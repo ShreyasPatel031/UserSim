@@ -110,3 +110,8 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   (raw/_babysitter/scale_test/ops/ops.json) instead of tab HTML, measure bytes per item, then set the daily page budget from $ not from rate.
 - First run (20261104T0334Z_df10006) invalid: the babysitter's script called the Playwright page from worker threads, so 639 fetches all
   errored locally (0 PH loads, 0 MB). Data Feeder caught it and reran.
+- **Reused-browser JSON method, feeder-phpeople-2, port 10003 (2026-11-04 05:35–05:57 UTC):** cold open failed once (05:38), second
+  open cleared (05:41); 8 people completed in ~14 min, then a block on person 9 (05:56:46) → stopped_on_block. Cost 0.92 MB avg /
+  0.72 MB median per person vs 11.3 MB with a fresh browser per person (~12× cheaper). Items vs header (8 people): upvotes, followers,
+  following, hunted, reviews 100%; stacks 50% (11/22, method gap). **Mid-session block after ~8 people / ~14 min**, so established
+  sessions are not block-free on this port: the edge may be requests per session. Next: half pace, log requests-per-session at block.
