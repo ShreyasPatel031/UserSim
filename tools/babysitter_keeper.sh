@@ -5,7 +5,7 @@
 # on the port (sticky exit IP may rotate). Backoff per slot: 6 min after a long run, 15 min after a run that died in < 8 min.
 S=/tmp/claude-0/-home-user-UserSim/985ad5f2-8c78-5e96-8903-dc657024cd94/scratchpad
 B=gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/pull
-SLOTS="feeder-babysitter-1:10007 feeder-babysitter-2:10006 feeder-babysitter-3:10005"
+SLOTS="feeder-babysitter-1:10007 feeder-babysitter-2:10006 feeder-babysitter-3:10013"
 declare -A made last_exit
 log(){ echo "$(date -u +%H:%M:%S) $*"; }
 create(){ # $1 vm $2 port
