@@ -15,6 +15,7 @@ mkdir -p $R/people_live/vm $R/people_live/light $R/api_comments $R/population_da
 gsutil -q -m rsync -d -x '.*(_code|logs|status|heartbeat)/.*|heartbeat.*' $B/raw/ph_population/people_live/vm/ $R/people_live/vm/
 gsutil -q ls $B/raw/ph_population/people_live/light/ >/dev/null 2>&1 && gsutil -q -m rsync -r -d $B/raw/ph_population/people_live/light/ $R/people_live/light/
 gsutil -q -m rsync -r $B/raw/ph_population/people_live/boxbrowser/ $R/people_live/boxbrowser/ 2>/dev/null
+mkdir -p $R/people_live/vm_pgql && gsutil -q -m rsync -r -x '.*\.log$' $B/raw/ph_population/people_live/vm_pgql/ $R/people_live/vm_pgql/
 for d in $(gsutil ls -d "$B/raw/ph_at_launch/2026-1*/api_comments/" "$B/raw/ph_at_launch/2026-1*/api_replies/" 2>/dev/null); do
   t=$(echo "$d" | sed "s#$B/raw/ph_at_launch/##; s#/\$##; s#/#_#g"); mkdir -p $R/api_comments/$t
   gsutil -q -m rsync "$d" $R/api_comments/$t/

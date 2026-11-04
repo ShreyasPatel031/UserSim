@@ -342,7 +342,8 @@ def build(data_dir, out_dir, salt):
         up_times = json.load(open(f"{data_dir}/people_live/_upload_times.json"))
     tab_rows, fp_events = [], []
     filled = json.load(open(f"{data_dir}/people_live/f1_filled.json")) if os.path.exists(f"{data_dir}/people_live/f1_filled.json") else {}
-    vm = sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/light/**/*.json", recursive=True))
+    vm = sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/light/**/*.json", recursive=True)) \
+        + sorted(glob.glob(f"{data_dir}/people_live/vm_pgql/_run_*/*.json"))
     fixed_h = {p[:-len("_f1fix.json")] for p in vm if p.endswith("_f1fix.json")}
     vm = [p for p in vm if p.endswith("_f1fix.json") or p[:-len(".json")] not in fixed_h]   # F1: restamped copy replaces the original
     for fp in vm + sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json")):

@@ -52,6 +52,9 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
     others = [t for t in TABS if t not in ("upvotes", "about") and isinstance(d.get(t), dict)]
     light = "light" in str(d.get("mode") or d.get("method") or "").lower() or "/light/" in path or not others
     pull_type = "light" if light else "full"
+    if "pgql" in str(d.get("method") or "").lower() or "/vm_pgql/" in path:
+        light, pull_type = False, "pgql"   # fast GraphQL pull: real lists, but collection items / product pages / threads need deep
+        source = "people_live:vm_pgql"
     if str(d.get("method") or "").startswith("one long-lived"):
         source += ":reused_browser"
     hdr = d.get("header") or {}

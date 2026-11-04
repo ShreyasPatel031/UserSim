@@ -31,10 +31,17 @@ if os.path.exists(tp):
     t = pd.read_parquet(tp)
     if "pull_type" not in t:
         t["pull_type"] = "full"
-    light_only = set(t.person_id) - set(t[t.pull_type == "full"].person_id)
+    light_only = set(t[t.pull_type == "light"].person_id) - set(t[t.pull_type.isin(["full", "pgql"])].person_id)
     lu = t[(t.tab == "upvotes") & t.person_id.isin(light_only)]
     # light pulls were withdrawn (Shreyas, Nov 4 20:23Z): a header + upvotes-only pull is INCOMPLETE and goes on the deep_list
     print(f"\n## Incomplete header+upvotes-only pulls (need the full pull; never coverage): {len(light_only):,} people")
+    # fast pgql pulls: their upvotes/lists are in the events (count for vote coverage) but the person is pending_deep until a
+    # newer full/deep pull exists (orchestrator 22:35Z)
+    last_full = t[t.pull_type == "full"].groupby("person_id").fetched_at.max()
+    last_pgql = t[t.pull_type == "pgql"].groupby("person_id").fetched_at.max()
+    pending_deep = {p_ for p_, ts in last_pgql.items() if p_ not in last_full.index or ts > last_full[p_]}
+    print(f"\n## Fast pgql pulls: {len(last_pgql):,} people ({len(set(last_pgql.index) - pool):,} not in the Nov 2 pool); "
+          f"pending_deep (no newer full/deep pull) {len(pending_deep):,}")
     t = t[t.pull_type == "full"].copy()
     for col in ("complete_not_visible", "capped_large", "signed_out_cap"):
         if col not in t:
@@ -70,12 +77,14 @@ if os.path.exists(tp):
             if pd.Timestamp(e.get("utc")) > last[pid_]:
                 pending.setdefault(pid_, []).append(e.get("reason"))
     per = per.where(~per.index.isin(list(pending)), "pending_repull")
+    per = per.where(~per.index.isin(list(pending_deep)), "pending_deep")
     perdf = pd.DataFrame({"state": per, "tier": per.index.map(lambda x: tier.get(x, "non-pool" if x not in pool else "unknown"))})
     strict = int((perdf.state == "complete").sum()); se = int((perdf.state == "server_ended").sum()); fail = int((perdf.state == "FAIL").sum())
     pend = int((perdf.state == "pending_repull").sum())
     print(f"\n## HEADLINE: people with every tab complete or server-ended: {strict + se:,} "
           f"(pool {int((perdf.state.isin(['complete', 'server_ended']) & perdf.index.isin(pool)).sum()):,}); strict complete {strict:,}; "
           f"server-ended (PH hid items) {se:,}; FAIL (our code stopped) {fail:,}; pending re-pull on Data Feeder's deep_list {pend:,}; "
+          f"pending_deep after a pgql pull {len(pending_deep):,}; "
           f"people with any full pull {t.person_id.nunique():,}\n")
     if pending:
         from collections import Counter
@@ -98,6 +107,8 @@ if os.path.exists(tp):
         h_of = {r["person_id"]: r.get("handle") for r in map(json.loads, open(hi))}
         rows = ft.groupby("person_id").tab.apply(lambda s: ",".join(sorted(s)))
         rows = pd.concat([rows, pd.Series("needs_full_pull", index=sorted(light_only - set(rows.index)))])
+        for pid_ in sorted(pending_deep):
+            rows[pid_] = (rows[pid_] + ";pending_deep") if pid_ in rows.index else "pending_deep"
         for state, label in (("server_ended_signed_out", "needs_signed_in"), ("server_ended", "verify_signed_in")):
             g = t[t.state == state].groupby("person_id").tab.apply(lambda s: label + ":" + ",".join(sorted(s)))
             for pid_, v in g.items():
