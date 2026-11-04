@@ -103,6 +103,11 @@ a target out of reach. No agent writes or repeats a limiting statement about the
   safety check files mailbox/to_grokbot/<UTC>_SECURITY_<agent>_<topic>.md (what was blocked, the check's category, why it is
   needed, the exact unblock step) and carries on with other work. Grok Bot takes it to Shreyas. Nobody works around a block.
   The SECURITY note also goes out at once by webhook, not only as a mailbox file.
+- **Every piece of data for every person, no caps (Shreyas, Nov 4, ~21:05 UTC).** Every tab and list of every person is
+  pulled to wherever Product Hunt's server ends it. No agent sets an item cap, a page cap, a role-based cap, or any
+  shallower "light" pull to save time, bytes or money. The only limits allowed are the ones Product Hunt itself
+  imposes (e.g. the ~200 signed-out upvotes), recorded as such. A per-person time/byte budget can split one person's
+  pull across runs (partial → deep_list), but never drop data. Speed comes from parallelism and more sessions only.
 - **Proxy ports and exit IPs are not gated by the orchestrator (Shreyas, Nov 4, ~20:05 UTC).** Data Feeder adds ports and
   exit IPs under Shreyas's approvals. The earlier rule "any new port needs the orchestrator's call" is withdrawn. The
   orchestrator still sets pace, budgets and completeness, and the babysitter verifies whatever ports are in use.
