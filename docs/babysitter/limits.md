@@ -171,7 +171,7 @@ opens per IP" vs "two simultaneous opens" can't be separated from this run. Long
 1. **One warm browser per sticky IP, opened once.** Never reopen to retry; never add a second browser on the same IP.
 2. **Throughput through in-page parallel GraphQL** (persisted queries), not more browsers or tabs: concurrency 4 (240/min) as the
    working point; c8 (472/min) proven only for 3 min.
-3. **GraphQL only, no HTML tabs:** ~10.5 KB/request → ~1 GB per 100k requests (~$1 at DataImpulse $1/GB). Stop upvotes at the ~200 cap.
+3. **GraphQL only, no HTML tabs:** ~10.5 KB/request → ~1 GB per 100k requests (~$1 at DataImpulse $1/GB). Page every list until PH's server ends it (upvotes end at ~200 signed out: PH's limit, recorded as complete_not_visible, never a cap in our code).
 4. **Small VM is enough:** CPU/RAM are not binding at 1 browser (load 0.3 at 472/min); e2-small/medium per IP.
 5. **Scale by IP (more sticky ports), not by browsers per VM.** Ports and exit IPs are Data Feeder's call (Shreyas's approvals).
 6. Persistent profiles give nothing (clearance not kept). fingerprint_preset clears but is slower; no benefit shown; optional.

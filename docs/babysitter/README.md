@@ -14,3 +14,9 @@ files precise speed-up asks. Started 2026-11-03 19:45 UTC on Shreyas's request (
   an edge is measurement, but once a block is hit: honour Retry-After, back off, never rotate IPs or accounts; one PH account.
 
 Verification script (schema, timestamps, dedupe, coverage; prints no usernames): `tools/babysitter_verify.py`.
+
+## No-caps rule (Shreyas, 2026-11-04; RESEARCH_PROGRAM.md d9444ee3)
+Every piece of data for every person, no caps of any kind. The only allowed limits are Product Hunt's own (e.g. ~200 signed-out
+upvotes), recorded as such. In the daily scorecard, any tab or list that stopped short of its header for any reason other than PH's
+server ending it (our paging stopped, item/page caps, enrichment caps, budgets that never resume) is a **FAIL**, reported by person
+(in GCS) and tab. Verify every cap list against the code, and alert Shreyas directly on any knowingly added cap.
