@@ -149,3 +149,30 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
 - 2026-11-04 15:44 UTC, VM-3 (10004): **stopped_on_block mid-session after 46 people / 914 requests / 151 min** (session opened ~13:13).
   All three ports have now blocked mid-session at least once: 10002 at 494 requests / 87 min, 10004 at 914 / 151 min, 10003 at 8 people
   at full pace (and 1,786+ requests clean at half pace). Sessions last a few hundred to ~2,000 requests before a block, varying by exit IP.
+
+## Lab run 2026-11-04 19:28–19:47 UTC (babysitter-lab-1, e2-standard-4, port 10006, exit AS5650 Verizon, signed out)
+Script: tools/babysitter_cf_lab.py. Raw: raw/_babysitter/lab/{live,live2}.out. VM deleted after the run.
+
+| Step | Result |
+|---|---|
+| P1 cold open, persistent profile | 403 challenge, cleared in 15.5 s |
+| P3 bytes | HTML upvotes tab 480–492 KB; GraphQL upvotes page 17.4–18.0 KB (~27× less) |
+| P2 close + reopen same profile | challenged again, cleared in 15.3 s: **persistent profile does not keep clearance** |
+| P4 one page, 1 / 2 / 4 / 8 parallel GraphQL (3 min each) | 180/180 (60/min), 360/360 (120/min), 720/720 (240/min), **1,416/1,416 (472/min)**; 0 blocks; 10.5 KB/request; load ≤0.3 on 4 vCPU |
+| P5 fingerprint_preset=True, new process, same IP | cleared, but 34.9 s (vs ~15 s) |
+| P6 2 browsers at once (separate processes) | **both failed to clear** (70 s, 403) → stop rule, no retry |
+
+Reading: the per-IP request rate is not the edge (≥472/min for 3 min, edge not reached; CPU idle). What failed was **fresh browser
+opens**: the 6th and 7th opens on this IP in ~18 min (two at once, right after the preset open) did not clear. Confounded: "too many
+opens per IP" vs "two simultaneous opens" can't be separated from this run. Long-run session limits from the people VMs still apply
+(blocks after ~500–2,000 requests per session, varying by IP).
+
+### Recommended configuration (most data per $ and per block, best uptime)
+1. **One warm browser per sticky IP, opened once.** Never reopen to retry; never add a second browser on the same IP.
+2. **Throughput through in-page parallel GraphQL** (persisted queries), not more browsers or tabs: concurrency 4 (240/min) as the
+   working point; c8 (472/min) proven only for 3 min.
+3. **GraphQL only, no HTML tabs:** ~10.5 KB/request → ~1 GB per 100k requests (~$1 at DataImpulse $1/GB). Stop upvotes at the ~200 cap.
+4. **Small VM is enough:** CPU/RAM are not binding at 1 browser (load 0.3 at 472/min); e2-small/medium per IP.
+5. **Scale by IP (more sticky ports), not by browsers per VM.** Needs the orchestrator's OK (new ports/IPs rule).
+6. Persistent profiles give nothing (clearance not kept). fingerprint_preset clears but is slower; no benefit shown; optional.
+7. Uptime: stop at the first block; cool-down before a reopen on the same IP is still unmeasured.
