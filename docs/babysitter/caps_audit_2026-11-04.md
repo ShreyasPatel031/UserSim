@@ -42,3 +42,6 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
   loop, a cap my 20:30Z audit missed. Merge **PASS** (union by id, nothing saved dropped, richer copy kept, every paged tab saves a
   resume cursor). Risks: activity dedupe key ignores the new event_id; offset resume can skip items deleted between passes.
 - Completeness FAIL to track: VM-3 deep person 20:46Z, following 25/26 with no reason recorded.
+- 20:55Z staged **aFHkp4q** (2052Z_merged) and **cj89** (2049Z_evid_overlap): both caps **PASS**. Promote 2052Z (week_bytes over all
+  feeder-*.jsonl, per-VM priority, _c<N> tokens, endCursor resume first, event_id key, 60 s deep gap) with 2049Z's paging back-off
+  and legacy activity cross-match folded in. feeder-dy-1/2/3 still write no status file, so week_bytes can't count them yet.
