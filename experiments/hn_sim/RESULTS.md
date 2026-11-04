@@ -6,11 +6,11 @@ bootstrap interval over days. Held out: May–Sep 2026 (153 days); each test mon
 on stories before it (history from Jan 2023, BigQuery public HN dataset). Random picks: top 100 10.6%, top 30 3.2%,
 top 10 1.1%.
 
-## Current headlines: Caught per post (north star 80% at each checkpoint; updated 2026-11-04 02:50 UTC)
+## Current headlines: Caught per post (north star 80% at each checkpoint; updated 2026-11-04 16:30 UTC)
 | checkpoint | headline | what it is |
 |---|---|---|
 | 1 h | **48.5% [45.0, 52.1]** (Sep 1 - Oct 14) | rank only + history score + content model (large) |
-| 15 min (posting clock: judged 15 min after posting) | **29.6%** Oct 2 - 14 daily retrain = **headline for the live product** (dense early-vote coverage, as live); **28.0% [25.7, 30.7]** Sep 1 - Oct 14 = full-period backtest headline (was 24.7%; paired +3.3 [+1.1, +5.5]) | votes + who + volume + hour (Oct 2-14); light model: 2025 Jan-Jun Wayback rows + content (full period) |
+| 15 min (posting clock: judged 15 min after posting) | **29.6%** Oct 2 - 14 daily retrain = **headline for the live product** (dense early-vote coverage, as live); **28.4% [25.8, 31.3]** Sep 1 - Oct 14 = full-period backtest headline (was 24.7%; paired +3.7 [+1.2, +6.1]) | votes + who + volume + hour (Oct 2-14; the light model reaches 30.2% there, +0.5 [-2.7, +3.5], not significant); light model: all 2025 Wayback rows + content (full period) |
 | at posting | **26.1% [23.9, 28.2]** (Sep 1 - Oct 14) | 3-way rank blend: Jul-Aug model + 2025+ history + content model (large) |
 Secondary line, never the headline (orchestrator decision 2026-11-03 16:55 UTC): 15 min on the exposure clock (also
 judged 15 min after a front-page return or /pool entry; direction B) 34.5% [31.5, 37.7], Oct 2-14. Content model at
@@ -1148,3 +1148,17 @@ September has a /newest snapshot by 15 min for 4.1% of winners (October 81.5%); 
 so this bucket is a coverage artifact of the backtest, not of the live product (the Oct 2-14 headline, 29.6%, is the
 dense-coverage read); (3) 38.4 pts sit in late risers + re-ups, posts with no front-page signal in their first hour:
 at the posting clock only at-posting inputs (content moved late risers 97 -> 123) reach them.
+
+### 15 min with all of 2025 (Jan-Dec Wayback rows + content; wb25_train.py, paired15.py; 2026-11-04)
+Jul-Dec check (verify25.py, Data Feeder's final pull): 822,840 rows, 0 duplicates; 74.5% of Jul-Dec posts have a
+/newest snapshot by 15 min (Sep 2025 47%, other months 77-84%); **outcome-independent**: 73.7-75.2% in every
+final-points band, winners 74.6% vs all 74.5%.
+| test | 2026 rows | + content | + 2025 rows | + 2025 rows + content |
+|---|---|---|---|---|
+| Oct 2-14 daily retrain | 22.4% | 27.6%, +5.2 | 26.0%, +3.6 | **30.2%, +7.7 [+4.3, +11.7]** |
+| Sep 1 - Oct 14 (fit <= Aug 31) | 22.8% | 25.8%, +2.9 | 25.6%, +2.8 | **28.4%, +5.6 [+3.4, +8.0]** |
+With the full year, 2025 rows add on top of content in both tests (+2.6 [-0.5, +5.8] Oct; +2.6 [+0.5, +5.1] Sep-Oct).
+Paired vs the headlines (identical posts and flags): Sep 1 - Oct 14 **28.4% vs 24.7%, +3.7 [+1.2, +6.1]** (Jan-Jun
+only: 28.0%); Oct 2-14 30.2% vs 29.6%, +0.5 [-2.7, +3.5] (late risers 30 -> 38, re-ups 11 -> 15, fast 74 -> 64).
+Headlines: full period 28.4%; Oct 2-14 stays 29.6% (live product). Next: the two models are complementary on Oct 2-14
+(light catches late risers and re-ups, the headline catches fast posts) but the pre-set 50/50 blend gave 28.9%, -0.8.
