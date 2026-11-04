@@ -1,15 +1,19 @@
-"""PRE-REGISTERED test of off-HN traction (written and committed 2026-11-04 ~16:40 UTC, before any backfill row exists).
+"""PRE-REGISTERED test of off-HN traction (written and committed 2026-11-04 ~16:40 UTC, before any backfill row exists;
+AMENDED 16:50 UTC, still before any row: engagement counts dropped, see below).
 
 Data (Data Feeder backfill): for each HN story with a URL, Jul 1 - Oct 14 2026, same-URL items on Reddit (Arctic Shift) and
 Bluesky with created_at in [HN post - 72 h, HN post + 60 min]. Path: env OFFHN_PATH (a bucket prefix of jsonl files);
-expected fields per item: post_id (HN), source ("reddit" | "bluesky"), created_at (UTC), and counts when present
-(reddit: score, num_comments, subreddit; bluesky: like_count, repost_count).
+expected fields per item: post_id (HN), source ("reddit" | "bluesky"), created_at (UTC), reddit subreddit.
 
-Inputs, fixed now (only items created strictly before the checkpoint time; nothing after can enter):
-  at posting (t < HN post time):  pre_reddit_n, pre_bsky_n, pre_any, pre_subreddits, pre_reddit_score_max,
-                                  pre_reddit_comments_sum, pre_bsky_engagement (likes + reposts), pre_first_h (hours
-                                  from the first outside item to the HN post; -1 if none)
-  at 15 min (t <= HN post + 15 min): the same eight, window extended to post + 15 min (suffix _15)
+Inputs, fixed now (only items created strictly before the checkpoint time; nothing after can enter), and only
+quantities fixed at each item's created_at:
+  at posting (t < HN post time):  pre_reddit_n, pre_bsky_n, pre_any, pre_subreddits, pre_first_h (hours from the first
+                                  outside item to the HN post; -1 if none)
+  at 15 min (t <= HN post + 15 min): the same five, window extended to post + 15 min (suffix _15)
+Amendment (orchestrator, 16:50 UTC): Reddit score / num_comments (Arctic Shift, as of ingest) and Bluesky like / repost
+counts (as of now) are NOT as of the checkpoint: a post that later wins on HN collects more outside engagement because
+of HN, so they would leak the outcome. They are excluded from the backtest; they may be used only from live capture,
+where they are read at the checkpoint.
 
 Endpoints, fixed now:
   PRIMARY: Caught at posting on Oct 2 - 14 (scored once): the headline 3-way blend (Jul-Aug model + 2025+ history +
@@ -35,8 +39,7 @@ import store as S
 import top100 as H
 import wb_caught as W
 
-PRE = ["pre_reddit_n", "pre_bsky_n", "pre_any", "pre_subreddits", "pre_reddit_score_max", "pre_reddit_comments_sum",
-       "pre_bsky_engagement", "pre_first_h"]
+PRE = ["pre_reddit_n", "pre_bsky_n", "pre_any", "pre_subreddits", "pre_first_h"]     # counts fixed at created_at only
 
 
 def load_items():
@@ -55,7 +58,8 @@ def load_items():
 
 
 def feats(A, born, cutoff_s, suffix=""):
-    """The eight inputs per HN post from items created strictly before born + cutoff_s."""
+    """The five inputs per HN post from items created strictly before born + cutoff_s (no engagement counts: those are
+    read as of now in the backfill and would leak the HN outcome)."""
     A = A[A.post_id.isin(born.index)].copy()
     A = A[A.t < A.post_id.map(born) + cutoff_s]
     r, bs = A[A.source == "reddit"], A[A.source == "bluesky"]
@@ -63,13 +67,9 @@ def feats(A, born, cutoff_s, suffix=""):
     F["pre_reddit_n"] = r.groupby("post_id").size()
     F["pre_bsky_n"] = bs.groupby("post_id").size()
     F["pre_subreddits"] = r.groupby("post_id").subreddit.nunique() if "subreddit" in r else np.nan
-    F["pre_reddit_score_max"] = r.groupby("post_id").score.max() if "score" in r else np.nan
-    F["pre_reddit_comments_sum"] = r.groupby("post_id").num_comments.sum() if "num_comments" in r else np.nan
-    eng = bs.get("like_count", 0) + bs.get("repost_count", 0) if len(bs) else pd.Series(dtype=float)
-    F["pre_bsky_engagement"] = bs.assign(e=eng).groupby("post_id").e.sum() if len(bs) else np.nan
     first = A.groupby("post_id").t.min()
     F["pre_first_h"] = ((born - first.reindex(born.index)) / 3600).where(first.reindex(born.index).notna(), -1)
-    for c in ["pre_reddit_n", "pre_bsky_n", "pre_subreddits", "pre_reddit_comments_sum", "pre_bsky_engagement"]:
+    for c in ["pre_reddit_n", "pre_bsky_n", "pre_subreddits"]:
         F[c] = F[c].fillna(0)
     F["pre_any"] = ((F.pre_reddit_n + F.pre_bsky_n) > 0).astype(int)
     return F[PRE].add_suffix(suffix)
