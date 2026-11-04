@@ -38,3 +38,7 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
 - 20:42Z staging/reuse_2040Z.tgz **G7ltiPYUDQIJylNv2lT60g==**: caps **PASS** (diff vs T7ToP4: package_md5 logged, discovery-first queue,
   pgql excludes deep_list people, "no profile" skipped). **week_bytes FAIL:** sums only feeder-phpeople-1/2/3 status; misses
   feeder-pgql-1, feeder-phtest-1.*, feeder-dy-1/2/3, so the 29 GB stop undercounts.
+- 20:50Z live reuse.tgz = pgql.tgz **92/vwCnzX0KICfPvsQOvBQ==**: caps **PASS**; also removes `stack_pages < 50` in the stacks GraphQL
+  loop, a cap my 20:30Z audit missed. Merge **PASS** (union by id, nothing saved dropped, richer copy kept, every paged tab saves a
+  resume cursor). Risks: activity dedupe key ignores the new event_id; offset resume can skip items deleted between passes.
+- Completeness FAIL to track: VM-3 deep person 20:46Z, following 25/26 with no reason recorded.
