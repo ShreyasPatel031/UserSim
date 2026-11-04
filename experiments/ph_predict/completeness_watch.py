@@ -79,10 +79,13 @@ def mailbox(prev):
         if prev is None:   # first run: record, don't alert on history
             continue
         txt = sh("gsutil", "cat", key).stdout
-        m = [x.group(0) for x in CAP_RE.finditer(txt)]
+        # a mention counts only if it is not about removing a cap or about a spend / concurrency limit
+        NOT_DATA = re.compile(r"remov|gone|no[- ]?caps?|nocap|lifted|dropped the|concurren|rate cap|\$|usd|budget|29e9|bytes|c\d+\b|ports?", re.I)
+        live = [x for x in CAP_RE.finditer(txt) if not NOT_DATA.search(txt[max(0, x.start() - 120): x.end() + 120])]
+        m = [x.group(0) for x in live]
         if m:
             ctx = []
-            for x in list(CAP_RE.finditer(txt))[:3]:
+            for x in live[:3]:
                 s = txt[max(0, x.start() - 90): x.end() + 90].replace("\n", " ")
                 ctx.append(re.sub(r"@\w+", "@<user>", s))
             hits.append({"file": key.rsplit("/", 1)[-1], "matches": sorted(set(m))[:8], "context": ctx})
