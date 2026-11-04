@@ -5,7 +5,8 @@ import pandas as pd
 
 d, day = sys.argv[1], sys.argv[2]
 e = pd.read_parquet(f"{d}/events.parquet")
-pool = set(pd.read_parquet(f"{d}/persons.parquet").person_id)
+_pp = pd.read_parquet(f"{d}/persons.parquet")
+pool = set(_pp[_pp.in_pool].person_id) if "in_pool" in _pp else set(_pp.person_id)
 e["in_pool"] = e.person_id.isin(pool)
 n = len(pool)
 print(f"# Population store coverage, {day} (pool {n:,}; counts only)\n")
@@ -28,6 +29,14 @@ import json, os
 tp = f"{d}/tabs.parquet"
 if os.path.exists(tp):
     t = pd.read_parquet(tp)
+    if "pull_type" not in t:
+        t["pull_type"] = "full"
+    light_only = set(t.person_id) - set(t[t.pull_type == "full"].person_id)
+    lu = t[(t.tab == "upvotes") & t.person_id.isin(light_only)]
+    print(f"\n## Light pulls (header + upvotes only; not all-tabs): {len(light_only):,} people "
+          f"(in Nov 2 pool {len(light_only & pool):,}, new {len(light_only - pool):,}); upvotes list complete or server-ended "
+          f"{int((lu.complete | lu.complete_not_visible).sum()):,}")
+    t = t[t.pull_type == "full"]
     per = t.groupby("person_id").agg(tabs=("tab", "nunique"), complete=("complete", "sum"))
     tier = {}
     hi = f"{d}/have_index.jsonl"

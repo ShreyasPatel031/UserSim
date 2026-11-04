@@ -48,15 +48,20 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
     if pd.isna(f):
         f, f_quality = _ts(upload_time), "upload_time_upper_bound"
     source = source or "people_live:" + path.split("people_live/")[-1].split("/")[0]
+    # light pull (48 h coverage plan): profile header + upvotes list only. Recognised by mode/method or by shape.
+    others = [t for t in TABS if t not in ("upvotes", "about") and isinstance(d.get(t), dict)]
+    light = "light" in str(d.get("mode") or d.get("method") or "").lower() or "/light/" in path or not others
+    pull_type = "light" if light else "full"
     if str(d.get("method") or "").startswith("one long-lived"):
         source += ":reused_browser"
     hdr = d.get("header") or {}
     tabs, ev = [], []
-    for t in TABS:
+    for t in (["upvotes"] if light else TABS):
         v = d.get(t)
         if v is None:
             tabs.append(dict(person_id=pid, tab=t, header=hdr.get(t), count=None, complete=False, stopped_early=None,
-                             fetched_at=f, fetched_quality=f_quality, source=source))
+                             fetched_at=f, fetched_quality=f_quality, source=source, pull_type=pull_type,
+                             complete_not_visible=False))
             continue
         items = v.get("items") or []
         ft = _ts(v.get("fetched_at")) if v.get("fetched_at") else f   # per-tab fetch time when the pull records it
@@ -70,7 +75,8 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
         short = h is not None and t != "reviews" and n < 0.98 * h
         stopped = explicit or short
         tabs.append(dict(person_id=pid, tab=t, header=h, count=n, complete=not stopped, stopped_early=stopped,
-                         fetched_at=ft, fetched_quality=fq, source=source))
+                         fetched_at=ft, fetched_quality=fq, source=source, pull_type=pull_type,
+                         complete_not_visible=bool(v.get("complete_not_visible"))))
         for i, it in enumerate(items, 1):
             url = it.get("url") or ""
             prod = PRODUCT.search(url)

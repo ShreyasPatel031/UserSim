@@ -342,7 +342,7 @@ def build(data_dir, out_dir, salt):
         up_times = json.load(open(f"{data_dir}/people_live/_upload_times.json"))
     tab_rows, fp_events = [], []
     filled = json.load(open(f"{data_dir}/people_live/f1_filled.json")) if os.path.exists(f"{data_dir}/people_live/f1_filled.json") else {}
-    vm = sorted(glob.glob(f"{data_dir}/people_live/vm/*.json"))
+    vm = sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/light/**/*.json", recursive=True))
     fixed_h = {p[:-len("_f1fix.json")] for p in vm if p.endswith("_f1fix.json")}
     vm = [p for p in vm if p.endswith("_f1fix.json") or p[:-len(".json")] not in fixed_h]   # F1: restamped copy replaces the original
     for fp in vm + sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json")):
@@ -362,9 +362,13 @@ def build(data_dir, out_dir, salt):
                 api_cids |= {json.loads(x).get("comment_id") for x in a.extra}
         cid = e_.extra.map(lambda x: json.loads(x).get("comment_id") if isinstance(x, str) else None)
         ev.append(e_[~((e_.kind == "comment") & cid.isin(api_cids - {None}))])
-    if tab_rows:  # latest pull per (person, tab)
+    if tab_rows:  # latest pull per (person, tab); a light upvotes read never replaces a full pull's other tabs (it has none)
         tr = pd.concat(tab_rows, ignore_index=True).sort_values("fetched_at")
-        tr.drop_duplicates(["person_id", "tab"], keep="last").to_parquet(f"{out_dir}/tabs.parquet", index=False)
+        tr = tr.drop_duplicates(["person_id", "tab"], keep="last")
+        tr.to_parquet(f"{out_dir}/tabs.parquet", index=False)
+        extra_people = set(tr.person_id) - set(ids_map.values())
+    else:
+        extra_people = set()
     xe, xrep = x_events(data_dir, set(ids_map.values()))
     print("X drops:", json.dumps(xrep, default=str))
     if len(xe):
@@ -375,6 +379,8 @@ def build(data_dir, out_dir, salt):
         events[c] = pd.to_datetime(events[c], utc=True)
     pool = pd.DataFrame({"person_id": sorted(set(ids_map.values()))})
     pool["in_pool"] = True
+    # people pulled who are not in the Nov 2 pool (discovery for the 48 h coverage plan): same salted ids, in_pool False
+    pool = pd.concat([pool, pd.DataFrame({"person_id": sorted(extra_people), "in_pool": False})], ignore_index=True)
     events.to_parquet(f"{out_dir}/events.parquet", index=False)
     pool.to_parquet(f"{out_dir}/persons.parquet", index=False)
     return events, pool
@@ -393,8 +399,10 @@ def check_store(events, pool):
     c["upvote_lo_missing"] = int((up.ts_lo.isna() & (up.ts_quality == "bounded")).sum())
     c["null_person"] = int(events.person_id.isna().sum())
     c["fetched_or_exact"] = float(((events.fetched_at.notna()) | (events.ts_quality == "exact")).mean())
-    c["pool_people_with_events"] = int(events.person_id.isin(pool.person_id).groupby(events.person_id).any().sum())
-    c["events_outside_pool_people"] = int((~events.person_id.isin(pool.person_id)).sum())
+    core = pool[pool.in_pool].person_id
+    c["pool_people_with_events"] = int(events.person_id.isin(core).groupby(events.person_id).any().sum())
+    c["events_outside_pool_people"] = int((~events.person_id.isin(core)).sum())
+    c["pulled_non_pool_people"] = int((~pool.in_pool).sum())
     c["pass"] = c["dup_keys"] == 0 and c["upvote_lo_gt_hi"] == 0 and c["null_person"] == 0
     return c
 

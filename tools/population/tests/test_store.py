@@ -174,3 +174,15 @@ def test_f1fix_unknown_and_filled(tmp_path):
     assert ev.loc["1", "ts_quality"] == "unknown" and pd.isna(ev.loc["1", "ts_lo"])
     assert ev.loc["2", "ts_quality"] == "exact" and ev.loc["2", "target_id"] == "777"
     assert ev.loc["3", "ts_quality"] == "exact"   # restamped from the comment's own createdAt: trusted even at 00:01
+
+
+def test_light_pull_recognised(tmp_path):
+    import full_pull
+    d = {"profile": "https://www.producthunt.com/@carol", "mode": "light", "run": {"finished_utc": "2026-11-04T21:00:00Z"},
+         "header": {"upvotes": 2, "followers": 9},
+         "upvotes": {"header": 2, "count": 2, "items": [{"url": "https://www.producthunt.com/products/x", "post_id": "5"},
+                                                        {"url": "https://www.producthunt.com/products/y", "post_id": "6"}]}}
+    p = tmp_path / "carol.json"; p.write_text(json.dumps(d))
+    tabs, ev = full_pull.load_full(str(p), IDS)
+    assert list(tabs.tab) == ["upvotes"] and tabs.pull_type.iloc[0] == "light" and bool(tabs.complete.iloc[0])
+    assert set(ev.target_id) == {"5", "6"} and (ev.person_id == IDS("carol")).all()
