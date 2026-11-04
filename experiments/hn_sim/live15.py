@@ -116,6 +116,45 @@ def caught_line(T, name, out):
     print(f"   {name:44s} {res}  (by day: " + ", ".join(f"{d} {a}/{b}" for d, a, b in zip(per.index, h, n)) + ")", flush=True)
 
 
+BACKTEST = {15: 0.296, 60: 0.485}                      # posting-clock headlines on comparable inputs (Oct 2-14 / Sep-Oct)
+
+
+def live_table(P, F, keep_idx, SC, top, days_after, out):
+    """Running live table (orchestrator, 2026-11-04): per posting day, Caught at 15 min / 1 h with flags = that day's
+    winners so far, the gap to the backtest, and the top 3 reasons the 15-min misses were missed."""
+    T = P[["post_id", "day", "y"]].reset_index(drop=True)
+    pick = lambda sc: sc.get("model + exposure (direction A)", sc["blend 50/50"])
+    s15, s60 = pick(SC[15]), pick(SC[60])
+    seen15 = F[15].iloc[keep_idx].seen.to_numpy() == 1
+    front60 = F[60].iloc[keep_idx].front_best.to_numpy() < 999
+    lag = np.array([next((k for k, x in enumerate(days_after(d)) if pid in top.get(x, ())), -1) for pid, d in zip(T.post_id, T.day)])
+    print("\nLIVE TABLE (per posting day; flags = that day's winners so far; score = "
+          f"{'per-minute model (direction A)' if 'model + exposure (direction A)' in SC[15] else 'blend 50/50'}):", flush=True)
+    print(f"   {'day':10s} {'seen15':>6s} {'lists settled':>13s} {'winners':>7s} {'15 min':>14s} {'gap':>6s} {'1 h':>14s} {'gap':>6s}  top miss reasons at 15 min", flush=True)
+    rows = []
+    for d, g in T.groupby("day"):
+        i = g.index.to_numpy()
+        k = int(g.y.sum())
+        if k == 0:
+            continue
+        f15 = pd.Series(s15[i]).rank(ascending=False, method="first").to_numpy() <= k
+        f60 = pd.Series(s60[i]).rank(ascending=False, method="first").to_numpy() <= k
+        w = g.y.to_numpy() == 1
+        c15, c60 = (f15 & w).sum() / k, (f60 & w).sum() / k
+        miss = w & ~f15
+        why = np.where(~seen15[i], "not seen by the recorder within 15 min",
+              np.where(lag[i] >= 2, "re-up (first listed 2+ days after posting)",
+              np.where(~front60[i], "late riser (not on the front page within 1 h)", "on the front page within 1 h, ranked below the cut")))
+        reasons = pd.Series(why[miss]).value_counts().head(3)
+        info = out["days"].get(d, {})
+        rows.append({"day": d, "caught15": round(c15, 3), "caught60": round(c60, 3), "winners": k,
+                     "gap15": round(c15 - BACKTEST[15], 3), "gap60": round(c60 - BACKTEST[60], 3), "miss_reasons": reasons.to_dict()})
+        print(f"   {d:10s} {info.get('seen_by_15min', float('nan')):6.1%} {info.get('list_days_settled', 0):>9d} of 4 {k:7d} "
+              f"{int((f15 & w).sum()):>3d}/{k:<3d} {c15:6.1%} {c15 - BACKTEST[15]:+6.1%} {int((f60 & w).sum()):>3d}/{k:<3d} {c60:6.1%} "
+              f"{c60 - BACKTEST[60]:+6.1%}  " + "; ".join(f"{r} {n}" for r, n in reasons.items()), flush=True)
+    out["live_table"] = rows
+
+
 def main():
     M = LC.load_minute()
     cov = M.assign(day=pd.to_datetime(M.t, unit="s", utc=True).dt.strftime("%Y-%m-%d")).groupby(["day", "list"]).t.nunique().unstack()
@@ -164,6 +203,7 @@ def main():
     keep_idx = P.index.to_numpy()
     days = sorted(P.day.unique())
     print(f"PROVISIONAL live Caught: {len(P)} posts, {int(P.y.sum())} winners so far, posting days {days}", flush=True)
+    SC = {}
     for age, label in ((60, "1 h (checkpoint 1)"), (15, "15 min (checkpoint 2)")):
         Fa = F[age].iloc[keep_idx].reset_index(drop=True)
         T = P[["day", "y"]].reset_index(drop=True)
@@ -171,6 +211,7 @@ def main():
         votes = Fa.pts.to_numpy() + 3 * (Fa.front_best.to_numpy() < 999) + Fa.cm.to_numpy() * 1e-3
         odds = P.p_post.fillna(0).to_numpy()
         scores = {"votes (+ front page)": votes, "at-posting odds": odds, "blend 50/50": 0.5 * rk(votes) + 0.5 * rk(odds)}
+        SC[age] = scores
         if len(days) >= MIN_DAYS_MODEL:                  # model on the recorder's own data, leave one posting day out
             import lightgbm as lgb
             X = pd.concat([Fa.drop(columns=["seen"]), pd.Series(odds, name="p_post")], axis=1)
@@ -192,6 +233,7 @@ def main():
                 caught_line(T[full].assign(s=sc[full]), f"{age} min | FULL-COVERAGE days (headline) | {name}", out)
             caught_line(T.assign(s=sc), f"{age} min | all posts | {name}", out)
             caught_line(T[seen].assign(s=sc[seen]), f"{age} min | seen only | {name}", out)
+    live_table(P, F, keep_idx, SC, top, days_after, out)
     # direction B: re-up clock (judged 15 min after the first /pool sighting or second-chance return to the front page)
     RC = reup_clock(P, Mi, t_last)
     cohort = RC.ev.to_numpy() == 1

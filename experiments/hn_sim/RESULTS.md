@@ -1100,3 +1100,21 @@ Leak checks: (1) 2025 snapshots outcome-independent (snapshot-by-15-min rate 66-
 is present at 27-30% in every final-points band, winners vs non-winners Sep 4.1% vs 5.5%, Oct 81.5% vs 79.2%: no
 outcome signal; (3) content scores out of sample by construction (2025 rows: quarter models never trained on their
 quarter; 2026: trained <= Jun 30); (4) no QN series, who or history inputs (the leak-prone ones).
+
+### Predict every minute (Shreyas via the orchestrator, 2026-11-04)
+**Per-minute odds live** (job oddsmin1 on hn-sim-1, from 02:04 UTC Nov 4): every 60 s (each run ~3 s), every post of the
+last 3 h: P(top 30) / P(top 10) at posting, 15 min, 1 h and now -> odds_minute/<day>/<HHMM>.parquet. Inputs: the odds
+tool's models (large content model) with front-page rank now / best rank from hn_minute (both recorders) instead of
+Quality News 10-min slots; at-posting feature rows from a cache job (~10 min per pass: author/domain history over all
+posts), so a new post's first prediction comes 10-20 min after posting, then every minute. Bug fixed on the way:
+hn_minute's rank is already the absolute position (page 2 = 31-60); live_caught.load_minute added (page-1)*30 again,
+inflating page 2-3 positions in the live readouts.
+**Per-minute model (direction A) on from 2 posting days** (leave one day out), live table per posting day:
+| day | seen by 15 min | lists settled | winners | 15 min (gap vs 29.6%) | 1 h (gap vs 48.5%) | top miss reasons at 15 min |
+|---|---|---|---|---|---|---|
+| Oct 31 | 41.7% | 2 of 4 | 26 | 2/26 7.7% (-21.9) | 5/26 19.2% (-29.3) | not seen 13; late riser 6; ranked below cut 3 |
+| Nov 1 | 53.2% | 1 of 4 | 19 | 0/19 0.0% (-29.6) | 2/19 10.5% (-38.0) | not seen 14; ranked below cut 4; late riser 1 |
+| Nov 2 | 99.7% | 0 of 4 | 35 | 7/35 20.0% (-9.6) | 11/35 31.4% (-17.1) | late riser 16; ranked below cut 12 |
+| Nov 3 | 99.7% | 0 of 4 | 17 | 2/17 11.8% (-17.8) | 8/17 47.1% (-1.4) | ranked below cut 12; late riser 3 |
+Full-coverage days (Nov 2-3), 15 min: per-minute model 17.3%, blend 21.2%, at-posting odds alone 26.9%: with 4 days
+(two with poor coverage) the per-minute model is still weaker than the odds; it retrains daily as days settle.
