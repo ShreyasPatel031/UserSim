@@ -45,3 +45,8 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
 - 20:55Z staged **aFHkp4q** (2052Z_merged) and **cj89** (2049Z_evid_overlap): both caps **PASS**. Promote 2052Z (week_bytes over all
   feeder-*.jsonl, per-VM priority, _c<N> tokens, endCursor resume first, event_id key, 60 s deep gap) with 2049Z's paging back-off
   and legacy activity cross-match folded in. feeder-dy-1/2/3 still write no status file, so week_bytes can't count them yet.
+- 20:59Z live **uI2HqwBVVSYlV5ZCELEv1A==** (2052Z + cj89 parts): **PASS** for reuse, deep and pgql, incl. merge (one-to-one legacy
+  activity match). Also removes 3 caps my earlier audits missed: legacy.sh `--followers-cap 2000`, repullstacks `stack_pages < 50`,
+  ph_person.py stacks `pg_ < 50`. rcap survives only in a dead function. **One cap left (legacy mode only):** legacy.sh
+  `enrich.py --threads 20`; legacy timeouts 5400/3600 s drop a person without a deep_list entry.
+- Tab FAILs (no reason recorded): VM-3 deep 20:46Z following 25/26; VM-3 deep 20:56Z reviews 0/3.
