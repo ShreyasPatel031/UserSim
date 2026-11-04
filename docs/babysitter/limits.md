@@ -115,3 +115,9 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   0.72 MB median per person vs 11.3 MB with a fresh browser per person (~12× cheaper). Items vs header (8 people): upvotes, followers,
   following, hunted, reviews 100%; stacks 50% (11/22, method gap). **Mid-session block after ~8 people / ~14 min**, so established
   sessions are not block-free on this port: the edge may be requests per session. Next: half pace, log requests-per-session at block.
+- **Test 2a, reused browser at half pace, feeder-phpeople-2, port 10003 (2026-11-04 06:58–08:02 UTC):** one Cloudflare clear (07:01),
+  then **20/20 people, 0 blocks, 307 requests in one session over ~60 min**, 0.56 MB per person. Completeness vs header: upvotes 155/155,
+  following 68/68, hunted 4/4, stacks 4/4 (stacks fix holds) = 100%; followers 154/196 = 78.6% and collections 2/3 = 66.7% (paging gaps).
+  Compared with the full-pace run (block after ~8 people / ~14 min), **the mid-session edge on this port is rate-related**, between
+  ~1 person per 1.5 min (blocked) and ~1 person per 3 min (clean for 60 min). **Operating point per sticky port: ≤1 person / 3 min
+  (~5 requests/min), one long-lived browser** until a faster step is measured.
