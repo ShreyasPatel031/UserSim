@@ -15,7 +15,13 @@ from ph_person import Blocked
 def _mem_gb():
     try: return int(next(l for l in open('/proc/meminfo') if l.startswith('MemTotal')).split()[1]) / 1e6
     except Exception: return 4.0
-K = int(os.environ.get('PDEEP_K', 4 if _mem_gb() < 6 else 8)); TABS = int(os.environ.get('PDEEP_TABS', 2))  # e2-medium (4 GB): 4 workers x 2 pages
+_ACTIVE = [0]
+def _over_budget(R):
+    """2140Z audit fix 1: nic() is the whole VM's counter, so with K workers each person would be charged everyone's bytes.
+    Charge each person an equal share of the VM's traffic since that person started (per-worker stop-gap)."""
+    return (time.time() - R.t0) >= PB.BUDGET_SECS or (PB.nic() - getattr(R, "b0", PB.nic())) / max(1, _ACTIVE[0]) >= PB.BUDGET_BYTES
+PB.over_budget = _over_budget  # module-global lookup: pull()/paging use this from here on
+K = int(os.environ.get('PDEEP_K', 4))  # audit: K=4 for the first hour; TABS = int(os.environ.get('PDEEP_TABS', 2))  # e2-medium (4 GB): 4 workers x 2 pages
 B, VM = PB.B, PB.VM
 
 
@@ -87,13 +93,13 @@ async def main(a):
             h = await next_handle()
             if not h: break
             R = PB.R2(h, f'out/{h}.log', ramp); R.t0 = time.time(); R.b0 = PB.nic(); R.over = (lambda R=R: PB.over_budget(R)); R.partial = []
-            t0 = time.time(); res = err = None
+            t0 = time.time(); res = err = None; _ACTIVE[0] += 1
             try: res = await asyncio.wait_for(PB.pull_deep(R, pages, h, a, cap), a.person_timeout)
             except Blocked as e: err = ("block", str(e))
             except PB.PersonError as e: err = ("person_error", str(e))
             except asyncio.TimeoutError: err = ("timeout", "")
             except Exception as e: err = ("error", f"{type(e).__name__}: {e}"[:300])
-            secs = int(time.time() - t0)
+            secs = int(time.time() - t0); _ACTIVE[0] -= 1
             if res:
                 PB._CUR_R[0] = R; cv = PB.coverage(res)  # sync: no other worker runs between these two statements
                 json.dump(res, open(f'out/{h}.json', 'w'), indent=1, ensure_ascii=False)
@@ -106,7 +112,7 @@ async def main(a):
                 st["done"] += 1; consec = 0
             else:
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.log', f'{B}/logs/{h}.log')
-                if err[0] in ('timeout', 'block', 'error'):  # release the claim so the entry is retried; the deep_list entry stays
+                if 'no profile' not in (err[1] or ''):  # audit fix 4: release the claim on every error except a deleted account, so the entry is retried
                     await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'rm', f'{B}/claims/deep_{h}')
                 S.put(handle=h, rc=3 if err[0] == "block" else 1, method="pdeep_v1", worker=wi, secs=secs, error=err[0], detail=err[1])
                 if err[0] == "block":
@@ -124,7 +130,7 @@ async def main(a):
 
 if __name__ == "__main__":
     import argparse
-    ap = argparse.ArgumentParser(); ap.add_argument('--token', default=''); ap.add_argument('--ramp', default=os.environ.get('PDEEP_RAMP', '4:60,4:120'))  # per-worker rate gate; the IP held 8,700 req/min in the 2001Z lab
+    ap = argparse.ArgumentParser(); ap.add_argument('--token', default=''); ap.add_argument('--ramp', default=os.environ.get('PDEEP_RAMP', '4:60'))  # per-worker rate gate; the IP held 8,700 req/min in the 2001Z lab
     ap.add_argument('--threads', type=int, default=0); ap.add_argument('--followers-cap', type=int, default=0)
     ap.add_argument('--tabs', type=int, default=TABS); ap.add_argument('--person-timeout', type=int, default=1500); ap.add_argument('--cap', type=float, default=PB.CAP)
     a = ap.parse_args(); a.cap = min(a.cap, PB.CAP); a.mode = 'deep'

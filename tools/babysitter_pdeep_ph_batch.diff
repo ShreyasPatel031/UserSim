@@ -1,0 +1,27 @@
+158a159
+>     _stall = 0
+175c176,179
+<         if len(seen) == n0 and k >= 8: break
+---
+>         _stall = (_stall + 1) if len(seen) == n0 else 0
+>         if _stall >= 8: break  # 2140Z pdeep audit fix 3: 8 CONSECUTIVE no-growth scrolls (was one stall after k>=8)
+>     if len(seen) < (want or 0) and 'stacks' not in R.trunc:  # stopped short of the header: partial (deep retries), never complete
+>         R.trunc.append('stacks'); R.partial = getattr(R, 'partial', []) + ['stacks']
+785,786c789,790
+<         if k in curs: R.resume = {op: curs[k]}; base = old
+<         else: R.resume = {}; base = []
+---
+>         if k in curs: R.resume = {op: curs[k]}
+>         else: R.resume = {}
+790,791c794,798
+<         seen = {x.get("ph_user_id") or x.get("url") for x in base}; new = [user_item(n) for n in items]
+<         merged = base + [x for x in new if (x.get("ph_user_id") or x.get("url")) not in seen]
+---
+>         new = [user_item(n) for n in items]; _k = lambda x: x.get("ph_user_id") or x.get("url")
+>         # 2140Z pdeep audit fix 2: never drop a saved item. Resume: saved order first + new not seen; restart (no cursor): new first + saved not reached.
+>         if k in curs: _a, _b = old, new
+>         else: _a, _b = new, old
+>         _s = {_k(x) for x in _a if _k(x)}; merged = _a + [x for x in _b if not _k(x) or _k(x) not in _s]
+1011a1019,1020
+> if __name__ == "__main__" and "--mode" in sys.argv and sys.argv[sys.argv.index("--mode") + 1] == "pdeep":  # 2130Z babysitter: parallel deep (pdeep.py); same pull_deep, K people at once
+>     os.execv(sys.executable, [sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "pdeep.py"), "--token", sys.argv[sys.argv.index("--token") + 1] if "--token" in sys.argv else "pdeep"])
