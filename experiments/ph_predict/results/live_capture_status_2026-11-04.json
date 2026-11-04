@@ -1,0 +1,26 @@
+{
+ "day": "2026-11-04",
+ "status": "FAIL",
+ "counts": {
+  "posts": 70,
+  "board": 70,
+  "coverage": 2,
+  "snapshots": 2,
+  "launches": 35,
+  "vote_drops": 0,
+  "board_api_rows": 70,
+  "board_missing": 0,
+  "api_comments": 38,
+  "api_comments_no_user_id": 0,
+  "api_comments_created_after_pull": 0
+ },
+ "fail": [
+  "board: no homepage / leaderboard page views (only the API ranking)"
+ ],
+ "warn": [
+  "comments_ts.jsonl missing",
+  "people_ts.jsonl missing",
+  "products_ts.jsonl missing"
+ ],
+ "checked_at": "2026-11-04T08:18:09Z"
+}
