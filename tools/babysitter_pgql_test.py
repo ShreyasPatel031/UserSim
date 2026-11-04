@@ -58,7 +58,7 @@ async def ssr(path, h):
     return data
 async def chain(op, h, path, var="cursor", extra=None, cap=None, maxp=None):  # nocap2: no page cap (was 500)
     """server endCursor chain, sequential within one list; returns items, paging"""
-    extra = extra or {}; seen = {}; c = None; pg = 0; ended = None; zn = 0
+    extra = extra or {}; seen = {}; c = None; pg = 0; ended = None; zn = 0; _seen_c = set()
     while maxp is None or pg < maxp:
         d = await gql(op, h, **{var: c}, **extra); pg += 1; x = d
         if pg == 1 and isinstance(d.get("profile"), dict): HINT.setdefault(h, {}).update({k: v for k, v in d["profile"].items() if k.endswith("Count") and isinstance(v, int)})
@@ -68,8 +68,9 @@ async def chain(op, h, path, var="cursor", extra=None, cap=None, maxp=None):  # 
             n = (e or {}).get("node") or {}
             if n.get("id") and n["id"] not in seen: seen[n["id"]] = n; new += 1
         if not ed: ended = "empty_page"; break
-        zn = zn + 1 if new == 0 else 0
-        if zn >= 3: ended = "no_new_3pages"; break
+        zn = zn + 1 if new == 0 else 0  # 2330Z (quality gap 4): no_new_3pages was OUR stop; now only a repeated server cursor ends the chain
+        if pi.get("endCursor") and pi.get("endCursor") in _seen_c: ended = "server_cursor_loop"; break
+        _seen_c.add(pi.get("endCursor"))
         if cap and len(seen) >= cap: ended = "cap"; break
         if not pi.get("hasNextPage"): ended = "hasNextPage_false"; break
         c = pi.get("endCursor")
@@ -235,7 +236,7 @@ async def main(a):
                     _pg = (res.get("run") or {}).get("paging") or {}  # 2325Z: a tab that errored, or a follow list that ended short of its header, goes to deep too (deep re-pages it with paging_v2 and merges by id)
                     for _k in ("stacks", "hunted", "following", "followers", "activity", "forums", "upvotes"):
                         _t = res.get(_k) or {}; _h = _t.get("header")
-                        if (_pg.get(_k) or {}).get("error") or (_k in ("following", "followers") and _h and (_t.get("count") or 0) < 0.98 * _h):
+                        if (_pg.get(_k) or {}).get("error") or (_k in ("following", "followers", "stacks", "hunted") and _h and (_t.get("count") or 0) < 0.98 * _h):  # 2330Z quality gap 1: short stacks too
                             if _k not in _tabs: _tabs.append(_k)
                     res["deep_pending"] = _tabs; res.setdefault("notes", []).append("2210Z pgql lists saved as vm/<h>.json; deep fills header, reviews, collection items, product pages, forum threads")
                     json.dump(res, open(fn, "w"), ensure_ascii=False)

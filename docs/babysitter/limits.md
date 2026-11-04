@@ -207,3 +207,12 @@ First real full-list run at 32 parallel. **Blocked at 28.8 min:** `SSR /@<handle
   one per person, for header counts missing from ProfileAboutPage). Working hypothesis: HTML page loads, not GraphQL volume,
   are what Cloudflare scores. Next: take header counts from GraphQL only and keep HTML fetches near zero.
 - Stop rule followed: run stopped at the first block, no retry, no IP rotation.
+
+## Blocks 22:07–22:46 UTC and the always-on keeper (2026-11-04)
+- feeder-phpeople-1 (10002) c32: blocked 22:07Z after 214 people / ~49 min.
+- feeder-babysitter-1 (10007) c32 with HTML gated to 6/min: blocked 22:46Z on `SSR /@<handle> HTTP 403` after 52.4 min, 263 people,
+  39,935 requests (762/min), 306 HTML fetches. Both babysitter blocks tonight were on HTML page loads (19/min -> 29 min, 6/min -> 52
+  min). Since 23:00Z the fast pulls make no HTML page loads at all (PGQL_HTML_PER_MIN=0); header counts are left to deep.
+- 10005 failed its cold Cloudflare open 3 times today (21:54, 23:07 + earlier): IP flagged, released. Slot moved to 10013.
+- Keeper (tools/babysitter_keeper.sh, Shreyas 22:57Z "3 VMs at all times"): recreates any ended babysitter VM (new disk = new
+  fingerprint, new session), 6 min after a long run, 15 min after one that died in < 8 min. 23:23Z: 39.4 people/min on 3 x c32.
