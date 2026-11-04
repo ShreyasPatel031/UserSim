@@ -2,8 +2,8 @@
 person"; alert him if any agent caps or truncates a pull). Counts only: no usernames are printed or written.
 
 Checks, each against the previous run's state (STATE file), so only NEW truncation alerts:
-  store_v3 tabs.parquet   per tab: people with complete=False or stopped_early=True, and the header total vs rows got
-                          (a full pull gets every row the header says exists)
+  store_v3 tabs.parquet   per tab: short pulls split into PH server end (complete_not_visible, or upvotes ending at
+                          PH's ~200), near complete (deleted items) and code_stop (our code stopped): only code_stop alerts
   ph_at_launch makers     today's and yesterday's makers.jsonl: followers_cap set, followers_capped, followers_complete False
   mailbox from_grokbot    new or changed files whose text mentions a cap / limit on what is pulled
                           (cap, capped, limit to, limited, newest N, first N, max_*, truncat, skip, only page 1)
@@ -28,9 +28,27 @@ def tabs():
     T = pd.read_parquet(f)
     out = {}
     for t, g in T.groupby("tab"):
-        out[t] = {"people": int(len(g)), "incomplete": int((~g.complete.astype(bool)).sum()), "stopped_early": int(g.stopped_early.astype(bool).sum()),
-                  "header_total": int(g.header.fillna(0).sum()), "rows_got": int(g["count"].sum())}
+        inc = g[~g.complete.astype(bool)]
+        cls = inc.apply(short_kind, axis=1) if len(inc) else pd.Series(dtype=str)
+        out[t] = {"people": int(len(g)), "incomplete": int(len(inc)), "stopped_early": int(g.stopped_early.astype(bool).sum()),
+                  "header_total": int(g.header.fillna(0).sum()), "rows_got": int(g["count"].sum()),
+                  "server_end": int((cls == "server_end").sum()), "near_complete": int((cls == "near_complete").sum()),
+                  "code_stop": int((cls == "code_stop").sum()),
+                  "code_stop_rows_missing": int((inc.header.fillna(0) - inc["count"])[cls == "code_stop"].sum()) if len(inc) else 0}
     return out
+
+
+def short_kind(r):
+    """Why a tab is short of its header count (orchestrator, Nov 4 20:24 UTC: alert Shreyas only on our code stopping).
+    server_end: PH's server stopped listing (the pull flags complete_not_visible, or an upvote list ends at PH's ~200
+    limit, 185-205 rows); near_complete: within max(3, 2%) of the header (deleted / hidden items); code_stop: anything
+    else, i.e. our code stopped early."""
+    h, c = float(r.header or 0), float(r["count"] or 0)
+    if bool(r.get("complete_not_visible")) or (r.tab == "upvotes" and 185 <= c <= 205 and h > c):
+        return "server_end"
+    if h - c <= max(3, 0.02 * h):
+        return "near_complete"
+    return "code_stop"
 
 
 def makers():
@@ -78,9 +96,10 @@ def main():
     alerts = []
     for t, v in now["tabs"].items():
         p = (prev.get("tabs") or {}).get(t, {})
-        for k in ("incomplete", "stopped_early"):
-            if v[k] > p.get(k, 0 if prev else v[k]):
-                alerts.append(f"store_v3 {t}: {k} {p.get(k, 0)} -> {v[k]} people (rows got {v['rows_got']} of header {v['header_total']})")
+        # alert only on our code stopping (server ends at PH's limits and near-complete lists are reported, not alerted)
+        if v["code_stop"] > p.get("code_stop", 0):
+            alerts.append(f"store_v3 {t}: code stopped early on {v['code_stop']} people (was {p.get('code_stop', 0)}), "
+                          f"{v['code_stop_rows_missing']} rows missing vs headers; PH server end {v['server_end']}, near complete {v['near_complete']}")
     for d, v in now["makers"].items():
         p = (prev.get("makers") or {}).get(d, {})
         if v["cap_set"] or v["capped"]:
