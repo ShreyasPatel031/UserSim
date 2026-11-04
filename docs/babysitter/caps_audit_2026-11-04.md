@@ -4,7 +4,7 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
 
 | # | Where (code) | What stops short | Verdict |
 |---|---|---|---|
-| 0 | ph_batch.py fcap/mark_capped | followers 500 / 2,000 role cap (added 16:50Z) | **removed** in this build; 377 people pulled under it 16:50–20:17Z need re-pull (only 3–5 are on deep_list) |
+| 0 | ph_batch.py fcap/mark_capped | followers 500 / 2,000 role cap (added 16:50Z) | **removed** in this build; Data Feeder found 3 people cut by it (of 377 status rows checked), now on deep_list; to verify: every person pulled 16:50–20:17Z with followers < header |
 | 1 | ph_batch.py `--threads 20`, `fitems[:a.threads]`; enrich.py same | only the first 20 forum threads get full body + replies; the rest `thread_full=False` | **CAP: FAIL** |
 | 2 | ph_batch.py thread(): `for k in range(25)` | at most 25 "more replies" clicks per thread | **CAP: FAIL** on long threads |
 | 3 | paging_v2.py `maxp = goal//20+10 if goal else 500` | lists with no header (activity) stop at 500 pages = 10,000 items, `ended=max_pages`; deep pass re-pulls non-follow tabs from page 1, so it hits the same wall forever | **CAP: FAIL** for activity > 10k |
