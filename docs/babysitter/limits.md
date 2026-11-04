@@ -173,6 +173,6 @@ opens per IP" vs "two simultaneous opens" can't be separated from this run. Long
    working point; c8 (472/min) proven only for 3 min.
 3. **GraphQL only, no HTML tabs:** ~10.5 KB/request → ~1 GB per 100k requests (~$1 at DataImpulse $1/GB). Stop upvotes at the ~200 cap.
 4. **Small VM is enough:** CPU/RAM are not binding at 1 browser (load 0.3 at 472/min); e2-small/medium per IP.
-5. **Scale by IP (more sticky ports), not by browsers per VM.** Needs the orchestrator's OK (new ports/IPs rule).
+5. **Scale by IP (more sticky ports), not by browsers per VM.** Ports and exit IPs are Data Feeder's call (Shreyas's approvals).
 6. Persistent profiles give nothing (clearance not kept). fingerprint_preset clears but is slower; no benefit shown; optional.
 7. Uptime: stop at the first block; cool-down before a reopen on the same IP is still unmeasured.
