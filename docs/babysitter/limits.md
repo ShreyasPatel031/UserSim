@@ -121,3 +121,9 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   Compared with the full-pace run (block after ~8 people / ~14 min), **the mid-session edge on this port is rate-related**, between
   ~1 person per 1.5 min (blocked) and ~1 person per 3 min (clean for 60 min). **Operating point per sticky port: ≤1 person / 3 min
   (~5 requests/min), one long-lived browser** until a faster step is measured.
+- **Released VMs at half pace (2026-11-04 09:40–11:11 UTC), per-session ceiling:** VM-1 (10002) one session, 28 people, 537 requests,
+  87.7 min, 58.5 MB, then **stopped_on_block 11:07:03Z** (mid-session). VM-3 (10004) one session, 28 people, 507 requests, 84.4 min,
+  ended by stop_flag 11:04, then a **cold restart failed Cloudflare 11:10:43Z**. VM-2 (10003) 29+ people, no block at 11:24Z.
+  Reading: at ~1 person / 3 min a session lasts ~85–90 min / ~500–540 requests before a block. That looks like a per-session
+  request or duration limit, not rate; and a cold open right after a long session fails. First 20 per VM: 0 blocks; MB 0.59 / 2.12 / 0.67;
+  upvotes capped at ~197–199 for heavy upvoters (paging stops ~10 pages), stacks 73–100%, followers 89–99%.
