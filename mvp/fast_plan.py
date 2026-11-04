@@ -489,6 +489,18 @@ def is_general_assistant(url_or_name: str) -> bool:
     return bool(_ASSISTANT_NAMES.match(text))
 
 
+def is_chatbot_rival(url: str) -> bool:
+    """True for a general chatbot itself: a bare assistant-vendor homepage or a chat app host.
+
+    A chatbot vendor's product page (anthropic.com/api) is a real rival for a model platform.
+    """
+    parts = urlsplit(_clean_url(url))
+    host = (parts.hostname or "").removeprefix("www.")
+    if host not in _ASSISTANT_HOSTS:
+        return False
+    return not parts.path.strip("/") or host in {"chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com"}
+
+
 def product_is_general_assistant(own: str, read: dict[str, Any] | None = None) -> bool:
     """True when the product itself is a general-purpose chatbot (then chatbots are its direct rivals)."""
     if (own or "").lower().removeprefix("www.") in _ASSISTANT_HOSTS:
@@ -563,11 +575,8 @@ def pick_competitors(items: list[Any], own: str, limit: int = 2, *, allow_assist
             continue
         if host in _SUITE_HOSTS and parts.path.strip("/") == "":
             continue
-        if not allow_assistants and host in _ASSISTANT_HOSTS:
-            # A chatbot vendor's product page (anthropic.com/api) is a real rival for a model platform;
-            # the chatbot itself (a bare homepage or a chat app host) is still skipped.
-            if not parts.path.strip("/") or host in {"chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com"}:
-                continue
+        if not allow_assistants and is_chatbot_rival(clean):
+            continue
         comps.append(clean)
         if len(comps) == limit:
             break
@@ -747,6 +756,11 @@ Return {{"tasks": [{{"task": "3-8 word task", "favors": "product or one competit
 Rules: an imperative verb and a concrete object; each must make sense on all three sites (done in the product where a
 trial allows, or judged from the website). Never use the words connect, integrate or sync. Never a task needing the customer's own outside credentials or data
 (connect or sync a data source, API keys, payment) and no pricing task. No quotes."""
+
+
+def plan_model() -> str:
+    """Model the planner calls (MVP_FAST_PLAN_MODEL)."""
+    return os.environ.get("MVP_FAST_PLAN_MODEL") or "gemini-2.5-flash"  # pragma: allowlist secret
 
 
 def compare_mode() -> bool:
