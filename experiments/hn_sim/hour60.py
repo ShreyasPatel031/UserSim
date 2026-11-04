@@ -79,6 +79,29 @@ def main():
         types = ", ".join(f"{t} {int((fl & (kind[sel] == t)).sum())}/{int((kind[sel] == t).sum())}" for t in ("fast", "late", "reup"))
         print(f"   {name:52s} {W.ci2(c)}" + ("" if c is c0 else f"  vs base {W.ci2(c, c0)}") + f" | {types}", flush=True)
 
+    # (C) only posts NOT on the front page by 1 h (where late risers and re-ups are): does anything visible by 1 h
+    # separate the future winners from the posts that never rise? Daily retrain on that subset, AUC + Caught within it.
+    from sklearn.metrics import roc_auc_score
+    off = (R.best_rank.to_numpy() > 90)
+    t0, t1 = np.full(len(Q), np.nan), np.full(len(Q), np.nan)
+    for d in days:
+        tr = (Q.day <= (pd.Timestamp(d) - pd.Timedelta(days=2)).strftime("%Y-%m-%d")).to_numpy() & off
+        tt = (Q.day == d).to_numpy() & off
+        t0[tt] = lgb.LGBMClassifier(**W15.PRM).fit(base[tr], Q.y[tr]).predict_proba(base[tt])[:, 1]
+        t1[tt] = lgb.LGBMClassifier(**W15.PRM).fit(X1[tr], Q.y[tr]).predict_proba(X1[tt])[:, 1]
+    so = sel & off
+    T3 = Q[so][["post_id", "day", "y"]].reset_index(drop=True)
+    print(f"\n(C) posts not on the front page by 1 h, Oct 2 - 14: {len(T3)} posts, {int(T3.y.sum())} winners "
+          f"(late risers + re-ups + a few fast by other measures); Wayback snapshot by 60 min {V.v_has_60[so].mean():.1%}", flush=True)
+    a0, a1 = roc_auc_score(T3.y, t0[so]), roc_auc_score(T3.y, t1[so])
+    d0, d1 = W.caught_on(T3, t0[so]), W.caught_on(T3, t1[so])
+    print(f"   AUC within the subset: base {a0:.3f} -> + votes/comments/who {a1:.3f}", flush=True)
+    print(f"   Caught within the subset (flags = its winners): base {W.ci2(d0)} -> + votes/comments/who {W.ci2(d1)}, "
+          f"paired {W.ci2(d1, d0)}", flush=True)
+    imp = pd.Series(lgb.LGBMClassifier(**W15.PRM).fit(X1[(Q.day <= "2026-10-12").to_numpy() & off], Q.y[(Q.day <= "2026-10-12").to_numpy() & off])
+                    .booster_.feature_importance("gain"), index=X1.columns).sort_values(ascending=False)
+    print("   top inputs (gain) in the subset model:", ", ".join(f"{i} {v:.0f}" for i, v in imp.head(10).items()), flush=True)
+
 
 if __name__ == "__main__":
     main()

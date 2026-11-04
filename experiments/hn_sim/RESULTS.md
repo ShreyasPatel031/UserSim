@@ -1175,3 +1175,16 @@ Stacker: logistic regression on both ranks, early signal, interactions, snapshot
 | gate | 29.1% | -0.5 [-3.4, +2.3] | -1.0 [-4.0, +2.0] |
 | stacker | 25.5% | **-4.1 [-7.3, -0.8]** | -4.6 [-9.0, +0.0] |
 Neither beats 29.6%: dropped (orchestrator's rule). Headlines unchanged; direction A stays top priority.
+
+### Checkpoint 1 (1 h): miss decomposition and honest early votes (hour60.py)
+(A) 1-h headline (rank only + history + content), Sep 1 - Oct 14: 640 / 1,323 = 48.4%.
+| bucket | winners | caught | oracle gain |
+|---|---|---|---|
+| late riser (no front page by 1 h) | 461 | 56 | **30.6 pts** |
+| re-up (first listed 2+ days after posting) | 221 | 17 | **15.4 pts** |
+| on the front page by 1 h | 641 | 567 (88%) | 5.6 pts |
+Ceiling at 1 h with perfect flagging of every post on the front page by 1 h: ~54%. **80% at 1 h needs ~57% of the late
+risers and re-ups**, posts with no front-page signal in their first hour.
+(B) Oct 2-14 daily retrain: + honest votes / comments / who by 60 min (Wayback captures; 88.9% of posts, 91.2% of
+winners have one): 49.0% [41.3, 57.0] -> 47.2%, **-1.8 [-3.2, -0.3]**. Front-page rank already captures the fast posts;
+live per-minute votes are not expected to lift 1 h on their own.
