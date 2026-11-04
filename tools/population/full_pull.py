@@ -40,7 +40,7 @@ def load_full(path, ids, upload_time=None, source=None):
     user = handle_of(d)
     pid = ids(user)
     f = _ts((d.get("run") or {}).get("finished_utc") or d.get("fetched_at"))
-    f_quality = "file"
+    f_quality = "estimated" if (d.get("run") or {}).get("finished_utc_estimated") else "file"
     if pd.isna(f):
         f, f_quality = _ts(upload_time), "upload_time_upper_bound"
     source = source or "people_live:" + path.split("people_live/")[-1].split("/")[0]
@@ -53,6 +53,8 @@ def load_full(path, ids, upload_time=None, source=None):
                              fetched_at=f, fetched_quality=f_quality, source=source))
             continue
         items = v.get("items") or []
+        ft = _ts(v.get("fetched_at")) if v.get("fetched_at") else f   # per-tab fetch time when the pull records it
+        fq = "estimated" if v.get("fetched_at_estimated") else (f_quality if not v.get("fetched_at") else "file")
         n = v.get("count", len(items)) if t != "about" else 1
         h = v.get("header", hdr.get(t))
         note = (v.get("note") or "").lower()
@@ -62,16 +64,16 @@ def load_full(path, ids, upload_time=None, source=None):
         short = h is not None and t != "reviews" and n < 0.98 * h
         stopped = explicit or short
         tabs.append(dict(person_id=pid, tab=t, header=h, count=n, complete=not stopped, stopped_early=stopped,
-                         fetched_at=f, fetched_quality=f_quality, source=source))
+                         fetched_at=ft, fetched_quality=fq, source=source))
         for i, it in enumerate(items, 1):
             url = it.get("url") or ""
             prod = PRODUCT.search(url)
             lm = LAUNCH.search(url)
             target = str(it.get("post_id") or (f"launch:{lm.group(1) or lm.group(2)}" if lm else None)
                          or (f"product:{prod.group(1)}" if prod else url))
-            base = dict(person_id=pid, platform="producthunt", target_id=target, first_seen_at=f, fetched_at=f, source=source)
+            base = dict(person_id=pid, platform="producthunt", target_id=target, first_seen_at=ft, fetched_at=ft, source=source)
             if t == "upvotes":
-                ev.append({**base, "kind": "upvote", "ts_lo": pd.NaT, "ts_hi": f, "ts_quality": "snapshot",
+                ev.append({**base, "kind": "upvote", "ts_lo": pd.NaT, "ts_hi": ft, "ts_quality": "snapshot",
                            "extra": json.dumps({"position": i, "of": n})})
             elif t == "activity":
                 typ = (it.get("type") or "").lower()
@@ -89,13 +91,13 @@ def load_full(path, ids, upload_time=None, source=None):
                 if not other:
                     continue
                 a, b = (ids(other), pid) if t == "followers" else (pid, ids(other))
-                ev.append({**base, "person_id": a, "target_id": b, "kind": "follows", "ts_lo": pd.NaT, "ts_hi": f,
+                ev.append({**base, "person_id": a, "target_id": b, "kind": "follows", "ts_lo": pd.NaT, "ts_hi": ft,
                            "ts_quality": "snapshot", "extra": None})
             elif t in ("collections", "stacks"):
                 for sub in (it.get("items") or [it] if t == "stacks" else it.get("items") or []):
                     pm = PRODUCT.search(sub.get("url") or "")
                     ev.append({**base, "kind": t[:-1], "target_id": f"product:{pm.group(1)}" if pm else sub.get("url"),
-                               "ts_lo": pd.NaT, "ts_hi": f, "ts_quality": "snapshot",
+                               "ts_lo": pd.NaT, "ts_hi": ft, "ts_quality": "snapshot",
                                "extra": json.dumps({"list": it.get("name")}) if t == "collections" else None})
     tabs = pd.DataFrame(tabs)
     ev = pd.DataFrame(ev)
