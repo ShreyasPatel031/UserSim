@@ -198,7 +198,8 @@ def main(D=200):
     s = F.load_stories(); s["z"] = 0.0; sc_, a0_ = F.early(s); xw_ = F.newest_exposure(s, a0_)
     Mo.b = 0.0; Mo.fit_early(s, sc_, a0_, xw_, "2026-10-12"); print("tempering (QN likelihood)", Mo.early_log, flush=True)
     # outcome calibration (calib_fit.py, Oct 2-9: real top-30 reach per post) replaces the QN-likelihood tempering
-    cf = json.load(open(os.path.join(HERE, "out", "calib_fit.json")))["best"]
+    cfile = os.environ.get("CALIB", os.path.join(HERE, "out", "calib_fit.json"))   # e.g. calib_2025_grid2_results.json
+    cf = json.load(open(cfile))["best"]
     Mo.tau, Mo.kappa = cf["tau"], cf["kappa"]; Mo.grid = Mo.grid * cf["c"]; Mo.sigma = cf.get("sigma", 0.0); print("outcome calibration", cf, flush=True)
     M = load_minute()
     new = M[M.list == "newest"].sort_values("t")
@@ -257,7 +258,7 @@ def main(D=200):
     res = {"made_at": int(time.time()), "feed_end_utc": str(pd.Timestamp(end, unit="s")), "full_days": full_days, "posts": int(len(P)), "draws": D,
            "inputs": {"snapshot_by_15min": round(float(np.isfinite(P.score).mean()), 3), "front_page_80plus_ranks": round(float((P.n_front >= 80).mean()), 3), "real_front_used (60+ ranks)": round(float((P.n_front >= 60).mean()), 3),
                       "at_posting_score": round(float(P.has_atposting.mean()), 3), "prior": "flat (the live at-posting score is loaded for coverage only; not used in the prior)",
-                      "early_votes_and_scale": "outcome-calibrated on Oct 2-9 (calib_fit.py)"},
+                      "early_votes_and_scale": f"outcome fit from {os.path.basename(cfile)}: tau {cf['tau']}, kappa {cf['kappa']}, c {cf['c']}, sigma {cf.get('sigma', 0)}"},
            "calibration_24h": {}, "caught": {}}
     Dn = P[P.done24]
     for d, g in Dn.groupby("day"):
@@ -283,7 +284,7 @@ def main(D=200):
         res["caught"] = "no posting day has its 4 list days settled yet"
     os.makedirs(os.path.join(HERE, "out"), exist_ok=True)
     P.drop(columns=[]).to_parquet(os.path.join(HERE, "out", "live_posts.parquet"), index=False)
-    json.dump(res, open(os.path.join(HERE, "out", "live_frontsim.json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(HERE, "out", "live_frontsim" + ("_" + os.path.basename(cfile).replace(".json", "") if os.environ.get("CALIB") else "") + ".json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 if __name__ == "__main__":

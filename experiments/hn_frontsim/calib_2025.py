@@ -80,6 +80,8 @@ def main(path, n=20000, workers=12, D=30):
     state = {"M": M, "grid0": M.grid.copy(), "T": T, "sc": sc, "a0": a0, "xw": xw, "pool": pool, "by_day": by_day, "D": D}
     oct_fit = (0.3, 0.2, 0.25, 1.0)
     grid = [oct_fit] + [g for g in itertools.product((0.3, 0.6, 1.0), (0.05, 0.2, 1.0), (0.1, 0.15, 0.25), (0.0, 1.0)) if g != oct_fit]
+    if os.environ.get("GRID2"):   # beyond the first grid's edges (tau low, c high, sigma high)
+        grid = [oct_fit] + [g for g in itertools.product((0.1, 0.2, 0.3), (0.1, 0.2, 0.5), (0.25, 0.35, 0.5), (1.0, 1.5, 2.0)) if g != oct_fit]
     if os.environ.get("SMOKE"):
         grid = grid[:2]
     with get_context("spawn").Pool(workers, initializer=init, initargs=(state,)) as P:
@@ -88,7 +90,7 @@ def main(path, n=20000, workers=12, D=30):
     res["oct_fit"] = next(f for f in res["fits"] if (f["tau"], f["kappa"], f["c"], f["sigma"]) == oct_fit)
     res["best"] = max(res["fits"], key=lambda f: f["loglik"])
     os.makedirs(os.path.join(HERE, "out"), exist_ok=True)
-    json.dump(res, open(os.path.join(HERE, "out", "calib_2025.json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(HERE, "out", "calib_2025" + ("_grid2" if os.environ.get("GRID2") else "") + ".json"), "w"), indent=1)
     print("REAL", res["real_by_score"]); print("OCT", res["oct_fit"]); print("BEST", res["best"])
 
 

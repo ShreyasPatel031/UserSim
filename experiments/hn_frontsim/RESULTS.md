@@ -189,3 +189,25 @@ Points are calibrated, and posts with 1 point at 15 min are too. The simulator o
 An earlier report of the simulated "median 24 h points 58.8" was a metric error: a per-post mean over draws, inflated by rare front-page runs. It is now the median over draws.
 
 The simulator stays a shadow (decision rule above). Caught for Nov 2 posts is due when lists Nov 2-5 settle (~Nov 8).
+
+### Selection check on unselected data: Wayback /newest Jan-Jun 2025 (Nov 4)
+
+`calib_2025.py` refits tau, kappa, c and sigma by the binomial likelihood of the daily top-30 label. It uses 8,000 sampled 2025 posts with a /newest snapshot by 15 min (out of 103,503), with no Quality News selection anywhere; there were 296 winners in the sample. The front pages are 2026 replays, used as structure only. Results are in `calib_2025_results.json` and `calib_2025_grid2_results.json`.
+
+| 15-min score | real 2025 daily top 30 | 2025 fit (tau 0.1, kappa 0.5, c 0.25, sigma 1.0) | Oct outcome fit (tau 0.3, kappa 0.2, c 0.25, sigma 1.0) |
+|---|---|---|---|
+| 1 (6,059 posts) | 2.8% | 2.4% | 2.4% |
+| 2 (1,372) | 5.5% | 4.2% | 5.1% |
+| 3 (310) | 7.1% | 6.1% | 9.2% |
+| 4+ (259) | 11.6% | 12.8% | 28.0% |
+| log-likelihood | | -1344.1 | -1399.9 |
+| sum of P (296 winners) | | 253.7 | 316.0 |
+
+**Finding.** On unselected data the per-vote weight is lower (tau 0.1), not higher. So the small weight from the QN-likelihood fit was not a QN-selection artifact. The steep October outcome fit (tau 0.3) was the outlier, and its 4+ point response is 2.4x too steep for 2025.
+
+**Applied to the live Nov 2 calibration** (`live_frontsim_nov02_24h_fit2025.json`):
+- The day's sum of P falls from 47.1 to 36.7 (isotonic), against ~25-30 winners. Mean log1p points: 1.32 simulated against 1.26 real.
+- Top-30 reach barely moves: 14.8% simulated against 8.0% real.
+- By 15-min score, real against simulated: 1 point 2.6 vs 3.4%; 2 points 12.2 vs 27.8%; 3 points 22.6 vs 53.3%; 4+ points 52.6 vs 73.0%.
+
+The 2+ point reach overshoot is therefore not the early-vote weight. It comes from how far the live simulation lets those posts climb the front page: the projected competitors and the replayed arrivals. The next thing to fix there is the front-page dynamics.
