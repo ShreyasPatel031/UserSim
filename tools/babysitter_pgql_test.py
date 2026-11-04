@@ -119,6 +119,8 @@ async def person(h):
     for k, kk in _hm.items():
         if hd.get(k) is None and _hi.get(kk) is not None: hd[k] = _hi[kk]
     if _need_ssr and all(hd[k] is not None for k in ("followers", "following", "hunted", "collections")): hdr_src = "graphql:list responses (*Count)"
+    elif _need_ssr and time.time() - _HL[0] < 60.0 / HTML_PER_MIN:  # 2203Z: HTML budget for this minute used: skip, deep pass fills the header later
+        hdr_src = "missing: HTML page-load budget (deep pass fills it)"; res.setdefault("notes", []).append("header counts not read: HTML budget; queued via deep_list")
     elif _need_ssr:  # still missing: one rate-gated SSR page load
         dd = await ssr(f"/@{h}", h); hdr_src = "html:SSR /@h (counts not in GraphQL)"
         lay = next((x for x in dd.get("profile", []) if isinstance(x, dict) and "followersCount" in x), {})
@@ -126,7 +128,7 @@ async def person(h):
             if hd.get(k) is None: hd[k] = lay.get(kk)
     res["header"] = hd; res["header_source"] = hdr_src
     revs = []
-    if hd.get("reviews"):
+    if hd.get("reviews") and time.time() - _HL[0] >= 60.0 / HTML_PER_MIN:  # 2203Z: reviews page only within the HTML budget; else deep pass
         dr = await ssr(f"/@{h}/reviews", h); revs = [e["node"] for x in dr.get("user", []) for e in (x.get("detailedReviews") or {}).get("edges", [])]
     res["upvotes"] = {"header": hd["upvotes"], "count": len(lists["upvotes"] or []), "items": [post_item(n) for n in lists["upvotes"] or []]}
     res["hunted"] = {"header": hd["hunted"], "count": len(lists["hunted"] or []), "items": [post_item(n) for n in lists["hunted"] or []]}
