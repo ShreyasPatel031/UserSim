@@ -119,6 +119,11 @@ a target out of reach. No agent writes or repeats a limiting statement about the
   activity, forums, reviews, collections + each collection, stacks, hunted/made, followers, following), scrolled to the end, with
   items vs header per tab and raw page JSON saved. raw/ph_population/people_live/have_index.jsonl + need_list.jsonl are the single
   queue. Page-1 reads are only the daily recency refresh. Before Nov 3 no person had a full pull; all earlier person data is partial.
+- **Predict continuously, don't wait for days (Shreyas, Nov 4, 02:00 UTC).** PH: an intraday model predicts each launch's final
+  votes and rank at every 15-min snapshot from the pre-launch forecast plus the live state, is scored at end of day and retrained
+  daily; it also shows how the pre-launch error resolves hour by hour. HN: the odds tool runs on hn_minute at 1–5 min cadence and the
+  per-minute model trains on whatever posting days exist, retrained daily. Both are tools, labelled as such; the north stars stay
+  pre-launch PH top-k and HN Caught at 15 min.
 - Never commit files with Product Hunt usernames.
 - Never state that a data source is unavailable until Grok Bot / Data Feeder have checked it in the signed-in user
   view and reported what is visible (user, Nov 2).
