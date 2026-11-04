@@ -21,7 +21,8 @@ def _over_budget(R):
     Charge each person an equal share of the VM's traffic since that person started (per-worker stop-gap)."""
     return (time.time() - R.t0) >= PB.BUDGET_SECS or (PB.nic() - getattr(R, "b0", PB.nic())) / max(1, _ACTIVE[0]) >= PB.BUDGET_BYTES
 PB.over_budget = _over_budget  # module-global lookup: pull()/paging use this from here on
-K = int(os.environ.get('PDEEP_K', 4))  # audit: K=4 for the first hour; TABS = int(os.environ.get('PDEEP_TABS', 2))  # e2-medium (4 GB): 4 workers x 2 pages
+K = int(os.environ.get('PDEEP_K', 4))  # audit: K=4 for the first hour
+TABS = int(os.environ.get('PDEEP_TABS', 2))  # pages per worker
 B, VM = PB.B, PB.VM
 
 
