@@ -102,7 +102,8 @@ a target out of reach. No agent writes or repeats a limiting statement about the
 - **Security and permission blocks go to Grok Bot (Shreyas, Nov 3, ~17:58 UTC).** Any agent blocked by a permission or
   safety check files mailbox/to_grokbot/<UTC>_SECURITY_<agent>_<topic>.md (what was blocked, the check's category, why it is
   needed, the exact unblock step) and carries on with other work. Grok Bot takes it to Shreyas. Nobody works around a block.
-  The SECURITY note also goes out at once by webhook, not only as a mailbox file.
+  The SECURITY note also goes out at once by webhook, not only as a mailbox file. Every agent, every block, within 1 minute
+  (Shreyas, Nov 4 ~23:10 UTC): agents without the webhook send the orchestrator "GROKBOT URGENT:" and it relays at once.
 - **Every piece of data for every person, no caps (Shreyas, Nov 4, ~21:05 UTC).** Every tab and list of every person is
   pulled to wherever Product Hunt's server ends it. No agent sets an item cap, a page cap, a role-based cap, or any
   shallower "light" pull to save time, bytes or money. The only limits allowed are the ones Product Hunt itself
