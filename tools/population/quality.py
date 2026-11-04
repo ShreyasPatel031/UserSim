@@ -61,7 +61,8 @@ def tab_state(d, k):
 def deep_fill(d):
     """what a complete record has that a lists-only pull lacks; None = not applicable"""
     hdr = d.get("header") or {}
-    out = {"header": bool(hdr) and any(v is not None for v in hdr.values())}
+    # header complete = the four core counts read (fast pulls often skip the profile page; deep must fill them)
+    out = {"header": all(hdr.get(k) is not None for k in ("followers", "following", "hunted", "collections"))}
     rv = (d.get("reviews") or {}).get("items") or []
     rh = (d.get("reviews") or {}).get("header", hdr.get("reviews"))
     out["reviews_items"] = None if not rh else bool(rv)
