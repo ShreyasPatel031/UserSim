@@ -1016,7 +1016,8 @@ Test AUC: cut Jun 30 0.818 (base 0.813), cut Aug 30 0.824 (base 0.816).
 Higher AUC, no Caught gain: the author's track record is already in the at-posting blend (real-list record, history
 score). Per the orchestrator's rule (run large only if it clears at posting) no large author run. For reference, large
 vs base content at posting is +0.7 [-0.6, +1.9] paired (both clear the 23.2% baseline; auth_vs_base.py).
-(b) 2025 out-of-fold content scores: oof25_q1 AUC 0.789, q2-q4 running; used when the 2025 Wayback votes land.
+(b) 2025 out-of-fold content scores done: quarters q1-q4 AUC 0.789 / 0.783 / 0.818 / 0.824 (each scored by a model never trained
+on its own quarter); used when the 2025 Wayback votes land. The T4 deleted itself after the run.
 
 ### Live check 2026-11-04 00:31 UTC (score_live.py, live_caught.py)
 Settled list days: Oct 30, Oct 31, Nov 1. **Live hourly daily-list forecast, settled days** (share of the real daily
