@@ -6,11 +6,11 @@ bootstrap interval over days. Held out: May–Sep 2026 (153 days); each test mon
 on stories before it (history from Jan 2023, BigQuery public HN dataset). Random picks: top 100 10.6%, top 30 3.2%,
 top 10 1.1%.
 
-## Current headlines: Caught per post (north star 80% at each checkpoint; updated 2026-11-03 17:20 UTC)
+## Current headlines: Caught per post (north star 80% at each checkpoint; updated 2026-11-04 02:50 UTC)
 | checkpoint | headline | what it is |
 |---|---|---|
 | 1 h | **48.5% [45.0, 52.1]** (Sep 1 - Oct 14) | rank only + history score + content model (large) |
-| 15 min (posting clock: judged 15 min after posting) | **24.7% [22.6, 26.9]** Sep 1 - Oct 14; **29.6%** Oct 2 - 14 daily retrain | rank only (full period); votes + who + volume + hour (Oct 2-14) |
+| 15 min (posting clock: judged 15 min after posting) | **28.0% [25.7, 30.7]** Sep 1 - Oct 14 (was 24.7%; paired +3.3 [+1.1, +5.5]); **29.6%** Oct 2 - 14 daily retrain | light model: 2025 Jan-Jun Wayback rows + content (full period); votes + who + volume + hour (Oct 2-14) |
 | at posting | **26.1% [23.9, 28.2]** (Sep 1 - Oct 14) | 3-way rank blend: Jul-Aug model + 2025+ history + content model (large) |
 Secondary line, never the headline (orchestrator decision 2026-11-03 16:55 UTC): 15 min on the exposure clock (also
 judged 15 min after a front-page return or /pool entry; direction B) 34.5% [31.5, 37.7], Oct 2-14. Content model at
@@ -1087,3 +1087,16 @@ Reading: 2025 rows and content each lift this model by ~4 points on Oct 2-14 but
 Sep 1 - Oct 14 test they stack (28.0%). This model has no who/history/QN-rank inputs, so it is not yet the headline
 model: the posting-clock headlines stay 24.7% (Sep 1 - Oct 14) and 29.6% (Oct 2-14) until the 2025 rows are combined
 with those inputs (needs who/history measured before each 2025 row). Jul-Dec 2025 lands in ~1 day; rerun then.
+
+### Paired headline test at 15 min (paired15.py; posting clock; identical posts and flag counts)
+| test | headline | light (2025 Jan-Jun rows + content) | 50/50 blend (fixed in advance) |
+|---|---|---|---|
+| Sep 1 - Oct 14 (1,323 winners) | 24.7% [22.6, 26.9] | **28.0% [25.7, 30.7], +3.3 [+1.1, +5.5]** | 26.1%, +1.4 [-0.2, +2.8] |
+| Oct 2 - 14 (388 winners) | 29.6% [25.6, 33.3] | 27.1%, -2.6 [-5.7, +0.2] | 28.1%, -1.5 [-4.2, +1.3] |
+By type, Sep 1 - Oct 14: late risers 93 -> 123 of 461, re-ups 40 -> 50 of 221, fast 194 -> 198 of 641.
+**New full-period 15-min headline: 28.0%** (Sep 1 - Oct 14). Oct 2-14 headline stays 29.6% (who + Wayback-dense days).
+Leak checks: (1) 2025 snapshots outcome-independent (snapshot-by-15-min rate 66-69% in every final-points band; winners
+67.3% vs all 67.8%); (2) on the Sep 1 - Oct 14 test posts, the light model's only vote input (Wayback /newest by 15 min)
+is present at 27-30% in every final-points band, winners vs non-winners Sep 4.1% vs 5.5%, Oct 81.5% vs 79.2%: no
+outcome signal; (3) content scores out of sample by construction (2025 rows: quarter models never trained on their
+quarter; 2026: trained <= Jun 30); (4) no QN series, who or history inputs (the leak-prone ones).
