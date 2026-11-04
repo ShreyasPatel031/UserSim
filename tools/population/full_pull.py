@@ -27,7 +27,7 @@ def _ts(s):
     return t
 
 
-def handle_of(d):
+def handle_of(d, path=None):
     for k in ("handle", "username"):
         if isinstance(d.get(k), str):
             return d[k].lstrip("@").lower()
@@ -35,7 +35,9 @@ def handle_of(d):
     return m.group(1).lower() if m else None
 
 
-def load_full(path, ids, upload_time=None, source=None):
+def load_full(path, ids, upload_time=None, source=None, filled=None):
+    """filled: {"<handle>|<comment_id>": {"created_at", "method", "post_id"}} times recovered from API comments (F1 fix)."""
+    filled = filled or {}
     d = json.load(open(path))
     if not isinstance(d, dict) or not any(t in d for t in ("upvotes", "header")):
         return pd.DataFrame(), pd.DataFrame()   # heartbeat / status files
@@ -92,12 +94,20 @@ def load_full(path, ids, upload_time=None, source=None):
                             base["target_id"] = f"launch:{m2.group(1) or m2.group(2)}"; break
                 q = "exact" if pd.notna(ts) else "none"
                 lo, hi = ts, ts
-                if kind == "comment" and pd.notna(ts) and ts.tz_convert("America/Los_Angeles").strftime("%H:%M:%S") == "00:01:00":
+                fill = filled.get(f"{user}|{cid}") if kind == "comment" else None
+                if fill:  # F1: time recovered from API comments by comment id; the API's post id is the launch
+                    lo = hi = _ts(fill["created_at"]); q = "exact"
+                    if fill.get("post_id"):
+                        base["target_id"] = str(fill["post_id"])
+                elif kind == "comment" and (it.get("comment_time_unknown") or pd.isna(ts)):
+                    lo, hi, q = pd.NaT, ft, "unknown"   # F1: only a launch stamp existed; time unknown, before fetch
+                elif kind == "comment" and pd.notna(ts) and ts.tz_convert("America/Los_Angeles").strftime("%H:%M:%S") == "00:01:00" \
+                        and it.get("datetime_source") not in ("comment.createdAt (thread capture)", "api_match"):
                     # Nov 4 check: comments stamped 00:01:00 PT carry the LAUNCH time, not the comment's (16/16 matched to
                     # API createdAt were 0.5-200 h later; all other times matched to the second). Keep a window only.
                     q, hi = "bounded", ft
                 ev.append({**base, "kind": kind, "ts_lo": lo, "ts_hi": hi, "ts_quality": q,
-                           "extra": json.dumps({"comment_id": cid})})
+                           "extra": json.dumps({"comment_id": cid, "time_source": (fill or {}).get("method") or it.get("datetime_source")})})
             elif t == "reviews":
                 ts = _ts(it.get("date"))
                 ev.append({**base, "kind": "review", "ts_lo": ts, "ts_hi": ts, "ts_quality": "exact" if pd.notna(ts) else "none",

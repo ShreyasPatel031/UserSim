@@ -155,3 +155,22 @@ def test_activity_comment_launch_time_and_target(tmp_path):
     assert ev.loc["1", "ts_quality"] == "bounded" and ev.loc["1", "ts_hi"] == pd.Timestamp("2026-11-04T12:00:00Z")
     assert ev.loc["1", "target_id"] == "launch:x-2" and ev.loc["2", "target_id"] == "launch:y-3"
     assert ev.loc["2", "ts_quality"] == "exact"
+
+
+def test_f1fix_unknown_and_filled(tmp_path):
+    import full_pull
+    d = {"profile": "https://www.producthunt.com/@alice", "run": {"finished_utc": "2026-11-04T12:00:00Z"}, "header": {},
+         "activity": {"count": 3, "items": [
+             {"type": "left a comment", "comment_id": "1", "datetime": None, "comment_time_unknown": True,
+              "datetime_launch_stamp": "2026-11-03T00:01:00-08:00", "on_url": "https://www.producthunt.com/products/x/launches/x-2"},
+             {"type": "left a comment", "comment_id": "2", "datetime": None, "comment_time_unknown": True,
+              "on_url": "https://www.producthunt.com/products/y/launches/y-9"},
+             {"type": "left a comment", "comment_id": "3", "datetime": "2026-11-03T00:01:00-08:00",
+              "datetime_source": "comment.createdAt (thread capture)"}]}}
+    p = tmp_path / "alice_f1fix.json"; p.write_text(json.dumps(d))
+    filled = {"alice|2": {"created_at": "2026-10-01T10:00:00Z", "method": "api_comment_id", "post_id": "777"}}
+    _, ev = full_pull.load_full(str(p), IDS, filled=filled)
+    ev = ev.set_index(ev.extra.map(lambda x: json.loads(x)["comment_id"]))
+    assert ev.loc["1", "ts_quality"] == "unknown" and pd.isna(ev.loc["1", "ts_lo"])
+    assert ev.loc["2", "ts_quality"] == "exact" and ev.loc["2", "target_id"] == "777"
+    assert ev.loc["3", "ts_quality"] == "exact"   # restamped from the comment's own createdAt: trusted even at 00:01
