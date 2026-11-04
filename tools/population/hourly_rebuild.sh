@@ -26,7 +26,7 @@ log "build"
 rm -rf $W/store_tmp; mkdir -p $W/store_tmp
 OUT=$(cd "$REPO" && timeout 1500 python3 tools/population/store.py build $R $W/store_tmp --salt-file $W/salt 2>&1)
 echo "$OUT" | grep -v '^X drops' | head -14
-PASS=$(echo "$OUT" | grep -c '"pass": true')
+PASS=$(echo "$OUT" | grep -cE '^ "pass": true')
 EVENTS=$(echo "$OUT" | grep -E '^ "events": ' | head -1 | grep -o '[0-9]*')
 if [ "$PASS" -ge 1 ]; then
   cp $W/have_index.jsonl $W/store_tmp/
