@@ -1047,3 +1047,16 @@ empty pages; at :05 the pages evidently came back empty (HN refuses some request
 same IP). Live points of the live top 30 equal the replay's at T (no Quality News lag). Fix (forecast_daily.py, live
 from fdloop4): exclusion = listwatch's own reads from the bucket + the scrape with retries on empty pages; the count of
 excluded stories is written into each forecast. Caught headlines do not use the earlier-list input (no change there).
+
+### Daily live readout 2026-11-04 ~01:30 UTC (live15.py; PROVISIONAL, labels = daily top 30 so far)
+Backtest headlines (unchanged): 1 h 48.5%; 15 min (posting clock) 24.7% Sep 1 - Oct 14, 29.6% Oct 2-14; at posting 26.1%.
+Live, Oct 31 - Nov 3 posting days (3,697 posts, 97 winners so far; list days settled: Oct 31 2, Nov 1 1, Nov 2-3 0):
+| checkpoint | votes + front page | at-posting odds | blend 50/50 | by day (votes; blend) |
+|---|---|---|---|---|
+| 1 h | 34.0% [18.6, 50.0] | 15.5% | 30.9% | Oct 31 3/26, Nov 1 8/19, Nov 2 12/35, Nov 3 10/17 |
+| 15 min (posting clock) | 13.4% [5.2, 20.0] | 15.5% | **18.6% [6.7, 28.8]** | blend: 2/26, 1/19, 10/35, 5/17 |
+| at posting (odds tool) | | 15.5% [4.8, 23.7] | | 4/26, 0/19, 9/35, 2/17 |
+Secondary (exposure clock, direction B): 105 posts with an exposure event (median 6.8 h after posting), 29 of 97 winners;
+posting + re-up clock 21.6% [16.3, 27.0]. Seen by the recorder within 15 min: Oct 31 41.7%, Nov 1 53.2%, Nov 2 99.7%,
+Nov 3 99.7%. Recorder minutes read (front / newest / pool): Nov 2 3,290 / 1,611 / 152; Nov 3 2,769 / 1,538 / 194.
+Per-minute model (direction A) switches on at 5 posting days (tomorrow's run).
