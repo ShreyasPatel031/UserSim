@@ -226,8 +226,12 @@ async def main(a):
                 except Block: return
                 except Exception as e: ph["errors"] += 1; S.put(event="pgql_person_error", handle=h, err=str(e)[:200]); continue
                 fn = f"out_pgql/{'cmp_' if is_cmp else ''}{h}.json"; json.dump(res, open(fn, "w"), ensure_ascii=False)
-                if not is_cmp:  # 2030Z nocap2: pgql is a lists-only pull (no collection items / product pages / thread bodies); queue the full no-cap driver pull via deep_list
-                    _dl = f"/tmp/deep_pgql_{h}.json"; open(_dl, "w").write(json.dumps({"handle": h, "reason": "pgql_lists_only", "tabs": ["*"], "cursors": {}, "counts": {}, "vm": VM, "utc": now()}) + "\n")
+                if not is_cmp:  # 2210Z: save the lists as the person JSON (vm/<h>.json) so deep starts from them; deep fills only what pgql can't read
+                    _tabs = ["collections", "reviews", "forum_threads"]  # + header (pull() always reads it) + product pages (filled for every maker/stack product with no saved fields)
+                    res["deep_pending"] = _tabs; res.setdefault("notes", []).append("2210Z pgql lists saved as vm/<h>.json; deep fills header, reviews, collection items, product pages, forum threads")
+                    json.dump(res, open(fn, "w"), ensure_ascii=False)
+                    if not await asyncio.to_thread(PB.gexists, f"{h}.json"): await asyncio.to_thread(sh, 'gsutil', '-q', 'cp', fn, f'{B}/{h}.json')
+                    _dl = f"/tmp/deep_pgql_{h}.json"; open(_dl, "w").write(json.dumps({"handle": h, "reason": "pgql_lists_only", "tabs": _tabs, "cursors": {}, "counts": {}, "vm": VM, "utc": now()}) + "\n")
                     await asyncio.to_thread(sh, 'gsutil', '-q', 'cp', _dl, f'{B}/deep_list/{h}.{VM}.pgql.json')
                 c = cov(res); ph["people"] += 1; row = {"handle": h, "cmp": is_cmp, "reqs": res["run"]["requests"], "secs": res["run"]["secs"], "cov": c, "header_source": res["header_source"]}
                 ph["cov"].append(row)

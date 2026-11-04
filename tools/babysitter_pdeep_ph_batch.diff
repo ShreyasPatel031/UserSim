@@ -7,6 +7,10 @@
 >         if _stall >= 8: break  # 2140Z pdeep audit fix 3: 8 CONSECUTIVE no-growth scrolls (was one stall after k>=8)
 >     if len(seen) < (want or 0) and 'stacks' not in R.trunc:  # stopped short of the header: partial (deep retries), never complete
 >         R.trunc.append('stacks'); R.partial = getattr(R, 'partial', []) + ['stacks']
+300c304
+<     colls = []; _old_cid = {x.get("collection_id") for x in ((OLD.get("collections") or {}).get("items") or [])} if DO is not None else set()
+---
+>     colls = []; _old_cid = {x.get("collection_id") for x in ((OLD.get("collections") or {}).get("items") or []) if isinstance(x.get("items"), list)} if DO is not None else set()  # 2210Z: only collections whose item list was saved (pgql saves the index only)
 785,786c789,790
 <         if k in curs: R.resume = {op: curs[k]}; base = old
 <         else: R.resume = {}; base = []

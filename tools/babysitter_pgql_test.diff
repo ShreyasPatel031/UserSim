@@ -1,0 +1,46 @@
+17a18
+> HINT = {}  # 2155Z: per-handle *Count fields seen in list responses
+38a40
+> HTML_PER_MIN = float(os.environ.get('PGQL_HTML_PER_MIN', 6)); _HL = [0.0]
+40a43,48
+>     # 2155Z babysitter: the c32 block (21:42Z) hit an SSR page load, not GraphQL. Space HTML loads to <= HTML_PER_MIN per VM.
+>     while True:
+>         w = _HL[0] + 60.0 / HTML_PER_MIN - time.time()
+>         if w <= 0: _HL[0] = time.time(); break
+>         await asyncio.sleep(min(w, 5))
+>         if G.stop: raise Block(G.stop)
+55a64
+>         if pg == 1 and isinstance(d.get("profile"), dict): HINT.setdefault(h, {}).update({k: v for k, v in d["profile"].items() if k.endswith("Count") and isinstance(v, int)})
+76c85,86
+<     if any(hd[k] is None for k in ("followers", "following", "hunted", "collections")):
+---
+>     _need_ssr = any(hd[k] is None for k in ("followers", "following", "hunted", "collections"))
+>     if False:  # 2155Z: header SSR moved after the lists (counts usually come back in the list responses)
+106a117,129
+>     _hm = {"followers": "followersCount", "following": "followingsCount", "hunted": "submittedPostsCount", "collections": "collectionsCount", "reviews": "reviewsCount", "products": "productsCount", "stacks": "stacksCount", "upvotes": "votesCount"}
+>     _hi = HINT.pop(h, {})
+>     for k, kk in _hm.items():
+>         if hd.get(k) is None and _hi.get(kk) is not None: hd[k] = _hi[kk]
+>     if _need_ssr and all(hd[k] is not None for k in ("followers", "following", "hunted", "collections")): hdr_src = "graphql:list responses (*Count)"
+>     elif _need_ssr and time.time() - _HL[0] < 60.0 / HTML_PER_MIN:  # 2203Z: HTML budget for this minute used: skip, deep pass fills the header later
+>         hdr_src = "missing: HTML page-load budget (deep pass fills it)"; res.setdefault("notes", []).append("header counts not read: HTML budget; queued via deep_list")
+>     elif _need_ssr:  # still missing: one rate-gated SSR page load
+>         dd = await ssr(f"/@{h}", h); hdr_src = "html:SSR /@h (counts not in GraphQL)"
+>         lay = next((x for x in dd.get("profile", []) if isinstance(x, dict) and "followersCount" in x), {})
+>         for k, kk in _hm.items():
+>             if hd.get(k) is None: hd[k] = lay.get(kk)
+>     res["header"] = hd; res["header_source"] = hdr_src
+108c131
+<     if hd.get("reviews"):
+---
+>     if hd.get("reviews") and time.time() - _HL[0] >= 60.0 / HTML_PER_MIN:  # 2203Z: reviews page only within the HTML budget; else deep pass
+206,207c229,234
+<                 if not is_cmp:  # 2030Z nocap2: pgql is a lists-only pull (no collection items / product pages / thread bodies); queue the full no-cap driver pull via deep_list
+<                     _dl = f"/tmp/deep_pgql_{h}.json"; open(_dl, "w").write(json.dumps({"handle": h, "reason": "pgql_lists_only", "tabs": ["*"], "cursors": {}, "counts": {}, "vm": VM, "utc": now()}) + "\n")
+---
+>                 if not is_cmp:  # 2210Z: save the lists as the person JSON (vm/<h>.json) so deep starts from them; deep fills only what pgql can't read
+>                     _tabs = ["collections", "reviews", "forum_threads"]  # + header (pull() always reads it) + product pages (filled for every maker/stack product with no saved fields)
+>                     res["deep_pending"] = _tabs; res.setdefault("notes", []).append("2210Z pgql lists saved as vm/<h>.json; deep fills header, reviews, collection items, product pages, forum threads")
+>                     json.dump(res, open(fn, "w"), ensure_ascii=False)
+>                     if not await asyncio.to_thread(PB.gexists, f"{h}.json"): await asyncio.to_thread(sh, 'gsutil', '-q', 'cp', fn, f'{B}/{h}.json')
+>                     _dl = f"/tmp/deep_pgql_{h}.json"; open(_dl, "w").write(json.dumps({"handle": h, "reason": "pgql_lists_only", "tabs": _tabs, "cursors": {}, "counts": {}, "vm": VM, "utc": now()}) + "\n")
