@@ -1127,3 +1127,18 @@ wb15.votes15 (v_front), wb_caught (ev_front_best) and live_oct (archive features
 - Backtests: none used load_minute. The Wayback inflation reached v_front / ev_front_best only as tree-model inputs, a
   strictly increasing transform, so no backtest number moves: rerun of votes + who with corrected positions 28.4%
   [23.8, 32.9] (identical). live_oct was consistent before (train and live both inflated) and is consistent again.
+
+### Miss decomposition of the 15-min headline (miss15.py; Sep 1 - Oct 14, light model 28.0% = 371 / 1,323)
+Every winner not flagged, by bucket; oracle gain = points of Caught if every winner in the bucket were flagged.
+| bucket | winners | caught | missed | oracle gain |
+|---|---|---|---|---|
+| late riser (not on the front page within 1 h) | 461 | 123 | 338 | **25.5 pts** |
+| fast, no recorder data by 15 min (no /newest snapshot) | 466 | 133 | 333 | **25.2 pts** (302 of the 333 in September) |
+| re-up (first listed 2+ days after posting) | 221 | 50 | 171 | 12.9 pts |
+| fast, snapshot but no early signal (<= 2 pts, 0 comments) | 88 | 21 | 67 | 5.1 pts |
+| fast, early signal but scored below the flag | 87 | 44 | 43 | 3.3 pts |
+Reading: (1) model error on posts with a visible early signal is only 3.3 pts; (2) 25.2 pts is a backtest data gap:
+September has a /newest snapshot by 15 min for 4.1% of winners (October 81.5%); live, the per-minute recorder sees ~100%,
+so this bucket is a coverage artifact of the backtest, not of the live product (the Oct 2-14 headline, 29.6%, is the
+dense-coverage read); (3) 38.4 pts sit in late risers + re-ups, posts with no front-page signal in their first hour:
+at the posting clock only at-posting inputs (content moved late risers 97 -> 123) reach them.
