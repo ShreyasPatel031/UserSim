@@ -288,7 +288,7 @@ class Model:
         pen = np.exp(rng.choice(self.pen, (n, D)))
         # earlier front-page days of the same class
         td = pd.Timestamp(test_day)
-        pool = [d for d in days_cls[wday_class] if pd.Timestamp(d) <= td - pd.Timedelta(days=3)]
+        pool = [d for d in days_cls[wday_class] if getattr(self, "pool_any", False) or pd.Timestamp(d) <= td - pd.Timedelta(days=3)]
         dd = rng.choice(len(pool), (n, D))
         shift = np.array([(td - pd.Timestamp(d)).days * 86400 for d in pool])[dd]
         f0 = (np.floor(born / 600) + 1) * 600
