@@ -34,6 +34,7 @@ def tabs():
                   "header_total": int(g.header.fillna(0).sum()), "rows_got": int(g["count"].sum()),
                   "server_end": int((cls == "server_end").sum()), "near_complete": int((cls == "near_complete").sum()),
                   "code_stop": int((cls == "code_stop").sum()),
+                  "unclear": int((cls == "unclear").sum()),
                   "code_stop_rows_missing": int((inc.header.fillna(0) - inc["count"])[cls == "code_stop"].sum()) if len(inc) else 0}
     return out
 
@@ -46,6 +47,11 @@ def short_kind(r):
     h, c = float(r.header or 0), float(r["count"] or 0)
     if bool(r.get("complete_not_visible")) or (r.tab == "upvotes" and 185 <= c <= 205 and h > c):
         return "server_end"
+    # pgql fast pulls carry no budget / partial / truncated field (population agent paging records, Nov 4 23:31Z): their
+    # lists end at PH's server (signed-out ~200 upvotes, header counting hidden / de-listed posts). Exception under
+    # review: upvote headers above 200 that end before page 10 (unclear: reported, not alerted).
+    if str(r.get("pull_type")) == "pgql":
+        return "unclear" if (r.tab == "upvotes" and h > 205 and c < 185) else "server_end"
     if h - c <= max(3, 0.02 * h):
         return "near_complete"
     return "code_stop"
