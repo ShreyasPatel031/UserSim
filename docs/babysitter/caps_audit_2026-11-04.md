@@ -35,3 +35,6 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
 - 20:36Z: reuse.tgz and pgql.tgz are the same tarball, md5 T7ToP4aB… (20:32Z). ph_batch.py in it audited: **clean** (diff vs xLi/wR7D:
   activity moved last in the budget order, mislabel fixed). Open risk: deep resumes only followers/following by cursor; activity
   restarts from page 1. VM-2's status log has no package md5, so what it unpacked can't be verified yet.
+- 20:42Z staging/reuse_2040Z.tgz **G7ltiPYUDQIJylNv2lT60g==**: caps **PASS** (diff vs T7ToP4: package_md5 logged, discovery-first queue,
+  pgql excludes deep_list people, "no profile" skipped). **week_bytes FAIL:** sums only feeder-phpeople-1/2/3 status; misses
+  feeder-pgql-1, feeder-phtest-1.*, feeder-dy-1/2/3, so the 29 GB stop undercounts.
