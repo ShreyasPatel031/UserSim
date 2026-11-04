@@ -119,7 +119,7 @@ async def person(h):
     for k, kk in _hm.items():
         if hd.get(k) is None and _hi.get(kk) is not None: hd[k] = _hi[kk]
     if _need_ssr and all(hd[k] is not None for k in ("followers", "following", "hunted", "collections")): hdr_src = "graphql:list responses (*Count)"
-    elif _need_ssr and time.time() - _HL[0] < 60.0 / HTML_PER_MIN:  # 2203Z: HTML budget for this minute used: skip, deep pass fills the header later
+    elif _need_ssr and (HTML_PER_MIN <= 0 or time.time() - _HL[0] < 60.0 / HTML_PER_MIN):  # 2203Z: HTML budget for this minute used: skip, deep pass fills the header later
         hdr_src = "missing: HTML page-load budget (deep pass fills it)"; res.setdefault("notes", []).append("header counts not read: HTML budget; queued via deep_list")
     elif _need_ssr:  # still missing: one rate-gated SSR page load
         dd = await ssr(f"/@{h}", h); hdr_src = "html:SSR /@h (counts not in GraphQL)"
@@ -128,7 +128,7 @@ async def person(h):
             if hd.get(k) is None: hd[k] = lay.get(kk)
     res["header"] = hd; res["header_source"] = hdr_src
     revs = []
-    if hd.get("reviews") and time.time() - _HL[0] >= 60.0 / HTML_PER_MIN:  # 2203Z: reviews page only within the HTML budget; else deep pass
+    if hd.get("reviews") and HTML_PER_MIN > 0 and time.time() - _HL[0] >= 60.0 / HTML_PER_MIN:  # 2203Z: reviews page only within the HTML budget; else deep pass
         dr = await ssr(f"/@{h}/reviews", h); revs = [e["node"] for x in dr.get("user", []) for e in (x.get("detailedReviews") or {}).get("edges", [])]
     res["upvotes"] = {"header": hd["upvotes"], "count": len(lists["upvotes"] or []), "items": [post_item(n) for n in lists["upvotes"] or []]}
     res["hunted"] = {"header": hd["hunted"], "count": len(lists["hunted"] or []), "items": [post_item(n) for n in lists["hunted"] or []]}
@@ -175,6 +175,10 @@ async def main(a):
         try: rows = [json.loads(l) for l in open('need_list.jsonl')]
         except Exception: rows = []
         disc = [x['handle'].lower() for x in sorted((x for x in rows if x.get('tier') == 'discovery'), key=lambda x: (-(x.get('lists') or 0), x.get('rank') or 1e9))]
+        if os.environ.get('PGQL_ORDER') == 'pool':  # 2300Z: yield test 3.4% -> pool tiers first, discovery last (kept)
+            _tr = {'likely': 0, 'active_rest': 1, 'other': 2}
+            pool = [x['handle'].lower() for x in sorted((x for x in rows if x.get('handle') and x.get('tier') != 'discovery'), key=lambda x: (_tr.get(x.get('tier'), 3), x.get('rank') or 1e9))]
+            return [h for h in dict.fromkeys(pool + pr + base + disc + _disc()) if h not in have and h not in dq]
         return [h for h in dict.fromkeys(disc + _disc() + pr + base) if h not in have and h not in dq]
     queue = _build()
     cmp_handles = [l.strip() for l in open("compare_list.txt") if l.strip()] if os.path.exists("compare_list.txt") else []
