@@ -23,6 +23,8 @@ import store as S
 import top100 as H
 import wb_caught as W
 
+AGE = int(os.environ.get("WB_AGE", "15"))       # checkpoint in minutes: 15 (checkpoint 2) or 60 (checkpoint 1)
+SFX = "" if AGE == 15 else f"_{AGE}"
 PRM = dict(n_estimators=500, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8, subsample_freq=1,
            colsample_bytree=0.8, verbose=-1, random_state=0)
 SRC = {"jan_jun": "usersim_sim/raw/hn_early_votes_2025/early_snapshots.jsonl",
@@ -39,7 +41,7 @@ def snapshots():
             x.download_to_filename(f)
             parts.append(pd.read_json(f, lines=True, convert_dates=False))
     A = pd.concat(parts, ignore_index=True)
-    return A[(A.page == "newest") & (A.age_min >= 0) & (A.age_min <= 15)]
+    return A[(A.page == "newest") & (A.age_min >= 0) & (A.age_min <= AGE)]
 
 
 def build():
@@ -79,7 +81,7 @@ def build():
     born = Q.set_index("post_id").created_at_i
     c = c[c.story_id.isin(born.index)]
     lat = c.created_at_i - c.story_id.map(born).to_numpy()
-    Q["cm15"] = Q.post_id.map(c[(lat >= 0) & (lat < 900)].groupby("story_id").size()).fillna(0)
+    Q["cm15"] = Q.post_id.map(c[(lat >= 0) & (lat < AGE * 60)].groupby("story_id").size()).fillna(0)
     # Wayback votes by 15 min
     last = N.sort_values("age_min").drop_duplicates("item_id", keep="last").set_index("item_id")
     Q["v_has"] = Q.post_id.isin(last.index).astype(int)
@@ -154,8 +156,8 @@ def main():
     sel1 = Q.day.isin(days).to_numpy()
     out = pd.concat([pd.DataFrame({"post_id": Q.post_id[sel1].to_numpy(), "test": "oct2_14", **{a: v[sel1] for a, v in sc.items()}}),
                      pd.DataFrame({"post_id": Q.post_id[te].to_numpy(), "test": "sep1_oct14", **{a: v[te] for a, v in sc2.items()}})])
-    out.to_parquet(os.path.join(H.CACHE, "wb25_scores.parquet"), index=False)
-    print("saved wb25_scores.parquet", flush=True)
+    out.to_parquet(os.path.join(H.CACHE, f"wb25_scores{SFX}.parquet"), index=False)
+    print(f"saved wb25_scores{SFX}.parquet", flush=True)
 
 
 def report(title, Q, sel, sc, kind):
