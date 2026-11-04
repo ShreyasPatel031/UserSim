@@ -97,7 +97,7 @@ def rows_from(posts, products, makers, ext, fv):
 
     L, P = [], []
     for p in posts:
-        if p["status"] != 200:
+        if str(p["status"]) != "200":   # Nov 4 files carry the status as a string
             continue
         # PH hides vote counts early in the day (hide_votes_count: shown as 0), so the shown count only rules a row out
         # when visible and > 0; the vote-snapshot timing is the rule
@@ -106,14 +106,14 @@ def rows_from(posts, products, makers, ext, fv):
             if isinstance(p.get(k), (int, float, bool)):
                 L.append(row(p["launch_id"], "atl_post", m, p[k], p["fetched_at"], zero))
     for pr in products:
-        if pr["status"] != 200:
+        if str(pr["status"]) != "200":   # Nov 4 files carry the status as a string
             continue
         for lid in map(str, pr["launch_ids"]):
             for k, m in PRODUCT.items():
                 if isinstance(pr.get(k), (int, float, bool)):
                     L.append(row(lid, "atl_product", m, pr[k], pr["fetched_at"]))
     for mk in makers:
-        if mk["status"] != 200:
+        if str(mk["status"]) != "200":   # Nov 4 files carry the status as a string
             continue
         prof = mk["profile"] or {}
         for lid in map(str, mk["launch_ids"]):
