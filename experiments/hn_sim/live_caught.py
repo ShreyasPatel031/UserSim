@@ -50,7 +50,7 @@ def load_minute():
     M["t"] = (pd.to_datetime(M.t, utc=True) - pd.Timestamp(0, tz="UTC")) // pd.Timedelta(seconds=1)
     # union of box + VM copies: one row per (list, page, id, minute of the read)
     M = M.assign(_m=M.t // 60).drop_duplicates(["list", "page", "id", "_m"]).drop(columns="_m")
-    M["pos"] = (M.page - 1) * 30 + M["rank"]
+    M["pos"] = M["rank"]                     # the recorder's rank is already the position (page 2 = 31-60, page 3 = 61-90)
     return M
 
 

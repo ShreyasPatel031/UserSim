@@ -54,7 +54,7 @@ def read_minute(now):
                     continue
                 if r.get("list") == "front":
                     t = int(pd.Timestamp(r["fetched_at"]).timestamp())
-                    _front.append((int(r["id"]), t, (int(r["page"]) - 1) * 30 + int(r["rank"])))
+                    _front.append((int(r["id"]), t, int(r["rank"])))          # rank is already the position (page 2 = 31-60)
             _lines[k] = len(text)
     F = pd.DataFrame(_front, columns=["id", "t", "pos"])
     return F[F.t >= now - 2 * 86400]
@@ -65,18 +65,15 @@ def ranks_at(F, reads, post_ids, born, at):
     g = {pid: grp for pid, grp in F[F.id.isin(set(post_ids))].groupby("id")}
     rn, br = np.full(len(post_ids), 91.0), np.full(len(post_ids), 91.0)
     for i, (pid, b0, t) in enumerate(zip(post_ids, born, at)):
-        j = np.searchsorted(reads, t, side="right") - 1
-        last = reads[j] if j >= 0 else None
         x = g.get(pid)
         if x is None:
             continue
         seen = x[(x.t >= b0) & (x.t <= t)]
         if len(seen):
             br[i] = seen.pos.min()
-        if last is not None and t - last <= 600:
-            cur = x[(x.t // 60) == (last // 60)]
-            if len(cur):
-                rn[i] = cur.pos.min()
+            recent = seen[seen.t >= t - 600]            # pages are read in different minutes: the post's latest
+            if len(recent):                             # position in the last 10 min (Quality News used 10-min slots)
+                rn[i] = recent.sort_values("t").pos.iat[-1]
     return rn, br
 
 
