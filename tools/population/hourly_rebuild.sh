@@ -48,3 +48,6 @@ python3 -c "import json,sys; print(json.dumps({'utc': sys.argv[1], 'status': sys
   "$NOW" "$STATUS" "${EVENTS:-}" "$SECS" "$HEAD" "$LIGHT" > $W/logline.json
 (gsutil -q cat $B/raw/population/reports/$DAY/rebuild_log.jsonl 2>/dev/null; cat $W/logline.json) | gsutil -q cp - $B/raw/population/reports/$DAY/rebuild_log.jsonl
 log "$STATUS in ${SECS}s"; cat $W/logline.json
+
+# 30-min quality check, :20 run (the :50 run has its own scheduled task)
+"$REPO/tools/population/quality_run.sh" "$W" | tail -12
