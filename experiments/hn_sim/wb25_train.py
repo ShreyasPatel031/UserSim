@@ -42,7 +42,7 @@ def snapshots():
     return A[(A.page == "newest") & (A.age_min >= 0) & (A.age_min <= 15)]
 
 
-def main():
+def build():
     N = snapshots()
     months25 = sorted(pd.to_datetime(N[N.capture_ts.astype(str).str[:4] == "2025"].capture_ts.astype(str).str[:6], format="%Y%m").dt.strftime("%Y-%m").unique())
     print("2025 months with captures:", months25, flush=True)
@@ -108,6 +108,27 @@ def main():
     is25 = (Q.day < "2026-01-01").to_numpy()
     print(f"2025 rows {int(is25.sum())} ({int(y[is25].sum())} winners; with a /newest snapshot by 15 min {Q.v_has[is25].mean():.1%}; "
           f"content score {Q.content[is25].notna().mean():.1%}); 2026 rows {int((~is25).sum())} (content {Q.content[~is25].notna().mean():.1%})", flush=True)
+    return Q, base_cols, y, is25
+
+
+def daily_light(first="2026-09-01", last="2026-10-14"):
+    """Light model (all 2025 + 2026 rows + content) with a forward daily retrain (train on days <= d - 2) over
+    first..last, for the gate / stacker (gate15.py); saves wb25_daily_scores.parquet."""
+    Q, base_cols, y, is25 = build()
+    cols = base_cols + ["content"]
+    days = sorted(d for d in Q.day.unique() if first <= d <= last)
+    s = np.full(len(Q), np.nan)
+    for d in days:
+        tr = (Q.day <= (pd.Timestamp(d) - pd.Timedelta(days=2)).strftime("%Y-%m-%d")).to_numpy()
+        te = (Q.day == d).to_numpy()
+        s[te] = lgb.LGBMClassifier(**PRM).fit(Q.loc[tr, cols], y[tr]).predict_proba(Q.loc[te, cols])[:, 1]
+    sel = Q.day.isin(days).to_numpy()
+    pd.DataFrame({"post_id": Q.post_id[sel].to_numpy(), "light": s[sel]}).to_parquet(os.path.join(H.CACHE, "wb25_daily_scores.parquet"), index=False)
+    print(f"saved wb25_daily_scores.parquet ({int(sel.sum())} posts, {len(days)} days)", flush=True)
+
+
+def main():
+    Q, base_cols, y, is25 = build()
     import caught_types as CTY
     kind = CTY.kinds_for(Q)
     arms = {"2026 rows": (base_cols, False), "2026 rows + content": (base_cols + ["content"], False),
@@ -153,4 +174,5 @@ def report(title, Q, sel, sc, kind):
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    daily_light() if sys.argv[1:] == ["daily"] else main()
