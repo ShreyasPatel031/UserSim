@@ -124,6 +124,18 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
 - **Released VMs at half pace (2026-11-04 09:40–11:11 UTC), per-session ceiling:** VM-1 (10002) one session, 28 people, 537 requests,
   87.7 min, 58.5 MB, then **stopped_on_block 11:07:03Z** (mid-session). VM-3 (10004) one session, 28 people, 507 requests, 84.4 min,
   ended by stop_flag 11:04, then a **cold restart failed Cloudflare 11:10:43Z**. VM-2 (10003) 29+ people, no block at 11:24Z.
-  Reading: at ~1 person / 3 min a session lasts ~85–90 min / ~500–540 requests before a block. That looks like a per-session
-  request or duration limit, not rate; and a cold open right after a long session fails. First 20 per VM: 0 blocks; MB 0.59 / 2.12 / 0.67;
+  ~~Reading: a fixed per-session ceiling of ~500 requests / ~85 min.~~ **Corrected 12:40 UTC: the mid-session block is not a fixed
+  count; it is a distribution that differs by port:**
+
+  | Port (VM) | Session | People | Requests | Req/person | Result |
+  |---|---|---|---|---|---|
+  | 10003 (VM-2), test 1, full pace | 05:41–05:56 | 8 | n/a | n/a | block after ~14 min |
+  | 10002 (VM-1), half pace | 09:40–11:07 | 29 | 494 | 17.0 | block at 87 min |
+  | 10003 (VM-2), half pace | 09:39– (still open 12:23) | 36+ | 1,786+ | 49.6 | clean ≥2.7 h |
+  | 10004 (VM-3), half pace | 09:41–11:04 | 28 | ~507 | ~18 | ended by Data Feeder's stop_flag, no block; cold reopen 11:10 failed |
+
+  Person mix does not explain it: VM-2 makes ~3× more requests per person (5 heavy upvoters with >200 upvotes) and has run 3.6× more
+  requests than VM-1 without a block. The likely difference is the exit IP behind each sticky port (10002 also stopped on a block at
+  03:45 UTC). Exit IPs are not logged in the status rows; every session should log its exit IP and AS at open so this can be tested.
+  A cold open right after a long session failed (VM-3, 11:10). First 20 per VM: 0 blocks; MB 0.59 / 2.12 / 0.67;
   upvotes capped at ~197–199 for heavy upvoters (paging stops ~10 pages), stacks 73–100%, followers 89–99%.
