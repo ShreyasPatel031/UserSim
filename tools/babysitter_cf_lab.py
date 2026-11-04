@@ -169,6 +169,9 @@ def worker(idx, ppl, conc, step_s, q):
 
 def main():
     ppl = people()
+    if os.environ.get("LAB_PHASE") == "2":
+        emit("run", run=RUN, phase=2, port=PORT, people=len(ppl), **sysinfo()); upload()
+        return p5_p6(ppl)
     emit("run", run=RUN, port=PORT, people=len(ppl), cpus=os.cpu_count(), step_s=STEP_S, **sysinfo())
     upload()
     # P1 cold open with a persistent profile
@@ -199,14 +202,26 @@ def main():
         upload()
         if s["blocked"] >= 2:
             emit("stop", why=f"P4 edge at concurrency {conc}"); upload(); return
-    # P5 preset browser on the same IP (second process-free context in this process)
-    cm5, page5, ok5 = open_browser("/root/prof_preset", preset=True, label="P5_preset")
-    upload()
-    try:
-        cm5.__exit__(None, None, None)
-    except Exception:
-        pass
     cm.__exit__(None, None, None)
+    p5_p6(ppl)
+
+
+def p5_worker(q):
+    """P5 in its own process: Playwright sync API allows one Camoufox per process."""
+    try:
+        cm5, page5, ok5 = open_browser("/root/prof_preset", preset=True, label="P5_preset")
+        q.put(dict(cleared=ok5))
+        cm5.__exit__(None, None, None)
+    except Exception as e:
+        q.put(dict(err=str(e)[:120]))
+
+
+def p5_p6(ppl):
+    # P5 preset browser on the same IP, separate process
+    q = mp.Queue()
+    p = mp.Process(target=p5_worker, args=(q,)); p.start(); p.join(300)
+    emit("step", step="P5_preset", **(q.get() if not q.empty() else dict(err="timeout")))
+    upload()
     # P6 browsers per VM: 2, 3, 4 browsers in separate processes, each concurrency 2
     for nb in (2, 3, 4):
         q = mp.Queue()
