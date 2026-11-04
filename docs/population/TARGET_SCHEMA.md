@@ -96,3 +96,9 @@ Reading: popularity dominates, but the follow graph and past votes for the same 
 For collection: complete + dated following lists (3) and deeper upvote history (1) feed the which-launch side; reciprocity
 needs makers' own histories (low coverage now). Follows are read after the vote, so part of 0.88 may be follow-after-vote;
 dated follows (rota diffs) settle that.
+
+## Rule: PH API token work (orchestrator, Nov 4 19:37 UTC)
+The PH box API key is shared with the live launch-snapshot loop, which has priority. On Nov 4 the comment-time by-id lookup
+(126 calls, ~12.6k points; suggested by this agent for F1) drained the key, and the 11:15 and 11:30 PT live snapshots were lost.
+From now on the population agent proposes no PH API-token job without the orchestrator first, priced in points against the
+live loop's remaining budget. Comment times are not a model input; the 311 unknown full-pull comment times stay unknown.
