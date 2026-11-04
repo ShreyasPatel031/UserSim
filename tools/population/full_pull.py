@@ -37,6 +37,8 @@ def handle_of(d):
 
 def load_full(path, ids, upload_time=None, source=None):
     d = json.load(open(path))
+    if not isinstance(d, dict) or not any(t in d for t in ("upvotes", "header")):
+        return pd.DataFrame(), pd.DataFrame()   # heartbeat / status files
     user = handle_of(d)
     pid = ids(user)
     f = _ts((d.get("run") or {}).get("finished_utc") or d.get("fetched_at"))
@@ -44,6 +46,8 @@ def load_full(path, ids, upload_time=None, source=None):
     if pd.isna(f):
         f, f_quality = _ts(upload_time), "upload_time_upper_bound"
     source = source or "people_live:" + path.split("people_live/")[-1].split("/")[0]
+    if str(d.get("method") or "").startswith("one long-lived"):
+        source += ":reused_browser"
     hdr = d.get("header") or {}
     tabs, ev = [], []
     for t in TABS:

@@ -340,19 +340,27 @@ def build(data_dir, out_dir, salt):
     up_times = {}
     if os.path.exists(f"{data_dir}/people_live/_upload_times.json"):
         up_times = json.load(open(f"{data_dir}/people_live/_upload_times.json"))
-    tab_rows = []
+    tab_rows, fp_events = [], []
     for fp in sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json")):
         t_, e_ = full_pull.load_full(fp, ids, upload_time=up_times.get(os.path.relpath(fp, f"{data_dir}/people_live")))
-        tab_rows.append(t_)
+        if len(t_):
+            tab_rows.append(t_)
         if len(e_):
-            api_cids = set()
-            for e0 in ev:
-                if len(e0) and "source" in e0 and e0.source.astype(str).str.startswith("ph_api_v2").any():
-                    api_cids |= {json.loads(x).get("comment_id") for x in e0[e0.source.astype(str).str.startswith("ph_api_v2")].extra}
-            cid = e_.extra.map(lambda x: json.loads(x).get("comment_id") if isinstance(x, str) else None)
-            ev.append(e_[~((e_.kind == "comment") & cid.isin(api_cids - {None}))])
-    if tab_rows:
-        pd.concat(tab_rows, ignore_index=True).to_parquet(f"{out_dir}/tabs.parquet", index=False)
+            fp_events.append(e_)
+    if fp_events:
+        e_ = pd.concat(fp_events, ignore_index=True)
+        # re-pulls of the same person: one row per (person, kind, target, time), earliest first_seen kept
+        e_ = e_.sort_values("first_seen_at").drop_duplicates(["person_id", "kind", "target_id", "ts_lo"], keep="first")
+        api_cids = set()
+        for e0 in ev:
+            if len(e0) and "source" in e0:
+                a = e0[e0.source.astype(str).str.startswith("ph_api_v2")]
+                api_cids |= {json.loads(x).get("comment_id") for x in a.extra}
+        cid = e_.extra.map(lambda x: json.loads(x).get("comment_id") if isinstance(x, str) else None)
+        ev.append(e_[~((e_.kind == "comment") & cid.isin(api_cids - {None}))])
+    if tab_rows:  # latest pull per (person, tab)
+        tr = pd.concat(tab_rows, ignore_index=True).sort_values("fetched_at")
+        tr.drop_duplicates(["person_id", "tab"], keep="last").to_parquet(f"{out_dir}/tabs.parquet", index=False)
     xe, xrep = x_events(data_dir, set(ids_map.values()))
     print("X drops:", json.dumps(xrep, default=str))
     if len(xe):

@@ -34,8 +34,11 @@ if os.path.exists(tp):
     if os.path.exists(hi):
         tier = {r["person_id"]: r.get("tier") or "non-pool" for r in map(json.loads, open(hi))}
     per["tier"] = per.index.map(lambda x: tier.get(x, "unknown"))
-    allt = pd.Series({k: (n if k != "_" else 0) for k, n in [("_", 0)]})
-    print("\n## Full all-tab pulls by tier\n")
+    # a person's latest pull per tab wins
+    print(f"\n## HEADLINE: people with all 10 tabs complete: {int((per.complete >= 10).sum()):,} "
+          f"(pool: {int(((per.complete >= 10) & per.tier.isin(['likely', 'active_rest', 'other'])).sum()):,}); "
+          f"people with any full pull: {len(per):,}\n")
+    print("## Full all-tab pulls by tier\n")
     print("| Tier | People in tier | With a full pull | All 10 tabs complete |")
     print("|---|---|---|---|")
     sizes = pd.Series(tier).value_counts() if tier else pd.Series(dtype=int)
