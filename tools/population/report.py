@@ -33,9 +33,8 @@ if os.path.exists(tp):
         t["pull_type"] = "full"
     light_only = set(t.person_id) - set(t[t.pull_type == "full"].person_id)
     lu = t[(t.tab == "upvotes") & t.person_id.isin(light_only)]
-    print(f"\n## Light pulls (header + upvotes only; not all-tabs): {len(light_only):,} people "
-          f"(in Nov 2 pool {len(light_only & pool):,}, new {len(light_only - pool):,}); upvotes list complete or server-ended "
-          f"{int((lu.complete | lu.complete_not_visible).sum()):,}")
+    # light pulls were withdrawn (Shreyas, Nov 4 20:23Z): a header + upvotes-only pull is INCOMPLETE and goes on the deep_list
+    print(f"\n## Incomplete header+upvotes-only pulls (need the full pull; never coverage): {len(light_only):,} people")
     t = t[t.pull_type == "full"].copy()
     for col in ("complete_not_visible", "capped_large"):
         if col not in t:
@@ -75,6 +74,7 @@ if os.path.exists(tp):
     if os.path.exists(hi):
         h_of = {r["person_id"]: r.get("handle") for r in map(json.loads, open(hi))}
         rows = ft.groupby("person_id").tab.apply(lambda s: ",".join(sorted(s)))
+        rows = pd.concat([rows, pd.Series("needs_full_pull", index=sorted(light_only - set(rows.index)))])
         with open(f"{d}/deep_list.tsv", "w") as f:
             for pid, tabs_ in rows.items():
                 f.write(f"{h_of.get(pid) or pid}\t{tabs_}\n")
