@@ -1162,3 +1162,16 @@ Paired vs the headlines (identical posts and flags): Sep 1 - Oct 14 **28.4% vs 2
 only: 28.0%); Oct 2-14 30.2% vs 29.6%, +0.5 [-2.7, +3.5] (late risers 30 -> 38, re-ups 11 -> 15, fast 74 -> 64).
 Headlines: full period 28.4%; Oct 2-14 stays 29.6% (live product). Next: the two models are complementary on Oct 2-14
 (light catches late risers and re-ups, the headline catches fast posts) but the pre-set 50/50 blend gave 28.9%, -0.8.
+
+### Gate / stacker of the two 15-min models (gate15.py; pre-registered, scored once on Oct 2-14)
+Both models with a forward daily retrain over Sep 1 - Oct 14 (out of sample), within-day ranks. Gate (no fit): fast
+model for posts with an early /newest signal by 15 min (snapshot > 2 points or a comment), light model otherwise.
+Stacker: logistic regression on both ranks, early signal, interactions, snapshot count / age, fitted Sep 1 - Oct 1 (only
+490 early-signal rows: September snapshots are sparse).
+| Oct 2-14 (388 winners) | Caught | vs fast headline | vs light |
+|---|---|---|---|
+| fast (headline) | 29.6% [25.6, 33.5] | | |
+| light | 30.2% | +0.5 [-2.4, +3.3] | |
+| gate | 29.1% | -0.5 [-3.4, +2.3] | -1.0 [-4.0, +2.0] |
+| stacker | 25.5% | **-4.1 [-7.3, -0.8]** | -4.6 [-9.0, +0.0] |
+Neither beats 29.6%: dropped (orchestrator's rule). Headlines unchanged; direction A stays top priority.
