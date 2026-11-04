@@ -1720,3 +1720,17 @@ Reference: honest live set (62.7 / 70.4 / 76.6), day-calibrated control, 5 seeds
   (raw/population_data/ph_comments/<day>/events_v2.jsonl, extended back to May).
 - Live shadow_honest_a2 (bundle 6) uses warehouse comments with `date < day`: apply the same day − 2 bound (or exact
   times) in the next shadow update.
+
+## Honest recency in the person model (orchestrator priority, Nov 4) — no gain
+Turnout reweighting of the live person model (pnx, TIE2): per person, activity in the last 1 / 7 days (upvotes,
+comments), active days in 7, days since last, from raw/population/store_v2; logistic turnout model fitted leave-one-day-
+out; per launch ev = Σ w_rec·p vs pnx's Σ w·p. Retraining the person model itself is impossible (honest dated activity
+starts Oct 28; its training months predate it).
+Data caveats: store_v2's first-seen starts Nov 1, so "known before d" leaves only Nov 2–3; Nov 3 has no labels yet and
+Nov 2 thin ones (79 people acting). Reported as-if-live (the event happened before d, as a daily read would show).
+- Per-launch pool-turnout Spearman, recency − pnx (people bootstrap): Oct 29 +0.007 (−0.015, +0.013); Oct 30 −0.002
+  (−0.027, +0.009); Oct 31 +0.008 (−0.007, +0.009); Nov 1 0.000 (0.000, +0.016); mean +0.003. Nov 2 (thin) 0.000.
+- Person-level turnout AUC: +0.006 to +0.009 (e.g. 0.839 -> 0.848); Nov 2 +0.028 on 79 people.
+- Person top-3 hit unchanged by construction (0.48–0.74): recency reweights people, not their choice of launch.
+- Verdict: recency does not improve per-launch pool turnout over pnx's 30-day activity weight; not the lever. Revisit
+  with strict known-before-d data after ~2 weeks of daily first-seen reads.
