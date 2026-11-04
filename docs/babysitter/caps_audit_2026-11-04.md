@@ -10,7 +10,7 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
 | 3 | paging_v2.py `maxp = goal//20+10 if goal else 500` | lists with no header (activity) stop at 500 pages = 10,000 items, `ended=max_pages`; deep pass re-pulls non-follow tabs from page 1, so it hits the same wall forever | **CAP: FAIL** for activity > 10k |
 | 4 | ph_batch.py more_stacks(): `range(40)` scroll rounds | stacks beyond 40 scroll rounds | **CAP** (low risk) |
 | 5 | ph_batch.py BUDGET 1200 s / 15 MB, `--person-timeout 1500`; deep DEEP_SECS 3600 / 60 MB | lists cut mid-way; resumed by cursor for followers/following only; other tabs restart from page 1 and can loop | **partial: OK only if deep pass finishes**; verify per person |
-| 6 | ph_batch.py `CAP = 5.5e9` (weekly STOP.budget) | all pulls stop at 5.5 GB; Shreyas raised the cap to $30 / ~29 GB | **stale: must be raised to ~29e9** |
+| 6 | ph_batch.py `CAP = 5.5e9` (weekly STOP.budget) | all pulls stop at 5.5 GB; Shreyas raised the cap to $30 / ~29 GB | **fixed 20:22Z** (reuse.tgz md5 DaUVnatPa+rZ/CUZKzAHbg==, stop 29e9) |
 | 7 | ph_batch.py budget skips: `product_pages`, `forum_threads` truncated_budget | maker product pages / threads skipped when over budget | **FAIL** unless the deep pass re-pulls them |
 | 8 | Half mode skips deep_list people | heavy people never finished in half mode | **FAIL** unless deep mode runs |
 | 9 | ph_person.py `--followers-cap 10000` default | legacy single-person script | **CAP** if anything still calls it |
