@@ -92,3 +92,21 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   Operating point on e2-medium: 1 browser × 5 tabs ≈ 30 req/min per VM. Next (orchestrator, 03:35 UTC): resize phpeople-1/2/3 to
   e2-standard-4 (16 GB) one at a time, ramp 2→4→6 browsers per fixed port, capped at 60 pages/min per IP until the babysitter's
   port 10006 rate-edge result (in-page fetch, 80→240/min, one browser) sets the per-IP ceiling.
+- **Per-IP rate edge, port 10006 (babysitter script, run by Data Feeder, 2026-11-04 03:52–04:25 UTC):** exit 88.223.44.25 (AS7459 Grande
+  Communications, residential, Dallas); Camoufox per Data Feeder's recipe (no preset), cold warm-up cleared in 19.0 s; one browser,
+  sequential in-page fetch of profile tabs (/@u, activity, upvotes, followers, following) for likely-tier people.
+
+  | target/min | achieved/min | fetches | 200 | blocked | median s | MB |
+  |---|---|---|---|---|---|---|
+  | 80 | 72.8 | 582 | 582 | 0 | 0.73 | 208.7 |
+  | 120 | 66.2 | 530 | 530 | 0 | 0.83 | 186.3 |
+  | 160 | 75.2 | 602 | 602 | 0 | 0.75 | 209.9 |
+
+  1,714 fetches in 24 min, 1,709 × 200, 5 × 404 (no such page), **0 × 403/429/challenge**. One sequential browser tops out at ~66–75
+  fetches/min (latency-bound), so **the per-IP edge is above 75/min and was not reached.** Next lever: parallel fetches inside the one
+  warm page (Promise.all of 2–4), same port, same stop rule.
+- **Cost is the binding constraint, not Cloudflare:** a full tab HTML fetch is ~0.36 MB (not the 31 KB of a page-1 fragment), so ~$0.35 per
+  1,000 at $1/GB: at 75/min ≈ $1.6/h ≈ $38/day per IP, against the $30/week paid-data cap. Before scaling: fetch the site's GraphQL JSON
+  (raw/_babysitter/scale_test/ops/ops.json) instead of tab HTML, measure bytes per item, then set the daily page budget from $ not from rate.
+- First run (20261104T0334Z_df10006) invalid: the babysitter's script called the Playwright page from worker threads, so 639 fetches all
+  errored locally (0 PH loads, 0 MB). Data Feeder caught it and reran.
