@@ -20,6 +20,8 @@ pre_launch_relaxed; RELAXED=1 also dates those rows day - 1 for c2.
 Rows (JSON lines): launch_id, source, metric, as_of_date, count, fetched_at, first_vote_at, pre_launch
   + username, role for per-person rows (makers / hunters, and their X / GitHub counts).
 Outputs contain usernames: write them to the bucket or ~ only, never to the repo.
+Prior pulls: makers with a store_v3 full pull fetched before 00:00 PT of the day get dated profile rows (atl_profile_v3;
+V3=0 turns it off).
 usage: python at_launch_reader.py <day dir, local or gs://...> <out prefix>
        -> <out prefix>_launch.jsonl, <out prefix>_people.jsonl; prints coverage and the pre-launch share as JSON."""
 import datetime as dt, json, os, subprocess, sys, tempfile
@@ -143,12 +145,61 @@ def rows_from(posts, products, makers, ext, fv):
     return day, L, P
 
 
+V3_TABS = os.environ.get("V3_TABS", "gs://usersim-bakeoff-347838016394/usersim_sim/raw/population/store_v3/tabs.parquet")
+V3_METRIC = {"followers": "followers", "following": "followings", "hunted": "hunted", "upvotes": "upvotes_total",
+             "reviews": "reviews", "collections": "collections", "stacks": "stacks"}
+
+
+def v3_profiles(makers, day):
+    """Prior full pulls (orchestrator, Nov 4 13:06 UTC): a maker / hunter with a store_v3 full pull (tabs.parquet, one
+    header count per tab) fetched before 00:00 PT of the launch day has a dated pre-launch profile: source atl_profile_v3,
+    strict (pre_launch) when fetched_at < 00:00 PT of the day, as_of_date day - 1. The latest such pull per person is
+    used. store_v3 is keyed on salted hashes ("p_" + sha256(salt + "producthunt:" + lower(username))[:16]); the salt
+    (raw/population/_salt) is read only to match and never printed. fetched_quality is kept (store_v3 marks the pull
+    times estimated: an upper bound on the fetch, so the date rule stays strict)."""
+    import hashlib
+    path = V3_TABS
+    if path.startswith("gs://"):
+        loc = os.path.join(tempfile.mkdtemp(prefix="v3_"), "tabs.parquet")
+        subprocess.run(["gsutil", "-q", "cp", path, loc], check=True); path = loc
+    T = pd.read_parquet(path)
+    T = T[T.tab.isin(V3_METRIC) & T.header.notna()]
+    salt = subprocess.run(["gsutil", "cat", "gs://usersim-bakeoff-347838016394/usersim_sim/raw/population/_salt"],
+                          capture_output=True, text=True, check=True).stdout.strip()
+    d0 = pd.Timestamp(f"{day} 00:00", tz="America/Los_Angeles").tz_convert("UTC")
+    prev = (dt.date.fromisoformat(day) - dt.timedelta(days=1)).isoformat()
+    T = T[pd.to_datetime(T.fetched_at, utc=True) < d0]
+    last = T.sort_values("fetched_at").groupby(["person_id", "tab"]).tail(1)
+    by = {pid: g for pid, g in last.groupby("person_id")}
+    rows, seen, hit = [], set(), set()
+    for mk in makers:
+        u = str(mk.get("username") or "").lower()
+        if not u or u in ("[redacted]", "redacted", "none", "nan"):
+            continue
+        seen.add(u)
+        g = by.get("p_" + hashlib.sha256((salt + "producthunt:" + u).encode()).hexdigest()[:16])
+        if g is None:
+            continue
+        hit.add(u)
+        for lid in map(str, mk["launch_ids"]):
+            for role in mk["roles"]:
+                for r in g.itertuples():
+                    rows.append({"launch_id": lid, "source": "atl_profile_v3", "metric": V3_METRIC[r.tab], "as_of_date": prev,
+                                 "count": float(r.header), "fetched_at": pd.Timestamp(r.fetched_at).isoformat(),
+                                 "fetched_quality": r.fetched_quality, "first_vote_at": None, "pre_launch": True,
+                                 "pre_launch_relaxed": True, "username": u, "role": role})
+    return rows, {"makers_named": len(seen), "makers_with_prior_v3_pull": len(hit), "v3_people_before_day": int(T.person_id.nunique())}
+
+
 def main(src, out):
     posts, products, makers, ext = load(src)
     if not posts:
         raise SystemExit(f"no posts.jsonl rows in {src}")
     fv = first_votes({str(p["launch_id"]) for p in posts})
     day, L, P = rows_from(posts, products, makers, ext, fv)
+    v3 = {}
+    if os.environ.get("V3", "1") == "1":
+        R3, v3 = v3_profiles(makers, day); P += R3
     for suf, R in (("launch", L), ("people", P)):
         with open(f"{out}_{suf}.jsonl", "w") as f:
             for r in R:
@@ -157,7 +208,7 @@ def main(src, out):
     rep = {"day": day, "launches": len(posts), "launches_with_first_vote": len(fv),
            "rows": len(D), "pre_launch_rows": int(D.pre_launch.sum()) if len(D) else 0,
            "launches_with_any_pre_launch_row": int(D[D.pre_launch].launch_id.nunique()) if len(D) else 0,
-           "relaxed": RELAXED, "relax_min": RELAX_MIN, "pre_launch_relaxed_rows": int(D.pre_launch_relaxed.sum()) if len(D) else 0,
+           "v3_prior_pulls": v3, "relaxed": RELAXED, "relax_min": RELAX_MIN, "pre_launch_relaxed_rows": int(D.pre_launch_relaxed.sum()) if len(D) else 0,
            "by_source": D.groupby("source").agg(rows=("pre_launch", "size"), pre=("pre_launch", "sum"), relaxed=("pre_launch_relaxed", "sum")).astype(int).to_dict("index") if len(D) else {},
            "capture_minus_first_vote_min": (D.assign(g=[(ts(a) - ts(b)).total_seconds() / 60 if a and b else None for a, b in zip(D.fetched_at, D.first_vote_at)])
                                            .groupby("source").g.median().round(1).to_dict()) if len(D) else {}}
