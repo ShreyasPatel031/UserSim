@@ -139,3 +139,7 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   03:45 UTC). Exit IPs are not logged in the status rows; every session should log its exit IP and AS at open so this can be tested.
   A cold open right after a long session failed (VM-3, 11:10). First 20 per VM: 0 blocks; MB 0.59 / 2.12 / 0.67;
   upvotes capped at ~197–199 for heavy upvoters (paging stops ~10 pages), stacks 73–100%, followers 89–99%.
+- **Upvotes list cap (signed out), confirmed 2026-11-04:** a profile's upvotes stop at ~195–199 items however far paging goes. VM-2 made
+  ~330–340 GraphQL calls on two heavy upvoters (19–20 min, 11.7 / 12.8 MB) and got 195/2,526 and 197/3,142; other capped people
+  stopped at 197–199; the box browser pull stopped at 197/3,142. Stop upvote paging at ~200 (or at the first page that adds nothing)
+  and mark upvotes_capped; further calls only spend bytes. Signed-in visibility past 200 not tested.
