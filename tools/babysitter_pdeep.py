@@ -21,6 +21,12 @@ def _over_budget(R):
     Charge each person an equal share of the VM's traffic since that person started (per-worker stop-gap)."""
     return (time.time() - R.t0) >= PB.BUDGET_SECS or (PB.nic() - getattr(R, "b0", PB.nic())) / max(1, _ACTIVE[0]) >= PB.BUDGET_BYTES
 PB.over_budget = _over_budget  # module-global lookup: pull()/paging use this from here on
+_WB = {"t": 0.0, "v": (0, {})}
+def _week_bytes_cached():
+    """2352Z: week_bytes() reads every VM's status file (tens of seconds); each worker called it before every person, so
+    workers sat idle. Cache it 2 min; the fleet uses ~1 GB/h, so the 29 GB stop can overshoot by ~35 MB at most."""
+    if time.time() - _WB["t"] > 120: _WB["v"] = PB.week_bytes(); _WB["t"] = time.time()
+    return _WB["v"]
 K = int(os.environ.get('PDEEP_K', 4))  # audit: K=4 for the first hour
 TABS = int(os.environ.get('PDEEP_TABS', 2))  # pages per worker
 B, VM = PB.B, PB.VM
@@ -86,7 +92,7 @@ async def main(a):
         while not st["stop"]:
             f = await asyncio.to_thread(stopflag)
             if f: st["stop"] = f; S.put(event="stop_flag", flag=f, worker=wi); break
-            tot, _ = await asyncio.to_thread(PB.week_bytes)
+            tot, _ = await asyncio.to_thread(_week_bytes_cached)
             if tot + 25e6 > a.cap:
                 open('/tmp/sb', 'w').write(f'STOP budget {PB.now()} week bytes {tot} >= cap {a.cap} (set by {VM} pdeep)\n')
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', '/tmp/sb', f'{B}/STOP.budget')
