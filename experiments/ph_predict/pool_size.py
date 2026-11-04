@@ -13,8 +13,9 @@ Parts
     5k, 10k, all; daily and top-3 separately; 95% intervals from a bootstrap over days.
   3 completeness: for people with a store_v3 full pull, upvotes in the test window in the full list vs the warehouse.
   4 capture-recapture and votes per voter: see main().
-usage: python pool_size.py -> results/pool_size.json"""
-import hashlib, json, os, subprocess, sys, tempfile
+usage: python pool_size.py -> results/pool_size.json
+       python pool_size.py hourly [once]   coverage on the growing pool, one line per hour to HOURLY_GS"""
+import hashlib, json, os, subprocess, sys, tempfile, time
 import numpy as np, pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE))
@@ -247,6 +248,69 @@ def part4(L, E, V, sl, curve_all):
     return res
 
 
+HOURLY_GS = os.environ.get("HOURLY_GS", f"{BUCKET}/results/pool_size_hourly.jsonl")
+TOPK_DISC = int(os.environ.get("TOPK_DISC", "100"))   # discovery targets the top 100 Oct 1-24 launches (orchestrator plan)
+
+
+def hourly_once(L, E0, sl, base_ids):
+    """Coverage on the growing pool: votes on TEST-window launches by anyone we track now (warehouse pool upvotes
+    union store_v3 dated upvotes of every pulled person, deduped on salted id x launch), all launches / daily top 3,
+    with a day-bootstrap 95% CI; also on held-out launches (not among the TOPK_DISC by votes, which discovery targets,
+    so their coverage is not raised by selection). N added = pulled people with an upvote pull not in the base pool."""
+    V = v3()
+    Lt = L[(L.day >= TEST[0]) & (L.day <= TEST[1])].copy()
+    disc = set(Lt.nlargest(TOPK_DISC, "votes").id)
+    W_ = E0[(E0.kind == "upvote") & E0.id.isin(Lt.id)].drop_duplicates(["person", "id"])
+    hp = {u: hid(sl, u) for u in W_.person.unique()}
+    A = pd.DataFrame({"pid": W_.person.map(hp), "id": W_.id})
+    up = V["events"][V["events"].kind == "upvote"]
+    B = pd.DataFrame({"pid": up.person_id, "id": up.target_id.astype(str)})
+    U = pd.concat([A, B[B.id.isin(Lt.id)]]).drop_duplicates()
+    pv = U.groupby("id").size()
+    Lt["pv"] = Lt.id.map(pv).fillna(0); Lt["top3"] = Lt.daily_rank <= 3; Lt["held"] = ~Lt.id.isin(disc)
+    D = Lt.groupby("day").apply(lambda g: pd.Series({"V": g.votes.sum(), "P": g.pv.sum(), "V3": g[g.top3].votes.sum(), "P3": g[g.top3].pv.sum(),
+                                                       "Vh": g[g.held].votes.sum(), "Ph": g[g.held].pv.sum()}), include_groups=False)
+    rng = np.random.default_rng(3); bs = []
+    for _ in range(BOOT):
+        S = D.sample(len(D), replace=True, random_state=rng.integers(1 << 31)); bs.append((S.P.sum() / S.V.sum(), S.P3.sum() / S.V3.sum(), S.Ph.sum() / S.Vh.sum()))
+    bs = np.array(bs); ci = lambda j: np.percentile(bs[:, j], [2.5, 97.5]).round(3).tolist()
+    pulled = set(up.person_id) | set(V["tabs"][V["tabs"].tab == "upvotes"].person_id)
+    voters = set(U.pid)
+    return {"at": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%MZ"), "window": list(TEST), "method": "warehouse pool upvotes U store_v3 dated upvotes, dedup salted id x launch",
+            "coverage_all": round(float(D.P.sum() / D.V.sum()), 3), "ci_all": ci(0),
+            "coverage_top3": round(float(D.P3.sum() / D.V3.sum()), 3), "ci_top3": ci(1),
+            "coverage_heldout_not_top100": round(float(D.Ph.sum() / D.Vh.sum()), 3), "ci_heldout": ci(2),
+            "voters_in_window": int(len(voters)), "people_tracked": int(len(base_ids | pulled)),
+            "people_added_vs_base": int(len(pulled - base_ids)), "added_who_voted_in_window": int(len((pulled - base_ids) & voters)),
+            "store_v3_events_mtime": subprocess.run(["gsutil", "stat", f"{BUCKET}/raw/population/store_v3/events.parquet"], capture_output=True, text=True).stdout.split("Update time:")[-1].split("\n")[0].strip()}
+
+
+def hourly(loop=True):
+    """Every hour (at :40): one line appended to HOURLY_GS. Base pool = store_v3 persons.parquet (20,947) plus the
+    warehouse pool as hashed at the first run."""
+    sl = salt(); L, E0, Pp = frames()
+    base = set(v3()["persons"].person_id) | {hid(sl, u) for u in Pp.person}
+    prev = None
+    while True:
+        try:
+            r = hourly_once(L, E0, sl, base)
+            if prev:
+                r["added_last_hour"] = r["people_added_vs_base"] - prev["people_added_vs_base"]
+                r["coverage_all_change"] = round(r["coverage_all"] - prev["coverage_all"], 3)
+            prev = r
+            loc = os.path.join(tempfile.mkdtemp(prefix="psh_"), "h.jsonl")
+            subprocess.run(["gsutil", "-q", "cp", HOURLY_GS, loc], capture_output=True)
+            with open(loc, "a") as f:
+                f.write(json.dumps(r) + "\n")
+            subprocess.run(["gsutil", "-q", "cp", loc, HOURLY_GS], check=True)
+            print(json.dumps(r), flush=True)
+        except Exception as e:  # noqa: BLE001  (keep the loop alive)
+            print(json.dumps({"error": f"{type(e).__name__}: {e}"[:300]}), flush=True)
+        if not loop:
+            return
+        time.sleep(3600 - time.time() % 3600 + 40 * 60 if time.time() % 3600 < 40 * 60 else 3600 - time.time() % 3600 + 40 * 60)
+
+
 def main():
     L, E, Pp = frames()
     res = {"test_window": TEST, "rank_window": RANK, "pool_people": int(len(Pp)), "people_with_events": int(E.person.nunique())}
@@ -261,4 +325,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:2] == ["hourly"]:
+        hourly(loop=sys.argv[2:3] != ["once"])
+    else:
+        main()
