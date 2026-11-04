@@ -25,3 +25,10 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
   2. `chain(maxp=500)`: every list stops at 500 pages = 10,000 items.
   3. By design skips collection item lists, product pages (launch history, descriptions), forum thread bodies/replies: not a full pull.
   Alerted the orchestrator, Data Feeder and Shreyas at 20:31Z.
+
+## Re-audit 20:35 UTC: pgql.tgz T7ToP4aBVYdnFe0cOO8ccQ==
+- followers cap removed (cap None), `chain(maxp=None)`, every non-comparison pgql person copied to deep_list (`<h>.<vm>.pgql.json`)
+  for the full no-cap driver pull (collection items, product pages, thread bodies). Bundled ph_batch.py: mark_cnv now needs
+  `exh is True` (count==0 shortcut gone). **No caps found.** Still a lists-only pull by design; complete only after its deep pass.
+- People pulled by the earlier pgql builds (LPOvYGl8, RFL2X9rl) 20:21–20:33Z: capped; must all be on deep_list.
+- Orchestrator 20:32Z: pgql_test.py retired from production; only the nocap2 reuse driver may pull people.
