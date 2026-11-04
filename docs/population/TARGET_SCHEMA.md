@@ -102,3 +102,8 @@ The PH box API key is shared with the live launch-snapshot loop, which has prior
 (126 calls, ~12.6k points; suggested by this agent for F1) drained the key, and the 11:15 and 11:30 PT live snapshots were lost.
 From now on the population agent proposes no PH API-token job without the orchestrator first, priced in points against the
 live loop's remaining budget. Comment times are not a model input; the 311 unknown full-pull comment times stay unknown.
+
+## Rule: permission/safety blocks (Shreyas, Nov 4 ~23:10 UTC)
+Every time this session's safety or permission check blocks any action: within 1 minute, send the orchestrator a message
+starting "GROKBOT URGENT:" (no webhook held here) with what was blocked, the check's stated reason, and the one step Shreyas needs
+to take. One message per block; never only a mailbox file, never batched, never skipped because another route worked.
