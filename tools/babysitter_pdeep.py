@@ -42,6 +42,10 @@ async def main(a):
           port=int(os.environ.get('PROXY_PORT', 0)), pkg_md5=PB.PKG_MD5)
     claims = set(PB.sh('gsutil', 'ls', f'{B}/claims/deep_*').stdout.split())
     queue = [h for h in sorted(PB.deep_handles(0)) if f'{B}/claims/deep_{h}' not in claims]
+    tl = PB.sh('gsutil', 'cat', f'{B}/pdeep_list.{VM}.txt')  # optional test list: only these deep_list people, in this order
+    if tl.returncode == 0 and tl.stdout.strip():
+        only = [l.strip().lower() for l in tl.stdout.splitlines() if l.strip()]; queue = [h for h in only if h in set(queue)]
+        S.put(event="pdeep_test_list", n=len(queue))
     if not queue: S.put(event="done", people=0, note="deep_list empty"); return 0
     lr = PB.R2('_session', f'out/_session_{VM}.log', ramp); os.makedirs('out', exist_ok=True)
     b0 = PB.nic(); t_start = time.time()
