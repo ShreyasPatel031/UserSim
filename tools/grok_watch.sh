@@ -4,7 +4,7 @@
 INBOX_DIR=${GROK_INBOX_DIR:-/root/.usersim/grok_inbox}; mkdir -p "$INBOX_DIR"
 exec 9>"$INBOX_DIR/watch.lock"; flock -n 9 || exit 0
 B=gs://usersim-bakeoff-347838016394/usersim_sim/mailbox
-SKIP='status\.md|progress\.json|GCP_BUDGET|budget_history|hn-minute-gaps|recorder-cutover|wayback_status\.reply|vote_series|NEEDS_HUMAN|RELAY_log|TOTAL:'
+SKIP='status\.md|feeds-gaps|progress\.json|GCP_BUDGET|budget_history|hn-minute-gaps|recorder-cutover|wayback_status\.reply|vote_series|NEEDS_HUMAN|RELAY_log|TOTAL:'
 snap() { { gsutil ls -l "$B/from_grokbot/" 2>/dev/null; gsutil ls -l "$B/to_claude/" 2>/dev/null; } | grep -v -E "$SKIP" | awk 'NF>=3{print $2" "$3}' | sort; }
 [ -f "$INBOX_DIR/seen.txt" ] || snap > "$INBOX_DIR/seen.txt"
 while true; do
