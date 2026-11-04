@@ -85,3 +85,10 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   exit. Both runs used fingerprint_preset=True; the clean 10002 run at 01:56 UTC (14.9 s) did not, the 10002 warm-up at 02:14 UTC with the
   preset cleared in 18.7 s. 10005 parked by Data Feeder ("slow Cloudflare on its exit IP"); babysitter assigned 10006, the last port,
   to be run with Data Feeder's recipe (no preset). 10006 not run yet (blocked by this session's permission check, 02:45 UTC).
+- **Browsers per VM (Data Feeder capacity test, feeder-phpeople-1, e2-medium 2 vCPU / 4 GB, port 10002, 2026-11-04 02:05–03:00 UTC):**
+  limit is RAM, not Product Hunt: 0 HTTP 403/429 at every level. Each Camoufox browser with 3–5 tabs uses ~1.6–1.8 GB.
+  1 browser: 3 tabs 21.7 req/min, **5 tabs 30.0 req/min (best)**, 8 tabs 30.3, 12 tabs 36.4 (RAM 26 MB free, load 21). 2 browsers ran
+  RAM to 369 MB free; one "challenge not cleared in 60 s" line with no 403 (44/44 were 200), likely a slow render under memory pressure.
+  Operating point on e2-medium: 1 browser × 5 tabs ≈ 30 req/min per VM. Next (orchestrator, 03:35 UTC): resize phpeople-1/2/3 to
+  e2-standard-4 (16 GB) one at a time, ramp 2→4→6 browsers per fixed port, capped at 60 pages/min per IP until the babysitter's
+  port 10006 rate-edge result (in-page fetch, 80→240/min, one browser) sets the per-IP ceiling.
