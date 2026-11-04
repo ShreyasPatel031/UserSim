@@ -14,7 +14,7 @@ import pandas as pd
 
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 STATE = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/.completeness_watch.json")
-CAP_RE = re.compile(r"\b(capp?ed|caps?\b|limit(?:ed)? (?:to|at)|newest \d+|first \d+ |max_[a-z_]+\s*=?\s*\d+|truncat\w*|only page ?1|skip(?:ped|s)? )", re.I)
+CAP_RE = re.compile(r"(--[\w-]*(?:cap|max)[\w-]*[ =]\d+|\bcap(?:ped)?\s*(?:at|to|=|:)\s*\d|\blimit(?:ed)?\s+(?:to|at)\s+\d|\bnewest\s+\d{2,}\b|\bmax[_-][a-z_]+\s*=\s*\d+|\b(?:LIST_CAP|CAP_MB|max_pages|max_items)\b\s*=?\s*\d+|\bfirst\s+\d{2,}\s+(?:people|items|pages|followers|upvotes)|\bskip(?:s|ped)?\s+(?:people|handles|tabs|pages)|\bcap\b:?\s*(?:above|over|of)\s+[\d,]+|only page ?1\b|truncat\w*)", re.I)  # explicit limits only
 
 
 def sh(*a):
