@@ -225,6 +225,8 @@ def score(rows: pd.DataFrame, now: float | None = None) -> pd.DataFrame:
     X["knn_t30"], X["knn_sim"] = t30[k].mean(1), ksim
     if content is not None:
         X["content_pct"] = content
+    global LAST_X                                       # at-posting feature rows (odds_minute.py's x cache)
+    LAST_X = X.assign(created_at_i=rows.created_at_i.to_numpy())
     # votes so far, for posts already up (Quality News series)
     age_min = (now - rows.created_at_i.to_numpy()) / 60
     reached = [max([a for a in AGES.values() if a <= m] or [0]) if pid > 0 else 0 for m, pid in zip(age_min, rows.post_id)]
@@ -282,9 +284,39 @@ def recent(hours=3):
     print(out.sort_values("p_top30", ascending=False).head(10).to_string(index=False), flush=True)
 
 
+LAST_X = None
+XCACHE = "usersim_sim/hn_jobs/cache/odds_minute/x_cache.parquet"
+
+
+def xcache(hours=4):
+    """At-posting feature rows for every story of the last `hours` not cached yet (no Quality News calls: now=0),
+    appended to the bucket's x cache that odds_minute.py reads every 5 minutes (Shreyas, 2026-11-04: predict every
+    minute). The row of a post never changes after posting, so each post is computed once."""
+    import io
+    import store as S
+    b = S._bucket()
+    x = b.get_blob(XCACHE)
+    old = pd.read_parquet(io.BytesIO(x.download_as_bytes())) if x is not None else pd.DataFrame(columns=["post_id"])
+    now = time.time()
+    r = requests.get("https://hn.algolia.com/api/v1/search_by_date", timeout=30, params={
+        "tags": "story", "hitsPerPage": 1000, "numericFilters": f"created_at_i>={int(now - hours * 3600)}"}).json()
+    rows = pd.DataFrame([{"post_id": int(h["objectID"]), "title": h.get("title"), "url": h.get("url") or "", "author": h.get("author"),
+                          "created_at_i": h["created_at_i"], "text": h.get("story_text") or ""} for h in r.get("hits", [])])
+    rows = rows[~rows.post_id.isin(set(old.post_id))].reset_index(drop=True)
+    t0 = time.time()
+    if len(rows):
+        score(rows, now=0)
+        keep = old[old.created_at_i >= now - 2 * 86400] if len(old) else old     # 2 days are enough for scoring
+        new = pd.concat([keep, LAST_X], ignore_index=True).drop_duplicates("post_id", keep="last")
+        buf = io.BytesIO()
+        new.to_parquet(buf, index=False)
+        b.blob(XCACHE).upload_from_string(buf.getvalue())
+    print(f"x cache: {len(rows)} new posts in {time.time() - t0:.0f}s", flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["train", "score", "recent"])
+    ap.add_argument("cmd", choices=["train", "score", "recent", "xcache"])
     ap.add_argument("--title")
     ap.add_argument("--url", default="")
     ap.add_argument("--author", default="")
@@ -295,6 +327,8 @@ def main():
         return train()
     if a.cmd == "recent":
         return recent()
+    if a.cmd == "xcache":
+        return xcache()
     if a.id:
         it = requests.get(f"https://hacker-news.firebaseio.com/v0/item/{a.id}.json", timeout=30).json()
         rows = pd.DataFrame([{"post_id": a.id, "title": it.get("title"), "url": it.get("url") or "", "author": it.get("by"),
