@@ -1017,3 +1017,13 @@ Higher AUC, no Caught gain: the author's track record is already in the at-posti
 score). Per the orchestrator's rule (run large only if it clears at posting) no large author run. For reference, large
 vs base content at posting is +0.7 [-0.6, +1.9] paired (both clear the 23.2% baseline; auth_vs_base.py).
 (b) 2025 out-of-fold content scores: oof25_q1 AUC 0.789, q2-q4 running; used when the 2025 Wayback votes land.
+
+### Live check 2026-11-04 00:31 UTC (score_live.py, live_caught.py)
+Settled list days: Oct 30, Oct 31, Nov 1. **Live hourly daily-list forecast, settled days** (share of the real daily
+top 30 / top 10 found): Oct 31 at 21:00 47% / 40%, last forecast (23:00) 53% / 60%; Nov 1 at 21:00 60% / 40%, 23:00 67% /
+40%. Backtest reference: top 30 at 21:00 80.2%, end of day 86.0%. Two days only, but live is well below the backtest.
+Provisional (not settled): Nov 2 57% at 21:00, Nov 3 80%.
+Per-post odds: 6,372 live forecasts, none scorable yet (each post needs its 4 list days settled; first ~Nov 7).
+Live Caught (hn_minute): no posting day has its 4 list days settled yet (first ~Nov 6). hn_minute minutes read per day
+(front / newest / pool): Oct 31 930 / 306 / 307; Nov 1 1,445 / 606 / 321; Nov 2 3,290 / 1,611 / 152; Nov 3 2,769 /
+1,538 / 194 (two recorders unioned; Nov 3 includes the 19:11-19:14 resize gap).
