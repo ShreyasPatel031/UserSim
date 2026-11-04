@@ -86,7 +86,10 @@ def main(path, n=20000, workers=12, D=30):
     if os.environ.get("GRID2"):   # beyond the first grid's edges (tau low, c high, sigma high)
         grid = [oct_fit] + [g for g in itertools.product((0.1, 0.2, 0.3), (0.1, 0.2, 0.5), (0.25, 0.35, 0.5), (1.0, 1.5, 2.0)) if g != oct_fit]
     if os.environ.get("FRONT_FIX") == "young":   # dynamics changed: refit the scale with the entry penalty and its strength
-        grid = [g for g in itertools.product((0.1, 0.2, 0.3), (0.2, 0.5, 1.0), (0.25, 0.4, 0.6, 1.0), (1.0,), (0.5, 1.0))]
+        lams = tuple(float(x) for x in os.environ.get("LAMBDAS", "0.5,1.0").split(","))
+        grid = [g for g in itertools.product((0.1, 0.2, 0.3), (0.2, 0.5, 1.0), (0.25, 0.4, 0.6, 1.0), (1.0,), lams)]
+        if os.environ.get("SMALL"):
+            grid = [g for g in itertools.product((0.1,), (0.2, 0.5), (0.25, 0.4, 0.6), (1.0,), lams)]
     if os.environ.get("SMOKE"):
         grid = grid[:2]
     with get_context("spawn").Pool(workers, initializer=init, initargs=(state,)) as P:
@@ -95,7 +98,7 @@ def main(path, n=20000, workers=12, D=30):
     res["oct_fit"] = next((f for f in res["fits"] if (f["tau"], f["kappa"], f["c"], f["sigma"]) == oct_fit), None)
     res["best"] = max(res["fits"], key=lambda f: f["loglik"])
     os.makedirs(os.path.join(HERE, "out"), exist_ok=True)
-    json.dump(res, open(os.path.join(HERE, "out", "calib_2025" + ("_grid2" if os.environ.get("GRID2") else "") + ("_startjudge" if os.environ.get("START_JUDGE") == "1" else "") + ("_young" if os.environ.get("FRONT_FIX") == "young" else "") + ".json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(HERE, "out", "calib_2025" + ("_grid2" if os.environ.get("GRID2") else "") + ("_startjudge" if os.environ.get("START_JUDGE") == "1" else "") + ("_young" if os.environ.get("FRONT_FIX") == "young" else "") + ("_" + os.environ["TAG"] if os.environ.get("TAG") else "") + ".json"), "w"), indent=1)
     print("REAL", res["real_by_score"]); print("OCT", res["oct_fit"]); print("BEST", res["best"])
 
 

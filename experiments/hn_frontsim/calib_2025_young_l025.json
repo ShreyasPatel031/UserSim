@@ -1,0 +1,19 @@
+{
+ "best": {
+  "tau": 0.1,
+  "kappa": 0.2,
+  "c": 0.4,
+  "sigma": 1.0,
+  "young_scale": 0.25,
+  "loglik": -1345.2,
+  "sum_p": 357.5,
+  "winners": 296,
+  "sim_by_score": {
+   "1": 0.0367,
+   "2": 0.0536,
+   "3": 0.0729,
+   "4+": 0.151
+  }
+ },
+ "source": "calib_2025_startjudge_young_decomp_sj_results.json, best fit at lambda 0.25"
+}

@@ -248,3 +248,34 @@ Caveats:
 - The 2025 label does not favour the fix, so its support rests on reach data (QN and live), not on the daily list.
 
 The Nov 8 shadow Caught runs with this version as the main arm.
+
+### Selection and 2025 checks of the entry penalty (Nov 4, orchestrator's asks)
+
+**Is the penalty a QN artifact?** No. I measured the same table on the live hn_minute feed (Nov 2-3; every /newest post, no 5+ point selection; `fit_young_live.py`, `young_pen_live.json`). It shows a *stronger* hold-back:
+
+| young post, formula says top 30 | QN (5+ point posts) | live feed (all posts) |
+|---|---|---|
+| under 1 h, 3 points or fewer | 8.7% actually top 30 | 1.3% (396) |
+| under 1 h, 3-5 points | 16.8% | 8.2% (219) |
+| under 1 h, 5-10 points | 39.6% | 33.1% (142) |
+| under 1 h, 10+ points | 79.3% | 80.1% (236) |
+| any, under 15 min | 41% | 10.6% (235) |
+
+The QN selection makes the hold-back look weaker, so it is not why 2025 preferred no fix.
+
+**Why 2025 preferred no fix.** I decomposed it by refitting at each penalty strength lambda, with a small grid (tau 0.1; kappa 0.2 or 0.5; c 0.25, 0.4 or 0.6). Best log-likelihood at each setting:
+
+| | lambda 0 | lambda 0.25 | lambda 0.5 |
+|---|---|---|---|
+| start at the judging moment | -1359.6 | **-1345.2** | -1359.3 |
+| start at the first 10-min mark (old) | **-1344.1** | -1365.8 | -1371.1 |
+
+The judging-moment start alone costs likelihood; together with the penalty at lambda 0.25 it is back within 1.1 of no fix. So the 2025 daily-list label is about indifferent, not against the fix. The earlier -1359 was lambda 0.5 on a coarse grid. The daily list is set by end-of-day points, so it says little about *when* a post enters the front page.
+
+**Live, with lambda 0.25** (tau 0.1, kappa 0.2, c 0.4, sigma 1.0; `live_frontsim_nov02_24h_frontfix_l025.json`):
+- Nov 2: reach 9.0% simulated, 8.0% real. By 15-min score, real against simulated: 1 point 2.6 vs 3.2%; 2 points 12.2 vs 12.0%; 3 points 22.6 vs 29.9%; 4+ points 52.6 vs 56.4%.
+- Nov 3 so far (646 posts with 24 h): 7.4% simulated, 7.9% real.
+- With lambda 0.5 the same days give 6.3% and 5.3%.
+- The day's sum of P is still high: 43.2 isotonic, 39.3 day threshold, against ~25-30 winners.
+
+**Main arm from here: lambda 0.25.** The Nov 8 shadow Caught compares four arms, paired: lambda 0.25, lambda 0.5, no fix, and the October fit.
