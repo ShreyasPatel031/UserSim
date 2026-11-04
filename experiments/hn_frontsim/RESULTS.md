@@ -168,3 +168,24 @@ Best Sep fit: tau 0.3, kappa 0.05, c 0.25, sigma 0. A runner-up within 0.1 log-l
 The real reach table is stable between months. The simulated table is still too steep, as it was in October.
 
 The HN agent tested the September reach table as a 15-min input to wb15's "+ votes + who" on Oct 2-14 (forward daily retrain, paired): 28.4% became 27.6%, a change of -0.8 [-3.1, +1.5]. There is no gain, because wb15 already sees the raw 15-min score. The handoff is closed (HN agent's reach15.py). The vote-arrival fit is kept for its live per-minute model.
+
+### Live shadow: full 24 h calibration for Nov 2 (run Nov 4, 00:45 UTC)
+
+913 Nov 2 posts have a full 24 h of feed. The prior is flat (the live at-posting score is loaded but not used). The early-vote likelihood uses the October outcome fit. File: `live_frontsim_nov02_24h.json`.
+
+| | real | simulated |
+|---|---|---|
+| top-30 reach within 24 h | 8.0% (73 posts) | 15.0% (136.6) |
+| reach, 1 point at 15 min (624 posts) | 2.6% | 3.5% |
+| reach, 2 points (189) | 12.2% | 28.3% |
+| reach, 3 points (62) | 22.6% | 53.7% |
+| reach, 4+ points (38) | 52.6% | 73.6% |
+| median 24 h points | 1 | 1 |
+| mean log1p 24 h points | 1.26 (feed max; undercounts slightly) | 1.40 |
+| sum of P(top 30), whole day | about 25-30 winners | 47.1 (isotonic), 45.3 (day threshold) |
+
+Points are calibrated, and posts with 1 point at 15 min are too. The simulator overshoots reach for 2+ point posts, the same too-steep response to early votes found in October.
+
+An earlier report of the simulated "median 24 h points 58.8" was a metric error: a per-post mean over draws, inflated by rare front-page runs. It is now the median over draws.
+
+The simulator stays a shadow (decision rule above). Caught for Nov 2 posts is due when lists Nov 2-5 settle (~Nov 8).

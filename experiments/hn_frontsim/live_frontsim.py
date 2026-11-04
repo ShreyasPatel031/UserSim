@@ -177,7 +177,7 @@ def simulate(Mo, born, score, a0, xw, CE, CA, CR, wday_class, test_day, pool, th
         rank = 1 + n_comp + ((HE > sc[..., None]) & arr).sum(-1)
         e = np.where(rank <= 90, Mo.f_rank[np.clip(rank, 1, 90) - 1] * Mo.m_front[h][:, None], Mo.g_off[k + 1] * Mo.m_off[h][:, None])
         P += rng.poisson(q * e); best = np.minimum(best, rank)
-    return (Mo.g.predict(np.log1p(P).ravel()).reshape(n, D).mean(1), (P >= thr_d).mean(1), (best <= 30).mean(1), P.mean(1))
+    return (Mo.g.predict(np.log1p(P).ravel()).reshape(n, D).mean(1), (P >= thr_d).mean(1), (best <= 30).mean(1), np.median(P, 1), np.log1p(P).mean(1))
 
 
 MOD = None
@@ -187,7 +187,7 @@ def replay(Mo, born, score, a0, xw, wday_class, test_day, pool, thr, D=200):
     """front page = the replayed earlier day's (isotonic curve per slot), as frontsim.Model.simulate."""
     n = len(born)
     p_iso, P = Mo.simulate(born, score, a0, wday_class, test_day, {wday_class: pool}, D, xw=xw)
-    return p_iso, np.full(n, np.nan), Mo.last_top30, P.mean(1)
+    return p_iso, np.full(n, np.nan), Mo.last_top30, np.median(P, 1), np.log1p(P).mean(1)
 
 
 def main(D=200):
@@ -230,7 +230,7 @@ def main(D=200):
     cls = lambda d: int(pd.Timestamp(d).dayofweek >= 5)
     okd = pd.Series(np.isfinite(Mo.ISO[:, 0]), index=pd.to_datetime(Mo.T0 + 600 * np.arange(len(Mo.ISO)), unit="s").strftime("%Y-%m-%d")).groupby(level=0).mean()
     good = [d for d in sorted(thr) if okd.get(d, 0) >= 0.9 and okd.get(str((pd.Timestamp(d) + pd.Timedelta(days=1)).date()), 0) >= 0.9]
-    for c in ("p_iso", "p_thr", "sim_top30", "sim_p24"):
+    for c in ("p_iso", "p_thr", "sim_top30", "sim_p24", "sim_log1p"):
         P[c] = np.nan
     P["real_front"] = P.n_front >= 60
     for d in sorted(P.day.unique()):
@@ -243,7 +243,7 @@ def main(D=200):
                 r = simulate(Mo, P.born.to_numpy()[m], P.score.to_numpy()[m], P.a0.to_numpy()[m], P.xw.to_numpy()[m], CE[m], CA[m], CR[m], cls(d), d, pool, thr, D)
             else:                      # front page not read at t: the replayed earlier day only (frontsim.simulate)
                 r = replay(Mo, P.born.to_numpy()[m], P.score.to_numpy()[m], P.a0.to_numpy()[m], P.xw.to_numpy()[m], cls(d), d, pool, thr, D)
-            for c, v in zip(("p_iso", "p_thr", "sim_top30", "sim_p24"), r):
+            for c, v in zip(("p_iso", "p_thr", "sim_top30", "sim_p24", "sim_log1p"), r):
                 P.loc[m, c] = v
         print(d, int(m.sum()), f"{time.time() - t0:.0f}s", flush=True)
     # real outcomes from the feed: reached the top 30 within 24 h, max points seen within 24 h (when 24 h have passed)
@@ -256,7 +256,7 @@ def main(D=200):
     P["y"] = [int(any(i in settled.get((pd.Timestamp(d) + pd.Timedelta(days=k)).strftime("%Y-%m-%d"), ()) for k in range(4))) for i, d in zip(P.id, P.day)]
     res = {"made_at": int(time.time()), "feed_end_utc": str(pd.Timestamp(end, unit="s")), "full_days": full_days, "posts": int(len(P)), "draws": D,
            "inputs": {"snapshot_by_15min": round(float(np.isfinite(P.score).mean()), 3), "front_page_80plus_ranks": round(float((P.n_front >= 80).mean()), 3), "real_front_used (60+ ranks)": round(float((P.n_front >= 60).mean()), 3),
-                      "at_posting_score": round(float(P.has_atposting.mean()), 3), "prior": "flat (no at-posting score yet)" if not ap else "at-posting",
+                      "at_posting_score": round(float(P.has_atposting.mean()), 3), "prior": "flat (the live at-posting score is loaded for coverage only; not used in the prior)",
                       "early_votes_and_scale": "outcome-calibrated on Oct 2-9 (calib_fit.py)"},
            "calibration_24h": {}, "caught": {}}
     Dn = P[P.done24]
@@ -264,8 +264,12 @@ def main(D=200):
         res["calibration_24h"][d] = {"posts_with_24h": int(len(g)), "reach_top30_real": round(float(g.real_top30.mean()), 4),
                                      "reach_top30_sim": round(float(g.sim_top30.mean()), 4), "sum_reach_real": int(g.real_top30.sum()),
                                      "sum_reach_sim": round(float(g.sim_top30.sum()), 1),
-                                     "median_p24_real": float(g.real_p24.median()), "median_p24_sim": float(g.sim_p24.median()),
-                                     "mean_log1p_p24_real": round(float(np.log1p(g.real_p24).mean()), 3), "mean_log1p_p24_sim": round(float(np.log1p(g.sim_p24).mean()), 3)}
+                                     "median_p24_real": float(g.real_p24.median()), "median_p24_sim (median over draws)": float(g.sim_p24.median()),
+                                     "mean_log1p_p24_real": round(float(np.log1p(g.real_p24).mean()), 3), "mean_log1p_p24_sim": round(float(g.sim_log1p.mean()), 3),
+                                     "note_real_p24": "max points seen in the feed within 24 h (undercounts posts that left /newest p2 and the front page)"}
+        b = pd.cut(g.score, [0, 1, 2, 3, 1e9], labels=["1", "2", "3", "4+"])
+        res["calibration_24h"][d]["reach_by_15min_score [real, sim, n]"] = {str(k): [round(float(x.real_top30.mean()), 3), round(float(x.sim_top30.mean()), 3), int(len(x))]
+                                                                           for k, x in g.groupby(b, observed=True)}
     for d, g in P.groupby("day"):
         res["calibration_24h"].setdefault(d, {}).update(sum_P_isotonic=round(float(g.p_iso.sum()), 1), sum_P_day_threshold=round(float(g.p_thr.sum()), 1),
                                                         winners_so_far=int(g.y.sum()), lists_settled=bool(g.settled.all()))
