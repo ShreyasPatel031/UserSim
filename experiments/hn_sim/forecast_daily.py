@@ -57,14 +57,43 @@ def recent_stories(t_from: int) -> pd.DataFrame:
 
 
 def earlier_lists(day: pd.Timestamp) -> set:
-    ids = set()
+    """Stories on any of the last 7 days' lists (they cannot be on today's). Live diagnosis 2026-11-04: on Oct 31 and
+    Nov 1 the scrape came back empty at forecast time (HN refuses some requests; no check), so yesterday's list was not
+    excluded and filled 16 / 12 of the top 30 (live 47-60% vs 80% replayed). Now: listwatch's own reads from the bucket
+    (no extra HN load) + the scrape, with retries on empty pages; the count is reported in the forecast."""
+    ids, empty = set(), 0
+    try:
+        import io
+        import store as S
+        days = {(day - pd.Timedelta(days=k)).strftime("%Y-%m-%d") for k in range(1, 8)}
+        for x in S._bucket().list_blobs(prefix="usersim_sim/hn_jobs/cache/listwatch/"):
+            g = pd.read_json(io.StringIO(x.download_as_text()), lines=True, dtype={"day": str})
+            if {"day", "post_id"} <= set(g.columns):
+                ids |= set(g[g.day.isin(days)].post_id.astype(int))
+    except Exception as e:                                   # keep going on the scrape alone
+        print("listwatch read failed:", e, flush=True)
     for k in range(1, 8):
         d = (day - pd.Timedelta(days=k)).strftime("%Y-%m-%d")
         for page in (1, 2, 3, 4):
-            html = requests.get("https://news.ycombinator.com/front", params={"day": d, "p": page}, headers=UA, timeout=30).text
-            ids |= {int(x) for x in re.findall(r"<tr class=['\"]athing[^'\"]*['\"] id=['\"](\d+)['\"]", html)}
+            got = set()
+            for attempt in range(4):
+                try:
+                    html = requests.get("https://news.ycombinator.com/front", params={"day": d, "p": page}, headers=UA, timeout=30).text
+                    got = {int(x) for x in re.findall(r"<tr class=['\"]athing[^'\"]*['\"] id=['\"](\d+)['\"]", html)}
+                except requests.RequestException:
+                    got = set()
+                if got:
+                    break
+                time.sleep(10 * (attempt + 1))
+            empty += not got
+            ids |= got
             time.sleep(2)
+    print(f"earlier lists: {len(ids)} stories ({empty} empty pages after retries)", flush=True)
+    EARLIER_STATS.update(n=len(ids), empty_pages=empty)
     return ids
+
+
+EARLIER_STATS = {}
 
 
 def now(top=30):
@@ -96,6 +125,7 @@ def now(top=30):
                                                                  ranker.predict(C[cols(name)])))
     C = C.merge(st[["post_id", "title", "url"]], on="post_id", how="left").sort_values("score", ascending=False)
     res = {"day": day.strftime("%Y-%m-%d"), "made_at": pd.Timestamp(T, unit="s").isoformat(), "model": name,
+           "earlier_lists": dict(EARLIER_STATS), "n_candidates": int(len(C)),
            "top": [{"rank": i + 1, "post_id": int(r.post_id), "title": r.title, "url": r.url,
                     "points_now": float(getattr(r, f"{name}_points")), "rank_now": float(getattr(r, f"{name}_rank_now"))}
                    for i, r in enumerate(C.head(top).itertuples())]}
