@@ -26,7 +26,7 @@ import wb_caught as W
 PRM = dict(n_estimators=500, learning_rate=0.03, num_leaves=31, min_child_samples=30, subsample=0.8, subsample_freq=1,
            colsample_bytree=0.8, verbose=-1, random_state=0)
 SRC = {"jan_jun": "usersim_sim/raw/hn_early_votes_2025/early_snapshots.jsonl",
-       "jul_dec": "usersim_sim/raw/hn_early_votes_2025/hn_agent_h2/early_snapshots.jsonl"}
+       "jul_dec": "usersim_sim/raw/hn_early_votes_2025/jul_dec/early_snapshots.jsonl"}          # Data Feeder (moved from hn-agent)
 
 
 def snapshots():
@@ -91,23 +91,59 @@ def main():
     Q["x_vol30"] = np.searchsorted(ct, b) - np.searchsorted(ct, b - 1800)
     Q["x_hour"] = (b // 3600) % 24
     REC = [c_ for c_ in R.columns if c_ != "post_id"]
-    X = Q[["text_score"] + bcols + REC + PC + ["cm15", "v_has", "v_score", "v_age", "v_rate", "v_rank_new", "v_comments", "x_vol30", "x_hour"]]
+    # content model score (content_ft.py), out of sample everywhere: 2025 rows from the quarter models never trained on
+    # their own quarter (oof25_q1..q4), 2026 rows from the cut-Jun-30 model; each as a percentile within its own model
+    import store as S
+    parts = []
+    for n in ["oof25_q1", "oof25_q2", "oof25_q3", "oof25_q4", "jun30"]:
+        f = os.path.join(H.CACHE, f"content_scores_{n}.parquet")
+        if not os.path.exists(f):
+            S._bucket().get_blob(f"usersim_sim/hn_jobs/cache/content_ft/scores_{n}.parquet").download_to_filename(f)
+        c_ = pd.read_parquet(f).drop_duplicates("post_id")
+        parts.append(c_.assign(content=c_.s.rank(pct=True))[["post_id", "content"]])
+    CT = pd.concat(parts).drop_duplicates("post_id", keep="last").set_index("post_id").content
+    Q["content"] = Q.post_id.map(CT)
+    base_cols = ["text_score"] + bcols + REC + PC + ["cm15", "v_has", "v_score", "v_age", "v_rate", "v_rank_new", "v_comments", "x_vol30", "x_hour"]
     y = Q.y.to_numpy()
     is25 = (Q.day < "2026-01-01").to_numpy()
-    print(f"2025 rows {int(is25.sum())} ({int(y[is25].sum())} winners; with a /newest snapshot by 15 min {Q.v_has[is25].mean():.1%}); "
-          f"2026 rows {int((~is25).sum())}", flush=True)
+    print(f"2025 rows {int(is25.sum())} ({int(y[is25].sum())} winners; with a /newest snapshot by 15 min {Q.v_has[is25].mean():.1%}; "
+          f"content score {Q.content[is25].notna().mean():.1%}); 2026 rows {int((~is25).sum())} (content {Q.content[~is25].notna().mean():.1%})", flush=True)
+    import caught_types as CTY
+    kind = CTY.kinds_for(Q)
+    arms = {"2026 rows": (base_cols, False), "2026 rows + content": (base_cols + ["content"], False),
+            "2025 + 2026 rows": (base_cols, True), "2025 + 2026 rows + content": (base_cols + ["content"], True)}
+    # (1) Oct 2-14, forward daily retrain (train on days <= d - 2)
     days = sorted(d for d in Q.day.unique() if "2026-10-02" <= d <= "2026-10-14")
-    s0, s1 = np.full(len(Q), np.nan), np.full(len(Q), np.nan)
+    sc = {a: np.full(len(Q), np.nan) for a in arms}
     for d in days:
         tr = (Q.day <= (pd.Timestamp(d) - pd.Timedelta(days=2)).strftime("%Y-%m-%d")).to_numpy()
         te = (Q.day == d).to_numpy()
-        s0[te] = lgb.LGBMClassifier(**PRM).fit(X[tr & ~is25], y[tr & ~is25]).predict_proba(X[te])[:, 1]
-        s1[te] = lgb.LGBMClassifier(**PRM).fit(X[tr], y[tr]).predict_proba(X[te])[:, 1]
-    sel = Q.day.isin(days).to_numpy()
+        for a, (cols, with25) in arms.items():
+            m = tr & (np.ones(len(Q), bool) if with25 else ~is25)
+            sc[a][te] = lgb.LGBMClassifier(**PRM).fit(Q.loc[m, cols], y[m]).predict_proba(Q.loc[te, cols])[:, 1]
+    report("Oct 2-14 forward daily retrain", Q, Q.day.isin(days).to_numpy(), sc, kind)
+    # (2) Sep 1 - Oct 14, one fit on days <= Aug 31 (same split as the 24.7% full-period headline)
+    tr, te = (Q.day <= "2026-08-31").to_numpy(), ((Q.day >= "2026-09-01") & (Q.day <= "2026-10-14")).to_numpy()
+    sc2 = {a: np.full(len(Q), np.nan) for a in arms}
+    for a, (cols, with25) in arms.items():
+        m = tr & (np.ones(len(Q), bool) if with25 else ~is25)
+        sc2[a][te] = lgb.LGBMClassifier(**PRM).fit(Q.loc[m, cols], y[m]).predict_proba(Q.loc[te, cols])[:, 1]
+    report("Sep 1 - Oct 14, fit on days <= Aug 31", Q, te, sc2, kind)
+
+
+def report(title, Q, sel, sc, kind):
     T = Q[sel][["post_id", "day", "y"]].reset_index(drop=True)
-    c0, c1 = W.caught_on(T, s0[sel]), W.caught_on(T, s1[sel])
-    print(f"Caught at 15 min, Oct 2-14 ({int(T.y.sum())} winners): trained Jul 2026+ {W.ci2(c0)}; + 2025 rows {W.ci2(c1)}; "
-          f"difference {W.ci2(c1, c0)}", flush=True)
+    kt = kind[sel]
+    c = {a: W.caught_on(T, s[sel]) for a, s in sc.items()}
+    ref = c["2026 rows"]
+    print(f"\nCaught at 15 min (posting clock), {title} ({int(T.y.sum())} winners):", flush=True)
+    for a, v in c.items():
+        k = int(T.y.sum())
+        flag = pd.Series(sc[a][sel]).rank(ascending=False, method="first").to_numpy() <= k
+        types = ", ".join(f"{t} {int((flag & (kt == t)).sum())}/{int((kt == t).sum())}" for t in ("fast", "late", "reup"))
+        print(f"   {a:28s} {W.ci2(v)}" + ("" if a == "2026 rows" else f"  vs 2026 rows {W.ci2(v, ref)}") + f" | {types}", flush=True)
+    if "2026 rows + content" in c:
+        print(f"   2025 rows effect with content: {W.ci2(c['2025 + 2026 rows + content'], c['2026 rows + content'])}", flush=True)
 
 
 if __name__ == "__main__":
