@@ -157,6 +157,10 @@ def main():
                           "winners_seen_by_15min": int((g.seen15 & (g.y == 1)).sum()), "seen_by_1h": round(float(g.seen60.mean()), 3),
                           "winners_seen_by_1h": int((g.seen60 & (g.y == 1)).sum()),
                           "list_days_read": int(g.lists_read.iat[0]), "list_days_settled": int(g.lists_settled.iat[0])}
+    cov15 = P.groupby("day").seen15.mean()
+    FULL = sorted(d for d, v in cov15.items() if v >= 0.95)
+    print(f"full-coverage posting days (>= 95% seen within 15 min): {FULL}", flush=True)
+    out["full_coverage_days"] = FULL
     keep_idx = P.index.to_numpy()
     days = sorted(P.day.unique())
     print(f"PROVISIONAL live Caught: {len(P)} posts, {int(P.y.sum())} winners so far, posting days {days}", flush=True)
@@ -183,6 +187,9 @@ def main():
         print(f"Caught at {label}: seen by the recorder within {age} min: {seen.mean():.1%} of posts, "
               f"{int((seen & (T.y == 1).to_numpy()).sum())}/{int(T.y.sum())} winners", flush=True)
         for name, sc in scores.items():
+            full = T.day.isin(FULL).to_numpy()                  # live headline (orchestrator 2026-11-04): days the
+            if full.any():                                      # recorder saw >= 95% of posts within 15 min
+                caught_line(T[full].assign(s=sc[full]), f"{age} min | FULL-COVERAGE days (headline) | {name}", out)
             caught_line(T.assign(s=sc), f"{age} min | all posts | {name}", out)
             caught_line(T[seen].assign(s=sc[seen]), f"{age} min | seen only | {name}", out)
     # direction B: re-up clock (judged 15 min after the first /pool sighting or second-chance return to the front page)

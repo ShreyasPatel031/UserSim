@@ -1060,3 +1060,12 @@ Secondary (exposure clock, direction B): 105 posts with an exposure event (media
 posting + re-up clock 21.6% [16.3, 27.0]. Seen by the recorder within 15 min: Oct 31 41.7%, Nov 1 53.2%, Nov 2 99.7%,
 Nov 3 99.7%. Recorder minutes read (front / newest / pool): Nov 2 3,290 / 1,611 / 152; Nov 3 2,769 / 1,538 / 194.
 Per-minute model (direction A) switches on at 5 posting days (tomorrow's run).
+**Live headline from now on = full-coverage days** (recorder saw >= 95% of posts within 15 min; orchestrator,
+2026-11-04), flags = winners on those days only. Full-coverage days so far: Nov 2, Nov 3 (provisional labels):
+| checkpoint | votes + front page | at-posting odds | blend 50/50 |
+|---|---|---|---|
+| 1 h | 34.6% [28.6, 47.1] | 26.9% | 32.7% |
+| 15 min (posting clock) | 11.5% | 26.9% | **21.2% [17.6, 22.9]** |
+| at posting (odds tool) | | **26.9% [23.5, 28.6]** | |
+All days (Oct 31 - Nov 3) alongside: 1 h 34.0%, 15 min 18.6%, at posting 15.5%. Note: the per-day counts printed by an
+all-days run (e.g. Nov 2 10/35) use flags spread over all days, so they are not a valid full-coverage number.
