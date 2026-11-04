@@ -139,3 +139,19 @@ def test_full_pull_loader(tmp_path):
     assert set(ev[ev.kind == "upvote"].target_id) == {"9", "launch:y-2"}
     f = ev[ev.kind == "follows"].iloc[0]
     assert f.person_id == IDS("bob") and f.target_id == IDS("alice")
+
+
+def test_activity_comment_launch_time_and_target(tmp_path):
+    import full_pull
+    d = {"profile": "https://www.producthunt.com/@alice", "run": {"finished_utc": "2026-11-04T12:00:00Z"}, "header": {},
+         "activity": {"count": 2, "items": [
+             {"type": "left a comment", "url": "https://www.producthunt.com/products/x?comment=1",
+              "on_url": "https://www.producthunt.com/products/x/launches/x-2", "datetime": "2026-11-04T00:01:00-08:00"},
+             {"type": "left a comment", "url": "https://www.producthunt.com/products/y?comment=2",
+              "on_launch_url": "https://www.producthunt.com/products/y?launch=y-3", "datetime": "2026-11-03T05:06:07-08:00"}]}}
+    p = tmp_path / "alice.json"; p.write_text(json.dumps(d))
+    _, ev = full_pull.load_full(str(p), IDS)
+    ev = ev.set_index(ev.extra.map(lambda x: json.loads(x)["comment_id"]))
+    assert ev.loc["1", "ts_quality"] == "bounded" and ev.loc["1", "ts_hi"] == pd.Timestamp("2026-11-04T12:00:00Z")
+    assert ev.loc["1", "target_id"] == "launch:x-2" and ev.loc["2", "target_id"] == "launch:y-3"
+    assert ev.loc["2", "ts_quality"] == "exact"

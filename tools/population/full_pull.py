@@ -80,11 +80,23 @@ def load_full(path, ids, upload_time=None, source=None):
                 ev.append({**base, "kind": "upvote", "ts_lo": pd.NaT, "ts_hi": ft, "ts_quality": "snapshot",
                            "extra": json.dumps({"position": i, "of": n})})
             elif t == "activity":
-                typ = (it.get("type") or "").lower()
+                typ = (it.get("type") or it.get("raw_type") or "").lower()
                 kind = "comment" if "comment" in typ else ("launched" if "launch" in typ else ("hunted" if "hunt" in typ else "discussion"))
                 ts = _ts(it.get("datetime"))
                 cid = it.get("comment_id") or (COMMENT.search(url).group(1) if COMMENT.search(url) else None)
-                ev.append({**base, "kind": kind, "ts_lo": ts, "ts_hi": ts, "ts_quality": "exact" if pd.notna(ts) else "none",
+                if kind == "comment" and not it.get("post_id"):
+                    # the feed's own url is the product (?comment=); the launch commented on is in on_launch_url / on_url
+                    for k in ("on_launch_url", "on_url", "launch_url"):
+                        m2 = LAUNCH.search(it.get(k) or "")
+                        if m2:
+                            base["target_id"] = f"launch:{m2.group(1) or m2.group(2)}"; break
+                q = "exact" if pd.notna(ts) else "none"
+                lo, hi = ts, ts
+                if kind == "comment" and pd.notna(ts) and ts.tz_convert("America/Los_Angeles").strftime("%H:%M:%S") == "00:01:00":
+                    # Nov 4 check: comments stamped 00:01:00 PT carry the LAUNCH time, not the comment's (16/16 matched to
+                    # API createdAt were 0.5-200 h later; all other times matched to the second). Keep a window only.
+                    q, hi = "bounded", ft
+                ev.append({**base, "kind": kind, "ts_lo": lo, "ts_hi": hi, "ts_quality": q,
                            "extra": json.dumps({"comment_id": cid})})
             elif t == "reviews":
                 ts = _ts(it.get("date"))
