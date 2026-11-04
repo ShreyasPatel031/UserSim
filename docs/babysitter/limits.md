@@ -146,3 +146,6 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
 - 2026-11-04 14:02–14:04 UTC, VM-2 (10003): one person ran 2,015 s / 51.3 MB with rc 1 (the ≤20 min / ≤15 MB per-person cap from
   13:30 did not stop it), then the cold browser reopen failed (14:03:29) → stopped_on_block. Second time today a cold reopen right after a
   long session failed (VM-3 11:10). At 14:25 UTC only VM-3 (10004) is pulling; VM-1 (10002) off for the day.
+- 2026-11-04 15:44 UTC, VM-3 (10004): **stopped_on_block mid-session after 46 people / 914 requests / 151 min** (session opened ~13:13).
+  All three ports have now blocked mid-session at least once: 10002 at 494 requests / 87 min, 10004 at 914 / 151 min, 10003 at 8 people
+  at full pace (and 1,786+ requests clean at half pace). Sessions last a few hundred to ~2,000 requests before a block, varying by exit IP.
