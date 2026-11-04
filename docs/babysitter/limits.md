@@ -80,3 +80,8 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   Two VMs on one sticky port share one exit IP and corrupt both tests. Nobody moves a blocked job to another port.
 - Exit network check: port 10500 exited from a hosting AS (Ashburn) on Nov 3 while 10001/10002 exited residential/business ISPs;
   every job should log its exit IP's AS before use.
+- 2026-11-04 02:24–02:40 UTC, babysitter port 10005 (own port, Shreyas via Data Feeder): cold warm-up blocked twice (CF challenge not
+  cleared in 74 s and, after a 10-min back-off, 76 s). Exit 51.146.214.2, AS6079 RCN (residential cable), Ashburn VA, so not a hosting
+  exit. Both runs used fingerprint_preset=True; the clean 10002 run at 01:56 UTC (14.9 s) did not, the 10002 warm-up at 02:14 UTC with the
+  preset cleared in 18.7 s. 10005 parked by Data Feeder ("slow Cloudflare on its exit IP"); babysitter assigned 10006, the last port,
+  to be run with Data Feeder's recipe (no preset). 10006 not run yet (blocked by this session's permission check, 02:45 UTC).
