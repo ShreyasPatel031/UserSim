@@ -15,3 +15,13 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
 | 8 | Half mode skips deep_list people | heavy people never finished in half mode | **FAIL** unless deep mode runs |
 | 9 | ph_person.py `--followers-cap 10000` default | legacy single-person script | **CAP** if anything still calls it |
 | — | paging_v2.py upvotes: endCursor chain to hasNextPage=false, `complete_not_visible` | ~200 signed out | PH's own limit, **allowed** |
+
+## Re-audit 20:30 UTC
+- reuse.tgz **xLi/wR7D4v2kRB9MGdNGRg==** (nocap2): caps 1–4, 6, 9 removed (threads 0 = all, click/scroll loops until the button ends,
+  maxp None, weekly stop 29e9, followers-cap ignored). Budget 1,200 s / 15 MB still splits people to deep_list (3,600 s / 60 MB,
+  re-added until done). **Remaining bug:** mark_cnv marks collections `complete_not_visible` whenever count == 0, with no server-end proof.
+- **pgql.tgz LPOvYGl8/2FgHkRYA+2qYg== (pgql_test.py), the c32 production run on 10002 + 10009: FAIL.**
+  1. followers capped by `PB.rcap` = 500 (2,000 for makers/hunters): the banned cap.
+  2. `chain(maxp=500)`: every list stops at 500 pages = 10,000 items.
+  3. By design skips collection item lists, product pages (launch history, descriptions), forum thread bodies/replies: not a full pull.
+  Alerted the orchestrator, Data Feeder and Shreyas at 20:31Z.
