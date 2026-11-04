@@ -143,3 +143,6 @@ Log every route-4 page with `session_id`, `session_age_s`, `nav_index` (1 = firs
   ~330–340 GraphQL calls on two heavy upvoters (19–20 min, 11.7 / 12.8 MB) and got 195/2,526 and 197/3,142; other capped people
   stopped at 197–199; the box browser pull stopped at 197/3,142. Stop upvote paging at ~200 (or at the first page that adds nothing)
   and mark upvotes_capped; further calls only spend bytes. Signed-in visibility past 200 not tested.
+- 2026-11-04 14:02–14:04 UTC, VM-2 (10003): one person ran 2,015 s / 51.3 MB with rc 1 (the ≤20 min / ≤15 MB per-person cap from
+  13:30 did not stop it), then the cold browser reopen failed (14:03:29) → stopped_on_block. Second time today a cold reopen right after a
+  long session failed (VM-3 11:10). At 14:25 UTC only VM-3 (10004) is pulling; VM-1 (10002) off for the day.
