@@ -300,6 +300,11 @@ def hourly(loop=True):
             prev = r
             loc = os.path.join(tempfile.mkdtemp(prefix="psh_"), "h.jsonl")
             subprocess.run(["gsutil", "-q", "cp", HOURLY_GS, loc], capture_output=True)
+            if os.path.exists(loc) and os.path.getsize(loc):   # growth vs the first line (the base is re-read per run)
+                f0 = json.loads(open(loc).readline())
+                r["people_added_vs_first_line"] = r["people_tracked"] - f0["people_tracked"]
+                r["voters_added_vs_first_line"] = r["voters_in_window"] - f0["voters_in_window"]
+                r["first_line_at"] = f0["at"]
             with open(loc, "a") as f:
                 f.write(json.dumps(r) + "\n")
             subprocess.run(["gsutil", "-q", "cp", loc, HOURLY_GS], check=True)
