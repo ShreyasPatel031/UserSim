@@ -26,3 +26,13 @@ pages, header count vs items loaded) was meant to answer that at scale, but rout
 
 **Side finding:** the box browser on the box's own IP loaded Product Hunt normally (one checkbox, then no blocks) while route 4
 (Camoufox + DataImpulse from GCP VMs) was blocked.
+
+## Update 2026-11-04 16:00 UTC: signed-in Camoufox test not yet possible
+- Shreyas approved signed-in extraction on the Camoufox account (via Grok Bot, Nov 4); the orchestrator asked for a 15-person test
+  (to_grokbot/20261104T1600_orchestrator_signed_in_test.md).
+- Data Feeder: **not run.** No signed-in Camoufox profile exists. The VM scripts start Camoufox with a fresh profile directory and delete it
+  afterwards; run2.log (15:44:58Z) confirms "LOGGED OUT" on all 5 profiles (Sign-in link shown, no viewer id).
+- An earlier "5-person signed-in upvotes" result was therefore **signed out** and is invalid as a signed-in test: 191, 197, 197, 199,
+  197 upvotes, ~0.19 MB, 11 requests, 21 s each, the same ~200 cap.
+- Unblock: someone signs in to the PH account once inside a persistent Camoufox profile on a fixed exit IP (needs Shreyas or a sign-in
+  he completes); the profile is then reused. Until then the open question stands: does signed in show more than ~200 upvotes?
