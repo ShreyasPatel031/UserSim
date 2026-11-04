@@ -292,14 +292,17 @@ class Model:
         dd = rng.choice(len(pool), (n, D))
         shift = np.array([(td - pd.Timestamp(d)).days * 86400 for d in pool])[dd]
         f0 = (np.floor(born / 600) + 1) * 600
-        P = 1 + v0[:, None] + rng.poisson(q * (self.cum_new(np.full(n, 0) + (f0 - born) / 60, h_born) - E0)[:, None].clip(0))
+        k0 = np.ceil((born + 15 * 60 - f0) / 600).astype(int) if getattr(self, "start_at_judge", False) else np.zeros(n, int)
+        t_start = f0 + 600 * k0
+        P = 1 + v0[:, None] + rng.poisson(q * (self.cum_new((t_start - born) / 60, h_born) - E0)[:, None].clip(0))
         P = P.astype(float)
         best = np.full((n, D), 91)
-        for k in range(H24):
+        for k in range(H24 + int(k0.max())):
+            act = ((k >= k0) & (k < k0 + H24))[:, None]
             tau = f0 + 600 * k
             h = ((tau // 3600) % 24).astype(int)
             age = (tau - born) / 3600
-            sc = np.clip(P - 1, 0, None) ** 0.8 / (age[:, None] + 2) ** 1.8 * pen
+            sc = np.clip(P - 1, 0, None) ** 0.8 / (age[:, None] + 2) ** 1.8 * pen * np.exp(young_adj(self, P, age))
             slot = ((tau[:, None] - shift - self.T0) // 600).astype(int)
             slot = np.clip(slot, 0, len(self.ISO) - 1)
             C = self.ISO[slot]                                    # n x D x 90
@@ -308,7 +311,7 @@ class Model:
             rank = np.where(ok, rank, 91)
             e = np.where(rank <= 90, self.f_rank[np.clip(rank, 1, 90) - 1] * self.m_front[h][:, None],
                          self.g_off[k + 1] * self.m_off[h][:, None])
-            P += rng.poisson(q * e); best = np.minimum(best, rank)
+            P += np.where(act, rng.poisson(q * e), 0); best = np.where(act, np.minimum(best, rank), best)
         self.last_top30 = (best <= 30).mean(1)
         return self.g.predict(np.log1p(P).ravel()).reshape(n, D).mean(1), P
 
@@ -362,6 +365,22 @@ def simulate_live(M, born, score, a0, wday_class, test_day, days_cls, D=200, z=N
         P += rng.poisson(q * e); best = np.minimum(best, rank)
     M.last_top30 = (best <= 30).mean(1)
     return M.g.predict(np.log1p(P).ravel()).reshape(n, D).mean(1), P
+
+
+def young_adj(M, P, age_h):
+    """log multiplier on the HN score for young, low-point posts (fit_young.py): table value minus the 20+ point row at
+    the same age (that part is already in the general penalty draws), capped at 0, only before 6 h. P: n x D, age_h: n."""
+    Y = getattr(M, "young", None)
+    if Y is None:
+        return 0.0
+    T = np.array([[np.nan if v is None else v for v in row] for row in Y["log_mult"]], float)
+    T = np.nan_to_num(T, nan=0.0); ref = T[-1:, :]
+    adj = np.minimum(T - ref, 0.0)
+    pb = np.clip(np.searchsorted(np.array(Y["points_upper_edges"], float), P, side="left"), 0, adj.shape[0] - 1)
+    a = np.broadcast_to(np.asarray(age_h, float)[:, None], P.shape)
+    ab = np.searchsorted(np.array(Y["age_upper_edges_h"], float), a, side="left")
+    out = np.where(ab < adj.shape[1], adj[pb, np.clip(ab, 0, adj.shape[1] - 1)], 0.0)
+    return out * float(getattr(M, "young_scale", 1.0))
 
 
 def caught_on(T, s):

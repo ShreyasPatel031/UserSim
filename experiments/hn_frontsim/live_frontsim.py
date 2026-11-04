@@ -111,7 +111,8 @@ def features(M, born, ids, front_born, judge_min=15):
     iso = IsotonicRegression(increasing=False)
     M = M.sort_values("t")
     by_id = {i: g for i, g in M[M.id.isin(set(ids))].groupby("id")}
-    newest_min = np.sort(M[M.list == "newest"].t.unique() // 60)
+    page1_only = os.environ.get("NEWEST_P1", "1") == "1"      # Wayback-faithful: /newest page 1 reads only (ranks 1-30)
+    newest_min = np.sort(M[(M.list == "newest") & ((M.page == 1) | (not page1_only))].t.unique() // 60)
     front = M[M.list == "front"]; ft = front.t.to_numpy()
     out = []
     for i in ids:
@@ -120,7 +121,7 @@ def features(M, born, ids, front_born, judge_min=15):
         w = g[(g.t <= t) & (g.t >= b - 60)] if g is not None else None
         if w is not None and len(w):
             last = w.iloc[-1]; sc, a0 = float(last.points or 1), max((last.t - b) / 60, 0.5)
-            nw = w[w.list == "newest"]
+            nw = w[(w.list == "newest") & ((w.page == 1) | (not page1_only))]
             mins = np.searchsorted(newest_min, last.t // 60, side="right") - np.searchsorted(newest_min, b // 60)
             xw = float((1 / np.sqrt(nw.assign(_m=nw.t // 60).drop_duplicates("_m")["pos"].clip(lower=1))).sum()) / max(mins, 1) * a0 if mins else np.nan
         else:
@@ -162,11 +163,14 @@ def simulate(Mo, born, score, a0, xw, CE, CA, CR, wday_class, test_day, pool, th
     thr_d = np.array([thr[d] for d in pool])[dd]
     cs = ((born + judge_min * 60 - Mo.T0) // 600).astype(int)
     f0 = (np.floor(born / 600) + 1) * 600
-    P = (1 + v0[:, None] + rng.poisson(q * np.clip(Mo.cum_new((f0 - born) / 60, h_born) - E0, 0, None)[:, None])).astype(float)
+    k0 = np.ceil((born + judge_min * 60 - f0) / 600).astype(int) if getattr(Mo, "start_at_judge", False) else np.zeros(n, int)
+    t_start = f0 + 600 * k0
+    P = (1 + v0[:, None] + rng.poisson(q * np.clip(Mo.cum_new((t_start - born) / 60, h_born) - E0, 0, None)[:, None])).astype(float)
     cut_hist = cs[:, None] - shs; best = np.full((n, D), 91)
-    for k in range(F.H24):
+    for k in range(F.H24 + int(k0.max())):
+        act = ((k >= k0) & (k < k0 + F.H24))[:, None]
         tau = f0 + 600 * k; h = ((tau // 3600) % 24).astype(int); age = (tau - born) / 3600
-        sc = np.clip(P - 1, 0, None) ** 0.8 / (age[:, None] + 2) ** 1.8 * pen
+        sc = np.clip(P - 1, 0, None) ** 0.8 / (age[:, None] + 2) ** 1.8 * pen * np.exp(F.young_adj(Mo, P, age))
         slot = ((tau - Mo.T0) // 600).astype(int)
         dl = np.clip(slot - cs, 0, F.H24 + 1)
         ce = CE * Mo.RG[CA, CR, dl[:, None]]
@@ -176,7 +180,7 @@ def simulate(Mo, born, score, a0, xw, CE, CA, CR, wday_class, test_day, pool, th
         arr = (HJ >= 0) & (Mo.FIRST[np.maximum(HJ, 0)] > cut_hist[..., None])
         rank = 1 + n_comp + ((HE > sc[..., None]) & arr).sum(-1)
         e = np.where(rank <= 90, Mo.f_rank[np.clip(rank, 1, 90) - 1] * Mo.m_front[h][:, None], Mo.g_off[k + 1] * Mo.m_off[h][:, None])
-        P += rng.poisson(q * e); best = np.minimum(best, rank)
+        P += np.where(act, rng.poisson(q * e), 0); best = np.where(act, np.minimum(best, rank), best)
     return (Mo.g.predict(np.log1p(P).ravel()).reshape(n, D).mean(1), (P >= thr_d).mean(1), (best <= 30).mean(1), np.median(P, 1), np.log1p(P).mean(1))
 
 
@@ -200,6 +204,10 @@ def main(D=200):
     # outcome calibration (calib_fit.py, Oct 2-9: real top-30 reach per post) replaces the QN-likelihood tempering
     cfile = os.environ.get("CALIB", os.path.join(HERE, "out", "calib_fit.json"))   # e.g. calib_2025_grid2_results.json
     cf = json.load(open(cfile))["best"]
+    Mo.start_at_judge = os.environ.get("START_JUDGE") == "1"
+    if os.environ.get("FRONT_FIX") == "young":      # front-page entry penalty for young low-point posts (fit_young.py)
+        Mo.young = json.load(open(os.path.join(HERE, "young_pen.json")))
+        Mo.young_scale = float(json.load(open(cfile))["best"].get("young_scale", 1.0)) if os.environ.get("CALIB") else 1.0
     Mo.tau, Mo.kappa = cf["tau"], cf["kappa"]; Mo.grid = Mo.grid * cf["c"]; Mo.sigma = cf.get("sigma", 0.0); print("outcome calibration", cf, flush=True)
     M = load_minute()
     new = M[M.list == "newest"].sort_values("t")
@@ -284,7 +292,9 @@ def main(D=200):
         res["caught"] = "no posting day has its 4 list days settled yet"
     os.makedirs(os.path.join(HERE, "out"), exist_ok=True)
     P.drop(columns=[]).to_parquet(os.path.join(HERE, "out", "live_posts.parquet"), index=False)
-    json.dump(res, open(os.path.join(HERE, "out", "live_frontsim" + ("_" + os.path.basename(cfile).replace(".json", "") if os.environ.get("CALIB") else "") + ".json"), "w"), indent=1)
+    tag = os.environ.get("TAG", "")
+    res["variant"] = {"newest_page1_only": os.environ.get("NEWEST_P1", "1") == "1", "start_at_judge": Mo.start_at_judge, "front_fix": os.environ.get("FRONT_FIX", "")}
+    json.dump(res, open(os.path.join(HERE, "out", "live_frontsim" + ("_" + os.path.basename(cfile).replace(".json", "") if os.environ.get("CALIB") else "") + (f"_{tag}" if tag else "") + ".json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
 
 if __name__ == "__main__":

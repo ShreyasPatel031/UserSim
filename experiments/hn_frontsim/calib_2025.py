@@ -39,10 +39,13 @@ def init(state):
 
 
 def run_fit(params):
-    tau, kappa, c, sig = params
+    tau, kappa, c, sig = params[:4]; ys = params[4] if len(params) > 4 else 1.0
     import copy
     M = copy.deepcopy(G["M"]); M.tau, M.kappa, M.sigma = tau, kappa, sig; M.grid = G["grid0"] * c
     M.pool_any = True        # 2025 posts replay 2026 front pages (structure only)
+    M.start_at_judge = os.environ.get("START_JUDGE") == "1"
+    if os.environ.get("FRONT_FIX") == "young":
+        M.young = json.load(open(os.path.join(HERE, "young_pen.json"))); M.young_scale = ys
     F.rng = np.random.default_rng(1)
     T = G["T"]; p = np.zeros(len(T))
     for d, idx in G["by_day"].items():
@@ -51,7 +54,7 @@ def run_fit(params):
     y = T.y.to_numpy(); pr = np.clip(p, 1e-4, 1 - 1e-4)
     ll = float(np.sum(y * np.log(pr) + (1 - y) * np.log(1 - pr)))
     b = pd.cut(G["sc"], [0, 1, 2, 3, 1e9], labels=["1", "2", "3", "4+"])
-    return {"tau": tau, "kappa": kappa, "c": c, "sigma": sig, "loglik": round(ll, 1), "sum_p": round(float(p.sum()), 1), "winners": int(y.sum()),
+    return {"tau": tau, "kappa": kappa, "c": c, "sigma": sig, "young_scale": ys, "loglik": round(ll, 1), "sum_p": round(float(p.sum()), 1), "winners": int(y.sum()),
             "sim_by_score": {str(k): round(float(p[b == k].mean()), 4) for k in b.categories}}
 
 
@@ -82,15 +85,17 @@ def main(path, n=20000, workers=12, D=30):
     grid = [oct_fit] + [g for g in itertools.product((0.3, 0.6, 1.0), (0.05, 0.2, 1.0), (0.1, 0.15, 0.25), (0.0, 1.0)) if g != oct_fit]
     if os.environ.get("GRID2"):   # beyond the first grid's edges (tau low, c high, sigma high)
         grid = [oct_fit] + [g for g in itertools.product((0.1, 0.2, 0.3), (0.1, 0.2, 0.5), (0.25, 0.35, 0.5), (1.0, 1.5, 2.0)) if g != oct_fit]
+    if os.environ.get("FRONT_FIX") == "young":   # dynamics changed: refit the scale with the entry penalty and its strength
+        grid = [g for g in itertools.product((0.1, 0.2, 0.3), (0.2, 0.5, 1.0), (0.25, 0.4, 0.6, 1.0), (1.0,), (0.5, 1.0))]
     if os.environ.get("SMOKE"):
         grid = grid[:2]
     with get_context("spawn").Pool(workers, initializer=init, initargs=(state,)) as P:
         for r in P.imap_unordered(run_fit, grid):
             res["fits"].append(r); print(r, flush=True)
-    res["oct_fit"] = next(f for f in res["fits"] if (f["tau"], f["kappa"], f["c"], f["sigma"]) == oct_fit)
+    res["oct_fit"] = next((f for f in res["fits"] if (f["tau"], f["kappa"], f["c"], f["sigma"]) == oct_fit), None)
     res["best"] = max(res["fits"], key=lambda f: f["loglik"])
     os.makedirs(os.path.join(HERE, "out"), exist_ok=True)
-    json.dump(res, open(os.path.join(HERE, "out", "calib_2025" + ("_grid2" if os.environ.get("GRID2") else "") + ".json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(HERE, "out", "calib_2025" + ("_grid2" if os.environ.get("GRID2") else "") + ("_startjudge" if os.environ.get("START_JUDGE") == "1" else "") + ("_young" if os.environ.get("FRONT_FIX") == "young" else "") + ".json"), "w"), indent=1)
     print("REAL", res["real_by_score"]); print("OCT", res["oct_fit"]); print("BEST", res["best"])
 
 

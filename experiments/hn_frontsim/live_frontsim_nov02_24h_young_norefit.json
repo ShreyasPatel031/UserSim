@@ -1,0 +1,102 @@
+{
+ "made_at": 1793808942,
+ "feed_end_utc": "2026-11-04 16:11:43",
+ "full_days": [
+  "2026-11-02",
+  "2026-11-03"
+ ],
+ "posts": 1978,
+ "draws": 200,
+ "inputs": {
+  "snapshot_by_15min": 1.0,
+  "front_page_80plus_ranks": 0.656,
+  "real_front_used (60+ ranks)": 0.799,
+  "at_posting_score": 0.49,
+  "prior": "flat (the live at-posting score is loaded for coverage only; not used in the prior)",
+  "early_votes_and_scale": "outcome fit from calib_2025_grid2_results.json: tau 0.1, kappa 0.5, c 0.25, sigma 1.0"
+ },
+ "calibration_24h": {
+  "2026-11-02": {
+   "posts_with_24h": 913,
+   "reach_top30_real": 0.08,
+   "reach_top30_sim": 0.027,
+   "sum_reach_real": 73,
+   "sum_reach_sim": 24.7,
+   "median_p24_real": 1.0,
+   "median_p24_sim (median over draws)": 1.0,
+   "mean_log1p_p24_real": 1.262,
+   "mean_log1p_p24_sim": 1.128,
+   "note_real_p24": "max points seen in the feed within 24 h (undercounts posts that left /newest p2 and the front page)",
+   "reach_by_15min_score [real, sim, n]": {
+    "1": [
+     0.026,
+     0.007,
+     624
+    ],
+    "2": [
+     0.122,
+     0.015,
+     189
+    ],
+    "3": [
+     0.226,
+     0.053,
+     62
+    ],
+    "4+": [
+     0.526,
+     0.369,
+     38
+    ]
+   },
+   "sum_P_isotonic": 18.2,
+   "sum_P_day_threshold": 13.5,
+   "winners_so_far": 0,
+   "lists_settled": false
+  },
+  "2026-11-03": {
+   "posts_with_24h": 626,
+   "reach_top30_real": 0.0799,
+   "reach_top30_sim": 0.0267,
+   "sum_reach_real": 50,
+   "sum_reach_sim": 16.7,
+   "median_p24_real": 2.0,
+   "median_p24_sim (median over draws)": 1.0,
+   "mean_log1p_p24_real": 1.27,
+   "mean_log1p_p24_sim": 1.152,
+   "note_real_p24": "max points seen in the feed within 24 h (undercounts posts that left /newest p2 and the front page)",
+   "reach_by_15min_score [real, sim, n]": {
+    "1": [
+     0.03,
+     0.009,
+     398
+    ],
+    "2": [
+     0.068,
+     0.014,
+     148
+    ],
+    "3": [
+     0.194,
+     0.036,
+     36
+    ],
+    "4+": [
+     0.477,
+     0.225,
+     44
+    ]
+   },
+   "sum_P_isotonic": 16.1,
+   "sum_P_day_threshold": 7.0,
+   "winners_so_far": 0,
+   "lists_settled": false
+  }
+ },
+ "caught": "no posting day has its 4 list days settled yet",
+ "variant": {
+  "newest_page1_only": true,
+  "start_at_judge": true,
+  "front_fix": "young"
+ }
+}

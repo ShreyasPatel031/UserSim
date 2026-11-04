@@ -211,3 +211,40 @@ The simulator stays a shadow (decision rule above). Caught for Nov 2 posts is du
 - By 15-min score, real against simulated: 1 point 2.6 vs 3.4%; 2 points 12.2 vs 27.8%; 3 points 22.6 vs 53.3%; 4+ points 52.6 vs 73.0%.
 
 The 2+ point reach overshoot is therefore not the early-vote weight. It comes from how far the live simulation lets those posts climb the front page: the projected competitors and the replayed arrivals. The next thing to fix there is the front-page dynamics.
+
+### Front-page dynamics fix: entry of young low-point posts (Nov 4)
+
+**Diagnosis.**
+
+1. The live /newest exposure measure was not Wayback-faithful: it put minutes with only a page-2 read in the denominator. Live it gave 0.353 per minute of age, against 0.493 for Wayback. Fixed with page-1 reads only (`NEWEST_P1`). Live reach did not change (14.7%), because with the 2025 weight (tau 0.1) early votes barely move the quality estimate.
+2. The real cause is in the dynamics. On QN training series (Jul 14 - Sep 30), young posts that HN's formula ranks in the top 30 against that slot's front page are actually there far less often:
+   - by age: 41% at < 15 min, 58% at 1-2 h;
+   - under 1 h, by points: 8.7% with <= 3 points (median observed rank 91, off the front page), 16.8% with 3-5, 39.6% with 5-10, 79.3% with 10+.
+   HN holds young low-point posts back; the simulator let them straight in.
+
+**Fix.**
+- `fit_young.py` fits a log multiplier on the HN score by points x age: the median of log(score at the observed rank / formula score), with off-front observations censored. Result: `young_pen.json`; posts with 5 points or fewer are cut to about e^-1.6 in the first hour, and the effect fades by 4-6 h.
+- The simulators apply the young-specific part of it (the table minus the 20+ point row, capped at 0, under 6 h) with strength lambda (`FRONT_FIX=young`).
+- The 24 h of steps now start at the judging moment (`START_JUDGE=1`), not at the first 10-minute mark.
+- Because the dynamics changed, tau, kappa, c, sigma and lambda were refit on the unselected Wayback 2025 data (`calib_2025_young_results.json`). Best: tau 0.1, kappa 0.2, c 0.4, sigma 1.0, lambda 0.5. The 2025 log-likelihood is -1359.3, against -1344.1 without the fix: the daily-list label does not ask for it.
+
+**Test on the live Nov 2 calibration** (913 posts; held out: no Nov data in any fit). Files: `live_frontsim_nov02_24h_*.json`.
+
+| | real | 2025 fit, no fix | page-1 exposure only | + entry penalty, no refit | + entry penalty, refit |
+|---|---|---|---|---|---|
+| top-30 reach | 8.0% (73) | 14.8% | 14.7% | 2.7% | **6.3% (57.8)** |
+| reach, 1 point at 15 min (624) | 2.6% | 3.4% | 3.4% | 0.7% | 2.4% |
+| reach, 2 points (189) | 12.2% | 27.8% | 27.8% | 1.5% | 6.4% |
+| reach, 3 points (62) | 22.6% | 53.3% | 52.8% | 5.3% | 18.8% |
+| reach, 4+ points (38) | 52.6% | 73.0% | 72.1% | 36.9% | 49.7% |
+| mean log1p 24 h points | 1.26 | 1.32 | 1.32 | 1.13 | 1.34 |
+| sum of P(top 30) | ~25-30 | 36.7 | 36.4 | 18.2 | 36.9 (32.1 day threshold) |
+
+The overshoot is fixed. Reach is now slightly under (6.3% against 8.0%), mainly in 2-point posts (6.4% against 12.2%), and the day's sum of P is still above the winners.
+
+Caveats:
+- One live day.
+- The penalty comes from QN series, which cover only posts with 5+ final points. That makes it conservative for the low tail, but it is a selected sample.
+- The 2025 label does not favour the fix, so its support rests on reach data (QN and live), not on the daily list.
+
+The Nov 8 shadow Caught runs with this version as the main arm.
