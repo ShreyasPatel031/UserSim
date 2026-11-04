@@ -10,11 +10,17 @@ top 10 1.1%.
 | checkpoint | headline | what it is |
 |---|---|---|
 | 1 h | **48.5% [45.0, 52.1]** (Sep 1 - Oct 14) | rank only + history score + content model (large) |
-| 15 min (posting clock: judged 15 min after posting) | **28.0% [25.7, 30.7]** Sep 1 - Oct 14 (was 24.7%; paired +3.3 [+1.1, +5.5]); **29.6%** Oct 2 - 14 daily retrain | light model: 2025 Jan-Jun Wayback rows + content (full period); votes + who + volume + hour (Oct 2-14) |
+| 15 min (posting clock: judged 15 min after posting) | **29.6%** Oct 2 - 14 daily retrain = **headline for the live product** (dense early-vote coverage, as live); **28.0% [25.7, 30.7]** Sep 1 - Oct 14 = full-period backtest headline (was 24.7%; paired +3.3 [+1.1, +5.5]) | votes + who + volume + hour (Oct 2-14); light model: 2025 Jan-Jun Wayback rows + content (full period) |
 | at posting | **26.1% [23.9, 28.2]** (Sep 1 - Oct 14) | 3-way rank blend: Jul-Aug model + 2025+ history + content model (large) |
 Secondary line, never the headline (orchestrator decision 2026-11-03 16:55 UTC): 15 min on the exposure clock (also
 judged 15 min after a front-page return or /pool entry; direction B) 34.5% [31.5, 37.7], Oct 2-14. Content model at
 15 min on the posting clock (Oct 2-14, vs votes + who 28.4%): 30.2%, +1.8 [-1.1, +4.8], not significant.
+
+**Honest ceiling at 15 min (posting clock), from the miss decomposition (miss15.py):** perfect flagging of every fast
+post (front page within 1 h) would give about 28.0 + 25.2 + 5.1 + 3.3 = **61.6%**. The other 38.4 pts are late risers
+(25.5) and re-ups (12.9): posts with no front-page signal in their first hour. **80% needs about half of the late
+risers and re-ups caught from at-posting or first-15-min off-HN signals.** Re-ups have no 15-min data source: /pool is
+sampled every 5 min live, but /pool entry comes a median 23 h after posting.
 
 ## Scoreboard (each row adds one block of data)
 
