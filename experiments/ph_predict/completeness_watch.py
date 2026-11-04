@@ -47,6 +47,13 @@ def short_kind(r):
     h, c = float(r.header or 0), float(r["count"] or 0)
     if bool(r.get("complete_not_visible")) or (r.tab == "upvotes" and 185 <= c <= 205 and h > c):
         return "server_end"
+    # babysitter (Nov 4 23:36Z, from paging records): PH's signed-out ~200-slot upvote cap counts hidden / de-listed
+    # posts as slots, so lists of 140-185 rows with headers above 200 end at the same PH cap; small lists miss up to
+    # ~10% to posts PH counts in the header but won't list
+    if r.tab == "upvotes" and h > 205 and 140 <= c < 185:
+        return "server_end"
+    if r.tab == "upvotes" and h - c <= 0.10 * h:
+        return "near_complete"
     # pgql fast pulls carry no budget / partial / truncated field (population agent paging records, Nov 4 23:31Z): their
     # lists end at PH's server (signed-out ~200 upvotes, header counting hidden / de-listed posts). Exception under
     # review: upvote headers above 200 that end before page 10 (unclear: reported, not alerted).
