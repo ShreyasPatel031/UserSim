@@ -1748,3 +1748,15 @@ Nov 2 thin ones (79 people acting). Reported as-if-live (the event happened befo
 - pool_timing (Nov 3 only; Nov 1-2 lack API comments / posts_ts): 36 launches, 24/25/30 with a pool comment by 1/2/4 h;
   pool comments vs shock rho 0.28 / 0.33 / 0.31 at 1/2/4 h vs 0.42 whole day (one day, no CI).
 - Intraday tool test on Nov 3: top 3 100% vs 33% pre-launch from h4 (tool, not north star). Nov 4 live loop running on exp-1.
+
+## Pool size for 80-90% vote coverage (Shreyas via orchestrator, Nov 4 20:02 UTC) — ph_predict/pool_size.py, results/pool_size.json
+Window Oct 1-24 (750 launches, 85,744 real votes); warehouse page-1 lists are 98.6% complete there (CI 96.1-100, 155 full-pulled pool people).
+- Coverage by month (recorded): Jan 13% ... Jul 32%, Aug 33%, Sep 34%, Oct 35.2% all / 53.3% top 3 (older months lose heavy voters' history).
+- Within-pool curve (ranked by Aug-Sep activity, out of sample), share of Oct votes all / top 3: 1k 21.0% / 34.7%; 2k 25.1 / 41.1;
+  5k 28.4 / 45.9; 10k 31.0 / 49.4; 15k 33.2 / 51.9; all 20,958 35.5% (33.8-37.4) / 54.8% (53.1-56.9). Turnout-weight ranking: same within 1.5 pts.
+- Recapture: maker followers 13.3% in pool (n 976); launch commenters 81.9% (n 188). Pool-like accounts 157k (followers) vs 26k (commenters).
+- Votes method (non-pool sample, 103 pulled, 17 voters; calibrated x2.28 for page-1 roll-off): ~12.1k non-pool voters (7.9-18.7k),
+  ~16.0k distinct voters in 24 days (11.8-22.6k); pool voters 3,849 (7.9 votes each) vs non-pool ~4.6.
+- N: 80% needs ~5.0k more voters found most-active first (2.4-13.0k); 90% ~8.6k (4.2-16.2k). At the discovery route's 16.5% voting
+  rate that is ~30k / ~52k people to add.
+- Missed votes: pool votes are 88% from 4+-vote people; the non-pool sample's are 41% (29% from one-vote people), so light voters dominate.

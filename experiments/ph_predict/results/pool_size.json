@@ -1,0 +1,384 @@
+{
+ "test_window": [
+  "2026-10-01",
+  "2026-10-24"
+ ],
+ "rank_window": [
+  "2026-08-01",
+  "2026-09-30"
+ ],
+ "pool_people": 21099,
+ "people_with_events": 20958,
+ "by_month": {
+  "2026-01": {
+   "launches": 431,
+   "share_all": 0.13,
+   "share_top3": 0.165
+  },
+  "2026-02": {
+   "launches": 505,
+   "share_all": 0.145,
+   "share_top3": 0.189
+  },
+  "2026-03": {
+   "launches": 676,
+   "share_all": 0.15,
+   "share_top3": 0.208
+  },
+  "2026-04": {
+   "launches": 900,
+   "share_all": 0.156,
+   "share_top3": 0.233
+  },
+  "2026-05": {
+   "launches": 825,
+   "share_all": 0.192,
+   "share_top3": 0.291
+  },
+  "2026-06": {
+   "launches": 612,
+   "share_all": 0.225,
+   "share_top3": 0.323
+  },
+  "2026-07": {
+   "launches": 531,
+   "share_all": 0.317,
+   "share_top3": 0.444
+  },
+  "2026-08": {
+   "launches": 551,
+   "share_all": 0.333,
+   "share_top3": 0.481
+  },
+  "2026-09": {
+   "launches": 708,
+   "share_all": 0.338,
+   "share_top3": 0.507
+  },
+  "2026-10": {
+   "launches": 909,
+   "share_all": 0.352,
+   "share_top3": 0.533
+  },
+  "2026-11": {
+   "launches": 75,
+   "share_all": 0.109,
+   "share_top3": 0.139
+  }
+ },
+ "curve_activity": {
+  "rank_by": "activity",
+  "people_ranked": 20958,
+  "people_with_rank_activity": 7092,
+  "by_N": {
+   "1000": {
+    "share_all": 0.21,
+    "ci_all": [
+     0.198,
+     0.222
+    ],
+    "share_top3": 0.347,
+    "ci_top3": [
+     0.329,
+     0.363
+    ]
+   },
+   "2000": {
+    "share_all": 0.251,
+    "ci_all": [
+     0.241,
+     0.264
+    ],
+    "share_top3": 0.411,
+    "ci_top3": [
+     0.39,
+     0.432
+    ]
+   },
+   "5000": {
+    "share_all": 0.284,
+    "ci_all": [
+     0.27,
+     0.298
+    ],
+    "share_top3": 0.459,
+    "ci_top3": [
+     0.438,
+     0.478
+    ]
+   },
+   "10000": {
+    "share_all": 0.31,
+    "ci_all": [
+     0.296,
+     0.324
+    ],
+    "share_top3": 0.494,
+    "ci_top3": [
+     0.473,
+     0.512
+    ]
+   },
+   "15000": {
+    "share_all": 0.332,
+    "ci_all": [
+     0.316,
+     0.349
+    ],
+    "share_top3": 0.519,
+    "ci_top3": [
+     0.501,
+     0.538
+    ]
+   },
+   "20958": {
+    "share_all": 0.355,
+    "ci_all": [
+     0.338,
+     0.374
+    ],
+    "share_top3": 0.548,
+    "ci_top3": [
+     0.531,
+     0.569
+    ]
+   }
+  }
+ },
+ "curve_turnout": {
+  "rank_by": "turnout",
+  "people_ranked": 20958,
+  "people_with_rank_activity": 7092,
+  "by_N": {
+   "1000": {
+    "share_all": 0.196,
+    "ci_all": [
+     0.185,
+     0.206
+    ],
+    "share_top3": 0.337,
+    "ci_top3": [
+     0.32,
+     0.352
+    ]
+   },
+   "2000": {
+    "share_all": 0.245,
+    "ci_all": [
+     0.234,
+     0.257
+    ],
+    "share_top3": 0.403,
+    "ci_top3": [
+     0.384,
+     0.423
+    ]
+   },
+   "5000": {
+    "share_all": 0.288,
+    "ci_all": [
+     0.274,
+     0.303
+    ],
+    "share_top3": 0.464,
+    "ci_top3": [
+     0.443,
+     0.483
+    ]
+   },
+   "10000": {
+    "share_all": 0.31,
+    "ci_all": [
+     0.296,
+     0.324
+    ],
+    "share_top3": 0.494,
+    "ci_top3": [
+     0.473,
+     0.512
+    ]
+   },
+   "15000": {
+    "share_all": 0.332,
+    "ci_all": [
+     0.316,
+     0.349
+    ],
+    "share_top3": 0.519,
+    "ci_top3": [
+     0.501,
+     0.538
+    ]
+   },
+   "20958": {
+    "share_all": 0.355,
+    "ci_all": [
+     0.338,
+     0.374
+    ],
+    "share_top3": 0.548,
+    "ci_top3": [
+     0.531,
+     0.569
+    ]
+   }
+  }
+ },
+ "completeness": {
+  "people_full_pulled_in_pool": 314,
+  "people_with_test_votes": 155,
+  "test_votes_union": 435,
+  "in_warehouse": 429,
+  "in_full_list": 430,
+  "warehouse_completeness": 0.986,
+  "ci": [
+   0.962,
+   1.0
+  ],
+  "full_pull_people_total": 350
+ },
+ "part4": {
+  "samples": {
+   "maker_followers": {
+    "n": 976,
+    "share_in_pool": 0.133,
+    "ci": [
+     0.112,
+     0.157
+    ]
+   },
+   "launch_commenters": {
+    "n": 188,
+    "share_in_pool": 0.819,
+    "ci": [
+     0.755,
+     0.872
+    ]
+   },
+   "commenter_ids_unmapped": 145
+  },
+  "test_votes_per_person": {
+   "pool": {
+    "pulled": 20066,
+    "voters": 3730,
+    "share_voting": 0.186,
+    "votes_per_voter": 3.56,
+    "ci": [
+     3.41,
+     3.71
+    ],
+    "median": 1.0
+   },
+   "non_pool": {
+    "pulled": 103,
+    "voters": 17,
+    "share_voting": 0.165,
+    "votes_per_voter": 2.0,
+    "ci": [
+     1.24,
+     3.06
+    ],
+    "median": 1.0
+   }
+  },
+  "test_window_votes": {
+   "real_votes": 85744,
+   "pool_votes": 30447,
+   "pool_voters": 3849,
+   "pool_votes_per_voter": 7.91,
+   "launches": 750
+  },
+  "population": {
+   "votes_method_nonpool_voters": {
+    "est": 27648,
+    "ci": [
+     18077,
+     42729
+    ]
+   },
+   "votes_method_total_voters": {
+    "est": 31497,
+    "ci": [
+     21926,
+     46578
+    ]
+   },
+   "lincoln_petersen_maker_followers": {
+    "accounts_like_pool": 157496,
+    "ci": [
+     133420,
+     187026
+    ]
+   },
+   "lincoln_petersen_launch_commenters": {
+    "accounts_like_pool": 25576,
+    "ci": [
+     24021,
+     27744
+    ]
+   }
+  },
+  "N_for_target": {
+   "0.8": {
+    "non_pool_voters_to_add": 11384,
+    "ci": [
+     5535,
+     29725
+    ],
+    "pool_total": 32331
+   },
+   "0.9": {
+    "non_pool_voters_to_add": 19516,
+    "ci": [
+     9632,
+     36864
+    ],
+    "pool_total": 40463
+   }
+  },
+  "non_pool_profile": {
+   "votes_by_1_vote_people": 0.294,
+   "votes_by_2_3": 0.294,
+   "votes_by_4_plus": 0.412,
+   "share_of_pulled_non_pool_with_0_votes": 0.165
+  }
+ },
+ "calibrated": {
+  "note": "store_v3 dated upvotes (page-1 reads from Nov 1) undercount Oct votes: for 3,832 pool people in both, warehouse 30,301 vs store_v3 13,262 (x2.28). Non-pool votes per voter scaled by 2.28; N scales by 1/2.28 (Lorenz shape unchanged; heavy voters are the most undercounted, so this is approximate).",
+  "factor": 2.28,
+  "non_pool_votes_per_voter": 4.56,
+  "non_pool_voters": {
+   "est": 12126,
+   "ci": [
+    7929,
+    18741
+   ]
+  },
+  "total_voters_test_window": {
+   "est": 15975,
+   "ci": [
+    11778,
+    22590
+   ]
+  },
+  "N_add_80": {
+   "est": 4993,
+   "ci": [
+    2428,
+    13037
+   ]
+  },
+  "N_add_90": {
+   "est": 8560,
+   "ci": [
+    4225,
+    16168
+   ]
+  },
+  "pool_profile_votes_share": {
+   "by_1_vote": 0.063,
+   "by_2_3": 0.058,
+   "by_4_plus": 0.878
+  }
+ }
+}
