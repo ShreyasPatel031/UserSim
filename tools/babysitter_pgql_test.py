@@ -232,6 +232,11 @@ async def main(a):
                 fn = f"out_pgql/{'cmp_' if is_cmp else ''}{h}.json"; json.dump(res, open(fn, "w"), ensure_ascii=False)
                 if not is_cmp:  # 2210Z: save the lists as the person JSON (vm/<h>.json) so deep starts from them; deep fills only what pgql can't read
                     _tabs = ["collections", "reviews", "forum_threads"]  # + header (pull() always reads it) + product pages (filled for every maker/stack product with no saved fields)
+                    _pg = (res.get("run") or {}).get("paging") or {}  # 2325Z: a tab that errored, or a follow list that ended short of its header, goes to deep too (deep re-pages it with paging_v2 and merges by id)
+                    for _k in ("stacks", "hunted", "following", "followers", "activity", "forums", "upvotes"):
+                        _t = res.get(_k) or {}; _h = _t.get("header")
+                        if (_pg.get(_k) or {}).get("error") or (_k in ("following", "followers") and _h and (_t.get("count") or 0) < 0.98 * _h):
+                            if _k not in _tabs: _tabs.append(_k)
                     res["deep_pending"] = _tabs; res.setdefault("notes", []).append("2210Z pgql lists saved as vm/<h>.json; deep fills header, reviews, collection items, product pages, forum threads")
                     json.dump(res, open(fn, "w"), ensure_ascii=False)
                     if not await asyncio.to_thread(PB.gexists, f"{h}.json"): await asyncio.to_thread(sh, 'gsutil', '-q', 'cp', fn, f'{B}/{h}.json')
