@@ -1188,3 +1188,9 @@ risers and re-ups**, posts with no front-page signal in their first hour.
 (B) Oct 2-14 daily retrain: + honest votes / comments / who by 60 min (Wayback captures; 88.9% of posts, 91.2% of
 winners have one): 49.0% [41.3, 57.0] -> 47.2%, **-1.8 [-3.2, -0.3]**. Front-page rank already captures the fast posts;
 live per-minute votes are not expected to lift 1 h on their own.
+(C) Only posts NOT on the front page by 1 h (Oct 2-14: 11,918 posts, 192 winners, 88.7% with a Wayback snapshot by
+60 min), daily retrain on that subset: AUC 0.855 (at-posting inputs + rank) -> 0.853 with votes / comments / who by
+60 min; Caught within the subset 17.7% -> 16.7%, -1.0 [-3.3, +1.4]. Top inputs: history score, content model, author /
+domain record, title embedding: all known at posting. **Nothing visible in the first hour on HN separates future late
+risers and re-ups from the posts that never rise**; what separates them is known at posting. Levers for the 46 pts:
+better at-posting signals (content, history) and new information from outside HN (off-HN traction, requested).
