@@ -51,3 +51,4 @@ Package: vm/_code/reuse.tgz md5 KSkCQvRomzj6fzif1u001g== (Data Feeder "nocap" bu
   `enrich.py --threads 20`; legacy timeouts 5400/3600 s drop a person without a deep_list entry.
 - Tab FAILs (no reason recorded): VM-3 deep 20:46Z following 25/26; VM-3 deep 20:56Z reviews 0/3.
 - 21:02Z staging **ParGgPpsukFNCabQczaAtw==** (2105Z_legfix): **PASS, no caps in any path.** .py identical to uI2Hq; legacy.sh enrich `--threads 0`, timeouts to deep_list (tabs null = full re-pull).
+- 21:03Z live **40P+hKnHkWD4YAVZvgibdg==** (VM-1/VM-2 run mode, deep): **PASS**. .py identical to ParGgPps; supervisor.sh retires legacy (legacy tokens run as run mode). More tab FAILs: VM-3 21:01Z followers 35/43.
