@@ -40,7 +40,7 @@ def votes15(Q):
     N = A[A.page == "newest"].sort_values("age_min")
     g = N.groupby("item_id")
     last = N.drop_duplicates("item_id", keep="last").set_index("item_id")
-    off = {"news": 0, "news_p2": 30, "news_p3": 60}
+    off = {"news": 0, "news_p2": 0, "news_p3": 0}     # Wayback rank is already the position (news_p2 = 31-60); no page offset
     F = A[A.page.isin(off)]
     front = (F["rank"] + F.page.map(off)).groupby(F.item_id).min()
     out = pd.DataFrame(index=Q.index)

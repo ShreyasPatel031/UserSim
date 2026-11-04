@@ -1118,3 +1118,12 @@ inflating page 2-3 positions in the live readouts.
 | Nov 3 | 99.7% | 0 of 4 | 17 | 2/17 11.8% (-17.8) | 8/17 47.1% (-1.4) | ranked below cut 12; late riser 3 |
 Full-coverage days (Nov 2-3), 15 min: per-minute model 17.3%, blend 21.2%, at-posting odds alone 26.9%: with 4 days
 (two with poor coverage) the per-minute model is still weaker than the odds; it retrains daily as days settle.
+**Position bug audit (orchestrator, 2026-11-04).** Both sources give the absolute position already (hn_minute rank: page
+2 = 31-60; Wayback rank: news_p2 = 31-60), but four places added (page-1)*30: live_caught.load_minute (live readouts),
+wb15.votes15 (v_front), wb_caught (ev_front_best) and live_oct (archive features). All fixed (offset 0).
+- Full-coverage live numbers (15 min 21.2%, 1 h 34.6%, at posting 26.9%): unchanged by the fix; the votes / odds /
+  blend scores use front-page presence only, never the position (the 02:10 rerun's small moves, votes 11.5 -> 13.5% at
+  15 min and 34.6 -> 36.5% at 1 h, are refreshed labels: Nov 3 winners caught at 1 h 8 -> 9 of 17).
+- Backtests: none used load_minute. The Wayback inflation reached v_front / ev_front_best only as tree-model inputs, a
+  strictly increasing transform, so no backtest number moves: rerun of votes + who with corrected positions 28.4%
+  [23.8, 32.9] (identical). live_oct was consistent before (train and live both inflated) and is consistent again.

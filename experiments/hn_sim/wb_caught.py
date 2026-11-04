@@ -37,7 +37,7 @@ def early(Q, a):
     A = pd.read_json(EV, lines=True, convert_dates=False)
     A = A[(A.age_min <= a) & (A.age_min >= 0)]
     E = A[A.page == "newest"].sort_values("age_min")
-    off = {"news": 0, "news_p2": 30, "news_p3": 60}
+    off = {"news": 0, "news_p2": 0, "news_p3": 0}     # Wayback rank is already the position (news_p2 = 31-60); no page offset
     F = A[A.page.isin(off)]
     front = (F["rank"] + F.page.map(off)).groupby(F.item_id).min()      # best /news rank seen by age a (Wayback)
     last = E.drop_duplicates("item_id", keep="last").set_index("item_id")
