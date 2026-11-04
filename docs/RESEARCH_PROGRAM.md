@@ -55,7 +55,7 @@ Socrates, OSIM-8B.
    Nov 3, 15:04 UTC: ModernBERT-large (Aug 30 cut, test AUC 0.825 vs 0.816 base): at posting **26.1% [23.9, 28.2],
    +2.9 [+1.4, +4.3]** over the no-content baseline; 1 h **48.5% [45.0, 52.1], +1.3 [+0.4, +2.2]**; 15 min 30.2%, +1.8 n.s.
    Late risers 110→122 of 461, re-ups 43→50 of 221 at posting. Spend ~$2.5 GCE. Live odds tool still on the base model.
-   Now: 1 h 48.5% [45.0, 52.1] (large content model as an input, +1.3 [+0.4, +2.2], Nov 3), 15 min 24.7% [22.6, 26.9] (Sep 1–Oct 14; the 26.5% reported earlier on Nov 2 came from a bug and is withdrawn); Oct 2–14 with daily retrain 29.6% (votes + who + volume + hour); 15 min with /newest votes + early commenters 28.4% [23.6, 33.0]
+   Now: 1 h 48.5% [45.0, 52.1] (large content model as an input, +1.3 [+0.4, +2.2], Nov 3), 15 min **28.0% [25.7, 30.7]** (Sep 1–Oct 14; Nov 4: 2025 Jan–Jun Wayback rows + content, paired +3.3 [+1.1, +5.5] over the 24.7% headline on identical posts and flags; 2025 snapshots outcome-independent, 66–69% in every points band; the 26.5% reported on Nov 2 came from a bug and is withdrawn); Oct 2–14 with daily retrain 29.6% (votes + who + volume + hour); 15 min with /newest votes + early commenters 28.4% [23.6, 33.0]
    on Oct 2–14 (forward daily retrain, +2.8 [+0.3, +5.3] vs 25.5% on the same days); at posting 23.2%.
 
 Everything else (competitor grounding, person-level accuracy, pairwise and competitor-pair accuracy, pool-vote
