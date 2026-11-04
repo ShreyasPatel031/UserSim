@@ -36,23 +36,45 @@ if os.path.exists(tp):
     print(f"\n## Light pulls (header + upvotes only; not all-tabs): {len(light_only):,} people "
           f"(in Nov 2 pool {len(light_only & pool):,}, new {len(light_only - pool):,}); upvotes list complete or server-ended "
           f"{int((lu.complete | lu.complete_not_visible).sum()):,}")
-    t = t[t.pull_type == "full"]
-    per = t.groupby("person_id").agg(tabs=("tab", "nunique"), complete=("complete", "sum"))
+    t = t[t.pull_type == "full"].copy()
+    for col in ("complete_not_visible", "capped_large"):
+        if col not in t:
+            t[col] = False
+    # Shreyas standing rule (d9444ee3): every item, no caps. Per tab:
+    #   complete       = count >= 98% of the header
+    #   server_ended   = short, but PH's server ended the list (complete_not_visible; never capped_large)
+    #   FAIL           = short because our code stopped (capped_large, budget, paging, anything else)
+    t["state"] = "FAIL"
+    t.loc[t.complete & ~t.capped_large, "state"] = "complete"
+    t.loc[(t.state == "FAIL") & t.complete_not_visible & ~t.capped_large, "state"] = "server_ended"
     tier = {}
     hi = f"{d}/have_index.jsonl"
     if os.path.exists(hi):
         tier = {r["person_id"]: r.get("tier") or "non-pool" for r in map(json.loads, open(hi))}
-    per["tier"] = per.index.map(lambda x: tier.get(x, "unknown"))
-    # a person's latest pull per tab wins
-    print(f"\n## HEADLINE: people with all 10 tabs complete: {int((per.complete >= 10).sum()):,} "
-          f"(pool: {int(((per.complete >= 10) & per.tier.isin(['likely', 'active_rest', 'other'])).sum()):,}); "
-          f"people with any full pull: {len(per):,}\n")
+    per = t.groupby("person_id").state.agg(lambda s: "FAIL" if (s == "FAIL").any() else ("server_ended" if (s == "server_ended").any() else "complete"))
+    ntabs = t.groupby("person_id").tab.nunique()
+    per = per[ntabs.reindex(per.index) >= 10]
+    perdf = pd.DataFrame({"state": per, "tier": per.index.map(lambda x: tier.get(x, "non-pool" if x not in pool else "unknown"))})
+    strict = int((perdf.state == "complete").sum()); se = int((perdf.state == "server_ended").sum()); fail = int((perdf.state == "FAIL").sum())
+    print(f"\n## HEADLINE: people with every tab complete or server-ended: {strict + se:,} "
+          f"(pool {int(((perdf.state != 'FAIL') & perdf.index.isin(pool)).sum()):,}); strict complete {strict:,}; "
+          f"server-ended (PH hid items) {se:,}; FAIL (our code stopped) {fail:,}; people with any full pull {t.person_id.nunique():,}\n")
     print("## Full all-tab pulls by tier\n")
-    print("| Tier | People in tier | With a full pull | All 10 tabs complete |")
-    print("|---|---|---|---|")
+    print("| Tier | People in tier | With a full pull | All tabs complete | + server-ended | FAIL (our code stopped) |")
+    print("|---|---|---|---|---|---|")
     sizes = pd.Series(tier).value_counts() if tier else pd.Series(dtype=int)
     for tr in ["likely", "active_rest", "other", "non-pool", "unknown"]:
-        g = per[per.tier == tr]
-        print(f"| {tr} | {int(sizes.get(tr, 0)):,} | {len(g):,} | {int((g.complete >= 10).sum()):,} |")
-    inc = t[~t.complete].tab.value_counts().to_dict()
-    print(f"\nIncomplete tabs across full pulls: {inc}")
+        g = perdf[perdf.tier == tr]
+        anyp = len(set(t.person_id) & {k for k, v in tier.items() if v == tr}) if tier else 0
+        print(f"| {tr} | {int(sizes.get(tr, 0)):,} | {anyp:,} | {int((g.state == 'complete').sum()):,} | {int((g.state == 'server_ended').sum()):,} | {int((g.state == 'FAIL').sum()):,} |")
+    ft = t[t.state == "FAIL"]
+    print(f"\nFAIL tabs (our code stopped): {ft.tab.value_counts().to_dict()}; of which capped_large: {int(ft.capped_large.sum())}")
+    print(f"Server-ended tabs (PH hid items): {t[t.state == 'server_ended'].tab.value_counts().to_dict()}")
+    print("deep_list = every person with a FAIL tab (capped_large included).")
+    # deep_list file (handles; GCS only, never committed): people with any FAIL tab, and which tabs
+    if os.path.exists(hi):
+        h_of = {r["person_id"]: r.get("handle") for r in map(json.loads, open(hi))}
+        rows = ft.groupby("person_id").tab.apply(lambda s: ",".join(sorted(s)))
+        with open(f"{d}/deep_list.tsv", "w") as f:
+            for pid, tabs_ in rows.items():
+                f.write(f"{h_of.get(pid) or pid}\t{tabs_}\n")

@@ -33,6 +33,7 @@ if [ "$PASS" -ge 1 ]; then
   (cd "$REPO" && python3 tools/population/report.py $W/store_tmp $DAY) > $W/store_tmp/coverage.md
   gsutil -q -m cp $W/store_tmp/events.parquet $W/store_tmp/persons.parquet $W/store_tmp/tabs.parquet $B/raw/population/store_v3/
   gsutil -q cp $W/store_tmp/coverage.md $B/raw/population/reports/$DAY/coverage.md
+  [ -f $W/store_tmp/deep_list.tsv ] && gsutil -q cp $W/store_tmp/deep_list.tsv $B/raw/population/requests/deep_list_latest.tsv
   rm -rf $W/store_v3; mv $W/store_tmp $W/store_v3
   HEAD=$(grep -o 'HEADLINE.*' $W/store_v3/coverage.md | head -1); LIGHT=$(grep -o 'Light pulls.*' $W/store_v3/coverage.md | head -1)
   STATUS=published
