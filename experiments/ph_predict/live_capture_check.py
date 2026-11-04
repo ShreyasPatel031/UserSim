@@ -18,6 +18,7 @@ BUCKET = "gs://usersim-bakeoff-347838016394/usersim_sim"
 FETCH_TOL_MIN = float(os.environ.get("FETCH_TOL_MIN", "5"))
 GAP_MIN = float(os.environ.get("GAP_MIN", "20"))
 COVER = float(os.environ.get("COVER", "0.95"))
+FALLBACK = {"box_browser"}   # page-view fallback sources, not the snapshot loop
 NEED = {
     "posts": ["snapshot_id", "snapshot_ts", "fetched_at", "day", "launch_id", "slug", "fetch_status", "votes_at_fetch"],
     "comments": ["snapshot_ts", "fetched_at", "launch_id", "comment_id", "username", "created_at"],
@@ -69,6 +70,11 @@ def check(day, T):
     snaps = []
     if P is not None and {"snapshot_ts", "launch_id", "fetch_status"} <= set(P.columns):
         P = P.assign(launch_id=P.launch_id.astype(str), st=ts(P.snapshot_ts), ok=P.fetch_status.astype(str).isin(["200", "ok"]))
+        # fallback page views (source box_browser, Nov 4 on) stamp each page with its own snapshot_ts: one launch per
+        # "snapshot". Coverage, gaps and board positions are judged on the snapshot loop; fallback rows are counted apart.
+        if "source" in P.columns:
+            fb = P.source.astype(str).isin(FALLBACK)
+            n["fallback_post_rows"] = int(fb.sum()); P = P[~fb]
         exp_n = P.launch_id.nunique()
         expected = {}
         if V is not None and {"snapshot_ts", "launches_expected"} <= set(V.columns):
@@ -76,6 +82,8 @@ def check(day, T):
         low = []
         for s, g in P.groupby("st"):
             e = expected.get(s) or exp_n
+            # launches PH stopped listing (unfeatured: fetch_status absent_from_source) are not expected in that snapshot
+            e -= g[g.fetch_status.astype(str) == "absent_from_source"].launch_id.nunique()
             share = g[g.ok].launch_id.nunique() / e if e else 0
             snaps.append(s)
             if share < COVER:
