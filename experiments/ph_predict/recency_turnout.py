@@ -25,6 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); EXP = os.path.dirname(HERE)
 sys.path.insert(0, EXP)
 BUCKET = "gs://usersim-bakeoff-347838016394/usersim_sim"
 WORK = os.environ.get("RT_WORK", os.path.expanduser("~/rt_work"))
+MODE = os.environ.get("RT_MODE", "asif")   # asif | known (see recency())
 
 
 def stage():
@@ -53,8 +54,10 @@ def person_rows(d):
     P, I, E = SD.frames(d)
     Z = dict(np.load(f"{WORK}/live/emb.npz")); have = set(map(str, Z["launch_ids"]))
     miss = set(I[I.day <= d].id) - have
-    if miss & set(I[I.day == d].id):
-        raise SystemExit(f"{d}: {len(miss & set(I[I.day == d].id))} of the day's launches lack vectors in emb.npz")
+    gone = miss & set(I[I.day == d].id)
+    if gone:   # e.g. a late-featured launch the live run never encoded: leave it out of the day (counted in the log)
+        print(json.dumps({"day": d, "launches_without_vectors_dropped": len(gone)}), flush=True)
+        I = I[~I.id.isin(gone)]; E = E[~E.item.isin(gone)]
     from simlab import store, harness, popscore as PS
     store.RAW = f"{WORK}/live"; store.load = lambda: (P, I, E)
     harness.baseline = lambda: pd.DataFrame({"id": I.id, "day": I.day, "base": 0.5})
@@ -78,7 +81,11 @@ def recency(people, d, EV, sl):
     """Per person: recency features from store_v2 events known and timed before 00:00 PT of d."""
     d0 = pd.Timestamp(f"{d} 00:00", tz="America/Los_Angeles").tz_convert("UTC")
     h = {u: "p_" + hashlib.sha256((sl + "producthunt:" + str(u).lower()).encode()).hexdigest()[:16] for u in people}
-    X = EV[(EV.first_seen_at < d0) & (EV.ts_hi < d0) & (EV.person_id.isin(set(h.values())))]
+    # MODE known: event first seen by us before d (strict; store_v2 reads start Nov 1, so only Nov 2+ has any);
+    # MODE asif: the event happened before d (ts_hi < d), what a daily live read would have shown (page-1 reads made
+    # on Nov 1 can miss older October upvotes of heavy voters: undercounts recency on the early days)
+    known = EV.first_seen_at < d0 if MODE == "known" else True
+    X = EV[known & (EV.ts_hi < d0) & (EV.person_id.isin(set(h.values())))]
     out = {}
     g = {pid: q for pid, q in X.groupby("person_id")}
     for u, pid in h.items():
@@ -119,7 +126,7 @@ def main(d_from, d_to):
     # person-level turnout model, leave one day out
     Pp = {d: D.groupby("person").agg(w=("w", "first"), y=("y", "max"), **{c: (c, "first") for c in cols}).reset_index() for d, D in per.items()}
     feat = lambda T: np.c_[np.log(T.w.clip(lower=1e-3)), np.log1p(T[cols[1:]].values), np.minimum(T.rec_days_since.values, 30) / 30]
-    res = {"days": days, "per_day": {}, "reference": "pnx (live person model, TIE2) on the same days"}
+    res = {"days": days, "mode": MODE, "per_day": {}, "reference": "pnx (live person model, TIE2) on the same days"}
     rng = np.random.default_rng(0); diffs = []
     for d in days:
         tr = pd.concat([Pp[x] for x in days if x != d]); te = Pp[d]
