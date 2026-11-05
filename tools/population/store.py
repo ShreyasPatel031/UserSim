@@ -307,6 +307,31 @@ def x_events(data_dir, pool_ids):
     return (pd.concat(out, ignore_index=True) if out else pd.DataFrame()), reps
 
 
+# ---------- parse cache for person pulls (hourly rebuilds re-read ~1 GB of JSON otherwise) ----------
+_FILLED_SIG = [None]
+
+
+def _cached_load(fp, ids, upload_time, filled, data_dir):
+    """(tabs, events) for one pull file, cached by path + size + mtime + loader version + F1 fill map. Cache lives next to the
+    raw data (never committed); a changed or new file is re-parsed."""
+    import full_pull, pickle
+    st = os.stat(fp)
+    if _FILLED_SIG[0] is None:
+        _FILLED_SIG[0] = hashlib.sha256(json.dumps(filled, sort_keys=True).encode()).hexdigest()[:12]
+    code = hashlib.sha256(open(full_pull.__file__, "rb").read()).hexdigest()[:12]
+    key = hashlib.sha256(f"{fp}|{st.st_size}|{st.st_mtime_ns}|{code}|{_FILLED_SIG[0]}|{ids.salt[:4]}".encode()).hexdigest()[:24]
+    cdir = f"{data_dir}/.parse_cache"; os.makedirs(cdir, exist_ok=True)
+    cf = f"{cdir}/{key}.pkl"
+    if os.path.exists(cf):
+        try:
+            return pickle.load(open(cf, "rb"))
+        except Exception:
+            pass
+    out = full_pull.load_full(fp, ids, upload_time=upload_time, filled=filled)
+    pickle.dump(out, open(cf + ".tmp", "wb")); os.replace(cf + ".tmp", cf)
+    return out
+
+
 # ---------- build ----------
 def build(data_dir, out_dir, salt):
     ids = Ids(salt)
@@ -347,7 +372,7 @@ def build(data_dir, out_dir, salt):
     fixed_h = {p[:-len("_f1fix.json")] for p in vm if p.endswith("_f1fix.json")}
     vm = [p for p in vm if p.endswith("_f1fix.json") or p[:-len(".json")] not in fixed_h]   # F1: restamped copy replaces the original
     for fp in vm + sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json")):
-        t_, e_ = full_pull.load_full(fp, ids, upload_time=up_times.get(os.path.relpath(fp, f"{data_dir}/people_live")), filled=filled)
+        t_, e_ = _cached_load(fp, ids, up_times.get(os.path.relpath(fp, f"{data_dir}/people_live")), filled, data_dir)
         if len(t_):
             tab_rows.append(t_)
         if len(e_):
