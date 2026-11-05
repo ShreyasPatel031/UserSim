@@ -32,7 +32,18 @@ PASS=$(echo "$OUT" | grep -cE '^ "pass": true')
 EVENTS=$(echo "$OUT" | grep -E '^ "events": ' | head -1 | grep -o '[0-9]*')
 if [ "$PASS" -ge 1 ]; then
   cp $W/have_index.jsonl $W/store_tmp/
-  cat $R/people_live/deep_list/*.json 2>/dev/null | python3 -c "import sys,json; [print(json.dumps(json.loads(l))) for l in sys.stdin.read().replace('}{','}\n{').splitlines() if l.strip()]" > $W/store_tmp/df_deep_list.jsonl
+  python3 - "$R/people_live/deep_list" "$W/store_tmp/df_deep_list.jsonl" <<'PY' || { echo "deep_list load FAILED"; exit 1; }
+import glob, json, os, sys
+# read every deep_list entry (14k+ files: no shell glob); a file may hold several JSON objects
+n = 0
+with open(sys.argv[2], "w") as out:
+    for p in glob.glob(os.path.join(sys.argv[1], "*.json")):
+        for l in open(p).read().replace("}{", "}\n{").splitlines():
+            if l.strip():
+                out.write(json.dumps(json.loads(l)) + "\n"); n += 1
+assert n > 0 or not glob.glob(os.path.join(sys.argv[1], "*.json")), "deep_list files exist but none parsed"
+print("deep_list entries", n)
+PY
   (cd "$REPO" && python3 tools/population/report.py $W/store_tmp $DAY) > $W/store_tmp/coverage.md
   gsutil -q -m cp $W/store_tmp/events.parquet $W/store_tmp/persons.parquet $W/store_tmp/tabs.parquet $B/raw/population/store_v3/
   gsutil -q cp $W/store_tmp/coverage.md $B/raw/population/reports/$DAY/coverage.md
