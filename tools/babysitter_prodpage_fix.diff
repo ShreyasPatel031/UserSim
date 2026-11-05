@@ -1,0 +1,20 @@
+--- live/ph_batch.py	2026-11-05 03:11:23.205359271 +0000
++++ /tmp/claude-0/-home-user-UserSim/985ad5f2-8c78-5e96-8903-dc657024cd94/scratchpad/pdeep/pkg/ph_batch.py	2026-11-05 03:09:06.639880431 +0000
+@@ -332,7 +332,7 @@
+         walkp(cd.get("products") or cd); uniq = {}; [uniq.setdefault(p["id"], p) for p in prods]
+         colls.append({"name": c["name"], "url": purl(c["path"]), "collection_id": c["id"], "title": c.get("title"), "description": c.get("description"), "products_count": c.get("productsCount"),
+                       "items": [{"name": p["name"], "url": f"{PH}/products/{p['slug']}", "product_id": p["id"], "tagline": p.get("tagline")} for p in uniq.values()]})
+-    _old_prod = {x.get("url"): x for x in ((OLD.get("about") or {}).get("maker_history") or []) + ((OLD.get("stacks") or {}).get("items") or []) if x.get("url") and x.get("counts_note") != "truncated_budget"} if DO is not None else {}
++    _old_prod = {x.get("url"): x for x in ((OLD.get("about") or {}).get("maker_history") or []) + ((OLD.get("stacks") or {}).get("items") or []) if x.get("url") and x.get("counts_note") in ("latest launch", "no public launch posts on product page")} if DO is not None else {}
+     slugs = [s_ for s_ in dict.fromkeys([m["slug"] for m in mh] + [s_["product"]["slug"] for s_ in stacks]) if f"{PH}/products/{s_}" not in _old_prod]  # 2140Z deep: saved product pages reused
+     for i in range(0, len(slugs), max(1, R.tabs)):
+         if over_budget(R):  # 1426Z: skip remaining product pages
+@@ -635,7 +635,7 @@
+              "hunted": fill(res["hunted"]["items"], ["url", "tagline", "date", "votes", "comments", "description"]),
+              "maker_history": fill(res["about"]["maker_history"], ["url", "tagline", "description", "votes", "comments"]),
+              "stacks": fill(res["stacks"]["items"], ["url", "tagline", "votes", "comments"]),
+-             "activity_comments": fill([x for x in res["activity"]["items"] if x["type"] == "left a comment"], ["text", "url", "on_launch_url", "datetime"]),
++             "activity_comments": fill([x for x in res["activity"]["items"] if x.get("type") == "left a comment"], ["text", "url", "on_launch_url", "datetime"]),
+              "forums": fill([x for x in res["forums"]["items"] if x.get("thread_full")], ["url", "title", "body", "date", "comments", "votes"])}
+     return {"tabs": cov, "header_pct": round(100 * num / den, 1) if den else 100.0, "header_items": [num, den], "field_fill_pct": fills}
+ 
