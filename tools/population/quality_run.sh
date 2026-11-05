@@ -10,6 +10,7 @@ gsutil -q -m rsync -d -x '.*(_code|logs|status|heartbeat|deep_list|claims)/.*|he
 gsutil -q -m rsync -r -x '.*\.log$' $B/raw/ph_population/people_live/vm_pgql/ $R/people_live/vm_pgql/
 mkdir -p $R/people_live/deep_list && gsutil -q -m rsync -d $B/raw/ph_population/people_live/vm/deep_list/ $R/people_live/deep_list/
 mkdir -p $R/signedin_upvotes && gsutil -q -m rsync $B/raw/_babysitter/signedin_upvotes/ $R/signedin_upvotes/ 2>/dev/null
+gsutil -q cp $B/raw/_pacetest/merged_ledger.txt $R/merged_ledger.txt 2>/dev/null || rm -f $R/merged_ledger.txt
 gsutil -q cp $B/raw/population/requests/deep_list_latest.tsv $R/deep_list_latest.tsv 2>/dev/null
 python3 "$REPO/tools/population/quality.py" $R "$SINCE" $W/quality_$TS.md $W/quality_$TS.jsonl > $W/quality_$TS.out
 # pace-test output (raw/_pacetest/<vm>/<h>.json, not the store): scored with the same person definition, appended to the report

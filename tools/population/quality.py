@@ -311,6 +311,15 @@ out = ["", "## PERSON-LEVEL OUTPUT CHECK (every saved person vs the full definit
 for o in ("full", "deep", "pgql_lists_only"):
     out.append(f"| {o} | {origin[o]:,} | {pc[(o, True)] - so[o]:,} | {so[o]:,} | {pc[(o, False)]:,} |")
 out += ["", "Top reasons (origin, reason): " + "; ".join(f"{o} {w} x{n:,}" for (o, w), n in reasons.most_common(20))]
+# merged pace-test people (raw/_pacetest/merged_ledger.txt): any later FAIL goes to Shreyas as GROKBOT URGENT
+mled = set()
+if os.path.exists(f"{D}/merged_ledger.txt"):
+    mled = {l.strip().lower() for l in open(f"{D}/merged_ledger.txt") if l.strip() and not l.startswith("#")}
+m_in = {h: d for h, d in latest.items() if h.lower() in mled}
+m_bad = Counter(w.split(":")[0] + ":" + w.split(":")[1] if ":" in w else w for h, d in m_in.items() for w in person_complete(d, h)[1])
+m_inc = sum(1 for h, d in m_in.items() if not person_complete(d, h)[0])
+out += ["", f"Merged pace-test people: ledger {len(mled):,}; in vm/ {len(m_in):,}; **MERGED_INCOMPLETE {m_inc:,}**" + (f" (reasons: {dict(m_bad.most_common(6))})" if m_inc else "")]
 open(OUT_MD, "a").write("\n".join(out) + "\n")
 print("\n".join(out))
 print(f"PERSON_INCOMPLETE={inc}")
+print(f"MERGED_INCOMPLETE={m_inc} MERGED_IN_VM={len(m_in)}")
