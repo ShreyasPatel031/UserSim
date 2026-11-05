@@ -12,6 +12,13 @@ mkdir -p $R/people_live/deep_list && gsutil -q -m rsync -d $B/raw/ph_population/
 mkdir -p $R/signedin_upvotes && gsutil -q -m rsync $B/raw/_babysitter/signedin_upvotes/ $R/signedin_upvotes/ 2>/dev/null
 gsutil -q cp $B/raw/population/requests/deep_list_latest.tsv $R/deep_list_latest.tsv 2>/dev/null
 python3 "$REPO/tools/population/quality.py" $R "$SINCE" $W/quality_$TS.md $W/quality_$TS.jsonl > $W/quality_$TS.out
+# pace-test output (raw/_pacetest/<vm>/<h>.json, not the store): scored with the same person definition, appended to the report
+if gsutil -q ls $B/raw/_pacetest/ >/dev/null 2>&1; then
+  rm -rf $W/pace; mkdir -p $W/pace/people_live/vm $W/pace/people_live/deep_list $W/pace/signedin_upvotes
+  gsutil -q -m cp "$B/raw/_pacetest/*/*.json" $W/pace/people_live/vm/ 2>/dev/null
+  gsutil -q -m cp "$B/raw/_pacetest/*/_signedin_upvotes/*.json" $W/pace/signedin_upvotes/ 2>/dev/null
+  { echo; echo "# PACE TEST (raw/_pacetest/, not in the store)"; python3 "$REPO/tools/population/quality.py" $W/pace "$SINCE" /dev/null /dev/null | sed -n '/PERSON-LEVEL/,$p'; } >> $W/quality_$TS.md
+fi
 gsutil -q cp $W/quality_$TS.jsonl $B/raw/_babysitter/quality/$TS.jsonl
 mkdir -p "$REPO/docs/population/quality"; cp $W/quality_$TS.md "$REPO/docs/population/quality/$TS.md"
 (cd "$REPO" && git add docs/population/quality/$TS.md && git commit -q -m "population: person-pull quality report $TS (counts only)
