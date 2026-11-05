@@ -1239,3 +1239,18 @@ all made with the earlier-list exclusion bug); Nov 3 73%, Nov 4 70% (provisional
 the fix, fdloop4 from ~03:00 UTC Nov 4; settles Nov 7). Per-post odds: 9,863 live forecasts, none scorable yet (first
 ~Nov 7). Live Caught (hn_minute): no posting day with all 4 list days settled yet (first: Nov 2, scorable at the Nov 6
 check). hn_minute minutes read (front / newest / pool): Nov 3 2,769 / 1,538 / 194; Nov 4 4,071 / 1,530 / 185.
+
+### Daily live readout 2026-11-05 ~00:55 UTC (LIVE_MIN_DAYS=2 live15.py; PROVISIONAL)
+Backtest headlines: 1 h 48.5%; 15 min 29.6% (Oct 2-14, live product) / 28.4% (Sep 1 - Oct 14); at posting 26.1%.
+Live, 5 posting days (Oct 31 - Nov 4), 4,843 posts, 127 winners so far. Full-coverage days (>= 95% seen by 15 min):
+Nov 2, 3, 4.
+| checkpoint | full-coverage days (headline) | all days |
+|---|---|---|
+| 1 h | votes + front page **41.0%** [27.0, 61.9]; per-minute model 37.3%; blend 28.9% | votes 37.8%; model 31.5% |
+| 15 min (posting clock) | votes 20.5%; per-minute model 19.3%; blend 19.3% | blend 19.7%; votes 17.3% |
+| at posting (odds tool) | 19.3% [9.5, 27.0] | 14.2% |
+Live table (per day; flags = that day's winners; per-minute model): Nov 2 15 min 7/37, 1 h 14/37 (misses: late risers 18,
+ranked below the cut 11); Nov 3 6/25, 11/25 (below the cut 13, late 6); Nov 4 3/21, 9/21 (below the cut 17, late 1).
+Seen by 15 min: Oct 31 41.7%, Nov 1 53.2%, Nov 2-4 99.7%. hn_minute minutes (front / newest / pool): Nov 4 4,071 /
+1,530 / 185. Per-minute odds: 1,317 files on Nov 4 (of 1,440 minutes), landing every minute on Nov 5.
+At posting the live odds fell on Nov 3-4 (6 / 46 winners) after 10/37 on Nov 2; Nov 3-4 labels are still unsettled.
