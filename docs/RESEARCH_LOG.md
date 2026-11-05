@@ -163,3 +163,17 @@ Model switches, direction reviews and agenda changes, newest last.
 - **Next E5 step: follow ties.** The person model uses no follows; its ties come from comments and upvotes only.
   - Sizing (upper bound, undated follows): when a person follows someone on the launch team, they pick it 22.5% of the time against 5.4% otherwise (x4.2, 1,579 people with complete live lists). The old people.parquet follows give the same x4.2.
   - Because follows are undated, this is leak-prone in a backtest (follows made after the launch). The honest test is forward, with first-seen-dated follow edges from the live list diffs, after the follower lists are complete.
+
+## 2026-11-05 06:30 UTC: Follower re-page re-check + whole-person rule audit (E5 agent)
+- **Store (people_live/vm, newest file per person): 14,198 people.**
+  - **9,286 complete**: every list tab (upvotes, hunted, collections, stacks, followers, following) at >= 98% of its header. Reviews are excluded per the README.
+  - 13,943 are complete if a PH end recorded in the paging record counts as complete.
+  - Short tabs: followers 3,548, upvotes 2,052, following 904, stacks 88, collections 43, hunted 17.
+- **Re-page not done.** For the 1,080 people queued after the 00:08Z alert, the share now >= 98% of header:
+  - followers: <100 71/653, 100-1,000 26/315, >1,000 0/112;
+  - following: <100 521/733, 100-1,000 236/289, >1,000 43/58.
+  - Most follower lists still end "hasNextPage_false" (PH's repeating cursor chain).
+  - The two budget-stopped lists (149,623 and 107,708 followers) have not resumed.
+- **Rule breach.** Between 03:01Z and 03:31Z, 39 person files were written that are not whole (a list tab below 98% with no PH end recorded; 34 have no incomplete marker): 38 by the babysitter's VM collector, 1 by pgql_test.
+  - Nothing newer than 03:31:46Z is in the store.
+  - Alerted (GROKBOT URGENT, via the orchestrator).
