@@ -31,6 +31,11 @@ def tabs():
     # whose pull_type is not a full pull, so any new one alerts.
     pt = T.drop_duplicates("person_id").pull_type.astype(str) if "pull_type" in T else pd.Series(dtype=str)
     out["_pull_types"] = {k: int(v) for k, v in pt.value_counts().items()}
+    # breach tail closed at 04:05:37Z Nov 5 (VM-2 STOP; babysitter logs): only non-full pulls fetched after it count
+    cut = pd.Timestamp(os.environ.get("RULE_CUTOFF", "2026-11-05T04:05:37Z"))
+    P = T.groupby("person_id").agg(pt=("pull_type", "first"), f=("fetched_at", "max")) if "pull_type" in T else pd.DataFrame(columns=["pt", "f"])
+    late = P[(P.pt.astype(str) != "full") & (pd.to_datetime(P.f, utc=True) > cut)]
+    out["_after_rule"] = {k: int(v) for k, v in late.pt.astype(str).value_counts().items()}
     for t, g in T.groupby("tab"):
         inc = g[~g.complete.astype(bool)]
         cls = inc.apply(short_kind, axis=1) if len(inc) else pd.Series(dtype=str)
@@ -114,10 +119,10 @@ def main():
     now = {"tabs": tabs(), "makers": makers()}
     seen, mail = mailbox(prev.get("mail_seen"))
     alerts = []
-    for k, v in (now["tabs"].get("_pull_types") or {}).items():
-        was = ((prev.get("tabs") or {}).get("_pull_types") or {}).get(k, 0)
-        if k != "full" and v > was and prev:
-            alerts.append(f"whole-person rule: {v - was} new people with pull_type '{k}' (not a full pull; {was} -> {v})")
+    for k, v in (now["tabs"].get("_after_rule") or {}).items():
+        was = ((prev.get("tabs") or {}).get("_after_rule") or {}).get(k, 0)
+        if v > was:
+            alerts.append(f"whole-person rule: {v - was} new people with pull_type '{k}' fetched after the 04:05Z Nov 5 cutoff ({was} -> {v})")
     for t, v in now["tabs"].items():
         if t.startswith("_"):
             continue
