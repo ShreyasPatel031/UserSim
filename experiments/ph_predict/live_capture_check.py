@@ -109,6 +109,12 @@ def check(day, T):
         gaps = [f"{a:%H:%M}-{b:%H:%M}Z" for a, b in zip(snaps, snaps[1:]) if (b - a) > pd.Timedelta(minutes=GAP_MIN)]
         if gaps:
             fail.append(f"{len(gaps)} snapshot gaps > {GAP_MIN:g} min: {', '.join(gaps[:6])}")
+        # trailing gap (orchestrator, Nov 5 01:34Z: capture stopped at 00:30Z and the between-snapshot check missed it):
+        # while the day's capture should be running (launch day + 7 days), the newest snapshot must be <= GAP_MIN old
+        now = pd.Timestamp.now(tz="UTC")
+        end = pd.Timestamp(f"{day} 00:00", tz="America/Los_Angeles").tz_convert("UTC") + pd.Timedelta(days=8)
+        if snaps and now < end and (now - snaps[-1]) > pd.Timedelta(minutes=GAP_MIN):
+            fail.append(f"capture stale: no snapshot since {snaps[-1]:%H:%M}Z ({(now - snaps[-1]).total_seconds() / 60:.0f} min)")
         if B is not None and {"snapshot_ts", "slug"} <= set(B.columns):
             pos = next((c for c in ("position", "board_position", "homepage_position") if c in B.columns), None)
             if pos is None:

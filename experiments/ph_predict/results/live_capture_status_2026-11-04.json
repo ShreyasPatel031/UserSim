@@ -2,28 +2,29 @@
  "day": "2026-11-04",
  "status": "FAIL",
  "counts": {
-  "posts": 1696,
-  "board": 1756,
-  "coverage": 49,
+  "posts": 2291,
+  "board": 2336,
+  "coverage": 66,
   "fallback_post_rows": 16,
-  "snapshots": 48,
+  "snapshots": 65,
   "launches": 35,
-  "vote_drops": 3,
-  "board_api_rows": 1680,
-  "board_missing": 1673,
-  "api_comments": 282,
+  "vote_drops": 6,
+  "board_api_rows": 2260,
+  "board_missing": 2253,
+  "api_comments": 293,
   "api_comments_no_user_id": 0,
   "api_comments_created_after_pull": 0
  },
  "fail": [
   "1 snapshot gaps > 20 min: 19:00-19:45Z",
-  "board: 1673 launch-snapshots without a board position"
+  "capture stale: no snapshot since 00:30Z (65 min)",
+  "board: 2253 launch-snapshots without a board position"
  ],
  "warn": [
   "comments_ts.jsonl missing",
   "people_ts.jsonl missing",
   "products_ts.jsonl missing",
-  "votes dropped between snapshots: 3 times on 3 launches"
+  "votes dropped between snapshots: 6 times on 6 launches"
  ],
- "checked_at": "2026-11-04T20:18:44Z"
+ "checked_at": "2026-11-05T01:35:23Z"
 }
