@@ -40,7 +40,8 @@ def tab_state(d, k):
     items = t.get("items") or []
     got = t.get("count", len(items))
     h = t.get("header") if t.get("header") is not None else (d.get("header") or {}).get(k)  # tab header may be an explicit null
-    ids = [x.get(IDK[k]) or x.get("url") for x in items if isinstance(x, dict)]
+    # activity: pgql saves raw nodes (no "type"/comment_id at top level) and full pulls save items; count a comment once per id
+    ids = [x.get(IDK[k]) or x.get("url") or (x.get("comment") or {}).get("id") or x.get("id") for x in items if isinstance(x, dict)]
     ids = [i for i in ids if i]
     dup = len(ids) - len(set(ids))
     ended = (t.get("paging") or {}).get("ended") or (((d.get("run") or {}).get("paging") or {}).get(k) or {}).get("ended")
