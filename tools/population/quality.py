@@ -77,7 +77,7 @@ def comment_time_ok(x):
         from datetime import datetime
         from zoneinfo import ZoneInfo
         lt = datetime.fromisoformat(str(t).replace("Z", "+00:00")).astimezone(ZoneInfo("America/Los_Angeles"))
-        return src in ("comment.createdAt", "comment.createdAt (thread capture)", "api_match") or lt.strftime("%H:%M:%S") != "00:01:00"
+        return src in ("comment.createdAt", "comment.createdAt (thread capture)", "comment.createdAt_permalink", "api_match") or lt.strftime("%H:%M:%S") != "00:01:00"
     except Exception:
         return False
 
