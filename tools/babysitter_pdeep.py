@@ -19,7 +19,7 @@ _ACTIVE = [0]
 def _over_budget(R):
     """2140Z audit fix 1: nic() is the whole VM's counter, so with K workers each person would be charged everyone's bytes.
     Charge each person an equal share of the VM's traffic since that person started (per-worker stop-gap)."""
-    return (time.time() - R.t0) >= PB.BUDGET_SECS or (PB.nic() - getattr(R, "b0", PB.nic())) / max(1, _ACTIVE[0]) >= PB.BUDGET_BYTES
+    return False  # 0030Z Shreyas: no per-person budget; only PH limits and the 195e9 weekly stop
 PB.over_budget = _over_budget  # module-global lookup: pull()/paging use this from here on
 _WB = {"t": 0.0, "v": (0, {})}
 def _week_bytes_cached():
@@ -49,7 +49,7 @@ async def worker_pages(ctx, R, first_handle, n):
 async def main(a):
     S = PB.Status(); token = a.token
     PB.BUDGET_SECS = PB.DEEP_SECS; PB.BUDGET_BYTES = PB.DEEP_BYTES  # deep budget, as in deep mode
-    a.person_timeout = max(a.person_timeout, PB.DEEP_SECS + 300)
+    a.person_timeout = None  # 0030Z: no per-person timeout
     ramp = [tuple(int(x) for x in t.split(":")) for t in a.ramp.split(",")]
     S.put(event="start", method="pdeep_v1", mode="pdeep", token=token, workers=K, tabs_per_worker=TABS,
           port=int(os.environ.get('PROXY_PORT', 0)), pkg_md5=PB.PKG_MD5)
@@ -101,7 +101,7 @@ async def main(a):
             if not h: break
             R = PB.R2(h, f'out/{h}.log', ramp); R.t0 = time.time(); R.b0 = PB.nic(); R.over = (lambda R=R: PB.over_budget(R)); R.partial = []
             t0 = time.time(); res = err = None; _ACTIVE[0] += 1
-            try: res = await asyncio.wait_for(PB.pull_deep(R, pages, h, a, cap), a.person_timeout)
+            try: res = await asyncio.wait_for(PB.pull_deep(R, pages, h, a, cap), None)
             except Blocked as e: err = ("block", str(e))
             except PB.PersonError as e: err = ("person_error", str(e))
             except asyncio.TimeoutError: err = ("timeout", "")

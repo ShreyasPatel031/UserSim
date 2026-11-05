@@ -5,7 +5,7 @@ PORT=$(curl -s -H Metadata-Flavor:Google http://metadata.google.internal/compute
 apt-get update -q >/dev/null 2>&1; apt-get install -y -q python3-pip xvfb libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1 >/dev/null 2>&1
 pip3 install -q --break-system-packages -U "camoufox[geoip]" >/dev/null 2>&1; python3 -m camoufox fetch >/dev/null 2>&1
 mkdir -p /opt/ph/reuse/out /opt/ph/profiles && cd /opt/ph/reuse
-gsutil -q cp $B/raw/ph_population/people_live/vm/_code/staging/reuse_0025Z_cap195.tgz reuse.tgz && tar xzf reuse.tgz
+gsutil -q cp $B/raw/ph_population/people_live/vm/_code/staging/reuse_0032Z_nobudget.tgz reuse.tgz && tar xzf reuse.tgz
 export PROXY_URL=$(gsutil -q cat $B/secrets/proxy_url.txt | python3 -c "import sys,urllib.parse as u;r=sys.stdin.read().strip();p=u.urlsplit(r);n=p.username if '__cr.' in p.username else p.username+'__cr.us';print(r.replace(p.username+':',n+':',1))")
 export PROXY_PORT=$PORT PDEEP_K=32 PDEEP_TABS=1
 V=$(hostname)

@@ -1,0 +1,13 @@
+32c32,33
+<     return (time.time() - R.t0) >= BUDGET_SECS or (nic() - getattr(R, "b0", nic())) >= BUDGET_BYTES
+---
+>     """0030Z Shreyas: no per-person time or byte budget at all. Only PH's own limits and the 195e9 weekly stop end a pull."""
+>     return False
+885c886
+<         global BUDGET_SECS, BUDGET_BYTES; BUDGET_SECS = DEEP_SECS; BUDGET_BYTES = DEEP_BYTES; a.person_timeout = max(a.person_timeout, DEEP_SECS + 300)
+---
+>         global BUDGET_SECS, BUDGET_BYTES; BUDGET_SECS = DEEP_SECS; BUDGET_BYTES = DEEP_BYTES  # 0030Z: unused (over_budget is always False; no person timeout)
+977c978
+<         try: res = await asyncio.wait_for(({'repulltabs': pull_tabs, 'repullstacks': pull_stacks, 'repullupvotes': pull_upvotes, 'deep': pull_deep}.get(a.mode, pull))(R, pages, h, a, cap), a.person_timeout)
+---
+>         try: res = await asyncio.wait_for(({'repulltabs': pull_tabs, 'repullstacks': pull_stacks, 'repullupvotes': pull_upvotes, 'deep': pull_deep}.get(a.mode, pull))(R, pages, h, a, cap), None)  # 0030Z: no per-person timeout
