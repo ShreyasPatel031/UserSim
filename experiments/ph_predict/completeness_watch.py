@@ -27,6 +27,10 @@ def tabs():
         return {}
     T = pd.read_parquet(f)
     out = {}
+    # Shreyas's whole-person rule (Nov 5 ~03:00Z, AGENTS.md): no lists-only / light / fast / two-pass pulls. Track people
+    # whose pull_type is not a full pull, so any new one alerts.
+    pt = T.drop_duplicates("person_id").pull_type.astype(str) if "pull_type" in T else pd.Series(dtype=str)
+    out["_pull_types"] = {k: int(v) for k, v in pt.value_counts().items()}
     for t, g in T.groupby("tab"):
         inc = g[~g.complete.astype(bool)]
         cls = inc.apply(short_kind, axis=1) if len(inc) else pd.Series(dtype=str)
@@ -110,7 +114,13 @@ def main():
     now = {"tabs": tabs(), "makers": makers()}
     seen, mail = mailbox(prev.get("mail_seen"))
     alerts = []
+    for k, v in (now["tabs"].get("_pull_types") or {}).items():
+        was = ((prev.get("tabs") or {}).get("_pull_types") or {}).get(k, 0)
+        if k != "full" and v > was and prev:
+            alerts.append(f"whole-person rule: {v - was} new people with pull_type '{k}' (not a full pull; {was} -> {v})")
     for t, v in now["tabs"].items():
+        if t.startswith("_"):
+            continue
         p = (prev.get("tabs") or {}).get(t, {})
         # alert only on our code stopping (server ends at PH's limits and near-complete lists are reported, not alerted)
         if v["code_stop"] > p.get("code_stop", 0):
