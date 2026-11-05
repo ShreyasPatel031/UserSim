@@ -216,3 +216,10 @@ First real full-list run at 32 parallel. **Blocked at 28.8 min:** `SSR /@<handle
 - 10005 failed its cold Cloudflare open 3 times today (21:54, 23:07 + earlier): IP flagged, released. Slot moved to 10013.
 - Keeper (tools/babysitter_keeper.sh, Shreyas 22:57Z "3 VMs at all times"): recreates any ended babysitter VM (new disk = new
   fingerprint, new session), 6 min after a long run, 15 min after one that died in < 8 min. 23:23Z: 39.4 people/min on 3 x c32.
+
+## Follow lists on big profiles (2026-11-05 00:15 UTC)
+- Fast pgql pulls of followers/following on big profiles stop at ~63–77% of the header with hasNextPage=false from PH: the
+  endCursor chain repeats pages (195 pages -> 2,987 unique of 4,241; 489 pages -> 7,166 of 11,255). PH's server end, not our
+  stop; the full driver's paging_v2 (offset + chain, merged by id) recovers more. 1,080 people from E5's inventory + 878 from the
+  quality report queued for a deep re-page (<h>.babysitter.repage*.json). deep_list 6,459 entries.
+- Deep budget per pass 3,600 s / 60 MB at 60 req/min per pdeep worker (~72k items); lists of 100k+ resume by cursor over 2–3 passes.
