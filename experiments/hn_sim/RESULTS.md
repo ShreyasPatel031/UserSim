@@ -1232,3 +1232,10 @@ score wins, so the single ranking already spends flags close to optimally for th
 48.5%. What can move the late-riser bucket: honest front-page ranks for 2025 posts so the full 1-h model trains on all of
 2025 with content (asked; Data Feeder pulling raw/hn_front_2025/), and off-HN traction before posting (backfill running;
 test pre-registered in offhn_test.py).
+
+### Live check 2026-11-05 00:31 UTC (score_live.py, live_caught.py)
+Settled list days: Oct 30 - Nov 2. Daily-list forecast, top 30 found at 21:00: Oct 31 47%, Nov 1 60%, Nov 2 57% (settled;
+all made with the earlier-list exclusion bug); Nov 3 73%, Nov 4 70% (provisional; Nov 4 is the first day forecast with
+the fix, fdloop4 from ~03:00 UTC Nov 4; settles Nov 7). Per-post odds: 9,863 live forecasts, none scorable yet (first
+~Nov 7). Live Caught (hn_minute): no posting day with all 4 list days settled yet (first: Nov 2, scorable at the Nov 6
+check). hn_minute minutes read (front / newest / pool): Nov 3 2,769 / 1,538 / 194; Nov 4 4,071 / 1,530 / 185.
