@@ -27,7 +27,7 @@ def _week_bytes_cached():
     workers sat idle. Cache it 2 min; the fleet uses ~1 GB/h, so the 29 GB stop can overshoot by ~35 MB at most."""
     if time.time() - _WB["t"] > 120: _WB["v"] = PB.week_bytes(); _WB["t"] = time.time()
     return _WB["v"]
-K = int(os.environ.get('PDEEP_K', 16))  # audit: K=4 for the first hour
+K = int(os.environ.get('PDEEP_K', 4 if _mem_gb() < 6 else 16))  # 0205Z (population audit): RAM-based default; PDEEP_K per VM overrides
 TABS = int(os.environ.get('PDEEP_TABS', 2))  # pages per worker
 B, VM = PB.B, PB.VM
 
