@@ -67,6 +67,21 @@ def tab_state(d, k):
     return v + ("+dup" if dup else ""), dup
 
 
+def comment_time_ok(x):
+    """A comment time is real unless it is PH's launch stamp (00:01:00 PT) or marked unknown. Checked 04:50Z against
+    2,291 API comment createdAt: feed.occurredAt (not the launch stamp) matched 29/29 to the second; launch stamps 0/19."""
+    t, src = x.get("datetime"), x.get("datetime_source")
+    if not t or x.get("comment_time_unknown") or src in ("feed.occurredAt_launch_stamp", "unknown"):
+        return False
+    try:
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        lt = datetime.fromisoformat(str(t).replace("Z", "+00:00")).astimezone(ZoneInfo("America/Los_Angeles"))
+        return src in ("comment.createdAt", "comment.createdAt (thread capture)", "api_match") or lt.strftime("%H:%M:%S") != "00:01:00"
+    except Exception:
+        return False
+
+
 def deep_fill(d):
     """what a complete record has that a lists-only pull lacks; None = not applicable"""
     hdr = d.get("header") or {}
@@ -84,7 +99,7 @@ def deep_fill(d):
     ups = ((d.get("upvotes") or {}).get("items") or []) + ((d.get("hunted") or {}).get("items") or [])
     out["product_fields"] = None if not ups else sum(1 for x in ups if x.get("description") or x.get("votes") is not None) >= 0.9 * len(ups)
     cm = [x for x in (d.get("activity") or {}).get("items") or [] if "comment" in (x.get("type") or x.get("raw_type") or "").lower()]
-    out["comment_times"] = None if not cm else all(x.get("datetime") for x in cm)
+    out["comment_times"] = None if not cm else all(comment_time_ok(x) for x in cm)
     return out
 
 
