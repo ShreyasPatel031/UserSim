@@ -35,6 +35,35 @@ def handle_of(d, path=None):
     return m.group(1).lower() if m else None
 
 
+SERVER_END = {"hasNextPage_false", "server_end", "server_end_offset", "empty_page", "no_endCursor", "complete"}
+
+
+def _end_reason(d, t, v, n, h):
+    """Why the tab's list stopped, from the pull's own paging record (PH agent request 09:31Z).
+    -> (end_reason, paging_ended, paging_pages); end_reason in server_end / ph_limit / partial / error / complete_no_end_record /
+    short_no_end_record / not_paged."""
+    run = d.get("run") or {}
+    pg = v.get("paging") if isinstance(v.get("paging"), dict) else {}
+    rp = ((run.get("paging") or {}).get(t) or {}) if isinstance(run.get("paging"), dict) else {}
+    tp = (((run.get("timing") or {}).get(t) or {}).get("paging") or {}) if isinstance(run.get("timing"), dict) else {}
+    ended = pg.get("ended") or rp.get("ended") or tp.get("ended")
+    pages = pg.get("pages") or rp.get("pages") or tp.get("pages")
+    err = pg.get("error") or rp.get("error") or tp.get("error")
+    if v.get("status") in ("partial", "truncated_budget") or v.get("truncated_budget"):
+        return "partial", ended, pages
+    if err:
+        return "error", ended, pages
+    if ended in SERVER_END or (run.get("exh") or {}).get(t) is True:
+        return "server_end", ended, pages
+    if v.get("complete_not_visible") and not v.get("capped_large"):
+        return "ph_limit", ended, pages
+    if t in ("about",):
+        return "not_paged", ended, pages
+    if h is not None and n is not None and (h == 0 or n >= 0.98 * h):
+        return "complete_no_end_record", ended, pages
+    return "short_no_end_record", ended, pages
+
+
 def load_full(path, ids, upload_time=None, source=None, filled=None):
     """filled: {"<handle>|<comment_id>": {"created_at", "method", "post_id"}} times recovered from API comments (F1 fix)."""
     filled = filled or {}
@@ -64,7 +93,8 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
         if v is None:
             tabs.append(dict(person_id=pid, tab=t, header=hdr.get(t), count=None, complete=False, stopped_early=None,
                              fetched_at=f, fetched_quality=f_quality, source=source, pull_type=pull_type,
-                             complete_not_visible=False, capped_large=False, signed_out_cap=False))
+                             complete_not_visible=False, capped_large=False, signed_out_cap=False,
+                             end_reason="missing_tab", paging_ended=None, paging_pages=None))
             continue
         items = v.get("items") or []
         ft = _ts(v.get("fetched_at")) if v.get("fetched_at") else f   # per-tab fetch time when the pull records it
@@ -77,11 +107,13 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
         explicit = bool(re.search(r"partial|stops after|first \d+ loaded|of ~|lazy-load continued", note))
         short = h is not None and t != "reviews" and n < 0.98 * h
         stopped = explicit or short
+        er, pe, pp = _end_reason(d, t, v, n, h)
         tabs.append(dict(person_id=pid, tab=t, header=h, count=n, complete=not stopped, stopped_early=stopped,
                          fetched_at=ft, fetched_quality=fq, source=source, pull_type=pull_type,
                          complete_not_visible=bool(v.get("complete_not_visible")) and not v.get("capped_large"),
                          capped_large=bool(v.get("capped_large") or v.get("status") == "capped_large"),
-                         signed_out_cap=bool(t == "upvotes" and (v.get("upvotes_capped") or (v.get("complete_not_visible") and 190 <= n <= 210)))))
+                         signed_out_cap=bool(t == "upvotes" and (v.get("upvotes_capped") or (v.get("complete_not_visible") and 190 <= n <= 210))),
+                         end_reason=er, paging_ended=pe, paging_pages=pp))
         for i, it in enumerate(items, 1):
             url = it.get("url") or ""
             prod = PRODUCT.search(url)
