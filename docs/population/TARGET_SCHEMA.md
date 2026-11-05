@@ -107,3 +107,14 @@ live loop's remaining budget. Comment times are not a model input; the 311 unkno
 Every time this session's safety or permission check blocks any action: within 1 minute, send the orchestrator a message
 starting "GROKBOT URGENT:" (no webhook held here) with what was blocked, the check's stated reason, and the one step Shreyas needs
 to take. One message per block; never only a mailbox file, never batched, never skipped because another route worked.
+
+## Standing rule: whole person or nothing (Shreyas, Nov 5 ~03:00 UTC; AGENTS.md)
+A person is pulled whole or not at all: every tab to PH's end plus header counts, or the file is not written. No lists-only,
+light, fast-first, capped or two-pass pulls under any name, by any agent. Population agent's part:
+- every 30 min, the PERSON-LEVEL OUTPUT CHECK in tools/population/quality.py scores saved people against that definition and
+  FAILs loudly (orchestrator + babysitter) on any incomplete saved pull;
+- any build that can write an incomplete person FAILs its audit (pgql lists-only builds included);
+- if the rule is seen broken (e.g. a new vm_pgql/ lists-only file, a GO token for a lists-only mode), alert Grok Bot within
+  1 minute via the orchestrator ("GROKBOT URGENT:"), naming the agent.
+Lesson (Nov 4–5): this agent loaded 11,600 lists-only people as "pending deep" and checked tabs and caps but never the
+person-level rule, so the breach ran ~6 h without a FAIL. Output checks, not just code checks.
