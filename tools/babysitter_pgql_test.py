@@ -139,6 +139,7 @@ async def person(h):
     res["stacks"] = {"header": hd.get("stacks"), "count": len(lists["stacks"] or []), "items": [{"name": (s.get("product") or {}).get("name"), "url": f"{PH}/products/{(s.get('product') or {}).get('slug')}", "stacked": s.get("createdAt")} for s in lists["stacks"] or []]}
     res["activity"] = {"count": len(lists["activity"] or []), "items": lists["activity"] or []}
     res["forums"] = {"count": len(lists["forums"] or []), "items": [{"title": n.get("title"), "url": P.purl(n.get("path")), "date": n.get("createdAt"), "comments": n.get("commentsCount")} for n in lists["forums"] or []], "note": "list only; thread bodies/replies need navigation (not pulled)"}
+    _fu = set(); res["forums"]["items"] = [x for x in res["forums"]["items"] if not x.get("url") or not (x["url"] in _fu or _fu.add(x["url"]))]; res["forums"]["count"] = len(res["forums"]["items"])  # 0200Z: dedupe threads by url
     res["reviews"] = {"header": hd.get("reviews"), "count": len(revs), "items": revs}
     res["run"] = {"paging": paging, "requests": G.reqs - r0, "secs": round(time.time() - t0, 1), "finished_utc": now()}
     return res
@@ -152,7 +153,9 @@ def cov(res):
         if exp and got < 0.98 * exp:  # 2028Z label rule: complete_not_visible only if PH's server ended the list after >=1 fetched page
             c[k]["status"] = "complete_not_visible" if (pgk.get("ended") in ("empty_page", "hasNextPage_false") and (pgk.get("pages") or 0) >= 1) else "FAIL"
     return c
+_vd = None
 async def main(a):
+    global _vd
     try:
         import hashlib, base64
         _t = [f for f in ('pgql.tgz', '/opt/ph/reuse/reuse.tgz') if os.path.exists(f)]
@@ -189,6 +192,8 @@ async def main(a):
     for _try in range(2):
         try:  # 0150Z: from_options ignores headless="virtual", so start Xvfb and pass DISPLAY ourselves (as ph_batch.open_browser does)
             from camoufox.virtdisplay import VirtualDisplay
+            try: _vd.kill()  # 0200Z: stop the previous attempt's Xvfb
+            except Exception: pass
             _vd = VirtualDisplay(); _o = PB.stable_options(R, _vd.get()); _e = dict(_o.get('env') or {}); _e['DISPLAY'] = _vd.get(); _e.pop('WAYLAND_DISPLAY', None); _o['env'] = _e; _o['headless'] = False
             cm = AsyncCamoufox(from_options=_o, persistent_context=True); ctx = await cm.__aenter__(); break
         except Exception as e:

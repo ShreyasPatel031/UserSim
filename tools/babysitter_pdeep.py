@@ -27,7 +27,7 @@ def _week_bytes_cached():
     workers sat idle. Cache it 2 min; the fleet uses ~1 GB/h, so the 29 GB stop can overshoot by ~35 MB at most."""
     if time.time() - _WB["t"] > 120: _WB["v"] = PB.week_bytes(); _WB["t"] = time.time()
     return _WB["v"]
-K = int(os.environ.get('PDEEP_K', 4))  # audit: K=4 for the first hour
+K = int(os.environ.get('PDEEP_K', 16))  # audit: K=4 for the first hour
 TABS = int(os.environ.get('PDEEP_TABS', 2))  # pages per worker
 B, VM = PB.B, PB.VM
 
@@ -36,7 +36,7 @@ async def worker_pages(ctx, R, first_handle, n):
     """n new pages at the PH origin + a response capture on the first one (as open_browser does for pages[0])."""
     pages = []
     for _ in range(n):
-        pg = await ctx.new_page(); await R.goto(pg, f"/@{first_handle}/stacks"); pages.append(pg)
+        pg = await ctx.new_page(); await pg.goto("https://www.producthunt.com/robots.txt", timeout=60000); pages.append(pg)  # 0200Z: same-origin warm-up that is not a profile page (32 profile loads in a row got CF blocks)
     cap = []
     async def onr(r):
         if '/frontend/graphql' in r.url and (r.request.method == 'POST' or re.search('Comment|Thread|Discussion|Stack', r.url)):
@@ -101,7 +101,7 @@ async def main(a):
             if not h: break
             R = PB.R2(h, f'out/{h}.log', ramp); R.t0 = time.time(); R.b0 = PB.nic(); R.over = (lambda R=R: PB.over_budget(R)); R.partial = []
             t0 = time.time(); res = err = None; _ACTIVE[0] += 1
-            try: res = await asyncio.wait_for(PB.pull_deep(R, pages, h, a, cap), None)
+            try: res = await PB.no_progress_watch(PB.pull_deep(R, pages, h, a, cap), R)
             except Blocked as e: err = ("block", str(e))
             except PB.PersonError as e: err = ("person_error", str(e))
             except asyncio.TimeoutError: err = ("timeout", "")
