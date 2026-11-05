@@ -42,7 +42,7 @@ def whole(res, R):
     Returns the list of reasons the person is NOT whole ([] = whole)."""
     hd = res.get("header") or {}; exh = getattr(R, "exh", {}) or {}; tim = (res.get("run") or {}).get("timing") or {}; why = []
     for k in ("upvotes", "hunted", "following", "followers", "collections", "stacks", "reviews"):
-        t = res.get(k) or {}; H = t.get("header") if t.get("header") is not None else hd.get(k); got = t.get("count", len(t.get("items") or []))
+        t = res.get(k) or {}; H = hd.get(k); got = t.get("count", len(t.get("items") or []))  # 0345Z population (3): profile header key required (else a recorded server end)
         ended = exh.get(k) is True or ((t.get("paging") or {}).get("ended") in _ENDED) or (((tim.get(k) or {}).get("paging") or {}).get("ended") in _ENDED)
         if t.get("status") in ("partial", "truncated_budget"): why.append(k + ":partial"); continue
         if H is None:
@@ -50,6 +50,13 @@ def whole(res, R):
             continue
         if got < H and not (ended or t.get("complete_not_visible")): why.append(k)
     if res.get("truncated_budget"): why.append("truncated_budget")
+    if any(not x.get("thread_full") for x in (res.get("forums") or {}).get("items") or []): why.append("forum_threads")  # 0345Z population (1)
+    act = (res.get("activity") or {}).get("items") or []
+    if any(x.get("type") == "left a comment" and not x.get("datetime") for x in act): why.append("activity_comment_time")  # 0345Z population (2)
+    if any(x.get("raw_type") == "DiscussionThread" and not x.get("thread") for x in act): why.append("activity_threads")
+    for k in ("forums", "activity"):  # paged lists with no header: need a recorded server end
+        t = res.get(k) or {}; pg = (((res.get("run") or {}).get("timing") or {}).get(k) or {}).get("paging") or t.get("paging") or {}
+        if t.get("status") in ("partial", "truncated_budget") or not ((getattr(R, "exh", {}) or {}).get(k) is True or pg.get("ended") in _ENDED): why.append(k + ":no_server_end")
     for x in ((res.get("about") or {}).get("maker_history") or []) + ((res.get("stacks") or {}).get("items") or []):
         if x.get("url") and "/products/" in str(x.get("url")) and x.get("counts_note") not in _PROD_OK: why.append("product_pages"); break
     for c in (res.get("collections") or {}).get("items") or []:
@@ -156,6 +163,8 @@ async def main(a):
             if nw:  # 0335Z strict gate: NOT written to the store; claim kept (no auto-retry); reasons in status for the fixed build
                 open(f'out/{h}.incomplete.json', 'w').write(json.dumps(res, ensure_ascii=False))
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.incomplete.json', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/incomplete/{h}.json')
+                open(f'out/{h}.rq', 'w').write(json.dumps({"reasons": nw, "utc": PB.now(), "vm": VM}))
+                await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.rq', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/requeue/{h}.json')  # 0345Z population (6): requeue list for the fixed build
                 S.put(handle=h, rc=2, method="pfull_v2", worker=wi, secs=secs, error="not_whole", reasons=nw); consec = 0; continue
             if res:
                 PB._CUR_R[0] = R; cv = PB.coverage(res)  # sync: no other worker runs between these two statements
