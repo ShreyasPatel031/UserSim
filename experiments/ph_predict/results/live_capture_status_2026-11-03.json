@@ -2,14 +2,14 @@
  "day": "2026-11-03",
  "status": "FAIL",
  "counts": {
-  "posts": 4294,
-  "board": 4294,
-  "coverage": 113,
+  "posts": 4332,
+  "board": 4332,
+  "coverage": 114,
   "fallback_post_rows": 0,
-  "snapshots": 113,
+  "snapshots": 114,
   "launches": 38,
   "vote_drops": 12,
-  "board_api_rows": 4294,
+  "board_api_rows": 4332,
   "board_missing": 0,
   "api_comments": 236,
   "api_comments_no_user_id": 0,
@@ -18,8 +18,8 @@
  "fail": [
   "posts: 152 rows with fetched_at more than 5 min from snapshot_ts",
   "board: 152 rows with fetched_at more than 5 min from snapshot_ts",
-  "4 snapshot gaps > 20 min: 20:15-20:45Z, 12:00-12:30Z, 19:00-19:45Z, 00:30-01:30Z",
-  "capture stale: no snapshot since 01:30Z (50 min)",
+  "5 snapshot gaps > 20 min: 20:15-20:45Z, 12:00-12:30Z, 19:00-19:45Z, 00:30-01:30Z, 01:30-02:45Z",
+  "capture stale: no snapshot since 02:45Z (34 min)",
   "board: no homepage / leaderboard page views (only the API ranking)"
  ],
  "warn": [
@@ -28,5 +28,5 @@
   "products_ts.jsonl missing",
   "votes dropped between snapshots: 12 times on 10 launches"
  ],
- "checked_at": "2026-11-05T02:19:46Z"
+ "checked_at": "2026-11-05T03:19:24Z"
 }
