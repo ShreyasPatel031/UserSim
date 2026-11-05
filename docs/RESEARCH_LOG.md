@@ -1189,3 +1189,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 13:35 UTC Nov 5 mailbox checked: nothing new.
 - 14:33 UTC Nov 5 mailbox checked: nothing new. PH agent 14:17Z: last week complete-only 3.32%/5.36%.
 - 15:34 UTC Nov 5 mailbox checked: nothing new; store flat (whole 2,025 + 108); no pulls since 11:51Z.
+- 16:33 UTC Nov 5 mailbox checked: nothing new. PH and population agents switched to change-only reporting to save usage.
