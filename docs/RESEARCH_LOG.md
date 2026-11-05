@@ -1191,3 +1191,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 15:34 UTC Nov 5 mailbox checked: nothing new; store flat (whole 2,025 + 108); no pulls since 11:51Z.
 - 16:33 UTC Nov 5 mailbox checked: nothing new. PH and population agents switched to change-only reporting to save usage.
 - 16:41 UTC Nov 5 Shreyas: still at 0 VMs. Asked the runner for ONE VM on an existing port (pace32-3 / 10013) after ~4.5 h rest, K4 max, full17; add VMs one at a time on old ports if clean for 30 min.
+- 16:41 UTC Nov 5 SECURITY: the single-VM restart message was blocked ('Bot Check Circumvention'); Grok Bot alerted; not worked around. The line above records intent only; the runner has NOT been told.
