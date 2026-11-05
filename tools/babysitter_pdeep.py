@@ -45,14 +45,12 @@ def whole(res, R):
         t = res.get(k) or {}; H = hd.get(k); got = t.get("count", len(t.get("items") or []))  # 0345Z population (3): profile header key required (else a recorded server end)
         ended = exh.get(k) is True or ((t.get("paging") or {}).get("ended") in _ENDED) or (((tim.get(k) or {}).get("paging") or {}).get("ended") in _ENDED)
         if t.get("status") in ("partial", "truncated_budget"): why.append(k + ":partial"); continue
-        if H is None:
-            if not ended: why.append(k + ":no_header")
-            continue
+        if H is None: why.append(k + ":no_header"); continue  # 0350Z population full5 (2): all 7 header keys required
         if got < H and not ended: why.append(k)  # 0350Z orchestrator (a): short of header passes only on a recorded PH server end (complete_not_visible alone is not enough)
     if res.get("truncated_budget"): why.append("truncated_budget")
     if any(not x.get("thread_full") for x in (res.get("forums") or {}).get("items") or []): why.append("forum_threads")  # 0345Z population (1)
     act = (res.get("activity") or {}).get("items") or []
-    if any(x.get("type") == "left a comment" and not x.get("datetime") for x in act): why.append("activity_comment_time")  # 0345Z population (2)
+    if any(x.get("type") == "left a comment" and (not x.get("datetime") or x.get("comment_time_unknown") or x.get("datetime_source") != "comment.createdAt") for x in act): why.append("activity_comment_time")  # 0350Z population full5 (1): own comment.createdAt only
     if any(x.get("raw_type") == "DiscussionThread" and not x.get("thread") for x in act): why.append("activity_threads")
     for k in ("forums", "activity"):  # paged lists with no header: need a recorded server end
         t = res.get(k) or {}; pg = (((res.get("run") or {}).get("timing") or {}).get(k) or {}).get("paging") or t.get("paging") or {}
@@ -96,6 +94,8 @@ def _full_queue():
 
 async def main(a):
     S = PB.Status(); token = a.token
+    if not FULL:  # 0355Z population full5 (3): deep (second-pass) mode is retired under the whole-person rule; it never writes
+        S.put(event="deep_retired", note="pdeep deep mode retired 2026-11-05; only PDEEP_MODE=full with the whole() gate may write"); return 5
     PB.BUDGET_SECS = PB.DEEP_SECS; PB.BUDGET_BYTES = PB.DEEP_BYTES  # deep budget, as in deep mode
     a.person_timeout = None  # 0030Z: no per-person timeout
     ramp = [tuple(int(x) for x in t.split(":")) for t in a.ramp.split(",")]
@@ -103,15 +103,16 @@ async def main(a):
           port=int(os.environ.get('PROXY_PORT', 0)), pkg_md5=PB.PKG_MD5)
     claims = set(PB.sh('gsutil', 'ls', f'{B}/claims/deep_*').stdout.split())
     queue = [h for h in sorted(PB.deep_handles(0)) if f'{B}/claims/deep_{h}' not in claims]
+    _tl = PB.sh('gsutil', 'cat', f'{B}/pdeep_list.{VM}.txt'); _has_tl = _tl.returncode == 0 and _tl.stdout.strip()
     if FULL:
         queue = _full_queue()
-        rq = [u for u in PB.sh('gsutil', 'ls', 'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/requeue/').stdout.split() if u.endswith('.json')]
+        rq = [] if _has_tl else [u for u in PB.sh('gsutil', 'ls', 'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/requeue/').stdout.split() if u.endswith('.json')]
         mine = []
         for u in rq:  # 0350Z orchestrator (b): rejected people are requeued automatically once the build changes; never left claimed
             try: e = json.loads(PB.sh('gsutil', 'cat', u).stdout)
             except Exception: continue
             if e.get("pkg_md5") != PB.PKG_MD5:
-                h_ = u.rsplit('/', 1)[1][:-5]; mine.append(h_); PB.sh('gsutil', '-q', 'rm', f'{B}/claims/{h_}', u)
+                h_ = u.rsplit('/', 1)[1][:-5]; mine.append(h_); PB.sh('gsutil', '-q', 'rm', f'{B}/claims/{h_}'); PB.sh('gsutil', '-q', 'rm', u)
         if mine: queue = list(dict.fromkeys(mine + queue)); S.put(event="requeued", n=len(mine))
     tl = PB.sh('gsutil', 'cat', f'{B}/pdeep_list.{VM}.txt')  # optional test list: only these deep_list people, in this order
     if tl.returncode == 0 and tl.stdout.strip():
@@ -177,8 +178,10 @@ async def main(a):
                 S.put(handle=h, rc=2, method="pfull_v2", worker=wi, secs=secs, error="not_whole", reasons=nw); consec = 0; continue
             if res:
                 PB._CUR_R[0] = R; cv = PB.coverage(res)  # sync: no other worker runs between these two statements
+                res.setdefault("run", {})["exh"] = {k: v for k, v in (getattr(R, "exh", {}) or {}).items()}  # 0445Z population: persist PH server-end record so the gate's decision can be verified
                 json.dump(res, open(f'out/{h}.json', 'w'), indent=1, ensure_ascii=False)
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.json', f'{B}/{h}.json')
+                await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'rm', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/requeue/{h}.json')  # whole save clears its requeue entry (no-op if none)
                 if FULL and (res.get("upvotes") or {}).get("upvotes_capped"):  # 0350Z orchestrator (a): PH's signed-out upvote stop -> queued for the signed-in upvotes pass
                     open(f'out/{h}.su', 'w').write(json.dumps({"header": (res.get("header") or {}).get("upvotes"), "got": res["upvotes"].get("count"), "utc": PB.now(), "vm": VM}))
                     await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.su', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/signedin_upvotes/{h}.json')
