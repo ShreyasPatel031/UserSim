@@ -8,6 +8,7 @@ exec 8>"$W/.quality.lock"; flock -n 8 || { echo "quality run already active"; ex
 mkdir -p $R/people_live/vm $R/people_live/vm_pgql
 gsutil -q -m rsync -d -x '.*(_code|logs|status|heartbeat|deep_list|claims)/.*|heartbeat.*' $B/raw/ph_population/people_live/vm/ $R/people_live/vm/
 gsutil -q -m rsync -r -x '.*\.log$' $B/raw/ph_population/people_live/vm_pgql/ $R/people_live/vm_pgql/
+mkdir -p $R/people_live/deep_list && gsutil -q -m rsync -d $B/raw/ph_population/people_live/vm/deep_list/ $R/people_live/deep_list/
 python3 "$REPO/tools/population/quality.py" $R "$SINCE" $W/quality_$TS.md $W/quality_$TS.jsonl > $W/quality_$TS.out
 gsutil -q cp $W/quality_$TS.jsonl $B/raw/_babysitter/quality/$TS.jsonl
 mkdir -p "$REPO/docs/population/quality"; cp $W/quality_$TS.md "$REPO/docs/population/quality/$TS.md"

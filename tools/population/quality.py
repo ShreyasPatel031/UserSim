@@ -82,6 +82,16 @@ def deep_fill(d):
     return out
 
 
+# deep_list entries (vm/deep_list/<handle>.<tag>.json): which tabs are already queued for the deep pass per person
+queued = defaultdict(set)
+for p_ in glob.glob(f"{D}/people_live/deep_list/*.json"):
+    try:
+        for l in open(p_):
+            e = json.loads(l)
+            queued[(e.get("handle") or "").lower()] |= set(e.get("tabs") or ["*"])
+    except Exception:
+        pass
+
 rows, people = [], {}
 # kind comes from the pull's method (pgql pulls are also written to vm/<h>.json), not from the folder
 files = [(p, "fast_c32") for p in glob.glob(f"{D}/people_live/vm_pgql/_run_*/*.json")] + \
@@ -103,6 +113,10 @@ for p, src in files:
     h = handle_of(d, p)
     req_missing = [f for f in ("ph_user_id", "header", "run") if not d.get(f)]
     states = {k: tab_state(d, k)[0] for k in TABS}
+    q = queued.get(h, set())
+    for k in TABS:  # a short fast tab already on the person's deep_list is pending deep, not an open gap
+        if kind == "fast_c32" and states[k].startswith("FAIL_short") and ("*" in q or k in q):
+            states[k] = states[k].replace("FAIL_short", "queued_deep")
     fill = deep_fill(d)
     rows.append({"handle": h, "kind": kind, "finished": fin, "states": states, "fill": fill, "req_missing": req_missing,
                  "pkg_md5": (d.get("run") or {}).get("pkg_md5")})
@@ -116,14 +130,14 @@ for kind in ("fast_c32", "full", "deep"):
     rs = [r for r in rows if r["kind"] == kind]
     if not rs:
         continue
-    lines += [f"## {kind}: {len(rs):,} pulls", "", "| Tab | complete | ph_limit | rating_only | FAIL_short | partial | no_header | missing_tab | dup |", "|---|---|---|---|---|---|---|---|---|"]
+    lines += [f"## {kind}: {len(rs):,} pulls", "", "| Tab | complete | ph_limit | rating_only | FAIL_short | queued_deep | partial | no_header | missing_tab | dup |", "|---|---|---|---|---|---|---|---|---|---|"]
     for k in TABS:
         c = Counter(r["states"][k].split("+")[0] for r in rs); dup = sum(1 for r in rs if "+dup" in r["states"][k])
-        lines.append(f"| {k} | {c['complete']} | {c['ph_limit']} | {c['rating_only']} | {c['FAIL_short']} | {c['partial']} | {c['no_header']} | {c['missing_tab']} | {dup} |")
+        lines.append(f"| {k} | {c['complete']} | {c['ph_limit']} | {c['rating_only']} | {c['FAIL_short']} | {c['queued_deep']} | {c['partial']} | {c['no_header']} | {c['missing_tab']} | {dup} |")
         if c["FAIL_partial"]:
             flags.append((kind, k, "partial after no-budget build", c["FAIL_partial"], "a per-person budget/timeout still cut this tab (should not exist after 00:30Z)"))
         if c["FAIL_short"]:
-            flags.append((kind, k, "FAIL_short", c["FAIL_short"], "list stopped short of the header with no server end recorded (paging/cap in our code)"))
+            flags.append((kind, k, "FAIL_short", c["FAIL_short"], "list stopped short of the header with no server end recorded, and NOT on the person's deep_list (paging/cap in our code; nobody will fix it)"))
         if dup:
             flags.append((kind, k, "duplicate ids", dup, "merge or paging repeated items"))
         if kind != "fast_c32" and c["no_header"]:
