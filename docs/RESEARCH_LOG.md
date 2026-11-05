@@ -1153,3 +1153,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 09:33 UTC Nov 5 mailbox checked: nothing new; live capture down (SA).
 - 09:35 UTC Nov 5 Hourly check: 5 pace VMs RUNNING; store whole 1,288 + 58 signed-out (734 merged, 0 incomplete); fleet ~8.4 whole/min at the 09:16 check; last week complete-only 2.24% (PH read pending a post-merge store); steady-rate result ~10:20Z. Pipeline/capture still down (SA).
 - 09:48 UTC Nov 5 Population: tabs.parquet adds end_reason/paging_ended/paging_pages per (person, tab) (4937c94c), live from the 10:05 rebuild; relayed to the PH agent. Distribution: stacks error 14,485 (lists-only pgql, known incomplete), reviews short_no_end_record 13,283, upvotes server_end 13,128.
+- 09:49 UTC Nov 5 Steady-rate check 3 (09:49Z): fleet 12.7 whole/min, all from 3 VMs at K8 (pace32-6 6.5/min, -5 3.4, -1 2.7), 0 blocks at K8 over 45–56 min. K16 VMs 3/4 blocked (in hold, resume at K8). Pattern: K16 blocks in 20–40 min, K8 holds.
