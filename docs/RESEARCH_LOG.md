@@ -1175,3 +1175,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 11:32 UTC Nov 5 Population: 11:05 merge VERIFIED: complete 2,052 → 2,110; whole 2,002 + 108 signed-out; ledger 1,499, MERGED_INCOMPLETE 0. Pace ~1/min (blocked). Rebuild time 1,224 s (published 11:28Z); if it passes ~1,400 s, an incremental vm/ sync.
 - 11:34 UTC Nov 5 mailbox checked: nothing new.
 - 11:39 UTC Nov 5 Hourly check: pace VMs (above); store whole 2,002 + 108 (1,499 merged, 0 incomplete); last week complete-only 2.51%/4.20%; all VMs in PH block backoff since ~10:35–10:48Z, ~1 whole/min; pause decision with Shreyas.
+- 11:50 UTC Nov 5 Runner 11:50Z: all 5 VMs blocked again at K4 (11:18–11:49Z); now in 80-min holds (backoff is pausing the fleet itself); 0.4 whole/min over the last hour (23 whole). PH has refused the operation at any K since ~10:00Z. Recommendation stands: a deliberate pause of several hours, then one VM at K4.
