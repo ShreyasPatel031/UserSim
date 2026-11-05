@@ -1179,3 +1179,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 12:08 UTC Nov 5 12:05 merge done: 23/23 copied no-clobber; logged. Expected 2,110 → ~2,133.
 - 12:24 UTC Nov 5 PH agent 12:17Z: last week complete-only 2.58%/4.28% (gap ~14,730); Oct 1–24 2,116 complete; tier 0 1,363 (only ~22 became whole this hour). Answered: the priority queue has been live since ~10:45Z, but the fleet has been blocked since ~10:35Z; the jump came from the earlier need_list-order merge.
 - 12:28 UTC Nov 5 Population: 12:05 merge VERIFIED: complete 2,110 → 2,133; whole 2,025 + 108; ledger 1,522; MERGED_INCOMPLETE 0. Pace: no new whole people since 11:51 (fleet fully held by blocks). Rebuild 1,090 s.
+- 12:34 UTC Nov 5 mailbox checked: nothing new.
