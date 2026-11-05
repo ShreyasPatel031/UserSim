@@ -70,6 +70,10 @@ def short_kind(r):
         return "unclear" if (r.tab == "upvotes" and h > 205 and c < 185) else "server_end"
     if h - c <= max(3, 0.02 * h):
         return "near_complete"
+    # population agent (Nov 5 09:30Z): small follower / following lists that PH ends on page 1 (hasNextPage false) below
+    # the header are PH's own end; tabs.parquet carries no paging trail, so report these as unclear, not code stops
+    if r.tab in ("followers", "following") and h <= 50 and c < 20 + 1:
+        return "unclear"
     return "code_stop"
 
 
