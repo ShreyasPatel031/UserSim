@@ -30,6 +30,9 @@ def handle_of(d, path):
     return (m.group(1) if m else os.path.basename(path).split(".")[0]).lower()
 
 
+NOBUDGET_SINCE = "2026-11-05T00:30:00Z"  # Shreyas: no per-person budget from here on; partial after this is a FAIL
+
+
 def tab_state(d, k):
     t = d.get(k)
     if not isinstance(t, dict):
@@ -42,7 +45,8 @@ def tab_state(d, k):
     dup = len(ids) - len(set(ids))
     ended = (t.get("paging") or {}).get("ended") or (((d.get("run") or {}).get("paging") or {}).get(k) or {}).get("ended")
     if t.get("status") in ("partial", "truncated_budget") or t.get("truncated_budget"):
-        v = "partial"
+        fin = (d.get("run") or {}).get("finished_utc") or ""
+        v = "FAIL_partial" if fin >= NOBUDGET_SINCE else "partial"
     elif k in ("activity", "forums"):
         v = "complete"  # no header shown for these tabs
     elif h is None:
@@ -116,6 +120,8 @@ for kind in ("fast_c32", "full", "deep"):
     for k in TABS:
         c = Counter(r["states"][k].split("+")[0] for r in rs); dup = sum(1 for r in rs if "+dup" in r["states"][k])
         lines.append(f"| {k} | {c['complete']} | {c['ph_limit']} | {c['rating_only']} | {c['FAIL_short']} | {c['partial']} | {c['no_header']} | {c['missing_tab']} | {dup} |")
+        if c["FAIL_partial"]:
+            flags.append((kind, k, "partial after no-budget build", c["FAIL_partial"], "a per-person budget/timeout still cut this tab (should not exist after 00:30Z)"))
         if c["FAIL_short"]:
             flags.append((kind, k, "FAIL_short", c["FAIL_short"], "list stopped short of the header with no server end recorded (paging/cap in our code)"))
         if dup:
