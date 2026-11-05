@@ -73,7 +73,7 @@ async def main(a):
     if FULL: queue = _full_queue()
     tl = PB.sh('gsutil', 'cat', f'{B}/pdeep_list.{VM}.txt')  # optional test list: only these deep_list people, in this order
     if tl.returncode == 0 and tl.stdout.strip():
-        only = [l.strip().lower() for l in tl.stdout.splitlines() if l.strip()]; queue = [h for h in only if h in set(queue)]
+        only = [l.strip().lower() for l in tl.stdout.splitlines() if l.strip()]; queue = only if FULL else [h for h in only if h in set(queue)]  # 0318Z: FULL test list = pull exactly these people
         S.put(event="pdeep_test_list", n=len(queue))
     if not queue: S.put(event="done", people=0, note="deep_list empty"); return 0
     lr = PB.R2('_session', f'out/_session_{VM}.log', ramp); os.makedirs('out', exist_ok=True)
@@ -102,7 +102,7 @@ async def main(a):
             if FULL and st["qi"] and st["qi"] % 500 == 0 and not st.get("rb_" + str(st["qi"])):  # 0225Z audit: pick up new need_list rows every 500 people
                 st["rb_" + str(st["qi"])] = 1; queue[st["qi"]:] = [x for x in dict.fromkeys(queue[st["qi"]:] + await asyncio.to_thread(_full_queue))]
             h = queue[st["qi"]]; st["qi"] += 1
-            if FULL and await asyncio.to_thread(PB.gexists, f'{h}.json'): continue  # 0225Z audit: someone saved this person since the queue was built
+            if FULL and not os.environ.get('PDEEP_FORCE') and await asyncio.to_thread(PB.gexists, f'{h}.json'): continue  # 0225Z audit: someone saved this person since the queue was built
             if await asyncio.to_thread(PB.claim, h if FULL else f'deep_{h}'): return h
         return None
 

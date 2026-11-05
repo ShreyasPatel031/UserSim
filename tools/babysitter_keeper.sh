@@ -5,7 +5,7 @@
 # on the port (sticky exit IP may rotate). Backoff per slot: 6 min after a long run, 15 min after a run that died in < 8 min.
 S=/tmp/claude-0/-home-user-UserSim/985ad5f2-8c78-5e96-8903-dc657024cd94/scratchpad
 B=gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/pull
-SLOTS="feeder-babysitter-1:10007:bsit_vm2.sh feeder-babysitter-2:10006:bsit_vm2.sh feeder-babysitter-3:10013:bsit_vm2.sh feeder-babysitter-4:10018:bsit_vm2_c64.sh feeder-babysitter-5:10019:bsit_vm2_c64.sh feeder-babysitter-6:10020:bsit_vm2_c64.sh feeder-babysitter-deep-1:10014:pdeep_vm.sh feeder-babysitter-deep-2:10015:pdeep_vm.sh feeder-babysitter-deep-3:10016:pdeep_vm.sh feeder-babysitter-deep-4:10017:pdeep_vm.sh"
+SLOTS="feeder-babysitter-1:10007:pfull_vm.sh feeder-babysitter-2:10006:pfull_vm.sh feeder-babysitter-3:10013:pfull_vm.sh feeder-babysitter-4:10018:pfull_vm.sh feeder-babysitter-5:10019:pfull_vm.sh feeder-babysitter-6:10020:pfull_vm.sh feeder-babysitter-7:10014:pfull_vm.sh feeder-babysitter-8:10015:pfull_vm.sh feeder-babysitter-9:10016:pfull_vm.sh feeder-babysitter-10:10017:pfull_vm.sh"
 declare -A made last_exit
 log(){ echo "$(date -u +%H:%M:%S) $*"; }
 create(){ # $1 vm $2 port $3 startup script
@@ -23,7 +23,7 @@ while true; do
     tail=$(gsutil -q cat $B/run_$vm.log 2>/dev/null | tail -2)
     [ "${made[$vm]}" = 0 ] && { ct=$(gcloud compute instances describe $vm --zone us-central1-a --format="value(creationTimestamp)" 2>/dev/null); [ -n "$ct" ] && made[$vm]=$(date -d "$ct" +%s); }
     lu=$(gsutil ls -l gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_population/people_live/vm/status/$vm.jsonl 2>/dev/null | awk 'NR==1{print $2}')
-    if [ -n "$lu" ] && [ "${made[$vm]}" != 0 ] && [ $(( now - ${made[$vm]} )) -gt 1200 ] && [ $(( now - $(date -d "$lu" +%s) )) -gt $( [[ $vm == *deep* ]] && echo 2700 || echo 720 ) ] && ! echo "$tail" | grep -q '^EXIT'; then
+    if [ -n "$lu" ] && [ "${made[$vm]}" != 0 ] && [ $(( now - ${made[$vm]} )) -gt 1200 ] && [ $(( now - $(date -d "$lu" +%s) )) -gt $( echo 900 ) ] && ! echo "$tail" | grep -q '^EXIT'; then
       log "STALLED $vm (no status row for 12 min fast / 45 min deep); recreating"; create $vm $port $scr; continue; fi
     if echo "$tail" | grep -q '^EXIT'; then
       age=$(( now - ${made[$vm]:-0} )); wait=360; [ $age -lt 480 ] && wait=900
