@@ -223,3 +223,12 @@ First real full-list run at 32 parallel. **Blocked at 28.8 min:** `SSR /@<handle
   stop; the full driver's paging_v2 (offset + chain, merged by id) recovers more. 1,080 people from E5's inventory + 878 from the
   quality report queued for a deep re-page (<h>.babysitter.repage*.json). deep_list 6,459 entries.
 - Deep budget per pass 3,600 s / 60 MB at 60 req/min per pdeep worker (~72k items); lists of 100k+ resume by cursor over 2–3 passes.
+
+## 2026-11-05 04:20Z — whole-pull parallelism per IP (pdeep full mode, one Camoufox, 1 tab/worker, ramp 1:150)
+| K (people at once, one IP) | whole people/min | blocks |
+|---|---|---|
+| 16 | ~4 | 0 (35 min) |
+| 32 | 10–11 | 0 (27 min) |
+| 64 | testing | – |
+| 128 | ~2 | blocked at minute 9: Cloudflare challenge on thread-page navigations (/p/...); GraphQL never blocked |
+The limit is HTML page loads per IP, not GraphQL. Cold browser opens still fail at random (403 on the first profile load); a new fingerprint on a new port clears it. Running 3 VMs at K32 from 04:15Z (Shreyas).
