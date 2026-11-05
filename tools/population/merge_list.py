@@ -14,7 +14,8 @@ W = sys.argv[1]
 G = "gs://usersim-bakeoff-347838016394/usersim_sim/raw"
 T = f"{G}/_pacetest"
 PASSED = {"XpPuFRfyk37T2Rzdz5cIAQ==", "3QUc3/TCsXoVuac0bB2/+g==", "lZ4IRKn8K+vySvT1GuNB5w==", "cMA/79uhIsWH6pZ6JDL5Pg==",
-          "1QwHU3ILccX2sYXAmSCFpQ==", "yk+t8UiOwJAOvuXbg0FCKA=="}  # full7..full12, each PASSed by population
+          "1QwHU3ILccX2sYXAmSCFpQ==", "yk+t8UiOwJAOvuXbg0FCKA==",
+          "vqbWasUGY8DCao/wzvebLw==", "j6++x//+3CYoHnUxVkDHWQ=="}  # full7..full14, each PASSed by population
 NOMD5_OK = "XpPuFRfyk37T2Rzdz5cIAQ=="  # full7 predates run.pkg_md5 in the JSON; accepted only if the run status shows full7
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
 D = f"{W}/mg"
