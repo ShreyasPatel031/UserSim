@@ -185,3 +185,60 @@ with open(OUT_ROWS, "w") as f:
         f.write(json.dumps(r) + "\n")
 print("\n".join(lines[-(len(flags) + 2):]))
 print(f"FLAGS={len(flags)}")
+
+
+# ---------- person-level OUTPUT check (Shreyas, Nov 5 03:00Z): every saved person scored against the full definition ----------
+# A saved person (latest vm/<h>.json) is COMPLETE only if: all 10 tabs present; header has followers, following, hunted,
+# collections, stacks, reviews, upvotes; every list tab complete or server-ended (no FAIL_short / partial / no_header);
+# collection items present for every collection with products; every forum thread opened; review items present if the header
+# says reviews > 0; comment times present. Anything else = INCOMPLETE, and the report says why.
+ALL_TABS = ("about", "forums", "activity", "upvotes", "hunted", "collections", "stacks", "reviews", "followers", "following")
+HDR_KEYS = ("followers", "following", "hunted", "collections", "stacks", "reviews", "upvotes")
+
+
+def person_complete(d):
+    why = []
+    for t in ALL_TABS:
+        if not isinstance(d.get(t), dict):
+            why.append(f"missing_tab:{t}")
+    hdr = d.get("header") or {}
+    miss = [k for k in HDR_KEYS if hdr.get(k) is None]
+    if miss:
+        why.append("header_missing:" + ",".join(miss))
+    for k in TABS:
+        st = tab_state(d, k)[0].split("+")[0]
+        if st in ("FAIL_short", "FAIL_partial", "partial", "no_header", "queued_deep"):
+            why.append(f"{k}:{st}")
+    f = deep_fill(d)
+    for k in ("collection_items", "forum_threads", "reviews_items", "comment_times"):
+        if f.get(k) is False:
+            why.append(f"not_filled:{k}")
+    return not why, why
+
+
+latest = {}
+for p in glob.glob(f"{D}/people_live/vm/*.json"):
+    try:
+        d = json.load(open(p))
+    except Exception:
+        continue
+    if isinstance(d, dict) and ("upvotes" in d or "header" in d):
+        latest[handle_of(d, p)] = d
+pc = Counter(); reasons = Counter(); origin = Counter()
+for h, d in latest.items():
+    ok, why = person_complete(d)
+    o = "pgql_lists_only" if "pgql" in str(d.get("method") or "").lower() and not (d.get("run") or {}).get("deep_passes") else \
+        ("deep" if (d.get("run") or {}).get("deep_passes") else "full")
+    pc[(o, ok)] += 1; origin[o] += 1
+    for w in why:
+        reasons[(o, w.split(":")[0] + ":" + w.split(":")[1].split(",")[0] if ":" in w else w)] += 1
+inc = sum(v for (o, ok), v in pc.items() if not ok)
+out = ["", "## PERSON-LEVEL OUTPUT CHECK (every saved person vs the full definition)", "",
+       f"Saved people (latest vm/<h>.json): {len(latest):,}; COMPLETE {len(latest) - inc:,}; **INCOMPLETE {inc:,}**", "",
+       "| Origin | saved | complete | INCOMPLETE |", "|---|---|---|---|"]
+for o in ("full", "deep", "pgql_lists_only"):
+    out.append(f"| {o} | {origin[o]:,} | {pc[(o, True)]:,} | {pc[(o, False)]:,} |")
+out += ["", "Top reasons (origin, reason): " + "; ".join(f"{o} {w} x{n:,}" for (o, w), n in reasons.most_common(12))]
+open(OUT_MD, "a").write("\n".join(out) + "\n")
+print("\n".join(out))
+print(f"PERSON_INCOMPLETE={inc}")
