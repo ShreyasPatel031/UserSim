@@ -9,6 +9,8 @@ snap() { { gsutil ls -l "$B/from_grokbot/" 2>/dev/null; gsutil ls -l "$B/to_clau
 [ -f "$INBOX_DIR/seen.txt" ] || snap > "$INBOX_DIR/seen.txt"
 while true; do
   snap > "$INBOX_DIR/now.txt"
+  # If the listing failed (e.g. GCS credentials down), keep the old seen list; otherwise every old file replays.
+  [ -s "$INBOX_DIR/now.txt" ] || { sleep 15; continue; }
   comm -13 "$INBOX_DIR/seen.txt" "$INBOX_DIR/now.txt" | while read -r ts url; do
     # A file that is merely rewritten (e.g. an auto-regenerated in-progress reply) is delivered at most once per hour.
     now_s=$(date +%s); last=$(awk -v u="$url" '$2==u{t=$1} END{print t+0}' "$INBOX_DIR/delivered.txt" 2>/dev/null)
