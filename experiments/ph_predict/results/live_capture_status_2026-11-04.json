@@ -19,7 +19,7 @@
   "posts: 35 rows with fetched_at more than 5 min from snapshot_ts",
   "board: 34 rows with fetched_at more than 5 min from snapshot_ts",
   "3 snapshot gaps > 20 min: 19:00-19:45Z, 00:30-01:30Z, 01:30-02:45Z",
-  "capture stale: no snapshot since 02:45Z (34 min)",
+  "capture stale: no snapshot since 02:45Z (336 min)",
   "board: 2321 launch-snapshots without a board position"
  ],
  "warn": [
@@ -28,5 +28,5 @@
   "products_ts.jsonl missing",
   "votes dropped between snapshots: 6 times on 6 launches"
  ],
- "checked_at": "2026-11-05T03:19:09Z"
+ "checked_at": "2026-11-05T08:21:25Z"
 }

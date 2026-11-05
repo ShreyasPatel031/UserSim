@@ -1,0 +1,17 @@
+{
+ "day": "2026-11-05",
+ "status": "FAIL",
+ "counts": {},
+ "fail": [
+  "posts_ts.jsonl missing",
+  "coverage_ts.jsonl missing"
+ ],
+ "warn": [
+  "comments_ts.jsonl missing",
+  "board_ts.jsonl missing",
+  "people_ts.jsonl missing",
+  "products_ts.jsonl missing",
+  "api_comments/ missing"
+ ],
+ "checked_at": "2026-11-05T08:21:07Z"
+}
