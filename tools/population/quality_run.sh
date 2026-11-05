@@ -9,6 +9,7 @@ mkdir -p $R/people_live/vm $R/people_live/vm_pgql
 gsutil -q -m rsync -d -x '.*(_code|logs|status|heartbeat|deep_list|claims)/.*|heartbeat.*' $B/raw/ph_population/people_live/vm/ $R/people_live/vm/
 gsutil -q -m rsync -r -x '.*\.log$' $B/raw/ph_population/people_live/vm_pgql/ $R/people_live/vm_pgql/
 mkdir -p $R/people_live/deep_list && gsutil -q -m rsync -d $B/raw/ph_population/people_live/vm/deep_list/ $R/people_live/deep_list/
+mkdir -p $R/signedin_upvotes && gsutil -q -m rsync $B/raw/_babysitter/signedin_upvotes/ $R/signedin_upvotes/ 2>/dev/null
 gsutil -q cp $B/raw/population/requests/deep_list_latest.tsv $R/deep_list_latest.tsv 2>/dev/null
 python3 "$REPO/tools/population/quality.py" $R "$SINCE" $W/quality_$TS.md $W/quality_$TS.jsonl > $W/quality_$TS.out
 gsutil -q cp $W/quality_$TS.jsonl $B/raw/_babysitter/quality/$TS.jsonl

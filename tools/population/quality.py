@@ -213,6 +213,10 @@ for p_ in glob.glob(f"{D}/people_live/deep_list/*.json"):
         pass
 
 
+for p_ in glob.glob(f"{D}/signedin_upvotes/*.json"):  # babysitter queue raw/_babysitter/signedin_upvotes/<h>.json (bsit_full5)
+    signed_in_q.add(os.path.basename(p_)[:-5].lower())
+
+
 def signed_out_end(d):
     """Upvotes stopped at PH's signed-out ~200 end: tagged upvotes_capped (or 190-210 items short of the header) AND the
     paging record shows PH's end. Orchestrator 03:36Z: whole for the signed-out pass only if also queued for signed-in."""
