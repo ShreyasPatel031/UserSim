@@ -196,8 +196,42 @@ ALL_TABS = ("about", "forums", "activity", "upvotes", "hunted", "collections", "
 HDR_KEYS = ("followers", "following", "hunted", "collections", "stacks", "reviews", "upvotes")
 
 
-def person_complete(d):
+# signed-in upvotes queue: report.py's deep_list_latest.tsv (handle \t labels, "needs_signed_in:<tabs>") or a deep_list entry
+signed_in_q = set()
+if os.path.exists(f"{D}/deep_list_latest.tsv"):
+    for l in open(f"{D}/deep_list_latest.tsv"):
+        h_, _, lab = l.rstrip("\n").partition("\t")
+        if re.search(r"needs_signed_in:[^;]*upvotes", lab):
+            signed_in_q.add(h_.lower())
+for p_ in glob.glob(f"{D}/people_live/deep_list/*.json"):
+    try:
+        for l in open(p_).read().replace("}{", "}\n{").splitlines():
+            e = json.loads(l) if l.strip() else {}
+            if "upvotes" in (e.get("tabs") or []) and re.search(r"signed.?in", str(e.get("reason") or "") + str(e.get("note") or ""), re.I):
+                signed_in_q.add((e.get("handle") or "").lower())
+    except Exception:
+        pass
+
+
+def signed_out_end(d):
+    """Upvotes stopped at PH's signed-out ~200 end: tagged upvotes_capped (or 190-210 items short of the header) AND the
+    paging record shows PH's end. Orchestrator 03:36Z: whole for the signed-out pass only if also queued for signed-in."""
+    t = d.get("upvotes") or {}
+    if not isinstance(t, dict):
+        return False
+    n = t.get("count", len(t.get("items") or []))
+    h = t.get("header") if t.get("header") is not None else (d.get("header") or {}).get("upvotes")
+    if not h or n >= 0.98 * h:
+        return False
+    ended = (t.get("paging") or {}).get("ended") or (((d.get("run") or {}).get("paging") or {}).get("upvotes") or {}).get("ended")
+    tagged = bool(t.get("upvotes_capped") or d.get("upvotes_capped") or 190 <= n <= 210)
+    return tagged and (ended in SERVER_END or bool(t.get("complete_not_visible") and not t.get("capped_large")))
+
+
+def person_complete(d, h=None):
     why = []
+    if signed_out_end(d) and (h or "").lower() not in signed_in_q:
+        why.append("upvotes:signed_out_end_not_queued_signed_in")
     for t in ALL_TABS:
         if not isinstance(d.get(t), dict):
             why.append(f"missing_tab:{t}")
@@ -233,21 +267,24 @@ for p in glob.glob(f"{D}/people_live/vm/*.json"):
         continue
     if isinstance(d, dict) and ("upvotes" in d or "header" in d):
         latest[handle_of(d, p)] = d
-pc = Counter(); reasons = Counter(); origin = Counter()
+pc = Counter(); reasons = Counter(); origin = Counter(); so = Counter()
 for h, d in latest.items():
-    ok, why = person_complete(d)
+    ok, why = person_complete(d, h)
     o = "pgql_lists_only" if "pgql" in str(d.get("method") or "").lower() and not (d.get("run") or {}).get("deep_passes") else \
         ("deep" if (d.get("run") or {}).get("deep_passes") else "full")
     pc[(o, ok)] += 1; origin[o] += 1
+    if ok and signed_out_end(d):
+        so[o] += 1
     for w in why:
         reasons[(o, w.split(":")[0] + ":" + w.split(":")[1].split(",")[0] if ":" in w else w)] += 1
 inc = sum(v for (o, ok), v in pc.items() if not ok)
 out = ["", "## PERSON-LEVEL OUTPUT CHECK (every saved person vs the full definition)", "",
-       f"Saved people (latest vm/<h>.json): {len(latest):,}; COMPLETE {len(latest) - inc:,}; **INCOMPLETE {inc:,}**", "",
-       "| Origin | saved | complete | INCOMPLETE |", "|---|---|---|---|"]
+       f"Saved people (latest vm/<h>.json): {len(latest):,}; COMPLETE {len(latest) - inc:,} (whole {len(latest) - inc - sum(so.values()):,}; "
+       f"whole, signed-out {sum(so.values()):,} = upvotes at PH's signed-out end, queued for the signed-in pass); **INCOMPLETE {inc:,}**", "",
+       "| Origin | saved | whole | whole, signed-out | INCOMPLETE |", "|---|---|---|---|---|"]
 for o in ("full", "deep", "pgql_lists_only"):
-    out.append(f"| {o} | {origin[o]:,} | {pc[(o, True)]:,} | {pc[(o, False)]:,} |")
-out += ["", "Top reasons (origin, reason): " + "; ".join(f"{o} {w} x{n:,}" for (o, w), n in reasons.most_common(12))]
+    out.append(f"| {o} | {origin[o]:,} | {pc[(o, True)] - so[o]:,} | {so[o]:,} | {pc[(o, False)]:,} |")
+out += ["", "Top reasons (origin, reason): " + "; ".join(f"{o} {w} x{n:,}" for (o, w), n in reasons.most_common(20))]
 open(OUT_MD, "a").write("\n".join(out) + "\n")
 print("\n".join(out))
 print(f"PERSON_INCOMPLETE={inc}")
