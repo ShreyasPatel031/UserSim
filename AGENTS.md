@@ -24,4 +24,7 @@ header counts are stored. Anything less is not written, not counted, not reporte
   incomplete saved pull.
 - Progress is reported as **complete people**, read from the store. A rate of pulls, pages or lists is never reported as
   people.
+- Speed never comes from getting around Product Hunt's blocks. No agent builds or runs IP or fingerprint rotation on a
+  block, challenge re-clearing, or anything else meant to evade Cloudflare. A blocked VM stops and stays stopped; the
+  sustainable rate is whatever Product Hunt allows without that.
 - Any agent that sees this rule broken alerts Grok Bot by webhook within 1 minute, naming the agent.
