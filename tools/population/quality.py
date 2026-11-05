@@ -39,7 +39,7 @@ def tab_state(d, k):
         return "missing_tab", 0
     items = t.get("items") or []
     got = t.get("count", len(items))
-    h = t.get("header", (d.get("header") or {}).get(k))
+    h = t.get("header") if t.get("header") is not None else (d.get("header") or {}).get(k)  # tab header may be an explicit null
     ids = [x.get(IDK[k]) or x.get("url") for x in items if isinstance(x, dict)]
     ids = [i for i in ids if i]
     dup = len(ids) - len(set(ids))
