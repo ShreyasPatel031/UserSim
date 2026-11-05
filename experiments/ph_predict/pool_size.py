@@ -285,7 +285,24 @@ def hourly_once(L, E0, sl, base_ids):
     pc = Uc.groupby("id").size(); Lt["pc"] = Lt.id.map(pc).fillna(0)
     Dc = Lt.groupby("day").apply(lambda g: pd.Series({"V": g.votes.sum(), "P": g.pc.sum(), "V3": g[g.top3].votes.sum(), "P3": g[g.top3].pc.sum(),
                                                         "Vh": g[g.held].votes.sum(), "Ph": g[g.held].pc.sum()}), include_groups=False)
-    complete_block = {"complete_people": int(len(complete)), "complete_voters_in_window": int(Uc.pid.nunique()),
+    # last week (Shreyas, Nov 5 07:30Z: 80-90% of votes on Oct 29 - Nov 4 PT launches from complete people), launches with
+    # final votes only; votes by complete people = their store_v3 upvotes on those launches
+    LW = (os.environ.get("LW_FROM", "2026-10-29"), os.environ.get("LW_TO", "2026-11-04"))
+    Lw = L[(L.day >= LW[0]) & (L.day <= LW[1])].copy()
+    Bw = B[B.id.isin(Lw.id)]
+    Ww = E0[(E0.kind == "upvote") & E0.id.isin(Lw.id)].drop_duplicates(["person", "id"])
+    Aw = pd.DataFrame({"pid": Ww.person.map(lambda u: hid(sl, u)), "id": Ww.id})
+    allw = pd.concat([Aw, Bw]).drop_duplicates(); cw = Bw[Bw.pid.isin(complete)].drop_duplicates()
+    Lw["pa"] = Lw.id.map(allw.groupby("id").size()).fillna(0); Lw["pc"] = Lw.id.map(cw.groupby("id").size()).fillna(0)
+    t3 = Lw.daily_rank <= 3
+    lw_cov = round(float(Lw.pc.sum() / Lw.votes.sum()), 4) if len(Lw) else None
+    lastweek_block = {"lastweek_window": list(LW), "lastweek_launches_final": int(len(Lw)), "lastweek_days_final": sorted(Lw.day.unique().tolist()),
+                      "lastweek_real_votes": int(Lw.votes.sum()), "lastweek_coverage_complete_all": lw_cov,
+                      "lastweek_coverage_complete_top3": round(float(Lw[t3].pc.sum() / Lw[t3].votes.sum()), 4) if t3.any() else None,
+                      "lastweek_coverage_all_tracked": round(float(Lw.pa.sum() / Lw.votes.sum()), 4) if len(Lw) else None,
+                      "lastweek_complete_voters": int(cw.pid.nunique()), "lastweek_gap_to_80pct": round(0.8 - lw_cov, 4) if lw_cov is not None else None,
+                      "lastweek_votes_needed_for_80pct": int(0.8 * Lw.votes.sum() - Lw.pc.sum())}
+    complete_block = {**lastweek_block, "complete_people": int(len(complete)), "complete_voters_in_window": int(Uc.pid.nunique()),
                       "coverage_complete_all": round(float(Dc.P.sum() / Dc.V.sum()), 4), "coverage_complete_top3": round(float(Dc.P3.sum() / Dc.V3.sum()), 4),
                       "coverage_complete_heldout": round(float(Dc.Ph.sum() / Dc.Vh.sum()), 4),
                       "note": "headline = complete people only (whole-person rule); coverage_all etc. also count lists-only and page-1 pool upvotes"}
