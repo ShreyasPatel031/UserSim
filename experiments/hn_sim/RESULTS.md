@@ -1220,3 +1220,15 @@ By type, Sep 1 - Oct 14: late risers 56 -> **88** of 461 (light), re-ups 17 -> 1
 is what catches fast posts; 2025 rows + content are what catch late risers. Both together need honest front-page ranks
 for 2025 posts: asked of Data Feeder (to_grokbot/20261104T1715_hn_agent_wayback_front_2025.md: Wayback /news pages 1-3,
 2025). Headline unchanged at 48.5%.
+
+### Checkpoint 1 (1 h): fixes aimed at the biggest error bucket, late risers (30.6 pts oracle) (stack60.py, pools60.py)
+| 1 h, Sep 1 - Oct 14, paired, identical posts and flag totals | Caught | change | fast / late / re-up caught |
+|---|---|---|---|
+| headline (rank + history + content) | 48.4% [44.9, 51.7] | | 567 / 56 / 17 |
+| + light 60-min score as an input (cross-fitted, all 2025 rows) | 48.8% | +0.5 [-0.8, +1.7]; pairwise +0.004 [+0.001, +0.008] | 570 / 56 / 20 |
+| two pools: on / off the front page by 1 h, off-front share of flags fixed from Jul-Aug (42.5%, 563 flags) | 41.8% | **-6.6 [-8.5, -4.5]** | 439 / 75 / 39 |
+Two pools gains 41 late risers and re-ups but loses 128 fast posts: about 1 in 10 off-front posts with a strong at-posting
+score wins, so the single ranking already spends flags close to optimally for these signals. Neither ships; 1 h stays
+48.5%. What can move the late-riser bucket: honest front-page ranks for 2025 posts so the full 1-h model trains on all of
+2025 with content (asked; Data Feeder pulling raw/hn_front_2025/), and off-HN traction before posting (backfill running;
+test pre-registered in offhn_test.py).
