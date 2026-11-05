@@ -208,7 +208,7 @@ async def main(a):
             nonlocal b0
             nb = PB.nic(); S.put(event="pgql_bw", bytes=nb - b0, phase=G.phase["name"] if G.phase else None); b0 = nb
             tot, _ = await asyncio.to_thread(PB.week_bytes)
-            if tot + 50e6 > 29e9:  # $30/wk people budget, Shreyas 2021Z
+            if tot + 50e6 > PB.CAP:  # $30/wk people budget, Shreyas 2021Z
                 open('/tmp/sb', 'w').write(f'STOP budget {now()} week bytes {tot} (pgql test {VM})\n'); sh('gsutil', '-q', 'cp', '/tmp/sb', f'{B}/STOP.budget'); G.halt = "budget"
             sh('gsutil', '-q', '-m', 'rsync', 'out_pgql', f'{OUT}/_run_{a.token}')
     G.halt = None; ft = asyncio.create_task(flags())

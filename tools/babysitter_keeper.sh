@@ -21,9 +21,10 @@ while true; do
     if ! echo "$live" | grep -qx $vm; then
       if [ "${made[$vm]}" = 0 ] || [ $(( now - ${made[$vm]} )) -ge 360 ]; then log "MISSING $vm"; create $vm $port $scr; fi; continue; fi
     tail=$(gsutil -q cat $B/run_$vm.log 2>/dev/null | tail -2)
+    [ "${made[$vm]}" = 0 ] && { ct=$(gcloud compute instances describe $vm --zone us-central1-a --format="value(creationTimestamp)" 2>/dev/null); [ -n "$ct" ] && made[$vm]=$(date -d "$ct" +%s); }
     lu=$(gsutil ls -l gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_population/people_live/vm/status/$vm.jsonl 2>/dev/null | awk 'NR==1{print $2}')
-    if [ -n "$lu" ] && [ "${made[$vm]}" != 0 ] && [ $(( now - ${made[$vm]} )) -gt 1200 ] && [ $(( now - $(date -d "$lu" +%s) )) -gt 720 ] && ! echo "$tail" | grep -q '^EXIT'; then
-      log "STALLED $vm (no status row for 12+ min); recreating"; create $vm $port $scr; continue; fi
+    if [ -n "$lu" ] && [ "${made[$vm]}" != 0 ] && [ $(( now - ${made[$vm]} )) -gt 1200 ] && [ $(( now - $(date -d "$lu" +%s) )) -gt $( [[ $vm == *deep* ]] && echo 2700 || echo 720 ) ] && ! echo "$tail" | grep -q '^EXIT'; then
+      log "STALLED $vm (no status row for 12 min fast / 45 min deep); recreating"; create $vm $port $scr; continue; fi
     if echo "$tail" | grep -q '^EXIT'; then
       age=$(( now - ${made[$vm]:-0} )); wait=360; [ $age -lt 480 ] && wait=900
       if [ -z "${last_exit[$vm]}" ] || [ "${last_exit[$vm]}" -lt "${made[$vm]}" ]; then last_exit[$vm]=$now; log "ENDED $vm port $port after $((age/60)) min ($(echo "$tail" | tr '\n' ' ' | cut -c1-120)); recreate in $((wait/60)) min"; fi
