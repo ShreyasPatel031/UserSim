@@ -1,6 +1,6 @@
 # Target dataset spec (ideal measurement vs what we collect)
 Owner: orchestrator. Reviewed daily (10:43 UTC trigger). Rule (Shreyas, Nov 3): decide the measurement from what the model needs,
-then price it; default to the maximum inside the caps (GCP $50/day soft, $100 hard; paid data $30/week, people job $6 of it).
+then price it; default to the maximum inside the caps (GCP $50/day soft, $100 hard; paid data: people job $200/week ≈ 195 GB (Shreyas, Nov 5 00:15Z), other paid data $30/week).
 Every gap has an owner and a date, or a written reason.
 Verification: data babysitter (session_01WkCrUQbiTbMDT5gLXh6qjb) scores "current" daily in raw/_babysitter/<day>/scorecard.md.
 Dashboard: https://claude.ai/artifact/WV14WeCEQQmV1PB8psDfit (rebuilt by tools/coverage_dashboard.py).

@@ -84,7 +84,7 @@ a target out of reach. No agent writes or repeats a limiting statement about the
 - Results go to `experiments/simlab/reports/` with the commit.
 - Budget:
   - GCP $50/day, and spend it: one VM per research session (exp-1 PH agent, exp-2 E5, exp-3 short verification runs such as PR 143, hn-sim-1 HN agent), stopped when idle; Grok Bot writes a daily spend readout to raw/spend/. Sessions never share a VM.
-  - DataImpulse / Apify $30/week.
+  - DataImpulse / Apify $30/week; the PH people job alone up to $200/week ≈ 195 GB (Shreyas, Nov 5 00:15 UTC: "yes raise the budget, keep pulling").
   - Data Grok Bot buys: $50/month. Paid top-ups (e.g. twitterapi.io $20) come once or twice a month: use them only for
     what free quota can't do in time, never for work a free route can do.
   - Gemini for model calls in pipelines and experiments. Claude Code sessions (the subscription) do the research work.
