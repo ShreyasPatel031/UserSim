@@ -213,6 +213,15 @@ def person_complete(d):
     for k in ("collection_items", "forum_threads", "reviews_items", "comment_times"):
         if f.get(k) is False:
             why.append(f"not_filled:{k}")
+    # products the person made: each needs its product-page fields (description or launches)
+    mh = (d.get("about") or {}).get("maker_history") or []
+    if isinstance(mh, list) and any(isinstance(x, dict) and not (x.get("description") or x.get("launches")) for x in mh):
+        why.append("not_filled:maker_product_pages")
+    # collections index vs header
+    ch = (d.get("header") or {}).get("collections")
+    cn = len((d.get("collections") or {}).get("items") or [])
+    if ch and cn < ch:
+        why.append("collections:index_short")
     return not why, why
 
 
