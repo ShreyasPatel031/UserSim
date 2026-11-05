@@ -33,6 +33,32 @@ TABS = int(os.environ.get('PDEEP_TABS', 2))  # pages per worker
 B, VM = PB.B, PB.VM
 
 
+_ENDED = ("hasNextPage_false", "server_end", "server_end_offset", "empty_page")
+_PROD_OK = ("latest launch", "no public launch posts on product page")
+def whole(res, R):
+    """0335Z strict save gate (orchestrator / population definition; Shreyas: whole person or nothing).
+    A tab passes only if got >= header, or PH's server ended the list (recorded), or complete_not_visible.
+    A missing header passes only on a recorded server end. Every product page, collection item list and review list filled.
+    Returns the list of reasons the person is NOT whole ([] = whole)."""
+    hd = res.get("header") or {}; exh = getattr(R, "exh", {}) or {}; tim = (res.get("run") or {}).get("timing") or {}; why = []
+    for k in ("upvotes", "hunted", "following", "followers", "collections", "stacks", "reviews"):
+        t = res.get(k) or {}; H = t.get("header") if t.get("header") is not None else hd.get(k); got = t.get("count", len(t.get("items") or []))
+        ended = exh.get(k) is True or ((t.get("paging") or {}).get("ended") in _ENDED) or (((tim.get(k) or {}).get("paging") or {}).get("ended") in _ENDED)
+        if t.get("status") in ("partial", "truncated_budget"): why.append(k + ":partial"); continue
+        if H is None:
+            if not ended: why.append(k + ":no_header")
+            continue
+        if got < H and not (ended or t.get("complete_not_visible")): why.append(k)
+    if res.get("truncated_budget"): why.append("truncated_budget")
+    for x in ((res.get("about") or {}).get("maker_history") or []) + ((res.get("stacks") or {}).get("items") or []):
+        if x.get("url") and "/products/" in str(x.get("url")) and x.get("counts_note") not in _PROD_OK: why.append("product_pages"); break
+    for c in (res.get("collections") or {}).get("items") or []:
+        it = c.get("items")
+        if not isinstance(it, list) or (c.get("products_count") and len(it) < c["products_count"]): why.append("collection_items"); break
+    if (hd.get("reviews") or 0) > 0 and not (res.get("reviews") or {}).get("items") and exh.get("reviews") is not True: why.append("reviews_items")
+    return why
+
+
 async def worker_pages(ctx, R, first_handle, n):
     """n new pages at the PH origin + a response capture on the first one (as open_browser does for pages[0])."""
     pages = []
@@ -126,6 +152,11 @@ async def main(a):
             except asyncio.TimeoutError: err = ("timeout", "")
             except Exception as e: err = ("error", f"{type(e).__name__}: {e}"[:300])
             secs = int(time.time() - t0); _ACTIVE[0] -= 1
+            nw = whole(res, R) if (res and FULL) else []
+            if nw:  # 0335Z strict gate: NOT written to the store; claim kept (no auto-retry); reasons in status for the fixed build
+                open(f'out/{h}.incomplete.json', 'w').write(json.dumps(res, ensure_ascii=False))
+                await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.incomplete.json', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/incomplete/{h}.json')
+                S.put(handle=h, rc=2, method="pfull_v2", worker=wi, secs=secs, error="not_whole", reasons=nw); consec = 0; continue
             if res:
                 PB._CUR_R[0] = R; cv = PB.coverage(res)  # sync: no other worker runs between these two statements
                 json.dump(res, open(f'out/{h}.json', 'w'), indent=1, ensure_ascii=False)
