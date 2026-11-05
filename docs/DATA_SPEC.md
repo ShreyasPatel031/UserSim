@@ -17,6 +17,12 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Route 4 (port 10001, capture pages) | 403 on cold warm-up Nov 3 21:04Z and Nov 4 07:55Z | blocked; hold to Nov 5 07:25Z |
 | Box browser (own IP, $0) | human pace ≥ 20 s/load; second Cloudflare challenge after ~15 pages | used for first snapshot only |
 
+## Status Nov 5 (10:45 UTC) — daily review
+- Whole-person rule in force (AGENTS.md). Store: 1,949 whole + 103 whole except the signed-out upvote cap (from 605 at 03:00Z); 13,586 incomplete kept for a completion pass.
+- Person pulls: 5 pace VMs, Camoufox, fixed ports, K8 per IP (measured: K16 blocks in 1.5–39 min, K8 holds full hours at 2.5–6.3 whole/min). Expected 15–20 whole/min. Queue = last-week voters first (full17).
+- Last-week vote coverage from whole people: 2.31% (gap ~14,780 votes); known pool caps ~46%, so 80% needs new-voter discovery (signed-in pass).
+- Down since ~06:30Z: compute default SA disabled in Shreyas's cleanup → daily pipeline (no Nov 5 forecast/Nov 4 score), live/at-launch capture (stale since 02:45Z), exp-1. Needs Shreyas.
+
 ## Product Hunt: who votes on launch day (north star 1)
 | Question | Ideal measurement | Current (Nov 4) | Gap / owner / date |
 |---|---|---|---|
