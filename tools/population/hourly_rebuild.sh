@@ -49,7 +49,7 @@ PY
   gsutil -q cp $W/store_tmp/coverage.md $B/raw/population/reports/$DAY/coverage.md
   [ -f $W/store_tmp/deep_list.tsv ] && gsutil -q cp $W/store_tmp/deep_list.tsv $B/raw/population/requests/deep_list_latest.tsv
   rm -rf $W/store_v3; mv $W/store_tmp $W/store_v3
-  HEAD=$(grep -o 'HEADLINE.*' $W/store_v3/coverage.md | head -1); LIGHT=$(grep -o 'Incomplete header+upvotes-only.*' $W/store_v3/coverage.md | head -1)
+  HEAD=$(grep -o 'Per-tab test.*' $W/store_v3/coverage.md | head -1 | cut -c1-400); LIGHT=$(grep -o 'Incomplete header+upvotes-only.*' $W/store_v3/coverage.md | head -1)
   STATUS=published
 else
   HEAD=""; LIGHT=""; STATUS=FAILED_not_published
@@ -60,5 +60,10 @@ python3 -c "import json,sys; print(json.dumps({'utc': sys.argv[1], 'status': sys
 (gsutil -q cat $B/raw/population/reports/$DAY/rebuild_log.jsonl 2>/dev/null; cat $W/logline.json) | gsutil -q cp - $B/raw/population/reports/$DAY/rebuild_log.jsonl
 log "$STATUS in ${SECS}s"; cat $W/logline.json
 
-# 30-min quality check, :20 run (the :50 run has its own scheduled task)
+# 30-min quality check, :20 run (the :50 run has its own scheduled task); its PERSON-LEVEL OUTPUT CHECK becomes the coverage headline
 "$REPO/tools/population/quality_run.sh" "$W" | tail -12
+QMD=$(ls -t $W/quality_*.md 2>/dev/null | head -1)
+if [ -n "$QMD" ] && [ "$STATUS" = published ]; then
+  { echo "# HEADLINE (whole-person rule)"; sed -n '/PERSON-LEVEL OUTPUT CHECK/,$p' "$QMD"; echo; cat $W/store_v3/coverage.md; } > $W/coverage_final.md
+  gsutil -q cp $W/coverage_final.md $B/raw/population/reports/$DAY/coverage.md
+fi

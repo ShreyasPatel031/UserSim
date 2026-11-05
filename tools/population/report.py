@@ -81,7 +81,7 @@ if os.path.exists(tp):
     perdf = pd.DataFrame({"state": per, "tier": per.index.map(lambda x: tier.get(x, "non-pool" if x not in pool else "unknown"))})
     strict = int((perdf.state == "complete").sum()); se = int((perdf.state == "server_ended").sum()); fail = int((perdf.state == "FAIL").sum())
     pend = int((perdf.state == "pending_repull").sum())
-    print(f"\n## HEADLINE: people with every tab complete or server-ended: {strict + se:,} "
+    print(f"\n## Per-tab test (SUPERSEDED: the headline is the PERSON-LEVEL OUTPUT CHECK at the top of this report): people with every tab complete or server-ended: {strict + se:,} "
           f"(pool {int((perdf.state.isin(['complete', 'server_ended']) & perdf.index.isin(pool)).sum()):,}); strict complete {strict:,}; "
           f"server-ended (PH hid items) {se:,}; FAIL (our code stopped) {fail:,}; pending re-pull on Data Feeder's deep_list {pend:,}; "
           f"pending_deep after a pgql pull {len(pending_deep):,}; "
