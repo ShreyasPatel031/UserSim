@@ -1,0 +1,58 @@
+--- live/ph_batch.py	2026-11-05 01:44:05.975997546 +0000
++++ /tmp/claude-0/-home-user-UserSim/985ad5f2-8c78-5e96-8903-dc657024cd94/scratchpad/pdeep/pkg/ph_batch.py	2026-11-05 01:37:49.314626286 +0000
+@@ -28,6 +28,21 @@
+ def sh(*a, **k): return subprocess.run(list(a), capture_output=True, text=True, **k)
+ def gexists(p): return sh('gsutil', '-q', 'stat', f'{B}/{p}').returncode == 0
+ BUDGET_SECS = 1200; BUDGET_BYTES = 15e6  # 1330Z per-person budget, whichever first
++async def no_progress_watch(coro, R, idle=float(os.environ.get("NO_PROGRESS_SECS", 600))):
++    """0040Z (orchestrator): no per-person cap, but a hung request must not hold a worker forever. If the person's request
++    counter does not move for `idle` seconds, cancel and raise TimeoutError; the caller keeps the deep_list entry and frees the
++    claim, so the person is retried and merged by id (no saved data dropped)."""
++    t = asyncio.ensure_future(coro); last = getattr(R, "reqs", 0); since = time.time()
++    while True:
++        done, _ = await asyncio.wait({t}, timeout=30)
++        if done: return t.result()
++        cur = getattr(R, "reqs", 0)
++        if cur != last: last, since = cur, time.time()
++        elif time.time() - since >= idle:
++            t.cancel()
++            try: await t
++            except BaseException: pass
++            R.log("NO_PROGRESS", int(idle), "s without a request; requeued"); raise asyncio.TimeoutError()
+ def over_budget(R):
+     """0030Z Shreyas: no per-person time or byte budget at all. Only PH's own limits and the 195e9 weekly stop end a pull."""
+     return False
+@@ -975,7 +990,7 @@
+             if w > 0: await asyncio.sleep(w)
+         last_start[0] = time.time()
+         R = R2(h, f'out/{h}.log', ramp); R.t0 = time.time(); b0 = nic(); R.b0 = b0; R.over = (lambda R=R: over_budget(R)); R.partial = []; t0 = time.time(); err = None; res = None
+-        try: res = await asyncio.wait_for(({'repulltabs': pull_tabs, 'repullstacks': pull_stacks, 'repullupvotes': pull_upvotes, 'deep': pull_deep}.get(a.mode, pull))(R, pages, h, a, cap), None)  # 0030Z: no per-person timeout
++        try: res = await no_progress_watch(({'repulltabs': pull_tabs, 'repullstacks': pull_stacks, 'repullupvotes': pull_upvotes, 'deep': pull_deep}.get(a.mode, pull))(R, pages, h, a, cap), R)  # 0040Z: no cap; no-progress watchdog only
+         except Blocked as e: err = ("block", str(e))
+         except PersonError as e: err = ("person_error", str(e))
+         except asyncio.TimeoutError: err = ("timeout", "")
+--- live/pdeep.py	2026-11-05 01:44:05.979271505 +0000
++++ /tmp/claude-0/-home-user-UserSim/985ad5f2-8c78-5e96-8903-dc657024cd94/scratchpad/pdeep/pkg/pdeep.py	2026-11-05 01:37:49.315018390 +0000
+@@ -101,7 +101,7 @@
+             if not h: break
+             R = PB.R2(h, f'out/{h}.log', ramp); R.t0 = time.time(); R.b0 = PB.nic(); R.over = (lambda R=R: PB.over_budget(R)); R.partial = []
+             t0 = time.time(); res = err = None; _ACTIVE[0] += 1
+-            try: res = await asyncio.wait_for(PB.pull_deep(R, pages, h, a, cap), None)
++            try: res = await PB.no_progress_watch(PB.pull_deep(R, pages, h, a, cap), R)
+             except Blocked as e: err = ("block", str(e))
+             except PB.PersonError as e: err = ("person_error", str(e))
+             except asyncio.TimeoutError: err = ("timeout", "")
+--- live/pgql_test.py	2026-11-05 01:44:05.987271506 +0000
++++ /tmp/claude-0/-home-user-UserSim/985ad5f2-8c78-5e96-8903-dc657024cd94/scratchpad/pdeep/pkg/pgql_test.py	2026-11-05 01:43:47.373554243 +0000
+@@ -187,7 +187,10 @@
+     R = PB.R2('_pgql', 'out_pgql/_session.log', [(1, 30)])
+     nic0 = PB.nic(); b0 = nic0
+     for _try in range(2):
+-        try: cm = AsyncCamoufox(from_options=PB.stable_options(R), persistent_context=True, headless="virtual"); ctx = await cm.__aenter__(); break
++        try:  # 0150Z: from_options ignores headless="virtual", so start Xvfb and pass DISPLAY ourselves (as ph_batch.open_browser does)
++            from camoufox.virtdisplay import VirtualDisplay
++            _vd = VirtualDisplay(); _o = PB.stable_options(R, _vd.get()); _e = dict(_o.get('env') or {}); _e['DISPLAY'] = _vd.get(); _e.pop('WAYLAND_DISPLAY', None); _o['env'] = _e; _o['headless'] = False
++            cm = AsyncCamoufox(from_options=_o, persistent_context=True); ctx = await cm.__aenter__(); break
+         except Exception as e:
+             S.put(event="pgql_browser_open_failed", err=str(e)[-600:], attempt=_try + 1)
+             if _try: return 1

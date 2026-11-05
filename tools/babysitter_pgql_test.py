@@ -187,7 +187,10 @@ async def main(a):
     R = PB.R2('_pgql', 'out_pgql/_session.log', [(1, 30)])
     nic0 = PB.nic(); b0 = nic0
     for _try in range(2):
-        try: cm = AsyncCamoufox(from_options=PB.stable_options(R), persistent_context=True, headless="virtual"); ctx = await cm.__aenter__(); break
+        try:  # 0150Z: from_options ignores headless="virtual", so start Xvfb and pass DISPLAY ourselves (as ph_batch.open_browser does)
+            from camoufox.virtdisplay import VirtualDisplay
+            _vd = VirtualDisplay(); _o = PB.stable_options(R, _vd.get()); _e = dict(_o.get('env') or {}); _e['DISPLAY'] = _vd.get(); _e.pop('WAYLAND_DISPLAY', None); _o['env'] = _e; _o['headless'] = False
+            cm = AsyncCamoufox(from_options=_o, persistent_context=True); ctx = await cm.__aenter__(); break
         except Exception as e:
             S.put(event="pgql_browser_open_failed", err=str(e)[-600:], attempt=_try + 1)
             if _try: return 1
