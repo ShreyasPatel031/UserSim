@@ -13,7 +13,8 @@ from datetime import datetime, timezone
 W = sys.argv[1]
 G = "gs://usersim-bakeoff-347838016394/usersim_sim/raw"
 T = f"{G}/_pacetest"
-PASSED = {"XpPuFRfyk37T2Rzdz5cIAQ==", "3QUc3/TCsXoVuac0bB2/+g==", "lZ4IRKn8K+vySvT1GuNB5w==", "cMA/79uhIsWH6pZ6JDL5Pg=="}
+PASSED = {"XpPuFRfyk37T2Rzdz5cIAQ==", "3QUc3/TCsXoVuac0bB2/+g==", "lZ4IRKn8K+vySvT1GuNB5w==", "cMA/79uhIsWH6pZ6JDL5Pg==",
+          "1QwHU3ILccX2sYXAmSCFpQ==", "yk+t8UiOwJAOvuXbg0FCKA=="}  # full7..full12, each PASSed by population
 NOMD5_OK = "XpPuFRfyk37T2Rzdz5cIAQ=="  # full7 predates run.pkg_md5 in the JSON; accepted only if the run status shows full7
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
 D = f"{W}/mg"
@@ -30,7 +31,7 @@ with contextlib.redirect_stdout(io.StringIO()):
 c, out = Counter(), []
 for f in sorted(os.listdir(f"{D}/people_live/vm")):
     name = f[:-5]
-    if name in have or name in ledger:
+    if name in have:  # the list is every passing person not yet in vm/ (a list not yet copied is re-listed, never lost)
         c["already_in_vm"] += 1; continue
     d = json.load(open(f"{D}/people_live/vm/{f}"))
     ok, why = g["person_complete"](d, g["handle_of"](d, f))
@@ -44,8 +45,9 @@ ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 hdr = f"# population merge list {ts}: raw/_pacetest/shared/<name>.json -> people_live/vm/<name>.json; strict person check PASS; {len(out)} people; none already in vm/"
 open(f"{W}/merge_list.txt", "w").write(hdr + "\n" + "".join(n + "\n" for n in out))
 sh("gsutil", "-q", "cp", f"{W}/merge_list.txt", f"{T}/merge_list.txt")
-if out:
+new = [n for n in out if n not in ledger]
+if new:
     old = sh("gsutil", "cat", f"{T}/merged_ledger.txt").stdout
-    open(f"{W}/ledger.txt", "w").write(old + f"# {ts}\n" + "".join(n + "\n" for n in out))
+    open(f"{W}/ledger.txt", "w").write(old + f"# {ts}\n" + "".join(n + "\n" for n in new))
     sh("gsutil", "-q", "cp", f"{W}/ledger.txt", f"{T}/merged_ledger.txt")
-print(f"MERGE_LIST={len(out)} {dict(c)}")
+print(f"MERGE_LIST={len(out)} new_to_ledger={len(new)} {dict(c)}")
