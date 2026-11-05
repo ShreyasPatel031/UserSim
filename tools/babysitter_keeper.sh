@@ -5,7 +5,7 @@
 # on the port (sticky exit IP may rotate). Backoff per slot: 6 min after a long run, 15 min after a run that died in < 8 min.
 S=/tmp/claude-0/-home-user-UserSim/985ad5f2-8c78-5e96-8903-dc657024cd94/scratchpad
 B=gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/pull
-SLOTS="feeder-babysitter-1:10007:bsit_vm2.sh feeder-babysitter-2:10006:bsit_vm2.sh feeder-babysitter-3:10013:bsit_vm2.sh feeder-babysitter-4:10018:bsit_vm2_c64.sh feeder-babysitter-5:10019:bsit_vm2_c64.sh feeder-babysitter-6:10020:bsit_vm2_c64.sh feeder-babysitter-deep-1:10014:pdeep_vm.sh feeder-babysitter-deep-2:10015:pdeep_vm.sh feeder-babysitter-deep-3:10016:pdeep_vm.sh feeder-babysitter-deep-4:10017:pdeep_vm.sh"
+SLOTS="feeder-babysitter-1:10007:pfull_vm.sh feeder-babysitter-2:10006:pfull_vm.sh feeder-babysitter-3:10013:pfull_vm.sh feeder-babysitter-4:10018:pfull_vm.sh feeder-babysitter-5:10019:pfull_vm.sh feeder-babysitter-6:10020:pfull_vm.sh feeder-babysitter-deep-1:10014:pdeep_vm.sh feeder-babysitter-deep-2:10015:pdeep_vm.sh feeder-babysitter-deep-3:10016:pdeep_vm.sh feeder-babysitter-deep-4:10017:pdeep_vm.sh"
 declare -A made last_exit
 log(){ echo "$(date -u +%H:%M:%S) $*"; }
 create(){ # $1 vm $2 port $3 startup script
