@@ -1174,3 +1174,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 11:22 UTC Nov 5 PH agent 11:17Z: completeness relabel from end_reason (no new breach; all pre-04:05Z). Last week complete-only 2.51%/4.20% (gap ~14,745); Oct 1–24 1,410 complete. Priority tier 0 now 1,374 (36 pulled). Pipeline/live still down.
 - 11:32 UTC Nov 5 Population: 11:05 merge VERIFIED: complete 2,052 → 2,110; whole 2,002 + 108 signed-out; ledger 1,499, MERGED_INCOMPLETE 0. Pace ~1/min (blocked). Rebuild time 1,224 s (published 11:28Z); if it passes ~1,400 s, an incremental vm/ sync.
 - 11:34 UTC Nov 5 mailbox checked: nothing new.
+- 11:39 UTC Nov 5 Hourly check: pace VMs (above); store whole 2,002 + 108 (1,499 merged, 0 incomplete); last week complete-only 2.51%/4.20%; all VMs in PH block backoff since ~10:35–10:48Z, ~1 whole/min; pause decision with Shreyas.
