@@ -47,6 +47,20 @@ async def worker_pages(ctx, R, first_handle, n):
     return pages, cap
 
 
+def _full_queue():
+    """FULL mode queue: need_list in pool order minus people with a saved pull or a deep entry."""
+    have = set(x.rsplit('/', 1)[-1][:-5].lower() for x in PB.sh('gsutil', 'ls', f'{B}/*.json').stdout.split() if x.endswith('.json'))
+    dq = set(PB.deep_handles(0)); rows = []
+    PB.sh('gsutil', '-q', 'cp', 'gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_population/people_live/need_list.jsonl', 'need_list.jsonl')
+    for l in open('need_list.jsonl'):
+        try: rows.append(json.loads(l))
+        except Exception: pass
+    _tr = {'likely': 0, 'active_rest': 1, 'other': 2}
+    rows.sort(key=lambda x: (_tr.get(x.get('tier'), 3), x.get('rank') or 1e9))
+    queue = [h for h in dict.fromkeys((x.get('handle') or '').lower() for x in rows) if h and h not in have and h not in dq]
+    return queue
+
+
 async def main(a):
     S = PB.Status(); token = a.token
     PB.BUDGET_SECS = PB.DEEP_SECS; PB.BUDGET_BYTES = PB.DEEP_BYTES  # deep budget, as in deep mode
@@ -56,16 +70,7 @@ async def main(a):
           port=int(os.environ.get('PROXY_PORT', 0)), pkg_md5=PB.PKG_MD5)
     claims = set(PB.sh('gsutil', 'ls', f'{B}/claims/deep_*').stdout.split())
     queue = [h for h in sorted(PB.deep_handles(0)) if f'{B}/claims/deep_{h}' not in claims]
-    if FULL:  # new people only, pool order (likely > active_rest > other > discovery), skip anyone with a saved pull or a deep entry
-        have = set(x.rsplit('/', 1)[-1][:-5].lower() for x in PB.sh('gsutil', 'ls', f'{B}/*.json').stdout.split() if x.endswith('.json'))
-        dq = set(PB.deep_handles(0)); rows = []
-        PB.sh('gsutil', '-q', 'cp', 'gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_population/people_live/need_list.jsonl', 'need_list.jsonl')
-        for l in open('need_list.jsonl'):
-            try: rows.append(json.loads(l))
-            except Exception: pass
-        _tr = {'likely': 0, 'active_rest': 1, 'other': 2}
-        rows.sort(key=lambda x: (_tr.get(x.get('tier'), 3), x.get('rank') or 1e9))
-        queue = [h for h in dict.fromkeys((x.get('handle') or '').lower() for x in rows) if h and h not in have and h not in dq]
+    if FULL: queue = _full_queue()
     tl = PB.sh('gsutil', 'cat', f'{B}/pdeep_list.{VM}.txt')  # optional test list: only these deep_list people, in this order
     if tl.returncode == 0 and tl.stdout.strip():
         only = [l.strip().lower() for l in tl.stdout.splitlines() if l.strip()]; queue = [h for h in only if h in set(queue)]
@@ -94,7 +99,10 @@ async def main(a):
 
     async def next_handle():
         while st["qi"] < len(queue) and not st["stop"]:
+            if FULL and st["qi"] and st["qi"] % 500 == 0 and not st.get("rb_" + str(st["qi"])):  # 0225Z audit: pick up new need_list rows every 500 people
+                st["rb_" + str(st["qi"])] = 1; queue[st["qi"]:] = [x for x in dict.fromkeys(queue[st["qi"]:] + await asyncio.to_thread(_full_queue))]
             h = queue[st["qi"]]; st["qi"] += 1
+            if FULL and await asyncio.to_thread(PB.gexists, f'{h}.json'): continue  # 0225Z audit: someone saved this person since the queue was built
             if await asyncio.to_thread(PB.claim, h if FULL else f'deep_{h}'): return h
         return None
 

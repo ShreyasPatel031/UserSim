@@ -7,7 +7,7 @@ pip3 install -q --break-system-packages -U "camoufox[geoip]" >/dev/null 2>&1; py
 mkdir -p /opt/ph/reuse/out /opt/ph/profiles && cd /opt/ph/reuse
 gsutil -q cp $B/raw/ph_population/people_live/vm/_code/reuse.tgz reuse.tgz && tar xzf reuse.tgz
 export PROXY_URL=$(gsutil -q cat $B/secrets/proxy_url.txt | python3 -c "import sys,urllib.parse as u;r=sys.stdin.read().strip();p=u.urlsplit(r);n=p.username if '__cr.' in p.username else p.username+'__cr.us';print(r.replace(p.username+':',n+':',1))")
-export PROXY_PORT=$PORT PDEEP_K=16 PDEEP_TABS=1 PDEEP_RAMP=1:60
+export PROXY_PORT=$PORT PDEEP_K=16 PDEEP_TABS=1 PDEEP_RAMP=1:150
 V=$(hostname)
 echo "go" | gsutil -q cp - $B/raw/ph_population/people_live/vm/GO.$V
 ( while sleep 30; do gsutil -q cp /root/run.log $B/raw/_babysitter/pull/run_$V.log 2>/dev/null; done ) &

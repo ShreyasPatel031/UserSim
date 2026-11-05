@@ -1,5 +1,5 @@
---- live/pdeep.py	2026-11-05 02:00:28.891329932 +0000
-+++ pkg/pdeep.py	2026-11-05 02:00:00.722694731 +0000
+--- live/pdeep.py	2026-11-05 02:18:25.664729066 +0000
++++ pkg/pdeep.py	2026-11-05 02:17:46.051074328 +0000
 @@ -27,6 +27,7 @@
      workers sat idle. Cache it 2 min; the fleet uses ~1 GB/h, so the 29 GB stop can overshoot by ~35 MB at most."""
      if time.time() - _WB["t"] > 120: _WB["v"] = PB.week_bytes(); _WB["t"] = time.time()
@@ -8,7 +8,26 @@
  K = int(os.environ.get('PDEEP_K', 4 if _mem_gb() < 6 else 16))  # 0205Z (population audit): RAM-based default; PDEEP_K per VM overrides
  TABS = int(os.environ.get('PDEEP_TABS', 2))  # pages per worker
  B, VM = PB.B, PB.VM
-@@ -51,10 +52,20 @@
+@@ -46,15 +47,30 @@
+     return pages, cap
+ 
+ 
++def _full_queue():
++    """FULL mode queue: need_list in pool order minus people with a saved pull or a deep entry."""
++    have = set(x.rsplit('/', 1)[-1][:-5].lower() for x in PB.sh('gsutil', 'ls', f'{B}/*.json').stdout.split() if x.endswith('.json'))
++    dq = set(PB.deep_handles(0)); rows = []
++    PB.sh('gsutil', '-q', 'cp', 'gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_population/people_live/need_list.jsonl', 'need_list.jsonl')
++    for l in open('need_list.jsonl'):
++        try: rows.append(json.loads(l))
++        except Exception: pass
++    _tr = {'likely': 0, 'active_rest': 1, 'other': 2}
++    rows.sort(key=lambda x: (_tr.get(x.get('tier'), 3), x.get('rank') or 1e9))
++    queue = [h for h in dict.fromkeys((x.get('handle') or '').lower() for x in rows) if h and h not in have and h not in dq]
++    return queue
++
++
+ async def main(a):
+     S = PB.Status(); token = a.token
      PB.BUDGET_SECS = PB.DEEP_SECS; PB.BUDGET_BYTES = PB.DEEP_BYTES  # deep budget, as in deep mode
      a.person_timeout = None  # 0030Z: no per-person timeout
      ramp = [tuple(int(x) for x in t.split(":")) for t in a.ramp.split(",")]
@@ -17,29 +36,24 @@
            port=int(os.environ.get('PROXY_PORT', 0)), pkg_md5=PB.PKG_MD5)
      claims = set(PB.sh('gsutil', 'ls', f'{B}/claims/deep_*').stdout.split())
      queue = [h for h in sorted(PB.deep_handles(0)) if f'{B}/claims/deep_{h}' not in claims]
-+    if FULL:  # new people only, pool order (likely > active_rest > other > discovery), skip anyone with a saved pull or a deep entry
-+        have = set(x.rsplit('/', 1)[-1][:-5].lower() for x in PB.sh('gsutil', 'ls', f'{B}/*.json').stdout.split() if x.endswith('.json'))
-+        dq = set(PB.deep_handles(0)); rows = []
-+        PB.sh('gsutil', '-q', 'cp', 'gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_population/people_live/need_list.jsonl', 'need_list.jsonl')
-+        for l in open('need_list.jsonl'):
-+            try: rows.append(json.loads(l))
-+            except Exception: pass
-+        _tr = {'likely': 0, 'active_rest': 1, 'other': 2}
-+        rows.sort(key=lambda x: (_tr.get(x.get('tier'), 3), x.get('rank') or 1e9))
-+        queue = [h for h in dict.fromkeys((x.get('handle') or '').lower() for x in rows) if h and h not in have and h not in dq]
++    if FULL: queue = _full_queue()
      tl = PB.sh('gsutil', 'cat', f'{B}/pdeep_list.{VM}.txt')  # optional test list: only these deep_list people, in this order
      if tl.returncode == 0 and tl.stdout.strip():
          only = [l.strip().lower() for l in tl.stdout.splitlines() if l.strip()]; queue = [h for h in only if h in set(queue)]
-@@ -84,7 +95,7 @@
+@@ -83,8 +99,11 @@
+ 
      async def next_handle():
          while st["qi"] < len(queue) and not st["stop"]:
++            if FULL and st["qi"] and st["qi"] % 500 == 0 and not st.get("rb_" + str(st["qi"])):  # 0225Z audit: pick up new need_list rows every 500 people
++                st["rb_" + str(st["qi"])] = 1; queue[st["qi"]:] = [x for x in dict.fromkeys(queue[st["qi"]:] + await asyncio.to_thread(_full_queue))]
              h = queue[st["qi"]]; st["qi"] += 1
 -            if await asyncio.to_thread(PB.claim, f'deep_{h}'): return h
++            if FULL and await asyncio.to_thread(PB.gexists, f'{h}.json'): continue  # 0225Z audit: someone saved this person since the queue was built
 +            if await asyncio.to_thread(PB.claim, h if FULL else f'deep_{h}'): return h
          return None
  
      async def work(wi, pages, cap):
-@@ -101,7 +112,7 @@
+@@ -101,7 +120,7 @@
              if not h: break
              R = PB.R2(h, f'out/{h}.log', ramp); R.t0 = time.time(); R.b0 = PB.nic(); R.over = (lambda R=R: PB.over_budget(R)); R.partial = []
              t0 = time.time(); res = err = None; _ACTIVE[0] += 1
@@ -48,7 +62,7 @@
              except Blocked as e: err = ("block", str(e))
              except PB.PersonError as e: err = ("person_error", str(e))
              except asyncio.TimeoutError: err = ("timeout", "")
-@@ -112,15 +123,16 @@
+@@ -112,15 +131,16 @@
                  json.dump(res, open(f'out/{h}.json', 'w'), indent=1, ensure_ascii=False)
                  await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.json', f'{B}/{h}.json')
                  await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.log', f'{B}/logs/{h}.log')
