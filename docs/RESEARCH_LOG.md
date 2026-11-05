@@ -146,3 +146,20 @@ Model switches, direction reviews and agenda changes, newest last.
   - s_pred x prior shares (no curve): -2.7 [-6.7, 0.0]. This matches the PH agent's -2.7.
 - **Reading.** The only positive arms use a curve fitted on 2 days after the backtest window (structural look-ahead) and are not robust to the day level. The backtest's own outcomes do not support a strong rank-1 feedback.
 - **Verdict: no pass on the dry run.** Refit the curve when 14 clean snapshot days exist (~Nov 16), then score forward on days after the fit.
+
+## 2026-11-05: Follower-list completeness after the no-cap fix + E5 person model status (E5 agent)
+- **Check.** Every person file in raw/ph_population/people_live/vm/ (3,348 people, newest pull each): stored unique followers / following against the profile header.
+  - Follower lists below 98% of the header: 983. Following: 280.
+  - Small lists are short by 1-5 people (likely deleted or hidden accounts). Large profiles (>1,000 followers) stop at a median 77% of the header.
+  - The pgql_test collector writes no paging record, so a truncated list cannot be told from one that reached the server's end.
+  - Two lists stopped on the per-person budget (149,623 -> 0 and 107,708 -> 5,315); both are in deep_list.
+- **Not queued.** Only 280 of the 983 short follower lists have followers queued in deep_list. 694 are queued for other tabs only and 9 are not queued; that includes 85 of the 112 big profiles.
+  - Alerted via the orchestrator (GROKBOT URGENT).
+  - Ask: mailbox/to_grokbot/20261105T0030_e5_followers_short_after_nocap.md. Inventory by handle: tmp/e5/followers_short_20261105.csv (bucket only).
+- **E5 person model, latest held-out scores** (May-Oct, paired, unchanged since Nov 2). Top-3 hit / AUC / pool Spearman:
+  - Ensemble (target-attention two-tower + all-months LightGBM): **59.0 / 0.745 / 0.586**. vs the published baseline: +3.0 [+2.6, +3.5] top-3, 6/6 months. vs all-months LightGBM: +0.6 [+0.2, +0.9].
+  - All-months LightGBM: 58.5 / 0.742 / 0.586.
+  - At launch level it adds nothing: psg_ pool Spearman 0.587; ensemble -0.008 [-0.024, +0.007].
+- **Next E5 step: follow ties.** The person model uses no follows; its ties come from comments and upvotes only.
+  - Sizing (upper bound, undated follows): when a person follows someone on the launch team, they pick it 22.5% of the time against 5.4% otherwise (x4.2, 1,579 people with complete live lists). The old people.parquet follows give the same x4.2.
+  - Because follows are undated, this is leak-prone in a backtest (follows made after the launch). The honest test is forward, with first-seen-dated follow edges from the live list diffs, after the follower lists are complete.
