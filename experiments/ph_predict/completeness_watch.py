@@ -54,6 +54,16 @@ def short_kind(r):
     limit, 185-205 rows); near_complete: within max(3, 2%) of the header (deleted / hidden items); code_stop: anything
     else, i.e. our code stopped early."""
     h, c = float(r.header or 0), float(r["count"] or 0)
+    # population agent added end_reason per (person, tab) from the Nov 5 10:05Z rebuild (commit 4937c94c): use it when set
+    er = r.get("end_reason") if hasattr(r, "get") else None
+    if isinstance(er, str) and er:
+        if er in ("server_end", "ph_limit"):
+            return "server_end"
+        if er in ("partial", "error", "missing_tab"):
+            return "code_stop"
+        if er == "complete_no_end_record":
+            return "near_complete"
+        return "unclear"   # short_no_end_record, not_paged: no evidence either way
     if bool(r.get("complete_not_visible")) or (r.tab == "upvotes" and 185 <= c <= 205 and h > c):
         return "server_end"
     # babysitter (Nov 4 23:36Z, from paging records): PH's signed-out ~200-slot upvote cap counts hidden / de-listed
