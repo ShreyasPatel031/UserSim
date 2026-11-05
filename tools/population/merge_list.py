@@ -17,7 +17,7 @@ PASSED = {"XpPuFRfyk37T2Rzdz5cIAQ==", "3QUc3/TCsXoVuac0bB2/+g==", "lZ4IRKn8K+vyS
           "1QwHU3ILccX2sYXAmSCFpQ==", "yk+t8UiOwJAOvuXbg0FCKA==",
           "vqbWasUGY8DCao/wzvebLw==", "j6++x//+3CYoHnUxVkDHWQ==",
           "1vXYiANmKbePdwCkCCbrwA==",
-          "tiWEdopIK+WM16fYVVealw=="}  # full7..full16, each PASSed by population
+          "tiWEdopIK+WM16fYVVealw==", "Ku9PrVAfo8f+uDrIVfW8Bg=="}  # full7..full16 (both full16 uploads PASSed), each PASSed by population
 NOMD5_OK = "XpPuFRfyk37T2Rzdz5cIAQ=="  # full7 predates run.pkg_md5 in the JSON; accepted only if the run status shows full7
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
 D = f"{W}/mg"
