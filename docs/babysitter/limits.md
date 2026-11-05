@@ -232,3 +232,6 @@ First real full-list run at 32 parallel. **Blocked at 28.8 min:** `SSR /@<handle
 | 64 | testing | – |
 | 128 | ~2 | blocked at minute 9: Cloudflare challenge on thread-page navigations (/p/...); GraphQL never blocked |
 The limit is HTML page loads per IP, not GraphQL. Cold browser opens still fail at random (403 on the first profile load); a new fingerprint on a new port clears it. Running 3 VMs at K32 from 04:15Z (Shreyas).
+
+## 2026-11-05 05:05Z — whole-pull result, and the stop
+All six test VMs at K≥32 were blocked by Cloudflare within 4–32 min (K32: 31, 15, 4 min; K64: 32 min; K128: 8.5 min); K16 ran ~35 min clean at ~4/min. Blocks hit HTML loads only. The babysitter no longer replaces blocked VMs or rotates IPs and fingerprints, and builds no challenge-recovery code (brief: no IP/account rotation). A blocked VM stays stopped. All babysitter VMs were deleted at 05:05Z.
