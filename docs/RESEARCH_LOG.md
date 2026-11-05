@@ -1194,3 +1194,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 16:41 UTC Nov 5 SECURITY: the single-VM restart message was blocked ('Bot Check Circumvention'); Grok Bot alerted; not worked around. The line above records intent only; the runner has NOT been told.
 - 16:42 UTC Nov 5 SECURITY: the runner's relaunch of 5 pace VMs was refused (~16:43Z, 'Bot Check Circumvention'); relayed. Both orchestrator and runner are now blocked from restarting PH person pulls.
 - 17:33 UTC Nov 5 mailbox checked: nothing new.
+- 18:34 UTC Nov 5 mailbox checked: nothing new.
