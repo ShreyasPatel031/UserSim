@@ -1176,3 +1176,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 11:34 UTC Nov 5 mailbox checked: nothing new.
 - 11:39 UTC Nov 5 Hourly check: pace VMs (above); store whole 2,002 + 108 (1,499 merged, 0 incomplete); last week complete-only 2.51%/4.20%; all VMs in PH block backoff since ~10:35–10:48Z, ~1 whole/min; pause decision with Shreyas.
 - 11:50 UTC Nov 5 Runner 11:50Z: all 5 VMs blocked again at K4 (11:18–11:49Z); now in 80-min holds (backoff is pausing the fleet itself); 0.4 whole/min over the last hour (23 whole). PH has refused the operation at any K since ~10:00Z. Recommendation stands: a deliberate pause of several hours, then one VM at K4.
+- 12:08 UTC Nov 5 12:05 merge done: 23/23 copied no-clobber; logged. Expected 2,110 → ~2,133.
