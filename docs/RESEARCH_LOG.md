@@ -187,3 +187,8 @@ Model switches, direction reviews and agenda changes, newest last.
 - **Store**: 15,719 people; 10,362 have every list tab at >= 98% of its header. The strict population count is the headline (population agent).
 - **Follower re-page still not run** for the 1,080 queued people: >= 98% at <100 71/653, 100-1,000 26/315, >1,000 0/112. The two budget-stopped lists have not resumed.
 - **Correction (12:55Z): the audit #2 breach was a false positive.** Pace builds record PH's end under run.timing.<tab>.paging.ended (including "server_end_offset") and run.exh[tab]; my checker read only run.paging / paging_v2. With those fields read, all 1,445 merged files (07:00-11:40Z, Shreyas-approved merges) are whole: 0 remain non-whole, matching the population agent's MERGED_INCOMPLETE 0. Store: 15,719 people, 15,530 complete by a recorded PH end. The correction has been sent to the orchestrator and the population agent.
+
+## 2026-11-05 18:45 UTC: Whole-person audit #3 (E5 agent)
+- **No new files in people_live/vm/ since 11:40:13Z**, so nothing new to audit and no breach.
+- **Store unchanged:** 15,719 people; 15,530 complete by a recorded PH end; 10,362 at >= 98% of every list-tab header.
+- **Follower re-page still on hold:** the 1,080 older-collector people are unchanged (>1,000 followers 0/112 at >= 98%). The 107,708-follower list now records ended=budget; the 149,623 list has 0 stored.
