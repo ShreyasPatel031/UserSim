@@ -1169,3 +1169,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 10:34 UTC Nov 5 mailbox checked: nothing new.
 - 10:38 UTC Nov 5 Hourly check: 5 pace VMs RUNNING; store whole 1,949 + 103 signed-out (1,440 merged, 0 incomplete); full17 rolling out (priority queue). Pipeline/capture still down (SA).
 - 10:44 UTC Nov 5 Daily collection review: DATA_SPEC status block added (whole people 1,949 + 103; K8 x 5 VMs, 15–20/min; last-week coverage 2.31%, cap ~46%; SA outage blocks the pipeline, live capture and exp-1). Dashboard refresh skipped this cycle to save usage (Shreyas asked to slow down).
+- 10:50 UTC Nov 5 Runner 10:50Z: all 5 VMs blocked even at K4 (10:35–10:48Z; holds 20–40 min); fleet ~1 whole/min. Read: PH has flagged the operation as a whole, not a per-IP rate edge. The runner recommended to Shreyas a deliberate pause (per-VM STOP flags) for a few hours, then a slow restart with one VM at K4. The orchestrator agrees.
