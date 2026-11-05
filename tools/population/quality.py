@@ -44,7 +44,11 @@ def tab_state(d, k):
     ids = [x.get(IDK[k]) or x.get("url") or (x.get("comment") or {}).get("id") or x.get("id") for x in items if isinstance(x, dict)]
     ids = [i for i in ids if i]
     dup = len(ids) - len(set(ids))
-    ended = (t.get("paging") or {}).get("ended") or (((d.get("run") or {}).get("paging") or {}).get(k) or {}).get("ended")
+    run = d.get("run") or {}
+    ended = (t.get("paging") or {}).get("ended") or ((run.get("paging") or {}).get(k) or {}).get("ended") or \
+        ((((run.get("timing") or {}).get(k) or {}).get("paging") or {}).get("ended"))  # full pulls record the end under run.timing
+    if run.get("exh", {}).get(k) is True:
+        ended = ended or "server_end"
     if t.get("status") in ("partial", "truncated_budget") or t.get("truncated_budget"):
         fin = (d.get("run") or {}).get("finished_utc") or ""
         v = "FAIL_partial" if fin >= NOBUDGET_SINCE else "partial"
@@ -70,7 +74,8 @@ def deep_fill(d):
     out = {"header": all(hdr.get(k) is not None for k in ("followers", "following", "hunted", "collections"))}
     rv = (d.get("reviews") or {}).get("items") or []
     rh = (d.get("reviews") or {}).get("header", hdr.get("reviews"))
-    out["reviews_items"] = None if not rh else bool(rv)
+    # rating-only reviews are never listed by PH: 0 items passes only on a recorded end (run.exh.reviews from SSR pageInfo)
+    out["reviews_items"] = None if not rh else (bool(rv) or ((d.get("run") or {}).get("exh") or {}).get("reviews") is True)
     cols = (d.get("collections") or {}).get("items") or []
     need = [c for c in cols if (c.get("products_count") or 0) > 0]
     out["collection_items"] = None if not need else all(c.get("items") for c in need)
@@ -227,7 +232,9 @@ def signed_out_end(d):
     h = t.get("header") if t.get("header") is not None else (d.get("header") or {}).get("upvotes")
     if not h or n >= 0.98 * h:
         return False
-    ended = (t.get("paging") or {}).get("ended") or (((d.get("run") or {}).get("paging") or {}).get("upvotes") or {}).get("ended")
+    run = d.get("run") or {}
+    ended = (t.get("paging") or {}).get("ended") or ((run.get("paging") or {}).get("upvotes") or {}).get("ended") or \
+        ((((run.get("timing") or {}).get("upvotes") or {}).get("paging") or {}).get("ended"))
     tagged = bool(t.get("upvotes_capped") or d.get("upvotes_capped") or 190 <= n <= 210)
     return tagged and (ended in SERVER_END or bool(t.get("complete_not_visible") and not t.get("capped_large")))
 
@@ -258,7 +265,7 @@ def person_complete(d, h=None):
     # collections index vs header
     ch = (d.get("header") or {}).get("collections")
     cn = len((d.get("collections") or {}).get("items") or [])
-    if ch and cn < ch:
+    if ch and cn < ch and tab_state(d, "collections")[0].split("+")[0] != "ph_limit":  # short only with no recorded PH end
         why.append("collections:index_short")
     return not why, why
 
