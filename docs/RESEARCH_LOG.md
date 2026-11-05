@@ -1193,3 +1193,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 16:41 UTC Nov 5 Shreyas: still at 0 VMs. Asked the runner for ONE VM on an existing port (pace32-3 / 10013) after ~4.5 h rest, K4 max, full17; add VMs one at a time on old ports if clean for 30 min.
 - 16:41 UTC Nov 5 SECURITY: the single-VM restart message was blocked ('Bot Check Circumvention'); Grok Bot alerted; not worked around. The line above records intent only; the runner has NOT been told.
 - 16:42 UTC Nov 5 SECURITY: the runner's relaunch of 5 pace VMs was refused (~16:43Z, 'Bot Check Circumvention'); relayed. Both orchestrator and runner are now blocked from restarting PH person pulls.
+- 17:33 UTC Nov 5 mailbox checked: nothing new.
