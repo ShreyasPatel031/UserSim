@@ -274,9 +274,24 @@ def hourly_once(L, E0, sl, base_ids):
     for _ in range(BOOT):
         S = D.sample(len(D), replace=True, random_state=rng.integers(1 << 31)); bs.append((S.P.sum() / S.V.sum(), S.P3.sum() / S.V3.sum(), S.Ph.sum() / S.Vh.sum()))
     bs = np.array(bs); ci = lambda j: np.percentile(bs[:, j], [2.5, 97.5]).round(3).tolist()
+    # whole-person rule (Shreyas, Nov 5): coverage from complete people only = store_v3 people with a full pull and no tab
+    # our code cut short (completeness_watch.short_kind); this is the headline
+    from completeness_watch import short_kind
+    Tb = V["tabs"]; inc = Tb[~Tb.complete.astype(bool)]
+    bad = set(inc[inc.apply(short_kind, axis=1) == "code_stop"].person_id) if len(inc) else set()
+    full = set(Tb[Tb.pull_type.astype(str) == "full"].person_id) if "pull_type" in Tb else set(Tb.person_id)
+    complete = full - bad
+    Uc = B[B.id.isin(Lt.id) & B.pid.isin(complete)].drop_duplicates()
+    pc = Uc.groupby("id").size(); Lt["pc"] = Lt.id.map(pc).fillna(0)
+    Dc = Lt.groupby("day").apply(lambda g: pd.Series({"V": g.votes.sum(), "P": g.pc.sum(), "V3": g[g.top3].votes.sum(), "P3": g[g.top3].pc.sum(),
+                                                        "Vh": g[g.held].votes.sum(), "Ph": g[g.held].pc.sum()}), include_groups=False)
+    complete_block = {"complete_people": int(len(complete)), "complete_voters_in_window": int(Uc.pid.nunique()),
+                      "coverage_complete_all": round(float(Dc.P.sum() / Dc.V.sum()), 4), "coverage_complete_top3": round(float(Dc.P3.sum() / Dc.V3.sum()), 4),
+                      "coverage_complete_heldout": round(float(Dc.Ph.sum() / Dc.Vh.sum()), 4),
+                      "note": "headline = complete people only (whole-person rule); coverage_all etc. also count lists-only and page-1 pool upvotes"}
     pulled = set(up.person_id) | set(V["tabs"][V["tabs"].tab == "upvotes"].person_id)
     voters = set(U.pid)
-    return {"at": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%MZ"), "window": list(TEST), "method": "warehouse pool upvotes U store_v3 dated upvotes, dedup salted id x launch",
+    return {**complete_block, "at": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%MZ"), "window": list(TEST), "method": "warehouse pool upvotes U store_v3 dated upvotes, dedup salted id x launch",
             "coverage_all": round(float(D.P.sum() / D.V.sum()), 3), "ci_all": ci(0),
             "coverage_top3": round(float(D.P3.sum() / D.V3.sum()), 3), "ci_top3": ci(1),
             "coverage_heldout_not_top100": round(float(D.Ph.sum() / D.Vh.sum()), 3), "ci_heldout": ci(2),
