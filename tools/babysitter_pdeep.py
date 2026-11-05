@@ -50,7 +50,7 @@ def whole(res, R):
     if res.get("truncated_budget"): why.append("truncated_budget")
     if any(not x.get("thread_full") for x in (res.get("forums") or {}).get("items") or []): why.append("forum_threads")  # 0345Z population (1)
     act = (res.get("activity") or {}).get("items") or []
-    if any(x.get("type") == "left a comment" and (not x.get("datetime") or x.get("comment_time_unknown") or x.get("datetime_source") != "comment.createdAt") for x in act): why.append("activity_comment_time")  # 0350Z population full5 (1): own comment.createdAt only
+    if any(x.get("type") == "left a comment" and (not x.get("datetime") or x.get("comment_time_unknown") or x.get("datetime_source") in (None, "", "unknown", "feed.occurredAt_launch_stamp")) for x in act): why.append("activity_comment_time")  # 0450Z population: real feed occurredAt or comment.createdAt; launch stamps fail
     if any(x.get("raw_type") == "DiscussionThread" and not x.get("thread") for x in act): why.append("activity_threads")
     for k in ("forums", "activity"):  # paged lists with no header: need a recorded server end
         t = res.get(k) or {}; pg = (((res.get("run") or {}).get("timing") or {}).get(k) or {}).get("paging") or t.get("paging") or {}
