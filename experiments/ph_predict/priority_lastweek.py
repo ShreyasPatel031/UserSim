@@ -6,7 +6,8 @@ Evidence per person (store_v3 salted person_id, or a handle hashed with the salt
   cm    comments on them (warehouse + store_v3 + the at-launch API commenters via the user id map)
   fol   follows of last week's makers / hunters (store_v3 follows to their salted ids + makers.jsonl followers_page1)
   vn    voter-network connections (raw/ph_population/discovery_voternet_20261104/candidates_ranked.jsonl)
-score = 4*up + 3*cm + 2*min(fol, 5) + 0.3*min(vn, 10). Ties by handle.
+Order (file order = pull order): tier 0 upvote evidence (most last-week upvotes first), tier 1 commenters, tier 2
+maker followers, tier 3 voternet-only; within a tier by up, cm, fol, vn, then handle.
 Excluded: people already whole in store_v3 (full pull, no tab cut short by our code: completeness_watch.short_kind) and
 people the pace runner already pulled whole (raw/_pacetest/shared/ and raw/_pacetest/<vm>/ <handle>.json).
 Only people with a known handle can be listed (a pull needs the handle); unmapped salted ids are counted.
@@ -118,7 +119,11 @@ def main(d0="2026-10-29", d1="2026-11-04"):
         if s > 0:
             rows.append((pid, h2u.get(pid), s, len(up.get(pid, ())), len(cm.get(pid, ())), fol.get(pid, 0), vnh.get(pid, 0)))
     R = pd.DataFrame(rows, columns=["pid", "handle", "score", "up", "cm", "fol", "vn"])
-    known = R[R.handle.notna()].sort_values(["score", "handle"], ascending=[False, True])
+    # strict tiers (orchestrator, Nov 5 10:22Z; the pace queue reads file order): upvote evidence first (most last-week
+    # upvotes first), then commenters, then maker followers, then voternet-only; within a tier by the next signals
+    known = R[R.handle.notna()].copy()
+    known["tier"] = [0 if u > 0 else 1 if c > 0 else 2 if f > 0 else 3 for u, c, f in zip(known.up, known.cm, known.fol)]
+    known = known.sort_values(["tier", "up", "cm", "fol", "vn", "handle"], ascending=[True, False, False, False, False, True])
     loc = f"{tmp}/priority_lastweek.txt"
     with open(loc, "w") as f:
         f.write("\n".join(known.handle) + "\n")
@@ -129,7 +134,9 @@ def main(d0="2026-10-29", d1="2026-11-04"):
            "unmapped_follow_only": int((R.handle.isna() & (R.up == 0) & (R.cm == 0)).sum()), "with_upvote_evidence": int((known.up > 0).sum()),
            "with_comment_evidence": int((known.cm > 0).sum()), "with_maker_follow": int((known.fol > 0).sum()),
            "voternet_only": int(((known.up == 0) & (known.cm == 0) & (known.fol == 0)).sum()),
-           "excluded_whole": int(len(whole)), "out": OUT_GS}
+           "excluded_whole": int(len(whole)), "out": OUT_GS,
+           "tier_sizes": {str(k): int(v) for k, v in known.tier.value_counts().sort_index().items()},
+           "order_check": bool((known.tier.diff().fillna(0) >= 0).all())}
     print(json.dumps(rep))
     return rep
 
