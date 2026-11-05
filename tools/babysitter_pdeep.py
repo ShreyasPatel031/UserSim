@@ -48,7 +48,7 @@ def whole(res, R):
         if H is None:
             if not ended: why.append(k + ":no_header")
             continue
-        if got < H and not (ended or t.get("complete_not_visible")): why.append(k)
+        if got < H and not ended: why.append(k)  # 0350Z orchestrator (a): short of header passes only on a recorded PH server end (complete_not_visible alone is not enough)
     if res.get("truncated_budget"): why.append("truncated_budget")
     if any(not x.get("thread_full") for x in (res.get("forums") or {}).get("items") or []): why.append("forum_threads")  # 0345Z population (1)
     act = (res.get("activity") or {}).get("items") or []
@@ -103,7 +103,16 @@ async def main(a):
           port=int(os.environ.get('PROXY_PORT', 0)), pkg_md5=PB.PKG_MD5)
     claims = set(PB.sh('gsutil', 'ls', f'{B}/claims/deep_*').stdout.split())
     queue = [h for h in sorted(PB.deep_handles(0)) if f'{B}/claims/deep_{h}' not in claims]
-    if FULL: queue = _full_queue()
+    if FULL:
+        queue = _full_queue()
+        rq = [u for u in PB.sh('gsutil', 'ls', 'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/requeue/').stdout.split() if u.endswith('.json')]
+        mine = []
+        for u in rq:  # 0350Z orchestrator (b): rejected people are requeued automatically once the build changes; never left claimed
+            try: e = json.loads(PB.sh('gsutil', 'cat', u).stdout)
+            except Exception: continue
+            if e.get("pkg_md5") != PB.PKG_MD5:
+                h_ = u.rsplit('/', 1)[1][:-5]; mine.append(h_); PB.sh('gsutil', '-q', 'rm', f'{B}/claims/{h_}', u)
+        if mine: queue = list(dict.fromkeys(mine + queue)); S.put(event="requeued", n=len(mine))
     tl = PB.sh('gsutil', 'cat', f'{B}/pdeep_list.{VM}.txt')  # optional test list: only these deep_list people, in this order
     if tl.returncode == 0 and tl.stdout.strip():
         only = [l.strip().lower() for l in tl.stdout.splitlines() if l.strip()]; queue = only if FULL else [h for h in only if h in set(queue)]  # 0318Z: FULL test list = pull exactly these people
@@ -163,13 +172,16 @@ async def main(a):
             if nw:  # 0335Z strict gate: NOT written to the store; claim kept (no auto-retry); reasons in status for the fixed build
                 open(f'out/{h}.incomplete.json', 'w').write(json.dumps(res, ensure_ascii=False))
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.incomplete.json', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/incomplete/{h}.json')
-                open(f'out/{h}.rq', 'w').write(json.dumps({"reasons": nw, "utc": PB.now(), "vm": VM}))
+                open(f'out/{h}.rq', 'w').write(json.dumps({"reasons": nw, "utc": PB.now(), "vm": VM, "pkg_md5": PB.PKG_MD5}))
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.rq', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/requeue/{h}.json')  # 0345Z population (6): requeue list for the fixed build
                 S.put(handle=h, rc=2, method="pfull_v2", worker=wi, secs=secs, error="not_whole", reasons=nw); consec = 0; continue
             if res:
                 PB._CUR_R[0] = R; cv = PB.coverage(res)  # sync: no other worker runs between these two statements
                 json.dump(res, open(f'out/{h}.json', 'w'), indent=1, ensure_ascii=False)
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.json', f'{B}/{h}.json')
+                if FULL and (res.get("upvotes") or {}).get("upvotes_capped"):  # 0350Z orchestrator (a): PH's signed-out upvote stop -> queued for the signed-in upvotes pass
+                    open(f'out/{h}.su', 'w').write(json.dumps({"header": (res.get("header") or {}).get("upvotes"), "got": res["upvotes"].get("count"), "utc": PB.now(), "vm": VM}))
+                    await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.su', f'gs://usersim-bakeoff-347838016394/usersim_sim/raw/_babysitter/signedin_upvotes/{h}.json')
                 await asyncio.to_thread(PB.sh, 'gsutil', '-q', 'cp', f'out/{h}.log', f'{B}/logs/{h}.log')
                 if not FULL: await asyncio.to_thread(PB.deep_done, h, res, R)
                 elif res.get('truncated_budget') or getattr(R, 'trunc', None): await asyncio.to_thread(PB.deep_add, h, 'full_partial', list(getattr(R, 'trunc', []) or res.get('truncated_budget') or []), getattr(R, 'cursors', {}), {})
