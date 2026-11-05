@@ -1167,3 +1167,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 10:27 UTC Nov 5 Population: 10:05 merge VERIFIED: complete 1,346 → 2,052 (+706); whole 1,949 + 103 signed-out; ledger 1,440, MERGED_INCOMPLETE 0. tabs.parquet now has end_reason (159,040 tab rows). Pace test 1,463 (1,364 + 99).
 - 10:30 UTC Nov 5 full16 tiWEdopI PASS; full17 Ku9PrVAf PASS 10:29Z (priority queue + stacks via GraphQL + GraphQL-only stacks end after a 50-person verify sample + op-name logging), staged on all 5 VMs. Staggered: pace32-1 on full15 (10:24Z); pace32-3 ~10:35Z and pace32-6 ~10:45Z boot full17; 1/4/5 take full17 on their next natural start. K8 max.
 - 10:34 UTC Nov 5 mailbox checked: nothing new.
+- 10:38 UTC Nov 5 Hourly check: 5 pace VMs RUNNING; store whole 1,949 + 103 signed-out (1,440 merged, 0 incomplete); full17 rolling out (priority queue). Pipeline/capture still down (SA).
