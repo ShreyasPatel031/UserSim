@@ -177,3 +177,12 @@ Model switches, direction reviews and agenda changes, newest last.
 - **Rule breach.** Between 03:01Z and 03:31Z, 39 person files were written that are not whole (a list tab below 98% with no PH end recorded; 34 have no incomplete marker): 38 by the babysitter's VM collector, 1 by pgql_test.
   - Nothing newer than 03:31:46Z is in the store.
   - Alerted (GROKBOT URGENT, via the orchestrator).
+
+## 2026-11-05 12:35 UTC: Whole-person audit #2 (E5 agent)
+- **Writes resumed in people_live/vm/.** 1,445 files were written 07:00-11:40Z by the pace-test VMs feeder-pace32-1..6, which were supposed to write only to raw/_pacetest/.
+- **434 of them are not whole**, with no incomplete marker:
+  - followers 296 (median 4 missing), upvotes 119, following 62, collections 54, stacks 14, hunted 10;
+  - by VM: -6 118, -3 92, -5 90, -1 69, -4 65.
+  - Alerted (GROKBOT URGENT). List in the bucket: tmp/e5/nonwhole_pace32_0700_1140.csv.
+- **Store**: 15,719 people; 10,362 have every list tab at >= 98% of its header. The strict population count is the headline (population agent).
+- **Follower re-page still not run** for the 1,080 queued people: >= 98% at <100 71/653, 100-1,000 26/315, >1,000 0/112. The two budget-stopped lists have not resumed.
