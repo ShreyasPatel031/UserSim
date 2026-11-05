@@ -328,7 +328,8 @@ def hourly(loop=True):
             print(json.dumps({"error": f"{type(e).__name__}: {e}"[:300]}), flush=True)
         if not loop:
             return
-        time.sleep(3600 - time.time() % 3600 + 40 * 60 if time.time() % 3600 < 40 * 60 else 3600 - time.time() % 3600 + 40 * 60)
+        t = time.time() % 3600
+        time.sleep(40 * 60 - t if t < 40 * 60 else 3600 - t + 40 * 60)   # next :40
 
 
 def main():
