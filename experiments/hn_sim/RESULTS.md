@@ -1264,3 +1264,6 @@ using it lost bucket access: the per-minute recorder (grokbot-hn-recorder, last 
 02:53 UTC), and on hn-sim-1 listwatch2, fdloop4, oddsmin1, oddsloop2, live5 (logs stop 06:25-06:29 UTC Nov 5).
 hn_minute minutes read on Nov 5: 322 front / 420 newest / 63 pool. Escalated to Grok Bot (GROKBOT URGENT via the
 orchestrator) with the one step: re-enable the account. Not touched by hn-agent.
+Daily live readout 2026-11-06 00:48 UTC: skipped. The compute service account is still disabled (IAM disabled: true)
+and no recorder or list read has landed since 06:27 UTC Nov 5, so live15 would repeat the Nov 5 readout. Resumes with
+the next run after the account is re-enabled.
