@@ -1216,3 +1216,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 11:34 UTC Nov 6 mailbox checked: no replies; follow-up line added to the 10:50 daily asks; Nov 6 live capture still absent (SA outage, filed); 0 pace VMs.
 - 12:33 UTC Nov 6 mailbox checked: no new files; asks still unanswered (follow-up already added 11:34); Nov 6 live capture absent; 0 pace VMs.
 - 13:33 UTC Nov 6 mailbox checked: no new files; asks unanswered; Nov 6 live capture absent; 0 pace VMs.
+- 14:33 UTC Nov 6 mailbox checked: no new files; asks unanswered; no Nov 5/6 forecast (pipeline down on disabled SA, told Shreyas 14:30Z); 0 pace VMs.
