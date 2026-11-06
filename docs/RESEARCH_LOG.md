@@ -1210,3 +1210,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 06:34 UTC Nov 6 mailbox checked: nothing new.
 - 07:34 UTC Nov 6 mailbox checked: nothing new.
 - 08:35 UTC Nov 6 mailbox checked: no new Grok Bot files since 07:33; 0 pace VMs, compute SA still disabled.
+- 09:34 UTC Nov 6 mailbox checked: no new files either way; raw/ph_at_launch/2026-11-06 still absent (known compute-SA outage, already filed); 0 pace VMs.
