@@ -1227,3 +1227,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 18:34 UTC Nov 6 mailbox checked: HN vote-series reply regenerated (no change; Wayback 2025 done, known). PH live capture still stalled (last write 17:34:39Z); follow-up POSTed 18:22, awaiting Grok Bot.
 - 19:34 UTC Nov 6 mailbox checked: no replies; live capture stalled 2 h (last write 17:34:39Z); follow-up added and re-POSTed.
 - 20:34 UTC Nov 6 mailbox checked: no replies; live capture stalled 3 h; follow-up line added (not re-POSTed; 4 POSTs already unanswered).
+- 20:37 UTC Nov 6 usersim-cloud-agent credentials invalid for orchestrator and population agent (gsutil/gcloud: 'credentials are invalid'); population rule watch not done this hour. POSTed to Grok Bot; needs Shreyas.
