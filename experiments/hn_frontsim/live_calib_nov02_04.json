@@ -1,0 +1,1083 @@
+{
+ "lists_last_read": {
+  "2026-10-30": "2026-11-02 23:29:12",
+  "2026-10-31": "2026-11-03 23:02:04",
+  "2026-11-01": "2026-11-04 23:02:19",
+  "2026-11-02": "2026-11-05 06:11:23",
+  "2026-11-03": "2026-11-05 06:10:46",
+  "2026-11-04": "2026-11-05 06:10:24",
+  "2026-11-05": "2026-11-05 06:01:00"
+ },
+ "lists_settled": [
+  "2026-10-30",
+  "2026-10-31",
+  "2026-11-01",
+  "2026-11-02"
+ ],
+ "label_b_settled": "on a settled daily list among d..d+3; only list days in lists_settled count (Nov 2 posts: Nov 2 list only)",
+ "label_b_latest": "on the latest read of daily lists d..d+3 (provisional: those lists are not settled)",
+ "winners_found_only_on_a_later_days_list": 29,
+ "by_day": {
+  "2026-11-02": {
+   "posts": 913,
+   "posts_with_24h": 913,
+   "winners_b_latest": 32,
+   "winners_b_settled": 20,
+   "settled_list_days_used": [
+    "2026-11-02"
+   ],
+   "reach_top30_real_24h": [
+    73,
+    0.08
+   ],
+   "mean_log1p_p24_real": 1.262,
+   "median_p24_real": 1.0,
+   "main_l025": {
+    "reach_top30_sim_24h": [
+     82.8,
+     0.0907
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.026,
+      0.032,
+      624
+     ],
+     "2": [
+      0.122,
+      0.12,
+      189
+     ],
+     "3": [
+      0.226,
+      0.301,
+      62
+     ],
+     "4+": [
+      0.526,
+      0.564,
+      38
+     ]
+    },
+    "mean_log1p_p24_sim": 1.398,
+    "median_p24_sim": 1.0,
+    "sum_P": 43.2,
+    "sum_P / winners_b_latest": 1.351,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0659,
+     0.0526,
+     0.0806
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.256,
+     0.2013,
+     0.3091
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0712,
+     0.0579,
+     0.0852
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.2776,
+     0.2247,
+     0.3369
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0359,
+     0.025,
+     0.0468
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.1555,
+     0.1181,
+     0.1965
+    ],
+    "(b-settled) P vs daily label: brier": [
+     0.0239,
+     0.0157,
+     0.0322
+    ],
+    "(b-settled) P vs daily label: logloss": [
+     0.1113,
+     0.0833,
+     0.1425
+    ],
+    "(b-settled) n": 913
+   },
+   "l05": {
+    "reach_top30_sim_24h": [
+     57.8,
+     0.0633
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.026,
+      0.024,
+      624
+     ],
+     "2": [
+      0.122,
+      0.065,
+      189
+     ],
+     "3": [
+      0.226,
+      0.187,
+      62
+     ],
+     "4+": [
+      0.526,
+      0.498,
+      38
+     ]
+    },
+    "mean_log1p_p24_sim": 1.341,
+    "median_p24_sim": 1.0,
+    "sum_P": 36.9,
+    "sum_P / winners_b_latest": 1.152,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0665,
+     0.0521,
+     0.0816
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.2619,
+     0.2076,
+     0.3203
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0661,
+     0.0531,
+     0.0797
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.276,
+     0.2174,
+     0.337
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0357,
+     0.0256,
+     0.0471
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.1557,
+     0.1178,
+     0.1992
+    ],
+    "(b-settled) P vs daily label: brier": [
+     0.0235,
+     0.0153,
+     0.0322
+    ],
+    "(b-settled) P vs daily label: logloss": [
+     0.1078,
+     0.079,
+     0.1411
+    ],
+    "(b-settled) n": 913
+   },
+   "nofix": {
+    "reach_top30_sim_24h": [
+     134.7,
+     0.1475
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.026,
+      0.035,
+      624
+     ],
+     "2": [
+      0.122,
+      0.279,
+      189
+     ],
+     "3": [
+      0.226,
+      0.528,
+      62
+     ],
+     "4+": [
+      0.526,
+      0.728,
+      38
+     ]
+    },
+    "mean_log1p_p24_sim": 1.322,
+    "median_p24_sim": 1.0,
+    "sum_P": 36.5,
+    "sum_P / winners_b_latest": 1.141,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0668,
+     0.0528,
+     0.0821
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.2618,
+     0.2109,
+     0.316
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0946,
+     0.0801,
+     0.1094
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.348,
+     0.2897,
+     0.4104
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0352,
+     0.0247,
+     0.046
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.1543,
+     0.1149,
+     0.1975
+    ],
+    "(b-settled) P vs daily label: brier": [
+     0.0229,
+     0.0152,
+     0.0316
+    ],
+    "(b-settled) P vs daily label: logloss": [
+     0.1059,
+     0.0775,
+     0.1369
+    ],
+    "(b-settled) n": 913
+   },
+   "diff main_l025 - l05 (negative = main better)": {
+    "(a) brier": [
+     -0.0006,
+     -0.0012,
+     -0.0001
+    ],
+    "(a) logloss": [
+     -0.0059,
+     -0.0117,
+     -0.001
+    ],
+    "(b-latest) brier": [
+     0.0001,
+     -0.0003,
+     0.0005
+    ],
+    "(b-latest) logloss": [
+     -0.0002,
+     -0.0052,
+     0.0038
+    ]
+   },
+   "diff main_l025 - nofix (negative = main better)": {
+    "(a) brier": [
+     -0.0009,
+     -0.0017,
+     -0.0002
+    ],
+    "(a) logloss": [
+     -0.0058,
+     -0.0118,
+     0.0001
+    ],
+    "(b-latest) brier": [
+     0.0007,
+     0.0001,
+     0.0013
+    ],
+    "(b-latest) logloss": [
+     0.0011,
+     -0.0036,
+     0.0054
+    ]
+   }
+  },
+  "2026-11-03": {
+   "posts": 1065,
+   "posts_with_24h": 1065,
+   "winners_b_latest": 19,
+   "winners_b_settled": 0,
+   "settled_list_days_used": [],
+   "reach_top30_real_24h": [
+    71,
+    0.0667
+   ],
+   "mean_log1p_p24_real": 1.229,
+   "median_p24_real": 1.0,
+   "main_l025": {
+    "reach_top30_sim_24h": [
+     58.9,
+     0.0553
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.019,
+      0.018,
+      686
+     ],
+     "2": [
+      0.071,
+      0.041,
+      241
+     ],
+     "3": [
+      0.19,
+      0.146,
+      63
+     ],
+     "4+": [
+      0.387,
+      0.369,
+      75
+     ]
+    },
+    "mean_log1p_p24_sim": 1.331,
+    "median_p24_sim": 1.0,
+    "sum_P": 35.5,
+    "sum_P / winners_b_latest": 1.867,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0569,
+     0.0446,
+     0.0698
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.227,
+     0.1814,
+     0.2752
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0564,
+     0.0445,
+     0.0682
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.2456,
+     0.188,
+     0.304
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0186,
+     0.0117,
+     0.0255
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.093,
+     0.0672,
+     0.1207
+    ]
+   },
+   "l05": {
+    "reach_top30_sim_24h": [
+     42.8,
+     0.0402
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.019,
+      0.014,
+      686
+     ],
+     "2": [
+      0.071,
+      0.028,
+      241
+     ],
+     "3": [
+      0.19,
+      0.073,
+      63
+     ],
+     "4+": [
+      0.387,
+      0.288,
+      75
+     ]
+    },
+    "mean_log1p_p24_sim": 1.295,
+    "median_p24_sim": 1.0,
+    "sum_P": 30.4,
+    "sum_P / winners_b_latest": 1.599,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0578,
+     0.0451,
+     0.0714
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.2348,
+     0.1855,
+     0.2861
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0572,
+     0.0446,
+     0.0709
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.2537,
+     0.1951,
+     0.3159
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0182,
+     0.0115,
+     0.0256
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.0909,
+     0.0645,
+     0.1218
+    ]
+   },
+   "nofix": {
+    "reach_top30_sim_24h": [
+     107.3,
+     0.1008
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.019,
+      0.019,
+      686
+     ],
+     "2": [
+      0.071,
+      0.114,
+      241
+     ],
+     "3": [
+      0.19,
+      0.368,
+      63
+     ],
+     "4+": [
+      0.387,
+      0.585,
+      75
+     ]
+    },
+    "mean_log1p_p24_sim": 1.265,
+    "median_p24_sim": 1.0,
+    "sum_P": 31.5,
+    "sum_P / winners_b_latest": 1.66,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0576,
+     0.0453,
+     0.0713
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.2269,
+     0.1794,
+     0.2758
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0655,
+     0.054,
+     0.0775
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.2749,
+     0.2212,
+     0.3354
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0176,
+     0.011,
+     0.0252
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.0883,
+     0.0632,
+     0.1175
+    ]
+   },
+   "diff main_l025 - l05 (negative = main better)": {
+    "(a) brier": [
+     -0.0009,
+     -0.0017,
+     -0.0002
+    ],
+    "(a) logloss": [
+     -0.0078,
+     -0.0181,
+     0.0013
+    ],
+    "(b-latest) brier": [
+     0.0004,
+     0.0001,
+     0.0008
+    ],
+    "(b-latest) logloss": [
+     0.0021,
+     -0.0016,
+     0.0054
+    ]
+   },
+   "diff main_l025 - nofix (negative = main better)": {
+    "(a) brier": [
+     -0.0008,
+     -0.0018,
+     0.0001
+    ],
+    "(a) logloss": [
+     0.0,
+     -0.0076,
+     0.0087
+    ],
+    "(b-latest) brier": [
+     0.0009,
+     0.0005,
+     0.0014
+    ],
+    "(b-latest) logloss": [
+     0.0048,
+     0.0011,
+     0.0093
+    ]
+   }
+  },
+  "2026-11-04": {
+   "posts": 1050,
+   "posts_with_24h": 175,
+   "winners_b_latest": 30,
+   "winners_b_settled": 0,
+   "settled_list_days_used": [],
+   "reach_top30_real_24h": [
+    7,
+    0.04
+   ],
+   "mean_log1p_p24_real": 1.212,
+   "median_p24_real": 2.0,
+   "main_l025": {
+    "reach_top30_sim_24h": [
+     7.1,
+     0.0406
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.016,
+      0.01,
+      128
+     ],
+     "2": [
+      0.069,
+      0.022,
+      29
+     ],
+     "3": [
+      0.0,
+      0.133,
+      13
+     ],
+     "4+": [
+      0.6,
+      0.689,
+      5
+     ]
+    },
+    "mean_log1p_p24_sim": 1.198,
+    "median_p24_sim": 1.0,
+    "sum_P": 33.1,
+    "sum_P / winners_b_latest": 1.103,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0305,
+     0.0094,
+     0.0569
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.1392,
+     0.0508,
+     0.251
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0317,
+     0.0116,
+     0.0559
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.1682,
+     0.0549,
+     0.3173
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0269,
+     0.0186,
+     0.0356
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.1209,
+     0.0888,
+     0.1585
+    ]
+   },
+   "l05": {
+    "reach_top30_sim_24h": [
+     4.7,
+     0.0266
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.016,
+      0.007,
+      128
+     ],
+     "2": [
+      0.069,
+      0.012,
+      29
+     ],
+     "3": [
+      0.0,
+      0.034,
+      13
+     ],
+     "4+": [
+      0.6,
+      0.585,
+      5
+     ]
+    },
+    "mean_log1p_p24_sim": 1.166,
+    "median_p24_sim": 1.0,
+    "sum_P": 28.6,
+    "sum_P / winners_b_latest": 0.953,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0309,
+     0.0089,
+     0.0563
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.1512,
+     0.0511,
+     0.2726
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.0309,
+     0.0099,
+     0.0565
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.1992,
+     0.0534,
+     0.3705
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0268,
+     0.018,
+     0.0363
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.1236,
+     0.0899,
+     0.1604
+    ]
+   },
+   "nofix": {
+    "reach_top30_sim_24h": [
+     14.6,
+     0.0832
+    ],
+    "reach_by_15min_score [real, sim, n]": {
+     "1": [
+      0.016,
+      0.012,
+      128
+     ],
+     "2": [
+      0.069,
+      0.122,
+      29
+     ],
+     "3": [
+      0.0,
+      0.416,
+      13
+     ],
+     "4+": [
+      0.6,
+      0.815,
+      5
+     ]
+    },
+    "mean_log1p_p24_sim": 1.144,
+    "median_p24_sim": 1.0,
+    "sum_P": 30.2,
+    "sum_P / winners_b_latest": 1.007,
+    "(a) P vs 24h reach: brier [est, lo, hi]": [
+     0.0321,
+     0.0101,
+     0.059
+    ],
+    "(a) P vs 24h reach: logloss": [
+     0.149,
+     0.0535,
+     0.2622
+    ],
+    "(a) sim_top30 vs 24h reach: brier": [
+     0.05,
+     0.0281,
+     0.0754
+    ],
+    "(a) sim_top30 vs 24h reach: logloss": [
+     0.1988,
+     0.1042,
+     0.3113
+    ],
+    "(b-latest) P vs daily label: brier": [
+     0.0266,
+     0.0182,
+     0.0362
+    ],
+    "(b-latest) P vs daily label: logloss": [
+     0.1193,
+     0.0859,
+     0.1557
+    ]
+   },
+   "diff main_l025 - l05 (negative = main better)": {
+    "(a) brier": [
+     -0.0004,
+     -0.0016,
+     0.0005
+    ],
+    "(a) logloss": [
+     -0.012,
+     -0.0368,
+     0.0044
+    ],
+    "(b-latest) brier": [
+     0.0001,
+     -0.0003,
+     0.0006
+    ],
+    "(b-latest) logloss": [
+     -0.0027,
+     -0.0092,
+     0.0029
+    ]
+   },
+   "diff main_l025 - nofix (negative = main better)": {
+    "(a) brier": [
+     -0.0017,
+     -0.0039,
+     -0.0001
+    ],
+    "(a) logloss": [
+     -0.0098,
+     -0.0268,
+     0.0049
+    ],
+    "(b-latest) brier": [
+     0.0003,
+     -0.0005,
+     0.001
+    ],
+    "(b-latest) logloss": [
+     0.0016,
+     -0.0045,
+     0.0072
+    ]
+   }
+  }
+ },
+ "pooled": {
+  "posts": 3028,
+  "posts_with_24h": 2153,
+  "winners_b_latest": 81,
+  "winners_b_settled": 20,
+  "settled_list_days_used": [
+   "2026-11-02"
+  ],
+  "reach_top30_real_24h": [
+   151,
+   0.0701
+  ],
+  "mean_log1p_p24_real": 1.242,
+  "median_p24_real": 1.0,
+  "main_l025": {
+   "reach_top30_sim_24h": [
+    148.8,
+    0.0691
+   ],
+   "reach_by_15min_score [real, sim, n]": {
+    "1": [
+     0.022,
+     0.023,
+     1438
+    ],
+    "2": [
+     0.092,
+     0.072,
+     459
+    ],
+    "3": [
+     0.188,
+     0.214,
+     138
+    ],
+    "4+": [
+     0.441,
+     0.446,
+     118
+    ]
+   },
+   "mean_log1p_p24_sim": 1.349,
+   "median_p24_sim": 1.0,
+   "sum_P": 111.8,
+   "sum_P / winners_b_latest": 1.38,
+   "(a) P vs 24h reach: brier [est, lo, hi]": [
+    0.0586,
+    0.0495,
+    0.0678
+   ],
+   "(a) P vs 24h reach: logloss": [
+    0.2322,
+    0.1992,
+    0.2658
+   ],
+   "(a) sim_top30 vs 24h reach: brier": [
+    0.0607,
+    0.0525,
+    0.0692
+   ],
+   "(a) sim_top30 vs 24h reach: logloss": [
+    0.2529,
+    0.2165,
+    0.2946
+   ],
+   "(b-latest) P vs daily label: brier": [
+    0.0267,
+    0.0216,
+    0.0318
+   ],
+   "(b-latest) P vs daily label: logloss": [
+    0.1215,
+    0.1029,
+    0.1411
+   ],
+   "(b-settled) P vs daily label: brier": [
+    0.0239,
+    0.016,
+    0.0325
+   ],
+   "(b-settled) P vs daily label: logloss": [
+    0.1113,
+    0.0827,
+    0.1429
+   ],
+   "(b-settled) n": 913
+  },
+  "l05": {
+   "reach_top30_sim_24h": [
+    105.3,
+    0.0489
+   ],
+   "reach_by_15min_score [real, sim, n]": {
+    "1": [
+     0.022,
+     0.018,
+     1438
+    ],
+    "2": [
+     0.092,
+     0.042,
+     459
+    ],
+    "3": [
+     0.188,
+     0.121,
+     138
+    ],
+    "4+": [
+     0.441,
+     0.368,
+     118
+    ]
+   },
+   "mean_log1p_p24_sim": 1.304,
+   "median_p24_sim": 1.0,
+   "sum_P": 95.8,
+   "sum_P / winners_b_latest": 1.183,
+   "(a) P vs 24h reach: brier [est, lo, hi]": [
+    0.0593,
+    0.0504,
+    0.0688
+   ],
+   "(a) P vs 24h reach: logloss": [
+    0.2395,
+    0.2047,
+    0.2745
+   ],
+   "(a) sim_top30 vs 24h reach: brier": [
+    0.0588,
+    0.0501,
+    0.0681
+   ],
+   "(a) sim_top30 vs 24h reach: logloss": [
+    0.2587,
+    0.2188,
+    0.3022
+   ],
+   "(b-latest) P vs daily label: brier": [
+    0.0264,
+    0.0213,
+    0.0314
+   ],
+   "(b-latest) P vs daily label: logloss": [
+    0.1218,
+    0.1017,
+    0.1429
+   ],
+   "(b-settled) P vs daily label: brier": [
+    0.0235,
+    0.0154,
+    0.0324
+   ],
+   "(b-settled) P vs daily label: logloss": [
+    0.1078,
+    0.0777,
+    0.1403
+   ],
+   "(b-settled) n": 913
+  },
+  "nofix": {
+   "reach_top30_sim_24h": [
+    256.6,
+    0.1192
+   ],
+   "reach_by_15min_score [real, sim, n]": {
+    "1": [
+     0.022,
+     0.025,
+     1438
+    ],
+    "2": [
+     0.092,
+     0.182,
+     459
+    ],
+    "3": [
+     0.188,
+     0.444,
+     138
+    ],
+    "4+": [
+     0.441,
+     0.641,
+     118
+    ]
+   },
+   "mean_log1p_p24_sim": 1.279,
+   "median_p24_sim": 1.0,
+   "sum_P": 98.3,
+   "sum_P / winners_b_latest": 1.213,
+   "(a) P vs 24h reach: brier [est, lo, hi]": [
+    0.0595,
+    0.0504,
+    0.0689
+   ],
+   "(a) P vs 24h reach: logloss": [
+    0.2354,
+    0.2022,
+    0.2691
+   ],
+   "(a) sim_top30 vs 24h reach: brier": [
+    0.0766,
+    0.0676,
+    0.0853
+   ],
+   "(a) sim_top30 vs 24h reach: logloss": [
+    0.2998,
+    0.2633,
+    0.3391
+   ],
+   "(b-latest) P vs daily label: brier": [
+    0.026,
+    0.0209,
+    0.0313
+   ],
+   "(b-latest) P vs daily label: logloss": [
+    0.1189,
+    0.1005,
+    0.1401
+   ],
+   "(b-settled) P vs daily label: brier": [
+    0.0229,
+    0.0147,
+    0.0313
+   ],
+   "(b-settled) P vs daily label: logloss": [
+    0.1059,
+    0.0773,
+    0.1385
+   ],
+   "(b-settled) n": 913
+  },
+  "diff main_l025 - l05 (negative = main better)": {
+   "(a) brier": [
+    -0.0007,
+    -0.0012,
+    -0.0003
+   ],
+   "(a) logloss": [
+    -0.0073,
+    -0.0128,
+    -0.0018
+   ],
+   "(b-latest) brier": [
+    0.0002,
+    -0.0,
+    0.0005
+   ],
+   "(b-latest) logloss": [
+    -0.0002,
+    -0.0031,
+    0.0024
+   ]
+  },
+  "diff main_l025 - nofix (negative = main better)": {
+   "(a) brier": [
+    -0.0009,
+    -0.0015,
+    -0.0004
+   ],
+   "(a) logloss": [
+    -0.0032,
+    -0.0079,
+    0.0014
+   ],
+   "(b-latest) brier": [
+    0.0006,
+    0.0003,
+    0.001
+   ],
+   "(b-latest) logloss": [
+    0.0026,
+    -0.0003,
+    0.0053
+   ]
+  }
+ },
+ "rescale_preregistered": {
+  "pooled_sum_P": 111.79,
+  "winners_b_latest": 81,
+  "ratio": 1.38,
+  "band": [
+   0.8,
+   1.25
+  ],
+  "triggered": true,
+  "a": -0.3649,
+  "in_sample (b-latest) brier / logloss: before": [
+   0.0267,
+   0.1215
+  ],
+  "in_sample (b-latest) brier / logloss: after": [
+   0.0261,
+   0.1197
+  ]
+ }
+}

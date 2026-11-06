@@ -195,7 +195,9 @@ def replay(Mo, born, score, a0, xw, wday_class, test_day, pool, thr, D=200):
 
 
 def main(D=200):
-    t0 = time.time(); sync()
+    t0 = time.time()
+    if os.environ.get("SKIP_SYNC") != "1":
+        sync()
     import __main__; __main__.Model = F.Model
     Mo = pickle.load(open(os.path.join(F.CACHE, "frontsim_model.pkl"), "rb"))
     # early-vote tempering for the prior in use (flat until an at-posting score exists), on posts Jul 14 - Oct 12
@@ -221,6 +223,8 @@ def main(D=200):
     cov = M.assign(d=pd.to_datetime(M.t, unit="s", utc=True).dt.strftime("%Y-%m-%d")).groupby(["d", "list"]).t.apply(lambda x: x.floordiv(60).nunique()).unstack()
     full_days = [d for d in cov.index if cov.loc[d].get("newest", 0) >= 1300 and cov.loc[d].get("front", 0) >= 1000]
     print("feed minutes by day\n", cov, "\nfull days", full_days, flush=True)
+    if os.environ.get("DAYS"):                      # restrict to these posting days (pre-registration: no look at later days)
+        full_days = [d for d in full_days if d in os.environ["DAYS"].split(",")]
     P = P[P.day.isin(full_days)].reset_index(drop=True)
     print(f"{len(P)} posts on full days, {time.time() - t0:.0f}s", flush=True)
     global MOD
@@ -291,8 +295,8 @@ def main(D=200):
     else:
         res["caught"] = "no posting day has its 4 list days settled yet"
     os.makedirs(os.path.join(HERE, "out"), exist_ok=True)
-    P.drop(columns=[]).to_parquet(os.path.join(HERE, "out", "live_posts.parquet"), index=False)
     tag = os.environ.get("TAG", "")
+    P.drop(columns=[]).to_parquet(os.path.join(HERE, "out", f"live_posts{'_' + tag if tag else ''}.parquet"), index=False)
     res["variant"] = {"newest_page1_only": os.environ.get("NEWEST_P1", "1") == "1", "start_at_judge": Mo.start_at_judge, "front_fix": os.environ.get("FRONT_FIX", "")}
     json.dump(res, open(os.path.join(HERE, "out", "live_frontsim" + ("_" + os.path.basename(cfile).replace(".json", "") if os.environ.get("CALIB") else "") + (f"_{tag}" if tag else "") + ".json"), "w"), indent=1)
     print(json.dumps(res, indent=1))

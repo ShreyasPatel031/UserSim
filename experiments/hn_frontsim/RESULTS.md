@@ -279,3 +279,77 @@ The judging-moment start alone costs likelihood; together with the penalty at la
 - The day's sum of P is still high: 43.2 isotonic, 39.3 day threshold, against ~25-30 winners.
 
 **Main arm from here: lambda 0.25.** The Nov 8 shadow Caught compares four arms, paired: lambda 0.25, lambda 0.5, no fix, and the October fit.
+
+### Live calibration of three arms, Nov 2-4 (run Nov 6, 01:25 UTC)
+
+These are held-out days: no November data is in any fit. Script: `live_calib3.py`. Results file: `live_calib_nov02_04.json`. Per-post scores: `out/live_posts_<tag>.parquet`, from `live_frontsim.py` with `DAYS=2026-11-02,2026-11-03,2026-11-04`. Posting days Nov 5-8 were **not run or looked at**.
+
+The arms:
+- **main_l025:** the entry penalty at lambda 0.25 with the judging-moment start (2025 refit).
+- **l05:** the same, with lambda 0.5.
+- **nofix:** the 2025 grid2 fit, with no penalty and the old start.
+
+All arms use page-1 /newest exposure and 200 draws. Intervals are 95% bootstraps over posts (2,000 resamples). With only 3 days, they are not by day.
+
+**Data caveat: the outage.** Every HN uploader stopped at Nov 5 06:27Z, when the compute default service account was disabled.
+- Nov 4 posts have 24 h outcomes for only 175 of 1,050 (those posted before ~06:30Z).
+- Listwatch last read the daily lists at Nov 5 06:11Z. Only list day **Nov 2** has settled (48 h after the list day).
+- **(b-settled)** is the Nov 2 posting day against the settled Nov 2 list only: 913 posts, 20 winners.
+- **(b-latest)** is the latest read of lists d..d+3, which is provisional. That gives 81 winners on Nov 2-4: 32, 19 and 30. Later-day lists are partly or wholly missing, so this probably undercounts winners.
+
+**Top-30 reach within 24 h, pooled (2,153 posts with 24 h).** Real against simulated:
+
+| | real | main_l025 | l05 | nofix |
+|---|---|---|---|---|
+| all | 7.0% (151) | **6.9% (148.8)** | 4.9% (105.3) | 11.9% (256.6) |
+| 1 point at 15 min (1,438) | 2.2% | 2.3% | 1.8% | 2.5% |
+| 2 points (459) | 9.2% | 7.2% | 4.2% | 18.2% |
+| 3 points (138) | 18.8% | 21.4% | 12.1% | 44.4% |
+| 4+ points (118) | 44.1% | 44.6% | 36.8% | 64.1% |
+| mean log1p 24 h points | 1.24 (undercounts) | 1.35 | 1.30 | 1.28 |
+
+Reach by day, real vs main:
+- Nov 2: 8.0% vs 9.1%
+- Nov 3: 6.7% vs 5.5%
+- Nov 4 (175 posts): 4.0% vs 4.1%
+
+**Sum of P(daily top 30) against winners (b-latest):**
+- main: 111.8 / 81 = **1.38** (by day 1.35, 1.87, 1.10)
+- l05: 1.18
+- nofix: 1.21
+
+**Brier and log-loss of P (isotonic), pooled:**
+
+| | main_l025 | l05 | nofix |
+|---|---|---|---|
+| (a) vs 24 h reach: Brier | **0.0586** [0.0495, 0.0678] | 0.0593 | 0.0595 |
+| (a) log-loss | **0.232** [0.199, 0.266] | 0.240 | 0.235 |
+| (b-latest) vs daily label: Brier | 0.0267 [0.0216, 0.0318] | 0.0264 | **0.0260** |
+| (b-latest) log-loss | 0.1215 | 0.1218 | **0.1189** |
+| (b-settled, Nov 2 only, 913 posts) Brier | 0.0239 | 0.0235 | **0.0229** |
+| (b-settled) log-loss | 0.111 | 0.108 | **0.106** |
+
+Paired differences, main minus the other arm (negative means main is better):
+- **(a) Brier:** vs nofix −0.0009 [−0.0015, −0.0004]; vs l05 −0.0007 [−0.0012, −0.0003].
+- **(a) log-loss:** vs nofix −0.0032 [−0.0079, +0.0014]; vs l05 −0.0073 [−0.0128, −0.0018].
+- **(b-latest) Brier:** vs nofix +0.0006 [+0.0003, +0.0010]; vs l05 +0.0002 [−0.0000, +0.0005].
+- **(b-latest) log-loss:** vs nofix +0.0026 [−0.0003, +0.0053]; vs l05 −0.0002 [−0.0031, +0.0024].
+
+**Reading.**
+- The main arm gets reach right overall and by 15-min score. Nofix nearly doubles reach for 2-3 point posts.
+- Against the 24 h reach label, main is the best arm. Against the daily-list label, it is slightly worse than nofix on Brier. That fits P being too high: 1.38 times the winners.
+- The daily-list labels here are thin (one settled list day) and provisional.
+
+#### PRE-REGISTERED rescale (written and committed before any look at Nov 5-8)
+
+The rule was set by the orchestrator before these runs: if the pooled sum of P / winners on Nov 2-4 falls outside [0.8, 1.25], fit one day-level logit shift a.
+
+The check triggered: 111.79 / 81 = 1.38. Fitting on Nov 2-4 so that sum sigmoid(logit P + a) = 81 gives **a = −0.3649**.
+- It is fitted on the main arm's P, using winners from the latest reads (b-latest), floored at 1e-6.
+- In sample on the b-latest label, Brier goes from 0.0267 to 0.0261 and log-loss from 0.1215 to 0.1197.
+
+The fifth arm for the Nov 8 shadow run:
+- **Name:** `rescaled`.
+- **Score:** P_rescaled = sigmoid(logit(P_main_l025) + a), with **a = −0.3649 FIXED**. It is not refit on Nov 5-8, and not refit if the Nov 2-4 lists are backfilled.
+- **Effect:** Caught flags the top k by rank, so this arm's Caught equals main's. The rescale is judged on Brier and log-loss only.
+- **Possible bias:** the winners count is provisional (lists stopped at Nov 5 06:11Z) and probably low, so a may over-correct. This is recorded now, not adjusted after the fact.
