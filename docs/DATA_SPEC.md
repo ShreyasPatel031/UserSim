@@ -17,6 +17,13 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Route 4 (port 10001, capture pages) | 403 on cold warm-up Nov 3 21:04Z and Nov 4 07:55Z | blocked; hold to Nov 5 07:25Z |
 | Box browser (own IP, $0) | human pace ≥ 20 s/load; second Cloudflare challenge after ~15 pages | used for first snapshot only |
 
+## Status Nov 6 (10:50 UTC) — daily review
+- Store unchanged since Nov 5 12:08Z: 2,025 whole + 108 whole except the signed-out upvote cap = 2,133; 13,586 incomplete kept for a completion pass. Population merge lists since then: 0 people.
+- Person pulls: 0 VMs since ~10:00Z Nov 5 (PH blocked every IP even at K4; relaunches refused by the safety check). Rate today: 0 whole/day.
+- Last-week vote coverage from whole people: 3.32% (top-3 launches 5.36%); known pool caps ~46%.
+- Compute default SA still disabled: no daily pipeline since Nov 4 (Nov 5 and Nov 6 forecasts, Nov 4–5 scores lost), no at-launch/live capture since Nov 5 02:49Z, HN live stopped since Nov 5 06:27Z, exp-1 down. Needs Shreyas.
+- have_index/need_list stale since Nov 5 00:10Z (their "complete" flag predates the whole-person gate: 2,524 > 2,133 whole), so the coverage dashboard was not republished from them.
+
 ## Status Nov 5 (10:45 UTC) — daily review
 - Whole-person rule in force (AGENTS.md). Store: 1,949 whole + 103 whole except the signed-out upvote cap (from 605 at 03:00Z); 13,586 incomplete kept for a completion pass.
 - Person pulls: 5 pace VMs, Camoufox, fixed ports, K8 per IP (measured: K16 blocks in 1.5–39 min, K8 holds full hours at 2.5–6.3 whole/min). Expected 15–20 whole/min. Queue = last-week voters first (full17).
