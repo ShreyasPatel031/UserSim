@@ -16,7 +16,7 @@
   "api_comments_created_after_pull": 0
  },
  "fail": [
-  "capture stale: no snapshot since 17:30Z (51 min)",
+  "capture stale: no snapshot since 17:30Z (366 min)",
   "board: no homepage / leaderboard page views (only the API ranking)"
  ],
  "warn": [
@@ -24,5 +24,5 @@
   "people_ts.jsonl missing",
   "products_ts.jsonl missing"
  ],
- "checked_at": "2026-11-06T18:21:24Z"
+ "checked_at": "2026-11-06T23:35:53Z"
 }
