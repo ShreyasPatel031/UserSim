@@ -1230,3 +1230,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 20:37 UTC Nov 6 usersim-cloud-agent credentials invalid for orchestrator and population agent (gsutil/gcloud: 'credentials are invalid'); population rule watch not done this hour. POSTed to Grok Bot; needs Shreyas.
 - 21:35 UTC Nov 6 mailbox check could not run: GCS credentials still invalid (~1 h). Credential diagnostic denied by the classifier (Credential Materialization); alerted Grok Bot; not worked around.
 - 22:33 UTC Nov 6 mailbox check could not run: GCS credentials still invalid (~2 h; PH agent lost access 22:18Z too). Already alerted; no re-POST.
+- 23:34 UTC Nov 6 mailbox checked: GCS access back (down ~20:36–23:30Z). No new replies. Live capture still stalled since 17:34Z (6 h); follow-up added and re-POSTed. Told PH and population agents access is back.
