@@ -1228,3 +1228,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 19:34 UTC Nov 6 mailbox checked: no replies; live capture stalled 2 h (last write 17:34:39Z); follow-up added and re-POSTed.
 - 20:34 UTC Nov 6 mailbox checked: no replies; live capture stalled 3 h; follow-up line added (not re-POSTed; 4 POSTs already unanswered).
 - 20:37 UTC Nov 6 usersim-cloud-agent credentials invalid for orchestrator and population agent (gsutil/gcloud: 'credentials are invalid'); population rule watch not done this hour. POSTed to Grok Bot; needs Shreyas.
+- 21:35 UTC Nov 6 mailbox check could not run: GCS credentials still invalid (~1 h). Credential diagnostic denied by the classifier (Credential Materialization); alerted Grok Bot; not worked around.
