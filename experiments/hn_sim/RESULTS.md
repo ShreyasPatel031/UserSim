@@ -1254,3 +1254,13 @@ ranked below the cut 11); Nov 3 6/25, 11/25 (below the cut 13, late 6); Nov 4 3/
 Seen by 15 min: Oct 31 41.7%, Nov 1 53.2%, Nov 2-4 99.7%. hn_minute minutes (front / newest / pool): Nov 4 4,071 /
 1,530 / 185. Per-minute odds: 1,317 files on Nov 4 (of 1,440 minutes), landing every minute on Nov 5.
 At posting the live odds fell on Nov 3-4 (6 / 46 winners) after 10/37 on Nov 2; Nov 3-4 labels are still unsettled.
+
+### Live check 2026-11-06 00:31 UTC: live data stopped (service account disabled)
+Settled list days still Oct 30 - Nov 2 (no new read since); nothing scorable yet (live Caught first at the next check
+after Nov 3's lists settle; odds ~Nov 7+). Daily-list forecast at 21:00 (provisional): Nov 3 73%, Nov 4 77%.
+**Outage:** the Compute Engine default service account (347838016394-compute@developer.gserviceaccount.com) has been
+disabled since ~06:27 UTC Nov 5 (IAM: disabled: true; VMs get 401 "Service account is deleted or disabled"). Every VM
+using it lost bucket access: the per-minute recorder (grokbot-hn-recorder, last upload 06:27 UTC Nov 5; box recorder
+02:53 UTC), and on hn-sim-1 listwatch2, fdloop4, oddsmin1, oddsloop2, live5 (logs stop 06:25-06:29 UTC Nov 5).
+hn_minute minutes read on Nov 5: 322 front / 420 newest / 63 pool. Escalated to Grok Bot (GROKBOT URGENT via the
+orchestrator) with the one step: re-enable the account. Not touched by hn-agent.
