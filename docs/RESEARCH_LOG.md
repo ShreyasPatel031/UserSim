@@ -1205,3 +1205,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 01:33 UTC Nov 6 mailbox checked: nothing new. E5 HN calibration Nov 2–4 (722a8cb2): main best on 24 h reach; Σp/winners 1.38, so the pre-registered rescale a=−0.3649 was fixed for the Nov 8 run; HN live data stopped since 06:27Z Nov 5 (compute SA).
 - 02:33 UTC Nov 6 mailbox checked: nothing new.
 - 03:34 UTC Nov 6 mailbox checked: nothing new.
+- 04:33 UTC Nov 6 mailbox checked: nothing new.
