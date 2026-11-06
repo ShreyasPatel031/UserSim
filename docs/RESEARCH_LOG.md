@@ -1203,3 +1203,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 00:34 UTC Nov 6 mailbox checked: nothing new.
 - 00:36 UTC Nov 6 HN agent GROKBOT URGENT relayed: the compute SA disable (~06:27Z Nov 5) has stopped all live HN data ~18 h (recorder, listwatch, forecasts, odds); Nov 5 lost as a full-coverage day. Fix: re-enable the SA.
 - 01:33 UTC Nov 6 mailbox checked: nothing new. E5 HN calibration Nov 2–4 (722a8cb2): main best on 24 h reach; Σp/winners 1.38, so the pre-registered rescale a=−0.3649 was fixed for the Nov 8 run; HN live data stopped since 06:27Z Nov 5 (compute SA).
+- 02:33 UTC Nov 6 mailbox checked: nothing new.
