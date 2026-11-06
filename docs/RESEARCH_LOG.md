@@ -1224,3 +1224,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 16:35 UTC Nov 6 mailbox checked: no reply to the 15:36 live-capture restart; follow-up line added and re-POSTed. Route-4 probe mostly 403 since 15:59Z (one 200 after-challenge 16:19). Person-pull status unchanged (all STOP).
 - 17:36 UTC Nov 6 mailbox checked: PH live capture RESUMED — raw/ph_at_launch/2026-11-06/ appeared 17:34Z (api_comments, api_replies, live/posts_ts, board_ts, coverage_ts); API token 77.6% left. Heartbeat file not yet rewritten. Told the PH agent.
 - 18:22 UTC Nov 6 PH agent: live capture FAIL — one API snapshot (17:30Z) then stopped. Verified (last write 17:34:39Z). Follow-up added to the 15:36 request and POSTed to Grok Bot.
+- 18:34 UTC Nov 6 mailbox checked: HN vote-series reply regenerated (no change; Wayback 2025 done, known). PH live capture still stalled (last write 17:34:39Z); follow-up POSTed 18:22, awaiting Grok Bot.
