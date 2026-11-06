@@ -1231,3 +1231,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 21:35 UTC Nov 6 mailbox check could not run: GCS credentials still invalid (~1 h). Credential diagnostic denied by the classifier (Credential Materialization); alerted Grok Bot; not worked around.
 - 22:33 UTC Nov 6 mailbox check could not run: GCS credentials still invalid (~2 h; PH agent lost access 22:18Z too). Already alerted; no re-POST.
 - 23:34 UTC Nov 6 mailbox checked: GCS access back (down ~20:36–23:30Z). No new replies. Live capture still stalled since 17:34Z (6 h); follow-up added and re-POSTed. Told PH and population agents access is back.
+- 23:41 UTC Nov 6 PH agent after GCS recovery: live capture FAIL (one snapshot 17:30Z, stale 366 min); completeness watcher re-baselined at 122 code-stop people, all fetched before Nov 5 03:53Z (pre-gate), no non-full pulls after the rule; coverage flat 3.32% / 5.36%, 2,197 complete. 2-hourly check re-enabled.
