@@ -16,7 +16,7 @@ Literature ([Novada](https://www.novada.com/blog-ordinary/parallel-concurrent-pr
 
 ## Four strategies (policy, not metadata ramps)
 
-Configs live in `scripts/vm/ph_strategies/*.env`, injected as metadata key **`ph-strategy-env`** at VM create. Supervisor / `ph_person*` should read `PH_*` env (wire in `reuse.tgz` when approved).
+Configs live in `scripts/vm/ph_strategies/*.env`, injected as metadata key **`ph-strategy-env`** at VM create. `pace_startup.sh` installs GCS overlays (`_code/overlays/`) so `supervisor_strat.sh` exports `PH_*` into `ph_batch.py` as `--tabs` / `--ramp` / `--person-interval`, and expands `portscreen` to sticky ports **10000–20000**.
 
 | ID | Name | Idea | Primary levers |
 |----|------|------|----------------|
@@ -47,13 +47,13 @@ Winner: highest **mean people/min** with acceptable block rate (document if one 
 ```bash
 export GCP_PROJECT=...
 export PACE_ZONE=...
-export PACE_PORT_REGISTRY_BUCKET=...
+export MVP_GCS_BUCKET=...
 export PACE_EXPERIMENT_RUN_ID=$(date -u +%Y%m%dT%H%M%SZ)
 
-./scripts/vm/ph_tab_strategy_experiment.sh up --fetch-proxy-from feeder-phpeople-1
+./scripts/vm/ph_tab_strategy_experiment.sh up --use-template --fetch-proxy-from feeder-phpeople-1
 ./scripts/vm/ph_tab_strategy_experiment.sh monitor --loop
 ./scripts/vm/ph_tab_strategy_experiment.sh summary
 ./scripts/vm/ph_tab_strategy_experiment.sh down
 ```
 
-**Note:** Env files define policy; **`reuse.tgz` must honor `PH_*`** for strategies to differ in production. Until then, experiment compares configs ready for supervisor wiring.
+**Wiring:** overlays map `PH_*` → `ph_batch` CLI; home sticky ports stay in-pool (no silent remap into 10002–10018). Monitor counts `/opt/ph/reuse/out/*.json`.

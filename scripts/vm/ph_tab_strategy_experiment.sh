@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Four-VM exploration: tab/ramp strategies on live queue, 4h default, 15m health samples.
 #
-#   export PACE_EXPERIMENT_RUN_ID=20261107T161500Z   # optional; pins artifact dir
-#   ./scripts/vm/ph_tab_strategy_experiment.sh up --fetch-proxy-from feeder-phpeople-1
-#   ./scripts/vm/ph_tab_strategy_experiment.sh monitor --loop   # 15m samples for DURATION_SEC
+#   ./scripts/vm/ph_tab_strategy_experiment.sh up --use-template --fetch-proxy-from feeder-phpeople-1
+#   ./scripts/vm/ph_tab_strategy_experiment.sh monitor --loop
 #   ./scripts/vm/ph_tab_strategy_experiment.sh summary
 #   ./scripts/vm/ph_tab_strategy_experiment.sh down
 set -euo pipefail
@@ -13,40 +12,85 @@ PROJECT="${GCP_PROJECT:-${GOOGLE_CLOUD_PROJECT:-}}"
 ZONE="${PACE_ZONE:?export PACE_ZONE}"
 [[ -n "$PROJECT" ]] || { echo "set GCP_PROJECT" >&2; exit 1; }
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${PROJECT}.iam.gserviceaccount.com}"
+if [[ -d /home/ubuntu/google-cloud-sdk/bin ]]; then
+  export PATH="/home/ubuntu/google-cloud-sdk/bin:$PATH"
+fi
 GC=(gcloud --account="$SA")
-PORT_PREFIX="${PACE_PORT_REGISTRY_PREFIX:-gs://${PACE_PORT_REGISTRY_BUCKET:-[REDACTED]}/usersim_sim/raw/ph_population/people_live/vm/_ports}"
+BUCKET="${MVP_GCS_BUCKET:?export MVP_GCS_BUCKET}"
+PORT_PREFIX="${PACE_PORT_REGISTRY_PREFIX:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm/_ports}"
 DURATION_SEC="${DURATION_SEC:-14400}"
 INTERVAL_SEC="${INTERVAL_SEC:-900}"
 RUN_ID="${PACE_EXPERIMENT_RUN_ID:-${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}}"
+RUN_ID="${RUN_ID,,}" # GCE names: lowercase only
 ART="${ROOT}/results/ph_tab_experiment/${RUN_ID}"
 PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/.purl}"
+NEVER_PORTS=(10001 10005 10006 10020)
 
 STRATEGIES=(
-  "A:${ROOT}/scripts/vm/ph_strategies/A_serial_polite.env"
-  "B:${ROOT}/scripts/vm/ph_strategies/B_aimd_adaptive.env"
-  "C:${ROOT}/scripts/vm/ph_strategies/C_burst_coast.env"
-  "D:${ROOT}/scripts/vm/ph_strategies/D_req_budget.env"
+  "a:${ROOT}/scripts/vm/ph_strategies/A_serial_polite.env"
+  "b:${ROOT}/scripts/vm/ph_strategies/B_aimd_adaptive.env"
+  "c:${ROOT}/scripts/vm/ph_strategies/C_burst_coast.env"
+  "d:${ROOT}/scripts/vm/ph_strategies/D_req_budget.env"
 )
-COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=1 600 0"
+COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=0 600 0"
+TEMPLATE="${PACE_TEMPLATE:-pace-feeder-e2-standard-2}"
+USE_TEMPLATE=0
+VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
+OVERLAY_GCS="${VM_GCS}/_code/overlays"
+GO_TOKEN="run:strat-${RUN_ID}"
+
+upload_overlays() {
+  local d="$ROOT/scripts/vm/reuse_overlays"
+  [[ -f "$d/supervisor_strat.sh" ]] || { echo "missing overlays in $d" >&2; exit 1; }
+  "${GC[@]}" storage cp "$d/supervisor_strat.sh" "$d/portscreen.py" "$d/strategy_args.py" "${OVERLAY_GCS}/"
+  echo "Uploaded overlays -> ${OVERLAY_GCS}/"
+}
+
+write_boot_env() {
+  cat >"$ART/pace.env" <<EOF
+MVP_GCS_BUCKET=${BUCKET}
+PACE_GCS_VM_ROOT=${VM_GCS}
+PH_OVERLAYS_DIR=/opt/ph/overlays
+EOF
+}
+
+write_go_tokens() {
+  while IFS=$'\t' read -r sid _ _; do
+    [[ -z "$sid" ]] && continue
+    echo "$GO_TOKEN" | "${GC[@]}" storage cp - "${VM_GCS}/GO.$(vm_name "$sid")"
+  done <"$ART/instances.tsv"
+  echo "Wrote GO.* tokens ($GO_TOKEN)"
+}
+
+release_ports() {
+  [[ -f "$ART/instances.tsv" ]] || return 0
+  while IFS=$'\t' read -r sid port _; do
+    [[ -z "$sid" || -z "$port" ]] && continue
+    "${GC[@]}" storage rm "${PORT_PREFIX}/port.${port}" 2>/dev/null || true
+  done <"$ART/instances.tsv"
+}
 
 art_dir() {
   if [[ -n "${PACE_EXPERIMENT_RUN_ID:-}" ]]; then
-    RUN_ID="$PACE_EXPERIMENT_RUN_ID"
+    RUN_ID="${PACE_EXPERIMENT_RUN_ID,,}"
   elif [[ -f "${ROOT}/results/ph_tab_experiment/latest_run.txt" ]]; then
     RUN_ID="$(cat "${ROOT}/results/ph_tab_experiment/latest_run.txt")"
   fi
   ART="${ROOT}/results/ph_tab_experiment/${RUN_ID}"
+  GO_TOKEN="run:strat-${RUN_ID}"
 }
 
 fetch_proxy() {
   local vm=$1
-  OUT="$PROXY_FILE" "${GC[@]}" compute instances describe "$vm" --zone="$ZONE" --project="$PROJECT" --format=json |
+  export PROXY_FILE
+  "${GC[@]}" compute instances describe "$vm" --zone="$ZONE" --project="$PROJECT" --format=json |
     python3 -c "
 import json,sys,os
 j=json.load(sys.stdin)
+out=os.environ['PROXY_FILE']
 for it in j.get('metadata',{}).get('items',[]) or []:
     if it.get('key')=='proxy-url' and (it.get('value') or '').strip():
-        open(os.environ['OUT'],'w').write(it['value'].strip()+'\n'); sys.exit(0)
+        open(out,'w').write(it['value'].strip()+'\n'); sys.exit(0)
 sys.exit(1)
 "
   chmod 600 "$PROXY_FILE"
@@ -56,6 +100,7 @@ next_port() {
   local taken p
   taken="$("${GC[@]}" storage ls "${PORT_PREFIX}/" 2>/dev/null | sed -n 's/.*port\.\([0-9]*\).*/\1/p' | sort -nu)"
   for p in $(seq 10000 20000); do
+    printf '%s\n' "${NEVER_PORTS[@]}" | grep -qx "$p" && continue
     echo "$taken" | grep -qx "$p" && continue
     echo "$p"
     return 0
@@ -71,6 +116,7 @@ cmd_up() {
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --fetch-proxy-from) fetch_from=$2; shift 2 ;;
+      --use-template) USE_TEMPLATE=1; shift ;;
       *) echo "unknown: $1" >&2; exit 1 ;;
     esac
   done
@@ -78,6 +124,8 @@ cmd_up() {
   [[ -f "$PROXY_FILE" ]] || { echo "missing $PROXY_FILE; use --fetch-proxy-from" >&2; exit 1; }
   mkdir -p "$ART"
   echo "$RUN_ID" >"${ROOT}/results/ph_tab_experiment/latest_run.txt"
+  write_boot_env
+  upload_overlays
   : >"$ART/instances.tsv"
   for spec in "${STRATEGIES[@]}"; do
     IFS=: read -r sid envfile <<<"$spec"
@@ -89,43 +137,64 @@ cmd_up() {
     printf '%s %s strat-%s\n' "$name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$sid" |
       "${GC[@]}" storage cp - "${PORT_PREFIX}/port.${port}"
     meta="^;^proxy-port=${port};${COMMON_META};strat-id=${sid}"
-    "${GC[@]}" compute instances create "$name" \
-      --project="$PROJECT" --zone="$ZONE" \
-      --machine-type=e2-standard-2 \
-      --network=main-vpc --subnet=primary-subnet \
-      --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=20GB \
-      --service-account="$SA" --scopes=cloud-platform \
-      --tags=allow-iap-ssh \
-      --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$envfile,startup-script=$ROOT/pace_startup.sh" \
-      --metadata "$meta"
+    # Always inject current startup + overlays boot env (template image may be stale).
+    if [[ "$USE_TEMPLATE" -eq 1 ]]; then
+      "${GC[@]}" compute instances create "$name" \
+        --project="$PROJECT" --zone="$ZONE" \
+        --source-instance-template="$TEMPLATE" \
+        --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$envfile,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
+        --metadata "$meta"
+    else
+      "${GC[@]}" compute instances create "$name" \
+        --project="$PROJECT" --zone="$ZONE" \
+        --machine-type=e2-standard-2 \
+        --network=main-vpc --subnet=primary-subnet \
+        --image-family=pace-feeder --image-project="$PROJECT" --boot-disk-size=20GB \
+        --service-account="$SA" --scopes=cloud-platform \
+        --tags=allow-iap-ssh \
+        --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$envfile,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
+        --metadata "$meta" \
+        || "${GC[@]}" compute instances create "$name" \
+          --project="$PROJECT" --zone="$ZONE" \
+          --machine-type=e2-standard-2 \
+          --network=main-vpc --subnet=primary-subnet \
+          --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=20GB \
+          --service-account="$SA" --scopes=cloud-platform \
+          --tags=allow-iap-ssh \
+          --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$envfile,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
+          --metadata "$meta"
+    fi
   done
+  write_go_tokens
   date -u +%Y-%m-%dT%H:%M:%SZ >"$ART/started_at.txt"
-  echo "# ts strat vm status phsuper json_count est_ppm 403_hints" >"$ART/samples.tsv"
-  echo "RUN_ID=$RUN_ID  artifacts=$ART"
+  echo "# ts strat vm status phsuper json_count est_ppm 403_hints runtime_port strategy_args" >"$ART/samples.tsv"
+  echo "RUN_ID=$RUN_ID  artifacts=$ART  GO=$GO_TOKEN"
 }
 
 sample_one() {
   local sid=$1 name=$2 ts=$3
-  local st line phsuper count ppm c403
+  local st line remote
   st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" --format='value(status)' 2>/dev/null || echo MISSING)"
   if [[ "$st" != RUNNING ]]; then
-    echo -e "${ts}\t${sid}\t${name}\t${st}\t-\t-\t-\t-"
+    echo -e "${ts}\t${sid}\t${name}\t${st}\t-\t-\t-\t-\t-\t-"
     return
   fi
-  line="$("${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet --command='
-phsuper=$(systemctl is-active phsuper 2>/dev/null || echo unknown)
-n=0
-for f in /opt/ph/out/*/*.json; do [ -f "$f" ] && n=$((n+1)); done
-for f in /opt/ph/out/single/*.json; do [ -f "$f" ] && n=$((n+1)); done
-start=$(stat -c %Y /opt/ph/reuse/supervisor.log 2>/dev/null || stat -c %Y /var/log/phreuse_start.log 2>/dev/null || date +%s)
-wall=$(( $(date +%s) - start ))
-[ "$wall" -lt 60 ] && wall=60
+  remote='phsuper=$(systemctl is-active phsuper 2>/dev/null || echo unknown)
+n=$(find /opt/ph/reuse/out -name "*.json" ! -name "hb.json" 2>/dev/null | wc -l)
+start=$(stat -c %Y /opt/ph/reuse/supervisor.log 2>/dev/null || date +%s)
+wall=$(( $(date +%s) - start )); [ "$wall" -lt 60 ] && wall=60
 ppm=$(python3 -c "print(round($n*60.0/$wall,4))")
-c403=$(grep -cE "403|challenge|cf_clearance" /opt/ph/reuse/supervisor.log 2>/dev/null || echo 0)
-echo "$phsuper $n $ppm $c403"
-' 2>/dev/null)" || line="- - - -"
-  read -r phsuper count ppm c403 <<<"$line"
-  echo -e "${ts}\t${sid}\t${name}\t${st}\t${phsuper}\t${count}\t${ppm}\t${c403}"
+c403=0
+for f in /opt/ph/reuse/run_*.log; do [ -f "$f" ] || continue; c403=$((c403+$(grep -cE "BLOCK|challenge not cleared" "$f" || true))); done
+rport=$(grep -E "FINGERPRINT_(NEW|REUSED)" /opt/ph/reuse/run_*.log 2>/dev/null | tail -1 | grep -oE "port [0-9]+" | awk "{print \$2}")
+[ -z "$rport" ] && rport=$(curl -sf -H Metadata-Flavor:Google http://metadata.google.internal/computeMetadata/v1/instance/attributes/proxy-port)
+sargs=$(grep -E "^launch " /opt/ph/reuse/supervisor.log 2>/dev/null | tail -1 | sed -n "s/.*extra=\[\(.*\)\].*/\1/p" | tr " " _)
+echo "$phsuper $n $ppm $c403 ${rport:-?} ${sargs:-?}"'
+  # Redirect stdin so nested SSH cannot consume the caller's instances.tsv loop.
+  line="$("${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet --command="$remote" </dev/null 2>/dev/null)" || line="- - - - - -"
+  local phsuper count ppm c403 rport sargs
+  read -r phsuper count ppm c403 rport sargs <<<"$line" || true
+  echo -e "${ts}\t${sid}\t${name}\t${st}\t${phsuper:--}\t${count:--}\t${ppm:--}\t${c403:--}\t${rport:--}\t${sargs:--}"
 }
 
 cmd_monitor() {
@@ -138,7 +207,7 @@ cmd_monitor() {
     ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     while IFS=$'\t' read -r sid port _env; do
       [[ -z "$sid" ]] && continue
-      sample_one "$sid" "feeder-strat-${RUN_ID}-${sid}" "$ts" | tee -a "$ART/samples.tsv"
+      sample_one "$sid" "feeder-strat-${RUN_ID}-${sid}" "$ts" | tee -a "$ART/samples.tsv" | tee -a "$ART/monitor.log"
     done <"$ART/instances.tsv"
     [[ "$loop" -eq 0 ]] && break
     [[ $(date +%s) -ge $end ]] && break
@@ -158,23 +227,26 @@ samples = art / "samples.tsv"
 if not samples.exists():
     raise SystemExit(f"missing {samples}")
 by = defaultdict(list)
+last = {}
 for line in samples.read_text().splitlines():
     if line.startswith("#") or not line.strip():
         continue
     parts = line.split("\t")
     if len(parts) < 7:
         continue
-    sid, ppm = parts[1], parts[6]
+    sid, count, ppm = parts[1], parts[5], parts[6]
     try:
         by[sid].append(float(ppm))
+        last[sid] = (count, ppm, parts[8] if len(parts) > 8 else "?", parts[9] if len(parts) > 9 else "?")
     except ValueError:
         pass
-print("strategy\tmean_est_ppm\tn_samples")
+print("strategy\tmean_est_ppm\tn_samples\tlast_json\tlast_ppm\truntime_port\targs")
 best = None
 for sid in sorted(by):
     xs = by[sid]
     m = sum(xs) / len(xs) if xs else 0.0
-    print(f"{sid}\t{m:.4f}\t{len(xs)}")
+    c, p, port, args = last.get(sid, ("?", "?", "?", "?"))
+    print(f"{sid}\t{m:.4f}\t{len(xs)}\t{c}\t{p}\t{port}\t{args}")
     if best is None or m > best[1]:
         best = (sid, m)
 if best:
@@ -187,8 +259,9 @@ cmd_down() {
   [[ -f "$ART/instances.tsv" ]] || exit 0
   while IFS=$'\t' read -r sid _; do
     [[ -z "$sid" ]] && continue
-    "${GC[@]}" compute instances delete "feeder-strat-${RUN_ID}-${sid}" --zone="$ZONE" --quiet 2>/dev/null || true
+    "${GC[@]}" compute instances delete "feeder-strat-${RUN_ID}-${sid}" --zone="$ZONE" --project="$PROJECT" --quiet 2>/dev/null || true
   done <"$ART/instances.tsv"
+  release_ports
 }
 
 case "${1:-}" in
@@ -196,6 +269,7 @@ case "${1:-}" in
   monitor) shift; cmd_monitor "$@" ;;
   summary) cmd_summary ;;
   down) cmd_down ;;
+  upload-overlays) upload_overlays ;;
   *)
     sed -n '2,10p' "$0" | sed 's/^# //'
     exit 1

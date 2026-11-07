@@ -1,0 +1,9 @@
+# ts strat vm status phsuper json_count est_ppm 403_hints runtime_port strategy_args
+2026-11-07T17:32:14Z	a	feeder-strat-20261107t170953z-a	RUNNING	active	1	0.1026	0	10021	--tabs_4_--ramp_4:36_--person-interval_15.0
+2026-11-07T17:32:14Z	b	feeder-strat-20261107t170953z-b	RUNNING	active	0	0.0	0	10022	--tabs_16_--ramp_4:45,32:100,64:150
+2026-11-07T17:32:14Z	c	feeder-strat-20261107t170953z-c	RUNNING	active	0	0.0	0	10024	--tabs_24_--ramp_24:130_--person-interval_75.0
+2026-11-07T17:32:14Z	d	feeder-strat-20261107t170953z-d	RUNNING	active	0	0.0	1	10025	--tabs_32_--ramp_48:140
+2026-11-07T17:32:26Z	a	feeder-strat-20261107t170953z-a	RUNNING	active	1	0.1007	0	10021	--tabs_4_--ramp_4:36_--person-interval_15.0
+2026-11-07T17:32:26Z	b	feeder-strat-20261107t170953z-b	RUNNING	active	0	0.0	0	10022	--tabs_16_--ramp_4:45,32:100,64:150
+2026-11-07T17:32:26Z	c	feeder-strat-20261107t170953z-c	RUNNING	active	0	0.0	0	10024	--tabs_24_--ramp_24:130_--person-interval_75.0
+2026-11-07T17:32:26Z	d	feeder-strat-20261107t170953z-d	RUNNING	active	0	0.0	1	10025	--tabs_32_--ramp_48:140
