@@ -2,6 +2,7 @@
 # Four-VM exploration: tab/ramp strategies on live queue, 4h default, 15m health samples.
 #
 #   ./scripts/vm/ph_tab_strategy_experiment.sh up --use-template --fetch-proxy-from feeder-phpeople-1
+#   ./scripts/vm/ph_tab_strategy_experiment.sh setup   # create→first-pull timing per strategy
 #   ./scripts/vm/ph_tab_strategy_experiment.sh monitor --loop
 #   ./scripts/vm/ph_tab_strategy_experiment.sh summary
 #   ./scripts/vm/ph_tab_strategy_experiment.sh down
@@ -42,7 +43,7 @@ GO_TOKEN="run:strat-${RUN_ID}"
 upload_overlays() {
   local d="$ROOT/scripts/vm/reuse_overlays"
   [[ -f "$d/supervisor_strat.sh" ]] || { echo "missing overlays in $d" >&2; exit 1; }
-  "${GC[@]}" storage cp "$d/supervisor_strat.sh" "$d/portscreen.py" "$d/strategy_args.py" "${OVERLAY_GCS}/"
+  "${GC[@]}" storage cp "$d/supervisor_strat.sh" "$d/portscreen.py" "$d/strategy_args.py" "$d/setup_probe.py" "${OVERLAY_GCS}/"
   echo "Uploaded overlays -> ${OVERLAY_GCS}/"
 }
 
@@ -215,8 +216,82 @@ cmd_monitor() {
   done
 }
 
+cmd_setup() {
+  # Measure create → supervisor → launch → identity → first_pull per strategy.
+  art_dir
+  [[ -f "$ART/instances.tsv" ]] || { echo "no $ART/instances.tsv — run up first" >&2; exit 1; }
+  mkdir -p "$ART/setup_raw"
+  local probe="$ROOT/scripts/vm/reuse_overlays/setup_probe.py"
+  [[ -f "$probe" ]] || { echo "missing $probe" >&2; exit 1; }
+  echo -e "strat\tvm\tcreate_utc\tsupervisor_utc\tlaunch_utc\tidentity_utc\tfirst_pull_utc\tfirst_json_utc\tcreate_to_supervisor_s\tsupervisor_to_launch_s\tlaunch_to_identity_s\tidentity_to_first_pull_s\tcreate_to_first_pull_s\tcreate_to_first_json_s\tstatus" >"$ART/setup.tsv"
+  while IFS=$'\t' read -r sid port _env; do
+    [[ -z "$sid" ]] && continue
+    name="$(vm_name "$sid")"
+    create="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" --format='value(creationTimestamp)' 2>/dev/null || true)"
+    # Push probe + collect markers (stdin closed so instances.tsv loop stays intact).
+    raw="$("${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
+      --command='sudo tee /tmp/setup_probe.py >/dev/null && sudo python3 /tmp/setup_probe.py' \
+      <"$probe" 2>/dev/null | tail -1)" || raw="{}"
+    echo "$raw" >"$ART/setup_raw/${sid}.json"
+    python3 - <<'PY' "$sid" "$name" "$create" "$raw" "$ART/setup.tsv"
+import json, sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+sid, name, create_raw, raw, out = sys.argv[1:6]
+
+def parse(s):
+    if not s or s in ("-", "None", "null"):
+        return None
+    try:
+        return datetime.fromisoformat(s.strip().replace("Z", "+00:00")).astimezone(timezone.utc)
+    except Exception:
+        return None
+
+def secs(a, b):
+    if not a or not b:
+        return ""
+    return str(int((b - a).total_seconds()))
+
+try:
+    marks = json.loads(raw) if raw.strip().startswith("{") else {}
+except Exception:
+    marks = {}
+
+create = parse(create_raw)
+sup = parse(marks.get("supervisor_ready"))
+launch = parse(marks.get("batch_launch"))
+ident = parse(marks.get("identity_ready"))
+pull = parse(marks.get("first_pull"))
+j = parse(marks.get("first_json"))
+status = "pulling" if pull else ("identity" if ident else ("launched" if launch else ("supervisor" if sup else "booting")))
+row = "\t".join([
+    sid, name,
+    create.strftime("%Y-%m-%dT%H:%M:%SZ") if create else "",
+    marks.get("supervisor_ready") or "",
+    marks.get("batch_launch") or "",
+    marks.get("identity_ready") or "",
+    marks.get("first_pull") or "",
+    marks.get("first_json") or "",
+    secs(create, sup),
+    secs(sup, launch),
+    secs(launch, ident),
+    secs(ident, pull),
+    secs(create, pull),
+    secs(create, j),
+    status,
+])
+Path(out).open("a").write(row + "\n")
+print(row)
+PY
+  done <"$ART/instances.tsv"
+  echo "Wrote $ART/setup.tsv"
+  column -t -s $'\t' "$ART/setup.tsv" 2>/dev/null || cat "$ART/setup.tsv"
+}
+
 cmd_summary() {
   art_dir
+  [[ -f "$ART/setup.tsv" ]] || cmd_setup || true
   python3 - <<'PY' "$ART"
 import sys
 from pathlib import Path
@@ -251,6 +326,11 @@ for sid in sorted(by):
         best = (sid, m)
 if best:
     print(f"\nWINNER (mean est. people/min): {best[0]} @ {best[1]:.4f}")
+
+setup = art / "setup.tsv"
+if setup.exists():
+    print("\nSETUP (create → first pull, seconds):")
+    print(setup.read_text())
 PY
 }
 
@@ -266,12 +346,13 @@ cmd_down() {
 
 case "${1:-}" in
   up) shift; cmd_up "$@" ;;
+  setup) cmd_setup ;;
   monitor) shift; cmd_monitor "$@" ;;
   summary) cmd_summary ;;
   down) cmd_down ;;
   upload-overlays) upload_overlays ;;
   *)
-    sed -n '2,10p' "$0" | sed 's/^# //'
+    sed -n '2,12p' "$0" | sed 's/^# //'
     exit 1
     ;;
 esac

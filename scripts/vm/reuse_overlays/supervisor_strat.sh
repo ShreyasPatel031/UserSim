@@ -37,6 +37,9 @@ apply_overlays() {
   if [[ -f "$OVERLAYS/strategy_args.py" ]]; then
     cp -f "$OVERLAYS/strategy_args.py" /opt/ph/reuse/strategy_args.py
   fi
+  if [[ -f "$OVERLAYS/setup_probe.py" ]]; then
+    cp -f "$OVERLAYS/setup_probe.py" /opt/ph/reuse/setup_probe.py
+  fi
 }
 
 mkdir -p /opt/ph/reuse/out && cd /opt/ph/reuse
@@ -47,8 +50,14 @@ HB="${B%/vm}/heartbeat"
 gsutil -q rm "$B/heartbeat.$VM.json" 2>/dev/null || true
 hb(){ echo "{\"vm\":\"$VM\",\"utc\":\"$(date -u +%FT%TZ)\",\"last_token\":\"$last\",\"running\":\"$1\",\"strat\":\"${PH_STRATEGY:-}\"}" > hb.json; gsutil -q cp hb.json "$HB/heartbeat.$VM.json" || true; }
 
+mark() {
+  printf '{"event":"%s","utc":"%s","strat":"%s","detail":"%s"}\n' \
+    "$1" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${PH_STRATEGY:-}" "${2:-}" >> /opt/ph/reuse/setup_timing.jsonl
+}
+
 load_strategy
 echo "supervisor_strat start $(date -u +%FT%TZ) strategy=${PH_STRATEGY:-none} home_port=${PROXY_PORT}" >> /opt/ph/reuse/supervisor.log
+mark supervisor_ready "home_port=${PROXY_PORT}"
 
 while true; do
   gsutil -q cp "$B/_code/reuse.tgz" . && tar xzf reuse.tgz
@@ -62,10 +71,29 @@ while true; do
     if [[ "$mode" = "legacy" ]]; then mode=run; echo "legacy->$tok as run" >> supervisor.log; fi
     extra=$($PY strategy_args.py 2>>supervisor.log || true)
     echo "launch $tok mode=$mode extra=[$extra] $(date -u +%FT%TZ)" >> supervisor.log
+    mark batch_launch "token=$tok extra=$extra"
     # shellcheck disable=SC2086
     PYTHONUNBUFFERED=1 $PY -u ph_batch.py --mode "$mode" --token "$tok" $extra >"$L" 2>&1 &
     pid=$!
     hb "$tok"
+    # Watch the run log for identity-ready + first pull (setup ends when pulling starts).
+    (
+      saw_fp=0; saw_pull=0
+      for _ in $(seq 1 720); do
+        [[ -f "$L" ]] || { sleep 2; continue; }
+        if [[ $saw_fp -eq 0 ]] && grep -qE 'FINGERPRINT_(NEW|REUSED)' "$L" 2>/dev/null; then
+          mark identity_ready "$(grep -E 'FINGERPRINT_(NEW|REUSED)' "$L" | head -1 | tr '"' "'")"
+          saw_fp=1
+        fi
+        if [[ $saw_pull -eq 0 ]] && grep -qE ' paged | paged_v2 ' "$L" 2>/dev/null; then
+          mark first_pull "$(grep -E ' paged | paged_v2 ' "$L" | head -1 | tr '"' "'")"
+          saw_pull=1
+        fi
+        [[ $saw_fp -eq 1 && $saw_pull -eq 1 ]] && break
+        kill -0 "$pid" 2>/dev/null || break
+        sleep 2
+      done
+    ) &
     while kill -0 "$pid" 2>/dev/null; do
       sleep 120
       gsutil -q cp "$L" "$B/logs/$VM.reuse.$L" || true

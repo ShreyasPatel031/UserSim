@@ -1,0 +1,5 @@
+strat	vm	create_utc	supervisor_utc	launch_utc	identity_utc	first_pull_utc	first_json_utc	create_to_supervisor_s	supervisor_to_launch_s	launch_to_identity_s	identity_to_first_pull_s	create_to_first_pull_s	create_to_first_json_s	status
+a	feeder-strat-20261107t170953z-a	2026-11-07T17:09:59Z	2026-11-07T17:11:16Z	2026-11-07T17:22:32Z	2026-11-07T17:29:24Z	2026-11-07T17:30:09Z	2026-11-07T17:32:03Z	76	676	412	45	1209	1323	pulling
+b	feeder-strat-20261107t170953z-b	2026-11-07T17:10:34Z	2026-11-07T17:11:52Z	2026-11-07T17:22:41Z	2026-11-07T17:35:56Z			77	649	795				identity
+c	feeder-strat-20261107t170953z-c	2026-11-07T17:11:13Z	2026-11-07T17:12:02Z	2026-11-07T17:22:49Z	2026-11-07T17:31:47Z	2026-11-07T17:33:30Z	2026-11-07T17:35:54Z	48	647	538	103	1336	1480	pulling
+d	feeder-strat-20261107t170953z-d	2026-11-07T17:11:27Z	2026-11-07T17:13:04Z	2026-11-07T17:22:55Z	2026-11-07T17:27:30Z			96	591	275				identity

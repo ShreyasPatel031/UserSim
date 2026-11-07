@@ -1,0 +1,12 @@
+Setup timing definitions (RUN 20261107t170953z)
+
+Phases
+- create → supervisor: GCE create until supervisor_strat ready (warm template boot)
+- supervisor → launch: includes GO token wait / manual restart in this run (~10–11 min) — not pure boot cost
+- launch → identity: ph_batch start → sticky fingerprint (portscreen + Camoufox profile)
+- identity → first_pull: Cloudflare/session ready → first GraphQL `paged` request
+- create → first_pull: end-to-end until extraction traffic starts
+
+For ROI on “time before pulling,” prefer:
+  launch_to_identity_s + identity_to_first_pull_s
+and treat supervisor_to_launch_s as ops overhead for this retry.

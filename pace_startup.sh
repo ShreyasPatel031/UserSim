@@ -3,6 +3,12 @@
 exec >> /var/log/phreuse_start.log 2>&1
 mkdir -p /opt/ph /opt/ph/overlays /opt/ph/out /opt/ph/reuse/out
 MD=http://metadata.google.internal/computeMetadata/v1/instance/attributes
+mark() {
+  # Structured setup timeline (UTC). Consumed by ph_tab_strategy_experiment.sh setup.
+  mkdir -p /opt/ph/reuse
+  printf '{"event":"%s","utc":"%s"}\n' "$1" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> /opt/ph/reuse/setup_timing.jsonl
+}
+mark startup_begin
 
 curl -sf -H Metadata-Flavor:Google "$MD/pace-boot-env" >/opt/ph/pace.env 2>/dev/null || true
 if [[ -f /opt/ph/pace.env ]]; then
@@ -29,14 +35,20 @@ gcloud storage cp -q "$B/_code/overlays/strategy_args.py" /opt/ph/overlays/ 2>/d
 chmod +x /opt/ph/overlays/supervisor_strat.sh 2>/dev/null || true
 
 if [ ! -x /opt/venv/bin/python ]; then
+  mark cold_install_begin
   apt-get update -q && apt-get install -yq python3-venv xvfb libgtk-3-0 libx11-xcb1 libasound2 libdbus-glib-1-2 >/dev/null
   python3 -m venv /opt/venv && /opt/venv/bin/pip -q install "camoufox[geoip]==0.5.9" playwright==1.62.0 && /opt/venv/bin/python -m camoufox fetch >/dev/null
   touch /opt/ph/installed
+  mark cold_install_end
+else
+  mark warm_image_ready
 fi
 
 mkdir -p /opt/ph/reuse
 cd /opt/ph/reuse
+mark reuse_fetch_begin
 (gcloud storage cp -q "$B/_code/reuse.tgz" . 2>/dev/null || gsutil -q cp "$B/_code/reuse.tgz" .) && tar xzf reuse.tgz
+mark reuse_fetch_end
 [[ -f /opt/ph/overlays/portscreen.py ]] && cp -f /opt/ph/overlays/portscreen.py /opt/ph/reuse/portscreen.py
 [[ -f /opt/ph/overlays/strategy_args.py ]] && cp -f /opt/ph/overlays/strategy_args.py /opt/ph/reuse/strategy_args.py
 
@@ -56,6 +68,7 @@ if [[ -f /opt/ph/strategy.env ]] && [[ ! -f /opt/ph/reuse/.strat_cleaned ]]; the
   rm -rf /opt/ph/profiles
   mkdir -p /opt/ph/profiles
   touch /opt/ph/reuse/.strat_cleaned
+  mark golden_hygiene_done
 fi
 
 systemctl stop phsuper 2>/dev/null || true
@@ -64,6 +77,7 @@ SUP=/opt/ph/overlays/supervisor_strat.sh
 ENV_ARGS=()
 [[ -f /opt/ph/pace.env ]] && ENV_ARGS+=(-p "EnvironmentFile=/opt/ph/pace.env")
 [[ -f /opt/ph/strategy.env ]] && ENV_ARGS+=(-p "EnvironmentFile=/opt/ph/strategy.env")
+mark supervisor_start
 systemd-run --unit=phsuper --collect -p WorkingDirectory=/opt/ph/reuse \
   "${ENV_ARGS[@]}" \
   /bin/bash -c "bash $SUP >> /opt/ph/reuse/supervisor.log 2>&1"

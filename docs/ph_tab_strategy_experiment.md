@@ -51,9 +51,12 @@ export MVP_GCS_BUCKET=...
 export PACE_EXPERIMENT_RUN_ID=$(date -u +%Y%m%dT%H%M%SZ)
 
 ./scripts/vm/ph_tab_strategy_experiment.sh up --use-template --fetch-proxy-from feeder-phpeople-1
+./scripts/vm/ph_tab_strategy_experiment.sh setup    # create→first-pull timing per strategy
 ./scripts/vm/ph_tab_strategy_experiment.sh monitor --loop
 ./scripts/vm/ph_tab_strategy_experiment.sh summary
 ./scripts/vm/ph_tab_strategy_experiment.sh down
 ```
 
 **Wiring:** overlays map `PH_*` → `ph_batch` CLI; home sticky ports stay in-pool (no silent remap into 10002–10018). Monitor counts `/opt/ph/reuse/out/*.json`.
+
+**Setup time:** `setup` writes `results/.../setup.tsv` (create → supervisor → launch → identity/fingerprint → first `paged` pull → first JSON). Startup/supervisor also append `/opt/ph/reuse/setup_timing.jsonl` markers for future runs.
