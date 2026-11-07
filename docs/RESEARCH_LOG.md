@@ -1247,3 +1247,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 10:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; Nov 7 honest-forecast window closes ~11:00Z.
 - 10:50 UTC Nov 7 Daily collection review: no gaps closed; store 2,025 + 108 whole, 0 VMs, coverage 3.32%/5.36%; compute SA disabled again (no forecast Nov 5–7, capture dead). Dashboard not republished (source stale). DATA_SPEC status block added. Asks: to_grokbot/20261107T1050_orchestrator_daily_collection_asks.md.
 - 11:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; Nov 7 pre-launch window passed.
+- 12:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled.
