@@ -2,16 +2,16 @@
  "day": "2026-11-07",
  "status": "FAIL",
  "counts": {
-  "posts": 144,
-  "board": 144,
-  "coverage": 6,
+  "posts": 240,
+  "board": 240,
+  "coverage": 10,
   "fallback_post_rows": 0,
-  "snapshots": 6,
+  "snapshots": 10,
   "launches": 24,
   "vote_drops": 1,
-  "board_api_rows": 144,
+  "board_api_rows": 240,
   "board_missing": 0,
-  "api_comments": 77,
+  "api_comments": 78,
   "api_comments_no_user_id": 0,
   "api_comments_created_after_pull": 0
  },
@@ -26,5 +26,5 @@
   "products_ts.jsonl missing",
   "votes dropped between snapshots: 1 times on 1 launches"
  ],
- "checked_at": "2026-11-07T22:05:27Z"
+ "checked_at": "2026-11-07T23:06:23Z"
 }
