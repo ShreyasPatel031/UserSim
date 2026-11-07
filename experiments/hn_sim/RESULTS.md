@@ -1267,3 +1267,7 @@ orchestrator) with the one step: re-enable the account. Not touched by hn-agent.
 Daily live readout 2026-11-06 00:48 UTC: skipped. The compute service account is still disabled (IAM disabled: true)
 and no recorder or list read has landed since 06:27 UTC Nov 5, so live15 would repeat the Nov 5 readout. Resumes with
 the next run after the account is re-enabled.
+Service account back (checked 2026-11-07 21:03 UTC): already enabled when Shreyas OK'd re-enabling (hn-agent made no
+change). Live data flowing again: both recorders uploading (21:00-21:01 UTC Nov 7); listwatch2, fdloop4, oddsmin1,
+oddsloop2 logging. Per-minute odds present Nov 6 15:08-20:34 and Nov 7 14:48 onward, so the live record has gaps
+06:27 UTC Nov 5 - 15:08 UTC Nov 6 and 20:34 UTC Nov 6 - 14:48 UTC Nov 7. Scheduled checks stay paused (usage limit).
