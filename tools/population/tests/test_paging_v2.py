@@ -83,7 +83,8 @@ def run(server, op, total, cap=None):
 
 def test_hidden_accounts_marked_exhausted():
     r, items = run(FakeServer(10), "ProfileFollowersQuery", total=17)  # header 17, server lists 10
-    assert len(items) == 10 and r.last_exhausted and r.last_paging["ended"] == "server_end"
+    # full18b: short by > 2 and > 2% -> re-paged; closes at what PH lists
+    assert len(items) == 10 and r.last_exhausted and r.last_paging["ended"] == "server_end_offset"
 
 
 def test_growing_big_list_no_dups_reaches_cap():
@@ -142,41 +143,136 @@ class UnstableServer(FakeServer):
 
 
 
+class RecR(R):
+    """runner with the repage state hooks (in-memory) and a request counter"""
+    store = {}
+
+    def __init__(self, server, key="p"):
+        super().__init__(server); self.key, self.n = key, 0
+
+    async def gql(self, page, op, cursor=None, **kw):
+        self.n += 1
+        return self.s.query(cursor)
+
+    def repage_load(self, op): return RecR.store.get((self.key, op))
+    def repage_save(self, op, st):
+        if st is None: RecR.store.pop((self.key, op), None)
+        else: RecR.store[(self.key, op)] = st
+
+
+def runr(server, total, key="p", over=None):
+    paged = paging_v2.make_paged(offset_paged, cur, Blocked)
+    r = RecR(server, key)
+    if over: r.over = over
+    items, _, _ = asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, total, None, {}))
+    return r, items
+
+
+class DepthServer(UnstableServer):
+    """PH's own chain (the ~ cursors) is unstable; bare offset cursors past `depth` return an empty page (PH stops early)."""
+
+    def __init__(self, n_visible, depth, **kw):
+        super().__init__(n_visible, **kw); self.depth = depth
+
+    def query(self, cursor):
+        if not (cursor and cursor.startswith("~")) and uncur(cursor) >= self.depth:
+            return {"profile": {"followers": {"edges": [], "pageInfo": {"hasNextPage": False, "endCursor": None}}}}
+        return super().query(cursor)
+
+
+class ClampServer(UnstableServer):
+    """bare offset cursors past `at` keep returning one identical page (hasNextPage true)"""
+
+    def __init__(self, n_visible, at, **kw):
+        super().__init__(n_visible, **kw); self.at, self.clamped = at, None
+
+    def query(self, cursor):
+        if not (cursor and cursor.startswith("~")) and uncur(cursor) > self.at:
+            if self.clamped is None: self.clamped = super().query(cur(self.at))
+            return self.clamped
+        return super().query(cursor)
+
+
 def test_repeated_chain_is_repaged_to_server_end_offset():
-    s = UnstableServer(1079)
-    r, items = run(s, "ProfileFollowersQuery", total=1079)
-    lp = r.last_paging
-    assert lp["repage"] and lp["repage"]["start_items"] < 0.98 * 1079 and lp["repage"]["start_dups"] > 0  # chain alone was short
+    r, items = runr(UnstableServer(1079), 1079, key="a")
+    lp = r.last_paging; rp = lp["repage"]
+    assert rp["start_items"] < 0.98 * 1079 and rp["start_dups"] > 0  # the chain alone was short
     assert lp["ended"] == "server_end_offset" and len(items) >= 0.98 * 1079 and len({n["id"] for n in items}) == len(items)
-    assert r.last_exhausted
+    assert rp["served"][-1] >= 0.98 * rp["union"] and r.last_exhausted
 
 
-def test_repage_with_hidden_accounts_closes_on_a_zero_new_pass():
-    s = UnstableServer(900)  # header 1,079 but PH lists only 900 signed out
-    r, items = run(s, "ProfileFollowersQuery", total=1079)
+def test_hidden_accounts_need_three_full_depth_zero_passes():
+    # E5: the 899/900 case. header 1,079, PH lists 900 signed out; a list over 1,000 needs 3 zero-new full-depth passes
+    for seed in range(1, 21):
+        r, items = runr(UnstableServer(900, seed=seed), 1079, key=f"h{seed}")
+        lp = r.last_paging; rp = lp["repage"]
+        assert lp["ended"] in ("server_end_offset", "repage_max_passes", "repage_stalled")
+        if lp["ended"] == "server_end_offset":
+            assert rp["new"][-3:] == [0, 0, 0] and all(sv >= 0.98 * rp["union"] for sv in rp["served"][-3:])
+            MISSES.append(900 - len(items))
+        else:
+            assert not r.last_exhausted
+    print("hidden 900/1079, 20 seeds: closed", len(MISSES), "misses per closed run", MISSES)
+    assert sum(MISSES) <= 2 and all(m <= 1 for m in MISSES)  # residual risk of the zero-pass closure, reported to E5
+
+
+MISSES = []
+
+
+def test_short_offset_end_is_not_whole():
+    # E5 point 1: PH's offset paging stops at 75% of the list; two zero-new passes must NOT be labelled server_end_offset
+    r, items = runr(DepthServer(1079, depth=800), 1079, key="d")
     lp = r.last_paging
-    assert lp["ended"] == "server_end_offset" and lp["repage"]["new"][-2:] == [0, 0] and len(items) == 900
+    assert lp["ended"] in ("repage_short_end", "repage_stalled") and not r.last_exhausted
+    if lp["ended"] == "repage_short_end":
+        assert lp["repage"]["ph_offset_depth"] <= 800
 
 
-def test_repage_offset_ignored_is_a_failure_not_an_end():
-    s = UnstableServer(1079, offset_limit=200)
-    r, items = run(s, "ProfileFollowersQuery", total=1079)
-    assert r.last_paging["ended"] in ("repage_offset_ignored", "repage_offset_runaway") and not r.last_exhausted
+def test_class3_short_without_repeats_is_repaged():
+    # E5 point 2: a chain that ends short with no repeat seen (hidden accounts) is still re-paged, and closes
+    r, items = runr(FakeServer(860), 1000, key="c3")
+    lp = r.last_paging
+    assert lp["repage"] is not None and lp["ended"] == "server_end_offset" and len(items) == 860
+
+
+def test_clamp_detected():
+    r, items = runr(ClampServer(1079, at=400), 1079, key="cl")
+    assert r.last_paging["ended"] in ("repage_offset_clamped", "repage_short_end") and not r.last_exhausted
+
+
+def test_max_passes_then_resume_from_saved_state():
+    # E5 point 3: bounded, and a retry resumes with the saved union instead of restarting
+    RecR.store.clear()
+    s = UnstableServer(900, seed=3, block=200)  # very unstable order: slow convergence
+    r1, i1 = runr(s, 1079, key="m")
+    lp1 = r1.last_paging
+    assert lp1["repage"]["passes"] <= paging_v2.MAX_PASSES
+    if lp1["ended"] != "server_end_offset":
+        assert not r1.last_exhausted and RecR.store.get(("m", "ProfileFollowersQuery"))
+        r2, i2 = runr(s, 1079, key="m")
+        rp2 = r2.last_paging["repage"]
+        assert rp2["resumed_passes"] == lp1["repage"]["passes"] and len(i2) >= len(i1)
+
+
+def test_large_profile_over_10k():
+    r, items = runr(UnstableServer(12000, seed=11), 12500, key="big")
+    lp = r.last_paging; rp = lp["repage"]
+    assert lp["ended"] in ("server_end_offset", "repage_max_passes", "repage_stalled")
+    if lp["ended"] == "server_end_offset":
+        assert rp["new"][-3:] == [0, 0, 0] and len(items) >= 0.99 * 12000
+    print("large:", lp["ended"], len(items), rp["passes"], rp["new"], r.n)
 
 
 def test_repage_budget_is_a_failure():
-    s = UnstableServer(1079)
-    paged = paging_v2.make_paged(offset_paged, cur, Blocked)
-    r = R(s); calls = {"n": 0}
+    calls = {"n": 0}
 
     def over():
         calls["n"] += 1
         return calls["n"] > 60  # the chain (~54 pages) finishes, then the re-page runs out of budget
-    r.over = over
-    asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, 1079, None, {}))
+    r, _ = runr(UnstableServer(1079), 1079, key="b", over=over)
     assert r.last_paging["ended"] == "repage_budget" and not r.last_exhausted
 
 
-def test_stable_short_chain_is_not_repaged():
-    r, items = run(FakeServer(10), "ProfileFollowersQuery", total=17)
+def test_stable_short_by_two_is_not_repaged():
+    r, items = run(FakeServer(15), "ProfileFollowersQuery", total=17)
     assert r.last_paging["repage"] is None and r.last_paging["ended"] == "server_end"

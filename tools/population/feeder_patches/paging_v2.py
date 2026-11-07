@@ -23,6 +23,7 @@ import base64, time
 
 CHAIN_OPS = {"ProfileFollowersQuery", "ProfileFollowingsQuery", "ProfileFollowingQuery"}
 CHAIN_MIN = 200
+MAX_PASSES = 8  # full re-page passes per attempt; reaching it ends as repage_max_passes (not whole), resumable
 
 
 class _Stop(Exception):
@@ -108,47 +109,81 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
                 ended = "blocked"; R.log("chain stopped", op, e)
             except error_types as e:
                 ended = "error"; R.log("chain error", op, str(e)[:200])
-        # paging_v3 (population agent, 2026-11-07, E5 follower audit): for follow lists the chain above is the only phase, so
-        # "server_end_offset" was never recorded. On big lists PH's endCursor chain repeats pages (dups > 0, or more pages
-        # than items) and ends at hasNextPage=false short of the header: the order is not stable between requests, so some
-        # accounts are served twice and others never. A chain end like that is not PH's own end. Re-page by offset from 0,
-        # sequentially (one tab, same rate limiter), merging by id, and repeat full passes until two in a row add no new id
-        # or the union reaches 98% of the header. Only a pass that itself reaches PH's end (empty page or hasNextPage=false) and
-        # closes the union records ended = "server_end_offset". No page cap and no pass cap (whole-person rule); a stop,
-        # budget, block or error records "repage_<reason>", which the population check scores as not whole.
+        # paging_v3 / full18b (population agent, 2026-11-07; E5 review of full18). For follow lists the chain above was the only
+        # phase, so "server_end_offset" was never recorded. On big lists PH's endCursor chain repeats some accounts and skips
+        # others (the order is not stable between requests) and still ends at hasNextPage=false short of the header.
+        # A follow list that ends that way short by more than 2 accounts and more than 2% (E5 classes 2 and 3) is re-paged
+        # by offset from 0, sequentially (one tab, same rate limiter), merging by id, one full pass after another.
+        #   closes (ended = "server_end_offset") only on full-depth passes: each served >= 98% of the union in rows, and either
+        #     the union reaches 98% of the header, or ZERO_NEEDED zero-new full-depth passes in a row
+        #     (3 for lists over 1,000 or a union under 98% of the header, else 2)
+        #   repage_short_end: passes that add nothing but serve less than 98% of the union (PH's offset paging stops early);
+        #     repage["ph_offset_depth"] records the depth PH served
+        #   repage_stalled: 3 passes in a row each add fewer than max(2, 0.2% of the header)
+        #   repage_max_passes: MAX_PASSES full passes without closing
+        #   repage_offset_clamped / _offset_ignored / _offset_runaway: PH repeats a page or ignores the offset
+        #   repage_stopped / _budget / _blocked / _error
+        # Every repage_* end is NOT whole (no exhausted flag) and goes to the deep pass; the union and pass state are saved
+        # through R.repage_save(op, state) when the caller provides it, and loaded with R.repage_load(op) so a retry resumes.
         repage = None
-        if (op in CHAIN_OPS and ended == "server_end" and goal and len(items) < 0.98 * goal and not R.stop
-                and (dups > 0 or npg * step >= len(items) + step)):
-            repage = {"passes": 0, "new": [], "pages": 0, "start_items": len(items), "start_dups": dups}
+        if (op in CHAIN_OPS and ended == "server_end" and goal and (goal - len(items)) > 2 and len(items) < 0.98 * goal
+                and not R.stop):
+            st = None
+            try: st = R.repage_load(op) if getattr(R, "repage_load", None) else None
+            except Exception as e: R.log("repage state load failed", op, str(e)[:120])
+            repage = {"passes": 0, "new": [], "served": [], "pages": 0, "start_items": len(items), "start_dups": dups,
+                      "header": goal, "resumed_passes": 0}
+            if st:
+                for n in st.get("union") or []:
+                    if n.get("id") and n["id"] not in seen: seen.add(n["id"]); items.append(n)
+                for k in ("passes", "new", "served"): repage[k] = st.get(k, repage[k])
+                repage["resumed_passes"] = repage["passes"]
+            stall_min = max(2, 0.002 * goal)
             try:
                 while True:
-                    pass_new, off, pass_end, first_ids = 0, 0, False, None
+                    if repage["passes"] - repage["resumed_passes"] >= MAX_PASSES: raise _Stop("max_passes")
+                    pass_new, served, off, first_ids, prev_ids = 0, 0, 0, None, None
                     while True:
                         if R.stop: raise _Stop("stopped")
                         if over(): R.budget_hit = True; raise _Stop("budget")
-                        # loop guards, not data caps: they end the re-page as a failure (never as server_end_offset)
-                        if off > 2 * goal + 10 * step: raise _Stop("offset_runaway")
+                        if off > 2 * goal + 10 * step: raise _Stop("offset_runaway")  # loop guard, ends as a failure
                         d = await R.gql(pages[0], op, **{var: cur(off)}, **extra); npg += 1; repage["pages"] += 1
                         c = conn(d); pi = c.get("pageInfo") or {}; edges = c.get("edges") or []
                         ids = [((e or {}).get("node") or {}).get("id") for e in edges]
                         if off == 0: first_ids = ids
-                        elif ids and set(ids) <= set(first_ids or []): raise _Stop("offset_ignored")  # PH served page 0 for a deep offset
-                        pass_new += add(edges)
-                        if not edges or not pi.get("hasNextPage"):
-                            pass_end = True; break
+                        elif ids and set(ids) <= set(first_ids or []): raise _Stop("offset_ignored")  # PH served page 0 again
+                        if ids and prev_ids and set(ids) == set(prev_ids): raise _Stop("offset_clamped")  # PH served the same page twice in a row
+                        prev_ids = ids; served += len(edges); pass_new += add(edges)
+                        if not edges or not pi.get("hasNextPage"): break
                         off += step
-                    repage["passes"] += 1; repage["new"].append(pass_new)
-                    # closed = two full passes in a row that each reach PH's end and add no new id (one zero pass can
-                    # still miss an account the unstable order never served: 899/900 in the test), or 98% of the header
-                    if pass_end and (len(items) >= 0.98 * goal or (pass_new == 0 and len(repage["new"]) >= 2 and repage["new"][-2] == 0)):
+                    repage["passes"] += 1; repage["new"].append(pass_new); repage["served"].append(served)
+                    full_depth = served >= 0.98 * len(items)
+                    need = 3 if (goal > 1000 or len(items) < 0.98 * goal) else 2
+                    zero_full = 0
+                    for nw, sv in zip(reversed(repage["new"]), reversed(repage["served"])):
+                        if nw == 0 and sv >= 0.98 * len(items): zero_full += 1
+                        else: break
+                    if full_depth and (len(items) >= 0.98 * goal or zero_full >= need):
                         ended = "server_end_offset"; break
+                    if pass_new == 0 and not full_depth and len(repage["new"]) >= 2 and repage["new"][-2] == 0:
+                        repage["ph_offset_depth"] = served; raise _Stop("short_end")
+                    last3 = repage["new"][-3:]
+                    if len(last3) == 3 and all(x < stall_min for x in last3) and not (pass_new == 0 and full_depth):
+                        raise _Stop("stalled")
             except _Stop as e:
                 ended = "repage_" + str(e)
             except Blocked as e:
                 ended = "repage_blocked"; R.log("repage stopped", op, e)
             except error_types as e:
                 ended = "repage_error"; R.log("repage error", op, str(e)[:200])
-            R.log("repage", op, "items", len(items), "of", goal, "passes", repage["passes"], "new", repage["new"], "ended", ended)
+            repage["union"] = len(items)
+            try:
+                if ended != "server_end_offset" and getattr(R, "repage_save", None):
+                    R.repage_save(op, {"union": items, "passes": repage["passes"], "new": repage["new"], "served": repage["served"], "ended": ended})
+                elif ended == "server_end_offset" and getattr(R, "repage_save", None):
+                    R.repage_save(op, None)  # closed: drop any saved state
+            except Exception as e: R.log("repage state save failed", op, str(e)[:120])
+            R.log("repage", op, "items", len(items), "of", goal, "passes", repage["passes"], "new", repage["new"], "served", repage["served"], "ended", ended)
         if cap and len(items) > cap:
             items = items[:cap]
         if ended is None:
