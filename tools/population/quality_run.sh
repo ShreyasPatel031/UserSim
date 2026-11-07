@@ -21,6 +21,8 @@ if gsutil -q ls $B/raw/_pacetest/ >/dev/null 2>&1; then
   { echo; echo "# PACE TEST (raw/_pacetest/, not in the store)"; python3 "$REPO/tools/population/quality.py" $W/pace "$SINCE" /dev/null /dev/null | sed -n '/PERSON-LEVEL/,$p'; } >> $W/quality_$TS.md
 fi
 gsutil -q cp $W/quality_$TS.jsonl $B/raw/_babysitter/quality/$TS.jsonl
+# COMPLETE set for other agents (PH agent coverage check): stamped copy plus a fixed "latest" name
+[ -f $W/quality_${TS}_complete.txt ] && gsutil -q cp $W/quality_${TS}_complete.txt $B/raw/_babysitter/quality/${TS}_complete.txt && gsutil -q cp $W/quality_${TS}_complete.txt $B/raw/_babysitter/quality/latest_complete.txt
 mkdir -p "$REPO/docs/population/quality"; cp $W/quality_$TS.md "$REPO/docs/population/quality/$TS.md"
 (cd "$REPO" && git add docs/population/quality/$TS.md && git commit -q -m "population: person-pull quality report $TS (counts only)
 

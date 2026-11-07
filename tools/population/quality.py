@@ -313,9 +313,11 @@ for p in glob.glob(f"{D}/people_live/vm/*.json"):
         continue
     if isinstance(d, dict) and ("upvotes" in d or "header" in d):
         latest[handle_of(d, p)] = d
-pc = Counter(); reasons = Counter(); origin = Counter(); so = Counter()
+pc = Counter(); reasons = Counter(); origin = Counter(); so = Counter(); complete_rows = []
 for h, d in latest.items():
     ok, why = person_complete(d, h)
+    if ok:
+        complete_rows.append((h.lower(), "whole_signed_out" if signed_out_end(d) else "whole"))
     o = "pgql_lists_only" if "pgql" in str(d.get("method") or "").lower() and not (d.get("run") or {}).get("deep_passes") else \
         ("deep" if (d.get("run") or {}).get("deep_passes") else "full")
     pc[(o, ok)] += 1; origin[o] += 1
@@ -340,6 +342,10 @@ m_bad = Counter(w.split(":")[0] + ":" + w.split(":")[1] if ":" in w else w for h
 m_inc = sum(1 for h, d in m_in.items() if not person_complete(d, h)[0])
 out += ["", f"Merged pace-test people: ledger {len(mled):,}; in vm/ {len(m_in):,}; **MERGED_INCOMPLETE {m_inc:,}**" + (f" (reasons: {dict(m_bad.most_common(6))})" if m_inc else "")]
 open(OUT_MD, "a").write("\n".join(out) + "\n")
+# PH agent 22:37Z Nov 7: the COMPLETE set, one "handle<TAB>whole|whole_signed_out" per line, next to the rows file
+# (the run script copies it to GCS raw/_babysitter/quality/<stamp>_complete.txt; bucket only, never committed)
+if OUT_ROWS != "/dev/null":
+    open(OUT_ROWS.rsplit(".", 1)[0] + "_complete.txt", "w").write("".join(f"{h}\t{k}\n" for h, k in sorted(complete_rows)))
 print("\n".join(out))
 print(f"PERSON_INCOMPLETE={inc}")
 print(f"MERGED_INCOMPLETE={m_inc} MERGED_IN_VM={len(m_in)}")
