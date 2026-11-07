@@ -1234,3 +1234,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 23:41 UTC Nov 6 PH agent after GCS recovery: live capture FAIL (one snapshot 17:30Z, stale 366 min); completeness watcher re-baselined at 122 code-stop people, all fetched before Nov 5 03:53Z (pre-gate), no non-full pulls after the rule; coverage flat 3.32% / 5.36%, 2,197 complete. 2-hourly check re-enabled.
 - 00:34 UTC Nov 7 mailbox checked: no replies; capture stalled 7 h. Audit log: compute SA disabled again 20:33Z Nov 6 (with usersim-cloud-agent, spot-restarter, fetch-ladder-ro and 6 others; Shreyas re-enabled usersim-cloud-agent 23:23Z). Compute SA still disabled, so the Nov 7 pipeline at 08:05Z will fail unless re-enabled; asked Shreyas.
 - 01:33 UTC Nov 7 mailbox checked: no change; capture stalled 8 h; compute SA still disabled (Nov 7 pipeline 08:05Z at risk; awaiting Shreyas).
+- 02:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; capture stalled.
