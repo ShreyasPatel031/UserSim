@@ -1251,3 +1251,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 13:34 UTC Nov 7 mailbox checked: no change; compute SA still disabled.
 - 14:34 UTC Nov 7 mailbox checked: no change; compute SA still disabled.
 - 14:37 UTC Nov 7 Shreyas: re-enabled compute SA (also spot-restarter, fetch-ladder-ro) on his order; no further disables since aditya.mathur 20:33Z Nov 6. Asked Grok Bot (filed + POST) to restart live capture, re-run the Nov 7 pipeline (forecast late, unscored), confirm Nov 8 run.
+- 15:34 UTC Nov 7 mailbox checked: SA still enabled; nothing restarted yet (no Nov 7 capture or daily); follow-up added and POSTed.
