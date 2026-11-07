@@ -1235,3 +1235,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 00:34 UTC Nov 7 mailbox checked: no replies; capture stalled 7 h. Audit log: compute SA disabled again 20:33Z Nov 6 (with usersim-cloud-agent, spot-restarter, fetch-ladder-ro and 6 others; Shreyas re-enabled usersim-cloud-agent 23:23Z). Compute SA still disabled, so the Nov 7 pipeline at 08:05Z will fail unless re-enabled; asked Shreyas.
 - 01:33 UTC Nov 7 mailbox checked: no change; capture stalled 8 h; compute SA still disabled (Nov 7 pipeline 08:05Z at risk; awaiting Shreyas).
 - 02:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; capture stalled.
+- 03:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; capture stalled.
