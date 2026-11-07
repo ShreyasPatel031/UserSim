@@ -249,6 +249,7 @@ def part4(L, E, V, sl, curve_all):
 
 
 HOURLY_GS = os.environ.get("HOURLY_GS", f"{BUCKET}/results/pool_size_hourly.jsonl")
+COMPLETE_SRC = ["store_v3 tabs: full pull, no code_stop tab"]   # which complete set the headline used
 TOPK_DISC = int(os.environ.get("TOPK_DISC", "100"))   # discovery targets the top 100 Oct 1-24 launches (orchestrator plan)
 
 
@@ -284,7 +285,14 @@ def hourly_once(L, E0, sl, base_ids):
     # population agent's person-level COMPLETE set (quality.py person_complete, adopted Nov 7 22:23Z): one salted id per
     # line, built by complete_ids.py; when set it replaces the store_v3 tab-based set above
     if os.environ.get("COMPLETE_IDS"):
-        complete = {l.strip() for l in open(os.environ["COMPLETE_IDS"]) if l.strip()}
+        complete = {l.strip() for l in open(os.environ["COMPLETE_IDS"]) if l.strip()}; COMPLETE_SRC[0] = "COMPLETE_IDS file"
+    else:   # default (Nov 7 22:40Z): the population agent's hourly COMPLETE file, handle<TAB>whole|whole_signed_out, hashed here
+        cg = os.environ.get("COMPLETE_GS", f"{BUCKET}/raw/_babysitter/quality/latest_complete.txt")
+        r = subprocess.run(["gsutil", "cat", cg], capture_output=True, text=True)
+        hs = [l.split("\t")[0].strip().lower() for l in r.stdout.splitlines() if l.strip()]
+        if r.returncode == 0 and hs:
+            complete = {hid(sl, h) for h in hs}
+            COMPLETE_SRC[0] = f"{cg.rsplit('/', 1)[-1]} ({len(hs)} lines)"
     Uc =B[B.id.isin(Lt.id) & B.pid.isin(complete)].drop_duplicates()
     pc = Uc.groupby("id").size(); Lt["pc"] = Lt.id.map(pc).fillna(0)
     Dc = Lt.groupby("day").apply(lambda g: pd.Series({"V": g.votes.sum(), "P": g.pc.sum(), "V3": g[g.top3].votes.sum(), "P3": g[g.top3].pc.sum(),
@@ -309,7 +317,7 @@ def hourly_once(L, E0, sl, base_ids):
     complete_block = {**lastweek_block, "complete_people": int(len(complete)), "complete_voters_in_window": int(Uc.pid.nunique()),
                       "coverage_complete_all": round(float(Dc.P.sum() / Dc.V.sum()), 4), "coverage_complete_top3": round(float(Dc.P3.sum() / Dc.V3.sum()), 4),
                       "coverage_complete_heldout": round(float(Dc.Ph.sum() / Dc.Vh.sum()), 4),
-                      "note": "headline = complete people only (whole-person rule); coverage_all etc. also count lists-only and page-1 pool upvotes"}
+                      "complete_source": COMPLETE_SRC[0], "note": "headline = complete people only (whole-person rule); coverage_all etc. also count lists-only and page-1 pool upvotes"}
     pulled = set(up.person_id) | set(V["tabs"][V["tabs"].tab == "upvotes"].person_id)
     voters = set(U.pid)
     return {**complete_block, "at": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%MZ"), "window": list(TEST), "method": "warehouse pool upvotes U store_v3 dated upvotes, dedup salted id x launch",
