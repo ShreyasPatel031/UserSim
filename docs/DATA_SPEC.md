@@ -17,6 +17,12 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Route 4 (port 10001, capture pages) | 403 on cold warm-up Nov 3 21:04Z and Nov 4 07:55Z | blocked; hold to Nov 5 07:25Z |
 | Box browser (own IP, $0) | human pace ≥ 20 s/load; second Cloudflare challenge after ~15 pages | used for first snapshot only |
 
+## Status Nov 7 (10:50 UTC) — daily review
+- Store unchanged: 2,025 whole + 108 whole except the signed-out upvote cap = 2,133 (PH agent counts 2,197 complete incl. older store_v3); 13,586 incomplete kept. 0 pull VMs; 0 whole/day.
+- Last-week vote coverage from whole people: 3.32% (top-3 5.36%); all tracked people 46.1%.
+- Compute default SA re-enabled 14:58Z Nov 6, disabled again 20:33Z Nov 6 by another admin (with usersim-cloud-agent, spot-restarter, fetch-ladder-ro); usersim-cloud-agent re-enabled 23:23Z. Result: no pre-launch forecast Nov 5, 6, 7; live capture one snapshot all of Nov 6 and none for Nov 7.
+- Late Nov 6 forecast and a Nov 5 backtest (top-3 2/3) exist as raw/daily/<day>/forecast_<day>_late.md, not scored.
+
 ## Status Nov 6 (10:50 UTC) — daily review
 - Store unchanged since Nov 5 12:08Z: 2,025 whole + 108 whole except the signed-out upvote cap = 2,133; 13,586 incomplete kept for a completion pass. Population merge lists since then: 0 people.
 - Person pulls: 0 VMs since ~10:00Z Nov 5 (PH blocked every IP even at K4; relaunches refused by the safety check). Rate today: 0 whole/day.

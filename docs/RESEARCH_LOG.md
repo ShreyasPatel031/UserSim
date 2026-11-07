@@ -1245,3 +1245,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 09:11 UTC Nov 7 PH agent confirmed: Nov 7 pipeline FAILED at warehouse.sync (VM metadata 'Unauthorized': compute SA disabled since 20:33Z Nov 6 by aditya.mathur). No forecast, hourly snapshots failed to upload. Third day without a forecast. Waiting on Shreyas to re-enable the SA; honest re-run window ~until 11:00Z.
 - 09:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; no Nov 7 forecast or capture.
 - 10:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; Nov 7 honest-forecast window closes ~11:00Z.
+- 10:50 UTC Nov 7 Daily collection review: no gaps closed; store 2,025 + 108 whole, 0 VMs, coverage 3.32%/5.36%; compute SA disabled again (no forecast Nov 5–7, capture dead). Dashboard not republished (source stale). DATA_SPEC status block added. Asks: to_grokbot/20261107T1050_orchestrator_daily_collection_asks.md.
