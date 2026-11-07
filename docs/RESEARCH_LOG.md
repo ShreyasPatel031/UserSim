@@ -223,3 +223,12 @@ The 1,080-person older-collector inventory: 983 are still short on followers (al
 Separate whole-person gap: 14 of the 78 Nov 7 files carry stacks status "partial" (short by 1-2 of 1-11). They are marked incomplete, as the rule requires, and need the completion pass.
 
 Not a gap: upvotes on signed-out pulls stop near 200 by PH's own limit (labelled limit_owner PH; collected signed-in separately).
+
+### 2026-11-07 22:20Z — E5: re-fetch check. No follower re-fetch has run; all collectors are idle.
+
+- No person file has been written to vm/ since 22:10Z, and every heartbeat shows `running: ""`.
+- The Nov 7 feeder-strat run (VMs a-d, from 17:22Z) collected new people. It did not re-fetch existing follower lists.
+  - Its follower and following paging ends only at server_end. It used no offset pass, including on chains with repeated pages: one example read 2,165 of 2,780 with 610 duplicates.
+  - Its offset paging (server_end_offset) was on activity pages only.
+- All four strat VMs stopped on PH challenge blocks (403, "challenge not cleared"): a at 17:57Z, d at 18:36Z, b at 19:11Z, c at 22:06Z. Auto-recover is off ("no standing auto").
+- So the gaps in the 22:15Z audit stand unchanged. The follower re-fetch for the 1,080 inventory and for the 393 cap or repeated-page people has not started.
