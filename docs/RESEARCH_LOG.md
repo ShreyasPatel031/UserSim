@@ -1264,3 +1264,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 17:53 UTC Nov 7 Population agent: strat saves 15 (7 WHOLE / 8 FAIL: comment_times x8, stacks partial x1, upvotes signed-out end not queued x1); wave 2 still running; 8 GO.feeder-strat tokens present. Awaiting Shreyas.
 - 17:55 UTC Nov 7 Population agent store 17:52Z: 15,734 saved, 2,140 complete (+7 strat), 13,594 incomplete (+8 strat); merged pace ledger still 0 incomplete.
 - 18:33 UTC Nov 7 mailbox checked: no Grok Bot replies; strat wave 2 still running; no Nov 7 capture or daily. Awaiting Shreyas.
+- 18:38 UTC Nov 7 Population agent: strat saves 29 (8 WHOLE / 21 FAIL; 13 of last 14 failed); tokens changed to geoip1. Re-alerted Grok Bot, push-notified Shreyas.
