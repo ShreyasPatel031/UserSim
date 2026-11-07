@@ -112,6 +112,13 @@ def main(d0="2026-10-29", d1="2026-11-04"):
     bad = set(inc[inc.apply(short_kind, axis=1) == "code_stop"].person_id) if len(inc) else set()
     full = set(T[T.pull_type.astype(str) == "full"].person_id) if "pull_type" in T else set()
     whole = (full - bad) | {hid(sl, u) for u in pulled}
+    # population agent's person-level COMPLETE set (Nov 7 22:40Z) replaces the store_v3 tab rule when available, so people
+    # it marks INCOMPLETE (e.g. FAIL_repeat) go back on the list for a whole re-pull
+    r = sh("gsutil", "cat", f"{B}/raw/_babysitter/quality/latest_complete.txt")
+    lc = {l.split("\t")[0].strip().lower() for l in r.stdout.splitlines() if l.strip()}
+    if r.returncode == 0 and lc:
+        whole = {hid(sl, u) for u in lc}
+        names |= lc; h2u.update({hid(sl, u): u for u in lc})
     cand = (set(up) | set(cm) | set(fol) | set(vnh)) - whole - team_h
     rows = []
     for pid in cand:
@@ -134,7 +141,7 @@ def main(d0="2026-10-29", d1="2026-11-04"):
            "unmapped_follow_only": int((R.handle.isna() & (R.up == 0) & (R.cm == 0)).sum()), "with_upvote_evidence": int((known.up > 0).sum()),
            "with_comment_evidence": int((known.cm > 0).sum()), "with_maker_follow": int((known.fol > 0).sum()),
            "voternet_only": int(((known.up == 0) & (known.cm == 0) & (known.fol == 0)).sum()),
-           "excluded_whole": int(len(whole)), "out": OUT_GS,
+           "excluded_whole": int(len(whole)), "whole_source": "latest_complete.txt" if (r.returncode == 0 and lc) else "store_v3 tabs + pace pulls", "out": OUT_GS,
            "tier_sizes": {str(k): int(v) for k, v in known.tier.value_counts().sort_index().items()},
            "order_check": bool((known.tier.diff().fillna(0) >= 0).all())}
     print(json.dumps(rep))
