@@ -22,10 +22,10 @@ ART="${ROOT}/results/ph_tab_experiment/${RUN_ID}"
 PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/.purl}"
 
 STRATEGIES=(
-  "A:8:1:30,8:60"
-  "B:16:1:30,8:90,16:120"
-  "C:32:1:30,8:90,16:120,32:150"
-  "D:48:1:40,16:120,32:150,48:180"
+  "A:${ROOT}/scripts/vm/ph_strategies/A_serial_polite.env"
+  "B:${ROOT}/scripts/vm/ph_strategies/B_aimd_adaptive.env"
+  "C:${ROOT}/scripts/vm/ph_strategies/C_burst_coast.env"
+  "D:${ROOT}/scripts/vm/ph_strategies/D_req_budget.env"
 )
 COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=1 600 0"
 
@@ -80,14 +80,15 @@ cmd_up() {
   echo "$RUN_ID" >"${ROOT}/results/ph_tab_experiment/latest_run.txt"
   : >"$ART/instances.tsv"
   for spec in "${STRATEGIES[@]}"; do
-    IFS=: read -r sid tabs ramp <<<"$spec"
+    IFS=: read -r sid envfile <<<"$spec"
+    [[ -f "$envfile" ]] || { echo "missing $envfile" >&2; exit 1; }
     name="$(vm_name "$sid")"
     port="$(next_port)"
-    echo -e "${sid}\t${port}\t${tabs}\t${ramp}" >>"$ART/instances.tsv"
-    echo "==> $name port=$port tabs=$tabs ramp=$ramp"
+    echo -e "${sid}\t${port}\t$(basename "$envfile")" >>"$ART/instances.tsv"
+    echo "==> $name port=$port strategy=$sid"
     printf '%s %s strat-%s\n' "$name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$sid" |
       "${GC[@]}" storage cp - "${PORT_PREFIX}/port.${port}"
-    meta="^;^proxy-port=${port};${COMMON_META};pdeep-tabs=${tabs};pdeep-ramp=${ramp};strat-id=${sid}"
+    meta="^;^proxy-port=${port};${COMMON_META};strat-id=${sid}"
     "${GC[@]}" compute instances create "$name" \
       --project="$PROJECT" --zone="$ZONE" \
       --machine-type=e2-standard-2 \
@@ -95,7 +96,7 @@ cmd_up() {
       --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=20GB \
       --service-account="$SA" --scopes=cloud-platform \
       --tags=allow-iap-ssh \
-      --metadata-from-file "proxy-url=$PROXY_FILE,startup-script=$ROOT/pace_startup.sh" \
+      --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$envfile,startup-script=$ROOT/pace_startup.sh" \
       --metadata "$meta"
   done
   date -u +%Y-%m-%dT%H:%M:%SZ >"$ART/started_at.txt"
@@ -135,7 +136,7 @@ cmd_monitor() {
   local end=$(( $(date +%s) + DURATION_SEC ))
   while :; do
     ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    while IFS=$'\t' read -r sid port tabs ramp; do
+    while IFS=$'\t' read -r sid port _env; do
       [[ -z "$sid" ]] && continue
       sample_one "$sid" "feeder-strat-${RUN_ID}-${sid}" "$ts" | tee -a "$ART/samples.tsv"
     done <"$ART/instances.tsv"

@@ -1,6 +1,16 @@
 #!/bin/bash
 # Pace feeder boot: install Camoufox once, refresh reuse.tgz, run phsuper (queue worker).
 exec >> /var/log/phreuse_start.log 2>&1
+mkdir -p /opt/ph
+curl -sf -H Metadata-Flavor:Google \
+  http://metadata.google.internal/computeMetadata/v1/instance/attributes/ph-strategy-env \
+  >/opt/ph/strategy.env 2>/dev/null || true
+if [[ -f /opt/ph/strategy.env ]]; then
+  set -a
+  # shellcheck source=/dev/null
+  source /opt/ph/strategy.env
+  set +a
+fi
 B="${PACE_GCS_VM_ROOT:-gs://[REDACTED]/usersim_sim/raw/ph_population/people_live/vm}"
 if [ ! -x /opt/venv/bin/python ]; then
 apt-get update -q && apt-get install -yq python3-venv xvfb libgtk-3-0 libx11-xcb1 libasound2 libdbus-glib-1-2 >/dev/null

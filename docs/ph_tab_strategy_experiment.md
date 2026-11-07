@@ -1,41 +1,59 @@
-# PH tab/ramp strategy bake-off (4 VMs × 4 h)
+# PH throughput bake-off (4 × e2-standard-2, 1 browser each)
 
-## Identity rotation (no cold VM)
+**Goal:** maximize **people/min** (and **req/min**) per VM with **minimal blocks** over a **4 h** window — not sweep `pdeep-tabs` metadata.
 
-**Rotate between queue profiles / sessions**, not on every HTTP request:
+Literature ([Novada](https://www.novada.com/blog-ordinary/parallel-concurrent-processing-at-scale-5-production-patterns-that-actually-work/), [Crawlex AIMD](https://blog.crawlex.net/blog/rate-limiting-yourself/), [Proxora session budgets](https://proxora.io/blog/proxy-concurrency-rate-limit-playbook), [Shifter retry classes](https://shifter.io/blog/residential-proxy-retry-logic)) converges on:
 
-- **Same VM**, **same `phsuper`**, same sticky **`proxy-port`** for a run until you deliberately change it.
-- **New identity** = new **sticky port** (10000–20000) and/or new **`/opt/ph/profiles/p{port}/`** when starting the **next** person after a 403/challenge — not a VM reboot.
-- **Do not** swap proxy/session on every GraphQL call.
+1. **Two limiters:** in-flight work (tabs / semaphores) **and** request start rate (token bucket).
+2. **AIMD:** slow climb while healthy; **×0.5–0.7** on 403/429; jitter on retries.
+3. **One sticky session** per browser; **one active profile extract**; identity change **between** people, not per request.
+4. **Circuit breaker** after repeated blocks (your `pace-state` cooldown).
+5. **Measure** req/min, people/min, 403 rate — tune from feedback, not static metadata.
 
-## Tab ceiling
+**Your ceiling:** ~**64** in-flight tabs possible; exploration often uses **32** as a high but sub-max setting inside strategies that adapt.
 
-Empirical in-flight ceiling ~**64** tabs; arms use **8 / 16 / 32 / 48** (`pdeep-tabs`). Strategy **C** is the **32** exploratory setpoint.
+---
 
-## Strategies
+## Four strategies (policy, not metadata ramps)
 
-| ID | `pdeep-tabs` | `pdeep-ramp` |
-|----|--------------|--------------|
-| A | 8 | `1:30,8:60` |
-| B | 16 | `1:30,8:90,16:120` |
-| C | 32 | `1:30,8:90,16:120,32:150` |
-| D | 48 | `1:40,16:120,32:150,48:180` |
+Configs live in `scripts/vm/ph_strategies/*.env`, injected as metadata key **`ph-strategy-env`** at VM create. Supervisor / `ph_person*` should read `PH_*` env (wire in `reuse.tgz` when approved).
 
-Each VM: **e2-standard-2**, one hot browser (`k-levels=1,1`), own sticky port, `pace_startup.sh` → **phsuper** on people queue.
+| ID | Name | Idea | Primary levers |
+|----|------|------|----------------|
+| **A** | `serial_polite` | Longevity baseline | ≤4 tabs, ~36 req/min, heavy jitter, coast between profiles |
+| **B** | `aimd_adaptive` | Max people/min adaptively | Start 4 tabs / 45 rpm → climb toward 64 tabs / 150 rpm while clean |
+| **C** | `burst_coast` | Duty cycle | ~24 tabs × 90 s burst, 75 s coast @ 25 rpm (avoid sitting on cliff) |
+| **D** | `req_budget` | Optimize req efficiency | ≤48 tabs, hard **140 rpm** cap, skip redundant cursor work |
 
-## Run (from laptop / env with `gcloud`)
+Shared VM shape: **e2-standard-2**, **`k-levels=1,1`**, one Camoufox, own sticky port, warm profile dir.
+
+**403 vs 429** ([KindProxy](https://www.kindproxy.com/blog/en/blog/puppeteer-proxy-rotation-sticky-sessions-retries/)): 429 → slow down same session; 403 → deep pause + circuit, do not rotate to “evade”.
+
+---
+
+## Metrics (4 h, sample every 15 min)
+
+- **people/min** — completed profile JSONs / wall time  
+- **req/min** — from supervisor or extract logs (if instrumented)  
+- **uptime** — VM + `phsuper`  
+- **403/challenge count** — leading indicator before hard death  
+
+Winner: highest **mean people/min** with acceptable block rate (document if one arm trades blocks for speed).
+
+---
+
+## Run
 
 ```bash
-cd UserSim
-chmod +x scripts/vm/ph_tab_strategy_experiment.sh pace_startup.sh
+export GCP_PROJECT=...
+export PACE_ZONE=...
+export PACE_PORT_REGISTRY_BUCKET=...
 export PACE_EXPERIMENT_RUN_ID=$(date -u +%Y%m%dT%H%M%SZ)
 
 ./scripts/vm/ph_tab_strategy_experiment.sh up --fetch-proxy-from feeder-phpeople-1
-./scripts/vm/ph_tab_strategy_experiment.sh monitor --loop   # 15 min × 4 h
+./scripts/vm/ph_tab_strategy_experiment.sh monitor --loop
 ./scripts/vm/ph_tab_strategy_experiment.sh summary
 ./scripts/vm/ph_tab_strategy_experiment.sh down
 ```
 
-Samples: `results/ph_tab_experiment/<RUN_ID>/samples.tsv` (status, phsuper, JSON count, est. people/min, 403 hints).
-
-**Status:** Not auto-running in cloud agents without `gcloud`; launch the commands above in GCP-enabled shell.
+**Note:** Env files define policy; **`reuse.tgz` must honor `PH_*`** for strategies to differ in production. Until then, experiment compares configs ready for supervisor wiring.
