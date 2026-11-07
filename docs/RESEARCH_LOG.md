@@ -1237,3 +1237,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 02:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; capture stalled.
 - 03:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled; capture stalled.
 - 04:34 UTC Nov 7 mailbox checked: no change; compute SA still disabled; capture stalled.
+- 05:34 UTC Nov 7 mailbox checked: no change; compute SA still disabled (Nov 7 pipeline 08:05Z will fail without it); capture stalled.
