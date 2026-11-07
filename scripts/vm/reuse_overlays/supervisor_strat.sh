@@ -72,6 +72,12 @@ while true; do
     extra=$($PY strategy_args.py 2>>supervisor.log || true)
     echo "launch $tok mode=$mode extra=[$extra] $(date -u +%FT%TZ)" >> supervisor.log
     mark batch_launch "token=$tok extra=$extra"
+    # Refresh GeoIP mtime every launch so camoufox never re-downloads mid-session.
+    if [[ -x /opt/ph/overlays/ensure_geoip.sh ]]; then
+      mark geoip_ensure_begin
+      PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/ensure_geoip.sh >> supervisor.log 2>&1 || true
+      mark geoip_ensure_end
+    fi
     # shellcheck disable=SC2086
     PYTHONUNBUFFERED=1 $PY -u ph_batch.py --mode "$mode" --token "$tok" $extra >"$L" 2>&1 &
     pid=$!

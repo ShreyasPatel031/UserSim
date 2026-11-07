@@ -43,7 +43,8 @@ GO_TOKEN="run:strat-${RUN_ID}"
 upload_overlays() {
   local d="$ROOT/scripts/vm/reuse_overlays"
   [[ -f "$d/supervisor_strat.sh" ]] || { echo "missing overlays in $d" >&2; exit 1; }
-  "${GC[@]}" storage cp "$d/supervisor_strat.sh" "$d/portscreen.py" "$d/strategy_args.py" "$d/setup_probe.py" "${OVERLAY_GCS}/"
+  "${GC[@]}" storage cp "$d/supervisor_strat.sh" "$d/portscreen.py" "$d/strategy_args.py" \
+    "$d/setup_probe.py" "$d/ensure_geoip.sh" "${OVERLAY_GCS}/"
   echo "Uploaded overlays -> ${OVERLAY_GCS}/"
 }
 
@@ -52,6 +53,8 @@ write_boot_env() {
 MVP_GCS_BUCKET=${BUCKET}
 PACE_GCS_VM_ROOT=${VM_GCS}
 PH_OVERLAYS_DIR=/opt/ph/overlays
+PH_PORTSCREEN_HOME_ONLY=1
+PH_PORTSCREEN_MAX_TRY=1
 EOF
 }
 
@@ -223,7 +226,7 @@ cmd_setup() {
   mkdir -p "$ART/setup_raw"
   local probe="$ROOT/scripts/vm/reuse_overlays/setup_probe.py"
   [[ -f "$probe" ]] || { echo "missing $probe" >&2; exit 1; }
-  echo -e "strat\tvm\tcreate_utc\tsupervisor_utc\tlaunch_utc\tidentity_utc\tfirst_pull_utc\tfirst_json_utc\tcreate_to_supervisor_s\tsupervisor_to_launch_s\tlaunch_to_identity_s\tidentity_to_first_pull_s\tcreate_to_first_pull_s\tcreate_to_first_json_s\tstatus" >"$ART/setup.tsv"
+  echo -e "strat\tvm\tcreate_utc\tsupervisor_utc\tlaunch_utc\tidentity_utc\tfirst_pull_utc\tfirst_json_utc\tcreate_to_supervisor_s\tsupervisor_to_launch_s\tlaunch_to_identity_s\tidentity_to_first_pull_s\tphase_sum_s\tcreate_to_first_pull_s\tgap_s\tcreate_to_first_json_s\tstatus" >"$ART/setup.tsv"
   while IFS=$'\t' read -r sid port _env; do
     [[ -z "$sid" ]] && continue
     name="$(vm_name "$sid")"
@@ -265,6 +268,13 @@ ident = parse(marks.get("identity_ready"))
 pull = parse(marks.get("first_pull"))
 j = parse(marks.get("first_json"))
 status = "pulling" if pull else ("identity" if ident else ("launched" if launch else ("supervisor" if sup else "booting")))
+c2s, s2l, l2i, i2p = secs(create, sup), secs(sup, launch), secs(launch, ident), secs(ident, pull)
+parts = [c2s, s2l, l2i, i2p]
+phase_sum = str(sum(int(x) for x in parts if x != "")) if any(parts) else ""
+c2p = secs(create, pull)
+gap = ""
+if phase_sum != "" and c2p != "":
+    gap = str(int(c2p) - int(phase_sum))
 row = "\t".join([
     sid, name,
     create.strftime("%Y-%m-%dT%H:%M:%SZ") if create else "",
@@ -273,19 +283,25 @@ row = "\t".join([
     marks.get("identity_ready") or "",
     marks.get("first_pull") or "",
     marks.get("first_json") or "",
-    secs(create, sup),
-    secs(sup, launch),
-    secs(launch, ident),
-    secs(ident, pull),
-    secs(create, pull),
+    c2s, s2l, l2i, i2p,
+    phase_sum, c2p, gap,
     secs(create, j),
     status,
 ])
 Path(out).open("a").write(row + "\n")
 print(row)
+# Explicit waterfall so create→first_pull is never "mystery time".
+if c2p:
+    print(
+        f"  waterfall {sid}: boot {c2s or '?'}s + ops/GO {s2l or '?'}s + "
+        f"identity {l2i or '?'}s + to_pull {i2p or '?'}s = {phase_sum or '?'}s "
+        f"(create→pull {c2p}s, gap {gap or '0'}s)",
+        flush=True,
+    )
 PY
   done <"$ART/instances.tsv"
   echo "Wrote $ART/setup.tsv"
+  echo "NOTE: supervisor_to_launch_s = GO wait + any restart/ops tax (often the 'missing' half)."
   column -t -s $'\t' "$ART/setup.tsv" 2>/dev/null || cat "$ART/setup.tsv"
 }
 

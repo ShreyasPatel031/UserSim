@@ -56,26 +56,37 @@ def _release(port, vm):
     if cur.returncode == 0 and cur.stdout.strip() == vm: subprocess.run(["gsutil", "-q", "rm", obj], capture_output=True)
 def prescreen(vm, log):
     home = int(os.environ.get("PROXY_PORT") or 0)
-    # Prefer assigned home port, then a bounded nearby window — never scan all 10k stickies.
+    # Strat bake-off default: stay on assigned sticky port. urllib probe ≠ Camoufox CF clear;
+    # failing over silently (e.g. 10022→10000) wrecks the experiment.
+    home_only = os.environ.get("PH_PORTSCREEN_HOME_ONLY", "1") not in ("0", "false", "no")
     nearby = [p for p in range(max(10000, home - 32), min(20001, home + 33)) if p != home and p in set(POOL)]
     rest = [p for p in POOL if p != home and p not in nearby]
-    order = ([home] if home else []) + nearby + rest
-    # Hard cap failover probes so a bad home port cannot stall for hours.
-    max_try = int(os.environ.get("PH_PORTSCREEN_MAX_TRY", "24"))
+    order = ([home] if home else []) + ([] if home_only else (nearby + rest))
+    max_try = int(os.environ.get("PH_PORTSCREEN_MAX_TRY", "1" if home_only else "24"))
     tried = []
     for p in order[: max(1, max_try)]:
         if p in NEVER: continue
         if p in FAILED: tried.append({"port": p, "verdict": "failed_this_session"}); continue
         if not _claim(p, vm): tried.append({"port": p, "verdict": "claimed_by_running_vm"}); continue
         o = probe(p); tried.append(o)
-        if o["verdict"] in ("ok", "challenge_ok"):
+        # challenge_ok / ok / net_err: keep home — Camoufox clears JS challenges; probe is advisory.
+        if o["verdict"] in ("ok", "challenge_ok", "net_err") or (home_only and p == home and o["verdict"] != "blocked"):
             if p != home: _release(home, vm)
             os.environ["PROXY_PORT"] = str(p)
             ev = {"event": "port_prescreen", "home_port": home, "chosen_port": p, "moved": p != home,
-                  "reason": "home port passed test-open" if p == home else f"home port {home} blocked; next free pool port passed", "tried": tried}
+                  "home_only": home_only,
+                  "reason": "home port kept" if p == home else f"home port {home} blocked; next free pool port passed",
+                  "tried": tried}
             log(**ev); return p
-        FAILED.add(p); _release(p, vm)   # any failed probe (incl. TLS/EOF) = failed for this session
+        FAILED.add(p); _release(p, vm)   # hard blocked only
         time.sleep(5)
+    # Last resort for bake-off: keep claimed home even if probe said blocked (browser may still clear).
+    if home_only and home:
+        if _claim(home, vm) or True:
+            os.environ["PROXY_PORT"] = str(home)
+            log(event="port_prescreen", home_port=home, chosen_port=home, moved=False,
+                home_only=True, reason="home_only forced keep after probe failures", tried=tried)
+            return home
     log(event="port_prescreen", home_port=home, chosen_port=None, moved=False, reason="no pool port passed; stopping", tried=tried)
     return None
 if __name__ == "__main__":

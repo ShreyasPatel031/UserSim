@@ -1,0 +1,14 @@
+a	feeder-strat-20261107t170953z-a	2026-11-07T17:09:59Z	2026-11-07T17:11:16Z	2026-11-07T17:22:32Z	2026-11-07T17:29:24Z	2026-11-07T17:30:09Z	2026-11-07T17:32:03Z	76	676	412	45	1209	1209	0	1323	pulling
+  waterfall a: boot 76s + ops/GO 676s + identity 412s + to_pull 45s = 1209s (create→pull 1209s, gap 0s)
+b	feeder-strat-20261107t170953z-b	2026-11-07T17:10:34Z	2026-11-07T17:53:31Z	2026-11-07T17:53:34Z	2026-11-07T18:01:29Z			2576	3	475		3054				identity
+c	feeder-strat-20261107t170953z-c	2026-11-07T17:11:13Z	2026-11-07T17:12:02Z	2026-11-07T17:22:49Z	2026-11-07T17:31:47Z	2026-11-07T17:33:30Z	2026-11-07T17:35:54Z	48	647	538	103	1336	1336	0	1480	pulling
+  waterfall c: boot 48s + ops/GO 647s + identity 538s + to_pull 103s = 1336s (create→pull 1336s, gap 0s)
+d	feeder-strat-20261107t170953z-d	2026-11-07T17:11:27Z	2026-11-07T17:53:39Z	2026-11-07T17:53:41Z	2026-11-07T17:59:33Z	2026-11-07T18:00:19Z	2026-11-07T18:01:42Z	2531	2	352	46	2931	2931	0	3014	pulling
+  waterfall d: boot 2531s + ops/GO 2s + identity 352s + to_pull 46s = 2931s (create→pull 2931s, gap 0s)
+Wrote /agent/repos/usersim/results/ph_tab_experiment/20261107t170953z/setup.tsv
+NOTE: supervisor_to_launch_s = GO wait + any restart/ops tax (often the 'missing' half).
+strat  vm                               create_utc            supervisor_utc        launch_utc            identity_utc          first_pull_utc        first_json_utc        create_to_supervisor_s  supervisor_to_launch_s  launch_to_identity_s  identity_to_first_pull_s  phase_sum_s  create_to_first_pull_s  gap_s  create_to_first_json_s  status
+a      feeder-strat-20261107t170953z-a  2026-11-07T17:09:59Z  2026-11-07T17:11:16Z  2026-11-07T17:22:32Z  2026-11-07T17:29:24Z  2026-11-07T17:30:09Z  2026-11-07T17:32:03Z  76                      676                     412                   45                        1209         1209                    0      1323                    pulling
+b      feeder-strat-20261107t170953z-b  2026-11-07T17:10:34Z  2026-11-07T17:53:31Z  2026-11-07T17:53:34Z  2026-11-07T18:01:29Z                                              2576                    3                       475                                             3054                                                                identity
+c      feeder-strat-20261107t170953z-c  2026-11-07T17:11:13Z  2026-11-07T17:12:02Z  2026-11-07T17:22:49Z  2026-11-07T17:31:47Z  2026-11-07T17:33:30Z  2026-11-07T17:35:54Z  48                      647                     538                   103                       1336         1336                    0      1480                    pulling
+d      feeder-strat-20261107t170953z-d  2026-11-07T17:11:27Z  2026-11-07T17:53:39Z  2026-11-07T17:53:41Z  2026-11-07T17:59:33Z  2026-11-07T18:00:19Z  2026-11-07T18:01:42Z  2531                    2                       352                   46                        2931         2931                    0      3014                    pulling

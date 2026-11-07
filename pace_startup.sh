@@ -32,7 +32,9 @@ B="${PACE_GCS_VM_ROOT:-gs://${MVP_GCS_BUCKET:?pace-boot-env missing MVP_GCS_BUCK
 gcloud storage cp -q "$B/_code/overlays/supervisor_strat.sh" /opt/ph/overlays/ 2>/dev/null || true
 gcloud storage cp -q "$B/_code/overlays/portscreen.py" /opt/ph/overlays/ 2>/dev/null || true
 gcloud storage cp -q "$B/_code/overlays/strategy_args.py" /opt/ph/overlays/ 2>/dev/null || true
-chmod +x /opt/ph/overlays/supervisor_strat.sh 2>/dev/null || true
+gcloud storage cp -q "$B/_code/overlays/ensure_geoip.sh" /opt/ph/overlays/ 2>/dev/null || true
+gcloud storage cp -q "$B/_code/overlays/setup_probe.py" /opt/ph/overlays/ 2>/dev/null || true
+chmod +x /opt/ph/overlays/supervisor_strat.sh /opt/ph/overlays/ensure_geoip.sh 2>/dev/null || true
 
 if [ ! -x /opt/venv/bin/python ]; then
   mark cold_install_begin
@@ -44,6 +46,13 @@ else
   mark warm_image_ready
 fi
 
+# Kill the launch→identity GeoIP tax: restore cache if needed, then touch mmdb mtimes.
+mark geoip_ensure_begin
+if [[ -x /opt/ph/overlays/ensure_geoip.sh ]]; then
+  PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/ensure_geoip.sh >> /var/log/phreuse_start.log 2>&1 || true
+fi
+mark geoip_ensure_end
+
 mkdir -p /opt/ph/reuse
 cd /opt/ph/reuse
 mark reuse_fetch_begin
@@ -51,6 +60,8 @@ mark reuse_fetch_begin
 mark reuse_fetch_end
 [[ -f /opt/ph/overlays/portscreen.py ]] && cp -f /opt/ph/overlays/portscreen.py /opt/ph/reuse/portscreen.py
 [[ -f /opt/ph/overlays/strategy_args.py ]] && cp -f /opt/ph/overlays/strategy_args.py /opt/ph/reuse/strategy_args.py
+[[ -f /opt/ph/overlays/ensure_geoip.sh ]] && cp -f /opt/ph/overlays/ensure_geoip.sh /opt/ph/reuse/ensure_geoip.sh
+[[ -f /opt/ph/overlays/setup_probe.py ]] && cp -f /opt/ph/overlays/setup_probe.py /opt/ph/reuse/setup_probe.py
 
 # Golden-image hygiene: quarantine baked outputs/profiles so strat metrics & sticky ports stay clean.
 if [[ -f /opt/ph/strategy.env ]] && [[ ! -f /opt/ph/reuse/.strat_cleaned ]]; then

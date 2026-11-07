@@ -42,7 +42,8 @@ def build() -> list[str]:
         tabs, ramp = burst, f"{burst}:{burst_rpm}"
         person_interval = person_interval or float(_i("PH_COAST_SEC", 75))
     elif strat == "req_budget":
-        tabs = min(page_cap, max_tabs)
+        # Keep rate via ramp; open fewer browser pages so CF clear isn't 32-way fanout.
+        tabs = min(page_cap, max_tabs, _i("PH_BROWSER_TABS", 8))
         ramp = f"{max_tabs}:{rpm_cap}"
     else:
         tabs = min(page_cap, max_tabs)
