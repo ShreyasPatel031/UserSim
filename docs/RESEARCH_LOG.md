@@ -192,3 +192,34 @@ Model switches, direction reviews and agenda changes, newest last.
 - **No new files in people_live/vm/ since 11:40:13Z**, so nothing new to audit and no breach.
 - **Store unchanged:** 15,719 people; 15,530 complete by a recorded PH end; 10,362 at >= 98% of every list-tab header.
 - **Follower re-page still on hold:** the 1,080 older-collector people are unchanged (>1,000 followers 0/112 at >= 98%). The 107,708-follower list now records ended=budget; the 149,623 list has 0 stored.
+
+### 2026-11-07 22:15Z — E5: are the follower / following lists complete? (counts only; the per-person list is in the bucket at tmp/e5/follow_gaps_by_person_20261107.csv)
+
+The store holds 15,797 people (newest file per person, synced 22:10Z). Collection into vm/ resumed on Nov 7, with 78 new files since Nov 6 01:30Z. "Complete" means the items read reach at least 98% of the header count PH shows.
+
+| | followers | following |
+|---|---|---|
+| people with a non-zero header | 11,703 | 14,345 |
+| complete (>= 98% of header) | 7,830 (66.9%) | 13,369 (93.2%) |
+| short | 3,873 | 976 |
+| items missing / header total | 880,013 / 2,596,247 (33.9%) | 208,841 / 1,636,834 (12.8%) |
+
+Why the short people are short (followers / following):
+
+1. **Explicit cap or budget stop** (all Nov 4, before the whole-person rule): 6 people missing 297,954 followers; 1 person missing 704 following.
+   - Includes a 149,623-follower profile with 0 followers read and a 120,393-follower profile with 1,816 read.
+   - None of these has been re-pulled.
+2. **The page chain repeated pages** (duplicates recorded, or more pages than items): 386 people missing 419,707 followers; 10 people missing 199,078 following.
+   - These are the big profiles: 314 of the 386 have a header over 1,000.
+   - This is the known endCursor repeat. The offset re-page is needed, but no file in the store ends with server_end_offset, so it has never been run.
+   - 3 of these files were written on Nov 7, by the feeder-strat VMs.
+3. **PH ended before reaching the header, with no repeat seen**: 1,906 people missing 160,367 followers; 282 people missing 8,210 following.
+   - Not verified. The cause could be accounts hidden when signed out (the collectors' notes call this complete_not_visible), or a real early stop.
+   - A signed-in or offset re-check of a sample would settle it.
+4. **Short by only 1-2 items**: 1,575 people missing 1,985 followers; 683 people missing 849 following. Likely deleted accounts still counted in the header.
+
+The 1,080-person older-collector inventory: 983 are still short on followers (all 112 with headers over 1,000), and 280 are short on following.
+
+Separate whole-person gap: 14 of the 78 Nov 7 files carry stacks status "partial" (short by 1-2 of 1-11). They are marked incomplete, as the rule requires, and need the completion pass.
+
+Not a gap: upvotes on signed-out pulls stop near 200 by PH's own limit (labelled limit_owner PH; collected signed-in separately).
