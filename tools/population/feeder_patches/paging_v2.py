@@ -24,6 +24,16 @@ import base64, time
 CHAIN_OPS = {"ProfileFollowersQuery", "ProfileFollowingsQuery", "ProfileFollowingQuery"}
 CHAIN_MIN = 200
 MAX_PASSES = 8  # full re-page passes per attempt; reaching it ends as repage_max_passes (not whole), resumable
+TOTAL_PASSES = 24  # full18c: passes across all attempts (saved in state); reaching it ends as repage_exhausted -> review list
+STATE_TTL_S = 7 * 86400  # full18c: saved re-page state older than 7 days is ignored (restart at offset 0)
+CHAO1_MAX = 0.5  # full18c (E5): close only if the Chao1 estimate of accounts PH never served is below this
+
+
+def chao1(seen_in):
+    """Chao1 estimate of ids never served, from per-id counts of passes that served them:
+    f1^2 / (2 f2), or f1 (f1 - 1) / 2 when f2 = 0 (bias-corrected)."""
+    f1 = sum(1 for v in seen_in.values() if v == 1); f2 = sum(1 for v in seen_in.values() if v == 2)
+    return f1 * f1 / (2 * f2) if f2 else f1 * (f1 - 1) / 2
 
 
 class _Stop(Exception):
@@ -129,20 +139,26 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
         if (op in CHAIN_OPS and ended == "server_end" and goal and (goal - len(items)) > 2 and len(items) < 0.98 * goal
                 and not R.stop):
             st = None
-            try: st = R.repage_load(op) if getattr(R, "repage_load", None) else None
+            keep_state = not str(getattr(R, "h", "") or "").startswith("_")  # full18c: no state for session runners (_session...)
+            try: st = R.repage_load(op) if (keep_state and getattr(R, "repage_load", None)) else None
             except Exception as e: R.log("repage state load failed", op, str(e)[:120])
+            if st and time.time() - (st.get("saved_epoch") or 0) > STATE_TTL_S:  # full18c: stale state -> restart at offset 0
+                R.log("repage state expired", op, "age_s", int(time.time() - (st.get("saved_epoch") or 0))); st = None
             repage = {"passes": 0, "new": [], "served": [], "pages": 0, "start_items": len(items), "start_dups": dups,
-                      "header": goal, "resumed_passes": 0}
+                      "header": goal, "resumed_passes": 0, "total_passes": 0}
+            seen_in = {}  # full18c (E5 required): per-id count of re-page passes that served the id
             if st:
                 for n in st.get("union") or []:
                     if n.get("id") and n["id"] not in seen: seen.add(n["id"]); items.append(n)
                 for k in ("passes", "new", "served"): repage[k] = st.get(k, repage[k])
-                repage["resumed_passes"] = repage["passes"]
+                repage["resumed_passes"] = repage["passes"]; repage["total_passes"] = st.get("total_passes", repage["passes"])
+                seen_in = dict(st.get("seen_in") or {})
             stall_min = max(2, 0.002 * goal)
             try:
                 while True:
+                    if repage["total_passes"] >= TOTAL_PASSES: raise _Stop("exhausted")  # full18c: cross-attempt ceiling
                     if repage["passes"] - repage["resumed_passes"] >= MAX_PASSES: raise _Stop("max_passes")
-                    pass_new, served, off, first_ids, prev_ids = 0, 0, 0, None, None
+                    pass_new, served, off, first_ids, prev_ids, pass_ids = 0, 0, 0, None, None, set()
                     while True:
                         if R.stop: raise _Stop("stopped")
                         if over(): R.budget_hit = True; raise _Stop("budget")
@@ -153,17 +169,20 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
                         if off == 0: first_ids = ids
                         elif ids and set(ids) <= set(first_ids or []): raise _Stop("offset_ignored")  # PH served page 0 again
                         if ids and prev_ids and set(ids) == set(prev_ids): raise _Stop("offset_clamped")  # PH served the same page twice in a row
-                        prev_ids = ids; served += len(edges); pass_new += add(edges)
+                        prev_ids = ids; served += len(edges); pass_new += add(edges); pass_ids.update(i for i in ids if i)
                         if not edges or not pi.get("hasNextPage"): break
                         off += step
-                    repage["passes"] += 1; repage["new"].append(pass_new); repage["served"].append(served)
+                    repage["passes"] += 1; repage["total_passes"] += 1; repage["new"].append(pass_new); repage["served"].append(served)
+                    for i in pass_ids: seen_in[i] = seen_in.get(i, 0) + 1
+                    repage["chao1_unseen"] = chao1(seen_in)
                     full_depth = served >= 0.98 * len(items)
                     need = 3 if (goal > 1000 or len(items) < 0.98 * goal) else 2
                     zero_full = 0
                     for nw, sv in zip(reversed(repage["new"]), reversed(repage["served"])):
                         if nw == 0 and sv >= 0.98 * len(items): zero_full += 1
                         else: break
-                    if full_depth and (len(items) >= 0.98 * goal or zero_full >= need):
+                    # full18c (E5 required): also close only when the Chao1 estimate of never-served accounts is < 0.5
+                    if full_depth and (len(items) >= 0.98 * goal or zero_full >= need) and repage["chao1_unseen"] < CHAO1_MAX:
                         ended = "server_end_offset"; break
                     if pass_new == 0 and not full_depth and len(repage["new"]) >= 2 and repage["new"][-2] == 0:
                         repage["ph_offset_depth"] = served; raise _Stop("short_end")
@@ -178,9 +197,10 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
                 ended = "repage_error"; R.log("repage error", op, str(e)[:200])
             repage["union"] = len(items)
             try:
-                if ended != "server_end_offset" and getattr(R, "repage_save", None):
-                    R.repage_save(op, {"union": items, "passes": repage["passes"], "new": repage["new"], "served": repage["served"], "ended": ended})
-                elif ended == "server_end_offset" and getattr(R, "repage_save", None):
+                if ended != "server_end_offset" and keep_state and getattr(R, "repage_save", None):
+                    R.repage_save(op, {"union": items, "passes": repage["passes"], "total_passes": repage["total_passes"], "new": repage["new"],
+                                       "served": repage["served"], "seen_in": seen_in, "ended": ended, "saved_epoch": time.time()})
+                elif ended == "server_end_offset" and keep_state and getattr(R, "repage_save", None):
                     R.repage_save(op, None)  # closed: drop any saved state
             except Exception as e: R.log("repage state save failed", op, str(e)[:120])
             R.log("repage", op, "items", len(items), "of", goal, "passes", repage["passes"], "new", repage["new"], "served", repage["served"], "ended", ended)

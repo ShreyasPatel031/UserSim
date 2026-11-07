@@ -53,7 +53,7 @@ def _offset_depth_ok(t, run, k, got):
     for r in (t.get("paging") or {}, (run.get("paging") or {}).get(k) or {}, ((run.get("timing") or {}).get(k) or {}).get("paging") or {}):
         rp = r.get("repage") or {}
         if r.get("ended") == "server_end_offset" and rp.get("served"):
-            return rp["served"][-1] >= 0.98 * (rp.get("union") or got)
+            return rp["served"][-1] >= 0.98 * (rp.get("union") or got) and (rp.get("chao1_unseen") is not None and rp["chao1_unseen"] < 0.5)  # full18c (E5)
     return False
 
 

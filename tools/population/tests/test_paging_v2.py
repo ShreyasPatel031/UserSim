@@ -276,3 +276,55 @@ def test_repage_budget_is_a_failure():
 def test_stable_short_by_two_is_not_repaged():
     r, items = run(FakeServer(15), "ProfileFollowersQuery", total=17)
     assert r.last_paging["repage"] is None and r.last_paging["ended"] == "server_end"
+
+
+# ---- full18c: Chao1 closure, cross-attempt ceiling, state TTL, no state for session runners ----
+def test_chao1_formula():
+    assert paging_v2.chao1({"a": 1, "b": 2, "c": 2}) == 0.25
+    assert paging_v2.chao1({"a": 1, "b": 1}) == 1.0  # f2 = 0: f1 (f1 - 1) / 2
+    assert paging_v2.chao1({"a": 3, "b": 4}) == 0
+
+
+def test_chao1_closure_has_no_misses_over_30_seeds():
+    closed, misses, other = 0, [], []
+    for seed in range(100, 130):
+        RecR.store.clear()
+        r, items = runr(UnstableServer(900, seed=seed), 1079, key=f"c{seed}")
+        lp = r.last_paging
+        while lp["ended"] == "repage_max_passes":  # resume (state saved) until it closes or stops otherwise
+            r, items = runr(UnstableServer(900, seed=seed + 1000), 1079, key=f"c{seed}")
+            lp = r.last_paging
+        if lp["ended"] == "server_end_offset":
+            closed += 1; misses.append(900 - len(items))
+            assert lp["repage"]["chao1_unseen"] < paging_v2.CHAO1_MAX
+        else:
+            other.append(lp["ended"]); assert not r.last_exhausted
+    print("chao1 closure: closed", closed, "of 30; misses", sum(misses), "; other ends", other)
+    assert closed >= 15 and sum(misses) == 0
+
+
+def test_total_pass_ceiling_is_exhausted():
+    RecR.store.clear()
+    RecR.store[("x", "ProfileFollowersQuery")] = {"union": [], "passes": 24, "total_passes": 24, "new": [], "served": [], "seen_in": {},
+                                                "saved_epoch": __import__("time").time()}
+    r, _ = runr(UnstableServer(900, seed=5), 1079, key="x")
+    assert r.last_paging["ended"] == "repage_exhausted" and not r.last_exhausted
+
+
+def test_state_older_than_7_days_restarts():
+    RecR.store.clear()
+    old = {"union": [{"id": "zz_old"}], "passes": 5, "total_passes": 23, "new": [1], "served": [1], "seen_in": {},
+           "saved_epoch": __import__("time").time() - 8 * 86400}
+    RecR.store[("t", "ProfileFollowersQuery")] = old
+    r, items = runr(UnstableServer(900, seed=6), 1079, key="t")
+    assert r.last_paging["repage"]["resumed_passes"] == 0 and all(n["id"] != "zz_old" for n in items)
+    assert r.last_paging["ended"] != "repage_exhausted"
+
+
+def test_no_state_for_session_runner():
+    RecR.store.clear()
+    s = UnstableServer(900, seed=3, block=200)
+    paged = paging_v2.make_paged(offset_paged, cur, Blocked)
+    r = RecR(s, "sess"); r.h = "_session"
+    asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, 1079, None, {}))
+    assert not RecR.store
