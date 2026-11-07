@@ -20,6 +20,8 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE)); sys.path.insert(0, HERE)
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 OUT_GS = os.environ.get("OUT_GS", f"{B}/raw/_pacetest/priority_lastweek.txt")
+HOLD_GS = os.environ.get("HOLD_GS", f"{B}/raw/_pacetest/priority_lastweek_needs_full18c.txt")   # held for the full18c build
+PENDING_GS = os.environ.get("PENDING_GS", f"{B}/raw/population/requests/pending_offset_repage_20261107.tsv")
 
 
 def sh(*a, check=False):
@@ -131,17 +133,29 @@ def main(d0="2026-10-29", d1="2026-11-04"):
     known = R[R.handle.notna()].copy()
     known["tier"] = [0 if u > 0 else 1 if c > 0 else 2 if f > 0 else 3 for u, c, f in zip(known.up, known.cm, known.fol)]
     known = known.sort_values(["tier", "up", "cm", "fol", "vn", "handle"], ascending=[True, False, False, False, False, True])
+    # orchestrator 22:23Z Nov 7 (population agent 23:30Z): people incomplete only on the follow-list offset rule wait for the
+    # full18c build (records server_end_offset); re-pulling them with full15-17 repeats the same chain and fails again.
+    # They go to a separate list; if the pending file can't be read, nothing is written (the old lists stay).
+    rp = sh("gsutil", "cat", PENDING_GS)
+    pend = {l.split("\t")[0].strip().lower() for l in rp.stdout.splitlines() if l.strip() and not l.startswith("#")}
+    if rp.returncode or not pend:
+        raise SystemExit(f"pending offset re-page list unreadable ({PENDING_GS}); not writing priority lists")
+    hold = known[known.handle.str.lower().isin(pend)]
+    known = known[~known.handle.str.lower().isin(pend)]
     loc = f"{tmp}/priority_lastweek.txt"
     with open(loc, "w") as f:
         f.write("\n".join(known.handle) + "\n")
+    with open(f"{tmp}/hold.txt", "w") as f:
+        f.write("".join(f"{h}\tneeds_full18c\n" for h in hold.handle))
     sh("gsutil", "-q", "cp", loc, OUT_GS, check=True)
+    sh("gsutil", "-q", "cp", f"{tmp}/hold.txt", HOLD_GS, check=True)
     rep = {"window": [d0, d1], "launches": int(len(L)), "candidates": int(len(R)), "listed_with_handle": int(len(known)),
            "unmapped_salted_ids": int(R.handle.isna().sum()),
            "unmapped_with_upvote": int((R.handle.isna() & (R.up > 0)).sum()), "unmapped_with_comment": int((R.handle.isna() & (R.cm > 0)).sum()),
            "unmapped_follow_only": int((R.handle.isna() & (R.up == 0) & (R.cm == 0)).sum()), "with_upvote_evidence": int((known.up > 0).sum()),
            "with_comment_evidence": int((known.cm > 0).sum()), "with_maker_follow": int((known.fol > 0).sum()),
            "voternet_only": int(((known.up == 0) & (known.cm == 0) & (known.fol == 0)).sum()),
-           "excluded_whole": int(len(whole)), "whole_source": "latest_complete.txt" if (r.returncode == 0 and lc) else "store_v3 tabs + pace pulls", "out": OUT_GS,
+           "excluded_whole": int(len(whole)), "held_needs_full18c": int(len(hold)), "pending_offset_list": int(len(pend)), "hold_out": HOLD_GS, "whole_source": "latest_complete.txt" if (r.returncode == 0 and lc) else "store_v3 tabs + pace pulls", "out": OUT_GS,
            "tier_sizes": {str(k): int(v) for k, v in known.tier.value_counts().sort_index().items()},
            "order_check": bool((known.tier.diff().fillna(0) >= 0).all())}
     print(json.dumps(rep))
