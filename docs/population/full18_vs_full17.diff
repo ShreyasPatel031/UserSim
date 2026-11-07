@@ -1,0 +1,83 @@
+--- pacecode/x_bsit_full17.tgz/pdeep.py	2026-11-05 10:28:01.000000000 +0000
++++ full18/pdeep.py	2026-11-07 23:14:45.881004358 +0000
+@@ -54,6 +54,10 @@
+         if t.get("status") in ("partial", "truncated_budget"): why.append(k + ":partial"); continue
+         if H is None: why.append(k + ":no_header"); continue  # 0350Z population full5 (2): all 7 header keys required
+         if got < H and not ended: why.append(k)  # 0350Z orchestrator (a): short of header passes only on a recorded PH server end (complete_not_visible alone is not enough)
++        elif k in ("followers", "following") and got < 0.98 * H:  # full18 (population 2026-11-07, E5): a repeated page chain is not PH's end
++            pgs = [t.get("paging") or {}, (tim.get(k) or {}).get("paging") or {}]
++            rep = any((p.get("dups") or 0) > 0 for p in pgs) or max((p.get("pages") or 0) for p in pgs) * 20 >= got + 20
++            if rep and not any(p.get("ended") == "server_end_offset" for p in pgs): why.append(k + ":repeat_no_offset_end")
+     if res.get("truncated_budget"): why.append("truncated_budget")
+     if getattr(R, "trunc", None): why.append("truncated:" + ",".join(R.trunc))  # full7 (population 0532Z): a truncated person is rejected, never saved
+     if any(not x.get("thread_full") for x in (res.get("forums") or {}).get("items") or []): why.append("forum_threads")  # 0345Z population (1)
+--- pacecode/x_bsit_full17.tgz/paging_v2.py	2026-11-05 10:27:44.000000000 +0000
++++ full18/paging_v2.py	2026-11-07 23:14:45.870909436 +0000
+@@ -25,6 +25,10 @@
+ CHAIN_MIN = 200
+ 
+ 
++class _Stop(Exception):
++    """internal: the offset re-page was stopped (R.stop) or hit the per-person budget"""
++
++
+ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
+     async def paged(R, pages, op, conn_path, var="cursor", step=20, total=None, cap=None, extra=None):
+         extra = extra or {}
+@@ -104,6 +108,47 @@
+                 ended = "blocked"; R.log("chain stopped", op, e)
+             except error_types as e:
+                 ended = "error"; R.log("chain error", op, str(e)[:200])
++        # paging_v3 (population agent, 2026-11-07, E5 follower audit): for follow lists the chain above is the only phase, so
++        # "server_end_offset" was never recorded. On big lists PH's endCursor chain repeats pages (dups > 0, or more pages
++        # than items) and ends at hasNextPage=false short of the header: the order is not stable between requests, so some
++        # accounts are served twice and others never. A chain end like that is not PH's own end. Re-page by offset from 0,
++        # sequentially (one tab, same rate limiter), merging by id, and repeat full passes until two in a row add no new id
++        # or the union reaches 98% of the header. Only a pass that itself reaches PH's end (empty page or hasNextPage=false) and
++        # closes the union records ended = "server_end_offset". No page cap and no pass cap (whole-person rule); a stop,
++        # budget, block or error records "repage_<reason>", which the population check scores as not whole.
++        repage = None
++        if (op in CHAIN_OPS and ended == "server_end" and goal and len(items) < 0.98 * goal and not R.stop
++                and (dups > 0 or npg * step >= len(items) + step)):
++            repage = {"passes": 0, "new": [], "pages": 0, "start_items": len(items), "start_dups": dups}
++            try:
++                while True:
++                    pass_new, off, pass_end, first_ids = 0, 0, False, None
++                    while True:
++                        if R.stop: raise _Stop("stopped")
++                        if over(): R.budget_hit = True; raise _Stop("budget")
++                        # loop guards, not data caps: they end the re-page as a failure (never as server_end_offset)
++                        if off > 2 * goal + 10 * step: raise _Stop("offset_runaway")
++                        d = await R.gql(pages[0], op, **{var: cur(off)}, **extra); npg += 1; repage["pages"] += 1
++                        c = conn(d); pi = c.get("pageInfo") or {}; edges = c.get("edges") or []
++                        ids = [((e or {}).get("node") or {}).get("id") for e in edges]
++                        if off == 0: first_ids = ids
++                        elif ids and set(ids) <= set(first_ids or []): raise _Stop("offset_ignored")  # PH served page 0 for a deep offset
++                        pass_new += add(edges)
++                        if not edges or not pi.get("hasNextPage"):
++                            pass_end = True; break
++                        off += step
++                    repage["passes"] += 1; repage["new"].append(pass_new)
++                    # closed = two full passes in a row that each reach PH's end and add no new id (one zero pass can
++                    # still miss an account the unstable order never served: 899/900 in the test), or 98% of the header
++                    if pass_end and (len(items) >= 0.98 * goal or (pass_new == 0 and len(repage["new"]) >= 2 and repage["new"][-2] == 0)):
++                        ended = "server_end_offset"; break
++            except _Stop as e:
++                ended = "repage_" + str(e)
++            except Blocked as e:
++                ended = "repage_blocked"; R.log("repage stopped", op, e)
++            except error_types as e:
++                ended = "repage_error"; R.log("repage error", op, str(e)[:200])
++            R.log("repage", op, "items", len(items), "of", goal, "passes", repage["passes"], "new", repage["new"], "ended", ended)
+         if cap and len(items) > cap:
+             items = items[:cap]
+         if ended is None:
+@@ -115,7 +160,7 @@
+         nxt = endc if (need_chain and ended in ("budget", "blocked", "error", "max_pages", "stopped")) else None
+         if nxt is None and off_resume and ended not in ("server_end", "server_end_offset", "complete"):
+             nxt = off_resume  # 2140Z: offset-phase budget stop keeps a resume cursor
+-        R.last_paging = {"method": method, "pages": npg, "ended": ended, "dups": dups, "trail_tail": trail[-3:], "next_cursor": nxt, "resumed_from": start_saved, "resume_overlap_from_offset": off_back}
++        R.last_paging = {"method": method, "pages": npg, "ended": ended, "dups": dups, "repage": repage, "trail_tail": trail[-3:], "next_cursor": nxt, "resumed_from": start_saved, "resume_overlap_from_offset": off_back}
+         R.log("paged_v2", op, "items", len(items), "of", goal, "pages", npg, "ended", ended, "dups", dups)
+         return items, time.time() - t0, npg
+ 

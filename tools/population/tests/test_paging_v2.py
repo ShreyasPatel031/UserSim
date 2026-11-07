@@ -110,3 +110,73 @@ def test_budget_is_not_exhaustion():
     r.over = over
     items, _, _ = asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, 500, None, {}))
     assert r.last_paging["ended"] == "budget" and not r.last_exhausted and len(items) == 60
+
+
+# ---- paging_v3: offset re-page after a repeated follow-list chain (E5 audit, Nov 7) ----
+import random
+
+
+class UnstableServer(FakeServer):
+    """PH's follow lists sort on a key with ties, so the order changes between requests: each request sees the base list with
+    neighbours swapped inside blocks of `block`. A chain over it repeats some accounts and never serves others, and still
+    ends at hasNextPage=false (the E5 class-2 shape: pages x 20 ~ header, unique ids short)."""
+
+    def __init__(self, n_visible, block=40, seed=7, **kw):
+        super().__init__(n_visible, **kw)
+        self.block, self.rng = block, random.Random(seed)
+
+    def query(self, cursor):
+        base = list(self.items)
+        for b in range(0, len(base), self.block):
+            blk = base[b:b + self.block]; self.rng.shuffle(blk); base[b:b + self.block] = blk
+        if cursor and cursor.startswith("~"):  # the server's own endCursor: always honoured
+            start = int(cursor[1:])
+        else:  # a bare offset cursor (ours): ignored past offset_limit, served as page 0
+            start = uncur(cursor)
+            if start > self.offset_limit:
+                start = 0
+        page = base[start:start + PAGE]
+        has_next = start + PAGE < len(base)
+        endc = ("~" + str(start + PAGE)) if page else None
+        return {"profile": {"followers": {"edges": [{"node": n} for n in page], "pageInfo": {"hasNextPage": has_next, "endCursor": endc}}}}
+
+
+
+def test_repeated_chain_is_repaged_to_server_end_offset():
+    s = UnstableServer(1079)
+    r, items = run(s, "ProfileFollowersQuery", total=1079)
+    lp = r.last_paging
+    assert lp["repage"] and lp["repage"]["start_items"] < 0.98 * 1079 and lp["repage"]["start_dups"] > 0  # chain alone was short
+    assert lp["ended"] == "server_end_offset" and len(items) >= 0.98 * 1079 and len({n["id"] for n in items}) == len(items)
+    assert r.last_exhausted
+
+
+def test_repage_with_hidden_accounts_closes_on_a_zero_new_pass():
+    s = UnstableServer(900)  # header 1,079 but PH lists only 900 signed out
+    r, items = run(s, "ProfileFollowersQuery", total=1079)
+    lp = r.last_paging
+    assert lp["ended"] == "server_end_offset" and lp["repage"]["new"][-2:] == [0, 0] and len(items) == 900
+
+
+def test_repage_offset_ignored_is_a_failure_not_an_end():
+    s = UnstableServer(1079, offset_limit=200)
+    r, items = run(s, "ProfileFollowersQuery", total=1079)
+    assert r.last_paging["ended"] in ("repage_offset_ignored", "repage_offset_runaway") and not r.last_exhausted
+
+
+def test_repage_budget_is_a_failure():
+    s = UnstableServer(1079)
+    paged = paging_v2.make_paged(offset_paged, cur, Blocked)
+    r = R(s); calls = {"n": 0}
+
+    def over():
+        calls["n"] += 1
+        return calls["n"] > 60  # the chain (~54 pages) finishes, then the re-page runs out of budget
+    r.over = over
+    asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, 1079, None, {}))
+    assert r.last_paging["ended"] == "repage_budget" and not r.last_exhausted
+
+
+def test_stable_short_chain_is_not_repaged():
+    r, items = run(FakeServer(10), "ProfileFollowersQuery", total=17)
+    assert r.last_paging["repage"] is None and r.last_paging["ended"] == "server_end"
