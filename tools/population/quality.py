@@ -6,6 +6,7 @@ Per person and tab:
   ph_limit      short of the header but PH's server ended the list (complete_not_visible / paging ended at the server)
   FAIL_short    short of the header with no server end recorded (no-caps rule: our code stopped)
   FAIL_repeat   followers/following short of the header after a repeated page chain, with no server_end_offset end
+  FAIL_no_offset_end  followers/following short by > 2 and > 2% with no repeat seen and no server_end_offset end
   partial       marked partial / truncated_budget (deep_list resume)
   no_header     header count missing (fast pulls skip the profile page; deep must fill it)
   missing_tab   tab absent
@@ -47,6 +48,15 @@ def _chain_repeated(t, run, k, got, dup):
     return bool(pages) and pages * PAGE_SIZE >= got + PAGE_SIZE
 
 
+def _offset_depth_ok(t, run, k, got):
+    """the closing re-page pass served >= 98% of the union (rows); records without repage stats fail"""
+    for r in (t.get("paging") or {}, (run.get("paging") or {}).get(k) or {}, ((run.get("timing") or {}).get(k) or {}).get("paging") or {}):
+        rp = r.get("repage") or {}
+        if r.get("ended") == "server_end_offset" and rp.get("served"):
+            return rp["served"][-1] >= 0.98 * (rp.get("union") or got)
+    return False
+
+
 def tab_state(d, k):
     t = d.get(k)
     if not isinstance(t, dict):
@@ -74,10 +84,15 @@ def tab_state(d, k):
         v = "complete"
     elif k == "reviews":
         v = "rating_only"  # header counts rating-only reviews PH never lists; not a stop of ours
-    elif k in ("followers", "following") and _chain_repeated(t, run, k, got, dup):
-        # E5 / orchestrator 22:15Z Nov 7: a repeated endCursor chain is not PH's own end. Short of the header, the tab
-        # passes only on the offset re-page end (server_end_offset); complete_not_visible or server_end are not enough.
-        v = "ph_limit" if ended == "server_end_offset" else "FAIL_repeat"
+    elif k in ("followers", "following") and (h - got) > 2:
+        # E5 / orchestrator 22:15Z and 23:23Z Nov 7 (aligned with the full18b save gate): a follow list short of the header
+        # by > 2 and > 2% passes only on the offset re-page end (server_end_offset) with a full-depth closing pass (served
+        # >= 98% of the union). A plain chain end, complete_not_visible or server_end is not proof of PH's own end.
+        # FAIL_repeat = the chain repeated pages; FAIL_no_offset_end = short with no repeat seen (E5 class 3).
+        if ended == "server_end_offset" and _offset_depth_ok(t, run, k, got):
+            v = "ph_limit"
+        else:
+            v = "FAIL_repeat" if _chain_repeated(t, run, k, got, dup) else "FAIL_no_offset_end"
     elif (t.get("complete_not_visible") and not t.get("capped_large")) or ended in SERVER_END:
         v = "ph_limit"
     else:
@@ -169,16 +184,18 @@ for kind in ("fast_c32", "full", "deep"):
     rs = [r for r in rows if r["kind"] == kind]
     if not rs:
         continue
-    lines += [f"## {kind}: {len(rs):,} pulls", "", "| Tab | complete | ph_limit | rating_only | FAIL_short | FAIL_repeat | queued_deep | partial | no_header | missing_tab | dup |", "|---|---|---|---|---|---|---|---|---|---|---|"]
+    lines += [f"## {kind}: {len(rs):,} pulls", "", "| Tab | complete | ph_limit | rating_only | FAIL_short | FAIL_repeat | FAIL_no_offset_end | queued_deep | partial | no_header | missing_tab | dup |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for k in TABS:
         c = Counter(r["states"][k].split("+")[0] for r in rs); dup = sum(1 for r in rs if "+dup" in r["states"][k])
-        lines.append(f"| {k} | {c['complete']} | {c['ph_limit']} | {c['rating_only']} | {c['FAIL_short']} | {c['FAIL_repeat']} | {c['queued_deep']} | {c['partial']} | {c['no_header']} | {c['missing_tab']} | {dup} |")
+        lines.append(f"| {k} | {c['complete']} | {c['ph_limit']} | {c['rating_only']} | {c['FAIL_short']} | {c['FAIL_repeat']} | {c['FAIL_no_offset_end']} | {c['queued_deep']} | {c['partial']} | {c['no_header']} | {c['missing_tab']} | {dup} |")
         if c["FAIL_partial"]:
             flags.append((kind, k, "partial after no-budget build", c["FAIL_partial"], "a per-person budget/timeout still cut this tab (should not exist after 00:30Z)"))
         if c["FAIL_short"]:
             flags.append((kind, k, "FAIL_short", c["FAIL_short"], "list stopped short of the header with no server end recorded, and NOT on the person's deep_list (paging/cap in our code; nobody will fix it)"))
         if c["FAIL_repeat"]:
             flags.append((kind, k, "FAIL_repeat", c["FAIL_repeat"], "follower/following page chain repeated pages and stopped short of the header; needs the offset re-page (server_end_offset)"))
+        if c["FAIL_no_offset_end"]:
+            flags.append((kind, k, "FAIL_no_offset_end", c["FAIL_no_offset_end"], "follower/following list short of the header with no offset re-page end (E5 class 3); needs the full18b re-page"))
         if dup:
             flags.append((kind, k, "duplicate ids", dup, "merge or paging repeated items"))
         if kind != "fast_c32" and c["no_header"]:
@@ -287,7 +304,7 @@ def person_complete(d, h=None):
         why.append("header_missing:" + ",".join(miss))
     for k in TABS:
         st = tab_state(d, k)[0].split("+")[0]
-        if st in ("FAIL_short", "FAIL_partial", "FAIL_repeat", "partial", "no_header", "queued_deep"):
+        if st in ("FAIL_short", "FAIL_partial", "FAIL_repeat", "FAIL_no_offset_end", "partial", "no_header", "queued_deep"):
             why.append(f"{k}:{st}")
     f = deep_fill(d)
     for k in ("collection_items", "forum_threads", "reviews_items", "comment_times"):
