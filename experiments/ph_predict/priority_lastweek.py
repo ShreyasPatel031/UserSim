@@ -21,7 +21,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.di
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 OUT_GS = os.environ.get("OUT_GS", f"{B}/raw/_pacetest/priority_lastweek.txt")
 HOLD_GS = os.environ.get("HOLD_GS", f"{B}/raw/_pacetest/priority_lastweek_needs_full18c.txt")   # held for the full18c build
-PENDING_GS = os.environ.get("PENDING_GS", f"{B}/raw/population/requests/pending_offset_repage_20261107.tsv")
+PENDING_GS = os.environ.get("PENDING_GS", f"{B}/raw/population/requests/pending_offset_repage_latest.tsv")
 
 
 def sh(*a, check=False):
