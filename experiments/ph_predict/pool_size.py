@@ -281,7 +281,11 @@ def hourly_once(L, E0, sl, base_ids):
     bad = set(inc[inc.apply(short_kind, axis=1) == "code_stop"].person_id) if len(inc) else set()
     full = set(Tb[Tb.pull_type.astype(str) == "full"].person_id) if "pull_type" in Tb else set(Tb.person_id)
     complete = full - bad
-    Uc = B[B.id.isin(Lt.id) & B.pid.isin(complete)].drop_duplicates()
+    # population agent's person-level COMPLETE set (quality.py person_complete, adopted Nov 7 22:23Z): one salted id per
+    # line, built by complete_ids.py; when set it replaces the store_v3 tab-based set above
+    if os.environ.get("COMPLETE_IDS"):
+        complete = {l.strip() for l in open(os.environ["COMPLETE_IDS"]) if l.strip()}
+    Uc =B[B.id.isin(Lt.id) & B.pid.isin(complete)].drop_duplicates()
     pc = Uc.groupby("id").size(); Lt["pc"] = Lt.id.map(pc).fillna(0)
     Dc = Lt.groupby("day").apply(lambda g: pd.Series({"V": g.votes.sum(), "P": g.pc.sum(), "V3": g[g.top3].votes.sum(), "P3": g[g.top3].pc.sum(),
                                                         "Vh": g[g.held].votes.sum(), "Ph": g[g.held].pc.sum()}), include_groups=False)
