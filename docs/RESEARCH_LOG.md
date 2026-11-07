@@ -1269,3 +1269,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 19:33 UTC Nov 7 mailbox checked: no replies; strat wave 2 still running; no Nov 7 capture.
 - 19:37 UTC Nov 7 Population agent: strat saves 44 (15 WHOLE / 29 FAIL); wave 2 still running.
 - 19:55 UTC Nov 7 Population agent: strat saves 47 (16 WHOLE / 31 FAIL); store full-pull incomplete 251 (+31 vs Nov 6). Wave 2 running.
+- 20:34 UTC Nov 7 mailbox checked: no replies; strat wave 2 still running; no Nov 7 capture.
