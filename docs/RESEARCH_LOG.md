@@ -1240,3 +1240,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 05:34 UTC Nov 7 mailbox checked: no change; compute SA still disabled (Nov 7 pipeline 08:05Z will fail without it); capture stalled.
 - 06:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled (~1.5 h to the 08:05Z pipeline); capture stalled.
 - 07:33 UTC Nov 7 mailbox checked: no change; compute SA still disabled 30 min before the 08:05Z pipeline; capture stalled.
+- 08:21 UTC Nov 7 PH agent: Nov 7 day started 08:00Z with no capture (no raw/ph_at_launch/2026-11-07/); no raw/daily/2026-11-07 yet; compute SA still disabled, so the 08:05Z pipeline almost certainly failed. Third day without a pre-launch forecast unless Shreyas re-enables the SA.
