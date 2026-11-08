@@ -9,7 +9,7 @@ shift 2 || true
 MSG="${*:-}"
 [[ -n "$TO" && -n "$MSG" ]] || {
   echo "usage: $0 <to> [from] message..." >&2
-  echo "  to: orchestrator | grokbot | prediction | fleet-cursor | all" >&2
+  echo "  to: population | grokbot | fleet-cursor | all (default peer: population)" >&2
   exit 1
 }
 gcloud pubsub topics publish "$TOPIC" \

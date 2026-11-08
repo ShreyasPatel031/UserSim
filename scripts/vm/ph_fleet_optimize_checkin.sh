@@ -84,24 +84,25 @@ relay_msg="Fleet check-in run=$RUN_ID realized_ppm=$ppm vms=$n vm~\$$vm_day/day 
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
 relay_msg+=". Sample completeness $sampled pulls: complete=$complete incomplete=$incomplete (gate: PH_REQUIRE_FULL_SAVE=1 header>=98 tab>=95)."
 if [[ "$incomplete" -gt 0 ]]; then
-  relay_msg+=" INCOMPLETE_SAVES detected on fleet — verify orchestrator agrees before counting saves; rolling patch_require_full_save blocks gs upload."
+  relay_msg+=" INCOMPLETE_SAVES in sample — Population full audit required; PH_REQUIRE_FULL_SAVE blocks new bad uploads."
 fi
-relay_msg+=" Ask orchestrator: confirm full18d pkg MD5 in COMMON_META + validate N saved in gs:// vs status incomplete_skip_upload events."
-"$ROOT/scripts/vm/ph_fleet_agent_relay.sh" orchestrator fleet-cursor "$relay_msg" >>"$LOG" 2>&1 || true
-# Pull any orchestrator / grok replies for fleet-cursor (no ack until AUTO_ACK=1).
-if out="$("$ROOT/scripts/vm/ph_fleet_agent_inbox.sh" 3 2>/dev/null)"; then
-  echo "$out" | python3 -c "
-import json,sys
-from datetime import datetime,timezone
-raw=sys.stdin.read().strip()
-if not raw: raise SystemExit
-rows=json.loads(raw) if raw.startswith('[') else [json.loads(raw)]
-for r in rows:
-  m=r.get('message',{}) or {}
-  attrs=dict((a.get('key'),a.get('value')) for a in m.get('attributes',[]) or [])
-  line=json.dumps({'utc':datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),'from':attrs.get('from'),'to':attrs.get('to'),'data':m.get('data','')[:4000]})
-  print(line)
-" >>"$INBOX" 2>/dev/null || true
+relay_msg+=" zero_incomplete=UNVERIFIED. Request Population repair_list recheck loop."
+"$ROOT/scripts/vm/ph_fleet_agent_relay.sh" population fleet-cursor "$relay_msg" >>"$LOG" 2>&1 || true
+mkdir -p "$ART/agent_inbox"
+AGENT_INBOX_JSONL="$ART/agent_inbox/fleet-cursor.jsonl" AGENT_MSGS_SUB=fleet-cursor \
+  bash "$ROOT/scripts/vm/ph_fleet_agent_inbox.sh" 15 checkin >>"$LOG" 2>&1 || true
+# Act on Population directives (no infra actions without explicit authorization).
+if [[ -f "$ART/agent_inbox/fleet-cursor.jsonl" ]]; then
+  python3 -c "
+import json
+from pathlib import Path
+p=Path('$ART/agent_inbox/fleet-cursor.jsonl')
+for ln in p.read_text().splitlines()[-20:]:
+  try: j=json.loads(ln)
+  except: continue
+  if (j.get('from') or '').startswith('population') and 'repair_list' in (j.get('data') or ''):
+    print('POPULATION_REPAIR_LIST_SEEN', j.get('utc'))
+" >>"$LOG" 2>/dev/null || true
 fi
 
 echo "CHECKIN ppm=$ppm vms=$n vm~\$$vm_day/day eff=$eff complete=$complete incomplete=$incomplete sampled=$sampled"
