@@ -1,0 +1,37 @@
+# ts tabs vm phsuper json blocks runtime_port args note
+2026-11-08T01:54:28Z	a	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:54:31Z	b	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:54:33Z	c	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:54:35Z	d	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:55:37Z	a	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:55:39Z	b	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:55:41Z	c	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:55:43Z	d	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:56:45Z	a	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:56:47Z	b	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:56:49Z	c	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:56:51Z	d	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:57:53Z	a	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:57:55Z	b	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:57:57Z	c	fp=0 0 blk=0 0 pull=0 0 json=0 browsertabs=3 ramp=-
+2026-11-08T01:57:59Z	d	fp=1 blk=0 0 pull=0 0 json=0 browsertabs=9 ramp=-
+2026-11-08T01:59:01Z	a	fp=1 blk=0 0 pull=0 0 json=0 browsertabs=12 ramp=-
+2026-11-08T01:59:03Z	b	fp=1 blk=0 0 pull=0 0 json=0 browsertabs=8 ramp=-
+2026-11-08T01:59:05Z	c	fp=1 blk=0 0 pull=0 0 json=0 browsertabs=6 ramp=-
+2026-11-08T01:59:07Z	d	fp=1 blk=0 0 pull=0 0 json=0 browsertabs=12 ramp=-
+2026-11-08T01:59:23Z	16	feeder-strat-20261107t170953z-a	active	1	0 0	?	--tabs_16	ramp=.|pulls=8|tabs_live=0
+2026-11-08T01:59:23Z	32	feeder-strat-20261107t170953z-b	active	0	0 0	?	--tabs_32	ramp=.|pulls=0 0|tabs_live=0
+2026-11-08T01:59:23Z	48	feeder-strat-20261107t170953z-c	active	0	0 0	?	--tabs_48	ramp=.|pulls=0 0|tabs_live=0
+2026-11-08T01:59:23Z	64	feeder-strat-20261107t170953z-d	active	0	0 0	?	--tabs_64	ramp=.|pulls=0 0|tabs_live=0
+2026-11-08T02:01:02Z	16	feeder-strat-20261107t170953z-a	active	1	0 0	?	--tabs_16	ramp=.|pulls=16|tabs_live=0
+2026-11-08T02:01:02Z	32	feeder-strat-20261107t170953z-b	active	0	0 0	?	--tabs_32	ramp=.|pulls=6|tabs_live=0
+2026-11-08T02:01:02Z	48	feeder-strat-20261107t170953z-c	active	0	0 0	?	--tabs_48	ramp=.|pulls=0 0|tabs_live=0
+2026-11-08T02:01:02Z	64	feeder-strat-20261107t170953z-d	active	0	0 0	?	--tabs_64	ramp=.|pulls=0 0|tabs_live=0
+2026-11-08T02:02:42Z	16	feeder-strat-20261107t170953z-a	active	2	0 0	?	--tabs_16	ramp=.|pulls=18|tabs_live=0
+2026-11-08T02:02:42Z	32	feeder-strat-20261107t170953z-b	active	1	0 0	?	--tabs_32	ramp=.|pulls=8|tabs_live=0
+2026-11-08T02:02:42Z	48	feeder-strat-20261107t170953z-c	active	0	0 0	?	--tabs_48	ramp=.|pulls=8|tabs_live=0
+2026-11-08T02:02:42Z	64	feeder-strat-20261107t170953z-d	active	0	0 0	?	--tabs_64	ramp=.|pulls=8|tabs_live=0
+2026-11-08T02:04:21Z	16	feeder-strat-20261107t170953z-a	active	3	0 0	?	--tabs_16	ramp=.|pulls=25|tabs_live=0
+2026-11-08T02:04:21Z	32	feeder-strat-20261107t170953z-b	active	1	0 0	?	--tabs_32	ramp=.|pulls=18|tabs_live=0
+2026-11-08T02:04:21Z	48	feeder-strat-20261107t170953z-c	active	1	0 0	?	--tabs_48	ramp=.|pulls=10|tabs_live=0
+2026-11-08T02:04:21Z	64	feeder-strat-20261107t170953z-d	active	1	0 0	?	--tabs_64	ramp=.|pulls=10|tabs_live=0

@@ -28,7 +28,12 @@ def build() -> list[str]:
     person_interval = float(os.environ.get("PH_PERSON_INTERVAL") or coast or 0)
     page_cap = max(1, _i("PH_BROWSER_TABS", 32))
 
-    if strat == "serial_polite":
+    if strat == "ceiling":
+        # Explicit parallel-ceiling probe: PH_TABS/PH_RAMP drive open_browser + rate.
+        tabs = min(page_cap, max_tabs, _i("PH_TABS", max_tabs))
+        ramp = os.environ.get("PH_RAMP") or f"{tabs}:{rpm_cap}"
+        person_interval = 0.0
+    elif strat == "serial_polite":
         tabs, ramp = 4, "4:36"
         person_interval = person_interval or float(_i("PH_COAST_SEC_PER_PROFILE", 15))
     elif strat == "aimd_adaptive":
