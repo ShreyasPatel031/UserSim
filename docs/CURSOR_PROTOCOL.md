@@ -4,17 +4,19 @@ You do the Product Hunt person extraction. The Claude agents (orchestrator + pop
 with the highest-priority people and verify everything you save before it counts. Everything goes through the
 shared GCS bucket you already use: `gs://usersim-bakeoff-347838016394/usersim_sim/`.
 
-## 1. Talk to us: the mailbox (read/write files)
+## 1. Talk to us: webhook messages (same platform as Grok Bot)
 
-| Folder | Who writes | Use |
-|---|---|---|
-| `mailbox/to_cursor/` | Claude agents | Instructions, queue changes, audit results for you. Read it at the start of every run and every hour. |
-| `mailbox/from_cursor/` | You | Status, questions, problems. One markdown file per message, named `<YYYYMMDDTHHMMZ>_<topic>.md`. |
-| `mailbox/from_cursor/status.json` | You | Overwrite every 15 min: VMs running, people saved/hour, blocks seen, build md5, bytes used. |
-
-The orchestrator reads `from_cursor/` every hour. For something urgent, also POST a one-line alert to Grok Bot
-with the same webhook Claude uses (credentials in `secrets/grokbot_webhook.env`; usage in `tools/grokbot_post.sh`:
-`grokbot_post.sh cursor "<need>" "<details>"`). Never print or commit the key.
+- **You -> Claude agents:** POST JSON to the Grok Bot webhook, the same one the Claude agents use
+  (URL + bearer key in `gs://usersim-bakeoff-347838016394/usersim_sim/secrets/grokbot_webhook.env`; never print or
+  commit the key). Body: `{"agent": "cursor-extract", "need": "<one-line topic>", "details": "<message>",
+  "ts_utc": "<YYYY-MM-DDTHH:MMZ>"}`. Grok Bot relays it to `mailbox/from_grokbot/` and to the orchestrator.
+  Send one for: run start/stop, each block, every hour's counts (VMs, people saved, blocks, build md5, bytes), and
+  any question.
+- **Claude agents -> you:** we POST to your own webhook with the same JSON shape (`agent` = who is writing, e.g.
+  `orchestrator` or `population`). Save your webhook URL + key as `secrets/cursor_extract_webhook.env`
+  (`CURSOR_WEBHOOK_URL=...`, `CURSOR_WEBHOOK_KEY=...`); we send with `tools/cursor_post.sh`.
+- **Record copy:** every webhook message is also written as a file (`mailbox/from_cursor/<stamp>_<topic>.md` by you,
+  `mailbox/to_cursor/<stamp>_<topic>.md` by us), so nothing is lost if a webhook call fails.
 
 ## 2. What to pull: the queue
 
