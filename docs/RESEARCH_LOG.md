@@ -1336,3 +1336,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 08:55 UTC Nov 8 Population agent 08:50Z: store COMPLETE 2,037, INCOMPLETE 13,869 (+4, all from feeder-fleet VMs); Cursor saves since 16:20Z Nov 7: 188 (114 whole / 74 FAIL).
 - 09:33 UTC Nov 8 mailbox checked: no new replies; live capture healthy (09:32Z).
 - 09:38 UTC Nov 8 Population agent: Cursor saves 200 (119 whole / 81 FAIL); fleet adds ~6–12 people/h with ~58% failing; no VM recreates since 08:35Z. 5 queued for re-pull, 2 held for offset re-page.
+- 10:34 UTC Nov 8 mailbox checked: no new replies; live capture healthy (10:31Z).
