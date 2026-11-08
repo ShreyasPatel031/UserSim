@@ -37,7 +37,7 @@ DURATION_SEC="${DURATION_SEC:-14400}"
 RUN_ID="${PACE_FLEET_RUN_ID:-${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}}"
 RUN_ID="${RUN_ID,,}"
 ART="${ROOT}/results/ph_fleet_full/${RUN_ID}"
-GO_TOKEN="run:fleet-${RUN_ID}"
+GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
 
 upload_overlays() {
   local d="$ROOT/scripts/vm/reuse_overlays"
@@ -162,7 +162,7 @@ load_art() {
     RUN_ID="$(cat "${ROOT}/results/ph_fleet_full/latest_run.txt")"
   fi
   ART="${ROOT}/results/ph_fleet_full/${RUN_ID}"
-  GO_TOKEN="run:fleet-${RUN_ID}"
+  GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
 }
 
 slot_field() {
@@ -334,9 +334,11 @@ keeper_one_pass() {
     # Exact ph_batch pid only (avoid pgrep matching this SSH remote script).
     remote='n=$(find /opt/ph/reuse/out -name "*.json" ! -name hb.json 2>/dev/null | wc -l)
 alive=0
-for pid in $(pgrep -f "/opt/venv/bin/python -u ph_batch.py" 2>/dev/null); do
-  tr "\\0" " " < /proc/$pid/cmdline 2>/dev/null | grep -q "ph_batch.py" && alive=1
+for pid in $(pgrep -f "/opt/venv/bin/python" 2>/dev/null); do
+  tr "\\0" " " < /proc/$pid/cmdline 2>/dev/null | grep -qE "ph_batch.py|pdeep.py" && alive=1
 done
+[[ -f /opt/ph/reuse/KICK ]] && alive=1
+tail -40 /opt/ph/reuse/supervisor.log 2>/dev/null | grep -q "block rc=3" && [[ $(( $(date +%s) - $(stat -c %Y /opt/ph/reuse/supervisor.log) )) -lt 240 ]] && alive=1
 sup=$(tail -1 /opt/ph/reuse/status_*.jsonl 2>/dev/null | tr -d "\\n")
 echo JSON_COUNT=$n
 echo BATCH_ALIVE=$alive
@@ -351,8 +353,8 @@ SUP_TAIL="
     batch_alive=$(echo "$remote" | sed -n 's/^BATCH_ALIVE=//p' | tail -1); batch_alive=${batch_alive:-0}
     keeper_note_json "$slot" "$json_n"
     dead=0
+    # Blocks are handled on the VM (supervisor moves to a new port); only a missing batch counts as dead.
     [[ "$batch_alive" != "1" ]] && dead=1
-    echo "$remote" | grep -qiE 'stopped_on_block|supervisor_run_end|"rc":3' && dead=1
     if [[ "$dead" -eq 1 ]]; then
       keeper_mark_key "$slot" dead_since
       dead_for=$(keeper_secs_since "$slot" dead_since)

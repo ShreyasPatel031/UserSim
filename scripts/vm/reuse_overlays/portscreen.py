@@ -61,6 +61,14 @@ def prescreen(vm, log):
     home_only = os.environ.get("PH_PORTSCREEN_HOME_ONLY", "1") not in ("0", "false", "no")
     nearby = [p for p in range(max(10000, home - 32), min(20001, home + 33)) if p != home and p in set(POOL)]
     rest = [p for p in POOL if p != home and p not in nearby]
+    if not home_only and os.environ.get("PH_PORTSCREEN_SKIP_REGISTERED", "0") in ("1", "true", "yes"):
+        # One listing instead of a gsutil cat + gcloud lookup per port; registered ports are treated as taken.
+        import random
+        r = subprocess.run(["gsutil", "ls", f"{B}/_ports/"], capture_output=True, text=True)
+        taken = {int(x.rsplit(".", 1)[-1]) for x in r.stdout.split() if x.rsplit(".", 1)[-1].isdigit()}
+        rest = [p for p in POOL if p != home and p not in taken and p not in FAILED]
+        random.shuffle(rest)
+        nearby = []
     order = ([home] if home else []) + ([] if home_only else (nearby + rest))
     max_try = int(os.environ.get("PH_PORTSCREEN_MAX_TRY", "1" if home_only else "24"))
     tried = []

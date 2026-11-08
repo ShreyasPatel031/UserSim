@@ -14,6 +14,9 @@ VM=$(hostname)
 MD=http://metadata.google.internal/computeMetadata/v1/instance/attributes
 OVERLAYS="${PH_OVERLAYS_DIR:-/opt/ph/overlays}"
 export PROXY_PORT=$(curl -s -H Metadata-Flavor:Google "$MD/proxy-port")
+# A port moved to after a block survives supervisor restarts (metadata still holds the walled home port).
+_po=$(cat /opt/ph/reuse/port_override 2>/dev/null | tr -cd 0-9)
+[[ -n "$_po" ]] && export PROXY_PORT="$_po"
 export PROXY_URL=$(curl -s -H Metadata-Flavor:Google "$MD/proxy-url")
 export PROXY_URL=$(python3 -c 'import os,urllib.parse as up;u=os.environ["PROXY_URL"];p=up.urlparse(u);print(u if ("dataimpulse" not in (p.hostname or "") or "__cr." in (p.username or "")) else u.replace("//"+p.username+":","//"+p.username+"__cr.us:",1))')
 
@@ -27,6 +30,10 @@ load_strategy() {
     # shellcheck source=/dev/null
     source /opt/ph/strategy.env
     set +a
+  fi
+  # Population (full7): pending saves go to a separate folder; Population merges only people who pass.
+  if [[ -n "${PH_SAVE_B_SUFFIX:-}" ]]; then
+    export PH_SAVE_B="${B%/ph_population/people_live/vm}/${PH_SAVE_B_SUFFIX}"
   fi
 }
 
@@ -47,8 +54,11 @@ apply_overlays() {
     "$B/_code/overlays/patch_soft_block_rotate.py" \
     "$B/_code/overlays/patch_soft_open_rotate.py" \
     "$B/_code/overlays/patch_same_port_retry.py" \
-    "$B/_code/overlays/patch_lazy_tabs.py" "$OVERLAYS/" 2>/dev/null || true
-  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_lazy_tabs.py; do
+    "$B/_code/overlays/patch_lazy_tabs.py" \
+    "$B/_code/overlays/patch_require_full_save.py" \
+    "$B/_code/overlays/patch_pdeep_partition.py" \
+    "$B/_code/overlays/patch_cf_fast_fail.py" "$OVERLAYS/" 2>/dev/null || true
+  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_lazy_tabs.py patch_require_full_save.py patch_pdeep_partition.py patch_cf_fast_fail.py; do
     if [[ -f "$OVERLAYS/$_patch" && -x $PY ]]; then
       $PY "$OVERLAYS/$_patch" >>supervisor.log 2>&1 || true
     fi
@@ -124,6 +134,19 @@ while true; do
     [[ $rc -eq 7 ]] && echo "halted by autorecover; waiting for NEW GO token" >> supervisor.log
     echo "{\"vm\":\"$VM\",\"event\":\"supervisor_run_end\",\"token\":\"$tok\",\"pkg_md5\":\"$PKG_MD5\",\"rc\":$rc,\"utc\":\"$(date -u +%FT%TZ)\",\"strat\":\"${PH_STRATEGY:-}\",\"extra\":\"$extra\"}" >> "status_$VM.jsonl"
     gsutil -q cp "status_$VM.jsonl" "$B/status/$VM.supervisor.jsonl" || true
+    kicked=0; [[ -f /opt/ph/reuse/KICK ]] && { kicked=1; rm -f /opt/ph/reuse/KICK; }
+    if [[ ( $rc -eq 3 || $kicked -eq 1 ) && "${PH_BLOCK_NEW_PORT:-0}" == "1" ]]; then
+      # Blocked / Cloudflare not cleared (or kicked by the fleet wall check): new free port, relaunch the same token.
+      oldp="$PROXY_PORT"
+      newp=$(PH_PORTSCREEN_HOME_ONLY=0 PH_PORTSCREEN_MAX_TRY="${PH_PORTSCREEN_MAX_TRY_ON_BLOCK:-24}" \
+        $PY -c 'import os, portscreen as p; p.FAILED.add(int(os.environ.get("PROXY_PORT") or 0)); print(p.prescreen(os.uname()[1], lambda **k: None) or "")' \
+        2>>supervisor.log | tail -1)
+      [[ -n "$newp" ]] && { export PROXY_PORT="$newp"; echo "$newp" > /opt/ph/reuse/port_override; }
+      mark block_new_port "from=$oldp to=${newp:-none}"
+      echo "block rc=3: port $oldp -> ${newp:-unchanged}; rest ${PH_BLOCK_REST_SEC:-60}s then relaunch $tok" >> supervisor.log
+      sleep "${PH_BLOCK_REST_SEC:-60}"
+      continue
+    fi
     if [[ $rc -eq 1 && $crashes -lt 3 ]]; then
       crashes=$((crashes + 1))
       sleep 300

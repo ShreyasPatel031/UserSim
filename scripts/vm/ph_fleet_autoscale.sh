@@ -129,7 +129,7 @@ create_one() {
       --metadata "$meta"
   printf '%s fleet-%s\n' "$name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" |
     "${GC[@]}" storage cp - "${PORT_PREFIX}/port.${port}"
-  echo "run:fleet-${RUN_ID}" | "${GC[@]}" storage cp - "${VM_GCS}/GO.$name"
+  echo "${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}" | "${GC[@]}" storage cp - "${VM_GCS}/GO.$name"
 }
 
 delete_one() {

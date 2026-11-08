@@ -16,60 +16,51 @@ RUN_ID = os.environ.get("PACE_FLEET_RUN_ID", "").lower()
 SA = os.environ.get("PACE_SERVICE_ACCOUNT", f"usersim-cloud-agent@{PROJ}.iam.gserviceaccount.com")
 ART = Path(os.environ.get("FLEET_ART", f"results/ph_fleet_full/{RUN_ID}"))
 
+WINDOW_MIN = float(os.environ.get("FLEET_WINDOW_MIN", "15"))
+
+# State and rate come from this VM's status rows in the last WINDOW_MIN minutes (not since first_pull):
+#   complete = rc 0 saved person (pdeep pfull_* rows passed the whole() gate; legacy rows need header_pct >= 98)
+#   rerun    = any other person outcome (not_whole rc 2, errors, incomplete_skip_upload)
+#   active   = a person row in the last 10 min; cf_wall = only block/CF rows in the window; idle = neither
 PROBE = r'''python3 -c "
-import json, subprocess, glob
-from pathlib import Path
+import json, subprocess, socket
 from datetime import datetime, timezone
-now=datetime.now(timezone.utc)
-out=Path('/opt/ph/reuse/out')
-files=[p for p in out.glob('*.json') if p.name!='hb.json'] if out.exists() else []
-n_attempt=len(files)
-newest=max((p.stat().st_mtime for p in files), default=0)
-age=int((now.timestamp()-newest)) if newest else -1
-fp=idr=None
-p=Path('/opt/ph/reuse/setup_timing.jsonl')
-for ln in (p.read_text().splitlines() if p.exists() else []):
-  try: j=json.loads(ln)
-  except: continue
-  if j.get('event')=='first_pull': fp=j.get('utc')
-  if j.get('event')=='identity_ready': idr=j.get('utc')
-import socket
+W=__WINDOW__*60
+now=datetime.now(timezone.utc).timestamp()
 host=socket.gethostname()
-status_files=[sp for sp in glob.glob('/opt/ph/reuse/status*.jsonl') if host in sp]
-if not status_files:
-  status_files=[sp for sp in glob.glob('/opt/ph/reuse/status_feeder-fleet*.jsonl')]
-n_upload=n_complete=n_rerun=0
-for sp in status_files:
-  for ln in open(sp):
-    try: j=json.loads(ln)
-    except: continue
-    if not j.get('handle'): continue
-    if j.get('event')=='incomplete_skip_upload':
-      n_rerun+=1; continue
-    rc=j.get('rc')
-    if rc==0:
-      n_upload+=1
-      hp=float(j.get('header_pct') or 0)
-      if hp>=98: n_complete+=1
-      else: n_rerun+=1
-    elif rc not in (None,):
-      n_rerun+=1
-batch=subprocess.call(['pgrep','-f','ph_batch.py'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)==0
-ppm_attempt=ppm_complete=ppm_rerun=0.0
-if fp:
-  t=datetime.fromisoformat(fp.replace('Z','+00:00'))
-  sec=max(60.0,(now-t).total_seconds())
-  n_try=n_complete+n_rerun
-  ppm_attempt=round(n_try*60.0/sec,4)
-  ppm_complete=round(n_complete*60.0/sec,4)
-  ppm_rerun=round(n_rerun*60.0/sec,4)
-state='cold'
+def ts(u):
+  try: return datetime.fromisoformat(u.replace('Z','+00:00')).timestamp()
+  except Exception: return None
+nc=nr=nc_all=nr_all=0; last_person=None; walls=0; port=None
+BLOCKEV=('browser_open_failed','stopped_on_block','block_port_rotate','block_soft_retry','block_new_port')
+try: rows=open('/opt/ph/reuse/status_'+host+'.jsonl').read().splitlines()
+except Exception: rows=[]
+for ln in rows:
+  try: j=json.loads(ln)
+  except Exception: continue
+  t=ts(j.get('utc') or '')
+  if j.get('port'): port=j.get('port')
+  ev=j.get('event'); rc=j.get('rc')
+  if j.get('handle') and (rc is not None or ev=='incomplete_skip_upload'):
+    ok = rc==0 and ev!='incomplete_skip_upload' and (str(j.get('method') or '').startswith('pfull') or float(j.get('header_pct') or 0)>=98)
+    if ok: nc_all+=1
+    else: nr_all+=1
+    if t and now-t<=W:
+      if ok: nc+=1
+      else: nr+=1
+    if t: last_person=max(last_person or 0,t)
+  elif (ev in BLOCKEV or (ev=='supervisor_run_end' and rc==3)) and t and now-t<=W:
+    walls+=1
+batch=subprocess.call(['pgrep','-f','[p]h_batch.py|[p]deep.py'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)==0
+age=int(now-last_person) if last_person else -1
 if not batch: state='dead'
-elif not fp: state='cf_wall'
-elif age>=0 and age<300: state='active'
-elif fp: state='stale'
-print(json.dumps({'n':n_attempt,'n_complete':n_complete,'n_rerun':n_rerun,'n_upload':n_upload,'age':age,'ppm':ppm_complete,'ppm_attempt':ppm_attempt,'ppm_complete':ppm_complete,'ppm_rerun':ppm_rerun,'state':state,'fp':fp,'idr':idr,'batch':batch}))
-"'''
+elif last_person and now-last_person<=600: state='active'
+elif walls: state='cf_wall'
+elif last_person: state='stale'
+else: state='cold'
+m=W/60.0
+print(json.dumps({'n':nc_all+nr_all,'n_complete':nc_all,'n_rerun':nr_all,'win_complete':nc,'win_rerun':nr,'walls':walls,'age':age,'ppm':round(nc/m,4),'ppm_complete':round(nc/m,4),'ppm_attempt':round((nc+nr)/m,4),'ppm_rerun':round(nr/m,4),'state':state,'batch':batch,'port':port}))
+"'''.replace("__WINDOW__", str(WINDOW_MIN))
 
 
 def probe_slot(slot: str) -> dict:
@@ -116,19 +107,9 @@ def main() -> int:
         rows = list(ex.map(probe_slot, slots))
 
     now = datetime.now(timezone.utc)
-    realized = sum(
-        (r.get("ppm_complete") or r.get("ppm") or 0)
-        for r in rows
-        if r.get("state") in ("active", "stale")
-    )
-    attempt_ppm = sum(
-        (r.get("ppm_attempt") or r.get("ppm") or 0)
-        for r in rows
-        if r.get("state") in ("active", "stale")
-    )
-    rerun_ppm = sum(
-        (r.get("ppm_rerun") or 0) for r in rows if r.get("state") in ("active", "stale")
-    )
+    realized = sum((r.get("ppm_complete") or 0) for r in rows)
+    attempt_ppm = sum((r.get("ppm_attempt") or 0) for r in rows)
+    rerun_ppm = sum((r.get("ppm_rerun") or 0) for r in rows)
     active = [r for r in rows if r.get("state") == "active"]
     stale = [r for r in rows if r.get("state") == "stale"]
     cold = [r for r in rows if r.get("state") in ("cold", "cf_wall", "dead")]
@@ -142,7 +123,7 @@ def main() -> int:
         "complete_ppm": round(realized, 3),
         "attempt_ppm": round(attempt_ppm, 3),
         "rerun_ppm": round(rerun_ppm, 3),
-        "metric_note": "complete_ppm=status rc0+header>=98; incomplete pulls count as rerun only",
+        "metric_note": f"complete_ppm=complete saved people in last {WINDOW_MIN:g} min / {WINDOW_MIN:g}; incomplete pulls count as rerun only",
         "active_vms": len(active),
         "stale_vms": len(stale),
         "cold_vms": len(cold),
