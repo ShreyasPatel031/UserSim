@@ -125,7 +125,7 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
         # A follow list that ends that way short by more than 2 accounts and more than 2% (E5 classes 2 and 3) is re-paged
         # by offset from 0, sequentially (one tab, same rate limiter), merging by id, one full pass after another.
         #   closes (ended = "server_end_offset") only on full-depth passes: each served >= 98% of the union in rows, and either
-        #     the union reaches 98% of the header, or ZERO_NEEDED zero-new full-depth passes in a row
+        #     the union reaches the full header (full18d: no 98% shortcut), or ZERO_NEEDED zero-new full-depth passes in a row
         #     (3 for lists over 1,000 or a union under 98% of the header, else 2)
         #   repage_short_end: passes that add nothing but serve less than 98% of the union (PH's offset paging stops early);
         #     repage["ph_offset_depth"] records the depth PH served
@@ -182,7 +182,7 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
                         if nw == 0 and sv >= 0.98 * len(items): zero_full += 1
                         else: break
                     # full18c (E5 required): also close only when the Chao1 estimate of never-served accounts is < 0.5
-                    if full_depth and (len(items) >= 0.98 * goal or zero_full >= need) and repage["chao1_unseen"] < CHAO1_MAX:
+                    if full_depth and (len(items) >= goal or zero_full >= need) and repage["chao1_unseen"] < CHAO1_MAX:  # full18d (E5): no 98% shortcut
                         ended = "server_end_offset"; break
                     if pass_new == 0 and not full_depth and len(repage["new"]) >= 2 and repage["new"][-2] == 0:
                         repage["ph_offset_depth"] = served; raise _Stop("short_end")
