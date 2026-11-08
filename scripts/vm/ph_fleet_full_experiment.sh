@@ -46,6 +46,7 @@ upload_overlays() {
     "$d/setup_probe.py" "$d/ensure_geoip.sh" \
     "$d/patch_week_bytes.py" "$d/patch_stop_first_block.py" \
     "$d/patch_dynamic_paged.py" "$d/patch_soft_block_rotate.py" \
+    "$d/patch_soft_open_rotate.py" \
     "${OVERLAY_GCS}/"
   "${GC[@]}" storage cp "$STRATEGY_ENV" "${OVERLAY_GCS}/fleet_aggressive.env"
   echo "Overlays -> ${OVERLAY_GCS}/"
