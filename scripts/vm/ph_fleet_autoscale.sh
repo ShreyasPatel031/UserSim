@@ -272,20 +272,20 @@ lo=float('$TARGET_LO')
 hi=float('$TARGET_HI')
 mid=float('$TARGET_MID')
 n=int('$n')
-act=int(m.get('active_vms') or 0)
-avg = (r / act) if act > 0 else 0
+# Yield per provisioned VM: a share of the fleet is always mid port-swap, so per-active-VM rates over-shrink.
+avg = (r / n) if n > 0 else 0
 if avg <= 0:
     print(n); raise SystemExit
-# VMs needed so fleet complete/min stays in [lo, hi] at current throughput per active VM.
 cap = max(int('$MIN_VMS'), int(math.ceil(hi / avg)))
 floor = max(int('$MIN_VMS'), int(math.ceil(lo / avg)))
 aim = max(floor, min(cap, int(round(mid / avg))))
+step = int('${FLEET_MAX_SHRINK_STEP:-4}')
 if r > hi:
-    d = max(int('$MIN_VMS'), min(n, aim))
+    d = max(int('$MIN_VMS'), min(n, max(aim, n - step)))
 elif r < lo:
     d = min(int('$MAX_VMS'), max(n, floor + 1))
 else:
-    d = min(n, cap)
+    d = max(min(n, cap), n - step)
 print(d)
 ")
   use_ppm="${realized:-$ppm}"
