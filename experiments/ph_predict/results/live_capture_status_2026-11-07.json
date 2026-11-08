@@ -2,29 +2,35 @@
  "day": "2026-11-07",
  "status": "FAIL",
  "counts": {
-  "posts": 240,
-  "board": 240,
-  "coverage": 10,
+  "posts": 360,
+  "comments": 79,
+  "board": 360,
+  "people": 114,
+  "products": 48,
+  "coverage": 15,
   "fallback_post_rows": 0,
-  "snapshots": 10,
+  "snapshots": 15,
   "launches": 24,
   "vote_drops": 1,
-  "board_api_rows": 240,
+  "board_api_rows": 360,
   "board_missing": 0,
-  "api_comments": 78,
+  "bad_username": 0,
+  "created_after_fetch": 0,
+  "created_unparsed": 0,
+  "api_comments": 79,
   "api_comments_no_user_id": 0,
   "api_comments_created_after_pull": 0
  },
  "fail": [
   "posts: 24 rows with fetched_at more than 5 min from snapshot_ts",
+  "comments: 74 rows with fetched_at more than 5 min from snapshot_ts",
   "board: 24 rows with fetched_at more than 5 min from snapshot_ts",
   "board: no homepage / leaderboard page views (only the API ranking)"
  ],
  "warn": [
-  "comments_ts.jsonl missing",
-  "people_ts.jsonl missing",
-  "products_ts.jsonl missing",
-  "votes dropped between snapshots: 1 times on 1 launches"
+  "votes dropped between snapshots: 1 times on 1 launches",
+  "comments: 79 without a username but with a commenter user id (API v2; map via user_id_map)",
+  "comments: 13 created more than a day before the launch day (old threads?)"
  ],
- "checked_at": "2026-11-07T23:06:23Z"
+ "checked_at": "2026-11-08T00:22:40Z"
 }

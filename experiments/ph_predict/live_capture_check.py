@@ -52,6 +52,8 @@ def check(day, T):
     fail, warn, n = [], [], {}
     for f, cols in NEED.items():
         D = T[f]
+        if D is not None and f == "products" and "slug" not in D.columns and "product_slug" in D.columns:
+            D = T[f] = D.rename(columns={"product_slug": "slug"})   # the writer names it product_slug (Nov 7 restart)
         if D is None:
             (fail if f in REQUIRED else warn).append(f"{f}_ts.jsonl missing"); continue
         miss = [c for c in cols if c not in D.columns]
@@ -135,7 +137,14 @@ def check(day, T):
                 fail.append(f"board: {missing_board} launch-snapshots without a board position")
     if C is not None and {"username", "created_at", "fetched_at"} <= set(C.columns):
         u = C.username.astype(str)
-        bad_u = int((~u.str.match(USER) | u.str.lower().isin(["", "nan", "none", "[redacted]"])).sum())
+        no_u = ~u.str.match(USER) | u.str.lower().isin(["", "nan", "none", "[redacted]"])
+        # the official API (ph_api_v2) returns no commenter username; a row with a commenter user id is still usable
+        # (mapped through the user id map), so only rows with neither count as bad
+        uid = C.get("commenter_user_id", C.get("user_id"))
+        has_id = uid.notna() & ~uid.astype(str).str.lower().isin(["", "nan", "none"]) if uid is not None else pd.Series(False, index=C.index)
+        bad_u = int((no_u & ~has_id).sum())
+        if int((no_u & has_id).sum()):
+            warn.append(f"comments: {int((no_u & has_id).sum())} without a username but with a commenter user id (API v2; map via user_id_map)")
         ca, fa = ts(C.created_at), ts(C.fetched_at)
         future = int((ca > fa + pd.Timedelta(minutes=1)).sum()); unparsed = int(ca.isna().sum())
         early = int((ca < pd.Timestamp(day, tz="America/Los_Angeles").tz_convert("UTC") - pd.Timedelta(days=1)).sum())

@@ -2,15 +2,19 @@
  "day": "2026-11-06",
  "status": "FAIL",
  "counts": {
-  "posts": 165,
-  "board": 165,
-  "coverage": 3,
+  "posts": 880,
+  "comments": 138,
+  "board": 880,
+  "coverage": 16,
   "fallback_post_rows": 0,
-  "snapshots": 3,
+  "snapshots": 16,
   "launches": 55,
   "vote_drops": 0,
-  "board_api_rows": 165,
+  "board_api_rows": 880,
   "board_missing": 0,
+  "bad_username": 0,
+  "created_after_fetch": 0,
+  "created_unparsed": 0,
   "api_comments": 138,
   "api_comments_no_user_id": 0,
   "api_comments_created_after_pull": 0
@@ -22,9 +26,10 @@
   "board: no homepage / leaderboard page views (only the API ranking)"
  ],
  "warn": [
-  "comments_ts.jsonl missing",
   "people_ts.jsonl missing",
-  "products_ts.jsonl missing"
+  "products_ts.jsonl missing",
+  "comments: 138 without a username but with a commenter user id (API v2; map via user_id_map)",
+  "comments: 24 created more than a day before the launch day (old threads?)"
  ],
- "checked_at": "2026-11-07T21:08:52Z"
+ "checked_at": "2026-11-08T00:22:53Z"
 }
