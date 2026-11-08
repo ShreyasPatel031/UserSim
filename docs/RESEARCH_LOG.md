@@ -1322,3 +1322,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 03:33 UTC Nov 8 mailbox checked: only the X-truncated reply (handled 02:40); live capture healthy (03:31Z).
 - 03:55 UTC Nov 8 Population agent: strat saves 145 (80 whole / 65 FAIL); scale-test VMs a,d also save incomplete. Store 03:50Z: COMPLETE 2,002 (1,920 whole + 82 signed-out), INCOMPLETE 13,860.
 - 04:17 UTC Nov 8 Population agent: strat saves 164 (97 whole / 67 FAIL); last 19: 17 whole / 2 FAIL. stopped_on_block: a2 b1 c3 d3. No config change since 03:18Z.
+- 04:34 UTC Nov 8 mailbox checked: GCP budget status (19:36 PT Nov 7): $25.87 so far, projected $42.47 (under the $50 soft cap), burn $1.50/h. feeder-pace32-1 exists again (re-created 23:17Z Nov 6, idle) and phpeople-1..3 idle but running. Live capture healthy (04:31Z).
