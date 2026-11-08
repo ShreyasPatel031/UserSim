@@ -11,7 +11,7 @@ ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
 GC=(gcloud --account="$SA")
 ZONE="$PACE_ZONE"
-MAX_WAIT_SEC="${CF_WALL_MAX_SEC:-300}"
+MAX_WAIT_SEC="${CF_WALL_MAX_SEC:-600}"
 
 REMOTE='
 python3 <<PY
@@ -22,7 +22,7 @@ now=time.time()
 def ts(u):
     try: return datetime.fromisoformat(u.replace("Z","+00:00")).timestamp()
     except Exception: return None
-start=None; last_person=None
+start=None; last_person=None; opened=None
 try: rows=open(f"/opt/ph/reuse/status_{host}.jsonl").read().splitlines()
 except Exception: rows=[]
 for ln in rows:
@@ -30,15 +30,20 @@ for ln in rows:
     except Exception: continue
     t=ts(j.get("utc") or "")
     if not t: continue
-    if j.get("event")=="start": start=t
+    if j.get("event")=="start": start=t; opened=None
+    if j.get("event")=="browser_open": opened=t
     if j.get("handle") and j.get("rc") is not None: last_person=t
 running=subprocess.call(["pgrep","-f","[p]deep.py|[p]h_batch.py"],stdout=subprocess.DEVNULL)==0
 if not running: print("WAIT no batch"); raise SystemExit(0)
-ref=max(x for x in (start, last_person, 0) if x is not None)
-if not ref: print("WAIT no start row"); raise SystemExit(0)
+if not start: print("WAIT no start row"); raise SystemExit(0)
+ref=max(x for x in (start, last_person) if x is not None)
 idle=int(now-ref)
-print(f"idle={idle}s")
-if idle < '"$MAX_WAIT_SEC"' or (last_person and start and last_person>=start and idle<900):
+print(f"idle={idle}s opened={bool(opened)}")
+# Cloudflare failures already exit on their own (~3 min, then supervisor swaps port). Only kick real hangs:
+# no browser_open long after start, or a cleared session that has saved nobody for a long time.
+hung_pre_cf = (not opened) and idle >= '"$MAX_WAIT_SEC"'
+hung_post_cf = bool(opened) and idle >= 1800
+if not (hung_pre_cf or hung_post_cf):
     print("OK"); raise SystemExit(0)
 subprocess.call(["sudo","sh","-c","date -u +%FT%TZ > /opt/ph/reuse/KICK"])
 subprocess.call(["sudo","pkill","-TERM","-f","[p]deep.py|[p]h_batch.py"])

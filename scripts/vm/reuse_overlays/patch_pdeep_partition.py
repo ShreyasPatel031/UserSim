@@ -20,20 +20,24 @@ if "PDEEP_PARTITION_PATCH" in src:
 
 needle = "    return list(RR) + rest\nRR = {}"
 repl = '''    # PDEEP_PARTITION_PATCH
+    _cl = set()
     try:
         _cl = set(x.rstrip('/').rsplit('/', 1)[-1].lower() for x in PB.sh('gsutil', 'ls', f'{SB}/claims/').stdout.split())
         rest = [h for h in rest if h not in _cl]
     except Exception:
         pass
+    # Re-pull requests already claimed by another VM would each cost a gsutil claim attempt for nothing.
+    for _h in [h for h, t in RR.items() if f'rerun_{t}_{h}'.lower() in _cl]:
+        RR.pop(_h, None)
     import re as _re, zlib as _z
     _n = int(os.environ.get('PH_FLEET_N', '0') or 0)
+    _rr = list(RR)
     if _n > 1:
         _m = _re.search(r'-(\\d+)$', VM)
         _k = (int(_m.group(1)) if _m else _z.crc32(VM.encode())) % _n
         rest = [h for j, h in enumerate(rest) if j % _n == _k] + [h for j, h in enumerate(rest) if j % _n != _k]
-    if os.environ.get("PH_FLEET_RR_ONLY", "0") in ("1", "true", "yes") and RR:
-        return list(RR)  # Population repair sprint: burn proxy only on rerun_whole_* until RR drains
-    return list(RR) + rest
+        _rr = [h for j, h in enumerate(_rr) if j % _n == _k] + [h for j, h in enumerate(_rr) if j % _n != _k]
+    return _rr + rest
 RR = {}'''
 
 if needle not in src:
