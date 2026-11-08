@@ -154,6 +154,26 @@ def main() -> int:
         return 1
     log = log_path.read_text()
     series = parse_measures(log)
+    fm = art / "fleet_measure.json"
+    if fm.exists():
+        try:
+            cur = json.loads(fm.read_text())
+            pt = {
+                "utc": cur.get("utc"),
+                "complete_ppm": float(cur.get("complete_ppm") or cur.get("realized_ppm") or 0),
+                "attempt_ppm": float(cur.get("attempt_ppm") or 0),
+                "rerun_ppm": float(cur.get("rerun_ppm") or 0),
+                "vms": int(cur.get("vms") or 0),
+                "active_vms": int(cur.get("active_vms") or 0),
+                "stale_vms": int(cur.get("stale_vms") or 0),
+                "cold_vms": int(cur.get("cold_vms") or 0),
+                "productive_vms": int(cur.get("productive_vms") or 0),
+                "avg_ppm_productive": float(cur.get("avg_ppm_productive") or 0),
+            }
+            if pt["utc"] and (not series or series[-1]["utc"] != pt["utc"]):
+                series.append(pt)
+        except Exception:
+            pass
     if not series:
         return 1
 
@@ -185,7 +205,7 @@ def main() -> int:
     web.mkdir(parents=True, exist_ok=True)
     (web / "history.json").write_text(json.dumps(out, indent=2))
     (art / "progress_history.json").write_text(json.dumps(out, indent=2))
-    print(json.dumps({"points": len(series), "latest_ppm": series[-1]["complete_ppm"]}))
+    print(json.dumps({"points": len(series), "latest_ppm": series[-1]["complete_ppm"]}), file=sys.stderr)
     return 0
 
 

@@ -1,5 +1,5 @@
 {
-  "utc": "2026-11-08T23:51:24Z",
+  "utc": "2026-11-08T23:51:46Z",
   "run_id": "20261108t082000z",
   "target_lo": 20,
   "target_hi": 30,
@@ -171,6 +171,18 @@
       "cold_vms": 2,
       "productive_vms": 13,
       "avg_ppm_productive": 1.4103
+    },
+    {
+      "utc": "2026-11-08T23:51:40Z",
+      "complete_ppm": 22.333,
+      "attempt_ppm": 22.934,
+      "rerun_ppm": 0.6,
+      "vms": 16,
+      "active_vms": 15,
+      "stale_vms": 1,
+      "cold_vms": 0,
+      "productive_vms": 15,
+      "avg_ppm_productive": 1.4889
     }
   ],
   "milestones": [
@@ -409,6 +421,27 @@
       ]
     },
     {
+      "from_utc": "2026-11-08T23:45:15Z",
+      "to_utc": "2026-11-08T23:51:40Z",
+      "delta_ppm": 3.2,
+      "direction": "up",
+      "factors": [
+        {
+          "label": "+1 VMs",
+          "est_ppm": 1.4,
+          "detail": "~1.41 complete/min per VM at prior rate"
+        },
+        {
+          "label": "stale +1, cf_wall -2",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        }
+      ],
+      "events": [
+        "2026-11-08T23:45:37Z FIXES_AUDIT good=15/15 bad=none"
+      ]
+    },
+    {
       "from_utc": "2026-11-08T19:30:30Z",
       "to_utc": "2026-11-08T19:48:49Z",
       "delta_ppm": -0.11,
@@ -434,27 +467,19 @@
       "direction": "flat",
       "factors": [],
       "events": []
-    },
-    {
-      "from_utc": "2026-11-08T19:15:18Z",
-      "to_utc": "2026-11-08T19:30:30Z",
-      "delta_ppm": -0.06,
-      "direction": "flat",
-      "factors": [],
-      "events": []
     }
   ],
   "latest": {
-    "utc": "2026-11-08T23:45:15Z",
-    "complete_ppm": 19.134,
-    "attempt_ppm": 20.067,
-    "rerun_ppm": 0.933,
-    "vms": 15,
-    "active_vms": 13,
-    "stale_vms": 0,
-    "cold_vms": 2,
-    "productive_vms": 13,
-    "avg_ppm_productive": 1.4103
+    "utc": "2026-11-08T23:51:40Z",
+    "complete_ppm": 22.333,
+    "attempt_ppm": 22.934,
+    "rerun_ppm": 0.6,
+    "vms": 16,
+    "active_vms": 15,
+    "stale_vms": 1,
+    "cold_vms": 0,
+    "productive_vms": 15,
+    "avg_ppm_productive": 1.4889
   },
   "peak": {
     "utc": "2026-11-08T23:02:11Z",
