@@ -24,6 +24,18 @@ print(f"\nUpvotes dated within 1 day: {(w <= 1).mean():.1%}; within 7 days: {(w 
 print(f"People with any event: {e[e.in_pool].person_id.nunique():,} ({e[e.in_pool].person_id.nunique() / n:.1%}). "
       f"Events from people outside the pool: {(~e.in_pool).sum():,} ({e[~e.in_pool].person_id.nunique():,} people; pool-growth candidates).")
 
+# X timelines (orchestrator Nov 8 02:39Z): pass 1 is capped by us (1 page = 25 newest posts, posts since 2026-08-01);
+# every X timeline is PARTIAL unless its end_reason is x_end. X is outside the PH whole-person definition.
+import os
+_xt = f"{d}/x_timelines.parquet"
+if os.path.exists(_xt):
+    _x = pd.read_parquet(_xt)
+    _er = _x.end_reason.value_counts().to_dict()
+    print(f"\n## X timelines: {len(_x):,} people, {int((_x.timeline_status == 'partial').sum()):,} PARTIAL, "
+          f"{int((_x.timeline_status == 'complete').sum()):,} complete (x_end only). End reasons: "
+          + ", ".join(f"{k} {v:,}" for k, v in sorted(_er.items()))
+          + ". cap_1 = our 1-page (25 posts) cap; window = our since-2026-08-01 window; error = fetch error. Not complete.")
+
 # full all-tab pulls, by tier (tier from people_live/have_index.jsonl when present next to the store)
 import json, os
 tp = f"{d}/tabs.parquet"

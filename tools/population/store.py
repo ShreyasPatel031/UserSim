@@ -292,8 +292,42 @@ def verify_x_drop(run_dir, pool_ids):
     return ok, r
 
 
+def x_end_reason(row):
+    """X pass-1 timeline end (Data Feeder, Nov 8): pass 1 reads 1 page (25 newest posts) and posts since 2026-08-01 only.
+    A drop's own end_reason wins; else posts_error -> error, posts_truncated -> cap_1, otherwise -> window. Only x_end
+    (X itself ended the timeline) is a complete timeline; every other end is partial (Shreyas decides whether to finish)."""
+    er = row.get("end_reason")
+    if er:
+        return str(er)
+    if row.get("posts_error"):
+        return "error"
+    if row.get("posts_truncated") in (True, "true", "True", 1):
+        return "cap_1"
+    return "window"
+
+
+def x_timelines(data_dir, ok_dirs):
+    """one row per X person (latest fetch over the passing drops): end_reason and timeline_status (partial unless x_end)."""
+    rows = []
+    for d in ok_dirs:
+        for r in read_jsonl(f"{d}/persons.jsonl"):
+            rows.append({"person_id": r.get("person_id"), "x_person_id": r.get("x_person_id"), "drop": os.path.relpath(d, data_dir),
+                         "fetched_at": r.get("fetched_at"), "posts_window_start": r.get("posts_window_start"),
+                         "oldest_fetched_post_at": r.get("oldest_fetched_post_at"), "posts_calls": r.get("posts_calls"),
+                         "posts_truncated": bool(r.get("posts_truncated")), "posts_error": bool(r.get("posts_error")),
+                         "end_reason": x_end_reason(r)})
+    if not rows:
+        return pd.DataFrame()
+    t = pd.DataFrame(rows).sort_values("fetched_at").drop_duplicates("person_id", keep="last")
+    t["timeline_status"] = t.end_reason.map(lambda e: "complete" if e == "x_end" else "partial")
+    return t
+
+
+OK_X_DIRS = []
+
+
 def x_events(data_dir, pool_ids):
-    out, reps = [], {}
+    out, reps = [], {}; OK_X_DIRS.clear()
     for d in sorted(glob.glob(f"{data_dir}/population_data/x*/*/")) + sorted(glob.glob(f"{data_dir}/population_data/x_pilot50/")):
         if not os.path.exists(f"{d}/events.jsonl"):
             continue
@@ -301,6 +335,7 @@ def x_events(data_dir, pool_ids):
         reps[os.path.relpath(d, data_dir)] = rep
         if not ok:
             continue  # failed drops are reported, never loaded
+        OK_X_DIRS.append(d)
         E = pd.DataFrame(read_jsonl(f"{d}/events.jsonl"))
         E["extra"] = E.extra.map(json.dumps)
         out.append(E[X_EVENT_COLS + ["extra"]])
@@ -409,6 +444,11 @@ def build(data_dir, out_dir, salt):
     pool = pd.concat([pool, pd.DataFrame({"person_id": sorted(extra_people), "in_pool": False})], ignore_index=True)
     events.to_parquet(f"{out_dir}/events.parquet", index=False)
     pool.to_parquet(f"{out_dir}/persons.parquet", index=False)
+    xt = x_timelines(data_dir, OK_X_DIRS)  # orchestrator Nov 8 02:39Z: every X timeline labelled; partial unless x_end
+    if len(xt):
+        xt.to_parquet(f"{out_dir}/x_timelines.parquet", index=False)
+        print("X timelines:", json.dumps({"people": len(xt), "end_reason": xt.end_reason.value_counts().to_dict(),
+                                          "timeline_status": xt.timeline_status.value_counts().to_dict()}))
     return events, pool
 
 

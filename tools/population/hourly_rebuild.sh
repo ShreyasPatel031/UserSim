@@ -46,6 +46,7 @@ print("deep_list entries", n)
 PY
   (cd "$REPO" && python3 tools/population/report.py $W/store_tmp $DAY) > $W/store_tmp/coverage.md
   gsutil -q -m cp $W/store_tmp/events.parquet $W/store_tmp/persons.parquet $W/store_tmp/tabs.parquet $B/raw/population/store_v3/
+  [ -f $W/store_tmp/x_timelines.parquet ] && gsutil -q cp $W/store_tmp/x_timelines.parquet $B/raw/population/store_v3/  # X timeline end_reason (partial unless x_end)
   gsutil -q cp $W/store_tmp/coverage.md $B/raw/population/reports/$DAY/coverage.md
   [ -f $W/store_tmp/deep_list.tsv ] && gsutil -q cp $W/store_tmp/deep_list.tsv $B/raw/population/requests/deep_list_latest.tsv
   rm -rf $W/store_v3; mv $W/store_tmp $W/store_v3
