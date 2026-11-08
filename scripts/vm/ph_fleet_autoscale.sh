@@ -233,19 +233,37 @@ Path("$ART/dashboard_snapshot.json").write_text(json.dumps(snap, indent=2))
 Path("$ART/autoscale.jsonl").open("a").write(json.dumps(snap)+"\n")
 print(json.dumps(snap))
 PY
-  desired=$(python3 -c "import math; r=float('$realized' or 0); need=int('$need'); n=int('$n'); lo=float('$TARGET_LO');
-need=max(need,4); d=max($MIN_VMS, min($MAX_VMS, need+1 if r<lo else need)); print(d)")
+  read -r cold_vms active_vms productive_vms <<<"$(python3 -c "
+import json
+m=json.load(open('$ART/fleet_measure.json'))
+print(m.get('cold_vms',0), m.get('active_vms',0), m.get('productive_vms',0))
+" 2>/dev/null || echo "0 0 0")"
+  desired=$(python3 -c "
+import json
+m=json.load(open('$ART/fleet_measure.json'))
+r=float('$realized' or 0)
+lo=float('$TARGET_LO')
+need=int('$need')
+n=int('$n')
+prod=int('$productive_vms' or 0)
+# Target VM count: enough productive headroom, not 'need' when half the fleet is CF-wall.
+if r >= lo:
+    d=max($MIN_VMS, min(n, max(prod + 2, int(need))))
+else:
+    d=max($MIN_VMS, min($MAX_VMS, prod + 4 if prod else $MIN_VMS))
+print(d)
+")
   use_ppm="${realized:-$ppm}"
-  echo "realized=$use_ppm projected=$ppm avg_warm=$avg warm=$warm_n/$n vms=$n desired=$desired target=[$TARGET_LO,$TARGET_HI] \$${cost_day}/day"
+  echo "realized=$use_ppm cold=$cold_vms active=$active_vms prod=$productive_vms vms=$n desired=$desired target=[$TARGET_LO,$TARGET_HI] \$${cost_day}/day"
   # Shed idle: drop highest slots stuck on CF wall when over desired
-  if [[ $n -gt $desired ]]; then
-    idle_drop="$(python3 -c "
+  idle_drop="$(python3 -c "
 import json
 rows=json.load(open('$ART/fleet_measure.json')).get('slots',[])
-cand=sorted([r['slot'] for r in rows if r.get('state') in ('cf_wall','cold','dead') and (r.get('n') or 0)<=2], reverse=True)
+cand=sorted([r['slot'] for r in rows if r.get('state') in ('cf_wall','cold','dead','probe_fail') and (r.get('n') or 0)<=2], reverse=True)
 drop=max(0, int('$n')-int('$desired'))
 print(' '.join(str(s) for s in cand[:drop]))
 " 2>/dev/null || true)"
+  if [[ -n "$idle_drop" ]]; then
     for slot in $idle_drop; do
       echo "SHED idle slot $slot"
       delete_one "$slot" || true
@@ -253,14 +271,13 @@ print(' '.join(str(s) for s in cand[:drop]))
     n=$(n_slots)
   fi
   if python3 -c "import sys; sys.exit(0 if float('$use_ppm') < float('$TARGET_LO') else 1)"; then
-    if [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
-      echo "UNDER target → scale toward $desired"
-      cmd_scale_to "$(python3 -c "print(min(int('$desired'), int('$n')+2, int('$MAX_VMS')))")"
-    elif [[ $n -lt $MAX_VMS ]]; then
-      echo "UNDER at desired count but rate low — add 1 (cap $MAX_VMS)"
-      cmd_scale_to $((n+1))
+    if [[ "${cold_vms:-0}" -gt "${active_vms:-0}" ]]; then
+      echo "HOLD scale-up — cold($cold_vms) > active($active_vms); shed/restart only"
+    elif [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
+      echo "UNDER target → +1 VM (cap $MAX_VMS)"
+      cmd_scale_to $((n + 1))
     else
-      echo "UNDER but at MAX_VMS=$MAX_VMS — rollout patches / CF recovery"
+      echo "UNDER — hold $n VMs until more pullers warm"
     fi
   elif python3 -c "import sys; sys.exit(0 if float('$use_ppm') > float('$TARGET_HI') else 1)"; then
     if [[ $n -gt $desired && $n -gt $MIN_VMS ]]; then

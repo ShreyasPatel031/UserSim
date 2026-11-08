@@ -135,12 +135,39 @@ def main() -> int:
             "fleet_ppm": snap["realized_ppm"],
             "realized_ppm": snap["realized_ppm"],
             "active_vms": snap["active_vms"],
+            "stale_vms": snap["stale_vms"],
             "cold_vms": snap["cold_vms"],
-            "vms_needed_for_20": snap["vms_needed_for_20"],
             "productive_vms": snap["productive_vms"],
+            "vms_needed_for_20": snap["vms_needed_for_20"],
+            "avg_ppm_productive": snap["avg_ppm_productive"],
+            "json_sum_fleet": sum(r.get("n", 0) for r in rows),
         }
     )
     (ART / "dashboard_snapshot.json").write_text(json.dumps(dash, indent=2))
+    live = {**snap, "dashboard": dash}
+    live_path = ART / "dashboard_live.json"
+    live_path.write_text(json.dumps(live, indent=2))
+
+    root = Path(__file__).resolve().parents[2]
+    web = root / "fleet-dashboard"
+    web.mkdir(parents=True, exist_ok=True)
+    (web / "snapshot.json").write_text(json.dumps(live, indent=2))
+    bucket = os.environ.get("MVP_GCS_BUCKET", "")
+    if bucket:
+        gcs_key = "usersim_sim/raw/ph_population/people_live/vm/dashboard_live.json"
+        gcs_uri = f"gs://{bucket}/{gcs_key}"
+        try:
+            subprocess.run(
+                ["gcloud", "storage", "cp", "-q", str(live_path), gcs_uri],
+                check=False,
+                timeout=120,
+            )
+            public = f"https://storage.googleapis.com/{bucket}/{gcs_key}"
+            (web / "config.js").write_text(
+                f"window.FLEET_SNAPSHOT_URL = {json.dumps(public)};\n"
+            )
+        except Exception:
+            (web / "config.js").write_text("window.FLEET_SNAPSHOT_URL = '';\n")
     print(json.dumps(snap))
     return 0
 

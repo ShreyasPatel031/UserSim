@@ -68,9 +68,10 @@ gcloud storage cp -q "$B/_code/overlays/patch_week_bytes.py" \
   "$B/_code/overlays/patch_soft_block_rotate.py" \
   "$B/_code/overlays/patch_soft_open_rotate.py" \
   "$B/_code/overlays/patch_same_port_retry.py" \
-  "$B/_code/overlays/patch_lazy_tabs.py" /opt/ph/overlays/ 2>/dev/null || true
+  "$B/_code/overlays/patch_lazy_tabs.py" \
+  "$B/_code/overlays/patch_require_full_save.py" /opt/ph/overlays/ 2>/dev/null || true
 if [[ -x /opt/venv/bin/python && -f /opt/ph/reuse/ph_batch.py ]]; then
-  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_lazy_tabs.py; do
+  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_lazy_tabs.py patch_require_full_save.py; do
   if [[ -f /opt/ph/overlays/$_patch ]]; then
     mark "patch_${_patch%.py}_begin"
     /opt/venv/bin/python "/opt/ph/overlays/$_patch" >>/var/log/phreuse_start.log 2>&1 || true

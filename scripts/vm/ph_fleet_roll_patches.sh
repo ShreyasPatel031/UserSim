@@ -30,14 +30,19 @@ gcloud storage cp -q \
   "$B/_code/overlays/patch_soft_open_rotate.py" \
   "$B/_code/overlays/patch_same_port_retry.py" \
   "$B/_code/overlays/patch_lazy_tabs.py" \
+  "$B/_code/overlays/patch_require_full_save.py" \
   "$B/_code/overlays/fleet_optimize.env" \
   "$TMP/" 2>/dev/null || true
 sudo cp -f "$TMP"/*.py /opt/ph/overlays/ 2>/dev/null || true
 sudo cp -f "$TMP/fleet_optimize.env" /opt/ph/strategy.env 2>/dev/null || true
 export PH_BLOCK_ROTATE_SLEEP_SEC=15 PH_BLOCK_SAME_PORT_RETRIES=2 PH_BLOCK_SAME_PORT_SLEEP_SEC=20
-for p in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_lazy_tabs.py; do
+for p in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_lazy_tabs.py patch_require_full_save.py; do
   [[ -f /opt/ph/overlays/$p ]] && sudo /opt/venv/bin/python /opt/ph/overlays/$p 2>&1 | sudo tee -a /var/log/phreuse_start.log >/dev/null || true
 done
+if pgrep -f ph_batch.py >/dev/null 2>&1; then
+  pkill -f ph_batch.py || true
+  sleep 2
+fi
 echo ROLL_OK'
 
 while IFS=$'\t' read -r slot _port; do
