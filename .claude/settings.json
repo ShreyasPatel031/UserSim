@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gcloud auth activate-service-account --key-file=\"$GOOGLE_APPLICATION_CREDENTIALS\")",
+      "Bash(gcloud auth activate-service-account --key-file=\"$GOOGLE_APPLICATION_CREDENTIALS\" --quiet)",
+      "Bash(gcloud auth activate-service-account --key-file=\"$GOOGLE_APPLICATION_CREDENTIALS\" --quiet >/dev/null 2>&1)",
+      "Bash(printf '%s' \"$GOOGLE_APPLICATION_CREDENTIALS_B64\" | base64 -d > \"$GOOGLE_APPLICATION_CREDENTIALS\")"
+    ]
+  }
+}
