@@ -1326,3 +1326,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 04:55 UTC Nov 8 Population agent 04:51Z store: COMPLETE 2,027 (1,945 whole + 82 signed-out), INCOMPLETE 13,865, saved 15,892; strat 173 saves (104 whole / 69 FAIL), none since 04:36Z.
 - 05:33 UTC Nov 8 mailbox checked: no new replies; live capture healthy (05:32Z).
 - 06:33 UTC Nov 8 mailbox checked: no new replies; live capture healthy (06:31Z). Nov 8 pipeline due 08:05Z (VM should stop 23:00 PT and boot 00:05 PT).
+- 07:34 UTC Nov 8 mailbox checked: no new replies; live capture healthy (07:31Z). usersim-pipeline stopped itself 23:00:38 PT (TERMINATED) — Nov 8 00:05 PT start schedule is armed.
