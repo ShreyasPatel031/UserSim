@@ -17,7 +17,8 @@ HOURLY="${FLEET_HOURLY_USD:-0.06701}"
 
 export FLEET_WINDOW_MIN="${FLEET_WINDOW_MIN:-15}"
 measure="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null)" || measure="{}"
-chmod +x "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" 2>/dev/null || true
+chmod +x "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" "$ROOT/scripts/vm/ph_fleet_population_coord.sh" 2>/dev/null || true
+source "$ROOT/scripts/vm/ph_strategies/fleet_optimize.env" 2>/dev/null || true
 fixes="$(bash "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" 2>/dev/null | tail -1)" || fixes="FIXES_AUDIT failed"
 echo "$(date -u +%FT%TZ) $fixes" >>"$LOG"
 echo "$(date -u +%FT%TZ) measure=$measure" >>"$LOG"
@@ -98,9 +99,11 @@ exit(0 if float(m.get('complete_ppm') or 0) >= float('${FLEET_TARGET_LO}') else 
 export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET_MID:-25}"
 "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
 
-relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm vms=$n vm~\$$vm_day/day efficiency_complete=${eff}. KPI excludes incomplete pulls (reruns only)."
+rerun_pct="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(100*float('$rerun_ppm' or 0)/a,1))")"
+eff_pop="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(float('$ppm' or 0)/a,4))")"  # complete per attempt = Population-aligned efficiency
+relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. PH_FLEET_RR_ONLY=${PH_FLEET_RR_ONLY:-0} save_path=_pacetest/shared full18d_pdeep."
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
-relay_msg+=". Sample completeness $sampled pulls: complete=$complete incomplete=$incomplete (gate: PH_REQUIRE_FULL_SAVE=1 header>=98 tab>=95)."
+relay_msg+=". VM smoke sample $sampled rows: complete=$complete incomplete=$incomplete (legacy header/tab; Population whole() is authority). Pulling rerun_whole_20261108T2031Z_fleetv2.txt first when RR_ONLY=1."
 if [[ "$incomplete" -gt 0 ]]; then
   relay_msg+=" INCOMPLETE_SAVES in sample — Population full audit required; PH_REQUIRE_FULL_SAVE blocks new bad uploads."
 fi

@@ -31,6 +31,8 @@ repl = '''    # PDEEP_PARTITION_PATCH
         _m = _re.search(r'-(\\d+)$', VM)
         _k = (int(_m.group(1)) if _m else _z.crc32(VM.encode())) % _n
         rest = [h for j, h in enumerate(rest) if j % _n == _k] + [h for j, h in enumerate(rest) if j % _n != _k]
+    if os.environ.get("PH_FLEET_RR_ONLY", "0") in ("1", "true", "yes") and RR:
+        return list(RR)  # Population repair sprint: burn proxy only on rerun_whole_* until RR drains
     return list(RR) + rest
 RR = {}'''
 
