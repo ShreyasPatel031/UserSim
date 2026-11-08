@@ -45,8 +45,10 @@ apply_overlays() {
     "$B/_code/overlays/patch_stop_first_block.py" \
     "$B/_code/overlays/patch_dynamic_paged.py" \
     "$B/_code/overlays/patch_soft_block_rotate.py" \
-    "$B/_code/overlays/patch_soft_open_rotate.py" "$OVERLAYS/" 2>/dev/null || true
-  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py; do
+    "$B/_code/overlays/patch_soft_open_rotate.py" \
+    "$B/_code/overlays/patch_same_port_retry.py" \
+    "$B/_code/overlays/patch_lazy_tabs.py" "$OVERLAYS/" 2>/dev/null || true
+  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_lazy_tabs.py; do
     if [[ -f "$OVERLAYS/$_patch" && -x $PY ]]; then
       $PY "$OVERLAYS/$_patch" >>supervisor.log 2>&1 || true
     fi

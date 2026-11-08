@@ -17,13 +17,13 @@ RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 TARGET_LO="${FLEET_TARGET_LO:-20}"
 TARGET_HI="${FLEET_TARGET_HI:-30}"
-MAX_VMS="${FLEET_MAX_VMS:-24}"
+MAX_VMS="${FLEET_MAX_VMS:-30}"
 MIN_VMS="${FLEET_MIN_VMS:-4}"
 MACHINE="${PH_FLEET_MACHINE:-e2-standard-2}"
 # On-demand e2-standard-2 list price ~$0.06701/hr (STANDARD provisioning).
 HOURLY_USD="${FLEET_HOURLY_USD:-0.06701}"
 PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/.purl}"
-STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_aggressive.env}"
+STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 PORT_PREFIX="${PACE_PORT_REGISTRY_PREFIX:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm/_ports}"
 VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=0 600 0"
@@ -196,7 +196,14 @@ PY
 }
 
 cmd_autoscale_once() {
-  local alive json ppm warm_n avg n
+  local alive json ppm warm_n avg n realized need desired
+  export FLEET_ART="$ART" PACE_FLEET_RUN_ID="$RUN_ID"
+  if [[ -f "$ROOT/scripts/vm/ph_fleet_measure.py" ]]; then
+  realized="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin).get('realized_ppm',0))" 2>/dev/null || echo 0)"
+  need="$(python3 -c "import json; print(json.load(open('$ART/fleet_measure.json')).get('vms_needed_for_20',24))" 2>/dev/null || echo 24)"
+  else
+  realized=0; need=24
+  fi
   # Single sample → snapshot + decision (avoid double SSH sweep)
   IFS=$'\t' read -r alive json ppm warm_n avg <<<"$(sample_fleet_ppm)"
   n=$(n_slots)
@@ -226,25 +233,42 @@ Path("$ART/dashboard_snapshot.json").write_text(json.dumps(snap, indent=2))
 Path("$ART/autoscale.jsonl").open("a").write(json.dumps(snap)+"\n")
 print(json.dumps(snap))
 PY
-  echo "ppm=$ppm (avg_warm=$avg warm=$warm_n/$n) vms=$n target=[$TARGET_LO,$TARGET_HI] \$${cost_day}/day"
-  if [[ "${warm_n:-0}" -lt 2 ]]; then
-    echo "HOLD — need ≥2 warm (first_pull) VMs before scaling (avoid false zero)"
-    return 0
+  desired=$(python3 -c "import math; r=float('$realized' or 0); need=int('$need'); n=int('$n'); lo=float('$TARGET_LO');
+need=max(need,4); d=max($MIN_VMS, min($MAX_VMS, need+1 if r<lo else need)); print(d)")
+  use_ppm="${realized:-$ppm}"
+  echo "realized=$use_ppm projected=$ppm avg_warm=$avg warm=$warm_n/$n vms=$n desired=$desired target=[$TARGET_LO,$TARGET_HI] \$${cost_day}/day"
+  # Shed idle: drop highest slots stuck on CF wall when over desired
+  if [[ $n -gt $desired ]]; then
+    idle_drop="$(python3 -c "
+import json
+rows=json.load(open('$ART/fleet_measure.json')).get('slots',[])
+cand=sorted([r['slot'] for r in rows if r.get('state') in ('cf_wall','cold','dead') and (r.get('n') or 0)<=2], reverse=True)
+drop=max(0, int('$n')-int('$desired'))
+print(' '.join(str(s) for s in cand[:drop]))
+" 2>/dev/null || true)"
+    for slot in $idle_drop; do
+      echo "SHED idle slot $slot"
+      delete_one "$slot" || true
+    done
+    n=$(n_slots)
   fi
-  if python3 -c "import sys; sys.exit(0 if float('$ppm') < float('$TARGET_LO') else 1)"; then
-    if [[ $n -lt $MAX_VMS ]]; then
-      echo "UNDER target → add 1 VM"
+  if python3 -c "import sys; sys.exit(0 if float('$use_ppm') < float('$TARGET_LO') else 1)"; then
+    if [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
+      echo "UNDER target → scale toward $desired"
+      cmd_scale_to "$(python3 -c "print(min(int('$desired'), int('$n')+2, int('$MAX_VMS')))")"
+    elif [[ $n -lt $MAX_VMS ]]; then
+      echo "UNDER at desired count but rate low — add 1 (cap $MAX_VMS)"
       cmd_scale_to $((n+1))
     else
-      echo "UNDER but at MAX_VMS=$MAX_VMS"
+      echo "UNDER but at MAX_VMS=$MAX_VMS — rollout patches / CF recovery"
     fi
-  elif python3 -c "import sys; sys.exit(0 if float('$ppm') > float('$TARGET_HI') else 1)"; then
-    if [[ $n -gt $MIN_VMS ]]; then
-      echo "OVER target → remove 1 VM"
-      cmd_scale_to $((n-1))
+  elif python3 -c "import sys; sys.exit(0 if float('$use_ppm') > float('$TARGET_HI') else 1)"; then
+    if [[ $n -gt $desired && $n -gt $MIN_VMS ]]; then
+      echo "OVER target → scale toward $desired"
+      cmd_scale_to "$desired"
     fi
   else
-    echo "IN BAND — hold"
+    echo "IN BAND — hold $n VMs"
   fi
 }
 

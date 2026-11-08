@@ -23,7 +23,7 @@ VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/
 OVERLAY_GCS="${VM_GCS}/_code/overlays"
 PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/.purl}"
 NEVER_PORTS=(10001 10005 10006 10020)
-STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_aggressive.env}"
+STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 SLOTS=(1 2 3 4)
 MACHINE="${PH_FLEET_MACHINE:-e2-standard-2}"
 KEEPER_DOWN_SEC="${KEEPER_DOWN_SEC:-1800}"       # replace VM missing/stopped ≥30 min
@@ -46,9 +46,9 @@ upload_overlays() {
     "$d/setup_probe.py" "$d/ensure_geoip.sh" \
     "$d/patch_week_bytes.py" "$d/patch_stop_first_block.py" \
     "$d/patch_dynamic_paged.py" "$d/patch_soft_block_rotate.py" \
-    "$d/patch_soft_open_rotate.py" \
+    "$d/patch_soft_open_rotate.py" "$d/patch_same_port_retry.py" "$d/patch_lazy_tabs.py" \
     "${OVERLAY_GCS}/"
-  "${GC[@]}" storage cp "$STRATEGY_ENV" "${OVERLAY_GCS}/fleet_aggressive.env"
+  "${GC[@]}" storage cp "$STRATEGY_ENV" "${OVERLAY_GCS}/fleet_optimize.env"
   echo "Overlays -> ${OVERLAY_GCS}/"
 }
 
