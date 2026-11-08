@@ -16,6 +16,14 @@ Secondary line, never the headline (orchestrator decision 2026-11-03 16:55 UTC):
 judged 15 min after a front-page return or /pool entry; direction B) 34.5% [31.5, 37.7], Oct 2-14. Content model at
 15 min on the posting clock (Oct 2-14, vs votes + who 28.4%): 30.2%, +1.8 [-1.1, +4.8], not significant.
 
+**Milestone counts (winners caught / winners; north star 80%; focus order 1 h -> 15 min -> at posting, each held until
+it reaches 80%; Shreyas, 2026-11-08).** Current focus: **1 h**.
+| checkpoint | backtest caught | 80% target | gap | live, full-coverage days Nov 2-4 (provisional) |
+|---|---|---|---|---|
+| 1 h | **640 / 1,323** (48.4%, Sep 1 - Oct 14) | 1,059 | 419 winners | 34 / 83 (41.0%, votes + front page) |
+| 15 min | **115 / 388** (29.6%, Oct 2-14); 376 / 1,323 (28.4%, Sep 1 - Oct 14) | 311; 1,059 | 196; 683 | 17 / 83 (20.5%) |
+| at posting | ~345 / 1,323 (26.1%, Sep 1 - Oct 14) | 1,059 | ~714 | 16 / 83 (19.3%) |
+
 **Honest ceiling at 15 min (posting clock), from the miss decomposition (miss15.py):** perfect flagging of every fast
 post (front page within 1 h) would give about 28.0 + 25.2 + 5.1 + 3.3 = **61.6%**. The other 38.4 pts are late risers
 (25.5) and re-ups (12.9): posts with no front-page signal in their first hour. **80% needs about half of the late
