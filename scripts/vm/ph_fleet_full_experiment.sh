@@ -27,8 +27,9 @@ STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_aggressi
 SLOTS=(1 2 3 4)
 MACHINE="${PH_FLEET_MACHINE:-e2-standard-2}"
 KEEPER_DOWN_SEC="${KEEPER_DOWN_SEC:-1800}"       # replace VM missing/stopped ≥30 min
-KEEPER_STALL_SEC="${KEEPER_STALL_SEC:-1800}"     # no new JSON while RUNNING ≥30 min
-KEEPER_BLOCK_COOLDOWN_SEC="${KEEPER_BLOCK_COOLDOWN_SEC:-360}"  # after 403, wait then recreate
+KEEPER_STALL_SEC="${KEEPER_STALL_SEC:-600}"      # no new JSON while RUNNING ≥10 min → recover
+KEEPER_DEAD_SEC="${KEEPER_DEAD_SEC:-180}"        # batch dead / stopped_on_block → recover in 3 min
+KEEPER_BLOCK_COOLDOWN_SEC="${KEEPER_BLOCK_COOLDOWN_SEC:-120}"  # after 403 circuit, wait then recover
 COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=0 600 0"
 TEMPLATE="${PACE_TEMPLATE:-}"
 INTERVAL_SEC="${INTERVAL_SEC:-300}"
@@ -44,6 +45,7 @@ upload_overlays() {
     "$d/supervisor_strat.sh" "$d/portscreen.py" "$d/strategy_args.py" \
     "$d/setup_probe.py" "$d/ensure_geoip.sh" \
     "$d/patch_week_bytes.py" "$d/patch_stop_first_block.py" \
+    "$d/patch_dynamic_paged.py" "$d/patch_soft_block_rotate.py" \
     "${OVERLAY_GCS}/"
   "${GC[@]}" storage cp "$STRATEGY_ENV" "${OVERLAY_GCS}/fleet_aggressive.env"
   echo "Overlays -> ${OVERLAY_GCS}/"
@@ -269,10 +271,51 @@ p.write_text(json.dumps(st, indent=2))
 PY
 }
 
+nudge_go() {
+  # New GO token so supervisor relaunches without deleting the VM (minutes, not hours).
+  local slot=$1 reason=$2
+  local gen token
+  gen=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('gen',0)+1)")
+  token="${GO_TOKEN}-r${gen}"
+  python3 - <<PY
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+p=Path("$ART/keeper_state.json")
+st=json.loads(p.read_text())
+sl=st.setdefault("slots",{}).setdefault("$slot",{})
+sl["gen"]=$gen
+sl["last_nudge"]=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+sl["nudge_reason"]="$reason"
+sl["token"]="$token"
+sl.pop("block_since", None); sl.pop("dead_since", None); sl.pop("stall_since", None)
+p.write_text(json.dumps(st, indent=2))
+PY
+  echo "KEEPER nudge slot=$slot gen=$gen reason=$reason token=$token" | tee -a "$ART/keeper.log"
+  write_go "$slot" "$token"
+  # Push strategy + overlays so next launch has soft-block + dynamic paging + high mem.
+  "${GC[@]}" compute instances add-metadata "$(vm_name "$slot")" --zone="$ZONE" --project="$PROJECT" \
+    --metadata-from-file="ph-strategy-env=$STRATEGY_ENV" >/dev/null 2>&1 || true
+}
+
+keeper_mark_key() {
+  local slot=$1 key=$2
+  python3 - <<PY
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+p=Path("$ART/keeper_state.json")
+st=json.loads(p.read_text())
+sl=st.setdefault("slots",{}).setdefault("$slot",{})
+sl.setdefault("$key", datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
+p.write_text(json.dumps(st, indent=2))
+PY
+}
+
 keeper_one_pass() {
   load_art
   [[ -f "$ART/slots.tsv" ]] || { echo "no fleet run" >&2; exit 1; }
-  local now slot name st tail json_n blocked ended down_for stall_for since_block
+  local now slot name st remote json_n batch_alive dead_for stall_for nudge_age
   now=$(date +%s)
   while IFS=$'\t' read -r slot port; do
     [[ -z "$slot" ]] && continue
@@ -287,54 +330,71 @@ keeper_one_pass() {
       continue
     fi
     keeper_clear_down "$slot"
-    remote='for f in /opt/ph/reuse/run_*.log; do [ -f "$f" ] || continue; tail -5 "$f"; done | tail -8
-n=$(find /opt/ph/reuse/out -name "*.json" ! -name hb.json 2>/dev/null | wc -l)
-alive=$(pgrep -cf "python.*ph_batch" || true)
+    # Exact ph_batch pid only (avoid pgrep matching this SSH remote script).
+    remote='n=$(find /opt/ph/reuse/out -name "*.json" ! -name hb.json 2>/dev/null | wc -l)
+alive=0
+for pid in $(pgrep -f "/opt/venv/bin/python -u ph_batch.py" 2>/dev/null); do
+  tr "\\0" " " < /proc/$pid/cmdline 2>/dev/null | grep -q "ph_batch.py" && alive=1
+done
+sup=$(tail -1 /opt/ph/reuse/status_*.jsonl 2>/dev/null | tr -d "\\n")
 echo JSON_COUNT=$n
-echo BATCH_ALIVE=$alive'
-    tail="$("${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet </dev/null --command="$remote" 2>/dev/null)" || tail=""
-    json_n=$(echo "$tail" | sed -n 's/^JSON_COUNT=//p'); json_n=${json_n:-0}
-    batch_alive=$(echo "$tail" | sed -n 's/^BATCH_ALIVE=//p'); batch_alive=${batch_alive:-0}
+echo BATCH_ALIVE=$alive
+echo SUP_TAIL=$sup
+grep -E "stopped_on_block|BLOCK challenge|BLOCK HTTP 403" /opt/ph/reuse/run_*.log 2>/dev/null | tail -3 || true'
+    remote="$("${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
+      --ssh-flag="-o ConnectTimeout=20" --ssh-flag="-o ServerAliveInterval=5" --ssh-flag="-o ServerAliveCountMax=2" \
+      </dev/null --command="$remote" 2>/dev/null)" || remote="JSON_COUNT=0
+BATCH_ALIVE=0
+SUP_TAIL="
+    json_n=$(echo "$remote" | sed -n 's/^JSON_COUNT=//p' | tail -1); json_n=${json_n:-0}
+    batch_alive=$(echo "$remote" | sed -n 's/^BATCH_ALIVE=//p' | tail -1); batch_alive=${batch_alive:-0}
     keeper_note_json "$slot" "$json_n"
-    blocked=0
-    echo "$tail" | grep -qiE 'stopped_on_block|BLOCK HTTP 403|challenge not cleared' && blocked=1
-    ended=0
-  if [[ "$batch_alive" -eq 0 ]]; then
-      "${GC[@]}" storage cat "${VM_GCS}/status/${name}.supervisor.jsonl" 2>/dev/null | tail -3 | grep -q supervisor_run_end && ended=1
-    fi
-    stall_for=$(keeper_secs_since "$slot" stall_since)
-    if [[ "$stall_for" -ge "$KEEPER_STALL_SEC" ]]; then
-      recreate_slot "$slot" "stall_${stall_for}s"
-      continue
-    fi
-    if [[ "$blocked" -eq 1 || "$ended" -eq 1 ]]; then
-      since_block=$(keeper_secs_since "$slot" last_recreate)
-      # Mark first sighting of block so cooldown can elapse before recreate.
-      if [[ "$blocked" -eq 1 ]]; then
-        python3 - <<PY 2>/dev/null || true
+    dead=0
+    [[ "$batch_alive" != "1" ]] && dead=1
+    echo "$remote" | grep -qiE 'stopped_on_block|supervisor_run_end|"rc":3' && dead=1
+    if [[ "$dead" -eq 1 ]]; then
+      keeper_mark_key "$slot" dead_since
+      dead_for=$(keeper_secs_since "$slot" dead_since)
+      nudge_age=$(keeper_secs_since "$slot" last_nudge)
+      [[ "$nudge_age" -eq 0 ]] && nudge_age=99999
+      if [[ "$dead_for" -ge "$KEEPER_DEAD_SEC" && "$nudge_age" -ge "$KEEPER_DEAD_SEC" ]]; then
+        # Prefer in-place relaunch (new GO). Full recreate only if already nudged twice with no batch.
+        nudges=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('nudge_fail',0))" 2>/dev/null || echo 0)
+        if [[ "$nudges" -ge 2 ]]; then
+          recreate_slot "$slot" "dead_after_nudges"
+          python3 - <<PY
 import json
-from datetime import datetime, timezone
 from pathlib import Path
-p = Path("$ART/keeper_state.json")
-st = json.loads(p.read_text())
-sl = st.setdefault("slots", {}).setdefault("$slot", {})
-sl.setdefault("block_since", datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
+p=Path("$ART/keeper_state.json"); st=json.loads(p.read_text())
+st.setdefault("slots",{}).setdefault("$slot",{})["nudge_fail"]=0
 p.write_text(json.dumps(st, indent=2))
 PY
-      fi
-      block_wait=$(keeper_secs_since "$slot" block_since)
-      [[ "$block_wait" -eq 0 ]] && block_wait=$KEEPER_BLOCK_COOLDOWN_SEC
-      if [[ "$blocked" -eq 1 && "$block_wait" -ge "$KEEPER_BLOCK_COOLDOWN_SEC" ]] || \
-         [[ "$ended" -eq 1 && "$since_block" -ge "$KEEPER_BLOCK_COOLDOWN_SEC" ]]; then
-        recreate_slot "$slot" "block_or_end"
-        python3 - <<PY 2>/dev/null || true
+        else
+          nudge_go "$slot" "dead_${dead_for}s"
+          python3 - <<PY
 import json
 from pathlib import Path
-st = json.loads(Path("$ART/keeper_state.json").read_text())
-st.setdefault("slots", {}).setdefault("$slot", {}).pop("block_since", None)
-Path("$ART/keeper_state.json").write_text(json.dumps(st, indent=2))
+p=Path("$ART/keeper_state.json"); st=json.loads(p.read_text())
+sl=st.setdefault("slots",{}).setdefault("$slot",{})
+sl["nudge_fail"]=int(sl.get("nudge_fail") or 0)+1
+p.write_text(json.dumps(st, indent=2))
 PY
+        fi
       fi
+      continue
+    fi
+    # Batch alive: clear dead/nudge-fail counters.
+    python3 - <<PY 2>/dev/null || true
+import json
+from pathlib import Path
+p=Path("$ART/keeper_state.json"); st=json.loads(p.read_text())
+sl=st.setdefault("slots",{}).setdefault("$slot",{})
+sl.pop("dead_since", None); sl["nudge_fail"]=0
+p.write_text(json.dumps(st, indent=2))
+PY
+    stall_for=$(keeper_secs_since "$slot" stall_since)
+    if [[ "$stall_for" -ge "$KEEPER_STALL_SEC" ]]; then
+      nudge_go "$slot" "stall_${stall_for}s"
     fi
   done <"$ART/slots.tsv"
 }

@@ -62,9 +62,12 @@ mark reuse_fetch_end
 [[ -f /opt/ph/overlays/strategy_args.py ]] && cp -f /opt/ph/overlays/strategy_args.py /opt/ph/reuse/strategy_args.py
 [[ -f /opt/ph/overlays/ensure_geoip.sh ]] && cp -f /opt/ph/overlays/ensure_geoip.sh /opt/ph/reuse/ensure_geoip.sh
 [[ -f /opt/ph/overlays/setup_probe.py ]] && cp -f /opt/ph/overlays/setup_probe.py /opt/ph/reuse/setup_probe.py
-gcloud storage cp -q "$B/_code/overlays/patch_week_bytes.py" "$B/_code/overlays/patch_stop_first_block.py" /opt/ph/overlays/ 2>/dev/null || true
+gcloud storage cp -q "$B/_code/overlays/patch_week_bytes.py" \
+  "$B/_code/overlays/patch_stop_first_block.py" \
+  "$B/_code/overlays/patch_dynamic_paged.py" \
+  "$B/_code/overlays/patch_soft_block_rotate.py" /opt/ph/overlays/ 2>/dev/null || true
 if [[ -x /opt/venv/bin/python && -f /opt/ph/reuse/ph_batch.py ]]; then
-  for _patch in patch_week_bytes.py patch_stop_first_block.py; do
+  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py; do
   if [[ -f /opt/ph/overlays/$_patch ]]; then
     mark "patch_${_patch%.py}_begin"
     /opt/venv/bin/python "/opt/ph/overlays/$_patch" >>/var/log/phreuse_start.log 2>&1 || true

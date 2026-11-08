@@ -40,6 +40,16 @@ apply_overlays() {
   if [[ -f "$OVERLAYS/setup_probe.py" ]]; then
     cp -f "$OVERLAYS/setup_probe.py" /opt/ph/reuse/setup_probe.py
   fi
+  # Refresh patches from GCS each loop (reuse.tgz unpack can clobber).
+  gcloud storage cp -q "$B/_code/overlays/patch_week_bytes.py" \
+    "$B/_code/overlays/patch_stop_first_block.py" \
+    "$B/_code/overlays/patch_dynamic_paged.py" \
+    "$B/_code/overlays/patch_soft_block_rotate.py" "$OVERLAYS/" 2>/dev/null || true
+  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py; do
+    if [[ -f "$OVERLAYS/$_patch" && -x $PY ]]; then
+      $PY "$OVERLAYS/$_patch" >>supervisor.log 2>&1 || true
+    fi
+  done
 }
 
 mkdir -p /opt/ph/reuse/out && cd /opt/ph/reuse

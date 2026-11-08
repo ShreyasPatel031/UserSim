@@ -73,6 +73,14 @@ def build() -> list[str]:
     args = ["--tabs", str(tabs), "--ramp", ramp]
     if person_interval > 0:
         args += ["--person-interval", str(person_interval)]
+    # Default 2200MB forces a full browser reopen almost every person at 32 tabs (RSS >> 2.2GB).
+    # Fleet stays warm unless PH_MEM_MB is set lower intentionally.
+    mem_mb = _i("PH_MEM_MB", 7500)
+    if mem_mb > 0:
+        args += ["--mem-mb", str(mem_mb)]
+    recycle = _i("PH_RECYCLE_EVERY", 250)
+    if recycle > 0:
+        args += ["--recycle", str(recycle)]
     return args
 
 
