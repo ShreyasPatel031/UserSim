@@ -1,0 +1,483 @@
+{
+  "utc": "2026-11-08T23:51:24Z",
+  "run_id": "20261108t082000z",
+  "target_lo": 20,
+  "target_hi": 30,
+  "series": [
+    {
+      "utc": "2026-11-08T18:59:20Z",
+      "complete_ppm": 5.583,
+      "attempt_ppm": 0.0,
+      "rerun_ppm": 0.0,
+      "vms": 22,
+      "active_vms": 9,
+      "stale_vms": 6,
+      "cold_vms": 6,
+      "productive_vms": 12,
+      "avg_ppm_productive": 0.461
+    },
+    {
+      "utc": "2026-11-08T19:01:29Z",
+      "complete_ppm": 5.564,
+      "attempt_ppm": 0.0,
+      "rerun_ppm": 0.0,
+      "vms": 19,
+      "active_vms": 8,
+      "stale_vms": 7,
+      "cold_vms": 4,
+      "productive_vms": 12,
+      "avg_ppm_productive": 0.4596
+    },
+    {
+      "utc": "2026-11-08T19:15:18Z",
+      "complete_ppm": 5.489,
+      "attempt_ppm": 0.0,
+      "rerun_ppm": 0.0,
+      "vms": 19,
+      "active_vms": 8,
+      "stale_vms": 7,
+      "cold_vms": 4,
+      "productive_vms": 11,
+      "avg_ppm_productive": 0.4896
+    },
+    {
+      "utc": "2026-11-08T19:30:30Z",
+      "complete_ppm": 5.431,
+      "attempt_ppm": 5.541,
+      "rerun_ppm": 0.11,
+      "vms": 19,
+      "active_vms": 8,
+      "stale_vms": 7,
+      "cold_vms": 4,
+      "productive_vms": 11,
+      "avg_ppm_productive": 0.4797
+    },
+    {
+      "utc": "2026-11-08T19:48:49Z",
+      "complete_ppm": 5.319,
+      "attempt_ppm": 5.42,
+      "rerun_ppm": 0.101,
+      "vms": 29,
+      "active_vms": 6,
+      "stale_vms": 9,
+      "cold_vms": 14,
+      "productive_vms": 10,
+      "avg_ppm_productive": 0.5163
+    },
+    {
+      "utc": "2026-11-08T20:23:13Z",
+      "complete_ppm": 9.467,
+      "attempt_ppm": 10.134,
+      "rerun_ppm": 0.667,
+      "vms": 29,
+      "active_vms": 19,
+      "stale_vms": 0,
+      "cold_vms": 10,
+      "productive_vms": 19,
+      "avg_ppm_productive": 0.4842
+    },
+    {
+      "utc": "2026-11-08T20:30:36Z",
+      "complete_ppm": 18.933,
+      "attempt_ppm": 19.933,
+      "rerun_ppm": 1.0,
+      "vms": 29,
+      "active_vms": 23,
+      "stale_vms": 0,
+      "cold_vms": 6,
+      "productive_vms": 23,
+      "avg_ppm_productive": 0.8232
+    },
+    {
+      "utc": "2026-11-08T20:45:27Z",
+      "complete_ppm": 32.333,
+      "attempt_ppm": 33.333,
+      "rerun_ppm": 1.0,
+      "vms": 29,
+      "active_vms": 28,
+      "stale_vms": 0,
+      "cold_vms": 1,
+      "productive_vms": 28,
+      "avg_ppm_productive": 1.1548
+    },
+    {
+      "utc": "2026-11-08T21:15:36Z",
+      "complete_ppm": 25.133,
+      "attempt_ppm": 27.333,
+      "rerun_ppm": 2.2,
+      "vms": 27,
+      "active_vms": 23,
+      "stale_vms": 1,
+      "cold_vms": 1,
+      "productive_vms": 23,
+      "avg_ppm_productive": 1.0899
+    },
+    {
+      "utc": "2026-11-08T21:45:21Z",
+      "complete_ppm": 21.266,
+      "attempt_ppm": 22.867,
+      "rerun_ppm": 1.6,
+      "vms": 27,
+      "active_vms": 19,
+      "stale_vms": 5,
+      "cold_vms": 1,
+      "productive_vms": 19,
+      "avg_ppm_productive": 1.1193
+    },
+    {
+      "utc": "2026-11-08T23:02:11Z",
+      "complete_ppm": 42.2,
+      "attempt_ppm": 43.733,
+      "rerun_ppm": 1.534,
+      "vms": 23,
+      "active_vms": 22,
+      "stale_vms": 1,
+      "cold_vms": 0,
+      "productive_vms": 22,
+      "avg_ppm_productive": 1.9182
+    },
+    {
+      "utc": "2026-11-08T23:15:20Z",
+      "complete_ppm": 36.867,
+      "attempt_ppm": 38.933,
+      "rerun_ppm": 2.067,
+      "vms": 19,
+      "active_vms": 19,
+      "stale_vms": 0,
+      "cold_vms": 0,
+      "productive_vms": 19,
+      "avg_ppm_productive": 1.9404
+    },
+    {
+      "utc": "2026-11-08T23:30:16Z",
+      "complete_ppm": 23.8,
+      "attempt_ppm": 25.267,
+      "rerun_ppm": 1.467,
+      "vms": 15,
+      "active_vms": 15,
+      "stale_vms": 0,
+      "cold_vms": 0,
+      "productive_vms": 15,
+      "avg_ppm_productive": 1.5867
+    },
+    {
+      "utc": "2026-11-08T23:45:15Z",
+      "complete_ppm": 19.134,
+      "attempt_ppm": 20.067,
+      "rerun_ppm": 0.933,
+      "vms": 15,
+      "active_vms": 13,
+      "stale_vms": 0,
+      "cold_vms": 2,
+      "productive_vms": 13,
+      "avg_ppm_productive": 1.4103
+    }
+  ],
+  "milestones": [
+    {
+      "utc": "2026-11-08T22:15:00Z",
+      "kind": "fix",
+      "label": "Queue cache + 75s CF open timeout deployed"
+    },
+    {
+      "utc": "2026-11-08T22:25:00Z",
+      "kind": "recover",
+      "label": "Manual kick: 17 VMs stuck 20+ min after block"
+    },
+    {
+      "utc": "2026-11-08T22:33:00Z",
+      "kind": "fix",
+      "label": "Fast block exit, supervisor 5s poll, claim release"
+    },
+    {
+      "utc": "2026-11-08T23:02:00Z",
+      "kind": "scale",
+      "label": "Autoscale shed 4 VMs (42\u219219 planned)"
+    },
+    {
+      "utc": "2026-11-08T23:15:00Z",
+      "kind": "scale",
+      "label": "Shed 4 more VMs \u2192 15"
+    },
+    {
+      "utc": "2026-11-08T23:41:00Z",
+      "kind": "fix",
+      "label": "Parallel requeue reads on queue-cache miss"
+    },
+    {
+      "utc": "2026-11-08T23:45:00Z",
+      "kind": "scale",
+      "label": "Under 20/min \u2192 +1 VM (slot 27)"
+    }
+  ],
+  "drivers": [
+    {
+      "from_utc": "2026-11-08T21:45:21Z",
+      "to_utc": "2026-11-08T23:02:11Z",
+      "delta_ppm": 20.93,
+      "direction": "up",
+      "factors": [
+        {
+          "label": "-4 VMs",
+          "est_ppm": -4.5,
+          "detail": "~1.12 complete/min per VM at prior rate"
+        },
+        {
+          "label": "stale -4, cf_wall -1",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        },
+        {
+          "label": "fixes drift",
+          "est_ppm": null,
+          "detail": "2026-11-08T21:46:18Z FIXES_AUDIT good=25/27 bad=9 17"
+        }
+      ],
+      "events": [
+        "2026-11-08T21:46:18Z FIXES_AUDIT good=25/27 bad=9 17"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T20:30:36Z",
+      "to_utc": "2026-11-08T20:45:27Z",
+      "delta_ppm": 13.4,
+      "direction": "up",
+      "factors": [
+        {
+          "label": "+5 active pullers",
+          "est_ppm": 4.1,
+          "detail": "more slots saving in the window"
+        },
+        {
+          "label": "stale +0, cf_wall -5",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        }
+      ],
+      "events": [
+        "2026-11-08T20:31:15Z FIXES_AUDIT good=29/29 bad=none"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T23:15:20Z",
+      "to_utc": "2026-11-08T23:30:16Z",
+      "delta_ppm": -13.07,
+      "direction": "down",
+      "factors": [
+        {
+          "label": "-4 VMs",
+          "est_ppm": -7.8,
+          "detail": "~1.94 complete/min per VM at prior rate"
+        }
+      ],
+      "events": [
+        "2026-11-08T23:15:47Z FIXES_AUDIT good=19/19 bad=none"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T20:23:13Z",
+      "to_utc": "2026-11-08T20:30:36Z",
+      "delta_ppm": 9.47,
+      "direction": "up",
+      "factors": [
+        {
+          "label": "+4 active pullers",
+          "est_ppm": 1.9,
+          "detail": "more slots saving in the window"
+        },
+        {
+          "label": "stale +0, cf_wall -4",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        }
+      ],
+      "events": [
+        "2026-11-08T20:23:15Z FIXES_AUDIT failed"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T20:45:27Z",
+      "to_utc": "2026-11-08T21:15:36Z",
+      "delta_ppm": -7.2,
+      "direction": "down",
+      "factors": [
+        {
+          "label": "-2 VMs",
+          "est_ppm": -2.3,
+          "detail": "~1.15 complete/min per VM at prior rate"
+        },
+        {
+          "label": "stale +1, cf_wall +0",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        },
+        {
+          "label": "fixes drift",
+          "est_ppm": null,
+          "detail": "2026-11-08T20:46:12Z FIXES_AUDIT good=28/29 bad=9"
+        }
+      ],
+      "events": [
+        "2026-11-08T20:46:12Z FIXES_AUDIT good=28/29 bad=9"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T23:02:11Z",
+      "to_utc": "2026-11-08T23:15:20Z",
+      "delta_ppm": -5.33,
+      "direction": "down",
+      "factors": [
+        {
+          "label": "-4 VMs",
+          "est_ppm": -7.7,
+          "detail": "~1.92 complete/min per VM at prior rate"
+        },
+        {
+          "label": "stale -1, cf_wall +0",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        }
+      ],
+      "events": [
+        "2026-11-08T23:02:43Z FIXES_AUDIT good=23/23 bad=none"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T23:30:16Z",
+      "to_utc": "2026-11-08T23:45:15Z",
+      "delta_ppm": -4.67,
+      "direction": "down",
+      "factors": [
+        {
+          "label": "-2 active pullers",
+          "est_ppm": -3.2,
+          "detail": "more slots saving in the window"
+        },
+        {
+          "label": "stale +0, cf_wall +2",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        }
+      ],
+      "events": [
+        "2026-11-08T23:30:40Z FIXES_AUDIT good=15/15 bad=none"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T19:48:49Z",
+      "to_utc": "2026-11-08T20:23:13Z",
+      "delta_ppm": 4.15,
+      "direction": "up",
+      "factors": [
+        {
+          "label": "+13 active pullers",
+          "est_ppm": 6.7,
+          "detail": "more slots saving in the window"
+        },
+        {
+          "label": "stale -9, cf_wall -4",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        }
+      ],
+      "events": []
+    },
+    {
+      "from_utc": "2026-11-08T21:15:36Z",
+      "to_utc": "2026-11-08T21:45:21Z",
+      "delta_ppm": -3.87,
+      "direction": "down",
+      "factors": [
+        {
+          "label": "-4 active pullers",
+          "est_ppm": -4.4,
+          "detail": "more slots saving in the window"
+        },
+        {
+          "label": "stale +4, cf_wall +0",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        },
+        {
+          "label": "fixes drift",
+          "est_ppm": null,
+          "detail": "2026-11-08T21:16:41Z FIXES_AUDIT good=25/27 bad=15 31"
+        }
+      ],
+      "events": [
+        "2026-11-08T21:16:41Z FIXES_AUDIT good=25/27 bad=15 31"
+      ]
+    },
+    {
+      "from_utc": "2026-11-08T19:30:30Z",
+      "to_utc": "2026-11-08T19:48:49Z",
+      "delta_ppm": -0.11,
+      "direction": "flat",
+      "factors": [
+        {
+          "label": "+10 VMs",
+          "est_ppm": 4.8,
+          "detail": "~0.48 complete/min per VM at prior rate"
+        },
+        {
+          "label": "stale +2, cf_wall +10",
+          "est_ppm": null,
+          "detail": "idle or blocked slots"
+        }
+      ],
+      "events": []
+    },
+    {
+      "from_utc": "2026-11-08T19:01:29Z",
+      "to_utc": "2026-11-08T19:15:18Z",
+      "delta_ppm": -0.08,
+      "direction": "flat",
+      "factors": [],
+      "events": []
+    },
+    {
+      "from_utc": "2026-11-08T19:15:18Z",
+      "to_utc": "2026-11-08T19:30:30Z",
+      "delta_ppm": -0.06,
+      "direction": "flat",
+      "factors": [],
+      "events": []
+    }
+  ],
+  "latest": {
+    "utc": "2026-11-08T23:45:15Z",
+    "complete_ppm": 19.134,
+    "attempt_ppm": 20.067,
+    "rerun_ppm": 0.933,
+    "vms": 15,
+    "active_vms": 13,
+    "stale_vms": 0,
+    "cold_vms": 2,
+    "productive_vms": 13,
+    "avg_ppm_productive": 1.4103
+  },
+  "peak": {
+    "utc": "2026-11-08T23:02:11Z",
+    "complete_ppm": 42.2,
+    "attempt_ppm": 43.733,
+    "rerun_ppm": 1.534,
+    "vms": 23,
+    "active_vms": 22,
+    "stale_vms": 1,
+    "cold_vms": 0,
+    "productive_vms": 22,
+    "avg_ppm_productive": 1.9182
+  },
+  "trough": {
+    "utc": "2026-11-08T19:48:49Z",
+    "complete_ppm": 5.319,
+    "attempt_ppm": 5.42,
+    "rerun_ppm": 0.101,
+    "vms": 29,
+    "active_vms": 6,
+    "stale_vms": 9,
+    "cold_vms": 14,
+    "productive_vms": 10,
+    "avg_ppm_productive": 0.5163
+  }
+}

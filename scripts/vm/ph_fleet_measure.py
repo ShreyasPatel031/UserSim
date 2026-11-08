@@ -185,6 +185,15 @@ def main() -> int:
     web = root / "fleet-dashboard"
     web.mkdir(parents=True, exist_ok=True)
     (web / "snapshot.json").write_text(json.dumps(live, indent=2))
+    try:
+        subprocess.run(
+            [sys.executable, str(Path(__file__).resolve().parent / "ph_fleet_progress_history.py")],
+            check=False,
+            timeout=30,
+            env={**os.environ, "PACE_FLEET_RUN_ID": RUN_ID},
+        )
+    except Exception:
+        pass
     bucket = os.environ.get("MVP_GCS_BUCKET", "")
     if bucket:
         gcs_key = "usersim_sim/raw/ph_population/people_live/vm/dashboard_live.json"
