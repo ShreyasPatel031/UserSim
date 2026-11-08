@@ -1279,3 +1279,18 @@ Service account back (checked 2026-11-07 21:03 UTC): already enabled when Shreya
 change). Live data flowing again: both recorders uploading (21:00-21:01 UTC Nov 7); listwatch2, fdloop4, oddsmin1,
 oddsloop2 logging. Per-minute odds present Nov 6 15:08-20:34 and Nov 7 14:48 onward, so the live record has gaps
 06:27 UTC Nov 5 - 15:08 UTC Nov 6 and 20:34 UTC Nov 6 - 14:48 UTC Nov 7. Scheduled checks stay paused (usage limit).
+
+### Live check 2026-11-08 00:31 UTC: first SETTLED live results (score_live.py, live_caught.py)
+Settled list days: Oct 30 - Nov 5. Settled posting days for live Caught: Oct 31, Nov 1, Nov 2 (51 winners; Oct 31 and
+Nov 1 had only 42-53% recorder coverage by 15 min, Nov 2 99.7%).
+| checkpoint | settled live Caught (Oct 31 - Nov 2) | milestone count | backtest |
+|---|---|---|---|
+| 1 h (focus) | 35.3% [20.0, 75.0] (points) | 18 / 51 | 640 / 1,323 (48.4%) |
+| 15 min | 23.5% [10.0, 50.0] (points) | 12 / 51 | 115 / 388 (29.6%) |
+Per-post odds, first settled calibration (posts whose 4 list days settled): AUC at posting 0.804 (351 posts, 13 made a
+top 30), 15 min 0.727 (332 / 10), 30 min 0.800, 1 h 0.857 (1,387 / 43), 2 h 0.884 (1,403 / 42); Brier 0.021-0.031.
+The top decile is over-predicted (1 h: 0.259 predicted vs 0.165 realized; 2 h 0.267 vs 0.191).
+**Daily-list forecast, first settled days with the earlier-list fix (fdloop4 from Nov 4): top 30 found at 21:00 Nov 4
+70%, Nov 5 83%** (backtest 80.2%; pre-fix settled days 47-60%). Provisional: Nov 6 80%, Nov 7 90%.
+hn_minute minutes read (front / newest / pool): Nov 5 857 / 1,552 / 216; Nov 6 838 / 1,563 / 247; Nov 7 1,235 / 1,569
+/ 256 (the /newest recorder stayed up through the service-account outage; front and pool reads dropped).
