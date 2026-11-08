@@ -23,8 +23,8 @@ import base64, time
 
 CHAIN_OPS = {"ProfileFollowersQuery", "ProfileFollowingsQuery", "ProfileFollowingQuery"}
 CHAIN_MIN = 200
-MAX_PASSES = 8  # full re-page passes per attempt; reaching it ends as repage_max_passes (not whole), resumable
-TOTAL_PASSES = 24  # full18c: passes across all attempts (saved in state); reaching it ends as repage_exhausted -> review list
+MAX_PASSES = 8  # not-whole stop (nocap2: the list is saved NOT whole and resumed, never counted complete); full re-page passes per attempt; reaching it ends as repage_max_passes (not whole), resumable
+TOTAL_PASSES = 24  # not-whole stop (nocap2: ends as repage_exhausted -> review, never complete); full18c: passes across all attempts (saved in state); reaching it ends as repage_exhausted -> review list
 STATE_TTL_S = 7 * 86400  # full18c: saved re-page state older than 7 days is ignored (restart at offset 0)
 CHAO1_MAX = 0.5  # full18c (E5): close only if the Chao1 estimate of accounts PH never served is below this
 
@@ -136,8 +136,8 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
         # Every repage_* end is NOT whole (no exhausted flag) and goes to the deep pass; the union and pass state are saved
         # through R.repage_save(op, state) when the caller provides it, and loaded with R.repage_load(op) so a retry resumes.
         repage = None
-        if (op in CHAIN_OPS and ended == "server_end" and goal and (goal - len(items)) > 2 and len(items) < 0.98 * goal
-                and not R.stop):
+        if (op in CHAIN_OPS and ended == "server_end" and goal and (goal - len(items)) > 2
+                and not R.stop):  # full18e nocap (Data Feeder capcheck 19:48Z): re-page whenever short by > 2; the 0.98 shortcut was a cap
             st = None
             keep_state = not str(getattr(R, "h", "") or "").startswith("_")  # full18c: no state for session runners (_session...)
             try: st = R.repage_load(op) if (keep_state and getattr(R, "repage_load", None)) else None
@@ -176,7 +176,7 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
                     for i in pass_ids: seen_in[i] = seen_in.get(i, 0) + 1
                     repage["chao1_unseen"] = chao1(seen_in)
                     full_depth = served >= 0.98 * len(items)
-                    need = 3 if (goal > 1000 or len(items) < 0.98 * goal) else 2
+                    need = 3 if (goal > 1000 or len(items) < 0.98 * goal) else 2  # nocap2: only makes closure stricter (more zero-new passes), never ends a list early
                     zero_full = 0
                     for nw, sv in zip(reversed(repage["new"]), reversed(repage["served"])):
                         if nw == 0 and sv >= 0.98 * len(items): zero_full += 1
@@ -207,7 +207,7 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
         if cap and len(items) > cap:
             items = items[:cap]
         if ended is None:
-            ended = "complete" if goal and len(items) >= 0.98 * goal else "unknown"
+            ended = "complete" if goal and (len(items) >= goal - 2 if op in CHAIN_OPS else len(items) >= 0.98 * goal) else "unknown"  # full18e: follow lists get no 98% end
         # 1640Z Data Feeder: upvotes end where the server ends (hasNextPage=false, ~200 signed-out); flag the signed-out cap
         if op == "ProfileUpvotesQuery" and ended in ("server_end", "server_end_offset") and total and len(items) < 0.98 * total:
             R.upv_capped = True

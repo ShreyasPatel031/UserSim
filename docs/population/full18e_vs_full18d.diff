@@ -1,0 +1,103 @@
+diff -ru -x __pycache__ -x .pytest_cache full18d/BUILD_NOTES.md full18e/BUILD_NOTES.md
+--- full18d/BUILD_NOTES.md	2026-11-08 00:08:26.163619272 +0000
++++ full18e/BUILD_NOTES.md	2026-11-08 20:36:22.906890089 +0000
+@@ -1,18 +1,16 @@
+-# full18d (population agent, 2026-11-08)
++# full18e (population agent, 2026-11-08 ~20:45Z)
+ 
+-full17 (Ku9PrVAfo8f+uDrIVfW8Bg==) plus paging_v2.py, pdeep.py, ph_batch.py and tests/test_paging_v2.py.
++full18d (T3OI+xr3iAvoMDMZrdryhA==) plus one no-cap change (Data Feeder capcheck from_grokbot/20261108T1948_URGENT_capcheck_full18d_98pct_repage.md; orchestrator decision 20:34Z):
+ 
+-- paging_v2: follow lists whose endCursor chain ends short of the header by > 2 and > 2% are re-paged by offset from 0, in full passes, merging by id.
+-  - Closure (server_end_offset) needs three things on a full-depth pass (rows served >= 98% of the union):
+-    - the union reaches the full header, or 3 zero-new full-depth passes in a row (2 for lists <= 1,000 with the union >= 98% of the header);
+-    - Chao1 unseen < 0.5;
+-    - full18d (E5): no closing on a 98%-of-header shortcut.
+-  - Not-whole ends: repage_short_end, _stalled, _max_passes (8 per attempt), _exhausted (24 across attempts; to review/), _offset_clamped / _ignored / _runaway, _stopped / _budget / _blocked / _error.
+-  - State (union, per-id pass counts, passes) lives in <PH_SAVE_B>/_repage_state/; entries expire after 7 days; nothing is saved for runners named "_*".
+-- pdeep.whole: such a list needs server_end_offset, a full-depth closing pass and chao1_unseen < 0.5.
+-- Run the tests: `cd tests && python3 -m pytest -q test_paging_v2.py`.
++- paging_v2.py: a follow list (followers/following) whose chain ends short of its header is re-paged by offset whenever it is short by
++  more than 2. The `len(items) < 0.98 * goal` condition is removed; under full18d a 10k list up to 200 short was never re-paged.
++  The <=2 slack stays (deleted accounts).
++- paging_v2.py: a follow list with no recorded end is labelled `complete` only within 2 of its header (other lists keep 98%).
++- pdeep.py whole(): the same rule. A follow list short by more than 2 needs server_end_offset with a full-depth closing pass and
++  chao1_unseen < 0.5.
++- Tagged, unchanged: `need = 3 if goal > 1000 or union < 98%` (nocap2: only makes closure stricter); MAX_PASSES 8 / TOTAL_PASSES 24
++  (not-whole stops: saved NOT whole and resumed or reviewed, never counted complete).
++- tests/test_paging_v2.py: + test_short_by_one_percent_is_repaged (9,900 of 10,000). 19 pass: `cd tests && python3 -m pytest -q`.
+ 
+-Remaining risks (E5):
+-1. Rarely-served accounts. An account PH serves in few passes can still be missed. In simulation, about 1 account in roughly 50 closed lists.
+-2. Profiles still gaining followers. New followers arrive during the passes, so a pass rarely adds zero new on very active profiles. These end stalled or max_passes and are resumed.
+-3. The class-3 cause is not yet measured. It is unproven whether short lists come from hidden accounts or from paging. The first real run (one 1k-10k profile reporting its repage record) should show which.
++Matching audit change: tools/population/quality.py tab_state (branch claude/population-data).
++Not deployed. First-run audit (one 1k–10k-follower repage record plus a 5-person sample) is still required before use.
+diff -ru -x __pycache__ -x .pytest_cache full18d/paging_v2.py full18e/paging_v2.py
+--- full18d/paging_v2.py	2026-11-08 00:08:26.157378936 +0000
++++ full18e/paging_v2.py	2026-11-08 20:35:13.437863238 +0000
+@@ -23,8 +23,8 @@
+ 
+ CHAIN_OPS = {"ProfileFollowersQuery", "ProfileFollowingsQuery", "ProfileFollowingQuery"}
+ CHAIN_MIN = 200
+-MAX_PASSES = 8  # full re-page passes per attempt; reaching it ends as repage_max_passes (not whole), resumable
+-TOTAL_PASSES = 24  # full18c: passes across all attempts (saved in state); reaching it ends as repage_exhausted -> review list
++MAX_PASSES = 8  # not-whole stop (nocap2: the list is saved NOT whole and resumed, never counted complete); full re-page passes per attempt; reaching it ends as repage_max_passes (not whole), resumable
++TOTAL_PASSES = 24  # not-whole stop (nocap2: ends as repage_exhausted -> review, never complete); full18c: passes across all attempts (saved in state); reaching it ends as repage_exhausted -> review list
+ STATE_TTL_S = 7 * 86400  # full18c: saved re-page state older than 7 days is ignored (restart at offset 0)
+ CHAO1_MAX = 0.5  # full18c (E5): close only if the Chao1 estimate of accounts PH never served is below this
+ 
+@@ -136,8 +136,8 @@
+         # Every repage_* end is NOT whole (no exhausted flag) and goes to the deep pass; the union and pass state are saved
+         # through R.repage_save(op, state) when the caller provides it, and loaded with R.repage_load(op) so a retry resumes.
+         repage = None
+-        if (op in CHAIN_OPS and ended == "server_end" and goal and (goal - len(items)) > 2 and len(items) < 0.98 * goal
+-                and not R.stop):
++        if (op in CHAIN_OPS and ended == "server_end" and goal and (goal - len(items)) > 2
++                and not R.stop):  # full18e nocap (Data Feeder capcheck 19:48Z): re-page whenever short by > 2; the 0.98 shortcut was a cap
+             st = None
+             keep_state = not str(getattr(R, "h", "") or "").startswith("_")  # full18c: no state for session runners (_session...)
+             try: st = R.repage_load(op) if (keep_state and getattr(R, "repage_load", None)) else None
+@@ -176,7 +176,7 @@
+                     for i in pass_ids: seen_in[i] = seen_in.get(i, 0) + 1
+                     repage["chao1_unseen"] = chao1(seen_in)
+                     full_depth = served >= 0.98 * len(items)
+-                    need = 3 if (goal > 1000 or len(items) < 0.98 * goal) else 2
++                    need = 3 if (goal > 1000 or len(items) < 0.98 * goal) else 2  # nocap2: only makes closure stricter (more zero-new passes), never ends a list early
+                     zero_full = 0
+                     for nw, sv in zip(reversed(repage["new"]), reversed(repage["served"])):
+                         if nw == 0 and sv >= 0.98 * len(items): zero_full += 1
+@@ -207,7 +207,7 @@
+         if cap and len(items) > cap:
+             items = items[:cap]
+         if ended is None:
+-            ended = "complete" if goal and len(items) >= 0.98 * goal else "unknown"
++            ended = "complete" if goal and (len(items) >= goal - 2 if op in CHAIN_OPS else len(items) >= 0.98 * goal) else "unknown"  # full18e: follow lists get no 98% end
+         # 1640Z Data Feeder: upvotes end where the server ends (hasNextPage=false, ~200 signed-out); flag the signed-out cap
+         if op == "ProfileUpvotesQuery" and ended in ("server_end", "server_end_offset") and total and len(items) < 0.98 * total:
+             R.upv_capped = True
+diff -ru -x __pycache__ -x .pytest_cache full18d/pdeep.py full18e/pdeep.py
+--- full18d/pdeep.py	2026-11-08 00:08:25.883451878 +0000
++++ full18e/pdeep.py	2026-11-08 20:35:13.448413721 +0000
+@@ -54,7 +54,7 @@
+         if t.get("status") in ("partial", "truncated_budget"): why.append(k + ":partial"); continue
+         if H is None: why.append(k + ":no_header"); continue  # 0350Z population full5 (2): all 7 header keys required
+         if got < H and not ended: why.append(k)  # 0350Z orchestrator (a): short of header passes only on a recorded PH server end (complete_not_visible alone is not enough)
+-        elif k in ("followers", "following") and (H - got) > 2 and got < 0.98 * H:
++        elif k in ("followers", "following") and (H - got) > 2:  # full18e nocap: no 98% shortcut for follow lists
+             # full18b (population 2026-11-07, E5 review): a follow list short by > 2 and > 2% passes only on the offset re-page
+             # end, server_end_offset, with the closing pass served at full depth (>= 98% of the union, in rows)
+             pg = (t.get("paging") or {}) if (t.get("paging") or {}).get("ended") else ((tim.get(k) or {}).get("paging") or {})
+diff -ru -x __pycache__ -x .pytest_cache full18d/tests/test_paging_v2.py full18e/tests/test_paging_v2.py
+--- full18d/tests/test_paging_v2.py	2026-11-08 00:08:26.162183239 +0000
++++ full18e/tests/test_paging_v2.py	2026-11-08 20:35:55.593075737 +0000
+@@ -328,3 +328,9 @@
+     r = RecR(s, "sess"); r.h = "_session"
+     asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, 1079, None, {}))
+     assert not RecR.store
++# ---- full18e: no 98% shortcut for follow lists (Data Feeder capcheck 2026-11-08 19:48Z) ----
++def test_short_by_one_percent_is_repaged():
++    # 9,900 of a 10,000 header (1% short, 100 accounts) was never re-paged under full18d; now it must be
++    r, items = runr(FakeServer(9900), 10000, key="f18e")
++    lp = r.last_paging
++    assert lp["repage"] is not None and lp["ended"] == "server_end_offset" and len(items) == 9900

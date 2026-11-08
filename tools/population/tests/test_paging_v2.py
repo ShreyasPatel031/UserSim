@@ -328,3 +328,11 @@ def test_no_state_for_session_runner():
     r = RecR(s, "sess"); r.h = "_session"
     asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, 1079, None, {}))
     assert not RecR.store
+
+
+# ---- full18e: no 98% shortcut for follow lists (Data Feeder capcheck 2026-11-08 19:48Z) ----
+def test_short_by_one_percent_is_repaged():
+    # 9,900 of a 10,000 header (1% short, 100 accounts) was never re-paged under full18d; now it must be
+    r, items = runr(FakeServer(9900), 10000, key="f18e")
+    lp = r.last_paging
+    assert lp["repage"] is not None and lp["ended"] == "server_end_offset" and len(items) == 9900

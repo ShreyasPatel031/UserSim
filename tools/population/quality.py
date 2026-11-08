@@ -80,7 +80,7 @@ def tab_state(d, k):
         v = "complete"  # no header shown for these tabs
     elif h is None:
         v = "no_header"
-    elif h == 0 or got >= 0.98 * h:
+    elif h == 0 or (got >= 0.98 * h and not (k in ("followers", "following") and (h - got) > 2)):  # full18e nocap: follow lists short by > 2 need the offset end
         v = "complete"
     elif k == "reviews":
         v = "rating_only"  # header counts rating-only reviews PH never lists; not a stop of ours
