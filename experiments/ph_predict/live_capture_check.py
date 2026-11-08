@@ -123,8 +123,12 @@ def check(day, T):
                 fail.append("board: no position column")
             Bt = B.assign(st=ts(B.snapshot_ts))
             if "is_page_view" in Bt.columns:   # page=api_v2_ranking is the API's order, not what visitors see
-                n["board_api_rows"] = int((~Bt.is_page_view.fillna(False).astype(bool)).sum())
-                Bt = Bt[Bt.is_page_view.fillna(False).astype(bool)]
+                # route4 page rows (Nov 8) leave is_page_view empty; page=homepage / leaderboard_* are page views
+                pv = Bt.is_page_view.fillna(False).astype(bool)
+                if "page" in Bt.columns:
+                    pv = pv | Bt.page.astype(str).str.match(r"^(homepage|leaderboard)")
+                n["board_api_rows"] = int((~pv).sum())
+                Bt = Bt[pv]
                 if not len(Bt):
                     fail.append("board: no homepage / leaderboard page views (only the API ranking)")
             missing_board = 0
