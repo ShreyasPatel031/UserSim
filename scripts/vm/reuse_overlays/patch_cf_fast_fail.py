@@ -37,6 +37,19 @@ if p.exists():
         else:
             print("on_block backoff not found", file=sys.stderr)
 
+# First-page Cloudflare clear: fleet data 2026-11-08 had 93/119 clears within 60 s and none between 60 and 90 s,
+# while every failure burned the full 150 s.
+b = pathlib.Path("/opt/ph/reuse/ph_batch.py")
+if b.exists():
+    src = b.read_text()
+    n = 'await R.goto(pages[0], f"/@{first_handle}", 150)'
+    if "PH_CF_OPEN_SEC" not in src:
+        if n in src:
+            b.write_text(src.replace(n, 'await R.goto(pages[0], f"/@{first_handle}", int(os.environ.get("PH_CF_OPEN_SEC", "150")))', 1))
+            print("patched cf_open_sec")
+        else:
+            print("open_browser goto not found", file=sys.stderr)
+
 q = pathlib.Path("/opt/ph/reuse/pdeep.py")
 if q.exists():
     src = q.read_text()
@@ -47,11 +60,11 @@ if q.exists():
             "        _qc = '/tmp/pdeep_queue_cache.json'\n"
             "        try:\n"
             "            _c = json.load(open(_qc))\n"
-            "            if time.time() - _c['t'] > int(os.environ.get('PDEEP_QUEUE_CACHE_SEC', '1200')): raise ValueError('stale')\n"
-            "            queue = _c['q']; RR.clear(); RR.update(_c['rr'])\n"
+            "            if time.time() - _c['t'] > int(os.environ.get('PDEEP_QUEUE_CACHE_SEC', '1200')) or _c.get('m') != PB.PKG_MD5: raise ValueError('stale')\n"
+            "            queue = _c['q']; RR.clear(); RR.update(_c['rr']); _qhit = True\n"
             "        except Exception:\n"
-            "            queue = _full_queue()\n"
-            "            try: json.dump({'t': time.time(), 'q': queue, 'rr': RR}, open(_qc, 'w'))\n"
+            "            queue = _full_queue(); _qhit = False\n"
+            "            try: json.dump({'t': time.time(), 'm': PB.PKG_MD5, 'q': queue, 'rr': RR}, open(_qc, 'w'))\n"
             "            except Exception: pass\n"
         )
         n2 = '        S.put(event="stopped_on_block", note="pdeep: browser open/Cloudflare clear failed; no retry"); return 3\n'
@@ -89,7 +102,11 @@ if q.exists():
             "                    if _rel: PB.sh('gsutil', '-q', '-m', 'rm', *_rel)\n"
             "                    PB.sh('gsutil', '-q', 'cp', S.f, f'{B}/status/{VM}.jsonl'); _wake(); os._exit(3)\n"
         )
-        pairs = [(n1, r1), (n2, r2), (n3, r3), (n4, r4), (n5, r5), (n6, r6), (n7, r7)]
+        # Requeue sweep reads every entry with its own gsutil cat (~1.5 s each, 91 entries = 2+ min). It only acts
+        # on entries from another build, which the run that built the cached queue already handled.
+        n8 = "        rq = [] if _has_tl else ["
+        r8 = "        rq = [] if (_has_tl or _qhit) else ["
+        pairs = [(n8, r8), (n1, r1), (n2, r2), (n3, r3), (n4, r4), (n5, r5), (n6, r6), (n7, r7)]
         miss = [i for i, (n, _) in enumerate(pairs, 1) if n not in src]
         if not miss:
             for n, r in pairs:
