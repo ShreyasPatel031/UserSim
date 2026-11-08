@@ -33,8 +33,13 @@ for ln in (p.read_text().splitlines() if p.exists() else []):
   except: continue
   if j.get('event')=='first_pull': fp=j.get('utc')
   if j.get('event')=='identity_ready': idr=j.get('utc')
+import socket
+host=socket.gethostname()
+status_files=[sp for sp in glob.glob('/opt/ph/reuse/status*.jsonl') if host in sp]
+if not status_files:
+  status_files=[sp for sp in glob.glob('/opt/ph/reuse/status_feeder-fleet*.jsonl')]
 n_upload=n_complete=n_rerun=0
-for sp in glob.glob('/opt/ph/reuse/status*.jsonl'):
+for sp in status_files:
   for ln in open(sp):
     try: j=json.loads(ln)
     except: continue
@@ -54,7 +59,8 @@ ppm_attempt=ppm_complete=ppm_rerun=0.0
 if fp:
   t=datetime.fromisoformat(fp.replace('Z','+00:00'))
   sec=max(60.0,(now-t).total_seconds())
-  ppm_attempt=round(n_attempt*60.0/sec,4)
+  n_try=n_complete+n_rerun
+  ppm_attempt=round(n_try*60.0/sec,4)
   ppm_complete=round(n_complete*60.0/sec,4)
   ppm_rerun=round(n_rerun*60.0/sec,4)
 state='cold'
