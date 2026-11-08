@@ -86,7 +86,7 @@ def check(day, T):
             expected = dict(zip(ts(V.snapshot_ts), pd.to_numeric(V.launches_expected, errors="coerce")))
         low = []
         for s, g in P.groupby("st"):
-            e = expected.get(s) or exp_n
+            e = T.get("_expected_override") or expected.get(s) or exp_n
             # launches PH stopped listing (unfeatured: fetch_status absent_from_source) are not expected in that snapshot
             e -= g[g.fetch_status.astype(str) == "absent_from_source"].launch_id.nunique()
             share = g[g.ok].launch_id.nunique() / e if e else 0
@@ -209,10 +209,57 @@ def load_api_comments(day, src=None):
     return pd.concat(parts, ignore_index=True) if parts else None
 
 
+def day_roster(day):
+    """Launches of the PT day (orchestrator Nov 8 16:10Z): the pipeline's list raw/daily/<day>/<day>.json, kept to posts whose
+    createdAt falls inside the PT day. None if the list is missing (then rows marked not_this_day are still dropped)."""
+    r = subprocess.run(["gsutil", "cat", f"{BUCKET}/raw/daily/{day}/{day}.json"], capture_output=True, text=True)
+    if r.returncode:
+        return None
+    try:
+        L = json.loads(r.stdout)
+    except ValueError:
+        return None
+    L = L.get("launches", L) if isinstance(L, dict) else L
+    a = pd.Timestamp(day, tz="America/Los_Angeles"); b = a + pd.Timedelta(days=1)
+    ok = set()
+    for x in L:
+        c = pd.to_datetime(x.get("createdAt"), utc=True, errors="coerce")
+        if pd.isna(c) or a <= c < b:
+            ok.add(str(x.get("id")))
+    return ok
+
+
+def restrict(T, day):
+    """Keep only this day's launches in posts (and the board rows of their slugs); count the rest apart."""
+    P, n = T.get("posts"), {}
+    if P is None or "launch_id" not in P.columns:
+        return T, n
+    P = P.assign(launch_id=P.launch_id.astype(str))
+    bad = P.fetch_status.astype(str).eq("not_this_day") if "fetch_status" in P.columns else pd.Series(False, index=P.index)
+    roster, src = day_roster(day), "pipeline list (createdAt in PT day)"
+    if roster is None and "source" in P.columns:
+        # no pipeline list (Nov 7): the official API ranking lists the day's featured launches
+        roster = set(P[P.source.astype(str).eq("ph_api_v2") & P.fetch_status.astype(str).isin(["200", "ok"])].launch_id)
+        src = "ph_api_v2 ranking (no pipeline list)"
+    # by-id rows outside the roster are not counted until the feeder marks this-day unfeatured launches (createdAt);
+    # rows marked not_this_day never count
+    keep = (P.launch_id.isin(roster) if roster is not None else True) & ~bad
+    n = {"roster": len(roster) if roster is not None else None, "roster_source": src, "not_this_day_rows": int((~keep).sum()),
+         "not_this_day_launches": int(P[~keep].launch_id.nunique())}
+    T["posts"] = P[keep]
+    if roster is not None:
+        T["_expected_override"] = len(roster)
+    return T, n
+
+
 def main(day, src=None):
     T = load(src or f"{BUCKET}/raw/ph_at_launch/{day}/live")
     T["api_comments"] = load_api_comments(day, src)
+    T, nr = restrict(T, day)
     status, line, res = check(day, T)
+    if nr:
+        res.setdefault("counts", {}).update(nr) if isinstance(res, dict) else None
+        line = line.replace(" | ", f", not_this_day_launches {nr.get('not_this_day_launches')} | ", 1)
     out = os.environ.get("STATUS_OUT", os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", f"live_capture_status_{day}.json"))
     os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump(res, open(out, "w"), indent=1)

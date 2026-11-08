@@ -2,40 +2,43 @@
  "day": "2026-11-08",
  "status": "FAIL",
  "counts": {
-  "posts": 1712,
-  "comments": 159,
-  "board": 1643,
+  "posts": 850,
+  "comments": 161,
+  "board": 1818,
   "people": 471,
   "products": 298,
-  "coverage": 43,
+  "coverage": 50,
   "fallback_post_rows": 0,
-  "snapshots": 26,
-  "launches": 45,
-  "absent_unread": 196,
+  "snapshots": 33,
+  "launches": 17,
+  "absent_unread": 0,
   "byid_rows": 0,
-  "vote_drops": 6,
-  "board_api_rows": 442,
-  "board_missing": 563,
+  "vote_drops": 10,
+  "board_api_rows": 617,
+  "board_missing": 272,
   "bad_username": 0,
   "created_after_fetch": 0,
   "created_unparsed": 0,
-  "api_comments": 46,
+  "api_comments": 48,
   "api_comments_no_user_id": 0,
-  "api_comments_created_after_pull": 0
+  "api_comments_created_after_pull": 0,
+  "roster": 17,
+  "roster_source": "pipeline list (createdAt in PT day)",
+  "not_this_day_rows": 1177,
+  "not_this_day_launches": 28
  },
  "fail": [
-  "posts: 83 rows with fetched_at more than 5 min from snapshot_ts",
+  "posts: 34 rows with fetched_at more than 5 min from snapshot_ts",
   "comments: 122 rows with fetched_at more than 5 min from snapshot_ts",
   "board: 122 rows with fetched_at more than 5 min from snapshot_ts",
   "people: 206 rows with fetched_at more than 5 min from snapshot_ts",
-  "products: 101 rows with fetched_at more than 5 min from snapshot_ts",
-  "196 launch-snapshots with no vote read from any source (absent from the API ranking, no page or by-id read)"
+  "products: 101 rows with fetched_at more than 5 min from snapshot_ts"
  ],
  "warn": [
-  "votes dropped between snapshots: 6 times on 5 launches",
-  "board: 563 launch-snapshots without a board position - missing, route 4 off",
-  "comments: 17 without a username but with a commenter user id (API v2; map via user_id_map)",
+  "votes dropped between snapshots: 10 times on 9 launches",
+  "board: 272 launch-snapshots without a board position - missing, route 4 off",
+  "comments: 19 without a username but with a commenter user id (API v2; map via user_id_map)",
   "comments: 116 created more than a day before the launch day (old threads?)"
  ],
- "checked_at": "2026-11-08T14:24:38Z"
+ "checked_at": "2026-11-08T16:11:16Z"
 }
