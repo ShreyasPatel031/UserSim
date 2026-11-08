@@ -20,7 +20,7 @@ VM = f"{R}/ph_population/people_live/vm"
 CUR = f"{R}/_cursor"
 START = os.environ.get("CURSOR_AUDIT_START", "2026-11-08T18:20:00Z")  # protocol start; older staged files belong to the pace test (merge_list.py)
 FULL18D = "T3OI+xr3iAvoMDMZrdryhA=="
-AUDITED_BUILDS = set()  # add FULL18D only after the first-run repage audit + 5-person sample pass
+AUDITED_BUILDS = {FULL18D}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
 FOLLOW_ONLY = re.compile(r"^(followers|following):FAIL_(repeat|no_offset_end)$")
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
@@ -43,6 +43,15 @@ def main():
     W, dry = sys.argv[1], "--dry-run" in sys.argv
     stamp = time.strftime("%Y%m%dT%H%MZ", time.gmtime())
     done = {l.split("\t")[0] for l in lines(f"{CUR}/audited.tsv")}
+    if "--reaudit-held" in sys.argv:  # re-score people whose latest audit result was held_gate (whole, blocked only by a gate)
+        last = {}
+        for u in sorted(sh("gsutil", "ls", f"{CUR}/audit_*.tsv").stdout.split()):
+            for l in lines(u):
+                f = l.split("\t")
+                if len(f) >= 3: last[f"{f[0]}@{f[1]}"] = f[2]
+        held = {k for k, v in last.items() if v == "held_gate"}
+        print(f"REAUDIT_HELD={len(held)}")
+        done -= held
     st = lsl(f"{STAGE}/*.json")
     todo = sorted(n for n, t in st.items() if t >= START and f"{n}@{t}" not in done)
     print(f"STAGED_NEW={len(todo)}")
