@@ -1319,3 +1319,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 02:47 UTC Nov 8 Population agent: X timelines labelled (959641e3; store_v3/x_timelines.parquet): 1,867 X people, all partial — cap_1 1,004, window 842, error 21, x_end 0. Coverage report shows them as partial; PH COMPLETE unchanged at 1,960.
 - 02:56 UTC Nov 8 Population agent 02:50Z: store 15,830 saved, COMPLETE 1,981 (+21 whole from strat), INCOMPLETE 13,849 (+12); strat ledger 109 saves since 16:20Z. MERGED_INCOMPLETE 179. latest_complete.txt 1,981.
 - 03:32 UTC Nov 8 Population agent: strat saves 123 (66 whole / 57 FAIL). Reconfigured 03:18Z: a,d on run:scaleud (4↔32 tabs, 40↔160 req/min; byte stop applies again; PH_STOP_ON_FIRST_BLOCK=1 exits on first 403/challenge), b,c still ceiling32 (byte stop bypassed). Save path still ungated reuse.tgz.
+- 03:33 UTC Nov 8 mailbox checked: only the X-truncated reply (handled 02:40); live capture healthy (03:31Z).
