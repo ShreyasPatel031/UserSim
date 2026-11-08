@@ -1312,3 +1312,10 @@ Nov 4 18/35 | 7/35, Nov 5 16/28 | 5/28, Nov 6 14/31 | 4/31, Nov 7 9/16 | 2/16. R
 within 1 h, then late risers. Per-minute odds files land every minute (Nov 7: 552 files 14:48-23:59; Nov 8 00:00-00:58).
 Environment note: the session container was replaced; reinstalled lightgbm / scikit-learn / google-cloud-storage.
 Replay check for the daily list on Nov 2-5 (diag_live21.py, DIAG_DAYS env added) running.
+
+Replay check, daily list at 21:05 (diag_live21.py, DIAG_DAYS=2026-11-02..05): live forecast found 85/120 of the real
+top 30 (Nov 2 17, Nov 3 22, Nov 4 21, Nov 5 25); the backtest code path replayed at the same time found 94/120
+(25, 23, 22, 24). Of the 35 live misses: live input differed (replay had it) 13 (9 of them on Nov 2), model miss in
+both 13 (7 on Nov 4, incl. ranks 3/4/8 with 356-780 points at T), posted after the forecast time 6, under the live
+5-point candidate filter 3. Next (not run; usage pause): diff the live vs replay inputs for the 9 Nov 2 posts; check why
+the model passes over high-point posts on Nov 4.
