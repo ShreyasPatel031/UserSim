@@ -57,10 +57,44 @@ if q.exists():
         n2 = '        S.put(event="stopped_on_block", note="pdeep: browser open/Cloudflare clear failed; no retry"); return 3\n'
         r2 = (
             '        S.put(event="stopped_on_block", note="pdeep: browser open/Cloudflare clear failed; no retry")\n'
-            "        PB.sh('gsutil', '-q', 'cp', S.f, f'{B}/status/{VM}.jsonl'); os._exit(3)\n"
+            "        PB.sh('gsutil', '-q', 'cp', S.f, f'{B}/status/{VM}.jsonl'); _wake(); os._exit(3)\n"
         )
-        if n1 in src and n2 in src:
-            q.write_text(src.replace(n1, r1, 1).replace(n2, r2, 1))
+        # Mid-run block: stock code sets st["stop"] and gather() waits for every other worker to finish its current
+        # full pull on the walled IP (10+ min observed). Exit now, releasing the other workers' claims so those
+        # people return to the queue.
+        n3 = '    st = {"stop": None, "done": 0, "rc": 0, "qi": 0}\n'
+        r3 = n3 + "    _INF = _INFG\n"
+        n6 = "    import signal; signal.signal(signal.SIGTERM, lambda *_: (PB.sh('gsutil', '-q', 'cp', S.f, f'{B}/status/{VM}.jsonl'), os._exit(143)))"
+        r6 = (
+            "    import signal; signal.signal(signal.SIGTERM, lambda *_: ((lambda r: r and PB.sh('gsutil', '-q', '-m', 'rm', *r))"
+            "([f'{SB}/claims/{v}' for v in _INFG.values()]), PB.sh('gsutil', '-q', 'cp', S.f, f'{B}/status/{VM}.jsonl'), _wake(), os._exit(143)))"
+        )
+        n7 = "async def main(a):\n"
+        r7 = (
+            "_INFG = {}\n"
+            "def _wake():  # supervisor polls its child with `sleep 120`; end that sleep just after we exit\n"
+            "    import subprocess as _sp; _sp.Popen(['bash', '-c', 'sleep 1; pkill -x -f \"sleep 120\"'], start_new_session=True)\n"
+            + n7
+        )
+        n4 = "            h = await next_handle()\n            if not h: break\n"
+        r4 = (
+            "            _INF.pop(wi, None)\n"
+            "            h = await next_handle()\n            if not h: break\n"
+            "            _INF[wi] = f'rerun_{RR[h]}_{h}' if h in RR else h\n"
+        )
+        n5 = '                    st["stop"] = "block"; st["rc"] = 3; S.put(event="stopped_on_block", handle=h, note="pdeep: first block stops every worker"); break\n'
+        r5 = (
+            '                    S.put(event="stopped_on_block", handle=h, note="pdeep: first block; fast exit, released in-flight claims", released=sorted(v for k, v in _INF.items() if k != wi))\n'
+            "                    _rel = [f'{SB}/claims/{v}' for k, v in _INF.items() if k != wi]\n"
+            "                    if _rel: PB.sh('gsutil', '-q', '-m', 'rm', *_rel)\n"
+            "                    PB.sh('gsutil', '-q', 'cp', S.f, f'{B}/status/{VM}.jsonl'); _wake(); os._exit(3)\n"
+        )
+        pairs = [(n1, r1), (n2, r2), (n3, r3), (n4, r4), (n5, r5), (n6, r6), (n7, r7)]
+        miss = [i for i, (n, _) in enumerate(pairs, 1) if n not in src]
+        if not miss:
+            for n, r in pairs:
+                src = src.replace(n, r, 1)
+            q.write_text(src)
             print("patched pdeep_fastcycle")
         else:
-            print(f"pdeep_fastcycle needles missing q={n1 in src} exit={n2 in src}", file=sys.stderr)
+            print(f"pdeep_fastcycle needles missing {miss}", file=sys.stderr)

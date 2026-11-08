@@ -123,10 +123,14 @@ while true; do
         sleep 2
       done
     ) &
+    _up=$SECONDS
     while kill -0 "$pid" 2>/dev/null; do
-      sleep 120
-      gsutil -q cp "$L" "$B/logs/$VM.reuse.$L" || true
-      hb "$tok"
+      sleep 5
+      if (( SECONDS - _up >= 120 )); then
+        _up=$SECONDS
+        gsutil -q cp "$L" "$B/logs/$VM.reuse.$L" || true
+        hb "$tok"
+      fi
     done
     wait "$pid"
     rc=$?

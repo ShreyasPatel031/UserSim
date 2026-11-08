@@ -42,11 +42,12 @@ print(f"idle={idle}s opened={bool(opened)}")
 # Cloudflare failures already exit on their own (~3 min, then supervisor swaps port). Only kick real hangs:
 # no browser_open long after start, or a cleared session that has saved nobody for a long time.
 hung_pre_cf = (not opened) and idle >= '"$MAX_WAIT_SEC"'
-hung_post_cf = bool(opened) and idle >= 1800
+hung_post_cf = bool(opened) and idle >= 600
 if not (hung_pre_cf or hung_post_cf):
     print("OK"); raise SystemExit(0)
 subprocess.call(["sudo","sh","-c","date -u +%FT%TZ > /opt/ph/reuse/KICK"])
 subprocess.call(["sudo","pkill","-TERM","-f","[p]deep.py|[p]h_batch.py"])
+time.sleep(4); subprocess.call(["sudo","pkill","-x","-f","sleep 120"])
 print("BATCH_KICKED")
 PY
 '
