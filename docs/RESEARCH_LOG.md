@@ -232,3 +232,29 @@ Not a gap: upvotes on signed-out pulls stop near 200 by PH's own limit (labelled
   - Its offset paging (server_end_offset) was on activity pages only.
 - All four strat VMs stopped on PH challenge blocks (403, "challenge not cleared"): a at 17:57Z, d at 18:36Z, b at 19:11Z, c at 22:06Z. Auto-recover is off ("no standing auto").
 - So the gaps in the 22:15Z audit stand unchanged. The follower re-fetch for the 1,080 inventory and for the 393 cap or repeated-page people has not started.
+
+### 2026-11-08 00:30Z — E5: code-only review of full18c (adds the Chao1 pass-accounting closure guard)
+
+The diff matches my request:
+- It keeps a per-id count of how many passes served each account, saved in the re-page state.
+- It closes only when the Chao1 estimate of never-served accounts is below 0.5. pdeep.whole checks this too.
+- It also adds a cap of 24 passes across all attempts. Hitting it marks the person "repage_exhausted" and sends them to a review list, off the automatic queue.
+- Saved state expires after 7 days, and session runners save no state.
+- The package has no tests/ folder, and running candidate code is blocked here. So the miss rate below comes from my own re-implementation of the closure rules: `experiments/population_review/sim_repage_closure.py`.
+
+**Simulated miss rate:** the share of closed lists still missing at least one visible account. 200 runs per cell (60 for N = 20k). m is the chance a given account is skipped in one pass.
+
+| model of PH's unstable order | full18c as built | with the 98%-of-header shortcut removed |
+|---|---|---|
+| every account equally likely to be skipped, m 0.02-0.25, N 300-20k, header = visible | 0-10% (3/200 ... 19/200) | **0/200** in 8 of 9 cells; 5/200 at N 300, m 0.25 |
+| same, with 10% hidden accounts in the header | 0-3% | (not needed) |
+| a few accounts almost never served (1% skipped 90%, or 0.2% skipped 97%) | 40-100% of closed lists miss, 0.5-34 accounts each; 20-100% end exhausted | not fixable by pass counting |
+| 1-5 new followers arriving per pass | 15-43% of closed lists miss a newcomer; up to 16% exhausted | |
+
+Two things to take from this:
+- **Where the misses come from:** the shortcut "union >= 98% of header" closes as soon as Chao1 dips under 0.5, before any zero-new pass. Requiring union >= header (or zero_full >= need) instead adds about 0.1 passes on average.
+- **Remaining risks:**
+  1. Accounts PH almost never serves (heterogeneous order) look the same as hidden accounts. Chao1 underestimates them, so they close as missed or end exhausted. Only an independent ordering or a signed-in view can tell the difference.
+  2. Active big profiles are a moving target. New followers during a pass stop the zero-new closure and inflate f1, so some of them end exhausted.
+  3. The class-3 cause (hidden vs not served) is still unmeasured.
+  4. Not yet run on PH.
