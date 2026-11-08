@@ -1294,3 +1294,21 @@ The top decile is over-predicted (1 h: 0.259 predicted vs 0.165 realized; 2 h 0.
 70%, Nov 5 83%** (backtest 80.2%; pre-fix settled days 47-60%). Provisional: Nov 6 80%, Nov 7 90%.
 hn_minute minutes read (front / newest / pool): Nov 5 857 / 1,552 / 216; Nov 6 838 / 1,563 / 247; Nov 7 1,235 / 1,569
 / 256 (the /newest recorder stayed up through the service-account outage; front and pool reads dropped).
+
+## Daily live check 2026-11-08 00:47 UTC (live15.py, LIVE_MIN_DAYS=2)
+
+Milestone counts (Caught = winners flagged / winners; flags = winners; 80% target):
+- Backtest: 1 h 640/1,323 (48.4%, target 1,059, gap 419); 15 min 115/388 Oct 2-14 (29.6%, target 311) and 376/1,323
+  Sep 1 - Oct 14 (28.4%, target 1,059); at posting ~345/1,323 (26.1%, target 1,059).
+- Live, full-coverage posting days Nov 2-7 (PROVISIONAL: only Nov 2 has all 4 list days settled), per-minute model:
+  1 h 80/169 (47.3% [35.4, 57.7]); 15 min 28/169 (16.6% [14.3, 18.6]); best 15-min score is the 50/50 blend
+  43/169 (25.4% [22.2, 29.0]); at posting (odds) 36/169 (21.3% [18.9, 24.2]).
+  All days Oct 31 - Nov 7: 1 h 86/213 (40.4%), 15 min 33/213 (15.5%).
+- Focus: checkpoint 1 (1 h) until 80%: backtest gap 419 winners; live full-coverage gap 56 of 169.
+
+Per day (1 h | 15 min, per-minute model): Nov 2 9/38 | 6/38 (settled; 18 late risers), Nov 3 13/21 | 4/21,
+Nov 4 18/35 | 7/35, Nov 5 16/28 | 5/28, Nov 6 14/31 | 4/31, Nov 7 9/16 | 2/16. Recorder saw >= 99% of posts within
+15 min on Nov 2-7 (Oct 31 41.7%, Nov 1 53.2%). Top miss reasons at 15 min: ranked below the cut while on the front page
+within 1 h, then late risers. Per-minute odds files land every minute (Nov 7: 552 files 14:48-23:59; Nov 8 00:00-00:58).
+Environment note: the session container was replaced; reinstalled lightgbm / scikit-learn / google-cloud-storage.
+Replay check for the daily list on Nov 2-5 (diag_live21.py, DIAG_DAYS env added) running.

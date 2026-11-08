@@ -23,7 +23,7 @@ import qn  # noqa: E402
 import store as S  # noqa: E402
 import top100 as H  # noqa: E402
 
-DAYS = ["2026-10-31", "2026-11-01"]
+DAYS = os.environ.get("DIAG_DAYS", "2026-10-31,2026-11-01").split(",")
 HM = sys.argv[1] if len(sys.argv) > 1 else "2105"
 b = S._bucket()
 L = pd.concat([pd.read_json(io.StringIO(x.download_as_text()), lines=True, dtype={"day": str}, convert_dates=False)
