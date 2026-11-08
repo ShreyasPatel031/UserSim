@@ -93,8 +93,9 @@ export FLEET_AUTOSCALE_NO_SHED=1
 python3 -c "
 import json
 m=json.load(open('$ART/fleet_measure.json'))
-exit(0 if float(m.get('complete_ppm') or 0) >= float('$FLEET_TARGET_LO') else 1)
+exit(0 if float(m.get('complete_ppm') or 0) >= float('${FLEET_TARGET_LO}') else 1)
 " 2>/dev/null && export FLEET_AUTOSCALE_NO_SHED=0 || true
+export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET_MID:-25}"
 "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
 
 relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm vms=$n vm~\$$vm_day/day efficiency_complete=${eff}. KPI excludes incomplete pulls (reruns only)."

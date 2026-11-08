@@ -17,6 +17,7 @@ RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 TARGET_LO="${FLEET_TARGET_LO:-20}"
 TARGET_HI="${FLEET_TARGET_HI:-30}"
+TARGET_MID="${FLEET_TARGET_MID:-25}"   # scale-down aim: stay in [LO,HI] at minimum VM cost
 MAX_VMS="${FLEET_MAX_VMS:-30}"
 MIN_VMS="${FLEET_MIN_VMS:-4}"
 MACHINE="${PH_FLEET_MACHINE:-e2-standard-2}"
@@ -143,6 +144,30 @@ delete_one() {
   awk -F'\t' -v s="$slot" '$1!=s' "$ART/slots.tsv" >"$ART/slots.tsv.tmp" && mv "$ART/slots.tsv.tmp" "$ART/slots.tsv"
 }
 
+# When scaling down: drop cf_wall/dead first, then lowest complete/min in the measure window.
+pick_scale_down_slot() {
+  ART="$ART" python3 - <<'PY' 2>/dev/null || awk -F'\t' 'NF>=2 && $1+0==$1 {m=$1} END{print m}' "$ART/slots.tsv"
+import json, os
+from pathlib import Path
+art = Path(os.environ["ART"])
+rows = json.loads((art / "fleet_measure.json").read_text()).get("slots", []) if (art / "fleet_measure.json").exists() else []
+live = {int(ln.split("\t", 1)[0]) for ln in art.joinpath("slots.tsv").read_text().splitlines() if ln.strip() and not ln.startswith("#")}
+rows = [r for r in rows if int(r.get("slot", 0)) in live]
+idle = [r for r in rows if r.get("state") in ("cf_wall", "dead", "cold", "probe_fail")]
+if idle:
+    print(max(idle, key=lambda r: int(r.get("slot", 0)))["slot"])
+    raise SystemExit
+act = sorted(
+    [r for r in rows if r.get("state") == "active"],
+    key=lambda r: (float(r.get("ppm_complete") or 0), float(r.get("win_complete") or 0)),
+)
+if act:
+    print(act[0]["slot"])
+else:
+    print(max(live))
+PY
+}
+
 cmd_scale_to() {
   local want=$1 have next port
   have=$(n_slots)
@@ -154,8 +179,9 @@ cmd_scale_to() {
     create_one "$next" "$port"
   done
   while [[ $(n_slots) -gt $want ]]; do
-    next=$(awk -F'\t' 'NF>=2 && $1+0==$1 {m=$1} END{print m}' "$ART/slots.tsv")
-    [[ "$next" -le $MIN_VMS ]] && break
+  [[ $(n_slots) -le $MIN_VMS ]] && break
+    next="$(pick_scale_down_slot)"
+    [[ -z "$next" ]] && break
     delete_one "$next"
   done
 }
@@ -239,18 +265,27 @@ m=json.load(open('$ART/fleet_measure.json'))
 print(m.get('cold_vms',0), m.get('active_vms',0), m.get('productive_vms',0))
 " 2>/dev/null || echo "0 0 0")"
   desired=$(python3 -c "
-import json
+import json, math
 m=json.load(open('$ART/fleet_measure.json'))
 r=float('$realized' or 0)
 lo=float('$TARGET_LO')
-need=int('$need')
+hi=float('$TARGET_HI')
+mid=float('$TARGET_MID')
 n=int('$n')
-prod=int('$productive_vms' or 0)
-# Target VM count: enough productive headroom, not 'need' when half the fleet is CF-wall.
-if r >= lo:
-    d=max($MIN_VMS, min(n, max(prod + 2, int(need))))
+act=int(m.get('active_vms') or 0)
+avg = (r / act) if act > 0 else 0
+if avg <= 0:
+    print(n); raise SystemExit
+# VMs needed so fleet complete/min stays in [lo, hi] at current throughput per active VM.
+cap = max(int('$MIN_VMS'), int(math.ceil(hi / avg)))
+floor = max(int('$MIN_VMS'), int(math.ceil(lo / avg)))
+aim = max(floor, min(cap, int(round(mid / avg))))
+if r > hi:
+    d = max(int('$MIN_VMS'), min(n, aim))
+elif r < lo:
+    d = min(int('$MAX_VMS'), max(n, floor + 1))
 else:
-    d=max($MIN_VMS, min($MAX_VMS, prod + 4 if prod else $MIN_VMS))
+    d = min(n, cap)
 print(d)
 ")
   use_ppm="${realized:-$ppm}"
@@ -281,11 +316,20 @@ print(' '.join(str(s) for s in cand[:drop]))
     fi
   elif python3 -c "import sys; sys.exit(0 if float('$use_ppm') > float('$TARGET_HI') else 1)"; then
     if [[ $n -gt $desired && $n -gt $MIN_VMS ]]; then
-      echo "OVER target → scale toward $desired"
+      echo "OVER $TARGET_HI/min → scale toward $desired VMs (cost optimize)"
       cmd_scale_to "$desired"
+    elif [[ $n -gt $desired ]]; then
+      echo "OVER ppm but at MIN_VMS=$MIN_VMS"
+    else
+      echo "OVER ppm — already at desired=$desired VMs"
     fi
   else
-    echo "IN BAND — hold $n VMs"
+    if [[ $n -gt $desired && $n -gt $MIN_VMS ]]; then
+      echo "IN BAND — right-size $n → $desired VMs"
+      cmd_scale_to "$desired"
+    else
+      echo "IN BAND — hold $n VMs (desired=$desired)"
+    fi
   fi
 }
 
