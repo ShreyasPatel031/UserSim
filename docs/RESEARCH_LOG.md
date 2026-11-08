@@ -1321,3 +1321,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 03:32 UTC Nov 8 Population agent: strat saves 123 (66 whole / 57 FAIL). Reconfigured 03:18Z: a,d on run:scaleud (4↔32 tabs, 40↔160 req/min; byte stop applies again; PH_STOP_ON_FIRST_BLOCK=1 exits on first 403/challenge), b,c still ceiling32 (byte stop bypassed). Save path still ungated reuse.tgz.
 - 03:33 UTC Nov 8 mailbox checked: only the X-truncated reply (handled 02:40); live capture healthy (03:31Z).
 - 03:55 UTC Nov 8 Population agent: strat saves 145 (80 whole / 65 FAIL); scale-test VMs a,d also save incomplete. Store 03:50Z: COMPLETE 2,002 (1,920 whole + 82 signed-out), INCOMPLETE 13,860.
+- 04:17 UTC Nov 8 Population agent: strat saves 164 (97 whole / 67 FAIL); last 19: 17 whole / 2 FAIL. stopped_on_block: a2 b1 c3 d3. No config change since 03:18Z.
