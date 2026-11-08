@@ -20,7 +20,8 @@ probe_one() {
   if [[ "$ok" == 1 ]]; then echo "OK $slot"
   else echo "BAD $slot $line"; fi
 }
-export -f probe_one RUN_ID SA ZONE PROBE
+export -f probe_one
+export RUN_ID SA ZONE PROBE
 
 slots=()
 while IFS=$'\t' read -r slot _; do
@@ -33,7 +34,7 @@ done <"$ART/slots.tsv"
 total=${#slots[@]}
 tmp="$(mktemp)"
 printf '%s\n' "${slots[@]}" | xargs -P 10 -I{} bash -c 'probe_one "$@"' _ {} >"$tmp" 2>/dev/null || true
-good=$(grep -c '^OK ' "$tmp" || true)
+good=$(grep -c '^OK ' "$tmp" 2>/dev/null || true); good=${good:-0}
 bad=()
 while read -r tag slot rest; do
   [[ "$tag" == BAD ]] && bad+=("$slot") && echo "FIXES_BAD slot=$slot $rest"
