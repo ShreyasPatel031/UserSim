@@ -33,6 +33,16 @@ def build() -> list[str]:
         tabs = min(page_cap, max_tabs, _i("PH_TABS", max_tabs))
         ramp = os.environ.get("PH_RAMP") or f"{tabs}:{rpm_cap}"
         person_interval = 0.0
+    elif strat == "scale_up":
+        # Climb 4→32; browser opens 32 pages, logical fan-out follows ramp.
+        tabs = min(page_cap, 32, max_tabs)
+        ramp = os.environ.get("PH_RAMP") or "4:40,8:80,16:120,24:140,32:160"
+        person_interval = 0.0
+    elif strat == "scale_down":
+        # Start at 32 and step down the ramp list (maybe_ramp advances index).
+        tabs = min(page_cap, 32, max_tabs)
+        ramp = os.environ.get("PH_RAMP") or "32:160,24:140,16:100,8:60,4:40"
+        person_interval = 0.0
     elif strat == "serial_polite":
         tabs, ramp = 4, "4:36"
         person_interval = person_interval or float(_i("PH_COAST_SEC_PER_PROFILE", 15))
