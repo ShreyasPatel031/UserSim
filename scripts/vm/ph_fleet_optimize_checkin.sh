@@ -15,7 +15,11 @@ export FLEET_MAX_VMS="${FLEET_MAX_VMS:-30}" PH_FLEET_STRATEGY="$ROOT/scripts/vm/
 LOG="$ART/checkin.log"
 HOURLY="${FLEET_HOURLY_USD:-0.06701}"
 
+export FLEET_WINDOW_MIN="${FLEET_WINDOW_MIN:-15}"
 measure="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null)" || measure="{}"
+chmod +x "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" 2>/dev/null || true
+fixes="$(bash "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" 2>/dev/null | tail -1)" || fixes="FIXES_AUDIT failed"
+echo "$(date -u +%FT%TZ) $fixes" >>"$LOG"
 echo "$(date -u +%FT%TZ) measure=$measure" >>"$LOG"
 
 n="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('vms',0))" 2>/dev/null || echo 0)"
@@ -83,6 +87,14 @@ fi
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
 "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
+# Babysit: do not delete cf_wall/dead slots while throughput is below target (they may be mid port-swap).
+FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
+export FLEET_AUTOSCALE_NO_SHED=1
+python3 -c "
+import json
+m=json.load(open('$ART/fleet_measure.json'))
+exit(0 if float(m.get('complete_ppm') or 0) >= float('$FLEET_TARGET_LO') else 1)
+" 2>/dev/null && export FLEET_AUTOSCALE_NO_SHED=0 || true
 "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
 
 relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm vms=$n vm~\$$vm_day/day efficiency_complete=${eff}. KPI excludes incomplete pulls (reruns only)."

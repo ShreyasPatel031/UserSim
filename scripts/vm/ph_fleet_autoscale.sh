@@ -263,12 +263,14 @@ cand=sorted([r['slot'] for r in rows if r.get('state') in ('cf_wall','cold','dea
 drop=max(0, int('$n')-int('$desired'))
 print(' '.join(str(s) for s in cand[:drop]))
 " 2>/dev/null || true)"
-  if [[ -n "$idle_drop" ]]; then
+  if [[ -n "$idle_drop" && "${FLEET_AUTOSCALE_NO_SHED:-0}" != "1" ]]; then
     for slot in $idle_drop; do
       echo "SHED idle slot $slot"
       delete_one "$slot" || true
     done
     n=$(n_slots)
+  elif [[ -n "$idle_drop" ]]; then
+    echo "SHED skipped (FLEET_AUTOSCALE_NO_SHED=1): would drop $idle_drop"
   fi
   if python3 -c "import sys; sys.exit(0 if float('$use_ppm') < float('$TARGET_LO') else 1)"; then
     if [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
