@@ -1327,3 +1327,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 05:33 UTC Nov 8 mailbox checked: no new replies; live capture healthy (05:32Z).
 - 06:33 UTC Nov 8 mailbox checked: no new replies; live capture healthy (06:31Z). Nov 8 pipeline due 08:05Z (VM should stop 23:00 PT and boot 00:05 PT).
 - 07:34 UTC Nov 8 mailbox checked: no new replies; live capture healthy (07:31Z). usersim-pipeline stopped itself 23:00:38 PT (TERMINATED) — Nov 8 00:05 PT start schedule is armed.
+- 08:23 UTC Nov 8 PH agent: Nov 8 started on time (pipeline 00:05:10 PT, today_0005.json uploaded; live capture 08:01Z/08:15Z 17/17). raw/daily/2026-11-07 never landed. Last week now Oct 29–Nov 4 (7 days, 23,349 votes): complete-only 2.21% / 3.53% top 3 on 2,027 complete; gap to 80% 18,164 votes; all tracked 42.7%.
