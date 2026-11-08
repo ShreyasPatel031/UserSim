@@ -17,13 +17,13 @@ SA = os.environ.get("PACE_SERVICE_ACCOUNT", f"usersim-cloud-agent@{PROJ}.iam.gse
 ART = Path(os.environ.get("FLEET_ART", f"results/ph_fleet_full/{RUN_ID}"))
 
 PROBE = r'''python3 -c "
-import json, subprocess
+import json, subprocess, glob
 from pathlib import Path
 from datetime import datetime, timezone
 now=datetime.now(timezone.utc)
 out=Path('/opt/ph/reuse/out')
 files=[p for p in out.glob('*.json') if p.name!='hb.json'] if out.exists() else []
-n=len(files)
+n_attempt=len(files)
 newest=max((p.stat().st_mtime for p in files), default=0)
 age=int((now.timestamp()-newest)) if newest else -1
 fp=idr=None
@@ -33,18 +33,36 @@ for ln in (p.read_text().splitlines() if p.exists() else []):
   except: continue
   if j.get('event')=='first_pull': fp=j.get('utc')
   if j.get('event')=='identity_ready': idr=j.get('utc')
+n_upload=n_complete=n_rerun=0
+for sp in glob.glob('/opt/ph/reuse/status*.jsonl'):
+  for ln in open(sp):
+    try: j=json.loads(ln)
+    except: continue
+    if not j.get('handle'): continue
+    if j.get('event')=='incomplete_skip_upload':
+      n_rerun+=1; continue
+    rc=j.get('rc')
+    if rc==0:
+      n_upload+=1
+      hp=float(j.get('header_pct') or 0)
+      if hp>=98: n_complete+=1
+      else: n_rerun+=1
+    elif rc not in (None,):
+      n_rerun+=1
 batch=subprocess.call(['pgrep','-f','ph_batch.py'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)==0
-ppm=0.0
+ppm_attempt=ppm_complete=ppm_rerun=0.0
 if fp:
   t=datetime.fromisoformat(fp.replace('Z','+00:00'))
   sec=max(60.0,(now-t).total_seconds())
-  ppm=round(n*60.0/sec,4)
+  ppm_attempt=round(n_attempt*60.0/sec,4)
+  ppm_complete=round(n_complete*60.0/sec,4)
+  ppm_rerun=round(n_rerun*60.0/sec,4)
 state='cold'
 if not batch: state='dead'
 elif not fp: state='cf_wall'
 elif age>=0 and age<300: state='active'
 elif fp: state='stale'
-print(json.dumps({'n':n,'age':age,'ppm':ppm,'state':state,'fp':fp,'idr':idr,'batch':batch}))
+print(json.dumps({'n':n_attempt,'n_complete':n_complete,'n_rerun':n_rerun,'n_upload':n_upload,'age':age,'ppm':ppm_complete,'ppm_attempt':ppm_attempt,'ppm_complete':ppm_complete,'ppm_rerun':ppm_rerun,'state':state,'fp':fp,'idr':idr,'batch':batch}))
 "'''
 
 
@@ -92,7 +110,19 @@ def main() -> int:
         rows = list(ex.map(probe_slot, slots))
 
     now = datetime.now(timezone.utc)
-    realized = sum(r.get("ppm", 0) for r in rows if r.get("state") in ("active", "stale"))
+    realized = sum(
+        (r.get("ppm_complete") or r.get("ppm") or 0)
+        for r in rows
+        if r.get("state") in ("active", "stale")
+    )
+    attempt_ppm = sum(
+        (r.get("ppm_attempt") or r.get("ppm") or 0)
+        for r in rows
+        if r.get("state") in ("active", "stale")
+    )
+    rerun_ppm = sum(
+        (r.get("ppm_rerun") or 0) for r in rows if r.get("state") in ("active", "stale")
+    )
     active = [r for r in rows if r.get("state") == "active"]
     stale = [r for r in rows if r.get("state") == "stale"]
     cold = [r for r in rows if r.get("state") in ("cold", "cf_wall", "dead")]
@@ -103,18 +133,31 @@ def main() -> int:
         "run_id": RUN_ID,
         "vms": len(slots),
         "realized_ppm": round(realized, 3),
+        "complete_ppm": round(realized, 3),
+        "attempt_ppm": round(attempt_ppm, 3),
+        "rerun_ppm": round(rerun_ppm, 3),
+        "metric_note": "complete_ppm=status rc0+header>=98; incomplete pulls count as rerun only",
         "active_vms": len(active),
         "stale_vms": len(stale),
         "cold_vms": len(cold),
         "productive_vms": len(productive),
         "avg_ppm_productive": round(
-            sum(r.get("ppm", 0) for r in productive) / len(productive), 4
+            sum((r.get("ppm_complete") or r.get("ppm") or 0) for r in productive)
+            / len(productive),
+            4,
         )
         if productive
         else 0,
         "vms_needed_for_20": int(
-            (20 / (sum(r.get("ppm", 0) for r in productive) / len(productive)))
-            if productive and sum(r.get("ppm", 0) for r in productive) > 0
+            (
+                20
+                / (
+                    sum((r.get("ppm_complete") or r.get("ppm") or 0) for r in productive)
+                    / len(productive)
+                )
+            )
+            if productive
+            and sum((r.get("ppm_complete") or r.get("ppm") or 0) for r in productive) > 0
             else 30
         ),
         "slots": rows,
@@ -132,8 +175,11 @@ def main() -> int:
         {
             "utc": snap["utc"],
             "vms": snap["vms"],
-            "fleet_ppm": snap["realized_ppm"],
-            "realized_ppm": snap["realized_ppm"],
+            "fleet_ppm": snap["complete_ppm"],
+            "realized_ppm": snap["complete_ppm"],
+            "complete_ppm": snap["complete_ppm"],
+            "attempt_ppm": snap["attempt_ppm"],
+            "rerun_ppm": snap["rerun_ppm"],
             "active_vms": snap["active_vms"],
             "stale_vms": snap["stale_vms"],
             "cold_vms": snap["cold_vms"],

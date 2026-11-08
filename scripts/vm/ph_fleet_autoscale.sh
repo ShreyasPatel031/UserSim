@@ -199,7 +199,7 @@ cmd_autoscale_once() {
   local alive json ppm warm_n avg n realized need desired
   export FLEET_ART="$ART" PACE_FLEET_RUN_ID="$RUN_ID"
   if [[ -f "$ROOT/scripts/vm/ph_fleet_measure.py" ]]; then
-  realized="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin).get('realized_ppm',0))" 2>/dev/null || echo 0)"
+  realized="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null | python3 -c "import json,sys; m=json.load(sys.stdin); print(m.get('complete_ppm',m.get('realized_ppm',0)))" 2>/dev/null || echo 0)"
   need="$(python3 -c "import json; print(json.load(open('$ART/fleet_measure.json')).get('vms_needed_for_20',24))" 2>/dev/null || echo 24)"
   else
   realized=0; need=24

@@ -19,7 +19,9 @@ measure="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null)" || measu
 echo "$(date -u +%FT%TZ) measure=$measure" >>"$LOG"
 
 n="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('vms',0))" 2>/dev/null || echo 0)"
-ppm="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('realized_ppm',0))" 2>/dev/null || echo 0)"
+ppm="$(echo "$measure" | python3 -c "import json,sys; m=json.load(sys.stdin); print(m.get('complete_ppm',m.get('realized_ppm',0)))" 2>/dev/null || echo 0)"
+attempt_ppm="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('attempt_ppm',0))" 2>/dev/null || echo 0)"
+rerun_ppm="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('rerun_ppm',0))" 2>/dev/null || echo 0)"
 vm_day="$(python3 -c "print(round(float($n)*float($HOURLY)*24,2))")"
 vm_hr="$(python3 -c "print(round(float($n)*float($HOURLY),4))")"
 eff="$(python3 -c "p=float('$ppm' or 0); c=float('$vm_hr' or 1); print(round(p/c,4) if c>0 else 0)")"
@@ -80,7 +82,7 @@ fi
 
 "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
 
-relay_msg="Fleet check-in run=$RUN_ID realized_ppm=$ppm vms=$n vm~\$$vm_day/day efficiency=${eff} people/min per \$/hr_vm"
+relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm vms=$n vm~\$$vm_day/day efficiency_complete=${eff}. KPI excludes incomplete pulls (reruns only)."
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
 relay_msg+=". Sample completeness $sampled pulls: complete=$complete incomplete=$incomplete (gate: PH_REQUIRE_FULL_SAVE=1 header>=98 tab>=95)."
 if [[ "$incomplete" -gt 0 ]]; then
@@ -105,4 +107,4 @@ for ln in p.read_text().splitlines()[-20:]:
 " >>"$LOG" 2>/dev/null || true
 fi
 
-echo "CHECKIN ppm=$ppm vms=$n vm~\$$vm_day/day eff=$eff complete=$complete incomplete=$incomplete sampled=$sampled"
+echo "CHECKIN complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm vms=$n vm~\$$vm_day/day eff=$eff pop_audit=incomplete_not_zero"

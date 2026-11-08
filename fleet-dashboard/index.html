@@ -70,7 +70,7 @@
     <section>
       <h2>Active slots</h2>
       <table>
-        <thead><tr><th>Slot</th><th>People/min</th><th>JSON</th><th>Last write</th></tr></thead>
+        <thead><tr><th>Slot</th><th>Complete/min</th><th>complete/attempt</th><th>Last write</th></tr></thead>
         <tbody id="active-rows"></tbody>
       </table>
     </section>
@@ -108,21 +108,30 @@
         return rows;
       }
       function render(d) {
-        const ppm = d.realized_ppm ?? d.fleet_ppm ?? 0;
+        const ppm = d.complete_ppm ?? d.realized_ppm ?? d.fleet_ppm ?? 0;
+        const attempt = d.attempt_ppm;
+        const rerun = d.rerun_ppm;
         const target = d.target_lo ?? 20;
         const ok = ppm >= target;
         document.getElementById("meta").textContent =
           `Measured ${d.utc || "—"} (${fmtEt(d.utc)} ET) · run ${d.run_id || "—"}`;
         document.getElementById("pills").innerHTML =
-          `<span class="pill ${ok ? "ok" : "warn"}">${ppm.toFixed(2)} people/min</span>` +
-          `<span class="pill">target ${target}–${d.target_hi ?? 30}</span>` +
+          `<span class="pill ${ok ? "ok" : "warn"}">${ppm.toFixed(2)} complete/min</span>` +
+          (attempt != null ? `<span class="pill warn">${Number(attempt).toFixed(2)} attempts/min</span>` : "") +
+          (rerun != null ? `<span class="pill">${Number(rerun).toFixed(2)} reruns/min</span>` : "") +
+          `<span class="pill">target ${target}–${d.target_hi ?? 30} complete</span>` +
           `<span class="pill">${d.vms ?? "—"} VMs</span>`;
         const cost = d.dashboard?.compute_usd_per_day ?? d.compute_usd_per_day;
+        const costHr = d.dashboard?.compute_usd_per_hour ?? d.compute_usd_per_hour;
+        const eff = costHr > 0 ? ppm / costHr : null;
         const stats = [
-          [ppm.toFixed(2), "Realized people/min"],
+          [ppm.toFixed(2), "Complete people/min"],
+          [attempt != null ? Number(attempt).toFixed(2) : "—", "Attempts/min (incl. reruns)"],
           [String(d.vms ?? "—"), "VMs"],
           [`${d.active_vms ?? 0}/${d.vms ?? "—"}`, "Active last 5m"],
           [cost != null ? "$" + Number(cost).toFixed(2) : "—", "Compute $/day"],
+          [eff != null ? eff.toFixed(2) : "—", "People/min per $/hr VM"],
+          [String(d.productive_vms ?? "—"), "Productive slots"],
           [String(d.stale_vms ?? "—"), "Stale"],
           [String(d.cold_vms ?? "—"), "CF wall / cold"],
           [String(d.vms_needed_for_20 ?? "—"), "Est. VMs @ current rate"],
@@ -130,10 +139,12 @@
         document.getElementById("stats").innerHTML = stats
           .map(([v, l]) => `<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`)
           .join("");
-        const active = (d.slots || []).filter((r) => r.state === "active").sort((a, b) => b.ppm - a.ppm);
+        const active = (d.slots || []).filter((r) => r.state === "active").sort(
+          (a, b) => (b.ppm_complete || b.ppm || 0) - (a.ppm_complete || a.ppm || 0)
+        );
         document.getElementById("active-rows").innerHTML = active.length
           ? active.map((r) =>
-              `<tr><td>${r.slot}</td><td>${(r.ppm || 0).toFixed(2)}</td><td>${r.n}</td><td>${r.age >= 0 ? r.age + "s" : "—"}</td></tr>`
+              `<tr><td>${r.slot}</td><td>${(r.ppm_complete || r.ppm || 0).toFixed(2)}</td><td>${r.n_complete ?? "—"}/${r.n ?? "—"}</td><td>${r.age >= 0 ? r.age + "s" : "—"}</td></tr>`
             ).join("")
           : `<tr><td colspan="4">No active slots in last 5m</td></tr>`;
         document.getElementById("state-rows").innerHTML = groupSlots(d.slots)
