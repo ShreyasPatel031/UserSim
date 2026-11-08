@@ -17,6 +17,14 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Route 4 (port 10001, capture pages) | 403 on cold warm-up Nov 3 21:04Z and Nov 4 07:55Z | blocked; hold to Nov 5 07:25Z |
 | Box browser (own IP, $0) | human pace ≥ 20 s/load; second Cloudflare challenge after ~15 pages | used for first snapshot only |
 
+## Status Nov 8 (10:50 UTC) — daily review
+- Complete people (strict rule incl. follow-list offset end, FAIL_repeat, class 3): 2,045 (1,963 whole + 82 whole signed-out); 13,877 incomplete. Earlier 2,133/2,161 counts were overstated; 179 of 1,522 merged pace-test people now fail the follow-list rule.
+- Last week (Oct 29–Nov 4, 23,349 votes) complete-only coverage: 2.21% all / 3.53% top 3; all tracked 42.7%.
+- Pulls: no audited fleet. A Cursor agent (usersim-cloud-agent) runs 4 feeder-strat + 6 feeder-fleet VMs on the ungated reuse.tgz 7bAxaq8n: 203 saves since 16:20Z Nov 7, 81 incomplete; byte stop bypassed on 2; fleet recreates VMs after a 403 (IP rotation). Awaiting Shreyas.
+- Follow-list fix full18d (offset re-page, Chao1 closure) built and E5-reviewed; needs a non-blocked path. 2,365 people held for it.
+- Pipeline: Nov 8 forecast produced on time (first since Nov 4); Nov 5–7 no pre-launch forecast. Live capture healthy since 21:00Z Nov 7 (official API; comments/people/products/content writers on). Maker header fallback added after the Nov 8 failure.
+- X pass 1: capped (25 posts, since Aug 1); 1,867 people labelled partial; Shreyas to decide on completion.
+
 ## Status Nov 7 (10:50 UTC) — daily review
 - Store unchanged: 2,025 whole + 108 whole except the signed-out upvote cap = 2,133 (PH agent counts 2,197 complete incl. older store_v3); 13,586 incomplete kept. 0 pull VMs; 0 whole/day.
 - Last-week vote coverage from whole people: 3.32% (top-3 5.36%); all tracked people 46.1%.
