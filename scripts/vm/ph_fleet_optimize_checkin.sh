@@ -80,6 +80,9 @@ if [[ "$proxy_slots_sampled" -gt 0 ]]; then
   proxy_day="$(python3 -c "gb=float('$proxy_gb'); rate=float('$ppm' or 0); print(round(gb*rate*60*24*4,2) if rate>0 else round(gb*4,2))")"
 fi
 
+chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
+"$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
+bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
 "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
 
 relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm vms=$n vm~\$$vm_day/day efficiency_complete=${eff}. KPI excludes incomplete pulls (reruns only)."

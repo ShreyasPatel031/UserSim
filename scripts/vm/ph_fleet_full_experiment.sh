@@ -30,7 +30,7 @@ KEEPER_DOWN_SEC="${KEEPER_DOWN_SEC:-1800}"       # replace VM missing/stopped �
 KEEPER_STALL_SEC="${KEEPER_STALL_SEC:-600}"      # no new JSON while RUNNING ≥10 min → recover
 KEEPER_DEAD_SEC="${KEEPER_DEAD_SEC:-180}"        # batch dead / stopped_on_block → recover in 3 min
 KEEPER_BLOCK_COOLDOWN_SEC="${KEEPER_BLOCK_COOLDOWN_SEC:-120}"  # after 403 circuit, wait then recover
-COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=0 600 0"
+COMMON_META="pkg-name=full18d_candidate.tgz;pkg-md5=T3OI+xr3iAvoMDMZrdryhA==;k-levels=1,1;pace-state=0 600 0"
 TEMPLATE="${PACE_TEMPLATE:-}"
 INTERVAL_SEC="${INTERVAL_SEC:-300}"
 DURATION_SEC="${DURATION_SEC:-14400}"

@@ -26,7 +26,7 @@ PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/.purl}"
 STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 PORT_PREFIX="${PACE_PORT_REGISTRY_PREFIX:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm/_ports}"
 VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
-COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=0 600 0"
+COMMON_META="pkg-name=full18d_candidate.tgz;pkg-md5=T3OI+xr3iAvoMDMZrdryhA==;k-levels=1,1;pace-state=0 600 0"
 NEVER_PORTS=(10001 10005 10006 10020)
 
 vm_name() { echo "feeder-fleet-${RUN_ID}-${1}"; }
@@ -271,9 +271,7 @@ print(' '.join(str(s) for s in cand[:drop]))
     n=$(n_slots)
   fi
   if python3 -c "import sys; sys.exit(0 if float('$use_ppm') < float('$TARGET_LO') else 1)"; then
-    if [[ "${cold_vms:-0}" -gt "${active_vms:-0}" ]]; then
-      echo "HOLD scale-up — cold($cold_vms) > active($active_vms); shed/restart only"
-    elif [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
+    if [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
       echo "UNDER target → +1 VM (cap $MAX_VMS)"
       cmd_scale_to $((n + 1))
     else
