@@ -1325,3 +1325,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 04:34 UTC Nov 8 mailbox checked: GCP budget status (19:36 PT Nov 7): $25.87 so far, projected $42.47 (under the $50 soft cap), burn $1.50/h. feeder-pace32-1 exists again (re-created 23:17Z Nov 6, idle) and phpeople-1..3 idle but running. Live capture healthy (04:31Z).
 - 04:55 UTC Nov 8 Population agent 04:51Z store: COMPLETE 2,027 (1,945 whole + 82 signed-out), INCOMPLETE 13,865, saved 15,892; strat 173 saves (104 whole / 69 FAIL), none since 04:36Z.
 - 05:33 UTC Nov 8 mailbox checked: no new replies; live capture healthy (05:32Z).
+- 06:33 UTC Nov 8 mailbox checked: no new replies; live capture healthy (06:31Z). Nov 8 pipeline due 08:05Z (VM should stop 23:00 PT and boot 00:05 PT).
