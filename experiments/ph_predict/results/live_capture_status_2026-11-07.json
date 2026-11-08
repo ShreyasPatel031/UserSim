@@ -2,18 +2,20 @@
  "day": "2026-11-07",
  "status": "FAIL",
  "counts": {
-  "posts": 1690,
+  "posts": 1962,
   "comments": 173,
-  "board": 1812,
+  "board": 2044,
   "people": 513,
   "products": 216,
-  "coverage": 78,
+  "coverage": 88,
   "fallback_post_rows": 0,
-  "snapshots": 63,
+  "snapshots": 71,
   "launches": 34,
+  "absent_unread": 168,
+  "byid_rows": 0,
   "vote_drops": 5,
-  "board_api_rows": 1512,
-  "board_missing": 1269,
+  "board_api_rows": 1704,
+  "board_missing": 1427,
   "bad_username": 0,
   "created_after_fetch": 0,
   "created_unparsed": 0,
@@ -25,12 +27,13 @@
   "posts: 82 rows with fetched_at more than 5 min from snapshot_ts",
   "comments: 128 rows with fetched_at more than 5 min from snapshot_ts",
   "board: 64 rows with fetched_at more than 5 min from snapshot_ts",
-  "board: 1269 launch-snapshots without a board position"
+  "168 launch-snapshots with no vote read from any source (absent from the API ranking, no page or by-id read)"
  ],
  "warn": [
   "votes dropped between snapshots: 5 times on 4 launches",
+  "board: 1427 launch-snapshots without a board position - missing, route 4 off",
   "comments: 96 without a username but with a commenter user id (API v2; map via user_id_map)",
   "comments: 61 created more than a day before the launch day (old threads?)"
  ],
- "checked_at": "2026-11-08T12:21:38Z"
+ "checked_at": "2026-11-08T14:24:57Z"
 }

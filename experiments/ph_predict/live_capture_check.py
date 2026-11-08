@@ -16,6 +16,9 @@ import pandas as pd
 
 BUCKET = "gs://usersim-bakeoff-347838016394/usersim_sim"
 FETCH_TOL_MIN = float(os.environ.get("FETCH_TOL_MIN", "5"))
+# orchestrator Nov 8 14:22Z: route 4 (page views) is off under the STOP until Shreyas rules; board positions are then
+# reported as missing (warning), not failing. Set ROUTE4_OFF=0 once page capture is allowed again.
+ROUTE4_OFF = os.environ.get("ROUTE4_OFF", "1") == "1"
 GAP_MIN = float(os.environ.get("GAP_MIN", "20"))
 COVER = float(os.environ.get("COVER", "0.95"))
 FALLBACK = {"box_browser"}   # page-view fallback sources, not the snapshot loop
@@ -91,6 +94,17 @@ def check(day, T):
             if share < COVER:
                 low.append(f"{s:%H:%M}Z {share:.0%}")
         n["snapshots"] = len(snaps); n["launches"] = exp_n
+        # launches a source marked absent_from_source (the API ranking lists featured only) need a vote read from some
+        # other source in the same snapshot (route4 pages, or ph_api_v2_byid from Nov 8); count the ones nobody read
+        unread = 0
+        for s, g in P.groupby("st"):
+            ab = set(g[g.fetch_status.astype(str) == "absent_from_source"].launch_id)
+            unread += len(ab - set(g[g.ok].launch_id))
+        n["absent_unread"] = unread
+        if "source" in P.columns:
+            n["byid_rows"] = int((P.source.astype(str) == "ph_api_v2_byid").sum())
+        if unread:
+            fail.append(f"{unread} launch-snapshots with no vote read from any source (absent from the API ranking, no page or by-id read)")
         key = ["snapshot_ts", "launch_id"] + (["source"] if "source" in P.columns else [])
         dup = int(P.duplicated(key).sum())
         if dup:
@@ -130,7 +144,7 @@ def check(day, T):
                 n["board_api_rows"] = int((~pv).sum())
                 Bt = Bt[pv]
                 if not len(Bt):
-                    fail.append("board: no homepage / leaderboard page views (only the API ranking)")
+                    (warn if ROUTE4_OFF else fail).append("board: no homepage / leaderboard page views (only the API ranking)" + (" - missing, route 4 off" if ROUTE4_OFF else ""))
             missing_board = 0
             for s, g in (P[P.ok].groupby("st") if len(Bt) else []):
                 b = Bt[Bt.st == s]
@@ -138,7 +152,7 @@ def check(day, T):
                 missing_board += len(set(g.slug.astype(str)) - have)
             n["board_missing"] = missing_board
             if missing_board:
-                fail.append(f"board: {missing_board} launch-snapshots without a board position")
+                (warn if ROUTE4_OFF else fail).append(f"board: {missing_board} launch-snapshots without a board position" + (" - missing, route 4 off" if ROUTE4_OFF else ""))
     if C is not None and {"username", "created_at", "fetched_at"} <= set(C.columns):
         u = C.username.astype(str)
         no_u = ~u.str.match(USER) | u.str.lower().isin(["", "nan", "none", "[redacted]"])
