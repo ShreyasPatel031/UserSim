@@ -106,7 +106,17 @@ if q.exists():
         # on entries from another build, which the run that built the cached queue already handled.
         n8 = "        rq = [] if _has_tl else ["
         r8 = "        rq = [] if (_has_tl or _qhit) else ["
-        pairs = [(n8, r8), (n1, r1), (n2, r2), (n3, r3), (n4, r4), (n5, r5), (n6, r6), (n7, r7)]
+        # On a cache miss the sweep still runs; read the entries in parallel (170+ serial reads took 4.3 min).
+        n9 = "        mine = []\n        for u in rq:"
+        r9 = (
+            "        mine = []\n"
+            "        import concurrent.futures as _cfu\n"
+            "        with _cfu.ThreadPoolExecutor(12) as _ex: _rqc = dict(zip(rq, _ex.map(lambda u: PB.sh('gsutil', 'cat', u).stdout, rq)))\n"
+            "        for u in rq:"
+        )
+        n10 = "            try: e = json.loads(PB.sh('gsutil', 'cat', u).stdout)\n"
+        r10 = "            try: e = json.loads(_rqc[u])\n"
+        pairs = [(n8, r8), (n9, r9), (n10, r10), (n1, r1), (n2, r2), (n3, r3), (n4, r4), (n5, r5), (n6, r6), (n7, r7)]
         miss = [i for i, (n, _) in enumerate(pairs, 1) if n not in src]
         if not miss:
             for n, r in pairs:
