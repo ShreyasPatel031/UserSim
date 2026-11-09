@@ -1386,3 +1386,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 07:34 UTC Nov 9 mailbox checked: no new replies; nothing from Cursor; live capture healthy (ph_api_v2 23:30 PT, posts_ts 07:30Z).
 - 08:37 UTC Nov 9 mailbox checked: Nov 9 PT live capture started on time (snapshots 00:01/00:15/00:30 PT, 23 launches 23/23, 2026-11-09/live/ growing). Maker headers 24/32 (today_0005 fallback; api_detail 00:01 not seen by +10 min; box stopped on first 403, no retry, as required); 8 unread queued. Nothing from Cursor.
 - 09:34 UTC Nov 9 mailbox checked: no new replies; nothing from Cursor; live capture healthy (ph_api_v2 01:30 PT, 25/25 launches).
+- 10:34 UTC Nov 9 mailbox checked: no new replies; nothing from Cursor; live capture healthy (ph_api_v2 02:30 PT, 25/25).
