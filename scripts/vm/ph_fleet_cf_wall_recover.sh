@@ -52,14 +52,18 @@ print("BATCH_KICKED")
 PY
 '
 
+_max_kick="${FLEET_CF_RECOVER_MAX_KICKS:-2}"
+_kicked=0
 while IFS=$'\t' read -r slot _port; do
   [[ -z "$slot" || "$slot" == \#* ]] && continue
+  ((_kicked >= _max_kick)) && break
   name="feeder-fleet-${RUN_ID}-${slot}"
   st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
   [[ "$st" == RUNNING ]] || continue
   out="$("${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
     --ssh-flag=-oConnectTimeout=15 </dev/null --command="$REMOTE" 2>/dev/null)" || continue
   if echo "$out" | grep -q "BATCH_KICKED"; then
+    _kicked=$((_kicked + 1))
     echo "==> cf_recover slot=$slot $(echo "$out" | tr '\n' ' ')"
   fi
 done <"$ART/slots.tsv"
