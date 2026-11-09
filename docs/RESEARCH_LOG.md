@@ -1378,3 +1378,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 00:34 UTC Nov 9 mailbox checked: no new replies; nothing from the Cursor agent; live capture healthy (00:30Z).
 - 01:34 UTC Nov 9 mailbox checked: no new replies; nothing from the Cursor agent; live capture healthy (01:30Z).
 - 02:34 UTC Nov 9 mailbox checked: X rollout added 7 drops (20261109[_b.._g], queue 2200–2900 of 8,902; 532 resolved, 6,018 events, $0; end_reason on every row: cap_1 204 / window 321 / error 7); not folded into the store (usage pause; population agent folds on request). Live capture healthy; nothing from the Cursor agent.
+- 03:34 UTC Nov 9 mailbox checked: no new replies; nothing from the Cursor agent; live capture healthy (03:30Z).
