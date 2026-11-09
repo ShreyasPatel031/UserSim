@@ -334,9 +334,7 @@ keeper_one_pass() {
     # Exact ph_batch pid only (avoid pgrep matching this SSH remote script).
     remote='n=$(find /opt/ph/reuse/out -name "*.json" ! -name hb.json 2>/dev/null | wc -l)
 alive=0
-for pid in $(pgrep -f "/opt/venv/bin/python" 2>/dev/null); do
-  tr "\\0" " " < /proc/$pid/cmdline 2>/dev/null | grep -qE "ph_batch.py|pdeep.py" && alive=1
-done
+pgrep -f "[p]h_batch.py|[p]deep.py" >/dev/null 2>&1 && alive=1
 [[ -f /opt/ph/reuse/KICK ]] && alive=1
 tail -40 /opt/ph/reuse/supervisor.log 2>/dev/null | grep -q "block rc=3" && [[ $(( $(date +%s) - $(stat -c %Y /opt/ph/reuse/supervisor.log) )) -lt 240 ]] && alive=1
 sup=$(tail -1 /opt/ph/reuse/status_*.jsonl 2>/dev/null | tr -d "\\n")

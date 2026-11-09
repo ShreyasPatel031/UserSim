@@ -88,7 +88,9 @@ while true; do
   load_strategy
   export PKG_MD5=$(python3 -c 'import hashlib,base64;print(base64.b64encode(hashlib.md5(open("reuse.tgz","rb").read()).digest()).decode())' 2>/dev/null)
   tok=$(gsutil cat "$B/GO.$VM" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9:_.-' || true)
-  if [[ -n "$tok" && "$tok" != "$last" ]]; then
+  batch_up=0
+  pgrep -f '[p]h_batch.py|[p]deep.py' >/dev/null 2>&1 && batch_up=1
+  if [[ -n "$tok" && ( "$tok" != "$last" || $batch_up -eq 0 ) ]]; then
     mode=${tok%%:*}
     L=run_$(date -u +%Y%m%dT%H%MZ).log
     if [[ "$mode" = "legacy" ]]; then mode=run; echo "legacy->$tok as run" >> supervisor.log; fi
@@ -161,5 +163,9 @@ while true; do
     fi
   fi
   hb ""
-  sleep 60
+  if [[ -n "${tok:-}" && $batch_up -eq 0 && "${tok:-}" == "$last" ]]; then
+    sleep 5
+  else
+    sleep 60
+  fi
 done

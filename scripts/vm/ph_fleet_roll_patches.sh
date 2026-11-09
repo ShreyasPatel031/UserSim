@@ -29,7 +29,7 @@ gcloud storage cp -q "$B/_code/overlays/*.py" "$B/_code/overlays/supervisor_stra
 sudo cp -f "$TMP"/*.py /opt/ph/overlays/ 2>/dev/null || true
 [[ -s "$TMP/supervisor_strat.sh" ]] && sudo install -m 755 "$TMP/supervisor_strat.sh" /opt/ph/overlays/supervisor_strat.sh
 sudo cp -f "$TMP/fleet_optimize.env" /opt/ph/strategy.env 2>/dev/null || true
-sudo rm -f /opt/ph/reuse/KICK
+sudo rm -f /opt/ph/reuse/KICK /opt/ph/reuse/last_token
 sudo systemctl stop phsuper || true
 sudo pkill -f "[p]deep.py|[p]h_batch.py" 2>/dev/null || true; sudo pkill -f "[c]amoufox" 2>/dev/null || true; sudo pkill -f "[p]laywright/driver" 2>/dev/null || true
 EA=""; [[ -f /opt/ph/pace.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/pace.env"; [[ -f /opt/ph/strategy.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/strategy.env"

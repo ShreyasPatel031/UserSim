@@ -3,6 +3,7 @@
 set -euo pipefail
 sudo systemctl stop phsuper 2>/dev/null || true
 sudo pkill -TERM -f '[p]deep.py|[p]h_batch.py' 2>/dev/null || true
+sudo rm -f /opt/ph/reuse/last_token
 sleep 2
 sudo systemd-run --unit=phsuper --collect \
   -p WorkingDirectory=/opt/ph/reuse \
