@@ -126,4 +126,14 @@ for ln in p.read_text().splitlines()[-20:]:
 " >>"$LOG" 2>/dev/null || true
 fi
 
+# Single babysit path also refreshes fleet-dashboard/ (measure at top) and keeps local static server up.
+if ! pgrep -f '[h]ttp.server 8765' >/dev/null; then
+  DASH="$ROOT/fleet-dashboard"
+  SESSION_NAME="ph-fleet-dashboard"
+  tmux -f /exec-daemon/tmux.portal.conf has-session -t "=$SESSION_NAME" 2>/dev/null \
+    || tmux -f /exec-daemon/tmux.portal.conf new-session -d -s "$SESSION_NAME" -c "$DASH"
+  tmux -f /exec-daemon/tmux.portal.conf send-keys -t "$SESSION_NAME:0.0" \
+    "cd $DASH && exec python3 -m http.server 8765 --bind 0.0.0.0" C-m
+fi
+
 echo "CHECKIN complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm vms=$n vm~\$$vm_day/day eff=$eff pop_audit=incomplete_not_zero"
