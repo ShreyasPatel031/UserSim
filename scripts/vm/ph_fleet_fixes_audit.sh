@@ -49,6 +49,11 @@ print(json.dumps({"utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ
                   "total": $total, "good": $good, "bad_slots": bad}, indent=2))
 PY
 
+# Mass simultaneous rolls zero fleet throughput; cap repairs per check-in.
+if [[ "$REPAIR" == 1 && ${#bad[@]} -gt 3 ]]; then
+  echo "FIXES_INCIDENT bad=${#bad[@]} slots — rolling at most 3 this check-in"
+  bad=("${bad[@]:0:3}")
+fi
 if [[ "$REPAIR" == 1 && ${#bad[@]} -gt 0 && ${#bad[@]} -le 12 ]]; then
   ONLY_SLOTS="${bad[*]}" SKIP_UPLOAD=1 bash "$ROOT/scripts/vm/ph_fleet_roll_patches.sh" >>"$ART/checkin.log" 2>&1 || true
   echo "FIXES_REPAIR rolled slots: ${bad[*]}"
