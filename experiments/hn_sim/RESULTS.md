@@ -1319,3 +1319,13 @@ top 30 (Nov 2 17, Nov 3 22, Nov 4 21, Nov 5 25); the backtest code path replayed
 both 13 (7 on Nov 4, incl. ranks 3/4/8 with 356-780 points at T), posted after the forecast time 6, under the live
 5-point candidate filter 3. Next (not run; usage pause): diff the live vs replay inputs for the 9 Nov 2 posts; check why
 the model passes over high-point posts on Nov 4.
+
+## Live check 2026-11-09 00:31 UTC (settled list days Oct 30 - Nov 6)
+
+- Live Caught (live_caught.py, settled posting days Oct 31 - Nov 3, 72 winners): 1 h 28/72 (38.9% [20.9, 66.7]);
+  15 min 13/72 (18.1% [13.4, 24.0]); with the front-page bonus 1 h 38.9%, 15 min 19.4%. Backtest 48.4% / 29.6%.
+- Odds AUC on settled posts: at posting 0.820 (561 posts), 15 min 0.763 (543), 30 min 0.837, 1 h 0.902 (2,262),
+  2 h 0.922. Top decile over-predicted (1 h-equivalent 2 h: 0.243 forecast vs 0.189 actual; 30 min 0.201 vs 0.117).
+- Daily list at 21:00 (top 30 found): Oct 31 47%, Nov 1 60%, Nov 2 57%, Nov 3 73%, Nov 4 70%, Nov 5 83%, Nov 6 80%
+  (backtest 80.2%); at 23:00 Nov 6 90%.
+- hn_minute coverage: front/newest read every minute Nov 2-8 (newest 1,530-1,611 per day).
