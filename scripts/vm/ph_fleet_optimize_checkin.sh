@@ -19,7 +19,16 @@ export FLEET_WINDOW_MIN="${FLEET_WINDOW_MIN:-15}"
 measure="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null)" || measure="{}"
 chmod +x "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" "$ROOT/scripts/vm/ph_fleet_population_coord.sh" 2>/dev/null || true
 source "$ROOT/scripts/vm/ph_strategies/fleet_optimize.env" 2>/dev/null || true
-fixes="$(bash "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" 2>/dev/null | tail -1)" || fixes="FIXES_AUDIT failed"
+_act="$(echo "$measure" | python3 -c "import json,sys; m=json.load(sys.stdin); print(m.get('active_vms',0))" 2>/dev/null || echo 0)"
+_ppm="$(echo "$measure" | python3 -c "import json,sys; m=json.load(sys.stdin); print(m.get('complete_ppm',m.get('realized_ppm',0)))" 2>/dev/null || echo 0)"
+# After a mass outage, parallel rolls keep the fleet cold — repair only when pullers are warming.
+if python3 -c "exit(0 if float('${_ppm}' or 0) < 5 or int('${_act}' or 0) < 3 else 1)" 2>/dev/null; then
+  export FLEET_FIXES_REPAIR=0
+  fixes="$(bash "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" 2>/dev/null | tail -1)" || fixes="FIXES_AUDIT skipped (fleet cold)"
+  echo "$(date -u +%FT%TZ) FIXES_REPAIR_PAUSED ppm=${_ppm} active=${_act}" >>"$LOG"
+else
+  fixes="$(bash "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" 2>/dev/null | tail -1)" || fixes="FIXES_AUDIT failed"
+fi
 echo "$(date -u +%FT%TZ) $fixes" >>"$LOG"
 echo "$(date -u +%FT%TZ) measure=$measure" >>"$LOG"
 
