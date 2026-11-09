@@ -1387,3 +1387,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 08:37 UTC Nov 9 mailbox checked: Nov 9 PT live capture started on time (snapshots 00:01/00:15/00:30 PT, 23 launches 23/23, 2026-11-09/live/ growing). Maker headers 24/32 (today_0005 fallback; api_detail 00:01 not seen by +10 min; box stopped on first 403, no retry, as required); 8 unread queued. Nothing from Cursor.
 - 09:34 UTC Nov 9 mailbox checked: no new replies; nothing from Cursor; live capture healthy (ph_api_v2 01:30 PT, 25/25 launches).
 - 10:34 UTC Nov 9 mailbox checked: no new replies; nothing from Cursor; live capture healthy (ph_api_v2 02:30 PT, 25/25).
+- 10:50 UTC Nov 9 daily collection review: ~15.2k complete PH people (3,123 + ~12.1k merged from full18d staging since 20:47Z Nov 8, ~1,200/h); 177 held for VM rotation evidence, 131 failed follow lists. Live capture restored 04:38Z. Dashboard refresh skipped (usage limit). DATA_SPEC status block added.

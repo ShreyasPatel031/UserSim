@@ -69,3 +69,10 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Content at posting | title, domain, text, author history | held; author history tested: +0.4 [−1.0, +1.7], closed | none |
 | Second-chance pool | /pool reads | sampled every 5 min; entry median 23 h after posting, so no 15-min value | closed for the posting clock |
 | Dead/flagged | showdead | 0 of 278 false flags dead | closed |
+
+### Status Nov 9 (10:50 UTC, orchestrator daily review)
+- PH people, complete (whole-person rule): about 15,200 (3,123 at 20:42Z Nov 8 plus about 12,100 merged since, summed from the population agent's to_cursor/audit_*.md). Rate over the last 14 h: about 1,200 complete people/hour (about 25k/day), from 10–11 feeder-fleet VMs running full18d into staging. Exact count waits for the next store rebuild.
+- Audit gates holding: 0752Z audit staged 3,266, merged 2,958, held 177 (vm_evasion_or_unknown 188 reasons), failed 131 (follow lists without offset end).
+- Gap: last-week vote coverage not re-measured since the merges (0.32% before); population agent to report it at the next rebuild.
+- Live capture: official-API loop restored 04:38Z Nov 9 (lost 19:30Z Nov 8–04:38Z Nov 9); Nov 9 PT capturing on time. Maker headers 24/32 (stopped at first 403).
+- Gaps unchanged: X timelines partial (cap_1); route 4 off; Cursor agent has not used from_cursor/ or its webhook.
