@@ -1448,3 +1448,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 11:34 UTC Nov 10 mailbox checked: no new replies; fleet paused pending Shreyas (sticky IPs); live capture healthy (03:30 PT, 50/50).
 - 12:23 UTC Nov 10 Population: MERGED_INCOMPLETE +5 was a scoring bug (140 people with both <h>.json and stale Nov 4 _f1fix copy; quality.py/store.py used stale copy); fixed 02e71655, recount 235. COMPLETE 39,774 (34,147 whole + 5,627 signed-out) of 52,730. store_v3 rebuild at next coverage check. Fleet paused.
 - 12:28 UTC Nov 10 PH agent coverage on latest_complete 39,774: last week complete-only 38.75% votes / 53.43% top 3; gap to 80% 9,661 votes; Oct 1-24 26.29%/45.53%. Nov 10 capture 50/50, only FAIL 08:01Z snapshot at 94%.
+- 12:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (04:30 PT, 50/50).
