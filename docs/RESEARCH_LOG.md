@@ -1450,3 +1450,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 12:28 UTC Nov 10 PH agent coverage on latest_complete 39,774: last week complete-only 38.75% votes / 53.43% top 3; gap to 80% 9,661 votes; Oct 1-24 26.29%/45.53%. Nov 10 capture 50/50, only FAIL 08:01Z snapshot at 94%.
 - 12:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (04:30 PT, 50/50).
 - 12:37 UTC Nov 10 PH agent on republished store_v3 (newer-pull fix): last week complete-only 41.30% votes / 56.95% top 3; 1,983 complete voters; 9,063 votes to 80%; all tracked 55.8%; seen 13,075 of 23,421; 818 incomplete voters hold 3,402 votes. Oct 1-24 27.85%/47.71%.
+- 13:34 UTC Nov 10 mailbox checked: no new replies; fleet paused (sticky-IP decision pending); live capture healthy (05:30 PT, 50/50).
