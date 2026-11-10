@@ -150,6 +150,13 @@ def rep_factor(R, real_votes):
     return R.tier.map(f).fillna(1.0)
 
 
+def topk(g, col, k, asc=False):
+    top = set(g[g["rank"] <= k].id)
+    if len(top) < k or g[col].isna().any():
+        return np.nan
+    return len(set((g.nsmallest(k, col) if asc else g.nlargest(k, col)).id) & top) / k * 100
+
+
 def score():
     from sklearn.metrics import roc_auc_score, log_loss
     from pipeline import warehouse as W
@@ -161,9 +168,23 @@ def score():
     dep = {}
     for f in glob.glob(f"{WORK}/scores_retrain/wh_*.parquet"):
         S = pd.read_parquet(f); dep.update({(r.day, str(r.id)): r.psn_ev for r in S.itertuples()})
+    # E5 checks 2 and 3: a person's labels on d count only if their upvote list was read >= 2 days after d, and for lists
+    # short of their header (signed-out cap) only from their oldest listed vote onward
+    T = pd.read_parquet(f"{WORK}/tabs_v3.parquet"); T = T[T.tab == "upvotes"]
+    read_day = dict(zip(T.person_id, pd.to_datetime(T.fetched_at, utc=True).dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")))
+    short = set(T[T["count"] < T.header.fillna(0) * 0.98].person_id)
+    Eu = pd.read_parquet(f"{WORK}/events_cp.parquet"); Eu = Eu[Eu.kind == "upvote"]
+    oldest = Eu.groupby("person").date.min().to_dict()
+    filt_n = []
     per, pop, diag, prev_rows = [], [], [], []
     for f in files:
         d = os.path.basename(f)[:10]; R = pd.read_parquet(f); R["id"] = R.id.astype(str)
+        d2 = (pd.Timestamp(d) + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
+        ok = R.person.map(lambda u: read_day.get(u, "0000") >= d2 and (u not in short or oldest.get(u, "9999") <= d))
+        filt_n.append({"day": d, "people_before": int(R.person.nunique()), "people_after": int(R[ok].person.nunique())})
+        R = R[ok].copy()
+        if not len(R):
+            continue
         raw = R.copy()
         if os.environ.get("WEIGHTS", "act") == "rep":
             fac = rep_factors(pd.concat(prev_rows[-7:]) if prev_rows else None, votes)   # previous 7 scored days only
@@ -178,26 +199,42 @@ def score():
         wv = R.assign(e=R.w * R.y).groupby("id").e.sum()
         diag[-1]["spearman_weighted_real_vs_votes"] = float(spearmanr(wv.values, [votes.get(x, np.nan) for x in wv.index], nan_policy="omit").correlation) if len(wv) > 3 else None
         unseen = json.load(open(f[:-8] + "_unseen.json"))
-        auc = roc_auc_score(R.y, R.p) if R.y.nunique() > 1 else np.nan
-        ll = log_loss(R.y, R.p.clip(1e-6, 1 - 1e-6))
+        q = (R.w * R.p).clip(1e-6, 1 - 1e-6)   # E5 check 1: P(votes that day | pre-d activity) x P(picks L | votes)
+        auc = roc_auc_score(R.y, q) if R.y.nunique() > 1 else np.nan
+        ll = log_loss(R.y, q)
         g = R[R.groupby("person").y.transform("sum") > 0]
         top3 = g[g.groupby("person").p.rank(ascending=False, method="first") <= 3]
         hit3 = top3.groupby("person").y.max().mean() if len(top3) else np.nan
-        rec = []
+        rec, rp = [], []
         for x, gx in R.groupby("id"):
             n = int(gx.y.sum()) + int(unseen.get(x, 0))
             if n:
                 rec.append(gx.nlargest(n, "p").y.sum() / n)
-        per.append({"day": d, "auc": auc, "logloss": ll, "hit3": hit3, "voter_recall": float(np.mean(rec)) if rec else np.nan})
+            m = int(gx.y.sum())   # voter R-precision (E5): of the launch's top-m scored people (m = its voters with a row), share who voted
+            if m:
+                rp.append(gx.assign(q=gx.w * gx.p).nlargest(m, "q").y.sum() / m)
+        per.append({"day": d, "auc": auc, "logloss": ll, "hit3": hit3, "voter_recall": float(np.mean(rec)) if rec else np.nan,
+                    "voter_rprec": float(np.mean(rp)) if rp else np.nan})
         ev = R.assign(e=R.w * R.p).groupby("id").e.sum()
         for x, e in ev.items():
             pop.append({"day": d, "id": x, "ev": e, "dep": dep.get((d, x)), "lm": lm.get((d, x)), "votes": votes.get(x), "rank": rnk.get(x), "wrank": wrk.get(x)})
     Pm = pd.DataFrame(per); Q = pd.DataFrame(pop).dropna(subset=["rank"])
     rng = np.random.default_rng(0)
     res = {"tag": TAG, "weights": os.environ.get("WEIGHTS", "act"), "days": sorted(Q.day.unique().tolist())}
-    res["person"] = {k: boot(Pm[k].values, rng) for k in ("auc", "logloss", "hit3", "voter_recall")}
+    res["person"] = {k: boot(Pm[k].values, rng) for k in ("auc", "logloss", "hit3", "voter_recall", "voter_rprec")}
+    res["label_filter"] = {"rule": "labels on d only for people whose upvote list was read >= d+2; short (signed-out capped) lists only from the oldest listed vote",
+                           "per_day": filt_n}
+    # E5 check 4: paired against E5's no-follow baseline per day (pop_by_day_nofol.csv, weighted EV columns)
+    e5p = os.environ.get("E5_BASELINE")
+    if e5p and os.path.exists(e5p):
+        E5 = pd.read_csv(e5p).set_index("d")
+        res["vs_e5_baseline"] = {}
+        for k in (3, 5, 10):
+            dd = [d for d in E5.index if d in set(Q.day) and d not in SELECTED]
+            a = np.array([topk(Q[Q.day == d], "ev", k) for d in dd]); b = np.array([E5.loc[d, f"ev_w_top{k}"] * 100 for d in dd])
+            res["vs_e5_baseline"][f"clean day top{k}"] = {"two_level": round(float(np.nanmean(a)), 1), "e5_nofol": round(float(np.nanmean(b)), 1), "delta": boot(a - b, rng), "days": len(dd)}
 
-    def topk(g, col, k, asc=False):
+    def _unused(g, col, k, asc=False):
         top = set(g[g["rank"] <= k].id)
         if len(top) < k or g[col].isna().any():
             return np.nan

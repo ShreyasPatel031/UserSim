@@ -21,54 +21,212 @@
   "2026-11-05",
   "2026-11-06",
   "2026-11-07",
-  "2026-11-08",
-  "2026-11-09"
+  "2026-11-08"
  ],
  "person": {
   "auc": [
-   0.712,
+   0.867,
    [
-    0.69,
-    0.733
+    0.846,
+    0.89
    ],
-   21
+   20
   ],
   "logloss": [
-   0.123,
+   0.052,
    [
-    0.11,
-    0.137
+    0.041,
+    0.063
    ],
-   21
+   20
   ],
   "hit3": [
-   0.636,
+   0.628,
    [
-    0.59,
-    0.677
+    0.583,
+    0.669
    ],
-   21
+   20
   ],
   "voter_recall": [
-   0.088,
+   0.089,
    [
     0.079,
     0.099
    ],
-   21
+   20
+  ],
+  "voter_rprec": [
+   0.151,
+   [
+    0.131,
+    0.175
+   ],
+   20
   ]
+ },
+ "label_filter": {
+  "rule": "labels on d only for people whose upvote list was read >= d+2; short (signed-out capped) lists only from the oldest listed vote",
+  "per_day": [
+   {
+    "day": "2026-10-20",
+    "people_before": 2842,
+    "people_after": 2814
+   },
+   {
+    "day": "2026-10-21",
+    "people_before": 2852,
+    "people_after": 2824
+   },
+   {
+    "day": "2026-10-22",
+    "people_before": 2845,
+    "people_after": 2818
+   },
+   {
+    "day": "2026-10-23",
+    "people_before": 2828,
+    "people_after": 2802
+   },
+   {
+    "day": "2026-10-24",
+    "people_before": 2803,
+    "people_after": 2780
+   },
+   {
+    "day": "2026-10-25",
+    "people_before": 2760,
+    "people_after": 2737
+   },
+   {
+    "day": "2026-10-26",
+    "people_before": 2704,
+    "people_after": 2685
+   },
+   {
+    "day": "2026-10-27",
+    "people_before": 2724,
+    "people_after": 2706
+   },
+   {
+    "day": "2026-10-28",
+    "people_before": 2751,
+    "people_after": 2734
+   },
+   {
+    "day": "2026-10-29",
+    "people_before": 2765,
+    "people_after": 2748
+   },
+   {
+    "day": "2026-10-30",
+    "people_before": 2758,
+    "people_after": 2742
+   },
+   {
+    "day": "2026-10-31",
+    "people_before": 2799,
+    "people_after": 2783
+   },
+   {
+    "day": "2026-11-01",
+    "people_before": 2791,
+    "people_after": 2791
+   },
+   {
+    "day": "2026-11-02",
+    "people_before": 10026,
+    "people_after": 9956
+   },
+   {
+    "day": "2026-11-03",
+    "people_before": 10066,
+    "people_after": 9383
+   },
+   {
+    "day": "2026-11-04",
+    "people_before": 10150,
+    "people_after": 8698
+   },
+   {
+    "day": "2026-11-05",
+    "people_before": 10140,
+    "people_after": 8679
+   },
+   {
+    "day": "2026-11-06",
+    "people_before": 10106,
+    "people_after": 8558
+   },
+   {
+    "day": "2026-11-07",
+    "people_before": 10100,
+    "people_after": 6077
+   },
+   {
+    "day": "2026-11-08",
+    "people_before": 10080,
+    "people_after": 376
+   },
+   {
+    "day": "2026-11-09",
+    "people_before": 10056,
+    "people_after": 0
+   }
+  ]
+ },
+ "vs_e5_baseline": {
+  "clean day top3": {
+   "two_level": 52.8,
+   "e5_nofol": 38.9,
+   "delta": [
+    13.889,
+    [
+     -2.778,
+     30.556
+    ],
+    12
+   ],
+   "days": 12
+  },
+  "clean day top5": {
+   "two_level": 55.0,
+   "e5_nofol": 45.0,
+   "delta": [
+    10.0,
+    [
+     1.667,
+     18.333
+    ],
+    12
+   ],
+   "days": 12
+  },
+  "clean day top10": {
+   "two_level": 65.8,
+   "e5_nofol": 60.0,
+   "delta": [
+    5.833,
+    [
+     -2.5,
+     15.0
+    ],
+    12
+   ],
+   "days": 12
+  }
  },
  "population_all_days": {
   "day top3": {
-   "two_level": 50.8,
-   "deployed_sim": 50.8,
+   "two_level": 50.0,
+   "deployed_sim": 50.0,
    "delta_vs_deployed": [
     -0.0,
     [
-     -7.937,
-     7.937
+     -8.333,
+     8.333
     ],
-    21
+    20
    ],
    "launch_model": 57.1,
    "delta_vs_launch_model": [
@@ -81,15 +239,15 @@
    ]
   },
   "day top5": {
-   "two_level": 61.0,
-   "deployed_sim": 64.8,
+   "two_level": 60.0,
+   "deployed_sim": 65.0,
    "delta_vs_deployed": [
-    -3.81,
+    -5.0,
     [
-     -8.571,
-     0.0
+     -9.0,
+     -1.0
     ],
-    21
+    20
    ],
    "launch_model": 68.6,
    "delta_vs_launch_model": [
@@ -102,15 +260,15 @@
    ]
   },
   "day top10": {
-   "two_level": 69.5,
-   "deployed_sim": 71.0,
+   "two_level": 69.0,
+   "deployed_sim": 70.0,
    "delta_vs_deployed": [
-    -1.429,
+    -1.0,
     [
-     -4.286,
-     1.429
+     -3.5,
+     1.5
     ],
-    21
+    20
    ],
    "launch_model": 81.4,
    "delta_vs_launch_model": [
@@ -123,33 +281,33 @@
    ]
   },
   "spearman_ev_votes": [
-   0.538,
+   0.533,
    [
-    0.48,
-    0.588
+    0.475,
+    0.586
    ],
-   21
+   20
   ],
   "spearman_deployed_votes": [
-   0.552,
+   0.549,
    [
-    0.484,
-    0.616
+    0.476,
+    0.615
    ],
-   21
+   20
   ]
  },
  "population_clean_days": {
   "day top3": {
-   "two_level": 52.4,
-   "deployed_sim": 54.8,
+   "two_level": 51.3,
+   "deployed_sim": 53.8,
    "delta_vs_deployed": [
-    -2.381,
+    -2.564,
     [
-     -9.524,
-     4.762
+     -10.256,
+     5.128
     ],
-    14
+    13
    ],
    "launch_model": 58.3,
    "delta_vs_launch_model": [
@@ -162,15 +320,15 @@
    ]
   },
   "day top5": {
-   "two_level": 57.1,
-   "deployed_sim": 61.4,
+   "two_level": 55.4,
+   "deployed_sim": 61.5,
    "delta_vs_deployed": [
-    -4.286,
+    -6.154,
     [
-     -10.0,
-     1.429
+     -10.769,
+     -1.538
     ],
-    14
+    13
    ],
    "launch_model": 65.0,
    "delta_vs_launch_model": [
@@ -183,15 +341,15 @@
    ]
   },
   "day top10": {
-   "two_level": 67.1,
-   "deployed_sim": 70.7,
+   "two_level": 66.2,
+   "deployed_sim": 69.2,
    "delta_vs_deployed": [
-    -3.571,
+    -3.077,
     [
-     -6.429,
-     -0.714
+     -6.154,
+     0.0
     ],
-    14
+    13
    ],
    "launch_model": 80.0,
    "delta_vs_launch_model": [
@@ -204,20 +362,20 @@
    ]
   },
   "spearman_ev_votes": [
-   0.52,
+   0.512,
    [
-    0.446,
-    0.585
+    0.433,
+    0.582
    ],
-   14
+   13
   ],
   "spearman_deployed_votes": [
-   0.551,
+   0.546,
    [
-    0.452,
-    0.641
+    0.439,
+    0.643
    ],
-   14
+   13
   ]
  },
  "clean_days": [
@@ -233,20 +391,19 @@
   "2026-11-05",
   "2026-11-06",
   "2026-11-07",
-  "2026-11-08",
-  "2026-11-09"
+  "2026-11-08"
  ],
  "weights_diag": {
-  "n_eff_median": 1078.7,
-  "people_median": 2842,
-  "max_w_share_max": 0.0025,
+  "n_eff_median": 1074.6,
+  "people_median": 2796,
+  "max_w_share_max": 0.0315,
   "top1pct_share_median": 0.066,
-  "spearman_weighted_real_vs_votes_median": 0.858
+  "spearman_weighted_real_vs_votes_median": 0.85
  },
  "n_both_levels": {
-  "person_days": 116946,
-  "rows": 3359286,
-  "days": 21,
+  "person_days": 87691,
+  "rows": 2625706,
+  "days": 20,
   "note": "person metrics and launch EV use the same rows (complete people active in the 30 days before d x the line-up)"
  },
  "model_max_event_date": {
@@ -276,7 +433,7 @@
    "deployed_sim": 40.0
   },
   "2026-W45 top10": {
-   "two_level": 30.0,
+   "two_level": 40.0,
    "deployed_sim": 40.0
   }
  }
