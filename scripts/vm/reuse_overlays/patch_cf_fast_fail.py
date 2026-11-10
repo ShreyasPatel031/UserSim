@@ -64,7 +64,7 @@ if q.exists():
             "            queue = _c['q']; RR.clear(); RR.update(_c['rr']); _qhit = True\n"
             "        except Exception:\n"
             "            queue = _full_queue(); _qhit = False\n"
-            "            try: json.dump({'t': time.time(), 'm': PB.PKG_MD5, 'q': queue, 'rr': RR}, open(_qc, 'w'))\n"
+            "            try: json.dump({'t': time.time(), 'm': PB.PKG_MD5, 'q': queue, 'rr': RR}, open(_qc, 'w')); _qhit = True\n"
             "            except Exception: pass\n"
         )
         n2 = '        S.put(event="stopped_on_block", note="pdeep: browser open/Cloudflare clear failed; no retry"); return 3\n'
