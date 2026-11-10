@@ -77,8 +77,22 @@ def main():
         if vm not in vm_clean:
             logs = sh("gsutil", "ls", f"{STAGE}/status/{vm}*", f"{R}/ph_population/people_live/vm/status/{vm}*").stdout.split()
             txt = "".join(sh("gsutil", "cat", u).stdout for u in logs)
-            vm_clean[vm] = not EVASION.search(txt)
+            vm_clean[vm] = not any(EVASION.search(_strip_person(l)) for l in txt.splitlines())
         return vm_clean[vm]
+
+    def _strip_person(l):
+        """05:5xZ Nov 10: match rotation evidence only in VM fields, never in a person's handle/url (a handle such as
+        '...keeper...' flagged 5 clean VMs: 8, 11, 24, 36, 56)."""
+        try:
+            d = json.loads(l)
+        except Exception:
+            return l
+        if not isinstance(d, dict):
+            return l
+        for k in ("handle", "h", "user", "username", "name", "url", "profile_url"):
+            d.pop(k, None)
+        return json.dumps(d)
+
 
     c, reasons, builds, vms = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
     rows, merge, replace, requeue = [], [], [], []
