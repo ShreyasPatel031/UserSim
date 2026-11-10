@@ -93,7 +93,7 @@ def tab_state(d, k):
             v = "ph_limit"
         else:
             v = "FAIL_repeat" if _chain_repeated(t, run, k, got, dup) else "FAIL_no_offset_end"
-    elif (t.get("complete_not_visible") and not t.get("capped_large")) or ended in SERVER_END:
+    elif ended in SERVER_END:  # full18f (E5/orchestrator 03:42Z Nov 10): complete_not_visible alone is a label, not a PH end
         v = "ph_limit"
     else:
         v = "FAIL_short"
@@ -288,7 +288,7 @@ def signed_out_end(d):
     ended = (t.get("paging") or {}).get("ended") or ((run.get("paging") or {}).get("upvotes") or {}).get("ended") or \
         ((((run.get("timing") or {}).get("upvotes") or {}).get("paging") or {}).get("ended"))
     tagged = bool(t.get("upvotes_capped") or d.get("upvotes_capped") or 190 <= n <= 210)
-    return tagged and (ended in SERVER_END or bool(t.get("complete_not_visible") and not t.get("capped_large")))
+    return tagged and ended in SERVER_END  # full18f: a recorded PH end is required (complete_not_visible alone is not)
 
 
 def person_complete(d, h=None):

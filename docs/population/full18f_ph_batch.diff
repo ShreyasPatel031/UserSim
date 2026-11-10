@@ -1,0 +1,4 @@
+989c989
+<             if len(out) >= 0.98 * (n.get("header") or 0): [n.pop(x, None) for x in ("upvotes_capped", "cap", "complete_not_visible", "status", "limit_owner")]
+---
+>             if len(out) >= (n.get("header") or 0): [n.pop(x, None) for x in ("upvotes_capped", "cap", "complete_not_visible", "status", "limit_owner")]
