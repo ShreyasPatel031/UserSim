@@ -12,7 +12,7 @@ model_2026-11.pkl (trained on October), so only November days are honest test da
 September-trained TIE2 model, not on disk).
 Score: within each day, launches ranked by the simulation's expected votes (pnx_ev) vs final daily_rank: top 3/5/10 hits,
 paired bootstrap over days (10,000). Weekly: ISO weeks fully inside the scored days, ranked by pnx_ev vs weekly_rank.
-usage: python sim_v3_backtest.py prepare | day <variant> <d> | score [d0 d1]    (counts only; no usernames printed)"""
+usage: python sim_v3_backtest.py prepare | train <variant> <month> | day <variant> <d> | score [d0 d1]   (RETRAIN=1: retrained models)    (counts only; no usernames printed)"""
 import glob, hashlib, json, os, shutil, subprocess, sys, tempfile
 import numpy as np, pandas as pd
 
@@ -20,6 +20,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); EXP = os.path.dirname(HERE); 
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 WORK = os.environ.get("SIMBT", os.path.join(tempfile.gettempdir(), "simbt"))
 MODEL = os.environ.get("SIMBT_MODEL", os.path.join(WORK, "models", "model_2026-11.pkl"))
+RETRAIN = os.environ.get("RETRAIN") == "1"   # use models_<variant>/ trained by `train` instead of the live model
+SCORES = "scores_retrain" if RETRAIN else "scores"
 DAYS = [d.strftime("%Y-%m-%d") for d in pd.date_range(os.environ.get("D0", "2026-11-01"), os.environ.get("D1", "2026-11-09"))]
 
 
@@ -68,6 +70,30 @@ def prepare():
     json.dump(rep, open(f"{WORK}/prepare.json", "w"), indent=1); print(json.dumps(rep))
 
 
+def _setup(P, I, E, work):
+    from simlab import store, harness, popscore as PS
+    store.RAW = os.path.join(WORK, "live")
+    store.load = lambda: (P, I, E)
+    harness.baseline = lambda: pd.DataFrame({"id": I.id, "day": I.day, "base": 0.5})
+    PS.WORK = work; os.makedirs(work, exist_ok=True)
+    return PS
+
+
+def train(variant, m):
+    """Person model for month m trained on the previous month's rows (popscore.train_month), on this variant's events
+    dated before m (no event on or after the first day of m enters). Saved to WORK/models_<variant>/model_<m>.pkl."""
+    os.environ["TIE2"] = "1"
+    for k in ("PAGE", "TASTE", "HERD", "PRESENCE", "TWIN", "COMP", "RECIP", "UPV_LAG", "TRAIN_ALL"):
+        os.environ.pop(k, None)
+    cut = f"{m}-01"
+    I = pd.read_parquet(f"{WORK}/items.parquet"); I = I[I.day < cut]
+    E = pd.read_parquet(f"{WORK}/events_{variant}.parquet"); E = E[(E.date < cut) & E.item.isin(set(I.id))]
+    P = pd.DataFrame({"person": sorted(set(pd.read_parquet(f"{WORK}/people_wh.parquet").person) | set(E.person))}).assign(follows="[]")
+    PS = _setup(P, I, E, os.path.join(WORK, f"models_{variant}"))
+    PS.load(); r = PS.train_month(m)
+    print(json.dumps({"variant": variant, "month": m, "train_rows": r[1], "pos_rate": round(r[2], 4), "events": len(E)}))
+
+
 def day(variant, d):
     os.environ["TIE2"] = "1"
     for k in ("PAGE", "TASTE", "HERD", "PRESENCE", "TWIN", "COMP", "RECIP", "UPV_LAG"):
@@ -80,13 +106,14 @@ def day(variant, d):
     store.load = lambda: (P, I, E)
     harness.baseline = lambda: pd.DataFrame({"id": I.id, "day": I.day, "base": 0.5})
     PS.WORK = os.path.join(WORK, f"work_{variant}_{d}"); os.makedirs(PS.WORK, exist_ok=True)
-    shutil.copy(MODEL, os.path.join(PS.WORK, f"model_{d[:7]}.pkl"))
+    trained = os.path.join(WORK, f"models_{variant}", f"model_{d[:7]}.pkl")
+    shutil.copy(trained if RETRAIN else MODEL, os.path.join(PS.WORK, f"model_{d[:7]}.pkl"))
     out = os.path.join(PS.WORK, f"day_{d}.parquet")
     if os.path.exists(out):
         os.remove(out)
     PS.load(); _, n = PS.score_day(d)
     S = pd.read_parquet(out); S["variant"] = variant
-    os.makedirs(f"{WORK}/scores", exist_ok=True); S.to_parquet(f"{WORK}/scores/{variant}_{d}.parquet")
+    os.makedirs(f"{WORK}/{SCORES}", exist_ok=True); S.to_parquet(f"{WORK}/{SCORES}/{variant}_{d}.parquet")
     print(json.dumps({"variant": variant, "day": d, "events": len(E), "people": len(P), "rows": int(n), "launches": len(S)}))
 
 
@@ -100,7 +127,7 @@ def boot(x, rng, n=10000):
 
 def score(d0=None, d1=None):
     from pipeline import warehouse as W
-    S = pd.concat([pd.read_parquet(f) for f in glob.glob(f"{WORK}/scores/*.parquet")])
+    S = pd.concat([pd.read_parquet(f) for f in glob.glob(f"{WORK}/{SCORES}/*.parquet")])
     S["id"] = S.id.astype(str)
     if d0:
         S = S[(S.day >= d0) & (S.day <= (d1 or d0))]
@@ -131,13 +158,16 @@ def score(d0=None, d1=None):
     res["weekly"] = wk or "no full ISO week in the scored days"
     res["monthly"] = "not enough November days for a monthly list"
     res["label"] = f"PROVISIONAL ({len(days)} days)"
-    json.dump(res, open(os.path.join(HERE, "results", "sim_v3_backtest.json"), "w"), indent=1); print(json.dumps(res, indent=1))
+    res["models"] = "retrained per variant (Sep-trained for Oct days, Oct-trained for Nov days)" if RETRAIN else "live model_2026-11.pkl for both"
+    json.dump(res, open(os.path.join(HERE, "results", "sim_v3_backtest" + ("_retrain" if RETRAIN else "") + ".json"), "w"), indent=1); print(json.dumps(res, indent=1))
 
 
 if __name__ == "__main__":
     cmd = sys.argv[1]
     if cmd == "prepare":
         prepare()
+    elif cmd == "train":
+        train(sys.argv[2], sys.argv[3])
     elif cmd == "day":
         day(sys.argv[2], sys.argv[3])
     else:
