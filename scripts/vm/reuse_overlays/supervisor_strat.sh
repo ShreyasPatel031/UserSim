@@ -101,11 +101,36 @@ while true; do
   tok=$(gsutil cat "$B/GO.$VM" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9:_.-' || true)
   batch_up=0
   pgrep -f '[p]h_batch.py|[p]deep.py' >/dev/null 2>&1 && batch_up=1
+  do_launch=0
+  launch_reason=""
   if _cf_cooldown_active; then
     rem=$(( $(cat /opt/ph/reuse/cf_cooldown_until | tr -cd 0-9) - $(date +%s) ))
-    echo "cf_cooldown ${rem}s left; no relaunch (Population block backoff)" >> supervisor.log
+    echo "cf_cooldown ${rem}s left; no relaunch" >> supervisor.log
     hb "${tok:-}"
   elif [[ -n "$tok" && "$tok" != "$last" ]]; then
+    do_launch=1
+    launch_reason="new_go"
+  elif [[ -n "$tok" && "$tok" == "$last" && $batch_up -eq 0 ]]; then
+    now_s=$(date +%s)
+    retry_at=0
+    [[ -f /opt/ph/reuse/same_tok_retry_at ]] && retry_at=$(cat /opt/ph/reuse/same_tok_retry_at 2>/dev/null | tr -cd 0-9)
+    if [[ -n "$retry_at" && "$now_s" -lt "$retry_at" ]]; then
+      :
+    else
+      base=${PH_CF_FLEET_REST_SEC:-600}
+      n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n 2>/dev/null | tr -cd 0-9)))
+      mult=1
+      (( n > 1 )) && mult=2
+      (( n > 2 )) && mult=4
+      (( n > 3 )) && mult=8
+      wait=$(( base * mult ))
+      (( wait > 3600 )) && wait=3600
+      echo $(( now_s + wait )) > /opt/ph/reuse/same_tok_retry_at
+      do_launch=1
+      launch_reason="same_tok_backoff_${wait}s"
+    fi
+  fi
+  if [[ $do_launch -eq 1 ]]; then
     if [[ "${PH_FLEET_BLOCK_PAUSE:-0}" == "1" ]]; then
       echo "fleet_block_pause; ack GO $tok without launch ($(date -u +%FT%TZ))" >> supervisor.log
       last=$tok
@@ -115,7 +140,7 @@ while true; do
     L=run_$(date -u +%Y%m%dT%H%MZ).log
     if [[ "$mode" = "legacy" ]]; then mode=run; echo "legacy->$tok as run" >> supervisor.log; fi
     extra=$($PY strategy_args.py 2>>supervisor.log || true)
-    echo "launch $tok mode=$mode extra=[$extra] $(date -u +%FT%TZ)" >> supervisor.log
+    echo "launch $tok reason=$launch_reason mode=$mode extra=[$extra] $(date -u +%FT%TZ)" >> supervisor.log
     mark batch_launch "token=$tok extra=$extra"
     # Refresh GeoIP mtime every launch so camoufox never re-downloads mid-session.
     if [[ -x /opt/ph/overlays/ensure_geoip.sh ]]; then
@@ -184,10 +209,11 @@ while true; do
       wait=$(( base * mult ))
       (( wait > 3600 )) && wait=3600
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/cf_cooldown_until
+      echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
       echo "block rc=$rc same-ip; cooldown ${wait}s (n=$n) — no relaunch storm" >> supervisor.log
       last=$tok; echo "$tok" > last_token
     elif [[ $rc -eq 0 ]]; then
-      rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n
+      rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at
     fi
     if [[ $rc -eq 1 && $crashes -lt 3 ]]; then
       crashes=$((crashes + 1))

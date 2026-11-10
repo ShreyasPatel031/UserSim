@@ -366,8 +366,8 @@ SUP_TAIL="
       [[ "$nudge_age" -eq 0 ]] && nudge_age=99999
       if [[ "$block_pause" -eq 1 ]]; then
         echo "KEEPER skip nudge slot=$slot dead_${dead_for}s (PH_FLEET_BLOCK_PAUSE)" | tee -a "$ART/keeper.log"
-      elif [[ "$low_ppm" -eq 1 ]]; then
-        echo "KEEPER skip recover slot=$slot dead_${dead_for}s (fleet_ppm<5 — same-IP backoff)" | tee -a "$ART/keeper.log"
+      elif [[ "$low_ppm" -eq 1 && "$dead_for" -lt 900 ]]; then
+        echo "KEEPER skip recover slot=$slot dead_${dead_for}s (fleet_ppm<5 — supervisor backoff)" | tee -a "$ART/keeper.log"
       elif [[ "$dead_for" -ge "$KEEPER_DEAD_SEC" && "$nudge_age" -ge "$KEEPER_DEAD_SEC" ]]; then
         # Prefer in-place relaunch (new GO). Full recreate only if already nudged twice with no batch.
         nudges=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('nudge_fail',0))" 2>/dev/null || echo 0)
