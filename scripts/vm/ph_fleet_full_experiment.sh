@@ -319,6 +319,10 @@ keeper_one_pass() {
   local now slot name st remote json_n batch_alive dead_for stall_for nudge_age block_pause
   block_pause=0
   grep -qE '^PH_FLEET_BLOCK_PAUSE=1' "$STRATEGY_ENV" 2>/dev/null && block_pause=1
+  low_ppm=0
+  if [[ -f "$ART/fleet_measure.json" ]]; then
+    low_ppm=$(python3 -c "import json; m=json.load(open('$ART/fleet_measure.json')); c=float(m.get('complete_ppm') or 0); a=float(m.get('attempt_ppm') or 0); print(1 if c < 5 and a < 5 else 0)" 2>/dev/null || echo 0)
+  fi
   now=$(date +%s)
   while IFS=$'\t' read -r slot port; do
     [[ -z "$slot" ]] && continue
@@ -362,6 +366,8 @@ SUP_TAIL="
       [[ "$nudge_age" -eq 0 ]] && nudge_age=99999
       if [[ "$block_pause" -eq 1 ]]; then
         echo "KEEPER skip nudge slot=$slot dead_${dead_for}s (PH_FLEET_BLOCK_PAUSE)" | tee -a "$ART/keeper.log"
+      elif [[ "$low_ppm" -eq 1 ]]; then
+        echo "KEEPER skip recover slot=$slot dead_${dead_for}s (fleet_ppm<5 — same-IP backoff)" | tee -a "$ART/keeper.log"
       elif [[ "$dead_for" -ge "$KEEPER_DEAD_SEC" && "$nudge_age" -ge "$KEEPER_DEAD_SEC" ]]; then
         # Prefer in-place relaunch (new GO). Full recreate only if already nudged twice with no batch.
         nudges=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('nudge_fail',0))" 2>/dev/null || echo 0)
