@@ -1404,3 +1404,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 00:34 UTC Nov 10 mailbox checked: no new replies; nothing from Cursor; live capture healthy (16:30 PT Nov 9, 25/25).
 - 00:35 UTC Nov 10 HN agent calibration (settled Oct 31-Nov 4, 105 winners): live Caught 1 h 41.9% (43.8% w/ bonus), 15 min 19.0% vs backtest 48.4%/29.6%; AUC 0.787 at posting to 0.913 at 1 h; daily top-30 at 21:00 Nov 7 83%. No action; next check Nov 11.
 - 01:01 UTC Nov 10 HN daily live check: full-coverage days Nov 2-9 Caught 1 h 105/225 (46.7%), 15 min 47/225 (20.9%); backtest 48.4%/115 of 388. Focus 1 h; main misses = on front page within 1 h but ranked below cut. Nov 7 daily list 25/30. No action.
+- 01:34 UTC Nov 10 mailbox checked: X pass-1 drops 20261110_a-d (positions 2900-3299; 3,736 events; 126 truncated, labelled cap_1); checkpoint 3300/8902, ETA ~Nov 17-18; still partial per earlier decision. Nothing from Cursor; live capture healthy (17:30 PT, 25/25).
