@@ -1455,3 +1455,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 15:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (07:30 PT, 50/50).
 - 16:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (08:30 PT, 50/50).
 - 17:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (09:30 PT, 50/50).
+- 18:37 UTC Nov 10 Shreyas asked for yesterday's prediction + a user simulation. Nov 9 pre-launch forecast (launch_model): top 3/5/10 1/3, 2/5, 7/10 per PH agent; simulation 2/3, 3/5, 9/10 (sim order Dageno, Databox, Higgsfield, PH MCP, MCP1 vs final PH MCP, Dageno, Databox). Ran deployed person sim (model_2026-11) for Nov 9 in scratch: 3,635 people x 25 launches; inputs' newest upvote Nov 3. Spot check on one complete person re-pulled Nov 10: sim Databox CLI 96%, next 17%; real Nov 9 upvote = Databox CLI only. Usernames kept out of repo.
