@@ -110,7 +110,7 @@ export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET
 
 rerun_pct="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(100*float('$rerun_ppm' or 0)/a,1))")"
 eff_pop="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(float('$ppm' or 0)/a,4))")"  # complete per attempt = Population-aligned efficiency
-relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. PH_FLEET_RR_ONLY=${PH_FLEET_RR_ONLY:-0} save_path=_pacetest/shared full18d_pdeep."
+relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. GOAL lastweek 100% (Population ~65% now). PH_FLEET_RR_ONLY=1 queue=fix_vmgate(3915),fix_full18e_follow(1867),fix_signedin(21),overnight_0245Z. full18e md5 emGHSIIIgQ73nRE8WMwLiw== save=_pacetest/shared."
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
 relay_msg+=". VM smoke sample $sampled rows: complete=$complete incomplete=$incomplete (legacy header/tab; Population whole() is authority). RR_ONLY queue rerun_whole_20261110T0230Z_lastweek_priority.txt (no port rotate)."
 if [[ "$incomplete" -gt 0 ]]; then

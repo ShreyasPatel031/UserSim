@@ -27,7 +27,7 @@ PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/.purl}"
 STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 PORT_PREFIX="${PACE_PORT_REGISTRY_PREFIX:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm/_ports}"
 VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
-COMMON_META="pkg-name=full18d_candidate.tgz;pkg-md5=T3OI+xr3iAvoMDMZrdryhA==;k-levels=1,1;pace-state=0 600 0"
+COMMON_META="pkg-name=full18e_candidate.tgz;pkg-md5=emGHSIIIgQ73nRE8WMwLiw==;k-levels=1,1;pace-state=0 600 0"
 NEVER_PORTS=(10001 10005 10006 10020)
 
 vm_name() { echo "feeder-fleet-${RUN_ID}-${1}"; }
