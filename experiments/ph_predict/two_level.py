@@ -95,7 +95,8 @@ def day(d):
     from simlab import choice
     PS = _ps(P, I, E, os.path.join(WORK, f"work_tl_{TAG}_{d}"))
     import pickle
-    art = pickle.load(open(os.path.join(WORK, f"models_tl_{TAG}", f"model_{d[:7]}.pkl"), "rb"))
+    mdir = os.environ.get("TL_MODEL_DIR") or f"models_tl_{TAG}"   # e.g. models_wh: the deployed-style model as a person-level comparator
+    art = pickle.load(open(os.path.join(WORK, mdir, f"model_{d[:7]}.pkl"), "rb"))
     D = choice.rows(day_from=d, day_to=d, all_people=True)
     D = PS.featurize(D, art["cf"], art["prior_cut"]); D, pc = PS.page_cols(D)
     D["p"] = art["model"].predict_proba(D[PS.FEATS + pc])[:, 1]
