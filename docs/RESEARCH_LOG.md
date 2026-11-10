@@ -1414,3 +1414,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 03:46 UTC Nov 10 E5 PASS final full18f (uYYdW17h…, 57054df8). Deploy waits only on Data Feeder capcheck.
 - 03:48 UTC Nov 10 Data Feeder capcheck PASS full18f (0 findings/52 files, 21 tests). Both gates clear; population told to have fleet-cursor deploy full18f now and confirm first audit on uYYd… with nonzero saves.
 - 04:14 UTC Nov 10 Population: fleet saving again since ~04:00Z (203 staged, ~15/min) on full18d rollback (T3OI…); full18f not yet live, told to deploy. Gap 02:50-04:00Z 0 saves. Corrected COMPLETE pending :50 quality run.
+- 04:21 UTC Nov 10 Population official re-score (full18f rule, store ~03:52Z): saved 47,503; COMPLETE 33,370 (29,131 whole + 4,239 whole signed-out), was 33,444; INCOMPLETE 14,133; MERGED_INCOMPLETE 234 (+39 from rule). Fleet ~28 complete/min on full18d; full18f deploy pending.
