@@ -106,6 +106,11 @@ while true; do
     echo "cf_cooldown ${rem}s left; no relaunch (Population block backoff)" >> supervisor.log
     hb "${tok:-}"
   elif [[ -n "$tok" && "$tok" != "$last" ]]; then
+    if [[ "${PH_FLEET_BLOCK_PAUSE:-0}" == "1" ]]; then
+      echo "fleet_block_pause; ack GO $tok without launch ($(date -u +%FT%TZ))" >> supervisor.log
+      last=$tok
+      echo "$tok" > last_token
+    else
     mode=${tok%%:*}
     L=run_$(date -u +%Y%m%dT%H%MZ).log
     if [[ "$mode" = "legacy" ]]; then mode=run; echo "legacy->$tok as run" >> supervisor.log; fi
@@ -191,6 +196,7 @@ while true; do
       last=$tok
       echo "$tok" > last_token
       crashes=0
+    fi
     fi
   fi
   hb ""
