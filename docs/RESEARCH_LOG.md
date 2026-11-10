@@ -1465,3 +1465,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 21:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (13:30 PT, 50/50).
 - 22:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (14:30 PT, 50/50).
 - 22:47 UTC Nov 10 Shreyas: no asking; make the sim work at person + population level together. Wrote docs/SIM_TWO_LEVEL_PLAN.md (person model on complete people with real negatives, representativeness weights, launch EV = sum w*P; both levels reported per run; ship rule). PH agent assigned to build/iterate/deploy; E5 to review leakage/weights and build a reference baseline.
+- 23:34 UTC Nov 10 mailbox checked: no new replies; two-level sim in progress (PH agent, E5); live capture healthy (15:30 PT, 50/50).
