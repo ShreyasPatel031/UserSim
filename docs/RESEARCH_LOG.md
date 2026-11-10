@@ -1451,3 +1451,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 12:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (04:30 PT, 50/50).
 - 12:37 UTC Nov 10 PH agent on republished store_v3 (newer-pull fix): last week complete-only 41.30% votes / 56.95% top 3; 1,983 complete voters; 9,063 votes to 80%; all tracked 55.8%; seen 13,075 of 23,421; 818 incomplete voters hold 3,402 votes. Oct 1-24 27.85%/47.71%.
 - 13:34 UTC Nov 10 mailbox checked: no new replies; fleet paused (sticky-IP decision pending); live capture healthy (05:30 PT, 50/50).
+- 14:34 UTC Nov 10 mailbox checked: Data Feeder daily merge (Data Feeder master pool 21,998; x_posts 4,096, x_profile 4,329; routine). Fleet paused; live capture checked.
