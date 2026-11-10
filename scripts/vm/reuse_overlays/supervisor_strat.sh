@@ -117,17 +117,8 @@ while true; do
     if [[ -n "$retry_at" && "$now_s" -lt "$retry_at" ]]; then
       :
     else
-      base=${PH_CF_FLEET_REST_SEC:-600}
-      n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n 2>/dev/null | tr -cd 0-9)))
-      mult=1
-      (( n > 1 )) && mult=2
-      (( n > 2 )) && mult=4
-      (( n > 3 )) && mult=8
-      wait=$(( base * mult ))
-      (( wait > 3600 )) && wait=3600
-      echo $(( now_s + wait )) > /opt/ph/reuse/same_tok_retry_at
       do_launch=1
-      launch_reason="same_tok_backoff_${wait}s"
+      launch_reason="same_tok_retry"
     fi
   fi
   if [[ $do_launch -eq 1 ]]; then
@@ -214,6 +205,16 @@ while true; do
       last=$tok; echo "$tok" > last_token
     elif [[ $rc -eq 0 ]]; then
       rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at
+    else
+      base=${PH_CF_FLEET_REST_SEC:-600}
+      n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n 2>/dev/null | tr -cd 0-9)))
+      mult=1
+      (( n > 1 )) && mult=2
+      (( n > 2 )) && mult=4
+      (( n > 3 )) && mult=8
+      wait=$(( base * mult ))
+      (( wait > 3600 )) && wait=3600
+      echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
     fi
     if [[ $rc -eq 1 && $crashes -lt 3 ]]; then
       crashes=$((crashes + 1))
