@@ -1402,3 +1402,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 22:34 UTC Nov 9 mailbox checked: no new replies; nothing from Cursor; live capture healthy (14:30 PT, 25/25).
 - 23:34 UTC Nov 9 mailbox checked: no new replies; nothing from Cursor; live capture healthy (15:30 PT, 25/25).
 - 00:34 UTC Nov 10 mailbox checked: no new replies; nothing from Cursor; live capture healthy (16:30 PT Nov 9, 25/25).
+- 00:35 UTC Nov 10 HN agent calibration (settled Oct 31-Nov 4, 105 winners): live Caught 1 h 41.9% (43.8% w/ bonus), 15 min 19.0% vs backtest 48.4%/29.6%; AUC 0.787 at posting to 0.913 at 1 h; daily top-30 at 21:00 Nov 7 83%. No action; next check Nov 11.
