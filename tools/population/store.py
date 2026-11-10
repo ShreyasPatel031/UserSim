@@ -368,7 +368,9 @@ def _cached_load(fp, ids, upload_time, filled, data_dir):
 
 
 # ---------- build ----------
-def build(data_dir, out_dir, salt):
+def build(data_dir, out_dir, salt, complete=None):
+    """complete: optional set of lower-case handles (whole-person rule). When given, full pulls are read only from
+    people_live/vm/ for those handles (no lists-only light/pgql/boxbrowser pulls) and persons.parquet gets a `complete` flag."""
     ids = Ids(salt)
     os.makedirs(out_dir, exist_ok=True)
     reads = pd.concat([
@@ -404,9 +406,12 @@ def build(data_dir, out_dir, salt):
     filled = json.load(open(f"{data_dir}/people_live/f1_filled.json")) if os.path.exists(f"{data_dir}/people_live/f1_filled.json") else {}
     vm = sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/light/**/*.json", recursive=True)) \
         + sorted(glob.glob(f"{data_dir}/people_live/vm_pgql/_run_*/*.json"))
+    if complete is not None:  # orchestrator 08:30Z Nov 10: store_v3 from complete people only
+        vm = [p for p in glob.glob(f"{data_dir}/people_live/vm/*.json")
+              if os.path.basename(p)[:-5].replace("_f1fix", "").lower() in complete]
     fixed_h = {p[:-len("_f1fix.json")] for p in vm if p.endswith("_f1fix.json")}
     vm = [p for p in vm if p.endswith("_f1fix.json") or p[:-len(".json")] not in fixed_h]   # F1: restamped copy replaces the original
-    for fp in vm + sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json")):
+    for fp in vm + ([] if complete is not None else sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json"))):
         t_, e_ = _cached_load(fp, ids, up_times.get(os.path.relpath(fp, f"{data_dir}/people_live")), filled, data_dir)
         if len(t_):
             tab_rows.append(t_)
@@ -442,6 +447,9 @@ def build(data_dir, out_dir, salt):
     pool["in_pool"] = True
     # people pulled who are not in the Nov 2 pool (discovery for the 48 h coverage plan): same salted ids, in_pool False
     pool = pd.concat([pool, pd.DataFrame({"person_id": sorted(extra_people), "in_pool": False})], ignore_index=True)
+    if complete is not None:
+        cids = {ids(h) for h in complete}
+        pool["complete"] = pool.person_id.isin(cids)
     events.to_parquet(f"{out_dir}/events.parquet", index=False)
     pool.to_parquet(f"{out_dir}/persons.parquet", index=False)
     xt = x_timelines(data_dir, OK_X_DIRS)  # orchestrator Nov 8 02:39Z: every X timeline labelled; partial unless x_end
@@ -478,10 +486,14 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["build", "validate-pilot"])
     ap.add_argument("paths", nargs="+")
     ap.add_argument("--salt-file")
+    ap.add_argument("--complete-file", help="latest_complete.txt: build full-pull tabs/events from complete people only")
     a = ap.parse_args()
     if a.cmd == "build":
         salt = open(a.salt_file).read().strip()
-        ev, pool = build(a.paths[0], a.paths[1], salt)
+        comp = None
+        if a.complete_file:
+            comp = {l.split("\t")[0].split()[0].lstrip("@").lower() for l in open(a.complete_file) if l.strip() and not l.startswith("#")}
+        ev, pool = build(a.paths[0], a.paths[1], salt, comp)
         print(json.dumps(check_store(ev, pool), indent=1))
         print(ev.groupby(["kind", "source", "ts_quality"]).agg(events=("person_id", "size"), people=("person_id", "nunique")).to_string())
     else:
