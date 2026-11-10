@@ -329,7 +329,10 @@ for p in glob.glob(f"{D}/people_live/vm/*.json"):
     except Exception:
         continue
     if isinstance(d, dict) and ("upvotes" in d or "header" in d):
-        latest[handle_of(d, p)] = d
+        h_ = handle_of(d, p)  # 12:2xZ Nov 10: <h>.json and an old <h>_f1fix.json map to one handle; keep the newer pull
+        fin = lambda x: str((x.get("run") or {}).get("finished_utc") or "")
+        if h_ not in latest or fin(d) >= fin(latest[h_]):
+            latest[h_] = d
 pc = Counter(); reasons = Counter(); origin = Counter(); so = Counter(); complete_rows = []
 for h, d in latest.items():
     ok, why = person_complete(d, h)

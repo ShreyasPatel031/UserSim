@@ -410,7 +410,17 @@ def build(data_dir, out_dir, salt, complete=None):
         vm = [p for p in glob.glob(f"{data_dir}/people_live/vm/*.json")
               if os.path.basename(p)[:-5].replace("_f1fix", "").lower() in complete]
     fixed_h = {p[:-len("_f1fix.json")] for p in vm if p.endswith("_f1fix.json")}
-    vm = [p for p in vm if p.endswith("_f1fix.json") or p[:-len(".json")] not in fixed_h]   # F1: restamped copy replaces the original
+
+    def _fin(p):
+        try:
+            return str((json.load(open(p)).get("run") or {}).get("finished_utc") or "")
+        except Exception:
+            return ""
+    # F1: the restamped copy replaces the original it was made from, but never a newer pull of the same person
+    # (12:2xZ Nov 10: 140 people had an old _f1fix copy shadowing a newer full pull)
+    newer = {b for b in fixed_h if os.path.exists(b + ".json") and _fin(b + ".json") > _fin(b + "_f1fix.json")}
+    vm = [p for p in vm if (p.endswith("_f1fix.json") and p[:-len("_f1fix.json")] not in newer)
+          or (not p.endswith("_f1fix.json") and (p[:-len(".json")] not in fixed_h or p[:-len(".json")] in newer))]
     for fp in vm + ([] if complete is not None else sorted(glob.glob(f"{data_dir}/people_live/boxbrowser/*/*_full.json"))):
         t_, e_ = _cached_load(fp, ids, up_times.get(os.path.relpath(fp, f"{data_dir}/people_live")), filled, data_dir)
         if len(t_):
