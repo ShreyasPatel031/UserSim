@@ -11,7 +11,36 @@ if not p.exists():
     print("pdeep.py missing; skip")
     sys.exit(0)
 src = p.read_text()
+
+
+def _fix_skip_indent(s: str) -> tuple[str, bool]:
+    """Repair else-branch body left at column 4 (IndentationError on pdeep import)."""
+    if "PDEEP_RR_ONLY_SKIP" not in s or "    else:\n        PB.sh" in s:
+        return s, False
+    if "    else:\n    PB.sh" not in s:
+        return s, False
+    m = re.search(
+        r"    else:\n"
+        r"(    PB\.sh\('gsutil', '-q', 'cp', '[^']+need_list\.jsonl', 'need_list\.jsonl'\)\n"
+        r"    for l in open\('need_list\.jsonl'\):\n"
+        r"(?:        .*\n)*?"
+        r"    nl = \[h for h in dict\.fromkeys.*?\n)",
+        s,
+    )
+    if not m:
+        return s, False
+    body = "\n".join(("        " + line if line.strip() else line) for line in m.group(1).split("\n"))
+    return s.replace(m.group(0), "    else:\n" + body, 1), True
+
+
+src, fixed = _fix_skip_indent(src)
+if fixed:
+    p.write_text(src)
+    print("fixed PDEEP_RR_ONLY_SKIP indent")
+
 if "PDEEP_RR_ONLY_PATCH" in src:
+    if fixed:
+        sys.exit(0)
     print("pdeep_rr_only already patched")
     sys.exit(0)
 
@@ -28,13 +57,15 @@ if "PDEEP_RR_ONLY_SKIP" not in src:
     )
     if m:
         inner = m.group(2)
+        body = f"    PB.sh('gsutil', '-q', 'cp', '{m.group(1)}', 'need_list.jsonl')\n" + inner
+        body = "\n".join(("        " + line if line.strip() else line) for line in body.split("\n"))
         repl = (
             "    # PDEEP_RR_ONLY_SKIP\n"
             "    if os.environ.get('PH_FLEET_RR_ONLY', '').strip() in ('1', 'true', 'yes'):\n"
             "        rows, nl = [], []\n"
             "    else:\n"
-            f"    PB.sh('gsutil', '-q', 'cp', '{m.group(1)}', 'need_list.jsonl')\n"
-            + inner
+            + body
+            + "\n"
         )
         src = src[: m.start()] + repl + src[m.end() :]
 
