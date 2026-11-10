@@ -23,6 +23,7 @@ FULL18D = "T3OI+xr3iAvoMDMZrdryhA=="
 FULL18F = "uYYdW17hoPBJjpMGoR7lKw=="  # full18e + paging_v2.py:210 fix (no 98% / header-2 complete label); population agent 03:5xZ Nov 10
 AUDITED_BUILDS = {FULL18D, FULL18F}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
+BLOCK_SINCE = os.environ.get("CURSOR_BLOCK_SINCE", "2026-11-10T09:15:00Z")  # fleet-wide PH block start (status logs)
 FOLLOW_ONLY = re.compile(r"^(followers|following):FAIL_(repeat|no_offset_end)$")
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
 
@@ -77,8 +78,32 @@ def main():
         if vm not in vm_clean:
             logs = sh("gsutil", "ls", f"{STAGE}/status/{vm}*", f"{R}/ph_population/people_live/vm/status/{vm}*").stdout.split()
             txt = "".join(sh("gsutil", "cat", u).stdout for u in logs)
-            vm_clean[vm] = not any(EVASION.search(_strip_person(l)) for l in txt.splitlines())
+            lines = txt.splitlines()
+            vm_clean[vm] = (not any(EVASION.search(_strip_person(l)) for l in lines), _block_evasion(lines))
         return vm_clean[vm]
+
+    def _block_evasion(lines):
+        """orchestrator 10:25Z Nov 10. Returns the UTC time from which this VM's saves are held, or None:
+        - a VM whose first log line is at/after BLOCK_SINCE (created during/after the PH block): held from its first line;
+        - a VM with a stopped_on_block at/after BLOCK_SINCE that then shows an exit IP it never used before that block:
+          held from that new-IP event. Earlier blocks are ignored (the residential proxy changes exit IPs on its own)."""
+        recs = []
+        for l in lines:
+            try:
+                d = json.loads(l)
+            except Exception:
+                continue
+            if isinstance(d, dict):
+                recs.append((str(d.get("utc") or d.get("ts") or ""), d))
+        recs.sort(key=lambda x: x[0])
+        times = [t for t, _ in recs if t]
+        if times and times[0] >= BLOCK_SINCE:
+            return times[0]
+        blocked = next((t for t, d in recs if d.get("event") == "stopped_on_block" and t >= BLOCK_SINCE), None)
+        if blocked is None:
+            return None
+        before = {d.get("exit_ip") for t, d in recs if d.get("event") == "exit_ip" and t < blocked}
+        return next((t for t, d in recs if d.get("event") == "exit_ip" and t >= blocked and d.get("exit_ip") not in before), None)
 
     def _strip_person(l):
         """05:5xZ Nov 10: match rotation evidence only in VM fields, never in a person's handle/url (a handle such as
@@ -107,8 +132,10 @@ def main():
         gate = []
         if md5 not in AUDITED_BUILDS:
             gate.append("build_not_audited")
-        if vm == "unknown" or not clean(vm):
+        if vm == "unknown" or not clean(vm)[0]:
             gate.append("vm_evasion_or_unknown")
+        elif clean(vm)[1] and st[n] >= clean(vm)[1]:
+            gate.append("vm_after_block_new_vm_or_ip")
         if ok and not gate:
             if n in vm_t and not (n.lower() in rerun and st[n] > vm_t[n]):
                 res = "already_in_vm"
@@ -156,7 +183,7 @@ def main():
           "(handles stay under raw/).", "",
           "Gates: only `full18d` (md5 T3OI+xr3iAvoMDMZrdryhA==) and `full18f` (md5 uYYdW17hoPBJjpMGoR7lKw==) saves are mergeable, "
           "and every person must pass the whole-person check (full header or PH's own end on every list). Saves from any VM whose status logs show IP/port rotation, VM recreation or a byte-stop bypass "
-          "are never merged."]
+          "are never merged, nor saves from VMs created during/after a PH block or whose exit IP changed after a block."]
     open(f"{W}/audit.md", "w").write("\n".join(md) + "\n")
     sh("gsutil", "-q", "cp", f"{W}/audit.md", f"{G}/mailbox/to_cursor/audit_{stamp}.md")
     print(f"wrote mailbox/to_cursor/audit_{stamp}.md and raw/_cursor/audit_{stamp}.tsv")
