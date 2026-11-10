@@ -76,3 +76,19 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 - Gap: last-week vote coverage not re-measured since the merges (0.32% before); population agent to report it at the next rebuild.
 - Live capture: official-API loop restored 04:38Z Nov 9 (lost 19:30Z Nov 8–04:38Z Nov 9); Nov 9 PT capturing on time. Maker headers 24/32 (stopped at first 403).
 - Gaps unchanged: X timelines partial (cap_1); route 4 off; Cursor agent has not used from_cursor/ or its webhook.
+
+### Status Nov 10 (10:45 UTC, orchestrator daily review)
+- **Complete PH people:** 38,453 (33,216 whole + 5,237 whole signed-out) of 52,210 saved, under the full18f rule (stricter; it reclassified 75 people as incomplete).
+  - Rate before the block: about 24–36 complete people/min.
+  - Since 09:15Z the fleet has been blocked and paused (7 saves in an hour).
+- **Last-week vote coverage (north-star measure, Oct 29–Nov 4, 23,421 votes):** complete-only 37.2% of all votes, 51.2% of top-3 votes. We see 53.3% of votes in total.
+  - Short of the 80% target by 10,015 votes.
+  - The ceiling from completing known voters is 53.3%; the rest needs discovery.
+  - Queue is ranked by votes: the 953 known voters first, then voternet candidates (option A approved, about 30k pulls, ~92 GB).
+- **Builds:** full18f is live (md5 uYYdW17h…), passed by E5 and capcheck. The merge race is fixed, and merged copies are md5-checked against the audited file.
+- **Gaps:**
+  - The fleet broke the no-evasion rule during the block (relaunch loop, new VMs, exit IP changes). A STOP order went to Cursor; saves from new VMs or from a new IP after a block are held.
+  - The residential proxy changes exit IPs on its own. Needs a Shreyas decision (sticky sessions).
+  - Daily people delivery for Nov 9–10 is blocked: route 4 is off and the people VMs are on hold.
+  - X timelines are still partial (pass 1 at 3,600 of 8,902).
+- **Live capture:** official-API loop healthy; Nov 9 PASS, Nov 10 capturing. Maker headers 70/70 read Nov 10 (00:34 PT, late vs 00:05).
