@@ -1345,3 +1345,14 @@ headline 7/24); not investigated under the usage pause, headline line used above
 Per-minute odds: Nov 8 1,440/1,440 files (00:00-23:59); Nov 9 landing (54 by 00:53).
 Replay, daily list Nov 6 at 21:05: live 24/30, replay 24/30; live misses: under the live 5-point filter 3, model miss 2,
 posted after the forecast 1.
+
+## Live check 2026-11-10 00:31 UTC (settled list days Oct 30 - Nov 7)
+
+- Live Caught (live_caught.py, settled posting days Oct 31 - Nov 4, 105 winners): 1 h 44/105 (41.9% [24.5, 57.8]),
+  with the front-page bonus 46/105 (43.8%); 15 min 20/105 (19.0% [13.3, 24.2]), with the bonus 24/105 (22.9%).
+  Backtest 48.4% / 29.6%. Focus 1 h: live gap to 80% is 40 of 105 (points model).
+- Odds AUC on settled posts: at posting 0.787 (836 posts), 15 min 0.759 (801), 30 min 0.855 (1,698), 1 h 0.913
+  (3,397), 2 h 0.933 (3,413). Top decile: 30 min 0.201 forecast vs 0.153 actual; at posting 0.121 vs 0.107.
+- Daily list at 21:00 (top 30 found): Nov 4 70%, Nov 5 83%, Nov 6 80%, Nov 7 83% (backtest 80.2%).
+- hn_minute: front/newest read every minute through Nov 9.
+- Fix: score_live.py crashed on a one-post "3 h" odds bucket (deciles need >= 10 posts); such buckets are now skipped.

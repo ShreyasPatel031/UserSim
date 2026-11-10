@@ -68,6 +68,9 @@ def odds_calibration():
     O = O.sort_values("made_at").drop_duplicates(["post_id", "age"], keep="first")
     out = []
     for age, g in O.groupby("age"):
+        if len(g) < 10:                                            # too few posts for deciles (e.g. a rare age label)
+            print(f"odds {age}: {len(g)} posts, skipped (fewer than 10)")
+            continue
         g = g.assign(decile=pd.qcut(g.p_top30.rank(method="first"), 10, labels=False))
         t = g.groupby("decile").agg(posts=("y", "size"), predicted=("p_top30", "mean"), realized=("y", "mean")).reset_index()
         t.insert(0, "age", age)
