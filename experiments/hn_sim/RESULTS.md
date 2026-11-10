@@ -1368,3 +1368,24 @@ Nov 6 14/31 | 6/31, Nov 7 9/26 | 3/26, Nov 8 13/23 | 4/23, Nov 9 14/24 | 4/24. R
 15 min Nov 2-9. Top misses at 15 min: on the front page within 1 h but ranked below the cut, then late risers.
 Per-minute odds: Nov 9 1,440/1,440 files; Nov 10 landing (60 by 00:59).
 Replay, daily list Nov 7 at 21:05: live 25/30, replay 25/30; live misses: model miss 3, under the live 5-point filter 2.
+
+## 1 h checkpoint, live: biggest miss bucket and fix (2026-11-10, Shreyas)
+
+Misses at 1 h, full-coverage days Nov 2-9 (115 missed of 225 winners, per-minute model, flags per day = winners):
+late risers (not on the front page by 1 h) 70, on the front page by 1 h but ranked below the cut 44, not seen 1.
+- Late risers (largest bucket): not fixable at 1 h with today's inputs. Within off-front posts first-hour votes barely
+  separate winners (AUC 0.66 for points) and none appear in the second-chance pool within 4 h; at-posting odds do (AUC
+  0.80) but too few of their top picks win. late60_live.py, leave one day out, Nov 2-8: fixed off-front share ranked by
+  odds 84/201 vs 94/201 current (late risers 9 vs 5, but -19 on front-page posts); separate on/off models merged by
+  probability 94 = 94; off-front model on odds + /newest votes 81; monotone constraints 91.
+- Second bucket (front page by 1 h, below the cut): the joint model drops strong posts (Nov 9: 78-100 points at front
+  rank 2-4). late60_b.py, simpler rankings, chosen on Nov 2-8 before reading Nov 9-10: every variant beat the current
+  model in both runs (core inputs +3, regularised core +5 to +9, logistic +7 to +9, rank blend of model and votes
+  +9); the best differed between runs (V6 then V8: labels moved as Nov 7-9 lists were re-read). Shipped: V8, equal
+  rank blend of the per-minute model and the votes score (points + 3 x front page), within each posting day.
+- Re-scored post by post (live15.py LIVE_INCLUDE_TODAY=1, provisional labels; Nov 9 now 35 winners after later list
+  reads, Nov 10 partial, posts up to 08:00 UTC): Nov 9 18/35 (51.4%) [current model in the same run 14/35],
+  Nov 10 5/12 (41.7%) [4/12]. Full-coverage Nov 2-10 headline: 132/252 (48.4% [41.4, 55.7]) vs 115/252 (45.6%).
+  late60_b.py same-split comparison Nov 9 + Nov 10: 22/47 vs 17/47. Front-page misses on Nov 2-8: 24 vs 37.
+- Not moved: late risers stay ~2/3 of remaining 1 h misses. Next: an at-posting signal strong enough for off-front
+  posts (the off-HN Reddit/Bluesky test and the 2025 front pages are the queued inputs).

@@ -124,7 +124,8 @@ def live_table(P, F, keep_idx, SC, top, days_after, out):
     winners so far, the gap to the backtest, and the top 3 reasons the 15-min misses were missed."""
     T = P[["post_id", "day", "y"]].reset_index(drop=True)
     pick = lambda sc: sc.get("model + exposure (direction A)", sc["blend 50/50"])
-    s15, s60 = pick(SC[15]), pick(SC[60])
+    s15 = pick(SC[15])
+    s60 = SC[60].get("model + votes blend (1 h fix)", pick(SC[60]))
     seen15 = F[15].iloc[keep_idx].seen.to_numpy() == 1
     front60 = F[60].iloc[keep_idx].front_best.to_numpy() < 999
     lag = np.array([next((k for k, x in enumerate(days_after(d)) if pid in top.get(x, ())), -1) for pid, d in zip(T.post_id, T.day)])
@@ -163,7 +164,8 @@ def main():
     P = OL.recent_history()
     P = P[(P.created_at_i >= t_start) & (P.created_at_i <= t_last - 60 * 60)].reset_index(drop=True)
     P["day"] = pd.to_datetime(P.created_at_i, unit="s", utc=True).dt.strftime("%Y-%m-%d")
-    P = P[P.day < time.strftime("%Y-%m-%d", time.gmtime())].reset_index(drop=True)     # only posting days already over
+    if os.environ.get("LIVE_INCLUDE_TODAY") != "1":                                   # default: only posting days already over
+        P = P[P.day < time.strftime("%Y-%m-%d", time.gmtime())].reset_index(drop=True)
     # per-minute inputs at 15 min and 1 h (recorder sightings at or before created + age)
     Mi = M[M.id.isin(set(P.post_id))].merge(P[["post_id", "created_at_i"]].rename(columns={"post_id": "id"}), on="id")
     Mi["age"] = (Mi.t - Mi.created_at_i) / 60
@@ -223,6 +225,13 @@ def main():
                     sm[te] = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=20,
                                                 verbose=-1, random_state=0).fit(X.loc[~te, cols], T.y[~te]).predict_proba(X.loc[te, cols])[:, 1]
                 scores[mname] = sm
+            if age == 60:                                # 1 h fix (late60_b.py, chosen on Nov 2-8): equal rank blend of the
+                dd = T.day.to_numpy()                    # model and the votes score, ranked within each posting day
+                bl = np.zeros(len(T))
+                for d in days:
+                    m = dd == d
+                    bl[m] = 0.5 * rk(scores["model + exposure (direction A)"][m]) + 0.5 * rk(votes[m])
+                scores["model + votes blend (1 h fix)"] = bl
         else:
             print(f"   [model on per-minute features: needs {MIN_DAYS_MODEL} posting days, have {len(days)}]", flush=True)
         print(f"Caught at {label}: seen by the recorder within {age} min: {seen.mean():.1%} of posts, "
@@ -250,7 +259,7 @@ def main():
         caught_line(T.assign(s=both), "15 min | all posts | posting clock + re-up clock (best of the two)", out)
     feats = pd.concat([P[["post_id", "day", "y", "p_post"]].reset_index(drop=True), RC.add_prefix("rc_")] +
                       [F[a].iloc[keep_idx].reset_index(drop=True).add_prefix(f"m{a}_") for a in AGES], axis=1)
-    feats.to_parquet(os.path.join(os.path.dirname(__file__), "out", "live_minute_feats.parquet"), index=False)
+    feats.to_parquet(os.path.join(os.path.dirname(__file__), "out", "live_minute_feats" + ("_today" if os.environ.get("LIVE_INCLUDE_TODAY") == "1" else "") + ".parquet"), index=False)
     print(json.dumps(out["days"]), flush=True)
     path = os.path.join(os.path.dirname(__file__), "out", f"live15_{time.strftime('%Y-%m-%d', time.gmtime())}.json")
     json.dump(out, open(path, "w"), indent=1)
