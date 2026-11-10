@@ -65,7 +65,7 @@ repl = f"""    RR.clear()
     _vmfl = (os.environ.get('PH_VM_FLAGGED_GCS') or '').strip() or (_cursor_root.rstrip('/') + '/vm_flagged.txt')
     _fr = PB.sh('gsutil', 'cat', _vmfl)
     if _fr.returncode == 0:
-        _flagged = {t.strip() for t in _fr.stdout.splitlines() if t.strip() and not t.lstrip().startswith('#')}
+        _flagged = {{t.strip() for t in _fr.stdout.splitlines() if t.strip() and not t.lstrip().startswith('#')}}
     _vm_flagged = VM in _flagged
     _urls = []
     if _rr_only and _specs:
