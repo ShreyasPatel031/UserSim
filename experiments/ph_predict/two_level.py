@@ -20,11 +20,13 @@ Selection caveat: the complete set was pulled partly from the Oct 29-Nov 4 prior
 usage: SIMBT=<dir> python two_level.py prepare | train <YYYY-MM> | day <YYYY-MM-DD> | score     (counts only)"""
 import glob, json, os, shutil, subprocess, sys, tempfile
 import numpy as np, pandas as pd
+from scipy.stats import spearmanr
 
 HERE = os.path.dirname(os.path.abspath(__file__)); EXP = os.path.dirname(HERE); sys.path.insert(0, EXP)
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 WORK = os.environ.get("SIMBT", os.path.join(tempfile.gettempdir(), "simbt"))
-VAR = os.environ.get("TL_VAR", "cp")              # cp | cp_noflag
+VAR = os.environ.get("TL_VAR", "cp")              # cp | cp_noflag  (events used as HISTORY / features)
+LABELS = os.environ.get("TL_LABELS", "cp")        # events used for labels (always the full set by default)
 TAG = os.environ.get("TL_TAG", VAR)               # output tag (models_tl_<TAG>, rows_tl_<TAG>)
 SELECTED = {d.strftime("%Y-%m-%d") for d in pd.date_range("2026-10-29", "2026-11-04")}
 
@@ -64,9 +66,10 @@ def _env():
 def _load(before):
     I = pd.read_parquet(f"{WORK}/items.parquet")
     Eall = pd.read_parquet(f"{WORK}/events_{VAR}.parquet")
+    Elab = pd.read_parquet(f"{WORK}/events_{LABELS}.parquet")
     E = Eall[(Eall.date < before) & Eall.item.isin(set(I[I.day < before].id))][["person", "item", "date", "kind"]]
     P = pd.DataFrame({"person": sorted(set(E.person))}).assign(follows="[]")
-    return P, I, E, Eall
+    return P, I, E, Elab
 
 
 def _ps(P, I, E, work):
@@ -82,6 +85,7 @@ def train(m):
     I = I[I.day < f"{m}-01"]
     PS = _ps(P, I, E, os.path.join(WORK, f"models_tl_{TAG}"))
     r = PS.train_month(m)
+    json.dump({"max_event_date": E.date.max(), "events": len(E)}, open(os.path.join(WORK, f"models_tl_{TAG}", f"model_{m}.json"), "w"))
     print(json.dumps({"tag": TAG, "month": m, "train_rows": r[1], "pos_rate": round(r[2], 4), "events": len(E), "people": len(P)}))
 
 
@@ -116,6 +120,23 @@ def boot(x, rng, n=10000):
     return [round(float(x.mean()), 3), [round(float(v), 3) for v in np.percentile(b, [2.5, 97.5])], int(len(x))]
 
 
+def tier_of(w, q):
+    return np.digitize(w, q)
+
+
+def rep_factors(prev, real_votes):
+    """Tier factors fitted on PREVIOUS days only (rows of days < d): per activity tier, real votes the complete people
+    cast / their weighted expected votes, scaled by the share of each launch's real total that complete people cast.
+    Returns (tier cut points, factor per tier) or None when there are no previous days."""
+    if prev is None or not len(prev):
+        return None
+    q = prev.w.quantile([1 / 3, 2 / 3]).values
+    t = tier_of(prev.w, q)
+    ev = prev.assign(t=t, e=prev.w * prev.p).groupby("t").e.sum()
+    obs = prev.assign(t=t)[prev.y == 1].groupby("t").size()
+    return q, {k: float(obs.get(k, 0)) / ev[k] if ev[k] > 0 else 1.0 for k in ev.index}
+
+
 def rep_factor(R, real_votes):
     """Per activity tier (w terciles), real votes per tier / sample's weighted expected votes per tier, scaled so the
     weighted sample matches the real voter base's volume. real_votes: launch id -> real votes."""
@@ -130,7 +151,6 @@ def rep_factor(R, real_votes):
 
 def score():
     from sklearn.metrics import roc_auc_score, log_loss
-    from scipy.stats import spearmanr
     from pipeline import warehouse as W
     files = sorted(glob.glob(f"{WORK}/rows_tl_{TAG}/*.parquet"))
     L = W.query("SELECT CAST(id AS VARCHAR) AS id, day::VARCHAR AS day, daily_rank, weekly_rank, votes FROM launches WHERE daily_rank IS NOT NULL")
@@ -140,11 +160,22 @@ def score():
     dep = {}
     for f in glob.glob(f"{WORK}/scores_retrain/wh_*.parquet"):
         S = pd.read_parquet(f); dep.update({(r.day, str(r.id)): r.psn_ev for r in S.itertuples()})
-    per, pop = [], []
+    per, pop, diag, prev_rows = [], [], [], []
     for f in files:
         d = os.path.basename(f)[:10]; R = pd.read_parquet(f); R["id"] = R.id.astype(str)
+        raw = R.copy()
         if os.environ.get("WEIGHTS", "act") == "rep":
-            R["w"] = R.w * rep_factor(R, votes)
+            fac = rep_factors(pd.concat(prev_rows[-7:]) if prev_rows else None, votes)   # previous 7 scored days only
+            if fac is not None:
+                q, fmap = fac
+                R["w"] = R.w * pd.Series(tier_of(R.w, q), index=R.index).map(fmap).fillna(1.0)
+        prev_rows.append(raw[["w", "p", "y"]])
+        pw = R.groupby("person").w.first(); tot = pw.sum()
+        diag.append({"day": d, "people": int(len(pw)), "rows": int(len(R)), "n_eff": float(tot ** 2 / (pw ** 2).sum()) if tot else 0,
+                     "max_w_share": float(pw.max() / tot) if tot else 0, "top1pct_share": float(pw.nlargest(max(1, len(pw) // 100)).sum() / tot) if tot else 0})
+        # weighted real votes vs real totals (E5 validation): sum_p w_p * y_pL per launch vs the launch's real votes
+        wv = R.assign(e=R.w * R.y).groupby("id").e.sum()
+        diag[-1]["spearman_weighted_real_vs_votes"] = float(spearmanr(wv.values, [votes.get(x, np.nan) for x in wv.index], nan_policy="omit").correlation) if len(wv) > 3 else None
         unseen = json.load(open(f[:-8] + "_unseen.json"))
         auc = roc_auc_score(R.y, R.p) if R.y.nunique() > 1 else np.nan
         ll = log_loss(R.y, R.p.clip(1e-6, 1 - 1e-6))
@@ -189,6 +220,15 @@ def score():
     alld = res["days"]; clean = [d for d in alld if d not in SELECTED]
     res["population_all_days"] = block(alld); res["population_clean_days"] = block(clean)
     res["clean_days"] = clean
+    Dg = pd.DataFrame(diag)
+    res["weights_diag"] = {"n_eff_median": round(float(Dg.n_eff.median()), 1), "people_median": int(Dg.people.median()),
+                           "max_w_share_max": round(float(Dg.max_w_share.max()), 4), "top1pct_share_median": round(float(Dg.top1pct_share.median()), 3),
+                           "spearman_weighted_real_vs_votes_median": round(float(Dg.spearman_weighted_real_vs_votes.median()), 3)}
+    res["n_both_levels"] = {"person_days": int(Dg.people.sum()), "rows": int(Dg.rows.sum()), "days": len(Dg),
+                            "note": "person metrics and launch EV use the same rows (complete people active in the 30 days before d x the line-up)"}
+    res["model_max_event_date"] = {os.path.basename(m): json.load(open(m[:-4] + ".json")).get("max_event_date") if os.path.exists(m[:-4] + ".json") else None
+                                   for m in glob.glob(f"{WORK}/models_tl_{TAG}/model_*.pkl")}
+    res["follow_edges"] = "none (people get follows='[]'; no follow features enter)"
     Q["week"] = pd.to_datetime(Q.day).dt.strftime("%G-W%V")
     wk = {}
     for w, g in Q.groupby("week"):
