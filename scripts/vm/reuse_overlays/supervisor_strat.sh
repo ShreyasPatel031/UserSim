@@ -85,6 +85,14 @@ load_strategy
 echo "supervisor_strat start $(date -u +%FT%TZ) strategy=${PH_STRATEGY:-none} home_port=${PROXY_PORT}" >> /opt/ph/reuse/supervisor.log
 mark supervisor_ready "home_port=${PROXY_PORT}"
 
+_cf_cooldown_active() {
+  [[ -f /opt/ph/reuse/cf_cooldown_until ]] || return 1
+  local until now
+  until=$(cat /opt/ph/reuse/cf_cooldown_until 2>/dev/null | tr -cd 0-9)
+  now=$(date +%s)
+  [[ -n "$until" && "$now" -lt "$until" ]]
+}
+
 while true; do
   gsutil -q cp "$B/_code/reuse.tgz" . && tar xzf reuse.tgz
   apply_overlays
@@ -93,7 +101,11 @@ while true; do
   tok=$(gsutil cat "$B/GO.$VM" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9:_.-' || true)
   batch_up=0
   pgrep -f '[p]h_batch.py|[p]deep.py' >/dev/null 2>&1 && batch_up=1
-  if [[ -n "$tok" && ( "$tok" != "$last" || $batch_up -eq 0 ) ]]; then
+  if _cf_cooldown_active; then
+    rem=$(( $(cat /opt/ph/reuse/cf_cooldown_until | tr -cd 0-9) - $(date +%s) ))
+    echo "cf_cooldown ${rem}s left; no relaunch (Population block backoff)" >> supervisor.log
+    hb "${tok:-}"
+  elif [[ -n "$tok" && ( "$tok" != "$last" || $batch_up -eq 0 ) ]]; then
     mode=${tok%%:*}
     L=run_$(date -u +%Y%m%dT%H%MZ).log
     if [[ "$mode" = "legacy" ]]; then mode=run; echo "legacy->$tok as run" >> supervisor.log; fi
@@ -157,15 +169,25 @@ while true; do
       continue
     fi
     if [[ $rc -eq 3 || $kicked -eq 1 ]]; then
-      # Same-IP backoff (PH_BLOCK_NEW_PORT=0): rest on home port and relaunch same GO token.
-      echo "block rc=$rc same-ip; rest ${PH_BLOCK_REST_SEC:-10}s then relaunch $tok" >> supervisor.log
-      sleep "${PH_BLOCK_REST_SEC:-10}"
-      continue
+      base=${PH_CF_FLEET_REST_SEC:-600}
+      n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n | tr -cd 0-9)))
+      n=$((n + 1)); echo "$n" > /opt/ph/reuse/cf_backoff_n
+      mult=1
+      (( n > 1 )) && mult=2
+      (( n > 2 )) && mult=4
+      (( n > 3 )) && mult=8
+      wait=$(( base * mult ))
+      (( wait > 3600 )) && wait=3600
+      echo $(( $(date +%s) + wait )) > /opt/ph/reuse/cf_cooldown_until
+      echo "block rc=$rc same-ip; cooldown ${wait}s (n=$n) — no relaunch storm" >> supervisor.log
+      last=$tok; echo "$tok" > last_token
+    elif [[ $rc -eq 0 ]]; then
+      rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n
     fi
     if [[ $rc -eq 1 && $crashes -lt 3 ]]; then
       crashes=$((crashes + 1))
       sleep 300
-    else
+    elif [[ $rc -ne 3 && $kicked -eq 0 ]]; then
       last=$tok
       echo "$tok" > last_token
       crashes=0
