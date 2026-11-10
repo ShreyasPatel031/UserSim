@@ -244,6 +244,56 @@ def score():
     json.dump(res, open(out, "w"), indent=1); print(json.dumps(res, indent=1))
 
 
+def blend():
+    """Hierarchical form (orchestrator Nov 10 23:52Z): launch score = z(launch-model score) + beta * z(log EV), within day.
+    Launch-model score known at 00:05 PT: the honest backtest prediction (honest_preds 'honest', Oct 20-24) or the live
+    forecast's predicted rank (forecasts table, Oct 25 on). beta chosen (a) leave-one-day-out over all scored days and
+    (b) fitted on October days, tested on November days; criterion = mean of daily top 3 and top 5 hits."""
+    from pipeline import warehouse as W
+    L = W.query("SELECT CAST(id AS VARCHAR) AS id, day::VARCHAR AS day, daily_rank, votes FROM launches WHERE daily_rank IS NOT NULL")
+    rnk = dict(zip(L.id, L.daily_rank))
+    lm = {}
+    hp = os.environ.get("HONEST_PREDS")
+    if hp and os.path.exists(hp):
+        H = pd.read_parquet(hp); H["id"] = H.id.astype(str)
+        lm.update({(r.day, r.id): float(r.honest) for r in H.itertuples()})
+    Fc = W.query("SELECT CAST(launch_id AS VARCHAR) AS id, forecast_date AS day, predicted_rank FROM forecasts WHERE model = 'launch_model'", do_sync=False)
+    lm.update({(r.day, r.id): -float(np.log(r.predicted_rank)) for r in Fc.itertuples()})
+    rows = []
+    for f in sorted(glob.glob(f"{WORK}/rows_tl_{TAG}/*.parquet")):
+        d = os.path.basename(f)[:10]; R = pd.read_parquet(f); R["id"] = R.id.astype(str)
+        ev = R.assign(e=R.w * R.p).groupby("id").e.sum()
+        for x, e in ev.items():
+            rows.append({"day": d, "id": x, "ev": np.log1p(e * 1000), "lm": lm.get((d, x)), "rank": rnk.get(x)})
+    Q = pd.DataFrame(rows).dropna(subset=["rank"])
+    Q = Q[Q.groupby("day").lm.transform(lambda s: s.notna().all())]
+    for c in ("ev", "lm"):
+        g = Q.groupby("day")[c]; Q["z_" + c] = (Q[c] - g.transform("mean")) / (g.transform("std") + 1e-9)
+    days = sorted(Q.day.unique()); betas = np.round(np.arange(0, 2.01, 0.1), 2)
+
+    def hits(d, beta, k):
+        g = Q[Q.day == d]; top = set(g[g["rank"] <= k].id)
+        if len(top) < k:
+            return np.nan
+        return len(set(g.assign(s=g.z_lm + beta * g.z_ev).nlargest(k, "s").id) & top) / k * 100
+
+    def crit(ds, beta):
+        return np.nanmean([(hits(d, beta, 3) + hits(d, beta, 5)) / 2 for d in ds])
+    rng = np.random.default_rng(0); res = {"tag": TAG, "days": days, "n_days": len(days)}
+    lodo = {d: max(betas, key=lambda b: crit([x for x in days if x != d], b)) for d in days}
+    for k in (3, 5, 10):
+        a = np.array([hits(d, 0.0, k) for d in days]); b = np.array([hits(d, lodo[d], k) for d in days])
+        res[f"lodo top{k}"] = {"launch_model": round(float(np.nanmean(a)), 1), "blend": round(float(np.nanmean(b)), 1), "delta": boot(b - a, rng)}
+    res["lodo_beta"] = {d: float(v) for d, v in lodo.items()}
+    octd = [d for d in days if d < "2026-11-01"]; novd = [d for d in days if d >= "2026-11-01"]
+    bo = max(betas, key=lambda b: crit(octd, b)); res["oct_fit_beta"] = float(bo)
+    for k in (3, 5, 10):
+        a = np.array([hits(d, 0.0, k) for d in novd]); b = np.array([hits(d, bo, k) for d in novd])
+        res[f"nov_test top{k}"] = {"launch_model": round(float(np.nanmean(a)), 1), "blend": round(float(np.nanmean(b)), 1), "delta": boot(b - a, rng), "days": len(novd)}
+    json.dump(res, open(os.path.join(HERE, "results", f"two_level_blend_{TAG}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
+
+
 if __name__ == "__main__":
     c = sys.argv[1]
-    {"prepare": lambda: prepare(), "train": lambda: train(sys.argv[2]), "day": lambda: day(sys.argv[2]), "score": lambda: score()}[c]()
+    {"prepare": lambda: prepare(), "train": lambda: train(sys.argv[2]), "day": lambda: day(sys.argv[2]), "score": lambda: score(),
+     "blend": lambda: blend()}[c]()
