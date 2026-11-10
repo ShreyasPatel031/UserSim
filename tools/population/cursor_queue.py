@@ -13,7 +13,7 @@ import os, subprocess, sys, time
 
 R = "gs://usersim-bakeoff-347838016394/usersim_sim/raw"
 SRC = {
-    "priority": f"{R}/_pacetest/priority_lastweek.txt",
+    "priority": f"{R}/_cursor/priority_lastweek_order_0230Z.txt",  # 09:1xZ Nov 10: own copy; _pacetest/priority_lastweek.txt was rewritten by another agent
     "complete": f"{R}/_babysitter/quality/latest_complete.txt",
     "held_18c": f"{R}/_pacetest/priority_lastweek_needs_full18c.txt",
     "held_offset": f"{R}/population/requests/pending_offset_repage_latest.tsv",
