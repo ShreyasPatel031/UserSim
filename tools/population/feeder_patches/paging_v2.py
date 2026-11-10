@@ -207,7 +207,7 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
         if cap and len(items) > cap:
             items = items[:cap]
         if ended is None:
-            ended = "complete" if goal and len(items) >= goal else "unknown"  # full18f (capcheck 02:53Z Nov 10): no end without the full header or PH's own server end; no 98% / -2 label
+            ended = "complete" if goal and len(items) >= goal else ("stopped" if R.stop else "unknown")  # full18f (capcheck 02:53Z Nov 10): no end without the full header or PH's own server end; no 98% / -2 label
         # 1640Z Data Feeder: upvotes end where the server ends (hasNextPage=false, ~200 signed-out); flag the signed-out cap
         if op == "ProfileUpvotesQuery" and ended in ("server_end", "server_end_offset") and total and len(items) < total:  # full18f nocap2: flag any short signed-out end (stricter)
             R.upv_capped = True
@@ -215,6 +215,7 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
         nxt = endc if (need_chain and ended in ("budget", "blocked", "error", "max_pages", "stopped")) else None
         if nxt is None and off_resume and ended not in ("server_end", "server_end_offset", "complete"):
             nxt = off_resume  # 2140Z: offset-phase budget stop keeps a resume cursor
+        nxt = nxt or (start_saved if ended == "stopped" else None)  # full18f (E5 03:38Z Nov 10): a stop before the chain keeps the saved cursor
         R.last_paging = {"method": method, "pages": npg, "ended": ended, "dups": dups, "repage": repage, "trail_tail": trail[-3:], "next_cursor": nxt, "resumed_from": start_saved, "resume_overlap_from_offset": off_back}
         R.log("paged_v2", op, "items", len(items), "of", goal, "pages", npg, "ended", ended, "dups", dups)
         return items, time.time() - t0, npg

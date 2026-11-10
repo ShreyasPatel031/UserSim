@@ -351,3 +351,11 @@ def test_98pct_without_server_end_is_not_complete():
         assert len(items) <= 100
         assert r.last_paging["ended"] not in ("complete", "server_end", "server_end_offset"), (op, r.last_paging["ended"])
         assert not r.last_exhausted
+
+
+def test_stop_before_chain_keeps_saved_cursor():
+    """full18f (E5 03:38Z Nov 10): a resumed list stopped before any page is labelled stopped and keeps the saved cursor."""
+    paged = paging_v2.make_paged(offset_paged, cur, Blocked)
+    r = R(FakeServer(500)); r.stop = True; r.resume = {"ProfileFollowersQuery": "Ku123"}
+    items, _, _ = asyncio.run(paged(r, [None], "ProfileFollowersQuery", ["profile", "followers"], "cursor", PAGE, 500, None, {}))
+    assert r.last_paging["ended"] == "stopped" and r.last_paging["next_cursor"] == "Ku123" and not r.last_exhausted

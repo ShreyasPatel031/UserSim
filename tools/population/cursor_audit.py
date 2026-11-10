@@ -20,7 +20,7 @@ VM = f"{R}/ph_population/people_live/vm"
 CUR = f"{R}/_cursor"
 START = os.environ.get("CURSOR_AUDIT_START", "2026-11-08T18:20:00Z")  # protocol start; older staged files belong to the pace test (merge_list.py)
 FULL18D = "T3OI+xr3iAvoMDMZrdryhA=="
-FULL18F = "PU9LpI43fvU98ctFrFF95g=="  # full18e + paging_v2.py:210 fix (no 98% / header-2 complete label); population agent 03:5xZ Nov 10
+FULL18F = "4cP3EgTJLl8uQ+hiNkwqgg=="  # full18e + paging_v2.py:210 fix (no 98% / header-2 complete label); population agent 03:5xZ Nov 10
 AUDITED_BUILDS = {FULL18D, FULL18F}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
 FOLLOW_ONLY = re.compile(r"^(followers|following):FAIL_(repeat|no_offset_end)$")
@@ -139,7 +139,7 @@ def main():
           "Builds (run.pkg_md5): " + ", ".join(f"{k} {v}" for k, v in builds.items()), "",
           f"VMs: {len(vms)}. Per-handle reasons, build and VM: `raw/_cursor/audit_{stamp}.tsv` "
           "(handles stay under raw/).", "",
-          "Gates: only `full18d` (md5 T3OI+xr3iAvoMDMZrdryhA==) and `full18f` (md5 PU9LpI43fvU98ctFrFF95g==) saves are mergeable, "
+          "Gates: only `full18d` (md5 T3OI+xr3iAvoMDMZrdryhA==) and `full18f` (md5 4cP3EgTJLl8uQ+hiNkwqgg==) saves are mergeable, "
           "and every person must pass the whole-person check (full header or PH's own end on every list). Saves from any VM whose status logs show IP/port rotation, VM recreation or a byte-stop bypass "
           "are never merged."]
     open(f"{W}/audit.md", "w").write("\n".join(md) + "\n")
