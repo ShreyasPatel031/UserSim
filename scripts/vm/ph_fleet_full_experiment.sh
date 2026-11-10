@@ -407,6 +407,8 @@ PY
     if [[ "$stall_for" -ge "$KEEPER_STALL_SEC" ]]; then
       if [[ "$block_pause" -eq 1 ]]; then
         echo "KEEPER skip stall nudge slot=$slot (PH_FLEET_BLOCK_PAUSE)" | tee -a "$ART/keeper.log"
+      elif [[ "$low_ppm" -eq 1 ]]; then
+        echo "KEEPER skip stall nudge slot=$slot (fleet_ppm<5)" | tee -a "$ART/keeper.log"
       else
         nudge_go "$slot" "stall_${stall_for}s"
       fi
