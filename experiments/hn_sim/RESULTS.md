@@ -1356,3 +1356,15 @@ posted after the forecast 1.
 - Daily list at 21:00 (top 30 found): Nov 4 70%, Nov 5 83%, Nov 6 80%, Nov 7 83% (backtest 80.2%).
 - hn_minute: front/newest read every minute through Nov 9.
 - Fix: score_live.py crashed on a one-post "3 h" odds bucket (deciles need >= 10 posts); such buckets are now skipped.
+
+## Daily live check 2026-11-10 00:47 UTC (live15.py, LIVE_MIN_DAYS=2)
+
+Backtest unchanged (1 h 640/1,323 = 48.4%, target 1,059, gap 419; 15 min 115/388 and 376/1,323; at posting ~345/1,323).
+Live, full-coverage posting days Nov 2-9 (per-minute model; settled Nov 2-4): 1 h 105/225 (46.7% [37.1, 55.4]),
+settled days alone 41/93 (44.1%); 15 min 47/225 (20.9%), blend 52/225 (23.1%); at posting 42/225 (18.7%).
+All days Oct 31 - Nov 9: 1 h 113/269 (42.0%), 15 min 56/269 (20.8%). Focus 1 h: live gap to 80% is 75 of 225.
+Per day 1 h | 15 min (headline line): Nov 2 9/38 | 6/38, Nov 3 13/21 | 5/21, Nov 4 19/34 | 13/34, Nov 5 14/28 | 6/28,
+Nov 6 14/31 | 6/31, Nov 7 9/26 | 3/26, Nov 8 13/23 | 4/23, Nov 9 14/24 | 4/24. Recorder saw >= 99% of posts within
+15 min Nov 2-9. Top misses at 15 min: on the front page within 1 h but ranked below the cut, then late risers.
+Per-minute odds: Nov 9 1,440/1,440 files; Nov 10 landing (60 by 00:59).
+Replay, daily list Nov 7 at 21:05: live 25/30, replay 25/30; live misses: model miss 3, under the live 5-point filter 2.
