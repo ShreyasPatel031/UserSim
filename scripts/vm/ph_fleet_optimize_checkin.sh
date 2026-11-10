@@ -121,7 +121,7 @@ relay_msg+=" zero_incomplete=UNVERIFIED. Request Population repair_list recheck 
 mkdir -p "$ART/agent_inbox"
 AGENT_INBOX_JSONL="$ART/agent_inbox/fleet-cursor.jsonl" AGENT_MSGS_SUB=fleet-cursor \
   bash "$ROOT/scripts/vm/ph_fleet_agent_inbox.sh" 15 checkin >>"$LOG" 2>&1 || true
-# Act on Population directives (no infra actions without explicit authorization).
+# Population inbox: queue/audit/quality only. Stop/start/VM count/GO = operator only (not Population).
 if [[ -f "$ART/agent_inbox/fleet-cursor.jsonl" ]]; then
   python3 -c "
 import json
