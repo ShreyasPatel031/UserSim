@@ -105,7 +105,7 @@ while true; do
     rem=$(( $(cat /opt/ph/reuse/cf_cooldown_until | tr -cd 0-9) - $(date +%s) ))
     echo "cf_cooldown ${rem}s left; no relaunch (Population block backoff)" >> supervisor.log
     hb "${tok:-}"
-  elif [[ -n "$tok" && ( "$tok" != "$last" || $batch_up -eq 0 ) ]]; then
+  elif [[ -n "$tok" && "$tok" != "$last" ]]; then
     mode=${tok%%:*}
     L=run_$(date -u +%Y%m%dT%H%MZ).log
     if [[ "$mode" = "legacy" ]]; then mode=run; echo "legacy->$tok as run" >> supervisor.log; fi
