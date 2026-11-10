@@ -1385,7 +1385,7 @@ late risers (not on the front page by 1 h) 70, on the front page by 1 h but rank
   rank blend of the per-minute model and the votes score (points + 3 x front page), within each posting day.
 - Re-scored post by post (live15.py LIVE_INCLUDE_TODAY=1, provisional labels; Nov 9 now 35 winners after later list
   reads, Nov 10 partial, posts up to 08:00 UTC): Nov 9 18/35 (51.4%) [current model in the same run 14/35],
-  Nov 10 5/12 (41.7%) [4/12]. Full-coverage Nov 2-10 headline: 132/252 (48.4% [41.4, 55.7]) vs 115/252 (45.6%).
+  Nov 10 5/12 (41.7%) [4/12]. Full-coverage Nov 2-10 headline: 122/252 (48.4% [41.4, 55.7]) vs 115/252 (45.6%).
   late60_b.py same-split comparison Nov 9 + Nov 10: 22/47 vs 17/47. Front-page misses on Nov 2-8: 24 vs 37.
 - Not moved: late risers stay ~2/3 of remaining 1 h misses. Next: an at-posting signal strong enough for off-front
   posts (the off-HN Reddit/Bluesky test and the 2025 front pages are the queued inputs).
