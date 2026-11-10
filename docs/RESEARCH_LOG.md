@@ -1463,3 +1463,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 19:50 UTC Nov 10 PH agent retrained sim test (21 days Oct 20-Nov 9, own Sep/Oct models per variant, $0): store_v3 LOSES: daily top3 50.8->46.0 (-4.8 [-11.1,+1.6]), top5 64.8->60.0 (-4.8 [-10.5,0]), top10 71.0->70.5 (-0.5); weekly W45 top5 40->20, top10 40->30. Not deployed. Complete-people data has not improved the person sim's ranking in two honest tests. Recommend holding further paid pulls until a test shows value.
 - 20:37 UTC Nov 10 mailbox checked: no new replies; fleet paused; awaiting Shreyas on vote-timing test; live capture healthy (12:30 PT, 50/50).
 - 21:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (13:30 PT, 50/50).
+- 22:34 UTC Nov 10 mailbox checked: no new replies; fleet paused; live capture healthy (14:30 PT, 50/50).
