@@ -130,8 +130,9 @@ def main():
         return
     for n in replace:
         sh("gsutil", "-q", "cp", f"{VM}/{n}.json", f"{VM}/{n}.json.bak_cursor")
-    for n in merge + replace:
-        sh("gsutil", "-q", "cp", f"{STAGE}/{n}.json", f"{VM}/{n}.json")
+    for n in merge + replace:  # 07:5xZ Nov 10: merge the exact file audited (local copy), never the live staged object, which
+        # the fleet may have overwritten since the download (an unaudited incomplete save reached vm/ that way at 06:42Z)
+        sh("gsutil", "-q", "cp", f"{D}/people_live/vm/{n}.json", f"{VM}/{n}.json")
     if merge + replace:
         old = sh("gsutil", "cat", f"{R}/_pacetest/merged_ledger.txt").stdout
         open(f"{W}/ledger.txt", "w").write(old + f"# cursor {stamp}\n" + "".join(x + "\n" for x in merge + replace))
