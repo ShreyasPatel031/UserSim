@@ -336,3 +336,18 @@ def test_short_by_one_percent_is_repaged():
     r, items = runr(FakeServer(9900), 10000, key="f18e")
     lp = r.last_paging
     assert lp["repage"] is not None and lp["ended"] == "server_end_offset" and len(items) == 9900
+
+
+def test_98pct_without_server_end_is_not_complete():
+    """full18f (capcheck 02:53Z Nov 10): a list short of its header with no PH server end is never labelled complete and keeps
+    its resume cursor; the old line labelled 98% of the header (or header-2 for follow lists) as complete."""
+    async def short_offset(R_, pages, op, conn_path, var, step, total, cap, extra):
+        R_.last_exhausted = False; R_.stop = True  # stopped before the chain could run
+        return [{"id": f"u{i}"} for i in range(99)], 0, 5
+    for op in ("ProfileCollectionsIndexPage", "ProfileUpvotesQuery"):  # follow lists use the chain only (ends at the server)
+        paged = paging_v2.make_paged(short_offset, cur, Blocked)
+        r = R(FakeServer(100))
+        items, _, _ = asyncio.run(paged(r, [None], op, ["profile", "followers"], "cursor", PAGE, 100, None, {}))
+        assert len(items) <= 100
+        assert r.last_paging["ended"] not in ("complete", "server_end", "server_end_offset"), (op, r.last_paging["ended"])
+        assert not r.last_exhausted

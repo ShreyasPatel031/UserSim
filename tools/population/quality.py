@@ -23,7 +23,7 @@ D, SINCE, OUT_MD, OUT_ROWS = sys.argv[1:5]
 TABS = ("upvotes", "hunted", "following", "followers", "collections", "stacks", "reviews", "activity", "forums")
 IDK = {"upvotes": "post_id", "hunted": "post_id", "following": "ph_user_id", "followers": "ph_user_id",
        "collections": "collection_id", "stacks": "url", "reviews": "review_id", "activity": "comment_id", "forums": "url"}
-SERVER_END = {"hasNextPage_false", "server_end", "server_end_offset", "empty_page", "no_endCursor", "complete"}
+SERVER_END = {"hasNextPage_false", "server_end", "server_end_offset", "empty_page", "no_endCursor"}  # full18f: "complete" was the collector's 98% label, not a PH end
 HANDLE = re.compile(r"producthunt\.com/@([A-Za-z0-9_\.\-]+)")
 
 
@@ -80,7 +80,7 @@ def tab_state(d, k):
         v = "complete"  # no header shown for these tabs
     elif h is None:
         v = "no_header"
-    elif h == 0 or (got >= 0.98 * h and not (k in ("followers", "following") and (h - got) > 2)):  # full18e nocap: follow lists short by > 2 need the offset end
+    elif h == 0 or got >= h:  # full18f (orchestrator 03:36Z Nov 10): complete = the full header; anything short needs PH's own end below
         v = "complete"
     elif k == "reviews":
         v = "rating_only"  # header counts rating-only reviews PH never lists; not a stop of ours
@@ -282,7 +282,7 @@ def signed_out_end(d):
         return False
     n = t.get("count", len(t.get("items") or []))
     h = t.get("header") if t.get("header") is not None else (d.get("header") or {}).get("upvotes")
-    if not h or n >= 0.98 * h:
+    if not h or n >= h:  # full18f: no 98% rule
         return False
     run = d.get("run") or {}
     ended = (t.get("paging") or {}).get("ended") or ((run.get("paging") or {}).get("upvotes") or {}).get("ended") or \

@@ -207,9 +207,9 @@ def make_paged(offset_paged, cur, Blocked, error_types=(Exception,)):
         if cap and len(items) > cap:
             items = items[:cap]
         if ended is None:
-            ended = "complete" if goal and (len(items) >= goal - 2 if op in CHAIN_OPS else len(items) >= 0.98 * goal) else "unknown"  # full18e: follow lists get no 98% end
+            ended = "complete" if goal and len(items) >= goal else "unknown"  # full18f (capcheck 02:53Z Nov 10): no end without the full header or PH's own server end; no 98% / -2 label
         # 1640Z Data Feeder: upvotes end where the server ends (hasNextPage=false, ~200 signed-out); flag the signed-out cap
-        if op == "ProfileUpvotesQuery" and ended in ("server_end", "server_end_offset") and total and len(items) < 0.98 * total:
+        if op == "ProfileUpvotesQuery" and ended in ("server_end", "server_end_offset") and total and len(items) < total:  # full18f nocap2: flag any short signed-out end (stricter)
             R.upv_capped = True
         R.last_exhausted = ended in ("server_end", "server_end_offset", "complete") and not R.stop and (npg >= 1 or bool(items))  # 2028Z: server-ended only after >=1 page fetched
         nxt = endc if (need_chain and ended in ("budget", "blocked", "error", "max_pages", "stopped")) else None

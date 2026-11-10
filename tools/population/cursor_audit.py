@@ -20,7 +20,8 @@ VM = f"{R}/ph_population/people_live/vm"
 CUR = f"{R}/_cursor"
 START = os.environ.get("CURSOR_AUDIT_START", "2026-11-08T18:20:00Z")  # protocol start; older staged files belong to the pace test (merge_list.py)
 FULL18D = "T3OI+xr3iAvoMDMZrdryhA=="
-AUDITED_BUILDS = {FULL18D}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
+FULL18F = "PU9LpI43fvU98ctFrFF95g=="  # full18e + paging_v2.py:210 fix (no 98% / header-2 complete label); population agent 03:5xZ Nov 10
+AUDITED_BUILDS = {FULL18D, FULL18F}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
 FOLLOW_ONLY = re.compile(r"^(followers|following):FAIL_(repeat|no_offset_end)$")
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
@@ -91,7 +92,7 @@ def main():
         ok, why = g["person_complete"](d, g["handle_of"](d, f"{n}.json"))
         gate = []
         if md5 not in AUDITED_BUILDS:
-            gate.append("build_not_audited" if md5 == FULL18D else "build_not_full18d")
+            gate.append("build_not_audited")
         if vm == "unknown" or not clean(vm):
             gate.append("vm_evasion_or_unknown")
         if ok and not gate:
@@ -138,8 +139,8 @@ def main():
           "Builds (run.pkg_md5): " + ", ".join(f"{k} {v}" for k, v in builds.items()), "",
           f"VMs: {len(vms)}. Per-handle reasons, build and VM: `raw/_cursor/audit_{stamp}.tsv` "
           "(handles stay under raw/).", "",
-          "Gates: only `full18d` saves (md5 T3OI+xr3iAvoMDMZrdryhA==) are mergeable, and only after its first-run audit "
-          "passes. Saves from any VM whose status logs show IP/port rotation, VM recreation or a byte-stop bypass "
+          "Gates: only `full18d` (md5 T3OI+xr3iAvoMDMZrdryhA==) and `full18f` (md5 PU9LpI43fvU98ctFrFF95g==) saves are mergeable, "
+          "and every person must pass the whole-person check (full header or PH's own end on every list). Saves from any VM whose status logs show IP/port rotation, VM recreation or a byte-stop bypass "
           "are never merged."]
     open(f"{W}/audit.md", "w").write("\n".join(md) + "\n")
     sh("gsutil", "-q", "cp", f"{W}/audit.md", f"{G}/mailbox/to_cursor/audit_{stamp}.md")
