@@ -1417,3 +1417,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 04:21 UTC Nov 10 Population official re-score (full18f rule, store ~03:52Z): saved 47,503; COMPLETE 33,370 (29,131 whole + 4,239 whole signed-out), was 33,444; INCOMPLETE 14,133; MERGED_INCOMPLETE 234 (+39 from rule). Fleet ~28 complete/min on full18d; full18f deploy pending.
 - 04:34 UTC Nov 10 mailbox checked: no new replies beyond full18f thread; nothing from Cursor; live capture healthy (20:30 PT, 25/25).
 - 04:47 UTC Nov 10 Population audit 0411Z (full18f rule): 1,023 staged (all full18d), merged 955, held 26 (rotation gate), failed 42 (40 follow lists without offset end, 3 signed-out upvotes). Fleet still not on full18f ~1 h after clearance.
+- 05:34 UTC Nov 10 mailbox checked: no new replies; nothing from Cursor; live capture healthy (21:30 PT, 25/25).
