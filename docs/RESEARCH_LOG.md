@@ -1419,3 +1419,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 04:47 UTC Nov 10 Population audit 0411Z (full18f rule): 1,023 staged (all full18d), merged 955, held 26 (rotation gate), failed 42 (40 follow lists without offset end, 3 signed-out upvotes). Fleet still not on full18f ~1 h after clearance.
 - 05:34 UTC Nov 10 mailbox checked: no new replies; nothing from Cursor; live capture healthy (21:30 PT, 25/25).
 - 06:34 UTC Nov 10 mailbox checked: no new replies; nothing from Cursor; live capture healthy (22:30 PT, 25/25).
+- 07:11 UTC Nov 10 Population: rotation gate regex false-matched handles (5 clean VMs); fixed 7e24ae78; re-audit 0559Z merged 1,475, replaced 151, held 1,339 (9 real-rotation VMs), failed 187. Fleet still on full18d and says it awaits clearance; wrote to_cursor/20261110T0711Z_full18f_CLEARED.md.
