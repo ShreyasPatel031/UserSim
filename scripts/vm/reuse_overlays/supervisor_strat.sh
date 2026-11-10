@@ -156,6 +156,12 @@ while true; do
       sleep "${PH_BLOCK_REST_SEC:-60}"
       continue
     fi
+    if [[ $rc -eq 3 || $kicked -eq 1 ]]; then
+      # Same-IP backoff (PH_BLOCK_NEW_PORT=0): rest on home port and relaunch same GO token.
+      echo "block rc=$rc same-ip; rest ${PH_BLOCK_REST_SEC:-10}s then relaunch $tok" >> supervisor.log
+      sleep "${PH_BLOCK_REST_SEC:-10}"
+      continue
+    fi
     if [[ $rc -eq 1 && $crashes -lt 3 ]]; then
       crashes=$((crashes + 1))
       sleep 300
