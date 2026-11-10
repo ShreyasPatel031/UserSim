@@ -21,6 +21,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.di
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 OUT_GS = os.environ.get("OUT_GS", f"{B}/raw/_pacetest/priority_lastweek.txt")
 HOLD_GS = os.environ.get("HOLD_GS", f"{B}/raw/_pacetest/priority_lastweek_needs_full18c.txt")   # held for the full18c build
+REMAIN_GS = os.environ.get("REMAIN_GS", f"{B}/raw/_pacetest/priority_lastweek_remaining.txt")   # full order minus complete people
 PENDING_GS = os.environ.get("PENDING_GS", f"{B}/raw/population/requests/pending_offset_repage_latest.tsv")
 
 
@@ -121,7 +122,9 @@ def main(d0="2026-10-29", d1="2026-11-04"):
     if r.returncode == 0 and lc:
         whole = {hid(sl, u) for u in lc}
         names |= lc; h2u.update({hid(sl, u): u for u in lc})
-    cand = (set(up) | set(cm) | set(fol) | set(vnh)) - whole - team_h
+    # orchestrator 09:12Z Nov 10: priority_lastweek.txt is the FULL last-week order (the population agent's cursor_queue.py
+    # reads it and skips complete people itself); the remainder without complete people goes to REMAIN_GS
+    cand = (set(up) | set(cm) | set(fol) | set(vnh)) - team_h
     rows = []
     for pid in cand:
         s = 4 * len(up.get(pid, ())) + 3 * len(cm.get(pid, ())) + 2 * min(fol.get(pid, 0), 5) + 0.3 * min(vnh.get(pid, 0), 10)
@@ -147,15 +150,21 @@ def main(d0="2026-10-29", d1="2026-11-04"):
         f.write("\n".join(known.handle) + "\n")
     with open(f"{tmp}/hold.txt", "w") as f:
         f.write("".join(f"{h}\tneeds_full18c\n" for h in hold.handle))
+    remain = known[~known.pid.isin(whole)]
+    with open(f"{tmp}/remain.txt", "w") as f:
+        f.write("\n".join(remain.handle) + "\n")
     sh("gsutil", "-q", "cp", loc, OUT_GS, check=True)
     sh("gsutil", "-q", "cp", f"{tmp}/hold.txt", HOLD_GS, check=True)
+    sh("gsutil", "-q", "cp", f"{tmp}/remain.txt", REMAIN_GS, check=True)
     rep = {"window": [d0, d1], "launches": int(len(L)), "candidates": int(len(R)), "listed_with_handle": int(len(known)),
            "unmapped_salted_ids": int(R.handle.isna().sum()),
            "unmapped_with_upvote": int((R.handle.isna() & (R.up > 0)).sum()), "unmapped_with_comment": int((R.handle.isna() & (R.cm > 0)).sum()),
            "unmapped_follow_only": int((R.handle.isna() & (R.up == 0) & (R.cm == 0)).sum()), "with_upvote_evidence": int((known.up > 0).sum()),
            "with_comment_evidence": int((known.cm > 0).sum()), "with_maker_follow": int((known.fol > 0).sum()),
            "voternet_only": int(((known.up == 0) & (known.cm == 0) & (known.fol == 0)).sum()),
-           "excluded_whole": int(len(whole)), "held_needs_full18c": int(len(hold)), "pending_offset_list": int(len(pend)), "hold_out": HOLD_GS, "whole_source": "latest_complete.txt" if (r.returncode == 0 and lc) else "store_v3 tabs + pace pulls", "out": OUT_GS,
+           "complete_in_full_list": int(known.pid.isin(whole).sum()), "remaining_not_complete": int(len(remain)), "remain_out": REMAIN_GS,
+           "remaining_tier_sizes": {str(k): int(v) for k, v in remain.tier.value_counts().sort_index().items()},
+           "complete_set": int(len(whole)), "held_needs_full18c": int(len(hold)), "pending_offset_list": int(len(pend)), "hold_out": HOLD_GS, "whole_source": "latest_complete.txt" if (r.returncode == 0 and lc) else "store_v3 tabs + pace pulls", "out": OUT_GS,
            "tier_sizes": {str(k): int(v) for k, v in known.tier.value_counts().sort_index().items()},
            "order_check": bool((known.tier.diff().fillna(0) >= 0).all())}
     print(json.dumps(rep))
