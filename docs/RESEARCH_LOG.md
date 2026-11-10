@@ -258,3 +258,43 @@ Two things to take from this:
   2. Active big profiles are a moving target. New followers during a pass stop the zero-new closure and inflate f1, so some of them end exhausted.
   3. The class-3 cause (hidden vs not served) is still unmeasured.
   4. Not yet run on PH.
+
+### 2026-11-11 00:30Z — E5: independent reference baseline for the two-level sim (taste + ties logistic)
+
+This is a reference for the PH agent's two-level sim: a plain baseline its gains can be measured against.
+- Script: `experiments/simlab/two_level_baseline.py`. Reports: `experiments/simlab/reports/two_level_baseline/`.
+- CPU-only, run locally at $0.
+
+**Split**
+- The September model trains on Aug 1-Sep 30 and scores Oct 20-31. The October model trains on Sep 1-Oct 31 and scores Nov 1-7. The last training label day is before the first test day.
+- Nov 8-9 are left out: a day's labels count only for people whose upvote list was read at least 2 days after it.
+
+**People**
+- store_v3 complete people only.
+- A person enters day d only if they upvoted a launch in the 60 days before d. Activity on d itself never decides it.
+- Labels run from coverage start: the oldest listed vote when the upvote list is shorter than its header (the signed-out ~200 cap).
+- That leaves 6,712 people, 106,627 person-days and 2.87M person-launch rows on 19 test days.
+
+**Features, all from events before d**
+- Taste: topic match and text match with past upvotes.
+- Ties: earlier upvotes or comments on launches by the same team; whether the person is on the team.
+- Activity: last 30 days, history, tenure.
+- Follows of the team, in a separate arm only.
+
+**Weights:** complete people post-stratified to the whole store_v3 pool by 30-day activity tier. The full-rank voter lists the plan asks for are not in the store.
+
+| | person AUC | person log-loss | Hit@3 | voter R-precision | daily top 3 | top 5 | top 10 | Spearman with votes |
+|---|---|---|---|---|---|---|---|---|
+| no follows | 0.911 | 0.0322 | 0.476 | 0.210 | 33.3 [22.8, 43.9] | 42.1 [33.7, 50.5] | 64.2 [58.4, 70.0] | 0.40 [0.34, 0.47] |
+| with follows (Nov snapshot, undated) | 0.923 | 0.0311 | 0.596 | 0.245 | 47.4 [36.8, 57.9] | 61.1 [51.6, 70.5] | 72.6 [67.9, 77.4] | 0.53 [0.46, 0.61] |
+| ceiling: real votes of the same sample, weighted | | | | | 84.2 [73.7, 93.0] | 90.5 [85.3, 95.8] | 86.3 [83.2, 89.5] | 0.87 [0.85, 0.90] |
+
+Population metrics are the share of the real daily top k recovered (%), with day-bootstrap 95% intervals.
+
+Follows minus no follows, paired by day: top 3 +14.0 [0.0, +29.8], top 5 +19.0 [+10.5, +28.4], top 10 +8.4 [+4.2, +13.2], Spearman +0.13 [+0.08, +0.18]. The follow edges carry no dates and many follows come after the upvote, so this gain is presumed leaky until shown otherwise. The honest baseline is the no-follows row.
+
+What it shows:
+1. **The sample can carry the north star.** A perfect person model on these complete people would get about 84% of the daily top 3. The gap is in person prediction, not in the sample.
+2. **The weights barely matter here.** Tier post-stratification moves no metric beyond its interval.
+3. **The honest person-sum is weak at launch level.** 33% of the daily top 3 is below the deployed sim's ~48-51% on Oct 20-Nov 9. Any two-level model has to beat both this baseline and the deployed sim.
+4. **Person AUC is inflated by between-person activity.** Use Hit@3 and voter R-precision as the person metrics that matter.

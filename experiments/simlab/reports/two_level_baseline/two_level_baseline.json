@@ -1,0 +1,286 @@
+{
+ "made_utc": "2026-11-10 23:39:42.458500+00:00",
+ "split": [
+  [
+   "sep",
+   "2026-08-01",
+   "2026-09-30",
+   "2026-10-20",
+   "2026-10-31"
+  ],
+  [
+   "oct",
+   "2026-09-01",
+   "2026-10-31",
+   "2026-11-01",
+   "2026-11-07"
+  ]
+ ],
+ "weights": "post-stratified to the store_v3 pool by 30-day activity tier before d (target = pool, not full voter lists; see doc)",
+ "no_follows": {
+  "arm": "no follows",
+  "folds": {
+   "sep": {
+    "train_days": [
+     "2026-08-01",
+     "2026-09-30"
+    ],
+    "test_days": [
+     "2026-10-20",
+     "2026-10-31"
+    ],
+    "train_rows": 513501,
+    "train_pos": 51511,
+    "max_train_label_day": "2026-09-30",
+    "coef": {
+     "taste_topic": 0.27399998903274536,
+     "taste_text": 0.3240000009536743,
+     "tie_backed_team": 0.38999998569488525,
+     "is_team": 0.1459999978542328,
+     "follows_team": 0.0,
+     "act_30d": 1.1710000038146973,
+     "act_hist": 0.0860000029206276,
+     "tenure": -0.5849999785423279,
+     "comments_hist": -0.18299999833106995
+    }
+   },
+   "oct": {
+    "train_days": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "test_days": [
+     "2026-11-01",
+     "2026-11-07"
+    ],
+    "train_rows": 524271,
+    "train_pos": 54793,
+    "max_train_label_day": "2026-10-31",
+    "coef": {
+     "taste_topic": 0.210999995470047,
+     "taste_text": 0.32899999618530273,
+     "tie_backed_team": 0.460999995470047,
+     "is_team": 0.18400000035762787,
+     "follows_team": 0.0,
+     "act_30d": 1.5859999656677246,
+     "act_hist": -0.3440000116825104,
+     "tenure": -0.5019999742507935,
+     "comments_hist": -0.10599999874830246
+    }
+   }
+  },
+  "person": {
+   "rows": 2870488,
+   "people": 6712,
+   "person_days": 106627,
+   "positives": 21376,
+   "auc": 0.9112,
+   "logloss": 0.0322,
+   "hit@3 (person-days with a vote)": 0.4761,
+   "voter R-precision (mean over launches)": 0.2097
+  },
+  "population": {
+   "days": 19,
+   "people_per_day_median": 5749,
+   "baseline, weighted": {
+    "top3": [
+     0.3333,
+     0.2281,
+     0.4386
+    ],
+    "top5": [
+     0.4211,
+     0.3368,
+     0.5053
+    ],
+    "top10": [
+     0.6421,
+     0.5841,
+     0.7
+    ],
+    "spearman": [
+     0.4049,
+     0.342,
+     0.4746
+    ]
+   },
+   "baseline, unweighted": {
+    "top3": [
+     0.3333,
+     0.2281,
+     0.4386
+    ],
+    "top5": [
+     0.4211,
+     0.3474,
+     0.5053
+    ],
+    "top10": [
+     0.6316,
+     0.5737,
+     0.6842
+    ],
+    "spearman": [
+     0.4008,
+     0.3272,
+     0.4705
+    ]
+   },
+   "REFERENCE: real votes of the sample, weighted (ceiling of a perfect person model on this sample)": {
+    "top3": [
+     0.8421,
+     0.7368,
+     0.9298
+    ],
+    "top5": [
+     0.9053,
+     0.8526,
+     0.9579
+    ],
+    "top10": [
+     0.8632,
+     0.8316,
+     0.8947
+    ],
+    "spearman": [
+     0.8709,
+     0.8474,
+     0.8952
+    ]
+   }
+  }
+ },
+ "follows": {
+  "arm": "with follows",
+  "folds": {
+   "sep": {
+    "train_days": [
+     "2026-08-01",
+     "2026-09-30"
+    ],
+    "test_days": [
+     "2026-10-20",
+     "2026-10-31"
+    ],
+    "train_rows": 511859,
+    "train_pos": 51511,
+    "max_train_label_day": "2026-09-30",
+    "coef": {
+     "taste_topic": 0.22499999403953552,
+     "taste_text": 0.3019999861717224,
+     "tie_backed_team": 0.21799999475479126,
+     "is_team": 0.22300000488758087,
+     "follows_team": 0.4819999933242798,
+     "act_30d": 1.121000051498413,
+     "act_hist": 0.1120000034570694,
+     "tenure": -0.5379999876022339,
+     "comments_hist": -0.1809999942779541
+    }
+   },
+   "oct": {
+    "train_days": [
+     "2026-09-01",
+     "2026-10-31"
+    ],
+    "test_days": [
+     "2026-11-01",
+     "2026-11-07"
+    ],
+    "train_rows": 524612,
+    "train_pos": 54793,
+    "max_train_label_day": "2026-10-31",
+    "coef": {
+     "taste_topic": 0.21400000154972076,
+     "taste_text": 0.31200000643730164,
+     "tie_backed_team": 0.27900001406669617,
+     "is_team": 0.2460000067949295,
+     "follows_team": 0.49799999594688416,
+     "act_30d": 1.531000018119812,
+     "act_hist": -0.328000009059906,
+     "tenure": -0.4690000116825104,
+     "comments_hist": -0.10000000149011612
+    }
+   }
+  },
+  "person": {
+   "rows": 2870488,
+   "people": 6712,
+   "person_days": 106627,
+   "positives": 21376,
+   "auc": 0.9227,
+   "logloss": 0.0311,
+   "hit@3 (person-days with a vote)": 0.5958,
+   "voter R-precision (mean over launches)": 0.2451
+  },
+  "population": {
+   "days": 19,
+   "people_per_day_median": 5749,
+   "baseline, weighted": {
+    "top3": [
+     0.4737,
+     0.3684,
+     0.5789
+    ],
+    "top5": [
+     0.6105,
+     0.5158,
+     0.7053
+    ],
+    "top10": [
+     0.7263,
+     0.6789,
+     0.7737
+    ],
+    "spearman": [
+     0.5312,
+     0.4555,
+     0.6087
+    ]
+   },
+   "baseline, unweighted": {
+    "top3": [
+     0.4737,
+     0.3684,
+     0.5789
+    ],
+    "top5": [
+     0.6105,
+     0.5158,
+     0.7053
+    ],
+    "top10": [
+     0.7316,
+     0.6842,
+     0.7737
+    ],
+    "spearman": [
+     0.5343,
+     0.4497,
+     0.6107
+    ]
+   },
+   "REFERENCE: real votes of the sample, weighted (ceiling of a perfect person model on this sample)": {
+    "top3": [
+     0.8421,
+     0.7544,
+     0.9298
+    ],
+    "top5": [
+     0.9053,
+     0.8526,
+     0.9579
+    ],
+    "top10": [
+     0.8632,
+     0.8316,
+     0.8947
+    ],
+    "spearman": [
+     0.8709,
+     0.8455,
+     0.8933
+    ]
+   }
+  }
+ }
+}
