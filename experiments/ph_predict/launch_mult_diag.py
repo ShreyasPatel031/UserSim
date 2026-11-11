@@ -119,6 +119,38 @@ if os.path.exists(AE):
             fsp[c] = round(float(np.nanmean(vals)), 3) if vals else None
         out["within_day_spearman_logm_vs_feature"] = fsp
         res["team_fol_pilot"] = out
+    # orchestrator 07:00Z Nov 11 P1: audience SIZE. All follower counts in the LM cache were read AFTER launch (honest.py:
+    # PH counts re-read from data/days/, X counts from later fetches; promo_reactions read at fetch time) -> LATE.
+    # promo_posts is dated before launch -> honest at 00:05 (already in FEATS). Log1p, z-scored within day.
+    AUD = {"ph_hunter_followers": "late", "ph_maker_sum_followers": "late", "ph_maker_max_followers": "late",
+           "x_maker_sum_followers": "late", "x_company_followers": "late", "promo_reactions": "late", "promo_posts": "honest"}
+    Fa = df.set_index("id")[[c for c in AUD if c in df]].apply(lambda x: np.log1p(x.clip(lower=0)))
+    M4 = M2.drop(columns=[c for c in AUD if c in M2], errors="ignore").merge(Fa, left_on="id", right_index=True, how="left")
+    if os.environ.get("TFOL") == "1" and os.path.exists(TF_):
+        M4 = M4.merge(pd.read_parquet(TF_)[["day", "id", "ttot"]], on=["day", "id"], how="left")
+    aud = [c for c in AUD if c in M4 and c not in cols] + (["ttot"] if "ttot" in M4 else [])   # promo_posts is already in cols
+    out = {"flags": {**AUD, "ttot": "late (store_v3 followers header, Nov)"}}
+    for nm, cols4 in (("with_arrivals", cols + ["arr_ev", "cand_n"]), ("with_arrivals_audience", cols + ["arr_ev", "cand_n"] + aud),
+                      ("audience_only", aud), ("with_arrivals_audience_honest_only", cols + ["arr_ev", "cand_n"])):
+        Z4 = M4.copy()
+        for c in cols4:
+            g = Z4.groupby("day")[c]; Z4[c] = ((Z4[c] - g.transform("mean")) / (g.transform("std") + 1e-9)).fillna(0)
+        pr = pd.Series(np.nan, index=Z4.index); per_d = []
+        for d in Z4.day.unique():
+            tr, te = Z4.day != d, Z4.day == d
+            pr[te] = Ridge(alpha=1.0).fit(Z4.loc[tr, cols4], Z4.loc[tr, "logm"]).predict(Z4.loc[te, cols4])
+        Z4["pred"] = pr
+        sp = np.array([spearmanr(g.pred, g.logm).correlation for _, g in Z4.groupby("day")])
+        out[nm] = round(float(np.nanmean(sp)), 3); out[nm + "_per_day"] = sp.round(3).tolist()
+    fsp = {}
+    for c in aud:
+        vals = [spearmanr(g[c], g.logm, nan_policy="omit").correlation for _, g in M4.groupby("day") if g[c].notna().sum() >= 5 and g[c].nunique() > 1]
+        fsp[c] = round(float(np.nanmean(vals)), 3) if vals else None
+    out["within_day_spearman_logm_vs_feature"] = fsp
+    a, z = np.array(out["with_arrivals_audience_per_day"]), np.array(out["with_arrivals_per_day"])
+    rr = np.random.default_rng(0); dd = a - z
+    out["delta_audience"] = [round(float(np.nanmean(dd)), 3)] + [round(float(x), 3) for x in np.percentile([np.nanmean(dd[rr.integers(0, len(dd), len(dd))]) for _ in range(5000)], [2.5, 97.5])]
+    res["audience_p1"] = out
 res["lm_alone_spearman_vs_fitted_logm"] = fs.get("lm")
 json.dump(res, open("/home/user/UserSim/experiments/ph_predict/results/launch_mult_diag.json", "w"), indent=1)
 print(json.dumps(res, indent=1))
