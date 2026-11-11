@@ -92,3 +92,13 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
   - Daily people delivery for Nov 9–10 is blocked: route 4 is off and the people VMs are on hold.
   - X timelines are still partial (pass 1 at 3,600 of 8,902).
 - **Live capture:** official-API loop healthy; Nov 9 PASS, Nov 10 capturing. Maker headers 70/70 read Nov 10 (00:34 PT, late vs 00:05).
+
+### Status Nov 11 (10:50 UTC, orchestrator daily review)
+- **Complete PH people:** 39,781 (whole + whole signed-out), unchanged since Nov 10. The fleet has been paused since the 09:15Z Nov 10 block, so the daily rate is 0.
+- **Last-week vote coverage, complete only:** 41.2% of all votes, 56.7% of top-3 votes; 9,098 votes short of 80%.
+- **Pulls are held on purpose.** Nov 11 tests showed that more people, follower lists and audience counts do not move the simulation. The team-audience pull was withdrawn. Rule: no large pull without a pilot on held data.
+- **New data since yesterday:**
+  - product info for all 35,032 stacked / reviewed / collected / hunted products, by official API, in raw/products_info/;
+  - the daily maker X read was requested. Nov 11 was partial: 4 of 23 makers, all late. The handle source is being moved to the official API field.
+- **Live capture:** official-API loop healthy. Nov 9 PASS; Nov 10 FAIL on one snapshot (94%); Nov 11 PASS so far. Maker headers: Nov 10 70/70, Nov 11 0/23 (Cloudflare interstitial, stopped, no retry). At-launch posts/makers/products.jsonl absent, because route 4 is off.
+- **Gaps unchanged:** X timelines partial (pass 1 at 4,300 of 8,902); no per-vote timestamps (PH only); `[REDACTED]` maker fix not yet in the deployed pipeline.
