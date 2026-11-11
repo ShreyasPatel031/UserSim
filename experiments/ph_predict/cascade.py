@@ -87,10 +87,15 @@ def loss(th, days):
 
 
 def fit(days):
+    """Starts scaled to the training days' real totals (an unscaled start sends s, g to 0: fixed Nov 11 after the first
+    run, disclosed to E5); parameters bounded to +-15 so exp() stays finite."""
+    fin = np.mean([D["V"][-1].mean() for D in days]); inp = np.mean([(D["S"] + D["G"]).mean() for D in days])
+    base = np.log(max(fin, 1e-3) / (len(STEPS) * max(inp, 1e-9)))
     best = None
-    for s0 in (0, 1, 2):   # a few starts; Powell on 13 parameters
-        th0 = np.r_[np.log(1 + s0), 0.0, np.zeros(6), np.zeros(5)]
-        r = minimize(loss, th0, args=(days,), method="Powell", options={"maxiter": 4000, "xtol": 1e-3, "ftol": 1e-5})
+    for a, b in ((0, 0), (1, -1), (-1, 1)):   # seed-heavy, taste-heavy, balanced starts; Powell on 13 parameters
+        th0 = np.r_[base + a, base + b, np.zeros(6), np.zeros(5)]
+        r = minimize(loss, th0, args=(days,), method="Powell", bounds=[(base - 15, base + 15)] * 2 + [(-15, 15)] * 11,
+                     options={"maxiter": 6000, "xtol": 1e-3, "ftol": 1e-6})
         if best is None or r.fun < best.fun:
             best = r
     return best.x, float(best.fun)
