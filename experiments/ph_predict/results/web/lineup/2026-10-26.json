@@ -1,0 +1,198 @@
+{
+ "day": "2026-10-26",
+ "source": "warehouse launches (final)",
+ "launches": [
+  {
+   "id": "1278009",
+   "slug": "strawberry-1-0",
+   "name": "Strawberry 1.0",
+   "tagline": "AI Browser that saves your team >100h/week",
+   "daily_rank": 1,
+   "votes": 365
+  },
+  {
+   "id": "1282225",
+   "slug": "surgepix",
+   "name": "SurgePix",
+   "tagline": "AI visuals. Edit every layer. Agent-callable. ",
+   "daily_rank": 2,
+   "votes": 306
+  },
+  {
+   "id": "1285416",
+   "slug": "minimax-m3-1-flash",
+   "name": "MiniMax M3.1 Flash",
+   "tagline": "MiniMax\u2019s Flash model, 3x faster and 70% cheaper for agents",
+   "daily_rank": 3,
+   "votes": 239
+  },
+  {
+   "id": "1273287",
+   "slug": "n8n-chat-ui-3",
+   "name": "N8N Chat UI",
+   "tagline": "Beautiful, no-code, on-brand AI chat widgets for n8n",
+   "daily_rank": 4,
+   "votes": 195
+  },
+  {
+   "id": "1291654",
+   "slug": "2g",
+   "name": "2G",
+   "tagline": "Sampler to create early 2000 Neural Synthesis",
+   "daily_rank": 5,
+   "votes": 159
+  },
+  {
+   "id": "1288735",
+   "slug": "pdf-accessibility-checker-by-webyes",
+   "name": "PDF Accessibility Checker by WebYes",
+   "tagline": "Find PDF accessibility issues for free, with fix guidance",
+   "daily_rank": 6,
+   "votes": 172
+  },
+  {
+   "id": "1275386",
+   "slug": "flipcorder",
+   "name": "Flipcorder",
+   "tagline": "A 1991 camcorder for your iPhone, one tape a day",
+   "daily_rank": 7,
+   "votes": 129
+  },
+  {
+   "id": "1285083",
+   "slug": "cloudknife",
+   "name": "CloudKnife",
+   "tagline": "Cut your cloud bill, not your performance",
+   "daily_rank": 8,
+   "votes": 138
+  },
+  {
+   "id": "1292572",
+   "slug": "desigma",
+   "name": "desigma",
+   "tagline": "Free Figma alternative made on Rust",
+   "daily_rank": 9,
+   "votes": 125
+  },
+  {
+   "id": "1292664",
+   "slug": "whoiscooking",
+   "name": "WhoIsCooking",
+   "tagline": "See which AI agent is heating your Mac and cool it down.",
+   "daily_rank": 10,
+   "votes": 115
+  },
+  {
+   "id": "1291790",
+   "slug": "kiwi-a8f6558b-2889-41dd-b68d-dd02b67b42a9",
+   "name": "Kiwi",
+   "tagline": "A proactive AI assistant that texts you before you ask",
+   "daily_rank": 11,
+   "votes": 112
+  },
+  {
+   "id": "1292068",
+   "slug": "tabsh",
+   "name": "tabsh",
+   "tagline": "Work with agents with an IDE in your browser tab",
+   "daily_rank": 12,
+   "votes": 106
+  },
+  {
+   "id": "1292599",
+   "slug": "manyagents",
+   "name": "ManyAgents",
+   "tagline": "Run a team of AI coding agents from one Mac window",
+   "daily_rank": 13,
+   "votes": 110
+  },
+  {
+   "id": "1292641",
+   "slug": "omerta",
+   "name": "omerta",
+   "tagline": "Catch .env secrets leaking into git",
+   "daily_rank": 14,
+   "votes": 97
+  },
+  {
+   "id": "1291345",
+   "slug": "loqui-3",
+   "name": "Loqui",
+   "tagline": "Turns your voice into ready-to-send text in any Mac app",
+   "daily_rank": 15,
+   "votes": 93
+  },
+  {
+   "id": "1292433",
+   "slug": "mozy",
+   "name": "Mozy",
+   "tagline": "App Blocker for Android & iPhone",
+   "daily_rank": 16,
+   "votes": 101
+  },
+  {
+   "id": "1287693",
+   "slug": "ai-bridge",
+   "name": "AI Bridge",
+   "tagline": "Every AI coding agent on your Mac, in its place",
+   "daily_rank": 17,
+   "votes": 93
+  },
+  {
+   "id": "1292655",
+   "slug": "vibeide-2",
+   "name": "VibeiDE",
+   "tagline": "Queue agent tasks in parallel and review each result",
+   "daily_rank": 18,
+   "votes": 87
+  },
+  {
+   "id": "1284985",
+   "slug": "helio-8",
+   "name": "Helio",
+   "tagline": "Know exactly what your rooftop solar made today",
+   "daily_rank": 19,
+   "votes": 86
+  },
+  {
+   "id": "1291025",
+   "slug": "knock-11",
+   "name": "Knock",
+   "tagline": "Create shortcuts by hitting your mac",
+   "daily_rank": 20,
+   "votes": 90
+  },
+  {
+   "id": "1292687",
+   "slug": "jobmate-ai-3",
+   "name": "Jobmate AI",
+   "tagline": "The humanized AI Copilot for your entire Job search",
+   "daily_rank": 21,
+   "votes": 83
+  },
+  {
+   "id": "1292685",
+   "slug": "avp",
+   "name": "AVP",
+   "tagline": "Open source alternative to Git for AI coding agents",
+   "daily_rank": 22,
+   "votes": 83
+  },
+  {
+   "id": "1292792",
+   "slug": "standfast",
+   "name": "Standfast",
+   "tagline": "Know if your Mac's GitHub Actions runners will get work",
+   "daily_rank": 23,
+   "votes": 77
+  },
+  {
+   "id": "1292894",
+   "slug": "allmodels",
+   "name": "AllModels",
+   "tagline": "Explore every abliterated model",
+   "daily_rank": 24,
+   "votes": 75
+  }
+ ]
+}
