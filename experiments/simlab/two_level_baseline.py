@@ -47,7 +47,9 @@ L = pd.concat([pd.read_parquet(f) for f in sorted(glob.glob(os.path.join(W, "lau
 L = L.sort_values("updated_at").drop_duplicates("id", keep="last")
 L = L[L.day >= "2026-06-01"].reset_index(drop=True)
 L["topics_l"] = L.topics.map(lambda s: json.loads(s) if isinstance(s, str) and s.startswith("[") else [])
-L["team"] = [({pid(m) for m in (json.loads(mk) if isinstance(mk, str) and mk.startswith("[") else [])} | ({pid(po)} if po else set()))
+def _real(h):   # 2026-11-11: the makers field holds a redaction placeholder ("[REDACTED]") on ~96% of launches; drop it
+    return bool(h) and not str(h).startswith("[") and str(h).strip().lower() not in ("redacted", "none", "null")
+L["team"] = [({pid(m) for m in (json.loads(mk) if isinstance(mk, str) and mk.startswith("[") else []) if _real(m)} | ({pid(po)} if _real(po) else set()))
              for mk, po in zip(L.makers, L.poster)]
 L["votes"] = pd.to_numeric(L.votes, errors="coerce"); L["daily_rank"] = pd.to_numeric(L.daily_rank, errors="coerce")
 lid = {x: i for i, x in enumerate(L.id)}; Lday = L.day.to_numpy()
