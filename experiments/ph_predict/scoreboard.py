@@ -94,14 +94,15 @@ BACKTEST = {
     ("P2", "comment_ridge"): ("67.8 / 71.2 / 76.1", "same"), ("P3", "comment_ridge"): ("69.1 / 71.4 / 76.1", "same"),
     ("P4", "comment_ridge"): ("68.0 / 73.1 / 77.0", "same"),
     ("R0", "raw_votes"): ("72 / 77 / 88", "6-day replay (early_forecast_replay.json); 85 / 93 / 92 first hour after reveal on 9 days"),
-    ("R1", "raw_votes"): ("see replay", "6-day replay"), ("R2", "raw_votes"): ("83 / 90 / 93", "6-day replay"),
+    ("R0q", "raw_votes"): ("75 / 80 / 88", "4-day 15-min replay (reveal_gap.md)"), ("R0h", "raw_votes"): ("75 / 90 / 88", "4-day 15-min replay (reveal_gap.md)"),
+    ("R1", "raw_votes"): ("83 / 90 / 88", "6-day replay; 83 / 90 / 88 on the 4-day 15-min replay"), ("R2", "raw_votes"): ("83 / 90 / 93", "6-day replay"),
     ("R4", "raw_votes"): ("94 / 90 / 95", "6-day replay; 93 / 95 / 93 at 08:00-12:00 PT on 29 days"),
     ("week", "dayend_votes"): ("57.5 / 71.5 / 77.8", "end-of-week call without dated votes, 40 weeks (weekly_forecast.md); 100 / 80 / 90 with day-end votes on 1 week"),
     ("month", "monthlyRank"): ("75 / 75 / 80", "dated reads, 4 months (E5 monthly_northstar); 42 / 50 / 52 from daily rank"),
 }
 ORDER = [("0005", "published"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay")] + \
         [(p, m) for p in ("P1", "P2", "P3", "P4") for m in ("comment_ridge", "api_rank", "blend")] + \
-        [(p, "raw_votes") for p in ("R0", "R1", "R2", "R4")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
+        [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
 
 
 def _boot(v, rng, n=2000):
@@ -139,7 +140,7 @@ def north_star(X):
          "| forecast | when | live: days | live top 3 / 5 / 10 [95% CI] | other rows (source: days, top 3/5/10) | backtest top 3 / 5 / 10 | backtest basis |",
          "|---|---|---|---|---|---|---|"]
     WHEN = {"0005": "00:05 PT", "P1": "01:00 PT", "P2": "02:00 PT", "P3": "03:00 PT", "P4": "04:00 PT", "R0": "reveal ~04:00 PT",
-            "R1": "reveal +1 h", "R2": "reveal +2 h", "R4": "reveal +4 h", "week": "Sunday 23:59 PT", "month": "month end"}
+            "R0q": "reveal +15 min", "R0h": "reveal +30 min", "R1": "reveal +1 h", "R2": "reveal +2 h", "R4": "reveal +4 h", "week": "Sunday 23:59 PT", "month": "month end"}
     for key in ORDER:
         d = rows.get(key, {}); live = d.get("live")
         if live is not None and len(live):

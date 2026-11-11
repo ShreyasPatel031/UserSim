@@ -13,7 +13,7 @@ import glob, json, os, subprocess, sys, tempfile
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE))
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
-POINTS = {"R0": 0, "R1": 1, "R2": 2, "R4": 4}
+POINTS = {"R0": 0, "R0q": 0.25, "R0h": 0.5, "R1": 1, "R2": 2, "R4": 4}   # R0q / R0h = reveal +15 / +30 min (reveal_gap.md)
 
 
 def load_snaps(day, path=None):
