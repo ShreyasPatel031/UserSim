@@ -1487,3 +1487,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 02:18 UTC Nov 11 PH agent BLOCKED: crontab install for daily it8 shadow on usersim-exp-1 denied by auto-mode classifier (Unauthorized Persistence); not worked around. Shadow test Nov 10 OK (50 launches, 10,031 people). Needs Shreyas: approve the permission or add the cron line himself.
 - 02:24 UTC Nov 11 PH agent: Nov 10 live capture FAIL only on 08:01Z snapshot 94% (<95%); otherwise 74 snaps, 50 launches, nothing missing; Nov 9 PASS. Coverage unchanged 41.33%/57.01%.
 - 02:35 UTC Nov 11 mailbox checked: no new replies; it8 shadow cron awaits Shreyas; live capture healthy (18:30 PT, 50/50).
+- 03:08 UTC Nov 11 HN: early signals for off-front winners (velocity, author/domain history, prior URL) add nothing over at-posting odds on held-out Nov 7-10; rejected. 1 h unchanged 130/254 (51.2%). Waiting on off-HN mentions and 2025 front pages.
