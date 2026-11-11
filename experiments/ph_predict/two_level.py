@@ -118,6 +118,23 @@ def _ps(P, I, E, work):
             return D
         PS.follow_features = follow_features
         PS.G["fol_people"] = set(fol)
+    if os.environ.get("TL_UNCOND") == "1":   # iteration 5 (E5 Nov 11): unconditional P(votes on L | pre-d history)
+        from simlab import choice                # trained on all-people rows (everyone active in the 30 days before d),
+        def train_rows(M):                       # with the activity share w as a feature instead of a multiplier
+            cut = PS.month_start(M, 0)
+            D = choice.rows(day_from=cut, day_to=PS.month_end(M), all_people=True)
+            rng = np.random.default_rng(0); keep = set()
+            for d, g in D.groupby("day"):
+                keep |= {u + "|" + d for u in rng.permutation(list(g.person.unique()))[:600]}
+            D = D[D.g.isin(keep)].copy()
+            D = PS.featurize(D, PS.fit_cf(cut), cut); D, pc = PS.page_cols(D)
+            return D[["person", "day", "id", "y"] + PS.FEATS + pc].reset_index(drop=True)
+        PS.train_rows = train_rows
+        base_u = PS.page_cols
+        def page_cols_u(D, _b=base_u):
+            D, pc = _b(D)
+            return D.assign(w_act=D.w.astype(float)), list(pc) + ["w_act"]
+        PS.page_cols = page_cols_u
     if os.environ.get("TL_LM") == "1":   # iteration 3: launch-model pull as a person-model feature (NaN where unknown)
         lm = lm_pct(); base = PS.page_cols
         def page_cols(D, _b=base):
@@ -148,6 +165,8 @@ def day(d):
     D = choice.rows(day_from=d, day_to=d, all_people=True)
     D = PS.featurize(D, art["cf"], art["prior_cut"]); D, pc = PS.page_cols(D)
     D["p"] = art["model"].predict_proba(D[PS.FEATS + pc])[:, 1]
+    if os.environ.get("TL_UNCOND") == "1":   # p is already unconditional: EV = sum p, person metrics on p
+        D["w"] = 1.0
     lineup = set(I[I.day == d].id)
     lab = Eall[(Eall.kind == "upvote") & Eall.item.isin(lineup)]
     pos = set(zip(lab.person, lab.item))
