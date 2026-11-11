@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-11T22:35:28.706160+00:00",
+ "built_at": "2026-11-11T22:39:01.573976+00:00",
  "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
  "sources": {
   "live": "written before or at its point time",
@@ -16,7 +16,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 52.4,
    "mean_top5": 65.7,
-   "mean_top10": 77.9
+   "mean_top10": 77.9,
+   "ci_top3": [
+    40.5,
+    64.3
+   ],
+   "ci_top5": [
+    55.7,
+    75.7
+   ],
+   "ci_top10": [
+    72.8,
+    82.9
+   ]
   },
   {
    "point": "P1",
@@ -27,7 +39,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 33.3,
    "mean_top5": 56.0,
-   "mean_top10": 72.0
+   "mean_top10": 72.0,
+   "ci_top3": [
+    13.3,
+    53.3
+   ],
+   "ci_top5": [
+    36.0,
+    72.0
+   ],
+   "ci_top10": [
+    58.0,
+    84.0
+   ]
   },
   {
    "point": "P1",
@@ -38,7 +62,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 68.0,
-   "mean_top10": 78.0
+   "mean_top10": 78.0,
+   "ci_top3": [
+    20.0,
+    80.0
+   ],
+   "ci_top5": [
+    60.0,
+    76.0
+   ],
+   "ci_top10": [
+    72.0,
+    84.0
+   ]
   },
   {
    "point": "P1",
@@ -49,7 +85,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 68.0,
-   "mean_top10": 74.0
+   "mean_top10": 74.0,
+   "ci_top3": [
+    33.3,
+    60.0
+   ],
+   "ci_top5": [
+    60.0,
+    76.0
+   ],
+   "ci_top10": [
+    66.0,
+    80.0
+   ]
   },
   {
    "point": "P2",
@@ -60,7 +108,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 64.0,
-   "mean_top10": 80.0
+   "mean_top10": 80.0,
+   "ci_top3": [
+    33.3,
+    60.0
+   ],
+   "ci_top5": [
+    52.0,
+    76.0
+   ],
+   "ci_top10": [
+    72.0,
+    88.0
+   ]
   },
   {
    "point": "P2",
@@ -71,7 +131,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 53.3,
    "mean_top5": 76.0,
-   "mean_top10": 82.0
+   "mean_top10": 82.0,
+   "ci_top3": [
+    40.0,
+    66.7
+   ],
+   "ci_top5": [
+    68.0,
+    80.0
+   ],
+   "ci_top10": [
+    76.0,
+    88.0
+   ]
   },
   {
    "point": "P2",
@@ -82,7 +154,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 68.0,
-   "mean_top10": 78.0
+   "mean_top10": 78.0,
+   "ci_top3": [
+    33.3,
+    60.0
+   ],
+   "ci_top5": [
+    60.0,
+    76.0
+   ],
+   "ci_top10": [
+    68.0,
+    88.0
+   ]
   },
   {
    "point": "P3",
@@ -93,7 +177,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 64.0,
-   "mean_top10": 78.0
+   "mean_top10": 78.0,
+   "ci_top3": [
+    33.3,
+    60.0
+   ],
+   "ci_top5": [
+    52.0,
+    76.0
+   ],
+   "ci_top10": [
+    68.0,
+    86.0
+   ]
   },
   {
    "point": "P3",
@@ -104,7 +200,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 53.3,
    "mean_top5": 72.0,
-   "mean_top10": 80.0
+   "mean_top10": 80.0,
+   "ci_top3": [
+    33.3,
+    80.0
+   ],
+   "ci_top5": [
+    64.0,
+    80.0
+   ],
+   "ci_top10": [
+    72.0,
+    88.0
+   ]
   },
   {
    "point": "P3",
@@ -115,7 +223,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 68.0,
-   "mean_top10": 78.0
+   "mean_top10": 78.0,
+   "ci_top3": [
+    33.3,
+    60.0
+   ],
+   "ci_top5": [
+    60.0,
+    76.0
+   ],
+   "ci_top10": [
+    68.0,
+    88.0
+   ]
   },
   {
    "point": "P4",
@@ -126,7 +246,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 72.0,
-   "mean_top10": 84.0
+   "mean_top10": 84.0,
+   "ci_top3": [
+    33.3,
+    60.0
+   ],
+   "ci_top5": [
+    64.0,
+    80.0
+   ],
+   "ci_top10": [
+    80.0,
+    88.0
+   ]
   },
   {
    "point": "P4",
@@ -137,7 +269,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 60.0,
    "mean_top5": 72.0,
-   "mean_top10": 84.0
+   "mean_top10": 84.0,
+   "ci_top3": [
+    40.0,
+    80.0
+   ],
+   "ci_top5": [
+    64.0,
+    80.0
+   ],
+   "ci_top10": [
+    76.0,
+    90.0
+   ]
   },
   {
    "point": "P4",
@@ -148,7 +292,19 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 72.0,
-   "mean_top10": 80.0
+   "mean_top10": 80.0,
+   "ci_top3": [
+    33.3,
+    60.0
+   ],
+   "ci_top5": [
+    64.0,
+    80.0
+   ],
+   "ci_top10": [
+    70.0,
+    88.0
+   ]
   }
  ],
  "rows": [

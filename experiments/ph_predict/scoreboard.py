@@ -67,8 +67,13 @@ def main():
     X = pd.DataFrame(rows).sort_values(["day", "point", "method"])
     summ = []
     for (pt, m, s), g in X.groupby(["point", "method", "source"]):
-        summ.append({"point": pt, "method": m, "source": s, "days": int(len(g)), "first_day": g.day.min(), "last_day": g.day.max(),
-                     **{f"mean_top{k}": round(float(g[f"top{k}"].mean()), 1) for k in (3, 5, 10)}})
+        row = {"point": pt, "method": m, "source": s, "days": int(len(g)), "first_day": g.day.min(), "last_day": g.day.max(),
+               **{f"mean_top{k}": round(float(g[f"top{k}"].mean()), 1) for k in (3, 5, 10)}}
+        rng_ = np.random.default_rng(0)
+        for k in (3, 5, 10):   # 95% day-bootstrap interval, only when at least 5 days are scored (else null)
+            c = _boot(g[f"top{k}"], rng_)
+            row[f"ci_top{k}"] = [round(float(c[0]), 1), round(float(c[1]), 1)] if c is not None else None
+        summ.append(row)
     actual = {d: g.head(10).id.tolist() for d, g in real.items()}
     out = {"built_at": pd.Timestamp.now(tz="UTC").isoformat(),
            "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
