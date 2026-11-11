@@ -281,6 +281,9 @@ def day(d):
     seen = set(D.person); unseen = lab[~lab.person.isin(seen)].groupby("item").size()
     os.makedirs(f"{WORK}/rows_tl_{TAG}", exist_ok=True)
     D[["person", "id", "w", "p", "y", "backed"]].assign(day=d).to_parquet(f"{WORK}/rows_tl_{TAG}/{d}.parquet")
+    if os.environ.get("TL_UNCOND") == "1" and os.environ.get("TL_SAVEX", "1") == "1":   # feature matrix for the choice model (it8)
+        X = D[PS.FEATS + pc].astype("float32"); X.insert(0, "id", D.id.astype(str).values); X.insert(0, "person", D.person.values)
+        X["y"] = D.y.values.astype("int8"); X.to_parquet(f"{WORK}/rows_tl_{TAG}/X_{d}.parquet")
     json.dump({str(k): int(v) for k, v in unseen.items()}, open(f"{WORK}/rows_tl_{TAG}/{d}_unseen.json", "w"))
     if fol_cov is not None:
         json.dump(fol_cov, open(f"{WORK}/rows_tl_{TAG}/{d}_fol.json", "w"))
@@ -335,7 +338,7 @@ def topk(g, col, k, asc=False):
 def score():
     from sklearn.metrics import roc_auc_score, log_loss
     from pipeline import warehouse as W
-    files = sorted(glob.glob(f"{WORK}/rows_tl_{TAG}/*.parquet"))
+    files = sorted(f for f in glob.glob(f"{WORK}/rows_tl_{TAG}/*.parquet") if os.path.basename(f)[:2] == "20")
     D0, D1 = os.environ.get("TL_FROM", "2026-10-20"), os.environ.get("TL_TO", "2026-11-08")
     allfiles = files; files = [f for f in files if D0 <= os.path.basename(f)[:10] <= D1]   # scored days; earlier files feed TL_RECAL only
     L = W.query("SELECT CAST(id AS VARCHAR) AS id, day::VARCHAR AS day, daily_rank, weekly_rank, votes FROM launches WHERE daily_rank IS NOT NULL")
@@ -533,7 +536,7 @@ def blend():
     Fc = W.query("SELECT CAST(launch_id AS VARCHAR) AS id, forecast_date AS day, predicted_rank FROM forecasts WHERE model = 'launch_model'", do_sync=False)
     lm.update({(r.day, r.id): -float(np.log(r.predicted_rank)) for r in Fc.itertuples()})
     rows = []
-    for f in sorted(glob.glob(f"{WORK}/rows_tl_{TAG}/*.parquet")):
+    for f in sorted(f for f in glob.glob(f"{WORK}/rows_tl_{TAG}/*.parquet") if os.path.basename(f)[:2] == "20"):
         d = os.path.basename(f)[:10]; R = pd.read_parquet(f); R["id"] = R.id.astype(str)
         ev = R.assign(e=R.w * R.p).groupby("id").e.sum()
         for x, e in ev.items():
@@ -633,7 +636,99 @@ def resid():
     json.dump(res, open(os.path.join(HERE, "results", f"two_level_resid_{TAG}{SFX()}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
 
 
+ACT_COLS = ["w_act", "days_since", "act_7", "log_act_30", "log_act_all", "tenure", "dow"]
+
+
+def _label_maps():
+    T = pd.read_parquet(f"{WORK}/tabs_v3.parquet"); T = T[T.tab == "upvotes"]
+    read_day = dict(zip(T.person_id, pd.to_datetime(T.fetched_at, utc=True).dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")))
+    short = set(T[T["count"] < T.header.fillna(0) * 0.98].person_id)
+    Eu = pd.read_parquet(f"{WORK}/events_cp.parquet"); Eu = Eu[Eu.kind == "upvote"]
+    oldest = Eu.groupby("person").date.min().to_dict()
+    def ok(persons, d):
+        d2 = (pd.Timestamp(d) + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
+        return persons.map(lambda u: read_day.get(u, "0000") >= d2 and (u not in short or oldest.get(u, "9999") <= d)).values
+    return ok, Eu
+
+
+def choice():
+    """Iteration 8 (pre-registered with E5, Nov 11): EV(L) = sum_p A_p * K_p * S_pL. A = P(any vote on the line-up | pre-d),
+    K = E[# voted | active] (poisson), S = within-person-day share over the line-up (binary LightGBM on active person-days,
+    normalised). Each part fitted on the previous month's label-filtered rows of the base tag (TL_BASE, default cp_unc;
+    its X_<d>.parquet feature matrices); writes rows_tl_<TAG>/<d>.parquet for `score` with p = min(1, AKS), w = AKS / p
+    (so EV = sum w*p is unclipped), and the parts' own test-day fits to results/two_level_choice_parts_<TAG>.json."""
+    import lightgbm as lgb
+    from sklearn.metrics import roc_auc_score, mean_poisson_deviance
+    base = os.environ.get("TL_BASE", "cp_unc"); src = f"{WORK}/rows_tl_{base}"
+    ok, Eu = _label_maps()
+    up = {u: np.array(sorted(g.date.astype(str).str[:10]), dtype="datetime64[D]") for u, g in Eu.groupby("person")}
+    def mean_daily(u, d):   # the person's mean upvotes per active upvote day, before d
+        a = up.get(u)
+        if a is None:
+            return np.nan
+        a = a[a < np.datetime64(d, "D")]
+        return float(len(a) / len(np.unique(a))) if len(a) else np.nan
+    def load(d, filt=True):
+        X = pd.read_parquet(f"{src}/X_{d}.parquet")
+        if filt:
+            X = X[ok(X.person, d)]
+        taste = [c for c in X.columns if c not in ["person", "id", "y"] + ACT_COLS]
+        g = X.groupby("person")
+        for c in taste:   # within-person-day contrasts over the line-up
+            X[c + "_dm"] = X[c] - g[c].transform("mean"); X[c + "_rk"] = g[c].rank(pct=True)
+        X["lineup_n"] = float(X.id.nunique())
+        P = g.agg(**{c: (c, "first") for c in ACT_COLS}, k=("y", "sum")).reset_index()
+        P["lineup_n"] = X.lineup_n.iloc[0]; P["a"] = (P.k > 0).astype(int)
+        P["mean_daily"] = [mean_daily(u, d) for u in P.person]
+        return X, P, taste
+    days_all = sorted(os.path.basename(f)[2:12] for f in glob.glob(f"{src}/X_*.parquet"))
+    test = [d for d in days_all if os.environ.get("TL_FROM", "2026-10-20") <= d <= os.environ.get("TL_TO", "2026-11-08")]
+    A_COLS = ACT_COLS + ["lineup_n"]; K_COLS = A_COLS + ["mean_daily"]
+    models, parts, rep = {}, [], {"base": base, "fit": {}}
+    os.makedirs(f"{WORK}/rows_tl_{TAG}", exist_ok=True)
+    for mon in sorted({d[:7] for d in test}):
+        prev = (pd.Timestamp(mon + "-01") - pd.Timedelta(days=1)).strftime("%Y-%m")
+        fit = [d for d in days_all if d[:7] == prev]
+        Xs, Ps = [], []
+        for d in fit:
+            X, P, taste = load(d)
+            Ps.append(P); Xs.append(X[X.person.isin(set(P[P.a == 1].person))])
+        Xf, Pf = pd.concat(Xs), pd.concat(Ps)
+        scols = taste + [c + s for c in taste for s in ("_dm", "_rk")] + ["lineup_n"]
+        mA = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=2).fit(Pf[A_COLS], Pf.a)
+        act = Pf[Pf.a == 1]
+        mK = lgb.LGBMRegressor(objective="poisson", n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=2).fit(act[K_COLS], act.k)
+        mS = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=2).fit(Xf[scols], Xf.y)
+        models[mon] = (mA, mK, mS, scols)
+        rep["fit"][mon] = {"fit_month": prev, "fit_days": len(fit), "person_days": int(len(Pf)), "active_rate": round(float(Pf.a.mean()), 4),
+                           "share_rows": int(len(Xf)), "mean_k_active": round(float(act.k.mean()), 3)}
+    clipped = 0; total = 0
+    for d in test:
+        mA, mK, mS, scols = models[d[:7]]
+        X, P, _ = load(d, filt=False)   # every row is scored (as at 00:05); the label filter applies in `score`
+        P["A"] = mA.predict_proba(P[A_COLS])[:, 1]; P["K"] = np.maximum(mK.predict(P[K_COLS]), 1.0)   # K >= 1 given active
+        X["s"] = mS.predict_proba(X[scols])[:, 1]; X["S"] = X.s / X.groupby("person").s.transform("sum")
+        X = X.merge(P[["person", "A", "K"]], on="person")
+        q = X.A * X.K * X.S; p = np.minimum(1.0, q); clipped += int((q > 1).sum()); total += len(q)
+        R = pd.DataFrame({"person": X.person, "id": X.id, "w": (q / p).values, "p": p.values, "y": X.y.astype(int).values, "backed": 0.0, "day": d})
+        R.to_parquet(f"{WORK}/rows_tl_{TAG}/{d}.parquet")
+        import shutil
+        shutil.copy(f"{src}/{d}_unseen.json", f"{WORK}/rows_tl_{TAG}/{d}_unseen.json")
+        # parts' own fits on the test day, label-filtered
+        m = ok(P.person, d); Pt = P[m]; Xt = X[ok(X.person, d)]
+        at = Pt[Pt.a == 1]
+        top1 = Xt[Xt.person.isin(set(at.person))].sort_values("S", ascending=False).groupby("person").y.first()
+        parts.append({"day": d, "A_auc": float(roc_auc_score(Pt.a, Pt.A)) if Pt.a.nunique() > 1 else np.nan,
+                      "K_poisson_dev": float(mean_poisson_deviance(at.k, at.K)) if len(at) else np.nan,
+                      "K_poisson_dev_const": float(mean_poisson_deviance(at.k, np.full(len(at), max(1.0, at.k.mean())))) if len(at) else np.nan,
+                      "S_top1_acc": float(top1.mean()) if len(top1) else np.nan, "active_people": int(len(at))})
+    Pp = pd.DataFrame(parts); rng = np.random.default_rng(0)
+    rep["parts"] = {c: boot(Pp[c].values, rng) for c in ("A_auc", "K_poisson_dev", "K_poisson_dev_const", "S_top1_acc")}
+    rep["parts_per_day"] = parts; rep["clipped_rows"] = clipped; rep["rows"] = total
+    json.dump(rep, open(os.path.join(HERE, "results", f"two_level_choice_parts_{TAG}.json"), "w"), indent=1, default=float)
+    print(json.dumps({k: v for k, v in rep.items() if k != "parts_per_day"}, default=float))
+
 if __name__ == "__main__":
     c = sys.argv[1]
     {"prepare": lambda: prepare(), "train": lambda: train(sys.argv[2]), "day": lambda: day(sys.argv[2]), "score": lambda: score(),
-     "blend": lambda: blend(), "resid": lambda: resid()}[c]()
+     "blend": lambda: blend(), "resid": lambda: resid(), "choice": lambda: choice()}[c]()
