@@ -149,6 +149,34 @@ def _is_final(day: str, at_iso: str | None) -> bool:
     return at >= end
 
 
+def _monthly_reread(day: str) -> tuple[dict, str | None]:
+    """Final ranks from the daily 23:50 PT official-API re-read of the month (latest file that covers `day`)."""
+    names = sorted(n for n, _ in gcs.list_names(f"raw/ph_at_launch/monthly_reread/{day[:7]}/", ttl=600)
+                   if n.endswith(".jsonl"))
+    for n in reversed(names):
+        if n.rsplit("/", 1)[-1][:10] <= day:   # a read made before the day ended is not final
+            break
+        rows = gcs.read_jsonl(n, ttl=600)
+        ranks, at = {}, None
+        for r in rows:
+            if r.get("_header") or str(r.get("launch_day_PT")) != day or not r.get("dailyRank"):
+                continue
+            try:
+                ranks[str(r["id"])] = {"rank": int(r["dailyRank"]), "votes": int(r.get("votesCount") or 0)}
+            except (ValueError, TypeError):
+                continue
+            at = max(at or "", str(r.get("fetched_at") or ""))
+        if ranks:
+            return ranks, at
+    return {}, None
+
+
+def _scoreboard_top10(day: str) -> dict:
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+    ids = (sb.get("actual_top10") or {}).get(day) or []
+    return {str(i): {"rank": n, "votes": None} for n, i in enumerate(ids, 1)}
+
+
 def actuals(day: str) -> dict:
     """{'final': bool, 'as_of': iso, 'revealed': bool, 'ranks': {id: {rank, votes}}}"""
     def go():
@@ -164,8 +192,18 @@ def actuals(day: str) -> dict:
             pr, pat = _posts_ts_final(day)
             if pr and (_is_final(day, pat) or not ranks):
                 ranks, at, src = pr, pat, "posts_ts"
-        revealed = any(v.get("votes") for v in ranks.values())
-        return {"final": _is_final(day, at), "as_of": at, "revealed": revealed, "ranks": ranks, "source": src}
+        final = _is_final(day, at)
+        if not final and day < today_pt():
+            mr, mat = _monthly_reread(day)
+            if mr:
+                ranks, at, src, final = mr, mat, "monthly_reread", True
+            else:
+                top = _scoreboard_top10(day)
+                if top:
+                    ranks, src, final = top, "scoreboard_top10", True
+                    at = datetime.fromisoformat(day).replace(hour=23, minute=59, tzinfo=PT).isoformat()
+        revealed = final or any(v.get("votes") for v in ranks.values())
+        return {"final": final, "as_of": at, "revealed": revealed, "ranks": ranks, "source": src}
     return gcs._cached("actuals:" + day, 300, go)
 
 

@@ -145,6 +145,7 @@ function renderLive(){
   $("#live").innerHTML = o.map(x=>{
     const pr = lead && lead.ranks[x.id];
     const vote = x.board_votes!=null ? `<div class="vote"><span class="tri"></span><b>${Number(x.board_votes)}</b><small>votes</small></div>`
+       : fin ? `<div class="vote hidden" title="Final rank only; vote count not recorded for this day"><span class="tri"></span><b>—</b><small>final</small></div>`
        : `<div class="vote hidden" title="Hidden on Product Hunt until about 04:00 PT"><span class="tri"></span><b>—</b><small>hidden</small></div>`;
     return `<li class="row c"><div class="pos">${Number(x.board_rank)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
       <div class="chips">${chips(x)}${pr?`<span class="trail">we said <b>#${Number(pr)}</b></span>`:""}</div></div>${vote}</li>`;}).join("")
