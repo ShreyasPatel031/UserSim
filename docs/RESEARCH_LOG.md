@@ -874,3 +874,11 @@ Scripts experiments/simlab/gemini_bundle.py, gemini_bundle_trees.py; reports rep
 | Gemini 256 (MRL) | 0.625 [0.615, 0.635] | 0.623 | 0.692 [0.681, 0.703] |
 Personal part (logistic − shuffled-profile): Gemini-256 +0.042 [0.030, 0.054], bge-base +0.058.
 The learned gain needs the nonlinear head, so the LightGBM model (200 trees, 15 leaves, 5 features) is exported as flat numpy arrays (max abs difference vs LightGBM 1.2e-7). Bundle gs://…/tmp/e5/website/person_bundle_gemini.npz: 7.9 MB, 5,096 anonymous people, 16,211 item vectors (256-d fp16), CSR person→items, role flags, activity counts, per-person 99th-percentile thresholds; no ids, handles, bios or product names. Scoring all people per product: 0.19 s in numpy, plus one embedding API call.
+
+### 2026-11-12 E5 — PH pre-reveal rank in Wayback captures: not there (stays forward-only)
+65 homepage captures taken 00:00–04:00 PT on 20 days (1,822 same-day post rows), parsed from the raw Apollo state in raw/ph_homepage_archive/raw/.
+- dailyRank is null on all 1,822 rows; latestScore 0 on all; weekly/monthlyRank null.
+- randomizationStatus.randomizeOrder = true on every pre-reveal row, nextTransitionAt 04:00 PT: the page order is randomised. Page position vs final daily rank: mean per-capture Spearman −0.006 (sd 0.23, 65 captures); order between consecutive same-day captures −0.056 (45 pairs) - reshuffled each load.
+- Non-null fields while votes are hidden: id, name, slug, tagline, topics, product, featuredAt/scheduledAt/createdAt, updatedAt, commentsCount, hideVotesCount, productState, thumbnail, promotedPillImageUrl (all rows), friendVoters (empty, anonymous), iterationDayParticipation, shortenedUrl.
+- Only ordering signals: commentsCount (per-capture Spearman with −final rank +0.44; already in the comments+LM model, 66.7/69.5/78.9) and updatedAt recency (+0.10, weak).
+Verdict: the homepage page state does not carry PH's pre-reveal rank (the API's post.dailyRank is not exposed to the anonymous homepage), and the order is randomised. The API-rank line stays forward-only.
