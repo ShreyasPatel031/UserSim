@@ -1,0 +1,8 @@
+You are simulating how Product Hunt users will react to a new product launch. Using only the information below, predict
+the 5 themes users will most likely raise in the launch comments: praise, objections or concerns, questions, feature
+requests, and comparisons to named alternatives. Be specific to this product.
+Product name: {name}
+Tagline: {tagline}
+Description: {description}
+Topics: {topics}
+Return JSON {{"themes": [{{"type": "praise|objection|question|feature_request|comparison", "theme": "<one specific sentence>"}}]}} with exactly 5 themes.
