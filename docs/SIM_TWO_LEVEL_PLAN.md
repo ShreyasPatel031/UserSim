@@ -125,7 +125,7 @@ item it can, and assigns the next one if not. Waiting for forward days or a data
 Each item is a backtest on held data unless marked otherwise. Results go to docs/RESEARCH_LOG.md.
 
 Status at 21:50 UTC Nov 11:
-1. **Live vs backtest parity of the 00:05 forecast** (live 39/60/77 vs offline 63/69/75): PH agent, running.
+1. **Live vs backtest parity of the 00:05 forecast**: done. The gap was mostly a small, different day set. Same 14 live days: published 50.0/61.4/72.9; current code on 00:05 inputs 57.1/64.3/77.9; backtest condition 59.5/67.1/77.9; no difference excludes zero; no new leak. Placeholder maker ids cost about 2 top-3 points (shadow fix, scored forward).
 2. **Early-day vote forecast on months**: done. 93/95/93 at 08:00–12:00 PT on 29 days; 85/93/92 in the first hour after the reveal on 9 days; raw votes beat any learned projection.
 3. **Dated domain popularity before launch**: done, no gain. In the top-1M list for 13% of launches; correlates with votes (+0.14) but not with what the launch model misses (−0.015); top 3/5/10 −0.2 / −0.3 / 0.0, all intervals span zero.
 4. **User simulation at population level, "uses or wants" channel**: done. Weak but real: for new products, summed taste picks adopted products at about 1.5× random (top-decile 15.5 vs 9.8); for known products popularity dominates (taste adds +2.6 top-decile).
