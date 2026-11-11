@@ -141,4 +141,6 @@ without dated votes; 100/80/90 with day-end votes on 1 week); monthly call (42/5
 Website agent: session_01WkCrUQw5HWVGM17CVJnoPr, branch `claude/ph-website`. Two pages: (1) live predictor (00:05, pre-reveal and
 vote-based forecasts with a scored track record); (2) try a product URL → simulated reactions, likely users with names
 redacted, and where it would land on Product Hunt with default hunter/maker values. PH agent and E5 supply entry points.
-The hourly check also covers this agent: design due 45 min after start, progress every 60 min, PR to main reviewed and merged by the orchestrator.
+Shreyas has taken this agent over (Nov 11 22:35 UTC) and directs it himself; the orchestrator, PH agent and E5 support it on request.
+
+**Standing rule (Shreyas, Nov 11):** every subagent or new session the orchestrator creates uses the Opus model.
