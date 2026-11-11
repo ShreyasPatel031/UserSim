@@ -298,3 +298,15 @@ What it shows:
 2. **The weights barely matter here.** Tier post-stratification moves no metric beyond its interval.
 3. **The honest person-sum is weak at launch level.** 33% of the daily top 3 is below the deployed sim's ~48-51% on Oct 20-Nov 9. Any two-level model has to beat both this baseline and the deployed sim.
 4. **Person AUC is inflated by between-person activity.** Use Hit@3 and voter R-precision as the person metrics that matter.
+
+### 2026-11-11 01:00Z — E5 review of the PH two-level sim: residual test fixed; voter R-precision should rank by P, not w·P
+
+- **The raw residual check was biased.** Its within-day Spearman of EV against (real − LM) standing comes out negative by construction, through regression to the mean.
+  - The honest tests (PH commit 520ff740, 15 days): partial Spearman +0.035 [−0.054, 0.125]; EV coefficient beside the LM +0.073 [0.007, 0.145] (it1).
+  - A leave-one-week-out blend does not change top 3/5/10; the LM leads or ties in every row.
+- **My baseline scored on the PH agent's exact clean rows** (1.53M rows, 12 days; `experiments/simlab/two_level_score_on_rows.py`):
+  - R-precision is 0.213 when each launch's voters are ranked by P, and 0.123 when ranked by w·P.
+  - On the same rows and definition, the PH agent's 0.151 (w·P) beats my 0.123.
+- **Metric rule from now on:**
+  - Person-level ranking metrics (voter R-precision, Hit@3) use P.
+  - The representativeness weights enter only the population EV, Σ w·P.
