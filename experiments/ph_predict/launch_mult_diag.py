@@ -91,6 +91,34 @@ if os.path.exists(AE):
         Z2["pred"] = pr
         res[f"lodo_ridge_{nm}"] = round(float(np.mean([spearmanr(g.pred, g.logm).correlation for _, g in Z2.groupby("day")])), 3)
     res["arrivals_coverage"] = round(float(M2.arr_ev.notna().mean()), 3)
+    # orchestrator 06:50Z Nov 11, team-audience pilot (TFOL=1): LEAKY upper bound (Nov follow lists, undated). Adds the
+    # count of complete followers of the team (tcf), the team's summed follower counts (ttot) and the follower-edge
+    # arrivals EV (arr_ev_fol) from team_fol_pilot.py; reported on all launches and pooled over held launches
+    TF_ = f"{S_}/simbt/arrivals_fol/launch_feats.parquet"
+    if os.environ.get("TFOL") == "1" and os.path.exists(TF_):
+        G = pd.read_parquet(TF_)[["day", "id", "held", "tcf", "ttot", "arr_ev_fol"]]
+        M3 = M2.merge(G, on=["day", "id"], how="left"); M3["held"] = M3.held.fillna(False).astype(bool)
+        out = {"LEAK": "Nov follow lists, undated: upper bound", "held_launches": int(M3.held.sum()), "launches": int(len(M3))}
+        for nm, cols3 in (("with_arrivals", cols + ["arr_ev", "cand_n"]), ("with_arrivals_fol", cols + ["arr_ev", "cand_n", "tcf", "ttot", "arr_ev_fol"]),
+                          ("fol_only", ["tcf", "ttot", "arr_ev_fol"])):
+            Z3 = M3.copy()
+            for c in cols3:
+                g = Z3.groupby("day")[c]; Z3[c] = ((Z3[c] - g.transform("mean")) / (g.transform("std") + 1e-9)).fillna(0)
+            pr = pd.Series(np.nan, index=Z3.index)
+            for d in Z3.day.unique():
+                tr, te = Z3.day != d, Z3.day == d
+                pr[te] = Ridge(alpha=1.0).fit(Z3.loc[tr, cols3], Z3.loc[tr, "logm"]).predict(Z3.loc[te, cols3])
+            Z3["pred"] = pr
+            Z3["pp"] = Z3.groupby("day").pred.rank(pct=True); Z3["mp"] = Z3.groupby("day").logm.rank(pct=True)
+            h = Z3[Z3.held]
+            out[nm] = {"lodo_spearman_all": round(float(np.mean([spearmanr(g.pred, g.logm).correlation for _, g in Z3.groupby("day")])), 3),
+                       "held_pooled_within_day_pct": round(float(spearmanr(h.pp, h.mp).correlation), 3) if len(h) > 5 else None}
+        fsp = {}
+        for c in ("tcf", "ttot", "arr_ev_fol"):
+            vals = [spearmanr(g[c], g.logm, nan_policy="omit").correlation for _, g in M3.groupby("day") if g[c].notna().sum() >= 5 and g[c].nunique() > 1]
+            fsp[c] = round(float(np.nanmean(vals)), 3) if vals else None
+        out["within_day_spearman_logm_vs_feature"] = fsp
+        res["team_fol_pilot"] = out
 res["lm_alone_spearman_vs_fitted_logm"] = fs.get("lm")
 json.dump(res, open("/home/user/UserSim/experiments/ph_predict/results/launch_mult_diag.json", "w"), indent=1)
 print(json.dumps(res, indent=1))

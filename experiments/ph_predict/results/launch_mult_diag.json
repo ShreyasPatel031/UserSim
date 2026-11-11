@@ -93,6 +93,28 @@
  "lodo_ridge_with_arrivals": 0.262,
  "lodo_ridge_arrivals_only": 0.117,
  "arrivals_coverage": 1.0,
+ "team_fol_pilot": {
+  "LEAK": "Nov follow lists, undated: upper bound",
+  "held_launches": 49,
+  "launches": 532,
+  "with_arrivals": {
+   "lodo_spearman_all": 0.262,
+   "held_pooled_within_day_pct": 0.465
+  },
+  "with_arrivals_fol": {
+   "lodo_spearman_all": 0.305,
+   "held_pooled_within_day_pct": 0.585
+  },
+  "fol_only": {
+   "lodo_spearman_all": 0.165,
+   "held_pooled_within_day_pct": 0.088
+  },
+  "within_day_spearman_logm_vs_feature": {
+   "tcf": -0.059,
+   "ttot": 0.26,
+   "arr_ev_fol": 0.035
+  }
+ },
  "lm_alone_spearman_vs_fitted_logm": [
   0.02,
   17
