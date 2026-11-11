@@ -258,7 +258,11 @@ def live(day, point):
         print(json.dumps({"day": day, "point": point, "status": f"point {T} not reached"})); return
     tmp = tempfile.mkdtemp(prefix="cf_")
     for f in ("posts_ts", "comments_ts", "people_ts"):
-        subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/{day}/live/{f}.jsonl", f"{tmp}/{f}.jsonl"], check=True)
+        r_ = subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/{day}/live/{f}.jsonl", f"{tmp}/{f}.jsonl"])
+        if r_.returncode:
+            if f != "people_ts":
+                raise RuntimeError(f"missing live/{f}.jsonl for {day}")
+            open(f"{tmp}/{f}.jsonl", "w").close()   # optional: team ids then come from the dump map only
     team, ids, api = {}, set(), {}
     for l in open(f"{tmp}/posts_ts.jsonl"):
         r = json.loads(l)
@@ -270,10 +274,12 @@ def live(day, point):
         if str(r.get("source", "")).startswith("ph_api_v2") and r.get("daily_rank_at_fetch") is not None and fa <= T:
             if i not in api or fa > api[i][0]:
                 api[i] = (fa, float(r["daily_rank_at_fetch"]))
-    pid = {}   # launch -> maker/hunter PH user ids (people_ts: user_id, role, launch_ids)
+    pid, pnames = {}, {}   # launch -> maker/hunter PH user ids (people_ts: user_id, role, launch_ids); username -> id
     for l in open(f"{tmp}/people_ts.jsonl"):
         r = json.loads(l)
         if r.get("user_id"):
+            if r.get("username"):
+                pnames[str(r["username"]).lower()] = str(r["user_id"])
             for i in r.get("launch_ids") or []:
                 pid.setdefault(str(i), set()).add(str(r["user_id"]))
     C = []
@@ -288,13 +294,17 @@ def live(day, point):
     fetch(); K, _ = load_comments()
     first = K[K.uid != ""].groupby("uid").ts.min().to_dict()
     name2id = dict(zip(K.user, K.uid))   # usernames -> PH user ids, from the dump (in memory only)
+    name2id.update(pnames)
     from pipeline import warehouse as W
     L = W.query("SELECT CAST(id AS VARCHAR) id, slug, makers, poster FROM launches", do_sync=False)
     # teams: live posts_ts carries no makers; the warehouse launches row (loaded by the 00:05 run) does
     for i, m, p_ in zip(L.id, L.makers, L.poster):
         if i in ids:
             names = {u.lower() for u in (json.loads(m) if m and m.startswith("[") else []) + ([p_] if p_ else []) if u}
-            team[i] = (names, {name2id[u] for u in names if name2id.get(u)} | pid.get(i, set()))
+            # pred_rank: the TRAINING rule - team = named makers + hunter (placeholder makers count as outside), by username;
+            # pred_rank_teamids: people_ts maker/hunter ids added (resolves placeholders; differs from training)
+            rule = {name2id[u] for u in names if name2id.get(u)}
+            team[i] = (names, rule, rule | pid.get(i, set()))
     tm = {sl: {u.lower() for u in (json.loads(m) if m and m.startswith("[") else []) + ([p] if p else []) if u} for sl, m, p in zip(L.slug, L.makers, L.poster)}
     TIE = {}
     for sl, u, uid, ts in zip(K.slug, K.user, K.uid, K.ts):
@@ -307,21 +317,26 @@ def live(day, point):
     if not lm:
         print(json.dumps({"day": day, "point": point, "status": "no 00:05 LM forecast for the day"})); return
     lmr = pd.Series({i: lm.get(i, np.nan) for i in ids}); lmr = -np.log(lmr.rank(ascending=False, method="first", na_option="bottom"))
-    rows = []
-    for i in sorted(ids):
-        g = C[C.id == i]; tnames, tset = team.get(i, (set(), set()))
-        it = g.user.isin(tset); out = g[~it]; us = [u for u in out.user.unique() if u]
-        rows.append({"id": i, "n_c": len(g), "n_top": int(g.parent.isna().sum()), "n_rep": int(g.parent.notna().sum()),
-                     "n_team": int(it.sum()), "u_out": len(us), "u_prior": int(sum(first.get(u, T) < t0 for u in us)),
-                     "u_tie": sum(1 for u in us if any(ts < t0 for m, ts in TIE.get(u, {}).items() if m in tnames)),
-                     "lm": float(lmr[i]), "lm_matched": i in lm})
-    A = pd.DataFrame(rows); A["n_day"] = len(A)
-    A["sh_c"] = np.log((A.n_c + 0.5) / (A.n_c + 0.5).sum()); A["r_c"] = A.n_c.rank(pct=True); A["r_lm"] = A.lm.rank(pct=True)
-    F = A[LIVEF].copy()
-    for c in CNT:
-        F[c] = np.log1p(F[c])
-    A["score"] = sum(((F[c] - M["mu"][c]) / M["sd"][c]) * M["coef"][c] for c in LIVEF) + M["intercept"]
-    A["pred_rank"] = A.score.rank(ascending=False, method="first").astype(int)
+    def featurise(which):
+        rows = []
+        for i in sorted(ids):
+            g = C[C.id == i]; tnames, trule, tids = team.get(i, (set(), set(), set())); tset = trule if which == "rule" else tids
+            it = g.user.isin(tset); out = g[~it]; us = [u for u in out.user.unique() if u]
+            rows.append({"id": i, "n_c": len(g), "n_top": int(g.parent.isna().sum()), "n_rep": int(g.parent.notna().sum()),
+                         "n_team": int(it.sum()), "u_out": len(us), "u_prior": int(sum(first.get(u, T) < t0 for u in us)),
+                         "u_tie": sum(1 for u in us if any(ts < t0 for m, ts in TIE.get(u, {}).items() if m in tnames)),
+                         "lm": float(lmr[i]), "lm_matched": i in lm})
+        A = pd.DataFrame(rows); A["n_day"] = len(A)
+        A["sh_c"] = np.log((A.n_c + 0.5) / (A.n_c + 0.5).sum()); A["r_c"] = A.n_c.rank(pct=True); A["r_lm"] = A.lm.rank(pct=True)
+        F = A[LIVEF].copy()
+        for c in CNT:
+            F[c] = np.log1p(F[c])
+        A["score"] = sum(((F[c] - M["mu"][c]) / M["sd"][c]) * M["coef"][c] for c in LIVEF) + M["intercept"]
+        A["pred_rank"] = A.score.rank(ascending=False, method="first").astype(int)
+        return A
+    A = featurise("rule")
+    A2 = featurise("ids").set_index("id")
+    A["pred_rank_teamids"] = A.id.map(A2.pred_rank); A["u_out_teamids"] = A.id.map(A2.u_out)
     # orchestrator 21:05Z: write three scores per point - comment ridge, API pre-reveal rank, blend (mean of rank positions)
     A["api_rank"] = A.id.map(lambda i: api[i][1] if i in api else np.nan)
     A["pred_rank_api"] = (A.api_rank.fillna(999) - 1e-6 * A.lm).rank(method="first").astype(int)
@@ -338,9 +353,9 @@ def live(day, point):
         if c not in A:
             A[c] = np.nan
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
-           "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0))[1])), "comments": int(len(C)), "written_at": now.isoformat(),
+           "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "api_rank", "n_c", "u_out", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
         res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)

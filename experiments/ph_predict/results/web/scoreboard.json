@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-11T22:00:22.247599+00:00",
+ "built_at": "2026-11-11T22:35:28.706160+00:00",
  "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
  "sources": {
   "live": "written before or at its point time",
@@ -22,26 +22,59 @@
    "point": "P1",
    "method": "api_rank",
    "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
+   "days": 5,
+   "first_day": "2026-11-02",
    "last_day": "2026-11-10",
    "mean_top3": 33.3,
-   "mean_top5": 50.0,
-   "mean_top10": 67.5
+   "mean_top5": 56.0,
+   "mean_top10": 72.0
   },
   {
    "point": "P1",
    "method": "blend",
    "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
+   "days": 5,
+   "first_day": "2026-11-02",
    "last_day": "2026-11-10",
-   "mean_top3": 50.0,
-   "mean_top5": 65.0,
-   "mean_top10": 75.0
+   "mean_top3": 46.7,
+   "mean_top5": 68.0,
+   "mean_top10": 78.0
   },
   {
    "point": "P1",
+   "method": "comment_ridge",
+   "source": "replay",
+   "days": 5,
+   "first_day": "2026-11-02",
+   "last_day": "2026-11-10",
+   "mean_top3": 46.7,
+   "mean_top5": 68.0,
+   "mean_top10": 74.0
+  },
+  {
+   "point": "P2",
+   "method": "api_rank",
+   "source": "replay",
+   "days": 5,
+   "first_day": "2026-11-02",
+   "last_day": "2026-11-10",
+   "mean_top3": 46.7,
+   "mean_top5": 64.0,
+   "mean_top10": 80.0
+  },
+  {
+   "point": "P2",
+   "method": "blend",
+   "source": "replay",
+   "days": 5,
+   "first_day": "2026-11-02",
+   "last_day": "2026-11-10",
+   "mean_top3": 53.3,
+   "mean_top5": 76.0,
+   "mean_top10": 82.0
+  },
+  {
+   "point": "P2",
    "method": "comment_ridge",
    "source": "replay",
    "days": 5,
@@ -52,59 +85,26 @@
    "mean_top10": 78.0
   },
   {
-   "point": "P2",
+   "point": "P3",
    "method": "api_rank",
-   "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
-   "last_day": "2026-11-10",
-   "mean_top3": 50.0,
-   "mean_top5": 60.0,
-   "mean_top10": 77.5
-  },
-  {
-   "point": "P2",
-   "method": "blend",
-   "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
-   "last_day": "2026-11-10",
-   "mean_top3": 58.3,
-   "mean_top5": 75.0,
-   "mean_top10": 80.0
-  },
-  {
-   "point": "P2",
-   "method": "comment_ridge",
    "source": "replay",
    "days": 5,
    "first_day": "2026-11-02",
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
-   "mean_top5": 68.0,
-   "mean_top10": 80.0
-  },
-  {
-   "point": "P3",
-   "method": "api_rank",
-   "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
-   "last_day": "2026-11-10",
-   "mean_top3": 50.0,
-   "mean_top5": 60.0,
-   "mean_top10": 75.0
+   "mean_top5": 64.0,
+   "mean_top10": 78.0
   },
   {
    "point": "P3",
    "method": "blend",
    "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
+   "days": 5,
+   "first_day": "2026-11-02",
    "last_day": "2026-11-10",
-   "mean_top3": 58.3,
-   "mean_top5": 70.0,
-   "mean_top10": 77.5
+   "mean_top3": 53.3,
+   "mean_top5": 72.0,
+   "mean_top10": 80.0
   },
   {
    "point": "P3",
@@ -115,29 +115,29 @@
    "last_day": "2026-11-10",
    "mean_top3": 46.7,
    "mean_top5": 68.0,
-   "mean_top10": 80.0
+   "mean_top10": 78.0
   },
   {
    "point": "P4",
    "method": "api_rank",
    "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
+   "days": 5,
+   "first_day": "2026-11-02",
    "last_day": "2026-11-10",
-   "mean_top3": 50.0,
-   "mean_top5": 70.0,
-   "mean_top10": 82.5
+   "mean_top3": 46.7,
+   "mean_top5": 72.0,
+   "mean_top10": 84.0
   },
   {
    "point": "P4",
    "method": "blend",
    "source": "replay",
-   "days": 4,
-   "first_day": "2026-11-03",
+   "days": 5,
+   "first_day": "2026-11-02",
    "last_day": "2026-11-10",
-   "mean_top3": 66.7,
-   "mean_top5": 70.0,
-   "mean_top10": 82.5
+   "mean_top3": 60.0,
+   "mean_top5": 72.0,
+   "mean_top10": 84.0
   },
   {
    "point": "P4",
@@ -254,10 +254,32 @@
   {
    "day": "2026-11-02",
    "point": "P1",
+   "method": "api_rank",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:33:36.311360+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P1",
+   "method": "blend",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:33:36.311360+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P1",
    "method": "comment_ridge",
    "source": "replay",
    "n": 18,
-   "written_at": "2026-11-11T20:58:52.348177+00:00",
+   "written_at": "2026-11-11T22:33:36.311360+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 80.0
@@ -265,10 +287,54 @@
   {
    "day": "2026-11-02",
    "point": "P2",
+   "method": "api_rank",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:33:52.824203+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P2",
+   "method": "blend",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:33:52.824203+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P2",
    "method": "comment_ridge",
    "source": "replay",
    "n": 18,
-   "written_at": "2026-11-11T20:59:03.052608+00:00",
+   "written_at": "2026-11-11T22:33:52.824203+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P3",
+   "method": "api_rank",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:34:09.842741+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P3",
+   "method": "blend",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:34:09.842741+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 90.0
@@ -279,7 +345,29 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 18,
-   "written_at": "2026-11-11T20:59:08.160874+00:00",
+   "written_at": "2026-11-11T22:34:09.842741+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P4",
+   "method": "api_rank",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:34:27.211189+00:00",
+   "top3": 33.3,
+   "top5": 80.0,
+   "top10": 90.0
+  },
+  {
+   "day": "2026-11-02",
+   "point": "P4",
+   "method": "blend",
+   "source": "replay",
+   "n": 18,
+   "written_at": "2026-11-11T22:34:27.211189+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 90.0
@@ -290,7 +378,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 18,
-   "written_at": "2026-11-11T20:59:12.896569+00:00",
+   "written_at": "2026-11-11T22:34:27.211189+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 90.0
@@ -312,7 +400,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:04.106498+00:00",
+   "written_at": "2026-11-11T22:30:27.303164+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -323,7 +411,7 @@
    "method": "blend",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:04.106498+00:00",
+   "written_at": "2026-11-11T22:30:27.303164+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -334,7 +422,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:04.106498+00:00",
+   "written_at": "2026-11-11T22:30:27.303164+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 80.0
@@ -345,7 +433,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:17.211399+00:00",
+   "written_at": "2026-11-11T22:30:46.155063+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -356,7 +444,7 @@
    "method": "blend",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:17.211399+00:00",
+   "written_at": "2026-11-11T22:30:46.155063+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -367,7 +455,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:17.211399+00:00",
+   "written_at": "2026-11-11T22:30:46.155063+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 80.0
@@ -378,7 +466,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:24.617247+00:00",
+   "written_at": "2026-11-11T22:30:53.552659+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -389,7 +477,7 @@
    "method": "blend",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:24.617247+00:00",
+   "written_at": "2026-11-11T22:30:53.552659+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -400,7 +488,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:24.617247+00:00",
+   "written_at": "2026-11-11T22:30:53.552659+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 80.0
@@ -411,7 +499,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:32.178004+00:00",
+   "written_at": "2026-11-11T22:31:00.473289+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -422,7 +510,7 @@
    "method": "blend",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:32.178004+00:00",
+   "written_at": "2026-11-11T22:31:00.473289+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 80.0
@@ -433,7 +521,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 38,
-   "written_at": "2026-11-11T21:05:32.178004+00:00",
+   "written_at": "2026-11-11T22:31:00.473289+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0
@@ -455,7 +543,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:39.677826+00:00",
+   "written_at": "2026-11-11T22:31:07.682219+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 50.0
@@ -466,7 +554,7 @@
    "method": "blend",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:39.677826+00:00",
+   "written_at": "2026-11-11T22:31:07.682219+00:00",
    "top3": 100.0,
    "top5": 60.0,
    "top10": 70.0
@@ -477,10 +565,10 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:39.677826+00:00",
+   "written_at": "2026-11-11T22:31:07.682219+00:00",
    "top3": 33.3,
    "top5": 60.0,
-   "top10": 90.0
+   "top10": 80.0
   },
   {
    "day": "2026-11-04",
@@ -488,7 +576,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:46.885461+00:00",
+   "written_at": "2026-11-11T22:31:20.064546+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 70.0
@@ -499,7 +587,7 @@
    "method": "blend",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:46.885461+00:00",
+   "written_at": "2026-11-11T22:31:20.064546+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 90.0
@@ -510,7 +598,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:46.885461+00:00",
+   "written_at": "2026-11-11T22:31:20.064546+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 90.0
@@ -521,7 +609,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:54.463883+00:00",
+   "written_at": "2026-11-11T22:31:27.023422+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0
@@ -532,7 +620,7 @@
    "method": "blend",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:54.463883+00:00",
+   "written_at": "2026-11-11T22:31:27.023422+00:00",
    "top3": 100.0,
    "top5": 60.0,
    "top10": 90.0
@@ -543,7 +631,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:05:54.463883+00:00",
+   "written_at": "2026-11-11T22:31:27.023422+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 90.0
@@ -554,7 +642,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:06:01.140229+00:00",
+   "written_at": "2026-11-11T22:31:34.400639+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 90.0
@@ -565,7 +653,7 @@
    "method": "blend",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:06:01.140229+00:00",
+   "written_at": "2026-11-11T22:31:34.400639+00:00",
    "top3": 100.0,
    "top5": 60.0,
    "top10": 90.0
@@ -576,7 +664,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 36,
-   "written_at": "2026-11-11T21:06:01.140229+00:00",
+   "written_at": "2026-11-11T22:31:34.400639+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 90.0
@@ -598,7 +686,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:08.520418+00:00",
+   "written_at": "2026-11-11T22:31:41.122765+00:00",
    "top3": 33.3,
    "top5": 60.0,
    "top10": 80.0
@@ -609,7 +697,7 @@
    "method": "blend",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:08.520418+00:00",
+   "written_at": "2026-11-11T22:31:41.122765+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0
@@ -620,10 +708,10 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:08.520418+00:00",
+   "written_at": "2026-11-11T22:31:41.122765+00:00",
    "top3": 66.7,
    "top5": 60.0,
-   "top10": 80.0
+   "top10": 70.0
   },
   {
    "day": "2026-11-08",
@@ -631,7 +719,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:15.835976+00:00",
+   "written_at": "2026-11-11T22:31:53.703886+00:00",
    "top3": 33.3,
    "top5": 40.0,
    "top10": 70.0
@@ -642,7 +730,7 @@
    "method": "blend",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:15.835976+00:00",
+   "written_at": "2026-11-11T22:31:53.703886+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0
@@ -653,10 +741,10 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:15.835976+00:00",
+   "written_at": "2026-11-11T22:31:53.703886+00:00",
    "top3": 66.7,
    "top5": 60.0,
-   "top10": 80.0
+   "top10": 70.0
   },
   {
    "day": "2026-11-08",
@@ -664,7 +752,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:23.140447+00:00",
+   "written_at": "2026-11-11T22:32:01.038909+00:00",
    "top3": 33.3,
    "top5": 40.0,
    "top10": 60.0
@@ -675,7 +763,7 @@
    "method": "blend",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:23.140447+00:00",
+   "written_at": "2026-11-11T22:32:01.038909+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 70.0
@@ -686,10 +774,10 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:23.140447+00:00",
+   "written_at": "2026-11-11T22:32:01.038909+00:00",
    "top3": 66.7,
    "top5": 60.0,
-   "top10": 80.0
+   "top10": 70.0
   },
   {
    "day": "2026-11-08",
@@ -697,7 +785,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:30.683040+00:00",
+   "written_at": "2026-11-11T22:32:07.963456+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 80.0
@@ -708,7 +796,7 @@
    "method": "blend",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:30.683040+00:00",
+   "written_at": "2026-11-11T22:32:07.963456+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 90.0
@@ -719,7 +807,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 46,
-   "written_at": "2026-11-11T21:06:30.683040+00:00",
+   "written_at": "2026-11-11T22:32:07.963456+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 80.0
@@ -752,7 +840,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:38.395055+00:00",
+   "written_at": "2026-11-11T22:32:15.101323+00:00",
    "top3": 0.0,
    "top5": 20.0,
    "top10": 60.0
@@ -763,7 +851,7 @@
    "method": "blend",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:38.395055+00:00",
+   "written_at": "2026-11-11T22:32:15.101323+00:00",
    "top3": 0.0,
    "top5": 60.0,
    "top10": 70.0
@@ -774,7 +862,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:38.395055+00:00",
+   "written_at": "2026-11-11T22:32:15.101323+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 60.0
@@ -785,7 +873,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:45.977314+00:00",
+   "written_at": "2026-11-11T22:32:27.991418+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 90.0
@@ -796,7 +884,7 @@
    "method": "blend",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:45.977314+00:00",
+   "written_at": "2026-11-11T22:32:27.991418+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0
@@ -807,7 +895,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:45.977314+00:00",
+   "written_at": "2026-11-11T22:32:27.991418+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 60.0
@@ -818,7 +906,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:53.439352+00:00",
+   "written_at": "2026-11-11T22:32:35.106642+00:00",
    "top3": 66.7,
    "top5": 60.0,
    "top10": 80.0
@@ -829,7 +917,7 @@
    "method": "blend",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:53.439352+00:00",
+   "written_at": "2026-11-11T22:32:35.106642+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0
@@ -840,7 +928,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:06:53.439352+00:00",
+   "written_at": "2026-11-11T22:32:35.106642+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 60.0
@@ -851,7 +939,7 @@
    "method": "api_rank",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:07:00.959175+00:00",
+   "written_at": "2026-11-11T22:32:42.244908+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0
@@ -862,7 +950,7 @@
    "method": "blend",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:07:00.959175+00:00",
+   "written_at": "2026-11-11T22:32:42.244908+00:00",
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0
@@ -873,7 +961,7 @@
    "method": "comment_ridge",
    "source": "replay",
    "n": 52,
-   "written_at": "2026-11-11T21:07:00.959175+00:00",
+   "written_at": "2026-11-11T22:32:42.244908+00:00",
    "top3": 33.3,
    "top5": 80.0,
    "top10": 60.0
