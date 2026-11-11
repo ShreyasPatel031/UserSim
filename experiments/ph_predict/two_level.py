@@ -755,6 +755,9 @@ def choice():
         m = models[d[:7]]; T = m[4] if TEMP else None
         X, P = predict(d, m[:4], filt=False)   # every row is scored (as at 00:05); the label filter applies in `score`
         X["S"] = share(X, T)
+        if os.environ.get("TL_DIAG") == "2":   # orchestrator launch-multiplier diagnostic: dump the parts on label-filtered rows
+            Xt = X[ok(X.person, d)][["person", "id", "A", "K", "S", "y"]]
+            os.makedirs(f"{WORK}/diag_parts", exist_ok=True); Xt.to_parquet(f"{WORK}/diag_parts/{d}.parquet"); continue
         if os.environ.get("TL_DIAG") == "1":   # E5 diagnostic only (uses test-day outcomes, never a score): swap one part for its truth
             Xt = X[ok(X.person, d)].copy()
             g = Xt.groupby("person").y; kt = g.transform("sum"); at = (kt > 0).astype(float)
@@ -785,6 +788,8 @@ def choice():
                       "K_poisson_dev": float(mean_poisson_deviance(at.k, at.K)) if len(at) else np.nan,
                       "K_poisson_dev_const": float(mean_poisson_deviance(at.k, np.full(len(at), max(1.0, at.k.mean())))) if len(at) else np.nan,
                       "S_top1_acc": float(top1.mean()) if len(top1) else np.nan, "active_people": int(len(at))})
+    if os.environ.get("TL_DIAG") == "2":
+        print(json.dumps({"diag_parts": len(test)})); return
     if diag_rows:
         Dg = pd.DataFrame(diag_rows); rng = np.random.default_rng(0)
         out = {"note": "DIAGNOSTIC ONLY: parts swapped for test-day truth; never a score", "days": int(Dg.day.nunique()),
