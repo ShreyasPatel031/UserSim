@@ -1,0 +1,78 @@
+"""Orchestrator diagnostic (uses test outcomes; diagnostic only): one appeal multiplier m_L per launch inside it8's share.
+share'_pL = S_pL m_L / sum_j S_pj m_j, m fitted per day by MM (Luce) to the real picks of active people (label-filtered);
+EV_m = sum_p A_p K_p share'_pL. Then: how much of log m is predictable from 00:05 features (within-day Spearman per
+feature; LODO ridge on all of them, and EV with the predicted m)."""
+import glob, json, os, pickle, sys
+import numpy as np, pandas as pd
+from scipy.stats import spearmanr
+sys.path.insert(0, "/home/user/UserSim/experiments")
+from pipeline import warehouse as W
+S_ = "/tmp/claude-0/-home-user-UserSim/94f4f0ff-5cdc-5cbe-bb94-5c0d76cd2a8c/scratchpad"
+L = W.query("SELECT CAST(id AS VARCHAR) AS id, day::VARCHAR AS day, daily_rank, votes FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+votes = dict(zip(L.id, L.votes)); rnk = dict(zip(L.id, L.daily_rank))
+H = pd.read_parquet(f"{S_}/e5h/honest_preds.parquet"); H["id"] = H.id.astype(str)
+lm = {(str(r.day), r.id): float(r.honest) for r in H.itertuples()}
+Fc = W.query("SELECT CAST(launch_id AS VARCHAR) AS id, forecast_date AS day, predicted_rank FROM forecasts WHERE model = 'launch_model'", do_sync=False)
+lm.update({(r.day, r.id): -float(np.log(r.predicted_rank)) for r in Fc.itertuples()})
+df = pickle.load(open(f"{S_}/lm/build_cache_gemini.pkl", "rb")); df["id"] = df.id.astype(str)
+FEATS = ["hist_maker_rel_max", "hist_hunter_rel", "hist_maker_top5", "hist_hunter_top5", "promo_posts", "promo_cov", "llm_pitch", "llm_brand",
+         "ph_n_media", "ph_has_video", "ph_desc_len", "ph_tagline_len", "ph_n_topics", "ph_n_makers", "ph_self_hunted"]
+F = df.set_index("id")[[c for c in FEATS if c in df]]
+
+def topk(s, r, k):
+    top = set(np.where(r <= k)[0])
+    return len(set(np.argsort(-s)[:k]) & top) / k * 100 if len(top) >= k else np.nan
+
+rows, per = [], []
+for f in sorted(glob.glob(f"{S_}/simbt/diag_parts/*.parquet")):
+    d = os.path.basename(f)[:10]; X = pd.read_parquet(f); X["id"] = X.id.astype(str)
+    ids = sorted(X.id.unique()); ix = {i: k for k, i in enumerate(ids)}; X["j"] = X.id.map(ix).astype(int)
+    act = X[X.groupby("person").y.transform("sum") > 0]
+    m = np.ones(len(ids)); c = np.bincount(act.j, weights=act.y, minlength=len(ids))
+    for _ in range(300):   # MM for the Luce model with person-specific base shares S
+        den = act.S * m[act.j.values]; tot = den.groupby(act.person).transform("sum")
+        npk = act.groupby("person").y.transform("sum")
+        w = np.bincount(act.j, weights=(npk * act.S / tot).values, minlength=len(ids))
+        m = np.where(w > 0, (c + 1e-3) / (w + 1e-3), 1.0); m = m / np.exp(np.log(m).mean())
+    X["S2"] = X.S * m[X.j.values]; X["S2"] = X.S2 / X.groupby("person").S2.transform("sum")
+    ev0 = (X.A * X.K * X.S).groupby(X.j).sum().reindex(range(len(ids))).values
+    evm = (X.A * X.K * X.S2).groupby(X.j).sum().reindex(range(len(ids))).values
+    kt = X.groupby("person").y.transform("sum"); st = np.where(kt > 0, X.y / kt.clip(lower=1), X.S)
+    evs = (X.A * X.K * st).groupby(X.j).sum().reindex(range(len(ids))).values
+    v = np.array([votes.get(i, np.nan) for i in ids], float); r = np.array([rnk.get(i, np.nan) for i in ids], float)
+    ok = ~np.isnan(v)
+    if ok.sum() < 5:
+        continue
+    row = {"day": d, "n": int(ok.sum())}
+    for nm, ev in (("model", ev0), ("launch_mult", evm), ("S_true", evs)):
+        row[f"sp_{nm}"] = spearmanr(ev[ok], v[ok]).correlation
+        for k in (3, 5, 10):
+            row[f"{nm}_top{k}"] = topk(np.where(ok, ev, -1), np.where(ok, r, 99), k)
+    per.append(row)
+    for i, idd in enumerate(ids):
+        rows.append({"day": d, "id": idd, "logm": float(np.log(m[i])), "lm": lm.get((d, idd)), "A_K_S": ev0[i]})
+P = pd.DataFrame(per); M = pd.DataFrame(rows).merge(F, left_on="id", right_index=True, how="left")
+res = {"note": "DIAGNOSTIC ONLY: m fitted to test-day picks", "days": len(P),
+       "spearman_ev_votes": {c: round(float(P[c].mean()), 3) for c in ("sp_model", "sp_launch_mult", "sp_S_true")},
+       "topk": {nm: [round(float(P[f"{nm}_top{k}"].mean()), 1) for k in (3, 5, 10)] for nm in ("model", "launch_mult", "S_true")}}
+fs = {}
+for c in ["lm"] + [x for x in FEATS if x in M]:
+    vals = [spearmanr(g[c], g.logm, nan_policy="omit").correlation for _, g in M.groupby("day") if g[c].notna().sum() >= 5 and g[c].nunique() > 1]
+    vals = [x for x in vals if not np.isnan(x)]
+    fs[c] = (round(float(np.mean(vals)), 3), len(vals)) if vals else None
+res["within_day_spearman_logm_vs_feature"] = dict(sorted(fs.items(), key=lambda kv: -abs(kv[1][0]) if kv[1] else 0))
+# LODO ridge: predict log m from the 00:05 features (z-scored within day, NaN -> 0), Spearman of predicted vs fitted m
+from sklearn.linear_model import Ridge
+cols = ["lm"] + [x for x in FEATS if x in M]
+Z = M.copy()
+for c in cols:
+    g = Z.groupby("day")[c]; Z[c] = ((Z[c] - g.transform("mean")) / (g.transform("std") + 1e-9)).fillna(0)
+pred = pd.Series(np.nan, index=Z.index)
+for d in Z.day.unique():
+    tr, te = Z.day != d, Z.day == d
+    pred[te] = Ridge(alpha=1.0).fit(Z.loc[tr, cols], Z.loc[tr, "logm"]).predict(Z.loc[te, cols])
+Z["pred"] = pred
+res["lodo_ridge_spearman_pred_vs_fitted_logm"] = round(float(np.mean([spearmanr(g.pred, g.logm).correlation for _, g in Z.groupby("day")])), 3)
+res["lm_alone_spearman_vs_fitted_logm"] = fs.get("lm")
+json.dump(res, open("/home/user/UserSim/experiments/ph_predict/results/launch_mult_diag.json", "w"), indent=1)
+print(json.dumps(res, indent=1))

@@ -1,0 +1,97 @@
+{
+ "note": "DIAGNOSTIC ONLY: m fitted to test-day picks",
+ "days": 20,
+ "spearman_ev_votes": {
+  "sp_model": 0.555,
+  "sp_launch_mult": 0.881,
+  "sp_S_true": 0.788
+ },
+ "topk": {
+  "model": [
+   41.7,
+   65.0,
+   69.0
+  ],
+  "launch_mult": [
+   86.7,
+   90.0,
+   88.0
+  ],
+  "S_true": [
+   68.3,
+   76.0,
+   78.5
+  ]
+ },
+ "within_day_spearman_logm_vs_feature": {
+  "ph_n_media": [
+   0.234,
+   20
+  ],
+  "llm_brand": [
+   -0.136,
+   12
+  ],
+  "ph_self_hunted": [
+   0.132,
+   20
+  ],
+  "promo_cov": [
+   -0.126,
+   14
+  ],
+  "hist_maker_rel_max": [
+   -0.112,
+   19
+  ],
+  "ph_n_topics": [
+   0.107,
+   20
+  ],
+  "ph_n_makers": [
+   0.079,
+   20
+  ],
+  "ph_has_video": [
+   0.068,
+   20
+  ],
+  "ph_tagline_len": [
+   0.058,
+   20
+  ],
+  "promo_posts": [
+   0.035,
+   14
+  ],
+  "hist_hunter_top5": [
+   0.034,
+   20
+  ],
+  "ph_desc_len": [
+   0.029,
+   20
+  ],
+  "lm": [
+   0.02,
+   17
+  ],
+  "hist_hunter_rel": [
+   -0.016,
+   20
+  ],
+  "llm_pitch": [
+   0.007,
+   17
+  ],
+  "hist_maker_top5": [
+   0.005,
+   20
+  ]
+ },
+ "lodo_ridge_spearman_pred_vs_fitted_logm": 0.24,
+ "lm_alone_spearman_vs_fitted_logm": [
+  0.02,
+  17
+ ]
+}
