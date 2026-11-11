@@ -697,6 +697,22 @@ def choice():
             X = X[ok(X.person, d)].copy()
         if AF is not None:   # it9b: product attributes x person attribute preference (attr_feats.py)
             AF.add(X, d)
+        if os.environ.get("TL_ARR") == "1":   # it10 unified (E5 PASS): arrival-candidate features as inputs, not a partition
+            ap = f"{WORK}/arrivals/{d}.parquet"
+            ARR = ["fol_mk", "fol_hu", "past_arr", "team_prev", "team_arr_mean", "cand_n", "n_makers_real"]
+            if os.path.exists(ap):
+                Ar = pd.read_parquet(ap, columns=["person", "id"] + ARR); Ar["id"] = Ar.id.astype(str); Ar["in_C"] = 1.0
+                X["id"] = X.id.astype(str)
+                X = X.merge(Ar, on=["person", "id"], how="left")
+            for c in ARR + ["in_C"]:
+                if c not in X:
+                    X[c] = np.nan
+            X["in_C"] = X.in_C.fillna(0.0)
+            for c in ("fol_mk", "fol_hu", "past_arr"):
+                X[c] = X[c].fillna(0.0)
+            g0 = X.groupby("id")   # team-level columns are per launch: fill for non-candidates too
+            for c in ("team_prev", "team_arr_mean", "cand_n", "n_makers_real"):
+                X[c] = g0[c].transform("max")
         if os.environ.get("TL_NOCTX") == "1":   # product-only: drop the PH-context block (team ties, makers'/hunter's network)
             X = X.drop(columns=[c for c in X.columns if c in PH_CTX or c.startswith(("tie_", "team_"))])
         taste = [c for c in X.columns if c not in ["person", "id", "y"] + ACT_COLS]
