@@ -257,14 +257,25 @@ def live(day, point):
     if now < T:
         print(json.dumps({"day": day, "point": point, "status": f"point {T} not reached"})); return
     tmp = tempfile.mkdtemp(prefix="cf_")
-    for f in ("posts_ts", "comments_ts"):
+    for f in ("posts_ts", "comments_ts", "people_ts"):
         subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/{day}/live/{f}.jsonl", f"{tmp}/{f}.jsonl"], check=True)
-    team, ids = {}, set()
+    team, ids, api = {}, set(), {}
     for l in open(f"{tmp}/posts_ts.jsonl"):
         r = json.loads(l)
-        if r.get("fetch_status") != 200 or str(r.get("day", day)) != day:   # the line-up and teams are fixed at 00:01 PT
+        if r.get("fetch_status") != 200 or str(r.get("day", day)) != day:   # the line-up is fixed at 00:01 PT
             continue
-        ids.add(str(r["launch_id"]))
+        i = str(r["launch_id"]); ids.add(i)
+        # the official API's own post.dailyRank, populated before the reveal; latest fetched by T (fetched_at, no look-ahead)
+        fa = pd.Timestamp(r.get("fetched_at") or r["snapshot_ts"])
+        if str(r.get("source", "")).startswith("ph_api_v2") and r.get("daily_rank_at_fetch") is not None and fa <= T:
+            if i not in api or fa > api[i][0]:
+                api[i] = (fa, float(r["daily_rank_at_fetch"]))
+    pid = {}   # launch -> maker/hunter PH user ids (people_ts: user_id, role, launch_ids)
+    for l in open(f"{tmp}/people_ts.jsonl"):
+        r = json.loads(l)
+        if r.get("user_id"):
+            for i in r.get("launch_ids") or []:
+                pid.setdefault(str(i), set()).add(str(r["user_id"]))
     C = []
     for l in open(f"{tmp}/comments_ts.jsonl"):
         r = json.loads(l)
@@ -283,7 +294,7 @@ def live(day, point):
     for i, m, p_ in zip(L.id, L.makers, L.poster):
         if i in ids:
             names = {u.lower() for u in (json.loads(m) if m and m.startswith("[") else []) + ([p_] if p_ else []) if u}
-            team[i] = (names, {name2id[u] for u in names if name2id.get(u)})
+            team[i] = (names, {name2id[u] for u in names if name2id.get(u)} | pid.get(i, set()))
     tm = {sl: {u.lower() for u in (json.loads(m) if m and m.startswith("[") else []) + ([p] if p else []) if u} for sl, m, p in zip(L.slug, L.makers, L.poster)}
     TIE = {}
     for sl, u, uid, ts in zip(K.slug, K.user, K.uid, K.ts):
@@ -311,9 +322,14 @@ def live(day, point):
         F[c] = np.log1p(F[c])
     A["score"] = sum(((F[c] - M["mu"][c]) / M["sd"][c]) * M["coef"][c] for c in LIVEF) + M["intercept"]
     A["pred_rank"] = A.score.rank(ascending=False, method="first").astype(int)
+    # orchestrator 21:05Z: write three scores per point - comment ridge, API pre-reveal rank, blend (mean of rank positions)
+    A["api_rank"] = A.id.map(lambda i: api[i][1] if i in api else np.nan)
+    A["pred_rank_api"] = (A.api_rank.fillna(999) - 1e-6 * A.lm).rank(method="first").astype(int)
+    A["pred_rank_blend"] = ((A.pred_rank + A.pred_rank_api) / 2 - 1e-6 * A.lm).rank(method="first").astype(int)
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0))[1])), "comments": int(len(C)), "written_at": now.isoformat(),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "n_c", "u_out", "u_tie", "lm", "score"]].round(4).to_dict("records")}
+           "api_ranked": int(A.api_rank.notna().sum()),
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "api_rank", "n_c", "u_out", "u_tie", "lm", "score"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
         res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
     else:
