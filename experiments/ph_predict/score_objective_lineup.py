@@ -40,8 +40,9 @@ def main(path):
     for c in ("reg", "lr_ndcg", "ridge"):
         A[f"r_{c}"] = A.groupby("day")[c].rank(pct=True)
     A["avg3"] = A[["r_reg", "r_lr_ndcg", "r_ridge"]].mean(axis=1)
+    A["avg2"] = A[["r_reg", "r_lr_ndcg"]].mean(axis=1)   # without the (weak) ridge
     A = stage2(A)
-    V = ["reg", "lr_ndcg", "lr_top3", "clf3", "clf10", "ridge", "avg3", "reg_lu", "stage2"]
+    V = ["reg", "lr_ndcg", "lr_top3", "clf3", "clf10", "ridge", "avg3", "avg2", "reg_lu", "stage2"]
     res = {"days": int(A.day.nunique()), "launches": int(len(A)), "table": {}}
     md = ["# 00:05 launch model: objective / ensemble and same-day line-up features (honest, month-forward)", "",
           f"{A.day.nunique()} days, {len(A):,} launches; 5 seeds; paired day-bootstrap 95% CI vs reg.", "",
