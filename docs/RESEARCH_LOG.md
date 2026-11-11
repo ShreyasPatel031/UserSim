@@ -1474,3 +1474,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 00:21 UTC Nov 11 E5 review: iter 2-3 leakage checks PASS; iter 3 not shippable (voter R-prec 0.149 < E5 baseline 0.210; launch-model-score gain must be shown vs launch model alone). Position-based follow dating FAILS (follow lists not ordered consistently, Kendall tau ~0); only edges seen in a read dated before d may be used (Oct 26 warehouse read).
 - 00:26 UTC Nov 11 Shreyas: keep going, report when north star improves. PH agent told to iterate autonomously (dated follows via pre-d reads only, R-precision > 0.210, paired vs launch model) and report/deploy only on a variant beating launch model 57/69/81 with E5 PASS.
 - 00:34 UTC Nov 11 mailbox checked: no new replies; live capture healthy (16:30 PT, 50/50).
+- 00:35 UTC Nov 11 HN calibration: settled Oct 31-Nov 5 (132 winners) 1 h 41.7%, 15 min 19.7%; AUC 0.788 at posting to 0.913 at 1 h; daily list Nov 8 67%. No action.
