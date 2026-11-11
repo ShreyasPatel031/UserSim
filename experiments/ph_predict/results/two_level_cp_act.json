@@ -62,7 +62,42 @@
     0.16
    ],
    19
+  ],
+  "voter_rprec_p": [
+   0.092,
+   [
+    0.082,
+    0.104
+   ],
+   19
   ]
+ },
+ "person_rprec_p_split": {
+  "clean": [
+   0.095,
+   [
+    0.083,
+    0.111
+   ],
+   12
+  ],
+  "oct_clean": [
+   0.087,
+   [
+    0.078,
+    0.096
+   ],
+   9
+  ],
+  "nov_clean": [
+   0.121,
+   [
+    0.081,
+    0.165
+   ],
+   3
+  ],
+  "note": "hit3 and voter_recall already rank by P; voter_rprec (w*P) kept for reference"
  },
  "label_filter": {
   "rule": "labels on d only for people whose upvote list was read >= d+2; short (signed-out capped) lists only from the oldest listed vote",
@@ -285,15 +320,15 @@
    0.54,
    [
     0.479,
-    0.594
+    0.593
    ],
    19
   ],
   "spearman_deployed_votes": [
    0.555,
    [
-    0.479,
-    0.624
+    0.48,
+    0.622
    ],
    19
   ]
@@ -365,16 +400,16 @@
   "spearman_ev_votes": [
    0.521,
    [
-    0.436,
-    0.594
+    0.437,
+    0.593
    ],
    12
   ],
   "spearman_deployed_votes": [
    0.555,
    [
-    0.439,
-    0.658
+    0.44,
+    0.656
    ],
    12
   ]
@@ -446,7 +481,7 @@
   "spearman_ev_votes": [
    0.533,
    [
-    0.459,
+    0.46,
     0.597
    ],
    9
@@ -454,8 +489,8 @@
   "spearman_deployed_votes": [
    0.577,
    [
-    0.461,
-    0.681
+    0.457,
+    0.687
    ],
    9
   ]
@@ -607,8 +642,8 @@
   "spearman_deployed_votes": [
    0.548,
    [
-    0.423,
-    0.659
+    0.427,
+    0.66
    ],
    11
   ]

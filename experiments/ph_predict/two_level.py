@@ -263,7 +263,7 @@ def score():
         g = R[R.groupby("person").y.transform("sum") > 0]
         top3 = g[g.groupby("person").p.rank(ascending=False, method="first") <= 3]
         hit3 = top3.groupby("person").y.max().mean() if len(top3) else np.nan
-        rec, rp = [], []
+        rec, rp, rpp = [], [], []
         for x, gx in R.groupby("id"):
             n = int(gx.y.sum()) + int(unseen.get(x, 0))
             if n:
@@ -271,8 +271,9 @@ def score():
             m = int(gx.y.sum())   # voter R-precision (E5): of the launch's top-m scored people (m = its voters with a row), share who voted
             if m:
                 rp.append(gx.assign(q=gx.w * gx.p).nlargest(m, "q").y.sum() / m)
+                rpp.append(gx.nlargest(m, "p").y.sum() / m)   # E5 Nov 11: rank by P (w is a population weight, EV only)
         per.append({"day": d, "auc": auc, "logloss": ll, "hit3": hit3, "voter_recall": float(np.mean(rec)) if rec else np.nan,
-                    "voter_rprec": float(np.mean(rp)) if rp else np.nan})
+                    "voter_rprec": float(np.mean(rp)) if rp else np.nan, "voter_rprec_p": float(np.mean(rpp)) if rpp else np.nan})
         ev = R.assign(e=R.w * R.p).groupby("id").e.sum()
         for x, e in ev.items():
             pop.append({"day": d, "id": x, "ev": e, "dep": dep.get((d, x)), "lm": lm.get((d, x)), "votes": votes.get(x), "rank": rnk.get(x), "wrank": wrk.get(x)})
@@ -281,7 +282,11 @@ def score():
     Pm = pd.DataFrame(per); Q = pd.DataFrame(pop).dropna(subset=["rank"])
     rng = np.random.default_rng(0)
     res = {"tag": TAG, "weights": os.environ.get("WEIGHTS", "act"), "days": sorted(Q.day.unique().tolist())}
-    res["person"] = {k: boot(Pm[k].values, rng) for k in ("auc", "logloss", "hit3", "voter_recall", "voter_rprec")}
+    res["person"] = {k: boot(Pm[k].values, rng) for k in ("auc", "logloss", "hit3", "voter_recall", "voter_rprec", "voter_rprec_p")}
+    cl = Pm[~Pm.day.isin(SELECTED)]
+    res["person_rprec_p_split"] = {"clean": boot(cl.voter_rprec_p.values, rng), "oct_clean": boot(cl[cl.day < "2026-11-01"].voter_rprec_p.values, rng),
+                                   "nov_clean": boot(cl[cl.day >= "2026-11-01"].voter_rprec_p.values, rng),
+                                   "note": "hit3 and voter_recall already rank by P; voter_rprec (w*P) kept for reference"}
     res["label_filter"] = {"rule": "labels on d only for people whose upvote list was read >= d+2; short (signed-out capped) lists only from the oldest listed vote",
                            "per_day": filt_n}
     # E5 check 4: paired against E5's no-follow baseline per day (pop_by_day_nofol.csv, weighted EV columns)

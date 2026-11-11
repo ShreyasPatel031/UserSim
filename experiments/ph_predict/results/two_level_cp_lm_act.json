@@ -62,7 +62,42 @@
     0.161
    ],
    19
+  ],
+  "voter_rprec_p": [
+   0.094,
+   [
+    0.085,
+    0.104
+   ],
+   19
   ]
+ },
+ "person_rprec_p_split": {
+  "clean": [
+   0.095,
+   [
+    0.084,
+    0.109
+   ],
+   12
+  ],
+  "oct_clean": [
+   0.089,
+   [
+    0.079,
+    0.097
+   ],
+   9
+  ],
+  "nov_clean": [
+   0.115,
+   [
+    0.079,
+    0.155
+   ],
+   3
+  ],
+  "note": "hit3 and voter_recall already rank by P; voter_rprec (w*P) kept for reference"
  },
  "label_filter": {
   "rule": "labels on d only for people whose upvote list was read >= d+2; short (signed-out capped) lists only from the oldest listed vote",
@@ -204,7 +239,7 @@
     6.667,
     [
      -2.5,
-     16.667
+     15.833
     ],
     12
    ],
@@ -278,7 +313,7 @@
   "spearman_ev_votes": [
    0.563,
    [
-    0.485,
+    0.488,
     0.631
    ],
    19
@@ -286,8 +321,8 @@
   "spearman_deployed_votes": [
    0.555,
    [
-    0.479,
-    0.624
+    0.48,
+    0.622
    ],
    19
   ]
@@ -300,7 +335,7 @@
     0.0,
     [
      -19.444,
-     19.444
+     16.667
     ],
     12
    ],
@@ -359,16 +394,16 @@
   "spearman_ev_votes": [
    0.529,
    [
-    0.423,
-    0.63
+    0.424,
+    0.628
    ],
    12
   ],
   "spearman_deployed_votes": [
    0.555,
    [
-    0.439,
-    0.658
+    0.44,
+    0.656
    ],
    12
   ]
@@ -380,7 +415,7 @@
    "delta_vs_deployed": [
     7.407,
     [
-     -14.815,
+     -18.519,
      25.926
     ],
     9
@@ -423,7 +458,7 @@
     0.0,
     [
      -6.667,
-     7.778
+     6.667
     ],
     9
    ],
@@ -448,8 +483,8 @@
   "spearman_deployed_votes": [
    0.577,
    [
-    0.461,
-    0.681
+    0.457,
+    0.687
    ],
    9
   ]
@@ -593,16 +628,16 @@
   "spearman_ev_votes": [
    0.55,
    [
-    0.439,
-    0.648
+    0.441,
+    0.649
    ],
    11
   ],
   "spearman_deployed_votes": [
    0.548,
    [
-    0.423,
-    0.659
+    0.427,
+    0.66
    ],
    11
   ]
@@ -610,7 +645,7 @@
  "ev_vs_lm_residual_spearman": [
   -0.248,
   [
-   -0.292,
+   -0.291,
    -0.193
   ],
   6
