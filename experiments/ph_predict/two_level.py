@@ -230,7 +230,7 @@ def score():
     short = set(T[T["count"] < T.header.fillna(0) * 0.98].person_id)
     Eu = pd.read_parquet(f"{WORK}/events_cp.parquet"); Eu = Eu[Eu.kind == "upvote"]
     oldest = Eu.groupby("person").date.min().to_dict()
-    filt_n = []
+    filt_n, dump = [], []
     per, pop, diag, prev_rows = [], [], [], []
     for f in files:
         d = os.path.basename(f)[:10]; R = pd.read_parquet(f); R["id"] = R.id.astype(str)
@@ -248,6 +248,8 @@ def score():
                 q, fmap = fac
                 R["w"] = R.w * pd.Series(tier_of(R.w, q), index=R.index).map(fmap).fillna(1.0)
         prev_rows.append(raw[["w", "p", "y"]])
+        if os.environ.get("TL_DUMP") and d not in SELECTED:   # E5 (b): label-filtered clean-day rows for like-for-like scoring
+            dump.append(raw[["person", "id", "w", "y"]].assign(d=d).rename(columns={"person": "person_id", "id": "launch_id"}))
         pw = R.groupby("person").w.first(); tot = pw.sum()
         diag.append({"day": d, "people": int(len(pw)), "rows": int(len(R)), "n_eff": float(tot ** 2 / (pw ** 2).sum()) if tot else 0,
                      "max_w_share": float(pw.max() / tot) if tot else 0, "top1pct_share": float(pw.nlargest(max(1, len(pw) // 100)).sum() / tot) if tot else 0})
@@ -274,6 +276,8 @@ def score():
         ev = R.assign(e=R.w * R.p).groupby("id").e.sum()
         for x, e in ev.items():
             pop.append({"day": d, "id": x, "ev": e, "dep": dep.get((d, x)), "lm": lm.get((d, x)), "votes": votes.get(x), "rank": rnk.get(x), "wrank": wrk.get(x)})
+    if dump:
+        pd.concat(dump)[["d", "person_id", "launch_id", "w", "y"]].to_parquet(os.environ["TL_DUMP"], index=False)
     Pm = pd.DataFrame(per); Q = pd.DataFrame(pop).dropna(subset=["rank"])
     rng = np.random.default_rng(0)
     res = {"tag": TAG, "weights": os.environ.get("WEIGHTS", "act"), "days": sorted(Q.day.unique().tolist())}
@@ -327,6 +331,7 @@ def score():
         rs.append(spearmanr(g.ev, resid).correlation)
     res["ev_vs_lm_residual_spearman"] = boot(rs, rng)
     res["clean_days"] = clean
+    Q.to_parquet(f"{WORK}/pop_{TAG}.parquet")   # launch-level EV per day, read by `resid`
     Dg = pd.DataFrame(diag)
     res["n_eff_per_day"] = {r["day"]: round(r["n_eff"], 1) for r in diag}
     res["weights_diag"] = {"n_eff_median": round(float(Dg.n_eff.median()), 1), "people_median": int(Dg.people.median()),
@@ -404,7 +409,73 @@ def blend():
     json.dump(res, open(os.path.join(HERE, "results", f"two_level_blend_{TAG}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
 
 
+def resid():
+    """E5 Nov 11 01:35Z: the raw corr(EV, real - LM) is biased negative whenever EV correlates with the LM, so test EV's
+    information beyond the LM honestly, on every day where the LM (honest backtest through Oct 24, live forecast from Oct 25)
+    covers >= 90% of the scored line-up; launches without an LM score are dropped from that day.
+    (a) partial Spearman: within day, rank(EV) residualised on rank(LM) by OLS, correlated with (real - LM) standing.
+    (b) within-day regression of real standing (pct) on LM pct + EV pct, EV coefficient (pooled, day-bootstrap CI).
+    (c) blend: within-day rank of LM pct + w * EV pct, w from a grid chosen leave-one-ISO-week-out (criterion mean of
+        top 3 and top 5 hits), top 3/5/10 paired by day against the LM alone. Reads pop_<TAG>.parquet from `score`."""
+    from pipeline import warehouse as W
+    Q = pd.read_parquet(f"{WORK}/pop_{TAG}.parquet")
+    lm = {}
+    hp = os.environ.get("HONEST_PREDS")
+    if hp and os.path.exists(hp):
+        H = pd.read_parquet(hp); H["id"] = H.id.astype(str)
+        lm.update({(str(r.day), r.id): float(r.honest) for r in H.itertuples()})
+    Fc = W.query("SELECT CAST(launch_id AS VARCHAR) AS id, forecast_date::VARCHAR AS day, predicted_rank FROM forecasts WHERE model = 'launch_model'")
+    lm.update({(r.day, r.id): -float(np.log(r.predicted_rank)) for r in Fc.itertuples()})   # higher = better
+    Q["lms"] = [lm.get((d, x)) for d, x in zip(Q.day, Q.id)]
+    cov = Q.groupby("day").lms.apply(lambda s: s.notna().mean())
+    days = sorted(cov[cov >= 0.9].index)
+    Q = Q[Q.day.isin(days) & Q.lms.notna()].copy()
+    g = Q.groupby("day")
+    Q["r_real"] = g.votes.rank(pct=True); Q["r_lm"] = g.lms.rank(pct=True); Q["r_ev"] = g.ev.rank(pct=True)
+    rng = np.random.default_rng(0); res = {"tag": TAG, "days": days, "n_days": len(days),
+                                           "lm_coverage": {d: round(float(cov[d]), 3) for d in days}}
+    ps, raw = [], []
+    for d, x in Q.groupby("day"):
+        if len(x) < 5:
+            continue
+        b = np.polyfit(x.r_lm, x.r_ev, 1); ev_res = x.r_ev - np.polyval(b, x.r_lm)
+        ps.append(spearmanr(ev_res, x.r_real - x.r_lm).correlation); raw.append(spearmanr(x.ev, x.r_real - x.r_lm).correlation)
+    res["raw_residual_spearman"] = {"mean_ci_n": boot(raw, rng), "n_days": len(raw)}
+    res["partial_spearman"] = {"mean_ci_n": boot(ps, rng), "n_days": len(ps)}
+
+    def coef(ds):
+        x = Q[Q.day.isin(ds)]; A = np.c_[np.ones(len(x)), x.r_lm, x.r_ev]
+        return np.linalg.lstsq(A, x.r_real.values, rcond=None)[0]
+    c = coef(days); bs = []
+    for _ in range(2000):
+        bs.append(coef(list(rng.choice(days, len(days))))[2])
+    res["regression_real_on_lm_ev"] = {"coef_lm": round(float(c[1]), 3), "coef_ev": round(float(c[2]), 3),
+                                       "coef_ev_ci": [round(float(np.percentile(bs, 2.5)), 3), round(float(np.percentile(bs, 97.5)), 3)], "n_days": len(days)}
+    Q["week"] = pd.to_datetime(Q.day).dt.strftime("%G-W%V")
+    ws = np.round(np.arange(0, 1.51, 0.05), 2)
+
+    def hits(d, w, k):
+        x = Q[Q.day == d]; top = set(x[x["rank"] <= k].id)
+        if len(top) < k:
+            return np.nan
+        return len(set(x.assign(s=x.r_lm + w * x.r_ev).nlargest(k, "s").id) & top) / k * 100
+
+    def crit(ds, w):
+        return np.nanmean([(hits(d, w, 3) + hits(d, w, 5)) / 2 for d in ds])
+    wk_of = dict(zip(Q.day, Q.week)); chosen = {}
+    for wk in sorted(set(wk_of.values())):
+        tr = [d for d in days if wk_of[d] != wk]
+        chosen[wk] = float(max(ws, key=lambda w: crit(tr, w)))
+    for k in (3, 5, 10):
+        a = np.array([hits(d, 0.0, k) for d in days]); b = np.array([hits(d, chosen[wk_of[d]], k) for d in days])
+        m = ~np.isnan(a) & ~np.isnan(b)
+        res[f"blend_lowo top{k}"] = {"launch_model": round(float(a[m].mean()), 1), "blend": round(float(b[m].mean()), 1),
+                                     "delta": boot((b - a)[m], rng), "n_days": int(m.sum())}
+    res["blend_w_by_held_out_week"] = chosen
+    json.dump(res, open(os.path.join(HERE, "results", f"two_level_resid_{TAG}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
+
+
 if __name__ == "__main__":
     c = sys.argv[1]
     {"prepare": lambda: prepare(), "train": lambda: train(sys.argv[2]), "day": lambda: day(sys.argv[2]), "score": lambda: score(),
-     "blend": lambda: blend()}[c]()
+     "blend": lambda: blend(), "resid": lambda: resid()}[c]()
