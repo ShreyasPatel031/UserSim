@@ -14,8 +14,34 @@ DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 def _client_ip(request: Request) -> str:
-    fwd = request.headers.get("x-forwarded-for", "")
-    return (fwd.split(",")[0].strip() if fwd else "") or (request.client.host if request.client else "unknown")
+    """Rate-limit key. On Vercel the platform sets x-vercel-forwarded-for / x-real-ip (clients cannot spoof them);
+    elsewhere use the socket peer. IPv6 is keyed per /64 so one allocation can't rotate addresses past the caps."""
+    import ipaddress
+    import os
+
+    raw = ""
+    if os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"):
+        raw = (request.headers.get("x-vercel-forwarded-for") or request.headers.get("x-real-ip") or "").split(",")[0]
+    raw = raw.strip() or (request.client.host if request.client else "unknown")
+    try:
+        ip = ipaddress.ip_address(raw)
+    except ValueError:
+        return raw
+    if ip.version == 6:
+        if ip.ipv4_mapped:
+            return str(ip.ipv4_mapped)
+        return str(ipaddress.ip_network(f"{ip}/64", strict=False))
+    return str(ip)
+
+
+async def _body(request: Request) -> dict:
+    try:
+        j = await request.json()
+    except Exception:  # noqa: BLE001
+        j = None
+    if not isinstance(j, dict):
+        raise HTTPException(400, "Send a JSON object.")
+    return j
 
 
 def _json(data, max_age: int = 60) -> JSONResponse:
@@ -64,6 +90,12 @@ async def ph_weekly():
 def _err(exc: Exception) -> JSONResponse:
     from mvp.ph_site.safe_fetch import FetchError
 
+    from mvp.ph_site.try_sim import BadToken, NotConfigured
+
+    if isinstance(exc, NotConfigured):
+        return JSONResponse({"error": str(exc)}, status_code=503)
+    if isinstance(exc, BadToken):
+        return JSONResponse({"error": str(exc)}, status_code=403)
     if isinstance(exc, PermissionError):
         return JSONResponse({"error": str(exc)}, status_code=429)
     if isinstance(exc, (FetchError, ValueError)):
@@ -76,7 +108,7 @@ def _err(exc: Exception) -> JSONResponse:
 async def try_page_step(request: Request):
     from mvp.ph_site import try_sim
 
-    body = await request.json()
+    body = await _body(request)
     url = str(body.get("url") or "")[:2000]
     try:
         return JSONResponse(await asyncio.wait_for(try_sim.step_page(url, _client_ip(request)), timeout=45))
@@ -90,8 +122,8 @@ async def try_page_step(request: Request):
 async def try_step(step: str, request: Request):
     from mvp.ph_site import try_sim
 
-    body = await request.json()
-    tok = str(body.get("token") or "")
+    body = await _body(request)
+    tok = str(body.get("token") or "")[:2000]
     try:
         if step == "people":
             return JSONResponse(await asyncio.wait_for(try_sim.step_people(tok), timeout=30))

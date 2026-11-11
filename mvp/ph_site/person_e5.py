@@ -13,6 +13,7 @@ import numpy as np
 from mvp.ph_site import gcs
 
 _B: dict = {}
+K_ANON = 20
 TIERS = [(1, 3, "lists 1-3 tools"), (4, 10, "lists 4-10 tools"), (11, 10**9, "lists 11+ tools")]
 ROLE_TEXT = {"dev": "developer", "design": "designer", "market": "marketer", "founder": "founder", "product": "product person",
              "data_ai": "data / AI person", "sales": "sales", "student": "student", "invest": "investor"}
@@ -119,17 +120,27 @@ def summarize(B: dict, score: np.ndarray, k_people: int = 8) -> dict:
         m = (nu >= lo) & (nu <= hi_)
         tiers.append({"tier": label, "size": int(m.sum()), "likely": int((likely & m).sum()),
                       "share": round(float((likely & m).mean() / max(m.mean(), 1e-9)), 4)})
-    # Closest people: distinct (role set, tier) combinations so the list shows different kinds of people.
+    # Closest people: each card is a (roles, tier) description that at least K_ANON people in the bundle share, so a card
+    # never singles anyone out; coarsen roles (two -> one -> none) until the description is that common.
+    def tier_of(j):
+        return next(lbl for lo, hi_, lbl in TIERS if lo <= nu[j] <= hi_)
+    rolesets = [tuple(names[k] for k in range(len(names)) if roles[j, k]) for j in range(len(nu))]
+    tiers_all = [tier_of(j) for j in range(len(nu))]
+    from collections import Counter
+    cnt = Counter()
+    for rs, t in zip(rolesets, tiers_all):
+        for depth in (2, 1, 0):
+            cnt[(rs[:depth], t)] += 1
     people, seen = [], set()
     for j in np.argsort(-margin)[:2000]:
-        rs = tuple(names[k] for k in range(len(names)) if roles[j, k])
-        tier = next(lbl for lo, hi_, lbl in TIERS if lo <= nu[j] <= hi_)
-        key = (rs[:2], tier)
-        if key in seen:
+        rs, tier = rolesets[j], tiers_all[j]
+        key = next(((rs[:d], tier) for d in (2, 1, 0) if cnt[(rs[:d], tier)] >= K_ANON), None)
+        if key is None or key in seen:
             continue
         seen.add(key)
-        people.append({"roles": [ROLE_TEXT.get(r, r) for r in rs] or ["no stated role"], "tier": tier,
-                       "likely": bool(likely[j]), "strength": "strong" if margin[j] > 0 else "moderate"})
+        people.append({"roles": [ROLE_TEXT.get(r, r) for r in key[0]] or ["no stated role"], "tier": tier,
+                       "likely": bool(likely[j]), "strength": "strong" if margin[j] > 0 else "moderate",
+                       "shared_by": "20+ members" if cnt[key] < 100 else "100+ members"})
         if len(people) == k_people:
             break
     return {"people_scored": int(B["n"]), "likely_count": int(likely.sum()), "likely_share": round(float(base), 4),

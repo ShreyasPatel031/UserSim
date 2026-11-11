@@ -100,6 +100,10 @@ def available_days(limit: int = 30) -> list[str]:
         parts = name.split("/")
         if len(parts) >= 4 and parts[3].startswith("forecast_") and parts[3].endswith(".parquet"):
             days.add(parts[2])
+    for name, _ in gcs.list_names("results/web/forecast_0005/", ttl=300):
+        f = name.rsplit("/", 1)[-1]
+        if f.endswith(".json") and f[:10].count("-") == 2:
+            days.add(f[:10])
     for name, _ in gcs.list_names("results/early_forecast/", ttl=120):
         f = name.rsplit("/", 1)[-1]
         if f[:10].count("-") == 2:
@@ -186,12 +190,28 @@ def _lineup(day: str) -> dict[str, dict]:
 
 
 def _forecast_0005(day: str):
-    df = gcs.read_parquet_cols(f"raw/daily/{day}/forecast_{day}.parquet", ["id", "pred"], ttl=600)
-    if not df or not df["id"]:
-        return None
-    ids = [str(i) for i, _ in sorted(zip(df["id"], df["pred"]), key=lambda t: -(t[1] if t[1] is not None else -1e9))]
-    upd = dict(gcs.list_names(f"raw/daily/{day}/", ttl=300)).get(f"raw/daily/{day}/forecast_{day}.parquet", "")
-    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": upd,
+    """00:05 PT launch-model order. Prefer the JSON export (results/web/forecast_0005/<day>.json: [{id, predicted_rank}]
+    or {id: rank}); the parquet is read only where pyarrow happens to be installed (it is not in the Vercel bundle)."""
+    ids, made = None, ""
+    j = gcs.read_json(f"results/web/forecast_0005/{day}.json", ttl=600)
+    if isinstance(j, dict) and isinstance(j.get("forecast"), list):
+        made = j.get("written_at", "")
+        j = j["forecast"]
+    if isinstance(j, list) and j:
+        rows = [(str(r.get("id")), int(r.get("predicted_rank") or r.get("pred_rank") or 0)) for r in j if isinstance(r, dict)]
+        ids = [i for i, _ in sorted(rows, key=lambda t: t[1]) if i]
+    elif isinstance(j, dict) and j:
+        ids = [str(k) for k, _ in sorted(j.items(), key=lambda kv: int(kv[1]))]
+    if not ids:
+        try:
+            df = gcs.read_parquet_cols(f"raw/daily/{day}/forecast_{day}.parquet", ["id", "pred"], ttl=600)
+        except ImportError:
+            df = None
+        if not df or not df["id"]:
+            return None
+        ids = [str(i) for i, _ in sorted(zip(df["id"], df["pred"]), key=lambda t: -(t[1] if t[1] is not None else -1e9))]
+        made = dict(gcs.list_names(f"raw/daily/{day}/", ttl=300)).get(f"raw/daily/{day}/forecast_{day}.parquet", "")
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": made,
             "data_up_to": datetime.fromisoformat(day).replace(hour=0, minute=5, tzinfo=PT).isoformat(),
             "method": "launch model (deployed 00:05 PT)"}
 
@@ -265,26 +285,32 @@ def current_board(day: str) -> dict:
     return {"as_of": last, "as_of_pt": _pt_label(last), "ranks": ranks, "votes_hidden": hidden}
 
 
-# E5 false_favourites (claude/person-model-v2 experiments/simlab/reports/false_favourites): how often the 00:05 launch
-# model's #1/#2/#3 finished in the day's top 3 on 207 backtest days (Mar-Oct 2026, month-forward, honest LM).
-TOP3_RATE = {"source": "207 backtest days, Mar-Oct 2026", "by_rank": {1: 0.903, 2: 0.570, 3: 0.411},
-             "brand": 0.48, "version": 0.50}
+def claims() -> dict:
+    """Fixed offline figures with source and date (mvp/ph_site/claims.json)."""
+    from pathlib import Path
+    return json.loads((Path(__file__).with_name("claims.json")).read_text())
+
+
 _BRAND = re.compile(r"\bby\s+[A-Z]")
 _VERSION = re.compile(r"\b\d+(\.\d+)+\b|\bv\d+\b")
 
 
 def _top3_confidence(ranks: dict[str, int], prods: dict[str, dict]) -> dict[str, dict]:
+    c = claims()["top3_rate_by_rank"]
+    v = c["values"]
     out = {}
     for pid, r in ranks.items():
         if r > 3:
             continue
         name = prods.get(pid, {}).get("name", "")
-        note = None
+        note = short = None
         if _BRAND.search(name):
-            note = f"brand sub-launches like this made the top 3 about {TOP3_RATE['brand']:.0%} of the time"
+            note = f"brand sub-launches like this made the top 3 about {v['brand_sub_launch']:.0%} of the time"
+            short = f"brand launch: ~{v['brand_sub_launch']:.0%}"
         elif _VERSION.search(name):
-            note = f"versioned launches like this made the top 3 about {TOP3_RATE['version']:.0%} of the time"
-        out[pid] = {"p": TOP3_RATE["by_rank"][r], "note": note}
+            note = f"versioned launches like this made the top 3 about {v['versioned_name']:.0%} of the time"
+            short = f"versioned: ~{v['versioned_name']:.0%}"
+        out[pid] = {"p": v[str(r)], "note": note, "short": short, "basis": c["label"], "date": c["date"]}
     return out
 
 
@@ -400,4 +426,5 @@ def weekly() -> dict | None:
         keep.append({"id": str(r.get("id")), "pred_rank": r.get("pred_rank"), "est_votes": r.get("est"), "day": r.get("day"),
                      "name": p.get("name"), "tagline": p.get("tagline"), "slug": p.get("slug"), "topics": p.get("topics", [])})
     return {"week_monday": j.get("week_monday"), "as_of_day": j.get("day"), "point": j.get("point"),
+            "ratio": j.get("ratio"),
             "written_at": j.get("written_at"), "top": keep}

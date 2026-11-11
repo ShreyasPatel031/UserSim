@@ -91,7 +91,7 @@ async function load(day){
   const r = await fetch("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : ""));
   if(!r.ok){ $("#pred").innerHTML = `<li class="skeleton">No forecast available yet.</li>`; return; }
   VIEW = await r.json();
-  $("#day").innerHTML = VIEW.days.map(d=>`<option ${d===VIEW.day?"selected":""}>${d}</option>`).join("");
+  $("#day").innerHTML = VIEW.days.map(d=>`<option ${d===VIEW.day?"selected":""}>${esc(d)}</option>`).join("");
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
   $("#kicker").textContent = `Product Hunt · ${isToday ? "live forecast" : "forecast"} · ${VIEW.day}`;
   $("#title").textContent = st.final ? "Our calls next to the final board" : "Our call on today's leaderboard, next to the real one";
@@ -102,14 +102,14 @@ async function load(day){
 }
 
 function timeline(){
-  $("#timeline").innerHTML = VIEW.points.map(p=>`<button type="button" data-k="${p.key}" aria-pressed="${SEL===p.key}"><small>${esc(p.label)}</small>${esc(p.time_pt||"")}</button>`).join("");
+  $("#timeline").innerHTML = VIEW.points.map(p=>`<button type="button" data-k="${esc(p.key)}" aria-pressed="${SEL===p.key}"><small>${esc(p.label)}</small>${esc(p.time_pt||"")}</button>`).join("");
   $("#timeline").querySelectorAll("button").forEach(b=>b.onclick=()=>{SEL=b.dataset.k; timeline(); renderPred();});
 }
 
 function moveTag(pred, now){
   if(!now) return "";
   const cls = now===pred ? "same" : now<pred ? "up" : "down";
-  return `<span class="now ${cls}" title="Place on the live board">now #${now}</span>`;
+  return `<span class="now ${cls}" title="Place on the live board">now #${Number(now)}</span>`;
 }
 
 function renderPred(){
@@ -118,7 +118,8 @@ function renderPred(){
   const phase = p.key.startsWith("R") ? "after the vote reveal" : p.key.startsWith("P") ? "before the reveal (votes hidden)" : "before launch";
   $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b><br>${esc(phase)}${SEL===VIEW.lead_point?" · latest":""}`;
   let sees = `Could see: ${p.sees}`;
-  if(p.top3_conf) sees += " Top-3 rates by rank are from 207 backtest days; brand sub-launches and versioned names hit about half as often as their rank suggests.";
+  const c0 = p.top3_conf && Object.values(p.top3_conf)[0];
+  if(c0) sees += ` Top-3 rates by rank are fixed offline figures (${c0.basis}, ${c0.date}); brand sub-launches and versioned names hit less often than their rank suggests.`;
   if(p.score) sees += ` Scored: ${p.score["3"]}/3 of the real top 3, ${p.score["5"]}/5 of top 5, ${p.score["10"]}/10 of top 10.`;
   $("#sees").textContent = sees;
   const fin = VIEW.status.final;
@@ -126,10 +127,10 @@ function renderPred(){
   $("#pred").innerHTML = o.map(x=>{
     const r = p.ranks[x.id], hit = x.board_rank && x.board_rank<=10;
     const c = p.top3_conf && p.top3_conf[x.id];
-    const conf = c ? `<span class="mk" title="How often the 00:05 model's pick at this rank finished in the top 3 on 207 backtest days">top-3 rate ${Math.round(c.p*100)}%</span>`
-      + (c.note ? `<span class="mk hit" title="${esc(c.note)}">${c.note.startsWith("brand") ? "brand launch: ~48%" : "versioned: ~50%"}</span>` : "") : "";
+    const conf = c ? `<span class="mk" title="${esc("How often the 00:05 model's pick at this rank finished in the top 3: " + c.basis)}">top-3 rate ${Math.round(Number(c.p)*100)}%</span>`
+      + (c.short ? `<span class="mk hit" title="${esc(c.note)}">${esc(c.short)}</span>` : "") : "";
     const mk = x.board_rank ? `<span class="mk ${hit?"hit":"miss"}">${hit?(fin?"in final top 10":"in live top 10"):(fin?"missed top 10":"outside live top 10")}</span>` : "";
-    return `<li class="row c"><div class="pos">${r}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
+    return `<li class="row c"><div class="pos">${Number(r)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
       <div class="chips">${chips(x)}</div></div><div class="side">${moveTag(r, x.board_rank)}${mk}${conf}</div></li>`;}).join("");
 }
 
@@ -143,10 +144,10 @@ function renderLive(){
   const o = VIEW.launches.filter(x=>x.board_rank).sort((a,c)=>a.board_rank-c.board_rank).slice(0,10);
   $("#live").innerHTML = o.map(x=>{
     const pr = lead && lead.ranks[x.id];
-    const vote = x.board_votes!=null ? `<div class="vote"><span class="tri"></span><b>${x.board_votes}</b><small>votes</small></div>`
+    const vote = x.board_votes!=null ? `<div class="vote"><span class="tri"></span><b>${Number(x.board_votes)}</b><small>votes</small></div>`
        : `<div class="vote hidden" title="Hidden on Product Hunt until about 04:00 PT"><span class="tri"></span><b>—</b><small>hidden</small></div>`;
-    return `<li class="row c"><div class="pos">${x.board_rank}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
-      <div class="chips">${chips(x)}${pr?`<span class="trail">we said <b>#${pr}</b></span>`:""}</div></div>${vote}</li>`;}).join("")
+    return `<li class="row c"><div class="pos">${Number(x.board_rank)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
+      <div class="chips">${chips(x)}${pr?`<span class="trail">we said <b>#${Number(pr)}</b></span>`:""}</div></div>${vote}</li>`;}).join("")
     || `<li class="skeleton">The board appears after the 00:01 PT launch.</li>`;
 }
 
@@ -154,15 +155,15 @@ async function side(){
   const t = await (await fetch("/api/ph/track-record")).json();
   const f = (v)=> v==null ? "—" : Math.round(v)+"%";
   const ci = (r,k)=> (r.ci && Array.isArray(r.ci[k])) ? `<br><span class="small muted">${Math.round(r.ci[k][0])}–${Math.round(r.ci[k][1])}</span>` : "";
-  const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${r.n_days}</td><td>${f(r.top3)}${ci(r,"top3")}</td><td>${f(r.top5)}${ci(r,"top5")}</td><td>${f(r.top10)}${ci(r,"top10")}</td></tr>`;
+  const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${Number(r.n_days)}</td><td>${f(r.top3)}${ci(r,"top3")}</td><td>${f(r.top5)}${ci(r,"top5")}</td><td>${f(r.top10)}${ci(r,"top10")}</td></tr>`;
   const live = t.rows.filter(r=>r.n_days && (r.source||"live")==="live"), other = t.rows.filter(r=>r.n_days && (r.source||"live")!=="live");
   $("#rec tbody").innerHTML = live.map(tr).join("") || `<tr><td colspan="5" class="muted">No live day scored yet.</td></tr>`;
   if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+" ("+r.source+")"})).join(""); }
   $("#rec-how").textContent = t.how;
   const w = await (await fetch("/api/ph/weekly")).json();
   if(w && w.top){
-    $("#wk-note").textContent = `Running weekly call (week of ${w.week_monday}): days so far plus today's votes ×1.069 at reveal + 4 h. Scored when the week ends.`;
-    $("#weekly").innerHTML = w.top.map(x=>`<li><span>${x.pred_rank}</span><span>${esc(x.name||"(launch "+x.day+")")}</span><span>~${Math.round(x.est_votes)}</span></li>`).join("");
+    $("#wk-note").textContent = `Running weekly call (week of ${w.week_monday}): final votes of the days so far, plus today's votes at reveal + 4 h scaled by ${w.ratio ? "×"+Number(w.ratio).toFixed(3) : "a fitted ratio"}. Scored when the week ends.`;
+    $("#weekly").innerHTML = w.top.map(x=>`<li><span>${Number(x.pred_rank)}</span><span>${esc(x.name||"(launch "+String(x.day)+")")}</span><span>~${Math.round(Number(x.est_votes))}</span></li>`).join("");
   }
 }
 

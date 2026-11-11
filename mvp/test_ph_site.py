@@ -7,6 +7,8 @@ import pytest
 
 from mvp.ph_site import live, safe_fetch, try_sim
 
+os.environ.setdefault("TRY_SIGNING_KEY", "test-key-" + "x" * 40)
+
 
 def test_product_whitelist_drops_people():
     r = {"id": 1, "name": "Prod", "tagline": "t", "slug": "prod", "topics": {"edges": [{"node": {"name": "SaaS"}}]},
@@ -79,11 +81,94 @@ def test_hits():
 def test_e5_summary_shows_roles_tiers_only():
     import numpy as np
     from mvp.ph_site import person_e5
-    n = 60
-    B = {"pct99_tree": np.zeros(n, np.float32), "roles": np.eye(n, 9, dtype=np.uint8),
+    n = 300
+    roles = np.zeros((n, 9), np.uint8)
+    roles[:150, 0] = 1          # 150 devs
+    roles[150:155, 3] = 1       # 5 founders: too few to show on their own
+    B = {"pct99_tree": np.zeros(n, np.float32), "roles": roles,
          "role_names": np.array(["dev", "design", "market", "founder", "product", "data_ai", "sales", "student", "invest"]),
-         "n_uses": np.arange(1, n + 1, dtype=np.int32), "n": n}
-    out = person_e5.summarize(B, np.linspace(1, -1, n))
+         "n_uses": np.full(n, 6, dtype=np.int32), "n": n}
+    score = np.linspace(-1, 1, n)
+    score[150:155] = 5           # the rare founders score highest
+    out = person_e5.summarize(B, score)
     for p in out["people"]:
-        assert set(p) == {"roles", "tier", "likely", "strength"}
+        assert set(p) == {"roles", "tier", "likely", "strength", "shared_by"}
+        assert p["roles"] != ["founder"]   # a 5-person description is never shown
     assert all(s["likely"] >= 20 for s in out["segments"])
+
+
+def test_pinned_fetch_uses_validated_ip(monkeypatch):
+    """The connection goes to the IP we validated, with the original Host header (no second DNS lookup)."""
+    import http.server
+    import threading
+    seen = {}
+
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            seen["host"] = self.headers.get("Host")
+            body = b"<title>T</title><p>" + b"x" * 200 + b"</p>"
+            self.send_response(200); self.send_header("Content-Type", "text/html; charset=nope")
+            self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+
+        def log_message(self, *a):
+            pass
+
+    srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    calls = []
+
+    async def fake_resolve(host):
+        calls.append(host)
+        return ["127.0.0.1"]
+
+    monkeypatch.setattr(safe_fetch, "_resolve", fake_resolve)
+    monkeypatch.setattr(safe_fetch, "_behind_proxy", lambda: False)
+    monkeypatch.setattr(safe_fetch, "_static_checks", lambda u: (__import__("urllib.parse").parse.urlsplit(
+        u.replace("example.test", f"example.test:{port}")), "example.test"))
+    status, hdrs, raw = asyncio.run(safe_fetch._get_pinned("http://example.test/"))
+    srv.shutdown()
+    assert status == 200 and seen["host"] == f"example.test:{port}" and calls == ["example.test"]
+    assert "x" * 50 in safe_fetch._decode(raw, "text/html; charset=nope", "")   # unknown charset -> utf-8, no crash
+
+
+def test_ipv6_tunnels_blocked():
+    for ip in ("64:ff9b::7f00:1", "2002:7f00:1::1", "::ffff:10.0.0.1", "fd00::1", "fe80::1"):
+        assert not safe_fetch._ip_ok(ip)
+    assert safe_fetch._ip_ok("2606:4700::1111")
+
+
+def test_signing_fails_closed(monkeypatch):
+    monkeypatch.delenv("TRY_SIGNING_KEY", raising=False)
+    with pytest.raises(try_sim.NotConfigured):
+        try_sim.sign({"a": 1})
+
+
+def test_run_steps_are_one_use(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    tok = try_sim.new_run({"name": "n", "topics": []})
+    assert try_sim.use_run(tok, "reactions")["name"] == "n"
+    with pytest.raises(PermissionError):
+        try_sim.use_run(tok, "reactions")
+    try_sim.use_run(tok, "people")
+    with pytest.raises(PermissionError):
+        try_sim.use_run(tok, "people")
+
+
+def test_local_limits_ignored_on_vercel(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.setenv("VERCEL", "1")
+    assert not try_sim._local_limits()
+
+
+def test_client_ip_keys(monkeypatch):
+    from types import SimpleNamespace
+    from mvp.ph_site.routes import _client_ip
+    monkeypatch.setenv("VERCEL", "1")
+    req = lambda h, peer="9.9.9.9": SimpleNamespace(headers=h, client=SimpleNamespace(host=peer))
+    assert _client_ip(req({"x-vercel-forwarded-for": "1.2.3.4", "x-forwarded-for": "6.6.6.6"})) == "1.2.3.4"
+    assert _client_ip(req({"x-vercel-forwarded-for": "2001:db8:1:2:aaaa::1"})) == "2001:db8:1:2::/64"
+    assert _client_ip(req({"x-vercel-forwarded-for": "2001:db8:1:2:bbbb::9"})) == "2001:db8:1:2::/64"
+    monkeypatch.delenv("VERCEL")
+    assert _client_ip(req({"x-forwarded-for": "6.6.6.6"})) == "9.9.9.9"   # spoofable header ignored off Vercel

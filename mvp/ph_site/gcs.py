@@ -100,7 +100,7 @@ def read_parquet_cols(path: str, cols: list[str], ttl: float = 300) -> dict[str,
     return {c: t.column(c).to_pylist() for c in cols}
 
 
-def write_json_cas(path: str, update, retries: int = 6) -> Any:
+def write_json_cas(path: str, update, retries: int = 12) -> Any:
     """Read-modify-write with generation match (used for the try-a-URL usage counters)."""
     from google.api_core.exceptions import PreconditionFailed, NotFound
 
@@ -117,5 +117,6 @@ def write_json_cas(path: str, update, retries: int = 6) -> Any:
             blob.upload_from_string(json.dumps(new), content_type="application/json", if_generation_match=gen)
             return new
         except PreconditionFailed:
-            time.sleep(0.2)
-    raise RuntimeError("usage counter busy")
+            import random
+            time.sleep(0.05 + random.random() * 0.25)
+    raise PermissionError("The simulator is busy right now; try again in a few seconds.")

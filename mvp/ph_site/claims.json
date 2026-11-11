@@ -1,0 +1,21 @@
+{
+ "_about": "Fixed offline figures quoted on /ph and /try. Each has its source and date; the pages label them as fixed offline figures, not live scores. Update here (and only here) when the owning agent publishes new numbers.",
+ "top3_rate_by_rank": {
+  "values": {"1": 0.903, "2": 0.570, "3": 0.411, "brand_sub_launch": 0.48, "versioned_name": 0.50},
+  "label": "207 backtest days, Mar-Oct 2026 (month-forward, honest launch model)",
+  "source": "E5 false_favourites: experiments/simlab/reports/false_favourites/false_favourites.json, branch claude/person-model-v2",
+  "date": "2026-11-11"
+ },
+ "reactions_eval": {
+  "values": {"launches": 300, "theme_recall": 0.385, "theme_recall_generic": 0.06},
+  "label": "300 past launches, blinded judge",
+  "source": "E5 reactions_eval: experiments/simlab/reports/reactions_eval/, branch claude/person-model-v2",
+  "date": "2026-11-11"
+ },
+ "similar_tools_auc": {
+  "values": {"auc": 0.692, "typical_likely_share": 0.01},
+  "label": "held-out uses, popularity- and length-matched",
+  "source": "E5 person_bundle_gemini (Gemini-256 + trees)",
+  "date": "2026-11-11"
+ }
+}

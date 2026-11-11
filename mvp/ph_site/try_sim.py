@@ -1,9 +1,10 @@
 """Try-a-product-URL simulation, split into short stateless steps so each fits a serverless request and the page can
 show progress:  page (fetch + Gemini read)  ->  people (no LLM)  |  reactions (Gemini)  |  launch (no LLM).
 
-The page step returns a signed token holding the product analysis; later steps accept only that token, so they cost
-nothing extra to abuse and cannot be pointed at arbitrary input. Caps (stated on the page):
-  per IP: 3 runs / hour, 10 / day;  everyone: 150 runs / day;  per run: 2 Gemini calls (flash-lite), ~6k output tokens.
+The page step stores the analysis server-side (site/try_runs/<day>/<run id>.json) and returns a signed run id; later
+steps accept only that id and each LLM step can be spent once, so tokens cannot be replayed or forged into extra calls. Caps (stated on the page):
+  per IP: 3 runs / hour, 10 / day;  everyone: 150 runs / day;  per run: 2 Gemini calls (flash-lite, output capped at
+  1.5k + 3k tokens) and 1 embedding call. Each LLM step can run once per run (enforced server-side by run id).
 Person data comes only from site/person_index_v1 (no identifiers). Labels "User A".. are assigned per response.
 """
 from __future__ import annotations
@@ -26,52 +27,70 @@ PT = ZoneInfo("America/Los_Angeles")
 CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "3")),
         "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "10")),
         "global_day": int(os.environ.get("TRY_GLOBAL_DAY", "150")),
-        "gemini_calls_per_run": 2, "embedding_calls_per_run": 2, "max_output_tokens_per_run": 6000}
+        "gemini_calls_per_run": 2, "embedding_calls_per_run": 1, "max_output_tokens_per_run": 4500}
 MODEL = os.environ.get("TRY_GEMINI_MODEL", "gemini-2.5-flash-lite")
 TOKEN_TTL_S = 900
 
 
 # ---------- signing / limits ----------
 
+class NotConfigured(RuntimeError):
+    pass
+
+
+class BadToken(PermissionError):
+    pass
+
+
+def _on_server() -> bool:
+    return bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
+
+
+def _local_limits() -> bool:
+    # In-memory limits are for local runs only; never honoured on the deployed site.
+    return os.environ.get("TRY_LOCAL_LIMITS") == "1" and not _on_server()
+
+
 def _key() -> bytes:
-    k = os.environ.get("TRY_SIGNING_KEY")
-    if k:
-        return k.encode()
-    # Derive from the service credentials present on the server (never sent anywhere).
-    seed = (os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_B64") or os.environ.get("VERTEX_ADC_JSON")
-            or os.environ.get("GOOGLE_ADC_JSON") or "atelier-dev-only")
-    return hashlib.sha256(("try-sign:" + seed).encode()).digest()
+    """HMAC key for run tokens. Fails closed: no key, no runs (never a constant or a derived fallback)."""
+    k = os.environ.get("TRY_SIGNING_KEY", "")
+    if len(k) < 32:
+        raise NotConfigured("The simulator is not configured on this server yet (TRY_SIGNING_KEY).")
+    return k.encode()
 
 
 def sign(obj: dict) -> str:
     raw = json.dumps({**obj, "exp": int(time.time()) + TOKEN_TTL_S}, separators=(",", ":")).encode()
-    mac = hmac.new(_key(), raw, hashlib.sha256).digest()[:16]
+    mac = hmac.new(_key(), raw, hashlib.sha256).digest()
     return base64.urlsafe_b64encode(raw).decode() + "." + base64.urlsafe_b64encode(mac).decode()
 
 
 def verify(tok: str) -> dict:
+    key = _key()
     try:
-        a, b = tok.split(".")
+        a, b = str(tok).split(".")
         raw = base64.urlsafe_b64decode(a)
-        if not hmac.compare_digest(base64.urlsafe_b64decode(b), hmac.new(_key(), raw, hashlib.sha256).digest()[:16]):
+        if not hmac.compare_digest(base64.urlsafe_b64decode(b), hmac.new(key, raw, hashlib.sha256).digest()):
             raise ValueError
         obj = json.loads(raw)
     except Exception as exc:  # noqa: BLE001
-        raise PermissionError("Invalid or expired run token; start again.") from exc
-    if obj.get("exp", 0) < time.time():
-        raise PermissionError("This run expired; start again.")
+        raise BadToken("Invalid or expired run token; start again.") from exc
+    if not isinstance(obj, dict) or obj.get("exp", 0) < time.time():
+        raise BadToken("This run expired; start again.")
     return obj
 
 
 def _ip_hash(ip: str) -> str:
-    return hashlib.sha256(_key() + ip.encode()).hexdigest()[:16]   # IPs are never stored in clear
+    return hmac.new(_key(), ("ip:" + ip).encode(), hashlib.sha256).hexdigest()[:16]   # IPs never stored in clear
 
 
 _mem: dict[str, list[float]] = {}
+_runs_mem: dict[str, dict] = {}
+STEP_USES = {"people": 1, "reactions": 1, "launch": 3}   # LLM/embedding steps once per run; launch is free (no LLM)
 
 
 def take_slot(ip: str) -> dict:
-    """Count one run; raise PermissionError when a cap is hit. GCS counter (shared by all instances) + local fallback."""
+    """Count one run; raise PermissionError when a cap is hit. GCS counter (shared by all instances)."""
     day = datetime.now(PT).strftime("%Y-%m-%d")
     h = _ip_hash(ip)
     now = time.time()
@@ -90,13 +109,54 @@ def take_slot(ip: str) -> dict:
         cur["total"] += 1
         return cur
 
-    if os.environ.get("TRY_LOCAL_LIMITS") == "1":
+    if _local_limits():
         cur = upd({"total": len(_mem.get("_all", [])), "ips": {h: _mem.get(h, [])}})
         _mem[h] = cur["ips"][h]
         _mem.setdefault("_all", []).append(now)
         return {"used_today": cur["total"]}
     cur = gcs.write_json_cas(f"site/try_usage/{day}.json", upd)
     return {"used_today": cur["total"]}
+
+
+def _run_path(day: str, jti: str) -> str:
+    return f"site/try_runs/{day}/{jti}.json"
+
+
+def new_run(analysis: dict) -> str:
+    """Store the run's analysis (incl. page excerpt) server-side; the client only gets a signed run id."""
+    import secrets as _secrets
+    jti = _secrets.token_urlsafe(16)
+    day = datetime.now(PT).strftime("%Y-%m-%d")
+    rec = {"a": analysis, "uses": {}, "created": time.time()}
+    if _local_limits():
+        _runs_mem[jti] = rec
+    else:
+        gcs.write_json_cas(_run_path(day, jti), lambda cur: rec)
+    return sign({"jti": jti, "d": day})
+
+
+def use_run(tok: str, step: str) -> dict:
+    """Verify the token and spend one use of `step` for this run (at most STEP_USES[step]). Returns the analysis."""
+    t = verify(tok)
+    jti, day = str(t.get("jti", "")), str(t.get("d", ""))
+    if not jti or not day:
+        raise BadToken("Invalid run token; start again.")
+    cap = STEP_USES.get(step, 0)
+
+    def upd(cur):
+        if not cur or "a" not in cur:
+            raise PermissionError("This run expired; start again.")
+        n = int(cur.get("uses", {}).get(step, 0))
+        if n >= cap:
+            raise PermissionError("This step already ran for this simulation; start a new one.")
+        cur.setdefault("uses", {})[step] = n + 1
+        return cur
+
+    if _local_limits():
+        rec = upd(_runs_mem.get(jti))
+    else:
+        rec = gcs.write_json_cas(_run_path(day, jti), upd)
+    return rec["a"]
 
 
 # ---------- person index ----------
@@ -157,7 +217,8 @@ async def step_page(url: str, ip: str) -> dict:
     vocab = index()["meta"]["vocab"]
     prompt = READ_PROMPT.format(url=page["url"], title=page["title"], desc=page["description"],
                                 text=page["text"][:9000], pricing=page["pricing_text"][:2500], vocab=", ".join(vocab))
-    raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2, max_retries=3)
+    raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2, max_retries=3,
+                            max_output_tokens=1500)
     a = extract_json(raw)
     if a.get("problem"):
         raise ValueError("Couldn't judge this page: " + str(a["problem"])[:200])
@@ -165,7 +226,7 @@ async def step_page(url: str, ip: str) -> dict:
     a = {k: a.get(k) for k in ("name", "tagline", "summary", "topics", "audience", "pricing", "strengths", "doubts", "clarity")}
     a["url"] = page["url"]
     a["page_excerpt"] = (page["description"] + "\n" + page["text"])[:2500]
-    return {"analysis": {k: v for k, v in a.items() if k != "page_excerpt"}, "token": sign({"a": a}),
+    return {"analysis": {k: v for k, v in a.items() if k != "page_excerpt"}, "token": new_run(a),
             "caps": CAPS, "used_today": usage["used_today"]}
 
 
@@ -189,8 +250,7 @@ def _describe(meta: dict, x: np.ndarray, act: int, cmt: int, maker: bool, seg: i
             "upvoted_like": f"Mostly upvotes {', '.join(top[:2]) or 'a mix of categories'} launches"}
 
 
-def _interest_people(tok: str) -> dict:
-    a = verify(tok)["a"]
+def _interest_people(a: dict) -> dict:
     I = index()
     meta = I["meta"]
     q = _qvec(a["topics"], meta["vocab"])
@@ -267,34 +327,52 @@ async def step_people(tok: str) -> dict:
     """Interest-segment match (13.6k profiles, category level) + E5's similar-tools scorer (5,096 people, AUC 0.69)."""
     from mvp.ph_site import person_e5
 
-    a = verify(tok)["a"]
-    out = _interest_people(tok)
-    out["interest_top"] = out.pop("top_people")
+    a = use_run(tok, "people")
+    out = _interest_people(a)
+    out.pop("top_people", None)   # per-person interest rows are not shown (no k-anonymity floor); segments are
     try:
         B = person_e5.bundle()
         text = f"{a.get('name')}. {a.get('tagline')}. {a.get('summary') or ''} {(a.get('page_excerpt') or '')[:700]}"
         q = await person_e5.embed(text)
         sm = person_e5.summarize(B, person_e5.score_text(B, q))
+        from mvp.ph_site.live import claims
+        c = claims()["similar_tools_auc"]
         out["similar"] = {**{k: sm[k] for k in ("people_scored", "likely_count", "likely_share", "segments", "tiers")},
-                          "typical_share": 0.01,
+                          "typical_share": c["values"]["typical_likely_share"],
                           "method": ("Similar-tools match: each person's own tool stack, reviews and collections are "
-                                     "compared with this page (Gemini embeddings + a learned scorer). Person-level "
-                                     "accuracy: ranks a person's real tools above look-alike non-uses 69% of the time. "
-                                     "By design about 1% of people match a typical product.")}
+                                     "compared with this page (Gemini embeddings + a learned scorer). Fixed offline "
+                                     f"figure ({c['label']}, {c['date']}): it ranks a person's real tools above look-alike "
+                                     f"non-uses {c['values']['auc']:.0%} of the time. By design about "
+                                     f"{c['values']['typical_likely_share']:.0%} of people match a typical product.")}
         out["top_people"] = [{"label": f"User {chr(65 + i)}", **p} for i, p in enumerate(sm["people"])]
-    except Exception as exc:  # noqa: BLE001 - fall back to the interest index alone
+    except Exception as exc:  # noqa: BLE001 - fall back to the interest segments alone
         print(f"[try] similar-tools scorer unavailable: {exc!r}", flush=True)
         out["similar"] = None
-        out["top_people"] = [{"label": p["label"], "roles": [p["role"]], "tier": p["activity"], "strength": "interest match",
-                              "likely": True} for p in out["interest_top"]]
+        out["top_people"] = []
     return out
 
 
-def _types_from_people(p: dict, topics: list[str]) -> list[str]:
+def _reactions_note() -> str:
+    from mvp.ph_site.live import claims
+    c = claims()["reactions_eval"]
+    v = c["values"]
+    return (f"Simulated, not real comments. Fixed offline figure ({c['label']}, {c['date']}): these simulated comments "
+            f"anticipated about {v['theme_recall']:.0%} of the themes real users raised (generic category comments: "
+            f"about {v['theme_recall_generic']:.0%}). The member types add variety in voice; they did not make the themes "
+            "more accurate.")
+
+
+def _member_types(p: dict, topics: list[str]) -> list[str]:
+    """Reaction voices from aggregate interest segments (never from an individual row)."""
     out = []
-    for r in p["top_people"][:4]:
-        out.append(f"{r['label']}: {' / '.join(r['roles'])}, {r['tier']}, interested in {', '.join(topics[:2]) or 'this category'}")
-    # Contrast types so it isn't only fans.
+    segs = (p.get("segments") or [])[:4]
+    for i, sg in enumerate(segs):
+        role = "often makers themselves" if sg.get("maker_share", 0) >= 0.5 else "mostly voters"
+        out.append(f"User {chr(65 + i)}: member of the '{sg['name']}' crowd ({role}), interested in "
+                   f"{', '.join(sg['top_topics'][:2])}")
+    while len(out) < 4:
+        out.append(f"User {chr(65 + len(out))}: regular PH voter interested in {', '.join(topics[:2]) or 'this category'}")
+    # Contrast voices so it isn't only fans.
     out.append("User E: heavy PH voter who comments often and sees dozens of similar launches a week")
     out.append("User F: maker from an unrelated category, browsing the day's launches")
     return out
@@ -303,22 +381,21 @@ def _types_from_people(p: dict, topics: list[str]) -> list[str]:
 async def step_reactions(tok: str) -> dict:
     from capability.gemini_config import extract_json, gemini_chat
 
-    a = verify(tok)["a"]
-    p = await step_people(tok)
-    types = _types_from_people(p, a.get("topics") or [])
+    a = use_run(tok, "reactions")
+    p = _interest_people(a)
+    types = _member_types(p, a.get("topics") or [])
     prompt = REACT_PROMPT.format(name=a.get("name"), tagline=a.get("tagline"), summary=a.get("summary"),
                                  pricing=a.get("pricing"), strengths="; ".join(a.get("strengths") or []),
                                  doubts="; ".join(a.get("doubts") or []), excerpt=(a.get("page_excerpt") or "")[:2500],
                                  types="\n".join(types))
-    raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.7, max_retries=3)
+    raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.7, max_retries=3,
+                            max_output_tokens=3000)
     j = extract_json(raw)
     reacts = []
     for r in (j.get("reactions") or [])[:6]:
         reacts.append({k: r.get(k) for k in ("type", "comment", "sentiment", "would_upvote", "would_try", "why")})
     return {"reactions": reacts, "types": types, "headline": j.get("headline_takeaway", ""),
-            "note": ("Simulated, not real comments. Tested on 300 past launches: these simulated comments anticipated "
-                     "about 2 in 5 of the themes real users raised (generic category comments: about 1 in 20). The "
-                     "member types add variety in voice; they did not make the themes more accurate.")}
+            "note": _reactions_note()}
 
 
 # ---------- step 4: launch (no LLM) ----------
@@ -343,7 +420,7 @@ def _band_score(lb: dict, name: str, tagline: str, description: str, topics: lis
 
 
 def step_launch(tok: str) -> dict:
-    a = verify(tok)["a"]
+    a = use_run(tok, "launch")
     lb = gcs.read_json("results/web/launch_band.json", ttl=3600)
     if not lb:
         raise RuntimeError("launch band missing")

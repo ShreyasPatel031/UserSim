@@ -16,4 +16,3 @@ curl_cffi>=0.7
 patchright>=1.50
 camoufox[geoip]==0.4.11
 numpy>=1.26
-pyarrow>=15
