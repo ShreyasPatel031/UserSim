@@ -193,6 +193,10 @@ def _ps(P, I, E, work):
     return PS
 
 
+def SFX():
+    return "_recal" if os.environ.get("TL_RECAL") == "1" else ""
+
+
 def launch_priors(I):
     """Per launch L on day d: team (makers + hunter) history over launches dated <= d-2 (daily rank settled) and topic form
     over launches dated d-8 .. d-2. Ranks from the warehouse launches table; nothing dated d-1 or later enters."""
@@ -332,6 +336,8 @@ def score():
     from sklearn.metrics import roc_auc_score, log_loss
     from pipeline import warehouse as W
     files = sorted(glob.glob(f"{WORK}/rows_tl_{TAG}/*.parquet"))
+    D0, D1 = os.environ.get("TL_FROM", "2026-10-20"), os.environ.get("TL_TO", "2026-11-08")
+    allfiles = files; files = [f for f in files if D0 <= os.path.basename(f)[:10] <= D1]   # scored days; earlier files feed TL_RECAL only
     L = W.query("SELECT CAST(id AS VARCHAR) AS id, day::VARCHAR AS day, daily_rank, weekly_rank, votes FROM launches WHERE daily_rank IS NOT NULL")
     votes = dict(zip(L.id, L.votes)); rnk = dict(zip(L.id, L.daily_rank)); wrk = dict(zip(L.id, L.weekly_rank))
     Fc = W.query("SELECT launch_id AS id, forecast_date AS day, predicted_rank FROM forecasts WHERE model = 'launch_model'", do_sync=False)
@@ -348,8 +354,28 @@ def score():
     oldest = Eu.groupby("person").date.min().to_dict()
     filt_n, dump = [], []
     per, pop, diag, prev_rows = [], [], [], []
+    recal = None
+    if os.environ.get("TL_RECAL") == "1":   # E5 (ii): one isotonic map per month fold, P's within-day percentile -> P(vote),
+        from sklearn.isotonic import IsotonicRegression   # fit on the previous month's label-filtered rows only
+        recal = {}
+        def _filt(R, d):
+            d2 = (pd.Timestamp(d) + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
+            return R[R.person.map(lambda u: read_day.get(u, "0000") >= d2 and (u not in short or oldest.get(u, "9999") <= d))]
+        for mon in sorted({os.path.basename(f)[:7] for f in files}):
+            prev = (pd.Timestamp(mon + "-01") - pd.Timedelta(days=1)).strftime("%Y-%m")
+            fit = [f for f in allfiles if os.path.basename(f)[:7] == prev]
+            X = []
+            for f in fit:
+                R = pd.read_parquet(f, columns=["person", "p", "y"]); R["x"] = R.p.rank(pct=True)   # same key as the test days
+                R = _filt(R, os.path.basename(f)[:10])
+                X.append(R[["x", "y"]])
+            X = pd.concat(X)
+            recal[mon] = IsotonicRegression(out_of_bounds="clip", y_min=1e-6).fit(X.x, X.y)
+            recal.setdefault("_fit", {})[mon] = {"fit_month": prev, "fit_days": len(fit), "fit_rows": int(len(X)), "fit_pos_rate": round(float(X.y.mean()), 5)}
     for f in files:
         d = os.path.basename(f)[:10]; R = pd.read_parquet(f); R["id"] = R.id.astype(str)
+        if recal is not None:   # percentile over the whole day's rows (before the label filter, as known at 00:05)
+            R["p"] = recal[d[:7]].predict(R.p.rank(pct=True).values)
         d2 = (pd.Timestamp(d) + pd.Timedelta(days=2)).strftime("%Y-%m-%d")
         ok = R.person.map(lambda u: read_day.get(u, "0000") >= d2 and (u not in short or oldest.get(u, "9999") <= d))
         filt_n.append({"day": d, "people_before": int(R.person.nunique()), "people_after": int(R[ok].person.nunique())})
@@ -457,7 +483,7 @@ def score():
         rs.append(spearmanr(g.ev, resid).correlation)
     res["ev_vs_lm_residual_spearman"] = boot(rs, rng)
     res["clean_days"] = clean
-    Q.to_parquet(f"{WORK}/pop_{TAG}.parquet")   # launch-level EV per day, read by `resid`
+    Q.to_parquet(f"{WORK}/pop_{TAG}{SFX()}.parquet")   # launch-level EV per day, read by `resid`
     Dg = pd.DataFrame(diag)
     res["n_eff_per_day"] = {r["day"]: round(r["n_eff"], 1) for r in diag}
     res["weights_diag"] = {"n_eff_median": round(float(Dg.n_eff.median()), 1), "people_median": int(Dg.people.median()),
@@ -485,7 +511,9 @@ def score():
             wk[f"{w} top{k}"] = {"two_level": len(set(g.nlargest(k, "ev").id) & top) / k * 100,
                                  "deployed_sim": len(set(g.dropna(subset=["dep"]).nlargest(k, "dep").id) & top) / k * 100}
     res["weekly"] = wk
-    out = os.path.join(HERE, "results", f"two_level_{TAG}_{res['weights']}.json")
+    if recal is not None:
+        res["recal_fit"] = recal["_fit"]
+    out = os.path.join(HERE, "results", f"two_level_{TAG}{'_recal' if recal is not None else ''}_{res['weights']}.json")
     json.dump(res, open(out, "w"), indent=1); print(json.dumps(res, indent=1))
 
 
@@ -547,7 +575,7 @@ def resid():
     (c) blend: within-day rank of LM pct + w * EV pct, w from a grid chosen leave-one-ISO-week-out (criterion mean of
         top 3 and top 5 hits), top 3/5/10 paired by day against the LM alone. Reads pop_<TAG>.parquet from `score`."""
     from pipeline import warehouse as W
-    Q = pd.read_parquet(f"{WORK}/pop_{TAG}.parquet")
+    Q = pd.read_parquet(f"{WORK}/pop_{TAG}{SFX()}.parquet")
     lm = {}
     hp = os.environ.get("HONEST_PREDS")
     if hp and os.path.exists(hp):
@@ -602,7 +630,7 @@ def resid():
         res[f"blend_lowo top{k}"] = {"launch_model": round(float(a[m].mean()), 1), "blend": round(float(b[m].mean()), 1),
                                      "delta": boot((b - a)[m], rng), "n_days": int(m.sum())}
     res["blend_w_by_held_out_week"] = chosen
-    json.dump(res, open(os.path.join(HERE, "results", f"two_level_resid_{TAG}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
+    json.dump(res, open(os.path.join(HERE, "results", f"two_level_resid_{TAG}{SFX()}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
 
 
 if __name__ == "__main__":
