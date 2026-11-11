@@ -703,3 +703,27 @@ At person level, log-loss improves: 0.0336 (taste) → 0.0320 (two-term).
 - Summing persons still dilutes the LM's ordering, so it trails the LM alone.
 - Taste-only Σ P is weak at population level (top 3 = 16).
 - For a simulator of individual responses, the two-term form is the right structure: population appeal from the launch, plus person taste on top.
+
+### 2026-11-11 11:00Z — RESULT (E5): cross-domain zero-shot, uses ↔ upvotes
+
+- **Code and results:** `experiments/simlab/cross_domain.py`, `reports/upvote_taste/cross_domain.json`.
+- **Sample:** 1,367 voting person-days, 288 people who have a uses profile, 19 days.
+
+**Uses → upvotes.** The S3np scorer is trained on the uses tasks and applied as-is. Its profile is the person's stacks, reviews and collections (product slugs equal to the launch's slug removed). The candidates are each day's line-up.
+
+| | Hit@1 | Hit@3 | within-line-up AUC |
+|---|---|---|---|
+| random | 0.103 | 0.266 | 0.495 |
+| E5 upvote-trained taste logistic | 0.183 | 0.382 | 0.619 |
+| uses-trained scorer, zero-shot | 0.134 | 0.307 | 0.552; vs E5 −0.068 [−0.102, −0.035] |
+| same, shuffled uses profile | 0.115 | 0.284 | 0.522 |
+| personal part (zero-shot − shuffled) | +0.019 | +0.023 | +0.030 [0.008, 0.050] |
+
+**Upvotes → uses.** Measured earlier with the centroid scorer on the pop-matched uses harness: upvote history predicts held-out uses at AUC 0.538. Using uses history gives 0.601, and pooling uses + upvotes gives 0.582.
+
+**Reading:** the transfer is weak in both directions.
+- Use-taste carries a small but real personal signal onto upvotes: +0.03 AUC over a shuffled profile.
+- It is far below a model trained on upvotes.
+- Upvote history barely predicts uses.
+
+The two behaviours share only a small taste core. A user sim should model "uses / wants" and "upvotes on launch day" as separate response channels, each with its own data.
