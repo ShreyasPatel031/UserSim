@@ -138,7 +138,8 @@ Status at 21:50 UTC Nov 11:
 11. **Validate the website's "what users will say"**: done, passes. 300 launches: the site's simulated comments cover 38.5% [36.0, 41.0] of the themes real users raised; 42.3% [39.4, 45.2] of simulated points appear in real comments; generic-topic and shuffled controls score about 5%. Persona conditioning adds nothing.
 11b. **Raise it** (retrieval of real reactions to similar earlier products, more/structured output, model and page-text variants): E5, running.
 12. **Votes on comments before the reveal** (dated in live comments_ts; forward-only) + train/serve rescale of the comment ridge + first live pre-reveal points on Nov 12: PH agent, running.
-13. **What PH.s weekly/monthly rank is made of beyond votes** (votes-only ceiling 100/80/90 monthly): PH agent, running.
+13. **What PH's weekly/monthly rank is made of**: done. It is votes frozen at the period end and nothing else (live Spearman 0.9993; the running rank lags recent launches). A learned score does not beat votes. The period-end read (23:50 PT daily) is the call; weekly and monthly reread points added.
+13b. **Why the live reveal-time point (72/77/88) is below the Wayback reveal-hour number (85/93/92)**: PH agent, running.
 14. Open: refit the pre-reveal blend at 7 scored days; maker-fix shadow (scored forward); weekly and monthly shadow lines (scored Nov 16 and Dec 1).
 Pre-launch status (Nov 12 01:30 UTC): exhausted with held data. Honest 00:05 level is about 60–63 / 68–69 / 75; no tested pre-launch input moved it.
 Standing conclusion (Nov 11): nothing knowable before launch explains the launch model's misses (all pre-launch attributes |rho| <= 0.05 with the error; closed today: domain popularity, fame prior, GitHub momentum, repeat-maker mobilisation, pre-midnight comments, early-commenter identity, comment text). The lever is the first hours after launch.
