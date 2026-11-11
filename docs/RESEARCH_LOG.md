@@ -626,3 +626,28 @@ Paired change vs base, top 3 / top 5, with 95% CI:
 | D2 person-sum EV | +0.3 [−0.8, 1.4] / +0.2 [−0.5, 0.8] | 0.0 / +3.0 |
 
 Neither candidate has a CI-positive top 3 or top 5 on Mar–Oct, so the verdict stands: both dropped.
+
+### 2026-11-11 08:50Z — RESULT (E5): uses v2, S0–S4 on the length-matched sets with the shuffled-profile control
+
+- **Sets:** negatives matched on pop decile × rich status × length decile; 40,038 tasks, 5,096 people.
+- **Learned scorers (S3/S4):** LightGBM trained on person-disjoint 2-fold, trained on real profiles only.
+- **Shuffled control:** for each task, profile and who-features come from a random other person.
+- **Code and results:** `experiments/simlab/uses_v2_rm.py`; `reports/uses_v2/uses_v2_s0_s4_lenmatched.json`.
+
+| pop-matched (all) | AUC | Hit@10 | shuffled AUC | personal (AUC − shuffled) |
+|---|---|---|---|---|
+| popularity alone | 0.742 | 0.620 | 0.742 | 0.000 |
+| S0 centroid, card text, bge-small | 0.604 | 0.353 | 0.560 | 0.044 [0.039, 0.049] |
+| S1 API text, bge-small | 0.612 | 0.365 | 0.559 | 0.053 |
+| S2 API text, bge-base | 0.636 | 0.396 | 0.576 | 0.060 [0.056, 0.065] |
+| **S3np learned kNN scorer, no popularity** | **0.739** | 0.562 | 0.628 | **0.111 [0.106, 0.116]** |
+| S3 learned + popularity | 0.839 | 0.726 | 0.795 | 0.044 |
+| S4np S3np + headline/bio/roles | 0.747 | 0.573 | 0.630 | 0.117 [0.112, 0.121] |
+| S4 S4np + popularity | 0.844 | 0.735 | 0.795 | 0.049 |
+
+**Reading**
+1. **The learned scorer is the big step.** It replaces the mean-of-top-5 centroid with LightGBM over kNN similarity features (top-1 / top-5 / mean, two embeddings) plus topic rate. That nearly doubles the personal part, 0.060 → 0.111, and raises taste-only AUC to 0.739, level with popularity alone.
+2. **Adding popularity raises raw AUC to 0.84,** but the model then leans on popularity, and the personal part falls to about 0.045. For a user simulation, the two should be combined explicitly rather than learned jointly. Popularity is the population term, taste the person term.
+3. **Who the person is (headline/bio/roles) adds little:** personal +0.006, AUC +0.008.
+4. **Richer API text adds about +0.007;** bge-base adds about +0.03.
+5. **Best person-level "uses" model so far:** S4np, AUC 0.747, personal 0.117, on leak-controlled sets.
