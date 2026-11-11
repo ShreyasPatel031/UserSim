@@ -205,7 +205,8 @@ def launch_priors(I):
     J["rank"] = J.id.map(rk)
     days = sorted(J.day.unique()); by_day = {d: g for d, g in J.groupby("day")}
     out = {}
-    hist_team = {}   # person -> list of ranks of launches settled so far (dated <= d-2)
+    hist_team = {}   # person -> list of (rank, launch day) of launches settled so far (dated <= d-2)
+    checks = {"rows": 0, "violations": 0}
     added = set()
     for d in days:
         cut = (pd.Timestamp(d) - pd.Timedelta(days=2)).strftime("%Y-%m-%d")
@@ -218,22 +219,27 @@ def launch_priors(I):
             for r in by_day[dd].itertuples():
                 if not np.isnan(r.rank):
                     for u in r.team:
-                        hist_team.setdefault(u, []).append(r.rank)
+                        hist_team.setdefault(u, []).append((r.rank, dd))
         lo = (pd.Timestamp(d) - pd.Timedelta(days=8)).strftime("%Y-%m-%d")
         win = J[(J.day >= lo) & (J.day <= cut) & J["rank"].notna()]
         tf = {}
-        for t, rr in zip(win.tops, win["rank"]):
+        for t, rr, dd in zip(win.tops, win["rank"], win.day):
             for x in t:
-                tf.setdefault(x, []).append(rr)
+                tf.setdefault(x, []).append((rr, dd))
         for r in by_day[d].itertuples():
-            rs = [v for u in r.team for v in hist_team.get(u, [])]
+            used = [dd for u in r.team for _, dd in hist_team.get(u, [])] + [dd for x in r.tops for _, dd in tf.get(x, [])]
+            checks["rows"] += 1; checks["violations"] += int(bool(used) and max(used) > cut)   # E5: max(prior launch day) <= d-2
+            rs = [v for u in r.team for v, _ in hist_team.get(u, [])]
             a = np.array(rs) if rs else None
-            tt = [np.array(tf[x]) for x in r.tops if x in tf]
+            tt = [np.array([v for v, _ in tf[x]]) for x in r.tops if x in tf]
             out[r.id] = [float(len(rs)), float(a.min()) if a is not None else np.nan, float((1 / a).mean()) if a is not None else np.nan,
                          float((a <= 10).mean()) if a is not None else np.nan,
                          float(np.mean([(v <= 10).mean() for v in tt])) if tt else np.nan,
                          float(np.mean([(1 / v).mean() for v in tt])) if tt else np.nan,
                          float(np.mean([len(v) for v in tt])) if tt else 0.0]
+    assert checks["violations"] == 0, checks
+    os.makedirs(os.path.join(WORK, f"rows_tl_{TAG}"), exist_ok=True)
+    json.dump(checks, open(os.path.join(WORK, f"rows_tl_{TAG}", "prior_assert.json"), "w"))
     return out
 
 def train(m):
@@ -459,6 +465,9 @@ def score():
                            "spearman_weighted_real_vs_votes_median": round(float(Dg.spearman_weighted_real_vs_votes.median()), 3)}
     res["n_both_levels"] = {"person_days": int(Dg.people.sum()), "rows": int(Dg.rows.sum()), "days": len(Dg),
                             "note": "person metrics and launch EV use the same rows (complete people active in the 30 days before d x the line-up)"}
+    pa = f"{WORK}/rows_tl_{TAG}/prior_assert.json"
+    if os.path.exists(pa):
+        res["prior_assert"] = json.load(open(pa))
     res["model_max_event_date"] = {os.path.basename(m): json.load(open(m[:-4] + ".json")).get("max_event_date") if os.path.exists(m[:-4] + ".json") else None
                                    for m in glob.glob(f"{WORK}/models_tl_{TAG}/model_*.pkl")}
     if os.environ.get("TL_FOL") == "1":
@@ -562,6 +571,7 @@ def resid():
         ps.append(spearmanr(ev_res, x.r_real - x.r_lm).correlation); raw.append(spearmanr(x.ev, x.r_real - x.r_lm).correlation)
     res["raw_residual_spearman"] = {"mean_ci_n": boot(raw, rng), "n_days": len(raw)}
     res["partial_spearman"] = {"mean_ci_n": boot(ps, rng), "n_days": len(ps)}
+    res["spearman_ev_lm"] = {"mean_ci_n": boot([spearmanr(x.ev, x.lms).correlation for _, x in Q.groupby("day") if len(x) >= 5], rng)}
 
     def coef(ds):
         x = Q[Q.day.isin(ds)]; A = np.c_[np.ones(len(x)), x.r_lm, x.r_ev]
