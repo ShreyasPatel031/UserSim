@@ -1413,3 +1413,21 @@ Provisional labels move with later list reads (Nov 9: 29 winners in this run). R
 Per-minute odds: Nov 10 1,440/1,440 files. Replay, daily list Nov 8 at 21:05: live 20/30, replay 20/30; live misses:
 model miss 5, posted after the forecast 4, under the live 5-point filter 1.
 live15.py: LIVE TABLE header now names the 1 h score (it showed the old label).
+
+## 1 h checkpoint, live: biggest bucket under the shipped score, one fix on held-out days (2026-11-11, Shreyas)
+
+Under the shipped 1 h score (rank blend of the per-minute model and votes), full-coverage days Nov 2-10, 254 winners:
+the biggest miss bucket is winners NOT on the front page by 1 h: 85 winners, ~0 flags (252 of 254 flags go to the 748
+posts that are on the front page by 1 h, which hold 169 winners). Ceiling: ranking front-page posts perfectly and
+flagging nothing else gives 169/254 = 66.5%; 80% (204) needs at least 35 off-front winners caught at 1 h.
+Fix tested (late60_c.py, one fix, leave one day out): swap each day's n weakest front-page flags for the n strongest
+off-front posts, scored by a model trained only on off-front posts (at-posting odds + /newest vote inputs at 1 h);
+n chosen on Nov 2-6 (0-8), Nov 7-10 held out.
+- Every n > 0 loses on Nov 2-6 (n=1 72 vs 74 ... n=8 64 vs 74) and on Nov 7-10 (n=1 55 = 55 ... n=8 44 vs 55);
+  chosen n = 0, i.e. the fix is rejected. Each day's top-3 off-front picks win 7.4% of the time, below the weakest
+  front-page flags.
+- New 1 h catch rate (unchanged score, same rows): held-out Nov 7-10 55/102 (53.9%); all full-coverage days Nov 2-10
+  129/254 (50.8%; live15's 127/254 trains on two more days, Oct 31 - Nov 1).
+- What didn't move: off-front winners at 1 h (0-8 of 85 caught for any n). Next: the only path past 66.5% at 1 h is an
+  off-front signal with far higher precision than 7%; candidates are inputs not yet in the live model (off-HN Reddit /
+  Bluesky mentions before posting, the 2025 front-page history for a larger 1 h training set, content model large).
