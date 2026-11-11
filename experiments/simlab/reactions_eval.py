@@ -2,7 +2,11 @@
 Sample: launches Aug-Oct 2026 in the thread dumps (raw/ph_predict_data/comments) with >= 8 non-team comments (team = real
 maker/poster handles); pilot N=30 then N=300 (SEED fixed). Product-only inputs: name, tagline, description, topics.
 Steps (Gemini on Vertex, temperature 0, JSON; no Claude):
-  PRED_PLAIN    the website's prompt (file passed in; placeholder until the site sends its exact prompt) -> 5 themes
+  PRED_PLAIN    placeholder theme prompt (file passed in) -> 5 themes. With SITE_FILE=<try_sim.py> BUNDLE=<person bundle>: the
+                website's REACT_PROMPT verbatim (gemini-2.5-flash-lite, temperature 0.7), launch-replay inputs (name, tagline,
+                description as summary and excerpt, pricing unknown), 6 simulated comments; PLAIN = 4 generic member types,
+                PERSONA = the site's 4 closest member types from the E5 scorer (roles + tool tier + topics); both + the 2 fixed
+                contrast types
   PRED_PERSONA  the same + "consider these user types" (the E5 role segments) -> 5 themes
   TRUTH         a separate call that sees only the real non-team comments (up to 40, 400 chars each) -> up to 8 themes,
                 each with the number of comments raising it; never sees any prediction
@@ -43,9 +47,9 @@ def post(url, body):
     return None
 
 
-def gem(prompt, maxtok=1500):
-    j = post(GEN, {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                   "generationConfig": {"temperature": 0, "maxOutputTokens": maxtok, "responseMimeType": "application/json",
+def gem(prompt, maxtok=1500, temp=0.0, url=None):
+    j = post(url or GEN, {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                   "generationConfig": {"temperature": temp, "maxOutputTokens": maxtok, "responseMimeType": "application/json",
                                         "thinkingConfig": {"thinkingBudget": 0}}})
     if not j: return None
     u = j.get("usageMetadata", {}); USE["in"] += u.get("promptTokenCount", 0); USE["out"] += u.get("candidatesTokenCount", 0)
@@ -93,7 +97,52 @@ def inputs(s):
                         "topics": ", ".join(json.loads(r.topics)) if isinstance(r.topics, str) and r.topics.startswith("[") else ""}
 
 
+SITE = os.environ.get("SITE_FILE")          # the website's try_sim.py: use its REACT_PROMPT verbatim, flash-lite, temperature 0.7
+if SITE:
+    import ast
+    SITE_PROMPT = next(n.value.value for n in ast.parse(open(SITE).read()).body if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "REACT_PROMPT")
+    SITE_URL = GEN.replace(MODEL, "gemini-2.5-flash-lite"); PRICE = (0.10, 0.40)
+    BZ = np.load(os.environ["BUNDLE"]); IE = BZ["item_emb"].astype(np.float32); PTR, IDX = BZ["person_ptr"], BZ["person_items"]
+    TR = {k: BZ[k] for k in ("tree_feat", "tree_thr", "tree_left", "tree_right", "tree_value", "tree_roots")}
+    RN = list(BZ["role_names"]); NU = BZ["n_uses"]
+    def closest_types(s, topics):
+        r = bys[s]; q = embed([f"{r.name}. {r.tagline}. {(r.description or '')[:1100]}"])[0]
+        v = IE @ q; F = np.zeros((len(PTR) - 1, 5), np.float32); ok = np.diff(PTR) > 0
+        for j in np.flatnonzero(ok):
+            x = v[IDX[PTR[j]:PTR[j + 1]]]; xs = np.sort(x)
+            F[j] = [xs[-1], xs[-5:].mean(), x.mean(), (x > float(BZ["hi"])).mean(), np.log1p(len(x))]
+        sc = np.zeros(len(F))
+        for rt in TR["tree_roots"]:
+            n = np.full(len(F), rt)
+            while True:
+                f = TR["tree_feat"][n]; leaf = f < 0
+                if leaf.all(): break
+                n = np.where(leaf, n, np.where(F[np.arange(len(F)), np.maximum(f, 0)] <= TR["tree_thr"][n], TR["tree_left"][n], TR["tree_right"][n]))
+            sc += TR["tree_value"][n]
+        sc[~ok] = -1e9; out, seen = [], set()
+        for j in np.argsort(-(sc - BZ["pct99_tree"])):
+            roles = tuple(RN[k] for k in np.flatnonzero(BZ["roles"][j])) or ("member",)
+            tier = "1-3 tools" if NU[j] <= 3 else ("4-10 tools" if NU[j] <= 10 else "11+ tools")
+            if (roles, tier) in seen: continue
+            seen.add((roles, tier)); out.append((roles, tier))
+            if len(out) == 4: break
+        return [f"User {chr(65 + i)}: {' / '.join(ro)}, {ti}, interested in {', '.join(topics[:2]) or 'this category'}" for i, (ro, ti) in enumerate(out)]
+    CONTRAST = ["User E: heavy PH voter who comments often and sees dozens of similar launches a week",
+                "User F: maker from an unrelated category, browsing the day's launches"]
+
+
 def pred(s, persona):
+    if SITE:
+        i = inputs(s); tl = [t.strip() for t in i["topics"].split(",") if t.strip()]
+        types = (closest_types(s, tl) if persona else [f"User {chr(65 + k)}: typical Product Hunt member" for k in range(4)]) + CONTRAST
+        p = SITE_PROMPT.format(name=i["name"], tagline=i["tagline"], summary=i["description"], pricing="unknown", strengths="", doubts="",
+                               excerpt=i["description"][:2500], types="\n".join(types))
+        a = gem(p, 2500, 0.7, SITE_URL)
+        return [f"{r.get('comment', '')} ({r.get('why', '')})" for r in ((a or {}).get("reactions") or []) if isinstance(r, dict)][:6]
+    return pred_plain_themes(s, persona)
+
+
+def pred_plain_themes(s, persona):
     p = PROMPT.format(**inputs(s))
     if persona: p += f"\n\nConsider how each of these user types would react before choosing the themes: {SEGS}."
     a = gem(p); th = (a or {}).get("themes") if isinstance(a, dict) else a
@@ -132,7 +181,13 @@ def judge(real, cand):
     return [bool(x) for x in ac], [bool(x) for x in bp]
 
 
-cache_f = os.path.join(OUT, "cache.json"); C = json.load(open(cache_f)) if os.path.exists(cache_f) else {}
+cache_f = os.path.join(OUT, "cache_site.json" if SITE else "cache.json")
+if SITE and not os.path.exists(cache_f) and os.path.exists(os.path.join(OUT, "cache.json")):   # reuse truth extractions only
+    _c = json.load(open(os.path.join(OUT, "cache.json"))); json.dump({k: v for k, v in _c.items() if k.startswith("truth|")}, open(cache_f, "w"))
+C = json.load(open(cache_f)) if os.path.exists(cache_f) else {}
+if SITE and os.path.exists(os.path.join(OUT, "cache.json")):                                     # add any missing truth extractions
+    for k, v in json.load(open(os.path.join(OUT, "cache.json"))).items():
+        if k.startswith("truth|") and k not in C: C[k] = v
 def run(fn, key, *a):
     if key not in C: C[key] = fn(*a)
     return C[key]
@@ -179,12 +234,12 @@ def boot(v, B=4000):
 
 MET = ["judge_recall", "judge_recall_w", "judge_precision", "emb_recall", "emb_precision", "emb_best_cos"]
 P_ = D.pivot_table(index="slug_idx", columns="cand", values=MET)
-res = {"design": __doc__.split("\n    python")[0], "model": MODEL, "eligible": len(elig), "n": len(S),
+res = {"design": __doc__.split("\n    python")[0], "model": MODEL, "site_mode": bool(SITE), "eligible": len(elig), "n": len(S),
        "usd": round(USE["in"] / 1e6 * PRICE[0] + USE["out"] / 1e6 * PRICE[1], 3), "means": {}, "paired": {}}
 for nm in cands: res["means"][nm] = {m: boot(P_[(m, nm)]) for m in MET if (m, nm) in P_}
 for a, b in (("PRED_PLAIN", "GENERIC_TOPIC"), ("PRED_PLAIN", "SHUFFLE_SAME_TOPIC"), ("PRED_PERSONA", "GENERIC_TOPIC"), ("PRED_PERSONA", "SHUFFLE_SAME_TOPIC"), ("PRED_PERSONA", "PRED_PLAIN")):
     res["paired"][f"{a} - {b}"] = {m: boot(P_[(m, a)] - P_[(m, b)]) for m in MET if (m, a) in P_ and (m, b) in P_}
 ex_s = S[0]
 res["example (first sample launch, product name withheld)"] = {"truth": [t["theme"] for t in alltruth.get(ex_s, [])], "pred_plain": cands["PRED_PLAIN"][ex_s], "generic": generic[ex_s]}
-json.dump(res, open(os.path.join(OUT, f"reactions_eval_n{N}.json"), "w"), indent=1)
+json.dump(res, open(os.path.join(OUT, f"reactions_eval_n{N}{'_site' if SITE else ''}.json"), "w"), indent=1)
 print(json.dumps({k: v for k, v in res.items() if k != "design"}, indent=1))
