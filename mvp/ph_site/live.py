@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import ast
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -65,10 +66,32 @@ def _clean_text(s) -> str:
     return " ".join(str(s or "").split())[:200]
 
 
+THUMB_HOSTS = ("ph-files.imgix.net",)
+
+
+def _thumb(v) -> str | None:
+    """Product thumbnail from PH's image CDN only (Post.thumbnail.url in the official API). Never a person avatar."""
+    if isinstance(v, dict):
+        v = v.get("url")
+    if not isinstance(v, str):
+        return None
+    m = re.match(r"^https://(ph-files\.imgix\.net)/[A-Za-z0-9._\-/]+$", v.split("?")[0])
+    if not m or m.group(1) not in THUMB_HOSTS:
+        return None
+    return v.split("?")[0] + "?auto=format&fit=crop&w=112&h=112"
+
+
 def _product(r: dict) -> dict:
     # Whitelist: product facts only. Never makers / user / hunter / website redirect.
     return {"id": str(r.get("id")), "name": _clean_text(r.get("name")), "tagline": _clean_text(r.get("tagline")),
-            "slug": _clean_text(r.get("slug")), "topics": _topics(r.get("topics"))}
+            "slug": _clean_text(r.get("slug")), "topics": _topics(r.get("topics")),
+            "thumb": _thumb(r.get("thumbnail") or r.get("thumbnail_url"))}
+
+
+def _icons(day: str) -> dict[str, str]:
+    """Optional per-day {launch_id: thumbnail url} written by the data feeder from the official API."""
+    j = gcs.read_json(f"results/web/icons/{day}.json", ttl=600) or {}
+    return {str(k): t for k, v in j.items() if (t := _thumb(v))} if isinstance(j, dict) else {}
 
 
 def available_days(limit: int = 30) -> list[str]:
@@ -153,8 +176,12 @@ def _lineup(day: str) -> dict[str, dict]:
         p = _product(r)
         if p["id"] not in prods:
             prods[p["id"]] = p
-        elif not prods[p["id"]]["topics"]:
-            prods[p["id"]]["topics"] = p["topics"]
+        else:
+            prods[p["id"]]["topics"] = prods[p["id"]]["topics"] or p["topics"]
+            prods[p["id"]]["thumb"] = prods[p["id"]]["thumb"] or p["thumb"]
+    for pid, url in _icons(day).items():
+        if pid in prods and not prods[pid]["thumb"]:
+            prods[pid]["thumb"] = url
     return prods
 
 
@@ -221,6 +248,24 @@ def hits(pred: dict[str, int], act: dict[str, dict], k: int) -> int | None:
     return len(set(pred_top) & set(actual_top))
 
 
+def current_board(day: str) -> dict:
+    """PH's own leaderboard from the latest 15-min snapshot (official API light loop). Votes only once PH shows them."""
+    rows = gcs.read_tail_jsonl(f"raw/ph_at_launch/{day}/live/posts_ts.jsonl", ttl=120)
+    rows = [r for r in rows if r.get("fetch_status") == 200 and str(r.get("day", day)) == day and r.get("snapshot_ts")]
+    if not rows:
+        return {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True}
+    last = max(r["snapshot_ts"] for r in rows)
+    snap = [r for r in rows if r["snapshot_ts"] == last]
+    hidden = sum(bool(r.get("hide_votes_count")) for r in snap) > len(snap) / 2
+    ranks = {}
+    for i, r in enumerate(sorted(snap, key=lambda r: (int(r.get("daily_rank_at_fetch") or 999), -(r.get("votes_at_fetch") or 0))), 1):
+        dr = r.get("daily_rank_at_fetch")
+        ranks[str(r["launch_id"])] = {"rank": int(dr) if dr else i,
+                                      "votes": None if hidden or r.get("votes_at_fetch") is None else int(r["votes_at_fetch"]),
+                                      "comments": int(r.get("comments_count_at_fetch") or 0)}
+    return {"as_of": last, "as_of_pt": _pt_label(last), "ranks": ranks, "votes_hidden": hidden}
+
+
 def day_view(day: str) -> dict:
     prods = _lineup(day)
     fc = forecasts(day)
@@ -245,7 +290,15 @@ def day_view(day: str) -> dict:
         launches.append({**p, "actual_rank": a.get("rank") if act["final"] else None,
                          "current_rank": a.get("rank") if act["revealed"] else None,
                          "votes": a.get("votes") if act["revealed"] else None})
+    board = current_board(day) if not act["final"] else {"as_of": act["as_of"], "as_of_pt": _pt_label(act["as_of"] or ""),
+                                                          "ranks": act["ranks"], "votes_hidden": False}
+    for x in launches:
+        b = board["ranks"].get(x["id"], {})
+        x["board_rank"] = b.get("rank")
+        x["board_votes"] = b.get("votes")
+    lead = points[-1]["key"] if points else None
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
+            "lead_point": lead, "board": {k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")},
             "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _pt_label(act["as_of"] or ""),
                        "as_of": act["as_of"]}}
 

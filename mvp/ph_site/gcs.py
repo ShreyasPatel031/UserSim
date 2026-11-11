@@ -54,6 +54,29 @@ def read_bytes(path: str, ttl: float = 300) -> bytes | None:
     return _cached("b:" + path, ttl, go)
 
 
+def read_tail_jsonl(path: str, nbytes: int = 400_000, ttl: float = 120) -> list[dict]:
+    """Last complete lines of a large append-only jsonl (ranged read; the first, partial line is dropped)."""
+    def go():
+        b = _bucket().blob(f"{ROOT}/{path}")
+        try:
+            b.reload()
+        except Exception:  # noqa: BLE001
+            return []
+        start = max(0, (b.size or 0) - nbytes)
+        raw = b.download_as_bytes(start=start).decode("utf-8", "replace")
+        lines = raw.splitlines()
+        if start > 0:
+            lines = lines[1:]
+        out = []
+        for x in lines:
+            try:
+                out.append(json.loads(x))
+            except ValueError:
+                pass
+        return out
+    return _cached("tail:" + path, ttl, go)
+
+
 def read_json(path: str, ttl: float = 300) -> Any:
     raw = read_bytes(path, ttl)
     return None if raw is None else json.loads(raw)
