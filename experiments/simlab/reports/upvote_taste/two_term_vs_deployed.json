@@ -1,0 +1,47 @@
+{
+ "two_term - deployed top3": [
+  10.5,
+  -1.8,
+  22.8,
+  19
+ ],
+ "two_term mean top3": 59.6,
+ "deployed mean top3 (same days)": 49.1,
+ "two_term - deployed top5": [
+  2.1,
+  -4.2,
+  8.4,
+  19
+ ],
+ "two_term mean top5": 67.4,
+ "deployed mean top5 (same days)": 65.3,
+ "two_term - deployed top10": [
+  0.0,
+  -5.3,
+  5.3,
+  19
+ ],
+ "two_term mean top10": 70.0,
+ "deployed mean top10 (same days)": 70.0,
+ "lm_only - deployed top3": [
+  21.1,
+  7.0,
+  33.3,
+  19
+ ],
+ "lm_only mean top3": 70.2,
+ "lm_only - deployed top5": [
+  3.2,
+  -3.2,
+  8.4,
+  19
+ ],
+ "lm_only mean top5": 68.4,
+ "lm_only - deployed top10": [
+  4.7,
+  0.5,
+  9.5,
+  19
+ ],
+ "lm_only mean top10": 74.7
+}

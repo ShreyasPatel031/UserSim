@@ -762,3 +762,15 @@ The pairing against the deployed sim waits on the PH agent's per-day numbers (re
 - On launch-day upvotes, the LM's launch popularity is what predicts each person's pick: Hit@3 0.685 and AUC 0.78, against taste-only 0.38 / 0.64.
 - Adding the person's product taste on top of the LM adds nothing measurable. Wrong taste (shuffled) hurts.
 - So for upvotes, the simulator's person level is "activity × launch popularity". Personal taste matters for the uses channel (+0.11 AUC personal), not for launch-day upvotes.
+
+### 2026-11-11 E5 — two-term user sim vs the DEPLOYED sim (paired by day)
+Deployed sim per-day hits from the PH agent (tmp/e5/deployed_sim_per_day.json; 20-day mean 50.0/65.0/70.0). Paired on the 19 shared days, day bootstrap (4000), percentage points, 95% CI:
+
+| model − deployed | top-3 | top-5 | top-10 |
+|---|---|---|---|
+| two-term (taste + a·z(LM)) | +10.5 [−1.8, 22.8] | +2.1 [−4.2, 8.4] | +0.0 [−5.3, 5.3] |
+| LM only | +21.1 [7.0, 33.3] | +3.2 [−3.2, 8.4] | +4.7 [0.5, 9.5] |
+
+Same-day means: deployed 49.1/65.3/70.0; two-term 59.6/67.4/70.0; LM-only 70.2/68.4/74.7.
+Reading: the two-term model does not beat the deployed sim at any cut-off (all CIs include 0). LM alone beats it at top-3 and top-10, so adding the taste term hurts at population level. Consistent with the person-level result (taste adds nothing on top of the LM).
+Output: experiments/simlab/reports/upvote_taste/two_term_vs_deployed.json.
