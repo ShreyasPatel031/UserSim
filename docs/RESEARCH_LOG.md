@@ -319,3 +319,25 @@ My conclusion at 01:00Z was wrong for the PH agent's model, and its 01:00Z metri
 - **The like-for-like comparison on the same 12 clean days:** my P scores 0.213 overall (Oct clean 0.168) against its w·p at 0.143 (Oct clean 0.141). The gap is real and lies in the model.
 - **The rule that stands:** rank by each model's own unconditional P(person votes for L), and keep any representativeness weight out of person metrics.
 - **Next for the PH agent:** train an unconditional P on all-people rows.
+
+### 2026-11-11 02:05Z — E5 review: the two-level sim's person route has plateaued at 00:05
+
+All iterations passed the honesty review. The PH agent's code and results are on claude/ph-ops-agent.
+
+- **Model of record: it8**, a choice model with EV = Σ A·K·S and monthly honest refits.
+  - Person R-precision 0.241. My baseline on the same rows scores 0.168 (Oct clean) and 0.299 (Nov clean); it8 scores 0.208 and 0.353.
+  - It carries a signal beyond the LM: EV coefficient +0.163 [0.100, 0.236].
+  - It does not beat the LM: top 10 about 69, against 80+ on the LM's 6 days. The leave-one-week-out blend adds nothing over 15 days.
+- **Tried and dropped:**
+  - launch priors (team and topic history);
+  - isotonic recalibration;
+  - a temperature on the shares;
+  - the reweighted negative sampling (neutral);
+  - undated follows (leaky);
+  - dated follows (no effect).
+- **Coverage is not the limit.** An oracle on the same complete people (Σ of real votes) reaches 89.5 top 10, Spearman 0.89.
+- **The gap is breakout appeal.** Real top-3 launches the model missed had as many sample voters as the hits, but P gave them only 0.33-0.46 of the probability their voters warranted. P follows each person's usual taste, and breakouts are not visible at 00:05.
+- **Next:**
+  - stop new person-model variants;
+  - run one diagnostic that swaps each part (A, K, S) for its truth on the test days, to confirm which part loses;
+  - re-test LM + it8 once about 30 LM-covered days exist.
