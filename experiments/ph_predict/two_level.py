@@ -59,6 +59,8 @@ def prepare():
 
 def _env():
     os.environ["TIE2"] = "1"
+    if os.environ.get("TL_FOL") == "1":
+        os.environ["FOLLOW"] = "baseline"   # adds fol_team, fol_team_n, pre_comment_this to FEATS (set before import)
     for k in ("PAGE", "TASTE", "HERD", "PRESENCE", "TWIN", "COMP", "RECIP", "UPV_LAG", "TRAIN_ALL"):
         os.environ.pop(k, None)
 
@@ -98,6 +100,24 @@ def _ps(P, I, E, work):
     store.RAW = os.path.join(WORK, "live"); store.load = lambda: (P, I, E)
     harness.baseline = lambda: pd.DataFrame({"id": I.id, "day": I.day, "base": 0.5})
     PS.WORK = work; os.makedirs(work, exist_ok=True); PS.load()
+    if os.environ.get("TL_FOL") == "1":   # iteration 4: dated follow edges only (E5, Nov 11 00:40Z)
+        import hashlib
+        from pipeline import warehouse as W
+        sl = sh("gsutil", "cat", f"{B}/raw/population/_salt", check=True).stdout.strip()
+        F = W.query("SELECT lower(person) AS p, lower(followee) AS f, observed_on::VARCHAR AS o FROM follows WHERE observed_on = '2026-10-26'")
+        F["pid"] = ["p_" + hashlib.sha256((sl + "producthunt:" + u).encode()).hexdigest()[:16] for u in F.p]
+        fol = F.groupby("pid").f.apply(set).to_dict(); seen = "2026-10-26"
+        g = PS.load(); dd = g["day"]; C = g["E"][g["E"].kind == "comment"]
+        precom = {(u, x) for u, x, t in zip(C.person, C.item, C.date) if x in dd and str(t)[:10] < dd[x]}
+        team_lc = {x: {str(m).lower() for m in ms if m} for x, ms in g["team"].items()}
+        def follow_features(D):
+            ok = (D.day > seen).values   # an edge counts only on days after the read that saw it
+            n = [len(fol.get(u, set()) & team_lc.get(x, set())) if o else 0 for u, x, o in zip(D.person, D.id, ok)]
+            D["fol_team_n"] = np.array(n, dtype=float); D["fol_team"] = (D.fol_team_n > 0).astype(float)
+            D["pre_comment_this"] = [float((u, x) in precom) for u, x in zip(D.person, D.id)]
+            return D
+        PS.follow_features = follow_features
+        PS.G["fol_people"] = set(fol)
     if os.environ.get("TL_LM") == "1":   # iteration 3: launch-model pull as a person-model feature (NaN where unknown)
         lm = lm_pct(); base = PS.page_cols
         def page_cols(D, _b=base):
@@ -132,13 +152,20 @@ def day(d):
     lab = Eall[(Eall.kind == "upvote") & Eall.item.isin(lineup)]
     pos = set(zip(lab.person, lab.item))
     D["y"] = [int((u, x) in pos) for u, x in zip(D.person, D.id)]
+    fol_cov = None
+    if os.environ.get("TL_FOL") == "1":
+        fp = PS.G.get("fol_people", set()); ppl = set(D.person)
+        fol_cov = {"people_with_dated_edges": len(ppl & fp) if d > "2026-10-26" else 0, "people": len(ppl),
+                   "rows_fol_team": int(D.fol_team.sum()) if "fol_team" in D else 0}
     # voters among complete people who were not active in the 30 days before d have no row: count them for recall
     seen = set(D.person); unseen = lab[~lab.person.isin(seen)].groupby("item").size()
     os.makedirs(f"{WORK}/rows_tl_{TAG}", exist_ok=True)
     D[["person", "id", "w", "p", "y", "backed"]].assign(day=d).to_parquet(f"{WORK}/rows_tl_{TAG}/{d}.parquet")
     json.dump({str(k): int(v) for k, v in unseen.items()}, open(f"{WORK}/rows_tl_{TAG}/{d}_unseen.json", "w"))
+    if fol_cov is not None:
+        json.dump(fol_cov, open(f"{WORK}/rows_tl_{TAG}/{d}_fol.json", "w"))
     print(json.dumps({"tag": TAG, "day": d, "rows": len(D), "people": int(D.person.nunique()), "positives": int(D.y.sum()),
-                      "voters_without_row": int(unseen.sum())}))
+                      "voters_without_row": int(unseen.sum()), "follow_coverage": fol_cov}))
 
 
 def boot(x, rng, n=10000):
@@ -294,7 +321,11 @@ def score():
                             "note": "person metrics and launch EV use the same rows (complete people active in the 30 days before d x the line-up)"}
     res["model_max_event_date"] = {os.path.basename(m): json.load(open(m[:-4] + ".json")).get("max_event_date") if os.path.exists(m[:-4] + ".json") else None
                                    for m in glob.glob(f"{WORK}/models_tl_{TAG}/model_*.pkl")}
-    res["follow_edges"] = "none (people get follows='[]'; no follow features enter)"
+    if os.environ.get("TL_FOL") == "1":
+        res["follow_edges"] = {"rule": "only edges seen in the warehouse read observed 2026-10-26, used on days after it (no position propagation)",
+                               "coverage_per_day": {os.path.basename(f)[:10]: json.load(open(f)) for f in sorted(glob.glob(f"{WORK}/rows_tl_{TAG}/*_fol.json"))}}
+    else:
+        res["follow_edges"] = "none (no follow features enter)"
     Q["week"] = pd.to_datetime(Q.day).dt.strftime("%G-W%V")
     wk = {}
     for w, g in Q.groupby("week"):
