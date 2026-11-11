@@ -406,8 +406,16 @@ def score():
         auc = roc_auc_score(R.y, q) if R.y.nunique() > 1 else np.nan
         ll = log_loss(R.y, q)
         g = R[R.groupby("person").y.transform("sum") > 0]
-        top3 = g[g.groupby("person").p.rank(ascending=False, method="first") <= 3]
+        rq = g.assign(q=g.w * g.p).groupby("person").q.rank(ascending=False, method="first")   # rank by the person's own P
+        top3 = g[rq <= 3]
         hit3 = top3.groupby("person").y.max().mean() if len(top3) else np.nan
+        hit1 = g[rq <= 1].groupby("person").y.max().mean() if len(g) else np.nan
+        pauc = []   # per-person AUC over the day's line-up (voters only, need a positive and a negative)
+        for _, gp in g.groupby("person"):
+            if 0 < gp.y.sum() < len(gp):
+                pauc.append(roc_auc_score(gp.y, gp.w * gp.p))
+        qq = q.values; yy = R.y.values; bins = np.minimum((qq * 10).astype(int), 9)   # calibration (ECE, 10 bins of P)
+        ece = float(sum(abs(qq[bins == b].mean() - yy[bins == b].mean()) * (bins == b).mean() for b in range(10) if (bins == b).any()))
         rec, rp, rpp = [], [], []
         for x, gx in R.groupby("id"):
             n = int(gx.y.sum()) + int(unseen.get(x, 0))
@@ -417,7 +425,8 @@ def score():
             if m:
                 rp.append(gx.assign(q=gx.w * gx.p).nlargest(m, "q").y.sum() / m)
                 rpp.append(gx.nlargest(m, "p").y.sum() / m)   # E5 Nov 11: rank by P (w is a population weight, EV only)
-        per.append({"day": d, "auc": auc, "logloss": ll, "hit3": hit3, "voter_recall": float(np.mean(rec)) if rec else np.nan,
+        per.append({"day": d, "auc": auc, "logloss": ll, "hit3": hit3, "hit1": hit1, "person_auc": float(np.mean(pauc)) if pauc else np.nan,
+                    "ece": ece, "mean_p": float(qq.mean()), "mean_y": float(yy.mean()), "voter_recall": float(np.mean(rec)) if rec else np.nan,
                     "voter_rprec": float(np.mean(rp)) if rp else np.nan, "voter_rprec_p": float(np.mean(rpp)) if rpp else np.nan})
         ev = R.assign(e=R.w * R.p).groupby("id").e.sum(); orc = R.groupby("id").y.sum()   # oracle (E5): sum of the sample's real votes, w = 1
         for x, e in ev.items():
@@ -427,7 +436,7 @@ def score():
     Pm = pd.DataFrame(per); Q = pd.DataFrame(pop).dropna(subset=["rank"])
     rng = np.random.default_rng(0)
     res = {"tag": TAG, "weights": os.environ.get("WEIGHTS", "act"), "days": sorted(Q.day.unique().tolist())}
-    res["person"] = {k: boot(Pm[k].values, rng) for k in ("auc", "logloss", "hit3", "voter_recall", "voter_rprec", "voter_rprec_p")}
+    res["person"] = {k: boot(Pm[k].values, rng) for k in ("auc", "logloss", "hit1", "hit3", "person_auc", "voter_recall", "voter_rprec", "voter_rprec_p", "ece", "mean_p", "mean_y")}
     cl = Pm[~Pm.day.isin(SELECTED)]
     res["person_rprec_p_split"] = {"clean": boot(cl.voter_rprec_p.values, rng), "oct_clean": boot(cl[cl.day < "2026-11-01"].voter_rprec_p.values, rng),
                                    "nov_clean": boot(cl[cl.day >= "2026-11-01"].voter_rprec_p.values, rng),
@@ -636,6 +645,7 @@ def resid():
     json.dump(res, open(os.path.join(HERE, "results", f"two_level_resid_{TAG}{SFX()}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
 
 
+PH_CTX = {"backed", "cf_team", "nbr_team", "nbr_pop", "team_recent"}   # PH mobilisation inputs (+ tie_*, team_*), off with TL_NOCTX=1
 ACT_COLS = ["w_act", "days_since", "act_7", "log_act_30", "log_act_all", "tenure", "dow"]
 
 
@@ -678,6 +688,8 @@ def choice():
             X = X[ok(X.person, d)].copy()
         if AF is not None:   # it9b: product attributes x person attribute preference (attr_feats.py)
             AF.add(X, d)
+        if os.environ.get("TL_NOCTX") == "1":   # product-only: drop the PH-context block (team ties, makers'/hunter's network)
+            X = X.drop(columns=[c for c in X.columns if c in PH_CTX or c.startswith(("tie_", "team_"))])
         taste = [c for c in X.columns if c not in ["person", "id", "y"] + ACT_COLS]
         g = X.groupby("person")
         for c in taste:   # within-person-day contrasts over the line-up
