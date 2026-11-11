@@ -1,0 +1,28 @@
+{
+  "art": "/agent/repos/usersim/results/ph_scale_ud/20261108T031811Z",
+  "go": "run:scaleud-20261108t031811z",
+  "arms": [
+    [
+      "a",
+      "scale_up",
+      20,
+      2,
+      0.0951022349025202,
+      210.3
+    ],
+    [
+      "d",
+      "scale_down",
+      20,
+      2,
+      0.09535160905840286,
+      209.75
+    ]
+  ],
+  "winner": {
+    "sid": "d",
+    "strat": "scale_down",
+    "people_per_min": 0.09535160905840286,
+    "blocks": 2
+  }
+}

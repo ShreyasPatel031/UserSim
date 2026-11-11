@@ -1,0 +1,31 @@
+Setup timing — where the minutes go (RUN 20261107t170953z)
+
+PHASES (must sum; gap_s should be ~0 once all markers exist)
+  create → supervisor     warm template boot (~1 min)
+  supervisor → launch     GO wait + ANY restart/ops tax  ← this was the "missing half"
+  launch → identity       GeoIP + GCS queue scan + Camoufox open
+  identity → first_pull   CF clear done → first GraphQL `paged`
+
+WHY create→first_pull looked like 20 min (strategy A, pre-fix)
+  boot 76s + ops/GO+restarts 676s + identity 412s + to_pull 45s = 1209s
+  The 676s was US killing/restarting VMs, not image install.
+
+GEOIP FIX (2026-11-07T17:53Z relaunch B/D)
+  Root cause: camoufox needs_update() rechecks when mmdb mtime > 1 day.
+  Golden image had Nov 4 mtime → every session re-downloaded 53MB GeoIP.
+  Fix: ensure_geoip.sh restores cache from GCS if missing, then `touch` mmdbs.
+  Result on D relaunch: NO "Downloading GeoIP" line; geoip_ensure 0s.
+
+D relaunch (geoip fixed, home port 10025, tabs 8)
+  launch 17:53:41Z → identity 17:59:32Z = 351s (queue/browser, not geoip)
+  identity → first_pull ≈ 45s
+  launch → first_pull ≈ 6.6 min
+  Still pulling as of measurement.
+
+B relaunch (geoip fixed, forced home 10022)
+  No GeoIP download; fingerprint on port 10022 (was wrongly 10000 before).
+  launch→identity still ~7 min from GCS week_bytes/handle scan before browser.
+
+REMAINING IDENTITY TAX (after geoip)
+  ph_batch does many gsutil cats (week_bytes, priority lists, claims) before open_browser.
+  Next optimization target: defer/cache week_bytes until after browser is up.

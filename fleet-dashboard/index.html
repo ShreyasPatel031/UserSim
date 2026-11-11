@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PH fleet live</title>
+    <script src="config.js"></script>
+    <style>
+      :root {
+        --bg: #0f1117;
+        --card: #181b23;
+        --text: #e6e8ec;
+        --muted: #9aa3b2;
+        --warn: #d4a012;
+        --ok: #3dba6c;
+        --border: #2a2f3a;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.45;
+        padding: 24px;
+        max-width: 960px;
+        margin-inline: auto;
+      }
+      h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 4px; }
+      .meta { color: var(--muted); font-size: 0.875rem; margin-bottom: 20px; }
+      .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+      .pill {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--card);
+      }
+      .pill.warn { border-color: var(--warn); color: var(--warn); }
+      .pill.ok { border-color: var(--ok); color: var(--ok); }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px;
+      }
+      .stat .v { font-size: 1.5rem; font-weight: 600; }
+      .stat .l { font-size: 0.7rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+      section { margin-bottom: 28px; }
+      h2 { font-size: 0.85rem; font-weight: 600; margin: 0 0 10px; color: var(--muted); }
+      table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+      th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+      th { color: var(--muted); font-weight: 500; }
+      .err { color: #e85d5d; padding: 12px; border: 1px solid #5a2a2a; border-radius: 8px; background: #1a1010; }
+      #live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); margin-right: 6px; animation: pulse 2s infinite; }
+      @keyframes pulse { 50% { opacity: 0.35; } }
+      .chart-wrap {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px 8px;
+        margin-bottom: 24px;
+      }
+      .chart-wrap svg { width: 100%; height: auto; display: block; }
+      .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.7rem; color: var(--muted); margin-top: 8px; }
+      .legend span::before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 3px;
+        margin-right: 5px;
+        vertical-align: middle;
+        background: currentColor;
+      }
+      .drivers { font-size: 0.78rem; }
+      .drivers .up { color: var(--ok); }
+      .drivers .down { color: #e85d5d; }
+      .drivers .flat { color: var(--muted); }
+      .drivers ul { margin: 4px 0 0; padding-left: 1.1rem; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <h1><span id="live-dot"></span>PH fleet — live dashboard</h1>
+    <p class="meta" id="meta">Loading…</p>
+    <div class="pills" id="pills"></div>
+    <div class="grid" id="stats"></div>
+    <section class="chart-wrap">
+      <h2>Complete people/min — progress</h2>
+      <div id="progress-chart"></div>
+      <div class="legend" id="chart-legend"></div>
+    </section>
+    <section>
+      <h2>What moved throughput</h2>
+      <div id="drivers" class="drivers"></div>
+    </section>
+    <section>
+      <h2>Active slots</h2>
+      <table>
+        <thead><tr><th>Slot</th><th>Complete/min</th><th>complete/attempt</th><th>Last write</th></tr></thead>
+        <tbody id="active-rows"></tbody>
+      </table>
+    </section>
+    <section>
+      <h2>State summary</h2>
+      <table>
+        <thead><tr><th>State</th><th>Count</th><th>Slots</th></tr></thead>
+        <tbody id="state-rows"></tbody>
+      </table>
+    </section>
+    <p class="meta" id="refresh-note">Auto-refresh every 30s</p>
+    <script>
+      const LOCAL_FALLBACK = "snapshot.json";
+      function snapshotUrl() {
+        const u = window.FLEET_SNAPSHOT_URL;
+        return u && String(u).length ? u : LOCAL_FALLBACK;
+      }
+      function fmtEt(utc) {
+        try {
+          return new Date(utc).toLocaleString("en-US", { timeZone: "America/New_York", hour: "numeric", minute: "2-digit" });
+        } catch { return utc; }
+      }
+      function groupSlots(slots) {
+        const m = {};
+        for (const r of slots || []) {
+          const st = r.state || "unknown";
+          (m[st] ||= []).push(r.slot);
+        }
+        const rows = [];
+        const order = { active: 1, stale: 2, cf_wall: 3, cold: 4, dead: 5 };
+        for (const [st, ids] of Object.entries(m).sort((a, b) => (order[a[0]]||9)-(order[b[0]]||9))) {
+          const label = st === "cf_wall" ? "CF wall" : st;
+          rows.push([label, ids.length, ids.sort((a,b)=>a-b).join(", ")]);
+        }
+        return rows;
+      }
+      let historyCache = null;
+
+      function drawChart(h) {
+        const el = document.getElementById("progress-chart");
+        const leg = document.getElementById("chart-legend");
+        if (!h || !h.series || h.series.length < 2) {
+          el.innerHTML = '<p class="meta">Collecting history…</p>';
+          leg.innerHTML = "";
+          return;
+        }
+        const W = 880, H = 220, pad = { l: 44, r: 12, t: 16, b: 36 };
+        const pts = h.series;
+        const xs = pts.map((p) => new Date(p.utc).getTime());
+        const ys = pts.map((p) => p.complete_ppm);
+        const yMax = Math.max(h.target_hi * 1.15, Math.max(...ys) + 2);
+        const yMin = 0;
+        const x0 = Math.min(...xs), x1 = Math.max(...xs);
+        const sx = (t) => pad.l + ((t - x0) / (x1 - x0 || 1)) * (W - pad.l - pad.r);
+        const sy = (v) => pad.t + (1 - (v - yMin) / (yMax - yMin)) * (H - pad.t - pad.b);
+        const line = pts.map((p, i) => `${i ? "L" : "M"}${sx(xs[i]).toFixed(1)},${sy(ys[i]).toFixed(1)}`).join(" ");
+        const bandY0 = sy(h.target_hi), bandY1 = sy(h.target_lo);
+        const milestones = (h.milestones || []).filter((m) => {
+          const t = new Date(m.utc).getTime();
+          return t >= x0 && t <= x1;
+        });
+        const msMarks = milestones
+          .map((m) => {
+            const x = sx(new Date(m.utc).getTime());
+            const col = m.kind === "fix" ? "#6ab0ff" : m.kind === "scale" ? "#d4a012" : "#3dba6c";
+            return `<line x1="${x}" y1="${pad.t}" x2="${x}" y2="${H - pad.b}" stroke="${col}" stroke-opacity="0.35" stroke-dasharray="3,3"/>
+              <title>${m.label}</title>`;
+          })
+          .join("");
+        const yTicks = [0, h.target_lo, h.target_hi, Math.ceil(yMax / 5) * 5].filter((v, i, a) => a.indexOf(v) === i);
+        const yGrid = yTicks
+          .map((v) => `<line x1="${pad.l}" y1="${sy(v)}" x2="${W - pad.r}" y2="${sy(v)}" stroke="#2a2f3a" stroke-width="1"/>
+            <text x="${pad.l - 6}" y="${sy(v) + 4}" text-anchor="end" fill="#9aa3b2" font-size="10">${v}</text>`)
+          .join("");
+        el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Complete people per minute over time">
+          <rect x="${pad.l}" y="${bandY0}" width="${W - pad.l - pad.r}" height="${bandY1 - bandY0}" fill="#3dba6c" fill-opacity="0.08"/>
+          ${yGrid}
+          ${msMarks}
+          <path d="${line}" fill="none" stroke="#6ab0ff" stroke-width="2.5" stroke-linejoin="round"/>
+          ${pts.map((p, i) => `<circle cx="${sx(xs[i])}" cy="${sy(ys[i])}" r="3" fill="#e6e8ec"><title>${fmtEt(p.utc)}: ${ys[i].toFixed(1)} complete/min, ${p.vms} VMs</title></circle>`).join("")}
+        </svg>`;
+        leg.innerHTML =
+          `<span style="color:#6ab0ff">Complete/min</span>` +
+          `<span style="color:#3dba6c">Target band 20–30</span>` +
+          `<span style="color:#6ab0ff">Fix deploy</span>` +
+          `<span style="color:#d4a012">Scale change</span>` +
+          `<span style="color:#3dba6c">Recovery</span>`;
+      }
+
+      function renderDrivers(h) {
+        const el = document.getElementById("drivers");
+        if (!h || !h.drivers || !h.drivers.length) {
+          el.innerHTML = '<p class="meta">Driver breakdown after the next check-in.</p>';
+          return;
+        }
+        const rows = h.drivers
+          .filter((d) => Math.abs(d.delta_ppm) >= 1)
+          .slice(0, 8)
+          .map((d) => {
+            const fac = (d.factors || [])
+              .map((f) => `<li>${f.label}${f.est_ppm != null ? ` (~${f.est_ppm > 0 ? "+" : ""}${f.est_ppm} ppm)` : ""}${f.detail ? ` — ${f.detail}` : ""}</li>`)
+              .join("");
+            return `<div class="${d.direction}"><strong>${d.delta_ppm > 0 ? "+" : ""}${d.delta_ppm.toFixed(1)} complete/min</strong> · ${fmtEt(d.from_utc)} → ${fmtEt(d.to_utc)}${fac ? `<ul>${fac}</ul>` : ""}</div>`;
+          })
+          .join("");
+        const peak = h.peak, trough = h.trough, latest = h.latest;
+        const summary =
+          latest && peak
+            ? `<p class="meta">Now <strong>${latest.complete_ppm.toFixed(1)}</strong>/min on ${latest.vms} VMs (${latest.active_vms} pulling). Peak <strong>${peak.complete_ppm.toFixed(1)}</strong> (${fmtEt(peak.utc)}); low <strong>${trough.complete_ppm.toFixed(1)}</strong> (${fmtEt(trough.utc)}).</p>`
+            : "";
+        el.innerHTML = summary + rows;
+      }
+
+      function render(d) {
+        const ppm = d.complete_ppm ?? d.realized_ppm ?? d.fleet_ppm ?? 0;
+        const attempt = d.attempt_ppm;
+        const rerun = d.rerun_ppm;
+        const target = d.target_lo ?? 20;
+        const ok = ppm >= target;
+        document.getElementById("meta").textContent =
+          `Measured ${d.utc || "—"} (${fmtEt(d.utc)} ET) · run ${d.run_id || "—"}`;
+        document.getElementById("pills").innerHTML =
+          `<span class="pill ${ok ? "ok" : "warn"}">${ppm.toFixed(2)} complete/min</span>` +
+          (attempt != null ? `<span class="pill warn">${Number(attempt).toFixed(2)} attempts/min</span>` : "") +
+          (rerun != null ? `<span class="pill">${Number(rerun).toFixed(2)} reruns/min</span>` : "") +
+          `<span class="pill">target ${target}–${d.target_hi ?? 30} complete</span>` +
+          `<span class="pill">${d.vms ?? "—"} VMs</span>`;
+        const cost = d.dashboard?.compute_usd_per_day ?? d.compute_usd_per_day;
+        const costHr = d.dashboard?.compute_usd_per_hour ?? d.compute_usd_per_hour;
+        const eff = costHr > 0 ? ppm / costHr : null;
+        const stats = [
+          [ppm.toFixed(2), "Complete people/min"],
+          [attempt != null ? Number(attempt).toFixed(2) : "—", "Attempts/min (incl. reruns)"],
+          [String(d.vms ?? "—"), "VMs"],
+          [`${d.active_vms ?? 0}/${d.vms ?? "—"}`, "Active last 5m"],
+          [cost != null ? "$" + Number(cost).toFixed(2) : "—", "Compute $/day"],
+          [eff != null ? eff.toFixed(2) : "—", "People/min per $/hr VM"],
+          [String(d.productive_vms ?? "—"), "Productive slots"],
+          [String(d.stale_vms ?? "—"), "Stale"],
+          [String(d.cold_vms ?? "—"), "CF wall / cold"],
+          [String(d.vms_needed_for_20 ?? "—"), "Est. VMs @ current rate"],
+        ];
+        document.getElementById("stats").innerHTML = stats
+          .map(([v, l]) => `<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`)
+          .join("");
+        const active = (d.slots || []).filter((r) => r.state === "active").sort(
+          (a, b) => (b.ppm_complete || b.ppm || 0) - (a.ppm_complete || a.ppm || 0)
+        );
+        document.getElementById("active-rows").innerHTML = active.length
+          ? active.map((r) =>
+              `<tr><td>${r.slot}</td><td>${(r.ppm_complete || r.ppm || 0).toFixed(2)}</td><td>${r.n_complete ?? "—"}/${r.n ?? "—"}</td><td>${r.age >= 0 ? r.age + "s" : "—"}</td></tr>`
+            ).join("")
+          : `<tr><td colspan="4">No active slots in last 5m</td></tr>`;
+        document.getElementById("state-rows").innerHTML = groupSlots(d.slots)
+          .map(([st, n, slots]) => `<tr><td>${st}</td><td>${n}</td><td>${slots}</td></tr>`)
+          .join("");
+        document.getElementById("refresh-note").textContent =
+          `Auto-refresh every 30s · last fetch ${new Date().toLocaleTimeString()}`;
+      }
+      async function loadHistory() {
+        try {
+          const r = await fetch("history.json?t=" + Date.now(), { cache: "no-store" });
+          if (!r.ok) return null;
+          return await r.json();
+        } catch { return null; }
+      }
+
+      async function load() {
+        const base = snapshotUrl();
+        const url = base + (base.includes("?") ? "&" : "?") + "t=" + Date.now();
+        try {
+          const [snap, hist] = await Promise.all([
+            fetch(url, { cache: "no-store" }).then((r) => (r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status)))),
+            loadHistory(),
+          ]);
+          historyCache = hist || historyCache;
+          render(snap);
+          if (historyCache) {
+            drawChart(historyCache);
+            renderDrivers(historyCache);
+          }
+        } catch (e) {
+          document.getElementById("meta").innerHTML =
+            `<span class="err">Could not load snapshot: ${e.message}. Retrying…</span>`;
+        }
+      }
+      load();
+      setInterval(load, 30000);
+    </script>
+  </body>
+</html>
