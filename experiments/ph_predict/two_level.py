@@ -72,11 +72,39 @@ def _load(before):
     return P, I, E, Elab
 
 
+def lm_pct():
+    """Launch-model score known at 00:05 PT, as a within-day percentile: the honest backtest prediction (honest_preds
+    'honest', rolling monthly, out of sample; through Oct 25) and the live forecast (forecasts table, Oct 25 on)."""
+    path = os.path.join(WORK, "lm_pct.parquet")
+    if os.path.exists(path):
+        M = pd.read_parquet(path)
+    else:
+        from pipeline import warehouse as W
+        rows = []
+        hp = os.environ.get("HONEST_PREDS")
+        if hp and os.path.exists(hp):
+            H = pd.read_parquet(hp); rows.append(pd.DataFrame({"day": H.day.astype(str), "id": H.id.astype(str), "s": H.honest.astype(float), "src": "honest"}))
+        F = W.query("SELECT CAST(launch_id AS VARCHAR) AS id, forecast_date AS day, predicted_rank FROM forecasts WHERE model = 'launch_model'")
+        rows.append(pd.DataFrame({"day": F.day, "id": F.id, "s": -np.log(F.predicted_rank.astype(float)), "src": "live"}))
+        M = pd.concat(rows)
+        M = M[~M.duplicated(["day", "id"], keep="last")]      # live wins where both exist (Oct 25)
+        M["lm_pct"] = M.groupby(["day", "src"]).s.rank(pct=True)
+        M[["day", "id", "lm_pct"]].to_parquet(path)
+    return {(d, i): v for d, i, v in zip(M.day, M.id, M.lm_pct)}
+
+
 def _ps(P, I, E, work):
     from simlab import store, harness, popscore as PS
     store.RAW = os.path.join(WORK, "live"); store.load = lambda: (P, I, E)
     harness.baseline = lambda: pd.DataFrame({"id": I.id, "day": I.day, "base": 0.5})
     PS.WORK = work; os.makedirs(work, exist_ok=True); PS.load()
+    if os.environ.get("TL_LM") == "1":   # iteration 3: launch-model pull as a person-model feature (NaN where unknown)
+        lm = lm_pct(); base = PS.page_cols
+        def page_cols(D, _b=base):
+            D, pc = _b(D)
+            D = D.assign(lm_pct=[lm.get((d, str(x)), np.nan) for d, x in zip(D.day, D.id)])
+            return D, list(pc) + ["lm_pct"]
+        PS.page_cols = page_cols
     return PS
 
 
