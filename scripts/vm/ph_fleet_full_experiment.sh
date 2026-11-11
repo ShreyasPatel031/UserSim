@@ -320,8 +320,12 @@ keeper_one_pass() {
   block_pause=0
   grep -qE '^PH_FLEET_BLOCK_PAUSE=1' "$STRATEGY_ENV" 2>/dev/null && block_pause=1
   low_ppm=0
+  fleet_recover=0
+  keeper_nudge_budget=99
   if [[ -f "$ART/fleet_measure.json" ]]; then
     low_ppm=$(python3 -c "import json; m=json.load(open('$ART/fleet_measure.json')); c=float(m.get('complete_ppm') or 0); a=float(m.get('attempt_ppm') or 0); print(1 if c < 5 and a < 5 else 0)" 2>/dev/null || echo 0)
+    fleet_recover=$(python3 -c "import json; m=json.load(open('$ART/fleet_measure.json')); c=float(m.get('complete_ppm') or 0); lo=float('${FLEET_TARGET_LO:-20}'); print(1 if c < lo else 0)" 2>/dev/null || echo 0)
+    [[ "$fleet_recover" -eq 1 ]] && keeper_nudge_budget=2
   fi
   now=$(date +%s)
   while IFS=$'\t' read -r slot port; do
@@ -368,6 +372,8 @@ SUP_TAIL="
         echo "KEEPER skip nudge slot=$slot dead_${dead_for}s (PH_FLEET_BLOCK_PAUSE)" | tee -a "$ART/keeper.log"
       elif [[ "$low_ppm" -eq 1 && "$dead_for" -lt 900 ]]; then
         echo "KEEPER skip recover slot=$slot dead_${dead_for}s (fleet_ppm<5 — supervisor backoff)" | tee -a "$ART/keeper.log"
+      elif [[ "$keeper_nudge_budget" -le 0 ]]; then
+        echo "KEEPER skip recover slot=$slot (nudge budget exhausted below target)" | tee -a "$ART/keeper.log"
       elif [[ "$dead_for" -ge "$KEEPER_DEAD_SEC" && "$nudge_age" -ge "$KEEPER_DEAD_SEC" ]]; then
         # Prefer in-place relaunch (new GO). Full recreate only if already nudged twice with no batch.
         nudges=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('nudge_fail',0))" 2>/dev/null || echo 0)
@@ -382,6 +388,7 @@ p.write_text(json.dumps(st, indent=2))
 PY
         else
           nudge_go "$slot" "dead_${dead_for}s"
+          keeper_nudge_budget=$((keeper_nudge_budget - 1))
           python3 - <<PY
 import json
 from pathlib import Path
@@ -407,8 +414,8 @@ PY
     if [[ "$stall_for" -ge "$KEEPER_STALL_SEC" ]]; then
       if [[ "$block_pause" -eq 1 ]]; then
         echo "KEEPER skip stall nudge slot=$slot (PH_FLEET_BLOCK_PAUSE)" | tee -a "$ART/keeper.log"
-      elif [[ "$low_ppm" -eq 1 ]]; then
-        echo "KEEPER skip stall nudge slot=$slot (fleet_ppm<5)" | tee -a "$ART/keeper.log"
+      elif [[ "$low_ppm" -eq 1 || "$fleet_recover" -eq 1 ]]; then
+        echo "KEEPER skip stall nudge slot=$slot (below target)" | tee -a "$ART/keeper.log"
       else
         nudge_go "$slot" "stall_${stall_for}s"
       fi
