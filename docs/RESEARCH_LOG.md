@@ -651,3 +651,28 @@ Neither candidate has a CI-positive top 3 or top 5 on Mar–Oct, so the verdict 
 3. **Who the person is (headline/bio/roles) adds little:** personal +0.006, AUC +0.008.
 4. **Richer API text adds about +0.007;** bge-base adds about +0.03.
 5. **Best person-level "uses" model so far:** S4np, AUC 0.747, personal 0.117, on leak-controlled sets.
+
+### 2026-11-11 10:05Z — RESULT (E5): the learned taste scorer (uses S4np recipe) applied to upvotes on launches, product-only
+
+- **Rows:** the PH agent's 19-day rows, 2.62M.
+- **Training:** honest monthly. Oct ← Sep 18–Oct 18 (529k rows); Nov ← Oct 1–30 (449k rows).
+- **Shuffled control:** each test person-day is also scored with another person's history and who-features.
+- **Code and results:** `experiments/simlab/upvote_taste_learned.py`, `reports/upvote_taste/upvote_taste_learned.json`.
+
+Day-bootstrap 95% CIs; "vs E5" is paired by day:
+
+| full line-up | Hit@1 | Hit@3 | within-line-up AUC |
+|---|---|---|---|
+| random | 0.099 | 0.245 | 0.500 |
+| E5 taste logistic (TF-IDF/topic taste + activity) | 0.177 | 0.383 | 0.642 |
+| it9b product-only (PH agent, same days) | 0.162 | 0.370 | 0.641 |
+| learned kNN scorer + who | 0.171 | 0.371 | 0.627; vs E5 −0.016 [−0.050, 0.022] |
+| learned, shuffled profile | 0.129 | 0.313 | 0.594 |
+| **personal part (learned − shuffled)** | +0.042 [0.020, 0.069] | +0.058 [0.025, 0.090] | **+0.033 [0.011, 0.055]** |
+
+On cold-only line-ups (makers with no earlier launch; 80% of rows), the learned AUC is 0.623 vs E5 0.648, personal +0.027.
+
+**Reading**
+1. **On upvotes, the learned scorer does not beat the simpler taste logistic or it9b** (all about 0.63–0.64 AUC).
+2. **The personal part is about +0.03 AUC on upvotes, against +0.11 on uses** (stacks/reviews/collections). Upvotes are much less taste-driven than what people actually use. This is consistent with the exposure findings: about 1% of within-day choice variance is taste, about 18% is the day's popularity.
+3. **For the user sim:** taste models transfer, but an upvote is a weak taste signal. The use labels are the cleaner target for "would this person want this product".
