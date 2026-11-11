@@ -198,7 +198,10 @@ def actuals(day: str) -> dict:
             if mr:
                 ranks, at, src, final = mr, mat, "monthly_reread", True
             else:
-                top = _scoreboard_top10(day)
+                lu = gcs.read_json(f"results/web/lineup/{day}.json", ttl=3600) or {}
+                top = {str(r["id"]): {"rank": int(r["daily_rank"]), "votes": r.get("votes")}
+                       for r in (lu.get("launches") or []) if isinstance(r, dict) and r.get("daily_rank")} \
+                    or _scoreboard_top10(day)
                 if top:
                     ranks, src, final = top, "scoreboard_top10", True
                     at = datetime.fromisoformat(day).replace(hour=23, minute=59, tzinfo=PT).isoformat()
@@ -214,6 +217,10 @@ def _lineup(day: str) -> dict[str, dict]:
     for r in t if isinstance(t, list) else []:
         p = _product(r)
         prods[p["id"]] = p
+    lu = gcs.read_json(f"results/web/lineup/{day}.json", ttl=3600) or {}
+    for r in lu.get("launches") or [] if isinstance(lu, dict) else []:
+        p = _product(r)
+        prods.setdefault(p["id"], p)
     rows, _ = _api_detail(day)
     for r in rows:
         p = _product(r)
