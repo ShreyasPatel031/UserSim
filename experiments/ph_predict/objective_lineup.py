@@ -72,8 +72,10 @@ def job(a):
     for k in (3, 10):
         out[f"clf{k}"] = lgb.LGBMClassifier(**P).fit(tr[cols], (tr.dailyRank <= k).astype(int)).predict_proba(te[cols])[:, 1]
     from sklearn.linear_model import Ridge
-    med = tr[cols].median(); mu = tr[cols].fillna(med).mean(); sd = tr[cols].fillna(med).std() + 1e-9
-    out["ridge"] = Ridge(alpha=10.0).fit((tr[cols].fillna(med) - mu) / sd, tr.logv).predict((te[cols].fillna(med) - mu) / sd)
+    med = tr[cols].median().fillna(0.0)   # columns empty in the training months -> 0
+    Xtr = tr[cols].astype(float).fillna(med); Xte = te[cols].astype(float).fillna(med)
+    mu = Xtr.mean(); sd = Xtr.std().fillna(0.0) + 1e-9
+    out["ridge"] = Ridge(alpha=10.0).fit(((Xtr - mu) / sd).fillna(0.0), tr.logv).predict(((Xte - mu) / sd).fillna(0.0))
     return pd.DataFrame(out)
 
 
