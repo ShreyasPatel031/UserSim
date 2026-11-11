@@ -13,10 +13,18 @@ def test_product_whitelist_drops_people():
          "makers": [{"username": "someone", "name": "Some One"}], "user": {"username": "hunter1"},
          "website": "https://x/r?utm=1"}
     p = live._product(r)
-    assert set(p) == {"id", "name", "tagline", "slug", "topics"}
+    assert set(p) == {"id", "name", "tagline", "slug", "topics", "thumb"}
+    assert p["thumb"] is None
     s = json.dumps(p)
     assert "someone" not in s and "hunter1" not in s and "Some One" not in s
     assert p["topics"] == ["SaaS"]
+
+
+def test_thumb_only_ph_cdn():
+    assert live._thumb({"url": "https://ph-files.imgix.net/abc-1.png?w=1"}).startswith("https://ph-files.imgix.net/abc-1.png?")
+    for bad in ("https://evil.example/x.png", "http://ph-files.imgix.net/a.png", "javascript:alert(1)",
+                "https://ph-files.imgix.net.evil.com/a.png", "https://ph-files.imgix.net/a\"onerror=x.png", None, 5):
+        assert live._thumb(bad) is None
 
 
 def test_topics_from_stringified_api_detail():
