@@ -1,0 +1,532 @@
+{
+ "design": "Raise the \"what users will say\" metric (orchestrator 02:00Z Nov 12). Same 300 launches, truth themes, blinded judge and\nrecall/precision definitions as reactions_eval.py (site mode); every variant is paired by launch against the site's current\npipeline (V0 = REACT_PROMPT verbatim, flash-lite, temperature 0.7, 6 comments, E5 member types + 2 contrast types).\nVariants\n  R{k}      retrieval grounding, k = 3/5/10: the k most similar launches dated strictly BEFORE the target (gemini-embedding of\n            name + tagline + description; excluded: shared real maker/poster, same product family = same slug stem or the same\n            name), their real non-team comments condensed to themes by flash-lite (themes only, never verbatim comments) and\n            added to the prompt as \"users of similar past products raised: ...\".\n  N10/N15   10 / 15 comments (member types extended with generic PH member types).\n  TWO       two passes: (1) list expected themes by type (praise, objection, question, feature request, comparison),\n            (2) write the comments from those themes.\n  FLASH3    gemini-2.5-flash, temperature 0.3.   LITE3: flash-lite, temperature 0.3.\n  SITE      the product's own site text (sites.jsonl, live fetch) as the page excerpt where held, else the PH description.\n  BEST      the best retrieval k combined with the best of the other levers (chosen on the primary run, reported as such).\nCross-judge: V0 and BEST on 100 launches with a second, differently worded judge (per real theme: 0 = not addressed,\n1 = same area, 2 = same specific point; covered = 2).",
+ "variants": {
+  "R3": {
+   "cfg": {
+    "k": 3
+   },
+   "recall": [
+    43.1,
+    40.6,
+    45.7,
+    298
+   ],
+   "recall_w": [
+    50.3,
+    47.3,
+    53.2,
+    298
+   ],
+   "precision": [
+    44.6,
+    41.7,
+    47.5,
+    298
+   ],
+   "recall - V0 (paired)": [
+    3.1,
+    0.5,
+    5.8,
+    298
+   ],
+   "recall_w - V0 (paired)": [
+    3.5,
+    0.4,
+    6.6,
+    298
+   ],
+   "precision - V0 (paired)": [
+    1.1,
+    -2.1,
+    4.3,
+    298
+   ],
+   "gen_usd_per_request": 0.00102,
+   "median_latency_s": 2.77,
+   "calls_per_request": 1
+  },
+  "R5": {
+   "cfg": {
+    "k": 5
+   },
+   "recall": [
+    43.6,
+    41.3,
+    46.1,
+    299
+   ],
+   "recall_w": [
+    51.0,
+    48.1,
+    53.9,
+    299
+   ],
+   "precision": [
+    48.0,
+    45.2,
+    50.9,
+    299
+   ],
+   "recall - V0 (paired)": [
+    3.7,
+    1.3,
+    6.1,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    4.1,
+    1.2,
+    7.1,
+    299
+   ],
+   "precision - V0 (paired)": [
+    4.5,
+    1.3,
+    7.6,
+    299
+   ],
+   "gen_usd_per_request": 0.0009,
+   "median_latency_s": 2.79,
+   "calls_per_request": 1
+  },
+  "R10": {
+   "cfg": {
+    "k": 10
+   },
+   "recall": [
+    43.6,
+    41.1,
+    46.0,
+    298
+   ],
+   "recall_w": [
+    52.3,
+    49.5,
+    55.1,
+    298
+   ],
+   "precision": [
+    49.3,
+    46.4,
+    52.2,
+    298
+   ],
+   "recall - V0 (paired)": [
+    3.6,
+    1.0,
+    6.1,
+    298
+   ],
+   "recall_w - V0 (paired)": [
+    5.4,
+    2.4,
+    8.3,
+    298
+   ],
+   "precision - V0 (paired)": [
+    5.7,
+    2.6,
+    8.9,
+    298
+   ],
+   "gen_usd_per_request": 0.00104,
+   "median_latency_s": 2.78,
+   "calls_per_request": 1
+  },
+  "N10": {
+   "cfg": {
+    "n": 10
+   },
+   "recall": [
+    44.1,
+    41.7,
+    46.6,
+    299
+   ],
+   "recall_w": [
+    52.4,
+    49.6,
+    55.2,
+    299
+   ],
+   "precision": [
+    34.1,
+    31.7,
+    36.6,
+    299
+   ],
+   "recall - V0 (paired)": [
+    4.1,
+    1.8,
+    6.5,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    5.6,
+    2.7,
+    8.4,
+    299
+   ],
+   "precision - V0 (paired)": [
+    -9.5,
+    -12.2,
+    -6.6,
+    299
+   ],
+   "gen_usd_per_request": 0.00099,
+   "median_latency_s": 3.99,
+   "calls_per_request": 1
+  },
+  "N15": {
+   "cfg": {
+    "n": 15
+   },
+   "recall": [
+    47.6,
+    45.0,
+    50.3,
+    300
+   ],
+   "recall_w": [
+    54.9,
+    51.9,
+    58.0,
+    300
+   ],
+   "precision": [
+    31.7,
+    29.4,
+    34.1,
+    300
+   ],
+   "recall - V0 (paired)": [
+    7.7,
+    5.0,
+    10.3,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    8.0,
+    4.9,
+    11.1,
+    299
+   ],
+   "precision - V0 (paired)": [
+    -11.9,
+    -14.7,
+    -9.0,
+    299
+   ],
+   "gen_usd_per_request": 0.00134,
+   "median_latency_s": 5.47,
+   "calls_per_request": 1
+  },
+  "TWO": {
+   "cfg": {
+    "two": true
+   },
+   "recall": [
+    42.1,
+    39.8,
+    44.5,
+    299
+   ],
+   "recall_w": [
+    48.4,
+    45.7,
+    51.2,
+    299
+   ],
+   "precision": [
+    46.2,
+    43.2,
+    49.0,
+    299
+   ],
+   "recall - V0 (paired)": [
+    2.2,
+    -0.4,
+    4.8,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    1.6,
+    -1.3,
+    4.6,
+    299
+   ],
+   "precision - V0 (paired)": [
+    2.6,
+    -0.3,
+    5.5,
+    299
+   ],
+   "gen_usd_per_request": 0.00081,
+   "median_latency_s": 3.69,
+   "calls_per_request": 2
+  },
+  "FLASH3": {
+   "cfg": {
+    "model": "gemini-2.5-flash",
+    "temp": 0.3
+   },
+   "recall": [
+    44.5,
+    42.0,
+    46.9,
+    299
+   ],
+   "recall_w": [
+    52.6,
+    49.6,
+    55.5,
+    299
+   ],
+   "precision": [
+    50.4,
+    47.4,
+    53.6,
+    299
+   ],
+   "recall - V0 (paired)": [
+    4.5,
+    1.9,
+    7.1,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    5.7,
+    2.6,
+    8.7,
+    299
+   ],
+   "precision - V0 (paired)": [
+    6.9,
+    3.6,
+    10.4,
+    299
+   ],
+   "gen_usd_per_request": 0.00251,
+   "median_latency_s": 5.01,
+   "calls_per_request": 1
+  },
+  "LITE3": {
+   "cfg": {
+    "temp": 0.3
+   },
+   "recall": [
+    38.7,
+    36.1,
+    41.3,
+    299
+   ],
+   "recall_w": [
+    45.5,
+    42.4,
+    48.5,
+    299
+   ],
+   "precision": [
+    41.7,
+    38.7,
+    44.7,
+    299
+   ],
+   "recall - V0 (paired)": [
+    -1.3,
+    -3.8,
+    1.2,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    -1.4,
+    -4.4,
+    1.7,
+    299
+   ],
+   "precision - V0 (paired)": [
+    -1.9,
+    -5.0,
+    1.2,
+    299
+   ],
+   "gen_usd_per_request": 0.00071,
+   "median_latency_s": 2.72,
+   "calls_per_request": 1
+  },
+  "SITE": {
+   "cfg": {
+    "site": true
+   },
+   "recall": [
+    41.1,
+    38.6,
+    43.6,
+    299
+   ],
+   "recall_w": [
+    49.1,
+    46.2,
+    52.0,
+    299
+   ],
+   "precision": [
+    42.8,
+    40.0,
+    45.6,
+    299
+   ],
+   "recall - V0 (paired)": [
+    1.2,
+    -1.4,
+    3.7,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    2.3,
+    -0.8,
+    5.3,
+    299
+   ],
+   "precision - V0 (paired)": [
+    -0.8,
+    -4.0,
+    2.4,
+    299
+   ],
+   "gen_usd_per_request": 0.00075,
+   "median_latency_s": 2.78,
+   "calls_per_request": 1
+  },
+  "BEST": {
+   "cfg": {
+    "model": "gemini-2.5-flash",
+    "temp": 0.3,
+    "k": 10
+   },
+   "recall": [
+    49.9,
+    47.4,
+    52.6,
+    299
+   ],
+   "recall_w": [
+    58.6,
+    55.6,
+    61.4,
+    299
+   ],
+   "precision": [
+    51.4,
+    48.4,
+    54.3,
+    299
+   ],
+   "recall - V0 (paired)": [
+    12.2,
+    9.6,
+    14.8,
+    299
+   ],
+   "recall_w - V0 (paired)": [
+    14.1,
+    11.1,
+    17.2,
+    299
+   ],
+   "precision - V0 (paired)": [
+    8.9,
+    5.7,
+    12.1,
+    299
+   ],
+   "gen_usd_per_request": 0.00284,
+   "median_latency_s": 4.98,
+   "calls_per_request": 1
+  }
+ },
+ "V0 site current": {
+  "recall": [
+   37.7,
+   35.4,
+   40.1,
+   300
+  ],
+  "recall_w": [
+   44.5,
+   41.7,
+   47.2,
+   300
+  ],
+  "precision": [
+   42.6,
+   39.7,
+   45.4,
+   300
+  ]
+ },
+ "usd_total_this_run": 1.033,
+ "cross_judge_100": {
+  "variant": "BEST",
+  "V0": {
+   "recall": [
+    16.7,
+    14.0,
+    19.7,
+    100
+   ],
+   "recall_w": [
+    23.9,
+    20.2,
+    28.0,
+    100
+   ],
+   "precision": [
+    23.5,
+    19.3,
+    28.0,
+    100
+   ]
+  },
+  "BEST": {
+   "recall": [
+    23.1,
+    20.4,
+    25.9,
+    100
+   ],
+   "recall_w": [
+    32.6,
+    28.6,
+    36.5,
+    100
+   ],
+   "precision": [
+    31.7,
+    27.5,
+    36.0,
+    100
+   ]
+  },
+  "diff (paired)": {
+   "recall": [
+    6.4,
+    3.3,
+    9.6,
+    100
+   ],
+   "recall_w": [
+    8.6,
+    4.5,
+    12.9,
+    100
+   ],
+   "precision": [
+    8.2,
+    2.8,
+    13.7,
+    100
+   ]
+  }
+ }
+}

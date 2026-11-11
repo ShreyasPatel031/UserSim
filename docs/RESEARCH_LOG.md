@@ -904,3 +904,16 @@ Site pipeline (the website's REACT_PROMPT verbatim, gemini-2.5-flash-lite, tempe
 Theme prompt (gemini-2.5-flash, 5 themes): recall 31.3% [29.1, 33.4], precision 32.2%; persona − plain +1.2 [−0.9, 3.3].
 Embedding match (cos >= 0.80, gemini-embedding) does not discriminate (baselines also >= 0.8); the judge is the primary metric.
 Reading: the simulated reactions are product-specific and beat both baselines by a wide margin - about 2 in 5 real discussion themes are anticipated and about 2 in 5 simulated points occur in real comments. The member-type conditioning adds nothing measurable. Caveats: replay uses the PH description instead of the site's page read; judge and generator are the same model family (the baselines are judged the same way, so the gaps are fair, but absolute levels may be optimistic).
+
+### 2026-11-12 E5 — raising "what users will say": retrieval of similar past launches + flash wins
+Script experiments/simlab/reactions_v2.py; report reports/reactions_v2/. Same 300 launches, truth themes and blinded judge as reactions_eval; every variant paired by launch vs the site's current pipeline (V0, flash-lite 0.7, 6 comments; V0 re-judged within each run: 40.0 / 37.7 recall in the two runs - judge noise about ±2). Recall / precision (%), paired difference vs V0 [95% CI], median generation latency:
+- R3 (3 similar past launches' themes): 43.1 / 44.6; +3.1 [0.5, 5.8] / +1.1 [−2.1, 4.3]; 2.8 s
+- R5: 43.6 / 48.0; +3.7 [1.3, 6.1] / +4.5 [1.3, 7.6]; 2.8 s
+- R10: 43.6 / 49.3; +3.6 [1.0, 6.1] / +5.7 [2.6, 8.9]; 2.8 s
+- N10 comments: 44.1 / 34.1; +4.1 / −9.5 [−12.2, −6.6]; 4.0 s.  N15: 47.6 / 31.7; +7.7 / −11.9; 5.5 s (recall bought with precision)
+- TWO-pass: +2.2 [−0.4, 4.8] / +2.6 [−0.3, 5.5]; 3.7 s (2 calls)
+- FLASH3 (gemini-2.5-flash, temperature 0.3): 44.5 / 50.4; +4.5 [1.9, 7.1] / +6.9 [3.6, 10.4]; 5.0 s
+- LITE3 (flash-lite 0.3): −1.3 / −1.9 (n.s.).  SITE page text instead of the PH description (191/300 held): +1.2 / −0.8 (n.s.)
+- BEST = flash 0.3 + R10 + 6 comments: 49.9 / 51.4; +12.2 [9.6, 14.8] / +8.9 [5.7, 12.1]; 5.0 s; about $0.003 per request (1 generation call + 1 embedding call)
+Cross-judge (100 launches, differently worded 0/1/2 judge, covered = 2): BEST − V0 recall +6.4 [3.3, 9.6], weighted +8.6 [4.5, 12.9], precision +8.2 [2.8, 13.7] - the gain is not judge-specific.
+Retrieval bundle for the site (reactions_retrieval_bundle.py): gs://…/tmp/e5/website/reactions_retrieval_v1.{npz,json}, 3,371 past launches (Jan–Oct 2026, >= 5 non-team comments): 256-d gemini-embedding of name/tagline/description + up to 6 paraphrased comment themes each (@handles scrubbed, no verbatim comments, no usernames); 3.5 MB. Total spend for this item about $4.4.

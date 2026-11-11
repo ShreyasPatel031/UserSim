@@ -16,7 +16,7 @@ Cross-judge: V0 and BEST on 100 launches with a second, differently worded judge
 1 = same area, 2 = same specific point; covered = 2).
     python reactions_v2.py <react_site dir (cache_site.json)> <cf dir> <launches dir> <sites.jsonl> <bundle.npz> <try_sim.py> <out dir> [variants]
 """
-import ast, concurrent.futures as cf, glob, gzip, html, json, os, random, re, subprocess, sys, time, urllib.request
+import ast, concurrent.futures as cf, glob, gzip, hashlib, html, json, os, random, re, subprocess, sys, time, urllib.request
 import numpy as np, pandas as pd
 
 RS, CFD, LDIR, SITES, BUNDLE, TRY, OUT = sys.argv[1:8]; os.makedirs(OUT, exist_ok=True)
@@ -252,7 +252,7 @@ def judge(real, cand, second=False):
 def score(cands, second=False, subset=None, tag="j"):
     jobs = [s for s in (subset or S) if truth.get(s) and cands.get(s)]
     def one(s):
-        return s, run(f"{tag}|{'2' if second else '1'}|{hash(tuple(cands[s])) & 0xffffffff}|{s}", lambda: judge(truth[s], cands[s], second))
+        return s, run(f"{tag}|{'2' if second else '1'}|{hashlib.md5(json.dumps(cands[s]).encode()).hexdigest()[:10]}|{s}", lambda: judge(truth[s], cands[s], second))
     with cf.ThreadPoolExecutor(8) as ex: out = dict(ex.map(one, jobs))
     rec, pre, rw = {}, {}, {}
     for s, jr in out.items():
