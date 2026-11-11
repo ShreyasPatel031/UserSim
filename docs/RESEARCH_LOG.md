@@ -341,3 +341,7 @@ All iterations passed the honesty review. The PH agent's code and results are on
   - stop new person-model variants;
   - run one diagnostic that swaps each part (A, K, S) for its truth on the test days, to confirm which part loses;
   - re-test LM + it8 once about 30 LM-covered days exist.
+- 02:15Z: the part-swap diagnostic (test-day outcomes, diagnostic only) confirms the plateau.
+  - Within-day Spearman of EV vs votes: model 0.555, true A 0.565, true A·K 0.562, true S 0.788, oracle 0.885.
+  - Activity is not the gap. The shares (taste vs breakout) close about 70% of it.
+  - The two-level review is closed until a new pre-d breakout signal appears, or about 30 LM-covered days exist for the LM + it8 re-test.
