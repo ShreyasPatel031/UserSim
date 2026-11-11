@@ -23,7 +23,7 @@
     14.8
    ]
   },
-  "label": "300 past launches, blinded judge",
+  "label": "300 past launches, blinded judge; measured on their PH descriptions (your own page text tested no different)",
   "source": "E5 reactions_v2: experiments/simlab/reports/reactions_v2/reactions_v2.json (variant BEST), branch claude/person-model-v2",
   "date": "2026-11-11"
  },
