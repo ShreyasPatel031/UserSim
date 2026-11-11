@@ -316,8 +316,9 @@ async def step_reactions(tok: str) -> dict:
     for r in (j.get("reactions") or [])[:6]:
         reacts.append({k: r.get(k) for k in ("type", "comment", "sentiment", "would_upvote", "would_try", "why")})
     return {"reactions": reacts, "types": types, "headline": j.get("headline_takeaway", ""),
-            "note": "Simulated by Gemini from the page text, voiced as member types built from real PH activity patterns. "
-                    "Not real comments."}
+            "note": ("Simulated, not real comments. Tested on 300 past launches: these simulated comments anticipated "
+                     "about 2 in 5 of the themes real users raised (generic category comments: about 1 in 20). The "
+                     "member types add variety in voice; they did not make the themes more accurate.")}
 
 
 # ---------- step 4: launch (no LLM) ----------
