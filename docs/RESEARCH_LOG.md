@@ -310,3 +310,12 @@ What it shows:
 - **Metric rule from now on:**
   - Person-level ranking metrics (voter R-precision, Hit@3) use P.
   - The representativeness weights enter only the population EV, Σ w·P.
+
+### 2026-11-11 01:20Z — CORRECTION to the 01:00Z entry (R-precision, P vs w·P)
+
+My conclusion at 01:00Z was wrong for the PH agent's model, and its 01:00Z metric rule is withdrawn.
+- **What w is.** In the PH agent's rows, w is not a representativeness weight. It is P(active on d), taken from the person's own 30 days before d. Its p is P(picks L | active).
+- **So w·p is its unconditional probability,** and ranking voters by w·p is correct. Its R-precision by p alone is 0.092-0.098, by w·p 0.143-0.151.
+- **The like-for-like comparison on the same 12 clean days:** my P scores 0.213 overall (Oct clean 0.168) against its w·p at 0.143 (Oct clean 0.141). The gap is real and lies in the model.
+- **The rule that stands:** rank by each model's own unconditional P(person votes for L), and keep any representativeness weight out of person metrics.
+- **Next for the PH agent:** train an unconditional P on all-people rows.
