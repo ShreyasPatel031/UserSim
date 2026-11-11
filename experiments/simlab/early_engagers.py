@@ -139,7 +139,7 @@ def topk_hits(D, score):
 
 
 res = {"design": __doc__.split("\n    python")[0], "coverage": {}, "launch_level": {}}
-months = sorted(P.day.str[:7].unique())
+months = sorted(P.day.str[:7].unique()); SER = {}
 for T in TS:
     D = P.merge(agg[agg["T"] == T].drop(columns="T"), left_on="id", right_on="lid", how="left")
     D[[c for c in agg.columns if c not in ("lid", "T")]] = D[[c for c in agg.columns if c not in ("lid", "T")]].fillna(0)
@@ -164,11 +164,19 @@ for T in TS:
             r[f"top{k} minus LM-only, Oct20-Nov8"] = boot(hv[k][late] - hb[k][late])
         r["per_month_spearman"] = {mo: round(float(sp[sp.index.str[:7] == mo].mean()), 3) for mo in months[1:]}
         res["launch_level"][f"T{T} {vname}"] = r
+        SER[(T, vname)] = (sp, hv)
+    for k2 in ("B_identity", "C_identity_follow"):
+        spA, hA = SER[(T, "A_count")]; spB, hB = SER[(T, k2)]
+        j = spA.index.intersection(spB.index)
+        res["launch_level"][f"T{T} {k2} minus A_count (paired by day)"] = {"spearman": boot((spB[j] - spA[j]).values)} | {
+            f"top{k}": boot(hB[k] - hA[k]) for k in (3, 5, 10)}
         print(T, vname, r["within_day_spearman_pred_vs_true_r"], r["top3 minus LM-only (paired by day)"], flush=True)
     if T == 1:
         _, hb = topk_hits(T_, "base"); res["launch_level"]["LM-only"] = {f"top{k}": boot(hb[k]) for k in (3, 5, 10)}
 json.dump(res, open(os.path.join(OUT, "early_engagers.json"), "w"), indent=1)
 
+if os.environ.get("LAUNCH_ONLY"):
+    json.dump(res, open(os.path.join(OUT, "early_engagers_launch.json"), "w"), indent=1); sys.exit(0)
 # ---------------- person level
 R = pd.read_parquet(os.path.join(W, "rows.parquet")); R["launch_id"] = R.launch_id.astype(str)
 R = R.merge(P[["id", "base"]].rename(columns={"id": "launch_id"}), on="launch_id", how="inner")

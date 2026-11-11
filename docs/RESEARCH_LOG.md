@@ -774,3 +774,24 @@ Deployed sim per-day hits from the PH agent (tmp/e5/deployed_sim_per_day.json; 2
 Same-day means: deployed 49.1/65.3/70.0; two-term 59.6/67.4/70.0; LM-only 70.2/68.4/74.7.
 Reading: the two-term model does not beat the deployed sim at any cut-off (all CIs include 0). LM alone beats it at top-3 and top-10, so adding the taste term hurts at population level. Consistent with the person-level result (taste adds nothing on top of the LM).
 Output: experiments/simlab/reports/upvote_taste/two_term_vs_deployed.json.
+
+### 2026-11-11 E5 — simulation conditioned on the first hours: who commented early → launch shock, who votes next
+Script experiments/simlab/early_engagers.py; reports experiments/simlab/reports/early_engagers/. E_T = complete pool people with an exact-timed comment on L within T h of 00:01 PT (team excluded). Coverage is thin: share of launches with any E_T member 15.5% / 26.1% / 35.3% at T = 1/2/4 h (mean size if any 1.4 / 1.7 / 2.1). Target r = logv − base (it8 LM out-of-sample). LightGBM month-forward (train months < m, test Apr–Nov, 222 days). Day bootstrap 95% CIs.
+
+Launch level, within-day Spearman(pred r, true r), all 222 days [Oct 20–Nov 8 in brackets]:
+| T | A count only | B identity | C identity + follow snapshot | B − A paired |
+|---|---|---|---|---|
+| 1h | 0.150 [0.114, 0.185] (0.233) | 0.151 [0.118, 0.183] (0.183) | 0.148 (0.170) | +0.012 [−0.021, 0.046] |
+| 2h | 0.165 [0.128, 0.201] (0.292) | 0.194 [0.158, 0.230] (0.238) | 0.190 (0.225) | +0.035 [0.005, 0.064] |
+| 4h | 0.200 [0.162, 0.240] (0.333) | 0.243 [0.207, 0.279] (0.348) | 0.248 (0.352) | +0.043 [0.014, 0.074] |
+
+Daily top-3 / top-5 / top-10 of base + predicted r, minus LM-only (LM-only 62.0 / 68.2 / 74.5), paired by day, 222 days:
+- A count, T4: +2.7 [0.5, 5.1] / +1.3 [−0.3, 2.8] / +1.3 [0.5, 2.1]  (T2: +2.3 [0.2, 4.2] / +0.8 / +1.0 [0.3, 1.7])
+- B identity, T4: +2.1 [−0.6, 4.8] / +0.0 [−1.8, 1.9] / +0.1 [−0.8, 1.1]
+- B − A at T4: top-3 −0.6 [−2.9, 1.7], top-10 −1.2 [−2.0, −0.3]
+Identity features raise the residual rank correlation by ~0.04 at T ≥ 2h but do not translate into top-k: the count of early pool commenters gives the small, significant top-k lift; identity adds nothing (slightly worse at top-10).
+
+Person level (19 days Oct 20–Nov 8, people not in E_T; logistic cross-fit Oct↔Nov), vs popularity (base) Hit@1 0.354 / Hit@3 0.683 / AUC 0.784:
+- + |E_T| (launch-level count): AUC +0.012 [0.004, 0.021] (T2), +0.013 [0.003, 0.024] (T4); Hit@3 +0.018 [−0.022, 0.063] (T4)
+- + co-upvote affinity to E_T (SVD user-factor cosine, max & sum): no gain; Hit@3 −0.025 [−0.079, 0.031], AUC −0.002 [−0.017, 0.014] (T4); worse than count alone.
+Verdict: conditioning on WHO commented early does not do real work beyond HOW MANY did, either for the launch shock top-k or for who votes next. Caveats: pool people only (≈1.5–2 early commenters per launch when any), upvotes dated by launch day (ids outside the launches table undated → activity features undercount), follow features from the Nov snapshot (variant C only).
