@@ -3,8 +3,8 @@ show progress:  page (fetch + Gemini read)  ->  people (no LLM)  |  reactions (G
 
 The page step stores the analysis server-side (site/try_runs/<day>/<run id>.json) and returns a signed run id; later
 steps accept only that id and each LLM step can be spent once, so tokens cannot be replayed or forged into extra calls. Caps (stated on the page):
-  per IP: 3 runs / hour, 10 / day;  everyone: 150 runs / day;  per run: 2 Gemini calls (flash-lite, output capped at
-  1.5k + 3k tokens) and 1 embedding call. Each LLM step can run once per run (enforced server-side by run id).
+  per IP: 3 runs / hour, 10 / day;  everyone: 150 runs / day;  per run: 2 Gemini calls (flash-lite page read and
+  2.5-flash reactions, output capped at 1.5k + 3k tokens) and 2 embedding calls. Each LLM step can run once per run (enforced server-side by run id).
 Person data comes only from site/person_index_v1 (no identifiers). Labels "User A".. are assigned per response.
 """
 from __future__ import annotations
@@ -27,7 +27,7 @@ PT = ZoneInfo("America/Los_Angeles")
 CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "3")),
         "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "10")),
         "global_day": int(os.environ.get("TRY_GLOBAL_DAY", "150")),
-        "gemini_calls_per_run": 2, "embedding_calls_per_run": 1, "max_output_tokens_per_run": 4500}
+        "gemini_calls_per_run": 2, "embedding_calls_per_run": 2, "max_output_tokens_per_run": 4500}
 MODEL = os.environ.get("TRY_GEMINI_MODEL", "gemini-2.5-flash-lite")
 TOKEN_TTL_S = 900
 
@@ -356,10 +356,23 @@ def _reactions_note() -> str:
     from mvp.ph_site.live import claims
     c = claims()["reactions_eval"]
     v = c["values"]
-    return (f"Simulated, not real comments. Fixed offline figure ({c['label']}, {c['date']}): these simulated comments "
-            f"anticipated about {v['theme_recall']:.0%} of the themes real users raised (generic category comments: "
-            f"about {v['theme_recall_generic']:.0%}). The member types add variety in voice; they did not make the themes "
-            "more accurate.")
+    return (f"Simulated, not real comments. Grounded in themes from similar past launches. Fixed offline figure "
+            f"({c['label']}, {c['date']}): these simulated comments anticipated about {v['theme_recall']:.0%} of the "
+            f"themes real users raised, and about {v['theme_precision']:.0%} of the simulated points appeared in real "
+            f"comments (generic category comments: about {v['theme_recall_generic']:.0%}).")
+
+
+def _types_from_people(p: dict, topics: list[str]) -> list[str]:
+    """4 voices from the similar-tools scorer's closest descriptions (each shared by 20+ people) + 2 contrast voices."""
+    out = []
+    for r in p["top_people"][:4]:
+        out.append(f"{r['label']}: {' / '.join(r['roles'])}, {r['tier']}, interested in "
+                   f"{', '.join(topics[:2]) or 'this category'}")
+    while len(out) < 4:
+        out.append(f"User {chr(65 + len(out))}: regular PH voter interested in {', '.join(topics[:2]) or 'this category'}")
+    out.append("User E: heavy PH voter who comments often and sees dozens of similar launches a week")
+    out.append("User F: maker from an unrelated category, browsing the day's launches")
+    return out
 
 
 def _member_types(p: dict, topics: list[str]) -> list[str]:
@@ -378,23 +391,83 @@ def _member_types(p: dict, topics: list[str]) -> list[str]:
     return out
 
 
+_RET: dict = {}
+REACT_MODEL = os.environ.get("TRY_REACT_MODEL", "gemini-2.5-flash")
+
+
+def _retrieval() -> dict:
+    """E5's reactions retrieval bundle: paraphrased comment themes of 3,371 past launches (no verbatim comments, no
+    usernames) with gemini-embedding-001 256-d vectors (site/reactions_retrieval_v1.*)."""
+    if not _RET:
+        import io
+        raw = gcs.read_bytes("site/reactions_retrieval_v1.npz", ttl=86400)
+        meta = gcs.read_json("site/reactions_retrieval_v1.json", ttl=86400)
+        if raw is None or not meta:
+            raise RuntimeError("reactions retrieval bundle missing")
+        _RET.update(emb=np.load(io.BytesIO(raw))["emb"].astype(np.float32), rows=meta)
+    return _RET
+
+
+def _slug_stem(name: str) -> str:
+    import re as _re
+    return _re.sub(r"[^a-z0-9]+", "-", (name or "").lower()).strip("-")
+
+
+def _grounding(q: np.ndarray, name: str, k: int = 10, max_lines: int = 60) -> list[str]:
+    R = _retrieval()
+    sims = R["emb"] @ q
+    own = _slug_stem(name)
+    lines = []
+    for j in np.argsort(-sims):
+        row = R["rows"][int(j)]
+        stem = str(row.get("slug_stem") or "")
+        if own and (stem == own or stem.startswith(own + "-") or own.startswith(stem + "-")):
+            continue
+        lines.extend(str(t) for t in (row.get("themes") or [])[:6])
+        k -= 1
+        if k == 0 or len(lines) >= max_lines:
+            break
+    return lines[:max_lines]
+
+
 async def step_reactions(tok: str) -> dict:
+    """E5's measured best variant (reactions_v2 BEST): gemini-2.5-flash at 0.3, grounded in themes from the 10 most
+    similar past launches, member types from the similar-tools scorer (+2 contrast voices)."""
     from capability.gemini_config import extract_json, gemini_chat
+    from mvp.ph_site import person_e5
 
     a = use_run(tok, "reactions")
-    p = _interest_people(a)
-    types = _member_types(p, a.get("topics") or [])
+    desc = ((a.get("summary") or "") + " " + (a.get("page_excerpt") or ""))[:800]
+    q = await person_e5.embed(f"{a.get('name')}. {a.get('tagline')}. {desc}")
+    try:
+        B = person_e5.bundle()
+        sm = person_e5.summarize(B, person_e5.score_text(B, q))
+        people = {"top_people": [{"label": f"User {chr(65 + i)}", **pp} for i, pp in enumerate(sm["people"])]}
+        types = _types_from_people(people, a.get("topics") or [])
+    except Exception as exc:  # noqa: BLE001
+        print(f"[try] member types fallback: {exc!r}", flush=True)
+        types = _member_types(_interest_people(a), a.get("topics") or [])
     prompt = REACT_PROMPT.format(name=a.get("name"), tagline=a.get("tagline"), summary=a.get("summary"),
                                  pricing=a.get("pricing"), strengths="; ".join(a.get("strengths") or []),
                                  doubts="; ".join(a.get("doubts") or []), excerpt=(a.get("page_excerpt") or "")[:2500],
                                  types="\n".join(types))
-    raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.7, max_retries=3,
+    grounded = False
+    try:
+        lines = _grounding(q, a.get("name") or "")
+        if lines:
+            prompt += ("\n\nFor grounding: users of similar past Product Hunt products raised these points (other "
+                       "products, not this one; reuse only what plausibly applies here):\n" +
+                       "\n".join(f"- {l}" for l in lines))
+            grounded = True
+    except Exception as exc:  # noqa: BLE001 - ungrounded is still a valid (weaker) answer
+        print(f"[try] grounding unavailable: {exc!r}", flush=True)
+    raw = await gemini_chat([{"role": "user", "content": prompt}], model=REACT_MODEL, temperature=0.3, max_retries=3,
                             max_output_tokens=3000)
     j = extract_json(raw)
     reacts = []
     for r in (j.get("reactions") or [])[:6]:
         reacts.append({k: r.get(k) for k in ("type", "comment", "sentiment", "would_upvote", "would_try", "why")})
-    return {"reactions": reacts, "types": types, "headline": j.get("headline_takeaway", ""),
+    return {"reactions": reacts, "types": types, "headline": j.get("headline_takeaway", ""), "grounded": grounded,
             "note": _reactions_note()}
 
 
