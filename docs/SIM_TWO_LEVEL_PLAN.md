@@ -136,3 +136,9 @@ Status at 21:50 UTC Nov 11:
 Done Nov 11: comment forecast before the reveal (+5.0 top 3, +3.9 top 5 at 4 h, 207 days, live-compatible); early-engager
 identity (no gain); comment text / commenter / maker-reply / arrival-shape blocks (no gain); weekly call (57.5/71.5/77.8
 without dated votes; 100/80/90 with day-end votes on 1 week); monthly call (42/50/52 from daily rank; 75/75/80 with dated reads, 4 months).
+
+## Website (Shreyas, Nov 11 22:15 UTC): put the Product Hunt predictor on the site
+Website agent: session_01WkCrUQw5HWVGM17CVJnoPr, branch `claude/ph-website`. Two pages: (1) live predictor (00:05, pre-reveal and
+vote-based forecasts with a scored track record); (2) try a product URL → simulated reactions, likely users with names
+redacted, and where it would land on Product Hunt with default hunter/maker values. PH agent and E5 supply entry points.
+The hourly check also covers this agent: design due 45 min after start, progress every 60 min, PR to main reviewed and merged by the orchestrator.
