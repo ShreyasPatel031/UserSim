@@ -795,3 +795,14 @@ Person level (19 days Oct 20–Nov 8, people not in E_T; logistic cross-fit Oct�
 - + |E_T| (launch-level count): AUC +0.012 [0.004, 0.021] (T2), +0.013 [0.003, 0.024] (T4); Hit@3 +0.018 [−0.022, 0.063] (T4)
 - + co-upvote affinity to E_T (SVD user-factor cosine, max & sum): no gain; Hit@3 −0.025 [−0.079, 0.031], AUC −0.002 [−0.017, 0.014] (T4); worse than count alone.
 Verdict: conditioning on WHO commented early does not do real work beyond HOW MANY did, either for the launch shock top-k or for who votes next. Caveats: pool people only (≈1.5–2 early commenters per launch when any), upvotes dated by launch day (ids outside the launches table undated → activity features undercount), follow features from the Nov snapshot (variant C only).
+
+### 2026-11-11 E5 — trying to beat the PH comment ridge with text / account / maker / arrival-shape blocks
+Script experiments/simlab/comment_blocks.py (imports the PH agent's comment_forecast.py build/forward/score_days from claude/ph-ops-agent 55b84206; only the warehouse query is replaced by the same launches table). Same 238 covered days, 102,128 comments, 6,490 pages; scored 207 days (month-forward). Reproduction exact: +4h PH ridge 70.0 / 73.6 / 77.2, Spearman 69.9.
+Blocks (created_at <= T only): (a) text — bge-small mean embedding (PCA-8 fitted on the first, training-only month), mean length, "?" share, congratulation share, feature-request share (regex); (b) account — id-derived new-account count (id above the highest id commenting before t0−7d), mean log user id, first-ever comment in the dump, E5 complete-pool commenters and their prior upvotes (<= d−2); (c) maker — team replies, share of non-team threads answered, median reply latency; (d) shape — hours to first non-team comment, non-team comments in the last hour, last-hour share. Kept out as fetch-time: comment votes, isSticky, prominent/verified flags, badges, follower counts. Blocks added to the PH ridge without its fetch-time flags (u_ver/u_prom).
+Paired by day vs the PH ridge as published (points, 95% day-bootstrap CI), top-3 / top-5 / top-10 / Spearman:
+- +4h all blocks: −0.8 [−2.7, 1.0] / −0.2 [−1.4, 1.0] / −0.0 [−0.6, 0.5] / −0.8 [−1.5, −0.0]
+- +4h single blocks: text −0.8 / −0.1 / +0.2 / −0.4; acct −0.8 / +0.1 / −0.4 / −0.6; maker +0.6 [−0.6, 2.1] / +0.1 / +0.0 / −0.2; shape −0.6 / −0.1 / −0.1 / −0.1 (all CIs include 0)
+- +2h all blocks: −1.1 [−2.6, 0.3] / +0.1 / −0.2 / −0.6
+- +1h all blocks: +0.6 [−1.0, 2.3] / +1.1 [0.0, 2.1] / −0.1 / −0.1 (the one CI touching +0 among ~40 comparisons; not a robust win)
+- dropping the fetch-time flags from the PH ridge itself: +4h −0.5 [−1.4, 0.3] / +0.2 / +0.1 / −0.1 (the flags carry ~nothing; safe to remove)
+Verdict: nothing beats the PH ridge. Early-comment content, commenter accounts, maker responsiveness and arrival shape add no ranking signal beyond its counts + ties + LM.
