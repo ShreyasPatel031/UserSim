@@ -806,3 +806,15 @@ Paired by day vs the PH ridge as published (points, 95% day-bootstrap CI), top-3
 - +1h all blocks: +0.6 [−1.0, 2.3] / +1.1 [0.0, 2.1] / −0.1 / −0.1 (the one CI touching +0 among ~40 comparisons; not a robust win)
 - dropping the fetch-time flags from the PH ridge itself: +4h −0.5 [−1.4, 0.3] / +0.2 / +0.1 / −0.1 (the flags carry ~nothing; safe to remove)
 Verdict: nothing beats the PH ridge. Early-comment content, commenter accounts, maker responsiveness and arrival shape add no ranking signal beyond its counts + ties + LM.
+
+### 2026-11-11 E5 — monthly north star backtest (monthly top 3/5/10)
+Script experiments/simlab/monthly_northstar.py; report experiments/simlab/reports/monthly_northstar/monthly_northstar.json.
+Definition: launches.monthly_rank (final PH monthly leaderboard rank; month = PT calendar month of the launch day). Complete months held: 10 (Jan–Oct 2026). One corrupt Feb value (2687) dropped. Final `votes` reproduces monthly top-10 at 70–100% per month (PH ranks on its own score).
+Dated votes: the warehouse holds FINAL votes only (a leak for this purpose; shown as a flagged ceiling). The only dated source is the Wayback homepage archive (Jul–Oct): launchDayScore (frozen launch-day score; identical across all post-day captures; held for ~40–55% of launches, 39/40 of monthly top-10) and latestScore at capture time (dated votes-so-far). Before Jul there are no day-end votes.
+Scorers at each day-end call (candidates = launched so far): R0 daily rank; R1 launch-day score; R2 R1 × learned post-day growth (by daily rank × weekday × days to month end, earlier months); R3 ridge month-forward (launch-day score, daily rank, weekday, days left, comments by day end, honest LM); R4 latest dated votes-so-far (Wayback latestScore before the call, else launch-day score). CIs = bootstrap over months: 4 months (Jul–Oct) is too few for real intervals — indicative only.
+Jul–Oct, top-3 / top-5 / top-10 (×100):
+- month-end call: R0 41.7/50/52.5; R1 41.7/55/60; R2 25/45/52.5; R3 41.7/60/62.5; R4 75 [50,100] / 75 [65,80] / 80 [60,95]; LEAK final votes 100/80/90
+- R4 − R0 paired by month, month end: +33.3 [8.3,58.3] / +25 [20,35] / +27.5 [20,35]; day 21: +16.7 / +10 / +5
+- day-14 call: launched-so-far ceiling 50/60/60; R4 41.7/50/55; R0 16.7/40/45
+Jan–Oct (10 months; no dated votes before Jul so R1/R4 fall back to imputed values there): month end R0 33.3/38/46; R3 33.3/57.8 [40,76]/58.9 [50,67].
+How much is decided on launch day (Jul–Oct): monthly top-10 launches earn a median 14.5% [IQR 6–20%] of their final votes after launch day vs 1.4% for the rest; ranking by launch-day score recovers 5/8/8/7 of each month's final top 10 (daily rank alone 3–4). The top-3 is tightly packed and is reshuffled by post-launch accumulation (e.g. Aug #1 was 2nd on its day, 441 → 650 votes). Learned growth (R2) does not capture it; dated mid-month vote reads (R4) do.
