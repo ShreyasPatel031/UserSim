@@ -746,11 +746,32 @@ def choice():
             cv = curve(pairs); best = max(GRID, key=lambda T: cv[T][0])
             rep["temperature"][mon] = {"selection": how, "curve": {str(T): cv[T] for T in GRID}, "chosen_T": best}
             models[mon] = models[mon] + (best,)
-    clipped = 0; total = 0
+    clipped = 0; total = 0; diag_rows = []
+    if os.environ.get("TL_DIAG") == "1":
+        from pipeline import warehouse as W
+        Lv = W.query("SELECT CAST(id AS VARCHAR) AS id, votes, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+        vmap_d = dict(zip(Lv.id, Lv.votes)); rmap_d = dict(zip(Lv.id, Lv.daily_rank))
     for d in test:
         m = models[d[:7]]; T = m[4] if TEMP else None
         X, P = predict(d, m[:4], filt=False)   # every row is scored (as at 00:05); the label filter applies in `score`
         X["S"] = share(X, T)
+        if os.environ.get("TL_DIAG") == "1":   # E5 diagnostic only (uses test-day outcomes, never a score): swap one part for its truth
+            Xt = X[ok(X.person, d)].copy()
+            g = Xt.groupby("person").y; kt = g.transform("sum"); at = (kt > 0).astype(float)
+            st = (Xt.y / kt.where(kt > 0, 1)).where(kt > 0, Xt.S)   # true picks normalised; non-voters keep predicted S (A or k = 0 anyway)
+            var = {"model": Xt.A * Xt.K * Xt.S, "A_true": at * Xt.K * Xt.S, "AK_true": kt * Xt.S, "S_true": Xt.A * Xt.K * st,
+                   "oracle": Xt.y.astype(float)}
+            for nm, v in var.items():
+                ev = v.groupby(Xt.id).sum()
+                vv = np.array([vmap_d.get(x, np.nan) for x in ev.index], float); rk = np.array([rmap_d.get(x, np.nan) for x in ev.index], float)
+                k = ~np.isnan(vv)
+                row = {"day": d, "variant": nm, "spearman": float(spearmanr(ev.values[k], vv[k]).correlation) if k.sum() > 3 else np.nan}
+                E_ = pd.DataFrame({"ev": ev.values, "rank": rk})
+                for kk in (3, 5, 10):
+                    top = set(E_.index[E_["rank"] <= kk])
+                    row[f"top{kk}"] = len(set(E_.nlargest(kk, "ev").index) & top) / kk * 100 if len(top) >= kk else np.nan
+                diag_rows.append(row)
+            continue
         q = X.A * X.K * X.S; p = np.minimum(1.0, q); clipped += int((q > 1).sum()); total += len(q)
         R = pd.DataFrame({"person": X.person, "id": X.id, "w": (q / p).values, "p": p.values, "y": X.y.astype(int).values, "backed": 0.0, "day": d})
         R.to_parquet(f"{WORK}/rows_tl_{TAG}/{d}.parquet")
@@ -764,6 +785,12 @@ def choice():
                       "K_poisson_dev": float(mean_poisson_deviance(at.k, at.K)) if len(at) else np.nan,
                       "K_poisson_dev_const": float(mean_poisson_deviance(at.k, np.full(len(at), max(1.0, at.k.mean())))) if len(at) else np.nan,
                       "S_top1_acc": float(top1.mean()) if len(top1) else np.nan, "active_people": int(len(at))})
+    if diag_rows:
+        Dg = pd.DataFrame(diag_rows); rng = np.random.default_rng(0)
+        out = {"note": "DIAGNOSTIC ONLY: parts swapped for test-day truth; never a score", "days": int(Dg.day.nunique()),
+               "variants": {v: {c: boot(g[c].values, rng) for c in ("spearman", "top3", "top5", "top10")} for v, g in Dg.groupby("variant")}}
+        json.dump(out, open(os.path.join(HERE, "results", f"two_level_choice_diag_{TAG}.json"), "w"), indent=1, default=float)
+        print(json.dumps(out, default=float)); return
     Pp = pd.DataFrame(parts); rng = np.random.default_rng(0)
     rep["parts"] = {c: boot(Pp[c].values, rng) for c in ("A_auc", "K_poisson_dev", "K_poisson_dev_const", "S_top1_acc")}
     rep["parts_per_day"] = parts; rep["clipped_rows"] = clipped; rep["rows"] = total
