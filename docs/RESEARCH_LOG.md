@@ -369,3 +369,32 @@ Daily top 3 / top 5, change vs the base LM, Mar-Oct (243 days):
 - C3's live Oct 20-Nov 8 result (+3.3 / +2.0, 20 days, intervals include 0) does not override the backtest gate.
 - With these gone, the honest pre-launch candidate list is exhausted for current data.
 - Deferred until about 60 days of at-launch reads exist: X audience and page quality at 00:05.
+
+### 2026-11-11 02:45Z — PRE-REGISTRATION (E5): next LM candidates D1, D2. Written before any feature is computed or scored.
+
+**Why these two.**
+- The two-level work found that complete people's own history carries a signal beyond the LM: it8's EV coefficient is +0.163 [0.100, 0.236], on 15 days only.
+- The C1-C3 breakout features reused launch-table history that the LM already has. Neither candidate below is in the LM in any form.
+- Data: store_v3 (5.98M events) and the launches table. No new pulls.
+
+**D1, warm audience.** Counted per launch L on day d, over store_v3 people with a full upvote history, using only votes and comments on launches dated ≤ d−2. The team is L's makers plus its hunter, as salted person ids.
+- `aud_backers`: people who upvoted or commented on any earlier launch by the team.
+- `aud_backers_act30`: those backers who also upvoted something dated d−31 … d−2.
+- `aud_commenters`: people who commented on any earlier launch by the team.
+- `aud_team_in_store`: how many team members are in the store pool.
+- The log of each count, and its within-day percentile over the final featured list (flagged as final-list).
+
+**D2, person-sum EV.**
+- The E5 two-level baseline (taste + ties + activity logistic, no follows) is retrained monthly on the 2 months before the test month and scored on every launch, Mar–Nov 8.
+- `ev_e5` = Σ P over people active in d−61 … d−2. Also `ev_e5_pct`, its within-day percentile.
+- History lag: features use launches dated ≤ d−2 (the script's events-before-d raised to d−2).
+
+**Harness and keep rule:** unchanged from C1–C3.
+- The PH agent's lm_breakout main: monthly folds Mar–Nov 8, 5 seeds averaged, paired daily top 3/5/10, 10,000-draw day bootstrap.
+- Keep a candidate only if:
+  - top 3 or top 5 is CI-positive on Mar–Oct;
+  - no k is below −2 (point estimate) on Mar–Oct;
+  - Oct 20–Nov 8 point estimates are not negative at top 3 and top 5.
+- D1 and D2 are tested separately. Their combination gets one extra row, only if both pass.
+
+**Known risk, stated up front.** The store people were selected in November (mostly Oct 29–Nov 4 voters). For early months the sample is "people still active in Nov", which may weaken the features for those months. The rule's Oct 20–Nov 8 condition covers the live-like period.
