@@ -17,7 +17,7 @@ for i in range(len(P)): pools.setdefault((dec[i], rich[i], ldec[i]), []).append(
 pools = {k: np.array(v) for k, v in pools.items()}
 profs = T.profile.tolist()
 E = {k: np.load(D + f) for k, f in (("S0", "/emb_small_card.npy"), ("S1", "/emb_small_rich.npy"), ("S2", "/emb_base_rich.npy"))}
-out = []
+out, SETS = [], []
 for r in T.itertuples():
     if r.neg_kind != "pop_matched": continue
     tg = ix[r.heldout]; own = mine[r.person_id]; pool = pools[(dec[tg], rich[tg], ldec[tg])]
@@ -26,6 +26,9 @@ for r in T.itertuples():
     cand = np.array([tg] + negs); prof = np.array([ix[s] for s in r.profile])
     other = np.array([ix[s] for s in profs[rng.integers(len(profs))]])
     rec = {"person": r.person_id, "hr": bool(rich[tg]), "type": r.type}
+    SETS.append({"task": r.task, "person_id": r.person_id, "heldout": r.heldout, "type": r.type, "neg_kind": "pop_matched", "heldout_rich": bool(rich[tg]),
+                 "negatives": [P.slug[i] for i in negs], "profile": list(r.profile), "other_profile": [P.slug[i] for i in other],
+                 "other_person": PE.person_id.iloc[int(rng.integers(len(PE)))]})
     def score(v, nm):
         v = v + rng.random(len(v)) * 1e-9; a = int((v[1:] > v[0]).sum())
         rec[nm + "_auc"] = float((v[1:] < v[0]).mean()); rec[nm + "_h10"] = float(a + 1 <= 10)
@@ -34,7 +37,7 @@ for r in T.itertuples():
         for tag, pr in (("", prof), ("sh", other)):
             S = M[cand] @ M[pr].T; k = min(5, S.shape[1]); score(np.sort(S, 1)[:, -k:].mean(1), nm + tag)
     out.append(rec)
-O = pd.DataFrame(out)
+O = pd.DataFrame(out); pd.DataFrame(SETS).to_parquet(D + "/export/eval_sets_lenmatched.parquet", index=False)
 def boot(v, B=2000):
     v = np.asarray(v, float); bs = [v[rng.integers(0, len(v), len(v))].mean() for _ in range(B)]
     return [round(float(v.mean()), 4), round(float(np.percentile(bs, 2.5)), 4), round(float(np.percentile(bs, 97.5)), 4), int(len(v))]
