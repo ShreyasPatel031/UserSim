@@ -20,6 +20,7 @@ from .seq import features as seq_features
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ph_predict"))
 from atomicio import atomic_path   # model_/day_ files gate resumes via os.path.exists; features.json is read by other runs
+from .handles import clean_handles   # drop the "[REDACTED]" placeholder and empty handles (Nov 11 fix)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PAGE = os.environ.get("PAGE") == "1"   # page-aware people: every launch-page input added to the person model
@@ -59,7 +60,7 @@ def load():
     if not G:
         P, I, E = store.load()
         G.update(P=P, I=I, E=E, day=dict(zip(I.id, I.day)), topics={r.id: json.loads(r.topics) for r in I.itertuples()},
-                 team={r.id: set(json.loads(r.makers)) | {r.poster} for r in I.itertuples()},
+                 team={r.id: clean_handles(json.loads(r.makers)) | clean_handles([r.poster]) for r in I.itertuples()},
                  lineup=I.groupby("day").id.apply(list).to_dict())
     return G
 
@@ -197,7 +198,7 @@ def tie_features(D):
     g = load()
     if "tie_hist" not in G:
         I, E = g["I"], g["E"]
-        mk = {r.id: set(json.loads(r.makers)) - {""} for r in I.itertuples()}
+        mk = {r.id: clean_handles(json.loads(r.makers)) for r in I.itertuples()}
         hu = {r.id: r.poster for r in I.itertuples()}
         Es = E[E.item.isin(mk)].sort_values("date")
         G["tie_hist"] = {u: (gg.date.values, gg.item.values, (gg.kind == "comment").values) for u, gg in Es.groupby("person")}
@@ -293,7 +294,7 @@ def tie2_features(D):
     if "tie_made" not in G:
         made, hunted = defaultdict(list), defaultdict(list)
         for r in g["I"].itertuples():
-            ms = set(json.loads(r.makers)) - {""}
+            ms = clean_handles(json.loads(r.makers))
             for m in ms:
                 made[m].append(r.id)
             if r.poster and r.poster not in ms:
@@ -362,7 +363,7 @@ def recip_features(D):
         I, E = g["I"], g["E"]
         made = defaultdict(list)
         for r in I.itertuples():
-            for m in set(json.loads(r.makers)) | {r.poster}:
+            for m in clean_handles(json.loads(r.makers)) | clean_handles([r.poster]):
                 made[str(r.id)].append(m)
         E2 = E.assign(item=E.item.astype(str)); E2 = E2[E2.item.isin(made)]
         rec = defaultdict(list)   # maker -> [(date, engager)]
