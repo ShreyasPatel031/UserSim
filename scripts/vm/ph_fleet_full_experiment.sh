@@ -418,10 +418,14 @@ PY
 
 cmd_keeper() {
   load_art
-  local loop=0
+  local loop=0 lock="$ART/keeper.lock"
   [[ "${1:-}" == --loop ]] && loop=1
+  mkdir -p "$ART"
   while :; do
+  (
+    flock -w 600 9 || exit 1
     keeper_one_pass
+  ) 9>"$lock"
     [[ "$loop" -eq 0 ]] && break
     sleep 60
   done
