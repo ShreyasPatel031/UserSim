@@ -118,6 +118,27 @@ def take_slot(ip: str) -> dict:
     return {"used_today": cur["total"]}
 
 
+def refund_slot(ip: str) -> None:
+    """Undo the last take_slot for this visitor (the run failed before spending anything)."""
+    day = datetime.now(PT).strftime("%Y-%m-%d")
+    h = _ip_hash(ip)
+
+    def upd(cur):
+        ts = cur.get("ips", {}).get(h, [])
+        if ts:
+            cur["ips"][h] = ts[:-1]
+            cur["total"] = max(0, int(cur.get("total", 0)) - 1)
+        return cur
+
+    if _local_limits():
+        if _mem.get(h):
+            _mem[h] = _mem[h][:-1]
+        if _mem.get("_all"):
+            _mem["_all"] = _mem["_all"][:-1]
+        return
+    gcs.write_json_cas(f"site/try_usage/{day}.json", upd)
+
+
 def _run_path(day: str, jti: str) -> str:
     return f"site/try_runs/{day}/{jti}.json"
 
@@ -211,22 +232,37 @@ async def step_page(url: str, ip: str) -> dict:
 
     norm = await safe_fetch.check_url(url)        # validate before spending a slot
     usage = take_slot(ip)
-    page = await safe_fetch.fetch_product(norm)
-    if len((page["text"] or "").strip()) < 80:
-        raise ValueError("That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page.")
-    vocab = index()["meta"]["vocab"]
-    prompt = READ_PROMPT.format(url=page["url"], title=page["title"], desc=page["description"],
-                                text=page["text"][:9000], pricing=page["pricing_text"][:2500], vocab=", ".join(vocab))
-    raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2, max_retries=3,
-                            max_output_tokens=1500)
-    a = extract_json(raw)
-    if a.get("problem"):
-        raise ValueError("Couldn't judge this page: " + str(a["problem"])[:200])
-    a["topics"] = [t for t in (a.get("topics") or []) if t in vocab][:4] or ["Productivity"]
-    a = {k: a.get(k) for k in ("name", "tagline", "summary", "topics", "audience", "pricing", "strengths", "doubts", "clarity")}
-    a["url"] = page["url"]
-    a["page_excerpt"] = (page["description"] + "\n" + page["text"])[:2500]
-    return {"analysis": {k: v for k, v in a.items() if k != "page_excerpt"}, "token": new_run(a),
+    stage = "fetch"
+    try:
+        page = await safe_fetch.fetch_product(norm)
+        if len((page["text"] or "").strip()) < 80:
+            raise ValueError("That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page.")
+        vocab = index()["meta"]["vocab"]
+        prompt = READ_PROMPT.format(url=page["url"], title=page["title"], desc=page["description"],
+                                    text=page["text"][:9000], pricing=page["pricing_text"][:2500], vocab=", ".join(vocab))
+        stage = "gemini"
+        raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2, max_retries=3,
+                                max_output_tokens=1500)
+        stage = "judged"
+        a = extract_json(raw)
+        if a.get("problem"):
+            raise ValueError("Couldn't judge this page: " + str(a["problem"])[:200])
+        a["topics"] = [t for t in (a.get("topics") or []) if t in vocab][:4] or ["Productivity"]
+        a = {k: a.get(k) for k in ("name", "tagline", "summary", "topics", "audience", "pricing", "strengths", "doubts", "clarity")}
+        a["url"] = page["url"]
+        a["page_excerpt"] = (page["description"] + "\n" + page["text"])[:2500]
+        stage = "store"
+        tok = new_run(a)
+    except Exception:
+        # Give the run back when nothing was spent (fetch failed) or when our own storage failed. A page that reached
+        # Gemini keeps its slot, so failing pages can't be used to buy unlimited model calls.
+        if stage in ("fetch", "store"):
+            try:
+                refund_slot(ip)
+            except Exception:  # noqa: BLE001
+                pass
+        raise
+    return {"analysis": {k: v for k, v in a.items() if k != "page_excerpt"}, "token": tok,
             "caps": CAPS, "used_today": usage["used_today"]}
 
 

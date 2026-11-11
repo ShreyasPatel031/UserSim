@@ -131,7 +131,7 @@ function renderLaunch(l){
    ${l.coverage ? `<p class="small" style="margin-top:12px"><b>${Math.round(Number(l.coverage.share)*10)} in 10</b> launches with this score finished within this rank range (checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches, ${esc(l.coverage.label)}; fixed offline figure, ${esc(l.coverage.date)}).</p>` : ""}
    <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
    <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
-     <tr><td>This page-only model (${A.days} days)</td><td>${A.top3.toFixed(0)}%</td><td>${A.top5.toFixed(0)}%</td><td>${A.top10.toFixed(0)}%</td></tr>
+     <tr><td>This page-only model (${Number(A.days)} days)</td><td>${A.top3.toFixed(0)}%</td><td>${A.top5.toFixed(0)}%</td><td>${A.top10.toFixed(0)}%</td></tr>
      <tr><td class="muted">Full launch model with team history (offline)</td><td class="muted">${A.full_model.top3.toFixed(0)}%</td><td class="muted">${A.full_model.top5.toFixed(0)}%</td><td class="muted">${A.full_model.top10.toFixed(0)}%</td></tr></tbody></table>
    <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
 }

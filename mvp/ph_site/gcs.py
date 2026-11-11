@@ -112,6 +112,9 @@ def write_json_cas(path: str, update, retries: int = 12) -> Any:
             cur = json.loads(blob.download_as_bytes(if_generation_match=gen))
         except NotFound:
             gen, cur = 0, {}
+        except PreconditionFailed:   # written between reload and download: re-read
+            time.sleep(0.05)
+            continue
         new = update(cur)
         try:
             blob.upload_from_string(json.dumps(new), content_type="application/json", if_generation_match=gen)

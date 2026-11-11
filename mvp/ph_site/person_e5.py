@@ -118,7 +118,10 @@ def summarize(B: dict, score: np.ndarray, k_people: int = 8) -> dict:
     tiers = []
     for lo, hi_, label in TIERS:
         m = (nu >= lo) & (nu <= hi_)
-        tiers.append({"tier": label, "size": int(m.sum()), "likely": int((likely & m).sum()),
+        nl = int((likely & m).sum())
+        if nl < K_ANON:     # same 20-person floor as segments
+            continue
+        tiers.append({"tier": label, "size": int(m.sum()), "likely": nl,
                       "share": round(float((likely & m).mean() / max(m.mean(), 1e-9)), 4)})
     # Closest people: each card is a (roles, tier) description that at least K_ANON people in the bundle share, so a card
     # never singles anyone out; coarsen roles (two -> one -> none) until the description is that common.

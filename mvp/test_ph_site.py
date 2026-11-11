@@ -172,3 +172,34 @@ def test_client_ip_keys(monkeypatch):
     assert _client_ip(req({"x-vercel-forwarded-for": "2001:db8:1:2:bbbb::9"})) == "2001:db8:1:2::/64"
     monkeypatch.delenv("VERCEL")
     assert _client_ip(req({"x-forwarded-for": "6.6.6.6"})) == "9.9.9.9"   # spoofable header ignored off Vercel
+
+
+def test_decode_non_text_codecs_and_bad_gzip():
+    for cs in ("base64", "rot13", "hex", "zlib", "nope"):
+        assert "hi" in safe_fetch._decode(b"hi there", f"text/html; charset={cs}", "")
+    with pytest.raises(safe_fetch.FetchError):
+        safe_fetch._decode(b"not gzip at all", "text/html", "gzip")
+
+
+def test_ipv4_compatible_and_siit_blocked():
+    assert not safe_fetch._ip_ok("::7f00:1")          # ::127.0.0.1 (IPv4-compatible)
+    assert not safe_fetch._ip_ok("::ffff:0:7f00:1")   # SIIT
+
+
+def test_refund_after_failed_fetch(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    try_sim._mem.clear()
+
+    async def ok(u):
+        return u
+
+    async def boom(u):
+        raise safe_fetch.FetchError("down")
+
+    monkeypatch.setattr(safe_fetch, "check_url", ok)
+    monkeypatch.setattr(safe_fetch, "fetch_product", boom)
+    for _ in range(try_sim.CAPS["per_ip_hour"] + 2):   # failures before any model call never use up the hour
+        with pytest.raises(safe_fetch.FetchError):
+            asyncio.run(try_sim.step_page("https://example.com", "7.7.7.7"))
+    assert len(try_sim._mem.get(try_sim._ip_hash("7.7.7.7"), [])) == 0

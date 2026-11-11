@@ -49,6 +49,8 @@ def _ip_ok(ip: str) -> bool:
             inner.append(ipaddress.IPv4Address(int(a) & 0xFFFFFFFF))
         if inner:   # tunnelled/translated forms: judge by the address they reach
             return all(_ip_ok(str(x)) for x in inner)
+        if a in ipaddress.ip_network("::/96") or a in ipaddress.ip_network("::ffff:0:0:0/96"):
+            return False    # IPv4-compatible and SIIT forms
     return a.is_global and not a.is_multicast
 
 
@@ -106,16 +108,20 @@ def _decode(raw: bytes, ctype: str, encoding_hdr: str) -> str:
     enc = (encoding_hdr or "").lower().strip()
     if enc in ("gzip", "deflate", "x-gzip"):
         d = zlib.decompressobj(16 + zlib.MAX_WBITS if "gzip" in enc else zlib.MAX_WBITS)
-        raw = d.decompress(raw, MAX_BYTES)
+        try:
+            raw = d.decompress(raw, MAX_BYTES)
+        except zlib.error as exc:
+            raise FetchError("The site sent a corrupt compressed page.") from exc
     elif enc not in ("", "identity"):
         raise FetchError("The site sent an encoding we don't read.")
     m = re.search(r"charset=([\w\-]+)", ctype or "", re.I)
     charset = m.group(1) if m else "utf-8"
     try:
-        codecs.lookup(charset)
-    except LookupError:
-        charset = "utf-8"
-    return raw.decode(charset, errors="replace")
+        if not getattr(codecs.lookup(charset), "_is_text_encoding", True):
+            charset = "utf-8"    # base64, rot13, hex, zlib... are not text encodings
+        return raw.decode(charset, errors="replace")
+    except (LookupError, TypeError, ValueError):
+        return raw.decode("utf-8", errors="replace")
 
 
 def _behind_proxy() -> bool:
@@ -132,6 +138,8 @@ async def _get_pinned(url: str) -> tuple[int, dict, bytes]:
     parts, host = _static_checks(url)
     ip = (await _resolve(host))[0]
     if _behind_proxy():
+        if parts.scheme.lower() != "https":
+            raise FetchError("Only https links can be fetched in this environment.")
         return await _get_via(url, {"User-Agent": UA, "Accept": "text/html,text/plain;q=0.9",
                                     "Accept-Encoding": "identity"}, None, trust_env=True)
     netloc_ip = f"[{ip}]" if ":" in ip else ip
