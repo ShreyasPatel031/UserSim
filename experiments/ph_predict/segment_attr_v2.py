@@ -65,6 +65,10 @@ def main():
     cold = pickle.load(open(f"{S_}/lm/build_cache_gemini.pkl", "rb")); cold["id"] = cold.id.astype(str)
     cold = set(cold[(cold.hist_hunter_n.fillna(0) == 0) & (cold.hist_maker_n.fillna(0) == 0)].id)
     lab = up[(up.lday >= D0) & (up.lday <= D1) & (up.date == up.lday) & up.person.isin(people)]
+    from pipeline import warehouse as W
+    LV = W.query("SELECT CAST(id AS VARCHAR) AS id, day::VARCHAR AS day, votes FROM launches WHERE votes IS NOT NULL", do_sync=False)
+    LV["q"] = LV.groupby("day").votes.rank(pct=True).mul(5).clip(upper=4.999).astype(int)   # within-day popularity quintile
+    popq = dict(zip(LV.id, LV.q))
     # per cell (d, L): segment exposure counts and votes for A and B, plus L's all-population pick rate
     cells = []
     for d, g in lab.groupby("lday"):
@@ -78,9 +82,22 @@ def main():
                 continue
             y = np.array([(p, L) in votes for p in pp], float); rL = y.mean()
             s = seg.reindex(pp).values.astype(int); a = grpA.reindex(pp).values.astype(bool)
-            cells.append({"d": d, "L": L, "rL": rL,
+            cells.append({"d": d, "L": L, "rL": rL, "q": popq.get(L, 2),
                           "nA": np.bincount(s[a], minlength=K) * 1.0, "vA": np.bincount(s[a], weights=y[a], minlength=K),
                           "nB": np.bincount(s[~a], minlength=K) * 1.0, "vB": np.bincount(s[~a], weights=y[~a], minlength=K)})
+
+    STRAT = {"on": False}
+    def mfac(h, per):
+        v = np.zeros((K, 5)); e = np.zeros((K, 5))
+        for c in cells:
+            if (c["d"] >= TEST0) != (per == "test"):
+                continue
+            v[:, c["q"]] += c["v" + h]; e[:, c["q"]] += c["n" + h] * c["rL"]
+        vs, es = v.sum(1, keepdims=True), e.sum(1, keepdims=True)
+        return ((v + 5) / (e + 5)) / ((vs + 5) / (es + 5))   # segment x popularity-quintile propensity, segment mean removed
+    MF = {("A", "train"): mfac("A", "train"), ("B", "test"): mfac("B", "test")}
+    def ex(c, h, per):
+        return c["n" + h] * c["rL"] * (MF[(h, per)][:, c["q"]] if STRAT["on"] else 1.0)
 
     def train_lifts(ATTR, al):
         si = {x: i for i, x in enumerate(ATTR)}
@@ -88,7 +105,7 @@ def main():
         for c in cells:
             if c["d"] >= TEST0:
                 continue
-            ee = c["nA"] * c["rL"]; vs += c["vA"]; es += ee
+            ee = ex(c, "A", "train"); vs += c["vA"]; es += ee
             for x in amat.get(c["L"], ()):
                 if x in si:
                     v[:, si[x]] += c["vA"]; e[:, si[x]] += ee
@@ -100,7 +117,7 @@ def main():
         test = [c for c in cells if c["d"] >= TEST0 and (launches is None or c["L"] in launches)]
         predL = {c["L"]: (tr[:, [si[x] for x in sets[c["L"]] if x in si]].mean(1) if any(x in si for x in sets[c["L"]]) else np.zeros(K)) for c in test}
         pbar = np.mean([predL[c["L"]] for c in test], axis=0)
-        vs = sum(c["vB"] for c in test); es = sum(c["nB"] * c["rL"] for c in test); base = np.log((vs + al) / (es + al))
+        vs = sum(c["vB"] for c in test); es = sum(ex(c, "B", "test") for c in test); base = np.log((vs + al) / (es + al))
         sp = []
         for x in ATTR:
             G = [c for c in test if x in sets[c["L"]]]
@@ -109,10 +126,30 @@ def main():
             v = sum(c["vB"] for c in G)
             if v.sum() < 30:
                 continue
-            e = sum(c["nB"] * c["rL"] for c in G)
+            e = sum(ex(c, "B", "test") for c in G)
             real = np.log((v + al) / (e + al)) - base
             pred = np.mean([predL[c["L"]] for c in G], axis=0) - pbar
             r = spearmanr(pred, real).correlation
+            if not np.isnan(r):
+                sp.append(r)
+        return np.array(sp)
+
+    def score_subset(ATTR, keep, al, sets, launches=None):
+        si = {x: i for i, x in enumerate(ATTR)}; tr = train_lifts(ATTR, al)
+        test = [c for c in cells if c["d"] >= TEST0 and (launches is None or c["L"] in launches)]
+        predL = {c["L"]: (tr[:, [si[x] for x in sets[c["L"]] if x in si]].mean(1) if any(x in si for x in sets[c["L"]]) else np.zeros(K)) for c in test}
+        pbar = np.mean([predL[c["L"]] for c in test], axis=0)
+        vs = sum(c["vB"] for c in test); es = sum(ex(c, "B", "test") for c in test); base = np.log((vs + al) / (es + al))
+        sp = []
+        for x in keep:
+            G = [c for c in test if x in sets[c["L"]]]
+            if not G:
+                continue
+            v = sum(c["vB"] for c in G)
+            if v.sum() < 30:
+                continue
+            e = sum(ex(c, "B", "test") for c in G)
+            r = spearmanr(np.mean([predL[c["L"]] for c in G], axis=0) - pbar, np.log((v + al) / (e + al)) - base).correlation
             if not np.isnan(r):
                 sp.append(r)
         return np.array(sp)
@@ -132,7 +169,8 @@ def main():
     res = {"K": K, "people": int(len(pv)), "A": int(halfA.sum()), "B": int((~halfA).sum()),
            "segment_sizes_A": np.bincount(seg[grpA].values, minlength=K).tolist(), "rows": {}}
     perms = [permuted_sets() for _ in range(NPERM)]
-    for aname, ATTR in (("all86", BINS + TOP), ("topics40", TOP), ("it9b46", BINS)):
+    GRID = () if os.environ.get("PRIMARY_ONLY") == "1" else (("all86", BINS + TOP), ("topics40", TOP), ("it9b46", BINS))
+    for aname, ATTR in GRID:
         for al in (1.0, 5.0, 20.0):
             for sub, launches in (("all", None), ("cold_start", cold)):
                 r = score(ATTR, al, amat, launches)
@@ -146,7 +184,56 @@ def main():
                     "real_minus_control": round(float(r.mean() - cm.mean()), 3) if len(r) else None,
                     "z_vs_control": round(float((r.mean() - cm.mean()) / (cm.std() + 1e-9)), 1) if len(r) else None}
                 print(f"{aname} | alpha {al:g} | {sub}", res["rows"][f"{aname} | alpha {al:g} | {sub}"], flush=True)
-    json.dump(res, open(os.path.join(HERE, "results", f"segment_attr_v2_k{K}.json"), "w"), indent=1, default=float)
+    # E5 (d2): popularity sorting. Primary config (K=12, alpha 5, all 86) with expected votes adjusted by each segment's
+    # propensity in the launch's within-day popularity quintile (in-sample diagnostic), plus popularity quintiles as
+    # extra control attributes.
+    ATTR = BINS + TOP; al = 5.0
+    for nm, strat, extra in (("pop_stratified", True, False), ("pop_quintile_as_attrs", False, True), ("pop_stratified+attrs", True, True)):
+        STRAT["on"] = strat
+        if extra:
+            for c in cells:
+                amat[c["L"]] = set(amat[c["L"]]) | {f"popq:{c['q']}"}
+        AT2 = ATTR + ([f"popq:{q}" for q in range(5)] if extra else [])
+        for sub, launches in (("all", None), ("cold_start", cold)):
+            pS = [permuted_sets() for _ in range(NPERM)]
+            r = score(AT2, al, amat, launches); r = r  # popq attrs are scored too; report true-attribute-only below
+            si2 = [x for x in AT2 if not x.startswith("popq:")]
+            r_true = score_subset(AT2, si2, al, amat, launches)
+            ctrl = np.array([score_subset(AT2, si2, al, S, launches).mean() for S in pS])
+            bs = [r_true[rng.integers(0, len(r_true), len(r_true))].mean() for _ in range(3000)]
+            res["rows"][f"PRIMARY {nm} | {sub}"] = {"attrs": int(len(r_true)), "real": round(float(r_true.mean()), 3),
+                "real_ci": [round(float(x), 3) for x in np.percentile(bs, [2.5, 97.5])], "control_mean": round(float(ctrl.mean()), 3),
+                "control_sd": round(float(ctrl.std()), 3), "real_minus_control": round(float(r_true.mean() - ctrl.mean()), 3)}
+            print(f"PRIMARY {nm} | {sub}", res["rows"][f"PRIMARY {nm} | {sub}"], flush=True)
+        if extra:
+            for c in cells:
+                amat[c["L"]] = {x for x in amat[c["L"]] if not x.startswith("popq:")}
+    STRAT["on"] = False
+    # E5 (d5): FDR over segment x attribute cells (A, train period; Poisson z vs the segment's overall rate), and the
+    # top-20 cells' A-train vs B-test stability (centered lifts)
+    from scipy.stats import norm
+    si = {x: i for i, x in enumerate(ATTR)}
+    v = np.zeros((K, len(ATTR))); e = np.zeros((K, len(ATTR))); vB = np.zeros((K, len(ATTR))); eB = np.zeros((K, len(ATTR)))
+    for c in cells:
+        for x in amat.get(c["L"], ()):
+            if x in si:
+                if c["d"] < TEST0:
+                    v[:, si[x]] += c["vA"]; e[:, si[x]] += c["nA"] * c["rL"]
+                else:
+                    vB[:, si[x]] += c["vB"]; eB[:, si[x]] += c["nB"] * c["rL"]
+    adj = (v.sum(1) / e.sum(1))[:, None] * e
+    z = (v - adj) / np.sqrt(adj + 1e-9); pv_ = 2 * norm.sf(np.abs(z)); ok_ = e.sum(0) > 0
+    pf = pv_[:, ok_].ravel(); o = np.argsort(pf); m = len(pf)
+    bh = pf[o] <= 0.05 * (np.arange(1, m + 1) / m); nsig = int(np.max(np.where(bh)[0]) + 1) if bh.any() else 0
+    trc = train_lifts(ATTR, al)
+    teb = np.log((vB + al) / (eB + al)) - np.log((vB.sum(1) + al) / (eB.sum(1) + al))[:, None]; teb = teb - teb.mean(0, keepdims=True)
+    flat = np.argsort(-np.abs(z).ravel())[:20]; ii, jj = np.unravel_index(flat, z.shape)
+    a_, b_ = trc[ii, jj], teb[ii, jj]
+    res["fdr"] = {"cells": int(m), "significant_bh05": nsig, "top20_sign_agreement": round(float(np.mean(np.sign(a_) == np.sign(b_))), 3),
+                  "top20_pearson_A_train_vs_B_test": round(float(np.corrcoef(a_, b_)[0, 1]), 3),
+                  "top20_cells": [{"seg": int(i), "attr": ATTR[j], "z_A": round(float(z[i, j]), 1), "lift_A": round(float(trc[i, j]), 2), "lift_B_test": round(float(teb[i, j]), 2)} for i, j in zip(ii, jj)]}
+    print("FDR", {k: v for k, v in res["fdr"].items() if k != "top20_cells"})
+    json.dump(res, open(os.path.join(HERE, "results", f"segment_attr_v2_k{K}" + ("_primary" if os.environ.get("PRIMARY_ONLY") == "1" else "") + ".json"), "w"), indent=1, default=float)
 
 
 if __name__ == "__main__":

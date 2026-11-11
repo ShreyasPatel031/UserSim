@@ -1,0 +1,236 @@
+{
+ "K": 12,
+ "people": 6593,
+ "A": 3324,
+ "B": 3269,
+ "segment_sizes_A": [
+  130,
+  200,
+  343,
+  673,
+  117,
+  18,
+  323,
+  194,
+  159,
+  719,
+  223,
+  225
+ ],
+ "rows": {
+  "PRIMARY pop_stratified | all": {
+   "attrs": 55,
+   "real": 0.186,
+   "real_ci": [
+    0.111,
+    0.255
+   ],
+   "control_mean": 0.01,
+   "control_sd": 0.064,
+   "real_minus_control": 0.176
+  },
+  "PRIMARY pop_stratified | cold_start": {
+   "attrs": 37,
+   "real": 0.125,
+   "real_ci": [
+    0.035,
+    0.214
+   ],
+   "control_mean": -0.019,
+   "control_sd": 0.064,
+   "real_minus_control": 0.145
+  },
+  "PRIMARY pop_quintile_as_attrs | all": {
+   "attrs": 55,
+   "real": 0.268,
+   "real_ci": [
+    0.199,
+    0.331
+   ],
+   "control_mean": 0.007,
+   "control_sd": 0.058,
+   "real_minus_control": 0.261
+  },
+  "PRIMARY pop_quintile_as_attrs | cold_start": {
+   "attrs": 37,
+   "real": 0.154,
+   "real_ci": [
+    0.067,
+    0.232
+   ],
+   "control_mean": 0.022,
+   "control_sd": 0.05,
+   "real_minus_control": 0.132
+  },
+  "PRIMARY pop_stratified+attrs | all": {
+   "attrs": 55,
+   "real": 0.182,
+   "real_ci": [
+    0.11,
+    0.253
+   ],
+   "control_mean": 0.034,
+   "control_sd": 0.069,
+   "real_minus_control": 0.148
+  },
+  "PRIMARY pop_stratified+attrs | cold_start": {
+   "attrs": 37,
+   "real": 0.127,
+   "real_ci": [
+    0.036,
+    0.217
+   ],
+   "control_mean": -0.008,
+   "control_sd": 0.044,
+   "real_minus_control": 0.135
+  }
+ },
+ "fdr": {
+  "cells": 1032,
+  "significant_bh05": 17,
+  "top20_sign_agreement": 0.85,
+  "top20_pearson_A_train_vs_B_test": 0.671,
+  "top20_cells": [
+   {
+    "seg": 10,
+    "attr": "topic:Video",
+    "z_A": 8.5,
+    "lift_A": 1.27,
+    "lift_B_test": 1.3
+   },
+   {
+    "seg": 1,
+    "attr": "topic:Vercel Day",
+    "z_A": 5.5,
+    "lift_A": 0.62,
+    "lift_B_test": 0.29
+   },
+   {
+    "seg": 9,
+    "attr": "topic:Mac",
+    "z_A": 5.1,
+    "lift_A": 0.37,
+    "lift_B_test": 0.07
+   },
+   {
+    "seg": 3,
+    "attr": "aud_sales",
+    "z_A": 4.6,
+    "lift_A": 0.47,
+    "lift_B_test": 0.54
+   },
+   {
+    "seg": 9,
+    "attr": "plat_mac",
+    "z_A": 4.4,
+    "lift_A": 0.16,
+    "lift_B_test": 0.13
+   },
+   {
+    "seg": 7,
+    "attr": "topic:Audio",
+    "z_A": 4.4,
+    "lift_A": 0.58,
+    "lift_B_test": -0.23
+   },
+   {
+    "seg": 3,
+    "attr": "topic:Artificial Intelligence",
+    "z_A": 4.3,
+    "lift_A": 0.18,
+    "lift_B_test": 0.13
+   },
+   {
+    "seg": 3,
+    "attr": "topic:Messaging",
+    "z_A": 4.3,
+    "lift_A": 0.6,
+    "lift_B_test": -0.05
+   },
+   {
+    "seg": 3,
+    "attr": "topic:Sales",
+    "z_A": 4.3,
+    "lift_A": 0.51,
+    "lift_B_test": 0.28
+   },
+   {
+    "seg": 10,
+    "attr": "aud_creators",
+    "z_A": 4.2,
+    "lift_A": 0.44,
+    "lift_B_test": 0.48
+   },
+   {
+    "seg": 7,
+    "attr": "aud_consumers",
+    "z_A": 4.0,
+    "lift_A": 0.49,
+    "lift_B_test": 0.15
+   },
+   {
+    "seg": 3,
+    "attr": "agent",
+    "z_A": 3.8,
+    "lift_A": 0.19,
+    "lift_B_test": 0.07
+   },
+   {
+    "seg": 3,
+    "attr": "cat_marketing_sales",
+    "z_A": 3.8,
+    "lift_A": 0.36,
+    "lift_B_test": 0.34
+   },
+   {
+    "seg": 9,
+    "attr": "topic:Menu Bar Apps",
+    "z_A": 3.7,
+    "lift_A": 0.28,
+    "lift_B_test": 0.26
+   },
+   {
+    "seg": 3,
+    "attr": "topic:GitHub",
+    "z_A": -3.6,
+    "lift_A": -0.23,
+    "lift_B_test": -0.22
+   },
+   {
+    "seg": 3,
+    "attr": "mkt_b2c",
+    "z_A": -3.4,
+    "lift_A": -0.28,
+    "lift_B_test": -0.13
+   },
+   {
+    "seg": 10,
+    "attr": "plat_windows",
+    "z_A": 3.4,
+    "lift_A": 0.57,
+    "lift_B_test": 1.16
+   },
+   {
+    "seg": 3,
+    "attr": "topic:Productivity",
+    "z_A": -3.3,
+    "lift_A": -0.19,
+    "lift_B_test": 0.14
+   },
+   {
+    "seg": 9,
+    "attr": "topic:Artificial Intelligence",
+    "z_A": -3.3,
+    "lift_A": -0.11,
+    "lift_B_test": -0.08
+   },
+   {
+    "seg": 4,
+    "attr": "mkt_b2c",
+    "z_A": 3.3,
+    "lift_A": 0.29,
+    "lift_B_test": 0.04
+   }
+  ]
+ }
+}
