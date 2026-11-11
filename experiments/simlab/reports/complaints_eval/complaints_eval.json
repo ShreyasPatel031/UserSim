@@ -1,0 +1,374 @@
+{
+ "design": "Raise complaint recall and control for memorisation (orchestrator 23:45Z Nov 11).\nPart A - reviews (the 228 products of reviews_eval.py; truth themes, U1 outputs and controls reused from its cache).\n  Candidate list = U1 (post-use prompt, 6 comments) + a critic pass (gemini-2.5-flash, temperature 0.3) of K items:\n    A_critic     objections, deal-breakers, missing features, pricing and trust concerns (K = 6)\n    B_retrieval  A + complaint/missing-feature themes from the reviews of the 5 most similar OTHER products (gemini\n                 embedding; same slug stem and themes naming the target are dropped). Neighbour themes come from those\n                 products' full review sets (not date-restricted: they are other products' reviews).\n    C_viewpoints critic voices: skeptic, churned user, competitor's user (K = 6)\n    D_category   the complaints users of this product category always raise + the ones specific to this product (K = 6)\n    E_more10     A with K = 10\n  Complaint judge (blinded): A = the product's complaint + missing-feature truth themes; B = the candidate list; returns\n  a_covered, and per B item is_criticism and matches. complaint recall = share of A covered; complaint precision = share of\n  criticism items that match. Overall recall/precision with the reviews_eval judge on all truth themes.\n  Memorisation: first review >= 2025-01-01 (after the model's Jan 2025 cutoff; 11 products, indicative) vs earlier.\nPart B - clean slice: the 300 launches of reactions_eval (Aug-Oct 2026, all after the cutoff). Truth = critical themes only\n  (objections, questions, feature requests) from the real non-team comments (separate flash pass). Candidates: BEST (the\n  deployed launch reactions, cached in reactions_v2) vs BEST + the winning critic pass (launch framing). Same complaint judge.\nPaired differences vs U1 (A) / BEST (B), bootstrap 95% CIs; cost and latency per request.",
+ "partA": {
+  "U1": {
+   "c_recall": [
+    16.9,
+    13.2,
+    20.8,
+    195
+   ],
+   "c_precision": [
+    11.2,
+    9.0,
+    13.8,
+    195
+   ]
+  },
+  "A_critic": {
+   "merged": {
+    "c_recall": [
+     24.8,
+     20.5,
+     29.2,
+     195
+    ],
+    "c_precision": [
+     11.0,
+     9.1,
+     13.1,
+     195
+    ]
+   },
+   "critic_only": {
+    "c_recall": [
+     28.7,
+     23.9,
+     33.5,
+     195
+    ],
+    "c_precision": [
+     13.8,
+     11.5,
+     16.0,
+     195
+    ]
+   },
+   "merged - U1 (paired)": {
+    "c_recall": [
+     7.9,
+     4.2,
+     11.6,
+     195
+    ],
+    "c_precision": [
+     -0.3,
+     -2.3,
+     1.7,
+     195
+    ]
+   },
+   "median_critic_latency_s": 0.0,
+   "memorisation split, merged - U1 c_recall": {
+    "clean (first review >= 2025)": [
+     0.0,
+     0.0,
+     0.0,
+     9
+    ],
+    "pre-cutoff": [
+     8.3,
+     4.4,
+     12.2,
+     186
+    ]
+   }
+  },
+  "B_retrieval": {
+   "merged": {
+    "c_recall": [
+     20.6,
+     16.5,
+     24.7,
+     193
+    ],
+    "c_precision": [
+     9.4,
+     7.4,
+     11.5,
+     193
+    ]
+   },
+   "critic_only": {
+    "c_recall": [
+     22.2,
+     18.1,
+     26.8,
+     195
+    ],
+    "c_precision": [
+     11.1,
+     8.8,
+     13.6,
+     195
+    ]
+   },
+   "merged - U1 (paired)": {
+    "c_recall": [
+     4.1,
+     1.4,
+     6.7,
+     193
+    ],
+    "c_precision": [
+     -1.8,
+     -3.7,
+     -0.0,
+     193
+    ]
+   },
+   "median_critic_latency_s": 0.0,
+   "memorisation split, merged - U1 c_recall": {
+    "clean (first review >= 2025)": [
+     0.0,
+     0.0,
+     0.0,
+     9
+    ],
+    "pre-cutoff": [
+     4.3,
+     1.3,
+     7.0,
+     184
+    ]
+   }
+  },
+  "C_viewpoints": {
+   "merged": {
+    "c_recall": [
+     20.6,
+     16.4,
+     25.1,
+     195
+    ],
+    "c_precision": [
+     9.0,
+     7.2,
+     10.9,
+     195
+    ]
+   },
+   "critic_only": {
+    "c_recall": [
+     22.8,
+     18.3,
+     27.5,
+     195
+    ],
+    "c_precision": [
+     10.8,
+     8.7,
+     12.9,
+     195
+    ]
+   },
+   "merged - U1 (paired)": {
+    "c_recall": [
+     3.7,
+     0.1,
+     7.4,
+     195
+    ],
+    "c_precision": [
+     -2.2,
+     -4.1,
+     -0.4,
+     195
+    ]
+   },
+   "median_critic_latency_s": 0.0,
+   "memorisation split, merged - U1 c_recall": {
+    "clean (first review >= 2025)": [
+     -3.7,
+     -33.3,
+     29.6,
+     9
+    ],
+    "pre-cutoff": [
+     4.1,
+     0.5,
+     7.7,
+     186
+    ]
+   }
+  },
+  "D_category": {
+   "merged": {
+    "c_recall": [
+     25.3,
+     20.9,
+     29.9,
+     195
+    ],
+    "c_precision": [
+     11.6,
+     9.5,
+     13.5,
+     195
+    ]
+   },
+   "critic_only": {
+    "c_recall": [
+     27.0,
+     22.3,
+     32.0,
+     195
+    ],
+    "c_precision": [
+     12.1,
+     10.3,
+     14.2,
+     195
+    ]
+   },
+   "merged - U1 (paired)": {
+    "c_recall": [
+     8.4,
+     5.0,
+     12.0,
+     195
+    ],
+    "c_precision": [
+     0.3,
+     -1.6,
+     2.3,
+     195
+    ]
+   },
+   "median_critic_latency_s": 0.0,
+   "memorisation split, merged - U1 c_recall": {
+    "clean (first review >= 2025)": [
+     0.0,
+     0.0,
+     0.0,
+     9
+    ],
+    "pre-cutoff": [
+     8.8,
+     5.2,
+     12.6,
+     186
+    ]
+   }
+  },
+  "E_more10": {
+   "merged": {
+    "c_recall": [
+     28.3,
+     23.6,
+     33.3,
+     194
+    ],
+    "c_precision": [
+     10.0,
+     8.2,
+     11.9,
+     194
+    ]
+   },
+   "critic_only": {
+    "c_recall": [
+     29.1,
+     24.2,
+     34.1,
+     194
+    ],
+    "c_precision": [
+     9.9,
+     8.0,
+     11.9,
+     194
+    ]
+   },
+   "merged - U1 (paired)": {
+    "c_recall": [
+     11.4,
+     7.2,
+     15.7,
+     194
+    ],
+    "c_precision": [
+     -1.3,
+     -3.3,
+     0.6,
+     194
+    ]
+   },
+   "median_critic_latency_s": 0.0,
+   "memorisation split, merged - U1 c_recall": {
+    "clean (first review >= 2025)": [
+     0.0,
+     0.0,
+     0.0,
+     9
+    ],
+    "pre-cutoff": [
+     11.9,
+     7.7,
+     16.3,
+     185
+    ]
+   }
+  },
+  "U1 memorisation split c_recall": {
+   "clean": [
+    25.9,
+    3.7,
+    55.6,
+    9
+   ],
+   "pre-cutoff": [
+    16.4,
+    12.8,
+    20.4,
+    186
+   ]
+  }
+ },
+ "partB": {
+  "launches_with_critical_truth": 296,
+  "BEST": {
+   "c_recall": [
+    18.2,
+    15.8,
+    20.7,
+    296
+   ],
+   "c_precision": [
+    17.5,
+    14.7,
+    20.3,
+    290
+   ]
+  },
+  "BEST + D_category critic": {
+   "c_recall": [
+    21.9,
+    19.2,
+    24.5,
+    296
+   ],
+   "c_precision": [
+    11.3,
+    9.7,
+    13.0,
+    296
+   ]
+  },
+  "diff (paired)": {
+   "c_recall": [
+    3.6,
+    1.6,
+    5.7,
+    296
+   ],
+   "c_precision": [
+    -6.1,
+    -8.7,
+    -3.6,
+    290
+   ]
+  }
+ },
+ "usd": 0.612
+}

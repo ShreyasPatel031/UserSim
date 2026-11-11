@@ -936,3 +936,17 @@ Script experiments/simlab/reviews_eval.py; report reports/reviews_eval/. Data: t
 - U1 − U0: recall +16.0 [12.7, 19.3], precision +21.5 [17.3, 25.6], complaints +11.1 [6.5, 15.7] - the framing matters
 - PH launch-theme retrieval on the post-use prompt (U2 − U1): recall −1.2 [−4.1, 1.6], precision +1.0 [−2.4, 4.6] - no help here
 Reading: the claim extends to post-use feedback ONLY with a post-use prompt (no retrieval): about half of reviewers' themes anticipated and about half of simulated points present, far above controls. Complaints are much harder (1 in 4) than praise (2 in 3). Caveats: PH reviews skew positive and include founder reviews; many reviewed products are established and may be known to the model from pre-cutoff data (the page's real use is new products, where this advantage is smaller).
+
+### 2026-11-12 E5 — raising complaint recall; memorisation control
+Script experiments/simlab/complaints_eval.py; report reports/complaints_eval/. Complaint judge (blinded): A = complaint + missing-feature truth themes, B = candidate list; complaint recall = share of A covered, complaint precision = share of B's criticism items that match. Paired vs U1 (post-use prompt), product bootstrap. Spend $2.27 (Gemini only). Critic latency 1.6–2.6 s (one extra call).
+Part A, 195 reviewed products with complaint truth (U1 under this judge: recall 16.9 [13.2, 20.8], precision 11.2):
+- A_critic (6 objections/deal-breakers/missing/pricing/trust, merged): recall +7.9 [4.2, 11.6], precision −0.3 [−2.3, 1.7]
+- B_retrieval (complaint themes of the 5 most similar other products): +4.1 [1.4, 6.7], −1.8 [−3.7, −0.0]
+- C_viewpoints (skeptic / churned / competitor user): +3.7 [0.1, 7.4], −2.2 [−4.1, −0.4]
+- D_category (category-typical + product-specific): +8.4 [5.0, 12.0], +0.3 [−1.6, 2.3]  <- best recall without precision cost
+- E_more10 (10 critic items): +11.4 [7.2, 15.7], −1.3 [−3.3, 0.6]
+Memorisation: only 9 reviewed products have their first review after the Jan 2025 cutoff - too few (all CIs span zero or are degenerate). Clean test instead on Part B.
+Part B, clean slice = the 300 Aug–Oct 2026 launches (all after the cutoff), truth = critical themes only (objections, doubting questions, feature requests) from the real comments (296 launches have some):
+- deployed launch reactions (BEST): complaint recall 18.2 [15.8, 20.7], precision 17.5 [14.7, 20.3]
+- BEST + D_category critic: recall 21.9 [19.2, 24.5], precision 11.3 [9.7, 13.0]; diff +3.6 [1.6, 5.7] recall, −6.1 [−8.7, −3.6] precision
+Reading: a critic pass raises complaint recall on established products (+8 to +11), but on genuinely new products it adds little (+3.6) and dilutes precision (most extra objections do not appear). Complaints remain the weak spot: about 1 in 5 real critical points anticipated for new products. A "risks and objections" section is defensible only as a checklist of possible concerns, not as a prediction.
