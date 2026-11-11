@@ -11,6 +11,7 @@ AUC 0.636 popularity-matched (taste only), see reports/uses_v2. "Likely user" = 
 percentile of the reference products (thresholds per person in pct99). Population validation: reports/uses_population.
 Usage:
     python score_product.py --build <uses2 dir> <out.npz>           (one-off, done by E5)
+    python score_product.py --build-small <uses2 dir> <out.npz>     (bge-small variant, ~35 MB, for small serverless hosts)
     python score_product.py <bundle.npz> "Name. Tagline. Description"
 Runtime: ~0.3 s to embed one product on CPU (bge-base), ~20 ms to score all 5,096 people.
 """
@@ -20,7 +21,7 @@ import numpy as np
 ROLE_NAMES = ["dev", "design", "market", "founder", "product", "data_ai", "sales", "student", "invest"]
 
 
-def _build(D, out):
+def _build(D, out, emb="emb_base_rich.npy", model="BAAI/bge-base-en-v1.5"):
     import re, pandas as pd
     ROLES = {"dev": r"develop|engineer|programm|coder|software|full.?stack|backend|frontend|devops|\bcto\b",
              "design": r"design|\bux\b|\bui\b|creative|artist", "market": r"market|growth|seo|content|brand|social media",
@@ -28,7 +29,7 @@ def _build(D, out):
              "data_ai": r"\bai\b|machine learning|\bml\b|data scien|llm|research", "sales": r"sales|\bbd\b|business develop|revenue",
              "student": r"student|universit|college|learning", "invest": r"invest|\bvc\b|angel|partner at"}
     P = pd.read_parquet(os.path.join(D, "export", "products.parquet")); Pe = pd.read_parquet(os.path.join(D, "export", "people.parquet"))
-    E = np.load(os.path.join(D, "emb_base_rich.npy")).astype(np.float32); pix = {s: i for i, s in enumerate(P.slug)}
+    E = np.load(os.path.join(D, emb)).astype(np.float32); pix = {s: i for i, s in enumerate(P.slug)}
     order = np.random.default_rng(0).permutation(len(Pe))                    # anonymous row order
     items, ptr, roles, nu = [], [0], [], []
     for i in order:
@@ -43,14 +44,14 @@ def _build(D, out):
         if S.shape[1] == 0: continue
         k = min(5, S.shape[1]); sc = np.sort(S, 1)[:, -k:].mean(1); pct99[j] = np.percentile(sc, 99)
     np.savez_compressed(out, item_emb=IE.astype(np.float16), item_ptr=np.array(ptr), roles=np.array(roles, np.uint8),
-                        n_uses=np.array(nu, np.int32), pct99=pct99, role_names=np.array(ROLE_NAMES))
+                        n_uses=np.array(nu, np.int32), pct99=pct99, role_names=np.array(ROLE_NAMES), model=np.array(model))
     print("bundle", out, IE.shape, len(order))
 
 
 def score(bundle, text):
     from sentence_transformers import SentenceTransformer
     z = np.load(bundle); IE = z["item_emb"].astype(np.float32); ptr = z["item_ptr"]
-    q = SentenceTransformer("BAAI/bge-base-en-v1.5", device="cpu").encode([text], normalize_embeddings=True)[0]
+    q = SentenceTransformer(str(z["model"]) if "model" in z else "BAAI/bge-base-en-v1.5", device="cpu").encode([text], normalize_embeddings=True)[0]
     s = IE @ q; out = np.zeros(len(ptr) - 1, np.float32)
     for j in range(len(out)):
         v = s[ptr[j]:ptr[j + 1]]
@@ -67,4 +68,5 @@ def score(bundle, text):
 
 if __name__ == "__main__":
     if sys.argv[1] == "--build": _build(sys.argv[2], sys.argv[3])
+    elif sys.argv[1] == "--build-small": _build(sys.argv[2], sys.argv[3], "emb_small_rich.npy", "BAAI/bge-small-en-v1.5")
     else: print(json.dumps(score(sys.argv[1], sys.argv[2]), indent=1))
