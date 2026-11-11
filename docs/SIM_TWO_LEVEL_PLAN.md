@@ -1,3 +1,21 @@
+# User simulation plan (corrected Nov 11)
+
+**What we are building (Shreyas, Nov 11):** a user simulation. Given any product's information, predict how each
+real person responds to it. Product Hunt votes are the ground truth for validating the simulation.
+
+- We are NOT building a launch predictor.
+- The launch model is a reference line only. It is not improved further.
+- Product understanding lives inside the person model: P(person wants product | product information, person history).
+- Inputs come in two labelled blocks:
+  - **product-only**: available for any product (description, audience, pricing, category, media, site, competitors);
+  - **PH context**: hunter and maker audience, team ties.
+  Every result is reported with PH context off and on.
+- Primary metrics are person-level: per-person Hit@1 and Hit@3 over the day's line-up, voter R-precision per
+  product, calibration.
+- The daily/weekly/monthly top 3/5/10, from summing people, is the population-level validation.
+
+The original Nov 10 text follows. Where it differs from the above, the above wins.
+
 # Two-level simulation plan: person accuracy and launch accuracy together (Nov 10)
 
 Goal (Shreyas, Nov 10): the simulation must predict both
