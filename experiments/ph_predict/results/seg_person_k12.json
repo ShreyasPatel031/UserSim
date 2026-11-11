@@ -1,0 +1,394 @@
+{
+ "K": 12,
+ "rows": 228949,
+ "person_days": 8381,
+ "votes": 20281,
+ "share_votes_with_segment": 0.364,
+ "lr_coefs_note": "LODO logistic on lp,segf,has_seg,segf_lp",
+ "table": {
+  "voters | with_segment | all votes": {
+   "it9b": {
+    "hit1": 0.079,
+    "hit3": 0.214,
+    "auc": 0.649,
+    "votes": 7377
+   },
+   "seg": {
+    "hit1": 0.043,
+    "hit3": 0.168,
+    "auc": 0.617,
+    "votes": 7377
+   },
+   "it9b+seg": {
+    "hit1": 0.085,
+    "hit3": 0.216,
+    "auc": 0.654,
+    "votes": 7377
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.005,
+     0.002,
+     0.008
+    ],
+    "hit1": [
+     0.007,
+     0.001,
+     0.011
+    ]
+   }
+  },
+  "voters | with_segment | cold votes": {
+   "it9b": {
+    "hit1": 0.035,
+    "hit3": 0.098,
+    "auc": 0.483,
+    "votes": 877
+   },
+   "seg": {
+    "hit1": 0.081,
+    "hit3": 0.185,
+    "auc": 0.546,
+    "votes": 877
+   },
+   "it9b+seg": {
+    "hit1": 0.054,
+    "hit3": 0.139,
+    "auc": 0.533,
+    "votes": 877
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.05,
+     0.035,
+     0.065
+    ],
+    "hit1": [
+     0.018,
+     0.003,
+     0.034
+    ]
+   }
+  },
+  "voters | with_segment | warm votes": {
+   "it9b": {
+    "hit1": 0.084,
+    "hit3": 0.229,
+    "auc": 0.671,
+    "votes": 6500
+   },
+   "seg": {
+    "hit1": 0.037,
+    "hit3": 0.165,
+    "auc": 0.626,
+    "votes": 6500
+   },
+   "it9b+seg": {
+    "hit1": 0.09,
+    "hit3": 0.226,
+    "auc": 0.67,
+    "votes": 6500
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.001,
+     -0.004,
+     0.003
+    ],
+    "hit1": [
+     0.005,
+     -0.0,
+     0.011
+    ]
+   }
+  },
+  "voters | all_people | all votes": {
+   "it9b": {
+    "hit1": 0.066,
+    "hit3": 0.181,
+    "auc": 0.606,
+    "votes": 20281
+   },
+   "seg": {
+    "hit1": 0.039,
+    "hit3": 0.134,
+    "auc": 0.538,
+    "votes": 20281
+   },
+   "it9b+seg": {
+    "hit1": 0.068,
+    "hit3": 0.182,
+    "auc": 0.608,
+    "votes": 20281
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.002,
+     0.001,
+     0.003
+    ],
+    "hit1": [
+     0.002,
+     0.0,
+     0.004
+    ]
+   }
+  },
+  "voters | all_people | cold votes": {
+   "it9b": {
+    "hit1": 0.024,
+    "hit3": 0.089,
+    "auc": 0.473,
+    "votes": 4204
+   },
+   "seg": {
+    "hit1": 0.048,
+    "hit3": 0.128,
+    "auc": 0.499,
+    "votes": 4204
+   },
+   "it9b+seg": {
+    "hit1": 0.027,
+    "hit3": 0.097,
+    "auc": 0.484,
+    "votes": 4204
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.011,
+     0.007,
+     0.014
+    ],
+    "hit1": [
+     0.004,
+     0.001,
+     0.007
+    ]
+   }
+  },
+  "voters | all_people | warm votes": {
+   "it9b": {
+    "hit1": 0.077,
+    "hit3": 0.206,
+    "auc": 0.64,
+    "votes": 16077
+   },
+   "seg": {
+    "hit1": 0.037,
+    "hit3": 0.136,
+    "auc": 0.549,
+    "votes": 16077
+   },
+   "it9b+seg": {
+    "hit1": 0.079,
+    "hit3": 0.204,
+    "auc": 0.639,
+    "votes": 16077
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.0,
+     -0.002,
+     0.001
+    ],
+    "hit1": [
+     0.002,
+     -0.0,
+     0.004
+    ]
+   }
+  },
+  "browsers | with_segment | all votes": {
+   "it9b": {
+    "hit1": 0.058,
+    "hit3": 0.168,
+    "auc": 0.608,
+    "votes": 2103
+   },
+   "seg": {
+    "hit1": 0.047,
+    "hit3": 0.149,
+    "auc": 0.59,
+    "votes": 2103
+   },
+   "it9b+seg": {
+    "hit1": 0.055,
+    "hit3": 0.175,
+    "auc": 0.619,
+    "votes": 2103
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.012,
+     0.005,
+     0.019
+    ],
+    "hit1": [
+     -0.003,
+     -0.01,
+     0.004
+    ]
+   }
+  },
+  "browsers | with_segment | cold votes": {
+   "it9b": {
+    "hit1": 0.024,
+    "hit3": 0.07,
+    "auc": 0.475,
+    "votes": 412
+   },
+   "seg": {
+    "hit1": 0.068,
+    "hit3": 0.15,
+    "auc": 0.541,
+    "votes": 412
+   },
+   "it9b+seg": {
+    "hit1": 0.032,
+    "hit3": 0.109,
+    "auc": 0.512,
+    "votes": 412
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.037,
+     0.017,
+     0.058
+    ],
+    "hit1": [
+     0.007,
+     -0.01,
+     0.023
+    ]
+   }
+  },
+  "browsers | with_segment | warm votes": {
+   "it9b": {
+    "hit1": 0.067,
+    "hit3": 0.192,
+    "auc": 0.64,
+    "votes": 1691
+   },
+   "seg": {
+    "hit1": 0.041,
+    "hit3": 0.148,
+    "auc": 0.601,
+    "votes": 1691
+   },
+   "it9b+seg": {
+    "hit1": 0.061,
+    "hit3": 0.19,
+    "auc": 0.645,
+    "votes": 1691
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.006,
+     -0.002,
+     0.012
+    ],
+    "hit1": [
+     -0.006,
+     -0.013,
+     0.002
+    ]
+   }
+  },
+  "browsers | all_people | all votes": {
+   "it9b": {
+    "hit1": 0.058,
+    "hit3": 0.165,
+    "auc": 0.584,
+    "votes": 9327
+   },
+   "seg": {
+    "hit1": 0.037,
+    "hit3": 0.122,
+    "auc": 0.517,
+    "votes": 9327
+   },
+   "it9b+seg": {
+    "hit1": 0.057,
+    "hit3": 0.167,
+    "auc": 0.586,
+    "votes": 9327
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.003,
+     0.001,
+     0.004
+    ],
+    "hit1": [
+     -0.001,
+     -0.002,
+     0.001
+    ]
+   }
+  },
+  "browsers | all_people | cold votes": {
+   "it9b": {
+    "hit1": 0.024,
+    "hit3": 0.086,
+    "auc": 0.475,
+    "votes": 2445
+   },
+   "seg": {
+    "hit1": 0.038,
+    "hit3": 0.117,
+    "auc": 0.495,
+    "votes": 2445
+   },
+   "it9b+seg": {
+    "hit1": 0.025,
+    "hit3": 0.092,
+    "auc": 0.481,
+    "votes": 2445
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.006,
+     0.003,
+     0.01
+    ],
+    "hit1": [
+     0.001,
+     -0.002,
+     0.004
+    ]
+   }
+  },
+  "browsers | all_people | warm votes": {
+   "it9b": {
+    "hit1": 0.07,
+    "hit3": 0.194,
+    "auc": 0.622,
+    "votes": 6882
+   },
+   "seg": {
+    "hit1": 0.037,
+    "hit3": 0.124,
+    "auc": 0.525,
+    "votes": 6882
+   },
+   "it9b+seg": {
+    "hit1": 0.069,
+    "hit3": 0.193,
+    "auc": 0.623,
+    "votes": 6882
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.001,
+     -0.0,
+     0.003
+    ],
+    "hit1": [
+     -0.001,
+     -0.003,
+     0.0
+    ]
+   }
+  }
+ }
+}
