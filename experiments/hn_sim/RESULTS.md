@@ -1431,3 +1431,23 @@ n chosen on Nov 2-6 (0-8), Nov 7-10 held out.
 - What didn't move: off-front winners at 1 h (0-8 of 85 caught for any n). Next: the only path past 66.5% at 1 h is an
   off-front signal with far higher precision than 7%; candidates are inputs not yet in the live model (off-HN Reddit /
   Bluesky mentions before posting, the 2025 front-page history for a larger 1 h training set, content model large).
+
+## 1 h checkpoint, live: early signals for off-front winners, held-out test (2026-11-11, Shreyas)
+
+late60_d.py, full-coverage days Nov 2-10 (8,586 posts not on the front page by 1 h, 85 winners), leave one day out.
+Signals (all fixed before 1 h; history = stories created >= 3 days before the post, points settled): first-15-min
+votes / comments and 15 -> 60 min change; author history (past stories, share >= 100 points, max, days since last;
+94% of off-front winners have one); same URL submitted before (11%); domain record.
+(1) Within off-front posts, AUC / precision of each day's top 3 picks: odds + 1 h /newest (current) 0.798 / 7.4%;
+velocity alone 0.629 / 3.7%; author + URL alone 0.651 / 0%; domain alone 0.644 / 3.7%; odds + 1 h + velocity
+0.783 / 3.7%; + author 0.787 / 18.5%; + domain 0.808 / 14.8%; + all three 0.799 / 11.1% (27 picks per variant, so
+top-3 precision moves by 3.7 points per hit).
+(2) Held out (choices on Nov 2-6, Nov 7-10 scored once): shipped 1 h score 75/152 | 55/102 (all 130/254).
+(a) new inputs in the 1 h model: 79/152 | 53/102 (132/254), off-front winners caught 0 -> rejected (gain on Nov 2-6
+did not hold out). (b) swap the n weakest front-page flags for the top off-front posts scored with the new inputs:
+every n > 0 loses on both periods (n=1 73 | 54 ... n=8 62 | 43); chosen n = 0 -> rejected.
+1 h catch rate: unchanged, held-out Nov 7-10 55/102 (53.9%), Nov 2-10 130/254 (51.2%).
+Not moved: off-front winners at 1 h (0 caught). Velocity, author and domain records add no separation beyond the
+at-posting odds (which already carry author / domain records); the best off-front picks still win < 20% of the time,
+below the weakest front-page flags. Next: inputs the at-posting odds do not have (off-HN mentions before posting,
+the larger 2025 front-page training set) when that data lands.
