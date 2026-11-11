@@ -326,10 +326,22 @@ def live(day, point):
     A["api_rank"] = A.id.map(lambda i: api[i][1] if i in api else np.nan)
     A["pred_rank_api"] = (A.api_rank.fillna(999) - 1e-6 * A.lm).rank(method="first").astype(int)
     A["pred_rank_blend"] = ((A.pred_rank + A.pred_rank_api) / 2 - 1e-6 * A.lm).rank(method="first").astype(int)
+    # orchestrator 01:30Z Nov 12: dated comment votes before the reveal, recorded as extra columns (pred_rank unchanged)
+    try:
+        import comment_votes as CV
+        V = CV.features(day, T)
+        if len(V):
+            A = A.merge(V, on="id", how="left")
+    except Exception as e:
+        print("comment votes skipped:", repr(e)[:120], flush=True)
+    for c in ("cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot"):
+        if c not in A:
+            A[c] = np.nan
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0))[1])), "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "api_rank", "n_c", "u_out", "u_tie", "lm", "score"]].round(4).to_dict("records")}
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "api_rank", "n_c", "u_out", "u_tie", "lm", "score",
+                                                   "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
         res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
     else:
