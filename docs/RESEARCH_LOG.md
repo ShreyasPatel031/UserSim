@@ -857,3 +857,9 @@ Script experiments/simlab/fame_pilot.py; report reports/fame_pilot/. Gemini 2.5 
 - Brand flag vs residual r = logv − honest LM: within-day Spearman +0.017 [−0.112, 0.145] (12 days); pooled vs day-demeaned r −0.028 [−0.143, 0.087]; placebo −0.078. It correlates with the LM (+0.28 [0.18, 0.36]) and log votes (+0.18) - the LM already carries it.
 - "new version" pooled +0.104 [0.056, 0.176] rests on 2 launches - not a signal.
 Verdict: null. An LLM with a 2025 cutoff knows essentially none of the 2026 launches, and what it knows (brand) is already in the LM. Per the 23:20Z rule (run in full only if the residual CI is above zero) the full run was not done.
+
+### 2026-11-11 E5 — learned taste scorer (bge-small, deployable features) and the population re-check
+Script experiments/simlab/uses_learned_small.py; report reports/uses_learned_small/. LightGBM on 5 similarity features (top1, top5, mean, share > 0.8, profile size), leak-controlled length-matched sets (40,038 tasks, 5,096 people), person-disjoint 2 folds.
+- Person level: learned AUC 0.702 [0.697, 0.707] vs top-5 mean (same bge-small) 0.612 [0.608, 0.616]; shuffled-profile control 0.604 -> personal +0.098 [0.093, 0.103].
+- Population (same design as uses_population, 5 seeds): learned top-200 summed over people - all products Spearman 10.9, top-decile 16.4; COLD products top-decile 12.6 (seed sd 0.5) vs 15.5 for S2 (bge-base top-5) and 10 random. Pop + learned 38.4 all (vs 39.2 with S2).
+Reading: the learned scorer is better per person but worse at population level - its top lists concentrate on generic products that many people's profiles resemble, so summing over people adds less product-specific signal. For "who would use this product" at population level keep S2 (or an ensemble); for per-person ranking use the learned scorer.

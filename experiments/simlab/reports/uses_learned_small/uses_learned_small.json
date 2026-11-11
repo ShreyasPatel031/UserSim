@@ -1,0 +1,52 @@
+{
+ "design": "Deployable learned taste scorer for the website (bge-small only, no PH topics, no popularity, no who-text), and the\npopulation-level check redone with it.\nTraining data: the leak-controlled uses harness (eval_sets_lenmatched: popularity- and length-matched negatives, 40,038 tasks).\nFeatures per (person, product), from bge-small-en-v1.5 rich-text embeddings: top1, top5-mean, mean and share > 0.8 of the\ncosine similarities to the person's profile items, log1p profile size. LightGBM, person-disjoint 2-fold for the reported AUC\n(plus the shuffled-profile control: the same task scored with another person's profile -> personal = AUC - shuffled AUC);\nthe final model is refitted on all tasks and saved as a text file.\nPopulation check: identical to uses_population.py, with \"wants it\" = product in the person's top-200 by the learned score.",
+ "person_level": {
+  "learned_small AUC": [
+   0.7024,
+   0.6972,
+   0.7073,
+   5096
+  ],
+  "top5 (S2-small) AUC": [
+   0.6119,
+   0.6079,
+   0.6158,
+   5096
+  ],
+  "learned_small shuffled-profile AUC": [
+   0.6043,
+   0.6003,
+   0.6083,
+   5096
+  ],
+  "personal (AUC - shuffled), paired": [
+   0.098,
+   0.0932,
+   0.1029,
+   5096
+  ]
+ },
+ "population": {
+  "POP_A": {
+   "all spearman": 20.1,
+   "all top-decile": 36.6,
+   "cold spearman": NaN,
+   "cold top-decile": 10.0,
+   "cold top-decile seed sd": 0.2
+  },
+  "TASTE learned_small": {
+   "all spearman": 10.9,
+   "all top-decile": 16.4,
+   "cold spearman": 5.5,
+   "cold top-decile": 12.6,
+   "cold top-decile seed sd": 0.5
+  },
+  "COMB pop+learned": {
+   "all spearman": 18.7,
+   "all top-decile": 38.4,
+   "cold spearman": 5.5,
+   "cold top-decile": 12.1,
+   "cold top-decile seed sd": 0.6
+  }
+ }
+}
