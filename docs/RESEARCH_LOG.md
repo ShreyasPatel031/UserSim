@@ -496,3 +496,37 @@ This is the orchestrator's track for E5. The design is in the docstring of `expe
 - **Retrieval (V2) matches the taste logistic** within its CI, so a strong text embedding adds nothing over the TF-IDF and topic taste features.
 - **Verdict:** none of the three passes the pre-registered success test.
 - **All variants beat random,** and V2 and the baseline exceed it8 product-only's reported 0.587 AUC. That comparison is on different days (19 vs 12), so it needs the 19-day rows or it8's 12-day numbers to be sure.
+
+### 2026-11-11 05:55Z — E5: how much of PH upvoting does taste explain? Exposure-controlled checks (19 days, the PH agent's it8 rows)
+
+- **Data:** 2.61M rows; 8,362 voting person-days, Oct 20–Nov 7.
+- **Scores:** the E5 baseline. ORACLE ranks launches by the day's final votes; it is non-personal and uses outcomes, so it is a reference only.
+- **Code and results:** `experiments/simlab/exposure_control.py`; `reports/usersim_ref/exposure_control_19d.json` and `usersim_ref_table_19d.json`.
+
+Hit@3 [95% CI]; "vs random" is paired by day:
+
+| | full line-up | final top 20 only | final top 10 only |
+|---|---|---|---|
+| random | 0.236 | 0.284 | 0.444 |
+| taste, product-only | 0.386 (+0.150 vs random) | 0.437 (+0.153) | 0.588 (+0.144 [0.087, 0.198]) |
+| taste + team ties (full) | 0.486 (+0.249) | 0.518 (+0.234) | 0.601 (+0.157) |
+| ORACLE, final votes | 0.740 (+0.504) | 0.753 | 0.794 (+0.350) |
+
+**Pseudo-R²** of the within-person-day choice. The null is the person-day's base rate.
+
+| predictor | pseudo-R² |
+|---|---|
+| final-vote popularity | 0.179 |
+| taste, product-only | 0.009 |
+| taste + ties | 0.023 |
+| popularity + taste | 0.181 |
+
+So taste adds only about +0.002 on top of popularity.
+
+**Reading**
+1. **Choices concentrate on the day's winners.** 94% of voting person-days have their pick inside the final top 10, so upvotes mostly go where the day's winners are.
+2. **Personal taste is real but small.** It keeps a stable lift over random (about +0.15 Hit@3) even inside the final top 10, so it survives the exposure control. But within-day it explains about 1% of choice variance (pseudo-R²), against about 18% for the day's popularity.
+3. **Team ties work mainly through which launches reach the top.** Inside the top 10 they add almost nothing over product-only taste (0.601 vs 0.588).
+4. **Caveat: popularity is not pure exposure.** Final votes mix homepage exposure, mobilisation and shared appeal (common taste). We hold no homepage-position data, so the 18% cannot be split between "exposure" and "everyone likes the same thing".
+
+**"Wants/uses" labels (stacks, collections, reviews): not testable on current text.** These events are product slugs with no dates. Only 3.5% of collection items, 1.4% of reviews and 0.1% of stack items match a launch whose text we hold: 1,031 items over 704 products, and only 36 people with 5 or more matched items. Most stacked products are established tools (Slack, n8n and the like) that are not 2026 launches.

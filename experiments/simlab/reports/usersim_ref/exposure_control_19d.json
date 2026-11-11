@@ -1,0 +1,288 @@
+{
+ "rows": 2610616,
+ "days": 19,
+ "voting_person_days": 8362,
+ "full line-up": {
+  "voting_person_days": 8362,
+  "rand": {
+   "Hit@1": [
+    0.098,
+    0.082,
+    0.114
+   ],
+   "Hit@3": [
+    0.236,
+    0.205,
+    0.27
+   ]
+  },
+  "product_only": {
+   "Hit@1": [
+    0.178,
+    0.137,
+    0.223
+   ],
+   "Hit@3": [
+    0.386,
+    0.329,
+    0.442
+   ],
+   "Hit@3 minus random (paired)": [
+    0.15,
+    0.102,
+    0.201
+   ]
+  },
+  "full": {
+   "Hit@1": [
+    0.21,
+    0.173,
+    0.247
+   ],
+   "Hit@3": [
+    0.486,
+    0.422,
+    0.549
+   ],
+   "Hit@3 minus random (paired)": [
+    0.249,
+    0.19,
+    0.309
+   ]
+  },
+  "oracle": {
+   "Hit@1": [
+    0.385,
+    0.338,
+    0.433
+   ],
+   "Hit@3": [
+    0.74,
+    0.704,
+    0.774
+   ],
+   "Hit@3 minus random (paired)": [
+    0.504,
+    0.462,
+    0.545
+   ]
+  },
+  "taste_plus_oracle": {
+   "Hit@1": [
+    0.399,
+    0.358,
+    0.44
+   ],
+   "Hit@3": [
+    0.708,
+    0.682,
+    0.736
+   ],
+   "Hit@3 minus random (paired)": [
+    0.472,
+    0.439,
+    0.502
+   ]
+  }
+ },
+ "final top 20": {
+  "voting_person_days": 8237,
+  "rand": {
+   "Hit@1": [
+    0.117,
+    0.108,
+    0.128
+   ],
+   "Hit@3": [
+    0.284,
+    0.266,
+    0.306
+   ]
+  },
+  "product_only": {
+   "Hit@1": [
+    0.185,
+    0.145,
+    0.231
+   ],
+   "Hit@3": [
+    0.437,
+    0.386,
+    0.488
+   ],
+   "Hit@3 minus random (paired)": [
+    0.153,
+    0.107,
+    0.198
+   ]
+  },
+  "full": {
+   "Hit@1": [
+    0.223,
+    0.184,
+    0.262
+   ],
+   "Hit@3": [
+    0.518,
+    0.459,
+    0.574
+   ],
+   "Hit@3 minus random (paired)": [
+    0.234,
+    0.174,
+    0.292
+   ]
+  },
+  "oracle": {
+   "Hit@1": [
+    0.392,
+    0.343,
+    0.439
+   ],
+   "Hit@3": [
+    0.753,
+    0.717,
+    0.786
+   ],
+   "Hit@3 minus random (paired)": [
+    0.469,
+    0.43,
+    0.506
+   ]
+  },
+  "taste_plus_oracle": {
+   "Hit@1": [
+    0.407,
+    0.364,
+    0.45
+   ],
+   "Hit@3": [
+    0.719,
+    0.693,
+    0.745
+   ],
+   "Hit@3 minus random (paired)": [
+    0.436,
+    0.409,
+    0.461
+   ]
+  }
+ },
+ "final top 10": {
+  "voting_person_days": 7827,
+  "rand": {
+   "Hit@1": [
+    0.188,
+    0.176,
+    0.201
+   ],
+   "Hit@3": [
+    0.444,
+    0.429,
+    0.462
+   ]
+  },
+  "product_only": {
+   "Hit@1": [
+    0.269,
+    0.222,
+    0.324
+   ],
+   "Hit@3": [
+    0.588,
+    0.535,
+    0.639
+   ],
+   "Hit@3 minus random (paired)": [
+    0.144,
+    0.087,
+    0.198
+   ]
+  },
+  "full": {
+   "Hit@1": [
+    0.288,
+    0.25,
+    0.325
+   ],
+   "Hit@3": [
+    0.601,
+    0.546,
+    0.648
+   ],
+   "Hit@3 minus random (paired)": [
+    0.157,
+    0.098,
+    0.213
+   ]
+  },
+  "oracle": {
+   "Hit@1": [
+    0.413,
+    0.362,
+    0.464
+   ],
+   "Hit@3": [
+    0.794,
+    0.759,
+    0.825
+   ],
+   "Hit@3 minus random (paired)": [
+    0.35,
+    0.31,
+    0.388
+   ]
+  },
+  "taste_plus_oracle": {
+   "Hit@1": [
+    0.433,
+    0.384,
+    0.484
+   ],
+   "Hit@3": [
+    0.764,
+    0.736,
+    0.792
+   ],
+   "Hit@3 minus random (paired)": [
+    0.319,
+    0.285,
+    0.353
+   ]
+  }
+ },
+ "pseudo_R2 (within person-day; null = each person-day's base rate)": {
+  "popularity (log final votes; non-personal, outcome)": [
+   0.1789,
+   [
+    0.866
+   ]
+  ],
+  "taste product-only": [
+   0.0087,
+   [
+    0.186
+   ]
+  ],
+  "taste full (incl. team ties)": [
+   0.023,
+   [
+    0.291
+   ]
+  ],
+  "popularity + taste product-only": [
+   0.1812,
+   [
+    0.855,
+    0.098
+   ]
+  ],
+  "popularity + taste full": [
+   0.1813,
+   [
+    0.842,
+    0.098
+   ]
+  ]
+ }
+}
