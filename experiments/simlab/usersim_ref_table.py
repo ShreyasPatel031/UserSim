@@ -68,4 +68,5 @@ def person_metrics(s):
 res = {"rows": int(len(R)), "days": int(R.d.nunique()), "person_days": int(R.groupby(["d", "person_id"]).ngroups), "model": "E5 logistic baseline, monthly (Sep model -> Oct days, Oct model -> Nov days)"}
 for sn in SETS: res[sn] = person_metrics(sn)
 d = (R.groupby(["d", "person_id"]).apply(lambda g: 0))  # placeholder to keep structure simple
+R[["d", "person_id", "launch_id", "y"] + list(SETS)].to_parquet(W + "/out/usersim_ref_rows.parquet", index=False)
 json.dump(res, open(W + "/out/usersim_ref_table.json", "w"), indent=1); print(json.dumps(res, indent=1))

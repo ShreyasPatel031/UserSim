@@ -452,3 +452,25 @@ Day-bootstrap 95% CIs:
 - Product-only taste is weak within a person's day: AUC 0.65.
 - Calibration is good overall. One caveat: deciles 3–5 predict 0.0013 against a real 0.00005. These are people with no dated history; the model gives them a floor rate.
 - These are the reference rows for it9b's keep rule: product-only Hit@3 or within-line-up AUC CI-positive vs it8 on the same input set.
+
+### 2026-11-11 04:55Z — PRE-REGISTRATION (E5): cold-start content-to-CF user simulation (product-only), before scoring
+
+This is the orchestrator's track for E5. The design is in the docstring of `experiments/simlab/cold_start.py`, committed with this entry. It uses no team, maker, hunter, follow or tie features.
+
+**Variants (all three pre-registered):**
+- **V1 cf_enc:**
+  - Item vectors come from an SVD of co-upvotes, using only upvotes on launches dated on or before the fold cutoff.
+  - A ridge text encoder maps bge-small text embeddings to those CF vectors.
+  - The person vector is a recency-weighted mean of the vectors of their upvotes dated ≤ d−2.
+  - Score: cosine between the person vector and the encoded vector of L.
+- **V2 retrieval:** recency-weighted mean of L's top-5 text similarities to the person's past upvoted launches. The max similarity is reported alongside.
+- **V3 hybrid:** z(V1) + z(V2), within each person-day.
+
+**Folds:** cutoffs Oct 18 (scoring Oct 20–31) and Oct 30 (scoring Nov 1–7).
+
+**Evaluation:**
+- Rows: the PH agent's 12 clean days (tl_cp_clean_rows); the 19-day it8 rows when provided.
+- Metrics: Hit@1, Hit@3, within-line-up AUC, day-bootstrap CIs.
+- Paired by day against the E5 product-only baseline. Compared with it8 product-only on matching days.
+
+**Success:** any variant with Hit@3 or AUC CI-positive vs the E5 product-only baseline.
