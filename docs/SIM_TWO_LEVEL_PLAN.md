@@ -55,3 +55,17 @@ does not lose beyond its interval, and the person metrics improve.
 - E5: reviews the leakage and the weighting.
 - Population agent: keeps the complete set and its activity-tier stats current.
 - Orchestrator: reports both levels to Shreyas daily.
+
+## Standing finding: where the PH error is (read before starting any PH test)
+- **Nov 2 (E0, `simlab/e0_shock.py`, `shock_model.py`):** 90.5% of the simulation error is one shared per-launch
+  shock. Daily top 3/5/10 with the simulation + TRUE shock: 86/93/90. Pre-launch inputs predicted the shock at
+  within-day Spearman 0.49, mostly from audience counts. A 10% sample of real voters already gave 83/86/82, so
+  coverage was not the limit.
+- **Nov 11 (it8 launch-multiplier diagnostic):** the same result on complete people. One scalar per launch lifts
+  0.555 → 0.881 and top 3/5/10 to 87/90/88. From held 00:05 features, 0.24 of it is predictable.
+- **Tried against the shock, with no gain:** surge history, coming-soon (feature removed by PH), competitor
+  grounding (4 tests), X audience (too few on-time reads), late-fetched page inputs (leaky), dated follows, team
+  and hunter history, 5 LM candidates, the cascade sim, and more complete people.
+- **Not tried until Nov 11:** product understanding from launch-day text inside the person model, a listwise
+  ranking of the day's line-up, a gallery read, a persona panel.
+- **Rule:** PH work targets the per-launch appeal term. People pulls do not address it.
