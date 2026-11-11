@@ -95,7 +95,13 @@ if [[ "$proxy_slots_sampled" -gt 0 ]]; then
 fi
 
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
-"$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
+# Below target: avoid batch kicks (they drop the 15m window while VMs relaunch).
+if python3 -c "exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null; then
+  export FLEET_CF_RECOVER_MAX_KICKS=0
+  echo "$(date -u +%FT%TZ) CF_RECOVER_SKIPPED ppm=${ppm} (below target)" >>"$LOG"
+else
+  "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
+fi
 bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
 # Babysit: do not delete cf_wall/dead slots while throughput is below target (they may be mid port-swap).
 FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
