@@ -1,0 +1,275 @@
+{
+ "launches": 5564,
+ "days": 239,
+ "groups": {
+  "other": 4803,
+  "hit": 441,
+  "near": 241,
+  "false_alarm": 46,
+  "miss": 33
+ },
+ "group_means": {
+  "false_alarm": {
+   "team_prev": 722.87,
+   "team_prev_top3": 154.13,
+   "hunter_prev": 80.326,
+   "relaunch": 0.087,
+   "n_makers": 2.565,
+   "self_hunted": 0.087,
+   "desc_len": 312.022,
+   "tagline_len": 48.13,
+   "weekday": 2.674,
+   "lineup": 32.587,
+   "ai_topic": 0.674,
+   "topic:Artificial Intelligence": 0.674,
+   "topic:Productivity": 0.174,
+   "topic:Developer Tools": 0.196,
+   "topic:GitHub": 0.022,
+   "topic:Open Source": 0.043,
+   "topic:Mac": 0.0,
+   "topic:SaaS": 0.065,
+   "topic:Marketing": 0.13,
+   "topic:Design Tools": 0.13,
+   "topic:API": 0.043,
+   "topic:Menu Bar Apps": 0.0,
+   "topic:Tech": 0.087,
+   "c_4h": 3.609,
+   "c_day": 6.826
+  },
+  "hit": {
+   "team_prev": 657.644,
+   "team_prev_top3": 149.408,
+   "hunter_prev": 117.045,
+   "relaunch": 0.077,
+   "n_makers": 3.998,
+   "self_hunted": 0.052,
+   "desc_len": 349.438,
+   "tagline_len": 47.939,
+   "weekday": 2.977,
+   "lineup": 22.617,
+   "ai_topic": 0.757,
+   "topic:Artificial Intelligence": 0.757,
+   "topic:Productivity": 0.324,
+   "topic:Developer Tools": 0.297,
+   "topic:GitHub": 0.077,
+   "topic:Open Source": 0.088,
+   "topic:Mac": 0.009,
+   "topic:SaaS": 0.073,
+   "topic:Marketing": 0.141,
+   "topic:Design Tools": 0.063,
+   "topic:API": 0.077,
+   "topic:Menu Bar Apps": 0.0,
+   "topic:Tech": 0.029,
+   "c_4h": 17.009,
+   "c_day": 46.556
+  },
+  "miss": {
+   "team_prev": 469.758,
+   "team_prev_top3": 91.303,
+   "hunter_prev": 18.576,
+   "relaunch": 0.061,
+   "n_makers": 1.939,
+   "self_hunted": 0.424,
+   "desc_len": 295.636,
+   "tagline_len": 46.606,
+   "weekday": 2.848,
+   "lineup": 30.333,
+   "ai_topic": 0.545,
+   "topic:Artificial Intelligence": 0.545,
+   "topic:Productivity": 0.394,
+   "topic:Developer Tools": 0.242,
+   "topic:GitHub": 0.242,
+   "topic:Open Source": 0.121,
+   "topic:Mac": 0.061,
+   "topic:SaaS": 0.03,
+   "topic:Marketing": 0.061,
+   "topic:Design Tools": 0.03,
+   "topic:API": 0.03,
+   "topic:Menu Bar Apps": 0.121,
+   "topic:Tech": 0.03,
+   "c_4h": 9.212,
+   "c_day": 31.364
+  },
+  "near": {
+   "team_prev": 803.705,
+   "team_prev_top3": 169.423,
+   "hunter_prev": 84.631,
+   "relaunch": 0.054,
+   "n_makers": 2.349,
+   "self_hunted": 0.174,
+   "desc_len": 321.826,
+   "tagline_len": 47.452,
+   "weekday": 3.095,
+   "lineup": 23.519,
+   "ai_topic": 0.656,
+   "topic:Artificial Intelligence": 0.656,
+   "topic:Productivity": 0.245,
+   "topic:Developer Tools": 0.386,
+   "topic:GitHub": 0.158,
+   "topic:Open Source": 0.154,
+   "topic:Mac": 0.041,
+   "topic:SaaS": 0.075,
+   "topic:Marketing": 0.075,
+   "topic:Design Tools": 0.041,
+   "topic:API": 0.075,
+   "topic:Menu Bar Apps": 0.012,
+   "topic:Tech": 0.033,
+   "c_4h": 11.079,
+   "c_day": 31.627
+  },
+  "other": {
+   "team_prev": 403.489,
+   "team_prev_top3": 79.423,
+   "hunter_prev": 28.811,
+   "relaunch": 0.044,
+   "n_makers": 1.707,
+   "self_hunted": 0.529,
+   "desc_len": 330.333,
+   "tagline_len": 47.59,
+   "weekday": 2.534,
+   "lineup": 34.264,
+   "ai_topic": 0.489,
+   "topic:Artificial Intelligence": 0.489,
+   "topic:Productivity": 0.313,
+   "topic:Developer Tools": 0.297,
+   "topic:GitHub": 0.169,
+   "topic:Open Source": 0.122,
+   "topic:Mac": 0.081,
+   "topic:SaaS": 0.068,
+   "topic:Marketing": 0.057,
+   "topic:Design Tools": 0.063,
+   "topic:API": 0.04,
+   "topic:Menu Bar Apps": 0.047,
+   "topic:Tech": 0.042,
+   "c_4h": 3.465,
+   "c_day": 9.177
+  }
+ },
+ "residual_spearman": {
+  "team_prev": [
+   -0.041,
+   -0.067,
+   -0.017
+  ],
+  "team_prev_top3": [
+   -0.039,
+   -0.065,
+   -0.012
+  ],
+  "hunter_prev": [
+   -0.015,
+   -0.046,
+   0.02
+  ],
+  "relaunch": [
+   -0.015,
+   -0.037,
+   0.005
+  ],
+  "n_makers": [
+   -0.019,
+   -0.049,
+   0.012
+  ],
+  "self_hunted": [
+   0.04,
+   0.013,
+   0.07
+  ],
+  "desc_len": [
+   0.022,
+   -0.003,
+   0.048
+  ],
+  "tagline_len": [
+   0.004,
+   -0.022,
+   0.031
+  ],
+  "weekday": [
+   NaN,
+   NaN,
+   NaN
+  ],
+  "lineup": [
+   NaN,
+   NaN,
+   NaN
+  ],
+  "ai_topic": [
+   -0.031,
+   -0.062,
+   -0.003
+  ],
+  "topic:Artificial Intelligence": [
+   -0.031,
+   -0.058,
+   -0.002
+  ],
+  "topic:Productivity": [
+   0.015,
+   -0.013,
+   0.043
+  ],
+  "topic:Developer Tools": [
+   0.054,
+   0.03,
+   0.079
+  ],
+  "topic:GitHub": [
+   0.046,
+   0.025,
+   0.067
+  ],
+  "topic:Open Source": [
+   0.034,
+   0.01,
+   0.056
+  ],
+  "topic:Mac": [
+   0.009,
+   -0.006,
+   0.026
+  ],
+  "topic:SaaS": [
+   -0.009,
+   -0.026,
+   0.01
+  ],
+  "topic:Marketing": [
+   -0.008,
+   -0.027,
+   0.011
+  ],
+  "topic:Design Tools": [
+   0.001,
+   -0.013,
+   0.019
+  ],
+  "topic:API": [
+   0.01,
+   -0.01,
+   0.028
+  ],
+  "topic:Menu Bar Apps": [
+   0.015,
+   0.003,
+   0.03
+  ],
+  "topic:Tech": [
+   0.002,
+   -0.015,
+   0.018
+  ],
+  "c_4h": [
+   0.3,
+   0.273,
+   0.326
+  ],
+  "c_day": [
+   0.433,
+   0.405,
+   0.457
+  ]
+ }
+}
