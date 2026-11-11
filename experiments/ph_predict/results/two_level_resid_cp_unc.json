@@ -57,12 +57,22 @@
   ],
   "n_days": 15
  },
+ "spearman_ev_lm": {
+  "mean_ci_n": [
+   0.719,
+   [
+    0.664,
+    0.768
+   ],
+   15
+  ]
+ },
  "regression_real_on_lm_ev": {
   "coef_lm": 0.635,
   "coef_ev": 0.076,
   "coef_ev_ci": [
-   -0.011,
-   0.161
+   -0.014,
+   0.162
   ],
   "n_days": 15
  },
