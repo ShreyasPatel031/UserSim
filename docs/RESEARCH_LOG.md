@@ -398,3 +398,29 @@ Daily top 3 / top 5, change vs the base LM, Mar-Oct (243 days):
 - D1 and D2 are tested separately. Their combination gets one extra row, only if both pass.
 
 **Known risk, stated up front.** The store people were selected in November (mostly Oct 29–Nov 4 voters). For early months the sample is "people still active in Nov", which may weaken the features for those months. The rule's Oct 20–Nov 8 condition covers the live-like period.
+
+### 2026-11-11 03:55Z — RESULT (E5): LM candidates D1 warm audience, D2 person-sum EV. Both DROPPED under the pre-registered rule.
+
+**Setup**
+- The PH agent's lm_breakout harness, unchanged: code identical to claude/ph-ops-agent at 8a1ad1df, its build cache of Nov 9.
+- Monthly folds Mar–Nov 8, 5 seeds averaged, 10,000-draw day bootstrap.
+- Base reproduced exactly: 60.5 / 67.7 / 75.2 on Mar–Oct, 70.0 / 68.0 / 74.5 on Oct 20–Nov 8.
+- Features: `experiments/simlab/lm_cand_d1d2.py`; wrapper: `experiments/simlab/lm_cand_run_harness.py`; results: `experiments/simlab/reports/lm_cand_d1d2/`.
+
+Paired change vs the base LM, daily top 3 / 5 / 10, with 95% CI:
+
+| | Mar–Oct (243 days) | Oct 20–Nov 8 (20 days) |
+|---|---|---|
+| D1 warm audience | +0.4 [−1.0, 1.8] / +0.2 [−0.7, 1.2] / −0.2 [−0.9, 0.4] | −5.0 [−11.7, 1.7] / +1.0 / +2.0 |
+| D2 person-sum EV | −0.3 [−1.4, 0.8] / +0.2 [−0.4, 0.9] / +0.1 [−0.4, 0.6] | −1.7 [−5.0, 0] / 0.0 / +1.0 |
+
+**Keep rule**
+- Neither candidate has a CI-positive top 3 or top 5 on Mar–Oct.
+- Both are negative at top 3 on the live window.
+- So both are DROPPED. Following the pre-registration, the D1+D2 combination row was not run.
+
+**Reading**
+1. The complete people's own history (audience size, person-sum EV) carries nothing usable beyond the LM's 53 honest inputs.
+2. The two-level residual signal (it8 EV coefficient +0.16, on 15 days) does not survive as an LM input across 243 days.
+3. With C1–C3 and D1–D2 all failing, five pre-launch candidates built from data we already hold have failed in total.
+4. The honest 00:05 LM looks saturated on held data. The next real lift needs a new kind of measurement, for example at-launch X audience or page quality once about 60 days of at-launch reads exist, or within-day early signals if the target allows forecasting after launch.
