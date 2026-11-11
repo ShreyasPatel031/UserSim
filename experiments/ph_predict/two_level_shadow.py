@@ -90,6 +90,7 @@ def main(d):
     loc = f"{WORK}/ev_{d}.parquet"; ev.to_parquet(loc, index=False)
     log.update(launches_scored=int(len(ev)), people=int(R.person.nunique()), rows=int(len(R)),
                lm_matched=int(ev["lm_rank"].notna().sum()) if "lm_rank" in ev else 0, seconds=round(time.time() - t0, 1))
+    log["written_at"] = pd.Timestamp.now(tz="UTC").isoformat()   # E5: provably written before d's outcomes settle
     json.dump(log, open(f"{WORK}/ev_{d}.json", "w"), indent=1, default=str)
     for f in (loc, f"{WORK}/ev_{d}.json"):
         subprocess.run(["gsutil", "-q", "cp", f, f"{OUT}/"], check=True)
