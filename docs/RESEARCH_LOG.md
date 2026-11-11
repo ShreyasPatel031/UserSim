@@ -1582,3 +1582,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 14:34 UTC Nov 11 mailbox checked; live capture checked (06:30 PT snapshot, 26 launches, 0 failures). Daily merge note: pool 22,045, nothing to act on.
 - 15:33 UTC Nov 11 mailbox checked; live capture checked (07:30 PT snapshot, 0 failures). Data Feeder replied 'blocked' on list_check Nov 10: already closed (the PH agent ran it in its own session), no action.
 - 16:33 UTC Nov 11 mailbox checked; live capture checked (08:30 PT snapshot, 0 failures). Early-day forecast for Nov 11: all four points written (R0, R1, R2, R4; R4 at 16:01Z, 26 launches). GCP meter 07:39 PT: projected $45.30 of $50, of which ~$1.04/h is the paused feeder-fleet VMs still running.
+- 17:39 UTC Nov 11 mailbox checked; live capture checked.
