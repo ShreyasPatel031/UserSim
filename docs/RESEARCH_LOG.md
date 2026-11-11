@@ -345,3 +345,27 @@ All iterations passed the honesty review. The PH agent's code and results are on
   - Within-day Spearman of EV vs votes: model 0.555, true A 0.565, true A·K 0.562, true S 0.788, oracle 0.885.
   - Activity is not the gap. The shares (taste vs breakout) close about 70% of it.
   - The two-level review is closed until a new pre-d breakout signal appears, or about 30 LM-covered days exist for the LM + it8 re-test.
+
+### 2026-11-11 02:25Z — E5 review: breakout features in the LM (C1-C3), all dropped under the pre-registered rule
+
+The PH agent tested three candidate features (lm_breakout.py on claude/ph-ops-agent), each paired against the base LM:
+- **C1 topic momentum:** how well launches in the same topics did recently.
+- **C2 within-day field:** a launch's standing against that day's line-up, built from the final featured list (marked as such).
+- **C3 team absolute record:** the team's earlier vote and rank history.
+
+How the test was run:
+- Honest LM base with 53 inputs; 9 monthly folds, Mar-Nov 8; 5 seeds, averaged.
+- Vote-based parts use only launches dated d-7 or earlier, and rank-based parts d-2 or earlier. The date assertion found 0 violations in 7,198 rows.
+
+Daily top 3 / top 5, change vs the base LM, Mar-Oct (243 days):
+
+| | top 3 | top 5 |
+|---|---|---|
+| C1 | -0.8 [-2.5, 0.7] | -0.7 [-1.6, 0.2] |
+| C2 | -0.4 [-1.9, 1.1] | -0.1 [-1.1, 0.9] |
+| C3 | -0.5 [-2.1, 1.0] | +0.6 [-0.2, 1.4] |
+
+- None passes the keep rule, which needed top 3 or top 5 clearly positive on Mar-Oct. All three are dropped.
+- C3's live Oct 20-Nov 8 result (+3.3 / +2.0, 20 days, intervals include 0) does not override the backtest gate.
+- With these gone, the honest pre-launch candidate list is exhausted for current data.
+- Deferred until about 60 days of at-launch reads exist: X audience and page quality at 00:05.
