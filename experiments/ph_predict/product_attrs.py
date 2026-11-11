@@ -40,6 +40,39 @@ Topics: {topics}
 Number of makers: {n_makers}
 Description: {description}"""
 LEAK = re.compile(r"(\d[\d,.]*\s*(up)?votes?|\d[\d,.]*\s*comments?|#\s*\d|\brank(ed)?\s*#?\d|\d+(st|nd|rd|th)\s+product\s+of\s+the)", re.I)
+# E5 Nov 11: post-launch edits. Any sentence with these phrases is blanked (counted) before the prompt and the embeddings.
+EDIT = re.compile(r"product of the (day|week|month)|golden kitty|thank(s| you) (for|everyone)|upvot|hunt(ed)? us|we('re| are) live|launch day", re.I)
+
+
+def clean(text):
+    """Blank sentences that look like post-launch edits, then redact vote/rank/comment numbers. Returns (text, hits)."""
+    parts = re.split(r"(?<=[.!?\n])\s+", text or ""); hits = 0; keep = []
+    for p in parts:
+        if EDIT.search(p):
+            hits += 1; continue
+        keep.append(p)
+    t = " ".join(keep); n = len(LEAK.findall(t))
+    return LEAK.sub("[n]", t), hits + n
+
+
+def captured_text():
+    """Launch text as captured on launch day (raw/ph_at_launch/<d>/posts.jsonl, Oct 20 on), preferred to the late fetch."""
+    import subprocess
+    B = "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_at_launch"
+    r = subprocess.run(["gsutil", "ls", f"{B}/*/posts.jsonl"], capture_output=True, text=True)
+    out = {}
+    for p in r.stdout.split():
+        t = subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
+        for l in t.splitlines():
+            try:
+                x = json.loads(l)
+            except Exception:  # noqa: BLE001
+                continue
+            if x.get("tagline") is not None:
+                out[str(x["launch_id"])] = (x.get("name"), x.get("tagline") or "", x.get("description") or "", x.get("fetched_at"))
+    return out
+TEMPLATE_SHA = hashlib.sha256((PROMPT + json.dumps(SCHEMA, sort_keys=True)).encode()).hexdigest()[:16]
+CAP = {}
 LK = threading.Lock(); USE = {"in": 0, "out": 0, "leak_hits": 0, "prompts": 0}
 
 
@@ -63,6 +96,8 @@ def call(prompt):
 
 
 def main(threads=8):
+    global CAP
+    CAP = captured_text()
     I = pd.read_parquet(f"{WORK}/items.parquet")
     done = set()
     path = f"{OUT}/attrs_a.jsonl"
@@ -72,15 +107,16 @@ def main(threads=8):
     f = open(path, "a")
 
     def one(r):
-        mk = len(json.loads(r.makers or "[]"))
-        p = PROMPT.format(name=r.name, tagline=r.tagline, topics=", ".join(json.loads(r.topics or "[]")), n_makers=mk,
-                          description=(r.description or "")[:1500])
-        hit = len(LEAK.findall(p)); p = LEAK.sub("[n]", p)   # counted, then redacted before sending
+        mk = len(json.loads(r.makers or "[]")); cap = CAP.get(str(r.id))
+        name, tag, desc, src = (cap[0] or r.name, cap[1], cap[2], "captured") if cap else (r.name, r.tagline, r.description or "", "fetched")
+        tag, h1 = clean(tag); desc, h2 = clean(desc[:1500]); hit = h1 + h2
+        p = PROMPT.format(name=name, tagline=tag, topics=", ".join(json.loads(r.topics or "[]")), n_makers=mk, description=desc)
         try:
             a = call(p)
         except Exception as e:  # noqa: BLE001
             return {"id": str(r.id), "error": str(e)[:200]}
         rec = {"id": str(r.id), "day": r.day, "attrs": a, "model": MODEL, "prompt_sha": hashlib.sha256(p.encode()).hexdigest()[:16],
+               "template_sha": TEMPLATE_SHA, "text_source": src, "tagline_clean": tag, "description_clean": desc,
                "leak_hits": hit, "at": pd.Timestamp.now(tz="UTC").isoformat()}
         with LK:
             USE["prompts"] += 1; USE["leak_hits"] += hit
@@ -88,7 +124,7 @@ def main(threads=8):
         return rec
     with ThreadPoolExecutor(threads) as ex:
         errs = [x for x in ex.map(one, todo.itertuples()) if "error" in x]
-    json.dump({**USE, "errors": len(errs), "todo": len(todo), "model": MODEL}, open(f"{OUT}/run_{int(time.time())}.json", "w"))
+    json.dump({**USE, "errors": len(errs), "todo": len(todo), "model": MODEL, "template_sha": TEMPLATE_SHA, "captured_texts": len(CAP)}, open(f"{OUT}/run_{int(time.time())}.json", "w"))
     print(json.dumps({**USE, "errors": len(errs), "todo": len(todo)}))
 
 
