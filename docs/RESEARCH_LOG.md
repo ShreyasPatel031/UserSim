@@ -1561,3 +1561,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 08:23 UTC Nov 11 Nov 11 PT day started: today_0005.json landed, live capture PASS (16/16); maker headers 23 makers, box fallback pending. Coverage flat 41.24%/56.71%. E5 assigned: learned taste scorer on upvote choice (product-only, cold-only line-ups, shuffled control), cross-domain zero-shot, and two-term popularity + taste population score.
 - 08:25 UTC Nov 11 Maker headers Nov 11: 0 of 23 read; box fallback hit a Cloudflare interstitial on the first profile and stopped, no retry (correct). Follower counts for makers/hunters are still in today_0005.json from the official API, so the 00:05 counts are not lost.
 - 08:39 UTC Nov 11 mailbox checked; Nov 11 live capture checked.
+- 08:40 UTC Nov 11 Live capture Nov 11 healthy (00:30 PT, 26/26). makers_x.jsonl for Nov 11 missing at 00:39 PT (planned ~00:12 PT); follow-up POSTed to Grok Bot.
