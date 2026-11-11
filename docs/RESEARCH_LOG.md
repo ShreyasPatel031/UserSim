@@ -926,3 +926,13 @@ Script experiments/simlab/landing_retrieval.py; report reports/landing_retrieval
 - on the full honest LM (177 days): LM + retrieval − LM: Spearman −1.3 [−2.2, −0.4], top-3 −1.7 [−3.8, 0.6], top-5 −0.3, top-10 −0.5
 - rank-band calibration (10–90% band from earlier months, month-forward): base covers 79.7% of true ranks (n 5,351), ridge + retrieval 80.6%, LightGBM 82.4% - the band is already calibrated.
 Verdict: null; nothing exported. Similar products' outcomes carry the same information as the product text the ridge already uses.
+
+### 2026-11-12 E5 — "what users will say" against real post-use reviews
+Script experiments/simlab/reviews_eval.py; report reports/reviews_eval/. Data: the review pull held is Product Hunt product reviews (raw/ph_predict_data/competitor_reviews.jsonl.gz; not G2/Capterra): 606 products with reviews, 229 with >= 10 (228 with product text), 6,396 reviews used (personal + founder reviews, 2017–Oct 2026; pros/cons fields on 653). Reviewer names never read. Truth themes typed: praise 1,213, complaint 450, missing feature 98, comparison 41 - these reviews skew positive. Generators on gemini-2.5-flash 0.3, 6 comments, E5 member types; same blinded judge; controls by embedding cluster (12). Product-bootstrap 95% CIs (x100). Spend $2.14.
+- U1 post-use prompt ("reviews written after using it: praise, complaints, missing features, comparisons"): recall 52.3 [48.8, 55.7], precision 54.2 [49.9, 58.4]; recall on praise themes 65.5, on complaint + missing-feature themes 25.1 [20.6, 29.7]
+- U0 the site's launch-framed prompt as deployed (with PH launch-theme retrieval): recall 36.4, precision 32.7; praise 46.7, complaints 14.0
+- controls: category-generic 4.3 / 4.8 (complaints 1.0); shuffled within category 2.0 / 2.0
+- U1 − generic: recall +48.0 [44.3, 51.7], precision +49.4 [44.9, 53.8], complaints +24.1 [19.6, 28.8]; U1 − shuffle +50.4 / +52.1
+- U1 − U0: recall +16.0 [12.7, 19.3], precision +21.5 [17.3, 25.6], complaints +11.1 [6.5, 15.7] - the framing matters
+- PH launch-theme retrieval on the post-use prompt (U2 − U1): recall −1.2 [−4.1, 1.6], precision +1.0 [−2.4, 4.6] - no help here
+Reading: the claim extends to post-use feedback ONLY with a post-use prompt (no retrieval): about half of reviewers' themes anticipated and about half of simulated points present, far above controls. Complaints are much harder (1 in 4) than praise (2 in 3). Caveats: PH reviews skew positive and include founder reviews; many reviewed products are established and may be known to the model from pre-cutoff data (the page's real use is new products, where this advantage is smaller).
