@@ -660,6 +660,10 @@ def choice():
     import lightgbm as lgb
     from sklearn.metrics import roc_auc_score, mean_poisson_deviance
     base = os.environ.get("TL_BASE", "cp_unc"); src = f"{WORK}/rows_tl_{base}"
+    AF = None
+    if os.environ.get("TL_ATTR") == "1":
+        from attr_feats import AttrFeats
+        AF = AttrFeats(WORK)
     ok, Eu = _label_maps()
     up = {u: np.array(sorted(g.date.astype(str).str[:10]), dtype="datetime64[D]") for u, g in Eu.groupby("person")}
     def mean_daily(u, d):   # the person's mean upvotes per active upvote day, before d
@@ -671,7 +675,9 @@ def choice():
     def load(d, filt=True):
         X = pd.read_parquet(f"{src}/X_{d}.parquet")
         if filt:
-            X = X[ok(X.person, d)]
+            X = X[ok(X.person, d)].copy()
+        if AF is not None:   # it9b: product attributes x person attribute preference (attr_feats.py)
+            AF.add(X, d)
         taste = [c for c in X.columns if c not in ["person", "id", "y"] + ACT_COLS]
         g = X.groupby("person")
         for c in taste:   # within-person-day contrasts over the line-up
