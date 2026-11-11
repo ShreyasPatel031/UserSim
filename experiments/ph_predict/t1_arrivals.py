@@ -49,17 +49,31 @@ def main():
         tied = (X.tie_maker > 0) if os.environ.get("T1_TIE", "maker") == "maker" else ((X.backed > 0) | (X.tie_maker > 0) | (X.tie_hunter > 0))
         dormant = (X.days_since > 30) | (X.tenure < 30)
         X["browser_elig"] = (n_up >= 3) & regular & ~tied      # a browser who could pick L
+        X["bb"] = (n_up >= 3) & regular                        # T1b (2): behaviour-only browser, no tie exclusion
+        X["one_vote"] = (X.y == 1) & (n_up == 1); X["dorm_new"] = (X.y == 1) & dormant & ~(n_up == 1)
+        X["tied_v"] = (X.y == 1) & tied & ~(n_up == 1) & ~dormant
         X["bv"] = X.browser_elig & (X.y == 1)
         X["av"] = (X.y == 1) & ((n_up == 1) | tied | dormant)
         g = X.groupby("id")
+        nbb = int(X.drop_duplicates("person").bb.sum())
         Lr = pd.DataFrame({"sample_votes": g.y.sum(), "arrival_votes": g.av.sum(), "browser_votes": g.bv.sum(), "browsers": g.browser_elig.sum(),
+                           "bb_votes": (X.bb & (X.y == 1)).groupby(X.id).sum(), "one_vote": g.one_vote.sum(), "dorm_new": g.dorm_new.sum(), "tied_v": g.tied_v.sum(),
                            "votes": g.votes.first(), "rank": g["rank"].first()}).reset_index()
+        Lr["bb_rate"] = Lr.bb_votes / max(1, nbb)
         Lr["browser_rate"] = Lr.browser_votes / Lr.browsers.clip(lower=1); Lr["arrival_share"] = Lr.arrival_votes / Lr.sample_votes.clip(lower=1)
         Lr["day"] = d; per_launch.append(Lr)
         Lv = Lr.dropna(subset=["votes"])
         row = {"day": d, "launches": len(Lv)}
         for c in ("sample_votes", "arrival_votes", "browser_votes", "browser_rate"):
             row[f"sp_{c}"] = spearmanr(Lv[c], Lv.votes).correlation
+        E = Lv[Lv.browsers >= 20]   # T1b (1): launches with >= 20 eligible browsers only
+        row["n_elig20"] = int(len(E))
+        row["sp20_rate_votes"] = spearmanr(E.browser_rate, E.votes).correlation if len(E) >= 5 else np.nan
+        row["sp20_rate_arrivals"] = spearmanr(E.browser_rate, E.arrival_votes).correlation if len(E) >= 5 else np.nan
+        row["sp_bb_rate_votes"] = spearmanr(Lv.bb_rate, Lv.votes).correlation
+        row["bb_share_top3"] = float(Lv[Lv["rank"] <= 3].bb_votes.sum() / max(1, Lv.bb_votes.sum()))
+        row["sample_share_top3"] = float(Lv[Lv["rank"] <= 3].sample_votes.sum() / max(1, Lv.sample_votes.sum()))
+        row["top3_frac_of_lineup"] = float((Lv["rank"] <= 3).sum() / max(1, len(Lv)))
         row["arrival_share_mean"] = float(Lv.arrival_votes.sum() / max(1, Lv.sample_votes.sum()))
         row["browser_share_mean"] = float(Lv.browser_votes.sum() / max(1, Lv.sample_votes.sum()))
         per_day.append(row)
@@ -86,6 +100,21 @@ def main():
            "b_browser_choice": {"browser_person_days": int(H.browser_person_days.sum()),
                                 **{m: {"hit1": boot(H[f"{m}_hit1"], rng), "hit3": boot(H[f"{m}_hit3"], rng)} for m in ("random", "loo", "oracle")}},
            "note": "loo = browser pick rate of the other browsers that day (non-personal, uses outcomes of others); oracle = final votes"}
+    res["t1b"] = {"1_launches_with_ge20_eligible_browsers": {"per_day_n_median": float(P.n_elig20.median()),
+                                                             "spearman_rate_vs_final_votes": boot(P.sp20_rate_votes, rng),
+                                                             "spearman_rate_vs_arrival_votes": boot(P.sp20_rate_arrivals, rng)},
+                  "2_behaviour_only_browsers": {"spearman_pick_rate_vs_final_votes": boot(P.sp_bb_rate_votes, rng),
+                                                "share_of_their_votes_on_top3": boot(P.bb_share_top3, rng),
+                                                "share_of_all_sample_votes_on_top3": boot(P.sample_share_top3, rng),
+                                                "top3_share_of_lineup": boot(P.top3_frac_of_lineup, rng)}}
+    Lv = Lall.dropna(subset=["rank"]).copy()
+    for c in ("one_vote", "dorm_new", "tied_v"):
+        Lv[c + "_sh"] = Lv[c] / Lv.sample_votes.clip(lower=1)
+    Lv["other_sh"] = 1 - Lv[["one_vote_sh", "dorm_new_sh", "tied_v_sh"]].sum(1)
+    grp = {"top3": Lv["rank"] <= 3, "rank4_5": (Lv["rank"] > 3) & (Lv["rank"] <= 5), "rest": Lv["rank"] > 5}
+    res["t1b"]["3_voter_profile_share_of_sample_votes"] = {g: {c: round(float(Lv[m][c + "_sh"].median()), 3) for c in ("one_vote", "dorm_new", "tied_v", "other")}
+                                                           | {"launches": int(m.sum())} for g, m in grp.items()}
+    res["t1b"]["3_note"] = "exclusive classes in order: one-vote-that-day, then dormant/new, then maker-tied; other = the rest (regular, untied, multi-vote)"
     top = Lall[Lall["rank"] <= 5]
     res["top5_launches_arrival_share_median"] = round(float(top.arrival_share.median()), 3)
     res["other_launches_arrival_share_median"] = round(float(Lall[Lall["rank"] > 5].arrival_share.median()), 3)

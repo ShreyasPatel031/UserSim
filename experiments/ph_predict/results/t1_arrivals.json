@@ -116,6 +116,85 @@
   }
  },
  "note": "loo = browser pick rate of the other browsers that day (non-personal, uses outcomes of others); oracle = final votes",
+ "t1b": {
+  "1_launches_with_ge20_eligible_browsers": {
+   "per_day_n_median": 16.5,
+   "spearman_rate_vs_final_votes": [
+    0.726,
+    [
+     0.643,
+     0.795
+    ],
+    19
+   ],
+   "spearman_rate_vs_arrival_votes": [
+    0.762,
+    [
+     0.71,
+     0.811
+    ],
+    19
+   ]
+  },
+  "2_behaviour_only_browsers": {
+   "spearman_pick_rate_vs_final_votes": [
+    0.829,
+    [
+     0.783,
+     0.869
+    ],
+    20
+   ],
+   "share_of_their_votes_on_top3": [
+    0.314,
+    [
+     0.289,
+     0.339
+    ],
+    20
+   ],
+   "share_of_all_sample_votes_on_top3": [
+    0.424,
+    [
+     0.392,
+     0.457
+    ],
+    20
+   ],
+   "top3_share_of_lineup": [
+    0.128,
+    [
+     0.109,
+     0.15
+    ],
+    20
+   ]
+  },
+  "3_voter_profile_share_of_sample_votes": {
+   "top3": {
+    "one_vote": 0.337,
+    "dorm_new": 0.156,
+    "tied_v": 0.372,
+    "other": 0.013,
+    "launches": 60
+   },
+   "rank4_5": {
+    "one_vote": 0.17,
+    "dorm_new": 0.226,
+    "tied_v": 0.174,
+    "other": 0.45,
+    "launches": 40
+   },
+   "rest": {
+    "one_vote": 0.062,
+    "dorm_new": 0.333,
+    "tied_v": 0.0,
+    "other": 0.5,
+    "launches": 431
+   }
+  },
+  "3_note": "exclusive classes in order: one-vote-that-day, then dormant/new, then maker-tied; other = the rest (regular, untied, multi-vote)"
+ },
  "top5_launches_arrival_share_median": 0.986,
  "other_launches_arrival_share_median": 0.5
 }
