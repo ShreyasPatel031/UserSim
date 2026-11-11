@@ -562,3 +562,20 @@ Random scores 0.50 everywhere.
    - Adding upvotes to the uses profile *lowers* the score (0.58 vs 0.60).
    - So upvotes are a noisy, partly different signal of what people use.
 4. **For the user sim:** model "uses/wants" from use history where it exists. Treat upvote history as a weaker, partly different proxy. In every channel, popularity has to be modelled explicitly.
+
+### 2026-11-11 06:40Z — RERUN after the [REDACTED]-maker fix (E5 "full" set). Ties are stronger than measured before; one earlier reading is corrected.
+
+- The fixed team sets drop placeholder handles only. Product-only numbers are unchanged.
+- Reports: `reports/usersim_ref/*_fixed.json`.
+
+| E5 full set (product-only + ties) | before the fix | after the fix |
+|---|---|---|
+| 12 clean days: Hit@1 / Hit@3 / within-line-up AUC | 0.202 / 0.511 / 0.695 | **0.340 / 0.612 / 0.727** |
+| 19 days: Hit@1 / Hit@3 / AUC | 0.210 / 0.486 / — | **0.349 / 0.608 / 0.736** |
+| 19 days, inside the final top 10: Hit@3 (product-only 0.588) | 0.601 | **0.689** |
+| pseudo-R² of the within-day choice | 0.023 | **0.051** (popularity 0.179) |
+
+Corrections:
+- **"Ties act mainly through which launches reach the top" (05:55Z entry) is withdrawn.** With real ties, they add about +0.10 Hit@3 even inside the final top 10.
+- **The placeholder diluted the real ties:** it made everyone tied to about a third of launches.
+- **Taste + ties now explain about 5% of the within-day choice,** against about 18% for the day's popularity.
