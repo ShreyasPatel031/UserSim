@@ -265,6 +265,29 @@ def current_board(day: str) -> dict:
     return {"as_of": last, "as_of_pt": _pt_label(last), "ranks": ranks, "votes_hidden": hidden}
 
 
+# E5 false_favourites (claude/person-model-v2 experiments/simlab/reports/false_favourites): how often the 00:05 launch
+# model's #1/#2/#3 finished in the day's top 3 on 207 backtest days (Mar-Oct 2026, month-forward, honest LM).
+TOP3_RATE = {"source": "207 backtest days, Mar-Oct 2026", "by_rank": {1: 0.903, 2: 0.570, 3: 0.411},
+             "brand": 0.48, "version": 0.50}
+_BRAND = re.compile(r"\bby\s+[A-Z]")
+_VERSION = re.compile(r"\b\d+(\.\d+)+\b|\bv\d+\b")
+
+
+def _top3_confidence(ranks: dict[str, int], prods: dict[str, dict]) -> dict[str, dict]:
+    out = {}
+    for pid, r in ranks.items():
+        if r > 3:
+            continue
+        name = prods.get(pid, {}).get("name", "")
+        note = None
+        if _BRAND.search(name):
+            note = f"brand sub-launches like this made the top 3 about {TOP3_RATE['brand']:.0%} of the time"
+        elif _VERSION.search(name):
+            note = f"versioned launches like this made the top 3 about {TOP3_RATE['version']:.0%} of the time"
+        out[pid] = {"p": TOP3_RATE["by_rank"][r], "note": note}
+    return out
+
+
 def day_view(day: str) -> dict:
     prods = _lineup(day)
     fc = forecasts(day)
@@ -278,7 +301,8 @@ def day_view(day: str) -> dict:
         score = None
         if act["final"]:
             score = {str(k): hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)}
-        points.append({"key": key, "label": label, "time_pt": made, "made_at": f.get("made_at"),
+        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else None
+        points.append({"key": key, "label": label, "time_pt": made, "top3_conf": conf, "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
                        "ranks": f["ranks"], "score": score})
     # Only expose live votes after the reveal; before it they are hidden on PH too.
