@@ -1,0 +1,188 @@
+{
+ "test_days": 20,
+ "browser_person_days": 1730,
+ "fits": {
+  "2026-10": {
+   "fit_days": 13,
+   "browser_person_days": 793,
+   "rows": 28398
+  },
+  "2026-11": {
+   "fit_days": 31,
+   "browser_person_days": 2361,
+   "rows": 69524
+  }
+ },
+ "attr_cols": [
+  "at_lift_sum",
+  "at_lift_max",
+  "at_lift_mean",
+  "at_lift_cat",
+  "at_lift_aud",
+  "at_gap_value_clarity",
+  "at_value_clarity",
+  "at_gap_novelty",
+  "at_novelty",
+  "at_gap_breadth_of_appeal",
+  "at_breadth_of_appeal",
+  "at_gap_problem_urgency",
+  "at_problem_urgency",
+  "at_gap_specificity",
+  "at_specificity",
+  "at_price_free",
+  "at_price_freemium",
+  "at_price_paid",
+  "at_price_not_stated",
+  "at_mat_new_product",
+  "at_mat_major_update",
+  "at_mat_feature_update",
+  "at_mat_relaunch",
+  "at_ai",
+  "at_os",
+  "at_rare_cat",
+  "at_rare_aud",
+  "at_has_pref",
+  "at_emb_tag",
+  "at_emb_desc"
+ ],
+ "random": {
+  "hit1": [
+   0.224,
+   [
+    0.195,
+    0.254
+   ],
+   20
+  ],
+  "hit3": [
+   0.5,
+   [
+    0.449,
+    0.553
+   ],
+   20
+  ]
+ },
+ "s_centroid": {
+  "hit1": [
+   0.338,
+   [
+    0.259,
+    0.422
+   ],
+   20
+  ],
+  "hit3": [
+   0.634,
+   [
+    0.556,
+    0.712
+   ],
+   20
+  ],
+  "auc": [
+   0.609,
+   [
+    0.583,
+    0.637
+   ],
+   20
+  ]
+ },
+ "s_base": {
+  "hit1": [
+   0.261,
+   [
+    0.2,
+    0.336
+   ],
+   20
+  ],
+  "hit3": [
+   0.604,
+   [
+    0.541,
+    0.667
+   ],
+   20
+  ],
+  "auc": [
+   0.583,
+   [
+    0.561,
+    0.607
+   ],
+   20
+  ]
+ },
+ "s_attr": {
+  "hit1": [
+   0.362,
+   [
+    0.306,
+    0.42
+   ],
+   20
+  ],
+  "hit3": [
+   0.67,
+   [
+    0.595,
+    0.743
+   ],
+   20
+  ],
+  "auc": [
+   0.615,
+   [
+    0.588,
+    0.643
+   ],
+   20
+  ]
+ },
+ "attr_minus_base": {
+  "hit1": [
+   0.101,
+   [
+    0.042,
+    0.157
+   ],
+   20
+  ],
+  "hit3": [
+   0.066,
+   [
+    -0.01,
+    0.137
+   ],
+   20
+  ],
+  "auc": [
+   0.032,
+   [
+    0.008,
+    0.055
+   ],
+   20
+  ]
+ },
+ "base_minus_random": {
+  "hit1": [
+   0.038,
+   [
+    -0.016,
+    0.103
+   ],
+   20
+  ],
+  "hit3": [
+   0.105,
+   [
+    0.052,
+    0.155
+   ],
+   20
+  ]
+ }
+}
