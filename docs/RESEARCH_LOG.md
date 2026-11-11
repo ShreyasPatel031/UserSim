@@ -727,3 +727,38 @@ At person level, log-loss improves: 0.0336 (taste) → 0.0320 (two-term).
 - Upvote history barely predicts uses.
 
 The two behaviours share only a small taste core. A user sim should model "uses / wants" and "upvotes on launch day" as separate response channels, each with its own data.
+
+### 2026-11-11 11:45Z — E5: two-term user sim. Paired vs it8, LM honesty, and whether taste adds anything at person level
+
+**(1) Paired by day vs it8 full** (its two_level_per_day, cp_choice2, same 19 days):
+
+| | top 3 | top 5 | top 10 |
+|---|---|---|---|
+| two-term − it8 full | +15.8 [7.0, 26.3] | +4.2 [−4.2, 12.6] | +0.5 [−3.7, 4.2] |
+
+The pairing against the deployed sim waits on the PH agent's per-day numbers (requested).
+
+**(2) The harness LM's inputs.**
+- It is lm_breakout's base: `model.cols(LIVE_SOURCES)` with HONEST=1. That drops follower-count columns, fol_/seg_, undated promo, and llm_full. Monthly folds train on earlier months only.
+- Residual risks I can see, both small:
+  - hist_* use earlier days' *final* vote counts, including d−1, which is nearly final but not fully at 00:05;
+  - within-day "dayrank" features rank over the final featured list, not the 00:05 line-up.
+- It is the same honest backtest as the PH agent's 60.5/67.7/75.2 (Mar–Oct) and 70.0/68.0/74.5 (Oct 20–Nov 8).
+- The live LM's 55.6/70.0/81.7 is a different object: the live pipeline's forecasts, on only 6 days.
+
+**(3) Does taste add anything to the LM at the person level?** On the PH 19-day rows:
+- POP = the person's own base rate + a·z(LM): no taste over launches.
+- TWO = taste + a·z(LM).
+- TWOsh = TWO with another person's taste.
+
+| | Hit@1 | Hit@3 | within-line-up AUC | log-loss (per-day mean) |
+|---|---|---|---|---|
+| POP (activity + LM) | 0.356 | **0.685** | **0.784** | 0.0501 |
+| TWO (taste + LM) | 0.374 | 0.653 | 0.784 | 0.0500 |
+| TWO − POP (paired) | +0.019 [−0.008, 0.049] | −0.031 [−0.068, 0.001] | −0.001 [−0.012, 0.010] | −0.0002 (n.s.) |
+| TWOsh (another person's taste) | 0.351 | 0.625 | 0.764 | 0.0762 |
+
+**Reading**
+- On launch-day upvotes, the LM's launch popularity is what predicts each person's pick: Hit@3 0.685 and AUC 0.78, against taste-only 0.38 / 0.64.
+- Adding the person's product taste on top of the LM adds nothing measurable. Wrong taste (shuffled) hurts.
+- So for upvotes, the simulator's person level is "activity × launch popularity". Personal taste matters for the uses channel (+0.11 AUC personal), not for launch-day upvotes.
