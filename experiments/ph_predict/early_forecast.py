@@ -1,7 +1,7 @@
 """Early-day forecast (orchestrator Nov 11): rank the day's launches at fixed points after the vote REVEAL, from data up
 to that minute only.
-  R0     the first 15-min snapshot (raw/ph_at_launch/<d>/live/posts_ts.jsonl) where vote counts are readable (sum of
-         votes_at_fetch > 0; the hide flag can lag a snapshot); points R0, R0+1h, R0+2h, R0+4h
+  R0     the first 15-min snapshot (raw/ph_at_launch/<d>/live/posts_ts.jsonl) where vote counts are readable (>= half the
+         launches with votes_at_fetch > 0; the hide flag can lag a snapshot); points R0, R0+1h, R0+2h, R0+4h
 Features at point t (snapshots with snapshot_ts <= t only): votes at t, votes at R0, velocity (votes_t - votes_R0) per
 hour since R0, comments at t, the 00:05 LM score (-log predicted_rank, forecasts table, model launch_model), hour of t
 (PT), line-up size. Scorers: (a) raw votes at t; (b) LM + votes blend: z(log1p votes) + w z(LM), w by leave-one-day-out;
@@ -30,8 +30,8 @@ def load_snaps(day, path=None):
 
 
 def reveal(T):
-    g = T.groupby("ts").agg(v=("v", "sum"), hid=("hid", "mean")).sort_index()
-    ok = g[g.v > 0]   # first snapshot where the API returns vote counts (the hide flag can lag by a snapshot)
+    g = T.groupby("ts").agg(v=("v", "sum"), nz=("v", lambda x: float((x > 0).mean()))).sort_index()
+    ok = g[g.nz >= 0.5]   # first snapshot where most launches show votes (a few can show early; the hide flag can lag)
     return ok.index.min() if len(ok) else None
 
 
