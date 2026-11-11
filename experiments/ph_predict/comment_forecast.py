@@ -43,7 +43,17 @@ def fetch():
         os.system(f"gsutil -q cp {B}/tmp/e5/honest/honest_preds.parquet {p}")
 
 
+_KC = {}
+
+
 def load_comments():
+    if "K" in _KC:
+        return _KC["K"]
+    _KC["K"] = _load_comments()
+    return _KC["K"]
+
+
+def _load_comments():
     import ph_comments as C
     rows, fetched = [], set()
     for f in ("page1", "page1b", "page1c", "page2"):
@@ -57,9 +67,9 @@ def load_comments():
                 continue
             fetched.add(info["slug"])
             for r in rr:
-                rows.append((info["slug"], r["comment_id"], (r["username"] or "").lower(), r["created"], r["depth"],
-                             bool(r["verified"]), bool(r["prominent"])))
-    K = pd.DataFrame(rows, columns=["slug", "cid", "user", "created", "depth", "ver", "prom"]).drop_duplicates("cid")
+                rows.append((info["slug"], r["comment_id"], (r["username"] or "").lower(), str(r["user_id"] or ""), r["created"],
+                             r["depth"], bool(r["verified"]), bool(r["prominent"])))
+    K = pd.DataFrame(rows, columns=["slug", "cid", "user", "uid", "created", "depth", "ver", "prom"]).drop_duplicates("cid")
     K["ts"] = pd.to_datetime(K.created, utc=True, errors="coerce")
     return K.dropna(subset=["ts"]), fetched
 
@@ -211,5 +221,113 @@ def main():
     print("\n".join(md))
 
 
+LIVEF = [f for f in FEATS if f not in ("u_ver", "u_prom")]   # live comments carry no account flags
+CNT = ("n_c", "n_top", "n_rep", "n_team", "u_out", "u_prior", "u_tie", "n_day")
+
+
+def fit_live():
+    """Ridge per cut on all backtest days, LM as -log(within-day LM rank) (the only form the live 00:05 LM has).
+    -> results/comment_forecast_live_model.json (coefficients, scaling; no people)."""
+    from sklearn.linear_model import Ridge
+    X = pd.read_parquet(f"{WORK}/cf_rows.parquet")
+    X["lm"] = -np.log(X.groupby(["cut", "day"]).lm.rank(ascending=False, method="first"))
+    out = {"feats": LIVEF, "log1p": list(CNT), "lm": "-log(within-day 00:05 LM rank)", "cuts": {}}
+    for h in CUTS:
+        Xh = X[X.cut == h]; F = Xh[LIVEF].copy()
+        for c in CNT:
+            F[c] = np.log1p(F[c])
+        mu, sd = F.mean(), F.std() + 1e-9
+        m = Ridge(alpha=10.0).fit((F - mu) / sd, -np.log(Xh["rank"]))
+        out["cuts"][f"P{h}"] = {"coef": dict(zip(LIVEF, map(float, m.coef_))), "intercept": float(m.intercept_),
+                                "mu": mu.round(6).to_dict(), "sd": sd.round(6).to_dict(), "days": int(Xh.day.nunique())}
+    json.dump(out, open(os.path.join(HERE, "results", "comment_forecast_live_model.json"), "w"), indent=1)
+    print(json.dumps({k: v["days"] for k, v in out["cuts"].items()}))
+
+
+def live(day, point):
+    """P1..P4 = 00:00 PT of <day> + 1..4 h. Line-up: launches in live/posts_ts.jsonl snapshots <= T (fetch 200);
+    comments: live/comments_ts.jsonl created_at <= T (dedup comment_id); team = makers + hunter from posts_ts; prior
+    activity / ties from the backtest dump + earlier days' comments_ts; LM = the 00:05 launch_model forecast.
+    -> results/early_forecast/<day>_<point>.json and gs://.../results/early_forecast/."""
+    import subprocess, tempfile
+    from early_forecast import lm_scores
+    M = json.load(open(os.path.join(HERE, "results", "comment_forecast_live_model.json")))["cuts"][point]
+    h = int(point[1:]); t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
+    T = t0 + pd.Timedelta(hours=h); now = pd.Timestamp.now(tz="UTC")
+    if now < T:
+        print(json.dumps({"day": day, "point": point, "status": f"point {T} not reached"})); return
+    tmp = tempfile.mkdtemp(prefix="cf_")
+    for f in ("posts_ts", "comments_ts"):
+        subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/{day}/live/{f}.jsonl", f"{tmp}/{f}.jsonl"], check=True)
+    team, ids = {}, set()
+    for l in open(f"{tmp}/posts_ts.jsonl"):
+        r = json.loads(l)
+        if r.get("fetch_status") != 200 or str(r.get("day", day)) != day:   # the line-up and teams are fixed at 00:01 PT
+            continue
+        ids.add(str(r["launch_id"]))
+    C = []
+    for l in open(f"{tmp}/comments_ts.jsonl"):
+        r = json.loads(l)
+        if r.get("created_at"):
+            # identity = commenter_user_id: the live "username" field is one constant per launch, not the commenter
+            C.append((str(r["launch_id"]), r.get("comment_id"), str(r.get("commenter_user_id") or r.get("user_id") or ""), r["created_at"], r.get("parent_id")))
+    C = pd.DataFrame(C, columns=["id", "cid", "user", "created", "parent"]).drop_duplicates("cid")
+    C["ts"] = pd.to_datetime(C.created, utc=True, errors="coerce"); C = C[(C.ts <= T) & C.id.isin(ids)]
+    # history (users only, in memory): backtest dump + earlier live days
+    fetch(); K, _ = load_comments()
+    first = K[K.uid != ""].groupby("uid").ts.min().to_dict()
+    name2id = dict(zip(K.user, K.uid))   # usernames -> PH user ids, from the dump (in memory only)
+    from pipeline import warehouse as W
+    L = W.query("SELECT CAST(id AS VARCHAR) id, slug, makers, poster FROM launches", do_sync=False)
+    # teams: live posts_ts carries no makers; the warehouse launches row (loaded by the 00:05 run) does
+    for i, m, p_ in zip(L.id, L.makers, L.poster):
+        if i in ids:
+            names = {u.lower() for u in (json.loads(m) if m and m.startswith("[") else []) + ([p_] if p_ else []) if u}
+            team[i] = (names, {name2id[u] for u in names if name2id.get(u)})
+    tm = {sl: {u.lower() for u in (json.loads(m) if m and m.startswith("[") else []) + ([p] if p else []) if u} for sl, m, p in zip(L.slug, L.makers, L.poster)}
+    TIE = {}
+    for sl, u, uid, ts in zip(K.slug, K.user, K.uid, K.ts):
+        if not uid:
+            continue
+        for m in tm.get(sl, ()):
+            if m != u and (m not in TIE.setdefault(uid, {}) or ts < TIE[uid][m]):
+                TIE[uid][m] = ts
+    lm = lm_scores(day)
+    if not lm:
+        print(json.dumps({"day": day, "point": point, "status": "no 00:05 LM forecast for the day"})); return
+    lmr = pd.Series({i: lm.get(i, np.nan) for i in ids}); lmr = -np.log(lmr.rank(ascending=False, method="first", na_option="bottom"))
+    rows = []
+    for i in sorted(ids):
+        g = C[C.id == i]; tnames, tset = team.get(i, (set(), set()))
+        it = g.user.isin(tset); out = g[~it]; us = [u for u in out.user.unique() if u]
+        rows.append({"id": i, "n_c": len(g), "n_top": int(g.parent.isna().sum()), "n_rep": int(g.parent.notna().sum()),
+                     "n_team": int(it.sum()), "u_out": len(us), "u_prior": int(sum(first.get(u, T) < t0 for u in us)),
+                     "u_tie": sum(1 for u in us if any(ts < t0 for m, ts in TIE.get(u, {}).items() if m in tnames)),
+                     "lm": float(lmr[i]), "lm_matched": i in lm})
+    A = pd.DataFrame(rows); A["n_day"] = len(A)
+    A["sh_c"] = np.log((A.n_c + 0.5) / (A.n_c + 0.5).sum()); A["r_c"] = A.n_c.rank(pct=True); A["r_lm"] = A.lm.rank(pct=True)
+    F = A[LIVEF].copy()
+    for c in CNT:
+        F[c] = np.log1p(F[c])
+    A["score"] = sum(((F[c] - M["mu"][c]) / M["sd"][c]) * M["coef"][c] for c in LIVEF) + M["intercept"]
+    A["pred_rank"] = A.score.rank(ascending=False, method="first").astype(int)
+    res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
+           "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0))[1])), "comments": int(len(C)), "written_at": now.isoformat(),
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "n_c", "u_out", "u_tie", "lm", "score"]].round(4).to_dict("records")}
+    if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
+        res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
+    else:
+        os.makedirs(os.path.join(HERE, "results", "early_forecast"), exist_ok=True)
+        p = os.path.join(HERE, "results", "early_forecast", f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
+        subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/early_forecast/{day}_{point}.json"], check=True)
+    print(json.dumps({k: v for k, v in res.items() if k != "forecast"}))
+
+
 if __name__ == "__main__":
-    main()
+    a = sys.argv[1:]
+    if a and a[0] == "fit":
+        fit_live()
+    elif a and a[0] == "live":
+        live(a[1], a[2])
+    else:
+        main()

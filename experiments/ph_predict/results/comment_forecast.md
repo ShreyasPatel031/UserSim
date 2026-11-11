@@ -53,3 +53,27 @@ Comments per launch by cut: +1h mean 2.1, 7% with none; +2h mean 3.1, 6% with no
 
 Leak checks: features use created_at <= T only; comment votes and follower counts (final-time) are not used; featured_at is not used; account verified/prominent flags are fetch-time (mild late read; u_ver/u_prom). Source limit: the page query returns the top 50 threads by votes (page2 = 51-100 for some), so early low-vote threads on very busy launches can be missing (counts biased low for those, not leaky).
 LM = honest pre-launch OOF prediction (the 00:05 live LM only exists from Oct 25).
+
+## Live-compatible model and live replay (added 21:40Z Nov 11)
+
+Live model (`python comment_forecast.py fit` -> results/comment_forecast_live_model.json): ridge per cut on all 238 days,
+LM as -log(within-day LM rank) (the live 00:05 LM is a rank only), no account flags (live comments carry none).
+Month-forward backtest of this variant, minus LM only: +1h +3.2 / +1.0 / +0.8; +2h +4.8 / +1.9 / +1.1;
++3h +6.1 / +2.1 / +1.2; **+4h +5.0 [+2.3, +7.6] / +3.9 [+1.9, +5.7] / +2.0 [+0.9, +3.0]** (top 3 / 5 / 10).
+
+Live replay (`CF_DRY=<dir> python comment_forecast.py live <day> P1..P4`, then comment_forecast_replay_score.py): the
+5 days with live comments_ts, a 00:05 LM forecast and final ranks (Nov 2, 3, 4, 8, 10; Nov 8 has only 17/46 launches
+with an LM score). Comments filtered by created_at <= T from the day's capture (not a strict as-of replay).
+
+| point | LM only | comment count only | comment ridge |
+|---|---|---|---|
+| P1 (01:00 PT) | 40.0 / 64.0 / 78.0 | 46.7 / 64.0 / 64.0 | 46.7 / 68.0 / 78.0 |
+| P4 (04:00 PT) | 40.0 / 64.0 / 78.0 | 40.0 / 64.0 / 74.0 | 46.7 / 68.0 / 80.0 |
+
+Comments added to the vote forecast (raw votes z + w x z(P4 comment score)), same 5 days:
+R0 w=0: 73.3 / 80 / 90; w=0.25: 73.3 / 84 / 90; w=0.5: 80 / 80 / 92; w=1: 66.7 / 80 / 90.
+R1 w=0: 93.3 / 92 / 92; w=0.25: 93.3 / 88 / 92; w=0.5: 93.3 / 80 / 92. No consistent gain; not adopted (5 days).
+
+Live data notes: live comments_ts / api_comments "username" is one constant per launch (not the commenter), so the live
+identity is commenter_user_id; maker user ids come from the dump's username->id pairs (in memory), known for about 40%
+of launches, so on the rest team comments count as outside comments (n_team low, u_out high vs training).
