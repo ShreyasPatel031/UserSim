@@ -393,7 +393,7 @@ def score():
                 q, fmap = fac
                 R["w"] = R.w * pd.Series(tier_of(R.w, q), index=R.index).map(fmap).fillna(1.0)
         prev_rows.append(raw[["w", "p", "y"]])
-        if os.environ.get("TL_DUMP") and d not in SELECTED:   # E5 (b): label-filtered clean-day rows for like-for-like scoring
+        if os.environ.get("TL_DUMP") and (d not in SELECTED or os.environ.get("TL_DUMP_ALL") == "1"):   # E5 (b): label-filtered clean-day rows for like-for-like scoring
             dump.append(raw[["person", "id", "w", "y"]].assign(d=d).rename(columns={"person": "person_id", "id": "launch_id"}))
         pw = R.groupby("person").w.first(); tot = pw.sum()
         diag.append({"day": d, "people": int(len(pw)), "rows": int(len(R)), "n_eff": float(tot ** 2 / (pw ** 2).sum()) if tot else 0,
