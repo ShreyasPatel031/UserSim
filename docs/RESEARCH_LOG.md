@@ -818,3 +818,16 @@ Jul–Oct, top-3 / top-5 / top-10 (×100):
 - day-14 call: launched-so-far ceiling 50/60/60; R4 41.7/50/55; R0 16.7/40/45
 Jan–Oct (10 months; no dated votes before Jul so R1/R4 fall back to imputed values there): month end R0 33.3/38/46; R3 33.3/57.8 [40,76]/58.9 [50,67].
 How much is decided on launch day (Jul–Oct): monthly top-10 launches earn a median 14.5% [IQR 6–20%] of their final votes after launch day vs 1.4% for the rest; ranking by launch-day score recovers 5/8/8/7 of each month's final top 10 (daily rank alone 3–4). The top-3 is tightly packed and is reshuffled by post-launch accumulation (e.g. Aug #1 was 2nd on its day, 441 → 650 votes). Learned growth (R2) does not capture it; dated mid-month vote reads (R4) do.
+
+### 2026-11-11 E5 — early-day vote forecast over Jul–Oct from Wayback same-day captures (item A)
+Script experiments/simlab/intraday_wayback.py; report reports/intraday_wayback/. Same-day homepage captures with latestScore; last capture per (day, bucket); qualify if the capture holds >= 80% of the ranked line-up. Qualifying days per bucket (hours after 00:00 PT): 0–4h 19, 4–5h 9, 5–6h 15, 6–8h 17, 8–12h 29, 12–24h 52. Day-bootstrap 95% CIs.
+Before 04:00 PT latestScore is 0 for every post (votes hidden in the page state too), so "raw votes" before the reveal = the LM tie-break.
+Raw votes at capture, daily top-3 / top-5 / top-10 / Spearman vs final daily rank:
+- 4–5h (reveal to +1h, 9 days): 85.2 [74, 96] / 93.3 [87, 100] / 92.2 [84, 99] / 93.5
+- 5–6h (15): 82.2 [71, 91] / 94.7 [89, 99] / 86.0 [79, 91] / 93.3
+- 6–8h (17): 88.2 [80, 96] / 94.1 [89, 98] / 90.6 [87, 95] / 94.0
+- 8–12h (29): 93.1 [87, 98] / 95.2 [92, 98] / 93.4 [90, 97] / 96.7
+- 12–24h (52): 96.8 [94, 99] / 97.3 [95, 99] / 94.6 [91, 97] / 98.9
+- 0–4h pre-reveal (19): LM only 54.4 / 65.3 / 75.8; learned (comments at capture + LM + hour) 66.7 [56, 75] / 69.5 / 78.9, learned − LM +12.3 [5.3, 19.3] top-3.
+Learned projection (ridge month-forward, Aug–Oct: votes at t, hour, velocity, share/rank, comments at t, LM) vs raw votes at the same capture: no gain after the reveal; worse from 8h on (8–12h −5.7 [−10.3, −1.1] top-3; 12–24h −7.2 [−11.1, −3.3]).
+Reading: the honest reveal-time (+0–1h after 04:00 PT) number is ~85/93/92 on 9 days, wide CIs; by 08:00–12:00 PT it is ~93/95/93 on 29 days. The 6-day "94/90/95 four hours later" is consistent with these. Raw votes at t are the best estimator once visible; before the reveal, early comments + LM give +12 top-3 over LM alone.
