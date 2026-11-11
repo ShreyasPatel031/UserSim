@@ -676,3 +676,30 @@ On cold-only line-ups (makers with no earlier launch; 80% of rows), the learned 
 1. **On upvotes, the learned scorer does not beat the simpler taste logistic or it9b** (all about 0.63–0.64 AUC).
 2. **The personal part is about +0.03 AUC on upvotes, against +0.11 on uses** (stacks/reviews/collections). Upvotes are much less taste-driven than what people actually use. This is consistent with the exposure findings: about 1% of within-day choice variance is taste, about 18% is the day's popularity.
 3. **For the user sim:** taste models transfer, but an upvote is a weak taste signal. The use labels are the cleaner target for "would this person want this product".
+
+### 2026-11-11 10:30Z — RESULT (E5): two-term user sim, logit P = logit P_taste + a·z(LM), at population level (19 days)
+
+- **Inputs:**
+  - P_taste: the E5 product-only logistic (unconditional) on the PH 19-day rows.
+  - LM: the honest out-of-sample harness LM (monthly folds), z-scored within day.
+  - a: 2-fold cross-time, Oct ↔ Nov; it came out 0.5–0.6.
+- **Code and results:** `experiments/simlab/two_term_pop.py`, `reports/upvote_taste/two_term_pop.json`.
+
+Daily top 3 / 5 / 10, day-bootstrap 95% CI:
+
+| | top 3 | top 5 | top 10 |
+|---|---|---|---|
+| (ii) taste only, Σ P | 15.8 [8.8, 22.8] | 28.4 | 47.9 |
+| **(i) two-term, Σ P** | **59.6 [52.6, 66.7]** | 67.4 [58.9, 75.8] | 70.0 [63.7, 75.8] |
+| LM alone (the same harness predictions) | 70.2 [61.4, 80.7] | 68.4 | 74.7 |
+| quoted: deployed sim / arrivals-only / it8 full | 49.1 / 53.3 / 43.9 | 65.3 / 64.0 / 63.2 | 70.0 / 70.0 / 69.5 |
+
+Two-term vs taste-only: +43.9 / +38.9 / +22.1. Two-term vs LM alone: −10.5 [−21.1, −1.8] / −1.1 / −4.7 [−8.4, −1.1].
+
+At person level, log-loss improves: 0.0336 (taste) → 0.0320 (two-term).
+
+**Reading**
+- The two-term user sim, one person-taste term plus one launch-popularity term, is the best simulation-based population ranking so far. It is above the deployed sim, arrivals-only and it8 at top 3.
+- Summing persons still dilutes the LM's ordering, so it trails the LM alone.
+- Taste-only Σ P is weak at population level (top 3 = 16).
+- For a simulator of individual responses, the two-term form is the right structure: population appeal from the launch, plus person taste on top.
