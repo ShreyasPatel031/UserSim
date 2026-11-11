@@ -118,3 +118,21 @@ Shreyas: stop asking, take the call, move the metric. Call taken:
 - PH agent: replay on all captured days, go live by hand from Nov 11, weekly and monthly lists from cumulative votes.
 - The user simulation continues on the "uses or wants" channel (learned taste scorer) as a separate deliverable.
 - Hacker News stays stopped.
+
+## Experiment queue (orchestrator keeps this current; agents take the next open item when they finish)
+Rule (Shreyas, Nov 11): no agent sits idle. Every hourly check confirms each agent is running the highest-priority
+item it can, and assigns the next one if not. Waiting for forward days or a data reply is never a reason to stop.
+Each item is a backtest on held data unless marked otherwise. Results go to docs/RESEARCH_LOG.md.
+
+Status at 21:50 UTC Nov 11:
+1. **Live vs backtest parity of the 00:05 forecast** (live 39/60/77 vs offline 63/69/75): PH agent, running.
+2. **Early-day vote forecast on months** (Wayback intraday reads, Jul–Oct): E5, running.
+3. **Product's off-PH footprint before launch vs the per-launch surprise** (dated domain popularity): population agent, running.
+4. **User simulation at population level, "uses or wants" channel** (sum the taste scorer over people, rank products by real adoption): E5, after item 2.
+5. **Pre-reveal blend** (PH's pre-reveal API rank + comment forecast + launch model): scored forward daily from Nov 12; refit when 7 days exist. PH agent.
+6. **Weekly and monthly calls from dated votes**: scored forward; depends on the daily re-read asked of the Data Feeder (to_grokbot/20261111T2140Z_monthly_reread.md).
+7. Open, unassigned: rank trajectory before the reveal (shape of PH's rank over the first 4 hours, not just the last read); reveal-time projection using who has already voted (voter lists from the API at the reveal × person activity, to predict remaining votes); repeat makers' past share of one-vote accounts as a pre-launch mobilisation feature.
+
+Done Nov 11: comment forecast before the reveal (+5.0 top 3, +3.9 top 5 at 4 h, 207 days, live-compatible); early-engager
+identity (no gain); comment text / commenter / maker-reply / arrival-shape blocks (no gain); weekly call (57.5/71.5/77.8
+without dated votes; 100/80/90 with day-end votes on 1 week); monthly call (42/50/52 from daily rank; 75/75/80 with dated reads, 4 months).
