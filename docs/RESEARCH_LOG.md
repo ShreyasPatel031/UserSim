@@ -863,3 +863,14 @@ Script experiments/simlab/uses_learned_small.py; report reports/uses_learned_sma
 - Person level: learned AUC 0.702 [0.697, 0.707] vs top-5 mean (same bge-small) 0.612 [0.608, 0.616]; shuffled-profile control 0.604 -> personal +0.098 [0.093, 0.103].
 - Population (same design as uses_population, 5 seeds): learned top-200 summed over people - all products Spearman 10.9, top-decile 16.4; COLD products top-decile 12.6 (seed sd 0.5) vs 15.5 for S2 (bge-base top-5) and 10 random. Pop + learned 38.4 all (vs 39.2 with S2).
 Reading: the learned scorer is better per person but worse at population level - its top lists concentrate on generic products that many people's profiles resemble, so summing over people adds less product-specific signal. For "who would use this product" at population level keep S2 (or an ensemble); for per-person ranking use the learned scorer.
+
+### 2026-11-11 E5 — website scorer on API embeddings (Gemini) with an exported tree head
+Scripts experiments/simlab/gemini_bundle.py, gemini_bundle_trees.py; reports reports/gemini_bundle/. gemini-embedding-001 (Vertex, task_type SEMANTIC_SIMILARITY) on 43,925 products. Same 4,000 leak-controlled tasks (2,794 people), person-disjoint 2 folds, person-bootstrap 95% CIs. AUC (popularity- and length-matched negatives):
+| space | S2 top-5 | learned logistic | learned LightGBM |
+|---|---|---|---|
+| bge-small | 0.610 [0.599, 0.619] | 0.620 | 0.676 [0.666, 0.687] |
+| bge-base | 0.637 [0.626, 0.647] | 0.639 | 0.675 [0.665, 0.687] |
+| Gemini 768 | 0.574 [0.564, 0.586] | 0.583 | 0.673 [0.662, 0.684] |
+| Gemini 256 (MRL) | 0.625 [0.615, 0.635] | 0.623 | 0.692 [0.681, 0.703] |
+Personal part (logistic − shuffled-profile): Gemini-256 +0.042 [0.030, 0.054], bge-base +0.058.
+The learned gain needs the nonlinear head, so the LightGBM model (200 trees, 15 leaves, 5 features) is exported as flat numpy arrays (max abs difference vs LightGBM 1.2e-7). Bundle gs://…/tmp/e5/website/person_bundle_gemini.npz: 7.9 MB, 5,096 anonymous people, 16,211 item vectors (256-d fp16), CSR person→items, role flags, activity counts, per-person 99th-percentile thresholds; no ids, handles, bios or product names. Scoring all people per product: 0.19 s in numpy, plus one embedding API call.

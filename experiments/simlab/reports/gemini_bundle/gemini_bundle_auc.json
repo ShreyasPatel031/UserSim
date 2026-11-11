@@ -1,0 +1,115 @@
+{
+ "design": "Website-deployable taste scorer with API embeddings (orchestrator 23:50Z Nov 11).\nProduct text is embedded with gemini-embedding-001 (Vertex or Gemini API, task_type SEMANTIC_SIMILARITY, 768-d; the 256-d\nvariant = first 256 dims renormalised, equal to outputDimensionality=256). Person side = the person's uses items embedded in the\nsame space, shipped as an anonymous bundle. Learned scorer = logistic regression on similarity features (plain numpy weights).\nHarness check (leak-controlled uses sets, eval_sets_lenmatched, 4,000 random tasks, person-disjoint 2 folds): AUC of S2\n(top-5 mean cosine) and the learned scorer (logistic; LightGBM shown for reference) with bge-small / bge-base / Gemini-768 /\nGemini-256, plus the shuffled-profile control for the learned scorer (personal = AUC - shuffled).\nFeatures: top1, top5 mean, mean, share above the space's 99th-percentile random-pair similarity, log1p profile size.",
+ "tasks": 4000,
+ "products_embedded": 43925,
+ "auc": {
+  "gemini768": {
+   "S2 top5": [
+    0.5744,
+    0.5638,
+    0.5857,
+    2794
+   ],
+   "learned logistic": [
+    0.5833,
+    0.5728,
+    0.5942,
+    2794
+   ],
+   "learned lgbm": [
+    0.6727,
+    0.6618,
+    0.6835,
+    2794
+   ],
+   "learned logistic personal (AUC - shuffled)": [
+    0.0201,
+    0.0061,
+    0.0334
+   ]
+  },
+  "gemini256": {
+   "S2 top5": [
+    0.6247,
+    0.6147,
+    0.6346,
+    2794
+   ],
+   "learned logistic": [
+    0.6227,
+    0.6129,
+    0.6329,
+    2794
+   ],
+   "learned lgbm": [
+    0.6918,
+    0.6809,
+    0.7028,
+    2794
+   ],
+   "learned logistic personal (AUC - shuffled)": [
+    0.0422,
+    0.0304,
+    0.0538
+   ]
+  },
+  "bge_small": {
+   "S2 top5": [
+    0.6095,
+    0.5992,
+    0.6193,
+    2794
+   ],
+   "learned logistic": [
+    0.6197,
+    0.6092,
+    0.63,
+    2794
+   ],
+   "learned lgbm": [
+    0.6764,
+    0.666,
+    0.6872,
+    2794
+   ],
+   "learned logistic personal (AUC - shuffled)": [
+    0.0443,
+    0.0322,
+    0.0573
+   ]
+  },
+  "bge_base": {
+   "S2 top5": [
+    0.6373,
+    0.6264,
+    0.6468,
+    2794
+   ],
+   "learned logistic": [
+    0.6391,
+    0.6292,
+    0.6494,
+    2794
+   ],
+   "learned lgbm": [
+    0.6754,
+    0.6647,
+    0.6865,
+    2794
+   ],
+   "learned logistic personal (AUC - shuffled)": [
+    0.058,
+    0.0457,
+    0.0695
+   ]
+  }
+ },
+ "bundle": {
+  "file": "<scratch>/gem/person_bundle_gemini.npz",
+  "dim": 256,
+  "items": 16211,
+  "people": 5096,
+  "bytes": 7802623,
+  "score_seconds_numpy_loop": 0.073
+ }
+}

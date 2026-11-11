@@ -1,0 +1,7 @@
+{
+ "export_max_abs_diff": 1.1985601078290387e-07,
+ "nodes": 5800,
+ "trees": 200,
+ "bytes": 7855119,
+ "score_seconds_numpy": 0.19
+}
