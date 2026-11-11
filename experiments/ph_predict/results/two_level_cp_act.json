@@ -20,49 +20,48 @@
   "2026-11-04",
   "2026-11-05",
   "2026-11-06",
-  "2026-11-07",
-  "2026-11-08"
+  "2026-11-07"
  ],
  "person": {
   "auc": [
-   0.867,
+   0.864,
    [
-    0.846,
-    0.89
+    0.843,
+    0.887
    ],
-   20
+   19
   ],
   "logloss": [
-   0.052,
+   0.053,
    [
-    0.041,
-    0.063
+    0.042,
+    0.064
    ],
-   20
+   19
   ],
   "hit3": [
    0.628,
    [
-    0.583,
-    0.669
+    0.581,
+    0.671
    ],
-   20
+   19
   ],
   "voter_recall": [
-   0.089,
+   0.088,
    [
-    0.079,
+    0.078,
     0.099
    ],
-   20
+   19
   ],
   "voter_rprec": [
-   0.151,
+   0.143,
    [
-    0.131,
-    0.175
+    0.126,
+    0.16
    ],
-   20
+   19
   ]
  },
  "label_filter": {
@@ -166,12 +165,14 @@
    {
     "day": "2026-11-08",
     "people_before": 10080,
-    "people_after": 376
+    "people_after": 376,
+    "dropped": true
    },
    {
     "day": "2026-11-09",
     "people_before": 10056,
-    "people_after": 0
+    "people_after": 0,
+    "dropped": true
    }
   ]
  },
@@ -218,166 +219,408 @@
  },
  "population_all_days": {
   "day top3": {
-   "two_level": 50.0,
-   "deployed_sim": 50.0,
+   "two_level": 50.9,
+   "deployed_sim": 49.1,
+   "delta_vs_deployed": [
+    1.754,
+    [
+     -5.263,
+     8.772
+    ],
+    19
+   ],
+   "launch_model": 55.6,
+   "delta_vs_launch_model": [
+    -5.556,
+    [
+     -22.222,
+     11.111
+    ],
+    6
+   ]
+  },
+  "day top5": {
+   "two_level": 60.0,
+   "deployed_sim": 65.3,
+   "delta_vs_deployed": [
+    -5.263,
+    [
+     -9.474,
+     -2.105
+    ],
+    19
+   ],
+   "launch_model": 70.0,
+   "delta_vs_launch_model": [
+    -3.333,
+    [
+     -13.333,
+     6.667
+    ],
+    6
+   ]
+  },
+  "day top10": {
+   "two_level": 68.9,
+   "deployed_sim": 70.0,
+   "delta_vs_deployed": [
+    -1.053,
+    [
+     -3.684,
+     1.579
+    ],
+    19
+   ],
+   "launch_model": 81.7,
+   "delta_vs_launch_model": [
+    -10.0,
+    [
+     -15.0,
+     -5.0
+    ],
+    6
+   ]
+  },
+  "spearman_ev_votes": [
+   0.54,
+   [
+    0.479,
+    0.594
+   ],
+   19
+  ],
+  "spearman_deployed_votes": [
+   0.555,
+   [
+    0.479,
+    0.624
+   ],
+   19
+  ]
+ },
+ "population_clean_days": {
+  "day top3": {
+   "two_level": 52.8,
+   "deployed_sim": 52.8,
    "delta_vs_deployed": [
     -0.0,
     [
      -8.333,
      8.333
     ],
-    20
+    12
    ],
-   "launch_model": 57.1,
+   "launch_model": 55.6,
    "delta_vs_launch_model": [
-    -9.524,
-    [
-     -23.81,
-     9.524
-    ],
-    7
-   ]
-  },
-  "day top5": {
-   "two_level": 60.0,
-   "deployed_sim": 65.0,
-   "delta_vs_deployed": [
-    -5.0,
-    [
-     -9.0,
-     -1.0
-    ],
-    20
-   ],
-   "launch_model": 68.6,
-   "delta_vs_launch_model": [
-    -2.857,
-    [
-     -11.429,
-     5.714
-    ],
-    7
-   ]
-  },
-  "day top10": {
-   "two_level": 69.0,
-   "deployed_sim": 70.0,
-   "delta_vs_deployed": [
-    -1.0,
-    [
-     -3.5,
-     1.5
-    ],
-    20
-   ],
-   "launch_model": 81.4,
-   "delta_vs_launch_model": [
-    -10.0,
-    [
-     -14.286,
-     -5.714
-    ],
-    7
-   ]
-  },
-  "spearman_ev_votes": [
-   0.533,
-   [
-    0.475,
-    0.586
-   ],
-   20
-  ],
-  "spearman_deployed_votes": [
-   0.549,
-   [
-    0.476,
-    0.615
-   ],
-   20
-  ]
- },
- "population_clean_days": {
-  "day top3": {
-   "two_level": 51.3,
-   "deployed_sim": 53.8,
-   "delta_vs_deployed": [
-    -2.564,
-    [
-     -10.256,
-     5.128
-    ],
-    13
-   ],
-   "launch_model": 58.3,
-   "delta_vs_launch_model": [
-    -16.667,
+    -11.111,
     [
      -33.333,
-     16.667
+     33.333
     ],
-    4
+    3
    ]
   },
   "day top5": {
-   "two_level": 55.4,
-   "deployed_sim": 61.5,
+   "two_level": 55.0,
+   "deployed_sim": 61.7,
    "delta_vs_deployed": [
-    -6.154,
+    -6.667,
     [
-     -10.769,
-     -1.538
+     -11.667,
+     -1.667
     ],
-    13
+    12
    ],
-   "launch_model": 65.0,
+   "launch_model": 66.7,
    "delta_vs_launch_model": [
     0.0,
     [
      0.0,
      0.0
     ],
-    4
+    3
    ]
   },
   "day top10": {
-   "two_level": 66.2,
+   "two_level": 65.8,
    "deployed_sim": 69.2,
    "delta_vs_deployed": [
-    -3.077,
+    -3.333,
     [
-     -6.154,
+     -6.667,
      0.0
     ],
-    13
+    12
    ],
    "launch_model": 80.0,
    "delta_vs_launch_model": [
-    -12.5,
+    -13.333,
     [
-     -17.5,
+     -20.0,
      -10.0
     ],
-    4
+    3
    ]
   },
   "spearman_ev_votes": [
-   0.512,
+   0.521,
    [
-    0.433,
-    0.582
+    0.436,
+    0.594
    ],
-   13
+   12
   ],
   "spearman_deployed_votes": [
-   0.546,
+   0.555,
    [
     0.439,
-    0.643
+    0.658
    ],
-   13
+   12
   ]
  },
+ "population_oct_clean": {
+  "day top3": {
+   "two_level": 48.1,
+   "deployed_sim": 48.1,
+   "delta_vs_deployed": [
+    -0.0,
+    [
+     -11.111,
+     11.111
+    ],
+    9
+   ],
+   "launch_model": 55.6,
+   "delta_vs_launch_model": [
+    -11.111,
+    [
+     -33.333,
+     33.333
+    ],
+    3
+   ]
+  },
+  "day top5": {
+   "two_level": 55.6,
+   "deployed_sim": 62.2,
+   "delta_vs_deployed": [
+    -6.667,
+    [
+     -13.333,
+     0.0
+    ],
+    9
+   ],
+   "launch_model": 66.7,
+   "delta_vs_launch_model": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    3
+   ]
+  },
+  "day top10": {
+   "two_level": 68.9,
+   "deployed_sim": 71.1,
+   "delta_vs_deployed": [
+    -2.222,
+    [
+     -6.667,
+     2.222
+    ],
+    9
+   ],
+   "launch_model": 80.0,
+   "delta_vs_launch_model": [
+    -13.333,
+    [
+     -20.0,
+     -10.0
+    ],
+    3
+   ]
+  },
+  "spearman_ev_votes": [
+   0.533,
+   [
+    0.459,
+    0.597
+   ],
+   9
+  ],
+  "spearman_deployed_votes": [
+   0.577,
+   [
+    0.461,
+    0.681
+   ],
+   9
+  ]
+ },
+ "population_nov_clean": {
+  "day top3": {
+   "two_level": 66.7,
+   "deployed_sim": 66.7,
+   "delta_vs_deployed": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    3
+   ],
+   "launch_model": null,
+   "delta_vs_launch_model": [
+    null,
+    null,
+    0
+   ]
+  },
+  "day top5": {
+   "two_level": 53.3,
+   "deployed_sim": 60.0,
+   "delta_vs_deployed": [
+    -6.667,
+    [
+     -20.0,
+     0.0
+    ],
+    3
+   ],
+   "launch_model": null,
+   "delta_vs_launch_model": [
+    null,
+    null,
+    0
+   ]
+  },
+  "day top10": {
+   "two_level": 56.7,
+   "deployed_sim": 63.3,
+   "delta_vs_deployed": [
+    -6.667,
+    [
+     -10.0,
+     0.0
+    ],
+    3
+   ],
+   "launch_model": null,
+   "delta_vs_launch_model": [
+    null,
+    null,
+    0
+   ]
+  },
+  "spearman_ev_votes": [
+   0.486,
+   [
+    0.203,
+    0.646
+   ],
+   3
+  ],
+  "spearman_deployed_votes": [
+   0.491,
+   [
+    0.17,
+    0.666
+   ],
+   3
+  ]
+ },
+ "population_clean_without_nov7_8": {
+  "day top3": {
+   "two_level": 51.5,
+   "deployed_sim": 51.5,
+   "delta_vs_deployed": [
+    -0.0,
+    [
+     -9.091,
+     9.091
+    ],
+    11
+   ],
+   "launch_model": 55.6,
+   "delta_vs_launch_model": [
+    -11.111,
+    [
+     -33.333,
+     33.333
+    ],
+    3
+   ]
+  },
+  "day top5": {
+   "two_level": 54.5,
+   "deployed_sim": 61.8,
+   "delta_vs_deployed": [
+    -7.273,
+    [
+     -12.727,
+     -1.818
+    ],
+    11
+   ],
+   "launch_model": 66.7,
+   "delta_vs_launch_model": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    3
+   ]
+  },
+  "day top10": {
+   "two_level": 65.5,
+   "deployed_sim": 69.1,
+   "delta_vs_deployed": [
+    -3.636,
+    [
+     -7.273,
+     0.0
+    ],
+    11
+   ],
+   "launch_model": 80.0,
+   "delta_vs_launch_model": [
+    -13.333,
+    [
+     -20.0,
+     -10.0
+    ],
+    3
+   ]
+  },
+  "spearman_ev_votes": [
+   0.51,
+   [
+    0.423,
+    0.585
+   ],
+   11
+  ],
+  "spearman_deployed_votes": [
+   0.548,
+   [
+    0.423,
+    0.659
+   ],
+   11
+  ]
+ },
+ "ev_vs_lm_residual_spearman": [
+  -0.159,
+  [
+   -0.239,
+   -0.09
+  ],
+  6
+ ],
  "clean_days": [
   "2026-10-20",
   "2026-10-21",
@@ -390,27 +633,47 @@
   "2026-10-28",
   "2026-11-05",
   "2026-11-06",
-  "2026-11-07",
-  "2026-11-08"
+  "2026-11-07"
  ],
+ "n_eff_per_day": {
+  "2026-10-20": 1055.5,
+  "2026-10-21": 1057.2,
+  "2026-10-22": 1058.9,
+  "2026-10-23": 1062.2,
+  "2026-10-24": 1059.5,
+  "2026-10-25": 1047.0,
+  "2026-10-26": 1045.9,
+  "2026-10-27": 1059.3,
+  "2026-10-28": 1074.5,
+  "2026-10-29": 1074.8,
+  "2026-10-30": 1075.2,
+  "2026-10-31": 1090.0,
+  "2026-11-01": 1091.8,
+  "2026-11-02": 2625.1,
+  "2026-11-03": 2458.9,
+  "2026-11-04": 2313.9,
+  "2026-11-05": 2327.5,
+  "2026-11-06": 2308.8,
+  "2026-11-07": 1615.4
+ },
  "weights_diag": {
-  "n_eff_median": 1074.6,
-  "people_median": 2796,
-  "max_w_share_max": 0.0315,
-  "top1pct_share_median": 0.066,
-  "spearman_weighted_real_vs_votes_median": 0.85
+  "n_eff_median": 1074.8,
+  "people_median": 2802,
+  "max_w_share_max": 0.0025,
+  "top1pct_share_median": 0.065,
+  "spearman_weighted_real_vs_votes_median": 0.858
  },
  "n_both_levels": {
-  "person_days": 87691,
-  "rows": 2625706,
-  "days": 20,
+  "person_days": 87315,
+  "rows": 2619314,
+  "days": 19,
   "note": "person metrics and launch EV use the same rows (complete people active in the 30 days before d x the line-up)"
  },
  "model_max_event_date": {
   "model_2026-10.pkl": "2026-09-30",
   "model_2026-11.pkl": "2026-10-31"
  },
- "follow_edges": "none (people get follows='[]'; no follow features enter)",
+ "follow_edges": "none (no follow features enter)",
  "weekly": {
   "2026-W44 top3": {
    "two_level": 0.0,
@@ -423,18 +686,6 @@
   "2026-W44 top10": {
    "two_level": 20.0,
    "deployed_sim": 10.0
-  },
-  "2026-W45 top3": {
-   "two_level": 0.0,
-   "deployed_sim": 0.0
-  },
-  "2026-W45 top5": {
-   "two_level": 40.0,
-   "deployed_sim": 40.0
-  },
-  "2026-W45 top10": {
-   "two_level": 40.0,
-   "deployed_sim": 40.0
   }
  }
 }

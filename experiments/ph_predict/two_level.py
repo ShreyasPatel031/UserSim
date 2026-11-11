@@ -238,7 +238,8 @@ def score():
         ok = R.person.map(lambda u: read_day.get(u, "0000") >= d2 and (u not in short or oldest.get(u, "9999") <= d))
         filt_n.append({"day": d, "people_before": int(R.person.nunique()), "people_after": int(R[ok].person.nunique())})
         R = R[ok].copy()
-        if not len(R):
+        if not len(R) or filt_n[-1]["people_after"] < 0.5 * filt_n[-1]["people_before"]:   # E5: drop days that lose half their people
+            filt_n[-1]["dropped"] = True
             continue
         raw = R.copy()
         if os.environ.get("WEIGHTS", "act") == "rep":
@@ -312,8 +313,22 @@ def score():
         return out
     alld = res["days"]; clean = [d for d in alld if d not in SELECTED]
     res["population_all_days"] = block(alld); res["population_clean_days"] = block(clean)
+    res["population_oct_clean"] = block([d for d in clean if d < "2026-11-01"])
+    res["population_nov_clean"] = block([d for d in clean if d >= "2026-11-01"])
+    res["population_clean_without_nov7_8"] = block([d for d in clean if d not in ("2026-11-07", "2026-11-08")])
+    # E5 item 4: does the person-sum EV explain what the launch model gets wrong? within-day Spearman of EV with
+    # (real standing - LM standing), on days where every launch has an LM score; day-bootstrap CI
+    rs = []
+    for d in alld:
+        g = Q[(Q.day == d)]
+        if g.lm.isna().any() or len(g) < 5:
+            continue
+        resid = g.votes.rank(pct=True) - (-g.lm).rank(pct=True)   # lm holds the predicted rank (lower = better)
+        rs.append(spearmanr(g.ev, resid).correlation)
+    res["ev_vs_lm_residual_spearman"] = boot(rs, rng)
     res["clean_days"] = clean
     Dg = pd.DataFrame(diag)
+    res["n_eff_per_day"] = {r["day"]: round(r["n_eff"], 1) for r in diag}
     res["weights_diag"] = {"n_eff_median": round(float(Dg.n_eff.median()), 1), "people_median": int(Dg.people.median()),
                            "max_w_share_max": round(float(Dg.max_w_share.max()), 4), "top1pct_share_median": round(float(Dg.top1pct_share.median()), 3),
                            "spearman_weighted_real_vs_votes_median": round(float(Dg.spearman_weighted_real_vs_votes.median()), 3)}
