@@ -893,3 +893,14 @@ Calibration (LM top-3 picks, 621):
 - by second-stage P(top 3): <= 0.3 → 32.9% (73), 0.3–0.5 → 42.2% (173), 0.5–0.7 → 62.1% (161), > 0.7 → 90.2% (214)
 - P(top 3) quintiles over the LM top 8 are calibrated: mean predicted 0.10/0.17/0.26/0.43/0.79 vs observed 0.13/0.20/0.27/0.38/0.82.
 Verdict: no ranking gain; the per-pick probability is a usable, calibrated confidence flag for the website.
+
+### 2026-11-12 E5 — validating "what users will say" against real launch comments
+Script experiments/simlab/reactions_eval.py; reports reports/reactions_eval/. 300 launches (Aug–Oct 2026, >= 8 non-team comments; 506 eligible), product-only inputs (name, tagline, description, topics). Truth = themes extracted by a separate Gemini 2.5 Flash call from the real non-team comments (<= 40), never seeing a prediction. Blinded Gemini judge (candidate lists interleaved, labelled only "list B"): recall = share of real themes covered (also weighted by comment count), precision = share of candidate items present in real comments. Baselines: generic = the 5 most central real themes of other launches in the same topic; shuffle = another same-topic launch's prediction. Launch-bootstrap 95% CIs. Total spend about $1.4 (Gemini only).
+Site pipeline (the website's REACT_PROMPT verbatim, gemini-2.5-flash-lite, temperature 0.7, 6 simulated comments; member types from the E5 scorer + 2 fixed contrast types = what the page shows):
+- recall 38.5% [36.0, 41.0] (weighted 45.6%), precision 42.3% [39.4, 45.2]
+- generic-topic baseline: recall 5.2%, precision 6.5%; shuffle: 3.7% / 4.6%
+- site − generic: recall +33.3 [30.7, 35.9], precision +35.7 [32.6, 38.7]; site − shuffle: +34.9 [32.3, 37.6] / +37.7 [34.6, 40.9]
+- persona (scorer member types) − generic member types: recall −0.7 [−3.3, 1.8], weighted −3.1 [−6.0, −0.2], precision +0.3 — no gain from persona conditioning
+Theme prompt (gemini-2.5-flash, 5 themes): recall 31.3% [29.1, 33.4], precision 32.2%; persona − plain +1.2 [−0.9, 3.3].
+Embedding match (cos >= 0.80, gemini-embedding) does not discriminate (baselines also >= 0.8); the judge is the primary metric.
+Reading: the simulated reactions are product-specific and beat both baselines by a wide margin - about 2 in 5 real discussion themes are anticipated and about 2 in 5 simulated points occur in real comments. The member-type conditioning adds nothing measurable. Caveats: replay uses the PH description instead of the site's page read; judge and generator are the same model family (the baselines are judged the same way, so the gaps are fair, but absolute levels may be optimistic).

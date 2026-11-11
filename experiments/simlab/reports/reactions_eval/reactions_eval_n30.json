@@ -1,0 +1,379 @@
+{
+ "design": "Validate \"what users will say\" (orchestrator 01:15Z Nov 12) against real Product Hunt launch comments.\nSample: launches Aug-Oct 2026 in the thread dumps (raw/ph_predict_data/comments) with >= 8 non-team comments (team = real\nmaker/poster handles); pilot N=30 then N=300 (SEED fixed). Product-only inputs: name, tagline, description, topics.\nSteps (Gemini on Vertex, temperature 0, JSON; no Claude):\n  PRED_PLAIN    the website's prompt (file passed in; placeholder until the site sends its exact prompt) -> 5 themes\n  PRED_PERSONA  the same + \"consider these user types\" (the E5 role segments) -> 5 themes\n  TRUTH         a separate call that sees only the real non-team comments (up to 40, 400 chars each) -> up to 8 themes,\n                each with the number of comments raising it; never sees any prediction\n  GENERIC       (baseline a) the 5 most central real themes of OTHER launches with the same first topic (embedding centrality)\n  SHUFFLE       (baseline b) the PRED_PLAIN themes of a different random launch with the same first topic\n  JUDGE         blinded: real theme list + one candidate list (labelled only \"list B\", order of candidates randomised per call)\n                -> for each real theme, covered y/n; for each candidate theme, present in real comments y/n\n  EMBED         gemini-embedding-001 cosine; a theme matches if cos >= 0.80 (also mean best-match cosine)\nMetrics per launch: recall = share of real themes covered (weighted by comment count, and unweighted); precision = share of\ncandidate themes present. Means with launch-bootstrap 95% CIs; paired differences PRED - GENERIC and PRED - SHUFFLE,\nPERSONA - PLAIN. The simulation counts only if PRED beats both baselines with intervals above zero.",
+ "model": "gemini-2.5-flash",
+ "eligible": 506,
+ "n": 30,
+ "usd": 0.111,
+ "means": {
+  "PRED_PLAIN": {
+   "judge_recall": [
+    0.287,
+    0.224,
+    0.348,
+    30
+   ],
+   "judge_recall_w": [
+    0.319,
+    0.233,
+    0.405,
+    30
+   ],
+   "judge_precision": [
+    0.3,
+    0.233,
+    0.367,
+    30
+   ],
+   "emb_recall": [
+    0.89,
+    0.848,
+    0.93,
+    30
+   ],
+   "emb_precision": [
+    0.98,
+    0.947,
+    1.0,
+    30
+   ],
+   "emb_best_cos": [
+    0.848,
+    0.843,
+    0.854,
+    30
+   ]
+  },
+  "PRED_PERSONA": {
+   "judge_recall": [
+    0.36,
+    0.302,
+    0.415,
+    30
+   ],
+   "judge_recall_w": [
+    0.398,
+    0.317,
+    0.475,
+    30
+   ],
+   "judge_precision": [
+    0.347,
+    0.287,
+    0.407,
+    30
+   ],
+   "emb_recall": [
+    0.914,
+    0.876,
+    0.948,
+    30
+   ],
+   "emb_precision": [
+    0.987,
+    0.967,
+    1.0,
+    30
+   ],
+   "emb_best_cos": [
+    0.846,
+    0.842,
+    0.851,
+    30
+   ]
+  },
+  "GENERIC_TOPIC": {
+   "judge_recall": [
+    0.042,
+    0.013,
+    0.083,
+    30
+   ],
+   "judge_recall_w": [
+    0.046,
+    0.006,
+    0.102,
+    30
+   ],
+   "judge_precision": [
+    0.073,
+    0.027,
+    0.133,
+    30
+   ],
+   "emb_recall": [
+    0.962,
+    0.923,
+    0.992,
+    30
+   ],
+   "emb_precision": [
+    1.0,
+    1.0,
+    1.0,
+    30
+   ],
+   "emb_best_cos": [
+    0.852,
+    0.845,
+    0.859,
+    30
+   ]
+  },
+  "SHUFFLE_SAME_TOPIC": {
+   "judge_recall": [
+    0.016,
+    0.0,
+    0.035,
+    30
+   ],
+   "judge_recall_w": [
+    0.009,
+    0.0,
+    0.021,
+    30
+   ],
+   "judge_precision": [
+    0.02,
+    0.0,
+    0.047,
+    30
+   ],
+   "emb_recall": [
+    0.814,
+    0.756,
+    0.87,
+    30
+   ],
+   "emb_precision": [
+    0.873,
+    0.813,
+    0.927,
+    30
+   ],
+   "emb_best_cos": [
+    0.822,
+    0.817,
+    0.828,
+    30
+   ]
+  }
+ },
+ "paired": {
+  "PRED_PLAIN - GENERIC_TOPIC": {
+   "judge_recall": [
+    0.246,
+    0.178,
+    0.311,
+    30
+   ],
+   "judge_recall_w": [
+    0.273,
+    0.192,
+    0.355,
+    30
+   ],
+   "judge_precision": [
+    0.227,
+    0.14,
+    0.307,
+    30
+   ],
+   "emb_recall": [
+    -0.072,
+    -0.122,
+    -0.023,
+    30
+   ],
+   "emb_precision": [
+    -0.02,
+    -0.053,
+    0.0,
+    30
+   ],
+   "emb_best_cos": [
+    -0.004,
+    -0.011,
+    0.003,
+    30
+   ]
+  },
+  "PRED_PLAIN - SHUFFLE_SAME_TOPIC": {
+   "judge_recall": [
+    0.272,
+    0.212,
+    0.331,
+    30
+   ],
+   "judge_recall_w": [
+    0.31,
+    0.224,
+    0.392,
+    30
+   ],
+   "judge_precision": [
+    0.28,
+    0.213,
+    0.347,
+    30
+   ],
+   "emb_recall": [
+    0.076,
+    0.011,
+    0.139,
+    30
+   ],
+   "emb_precision": [
+    0.107,
+    0.053,
+    0.16,
+    30
+   ],
+   "emb_best_cos": [
+    0.026,
+    0.018,
+    0.034,
+    30
+   ]
+  },
+  "PRED_PERSONA - GENERIC_TOPIC": {
+   "judge_recall": [
+    0.318,
+    0.256,
+    0.38,
+    30
+   ],
+   "judge_recall_w": [
+    0.351,
+    0.269,
+    0.424,
+    30
+   ],
+   "judge_precision": [
+    0.273,
+    0.2,
+    0.353,
+    30
+   ],
+   "emb_recall": [
+    -0.048,
+    -0.095,
+    -0.004,
+    30
+   ],
+   "emb_precision": [
+    -0.013,
+    -0.033,
+    0.0,
+    30
+   ],
+   "emb_best_cos": [
+    -0.006,
+    -0.012,
+    -0.0,
+    30
+   ]
+  },
+  "PRED_PERSONA - SHUFFLE_SAME_TOPIC": {
+   "judge_recall": [
+    0.344,
+    0.289,
+    0.395,
+    30
+   ],
+   "judge_recall_w": [
+    0.388,
+    0.315,
+    0.465,
+    30
+   ],
+   "judge_precision": [
+    0.327,
+    0.26,
+    0.387,
+    30
+   ],
+   "emb_recall": [
+    0.1,
+    0.03,
+    0.169,
+    30
+   ],
+   "emb_precision": [
+    0.113,
+    0.06,
+    0.167,
+    30
+   ],
+   "emb_best_cos": [
+    0.024,
+    0.017,
+    0.031,
+    30
+   ]
+  },
+  "PRED_PERSONA - PRED_PLAIN": {
+   "judge_recall": [
+    0.072,
+    0.009,
+    0.138,
+    30
+   ],
+   "judge_recall_w": [
+    0.078,
+    0.015,
+    0.151,
+    30
+   ],
+   "judge_precision": [
+    0.047,
+    -0.02,
+    0.113,
+    30
+   ],
+   "emb_recall": [
+    0.024,
+    0.0,
+    0.051,
+    30
+   ],
+   "emb_precision": [
+    0.007,
+    -0.013,
+    0.027,
+    30
+   ],
+   "emb_best_cos": [
+    -0.002,
+    -0.005,
+    0.001,
+    30
+   ]
+  }
+ },
+ "example (first sample launch, product name withheld)": {
+  "truth": [
+   "Users appreciate the ability to find information based on what they remember, not just exact keywords, and the value of their own context in the age of AI.",
+   "The difficulty of adding content and importing existing bookmarks into such systems is a major concern.",
+   "Users are asking about the ability to export saved content and whether the system remembers everything checked or only saved items.",
+   "Users are interested in seamless import of existing bookmarks and integration with email and chat platforms.",
+   "The visual design of the website, particularly the background art, is highly praised.",
+   "There is a question about how Ancher handles conflicting information from different saved sources.",
+   "The feature of finding the exact moment in a saved video with the source attached is highlighted as very useful.",
+   "The AI voice in the video mispronouncing 'Ancher' was noted as a minor issue."
+  ],
+  "pred_plain": [
+   "The ability to turn everything I read and save into work I can ship, especially generating research briefs, reports, and presentations in my own voice, sounds incredibly powerful and time-saving.",
+   "I'm concerned about the privacy and security of my captured articles, videos, PDFs, and personal ideas, especially since AI is involved in processing them.",
+   "How does Ancher 2.0 handle duplicate content or conflicting information from various sources I capture?",
+   "It would be great if Ancher 2.0 could integrate directly with popular project management tools like Notion or Asana for seamless workflow integration.",
+   "How does Ancher 2.0 differentiate itself from existing AI note-taking and knowledge management tools like Mem.ai or Obsidian, especially regarding the 'work you can ship' aspect?"
+  ],
+  "generic": [
+   "Users want to know more about the functionality and adaptability of the 'Learn Anywhere' feature.",
+   "Users are curious about the types of tasks or skills that can be learned on the platform.",
+   "Users are asking for clarification on whether Offloop replaces or works alongside existing team tools.",
+   "Users want to understand how Schol\u00e9 ensures the accuracy of generated lessons.",
+   "Users are asking about how to input their own files or integrate the app via API/iframe."
+  ]
+ }
+}

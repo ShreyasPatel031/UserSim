@@ -1,0 +1,381 @@
+{
+ "design": "Validate \"what users will say\" (orchestrator 01:15Z Nov 12) against real Product Hunt launch comments.\nSample: launches Aug-Oct 2026 in the thread dumps (raw/ph_predict_data/comments) with >= 8 non-team comments (team = real\nmaker/poster handles); pilot N=30 then N=300 (SEED fixed). Product-only inputs: name, tagline, description, topics.\nSteps (Gemini on Vertex, temperature 0, JSON; no Claude):\n  PRED_PLAIN    placeholder theme prompt (file passed in) -> 5 themes. With SITE_FILE=<try_sim.py> BUNDLE=<person bundle>: the\n                website's REACT_PROMPT verbatim (gemini-2.5-flash-lite, temperature 0.7), launch-replay inputs (name, tagline,\n                description as summary and excerpt, pricing unknown), 6 simulated comments; PLAIN = 4 generic member types,\n                PERSONA = the site's 4 closest member types from the E5 scorer (roles + tool tier + topics); both + the 2 fixed\n                contrast types\n  PRED_PERSONA  the same + \"consider these user types\" (the E5 role segments) -> 5 themes\n  TRUTH         a separate call that sees only the real non-team comments (up to 40, 400 chars each) -> up to 8 themes,\n                each with the number of comments raising it; never sees any prediction\n  GENERIC       (baseline a) the 5 most central real themes of OTHER launches with the same first topic (embedding centrality)\n  SHUFFLE       (baseline b) the PRED_PLAIN themes of a different random launch with the same first topic\n  JUDGE         blinded: real theme list + one candidate list (labelled only \"list B\", order of candidates randomised per call)\n                -> for each real theme, covered y/n; for each candidate theme, present in real comments y/n\n  EMBED         gemini-embedding-001 cosine; a theme matches if cos >= 0.80 (also mean best-match cosine)\nMetrics per launch: recall = share of real themes covered (weighted by comment count, and unweighted); precision = share of\ncandidate themes present. Means with launch-bootstrap 95% CIs; paired differences PRED - GENERIC and PRED - SHUFFLE,\nPERSONA - PLAIN. The simulation counts only if PRED beats both baselines with intervals above zero.",
+ "model": "gemini-2.5-flash",
+ "site_mode": true,
+ "eligible": 506,
+ "n": 300,
+ "usd": 0.265,
+ "means": {
+  "PRED_PLAIN": {
+   "judge_recall": [
+    0.393,
+    0.371,
+    0.415,
+    299
+   ],
+   "judge_recall_w": [
+    0.487,
+    0.46,
+    0.513,
+    299
+   ],
+   "judge_precision": [
+    0.419,
+    0.392,
+    0.446,
+    299
+   ],
+   "emb_recall": [
+    0.943,
+    0.933,
+    0.953,
+    300
+   ],
+   "emb_precision": [
+    0.988,
+    0.983,
+    0.993,
+    300
+   ],
+   "emb_best_cos": [
+    0.845,
+    0.844,
+    0.846,
+    300
+   ]
+  },
+  "PRED_PERSONA": {
+   "judge_recall": [
+    0.385,
+    0.36,
+    0.41,
+    299
+   ],
+   "judge_recall_w": [
+    0.456,
+    0.427,
+    0.485,
+    299
+   ],
+   "judge_precision": [
+    0.423,
+    0.394,
+    0.452,
+    299
+   ],
+   "emb_recall": [
+    0.939,
+    0.928,
+    0.949,
+    300
+   ],
+   "emb_precision": [
+    0.994,
+    0.99,
+    0.997,
+    300
+   ],
+   "emb_best_cos": [
+    0.844,
+    0.843,
+    0.846,
+    300
+   ]
+  },
+  "GENERIC_TOPIC": {
+   "judge_recall": [
+    0.052,
+    0.039,
+    0.065,
+    300
+   ],
+   "judge_recall_w": [
+    0.05,
+    0.037,
+    0.064,
+    300
+   ],
+   "judge_precision": [
+    0.065,
+    0.05,
+    0.082,
+    300
+   ],
+   "emb_recall": [
+    0.932,
+    0.917,
+    0.946,
+    300
+   ],
+   "emb_precision": [
+    0.988,
+    0.98,
+    0.995,
+    300
+   ],
+   "emb_best_cos": [
+    0.853,
+    0.851,
+    0.855,
+    300
+   ]
+  },
+  "SHUFFLE_SAME_TOPIC": {
+   "judge_recall": [
+    0.037,
+    0.025,
+    0.048,
+    300
+   ],
+   "judge_recall_w": [
+    0.048,
+    0.032,
+    0.064,
+    300
+   ],
+   "judge_precision": [
+    0.046,
+    0.032,
+    0.061,
+    300
+   ],
+   "emb_recall": [
+    0.887,
+    0.872,
+    0.903,
+    300
+   ],
+   "emb_precision": [
+    0.954,
+    0.942,
+    0.965,
+    300
+   ],
+   "emb_best_cos": [
+    0.829,
+    0.827,
+    0.83,
+    300
+   ]
+  }
+ },
+ "paired": {
+  "PRED_PLAIN - GENERIC_TOPIC": {
+   "judge_recall": [
+    0.341,
+    0.317,
+    0.364,
+    299
+   ],
+   "judge_recall_w": [
+    0.437,
+    0.409,
+    0.464,
+    299
+   ],
+   "judge_precision": [
+    0.354,
+    0.324,
+    0.383,
+    299
+   ],
+   "emb_recall": [
+    0.011,
+    -0.005,
+    0.027,
+    300
+   ],
+   "emb_precision": [
+    0.0,
+    -0.009,
+    0.01,
+    300
+   ],
+   "emb_best_cos": [
+    -0.008,
+    -0.01,
+    -0.005,
+    300
+   ]
+  },
+  "PRED_PLAIN - SHUFFLE_SAME_TOPIC": {
+   "judge_recall": [
+    0.356,
+    0.331,
+    0.381,
+    299
+   ],
+   "judge_recall_w": [
+    0.439,
+    0.408,
+    0.47,
+    299
+   ],
+   "judge_precision": [
+    0.373,
+    0.344,
+    0.403,
+    299
+   ],
+   "emb_recall": [
+    0.055,
+    0.04,
+    0.071,
+    300
+   ],
+   "emb_precision": [
+    0.034,
+    0.023,
+    0.047,
+    300
+   ],
+   "emb_best_cos": [
+    0.016,
+    0.015,
+    0.018,
+    300
+   ]
+  },
+  "PRED_PERSONA - GENERIC_TOPIC": {
+   "judge_recall": [
+    0.333,
+    0.307,
+    0.359,
+    299
+   ],
+   "judge_recall_w": [
+    0.406,
+    0.376,
+    0.437,
+    299
+   ],
+   "judge_precision": [
+    0.357,
+    0.326,
+    0.387,
+    299
+   ],
+   "emb_recall": [
+    0.007,
+    -0.008,
+    0.022,
+    300
+   ],
+   "emb_precision": [
+    0.006,
+    -0.002,
+    0.015,
+    300
+   ],
+   "emb_best_cos": [
+    -0.009,
+    -0.011,
+    -0.006,
+    300
+   ]
+  },
+  "PRED_PERSONA - SHUFFLE_SAME_TOPIC": {
+   "judge_recall": [
+    0.349,
+    0.323,
+    0.376,
+    299
+   ],
+   "judge_recall_w": [
+    0.408,
+    0.375,
+    0.44,
+    299
+   ],
+   "judge_precision": [
+    0.377,
+    0.346,
+    0.409,
+    299
+   ],
+   "emb_recall": [
+    0.051,
+    0.036,
+    0.067,
+    300
+   ],
+   "emb_precision": [
+    0.04,
+    0.029,
+    0.052,
+    300
+   ],
+   "emb_best_cos": [
+    0.016,
+    0.014,
+    0.017,
+    300
+   ]
+  },
+  "PRED_PERSONA - PRED_PLAIN": {
+   "judge_recall": [
+    -0.007,
+    -0.033,
+    0.018,
+    299
+   ],
+   "judge_recall_w": [
+    -0.031,
+    -0.06,
+    -0.002,
+    299
+   ],
+   "judge_precision": [
+    0.003,
+    -0.028,
+    0.036,
+    299
+   ],
+   "emb_recall": [
+    -0.004,
+    -0.013,
+    0.006,
+    300
+   ],
+   "emb_precision": [
+    0.006,
+    0.001,
+    0.011,
+    300
+   ],
+   "emb_best_cos": [
+    -0.001,
+    -0.002,
+    0.0,
+    300
+   ]
+  }
+ },
+ "example (first sample launch, product name withheld)": {
+  "truth": [
+   "Users appreciate the ability to find information based on what they remember, not just exact keywords, and the value of their own context in the age of AI.",
+   "The difficulty of adding content and importing existing bookmarks into such systems is a major concern.",
+   "Users are asking about the ability to export saved content and whether the system remembers everything checked or only saved items.",
+   "Users are interested in seamless import of existing bookmarks and integration with email and chat platforms.",
+   "The visual design of the website, particularly the background art, is highly praised.",
+   "There is a question about how Ancher handles conflicting information from different saved sources.",
+   "The feature of finding the exact moment in a saved video with the source attached is highlighted as very useful.",
+   "The AI voice in the video mispronouncing 'Ancher' was noted as a minor issue."
+  ],
+  "pred_plain": [
+   "This looks super useful for managing all the information overload. Love the idea of turning saved content into actionable output! (Addresses a common pain point of information overload and content repurposing.)",
+   "How does this compare to Notion or Obsidian with AI integrations? Curious about the core difference. (Asks a direct comparison question to similar tools.)",
+   "The concept of an AI knowledge workspace that doesn't require folder organization is a game-changer. Excited to see how this evolves! (Highlights a key feature (no folders) and expresses excitement.)",
+   "Can it handle video transcripts well? That's a big one for me. Also, what's the pricing like? (Asks specific feature clarification and pricing question.)",
+   "Another AI knowledge tool. The 'ship work' angle is interesting, but I've seen similar promises. Need to see concrete examples of output quality and integration depth. (Expresses skepticism due to seeing many similar products and requires more proof of value.)",
+   "The idea of connecting saved knowledge is powerful. As a maker, I can see how this could streamline research for new projects. Good luck with the launch! (Relates the product's value proposition to their own maker needs.)"
+  ],
+  "generic": [
+   "Users are curious about how the product handles context across multiple tools and applications.",
+   "Users are curious about how well the product handles messy open-ended answers.",
+   "Users inquire about the product's functionality for non-developers and its applicability to diverse workflows.",
+   "Users want to know more about the functionality and adaptability of the 'Learn Anywhere' feature.",
+   "Users are curious about specific use cases and limitations, such as task locking, live search limits, and cost."
+  ]
+ }
+}
