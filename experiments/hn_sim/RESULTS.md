@@ -1398,3 +1398,18 @@ late risers (not on the front page by 1 h) 70, on the front page by 1 h but rank
   2 h 0.932 (3,489). Top decile: 1 h 0.231 forecast vs 0.187 actual; 30 min 0.198 vs 0.155; at posting 0.121 vs 0.106.
 - Daily list at 21:00 (top 30 found): Nov 7 83%, Nov 8 67% (backtest 80.2%).
 - hn_minute: front/newest read every minute through Nov 10.
+
+## Daily live check 2026-11-11 00:47 UTC (live15.py, LIVE_MIN_DAYS=2; 1 h now scored by the shipped blend)
+
+Backtest unchanged (1 h 640/1,323 = 48.4%, target 1,059, gap 419; 15 min 115/388 and 376/1,323; at posting ~345/1,323).
+Live, full-coverage posting days Nov 2-10 (settled Nov 2-5): 1 h, model + votes blend (1 h fix) 127/254 (50.0%
+[43.4, 56.8]) vs the previous per-minute model 119/254 (46.9%); settled days alone 60/121 (49.6%). 15 min 61/254 (24.0%);
+at posting 50/254 (19.7%). All days Oct 31 - Nov 10: 1 h 143/298 (48.0%), 15 min 68/298 (22.8%).
+Focus 1 h: live gap to 80% is 77 of 254.
+Per day 1 h (blend) | 15 min: Nov 2 12/38 | 9/38, Nov 3 12/21 | 4/21, Nov 4 18/34 | 8/34, Nov 5 18/28 | 6/28,
+Nov 6 15/31 | 10/31, Nov 7 12/26 | 4/26, Nov 8 13/25 | 6/25, Nov 9 13/29 | 6/29, Nov 10 14/22 | 8/22.
+Provisional labels move with later list reads (Nov 9: 29 winners in this run). Recorder saw >= 99% of posts within
+15 min Nov 2-10. Top misses at 15 min: on the front page within 1 h but ranked below the cut, then late risers.
+Per-minute odds: Nov 10 1,440/1,440 files. Replay, daily list Nov 8 at 21:05: live 20/30, replay 20/30; live misses:
+model miss 5, posted after the forecast 4, under the live 5-point filter 1.
+live15.py: LIVE TABLE header now names the 1 h score (it showed the old label).

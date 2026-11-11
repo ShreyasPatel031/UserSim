@@ -130,7 +130,8 @@ def live_table(P, F, keep_idx, SC, top, days_after, out):
     front60 = F[60].iloc[keep_idx].front_best.to_numpy() < 999
     lag = np.array([next((k for k, x in enumerate(days_after(d)) if pid in top.get(x, ())), -1) for pid, d in zip(T.post_id, T.day)])
     print("\nLIVE TABLE (per posting day; flags = that day's winners so far; score = "
-          f"{'per-minute model (direction A)' if 'model + exposure (direction A)' in SC[15] else 'blend 50/50'}):", flush=True)
+          f"{'per-minute model (direction A)' if 'model + exposure (direction A)' in SC[15] else 'blend 50/50'} at 15 min, "
+          f"{'model + votes blend (1 h fix)' if 'model + votes blend (1 h fix)' in SC[60] else 'same'} at 1 h):", flush=True)
     print(f"   {'day':10s} {'seen15':>6s} {'lists settled':>13s} {'winners':>7s} {'15 min':>14s} {'gap':>6s} {'1 h':>14s} {'gap':>6s}  top miss reasons at 15 min", flush=True)
     rows = []
     for d, g in T.groupby("day"):
