@@ -153,7 +153,8 @@ function renderLive(){
 async function side(){
   const t = await (await fetch("/api/ph/track-record")).json();
   const f = (v)=> v==null ? "—" : Math.round(v)+"%";
-  const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${r.n_days}</td><td>${f(r.top3)}</td><td>${f(r.top5)}</td><td>${f(r.top10)}</td></tr>`;
+  const ci = (r,k)=> (r.ci && Array.isArray(r.ci[k])) ? `<br><span class="small muted">${Math.round(r.ci[k][0])}–${Math.round(r.ci[k][1])}</span>` : "";
+  const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${r.n_days}</td><td>${f(r.top3)}${ci(r,"top3")}</td><td>${f(r.top5)}${ci(r,"top5")}</td><td>${f(r.top10)}${ci(r,"top10")}</td></tr>`;
   const live = t.rows.filter(r=>r.n_days && (r.source||"live")==="live"), other = t.rows.filter(r=>r.n_days && (r.source||"live")!=="live");
   $("#rec tbody").innerHTML = live.map(tr).join("") || `<tr><td colspan="5" class="muted">No live day scored yet.</td></tr>`;
   if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+" ("+r.source+")"})).join(""); }

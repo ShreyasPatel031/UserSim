@@ -347,7 +347,10 @@ def track_record(max_days: int = 30) -> dict:
                          "source": r.get("source"), "n_days": r.get("days", 0),
                          "days_range": [r.get("first_day"), r.get("last_day")],
                          "top3": r.get("mean_top3"), "top5": r.get("mean_top5"), "top10": r.get("mean_top10"),
-                         "experimental": "experimental" in m})
+                         "experimental": "experimental" in m,
+                         # 95% day-bootstrap intervals, if the scoreboard carries them (NORTH_STAR shows them at 5+ days)
+                         "ci": {k: r[c] for k in ("top3", "top5", "top10")
+                                for c in (f"ci_{k}", f"ci95_{k}", f"{k}_ci") if c in r} or None})
         rows.sort(key=lambda r: (src_rank.get(r["source"], 9), order.get(r["key"], 99), r["experimental"], r["label"]))
         return {"rows": rows, "computed_at": sb.get("built_at"), "source": "results/web/scoreboard.json",
                 "how": (sb.get("definition") or "") + ". Live = written in time; late = honest data cut but written "
