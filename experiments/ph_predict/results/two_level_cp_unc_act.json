@@ -42,8 +42,8 @@
   "hit3": [
    0.601,
    [
-    0.556,
-    0.641
+    0.557,
+    0.642
    ],
    19
   ],
@@ -1330,7 +1330,8 @@
  },
  "model_max_event_date": {
   "model_2026-10.pkl": "2026-09-30",
-  "model_2026-11.pkl": "2026-10-31"
+  "model_2026-11.pkl": "2026-10-31",
+  "model_2026-09.pkl": "2026-08-31"
  },
  "follow_edges": "none (no follow features enter)",
  "weekly": {
