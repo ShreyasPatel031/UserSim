@@ -272,18 +272,29 @@ lo=float('$TARGET_LO')
 hi=float('$TARGET_HI')
 mid=float('$TARGET_MID')
 n=int('$n')
-# Yield per provisioned VM: a share of the fleet is always mid port-swap, so per-active-VM rates over-shrink.
-avg = (r / n) if n > 0 else 0
+min_v=int('$MIN_VMS')
+max_v=int('$MAX_VMS')
+step=int('${FLEET_MAX_SHRINK_STEP:-4}')
+avg_prod=float(m.get('avg_ppm_productive') or 0)
+# Prefer yield of VMs that are actually completing wholes.
+avg = avg_prod if avg_prod > 0.05 else ((r / n) if n > 0 else 0)
 if avg <= 0:
     print(n); raise SystemExit
-cap = max(int('$MIN_VMS'), int(math.ceil(hi / avg)))
-floor = max(int('$MIN_VMS'), int(math.ceil(lo / avg)))
+cap = max(min_v, int(math.ceil(hi / avg)))
+floor = max(min_v, int(math.ceil(lo / avg)))
 aim = max(floor, min(cap, int(round(mid / avg))))
-step = int('${FLEET_MAX_SHRINK_STEP:-4}')
+# Paying for many VMs while yield is collapsed does not buy throughput — shed before scaling up.
+if r < lo and avg_prod > 0 and avg_prod < 0.75 and n > 22:
+    aim = min(n, max(min_v, 20))
 if r > hi:
-    d = max(int('$MIN_VMS'), min(n, max(aim, n - step)))
+    d = max(min_v, min(n, max(aim, n - step)))
 elif r < lo:
-    d = min(int('$MAX_VMS'), max(n, floor + 1))
+    if avg_prod >= 0.75 and n < aim:
+        d = min(max_v, max(n, min(aim, floor + 1)))
+    elif n > aim:
+        d = max(min_v, aim)
+    else:
+        d = min(max_v, max(n, min(aim, floor + 1))) if avg_prod >= 0.5 else n
 else:
     d = max(min(n, cap), n - step)
 print(d)
@@ -308,11 +319,14 @@ print(' '.join(str(s) for s in cand[:drop]))
     echo "SHED skipped (FLEET_AUTOSCALE_NO_SHED=1): would drop $idle_drop"
   fi
   if python3 -c "import sys; sys.exit(0 if float('$use_ppm') < float('$TARGET_LO') else 1)"; then
-    if [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
+    if [[ $n -gt $desired && $n -gt $MIN_VMS ]]; then
+      echo "UNDER target but overprovisioned → scale $n → $desired"
+      cmd_scale_to "$desired"
+    elif [[ $n -lt $desired && $n -lt $MAX_VMS ]]; then
       echo "UNDER target → +1 VM (cap $MAX_VMS)"
       cmd_scale_to $((n + 1))
     else
-      echo "UNDER — hold $n VMs until more pullers warm"
+      echo "UNDER — hold $n VMs (desired=$desired)"
     fi
   elif python3 -c "import sys; sys.exit(0 if float('$use_ppm') > float('$TARGET_HI') else 1)"; then
     if [[ $n -gt $desired && $n -gt $MIN_VMS ]]; then

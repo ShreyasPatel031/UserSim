@@ -96,21 +96,25 @@ if [[ "$proxy_slots_sampled" -gt 0 ]]; then
 fi
 
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
-# Below target: avoid batch kicks (they drop the 15m window while VMs relaunch).
-if python3 -c "exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null; then
-  export FLEET_CF_RECOVER_MAX_KICKS=0
-  echo "$(date -u +%FT%TZ) CF_RECOVER_SKIPPED ppm=${ppm} (below target)" >>"$LOG"
-else
-  "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
-fi
+# Hung batches: limited kicks; CF block exit is port-swap via PH_BLOCK_NEW_PORT on supervisor.
+export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
+"$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
-# Babysit: do not delete cf_wall/dead slots while throughput is below target (they may be mid port-swap).
+# Below target: still shed idle slots when yield collapsed (many VMs, ~0.3 ppm each).
 FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
 export FLEET_AUTOSCALE_NO_SHED=1
 python3 -c "
 import json
 m=json.load(open('$ART/fleet_measure.json'))
-exit(0 if float(m.get('complete_ppm') or 0) >= float('${FLEET_TARGET_LO}') else 1)
+c=float(m.get('complete_ppm') or 0)
+lo=float('${FLEET_TARGET_LO}')
+ap=float(m.get('avg_ppm_productive') or 0)
+nv=int(m.get('vms') or 0)
+if c >= lo:
+    raise SystemExit(0)
+if ap < 0.75 and nv > 22:
+    raise SystemExit(0)  # allow shed
+raise SystemExit(1)
 " 2>/dev/null && export FLEET_AUTOSCALE_NO_SHED=0 || true
 export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET_MID:-25}"
 "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
