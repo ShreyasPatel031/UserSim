@@ -49,6 +49,7 @@ apply_overlays() {
   fi
   # Refresh patches from GCS each loop (reuse.tgz unpack can clobber).
   gcloud storage cp -q "$B/_code/overlays/patch_week_bytes.py" \
+    "$B/_code/overlays/patch_week_start.py" \
     "$B/_code/overlays/patch_stop_first_block.py" \
     "$B/_code/overlays/patch_dynamic_paged.py" \
     "$B/_code/overlays/patch_soft_block_rotate.py" \
@@ -61,7 +62,7 @@ apply_overlays() {
     "$B/_code/overlays/patch_pdeep_coverage_queue.py" \
     "$B/_code/overlays/patch_same_ip_only.py" \
     "$B/_code/overlays/patch_cf_fast_fail.py" "$OVERLAYS/" 2>/dev/null || true
-  for _patch in patch_week_bytes.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_same_ip_only.py patch_lazy_tabs.py patch_require_full_save.py patch_pdeep_partition.py patch_pdeep_rr_only.py patch_pdeep_coverage_queue.py patch_cf_fast_fail.py; do
+  for _patch in patch_week_bytes.py patch_week_start.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_same_ip_only.py patch_lazy_tabs.py patch_require_full_save.py patch_pdeep_partition.py patch_pdeep_rr_only.py patch_pdeep_coverage_queue.py patch_cf_fast_fail.py; do
     if [[ -f "$OVERLAYS/$_patch" && -x $PY ]]; then
       $PY "$OVERLAYS/$_patch" >>supervisor.log 2>&1 || true
     fi
