@@ -355,7 +355,7 @@ def score():
     short = set(T[T["count"] < T.header.fillna(0) * 0.98].person_id)
     Eu = pd.read_parquet(f"{WORK}/events_cp.parquet"); Eu = Eu[Eu.kind == "upvote"]
     oldest = Eu.groupby("person").date.min().to_dict()
-    filt_n, dump = [], []
+    filt_n, dump, calib_rows = [], [], []
     per, pop, diag, prev_rows = [], [], [], []
     recal = None
     if os.environ.get("TL_RECAL") == "1":   # E5 (ii): one isotonic map per month fold, P's within-day percentile -> P(vote),
@@ -415,6 +415,7 @@ def score():
             if 0 < gp.y.sum() < len(gp):
                 pauc.append(roc_auc_score(gp.y, gp.w * gp.p))
         qq = q.values; yy = R.y.values; bins = np.minimum((qq * 10).astype(int), 9)   # calibration (ECE, 10 bins of P)
+        calib_rows.append(pd.DataFrame({"q": qq, "y": yy}))
         ece = float(sum(abs(qq[bins == b].mean() - yy[bins == b].mean()) * (bins == b).mean() for b in range(10) if (bins == b).any()))
         rec, rp, rpp = [], [], []
         for x, gx in R.groupby("id"):
@@ -437,6 +438,11 @@ def score():
     rng = np.random.default_rng(0)
     res = {"tag": TAG, "weights": os.environ.get("WEIGHTS", "act"), "days": sorted(Q.day.unique().tolist())}
     res["person"] = {k: boot(Pm[k].values, rng) for k in ("auc", "logloss", "hit1", "hit3", "person_auc", "voter_recall", "voter_rprec", "voter_rprec_p", "ece", "mean_p", "mean_y")}
+    if calib_rows:   # reliability table on all rows (E5): P deciles vs the real rate
+        Cb = pd.concat(calib_rows); Cb["dec"] = pd.qcut(Cb.q.rank(method="first"), 10, labels=False)
+        res["calibration_deciles"] = [{"decile": int(k), "mean_p": round(float(g.q.mean()), 5), "real_rate": round(float(g.y.mean()), 5), "n": int(len(g))}
+                                      for k, g in Cb.groupby("dec")]
+        res["calibration_pooled"] = {"mean_p": round(float(Cb.q.mean()), 5), "real_rate": round(float(Cb.y.mean()), 5)}
     cl = Pm[~Pm.day.isin(SELECTED)]
     res["person_rprec_p_split"] = {"clean": boot(cl.voter_rprec_p.values, rng), "oct_clean": boot(cl[cl.day < "2026-11-01"].voter_rprec_p.values, rng),
                                    "nov_clean": boot(cl[cl.day >= "2026-11-01"].voter_rprec_p.values, rng),
