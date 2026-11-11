@@ -1389,3 +1389,12 @@ late risers (not on the front page by 1 h) 70, on the front page by 1 h but rank
   late60_b.py same-split comparison Nov 9 + Nov 10: 22/47 vs 17/47. Front-page misses on Nov 2-8: 24 vs 37.
 - Not moved: late risers stay ~2/3 of remaining 1 h misses. Next: an at-posting signal strong enough for off-front
   posts (the off-HN Reddit/Bluesky test and the 2025 front pages are the queued inputs).
+
+## Live check 2026-11-11 00:31 UTC (settled list days Oct 30 - Nov 8)
+
+- Live Caught (live_caught.py, simple points scores, settled posting days Oct 31 - Nov 5, 132 winners): 1 h 55/132
+  (41.7% [28.2, 55.1]), with the front-page bonus 57/132 (43.2%); 15 min 26/132 (19.7%), with the bonus 30/132 (22.7%).
+- Odds AUC on settled posts: at posting 0.788 (850), 15 min 0.759 (812), 30 min 0.857 (1,733), 1 h 0.913 (3,464),
+  2 h 0.932 (3,489). Top decile: 1 h 0.231 forecast vs 0.187 actual; 30 min 0.198 vs 0.155; at posting 0.121 vs 0.106.
+- Daily list at 21:00 (top 30 found): Nov 7 83%, Nov 8 67% (backtest 80.2%).
+- hn_minute: front/newest read every minute through Nov 10.
