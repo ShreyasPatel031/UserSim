@@ -131,8 +131,10 @@ Status at 21:50 UTC Nov 11:
 4. **User simulation at population level, "uses or wants" channel**: done. Weak but real: for new products, summed taste picks adopted products at about 1.5× random (top-decile 15.5 vs 9.8); for known products popularity dominates (taste adds +2.6 top-decile).
 5. **Pre-reveal blend** (PH's pre-reveal API rank + comment forecast + launch model): scored forward daily from Nov 12; refit when 7 days exist. PH agent.
 6. **Weekly and monthly calls from dated votes**: scored forward; daily re-read live from Nov 11 (raw/ph_at_launch/monthly_reread/); PH agent adds the monthly shadow line.
-7. **Existing-fame prior at 00:05** (Gemini asked only whether the product/company was already known, with a post-cutoff slice and a shuffled-name placebo): E5, as a 300-launch pilot after it exports the learned taste scorer (S3np) for the website and re-runs the population check with it.
-8. Open, unassigned: product-hub followers and review count on Product Hunt at 00:05 (live products_ts) as the on-site audience; error anatomy of the launch model's top-3 misses (what kind of launches it under-ranks) to generate the next hypotheses.
+7. **Existing-fame prior at 00:05**: done, null (302 of 305 launches unknown to the model; brand flag vs residual +0.017 [−0.11, +0.15]).
+8. **Product Hunt's pre-reveal rank backfilled from Wayback pre-reveal captures (19 days)**: E5, running. Turns the 4-day lead into a testable result if the captures carry a rank or order.
+9. Open: product-hub followers at 00:05 (waiting on the Data Feeder field; forward only); refit the pre-reveal blend when 7 scored days exist; top-3 near-tie share (orchestrator's analysis, running); maker-fix shadow (scored forward).
+Standing conclusion (Nov 11): nothing knowable before launch explains the launch model's misses (all pre-launch attributes |rho| <= 0.05 with the error; closed today: domain popularity, fame prior, GitHub momentum, repeat-maker mobilisation, pre-midnight comments, early-commenter identity, comment text). The lever is the first hours after launch.
 
 Done Nov 11: comment forecast before the reveal (+5.0 top 3, +3.9 top 5 at 4 h, 207 days, live-compatible); early-engager
 identity (no gain); comment text / commenter / maker-reply / arrival-shape blocks (no gain); weekly call (57.5/71.5/77.8
