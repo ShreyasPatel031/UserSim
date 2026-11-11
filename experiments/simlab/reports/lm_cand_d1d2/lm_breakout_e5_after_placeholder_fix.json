@@ -1,0 +1,216 @@
+{
+ "vote_rule": "vote-based parts only from launches dated <= d-7 (C1: d-14..d-7); rank-based <= d-2",
+ "c2_lineup": "00:05 PT forecast line-up where it exists (Oct 28 on), else the final featured list (c2_final_list = 1)",
+ "seeds": "5, predictions averaged",
+ "base_inputs": 53,
+ "candidates": [
+  "D1",
+  "D2"
+ ],
+ "assert_le_d_minus_2": {
+  "rows": 0,
+  "violations": 0
+ },
+ "launches": 5949,
+ "days": 253,
+ "Mar-Oct": {
+  "day top3": {
+   "base": 60.5,
+   "days": 243,
+   "D1": [
+    60.6,
+    0.1,
+    [
+     -1.4,
+     1.5
+    ]
+   ],
+   "D2": [
+    60.8,
+    0.3,
+    [
+     -0.8,
+     1.4
+    ]
+   ]
+  },
+  "day top5": {
+   "base": 67.7,
+   "days": 243,
+   "D1": [
+    68.5,
+    0.8,
+    [
+     -0.2,
+     1.8
+    ]
+   ],
+   "D2": [
+    67.8,
+    0.2,
+    [
+     -0.5,
+     0.8
+    ]
+   ]
+  },
+  "day top10": {
+   "base": 75.2,
+   "days": 204,
+   "D1": [
+    75.4,
+    0.2,
+    [
+     -0.3,
+     0.7
+    ]
+   ],
+   "D2": [
+    75.6,
+    0.3,
+    [
+     -0.1,
+     0.8
+    ]
+   ]
+  }
+ },
+ "Jul-Oct": {
+  "day top3": {
+   "base": 65.0,
+   "days": 123,
+   "D1": [
+    63.7,
+    -1.4,
+    [
+     -3.5,
+     0.8
+    ]
+   ],
+   "D2": [
+    64.5,
+    -0.5,
+    [
+     -2.2,
+     1.1
+    ]
+   ]
+  },
+  "day top5": {
+   "base": 69.4,
+   "days": 123,
+   "D1": [
+    70.4,
+    1.0,
+    [
+     -0.5,
+     2.4
+    ]
+   ],
+   "D2": [
+    69.6,
+    0.2,
+    [
+     -1.0,
+     1.1
+    ]
+   ]
+  },
+  "day top10": {
+   "base": 76.8,
+   "days": 108,
+   "D1": [
+    76.9,
+    0.1,
+    [
+     -0.6,
+     0.8
+    ]
+   ],
+   "D2": [
+    77.1,
+    0.4,
+    [
+     -0.3,
+     1.0
+    ]
+   ]
+  }
+ },
+ "Oct20-Nov8": {
+  "day top3": {
+   "base": 70.0,
+   "days": 20,
+   "D1": [
+    65.0,
+    -5.0,
+    [
+     -11.7,
+     1.7
+    ]
+   ],
+   "D2": [
+    70.0,
+    0.0,
+    [
+     -5.0,
+     5.0
+    ]
+   ]
+  },
+  "day top5": {
+   "base": 68.0,
+   "days": 20,
+   "D1": [
+    71.0,
+    3.0,
+    [
+     -3.0,
+     9.0
+    ]
+   ],
+   "D2": [
+    71.0,
+    3.0,
+    [
+     0.0,
+     6.0
+    ]
+   ]
+  },
+  "day top10": {
+   "base": 74.5,
+   "days": 20,
+   "D1": [
+    75.5,
+    1.0,
+    [
+     -1.5,
+     3.5
+    ]
+   ],
+   "D2": [
+    74.5,
+    -0.0,
+    [
+     -1.5,
+     1.5
+    ]
+   ]
+  }
+ },
+ "keep": {
+  "D1": {
+   "ci_positive_top3_or_5": false,
+   "no_k_below_-2": true,
+   "live_top3_top5_not_negative": false,
+   "KEEP": false
+  },
+  "D2": {
+   "ci_positive_top3_or_5": false,
+   "no_k_below_-2": true,
+   "live_top3_top5_not_negative": true,
+   "KEEP": false
+  }
+ }
+}

@@ -613,3 +613,16 @@ Subsets:
 2. A stronger embedding helps a little: about +0.03 AUC, +0.015 of it personal.
 3. Richer API text helps very little once its format and length are controlled.
 4. Popularity (0.74) still dominates.
+
+### 2026-11-11 08:20Z — RERUN after the [REDACTED]-maker fix: LM candidates D1 / D2 are still DROPPED
+
+This rerun uses the same pre-registered rule and harness as before (registered in 9b91802f). Base LM: 60.5 / 67.7 / 75.2. Results: `reports/lm_cand_d1d2/lm_breakout_e5_after_placeholder_fix.json`.
+
+Paired change vs base, top 3 / top 5, with 95% CI:
+
+| | Mar–Oct | Oct 20–Nov 8 |
+|---|---|---|
+| D1 warm audience | +0.1 [−1.4, 1.5] / +0.8 [−0.2, 1.8] | −5.0 / +3.0 |
+| D2 person-sum EV | +0.3 [−0.8, 1.4] / +0.2 [−0.5, 0.8] | 0.0 / +3.0 |
+
+Neither candidate has a CI-positive top 3 or top 5 on Mar–Oct, so the verdict stands: both dropped.
