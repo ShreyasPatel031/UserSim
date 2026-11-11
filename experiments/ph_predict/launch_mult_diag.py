@@ -73,6 +73,24 @@ for d in Z.day.unique():
     pred[te] = Ridge(alpha=1.0).fit(Z.loc[tr, cols], Z.loc[tr, "logm"]).predict(Z.loc[te, cols])
 Z["pred"] = pred
 res["lodo_ridge_spearman_pred_vs_fitted_logm"] = round(float(np.mean([spearmanr(g.pred, g.logm).correlation for _, g in Z.groupby("day")])), 3)
+# orchestrator Nov 11: the same LODO ridge with the arrivals EV (no_dormant, honest monthly fits) and |C(L)| added
+AE = f"{S_}/simbt/arrivals/ev_per_launch.parquet"
+if os.path.exists(AE):
+    A = pd.read_parquet(AE); A = A[A.variant == "no_dormant"][["day", "id", "arr", "cand_n"]].rename(columns={"arr": "arr_ev"})
+    A["arr_ev"] = np.log1p(A.arr_ev); A["cand_n"] = np.log1p(A.cand_n)
+    M2 = M.merge(A, on=["day", "id"], how="left")
+    for extra, nm in ((["arr_ev", "cand_n"], "with_arrivals"), (["arr_ev", "cand_n"], "arrivals_only")):
+        cols2 = (cols + extra) if nm == "with_arrivals" else extra
+        Z2 = M2.copy()
+        for c in cols2:
+            g = Z2.groupby("day")[c]; Z2[c] = ((Z2[c] - g.transform("mean")) / (g.transform("std") + 1e-9)).fillna(0)
+        pr = pd.Series(np.nan, index=Z2.index)
+        for d in Z2.day.unique():
+            tr, te = Z2.day != d, Z2.day == d
+            pr[te] = Ridge(alpha=1.0).fit(Z2.loc[tr, cols2], Z2.loc[tr, "logm"]).predict(Z2.loc[te, cols2])
+        Z2["pred"] = pr
+        res[f"lodo_ridge_{nm}"] = round(float(np.mean([spearmanr(g.pred, g.logm).correlation for _, g in Z2.groupby("day")])), 3)
+    res["arrivals_coverage"] = round(float(M2.arr_ev.notna().mean()), 3)
 res["lm_alone_spearman_vs_fitted_logm"] = fs.get("lm")
 json.dump(res, open("/home/user/UserSim/experiments/ph_predict/results/launch_mult_diag.json", "w"), indent=1)
 print(json.dumps(res, indent=1))

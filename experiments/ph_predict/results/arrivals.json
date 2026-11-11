@@ -1886,7 +1886,7 @@
      "brw_top10": 40.0,
      "dep_top10": 70.0,
      "sp_ev": 0.486,
-     "sp_arr": 0.617,
+     "sp_arr": 0.619,
      "sp_brw": -0.245,
      "cand_vote_share": 0.59
     },

@@ -90,6 +90,9 @@
   ]
  },
  "lodo_ridge_spearman_pred_vs_fitted_logm": 0.24,
+ "lodo_ridge_with_arrivals": 0.262,
+ "lodo_ridge_arrivals_only": 0.117,
+ "arrivals_coverage": 1.0,
  "lm_alone_spearman_vs_fitted_logm": [
   0.02,
   17

@@ -136,6 +136,7 @@ def fit_score():
     import two_level as TL
     T_ok, _ = TL._label_maps()
     cols = PF + TF; rng = np.random.default_rng(0); res = {"variants": {}}
+    ev_rows = []
     for variant in ("no_dormant", "with_dormant"):
         models = {}
         for mon in sorted({d[:7] for d in test}):
@@ -162,6 +163,8 @@ def fit_score():
             ids = sorted(set(arr.index) | set(brw.index))
             G = pd.DataFrame({"id": ids}); G["arr"] = G.id.map(arr).fillna(0); G["brw"] = G.id.map(brw).fillna(0)
             G["ev"] = G.arr + G.brw; G["rank"] = G.id.map(rk); G["votes"] = G.id.map(vt); G["dep"] = [dep.get((d, x)) for x in G.id]
+            G["cand_n"] = G.id.map(A.groupby("id").cand_n.first()); G["day"] = d; G["variant"] = variant
+            ev_rows.append(G.copy())
             G = G.dropna(subset=["rank"])
             row = {"day": d, "selected": d in SELECTED}
             for k in (3, 5, 10):
@@ -189,8 +192,8 @@ def fit_score():
         r["per_day"] = P.round(3).to_dict("records")
         res["variants"][variant] = r
     json.dump(res, open(os.path.join(HERE, "results", "arrivals.json"), "w"), indent=1, default=float)
-    for v, r in res["variants"].items():
-        print(v, json.dumps({k: {kk: vv["ev"][0] if kk != "spearman" else vv["ev"][0] for kk, vv in r[k].items()} for k in ("all", "clean")}))
+    pd.concat(ev_rows).to_parquet(f"{OUT}/ev_per_launch.parquet")
+    print("saved", len(ev_rows))
 
 
 if __name__ == "__main__":
