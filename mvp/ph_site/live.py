@@ -209,7 +209,8 @@ def actuals(day: str) -> dict:
 
 def _lineup(day: str) -> dict[str, dict]:
     prods: dict[str, dict] = {}
-    t = gcs.read_json(f"raw/daily/{day}/today_0005.json", ttl=600) or []
+    t = (gcs.read_json(f"raw/daily/{day}/today_0005.json", ttl=600)
+         or gcs.read_json(f"raw/daily/{day}/{day}.json", ttl=600) or [])
     for r in t if isinstance(t, list) else []:
         p = _product(r)
         prods[p["id"]] = p

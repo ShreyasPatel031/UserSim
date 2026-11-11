@@ -149,7 +149,7 @@ function renderLive(){
        : `<div class="vote hidden" title="Hidden on Product Hunt until about 04:00 PT"><span class="tri"></span><b>—</b><small>hidden</small></div>`;
     return `<li class="row c"><div class="pos">${Number(x.board_rank)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
       <div class="chips">${chips(x)}${pr?`<span class="trail">we said <b>#${Number(pr)}</b></span>`:""}</div></div>${vote}</li>`;}).join("")
-    || `<li class="skeleton">The board appears after the 00:01 PT launch.</li>`;
+    || `<li class="skeleton">${fin ? "No line-up file for this day; the score above still comes from the final top 10." : "The board appears after the 00:01 PT launch."}</li>`;
 }
 
 async function side(){
