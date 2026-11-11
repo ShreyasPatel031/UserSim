@@ -850,3 +850,10 @@ Script experiments/simlab/mobilisation.py; report reports/mobilisation/. Full vo
 - Warm features (prior launches, earlier voters) + base: top-3 / 5 / 10 minus LM-only −2.4 [−4.7, −0.2] / −1.0 / −0.3.
 - Adding mobilisation: residual Spearman +0.028 [−0.001, 0.056]; top-3 / 5 / 10 vs warm +0.0 [−2.0, 2.1] / +0.0 / +0.1.
 Verdict: no gain. Repeat makers' low-activity pool voters do not predict the per-launch surprise (proxy limited to pool voters; full per-launch voter lists would be needed for the real one-vote share). Item 7a (voters at the reveal) is not testable on held data.
+
+### 2026-11-11 E5 — existing-fame prior (LLM knowledge), 300-launch pilot: null, full run not done
+Script experiments/simlab/fame_pilot.py; report reports/fame_pilot/. Gemini 2.5 Flash-Lite (Vertex, temperature 0, JSON); inputs name, tagline, website domain (62% resolved), launch month only. Knowledge cutoff January 2025 (Google's stated cutoff for 2.5 Flash-Lite); all launches are Mar–Oct 2026, so the whole pilot is the clean post-cutoff slice. Pilot = all 305 launches on 12 random scored days of the comment-forecast set. Cost $0.012.
+- Answers are degenerate: heard_before 0 for 302/305, user_base "none" 302/305, new_version "y" 2/305; venture/known brand y 18, unknown 23, n 264.
+- Brand flag vs residual r = logv − honest LM: within-day Spearman +0.017 [−0.112, 0.145] (12 days); pooled vs day-demeaned r −0.028 [−0.143, 0.087]; placebo −0.078. It correlates with the LM (+0.28 [0.18, 0.36]) and log votes (+0.18) - the LM already carries it.
+- "new version" pooled +0.104 [0.056, 0.176] rests on 2 launches - not a signal.
+Verdict: null. An LLM with a 2025 cutoff knows essentially none of the 2026 launches, and what it knows (brand) is already in the LM. Per the 23:20Z rule (run in full only if the residual CI is above zero) the full run was not done.
