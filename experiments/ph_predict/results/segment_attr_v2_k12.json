@@ -1,0 +1,238 @@
+{
+ "K": 12,
+ "people": 6593,
+ "A": 3324,
+ "B": 3269,
+ "segment_sizes_A": [
+  130,
+  200,
+  343,
+  673,
+  117,
+  18,
+  323,
+  194,
+  159,
+  719,
+  223,
+  225
+ ],
+ "rows": {
+  "all86 | alpha 1 | all": {
+   "attrs": 55,
+   "real": 0.268,
+   "real_ci": [
+    0.197,
+    0.338
+   ],
+   "control_mean": -0.014,
+   "control_sd": 0.083,
+   "real_minus_control": 0.282,
+   "z_vs_control": 3.4
+  },
+  "all86 | alpha 1 | cold_start": {
+   "attrs": 37,
+   "real": 0.227,
+   "real_ci": [
+    0.13,
+    0.318
+   ],
+   "control_mean": 0.019,
+   "control_sd": 0.075,
+   "real_minus_control": 0.208,
+   "z_vs_control": 2.8
+  },
+  "all86 | alpha 5 | all": {
+   "attrs": 55,
+   "real": 0.267,
+   "real_ci": [
+    0.2,
+    0.334
+   ],
+   "control_mean": -0.002,
+   "control_sd": 0.069,
+   "real_minus_control": 0.269,
+   "z_vs_control": 3.9
+  },
+  "all86 | alpha 5 | cold_start": {
+   "attrs": 37,
+   "real": 0.153,
+   "real_ci": [
+    0.068,
+    0.233
+   ],
+   "control_mean": -0.006,
+   "control_sd": 0.059,
+   "real_minus_control": 0.159,
+   "z_vs_control": 2.7
+  },
+  "all86 | alpha 20 | all": {
+   "attrs": 55,
+   "real": 0.187,
+   "real_ci": [
+    0.115,
+    0.255
+   ],
+   "control_mean": 0.012,
+   "control_sd": 0.046,
+   "real_minus_control": 0.175,
+   "z_vs_control": 3.8
+  },
+  "all86 | alpha 20 | cold_start": {
+   "attrs": 37,
+   "real": 0.088,
+   "real_ci": [
+    -0.012,
+    0.185
+   ],
+   "control_mean": -0.014,
+   "control_sd": 0.041,
+   "real_minus_control": 0.102,
+   "z_vs_control": 2.5
+  },
+  "topics40 | alpha 1 | all": {
+   "attrs": 17,
+   "real": 0.096,
+   "real_ci": [
+    -0.012,
+    0.205
+   ],
+   "control_mean": 0.012,
+   "control_sd": 0.097,
+   "real_minus_control": 0.084,
+   "z_vs_control": 0.9
+  },
+  "topics40 | alpha 1 | cold_start": {
+   "attrs": 9,
+   "real": -0.042,
+   "real_ci": [
+    -0.251,
+    0.162
+   ],
+   "control_mean": -0.042,
+   "control_sd": 0.104,
+   "real_minus_control": -0.0,
+   "z_vs_control": -0.0
+  },
+  "topics40 | alpha 5 | all": {
+   "attrs": 17,
+   "real": 0.081,
+   "real_ci": [
+    -0.046,
+    0.195
+   ],
+   "control_mean": -0.018,
+   "control_sd": 0.069,
+   "real_minus_control": 0.099,
+   "z_vs_control": 1.4
+  },
+  "topics40 | alpha 5 | cold_start": {
+   "attrs": 9,
+   "real": -0.109,
+   "real_ci": [
+    -0.321,
+    0.103
+   ],
+   "control_mean": -0.062,
+   "control_sd": 0.087,
+   "real_minus_control": -0.047,
+   "z_vs_control": -0.5
+  },
+  "topics40 | alpha 20 | all": {
+   "attrs": 17,
+   "real": 0.065,
+   "real_ci": [
+    -0.1,
+    0.229
+   ],
+   "control_mean": -0.014,
+   "control_sd": 0.055,
+   "real_minus_control": 0.079,
+   "z_vs_control": 1.4
+  },
+  "topics40 | alpha 20 | cold_start": {
+   "attrs": 9,
+   "real": -0.175,
+   "real_ci": [
+    -0.4,
+    0.099
+   ],
+   "control_mean": -0.135,
+   "control_sd": 0.081,
+   "real_minus_control": -0.04,
+   "z_vs_control": -0.5
+  },
+  "it9b46 | alpha 1 | all": {
+   "attrs": 38,
+   "real": 0.264,
+   "real_ci": [
+    0.165,
+    0.361
+   ],
+   "control_mean": -0.03,
+   "control_sd": 0.086,
+   "real_minus_control": 0.294,
+   "z_vs_control": 3.4
+  },
+  "it9b46 | alpha 1 | cold_start": {
+   "attrs": 28,
+   "real": 0.218,
+   "real_ci": [
+    0.096,
+    0.331
+   ],
+   "control_mean": 0.026,
+   "control_sd": 0.08,
+   "real_minus_control": 0.192,
+   "z_vs_control": 2.4
+  },
+  "it9b46 | alpha 5 | all": {
+   "attrs": 38,
+   "real": 0.297,
+   "real_ci": [
+    0.211,
+    0.386
+   ],
+   "control_mean": 0.006,
+   "control_sd": 0.078,
+   "real_minus_control": 0.291,
+   "z_vs_control": 3.7
+  },
+  "it9b46 | alpha 5 | cold_start": {
+   "attrs": 28,
+   "real": 0.163,
+   "real_ci": [
+    0.066,
+    0.257
+   ],
+   "control_mean": 0.017,
+   "control_sd": 0.047,
+   "real_minus_control": 0.146,
+   "z_vs_control": 3.1
+  },
+  "it9b46 | alpha 20 | all": {
+   "attrs": 38,
+   "real": 0.204,
+   "real_ci": [
+    0.137,
+    0.271
+   ],
+   "control_mean": 0.019,
+   "control_sd": 0.053,
+   "real_minus_control": 0.185,
+   "z_vs_control": 3.5
+  },
+  "it9b46 | alpha 20 | cold_start": {
+   "attrs": 28,
+   "real": 0.128,
+   "real_ci": [
+    0.033,
+    0.216
+   ],
+   "control_mean": 0.023,
+   "control_sd": 0.037,
+   "real_minus_control": 0.105,
+   "z_vs_control": 2.8
+  }
+ }
+}
