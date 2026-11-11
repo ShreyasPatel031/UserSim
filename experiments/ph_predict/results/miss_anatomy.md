@@ -79,3 +79,9 @@
 - (a) **Pre-launch GitHub momentum** (repo stars / star velocity before launch day, dated) for GitHub / Open Source launches. raw/github_repos and raw/github_stargazers exist and may carry dates.
 - (b) **Indie maker audience** for self-hunted launches: the maker's own X/PH audience dated before launch. Only the follower counts read at 00:05 are honest.
 - (c) **Upcoming-page activity before 00:00** (comments created before the launch day): honest at 00:05, and the comment dump already holds it.
+
+**Test of (c), Nov 11:** comments created before 00:00 PT (the upcoming page) as 00:05 features, using the same ridge
+as comment_forecast.py, month-forward over 207 days.
+- 89% of launches have one, but the mean is 1.0: mostly the maker's first comment.
+- Ridge minus LM: top 3 −0.3 [−2.3, +1.4], top 5 +0.6 [−0.5, +1.6], top 10 −0.2. **No gain.**
+- The comment signal only appears after 00:00 PT, as the P1–P4 points.
