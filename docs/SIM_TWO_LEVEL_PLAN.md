@@ -131,8 +131,8 @@ Status at 21:50 UTC Nov 11:
 4. **User simulation at population level, "uses or wants" channel**: done. Weak but real: for new products, summed taste picks adopted products at about 1.5× random (top-decile 15.5 vs 9.8); for known products popularity dominates (taste adds +2.6 top-decile).
 5. **Pre-reveal blend** (PH's pre-reveal API rank + comment forecast + launch model): scored forward daily from Nov 12; refit when 7 days exist. PH agent.
 6. **Weekly and monthly calls from dated votes**: scored forward; daily re-read live from Nov 11 (raw/ph_at_launch/monthly_reread/); PH agent adds the monthly shadow line.
-7. **Existing-fame prior at 00:05** (Gemini asked only whether the product/company was already known, with a post-cutoff slice and a shuffled-name placebo): E5, running.
-8. Open, unassigned: reveal-time projection using who has already voted (needs voter lists at the reveal; check what the API gives); repeat makers' past share of one-vote accounts as a pre-launch mobilisation feature; product-hub followers and review count on Product Hunt at 00:05 (live products_ts) as the on-site audience; error anatomy of the launch model's top-3 misses (what kind of launches it under-ranks) to generate the next hypotheses.
+7. **Existing-fame prior at 00:05** (Gemini asked only whether the product/company was already known, with a post-cutoff slice and a shuffled-name placebo): E5, as a 300-launch pilot after it exports the learned taste scorer (S3np) for the website and re-runs the population check with it.
+8. Open, unassigned: product-hub followers and review count on Product Hunt at 00:05 (live products_ts) as the on-site audience; error anatomy of the launch model's top-3 misses (what kind of launches it under-ranks) to generate the next hypotheses.
 
 Done Nov 11: comment forecast before the reveal (+5.0 top 3, +3.9 top 5 at 4 h, 207 days, live-compatible); early-engager
 identity (no gain); comment text / commenter / maker-reply / arrival-shape blocks (no gain); weekly call (57.5/71.5/77.8
@@ -145,3 +145,5 @@ redacted, and where it would land on Product Hunt with default hunter/maker valu
 Shreyas has taken this agent over (Nov 11 22:35 UTC) and directs it himself; the orchestrator, PH agent and E5 support it on request.
 
 **Standing rule (Shreyas, Nov 11):** every subagent or new session the orchestrator creates uses the Opus model.
+
+Closed Nov 11 (late): repeat makers' past low-activity voters as a mobilisation feature (no gain, +0.0 top 3); reveal-time projection from voter lists (dropped: voter lists are not held and cannot be captured).
