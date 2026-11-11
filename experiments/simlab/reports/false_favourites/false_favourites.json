@@ -1,0 +1,161 @@
+{
+ "design": "False favourites (orchestrator 01:00Z Nov 12): a second-stage correction of the launch model's ranking for big-brand\nsub-launches and similar picks the LM over-trusts, plus a calibration table for a website confidence flag.\nData: the PH agent's honest LM table (honest_preds.parquet: out-of-sample pre-launch prediction \"honest\", dailyRank), the\ncomment-forecast days (cf_rows, 238 days, the first month only trains -> 207 scored days, LM 63.0/69.3/75.0), warehouse\nlaunches (name, makers, poster = hunter, topics).\nFeatures, all known at 00:05: LM score, LM rank in the day, margin to the next LM pick, gap to the LM #3/#4 boundary,\nline-up size; name patterns (\"X by Brand\", \" for \", version number/\"2.0\"/\"v3\", \"AI\"); makers: number named, share of\n\"[REDACTED]\" placeholders, poster is a maker; hunter's past hunts and past top-3 rate (launch days < d), team's past\nlaunches and past top-3 rate; top topic (first listed topic, categorical, top 30 kept).\nModel: LightGBM classifier on each day's LM top-8, target = finished top 3, month-forward (months < m). The day's top 8 are\nre-ordered by the predicted P(top 3); positions 9+ keep LM order. Daily top 3/5/10 overlap with the final daily rank vs LM\nonly, paired by day, 4000 day-bootstrap draws. Calibration: hit rate of LM picks by LM rank and confidence bucket, and the\nmodel's P(top 3) deciles vs observed.",
+ "days": 207,
+ "LM only": {
+  "top3": [
+   63.0,
+   59.7,
+   66.0
+  ],
+  "top5": [
+   69.3,
+   66.8,
+   72.0
+  ],
+  "top10": [
+   75.0,
+   73.3,
+   76.6
+  ]
+ },
+ "LM + second stage": {
+  "top3": [
+   62.0,
+   58.9,
+   65.1
+  ],
+  "top5": [
+   67.3,
+   64.6,
+   69.9
+  ],
+  "top10": [
+   75.0,
+   73.3,
+   76.8
+  ]
+ },
+ "second stage minus LM (paired by day)": {
+  "top3": [
+   -1.0,
+   -3.1,
+   1.1
+  ],
+  "top5": [
+   -1.9,
+   -3.7,
+   -0.1
+  ],
+  "top10": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ "LM top-3 pick hit rate by LM rank": [
+  {
+   "lm_rank": 1.0,
+   "mean": 0.903,
+   "size": 207
+  },
+  {
+   "lm_rank": 2.0,
+   "mean": 0.57,
+   "size": 207
+  },
+  {
+   "lm_rank": 3.0,
+   "mean": 0.411,
+   "size": 207
+  }
+ ],
+ "LM top-3 pick hit rate by day margin tercile": [
+  {
+   "conf": "low #3/#4 margin",
+   "mean": 0.58,
+   "size": 207
+  },
+  {
+   "conf": "mid",
+   "mean": 0.609,
+   "size": 207
+  },
+  {
+   "conf": "high",
+   "mean": 0.696,
+   "size": 207
+  }
+ ],
+ "false-favourite flags among LM top-3 picks (hit rate, n)": {
+  "by_brand": [
+   0.481,
+   52
+  ],
+  "version": [
+   0.5,
+   74
+  ],
+  "for_x": [
+   0.765,
+   17
+  ],
+  "ai_name": [
+   0.681,
+   47
+  ]
+ },
+ "second-stage P(top3) quintiles vs observed (LM top 8)": [
+  {
+   "p_range": "(0.0457, 0.138]",
+   "mean_p": 0.104,
+   "observed": 0.13,
+   "n": 324
+  },
+  {
+   "p_range": "(0.138, 0.206]",
+   "mean_p": 0.169,
+   "observed": 0.198,
+   "n": 323
+  },
+  {
+   "p_range": "(0.206, 0.322]",
+   "mean_p": 0.257,
+   "observed": 0.266,
+   "n": 323
+  },
+  {
+   "p_range": "(0.322, 0.569]",
+   "mean_p": 0.426,
+   "observed": 0.378,
+   "n": 323
+  },
+  {
+   "p_range": "(0.569, 0.969]",
+   "mean_p": 0.791,
+   "observed": 0.824,
+   "n": 324
+  }
+ ],
+ "LM top-3 picks by second-stage P(top3)": [
+  {
+   "p_bucket": "(0.0, 0.3]",
+   "observed": 0.329,
+   "n": 73
+  },
+  {
+   "p_bucket": "(0.3, 0.5]",
+   "observed": 0.422,
+   "n": 173
+  },
+  {
+   "p_bucket": "(0.5, 0.7]",
+   "observed": 0.621,
+   "n": 161
+  },
+  {
+   "p_bucket": "(0.7, 1.0]",
+   "observed": 0.902,
+   "n": 214
+  }
+ ]
+}

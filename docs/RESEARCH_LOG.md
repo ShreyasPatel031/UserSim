@@ -882,3 +882,14 @@ The learned gain needs the nonlinear head, so the LightGBM model (200 trees, 15 
 - Non-null fields while votes are hidden: id, name, slug, tagline, topics, product, featuredAt/scheduledAt/createdAt, updatedAt, commentsCount, hideVotesCount, productState, thumbnail, promotedPillImageUrl (all rows), friendVoters (empty, anonymous), iterationDayParticipation, shortenedUrl.
 - Only ordering signals: commentsCount (per-capture Spearman with −final rank +0.44; already in the comments+LM model, 66.7/69.5/78.9) and updatedAt recency (+0.10, weak).
 Verdict: the homepage page state does not carry PH's pre-reveal rank (the API's post.dailyRank is not exposed to the anonymous homepage), and the order is randomised. The API-rank line stays forward-only.
+
+### 2026-11-12 E5 — false favourites: second-stage correction of the LM top 8, and a calibration table
+Script experiments/simlab/false_favourites.py; report reports/false_favourites/. Honest LM on the 207 scored comment-forecast days (reproduces LM only 63.0/69.3/75.0). LightGBM on each day's LM top 8, target finished top 3, month-forward; features known at 00:05 (LM score/rank/margins/#3–#4 gap, line-up size, "X by Brand" / "for X" / version / "AI" in name, named makers, placeholder share, poster-is-maker, hunter and team past launches and past top-3 rate, first topic).
+- Second stage minus LM, paired by day: top-3 −1.0 [−3.1, 1.1], top-5 −1.9 [−3.7, −0.1], top-10 0.0. No correction beats LM only.
+- Flags among LM top-3 picks: "X by Brand" hit 48% (n 52), version in name 50% (74), vs all LM top-3 picks 63%.
+Calibration (LM top-3 picks, 621):
+- by LM rank: #1 90.3%, #2 57.0%, #3 41.1% (207 each)
+- by the day's LM #3/#4 gap tercile: low 58.0%, mid 60.9%, high 69.6%
+- by second-stage P(top 3): <= 0.3 → 32.9% (73), 0.3–0.5 → 42.2% (173), 0.5–0.7 → 62.1% (161), > 0.7 → 90.2% (214)
+- P(top 3) quintiles over the LM top 8 are calibrated: mean predicted 0.10/0.17/0.26/0.43/0.79 vs observed 0.13/0.20/0.27/0.38/0.82.
+Verdict: no ranking gain; the per-pick probability is a usable, calibrated confidence flag for the website.
