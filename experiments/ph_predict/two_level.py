@@ -123,13 +123,35 @@ def _ps(P, I, E, work):
         def train_rows(M):                       # with the activity share w as a feature instead of a multiplier
             cut = PS.month_start(M, 0)
             D = choice.rows(day_from=cut, day_to=PS.month_end(M), all_people=True)
-            rng = np.random.default_rng(0); keep = set()
-            for d, g in D.groupby("day"):
-                keep |= {u + "|" + d for u in rng.permutation(list(g.person.unique()))[:600]}
-            D = D[D.g.isin(keep)].copy()
+            rng = np.random.default_rng(0)
+            if os.environ.get("TL_NEG") == "1":   # E5's scheme: every person-day; voting days keep all positives + 8 negatives
+                pv = D.groupby("g").y.transform("sum") > 0   # per positive (reweighted), non-voting days kept at 5% (weight 20)
+                u = rng.random(len(D))
+                vd = D[pv]; npos = vd.groupby("g").y.transform("sum"); nneg = vd.groupby("g").y.transform(lambda s: (s == 0).sum())
+                pk = np.minimum(1.0, 8 * npos / nneg.clip(lower=1))
+                kv = (vd.y == 1) | (u[pv.values] < pk)
+                V = vd[kv].assign(sw=np.where(vd.y[kv] == 1, 1.0, 1.0 / pk[kv]))
+                nd = D[~pv]; gk = nd.g.unique(); gk = set(rng.permutation(gk)[:max(1, int(0.05 * len(gk)))])
+                N = nd[nd.g.isin(gk)].assign(sw=20.0)
+                D = pd.concat([V, N]).copy()
+            else:
+                keep = set()
+                for d, g in D.groupby("day"):
+                    keep |= {u + "|" + d for u in rng.permutation(list(g.person.unique()))[:600]}
+                D = D[D.g.isin(keep)].copy(); D["sw"] = 1.0
             D = PS.featurize(D, PS.fit_cf(cut), cut); D, pc = PS.page_cols(D)
-            return D[["person", "day", "id", "y"] + PS.FEATS + pc].reset_index(drop=True)
+            return D[["person", "day", "id", "y", "sw"] + PS.FEATS + pc].reset_index(drop=True)
         PS.train_rows = train_rows
+        def train_month(m):   # same as popscore.train_month, with the sample weights
+            import lightgbm as lgb, pickle
+            prev = PS.month_start(m, 1); cf = PS.fit_cf(prev)
+            D = pd.concat([train_rows(M) for M in PS.train_months(m)], ignore_index=True)
+            mdl = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=1)
+            pc = [c for c in D.columns if c not in ["person", "day", "id", "y", "sw"] + PS.FEATS]
+            mdl.fit(D[PS.FEATS + pc], D.y, sample_weight=D.sw)
+            pickle.dump({"model": mdl, "cf": cf, "prior_cut": prev}, open(f"{PS.WORK}/model_{m}.pkl", "wb"))
+            return m, len(D), float(np.average(D.y, weights=D.sw))
+        PS.train_month = train_month
         base_u = PS.page_cols
         Ev = PS.load()["E"]; Ev = Ev[Ev.kind.isin(["upvote", "comment"])]
         act = {u: np.array(sorted(set(map(str, g.date.astype(str).str[:10]))), dtype="datetime64[D]") for u, g in Ev.groupby("person")}
@@ -309,9 +331,9 @@ def score():
                 rpp.append(gx.nlargest(m, "p").y.sum() / m)   # E5 Nov 11: rank by P (w is a population weight, EV only)
         per.append({"day": d, "auc": auc, "logloss": ll, "hit3": hit3, "voter_recall": float(np.mean(rec)) if rec else np.nan,
                     "voter_rprec": float(np.mean(rp)) if rp else np.nan, "voter_rprec_p": float(np.mean(rpp)) if rpp else np.nan})
-        ev = R.assign(e=R.w * R.p).groupby("id").e.sum()
+        ev = R.assign(e=R.w * R.p).groupby("id").e.sum(); orc = R.groupby("id").y.sum()   # oracle (E5): sum of the sample's real votes, w = 1
         for x, e in ev.items():
-            pop.append({"day": d, "id": x, "ev": e, "dep": dep.get((d, x)), "lm": lm.get((d, x)), "votes": votes.get(x), "rank": rnk.get(x), "wrank": wrk.get(x)})
+            pop.append({"day": d, "id": x, "ev": e, "orc": orc.get(x, 0) + 1e-6 * e, "dep": dep.get((d, x)), "lm": lm.get((d, x)), "votes": votes.get(x), "rank": rnk.get(x), "wrank": wrk.get(x)})
     if dump:
         pd.concat(dump)[["d", "person_id", "launch_id", "w", "y"]].to_parquet(os.environ["TL_DUMP"], index=False)
     Pm = pd.DataFrame(per); Q = pd.DataFrame(pop).dropna(subset=["rank"])
@@ -345,13 +367,18 @@ def score():
         for k in (3, 5, 10):
             a = np.array([topk(Q[Q.day == d], "ev", k) for d in days]); b = np.array([topk(Q[Q.day == d], "dep", k) for d in days])
             c = np.array([topk(Q[Q.day == d], "lm", k, asc=True) for d in days])
+            o = np.array([topk(Q[Q.day == d], "orc", k) for d in days])
             m1 = ~np.isnan(a) & ~np.isnan(b); m2 = ~np.isnan(a) & ~np.isnan(c)
             out[f"day top{k}"] = {"two_level": round(float(np.nanmean(a)), 1), "deployed_sim": round(float(np.nanmean(b[m1])), 1) if m1.any() else None,
                                   "delta_vs_deployed": boot((a - b)[m1], rng), "launch_model": round(float(np.nanmean(c[m2])), 1) if m2.any() else None,
-                                  "delta_vs_launch_model": boot((a - c)[m2], rng)}
+                                  "delta_vs_launch_model": boot((a - c)[m2], rng),
+                                  "oracle_sample_votes": round(float(np.nanmean(o)), 1), "oracle_on_lm_days": round(float(np.nanmean(o[m2])), 1) if m2.any() else None}
         sp = [spearmanr(Q[Q.day == d].ev, Q[Q.day == d].votes).correlation for d in days if (Q.day == d).sum() > 3]
         spd = [spearmanr(Q[(Q.day == d) & Q.dep.notna()].ev, Q[(Q.day == d) & Q.dep.notna()].dep).correlation for d in days if ((Q.day == d) & Q.dep.notna()).sum() > 3]
         out["spearman_ev_votes"] = boot(sp, rng)
+        out["spearman_oracle_votes"] = boot([spearmanr(Q[Q.day == d].orc, Q[Q.day == d].votes).correlation for d in days if (Q.day == d).sum() > 3], rng)
+        out["oracle_per_day"] = {d: [topk(Q[Q.day == d], "orc", k) for k in (3, 5, 10)] for d in days}
+        out["two_level_per_day"] = {d: [topk(Q[Q.day == d], "ev", k) for k in (3, 5, 10)] for d in days}
         out["spearman_deployed_votes"] = boot([spearmanr(Q[(Q.day == d) & Q.dep.notna()].dep, Q[(Q.day == d) & Q.dep.notna()].votes).correlation
                                                for d in days if ((Q.day == d) & Q.dep.notna()).sum() > 3], rng)
         return out
