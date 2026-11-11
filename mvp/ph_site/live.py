@@ -24,10 +24,10 @@ PT = ZoneInfo("America/Los_Angeles")
 # Forecast points in time order. "sees" is what the forecast could see when it was made.
 POINTS = [
     ("0005", "pre-launch", "Line-up, product pages, maker/hunter/team track record. No votes, no comments."),
-    ("P1", "pre-reveal 1", "00:05 inputs + launch-day comments + PH's own ordering so far. Vote counts still hidden."),
-    ("P2", "pre-reveal 2", "00:05 inputs + launch-day comments + PH's own ordering so far. Vote counts still hidden."),
-    ("P3", "pre-reveal 3", "00:05 inputs + launch-day comments + PH's own ordering so far. Vote counts still hidden."),
-    ("P4", "pre-reveal 4", "00:05 inputs + launch-day comments + PH's own ordering so far. Vote counts still hidden."),
+    ("P1", "pre-reveal 1", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
+    ("P2", "pre-reveal 2", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
+    ("P3", "pre-reveal 3", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
+    ("P4", "pre-reveal 4", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
     ("R0", "votes revealed", "First vote counts after PH reveals them (~04:00 PT) + the 00:05 forecast."),
     ("R1", "reveal + 1 h", "Vote counts and vote speed up to 1 h after the reveal + the 00:05 forecast."),
     ("R2", "reveal + 2 h", "Vote counts and vote speed up to 2 h after the reveal + the 00:05 forecast."),
@@ -201,20 +201,19 @@ def _forecast_file(day: str, key: str):
     if not j or not j.get("forecast"):
         return None
     f = j["forecast"]
-    if key.startswith("P"):
-        # Pre-reveal files carry three orderings; the blend is the headline, the others are kept for the record.
-        field = "pred_rank_blend" if any("pred_rank_blend" in r for r in f) else "pred_rank"
-    else:
-        field = "pred_rank"
+    # Pre-reveal files carry three orderings. The comment ridge leads (backtested on 207 days); PH's API rank and the
+    # blend rest on a few replay days, so they are kept as experimental alternatives (PH ops, Nov 11).
+    field = "pred_rank"
     ranks = {str(r["id"]): int(r[field]) for r in f if r.get(field) is not None}
     if not ranks:
         return None
     alt = {}
-    for af in ("pred_rank", "pred_rank_api"):
+    for af in ("pred_rank_blend", "pred_rank_api"):
         if af != field and any(af in r for r in f):
             alt[af] = {str(r["id"]): int(r[af]) for r in f if r.get(af) is not None}
+    method = "comment ridge" if key.startswith("P") else (j.get("method") or field)
     return {"ranks": ranks, "made_at": j.get("written_at", ""), "data_up_to": j.get("data_up_to", ""),
-            "method": j.get("method") or field, "rank_field": field, "alt": alt}
+            "method": method, "rank_field": field, "alt": alt}
 
 
 def forecasts(day: str) -> dict[str, dict]:
@@ -303,7 +302,36 @@ def day_view(day: str) -> dict:
                        "as_of": act["as_of"]}}
 
 
+SB_LABEL = {"0005": "00:05 PT launch model", "P1": "pre-reveal +1 h", "P2": "pre-reveal +2 h", "P3": "pre-reveal +3 h",
+            "P4": "pre-reveal +4 h", "R0": "votes revealed", "R1": "reveal + 1 h", "R2": "reveal + 2 h", "R4": "reveal + 4 h"}
+SB_METHOD = {"published": "", "comment_ridge": "comments", "api_rank": "PH order (experimental)", "blend": "blend (experimental)",
+             "raw_votes": "votes"}
+
+
 def track_record(max_days: int = 30) -> dict:
+    """Prefer the PH agent's daily scoreboard (results/web/scoreboard.json); fall back to scoring the files here."""
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600)
+    if sb and sb.get("summary"):
+        order = {k: i for i, k in enumerate(POINT_KEYS)}
+        src_rank = {"live": 0, "late": 1, "replay": 2}
+        rows = []
+        for r in sb["summary"]:
+            if r.get("method") in ("makerfix_shadow", "unfixed_replay"):
+                continue
+            m = SB_METHOD.get(r.get("method"), r.get("method", ""))
+            rows.append({"key": r["point"], "label": SB_LABEL.get(r["point"], r["point"]) + (f" · {m}" if m else ""),
+                         "source": r.get("source"), "n_days": r.get("days", 0),
+                         "days_range": [r.get("first_day"), r.get("last_day")],
+                         "top3": r.get("mean_top3"), "top5": r.get("mean_top5"), "top10": r.get("mean_top10"),
+                         "experimental": "experimental" in m})
+        rows.sort(key=lambda r: (src_rank.get(r["source"], 9), order.get(r["key"], 99), r["experimental"], r["label"]))
+        return {"rows": rows, "computed_at": sb.get("built_at"), "source": "results/web/scoreboard.json",
+                "how": (sb.get("definition") or "") + ". Live = written in time; late = honest data cut but written "
+                       "after the fact; replay = re-run afterwards on data up to the point time."}
+    return _track_record_files(max_days)
+
+
+def _track_record_files(max_days: int = 30) -> dict:
     """Top 3/5/10 hit rate per forecast point over every day that has a final result. Computed from files only."""
     def go():
         per = {k: {"days": [], "h3": 0, "h5": 0, "h10": 0} for k in POINT_KEYS}

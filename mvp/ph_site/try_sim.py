@@ -297,45 +297,63 @@ async def step_reactions(tok: str) -> dict:
 
 # ---------- step 4: launch (no LLM) ----------
 
+def _band_score(lb: dict, name: str, tagline: str, description: str, topics: list[str]) -> float:
+    """PH ops' product-only ridge (results/web/launch_band.json `recipe`): TF-IDF + topic flags + lengths -> ln(1+votes)."""
+    import re as _re
+    text = (f"{name}. {tagline}. {description} " + " ".join(topics)).lower()
+    toks = _re.findall(r"\b[a-z0-9]+\b", text)
+    counts: dict[str, int] = {}
+    for t in toks + [a + " " + b for a, b in zip(toks, toks[1:])]:
+        if t in lb["vocab"]:
+            counts[t] = counts.get(t, 0) + 1
+    x = {t: (1 + math.log(c)) * lb["vocab"][t][0] for t, c in counts.items()}
+    norm = math.sqrt(sum(v * v for v in x.values())) or 1.0
+    score = lb["intercept"] + sum(lb["vocab"][t][1] * v / norm for t, v in x.items())
+    dense = [1.0 if t in topics else 0.0 for t in lb["topics_order"]]
+    dense += [math.log1p(len(description)), math.log1p(len(tagline)), float(len(topics))]
+    for v, m, sd, c in zip(dense, lb["dense_mean"], lb["dense_sd"], lb["dense_coef"]):
+        score += c * (v - m) / (sd or 1.0)
+    return score
+
+
 def step_launch(tok: str) -> dict:
     a = verify(tok)["a"]
-    meta = index()["meta"]
-    tr = meta["topic_rank"]
-    ws, pct, votes = [], [], []
-    for i, t in enumerate(a.get("topics") or []):
-        st = tr.get(t)
-        if st:
-            w = 1.0 / (1 + i)
-            ws.append(w); pct.append(np.array(st["pct"])); votes.append(np.array(st["votes"]))
-    if not ws:
-        st = tr["_all"]; ws, pct, votes = [1.0], [np.array(st["pct"])], [np.array(st["votes"])]
-    w = np.array(ws) / sum(ws)
-    P = (w[:, None] * np.stack(pct)).sum(0)      # quantiles 10/25/50/75/90 of rank as share of line-up
-    V = (w[:, None] * np.stack(votes)).sum(0)
-    L = meta["lineup_recent60"]["median"]
-    r = lambda x: max(1, int(math.ceil(x * L)))
-    return {"lineup_typical": int(L),
-            "rank_band": {"likely": [r(P[1]), r(P[3])], "wide": [r(P[0]), r(P[4])], "median": r(P[2])},
-            "votes_band": {"likely": [int(V[1]), int(V[3])], "wide": [int(V[0]), int(V[4])], "median": int(V[2])},
+    lb = gcs.read_json("results/web/launch_band.json", ttl=3600)
+    if not lb:
+        raise RuntimeError("launch band missing")
+    desc = (a.get("summary") or "") + " " + (a.get("page_excerpt") or "")[:600]
+    score = _band_score(lb, a.get("name") or "", a.get("tagline") or "", desc, a.get("topics") or [])
+    pct = sum(1 for c in lb["score_percentile_cuts"] if c < score)
+    b = lb["bands"][min(9, pct // 10)]
+    rk, vt = b["daily_rank_p10_p50_p90"], b["votes_p10_p50_p90"]
+    acc = lb["heldout_accuracy"]
+    return {"percentile": pct, "decile": b["decile"],
+            "rank_band": {"likely": [int(rk[0]), int(rk[2])], "median": int(rk[1])},
+            "votes_band": {"likely": [int(vt[0]), int(vt[2])], "median": int(vt[1])},
+            "share_top3": b["share_top3"], "share_top10": b["share_top10"], "similar_launches": b["n"],
+            "accuracy": {"days": acc["days"], "top3": acc["top3"], "top5": acc["top5"], "top10": acc["top10"],
+                         "spearman": acc["within_day_spearman"],
+                         "full_model": {k: acc["reference_full_launch_model_honest"][k] for k in ("top3", "top5", "top10")}},
             "assumed": {"hunter": "population median (unknown)", "maker history": "population median (unknown)",
-                        "team ties / audience": "population median (unknown)", "launch day": "a typical day"},
-            "method": (f"Where featured launches in the same PH topics finished on {meta['days']} launch days "
-                       f"({meta['day_range'][0]} to {meta['day_range'][1]}), with everything we can't know about your "
-                       "launch (hunter, maker history, team ties, audience) at the population median. On a typical "
-                       f"day of {int(L)} featured launches."),
-            "honesty": _honesty()}
+                        "team ties / audience": "population median (unknown)", "launch day": "a typical day's line-up"},
+            "method": (f"Percentile band from the page alone: a text model trained on {lb['trained_on']['launches']:,} "
+                       f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
+                       f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
+                       "(10th to 90th percentile)."),
+            "honesty": _honesty(acc)}
 
 
-def _honesty() -> str:
+def _honesty(acc: dict) -> str:
     rec = ""
     try:
         from mvp.ph_site import live
-        row = next(r for r in live.track_record()["rows"] if r["key"] == "0005")
+        row = next(r for r in live.track_record()["rows"] if r["key"] == "0005" and r.get("source", "live") == "live")
         if row["n_days"]:
-            rec = (f" Scored live so far ({row['n_days']} days), it puts {row['top3']}% of the real top 3 and "
-                   f"{row['top10']}% of the real top 10 in its own top 3 / top 10.")
+            rec = (f" Our deployed 00:05 PT launch model, which also knows the hunter, makers and team history, "
+                   f"scores {row['top3']:.0f} / {row['top5']:.0f} / {row['top10']:.0f} live over {row['n_days']} days.")
     except Exception:  # noqa: BLE001
         pass
-    return ("Pre-launch rank prediction is weak. Our deployed 00:05 PT launch model knows the hunter, makers and team "
-            "history and still misses often." + rec + " From a page alone, the band below is close to the base rate: "
-            "who hunts it and who shows up on the day decide most of the result.")
+    return (f"Pre-launch rank prediction is weak, and weaker still from a page alone. Tested month-forward on "
+            f"{acc['days']} days, this page-only model put {acc['top3']:.0f}% / {acc['top5']:.0f}% / "
+            f"{acc['top10']:.0f}% of the real top 3 / 5 / 10 in its own top 3 / 5 / 10." + rec +
+            " Who hunts it and who shows up on the day decide most of the result.")

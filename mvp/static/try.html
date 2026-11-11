@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=3">
+<link rel="stylesheet" href="/static/ph_site.css?v=4">
 </head>
 <body>
 <div class="wrap">
@@ -118,15 +118,18 @@ function renderPeople(p){
   $("#pp-method").textContent = p.method + " " + p.note;
 }
 function renderLaunch(l){
-  const N = l.lineup_typical, x = (r)=> (Math.min(r, N)-0.5)/N*100;
+  const N = 40, x = (r)=> (Math.min(r, N)-0.5)/N*100, A = l.accuracy;
   $("#ln").innerHTML = `<div class="grid3">
-     <div class="card"><p class="label">Likely daily rank</p><p class="big">#${l.rank_band.likely[0]}–#${l.rank_band.likely[1]}</p><p class="small muted">wide range #${l.rank_band.wide[0]}–#${l.rank_band.wide[1]} of ~${N}</p></div>
-     <div class="card"><p class="label">Likely upvotes</p><p class="big">${l.votes_band.likely[0]}–${l.votes_band.likely[1]}</p><p class="small muted">wide range ${l.votes_band.wide[0]}–${l.votes_band.wide[1]}</p></div>
+     <div class="card"><p class="label">Likely daily rank</p><p class="big">#${l.rank_band.likely[0]}–#${l.rank_band.likely[1]}</p><p class="small muted">middle #${l.rank_band.median}; ${(l.share_top10*100).toFixed(0)}% of similar pages made the top 10, ${(l.share_top3*100).toFixed(0)}% the top 3</p></div>
+     <div class="card"><p class="label">Likely upvotes</p><p class="big">${l.votes_band.likely[0]}–${l.votes_band.likely[1]}</p><p class="small muted">middle ${l.votes_band.median}</p></div>
      <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>
-   <div class="band" aria-label="Rank band on a typical day"><div class="w" style="left:${x(l.rank_band.wide[0])}%;right:${100-x(l.rank_band.wide[1])}%"></div>
-     <div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
-   <div class="scale"><span>#1</span><span>daily rank on a typical day of ${N} featured launches</span><span>#${N}</span></div>
-   <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p><p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
+   <div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
+   <div class="scale"><span>#1</span><span>page scores above ${l.percentile}% of past launches · band = 10th to 90th percentile of where similar pages finished</span><span>#${N}+</span></div>
+   <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
+   <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
+     <tr><td>This page-only model (${A.days} days)</td><td>${A.top3.toFixed(0)}%</td><td>${A.top5.toFixed(0)}%</td><td>${A.top10.toFixed(0)}%</td></tr>
+     <tr><td class="muted">Full launch model with team history (offline)</td><td class="muted">${A.full_model.top3.toFixed(0)}%</td><td class="muted">${A.full_model.top5.toFixed(0)}%</td><td class="muted">${A.full_model.top10.toFixed(0)}%</td></tr></tbody></table>
+   <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
 }
 
 $("#f").onsubmit = async (e) => {
