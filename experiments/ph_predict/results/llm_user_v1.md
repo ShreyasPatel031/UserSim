@@ -21,3 +21,5 @@ Reading:
 - That shared term is not readable from the listing text: Gemini, Flash or Pro, gets 0.13–0.16.
 - Taste from history is real but small (embedding 0.37 vs random 0.24).
 - So a PH upvote is mostly exposure and mobilisation, not a clean "this person wants this product" signal.
+
+**Void (Nov 11 05:05Z):** the 'untied picks' column used the launches `makers` field, which lists the redaction placeholder `[REDACTED]` as a maker on 6,712 of 6,965 launches. The tied/untied split is unreliable until rerun with the placeholder filtered. The 'all' columns are unaffected.
