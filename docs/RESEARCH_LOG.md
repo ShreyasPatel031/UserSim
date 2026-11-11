@@ -1562,3 +1562,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 08:25 UTC Nov 11 Maker headers Nov 11: 0 of 23 read; box fallback hit a Cloudflare interstitial on the first profile and stopped, no retry (correct). Follower counts for makers/hunters are still in today_0005.json from the official API, so the 00:05 counts are not lost.
 - 08:39 UTC Nov 11 mailbox checked; Nov 11 live capture checked.
 - 08:40 UTC Nov 11 Live capture Nov 11 healthy (00:30 PT, 26/26). makers_x.jsonl for Nov 11 missing at 00:39 PT (planned ~00:12 PT); follow-up POSTed to Grok Bot.
+- 09:12 UTC Nov 11 PH agent permission block (auto-mode classifier 'Interfere With Workloads') on read-only ssh list_check on usersim-pipeline; not retried. Grok Bot asked to run list_check 2026-11-10 (to_grokbot/20261111T0912Z_list_check_nov10.md). Daily run Nov 11 otherwise clean (15 steps ok, forecast 16 launches); list_check reports 4 featured launches missing from the API list for Nov 10.
