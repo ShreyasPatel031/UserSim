@@ -115,6 +115,86 @@ def build(d0, d1):
                           "pos": int(R.y.sum()), "dormant_30": int((R.act_30 == 0).sum()), "fol_rows": int((R.fol_mk + R.fol_hu > 0).sum())}), flush=True)
 
 
+SELECTED = {d.strftime("%Y-%m-%d") for d in pd.date_range("2026-10-29", "2026-11-04")}
+
+
+def fit_score():
+    """Honest monthly fits of P_arr (Sep candidate rows -> Oct days, Oct -> Nov), label-filtered rows only. EV per launch
+    = arrivals EV (+/- dormant-30 rows, E5 fix 1) + browsers EV (it9b product-only rows, persons x launches NOT in C(L)).
+    No herding step in the ranking (E5 fix 2: monotone, cannot change the order). Scored on the it8 days vs it8 full
+    (cp_choice2) and the deployed sim, plus the share of complete-people votes that come from C(L)."""
+    import lightgbm as lgb
+    from scipy.stats import spearmanr
+    from pipeline import warehouse as W
+    L = W.query("SELECT CAST(id AS VARCHAR) AS id, daily_rank, votes FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+    rk = dict(zip(L.id, L.daily_rank)); vt = dict(zip(L.id, L.votes))
+    dep = {}
+    for f in glob.glob(f"{WORK}/scores_retrain/wh_*.parquet"):
+        S = pd.read_parquet(f); dep.update({(r.day, str(r.id)): r.psn_ev for r in S.itertuples()})
+    files = {os.path.basename(f)[:10]: f for f in glob.glob(f"{OUT}/20*.parquet")}
+    test = sorted(d for d in files if "2026-10-20" <= d <= "2026-11-08")
+    import two_level as TL
+    T_ok, _ = TL._label_maps()
+    cols = PF + TF; rng = np.random.default_rng(0); res = {"variants": {}}
+    for variant in ("no_dormant", "with_dormant"):
+        models = {}
+        for mon in sorted({d[:7] for d in test}):
+            prev = (pd.Timestamp(mon + "-01") - pd.Timedelta(days=1)).strftime("%Y-%m")
+            T = pd.concat([pd.read_parquet(files[d]) for d in sorted(files) if d[:7] == prev])
+            T = T[T.lab_ok]
+            if variant == "no_dormant":
+                T = T[T.act_30 > 0]
+            else:
+                T = T[(T.act_30 > 0) | ~T.day.isin(SELECTED)]
+            models[mon] = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=4).fit(T[cols], T.y)
+        per = []
+        for d in test:
+            A = pd.read_parquet(files[d])
+            if variant == "no_dormant" or d in SELECTED:
+                A = A[A.act_30 > 0]
+            A["p"] = models[d[:7]].predict_proba(A[cols])[:, 1]
+            arr = A.groupby("id").p.sum()
+            Bp = f"{WORK}/rows_tl_cp_attr_noctx/{d}.parquet"
+            Bw = pd.read_parquet(Bp, columns=["person", "id", "w", "p", "y"]); Bw["id"] = Bw.id.astype(str)
+            cand = set(zip(A.person, A.id))
+            Bw = Bw[[(p, x) not in cand for p, x in zip(Bw.person, Bw.id)]]
+            brw = Bw.assign(e=Bw.w * Bw.p).groupby("id").e.sum()
+            ids = sorted(set(arr.index) | set(brw.index))
+            G = pd.DataFrame({"id": ids}); G["arr"] = G.id.map(arr).fillna(0); G["brw"] = G.id.map(brw).fillna(0)
+            G["ev"] = G.arr + G.brw; G["rank"] = G.id.map(rk); G["votes"] = G.id.map(vt); G["dep"] = [dep.get((d, x)) for x in G.id]
+            G = G.dropna(subset=["rank"])
+            row = {"day": d, "selected": d in SELECTED}
+            for k in (3, 5, 10):
+                top = set(G[G["rank"] <= k].id)
+                for m in ("ev", "arr", "brw", "dep"):
+                    g = G.dropna(subset=[m]) if m == "dep" else G
+                    row[f"{m}_top{k}"] = len(set(g.nlargest(k, m).id) & top) / k * 100 if len(top) >= k and len(g) >= k else np.nan
+            for m in ("ev", "arr", "brw"):
+                row[f"sp_{m}"] = spearmanr(G[m], G.votes).correlation
+            lab = A[A.lab_ok]; okb = T_ok(Bw.person, d)
+            cv, bv = float(lab.y.sum()), float(Bw[okb].y.sum())
+            row["cand_vote_share"] = cv / max(1.0, cv + bv)
+            per.append(row)
+        P = pd.DataFrame(per)
+        def b(x):
+            x = np.asarray(x, float); x = x[~np.isnan(x)]
+            bs = [x[rng.integers(0, len(x), len(x))].mean() for _ in range(5000)]
+            return [round(float(x.mean()), 1 if abs(x.mean()) > 1.5 else 3), [round(float(v), 1 if abs(x.mean()) > 1.5 else 3) for v in np.percentile(bs, [2.5, 97.5])], int(len(x))]
+        r = {}
+        for sub, m in (("all", P.day.notna()), ("clean", ~P.selected), ("oct", P.day < "2026-11-01"), ("nov", P.day >= "2026-11-01")):
+            Q = P[m]
+            r[sub] = {f"top{k}": {x: b(Q[f"{x}_top{k}"]) for x in ("ev", "arr", "brw", "dep")} for k in (3, 5, 10)}
+            r[sub]["spearman"] = {x: b(Q[f"sp_{x}"]) for x in ("ev", "arr", "brw")}
+            r[sub]["candidate_share_of_sample_votes"] = b(Q.cand_vote_share)
+        r["per_day"] = P.round(3).to_dict("records")
+        res["variants"][variant] = r
+    json.dump(res, open(os.path.join(HERE, "results", "arrivals.json"), "w"), indent=1, default=float)
+    for v, r in res["variants"].items():
+        print(v, json.dumps({k: {kk: vv["ev"][0] if kk != "spearman" else vv["ev"][0] for kk, vv in r[k].items()} for k in ("all", "clean")}))
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "build":
         build(sys.argv[2], sys.argv[3])
+    elif sys.argv[1] == "fit":
+        fit_score()
