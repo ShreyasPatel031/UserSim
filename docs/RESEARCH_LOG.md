@@ -831,3 +831,15 @@ Raw votes at capture, daily top-3 / top-5 / top-10 / Spearman vs final daily ran
 - 0–4h pre-reveal (19): LM only 54.4 / 65.3 / 75.8; learned (comments at capture + LM + hour) 66.7 [56, 75] / 69.5 / 78.9, learned − LM +12.3 [5.3, 19.3] top-3.
 Learned projection (ridge month-forward, Aug–Oct: votes at t, hour, velocity, share/rank, comments at t, LM) vs raw votes at the same capture: no gain after the reveal; worse from 8h on (8–12h −5.7 [−10.3, −1.1] top-3; 12–24h −7.2 [−11.1, −3.3]).
 Reading: the honest reveal-time (+0–1h after 04:00 PT) number is ~85/93/92 on 9 days, wide CIs; by 08:00–12:00 PT it is ~93/95/93 on 29 days. The 6-day "94/90/95 four hours later" is consistent with these. Raw votes at t are the best estimator once visible; before the reveal, early comments + LM give +12 top-3 over LM alone.
+
+### 2026-11-11 E5 — population-level uses simulation (item B): does summed taste rank products by real adoption?
+Script experiments/simlab/uses_population.py; report reports/uses_population/. Stacks/collections are undated snapshots, so the split is person-disjoint, not forward in time: 5,096 uses-harness people split into halves A/B (5 seeds); target = number of B people with the product in stack/review/collection. Universe 38,978 products (text, and >= 1 A use or >= 2 upvotes). B's uses enter only through leave-one-out taste profiles. Taste = S2 (bge-base top-5 mean), person "wants it" = product in the person's top-200; summed over B people. Combiners fitted inside A only. Means over 5 seeds (seed sd <= 0.9); product-bootstrap 95% CIs on seed 0.
+All products: Spearman / top-decile precision (random = 10):
+- POP_A (uses popularity, other half): 20.1 / 36.6 [35.0, 38.4]
+- TASTE (product-only): 15.2 / 19.4 [18.7, 21.1]
+- UPV (PH upvote popularity): 6.5 / 33.3
+- COMB POP_A + TASTE: 21.0 / 39.2 [37.8, 40.8]; − POP_A: Spearman +0.9 [0.3, 1.4], top-decile +2.6 [1.7, 3.8]
+- COMB all: 13.8 / 42.5
+Cold products (no A uses; 74% of the universe; 21% of them gain >= 1 B adopter) - the new-product case:
+- POP_A ties (top-decile 9.8 = random); TASTE 9.3 / 15.5 [14.6, 17.1] (vs POP_A +5.7 [4.1, 7.5]); UPV −16.9 / 16.6; TASTE + UPV 18.9.
+Reading: summed taste carries real but weak population signal - about 1.5x random at picking which new products the held-out half adopts; popularity dominates for known products and taste adds +2.6 points on top. For the website, "who will use it" should be worded as "people with similar tools" with low confidence.

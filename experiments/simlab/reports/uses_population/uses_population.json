@@ -1,0 +1,767 @@
+{
+ "design": "User simulation at population level on the \"uses or wants\" channel (orchestrator 21:50Z Nov 11, item B).\nQuestion: summed over people, does the per-person taste scorer rank PRODUCTS by real adoption (stack / review / collection\nadds)? Stack and collection lists are undated snapshots, so a forward-in-time split is not possible for them; the test is\nperson-disjoint instead: people (the 5,096 uses-harness people) are split at random into halves A and B (5 seeds); the target\nis adoption_B(P) = number of B people with P in their stack/review/collection lists. Nothing about B's uses enters any\npredictor except through the leave-one-out taste profiles (P itself is removed from every B person's profile, as in the\nperson-level harness).\nUniverse: products with text and (>= 1 use among A people or >= 2 upvotes among all people) - defined without B's uses.\nPredictors\n  POP_A       adoption among A people (popularity of uses in the other half)                  [popularity baseline]\n  TASTE       sum over B people of 1[P in the person's top-200 products by taste], taste = mean of the top-5 bge-base cosine\n              similarities between P and the person's other uses items (S2 scorer of uses_v2)   [product-only: text + profiles]\n  TASTE_UP    the same with the person's upvoted products as profile (cross-channel)\n  UPV         upvotes of P among all people (PH context)\n  COMB        ridge on log1p(POP_A, TASTE, TASTE_UP, UPV) (target log1p adoption,\n              features from B), then applied - never sees adoption_B. (Fitted inside A: A1 adoption + A2 taste -> A2\n              adoption, counts doubled to B's scale.)\nMetrics over the universe: Spearman with adoption_B; top-decile precision (share of the predicted top 10% that is in the\nactual top 10% of adoption_B, ties broken at random); also restricted to products with POP_A = 0 (cold for uses: popularity\ncan only tie). CIs: product bootstrap on seed 0 (1000 draws); seed spread reported.",
+ "people": 5096,
+ "universe": 38978,
+ "seeds": {
+  "0": {
+   "POP_A": {
+    "all": [
+     20.201424092402863,
+     36.232999743392355
+    ],
+    "cold (POP_A=0)": [
+     NaN,
+     9.94818652849741
+    ]
+   },
+   "TASTE (product-only)": {
+    "all": [
+     15.253882730029467,
+     19.835771105978957
+    ],
+    "cold (POP_A=0)": [
+     9.306505327889148,
+     15.785837651122625
+    ]
+   },
+   "TASTE_UP": {
+    "all": [
+     7.610582531585573,
+     14.139081344624069
+    ],
+    "cold (POP_A=0)": [
+     2.6391280183073302,
+     10.569948186528498
+    ]
+   },
+   "UPV (PH context)": {
+    "all": [
+     6.268876465081105,
+     33.17936874518861
+    ],
+    "cold (POP_A=0)": [
+     -17.136074601720324,
+     15.233160621761657
+    ]
+   },
+   "COMB pop+taste": {
+    "all": [
+     21.073076811230333,
+     39.107005388760584
+    ],
+    "cold (POP_A=0)": [
+     9.306505327889148,
+     16.02763385146805
+    ]
+   },
+   "COMB taste+upv (no uses popularity)": {
+    "all": [
+     13.995389055301722,
+     35.514498332050294
+    ],
+    "cold (POP_A=0)": [
+     -7.6690799442345154,
+     18.307426597582037
+    ]
+   },
+   "COMB all": {
+    "all": [
+     14.06312735507417,
+     42.10931485758276
+    ],
+    "cold (POP_A=0)": [
+     -7.193150490184374,
+     18.031088082901555
+    ]
+   },
+   "share_universe_cold": 0.742803632818513,
+   "share_cold_with_B_adoption": 0.21365661589472593
+  },
+  "1": {
+   "POP_A": {
+    "all": [
+     19.968599653557952,
+     36.18167821401077
+    ],
+    "cold (POP_A=0)": [
+     NaN,
+     9.751108080463688
+    ]
+   },
+   "TASTE (product-only)": {
+    "all": [
+     15.106069957535947,
+     19.399538106235568
+    ],
+    "cold (POP_A=0)": [
+     9.534375928311832,
+     16.433685646096148
+    ]
+   },
+   "TASTE_UP": {
+    "all": [
+     7.53616086183427,
+     13.471901462663588
+    ],
+    "cold (POP_A=0)": [
+     2.6252674705217656,
+     11.217183770883054
+    ]
+   },
+   "UPV (PH context)": {
+    "all": [
+     5.538541540450118,
+     32.948421862971514
+    ],
+    "cold (POP_A=0)": [
+     -18.087118018097332,
+     16.29730651210365
+    ]
+   },
+   "COMB pop+taste": {
+    "all": [
+     20.87391538132781,
+     39.568899153194764
+    ],
+    "cold (POP_A=0)": [
+     9.534375928311832,
+     15.683600409137401
+    ]
+   },
+   "COMB taste+upv (no uses popularity)": {
+    "all": [
+     13.880882733844135,
+     35.617141390813444
+    ],
+    "cold (POP_A=0)": [
+     -7.1827143013109165,
+     19.058983975451756
+    ]
+   },
+   "COMB all": {
+    "all": [
+     13.996114958250269,
+     41.904028740056454
+    ],
+    "cold (POP_A=0)": [
+     -6.484625105374049,
+     18.411183088987386
+    ]
+   },
+   "share_universe_cold": 0.7526040330442814,
+   "share_cold_with_B_adoption": 0.22389636952445885
+  },
+  "2": {
+   "POP_A": {
+    "all": [
+     20.090208173295075,
+     36.771875801898894
+    ],
+    "cold (POP_A=0)": [
+     NaN,
+     8.976109215017065
+    ]
+   },
+   "TASTE (product-only)": {
+    "all": [
+     15.89503462432351,
+     19.219912753400052
+    ],
+    "cold (POP_A=0)": [
+     9.957111838780474,
+     15.358361774744028
+    ]
+   },
+   "TASTE_UP": {
+    "all": [
+     8.484629982815783,
+     14.03643828586092
+    ],
+    "cold (POP_A=0)": [
+     3.4459948257122006,
+     10.784982935153584
+    ]
+   },
+   "UPV (PH context)": {
+    "all": [
+     7.387345233393675,
+     33.84654862714909
+    ],
+    "cold (POP_A=0)": [
+     -15.517829554315055,
+     17.20136518771331
+    ]
+   },
+   "COMB pop+taste": {
+    "all": [
+     21.270811912911324,
+     38.97870156530664
+    ],
+    "cold (POP_A=0)": [
+     9.957111838780474,
+     15.187713310580206
+    ]
+   },
+   "COMB taste+upv (no uses popularity)": {
+    "all": [
+     14.295535052515099,
+     37.10546574287914
+    ],
+    "cold (POP_A=0)": [
+     -7.203566395258135,
+     19.965870307167236
+    ]
+   },
+   "COMB all": {
+    "all": [
+     13.564618678960366,
+     43.52065691557608
+    ],
+    "cold (POP_A=0)": [
+     -8.249654658207213,
+     20.44368600682594
+    ]
+   },
+   "share_universe_cold": 0.7519369900969778,
+   "share_cold_with_B_adoption": 0.2232078883619366
+  },
+  "3": {
+   "POP_A": {
+    "all": [
+     20.4774618418404,
+     36.438285860918654
+    ],
+    "cold (POP_A=0)": [
+     NaN,
+     9.976084728390845
+    ]
+   },
+   "TASTE (product-only)": {
+    "all": [
+     15.007043714271637,
+     19.57916345907108
+    ],
+    "cold (POP_A=0)": [
+     9.05759790673859,
+     15.408267851042023
+    ]
+   },
+   "TASTE_UP": {
+    "all": [
+     7.625097091630978,
+     13.677187580189889
+    ],
+    "cold (POP_A=0)": [
+     2.6584075641111378,
+     10.693542876665528
+    ]
+   },
+   "UPV (PH context)": {
+    "all": [
+     6.326173755303616,
+     32.768796510136
+    ],
+    "cold (POP_A=0)": [
+     -17.237456726471606,
+     16.979842842500855
+    ]
+   },
+   "COMB pop+taste": {
+    "all": [
+     21.06165903777165,
+     38.876058506543494
+    ],
+    "cold (POP_A=0)": [
+     9.05759790673859,
+     16.569866757772463
+    ]
+   },
+   "COMB taste+upv (no uses popularity)": {
+    "all": [
+     13.790444170683347,
+     35.745445214267384
+    ],
+    "cold (POP_A=0)": [
+     -8.111721245222569,
+     18.790570550051246
+    ]
+   },
+   "COMB all": {
+    "all": [
+     13.412328988244498,
+     42.23761868103669
+    ],
+    "cold (POP_A=0)": [
+     -8.736696961822581,
+     19.063887939870174
+    ]
+   },
+   "share_universe_cold": 0.7510903586638616,
+   "share_cold_with_B_adoption": 0.22233228583139772
+  },
+  "4": {
+   "POP_A": {
+    "all": [
+     20.001253325873876,
+     37.23376956633307
+    ],
+    "cold (POP_A=0)": [
+     NaN,
+     10.099622122981792
+    ]
+   },
+   "TASTE (product-only)": {
+    "all": [
+     14.807937759527832,
+     18.809340518347447
+    ],
+    "cold (POP_A=0)": [
+     8.824456209649185,
+     14.599793885262796
+    ]
+   },
+   "TASTE_UP": {
+    "all": [
+     8.00621074000437,
+     13.959455991788555
+    ],
+    "cold (POP_A=0)": [
+     2.9783072390035983,
+     10.58055650979045
+    ]
+   },
+   "UPV (PH context)": {
+    "all": [
+     7.141558949914516,
+     33.8208878624583
+    ],
+    "cold (POP_A=0)": [
+     -16.47911833501973,
+     17.313637925111646
+    ]
+   },
+   "COMB pop+taste": {
+    "all": [
+     20.618132003317942,
+     39.2866307415961
+    ],
+    "cold (POP_A=0)": [
+     8.824456209649185,
+     15.664720027481966
+    ]
+   },
+   "COMB taste+upv (no uses popularity)": {
+    "all": [
+     14.642230399104827,
+     36.15601744931999
+    ],
+    "cold (POP_A=0)": [
+     -6.880831924989349,
+     18.48162143593267
+    ]
+   },
+   "COMB all": {
+    "all": [
+     14.101789181672522,
+     42.6481909160893
+    ],
+    "cold (POP_A=0)": [
+     -6.769339994562773,
+     18.584678804534523
+    ]
+   },
+   "share_universe_cold": 0.7469854789881472,
+   "share_cold_with_B_adoption": 0.21805879928561617
+  }
+ },
+ "seed0_ci": {
+  "POP_A": {
+   "all": [
+    [
+     19.1,
+     21.4
+    ],
+    [
+     35.0,
+     38.4
+    ]
+   ],
+   "cold": [
+    [
+     NaN,
+     NaN
+    ],
+    [
+     8.9,
+     11.1
+    ]
+   ]
+  },
+  "TASTE (product-only)": {
+   "all": [
+    [
+     14.4,
+     16.2
+    ],
+    [
+     18.7,
+     21.1
+    ]
+   ],
+   "cold": [
+    [
+     8.2,
+     10.3
+    ],
+    [
+     14.6,
+     17.1
+    ]
+   ]
+  },
+  "TASTE_UP": {
+   "all": [
+    [
+     6.7,
+     8.8
+    ],
+    [
+     12.4,
+     14.3
+    ]
+   ],
+   "cold": [
+    [
+     1.6,
+     3.6
+    ],
+    [
+     9.4,
+     11.6
+    ]
+   ]
+  },
+  "UPV (PH context)": {
+   "all": [
+    [
+     5.0,
+     7.5
+    ],
+    [
+     31.8,
+     34.6
+    ]
+   ],
+   "cold": [
+    [
+     -18.6,
+     -15.9
+    ],
+    [
+     15.1,
+     17.7
+    ]
+   ]
+  },
+  "COMB pop+taste": {
+   "all": [
+    [
+     20.1,
+     22.1
+    ],
+    [
+     37.8,
+     40.8
+    ]
+   ],
+   "cold": [
+    [
+     8.2,
+     10.3
+    ],
+    [
+     14.8,
+     17.1
+    ]
+   ]
+  },
+  "COMB taste+upv (no uses popularity)": {
+   "all": [
+    [
+     12.9,
+     15.1
+    ],
+    [
+     34.3,
+     36.9
+    ]
+   ],
+   "cold": [
+    [
+     -9.1,
+     -6.4
+    ],
+    [
+     17.3,
+     19.8
+    ]
+   ]
+  },
+  "COMB all": {
+   "all": [
+    [
+     12.9,
+     15.2
+    ],
+    [
+     41.0,
+     44.0
+    ]
+   ],
+   "cold": [
+    [
+     -8.6,
+     -5.9
+    ],
+    [
+     17.4,
+     19.7
+    ]
+   ]
+  }
+ },
+ "seed0_diff_vs_POP_A_ci": {
+  "TASTE (product-only)": {
+   "all": [
+    [
+     -6.2,
+     -3.5
+    ],
+    [
+     -18.6,
+     -14.9
+    ]
+   ],
+   "cold": [
+    [
+     NaN,
+     NaN
+    ],
+    [
+     4.1,
+     7.5
+    ]
+   ]
+  },
+  "TASTE_UP": {
+   "all": [
+    [
+     -13.9,
+     -11.2
+    ],
+    [
+     -25.2,
+     -21.7
+    ]
+   ],
+   "cold": [
+    [
+     NaN,
+     NaN
+    ],
+    [
+     -1.1,
+     2.1
+    ]
+   ]
+  },
+  "UPV (PH context)": {
+   "all": [
+    [
+     -15.3,
+     -12.8
+    ],
+    [
+     -5.2,
+     -2.0
+    ]
+   ],
+   "cold": [
+    [
+     NaN,
+     NaN
+    ],
+    [
+     4.6,
+     8.1
+    ]
+   ]
+  },
+  "COMB pop+taste": {
+   "all": [
+    [
+     0.3,
+     1.4
+    ],
+    [
+     1.7,
+     3.8
+    ]
+   ],
+   "cold": [
+    [
+     NaN,
+     NaN
+    ],
+    [
+     4.1,
+     7.4
+    ]
+   ]
+  },
+  "COMB taste+upv (no uses popularity)": {
+   "all": [
+    [
+     -7.4,
+     -5.1
+    ],
+    [
+     -2.6,
+     0.5
+    ]
+   ],
+   "cold": [
+    [
+     NaN,
+     NaN
+    ],
+    [
+     6.8,
+     10.1
+    ]
+   ]
+  },
+  "COMB all": {
+   "all": [
+    [
+     -6.9,
+     -5.4
+    ],
+    [
+     4.7,
+     6.9
+    ]
+   ],
+   "cold": [
+    [
+     NaN,
+     NaN
+    ],
+    [
+     6.9,
+     10.2
+    ]
+   ]
+  }
+ },
+ "summary": {
+  "POP_A": {
+   "all": {
+    "spearman_mean": 20.1,
+    "spearman_seed_sd": 0.2,
+    "top_decile_precision_mean": 36.6,
+    "top_decile_seed_sd": 0.4
+   },
+   "cold (POP_A=0)": {
+    "spearman_mean": NaN,
+    "spearman_seed_sd": NaN,
+    "top_decile_precision_mean": 9.8,
+    "top_decile_seed_sd": 0.4
+   }
+  },
+  "TASTE (product-only)": {
+   "all": {
+    "spearman_mean": 15.2,
+    "spearman_seed_sd": 0.4,
+    "top_decile_precision_mean": 19.4,
+    "top_decile_seed_sd": 0.3
+   },
+   "cold (POP_A=0)": {
+    "spearman_mean": 9.3,
+    "spearman_seed_sd": 0.4,
+    "top_decile_precision_mean": 15.5,
+    "top_decile_seed_sd": 0.6
+   }
+  },
+  "TASTE_UP": {
+   "all": {
+    "spearman_mean": 7.9,
+    "spearman_seed_sd": 0.4,
+    "top_decile_precision_mean": 13.9,
+    "top_decile_seed_sd": 0.2
+   },
+   "cold (POP_A=0)": {
+    "spearman_mean": 2.9,
+    "spearman_seed_sd": 0.3,
+    "top_decile_precision_mean": 10.8,
+    "top_decile_seed_sd": 0.2
+   }
+  },
+  "UPV (PH context)": {
+   "all": {
+    "spearman_mean": 6.5,
+    "spearman_seed_sd": 0.7,
+    "top_decile_precision_mean": 33.3,
+    "top_decile_seed_sd": 0.4
+   },
+   "cold (POP_A=0)": {
+    "spearman_mean": -16.9,
+    "spearman_seed_sd": 0.9,
+    "top_decile_precision_mean": 16.6,
+    "top_decile_seed_sd": 0.8
+   }
+  },
+  "COMB pop+taste": {
+   "all": {
+    "spearman_mean": 21.0,
+    "spearman_seed_sd": 0.2,
+    "top_decile_precision_mean": 39.2,
+    "top_decile_seed_sd": 0.2
+   },
+   "cold (POP_A=0)": {
+    "spearman_mean": 9.3,
+    "spearman_seed_sd": 0.4,
+    "top_decile_precision_mean": 15.8,
+    "top_decile_seed_sd": 0.5
+   }
+  },
+  "COMB taste+upv (no uses popularity)": {
+   "all": {
+    "spearman_mean": 14.1,
+    "spearman_seed_sd": 0.3,
+    "top_decile_precision_mean": 36.0,
+    "top_decile_seed_sd": 0.6
+   },
+   "cold (POP_A=0)": {
+    "spearman_mean": -7.4,
+    "spearman_seed_sd": 0.4,
+    "top_decile_precision_mean": 18.9,
+    "top_decile_seed_sd": 0.6
+   }
+  },
+  "COMB all": {
+   "all": {
+    "spearman_mean": 13.8,
+    "spearman_seed_sd": 0.3,
+    "top_decile_precision_mean": 42.5,
+    "top_decile_seed_sd": 0.6
+   },
+   "cold (POP_A=0)": {
+    "spearman_mean": -7.5,
+    "spearman_seed_sd": 0.9,
+    "top_decile_precision_mean": 18.9,
+    "top_decile_seed_sd": 0.8
+   }
+  }
+ }
+}
