@@ -530,3 +530,35 @@ So taste adds only about +0.002 on top of popularity.
 4. **Caveat: popularity is not pure exposure.** Final votes mix homepage exposure, mobilisation and shared appeal (common taste). We hold no homepage-position data, so the 18% cannot be split between "exposure" and "everyone likes the same thing".
 
 **"Wants/uses" labels (stacks, collections, reviews): not testable on current text.** These events are product slugs with no dates. Only 3.5% of collection items, 1.4% of reviews and 0.1% of stack items match a launch whose text we hold: 1,031 items over 704 products, and only 36 people with 5 or more matched items. Most stacked products are established tools (Slack, n8n and the like) that are not 2026 launches.
+
+### 2026-11-11 06:20Z — RESULT (E5): "uses" test. Stacks, reviews and collections against content taste and popularity
+
+**Setup**
+- Design fixed in commit 8a… before running: `experiments/simlab/uses_test.py`. Results: `experiments/simlab/reports/uses_test/uses_test.json`.
+- 52,730 person files; 141,333 products with card text, embedded with bge-small.
+- 5,096 complete people with at least 5 "uses" items.
+- Up to 10 held-out items per person, each ranked against 50 negatives.
+- Person-bootstrap CIs, all narrower than ±0.01 AUC.
+
+AUC by held-out type:
+
+| | random negatives | popularity-matched negatives |
+|---|---|---|
+| popularity (leave-person-out pool count) | 0.914 | 0.765 (residual within decile) |
+| taste from the other uses items (U) | 0.717 | **0.601** |
+| taste from upvotes only (V; do upvotes predict uses?) | 0.626 | 0.538 |
+| taste from uses + upvotes (UV) | 0.679 | 0.582 |
+| reverse: taste from uses → held-out upvote | 0.696 | 0.588 |
+| by type, U, pop-matched | stack 0.582 · review 0.611 · collection 0.658 | |
+
+Random scores 0.50 everywhere.
+
+**Reading**
+1. **"Uses" show a real content taste beyond popularity.** Against popularity-matched negatives, U scores 0.60, Hit@10 0.34 vs 0.19 random. It is strongest for collections (0.66, themed lists) and weakest for stacks (0.58).
+2. **Popularity still dominates** even off the leaderboard: 0.91 vs 0.72 against random negatives.
+3. **Upvote taste and use taste overlap only partly.**
+   - Upvotes predict uses at 0.54 pop-matched, against 0.60 from the uses themselves.
+   - Uses predict upvotes at 0.59.
+   - Adding upvotes to the uses profile *lowers* the score (0.58 vs 0.60).
+   - So upvotes are a noisy, partly different signal of what people use.
+4. **For the user sim:** model "uses/wants" from use history where it exists. Treat upvote history as a weaker, partly different proxy. In every channel, popularity has to be modelled explicitly.
