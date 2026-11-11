@@ -134,8 +134,9 @@ Status at 21:50 UTC Nov 11:
 7. **Existing-fame prior at 00:05**: done, null (302 of 305 launches unknown to the model; brand flag vs residual +0.017 [−0.11, +0.15]).
 8. **PH pre-reveal rank from Wayback**: not available (dailyRank null on all 1,822 pre-reveal rows; page order is randomised, Spearman −0.006 with final rank). The API rank stays a forward-only line.
 9. **Resolve placeholder makers to real identities from held data (store 'made' tabs, thread dumps, people_ts) and recompute maker history**: PH agent, running. 48% of actual top-3 launches have a placeholder maker; they are missed 44.7% vs 30.1%; ceiling about +7 top 3.
-10. **Second-stage correction of false favourites (brand sub-launches, versioned names, placeholder share, margin) + calibration / confidence flag**: E5, running.
-11. Open: refit the pre-reveal blend when 7 scored days exist; brand sub-launch penalty for favourites ('X by Brand' names are false picks 52% of the time, 27/52; versioned names 50%); report the launch model's own margin as a confidence flag (top 3 is 73.7% on days with a large #3/#4 gap vs ~59%); maker-fix shadow (scored forward).
+10. **Second-stage correction of false favourites**: done, null (top 3 −1.0 [−3.1, 1.1]). Calibration kept: the launch model's #1 / #2 / #3 picks finish top 3 90.3% / 57.0% / 41.1% of the time; sent to the website as a confidence flag.
+11. **Validate the website's "what users will say"** against 102k real launch comments (theme recall and precision vs topic-generic and shuffled baselines): E5, running.
+12. Open: refit the pre-reveal blend when 7 scored days exist; brand sub-launch penalty for favourites ('X by Brand' names are false picks 52% of the time, 27/52; versioned names 50%); report the launch model's own margin as a confidence flag (top 3 is 73.7% on days with a large #3/#4 gap vs ~59%); maker-fix shadow (scored forward).
 Standing conclusion (Nov 11): nothing knowable before launch explains the launch model's misses (all pre-launch attributes |rho| <= 0.05 with the error; closed today: domain popularity, fame prior, GitHub momentum, repeat-maker mobilisation, pre-midnight comments, early-commenter identity, comment text). The lever is the first hours after launch.
 
 Done Nov 11: comment forecast before the reveal (+5.0 top 3, +3.9 top 5 at 4 h, 207 days, live-compatible); early-engager
