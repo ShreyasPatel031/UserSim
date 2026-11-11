@@ -22,7 +22,7 @@ SEN = {"student": 0, "junior": 1, "mid": 2, "senior": 3, "founder_exec": 4}; PRI
 
 
 def main():
-    P = pd.read_parquet(f"{U}/products.parquet"); E = pd.read_parquet(f"{U}/eval_sets.parquet")
+    P = pd.read_parquet(f"{U}/products.parquet"); E = pd.read_parquet(f"{U}/{os.environ.get('EVAL', 'eval_sets.parquet')}")
     C = {}
     for l in open(f"{U}/cards.jsonl"):
         r = json.loads(l)
@@ -71,10 +71,11 @@ def main():
     R["card_nuses"] = R.person.map({p: C[p]["n_uses_in"] for p in pids}).astype(float)
     R["card_nups"] = R.person.map({p: C[p]["n_ups_in"] for p in pids}).astype(float)
     R["log_pop"] = np.log1p(R["pop"].clip(lower=0))
+    tl = P.text.fillna("").str.len().values; R["txt_len"] = np.where(ok, tl[R.pix.clip(lower=0).values], 0)   # E5 leak control
     dec = dict(zip(P.slug, P.pop_decile)); held = dict(zip(E.task, E.heldout)); low = {t: dec.get(h, 9) <= 5 for t, h in held.items()}
     fold = R.person.map(lambda p: int(p[2:4], 16) % 2).values
     CARD = ["card_sim", "avoid_sim", "card_depth", "card_sen", "card_price", "card_nuses", "card_nups"]
-    V = {"popularity": ["log_pop"], "card": CARD, "card+pop": CARD + ["log_pop"], "prof": ["prof_sim"],
+    V = {"length_only": ["txt_len"], "popularity": ["log_pop"], "card": CARD, "card+pop": CARD + ["log_pop"], "prof": ["prof_sim"],
          "prof+pop": ["prof_sim", "log_pop"], "prof+card+pop": ["prof_sim", "log_pop"] + CARD, "prof+card": ["prof_sim"] + CARD}
     rng = np.random.default_rng(0); scores = {}
     for nm, cols in V.items():
@@ -99,13 +100,13 @@ def main():
     def b(x):
         x = np.asarray(x, float)
         return [round(float(x.mean()), 3)] + [round(float(v), 3) for v in np.percentile([x[rng.integers(0, len(x), len(x))].mean() for _ in range(2000)], [2.5, 97.5])] + [int(len(x))]
-    res = {"tasks": int(T.task.nunique()), "note": "pop-matched negatives; person-disjoint 2-fold; prof_sim stands in for E5 U taste (no embeddings in tmp/e5/uses/)"}
+    res = {"eval": os.environ.get("EVAL", "eval_sets.parquet"), "tasks": int(T.task.nunique()), "note": "pop-matched negatives; person-disjoint 2-fold; prof_sim stands in for E5 U taste (no embeddings in tmp/e5/uses/)"}
     for sub, m in (("all", T.task.notna()), ("pop_decile_le5", T.low)):
         Q = T[m]; piv = {c: Q.pivot(index="task", columns="scorer", values=c) for c in ("auc", "hit1", "hit10")}
         res[sub] = {nm: {c: b(piv[c][nm]) for c in piv} for nm in V}
         for a, z in (("card+pop", "popularity"), ("prof+card+pop", "prof+pop"), ("card", "prof"), ("prof+card", "prof")):
             res[sub][f"{a} - {z}"] = {c: b(piv[c][a] - piv[c][z]) for c in piv}
-    json.dump(res, open(os.path.join(HERE, "results", "uses_lgb.json"), "w"), indent=1)
+    json.dump(res, open(os.path.join(HERE, "results", os.environ.get("OUT", "uses_lgb") + ".json"), "w"), indent=1)
     for sub in ("all", "pop_decile_le5"):
         for k, v in res[sub].items():
             print(sub, k, {c: v[c][:3] for c in v})
