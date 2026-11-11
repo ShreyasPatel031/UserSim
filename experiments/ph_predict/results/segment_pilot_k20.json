@@ -1,0 +1,106 @@
+{
+ "K": 20,
+ "MIN_N": 10,
+ "people_clustered": 6593,
+ "segment_sizes": [
+  1241,
+  171,
+  229,
+  111,
+  323,
+  424,
+  306,
+  193,
+  640,
+  308,
+  45,
+  171,
+  756,
+  32,
+  197,
+  353,
+  439,
+  199,
+  76,
+  379
+ ],
+ "real_segments": {
+  "all": {
+   "launches": 19,
+   "spearman_pred_real": [
+    0.655,
+    0.556,
+    0.742
+   ],
+   "top_segment_in_pred_top3": [
+    0.947,
+    0.842,
+    1.0
+   ],
+   "random_top3": 0.375
+  },
+  "cold_start": {
+   "launches": 6,
+   "spearman_pred_real": [
+    0.679,
+    0.56,
+    0.77
+   ],
+   "top_segment_in_pred_top3": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "random_top3": 0.375
+  }
+ },
+ "shuffled_segments": {
+  "all": {
+   "launches": 81,
+   "spearman_pred_real": [
+    0.154,
+    0.093,
+    0.211
+   ],
+   "top_segment_in_pred_top3": [
+    0.284,
+    0.185,
+    0.383
+   ],
+   "random_top3": 0.265
+  },
+  "cold_start": {
+   "launches": 29,
+   "spearman_pred_real": [
+    0.19,
+    0.09,
+    0.297
+   ],
+   "top_segment_in_pred_top3": [
+    0.241,
+    0.103,
+    0.414
+   ],
+   "random_top3": 0.265
+  }
+ },
+ "test_label_cells": {
+  "cells": 2074,
+  "median_n": 6.0,
+  "median_votes_per_cell": 0.0
+ },
+ "reliability_test_days": {
+  "real": {
+   "launches": 11,
+   "split_half_spearman": 0.307,
+   "spearman_brown": 0.47,
+   "cell_pearson": 0.301
+  },
+  "shuffled": {
+   "launches": 53,
+   "split_half_spearman": 0.071,
+   "spearman_brown": 0.132,
+   "cell_pearson": 0.05
+  }
+ }
+}

@@ -1,0 +1,99 @@
+{
+ "K": 12,
+ "MIN_N": 10,
+ "centered": true,
+ "people_clustered": 6593,
+ "segment_sizes": [
+  526,
+  1079,
+  531,
+  760,
+  173,
+  232,
+  703,
+  437,
+  1556,
+  436,
+  128,
+  32
+ ],
+ "real_segments": {
+  "all": {
+   "launches": 98,
+   "spearman_pred_real": [
+    0.114,
+    0.025,
+    0.203
+   ],
+   "top_segment_in_pred_top3": [
+    0.541,
+    0.439,
+    0.643
+   ],
+   "random_top3": 0.525
+  },
+  "cold_start": {
+   "launches": 31,
+   "spearman_pred_real": [
+    0.098,
+    -0.056,
+    0.258
+   ],
+   "top_segment_in_pred_top3": [
+    0.484,
+    0.29,
+    0.677
+   ],
+   "random_top3": 0.528
+  }
+ },
+ "shuffled_segments": {
+  "all": {
+   "launches": 119,
+   "spearman_pred_real": [
+    0.011,
+    -0.047,
+    0.07
+   ],
+   "top_segment_in_pred_top3": [
+    0.412,
+    0.328,
+    0.504
+   ],
+   "random_top3": 0.369
+  },
+  "cold_start": {
+   "launches": 44,
+   "spearman_pred_real": [
+    0.037,
+    -0.066,
+    0.146
+   ],
+   "top_segment_in_pred_top3": [
+    0.477,
+    0.341,
+    0.636
+   ],
+   "random_top3": 0.357
+  }
+ },
+ "test_label_cells": {
+  "cells": 1971,
+  "median_n": 9.0,
+  "median_votes_per_cell": 0.0
+ },
+ "reliability_test_days": {
+  "real": {
+   "launches": 76,
+   "split_half_spearman": -0.041,
+   "spearman_brown": -0.086,
+   "cell_pearson": 0.092
+  },
+  "shuffled": {
+   "launches": 92,
+   "split_half_spearman": -0.004,
+   "spearman_brown": -0.009,
+   "cell_pearson": 0.002
+  }
+ }
+}

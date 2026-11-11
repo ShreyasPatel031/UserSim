@@ -1,0 +1,90 @@
+{
+ "K": 12,
+ "MIN_N": 10,
+ "people_clustered": 6593,
+ "segment_sizes": [
+  526,
+  1079,
+  531,
+  760,
+  173,
+  232,
+  703,
+  437,
+  1556,
+  436,
+  128,
+  32
+ ],
+ "real_segments": {
+  "all": {
+   "launches": 0,
+   "spearman_pred_real": [
+    null
+   ],
+   "top_segment_in_pred_top3": [
+    null
+   ],
+   "random_top3": null
+  },
+  "cold_start": {
+   "launches": 0,
+   "spearman_pred_real": [
+    null
+   ],
+   "top_segment_in_pred_top3": [
+    null
+   ],
+   "random_top3": null
+  }
+ },
+ "shuffled_segments": {
+  "all": {
+   "launches": 93,
+   "spearman_pred_real": [
+    0.14,
+    0.069,
+    0.209
+   ],
+   "top_segment_in_pred_top3": [
+    0.409,
+    0.312,
+    0.505
+   ],
+   "random_top3": 0.335
+  },
+  "cold_start": {
+   "launches": 36,
+   "spearman_pred_real": [
+    0.183,
+    0.069,
+    0.3
+   ],
+   "top_segment_in_pred_top3": [
+    0.389,
+    0.222,
+    0.556
+   ],
+   "random_top3": 0.333
+  }
+ },
+ "test_label_cells": {
+  "cells": 1971,
+  "median_n": 9.0,
+  "median_votes_per_cell": 0.0
+ },
+ "reliability_test_days": {
+  "real": {
+   "launches": 0,
+   "split_half_spearman": NaN,
+   "spearman_brown": null,
+   "cell_pearson": 0.273
+  },
+  "shuffled": {
+   "launches": 63,
+   "split_half_spearman": 0.093,
+   "spearman_brown": 0.17,
+   "cell_pearson": 0.054
+  }
+ }
+}
