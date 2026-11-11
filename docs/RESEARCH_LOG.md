@@ -474,3 +474,25 @@ This is the orchestrator's track for E5. The design is in the docstring of `expe
 - Paired by day against the E5 product-only baseline. Compared with it8 product-only on matching days.
 
 **Success:** any variant with Hit@3 or AUC CI-positive vs the E5 product-only baseline.
+
+### 2026-11-11 05:30Z — RESULT (E5): cold-start content-to-CF user simulation. No variant beats the product-only baseline.
+
+- **Data:** the 12 clean days of the PH agent's rows, 1.53M rows. Within-line-up metrics with day-bootstrap 95% CIs, paired by day against the E5 product-only baseline.
+- **Results file:** `experiments/simlab/reports/cold_start/cold_start.json`.
+
+| | Hit@1 | Hit@3 | within-line-up AUC | AUC − baseline |
+|---|---|---|---|---|
+| random | 0.099 | 0.238 | 0.493 | |
+| E5 product-only baseline (taste logistic) | 0.186 | 0.396 | 0.651 | |
+| V1 cf_enc (SVD co-upvotes + text→CF encoder) | 0.128 | 0.329 | 0.574 | −0.077 [−0.147, −0.018] |
+| V2 retrieval (top-5 text similarity to past upvotes) | 0.164 | 0.387 | 0.643 | −0.008 [−0.048, 0.031] |
+| V2max | 0.153 | 0.348 | 0.627 | −0.024 [−0.061, 0.014] |
+| V3 hybrid | 0.167 | 0.357 | 0.625 | −0.026 [−0.076, 0.020] |
+
+**Reading**
+- **The encoder is the weak link.** It predicts an unseen launch's co-upvote vector with a held-out cosine of only 0.07 (Oct fold) and 0.08 (Nov fold), from 6.3k–6.6k training launches.
+- **So text barely says who will co-upvote a launch.** Product Hunt's collaborative structure is not driven by content.
+- This fits the earlier findings: team ties and who-knows-whom carry the signal (+11 Hit@3), and product-only taste is weak (AUC 0.65).
+- **Retrieval (V2) matches the taste logistic** within its CI, so a strong text embedding adds nothing over the TF-IDF and topic taste features.
+- **Verdict:** none of the three passes the pre-registered success test.
+- **All variants beat random,** and V2 and the baseline exceed it8 product-only's reported 0.587 AUC. That comparison is on different days (19 vs 12), so it needs the 19-day rows or it8's 12-day numbers to be sure.

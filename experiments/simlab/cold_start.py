@@ -60,7 +60,8 @@ print("dated upvotes", len(up), flush=True)
 R = pd.read_parquet(ROWS); R["li"] = R.launch_id.map(lid)
 B = pd.read_parquet(BASE)[["d", "person_id", "launch_id", "product_only"]]
 R = R.merge(B, on=["d", "person_id", "launch_id"], how="left")
-upg = {p: g for p, g in up.groupby("person_id") if p in set(R.person_id)}
+_need = set(R.person_id)
+upg = {p: g for p, g in up[up.person_id.isin(_need)].groupby("person_id")}
 
 for name, cut, te0, te1 in FOLDS:
     U = up[up.vday <= cut]
