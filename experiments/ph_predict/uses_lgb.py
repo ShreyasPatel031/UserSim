@@ -29,6 +29,10 @@ def main():
         if "card" in r:
             C[r["person_id"]] = r
     E = E[(E.neg_kind == "pop_matched") & E.person_id.isin(C)].reset_index(drop=True)
+    if "pop_loo_heldout" not in E:   # rich-matched set: leave-one-out popularity = pop - 1 for the held-out (the person's own use)
+        pp = dict(zip(P.slug, P["pop"].astype(float)))
+        E["pop_loo_heldout"] = [pp.get(h, 0.0) - 1 for h in E.heldout]
+        E["pop_loo_negatives"] = [[pp.get(x, 0.0) for x in n] for n in E.negatives]
     six = {s: i for i, s in enumerate(P.slug)}
     vec = TfidfVectorizer(min_df=3, max_features=200000, ngram_range=(1, 2), sublinear_tf=True, stop_words="english")
     XP = normalize(vec.fit_transform(P.text.fillna("").str[:1000]))
@@ -76,7 +80,9 @@ def main():
     fold = R.person.map(lambda p: int(p[2:4], 16) % 2).values
     CARD = ["card_sim", "avoid_sim", "card_depth", "card_sen", "card_price", "card_nuses", "card_nups"]
     V = {"length_only": ["txt_len"], "popularity": ["log_pop"], "card": CARD, "card+pop": CARD + ["log_pop"], "prof": ["prof_sim"],
-         "prof+pop": ["prof_sim", "log_pop"], "prof+card+pop": ["prof_sim", "log_pop"] + CARD, "prof+card": ["prof_sim"] + CARD}
+         "prof+pop": ["prof_sim", "log_pop"], "prof+card+pop": ["prof_sim", "log_pop"] + CARD, "prof+card": ["prof_sim"] + CARD,
+         "len+pop": ["txt_len", "log_pop"], "card+len+pop": CARD + ["txt_len", "log_pop"], "prof+len+pop": ["prof_sim", "txt_len", "log_pop"],
+         "prof+card+len+pop": ["prof_sim", "txt_len", "log_pop"] + CARD}
     rng = np.random.default_rng(0); scores = {}
     for nm, cols in V.items():
         s = np.zeros(len(R))
@@ -104,7 +110,7 @@ def main():
     for sub, m in (("all", T.task.notna()), ("pop_decile_le5", T.low)):
         Q = T[m]; piv = {c: Q.pivot(index="task", columns="scorer", values=c) for c in ("auc", "hit1", "hit10")}
         res[sub] = {nm: {c: b(piv[c][nm]) for c in piv} for nm in V}
-        for a, z in (("card+pop", "popularity"), ("prof+card+pop", "prof+pop"), ("card", "prof"), ("prof+card", "prof")):
+        for a, z in (("card+pop", "popularity"), ("prof+card+pop", "prof+pop"), ("card", "prof"), ("prof+card", "prof"), ("card+len+pop", "len+pop"), ("prof+card+len+pop", "prof+len+pop"), ("card", "length_only")):
             res[sub][f"{a} - {z}"] = {c: b(piv[c][a] - piv[c][z]) for c in piv}
     json.dump(res, open(os.path.join(HERE, "results", os.environ.get("OUT", "uses_lgb") + ".json"), "w"), indent=1)
     for sub in ("all", "pop_decile_le5"):

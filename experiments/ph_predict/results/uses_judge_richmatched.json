@@ -1,0 +1,63 @@
+{
+ "rule": "negatives restricted to the held-out's rich status (rich_text != text, matches E5 heldout_rich 100%)",
+ "judge": {
+  "judge": {
+   "auc": [
+    0.576,
+    0.548,
+    0.603
+   ],
+   "hit1": 0.113,
+   "tasks": 476
+  },
+  "length": {
+   "auc": [
+    0.657,
+    0.632,
+    0.681
+   ],
+   "hit1": 0.116,
+   "tasks": 476
+  },
+  "popularity": {
+   "auc": [
+    0.787,
+    0.759,
+    0.816
+   ],
+   "hit1": 0.529,
+   "tasks": 476
+  },
+  "mean_negs_kept": 21.6
+ },
+ "judge_masked": {
+  "judge": {
+   "auc": [
+    0.52,
+    0.454,
+    0.585
+   ],
+   "hit1": 0.072,
+   "tasks": 97
+  },
+  "length": {
+   "auc": [
+    0.641,
+    0.585,
+    0.69
+   ],
+   "hit1": 0.072,
+   "tasks": 97
+  },
+  "popularity": {
+   "auc": [
+    0.822,
+    0.761,
+    0.875
+   ],
+   "hit1": 0.577,
+   "tasks": 97
+  },
+  "mean_negs_kept": 21.2
+ }
+}
