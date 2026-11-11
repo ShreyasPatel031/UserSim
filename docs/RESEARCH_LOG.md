@@ -424,3 +424,31 @@ Paired change vs the base LM, daily top 3 / 5 / 10, with 95% CI:
 2. The two-level residual signal (it8 EV coefficient +0.16, on 15 days) does not survive as an LM input across 243 days.
 3. With C1–C3 and D1–D2 all failing, five pre-launch candidates built from data we already hold have failed in total.
 4. The honest 00:05 LM looks saturated on held data. The next real lift needs a new kind of measurement, for example at-launch X audience or page quality once about 60 days of at-launch reads exist, or within-day early signals if the target allows forecasting after launch.
+
+### 2026-11-11 04:40Z — E5: reference table for the user-simulation goal (person level first)
+
+- **Model:** the E5 logistic baseline, retrained monthly.
+- **Rows:** the PH agent's clean it-rows: 1,527,587 rows, 12 days, 48,214 person-days.
+- **Code and results:** `experiments/simlab/usersim_ref_table.py`, `experiments/simlab/reports/usersim_ref/usersim_ref_table.json`.
+
+**Input sets**
+- **product-only:** the product's text and topics against the person's own history, plus the person's activity.
+- **full:** product-only plus PH context (backed the team before, is on the team). There are no follows in either.
+
+Day-bootstrap 95% CIs:
+
+| | product-only | full |
+|---|---|---|
+| Hit@1 (voting person-days) | 0.186 [0.126, 0.257] | 0.202 [0.156, 0.246] |
+| Hit@3 | 0.396 [0.321, 0.477] | 0.511 [0.435, 0.590] |
+| within-line-up AUC | 0.651 [0.603, 0.695] | 0.695 [0.651, 0.733] |
+| voter R-precision | 0.202 [0.168, 0.237] | 0.207 [0.173, 0.245] |
+| ECE / log-loss (all rows) | 0.00054 / 0.0340 | 0.00063 / 0.0336 |
+| secondary: top 3/5/10 vs the sample's own votes | 19 / 32 / 49 | 44 / 50 / 63 |
+
+**Reading**
+- PH context (team ties) adds about 11 points of Hit@3 and +0.04 within-line-up AUC.
+- For the population ordering it matters most: top 3 goes from 19 to 44.
+- Product-only taste is weak within a person's day: AUC 0.65.
+- Calibration is good overall. One caveat: deciles 3–5 predict 0.0013 against a real 0.00005. These are people with no dated history; the model gives them a floor rate.
+- These are the reference rows for it9b's keep rule: product-only Hit@3 or within-line-up AUC CI-positive vs it8 on the same input set.
