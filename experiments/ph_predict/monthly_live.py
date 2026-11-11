@@ -53,6 +53,15 @@ def dayend(day):
         wv = Wk.sort_values("votesCount", ascending=False).id.tolist()
         res["weekly_crosscheck"] = {"vs_weeklyRank": {k: topk_overlap(W, wr, k) for k in (3, 5, 10)},
                                     "vs_votes_at_read": {k: topk_overlap(W, wv, k) for k in (3, 5, 10)}}
+        # period-end-consistent weekly line (period_rank.md: PH's period ranks are votes frozen at the period end): rank the
+        # week's launches so far by their votes in this 23:50 PT read; written in weekly_live's format as point "reread"
+        Wr = Wk.sort_values("votesCount", ascending=False).reset_index(drop=True)
+        wres = {"week_monday": mon, "day": day, "point": "reread", "written_at": res["written_at"], "launches": int(len(Wr)),
+                "source": f"raw/ph_at_launch/monthly_reread/{day[:7]}/{day}.jsonl votesCount (23:50 PT read)",
+                "forecast": [{"id": i, "day": dd, "pred_rank": n + 1, "est": float(v), "src": "reread"} for n, (i, dd, v) in
+                             enumerate(zip(Wr.id, Wr.launch_day_PT, Wr.votesCount)) if n < 30]}
+        wp = os.path.join(HERE, "results", "weekly_live", f"{mon}_{day}_reread.json"); json.dump(wres, open(wp, "w"), indent=1)
+        subprocess.run(["gsutil", "-q", "cp", wp, f"{B}/results/weekly_live/{mon}_{day}_reread.json"], check=True)
     os.makedirs(OUT, exist_ok=True); p = f"{OUT}/{day[:7]}_{day}_dayend.json"; json.dump(res, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/monthly_live/{day[:7]}_{day}_dayend.json"], check=True)
     print(json.dumps({k: v for k, v in res.items() if not k.startswith("forecast")}))
