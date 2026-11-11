@@ -1,0 +1,264 @@
+{
+ "design": "Where would a product land? Retrieval of similar past launches vs the PH agent's product-only ridge (orchestrator 23:20Z\nNov 11). Base = web_launch_band.py's product-only ridge (TF-IDF 1-2 grams + top-80 topic flags + lengths, Ridge alpha 3,\ntarget ln(1+votes), month-forward from the third month; 222 days with >= 10 launches), re-implemented on the same warehouse\nlaunches table.\nRetrieval features for launch L on day d (neighbours = launches dated strictly before d; excluded: same slug stem, same\nname, any shared real maker/poster), embedding = gemini-embedding-001 256-d of \"name. tagline. description[:800]\":\n  for k in 5, 10, 25: mean / median ln(1+votes), mean within-day rank percentile, share top 3, share top 10,\n  similarity-weighted mean ln(1+votes); max similarity; topic base rates (first topic) over launches before d: mean\n  ln(1+votes), share top 10, count.\nModels (month-forward, same months): RIDGE+R = base design + standardised retrieval block; LGBM+R = LightGBM on retrieval\nblock + lengths + n_topics + the base ridge's held-out score; and on top of the FULL honest launch model (207 comment-forecast\ndays): ridge(honest LM + retrieval block), month-forward.\nMetrics: within-day Spearman with -daily rank, daily top 3/5/10 overlap; paired by day vs the base, 4000 day-bootstrap draws.\nBand calibration: rank band = 10th-90th percentile of final daily rank among earlier months' launches in the same score\ndecile (decile cut points from earlier months too); coverage = share of month-m launches whose true rank falls in the band.",
+ "n_launches": 6963,
+ "days": 222,
+ "base product-only ridge": {
+  "spearman": [
+   33.3,
+   30.6,
+   36.0
+  ],
+  "top3": [
+   29.3,
+   26.1,
+   32.6
+  ],
+  "top5": [
+   40.1,
+   37.1,
+   42.9
+  ],
+  "top10": [
+   60.3,
+   57.7,
+   62.8
+  ]
+ },
+ "ridge + retrieval": {
+  "spearman": [
+   33.4,
+   30.7,
+   36.1
+  ],
+  "top3": [
+   29.0,
+   25.7,
+   32.3
+  ],
+  "top5": [
+   40.5,
+   37.5,
+   43.3
+  ],
+  "top10": [
+   60.5,
+   58.1,
+   63.0
+  ]
+ },
+ "ridge + retrieval - base (paired)": {
+  "spearman": [
+   0.1,
+   -0.9,
+   1.1
+  ],
+  "top3": [
+   -0.3,
+   -2.7,
+   2.1
+  ],
+  "top5": [
+   0.4,
+   -1.4,
+   2.1
+  ],
+  "top10": [
+   0.2,
+   -0.8,
+   1.2
+  ]
+ },
+ "ridge + retrieval days": 222,
+ "LightGBM + retrieval": {
+  "spearman": [
+   32.9,
+   29.9,
+   35.8
+  ],
+  "top3": [
+   28.2,
+   24.5,
+   31.8
+  ],
+  "top5": [
+   39.9,
+   37.0,
+   42.7
+  ],
+  "top10": [
+   60.2,
+   57.4,
+   62.8
+  ]
+ },
+ "LightGBM + retrieval - base (paired)": {
+  "spearman": [
+   -1.5,
+   -4.0,
+   0.9
+  ],
+  "top3": [
+   -1.0,
+   -4.7,
+   2.4
+  ],
+  "top5": [
+   -0.7,
+   -3.3,
+   1.9
+  ],
+  "top10": [
+   -0.1,
+   -1.6,
+   1.5
+  ]
+ },
+ "LightGBM + retrieval days": 193,
+ "retrieval only r5_yw": {
+  "spearman": [
+   22.0,
+   19.3,
+   24.7
+  ],
+  "top3": [
+   26.1,
+   23.3,
+   29.1
+  ],
+  "top5": [
+   35.7,
+   33.1,
+   38.3
+  ],
+  "top10": [
+   56.1,
+   53.5,
+   58.7
+  ]
+ },
+ "retrieval only r10_yw": {
+  "spearman": [
+   25.2,
+   22.4,
+   28.0
+  ],
+  "top3": [
+   26.7,
+   23.9,
+   29.7
+  ],
+  "top5": [
+   37.5,
+   34.9,
+   40.1
+  ],
+  "top10": [
+   56.8,
+   54.2,
+   59.5
+  ]
+ },
+ "retrieval only r25_yw": {
+  "spearman": [
+   27.6,
+   24.6,
+   30.5
+  ],
+  "top3": [
+   24.5,
+   21.5,
+   27.5
+  ],
+  "top5": [
+   35.0,
+   32.3,
+   37.7
+  ],
+  "top10": [
+   58.2,
+   55.5,
+   60.9
+  ]
+ },
+ "band 10-90% coverage (target 0.80)": {
+  "base": [
+   0.797,
+   5351
+  ],
+  "ridge + retrieval": [
+   0.806,
+   5351
+  ],
+  "LightGBM + retrieval": [
+   0.824,
+   4451
+  ]
+ },
+ "full LM only": {
+  "spearman": [
+   64.6,
+   62.4,
+   66.7
+  ],
+  "top3": [
+   61.2,
+   57.8,
+   64.4
+  ],
+  "top5": [
+   66.0,
+   63.4,
+   68.5
+  ],
+  "top10": [
+   76.1,
+   74.4,
+   77.9
+  ]
+ },
+ "full LM + retrieval": {
+  "spearman": [
+   63.4,
+   60.9,
+   65.7
+  ],
+  "top3": [
+   59.5,
+   55.9,
+   63.1
+  ],
+  "top5": [
+   65.6,
+   63.1,
+   68.2
+  ],
+  "top10": [
+   75.6,
+   73.8,
+   77.3
+  ]
+ },
+ "full LM + retrieval - LM (paired)": {
+  "spearman": [
+   -1.3,
+   -2.2,
+   -0.4
+  ],
+  "top3": [
+   -1.7,
+   -3.8,
+   0.6
+  ],
+  "top5": [
+   -0.3,
+   -1.6,
+   0.9
+  ],
+  "top10": [
+   -0.5,
+   -1.2,
+   0.3
+  ]
+ },
+ "full days": 177
+}

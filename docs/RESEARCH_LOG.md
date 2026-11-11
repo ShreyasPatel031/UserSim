@@ -917,3 +917,12 @@ Script experiments/simlab/reactions_v2.py; report reports/reactions_v2/. Same 30
 - BEST = flash 0.3 + R10 + 6 comments: 49.9 / 51.4; +12.2 [9.6, 14.8] / +8.9 [5.7, 12.1]; 5.0 s; about $0.003 per request (1 generation call + 1 embedding call)
 Cross-judge (100 launches, differently worded 0/1/2 judge, covered = 2): BEST − V0 recall +6.4 [3.3, 9.6], weighted +8.6 [4.5, 12.9], precision +8.2 [2.8, 13.7] - the gain is not judge-specific.
 Retrieval bundle for the site (reactions_retrieval_bundle.py): gs://…/tmp/e5/website/reactions_retrieval_v1.{npz,json}, 3,371 past launches (Jan–Oct 2026, >= 5 non-team comments): 256-d gemini-embedding of name/tagline/description + up to 6 paraphrased comment themes each (@handles scrubbed, no verbatim comments, no usernames); 3.5 MB. Total spend for this item about $4.4.
+
+### 2026-11-12 E5 — "where it would land": similar past launches' outcomes do not beat the product-only ridge
+Script experiments/simlab/landing_retrieval.py; report reports/landing_retrieval/. Base = the PH agent's product-only ridge (web_launch_band.py design) re-implemented on the same launches: reproduces within-day Spearman 33.3 and top-3/5/10 29.3/40.1/60.3 on 222 days exactly. Retrieval block: k = 5/10/25 nearest earlier launches (gemini-embedding 256-d; excluded same slug stem, same name, shared makers): mean/median ln votes, rank percentile, share top 3/top 10, similarity-weighted ln votes, max similarity; topic base rates over earlier launches. Month-forward; paired by day, 4000 day-bootstrap draws (x100).
+- ridge + retrieval − base: Spearman +0.1 [−0.9, 1.1], top-3 −0.3 [−2.7, 2.1], top-5 +0.4 [−1.4, 2.1], top-10 +0.2 [−0.8, 1.2]
+- LightGBM + retrieval − base (193 days): Spearman −1.5 [−4.0, 0.9], top-3 −1.0, top-5 −0.7, top-10 −0.1
+- retrieval alone (similarity-weighted ln votes): k=10 Spearman 25.2, top-3/5/10 26.7/37.5/56.8; k=25 27.6 / 24.5/35.0/58.2 - informative but redundant with the text ridge
+- on the full honest LM (177 days): LM + retrieval − LM: Spearman −1.3 [−2.2, −0.4], top-3 −1.7 [−3.8, 0.6], top-5 −0.3, top-10 −0.5
+- rank-band calibration (10–90% band from earlier months, month-forward): base covers 79.7% of true ranks (n 5,351), ridge + retrieval 80.6%, LightGBM 82.4% - the band is already calibrated.
+Verdict: null; nothing exported. Similar products' outcomes carry the same information as the product text the ridge already uses.
