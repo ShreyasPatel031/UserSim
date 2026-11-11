@@ -1586,3 +1586,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 18:34 UTC Nov 11 mailbox checked; live capture checked.
 - 19:33 UTC Nov 11 mailbox checked; live capture checked.
 - 20:34 UTC Nov 11 mailbox checked; live capture checked.
+- 20:45 UTC Nov 11 Shreyas asked for progress. Honest state: pre-launch north star not improved; early-day forecast live but unscored; no experiment ran 16:23–20:45Z (orchestrator only did mailbox checks). Started two: PH agent = pre-reveal forecast from timestamped comments (hours 0–4, whole-warehouse backtest); E5 = simulation conditioned on early engagers (launch multiplier + person level). First numbers due ~22:45Z.
