@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier · Try a product</title>
+<meta name="description" content="Paste a product URL: simulated Product Hunt reactions, who it resonates with, and where it might land.">
+<link rel="icon" href="/atelier/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
+<link rel="stylesheet" href="/static/ph_site.css?v=2">
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Main">
+    <a class="mark" href="/" aria-label="Atelier home"><img src="/atelier/logo.png" alt="" width="30" height="30">Atelier</a>
+    <div class="menu label"><a href="/ph">PH forecast</a><a href="/try" aria-current="page">Try a product</a><a href="/app">Open app</a></div>
+  </nav>
+
+  <header class="head" style="grid-template-columns:minmax(0,1fr)">
+    <div class="copy">
+      <p class="label">Product Hunt simulation</p>
+      <h1>What would Product Hunt say about your product?</h1>
+      <p class="lede">We read your page, match it against real Product Hunt members (anonymised), simulate their reactions, and place it on a typical launch day.</p>
+      <form class="url" id="f">
+        <input id="u" name="url" type="url" required placeholder="https://yourproduct.com" aria-label="Product URL" autocomplete="url">
+        <button type="submit" id="go">Simulate</button>
+      </form>
+      <ol class="steps" id="steps">
+        <li data-s="page"><b>Read page</b>Fetch + understand it</li>
+        <li data-s="people"><b>Match people</b>Real PH members, anonymised</li>
+        <li data-s="reactions"><b>Simulate reactions</b>What they'd write</li>
+        <li data-s="launch"><b>Place on PH</b>Rank and vote range</li>
+      </ol>
+      <div id="err" class="err" hidden></div>
+    </div>
+  </header>
+
+  <div id="out" hidden>
+    <section class="block" id="prod"></section>
+    <section class="block">
+      <header><h2>What users will say</h2><span class="label" id="rx-note"></span></header>
+      <p class="lede" id="rx-head"></p>
+      <div id="rx"><p class="skeleton">Simulating reactions…</p></div>
+    </section>
+    <section class="block">
+      <header><h2>Who it resonates with</h2><span class="label" id="pp-note"></span></header>
+      <div class="grid3" id="pp-stats"></div>
+      <h3 style="margin:22px 0 8px">Closest matching members</h3>
+      <p class="small muted">Real Product Hunt members, shown only as a label and category-level descriptors. No names, handles, avatars or links, ever.</p>
+      <div class="grid2" id="pp"><p class="skeleton">Matching…</p></div>
+      <h3 style="margin:22px 0 8px">Audience segments most likely to respond</h3>
+      <table class="rec" id="seg"><thead><tr><th>Segment</th><th>Members</th><th>Match share</th><th>vs average</th></tr></thead><tbody></tbody></table>
+      <p class="small muted" id="pp-method"></p>
+    </section>
+    <section class="block">
+      <header><h2>Where it would land on Product Hunt</h2><span class="label">a range, not a promise</span></header>
+      <div id="ln"><p class="skeleton">Placing…</p></div>
+    </section>
+    <section class="block">
+      <header><h2>Go further</h2></header>
+      <p class="lede">Run the full live simulation on this URL: simulated users drive real browsers through your product and two competitors, with a report.</p>
+      <p><a id="full" class="tag" href="/app">Run the live product simulation →</a></p>
+    </section>
+  </div>
+  <footer class="note label"><span id="caps">Limits: 3 simulations per hour, 10 per day per visitor</span><span>Atelier · not affiliated with Product Hunt</span></footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const step = (s, cls) => { const li = document.querySelector(`#steps [data-s="${s}"]`); li.className = cls; };
+async function post(path, body){
+  const r = await fetch(path, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  const j = await r.json().catch(()=>({error:"Bad response"}));
+  if(!r.ok) throw new Error(j.error || j.detail || ("HTTP "+r.status));
+  return j;
+}
+function fail(msg){ $("#err").hidden=false; $("#err").textContent = msg; }
+
+function renderProduct(a){
+  $("#prod").innerHTML = `<header><div><p class="label">${esc(new URL(a.url).hostname)}</p><h2>${esc(a.name)}</h2></div>
+    <span class="label">${esc((a.topics||[]).join(" · "))}</span></header>
+    <p class="lede"><b style="color:var(--ink)">${esc(a.tagline)}</b><br>${esc(a.summary)}</p>
+    <div class="grid3" style="margin-top:16px">
+      <div class="card"><p class="label">Audience</p><p>${esc(a.audience)}</p><p class="label">Pricing</p><p>${esc(a.pricing)}</p></div>
+      <div class="card"><p class="label">PH visitors would like</p><ul>${(a.strengths||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+      <div class="card"><p class="label">They would question</p><ul>${(a.doubts||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+    </div>`;
+  $("#full").href = "/app?url=" + encodeURIComponent(a.url);
+}
+const pct = (v)=> Math.max(0, Math.min(100, Number(v)||0));
+function renderReactions(j){
+  $("#rx-head").textContent = j.headline || "";
+  $("#rx-note").textContent = "simulated, not real comments";
+  $("#rx").innerHTML = j.reactions.map(r=>{
+    const lab = String(r.type||"").split(":")[0];
+    return `<div class="comment"><div class="avatar" aria-hidden="true">${esc(lab.replace("User ","").charAt(0))}</div><div>
+      <div class="who"><b>${esc(lab)}</b> · ${esc(String(r.type||"").split(":").slice(1).join(":"))}</div>
+      <q>${esc(r.comment)}</q>
+      <span class="meter">upvote <i style="--v:${pct(r.would_upvote)}%"></i> ${pct(r.would_upvote)}%</span>
+      <span class="meter">try it <i style="--v:${pct(r.would_try)}%"></i> ${pct(r.would_try)}%</span>
+      <span class="meter">${esc(r.sentiment)} · ${esc(r.why)}</span></div></div>`;}).join("") + `<p class="small muted">${esc(j.note)}</p>`;
+}
+function renderPeople(p){
+  $("#pp-note").textContent = `${p.people_scored.toLocaleString()} members matched`;
+  $("#pp-stats").innerHTML = `
+    <div class="card"><p class="label">Members with a close interest match</p><p class="big">${p.likely_count.toLocaleString()}</p><p class="small muted">${(p.likely_share*100).toFixed(0)}% of profiles (top tenth by match)</p></div>
+    <div class="card"><p class="label">Of those, makers themselves</p><p class="big">${p.maker_share_of_likely!=null?(p.maker_share_of_likely*100).toFixed(0)+"%":"—"}</p><p class="small muted">have launched or hunted on PH</p></div>
+    <div class="card"><p class="label">Most responsive activity tier</p><p class="big" style="font-size:24px">${esc((p.tiers.slice().sort((a,b)=>b.share-a.share)[0]||{}).tier||"—")}</p><p class="small muted">by share matching</p></div>`;
+  $("#pp").innerHTML = p.top_people.map(x=>`<div class="card"><h3>${esc(x.label)} <span class="tag">${esc(x.segment)}</span></h3>
+     <p class="small">${esc(x.role)} · ${esc(x.activity)} · ${esc(x.comments)}</p>
+     <p class="small muted">${esc(x.upvoted_like)}. Interests: ${esc(x.interests.join(", "))}.</p>
+     <span class="meter">match <i style="--v:${pct(x.match*100)}%"></i> ${(x.match*100).toFixed(0)}%</span></div>`).join("");
+  $("#seg tbody").innerHTML = p.segments.map(s=>`<tr><td>${esc(s.name)}<br><span class="small muted">${esc(s.top_topics.join(", "))}</span></td><td>${s.size.toLocaleString()}</td><td>${(s.share*100).toFixed(0)}%</td><td>${s.lift.toFixed(1)}×</td></tr>`).join("")
+     || `<tr><td colspan="4" class="muted">No segment has 20+ matching members; the match is spread thin.</td></tr>`;
+  $("#pp-method").textContent = p.method + " " + p.note;
+}
+function renderLaunch(l){
+  const N = l.lineup_typical, x = (r)=> (Math.min(r, N)-0.5)/N*100;
+  $("#ln").innerHTML = `<div class="grid3">
+     <div class="card"><p class="label">Likely daily rank</p><p class="big">#${l.rank_band.likely[0]}–#${l.rank_band.likely[1]}</p><p class="small muted">wide range #${l.rank_band.wide[0]}–#${l.rank_band.wide[1]} of ~${N}</p></div>
+     <div class="card"><p class="label">Likely upvotes</p><p class="big">${l.votes_band.likely[0]}–${l.votes_band.likely[1]}</p><p class="small muted">wide range ${l.votes_band.wide[0]}–${l.votes_band.wide[1]}</p></div>
+     <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>
+   <div class="band" aria-label="Rank band on a typical day"><div class="w" style="left:${x(l.rank_band.wide[0])}%;right:${100-x(l.rank_band.wide[1])}%"></div>
+     <div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
+   <div class="scale"><span>#1</span><span>daily rank on a typical day of ${N} featured launches</span><span>#${N}</span></div>
+   <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p><p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
+}
+
+$("#f").onsubmit = async (e) => {
+  e.preventDefault();
+  $("#err").hidden = true; $("#go").disabled = true; $("#out").hidden = true;
+  ["page","people","reactions","launch"].forEach(s=>step(s,""));
+  step("page","run");
+  let tok;
+  try {
+    const p = await post("/api/try/page", {url: $("#u").value});
+    tok = p.token; step("page","done"); renderProduct(p.analysis); $("#out").hidden = false;
+    $("#caps").textContent = `Limits: ${p.caps.per_ip_hour} per hour, ${p.caps.per_ip_day} per day per visitor, ${p.caps.global_day} per day overall`;
+  } catch(err){ step("page","fail"); fail(err.message); $("#go").disabled=false; return; }
+  const run = (s, fn) => { step(s,"run"); return post("/api/try/"+s, {token: tok}).then(j=>{fn(j); step(s,"done");}).catch(err=>{step(s,"fail"); fail(err.message);}); };
+  await Promise.all([run("people", renderPeople), run("reactions", renderReactions), run("launch", renderLaunch)]);
+  $("#go").disabled = false;
+};
+const q = new URLSearchParams(location.search).get("url"); if(q){ $("#u").value = q; }
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier · Product Hunt forecast</title>
+<meta name="description" content="Today's Product Hunt launches, ranked by our forecast before vote counts are visible, with an honest track record.">
+<link rel="icon" href="/atelier/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
+<link rel="stylesheet" href="/static/ph_site.css?v=2">
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Main">
+    <a class="mark" href="/" aria-label="Atelier home"><img src="/atelier/logo.png" alt="" width="30" height="30">Atelier</a>
+    <div class="menu label"><a href="/ph" aria-current="page">PH forecast</a><a href="/try">Try a product</a><a href="/app">Open app</a></div>
+  </nav>
+
+  <header class="head">
+    <div class="copy">
+      <p class="label" id="kicker">Product Hunt · live forecast</p>
+      <h1 id="title">Today's top products, called before the votes show</h1>
+      <p class="lede">We rank every featured launch at 00:05 PT, update through the night from comments and PH's own ordering while vote counts are hidden, then from votes after the 04:00 PT reveal. Each list says when it was made and what it could see.</p>
+    </div>
+    <label class="label">Day<br><select id="day" aria-label="Launch day"></select></label>
+  </header>
+
+  <div class="layout">
+    <main>
+      <div class="timeline" id="timeline" role="group" aria-label="Forecast made at"></div>
+      <p class="sees" id="sees"></p>
+      <ol class="board" id="board" aria-live="polite"><li class="skeleton">Loading today's line-up…</li></ol>
+      <details class="more" id="more" hidden><summary>Show the rest of the line-up</summary><ol class="board" id="rest"></ol></details>
+    </main>
+    <aside>
+      <section class="panel" aria-labelledby="tr-h">
+        <h2 id="tr-h">Track record</h2>
+        <p class="muted">Computed from our saved forecast files and the final results, every day that has both. Nothing typed in by hand.</p>
+        <table class="rec" id="rec"><thead><tr><th>Forecast</th><th>Days</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody><tr><td colspan="5" class="muted">Scoring saved forecasts…</td></tr></tbody></table>
+        <p class="small muted" id="rec-how"></p>
+        <p class="small muted">Offline backtests, for context (not this page's record): 00:05 launch model 63 / 69 / 75 on Mar–Oct; adding launch-day comments by +4 h lifted top 3 by about 5–7 points; vote-based ranks at 08:00–12:00 PT reached 93 / 95 / 93 on six replayed days. The live 00:05 record is lower than its backtest.</p>
+      </section>
+      <section class="panel" aria-labelledby="wk-h">
+        <h2 id="wk-h">This week so far</h2>
+        <p class="muted small" id="wk-note"></p>
+        <ol class="mini" id="weekly"></ol>
+      </section>
+      <section class="panel">
+        <h2>Launching soon?</h2>
+        <p class="muted">Paste your product's URL and see what PH members would say, who it resonates with, and where it might land.</p>
+        <p><a href="/try" class="tag">Try a product →</a></p>
+      </section>
+    </aside>
+  </div>
+  <footer class="note label"><span>Forecasts by Atelier · not affiliated with Product Hunt</span><span id="asof"></span></footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const GLYPH = [["Artificial Intelligence","✦"],["Developer Tools","{}"],["Open Source","◎"],["Design Tools","◐"],["Productivity","◷"],
+  ["Marketing","↗"],["Sales","$"],["Fintech","$"],["Analytics","▤"],["Data & Analytics","▤"],["Mac","⌘"],["iOS","▯"],["Android","▯"],
+  ["SaaS","☁"],["Video","▶"],["Audio","♪"],["Music","♪"],["Health & Fitness","+"],["Education","✎"],["Writing","✎"],["Games","◆"],
+  ["Privacy","⊘"],["Security","⊘"],["Email","✉"],["Messaging","✉"],["Hardware","▣"],["Social Media","☺"],["Photography","◉"]];
+function hash(s){let h=2166136261;for(const c of String(s))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
+function icon(p){
+  const h=hash(p.id||p.name), g=(GLYPH.find(([t])=>(p.topics||[]).includes(t))||[])[1]||"·";
+  const letter=(p.name||"?").trim().charAt(0).toUpperCase();
+  return `<div class="icon" style="--dot:${3+(h%4)}px;--dop:${(0.16+((h>>3)%5)*0.06).toFixed(2)}" aria-hidden="true"><span>${esc(letter)}</span><i>${esc(g)}</i></div>`;
+}
+let VIEW=null, SEL=null;
+
+async function load(day){
+  const r = await fetch("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : ""));
+  if(!r.ok){ $("#board").innerHTML = `<li class="skeleton">No forecast available yet.</li>`; return; }
+  VIEW = await r.json();
+  $("#day").innerHTML = VIEW.days.map(d=>`<option ${d===VIEW.day?"selected":""}>${d}</option>`).join("");
+  const isToday = VIEW.day === VIEW.today;
+  $("#kicker").textContent = `Product Hunt · ${isToday ? "live forecast" : "forecast"} · ${VIEW.day}`;
+  $("#title").textContent = VIEW.status.final ? "How our calls compared with the final board"
+    : isToday ? "Today's top products, called before the votes show" : "Forecast for " + VIEW.day;
+  const st = VIEW.status;
+  $("#asof").textContent = st.final ? `Final result (${st.as_of_pt})` : st.revealed ? `Votes as of ${st.as_of_pt}` : "Votes hidden on PH until ~04:00 PT";
+  const pts = VIEW.points.map(p=>p.key);
+  if(!SEL || !(pts.includes(SEL) || SEL==="final")) SEL = st.final ? "final" : pts[pts.length-1];
+  timeline(); render();
+}
+
+function timeline(){
+  const btns = VIEW.points.map(p=>`<button type="button" data-k="${p.key}" aria-pressed="${SEL===p.key}"><small>${esc(p.label)}</small>${esc(p.time_pt||"")}</button>`);
+  btns.push(`<button type="button" data-k="final" aria-pressed="${SEL==="final"}" ${VIEW.status.final?"":"disabled"}><small>Actual</small>${VIEW.status.final?"Final":"after 23:59"}</button>`);
+  $("#timeline").innerHTML = btns.join("");
+  $("#timeline").querySelectorAll("button").forEach(b=>b.onclick=()=>{SEL=b.dataset.k; timeline(); render();});
+}
+
+function order(){
+  const L = VIEW.launches;
+  if(SEL==="final") return L.filter(x=>x.actual_rank).sort((a,b)=>a.actual_rank-b.actual_rank).map(x=>[x,x.actual_rank]);
+  const p = VIEW.points.find(q=>q.key===SEL); if(!p) return [];
+  return L.filter(x=>p.ranks[x.id]).sort((a,b)=>p.ranks[a.id]-p.ranks[b.id]).map(x=>[x,p.ranks[x.id]]);
+}
+
+function trail(x){
+  const parts = VIEW.points.filter(p=>p.ranks[x.id]).map(p=>`${esc(p.time_pt||p.label)} <b>#${p.ranks[x.id]}</b>`);
+  if(x.actual_rank) parts.push(`final <b>#${x.actual_rank}</b>`);
+  return parts.join(" → ");
+}
+
+function row([x, r]){
+  const st = VIEW.status;
+  const hit = st.final && SEL!=="final" && x.actual_rank && x.actual_rank<=10 && r<=10;
+  const actual = st.final && SEL!=="final" ? (x.actual_rank ? `<span class="tag ${hit?"hit":""}">${hit?"in real top 10":"final #"+x.actual_rank}</span>` : "") : "";
+  const vote = x.votes!=null ? `<div class="vote"><span class="tri"></span><b>${x.votes}</b><small>votes</small></div>`
+                             : `<div class="vote hidden" title="Vote counts are hidden on Product Hunt until about 04:00 PT"><span class="tri"></span><b>—</b><small>hidden</small></div>`;
+  const link = x.slug ? `<a href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name);
+  return `<li class="row"><div class="pos">${r}</div>${icon(x)}<div class="prod"><h3>${link} ${actual}</h3><p>${esc(x.tagline)}</p>
+    <div class="chips">${(x.topics||[]).slice(0,3).map(t=>`<span class="t">${esc(t)}</span>`).join("")}<span class="trail">${trail(x)}</span></div></div>${vote}</li>`;
+}
+
+function render(){
+  const o = order();
+  const p = VIEW.points.find(q=>q.key===SEL);
+  let sees = SEL==="final" ? "Final daily ranking from Product Hunt's official API at the end of the day." :
+    p ? `Made ${p.time_pt ? "at "+p.time_pt : ""} from data up to that minute. Could see: ${p.sees}` : "";
+  if(p && p.score) sees += ` · Scored: ${p.score["3"]}/3 of the real top 3, ${p.score["5"]}/5 of top 5, ${p.score["10"]}/10 of top 10.`;
+  $("#sees").textContent = sees;
+  $("#board").innerHTML = o.slice(0,10).map(row).join("") || `<li class="skeleton">No forecast at this point yet.</li>`;
+  $("#rest").innerHTML = o.slice(10).map(row).join("");
+  $("#more").hidden = o.length<=10;
+  $("#rest").start = 11;
+}
+
+async function side(){
+  const t = await (await fetch("/api/ph/track-record")).json();
+  $("#rec tbody").innerHTML = t.rows.filter(r=>r.n_days).map(r=>`<tr><td>${esc(r.label)}</td><td>${r.n_days}</td>
+    <td>${r.top3}%<span class="bar" style="width:${r.top3*0.3}px"></span></td><td>${r.top5}%</td><td>${r.top10}%</td></tr>`).join("")
+    + t.rows.filter(r=>!r.n_days).map(r=>`<tr><td class="muted">${esc(r.label)}</td><td colspan="4" class="muted">not scored yet</td></tr>`).join("");
+  $("#rec-how").textContent = t.how;
+  const w = await (await fetch("/api/ph/weekly")).json();
+  if(w && w.top){
+    $("#wk-note").textContent = `Running weekly call (week of ${w.week_monday}), using days so far plus today's votes ×1.069 at reveal + 4 h. Scored when the week ends.`;
+    $("#weekly").innerHTML = w.top.map(x=>`<li><span>${x.pred_rank}</span><span>${esc(x.name||"(launch "+x.day+")")}</span><span>~${Math.round(x.est_votes)}</span></li>`).join("");
+  }
+}
+
+$("#day").onchange = (e)=>{ SEL=null; load(e.target.value); };
+load(); side();
+setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today) load(VIEW.day); }, 5*60*1000);
+</script>
+</body>
+</html>
