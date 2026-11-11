@@ -94,7 +94,7 @@ async def try_step(step: str, request: Request):
     tok = str(body.get("token") or "")
     try:
         if step == "people":
-            return JSONResponse(await asyncio.to_thread(try_sim.step_people, tok))
+            return JSONResponse(await asyncio.wait_for(try_sim.step_people(tok), timeout=30))
         if step == "launch":
             return JSONResponse(await asyncio.to_thread(try_sim.step_launch, tok))
         if step == "reactions":

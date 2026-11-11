@@ -74,3 +74,16 @@ def test_hits():
     pred = {str(i): 21 - i for i in range(1, 21)}
     assert live.hits(pred, act, 10) == 0
     assert live.hits({str(i): i for i in range(1, 21)}, act, 3) == 3
+
+
+def test_e5_summary_shows_roles_tiers_only():
+    import numpy as np
+    from mvp.ph_site import person_e5
+    n = 60
+    B = {"pct99_tree": np.zeros(n, np.float32), "roles": np.eye(n, 9, dtype=np.uint8),
+         "role_names": np.array(["dev", "design", "market", "founder", "product", "data_ai", "sales", "student", "invest"]),
+         "n_uses": np.arange(1, n + 1, dtype=np.int32), "n": n}
+    out = person_e5.summarize(B, np.linspace(1, -1, n))
+    for p in out["people"]:
+        assert set(p) == {"roles", "tier", "likely", "strength"}
+    assert all(s["likely"] >= 20 for s in out["segments"])

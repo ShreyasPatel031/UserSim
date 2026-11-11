@@ -26,7 +26,7 @@ PT = ZoneInfo("America/Los_Angeles")
 CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "3")),
         "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "10")),
         "global_day": int(os.environ.get("TRY_GLOBAL_DAY", "150")),
-        "gemini_calls_per_run": 2, "max_output_tokens_per_run": 6000}
+        "gemini_calls_per_run": 2, "embedding_calls_per_run": 2, "max_output_tokens_per_run": 6000}
 MODEL = os.environ.get("TRY_GEMINI_MODEL", "gemini-2.5-flash-lite")
 TOKEN_TTL_S = 900
 
@@ -189,7 +189,7 @@ def _describe(meta: dict, x: np.ndarray, act: int, cmt: int, maker: bool, seg: i
             "upvoted_like": f"Mostly upvotes {', '.join(top[:2]) or 'a mix of categories'} launches"}
 
 
-def step_people(tok: str) -> dict:
+def _interest_people(tok: str) -> dict:
     a = verify(tok)["a"]
     I = index()
     meta = I["meta"]
@@ -263,15 +263,40 @@ Return JSON: {{"reactions": [{{"type": "<copy the type label>", "comment": "1-3 
 "headline_takeaway": "one sentence: what PH visitors are most likely to say overall"}}"""
 
 
-def _types_from_people(p: dict) -> list[str]:
+async def step_people(tok: str) -> dict:
+    """Interest-segment match (13.6k profiles, category level) + E5's similar-tools scorer (5,096 people, AUC 0.69)."""
+    from mvp.ph_site import person_e5
+
+    a = verify(tok)["a"]
+    out = _interest_people(tok)
+    out["interest_top"] = out.pop("top_people")
+    try:
+        B = person_e5.bundle()
+        text = f"{a.get('name')}. {a.get('tagline')}. {a.get('summary') or ''} {(a.get('page_excerpt') or '')[:700]}"
+        q = await person_e5.embed(text)
+        sm = person_e5.summarize(B, person_e5.score_text(B, q))
+        out["similar"] = {**{k: sm[k] for k in ("people_scored", "likely_count", "likely_share", "segments", "tiers")},
+                          "typical_share": 0.01,
+                          "method": ("Similar-tools match: each person's own tool stack, reviews and collections are "
+                                     "compared with this page (Gemini embeddings + a learned scorer). Person-level "
+                                     "accuracy: ranks a person's real tools above look-alike non-uses 69% of the time. "
+                                     "By design about 1% of people match a typical product.")}
+        out["top_people"] = [{"label": f"User {chr(65 + i)}", **p} for i, p in enumerate(sm["people"])]
+    except Exception as exc:  # noqa: BLE001 - fall back to the interest index alone
+        print(f"[try] similar-tools scorer unavailable: {exc!r}", flush=True)
+        out["similar"] = None
+        out["top_people"] = [{"label": p["label"], "roles": [p["role"]], "tier": p["activity"], "strength": "interest match",
+                              "likely": True} for p in out["interest_top"]]
+    return out
+
+
+def _types_from_people(p: dict, topics: list[str]) -> list[str]:
     out = []
     for r in p["top_people"][:4]:
-        out.append(f"{r['label']}: {r['role']}, {r['activity']}, {r['comments']}, interests: {', '.join(r['interests'])}")
-    # Plus contrast types so it isn't only fans.
-    out.append("User E: voter / user, very heavy (400+), comments often, interests: Artificial Intelligence, Productivity "
-               "(sees dozens of similar launches a week)")
-    out.append("User F: maker (has launched or hunted on PH), regular (20-99), comments sometimes, interests outside this "
-               "product's category")
+        out.append(f"{r['label']}: {' / '.join(r['roles'])}, {r['tier']}, interested in {', '.join(topics[:2]) or 'this category'}")
+    # Contrast types so it isn't only fans.
+    out.append("User E: heavy PH voter who comments often and sees dozens of similar launches a week")
+    out.append("User F: maker from an unrelated category, browsing the day's launches")
     return out
 
 
@@ -279,8 +304,8 @@ async def step_reactions(tok: str) -> dict:
     from capability.gemini_config import extract_json, gemini_chat
 
     a = verify(tok)["a"]
-    p = step_people(tok)
-    types = _types_from_people(p)
+    p = await step_people(tok)
+    types = _types_from_people(p, a.get("topics") or [])
     prompt = REACT_PROMPT.format(name=a.get("name"), tagline=a.get("tagline"), summary=a.get("summary"),
                                  pricing=a.get("pricing"), strengths="; ".join(a.get("strengths") or []),
                                  doubts="; ".join(a.get("doubts") or []), excerpt=(a.get("page_excerpt") or "")[:2500],
