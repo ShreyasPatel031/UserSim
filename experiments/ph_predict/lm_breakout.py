@@ -115,7 +115,29 @@ def c2_ctx(df):
     return pd.concat(rows)
 
 
-CANDS = {"C1": c1_topic, "C2": c2_ctx, "C3": c3_team}
+def fix_maker_hist(df):
+    """hist_maker_* rebuilt as features.add_history does, but skipping the placeholder maker id '0' (hidden makers;
+    on 2,273 launches) that pooled every hidden-maker launch into one fake maker (Nov 11 fix)."""
+    d = df.sort_values("day").copy()
+    d["rel_"] = np.log1p(d.votes) - d.groupby("day").votes.transform(lambda v: np.log1p(v).mean())
+    d["top5_"] = (d.dailyRank <= 5).astype(float)
+    Mk, rows = {}, []
+    for day, g in d.groupby("day", sort=True):
+        for r in g.itertuples():
+            ms = [x for m in (r.maker_ids or []) if str(m) not in ("0", "", "None") for x in Mk.get(m, [])]
+            rows.append({"id": r.id, "fx_hist_maker_n": len(ms), "fx_hist_maker_rel_max": max([x[0] for x in ms]) if ms else np.nan,
+                         "fx_hist_maker_top5": np.mean([x[1] for x in ms]) if ms else np.nan})
+        for r in g.itertuples():
+            for m in set(r.maker_ids or []):
+                if str(m) not in ("0", "", "None"):
+                    Mk.setdefault(m, []).append((r.rel_, r.top5_))
+    out = pd.DataFrame(rows)
+    out = out.merge(df[["id", "day"]], on="id")
+    out["fx_hist_dayrank_hist_maker_rel_max"] = out.groupby("day").fx_hist_maker_rel_max.rank(pct=True)
+    return out.drop(columns=["day"])
+
+
+CANDS = {"C1": c1_topic, "C2": c2_ctx, "C3": c3_team, "FIXMK": fix_maker_hist}
 
 
 def job(a):
@@ -123,10 +145,13 @@ def job(a):
     tr, te = M.add_fold_feats(tr, te)
     base = [c for c in M.cols(tr, M.LIVE_SOURCES) if c != "llm_full"]
     out = {"id": te.id.values, "seed": seed, "base": fit(tr, te, base, seed)}
-    pref = {"C1": "tm_", "C2": "hc_", "C3": "tt_"}
+    pref = {"C1": "tm_", "C2": "hc_", "C3": "tt_", "FIXMK": "fx_"}
     for n in names:
         extra = [c for c in tr.columns if c.startswith(pref[n])]
-        out[n] = fit(tr, te, base + extra, seed)
+        if n == "FIXMK":   # replace the contaminated maker-history inputs instead of adding
+            out[n] = fit(tr, te, [c for c in base if not c.startswith(("hist_maker", "hist_dayrank_hist_maker"))] + extra, seed)
+        else:
+            out[n] = fit(tr, te, base + extra, seed)
     return pd.DataFrame(out), len(base)
 
 
