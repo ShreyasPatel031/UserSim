@@ -1,0 +1,200 @@
+{
+ "days": [
+  "2026-10-20",
+  "2026-10-21",
+  "2026-10-22",
+  "2026-10-23",
+  "2026-10-24",
+  "2026-10-25",
+  "2026-10-26",
+  "2026-10-27",
+  "2026-10-28",
+  "2026-11-05",
+  "2026-11-06",
+  "2026-11-07"
+ ],
+ "rows": 1527587,
+ "features": [
+  "product_only_z",
+  "at_lift_sum_z",
+  "at_lift_max_z",
+  "at_lift_mean_z",
+  "at_lift_cat_z",
+  "at_lift_aud_z",
+  "at_gap_value_clarity_z",
+  "at_value_clarity_z",
+  "at_gap_novelty_z",
+  "at_novelty_z",
+  "at_gap_breadth_of_appeal_z",
+  "at_breadth_of_appeal_z",
+  "at_gap_problem_urgency_z",
+  "at_problem_urgency_z",
+  "at_gap_specificity_z",
+  "at_specificity_z",
+  "at_price_free_z",
+  "at_price_freemium_z",
+  "at_price_paid_z",
+  "at_price_not_stated_z",
+  "at_mat_new_product_z",
+  "at_mat_major_update_z",
+  "at_mat_feature_update_z",
+  "at_mat_relaunch_z",
+  "at_ai_z",
+  "at_os_z",
+  "at_rare_cat_z",
+  "at_rare_aud_z",
+  "at_has_pref_z",
+  "at_emb_tag_z",
+  "at_emb_desc_z"
+ ],
+ "lodo": {
+  "days": 12,
+  "e5_hit1": [
+   0.185,
+   [
+    0.124,
+    0.254
+   ],
+   12
+  ],
+  "e5_hit3": [
+   0.394,
+   [
+    0.317,
+    0.477
+   ],
+   12
+  ],
+  "e5_auc": [
+   0.651,
+   [
+    0.603,
+    0.694
+   ],
+   12
+  ],
+  "comb_hit1": [
+   0.145,
+   [
+    0.097,
+    0.206
+   ],
+   12
+  ],
+  "comb_hit3": [
+   0.36,
+   [
+    0.277,
+    0.453
+   ],
+   12
+  ],
+  "comb_auc": [
+   0.618,
+   [
+    0.574,
+    0.659
+   ],
+   12
+  ],
+  "delta_hit1": [
+   -0.04,
+   [
+    -0.127,
+    0.055
+   ],
+   12
+  ],
+  "delta_hit3": [
+   -0.034,
+   [
+    -0.1,
+    0.036
+   ],
+   12
+  ],
+  "delta_auc": [
+   -0.033,
+   [
+    -0.069,
+    0.005
+   ],
+   12
+  ]
+ },
+ "forward": {
+  "days": 9,
+  "e5_hit1": [
+   0.201,
+   [
+    0.131,
+    0.285
+   ],
+   9
+  ],
+  "e5_hit3": [
+   0.409,
+   [
+    0.312,
+    0.514
+   ],
+   9
+  ],
+  "e5_auc": [
+   0.651,
+   [
+    0.588,
+    0.709
+   ],
+   9
+  ],
+  "comb_hit1": [
+   0.153,
+   [
+    0.104,
+    0.206
+   ],
+   9
+  ],
+  "comb_hit3": [
+   0.36,
+   [
+    0.266,
+    0.442
+   ],
+   9
+  ],
+  "comb_auc": [
+   0.595,
+   [
+    0.537,
+    0.648
+   ],
+   9
+  ],
+  "delta_hit1": [
+   -0.048,
+   [
+    -0.127,
+    0.038
+   ],
+   9
+  ],
+  "delta_hit3": [
+   -0.049,
+   [
+    -0.121,
+    0.027
+   ],
+   9
+  ],
+  "delta_auc": [
+   -0.056,
+   [
+    -0.118,
+    0.008
+   ],
+   9
+  ]
+ }
+}
