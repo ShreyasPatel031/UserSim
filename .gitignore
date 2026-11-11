@@ -10,6 +10,7 @@ results/cache/
 *.egg-info/
 .python-version
 secrets/
+.purl
 mvp/runs/
 vendor/
 # Large third-party clones / decrypted HAL traces (local only)
@@ -37,3 +38,6 @@ data/models/
 data/hackathon/
 .vercel
 .env*.local
+
+fleet-dashboard/config.js
+fleet-dashboard/snapshot.json

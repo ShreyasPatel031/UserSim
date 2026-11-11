@@ -12,7 +12,7 @@ SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccou
 GC=(gcloud --account="$SA")
 VM_GCS="${PACE_VM_GCS:-gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 OVERLAY_GCS="${VM_GCS}/_code/overlays"
-STRATEGY="$ROOT/scripts/vm/ph_strategies/fleet_optimize.env"
+STRATEGY="${PH_FLEET_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 D="$ROOT/scripts/vm/reuse_overlays"
 GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
 

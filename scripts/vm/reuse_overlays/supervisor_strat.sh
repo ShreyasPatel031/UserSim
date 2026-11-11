@@ -82,7 +82,13 @@ mark() {
     "$1" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${PH_STRATEGY:-}" "${2:-}" >> /opt/ph/reuse/setup_timing.jsonl
 }
 
+apply_proxy_port() {
+  if [[ "${PH_PROXY_FIXED_PORT:-0}" == "1" ]]; then
+    export PROXY_PORT=$(python3 -c 'import os,urllib.parse as up;u=os.environ["PROXY_URL"];print(up.urlparse(u).port or os.environ.get("PROXY_PORT",""))')
+  fi
+}
 load_strategy
+apply_proxy_port
 echo "supervisor_strat start $(date -u +%FT%TZ) strategy=${PH_STRATEGY:-none} home_port=${PROXY_PORT}" >> /opt/ph/reuse/supervisor.log
 mark supervisor_ready "home_port=${PROXY_PORT}"
 
@@ -98,6 +104,7 @@ while true; do
   gsutil -q cp "$B/_code/reuse.tgz" . && tar xzf reuse.tgz
   apply_overlays
   load_strategy
+  apply_proxy_port
   export PKG_MD5=$(python3 -c 'import hashlib,base64;print(base64.b64encode(hashlib.md5(open("reuse.tgz","rb").read()).digest()).decode())' 2>/dev/null)
   tok=$(gsutil cat "$B/GO.$VM" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9:_.-' || true)
   batch_up=0

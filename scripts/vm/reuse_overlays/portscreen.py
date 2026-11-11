@@ -9,8 +9,15 @@ POOL = [p for p in range(10000, 20001) if p not in NEVER]  # strat/feeder: full 
 FAILED = set()   # ports that failed a probe this session
 UA = "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0"
 def mask(ip): return None if not ip else ".".join(ip.split(".")[:3]) + ".0/24"
+def _egress_port(logical):
+    """DataImpulse: logical port (10000+) is the sticky session. ISP/fixed: URL port only."""
+    if os.environ.get("PH_PROXY_FIXED_PORT", "0") in ("1", "true", "yes"):
+        u = up.urlparse(os.environ["PROXY_URL"])
+        return int(u.port or logical or 0)
+    return int(logical)
 def _op(port):
-    p = up.urlparse(os.environ["PROXY_URL"]); pu = f"{p.scheme}://{p.username}:{p.password}@{p.hostname}:{port}"
+    ep = _egress_port(port)
+    p = up.urlparse(os.environ["PROXY_URL"]); pu = f"{p.scheme}://{p.username}:{p.password}@{p.hostname}:{ep}"
     return urllib.request.build_opener(urllib.request.ProxyHandler({"http": pu, "https": pu}))
 def probe(port):
     op = _op(port); o = {"port": port}
@@ -56,6 +63,24 @@ def _release(port, vm):
     if cur.returncode == 0 and cur.stdout.strip() == vm: subprocess.run(["gsutil", "-q", "rm", obj], capture_output=True)
 def prescreen(vm, log):
     home = int(os.environ.get("PROXY_PORT") or 0)
+    if os.environ.get("PH_PROXY_FIXED_PORT", "0") in ("1", "true", "yes"):
+        u = up.urlparse(os.environ["PROXY_URL"]); ep = int(u.port or 0)
+        if home and ep and home != ep:
+            # metadata proxy-port is fleet bookkeeping; egress uses URL port
+            pass
+        if ep:
+            home_only = True
+            order = [home] if home else [ep]
+            max_try = 1
+            tried = []
+            if home:
+                if _claim(home, vm) or True:
+                    o = probe(home); tried.append(o)
+                    os.environ["PROXY_PORT"] = str(home)
+                    log(event="port_prescreen", home_port=home, chosen_port=home, moved=False,
+                        home_only=True, reason="PH_PROXY_FIXED_PORT: single ISP endpoint", tried=tried)
+                    return home
+            return None
     # Strat bake-off default: stay on assigned sticky port. urllib probe ≠ Camoufox CF clear;
     # failing over silently (e.g. 10022→10000) wrecks the experiment.
     home_only = os.environ.get("PH_PORTSCREEN_HOME_ONLY", "1") not in ("0", "false", "no")
