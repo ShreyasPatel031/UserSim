@@ -66,11 +66,15 @@ def read_jsonl(path: str, ttl: float = 300) -> list[dict]:
     return [json.loads(x) for x in raw.decode("utf-8").splitlines() if x.strip()]
 
 
-def read_parquet(path: str, ttl: float = 300):
-    import pandas as pd
+def read_parquet_cols(path: str, cols: list[str], ttl: float = 300) -> dict[str, list] | None:
+    """Columns as python lists (pyarrow only; pandas is not in the Vercel bundle)."""
+    import pyarrow.parquet as pq
 
     raw = read_bytes(path, ttl)
-    return None if raw is None else pd.read_parquet(io.BytesIO(raw))
+    if raw is None:
+        return None
+    t = pq.read_table(io.BytesIO(raw), columns=cols)
+    return {c: t.column(c).to_pylist() for c in cols}
 
 
 def write_json_cas(path: str, update, retries: int = 6) -> Any:

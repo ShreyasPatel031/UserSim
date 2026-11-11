@@ -159,12 +159,12 @@ def _lineup(day: str) -> dict[str, dict]:
 
 
 def _forecast_0005(day: str):
-    df = gcs.read_parquet(f"raw/daily/{day}/forecast_{day}.parquet", ttl=600)
-    if df is None or not len(df):
+    df = gcs.read_parquet_cols(f"raw/daily/{day}/forecast_{day}.parquet", ["id", "pred"], ttl=600)
+    if not df or not df["id"]:
         return None
-    df = df.sort_values("pred", ascending=False)
+    ids = [str(i) for i, _ in sorted(zip(df["id"], df["pred"]), key=lambda t: -(t[1] if t[1] is not None else -1e9))]
     upd = dict(gcs.list_names(f"raw/daily/{day}/", ttl=300)).get(f"raw/daily/{day}/forecast_{day}.parquet", "")
-    return {"ranks": {str(i): n for n, i in enumerate(df["id"].astype(str), 1)}, "made_at": upd,
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": upd,
             "data_up_to": datetime.fromisoformat(day).replace(hour=0, minute=5, tzinfo=PT).isoformat(),
             "method": "launch model (deployed 00:05 PT)"}
 
