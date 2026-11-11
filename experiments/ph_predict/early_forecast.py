@@ -54,6 +54,32 @@ def lm_scores(day):
     return {r.id: -float(np.log(r.predicted_rank)) for r in F.itertuples()}
 
 
+def p4_ranks(day, replay=False):
+    """P4 (04:00 PT) ranks from the comment writer: blend, API pre-reveal rank, comment ridge (live file, or the replay
+    copy when replay=True). Empty if absent."""
+    for d_ in ([os.path.join(HERE, "results", "early_forecast")] + ([os.path.join(HERE, "results", "early_forecast_replay_P")] if replay else [])):
+        f = os.path.join(d_, f"{day}_P4.json")
+        if os.path.exists(f):
+            F = pd.DataFrame(json.load(open(f))["forecast"]); F["id"] = F.id.astype(str)
+            return F.set_index("id")[[c for c in ("pred_rank_blend", "pred_rank_api", "pred_rank") if c in F]]
+    return pd.DataFrame()
+
+
+def r0_blend(day, A, replay=False):
+    """pred_rank_r0blend: R0 votes, near-ties (within 10%: same log1.1 bucket) broken by the P4 blend rank;
+    pred_rank_r0mean: mean of the rank positions of R0 votes and the P4 blend. Without a P4 file both equal pred_rank."""
+    A = A.copy(); P = p4_ranks(day, replay)
+    n = len(A)
+    b = A["id"].map(P["pred_rank_blend"]) if "pred_rank_blend" in P else pd.Series(np.nan, index=A.index)
+    b = b.fillna(n + 1)
+    vr = A.v.rank(ascending=False, method="average")
+    bucket = np.floor(np.log1p(A.v.astype(float)) / np.log(1.1))
+    A["pred_rank_r0blend"] = pd.Series(list(zip(-bucket, b, -A.v)), index=A.index).rank(method="first").astype(int)
+    A["pred_rank_r0mean"] = ((vr + b) / 2 - 1e-6 * A.v).rank(method="first").astype(int)
+    A["p4_blend_rank"] = b
+    return A
+
+
 def z(x):
     x = np.asarray(x, float); return (x - x.mean()) / (x.std() + 1e-9)
 
@@ -74,9 +100,11 @@ def live(day, point, method="blend", w=None):
     else:
         A["score"] = z(A.lv) + w * z(A.lm)
     A["pred_rank"] = A.score.rank(ascending=False, method="first").astype(int)
+    if point == "R0":   # orchestrator 23:00Z Nov 11: R0 votes blended with what was known before the reveal (P4 file)
+        A = r0_blend(day, A)
     out = {"day": day, "point": point, "reveal_R0": R0.isoformat(), "data_up_to": t.isoformat(), "method": method, "w_lm": w,
            "launches": int(len(A)), "lm_matched": int(sum(1 for x in A.id if x in lm)), "written_at": now.isoformat(),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"]].round(4).to_dict("records")}
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"] + [c for c in ("pred_rank_r0blend", "pred_rank_r0mean", "p4_blend_rank") if c in A]].round(4).to_dict("records")}
     os.makedirs(os.path.join(HERE, "results", "early_forecast"), exist_ok=True)
     p = os.path.join(HERE, "results", "early_forecast", f"{day}_{point}.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/early_forecast/{day}_{point}.json"], check=True)

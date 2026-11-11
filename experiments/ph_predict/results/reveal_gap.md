@@ -41,3 +41,18 @@ E5's 04:00–05:00 PT Wayback bucket (85 / 93 / 92) averages captures across tha
 **(4) Day mix.** Only 4 days have 15-min reveal coverage (Nov 4, 8, 9, 10). These days' R0 is 58 vs the 6-day hourly replay's 72, so day mix matters at this n.
 
 **Fix.** Two extra live points, R0q (reveal +15 min) and R0h (+30 min), in early_forecast.py POINTS. Both score forward next to R0 in the scoreboard and NORTH_STAR. R0 stays as it is.
+
+## R0 blended with the pre-reveal forecast (orchestrator 23:00Z Nov 11)
+
+Same 4 days, top 3 / 5 / 10 vs final daily rank. Nov 9 has no P4 file (no live comments), so both blends equal votes there.
+
+| scorer | top 3 | top 5 | top 10 |
+|---|---|---|---|
+| R0 votes | 58.3 | 70.0 | 82.5 |
+| near-ties (within 10%) broken by P4 blend | 58.3 | 70.0 | 87.5 |
+| mean rank of R0 votes and P4 blend | 66.7 | 75.0 | 87.5 |
+| P4 blend alone (3 days with P4) | 66.7 | 73.3 | 86.7 |
+
+Per day (votes → mean blend): Nov 4 67/60/90 → 100/60/100; Nov 8 33/80/80 → 33/80/80; Nov 10 67/60/80 → 67/80/80.
+That's 3 informative days, so no intervals and no claim. From Nov 12 the live R0 file records pred_rank_r0blend (near-tie)
+and pred_rank_r0mean (mean) beside pred_rank, and both score forward in the scoreboard and NORTH_STAR.

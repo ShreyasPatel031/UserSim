@@ -64,6 +64,9 @@ def main():
                         add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
             else:
                 add(d, pt, "raw_votes", s, f.sort_values("pred_rank").id.astype(str).tolist(), E["written_at"])
+                for m, c in (("r0blend_neartie", "pred_rank_r0blend"), ("r0blend_mean", "pred_rank_r0mean")):
+                    if c in f:
+                        add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
     X = pd.DataFrame(rows).sort_values(["day", "point", "method"])
     summ = []
     for (pt, m, s), g in X.groupby(["point", "method", "source"]):
@@ -95,6 +98,8 @@ BACKTEST = {
     ("P4", "comment_ridge"): ("68.0 / 73.1 / 77.0", "same"),
     ("R0", "raw_votes"): ("72 / 77 / 88", "6-day replay (early_forecast_replay.json); 85 / 93 / 92 first hour after reveal on 9 days"),
     ("R0q", "raw_votes"): ("75 / 80 / 88", "4-day 15-min replay (reveal_gap.md)"), ("R0h", "raw_votes"): ("75 / 90 / 88", "4-day 15-min replay (reveal_gap.md)"),
+    ("R0", "r0blend_neartie"): ("58 / 70 / 88", "4-day replay; R0 votes with 10% near-ties broken by the P4 blend"),
+    ("R0", "r0blend_mean"): ("67 / 75 / 88", "4-day replay; mean rank of R0 votes and the P4 blend (Nov 9 has no P4: votes only)"),
     ("R1", "raw_votes"): ("83 / 90 / 88", "6-day replay; 83 / 90 / 88 on the 4-day 15-min replay"), ("R2", "raw_votes"): ("83 / 90 / 93", "6-day replay"),
     ("R4", "raw_votes"): ("94 / 90 / 95", "6-day replay; 93 / 95 / 93 at 08:00-12:00 PT on 29 days"),
     ("week", "dayend_votes"): ("57.5 / 71.5 / 77.8", "end-of-week call without dated votes, 40 weeks (weekly_forecast.md); 100 / 80 / 90 with day-end votes on 1 week"),
@@ -102,7 +107,7 @@ BACKTEST = {
 }
 ORDER = [("0005", "published"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay")] + \
         [(p, m) for p in ("P1", "P2", "P3", "P4") for m in ("comment_ridge", "api_rank", "blend")] + \
-        [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
+        [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("R0", "r0blend_neartie"), ("R0", "r0blend_mean")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
 
 
 def _boot(v, rng, n=2000):
