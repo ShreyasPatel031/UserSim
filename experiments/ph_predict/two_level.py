@@ -173,6 +173,16 @@ def _ps(P, I, E, work):
                          dow=pd.to_datetime(D.day).dt.dayofweek.astype(float))
             return D, list(pc) + ["w_act", "days_since", "act_7", "log_act_30", "log_act_all", "tenure", "dow"]
         PS.page_cols = page_cols_u
+    if os.environ.get("TL_PRIOR") == "1":   # iteration 7 (pre-registered with E5, Nov 11): launch priors from settled ranks only
+        pri = launch_priors(I); base_p = PS.page_cols
+        cols = ["team_prior_n", "team_best_rank", "team_mean_inv_rank", "team_top10_rate", "topic_top10_rate", "topic_mean_inv_rank", "topic_n_launches"]
+        def page_cols_p(D, _b=base_p):
+            D, pc = _b(D)
+            M = np.array([pri.get(str(x), [np.nan] * len(cols)) for x in D.id], dtype=float)
+            for k, c in enumerate(cols):
+                D[c] = M[:, k]
+            return D, list(pc) + cols
+        PS.page_cols = page_cols_p
     if os.environ.get("TL_LM") == "1":   # iteration 3: launch-model pull as a person-model feature (NaN where unknown)
         lm = lm_pct(); base = PS.page_cols
         def page_cols(D, _b=base):
@@ -182,6 +192,49 @@ def _ps(P, I, E, work):
         PS.page_cols = page_cols
     return PS
 
+
+def launch_priors(I):
+    """Per launch L on day d: team (makers + hunter) history over launches dated <= d-2 (daily rank settled) and topic form
+    over launches dated d-8 .. d-2. Ranks from the warehouse launches table; nothing dated d-1 or later enters."""
+    from pipeline import warehouse as W
+    R = W.query("SELECT CAST(id AS VARCHAR) AS id, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+    rk = dict(zip(R.id, R.daily_rank.astype(float)))
+    J = I.assign(id=I.id.astype(str)).sort_values("day")
+    J["team"] = [({str(m).lower() for m in json.loads(mk or "[]") if m} | ({str(p).lower()} if p else set())) for mk, p in zip(J.makers, J.poster)]
+    J["tops"] = [json.loads(t or "[]") for t in J.topics]
+    J["rank"] = J.id.map(rk)
+    days = sorted(J.day.unique()); by_day = {d: g for d, g in J.groupby("day")}
+    out = {}
+    hist_team = {}   # person -> list of ranks of launches settled so far (dated <= d-2)
+    added = set()
+    for d in days:
+        cut = (pd.Timestamp(d) - pd.Timedelta(days=2)).strftime("%Y-%m-%d")
+        for dd in days:
+            if dd > cut:
+                break
+            if dd in added:
+                continue
+            added.add(dd)
+            for r in by_day[dd].itertuples():
+                if not np.isnan(r.rank):
+                    for u in r.team:
+                        hist_team.setdefault(u, []).append(r.rank)
+        lo = (pd.Timestamp(d) - pd.Timedelta(days=8)).strftime("%Y-%m-%d")
+        win = J[(J.day >= lo) & (J.day <= cut) & J["rank"].notna()]
+        tf = {}
+        for t, rr in zip(win.tops, win["rank"]):
+            for x in t:
+                tf.setdefault(x, []).append(rr)
+        for r in by_day[d].itertuples():
+            rs = [v for u in r.team for v in hist_team.get(u, [])]
+            a = np.array(rs) if rs else None
+            tt = [np.array(tf[x]) for x in r.tops if x in tf]
+            out[r.id] = [float(len(rs)), float(a.min()) if a is not None else np.nan, float((1 / a).mean()) if a is not None else np.nan,
+                         float((a <= 10).mean()) if a is not None else np.nan,
+                         float(np.mean([(v <= 10).mean() for v in tt])) if tt else np.nan,
+                         float(np.mean([(1 / v).mean() for v in tt])) if tt else np.nan,
+                         float(np.mean([len(v) for v in tt])) if tt else 0.0]
+    return out
 
 def train(m):
     _env(); P, I, E, _ = _load(f"{m}-01")
