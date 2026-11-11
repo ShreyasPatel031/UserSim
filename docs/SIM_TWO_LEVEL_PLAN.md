@@ -128,7 +128,7 @@ Status at 21:50 UTC Nov 11:
 1. **Live vs backtest parity of the 00:05 forecast** (live 39/60/77 vs offline 63/69/75): PH agent, running.
 2. **Early-day vote forecast on months**: done. 93/95/93 at 08:00–12:00 PT on 29 days; 85/93/92 in the first hour after the reveal on 9 days; raw votes beat any learned projection.
 3. **Product's off-PH footprint before launch vs the per-launch surprise** (dated domain popularity): orchestrator, running (the population agent stays on data quality per Shreyas).
-4. **User simulation at population level, "uses or wants" channel** (sum the taste scorer over people, rank products by real adoption): E5, running.
+4. **User simulation at population level, "uses or wants" channel**: done. Weak but real: for new products, summed taste picks adopted products at about 1.5× random (top-decile 15.5 vs 9.8); for known products popularity dominates (taste adds +2.6 top-decile).
 5. **Pre-reveal blend** (PH's pre-reveal API rank + comment forecast + launch model): scored forward daily from Nov 12; refit when 7 days exist. PH agent.
 6. **Weekly and monthly calls from dated votes**: scored forward; daily re-read live from Nov 11 (raw/ph_at_launch/monthly_reread/); PH agent adds the monthly shadow line.
 7. Open, unassigned: reveal-time projection using who has already voted (voter lists from the API at the reveal × person activity, to predict remaining votes); repeat makers' past share of one-vote accounts as a pre-launch mobilisation feature.
