@@ -30,59 +30,37 @@
    "real_minus_control": 0.176
   },
   "PRIMARY pop_stratified | cold_start": {
-   "attrs": 37,
-   "real": 0.125,
+   "attrs": 33,
+   "real": 0.131,
    "real_ci": [
-    0.035,
-    0.214
+    0.046,
+    0.216
    ],
-   "control_mean": -0.019,
-   "control_sd": 0.064,
-   "real_minus_control": 0.145
+   "control_mean": -0.016,
+   "control_sd": 0.073,
+   "real_minus_control": 0.147
   },
-  "PRIMARY pop_quintile_as_attrs | all": {
+  "PRIMARY pop_stratified_EB | all": {
    "attrs": 55,
-   "real": 0.268,
+   "real": 0.251,
    "real_ci": [
-    0.199,
-    0.331
+    0.175,
+    0.325
    ],
-   "control_mean": 0.007,
-   "control_sd": 0.058,
-   "real_minus_control": 0.261
+   "control_mean": 0.047,
+   "control_sd": 0.076,
+   "real_minus_control": 0.204
   },
-  "PRIMARY pop_quintile_as_attrs | cold_start": {
-   "attrs": 37,
-   "real": 0.154,
+  "PRIMARY pop_stratified_EB | cold_start": {
+   "attrs": 33,
+   "real": 0.194,
    "real_ci": [
-    0.067,
-    0.232
+    0.112,
+    0.279
    ],
-   "control_mean": 0.022,
-   "control_sd": 0.05,
-   "real_minus_control": 0.132
-  },
-  "PRIMARY pop_stratified+attrs | all": {
-   "attrs": 55,
-   "real": 0.182,
-   "real_ci": [
-    0.11,
-    0.253
-   ],
-   "control_mean": 0.034,
-   "control_sd": 0.069,
-   "real_minus_control": 0.148
-  },
-  "PRIMARY pop_stratified+attrs | cold_start": {
-   "attrs": 37,
-   "real": 0.127,
-   "real_ci": [
-    0.036,
-    0.217
-   ],
-   "control_mean": -0.008,
-   "control_sd": 0.044,
-   "real_minus_control": 0.135
+   "control_mean": 0.014,
+   "control_sd": 0.065,
+   "real_minus_control": 0.18
   }
  },
  "fdr": {

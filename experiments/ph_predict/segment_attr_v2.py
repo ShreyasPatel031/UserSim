@@ -13,7 +13,7 @@
     pick rate), not the whole population. (d3) attribute sets: all 86 / topics only (40) / it9b only (46).
 Population: all label-filtered voting person-days, tied people (arrivals C(L)) dropped.
 usage: SIMBT=<dir> SEG_K=12 python segment_attr_v2.py -> results/segment_attr_v2_k<K>.json"""
-import glob, json, os, pickle, sys
+import glob, json, os, pickle, re, sys
 import numpy as np, pandas as pd
 from scipy.stats import spearmanr
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE)); sys.path.insert(0, HERE)
@@ -64,6 +64,15 @@ def main():
         amat[L] = s
     cold = pickle.load(open(f"{S_}/lm/build_cache_gemini.pkl", "rb")); cold["id"] = cold.id.astype(str)
     cold = set(cold[(cold.hist_hunter_n.fillna(0) == 0) & (cold.hist_maker_n.fillna(0) == 0)].id)
+    if os.environ.get("COLDFIX", "1") == "1":   # orchestrator 07:56Z: drop updates of an existing product
+        norm = lambda x: re.sub(r"\s*(v?\d+(\.\d+)*|2\.0|3\.0|pro|ai)$", "", re.sub(r"[^a-z0-9. ]", "", str(x).lower())).strip()
+        first = {}
+        for r in I.sort_values("day").itertuples():
+            first.setdefault(norm(r.name), r.day)
+        upd = {L for L in At.index if At.loc[L, ["mat_major_update", "mat_feature_update", "mat_relaunch"]].sum() > 0}
+        named = {r.id for r in I.itertuples() if first.get(norm(r.name), r.day) < r.day}
+        n0 = len(cold); cold = cold - upd - named
+        print("cold-start flag fix:", n0, "->", len(cold), flush=True)
     lab = up[(up.lday >= D0) & (up.lday <= D1) & (up.date == up.lday) & up.person.isin(people)]
     from pipeline import warehouse as W
     LV = W.query("SELECT CAST(id AS VARCHAR) AS id, day::VARCHAR AS day, votes FROM launches WHERE votes IS NOT NULL", do_sync=False)
@@ -86,7 +95,7 @@ def main():
                           "nA": np.bincount(s[a], minlength=K) * 1.0, "vA": np.bincount(s[a], weights=y[a], minlength=K),
                           "nB": np.bincount(s[~a], minlength=K) * 1.0, "vB": np.bincount(s[~a], weights=y[~a], minlength=K)})
 
-    STRAT = {"on": False}
+    STRAT = {"on": False}; EB = {"on": False}
     def mfac(h, per):
         v = np.zeros((K, 5)); e = np.zeros((K, 5))
         for c in cells:
@@ -109,7 +118,12 @@ def main():
             for x in amat.get(c["L"], ()):
                 if x in si:
                     v[:, si[x]] += c["vA"]; e[:, si[x]] += ee
-        lift = np.log((v + al) / (e + al)) - np.log((vs + al) / (es + al))[:, None]
+        if EB["on"]:   # empirical Bayes: shrink the raw log-lift toward 0 by its Poisson variance, tau^2 by moments
+            raw = np.log((v + 0.5) / (e + 0.5)) - np.log((vs + 0.5) / (es + 0.5))[:, None]; s2 = 1.0 / (v + 0.5)
+            m = e > 0.5; tau2 = max(float(np.var(raw[m]) - np.mean(s2[m])), 1e-4)
+            lift = raw * tau2 / (tau2 + s2); EB["tau2"] = tau2
+        else:
+            lift = np.log((v + al) / (e + al)) - np.log((vs + al) / (es + al))[:, None]
         return lift - lift.mean(0, keepdims=True)
 
     def score(ATTR, al, sets, launches=None):
@@ -188,8 +202,8 @@ def main():
     # propensity in the launch's within-day popularity quintile (in-sample diagnostic), plus popularity quintiles as
     # extra control attributes.
     ATTR = BINS + TOP; al = 5.0
-    for nm, strat, extra in (("pop_stratified", True, False), ("pop_quintile_as_attrs", False, True), ("pop_stratified+attrs", True, True)):
-        STRAT["on"] = strat
+    for nm, strat, extra, eb in (("pop_stratified", True, False, False), ("pop_stratified_EB", True, False, True)):
+        STRAT["on"] = strat; EB["on"] = eb
         if extra:
             for c in cells:
                 amat[c["L"]] = set(amat[c["L"]]) | {f"popq:{c['q']}"}
@@ -208,7 +222,11 @@ def main():
         if extra:
             for c in cells:
                 amat[c["L"]] = {x for x in amat[c["L"]] if not x.startswith("popq:")}
-    STRAT["on"] = False
+    STRAT["on"] = True; EB["on"] = True
+    pickle.dump({"pca": pca, "mu": mu, "sd": sd, "w": w, "km": km, "seg": seg, "grpA": grpA, "amat": amat, "ATTR": ATTR,
+                 "lift": train_lifts(ATTR, al), "tau2": EB.get("tau2"), "cold": cold, "top60": list(top60), "BINS": BINS},
+                open(f"{WORK}/segattr_v2_k{K}.pkl", "wb"))
+    STRAT["on"] = False; EB["on"] = False
     # E5 (d5): FDR over segment x attribute cells (A, train period; Poisson z vs the segment's overall rate), and the
     # top-20 cells' A-train vs B-test stability (centered lifts)
     from scipy.stats import norm
