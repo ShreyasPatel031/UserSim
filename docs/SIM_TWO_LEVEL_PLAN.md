@@ -106,3 +106,15 @@ does not lose beyond its interval, and the person metrics improve.
   LLM-as-the-user, blind LLM appeal (0.05–0.16 vs votes, full page included).
 - **Bug fixed in simlab, not in the deployed pipeline:** `[REDACTED]` / id "0" maker placeholder in tie and
   maker-history features. LM fix is accuracy-neutral.
+
+## Decision (orchestrator, Nov 11 13:45 UTC): ship the early-day forecast
+Shreyas: stop asking, take the call, move the metric. Call taken:
+- The PH operating north-star metric is now reported at two times: the 00:05 PT forecast (launch model, the
+  pre-launch line), and the early-day forecast at the vote reveal (~04:00 PT) and +1 h / +2 h / +4 h, using only
+  data up to that minute.
+- Reason: pre-launch ranking is at its ceiling with held data (about 60–70 / 68 / 75 in honest backtest; every
+  candidate since Nov 2 failed). Live votes reach 56 / 73 / 83 at the reveal and 89 / 93 / 90 two hours later
+  (3 days). 68% of votes are cast before the reveal.
+- PH agent: replay on all captured days, go live by hand from Nov 11, weekly and monthly lists from cumulative votes.
+- The user simulation continues on the "uses or wants" channel (learned taste scorer) as a separate deliverable.
+- Hacker News stays stopped.

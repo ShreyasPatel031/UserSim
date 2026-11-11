@@ -1576,3 +1576,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 11:34 UTC Nov 11 mailbox checked: Data Feeder maker X handles reply (PH API twitterUsername null for all 19; pool gave 4, 3 read; 15 null). Live capture checked.
 - 12:34 UTC Nov 11 mailbox checked; live capture checked.
 - 13:34 UTC Nov 11 mailbox checked; live capture checked.
+- 13:45 UTC Nov 11 Shreyas: stop asking; take the call; no progress in two weeks. DECISION: ship the early-day PH forecast (reveal, +1 h, +2 h, +4 h; data up to that minute only) as the operating north-star metric next to the 00:05 LM line; PH agent to replay on all captured days, go live by hand today, and forecast weekly/monthly from cumulative votes. Recorded in SIM_TWO_LEVEL_PLAN.md.
