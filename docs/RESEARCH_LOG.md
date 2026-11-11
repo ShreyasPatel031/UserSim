@@ -1574,3 +1574,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 10:35 UTC Nov 11 mailbox checked: Data Feeder maker X read Nov 11 PARTIAL (23 rows, all late; real data for 4; 19 without an X handle because PH profile pages were blocked). Asked Data Feeder to take handles from the official API user.twitterUsername / x_handles_pool / people_live files and decouple the X read from the header read (to_grokbot/20261111T1035Z_maker_x_handles.md). Live capture checked.
 - 10:50 UTC Nov 11 daily collection review: COMPLETE 39,781 (rate 0, fleet paused by design); coverage 41.2%/56.7%; products_info 35,032 by official API; maker X read partial; live capture healthy; DATA_SPEC status added; dashboard refresh left to the PH agent's daily check.
 - 11:34 UTC Nov 11 mailbox checked: Data Feeder maker X handles reply (PH API twitterUsername null for all 19; pool gave 4, 3 read; 15 null). Live capture checked.
+- 12:34 UTC Nov 11 mailbox checked; live capture checked.
