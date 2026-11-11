@@ -1,0 +1,137 @@
+{
+ "vote_rule": "vote-based parts only from launches dated <= d-7 (C1: d-14..d-7); rank-based <= d-2",
+ "c2_lineup": "00:05 PT forecast line-up where it exists (Oct 28 on), else the final featured list (c2_final_list = 1)",
+ "seeds": "5, predictions averaged",
+ "base_inputs": 53,
+ "candidates": [
+  "FIXMK"
+ ],
+ "assert_le_d_minus_2": {
+  "rows": 0,
+  "violations": 0
+ },
+ "launches": 5949,
+ "days": 253,
+ "Mar-Oct": {
+  "day top3": {
+   "base": 60.5,
+   "days": 243,
+   "FIXMK": [
+    60.1,
+    -0.4,
+    [
+     -1.9,
+     1.1
+    ]
+   ]
+  },
+  "day top5": {
+   "base": 67.7,
+   "days": 243,
+   "FIXMK": [
+    68.6,
+    0.9,
+    [
+     -0.2,
+     2.0
+    ]
+   ]
+  },
+  "day top10": {
+   "base": 75.2,
+   "days": 204,
+   "FIXMK": [
+    75.6,
+    0.4,
+    [
+     -0.2,
+     1.1
+    ]
+   ]
+  }
+ },
+ "Jul-Oct": {
+  "day top3": {
+   "base": 65.0,
+   "days": 123,
+   "FIXMK": [
+    63.4,
+    -1.6,
+    [
+     -3.8,
+     0.3
+    ]
+   ]
+  },
+  "day top5": {
+   "base": 69.4,
+   "days": 123,
+   "FIXMK": [
+    70.4,
+    1.0,
+    [
+     -0.3,
+     2.4
+    ]
+   ]
+  },
+  "day top10": {
+   "base": 76.8,
+   "days": 108,
+   "FIXMK": [
+    77.1,
+    0.4,
+    [
+     -0.5,
+     1.2
+    ]
+   ]
+  }
+ },
+ "Oct20-Nov8": {
+  "day top3": {
+   "base": 70.0,
+   "days": 20,
+   "FIXMK": [
+    70.0,
+    0.0,
+    [
+     -6.7,
+     6.7
+    ]
+   ]
+  },
+  "day top5": {
+   "base": 68.0,
+   "days": 20,
+   "FIXMK": [
+    70.0,
+    2.0,
+    [
+     -3.0,
+     7.0
+    ]
+   ]
+  },
+  "day top10": {
+   "base": 74.5,
+   "days": 20,
+   "FIXMK": [
+    75.5,
+    1.0,
+    [
+     -1.5,
+     3.5
+    ]
+   ]
+  }
+ },
+ "keep": {
+  "FIXMK": {
+   "ci_positive_top3_or_5": false,
+   "no_k_below_-2": true,
+   "live_top3_top5_not_negative": true,
+   "KEEP": false
+  }
+ }
+}
