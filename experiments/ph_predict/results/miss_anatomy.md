@@ -85,3 +85,10 @@ as comment_forecast.py, month-forward over 207 days.
 - 89% of launches have one, but the mean is 1.0: mostly the maker's first comment.
 - Ridge minus LM: top 3 −0.3 [−2.3, +1.4], top 5 +0.6 [−0.5, +1.6], top 10 −0.2. **No gain.**
 - The comment signal only appears after 00:00 PT, as the P1–P4 points.
+
+**Test of (a), Nov 11:** pre-launch GitHub momentum. Source: dated daily star counts from raw/github_stargazers/star_history_ph_0000.jsonl (600 repos linked from PH). Repos were matched to launches by slug (214 matches, some may be false).
+- 208 matched launches fall in the honest window (110 days); 13 of them finished top 3, and 8 of those were predicted outside the top 3.
+- Spearman with the within-day residual: stars before launch +0.017, last 7 days +0.030, last 30 days +0.047. Standard error is about 0.07 at n = 208, so none is distinguishable from 0.
+- The same counts correlate with log votes (+0.19 to +0.22), so they carry signal the model already has.
+- Stars on the launch day itself correlate with the residual (+0.16), but those are post-00:05.
+- **No gain at 00:05, and coverage is under 4% of launches.** Not worth a feature.
