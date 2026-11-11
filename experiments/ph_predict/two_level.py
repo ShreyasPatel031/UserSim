@@ -686,9 +686,7 @@ def choice():
     A_COLS = ACT_COLS + ["lineup_n"]; K_COLS = A_COLS + ["mean_daily"]
     models, parts, rep = {}, [], {"base": base, "fit": {}}
     os.makedirs(f"{WORK}/rows_tl_{TAG}", exist_ok=True)
-    for mon in sorted({d[:7] for d in test}):
-        prev = (pd.Timestamp(mon + "-01") - pd.Timedelta(days=1)).strftime("%Y-%m")
-        fit = [d for d in days_all if d[:7] == prev]
+    def fit_parts(fit):
         Xs, Ps = [], []
         for d in fit:
             X, P, taste = load(d)
@@ -699,16 +697,60 @@ def choice():
         act = Pf[Pf.a == 1]
         mK = lgb.LGBMRegressor(objective="poisson", n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=2).fit(act[K_COLS], act.k)
         mS = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, verbose=-1, n_jobs=2).fit(Xf[scols], Xf.y)
-        models[mon] = (mA, mK, mS, scols)
-        rep["fit"][mon] = {"fit_month": prev, "fit_days": len(fit), "person_days": int(len(Pf)), "active_rate": round(float(Pf.a.mean()), 4),
-                           "share_rows": int(len(Xf)), "mean_k_active": round(float(act.k.mean()), 3)}
+        info = {"fit_days": len(fit), "person_days": int(len(Pf)), "active_rate": round(float(Pf.a.mean()), 4),
+                "share_rows": int(len(Xf)), "mean_k_active": round(float(act.k.mean()), 3)}
+        return (mA, mK, mS, scols), info
+    TEMP = os.environ.get("TL_TEMP") == "1"
+    GRID = [0.25, 0.35, 0.5, 0.7, 1.0]
+    def share(X, T):   # E5: softmax(logit(s) / T) within person-day; TL_TEMP off keeps it8's s / sum(s)
+        if T is None:
+            return X.s / X.groupby("person").s.transform("sum")
+        z = np.log(X.s.clip(1e-9, 1 - 1e-9) / (1 - X.s.clip(1e-9, 1 - 1e-9))) / T
+        z = z - z.groupby(X.person).transform("max"); e = np.exp(z)
+        return e / e.groupby(X.person).transform("sum")
+    def predict(d, m, filt):
+        mA, mK, mS, scols = m
+        X, P, _ = load(d, filt=filt)
+        P["A"] = mA.predict_proba(P[A_COLS])[:, 1]; P["K"] = np.maximum(mK.predict(P[K_COLS]), 1.0)
+        X["s"] = mS.predict_proba(X[scols])[:, 1]
+        return X.merge(P[["person", "A", "K"]], on="person"), P
+    if TEMP:
+        from pipeline import warehouse as W
+        Lv = W.query("SELECT CAST(id AS VARCHAR) AS id, votes FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+        vmap = dict(zip(Lv.id, Lv.votes))
+        def curve(pairs):   # pairs: [(day, models)] -> mean within-day Spearman(EV(T), real votes) per T, on label-filtered rows
+            out = {T: [] for T in GRID}
+            for d, m in pairs:
+                X, _ = predict(d, m, filt=True)
+                for T in GRID:
+                    ev = (X.A * X.K * share(X, T)).groupby(X.id).sum()
+                    v = ev.index.map(vmap)
+                    k = ~pd.isna(v)
+                    if k.sum() > 3:
+                        out[T].append(spearmanr(ev[k], np.asarray(v[k], float)).correlation)
+            return {T: (float(np.mean(x)) if x else np.nan, len(x)) for T, x in out.items()}
+        rep["temperature"] = {}
+    for mon in sorted({d[:7] for d in test}):
+        prev = (pd.Timestamp(mon + "-01") - pd.Timedelta(days=1)).strftime("%Y-%m")
+        fit = [d for d in days_all if d[:7] == prev]
+        models[mon], info = fit_parts(fit); taste = None
+        rep["fit"][mon] = {"fit_month": prev, **info}
+        if TEMP:   # choose T on out-of-sample rows of the previous month only
+            prev2 = (pd.Timestamp(prev + "-01") - pd.Timedelta(days=1)).strftime("%Y-%m")
+            earlier = [d for d in days_all if d[:7] == prev2]
+            if len(earlier) >= 7:   # previous month scored by parts fitted on the month before it
+                m2, _ = fit_parts(earlier); pairs = [(d, m2) for d in fit]; how = f"{prev} days scored by parts fitted on {prev2}"
+            else:                   # no earlier month: 2-fold cross-fit by day within the previous month
+                a, b = fit[0::2], fit[1::2]; ma, _ = fit_parts(a); mb, _ = fit_parts(b)
+                pairs = [(d, mb) for d in a] + [(d, ma) for d in b]; how = f"{prev} 2-fold cross-fit by alternate day"
+            cv = curve(pairs); best = max(GRID, key=lambda T: cv[T][0])
+            rep["temperature"][mon] = {"selection": how, "curve": {str(T): cv[T] for T in GRID}, "chosen_T": best}
+            models[mon] = models[mon] + (best,)
     clipped = 0; total = 0
     for d in test:
-        mA, mK, mS, scols = models[d[:7]]
-        X, P, _ = load(d, filt=False)   # every row is scored (as at 00:05); the label filter applies in `score`
-        P["A"] = mA.predict_proba(P[A_COLS])[:, 1]; P["K"] = np.maximum(mK.predict(P[K_COLS]), 1.0)   # K >= 1 given active
-        X["s"] = mS.predict_proba(X[scols])[:, 1]; X["S"] = X.s / X.groupby("person").s.transform("sum")
-        X = X.merge(P[["person", "A", "K"]], on="person")
+        m = models[d[:7]]; T = m[4] if TEMP else None
+        X, P = predict(d, m[:4], filt=False)   # every row is scored (as at 00:05); the label filter applies in `score`
+        X["S"] = share(X, T)
         q = X.A * X.K * X.S; p = np.minimum(1.0, q); clipped += int((q > 1).sum()); total += len(q)
         R = pd.DataFrame({"person": X.person, "id": X.id, "w": (q / p).values, "p": p.values, "y": X.y.astype(int).values, "backed": 0.0, "day": d})
         R.to_parquet(f"{WORK}/rows_tl_{TAG}/{d}.parquet")
