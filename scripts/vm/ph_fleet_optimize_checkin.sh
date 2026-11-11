@@ -98,6 +98,8 @@ fi
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
 # Hung batches: limited kicks; CF block exit is port-swap via PH_BLOCK_NEW_PORT on supervisor.
 export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
+# Below target, never mass-kick (port-swap on supervisor handles CF; kicks were killing long whole pulls).
+python3 -c "import sys; sys.exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null && export FLEET_CF_RECOVER_MAX_KICKS=0
 "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
 # Below target: still shed idle slots when yield collapsed (many VMs, ~0.3 ppm each).
