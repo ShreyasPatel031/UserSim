@@ -87,3 +87,22 @@ does not lose beyond its interval, and the person metrics improve.
 - **Not tried until Nov 11:** product understanding from launch-day text inside the person model, a listwise
   ranking of the day's line-up, a gallery read, a persona panel.
 - **Rule:** PH work targets the per-launch appeal term. People pulls do not address it.
+
+## Where the evidence stands (Nov 11, 09:45 UTC)
+- **Launch-day upvote, per person:** predicted by launch popularity × the person's activity. Product taste adds no
+  measurable person-level gain on top of the launch-model score (E5: Hit@1 +0.019 [−0.008, 0.049], AUC −0.001).
+  Team ties add about 5% of the within-day choice. Votes are 68% cast before the hour-4 reveal; top-3 launches are
+  34% one-vote-that-day accounts.
+- **Launch ranking (north star):** best from the launch model alone. Two-term simulation (taste + LM popularity):
+  59.6 / 67.4 / 70.0, above the deployed sim (49.1 / 65.3 / 70.0) and it8 full (+15.8 top 3 [7.0, 26.3]), below
+  the honest backtest LM (70.2 / 68.4 / 74.7). Not run on live LM forecasts yet. Live votes reach about 90% at ~6 h.
+- **"Uses or wants" (stacks, reviews, collections), per person:** a learned taste scorer gives AUC 0.74–0.75 against
+  popularity-, format- and length-matched negatives; personal part +0.11–0.12 over a shuffled profile. Fuller text
+  adds +0.007; persona cards and the LLM judge add nothing.
+- **Upvote taste and use taste transfer weakly** (zero-shot personal part +0.03). Keep them as two response channels.
+- **Audience segments × product attributes:** real and stable at pooled level (0.25 vs control 0.05; cold-start 0.19
+  vs 0.01). Not a per-launch or per-person predictor.
+- **Ruled out on held data:** follower-list pull, audience-size scaling, on-PH team-audience term, cascade sim,
+  LLM-as-the-user, blind LLM appeal (0.05–0.16 vs votes, full page included).
+- **Bug fixed in simlab, not in the deployed pipeline:** `[REDACTED]` / id "0" maker placeholder in tie and
+  maker-history features. LM fix is accuracy-neutral.
