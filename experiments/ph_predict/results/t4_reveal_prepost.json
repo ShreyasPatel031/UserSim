@@ -1,0 +1,59 @@
+{
+ "note": "votes_at_fetch is 0 for every launch while counts are hidden (~4 h); the first snapshot at/after 4 h holds the votes cast under random order + hidden counts; post = final - reveal",
+ "days": [
+  {
+   "day": "2026-11-04",
+   "launches": 35,
+   "reveal_min": 240.0,
+   "end_min": 1125.0,
+   "pre_share_of_final": 0.708,
+   "top1_pre": 0.06,
+   "top1_post": 0.182,
+   "top3_pre": 0.141,
+   "top3_post": 0.402,
+   "top5_pre": 0.215,
+   "top5_post": 0.499,
+   "sp_pre_post": 0.771,
+   "sp_pre_final": 0.912,
+   "top3_kept": 2
+  },
+  {
+   "day": "2026-11-09",
+   "launches": 25,
+   "reveal_min": 240.0,
+   "end_min": 1425.0,
+   "pre_share_of_final": 0.619,
+   "top1_pre": 0.072,
+   "top1_post": 0.11,
+   "top3_pre": 0.199,
+   "top3_post": 0.363,
+   "top5_pre": 0.299,
+   "top5_post": 0.634,
+   "sp_pre_post": 0.69,
+   "sp_pre_final": 0.884,
+   "top3_kept": 2
+  },
+  {
+   "day": "2026-11-10",
+   "launches": 50,
+   "reveal_min": 240.0,
+   "end_min": 1155.0,
+   "pre_share_of_final": 0.709,
+   "top1_pre": 0.035,
+   "top1_post": 0.121,
+   "top3_pre": 0.094,
+   "top3_post": 0.425,
+   "top5_pre": 0.145,
+   "top5_post": 0.539,
+   "sp_pre_post": 0.8,
+   "sp_pre_final": 0.954,
+   "top3_kept": 2
+  }
+ ],
+ "skipped": {
+  "2026-11-03": "no hidden-window snapshots",
+  "2026-11-06": "no hidden-window snapshots",
+  "2026-11-07": "no hidden-window snapshots",
+  "2026-11-08": "nonzero votes before 4 h"
+ }
+}
