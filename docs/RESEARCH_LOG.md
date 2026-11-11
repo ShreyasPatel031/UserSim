@@ -843,3 +843,10 @@ All products: Spearman / top-decile precision (random = 10):
 Cold products (no A uses; 74% of the universe; 21% of them gain >= 1 B adopter) - the new-product case:
 - POP_A ties (top-decile 9.8 = random); TASTE 9.3 / 15.5 [14.6, 17.1] (vs POP_A +5.7 [4.1, 7.5]); UPV −16.9 / 16.6; TASTE + UPV 18.9.
 Reading: summed taste carries real but weak population signal - about 1.5x random at picking which new products the held-out half adopts; popularity dominates for known products and taste adds +2.6 points on top. For the website, "who will use it" should be worded as "people with similar tools" with low confidence.
+
+### 2026-11-11 E5 — queue 7b: repeat makers' low-activity voter share as a mobilisation feature
+Script experiments/simlab/mobilisation.py; report reports/mobilisation/. Full voter lists per launch are not held, so the proxy uses complete pool people: for launch L (day d), the makers' earlier launches (<= d−2) and their pool voters, split by the voter's dated upvote count up to d−2 (<= 3 = low-activity). 44% of launches are by repeat makers. Target r = logv − LM base; LightGBM month-forward, 222 test days; day-bootstrap CIs.
+- Raw within-day Spearman with r (repeat launches, 242 days): low-activity count +0.034 [−0.013, 0.083], low-activity share +0.026 [−0.019, 0.072], warm-audience size +0.028 [−0.017, 0.075].
+- Warm features (prior launches, earlier voters) + base: top-3 / 5 / 10 minus LM-only −2.4 [−4.7, −0.2] / −1.0 / −0.3.
+- Adding mobilisation: residual Spearman +0.028 [−0.001, 0.056]; top-3 / 5 / 10 vs warm +0.0 [−2.0, 2.1] / +0.0 / +0.1.
+Verdict: no gain. Repeat makers' low-activity pool voters do not predict the per-launch surprise (proxy limited to pool voters; full per-launch voter lists would be needed for the real one-vote share). Item 7a (voters at the reveal) is not testable on held data.

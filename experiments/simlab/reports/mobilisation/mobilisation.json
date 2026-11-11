@@ -1,0 +1,164 @@
+{
+ "design": "Queue item 7b (Nov 11): repeat makers' past share of one-vote / low-activity accounts as a pre-launch mobilisation feature.\nFull voter lists per launch are not held, so the proxy uses complete pool people (store_v3, full upvote lists):\nfor launch L on day d with team T (real maker/poster handles; \"[REDACTED]\" dropped), the makers' EARLIER launches are\nlaunches dated <= d-2 sharing a team member. Their pool voters (upvotes of complete people) are split by the voter's\nactivity = number of the voter's upvotes on launches dated <= d-2 (launch-day dating, no future reads):\n  mob_low_n    number of distinct earlier-launch pool voters with activity <= 3 (low-activity, \"one-vote-like\")\n  mob_low_sh   their share of the earlier-launch pool voters\n  mob_n        distinct earlier-launch pool voters (warm audience size)\n  prior_l      number of earlier launches; repeat = prior_l > 0\nTarget: per-launch multiplier r = logv - base (it8 LM out-of-sample). Month-forward LightGBM (months < m) on the features\n+ base; daily top 3/5/10 of base + predicted r vs LM only, and within-day Spearman of predicted vs true r, paired by day,\nday-bootstrap 95% CIs. Also the raw within-day Spearman of each feature with r among repeat-maker launches.",
+ "repeat_share": 0.439,
+ "raw_within_day_spearman_with_r (repeat launches)": {
+  "l_prior_l": [
+   0.032,
+   -0.014,
+   0.079,
+   242
+  ],
+  "l_mob_n": [
+   0.028,
+   -0.017,
+   0.075,
+   242
+  ],
+  "l_mob_low_n": [
+   0.034,
+   -0.013,
+   0.083,
+   242
+  ],
+  "mob_low_sh": [
+   0.026,
+   -0.019,
+   0.072,
+   242
+  ]
+ },
+ "warm (prior_l, mob_n)": {
+  "within_day_spearman_pred_r": [
+   0.046,
+   0.009,
+   0.083,
+   222
+  ],
+  "top3": [
+   59.61,
+   56.456,
+   62.763,
+   222
+  ],
+  "top5": [
+   67.207,
+   64.775,
+   69.82,
+   222
+  ],
+  "top10": [
+   74.189,
+   72.477,
+   75.992,
+   222
+  ],
+  "top3 minus LM-only": [
+   -2.402,
+   -4.655,
+   -0.15,
+   222
+  ],
+  "top5 minus LM-only": [
+   -0.991,
+   -2.342,
+   0.36,
+   222
+  ],
+  "top10 minus LM-only": [
+   -0.315,
+   -1.036,
+   0.405,
+   222
+  ]
+ },
+ "warm + mobilisation": {
+  "within_day_spearman_pred_r": [
+   0.074,
+   0.039,
+   0.108,
+   222
+  ],
+  "top3": [
+   59.61,
+   56.306,
+   62.763,
+   222
+  ],
+  "top5": [
+   67.207,
+   64.595,
+   69.73,
+   222
+  ],
+  "top10": [
+   74.279,
+   72.477,
+   76.036,
+   222
+  ],
+  "top3 minus LM-only": [
+   -2.402,
+   -4.805,
+   0.0,
+   222
+  ],
+  "top5 minus LM-only": [
+   -0.991,
+   -2.523,
+   0.45,
+   222
+  ],
+  "top10 minus LM-only": [
+   -0.225,
+   -0.991,
+   0.495,
+   222
+  ]
+ },
+ "mobilisation minus warm (paired by day)": {
+  "spearman": [
+   0.028,
+   -0.001,
+   0.056,
+   222
+  ],
+  "top3": [
+   0.0,
+   -1.952,
+   2.102,
+   222
+  ],
+  "top5": [
+   0.0,
+   -1.261,
+   1.261,
+   222
+  ],
+  "top10": [
+   0.09,
+   -0.45,
+   0.631,
+   222
+  ]
+ },
+ "LM-only": {
+  "top3": [
+   62.012,
+   59.009,
+   65.165,
+   222
+  ],
+  "top5": [
+   68.198,
+   65.673,
+   70.721,
+   222
+  ],
+  "top10": [
+   74.505,
+   72.838,
+   76.171,
+   222
+  ]
+ }
+}
