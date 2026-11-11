@@ -35,5 +35,14 @@
   "label": "held-out uses, popularity- and length-matched",
   "source": "E5 person_bundle_gemini (Gemini-256 + trees)",
   "date": "2026-11-11"
+ },
+ "rank_band_coverage": {
+  "values": {
+   "coverage": 0.797,
+   "launches": 5351
+  },
+  "label": "month-forward, bands built only from earlier months",
+  "source": "E5 landing_retrieval: experiments/simlab/reports/landing_retrieval/landing_retrieval.json, branch claude/person-model-v2",
+  "date": "2026-11-11"
  }
 }

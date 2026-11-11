@@ -128,6 +128,7 @@ function renderLaunch(l){
      <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>
    <div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
    <div class="scale"><span>#1</span><span>page scores above ${l.percentile}% of past launches · band = 10th to 90th percentile of where similar pages finished</span><span>#${N}+</span></div>
+   ${l.coverage ? `<p class="small" style="margin-top:12px"><b>${Math.round(Number(l.coverage.share)*10)} in 10</b> launches with this score finished within this rank range (checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches, ${esc(l.coverage.label)}; fixed offline figure, ${esc(l.coverage.date)}).</p>` : ""}
    <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
    <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
      <tr><td>This page-only model (${A.days} days)</td><td>${A.top3.toFixed(0)}%</td><td>${A.top5.toFixed(0)}%</td><td>${A.top10.toFixed(0)}%</td></tr>

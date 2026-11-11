@@ -516,7 +516,16 @@ def step_launch(tok: str) -> dict:
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
                        "(10th to 90th percentile)."),
-            "honesty": _honesty(acc)}
+            "honesty": _honesty(acc), "coverage": _coverage()}
+
+
+def _coverage() -> dict | None:
+    try:
+        from mvp.ph_site.live import claims
+        c = claims()["rank_band_coverage"]
+        return {"share": c["values"]["coverage"], "launches": c["values"]["launches"], "label": c["label"], "date": c["date"]}
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def _honesty(acc: dict) -> str:
