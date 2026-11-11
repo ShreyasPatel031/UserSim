@@ -579,3 +579,37 @@ Corrections:
 - **"Ties act mainly through which launches reach the top" (05:55Z entry) is withdrawn.** With real ties, they add about +0.10 Hit@3 even inside the final top 10.
 - **The placeholder diluted the real ties:** it made everyone tied to about a third of launches.
 - **Taste + ties now explain about 5% of the within-day choice,** against about 18% for the day's popularity.
+
+### 2026-11-11 08:05Z — E5 uses v2, S0–S2 with leaks controlled. Most of the "taste" AUC is product-level appeal.
+
+**Two artifacts found along the way:**
+- **Rich-text availability.** API text exists for 74.5% of held-out items but only 28% of pop-matched negatives. This made the first S1 look like +0.089 AUC.
+- **Text length.** It alone scored about 0.64–0.67 AUC.
+
+**Final evaluation**
+- Sets: negatives matched on pool-popularity decile × rich status × text-length decile. 40,038 pop-matched tasks, 5,096 people.
+- **Shuffled-profile control:** the same candidates are scored against a random other person's profile. Real AUC minus shuffled AUC is the *personal* part.
+- Code: `experiments/simlab/uses_lenmatched.py`. Results: `reports/uses_v2/uses_lenmatched.json`.
+
+| pop + rich + length matched | AUC | shuffled-profile AUC | personal part |
+|---|---|---|---|
+| length alone (control) | 0.449 | | |
+| popularity (pool count, leave-person-out) | 0.742 | | |
+| S0 card text, bge-small | 0.605 | 0.562 | 0.043 [0.038, 0.048] |
+| S1 API text, bge-small | 0.611 | 0.558 | 0.053 [0.049, 0.058] |
+| S2 API text, bge-base | **0.636** | 0.577 | **0.058 [0.054, 0.063]** |
+
+Paired deltas:
+- S1 − S0: +0.007 [0.003, 0.010]. The earlier +0.06–0.09 was mostly format and length.
+- S2 − S0: +0.031 [0.027, 0.035]. S2 − S1: +0.024.
+- Personal part, S1 − S0: +0.010 [0.006, 0.014].
+
+Subsets:
+- Held-out item card-only: the personal part is larger, about 0.10.
+- Held-out item with API text: personal part 0.037–0.050.
+
+**Reading**
+1. With leaks controlled, use-taste AUC is about 0.61–0.64. Of that, about 0.06 above the shuffled profile is personal. The rest (shuffled ≈ 0.56–0.58) is product-level appeal: what kinds of products people use at all.
+2. A stronger embedding helps a little: about +0.03 AUC, +0.015 of it personal.
+3. Richer API text helps very little once its format and length are controlled.
+4. Popularity (0.74) still dominates.
