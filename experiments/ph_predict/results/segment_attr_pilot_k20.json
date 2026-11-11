@@ -39,6 +39,28 @@
      0.227,
      0.323
     ]
+   },
+   "disjoint_predict_all": {
+    "attrs": 57,
+    "spearman": [
+     0.383,
+     0.334,
+     0.428
+    ]
+   },
+   "disjoint_predict_cold_start": {
+    "attrs": 36,
+    "spearman": [
+     0.276,
+     0.217,
+     0.339
+    ]
+   },
+   "disjoint_temporal_A_train_vs_B_test": {
+    "attrs": 57,
+    "cell_pearson": 0.31,
+    "within_attr_spearman": 0.305,
+    "spearman_brown_cell": 0.473
    }
   },
   "shuffled": {
@@ -64,17 +86,39 @@
     "attrs": 70,
     "spearman": [
      0.212,
-     0.165,
-     0.258
+     0.166,
+     0.261
     ]
    },
    "predict_cold_start": {
     "attrs": 50,
     "spearman": [
      0.095,
-     0.049,
-     0.145
+     0.047,
+     0.144
     ]
+   },
+   "disjoint_predict_all": {
+    "attrs": 57,
+    "spearman": [
+     0.164,
+     0.12,
+     0.211
+    ]
+   },
+   "disjoint_predict_cold_start": {
+    "attrs": 36,
+    "spearman": [
+     0.063,
+     0.006,
+     0.12
+    ]
+   },
+   "disjoint_temporal_A_train_vs_B_test": {
+    "attrs": 57,
+    "cell_pearson": 0.14,
+    "within_attr_spearman": 0.092,
+    "spearman_brown_cell": 0.245
    }
   }
  },
@@ -104,17 +148,39 @@
     "attrs": 52,
     "spearman": [
      0.301,
-     0.225,
-     0.373
+     0.227,
+     0.372
     ]
    },
    "predict_cold_start": {
     "attrs": 32,
     "spearman": [
      0.277,
-     0.196,
-     0.349
+     0.203,
+     0.346
     ]
+   },
+   "disjoint_predict_all": {
+    "attrs": 38,
+    "spearman": [
+     0.241,
+     0.151,
+     0.328
+    ]
+   },
+   "disjoint_predict_cold_start": {
+    "attrs": 27,
+    "spearman": [
+     0.187,
+     0.112,
+     0.26
+    ]
+   },
+   "disjoint_temporal_A_train_vs_B_test": {
+    "attrs": 38,
+    "cell_pearson": 0.265,
+    "within_attr_spearman": 0.218,
+    "spearman_brown_cell": 0.418
    }
   },
   "shuffled": {
@@ -141,7 +207,7 @@
     "spearman": [
      0.017,
      -0.021,
-     0.057
+     0.056
     ]
    },
    "predict_cold_start": {
@@ -149,8 +215,30 @@
     "spearman": [
      -0.038,
      -0.088,
-     0.013
+     0.008
     ]
+   },
+   "disjoint_predict_all": {
+    "attrs": 38,
+    "spearman": [
+     -0.007,
+     -0.071,
+     0.06
+    ]
+   },
+   "disjoint_predict_cold_start": {
+    "attrs": 27,
+    "spearman": [
+     -0.042,
+     -0.105,
+     0.018
+    ]
+   },
+   "disjoint_temporal_A_train_vs_B_test": {
+    "attrs": 38,
+    "cell_pearson": -0.018,
+    "within_attr_spearman": -0.009,
+    "spearman_brown_cell": -0.037
    }
   }
  }

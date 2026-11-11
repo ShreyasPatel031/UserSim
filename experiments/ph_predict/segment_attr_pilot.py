@@ -117,6 +117,7 @@ def main():
         return {"attrs": int(m.sum()), "cell_pearson": round(r, 3), "within_attr_spearman": round(s, 3), "spearman_brown_cell": round(2 * r / (1 + r), 3) if r > -1 else None}
 
     res = {"K": K, "people": int(len(people)), "attributes": len(ATTR)}
+    art = {}
     for pop in ("voters", "browsers"):
         cl = cells[pop]; out = {"person_days_x_launch": int(sum(len(c[2]) for c in cl)), "votes": int(sum(c[3].sum() for c in cl))}
         for sname, seg in (("real", seg_real), ("shuffled", seg_shuf)):
@@ -144,9 +145,36 @@ def main():
                 sp = np.array([x for x in sp if not np.isnan(x)])
                 ci = np.percentile([sp[rng.integers(0, len(sp), len(sp))].mean() for _ in range(3000)], [2.5, 97.5]) if len(sp) > 1 else [np.nan, np.nan]
                 o[f"predict_{sub}"] = {"attrs": int(len(sp)), "spearman": [round(float(sp.mean()), 3) if len(sp) else None, round(float(ci[0]), 3), round(float(ci[1]), 3)]}
+            # person-disjoint (orchestrator 07:50Z): lifts learned on half A (train period), scored on half B (test)
+            trA, vA = pooled(cl, seg, half, period="train")
+            for sub, launches in (("all", None), ("cold_start", cold)):
+                teB, vB = pooled(cl, seg, ~half, launches=launches, period="test")
+                test_L = {L for d, L, pp, y in cl if d >= TEST0 and (launches is None or L in launches)}
+                sp = []
+                for j, a in enumerate(ATTR):
+                    if vB[:, j].sum() < 30:
+                        continue
+                    grp = [L for L in test_L if a in amat.get(L, ())]
+                    if grp:
+                        pred = np.mean([np.mean([trA[:, si[x]] for x in amat[L] if x in si], axis=0) for L in grp], axis=0)
+                        sp.append(spearmanr(pred, teB[:, j]).correlation)
+                sp = np.array([x for x in sp if not np.isnan(x)])
+                ci = np.percentile([sp[rng.integers(0, len(sp), len(sp))].mean() for _ in range(3000)], [2.5, 97.5]) if len(sp) > 1 else [np.nan, np.nan]
+                o[f"disjoint_predict_{sub}"] = {"attrs": int(len(sp)), "spearman": [round(float(sp.mean()), 3) if len(sp) else None, round(float(ci[0]), 3), round(float(ci[1]), 3)]}
+            o["disjoint_temporal_A_train_vs_B_test"] = rel(trA, pooled(cl, seg, ~half, period="test")[0], vA, pooled(cl, seg, ~half, period="test")[1])
             out[sname] = o
+            if sname == "real":
+                art[pop] = tr
         res[pop] = out
     json.dump(res, open(os.path.join(HERE, "results", f"segment_attr_pilot_k{K}.json"), "w"), indent=1, default=float)
+    # artifacts for the person-level test and the readable output (salted ids only, scratch only)
+    gp = pat.mean(0); gt = ptop.mean(0); desc = {}
+    for s_ in range(K):
+        m = seg_real.values == s_
+        la = np.log((pat[m].mean(0) + 1e-3) / (gp + 1e-3)); lt = np.log((ptop[m].mean(0) + 1e-3) / (gt + 1e-3))
+        desc[s_] = {"size": int(m.sum()), "top_attrs": [BIN[i] for i in np.argsort(-la[:len(BIN)])[:4]],
+                    "top_topics": [str(top60[i]) for i in np.argsort(-lt)[:4]]}
+    pickle.dump({"seg": seg_real, "ATTR": ATTR, "amat": amat, "lift_train": art, "desc": desc, "cold": cold}, open(f"{WORK}/segattr_k{K}.pkl", "wb"))
     print(json.dumps(res, default=float))
 
 
