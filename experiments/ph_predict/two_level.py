@@ -443,6 +443,9 @@ def score():
         res["calibration_deciles"] = [{"decile": int(k), "mean_p": round(float(g.q.mean()), 5), "real_rate": round(float(g.y.mean()), 5), "n": int(len(g))}
                                       for k, g in Cb.groupby("dec")]
         res["calibration_pooled"] = {"mean_p": round(float(Cb.q.mean()), 5), "real_rate": round(float(Cb.y.mean()), 5)}
+    res["person_per_day"] = Pm.round(5).to_dict("records")
+    clp = Pm[~Pm.day.isin(SELECTED)]
+    res["person_clean_days"] = {k: boot(clp[k].values, rng) for k in ("hit1", "hit3", "person_auc", "voter_rprec_p", "logloss", "ece")}
     cl = Pm[~Pm.day.isin(SELECTED)]
     res["person_rprec_p_split"] = {"clean": boot(cl.voter_rprec_p.values, rng), "oct_clean": boot(cl[cl.day < "2026-11-01"].voter_rprec_p.values, rng),
                                    "nov_clean": boot(cl[cl.day >= "2026-11-01"].voter_rprec_p.values, rng),
