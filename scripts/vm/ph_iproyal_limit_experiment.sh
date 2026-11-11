@@ -3,6 +3,10 @@
 #
 #   export PACE_PROXY_FILE=/path/to/secrets/iproyal.purl
 #   export PACE_FLEET_GO_TOKEN=pdeep:fleet-20261108t082000z   # optional; default fleet token
+# Uses ONE existing fleet feeder (pace-feeder template): only proxy-url + strategy change.
+#   export PACE_FLEET_RUN_ID=20261108t082000z
+#   export PACE_PROXY_FILE=.../secrets/iproyal.purl
+#   export PACE_TEMPLATE=pace-feeder-e2-standard-2   # optional, recommended
 #   ./scripts/vm/ph_iproyal_limit_experiment.sh up
 #   ./scripts/vm/ph_iproyal_limit_experiment.sh ladder --minutes 25
 #   ./scripts/vm/ph_iproyal_limit_experiment.sh sample
@@ -18,17 +22,18 @@ ZONE="${PACE_ZONE:?export PACE_ZONE}"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${PROJECT}.iam.gserviceaccount.com}"
 GC=(gcloud --account="$SA")
 BUCKET="${MVP_GCS_BUCKET:?export MVP_GCS_BUCKET}"
-RUN_ID="${PACE_IPROYAL_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
-RUN_ID="${RUN_ID,,}"
-ART="${ROOT}/results/ph_iproyal_limit/${RUN_ID}"
+FLEET_RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
+FLEET_RUN_ID="${FLEET_RUN_ID,,}"
+LAB_RUN="${PACE_IPROYAL_RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
+LAB_RUN="${LAB_RUN,,}"
+ART="${ROOT}/results/ph_iproyal_limit/${LAB_RUN}"
+FLEET_ART="${ROOT}/results/ph_fleet_full/${FLEET_RUN_ID}"
 PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/secrets/iproyal.purl}"
 VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 OVERLAY_GCS="${VM_GCS}/_code/overlays"
-PORT_PREFIX="${PACE_PORT_REGISTRY_PREFIX:-${VM_GCS}/_ports}"
-GO_TOKEN="${PACE_FLEET_GO_TOKEN:-pdeep:fleet-20261108t082000z}"
-BOOK_PORT=10055
-COMMON_META="pkg-name=bsit_full17.tgz;pkg-md5=Ku9PrVAfo8f+uDrIVfW8Bg==;k-levels=1,1;pace-state=0 600 0"
-VM_NAME="feeder-iproyal-${RUN_ID}-1"
+TEMPLATE="${PACE_TEMPLATE:-pace-feeder-e2-standard-2}"
+FLEET_SLOT="${FLEET_LIMIT_SLOT:-}"
+VM_NAME=""
 LADDER=(L0_ultra L1_polite L2_modest L3_mid L4_fleet80 L5_fleet120 L6_fleet160 L7_ceiling)
 STEP_MIN="${LADDER_MINUTES:-25}"
 WARMUP_SEC="${LADDER_WARMUP_SEC:-300}"
@@ -61,63 +66,35 @@ PH_PORTSCREEN_MAX_TRY=1
 EOF
 }
 
+resolve_slot() {
+  if [[ -n "$FLEET_SLOT" ]]; then echo "$FLEET_SLOT"; return; fi
+  awk -F'\t' 'NF>=1 && $1+0==$1 {print $1; exit}' "$FLEET_ART/slots.tsv" 2>/dev/null || true
+}
+
 cmd_up() {
   [[ -f "$PROXY_FILE" ]] || { echo "missing PACE_PROXY_FILE=$PROXY_FILE" >&2; exit 1; }
-  mkdir -p "$ART"
-  echo "$RUN_ID" >"${ROOT}/results/ph_iproyal_limit/latest_run.txt"
+  mkdir -p "$ART" "$FLEET_ART"
+  touch "$FLEET_ART/slots.tsv"
+  echo "$LAB_RUN" >"${ROOT}/results/ph_iproyal_limit/latest_run.txt"
+  echo "$FLEET_RUN_ID" >"${ROOT}/results/ph_fleet_full/latest_run.txt"
   write_boot_env
+  cp -f "$ART/pace.env" "$FLEET_ART/pace.env" 2>/dev/null || write_boot_env && cp "$ART/pace.env" "$FLEET_ART/pace.env"
   upload_overlays
   local start="${1:-L0_ultra}"
-  local envfile
   envfile="$(merge_env "$start")"
   echo "$start" >"$ART/current_level.txt"
-  printf '%s\n' "$VM_NAME" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"${PORT_PREFIX}/port.${BOOK_PORT}" 2>/dev/null || \
-    echo "$VM_NAME" | "${GC[@]}" storage cp - "${PORT_PREFIX}/port.${BOOK_PORT}"
-  meta="^;^proxy-port=${BOOK_PORT};${COMMON_META};iproyal-level=${start}"
-  echo "==> create $VM_NAME level=$start"
-  "${GC[@]}" compute instances create "$VM_NAME" \
-    --project="$PROJECT" --zone="$ZONE" \
-    --machine-type=e2-standard-2 \
-    --network=main-vpc --subnet=primary-subnet \
-    --image-family=pace-feeder --image-project="$PROJECT" --boot-disk-size=20GB \
-    --service-account="$SA" --scopes=cloud-platform \
-    --tags=allow-iap-ssh \
-    --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$envfile,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
-    --metadata "$meta" \
-    || "${GC[@]}" compute instances create "$VM_NAME" \
-      --project="$PROJECT" --zone="$ZONE" \
-      --machine-type=e2-standard-2 \
-      --network=main-vpc --subnet=primary-subnet \
-      --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=20GB \
-      --service-account="$SA" --scopes=cloud-platform \
-      --tags=allow-iap-ssh \
-      --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$envfile,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
-      --metadata "$meta"
-  echo "$GO_TOKEN" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${VM_NAME}"
+  export PACE_PROXY_FILE="$PROXY_FILE" PACE_TEMPLATE="$TEMPLATE" PACE_FLEET_RUN_ID="$FLEET_RUN_ID"
+  export PH_FLEET_STRATEGY="$envfile"
+  FLEET_MIN_VMS=0 FLEET_MAX_VMS=1 bash "$ROOT/scripts/vm/ph_fleet_autoscale.sh" scale-to 1
+  FLEET_SLOT="$(resolve_slot)"
+  [[ -n "$FLEET_SLOT" ]] || { echo "no fleet slot after scale-to 1" >&2; exit 1; }
+  echo "$FLEET_SLOT" >"$ART/fleet_slot.txt"
+  VM_NAME="feeder-fleet-${FLEET_RUN_ID}-${FLEET_SLOT}"
+  ONLY_SLOTS="$FLEET_SLOT" PH_FLEET_STRATEGY_ENV="$envfile" bash "$ROOT/scripts/vm/ph_fleet_roll_patches.sh" | tail -3
   date -u +%Y-%m-%dT%H:%M:%SZ >"$ART/started_at.txt"
   echo "# ts level est_complete_ppm est_attempt_ppm blocks_15m browser_fail_15m phsuper note" >"$ART/samples.tsv"
   echo "# level verdict mean_complete_ppm max_complete_ppm blocks_15m" >"$ART/ladder.tsv"
-  echo "RUN_ID=$RUN_ID vm=$VM_NAME GO=$GO_TOKEN art=$ART"
-}
-
-roll_remote() {
-  local envfile=$1
-  "${GC[@]}" compute instances add-metadata "$VM_NAME" --zone="$ZONE" \
-    --metadata-from-file="ph-strategy-env=$envfile" >/dev/null
-  "${GC[@]}" compute ssh "$VM_NAME" --zone="$ZONE" --tunnel-through-iap --quiet </dev/null --command='set -e
-B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-)
-gcloud storage cp -q "$B/_code/overlays/supervisor_strat.sh" "$B/_code/overlays/"*.py /opt/ph/overlays/ 2>/dev/null || true
-sudo cp -f /opt/ph/overlays/*.py /opt/ph/overlays/ 2>/dev/null || true
-sudo install -m 755 /opt/ph/overlays/supervisor_strat.sh /opt/ph/overlays/supervisor_strat.sh 2>/dev/null || true
-sudo cp -f /tmp/strat.env /opt/ph/strategy.env 2>/dev/null || true
-curl -sf -H Metadata-Flavor:Google http://metadata.google.internal/computeMetadata/v1/instance/attributes/ph-strategy-env | sudo tee /opt/ph/strategy.env >/dev/null
-sudo rm -f /opt/ph/reuse/KICK /opt/ph/reuse/port_override /opt/ph/reuse/cf_cooldown_until 2>/dev/null || true
-sudo systemctl stop phsuper 2>/dev/null || true
-sudo pkill -f "[p]deep.py|[p]h_batch.py" 2>/dev/null || true
-EA=""; [[ -f /opt/ph/pace.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/pace.env"; [[ -f /opt/ph/strategy.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/strategy.env"
-sudo systemd-run --unit=phsuper --collect -p WorkingDirectory=/opt/ph/reuse $EA /bin/bash -c "bash /opt/ph/overlays/supervisor_strat.sh >> /opt/ph/reuse/supervisor.log 2>&1" >/dev/null 2>&1
-sleep 2; systemctl is-active phsuper
-echo ROLL_OK'
+  echo "fleet=$FLEET_RUN_ID slot=$FLEET_SLOT vm=$VM_NAME level=$start art=$ART"
 }
 
 cmd_apply() {
@@ -126,8 +103,11 @@ cmd_apply() {
   local envfile
   envfile="$(merge_env "$level")"
   echo "$level" >"$ART/current_level.txt"
-  roll_remote "$envfile"
-  echo "applied $level"
+  export PACE_PROXY_FILE="$PROXY_FILE" PACE_FLEET_RUN_ID="$FLEET_RUN_ID"
+  "${GC[@]}" compute instances add-metadata "$VM_NAME" --zone="$ZONE" \
+    --metadata-from-file="proxy-url=$PROXY_FILE,ph-strategy-env=$envfile" >/dev/null
+  ONLY_SLOTS="$FLEET_SLOT" PH_FLEET_STRATEGY_ENV="$envfile" bash "$ROOT/scripts/vm/ph_fleet_roll_patches.sh" | tail -3
+  echo "applied $level on $VM_NAME"
 }
 
 sample_remote() {
@@ -151,8 +131,9 @@ for ln in lines:
     t=ts(j.get("utc") or "")
     if now-t>win: continue
     ev=j.get("event") or ""
-    if ev in ("saved","uploaded") and j.get("rc")==0: comp+=1
-    if ev in ("saved","uploaded"): att+=1
+    rc=j.get("rc")
+    if ev in ("saved","uploaded","pfull_saved") and (rc==0 or rc is None and "pfull" in (j.get("note") or "")): comp+=1
+    if ev in ("saved","uploaded","pfull_saved") or (ev=="saved" and rc in (0,2)): att+=1
     if "block" in ev or ev=="stopped_on_block": blocks+=1
     if ev=="browser_open_failed": bf+=1
 ppm_c=round(comp*60/win,3) if win else 0
@@ -239,17 +220,20 @@ PY
 
 cmd_down() {
   art_dir
-  "${GC[@]}" compute instances delete "$VM_NAME" --zone="$ZONE" --quiet 2>/dev/null || true
-  "${GC[@]}" storage rm "${PORT_PREFIX}/port.${BOOK_PORT}" 2>/dev/null || true
-  echo "deleted $VM_NAME"
+  export PACE_FLEET_RUN_ID="$FLEET_RUN_ID"
+  FLEET_MIN_VMS=0 bash "$ROOT/scripts/vm/ph_fleet_autoscale.sh" scale-to 0 2>/dev/null || true
+  echo "fleet scale-to 0 (was slot $FLEET_SLOT)"
 }
 
 art_dir() {
   if [[ -f "${ROOT}/results/ph_iproyal_limit/latest_run.txt" ]]; then
-    RUN_ID="$(cat "${ROOT}/results/ph_iproyal_limit/latest_run.txt")"
-    ART="${ROOT}/results/ph_iproyal_limit/${RUN_ID}"
-    VM_NAME="feeder-iproyal-${RUN_ID}-1"
+    LAB_RUN="$(cat "${ROOT}/results/ph_iproyal_limit/latest_run.txt")"
+    ART="${ROOT}/results/ph_iproyal_limit/${LAB_RUN}"
   fi
+  FLEET_RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
+  FLEET_ART="${ROOT}/results/ph_fleet_full/${FLEET_RUN_ID,,}"
+  FLEET_SLOT="${FLEET_SLOT:-$(cat "$ART/fleet_slot.txt" 2>/dev/null || resolve_slot)}"
+  VM_NAME="feeder-fleet-${FLEET_RUN_ID}-${FLEET_SLOT}"
 }
 
 case "${1:-}" in

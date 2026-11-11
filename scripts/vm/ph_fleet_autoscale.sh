@@ -25,6 +25,7 @@ MACHINE="${PH_FLEET_MACHINE:-e2-standard-2}"
 HOURLY_USD="${FLEET_HOURLY_USD:-0.06701}"
 PROXY_FILE="${PACE_PROXY_FILE:-$ROOT/.purl}"
 STRATEGY_ENV="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
+TEMPLATE="${PACE_TEMPLATE:-}"
 PORT_PREFIX="${PACE_PORT_REGISTRY_PREFIX:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm/_ports}"
 VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 COMMON_META="pkg-name=full18f_candidate.tgz;pkg-md5=uYYdW17hoPBJjpMGoR7lKw==;k-levels=1,1;pace-state=0 600 0"
@@ -110,6 +111,17 @@ create_one() {
   name="$(vm_name "$slot")"
   meta="^;^proxy-port=${port};${COMMON_META};fleet-slot=${slot}"
   echo "==> create $name port=$port"
+  local create_args=(
+    --project="$PROJECT" --zone="$ZONE"
+    --service-account="$SA" --scopes=cloud-platform
+    --tags=allow-iap-ssh
+    --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh"
+    --metadata "$meta"
+  )
+  if [[ -n "$TEMPLATE" ]]; then
+    "${GC[@]}" compute instances create "$name" \
+      --source-instance-template="$TEMPLATE" "${create_args[@]}"
+  else
   "${GC[@]}" compute instances create "$name" \
     --project="$PROJECT" --zone="$ZONE" \
     --machine-type="$MACHINE" \
@@ -128,6 +140,7 @@ create_one() {
       --tags=allow-iap-ssh \
       --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
       --metadata "$meta"
+  fi
   printf '%s fleet-%s\n' "$name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" |
     "${GC[@]}" storage cp - "${PORT_PREFIX}/port.${port}"
   echo "${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}" | "${GC[@]}" storage cp - "${VM_GCS}/GO.$name"
