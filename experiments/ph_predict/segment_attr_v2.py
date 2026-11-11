@@ -223,7 +223,21 @@ def main():
             for c in cells:
                 amat[c["L"]] = {x for x in amat[c["L"]] if not x.startswith("popq:")}
     STRAT["on"] = True; EB["on"] = True
-    pickle.dump({"pca": pca, "mu": mu, "sd": sd, "w": w, "km": km, "seg": seg, "grpA": grpA, "amat": amat, "ATTR": ATTR,
+    # actual B test-period lifts per attribute (same centering as the scoring) + launch counts, and A-fit segment descriptions
+    siA = {x: i for i, x in enumerate(ATTR)}; test = [c for c in cells if c["d"] >= TEST0]
+    vsB = sum(c["vB"] for c in test); esB = sum(ex(c, "B", "test") for c in test); baseB = np.log((vsB + 5) / (esB + 5))
+    tlB = np.zeros((K, len(ATTR))); tvB = np.zeros((K, len(ATTR))); nL = np.zeros(len(ATTR)); ncold = np.zeros(len(ATTR))
+    for j, x in enumerate(ATTR):
+        G = [c for c in test if x in amat[c["L"]]]
+        if G:
+            v_ = sum(c["vB"] for c in G); e_ = sum(ex(c, "B", "test") for c in G)
+            tlB[:, j] = np.log((v_ + 5) / (e_ + 5)) - baseB; tvB[:, j] = v_; nL[j] = len({c["L"] for c in G}); ncold[j] = len({c["L"] for c in G if c["L"] in cold})
+    gp, gt = pat[halfA].mean(0), ptop[halfA].mean(0); desc = {}
+    for s_ in range(K):
+        m = (seg.values == s_) & halfA
+        la = np.log((pat[m].mean(0)[:len(BINS)] + 1e-3) / (gp[:len(BINS)] + 1e-3)); lt = np.log((ptop[m].mean(0) + 1e-3) / (gt + 1e-3))
+        desc[s_] = {"size_A": int(m.sum()), "size_all": int((seg.values == s_).sum()), "top_attrs": [BINS[i] for i in np.argsort(-la)[:4]], "top_topics": [str(top60[i]) for i in np.argsort(-lt)[:4]]}
+    pickle.dump({"test_lift_B": tlB, "test_votes_B": tvB, "n_test_launches": nL, "n_test_cold": ncold, "desc": desc,"pca": pca, "mu": mu, "sd": sd, "w": w, "km": km, "seg": seg, "grpA": grpA, "amat": amat, "ATTR": ATTR,
                  "lift": train_lifts(ATTR, al), "tau2": EB.get("tau2"), "cold": cold, "top60": list(top60), "BINS": BINS},
                 open(f"{WORK}/segattr_v2_k{K}.pkl", "wb"))
     STRAT["on"] = False; EB["on"] = False
