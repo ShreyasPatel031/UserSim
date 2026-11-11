@@ -131,9 +131,25 @@ def _ps(P, I, E, work):
             return D[["person", "day", "id", "y"] + PS.FEATS + pc].reset_index(drop=True)
         PS.train_rows = train_rows
         base_u = PS.page_cols
+        Ev = PS.load()["E"]; Ev = Ev[Ev.kind.isin(["upvote", "comment"])]
+        act = {u: np.array(sorted(set(map(str, g.date.astype(str).str[:10]))), dtype="datetime64[D]") for u, g in Ev.groupby("person")}
+        def recency(u, d):   # E5 Nov 11: P(active) from recency, not only the 30-day share; all from dates before d
+            a = act.get(u); t = np.datetime64(d, "D")
+            if a is None:
+                return (999.0, 0.0, 0.0, 0.0, 0.0)
+            a = a[a < t]
+            if not len(a):
+                return (999.0, 0.0, 0.0, 0.0, 0.0)
+            gap = (t - a).astype(int)
+            return (float(gap.min()), float((gap <= 7).sum()), float(np.log1p((gap <= 30).sum())), float(np.log1p(len(a))), float(gap.max()))
         def page_cols_u(D, _b=base_u):
             D, pc = _b(D)
-            return D.assign(w_act=D.w.astype(float)), list(pc) + ["w_act"]
+            key = D.person + "|" + D.day
+            R = {k: recency(*k.split("|", 1)) for k in key.unique()}
+            M = np.array([R[k] for k in key])
+            D = D.assign(w_act=D.w.astype(float), days_since=M[:, 0], act_7=M[:, 1], log_act_30=M[:, 2], log_act_all=M[:, 3], tenure=M[:, 4],
+                         dow=pd.to_datetime(D.day).dt.dayofweek.astype(float))
+            return D, list(pc) + ["w_act", "days_since", "act_7", "log_act_30", "log_act_all", "tenure", "dow"]
         PS.page_cols = page_cols_u
     if os.environ.get("TL_LM") == "1":   # iteration 3: launch-model pull as a person-model feature (NaN where unknown)
         lm = lm_pct(); base = PS.page_cols
