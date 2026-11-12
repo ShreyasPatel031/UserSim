@@ -969,3 +969,12 @@ All complete people, K = 100 / 500:
 - similarity alone (SIM) − ACTREC −8.0 / −5.9; ties alone − ACTREC +1.5 [−0.5, 3.5] / −4.0
 Site 5,096 pool, K = 100: PRODUCT − ACTREC +0.6 [0.4, 0.9]; FULL − ACTREC +1.3 [0.9, 1.7].
 Reading: who upvotes a launch is mostly who is active and recently active; product-taste adds about 10% relative at the top 100 (+1.8 points on 15.9%), maker ties add more (PH context). A "likely voters" view would mostly show recent actives. Not exported: the gain is small, the bundle self-check did not reproduce the in-script score (max diff 17.6, unresolved), and per-person upvote lists are fingerprints. Earlier "matches vs most-active" comparisons overstated taste because most-active by count ignores recency.
+
+### 2026-11-12 E5 — outside audience via handles on product websites
+Script experiments/simlab/site_handles.py; report reports/site_handles/ (handle list in the bucket only: tmp/e5/x_pilot_handles.json). Site captures with links: raw/ph_predict_data/sites.jsonl + sites_today.jsonl (HTML, 4,073 launches; fetched about Oct 28, i.e. after most launches - link presence is near-static but strictly a post-launch read); raw/sites_ph.jsonl is visible text only (4,962), used for "@handle" mentions.
+Coverage on the 207 scored days (4,877 launches; 62.5% with site HTML): X handle 21.2%, LinkedIn company 17.2%, GitHub 14.3%, YouTube 10.4%, App Store 4.7%, Discord 4.4%, Play 2.5%, Chrome Web Store 1.2%, Telegram 0.9%. Among actual top-3 launches (620): X 28.9%, LinkedIn 26.3%, GitHub 16.1%, YouTube 14.4%, Discord 9.5%.
+X reads joined by handle (3,815 handles: profiles_x 2,288, ext_x 1,839 read <= Oct 28, Data Feeder x_fill 72):
+- honest (read before the launch day): 3 launches - not testable.
+- leaky upper bound (read on/after launch day; 720 launches, 219 days): pooled Spearman of log followers with day-demeaned LM residual +0.078 [0.009, 0.152]; within-day −0.02 [−0.13, 0.08] (109 days with >= 3); log followers vs log votes +0.18, vs LM +0.17.
+Last 60 days: 1,749 launches, 289 with a site X handle, 113 of them without any X read (139 unique handles) -> pilot list for Data Feeder.
+Reading: even with post-launch follower counts the outside X audience barely relates to the LM's misses (pooled +0.08, within-day zero); an honest test needs forward reads. Site handles are present for only about 1 in 5 launches (3 in 10 top-3).

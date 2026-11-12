@@ -1,0 +1,73 @@
+{
+ "design": "Outside audience of the maker/company via handles found on the product's own website (orchestrator 01:45Z Nov 12).\nSite captures with links (HTML): raw/ph_predict_data/sites.jsonl (keyed by launch id, live fetch ~Oct 28) and sites_today.jsonl.\nraw/sites_ph.jsonl holds visible TEXT only (no hrefs) - used only for \"@handle\" mentions next to X/Twitter words.\nExtracted per launch: X/Twitter handles (share/intent links and site-builder/platform handles excluded), Discord invite,\nTelegram, YouTube, LinkedIn company page, GitHub org, Chrome Web Store, App Store, Play Store.\nX follower reads joined by handle (case-insensitive) with their dates: tables_v2/profiles.parquet platform x (observed_on),\nph_predict_data/ext_x.jsonl (file written 2026-10-28; read date taken as <= Oct 28), Data Feeder x_fill (x_fetched_at, launch\nday ~01:30 PT). A read is HONEST for a launch only if dated before the launch day (00:00 PT); later reads are a leaky upper bound.\nTest: residual r = logv - honest LM (lm_breakout preds / honest_preds), within-day Spearman of log1p(max followers) with r on\ndays with >= 3 launches holding a read, pooled Spearman with day-demeaned r, and ridge(LM + log followers + has_read) vs LM\nmonth-forward where enough rows exist.",
+ "sources": {
+  "sites.jsonl+sites_today (HTML, links)": 4073,
+  "sites_ph.jsonl (text only)": 4962
+ },
+ "coverage_207_days": {
+  "launches_207_days": 4877,
+  "with_site_html": 0.625,
+  "x_handle": 0.212,
+  "discord": 0.044,
+  "telegram": 0.009,
+  "youtube": 0.104,
+  "linkedin_company": 0.172,
+  "github_org": 0.143,
+  "chrome_store": 0.012,
+  "app_store": 0.047,
+  "play_store": 0.025
+ },
+ "coverage_top3": {
+  "top3_launches": 620,
+  "x_handle": 0.289,
+  "discord": 0.095,
+  "telegram": 0.006,
+  "youtube": 0.144,
+  "linkedin_company": 0.263,
+  "github_org": 0.161,
+  "chrome_store": 0.008,
+  "app_store": 0.027,
+  "play_store": 0.011
+ },
+ "x_reads": {
+  "profiles_x": 2288,
+  "ext_x(<=Oct28)": 1839,
+  "x_fill(launch day)": 72
+ },
+ "x_read_handles": 3815,
+ "honest (read before launch day)": {
+  "launches_with_read": 3,
+  "days": 3,
+  "date_range": [
+   "2026-07-05",
+   "2026-10-04"
+  ]
+ },
+ "LEAKY upper bound (read on/after launch day)": {
+  "launches_with_read": 720,
+  "days": 219,
+  "date_range": [
+   "2026-03-02",
+   "2026-10-28"
+  ],
+  "pooled_spearman_lf_vs_day_demeaned_r": [
+   0.078,
+   0.009,
+   0.152
+  ],
+  "spearman_lf_vs_logv": 0.179,
+  "spearman_lf_vs_LM": 0.169,
+  "within_day_spearman_lf_vs_r": [
+   -0.02,
+   -0.128,
+   0.084,
+   109
+  ]
+ },
+ "last_60_days": {
+  "launches": 1749,
+  "with_site_x_handle": 289,
+  "with_handle_but_no_x_read": 113,
+  "unique_handles_to_read": 139
+ }
+}
