@@ -87,10 +87,23 @@ let VIEW=null, SEL=null;
 const link = (x)=> x.slug ? `<a href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name);
 const chips = (x)=> (x.topics||[]).slice(0,2).map(t=>`<span class="t">${esc(t)}</span>`).join("");
 
+async function getJSON(url, ms){
+  const ctl = new AbortController(), t = setTimeout(()=>ctl.abort(), ms || 25000);
+  try {
+    const r = await fetch(url, {signal: ctl.signal});
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j) throw new Error((j && (j.error || j.detail)) || ("HTTP " + r.status));
+    return j;
+  } catch(e){ throw new Error(e.name === "AbortError" ? "timed out" : e.message); }
+  finally { clearTimeout(t); }
+}
+function failed(sel, what, e){
+  $(sel).innerHTML = `<li class="skeleton">Couldn't load ${esc(what)} (${esc(e.message)}). <a href="#" onclick="location.reload();return false">Retry</a></li>`;
+}
+
 async function load(day){
-  const r = await fetch("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : ""));
-  if(!r.ok){ $("#pred").innerHTML = `<li class="skeleton">No forecast available yet.</li>`; return; }
-  VIEW = await r.json();
+  try { VIEW = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
+  catch(e){ failed("#pred", "the forecast", e); failed("#live", "the live board", e); return; }
   $("#day").innerHTML = VIEW.days.map(d=>`<option ${d===VIEW.day?"selected":""}>${esc(d)}</option>`).join("");
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
   $("#kicker").textContent = `Product Hunt · ${isToday ? "live forecast" : "forecast"} · ${VIEW.day}`;
@@ -159,7 +172,9 @@ function renderLive(){
 }
 
 async function side(){
-  const t = await (await fetch("/api/ph/track-record")).json();
+  let t;
+  try { t = await getJSON("/api/ph/track-record"); }
+  catch(e){ $("#rec tbody").innerHTML = `<tr><td colspan="5" class="muted">Couldn't load the scoreboard (${esc(e.message)}).</td></tr>`; return; }
   const f = (v)=> v==null ? "—" : Math.round(v)+"%";
   const ci = (r,k)=> (r.ci && Array.isArray(r.ci[k])) ? `<br><span class="small muted">${Math.round(r.ci[k][0])}–${Math.round(r.ci[k][1])}</span>` : "";
   const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${Number(r.n_days)}</td><td>${f(r.top3)}${ci(r,"top3")}</td><td>${f(r.top5)}${ci(r,"top5")}</td><td>${f(r.top10)}${ci(r,"top10")}</td></tr>`;
@@ -167,7 +182,7 @@ async function side(){
   $("#rec tbody").innerHTML = live.map(tr).join("") || `<tr><td colspan="5" class="muted">No live day scored yet.</td></tr>`;
   if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+" ("+r.source+")"})).join(""); }
   $("#rec-how").textContent = t.how;
-  const w = await (await fetch("/api/ph/weekly")).json();
+  const w = await getJSON("/api/ph/weekly").catch(()=>null);
   if(w && w.top){
     $("#wk-note").textContent = `Running weekly call (week of ${w.week_monday}): final votes of the days so far, plus today's votes at reveal + 4 h scaled by ${w.ratio ? "×"+Number(w.ratio).toFixed(3) : "a fitted ratio"}. Scored when the week ends.`;
     $("#weekly").innerHTML = w.top.map(x=>`<li><span>${Number(x.pred_rank)}</span><span>${esc(x.name||"(launch "+String(x.day)+")")}</span><span>~${Math.round(Number(x.est_votes))}</span></li>`).join("");

@@ -58,8 +58,23 @@ async def try_page() -> FileResponse:
     return FileResponse(STATIC / "try.html")
 
 
+def _data_down(exc: Exception) -> JSONResponse:
+    print(f"[ph] data read failed: {exc!r}", flush=True)   # detail stays in server logs, never in the browser
+    return JSONResponse({"error": "forecast data is unavailable right now"}, status_code=503,
+                        headers={"Cache-Control": "no-store"})
+
+
 @router.get("/api/ph/today")
 async def ph_today(day: str | None = None):
+    try:
+        return await _ph_today(day)
+    except HTTPException:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        return _data_down(exc)
+
+
+async def _ph_today(day: str | None):
     from mvp.ph_site import live
 
     if day and not DAY.match(day):
@@ -73,18 +88,54 @@ async def ph_today(day: str | None = None):
     return _json(view, 60)
 
 
+@router.get("/api/ph/health")
+async def ph_health():
+    """Which data reads work on this deployment and how long they take (no secrets, no data values)."""
+    import os
+    import time
+
+    from mvp.ph_site import gcs, live
+
+    def probe():
+        out = {}
+        for name, fn in (("list_days", live.available_days),
+                         ("scoreboard", lambda: bool(gcs.read_json("results/web/scoreboard.json", ttl=0))),
+                         ("forecast_0005", lambda: bool(live.forecasts(live.available_days()[0]))),
+                         ("live_board", lambda: bool(live.current_board(live.today_pt())["ranks"])),
+                         ("person_index", lambda: gcs.read_bytes("site/person_index_v1.npz", ttl=0) is not None)):
+            t = time.time()
+            try:
+                v = fn()
+                out[name] = {"ok": bool(v), "ms": int((time.time() - t) * 1000)}
+            except Exception as exc:  # noqa: BLE001
+                out[name] = {"ok": False, "ms": int((time.time() - t) * 1000), "error": type(exc).__name__}
+        return out
+
+    checks = await asyncio.to_thread(probe)
+    return JSONResponse({"ok": all(c["ok"] for c in checks.values()), "checks": checks,
+                         "try_configured": len(os.environ.get("TRY_SIGNING_KEY", "")) >= 32,
+                         "on_vercel": bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))},
+                        headers={"Cache-Control": "no-store"})
+
+
 @router.get("/api/ph/track-record")
 async def ph_track():
     from mvp.ph_site import live
 
-    return _json(await asyncio.to_thread(live.track_record), 300)
+    try:
+        return _json(await asyncio.to_thread(live.track_record), 300)
+    except Exception as exc:  # noqa: BLE001
+        return _data_down(exc)
 
 
 @router.get("/api/ph/weekly")
 async def ph_weekly():
     from mvp.ph_site import live
 
-    return _json(await asyncio.to_thread(live.weekly) or {}, 300)
+    try:
+        return _json(await asyncio.to_thread(live.weekly) or {}, 300)
+    except Exception as exc:  # noqa: BLE001
+        return _data_down(exc)
 
 
 def _err(exc: Exception) -> JSONResponse:
