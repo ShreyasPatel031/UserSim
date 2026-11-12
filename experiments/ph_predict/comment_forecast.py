@@ -606,6 +606,12 @@ def live(day, point):
                 A["pred_rank_best_mix"] = (A._mix_score + 1e-6 * lm_pos).rank(method="first").astype(int)
     except Exception as e:
         print("best_clean skipped:", repr(e)[:120], flush=True)
+    # orchestrator 12:49Z Nov 12: best_thread = w_api x hidden API rank position + (1 - w_api) x clean_thread_z position
+    # (scored shadow column; "best" unchanged; replay prior_blend.md: within 1-3 hits of published / clean on 6 days)
+    A["pred_rank_best_thread"] = np.nan
+    if "pred_rank_clean_thread_z" in A and A.pred_rank_clean_thread_z.notna().any() and A.pred_rank_api.notna().any():
+        tz_ = A.pred_rank_clean_thread_z.rank(method="first")
+        A["pred_rank_best_thread"] = (w_api * A.pred_rank_api + (1 - w_api) * tz_ + 1e-6 * tz_).rank(method="first").astype(int)
     if npre_th is not None and point in ("P030", "P0", "P1") and A.pred_rank_best_mix.notna().any():
         # QA 10:00Z Nov 12: sorting the strict best_mix ranking never let the tie-break act; near-ties of the blended score
         # (same 0.5-rank-unit bucket) are now ordered by th_n_pre
@@ -621,9 +627,9 @@ def live(day, point):
         inmax["clean_shadow"] = pd.Timestamp(json.load(open(sp_)).get("written_at") or pd.Timestamp(os.path.getmtime(sp_), unit="s", tz="UTC"))
     late = (now - T) > pd.Timedelta(minutes=90)
     dep = {"comments": ["pred_rank", "pred_rank_rule_a", "pred_rank_teamids", "pred_rank_blend", "pred_rank_e5", "pred_rank_clean_thread",
-                        "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th"],
+                        "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "pred_rank_best_thread"],
            "clean_shadow": ["pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_best_mix_th", "pred_rank_e5", "pred_rank_clean_thread",
-                            "pred_rank_clean_thread_z", "pred_rank_clean_stack"],
+                            "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_thread"],
            "posts": ["pred_rank_api", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "pred_rank_estvotes"]}
     col_status = {}
     for src_, cols_ in dep.items():
@@ -639,7 +645,7 @@ def live(day, point):
            "hidden_rank_note": "each point's hidden API rank is the latest posts_ts read fetched <= the cut (the 15-min snapshot before it)",
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_thread", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).astype(object).where(lambda z: z.notna(), None).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
