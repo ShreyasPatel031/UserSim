@@ -1511,3 +1511,25 @@ Site list claims vs constant lists (the control they never had):
 - RANKED concerns: p@3 24.4 vs the category base-rate list 11.1 (300); on fresh page reads 21.1 vs the global constant 0.9.
 - RANKED questions: 15.5 vs base 6.8 (300); fresh 16.2 vs constant 6.0.
 - All three claims hold far above constant lists. The judge requires the same specific point, so generic constants score low by construction.
+
+### 2026-11-12 E5 — early hours on the stack prior; pool upvote times; live hidden-rank blends
+Scripts experiments/simlab/early_stack.py and live_blend.py; reports/early_stack/README.md.
+
+**(1) Stack prior on the dump backtest.** 186 scored days, month-forward.
+- The deployable stack (clean + thread) at 00:05: top 3 60.4, +4.1 [+1.3, +7.0] over clean.
+- Over the current early model E, top 3:
+  - Stack inputs added: +1.6 [0.0, 3.2] at 00:05; +2.0 [−0.2, 4.1] at +1 h; −0.5 at +2 h; −2.0 [−3.9, 0.0] at +3 h; −1.6 at +4 h.
+  - Fit the stack's way (within-day z, rank target): +2.2 [0.2, 4.3] at +1 h.
+- The current early model loses to the stack line at 00:05 (−2.2 [−4.5, 0.0]) and beats it from +3 h (+5.4 [2.0, 8.8]).
+- Launch-day comments absorb the thread signal by +2 h.
+- Schedule: stack at 00:05; stack-method early model at +1 h (shadow candidate); E from +2 h.
+
+**(2) Pool upvote times.** No held upvote has a real time.
+- Bounded windows are at least 2.3 h wide (median about 180 days); snapshots have no time.
+- `upvoted_at` is null in all raw rows.
+- All held upvotes come from profile reads, so the count is not available live without page loads.
+
+**(3) Live hidden-rank blends.** 6 days, recipe weights.
+- Clean vs published prior: 10 vs 13 of 18 top-3 hits at 00:30; 13 vs 12 at 01:00; 12 vs 13 at 02:00.
+- Differences are one launch, with intervals spanning 0.
+- The live stack is not computable from held data: hunters can't be matched to commenters.
