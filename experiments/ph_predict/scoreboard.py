@@ -21,6 +21,12 @@ def ov(pred_ids, real_ids, k):
     return len(set(pred_ids[:k]) & set(real_ids[:k])) / k * 100
 
 
+# orchestrator audit 05:00Z Nov 12: a 00:05 call counts as live only if written within 30 min of 00:05 PT; P / R points
+# within 90 min of their data cut; the maker / no-llm shadows are written after 01:00 PT from 00:05 inputs by design
+LATE_0005 = pd.Timedelta(minutes=30)
+LATE_POINT = pd.Timedelta(minutes=90)
+
+
 def main():
     from pipeline import warehouse as W
     today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
@@ -36,17 +42,24 @@ def main():
         if len(set(ids) & set(g.id)) < 10:
             return
         sub = g.id.tolist()   # the day's full final ranking (the number-of-record convention)
+        t3 = set(sub[:3])
         rows.append({"day": day, "point": point, "method": method, "source": source, "n": len(ids), "written_at": written_at,
-                     **{f"top{k}": round(ov(ids, sub, k), 1) for k in (3, 5, 10)}})
+                     **{f"top{k}": round(ov(ids, sub, k), 1) for k in (3, 5, 10)},
+                     # per-pick record: our #1 / #2 / #3 in the final top 3, and #1 = the winner
+                     "p1_top3": float(ids[0] in t3), "p2_top3": float(ids[1] in t3), "p3_top3": float(ids[2] in t3), "exact1": float(ids[0] == sub[0])})
 
     F = W.query("SELECT forecast_date d, CAST(launch_id AS VARCHAR) id, predicted_rank pr, updated_at u FROM forecasts WHERE model = 'launch_model'", do_sync=False)
     for d, g in F.groupby("d"):
         g = g[g.u == g.u.min()]   # the first (published) run of the day; Nov 1 was run twice
-        add(d, "0005", "published", "live", g.sort_values("pr").id.tolist(), g.u.iloc[0])
+        due = pd.Timestamp(d + " 00:05", tz="America/Los_Angeles")
+        wa = pd.Timestamp(g.u.iloc[0]); wa = wa.tz_localize("UTC") if wa.tzinfo is None else wa
+        add(d, "0005", "published", "live" if wa <= due + LATE_0005 else "late", g.sort_values("pr").id.tolist(), wa.isoformat())
     for p in sorted(glob.glob(os.path.join(HERE, "results", "shadow_makerfix", "*.json"))):
         S = json.load(open(p)); f = pd.DataFrame(S["forecast"])
-        add(S["day"], "0005", "makerfix_shadow", "live", f.sort_values("rank_makerfix").id.tolist(), S["written_at"])
-        add(S["day"], "0005", "unfixed_replay", "live", f.sort_values("rank_unfixed").id.tolist(), S["written_at"])
+        add(S["day"], "0005", "makerfix_shadow", "shadow", f.sort_values("rank_makerfix").id.tolist(), S["written_at"])
+        add(S["day"], "0005", "unfixed_replay", "shadow", f.sort_values("rank_unfixed").id.tolist(), S["written_at"])
+        if "rank_nollm" in f:
+            add(S["day"], "0005", "nollm_shadow", "shadow", f.sort_values("rank_nollm").id.tolist(), S["written_at"])
     for src, pat in (("live", os.path.join(HERE, "results", "early_forecast", "*.json")), ("replay", os.path.join(HERE, "results", "early_forecast_replay_P", "*.json"))):
         for p in sorted(glob.glob(pat)):
             E = json.load(open(p)); f = pd.DataFrame(E.get("forecast", []))
@@ -56,10 +69,14 @@ def main():
             s = src
             if src == "live":
                 due = pd.Timestamp(E["data_up_to"]) if E.get("data_up_to") else None
-                if due is not None and pd.Timestamp(E["written_at"]) > due + pd.Timedelta(minutes=90):
+                if due is not None and pd.Timestamp(E["written_at"]) > due + LATE_POINT:
                     s = "late"
             if pt.startswith("P"):
-                for m, c in (("comment_ridge", "pred_rank"), ("api_rank", "pred_rank_api"), ("blend", "pred_rank_blend"), ("best", "pred_rank_best")):
+                for m, c in (("comment_ridge", "pred_rank"), ("api_rank", "pred_rank_api"), ("blend", "pred_rank_blend"), ("best", "pred_rank_best"),
+                             ("depth", "pred_rank_depth")):
+                    # replay days without any pre-reveal API rank (Nov 2, 3: api_ranked 0) have no PH order: those rows are excluded
+                    if m in ("api_rank", "blend", "best", "depth") and E.get("api_ranked", 1) == 0:
+                        continue
                     if c in f:
                         add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
             else:
@@ -71,7 +88,9 @@ def main():
     summ = []
     for (pt, m, s), g in X.groupby(["point", "method", "source"]):
         row = {"point": pt, "method": m, "source": s, "days": int(len(g)), "first_day": g.day.min(), "last_day": g.day.max(),
-               **{f"mean_top{k}": round(float(g[f"top{k}"].mean()), 1) for k in (3, 5, 10)}}
+               **{f"mean_top{k}": round(float(g[f"top{k}"].mean()), 1) for k in (3, 5, 10)},
+               **{f"{c}_rate": round(100 * float(g[c].mean()), 1) for c in ("p1_top3", "p2_top3", "p3_top3", "exact1")},
+               **{f"{c}_count": f"{int(g[c].sum())} of {len(g)}" for c in ("p1_top3", "p2_top3", "p3_top3", "exact1")}}
         rng_ = np.random.default_rng(0)
         for k in (3, 5, 10):   # 95% day-bootstrap interval, only when at least 5 days are scored (else null)
             c = _boot(g[f"top{k}"], rng_)
@@ -80,7 +99,12 @@ def main():
     actual = {d: g.head(10).id.tolist() for d, g in real.items()}
     out = {"built_at": pd.Timestamp.now(tz="UTC").isoformat(),
            "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
-           "sources": {"live": "written before or at its point time", "late": "written >90 min after its data cut (honest data, not a live call)", "replay": "re-run afterwards with only data up to the point time"},
+           "sources": {"live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
+                       "late": "honest data cut but written later than that (not a live call)",
+                       "shadow": "shadow lines written after 01:00 PT from inputs stamped <= 00:05 (by design; not a live call)",
+                       "replay": "re-run afterwards with only data up to the point time"},
+           "per_pick": "p1/p2/p3_top3 = our #1/#2/#3 pick finished in the final top 3; exact1 = our #1 was the winner",
+           "time_shown": "written_at (when the forecast file was written), not the data cut",
            "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual}
     os.makedirs(os.path.join(HERE, "results", "web"), exist_ok=True)
     p = os.path.join(HERE, "results", "web", "scoreboard.json"); json.dump(out, open(p, "w"), indent=1, default=str)
@@ -91,15 +115,15 @@ def main():
 
 # backtest number beside each live line (source files in results/; update here when a backtest is re-run)
 BACKTEST = {
-    ("0005", "published"): ("63.0 / 69.3 / 75.0", "honest out-of-fold LM, 207 days Mar-Oct (honest.json)"),
-    ("0005", "makerfix_shadow"): ("60.2 / 68.6 / 75.7", "placeholders as missing, 245 days (maker_resolve.md; current features 59.9 / 67.7 / 75.4)"),
+    ("0005", "published"): ("54.7 / 64.5 / 75.6", "honest month-forward without maker-profile inputs, 214 days Mar-Nov 10 (leak_check_maker.md): #1 pick in top 3 72%, exact winner 39%. The earlier 63.0 / 69.3 / 75.0 was inflated by a leak: maker-profile availability in the cache depends on the final rank"),
+    ("0005", "makerfix_shadow"): ("-", "the earlier 60.2 / 68.6 / 75.7 (maker_resolve.md) used the leaking maker-profile cache; no clean backtest"),
     ("P1", "best"): ("66.7 / 66.7 / 78.3", "REPLAY, 6 days (Nov 2-10), leave-one-day-out choice: 0.5 x API rank + 0.5 x LM rank (api_depth.md); LM 38.9 / 60.0 / 76.7"),
     ("P2", "best"): ("72.2 / 76.7 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API rank + 0.25 x LM rank (api_depth.md)"),
     ("P3", "best"): ("83.3 / 80.0 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API + 0.25 x LM (P4 uses the same 03:00 read in the replay)"),
     ("P4", "best"): ("83.3 / 80.0 / 80.0", "REPLAY, 6 days, as P3 (hourly reads; the live P4 uses the 04:00 15-min read)"),
-    ("P1", "comment_ridge"): ("66.2 / 70.2 / 75.8", "live-compatible ridge, 207 days month-forward (comment_forecast.md)"),
-    ("P2", "comment_ridge"): ("67.8 / 71.2 / 76.1", "same"), ("P3", "comment_ridge"): ("69.1 / 71.4 / 76.1", "same"),
-    ("P4", "comment_ridge"): ("68.0 / 73.1 / 77.0", "same"),
+    ("P1", "comment_ridge"): ("66.2 / 70.2 / 75.8", "LEAKED BASELINE: ridge on top of the honest LM, whose maker-profile inputs leak (leak_check_maker.md); restate pending"),
+    ("P2", "comment_ridge"): ("67.8 / 71.2 / 76.1", "same caveat"), ("P3", "comment_ridge"): ("69.1 / 71.4 / 76.1", "same caveat"),
+    ("P4", "comment_ridge"): ("68.0 / 73.1 / 77.0", "same caveat"),
     ("R0", "raw_votes"): ("72 / 77 / 88", "6-day replay (early_forecast_replay.json); 85 / 93 / 92 first hour after reveal on 9 days"),
     ("R0q", "raw_votes"): ("75 / 80 / 88", "4-day 15-min replay (reveal_gap.md)"), ("R0h", "raw_votes"): ("75 / 90 / 88", "4-day 15-min replay (reveal_gap.md)"),
     ("R0", "r0blend_neartie"): ("58 / 70 / 88", "4-day replay; R0 votes with 10% near-ties broken by the P4 blend"),
@@ -109,8 +133,8 @@ BACKTEST = {
     ("week", "dayend_votes"): ("57.5 / 71.5 / 77.8", "end-of-week call without dated votes, 40 weeks (weekly_forecast.md); 100 / 80 / 90 with day-end votes on 1 week"),
     ("month", "monthlyRank"): ("75 / 75 / 80", "dated reads, 4 months (E5 monthly_northstar); 42 / 50 / 52 from daily rank"),
 }
-ORDER = [("0005", "published"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay")] + \
-        [(p, m) for p in ("P1", "P2", "P3", "P4") for m in ("best", "comment_ridge", "api_rank", "blend")] + \
+ORDER = [("0005", "published"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay"), ("0005", "nollm_shadow")] + \
+        [(p, m) for p in ("P0", "P1", "P2", "P3", "P4") for m in ("best", "depth", "comment_ridge", "api_rank", "blend")] + \
         [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("R0", "r0blend_neartie"), ("R0", "r0blend_mean")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
 
 
@@ -146,9 +170,9 @@ def north_star(X):
          "that finished in the final top K (daily rank for 00:05 / P / R; weekly and monthly rank for the period lines). "
          "Days are PT. 95% intervals are day bootstraps, shown when at least 5 days are scored. "
          "Sources: live = written in time; late = honest data cut written afterwards; replay = re-run afterwards.", "",
-         "| forecast | when | live: days | live top 3 / 5 / 10 [95% CI] | other rows (source: days, top 3/5/10) | backtest top 3 / 5 / 10 | backtest basis |",
-         "|---|---|---|---|---|---|---|"]
-    WHEN = {"0005": "00:05 PT", "P1": "01:00 PT", "P2": "02:00 PT", "P3": "03:00 PT", "P4": "04:00 PT", "R0": "reveal ~04:00 PT",
+         "| forecast | when (data cut) | live: days | live top 3 / 5 / 10 [95% CI] | live #1 / #2 / #3 pick in top 3 | other rows (source: days, top 3/5/10) | backtest top 3 / 5 / 10 | backtest basis |",
+         "|---|---|---|---|---|---|---|---|"]
+    WHEN = {"0005": "00:05 PT", "P0": "00:45 PT", "P1": "01:00 PT", "P2": "02:00 PT", "P3": "03:00 PT", "P4": "04:00 PT", "R0": "reveal ~04:00 PT",
             "R0q": "reveal +15 min", "R0h": "reveal +30 min", "R1": "reveal +1 h", "R2": "reveal +2 h", "R4": "reveal +4 h", "week": "Sunday 23:59 PT", "month": "month end"}
     for key in ORDER:
         d = rows.get(key, {}); live = d.get("live")
@@ -157,12 +181,16 @@ def north_star(X):
             ci = [_boot(live[f"top{k}"], rng) for k in (3, 5, 10)]
             cell = " / ".join(f"{m_:.1f}" + (f" [{c[0]:.0f}, {c[1]:.0f}]" if c is not None else "") for m_, c in zip(mean, ci))
             nd = len(live)
+            pk = " / ".join(f"{int(live[c].sum())}/{nd}" for c in ("p1_top3", "p2_top3", "p3_top3")) if "p1_top3" in live else "-"
         else:
-            cell, nd = "-", 0
+            cell, nd, pk = "-", 0, "-"
         other = "; ".join(f"{s_}: {len(g)}, " + " / ".join(f"{g[f'top{k}'].mean():.0f}" for k in (3, 5, 10)) for s_, g in d.items() if s_ != "live") or "-"
         bt = BACKTEST.get(key, ("-", "-"))
-        L.append(f"| {key[0]} {key[1]} | {WHEN.get(key[0], '')} | {nd} | {cell} | {other} | {bt[0]} | {bt[1]} |")
-    L += ["", "Notes: the 00:05 published line is the number of record (first published run per day; duplicate rows removed). "
+        L.append(f"| {key[0]} {key[1]} | {WHEN.get(key[0], '')} | {nd} | {cell} | {pk} | {other} | {bt[0]} | {bt[1]} |")
+    L += ["", "Notes: the 00:05 published line is the number of record (first published run per day; duplicate rows removed); "
+          "a run written more than 30 min after 00:05 PT counts as late (Oct 25-28 and Nov 1 were written hours later; Oct 30 86 min). "
+          "Shadow lines are written after 01:00 PT from 00:05 inputs by design. Times shown on the site are written_at. "
+          "P replay rows exclude days without a pre-reveal API rank (Nov 2, 3) for the API-based methods; P replay weights were chosen on the same 6 days (in-sample). "
           "P-point API rank and blend have no months-long backtest (the API's pre-reveal rank is only held from Nov 4). "
           "Weekly / monthly lines start scoring after their first full period (week of Nov 9-15; November)."]
     p = os.path.join(HERE, "results", "NORTH_STAR.md"); open(p, "w").write("\n".join(L) + "\n")
