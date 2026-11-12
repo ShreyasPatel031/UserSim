@@ -130,6 +130,37 @@ def main():
            "time_shown": "written_at (when the forecast file was written), not the data cut",
            "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual}
     os.makedirs(os.path.join(HERE, "results", "web"), exist_ok=True)
+    # orchestrator 12:47Z Nov 12: running clean vs deployed block, re-read at 25 and 50 live days (model-switch decision).
+    # deployed = the published 00:05 forecast (live rows); clean = shadow_makerfix pred_clean when written, else the
+    # clean_live_rows replay with 00:05 inputs (source marked per day)
+    try:
+        from pipeline import warehouse as W_
+        Rk = W_.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+        clean = {}
+        lp = os.path.join(HERE, "results", "clean_live_rows.parquet")
+        if os.path.exists(lp):
+            CLr = pd.read_parquet(lp)
+            for d_, g_ in CLr.groupby("day"):
+                clean[d_] = (g_.sort_values("clean_v3", ascending=False).id.astype(str).tolist(), "replay_0005_inputs")
+        for f_ in glob.glob(os.path.join(HERE, "results", "shadow_makerfix", "*.json")):
+            SF = pd.DataFrame(json.load(open(f_))["forecast"])
+            if "pred_clean" in SF and SF.pred_clean.notna().any():
+                clean[os.path.basename(f_)[:10]] = (SF.sort_values("pred_clean", ascending=False).id.astype(str).tolist(), "shadow")
+        pub = {r["day"]: r for r in out["rows"] if r["point"] == "0005" and r["method"] == "published" and r["source"] == "live"}
+        rows_cd = []
+        for d_, (o_, src_) in sorted(clean.items()):
+            t_ = Rk[Rk.day == d_].sort_values("daily_rank").id.tolist()
+            if d_ not in pub or len(t_) < 3:
+                continue
+            rows_cd.append({"day": d_, "clean_source": src_, "clean_top3": len(set(o_[:3]) & set(t_[:3])) / 3 * 100, "clean_p1_top3": float(o_[0] in t_[:3]) * 100,
+                            "clean_exact1": float(o_[0] == t_[0]) * 100, "deployed_top3": pub[d_]["top3"], "deployed_p1_top3": float(pub[d_]["p1_top3"]) * 100,
+                            "deployed_exact1": float(pub[d_]["exact1"]) * 100})   # rows hold these two as 0/1
+        Dcd = pd.DataFrame(rows_cd)
+        out["clean_vs_deployed"] = {"days": int(len(Dcd)), "reread_at": [25, 50],
+                                    "mean": Dcd.drop(columns=["day", "clean_source"]).mean().round(1).to_dict() if len(Dcd) else {},
+                                    "clean_sources": Dcd.clean_source.value_counts().to_dict() if len(Dcd) else {}, "per_day": rows_cd}
+    except Exception as e_:
+        out["clean_vs_deployed"] = {"error": repr(e_)[:200]}
     # orchestrator 09:12Z Nov 12: pre-registered forward check of clean_thread's signal (thread_coef.py), embedded as is
     tc = os.path.join(HERE, "results", "web", "thread_coef.json")
     subprocess.run([sys.executable, os.path.join(HERE, "thread_coef.py")], cwd=HERE)   # refresh first (best effort)

@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-12T09:36:26.658456+00:00",
+ "built_at": "2026-11-12T12:50:53.585178+00:00",
  "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
  "sources": {
   "live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
@@ -622,28 +622,6 @@
   },
   {
    "point": "P4",
-   "method": "best_clean",
-   "source": "late",
-   "days": 1,
-   "first_day": "2026-11-11",
-   "last_day": "2026-11-11",
-   "mean_top3": 100.0,
-   "mean_top5": 80.0,
-   "mean_top10": 90.0,
-   "p1_top3_rate": 100.0,
-   "p2_top3_rate": 100.0,
-   "p3_top3_rate": 100.0,
-   "exact1_rate": 0.0,
-   "p1_top3_count": "1 of 1",
-   "p2_top3_count": "1 of 1",
-   "p3_top3_count": "1 of 1",
-   "exact1_count": "0 of 1",
-   "ci_top3": null,
-   "ci_top5": null,
-   "ci_top10": null
-  },
-  {
-   "point": "P4",
    "method": "blend",
    "source": "late",
    "days": 1,
@@ -757,28 +735,6 @@
    "p2_top3_count": "1 of 1",
    "p3_top3_count": "1 of 1",
    "exact1_count": "1 of 1",
-   "ci_top3": null,
-   "ci_top5": null,
-   "ci_top10": null
-  },
-  {
-   "point": "P4",
-   "method": "e5",
-   "source": "late",
-   "days": 1,
-   "first_day": "2026-11-11",
-   "last_day": "2026-11-11",
-   "mean_top3": 100.0,
-   "mean_top5": 80.0,
-   "mean_top10": 90.0,
-   "p1_top3_rate": 100.0,
-   "p2_top3_rate": 100.0,
-   "p3_top3_rate": 100.0,
-   "exact1_rate": 0.0,
-   "p1_top3_count": "1 of 1",
-   "p2_top3_count": "1 of 1",
-   "p3_top3_count": "1 of 1",
-   "exact1_count": "0 of 1",
    "ci_top3": null,
    "ci_top5": null,
    "ci_top10": null
@@ -2285,21 +2241,6 @@
   {
    "day": "2026-11-11",
    "point": "P4",
-   "method": "best_clean",
-   "source": "late",
-   "n": 26.0,
-   "written_at": "2026-11-12T07:43:52.904191+00:00",
-   "top3": 100.0,
-   "top5": 80.0,
-   "top10": 90.0,
-   "p1_top3": 1.0,
-   "p2_top3": 1.0,
-   "p3_top3": 1.0,
-   "exact1": 0.0
-  },
-  {
-   "day": "2026-11-11",
-   "point": "P4",
    "method": "blend",
    "source": "late",
    "n": 26.0,
@@ -2341,21 +2282,6 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0
-  },
-  {
-   "day": "2026-11-11",
-   "point": "P4",
-   "method": "e5",
-   "source": "late",
-   "n": 26.0,
-   "written_at": "2026-11-12T07:43:52.904191+00:00",
-   "top3": 100.0,
-   "top5": 80.0,
-   "top10": 90.0,
-   "p1_top3": 1.0,
-   "p2_top3": 1.0,
-   "p3_top3": 1.0,
-   "exact1": 0.0
   },
   {
    "day": "2026-11-11",
@@ -2666,6 +2592,106 @@
    "1310655"
   ]
  },
+ "clean_vs_deployed": {
+  "days": 8,
+  "reread_at": [
+   25,
+   50
+  ],
+  "mean": {
+   "clean_top3": 58.3,
+   "clean_p1_top3": 87.5,
+   "clean_exact1": 25.0,
+   "deployed_top3": 45.8,
+   "deployed_p1_top3": 50.0,
+   "deployed_exact1": 12.5
+  },
+  "clean_sources": {
+   "replay_0005_inputs": 8
+  },
+  "per_day": [
+   {
+    "day": "2026-10-29",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 66.66666666666666,
+    "clean_p1_top3": 100.0,
+    "clean_exact1": 0.0,
+    "deployed_top3": 66.7,
+    "deployed_p1_top3": 100.0,
+    "deployed_exact1": 100.0
+   },
+   {
+    "day": "2026-10-31",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 66.66666666666666,
+    "clean_p1_top3": 100.0,
+    "clean_exact1": 0.0,
+    "deployed_top3": 66.7,
+    "deployed_p1_top3": 100.0,
+    "deployed_exact1": 0.0
+   },
+   {
+    "day": "2026-11-02",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 33.33333333333333,
+    "clean_p1_top3": 100.0,
+    "clean_exact1": 0.0,
+    "deployed_top3": 33.3,
+    "deployed_p1_top3": 100.0,
+    "deployed_exact1": 0.0
+   },
+   {
+    "day": "2026-11-03",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 66.66666666666666,
+    "clean_p1_top3": 100.0,
+    "clean_exact1": 0.0,
+    "deployed_top3": 33.3,
+    "deployed_p1_top3": 0.0,
+    "deployed_exact1": 0.0
+   },
+   {
+    "day": "2026-11-04",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 66.66666666666666,
+    "clean_p1_top3": 100.0,
+    "clean_exact1": 0.0,
+    "deployed_top3": 33.3,
+    "deployed_p1_top3": 0.0,
+    "deployed_exact1": 0.0
+   },
+   {
+    "day": "2026-11-08",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 66.66666666666666,
+    "clean_p1_top3": 100.0,
+    "clean_exact1": 100.0,
+    "deployed_top3": 66.7,
+    "deployed_p1_top3": 100.0,
+    "deployed_exact1": 0.0
+   },
+   {
+    "day": "2026-11-09",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 33.33333333333333,
+    "clean_p1_top3": 0.0,
+    "clean_exact1": 0.0,
+    "deployed_top3": 33.3,
+    "deployed_p1_top3": 0.0,
+    "deployed_exact1": 0.0
+   },
+   {
+    "day": "2026-11-10",
+    "clean_source": "replay_0005_inputs",
+    "clean_top3": 66.66666666666666,
+    "clean_p1_top3": 100.0,
+    "clean_exact1": 100.0,
+    "deployed_top3": 33.3,
+    "deployed_p1_top3": 0.0,
+    "deployed_exact1": 0.0
+   }
+  ]
+ },
  "clean_thread_coef": {
   "what": "day-clustered coefficient of z(th_n_pre) controlling for z(clean 00:05 score), pooled OLS of z(-log final rank), z within day",
   "backtest": {
@@ -2734,6 +2760,6 @@
    },
    "2026-11-11": "no clean score"
   },
-  "written_at": "2026-11-12T09:37:40.849402+00:00"
+  "written_at": "2026-11-12T12:52:15.071342+00:00"
  }
 }
