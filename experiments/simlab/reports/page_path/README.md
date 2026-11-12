@@ -111,3 +111,31 @@ Setup:
 **Verdict:**
 - Nothing beats (a). The current recipe stays.
 - In this run the top concern from the raw page also clears the constant (+27.1), and so does the top question (+22.9).
+
+## Where the URL's "most likely question" works (page_top1_cells.py; no new calls)
+
+Setup: raw-page top-1 question, the mean of 3 adjudications per launch; generic = the constant first question, same runs.
+
+Overall: hit 41.9 [32.4, 52.4], generic 21.4, difference +20.5 [7.1, 34.3] (70 launches).
+
+| cell | n | hit | generic | hit − generic |
+|---|---|---|---|---|
+| productivity | 24 | 48.6 | 16.7 | **+31.9 [9.7, 54.2]** |
+| consumer / other | 27 | 39.5 | 28.4 | +11.1 [−11.1, 33.3] |
+| dev tools | 15 | 28.9 | 17.8 | +11.1 [−15.6, 35.6] |
+| AI / agents (first PH topic) | 4 | 66.7 | 16.7 | +50.0 [−25, 100] |
+| comments 5–9 | 35 | 35.2 | 16.2 | **+19.0 [1.0, 35.3]** |
+| comments 10–19 | 23 | 55.1 | 21.7 | **+33.3 [8.7, 56.5]** |
+| comments 20+ | 12 | 36.1 | 36.1 | 0.0 [−36.1, 36.1] |
+| final rank #1–5 | 35 | 54.3 | 23.8 | **+30.5 [9.5, 51.4]** |
+| rank 6–15 | 29 | 31.0 | 16.1 | +14.9 [−3.4, 33.4] |
+| rank 16+ | 6 | 22.2 | 33.3 | −11.1 |
+| price: freemium | 10 | 60.0 | 10.0 | **+50.0 [13.3, 80.1]** |
+| price: unknown (fresh reads did not record it) | 55 | 37.0 | 20.6 | +16.4 [1.2, 30.9] |
+| price: free / paid | 2 / 3 | | | too few |
+
+**Reading:**
+- The cells are small, and the differences between groups overlap (e.g. productivity +32 vs consumer +11).
+- No split is clearly supported. Rank is not known before launch in any case.
+- The busiest launches (20+ comments) show no edge over a generic question.
+- No "works best for" note was sent.

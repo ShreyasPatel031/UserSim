@@ -1,0 +1,326 @@
+{
+ "design": "Prove /try fixes before the website builds them (orchestrator 10:15Z Nov 12). Uses the website's own code (origin/claude/ph-website\nmvp/ph_site: safe_fetch, try_sim.READ_PROMPT on flash-lite, try_sim._band_score with launch_band.json, person_e5.embed) as a library.\nLaunches: every ranked launch of Oct 27 - Nov 10 2026 with a product URL (at-launch primary_link, else the first non-PH link in the\nmaker's first comment); each site fetched ONCE by safe_fetch (http rewritten to https only because this container's proxy mode\nrefuses http), then read with the site's READ_PROMPT.\n1. Band inputs (score -> percentile among the band's cuts -> decile band):\n   (a) SITE now: name, tagline, summary + page_excerpt[:600], page-read topics\n   (b) READ: name + tagline + 2-sentence summary only, page-read topics\n   (c) REWRITE: a flash-lite rewrite of the page read into PH launch style (name, <= 60-char tagline, <= 260-char description,\n       3 topics from the PH vocabulary), then the band\n   (d) PH: the real PH name / tagline / description / topics (reference)\n   Spearman of the band percentile with -final rank (pooled over launches), band coverage of the true rank; paired bootstrap vs (a).\n2. Concerns and questions (launches with >= 5 identity-free truth comments): RANKED concerns (critic D_category + retrieved\n   neighbour themes + category base list, scored by neighbour frequency + agreement + Gemini likelihood; the reactions generator is\n   left out) and the single-call question generator, each fed (i) the page-read name/tagline/summary, (ii) the raw page excerpt,\n   (iii) the PH description. Blinded judges as concerns_rank / questions_rank; p@3 / hit@3, paired.\n3. Fetch failures: for every launch whose fetch or page read failed, retry (i) the root of the same domain, (ii) the at-launch\n   primary_link (PH \"website\" target) when held and different; share recovered without a headless browser.",
+ "launches": 70,
+ "all": {
+  "hit": [
+   41.9,
+   32.4,
+   52.4,
+   70
+  ],
+  "generic": [
+   21.4,
+   13.3,
+   30.5,
+   70
+  ],
+  "hit - generic": [
+   20.5,
+   7.1,
+   34.3,
+   70
+  ]
+ },
+ "topic": {
+  "AI / agents": {
+   "hit": [
+    66.7,
+    25.0,
+    100.0,
+    4
+   ],
+   "generic": [
+    16.7,
+    0.0,
+    50.0,
+    4
+   ],
+   "hit - generic": [
+    50.0,
+    -25.0,
+    100.0,
+    4
+   ],
+   "beats_generic": false
+  },
+  "consumer / other": {
+   "hit": [
+    39.5,
+    24.7,
+    55.6,
+    27
+   ],
+   "generic": [
+    28.4,
+    13.6,
+    45.7,
+    27
+   ],
+   "hit - generic": [
+    11.1,
+    -11.1,
+    33.3,
+    27
+   ],
+   "beats_generic": false
+  },
+  "dev tools": {
+   "hit": [
+    28.9,
+    11.1,
+    48.9,
+    15
+   ],
+   "generic": [
+    17.8,
+    2.2,
+    37.8,
+    15
+   ],
+   "hit - generic": [
+    11.1,
+    -15.6,
+    35.6,
+    15
+   ],
+   "beats_generic": false
+  },
+  "productivity": {
+   "hit": [
+    48.6,
+    29.2,
+    66.7,
+    24
+   ],
+   "generic": [
+    16.7,
+    4.2,
+    30.6,
+    24
+   ],
+   "hit - generic": [
+    31.9,
+    9.7,
+    54.2,
+    24
+   ],
+   "beats_generic": true
+  }
+ },
+ "price": {
+  "free": {
+   "hit": [
+    50.0,
+    null,
+    null,
+    2
+   ],
+   "generic": [
+    50.0,
+    null,
+    null,
+    2
+   ],
+   "hit - generic": [
+    0.0,
+    null,
+    null,
+    2
+   ],
+   "beats_generic": false
+  },
+  "freemium": {
+   "hit": [
+    60.0,
+    36.7,
+    83.3,
+    10
+   ],
+   "generic": [
+    10.0,
+    0.0,
+    30.0,
+    10
+   ],
+   "hit - generic": [
+    50.0,
+    13.3,
+    80.1,
+    10
+   ],
+   "beats_generic": true
+  },
+  "paid": {
+   "hit": [
+    66.7,
+    33.3,
+    100.0,
+    3
+   ],
+   "generic": [
+    55.6,
+    0.0,
+    100.0,
+    3
+   ],
+   "hit - generic": [
+    11.1,
+    -33.3,
+    33.3,
+    3
+   ],
+   "beats_generic": false
+  },
+  "unknown": {
+   "hit": [
+    37.0,
+    25.4,
+    49.1,
+    55
+   ],
+   "generic": [
+    20.6,
+    12.1,
+    30.9,
+    55
+   ],
+   "hit - generic": [
+    16.4,
+    1.2,
+    30.9,
+    55
+   ],
+   "beats_generic": true
+  }
+ },
+ "comments": {
+  "10-19": {
+   "hit": [
+    55.1,
+    37.7,
+    71.0,
+    23
+   ],
+   "generic": [
+    21.7,
+    8.7,
+    36.2,
+    23
+   ],
+   "hit - generic": [
+    33.3,
+    8.7,
+    56.5,
+    23
+   ],
+   "beats_generic": true
+  },
+  "20+": {
+   "hit": [
+    36.1,
+    13.9,
+    61.1,
+    12
+   ],
+   "generic": [
+    36.1,
+    13.9,
+    61.1,
+    12
+   ],
+   "hit - generic": [
+    -0.0,
+    -36.1,
+    36.1,
+    12
+   ],
+   "beats_generic": false
+  },
+  "5-9": {
+   "hit": [
+    35.2,
+    21.0,
+    50.5,
+    35
+   ],
+   "generic": [
+    16.2,
+    5.7,
+    28.6,
+    35
+   ],
+   "hit - generic": [
+    19.0,
+    1.0,
+    35.3,
+    35
+   ],
+   "beats_generic": true
+  }
+ },
+ "rank": {
+  "#1-5": {
+   "hit": [
+    54.3,
+    39.0,
+    69.5,
+    35
+   ],
+   "generic": [
+    23.8,
+    12.4,
+    35.2,
+    35
+   ],
+   "hit - generic": [
+    30.5,
+    9.5,
+    51.4,
+    35
+   ],
+   "beats_generic": true
+  },
+  "16+": {
+   "hit": [
+    22.2,
+    0.0,
+    55.6,
+    6
+   ],
+   "generic": [
+    33.3,
+    0.0,
+    66.7,
+    6
+   ],
+   "hit - generic": [
+    -11.1,
+    -50.0,
+    16.7,
+    6
+   ],
+   "beats_generic": false
+  },
+  "6-15": {
+   "hit": [
+    31.0,
+    16.1,
+    47.1,
+    29
+   ],
+   "generic": [
+    16.1,
+    3.4,
+    29.9,
+    29
+   ],
+   "hit - generic": [
+    14.9,
+    -3.4,
+    33.4,
+    29
+   ],
+   "beats_generic": false
+  }
+ }
+}
