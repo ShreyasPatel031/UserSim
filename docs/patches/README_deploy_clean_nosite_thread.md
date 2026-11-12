@@ -24,3 +24,9 @@ What a deploy changes (`deploy_clean_nosite_thread.patch`, forecast.py only; mod
    capture's comment feed starts ~01:30 PT, so without this read the deploy publishes the clean score alone.
 4. forecast_<day>.parquet keeps `pred` (the clean log-vote prediction) so early_shock / shadows keep their offset.
 Apply after approval: git apply docs/patches/deploy_clean_nosite_thread.patch; deploy by merging to main.
+
+## Variant: clean_nosite ALONE (`deploy_clean_nosite.patch`, orchestrator's recommendation 14:40Z Nov 12)
+Same column change and LightGBM settings as above; the published order is the clean score itself (no thread ridge, no
+data/today_comments dependency). Backtest 214 days 56.4 / 67.8 / 75.0; as-live 15 days 29/45 top-3 hits, #1 in top 3 14/15
+(deployed 27/45, 8/15). The thread add-on stays a shadow line (clean_nosite_thread) until the forward coefficient check
+(thread_coef.json, se <= 0.07) passes and a 00:05 comment read exists. Apply one patch or the other, not both.
