@@ -352,11 +352,27 @@ def live(day, point):
     for c in ("cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot"):
         if c not in A:
             A[c] = np.nan
+    # orchestrator 00:40Z Nov 12: hidden votes bracketed by the weekly rank (estvotes.py); extra columns only
+    try:
+        import estvotes as EV
+        E_, _ = EV.earlier_votes(day)
+        X0 = EV.est_votes(day, T, E_); X1 = EV.est_votes(day, T - pd.Timedelta(hours=1), E_)
+        if len(X0):
+            X0 = X0.merge(X1[["id", "est_votes"]].rename(columns={"est_votes": "e1"}), on="id", how="left") if len(X1) else X0.assign(e1=np.nan)
+            X0["est_vel60"] = X0.est_votes - X0.e1
+            A = A.merge(X0[["id", "est_votes", "est_vel60", "weekly_rank"]], on="id", how="left")
+    except Exception as e:
+        print("est votes skipped:", repr(e)[:120], flush=True)
+    for c in ("est_votes", "est_vel60", "weekly_rank"):
+        if c not in A:
+            A[c] = np.nan
+    A["pred_rank_estvotes"] = (A.est_votes.fillna(-1) + 1e-6 * A.lm).rank(ascending=False, method="first").astype(int)
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
            "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
-                                                   "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot"]].round(4).to_dict("records")}
+                                                   "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
+                                                   "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
         res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
     else:
