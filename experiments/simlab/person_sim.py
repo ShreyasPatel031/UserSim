@@ -3,7 +3,7 @@
 leave this script; outputs carry pair indices only; comment text stays in the bucket).
 Pairs: (person, launch) with the launch in Aug-Oct 2026, the person not on the launch team, a substantive comment (>= 12 words,
 not a pure congratulation), and >= 10 earlier substantive comments by the person dated before the launch day. Sample 300 pairs,
-at most 2 per person.
+at most 4 per person (only 88 people are eligible).
 Conditions (gemini-2.5-flash, temperature 0.3), product-only launch inputs (name, tagline, description, topics):
   A  the person's 10-20 most recent earlier substantive comments as history
   B  a generic "typical Product Hunt member"
@@ -73,11 +73,11 @@ pairs = []
 for p, g in S_.groupby("person"):
     for _, r in g[(g.day >= "2026-08-01") & (g.day <= "2026-10-31")].iterrows():
         hist = g[g.ts < r.day]                                   # strictly before the launch day (ISO strings compare)
-        if len(hist) >= 10: pairs.append({"person": p, "slug": r.slug, "day": r.day, "real": r.text, "hist": hist.text.tolist()[-20:]})
+        if len(hist) >= 10: pairs.append({"person": p, "slug": r.slug, "day": r.day, "real": r.text, "history": hist.text.tolist()[-20:]})
 P = pd.DataFrame(pairs)
 stats = {"substantive_comments_complete_people": int(len(S_)), "eligible_pairs": int(len(P)), "eligible_people": int(P.person.nunique()) if len(P) else 0}
 print(stats, flush=True)
-P = P.sample(frac=1, random_state=0).groupby("person").head(2)
+P = P.sample(frac=1, random_state=0).groupby("person").head(4)   # only 88 eligible people: cap 4 pairs each
 people = P.person.unique(); rng.shuffle(people)
 P = P[P.person.isin(people[:max(150, min(len(people), 300))])].sample(frac=1, random_state=1).head(300).reset_index(drop=True)
 print("sample pairs", len(P), "people", P.person.nunique(), flush=True)
@@ -89,11 +89,14 @@ lid = {str(i): (r.name, r.day) for i, r in zip(L.id, L.itertuples())}
 Pe = pd.read_parquet(os.path.join(EXP, "people.parquet")); stack = dict(zip(Pe.person_id, Pe["stack"]))
 def tools(p, d):
     up = [lid[t] for t in ev[ev.person_id == p].target_id if t in lid and lid[t][1] < d]
-    up = [n for n, _ in sorted(up, key=lambda x: x[1])][-15:]; st = list(stack.get(p, []) or [])[:15]
+    up = [n for n, _ in sorted(up, key=lambda x: x[1])][-15:]; st = [str(x) for x in (stack.get(p) if stack.get(p) is not None else [])][:15]
     return f"Tools they list: {', '.join(st) or 'unknown'}. Recently upvoted launches: {', '.join(up) or 'unknown'}."
-others = {i: P.hist[(i + 1 + int(rng.integers(0, len(P) - 1))) % len(P)] for i in range(len(P))}
+oth_idx = {}
 for i in range(len(P)):
-    if P.person[i] == P.person[(list(P.hist).index(others[i]))]: others[i] = P.hist[(i + 7) % len(P)]
+    j = int(rng.integers(0, len(P)))
+    while P.person[j] == P.person[i]: j = int(rng.integers(0, len(P)))
+    oth_idx[i] = j
+others = {i: P.history[oth_idx[i]] for i in range(len(P))}
 
 
 def launch_txt(s):
@@ -110,7 +113,7 @@ Write the single comment {pron} would most likely leave on this launch, in {pron
 in the product description; do not invent features. Never use names or @handles.
 Return JSON {{"comment": "...", "stance": "praise|question|objection|feature_request|comparison|other"}}"""
 def who(cond, i):
-    h = P.hist[i]; o = others[i]
+    h = P.history[i]; o = others[i]
     if cond == "A": return "Here are a Product Hunt member's own recent comments on other launches (oldest first):\n" + "\n".join(f"- {t[:300]}" for t in h)
     if cond == "B": return "You are a typical Product Hunt member."
     if cond == "C": return "Here are a Product Hunt member's own recent comments on other launches (oldest first):\n" + "\n".join(f"- {t[:300]}" for t in o)
@@ -147,7 +150,7 @@ def forced(i):
     try: return order[int(a.get("closest")) - 1]
     except Exception: return None
 def hist_st(i):
-    a = gem(HC.format(c="\n".join(f"{k+1}. {t[:300]}" for k, t in enumerate(P.hist[i]))), 0.0, 600) or {}
+    a = gem(HC.format(c="\n".join(f"{k+1}. {t[:300]}" for k, t in enumerate(P.history[i]))), 0.0, 600) or {}
     return a.get("stances") or []
 with cf.ThreadPoolExecutor(8) as ex:
     J = dict(zip(jobs, ex.map(lambda j: run(f"judge|{j[0]}|{j[1]}", lambda: judge(*j)), jobs)))
