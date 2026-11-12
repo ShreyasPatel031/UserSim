@@ -48,17 +48,18 @@ def main():
     rows = []
     for d in days:
         truth = R[R.day == d].sort_values("daily_rank").id.tolist(); lm = lm_scores(d)
-        lmo = sorted(truth, key=lambda i: -lm.get(i, -99))
+        base = sorted(truth)   # ties (launches missing from a prior) broken by id, never by final rank (orchestrator 10:35Z Nov 12)
+        lmo = sorted(base, key=lambda i: -lm.get(i, -99))
         t0 = pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
         for h in (1, 2, 3):
             T = t0 + pd.Timedelta(hours=h); g = V[(V.d == d) & (V.a <= T)]
             S = g.sort_values("a").groupby("id").rank_now.last()
-            api = sorted(truth, key=lambda i: (S.get(i, 999), -lm.get(i, -99)))
+            api = sorted(base, key=lambda i: (S.get(i, 999), -lm.get(i, -99)))
             ridge = None
             for pf in (os.path.join(HERE, "results", "early_forecast", f"{d}_P{h}.json"), os.path.join(HERE, "results", "early_forecast_replay_P", f"{d}_P{h}.json")):
                 if os.path.exists(pf):
                     F = pd.DataFrame(json.load(open(pf))["forecast"]); F["id"] = F.id.astype(str); cr = dict(zip(F.id, F.pred_rank))
-                    ridge = sorted(truth, key=lambda i: cr.get(i, 999)); break
+                    ridge = sorted(base, key=lambda i: cr.get(i, 999)); break
             for nm, o in orders(api, lmo, ridge).items():
                 rows.append({"day": d, "h": h, "cand": nm, **{f"t{k}": tk(o, truth, k) for k in (3, 5, 10)}})
     X = pd.DataFrame(rows); X["avg"] = X[["t3", "t5", "t10"]].mean(axis=1)

@@ -62,6 +62,8 @@ def main():
             add(S["day"], "0005", "nollm_shadow", "shadow", f.sort_values("rank_nollm").id.tolist(), S["written_at"])
         if "rank_clean" in f:
             add(S["day"], "0005", "clean_shadow", "shadow", f.sort_values("rank_clean").id.tolist(), S["written_at"])
+        if "rank_clean_avg" in f:
+            add(S["day"], "0005", "clean_avg_shadow", "shadow", f.sort_values("rank_clean_avg").id.tolist(), S["written_at"])
     for src, pat in (("live", os.path.join(HERE, "results", "early_forecast", "*.json")), ("replay", os.path.join(HERE, "results", "early_forecast_replay_P", "*.json"))):
         for p in sorted(glob.glob(pat)):
             E = json.load(open(p)); f = pd.DataFrame(E.get("forecast", []))
@@ -75,9 +77,10 @@ def main():
                     s = "late"
             if pt.startswith("P"):
                 for m, c in (("comment_ridge", "pred_rank"), ("api_rank", "pred_rank_api"), ("blend", "pred_rank_blend"), ("best", "pred_rank_best"),
-                             ("depth", "pred_rank_depth"), ("best_clean", "pred_rank_best_clean")):
+                             ("depth", "pred_rank_depth"), ("best_clean", "pred_rank_best_clean"), ("best_mix", "pred_rank_best_mix"),
+                             ("e5", "pred_rank_e5")):
                     # replay days without any pre-reveal API rank (Nov 2, 3: api_ranked 0) have no PH order: those rows are excluded
-                    if m in ("api_rank", "blend", "best", "depth", "best_clean") and E.get("api_ranked", 1) == 0:
+                    if m in ("api_rank", "blend", "best", "depth", "best_clean", "best_mix") and E.get("api_ranked", 1) == 0:
                         continue
                     if c in f:
                         add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
@@ -136,8 +139,8 @@ BACKTEST = {
     ("week", "dayend_votes"): ("57.5 / 71.5 / 77.8", "end-of-week call without dated votes, 40 weeks (weekly_forecast.md); 100 / 80 / 90 with day-end votes on 1 week"),
     ("month", "monthlyRank"): ("75 / 75 / 80", "dated reads, 4 months (E5 monthly_northstar); 42 / 50 / 52 from daily rank"),
 }
-ORDER = [("0005", "published"), ("0005", "clean_shadow"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay"), ("0005", "nollm_shadow")] + \
-        [(p, m) for p in ("P0", "P1", "P2", "P3", "P4") for m in ("best", "best_clean", "depth", "comment_ridge", "api_rank", "blend")] + \
+ORDER = [("0005", "published"), ("0005", "clean_shadow"), ("0005", "clean_avg_shadow"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay"), ("0005", "nollm_shadow")] + \
+        [(p, m) for p in ("P0", "P1", "P2", "P3", "P4") for m in ("best", "best_clean", "best_mix", "e5", "depth", "comment_ridge", "api_rank", "blend")] + \
         [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("R0", "r0blend_neartie"), ("R0", "r0blend_mean")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
 
 

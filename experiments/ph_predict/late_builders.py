@@ -36,7 +36,7 @@ def main():
         if pre.empty or post.empty:
             continue
         lm = lm_scores(d)
-        ids = list(f.index)
+        ids = sorted(f.index)   # ties broken by id, never by final rank
         lm_pos = pd.Series({i: -lm.get(i, -99) for i in ids}).rank(method="first")
         api_pos = pd.Series({i: pre.get(i, 999) for i in ids}).rank(method="first")
         wd = pd.Timestamp(d).dayofweek

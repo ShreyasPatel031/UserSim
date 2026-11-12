@@ -42,14 +42,14 @@ def main():
         lm = lm_scores(d)
         if not lm:
             continue
-        lm_pos = pd.Series({i: -lm.get(i, -99) for i in truth}).rank(method="first")
+        lm_pos = pd.Series({i: -lm.get(i, -99) for i in sorted(truth)}).rank(method="first")
         E, _ = EV.earlier_votes(d)
         for h in (1, 2, 3, 4):
             T = t0 + pd.Timedelta(hours=h) - (pd.Timedelta(minutes=1) if h == 4 else pd.Timedelta(0))
             S = g[g.a <= T].sort_values("a").groupby("id").rank_now.last()
             if S.empty:
                 continue
-            api_pos = pd.Series({i: S.get(i, 999) for i in truth}).rank(method="first")
+            api_pos = pd.Series({i: S.get(i, 999) for i in sorted(truth)}).rank(method="first")
             w = 0.5 if h == 1 else 0.75
             best = (w * api_pos + (1 - w) * lm_pos + 1e-6 * lm_pos).sort_values().index.tolist()
             ev = pd.Series(dtype=float)

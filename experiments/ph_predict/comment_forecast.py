@@ -425,7 +425,7 @@ def live(day, point):
     # makers, from the latest api_detail file stamped <= T; NaN when none yet) and has_prior_reviews (reviews_count > 0 in
     # the latest posts_ts row fetched <= T)
     A["has_prior_reviews"] = [float(rv[i][1] > 0) if i in rv else np.nan for i in A.id]
-    sh = {}
+    sh, hid = {}, {}
     try:
         fl = subprocess.run(["gsutil", "ls", f"{B}/raw/ph_at_launch/{day}/api_detail/"], capture_output=True, text=True).stdout.split()
         stamp = lambda f: pd.Timestamp(pd.to_datetime(os.path.basename(f)[:13], format="%Y%m%dT%H%M")).tz_localize("America/Los_Angeles").tz_convert("UTC")
@@ -435,10 +435,44 @@ def live(day, point):
             for l in open(f"{tmp}/api_detail.jsonl"):
                 r = json.loads(l); mk = {str(m.get("id")) for m in (r.get("makers") or []) if isinstance(m, dict)}
                 if r.get("id") is not None and r.get("userId") is not None:
-                    sh[str(r["id"])] = float(str(r["userId"]) in mk)
+                    sh[str(r["id"])] = float(str(r["userId"]) in mk); hid[str(r["id"])] = str(r["userId"])
     except Exception as e:
         print("self_hunted skipped:", repr(e)[:120], flush=True)
     A["self_hunted"] = [sh.get(i, np.nan) for i in A.id]
+    # E5's early recipe (gs://.../tmp/e5/early/early_model_recipe_v1_lm_com.json; orchestrator 09:20Z Nov 12): ridge on the
+    # clean LM (shadow pred_clean) + identity-free comment counts; team = first top-level comment author + hunter (api_detail
+    # userId, when a read <= T exists). Live threads limited to the 20 earliest top-level threads (training dumps hold <= 20).
+    A["pred_rank_e5"] = np.nan; A["e5_score"] = np.nan
+    try:
+        rp = os.path.join(HERE, "results", "early_model_recipe_v1_lm_com.json")
+        sp = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
+        if os.path.exists(rp) and os.path.exists(sp):
+            RC = json.load(open(rp)); key = {"P0": "1h", "P1": "1h", "P2": "2h", "P3": "3h", "P4": "4h"}[point]; Rk = RC["per_T"][key]
+            SF = pd.DataFrame(json.load(open(sp))["forecast"]); pc = dict(zip(SF.id.astype(str), SF.pred_clean)) if "pred_clean" in SF else {}
+            if pc:
+                start = t0 + pd.Timedelta(minutes=1); Tm = (T - start).total_seconds() / 60
+                Cc = C.sort_values("ts").copy(); Cc["top"] = Cc.parent.isna()
+                feats = []
+                for i in A.id:
+                    g = Cc[Cc.id == i]
+                    tops = g[g.top]
+                    keep = set(tops.cid.head(20)); g = g[g.cid.isin(keep) | g.parent.isin(keep)]
+                    team_ids = {u for u in [tops.user.iloc[0] if len(tops) else None, hid.get(i)] if u}
+                    nt = g[~g.user.isin(team_ids)]
+                    first = nt.ts.min()
+                    feats.append({"id": i, "honest": pc.get(i, np.nan), "c_tot": np.log1p(len(nt)), "c_top": np.log1p(int(nt.top.sum())),
+                                  "c_rep": np.log1p(int((~nt.top).sum())), "c_auth": np.log1p(nt.user.nunique()),
+                                  "c_last1h": np.log1p(int((nt.ts > T - pd.Timedelta(hours=1)).sum())), "n_nt": len(nt),
+                                  "c_first_min": (first - start).total_seconds() / 60 if pd.notna(first) else Tm})
+                E = pd.DataFrame(feats)
+                E["honest"] = E.honest.fillna(E.honest.min() - 0.1 if E.honest.notna().any() else Rk["mean"]["honest"])
+                E["lm_rank"] = E.honest.rank(ascending=False, method="first"); E["lineup"] = np.log(len(E))
+                E["c_share"] = E.n_nt / max(E.n_nt.sum(), 1)
+                E["e5_score"] = sum(((E[f] - Rk["mean"][f]) / Rk["sd"][f]) * Rk["coef"][f] for f in RC["features"]) + Rk["intercept"]
+                E["pred_rank_e5"] = E.e5_score.rank(ascending=False, method="first").astype(int)
+                A["pred_rank_e5"] = A.id.map(dict(zip(E.id, E.pred_rank_e5))); A["e5_score"] = A.id.map(dict(zip(E.id, E.e5_score)))
+    except Exception as e:
+        print("e5 recipe skipped:", repr(e)[:160], flush=True)
     # orchestrator 04:10Z Nov 12 (depth analysis; provisional, scored forward): pred_rank_depth = positions 1-5 from
     # pred_rank_best, positions 6+ by the equal-weight mean (w_api 0.5) of the API and LM positions; watch15 = our top 15
     # by pred_rank_best at P2-P4 (the final top 10 was inside it for 97% of launches from 02:00 PT)
@@ -452,7 +486,7 @@ def live(day, point):
     A["watch15"] = ((A.pred_rank_best <= 15) & (point in ("P2", "P3", "P4"))).astype(int)
     # orchestrator 07:10Z Nov 12: the same recipe with the CLEAN 00:05 model (shadow_makerfix rank_clean) as the LM prior;
     # replay on 6 days (best_clean_replay.json): P1 72.2 vs 66.7 top 3, P2 / P3 slightly below the published-LM recipe
-    A["pred_rank_best_clean"] = np.nan
+    A["pred_rank_best_clean"] = np.nan; A["pred_rank_best_mix"] = np.nan
     try:
         sp = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
         if not os.path.exists(sp):
@@ -463,12 +497,16 @@ def live(day, point):
                 rc = dict(zip(SF.id.astype(str), SF.rank_clean))
                 cpos = pd.Series([rc.get(i, 999) for i in A.id], index=A.index).rank(method="first")
                 A["pred_rank_best_clean"] = (w_api * A.pred_rank_api + (1 - w_api) * cpos + 1e-6 * cpos).rank(method="first").astype(int)
+                # orchestrator 10:35Z Nov 12: mix = hidden rank w_api, the rest split equally between the clean and published
+                # 00:05 ranks; no tuning until 15 days
+                A["pred_rank_best_mix"] = (w_api * A.pred_rank_api + (1 - w_api) / 2 * cpos + (1 - w_api) / 2 * lm_pos
+                                           + 1e-6 * lm_pos).rank(method="first").astype(int)
     except Exception as e:
         print("best_clean skipped:", repr(e)[:120], flush=True)
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
