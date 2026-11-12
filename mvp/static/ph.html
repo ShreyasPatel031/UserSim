@@ -158,7 +158,9 @@ function renderLive(){
   $("#live-k").textContent = fin ? "Final on Product Hunt" : "Live on Product Hunt";
   $("#live-h").textContent = fin ? "Final leaders" : "Current leaders";
   $("#live-stamp").innerHTML = b.as_of_pt ? `${fin?"Final":"Updated"} <b>${esc(b.as_of_pt)}</b><br>${fin?"end of day":"refreshes every 15 min"}` : "";
-  $("#live-note").textContent = b.votes_hidden ? "Vote counts are hidden on Product Hunt until about 04:00 PT; this is PH's own order so far." : "Product Hunt's order and vote counts at the time shown.";
+  const lk = b.lock;
+  const lockTxt = lk ? ` ${lk.label_top3 === "top 3 locked" ? "Top 3 looks locked" : "#3 is still open"}${lk.label_top5 === "top 5 locked" ? ", top 5 looks locked" : ""} (as of ${lk.read_pt || "the latest read"}; provisional rule: ${lk.rule || ""}).` : "";
+  $("#live-note").textContent = (b.votes_hidden ? "Vote counts are hidden on Product Hunt until about 04:00 PT; this is PH's own order so far." : "Product Hunt's order and vote counts at the time shown.") + lockTxt;
   const lead = VIEW.points.find(q=>q.key===VIEW.lead_point);
   const o = VIEW.launches.filter(x=>x.board_rank).sort((a,c)=>a.board_rank-c.board_rank).slice(0,10);
   $("#live").innerHTML = o.map(x=>{
