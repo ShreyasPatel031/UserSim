@@ -181,3 +181,14 @@ Near-ties (orchestrator, Nov 12): only 9–11% of top-3 misses are true coin-fli
 19c. **Read the launch model's misses and test rule-based text flags** (accelerator-backed, funding, open source, discounts, user-count claims, etc.): orchestrator (Opus subagent), running.
 19d. **Training window of the launch model** (daily refit, rolling windows, time-decay weights, weekday models): PH agent, queued after expected-final-votes and confidence.
 20. Open: commenter follower counts and comment votes dated in the live feed, scored as days accrue; a "what the site itself says about launch day" read at 00:05 (launch banner, waitlist size, pricing change) as a live-only feature; error anatomy of each live forecast point from results/NORTH_STAR.md each morning; raise complaint recall for new products using objections from the same category's reviews at retrieval time; raise the product-only rank band (29/40/60) with site-derived audience proxies if 18/19 show signal.
+
+### Queue state, 02:35 UTC Nov 12
+Running: PH agent = launch-model training window / recency (19d), then Nov 11 scoring (7th day for the pre-reveal recipe); E5 = ranked top-3 concerns vs category base rates (18e); orchestrator = reading the launch model's misses, rule-based text flags (19c).
+Done since the restart: pre-reveal recipe 83.3/80.0/80.0 at 03:00 PT (6 replay days), per-pick confidence (#1 pick 24/24 in the top 3), P0 at 00:45 PT, expected day-end votes (9.5% error at the reveal), weekly call with fitted factors 88.9/100/90 (3 days), optional-input ladder for the rank band (30 → 57 top 3 with hunter + makers), likely-voters validity, person-level comment simulation (no), X audience and community size (closed), field scan (closed).
+Open, next to assign:
+21. Refit the pre-reveal weights and the comment ridge each morning as scored days arrive (7th day Nov 11, 8th Nov 12); report the pooled table with intervals at 8 days.
+22. Top-10 depth before the reveal (80.0 at every hour): what the misses in slots 6–10 are, and whether the comment forecast or expected final votes helps there even though it does not help the top 3.
+23. Weekend / small line-up regime (Nov 8 failure): a separate weight or a later forecast time on days with fewer than 20 launches; test on all weekend days as they accrue and on Wayback post-reveal curves for how late weekend orders settle.
+24. Try-a-URL with optional hunter/maker fields: build the lookup bundle (hunter and maker histories keyed by profile) so the website can use the ladder result; validate end to end on 50 recent launches.
+25. Reveal-time forecast (75/80/88 at +15 min): blend with the pre-reveal recipe and expected final votes; LODO on the days held.
+26. What users ask: predict the questions makers get in the first hours (question themes only) and score against real questions, as a separate website section.
