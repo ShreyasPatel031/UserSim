@@ -486,7 +486,7 @@ def track_record(max_days: int = 30) -> dict:
     sb = gcs.read_json("results/web/scoreboard.json", ttl=600)
     if sb and sb.get("summary"):
         order = {k: i for i, k in enumerate(POINT_KEYS)}
-        src_rank = {"live": 0, "late": 1, "replay": 2}
+        src_rank = {"live": 0, "late": 1, "replay": 2, "replay_in_sample": 3}
         rows = []
         for r in sb["summary"]:
             if r.get("source") == "shadow" or r.get("method") in ("makerfix_shadow", "unfixed_replay"):

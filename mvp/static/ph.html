@@ -188,7 +188,7 @@ async function side(){
   const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${Number(r.n_days)}</td><td>${f(r.top3)}${ci(r,"top3")}</td><td>${f(r.top5)}${ci(r,"top5")}</td><td>${f(r.top10)}${ci(r,"top10")}</td></tr>`;
   const live = t.rows.filter(r=>r.n_days && (r.source||"live")==="live"), other = t.rows.filter(r=>r.n_days && (r.source||"live")!=="live");
   $("#rec tbody").innerHTML = live.map(tr).join("") || `<tr><td colspan="5" class="muted">No live day scored yet.</td></tr>`;
-  if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+" ("+r.source+")"})).join(""); }
+  if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+" ("+({replay_in_sample:"in-sample replay: weights chosen on these days", replay:"replay", late:"late, not a live call"}[r.source]||r.source)+")"})).join(""); }
   if(t.unavailable){ $("#rec tbody").innerHTML = `<tr><td colspan="5" class="muted">Track record unavailable right now.</td></tr>`; }
   $("#rec-how").textContent = t.how;
   const w = await getJSON("/api/ph/weekly").catch(()=>null);
