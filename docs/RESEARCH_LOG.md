@@ -1533,3 +1533,13 @@ Scripts experiments/simlab/early_stack.py and live_blend.py; reports/early_stack
 - Clean vs published prior: 10 vs 13 of 18 top-3 hits at 00:30; 13 vs 12 at 01:00; 12 vs 13 at 02:00.
 - Differences are one launch, with intervals spanning 0.
 - The live stack is not computable from held data: hunters can't be matched to commenters.
+
+### 2026-11-12 E5 — page band v2 (orchestrator's page facts on the d_both band with the LLM read): not exported
+Script experiments/simlab/band_facts.py; reports/band_v2/README.md. Test set: 856 = 726 held + 130 fresh.
+- Run 1, the orchestrator's sklearn retrieval: +0.048 [+0.003, +0.095] over d_both (0.278 → 0.328); fresh +0.015.
+- Run 2, servable pure-python retrieval: +0.045 [−0.000, +0.090]; fresh +0.028.
+- Without testimonial words: identical.
+- Facts carry about +0.04 (alone [−0.009, +0.085]); retrieval adds about 0; the topic prior adds 0.
+- Not exported: the pass hinges on an implementation detail of a near-null block.
+- Caches copied to gs://.../usersim_sim/tmp/e5/band/.
+- Also: stack prior with the link block. 00:05: 61.1, +0.7 [−0.7, +2.2] over thread-only. Later cuts: links stop the +3/+4 h loss but add nothing over the current early model.
