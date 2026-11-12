@@ -267,7 +267,8 @@ def live(day, point):
     team, ids, api, rv = {}, set(), {}, {}
     for l in open(f"{tmp}/posts_ts.jsonl"):
         r = json.loads(l)
-        if r.get("fetch_status") != 200 or str(r.get("day", day)) != day:   # the line-up is fixed at 00:01 PT
+        from early_forecast import pt_day   # day from featuredAt in PT (00:00 PT = 08:00:00Z is the new day; audit 05:00Z Nov 12)
+        if r.get("fetch_status") != 200 or pt_day(r, day) != day:   # the line-up is fixed at 00:01 PT
             continue
         i = str(r["launch_id"]); ids.add(i)
         # the official API's own post.dailyRank, populated before the reveal; latest fetched by T (fetched_at, no look-ahead)

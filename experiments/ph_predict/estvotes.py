@@ -15,7 +15,7 @@ usage: python estvotes.py validate -> results/estvotes_validate.json"""
 import json, os, subprocess, sys, tempfile
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE)); sys.path.insert(0, HERE)
-from early_forecast import B, reveal, load_snaps
+from early_forecast import B, reveal, load_snaps, pt_day
 _P = {}
 
 
@@ -28,7 +28,7 @@ def posts(day):
     rows = []
     for l in open(p):
         r = json.loads(l)
-        if r.get("fetch_status") == 200 and str(r.get("source", "")).startswith("ph_api_v2") and str(r.get("day", day)) == day:
+        if r.get("fetch_status") == 200 and str(r.get("source", "")).startswith("ph_api_v2") and pt_day(r, day) == day:
             rows.append((pd.Timestamp(r["snapshot_ts"]), pd.Timestamp(r.get("fetched_at") or r["snapshot_ts"]), str(r["launch_id"]),
                          r.get("weekly_rank_at_fetch"), r.get("daily_rank_at_fetch"), r.get("votes_at_fetch")))
     _P[day] = pd.DataFrame(rows, columns=["ts", "fa", "id", "wr", "dr", "v"])
@@ -44,6 +44,8 @@ def earlier_votes(day):
     p = f"{tempfile.mkdtemp(prefix='ev_')}/r.jsonl"
     if subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/monthly_reread/{prev[:7]}/{prev}.jsonl", p]).returncode == 0:
         X = pd.DataFrame([json.loads(l) for l in open(p) if '"_header"' not in l])
+        if "featuredAt" in X:   # day from featuredAt in PT (00:00 PT belongs to the new day)
+            X["launch_day_PT"] = [pt_day({"featuredAt": f, "day": d0}) for f, d0 in zip(X.featuredAt, X.launch_day_PT)]
         X = X.assign(id=X.id.astype(str)).sort_values("launch_day_PT").drop_duplicates("id", keep="last")   # 00:00 PT cohort listed twice
         X = X[(X.launch_day_PT >= mon.strftime("%Y-%m-%d")) & (X.launch_day_PT < day)]
         if len(X):

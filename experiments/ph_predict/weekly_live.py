@@ -14,7 +14,7 @@ results/weekly_live/<monday>_<day>_<point>.json locally and to gs://.../results/
 import json, os, subprocess, sys, tempfile
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE)); sys.path.insert(0, HERE)
-from early_forecast import B, load_snaps, reveal
+from early_forecast import B, load_snaps, reveal, pt_day
 OUT = os.path.join(HERE, "results", "weekly_live")
 RATIO_F = os.path.join(HERE, "results", "weekly_live_ratio.json")
 
@@ -34,7 +34,7 @@ def posts(d):
     rows = []
     for l in open(p):
         r = json.loads(l)
-        if r.get("fetch_status") == 200 and str(r.get("source", "")).startswith("ph_api_v2") and str(r.get("day", d)) == d and r.get("votes_at_fetch") is not None:
+        if r.get("fetch_status") == 200 and str(r.get("source", "")).startswith("ph_api_v2") and pt_day(r, d) == d and r.get("votes_at_fetch") is not None:
             rows.append((pd.Timestamp(r.get("fetched_at") or r["snapshot_ts"]), str(r["launch_id"]), float(r["votes_at_fetch"])))
     return pd.DataFrame(rows, columns=["fa", "id", "v"])
 
@@ -74,6 +74,18 @@ def write(day, point, A, extra):
            "forecast": A.head(30)[["id", "day", "pred_rank", "est", "src"]].round(2).to_dict("records")}
     os.makedirs(OUT, exist_ok=True); p = f"{OUT}/{mon}_{day}_{point}.json"; json.dump(res, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/weekly_live/{mon}_{day}_{point}.json"], check=True)
+    # website pointer (audit 05:00Z Nov 12): the latest file per point for the current week, so the page shows the call it
+    # describes (R4 / est / dayend / reread) rather than the newest file by name
+    lp = os.path.join(HERE, "results", "web", "weekly_latest.json"); os.makedirs(os.path.dirname(lp), exist_ok=True)
+    L = json.load(open(lp)) if os.path.exists(lp) else {}
+    if L.get("week_monday") != mon:
+        L = {"week_monday": mon, "points": {}}
+    cur = L["points"].get(point)
+    if cur is None or (day, res["written_at"]) >= (cur["day"], cur["written_at"]):
+        L["points"][point] = {"day": day, "written_at": res["written_at"], "file": f"results/weekly_live/{mon}_{day}_{point}.json"}
+    L["updated_at"] = now.isoformat()
+    json.dump(L, open(lp, "w"), indent=1)
+    subprocess.run(["gsutil", "-q", "cp", lp, f"{B}/results/web/weekly_latest.json"], check=True)
     print(json.dumps({k: v for k, v in res.items() if k != "forecast"}))
 
 

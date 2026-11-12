@@ -26,6 +26,9 @@ def read(day):
     X["id"] = X.id.astype(str)
     # orchestrator 04:25Z Nov 12: the re-read lists the 00:00 PT cohort twice (once under the previous day); keep one row per
     # id, the later launch day
+    if "featuredAt" in X:   # day-boundary fix: day from featuredAt in PT (00:00 PT = 08:00:00Z belongs to the new day)
+        from early_forecast import pt_day
+        X["launch_day_PT"] = [pt_day({"featuredAt": f, "day": d0}) for f, d0 in zip(X.featuredAt, X.get("launch_day_PT", [None] * len(X)))]
     if "launch_day_PT" in X:
         X = X.sort_values("launch_day_PT").drop_duplicates("id", keep="last")
     return hdr, X

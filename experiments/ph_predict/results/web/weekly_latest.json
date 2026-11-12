@@ -1,0 +1,21 @@
+{
+ "week_monday": "2026-11-09",
+ "points": {
+  "dayend": {
+   "day": "2026-11-10",
+   "written_at": "2026-11-11T21:23:20.963445+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-10_dayend.json"
+  },
+  "R4": {
+   "day": "2026-11-11",
+   "written_at": "2026-11-11T21:23:29.467050+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-11_R4.json"
+  },
+  "est": {
+   "day": "2026-11-11",
+   "written_at": "2026-11-12T02:24:46.607180+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-11_est.json"
+  }
+ },
+ "updated_at": "2026-11-12T04:21:22.501130+00:00"
+}

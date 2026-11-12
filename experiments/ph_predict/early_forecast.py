@@ -62,6 +62,19 @@ def lock_state(T, t, day):
     return out
 
 
+def pt_day(r, default=None, key="featured_at"):
+    """PT launch day from featuredAt (00:00:00 PT = 08:00:00Z belongs to the NEW day); falls back to the row's day tag.
+    Fixes the day-boundary bug (orchestrator audit 05:00Z Nov 12): launches featured at exactly 08:00:00Z were tagged with
+    the previous PT day in posts_ts and the monthly re-read."""
+    f = r.get(key) or r.get("featuredAt")
+    if f:
+        try:
+            return pd.Timestamp(f).tz_convert("America/Los_Angeles").strftime("%Y-%m-%d")
+        except Exception:  # noqa: BLE001
+            pass
+    return str(r.get("day", default))
+
+
 def load_snaps(day, path=None):
     if path is None:
         tmp = tempfile.mkdtemp(prefix="ef_"); path = f"{tmp}/posts.jsonl"
@@ -69,7 +82,7 @@ def load_snaps(day, path=None):
     rows = []
     for l in open(path):
         r = json.loads(l)
-        if r.get("fetch_status") == 200 and str(r.get("day", day)) == day:
+        if r.get("fetch_status") == 200 and pt_day(r, day) == day:
             rows.append((pd.Timestamp(r["snapshot_ts"]), str(r["launch_id"]), float(r.get("votes_at_fetch") or 0),
                          float(r.get("comments_count_at_fetch") or 0), bool(r.get("hide_votes_count"))))
     return pd.DataFrame(rows, columns=["ts", "id", "v", "c", "hid"])
