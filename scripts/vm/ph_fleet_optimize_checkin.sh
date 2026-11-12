@@ -138,6 +138,10 @@ if [[ "$incomplete" -gt 0 ]]; then
 fi
 relay_msg+=" zero_incomplete=UNVERIFIED. Request Population repair_list recheck loop."
 "$ROOT/scripts/vm/ph_fleet_agent_relay.sh" population fleet-cursor "$relay_msg" >>"$LOG" 2>&1 || true
+short_all="fleet-cursor check-in run=$RUN_ID complete_ppm=$ppm vms=$n. status=gs://${MVP_GCS_BUCKET}/usersim_sim/mailbox/from_cursor/status.json (15m). Reply mailbox=usersim_sim/mailbox/from_cursor/."
+"$ROOT/scripts/vm/ph_fleet_agent_relay.sh" all fleet-cursor "$short_all" >>"$LOG" 2>&1 || true
+chmod +x "$ROOT/scripts/vm/ph_fleet_cursor_mailbox_status.sh" 2>/dev/null || true
+"$ROOT/scripts/vm/ph_fleet_cursor_mailbox_status.sh" >>"$LOG" 2>&1 || true
 mkdir -p "$ART/agent_inbox"
 AGENT_INBOX_JSONL="$ART/agent_inbox/fleet-cursor.jsonl" AGENT_MSGS_SUB=fleet-cursor \
   bash "$ROOT/scripts/vm/ph_fleet_agent_inbox.sh" 15 checkin >>"$LOG" 2>&1 || true
