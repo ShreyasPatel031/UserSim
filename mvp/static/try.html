@@ -33,7 +33,16 @@
         <li data-s="reactions"><b>Simulate reactions</b>What they'd write</li>
         <li data-s="launch"><b>Place on PH</b>Rank and vote range</li>
       </ol>
+      <p class="small muted" style="margin:6px 0 0">No public page yet, or it needs JavaScript? <a href="#" id="paste-open">Paste a launch description instead</a>.</p>
       <div id="err" class="err" hidden></div>
+      <form id="paste" class="card" hidden style="margin-top:14px;max-width:40rem">
+        <p class="label">Paste it like a Product Hunt launch</p>
+        <p class="small muted">This is the kind of text our launch and reaction models were measured on, so it is the better input when you have it.</p>
+        <p><input id="pn" maxlength="80" required placeholder="Product name" aria-label="Product name" style="width:100%;border:1px solid var(--rule);background:transparent;padding:9px 10px;font:inherit"></p>
+        <p><input id="pt" maxlength="140" required placeholder="Tagline (one line)" aria-label="Tagline" style="width:100%;border:1px solid var(--rule);background:transparent;padding:9px 10px;font:inherit"></p>
+        <p><textarea id="pd" rows="6" minlength="80" maxlength="2000" required placeholder="Description: what it does and for whom (80 to 2,000 characters)" aria-label="Description" style="width:100%;border:1px solid var(--rule);background:transparent;padding:9px 10px;font:inherit"></textarea></p>
+        <p><button type="submit" id="pgo" style="border:0;background:var(--ink);color:var(--paper);font:600 14px var(--sans);padding:11px 20px;cursor:pointer">Simulate from description</button></p>
+      </form>
     </div>
   </header>
 
@@ -80,7 +89,7 @@ async function post(path, body){
 function fail(msg){ $("#err").hidden=false; $("#err").textContent = msg; }
 
 function renderProduct(a){
-  $("#prod").innerHTML = `<header><div><p class="label">${esc(new URL(a.url).hostname)}</p><h2>${esc(a.name)}</h2></div>
+  $("#prod").innerHTML = `<header><div><p class="label">${esc(a.url ? new URL(a.url).hostname : "pasted description")}</p><h2>${esc(a.name)}</h2></div>
     <span class="label">${esc((a.topics||[]).join(" · "))}</span></header>
     <p class="lede"><b style="color:var(--ink)">${esc(a.tagline)}</b><br>${esc(a.summary)}</p>
     <div class="grid3" style="margin-top:16px">
@@ -88,7 +97,7 @@ function renderProduct(a){
       <div class="card"><p class="label">PH visitors would like</p><ul>${(a.strengths||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
       <div class="card"><p class="label">They would question</p><ul>${(a.doubts||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
     </div>`;
-  $("#full").href = "/app?url=" + encodeURIComponent(a.url);
+  $("#full").href = a.url ? "/app?url=" + encodeURIComponent(a.url) : "/app";
 }
 const pct = (v)=> Math.max(0, Math.min(100, Number(v)||0));
 function renderReactions(j){
@@ -127,6 +136,7 @@ function renderLaunch(l){
    <div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
    <div class="scale"><span>#1</span><span>page scores above ${l.percentile}% of past launches · band = 10th to 90th percentile of where similar pages finished</span><span>#${N}+</span></div>
    ${l.coverage ? `<p class="small" style="margin-top:12px"><b>About ${Math.round(Number(l.coverage.share)*10)} in 10</b> past launches finished inside the band this model gave them (pooled over all scores, checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches using their PH descriptions, ${esc(l.coverage.label)}; fixed offline figure, ${esc(l.coverage.date)}).</p>` : ""}
+   ${l.input_note ? `<p class="small" style="margin-top:12px">${esc(l.input_note)}</p>` : ""}
    <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
    <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
      <tr><td>This page-only model (${Number(A.days)} days)</td><td>${A.top3.toFixed(0)}%</td><td>${A.top5.toFixed(0)}%</td><td>${A.top10.toFixed(0)}%</td></tr>
@@ -134,21 +144,30 @@ function renderLaunch(l){
    <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
 }
 
-$("#f").onsubmit = async (e) => {
-  e.preventDefault();
-  $("#err").hidden = true; $("#go").disabled = true; $("#out").hidden = true;
+async function simulate(first, body){
+  $("#err").hidden = true; $("#go").disabled = true; $("#pgo").disabled = true; $("#out").hidden = true;
   ["page","people","reactions","launch"].forEach(s=>step(s,""));
   step("page","run");
   let tok;
   try {
-    const p = await post("/api/try/page", {url: $("#u").value});
+    const p = await post(first, body);
     tok = p.token; step("page","done"); renderProduct(p.analysis); $("#out").hidden = false;
     $("#caps").textContent = `Limits: ${p.caps.per_ip_hour} per hour, ${p.caps.per_ip_day} per day per visitor, ${p.caps.global_day} per day overall`;
-  } catch(err){ step("page","fail"); fail(err.message); $("#go").disabled=false; return; }
+  } catch(err){
+    step("page","fail"); fail(err.message);
+    if(first === "/api/try/page" && !/limit|busy|configured/i.test(err.message)){
+      $("#err").textContent = err.message + " You can paste the product's name, tagline and description below instead.";
+      $("#paste").hidden = false;
+    }
+    $("#go").disabled=false; $("#pgo").disabled=false; return;
+  }
   const run = (s, fn) => { step(s,"run"); return post("/api/try/"+s, {token: tok}).then(j=>{fn(j); step(s,"done");}).catch(err=>{step(s,"fail"); fail(err.message);}); };
   await Promise.all([run("people", renderPeople), run("reactions", renderReactions), run("launch", renderLaunch)]);
-  $("#go").disabled = false;
-};
+  $("#go").disabled = false; $("#pgo").disabled = false;
+}
+$("#f").onsubmit = (e) => { e.preventDefault(); simulate("/api/try/page", {url: $("#u").value}); };
+$("#paste").onsubmit = (e) => { e.preventDefault(); simulate("/api/try/text", {name: $("#pn").value, tagline: $("#pt").value, description: $("#pd").value}); };
+$("#paste-open").onclick = (e) => { e.preventDefault(); $("#paste").hidden = false; $("#pn").focus(); };
 const q = new URLSearchParams(location.search).get("url"); if(q){ $("#u").value = q; }
 </script>
 </body>

@@ -250,3 +250,12 @@ def test_final_only_from_official_rank_after_3am(monkeypatch):
     monkeypatch.setattr(live.gcs, "read_jsonl", lambda path, ttl=0: rows)
     ranks, at = live._monthly_reread("2026-11-10")
     assert set(ranks) == {"a"}
+
+
+def test_step_text_validates_before_spending(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    try_sim._mem.clear()
+    with pytest.raises(ValueError):
+        asyncio.run(try_sim.step_text("Name", "Tag", "too short", "8.8.8.8"))
+    assert not try_sim._mem.get(try_sim._ip_hash("8.8.8.8"))   # rejected input never took a slot

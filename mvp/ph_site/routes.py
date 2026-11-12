@@ -169,6 +169,21 @@ async def try_page_step(request: Request):
         return _err(exc)
 
 
+@router.post("/api/try/text")
+async def try_text_step(request: Request):
+    from mvp.ph_site import try_sim
+
+    body = await _body(request)
+    try:
+        return JSONResponse(await asyncio.wait_for(try_sim.step_text(
+            str(body.get("name") or "")[:200], str(body.get("tagline") or "")[:300],
+            str(body.get("description") or "")[:4000], _client_ip(request)), timeout=45))
+    except asyncio.TimeoutError:
+        return JSONResponse({"error": "Reading the description took too long."}, status_code=504)
+    except Exception as exc:  # noqa: BLE001
+        return _err(exc)
+
+
 @router.post("/api/try/{step}")
 async def try_step(step: str, request: Request):
     from mvp.ph_site import try_sim

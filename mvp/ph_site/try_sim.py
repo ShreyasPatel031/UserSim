@@ -226,20 +226,21 @@ Return JSON:
  "clarity": 1-5 (how quickly a visitor understands what it does)}}"""
 
 
-async def step_page(url: str, ip: str) -> dict:
+async def _analyze(page: dict, ip: str, source: str, fetch=None) -> dict:
+    """Shared by page reads and pasted descriptions: (optional fetch) -> Gemini read -> stored run."""
     from capability.gemini_config import extract_json, gemini_chat
-    from mvp.ph_site import safe_fetch
 
-    norm = await safe_fetch.check_url(url)        # validate before spending a slot
     usage = take_slot(ip)
     stage = "fetch"
     try:
-        page = await safe_fetch.fetch_product(norm)
+        if fetch is not None:
+            page = await fetch()
         if len((page["text"] or "").strip()) < 80:
-            raise ValueError("That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page.")
+            raise ValueError("That page has almost no readable text (it may need JavaScript or a login).")
         vocab = index()["meta"]["vocab"]
-        prompt = READ_PROMPT.format(url=page["url"], title=page["title"], desc=page["description"],
-                                    text=page["text"][:9000], pricing=page["pricing_text"][:2500], vocab=", ".join(vocab))
+        prompt = READ_PROMPT.format(url=page["url"] or "(description pasted by the visitor)", title=page["title"],
+                                    desc=page["description"], text=page["text"][:9000],
+                                    pricing=page["pricing_text"][:2500], vocab=", ".join(vocab))
         stage = "gemini"
         raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2, max_retries=3,
                                 max_output_tokens=1500)
@@ -250,7 +251,15 @@ async def step_page(url: str, ip: str) -> dict:
         a["topics"] = [t for t in (a.get("topics") or []) if t in vocab][:4] or ["Productivity"]
         a = {k: a.get(k) for k in ("name", "tagline", "summary", "topics", "audience", "pricing", "strengths", "doubts", "clarity")}
         a["url"] = page["url"]
-        a["page_excerpt"] = (page["description"] + "\n" + page["text"])[:2500]
+        a["source"] = source
+        if source == "pasted":
+            # Keep the visitor's own words: this is the input the launch band and reactions were measured on.
+            a["name"] = page["title"] or a.get("name")
+            a["tagline"] = page["description"] or a.get("tagline")
+            a["ph_description"] = page["text"][:1200]
+            a["page_excerpt"] = (page["description"] + "\n" + page["text"])[:2500]
+        else:
+            a["page_excerpt"] = (page["description"] + "\n" + page["text"])[:2500]
         stage = "store"
         tok = new_run(a)
     except Exception:
@@ -262,8 +271,28 @@ async def step_page(url: str, ip: str) -> dict:
             except Exception:  # noqa: BLE001
                 pass
         raise
-    return {"analysis": {k: v for k, v in a.items() if k != "page_excerpt"}, "token": tok,
+    return {"analysis": {k: v for k, v in a.items() if k not in ("page_excerpt", "ph_description")}, "token": tok,
             "caps": CAPS, "used_today": usage["used_today"]}
+
+
+async def step_page(url: str, ip: str) -> dict:
+    from mvp.ph_site import safe_fetch
+
+    norm = await safe_fetch.check_url(url)        # validate before spending a slot
+    return await _analyze({}, ip, "page", fetch=lambda: safe_fetch.fetch_product(norm))
+
+
+async def step_text(name: str, tagline: str, description: str, ip: str) -> dict:
+    """Fallback when a page can't be fetched: the visitor pastes a PH-style name, tagline and description."""
+    name, tagline, description = (" ".join(str(x or "").split()) for x in (name, tagline, description))
+    if not (1 <= len(name) <= 80):
+        raise ValueError("Give the product's name (up to 80 characters).")
+    if not (1 <= len(tagline) <= 140):
+        raise ValueError("Give a one-line tagline (up to 140 characters).")
+    if not (80 <= len(description) <= 2000):
+        raise ValueError("Give a description of 80 to 2,000 characters, like a Product Hunt launch description.")
+    page = {"url": "", "title": name, "description": tagline, "text": description, "pricing_text": ""}
+    return await _analyze(page, ip, "pasted")
 
 
 # ---------- step 2: people (no LLM) ----------
@@ -368,7 +397,8 @@ async def step_people(tok: str) -> dict:
     out.pop("top_people", None)   # per-person interest rows are not shown (no k-anonymity floor); segments are
     try:
         B = person_e5.bundle()
-        text = f"{a.get('name')}. {a.get('tagline')}. {a.get('summary') or ''} {(a.get('page_excerpt') or '')[:700]}"
+        text = (f"{a.get('name')}. {a.get('tagline')}. {a['ph_description'][:1100]}" if a.get("ph_description") else
+                f"{a.get('name')}. {a.get('tagline')}. {a.get('summary') or ''} {(a.get('page_excerpt') or '')[:700]}")
         q = await person_e5.embed(text)
         sm = person_e5.summarize(B, person_e5.score_text(B, q))
         from mvp.ph_site.live import claims
@@ -501,7 +531,7 @@ async def step_reactions(tok: str) -> dict:
     from mvp.ph_site import person_e5
 
     a = use_run(tok, "reactions")
-    desc = ((a.get("summary") or "") + " " + (a.get("page_excerpt") or ""))[:800]
+    desc = (a.get("ph_description") or ((a.get("summary") or "") + " " + (a.get("page_excerpt") or "")))[:800]
     q = await person_e5.embed(f"{a.get('name')}. {a.get('tagline')}. {desc}")
     try:
         B = person_e5.bundle()
@@ -561,7 +591,7 @@ def step_launch(tok: str) -> dict:
     lb = gcs.read_json("results/web/launch_band.json", ttl=3600)
     if not lb:
         raise RuntimeError("launch band missing")
-    desc = (a.get("summary") or "") + " " + (a.get("page_excerpt") or "")[:600]
+    desc = a.get("ph_description") or ((a.get("summary") or "") + " " + (a.get("page_excerpt") or "")[:600])
     score = _band_score(lb, a.get("name") or "", a.get("tagline") or "", desc, a.get("topics") or [])
     pct = sum(1 for c in lb["score_percentile_cuts"] if c < score)
     b = lb["bands"][min(9, pct // 10)]
@@ -580,7 +610,24 @@ def step_launch(tok: str) -> dict:
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
                        "(10th to 90th percentile)."),
-            "honesty": _honesty(acc), "coverage": _coverage()}
+            "honesty": _honesty(acc), "coverage": _coverage(), "input_note": _input_note(a.get("source"))}
+
+
+def _input_note(source: str | None) -> str | None:
+    """The band was trained and validated on PH launch descriptions; a page read ranks launches less well."""
+    if source == "pasted":
+        return "Scored from the description you pasted, the kind of text this model was trained and tested on."
+    try:
+        from mvp.ph_site.live import claims
+        c = claims()["try_e2e"]
+        v = c["values"]
+        return (f"Scored from a read of your web page. The accuracy figures here were measured on Product Hunt "
+                f"descriptions; in an end-to-end test on {v['launches']} launches ({c['date']}), the band from a page "
+                f"read tracked the real rank less well (rank correlation {v['spearman_page']:.2f} vs "
+                f"{v['spearman_ph']:.2f} from the PH description) and contained the true rank {v['coverage_page']:.0%} "
+                f"of the time vs {v['coverage_ph']:.0%}. Pasting a launch-style description gives the better input.")
+    except Exception:  # noqa: BLE001
+        return "Scored from a read of your web page; the accuracy figures were measured on Product Hunt descriptions."
 
 
 def _full_model_ref(acc: dict) -> dict:

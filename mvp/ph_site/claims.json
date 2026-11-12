@@ -94,5 +94,18 @@
   "label": "clean backtest of the 00:05 model with 00:05-visible inputs only (214 days, Mar-Oct 2026)",
   "source": "PH ops honest_preds_v2 (c1dd71b5); E5 masked backtest agrees (#1 in top 3 67-71%)",
   "date": "2026-11-12"
+ },
+ "try_e2e": {
+  "values": {
+   "launches": 43,
+   "spearman_page": 0.31,
+   "spearman_ph": 0.68,
+   "coverage_page": 0.77,
+   "coverage_ph": 0.81,
+   "fetch_fail_share": 0.17
+  },
+  "label": "/try code run on 57 launches (43 fetched), Oct 27-Nov 10",
+  "source": "E5 reports/try_e2e/, branch claude/person-model-v2",
+  "date": "2026-11-12"
  }
 }
