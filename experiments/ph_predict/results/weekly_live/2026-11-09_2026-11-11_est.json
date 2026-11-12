@@ -2,8 +2,8 @@
  "week_monday": "2026-11-09",
  "day": "2026-11-11",
  "point": "est",
- "written_at": "2026-11-12T02:24:46.607180+00:00",
- "launches": 91,
+ "written_at": "2026-11-12T09:30:15.778288+00:00",
+ "launches": 101,
  "days_covered": [
   "2026-11-09",
   "2026-11-10",
@@ -18,21 +18,21 @@
    "id": "1288148",
    "day": "2026-11-10",
    "pred_rank": 1,
-   "est": 435.0,
+   "est": 438.0,
    "src": "posts_ts"
   },
   {
    "id": "1307104",
    "day": "2026-11-09",
    "pred_rank": 2,
-   "est": 414.0,
+   "est": 417.0,
    "src": "posts_ts"
   },
   {
    "id": "1302788",
    "day": "2026-11-09",
    "pred_rank": 3,
-   "est": 356.0,
+   "est": 359.0,
    "src": "posts_ts"
   },
   {
@@ -46,7 +46,7 @@
    "id": "1293370",
    "day": "2026-11-09",
    "pred_rank": 5,
-   "est": 287.0,
+   "est": 288.0,
    "src": "posts_ts"
   },
   {
@@ -60,21 +60,21 @@
    "id": "1296366",
    "day": "2026-11-10",
    "pred_rank": 7,
-   "est": 233.0,
+   "est": 232.0,
    "src": "posts_ts"
   },
   {
    "id": "1310787",
    "day": "2026-11-10",
    "pred_rank": 8,
-   "est": 229.0,
+   "est": 230.0,
    "src": "posts_ts"
   },
   {
    "id": "1306799",
    "day": "2026-11-09",
    "pred_rank": 9,
-   "est": 226.0,
+   "est": 227.0,
    "src": "posts_ts"
   },
   {
@@ -88,7 +88,7 @@
    "id": "1308411",
    "day": "2026-11-10",
    "pred_rank": 11,
-   "est": 208.0,
+   "est": 219.0,
    "src": "posts_ts"
   },
   {
@@ -116,7 +116,7 @@
    "id": "1266350",
    "day": "2026-11-09",
    "pred_rank": 15,
-   "est": 152.0,
+   "est": 157.0,
    "src": "posts_ts"
   },
   {
@@ -141,88 +141,88 @@
    "src": "posts_ts"
   },
   {
-   "id": "1312054",
+   "id": "1303622",
    "day": "2026-11-11",
    "pred_rank": 19,
-   "est": 127.38,
+   "est": 129.24,
    "src": "est_votes x fitted m"
   },
   {
-   "id": "1310655",
+   "id": "1311862",
    "day": "2026-11-11",
    "pred_rank": 20,
    "est": 127.38,
    "src": "est_votes x fitted m"
   },
   {
-   "id": "1310088",
+   "id": "1310655",
    "day": "2026-11-11",
    "pred_rank": 21,
    "est": 127.38,
    "src": "est_votes x fitted m"
   },
   {
-   "id": "1311454",
+   "id": "1312054",
    "day": "2026-11-11",
    "pred_rank": 22,
+   "est": 127.38,
+   "src": "est_votes x fitted m"
+  },
+  {
+   "id": "1310088",
+   "day": "2026-11-11",
+   "pred_rank": 23,
+   "est": 127.38,
+   "src": "est_votes x fitted m"
+  },
+  {
+   "id": "1312096",
+   "day": "2026-11-11",
+   "pred_rank": 24,
+   "est": 127.38,
+   "src": "est_votes x fitted m"
+  },
+  {
+   "id": "1311454",
+   "day": "2026-11-11",
+   "pred_rank": 25,
    "est": 126.44,
    "src": "est_votes x fitted m"
   },
   {
    "id": "1309486",
    "day": "2026-11-09",
-   "pred_rank": 23,
+   "pred_rank": 26,
    "est": 124.0,
    "src": "posts_ts"
   },
   {
    "id": "1311460",
    "day": "2026-11-11",
-   "pred_rank": 24,
+   "pred_rank": 27,
    "est": 123.63,
+   "src": "est_votes x fitted m"
+  },
+  {
+   "id": "1312166",
+   "day": "2026-11-11",
+   "pred_rank": 28,
+   "est": 121.76,
    "src": "est_votes x fitted m"
   },
   {
    "id": "1311715",
    "day": "2026-11-11",
-   "pred_rank": 25,
+   "pred_rank": 29,
    "est": 121.32,
    "src": "est_votes x fitted m"
   },
   {
-   "id": "1310328",
-   "day": "2026-11-10",
-   "pred_rank": 26,
-   "est": 114.0,
-   "src": "posts_ts"
-  },
-  {
-   "id": "1311828",
+   "id": "1312074",
    "day": "2026-11-11",
-   "pred_rank": 27,
-   "est": 110.29,
-   "src": "est_votes x fitted m"
-  },
-  {
-   "id": "1308685",
-   "day": "2026-11-11",
-   "pred_rank": 28,
-   "est": 108.82,
-   "src": "est_votes x fitted m"
-  },
-  {
-   "id": "1305634",
-   "day": "2026-11-09",
-   "pred_rank": 29,
-   "est": 108.0,
-   "src": "posts_ts"
-  },
-  {
-   "id": "1301600",
-   "day": "2026-11-09",
    "pred_rank": 30,
-   "est": 107.0,
-   "src": "posts_ts"
+   "est": 118.94,
+   "src": "est_votes x fitted m"
   }
  ]
 }

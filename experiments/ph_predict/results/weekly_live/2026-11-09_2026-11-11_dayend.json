@@ -2,15 +2,15 @@
  "week_monday": "2026-11-09",
  "day": "2026-11-11",
  "point": "dayend",
- "written_at": "2026-11-12T08:19:25.478130+00:00",
- "launches": 91,
+ "written_at": "2026-11-12T09:29:42.372460+00:00",
+ "launches": 101,
  "days_covered": [
   "2026-11-09",
   "2026-11-10",
   "2026-11-11"
  ],
  "sunday_call": false,
- "dropped_not_featured": 10,
+ "dropped_not_featured": 0,
  "forecast": [
   {
    "id": "1288148",
@@ -125,101 +125,101 @@
    "src": "posts_ts"
   },
   {
+   "id": "1306167",
+   "day": "2026-11-11",
+   "pred_rank": 17,
+   "est": 150.0,
+   "src": "posts_ts"
+  },
+  {
    "id": "1309685",
    "day": "2026-11-10",
-   "pred_rank": 17,
+   "pred_rank": 18,
    "est": 137.0,
    "src": "posts_ts"
   },
   {
    "id": "1308023",
    "day": "2026-11-09",
-   "pred_rank": 18,
+   "pred_rank": 19,
    "est": 135.0,
    "src": "posts_ts"
   },
   {
    "id": "1306678",
    "day": "2026-11-09",
-   "pred_rank": 19,
+   "pred_rank": 20,
    "est": 133.0,
    "src": "posts_ts"
   },
   {
    "id": "1311715",
    "day": "2026-11-11",
-   "pred_rank": 20,
+   "pred_rank": 21,
    "est": 126.0,
    "src": "posts_ts"
   },
   {
    "id": "1303622",
    "day": "2026-11-11",
-   "pred_rank": 21,
+   "pred_rank": 22,
    "est": 125.0,
    "src": "posts_ts"
   },
   {
    "id": "1309486",
    "day": "2026-11-09",
-   "pred_rank": 22,
+   "pred_rank": 23,
    "est": 124.0,
    "src": "posts_ts"
   },
   {
    "id": "1311330",
    "day": "2026-11-11",
-   "pred_rank": 23,
+   "pred_rank": 24,
    "est": 117.0,
    "src": "posts_ts"
   },
   {
    "id": "1310328",
    "day": "2026-11-10",
-   "pred_rank": 24,
+   "pred_rank": 25,
    "est": 114.0,
    "src": "posts_ts"
   },
   {
    "id": "1312356",
    "day": "2026-11-11",
-   "pred_rank": 25,
+   "pred_rank": 26,
    "est": 112.0,
    "src": "posts_ts"
   },
   {
    "id": "1305634",
    "day": "2026-11-09",
-   "pred_rank": 26,
+   "pred_rank": 27,
    "est": 108.0,
    "src": "posts_ts"
   },
   {
    "id": "1301600",
    "day": "2026-11-09",
-   "pred_rank": 27,
+   "pred_rank": 28,
    "est": 107.0,
    "src": "posts_ts"
   },
   {
    "id": "1310655",
    "day": "2026-11-11",
-   "pred_rank": 28,
+   "pred_rank": 29,
    "est": 107.0,
    "src": "posts_ts"
   },
   {
    "id": "1310088",
    "day": "2026-11-11",
-   "pred_rank": 29,
-   "est": 102.0,
-   "src": "posts_ts"
-  },
-  {
-   "id": "1309804",
-   "day": "2026-11-10",
    "pred_rank": 30,
-   "est": 101.0,
+   "est": 102.0,
    "src": "posts_ts"
   }
  ]

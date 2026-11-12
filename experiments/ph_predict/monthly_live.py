@@ -43,11 +43,20 @@ def dayend(day):
     if X is None:
         print(json.dumps({"day": day, "status": "no monthly_reread file"})); return
     X = X[X.launch_day_PT <= day]
+    # orchestrator 09:27Z Nov 12: a read taken before <day> ends leaves <day> partial and its same-day monthlyRank values are
+    # placeholders: flag the day and drop those ranks from the monthlyRank order
+    t_read = pd.Timestamp(hdr.get("fetched_at")) if hdr.get("fetched_at") else None
+    day_end = pd.Timestamp(day + " 23:59:59", tz="America/Los_Angeles").tz_convert("UTC")
+    early = t_read is not None and t_read < day_end - pd.Timedelta(minutes=30)
+    partial = sorted(set(hdr.get("rate_limited_days_missing_or_partial") or []) | ({day} if early else set()))
+    if early:
+        X.loc[X.launch_day_PT == day, "monthlyRank"] = np.nan
     by_mr = X.dropna(subset=["monthlyRank"]).sort_values("monthlyRank").id.tolist()
     by_v = X.sort_values(["votesCount", "dailyRank"], ascending=[False, True]).id.tolist()
     res = {"month": day[:7], "day": day, "point": "dayend", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),
            "read_fetched_at": hdr.get("fetched_at"), "read_rows": int(len(X)), "read_status": hdr.get("status"),
-           "partial_days": hdr.get("rate_limited_days_missing_or_partial"),
+           "partial_days": partial, "read_time_PT": t_read.tz_convert("America/Los_Angeles").strftime("%Y-%m-%d %H:%M") if t_read is not None else None,
+           "read_before_day_end": bool(early),
            "agree_mr_vs_votes": {k: topk_overlap(by_mr, by_v, k) for k in (3, 5, 10)},
            "forecast_monthlyRank": by_mr[:30], "forecast_votes": by_v[:30]}
     # weekly cross-check: weekly_live's dayend list for <day> vs this read's weeklyRank (and votes) within the week
@@ -64,7 +73,7 @@ def dayend(day):
         # week's launches so far by their votes in this 23:50 PT read; written in weekly_live's format as point "reread"
         Wr = Wk.sort_values("votesCount", ascending=False).reset_index(drop=True)
         wres = {"week_monday": mon, "day": day, "point": "reread", "written_at": res["written_at"], "launches": int(len(Wr)),
-                "source": f"raw/ph_at_launch/monthly_reread/{day[:7]}/{day}.jsonl votesCount (23:50 PT read)",
+                "source": f"raw/ph_at_launch/monthly_reread/{day[:7]}/{day}.jsonl votesCount (read at {res['read_time_PT']} PT" + (", before the day ended: partial)" if early else ")"),
                 "forecast": [{"id": i, "day": dd, "pred_rank": n + 1, "est": float(v), "src": "reread"} for n, (i, dd, v) in
                              enumerate(zip(Wr.id, Wr.launch_day_PT, Wr.votesCount)) if n < 30]}
         wp = os.path.join(HERE, "results", "weekly_live", f"{mon}_{day}_reread.json"); json.dump(wres, open(wp, "w"), indent=1)
@@ -72,6 +81,22 @@ def dayend(day):
     os.makedirs(OUT, exist_ok=True); p = f"{OUT}/{day[:7]}_{day}_dayend.json"; json.dump(res, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/monthly_live/{day[:7]}_{day}_dayend.json"], check=True)
     print(json.dumps({k: v for k, v in res.items() if not k.startswith("forecast")}))
+
+
+def running(day):
+    """PH's running monthlyRank after <day> ends (warehouse launches.monthly_rank after the next ranks step; orchestrator
+    09:27Z Nov 12). Written like dayend (forecast_monthlyRank) as point "running"."""
+    from pipeline import warehouse as W
+    nxt = (pd.Timestamp(day) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    R = W.query("SELECT step, status, run_date FROM pipeline_runs", do_sync=True)
+    if not len(R[(R.run_date.astype(str).str[:10] == nxt) & (R.step == "ranks") & (R.status == "ok")]):
+        print(json.dumps({"day": day, "status": f"ranks step of {nxt} not finished"})); return
+    L = W.query(f"SELECT CAST(id AS VARCHAR) id, day, monthly_rank FROM launches WHERE day >= '{day[:7]}-01' AND day <= '{day}' AND monthly_rank IS NOT NULL", do_sync=False)
+    res = {"month": day[:7], "day": day, "point": "running", "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "launches": int(len(L)),
+           "source": f"warehouse launches.monthly_rank after the {nxt} ranks step", "forecast_monthlyRank": L.sort_values(["monthly_rank", "id"]).id.tolist()[:30]}
+    os.makedirs(OUT, exist_ok=True); p = os.path.join(OUT, f"{day[:7]}_{day}_running.json"); json.dump(res, open(p, "w"), indent=1)
+    subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/monthly_live/{day[:7]}_{day}_running.json"], check=True)
+    print(json.dumps({k: v for k, v in res.items() if k != "forecast_monthlyRank"}))
 
 
 def score():
@@ -101,4 +126,4 @@ def score():
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    {"dayend": lambda: dayend(a[1]), "score": score}[a[0]]()
+    {"dayend": lambda: dayend(a[1]), "score": score, "running": lambda: running(a[1])}[a[0]]()

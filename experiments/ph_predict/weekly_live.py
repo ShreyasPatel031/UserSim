@@ -6,6 +6,7 @@ Week = Monday 00:00 - Sunday 23:59 PT; final weekly rank = warehouse launches.we
   python weekly_live.py r4 <day>       at <day>'s R0+4h: earlier days by day-end votes + <day>'s launches by projected
                                        day-end votes = votes at R0+4h x the median day-end / R0+4h ratio (fit below)
   python weekly_live.py fit            the ratio, from days whose live capture covers the reveal and the day end
+  python weekly_live.py running <day>  PH's running weeklyRank after <day> ends (warehouse, after the next ranks step)
   python weekly_live.py score          score every written file of finished weeks -> results/weekly_forecast_forward.jsonl
 
 Day-end votes: latest live/posts_ts.jsonl votes_at_fetch fetched at or before 23:59:59 PT of the launch day (official
@@ -67,8 +68,12 @@ def week_launches(mon):
 
 def write(day, point, A, extra):
     mon = monday(day); now = pd.Timestamp.now(tz="UTC")
-    feat = set(week_launches(mon).id)   # competitors = the week's featured (daily-ranked) launches in the warehouse
-    n_all = len(A); A = A[A.id.isin(feat)]; extra = {**extra, "dropped_not_featured": int(n_all - len(A))}
+    # competitors = the week's featured launches: warehouse rows PLUS ids from the day's official API reads (posts_ts). The
+    # warehouse list can be the early 00:07 PT part (16 of 26 Nov 11 launches; orchestrator 09:27Z Nov 12), so it alone drops
+    # late-featured launches. One row per id (the Nov 9 dayend file once held every launch twice).
+    feat = set(week_launches(mon).id) | set(A.loc[A.src.astype(str).str.startswith("posts_ts"), "id"])
+    n_all = len(A); A = A[A.id.isin(feat)].drop_duplicates("id", keep="last")
+    extra = {**extra, "dropped_not_featured": int(n_all - len(A))}
     A = A.sort_values("est", ascending=False).reset_index(drop=True); A["pred_rank"] = np.arange(1, len(A) + 1)
     res = {"week_monday": mon, "day": day, "point": point, "written_at": now.isoformat(), "launches": int(len(A)), **extra,
            "forecast": A.head(30)[["id", "day", "pred_rank", "est", "src"]].round(2).to_dict("records")}
@@ -104,6 +109,23 @@ def dayend(day):
     rows = earlier(day) + [{"id": i, "day": day, "est": v, "src": src[i]} for i, v in V.items()]
     A = pd.DataFrame(rows)
     write(day, "dayend", A, {"days_covered": sorted(A.day.unique().tolist()), "sunday_call": pd.Timestamp(day).dayofweek == 6})
+
+
+def running(day):
+    """orchestrator 09:27Z Nov 12: PH's own running weeklyRank read just after <day> ends (warehouse launches.weekly_rank,
+    refreshed by the 00:05 run's ranks step, ~00:20 PT of day+1) for the week's launches of days <= <day>. Run once that
+    step has finished (02:17 PT run); scored against the frozen weekly_rank like the other points."""
+    from pipeline import warehouse as W
+    mon = monday(day); end = day
+    L = W.query(f"SELECT CAST(id AS VARCHAR) id, day, weekly_rank FROM launches WHERE day >= '{mon}' AND day <= '{end}'", do_sync=True)
+    R = W.query("SELECT step, status, run_date FROM pipeline_runs", do_sync=False)
+    nxt = (pd.Timestamp(day) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    ok = len(R[(R.run_date.astype(str).str[:10] == nxt) & (R.step == "ranks") & (R.status == "ok")])
+    if not ok:
+        print(json.dumps({"day": day, "status": f"ranks step of {nxt} not finished"})); return
+    L = L.dropna(subset=["weekly_rank"])
+    A = L.assign(est=-L.weekly_rank.astype(float), src="weekly_rank_running")[["id", "day", "est", "src"]]
+    write(day, "running", A, {"days_covered": sorted(A.day.unique().tolist()), "source": f"warehouse launches.weekly_rank after the {nxt} ranks step (est = -weekly_rank)"})
 
 
 def r4(day):
@@ -190,4 +212,4 @@ def score():
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    {"dayend": lambda: dayend(a[1]), "r4": lambda: r4(a[1]), "est": lambda: est(a[1]), "fit": fit, "score": score}[a[0]]()
+    {"dayend": lambda: dayend(a[1]), "r4": lambda: r4(a[1]), "est": lambda: est(a[1]), "fit": fit, "score": score, "running": lambda: running(a[1])}[a[0]]()

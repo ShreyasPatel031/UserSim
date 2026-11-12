@@ -2,11 +2,15 @@
  "month": "2026-11",
  "day": "2026-11-11",
  "point": "dayend",
- "written_at": "2026-11-12T08:19:32.600395+00:00",
+ "written_at": "2026-11-12T09:30:31.850561+00:00",
  "read_fetched_at": "2026-11-11T21:31:37Z",
  "read_rows": 341,
  "read_status": "DRAFT until agents verify",
- "partial_days": [],
+ "partial_days": [
+  "2026-11-11"
+ ],
+ "read_time_PT": "2026-11-11 13:31",
+ "read_before_day_end": true,
  "agree_mr_vs_votes": {
   "3": 66.66666666666666,
   "5": 100.0,
