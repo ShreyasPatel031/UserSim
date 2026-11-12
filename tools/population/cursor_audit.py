@@ -76,7 +76,9 @@ def main():
 
     def clean(vm):
         if vm not in vm_clean:
-            logs = sh("gsutil", "ls", f"{STAGE}/status/{vm}*", f"{R}/ph_population/people_live/vm/status/{vm}*").stdout.split()
+            # 20:1xZ Nov 12: "{vm}.*", not "{vm}*": the bare glob also read VMs -10..-19 for VM -1 (-40..-49 for -4, ...),
+            # so a VM was judged on other VMs' rotation/block events. Logs are {vm}.jsonl and {vm}.supervisor.jsonl.
+            logs = sh("gsutil", "ls", f"{STAGE}/status/{vm}.*", f"{R}/ph_population/people_live/vm/status/{vm}.*").stdout.split()
             txt = "".join(sh("gsutil", "cat", u).stdout for u in logs)
             lines = txt.splitlines()
             vm_clean[vm] = (not any(EVASION.search(_strip_person(l)) for l in lines), _block_evasion(lines))
