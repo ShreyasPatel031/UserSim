@@ -9,10 +9,10 @@ Models (target ln(1+votes); month-forward on old launches; trained on all held l
   (a) CURRENT  launch_band.json scored on the site's band input (name, tagline, summary + page_excerpt[:600], topics)
   (b) TFIDF    word 1-2 gram TF-IDF ridge on page text "name. tagline. summary. excerpt[:1500]"
   (b2) EMB     ridge on gemini-embedding-001 (256-d) of the same text
-  (c) STRUCT   (b) + page-read fields: topics (one-hot), pricing, clarity, numbers of strengths / doubts, text lengths
+  (c) STRUCT   (b) + page-read topics (one-hot) and text length (pricing / clarity not held for the fresh reads)
   (d) BOTH     (c) trained on page rows AND PH-description rows (same features, PH text in place of page text) + a source flag;
                scored as source = page
-Band: deciles of the model's own training scores; 10th-90th percentile of final daily rank per decile from the training rows.
+Band: deciles of the model's 5-fold out-of-fold training scores; 10th-90th percentile of final daily rank per decile from those rows.
 Fresh test: the 130 Oct 27 - Nov 10 launches fetched and read through the site's code (try_fixes cache); none in training.
 Metrics: Spearman of the band percentile with -rank (pooled; launch bootstrap), band coverage / mean width, paired vs (a); old
 launches month-forward also within-day Spearman and daily top 3/5/10 on days with >= 10 page rows; with / without PH-mention pages.
@@ -87,11 +87,10 @@ PRC = ["free", "freemium", "paid", "unknown"]
 def struct(D, src_ph=False):
     tps = D.ph_topics.map(phtop) if src_ph else D.topics.map(lambda t: t if isinstance(t, list) else [])
     X = np.array([[float(v in t) for v in VOCAB] for t in tps], np.float32)
-    pr = np.zeros((len(D), 4), np.float32) if src_ph else np.array([[float(str(p).lower() == q) for q in PRC] for p in D.pricing], np.float32)
-    cl = np.zeros((len(D), 1), np.float32) if src_ph else pd.to_numeric(D.clarity, errors="coerce").fillna(3).to_numpy(np.float32)[:, None]
-    nsd = np.zeros((len(D), 2), np.float32) if src_ph else np.array([[len(s or []), len(d or [])] for s, d in zip(D.strengths, D.doubts)], np.float32)
+    # pricing / clarity / strengths / doubts are not held for the 130 fresh reads (try_fixes stored name, tagline, summary,
+    # topics, excerpt), so the structured block is topics + text length only, identical for training and test
     txt = ph_text(D) if src_ph else page_text(D); ln = np.array([[np.log1p(len(t))] for t in txt], np.float32)
-    return np.hstack([X, pr, cl / 5, nsd / 3, ln / 8])
+    return np.hstack([X, ln / 8])
 
 
 def current(D): return np.array([try_sim._band_score(LB, n or "", t or "", (s or "") + " " + (e or "")[:600], tp if isinstance(tp, list) else []) for n, t, s, e, tp in zip(D.name, D.tagline, D.summary, D.page_excerpt, D.topics)])
@@ -137,6 +136,18 @@ def fit_predict(kind, trD, teD, Etr=None, Ete=None):
     m = Ridge(alpha=3.0).fit(Xt, trD.y); return m.predict(Xte), m.predict(Xt)
 
 
+from sklearn.model_selection import KFold  # noqa: E402
+
+
+def oof_scores(kind, trD, Etr=None):
+    """5-fold out-of-fold training scores: band cuts / rank bands must come from held-out scores (in-sample ridge scores on
+    TF-IDF are overfit, which made the bands too narrow)"""
+    o = np.zeros(len(trD))
+    for a, b in KFold(5, shuffle=True, random_state=0).split(trD):
+        o[b] = fit_predict(kind, trD.iloc[a], trD.iloc[b], None if Etr is None else Etr[a], None if Etr is None else Etr[b])[0]
+    return o
+
+
 def band_eval(score_te, score_tr, trD, teD):
     cuts = np.percentile(score_tr, np.arange(10, 100, 10)); dtr, dte = np.searchsorted(cuts, score_tr), np.searchsorted(cuts, score_te)
     lo = {q: np.percentile(trD["rank"].values[dtr == q], 10) for q in range(10)}; hi = {q: np.percentile(trD["rank"].values[dtr == q], 90) for q in range(10)}
@@ -172,7 +183,7 @@ for sub, mask_tr, mask_te in (("fresh", np.ones(len(TR), bool), np.ones(len(TE),
         ca = np.array([float(LB["bands"][min(9, int(p) // 10)]["daily_rank_p10_p50_p90"][0] <= r <= LB["bands"][min(9, int(p) // 10)]["daily_rank_p10_p50_p90"][2]) for p, r in zip(pa, rk)]); wa = np.zeros(len(pa))
     out = {"a_current": sp_ci(pa, rk) | {"coverage": round(float(ca.mean()), 3)}}
     for kind in ("b", "b2", "c", "d"):
-        st, sr = fit_predict(kind, trD, teD, E_tr[mask_tr], E_te[mask_te]); p, cv, w = band_eval(st, sr, trD, teD)
+        st, _ = fit_predict(kind, trD, teD, E_tr[mask_tr], E_te[mask_te]); sr = oof_scores(kind, trD, E_tr[mask_tr]); p, cv, w = band_eval(st, sr, trD, teD)
         out[kind] = sp_ci(p, rk, other=pa) | {"coverage": round(float(cv.mean()), 3), "mean_width": round(float(w.mean()), 1)}
     res[sub] = out; print(sub, json.dumps(out), flush=True)
 # month-forward on old launches
@@ -183,6 +194,7 @@ for m in mons[2:]:
     P["a"][te.index] = current(te)
     for kind in ("b", "c", "d"): P[kind][te.index] = fit_predict(kind, tr, te)[0]
 T = TR.assign(**{f"s_{k}": v for k, v in P.items()}); T = T[T.s_a.notna()]
+res["note_old"] = "launch_band.json (a) was trained on launches that include these months, so (a) is partly in-sample on the old set"
 for k in ("a", "b", "c", "d"):
     wd = [spearmanr(g[f"s_{k}"], -g["rank"]).correlation for d, g in T.groupby("day") if len(g) >= 10]
     tk = {kk: np.mean([len(set(g.nlargest(kk, f"s_{k}").id) & set(g.nsmallest(kk, "rank").id)) / kk for d, g in T.groupby("day") if len(g) >= 10]) * 100 for kk in (3, 5, 10)}

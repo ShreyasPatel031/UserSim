@@ -1,0 +1,17 @@
+{
+ "fresh_page_reads_oct27_nov10": {
+  "n": 130,
+  "page_band_v1_spearman": 0.413,
+  "site_now_spearman (launch_band.json on name/tagline/summary)": 0.319,
+  "difference (paired bootstrap)": [
+   -0.036,
+   0.092,
+   0.227
+  ],
+  "page_band_v1_coverage": 0.869,
+  "site_now_coverage": 0.862,
+  "page_band_v1_mean_width": 31.9,
+  "site_now_mean_width": 32.0,
+  "note": "launch_band.json was trained on launches through Nov 10 (incl. these 130), so the site-now figure is partly in-sample; page_band_v1 never saw them"
+ }
+}

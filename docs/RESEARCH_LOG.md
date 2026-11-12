@@ -1351,3 +1351,31 @@ The rewrite does NOT recover the gap. The information is in what makers write fo
 - Retrying the root domain recovers 12 of 48 (25%): judge-refused deep links 6 of 10, other 3 of 8, JS-only 2 of 14, 403 1 of 16.
 - The at-launch primary_link recovers 0.
 - About 75% of failures (20% of all URLs) need a headless browser or pasted text.
+
+### 2026-11-12 E5 — rank band trained on product-site text (the serving distribution)
+Scripts experiments/simlab/band_page.py and band_page_export.py; reports/band_page/.
+
+Data:
+- Training: 2,974 held product pages (Jan–Oct 2026; 4,010 pages held, the rest unreadable or refused). They went through the site's own extraction (safe_fetch.extract) and READ_PROMPT on flash-lite, with PH-outcome phrases stripped.
+- 22.9% of training pages mention Product Hunt. The pages were fetched Oct 25, months after launch.
+- Test: the 130 fresh Oct 27–Nov 10 page reads, none in training. Caveat: launch_band.json was trained on launches through Nov 10, so its figures on these 130 are partly in-sample.
+
+On the 130 (Spearman of band percentile with −rank; bands from out-of-fold scores):
+
+| Model | Spearman | Change vs (a) | Coverage |
+|---|---|---|---|
+| (a) Current band, old site input | 0.305 [0.15, 0.46] | – | 82% |
+| (b) TF-IDF on page text | 0.440 [0.29, 0.56] | +0.14 [−0.01, 0.28] | 86% |
+| (b2) Embedding ridge | 0.353 | +0.05 [−0.11, 0.22] | 86% |
+| (c) TF-IDF + topics and length | 0.435 | +0.13 [−0.01, 0.26] | 86% |
+| (d) Page + PH rows with a source flag | 0.429 | +0.12 [0.01, 0.25] | 88% |
+
+- Without the PH-mention pages (n = 124): (b) +0.16 [0.02, 0.32]; (d) +0.13 [0.01, 0.26].
+- Old launches month-forward, within-day Spearman: (a) 0.22, (b) 0.26, (c) 0.19, (d) 0.22. This comparison is unfair to b–d, because (a) saw these launches in training.
+
+Site-compatible export (model d, retrained on _band_score's exact features), scored through try_sim._band_score:
+- Spearman 0.413 vs 0.319 for the site's CURRENT band input (launch_band.json on name / tagline / summary).
+- Paired difference +0.09 [−0.04, 0.23]. Coverage 86.9% vs 86.2%; width about 32 ranks for both.
+- The interval does not clear zero, so it was not sent as a replacement. Candidate file: gs://.../tmp/e5/website/launch_band_page_v1_candidate.json.
+
+Paste path: the site's /api/try/text feeds the visitor's description to launch_band.json. On the same 130, with the real PH description as the proxy, that gives Spearman 0.591 [0.47, 0.70] and coverage 89%. Confirmed: pasted launch text gets the 0.59, provided visitors paste PH-style text.

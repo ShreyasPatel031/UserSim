@@ -1,0 +1,209 @@
+{
+ "design": "Train the rank band on what the site reads (orchestrator 10:45Z Nov 12). The site's band (launch_band.json, a ridge on PH launch\ndescriptions) is served product-site text and its link with final rank falls from 0.59 to 0.31.\nTraining data: held product-site HTML for past launches (fame/sites.jsonl 'live' pages, fetched Oct 25 2026, i.e. months after\nlaunch) -> the SAME extraction the site uses (mvp/ph_site/safe_fetch.extract) -> PH-outcome phrases stripped (features.LEAK_WORDS\nrule: \"product hunt\", \"product of the day/week/month\", \"#1 product\", \"upvote\"; launches whose raw page mentions Product Hunt are\nflagged) -> the site's READ_PROMPT page read (gemini-2.5-flash-lite), which gives name / tagline / summary / topics / pricing /\nclarity / strengths / doubts. Pricing sub-page not fetched (held pages only).\nModels (target ln(1+votes); month-forward on old launches; trained on all held launches for the fresh test):\n  (a) CURRENT  launch_band.json scored on the site's band input (name, tagline, summary + page_excerpt[:600], topics)\n  (b) TFIDF    word 1-2 gram TF-IDF ridge on page text \"name. tagline. summary. excerpt[:1500]\"\n  (b2) EMB     ridge on gemini-embedding-001 (256-d) of the same text\n  (c) STRUCT   (b) + page-read topics (one-hot) and text length (pricing / clarity not held for the fresh reads)\n  (d) BOTH     (c) trained on page rows AND PH-description rows (same features, PH text in place of page text) + a source flag;\n               scored as source = page\nBand: deciles of the model's 5-fold out-of-fold training scores; 10th-90th percentile of final daily rank per decile from those rows.\nFresh test: the 130 Oct 27 - Nov 10 launches fetched and read through the site's code (try_fixes cache); none in training.\nMetrics: Spearman of the band percentile with -rank (pooled; launch bootstrap), band coverage / mean width, paired vs (a); old\nlaunches month-forward also within-day Spearman and daily top 3/5/10 on days with >= 10 page rows; with / without PH-mention pages.\nPaste path: the PH description is the proxy for visitor-pasted text (0.59 on the same 130 in try_fixes).",
+ "held_pages": 4010,
+ "training_page_reads": 2974,
+ "training_by_month": {
+  "2026-01": 176,
+  "2026-02": 234,
+  "2026-03": 294,
+  "2026-04": 376,
+  "2026-05": 379,
+  "2026-06": 277,
+  "2026-07": 252,
+  "2026-08": 260,
+  "2026-09": 341,
+  "2026-10": 385
+ },
+ "training_ph_mention_share": 0.229,
+ "fresh_test": 130,
+ "fresh": {
+  "a_current": {
+   "spearman": 0.305,
+   "ci": [
+    0.147,
+    0.456
+   ],
+   "n": 130,
+   "coverage": 0.823
+  },
+  "b": {
+   "spearman": 0.44,
+   "ci": [
+    0.292,
+    0.563
+   ],
+   "n": 130,
+   "minus_a (paired)": [
+    -0.007,
+    0.136,
+    0.284
+   ],
+   "coverage": 0.862,
+   "mean_width": 30.6
+  },
+  "b2": {
+   "spearman": 0.353,
+   "ci": [
+    0.189,
+    0.499
+   ],
+   "n": 130,
+   "minus_a (paired)": [
+    -0.11,
+    0.048,
+    0.217
+   ],
+   "coverage": 0.862,
+   "mean_width": 32.7
+  },
+  "c": {
+   "spearman": 0.435,
+   "ci": [
+    0.283,
+    0.558
+   ],
+   "n": 130,
+   "minus_a (paired)": [
+    -0.005,
+    0.129,
+    0.262
+   ],
+   "coverage": 0.862,
+   "mean_width": 31.3
+  },
+  "d": {
+   "spearman": 0.429,
+   "ci": [
+    0.281,
+    0.557
+   ],
+   "n": 130,
+   "minus_a (paired)": [
+    0.007,
+    0.121,
+    0.249
+   ],
+   "coverage": 0.877,
+   "mean_width": 31.5
+  }
+ },
+ "fresh_no_ph_mention": {
+  "a_current": {
+   "spearman": 0.314,
+   "ci": [
+    0.144,
+    0.461
+   ],
+   "n": 124,
+   "coverage": 0.815
+  },
+  "b": {
+   "spearman": 0.481,
+   "ci": [
+    0.337,
+    0.607
+   ],
+   "n": 124,
+   "minus_a (paired)": [
+    0.021,
+    0.164,
+    0.319
+   ],
+   "coverage": 0.839,
+   "mean_width": 32.7
+  },
+  "b2": {
+   "spearman": 0.319,
+   "ci": [
+    0.172,
+    0.463
+   ],
+   "n": 124,
+   "minus_a (paired)": [
+    -0.164,
+    0.004,
+    0.178
+   ],
+   "coverage": 0.855,
+   "mean_width": 33.1
+  },
+  "c": {
+   "spearman": 0.448,
+   "ci": [
+    0.293,
+    0.569
+   ],
+   "n": 124,
+   "minus_a (paired)": [
+    -0.016,
+    0.13,
+    0.272
+   ],
+   "coverage": 0.871,
+   "mean_width": 33.9
+  },
+  "d": {
+   "spearman": 0.448,
+   "ci": [
+    0.296,
+    0.568
+   ],
+   "n": 124,
+   "minus_a (paired)": [
+    0.01,
+    0.13,
+    0.262
+   ],
+   "coverage": 0.855,
+   "mean_width": 34.2
+  }
+ },
+ "old_month_forward": {
+  "a": {
+   "pooled_spearman": 0.203,
+   "within_day_spearman": 0.22,
+   "days": 108,
+   "top3_5_10_among_page_launches": [
+    34.0,
+    45.2,
+    71.9
+   ],
+   "launches": 2564
+  },
+  "b": {
+   "pooled_spearman": 0.122,
+   "within_day_spearman": 0.258,
+   "days": 108,
+   "top3_5_10_among_page_launches": [
+    34.6,
+    48.3,
+    73.5
+   ],
+   "launches": 2564
+  },
+  "c": {
+   "pooled_spearman": 0.111,
+   "within_day_spearman": 0.192,
+   "days": 108,
+   "top3_5_10_among_page_launches": [
+    28.1,
+    44.4,
+    72.7
+   ],
+   "launches": 2564
+  },
+  "d": {
+   "pooled_spearman": 0.127,
+   "within_day_spearman": 0.224,
+   "days": 108,
+   "top3_5_10_among_page_launches": [
+    27.8,
+    45.7,
+    72.4
+   ],
+   "launches": 2564
+  }
+ },
+ "note_old": "launch_band.json (a) was trained on launches that include these months, so (a) is partly in-sample on the old set",
+ "gemini_usd_estimate": 0.0
+}
