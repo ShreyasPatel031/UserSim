@@ -1485,3 +1485,29 @@ Addressable voters (predicted segment lift × the segment's last-30-day vote vol
 - Partial over launch_band_page_v1 (403 page reads): −0.04 [−0.14, 0.06].
 
 Verdict: launch text does not predict WHICH segments over-index among voters. Segment composition is roughly the same across launches, so "who" is honest only as category description. The population → launch-score link adds nothing beyond the clean model.
+
+### 2026-11-12 E5 — tone of reception (critical / question share) and the site's list claims vs constant lists
+Script experiments/simlab/tone_eval.py; reports/tone/. Spend $0.25.
+
+Truth: identity-free top-level comments labelled by flash-lite. 278 S300 launches (Sep–Oct month-forward n = 177) and 57 fresh.
+Real mean mix (S300): critical 9.7%, question 32.5%, praise 35.0%, congrats 10.9%, other 11.6%.
+
+Critical share:
+
+| Predictor | S300 Spearman | S300 MAE (pp) | S300 contested lift | Fresh Spearman / MAE |
+|---|---|---|---|---|
+| CONST | – | 9.3 | 0.92 | – / 12.0 |
+| CAT | −0.04 | 9.5 | 0.81 | 0.19 [−0.07, 0.43] / 11.8 |
+| RETR-10 | −0.04 | 9.9 | 1.07 | 0.15 / 11.9 |
+| SIM (classified simulated voices) | 0.18 [0.03, 0.32] | 12.4 | 1.12 | page 0.03, PH 0.07 / 12.9–15.4 |
+| DIRECT (one flash estimate) | 0.23 [0.08, 0.36] | 15.1 | 1.25 | page −0.21, PH −0.05 / 17.7–18.2 |
+
+- Question share: nothing beats the constant (Spearman ≤ 0.08 on S300; fresh CIs all span 0). SIM's question share is badly biased: MAE 28–32 pp, the simulated voices ask far more questions.
+- Relation to rank: real critical share vs −rank −0.09 (S300) / +0.09 (fresh); predictions are about 0. Tone does not relate to rank.
+- Verdict: no tone recipe beats the constant and the category mean on error. The small ranking signal (DIRECT 0.23 on S300) does not replicate on fresh launches. Nothing exported; the site should not claim tone or a "contested" forecast.
+
+Site list claims vs constant lists (the control they never had):
+- Reactions themes: BEST recall / precision 50.1 / 51.0 (191 Sep–Oct launches). A constant list of the 8 most frequent Aug themes gives 7.6 / 5.9, paired difference +42.5 [39.1, 45.8] / +45.1 [41.4, 48.8]. The existing category-central-themes control (reactions_eval GENERIC_TOPIC) gives 5.2 / 6.5.
+- RANKED concerns: p@3 24.4 vs the category base-rate list 11.1 (300); on fresh page reads 21.1 vs the global constant 0.9.
+- RANKED questions: 15.5 vs base 6.8 (300); fresh 16.2 vs constant 6.0.
+- All three claims hold far above constant lists. The judge requires the same specific point, so generic constants score low by construction.

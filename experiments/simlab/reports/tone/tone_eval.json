@@ -1,0 +1,400 @@
+{
+ "design": "Tone of reception: can we predict the share of critical / questioning comments? (orchestrator, Nov 12)\nTruth per launch (identity-free: the first top-level comment's author and the hunter removed; top-level comments only): one\ngemini-2.5-flash-lite call labels each comment critical / question / praise / congrats / other -> shares; number of distinct commenters.\nLaunch sets: S300 (the reactions sample, Aug-Oct 2026, PH thread dumps; PH-description input) and FRESH (Oct 27 - Nov 10 page reads\nwith >= 5 top-level comments in the API snapshots; page and PH input).\nPredictions: (a) SIM: the same classifier on the simulated reactions (S300: BEST; FRESH: the site's reactions from page / PH input);\n(b) DIRECT: one gemini-2.5-flash call estimating the shares from the product text; (c) RETR: mean real mix of the 10 most similar\nearlier S300 launches (gemini embedding of PH text); (d) CONST: mean of earlier launches; CAT: mean of earlier launches with the same\nfirst topic (>= 5, else CONST). S300 is evaluated month-forward on Sep-Oct (Aug = history only); FRESH uses all S300 as history.\nMetrics: Spearman and MAE (percentage points) of predicted vs real critical share and question share with launch-bootstrap CIs;\n\"contested\" lift = share of launches in the predicted top quartile of critical share that are in the real top quartile / 0.25;\npooled Spearman of real and predicted critical share with final daily rank.\nPart 4: the reactions themes claim vs a CONSTANT theme list (the 8 most frequent themes of Aug launches, frequency-clustered at\ncosine 0.80), judged with the reactions_eval judge against the same truth themes as BEST, on Sep-Oct S300 launches; paired.",
+ "S300_sep_oct": {
+  "launches": 177,
+  "real mean critical": 9.6,
+  "CAT critical": {
+   "spearman": [
+    -0.042,
+    -0.194,
+    0.113
+   ],
+   "MAE_pp": [
+    9.5,
+    8.4,
+    10.6
+   ],
+   "n": 177
+  },
+  "CAT contested lift": 0.81,
+  "CONST critical": {
+   "spearman": [
+    -0.037,
+    -0.189,
+    0.116
+   ],
+   "MAE_pp": [
+    9.3,
+    8.3,
+    10.4
+   ],
+   "n": 177
+  },
+  "CONST contested lift": 0.92,
+  "DIRECT_direct critical": {
+   "spearman": [
+    0.233,
+    0.082,
+    0.364
+   ],
+   "MAE_pp": [
+    15.1,
+    13.9,
+    16.3
+   ],
+   "n": 177
+  },
+  "DIRECT_direct contested lift": 1.25,
+  "RETR critical": {
+   "spearman": [
+    -0.036,
+    -0.183,
+    0.111
+   ],
+   "MAE_pp": [
+    9.9,
+    8.7,
+    11.2
+   ],
+   "n": 177
+  },
+  "RETR contested lift": 1.07,
+  "SIM_sim critical": {
+   "spearman": [
+    0.181,
+    0.025,
+    0.324
+   ],
+   "MAE_pp": [
+    12.4,
+    10.4,
+    14.4
+   ],
+   "n": 177
+  },
+  "SIM_sim contested lift": 1.12,
+  "real mean question": 34.9,
+  "CAT question": {
+   "spearman": [
+    -0.02,
+    -0.162,
+    0.121
+   ],
+   "MAE_pp": [
+    14.5,
+    12.9,
+    16.1
+   ],
+   "n": 177
+  },
+  "CONST question": {
+   "spearman": [
+    0.07,
+    -0.082,
+    0.219
+   ],
+   "MAE_pp": [
+    14.4,
+    12.8,
+    16.1
+   ],
+   "n": 177
+  },
+  "DIRECT_direct question": {
+   "spearman": [
+    0.046,
+    -0.097,
+    0.184
+   ],
+   "MAE_pp": [
+    14.5,
+    13.0,
+    16.1
+   ],
+   "n": 177
+  },
+  "RETR question": {
+   "spearman": [
+    0.082,
+    -0.072,
+    0.231
+   ],
+   "MAE_pp": [
+    14.4,
+    12.9,
+    16.0
+   ],
+   "n": 177
+  },
+  "SIM_sim question": {
+   "spearman": [
+    0.047,
+    -0.097,
+    0.192
+   ],
+   "MAE_pp": [
+    32.0,
+    29.4,
+    34.8
+   ],
+   "n": 177
+  },
+  "real critical share vs -rank (pooled spearman)": -0.093,
+  "CAT critical vs -rank": -0.016,
+  "CONST critical vs -rank": 0.043,
+  "DIRECT_direct critical vs -rank": -0.019,
+  "RETR critical vs -rank": -0.015,
+  "SIM_sim critical vs -rank": -0.042
+ },
+ "fresh": {
+  "launches": 57,
+  "real mean critical": 11.7,
+  "CAT critical": {
+   "spearman": [
+    0.19,
+    -0.07,
+    0.427
+   ],
+   "MAE_pp": [
+    11.8,
+    9.6,
+    14.4
+   ],
+   "n": 57
+  },
+  "CAT contested lift": 1.2,
+  "CONST critical": {
+   "spearman": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "MAE_pp": [
+    12.0,
+    9.7,
+    14.6
+   ],
+   "n": 57
+  },
+  "DIRECT_direct_page critical": {
+   "spearman": [
+    -0.206,
+    -0.498,
+    0.136
+   ],
+   "MAE_pp": [
+    17.7,
+    15.1,
+    20.4
+   ],
+   "n": 43
+  },
+  "DIRECT_direct_page contested lift": 0.83,
+  "DIRECT_direct_ph critical": {
+   "spearman": [
+    -0.053,
+    -0.31,
+    0.219
+   ],
+   "MAE_pp": [
+    18.2,
+    15.8,
+    20.7
+   ],
+   "n": 57
+  },
+  "DIRECT_direct_ph contested lift": 0.95,
+  "RETR critical": {
+   "spearman": [
+    0.154,
+    -0.127,
+    0.409
+   ],
+   "MAE_pp": [
+    11.9,
+    9.7,
+    14.2
+   ],
+   "n": 57
+  },
+  "RETR contested lift": 1.33,
+  "SIM_sim_page critical": {
+   "spearman": [
+    0.033,
+    -0.289,
+    0.346
+   ],
+   "MAE_pp": [
+    15.4,
+    11.1,
+    20.2
+   ],
+   "n": 43
+  },
+  "SIM_sim_page contested lift": 0.73,
+  "SIM_sim_ph critical": {
+   "spearman": [
+    0.074,
+    -0.192,
+    0.33
+   ],
+   "MAE_pp": [
+    12.9,
+    9.5,
+    16.6
+   ],
+   "n": 57
+  },
+  "SIM_sim_ph contested lift": 0.92,
+  "real mean question": 38.0,
+  "CAT question": {
+   "spearman": [
+    0.2,
+    -0.064,
+    0.464
+   ],
+   "MAE_pp": [
+    13.6,
+    10.8,
+    16.8
+   ],
+   "n": 57
+  },
+  "CONST question": {
+   "spearman": [
+    NaN,
+    NaN,
+    NaN
+   ],
+   "MAE_pp": [
+    13.8,
+    10.9,
+    16.8
+   ],
+   "n": 57
+  },
+  "DIRECT_direct_page question": {
+   "spearman": [
+    0.04,
+    -0.254,
+    0.347
+   ],
+   "MAE_pp": [
+    13.4,
+    10.6,
+    16.5
+   ],
+   "n": 43
+  },
+  "DIRECT_direct_ph question": {
+   "spearman": [
+    0.045,
+    -0.232,
+    0.313
+   ],
+   "MAE_pp": [
+    14.3,
+    11.5,
+    17.2
+   ],
+   "n": 57
+  },
+  "RETR question": {
+   "spearman": [
+    0.158,
+    -0.132,
+    0.418
+   ],
+   "MAE_pp": [
+    13.0,
+    10.3,
+    16.1
+   ],
+   "n": 57
+  },
+  "SIM_sim_page question": {
+   "spearman": [
+    0.01,
+    -0.291,
+    0.31
+   ],
+   "MAE_pp": [
+    27.5,
+    22.5,
+    32.4
+   ],
+   "n": 43
+  },
+  "SIM_sim_ph question": {
+   "spearman": [
+    0.196,
+    -0.084,
+    0.46
+   ],
+   "MAE_pp": [
+    32.3,
+    28.1,
+    36.4
+   ],
+   "n": 57
+  },
+  "real critical share vs -rank (pooled spearman)": 0.085,
+  "CAT critical vs -rank": -0.14,
+  "DIRECT_direct_page critical vs -rank": -0.361,
+  "DIRECT_direct_ph critical vs -rank": -0.075,
+  "RETR critical vs -rank": -0.162,
+  "SIM_sim_page critical vs -rank": 0.371,
+  "SIM_sim_ph critical vs -rank": -0.023
+ },
+ "truth_mix_S300_mean": {
+  "critical": 9.7,
+  "question": 32.5,
+  "praise": 35.0,
+  "congrats": 10.9,
+  "other": 11.6
+ },
+ "themes_vs_constant": {
+  "launches": 191,
+  "constant_list": [
+   "Users are asking about the differences and advantages of X1 compared to alternative tools like Lovable, Replit, Claude/Codex, Rork, and Glaze.",
+   "Users appreciate the pricing model where responses and extra funnels are free, and only personalization is charged.",
+   "Users appreciate the concept of agents claiming files before writing to prevent overwrite chaos.",
+   "A user expresses concern about the time it might take to get through a video.",
+   "Users are experiencing notifications asking for input when no input is actually requested.",
+   "The product addresses a significant pain point in web data extraction, particularly the maintenance of scrapers and the need for reliable data for AI products.",
+   "Generic praise and well wishes for the product launch.",
+   "Is there any plan for a reverse lookup feature where a hiring plan can be input to determine the required option pool?"
+  ],
+  "BEST recall": [
+   50.1,
+   47.0,
+   53.2
+  ],
+  "BEST precision": [
+   51.0,
+   47.4,
+   54.5
+  ],
+  "CONST recall": [
+   7.6,
+   6.1,
+   9.2
+  ],
+  "CONST precision": [
+   5.9,
+   4.8,
+   6.9
+  ],
+  "BEST - CONST recall (paired)": [
+   42.5,
+   39.1,
+   45.8
+  ],
+  "BEST - CONST precision (paired)": [
+   45.1,
+   41.4,
+   48.8
+  ]
+ },
+ "usd": 0.245
+}
