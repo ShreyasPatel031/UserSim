@@ -1246,3 +1246,4 @@ Masked-residual reruns:
 - Summed likely voters: still nothing over the LM.
 - Early-engager count on honest_preds_v2: top 3 +2.6 / +3.9 / +5.9 [3.5, 8.3] at +1 / +2 / +4 h. Identity adds nothing.
 - Person level, "who votes next" over popularity: Hit@3 +0.10 [0.04, 0.17] at +4 h.
+CORRECTION (E5, Nov 12, from Shreyas via the orchestrator): every entry above that says "PH names the day #1's makers only after the day" describes OUR SOURCE, not Product Hunt. The live launch page shows the full team (the hunter and every maker) during launch day. The official API's post.makers is mostly "[REDACTED]" at 00:05 and names the #1's makers in later reads; the rule behind this is unknown. The measured leak and the clean results stand.
