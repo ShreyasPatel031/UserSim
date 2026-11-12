@@ -256,9 +256,38 @@ def _forecast_0005(day: str):
         except ImportError:
             df = None
         if not df or not df["id"]:
-            return None
+            return _forecast_0005_md(day)
         ids = [str(i) for i, _ in sorted(zip(df["id"], df["pred"]), key=lambda t: -(t[1] if t[1] is not None else -1e9))]
         made = dict(gcs.list_names(f"raw/daily/{day}/", ttl=300)).get(f"raw/daily/{day}/forecast_{day}.parquet", "")
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": made,
+            "data_up_to": datetime.fromisoformat(day).replace(hour=0, minute=5, tzinfo=PT).isoformat(),
+            "method": "launch model (deployed 00:05 PT)"}
+
+
+def _forecast_0005_md(day: str):
+    """Fallback without pyarrow (the Vercel bundle): the same 00:05 run also writes raw/daily/<day>/forecast_<day>.md, a
+    table of predicted rank and product name; names are mapped to ids through that night's line-up file."""
+    import re as _re
+    raw = gcs.read_bytes(f"raw/daily/{day}/forecast_{day}.md", ttl=600)
+    t = gcs.read_json(f"raw/daily/{day}/today_0005.json", ttl=600) or gcs.read_json(f"raw/daily/{day}/{day}.json", ttl=600)
+    if not raw or not isinstance(t, list):
+        return None
+    by_name: dict[str, list[str]] = {}
+    for r in t:
+        p = _product(r)
+        by_name.setdefault((p.get("name") or "").strip().lower(), []).append(p["id"])
+    ranked = []
+    for line in raw.decode("utf-8", "replace").splitlines():
+        m = _re.match(r"^\|\s*(\d+)\s*\|\s*(.*?)\s*\|", line)
+        if not m:
+            continue
+        cand = by_name.get(m.group(2).strip().lower()) or []
+        if len(cand) == 1:
+            ranked.append((int(m.group(1)), cand[0]))
+    if len(ranked) < max(3, len(t) // 2):        # too few names matched: do not show a partial order as the forecast
+        return None
+    ids = [i for _, i in sorted(ranked)]
+    made = dict(gcs.list_names(f"raw/daily/{day}/", ttl=300)).get(f"raw/daily/{day}/forecast_{day}.md", "")
     return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": made,
             "data_up_to": datetime.fromisoformat(day).replace(hour=0, minute=5, tzinfo=PT).isoformat(),
             "method": "launch model (deployed 00:05 PT)"}
@@ -428,6 +457,49 @@ def _difficulty(day: str) -> dict | None:
     return out
 
 
+# Nominal data cut of each point (PT, hours after midnight); a point counts as "not made" once its cut is 90 min past.
+NOMINAL_CUT_H = {"0005": 0.08, "P1": 1, "P2": 2, "P3": 3, "P4": 4, "R0": 4, "R1": 5, "R2": 6, "R4": 8}
+BOARD_STALE_MIN = 35
+
+
+def _capture_gaps(day: str) -> list[dict]:
+    """Gaps of more than 30 min in the 15-min Product Hunt capture (raw/ph_at_launch/<day>/snapshots/<day>T<HHMM>PT_*)."""
+    import re as _re
+    ts = sorted({m.group(1) for n, _ in gcs.list_names(f"raw/ph_at_launch/{day}/snapshots/", ttl=120)
+                 for m in [_re.search(r"T(\d{4})PT", n.rsplit("/", 1)[-1])] if m})
+    mins = [int(t[:2]) * 60 + int(t[2:]) for t in ts]
+    return [{"from_pt": f"{a // 60:02d}:{a % 60:02d} PT", "to_pt": f"{b // 60:02d}:{b % 60:02d} PT", "minutes": b - a}
+            for a, b in zip(mins, mins[1:]) if b - a > 30]
+
+
+def _freshness(day: str, fc: dict, board: dict, final: bool) -> dict:
+    """What is missing or not updated, so the page can say so instead of breaking or looking current."""
+    now = datetime.now(PT)
+    is_today = day == now.strftime("%Y-%m-%d")
+    midnight = datetime.fromisoformat(day).replace(tzinfo=PT)
+    past = now - midnight
+    missing = [k for k, h in NOMINAL_CUT_H.items() if k not in fc and (not is_today or past.total_seconds() > (h * 60 + 90) * 60)]
+    out = {"missing_points": missing, "missing_labels": [dict((k, l) for k, l, _ in POINTS).get(k, k) for k in missing],
+           "capture_gaps": [], "board_stale": False, "board_stale_label": ""}
+    try:
+        out["capture_gaps"] = _capture_gaps(day)
+    except Exception as exc:  # noqa: BLE001 - a listing failure must not take the page down
+        print(f"[ph] capture gap check failed: {exc!r}", flush=True)
+    if is_today and not final:
+        try:
+            age = (datetime.now(timezone.utc) - datetime.fromisoformat(str(board.get("as_of")).replace("Z", "+00:00"))).total_seconds() / 60
+        except (ValueError, TypeError):
+            age = None
+        if age is None or age > BOARD_STALE_MIN:
+            out["board_stale"] = True
+            out["board_stale_label"] = (f"not updated since {board.get('as_of_pt')}" if board.get("as_of_pt")
+                                        else "no live reading yet today")
+            # an open gap: the capture stopped and has not resumed
+            if board.get("as_of_pt") and age is not None:
+                out["capture_gaps"].append({"from_pt": board["as_of_pt"], "to_pt": None, "minutes": int(age)})
+    return out
+
+
 def day_view(day: str) -> dict:
     prods = _lineup(day)
     fc = forecasts(day)
@@ -490,7 +562,9 @@ def day_view(day: str) -> dict:
             hr = None
         lock["reliability"] = ("tested right about 93% of the time after noon PT" if hr is not None and hr >= 12 else
                                "tested right only 67-81% of the time before noon PT")
+    fresh = _freshness(day, fc, board, act["final"])
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
+            "freshness": fresh,
             "lead_point": lead, "difficulty": difficulty, "board": {**{k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")}, "lock": lock},
             "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _written_label(day, act["as_of"]),
                        "as_of": act["as_of"]}}

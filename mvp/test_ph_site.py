@@ -305,3 +305,34 @@ def test_asks_rank_pick_and_note():
     assert "2 in 5" in page and "concern" in page and "Paste" in page
     assert "1 in 2" in pasted and "most likely concern did so" in pasted
     assert try_sim.STEP_USES["asks"] == 1
+
+
+def test_ph_steady_state_freshness(monkeypatch):
+    from datetime import datetime, timedelta, timezone
+    from mvp.ph_site import live, gcs
+    names = [(f"raw/ph_at_launch/d/snapshots/20261112T{t}PT_api.jsonl", "") for t in ("0245", "0300", "0555", "0600")]
+    monkeypatch.setattr(gcs, "list_names", lambda prefix, ttl=0: names if "snapshots" in prefix else [])
+    assert live._capture_gaps("2026-11-12") == [{"from_pt": "03:00 PT", "to_pt": "05:55 PT", "minutes": 175}]
+    today = live.today_pt()
+    old = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat()
+    f = live._freshness(today, {"0005": {}}, {"as_of": old, "as_of_pt": "05:00 PT"}, final=False)
+    assert f["board_stale"] and "not updated since 05:00 PT" in f["board_stale_label"]
+    assert f["capture_gaps"][-1]["to_pt"] is None
+    fresh = live._freshness(today, {}, {"as_of": datetime.now(timezone.utc).isoformat(), "as_of_pt": "x"}, final=False)
+    assert not fresh["board_stale"]
+    past = live._freshness("2026-11-01", {"0005": {}, "P1": {}}, {}, final=True)
+    assert "P2" in past["missing_points"] and "0005" not in past["missing_points"] and not past["board_stale"]
+
+
+def test_forecast_0005_markdown_fallback(monkeypatch):
+    from mvp.ph_site import live, gcs
+    md = "| Predicted rank | Product | Tagline |\n|---|---|---|\n| 1 | Beta | b |\n| 2 | Alpha | a |\n| 3 | Gamma | c |\n"
+    lineup = [{"id": 11, "name": "Alpha"}, {"id": 22, "name": "Beta"}, {"id": 33, "name": "Gamma"}]
+    monkeypatch.setattr(gcs, "read_bytes", lambda n, ttl=0: md.encode() if n.endswith(".md") else None)
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: lineup if n.endswith("today_0005.json") else None)
+    monkeypatch.setattr(gcs, "list_names", lambda prefix, ttl=0: [])
+    f = live._forecast_0005_md("2026-11-12")
+    assert f["ranks"] == {"22": 1, "11": 2, "33": 3}
+    lineup.append({"id": 44, "name": "Delta"}); lineup.append({"id": 55, "name": "Eps"}); lineup.append({"id": 66, "name": "Z"})
+    lineup.append({"id": 77, "name": "Y"}); lineup.append({"id": 88, "name": "X"}); lineup.append({"id": 99, "name": "W"})
+    assert live._forecast_0005_md("2026-11-12") is None      # too few names matched: no partial order shown

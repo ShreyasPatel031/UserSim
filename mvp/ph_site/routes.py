@@ -85,6 +85,9 @@ async def _ph_today(day: str | None):
     d = day if day in days else days[0]
     view = await asyncio.to_thread(live.day_view, d)
     view["days"] = days
+    if not day and d != live.today_pt():
+        # Steady state: the PH pipeline has written nothing for today yet (or is down); show the latest day, labelled.
+        view["notice"] = f"No forecast for today ({live.today_pt()}) has arrived yet; showing {d}, the latest day with data."
     return _json(view, 60)
 
 
