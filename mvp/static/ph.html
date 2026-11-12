@@ -60,6 +60,9 @@
       <h2 id="wk-h">This week so far</h2>
       <p class="muted small" id="wk-note"></p>
       <ol class="mini" id="weekly"></ol>
+      <h2 id="mo-h" hidden style="margin-top:22px">This month so far</h2>
+      <p class="muted small" id="mo-note" hidden></p>
+      <ol class="mini" id="monthly" hidden></ol>
     </section>
     <section class="panel">
       <h2>Launching soon?</h2>
@@ -209,8 +212,17 @@ async function side(){
   const w = await getJSON("/api/ph/weekly").catch(()=>null);
   if(!w || !w.top || !w.top.length){ $("#wk-note").textContent = "No weekly call available right now."; }
   if(w && w.top){
+    if(w.point==="running"){
+      $("#wk-note").textContent = `Product Hunt's own running weekly rank (week of ${w.week_monday}, after ${w.as_of_day} ended). Official standings so far, not our forecast; launches later this week can still enter.`;
+    } else
     $("#wk-note").textContent = `Running weekly call (week of ${w.week_monday}, ${w.point==="dayend" ? "after " + w.as_of_day + " ended" : "made at reveal + 4 h on " + w.as_of_day}): estimated weekly votes from the days so far${w.point==="dayend" ? "" : " plus today's votes" + (w.ratio ? " ×" + Number(w.ratio).toFixed(3) : "")}; estimates, not official counts. Scored when the week ends.`;
-    $("#weekly").innerHTML = w.top.map(x=>`<li><span>${Number(x.pred_rank)}</span><span>${esc(x.name||"(launch "+String(x.day)+")")}</span><span>~${Math.round(Number(x.est_votes))}</span></li>`).join("");
+    $("#weekly").innerHTML = w.top.map(x=>`<li><span>${Number(x.pred_rank)}</span><span>${esc(x.name||"(launch "+String(x.day)+")")}</span><span>${x.est_votes==null ? "" : "~"+Math.round(Number(x.est_votes))}</span></li>`).join("");
+    const m = w.month;
+    if(m && m.top && m.top.length){
+      ["#mo-h","#mo-note","#monthly"].forEach(s=>$(s).hidden=false);
+      $("#mo-note").textContent = `Product Hunt's own running monthly rank (${m.month}, after ${m.as_of_day} ended). Official standings so far; later launches can still enter.`;
+      $("#monthly").innerHTML = m.top.map(x=>`<li><span>${Number(x.rank)}</span><span>${esc(x.name||"(a launch this month)")}</span><span></span></li>`).join("");
+    }
   }
 }
 

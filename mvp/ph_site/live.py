@@ -612,8 +612,11 @@ def weekly() -> dict | None:
     ptr = gcs.read_json("results/web/weekly_latest.json", ttl=300) or {}
     pts = ptr.get("points") or {}
     # The reveal + 4 h call if it is the newest day, else the end-of-day standings (never the 03:45 estimate).
-    pick = max((v for k, v in pts.items() if k in ("R4", "dayend") and isinstance(v, dict) and v.get("file")),
-               key=lambda v: (v.get("day") or "", v.get("written_at") or ""), default=None)
+    # Preferred: Product Hunt's own running weekly rank (official, after the nightly ranks step). Otherwise our call
+    # at reveal + 4 h if it is the newest day, else the end-of-day standings (never the 03:45 estimate).
+    pick = pts.get("running") if isinstance(pts.get("running"), dict) and pts["running"].get("file") else None
+    pick = pick or max((v for k, v in pts.items() if k in ("R4", "dayend") and isinstance(v, dict) and v.get("file")),
+                       key=lambda v: (v.get("day") or "", v.get("written_at") or ""), default=None)
     if pick:
         names = [pick["file"]]
     else:
@@ -630,6 +633,42 @@ def weekly() -> dict | None:
         p = lookup.get(str(r.get("id")), {"name": "", "tagline": "", "topics": [], "slug": ""})
         keep.append({"id": str(r.get("id")), "pred_rank": r.get("pred_rank"), "est_votes": r.get("est"), "day": r.get("day"),
                      "name": p.get("name"), "tagline": p.get("tagline"), "slug": p.get("slug"), "topics": p.get("topics", [])})
-    return {"week_monday": j.get("week_monday"), "as_of_day": j.get("day"), "point": j.get("point"),
-            "ratio": j.get("ratio"),
-            "written_at": j.get("written_at"), "top": keep}
+    if j.get("point") == "running":
+        for x in keep:
+            x["est_votes"] = None          # running files carry -rank, not votes
+    out = {"week_monday": j.get("week_monday"), "as_of_day": j.get("day"), "point": j.get("point"),
+           "ratio": j.get("ratio"), "written_at": j.get("written_at"), "top": keep}
+    try:
+        out["month"] = monthly()
+    except Exception as exc:  # noqa: BLE001 - the week still shows
+        print(f"[ph] monthly unavailable: {exc!r}", flush=True)
+        out["month"] = None
+    return out
+
+
+def monthly() -> dict | None:
+    """Product Hunt's own running monthly rank (results/monthly_live/<month>_<day>_running.json), top 10."""
+    names = sorted(n for n, _ in gcs.list_names("results/monthly_live/", ttl=300) if n.endswith("_running.json"))
+    if not names:
+        return None
+    j = gcs.read_json(names[-1], ttl=300) or {}
+    ids = [str(i) for i in (j.get("forecast_monthlyRank") or [])[:10]]
+    day, month = str(j.get("day") or ""), str(j.get("month") or "")
+    if not ids or not day.startswith(month):
+        return None
+    lookup: dict[str, dict] = {}
+    d = datetime.fromisoformat(month + "-01")
+    while d.strftime("%Y-%m-%d") <= day:
+        lookup.update(_lineup(d.strftime("%Y-%m-%d")))
+        d += timedelta(days=1)
+    slugs: dict[str, str] = {}
+    if any(i not in lookup for i in ids):
+        # Launches missing from the nightly line-up files: take the product slug from the official monthly re-read.
+        rr = sorted(n for n, _ in gcs.list_names(f"raw/ph_at_launch/monthly_reread/{month}/", ttl=600) if n.endswith(".jsonl"))
+        for r in (gcs.read_jsonl(rr[-1], ttl=600) if rr else []):
+            if str(r.get("id")) in ids and r.get("slug"):
+                slugs[str(r["id"])] = str(r["slug"])
+    pretty = lambda sl: " ".join(w.capitalize() for w in re.sub(r"-\d+$", "", sl).split("-")) if sl else None
+    top = [{"id": i, "rank": n, "name": lookup.get(i, {}).get("name") or pretty(slugs.get(i)),
+            "slug": lookup.get(i, {}).get("slug") or slugs.get(i)} for n, i in enumerate(ids, 1)]
+    return {"month": month, "as_of_day": day, "written_at": j.get("written_at"), "top": top}
