@@ -1,0 +1,590 @@
+{
+ "design": "Rank-neutral maker identity (orchestrator 09:10Z Nov 12). The API's post.makers is mostly \"[REDACTED]\" at 00:05 and names\nthe #1's makers only in later reads (a property of OUR API reads; the PH site shows the full team on launch day). Can we identify\nthe team for EVERY launch from sources that do not depend on the final rank, and does maker history then help honestly?\nIdentity sources per launch, with a cut-off c in {00:05 PT, +1 h, +2 h, +4 h} after the 00:01 PT start (thread dumps, exact\ncreatedAt; comment-forecast days only):\n  badge   authors of comments (threads and replies) carrying PH's own 'maker' badge, created <= c\n  first   author of the earliest top-level comment created <= c (thread-position rule)\n  store   people of the store (saved profiles) with a 'launched' event on the launch (profile crawl; not time-cut)\n  hunter  the poster (never redacted in our reads)\nCoverage by final rank group (#1, #2-3, #4-10, 11+): share of launches with >= 1 identified maker and mean number identified -\nmust be flat to be usable.\nHistory (strictly before the day, identities of EARLIER launches from the same rank-neutral sources - badge/first over their whole\nthread, store, hunter; NOT the API makers list): for the identified makers of L at 00:05, number of earlier launches made or\nhunted, best earlier rank, top-3 share, mean / max ln votes of earlier launches; n identified.\nModel: ridge month-forward on ln(1+votes) over the clean LM (honest_preds_v2 = PH agent's clean_v3) + the history block, on the\ndump days; daily top 3/5/10, #1/#2/#3 pick in top 3, exact winner; paired by day vs the clean LM alone (2,000 day bootstraps).\nLeak guard: \"rank by number of identified makers\" alone (random tie-break): top 3 and exact winner vs chance.",
+ "dump_days": 238,
+ "launches_with_threads": 5553,
+ "coverage": {
+  "0005": {
+   "badge": {
+    "1": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 1553
+    }
+   },
+   "first": {
+    "1": {
+     "share_any": 0.958,
+     "mean_n": 0.96,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.879,
+     "mean_n": 0.88,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.947,
+     "mean_n": 0.95,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.915,
+     "mean_n": 0.92,
+     "n": 1553
+    }
+   },
+   "store": {
+    "1": {
+     "share_any": 0.577,
+     "mean_n": 1.11,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.079,
+     "mean_n": 0.1,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.466,
+     "mean_n": 0.81,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.247,
+     "mean_n": 0.37,
+     "n": 1553
+    }
+   },
+   "union_no_hunter": {
+    "1": {
+     "share_any": 0.967,
+     "mean_n": 1.89,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.891,
+     "mean_n": 0.96,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.97,
+     "mean_n": 1.57,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.935,
+     "mean_n": 1.21,
+     "n": 1553
+    }
+   },
+   "first author has the maker badge (share)": 0.0
+  },
+  "1h": {
+   "badge": {
+    "1": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 1553
+    }
+   },
+   "first": {
+    "1": {
+     "share_any": 0.992,
+     "mean_n": 0.99,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.901,
+     "mean_n": 0.9,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.979,
+     "mean_n": 0.98,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.956,
+     "mean_n": 0.96,
+     "n": 1553
+    }
+   },
+   "store": {
+    "1": {
+     "share_any": 0.577,
+     "mean_n": 1.11,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.079,
+     "mean_n": 0.1,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.466,
+     "mean_n": 0.81,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.247,
+     "mean_n": 0.37,
+     "n": 1553
+    }
+   },
+   "union_no_hunter": {
+    "1": {
+     "share_any": 0.992,
+     "mean_n": 1.92,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.908,
+     "mean_n": 0.98,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.981,
+     "mean_n": 1.6,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.965,
+     "mean_n": 1.24,
+     "n": 1553
+    }
+   },
+   "first author has the maker badge (share)": 0.0
+  },
+  "2h": {
+   "badge": {
+    "1": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 1553
+    }
+   },
+   "first": {
+    "1": {
+     "share_any": 0.996,
+     "mean_n": 1.0,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.912,
+     "mean_n": 0.91,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.985,
+     "mean_n": 0.99,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.972,
+     "mean_n": 0.97,
+     "n": 1553
+    }
+   },
+   "store": {
+    "1": {
+     "share_any": 0.577,
+     "mean_n": 1.11,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.079,
+     "mean_n": 0.1,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.466,
+     "mean_n": 0.81,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.247,
+     "mean_n": 0.37,
+     "n": 1553
+    }
+   },
+   "union_no_hunter": {
+    "1": {
+     "share_any": 0.996,
+     "mean_n": 1.92,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.918,
+     "mean_n": 0.99,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.987,
+     "mean_n": 1.61,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.977,
+     "mean_n": 1.26,
+     "n": 1553
+    }
+   },
+   "first author has the maker badge (share)": 0.0
+  },
+  "4h": {
+   "badge": {
+    "1": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.0,
+     "mean_n": 0.0,
+     "n": 1553
+    }
+   },
+   "first": {
+    "1": {
+     "share_any": 0.996,
+     "mean_n": 1.0,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.923,
+     "mean_n": 0.92,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.994,
+     "mean_n": 0.99,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.981,
+     "mean_n": 0.98,
+     "n": 1553
+    }
+   },
+   "store": {
+    "1": {
+     "share_any": 0.577,
+     "mean_n": 1.11,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.079,
+     "mean_n": 0.1,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.466,
+     "mean_n": 0.81,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.247,
+     "mean_n": 0.37,
+     "n": 1553
+    }
+   },
+   "union_no_hunter": {
+    "1": {
+     "share_any": 0.996,
+     "mean_n": 1.92,
+     "n": 239
+    },
+    "11+": {
+     "share_any": 0.928,
+     "mean_n": 1.0,
+     "n": 3287
+    },
+    "2-3": {
+     "share_any": 0.994,
+     "mean_n": 1.62,
+     "n": 474
+    },
+    "4-10": {
+     "share_any": 0.984,
+     "mean_n": 1.27,
+     "n": 1553
+    }
+   },
+   "first author has the maker badge (share)": 0.0
+  }
+ },
+ "model": {
+  "clean LM (ridge on honest_preds_v2)": {
+   "top3": [
+    56.3,
+    52.9,
+    59.9
+   ],
+   "top5": [
+    65.8,
+    63.2,
+    68.4
+   ],
+   "top10": [
+    76.1,
+    74.2,
+    77.8
+   ],
+   "p1": [
+    70.4,
+    64.0,
+    76.3
+   ],
+   "p2": [
+    58.6,
+    51.6,
+    65.6
+   ],
+   "p3": [
+    39.8,
+    32.8,
+    46.8
+   ],
+   "win": [
+    36.6,
+    29.6,
+    43.5
+   ],
+   "days": 186
+  },
+  "clean LM + rank-neutral maker history": {
+   "top3": [
+    58.1,
+    55.0,
+    61.3
+   ],
+   "top5": [
+    66.5,
+    63.8,
+    69.1
+   ],
+   "top10": [
+    76.1,
+    74.4,
+    77.8
+   ],
+   "p1": [
+    72.6,
+    66.1,
+    79.0
+   ],
+   "p2": [
+    60.8,
+    54.3,
+    67.7
+   ],
+   "p3": [
+    40.9,
+    33.9,
+    47.8
+   ],
+   "win": [
+    37.1,
+    30.1,
+    44.1
+   ],
+   "days": 186
+  },
+  "difference (paired)": {
+   "top3": [
+    1.8,
+    -0.4,
+    3.9
+   ],
+   "top5": [
+    0.6,
+    -0.8,
+    2.0
+   ],
+   "top10": [
+    0.1,
+    -0.6,
+    0.7
+   ],
+   "p1": [
+    2.2,
+    -2.7,
+    7.0
+   ],
+   "p2": [
+    2.2,
+    -4.8,
+    9.2
+   ],
+   "p3": [
+    1.1,
+    -6.5,
+    8.1
+   ],
+   "win": [
+    0.5,
+    -4.3,
+    5.4
+   ],
+   "days": 186
+  },
+  "leak guard: rank by n identified makers alone": {
+   "top3": [
+    42.3,
+    38.9,
+    45.6
+   ],
+   "top5": [
+    53.5,
+    51.1,
+    56.1
+   ],
+   "top10": [
+    63.1,
+    60.7,
+    65.4
+   ],
+   "p1": [
+    47.0,
+    40.9,
+    54.0
+   ],
+   "p2": [
+    43.3,
+    36.7,
+    49.8
+   ],
+   "p3": [
+    36.7,
+    30.7,
+    43.3
+   ],
+   "win": [
+    19.5,
+    14.4,
+    25.1
+   ],
+   "days": 215
+  },
+  "chance (random order)": {
+   "top3": [
+    18.0,
+    15.0,
+    20.9
+   ],
+   "top5": [
+    26.3,
+    23.5,
+    29.1
+   ],
+   "top10": [
+    50.8,
+    47.6,
+    54.1
+   ],
+   "p1": [
+    20.0,
+    14.4,
+    25.6
+   ],
+   "p2": [
+    19.1,
+    14.0,
+    24.7
+   ],
+   "p3": [
+    14.9,
+    9.8,
+    20.5
+   ],
+   "win": [
+    7.9,
+    4.7,
+    11.6
+   ],
+   "days": 215
+  }
+ },
+ "block_means_by_rank_group": {
+  "n_ident": {
+   "1": 0.689,
+   "11+": 0.05,
+   "2-3": 0.544,
+   "4-10": 0.27
+  },
+  "mk_prior": {
+   "1": 0.134,
+   "11+": 0.007,
+   "2-3": 0.077,
+   "4-10": 0.061
+  },
+  "mk_top3": {
+   "1": 0.077,
+   "11+": 0.001,
+   "2-3": 0.043,
+   "4-10": 0.021
+  },
+  "mk_ymean": {
+   "1": 5.399,
+   "11+": 5.379,
+   "2-3": 5.399,
+   "4-10": 5.383
+  }
+ },
+ "store_in_model": false
+}

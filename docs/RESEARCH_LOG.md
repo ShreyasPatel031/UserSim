@@ -1247,3 +1247,34 @@ Masked-residual reruns:
 - Early-engager count on honest_preds_v2: top 3 +2.6 / +3.9 / +5.9 [3.5, 8.3] at +1 / +2 / +4 h. Identity adds nothing.
 - Person level, "who votes next" over popularity: Hit@3 +0.10 [0.04, 0.17] at +4 h.
 CORRECTION (E5, Nov 12, from Shreyas via the orchestrator): every entry above that says "PH names the day #1's makers only after the day" describes OUR SOURCE, not Product Hunt. The live launch page shows the full team (the hunter and every maker) during launch day. The official API's post.makers is mostly "[REDACTED]" at 00:05 and names the #1's makers in later reads; the rule behind this is unknown. The measured leak and the clean results stand.
+
+### 2026-11-12 E5 — rank-neutral maker identity (thread badge / thread position): does honest maker history help?
+Script experiments/simlab/maker_neutral.py; reports/maker_neutral/. Sample: 238 thread-dump days, 5,553 launches.
+
+Coverage at 00:05 PT, share of launches with at least one identified maker (#1 / #2–3 / #4–10 / 11+):
+
+| Source | #1 | #2–3 | #4–10 | 11+ | Usable? |
+|---|---|---|---|---|---|
+| PH 'maker' badge on comments | 0.85 | 0.77 | 0.73 | 0.80 | Roughly flat: yes |
+| Earliest top-level comment's author | 0.96 | 0.95 | 0.92 | 0.88 | Roughly flat: yes |
+| Store 'launched' events | 0.58 | 0.47 | 0.25 | 0.08 | Rank-biased: excluded |
+
+- The earliest commenter has the maker badge 86% of the time.
+- Hunters are never redacted.
+- The number of identified non-hunter makers falls steadily with rank: 0.99 / 0.75 / 0.33 / 0.07. That is mostly self-hunting. Thread-based "the hunter is a badged maker" runs 0.12 / 0.22 / 0.46 / 0.75, while the API version (0.12 / 0.11 / 0.31 / 0.63) undercounts self-hunting for non-winners.
+
+Model (186 days): ridge over the clean LM (honest_preds_v2) plus maker history built from rank-neutral identities only.
+
+| Variant | Top 3 change | #1 pick in top 3 | Exact winner |
+|---|---|---|---|
+| Badge + thread position | +2.3 [−0.2, 4.8] | +4.3 [−1.6, 9.7] | −1.1 |
+| Thread position only | +1.8 [−0.4, 3.9] | – | – |
+| Store included (rank-biased; for reference) | +3.2 | – | +3.8 |
+
+Leak guard, "rank by number of identified makers" alone (215 days):
+- top 3 44.8 vs 18.0 by chance;
+- #1 pick in top 3 54.4%;
+- exact winner 23.7%, against 60–91% for the API leak.
+- The profile is a smooth gradient, consistent with the genuine self-hunted signal, not a winner flag.
+
+Verdict: honest maker information adds about +2 top 3, with a CI touching 0. It mostly restores "hunted by someone else", which clean_v3 lost when ph_self_hunted was dropped. Live use needs the first top-level comment's author at 00:05 (thread position); the badge adds about +0.5.
