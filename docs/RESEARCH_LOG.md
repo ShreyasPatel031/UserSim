@@ -1099,3 +1099,72 @@ Paired differences:
 - SC5 − CRITIC: p@1 +5.4 [0.3, 10.1]; p@3 −0.2
 
 PRO outputs were well formed (6 items on every launch). They read as generic first-person complaints ("the cost is too high...") rather than launch-specific concerns. Verdict: keep RANKED unchanged.
+
+### 2026-11-12 E5 — LEAK in the honest backtest: maker-record redaction labels the winner (the llm source is not the carrier)
+Scripts are in experiments/simlab/leak_audit/. The run was on usersim-exp-2 with honest.py's folds, 5 seeds, ctrl.fit, over 239 days (Mar–Oct). The "honest" refit reproduces honest_preds exactly.
+
+Trigger: on 14 live days the #1 pick finished top 3 on 7 of 14 days, against 89% in the backtest; the exact winner was right on 78% of backtest days.
+
+Mechanism: the PH day files were re-read on Oct 25. In them, a maker record is redacted for 2.5% of winners, against 70% of #2–3 launches, 48% of #4–10 and 23% of #11+. Other fields follow the same pattern:
+
+| | Winner | #2–3 | #4–10 | #11+ |
+|---|---|---|---|---|
+| Makers with createdAt | 98% | 47% | 64% | 84% |
+| Makers with an X handle (mean count) | 1.24 | 0.27 | 0.29 | 0.25 |
+| Maker's first comment found (it is matched via the maker) | 97% | 72% | 84% | 88% |
+
+The completeness of maker records therefore labels the #1. That explains why the backtest's #1 pick is very accurate while its #2 and #3 picks look normal.
+
+| Variant | Top 3 / 5 / 10 | #1 / #2 / #3 pick in top 3 | Exact winner |
+|---|---|---|---|
+| honest | 61.7 / 68.1 / 75.6 | 89.1 / 56.3 / 39.5 | 78.2 [72.7, 83.2] |
+| − llm | 59.8 / 66.7 / 75.1 | – | 79.0 |
+| − all page | 58.8 / 66.6 / 75.2 | – | 76.9 |
+| − 7 maker-record fields | 56.7 / 66.0 / 75.0 | – | 45.0 [38.7, 51.3] |
+| − all redaction-dependent fields (maker, hunter, hist) | 53.0 / 62.2 / 70.8 | 65.5 / 48.7 / 44.1 | 40.8 [34.5, 47.5] |
+| … and − llm_full | 51.5 / 63.1 / 71.5 | – | 39.9 |
+
+Paired change in exact-winner rate: −33.2 [−39.5, −26.5] without the maker-record fields; −37.4 [−44.5, −30.7] without every redaction-dependent field; +0.8 [−2.1, +3.8] without llm.
+
+Other findings:
+- honest.py's honest_cols keeps llm_full, which carries follower counts; model.honest_drop removes it. That is a bug to fix.
+- Site text is read after launch for 99.8–100% of launches, with a median lag of 130–135 days. Only 2 of 4,164 sites come from Wayback.
+- Outcome words are present but small: strong badge phrases appear in the raw HTML of 18.7% of winners and 1.7% of the rest. The filtered llm_site prompt shows 4.0% vs 2.0%.
+
+Verdict: the 63.0/69.3/75.0 baseline is inflated. Redaction-free top 3 is about 51–53, and that is still an upper bound because the first-comment inputs carry the artefact. Every comparison against honest_preds needs re-basing.
+
+### 2026-11-12 E5 — does the simulation know the audience? Show HN vs Product Hunt
+Script experiments/simlab/audience_eval.py; report reports/audience_eval/. Spend $3.80.
+
+Data:
+- 509 Show HN posts (Aug–Oct 2026) have at least 10 comments and a URL; 180 were sampled, with a median of 25.5 comments.
+- Comment text came from the public Algolia HN API; the hn_posts table holds no comment text.
+- Pairs present on both sites: 83 candidates by domain or name with at least 5 comments on each side. A flash check confirmed 61 as the same product, giving 57 unique pairs.
+
+(a) Against the real comments of 180 Show HN posts:
+
+| | Theme recall | Theme precision | Critical recall | Question recall | Concerns p@3 | Concerns hit@3 |
+|---|---|---|---|---|---|---|
+| HN-framed | 39.7 | 46.4 | 25.9 | 11.5 | 27.0 | 61.2 |
+| PH-framed | 39.0 | 52.7 | 24.4 | 10.4 | 24.2 | 53.1 |
+| HN + retrieval of earlier Show HN threads | 42.3 | 45.9 | 28.7 | 13.6 | – | – |
+| Generic HN list | 21.9 | 17.5 | 21.3 | 20.3 | 15.9 | 39.4 |
+| Shuffled | 6.2 | 8.4 | 2.9 | 1.6 | 2.2 | 6.2 |
+
+Paired differences:
+- HN − PH framing: recall +0.7 [−2.1, 3.4]; precision −6.3 [−10.4, −2.3]; concerns p@3 +2.4 [−1.1, 5.8]; hit@3 +7.3 [0.6, 14.1].
+- Retrieval − HN: recall +2.7 [−0.3, 5.6].
+- The generic list beats the generators on question recall (HN − generic −8.8 [−13.3, −4.4]).
+
+Split-half bar, on 132 posts with at least 16 comments:
+- Bar: recall 51.2, precision 46.8, concerns p@3 44.9.
+- HN + retrieval against half B: recall 47.3 (about 0.92 of the bar), precision 50.0 (about 1.07).
+- HN-framed concerns p@3 against half B: 26.7, about 0.59 of the bar.
+- HN commenters agree with each other on concerns far more than PH members do (PH bar 27.2).
+
+(b) 2×2 cross test on 57 products present on both sites. Inputs are the PH page, identical for both framings.
+- Theme recall: HN framing beats PH framing on HN comments by +7.6 [2.4, 12.7] and loses on PH comments by −4.2 [−8.6, 0.1]. The interaction is +11.9 [4.8, 18.9].
+- Theme precision interaction: +11.4 [3.2, 19.6].
+- Critical recall interaction: −7.0 [−16.9, 2.7]. Concerns p@3 interaction: −1.8 [−10.3, 6.7].
+
+Reading: naming the audience shifts the general reaction mix in the right direction on paired products, but it does not make concerns audience-specific. On the larger Show HN set it adds no recall and costs precision. Honest page wording: "choose the audience" may be offered for the overall reaction mix with a caution ("the audience changes the tone and themes modestly"). It should not be claimed for concerns. For Hacker News, add the generic HN question list (open source, pricing, privacy, alternatives) to the questions.
