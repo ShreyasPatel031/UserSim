@@ -292,3 +292,19 @@ API rows), and an orchestrator read of the held API rows (19q).
   with two ordinary paginated reads.
 - Legitimate rank-neutral maker identity we already have: the first top-level comment's author (88–96% at every rank).
 - NOT done and not to be done without Shreyas: reading one post per page to get every team through the API.
+
+## Queue state, Nov 12 ~08:35 UTC (real clock)
+Confirmed since the block above: the API redaction is positional (Data Feeder, 4 ordinary calls); a single-post read returns the full team. Pilot on held data: full teams add nothing to the clean model (97 launches, −0.022 [−0.066, +0.025]) → the one-post-per-call read is not requested.
+Headline numbers now: clean 00:05 backtest 56.1 / 67.5 / 74.4 on all 255 days (57.6 / 68.2 / 74.6 on the 207–214 day test sets). Stack (clean + thread features + link/media) top 3 62.3 vs 57.6, +4.7 [+1.9, +7.4] month-forward; no live gain shown yet (live re-score being redone with exact hunter ids). Weekly call from daily ranks only 59 / 70 / 76 (35 weeks); monthly 11/24, 24/40, 61/80 with official weekly ranks.
+Closed today (do not re-run): full maker team; error anatomy corrections (segment offsets, text flags, interactions); hidden-rank momentum; first-hours shape terms at 03:00; comments as day-end-vote proxy for weekly/monthly; top-8 reranker; rank-band rewrite; retrieval for questions/concerns; voter-learned "who" (constant predictor); addressable-voters score; tone of reception.
+Running:
+- R1 (orchestrator subagent): text of the pre-launch intro comment as a 00:05 input; live re-score of the stack with exact hunter ids.
+- R2 (PH agent): Nov 11 scoring at every point (7th pre-reveal day); shadow lines clean_stack, clean_thread with within-day standardisation, P0 at weight 0.25 and a 00:30 point, best_mix_th; weekly/monthly fallbacks.
+- R3 (E5): stack as the prior of the early-hours model at +1/+2/+4 h; timestamped pool upvotes in the first 30–120 min; hidden rank × stack blend on the 7 live days.
+Open (next to assign):
+- O1: reviewsCount at 00:01 and product links as read at launch — needs the capture change (to_grokbot/20261112T0825Z_launch_fields, awaiting approval); score when 30 days exist; meanwhile mine products_ts for earlier reads.
+- O2: 01:00–02:00 PT window: per-point weights refit each morning as live days accumulate (hidden rank × stack × comments), leave-one-day-out, published as shadow P columns.
+- O3: first full live week (score Mon Nov 16): weekly call from day-end votes vs the daily-rank table; monthly early-month line from official weekly ranks.
+- O4: /try rank band beyond 0.28–0.40 from a page read: page-read structured fields + nearest earlier launches' outcomes, tested against the best constant and the page-trained band on the 856-launch set.
+- O5: who on /try stays descriptive; only reopen with a new information source (e.g. followers of the hunter, which a URL does not have).
+Waiting on Shreyas: merge of the early_shock hidden-votes fix (before ~Nov 20); PR #147 merge and its Vercel key; RANKED concerns/questions build on /try; replacing the deployed 00:05 model with the clean one after ~7 scored shadow days.
