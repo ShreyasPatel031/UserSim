@@ -213,3 +213,15 @@ def test_exp_final_votes_read(monkeypatch):
     assert f["exp_votes"] == {"1": 413}
     doc["forecast"] = [{"id": "1", "pred_rank": 1}]
     assert live._forecast_file("2026-11-12", "R1")["exp_votes"] is None
+
+
+def test_prereveal_confidence(monkeypatch):
+    pc = {"n_days": 6, "note": "replay", "by_point": {"P2": {"pick1": {"in_top3": {"rate": 100.0, "hits": 6, "n": 6}},
+                                                             "pick4": {"in_top3": None, "in_top5": {"rate": 50.0, "hits": 3, "n": 6}}}},
+          "by_agreement": {"agree": {"picks1_3_in_top3": {"rate": 87.2}, "picks1_5_in_top5": {"rate": 88.7}},
+                           "disagree": {"picks1_3_in_top3": {"rate": 63.6}, "picks1_5_in_top5": {"rate": 65.7}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: pc)
+    f = {"ranks": {"a": 1, "b": 4, "c": 7}, "agree": {"a": True, "b": False}}
+    out = live._prereveal_confidence("P2", f)
+    assert out["a"]["hits"] == 6 and out["a"]["what"] == "top 3" and out["a"]["agree_rate"] == 87.2
+    assert out["b"]["what"] == "top 5" and out["b"]["agree_rate"] == 65.7 and "c" not in out

@@ -119,7 +119,8 @@ function renderPred(){
   $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b><br>${esc(phase)}${SEL===VIEW.lead_point?" · latest":""}`;
   let sees = `Could see: ${p.sees}`;
   const c0 = p.top3_conf && Object.values(p.top3_conf)[0];
-  if(c0) sees += ` Top-3 rates by rank are fixed offline figures (${c0.basis}, ${c0.date}); brand sub-launches and versioned names hit less often than their rank suggests.`;
+  if(c0 && c0.hits!=null) sees += ` Pick confidence is from a ${c0.basis} replay (not live-scored; rough). Where PH's hidden order and the 00:05 model agree, picks held about ${Math.round(Number(Object.values(p.top3_conf).find(v=>v.agree)?.agree_rate ?? 87))}% of the time.`;
+  else if(c0) sees += ` Top-3 rates by rank are fixed offline figures (${c0.basis}, ${c0.date}); brand sub-launches and versioned names hit less often than their rank suggests.`;
   if(p.exp_votes) sees += ` Expected day-end votes are rough${p.exp_err ? ": typical error " + p.exp_err : ""}.`;
   if(p.score) sees += ` Scored: ${p.score["3"]}/3 of the real top 3, ${p.score["5"]}/5 of top 5, ${p.score["10"]}/10 of top 10.`;
   $("#sees").textContent = sees;
@@ -128,8 +129,11 @@ function renderPred(){
   $("#pred").innerHTML = o.map(x=>{
     const r = p.ranks[x.id], hit = x.board_rank && x.board_rank<=10;
     const c = p.top3_conf && p.top3_conf[x.id];
-    const conf = c ? `<span class="mk" title="${esc("How often the 00:05 model's pick at this rank finished in the top 3: " + c.basis)}">top-3 rate ${Math.round(Number(c.p)*100)}%</span>`
-      + (c.short ? `<span class="mk hit" title="${esc(c.note)}">${esc(c.short)}</span>` : "") : "";
+    const conf = !c ? "" : c.hits!=null
+      ? `<span class="mk" title="${esc(c.basis + ". " + c.note)}">${esc(c.what)} on ${Number(c.hits)} of ${Number(c.n)} replay days</span>`
+        + (c.agree!=null ? `<span class="mk ${c.agree?"hit":""}" title="${esc("Hidden PH order and the 00:05 model " + (c.agree?"agree":"disagree") + " on this pick; such picks held " + Math.round(Number(c.agree_rate)) + "% of the time in the replay")}">${c.agree?"signals agree":"signals disagree"}</span>` : "")
+      : `<span class="mk" title="${esc("How often the 00:05 model's pick at this rank finished in the top 3: " + c.basis)}">top-3 rate ${Math.round(Number(c.p)*100)}%</span>`
+        + (c.short ? `<span class="mk hit" title="${esc(c.note)}">${esc(c.short)}</span>` : "");
     const mk = x.board_rank ? `<span class="mk ${hit?"hit":"miss"}">${hit?(fin?"in final top 10":"in live top 10"):(fin?"missed top 10":"outside live top 10")}</span>` : "";
     const ev = p.exp_votes && p.exp_votes[x.id];
     return `<li class="row c"><div class="pos">${Number(r)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>

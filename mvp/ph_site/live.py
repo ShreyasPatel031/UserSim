@@ -281,8 +281,15 @@ def _forecast_file(day: str, key: str):
         if af != field and any(af in r for r in f):
             alt[af] = {str(r["id"]): int(r[af]) for r in f if r.get(af) is not None}
     method = "comment ridge" if key.startswith("P") else (j.get("method") or field)
+    agree = None
+    if key.startswith("P"):
+        # Do PH's hidden API order and the 00:05 model roughly agree on this pick? (|positions| <= 2, PH ops' rule)
+        api = {str(r["id"]): r.get("pred_rank_api") for r in f}
+        lm = sorted(((str(r["id"]), r.get("lm")) for r in f if isinstance(r.get("lm"), (int, float))), key=lambda t: -t[1])
+        lm_pos = {i: n for n, (i, _) in enumerate(lm, 1)}
+        agree = {i: abs(int(api[i]) - lm_pos[i]) <= 2 for i in ranks if api.get(i) and i in lm_pos}
     return {"ranks": ranks, "made_at": j.get("written_at", ""), "data_up_to": j.get("data_up_to", ""),
-            "method": method, "rank_field": field, "alt": alt, "exp_votes": exp or None}
+            "method": method, "rank_field": field, "alt": alt, "exp_votes": exp or None, "agree": agree}
 
 
 def forecasts(day: str) -> dict[str, dict]:
@@ -363,6 +370,29 @@ def _top3_confidence(ranks: dict[str, int], prods: dict[str, dict]) -> dict[str,
     return out
 
 
+def _prereveal_confidence(key: str, f: dict) -> dict | None:
+    """PH ops' replay of the pre-reveal picks (results/web/prereveal_confidence.json): how often pick k finished in the
+    top 3 (picks 1-3) or top 5 (picks 4-5), as counts, plus whether the hidden API order and the 00:05 model agree."""
+    pc = gcs.read_json("results/web/prereveal_confidence.json", ttl=3600)
+    if not pc or key not in (pc.get("by_point") or {}):
+        return None
+    bp, out = pc["by_point"][key], {}
+    ag = pc.get("by_agreement") or {}
+    for pid, r in f["ranks"].items():
+        if r > 5:
+            continue
+        cell = (bp.get(f"pick{r}") or {}).get("in_top3" if r <= 3 else "in_top5")
+        if not cell:
+            continue
+        a = (f.get("agree") or {}).get(pid)
+        arate = ((ag.get("agree" if a else "disagree") or {}).get("picks1_3_in_top3" if r <= 3 else "picks1_5_in_top5")
+                 if a is not None else None)
+        out[pid] = {"hits": cell["hits"], "n": cell["n"], "what": "top 3" if r <= 3 else "top 5", "agree": a,
+                    "agree_rate": arate["rate"] if arate else None, "basis": f"replay, {pc.get('n_days')} days",
+                    "note": pc.get("note", "")}
+    return out or None
+
+
 def day_view(day: str) -> dict:
     prods = _lineup(day)
     fc = forecasts(day)
@@ -376,7 +406,8 @@ def day_view(day: str) -> dict:
         score = None
         if act["final"]:
             score = {str(k): hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)}
-        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else None
+        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else (
+            _prereveal_confidence(key, f) if key.startswith("P") else None)
         exp_err = None
         if f.get("exp_votes"):
             g = claims().get("exp_votes_error", {}).get("values", {})
