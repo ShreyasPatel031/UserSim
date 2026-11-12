@@ -473,6 +473,48 @@ def live(day, point):
                 A["pred_rank_e5"] = A.id.map(dict(zip(E.id, E.pred_rank_e5))); A["e5_score"] = A.id.map(dict(zip(E.id, E.e5_score)))
     except Exception as e:
         print("e5 recipe skipped:", repr(e)[:160], flush=True)
+    # rank_clean_thread (orchestrator 09:20Z / 08:45Z Nov 12; thread_feats.md): the clean 00:05 LM + rank-neutral thread
+    # maker features as of 00:05 PT (first top-level author vs hunter, pre-launch non-hunter commenters, first author's
+    # earlier launches); a 00:05 forecast recorded in the P files (data cut 00:05 for the thread part)
+    A["pred_rank_clean_thread"] = np.nan
+    try:
+        tp = os.path.join(HERE, "results", "thread_live_model.json"); sp = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
+        if os.path.exists(tp) and os.path.exists(sp):
+            TM = json.load(open(tp)); SF = pd.DataFrame(json.load(open(sp))["forecast"])
+            pc = dict(zip(SF.id.astype(str), SF.pred_clean)) if "pred_clean" in SF else {}
+            dp = f"{tmp}/daily.json"
+            subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{day}/{day}.json", dp])
+            hun = {str(x["id"]): str((x.get("user") or {}).get("id") or "") for x in json.load(open(dp))} if os.path.exists(dp) else {}
+            t5 = t0 + pd.Timedelta(minutes=5); C5 = C[C.ts <= t5].sort_values("ts")
+            # first-author history by user id from the dump: launches where the id was the first top-level commenter or the hunter
+            Kd = K.copy(); Kd["day"] = Kd.ts.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
+            Lr = W.query("SELECT slug, day, daily_rank, poster FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+            Lr["rp"] = Lr.groupby("day").daily_rank.rank(pct=True, ascending=False); rp = dict(zip(Lr.slug, Lr.rp)); ld = dict(zip(Lr.slug, Lr.day))
+            fa_hist = {}
+            for sl, g in Kd[Kd.depth == 0].sort_values("ts").groupby("slug"):
+                u = g.uid.iloc[0]
+                if u and sl in rp:
+                    fa_hist.setdefault(u, []).append((ld[sl], rp[sl]))
+            for sl, pu in zip(Lr.slug, Lr.poster):
+                u = name2id.get(str(pu or "").lower())
+                if u and sl in rp:
+                    fa_hist.setdefault(u, []).append((ld[sl], rp[sl]))
+            rows = []
+            for i in A.id:
+                g = C5[C5.id == i]; tops = g[g.parent.isna()]
+                fa = tops.user.iloc[0] if len(tops) else None; h = hun.get(i, "")
+                prev = [r for d_, r in set(fa_hist.get(fa, [])) if d_ < day] if fa else []
+                rows.append({"id": i, "honest": pc.get(i, np.nan), "th_has_first": float(fa is not None),
+                             "th_hunter_first": float(bool(fa) and fa == h), "th_n_pre": float(g[g.user != h].user.nunique()),
+                             "th_fa_n": float(np.log1p(len(prev))), "th_fa_rel": (sum(prev) + 1.0) / (len(prev) + 2) if prev else 0.5})
+            E = pd.DataFrame(rows)
+            if E.honest.notna().any():
+                E["honest"] = E.honest.fillna(E.honest.min() - 0.1)
+                E["lm_r"] = E.honest.rank(pct=True); E["n_day"] = np.log(len(E))
+                E["sc"] = sum(((E[f] - TM["mu"][f]) / TM["sd"][f]) * TM["coef"][f] for f in TM["feats"]) + TM["intercept"]
+                A["pred_rank_clean_thread"] = A.id.map(dict(zip(E.id, E.sc.rank(ascending=False, method="first").astype(int))))
+    except Exception as e:
+        print("clean_thread skipped:", repr(e)[:160], flush=True)
     # orchestrator 04:10Z Nov 12 (depth analysis; provisional, scored forward): pred_rank_depth = positions 1-5 from
     # pred_rank_best, positions 6+ by the equal-weight mean (w_api 0.5) of the API and LM positions; watch15 = our top 15
     # by pred_rank_best at P2-P4 (the final top 10 was inside it for 97% of launches from 02:00 PT)
@@ -506,7 +548,7 @@ def live(day, point):
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
