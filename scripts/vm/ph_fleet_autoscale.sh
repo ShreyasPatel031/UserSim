@@ -162,7 +162,7 @@ create_one() {
       --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=20GB \
       --service-account="$SA" --scopes=cloud-platform \
       --tags=allow-iap-ssh \
-      --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
+      --metadata-from-file "proxy-url=$proxy_file,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
       --metadata "$meta"
   fi
   printf '%s fleet-%s\n' "$name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" |
