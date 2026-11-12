@@ -67,13 +67,13 @@ def month_job(a):
     if "no_maker_prof" in variants:   # every maker-profile-derived input
         out["no_maker_prof"] = fitw(tr, te, [c for c in cols if not c.startswith(("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers"))], seed)
     # honest_preds_v2 (orchestrator 06:55Z Nov 12): no maker-profile inputs and no maker's-first-comment inputs (the first
-    # comment is found through the maker's identity, which PH names for the winner only after the day); v2b also without llm_full
+    # comment is found through the maker's identity, which our API reads name for the winner only after the day); v2b also without llm_full
     MP = ("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers")
     FC = ("ps_has_first_comment", "pf_first_comment_words", "ps_first_comment", "pf_founder_story")
     if "clean_v2" in variants:
         out["clean_v2"] = fitw(tr, te, [c for c in cols if not c.startswith(MP) and not c.startswith(FC)], seed)
-    # clean_v3 (orchestrator 06:20Z Nov 12 mechanism): every input that needs a maker to be NAMED (PH names the winner's
-    # makers only after the day); total maker count kept
+    # clean_v3 (orchestrator 06:20Z Nov 12 mechanism): every input that needs a maker to be NAMED (our API reads name the winner's
+    # makers only after the day; the PH page shows the full team on launch day); total maker count kept
     if "clean_v3" in variants:
         out["clean_v3"] = fitw(tr, te, [c for c in cols if c not in ID_COLS], seed)
     if "clean_v2b" in variants:

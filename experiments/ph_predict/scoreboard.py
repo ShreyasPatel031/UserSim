@@ -117,16 +117,16 @@ def main():
 
 # backtest number beside each live line (source files in results/; update here when a backtest is re-run)
 BACKTEST = {
-    ("0005", "published"): ("-", "no clean backtest: the deployed model trains on inputs that need a named maker, which PH fills in for the day's #1 only after the day (leaked 63.0 / 69.3 / 75.0). Clean equivalent: see clean_shadow"),
+    ("0005", "published"): ("-", "no clean backtest: the deployed model trains on inputs that need a named maker, which our API v2 reads return redacted at 00:05 but named for the day's #1 in reads after the day (the Product Hunt page itself shows the full team on launch day) (leaked 63.0 / 69.3 / 75.0). Clean equivalent: see clean_shadow"),
     ("0005", "clean_shadow"): ("53.7 / 64.6 / 75.4", "honest_preds_v2: month-forward 214 days Mar-Nov 10 without any input that needs a named maker (leak_check_v2.md): #1 pick in top 3 69%, exact winner 32%; live-days replay 61.9 / 67.1 / 76.4 on 14 days vs deployed 57.1 (clean_live.md)"),
     ("0005", "makerfix_shadow"): ("-", "the earlier 60.2 / 68.6 / 75.7 (maker_resolve.md) used the leaking maker-profile cache; no clean backtest"),
     ("P1", "best"): ("66.7 / 66.7 / 78.3", "REPLAY, 6 days (Nov 2-10), leave-one-day-out choice: 0.5 x API rank + 0.5 x LM rank (api_depth.md); LM 38.9 / 60.0 / 76.7"),
     ("P2", "best"): ("72.2 / 76.7 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API rank + 0.25 x LM rank (api_depth.md)"),
     ("P3", "best"): ("83.3 / 80.0 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API + 0.25 x LM (P4 uses the same 03:00 read in the replay)"),
     ("P4", "best"): ("83.3 / 80.0 / 80.0", "REPLAY, 6 days, as P3 (hourly reads; the live P4 uses the 04:00 15-min read)"),
-    ("P1", "comment_ridge"): ("64.6 / 70.9 / 76.2", "ridge without account flags over a LEAK-FREE LM (maker-profile inputs dropped), 207 days month-forward (comment_forecast_leakfree.md); LM alone 58.3 / 68.1 / 74.9"),
-    ("P2", "comment_ridge"): ("66.8 / 72.2 / 76.9", "same, leak-free"), ("P3", "comment_ridge"): ("67.3 / 72.1 / 77.1", "same, leak-free"),
-    ("P4", "comment_ridge"): ("66.8 / 72.9 / 77.4", "same, leak-free"),
+    ("P1", "comment_ridge"): ("63.9 / 71.7 / 76.1", "identity-free comment ridge (no team split; pred_rank from Nov 12) over the clean LM (honest_preds_v2, 57.6 / 68.2 / 74.7 alone), 207 days month-forward (comment_forecast_v2_teamc.md); the orchestrator's independent rebuild gives about 60 / 70 / 75 at +1 h; live comments at +1 h are about half captured"),
+    ("P2", "comment_ridge"): ("65.5 / 72.5 / 76.8", "same, identity-free, clean LM"), ("P3", "comment_ridge"): ("67.1 / 72.6 / 76.7 ", "same, identity-free, clean LM"),
+    ("P4", "comment_ridge"): ("65.9 / 72.7 / 77.1", "same, identity-free, clean LM"),
     ("R0", "raw_votes"): ("72 / 77 / 88", "6-day replay (early_forecast_replay.json); 85 / 93 / 92 first hour after reveal on 9 days"),
     ("R0q", "raw_votes"): ("75 / 80 / 88", "4-day 15-min replay (reveal_gap.md)"), ("R0h", "raw_votes"): ("75 / 90 / 88", "4-day 15-min replay (reveal_gap.md)"),
     ("R0", "r0blend_neartie"): ("58 / 70 / 88", "4-day replay; R0 votes with 10% near-ties broken by the P4 blend"),

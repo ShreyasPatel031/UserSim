@@ -6,7 +6,7 @@ live_sources() on the 00:05 rows, LIVE_PARAMS, 5 seeds); test rows = data/today/
             (hist_maker*, hist_dayrank_hist_maker*, ph_maker*, ph_n_makers*, ph_dayrank_ph_n_makers, x_n_makers*) is set
             to missing (LightGBM's missing branch) instead of the value joined on the placeholder id
   clean     (orchestrator 06:40Z / 07:10Z Nov 12; replaces the nollm line) the deployed model trained and served WITHOUT
-            every input that needs a named maker (PH names the day's #1 makers only after the day, so these inputs are
+            every input that needs a named maker (our API v2 reads return makers redacted at 00:05 and name the day's #1 makers in later reads, so these inputs are
             leaky in training rows): maker-profile inputs (ph_maker*, hist_maker*, hist_dayrank_hist_maker*, x_maker*,
             x_n_makers*) and ph_n_makers_new, ph_maker_has_headline, x_any_verified, ph_self_hunted; total maker count kept.
             Live days (clean_live.md): 61.9 / 67.1 / 76.4 vs deployed 57.1 / 64.3 / 76.4 on 14 days

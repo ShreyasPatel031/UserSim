@@ -83,7 +83,7 @@ def build():
     L = L.merge(H, on="id", how="left")
     L["team"] = [set(json.loads(m) if m and m.startswith("[") else []) | ({p.lower()} if p else set()) for m, p in zip(L.makers, L.poster)]
     L["team"] = [{u.lower() for u in t if u} for t in L.team]
-    # leak check (orchestrator 07:45Z Nov 12): PH names the winner's makers only after the day, so the warehouse maker list
+    # leak check (orchestrator 07:45Z Nov 12): our API reads name the winner's makers only after the day (the PH page shows the full team), so the warehouse maker list
     # (read later) recognises winners' maker comments as team and leaves other launches' redacted makers "outside".
     #   CF_TEAM=a  current rule: every named maker + hunter (read after the day)
     #   CF_TEAM=b  00:05-consistent: hunter + the single maker visible at 00:05 (the LAST entry of the maker list, if named)

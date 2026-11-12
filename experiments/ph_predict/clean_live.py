@@ -1,5 +1,5 @@
-"""Clean 00:05 model on the live days (orchestrator 06:40Z / 06:55Z Nov 12). Product Hunt names the day's #1 launch's makers
-only after the day, so every input that needs a maker to be NAMED is leaky in rows read after the day: the deployed model
+"""Clean 00:05 model on the live days (orchestrator 06:40Z / 06:55Z Nov 12). Our API v2 reads return post.makers redacted at 00:05 and name the day's #1
+launch's makers in reads after the day (the PH page shows the full team on launch day), so every input that needs a maker to be NAMED is leaky in rows read after the day: the deployed model
 is trained on those leaky values and served 00:05 values (train/serve skew). Same frame as parity_live / config_parity
 (features.build + llm), daily expanding refit on every finished day < d (the deployed cadence), test rows = the 00:05 rows
 of each live day, LIVE_PARAMS (= ctrl.fit settings), 5 seeds, sources dropped by M.live_sources as live does.

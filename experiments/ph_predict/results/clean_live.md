@@ -1,6 +1,6 @@
 # Clean 00:05 model on the live days (clean_live.py, Nov 12)
 
-Product Hunt names the day's #1 launch's makers only after the day, so every input that needs a maker to be NAMED is leaky in
+Our API v2 reads return post.makers redacted at 00:05 and name the day's #1 launch's makers in reads after the day (the Product Hunt page itself shows the full team on launch day), so every input that needs a maker to be NAMED is leaky in
 rows read after the day; the deployed model is trained on those values and served 00:05 values. Same frame as parity_live
 (features.build + llm), daily expanding refit (deployed cadence), 00:05 test rows, LIVE_PARAMS, 5 seeds. Truth = official
 daily_rank. Paired differences vs the deployed configuration, 95% day bootstrap.
