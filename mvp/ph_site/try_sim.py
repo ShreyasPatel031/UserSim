@@ -480,20 +480,16 @@ def _reactions_note(grounded: bool = True, source: str | None = None) -> str:
     page = source == "page"
     m = v["page" if page else "desc"]
     if page:
-        acc = (f"From a web page alone, few simulated reactions match a specific real comment: about "
-               f"{m['point_precision']:.0%} make the same specific point a real user made, and together they cover about "
-               f"{m['point_recall']:.0%} of the specific points real users raised. On this standard they do no better than a "
-               f"generic list of typical launch comments ({m['generic_point_precision']:.0%} match a specific comment, "
-               f"covering {m['generic_point_recall']:.0%} of the points). Counting the "
-               f"same topic, not the same point: about {m['topic_recall']:.0%} of real users' topics are covered. "
-               f"Pasting your launch description gives closer results.")
+        acc = (f"These reactions are at the level of topics only. From a web page alone, about "
+               f"{m['point_precision']:.0%} make the same specific point a real user made, fewer than a generic list of "
+               f"typical launch comments ({m['generic_point_precision']:.0%}, {m['launches']} launches). Counting the same "
+               f"topic, about {m['topic_recall']:.0%} of real users' topics are covered. Paste your launch description "
+               f"for closer results.")
     else:
-        acc = (f"From a launch description, about {m['point_precision']:.0%} of simulated reactions (about 1 in 4) make the "
-               f"same specific point a real user made, and together they cover about {m['point_recall']:.0%} of the "
-               f"specific points real users raised (a generic list of typical launch comments: "
-               f"{m['generic_point_precision']:.0%} match a specific comment, covering {m['generic_point_recall']:.0%} of "
-               f"the points). Most of the rest are on the right "
-               f"topic but not the same point: counting the same topic, about {m['topic_recall']:.0%} are covered.")
+        acc = (f"From a launch description, about {m['point_precision']:.0%} of simulated reactions make the same specific "
+               f"point a real user made, only a little above a generic list of typical launch comments "
+               f"({m['generic_point_precision']:.0%}); most are on the right topic but not the same point. Counting the "
+               f"same topic, about {m['topic_recall']:.0%} of real users' topics are covered.")
     return (f"Simulated, not real comments.{person}{ground} Fixed offline figure ({c['label']}, {c['date']}): {acc}"
             + ("" if page else " " + _vs_humans()) + _rerun_note())
 

@@ -3,23 +3,20 @@
  "reactions_eval": {
   "values": {
    "desc": {
-    "point_recall": 0.44,
-    "point_precision": 0.24,
-    "generic_point_recall": 0.08,
-    "generic_point_precision": 0.1,
+    "point_precision": 0.23,
+    "generic_point_precision": 0.2,
     "topic_recall": 0.78,
     "topic_precision": 0.78
    },
    "page": {
-    "point_recall": 0.24,
-    "point_precision": 0.07,
-    "generic_point_recall": 0.12,
-    "generic_point_precision": 0.17,
+    "point_precision": 0.15,
+    "generic_point_precision": 0.27,
     "topic_recall": 0.63,
-    "topic_precision": 0.65
+    "topic_precision": 0.65,
+    "launches": 17
    }
   },
-  "label": "past launches scored against their real comments by a stronger judge (gemini-2.5-pro) that separates the same specific point from the same topic",
+  "label": "past launches scored against their real comments by a stronger judge (gemini-2.5-pro) that separates the same specific point from the same topic; generic list = 6 typical launch comments; two halves of real commenters agree on the same point about 35% of the time",
   "source": "E5 reports/judge_reliability/README.md, branch claude/person-model-v2",
   "date": "2026-11-12"
  },
