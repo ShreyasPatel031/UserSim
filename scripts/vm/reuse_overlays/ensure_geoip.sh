@@ -3,6 +3,9 @@
 # needs_update() rechecks when mmdb mtime is older than RECHECK_DAYS (1). Touching
 # the file after ensure makes needs_update False even if the DB build is old.
 set -euo pipefail
+if [[ "${EUID:-$(id -u)}" -ne 0 ]] && command -v sudo >/dev/null; then
+  exec sudo -n env PACE_GCS_VM_ROOT="${PACE_GCS_VM_ROOT:-}" FORCE_GEOIP_REFRESH="${FORCE_GEOIP_REFRESH:-}" CAMOUFOX_GEOIP_CACHE="${CAMOUFOX_GEOIP_CACHE:-}" "$0" "$@"
+fi
 CACHE="${CAMOUFOX_GEOIP_CACHE:-/root/.cache/camoufox}"
 MMDB_DIR="$CACHE/geoip/mmdb"
 B="${PACE_GCS_VM_ROOT:-}"
@@ -19,10 +22,10 @@ if ! has_mmdb && [[ -n "$B" ]]; then
   fi
 fi
 
-if ! has_mmdb && [[ -x /opt/venv/bin/python ]]; then
+if [[ -x /opt/venv/bin/python ]] && { ! has_mmdb || [[ "${FORCE_GEOIP_REFRESH:-0}" == 1 ]]; }; then
   echo "ensure_geoip: downloading via camoufox (one-time)"
   /opt/venv/bin/python - <<'PY' || true
-from camoufox.geolocation import download_mmdb, load_geoip_config
+from camoufox.geolocation import download_mmdb
 download_mmdb()
 PY
 fi
