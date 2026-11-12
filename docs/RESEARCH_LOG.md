@@ -1223,3 +1223,26 @@ Addendum (E5, Nov 12):
   - both: 0.439 → 0.464.
   - The masked maker gain comes from the total maker count. Comments by redacted makers can't be excluded from the target, so treat the maker increment as an upper bound.
 - The v1 ladder files were restored to tmp/e5/website/.
+
+### 2026-11-12 E5 — after the maker leak: page inputs at 00:05, truth quality, masked-residual reruns, clean calibration
+Page inputs on the masked model (refit5, 239 days):
+- Groups added to "no page" (53.7): llm +2.5 [0.3, 4.8]; pf +1.7; vs +1.4; ps +1.1. All page groups together: +3.1 [0.4, 5.5].
+- No winner-specific jump in the media or video inputs. They rise smoothly with rank.
+- The deployed 00:05 frame contains only the llm_ columns, and their 00:05 values equal the cache values.
+- Live within-day Spearman (14 days) vs the backtest: llm_pitch 0.170 vs 0.273; llm_site 0.075 vs 0.138; llm_brand 0.213 vs 0.227.
+- Reading: the honest page gain is probably about half of +3.1. Use clean_v3 (PH agent, 53.7 / 64.6 / 75.4) as the baseline.
+
+Clean calibration (reports/masked_0005/pick_calibration_v2.json):
+- P(top 3) for our #1 / #2 / #3 pick: 71.4 / 55.0 / 43.7. P(win) for the #1 pick: 39.9.
+- For the #1 pick by margin, P(top 3): small 63, medium 73, large 79.
+
+Truth quality: 11.6% of the "non-team" truth comments were really the maker's (18% for launches ranked #2–3). Rebuilt with an identity-free rule (the earliest top-level comment's author, plus the hunter):
+- Our scores shift by less than 0.4 points over the 300 launches.
+- The split-half bar falls 4.4 recall on the affected launches, about 1.4 over the bar set.
+- No website change is needed.
+
+Masked-residual reruns:
+- Fame prior: still null.
+- Summed likely voters: still nothing over the LM.
+- Early-engager count on honest_preds_v2: top 3 +2.6 / +3.9 / +5.9 [3.5, 8.3] at +1 / +2 / +4 h. Identity adds nothing.
+- Person level, "who votes next" over popularity: Hit@3 +0.10 [0.04, 0.17] at +4 h.
