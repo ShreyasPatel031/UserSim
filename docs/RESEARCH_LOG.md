@@ -1030,3 +1030,13 @@ Validation: bundle and model as of Oct 24, every ranked launch Oct 25–Nov 10 (
 - + makers: 49.0 [35.3, 62.7] / 50.6 / 60.6, 40.3; 0.867 (34.1)
 - + both: 56.9 [47.1, 66.7] / 65.9 / 74.7, 58.3; 0.876 (31.6)
 End-to-end: bundle-path features equal the direct history computation on 50 sampled launches (max diff 0). Bands are slightly conservative (about 87% coverage of a nominal 80%).
+
+### 2026-11-12 E5 — predicting the QUESTIONS makers get asked
+Script experiments/simlab/questions_rank.py (concerns_rank machinery; truth = only the questions real users asked, 292 of 300 post-cutoff launches have some); report reports/questions_rank/. Spend $0.73. precision@1 / @3 / @5 / hit@3:
+- DEPLOYED reactions: 14.0 / 13.4 / 13.1 / 33.2
+- question generator (one flash call, 6 questions): 16.4 / 13.8 / 13.4 / 36.0
+- retrieved question themes of similar earlier launches: 13.0 / 7.2 / 5.9 / 20.2
+- generic FAQ list (pricing/free tier, data/privacy, integrations, mobile, open source/self-host, vs incumbent, roadmap; ordered by topic frequency): 3.8 / 6.8 / 5.9 / 19.5
+- RANKED (same fixed ranker): 15.4 / 15.5 / 14.2 / 37.7
+Paired: RANKED − generic p@3 +8.7 [5.7, 11.8], hit@3 +18.2 [10.6, 25.3]; question generator − generic p@3 +7.0 [4.3, 9.8]; RANKED − DEPLOYED p@3 +2.2 [−0.6, 5.1] (n.s.).
+Reading: predicted questions clear the generic FAQ list (about 1 in 7 vs 1 in 15 at the top three) but are harder than concerns; the single question-generator call does nearly as well as the full ranker.
