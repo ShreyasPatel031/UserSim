@@ -31,6 +31,7 @@
         <li data-s="page"><b>Read page</b>Fetch + understand it</li>
         <li data-s="people"><b>Match people</b>Real PH members, anonymised</li>
         <li data-s="reactions"><b>Simulate reactions</b>What they'd write</li>
+        <li data-s="asks"><b>Likely question</b>And concern</li>
         <li data-s="launch"><b>Place on PH</b>Rank and vote range</li>
       </ol>
       <p class="small muted" style="margin:6px 0 0">No public page yet, or it needs JavaScript? About 1 in 5 pages can’t be read automatically. <a href="#" id="paste-open">Paste a launch description instead</a> (also the more accurate input).</p>
@@ -48,6 +49,10 @@
 
   <div id="out" hidden>
     <section class="block" id="prod"></section>
+    <section class="block">
+      <header><h2>The question they’ll most likely ask</h2><span class="label">simulated</span></header>
+      <div id="ask"><p class="skeleton">Ranking likely questions…</p></div>
+    </section>
     <section class="block">
       <header><h2>What users will say</h2><span class="label" id="rx-note"></span></header>
       <p class="lede" id="rx-head"></p>
@@ -92,14 +97,22 @@ function renderProduct(a){
   $("#prod").innerHTML = `<header><div><p class="label">${esc(a.url ? new URL(a.url).hostname : "pasted description")}</p><h2>${esc(a.name)}</h2></div>
     <span class="label">${esc((a.topics||[]).join(" · "))}</span></header>
     <p class="lede"><b style="color:var(--ink)">${esc(a.tagline)}</b><br>${esc(a.summary)}</p>
-    <div class="grid3" style="margin-top:16px">
+    <div class="grid2" style="margin-top:16px">
       <div class="card"><p class="label">Audience</p><p>${esc(a.audience)}</p><p class="label">Pricing</p><p>${esc(a.pricing)}</p></div>
-      <div class="card"><p class="label">PH visitors would like</p><ul>${(a.strengths||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
-      <div class="card"><p class="label">Doubts the page may raise (read from the page; not validated)</p><ul>${(a.doubts||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+      <div class="card"><p class="label">PH visitors would like (read from the page; not validated)</p><ul>${(a.strengths||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
     </div>`;
   $("#full").href = a.url ? "/app?url=" + encodeURIComponent(a.url) : "/app";
 }
 const pct = (v)=> Math.max(0, Math.min(100, Number(v)||0));
+function renderAsks(j){
+  const card = (lab, txt) => `<div class="card"><p class="label">${lab}</p><p style="font-family:var(--serif);font-size:1.25rem;line-height:1.35">${esc(txt)}</p></div>`;
+  let h = '<div class="grid2">' + (j.question ? card("Most likely question", j.question) : "")
+    + (j.concern ? card("Most likely concern", j.concern)
+       : `<div class="card"><p class="label">Most likely concern</p><p class="muted">Only reliable from a launch description. <a href="#" class="paste-link">Paste yours</a> to see it.</p></div>`)
+    + "</div>";
+  $("#ask").innerHTML = h + `<p class="small muted">${esc(j.note)}</p>`;
+  document.querySelectorAll("#ask .paste-link").forEach(a=>a.onclick=(e)=>{e.preventDefault(); $("#paste").hidden=false; $("#pn").focus();});
+}
 function renderReactions(j){
   $("#rx-head").textContent = j.headline || "";
   $("#rx-note").textContent = "simulated, not real comments";
@@ -161,7 +174,7 @@ function renderLaunch(l){
 
 async function simulate(first, body){
   $("#err").hidden = true; $("#go").disabled = true; $("#pgo").disabled = true; $("#out").hidden = true;
-  ["page","people","reactions","launch"].forEach(s=>step(s,""));
+  ["page","people","reactions","asks","launch"].forEach(s=>step(s,""));
   step("page","run");
   let tok;
   try {
@@ -177,7 +190,7 @@ async function simulate(first, body){
     $("#go").disabled=false; $("#pgo").disabled=false; return;
   }
   const run = (s, fn) => { step(s,"run"); return post("/api/try/"+s, {token: tok}).then(j=>{fn(j); step(s,"done");}).catch(err=>{step(s,"fail"); fail(err.message);}); };
-  await Promise.all([run("people", renderPeople), run("reactions", renderReactions), run("launch", renderLaunch)]);
+  await Promise.all([run("people", renderPeople), run("reactions", renderReactions), run("asks", renderAsks), run("launch", renderLaunch)]);
   $("#go").disabled = false; $("#pgo").disabled = false;
 }
 $("#f").onsubmit = (e) => { e.preventDefault(); simulate("/api/try/page", {url: $("#u").value}); };

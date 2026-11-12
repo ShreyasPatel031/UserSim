@@ -197,6 +197,8 @@ async def try_step(step: str, request: Request):
             return JSONResponse(await asyncio.to_thread(try_sim.step_launch, tok))
         if step == "reactions":
             return JSONResponse(await asyncio.wait_for(try_sim.step_reactions(tok), timeout=45))
+        if step == "asks":
+            return JSONResponse(await asyncio.wait_for(try_sim.step_asks(tok), timeout=50))
     except Exception as exc:  # noqa: BLE001
         return _err(exc)
     raise HTTPException(404, "unknown step")

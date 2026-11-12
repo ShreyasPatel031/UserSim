@@ -27,7 +27,7 @@ PT = ZoneInfo("America/Los_Angeles")
 CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "3")),
         "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "10")),
         "global_day": int(os.environ.get("TRY_GLOBAL_DAY", "150")),
-        "gemini_calls_per_run": 2, "gemini_calls_max_per_run": 3, "embedding_calls_per_run": 2, "max_output_tokens_per_run": 4500}
+        "gemini_calls_per_run": 6, "gemini_calls_max_per_run": 7, "embedding_calls_per_run": 5, "max_output_tokens_per_run": 8200}
 MODEL = os.environ.get("TRY_GEMINI_MODEL", "gemini-2.5-flash-lite")
 TOKEN_TTL_S = 900
 
@@ -86,7 +86,7 @@ def _ip_hash(ip: str) -> str:
 
 _mem: dict[str, list[float]] = {}
 _runs_mem: dict[str, dict] = {}
-STEP_USES = {"people": 1, "reactions": 1, "launch": 3}   # LLM/embedding steps once per run; launch is free (no LLM)
+STEP_USES = {"people": 1, "reactions": 1, "asks": 1, "launch": 3}   # LLM/embedding steps once per run; launch is free (no LLM)
 
 
 def take_slot(ip: str) -> dict:
@@ -630,6 +630,158 @@ async def step_reactions(tok: str) -> dict:
         reacts.append({k: r.get(k) for k in ("type", "comment", "sentiment", "why")})   # no unvalidated vote meters
     return {"reactions": reacts, "types": types, "headline": j.get("headline_takeaway", ""), "grounded": grounded,
             "note": _reactions_note(grounded, a.get("source"))}
+
+
+# ---------- step 3b: most likely question / concern (E5 RANKED recipe) ----------
+
+ASK_MODEL = os.environ.get("TRY_ASK_MODEL", "gemini-2.5-flash")
+_ASK_GEN = {
+    "concerns": ("List the 6 criticisms most likely from real users: first the complaints users of this product CATEGORY "
+                 "almost always raise (2-3), then the ones SPECIFIC to this product (the rest). Write them as they would "
+                 "appear in launch-day comments (objections, questions to the maker, feature requests). Do not invent "
+                 "features.\nProduct: {name} - {tagline}\nDescription: {desc}\n"
+                 "Return JSON {{\"items\": [\"<one specific sentence>\", ...]}}"),
+    "questions": ("A new product is launching on Product Hunt today.\nProduct: {name} - {tagline}\nDescription: {desc}\n"
+                  "List the 6 questions users are most likely to ask the makers in the launch comments in the first hours, "
+                  "most likely first.\nBe specific to this product; do not invent features. "
+                  "Return JSON {{\"items\": [\"...\", ...]}}"),
+}
+_ASK_LIKE = ("A new product is launching on Product Hunt.\nProduct: {name} - {tagline}\nDescription: {desc}\n"
+             "Below are candidate {what} users might raise in the launch comments.\nRate how likely real users are to "
+             "raise each one for THIS product, 1 (unlikely) to 5 (very likely).\n"
+             "Return JSON {{\"ratings\": [1-5 per candidate, in order]}}\n{c}")
+
+
+def _ask_res():
+    import re as _re
+    return {"concerns": _re.compile(r"^\s*(objection|question|feature request|feature_request)\s*:\s*", _re.I),
+            "questions": _re.compile(r"^\s*question\s*:\s*", _re.I)}
+
+
+def _pct_rank(v: np.ndarray) -> np.ndarray:
+    order = np.argsort(np.argsort(v, kind="mergesort"), kind="mergesort").astype(float)
+    # average ranks for ties, as pandas rank(pct=True)
+    out = np.empty(len(v))
+    for x in np.unique(v):
+        m = v == x
+        out[m] = order[m].mean()
+    return (out + 1) / len(v)
+
+
+def _rank_pick(gen: list[str], nth: list[tuple[str, int]], NX: np.ndarray, X: np.ndarray, ratings) -> str | None:
+    """E5's RANKED score for candidates = generated + retrieved: neighbour frequency + cross-source agreement + Gemini
+    likelihood, each as a percentile rank; returns the top item."""
+    own = np.array([j for _, j in nth])
+    retr_n = len(X) - len(gen)
+    g = np.array(["GEN"] * len(gen) + ["RETR"] * retr_n)
+    S_ = X @ X.T
+    a = np.array([len(set(own[(NX @ X[i]) >= 0.80])) if len(nth) else 0 for i in range(len(X))], float)
+    b = np.array([((S_[i] >= 0.80) & (g != g[i])).sum() for i in range(len(X))], float)
+    c = np.array(ratings if isinstance(ratings, list) and len(ratings) == len(X) else [3] * len(X), float)
+    sc = (_pct_rank(a) + _pct_rank(b) + _pct_rank(c)) / 3
+    return None if not len(sc) else int(np.argmax(sc))
+
+
+async def step_asks(tok: str) -> dict:
+    """The single most likely question (and, from a pasted launch description, the single most likely concern), with the
+    hit rates E5 measured on the strict same-specific-point standard. Page reads use the raw page excerpt (measured
+    better than the summary); the concern is only shown from a pasted description (the only input where it beat a
+    generic concern reliably)."""
+    import asyncio
+
+    from capability.gemini_config import extract_json, gemini_chat
+    from mvp.ph_site import person_e5
+
+    a = use_run(tok, "asks")
+    pasted = bool(a.get("ph_description"))
+    name, tagline = a.get("name") or "", a.get("tagline") or ""
+    desc = a["ph_description"] if pasted else (a.get("page_excerpt") or a.get("summary") or "")
+    kinds = ["questions", "concerns"] if pasted else ["questions"]
+    res = _ask_res()
+
+    async def cj(prompt, temp, tok_):
+        try:
+            return extract_json(await gemini_chat([{"role": "user", "content": prompt}], model=ASK_MODEL,
+                                                  temperature=temp, max_retries=3, max_output_tokens=tok_)) or {}
+        except Exception as exc:  # noqa: BLE001
+            print(f"[try] asks call failed: {exc!r}", flush=True)
+            return {}
+
+    gens = await asyncio.gather(*[cj(_ASK_GEN[k].format(name=name, tagline=tagline,
+                                                         desc=desc[:1500 if k == "concerns" else 1200]), 0.3, 800)
+                                  for k in kinds])
+    gens = {k: [str(x) for x in (g.get("items") or [])][:6] for k, g in zip(kinds, gens)}
+    q = await person_e5.embed(f"{name}. {tagline}. {desc[:800]}")
+    R = _retrieval()
+    own_stem = _slug_stem(name)
+    nb = []
+    for j in np.argsort(-(R["emb"] @ q)):
+        stem = str(R["rows"][int(j)].get("slug_stem") or "")
+        if own_stem and (stem == own_stem or stem.startswith(own_stem + "-") or own_stem.startswith(stem + "-")):
+            continue
+        nb.append(int(j))
+        if len(nb) == 25:
+            break
+    nth = {k: [(res[k].sub("", t), j) for j in nb for t in (R["rows"][j].get("themes") or []) if res[k].match(t)]
+           for k in kinds}
+    texts = list(dict.fromkeys(t for k in kinds for t, _ in nth[k]))[:200]
+    nth = {k: [(t, j) for t, j in nth[k] if t in set(texts)] for k in kinds}
+    E = await person_e5.embed_many(texts) if texts else np.zeros((0, 256), np.float32)
+    pos = {t: i for i, t in enumerate(texts)}
+    cands = {}
+    for k in kinds:
+        NX = E[[pos[t] for t, _ in nth[k]]] if nth[k] else np.zeros((0, 256), np.float32)
+        retr = []
+        if len(NX):
+            own = np.array([j for _, j in nth[k]])
+            SS = NX @ NX.T
+            cnt = np.array([len(set(own[SS[i] >= 0.80])) for i in range(len(NX))])
+            used = np.zeros(len(NX), bool)
+            for i in np.argsort(-cnt, kind="stable"):
+                if used[i]:
+                    continue
+                retr.append(nth[k][i][0])
+                used |= SS[i] >= 0.80
+                if len(retr) == 8:
+                    break
+        cands[k] = (gens[k] + retr, NX)
+    allc = list(dict.fromkeys(t for k in kinds for t in cands[k][0]))
+    CE = await person_e5.embed_many(allc) if allc else np.zeros((0, 256), np.float32)
+    cpos = {t: i for i, t in enumerate(allc)}
+    what = {"concerns": "concerns (objections, doubting questions, feature requests)", "questions": "questions to the makers"}
+    num = lambda l: "\n".join(f"{i + 1}. {str(t)[:300]}" for i, t in enumerate(l))
+    likes = await asyncio.gather(*[cj(_ASK_LIKE.format(name=name, tagline=tagline, desc=desc[:1200], what=what[k],
+                                                       c=num(cands[k][0])), 0.0, 300) for k in kinds])
+    out = {}
+    for k, lk in zip(kinds, likes):
+        items, NX = cands[k]
+        if not items:
+            continue
+        i = _rank_pick(gens[k], nth[k], NX, CE[[cpos[t] for t in items]], lk.get("ratings"))
+        if i is not None:
+            out[k[:-1]] = items[i]
+    if not out:
+        raise RuntimeError("no question or concern could be produced")
+    return {"question": out.get("question"), "concern": out.get("concern"), "source": "pasted" if pasted else "page",
+            "note": _asks_note(pasted)}
+
+
+def _asks_note(pasted: bool) -> str:
+    from mvp.ph_site.live import claims
+    t = claims().get("top_items")
+    if not t:
+        return "Simulated, not a real comment."
+    v = t["values"]
+    src = "pasted launch description" if pasted else "web page"
+    s = (f"Simulated, not real comments. Fixed offline figure ({t['label']}, {t['date']}): from a {src}, the most likely "
+         f"question made the same specific point as a real user's question about "
+         f"{v['q_desc' if pasted else 'q_page']} times, against {v['q_generic']} for a generic question.")
+    if pasted:
+        s += (f" The most likely concern did so about {v['c_desc']} times, against {v['c_generic']} for a generic "
+              f"concern; on launches with 10 or more comments, generic concerns hit about as often.")
+    else:
+        s += " Paste your launch description to also see the most likely concern (it is only reliable from a description)."
+    return s
 
 
 # ---------- step 4: launch (no LLM) ----------

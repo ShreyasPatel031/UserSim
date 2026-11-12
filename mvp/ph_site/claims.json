@@ -148,5 +148,40 @@
   "label": "60 fresh launches run twice through this site's code; page read at temperature 0 gives an identical band",
   "source": "E5 reports/try_stability/README.md",
   "date": "2026-11-12"
+ },
+ "top_items": {
+  "values": {
+   "q_desc": "1 in 2",
+   "q_page": "2 in 5",
+   "q_generic": "1 in 5",
+   "c_desc": "2 in 5",
+   "c_generic": "1 in 5",
+   "ceiling": "1 in 3",
+   "q_desc_range": [
+    0.49,
+    0.5
+   ],
+   "q_page_raw": 0.41,
+   "q_generic_range": [
+    0.21,
+    0.23
+   ],
+   "c_desc_range": [
+    0.34,
+    0.41
+   ],
+   "c_generic_range": [
+    0.16,
+    0.2
+   ],
+   "ceiling_range": [
+    0.32,
+    0.35
+   ],
+   "launches": 70
+  },
+  "label": "70 past launches, top item judged against real comments by gemini-2.5-pro for the same specific point, two independent adjudications",
+  "source": "E5 reports/judge_reliability/README.md, branch claude/person-model-v2",
+  "date": "2026-11-12"
  }
 }

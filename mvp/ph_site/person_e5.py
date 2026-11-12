@@ -32,6 +32,19 @@ def bundle() -> dict:
 
 
 async def embed(text: str) -> np.ndarray:
+    return (await embed_many([text]))[0]
+
+
+async def embed_many(texts: list[str]) -> np.ndarray:
+    """One batched gemini-embedding-001 call (at most 250 texts), 256-d, SEMANTIC_SIMILARITY; rows L2-normalised."""
+    if not texts:
+        return np.zeros((0, 256), np.float32)
+    if len(texts) > 250:
+        raise ValueError("too many texts for one embedding call")
+    return await _embed_batch(texts)
+
+
+async def _embed_batch(texts: list[str]) -> np.ndarray:
     """gemini-embedding-001 on Vertex, 256-d, SEMANTIC_SIMILARITY; L2-normalised here."""
     import asyncio
 
@@ -43,18 +56,18 @@ async def embed(text: str) -> np.ndarray:
     host = "aiplatform.googleapis.com" if loc == "global" else f"{loc}-aiplatform.googleapis.com"
     url = (f"https://{host}/v1/projects/{gemini_project()}/locations/{loc}/publishers/google/models/"
            "gemini-embedding-001:predict")
-    body = {"instances": [{"content": text[:1200], "task_type": "SEMANTIC_SIMILARITY"}],
+    body = {"instances": [{"content": t[:1200], "task_type": "SEMANTIC_SIMILARITY"} for t in texts],
             "parameters": {"outputDimensionality": 256}}
     creds = cached_vertex_credentials() or await asyncio.to_thread(vertex_credentials)
-    async with httpx.AsyncClient(timeout=20) as c:
+    async with httpx.AsyncClient(timeout=30) as c:
         for attempt in range(3):
             r = await c.post(url, json=body, headers={"Authorization": f"Bearer {creds.token}"})
             if r.status_code in (429, 500, 503) and attempt < 2:
                 await asyncio.sleep(1 + attempt)
                 continue
             r.raise_for_status()
-            v = np.asarray(r.json()["predictions"][0]["embeddings"]["values"], np.float32)
-            return v / (np.linalg.norm(v) + 1e-9)
+            v = np.asarray([p["embeddings"]["values"] for p in r.json()["predictions"]], np.float32)
+            return v / (np.linalg.norm(v, axis=1, keepdims=True) + 1e-9)
     raise RuntimeError("embedding failed")
 
 

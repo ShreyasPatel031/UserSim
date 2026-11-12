@@ -293,3 +293,15 @@ def test_difficulty_label(monkeypatch):
     assert d["label"] == "clear_leader" and d["forward"]["days"] == 3
     conf.pop("stable")
     assert live._difficulty("2026-11-12") is None
+
+
+def test_asks_rank_pick_and_note():
+    import numpy as np
+    from mvp.ph_site import try_sim
+    X = np.eye(4, dtype=np.float32)
+    # candidate 2 has the highest likelihood and the others tie: it is picked
+    assert try_sim._rank_pick(["a", "b"], [], np.zeros((0, 4), np.float32), X, [1, 1, 5, 1]) == 2
+    page, pasted = try_sim._asks_note(False), try_sim._asks_note(True)
+    assert "2 in 5" in page and "concern" in page and "Paste" in page
+    assert "1 in 2" in pasted and "most likely concern did so" in pasted
+    assert try_sim.STEP_USES["asks"] == 1
