@@ -34,10 +34,12 @@ OVERLAY_GCS="${VM_GCS}/_code/overlays"
 TEMPLATE="${PACE_TEMPLATE:-pace-feeder-e2-standard-2}"
 FLEET_SLOT="${FLEET_LIMIT_SLOT:-}"
 VM_NAME=""
-LADDER=(L0_ultra L1_polite L2_modest L3_mid L4_fleet80 L5_fleet120 L6_fleet160 L7_ceiling)
-STEP_MIN="${LADDER_MINUTES:-25}"
-WARMUP_SEC="${LADDER_WARMUP_SEC:-300}"
-BLOCK_FAIL_STREAK="${LADDER_BLOCK_STREAK:-2}"
+LADDER=(Lm1_serial L0_ultra L1_polite L2_modest L3_mid L4_fleet80 L5_fleet120 L6_fleet160 L7_ceiling)
+STEP_MIN="${LADDER_MINUTES:-12}"
+WARMUP_SEC="${LADDER_WARMUP_SEC:-240}"
+SAMPLE_WIN_SEC="${LADDER_SAMPLE_WIN_SEC:-300}"
+BLOCK_FAIL_STREAK="${LADDER_BLOCK_STREAK:-3}"
+STEADY_MIN_PPM="${LADDER_STEADY_MIN_PPM:-0.35}"
 
 merge_env() {
   local level=$1
@@ -92,8 +94,8 @@ cmd_up() {
   VM_NAME="feeder-fleet-${FLEET_RUN_ID}-${FLEET_SLOT}"
   ONLY_SLOTS="$FLEET_SLOT" PH_FLEET_STRATEGY_ENV="$envfile" bash "$ROOT/scripts/vm/ph_fleet_roll_patches.sh" | tail -3
   date -u +%Y-%m-%dT%H:%M:%SZ >"$ART/started_at.txt"
-  echo "# ts level est_complete_ppm est_attempt_ppm blocks_15m browser_fail_15m phsuper note" >"$ART/samples.tsv"
-  echo "# level verdict mean_complete_ppm max_complete_ppm blocks_15m" >"$ART/ladder.tsv"
+  echo "# ts	level	complete_ppm	attempt_ppm	gql429_5m	walls_5m	phsuper	pdeep_k	note" >"$ART/samples.tsv"
+  echo "# level	verdict	mean_complete_ppm	max_complete_ppm	mean_gql429_5m	walls_5m	pdeep_k" >"$ART/ladder.tsv"
   echo "fleet=$FLEET_RUN_ID slot=$FLEET_SLOT vm=$VM_NAME level=$start art=$ART"
 }
 
@@ -111,36 +113,41 @@ cmd_apply() {
 }
 
 sample_remote() {
-  "${GC[@]}" compute ssh "$VM_NAME" --zone="$ZONE" --tunnel-through-iap --quiet </dev/null --command='python3 <<PY
-import json, time, subprocess, glob
+  local win="${SAMPLE_WIN_SEC}"
+  "${GC[@]}" compute ssh "$VM_NAME" --zone="$ZONE" --tunnel-through-iap --quiet </dev/null --command="python3 <<'PY'
+import json, socket, subprocess, time
 from datetime import datetime, timezone
+W=${win}
 now=time.time()
-win=900
-status=glob.glob("/opt/ph/reuse/status_*.jsonl")
-lines=[]
-for p in status:
-    try: lines.extend(open(p).read().splitlines()[-400:])
-    except Exception: pass
-def ts(s):
-    try: return datetime.fromisoformat(s.replace("Z","+00:00")).timestamp()
-    except Exception: return 0
-comp=att=blocks=bf=0
-for ln in lines:
+host=socket.gethostname()
+path=f'/opt/ph/reuse/status_{host}.jsonl'
+def ts(u):
+    try: return datetime.fromisoformat(u.replace('Z','+00:00')).timestamp()
+    except Exception: return None
+rows=open(path).read().splitlines() if __import__('os').path.isfile(path) else []
+nc=nr=gql429=walls=0
+start_k=start_t=None
+for ln in rows:
     try: j=json.loads(ln)
     except Exception: continue
-    t=ts(j.get("utc") or "")
-    if now-t>win: continue
-    ev=j.get("event") or ""
-    rc=j.get("rc")
-    if ev in ("saved","uploaded","pfull_saved") and (rc==0 or rc is None and "pfull" in (j.get("note") or "")): comp+=1
-    if ev in ("saved","uploaded","pfull_saved") or (ev=="saved" and rc in (0,2)): att+=1
-    if "block" in ev or ev=="stopped_on_block": blocks+=1
-    if ev=="browser_open_failed": bf+=1
-ppm_c=round(comp*60/win,3) if win else 0
-ppm_a=round(att*60/win,3) if win else 0
-ph= subprocess.getoutput("systemctl is-active phsuper 2>/dev/null") or "?"
-print(json.dumps({"complete_ppm":ppm_c,"attempt_ppm":ppm_a,"blocks_15m":blocks,"browser_fail_15m":bf,"phsuper":ph}))
-PY' 2>/dev/null || echo '{"complete_ppm":0,"attempt_ppm":0,"blocks_15m":0,"browser_fail_15m":0,"phsuper":"ssh_fail"}'
+    ev=j.get('event'); rc=j.get('rc')
+    if ev=='start':
+        start_k=(j.get('workers'), j.get('tabs_per_worker'), j.get('port'))
+        start_t=j.get('utc')
+    t=ts(j.get('utc') or '')
+    if not t or now-t>W: continue
+    if j.get('handle') and rc is not None:
+        ok = rc==0 and ev!='incomplete_skip_upload' and str(j.get('method') or '').startswith('pfull')
+        if ok: nc+=1
+        else: nr+=1
+        if rc==3 and '429' in (j.get('detail') or ''): gql429+=1
+    elif ev in ('stopped_on_block','browser_open_failed') or (ev=='supervisor_run_end' and rc==3):
+        walls+=1
+m=max(W/60.0, 1/60.0)
+out={'complete_ppm':round(nc/m,3),'attempt_ppm':round((nc+nr)/m,3),'gql429_5m':gql429,'walls_5m':walls,
+     'pdeep_k':start_k,'pdeep_started':start_t,'phsuper':subprocess.getoutput('systemctl is-active phsuper 2>/dev/null') or '?'}
+print(json.dumps(out))
+PY" 2>/dev/null || echo '{"complete_ppm":0,"attempt_ppm":0,"gql429_5m":0,"walls_5m":0,"phsuper":"ssh_fail"}'
 }
 
 cmd_sample() {
@@ -155,10 +162,12 @@ from pathlib import Path
 ts, level, j, out = sys.argv[1:5]
 m=json.loads(j)
 note=""
-if m.get("browser_fail_15m",0)>=3: note="browser_fail"
-if m.get("blocks_15m",0)>=2: note="blocks"
+if m.get("walls_5m",0)>=3: note="walls"
+if m.get("gql429_5m",0)>=4: note="gql429"
+if float(m.get("complete_ppm") or 0)<0.05 and float(m.get("attempt_ppm") or 0)>0.2: note=(note+" starved").strip()
 row="\t".join([ts, level, str(m.get("complete_ppm")), str(m.get("attempt_ppm")),
-               str(m.get("blocks_15m")), str(m.get("browser_fail_15m")), str(m.get("phsuper")), note])
+               str(m.get("gql429_5m")), str(m.get("walls_5m")), str(m.get("phsuper")),
+               str(m.get("pdeep_k")), note])
 Path(out).open("a").write(row+"\n")
 print(row)
 PY
@@ -175,30 +184,36 @@ cmd_ladder() {
     cmd_apply "$lv"
     echo "warmup ${WARMUP_SEC}s..."
     sleep "$WARMUP_SEC"
-    local fail=0 sum_c=0 n=0 max_c=0 blocks=0
+    local fail=0 sum_c=0 sum_g=0 n=0 max_c=0 walls=0 ksnap=""
     local steps=$(( STEP_MIN * 60 / 300 ))
     [[ "$steps" -lt 1 ]] && steps=1
     for ((s=0;s<steps;s++)); do
       sleep 300
       line="$(cmd_sample)"
       c="$(echo "$line" | cut -f3)"
-      b="$(echo "$line" | cut -f5)"
-      bf="$(echo "$line" | cut -f6)"
-      python3 -c "c=float('$c' or 0); exit(0 if c>0 or int('$bf')<2 else 1)" 2>/dev/null || fail=$((fail+1))
-      [[ "$bf" -ge 4 || "$b" -ge 3 ]] && fail=$((fail+1))
+      g="$(echo "$line" | cut -f5)"
+      w="$(echo "$line" | cut -f6)"
+      ksnap="$(echo "$line" | cut -f8)"
+      python3 -c "import sys; c=float('$c' or 0); g=int('$g' or 0); w=int('$w' or 0); steady=float('$STEADY_MIN_PPM');
+exit(1 if c<steady and g>=3 else 0)" 2>/dev/null || fail=$((fail+1))
+      [[ "$w" -ge 4 ]] && fail=$((fail+1))
       sum_c="$(python3 -c "print(float('$sum_c')+float('$c' or 0))")"
+      sum_g="$(python3 -c "print(float('$sum_g')+float('$g' or 0))")"
       max_c="$(python3 -c "print(max(float('$max_c'),float('$c' or 0)))")"
       n=$((n+1))
-      blocks=$((blocks + b))
+      walls=$((walls + w))
     done
     mean_c="$(python3 -c "print(round(float('$sum_c')/max(1,$n),3))")"
+    mean_g="$(python3 -c "print(round(float('$sum_g')/max(1,$n),2))")"
     verdict=ok
     [[ "$fail" -ge "$BLOCK_FAIL_STREAK" ]] && verdict=block
-    echo -e "${lv}\t${verdict}\t${mean_c}\t${max_c}\t${blocks}" >>"$ART/ladder.tsv"
-    echo "level $lv verdict=$verdict mean_complete_ppm=$mean_c max=$max_c"
-    [[ "$verdict" == block ]] && { echo "Stopping ladder at $lv (prior level is best steady)"; break; }
+    python3 -c "import sys; mc=float('$mean_c'); steady=float('$STEADY_MIN_PPM'); sys.exit(1 if mc<steady else 0)" 2>/dev/null || verdict=block
+    echo -e "${lv}\t${verdict}\t${mean_c}\t${max_c}\t${mean_g}\t${walls}\t${ksnap}" >>"$ART/ladder.tsv"
+    echo "level $lv verdict=$verdict mean_complete_ppm=$mean_c max=$max_c mean_gql429_5m=$mean_g pdeep_k=$ksnap"
+    [[ "$verdict" == block ]] && { echo "Stopping ladder at $lv (last OK level is max buy-safe concurrency)"; break; }
   done
   cmd_summary
+  cmd_report
 }
 
 cmd_summary() {
@@ -216,6 +231,53 @@ for r in rows:
         best=r[0]
 print("Best steady level (last OK):", best or "none yet")
 PY
+}
+
+cmd_report() {
+  art_dir
+  local rep="$ART/purchase_decision.txt"
+  python3 - <<PY >"$rep"
+from pathlib import Path
+art=Path("$ART")
+lad=art/"ladder.tsv"
+lines=[l.split("\t") for l in lad.read_text().splitlines() if l and not l.startswith("#")]
+ok=[r for r in lines if len(r)>=4 and r[1]=="ok"]
+best=ok[-1] if ok else None
+def ips_for(rate, per_ip):
+    if per_ip<=0: return "n/a"
+    import math
+    return {t: max(1, math.ceil(t/per_ip)) for t in (20, 30)}
+print("IPRoyal single-IP ladder", art.name)
+print("proxy: Spain ISP 213.220.25.150 (fixed port)")
+print()
+if not lines:
+    print("No ladder data yet — run: ph_iproyal_limit_experiment.sh ladder")
+else:
+    print("Ladder results:")
+    for r in lines:
+        print(" ", "\t".join(r))
+print()
+if best:
+    lvl, _, mean_c, max_c = best[0], best[1], float(best[2]), float(best[3])
+    per=float(mean_c)
+    print(f"Recommended per-IP concurrency: {lvl}")
+    print(f"  mean complete/min (12m window): {mean_c}")
+    print(f"  peak 5m sample complete/min:    {max_c}")
+    if best[6:7]:
+        print(f"  pdeep shape (K,TABS,port):      {best[6]}")
+    for target in (20, 30):
+        n=ips_for(target, per).get(target)
+        print(f"  dedicated IPs (+1 VM each) for ~{target} complete/min fleet: ~{n}")
+    print()
+    print("Buy rule: 1 static ISP IP per feeder VM at the recommended level.")
+    print("Do not stack multiple VMs on one IP — 429 budget is per egress.")
+else:
+    print("No OK level yet — stay at Lm1_serial until ladder finishes.")
+print()
+print("Artifacts:", art/"ladder.tsv", art/"samples.tsv")
+PY
+  echo "=== purchase_decision.txt ==="
+  cat "$rep"
 }
 
 cmd_down() {
@@ -240,10 +302,11 @@ case "${1:-}" in
   up) shift; cmd_up "${1:-L0_ultra}" ;;
   apply) shift; art_dir; cmd_apply "$@" ;;
   sample) art_dir; cmd_sample ;;
-  ladder) shift; cmd_ladder "${1:-L0_ultra}" ;;
+  ladder) shift; cmd_ladder "${1:-Lm1_serial}" ;;
   summary) art_dir; cmd_summary ;;
+  report) art_dir; cmd_report ;;
   down) cmd_down ;;
   *)
-    echo "usage: $0 up [L0_ultra]|apply LEVEL|sample|ladder [from_level]|summary|down" >&2
+    echo "usage: $0 up [Lm1_serial]|apply LEVEL|sample|ladder [from_level]|summary|report|down" >&2
     exit 1 ;;
 esac
