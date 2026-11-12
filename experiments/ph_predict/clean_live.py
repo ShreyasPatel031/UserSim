@@ -54,7 +54,8 @@ def main():
         cd = M.cols(tr2, src); cm = [c for c in cd if not c.startswith(MP)]; c3 = [c for c in cm if c not in ID]
         rk = fin.set_index(fin.id.astype(str)).dailyRank
         X = pd.DataFrame({"id": te.id.astype(str).values, "deployed": avg(tr2, te, cd), "no_makerprof": avg(tr2, te, cm),
-                          "clean_v3": avg(tr2, te, c3), "clean_v3_any": avg(tr2, te, c3 + ["any_named"])})
+                          "clean_v3": avg(tr2, te, c3), "clean_v3_any": avg(tr2, te, c3 + ["any_named"]),
+                          "clean_v3_nosite": avg(tr2, te, [c for c in c3 if c != "llm_site"])})
         from sklearn.linear_model import Ridge
         rc = [c for c in c3 if tr2[c].astype(float).std() > 1e-6]   # near-constant columns explode at 00:05; clip z to +-5
         med = tr2[rc].median().fillna(0.0); Xtr = tr2[rc].astype(float).fillna(med); Xte = te[rc].astype(float).fillna(med)

@@ -64,6 +64,8 @@ def main():
             add(S["day"], "0005", "clean_shadow", "shadow", f.sort_values("rank_clean").id.tolist(), S["written_at"])
         if "rank_clean_avg" in f:
             add(S["day"], "0005", "clean_avg_shadow", "shadow", f.sort_values("rank_clean_avg").id.tolist(), S["written_at"])
+        if "rank_clean_nosite" in f:
+            add(S["day"], "0005", "clean_nosite_shadow", "shadow", f.sort_values("rank_clean_nosite").id.tolist(), S["written_at"])
     for src, pat in (("live", os.path.join(HERE, "results", "early_forecast", "*.json")), ("replay", os.path.join(HERE, "results", "early_forecast_replay_P", "*.json"))):
         for p in sorted(glob.glob(pat)):
             E = json.load(open(p)); f = pd.DataFrame(E.get("forecast", []))

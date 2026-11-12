@@ -41,7 +41,13 @@ def main(d):
     p2 = np.mean([lgb.LGBMRegressor(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1,
                                     colsample_bytree=0.5, reg_lambda=1.0, random_state=s, verbose=-1, n_jobs=M.N_JOBS).fit(tr2[cc], tr2.logv).predict(te[cc])
                   for s in range(5)], axis=0)
-    out = pd.DataFrame({"id": te.id.astype(str).values, "pred_unfixed": p0, "pred_makerfix": p1, "pred_clean": p2, "placeholder": ph.values})
+    # orchestrator 13:34Z Nov 12: clean_nosite = the clean line without llm_site (homepage text fetched after launch in the backtest)
+    cn = [c for c in cc if c != "llm_site"]
+    p3 = np.mean([lgb.LGBMRegressor(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1,
+                                    colsample_bytree=0.5, reg_lambda=1.0, random_state=s, verbose=-1, n_jobs=M.N_JOBS).fit(tr2[cn], tr2.logv).predict(te[cn])
+                  for s in range(5)], axis=0)
+    out = pd.DataFrame({"id": te.id.astype(str).values, "pred_unfixed": p0, "pred_makerfix": p1, "pred_clean": p2, "pred_clean_nosite": p3, "placeholder": ph.values})
+    out["rank_clean_nosite"] = out.pred_clean_nosite.rank(ascending=False, method="first").astype(int)
     out["rank_unfixed"] = out.pred_unfixed.rank(ascending=False, method="first").astype(int)
     out["rank_makerfix"] = out.pred_makerfix.rank(ascending=False, method="first").astype(int)
     out["rank_clean"] = out.pred_clean.rank(ascending=False, method="first").astype(int)
