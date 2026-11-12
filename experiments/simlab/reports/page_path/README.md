@@ -92,3 +92,22 @@ Only the top 3 were adjudicated, so there is no p@5. Run 1 / run 2 are the two i
 - Even from the raw page text, the top question beats the constant in both runs (41% vs 21–23%).
 - Questions are well ordered (item 1 clearly best); concerns are not.
 - The lists' advantage over the constant is clearest on quieter launches (5–9 comments), where generic items rarely match. On busier launches, generic concerns hit about as often.
+
+## Raising the page path's top-1 (page_top1.py; one new adjudicated run, 70 launches, about $0.6)
+
+Setup:
+- 68 of 70 launches had pricing / FAQ / docs text in the stored HTML.
+- Self-consistency used 5 flash-lite samples at temperature 0.7, then a flash pick.
+
+| p@1 [95%] | question | concern |
+|---|---|---|
+| (a) current raw-excerpt recipe | **42.9 [31.4, 54.3]** | **44.3 [32.9, 55.7]** |
+| (b) + page answers (pricing / FAQ / docs) | 44.3 (vs a +1.4 [−11.4, +12.9]) | 37.1 (−7.1 [−21.4, +7.1]) |
+| (c) self-consistency | 31.4 (−11.4 [−25.7, +2.9]) | 30.0 (−14.3 [−30.0, 0.0]) |
+| (d) b + c | 25.7 (−17.1 [−31.4, −2.9]) | 37.1 (−7.1) |
+| constant first item | 20.0 | 17.1 |
+| (a) − constant | +22.9 [+7.1, +38.6] | +27.1 [+12.9, +41.4] |
+
+**Verdict:**
+- Nothing beats (a). The current recipe stays.
+- In this run the top concern from the raw page also clears the constant (+27.1), and so does the top question (+22.9).
