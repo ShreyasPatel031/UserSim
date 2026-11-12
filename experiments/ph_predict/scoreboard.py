@@ -124,6 +124,10 @@ def main():
            "time_shown": "written_at (when the forecast file was written), not the data cut",
            "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual}
     os.makedirs(os.path.join(HERE, "results", "web"), exist_ok=True)
+    # orchestrator 09:12Z Nov 12: pre-registered forward check of clean_thread's signal (thread_coef.py), embedded as is
+    tc = os.path.join(HERE, "results", "web", "thread_coef.json")
+    if os.path.exists(tc):
+        out["clean_thread_coef"] = json.load(open(tc))
     p = os.path.join(HERE, "results", "web", "scoreboard.json"); json.dump(out, open(p, "w"), indent=1, default=str)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/scoreboard.json"], check=True)
     north_star(X)

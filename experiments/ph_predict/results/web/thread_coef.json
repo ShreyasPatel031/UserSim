@@ -1,0 +1,70 @@
+{
+ "what": "day-clustered coefficient of z(th_n_pre) controlling for z(clean 00:05 score), pooled OLS of z(-log final rank), z within day",
+ "backtest": {
+  "coef": 0.204,
+  "se": 0.015
+ },
+ "stop_rule": "se <= 0.07 on forward days (from 2026-11-12)",
+ "forward_from": "2026-11-12",
+ "forward": null,
+ "all_live": {
+  "days": 9,
+  "launches": 242,
+  "coef_th_n_pre": 0.219,
+  "se": 0.092,
+  "coef_clean": 0.581
+ },
+ "per_day": {
+  "2026-10-29": {
+   "launches": 30,
+   "hunter_missing": 1,
+   "clean_missing": 3
+  },
+  "2026-10-30": {
+   "launches": 20,
+   "hunter_missing": 0,
+   "clean_missing": 0
+  },
+  "2026-10-31": {
+   "launches": 22,
+   "hunter_missing": 2,
+   "clean_missing": 0
+  },
+  "2026-11-01": {
+   "launches": 19,
+   "hunter_missing": 0,
+   "clean_missing": 0
+  },
+  "2026-11-02": {
+   "launches": 18,
+   "hunter_missing": 1,
+   "clean_missing": 1
+  },
+  "2026-11-03": {
+   "launches": 38,
+   "hunter_missing": 0,
+   "clean_missing": 2
+  },
+  "2026-11-04": {
+   "launches": 34,
+   "hunter_missing": 0,
+   "clean_missing": 0
+  },
+  "2026-11-05": "no comments_ts",
+  "2026-11-06": "no clean score",
+  "2026-11-07": "no clean score",
+  "2026-11-08": {
+   "launches": 17,
+   "hunter_missing": 0,
+   "clean_missing": 0
+  },
+  "2026-11-09": "no comments_ts",
+  "2026-11-10": {
+   "launches": 50,
+   "hunter_missing": 0,
+   "clean_missing": 0
+  },
+  "2026-11-11": "no clean score"
+ },
+ "written_at": "2026-11-12T09:21:51.197448+00:00"
+}
