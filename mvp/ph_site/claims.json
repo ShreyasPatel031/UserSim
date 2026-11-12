@@ -2,19 +2,24 @@
  "_about": "Fixed offline figures quoted on /ph and /try, each with source and date; the pages label them as fixed offline figures. Only the /ph live track record is computed from saved forecast files.",
  "reactions_eval": {
   "values": {
-   "launches": 96,
-   "theme_recall": 0.48,
-   "theme_recall_ci": [
-    0.43,
-    0.53
-   ],
-   "theme_precision": 0.53,
-   "theme_recall_generic": 0.14,
-   "second_judge_recall": 0.25,
-   "page_read_recall": 0.42,
-   "page_read_precision": 0.41
+   "desc": {
+    "point_recall": 0.44,
+    "point_precision": 0.24,
+    "generic_point_recall": 0.08,
+    "generic_point_precision": 0.1,
+    "topic_recall": 0.78,
+    "topic_precision": 0.78
+   },
+   "page": {
+    "point_recall": 0.24,
+    "point_precision": 0.07,
+    "generic_point_recall": 0.12,
+    "generic_point_precision": 0.17,
+    "topic_recall": 0.63,
+    "topic_precision": 0.65
+   }
   },
-  "label": "96 past launches, automated judge, measured on their PH descriptions; range counts launch, truth-extraction and judge noise",
+  "label": "past launches scored against their real comments by a stronger judge (gemini-2.5-pro) that separates the same specific point from the same topic",
   "source": "E5 reports/judge_reliability/README.md, branch claude/person-model-v2",
   "date": "2026-11-12"
  },

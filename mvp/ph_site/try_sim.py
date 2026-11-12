@@ -477,13 +477,25 @@ def _reactions_note(grounded: bool = True, source: str | None = None) -> str:
     ground = (" Grounded in themes from similar past launches." if grounded else
               " Similar past launches were unavailable for this run, so these were not grounded; the figures below "
               "were measured with grounding.")
-    return (f"Simulated, not real comments.{person}{ground} Fixed offline figure ({c['label']}, {c['date']}): these "
-            f"simulated comments matched about {v['theme_recall']:.0%} of the themes real users raised by our automated "
-            f"judge (range {v['theme_recall_ci'][0]:.0%}–{v['theme_recall_ci'][1]:.0%}); a stricter second judge that "
-            f"counts only the same specific point puts it at about {v['second_judge_recall']:.0%}. About "
-            f"{v['theme_precision']:.0%} of the simulated points appeared in real comments. A generic list of typical "
-            f"launch comments scores about {v['theme_recall_generic']:.0%} on the first judge. " + _vs_humans() + _page_read_note(source)
-            + _rerun_note())
+    page = source == "page"
+    m = v["page" if page else "desc"]
+    if page:
+        acc = (f"From a web page alone, few simulated reactions match a specific real comment: about "
+               f"{m['point_precision']:.0%} make the same specific point a real user made, and together they cover about "
+               f"{m['point_recall']:.0%} of the specific points real users raised. On this standard they do no better than a "
+               f"generic list of typical launch comments ({m['generic_point_precision']:.0%} match a specific comment, "
+               f"covering {m['generic_point_recall']:.0%} of the points). Counting the "
+               f"same topic, not the same point: about {m['topic_recall']:.0%} of real users' topics are covered. "
+               f"Pasting your launch description gives closer results.")
+    else:
+        acc = (f"From a launch description, about {m['point_precision']:.0%} of simulated reactions (about 1 in 4) make the "
+               f"same specific point a real user made, and together they cover about {m['point_recall']:.0%} of the "
+               f"specific points real users raised (a generic list of typical launch comments: "
+               f"{m['generic_point_precision']:.0%} match a specific comment, covering {m['generic_point_recall']:.0%} of "
+               f"the points). Most of the rest are on the right "
+               f"topic but not the same point: counting the same topic, about {m['topic_recall']:.0%} are covered.")
+    return (f"Simulated, not real comments.{person}{ground} Fixed offline figure ({c['label']}, {c['date']}): {acc}"
+            + ("" if page else " " + _vs_humans()) + _rerun_note())
 
 
 def _rerun_note() -> str:
@@ -495,25 +507,13 @@ def _rerun_note() -> str:
             f"{r['values']['reaction_agreement']:.0%} of the points ({r['label']}).")
 
 
-def _page_read_note(source: str | None) -> str:
-    if source != "page":
-        return ""
-    from mvp.ph_site.live import claims
-    v = claims()["reactions_eval"]["values"]
-    if "page_read_recall" not in v:
-        return ""
-    return (f" These comments came from a read of your web page, which scores lower than a pasted launch description: "
-            f"run end to end from fresh page reads, they matched about {v['page_read_recall']:.0%} of real themes, "
-            f"with {v['page_read_precision']:.0%} of the points appearing in real comments.")
-
-
 def _vs_humans() -> str:
     from mvp.ph_site.live import claims
     h = claims().get("reactions_vs_humans")
     if not h:
         return ""
-    return (f"On {h['values']['launches']} new launches they matched real users' themes at least as well as a second "
-            "group of real commenters on the same launch did.")
+    return (f"Counting the same topic, on {h['values']['launches']} new launches they covered real users' topics at "
+            "least as well as a second group of real commenters on the same launch did.")
 
 
 def _types_from_people(p: dict, topics: list[str]) -> list[str]:
