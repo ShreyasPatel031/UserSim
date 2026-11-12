@@ -17,7 +17,7 @@ D="$ROOT/scripts/vm/reuse_overlays"
 GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
 
 if [[ "${SKIP_UPLOAD:-0}" != 1 ]]; then
-  "${GC[@]}" storage cp "$D"/*.py "$D/supervisor_strat.sh" "$D/ensure_geoip.sh" "${OVERLAY_GCS}/"
+  "${GC[@]}" storage cp "$D"/*.py "$D/supervisor_strat.sh" "$D/ensure_geoip.sh" "$D/proxy_geo_sync.sh" "${OVERLAY_GCS}/"
   "${GC[@]}" storage cp "$STRATEGY" "${OVERLAY_GCS}/fleet_optimize.env"
 fi
 
@@ -25,9 +25,12 @@ REMOTE_CMD='set -e
 B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-)
 TMP=/tmp/ph-overlay-roll
 rm -rf "$TMP" && mkdir -p "$TMP"
-gcloud storage cp -q "$B/_code/overlays/*.py" "$B/_code/overlays/supervisor_strat.sh" "$B/_code/overlays/fleet_optimize.env" "$TMP/" 2>/dev/null || true
+gcloud storage cp -q "$B/_code/overlays/*.py" "$B/_code/overlays/supervisor_strat.sh" "$B/_code/overlays/ensure_geoip.sh" "$B/_code/overlays/proxy_geo_sync.sh" "$B/_code/overlays/fleet_optimize.env" "$TMP/" 2>/dev/null || true
 sudo cp -f "$TMP"/*.py /opt/ph/overlays/ 2>/dev/null || true
 [[ -s "$TMP/supervisor_strat.sh" ]] && sudo install -m 755 "$TMP/supervisor_strat.sh" /opt/ph/overlays/supervisor_strat.sh
+[[ -s "$TMP/ensure_geoip.sh" ]] && sudo install -m 755 "$TMP/ensure_geoip.sh" /opt/ph/overlays/ensure_geoip.sh
+[[ -s "$TMP/proxy_geo_sync.sh" ]] && sudo install -m 755 "$TMP/proxy_geo_sync.sh" /opt/ph/overlays/proxy_geo_sync.sh
+[[ -x /opt/ph/overlays/proxy_geo_sync.sh ]] && { B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-); PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/proxy_geo_sync.sh >>/opt/ph/reuse/supervisor.log 2>&1 || true; }
 sudo cp -f "$TMP/fleet_optimize.env" /opt/ph/strategy.env 2>/dev/null || true
 sudo rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/same_tok_retry_at /opt/ph/reuse/cf_backoff_n 2>/dev/null || true
 if [[ "${PRESERVE_QUEUE_CACHE:-0}" != 1 ]]; then

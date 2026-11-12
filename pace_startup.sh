@@ -33,8 +33,9 @@ gcloud storage cp -q "$B/_code/overlays/supervisor_strat.sh" /opt/ph/overlays/ 2
 gcloud storage cp -q "$B/_code/overlays/portscreen.py" /opt/ph/overlays/ 2>/dev/null || true
 gcloud storage cp -q "$B/_code/overlays/strategy_args.py" /opt/ph/overlays/ 2>/dev/null || true
 gcloud storage cp -q "$B/_code/overlays/ensure_geoip.sh" /opt/ph/overlays/ 2>/dev/null || true
+gcloud storage cp -q "$B/_code/overlays/proxy_geo_sync.sh" /opt/ph/overlays/ 2>/dev/null || true
 gcloud storage cp -q "$B/_code/overlays/setup_probe.py" /opt/ph/overlays/ 2>/dev/null || true
-chmod +x /opt/ph/overlays/supervisor_strat.sh /opt/ph/overlays/ensure_geoip.sh 2>/dev/null || true
+chmod +x /opt/ph/overlays/supervisor_strat.sh /opt/ph/overlays/ensure_geoip.sh /opt/ph/overlays/proxy_geo_sync.sh 2>/dev/null || true
 
 if [ ! -x /opt/venv/bin/python ]; then
   mark cold_install_begin
@@ -52,6 +53,10 @@ if [[ -x /opt/ph/overlays/ensure_geoip.sh ]]; then
   PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/ensure_geoip.sh >> /var/log/phreuse_start.log 2>&1 || true
 fi
 mark geoip_ensure_end
+
+if [[ -x /opt/ph/overlays/proxy_geo_sync.sh ]]; then
+  PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/proxy_geo_sync.sh >> /var/log/phreuse_start.log 2>&1 || true
+fi
 
 mkdir -p /opt/ph/reuse
 cd /opt/ph/reuse

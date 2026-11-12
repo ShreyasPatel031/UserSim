@@ -33,6 +33,29 @@ NEVER_PORTS=(10001 10005 10006 10020)
 
 vm_name() { echo "feeder-fleet-${RUN_ID}-${1}"; }
 
+proxy_for_slot() {
+  local slot=$1
+  local pool="${PACE_IPROYAL_POOL:-$ROOT/secrets/iproyal.pool}"
+  if [[ -f "$pool" ]]; then
+    ROOT="$ROOT" python3 - <<PY
+import pathlib
+ROOT = pathlib.Path("$ROOT")
+pool = pathlib.Path("$pool")
+if not pool.is_absolute():
+    pool = ROOT / pool
+lines = [l.strip() for l in pool.read_text().splitlines() if l.strip() and not l.strip().startswith("#")]
+i = int("$slot") - 1
+if 0 <= i < len(lines):
+    p = lines[i]
+    print(p if p.startswith("/") else str(ROOT / p))
+else:
+    print("$PROXY_FILE")
+PY
+  else
+    echo "$PROXY_FILE"
+  fi
+}
+
 next_port() {
   local taken p
   taken="$("${GC[@]}" storage ls "${PORT_PREFIX}/" 2>/dev/null | sed -n 's/.*port\.\([0-9]*\).*/\1/p' | sort -nu)"
@@ -107,15 +130,16 @@ sample_fleet_ppm() {
 
 create_one() {
   local slot=$1 port=$2
-  local name meta
+  local name meta proxy_file
   name="$(vm_name "$slot")"
+  proxy_file="$(proxy_for_slot "$slot")"
   meta="^;^proxy-port=${port};${COMMON_META};fleet-slot=${slot}"
-  echo "==> create $name port=$port"
+  echo "==> create $name port=$port proxy=${proxy_file##*/}"
   local create_args=(
     --project="$PROJECT" --zone="$ZONE"
     --service-account="$SA" --scopes=cloud-platform
     --tags=allow-iap-ssh
-    --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh"
+    --metadata-from-file "proxy-url=$proxy_file,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh"
     --metadata "$meta"
   )
   if [[ -n "$TEMPLATE" ]]; then
@@ -129,7 +153,7 @@ create_one() {
     --image-family=pace-feeder --image-project="$PROJECT" --boot-disk-size=20GB \
     --service-account="$SA" --scopes=cloud-platform \
     --tags=allow-iap-ssh \
-    --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
+    --metadata-from-file "proxy-url=$proxy_file,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh" \
     --metadata "$meta" \
     || "${GC[@]}" compute instances create "$name" \
       --project="$PROJECT" --zone="$ZONE" \

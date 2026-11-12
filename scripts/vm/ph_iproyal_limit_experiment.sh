@@ -56,7 +56,7 @@ merge_env() {
 
 upload_overlays() {
   local d="$ROOT/scripts/vm/reuse_overlays"
-  "${GC[@]}" storage cp "$d"/*.py "$d/supervisor_strat.sh" "$d/ensure_geoip.sh" "$d/strategy_args.py" "${OVERLAY_GCS}/"
+  "${GC[@]}" storage cp "$d"/*.py "$d/supervisor_strat.sh" "$d/ensure_geoip.sh" "$d/proxy_geo_sync.sh" "$d/strategy_args.py" "${OVERLAY_GCS}/"
 }
 
 write_boot_env() {

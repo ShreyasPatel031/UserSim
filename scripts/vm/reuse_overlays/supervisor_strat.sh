@@ -89,6 +89,9 @@ apply_proxy_port() {
 }
 load_strategy
 apply_proxy_port
+if [[ -x /opt/ph/overlays/proxy_geo_sync.sh ]]; then
+  PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/proxy_geo_sync.sh >>supervisor.log 2>&1 || true
+fi
 echo "supervisor_strat start $(date -u +%FT%TZ) strategy=${PH_STRATEGY:-none} home_port=${PROXY_PORT}" >> /opt/ph/reuse/supervisor.log
 mark supervisor_ready "home_port=${PROXY_PORT}"
 
@@ -141,6 +144,9 @@ while true; do
     extra=$($PY strategy_args.py 2>>supervisor.log || true)
     echo "launch $tok reason=$launch_reason mode=$mode extra=[$extra] $(date -u +%FT%TZ)" >> supervisor.log
     mark batch_launch "token=$tok extra=$extra"
+    if [[ -x /opt/ph/overlays/proxy_geo_sync.sh ]]; then
+      PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/proxy_geo_sync.sh >>supervisor.log 2>&1 || true
+    fi
     # Refresh GeoIP mtime every launch so camoufox never re-downloads mid-session.
     if [[ -x /opt/ph/overlays/ensure_geoip.sh ]]; then
       mark geoip_ensure_begin

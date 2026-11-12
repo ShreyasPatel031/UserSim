@@ -15,6 +15,13 @@ export FLEET_MAX_VMS="${FLEET_MAX_VMS:-30}" PH_FLEET_STRATEGY="$ROOT/scripts/vm/
 LOG="$ART/checkin.log"
 HOURLY="${FLEET_HOURLY_USD:-0.06701}"
 
+if [[ -f "$ROOT/secrets/iproyal.env" && -x "$ROOT/scripts/vm/ph_iproyal_sync_pool.sh" ]]; then
+  bash "$ROOT/scripts/vm/ph_iproyal_sync_pool.sh" >>"$LOG" 2>&1 || true
+fi
+if [[ -f "${PACE_IPROYAL_POOL:-$ROOT/secrets/iproyal.pool}" && -x "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" ]]; then
+  bash "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" >>"$LOG" 2>&1 || true
+fi
+
 export FLEET_WINDOW_MIN="${FLEET_WINDOW_MIN:-15}"
 measure="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null)" || measure="{}"
 chmod +x "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" "$ROOT/scripts/vm/ph_fleet_population_coord.sh" 2>/dev/null || true
