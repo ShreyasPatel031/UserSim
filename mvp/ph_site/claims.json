@@ -84,12 +84,15 @@
  },
  "launch_model_backtest": {
   "values": {
-   "top3": 54.7,
-   "top5": 64.5,
-   "top10": 75.6
+   "top3": 53.7,
+   "top5": 64.6,
+   "top10": 75.4,
+   "p1_top3": 0.69,
+   "exact1": 0.32,
+   "days": 214
   },
-  "label": "00:05 launch model offline backtest without the leaked maker-profile inputs; provisional until the rebuilt backtest is agreed",
-  "source": "PH ops NORTH_STAR.md (c960ead5)",
+  "label": "clean backtest of the 00:05 model with 00:05-visible inputs only (214 days, Mar-Oct 2026)",
+  "source": "PH ops honest_preds_v2 (c1dd71b5); E5 masked backtest agrees (#1 in top 3 67-71%)",
   "date": "2026-11-12"
  }
 }

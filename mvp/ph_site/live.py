@@ -360,11 +360,16 @@ def _top3_confidence(ranks: dict[str, int], prods: dict[str, dict]) -> dict[str,
                 and r.get("source") == "live"), None)
     if not row:
         return {}
+    bt = None
+    b = claims().get("launch_model_backtest")
+    if b and "p1_top3" in b["values"]:
+        bt = {"label": b["label"], "p1": b["values"]["p1_top3"], "exact1": b["values"]["exact1"], "date": b["date"]}
     out = {}
     for pid, r in ranks.items():
         cnt = row.get(f"p{r}_top3_count") if r <= 3 else None
         if cnt:
-            out[pid] = {"count": cnt, "what": "top 3", "basis": f"live 00:05 calls, {row.get('first_day')} to {row.get('last_day')}"}
+            out[pid] = {"count": cnt, "what": "top 3", "basis": f"live 00:05 calls, {row.get('first_day')} to {row.get('last_day')}",
+                        "backtest": bt}
     return out
 
 

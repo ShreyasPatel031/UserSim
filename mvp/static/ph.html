@@ -133,7 +133,7 @@ function renderPred(){
   $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b><br>${esc(phase)}${SEL===VIEW.lead_point?" · latest":""}`;
   let sees = `Could see: ${p.sees}`;
   const c0 = p.top3_conf && Object.values(p.top3_conf)[0];
-  if(c0 && c0.count) sees += ` Per-pick record is from the ${c0.basis}.`;
+  if(c0 && c0.count) sees += ` Per-pick record is from the ${c0.basis}.` + (c0.backtest ? ` For context, a ${c0.backtest.label} put our #1 in the final top 3 on ${Math.round(c0.backtest.p1*100)}% of days and on top on ${Math.round(c0.backtest.exact1*100)}% (fixed offline figure, ${c0.backtest.date}).` : "");
   else if(c0 && c0.hits!=null) sees += ` Pick figures are an in-sample replay on ${Number(c0.n)} past days (the ranking's weights were chosen on those days), so treat them as optimistic.`;
   if(p.exp_votes) sees += ` Expected day-end votes are rough${p.exp_err ? ": typical error " + p.exp_err : ""}.`;
   if(p.score) sees += ` Scored: ${p.score["3"]}/3 of the real top 3, ${p.score["5"]}/5 of top 5, ${p.score["10"]}/10 of top 10.`;
