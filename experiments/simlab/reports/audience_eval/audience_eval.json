@@ -1,0 +1,691 @@
+{
+ "design": "Does the simulation know the audience? Hacker News (Show HN) vs Product Hunt (orchestrator 04:35Z Nov 12).\nData: hn_posts (usersim_sim/tables) holds every Show HN post since 2025-02 with url and comment counts but no comment text;\ncomment text is fetched from the free public Algolia HN items API (one call per thread). PH comments come from the PH thread\ndumps (cf dir). gemini-2.5-flash throughout (cutoff Jan 2025; every post and launch here is later).\nSets\n  (a) Show HN posts 2026-08-01..10-31 with >= 10 comments and a product URL; a fixed random sample of N_A, truth from >= 8\n      non-author comments.\n  (b) products on BOTH sites: candidate pairs by product domain (app-store / GitHub paths by id or owner/repo) or exact name\n      within 180 days, both threads with >= 5 comments, then confirmed by a flash \"same product?\" check; one pair per HN post\n      and per PH launch; truth from >= 5 non-team comments on each side.\nInputs (product-only, identical for both framings): (a) the Show HN title without the prefix, the URL's domain and the post\ntext; (b) the PH name, tagline, description and domain.\nGenerators (BEST pipeline minus PH retrieval: flash, temperature 0.3, 6 reactions, \"comment (why)\"):\n  HN    reactions framed as Hacker News commenters on a Show HN post\n  PH    the same prompt framed as Product Hunt members on launch day\n  HNR   HN + retrieval: themes of the 10 most similar EARLIER Show HN threads (gemini-embedding; dated strictly before the\n        target, other domains), condensed by flash-lite (themes only)\n  GEN   a fixed generic HN list (alternatives / open source & self-hosting / pricing & business model / privacy & data /\n        licence / how it works & which model / reliability / unclear landing page)\n  SHUF  the HN arm's output for another, random post\n  Concern lists: a separate ranked call (\"6 critical points <audience> will raise, most likely first\") for HN and PH; GEN's\n  first 3 items; SHUF = HN list of another post.\nTruth (flash extraction, as in ceiling.py): up to 8 themes, 6 critical themes, 6 questions, from up to 60 comments.\nJudges (same blinded prompts as reactions_eval / concerns_rank): themes recall / precision; critical recall and question\nrecall (JUDGE a_covered with A = the critical / question truth); concerns p@3 / hit@3 (JC).\nSplit-half bar on (a) posts with >= 16 comments (one split), as in ceiling.py.\nCross test on (b): each framing scored against both communities' truth; interaction =\n  (HN@hn - PH@hn) - (HN@ph - PH@ph), paired bootstrap over pairs.\nPost / pair bootstrap 95% CIs. Spend guard at $5.8.",
+ "data": {
+  "showhn_aug_oct_ge10_with_url": 509,
+  "set_a_posts": 180,
+  "pair_candidates_ge5_both": 83,
+  "pairs_confirmed": 61,
+  "pairs_unique": 57,
+  "median_comments_a": 25.5
+ },
+ "a": {
+  "HN": {
+   "theme_recall": [
+    39.7,
+    36.8,
+    42.6,
+    180
+   ],
+   "theme_precision": [
+    46.4,
+    43.0,
+    50.0,
+    180
+   ],
+   "critical_recall": [
+    25.9,
+    22.4,
+    29.5,
+    180
+   ],
+   "question_recall": [
+    11.5,
+    8.9,
+    14.3,
+    177
+   ],
+   "concern_p3": [
+    27.0,
+    23.2,
+    30.7,
+    178
+   ],
+   "concern_hit3": [
+    61.2,
+    53.9,
+    68.5,
+    178
+   ]
+  },
+  "PH": {
+   "theme_recall": [
+    39.0,
+    36.0,
+    41.9,
+    180
+   ],
+   "theme_precision": [
+    52.7,
+    48.5,
+    56.6,
+    180
+   ],
+   "critical_recall": [
+    24.4,
+    20.9,
+    28.1,
+    180
+   ],
+   "question_recall": [
+    10.4,
+    7.8,
+    13.3,
+    177
+   ],
+   "concern_p3": [
+    24.2,
+    20.5,
+    28.3,
+    179
+   ],
+   "concern_hit3": [
+    53.1,
+    45.8,
+    60.3,
+    179
+   ]
+  },
+  "HNR": {
+   "theme_recall": [
+    42.3,
+    39.3,
+    45.5,
+    180
+   ],
+   "theme_precision": [
+    45.9,
+    42.3,
+    49.4,
+    180
+   ],
+   "critical_recall": [
+    28.7,
+    25.2,
+    32.4,
+    180
+   ],
+   "question_recall": [
+    13.6,
+    10.7,
+    16.8,
+    177
+   ]
+  },
+  "GEN": {
+   "theme_recall": [
+    21.9,
+    19.2,
+    24.6,
+    180
+   ],
+   "theme_precision": [
+    17.5,
+    15.3,
+    19.7,
+    180
+   ],
+   "critical_recall": [
+    21.3,
+    18.0,
+    24.7,
+    180
+   ],
+   "question_recall": [
+    20.3,
+    16.6,
+    24.2,
+    177
+   ],
+   "concern_p3": [
+    15.9,
+    13.0,
+    19.3,
+    180
+   ],
+   "concern_hit3": [
+    39.4,
+    32.2,
+    46.7,
+    180
+   ]
+  },
+  "SHUF": {
+   "theme_recall": [
+    6.2,
+    4.2,
+    8.4,
+    180
+   ],
+   "theme_precision": [
+    8.4,
+    5.6,
+    11.4,
+    180
+   ],
+   "critical_recall": [
+    2.9,
+    1.7,
+    4.4,
+    180
+   ],
+   "question_recall": [
+    1.6,
+    0.5,
+    3.1,
+    177
+   ],
+   "concern_p3": [
+    2.2,
+    1.1,
+    3.6,
+    178
+   ],
+   "concern_hit3": [
+    6.2,
+    2.8,
+    10.1,
+    178
+   ]
+  }
+ },
+ "a_paired": {
+  "HN - PH": {
+   "theme_recall": [
+    0.7,
+    -2.1,
+    3.4,
+    180
+   ],
+   "theme_precision": [
+    -6.3,
+    -10.4,
+    -2.3,
+    180
+   ],
+   "critical_recall": [
+    1.5,
+    -2.1,
+    5.0,
+    180
+   ],
+   "question_recall": [
+    1.1,
+    -2.1,
+    4.4,
+    177
+   ],
+   "concern_p3": [
+    2.4,
+    -1.1,
+    5.8,
+    177
+   ],
+   "concern_hit3": [
+    7.3,
+    0.6,
+    14.1,
+    177
+   ]
+  },
+  "HNR - HN": {
+   "theme_recall": [
+    2.7,
+    -0.3,
+    5.6,
+    180
+   ],
+   "theme_precision": [
+    -0.5,
+    -4.4,
+    3.6,
+    180
+   ],
+   "critical_recall": [
+    2.8,
+    -0.9,
+    6.6,
+    180
+   ],
+   "question_recall": [
+    2.1,
+    -1.2,
+    5.5,
+    177
+   ]
+  },
+  "HN - GEN": {
+   "theme_recall": [
+    17.8,
+    14.1,
+    21.5,
+    180
+   ],
+   "theme_precision": [
+    28.9,
+    24.8,
+    32.8,
+    180
+   ],
+   "critical_recall": [
+    4.6,
+    0.1,
+    9.1,
+    180
+   ],
+   "question_recall": [
+    -8.8,
+    -13.3,
+    -4.4,
+    177
+   ],
+   "concern_p3": [
+    11.0,
+    6.7,
+    15.4,
+    178
+   ],
+   "concern_hit3": [
+    21.9,
+    12.9,
+    30.3,
+    178
+   ]
+  },
+  "HNR - GEN": {
+   "theme_recall": [
+    20.5,
+    17.2,
+    23.7,
+    180
+   ],
+   "theme_precision": [
+    28.4,
+    25.0,
+    32.0,
+    180
+   ],
+   "critical_recall": [
+    7.4,
+    3.0,
+    11.9,
+    180
+   ],
+   "question_recall": [
+    -6.7,
+    -11.5,
+    -2.0,
+    177
+   ]
+  },
+  "HN - SHUF": {
+   "theme_recall": [
+    33.5,
+    30.2,
+    36.8,
+    180
+   ],
+   "theme_precision": [
+    38.0,
+    33.8,
+    41.9,
+    180
+   ],
+   "critical_recall": [
+    23.0,
+    19.4,
+    26.7,
+    180
+   ],
+   "question_recall": [
+    9.9,
+    6.9,
+    13.0,
+    177
+   ],
+   "concern_p3": [
+    24.8,
+    21.0,
+    28.6,
+    176
+   ],
+   "concern_hit3": [
+    55.1,
+    47.2,
+    63.1,
+    176
+   ]
+  },
+  "PH - GEN": {
+   "theme_recall": [
+    17.1,
+    13.7,
+    20.6,
+    180
+   ],
+   "theme_precision": [
+    35.2,
+    30.8,
+    39.4,
+    180
+   ],
+   "critical_recall": [
+    3.1,
+    -1.3,
+    7.4,
+    180
+   ],
+   "question_recall": [
+    -9.9,
+    -14.4,
+    -5.3,
+    177
+   ],
+   "concern_p3": [
+    8.2,
+    3.7,
+    12.5,
+    179
+   ],
+   "concern_hit3": [
+    13.4,
+    4.5,
+    22.9,
+    179
+   ]
+  }
+ },
+ "bar": {
+  "posts": 132,
+  "bar_recall": [
+   51.2,
+   47.8,
+   54.6,
+   132
+  ],
+  "bar_precision": [
+   46.8,
+   43.5,
+   49.9,
+   132
+  ],
+  "bar_concern_p3": [
+   44.9,
+   39.9,
+   50.0,
+   132
+  ],
+  "bar_concern_hit3": [
+   81.8,
+   75.0,
+   87.9,
+   132
+  ],
+  "HNR_vs_halfB_recall": [
+   47.3,
+   43.7,
+   50.9,
+   132
+  ],
+  "HNR_vs_halfB_precision": [
+   50.0,
+   45.6,
+   54.3,
+   132
+  ],
+  "HN_vs_halfB_recall": [
+   42.9,
+   39.1,
+   46.4,
+   132
+  ],
+  "HN_vs_halfB_precision": [
+   46.8,
+   42.8,
+   51.0,
+   132
+  ],
+  "HN_concern_p3_vs_halfB": [
+   26.7,
+   22.3,
+   31.3,
+   130
+  ]
+ },
+ "b": {
+  "HN framing @ hn comments": {
+   "theme_recall": [
+    46.7,
+    40.4,
+    53.1,
+    57
+   ],
+   "theme_precision": [
+    50.0,
+    43.3,
+    56.7,
+    57
+   ],
+   "critical_recall": [
+    23.8,
+    17.1,
+    30.6,
+    57
+   ],
+   "concern_p3": [
+    16.7,
+    10.7,
+    22.6,
+    56
+   ]
+  },
+  "HN framing @ ph comments": {
+   "theme_recall": [
+    43.9,
+    38.6,
+    49.2,
+    57
+   ],
+   "theme_precision": [
+    43.6,
+    37.7,
+    49.7,
+    57
+   ],
+   "critical_recall": [
+    25.8,
+    20.1,
+    31.4,
+    57
+   ],
+   "concern_p3": [
+    29.2,
+    21.4,
+    36.9,
+    56
+   ]
+  },
+  "PH framing @ hn comments": {
+   "theme_recall": [
+    39.1,
+    33.6,
+    44.8,
+    57
+   ],
+   "theme_precision": [
+    48.2,
+    40.4,
+    55.8,
+    57
+   ],
+   "critical_recall": [
+    26.9,
+    20.9,
+    33.1,
+    57
+   ],
+   "concern_p3": [
+    20.2,
+    14.3,
+    26.8,
+    56
+   ]
+  },
+  "PH framing @ ph comments": {
+   "theme_recall": [
+    48.2,
+    42.8,
+    53.2,
+    57
+   ],
+   "theme_precision": [
+    53.2,
+    46.8,
+    59.6,
+    57
+   ],
+   "critical_recall": [
+    21.8,
+    16.4,
+    27.5,
+    57
+   ],
+   "concern_p3": [
+    29.8,
+    23.2,
+    36.9,
+    56
+   ]
+  }
+ },
+ "b_cross": {
+  "theme_recall": {
+   "HN-PH framing @ hn": [
+    7.6,
+    2.4,
+    12.7,
+    57
+   ],
+   "HN-PH framing @ ph": [
+    -4.2,
+    -8.6,
+    0.1,
+    57
+   ],
+   "interaction": [
+    11.9,
+    4.8,
+    18.9,
+    57
+   ],
+   "HN framing: hn - ph comments": [
+    2.8,
+    -5.7,
+    11.1,
+    57
+   ],
+   "PH framing: ph - hn comments": [
+    9.1,
+    1.0,
+    16.4,
+    57
+   ]
+  },
+  "theme_precision": {
+   "HN-PH framing @ hn": [
+    1.8,
+    -3.5,
+    7.3,
+    57
+   ],
+   "HN-PH framing @ ph": [
+    -9.6,
+    -16.1,
+    -3.5,
+    57
+   ],
+   "interaction": [
+    11.4,
+    3.2,
+    19.6,
+    57
+   ],
+   "HN framing: hn - ph comments": [
+    6.4,
+    -2.3,
+    15.8,
+    57
+   ],
+   "PH framing: ph - hn comments": [
+    5.0,
+    -6.1,
+    15.2,
+    57
+   ]
+  },
+  "critical_recall": {
+   "HN-PH framing @ hn": [
+    -3.1,
+    -10.3,
+    4.1,
+    57
+   ],
+   "HN-PH framing @ ph": [
+    4.0,
+    -2.1,
+    10.1,
+    57
+   ],
+   "interaction": [
+    -7.0,
+    -16.9,
+    2.7,
+    57
+   ],
+   "HN framing: hn - ph comments": [
+    -2.0,
+    -10.7,
+    6.7,
+    57
+   ],
+   "PH framing: ph - hn comments": [
+    -5.0,
+    -13.3,
+    2.6,
+    57
+   ]
+  },
+  "concern_p3": {
+   "HN-PH framing @ hn": [
+    -2.4,
+    -8.5,
+    3.6,
+    55
+   ],
+   "HN-PH framing @ ph": [
+    -0.6,
+    -7.3,
+    6.1,
+    55
+   ],
+   "interaction": [
+    -1.8,
+    -10.3,
+    6.7,
+    55
+   ],
+   "HN framing: hn - ph comments": [
+    -12.5,
+    -22.0,
+    -3.0,
+    56
+   ],
+   "PH framing: ph - hn comments": [
+    9.5,
+    0.0,
+    18.5,
+    56
+   ]
+  }
+ },
+ "usd": 3.804
+}
