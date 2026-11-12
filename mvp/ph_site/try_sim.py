@@ -27,7 +27,7 @@ PT = ZoneInfo("America/Los_Angeles")
 CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "3")),
         "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "10")),
         "global_day": int(os.environ.get("TRY_GLOBAL_DAY", "150")),
-        "gemini_calls_per_run": 2, "embedding_calls_per_run": 2, "max_output_tokens_per_run": 4500}
+        "gemini_calls_per_run": 2, "gemini_calls_max_per_run": 3, "embedding_calls_per_run": 2, "max_output_tokens_per_run": 4500}
 MODEL = os.environ.get("TRY_GEMINI_MODEL", "gemini-2.5-flash-lite")
 TOKEN_TTL_S = 900
 
@@ -226,7 +226,7 @@ Return JSON:
  "clarity": 1-5 (how quickly a visitor understands what it does)}}"""
 
 
-async def _analyze(page: dict, ip: str, source: str, fetch=None) -> dict:
+async def _analyze(page: dict, ip: str, source: str, fetch=None, fallback=None) -> dict:
     """Shared by page reads and pasted descriptions: (optional fetch) -> Gemini read -> stored run."""
     from capability.gemini_config import extract_json, gemini_chat
 
@@ -246,6 +246,17 @@ async def _analyze(page: dict, ip: str, source: str, fetch=None) -> dict:
                                 max_output_tokens=1500)
         stage = "judged"
         a = extract_json(raw)
+        if a.get("problem") and fallback is not None:
+            # e.g. a docs or code page: judge the site's home page once instead (one extra read, same slot)
+            alt = await fallback()
+            if alt is not None and len((alt["text"] or "").strip()) >= 80:
+                page = alt
+                prompt = READ_PROMPT.format(url=page["url"], title=page["title"], desc=page["description"],
+                                            text=page["text"][:9000], pricing=page["pricing_text"][:2500],
+                                            vocab=", ".join(vocab))
+                raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2,
+                                        max_retries=3, max_output_tokens=1500)
+                a = extract_json(raw)
         if a.get("problem"):
             raise ValueError("Couldn't judge this page: " + str(a["problem"])[:200])
         a["topics"] = [t for t in (a.get("topics") or []) if t in vocab][:4] or ["Productivity"]
@@ -276,10 +287,34 @@ async def _analyze(page: dict, ip: str, source: str, fetch=None) -> dict:
 
 
 async def step_page(url: str, ip: str) -> dict:
+    from urllib.parse import urlsplit
     from mvp.ph_site import safe_fetch
 
     norm = await safe_fetch.check_url(url)        # validate before spending a slot
-    return await _analyze({}, ip, "page", fetch=lambda: safe_fetch.fetch_product(norm))
+    parts = urlsplit(norm)
+    root = f"{parts.scheme}://{parts.netloc}/"
+
+    async def fetch():
+        # A deep link (docs, a code page, a JS-only route) often fails where the site's home page works:
+        # retry the root once before giving up (E5: recovers about 1 in 4 failures).
+        try:
+            page = await safe_fetch.fetch_product(norm)
+            if len((page["text"] or "").strip()) >= 80 or norm.rstrip("/") == root.rstrip("/"):
+                return page
+        except safe_fetch.FetchError:
+            if norm.rstrip("/") == root.rstrip("/"):
+                raise
+        return await safe_fetch.fetch_product(root)
+
+    async def root_page():
+        if norm.rstrip("/") == root.rstrip("/"):
+            return None
+        try:
+            return await safe_fetch.fetch_product(root)
+        except safe_fetch.FetchError:
+            return None
+
+    return await _analyze({}, ip, "page", fetch=fetch, fallback=root_page)
 
 
 async def step_text(name: str, tagline: str, description: str, ip: str) -> dict:
@@ -591,7 +626,8 @@ def step_launch(tok: str) -> dict:
     lb = gcs.read_json("results/web/launch_band.json", ttl=3600)
     if not lb:
         raise RuntimeError("launch band missing")
-    desc = a.get("ph_description") or ((a.get("summary") or "") + " " + (a.get("page_excerpt") or "")[:600])
+    # Page reads: name/tagline/summary only (validated on 130 page reads: coverage 86% vs 82% with the raw excerpt).
+    desc = a.get("ph_description") or (a.get("summary") or "")
     score = _band_score(lb, a.get("name") or "", a.get("tagline") or "", desc, a.get("topics") or [])
     pct = sum(1 for c in lb["score_percentile_cuts"] if c < score)
     b = lb["bands"][min(9, pct // 10)]
@@ -622,7 +658,7 @@ def _input_note(source: str | None) -> str | None:
         c = claims()["try_e2e"]
         v = c["values"]
         return (f"Scored from a read of your web page. The accuracy figures here were measured on Product Hunt "
-                f"descriptions; in an end-to-end test on {v['launches']} launches ({c['date']}), the band from a page "
+                f"descriptions; in an end-to-end test on {v['launches']} page reads ({c['date']}), the band from a page "
                 f"read tracked the real rank less well (rank correlation {v['spearman_page']:.2f} vs "
                 f"{v['spearman_ph']:.2f} from the PH description) and contained the true rank {v['coverage_page']:.0%} "
                 f"of the time vs {v['coverage_ph']:.0%}. Pasting a launch-style description gives the better input.")

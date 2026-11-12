@@ -97,15 +97,14 @@
  },
  "try_e2e": {
   "values": {
-   "launches": 43,
-   "spearman_page": 0.31,
-   "spearman_ph": 0.68,
-   "coverage_page": 0.77,
-   "coverage_ph": 0.81,
-   "fetch_fail_share": 0.17
+   "launches": 130,
+   "spearman_page": 0.32,
+   "spearman_ph": 0.59,
+   "coverage_page": 0.86,
+   "coverage_ph": 0.89
   },
-  "label": "/try code run on 57 launches (43 fetched), Oct 27-Nov 10",
-  "source": "E5 reports/try_e2e/, branch claude/person-model-v2",
+  "label": "/try code on 130 page reads, Oct 27-Nov 10 (band from name, tagline and summary)",
+  "source": "E5 reports/try_fixes/, branch claude/person-model-v2",
   "date": "2026-11-12"
  }
 }

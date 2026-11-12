@@ -259,3 +259,24 @@ def test_step_text_validates_before_spending(monkeypatch):
     with pytest.raises(ValueError):
         asyncio.run(try_sim.step_text("Name", "Tag", "too short", "8.8.8.8"))
     assert not try_sim._mem.get(try_sim._ip_hash("8.8.8.8"))   # rejected input never took a slot
+
+
+def test_page_retries_site_root(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    calls = []
+
+    async def ok(u):
+        return u
+
+    async def fetch(u):
+        calls.append(u)
+        if u.endswith("/docs/x"):
+            raise safe_fetch.FetchError("403")
+        raise safe_fetch.FetchError("root also down")   # stop before any model call
+
+    monkeypatch.setattr(safe_fetch, "check_url", ok)
+    monkeypatch.setattr(safe_fetch, "fetch_product", fetch)
+    with pytest.raises(safe_fetch.FetchError):
+        asyncio.run(try_sim.step_page("https://example.com/docs/x", "9.9.9.9"))
+    assert calls == ["https://example.com/docs/x", "https://example.com/"]
