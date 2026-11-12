@@ -28,7 +28,8 @@ def main():
     rng = np.random.default_rng(0)
     K, fetched = CF.load_comments()
     L = W.query("SELECT CAST(id AS VARCHAR) id, slug, day, daily_rank, poster FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
-    H = pd.read_parquet(os.path.join(HERE, "results", "honest_preds_v2.parquet"))[["id", "honest"]]; H["id"] = H.id.astype(str)
+    hp = os.environ.get("HONEST_PATH", os.path.join(HERE, "results", "honest_preds_v2.parquet"))   # base LM (nosite check: tw_nosite)
+    H = pd.read_parquet(hp); H = H.rename(columns={os.environ.get("HONEST_COL", "honest"): "honest"})[["id", "honest"]]; H["id"] = H.id.astype(str)
     L = L.merge(H, on="id", how="left"); L["poster"] = L.poster.fillna("").str.lower()
     L["t5"] = [pd.Timestamp(d + " 00:05", tz="America/Los_Angeles").tz_convert("UTC") for d in L.day]
     K = K.merge(L[["slug", "id", "day", "t5", "poster"]], on="slug")
@@ -90,7 +91,7 @@ def main():
     m = Ridge(alpha=3.0).fit((X[F] - mu) / sd, X.y)
     json.dump({"feats": F, "mu": mu.to_dict(), "sd": sd.to_dict(), "coef": dict(zip(F, map(float, m.coef_))), "intercept": float(m.intercept_),
                "days": int(X.day.nunique()), "honest": "honest_preds_v2 (clean_v3 OOF); live: shadow pred_clean"},
-              open(os.path.join(HERE, "results", "thread_live_model.json"), "w"), indent=1)
+              open(os.path.join(HERE, "results", f"thread_live_model{os.environ.get("TF_SUFFIX", "")}.json"), "w"), indent=1)
     # orchestrator 08:29Z Nov 12 (stack): within-day z of every input and of the target -log(rank), ridge alpha 10, month-forward;
     # inputs known at 00:05 only: clean LM + thread (clean_thread_z) and + slug_num_l (clean_stack; productLinks / media wait for the 00:05 read)
     import re
@@ -123,9 +124,9 @@ def main():
         r = Ridge(alpha=10.0).fit(X[["z_" + f for f in F]], X.z_y)
         zm[nm] = {"feats": F, "coef": dict(zip(F, map(float, r.coef_)))}
     json.dump({"score": "sum(coef[f] * z_f), z_f = (x - mean_day(x)) / std_day(x) over the line-up (0 if std 0); rank by score desc",
-               "days": int(X.day.nunique()), "models": zm}, open(os.path.join(HERE, "results", "thread_live_model_z.json"), "w"), indent=1)
-    open(os.path.join(HERE, "results", "thread_feats.md"), "w").write("\n".join(md) + "\n")
-    json.dump({c: P[c].mean().round(2).to_dict() for c in P}, open(os.path.join(HERE, "results", "thread_feats.json"), "w"), indent=1)
+               "days": int(X.day.nunique()), "models": zm}, open(os.path.join(HERE, "results", f"thread_live_model_z{os.environ.get("TF_SUFFIX", "")}.json"), "w"), indent=1)
+    open(os.path.join(HERE, "results", f"thread_feats{os.environ.get("TF_SUFFIX", "")}.md"), "w").write("\n".join(md) + "\n")
+    json.dump({c: P[c].mean().round(2).to_dict() for c in P}, open(os.path.join(HERE, "results", f"thread_feats{os.environ.get("TF_SUFFIX", "")}.json"), "w"), indent=1)
     print("\n".join(md))
 
 
