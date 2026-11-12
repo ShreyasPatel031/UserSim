@@ -1,0 +1,1202 @@
+{
+ "design": "Simulation conditioned on the first hours (orchestrator Nov 11, 20:45Z): who showed up early -> launch shock and who next.\nE_T(L) = complete pool people (store_v3) with an exact-timed comment on L between launch start (00:01 PT) and +T h,\nT in {1, 2, 4}; the launch's own team (real maker/poster handles; \"[REDACTED]\" placeholders dropped) is excluded.\nExact comment times: people_live profile crawl (slug-keyed, mapped to launch id) + PH API v2 live/backfill.\n\nLaunch level. Target = per-launch multiplier r = logv - base, where base is the it8 LM's out-of-sample log-vote prediction\n(lm_breakout_e5_fix preds, monthly folds). Features of E_T, all dated strictly before L's start (upvotes by launch day <= d-2):\n  A count     log1p |E_T|\n  B identity  A + one-off vs regular accounts, activity tiers (prior upvotes / prior comments), prior early-commenting habit,\n              prior ties to the team (upvoted/commented any earlier launch of a team member), overlap with voters of top-3 launches\n              of the previous 30 days, and base itself\n  C +follow   B + follow-graph features from the Nov follow snapshot (not dated; leak risk, reported separately)\nMonth-forward: LightGBM trained on launches of months < m, scored on month m (m = Apr..Nov). Metrics: within-day Spearman of\npredicted vs true r; daily top 3/5/10 overlap with the real daily ranking of base + predicted r, paired by day vs base (LM only).\n\nPerson level (rows: tl_cp_all19 line-ups, 19 days Oct 20 - Nov 8). For people not in E_T(L): co-upvote affinity between the person\nand E_T members (cosine of SVD user factors of the upvote matrix fitted on upvotes dated <= fold cutoff, the cold_start folds),\nmax and sum over E_T; plus |E_T|. Logistic fitted on Oct days, scored on Nov days and vice versa. Hit@1/Hit@3/AUC within each\nperson-day line-up vs the popularity baseline (base; activity is constant within a line-up).\n",
+ "coverage": {
+  "T1": {
+   "share_launches_with_E_T": 0.157,
+   "mean_E_T": 0.23,
+   "mean_E_T_if_any": 1.44
+  },
+  "T2": {
+   "share_launches_with_E_T": 0.262,
+   "mean_E_T": 0.44,
+   "mean_E_T_if_any": 1.67
+  },
+  "T4": {
+   "share_launches_with_E_T": 0.354,
+   "mean_E_T": 0.74,
+   "mean_E_T_if_any": 2.09
+  }
+ },
+ "launch_level": {
+  "T1 A_count": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.159,
+    0.1239,
+    0.1929,
+    199
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.232,
+    0.162,
+    0.2989,
+    18
+   ],
+   "top3": [
+    60.3604,
+    57.2072,
+    63.6637,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    2.5526,
+    0.5968,
+    4.5045,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    8.3333,
+    3.3333,
+    15.0,
+    20
+   ],
+   "top5": [
+    68.8288,
+    66.3941,
+    71.3514,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    0.7207,
+    -0.5405,
+    1.982,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    4.0,
+    -1.0,
+    10.0,
+    20
+   ],
+   "top10": [
+    75.1802,
+    73.5574,
+    76.8919,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    0.4505,
+    -0.045,
+    0.9459,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    0.0,
+    0.0,
+    0.0,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.096,
+    "2026-05": 0.206,
+    "2026-06": 0.252,
+    "2026-07": 0.089,
+    "2026-08": 0.139,
+    "2026-09": 0.194,
+    "2026-10": 0.127,
+    "2026-11": 0.283
+   }
+  },
+  "T1 B_identity": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.1606,
+    0.1268,
+    0.1932,
+    222
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.2698,
+    0.1912,
+    0.3471,
+    20
+   ],
+   "top3": [
+    58.2583,
+    54.8048,
+    61.5616,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    0.4505,
+    -2.4024,
+    3.1532,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    8.3333,
+    -0.0,
+    16.6667,
+    20
+   ],
+   "top5": [
+    66.6667,
+    64.1419,
+    69.2793,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    -1.4414,
+    -3.1532,
+    0.2703,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    7.0,
+    1.0,
+    13.0,
+    20
+   ],
+   "top10": [
+    74.7748,
+    73.0631,
+    76.4865,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    0.045,
+    -0.7207,
+    0.8108,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    0.5,
+    0.0,
+    1.5,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.098,
+    "2026-05": 0.217,
+    "2026-06": 0.107,
+    "2026-07": 0.181,
+    "2026-08": 0.145,
+    "2026-09": 0.208,
+    "2026-10": 0.152,
+    "2026-11": 0.219
+   }
+  },
+  "T1 C_identity_follow": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.1691,
+    0.1354,
+    0.204,
+    222
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.2734,
+    0.1874,
+    0.3496,
+    20
+   ],
+   "top3": [
+    58.8589,
+    55.7057,
+    61.8619,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    1.0511,
+    -1.6517,
+    3.7538,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    5.0,
+    -1.6667,
+    11.6667,
+    20
+   ],
+   "top5": [
+    66.9369,
+    64.5946,
+    69.3716,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    -1.1712,
+    -2.8829,
+    0.6306,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    5.0,
+    -2.0,
+    12.0,
+    20
+   ],
+   "top10": [
+    75.0901,
+    73.4234,
+    76.7117,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    0.3604,
+    -0.5405,
+    1.2613,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    0.5,
+    0.0,
+    1.5,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.122,
+    "2026-05": 0.217,
+    "2026-06": 0.111,
+    "2026-07": 0.159,
+    "2026-08": 0.162,
+    "2026-09": 0.224,
+    "2026-10": 0.178,
+    "2026-11": 0.206
+   }
+  },
+  "T1 B_identity minus A_count (paired by day)": {
+   "spearman": [
+    0.0134,
+    -0.0264,
+    0.0542,
+    199
+   ],
+   "top3": [
+    -2.1021,
+    -4.8048,
+    0.4505,
+    222
+   ],
+   "top5": [
+    -2.1622,
+    -3.6036,
+    -0.6306,
+    222
+   ],
+   "top10": [
+    -0.4054,
+    -1.0811,
+    0.2703,
+    222
+   ]
+  },
+  "T1 C_identity_follow minus A_count (paired by day)": {
+   "spearman": [
+    0.0216,
+    -0.016,
+    0.0605,
+    199
+   ],
+   "top3": [
+    -1.5015,
+    -4.2042,
+    1.0511,
+    222
+   ],
+   "top5": [
+    -1.8919,
+    -3.3333,
+    -0.4505,
+    222
+   ],
+   "top10": [
+    -0.0901,
+    -0.8108,
+    0.6306,
+    222
+   ]
+  },
+  "LM-only": {
+   "top3": [
+    57.8078,
+    54.8048,
+    60.961,
+    222
+   ],
+   "top5": [
+    68.1081,
+    65.4955,
+    70.6329,
+    222
+   ],
+   "top10": [
+    74.7297,
+    73.018,
+    76.4414,
+    222
+   ]
+  },
+  "T2 A_count": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.1766,
+    0.1404,
+    0.2123,
+    213
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.2696,
+    0.1871,
+    0.351,
+    18
+   ],
+   "top3": [
+    61.7117,
+    58.5548,
+    65.015,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    3.9039,
+    1.8018,
+    6.006,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    11.6667,
+    5.0,
+    18.3333,
+    20
+   ],
+   "top5": [
+    69.0991,
+    66.5766,
+    71.6216,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    0.991,
+    -0.3604,
+    2.3423,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    4.0,
+    0.0,
+    8.0,
+    20
+   ],
+   "top10": [
+    75.5856,
+    73.8739,
+    77.2072,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    0.8559,
+    0.2252,
+    1.4414,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    1.5,
+    0.0,
+    3.0,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.113,
+    "2026-05": 0.222,
+    "2026-06": 0.27,
+    "2026-07": 0.109,
+    "2026-08": 0.184,
+    "2026-09": 0.183,
+    "2026-10": 0.138,
+    "2026-11": 0.296
+   }
+  },
+  "T2 B_identity": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.2108,
+    0.1746,
+    0.248,
+    222
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.3324,
+    0.2432,
+    0.4232,
+    20
+   ],
+   "top3": [
+    61.2613,
+    57.6577,
+    64.5646,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    3.4535,
+    0.7508,
+    6.3063,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    11.6667,
+    3.3333,
+    20.0,
+    20
+   ],
+   "top5": [
+    67.4775,
+    64.955,
+    70.0,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    -0.6306,
+    -2.5225,
+    1.1712,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    6.0,
+    0.0,
+    12.0,
+    20
+   ],
+   "top10": [
+    74.5495,
+    72.7928,
+    76.2613,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    -0.1802,
+    -1.036,
+    0.7207,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    0.0,
+    -2.0,
+    2.0,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.13,
+    "2026-05": 0.287,
+    "2026-06": 0.212,
+    "2026-07": 0.196,
+    "2026-08": 0.214,
+    "2026-09": 0.22,
+    "2026-10": 0.196,
+    "2026-11": 0.282
+   }
+  },
+  "T2 C_identity_follow": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.2106,
+    0.1748,
+    0.2453,
+    222
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.2942,
+    0.2008,
+    0.3849,
+    20
+   ],
+   "top3": [
+    61.4114,
+    58.1081,
+    64.7147,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    3.6036,
+    0.747,
+    6.4565,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    10.0,
+    1.6667,
+    18.3333,
+    20
+   ],
+   "top5": [
+    67.7477,
+    65.1351,
+    70.2725,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    -0.3604,
+    -2.1644,
+    1.4414,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    5.0,
+    -1.0,
+    10.0,
+    20
+   ],
+   "top10": [
+    74.6847,
+    72.973,
+    76.3964,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    -0.045,
+    -0.9459,
+    0.8108,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    1.0,
+    -1.0,
+    3.0,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.135,
+    "2026-05": 0.315,
+    "2026-06": 0.22,
+    "2026-07": 0.181,
+    "2026-08": 0.217,
+    "2026-09": 0.213,
+    "2026-10": 0.188,
+    "2026-11": 0.224
+   }
+  },
+  "T2 B_identity minus A_count (paired by day)": {
+   "spearman": [
+    0.0403,
+    0.0051,
+    0.0762,
+    213
+   ],
+   "top3": [
+    -0.4505,
+    -3.003,
+    1.952,
+    222
+   ],
+   "top5": [
+    -1.6216,
+    -3.0631,
+    -0.1802,
+    222
+   ],
+   "top10": [
+    -1.036,
+    -1.8468,
+    -0.3153,
+    222
+   ]
+  },
+  "T2 C_identity_follow minus A_count (paired by day)": {
+   "spearman": [
+    0.039,
+    0.0027,
+    0.0775,
+    213
+   ],
+   "top3": [
+    -0.3003,
+    -3.003,
+    2.2523,
+    222
+   ],
+   "top5": [
+    -1.3514,
+    -2.7928,
+    0.0901,
+    222
+   ],
+   "top10": [
+    -0.9009,
+    -1.7117,
+    -0.0901,
+    222
+   ]
+  },
+  "T4 A_count": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.216,
+    0.1791,
+    0.2518,
+    218
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.315,
+    0.2363,
+    0.3874,
+    19
+   ],
+   "top3": [
+    63.6637,
+    60.5105,
+    66.8168,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    5.8559,
+    3.4535,
+    8.2583,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    10.0,
+    3.3333,
+    16.6667,
+    20
+   ],
+   "top5": [
+    69.9099,
+    67.4752,
+    72.3423,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    1.8018,
+    0.3604,
+    3.3333,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    6.0,
+    2.0,
+    10.0,
+    20
+   ],
+   "top10": [
+    75.5856,
+    73.8739,
+    77.2523,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    0.8559,
+    0.1351,
+    1.6216,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    1.0,
+    0.0,
+    2.5,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.137,
+    "2026-05": 0.273,
+    "2026-06": 0.282,
+    "2026-07": 0.174,
+    "2026-08": 0.236,
+    "2026-09": 0.203,
+    "2026-10": 0.181,
+    "2026-11": 0.345
+   }
+  },
+  "T4 B_identity": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.2551,
+    0.2176,
+    0.2912,
+    222
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.3978,
+    0.2922,
+    0.4988,
+    20
+   ],
+   "top3": [
+    61.4114,
+    58.2583,
+    64.5683,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    3.6036,
+    0.4505,
+    6.6066,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    13.3333,
+    6.6667,
+    20.0,
+    20
+   ],
+   "top5": [
+    67.8378,
+    65.3153,
+    70.3604,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    -0.2703,
+    -2.0721,
+    1.6216,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    7.0,
+    1.0,
+    13.025,
+    20
+   ],
+   "top10": [
+    74.3694,
+    72.6126,
+    76.1712,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    -0.3604,
+    -1.3063,
+    0.6306,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    -1.0,
+    -3.0,
+    1.0,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.167,
+    "2026-05": 0.337,
+    "2026-06": 0.225,
+    "2026-07": 0.221,
+    "2026-08": 0.274,
+    "2026-09": 0.249,
+    "2026-10": 0.275,
+    "2026-11": 0.388
+   }
+  },
+  "T4 C_identity_follow": {
+   "within_day_spearman_pred_vs_true_r": [
+    0.2692,
+    0.2324,
+    0.3042,
+    222
+   ],
+   "within_day_spearman_Oct20_Nov8": [
+    0.4144,
+    0.3159,
+    0.5131,
+    20
+   ],
+   "top3": [
+    62.012,
+    58.8589,
+    65.1652,
+    222
+   ],
+   "top3 minus LM-only (paired by day)": [
+    4.2042,
+    1.0511,
+    7.2072,
+    222
+   ],
+   "top3 minus LM-only, Oct20-Nov8": [
+    16.6667,
+    10.0,
+    23.3333,
+    20
+   ],
+   "top5": [
+    67.7477,
+    65.1351,
+    70.2703,
+    222
+   ],
+   "top5 minus LM-only (paired by day)": [
+    -0.3604,
+    -2.3423,
+    1.5315,
+    222
+   ],
+   "top5 minus LM-only, Oct20-Nov8": [
+    8.0,
+    2.0,
+    14.0,
+    20
+   ],
+   "top10": [
+    74.7748,
+    73.0169,
+    76.5315,
+    222
+   ],
+   "top10 minus LM-only (paired by day)": [
+    0.045,
+    -0.9459,
+    1.036,
+    222
+   ],
+   "top10 minus LM-only, Oct20-Nov8": [
+    0.0,
+    -2.0,
+    2.0,
+    20
+   ],
+   "per_month_spearman": {
+    "2026-04": 0.163,
+    "2026-05": 0.343,
+    "2026-06": 0.293,
+    "2026-07": 0.227,
+    "2026-08": 0.275,
+    "2026-09": 0.275,
+    "2026-10": 0.272,
+    "2026-11": 0.396
+   }
+  },
+  "T4 B_identity minus A_count (paired by day)": {
+   "spearman": [
+    0.0442,
+    0.0127,
+    0.0745,
+    218
+   ],
+   "top3": [
+    -2.2523,
+    -4.8048,
+    0.1502,
+    222
+   ],
+   "top5": [
+    -2.0721,
+    -3.3333,
+    -0.9009,
+    222
+   ],
+   "top10": [
+    -1.2162,
+    -2.027,
+    -0.4505,
+    222
+   ]
+  },
+  "T4 C_identity_follow minus A_count (paired by day)": {
+   "spearman": [
+    0.0567,
+    0.0255,
+    0.0872,
+    218
+   ],
+   "top3": [
+    -1.6517,
+    -4.2042,
+    0.9009,
+    222
+   ],
+   "top5": [
+    -2.1622,
+    -3.6036,
+    -0.8108,
+    222
+   ],
+   "top10": [
+    -0.8108,
+    -1.5766,
+    -0.0901,
+    222
+   ]
+  }
+ },
+ "person_level": {
+  "T1": {
+   "popularity (base)": {
+    "Hit@1": [
+     0.3272,
+     0.2589,
+     0.3941,
+     19
+    ],
+    "Hit@3": [
+     0.6,
+     0.5125,
+     0.6788,
+     19
+    ],
+    "AUC": [
+     0.7718,
+     0.7429,
+     0.7994,
+     19
+    ]
+   },
+   "rows": 2610500,
+   "share_rows_launch_has_E_T": 0.259,
+   "count": {
+    "Hit@1": [
+     0.3668,
+     0.3037,
+     0.429,
+     19
+    ],
+    "Hit@3": [
+     0.6538,
+     0.5832,
+     0.7182,
+     19
+    ],
+    "AUC": [
+     0.7865,
+     0.7607,
+     0.8112,
+     19
+    ],
+    "Hit@1 minus popularity (paired by day)": [
+     0.0397,
+     -0.0307,
+     0.1173,
+     19
+    ],
+    "Hit@3 minus popularity (paired by day)": [
+     0.0538,
+     0.003,
+     0.1159,
+     19
+    ],
+    "AUC minus popularity (paired by day)": [
+     0.0147,
+     0.0056,
+     0.0246,
+     19
+    ]
+   },
+   "count_affinity": {
+    "Hit@1": [
+     0.3514,
+     0.2857,
+     0.4145,
+     19
+    ],
+    "Hit@3": [
+     0.6213,
+     0.5521,
+     0.6878,
+     19
+    ],
+    "AUC": [
+     0.7718,
+     0.7422,
+     0.7991,
+     19
+    ],
+    "Hit@1 minus popularity (paired by day)": [
+     0.0242,
+     -0.0383,
+     0.0955,
+     19
+    ],
+    "Hit@3 minus popularity (paired by day)": [
+     0.0214,
+     -0.0279,
+     0.0746,
+     19
+    ],
+    "AUC minus popularity (paired by day)": [
+     0.0,
+     -0.0104,
+     0.0105,
+     19
+    ]
+   }
+  },
+  "T2": {
+   "popularity (base)": {
+    "Hit@1": [
+     0.3265,
+     0.258,
+     0.3949,
+     19
+    ],
+    "Hit@3": [
+     0.5991,
+     0.5113,
+     0.6818,
+     19
+    ],
+    "AUC": [
+     0.7718,
+     0.7422,
+     0.7999,
+     19
+    ]
+   },
+   "rows": 2610379,
+   "share_rows_launch_has_E_T": 0.369,
+   "count": {
+    "Hit@1": [
+     0.4176,
+     0.3637,
+     0.4718,
+     19
+    ],
+    "Hit@3": [
+     0.6951,
+     0.6398,
+     0.7427,
+     19
+    ],
+    "AUC": [
+     0.7958,
+     0.7738,
+     0.8177,
+     19
+    ],
+    "Hit@1 minus popularity (paired by day)": [
+     0.0912,
+     0.0231,
+     0.1721,
+     19
+    ],
+    "Hit@3 minus popularity (paired by day)": [
+     0.0959,
+     0.0406,
+     0.1609,
+     19
+    ],
+    "AUC minus popularity (paired by day)": [
+     0.024,
+     0.0127,
+     0.0382,
+     19
+    ]
+   },
+   "count_affinity": {
+    "Hit@1": [
+     0.3842,
+     0.3248,
+     0.44,
+     19
+    ],
+    "Hit@3": [
+     0.637,
+     0.5726,
+     0.6999,
+     19
+    ],
+    "AUC": [
+     0.775,
+     0.7507,
+     0.7986,
+     19
+    ],
+    "Hit@1 minus popularity (paired by day)": [
+     0.0578,
+     -0.017,
+     0.1368,
+     19
+    ],
+    "Hit@3 minus popularity (paired by day)": [
+     0.0378,
+     -0.0221,
+     0.1016,
+     19
+    ],
+    "AUC minus popularity (paired by day)": [
+     0.0032,
+     -0.0101,
+     0.0186,
+     19
+    ]
+   }
+  },
+  "T4": {
+   "popularity (base)": {
+    "Hit@1": [
+     0.3263,
+     0.258,
+     0.394,
+     19
+    ],
+    "Hit@3": [
+     0.5989,
+     0.5131,
+     0.68,
+     19
+    ],
+    "AUC": [
+     0.7717,
+     0.7424,
+     0.7988,
+     19
+    ]
+   },
+   "rows": 2610296,
+   "share_rows_launch_has_E_T": 0.42,
+   "count": {
+    "Hit@1": [
+     0.4171,
+     0.362,
+     0.4695,
+     19
+    ],
+    "Hit@3": [
+     0.7022,
+     0.6458,
+     0.7501,
+     19
+    ],
+    "AUC": [
+     0.7995,
+     0.7776,
+     0.8204,
+     19
+    ],
+    "Hit@1 minus popularity (paired by day)": [
+     0.0908,
+     0.0237,
+     0.1688,
+     19
+    ],
+    "Hit@3 minus popularity (paired by day)": [
+     0.1033,
+     0.0437,
+     0.1673,
+     19
+    ],
+    "AUC minus popularity (paired by day)": [
+     0.0278,
+     0.0155,
+     0.0434,
+     19
+    ]
+   },
+   "count_affinity": {
+    "Hit@1": [
+     0.3981,
+     0.3484,
+     0.446,
+     19
+    ],
+    "Hit@3": [
+     0.661,
+     0.6115,
+     0.7054,
+     19
+    ],
+    "AUC": [
+     0.7828,
+     0.7614,
+     0.8056,
+     19
+    ],
+    "Hit@1 minus popularity (paired by day)": [
+     0.0719,
+     0.0026,
+     0.1433,
+     19
+    ],
+    "Hit@3 minus popularity (paired by day)": [
+     0.0621,
+     -0.0012,
+     0.132,
+     19
+    ],
+    "AUC minus popularity (paired by day)": [
+     0.0111,
+     -0.0044,
+     0.0291,
+     19
+    ]
+   }
+  }
+ }
+}

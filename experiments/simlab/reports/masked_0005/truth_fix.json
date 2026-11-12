@@ -1,0 +1,206 @@
+{
+ "design": "Truth quality (orchestrator 07:55Z Nov 12, item 4). The comment truth of reactions / concerns / questions / ceiling excluded\n\"team\" comments only when the team was NAMED; PH names only the day #1's makers after the day, so non-winners kept their makers'\ncomments. Identity-free rule: the author of the earliest top-level comment is a maker (the maker's first comment) - drop all of\nthat author's comments and replies - plus the hunter (poster). For the launches of the 300-sample whose comment set changes,\nthe truth is extracted under the OLD and the NEW rule with the same prompt (ceiling.py EX: themes / critical / questions, up to\n40 comments) and the deployed outputs are judged against both with the same judges: BEST reactions (recall / precision), RANKED\nconcerns and RANKED questions (p@3 / hit@3); plus the split-half bar (3 splits) for affected launches with >= 16 new comments.\nUnaffected launches keep identical truth (difference 0). Paired new - old over the affected set and over all 300, bootstrap CIs.",
+ "launches_300": 300,
+ "affected": 108,
+ "share_comments_dropped_mean_all300": 0.116,
+ "dropped_by_rank_group": {
+  "1": 0.0,
+  "11+": 0.05,
+  "2-3": 0.184,
+  "4-10": 0.142
+ },
+ "affected_set": {
+  "recall": {
+   "old": [
+    55.9,
+    52.3,
+    59.5,
+    108
+   ],
+   "new": [
+    55.7,
+    51.8,
+    59.5,
+    108
+   ],
+   "new - old (paired)": [
+    -0.3,
+    -4.9,
+    4.4,
+    108
+   ]
+  },
+  "precision": {
+   "old": [
+    57.4,
+    53.2,
+    61.6,
+    108
+   ],
+   "new": [
+    57.9,
+    52.9,
+    62.7,
+    108
+   ],
+   "new - old (paired)": [
+    0.5,
+    -4.2,
+    5.1,
+    108
+   ]
+  },
+  "c_p3": {
+   "old": [
+    28.8,
+    24.0,
+    34.0,
+    104
+   ],
+   "new": [
+    28.9,
+    23.5,
+    34.6,
+    105
+   ],
+   "new - old (paired)": [
+    0.3,
+    -4.2,
+    5.1,
+    104
+   ]
+  },
+  "c_hit3": {
+   "old": [
+    61.5,
+    51.9,
+    70.2,
+    104
+   ],
+   "new": [
+    60.0,
+    50.5,
+    68.6,
+    105
+   ],
+   "new - old (paired)": [
+    -1.0,
+    -9.6,
+    7.7,
+    104
+   ]
+  },
+  "q_p3": {
+   "old": [
+    14.2,
+    10.7,
+    18.1,
+    103
+   ],
+   "new": [
+    14.9,
+    11.0,
+    19.1,
+    103
+   ],
+   "new - old (paired)": [
+    0.6,
+    -2.3,
+    3.6,
+    103
+   ]
+  },
+  "q_hit3": {
+   "old": [
+    37.9,
+    28.2,
+    46.6,
+    103
+   ],
+   "new": [
+    36.9,
+    27.2,
+    45.6,
+    103
+   ],
+   "new - old (paired)": [
+    -1.0,
+    -6.8,
+    5.8,
+    103
+   ]
+  },
+  "bar_recall": {
+   "old": [
+    52.2,
+    48.0,
+    56.3,
+    52
+   ],
+   "new": [
+    47.8,
+    43.6,
+    51.9,
+    52
+   ],
+   "new - old (paired)": [
+    -4.4,
+    -9.1,
+    0.2,
+    52
+   ]
+  },
+  "bar_precision": {
+   "old": [
+    47.4,
+    43.6,
+    51.2,
+    52
+   ],
+   "new": [
+    43.8,
+    40.5,
+    47.1,
+    52
+   ],
+   "new - old (paired)": [
+    -3.6,
+    -7.3,
+    0.2,
+    52
+   ]
+  },
+  "bar_c_p3": {
+   "old": [
+    29.2,
+    23.7,
+    34.7,
+    51
+   ],
+   "new": [
+    32.1,
+    26.0,
+    38.4,
+    52
+   ],
+   "new - old (paired)": [
+    1.5,
+    -3.7,
+    7.1,
+    51
+   ]
+  }
+ },
+ "all300_shift": {
+  "recall": -0.1,
+  "precision": 0.17,
+  "c_p3": 0.11,
+  "c_hit3": -0.33,
+  "q_p3": 0.22,
+  "q_hit3": -0.33,
+  "bar_recall": null,
+  "bar_precision": null,
+  "bar_c_p3": null
+ },
+ "usd": 1.789
+}
