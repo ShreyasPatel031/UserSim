@@ -1,0 +1,28 @@
+--- a/merge_daily.py	2026-11-12 23:03:55.274285691 +0000
++++ b/merge_daily.py	2026-11-12 23:03:56.949145734 +0000
+@@ -78,6 +78,15 @@
+ # follows truncation: following p1 lists of 20 rows => likely more
+ fo=ev[(ev.kind=='follows')&(ev.source=='ph_following_p1')].groupby('person_id').size()
+ for p,n in fo.items():P[p]['follows']['truncated']=n>=20
++# whole-person follow lists (population agent, raw/population/follows_whole/latest.jsonl, hashed ids): followers+following
++# read to PH's end override the p1 truncation flag; partial whole-person reads stay truncated
++for r in jl(I('follows_whole.jsonl')):
++    p=r.get('person_id')
++    if p not in pool:continue
++    n=(r.get('followers_n') or 0)+(r.get('following_n') or 0)
++    fam(p,'follows','people_live_whole',n if n else 1,r.get('finished_utc'))
++    if r.get('full'):P[p]['follows']['truncated']=False
++    else:P[p]['follows']['truncated']=True
+ # --- profiles ---
+ for f,src in (('profiles.jsonl.gz','ph_profiles2_refetch'),('profiles2.jsonl.gz','ph_profiles2_refetch2'),('A.jsonl','people_live')):
+     for r in jl(I(f)):
+--- a/run_daily.sh	2026-11-12 23:03:56.697868074 +0000
++++ b/run_daily.sh	2026-11-12 23:03:56.949300572 +0000
+@@ -3,6 +3,7 @@
+ set -e; D=${1:-$(date +%F)}; B=gs://usersim-bakeoff-347838016394/usersim_sim/raw; cd /workspace/popdata; mkdir -p in/at_launch in/github in/xroll
+ gsutil -m -q cp $B/population/store_v1/*.parquet in/store_v1/
+ gsutil -m -q cp $B/ph_upvotes_full/upvotes_page1_full.jsonl $B/ph_population/people_live/A.jsonl in/ || true
++gsutil -q cp $B/population/follows_whole/latest.jsonl in/follows_whole.jsonl || true  # whole-person follow lists (population agent)
+ gsutil -m -q cp $B/ph_people_daily/$D/upvotes_hourly/lists/{likely,rest}.txt in/ 2>/dev/null || true
+ for d in $(gsutil ls $B/population_data/x/ | grep -E '/[0-9]{8}(_[a-z]+)?/$'); do n=$(basename $d); mkdir -p in/x_$n; gsutil -m -q cp ${d}{persons,events}.jsonl in/x_$n/; done
+ for d in $(gsutil ls $B/population/github/ | grep -E '/[0-9]{8}/$'); do n=$(basename $d); mkdir -p in/github/$n; gsutil -q cp ${d}profiles.jsonl in/github/$n/ || true; done
