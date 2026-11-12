@@ -1,4 +1,6 @@
-# One proxy URL per line (file path or http(s) URL). Order = IP index 1..N.
+# One proxy URL per line (file path or http(s) URL). Order = fleet slot 1..N.
+# Line 1 should be Spain ISP control (secrets/iproyal.purl); ph_iproyal_sync_pool.sh
+# prepends it when present and fills lines 2+ from Finland API (iproyal_fi_*.purl).
 # Apply with: scripts/vm/ph_iproyal_daily_pool.sh apply
 #
 # Default 5-IP split (daily < 5 confirmed):
