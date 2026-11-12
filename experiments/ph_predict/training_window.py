@@ -95,6 +95,9 @@ def day_job(a):
     out = {"id": te.id.values, "seed": seed}
     if "daily" in dv:
         out["daily"] = fitw(tr, te, cols, seed)
+    nm = lambda cs: [c for c in cs if not c.startswith(("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers"))]
+    if "daily_nomaker" in dv:   # leak-free (leak_check_maker.md): maker-profile inputs dropped, daily expanding refit
+        out["daily_nomaker"] = fitw(tr, te, nm(cols), seed)
     if "live_daily" in dv:   # the deployed configuration: LIVE_SOURCES, daily expanding refit
         out["live_daily"] = fitw(tr, te, live_cols(tr), seed)
     return pd.DataFrame(out)
@@ -111,7 +114,7 @@ def main():
         df["mon"] = df.day.str[:7]
     DF["df"] = df
     print(json.dumps({"rows": int(len(df)), "first_day": df.day.min(), "last_day": df.day.max(), "variants": V}), flush=True)
-    dv = [v for v in V if v in ("daily", "live_daily")]
+    dv = [v for v in V if v in ("daily", "live_daily", "daily_nomaker")]
     mv = [v for v in V if v not in dv]
     jobs = [(m, s, mv) for m in MONTHS for s in range(5) if len(df[df.mon < m]) > 200 and len(df[df.mon == m])]
     test_days = sorted(df[df.mon.isin([j[0] for j in jobs])].day.unique())
