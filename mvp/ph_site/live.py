@@ -374,7 +374,8 @@ def _top3_confidence(ranks: dict[str, int], prods: dict[str, dict]) -> dict[str,
     bt = None
     b = claims().get("launch_model_backtest")
     if b and "p1_top3" in b["values"]:
-        bt = {"label": b["label"], "p1": b["values"]["p1_top3"], "exact1": b["values"]["exact1"], "date": b["date"]}
+        bt = {"label": b.get("pick_label") or b["label"], "p1": b["values"]["p1_top3"], "exact1": b["values"]["exact1"],
+              "date": b["date"]}
     out = {}
     for pid, r in ranks.items():
         cnt = row.get(f"p{r}_top3_count") if r <= 3 else None
