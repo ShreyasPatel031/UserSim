@@ -110,5 +110,16 @@
   "label": "/try code on 130 page reads, Oct 27-Nov 10 (band from name, tagline and summary)",
   "source": "E5 reports/try_fixes/, branch claude/person-model-v2",
   "date": "2026-11-12"
+ },
+ "page_band": {
+  "values": {
+   "n": 130,
+   "spearman": 0.41,
+   "coverage": 0.87,
+   "width": 32
+  },
+  "label": "page-trained band, 130 fresh page reads Oct 27-Nov 10 (out of sample; trained to Oct 24)",
+  "source": "E5 launch_band_page_v1.json heldout_accuracy",
+  "date": "2026-11-12"
  }
 }

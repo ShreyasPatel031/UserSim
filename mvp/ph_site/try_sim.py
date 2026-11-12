@@ -615,6 +615,11 @@ async def step_reactions(tok: str) -> dict:
 
 # ---------- step 4: launch (no LLM) ----------
 
+import re as _re_mod
+_PH_PHRASES = _re_mod.compile(r"(#\s*\d+\s*)?product of the (day|week|month)|#\s*1 product|product\s*hunt|upvotes?",
+                              _re_mod.I)
+
+
 def _band_score(lb: dict, name: str, tagline: str, description: str, topics: list[str]) -> float:
     """PH ops' product-only ridge (results/web/launch_band.json `recipe`): TF-IDF + topic flags + lengths -> ln(1+votes)."""
     import re as _re
@@ -636,16 +641,26 @@ def _band_score(lb: dict, name: str, tagline: str, description: str, topics: lis
 
 def step_launch(tok: str) -> dict:
     a = use_run(tok, "launch")
-    lb = gcs.read_json("results/web/launch_band.json", ttl=3600)
-    if not lb:
+    lb_ph = gcs.read_json("results/web/launch_band.json", ttl=3600)
+    if not lb_ph:
         raise ValueError("The launch placement model is unavailable right now; the other sections still work.")
-    # Page reads: name/tagline/summary only (validated on 130 page reads: coverage 86% vs 82% with the raw excerpt).
-    desc = a.get("ph_description") or (a.get("summary") or "")
+    lb = lb_ph
+    if a.get("ph_description"):
+        desc = a["ph_description"]            # pasted launch text: the PH-description band (validated on that input)
+    else:
+        # Page reads: E5's page-trained band (site/launch_band_page_v1.json, out of sample on 130 fresh page reads),
+        # input = summary + page excerpt with Product Hunt outcome phrases removed; fallback to the PH band.
+        page_lb = gcs.read_json("site/launch_band_page_v1.json", ttl=3600)
+        excerpt = _PH_PHRASES.sub(" ", (a.get("page_excerpt") or "")[:1500])
+        if page_lb:
+            lb, desc = page_lb, (a.get("summary") or "") + " " + excerpt
+        else:
+            desc = a.get("summary") or ""
     score = _band_score(lb, a.get("name") or "", a.get("tagline") or "", desc, a.get("topics") or [])
     pct = sum(1 for c in lb["score_percentile_cuts"] if c < score)
     b = lb["bands"][min(9, pct // 10)]
     rk, vt = b["daily_rank_p10_p50_p90"], b["votes_p10_p50_p90"]
-    acc = lb["heldout_accuracy"]
+    acc = lb_ph["heldout_accuracy"]   # top-3/5/10 table: measured on PH descriptions (labelled as such)
     return {"percentile": pct, "decile": b["decile"],
             "rank_band": {"likely": [int(rk[0]), int(rk[2])], "median": int(rk[1])},
             "votes_band": {"likely": [int(vt[0]), int(vt[2])], "median": int(vt[1])},
@@ -663,21 +678,23 @@ def step_launch(tok: str) -> dict:
 
 
 def _input_note(source: str | None) -> str | None:
-    """The band was trained and validated on PH launch descriptions; a page read ranks launches less well."""
+    """Which band scored this run and how that band was validated."""
+    from mvp.ph_site.live import claims
+    cl = claims()
     if source == "pasted":
-        return "Scored from the description you pasted, the kind of text this model was trained and tested on."
-    try:
-        from mvp.ph_site.live import claims
-        c = claims()["try_e2e"]
-        v = c["values"]
-        return (f"Scored from a read of your web page. The accuracy figures here were measured on Product Hunt "
-                f"descriptions; in an end-to-end test on {v['launches']} page reads ({c['date']}), the band from a page "
-                f"read tracked the real rank less well (rank correlation {v['spearman_page']:.2f} vs "
-                f"{v['spearman_ph']:.2f} from the PH description) and contained the true rank {v['coverage_page']:.0%} "
-                f"of the time vs {v['coverage_ph']:.0%}. Pasting a launch-style description gives the better input.")
-    except Exception:  # noqa: BLE001
+        v = cl["try_e2e"]["values"]
+        return (f"Scored from the description you pasted with the model trained on Product Hunt launch descriptions "
+                f"(on {v['launches']} fresh launches: rank correlation {v['spearman_ph']:.2f}, real rank inside the band "
+                f"{v['coverage_ph']:.0%} of the time).")
+    pb = cl.get("page_band")
+    if not pb:
         return "Scored from a read of your web page; the accuracy figures were measured on Product Hunt descriptions."
-
+    v = pb["values"]
+    return (f"Scored from your web page alone with a model trained on product web pages. Tested on {v['n']} new "
+            f"launches read through this site ({pb['date']}): rank correlation {v['spearman']:.2f}, the real rank fell "
+            f"inside the band {v['coverage']:.0%} of the time (about {v['width']:.0f} ranks wide). A pasted launch "
+            f"description is the stronger input (rank correlation {cl['try_e2e']['values']['spearman_ph']:.2f}). The "
+            "top-3 table below was measured on Product Hunt descriptions.")
 
 def _full_model_ref(acc: dict) -> dict:
     """Corrected 00:05 launch-model backtest (claims.json; the 63/69/75 in older launch_band.json was leak-inflated)."""
