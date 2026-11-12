@@ -119,6 +119,7 @@ def main():
         md.append(f"| {c} | " + " | ".join(f"{P[c][k].mean():.1f}" for k in ("top3", "top5", "top10", "p1", "exact")) + " |")
     for c in ZF:
         md.append(f"{c} minus clean LM alone (paired day bootstrap): " + ", ".join(f"{k} {boot(P[c][k] - P['honest'][k])}" for k in ("top3", "top5", "top10", "p1")))
+    pd.concat({c: P[c] for c in P}, axis=1).to_csv(os.path.join(HERE, "results", f"thread_feats_perday{os.environ.get('TF_SUFFIX', '')}.csv"))
     zm = {}
     for nm, F in ZF.items():
         r = Ridge(alpha=10.0).fit(X[["z_" + f for f in F]], X.z_y)
