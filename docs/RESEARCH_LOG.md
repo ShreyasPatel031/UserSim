@@ -1441,3 +1441,21 @@ Similar-tools role types (117 launches with at least 15 bundle voters): page 7.4
 Person level (internal; 304 launches): the site's product-only score has AUC 0.49 for real voters (lift@1% 0.95), against 0.95 for activity + recency. Adding the score lowers AUC by 0.14. The same holds from PH input.
 
 Verdict: the who card's types do NOT predict who votes. They are better than random only because category matters, and worse than "the most active segments". It may only claim category-interest description ("members whose past activity centres on this category"), never "who will vote or use it". Votes come from activity.
+
+### 2026-11-12 E5 — a "who" learned from real voters beats the control (exported who_segments_v1)
+Script experiments/simlab/who_learn.py; reports/who_learn/. Same 426 launches; month-forward.
+
+Two truths: pool lift, as in who_eval, and day lift (share among the launch's voters vs share among ALL that day's voters, which removes "active people vote"). Mean truly over-represented segments: 1.21 (pool) and 0.97 (day).
+
+| Method | Pool truth: p@3, lift of top segment | vs control | Day truth: p@3, lift of top segment | vs control |
+|---|---|---|---|---|
+| Control: most-voting segments | 29.7, 1.25 | – | 20.8, 0.78 | – |
+| Site list, page input | 22.9 | – | 16.0 | −4.9 |
+| Random | 10.1 | – | 8.1 | – |
+| Best learned: RIDGE / RETR-30, PH input | 36.0 [34.4, 37.6], 1.67 | +6.3 [5.2, 7.7] | – | – |
+| RIDGE_D, page input | 35.6, 1.67 | +6.0 [4.8, 7.2] | 24.9 [22.9, 27.0], 1.70 | +4.1 [2.9, 5.3] |
+| RETR-30 weighted | – | – | 25.0 | +4.15 [2.9, 5.6] |
+
+- RETR-5 / 10 are lower than RETR-30. Similarity weighting changes almost nothing. Page input is as good as PH input.
+- Person level within the day's voters (internal): activity AUC 0.51; + predicted segment lift 0.56; + neighbour overlap 0.55. Paired gain +0.04 [0.03, 0.04]. Small.
+- Exported who_segments_v1.json: ridge from the query embedding to the 12 segments' log day-lift. It holds segment descriptions only, trained on 3,556 launches; validation is embedded. Sent to the website agent as information.
