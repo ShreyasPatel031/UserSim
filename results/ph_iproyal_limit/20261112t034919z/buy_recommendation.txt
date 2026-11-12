@@ -1,0 +1,22 @@
+IPRoyal Spain ISP 213.220.25.150 — experiment 20261112t034919z (COMPLETE for sizing)
+
+STEADY OPERATING POINT (per dedicated IP + 1 feeder VM)
+  Level: L3_mid (PDEEP 4 workers × 3 tabs, fixed port 12323)
+  Ladder: mean 1.3 complete/min, peak 5m window 2.6
+  Planning rate: 1.1 complete/min/IP (1.3 × 0.85 safety util)
+
+DO NOT run 24/7 at L5_fleet120 or above on this egress
+  L5 3h soak: mean 0.2, median 0, 75% of 15m windows at zero
+  L6 ladder: block (0 mean)
+
+FLEET ORDER SIZE (linear scale, 1 IP per VM)
+  ~20 complete/min → 18 dedicated ISP IPs
+  ~30 complete/min → 27 dedicated ISP IPs
+
+BLOCK / RECOVERY (GraphQL 429, not CF ban)
+  Quick cycle: often ~30–40s to next attempt; supervisor same-IP cooldown from 300s (up to 3600s on repeats)
+  Retrace after L6 push → back to partial throughput ~5 min on L5; sustained work still needs L3
+  Historical pre-calibration span: effective ~1.17/min long-run with 4×2 misconfig; valleys common
+
+NEXT BEFORE LARGE ORDER
+  Optional: repeat ladder on 1–2 US ISP IPs to compare mean; pilot 3 IPs at L3 and verify sum(complete_ppm) ≈ 3×1.1

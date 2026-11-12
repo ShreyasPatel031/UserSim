@@ -1,0 +1,8 @@
+{
+  "level": "L5_fleet120",
+  "hours": 3,
+  "samples": 12,
+  "mean_complete_ppm": 0.2,
+  "median_complete_ppm": 0.0,
+  "pct_windows_zero": 75.0
+}

@@ -259,11 +259,18 @@ best_ok_level() {
   python3 - <<PY
 from pathlib import Path
 p=Path("$ART/ladder.tsv")
-best="Lm1_serial"
+best, best_key = "Lm1_serial", (-1.0, -1.0)
 for l in p.read_text().splitlines():
     if l.startswith("#") or not l.strip(): continue
     r=l.split("\t")
-    if len(r)>=2 and r[1]=="ok": best=r[0]
+    if len(r)>=4 and r[1]=="ok":
+        try:
+            m, mx = float(r[2]), float(r[3])
+        except ValueError:
+            continue
+        key = (m, mx)
+        if key >= best_key:
+            best, best_key = r[0], key
 print(best)
 PY
 }
@@ -399,7 +406,9 @@ art=Path("$ART")
 lad=art/"ladder.tsv"
 lines=[l.split("\t") for l in lad.read_text().splitlines() if l and not l.startswith("#")]
 ok=[r for r in lines if len(r)>=4 and r[1]=="ok"]
-best=ok[-1] if ok else None
+best=None
+if ok:
+    best=max(ok, key=lambda r: (float(r[2]), float(r[3])))
 def ips_for(rate, per_ip):
     if per_ip<=0: return "n/a"
     import math
@@ -423,12 +432,16 @@ for p,d in [(rec_p,rec),(soak_p,soak),(rt_p,rt)]:
     if p.is_file():
         try: d.update(json.loads(p.read_text()))
         except Exception: pass
+soak_lvl=art/"soak_summary.json"
+soak_level=soak.get("level") if soak else None
 if best:
     lvl, _, mean_c, max_c = best[0], best[1], float(best[2]), float(best[3])
     soak_mean=float(soak.get("mean_complete_ppm") or 0)
     util=float("$STEADY_UTIL")
-  # Operate below ladder max: long-run soak beats burst peak for buy sizing
-    if soak_mean > 0:
+    if soak_mean > 0 and soak_level and soak_level != lvl:
+        print(f"Note: soak ran at {soak_level} (last OK); sizing uses best-mean ladder level {lvl}.")
+    # Operate below ladder max: long-run soak beats burst peak for buy sizing
+    if soak_mean > 0 and soak_level == lvl:
         per = soak_mean * util
         steady_note = f"soak mean {soak_mean} × util {util}"
     else:
