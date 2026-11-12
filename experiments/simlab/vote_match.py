@@ -40,7 +40,7 @@ def voters_of(k): return set(MT[k].indices.tolist())
 
 def feats(k):
     d = ldays[k]; prior = (ldays < d).astype(float)
-    s = E @ E[k]; Mp = M.multiply(prior).tocsr(); n = np.asarray(Mp.sum(1)).ravel()
+    s = E @ E[k]; Mp = M.multiply(prior).tocsr(); Mp.eliminate_zeros(); n = np.asarray(Mp.sum(1)).ravel()   # explicit zeros would leak later upvotes into recency
     soft = np.log(Mp @ np.exp(20 * (s - 1)) + 1e-12) / 20 + 1; mean = (Mp @ s) / np.maximum(n, 1)
     tmatch = np.array([float(bool(t & L.tp.iat[k])) for t in L.tp]); topic = (Mp @ tmatch) / np.maximum(n, 1)
     tie = np.array([float(bool(t & L.team.iat[k])) for t in L.team]) if L.team.iat[k] else np.zeros(len(L)); tie[k] = 0
