@@ -416,6 +416,10 @@ def _difficulty(day: str) -> dict | None:
     lab = ((j or {}).get("labels") or {}).get("h3") if isinstance(j, dict) else None
     if not isinstance(lab, dict) or not lab.get("label"):
         return None
+    # Held back until the label is shown to be stable (orchestrator: bins agreed on only 6 of 14 days between two
+    # near-identical scores). Shown only when the file says stable: true.
+    if not (j.get("stable") is True or lab.get("stable") is True):
+        return None
     oos = lab.get("oos_rates") or {}
     out = {"label": lab["label"], "oos_n": oos.get("n"), "oos_hits3": oos.get("h3"), "oos_p1t3": oos.get("p1t3"),
            "source": j.get("source") or "clean shadow model"}
