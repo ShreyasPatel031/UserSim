@@ -1,0 +1,236 @@
+{
+ "design": "Try-a-URL end to end through the website's own code (orchestrator 09:30Z Nov 12). Library calls into origin/claude/ph-website\nmvp/ph_site/try_sim.py (step_page -> safe_fetch.check_url/fetch_product + READ_PROMPT on gemini-2.5-flash-lite; step_reactions ->\nperson_e5 member types + reactions_retrieval_v1 grounding + REACT_PROMPT on gemini-2.5-flash at 0.3; step_launch -> launch_band.json\nproduct-only band), with TRY_SIGNING_KEY a local dummy and TRY_LOCAL_LIMITS=1 (in-memory run store / rate limits, one fake IP per\nlaunch). Nothing goes through the public site.\nLaunches: ranked launches of Oct 27 - Nov 10 2026 (after every training set; Oct 25-26 have no stored comment text) with a resolved\nproduct URL (sites.jsonl, live) and >= 5 identity-free truth comments, stratified by final rank group. Each product site is fetched\nONCE by the site's safe_fetch; any refusal / error / \"no readable text\" / page-judge \"problem\" counts as a skip (the skip reason is\nrecorded).\nPaired arm: the same launch through the same step_reactions / step_launch, with the analysis built from the PH name / tagline /\ndescription / topics instead of the page read (what our earlier harness measured).\nTruth: PH API comment snapshots (raw/ph_at_launch/<day>/api_comments, union of snapshots, deduped by comment id); identity-free\nteam rule: the earliest top-level comment's author is the maker - all their comments dropped (the hunter cannot be matched by id\nhere; noted). Extraction and judges as ceiling.py / truth_fix.py (themes / critical / questions; blinded judges).\nMetrics: reactions theme recall / precision, critical recall, question recall; page \"doubts\" as a concern list (p@3 vs critical\ntruth; the site has no ranked concerns or questions list); band coverage of the true daily rank and decile; latency per step;\nGemini cost per request (token estimate = characters / 4 at list prices); failure modes.",
+ "sampled": 57,
+ "by_group": {
+  "4-10": 27,
+  "2-3": 12,
+  "1": 9,
+  "11+": 9
+ },
+ "skip_rate": 0.246,
+ "skip_by_group": {
+  "1": 0.444,
+  "11+": 0.222,
+  "2-3": 0.083,
+  "4-10": 0.259
+ },
+ "skip_reasons": {
+  "ValueError": 9,
+  "FetchError": 5
+ },
+ "skip_examples": [
+  [
+   "platform.vaani.dev",
+   "ValueError: That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page."
+  ],
+  [
+   "quiz.empacer.com",
+   "ValueError: That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page."
+  ],
+  [
+   "github.com",
+   "FetchError: The site answered HTTP 403."
+  ],
+  [
+   "studio.wanaka.app",
+   "ValueError: That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page."
+  ],
+  [
+   "link.voxel51.com",
+   "ValueError: That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page."
+  ],
+  [
+   "github.com",
+   "FetchError: The site answered HTTP 403."
+  ],
+  [
+   "github.com",
+   "FetchError: The site answered HTTP 403."
+  ],
+  [
+   "deduplication.tech",
+   "ValueError: Couldn't judge this page: The page content is a list of words with dual meanings and does not describe a specific product that can be launched on Product Hunt."
+  ],
+  [
+   "huggingface.co",
+   "ValueError: Couldn't judge this page: The page content is primarily code and technical details related to a language model, not a user-facing product description suitable f"
+  ],
+  [
+   "lnkd.in",
+   "ValueError: Couldn't judge this page: The content is from a LinkedIn post and requires a login to view the full details or interact with the product's website."
+  ],
+  [
+   "sdsvn.github.io",
+   "FetchError: That link is not a web page."
+  ],
+  [
+   "xwiki.org",
+   "ValueError: Couldn't judge this page: The page is a technical installation guide and does not describe the product's value proposition or target audience in a way suitable "
+  ],
+  [
+   "github.com",
+   "FetchError: The site answered HTTP 403."
+  ],
+  [
+   "app.topmessage.com",
+   "ValueError: That page has almost no readable text (it may need JavaScript or a login). Try the product's main marketing page."
+  ]
+ ],
+ "quality": {
+  "theme_recall": {
+   "site page read (fetched ok)": [
+    47.8,
+    39.7,
+    55.6,
+    43
+   ],
+   "PH description (same launches)": [
+    50.7,
+    43.9,
+    57.2,
+    43
+   ],
+   "site - PH (paired)": [
+    -2.9,
+    -9.5,
+    3.6,
+    43
+   ],
+   "PH description (all sampled)": [
+    51.6,
+    45.5,
+    57.7,
+    57
+   ]
+  },
+  "theme_precision": {
+   "site page read (fetched ok)": [
+    51.9,
+    43.0,
+    60.5,
+    43
+   ],
+   "PH description (same launches)": [
+    53.9,
+    46.5,
+    60.5,
+    43
+   ],
+   "site - PH (paired)": [
+    -1.9,
+    -10.5,
+    6.6,
+    43
+   ],
+   "PH description (all sampled)": [
+    52.0,
+    45.6,
+    58.5,
+    57
+   ]
+  },
+  "critical_recall": {
+   "site page read (fetched ok)": [
+    25.9,
+    18.3,
+    34.5,
+    43
+   ],
+   "PH description (same launches)": [
+    26.0,
+    19.0,
+    33.5,
+    42
+   ],
+   "site - PH (paired)": [
+    0.5,
+    -5.5,
+    6.8,
+    42
+   ],
+   "PH description (all sampled)": [
+    26.9,
+    20.2,
+    34.0,
+    56
+   ]
+  },
+  "question_recall": {
+   "site page read (fetched ok)": [
+    16.1,
+    10.2,
+    22.3,
+    43
+   ],
+   "PH description (same launches)": [
+    21.3,
+    14.3,
+    28.8,
+    43
+   ],
+   "site - PH (paired)": [
+    -5.2,
+    -13.2,
+    2.3,
+    43
+   ],
+   "PH description (all sampled)": [
+    18.5,
+    12.9,
+    24.4,
+    57
+   ]
+  },
+  "page doubts as concerns p@3": [
+   11.6,
+   5.4,
+   18.6,
+   43
+  ],
+  "page doubts hit@3": [
+   27.9,
+   16.3,
+   41.9,
+   43
+  ]
+ },
+ "band": {
+  "coverage of true rank, site page": [
+   76.7,
+   62.8,
+   88.4,
+   43
+  ],
+  "coverage, PH description": [
+   80.7,
+   70.2,
+   91.2,
+   57
+  ],
+  "spearman(site percentile, -rank)": 0.308,
+  "spearman(PH percentile, -rank)": 0.651,
+  "spearman(site percentile, PH percentile)": 0.487
+ },
+ "latency_s_median_p90": {
+  "lat_page": [
+   2.8,
+   4.0
+  ],
+  "lat_react": [
+   6.2,
+   7.3
+  ],
+  "lat_launch": [
+   0.0,
+   0.0
+  ],
+  "lat_react_ph": [
+   6.3,
+   7.4
+  ]
+ },
+ "gemini_usd_estimate_total": 0.076,
+ "page_read_usd_per_request_estimate": 4e-05,
+ "grounded_share": 1.0,
+ "page_clarity_mean": 4.51
+}

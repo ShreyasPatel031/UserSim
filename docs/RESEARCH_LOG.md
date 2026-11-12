@@ -1301,3 +1301,22 @@ Daily top 3 (clean LM alone 56.3), ridge, all blocks:
   - 00:05: .73 / .55 / .47 / .30 / .32
   - +2 h: .86 / .57 / .44 / .36 / .25
   - +4 h: .84 / .64 / .47 / .29 / .23
+
+### 2026-11-12 E5 — try-a-URL end to end through the website's own code (origin/claude/ph-website, mvp/ph_site/try_sim.py)
+Script experiments/simlab/try_e2e.py; report reports/try_e2e/. Spend about $0.51.
+
+Method:
+- Library calls, with a local dummy signing key and in-memory limits: step_page (safe_fetch + READ_PROMPT on flash-lite), step_reactions (member types + retrieval grounding + REACT_PROMPT on flash), step_launch (launch_band.json).
+- Launches: 57 from Oct 27–Nov 10, stratified by rank (9 / 12 / 27 / 9). Comment text exists only from Oct 27.
+- URLs: the at-launch primary_link (3 days) or the first non-PH link in the maker's first comment. That resolver is itself rank-skewed: links were found for 67% of #1 launches vs 38% of 11+.
+- Paired arm: the same site code fed the PH name / tagline / description.
+- Identity-free truth: API comment snapshots minus the first top-level author.
+
+Results:
+- Skip rate 24.6% (14 of 57). Genuine page failures are 10 (17.5%): 5 JavaScript-only or almost no text, 4 HTTP 403, 1 not a web page. The other 4 were links to a LinkedIn post, docs or code pages, an artefact of the URL resolver.
+- 9 links were http; this container's safe_fetch only fetches https behind a proxy, so they were rewritten to https. Production fetches http directly.
+- Page read vs PH description (43 paired launches): theme recall 47.8 vs 50.7 (−2.9 [−9.5, 3.6]); precision 51.9 vs 53.9; critical recall 25.9 vs 26.0; question recall 16.1 vs 21.3 (−5.2 [−13.2, 2.3]).
+- The site has no ranked concerns or questions list. The page "doubts" used as a concern list give p@3 11.6 [5.4, 18.6] and hit@3 27.9, against RANKED p@3 about 24 in our harness.
+- Band: coverage of the true rank 76.7% (page) vs 80.7% (description). Spearman of the band percentile with −rank on the same 43 launches: 0.31 (page) vs 0.68 (description), difference −0.36 [−0.68, −0.11]. The band model was trained on PH descriptions, so page text is out of its distribution.
+- Latency, median / p90: page step 2.8 / 4.0 s, reactions step 6.2 / 7.3 s, launch step about 0.
+- Cost: page read about $0.0002 per request; reactions about $0.004 (flash).
