@@ -1,0 +1,114 @@
+{
+ "design": "Site lookup for \"where it would land\" with optional hunter / makers (orchestrator 03:00Z Nov 12).\nBundle (bucket only): key = sha256(\"ph-ladder-v1:\" + lowercase PH handle).hexdigest()[:20] -> aggregate launch stats as of a\ndate: hunted {n, n_top3, n_top10, sum_lnv}, made {n, best_rank, sum_lnv, max_lnv}. Only public launch outcomes; no names.\nModel JSON (plain, like launch_band.json): for each rung (product_only, hunter, makers, both) the feature list, medians for\nmissing values, standardisation mean/sd, ridge coefficients/intercept on ln(1+votes), and the calibrated band table (deciles of\nthe rung score -> final daily rank p10/p50/p90, from month-forward held-out scores). Feature recipe (same as landing_ladder):\n  base     the product-only score (launch_band.json recipe on the site; here the month-forward product-only ridge)\n  hunter   h_n = ln(1+hunts), h_top3 = top-3 share, h_top10 = top-10 share, h_ymean = mean ln votes of hunts (median if none),\n           h_self = hunter is one of the makers, h_top3_na / h_ymean_na = no earlier hunts\n  makers   m_count = number of makers, m_prior = ln(1 + sum of makers' earlier launches), m_best_rank = ln(1 + best earlier rank),\n           m_ymean = sum ln votes / launches, m_ymax = max ln votes (medians if none), m_best_rank_na / m_ymean_na\nValidation: bundle and models built AS OF 2026-10-24 (training launches <= Oct 24); every ranked launch Oct 25 - Nov 10 scored\nthrough the bundle path (hash the real handles, look up, compute features, apply the JSON ridge); per-day top 3/5/10 and\nSpearman for each rung, band coverage; plus a 50-launch end-to-end check that bundle features equal the direct computation.\nProduction bundle + JSON built as of the latest day.",
+ "validation": {
+  "launches": 474,
+  "days": 17,
+  "product_only": {
+   "spearman": [
+    34.8,
+    25.3,
+    43.8
+   ],
+   "top3": [
+    31.4,
+    17.6,
+    47.1
+   ],
+   "top5": [
+    40.0,
+    29.4,
+    50.6
+   ],
+   "top10": [
+    57.6,
+    48.8,
+    65.9
+   ],
+   "band_coverage": 0.869,
+   "band_width": 34.1,
+   "days": 17
+  },
+  "hunter": {
+   "spearman": [
+    56.0,
+    48.9,
+    62.4
+   ],
+   "top3": [
+    47.1,
+    37.3,
+    58.8
+   ],
+   "top5": [
+    64.7,
+    54.1,
+    75.3
+   ],
+   "top10": [
+    72.9,
+    65.9,
+    78.8
+   ],
+   "band_coverage": 0.886,
+   "band_width": 31.2,
+   "days": 17
+  },
+  "makers": {
+   "spearman": [
+    45.2,
+    37.0,
+    52.6
+   ],
+   "top3": [
+    47.1,
+    37.3,
+    58.8
+   ],
+   "top5": [
+    52.9,
+    44.7,
+    60.0
+   ],
+   "top10": [
+    65.9,
+    57.6,
+    72.4
+   ],
+   "band_coverage": 0.88,
+   "band_width": 33.4,
+   "days": 17
+  },
+  "both": {
+   "spearman": [
+    57.9,
+    49.8,
+    65.1
+   ],
+   "top3": [
+    54.9,
+    45.1,
+    64.7
+   ],
+   "top5": [
+    65.9,
+    56.5,
+    75.3
+   ],
+   "top10": [
+    74.7,
+    67.1,
+    81.2
+   ],
+   "band_coverage": 0.863,
+   "band_width": 30.5,
+   "days": 17
+  },
+  "end_to_end_50_max_feature_diff": 0.0
+ },
+ "production": {
+  "as_of": "2026-11-10",
+  "handles": 7513,
+  "model_bytes": 6511,
+  "bundle_bytes": 783790
+ }
+}

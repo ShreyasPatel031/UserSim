@@ -1168,3 +1168,50 @@ Split-half bar, on 132 posts with at least 16 comments:
 - Critical recall interaction: −7.0 [−16.9, 2.7]. Concerns p@3 interaction: −1.8 [−10.3, 6.7].
 
 Reading: naming the audience shifts the general reaction mix in the right direction on paired products, but it does not make concerns audience-specific. On the larger Show HN set it adds no recall and costs precision. Honest page wording: "choose the audience" may be offered for the overall reaction mix with a caution ("the audience changes the tone and themes modestly"). It should not be claimed for concerns. For Hacker News, add the generic HN question list (open source, pricing, privacy, alternatives) to the questions.
+
+### 2026-11-12 E5 — maker-identity leak (PH names the day #1's makers only after the day): masked 00:05 reruns and audit
+Mechanism (orchestrator and PH agent): at 00:05 the eventual winner has about one named maker, the rest "[REDACTED]", like everyone else. In rows read after the day, the winner's team is named. In my launches table winners have 3.99 named makers of 4.25, against about 0.93 named for every other rank.
+
+Masked view: the launch's own row keeps its first named maker plus the total maker count; earlier launches keep their full named teams. Reports are in reports/masked_0005/.
+
+Honest backtest, masked (refit4; maker-identity fields, self-hunted and llm_full dropped; same folds and 5 seeds):
+
+| Variant | Top 3 / 5 / 10 | #1 / #2 / #3 pick in top 3 | Exact winner |
+|---|---|---|---|
+| Masked | 58.4 / 67.7 / 75.7 | 70.6 / 57.1 / 47.1 | 44.1 [37.4, 50.4] |
+| … without first-comment fields | 56.8 / 68.3 / 75.4 | – | 39.9 |
+| … without all page inputs | 53.7 / 67.0 / 74.8 | – | 32.4 |
+| Leaky honest (for reference) | 61.7 / 68.1 / 75.6 | 89.1 / 56.3 / 39.5 | 78.2 |
+
+Ladder (150 test days; top 3, paired against product-only):
+
+| Rung | Leaky | Masked |
+|---|---|---|
+| + hunter | +17.6 | +17.6 (unchanged) |
+| + makers, cumulative top 3 | 56.9 (+26.9) | 52.9 (+22.9 [17.6, 27.8]) |
+| Makers alone | +15.3 | +10.0 [5.6, 14.7] |
+| + full LM | 61.1 | 58.9 |
+
+The maker rung survives at about 60% of its leaky value, and only with one main maker plus the total maker count.
+
+Site bundle v2 (ladder_model_v2.json / ladder_handles_v2.json; same key salt), validated on 474 launches Oct 25–Nov 10:
+- hunter + makers: 54.9 / 65.9 / 74.7 (v1: 56.9 / 65.9 / 74.7);
+- makers alone: 47.1 / 52.9 / 65.9;
+- hunter alone: 47.1 / 64.7 / 72.9;
+- band coverage 0.86–0.89.
+
+Likely voters (all ranked Aug–Oct launches, masked):
+- Person level: ties over taste and activity add AUC +0.0007 and precision@100 +0.43 points. Hunter ties alone add +0.43, maker ties +0.15.
+- Launch level: the ties sum alone gives Spearman 39.1, from hunter ties 38.5 against maker ties 4.6.
+- On top of product-only: ties +15.1, hunter ties +14.4 [10.6, 18.7], maker ties +0.1 [−1.0, 1.3].
+- Nothing is added on top of the masked full LM.
+- Verdict: the ties result stands, and it is almost entirely hunter ties.
+
+Discussion volume: product-only is unchanged at 0.283. Hunter + makers masked gives within-day Spearman 0.464 [0.426, 0.498], against 0.439 leaky; the total maker count carries it. It stands.
+
+Fall or need re-basing, not rerun (internal; not on the website):
+- results whose residual target is r = log votes − honest LM: early engagers, mobilisation, the fame prior, false favourites, and any "beat the LM" comparison;
+- the 90/57/41 calibration, withdrawn from the website;
+- early engagers' "prior ties to the team" and mobilisation's team-based features, which use the target's named team.
+
+Clean: the product-only ridge, landing_retrieval and launch_band. They use no maker identity as an input; named teams only exclude same-team neighbours.

@@ -1,0 +1,220 @@
+{
+ "design": "How much discussion to expect (orchestrator 03:15Z Nov 12, item 2). Target per launch: number of non-team comments (threads\nand replies) created in the first 24 h after 00:00 PT of the launch day, from the thread dumps (exact created_at; the page query\nholds the top 50 threads by votes, so very busy launches are capped - counts are a lower bound there), and the share of those\ncomments that are questions (contains \"?\"). Launches = the comment-forecast days (>= 80% of the line-up in the dumps).\nPredictors (00:05-known): the product-only score ('base', landing_retrieval) alone, and with the hunter + maker features of\nlanding_ladder (both rung). Ridge on ln(1 + comments) and on the question share, expanding month-forward (first two months\ntrain). Metrics: Spearman overall and within day, calibrated 10-90% band of the comment count per predicted decile (deciles and\nbands from earlier months) with coverage and width; day-bootstrap CIs; paired product-only vs both.",
+ "launches": 5553,
+ "days": 238,
+ "comments_24h": {
+  "median": 4.0,
+  "p10_p90": [
+   0.0,
+   21.0
+  ],
+  "share_zero": 0.156
+ },
+ "question_share": {
+  "mean": 0.47
+ },
+ "volume": {
+  "product_only": {
+   "spearman_overall": 0.216,
+   "within_day_spearman": [
+    0.283,
+    0.245,
+    0.318,
+    160
+   ],
+   "band_coverage": 0.834,
+   "band_mean_width_comments": 28.7,
+   "bands_by_decile": [
+    {
+     "decile": 0,
+     "comments_p10_p50_p90": [
+      0.0,
+      2.0,
+      13.300000000000011
+     ]
+    },
+    {
+     "decile": 1,
+     "comments_p10_p50_p90": [
+      0.0,
+      3.0,
+      17.0
+     ]
+    },
+    {
+     "decile": 2,
+     "comments_p10_p50_p90": [
+      0.0,
+      3.0,
+      18.400000000000034
+     ]
+    },
+    {
+     "decile": 3,
+     "comments_p10_p50_p90": [
+      0.0,
+      3.0,
+      18.30000000000001
+     ]
+    },
+    {
+     "decile": 4,
+     "comments_p10_p50_p90": [
+      0.0,
+      3.0,
+      19.30000000000001
+     ]
+    },
+    {
+     "decile": 5,
+     "comments_p10_p50_p90": [
+      0.0,
+      3.0,
+      26.400000000000034
+     ]
+    },
+    {
+     "decile": 6,
+     "comments_p10_p50_p90": [
+      0.0,
+      4.0,
+      23.30000000000001
+     ]
+    },
+    {
+     "decile": 7,
+     "comments_p10_p50_p90": [
+      1.0,
+      5.0,
+      29.0
+     ]
+    },
+    {
+     "decile": 8,
+     "comments_p10_p50_p90": [
+      1.0,
+      6.0,
+      37.30000000000001
+     ]
+    },
+    {
+     "decile": 9,
+     "comments_p10_p50_p90": [
+      1.0,
+      7.0,
+      30.0
+     ]
+    }
+   ]
+  },
+  "both": {
+   "spearman_overall": 0.465,
+   "within_day_spearman": [
+    0.464,
+    0.426,
+    0.498,
+    160
+   ],
+   "band_coverage": 0.781,
+   "band_mean_width_comments": 23.7,
+   "bands_by_decile": [
+    {
+     "decile": 0,
+     "comments_p10_p50_p90": [
+      0.0,
+      1.0,
+      7.300000000000011
+     ]
+    },
+    {
+     "decile": 1,
+     "comments_p10_p50_p90": [
+      0.0,
+      3.0,
+      10.0
+     ]
+    },
+    {
+     "decile": 2,
+     "comments_p10_p50_p90": [
+      0.0,
+      3.0,
+      15.0
+     ]
+    },
+    {
+     "decile": 3,
+     "comments_p10_p50_p90": [
+      0.0,
+      2.0,
+      12.0
+     ]
+    },
+    {
+     "decile": 4,
+     "comments_p10_p50_p90": [
+      0.0,
+      2.0,
+      9.0
+     ]
+    },
+    {
+     "decile": 5,
+     "comments_p10_p50_p90": [
+      0.0,
+      2.0,
+      11.0
+     ]
+    },
+    {
+     "decile": 6,
+     "comments_p10_p50_p90": [
+      0.0,
+      4.0,
+      22.0
+     ]
+    },
+    {
+     "decile": 7,
+     "comments_p10_p50_p90": [
+      1.0,
+      7.0,
+      27.0
+     ]
+    },
+    {
+     "decile": 8,
+     "comments_p10_p50_p90": [
+      2.0,
+      13.0,
+      40.30000000000001
+     ]
+    },
+    {
+     "decile": 9,
+     "comments_p10_p50_p90": [
+      3.0,
+      20.0,
+      48.30000000000001
+     ]
+    }
+   ]
+  },
+  "both - product_only within-day spearman (paired)": [
+   0.181,
+   0.147,
+   0.213,
+   160
+  ]
+ },
+ "question_share_model": {
+  "product_only": {
+   "spearman": 0.189,
+   "n": 1785
+  },
+  "both": {
+   "spearman": 0.275,
+   "n": 1785
+  }
+ }
+}

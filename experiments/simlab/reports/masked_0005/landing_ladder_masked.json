@@ -1,0 +1,556 @@
+{
+ "design": "What is each optional input worth to \"where it would land\"? (orchestrator 02:45Z Nov 12)\nBase = the product-only ridge's month-forward score (landing_retrieval.py 'base', the web_launch_band design). Blocks (all\nknown at 00:05, computed from held data strictly before the launch day):\n  CAL     day of week, line-up size (featured launches that day)                      visitor enters: launch date\n  HUNTER  hunter's past hunts (count), past top-3 / top-10 rate, mean ln votes of past hunts; self-hunted flag\n                                                                                        visitor enters: hunter's PH profile\n  MAKERS  number of real makers, makers' prior launches (count), best prior rank, mean / max ln votes of prior launches\n                                                                                        visitor enters: makers' PH profiles\n  TIES    complete-pool people who upvoted any earlier launch of the team (log count) - \"the team's earlier voters\"\n                                                                                        visitor enters: makers' PH profiles\n  FULL    the honest full launch model (its prediction as a feature)                    visitor enters: everything above + more\nLadder (cumulative) and each block alone on top of the base; ridge on ln(1+votes), expanding month-forward (first test month\nhas two earlier training months). Per day (>= 10 launches): within-day Spearman with -rank, top 3/5/10 overlap; paired by day\nvs the base, 2000 day-bootstrap draws. Band: deciles of the score and the 10th-90th percentile of final daily rank per decile,\nboth from earlier months; reported: mean band width (ranks) and coverage of the true rank.",
+ "launches": 5564,
+ "test_days": 150,
+ "test_months": [
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "ladder": {
+  "0 product-only": {
+   "spearman": [
+    35.2,
+    31.8,
+    38.5
+   ],
+   "top3": [
+    30.0,
+    26.0,
+    34.0
+   ],
+   "top5": [
+    41.1,
+    37.7,
+    44.8
+   ],
+   "top10": [
+    61.9,
+    58.7,
+    65.1
+   ],
+   "band": {
+    "mean_width_ranks": 33.5,
+    "coverage": 0.848
+   }
+  },
+  "1 + CAL": {
+   "spearman": [
+    35.2,
+    32.0,
+    38.5
+   ],
+   "top3": [
+    30.0,
+    26.0,
+    34.2
+   ],
+   "top5": [
+    41.1,
+    37.5,
+    44.5
+   ],
+   "top10": [
+    61.9,
+    58.8,
+    64.7
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 23.9,
+    "coverage": 0.81
+   }
+  },
+  "2 + HUNTER": {
+   "spearman": [
+    56.7,
+    53.8,
+    59.6
+   ],
+   "top3": [
+    47.6,
+    43.3,
+    52.0
+   ],
+   "top5": [
+    62.3,
+    59.5,
+    65.2
+   ],
+   "top10": [
+    75.2,
+    73.1,
+    77.3
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     21.5,
+     18.4,
+     24.7
+    ],
+    "top3": [
+     17.6,
+     12.4,
+     22.7
+    ],
+    "top5": [
+     21.2,
+     17.3,
+     25.2
+    ],
+    "top10": [
+     13.3,
+     10.7,
+     15.9
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 20.8,
+    "coverage": 0.831
+   }
+  },
+  "3 + MAKERS": {
+   "spearman": [
+    59.4,
+    56.6,
+    62.0
+   ],
+   "top3": [
+    52.9,
+    49.3,
+    56.5
+   ],
+   "top5": [
+    65.5,
+    62.3,
+    68.7
+   ],
+   "top10": [
+    76.1,
+    74.0,
+    78.2
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     24.2,
+     21.2,
+     27.3
+    ],
+    "top3": [
+     22.9,
+     17.6,
+     27.8
+    ],
+    "top5": [
+     24.4,
+     20.7,
+     28.3
+    ],
+    "top10": [
+     14.3,
+     11.7,
+     17.1
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 19.9,
+    "coverage": 0.822
+   }
+  },
+  "4 + TIES": {
+   "spearman": [
+    59.4,
+    56.6,
+    62.1
+   ],
+   "top3": [
+    53.3,
+    49.3,
+    57.1
+   ],
+   "top5": [
+    65.2,
+    62.3,
+    68.1
+   ],
+   "top10": [
+    76.1,
+    74.0,
+    78.3
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     24.1,
+     21.0,
+     27.4
+    ],
+    "top3": [
+     23.3,
+     18.4,
+     28.4
+    ],
+    "top5": [
+     24.1,
+     20.4,
+     28.0
+    ],
+    "top10": [
+     14.3,
+     11.5,
+     17.1
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 20.1,
+    "coverage": 0.829
+   }
+  },
+  "5 + FULL": {
+   "spearman": [
+    64.0,
+    61.4,
+    66.4
+   ],
+   "top3": [
+    58.9,
+    55.3,
+    62.4
+   ],
+   "top5": [
+    67.3,
+    64.4,
+    70.0
+   ],
+   "top10": [
+    77.2,
+    75.3,
+    79.0
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     28.7,
+     25.3,
+     32.2
+    ],
+    "top3": [
+     28.9,
+     23.8,
+     33.8
+    ],
+    "top5": [
+     26.3,
+     22.4,
+     30.1
+    ],
+    "top10": [
+     15.3,
+     12.5,
+     18.0
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 18.7,
+    "coverage": 0.821
+   }
+  }
+ },
+ "alone": {
+  "product-only + CAL": {
+   "spearman": [
+    35.2,
+    31.9,
+    38.5
+   ],
+   "top3": [
+    30.0,
+    26.0,
+    34.2
+   ],
+   "top5": [
+    41.1,
+    37.7,
+    44.7
+   ],
+   "top10": [
+    61.9,
+    58.7,
+    64.9
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 23.9,
+    "coverage": 0.81
+   }
+  },
+  "product-only + HUNTER": {
+   "spearman": [
+    55.8,
+    52.8,
+    58.9
+   ],
+   "top3": [
+    47.3,
+    43.1,
+    51.6
+   ],
+   "top5": [
+    62.0,
+    59.3,
+    64.8
+   ],
+   "top10": [
+    75.1,
+    73.0,
+    77.3
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     20.6,
+     17.3,
+     23.7
+    ],
+    "top3": [
+     17.3,
+     12.7,
+     22.2
+    ],
+    "top5": [
+     20.9,
+     17.2,
+     24.7
+    ],
+    "top10": [
+     13.3,
+     10.5,
+     16.1
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 27.4,
+    "coverage": 0.832
+   }
+  },
+  "product-only + MAKERS": {
+   "spearman": [
+    48.2,
+    45.2,
+    51.1
+   ],
+   "top3": [
+    40.0,
+    35.8,
+    44.0
+   ],
+   "top5": [
+    53.2,
+    50.1,
+    56.3
+   ],
+   "top10": [
+    69.8,
+    67.3,
+    72.2
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     13.0,
+     10.4,
+     15.4
+    ],
+    "top3": [
+     10.0,
+     5.6,
+     14.7
+    ],
+    "top5": [
+     12.1,
+     8.9,
+     15.5
+    ],
+    "top10": [
+     7.9,
+     5.9,
+     9.9
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 32.1,
+    "coverage": 0.836
+   }
+  },
+  "product-only + TIES": {
+   "spearman": [
+    53.4,
+    50.5,
+    56.3
+   ],
+   "top3": [
+    42.7,
+    39.1,
+    46.4
+   ],
+   "top5": [
+    58.7,
+    55.7,
+    61.7
+   ],
+   "top10": [
+    72.3,
+    70.1,
+    74.5
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     18.2,
+     15.2,
+     20.9
+    ],
+    "top3": [
+     12.7,
+     8.9,
+     16.4
+    ],
+    "top5": [
+     17.6,
+     14.0,
+     21.1
+    ],
+    "top10": [
+     10.5,
+     8.1,
+     12.9
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 30.5,
+    "coverage": 0.831
+   }
+  },
+  "product-only + FULL": {
+   "spearman": [
+    64.7,
+    62.1,
+    67.2
+   ],
+   "top3": [
+    58.4,
+    54.9,
+    62.2
+   ],
+   "top5": [
+    67.2,
+    64.7,
+    69.7
+   ],
+   "top10": [
+    77.3,
+    75.6,
+    79.0
+   ],
+   "minus product-only (paired)": {
+    "spearman": [
+     29.5,
+     26.1,
+     32.9
+    ],
+    "top3": [
+     28.4,
+     23.6,
+     33.6
+    ],
+    "top5": [
+     26.1,
+     22.1,
+     30.3
+    ],
+    "top10": [
+     15.5,
+     12.9,
+     18.1
+    ]
+   },
+   "band": {
+    "mean_width_ranks": 21.2,
+    "coverage": 0.837
+   }
+  }
+ },
+ "full LM alone (reference)": {
+  "spearman": [
+   64.8,
+   62.4,
+   67.3
+  ],
+  "top3": [
+   58.7,
+   55.1,
+   62.4
+  ],
+  "top5": [
+   67.1,
+   64.4,
+   69.9
+  ],
+  "top10": [
+   77.2,
+   75.6,
+   78.9
+  ],
+  "band": {
+   "mean_width_ranks": 26.2,
+   "coverage": 0.868
+  }
+ },
+ "inputs": {
+  "CAL": "launch date (we know the day's line-up size only on the day; before that, a typical size)",
+  "HUNTER": "the hunter's Product Hunt profile (we compute past hunts and hit rate from held launch data)",
+  "MAKERS": "the makers' Product Hunt profiles (prior launches and their votes/ranks from held launch data)",
+  "TIES": "the makers' profiles (we count pool members who upvoted their earlier launches); a visitor cannot type this number reliably",
+  "FULL": "all of the above plus the launch-model inputs (team followers, page facts) - not practical on /try"
+ }
+}
