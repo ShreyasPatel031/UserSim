@@ -285,12 +285,17 @@ def live(day, point):
     if now < T:
         print(json.dumps({"day": day, "point": point, "status": f"point {T} not reached"})); return
     tmp = tempfile.mkdtemp(prefix="cf_")
+    comments_missing = False
     for f in ("posts_ts", "comments_ts", "people_ts"):
-        r_ = subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/{day}/live/{f}.jsonl", f"{tmp}/{f}.jsonl"])
-        if r_.returncode:
-            if f != "people_ts":
+        r_ = 1 if (f == "comments_ts" and os.environ.get("CF_TEST_NO_COMMENTS")) else \
+            subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/{day}/live/{f}.jsonl", f"{tmp}/{f}.jsonl"]).returncode
+        if r_:
+            if f == "posts_ts":
                 raise RuntimeError(f"missing live/{f}.jsonl for {day}")
-            open(f"{tmp}/{f}.jsonl", "w").close()   # optional: team ids then come from the dump map only
+            # orchestrator 09:18Z Nov 12: comments_ts missing -> write the file with every comment / thread column blank and
+            # flagged (comments_missing), never another source
+            comments_missing = comments_missing or f == "comments_ts"
+            open(f"{tmp}/{f}.jsonl", "w").close()
     team, ids, api, rv = {}, set(), {}, {}
     for l in open(f"{tmp}/posts_ts.jsonl"):
         r = json.loads(l)
@@ -576,8 +581,13 @@ def live(day, point):
     if npre_th is not None and point in ("P030", "P0", "P1") and A.pred_rank_best_mix.notna().any():
         A["pred_rank_best_mix_th"] = A.assign(_n=A.id.map(npre_th).fillna(0)).sort_values(["pred_rank_best_mix", "_n", "id"], ascending=[True, False, True]).pipe(
             lambda z: pd.Series(np.arange(1, len(z) + 1), index=z.index)).reindex(A.index)
+    if comments_missing:   # blank every column that reads comments (identity-free ridge, old rule, team ids, thread lines, e5)
+        for c_ in [c for c in A.columns if c in ("pred_rank", "pred_rank_rule_a", "pred_rank_teamids", "pred_rank_blend", "pred_rank_e5", "e5_score",
+                   "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "n_c", "u_out",
+                   "u_out_teamids", "u_tie", "score")]:
+            A[c_] = np.nan
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
-           "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "thread_hunter_missing": th_missing, "written_at": now.isoformat(),
+           "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
            "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
