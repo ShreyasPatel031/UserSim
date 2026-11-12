@@ -1,0 +1,758 @@
+{
+ "v1": {
+  "x_handle": 6663,
+  "x_bio": 2444,
+  "linkedin": 2989,
+  "github": 0,
+  "website": 0,
+  "ph_name": "not stored"
+ },
+ "v2": {
+  "x_handle": 8930,
+  "x_profile": 2288,
+  "linkedin_identity": 7084,
+  "linkedin_low_conf_search": 0,
+  "linkedin_profile_rows": 3641,
+  "github": 712,
+  "website": 5529,
+  "other_links": 677,
+  "display_name": 8990,
+  "ph_extended_fields": 4143,
+  "x_posts_events": 31595,
+  "ph_events": 277733,
+  "x_people_with_posts": 2226,
+  "x_conflicts_demoted": 312
+ },
+ "linkedin_mentioning_wispr_v2": 1,
+ "sample": [
+  {
+   "person": "whatshivamdo",
+   "name": "Shivam Singh",
+   "x": [
+    "whatshivamdo"
+   ],
+   "linkedin": [
+    "whatshivamdo@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "medhaforcebewithyou",
+   "name": NaN,
+   "x": [
+    "ghatikesh"
+   ],
+   "linkedin": [
+    "medhaghatikesh@0.95"
+   ],
+   "github": [
+    "medha"
+   ],
+   "website": [
+    "https://keel-labs.org/",
+    "https://medium.com/@medhaforcebewithyou"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "nao_yukawa",
+   "name": "Nao Yukawa",
+   "x": [
+    "nyneurotech"
+   ],
+   "linkedin": [
+    "naoyukawa@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://www.producthunt.com/products/lifestack"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "quser",
+   "name": "Sergey Kudryashov \u2708\ufe0f",
+   "x": [
+    "quser"
+   ],
+   "linkedin": [
+    "quser@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "justfred_ar",
+   "name": NaN,
+   "x": [
+    "justfred_ar"
+   ],
+   "linkedin": [
+    "justinfredericks@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://arthouse.ar"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "rrhoover",
+   "name": "Ryan Hoover",
+   "x": [
+    "rrhoover"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [
+    "https://ryanhoover.me"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "chrismessina",
+   "name": "Chris Messina",
+   "x": [
+    "chrismessina"
+   ],
+   "linkedin": [
+    "factoryjoe@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://book.chrismessina.me/",
+    "https://bsky.app/profile/chrismessina.me",
+    "https://chrismessina.me"
+   ],
+   "x_profile": false,
+   "issues": []
+  }
+ ],
+ "random50_issues": 0,
+ "random50": [
+  {
+   "person": "lia_titanyan2",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "ding_hao",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "naveed_rafi1",
+   "name": NaN,
+   "x": [],
+   "linkedin": [
+    "nav-rafi@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "angell019",
+   "name": "Angel Rose",
+   "x": [],
+   "linkedin": [
+    "angelrosetj@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://angelrosejoy.framer.website/"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "awangt",
+   "name": NaN,
+   "x": [
+    "trisaktiawang"
+   ],
+   "linkedin": [
+    "awang-trisakti@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "srbiv",
+   "name": "Stafford Brooke",
+   "x": [
+    "srbiv"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "bradywilfaqn",
+   "name": "Brady Wilfahrt",
+   "x": [
+    "bradywilfaqn"
+   ],
+   "linkedin": [
+    "brady-michell-248230154@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": true,
+   "issues": []
+  },
+  {
+   "person": "merideth_thompson",
+   "name": NaN,
+   "x": [],
+   "linkedin": [
+    "merideth-j-thompson@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://www.mypartnerlab.co"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "vahan_melkonyan",
+   "name": "Vahan Melkonyan",
+   "x": [
+    "exkappavahan"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [
+    "https://cauldron.app"
+   ],
+   "x_profile": true,
+   "issues": []
+  },
+  {
+   "person": "arga_manurung",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "sebastian_sajoux1",
+   "name": "Sebastian Sajoux",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "gunjan_agg",
+   "name": NaN,
+   "x": [
+    "gunjan_amit"
+   ],
+   "linkedin": [
+    "gunjanaggarwal@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "alvaroybanez",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "berniejmitchell",
+   "name": "Bernie J Mitchell",
+   "x": [
+    "berniejmitchell"
+   ],
+   "linkedin": [
+    "berniejmitchell@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://coworkingvaluespodcast.substack.com",
+    "https://londoncoworkingassembly.com",
+    "https://thirdplaceworks.com"
+   ],
+   "x_profile": true,
+   "issues": []
+  },
+  {
+   "person": "pavan_tirumani",
+   "name": "Pavan Tirumani",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "odeth_negapatan1",
+   "name": "Odeth N",
+   "x": [],
+   "linkedin": [
+    "odeth-negapatan-789458122@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "atthajohn",
+   "name": NaN,
+   "x": [
+    "attha_john_"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "ihor_holovachenko1",
+   "name": "Ihor Holovachenko",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "black_bunny_in_tokyo",
+   "name": NaN,
+   "x": [
+    "0x_blackrabbit"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [
+    "https://dreamcog.com"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "tahafromcreem",
+   "name": "Taha Erel",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "oren_shadmi",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "aritra_ghosh6",
+   "name": "Aritra Ghosh",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "tiffany_kitchen",
+   "name": "Tiffany Kitchen",
+   "x": [],
+   "linkedin": [
+    "tiffany-kitchen-product-manager@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "cradeai",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "hasankocatiq7l",
+   "name": NaN,
+   "x": [
+    "hasankocatiq7l"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "zyi",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "zhane_range",
+   "name": "Zhane Range",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "vaibhav__bisht",
+   "name": "vaibhav bisht",
+   "x": [
+    "vaibhav__bisht"
+   ],
+   "linkedin": [],
+   "github": [
+    "vaibhav135"
+   ],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "artem_gontar",
+   "name": "Artsiom Hontar",
+   "x": [
+    "artem_gontar"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [
+    "https://www.yomio.app"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "turoczy",
+   "name": "Rick Turoczy",
+   "x": [
+    "turoczy"
+   ],
+   "linkedin": [
+    "turoczy@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://bsky.app/profile/turoczy.bsky.social"
+   ],
+   "x_profile": true,
+   "issues": []
+  },
+  {
+   "person": "varish_ali",
+   "name": "Varish Ali",
+   "x": [
+    "lazydevpro"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "ned_mehic",
+   "name": "Ned Mehic",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "anishsarkars",
+   "name": NaN,
+   "x": [
+    "anishsarkars"
+   ],
+   "linkedin": [
+    "anishsarkar-@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://aniish.me/",
+    "https://cal.com/anishsarkar"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "harini_mukesh",
+   "name": "Harini Mukesh",
+   "x": [],
+   "linkedin": [
+    "harini-mukesh@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://qapilot.io",
+    "https://www.producthunt.com/products/qapilot"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "andrewgazdecki",
+   "name": "Andrew Gazdecki",
+   "x": [
+    "agazdecki"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [
+    "https://www.acquire.com"
+   ],
+   "x_profile": true,
+   "issues": []
+  },
+  {
+   "person": "tejaswini_dalal",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "dankelly2040",
+   "name": "Dan Kelly",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "juwon55",
+   "name": "Juwon Adebayo",
+   "x": [
+    "eodly_io"
+   ],
+   "linkedin": [
+    "adebayojuwon200@0.95"
+   ],
+   "github": [],
+   "website": [
+    "https://eodly.io"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "okandg58",
+   "name": NaN,
+   "x": [
+    "okandg58"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "derineremetdi9",
+   "name": "Derin \u015eeremet",
+   "x": [
+    "derineremetdi9"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "steven_locke",
+   "name": NaN,
+   "x": [],
+   "linkedin": [
+    "steven-locke-codes@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "clairedo_04",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "tomo6",
+   "name": "TOMO",
+   "x": [],
+   "linkedin": [
+    "tomoro-ohashi-309a96368@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "komediruzecki",
+   "name": "Maff",
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [
+    "https://irchiinnuss.com",
+    "https://lumenapeiron.com",
+    "https://mercurypitch.com"
+   ],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "thejacobpegs",
+   "name": "Jacob Pegs",
+   "x": [
+    "thejacobpegs"
+   ],
+   "linkedin": [
+    "jacob-pegs@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "eszter_virt",
+   "name": NaN,
+   "x": [],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "canertaanux3r",
+   "name": "Caner Ta\u015fan",
+   "x": [
+    "canertaanux3r"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "utsav_interactai",
+   "name": NaN,
+   "x": [
+    "interactaidev"
+   ],
+   "linkedin": [
+    "utsav-singhal-986812179@0.95"
+   ],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "tomzoe",
+   "name": "Zoe",
+   "x": [
+    "tom2aqd"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [],
+   "x_profile": false,
+   "issues": []
+  },
+  {
+   "person": "farzad_yz",
+   "name": "Farzad Yousefzadeh",
+   "x": [
+    "farzad_yz"
+   ],
+   "linkedin": [],
+   "github": [],
+   "website": [
+    "https://farzadyz.com"
+   ],
+   "x_profile": true,
+   "issues": []
+  }
+ ],
+ "hn_sample_note": "5 HN sample people are not in PH persons; v2 does not yet include HN (unchanged tables/hn_people)."
+}
