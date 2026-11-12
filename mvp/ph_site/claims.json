@@ -17,7 +17,7 @@
    }
   },
   "label": "past launches scored against their real comments by a stronger judge (gemini-2.5-pro) that separates the same specific point from the same topic; generic list = 6 typical launch comments; two halves of real commenters agree on the same point about 35% of the time",
-  "source": "E5 reports/judge_reliability/README.md, branch claude/person-model-v2",
+  "source": "E5 reports/same_point/ (strict same-point judge vs the generic 6-item list), branch claude/person-model-v2",
   "date": "2026-11-12"
  },
  "similar_tools_auc": {
@@ -91,24 +91,21 @@
    "top3": 56.1,
    "top5": 67.5,
    "top10": 74.4,
-   "p1_top3": 0.69,
-   "exact1": 0.32,
+   "p1_top3": 0.725,
+   "exact1": 0.382,
    "days": 255
   },
   "label": "clean backtest of the 00:05 model with 00:05-visible inputs only (255 days, Mar 1 to Nov 10, 2026)",
   "source": "PH ops honest_preds_v2 (c1dd71b5)",
   "date": "2026-11-12",
-  "pick_label": "clean backtest, 214 days whose full top 10 was in the test"
+  "pick_label": "conservative clean backtest (no site features, 207 days)",
+  "pick_source": "PH agent docs/patches/README_deploy_clean_nosite_thread.md (clean_nosite)"
  },
  "try_e2e": {
   "values": {
    "launches": 130,
-   "spearman_page": 0.32,
    "spearman_ph": 0.59,
-   "coverage_page": 0.86,
    "coverage_ph": 0.89,
-   "reaction_recall_page": 0.478,
-   "reaction_precision_page": 0.519,
    "fetch_fail_share": 0.27,
    "fetch_fail_after_root": 0.2
   },
@@ -118,24 +115,11 @@
  },
  "page_band": {
   "values": {
-   "n": 130,
-   "spearman": 0.41,
-   "coverage": 0.87,
-   "width": 32
+   "n": 856,
+   "spearman": 0.279
   },
-  "label": "page-trained band, 130 fresh page reads Oct 27-Nov 10 (out of sample; trained to Oct 24)",
-  "source": "E5 launch_band_page_v1.json heldout_accuracy",
-  "date": "2026-11-12"
- },
- "who_card_test": {
-  "values": {
-   "launches": 426,
-   "site_p3": 0.229,
-   "random_p3": 0.101,
-   "always_top_p3": 0.297
-  },
-  "label": "426 launches from Sep 1, real voters' over-represented segments, people's segments built from activity before launch day",
-  "source": "E5 who-card voter test, branch claude/person-model-v2",
+  "label": "page-trained band, 856 held-out launches (trained to Aug 31; pooled, page summary + excerpt)",
+  "source": "site/launch_band_page_v1.json heldout_accuracy.settle_train_to_aug31.pooled.d_both",
   "date": "2026-11-12"
  },
  "try_stability": {

@@ -400,7 +400,7 @@ def _interest_people(a: dict) -> dict:
                        "descriptors are category-level and banded."),
             "note": (f"Based on {n:,} public Product Hunt profiles. These are types of members whose past Product Hunt "
                      "activity centres on this category: they show who the product resembles, not who will vote for it "
-                     "or use it. On launch day, votes come mostly from the most active members. " + _who_test_note() +
+                     "or use it. On launch day, votes come mostly from the most active members. " +
                      " Segments shown only where 20 or more people back them.")}
 
 
@@ -523,17 +523,6 @@ def _types_from_people(p: dict, topics: list[str]) -> list[str]:
     out.append("Type E: heavy PH voter who comments often and sees dozens of similar launches a week")
     out.append("Type F: maker from an unrelated category, browsing the day's launches")
     return out
-
-
-def _who_test_note() -> str:
-    from mvp.ph_site.live import claims
-    w = claims().get("who_card_test")
-    if not w:
-        return ""
-    v = w["values"]
-    return (f"Fixed offline figure ({w['label']}, {w['date']}): the segments this card shows matched the segments "
-            f"over-represented among real voters {v['site_p3']:.0%} of the time, against {v['random_p3']:.0%} at random "
-            f"and {v['always_top_p3']:.0%} for simply naming the most-voting segments.")
 
 
 def _member_types(p: dict, topics: list[str]) -> list[str]:
@@ -864,7 +853,7 @@ def step_launch(tok: str) -> dict:
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
                        "(10th to 90th percentile)."),
-            "honesty": _honesty(acc), "coverage": None if card else _coverage(), "input_note": _input_note(a.get("source")),
+            "honesty": _honesty(acc, a.get("source")), "coverage": None if card else _coverage(), "input_note": _input_note(a.get("source")),
             "card": card, "source": a.get("source")}
 
 
@@ -881,18 +870,17 @@ def _input_note(source: str | None) -> str | None:
     if not pb:
         return "Scored from a read of your web page; the accuracy figures were measured on Product Hunt descriptions."
     v = pb["values"]
-    return (f"Scored from your web page alone with a model trained on product web pages. Tested on {v['n']} new "
-            f"launches read through this site ({pb['date']}): rank correlation {v['spearman']:.2f}, the real rank fell "
-            f"inside the band {v['coverage']:.0%} of the time (about {v['width']:.0f} ranks wide). A pasted launch "
-            f"description is the stronger input (rank correlation {cl['try_e2e']['values']['spearman_ph']:.2f}). The "
-            "top-3 table below was measured on Product Hunt descriptions.")
+    return (f"Scored from your web page alone with a model trained on product web pages: on {v['n']} held-out "
+            f"launches its rank correlation was {v['spearman']:.2f} ({pb['date']}). A pasted launch description is the "
+            f"stronger input (rank correlation {cl['try_e2e']['values']['spearman_ph']:.2f}). The top-3 table below was "
+            "measured on Product Hunt descriptions.")
 
 def _full_model_ref(acc: dict) -> dict:
     """Corrected 00:05 launch-model backtest (claims.json; the 63/69/75 in older launch_band.json was leak-inflated)."""
     try:
         from mvp.ph_site.live import claims
         v = claims()["launch_model_backtest"]["values"]
-        return {k: v[k] for k in ("top3", "top5", "top10")}
+        return {**{k: v[k] for k in ("top3", "top5", "top10")}, "days": v["days"]}
     except Exception:  # noqa: BLE001 - never fall back to the leak-inflated reference in launch_band.json
         return None
 
@@ -910,7 +898,7 @@ def _r(x) -> int:
     return int(float(x) + 0.5)   # round half up, matching the /ph page
 
 
-def _honesty(acc: dict) -> str:
+def _honesty(acc: dict, source: str | None = None) -> str:
     rec = ""
     try:
         from mvp.ph_site import live
@@ -921,6 +909,7 @@ def _honesty(acc: dict) -> str:
     except Exception:  # noqa: BLE001
         pass
     return (f"Pre-launch rank prediction is weak, and weaker still from a page alone. Tested month-forward on "
-            f"{acc['days']} days, this page-only model put {acc['top3']:.0f}% / {acc['top5']:.0f}% / "
-            f"{acc['top10']:.0f}% of the real top 3 / 5 / 10 in its own top 3 / 5 / 10." + rec +
+            f"{acc['days']} days using Product Hunt launch descriptions, the description-only model put "
+            f"{acc['top3']:.0f}% / {acc['top5']:.0f}% / {acc['top10']:.0f}% of the real top 3 / 5 / 10 in its own "
+            f"top 3 / 5 / 10{'' if source == 'pasted' else '; a read of your web page is a weaker input than that'}." + rec +
             " Who hunts it and who shows up on the day decide most of the result.")

@@ -153,7 +153,7 @@ function renderLaunch(l){
      <div class="card"><p class="label">Chance of the day's top 10%</p><p class="big">${pc(C.p_top10pct)}%</p><p class="small muted">Top 3 by day size: ${sizes(C.p_top3_by_size)}. Top 10: ${sizes(C.p_top10_by_size)}.</p></div></div>`;
     band = `<div class="band" aria-label="Position in the day"><div class="l" style="left:${x(C.pct_of_day[0])}%;right:${100-x(C.pct_of_day[2])}%"></div><div class="m" style="left:${x(C.pct_of_day[1])}%"></div></div>
      <div class="scale"><span>top of the day</span><span>10th to 90th percentile of where pages with a similar score finished</span><span>bottom</span></div>`;
-    cov = `<p class="small" style="margin-top:12px">Checked out of sample on ${Number(V.launches)} page reads (fixed offline figures, E5): the real position fell inside this band ${Math.round(Number(V.band))}% of the time (${(V.band_by_size||[]).map(v=>Math.round(Number(v))+"%").join(" / ")} on small / mid / large days; ${Math.round(Number(V.fresh))}% on 130 fresh reads); the vote-share band held ${Math.round(Number(V.share))}% of the time; the top-10% chance averaged ${Number((V.top10pct||[])[0]).toFixed(1)}% predicted vs ${Number((V.top10pct||[])[1]).toFixed(1)}% actual. We assumed: ${Object.entries(l.assumed).map(([k,v])=>esc(k)+" at "+esc(v)).join("; ")}.</p>`;
+    cov = `<p class="small" style="margin-top:12px">Checked out of sample on ${Number(V.launches)} page reads (fixed offline figures, E5): the real position fell inside this band ${Math.round(Number(V.band))}% of the time (${(V.band_by_size||[]).map(v=>Math.round(Number(v))+"%").join(" / ")} on small / mid / large days); the vote-share band held ${Math.round(Number(V.share))}% of the time; the top-10% chance averaged ${Number((V.top10pct||[])[0]).toFixed(1)}% predicted vs ${Number((V.top10pct||[])[1]).toFixed(1)}% actual. We assumed: ${Object.entries(l.assumed).map(([k,v])=>esc(k)+" at "+esc(v)).join("; ")}.</p>`;
   } else {
     const N = 40, x = (r)=> (Math.min(r, N)-0.5)/N*100;
     cards = `<div class="grid3">
@@ -168,7 +168,7 @@ function renderLaunch(l){
    <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
    <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy (on PH descriptions)</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
      <tr><td>The PH-description model (${Number(A.days)} days)</td><td>${Number(A.top3).toFixed(0)}%</td><td>${Number(A.top5).toFixed(0)}%</td><td>${Number(A.top10).toFixed(0)}%</td></tr>
-     ${A.full_model ? `<tr><td class="muted">Full launch model with team history (offline backtest)</td><td class="muted">${Number(A.full_model.top3).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(0)}%</td></tr>` : ""}</tbody></table>
+     ${A.full_model ? `<tr><td class="muted">Full 00:05 launch model (clean offline backtest, ${Number(A.full_model.days)} days)</td><td class="muted">${Number(A.full_model.top3).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(0)}%</td></tr>` : ""}</tbody></table>
    <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
 }
 
