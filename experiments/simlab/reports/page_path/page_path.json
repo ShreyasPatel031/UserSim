@@ -1,0 +1,276 @@
+{
+ "design": "Prove /try fixes before the website builds them (orchestrator 10:15Z Nov 12). Uses the website's own code (origin/claude/ph-website\nmvp/ph_site: safe_fetch, try_sim.READ_PROMPT on flash-lite, try_sim._band_score with launch_band.json, person_e5.embed) as a library.\nLaunches: every ranked launch of Oct 27 - Nov 10 2026 with a product URL (at-launch primary_link, else the first non-PH link in the\nmaker's first comment); each site fetched ONCE by safe_fetch (http rewritten to https only because this container's proxy mode\nrefuses http), then read with the site's READ_PROMPT.\n1. Band inputs (score -> percentile among the band's cuts -> decile band):\n   (a) SITE now: name, tagline, summary + page_excerpt[:600], page-read topics\n   (b) READ: name + tagline + 2-sentence summary only, page-read topics\n   (c) REWRITE: a flash-lite rewrite of the page read into PH launch style (name, <= 60-char tagline, <= 260-char description,\n       3 topics from the PH vocabulary), then the band\n   (d) PH: the real PH name / tagline / description / topics (reference)\n   Spearman of the band percentile with -final rank (pooled over launches), band coverage of the true rank; paired bootstrap vs (a).\n2. Concerns and questions (launches with >= 5 identity-free truth comments): RANKED concerns (critic D_category + retrieved\n   neighbour themes + category base list, scored by neighbour frequency + agreement + Gemini likelihood; the reactions generator is\n   left out) and the single-call question generator, each fed (i) the page-read name/tagline/summary, (ii) the raw page excerpt,\n   (iii) the PH description. Blinded judges as concerns_rank / questions_rank; p@3 / hit@3, paired.\n3. Fetch failures: for every launch whose fetch or page read failed, retry (i) the root of the same domain, (ii) the at-launch\n   primary_link (PH \"website\" target) when held and different; share recovered without a headless browser.",
+ "est_usd_adjudicator": 0.49,
+ "launches": 70,
+ "by_fetch": {
+  "fresh": 44,
+  "late (Oct 25)": 26
+ },
+ "concerns": {
+  "a_read": {
+   "p@3": [
+    25.2,
+    19.5,
+    31.4,
+    70
+   ],
+   "hit@3": [
+    58.6,
+    47.1,
+    70.0,
+    70
+   ]
+  },
+  "b_raw": {
+   "p@3": [
+    29.5,
+    23.8,
+    35.2,
+    70
+   ],
+   "hit@3": [
+    65.7,
+    54.3,
+    77.1,
+    70
+   ]
+  },
+  "c_ph": {
+   "p@3": [
+    37.1,
+    31.0,
+    44.3,
+    70
+   ],
+   "hit@3": [
+    75.7,
+    65.7,
+    85.7,
+    70
+   ]
+  },
+  "cat": {
+   "p@3": [
+    5.8,
+    2.9,
+    8.7,
+    69
+   ],
+   "hit@3": [
+    17.4,
+    8.7,
+    27.5,
+    69
+   ]
+  },
+  "const": {
+   "p@3": [
+    24.3,
+    17.1,
+    31.4,
+    70
+   ],
+   "hit@3": [
+    45.7,
+    34.3,
+    57.1,
+    70
+   ]
+  },
+  "a_read - const (p@3, paired)": [
+   1.0,
+   -6.7,
+   8.1,
+   70
+  ],
+  "a_read - cat (p@3, paired)": [
+   19.8,
+   14.0,
+   26.1,
+   69
+  ],
+  "b_raw - const (p@3, paired)": [
+   5.2,
+   -3.3,
+   13.3,
+   70
+  ],
+  "b_raw - cat (p@3, paired)": [
+   23.7,
+   17.4,
+   30.0,
+   69
+  ],
+  "c_ph - const (p@3, paired)": [
+   12.9,
+   4.3,
+   21.0,
+   70
+  ],
+  "c_ph - cat (p@3, paired)": [
+   31.9,
+   25.1,
+   39.1,
+   69
+  ],
+  "b_raw - a_read (p@3, paired)": [
+   4.3,
+   -1.9,
+   10.0,
+   70
+  ],
+  "fresh only a_read / b_raw / c_ph / const p@3": [
+   31.1,
+   31.1,
+   36.4,
+   24.2
+  ]
+ },
+ "questions": {
+  "a_read": {
+   "p@3": [
+    29.5,
+    22.9,
+    36.2,
+    70
+   ],
+   "hit@3": [
+    58.6,
+    47.1,
+    70.0,
+    70
+   ]
+  },
+  "b_raw": {
+   "p@3": [
+    31.4,
+    24.3,
+    38.6,
+    70
+   ],
+   "hit@3": [
+    60.0,
+    48.6,
+    71.4,
+    70
+   ]
+  },
+  "c_ph": {
+   "p@3": [
+    37.1,
+    30.5,
+    43.8,
+    70
+   ],
+   "hit@3": [
+    71.4,
+    60.0,
+    81.4,
+    70
+   ]
+  },
+  "cat": {
+   "p@3": [
+    5.8,
+    2.4,
+    9.7,
+    69
+   ],
+   "hit@3": [
+    14.5,
+    7.2,
+    23.2,
+    69
+   ]
+  },
+  "const": {
+   "p@3": [
+    22.4,
+    15.7,
+    29.5,
+    70
+   ],
+   "hit@3": [
+    44.3,
+    32.9,
+    55.7,
+    70
+   ]
+  },
+  "a_read - const (p@3, paired)": [
+   7.1,
+   -1.4,
+   15.7,
+   70
+  ],
+  "a_read - cat (p@3, paired)": [
+   24.2,
+   17.4,
+   31.4,
+   69
+  ],
+  "b_raw - const (p@3, paired)": [
+   9.0,
+   -1.0,
+   19.0,
+   70
+  ],
+  "b_raw - cat (p@3, paired)": [
+   26.1,
+   18.4,
+   33.3,
+   69
+  ],
+  "c_ph - const (p@3, paired)": [
+   14.8,
+   8.1,
+   21.0,
+   70
+  ],
+  "c_ph - cat (p@3, paired)": [
+   31.9,
+   25.1,
+   39.1,
+   69
+  ],
+  "b_raw - a_read (p@3, paired)": [
+   1.9,
+   -5.2,
+   9.5,
+   70
+  ],
+  "fresh only a_read / b_raw / c_ph / const p@3": [
+   32.6,
+   34.8,
+   37.1,
+   23.5
+  ]
+ },
+ "ceiling_real_vs_real": {
+  "launches": 35,
+  "concerns p@3": [
+   32.4,
+   21.0,
+   44.3,
+   35
+  ],
+  "questions p@3": [
+   34.8,
+   23.5,
+   45.6,
+   34
+  ],
+  "concerns hit@3": [
+   57.1,
+   42.9,
+   74.3,
+   35
+  ],
+  "questions hit@3": [
+   61.8,
+   44.1,
+   76.5,
+   34
+  ]
+ }
+}

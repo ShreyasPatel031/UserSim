@@ -1641,3 +1641,14 @@ reports/same_point/README.md.
 **Ceiling:** real vs real split-half same-point precision is 35.2 [29.8, 41.3]. 13% of real points are generic.
 
 Nothing exported. Forward job Nov 12 ran late (12:35Z, 4.6 h after launch, after the usage-limit outage): 15/37 with a URL, 8 read ok.
+
+### 2026-11-12 E5 — page-read path under the same-point standard (70 launches)
+reports/page_path/README.md.
+- Ranked concerns / questions p@3 vs the constant list, paired:
+  - Page read summary: +1.0 / +7.1.
+  - Raw excerpt: +5.2 / +9.0.
+  - PH description: +12.9 [+4.3, +21.0] / +14.8 [+8.1, +21.0].
+  - All page intervals span 0.
+- Ceiling (real split-half): 32 / 35.
+- Statement: paste the launch description for concerns and questions; a URL gives the rank band and topic-level reactions only.
+- Adjudicator levels depend on pool size; compare within a run.
