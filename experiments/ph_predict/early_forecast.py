@@ -15,35 +15,50 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.di
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 POINTS = {"R0": 0, "R0q": 0.25, "R0h": 0.5, "R1": 1, "R2": 2, "R4": 4}   # R0q / R0h = reveal +15 / +30 min (reveal_gap.md)
 CLOCK = {"C05": 5, "C06": 6}   # orchestrator 03:25Z Nov 12: fixed 05:00 / 06:00 PT points (data <= that minute)
-# lock rule (orchestrator 03:25Z Nov 12, provisional until its out-of-sample check): r_k = votes of #k / votes of #k+1 in
-# the vote order; top-k "locked" when r_k >= LOCK_R at a read at or after LOCK_FROM_H PT
-LOCK_R, LOCK_FROM_H = 1.2, 5.0
+# lock rule (orchestrator 03:50Z Nov 12, out-of-sample on 80 days): r_k = votes of #k / votes of #k+1 in the vote order.
+#   top3 / top5 locked: r_k >= 1.3 at a read from 05:00 to 12:00 PT (provisional, few calls), r_k >= 1.2 from 12:00 PT
+#   top2 locked ("2 locked, 1 open"): r2 >= 1.2 at a read from 05:00 PT
+#   top10: exact set locked only when r10 >= 1.1 from 12:00 PT; "9 of 10" label on the plain vote order from 12:00 PT
+# The lock is a label only; pred_rank stays the plain vote order.
+LOCK_FROM_H, LOCK_NOON_H = 5.0, 12.0
+LOCK_R = {3: (1.3, 1.2), 5: (1.3, 1.2), 2: (1.2, 1.2), 10: (None, 1.1)}   # (05:00-12:00 PT, from 12:00 PT)
+
+
+def _locked(k, r, h):
+    if r is None or h < LOCK_FROM_H:
+        return False
+    thr = LOCK_R[k][0] if h < LOCK_NOON_H else LOCK_R[k][1]
+    return thr is not None and r >= thr
 
 
 def lock_state(T, t, day):
-    """r3 / r5 / r10 at the latest read <= t, lock flags, and the first read that day (>= 05:00 PT, <= t) at which each lock
-    held. T: snapshots (ts, id, v)."""
+    """r2 / r3 / r5 / r10 at the latest read <= t, lock flags, the first read that day (<= t) at which each lock held, and
+    the top-3 state label (3 locked / 2 locked, 1 open / open). T: snapshots (ts, id, v)."""
     t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
+    hrs = lambda ts: (pd.Timestamp(ts) - t0).total_seconds() / 3600
     def ratios(g):
         v = np.sort(g.groupby("id").v.last().values)[::-1]
-        return {k: (float(v[k - 1] / v[k]) if len(v) > k and v[k] > 0 else None) for k in (3, 5, 10)}
+        return {k: (float(v[k - 1] / v[k]) if len(v) > k and v[k] > 0 else None) for k in (2, 3, 5, 10)}
     S = T[T.ts <= t]
     if S.empty:
         return {}
-    out = {f"r{k}": (round(x, 4) if x else None) for k, x in ratios(S[S.ts == S.ts.max()]).items()}
-    late = S.ts.max() >= t0 + pd.Timedelta(hours=LOCK_FROM_H)
-    first = {3: None, 5: None}
+    last = S.ts.max(); r = ratios(S[S.ts == last]); h = hrs(last)
+    out = {f"r{k}": (round(x, 4) if x else None) for k, x in r.items()}
+    first = {k: None for k in (2, 3, 5, 10)}
     for ts in sorted(S.ts.unique()):
-        if ts < t0 + pd.Timedelta(hours=LOCK_FROM_H):
+        if hrs(ts) < LOCK_FROM_H:
             continue
-        r = ratios(S[S.ts == ts])
-        for k in (3, 5):
-            if first[k] is None and r[k] is not None and r[k] >= LOCK_R:
+        rr = ratios(S[S.ts == ts])
+        for k in first:
+            if first[k] is None and _locked(k, rr[k], hrs(ts)):
                 first[k] = pd.Timestamp(ts).isoformat()
-    for k in (3, 5):
-        out[f"top{k}_locked"] = bool(late and out[f"r{k}"] is not None and out[f"r{k}"] >= LOCK_R)
+    for k in (2, 3, 5, 10):
+        out[f"top{k}_locked"] = _locked(k, r[k], h)
         out[f"top{k}_first_locked_at"] = first[k]
-    out.update({"read_at": pd.Timestamp(S.ts.max()).isoformat(), "rule": f"r_k >= {LOCK_R} at a read >= {LOCK_FROM_H:02.0f}:00 PT (provisional)"})
+    out["state_top3"] = "3 locked" if out["top3_locked"] else ("2 locked, 1 open" if out["top2_locked"] else "open")
+    out["top10_label"] = "top 10 locked" if out["top10_locked"] else ("9 of 10 (vote order)" if h >= LOCK_NOON_H else "open")
+    out.update({"read_at": pd.Timestamp(last).isoformat(), "read_hour_pt": round(h, 2),
+                "rule": "top3/top5: r>=1.3 05-12 PT, r>=1.2 from 12 PT; top2: r2>=1.2 from 05 PT; top10 exact: r10>=1.1 from 12 PT (orchestrator 03:50Z Nov 12)"})
     return out
 
 
@@ -142,11 +157,11 @@ def live(day, point, method="blend", w=None):
         A = r0_blend(day, A)
     Tv = T[T.id.isin(set(A.index) if "id" not in A else set(A.id))] if len(A) else T
     lk = lock_state(Tv, t, day)
-    for c in ("r3", "r5", "r10", "top3_locked", "top5_locked"):
+    for c in ("r2", "r3", "r5", "r10", "top2_locked", "top3_locked", "top5_locked", "top10_locked"):
         A[c] = lk.get(c)
     out = {"lock": lk, "day": day, "point": point, "reveal_R0": R0.isoformat(), "data_up_to": t.isoformat(), "method": method, "w_lm": w,
            "launches": int(len(A)), "lm_matched": int(sum(1 for x in A.id if x in lm)), "written_at": now.isoformat(),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"] + [c for c in ("pred_rank_r0blend", "pred_rank_r0mean", "p4_blend_rank", "exp_final_votes", "r3", "r5", "r10", "top3_locked", "top5_locked") if c in A]].round(4).to_dict("records")}
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"] + [c for c in ("pred_rank_r0blend", "pred_rank_r0mean", "p4_blend_rank", "exp_final_votes", "r2", "r3", "r5", "r10", "top2_locked", "top3_locked", "top5_locked", "top10_locked") if c in A]].round(4).to_dict("records")}
     os.makedirs(os.path.join(HERE, "results", "early_forecast"), exist_ok=True)
     p = os.path.join(HERE, "results", "early_forecast", f"{day}_{point}.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/early_forecast/{day}_{point}.json"], check=True)
@@ -156,8 +171,9 @@ def live(day, point, method="blend", w=None):
     if not prev or prev.get("read_at", "") <= lk.get("read_at", ""):
         top = A.sort_values("v", ascending=False).head(10)
         web = {"day": day, "point": point, **lk, "written_at": now.isoformat(),
-               "label_top3": "top 3 locked" if lk.get("top3_locked") else "#3 open",
+               "label_top3": lk.get("state_top3"),
                "label_top5": "top 5 locked" if lk.get("top5_locked") else "#5 open",
+               "label_top10": lk.get("top10_label"),
                "vote_order_top10": [str(x) for x in (top.id if "id" in top else top.index)]}
         json.dump(web, open(wp, "w"), indent=1)
         subprocess.run(["gsutil", "-q", "cp", wp, f"{B}/results/web/lock/{day}.json"], check=True)
