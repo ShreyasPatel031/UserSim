@@ -137,10 +137,7 @@ function renderPred(){
   else if(c0 && c0.hits!=null) sees += ` Pick figures are an in-sample replay on ${Number(c0.n)} past days (the ranking's weights were chosen on those days), so treat them as optimistic.`;
   const D = VIEW.difficulty;
   if(D && p.key==="0005"){
-    const pct = (x)=> x==null ? "" : (Number(x) <= 1 ? Math.round(Number(x)*100) : Math.round(Number(x))) + "%";
-    sees += ` Day difficulty (from the clean shadow model, not the ranking shown): ${D.label}.`
-      + (D.oos_hits3!=null ? ` Out of sample on ${D.oos_n ? Number(D.oos_n) + " " : ""}${D.label} days, that model's top 3 caught about ${Number(D.oos_hits3).toFixed(1)} of the real top 3 and its #1 finished top 3 ${pct(D.oos_p1t3)} of the time.` : "")
-      + (D.forward ? ` Forward check so far: ${Number(D.forward.n)} ${D.label} days, ${Number(D.forward.hits3).toFixed(1)} of 3.` : "");
+    sees += " " + D.text + (D.forward ? ` Forward check so far: our #1 finished top 3 on ${esc(D.forward.p1_top3_count || "")} such days.` : "");
   }
   if(p.exp_votes) sees += ` Expected day-end votes are rough${p.exp_err ? ": typical error " + p.exp_err : ""}.`;
   if(p.score) sees += ` Scored: ${p.score["3"]}/3 of the real top 3, ${p.score["5"]}/5 of top 5, ${p.score["10"]}/10 of top 10.`;

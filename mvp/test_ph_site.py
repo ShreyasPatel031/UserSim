@@ -283,16 +283,13 @@ def test_page_retries_site_root(monkeypatch):
 
 
 def test_difficulty_label(monkeypatch):
-    conf = {"source": "from the clean shadow model", "stable": True, "applies_to": "published",
-            "labels": {"h3": {"label": "easy", "oos_rates": {"n": 62, "h3": 2.0, "p1t3": 0.85}}}}
-    sb = {"by_label": {"h3": {"easy": {"n": 3, "mean_hits": 1.7, "p1t3": 0.67}}}}
+    conf = {"label": "clear_leader", "stable": True, "applies_to": "clean shadow model", "text": "Clear leader today.",
+            "validated_rates": {"days": 69, "p1_top3": 0.855, "p1_count": "59 of 69"}}
+    sb = {"by_label": {"clear_leader": {"days": 3, "p1_top3_count": "2 of 3"}}}
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: conf if "/confidence/" in path else sb if "confidence_scoreboard" in path else None)
-    d = live._difficulty("2026-11-12")
-    assert d["label"] == "easy" and d["oos_hits3"] == 2.0 and d["forward"]["n"] == 3
-    conf["applies_to"] = "clean shadow model"
-    assert live._difficulty("2026-11-12") is None          # a clean-model label is not shown next to published picks
+    assert live._difficulty("2026-11-12") is None            # clean-model label never attached to the published ranking
     conf["applies_to"] = "published"
+    d = live._difficulty("2026-11-12")
+    assert d["label"] == "clear_leader" and d["forward"]["days"] == 3
     conf.pop("stable")
-    assert live._difficulty("2026-11-12") is None          # not shown until marked stable
-    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
     assert live._difficulty("2026-11-12") is None

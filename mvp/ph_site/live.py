@@ -410,27 +410,21 @@ def _prereveal_confidence(key: str, f: dict) -> dict | None:
 
 
 def _difficulty(day: str) -> dict | None:
-    """Day-difficulty label from the clean shadow model (results/web/confidence/<day>.json), with its out-of-sample
-    rates and, when available, the forward check. Describes the clean shadow model, not the published ranking."""
+    """Day label from results/web/confidence/<day>.json (conf_v2: clear_leader / open_field). It is validated for the
+    clean shadow model only, so it is returned only if the file says it applies to the published ranking and is
+    stable; with today's files (applies_to "clean shadow model") it is never shown next to the published picks."""
     j = gcs.read_json(f"results/web/confidence/{day}.json", ttl=600)
-    lab = ((j or {}).get("labels") or {}).get("h3") if isinstance(j, dict) else None
-    if not isinstance(lab, dict) or not lab.get("label"):
+    if not isinstance(j, dict) or not j.get("label") or j.get("stable") is not True:
         return None
-    # Held back until the label is shown to be stable (orchestrator: bins agreed on only 6 of 14 days between two
-    # near-identical scores). Shown only when the file says stable: true.
-    if not (j.get("stable") is True or lab.get("stable") is True):
-        return None
-    # Validated for the clean shadow model's scores only; /ph shows the deployed model's ranking, so the label is
-    # not shown next to it (it would describe a different model's #1). Shown only if it applies to the published one.
     if str(j.get("applies_to") or "").strip().lower() not in ("published", "published 00:05 ranking", "deployed"):
         return None
-    oos = lab.get("oos_rates") or {}
-    out = {"label": lab["label"], "oos_n": oos.get("n"), "oos_hits3": oos.get("h3"), "oos_p1t3": oos.get("p1t3"),
-           "source": j.get("source") or "clean shadow model"}
+    vr = j.get("validated_rates") or {}
+    out = {"label": j["label"], "text": j.get("text") or "", "days": vr.get("days"), "p1_top3": vr.get("p1_top3"),
+           "p1_count": vr.get("p1_count"), "source": j.get("source") or ""}
     fc = gcs.read_json("results/web/confidence_scoreboard.json", ttl=600) or {}
-    fwd = (((fc.get("by_label") or {}).get("h3") or {}).get(lab["label"])) if isinstance(fc, dict) else None
-    if isinstance(fwd, dict) and fwd.get("n"):
-        out["forward"] = {"n": fwd["n"], "hits3": fwd.get("mean_hits"), "p1t3": fwd.get("p1t3")}
+    fwd = ((fc.get("by_label") or {}).get(j["label"])) if isinstance(fc, dict) else None
+    if isinstance(fwd, dict) and fwd.get("days"):
+        out["forward"] = {"days": fwd["days"], "p1_top3_count": fwd.get("p1_top3_count")}
     return out
 
 
