@@ -1598,3 +1598,20 @@ reports/try_stability/README.md.
 - Ranked concerns at temperature 0: +8.9 [−1.1, +17.8], not significant.
 - Nothing clears a single run.
 - An embedding-cluster consensus attempt was void (cosine ~0.94 for any two reactions to one product).
+
+### 2026-11-12 E5 — reliability of the "what they will say" numbers
+reports/judge_reliability/README.md. 96 launches (60 S300 BEST + 36 fresh); extraction ×3, judge ×3, second judge, constant list.
+
+**Headline with all noise:**
+- BEST: 48.4 [43.1, 53.0] / 53.0 [46.7, 59.2].
+- Fresh page reads: 41.6 / 41.1.
+- Extraction and judge noise per launch is 8–11 points, but it adds only 1–2 points to the interval over launches.
+
+**Judge choice dominates:**
+- Kappa JUDGE vs JUDGE2: 0.47 / 0.55. Same judge run to run: 0.87.
+- The second judge gives 25 / 34 (BEST).
+- Chance-corrected (minus the constant list): 34 / 35.
+
+**Comment volume:** precision rises with it (37 → 48 → 61), and so does the constant (9 → 22).
+
+**Scoring rule:** keep 1 extraction × 1 judge.

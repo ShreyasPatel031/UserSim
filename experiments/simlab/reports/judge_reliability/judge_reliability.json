@@ -1,0 +1,440 @@
+{
+ "design": "Prove /try fixes before the website builds them (orchestrator 10:15Z Nov 12). Uses the website's own code (origin/claude/ph-website\nmvp/ph_site: safe_fetch, try_sim.READ_PROMPT on flash-lite, try_sim._band_score with launch_band.json, person_e5.embed) as a library.\nLaunches: every ranked launch of Oct 27 - Nov 10 2026 with a product URL (at-launch primary_link, else the first non-PH link in the\nmaker's first comment); each site fetched ONCE by safe_fetch (http rewritten to https only because this container's proxy mode\nrefuses http), then read with the site's READ_PROMPT.\n1. Band inputs (score -> percentile among the band's cuts -> decile band):\n   (a) SITE now: name, tagline, summary + page_excerpt[:600], page-read topics\n   (b) READ: name + tagline + 2-sentence summary only, page-read topics\n   (c) REWRITE: a flash-lite rewrite of the page read into PH launch style (name, <= 60-char tagline, <= 260-char description,\n       3 topics from the PH vocabulary), then the band\n   (d) PH: the real PH name / tagline / description / topics (reference)\n   Spearman of the band percentile with -final rank (pooled over launches), band coverage of the true rank; paired bootstrap vs (a).\n2. Concerns and questions (launches with >= 5 identity-free truth comments): RANKED concerns (critic D_category + retrieved\n   neighbour themes + category base list, scored by neighbour frequency + agreement + Gemini likelihood; the reactions generator is\n   left out) and the single-call question generator, each fed (i) the page-read name/tagline/summary, (ii) the raw page excerpt,\n   (iii) the PH description. Blinded judges as concerns_rank / questions_rank; p@3 / hit@3, paired.\n3. Fetch failures: for every launch whose fetch or page read failed, retry (i) the root of the same domain, (ii) the at-launch\n   primary_link (PH \"website\" target) when held and different; share recovered without a headless browser.",
+ "sets": {
+  "FRESH": {
+   "launches": 36,
+   "recall": {
+    "headline (mean over all)": 41.6,
+    "judge2": 15.8,
+    "variance_share": {
+     "launch": 74.2,
+     "extraction": 13.0,
+     "judge": 12.8
+    },
+    "sd_points": {
+     "extraction": 8.5,
+     "judge": 8.4
+    },
+    "interval_launch_only (1 extraction, 1 judge)": [
+     33.4,
+     48.7
+    ],
+    "interval_total": {
+     "1x1 (3 calls: extract + judge... per launch = 2)": [
+      33.9,
+      49.3
+     ],
+     "1 extraction x majority of 3 judges (4 calls)": [
+      34.5,
+      49.5
+     ],
+     "mean of 3 extractions x 1 judge (6 calls)": [
+      34.7,
+      48.5
+     ]
+    },
+    "constant_list": 13.0,
+    "chance_corrected (minus constant, paired)": 28.7,
+    "by_comments": {
+     "5-9": [
+      44.6,
+      15
+     ],
+     "10-19": [
+      41.4,
+      16
+     ],
+     "20+": [
+      30.0,
+      5
+     ]
+    },
+    "by_themes": {
+     "<=5": [
+      61.3,
+      4
+     ],
+     "6-7": [
+      43.5,
+      4
+     ],
+     "8": [
+      37.9,
+      28
+     ]
+    },
+    "const_by_comments": {
+     "5-9": 13.2,
+     "10-19": 13.3,
+     "20+": 17.5
+    }
+   },
+   "precision": {
+    "headline (mean over all)": 41.1,
+    "judge2": 20.5,
+    "variance_share": {
+     "launch": 72.3,
+     "extraction": 10.0,
+     "judge": 17.7
+    },
+    "sd_points": {
+     "extraction": 7.7,
+     "judge": 10.2
+    },
+    "interval_launch_only (1 extraction, 1 judge)": [
+     32.4,
+     48.1
+    ],
+    "interval_total": {
+     "1x1 (3 calls: extract + judge... per launch = 2)": [
+      33.3,
+      49.1
+     ],
+     "1 extraction x majority of 3 judges (4 calls)": [
+      34.7,
+      49.5
+     ],
+     "mean of 3 extractions x 1 judge (6 calls)": [
+      34.0,
+      48.2
+     ]
+    },
+    "constant_list": 15.3,
+    "chance_corrected (minus constant, paired)": 25.8,
+    "by_comments": {
+     "5-9": [
+      42.2,
+      15
+     ],
+     "10-19": [
+      38.5,
+      16
+     ],
+     "20+": [
+      40.0,
+      5
+     ]
+    },
+    "by_themes": {
+     "<=5": [
+      54.2,
+      4
+     ],
+     "6-7": [
+      37.5,
+      4
+     ],
+     "8": [
+      38.7,
+      28
+     ]
+    },
+    "const_by_comments": {
+     "5-9": 13.3,
+     "10-19": 16.7,
+     "20+": 26.7
+    }
+   },
+   "kappa_a_covered": {
+    "JUDGE vs JUDGE2": 0.392,
+    "JUDGE run1 vs run2": 0.854,
+    "items": 812
+   },
+   "kappa_b_present": {
+    "JUDGE vs JUDGE2": 0.469,
+    "JUDGE run1 vs run2": 0.847,
+    "items": 648
+   }
+  },
+  "S300": {
+   "launches": 60,
+   "recall": {
+    "headline (mean over all)": 48.4,
+    "judge2": 25.3,
+    "variance_share": {
+     "launch": 53.7,
+     "extraction": 31.2,
+     "judge": 15.1
+    },
+    "sd_points": {
+     "extraction": 11.2,
+     "judge": 7.8
+    },
+    "interval_launch_only (1 extraction, 1 judge)": [
+     41.2,
+     51.5
+    ],
+    "interval_total": {
+     "1x1 (3 calls: extract + judge... per launch = 2)": [
+      43.1,
+      53.0
+     ],
+     "1 extraction x majority of 3 judges (4 calls)": [
+      43.9,
+      53.9
+     ],
+     "mean of 3 extractions x 1 judge (6 calls)": [
+      44.2,
+      52.6
+     ]
+    },
+    "constant_list": 14.4,
+    "chance_corrected (minus constant, paired)": 34.0,
+    "by_comments": {
+     "5-9": [
+      39.0,
+      9
+     ],
+     "10-19": [
+      45.0,
+      27
+     ],
+     "20+": [
+      51.0,
+      24
+     ]
+    },
+    "by_themes": {
+     "<=5": [
+      51.7,
+      3
+     ],
+     "6-7": [
+      42.1,
+      16
+     ],
+     "8": [
+      47.9,
+      41
+     ]
+    },
+    "const_by_comments": {
+     "5-9": 8.3,
+     "10-19": 14.3,
+     "20+": 16.3
+    }
+   },
+   "precision": {
+    "headline (mean over all)": 53.0,
+    "judge2": 33.5,
+    "variance_share": {
+     "launch": 69.1,
+     "extraction": 13.5,
+     "judge": 17.3
+    },
+    "sd_points": {
+     "extraction": 9.3,
+     "judge": 10.6
+    },
+    "interval_launch_only (1 extraction, 1 judge)": [
+     44.7,
+     57.8
+    ],
+    "interval_total": {
+     "1x1 (3 calls: extract + judge... per launch = 2)": [
+      46.7,
+      59.2
+     ],
+     "1 extraction x majority of 3 judges (4 calls)": [
+      46.7,
+      59.2
+     ],
+     "mean of 3 extractions x 1 judge (6 calls)": [
+      47.5,
+      58.7
+     ]
+    },
+    "constant_list": 18.0,
+    "chance_corrected (minus constant, paired)": 35.0,
+    "by_comments": {
+     "5-9": [
+      37.0,
+      9
+     ],
+     "10-19": [
+      47.5,
+      27
+     ],
+     "20+": [
+      61.1,
+      24
+     ]
+    },
+    "by_themes": {
+     "<=5": [
+      27.8,
+      3
+     ],
+     "6-7": [
+      39.6,
+      16
+     ],
+     "8": [
+      57.7,
+      41
+     ]
+    },
+    "const_by_comments": {
+     "5-9": 9.3,
+     "10-19": 16.7,
+     "20+": 22.2
+    }
+   },
+   "kappa_a_covered": {
+    "JUDGE vs JUDGE2": 0.507,
+    "JUDGE run1 vs run2": 0.874,
+    "items": 1356
+   },
+   "kappa_b_present": {
+    "JUDGE vs JUDGE2": 0.577,
+    "JUDGE run1 vs run2": 0.866,
+    "items": 1080
+   }
+  },
+  "ALL": {
+   "launches": 96,
+   "recall": {
+    "headline (mean over all)": 45.8,
+    "judge2": 21.7,
+    "variance_share": {
+     "launch": 63.5,
+     "extraction": 22.6,
+     "judge": 13.9
+    },
+    "sd_points": {
+     "extraction": 10.3,
+     "judge": 8.0
+    },
+    "interval_launch_only (1 extraction, 1 judge)": [
+     40.4,
+     48.8
+    ],
+    "interval_total": {
+     "1x1 (3 calls: extract + judge... per launch = 2)": [
+      41.6,
+      50.1
+     ],
+     "1 extraction x majority of 3 judges (4 calls)": [
+      42.4,
+      50.7
+     ],
+     "mean of 3 extractions x 1 judge (6 calls)": [
+      42.1,
+      49.5
+     ]
+    },
+    "constant_list": 13.9,
+    "chance_corrected (minus constant, paired)": 32.0,
+    "by_comments": {
+     "5-9": [
+      42.5,
+      24
+     ],
+     "10-19": [
+      43.7,
+      43
+     ],
+     "20+": [
+      47.4,
+      29
+     ]
+    },
+    "by_themes": {
+     "<=5": [
+      57.1,
+      7
+     ],
+     "6-7": [
+      42.4,
+      20
+     ],
+     "8": [
+      43.8,
+      69
+     ]
+    },
+    "const_by_comments": {
+     "5-9": 11.4,
+     "10-19": 13.9,
+     "20+": 16.5
+    }
+   },
+   "precision": {
+    "headline (mean over all)": 48.5,
+    "judge2": 28.6,
+    "variance_share": {
+     "launch": 71.6,
+     "extraction": 11.8,
+     "judge": 16.7
+    },
+    "sd_points": {
+     "extraction": 8.8,
+     "judge": 10.4
+    },
+    "interval_launch_only (1 extraction, 1 judge)": [
+     42.4,
+     52.1
+    ],
+    "interval_total": {
+     "1x1 (3 calls: extract + judge... per launch = 2)": [
+      43.6,
+      53.8
+     ],
+     "1 extraction x majority of 3 judges (4 calls)": [
+      43.8,
+      53.6
+     ],
+     "mean of 3 extractions x 1 judge (6 calls)": [
+      43.9,
+      52.9
+     ]
+    },
+    "constant_list": 17.0,
+    "chance_corrected (minus constant, paired)": 31.6,
+    "by_comments": {
+     "5-9": [
+      40.3,
+      24
+     ],
+     "10-19": [
+      44.2,
+      43
+     ],
+     "20+": [
+      57.5,
+      29
+     ]
+    },
+    "by_themes": {
+     "<=5": [
+      42.9,
+      7
+     ],
+     "6-7": [
+      39.2,
+      20
+     ],
+     "8": [
+      50.0,
+      69
+     ]
+    },
+    "const_by_comments": {
+     "5-9": 11.8,
+     "10-19": 16.7,
+     "20+": 23.0
+    }
+   },
+   "kappa_a_covered": {
+    "JUDGE vs JUDGE2": 0.471,
+    "JUDGE run1 vs run2": 0.868,
+    "items": 2168
+   },
+   "kappa_b_present": {
+    "JUDGE vs JUDGE2": 0.546,
+    "JUDGE run1 vs run2": 0.861,
+    "items": 1728
+   }
+  }
+ }
+}
