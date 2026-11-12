@@ -14,6 +14,8 @@ def beat(step, day=None, data_cut=None, status="ok"):
         late = None
         if data_cut is not None:
             late = round((now - pd.Timestamp(data_cut)).total_seconds() / 60, 1)
+            if status == "ok" and late > 90:   # any write more than 90 min after its data cut is labelled late
+                status = "late"
         H.setdefault("steps", {})[step] = {"day": day, "data_cut": str(data_cut) if data_cut is not None else None,
                                           "written_at": now.isoformat(), "status": status, "late_min": late}
         H["updated_at"] = now.isoformat()
