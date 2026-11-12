@@ -1,0 +1,455 @@
+{
+ "design": "Vote-specific match (orchestrator 00:05Z Nov 12): can a person's UPVOTE history pick who upvotes a launch better than activity?\nPeople: all complete pool people (store_v3) with >= 1 dated upvote before the launch day; also reported on the 5,096 website\nbundle people. Test launches: the same 114 Aug-Oct launches as voters_eval.py (>= 30 voters among the 5,096). Upvotes are\ndated by the voted launch's day; history = upvotes on launches dated strictly before the launch day.\nFeatures per (person, launch), vectorised with a sparse person x launch matrix of prior upvotes:\n  sim_soft  log-sum-exp (tau = 20) of gemini-256 cosine between the launch and the person's prior upvoted launches (soft top-k)\n  sim_mean  mean cosine over prior upvotes\n  topic     share of prior upvotes sharing a topic with the launch\n  ties      prior upvotes on launches sharing a real maker/poster with the launch (log1p)\n  activity  log1p prior upvotes; recency bucket (days since last prior upvote)\nScorers: SIM (sim_soft), PRODUCT (logistic on sim_soft, sim_mean, topic + activity), TIES (ties then activity), FULL (logistic\non all), fitted on May-Jul launches with >= 30 complete voters (negatives subsampled 20:1); controls RANDOM, ACTIVITY-MATCHED\n(same activity decile x recency bucket as each top-K pick), MOST-ACTIVE. precision@100/500, launch-bootstrap 95% CIs, paired.",
+ "people": 17764,
+ "train_launches": 787,
+ "test_launches": 114,
+ "coef_full": {
+  "sim_soft": 1.464,
+  "sim_mean": -0.236,
+  "topic": 0.065,
+  "ties": 0.151,
+  "act": -0.628,
+  "rec": -6.81
+ },
+ "all complete K100": {
+  "base": [
+   1.27,
+   1.19,
+   1.35,
+   114
+  ],
+  "RANDOM": [
+   1.44,
+   1.18,
+   1.71,
+   114
+  ],
+  "SIM": [
+   7.85,
+   7.04,
+   8.68,
+   114
+  ],
+  "PRODUCT": [
+   17.65,
+   16.32,
+   18.97,
+   114
+  ],
+  "TIES": [
+   17.33,
+   15.29,
+   19.4,
+   114
+  ],
+  "FULL": [
+   20.95,
+   19.38,
+   22.56,
+   114
+  ],
+  "ACTIVITY-MATCHED (to FULL top)": [
+   11.85,
+   10.75,
+   13.0,
+   114
+  ],
+  "MOST-ACTIVE": [
+   4.32,
+   3.79,
+   4.88,
+   114
+  ],
+  "ACTREC": [
+   15.86,
+   14.64,
+   17.1,
+   114
+  ],
+  "SIM - MOST-ACTIVE (paired)": [
+   3.53,
+   3.04,
+   4.04,
+   114
+  ],
+  "PRODUCT - MOST-ACTIVE (paired)": [
+   13.32,
+   12.31,
+   14.35,
+   114
+  ],
+  "TIES - MOST-ACTIVE (paired)": [
+   13.01,
+   11.13,
+   14.89,
+   114
+  ],
+  "FULL - MOST-ACTIVE (paired)": [
+   16.62,
+   15.3,
+   17.98,
+   114
+  ],
+  "FULL - ACTIVITY-MATCHED (paired)": [
+   9.1,
+   7.3,
+   10.9,
+   114
+  ],
+  "SIM - ACTREC (paired)": [
+   -8.01,
+   -8.77,
+   -7.25,
+   114
+  ],
+  "PRODUCT - ACTREC (paired)": [
+   1.79,
+   1.39,
+   2.21,
+   114
+  ],
+  "TIES - ACTREC (paired)": [
+   1.47,
+   -0.52,
+   3.45,
+   114
+  ],
+  "FULL - ACTREC (paired)": [
+   5.09,
+   4.1,
+   6.16,
+   114
+  ]
+ },
+ "all complete K500": {
+  "base": [
+   1.27,
+   1.19,
+   1.35,
+   114
+  ],
+  "RANDOM": [
+   1.2,
+   1.06,
+   1.34,
+   114
+  ],
+  "SIM": [
+   9.56,
+   9.06,
+   10.07,
+   114
+  ],
+  "PRODUCT": [
+   15.87,
+   14.96,
+   16.75,
+   114
+  ],
+  "TIES": [
+   11.37,
+   10.53,
+   12.2,
+   114
+  ],
+  "FULL": [
+   16.46,
+   15.53,
+   17.44,
+   114
+  ],
+  "ACTIVITY-MATCHED (to FULL top)": [
+   8.52,
+   7.51,
+   9.62,
+   114
+  ],
+  "MOST-ACTIVE": [
+   9.02,
+   8.56,
+   9.49,
+   114
+  ],
+  "ACTREC": [
+   15.41,
+   14.58,
+   16.26,
+   114
+  ],
+  "SIM - MOST-ACTIVE (paired)": [
+   0.54,
+   0.44,
+   0.64,
+   114
+  ],
+  "PRODUCT - MOST-ACTIVE (paired)": [
+   6.85,
+   6.24,
+   7.47,
+   114
+  ],
+  "TIES - MOST-ACTIVE (paired)": [
+   2.35,
+   1.71,
+   3.02,
+   114
+  ],
+  "FULL - MOST-ACTIVE (paired)": [
+   7.45,
+   6.77,
+   8.14,
+   114
+  ],
+  "FULL - ACTIVITY-MATCHED (paired)": [
+   7.95,
+   7.01,
+   8.84,
+   114
+  ],
+  "SIM - ACTREC (paired)": [
+   -5.85,
+   -6.38,
+   -5.31,
+   114
+  ],
+  "PRODUCT - ACTREC (paired)": [
+   0.46,
+   0.35,
+   0.59,
+   114
+  ],
+  "TIES - ACTREC (paired)": [
+   -4.04,
+   -4.62,
+   -3.45,
+   114
+  ],
+  "FULL - ACTREC (paired)": [
+   1.06,
+   0.78,
+   1.37,
+   114
+  ]
+ },
+ "site 5,096 K100": {
+  "base": [
+   2.0,
+   1.89,
+   2.11,
+   114
+  ],
+  "RANDOM": [
+   2.13,
+   1.83,
+   2.46,
+   114
+  ],
+  "SIM": [
+   11.3,
+   10.49,
+   12.12,
+   114
+  ],
+  "PRODUCT": [
+   16.04,
+   15.03,
+   17.03,
+   114
+  ],
+  "TIES": [
+   13.04,
+   12.15,
+   13.9,
+   114
+  ],
+  "FULL": [
+   16.68,
+   15.75,
+   17.67,
+   114
+  ],
+  "ACTIVITY-MATCHED (to FULL top)": [
+   8.42,
+   7.65,
+   9.17,
+   114
+  ],
+  "MOST-ACTIVE": [
+   10.64,
+   9.84,
+   11.47,
+   114
+  ],
+  "ACTREC": [
+   15.4,
+   14.46,
+   16.4,
+   114
+  ],
+  "SIM - MOST-ACTIVE (paired)": [
+   0.66,
+   0.47,
+   0.84,
+   114
+  ],
+  "PRODUCT - MOST-ACTIVE (paired)": [
+   5.39,
+   4.82,
+   5.99,
+   114
+  ],
+  "TIES - MOST-ACTIVE (paired)": [
+   2.39,
+   1.72,
+   3.07,
+   114
+  ],
+  "FULL - MOST-ACTIVE (paired)": [
+   6.04,
+   5.41,
+   6.68,
+   114
+  ],
+  "FULL - ACTIVITY-MATCHED (paired)": [
+   8.26,
+   7.18,
+   9.33,
+   114
+  ],
+  "SIM - ACTREC (paired)": [
+   -4.11,
+   -4.68,
+   -3.54,
+   114
+  ],
+  "PRODUCT - ACTREC (paired)": [
+   0.63,
+   0.4,
+   0.87,
+   114
+  ],
+  "TIES - ACTREC (paired)": [
+   -2.37,
+   -3.25,
+   -1.54,
+   114
+  ],
+  "FULL - ACTREC (paired)": [
+   1.28,
+   0.89,
+   1.68,
+   114
+  ]
+ },
+ "site 5,096 K500": {
+  "base": [
+   2.0,
+   1.89,
+   2.11,
+   114
+  ],
+  "RANDOM": [
+   2.04,
+   1.88,
+   2.19,
+   114
+  ],
+  "SIM": [
+   6.34,
+   6.04,
+   6.68,
+   114
+  ],
+  "PRODUCT": [
+   7.41,
+   7.07,
+   7.78,
+   114
+  ],
+  "TIES": [
+   6.21,
+   5.91,
+   6.53,
+   114
+  ],
+  "FULL": [
+   7.41,
+   7.08,
+   7.79,
+   114
+  ],
+  "ACTIVITY-MATCHED (to FULL top)": [
+   7.28,
+   6.79,
+   7.85,
+   114
+  ],
+  "MOST-ACTIVE": [
+   6.3,
+   5.99,
+   6.64,
+   114
+  ],
+  "ACTREC": [
+   7.35,
+   7.03,
+   7.73,
+   114
+  ],
+  "SIM - MOST-ACTIVE (paired)": [
+   0.04,
+   0.01,
+   0.08,
+   114
+  ],
+  "PRODUCT - MOST-ACTIVE (paired)": [
+   1.11,
+   0.99,
+   1.24,
+   114
+  ],
+  "TIES - MOST-ACTIVE (paired)": [
+   -0.09,
+   -0.18,
+   -0.01,
+   114
+  ],
+  "FULL - MOST-ACTIVE (paired)": [
+   1.11,
+   0.99,
+   1.23,
+   114
+  ],
+  "FULL - ACTIVITY-MATCHED (paired)": [
+   0.12,
+   -0.35,
+   0.49,
+   114
+  ],
+  "SIM - ACTREC (paired)": [
+   -1.01,
+   -1.12,
+   -0.9,
+   114
+  ],
+  "PRODUCT - ACTREC (paired)": [
+   0.06,
+   0.03,
+   0.09,
+   114
+  ],
+  "TIES - ACTREC (paired)": [
+   -1.14,
+   -1.28,
+   -1.01,
+   114
+  ],
+  "FULL - ACTREC (paired)": [
+   0.06,
+   0.02,
+   0.09,
+   114
+  ]
+ },
+ "bundle": "not exported: taste adds ~1.8 pts over activity+recency at K100; bundle self-check unresolved; per-person upvote lists are fingerprints"
+}

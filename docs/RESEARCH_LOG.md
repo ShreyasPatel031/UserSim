@@ -958,3 +958,14 @@ Script experiments/simlab/voters_eval.py; report reports/voters_eval/. The websi
 - precision@500: matches 0.83%; random 0.82%; activity-matched 0.85% (ratio 0.97); most-active 5.72%; recall of the launch's voters in the top 500: 10.3% (random ~9.8%)
 - segments: Spearman across role segments between predicted likely share and actual vote rate +0.05 [−0.02, 0.12]
 Verdict: the tool-similarity match does not identify who upvotes; voting is driven by activity (the most active members are about 10x more likely to vote on any launch). The page should present matches as "people whose tools resemble this product", not "who would vote for it".
+
+### 2026-11-12 E5 — vote-specific match from upvote history: mostly activity + recency
+Script experiments/simlab/vote_match.py; report reports/vote_match/. 17,764 complete people with upvotes on dated launches (276k upvotes; 2,150 of the site's 5,096 among them); the same 114 Aug–Oct test launches; combiners fitted on 787 May–Jul launches (>= 30 complete voters). History = upvotes on launches dated before the launch day. Launch-bootstrap 95% CIs; precision = share of the top K who upvoted (base rate 1.3%).
+(A first run had a day-number bug that made recency constant; fixed and re-run - numbers below are the fixed run.)
+All complete people, K = 100 / 500:
+- ACTREC (activity + recency only, the control that matters): 15.9% / 15.4%; most-active by count 4.3% / 9.0%
+- PRODUCT (taste similarity + topic + activity + recency): 17.7% / 15.9%; PRODUCT − ACTREC +1.8 [1.4, 2.2] / +0.5 [0.4, 0.6]
+- FULL (+ ties to makers/hunter): 21.0% / 16.5%; FULL − ACTREC +5.1 [4.1, 6.2] / +1.1 [0.8, 1.4]; FULL − activity-matched (decile x recency) +9.1 [7.3, 11.0] / +8.0
+- similarity alone (SIM) − ACTREC −8.0 / −5.9; ties alone − ACTREC +1.5 [−0.5, 3.5] / −4.0
+Site 5,096 pool, K = 100: PRODUCT − ACTREC +0.6 [0.4, 0.9]; FULL − ACTREC +1.3 [0.9, 1.7].
+Reading: who upvotes a launch is mostly who is active and recently active; product-taste adds about 10% relative at the top 100 (+1.8 points on 15.9%), maker ties add more (PH context). A "likely voters" view would mostly show recent actives. Not exported: the gain is small, the bundle self-check did not reproduce the in-script score (max diff 17.6, unresolved), and per-person upvote lists are fingerprints. Earlier "matches vs most-active" comparisons overstated taste because most-active by count ignores recency.

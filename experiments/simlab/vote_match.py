@@ -46,7 +46,7 @@ def feats(k):
     tie = np.array([float(bool(t & L.team.iat[k])) for t in L.team]) if L.team.iat[k] else np.zeros(len(L)); tie[k] = 0
     ties = np.log1p(Mp @ (tie * prior))
     # recency: last prior upvote day
-    lastday = np.full(NP, -1.0); dnum = pd.to_datetime(ldays).astype("int64") // 86_400_000_000_000
+    lastday = np.full(NP, -1.0); dnum = pd.to_datetime(ldays).to_numpy().astype("datetime64[D]").astype(np.int64)
     Mpc = Mp.tocoo(); np.maximum.at(lastday, Mpc.row, dnum[Mpc.col])
     rec = np.where(lastday < 0, 9999, dnum[k] - lastday)
     X = np.c_[np.where(n > 0, soft, 0), mean, topic, ties, np.log1p(n), np.digitize(rec, [7, 30, 90])]
@@ -66,11 +66,13 @@ for k in rng.choice(train_k, min(120, len(train_k)), replace=False):
 Xtr, ytr = np.vstack(Xs), np.array(ys); mu, sd = Xtr.mean(0), Xtr.std(0) + 1e-9
 FULL = LogisticRegression(C=1.0, max_iter=2000).fit((Xtr - mu) / sd, ytr)
 PI = [0, 1, 2, 4, 5]; PROD = LogisticRegression(C=1.0, max_iter=2000).fit(((Xtr - mu) / sd)[:, PI], ytr)
+AI = [4, 5]; ACTREC = LogisticRegression(C=1.0, max_iter=2000).fit(((Xtr - mu) / sd)[:, AI], ytr)
 print("FULL coef", dict(zip(COLS, np.round(FULL.coef_[0], 3))), flush=True)
 rows = []
 for k in test_k:
     X, n = feats(k); V = voters_of(k); Z = (X - mu) / sd
-    sc = {"SIM": X[:, 0] + 1e-6 * X[:, 4], "PRODUCT": PROD.decision_function(Z[:, PI]), "TIES": X[:, 3] + 1e-3 * X[:, 4], "FULL": FULL.decision_function(Z), "MOST-ACTIVE": X[:, 4]}
+    sc = {"SIM": X[:, 0] + 1e-6 * X[:, 4], "PRODUCT": PROD.decision_function(Z[:, PI]), "TIES": X[:, 3] + 1e-3 * X[:, 4], "FULL": FULL.decision_function(Z), "MOST-ACTIVE": X[:, 4],
+          "ACTREC": ACTREC.decision_function(Z[:, AI])}
     adec = np.searchsorted(np.percentile(X[:, 4], np.arange(10, 100, 10)), X[:, 4]); cell = {}
     for pool_name, pool in (("all complete", np.flatnonzero(n > 0)), ("site 5,096", site_people[n[site_people] > 0])):
         cell = {}
@@ -94,9 +96,43 @@ def boot(v, B=4000):
 
 res = {"design": __doc__.split("\n    python")[0], "people": NP, "train_launches": len(train_k), "test_launches": len(test_k), "coef_full": dict(zip(COLS, FULL.coef_[0].round(3).tolist()))}
 for (pool, K), g in D.groupby(["pool", "K"]):
-    cols = ["base", "RANDOM", "SIM", "PRODUCT", "TIES", "FULL", "ACTIVITY-MATCHED (to FULL top)", "MOST-ACTIVE"]
+    cols = ["base", "RANDOM", "SIM", "PRODUCT", "TIES", "FULL", "ACTIVITY-MATCHED (to FULL top)", "MOST-ACTIVE", "ACTREC"]
     res[f"{pool} K{K}"] = {c: boot(g[c]) for c in cols} | {f"{c} - MOST-ACTIVE (paired)": boot(g[c] - g["MOST-ACTIVE"]) for c in ("SIM", "PRODUCT", "TIES", "FULL")} \
-        | {"FULL - ACTIVITY-MATCHED (paired)": boot(g["FULL"] - g["ACTIVITY-MATCHED (to FULL top)"])}
+        | {"FULL - ACTIVITY-MATCHED (paired)": boot(g["FULL"] - g["ACTIVITY-MATCHED (to FULL top)"])} \
+        | {f"{c} - ACTREC (paired)": boot(g[c] - g["ACTREC"]) for c in ("SIM", "PRODUCT", "TIES", "FULL")}
 json.dump(res, open(os.path.join(OUT, "vote_match.json"), "w"), indent=1)
 for k, v in res.items():
     if isinstance(v, dict) and "base" in v: print(k, {c: x[:3] for c, x in v.items()})
+
+# ---------- export (product-only scorer) as an anonymous bundle for a "likely voters" view
+# Rows = complete people with dated upvotes, shuffled; no ids. Each row's history = indices into the public launch table
+# (upvoted launch embeddings). A per-person upvote list is a fingerprint: keep the bundle SERVER-SIDE and show aggregates only.
+perm = rng.permutation(NP); Mr = M[perm].tocsr()
+dnum = pd.to_datetime(ldays).to_numpy().astype("datetime64[D]").astype(np.int64)
+topics_v = sorted({t for s in L.tp for t in s}); tix = {t: i for i, t in enumerate(topics_v)}
+tp_ptr = np.r_[0, np.cumsum([len(s) for s in L.tp])]; tp_idx = np.array([tix[t] for s in L.tp for t in sorted(s)], np.int16)
+last = np.full(NP, -1, np.int64); c = Mr.tocoo(); np.maximum.at(last, c.row, dnum[c.col])
+bf = os.path.join(OUT, "voter_bundle_v1.npz")
+np.savez_compressed(bf, launch_emb=E.astype(np.float16), launch_day_num=dnum.astype(np.int32), topic_ptr=tp_ptr.astype(np.int32), topic_idx=tp_idx,
+                    topic_names=np.array(topics_v), person_ptr=Mr.indptr.astype(np.int64), person_launches=Mr.indices.astype(np.int16 if len(L) < 32767 else np.int32),
+                    last_upvote_day_num=last.astype(np.int32), coef=PROD.coef_[0].astype(np.float32), intercept=np.float32(PROD.intercept_[0]),
+                    mu=mu[PI].astype(np.float32), sd=sd[PI].astype(np.float32), feature_names=np.array([COLS[i] for i in PI]), tau=np.float32(20.0),
+                    recency_bins=np.array([7, 30, 90], np.int32), model=np.array("gemini-embedding-001 SEMANTIC_SIMILARITY 256-d L2"))
+# self-check on one test launch: bundle recipe vs in-script PRODUCT score
+k = test_k[0]; Xk, nk = feats(k); ref = PROD.decision_function(((Xk - mu) / sd)[:, PI])[perm]
+z = np.load(bf); q = z["launch_emb"].astype(np.float32)[k]; Eb = z["launch_emb"].astype(np.float32)
+prior = z["launch_day_num"] < z["launch_day_num"][k]; s = Eb @ q
+chk = []
+for r_ in range(0, NP, max(1, NP // 300)):
+    li = z["person_launches"][z["person_ptr"][r_]:z["person_ptr"][r_ + 1]]; li = li[prior[li]]
+    if not len(li): continue
+    ss = s[li]; soft = np.log(np.exp(20 * (ss - 1)).sum() + 1e-12) / 20 + 1
+    tq = set(z["topic_idx"][z["topic_ptr"][k]:z["topic_ptr"][k + 1]].tolist())
+    top = np.mean([bool(tq & set(z["topic_idx"][z["topic_ptr"][x]:z["topic_ptr"][x + 1]].tolist())) for x in li])
+    lastp = max(z["launch_day_num"][li]); rec = np.digitize(z["launch_day_num"][k] - lastp, [7, 30, 90])
+    f = (np.array([soft, ss.mean(), top, np.log1p(len(li)), rec]) - z["mu"]) / z["sd"]
+    chk.append(abs(float(f @ z["coef"] + z["intercept"]) - ref[r_]))
+    if len(chk) == 1: print("selfcheck row", r_, "bundle feats", np.round([soft, ss.mean(), top, np.log1p(len(li)), rec], 4), "script feats", np.round(Xk[perm[r_]][PI], 4), flush=True)
+res["bundle"] = {"file": bf, "bytes": os.path.getsize(bf), "people": int(NP), "launches": int(len(L)), "selfcheck_max_abs_diff": round(float(max(chk)), 5),
+                 "privacy": "anonymous shuffled rows, but each row is a list of public launch upvotes (a fingerprint): server-side only, show aggregates"}
+json.dump(res, open(os.path.join(OUT, "vote_match.json"), "w"), indent=1); print(res["bundle"])
