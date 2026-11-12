@@ -1,6 +1,6 @@
 """Weekly north star (orchestrator 21:25Z Nov 11): forecast PH's final weekly top 3/5/10 at the end of each launch day.
 
-Definition (checked on the warehouse): weekly_rank orders the week's launches by final votes (within-week Spearman
+Definition (checked on the warehouse): truth = the official weekly_rank field; it is close to final-vote order (within-week Spearman
 with votes 0.99) over Monday 00:00 - Sunday 23:59 PT weeks (W-SUN periods fit best: fewest duplicate ranks); the
 competitors are the week's daily-ranked launches (max weekly_rank ~= launches in our table per week). Complete weeks:
 those with 7 launch days in the table.
@@ -123,10 +123,10 @@ def main():
     S["neg_dr"] = -S.daily_rank + 1e-6 * S.dow   # plain daily rank, ties broken by later day
     cols["daily rank only"] = "neg_dr"
     E = evalk(S, cols)
-    res = {"definition": "weekly_rank = order of the week's daily-ranked launches by final votes, Mon 00:00 - Sun 23:59 PT",
+    res = {"definition": "truth = PH's official weekly_rank field (Mon 00:00 - Sun 23:59 PT); close to but NOT pure final-vote order (orchestrator 09:27Z Nov 12: final votes reproduce 3/4/10 of the official top 3/5/10 in Nov 2-8)",
            "complete_weeks": nweeks, "scored_weeks": int(S.wk.nunique()), "scored_range": [S.wk.min(), S.wk.max()], "table": {}}
     md = ["# Weekly forecast (PH weekly top 3/5/10), backtest", "",
-          f"Weekly rank in our data: the week's daily-ranked launches ordered by final votes, weeks Monday 00:00 - Sunday 23:59 PT "
+          f"Truth = Product Hunt's official weekly_rank field (all scores below use it), weeks Monday 00:00 - Sunday 23:59 PT. It is close to, but not exactly, the order of final votes "
           f"(within-week Spearman of weekly_rank with final votes 0.99; W-SUN boundaries fit best). Complete weeks held: {nweeks} "
           f"(Jan 5 - Nov 8). Scored month-forward: {res['scored_weeks']} weeks ({S.wk.min()[:10]} .. {S.wk.max()[-10:]}).", "",
           "Inputs at the end of day k (23:59 PT): final daily rank (fixed at day end), day of week, line-up size, honest pre-launch "

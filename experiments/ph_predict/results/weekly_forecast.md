@@ -1,6 +1,6 @@
 # Weekly forecast (PH weekly top 3/5/10), backtest
 
-Weekly rank in our data: the week's daily-ranked launches ordered by final votes, weeks Monday 00:00 - Sunday 23:59 PT (within-week Spearman of weekly_rank with final votes 0.99; W-SUN boundaries fit best). Complete weeks held: 44 (Jan 5 - Nov 8). Scored month-forward: 40 weeks (2026-02-02 .. 2026-11-08).
+Truth = Product Hunt's official weekly_rank field (all scores below use it), weeks Monday 00:00 - Sunday 23:59 PT. It is close to, but not exactly, the order of final votes (within-week Spearman of weekly_rank with final votes 0.99; W-SUN boundaries fit best). Complete weeks held: 44 (Jan 5 - Nov 8). Scored month-forward: 40 weeks (2026-02-02 .. 2026-11-08).
 
 Inputs at the end of day k (23:59 PT): final daily rank (fixed at day end), day of week, line-up size, honest pre-launch LM (OOF, Mar-Oct; median-filled before), comments and unique commenters created by the launch day's end. No final votes.
 
@@ -10,7 +10,7 @@ Inputs at the end of day k (23:59 PT): final daily rank (fixed at day end), day 
 |---|---|---|---|
 | (b) daily rank + day of week | 57.5 [51, 65] | 71.5 [68, 75] | 77.8 [74, 80] |
 | (c) ridge | 57.5 [52, 63] | 70.0 [66, 74] | 78.0 [75, 81] |
-| (c) LightGBM | 60.0 [53, 67] | 64.5 [60, 69] | 75.5 [73, 78] |
+| (c) LightGBM | 59.2 [52, 66] | 65.0 [61, 69] | 75.5 [73, 78] |
 | daily rank only | 13.3 [8, 19] | 43.0 [39, 47] | 61.2 [58, 64] |
 
 ## By day of the week: (i) vs final weekly top k among launches so far; (ii) vs the whole week's final top k; (reach = share of the whole week's top k already launched)
@@ -36,7 +36,7 @@ Paired, end of week, ridge - (b): top 3 -0.0 [-8, +7], top 5 -1.5 [-4, +0], top 
 
 ## (a) Day-end votes (dated only from Oct 31; vote_snapshots)
 
-- week 2026-10-26/2026-11-01 (2 days, 41 launches): day-end votes 100/100/80; daily rank 67/80/90; final votes (oracle) 100/100/100
+- week 2026-10-26/2026-11-01 (2 days, 41 launches): day-end votes 100/100/80; daily rank 67/80/90; final votes (oracle) 100/100/90
 - week 2026-11-02/2026-11-08 (6 days, 186 launches): day-end votes 100/80/90; daily rank 0/60/60; final votes (oracle) 100/100/90
 
 Week Nov 2-8 is missing Nov 5 in vote_snapshots. Post-day growth over Oct 31 - Nov 8, final / day-end votes:
