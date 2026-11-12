@@ -82,8 +82,14 @@ def main():
                     # replay days without any pre-reveal API rank (Nov 2, 3: api_ranked 0) have no PH order: those rows are excluded
                     if m in ("api_rank", "blend", "best", "depth", "best_clean", "best_mix", "best_mix_th", "best_w25") and E.get("api_ranked", 1) == 0:
                         continue
-                    if c in f:
-                        add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
+                    # QA 10:00Z Nov 12: per-column status; backfilled columns score under their own source, blank ones not at all
+                    cs = (E.get("column_status") or {}).get(c, {}).get("status", "")
+                    if cs == "blank":
+                        continue
+                    s_c = "backfill" if cs.startswith("backfilled") else s
+                    ex = set(map(str, E.get("withdrawn_excluded", [])))
+                    if c in f and f[c].notna().any():
+                        add(d, pt, m, s_c, [i for i in f.dropna(subset=[c]).sort_values(c).id.astype(str).tolist() if i not in ex], E["written_at"])
             else:
                 add(d, pt, "raw_votes", s, f.sort_values("pred_rank").id.astype(str).tolist(), E["written_at"])
                 for m, c in (("r0blend_neartie", "pred_rank_r0blend"), ("r0blend_mean", "pred_rank_r0mean")):

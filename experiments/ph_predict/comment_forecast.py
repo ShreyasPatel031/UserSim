@@ -297,22 +297,34 @@ def live(day, point):
             comments_missing = comments_missing or f == "comments_ts"
             open(f"{tmp}/{f}.jsonl", "w").close()
     team, ids, api, rv = {}, set(), {}, {}
+    snap_ids, inmax = {}, {}   # orchestrator QA 10:00Z Nov 12: inputs fetched <= T only; per-input max fetched_at recorded
     for l in open(f"{tmp}/posts_ts.jsonl"):
         r = json.loads(l)
         from early_forecast import pt_day   # day from featuredAt in PT (00:00 PT = 08:00:00Z is the new day; audit 05:00Z Nov 12)
         if r.get("fetch_status") != 200 or pt_day(r, day) != day:   # the line-up is fixed at 00:01 PT
             continue
-        i = str(r["launch_id"]); ids.add(i)
-        # the official API's own post.dailyRank, populated before the reveal; latest fetched by T (fetched_at, no look-ahead)
         fa = pd.Timestamp(r.get("fetched_at") or r["snapshot_ts"])
+        if fa > T:
+            continue
+        i = str(r["launch_id"]); ids.add(i); snap_ids.setdefault(str(r.get("snapshot_ts")), set()).add(i)
+        inmax["posts"] = max(inmax.get("posts", fa), fa)
+        # the official API's own post.dailyRank, populated before the reveal; latest fetched by T (fetched_at, no look-ahead)
         if str(r.get("source", "")).startswith("ph_api_v2") and r.get("daily_rank_at_fetch") is not None and fa <= T:
             if i not in api or fa > api[i][0]:
                 api[i] = (fa, float(r["daily_rank_at_fetch"]))
         if r.get("reviews_count") is not None and fa <= T and (i not in rv or fa > rv[i][0]):
             rv[i] = (fa, float(r["reviews_count"]))
+    withdrawn = []
+    if snap_ids:   # a launch absent from the latest snapshot <= T was withdrawn: out of the line-up (and of scoring)
+        last = snap_ids[max(snap_ids)]
+        if len(last) >= 0.8 * len(ids):
+            withdrawn = sorted(ids - last); ids = ids & last
     pid, pnames, phun = {}, {}, {}   # launch -> maker/hunter PH user ids (people_ts: user_id, role, launch_ids); username -> id
     for l in open(f"{tmp}/people_ts.jsonl"):
         r = json.loads(l)
+        fp_ = r.get("fetched_at") or r.get("snapshot_ts")
+        if fp_ and pd.Timestamp(fp_) > T:
+            continue
         if r.get("user_id"):
             if r.get("username"):
                 pnames[str(r["username"]).lower()] = str(r["user_id"])
@@ -325,9 +337,25 @@ def live(day, point):
         r = json.loads(l)
         if r.get("created_at"):
             # identity = commenter_user_id: the live "username" field is one constant per launch, not the commenter
-            C.append((str(r["launch_id"]), r.get("comment_id"), str(r.get("commenter_user_id") or r.get("user_id") or ""), r["created_at"], r.get("parent_id")))
-    C = pd.DataFrame(C, columns=["id", "cid", "user", "created", "parent"]).drop_duplicates("cid")
-    C["ts"] = pd.to_datetime(C.created, utc=True, errors="coerce"); C = C[(C.ts <= T) & C.id.isin(ids)]
+            C.append((str(r["launch_id"]), r.get("comment_id"), str(r.get("commenter_user_id") or r.get("user_id") or ""), r["created_at"], r.get("parent_id"),
+                      r.get("fetched_at") or r.get("snapshot_ts")))
+    # replies live in api_replies/<tag>.jsonl (comments_ts holds top-level comments only; the training dumps hold both)
+    rd_ = f"{tmp}/replies"; os.makedirs(rd_, exist_ok=True)
+    subprocess.run(["gsutil", "-q", "-m", "cp", f"{B}/raw/ph_at_launch/{day}/api_replies/*.jsonl", rd_ + "/"], stderr=subprocess.DEVNULL)
+    n_rep_rows = 0
+    for f_ in sorted(os.listdir(rd_)):
+        for l in open(f"{rd_}/{f_}"):
+            r = json.loads(l)
+            if r.get("createdAt") and r.get("post_id"):
+                C.append((str(r["post_id"]), r.get("comment_id"), str(r.get("commenter_user_id") or ""), r["createdAt"], r.get("parentId"), r.get("snapshot_at")))
+                n_rep_rows += 1
+    C = pd.DataFrame(C, columns=["id", "cid", "user", "created", "parent", "fetched"]).drop_duplicates("cid")
+    C["ts"] = pd.to_datetime(C.created, utc=True, errors="coerce"); C["ft"] = pd.to_datetime(C.fetched, utc=True, errors="coerce")
+    C = C[(C.ts <= T) & C.id.isin(ids) & (C.ft <= T)]
+    if len(C):
+        inmax["comments"] = C.ft.max()
+    elif not comments_missing:
+        comments_missing = "no comment fetched by the cut"   # capture starts ~01:30 PT: comment columns blank by design before it
     # history (users only, in memory): backtest dump + earlier live days
     fetch(); K, _ = load_comments()
     first = K[K.uid != ""].groupby("uid").ts.min().to_dict()
@@ -574,24 +602,46 @@ def live(day, point):
                 A["pred_rank_best_clean"] = (w_api * A.pred_rank_api + (1 - w_api) * cpos + 1e-6 * cpos).rank(method="first").astype(int)
                 # orchestrator 10:35Z Nov 12: mix = hidden rank w_api, the rest split equally between the clean and published
                 # 00:05 ranks; no tuning until 15 days
-                A["pred_rank_best_mix"] = (w_api * A.pred_rank_api + (1 - w_api) / 2 * cpos + (1 - w_api) / 2 * lm_pos
-                                           + 1e-6 * lm_pos).rank(method="first").astype(int)
+                A["_mix_score"] = w_api * A.pred_rank_api + (1 - w_api) / 2 * cpos + (1 - w_api) / 2 * lm_pos
+                A["pred_rank_best_mix"] = (A._mix_score + 1e-6 * lm_pos).rank(method="first").astype(int)
     except Exception as e:
         print("best_clean skipped:", repr(e)[:120], flush=True)
     if npre_th is not None and point in ("P030", "P0", "P1") and A.pred_rank_best_mix.notna().any():
-        A["pred_rank_best_mix_th"] = A.assign(_n=A.id.map(npre_th).fillna(0)).sort_values(["pred_rank_best_mix", "_n", "id"], ascending=[True, False, True]).pipe(
+        # QA 10:00Z Nov 12: sorting the strict best_mix ranking never let the tie-break act; near-ties of the blended score
+        # (same 0.5-rank-unit bucket) are now ordered by th_n_pre
+        A["pred_rank_best_mix_th"] = A.assign(_n=A.id.map(npre_th).fillna(0), _b=np.floor(A._mix_score / 0.5)).sort_values(["_b", "_n", "pred_rank_best_mix"], ascending=[True, False, True]).pipe(
             lambda z: pd.Series(np.arange(1, len(z) + 1), index=z.index)).reindex(A.index)
     if comments_missing:   # blank every column that reads comments (identity-free ridge, old rule, team ids, thread lines, e5)
         for c_ in [c for c in A.columns if c in ("pred_rank", "pred_rank_rule_a", "pred_rank_teamids", "pred_rank_blend", "pred_rank_e5", "e5_score",
                    "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "n_c", "u_out",
                    "u_out_teamids", "u_tie", "score")]:
             A[c_] = np.nan
+    sp_ = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
+    if os.path.exists(sp_):
+        inmax["clean_shadow"] = pd.Timestamp(json.load(open(sp_)).get("written_at") or pd.Timestamp(os.path.getmtime(sp_), unit="s", tz="UTC"))
+    late = (now - T) > pd.Timedelta(minutes=90)
+    dep = {"comments": ["pred_rank", "pred_rank_rule_a", "pred_rank_teamids", "pred_rank_blend", "pred_rank_e5", "pred_rank_clean_thread",
+                        "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th"],
+           "clean_shadow": ["pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_best_mix_th", "pred_rank_e5", "pred_rank_clean_thread",
+                            "pred_rank_clean_thread_z", "pred_rank_clean_stack"],
+           "posts": ["pred_rank_api", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "pred_rank_estvotes"]}
+    col_status = {}
+    for src_, cols_ in dep.items():
+        for c_ in cols_:
+            t_ = inmax.get(src_)
+            st_ = "blank" if t_ is None else ("backfilled (inputs fetched after the cut)" if t_ > T else ("late" if late else "live"))
+            prev = col_status.get(c_, {}).get("status")
+            if prev == "blank" or (prev and prev != "live" and st_ == "live"):
+                st_ = prev
+            col_status[c_] = {"status": st_, "inputs_fetched_max": {**col_status.get(c_, {}).get("inputs_fetched_max", {}), src_: t_.isoformat() if t_ is not None else None}}
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
+           "column_status": col_status, "withdrawn_excluded": withdrawn, "reply_rows_read": n_rep_rows,
+           "hidden_rank_note": "each point's hidden API rank is the latest posts_ts read fetched <= the cut (the 15-min snapshot before it)",
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
            "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
-                                                   "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
+                                                   "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).astype(object).where(lambda z: z.notna(), None).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
         res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
     else:
