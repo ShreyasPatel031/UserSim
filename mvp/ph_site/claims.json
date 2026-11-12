@@ -133,5 +133,16 @@
   "label": "426 launches from Sep 1, real voters' over-represented segments, people's segments built from activity before launch day",
   "source": "E5 who-card voter test, branch claude/person-model-v2",
   "date": "2026-11-12"
+ },
+ "try_stability": {
+  "values": {
+   "launches": 60,
+   "reaction_agreement": 0.56,
+   "concern_overlap": 0.47,
+   "question_overlap": 0.59
+  },
+  "label": "60 fresh launches run twice through this site's code; page read at temperature 0 gives an identical band",
+  "source": "E5 reports/try_stability/README.md",
+  "date": "2026-11-12"
  }
 }

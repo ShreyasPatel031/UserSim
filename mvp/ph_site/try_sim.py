@@ -242,7 +242,7 @@ async def _analyze(page: dict, ip: str, source: str, fetch=None, fallback=None) 
                                     desc=page["description"], text=page["text"][:9000],
                                     pricing=page["pricing_text"][:2500], vocab=", ".join(vocab))
         stage = "gemini"
-        raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2, max_retries=3,
+        raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.0, max_retries=3,
                                 max_output_tokens=1500)
         stage = "judged"
         a = extract_json(raw)
@@ -254,7 +254,7 @@ async def _analyze(page: dict, ip: str, source: str, fetch=None, fallback=None) 
                 prompt = READ_PROMPT.format(url=page["url"], title=page["title"], desc=page["description"],
                                             text=page["text"][:9000], pricing=page["pricing_text"][:2500],
                                             vocab=", ".join(vocab))
-                raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.2,
+                raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.0,
                                         max_retries=3, max_output_tokens=1500)
                 a = extract_json(raw)
         if a.get("problem"):
@@ -481,7 +481,17 @@ def _reactions_note(grounded: bool = True, source: str | None = None) -> str:
             f"simulated comments anticipated about {v['theme_recall']:.0%} of the themes real users raised by our main "
             f"judge (about {v['second_judge_recall']:.0%} by a stricter second judge), and about "
             f"{v['theme_precision']:.0%} of the simulated points appeared in real comments; generic category comments "
-            f"anticipated about {v['theme_recall_generic']:.0%}. " + _vs_humans() + _page_read_note(source))
+            f"anticipated about {v['theme_recall_generic']:.0%}. " + _vs_humans() + _page_read_note(source)
+            + _rerun_note())
+
+
+def _rerun_note() -> str:
+    from mvp.ph_site.live import claims
+    r = claims().get("try_stability")
+    if not r:
+        return ""
+    return (f" Simulated comments vary between runs: rerunning the same page repeated about "
+            f"{r['values']['reaction_agreement']:.0%} of the points ({r['label']}).")
 
 
 def _page_read_note(source: str | None) -> str:
