@@ -14,7 +14,7 @@ import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE))
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 POINTS = {"R0": 0, "R0q": 0.25, "R0h": 0.5, "R1": 1, "R2": 2, "R4": 4}   # R0q / R0h = reveal +15 / +30 min (reveal_gap.md)
-CLOCK = {"C05": 5, "C06": 6}   # orchestrator 03:25Z Nov 12: fixed 05:00 / 06:00 PT points (data <= that minute)
+CLOCK = {"C05": 5, "C06": 6, "C12": 12, "C16": 16}   # fixed PT points (data <= that minute): 05/06 orchestrator 03:25Z Nov 12; 12/16 so the lock page reaches the after-noon rules
 # lock rule (orchestrator 03:50Z Nov 12, out-of-sample on 80 days): r_k = votes of #k / votes of #k+1 in the vote order.
 #   top3 / top5 locked: r_k >= 1.3 at a read from 05:00 to 12:00 PT (provisional, few calls), r_k >= 1.2 from 12:00 PT
 #   top2 locked ("2 locked, 1 open"): r2 >= 1.2 at a read from 05:00 PT
