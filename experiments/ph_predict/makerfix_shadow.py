@@ -5,6 +5,8 @@ live_sources() on the 00:05 rows, LIVE_PARAMS, 5 seeds); test rows = data/today/
   makerfix  for launches whose 00:05 maker ids include a placeholder ("0", empty, None), every maker-derived input
             (hist_maker*, hist_dayrank_hist_maker*, ph_maker*, ph_n_makers*, ph_dayrank_ph_n_makers, x_n_makers*) is set
             to missing (LightGBM's missing branch) instead of the value joined on the placeholder id
+  nollm     (orchestrator 04:45Z Nov 12) the deployed model WITHOUT the llm and promo sources (else as unfixed): the
+            replay's "live minus LLM judgements / promo" condition, scored forward next to published and makerfix
 usage (VM): /opt/exp/bin/python3 makerfix_shadow.py <day> -> results/shadow_makerfix/<day>.json (prints its path)"""
 import json, os, sys
 import numpy as np, pandas as pd
@@ -29,11 +31,15 @@ def main(d):
     fx = te.copy(); fx.loc[ph.values, mc] = np.nan
     models = [M.fit_predict(tr2, te, src, seed=s, **M.LIVE_PARAMS)[1] for s in range(5)]
     p0 = np.mean([m.predict(te[cols]) for m in models], axis=0); p1 = np.mean([m.predict(fx[cols]) for m in models], axis=0)
-    out = pd.DataFrame({"id": te.id.astype(str).values, "pred_unfixed": p0, "pred_makerfix": p1, "placeholder": ph.values})
+    src_n = [x for x in src if x not in ("llm", "promo")]
+    p2 = np.mean([M.fit_predict(tr2, te, src_n, seed=s, **M.LIVE_PARAMS)[0] for s in range(5)], axis=0)
+    out = pd.DataFrame({"id": te.id.astype(str).values, "pred_unfixed": p0, "pred_makerfix": p1, "pred_nollm": p2, "placeholder": ph.values})
     out["rank_unfixed"] = out.pred_unfixed.rank(ascending=False, method="first").astype(int)
     out["rank_makerfix"] = out.pred_makerfix.rank(ascending=False, method="first").astype(int)
+    out["rank_nollm"] = out.pred_nollm.rank(ascending=False, method="first").astype(int)
     res = {"day": d, "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "inputs": "data/today/<d>.json (00:05 snapshot) only",
            "launches": int(len(out)), "placeholder_launches": int(ph.sum()), "maker_cols": mc, "sources": src, "dropped": dropped,
+           "sources_nollm": src_n, "llm_in_unfixed": "llm" in src, "promo_in_unfixed": "promo" in src,
            "forecast": out.sort_values("rank_makerfix").round(4).to_dict("records")}
     os.makedirs(f"{RN.OUT}/shadow_makerfix", exist_ok=True)
     p = f"{RN.OUT}/shadow_makerfix/{d}.json"; json.dump(res, open(p, "w"), indent=1, default=bool)
