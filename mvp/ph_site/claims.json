@@ -64,5 +64,15 @@
   "label": "median absolute error of expected day-end votes",
   "source": "PH ops growth model: results/growth.md",
   "date": "2026-11-12"
+ },
+ "reactions_vs_humans": {
+  "values": {
+   "launches": 158,
+   "recall_ratio": 1.27,
+   "precision_ratio": 1.4
+  },
+  "label": "158 new launches, simulated reactions vs a random half of the real comments predicting the other half",
+  "source": "E5 reports/ceiling, commit 6fdf43d7, branch claude/person-model-v2",
+  "date": "2026-11-12"
  }
 }

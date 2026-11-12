@@ -403,7 +403,17 @@ def _reactions_note() -> str:
             f"they actually wrote). Grounded in themes from similar past launches. Fixed offline figure "
             f"({c['label']}, {c['date']}): these simulated comments anticipated about {v['theme_recall']:.0%} of the "
             f"themes real users raised, and about {v['theme_precision']:.0%} of the simulated points appeared in real "
-            f"comments (generic category comments: about {v['theme_recall_generic']:.0%}).")
+            f"comments (generic category comments: about {v['theme_recall_generic']:.0%}). "
+            + _vs_humans())
+
+
+def _vs_humans() -> str:
+    from mvp.ph_site.live import claims
+    h = claims().get("reactions_vs_humans")
+    if not h:
+        return ""
+    return (f"On {h['values']['launches']} new launches they matched real users' themes at least as well as a second "
+            "group of real commenters on the same launch did.")
 
 
 def _types_from_people(p: dict, topics: list[str]) -> list[str]:
