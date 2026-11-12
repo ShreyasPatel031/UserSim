@@ -8,7 +8,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 POOL="${PACE_IPROYAL_POOL:-$ROOT/secrets/iproyal.pool}"
 OUT="$ROOT/results/ph_iproyal_limit/ip_pool_roles.tsv"
-DAILY_N="${IPROYAL_DAILY_IPS:-3}"
+DAILY_N="${IPROYAL_DAILY_IPS:-2}"
 
 read_pool() {
   [[ -f "$POOL" ]] || { echo "missing pool: $POOL (see scripts/vm/iproyal.pool.example)" >&2; exit 1; }

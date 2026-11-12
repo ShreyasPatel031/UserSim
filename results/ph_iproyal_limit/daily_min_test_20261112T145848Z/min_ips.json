@@ -1,0 +1,32 @@
+{
+  "test_date_utc": "2026-11-12T15:17:00Z",
+  "pool_order": "88326929 Finland x5",
+  "finland_vm_soak_8min": "0 complete/min on all tested FI IPs (browser_open unstable)",
+  "spain_control_soak_L1_10min": {
+    "complete_ppm": 0.8,
+    "gql429_5m": 0,
+    "ip": "213.220.25.150"
+  },
+  "daily_workload_measured": {
+    "people_typical": 131,
+    "people_cap": 700,
+    "heavy_pass_minutes_max": 45,
+    "source": "ph_people_daily/2026-11-03 + Data Feeder mailbox"
+  },
+  "gql_weight_model": "pdeep ~80 gql/person vs daily page1 ~5 gql/person → 16x factor",
+  "estimated_light_people_per_min_per_working_ip": 12.8,
+  "minutes_one_ip_typical_day_serial": 26,
+  "minutes_one_ip_cap_day_serial": 89,
+  "minimum_ips_daily": {
+    "serialized_schedule": 1,
+    "steady_parallel_heavy_and_people": 2,
+    "cap_day_with_heavy_parallel_no_scheduler": 2,
+    "with_headroom_third_job": 3
+  },
+  "five_ip_allocation_if_all_pass_camoufox": {
+    "daily": 2,
+    "historical_l3": 3,
+    "note": "Do not assign all 5 to daily; 2 is enough for max measured workload"
+  },
+  "finland_warning": "4/5 FI IPs hard 403 on HTTP home probe; VM soak 0 throughput. Use Spain-validated ISP for daily until each IP passes Camoufox browser_open + completes."
+}
