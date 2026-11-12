@@ -1,0 +1,7 @@
+{
+ "source": "clean shadow model, confidence_v2 label (clear_leader / open_field), live days scored forward",
+ "applies_to": "clean shadow model",
+ "n_days": 0,
+ "by_label": {},
+ "days": []
+}

@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-12T12:50:53.585178+00:00",
+ "built_at": "2026-11-12T16:23:04.087096+00:00",
  "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
  "sources": {
   "live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
@@ -2760,6 +2760,6 @@
    },
    "2026-11-11": "no clean score"
   },
-  "written_at": "2026-11-12T12:52:15.071342+00:00"
+  "written_at": "2026-11-12T16:24:14.932026+00:00"
  }
 }
