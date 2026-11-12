@@ -89,6 +89,17 @@ def main():
                 for m, c in (("r0blend_neartie", "pred_rank_r0blend"), ("r0blend_mean", "pred_rank_r0mean")):
                     if c in f:
                         add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
+    # the site's P order is pred_rank_best: its replay record (api_depth.py, hourly hidden API rank on Nov 2-10, weights chosen
+    # on the same days -> IN-SAMPLE) as source replay_in_sample; P1 = 01:00 read w 0.5, P2 / P3 = 02:00 / 03:00 reads w 0.75,
+    # P4 = the 03:00 read (no pre-04:00 hourly read later than that). Per-pick fields from the replay are not held (NaN).
+    ad = os.path.join(HERE, "results", "api_depth.json")
+    if os.path.exists(ad):
+        for r in json.load(open(ad)).get("rows", []):
+            for pt, h, cand in (("P1", 1, "wmean_0.5"), ("P2", 2, "wmean_0.75"), ("P3", 3, "wmean_0.75"), ("P4", 3, "wmean_0.75")):
+                if r["h"] == h and r["cand"] == cand and r["day"] in real:
+                    rows.append({"day": r["day"], "point": pt, "method": "best", "source": "replay_in_sample", "n": None, "written_at": None,
+                                 "top3": round(r["t3"], 1), "top5": round(r["t5"], 1), "top10": round(r["t10"], 1),
+                                 "p1_top3": np.nan, "p2_top3": np.nan, "p3_top3": np.nan, "exact1": np.nan})
     X = pd.DataFrame(rows).sort_values(["day", "point", "method"])
     summ = []
     for (pt, m, s), g in X.groupby(["point", "method", "source"]):
@@ -107,7 +118,8 @@ def main():
            "sources": {"live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
                        "late": "honest data cut but written later than that (not a live call)",
                        "shadow": "shadow lines written after 01:00 PT from inputs stamped <= 00:05 (by design; not a live call)",
-                       "replay": "re-run afterwards with only data up to the point time"},
+                       "replay": "re-run afterwards with only data up to the point time",
+                       "replay_in_sample": "replay whose recipe weights were chosen on the same days (pred_rank_best on Nov 2-10)"},
            "per_pick": "p1/p2/p3_top3 = our #1/#2/#3 pick finished in the final top 3; exact1 = our #1 was the winner",
            "time_shown": "written_at (when the forecast file was written), not the data cut",
            "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual}

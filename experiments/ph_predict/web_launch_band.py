@@ -69,8 +69,7 @@ def main():
             per.append([spearmanr(g.oof, -g.daily_rank).correlation, topk(g, "oof", 3), topk(g, "oof", 5), topk(g, "oof", 10)])
     per = np.array(per)
     acc = {"days": int(len(per)), "months": [mons[2], mons[-1]], "within_day_spearman": round(float(np.nanmean(per[:, 0])), 3),
-           "top3": round(float(per[:, 1].mean()), 1), "top5": round(float(per[:, 2].mean()), 1), "top10": round(float(per[:, 3].mean()), 1),
-           "reference_full_launch_model_honest": {"top3": 63.0, "top5": 69.3, "top10": 75.0, "note": "207 days, all launch facts incl. team history; live 00:05 record 50.0/61.4/72.9 on 14 days"}}
+           "top3": round(float(per[:, 1].mean()), 1), "top5": round(float(per[:, 2].mean()), 1), "top10": round(float(per[:, 3].mean()), 1)}
     # band table: held-out score percentile decile -> final daily rank and votes
     H = H.copy(); H["pct"] = H.oof.rank(pct=True); H["dec"] = np.minimum((H.pct * 10).astype(int), 9)
     H["rank_pct_in_day"] = H.groupby("day").daily_rank.rank(pct=True)
