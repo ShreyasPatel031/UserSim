@@ -195,3 +195,35 @@ res["examples_base_list"] = {bys[s].topic: BASE[s] for s in S[:6]}
 res["usd"] = round(USD["usd"], 3)
 json.dump(res, open(os.path.join(OUT, "concerns_rank.json"), "w"), indent=1, default=str)
 print(json.dumps({k: v for k, v in res.items() if k != "design"}, indent=1, default=str)[:4000])
+
+# ---------- fairer base-rate bar: fixed generic concerns, ordered per topic by frequency among earlier launches
+GENERIC = ["How much does it cost - is there a free tier or clear pricing?", "How is my data handled - privacy and security?",
+           "Does it integrate with the tools I already use?", "Is there a mobile app?", "Is it open source or self-hostable?",
+           "How is it different from the established alternative?"]
+GE = embed(GENERIC); BASE2 = {}
+for qi, s in enumerate(S):
+    r = bys[s]; et = [j for j in range(len(RBM)) if rb_day[j] < r.day and rb_topic[j] == r.topic]
+    if len(et) < 20: et = [j for j in range(len(RBM)) if rb_day[j] < r.day]
+    ths = [t for j in et for t in crit_themes[j]]
+    if ths:
+        X = CE[[cix[t] for t in ths]]; f = (X @ GE.T >= 0.70).sum(0)
+    else:
+        f = np.zeros(len(GENERIC))
+    BASE2[s] = [GENERIC[i] for i in np.argsort(-f)][:5]
+METHODS["BASE_GENERIC"] = BASE2
+jobs2 = [(s, "BASE_GENERIC") for s in S]
+with cf.ThreadPoolExecutor(8) as ex: J2 = dict(zip(jobs2, ex.map(lambda j: run(f"j|{j[1]}|{j[0]}", lambda: judge(*j)), jobs2)))
+json.dump(K, open(cache_f, "w"))
+for (s, m), bm in J2.items():
+    if bm is None: continue
+    bm = np.array(bm, float)
+    rows.append({"s": s, "m": m, "topic": bys[s].topic, "p1": bm[:1].mean(), "p3": bm[:3].mean(), "p5": bm[:5].mean(), "hit3": float(bm[:3].any())})
+D = pd.DataFrame(rows); W = D.pivot_table(index="s", columns="m", values=MET)
+res["means"]["BASE_GENERIC"] = {k: boot(D[D.m == "BASE_GENERIC"][k]) for k in MET}
+for a in ("RANKED", "DEPLOYED", "CRITIC"):
+    res["paired"][f"{a} - BASE_GENERIC"] = {k: boot(W[(k, a)] - W[(k, "BASE_GENERIC")]) for k in MET}
+res["by_topic (p3) generic"] = {t: boot(D[(D.m == "BASE_GENERIC") & (D.topic == t)].p3) for t in top_topics}
+res["generic_order_examples"] = {bys[s].topic: BASE2[s][:3] for s in S[:6]}
+res["usd"] = round(USD["usd"], 3)
+json.dump(res, open(os.path.join(OUT, "concerns_rank.json"), "w"), indent=1, default=str)
+print("GENERIC", json.dumps({k: res[k] for k in ("usd",)}), json.dumps(res["means"]["BASE_GENERIC"]), json.dumps({k: v for k, v in res["paired"].items() if "GENERIC" in k}))

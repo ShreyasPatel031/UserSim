@@ -1008,3 +1008,16 @@ Ladder (Spearman / top 3 / 5 / 10; band width; Δ top-3, Δ top-5 vs product-onl
 - 5 + full LM: 64.8 / 61.1 / 67.7 / 77.1; band 19.0; Δ +31.1, +26.7
 Each block alone on top of product-only: hunter +17.3 [12.4, 22.2] / +20.9; makers +15.3 [11.6, 19.3] / +9.6; team's earlier voters +12.7 [8.9, 16.4] / +17.7; full LM +32.7 / +27.2. Full LM alone (reference, same days): 65.3 / 62.9 / 67.5 / 77.1.
 Inputs a visitor would give: launch date (band only); the hunter's PH profile; the makers' PH profiles (maker history and the earlier-voter count are both computed from held data given the profiles). Hunter + makers recover about 85% of the gap between product-only and the full LM at top 3 (30.0 -> 56.9 vs 61–63).
+
+### 2026-11-12 E5 — a ranked "top concerns" list for new products
+Script experiments/simlab/concerns_rank.py; report reports/concerns_rank/. Same 300 post-cutoff launches and critical-theme truth (objections, doubting questions, feature requests); blinded flash judge per listed item; launch-bootstrap 95% CIs; spend about $0.46.
+precision@1 / @3 / @5 / hit@3 (at least one of the top three raised):
+- DEPLOYED reactions (in order): 18.6 / 19.1 / 19.1 / 45.6
+- CRITIC (D_category): 15.5 / 19.4 / 19.5 / 47.6
+- RETRIEVED (critical themes of the 25 most similar earlier launches, by neighbour frequency): 20.9 / 13.2 / 10.4 / 34.1
+- BASE (most frequent critical themes of earlier same-topic launches; clustering at cos 0.80 leaves product-specific medoids, a weak bar): 7.8 / 8.1 / 6.6 / 22.3
+- BASE_GENERIC (the six generic concerns - pricing, privacy, integrations, mobile app, open source, vs the incumbent - ordered per topic by earlier frequency): 7.4 / 11.1 / 12.2 / 29.4
+- RANKED (pool of all candidates; fixed equal-weight rank-mean of neighbour frequency, cross-generator agreement and a Gemini likelihood rating): 23.3 / 24.4 / 22.1 / 54.7
+Paired: RANKED − BASE_GENERIC p@3 +13.3 [9.9, 16.8], hit@3 +25.3 [18.2, 32.8]; RANKED − DEPLOYED p@3 +5.3 [1.9, 8.8], hit@3 +9.1 [2.0, 16.2]. "Always ask about pricing and integrations" does NOT do as well as the simulation (11% vs 24% at the top three).
+By topic p@3 (RANKED / generic / deployed): Productivity 24.8 / – / 21.2 (n 74); Open Source 25.6 / 16.7 deployed; API 24.6 / 12.3 deployed; Marketing 31.2; AI 16.7.
+Reading: the ranked list raises top-3 precision to about 1 in 4 (from about 1 in 5 for the deployed order) and at least one of its top three concerns is raised by real users on about 55% of new launches.
