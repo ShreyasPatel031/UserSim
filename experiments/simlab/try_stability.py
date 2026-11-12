@@ -13,6 +13,8 @@ questions overlap@3 between 2 reruns (30 launches) and vs a mismatched product; 
 """
 import os, sys, json, re
 WT, SP0, OUTD = sys.argv[1:4]
+# local in-memory caps only (TRY_LOCAL_LIMITS=1 is set by the try_fixes setup; never the live counter): lift them for the test
+os.environ["TRY_GLOBAL_DAY"] = "100000"; os.environ["TRY_PER_IP_DAY"] = "100000"; os.environ["TRY_PER_IP_HOUR"] = "100000"
 SRC = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "try_fixes.py")).read().split("\n")
 TF = "\n".join(SRC[:118]) + "\n" + "\n".join(SRC[145:254])   # setup + cached fresh reads (no new calls) + ranked() / judge()
 sys.argv = [sys.argv[0], WT, SP0, os.path.join(SP0, "try_fixes")]
