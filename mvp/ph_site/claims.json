@@ -1,5 +1,5 @@
 {
- "_about": "Fixed offline figures quoted on /ph and /try. Each has its source and date; the pages label them as fixed offline figures, not live scores. Update here (and only here) when the owning agent publishes new numbers.",
+ "_about": "Fixed offline figures quoted on /ph and /try, each with source and date; the pages label them as fixed offline figures. Only the /ph live track record is computed from saved forecast files.",
  "top3_rate_by_rank": {
   "values": {
    "1": 0.903,
@@ -8,7 +8,7 @@
    "brand_sub_launch": 0.48,
    "versioned_name": 0.5
   },
-  "label": "207 backtest days, Mar-Oct 2026 (month-forward, honest launch model)",
+  "label": "207-day offline backtest of an earlier model run (Mar-Oct 2026), not this live model's record",
   "source": "E5 false_favourites: experiments/simlab/reports/false_favourites/false_favourites.json, branch claude/person-model-v2",
   "date": "2026-11-11"
  },
@@ -17,13 +17,14 @@
    "launches": 300,
    "theme_recall": 0.499,
    "theme_precision": 0.514,
-   "theme_recall_generic": 0.06,
+   "theme_recall_generic": 0.052,
    "gain_vs_v1_recall": [
     9.6,
     14.8
-   ]
+   ],
+   "second_judge_recall": 0.23
   },
-  "label": "300 past launches, blinded judge, measured on their PH descriptions; product-site text tested the same",
+  "label": "300 past launches, blinded judge, measured on their PH descriptions",
   "source": "E5 reactions_v2: experiments/simlab/reports/reactions_v2/reactions_v2.json (variant BEST), branch claude/person-model-v2",
   "date": "2026-11-11"
  },
@@ -57,7 +58,7 @@
  },
  "exp_votes_error": {
   "values": {
-   "pre_reveal": "about 20% (30-56% for top-10 launches)",
+   "pre_reveal": "about 20% (29% at +1 h on 3 days; 30-56% for top-10 launches)",
    "R0": "about 9.5% (15-34% for top-10 launches)",
    "R4": "about 5% (larger for top-10 launches)"
   },
@@ -73,6 +74,20 @@
   },
   "label": "158 new launches, simulated reactions vs a random half of the real comments predicting the other half",
   "source": "E5 reports/ceiling, commit 6fdf43d7, branch claude/person-model-v2",
+  "date": "2026-11-12"
+ },
+ "person_sim": {
+  "values": {
+   "same_point_own_history": 0.22,
+   "same_point_generic": 0.12,
+   "forced_choice_own": 0.29,
+   "forced_choice_generic": 0.27,
+   "chance": 0.25,
+   "comments": 275,
+   "members": 88
+  },
+  "label": "275 real comments by 88 members",
+  "source": "E5 person_sim: experiments/simlab/reports/person_sim/, branch claude/person-model-v2",
   "date": "2026-11-12"
  }
 }

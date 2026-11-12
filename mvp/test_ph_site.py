@@ -237,3 +237,16 @@ def test_lock_state_read(monkeypatch):
     monkeypatch.setattr(live, "current_board", lambda d: {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True})
     v = live.day_view("2026-11-12")
     assert v["board"]["lock"]["label_top3"] == "2 locked, 1 open" and v["board"]["lock"]["label_top10"] and v["board"]["lock"]["read_pt"] == "05:00 PT"
+
+
+def test_final_only_from_official_rank_after_3am(monkeypatch):
+    rows = [{"_header": True},
+            {"id": "a", "dailyRank": "1", "votesCount": "300", "featuredAt": "2026-11-10T08:01:00Z", "fetched_at": "2026-11-11T21:00:00Z"},
+            # featured at exactly 00:00 PT Nov 11 -> belongs to Nov 11, not Nov 10
+            {"id": "b", "dailyRank": "1", "votesCount": "900", "featuredAt": "2026-11-11T08:00:00Z", "launch_day_PT": "2026-11-10", "fetched_at": "2026-11-11T21:00:00Z"},
+            # read before 03:00 PT next day -> not final
+            {"id": "c", "dailyRank": "2", "votesCount": "200", "featuredAt": "2026-11-10T08:01:00Z", "fetched_at": "2026-11-11T09:00:00Z"}]
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [("raw/ph_at_launch/monthly_reread/2026-11/2026-11-11.jsonl", "")] if "monthly_reread" in prefix else [])
+    monkeypatch.setattr(live.gcs, "read_jsonl", lambda path, ttl=0: rows)
+    ranks, at = live._monthly_reread("2026-11-10")
+    assert set(ranks) == {"a"}

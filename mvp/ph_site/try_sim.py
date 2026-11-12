@@ -394,17 +394,27 @@ async def step_people(tok: str) -> dict:
     return out
 
 
-def _reactions_note() -> str:
+def _reactions_note(grounded: bool = True) -> str:
     from mvp.ph_site.live import claims
-    c = claims()["reactions_eval"]
+    cl = claims()
+    c, ps = cl["reactions_eval"], cl.get("person_sim")
     v = c["values"]
-    return (f"Simulated, not real comments, voiced as types of Product Hunt members, not as specific real people (tested "
-            f"against real members' comments, a member's own history made the simulation only slightly closer to what "
-            f"they actually wrote). Grounded in themes from similar past launches. Fixed offline figure "
-            f"({c['label']}, {c['date']}): these simulated comments anticipated about {v['theme_recall']:.0%} of the "
-            f"themes real users raised, and about {v['theme_precision']:.0%} of the simulated points appeared in real "
-            f"comments (generic category comments: about {v['theme_recall_generic']:.0%}). "
-            + _vs_humans())
+    person = ""
+    if ps:
+        pv = ps["values"]
+        person = (f" Voiced as types of Product Hunt members, not as specific real people: in a test on {ps['label']}, giving "
+                  f"the simulation a member's own past comments raised the chance of making the same point from "
+                  f"{pv['same_point_generic']:.0%} to {pv['same_point_own_history']:.0%}, and a judge could not tell it "
+                  f"from a generic member ({pv['forced_choice_own']:.0%} vs {pv['forced_choice_generic']:.0%}, chance "
+                  f"{pv['chance']:.0%}).")
+    ground = (" Grounded in themes from similar past launches." if grounded else
+              " Similar past launches were unavailable for this run, so these were not grounded; the figures below "
+              "were measured with grounding.")
+    return (f"Simulated, not real comments.{person}{ground} Fixed offline figure ({c['label']}, {c['date']}): these "
+            f"simulated comments anticipated about {v['theme_recall']:.0%} of the themes real users raised by our main "
+            f"judge (about {v['second_judge_recall']:.0%} by a stricter second judge), and about "
+            f"{v['theme_precision']:.0%} of the simulated points appeared in real comments; generic category comments "
+            f"anticipated about {v['theme_recall_generic']:.0%}. " + _vs_humans())
 
 
 def _vs_humans() -> str:
@@ -520,9 +530,9 @@ async def step_reactions(tok: str) -> dict:
     j = extract_json(raw)
     reacts = []
     for r in (j.get("reactions") or [])[:6]:
-        reacts.append({k: r.get(k) for k in ("type", "comment", "sentiment", "would_upvote", "would_try", "why")})
+        reacts.append({k: r.get(k) for k in ("type", "comment", "sentiment", "why")})   # no unvalidated vote meters
     return {"reactions": reacts, "types": types, "headline": j.get("headline_takeaway", ""), "grounded": grounded,
-            "note": _reactions_note()}
+            "note": _reactions_note(grounded)}
 
 
 # ---------- step 4: launch (no LLM) ----------

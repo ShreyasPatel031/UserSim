@@ -120,46 +120,39 @@ def _api_detail(day: str) -> tuple[list[dict], str | None]:
     return rows, at
 
 
-def _posts_ts_final(day: str) -> tuple[dict, str | None]:
-    rows = gcs.read_jsonl(f"raw/ph_at_launch/{day}/live/posts_ts.jsonl", ttl=600)
-    last: dict[str, dict] = {}
-    for r in rows:
-        if r.get("fetch_status") != 200 or str(r.get("day", day)) != day:
-            continue
-        lid = str(r.get("launch_id"))
-        if lid not in last or str(r.get("snapshot_ts")) >= str(last[lid].get("snapshot_ts")):
-            last[lid] = r
-    if not last:
-        return {}, None
-    at = max(str(r.get("snapshot_ts")) for r in last.values())
-    votes = {k: float(r.get("votes_at_fetch") or 0) for k, r in last.items()}
-    order = sorted(votes, key=lambda k: -votes[k])
-    ranks = {}
-    for i, k in enumerate(order, 1):
-        dr = last[k].get("daily_rank_at_fetch")
-        ranks[k] = {"rank": int(dr) if str(dr or "").isdigit() else i, "votes": int(votes[k])}
-    return ranks, at
+def _final_after(day: str) -> datetime:
+    """PH's daily rank is votes at midnight PT; it is only stable from 03:00 PT the next day."""
+    return datetime.fromisoformat(day).replace(tzinfo=PT) + timedelta(days=1, hours=3)
 
 
-def _is_final(day: str, at_iso: str | None) -> bool:
-    if not at_iso:
-        return False
-    at = datetime.fromisoformat(at_iso.replace("Z", "+00:00"))
-    end = datetime.fromisoformat(day).replace(tzinfo=PT) + timedelta(hours=22, minutes=55)
-    return at >= end
+def _pt_day(iso: str) -> str | None:
+    try:
+        return datetime.fromisoformat(str(iso).replace("Z", "+00:00")).astimezone(PT).strftime("%Y-%m-%d")
+    except ValueError:
+        return None
 
 
 def _monthly_reread(day: str) -> tuple[dict, str | None]:
-    """Final ranks from the daily 23:50 PT official-API re-read of the month (latest file that covers `day`)."""
-    names = sorted(n for n, _ in gcs.list_names(f"raw/ph_at_launch/monthly_reread/{day[:7]}/", ttl=600)
+    """Official dailyRank from the 23:50 PT official-API re-read, using only rows read at or after 03:00 PT the next
+    day. The launch day is the PT date of featuredAt (a launch featured at 00:00 PT belongs to that new day)."""
+    cut = _final_after(day)
+    months = sorted({day[:7], (datetime.fromisoformat(day) + timedelta(days=1)).strftime("%Y-%m")})
+    names = sorted(n for m in months for n, _ in gcs.list_names(f"raw/ph_at_launch/monthly_reread/{m}/", ttl=600)
                    if n.endswith(".jsonl"))
     for n in reversed(names):
-        if n.rsplit("/", 1)[-1][:10] <= day:   # a read made before the day ended is not final
-            break
         rows = gcs.read_jsonl(n, ttl=600)
         ranks, at = {}, None
         for r in rows:
-            if r.get("_header") or str(r.get("launch_day_PT")) != day or not r.get("dailyRank"):
+            if r.get("_header") or not r.get("dailyRank"):
+                continue
+            launch_day = _pt_day(r.get("featuredAt")) or str(r.get("launch_day_PT"))
+            if launch_day != day:
+                continue
+            try:
+                fetched = datetime.fromisoformat(str(r.get("fetched_at")).replace("Z", "+00:00"))
+            except ValueError:
+                continue
+            if fetched < cut:
                 continue
             try:
                 ranks[str(r["id"])] = {"rank": int(r["dailyRank"]), "votes": int(r.get("votesCount") or 0)}
@@ -178,8 +171,24 @@ def _scoreboard_top10(day: str) -> dict:
 
 
 def actuals(day: str) -> dict:
-    """{'final': bool, 'as_of': iso, 'revealed': bool, 'ranks': {id: {rank, votes}}}"""
+    """{'final', 'as_of', 'revealed', 'ranks': {id: {rank, votes}}, 'source'}.
+    Final only from the official daily rank read at or after 03:00 PT the next day (monthly re-read), or from the
+    warehouse's final ranks (lineup file / scoreboard top 10) for older days. Same-day reads are 'current', never final."""
     def go():
+        now = datetime.now(PT)
+        if now >= _final_after(day):
+            mr, mat = _monthly_reread(day)
+            if mr:
+                return {"final": True, "as_of": mat, "revealed": True, "ranks": mr, "source": "official daily rank"}
+            lu = gcs.read_json(f"results/web/lineup/{day}.json", ttl=3600) or {}
+            top = {str(r["id"]): {"rank": int(r["daily_rank"]), "votes": r.get("votes")}
+                   for r in (lu.get("launches") or []) if isinstance(r, dict) and r.get("daily_rank")}
+            src = "warehouse final ranks"
+            if not top:
+                top, src = _scoreboard_top10(day), "scoreboard final top 10"
+            if top:
+                return {"final": True, "as_of": _final_after(day).isoformat(), "revealed": True, "ranks": top,
+                        "source": src}
         rows, at = _api_detail(day)
         ranks = {}
         for r in rows:
@@ -187,26 +196,8 @@ def actuals(day: str) -> dict:
                 ranks[str(r["id"])] = {"rank": int(r.get("dailyRank") or 0) or None, "votes": int(r.get("votesCount") or 0)}
             except (ValueError, TypeError):
                 continue
-        src = "api_detail"
-        if not _is_final(day, at):
-            pr, pat = _posts_ts_final(day)
-            if pr and (_is_final(day, pat) or not ranks):
-                ranks, at, src = pr, pat, "posts_ts"
-        final = _is_final(day, at)
-        if not final and day < today_pt():
-            mr, mat = _monthly_reread(day)
-            if mr:
-                ranks, at, src, final = mr, mat, "monthly_reread", True
-            else:
-                lu = gcs.read_json(f"results/web/lineup/{day}.json", ttl=3600) or {}
-                top = {str(r["id"]): {"rank": int(r["daily_rank"]), "votes": r.get("votes")}
-                       for r in (lu.get("launches") or []) if isinstance(r, dict) and r.get("daily_rank")} \
-                    or _scoreboard_top10(day)
-                if top:
-                    ranks, src, final = top, "scoreboard_top10", True
-                    at = datetime.fromisoformat(day).replace(hour=23, minute=59, tzinfo=PT).isoformat()
-        revealed = final or any(v.get("votes") for v in ranks.values())
-        return {"final": final, "as_of": at, "revealed": revealed, "ranks": ranks, "source": src}
+        revealed = any(v.get("votes") for v in ranks.values())
+        return {"final": False, "as_of": at, "revealed": revealed, "ranks": ranks, "source": "same-day read (not final)"}
     return gcs._cached("actuals:" + day, 300, go)
 
 
@@ -241,7 +232,7 @@ def _forecast_0005(day: str):
     ids, made = None, ""
     j = gcs.read_json(f"results/web/forecast_0005/{day}.json", ttl=600)
     if isinstance(j, dict) and isinstance(j.get("forecast"), list):
-        made = j.get("written_at", "")
+        made = j.get("run_updated_at") or j.get("written_at", "")   # when the forecast itself was produced
         j = j["forecast"]
     if isinstance(j, list) and j:
         rows = [(str(r.get("id")), int(r.get("predicted_rank") or r.get("pred_rank") or 0)) for r in j if isinstance(r, dict)]
@@ -304,6 +295,16 @@ def forecasts(day: str) -> dict[str, dict]:
                 out[k] = f
         return out
     return gcs._cached("fc:" + day, 120, go)
+
+
+def _written_label(day: str, iso: str | None) -> str:
+    if not iso:
+        return ""
+    try:
+        t = datetime.fromisoformat(str(iso).replace("Z", "+00:00")).astimezone(PT)
+    except ValueError:
+        return ""
+    return t.strftime("%H:%M PT") if t.strftime("%Y-%m-%d") == day else t.strftime("%b %d, %H:%M PT")
 
 
 def _pt_label(iso: str) -> str:
@@ -402,17 +403,18 @@ def day_view(day: str) -> dict:
         if key not in fc:
             continue
         f = fc[key]
-        made = _pt_label(f.get("data_up_to")) or _pt_label(f.get("made_at"))
+        # 'Made' is when the file was actually written (not its data cut); show the date if written on a later day.
+        made = _written_label(day, f.get("made_at")) or _pt_label(f.get("data_up_to"))
+        cut = _pt_label(f.get("data_up_to"))
         score = None
         if act["final"]:
             score = {str(k): hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)}
-        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else (
-            _prereveal_confidence(key, f) if key.startswith("P") else None)
+        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else None
         exp_err = None
         if f.get("exp_votes"):
             g = claims().get("exp_votes_error", {}).get("values", {})
             exp_err = g.get(key) or (g.get("pre_reveal") if key.startswith("P") else None)
-        points.append({"key": key, "label": label, "time_pt": made, "top3_conf": conf,
+        points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "top3_conf": conf,
                        "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
                        "ranks": f["ranks"], "score": score})
@@ -449,10 +451,47 @@ SB_METHOD = {"published": "", "comment_ridge": "comments", "api_rank": "PH order
              "raw_votes": "votes"}
 
 
+LIVE_LATE_MIN = 60   # a 00:05 forecast counts as a live call only if produced within an hour of 00:05 PT
+
+
+def _recheck_0005_live(sb: dict) -> list[dict]:
+    """Re-derive the 00:05 'live' summary from each day's original run time (forecast_0005/<day>.json run_updated_at):
+    days produced more than LIVE_LATE_MIN minutes after 00:05 PT (backfills, late or post-reveal runs) are moved to a
+    'late' row instead of being counted as live calls."""
+    rows = [r for r in sb.get("rows") or [] if r.get("point") == "0005" and r.get("method") == "published"]
+    if not rows:
+        return sb["summary"]
+    live_rows, late_rows = [], []
+    for r in rows:
+        j = gcs.read_json(f"results/web/forecast_0005/{r['day']}.json", ttl=3600) or {}
+        ru = j.get("run_updated_at") or j.get("written_at")
+        try:
+            t = datetime.fromisoformat(str(ru).replace("Z", "+00:00")).astimezone(PT)
+        except ValueError:
+            late_rows.append(r)
+            continue
+        due = datetime.fromisoformat(r["day"]).replace(tzinfo=PT, hour=0, minute=5)
+        (live_rows if (t - due).total_seconds() <= LIVE_LATE_MIN * 60 else late_rows).append(r)
+
+    def summ(rs, source):
+        n = len(rs)
+        return {"point": "0005", "method": "published", "source": source, "days": n,
+                "first_day": min(r["day"] for r in rs), "last_day": max(r["day"] for r in rs),
+                **{f"mean_top{k}": round(sum(r[f"top{k}"] for r in rs) / n, 1) for k in (3, 5, 10)},
+                **{f"ci_top{k}": None for k in (3, 5, 10)}}
+    out = [r for r in sb["summary"] if not (r.get("point") == "0005" and r.get("method") == "published")]
+    if live_rows:
+        out.insert(0, summ(live_rows, "live"))
+    if late_rows:
+        out.append(summ(late_rows, "late"))
+    return out
+
+
 def track_record(max_days: int = 30) -> dict:
     """Prefer the PH agent's daily scoreboard (results/web/scoreboard.json); fall back to scoring the files here."""
     sb = gcs.read_json("results/web/scoreboard.json", ttl=600)
     if sb and sb.get("summary"):
+        sb = {**sb, "summary": _recheck_0005_live(sb)}
         order = {k: i for i, k in enumerate(POINT_KEYS)}
         src_rank = {"live": 0, "late": 1, "replay": 2}
         rows = []
@@ -504,7 +543,8 @@ def _track_record_files(max_days: int = 30) -> dict:
 
 
 def weekly() -> dict | None:
-    names = sorted(n for n, _ in gcs.list_names("results/weekly_live/", ttl=300) if n.endswith(".json"))
+    names = sorted(n for n, _ in gcs.list_names("results/weekly_live/", ttl=300)
+                   if n.endswith(".json") and not n.endswith("_est.json"))
     if not names:
         return None
     j = gcs.read_json(names[-1], ttl=300) or {}
