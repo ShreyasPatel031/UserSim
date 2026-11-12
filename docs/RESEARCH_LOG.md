@@ -1321,3 +1321,33 @@ Results:
 - Latency, median / p90: page step 2.8 / 4.0 s, reactions step 6.2 / 7.3 s, launch step about 0.
 - Cost: page read about $0.0002 per request; reactions about $0.004 (flash).
 MECHANISM (E5, Nov 12, facts from the orchestrator / Grok Bot box check): the PH website names every team member on the launch page at every rank (0 of 905 team rows redacted on the Nov 3, 7 and 8 page captures). The official API redacts makers POSITIONALLY on every read: the first post of each returned page has all makers named; every other post has exactly one named maker (the last listed, or the hunter when the hunter is a maker); post.user is never redacted. Ranking-ordered reads put the day's leader first, so the #1 launch appears fully named (#1 237 of 244; #2 1 of 206; #21, the first post of page 2, 24 of 31). Correct wording: "maker names in our API reads are complete only for the first post of a page". This explains why the first-maker mask (one named maker per launch) matches the clean 00:05 view. All masked results stand.
+
+### 2026-11-12 E5 — proving the /try fixes on page reads (site code, Oct 27–Nov 10)
+Script experiments/simlab/try_fixes.py; reports/try_fixes/. Spend about $0.34. 178 launches have a URL; 130 were fetched and read through the site's safe_fetch + READ_PROMPT.
+
+1. Band (Spearman of band percentile with −rank, n = 130; band coverage):
+
+| Band input | Spearman | Coverage | Change vs (a) |
+|---|---|---|---|
+| (a) Site now: summary + excerpt | 0.311 [0.15, 0.46] | 82% | – |
+| (b) Name / tagline / summary only | 0.319 | 86% | +0.01 [−0.07, 0.08] |
+| (c) PH-style rewrite | 0.345 [0.18, 0.49] | 83% | +0.03 [−0.09, 0.16] |
+| (d) Real PH description | 0.591 [0.47, 0.70] | 89% | +0.28 [0.13, 0.45] |
+
+The rewrite does NOT recover the gap. The information is in what makers write for launch day, not in the style, and pasted launch text is the way to get it.
+
+2. Concerns and questions (44 launches with truth; p@3 / hit@3):
+
+| Generator | Raw page excerpt | PH description | Read summary |
+|---|---|---|---|
+| RANKED concerns | 23.5 [16.7, 30.3] / 59.1 | 21.2 / 47.7 | 13.6 [8.3, 18.9] / 38.6 |
+| Single-call critic | 14.4 | 17.4 | 13.6 |
+| RANKED questions | 16.7 [11.4, 22.7] / 43.2 | 13.6 | 12.9 |
+
+- Summary − excerpt for RANKED concerns: −9.8 [−17.4, −2.3].
+- Feed the RAW EXCERPT, not the summary, and use RANKED (here without the reactions candidates).
+
+3. Fetch failures: 48 of 178 (27%): HTTP 403 16, JS-only 14, page-judge refused 10, other 8.
+- Retrying the root domain recovers 12 of 48 (25%): judge-refused deep links 6 of 10, other 3 of 8, JS-only 2 of 14, 403 1 of 16.
+- The at-launch primary_link recovers 0.
+- About 75% of failures (20% of all URLs) need a headless browser or pasted text.

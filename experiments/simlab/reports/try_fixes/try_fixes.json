@@ -1,0 +1,342 @@
+{
+ "design": "Prove /try fixes before the website builds them (orchestrator 10:15Z Nov 12). Uses the website's own code (origin/claude/ph-website\nmvp/ph_site: safe_fetch, try_sim.READ_PROMPT on flash-lite, try_sim._band_score with launch_band.json, person_e5.embed) as a library.\nLaunches: every ranked launch of Oct 27 - Nov 10 2026 with a product URL (at-launch primary_link, else the first non-PH link in the\nmaker's first comment); each site fetched ONCE by safe_fetch (http rewritten to https only because this container's proxy mode\nrefuses http), then read with the site's READ_PROMPT.\n1. Band inputs (score -> percentile among the band's cuts -> decile band):\n   (a) SITE now: name, tagline, summary + page_excerpt[:600], page-read topics\n   (b) READ: name + tagline + 2-sentence summary only, page-read topics\n   (c) REWRITE: a flash-lite rewrite of the page read into PH launch style (name, <= 60-char tagline, <= 260-char description,\n       3 topics from the PH vocabulary), then the band\n   (d) PH: the real PH name / tagline / description / topics (reference)\n   Spearman of the band percentile with -final rank (pooled over launches), band coverage of the true rank; paired bootstrap vs (a).\n2. Concerns and questions (launches with >= 5 identity-free truth comments): RANKED concerns (critic D_category + retrieved\n   neighbour themes + category base list, scored by neighbour frequency + agreement + Gemini likelihood; the reactions generator is\n   left out) and the single-call question generator, each fed (i) the page-read name/tagline/summary, (ii) the raw page excerpt,\n   (iii) the PH description. Blinded judges as concerns_rank / questions_rank; p@3 / hit@3, paired.\n3. Fetch failures: for every launch whose fetch or page read failed, retry (i) the root of the same domain, (ii) the at-launch\n   primary_link (PH \"website\" target) when held and different; share recovered without a headless browser.",
+ "launches_with_url": 178,
+ "fetched_and_read": 130,
+ "band": {
+  "a_site": {
+   "spearman": 0.311,
+   "ci": [
+    0.153,
+    0.462
+   ],
+   "coverage": 0.823,
+   "n": 130,
+   "spearman_with_d_ph_pct": 0.553
+  },
+  "b_read": {
+   "spearman": 0.319,
+   "ci": [
+    0.156,
+    0.469
+   ],
+   "coverage": 0.862,
+   "n": 130,
+   "minus_a (paired)": [
+    -0.068,
+    0.007,
+    0.084
+   ],
+   "spearman_with_d_ph_pct": 0.562
+  },
+  "c_rewrite": {
+   "spearman": 0.345,
+   "ci": [
+    0.181,
+    0.492
+   ],
+   "coverage": 0.831,
+   "n": 130,
+   "minus_a (paired)": [
+    -0.085,
+    0.032,
+    0.157
+   ],
+   "spearman_with_d_ph_pct": 0.555
+  },
+  "d_ph": {
+   "spearman": 0.591,
+   "ci": [
+    0.465,
+    0.7
+   ],
+   "coverage": 0.892,
+   "n": 130,
+   "minus_a (paired)": [
+    0.127,
+    0.279,
+    0.448
+   ],
+   "spearman_with_d_ph_pct": 1.0
+  }
+ },
+ "concerns_questions": {
+  "launches": 44,
+  "c_ranked p3": {
+   "read_summary": [
+    13.6,
+    8.3,
+    18.9,
+    44
+   ],
+   "raw_excerpt": [
+    23.5,
+    16.7,
+    30.3,
+    44
+   ],
+   "ph_description": [
+    21.2,
+    14.4,
+    28.8,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    -9.8,
+    -17.4,
+    -2.3,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    -7.6,
+    -13.6,
+    -1.5,
+    44
+   ]
+  },
+  "c_ranked hit3": {
+   "read_summary": [
+    38.6,
+    25.0,
+    52.3,
+    44
+   ],
+   "raw_excerpt": [
+    59.1,
+    45.5,
+    72.7,
+    44
+   ],
+   "ph_description": [
+    47.7,
+    34.1,
+    61.4,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    -20.5,
+    -38.6,
+    -2.3,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    -9.1,
+    -25.0,
+    6.8,
+    44
+   ]
+  },
+  "c_gen p3": {
+   "read_summary": [
+    13.6,
+    7.6,
+    20.5,
+    44
+   ],
+   "raw_excerpt": [
+    14.4,
+    7.6,
+    22.0,
+    44
+   ],
+   "ph_description": [
+    17.4,
+    11.4,
+    23.5,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    -0.8,
+    -7.6,
+    6.1,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    -3.8,
+    -12.1,
+    4.5,
+    44
+   ]
+  },
+  "c_gen hit3": {
+   "read_summary": [
+    31.8,
+    18.2,
+    45.5,
+    44
+   ],
+   "raw_excerpt": [
+    31.8,
+    18.2,
+    45.5,
+    44
+   ],
+   "ph_description": [
+    45.5,
+    31.8,
+    61.4,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    0.0,
+    -15.9,
+    15.9,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    -13.6,
+    -31.8,
+    4.5,
+    44
+   ]
+  },
+  "q_ranked p3": {
+   "read_summary": [
+    12.9,
+    7.6,
+    18.2,
+    44
+   ],
+   "raw_excerpt": [
+    16.7,
+    11.4,
+    22.7,
+    44
+   ],
+   "ph_description": [
+    13.6,
+    7.6,
+    20.5,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    -3.8,
+    -9.8,
+    2.3,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    -0.8,
+    -7.6,
+    6.8,
+    44
+   ]
+  },
+  "q_ranked hit3": {
+   "read_summary": [
+    36.4,
+    22.7,
+    50.0,
+    44
+   ],
+   "raw_excerpt": [
+    43.2,
+    29.5,
+    56.8,
+    44
+   ],
+   "ph_description": [
+    34.1,
+    20.5,
+    47.7,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    -6.8,
+    -22.7,
+    9.1,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    2.3,
+    -15.9,
+    20.5,
+    44
+   ]
+  },
+  "q_gen p3": {
+   "read_summary": [
+    13.6,
+    8.3,
+    19.7,
+    44
+   ],
+   "raw_excerpt": [
+    14.4,
+    8.3,
+    21.2,
+    44
+   ],
+   "ph_description": [
+    12.9,
+    7.6,
+    18.9,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    -0.8,
+    -7.6,
+    6.1,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    0.8,
+    -6.8,
+    7.6,
+    44
+   ]
+  },
+  "q_gen hit3": {
+   "read_summary": [
+    36.4,
+    22.7,
+    50.0,
+    44
+   ],
+   "raw_excerpt": [
+    34.1,
+    20.5,
+    47.7,
+    44
+   ],
+   "ph_description": [
+    34.1,
+    20.5,
+    47.7,
+    44
+   ],
+   "read_summary - raw_excerpt (paired)": [
+    2.3,
+    -13.6,
+    18.2,
+    44
+   ],
+   "read_summary - ph_description (paired)": [
+    2.3,
+    -15.9,
+    20.5,
+    44
+   ]
+  }
+ },
+ "fetch_failures": {
+  "failed": 48,
+  "share_of_launches": 0.27,
+  "by_kind": {
+   "HTTP 403": 16,
+   "no readable text (JS-only)": 14,
+   "page judge refused": 10,
+   "other: FetchError": 8
+  },
+  "recovered_by_root": 12,
+  "recovered_by_primary_link": 0,
+  "recovered_any": 12,
+  "by_kind_recovered": {
+   "no readable text (JS-only)": 2,
+   "page judge refused": 6,
+   "HTTP 403": 1,
+   "other: FetchError": 3
+  }
+ },
+ "latency_read_s_median": 3.0,
+ "gemini_usd_estimate_this_run": 0.338
+}
