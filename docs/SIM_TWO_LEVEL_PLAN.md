@@ -259,3 +259,16 @@ Open, next to assign:
 19o. **Earlier nulls re-tested on the clean baseline**: done. Tranco, 85 text flags, community links, line-up competition, seven hunter-history refinements, lambdarank and classifier objectives: all still null (no top-3 or top-5 interval above zero). One gain: rank-average of ridge and LightGBM → 55.6/67.1/74.6, pick #1 in top 3 71.0% (+6.3 [+1.0, +11.6]), exact winner 39.6% (+7.7 [+2.9, +12.6]); live 8 days 58.3/72.5/76.2, pick #1 87.5%. Added to shadow_clean as a second column.
 19p. **Leak suspect in the comment forecast** (its team / non-team split uses makers named after the day): orchestrator (Opus subagent) and PH agent, running. Until it reports, treat the +6 to +9 comment gain as unverified.
 19m. **Clean launch model on the live days**: done, and it wins. 14 live days, real 00:05 rows, same daily refit: deployed 57.1/64.3/76.4 (#1 pick in top 3 on 7 days); clean_v3 (maker-profile inputs dropped, total maker count kept) 61.9/67.1/76.4 (#1 on 11 days); +4.8 [0.0, +11.9] top 3, never worse. 8 on-time days: 58.3/67.5/75.0 with #1 on 7 of 8 vs deployed 50.0/60.0/73.8. Long backtest honest_preds_v2: 53.7/64.6/75.4 (matches the orchestrator's 53.8 and E5's 53.0–53.7). Live as the main 00:05 shadow line (rank_clean) from Nov 12 02:17 PT; also as the prior in the pre-reveal recipe (pred_rank_best_clean).
+
+### CORRECTION (Shreyas, Nov 12 08:45 UTC): the website shows the full team on launch day
+The "ROOT CAUSE" section above describes the behaviour of OUR SOURCE (the official API v2), not of Product Hunt's
+website. Shreyas checked today's site: a launch page lists the hunter and every maker by name during launch day.
+What is measured and stands: in our API reads, post.makers is mostly "[REDACTED]" at 00:05, and in reads after the day
+the #1 launch's makers are named while others stay redacted; the backtest was inflated by that pattern; the clean
+model beats the deployed one on live days.
+What was wrong: saying Product Hunt "hides makers and reveals the winner's team after the day". The rule behind the
+API's redaction is NOT known. Do not state it as fact.
+Consequence to test: the full team is public at launch on the page, so maker identity is legitimate launch-time
+information that the clean model discards only because the API hides it.
+Asked for facts: Grok Bot and the Cursor agent (mailbox 20261112T0845Z_team_visibility.md), the PH agent (hourly
+API rows), and an orchestrator read of the held API rows (19q).
