@@ -368,6 +368,12 @@ def live(day, point):
         if c not in A:
             A[c] = np.nan
     A["pred_rank_estvotes"] = (A.est_votes.fillna(-1) + 1e-6 * A.lm).rank(ascending=False, method="first").astype(int)
+    # orchestrator 02:30Z Nov 12 (growth.md): expected day-end votes = est_votes x the fitted multiplier at T by position
+    try:
+        import growth
+        A["exp_final_votes"] = growth.exp_final(A.set_index("id").est_votes, h, pd.Timestamp(day).dayofweek >= 5, "est").reindex(A.id).values
+    except Exception as e:
+        print("exp_final_votes skipped:", repr(e)[:120], flush=True); A["exp_final_votes"] = np.nan
     # orchestrator 02:00Z Nov 12 (api_depth.md): best LODO recipe on 6 days = weighted mean of rank positions of the API
     # pre-reveal rank and the 00:05 LM, w_api = 0.5 at P1 and 0.75 from P2 (chosen leave-one-day-out on every held-out day)
     w_api = 0.5 if point in ("P0", "P1") else 0.75
@@ -385,7 +391,7 @@ def live(day, point):
            "api_ranked": int(A.api_rank.notna().sum()),
            "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
-                                                   "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank"]].round(4).to_dict("records")}
+                                                   "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
         res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
     else:

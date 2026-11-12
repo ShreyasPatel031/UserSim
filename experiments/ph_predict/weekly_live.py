@@ -95,11 +95,39 @@ def r4(day):
     t = R0 + pd.Timedelta(hours=4)
     if pd.Timestamp.now(tz="UTC") < t or T.ts.max() < t:
         print(json.dumps({"day": day, "status": f"R0+4h {t} not reached"})); return
+    # orchestrator 02:30Z Nov 12: fitted day-end multiplier by T x leader position x weekday/weekend (growth.md) replaces
+    # the single ratio (kept in the file for reference); LODO weekly replay: results/growth_weekly_replay.json
+    import growth
     ratio = json.load(open(RATIO_F))["ratio_dayend_over_R4"]
     V = T[T.ts <= t].sort_values("ts").groupby("id").v.last()
-    rows = earlier(day) + [{"id": i, "day": day, "est": v * ratio, "src": "R0+4h x ratio"} for i, v in V.items()]
+    V = V[V.index.isin(set(week_launches(monday(day)).id))]
+    th = (t - pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")).total_seconds() / 3600
+    X = growth.exp_final(V, th, pd.Timestamp(day).dayofweek >= 5, "votes")
+    rows = earlier(day) + [{"id": i, "day": day, "est": X[i], "src": "R0+4h x fitted m"} for i in V.index]
     A = pd.DataFrame(rows)
-    write(day, "R4", A, {"days_covered": sorted(A.day.unique().tolist()), "data_up_to": t.isoformat(), "ratio": ratio})
+    write(day, "R4", A, {"days_covered": sorted(A.day.unique().tolist()), "data_up_to": t.isoformat(), "factor": "growth.json (T x position x weekday/weekend)",
+                         "old_ratio": ratio})
+
+
+def est(day):
+    """mid-day call at 03:45 PT, before the reveal: earlier days by day-end votes + today's launches by est_votes x the
+    fitted multiplier at 3.75 h (growth.md). Not on Mondays (no earlier-day launches to bracket against)."""
+    import growth, estvotes as EV
+    t = pd.Timestamp(day + " 03:45", tz="America/Los_Angeles").tz_convert("UTC")
+    if pd.Timestamp.now(tz="UTC") < t:
+        print(json.dumps({"day": day, "status": f"{t} not reached"})); return
+    E, src = EV.earlier_votes(day)
+    if E.empty:
+        print(json.dumps({"day": day, "status": f"no est_votes ({src})"})); return
+    S = EV.est_votes(day, t, E)
+    if S.empty:
+        print(json.dumps({"day": day, "status": "no weekly ranks read by 03:45 PT"})); return
+    s = S.set_index("id").est_votes; s = s[s.index.isin(set(week_launches(monday(day)).id))]
+    X = growth.exp_final(s, 3.75, pd.Timestamp(day).dayofweek >= 5, "est")
+    rows = earlier(day) + [{"id": i, "day": day, "est": X[i], "src": "est_votes x fitted m"} for i in s.index]
+    A = pd.DataFrame(rows)
+    write(day, "est", A, {"days_covered": sorted(A.day.unique().tolist()), "data_up_to": t.isoformat(), "earlier_source": src,
+                          "factor": "growth.json est (3.75 h x position x weekday/weekend)"})
 
 
 def fit():
@@ -144,4 +172,4 @@ def score():
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    {"dayend": lambda: dayend(a[1]), "r4": lambda: r4(a[1]), "fit": fit, "score": score}[a[0]]()
+    {"dayend": lambda: dayend(a[1]), "r4": lambda: r4(a[1]), "est": lambda: est(a[1]), "fit": fit, "score": score}[a[0]]()

@@ -100,11 +100,17 @@ def live(day, point, method="blend", w=None):
     else:
         A["score"] = z(A.lv) + w * z(A.lm)
     A["pred_rank"] = A.score.rank(ascending=False, method="first").astype(int)
+    try:   # orchestrator 02:30Z Nov 12 (growth.md): expected day-end votes = votes at t x fitted multiplier by position
+        import growth
+        th = (t - pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")).total_seconds() / 3600
+        A["exp_final_votes"] = growth.exp_final(A.v, th, pd.Timestamp(day).dayofweek >= 5, "votes").reindex(A.index).values
+    except Exception as e:
+        print("exp_final_votes skipped:", repr(e)[:120], flush=True)
     if point == "R0":   # orchestrator 23:00Z Nov 11: R0 votes blended with what was known before the reveal (P4 file)
         A = r0_blend(day, A)
     out = {"day": day, "point": point, "reveal_R0": R0.isoformat(), "data_up_to": t.isoformat(), "method": method, "w_lm": w,
            "launches": int(len(A)), "lm_matched": int(sum(1 for x in A.id if x in lm)), "written_at": now.isoformat(),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"] + [c for c in ("pred_rank_r0blend", "pred_rank_r0mean", "p4_blend_rank") if c in A]].round(4).to_dict("records")}
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"] + [c for c in ("pred_rank_r0blend", "pred_rank_r0mean", "p4_blend_rank", "exp_final_votes") if c in A]].round(4).to_dict("records")}
     os.makedirs(os.path.join(HERE, "results", "early_forecast"), exist_ok=True)
     p = os.path.join(HERE, "results", "early_forecast", f"{day}_{point}.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/early_forecast/{day}_{point}.json"], check=True)
