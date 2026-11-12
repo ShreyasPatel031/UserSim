@@ -305,6 +305,7 @@ def test_asks_rank_pick_and_note():
     assert "2 in 5" in page and "concern" in page and "Paste" in page
     assert "1 in 2" in pasted and "most likely concern did so" in pasted
     assert try_sim.STEP_USES["asks"] == 1
+    assert "under 40 words" in try_sim._asks_note(True, 25) and "under 40 words" not in try_sim._asks_note(True, 60)
 
 
 def test_ph_steady_state_freshness(monkeypatch):

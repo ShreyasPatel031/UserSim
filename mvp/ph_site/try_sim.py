@@ -763,10 +763,10 @@ async def step_asks(tok: str) -> dict:
     if not out:
         raise RuntimeError("no question or concern could be produced")
     return {"question": out.get("question"), "concern": out.get("concern"), "source": "pasted" if pasted else "page",
-            "note": _asks_note(pasted)}
+            "note": _asks_note(pasted, len(desc.split()) if pasted else None)}
 
 
-def _asks_note(pasted: bool) -> str:
+def _asks_note(pasted: bool, words: int | None = None) -> str:
     from mvp.ph_site.live import claims
     t = claims().get("top_items")
     if not t:
@@ -779,6 +779,9 @@ def _asks_note(pasted: bool) -> str:
     if pasted:
         s += (f" The most likely concern did so about {v['c_desc']} times, against {v['c_generic']} for a generic "
               f"concern; on launches with 10 or more comments, generic concerns hit about as often.")
+        if words is not None and words < 40:
+            s += (f" Your description has {words} words: on past launches with descriptions under 40 words, the top "
+                  f"question and concern did no better than generic ones (40 to 100 words did clearly better).")
     else:
         s += " Paste your launch description to also see the most likely concern (it is only reliable from a description)."
     return s
