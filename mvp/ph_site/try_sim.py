@@ -398,7 +398,9 @@ def _reactions_note() -> str:
     from mvp.ph_site.live import claims
     c = claims()["reactions_eval"]
     v = c["values"]
-    return (f"Simulated, not real comments. Grounded in themes from similar past launches. Fixed offline figure "
+    return (f"Simulated, not real comments, voiced as types of Product Hunt members, not as specific real people (tested "
+            f"against real members' comments, a member's own history made the simulation only slightly closer to what "
+            f"they actually wrote). Grounded in themes from similar past launches. Fixed offline figure "
             f"({c['label']}, {c['date']}): these simulated comments anticipated about {v['theme_recall']:.0%} of the "
             f"themes real users raised, and about {v['theme_precision']:.0%} of the simulated points appeared in real "
             f"comments (generic category comments: about {v['theme_recall_generic']:.0%}).")
@@ -408,12 +410,12 @@ def _types_from_people(p: dict, topics: list[str]) -> list[str]:
     """4 voices from the similar-tools scorer's closest descriptions (each shared by 20+ people) + 2 contrast voices."""
     out = []
     for r in p["top_people"][:4]:
-        out.append(f"{r['label']}: {' / '.join(r['roles'])}, {r['tier']}, interested in "
+        out.append(f"Type {chr(65 + len(out))}: {' / '.join(r['roles'])}, {r['tier']}, interested in "
                    f"{', '.join(topics[:2]) or 'this category'}")
     while len(out) < 4:
-        out.append(f"User {chr(65 + len(out))}: regular PH voter interested in {', '.join(topics[:2]) or 'this category'}")
-    out.append("User E: heavy PH voter who comments often and sees dozens of similar launches a week")
-    out.append("User F: maker from an unrelated category, browsing the day's launches")
+        out.append(f"Type {chr(65 + len(out))}: regular PH voter interested in {', '.join(topics[:2]) or 'this category'}")
+    out.append("Type E: heavy PH voter who comments often and sees dozens of similar launches a week")
+    out.append("Type F: maker from an unrelated category, browsing the day's launches")
     return out
 
 
@@ -423,13 +425,13 @@ def _member_types(p: dict, topics: list[str]) -> list[str]:
     segs = (p.get("segments") or [])[:4]
     for i, sg in enumerate(segs):
         role = "often makers themselves" if sg.get("maker_share", 0) >= 0.5 else "mostly voters"
-        out.append(f"User {chr(65 + i)}: member of the '{sg['name']}' crowd ({role}), interested in "
+        out.append(f"Type {chr(65 + i)}: member of the '{sg['name']}' crowd ({role}), interested in "
                    f"{', '.join(sg['top_topics'][:2])}")
     while len(out) < 4:
-        out.append(f"User {chr(65 + len(out))}: regular PH voter interested in {', '.join(topics[:2]) or 'this category'}")
+        out.append(f"Type {chr(65 + len(out))}: regular PH voter interested in {', '.join(topics[:2]) or 'this category'}")
     # Contrast voices so it isn't only fans.
-    out.append("User E: heavy PH voter who comments often and sees dozens of similar launches a week")
-    out.append("User F: maker from an unrelated category, browsing the day's launches")
+    out.append("Type E: heavy PH voter who comments often and sees dozens of similar launches a week")
+    out.append("Type F: maker from an unrelated category, browsing the day's launches")
     return out
 
 

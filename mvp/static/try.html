@@ -96,7 +96,7 @@ function renderReactions(j){
   $("#rx-note").textContent = "simulated, not real comments";
   $("#rx").innerHTML = j.reactions.map(r=>{
     const lab = String(r.type||"").split(":")[0];
-    return `<div class="comment"><div class="avatar" aria-hidden="true">${esc(lab.replace("User ","").charAt(0))}</div><div>
+    return `<div class="comment"><div class="avatar" aria-hidden="true">${esc(lab.replace(/^(User|Type) /,"").charAt(0))}</div><div>
       <div class="who"><b>${esc(lab)}</b> · ${esc(String(r.type||"").split(":").slice(1).join(":"))}</div>
       <q>${esc(r.comment)}</q>
       <span class="meter">upvote <i style="--v:${pct(r.would_upvote)}%"></i> ${pct(r.would_upvote)}%</span>
