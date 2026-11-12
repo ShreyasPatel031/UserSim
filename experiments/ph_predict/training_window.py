@@ -51,6 +51,11 @@ def month_job(a):
     # page sources) and the honest filter without the page sources, same params (LIVE_PARAMS == ctrl.fit settings)
     if "live_month" in variants:
         out["live_month"] = fitw(tr, te, live_cols(tr), seed)
+    # orchestrator 04:45Z Nov 12: does the llm (Gemini judgements) / promo source help on the long backtest?
+    if "no_llm" in variants:
+        out["no_llm"] = fitw(tr, te, [c for c in cols if not c.startswith("llm_")], seed)
+    if "no_promo" in variants:
+        out["no_promo"] = fitw(tr, te, [c for c in cols if not c.startswith("promo_")], seed)
     if "honest_nopage_month" in variants:
         out["honest_nopage_month"] = fitw(tr, te, honest_cols(live_cols(tr)), seed)
     for n in (60, 90, 120):
