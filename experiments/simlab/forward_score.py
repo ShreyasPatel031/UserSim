@@ -10,7 +10,7 @@ import numpy as np, pandas as pd
 from scipy.stats import spearmanr
 SP = sys.argv[1]; OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(SP, "forward/forward_score.json"); BK = "gs://usersim-bakeoff-347838016394/usersim_sim"
 rng = np.random.default_rng(0); loc = os.path.join(SP, "forward/pulled"); os.makedirs(loc, exist_ok=True)
-subprocess.run(["gsutil", "-q", "-m", "rsync", "-r", "-x", r".*_summary\.json$|.*\.pkl$", f"{BK}/tmp/e5/band/forward/", loc])
+subprocess.run(["gsutil", "-q", "-m", "rsync", "-r", "-x", r".*\.pkl$", f"{BK}/tmp/e5/band/forward/", loc])
 os.makedirs(os.path.expanduser("~/.usersim_sim/launches"), exist_ok=True)
 subprocess.run(["gsutil", "-q", "-m", "rsync", f"{BK}/tables/launches/", os.path.expanduser("~/.usersim_sim/launches/")])
 L = pd.concat([pd.read_parquet(f) for f in glob.glob(os.path.expanduser("~/.usersim_sim/launches/*.parquet"))]).sort_values("updated_at").drop_duplicates("id", keep="last")
@@ -34,4 +34,11 @@ if len(D) >= 10:
     res["v1_rank_band_coverage"] = round(float(((D["rank"] >= D.v1_lo) & (D["rank"] <= D.v1_hi)).mean()), 3)
     wd = {c: [sp(g[c], -g["rank"]) for _, g in D.groupby("day") if len(g) >= 5] for c in ("v1", "v2_run1", "v2_run2", "facts")}
     res["within_day_mean"] = {c: round(float(np.nanmean(v)), 3) for c, v in wd.items()}
+# URL coverage by final rank group (selection made visible): from the per-day summaries
+cov = []
+for f in glob.glob(os.path.join(SP, "forward/*_summary.json")) + glob.glob(os.path.join(loc, "*/_summary.json")):
+    sm = json.load(open(f))
+    for i in sm.get("all_ids", []):
+        if i in R.index: cov.append({"g": "1-3" if R.daily_rank[i] <= 3 else "4-10" if R.daily_rank[i] <= 10 else "11+", "has": i in sm.get("url_source_by_id", {})})
+if cov: res["url_coverage_by_rank_group"] = pd.DataFrame(cov).drop_duplicates().groupby("g").has.agg(["mean", "size"]).round(3).to_dict("index")
 json.dump(res, open(OUT, "w"), indent=1); print(json.dumps(res))

@@ -31,7 +31,20 @@ for l in cat(f"{BK}/raw/ph_at_launch/{DAY}/live/comments_ts.jsonl").splitlines()
     if ts > now: continue
     u = next((u.rstrip(".,;:!") for u in URL.findall(c["body"]) if not BAD.search(u)), None)
     if u and (i not in urls or ts < urls[i][1]): urls[i] = (u, ts)
-print(json.dumps({"day": DAY, "launches_0005": len(ids), "with_url": len(urls), "url_source": "first non-PH link in a top-level comment (live comments_ts)"}), flush=True)
+src = {i: "comment_link" for i in urls}
+# (0) the Data Feeder's resolved URLs, when the file exists (orchestrator 08:59Z: preferred source)
+for l in cat(f"{BK}/raw/ph_at_launch/{DAY}/website_urls.jsonl").splitlines():
+    try: x = json.loads(l)
+    except Exception: continue
+    i, u = str(x.get("launch_id") or x.get("id")), x.get("url") or x.get("website_url")
+    if i in ids and u and not BAD.search(u): urls[i] = (u, now); src[i] = "website_urls"
+# (2) a bare domain in the launch's own description / tagline (e.g. "try it at foo.ai")
+DOM = re.compile(r"\b((?:[a-z0-9-]+\.)+(?:com|ai|io|app|co|dev|so|xyz|net|org|tech|me|sh|tools|site|page|gg|cc|ly|to))\b(/[^\s]*)?", re.I)
+for i, x in ids.items():
+    if i in urls: continue
+    m = next((m for m in DOM.finditer(f"{x.get('tagline') or ''} {x.get('description') or ''}") if not BAD.search(m.group(0))), None)
+    if m: urls[i] = ("https://" + m.group(0).rstrip(".,;:!)"), now); src[i] = "description_domain"
+print(json.dumps({"day": DAY, "launches_0005": len(ids), "with_url": len(urls), "by_source": {k: list(src.values()).count(k) for k in set(src.values())}}), flush=True)
 CAP = {}
 _orig = safe_fetch.fetch
 async def _cap(url):
@@ -39,10 +52,10 @@ async def _cap(url):
 safe_fetch.fetch = _cap
 F1, F2 = pickle.load(open(os.path.join(SP, "forward/frozen_run1.pkl"), "rb")), pickle.load(open(os.path.join(SP, "forward/frozen_run2.pkl"), "rb"))
 done = set(p.rsplit("/", 1)[-1].split(".")[0] for p in subprocess.run(["gsutil", "ls", f"{OUTG}/"], capture_output=True, text=True).stdout.split())
-summary = {"day": DAY, "launches": len(ids), "with_url": len(urls), "ok": 0, "fail": {}, "chars_in": 0, "chars_out": 0}
+summary = {"day": DAY, "launches": len(ids), "with_url": len(urls), "url_source_by_id": src, "all_ids": list(ids), "ok": 0, "fail": {}, "chars_in": 0, "chars_out": 0}
 
 async def one(i, u):
-    CAP.clear(); t0 = time.time(); rec = {"id": i, "url": u[0], "url_source": "comment_link", "url_comment_created": str(u[1]), "fetched_at": str(pd.Timestamp.now(tz="UTC")),
+    CAP.clear(); t0 = time.time(); rec = {"id": i, "url": u[0], "url_source": src[i], "flag": "fetched 1-2 h after launch, self-selected" if src[i] != "website_urls" else "", "url_comment_created": str(u[1]), "fetched_at": str(pd.Timestamp.now(tz="UTC")),
                                          "hours_after_launch": round((pd.Timestamp.now(tz="UTC") - pd.Timestamp(DAY + " 00:01", tz="America/Los_Angeles")).total_seconds() / 3600, 2)}
     try:
         pg = await try_sim.step_page(u[0], "10.0.0.%d" % (hash(i) % 250)); a = pg["analysis"]; tok = pg["token"]
