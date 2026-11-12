@@ -65,7 +65,8 @@ for ms, d in zip(D.mk_own, D.day):
 D["m_count"] = D.n_total if MASK else D.mk.str.len(); D["m_prior"] = np.log1p([a[0] for a in mm]); D["m_best_rank"] = np.log1p([a[1] for a in mm]); D["m_ymean"] = [a[2] for a in mm]; D["m_ymax"] = [a[3] for a in mm]
 for c in ("h_top3", "h_top10", "h_ymean", "m_best_rank", "m_ymean", "m_ymax"):
     D[c + "_na"] = D[c].isna().astype(float); D[c] = D[c].fillna(D[c].median())
-SETS = {"product_only": ["base"], "both": ["base", "h_n", "h_top3", "h_top10", "h_ymean", "h_self", "h_top3_na", "m_count", "m_prior", "m_best_rank", "m_ymean", "m_ymax", "m_best_rank_na"]}
+SETS = {"product_only": ["base"], "hunter": ["base", "h_n", "h_top3", "h_top10", "h_ymean", "h_self", "h_top3_na"],
+        "makers": ["base", "m_count", "m_prior", "m_best_rank", "m_ymean", "m_ymax", "m_best_rank_na"], "both": ["base", "h_n", "h_top3", "h_top10", "h_ymean", "h_self", "h_top3_na", "m_count", "m_prior", "m_best_rank", "m_ymean", "m_ymax", "m_best_rank_na"]}
 D["ln24"] = np.log1p(D.n24); mons = sorted(D.mon.unique())
 print("launches", len(D), "days", D.day.nunique(), "median comments 24h", D.n24.median(), "share zero", round(float((D.n24 == 0).mean()), 3), flush=True)
 

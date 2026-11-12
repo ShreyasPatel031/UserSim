@@ -1215,3 +1215,11 @@ Fall or need re-basing, not rerun (internal; not on the website):
 - early engagers' "prior ties to the team" and mobilisation's team-based features, which use the target's named team.
 
 Clean: the product-only ridge, landing_retrieval and launch_band. They use no maker identity as an input; named teams only exclude same-team neighbours.
+Addendum (E5, Nov 12):
+- Hunters are never redacted: 0.0% at every rank, so the hunter rung is clean.
+- Discussion volume split, within-day Spearman, leaky → masked:
+  - hunter: 0.413 → 0.413 [0.377, 0.447];
+  - makers: 0.367 → 0.459 [0.428, 0.490];
+  - both: 0.439 → 0.464.
+  - The masked maker gain comes from the total maker count. Comments by redacted makers can't be excluded from the target, so treat the maker increment as an upper bound.
+- The v1 ladder files were restored to tmp/e5/website/.
