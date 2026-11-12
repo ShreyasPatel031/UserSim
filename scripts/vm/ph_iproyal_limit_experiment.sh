@@ -179,7 +179,7 @@ PY
 cmd_ladder() {
   local from="${1:-L0_ultra}"
   art_dir
-  local seen=0
+  local seen=0 last_ok=""
   for lv in "${LADDER[@]}"; do
     [[ "$seen" -eq 0 && "$lv" != "$from" ]] && continue
     seen=1
@@ -210,16 +210,31 @@ exit(1 if c<steady and g>=3 else 0)" 2>/dev/null || fail=$((fail+1))
     mean_g="$(python3 -c "print(round(float('$sum_g')/max(1,$n),2))")"
     verdict=ok
     [[ "$fail" -ge "$BLOCK_FAIL_STREAK" ]] && verdict=block
-    python3 -c "import sys; mc=float('$mean_c'); steady=float('$STEADY_MIN_PPM'); sys.exit(1 if mc<steady else 0)" 2>/dev/null || verdict=block
+    if [[ "$lv" == "Lm1_serial" ]]; then
+      python3 -c "import sys; mc=float('$mean_c'); sys.exit(1 if mc<0.08 else 0)" 2>/dev/null || verdict=block
+    else
+      python3 -c "import sys; mc=float('$mean_c'); steady=float('$STEADY_MIN_PPM'); sys.exit(1 if mc<steady else 0)" 2>/dev/null || verdict=block
+    fi
     echo -e "${lv}\t${verdict}\t${mean_c}\t${max_c}\t${mean_g}\t${walls}\t${ksnap}" >>"$ART/ladder.tsv"
     echo "level $lv verdict=$verdict mean_complete_ppm=$mean_c max=$max_c mean_gql429_5m=$mean_g pdeep_k=$ksnap"
-    [[ "$verdict" == block ]] && { echo "Stopping ladder at $lv (last OK level is max buy-safe concurrency)"; break; }
+    [[ "$verdict" == ok ]] && last_ok="$lv"
+    if [[ "$verdict" == block" && -n "$last_ok" ]]; then
+      echo "Stopping ladder at $lv (last OK level: $last_ok)"
+      break
+    fi
+    if [[ "$verdict" == block" && -z "$last_ok" ]]; then
+      echo "level $lv below threshold but no OK level yet — continue ladder"
+    fi
   done
   cmd_summary
   cmd_report
   cmd_analyze_recovery remote
-  [[ "${SOAK_HOURS:-0}" != "0" ]] && cmd_soak "$(best_ok_level)" "${SOAK_HOURS}"
-  [[ "${RETRACE_AFTER_LADDER:-0}" == "1" ]] && cmd_retrace
+  if [[ -n "$(best_ok_level 2>/dev/null || true)" ]]; then
+    [[ "${SOAK_HOURS:-0}" != "0" ]] && cmd_soak "$(best_ok_level)" "${SOAK_HOURS}"
+    [[ "${RETRACE_AFTER_LADDER:-0}" == "1" ]] && cmd_retrace
+  else
+    echo "Skip soak/retrace: no OK ladder level yet"
+  fi
 }
 
 cmd_summary() {
@@ -312,19 +327,21 @@ cmd_retrace() {
   local steady
   steady="$(best_ok_level)"
   local push="${1:-}"
+  push="${push:-}"
   if [[ -z "$push" ]]; then
     push="$(python3 - <<PY
 ladder = """${LADDER[*]}""".split()
 steady = """$steady"""
+out = steady
 for i, lv in enumerate(ladder):
     if lv == steady and i + 1 < len(ladder):
-        print(ladder[i + 1])
+        out = ladder[i + 1]
         break
-else:
-    print(steady)
+print(out)
 PY
-)"
+)" || push="$steady"
   fi
+  [[ -z "$push" ]] && push="$steady"
   echo "===== RETRACE push=$push then steady=$steady ====="
   echo "# ts	phase	complete_ppm	gql429_5m	walls_5m	note" >"$ART/retrace.tsv"
   cmd_apply "$push"
