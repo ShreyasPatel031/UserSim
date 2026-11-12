@@ -1047,3 +1047,11 @@ Script experiments/simlab/gap_eval.py; report reports/gap_eval/. Same 300 post-c
 (b) category level (a listed need counts if real users raised that need): GAP list (unanswered needs by base rate) p@3 44.2 / hit@3 80.7; GENERIC (needs by base rate) 66.0 / 94.0; RANKED concerns 53.9 / 86.9; RANKED questions 56.6 / 88.0. GAP − GENERIC −21.8 [−24.9, −18.9]. (Category level is coarse: comparison, how it works and team are raised on more than 60% of launches.)
 (c) RANKED lists re-ordered with the gap vote, scored with the existing per-item verdicts: concerns p@3 −0.6 [−1.8, 0.7], questions −0.5 [−1.4, 0.5]. No gain.
 Verdict: rejected. What the page says, not what it omits, is where questions come from; the gap signal should not be shown as "users will ask about X because your page does not say it".
+
+### 2026-11-12 E5 — how much discussion to expect (comments in the first 24 h)
+Script experiments/simlab/discussion_volume.py; report reports/discussion_volume/. 5,553 launches on the 238 comment-forecast days; non-team comments created in the first 24 h after 00:00 PT (thread dumps; top-50-threads cap, so busy launches are lower bounds). Median 4 comments (p10–p90: 0–21), 15.6% with none; 47% of comments contain a question mark. Ridge month-forward; 160 test days; day-bootstrap CIs.
+- product-only: within-day Spearman 0.283 [0.245, 0.318], overall 0.216; 10–90% band coverage 0.834, mean width 28.7 comments
+- + hunter + makers: within-day 0.439 [0.402, 0.472] (Δ +0.156 [0.122, 0.187]), overall 0.442; coverage 0.813, width 24.3
+- bands (p10 / median / p90 comments by predicted decile, + hunter + makers): lowest decile 0 / 1 / 8, middle deciles 0 / 2–3 / 10–16, top decile 2 / 18 / 43
+- question share (launches with >= 5 comments): Spearman 0.19 product-only, 0.21 with hunter/makers - weak
+Reading: comment volume is moderately predictable, mostly from the hunter and makers (who bring their audience); the share of questions is barely predictable. A "how much reaction to expect" line should show the band (median and 10–90% range), not a point count.
