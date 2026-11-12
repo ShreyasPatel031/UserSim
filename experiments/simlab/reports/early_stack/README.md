@@ -65,3 +65,22 @@ Clean blend minus published blend, top 3: +0.0 [−16.7, 16.7] at 00:30, +5.6 [�
 The stack prior is not scored live. Hunters cannot be matched to live comment authors in held data: Nov 4 comments_ts has no
 usernames, and on Nov 10 no launches.poster appears among commenters. th_n_pre then counts the hunter's own intro, giving
 about 1 for every launch. The PH agent's live clean_stack line, which matches by user id from Nov 12, is the forward test.
+
+## 1b. With the link / media block (orchestrator fields/A.pkl; page reads Oct 29 / Nov 11, not proven launch-time, not live at 00:05)
+
+STACK0L (clean + thread + links) at 00:05 is 61.1 top 3, +4.8 [+1.8, +7.9] over clean. Over STACK0 (no links) it is +0.7 [−0.7, +2.2].
+
+SZL is the early model fit the stack's way, with the link block added. Top 3:
+
+| cut | E | SZ (no links) | SZL (links) | SZL − E | SZL − STACK0L |
+|---|---|---|---|---|---|
+| 00:05 | 58.2 | 59.9 | 60.2 | +2.0 [−0.2, 4.3] | −0.9 [−2.7, 0.9] |
+| +1 h | 60.6 | 62.7 | 61.6 | +1.1 [−1.1, 3.2] | +0.5 [−2.2, 3.4] |
+| +2 h | 63.1 | 63.4 | 64.0 | +0.9 [−1.4, 3.2] | +2.9 [−0.5, 6.5] |
+| +3 h | 65.8 | 64.7 | 65.9 | +0.2 [−2.0, 2.3] | +4.8 [+1.4, 8.1] |
+| +4 h | 64.9 | 63.6 | 65.2 | +0.4 [−1.8, 2.5] | +4.1 [+0.7, 7.3] |
+
+Reading:
+- The links do not change the conclusion. The stack's lead is an hour-0/1 effect.
+- With links, the stack-method early model no longer loses at +3 / +4 h, but it doesn't beat E either.
+- The +1 h shadow candidate stays the no-links SZ, which is deployable now.

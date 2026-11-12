@@ -7,9 +7,10 @@ stack's thread inputs as of 00:05 PT (PH agent thread_feats / orchestrator stack
   S       E + within-day z of [honest] + TH (the stack inputs; one stage, so no nested OOF needed)
   S_LMCOM LM + COM + TH (stack prior + comments only)
 EZ / SZ  the same feature sets fit the stack's way (within-day z of every feature, target z of -log rank, alpha 10).
+Optional 7th arg = orchestrator fields/A.pkl: STACK0L / SZL add the link / media block (not known live at 00:05).
 Per T: paired day bootstrap S - E, S - STACK0, E - STACK0; cap guard on days with <= 1 capped launch.
 Identity: thread-position only (first top-level author, hunter from launches.poster), hashed ids in memory, nothing written.
-    python early_stack.py <cf dir> <launches dir> <early dir (salt)> <v3 dir> <honest_preds_v2.parquet> <out dir>
+    python early_stack.py <cf dir> <launches dir> <early dir (salt)> <v3 dir> <honest_preds_v2.parquet> <out dir> [A.pkl]
 """
 import glob, gzip, hashlib, json, os, sys
 import numpy as np, pandas as pd
@@ -90,6 +91,12 @@ zf = lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0.0
 B["zy"] = B.groupby("day")["rank"].transform(lambda r: zf(-np.log(r)))
 ZT = []
 for c in ["honest"] + TH: B["z_" + c] = B.groupby("day")[c].transform(zf); ZT.append("z_" + c)
+ZL = []
+if len(sys.argv) > 7:   # link / media block (orchestrator fields/A.pkl; page reads Oct 29 / Nov 11, not proven launch-time; not known live at 00:05)
+    A = pd.read_pickle(sys.argv[7])[["id", "n_social", "n_links", "has_linkedin", "has_github", "video_first", "slug_num_l", "n_media"]]; A["id"] = A.id.astype(str)
+    B = B.merge(A, on="id", how="left"); B["lnk"] = np.log1p(B.n_links); B["med"] = np.log1p(B.n_media)
+    LKc = ["n_social", "lnk", "has_linkedin", "has_github", "video_first", "slug_num_l", "med"]; B["has_A"] = B.n_media.notna()
+    for c in LKc: B["z_" + c] = B.groupby("day")[c].transform(zf).fillna(0.0); ZL.append("z_" + c)
 def feats_at(T):
     rows = []
     for li in B.li:
@@ -136,20 +143,25 @@ def dboot(X, B_=2000, cols=("top3", "top5", "top10", "p1", "p2", "p3", "win")):
 
 
 mons = sorted(B.mon.unique())
-def fit_stack(X):
-    p = pd.Series(np.nan, index=X.index)
+def fit_stack(X, cols=None):
+    cols = cols or ZT; p = pd.Series(np.nan, index=X.index)
     for m in mons[1:]:
-        tr, te = X[X.mon < m], X[X.mon == m]; p[te.index] = Ridge(alpha=10.0).fit(tr[ZT], tr.zy).predict(te[ZT])
+        tr, te = X[X.mon < m], X[X.mon == m]; p[te.index] = Ridge(alpha=10.0).fit(tr[cols], tr.zy).predict(te[cols])
     return p
 capped_days = B.groupby("day").capped.sum(); low_cap = set(capped_days[capped_days <= 1].index)
 res = {"design": __doc__.split("\n    python")[0], "launches": int(len(B)), "days": int(B.day.nunique()), "days_le1_capped": len(low_cap),
        "th_means_by_rank": B.assign(g=np.where(B["rank"] == 1, "1", np.where(B["rank"] <= 3, "2-3", np.where(B["rank"] <= 10, "4-10", "11+")))).groupby("g")[TH].mean().round(3).to_dict(), "by_T": {}}
 X0 = B.copy(); X0["s"] = fit_stack(X0); P_st = per_day(X0, "s"); P_lm = per_day(X0.assign(s=X0.honest.where(X0.mon > mons[0])), "s")
 j = P_st.index.intersection(P_lm.index); res["STACK0"] = dboot(P_st.loc[j]); res["clean LM alone"] = dboot(P_lm.loc[j]); res["STACK0 - clean LM (paired)"] = dboot(P_st.loc[j] - P_lm.loc[j], cols=("top3", "top5", "top10", "p1", "win"))
+if ZL:
+    P_stl = per_day(X0.assign(s=fit_stack(X0, ZT + ZL)), "s"); j = P_stl.index.intersection(P_lm.index)
+    res["STACK0L (with links)"] = dboot(P_stl.loc[j]); res["STACK0L - clean LM (paired)"] = dboot(P_stl.loc[j] - P_lm.loc[j], cols=("top3", "top5", "top10", "p1", "win"))
+    res["STACK0L - STACK0 (paired)"] = dboot(P_stl.loc[j] - P_st.loc[j], cols=("top3", "top5", "top10", "p1", "win")); res["share_with_link_fields"] = round(float(B.has_A.mean()), 3)
+    print("STACK0L", res["STACK0L (with links)"]["top3"], "vs LM", res["STACK0L - clean LM (paired)"]["top3"], "vs STACK0", res["STACK0L - STACK0 (paired)"]["top3"], flush=True)
 print("STACK0", res["STACK0"]["top3"], "LM", res["clean LM alone"]["top3"], "d", res["STACK0 - clean LM (paired)"]["top3"], flush=True)
 ALLc = LMB + COM + POOL + MAKER
 for tk, T in TS.items():
-    X = pd.concat([B[["id", "day", "mon", "y", "rank", "capped"] + LMB + MAKER + ZT].reset_index(drop=True), feats_at(T)], axis=1)
+    X = pd.concat([B[["id", "day", "mon", "y", "rank", "capped"] + LMB + MAKER + ZT + ZL].reset_index(drop=True), feats_at(T)], axis=1)
     sets = {"E": ALLc, "S": ALLc + ZT, "S_LMCOM": LMB + COM + ZT, "LM+COM": LMB + COM}
     P = {k: per_day(X.assign(s=fit(X, c, "ridge")), "s") for k, c in sets.items()}; P["STACK0"] = P_st
     # stack method throughout: within-day z of every feature, target within-day z of -log(rank), alpha 10
@@ -157,19 +169,22 @@ for tk, T in TS.items():
     for c in ALLc:
         if c not in ("honest",): X["zz_" + c] = X.groupby("day")[c].transform(zf)
     ZE = ["z_honest"] + ["zz_" + c for c in ALLc if c not in ("honest", "lm_rank", "lineup")]
-    for nm, cols in (("EZ", ZE), ("SZ", ZE + [c for c in ZT if c != "z_honest"])):
+    VAR = [("EZ", ZE), ("SZ", ZE + [c for c in ZT if c != "z_honest"])] + ([("SZL", ZE + [c for c in ZT if c != "z_honest"] + ZL)] if ZL else [])
+    if ZL: P["STACK0L"] = P_stl
+    for nm, cols in VAR:
         p = pd.Series(np.nan, index=X.index)
         for m in mons[1:]:
             tr, te = X[X.mon < m], X[X.mon == m]; p[te.index] = Ridge(alpha=10.0).fit(tr[cols].fillna(0), tr.zy).predict(te[cols].fillna(0))
         P[nm] = per_day(X.assign(s=p), "s")
     r = {k: dboot(v.loc[v.index.intersection(P["E"].index)]) for k, v in P.items()}
-    for a, b in (("S", "E"), ("S", "STACK0"), ("E", "STACK0"), ("S_LMCOM", "LM+COM"), ("S_LMCOM", "STACK0"), ("SZ", "EZ"), ("SZ", "STACK0"), ("EZ", "STACK0"), ("SZ", "E"), ("EZ", "E")):
+    for a, b in (("S", "E"), ("S", "STACK0"), ("E", "STACK0"), ("S_LMCOM", "LM+COM"), ("S_LMCOM", "STACK0"), ("SZ", "EZ"), ("SZ", "STACK0"), ("EZ", "STACK0"), ("SZ", "E"), ("EZ", "E")) + ((("SZL", "E"), ("SZL", "STACK0L"), ("SZL", "SZ")) if ZL else ()):
         j = P[a].index.intersection(P[b].index); r[f"{a} - {b} (paired)"] = dboot(P[a].loc[j] - P[b].loc[j], cols=("top3", "top5", "top10", "p1", "win"))
     for a, b in (("S", "E"), ("S", "STACK0")):
         j = sorted(set(P[a].index) & set(P[b].index) & low_cap); r[f"{a} - {b} on days with <= 1 capped launch"] = dboot(P[a].loc[j] - P[b].loc[j], cols=("top3", "top5", "p1"))
     res["by_T"][tk] = r
-    print(tk, {k: r[k]["top3"] for k in ("STACK0", "E", "S", "S_LMCOM", "EZ", "SZ")}, "S-E", r["S - E (paired)"]["top3"], "SZ-STACK0", r["SZ - STACK0 (paired)"]["top3"], "SZ-E", r["SZ - E (paired)"]["top3"], flush=True)
-json.dump(res, open(os.path.join(OUT, "early_stack.json"), "w"), indent=1, default=str)
+    print(tk, {k: r[k]["top3"] for k in ("STACK0", "E", "S", "S_LMCOM", "EZ", "SZ")}, "S-E", r["S - E (paired)"]["top3"], "SZ-STACK0", r["SZ - STACK0 (paired)"]["top3"], "SZ-E", r["SZ - E (paired)"]["top3"], ({"SZL": r["SZL"]["top3"], "SZL-E": r["SZL - E (paired)"]["top3"], "SZL-STACK0L": r["SZL - STACK0L (paired)"]["top3"]} if ZL else ""), flush=True)
+json.dump(res, open(os.path.join(OUT, "early_stack_links.json" if ZL else "early_stack.json"), "w"), indent=1, default=str)
+if ZL: sys.exit(0)
 # shadow candidate (not a replacement): SZ at +1h fit on all months, stack method (within-day z of every feature, alpha 10)
 X = pd.concat([B[["id", "day", "mon", "y", "rank", "capped"] + LMB + MAKER + ZT].reset_index(drop=True), feats_at(TS["1h"])], axis=1)
 X["zy"] = B.zy.values

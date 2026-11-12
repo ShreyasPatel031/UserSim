@@ -1,0 +1,96 @@
+{
+ "version": "early-stack-1h-v1 (shadow candidate)",
+ "cut": "+1h after the 00:01 PT start (comments created <= 01:01 PT)",
+ "score": "sum(coef[f] * z_f); z_f = within-day z over the line-up (0 if std 0, ddof 1); rank by score desc",
+ "features": {
+  "z_honest": "clean LM (clean_v3) score",
+  "zz_c_*/zz_pool_n": "early_model.py comment / pool features at the cut",
+  "zz_<maker>": "early_model.py thread-position maker features",
+  "z_th_*": "stack thread features as of 00:05 PT (thread_feats definitions)"
+ },
+ "coef": {
+  "z_honest": 0.4702856681307141,
+  "zz_c_tot": -0.26189819554871635,
+  "zz_c_top": 0.1289334212175056,
+  "zz_c_rep": 0.05276791417173663,
+  "zz_c_auth": 0.1558209006178016,
+  "zz_c_last1h": 0.1455312380723556,
+  "zz_c_share": 0.04402917233240798,
+  "zz_c_first_min": 0.006310867217037423,
+  "zz_pool_n": 0.004425946607985362,
+  "zz_self_hunted_thread": 0.005669548870553687,
+  "zz_no_first": -0.13690261690138789,
+  "zz_fa_prior": 0.029277659378728598,
+  "zz_fa_best": -0.010229507420780803,
+  "zz_fa_top3": 0.017504680509694795,
+  "zz_fa_ymean": 0.012346855428620176,
+  "zz_fa_best_na": 0.04822876375318656,
+  "z_th_has_first": -0.0026213356376731285,
+  "z_th_hunter_first": -0.04763663736904646,
+  "z_th_n_pre": 0.12795056197586258,
+  "z_th_fa_n": 0.04434000081175302,
+  "z_th_fa_rel": 0.04545577084437902
+ },
+ "fill_medians_maker": {
+  "fa_best": 1.791759469228055,
+  "fa_top3": 0.0,
+  "fa_ymean": 5.25227342804663
+ },
+ "backtest": {
+  "top3": [
+   2.2,
+   0.2,
+   4.3
+  ],
+  "top5": [
+   0.1,
+   -1.1,
+   1.4
+  ],
+  "top10": [
+   0.3,
+   -0.4,
+   1.0
+  ],
+  "p1": [
+   -0.5,
+   -4.8,
+   3.8
+  ],
+  "win": [
+   0.5,
+   -3.8,
+   4.8
+  ],
+  "days": 186,
+  "vs": "current early model E at +1h"
+ },
+ "backtest_vs_stack0": {
+  "top3": [
+   2.3,
+   -0.5,
+   5.0
+  ],
+  "top5": [
+   1.9,
+   0.1,
+   3.8
+  ],
+  "top10": [
+   1.8,
+   0.9,
+   2.7
+  ],
+  "p1": [
+   5.4,
+   -1.1,
+   11.8
+  ],
+  "win": [
+   4.8,
+   -2.7,
+   12.4
+  ],
+  "days": 186
+ }
+}
