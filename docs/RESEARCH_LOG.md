@@ -1583,3 +1583,18 @@ reports/try_stability/README.md.
 - Hero text fails 26/60 and scores 0.32 when it passes.
 
 **Recommend:** read at temperature 0 + cache by URL; ask visitors for their real launch description.
+
+### 2026-11-12 E5 — reaction-claim reconciliation; consensus / temperature-0 outputs
+reports/try_stability/README.md.
+
+**Reconciliation:** the "precision 9–19%" was a critical/questions-only judge, a different quantity. The original metric on 20 launches:
+- Page read: 43 / 42.
+- PH description: 63 / 63.
+- Consistent with the site's claims.
+
+**Consensus and temperature 0** (36 launches, paired vs a single run):
+- Reactions at temperature 0: −7 recall / −11 precision, though more repeatable (76 vs 62%).
+- Consensus ≥ 2 of 3: −16 / −18. Consensus = 3 of 3: −18 / −6.
+- Ranked concerns at temperature 0: +8.9 [−1.1, +17.8], not significant.
+- Nothing clears a single run.
+- An embedding-cluster consensus attempt was void (cosine ~0.94 for any two reactions to one product).

@@ -1,0 +1,275 @@
+{
+ "design": "Prove /try fixes before the website builds them (orchestrator 10:15Z Nov 12). Uses the website's own code (origin/claude/ph-website\nmvp/ph_site: safe_fetch, try_sim.READ_PROMPT on flash-lite, try_sim._band_score with launch_band.json, person_e5.embed) as a library.\nLaunches: every ranked launch of Oct 27 - Nov 10 2026 with a product URL (at-launch primary_link, else the first non-PH link in the\nmaker's first comment); each site fetched ONCE by safe_fetch (http rewritten to https only because this container's proxy mode\nrefuses http), then read with the site's READ_PROMPT.\n1. Band inputs (score -> percentile among the band's cuts -> decile band):\n   (a) SITE now: name, tagline, summary + page_excerpt[:600], page-read topics\n   (b) READ: name + tagline + 2-sentence summary only, page-read topics\n   (c) REWRITE: a flash-lite rewrite of the page read into PH launch style (name, <= 60-char tagline, <= 260-char description,\n       3 topics from the PH vocabulary), then the band\n   (d) PH: the real PH name / tagline / description / topics (reference)\n   Spearman of the band percentile with -final rank (pooled over launches), band coverage of the true rank; paired bootstrap vs (a).\n2. Concerns and questions (launches with >= 5 identity-free truth comments): RANKED concerns (critic D_category + retrieved\n   neighbour themes + category base list, scored by neighbour frequency + agreement + Gemini likelihood; the reactions generator is\n   left out) and the single-call question generator, each fed (i) the page-read name/tagline/summary, (ii) the raw page excerpt,\n   (iii) the PH description. Blinded judges as concerns_rank / questions_rank; p@3 / hit@3, paired.\n3. Fetch failures: for every launch whose fetch or page read failed, retry (i) the root of the same domain, (ii) the at-launch\n   primary_link (PH \"website\" target) when held and different; share recovered without a headless browser.",
+ "launches": 36,
+ "reactions": {
+  "single": {
+   "recall": [
+    52.3,
+    43.9,
+    60.8,
+    36
+   ],
+   "precision": [
+    52.3,
+    44.0,
+    60.6,
+    36
+   ]
+  },
+  "single_run2": {
+   "recall": [
+    46.7,
+    38.5,
+    54.8,
+    36
+   ],
+   "precision": [
+    44.9,
+    36.1,
+    53.7,
+    36
+   ]
+  },
+  "temp0": {
+   "recall": [
+    45.2,
+    36.9,
+    53.5,
+    36
+   ],
+   "precision": [
+    41.7,
+    32.4,
+    51.4,
+    36
+   ]
+  },
+  "cons2": {
+   "recall": [
+    23.7,
+    16.8,
+    30.6,
+    36
+   ],
+   "precision": [
+    63.9,
+    50.0,
+    77.8,
+    36
+   ]
+  },
+  "cons3": {
+   "recall": [
+    24.9,
+    17.9,
+    32.9,
+    36
+   ],
+   "precision": [
+    66.7,
+    52.8,
+    80.6,
+    36
+   ]
+  },
+  "const": {
+   "recall": [
+    14.6,
+    10.1,
+    19.3,
+    36
+   ],
+   "precision": [
+    20.8,
+    14.4,
+    28.2,
+    36
+   ]
+  },
+  "single_run2 - single (paired)": {
+   "recall": [
+    -5.6,
+    -11.0,
+    -0.3,
+    36
+   ],
+   "precision": [
+    -7.4,
+    -14.4,
+    0.0,
+    36
+   ]
+  },
+  "temp0 - single (paired)": {
+   "recall": [
+    -7.1,
+    -14.2,
+    -0.1,
+    36
+   ],
+   "precision": [
+    -10.6,
+    -18.5,
+    -2.8,
+    36
+   ]
+  },
+  "cons2 - single (paired)": {
+   "recall": [
+    -28.6,
+    -35.5,
+    -22.0,
+    36
+   ],
+   "precision": [
+    11.6,
+    -1.9,
+    25.0,
+    36
+   ]
+  },
+  "cons3 - single (paired)": {
+   "recall": [
+    -27.4,
+    -34.6,
+    -20.2,
+    36
+   ],
+   "precision": [
+    14.4,
+    2.3,
+    27.3,
+    36
+   ]
+  },
+  "const - single (paired)": {
+   "recall": [
+    -37.7,
+    -48.4,
+    -28.5,
+    36
+   ],
+   "precision": [
+    -31.5,
+    -40.3,
+    -21.8,
+    36
+   ]
+  },
+  "list_length": {
+   "cons2": 1.0,
+   "cons3": 1.0,
+   "single": 6
+  },
+  "stability": {
+   "agree_single": [
+    62.0,
+    55.1,
+    69.4,
+    36
+   ],
+   "agree_temp0": [
+    75.9,
+    68.1,
+    83.3,
+    36
+   ],
+   "agree_cons2": [
+    77.8,
+    63.9,
+    88.9,
+    36
+   ]
+  }
+ },
+ "ranked": {
+  "concerns": {
+   "single": [
+    16.7,
+    8.9,
+    24.4,
+    30
+   ],
+   "single_run2": [
+    14.4,
+    7.8,
+    21.1,
+    30
+   ],
+   "temp0": [
+    25.6,
+    17.8,
+    34.4,
+    30
+   ],
+   "cons": [
+    14.4,
+    3.9,
+    26.7,
+    30
+   ],
+   "temp0 - single (paired)": [
+    8.9,
+    -1.1,
+    17.8,
+    30
+   ],
+   "cons - single (paired)": [
+    -2.2,
+    -12.2,
+    7.8,
+    30
+   ],
+   "rerun_overlap@3": [
+    43.3,
+    34.4,
+    51.1,
+    30
+   ]
+  },
+  "questions": {
+   "single": [
+    15.6,
+    7.8,
+    23.3,
+    30
+   ],
+   "single_run2": [
+    13.3,
+    6.7,
+    21.1,
+    30
+   ],
+   "temp0": [
+    13.3,
+    5.6,
+    23.3,
+    30
+   ],
+   "cons": [
+    13.3,
+    3.3,
+    25.0,
+    30
+   ],
+   "temp0 - single (paired)": [
+    -2.2,
+    -7.8,
+    3.3,
+    30
+   ],
+   "cons - single (paired)": [
+    -2.2,
+    -10.0,
+    5.6,
+    30
+   ],
+   "rerun_overlap@3": [
+    51.1,
+    43.3,
+    58.9,
+    30
+   ]
+  }
+ }
+}

@@ -1,0 +1,94 @@
+{
+ "design": "Prove /try fixes before the website builds them (orchestrator 10:15Z Nov 12). Uses the website's own code (origin/claude/ph-website\nmvp/ph_site: safe_fetch, try_sim.READ_PROMPT on flash-lite, try_sim._band_score with launch_band.json, person_e5.embed) as a library.\nLaunches: every ranked launch of Oct 27 - Nov 10 2026 with a product URL (at-launch primary_link, else the first non-PH link in the\nmaker's first comment); each site fetched ONCE by safe_fetch (http rewritten to https only because this container's proxy mode\nrefuses http), then read with the site's READ_PROMPT.\n1. Band inputs (score -> percentile among the band's cuts -> decile band):\n   (a) SITE now: name, tagline, summary + page_excerpt[:600], page-read topics\n   (b) READ: name + tagline + 2-sentence summary only, page-read topics\n   (c) REWRITE: a flash-lite rewrite of the page read into PH launch style (name, <= 60-char tagline, <= 260-char description,\n       3 topics from the PH vocabulary), then the band\n   (d) PH: the real PH name / tagline / description / topics (reference)\n   Spearman of the band percentile with -final rank (pooled over launches), band coverage of the true rank; paired bootstrap vs (a).\n2. Concerns and questions (launches with >= 5 identity-free truth comments): RANKED concerns (critic D_category + retrieved\n   neighbour themes + category base list, scored by neighbour frequency + agreement + Gemini likelihood; the reactions generator is\n   left out) and the single-call question generator, each fed (i) the page-read name/tagline/summary, (ii) the raw page excerpt,\n   (iii) the PH description. Blinded judges as concerns_rank / questions_rank; p@3 / hit@3, paired.\n3. Fetch failures: for every launch whose fetch or page read failed, retry (i) the root of the same domain, (ii) the at-launch\n   primary_link (PH \"website\" target) when held and different; share recovered without a headless browser.",
+ "launches": 36,
+ "reactions": {
+  "single": {
+   "recall": [
+    45.7,
+    36.7,
+    55.2,
+    36
+   ],
+   "precision": [
+    46.8,
+    37.5,
+    55.6,
+    36
+   ]
+  },
+  "cons2": {
+   "recall": [
+    29.6,
+    20.6,
+    39.9,
+    33
+   ],
+   "precision": [
+    30.5,
+    20.2,
+    41.3,
+    33
+   ]
+  },
+  "cons3": {
+   "recall": [
+    32.1,
+    22.2,
+    42.4,
+    27
+   ],
+   "precision": [
+    45.7,
+    33.0,
+    58.9,
+    27
+   ]
+  },
+  "cons2 - single (paired, same judge pass)": {
+   "recall": [
+    -16.0,
+    -25.1,
+    -7.1,
+    33
+   ],
+   "precision": [
+    -17.5,
+    -27.4,
+    -7.7,
+    33
+   ]
+  },
+  "cons3 - single (paired, same judge pass)": {
+   "recall": [
+    -18.0,
+    -26.5,
+    -9.9,
+    27
+   ],
+   "precision": [
+    -6.1,
+    -17.9,
+    6.2,
+    27
+   ]
+  },
+  "list_length": {
+   "cons2": 4.1,
+   "cons3": 2.9
+  },
+  "stability": {
+   "agree_single": [
+    64.4,
+    57.9,
+    70.4,
+    36
+   ],
+   "agree_cons2": [
+    62.6,
+    52.5,
+    71.9,
+    30
+   ]
+  }
+ }
+}
