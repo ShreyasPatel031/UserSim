@@ -215,3 +215,22 @@ Open, next to assign:
 30. Pre-reveal recipe on the Nov 11 and Nov 12 live files once official ranks land (7th and 8th day): pooled table with intervals; refit weights LODO.
 31. Try-a-URL end to end on 30 recent launches through the actual site code path (page fetch, not the PH description): reactions recall, concerns p@3, rank band, with the page-read inputs the site really uses.
 32. Weekly call earlier in the week: probability that the current weekly top 3 survives, from how many launch days remain and the size of the leaders (calibration on 44 weeks).
+
+### ROOT CAUSE of the backtest leak (Nov 12, 06:20 UTC) — read before any 00:05 work
+Product Hunt shows the makers of the day's #1 launch BY NAME only after the day ends. At 00:05 the eventual winner
+has about one named maker and the rest are "[REDACTED]", like every other launch. Rows read after the day therefore
+mark the winner: it is nearly the only launch with several named makers.
+- Live days, 00:05 pull vs later read: winners' named makers 1.25 -> 3.00; ranks 2-3 1.04 -> 0.96; others 0.99 -> 0.94.
+  Total maker count is unchanged; only naming changes.
+- "Rank by number of named makers" finds the exact winner on 60-91% of days from the warehouse and 15% from the real
+  00:05 read. The backtest's #1 pick is that launch on 74% of days (then right 99% of the time); on other days it is
+  right 20% of the time, the live level.
+- The period after Oct 25 is not harder (simple baselines hold or improve; no step change in the line-ups).
+- Leaky inputs: everything derived from maker identity in rows read after the day (named-maker counts, maker ages,
+  maker headline / X flags, maker history and ties, within-day ranks of those) and history tables built from them.
+  Clean: total maker count, hunter identity and history, text, topics.
+- WITHDRAWN: backtest 63/69/75; pick rates 90/57/41; "hunter + makers" ladder gains that rely on named makers; the
+  miss-anatomy reading (hits 2.65 named makers vs 0.95); every pre-launch null was tested on top of a leaky model.
+- Honest 00:05 record: 45.8/62.5/73.8 on the 8 live days written on time.
+Running: PH agent = clean launch model (19m); orchestrator = independent leak-free baseline from the launches table
+with makers masked to the 00:05 view (19n).
