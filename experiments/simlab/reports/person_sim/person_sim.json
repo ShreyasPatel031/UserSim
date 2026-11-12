@@ -1,0 +1,278 @@
+{
+ "design": "Can we simulate what a SPECIFIC person says? (orchestrator 02:20Z Nov 12). Comment text = the launch thread dumps\n(raw/ph_predict_data/comments, exact created_at); commenters mapped to complete pool people by the salted id (usernames never\nleave this script; outputs carry pair indices only; comment text stays in the bucket).\nPairs: (person, launch) with the launch in Aug-Oct 2026, the person not on the launch team, a substantive comment (>= 12 words,\nnot a pure congratulation), and >= 10 earlier substantive comments by the person dated before the launch day. Sample 300 pairs,\nat most 4 per person (only 88 people are eligible).\nConditions (gemini-2.5-flash, temperature 0.3), product-only launch inputs (name, tagline, description, topics):\n  A  the person's 10-20 most recent earlier substantive comments as history\n  B  a generic \"typical Product Hunt member\"\n  C  another random person's history (shuffle control)\n  D  A + the person's tools/interest summary from the store (names of up to 15 stack items and 15 most recent upvoted launches,\n     all dated before the launch day for upvotes; stack lists are undated snapshots)\nJudge (gemini-2.5-flash, blinded, per generated comment): theme 0/1/2 vs the real comment, stance of each (praise / question /\nobjection / feature_request / comparison / other), specificity 0-2. Forced choice: the real comment + the 4 generated in random\norder -> which is closest (chance 25%). Type prediction: the real comment's stance vs (i) A's generated stance, (ii) the\nperson's most frequent historical stance (history classified in one call), (iii) the global base rate (most common stance).\nPerson-bootstrap 95% CIs.",
+ "substantive_comments_complete_people": 21306,
+ "eligible_pairs": 981,
+ "eligible_people": 88,
+ "sample_pairs": 275,
+ "sample_people": 88,
+ "means": {
+  "A": {
+   "theme": [
+    0.889,
+    0.78,
+    0.996,
+    88
+   ],
+   "theme2": [
+    0.221,
+    0.161,
+    0.288,
+    88
+   ],
+   "stance_match": [
+    0.55,
+    0.472,
+    0.627,
+    88
+   ],
+   "spec": [
+    1.394,
+    1.317,
+    1.474,
+    88
+   ],
+   "forced": [
+    0.289,
+    0.222,
+    0.359,
+    88
+   ]
+  },
+  "B": {
+   "theme": [
+    0.881,
+    0.789,
+    0.977,
+    88
+   ],
+   "theme2": [
+    0.124,
+    0.077,
+    0.171,
+    88
+   ],
+   "stance_match": [
+    0.481,
+    0.409,
+    0.558,
+    88
+   ],
+   "spec": [
+    1.442,
+    1.371,
+    1.516,
+    88
+   ],
+   "forced": [
+    0.265,
+    0.198,
+    0.332,
+    88
+   ]
+  },
+  "C": {
+   "theme": [
+    0.757,
+    0.665,
+    0.852,
+    88
+   ],
+   "theme2": [
+    0.123,
+    0.078,
+    0.176,
+    88
+   ],
+   "stance_match": [
+    0.415,
+    0.354,
+    0.482,
+    88
+   ],
+   "spec": [
+    1.355,
+    1.279,
+    1.433,
+    88
+   ],
+   "forced": [
+    0.17,
+    0.119,
+    0.223,
+    88
+   ]
+  },
+  "D": {
+   "theme": [
+    0.907,
+    0.808,
+    1.008,
+    88
+   ],
+   "theme2": [
+    0.202,
+    0.151,
+    0.257,
+    88
+   ],
+   "stance_match": [
+    0.574,
+    0.5,
+    0.652,
+    88
+   ],
+   "spec": [
+    1.384,
+    1.306,
+    1.465,
+    88
+   ],
+   "forced": [
+    0.277,
+    0.213,
+    0.342,
+    88
+   ]
+  }
+ },
+ "paired": {
+  "A - B": {
+   "theme": [
+    0.009,
+    -0.094,
+    0.107,
+    88
+   ],
+   "theme2": [
+    0.097,
+    0.033,
+    0.165,
+    88
+   ],
+   "stance_match": [
+    0.069,
+    -0.017,
+    0.161,
+    88
+   ],
+   "spec": [
+    -0.048,
+    -0.149,
+    0.048,
+    88
+   ],
+   "forced": [
+    0.024,
+    -0.094,
+    0.135,
+    88
+   ]
+  },
+  "A - C": {
+   "theme": [
+    0.133,
+    0.037,
+    0.231,
+    88
+   ],
+   "theme2": [
+    0.098,
+    0.044,
+    0.153,
+    88
+   ],
+   "stance_match": [
+    0.135,
+    0.051,
+    0.223,
+    88
+   ],
+   "spec": [
+    0.039,
+    -0.071,
+    0.143,
+    88
+   ],
+   "forced": [
+    0.119,
+    0.025,
+    0.216,
+    88
+   ]
+  },
+  "D - A": {
+   "theme": [
+    0.018,
+    -0.066,
+    0.108,
+    88
+   ],
+   "theme2": [
+    -0.019,
+    -0.071,
+    0.031,
+    88
+   ],
+   "stance_match": [
+    0.024,
+    -0.023,
+    0.073,
+    88
+   ],
+   "spec": [
+    -0.009,
+    -0.099,
+    0.084,
+    88
+   ],
+   "forced": [
+    -0.012,
+    -0.117,
+    0.095,
+    88
+   ]
+  }
+ },
+ "type_prediction": {
+  "real_stance_distribution": {
+   "question": 113,
+   "praise": 105,
+   "other": 26,
+   "objection": 17,
+   "feature_request": 13,
+   "comparison": 1
+  },
+  "base_mode": "question",
+  "genA": [
+   0.478,
+   0.404,
+   0.551,
+   88
+  ],
+  "hist_majority": [
+   0.496,
+   0.419,
+   0.577,
+   88
+  ],
+  "base_rate_mode": [
+   0.369,
+   0.294,
+   0.448,
+   88
+  ],
+  "hist_majority - base (paired)": [
+   0.127,
+   0.026,
+   0.231,
+   88
+  ],
+  "genA - base (paired)": [
+   0.109,
+   0.026,
+   0.199,
+   88
+  ]
+ },
+ "usd": 0.851
+}
