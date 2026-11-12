@@ -17,10 +17,22 @@ OUT = os.path.join(HERE, "results", "monthly_live")
 
 
 def read(day):
-    p = f"{tempfile.mkdtemp(prefix='ml_')}/r.jsonl"
-    if subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/monthly_reread/{day[:7]}/{day}.jsonl", p]).returncode:
+    """Day <day>'s day-end read (orchestrator 16:25Z Nov 12): rereads are keyed by their header fetched_at, not the file name;
+    the earliest read fetched at or after <day>+1 00:00 PT is the day-end read; none -> (None, None) = "missing read"."""
+    tmp = tempfile.mkdtemp(prefix='ml_'); closed = pd.Timestamp(day, tz="America/Los_Angeles") + pd.Timedelta(days=1)
+    ls = subprocess.run(["gsutil", "ls", f"{B}/raw/ph_at_launch/monthly_reread/{day[:7]}/"], capture_output=True, text=True).stdout.split()
+    best = None
+    for u in sorted(x for x in ls if x.endswith(".jsonl")):
+        p = os.path.join(tmp, os.path.basename(u))
+        if subprocess.run(["gsutil", "-q", "cp", u, p]).returncode:
+            continue
+        h = json.loads(open(p).readline() or "{}")
+        fa = h.get("fetched_at") if h.get("_header") else None
+        if fa and pd.Timestamp(fa) >= closed and (best is None or pd.Timestamp(fa) < best[0]):
+            best = (pd.Timestamp(fa), p)
+    if best is None:
         return None, None
-    rows = [json.loads(l) for l in open(p)]
+    rows = [json.loads(l) for l in open(best[1])]
     hdr = rows[0] if rows and rows[0].get("_header") else {}
     X = pd.DataFrame([r for r in rows if not r.get("_header")])
     X["id"] = X.id.astype(str)
@@ -41,7 +53,8 @@ def topk_overlap(a, b, k):
 def dayend(day):
     hdr, X = read(day)
     if X is None:
-        print(json.dumps({"day": day, "status": "no monthly_reread file"})); return
+        print(json.dumps({"day": day, "status": "missing read (no reread fetched after the day closed)"}))
+        import heartbeat; heartbeat.beat("monthly dayend", day, None, "missing read"); return
     X = X[X.launch_day_PT <= day]
     # orchestrator 09:27Z Nov 12: a read taken before <day> ends leaves <day> partial and its same-day monthlyRank values are
     # placeholders: flag the day and drop those ranks from the monthlyRank order

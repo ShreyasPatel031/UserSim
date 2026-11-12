@@ -20,7 +20,14 @@
    "written_at": "2026-11-12T16:24:19.078849+00:00",
    "status": "ok",
    "late_min": null
+  },
+  "monthly dayend": {
+   "day": "2026-11-12",
+   "data_cut": null,
+   "written_at": "2026-11-12T16:26:03.493113+00:00",
+   "status": "missing read",
+   "late_min": null
   }
  },
- "updated_at": "2026-11-12T16:24:19.078849+00:00"
+ "updated_at": "2026-11-12T16:26:03.493113+00:00"
 }

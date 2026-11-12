@@ -2,218 +2,218 @@
  "week_monday": "2026-11-09",
  "day": "2026-11-11",
  "point": "reread",
- "written_at": "2026-11-12T09:30:31.850561+00:00",
+ "written_at": "2026-11-12T16:25:51.279369+00:00",
  "launches": 101,
- "source": "raw/ph_at_launch/monthly_reread/2026-11/2026-11-11.jsonl votesCount (read at 2026-11-11 13:31 PT, before the day ended: partial)",
+ "source": "raw/ph_at_launch/monthly_reread/2026-11/2026-11-11.jsonl votesCount (read at 2026-11-12 06:48 PT)",
  "forecast": [
   {
    "id": "1288148",
    "day": "2026-11-10",
    "pred_rank": 1,
-   "est": 485.0,
+   "est": 497.0,
    "src": "reread"
   },
   {
    "id": "1307104",
    "day": "2026-11-09",
    "pred_rank": 2,
-   "est": 439.0,
+   "est": 443.0,
    "src": "reread"
   },
   {
    "id": "1302788",
    "day": "2026-11-09",
    "pred_rank": 3,
-   "est": 378.0,
+   "est": 381.0,
    "src": "reread"
   },
   {
    "id": "1290845",
    "day": "2026-11-10",
    "pred_rank": 4,
-   "est": 324.0,
+   "est": 328.0,
    "src": "reread"
   },
   {
    "id": "1293370",
    "day": "2026-11-09",
    "pred_rank": 5,
-   "est": 305.0,
-   "src": "reread"
-  },
-  {
-   "id": "1305545",
-   "day": "2026-11-10",
-   "pred_rank": 6,
-   "est": 265.0,
-   "src": "reread"
-  },
-  {
-   "id": "1310787",
-   "day": "2026-11-10",
-   "pred_rank": 7,
-   "est": 249.0,
-   "src": "reread"
-  },
-  {
-   "id": "1296366",
-   "day": "2026-11-10",
-   "pred_rank": 8,
-   "est": 241.0,
-   "src": "reread"
-  },
-  {
-   "id": "1306799",
-   "day": "2026-11-09",
-   "pred_rank": 9,
-   "est": 241.0,
+   "est": 308.0,
    "src": "reread"
   },
   {
    "id": "1285122",
    "day": "2026-11-11",
-   "pred_rank": 10,
-   "est": 229.0,
+   "pred_rank": 6,
+   "est": 300.0,
    "src": "reread"
   },
   {
    "id": "1311491",
    "day": "2026-11-11",
-   "pred_rank": 11,
-   "est": 228.0,
+   "pred_rank": 7,
+   "est": 292.0,
    "src": "reread"
   },
   {
-   "id": "1308411",
+   "id": "1305545",
    "day": "2026-11-10",
-   "pred_rank": 12,
-   "est": 226.0,
+   "pred_rank": 8,
+   "est": 281.0,
    "src": "reread"
   },
   {
-   "id": "1266350",
-   "day": "2026-11-09",
-   "pred_rank": 13,
-   "est": 180.0,
+   "id": "1310787",
+   "day": "2026-11-10",
+   "pred_rank": 9,
+   "est": 262.0,
    "src": "reread"
   },
   {
    "id": "1296277",
    "day": "2026-11-11",
-   "pred_rank": 14,
-   "est": 175.0,
+   "pred_rank": 10,
+   "est": 252.0,
    "src": "reread"
   },
   {
-   "id": "1296250",
+   "id": "1296366",
+   "day": "2026-11-10",
+   "pred_rank": 11,
+   "est": 244.0,
+   "src": "reread"
+  },
+  {
+   "id": "1306799",
    "day": "2026-11-09",
-   "pred_rank": 15,
-   "est": 166.0,
+   "pred_rank": 12,
+   "est": 241.0,
+   "src": "reread"
+  },
+  {
+   "id": "1308411",
+   "day": "2026-11-10",
+   "pred_rank": 13,
+   "est": 238.0,
+   "src": "reread"
+  },
+  {
+   "id": "1266350",
+   "day": "2026-11-09",
+   "pred_rank": 14,
+   "est": 180.0,
    "src": "reread"
   },
   {
    "id": "1311828",
    "day": "2026-11-11",
+   "pred_rank": 15,
+   "est": 178.0,
+   "src": "reread"
+  },
+  {
+   "id": "1296250",
+   "day": "2026-11-09",
    "pred_rank": 16,
-   "est": 149.0,
+   "est": 166.0,
+   "src": "reread"
+  },
+  {
+   "id": "1306167",
+   "day": "2026-11-11",
+   "pred_rank": 17,
+   "est": 152.0,
    "src": "reread"
   },
   {
    "id": "1306678",
    "day": "2026-11-09",
-   "pred_rank": 17,
+   "pred_rank": 18,
    "est": 146.0,
    "src": "reread"
   },
   {
    "id": "1309685",
    "day": "2026-11-10",
-   "pred_rank": 18,
-   "est": 143.0,
+   "pred_rank": 19,
+   "est": 144.0,
    "src": "reread"
   },
   {
    "id": "1308023",
    "day": "2026-11-09",
-   "pred_rank": 19,
-   "est": 136.0,
+   "pred_rank": 20,
+   "est": 138.0,
    "src": "reread"
   },
   {
    "id": "1309486",
    "day": "2026-11-09",
-   "pred_rank": 20,
-   "est": 136.0,
-   "src": "reread"
-  },
-  {
-   "id": "1306167",
-   "day": "2026-11-11",
    "pred_rank": 21,
-   "est": 121.0,
-   "src": "reread"
-  },
-  {
-   "id": "1310328",
-   "day": "2026-11-10",
-   "pred_rank": 22,
-   "est": 118.0,
-   "src": "reread"
-  },
-  {
-   "id": "1305634",
-   "day": "2026-11-09",
-   "pred_rank": 23,
-   "est": 115.0,
+   "est": 136.0,
    "src": "reread"
   },
   {
    "id": "1311715",
    "day": "2026-11-11",
-   "pred_rank": 24,
-   "est": 109.0,
-   "src": "reread"
-  },
-  {
-   "id": "1301600",
-   "day": "2026-11-09",
-   "pred_rank": 25,
-   "est": 108.0,
-   "src": "reread"
-  },
-  {
-   "id": "1311330",
-   "day": "2026-11-11",
-   "pred_rank": 26,
-   "est": 104.0,
+   "pred_rank": 22,
+   "est": 127.0,
    "src": "reread"
   },
   {
    "id": "1303622",
    "day": "2026-11-11",
+   "pred_rank": 23,
+   "est": 126.0,
+   "src": "reread"
+  },
+  {
+   "id": "1310328",
+   "day": "2026-11-10",
+   "pred_rank": 24,
+   "est": 122.0,
+   "src": "reread"
+  },
+  {
+   "id": "1311330",
+   "day": "2026-11-11",
+   "pred_rank": 25,
+   "est": 117.0,
+   "src": "reread"
+  },
+  {
+   "id": "1305634",
+   "day": "2026-11-09",
+   "pred_rank": 26,
+   "est": 115.0,
+   "src": "reread"
+  },
+  {
+   "id": "1312356",
+   "day": "2026-11-11",
    "pred_rank": 27,
-   "est": 103.0,
+   "est": 113.0,
+   "src": "reread"
+  },
+  {
+   "id": "1301600",
+   "day": "2026-11-09",
+   "pred_rank": 28,
+   "est": 108.0,
+   "src": "reread"
+  },
+  {
+   "id": "1310655",
+   "day": "2026-11-11",
+   "pred_rank": 29,
+   "est": 107.0,
    "src": "reread"
   },
   {
    "id": "1309804",
    "day": "2026-11-10",
-   "pred_rank": 28,
-   "est": 103.0,
-   "src": "reread"
-  },
-  {
-   "id": "1308321",
-   "day": "2026-11-10",
-   "pred_rank": 29,
-   "est": 99.0,
-   "src": "reread"
-  },
-  {
-   "id": "1304254",
-   "day": "2026-11-09",
    "pred_rank": 30,
-   "est": 97.0,
+   "est": 103.0,
    "src": "reread"
   }
  ]
