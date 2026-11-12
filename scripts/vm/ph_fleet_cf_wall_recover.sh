@@ -5,7 +5,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 source "${PACE_ENV_FILE:-$ROOT/results/ph_tab_experiment/20261107t170953z/pace.env}"
-source "$ROOT/scripts/vm/ph_strategies/fleet_optimize.env" 2>/dev/null || true
+source "${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_iproyal.env}" 2>/dev/null || true
 export CF_WALL_MAX_SEC FLEET_CF_RECOVER_MAX_KICKS
 RUN_ID="${PACE_FLEET_RUN_ID:-$(cat "$ROOT/results/ph_fleet_full/latest_run.txt")}"
 RUN_ID="${RUN_ID,,}"

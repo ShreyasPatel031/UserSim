@@ -27,7 +27,8 @@ fi
 export FLEET_WINDOW_MIN="${FLEET_WINDOW_MIN:-15}"
 measure="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null)" || measure="{}"
 chmod +x "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" "$ROOT/scripts/vm/ph_fleet_population_coord.sh" 2>/dev/null || true
-source "$ROOT/scripts/vm/ph_strategies/fleet_optimize.env" 2>/dev/null || true
+# Never source fleet_optimize.env here (PH_BLOCK_NEW_PORT=1 breaks IPRoyal). Strategy = PH_FLEET_STRATEGY only.
+source "$PH_FLEET_STRATEGY" 2>/dev/null || true
 _act="$(echo "$measure" | python3 -c "import json,sys; m=json.load(sys.stdin); print(m.get('active_vms',0))" 2>/dev/null || echo 0)"
 _ppm="$(echo "$measure" | python3 -c "import json,sys; m=json.load(sys.stdin); print(m.get('complete_ppm',m.get('realized_ppm',0)))" 2>/dev/null || echo 0)"
 # Below target: audit-only — parallel rolls during recovery crater the 15m ppm window.
@@ -132,7 +133,7 @@ export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET
 
 rerun_pct="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(100*float('$rerun_ppm' or 0)/a,1))")"
 eff_pop="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(float('$ppm' or 0)/a,4))")"  # complete per attempt = Population-aligned efficiency
-relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. GOAL lastweek 100%. PH_RR_FILES=0945Z_lastweek_votes(953),vmgate,follow,signedin,overnight. full18f uYYdW17hoPBJjpMGoR7lKw== save=_pacetest/shared."
+relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. OPS: fleet never honors Population/orchestrator pause-on-IP-block; PH_FLEET_BLOCK_PAUSE=0, same-IP backoff only (PH_BLOCK_NEW_PORT=0). GOAL lastweek 100%. PH_RR_FILES=0945Z_lastweek_votes(953),vmgate,follow,signedin,overnight. full18f uYYdW17hoPBJjpMGoR7lKw== save=_pacetest/shared."
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
 relay_msg+=". VM smoke sample $sampled rows: complete=$complete incomplete=$incomplete (legacy header/tab; Population whole() is authority). RR_ONLY queue rerun_whole_20261110T0230Z_lastweek_priority.txt (no port rotate)."
 if [[ "$incomplete" -gt 0 ]]; then

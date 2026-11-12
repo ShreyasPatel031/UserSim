@@ -199,6 +199,14 @@ st=json.loads(p.read_text())
 st.setdefault("slots",{})["$slot"]={"gen":$gen,"last_recreate":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","reason":"$reason","token":"$token"}
 p.write_text(json.dumps(st,indent=2))
 PY
+  lock="$ART/autoscale.lock"
+  if [[ -e "$lock" ]] && command -v flock >/dev/null; then
+  exec 8<"$lock"
+  if ! flock -n -s 8; then
+    echo "KEEPER skip recreate slot=$slot (autoscale lock held)" | tee -a "$ART/keeper.log"
+    return 0
+  fi
+  fi
   echo "KEEPER recreate slot=$slot gen=$gen reason=$reason" | tee -a "$ART/keeper.log"
   "${GC[@]}" compute instances delete "$name" --zone="$ZONE" --project="$PROJECT" --quiet 2>/dev/null || true
   sleep 5

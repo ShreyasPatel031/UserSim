@@ -212,7 +212,8 @@ while true; do
       (( n > 2 )) && mult=4
       (( n > 3 )) && mult=8
       wait=$(( base * mult ))
-      (( wait > 3600 )) && wait=3600
+      max_cf=${PH_CF_COOLDOWN_MAX_SEC:-3600}
+      (( wait > max_cf )) && wait=$max_cf
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/cf_cooldown_until
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
       echo "block rc=$rc same-ip; cooldown ${wait}s (n=$n) — no relaunch storm" >> supervisor.log
@@ -227,7 +228,8 @@ while true; do
       (( n > 2 )) && mult=4
       (( n > 3 )) && mult=8
       wait=$(( base * mult ))
-      (( wait > 3600 )) && wait=3600
+      max_cf=${PH_CF_COOLDOWN_MAX_SEC:-3600}
+      (( wait > max_cf )) && wait=$max_cf
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
     fi
     if [[ $rc -eq 1 && $crashes -lt 3 ]]; then

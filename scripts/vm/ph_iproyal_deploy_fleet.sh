@@ -25,7 +25,17 @@ _purl_abs() { local p=$1; [[ "$p" = /* ]] && echo "$p" || echo "$ROOT/$p"; }
 merge_env() {
   local out="$ROOT/results/ph_iproyal_limit/strategy_${LEVEL}.env"
   mkdir -p "$(dirname "$out")"
-  { cat "$ROOT/scripts/vm/ph_strategies/iproyal/_base.env"; echo; cat "$ROOT/scripts/vm/ph_strategies/iproyal/${LEVEL}.env"; } >"$out"
+  {
+    cat "$ROOT/scripts/vm/ph_strategies/iproyal/_base.env"
+    echo
+    cat "$ROOT/scripts/vm/ph_strategies/iproyal/${LEVEL}.env"
+    if [[ -f "$ROOT/scripts/vm/ph_strategies/fleet_iproyal.env" ]]; then
+      echo
+      echo "# fleet_iproyal queue/tabs (IPRoyal ops)"
+      grep -E '^(PH_TABS|PH_BROWSER_TABS|PH_MAX_INFLIGHT|PH_RAMP|PH_REQ_PER_MIN|PDEEP_|PH_RR)' \
+        "$ROOT/scripts/vm/ph_strategies/fleet_iproyal.env" || true
+    fi
+  } >"$out"
   echo "$out"
 }
 
@@ -36,7 +46,8 @@ read_pool() {
 }
 
 wipe_profiles() {
-  local slot=$1 name="feeder-fleet-${RUN_ID}-${slot}"
+  local slot="${1:?wipe_profiles needs slot}"
+  local name="feeder-fleet-${RUN_ID}-${slot}"
   "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet </dev/null \
     --command='sudo rm -rf /opt/ph/profiles/* /opt/ph/reuse/.strat_cleaned 2>/dev/null; sudo mkdir -p /opt/ph/profiles; FORCE_GEOIP_REFRESH=1 PACE_GCS_VM_ROOT="'"${PACE_GCS_VM_ROOT:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"'" sudo -E bash /opt/ph/overlays/ensure_geoip.sh 2>/dev/null || true; sudo systemctl restart phsuper 2>/dev/null || true' \
     2>/dev/null || echo "wipe skipped $name (ssh)"
