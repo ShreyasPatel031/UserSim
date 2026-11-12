@@ -6,7 +6,7 @@ Features at point t (snapshots with snapshot_ts <= t only): votes at t, votes at
 hour since R0, comments at t, the 00:05 LM score (-log predicted_rank, forecasts table, model launch_model), hour of t
 (PT), line-up size. Scorers: (a) raw votes at t; (b) LM + votes blend: z(log1p votes) + w z(LM), w by leave-one-day-out;
 (c) LightGBM lambdarank on the features, leave-one-day-out. Labels: final daily_rank (warehouse launches).
-usage: python early_forecast.py live <day> <point: R0|R1|R2|R4> [method]   -> writes results/early_forecast/<day>_<point>.json
+usage: python early_forecast.py live <day> <point: R0|R0q|R0h|R1|R2|R4|C05|C06> [method]   -> writes results/early_forecast/<day>_<point>.json
        python early_forecast.py replay                                       -> results/early_forecast_replay.json
 Counts and launch ids only."""
 import glob, json, os, subprocess, sys, tempfile
@@ -14,6 +14,37 @@ import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE))
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 POINTS = {"R0": 0, "R0q": 0.25, "R0h": 0.5, "R1": 1, "R2": 2, "R4": 4}   # R0q / R0h = reveal +15 / +30 min (reveal_gap.md)
+CLOCK = {"C05": 5, "C06": 6}   # orchestrator 03:25Z Nov 12: fixed 05:00 / 06:00 PT points (data <= that minute)
+# lock rule (orchestrator 03:25Z Nov 12, provisional until its out-of-sample check): r_k = votes of #k / votes of #k+1 in
+# the vote order; top-k "locked" when r_k >= LOCK_R at a read at or after LOCK_FROM_H PT
+LOCK_R, LOCK_FROM_H = 1.2, 5.0
+
+
+def lock_state(T, t, day):
+    """r3 / r5 / r10 at the latest read <= t, lock flags, and the first read that day (>= 05:00 PT, <= t) at which each lock
+    held. T: snapshots (ts, id, v)."""
+    t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
+    def ratios(g):
+        v = np.sort(g.groupby("id").v.last().values)[::-1]
+        return {k: (float(v[k - 1] / v[k]) if len(v) > k and v[k] > 0 else None) for k in (3, 5, 10)}
+    S = T[T.ts <= t]
+    if S.empty:
+        return {}
+    out = {f"r{k}": (round(x, 4) if x else None) for k, x in ratios(S[S.ts == S.ts.max()]).items()}
+    late = S.ts.max() >= t0 + pd.Timedelta(hours=LOCK_FROM_H)
+    first = {3: None, 5: None}
+    for ts in sorted(S.ts.unique()):
+        if ts < t0 + pd.Timedelta(hours=LOCK_FROM_H):
+            continue
+        r = ratios(S[S.ts == ts])
+        for k in (3, 5):
+            if first[k] is None and r[k] is not None and r[k] >= LOCK_R:
+                first[k] = pd.Timestamp(ts).isoformat()
+    for k in (3, 5):
+        out[f"top{k}_locked"] = bool(late and out[f"r{k}"] is not None and out[f"r{k}"] >= LOCK_R)
+        out[f"top{k}_first_locked_at"] = first[k]
+    out.update({"read_at": pd.Timestamp(S.ts.max()).isoformat(), "rule": f"r_k >= {LOCK_R} at a read >= {LOCK_FROM_H:02.0f}:00 PT (provisional)"})
+    return out
 
 
 def load_snaps(day, path=None):
@@ -88,7 +119,8 @@ def live(day, point, method="blend", w=None):
     T = load_snaps(day); R0 = reveal(T)
     if R0 is None:
         print(json.dumps({"day": day, "point": point, "status": "no reveal yet"})); return
-    t = R0 + pd.Timedelta(hours=POINTS[point])
+    t = (pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC") + pd.Timedelta(hours=CLOCK[point])
+         if point in CLOCK else R0 + pd.Timedelta(hours=POINTS[point]))
     now = pd.Timestamp.now(tz="UTC")
     if T.ts.max() < t:
         print(json.dumps({"day": day, "point": point, "status": f"point {t} not reached; latest snapshot {T.ts.max()}"})); return
@@ -108,12 +140,27 @@ def live(day, point, method="blend", w=None):
         print("exp_final_votes skipped:", repr(e)[:120], flush=True)
     if point == "R0":   # orchestrator 23:00Z Nov 11: R0 votes blended with what was known before the reveal (P4 file)
         A = r0_blend(day, A)
-    out = {"day": day, "point": point, "reveal_R0": R0.isoformat(), "data_up_to": t.isoformat(), "method": method, "w_lm": w,
+    Tv = T[T.id.isin(set(A.index) if "id" not in A else set(A.id))] if len(A) else T
+    lk = lock_state(Tv, t, day)
+    for c in ("r3", "r5", "r10", "top3_locked", "top5_locked"):
+        A[c] = lk.get(c)
+    out = {"lock": lk, "day": day, "point": point, "reveal_R0": R0.isoformat(), "data_up_to": t.isoformat(), "method": method, "w_lm": w,
            "launches": int(len(A)), "lm_matched": int(sum(1 for x in A.id if x in lm)), "written_at": now.isoformat(),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"] + [c for c in ("pred_rank_r0blend", "pred_rank_r0mean", "p4_blend_rank", "exp_final_votes") if c in A]].round(4).to_dict("records")}
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "v", "v0", "vel", "c", "lm", "score"] + [c for c in ("pred_rank_r0blend", "pred_rank_r0mean", "p4_blend_rank", "exp_final_votes", "r3", "r5", "r10", "top3_locked", "top5_locked") if c in A]].round(4).to_dict("records")}
     os.makedirs(os.path.join(HERE, "results", "early_forecast"), exist_ok=True)
     p = os.path.join(HERE, "results", "early_forecast", f"{day}_{point}.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/early_forecast/{day}_{point}.json"], check=True)
+    # website (results/web/lock/<day>.json): the latest lock state, "top 3 locked" vs "#3 open"
+    wd = os.path.join(HERE, "results", "web", "lock"); os.makedirs(wd, exist_ok=True); wp = os.path.join(wd, f"{day}.json")
+    prev = json.load(open(wp)) if os.path.exists(wp) else {}
+    if not prev or prev.get("read_at", "") <= lk.get("read_at", ""):
+        top = A.sort_values("v", ascending=False).head(10)
+        web = {"day": day, "point": point, **lk, "written_at": now.isoformat(),
+               "label_top3": "top 3 locked" if lk.get("top3_locked") else "#3 open",
+               "label_top5": "top 5 locked" if lk.get("top5_locked") else "#5 open",
+               "vote_order_top10": [str(x) for x in (top.id if "id" in top else top.index)]}
+        json.dump(web, open(wp, "w"), indent=1)
+        subprocess.run(["gsutil", "-q", "cp", wp, f"{B}/results/web/lock/{day}.json"], check=True)
     print(json.dumps({k: v for k, v in out.items() if k != "forecast"}))
 
 
