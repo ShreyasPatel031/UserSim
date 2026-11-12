@@ -314,6 +314,22 @@ def live(day, point):
                 api[i] = (fa, float(r["daily_rank_at_fetch"]))
         if r.get("reviews_count") is not None and fa <= T and (i not in rv or fa > rv[i][0]):
             rv[i] = (fa, float(r["reviews_count"]))
+    # orchestrator 23:03Z Nov 12: pre-cut ranking reads (~:58 / ~:28) in precut/<tag>_api.jsonl; the latest one fetched <= T
+    # supplies the hidden rank (instead of the 15-min snapshot before the cut)
+    pc_ = f"{tmp}/precut"; os.makedirs(pc_, exist_ok=True)
+    subprocess.run(["gsutil", "-q", "-m", "cp", f"{B}/raw/ph_at_launch/{day}/precut/*_api.jsonl", pc_ + "/"], stderr=subprocess.DEVNULL)
+    n_precut = 0
+    for f_ in sorted(os.listdir(pc_)):
+        for l in open(f"{pc_}/{f_}"):
+            r = json.loads(l)
+            if r.get("dailyRank") is None or not r.get("snapshot_at"):
+                continue
+            fa = pd.Timestamp(r["snapshot_at"]); i = str(r.get("id"))
+            if fa > T or pt_day({"featuredAt": r.get("featuredAt"), "day": day}, day) != day:
+                continue
+            if i not in api or fa > api[i][0]:
+                api[i] = (fa, float(r["dailyRank"])); n_precut += 1
+                inmax["posts"] = max(inmax.get("posts", fa), fa)
     withdrawn = []
     if snap_ids:   # a launch absent from the latest snapshot <= T was withdrawn: out of the line-up (and of scoring)
         last = snap_ids[max(snap_ids)]
@@ -650,7 +666,7 @@ def live(day, point):
                 st_ = prev
             col_status[c_] = {"status": st_, "inputs_fetched_max": {**col_status.get(c_, {}).get("inputs_fetched_max", {}), src_: t_.isoformat() if t_ is not None else None}}
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
-           "column_status": col_status, "withdrawn_excluded": withdrawn, "reply_rows_read": n_rep_rows, "reply_rows_used": int(C.parent.notna().sum()),
+           "column_status": col_status, "withdrawn_excluded": withdrawn, "reply_rows_read": n_rep_rows, "reply_rows_used": int(C.parent.notna().sum()), "precut_rank_rows": n_precut,
            "hidden_rank_note": "each point's hidden API rank is the latest posts_ts read fetched <= the cut (the 15-min snapshot before it)",
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
