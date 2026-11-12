@@ -76,6 +76,15 @@ def month_job(a):
     # makers only after the day; the PH page shows the full team on launch day); total maker count kept
     if "clean_v3" in variants:
         out["clean_v3"] = fitw(tr, te, [c for c in cols if c not in ID_COLS], seed)
+    # orchestrator 09:49Z Nov 12 leak check: llm_full's prompt (llm.facts) carries top-maker PH / X followers and the makers'
+    # earlier launches, generated in one batch on Oct 29 from rows read after the day; page scores come from later page reads
+    c3 = [c for c in cols if c not in ID_COLS]
+    if "clean_v3_nofull" in variants:
+        out["clean_v3_nofull"] = fitw(tr, te, [c for c in c3 if c != "llm_full"], seed)
+    if "clean_v3_nollm" in variants:
+        out["clean_v3_nollm"] = fitw(tr, te, [c for c in c3 if not c.startswith("llm_")], seed)
+    if "clean_v3_nolater" in variants:   # no llm_ and no page / video scores (pages fetched after launch day)
+        out["clean_v3_nolater"] = fitw(tr, te, [c for c in c3 if not c.startswith(("llm_", "ps_", "vs_", "pf_"))], seed)
     if "clean_v2b" in variants:
         out["clean_v2b"] = fitw(tr, te, [c for c in cols if not c.startswith(MP) and not c.startswith(FC) and c != "llm_full"], seed)
     if "no_promo" in variants:
