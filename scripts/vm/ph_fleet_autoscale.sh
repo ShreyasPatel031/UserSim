@@ -35,6 +35,10 @@ vm_name() { echo "feeder-fleet-${RUN_ID}-${1}"; }
 
 proxy_for_slot() {
   local slot=$1
+  export PACE_REPO_ROOT="$ROOT" PACE_FLEET_RUN_ID="$RUN_ID" FLEET_ART="$ART"
+  if [[ -x "$ROOT/scripts/vm/ph_iproyal_assignments.py" ]] && [[ -f "${PACE_IPROYAL_POOL:-$ROOT/secrets/iproyal.pool}" ]]; then
+    python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" get "$slot" 2>/dev/null && return 0
+  fi
   local pool="${PACE_IPROYAL_POOL:-$ROOT/secrets/iproyal.pool}"
   if [[ -f "$pool" ]]; then
     ROOT="$ROOT" python3 - <<PY

@@ -11,11 +11,24 @@ python3 <<'PY'
 import json, pathlib
 ROOT=pathlib.Path("/agent/repos/usersim")
 d=json.load(open("/tmp/iproyal_fi_orders.json"))
-order=next((o for o in d.get("data", []) if (o.get("proxy_data") or {}).get("proxies")), None)
-if not order:
+orders=[o for o in d.get("data", []) if (o.get("proxy_data") or {}).get("proxies")]
+if not orders:
     raise SystemExit("no ISP order with proxies in API response")
-proxies=order["proxy_data"]["proxies"]
-port=order["proxy_data"]["ports"]["http|https"]
+proxies=[]
+port=None
+for o in sorted(orders, key=lambda x: -len(x["proxy_data"]["proxies"])):
+    pd=o["proxy_data"]
+    if not port:
+        port=pd["ports"]["http|https"]
+    for p in pd["proxies"]:
+        proxies.append({**p, "_order_id": o.get("id")})
+seen=set()
+uniq=[]
+for p in proxies:
+    ip=p.get("ip")
+    if ip in seen: continue
+    seen.add(ip); uniq.append(p)
+proxies=uniq
 (secrets:=ROOT/"secrets").mkdir(exist_ok=True)
 paths=[]
 for i,p in enumerate(proxies,1):
@@ -41,5 +54,6 @@ body = "\n".join(pool_lines)
 if spares:
     body += "\n# spare Finland:\n" + "\n".join(f"# {p}" for p in spares)
 (ROOT / "secrets/iproyal.pool").write_text(header + body + "\n")
-print("pool", len(pool_lines), "fi_in_pool", min(len(paths), fi_cap), "order", order.get("id"))
+oids=sorted({p.get("_order_id") for p in proxies if p.get("_order_id")})
+print("pool", len(pool_lines), "fi_in_pool", min(len(paths), fi_cap), "fi_total", len(paths), "orders", oids)
 PY

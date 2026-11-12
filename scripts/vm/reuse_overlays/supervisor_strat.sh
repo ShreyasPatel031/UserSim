@@ -204,6 +204,14 @@ while true; do
       continue
     fi
     if [[ $rc -eq 3 || $kicked -eq 1 ]]; then
+      if [[ "${PH_IPROYAL_ROTATE_ON_BLOCK:-0}" == "1" ]]; then
+        echo "$(date -u +%FT%TZ) rc=$rc kicked=$kicked" > /opt/ph/reuse/iproyal_rotate_request
+        wait="${PH_IPROYAL_BLOCK_SLEEP_SEC:-35}"
+        echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
+        rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n
+        echo "block rc=$rc iproyal_rotate_request; retry ${wait}s (fleet binds new dedicated IP)" >> supervisor.log
+        last=$tok; echo "$tok" > last_token
+      else
       base=${PH_CF_FLEET_REST_SEC:-600}
       n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n | tr -cd 0-9)))
       n=$((n + 1)); echo "$n" > /opt/ph/reuse/cf_backoff_n
@@ -218,6 +226,7 @@ while true; do
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
       echo "block rc=$rc same-ip; cooldown ${wait}s (n=$n) — no relaunch storm" >> supervisor.log
       last=$tok; echo "$tok" > last_token
+      fi
     elif [[ $rc -eq 0 ]]; then
       rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at
     else

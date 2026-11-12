@@ -105,6 +105,9 @@ if [[ "$proxy_slots_sampled" -gt 0 ]]; then
   proxy_day="$(python3 -c "gb=float('$proxy_gb'); rate=float('$ppm' or 0); print(round(gb*rate*60*24*4,2) if rate>0 else round(gb*4,2))")"
 fi
 
+chmod +x "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" "$ROOT/scripts/vm/ph_iproyal_rotate_slot.sh" 2>/dev/null || true
+export PACE_REPO_ROOT="$ROOT"
+bash "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" >>"$LOG" 2>&1 || true
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
 # Hung batches: limited kicks; CF block exit is port-swap via PH_BLOCK_NEW_PORT on supervisor.
 export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
@@ -133,7 +136,7 @@ export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET
 
 rerun_pct="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(100*float('$rerun_ppm' or 0)/a,1))")"
 eff_pop="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(float('$ppm' or 0)/a,4))")"  # complete per attempt = Population-aligned efficiency
-relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. OPS: fleet never honors Population/orchestrator pause-on-IP-block; PH_FLEET_BLOCK_PAUSE=0, same-IP backoff only (PH_BLOCK_NEW_PORT=0). GOAL lastweek 100%. PH_RR_FILES=0945Z_lastweek_votes(953),vmgate,follow,signedin,overnight. full18f uYYdW17hoPBJjpMGoR7lKw== save=_pacetest/shared."
+relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. OPS: no pause-on-block from agents; sustained block => rotate to next dedicated IPRoyal IP (slot1 Spain fixed); new IP on keeper recreate. GOAL lastweek 100%. PH_RR_FILES=0945Z_lastweek_votes(953),vmgate,follow,signedin,overnight. full18f uYYdW17hoPBJjpMGoR7lKw== save=_pacetest/shared."
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
 relay_msg+=". VM smoke sample $sampled rows: complete=$complete incomplete=$incomplete (legacy header/tab; Population whole() is authority). RR_ONLY queue rerun_whole_20261110T0230Z_lastweek_priority.txt (no port rotate)."
 if [[ "$incomplete" -gt 0 ]]; then

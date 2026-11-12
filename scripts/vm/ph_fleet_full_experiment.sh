@@ -95,8 +95,12 @@ sys.exit(1)
 
 create_vm() {
   local slot=$1 port=$2
-  local name
+  local name proxy_file="$PROXY_FILE"
   name="$(vm_name "$slot")"
+  if [[ -f "$ROOT/scripts/vm/ph_iproyal_assignments.py" ]]; then
+    proxy_file="$(PACE_REPO_ROOT="$ROOT" PACE_FLEET_RUN_ID="$RUN_ID" python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" get "$slot" 2>/dev/null)" || proxy_file="$PROXY_FILE"
+    [[ -f "$proxy_file" ]] || proxy_file="$PROXY_FILE"
+  fi
   local meta="^;^proxy-port=${port};${COMMON_META};fleet-slot=${slot}"
   local create_args=(
     --project="$PROJECT" --zone="$ZONE"
@@ -105,7 +109,7 @@ create_vm() {
     --boot-disk-size=20GB
     --service-account="$SA" --scopes=cloud-platform
     --tags=allow-iap-ssh
-    --metadata-from-file "proxy-url=$PROXY_FILE,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh"
+    --metadata-from-file "proxy-url=$proxy_file,ph-strategy-env=$STRATEGY_ENV,pace-boot-env=$ART/pace.env,startup-script=$ROOT/pace_startup.sh"
     --metadata "$meta"
   )
   if [[ -n "$TEMPLATE" ]]; then
@@ -189,6 +193,10 @@ recreate_slot() {
   local port name token gen
   port="$(slot_field "$slot" 2)"
   name="$(vm_name "$slot")"
+  if [[ "$slot" != "1" ]] && grep -qE '^PH_IPROYAL_ROTATE_ON_RECREATE=1' "$STRATEGY_ENV" 2>/dev/null \
+    && [[ -x "$ROOT/scripts/vm/ph_iproyal_rotate_slot.sh" ]]; then
+    python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" rotate "$slot" "recreate" >/dev/null 2>&1 || true
+  fi
   gen=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('gen',0)+1)")
   token="${GO_TOKEN}-r${gen}"
   python3 - <<PY

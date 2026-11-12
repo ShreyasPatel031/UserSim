@@ -16,12 +16,12 @@ ZONE="${PACE_ZONE:-$("${GC[@]}" compute instances list --project="$GCP_PROJECT" 
 
 _purl_abs() { local p=$1; [[ "$p" = /* ]] && echo "$p" || echo "$ROOT/$p"; }
 
-mapfile -t LINES < <(grep -v '^[[:space:]]*#' "$POOL" | grep -v '^[[:space:]]*$' || true)
+export PACE_REPO_ROOT="$ROOT" PACE_FLEET_RUN_ID="$RUN_ID" FLEET_ART="$ART"
+python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" init >/dev/null 2>&1 || true
 while IFS=$'\t' read -r slot _port; do
   [[ -z "$slot" || "$slot" == \#* ]] && continue
-  idx=$((slot - 1))
-  (( idx >= 0 && idx < ${#LINES[@]} )) || continue
-  want="$(_purl_abs "${LINES[$idx]}")"
+  want="$(python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" get "$slot" 2>/dev/null || true)"
+  [[ -n "$want" && -f "$want" ]] || continue
   [[ -f "$want" ]] || continue
   name="feeder-fleet-${RUN_ID}-${slot}"
   st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
