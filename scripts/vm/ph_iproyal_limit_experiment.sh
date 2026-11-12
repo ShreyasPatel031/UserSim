@@ -218,11 +218,11 @@ exit(1 if c<steady and g>=3 else 0)" 2>/dev/null || fail=$((fail+1))
     echo -e "${lv}\t${verdict}\t${mean_c}\t${max_c}\t${mean_g}\t${walls}\t${ksnap}" >>"$ART/ladder.tsv"
     echo "level $lv verdict=$verdict mean_complete_ppm=$mean_c max=$max_c mean_gql429_5m=$mean_g pdeep_k=$ksnap"
     [[ "$verdict" == ok ]] && last_ok="$lv"
-    if [[ "$verdict" == block" && -n "$last_ok" ]]; then
+    if [[ "$verdict" == "block" && -n "$last_ok" ]]; then
       echo "Stopping ladder at $lv (last OK level: $last_ok)"
       break
     fi
-    if [[ "$verdict" == block" && -z "$last_ok" ]]; then
+    if [[ "$verdict" == "block" && -z "$last_ok" ]]; then
       echo "level $lv below threshold but no OK level yet — continue ladder"
     fi
   done
