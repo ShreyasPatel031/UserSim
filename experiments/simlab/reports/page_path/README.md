@@ -58,3 +58,37 @@ Setup: one flash call writes the maker's launch post from the raw page excerpt, 
 - A drafted post does not close the gap. It is no better than the constant list and slightly worse than the raw page text.
 - What helps is information the maker writes and the page lacks, not framing.
 - The paste path (the real launch description) stays the only validated route for concerns and questions.
+
+## Top-1 vs list; by comment volume (page_path_positions.py; no new calls; two adjudicated runs, 70 launches)
+
+Only the top 3 were adjudicated, so there is no p@5. Run 1 / run 2 are the two independent adjudications of the same lists.
+
+**Top item (p@1 = hit@1)**, paired vs the constant list's first item:
+
+| input | concern p@1 | Δ vs constant | question p@1 | Δ vs constant |
+|---|---|---|---|---|
+| PH description | 41.4 / 34.3 | **+21.4 [7.1, 35.7] / +18.6 [4.3, 32.9]** | 48.6 / 50.0 | **+25.7 [12.9, 40.0] / +28.6 [14.3, 41.5]** |
+| raw page excerpt | 32.9 / 40.0 | +12.9 [−2.9, 28.6] / **+24.3 [10.0, 38.6]** | 41.4 / 41.4 | **+18.6 [2.9, 34.3] / +20.0 [5.7, 34.3]** |
+| page read summary | 32.9 / 25.7 | +12.9 [1.4, 24.3] / +10.0 [−2.9, 22.9] | 38.6 / 34.3 | +15.7 [1.4, 30.0] / +12.9 [−2.9, 28.6] |
+| constant list (first item) | 20.0 / 15.7 | | 22.9 / 21.4 | |
+
+**Precision by position** (1 / 2 / 3, run 1):
+- PH concerns 41 / 34 / 36; PH questions 49 / 33 / 30.
+- Raw-page questions 41 / 27 / 26.
+- Position 1 minus positions 2–3, paired:
+  - Questions: +17.1 [3.6, 31.4] (PH), +15.0 [4.3, 25.7] (raw), replicated in run 2 (+19.3 / +19.3).
+  - Concerns: +6.4 [−6.4, 19.3] (PH), not significant.
+
+**p@3 by number of real comments** (run 1: PH / raw / constant):
+
+| comments | concerns | questions |
+|---|---|---|
+| 5–9 (35) | 31.4 / 22.9 / **9.5** | 25.7 / 23.8 / **12.4** |
+| 10–19 (23) | 40.6 / 34.8 / 40.6 | 40.6 / 40.6 / 24.6 |
+| 20+ (12) | 47.2 / 38.9 / 36.1 | 63.9 / 36.1 / 47.2 |
+
+**Reading:**
+- The single top item is the strongest claim. From a pasted description, the top question matches a real comment about 1 time in 2 and the top concern about 1 in 3 to 2 in 5, vs about 1 in 5 for a generic item.
+- Even from the raw page text, the top question beats the constant in both runs (41% vs 21–23%).
+- Questions are well ordered (item 1 clearly best); concerns are not.
+- The lists' advantage over the constant is clearest on quieter launches (5–9 comments), where generic items rarely match. On busier launches, generic concerns hit about as often.
