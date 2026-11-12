@@ -740,6 +740,176 @@ def missing_task_slots(rows: list[dict[str, Any]], sites: list[str]) -> dict[str
     return {s: per_site - sum(1 for r in rows if r["favors"] == s) for s in sites if sum(1 for r in rows if r["favors"] == s) < per_site}
 
 
+def pinned_rivals(competitors: list[str] | None, own: str) -> list[str]:
+    """The request's competitor URLs as written, one per host, never the product, at most RIVAL_COUNT."""
+    out: list[str] = []
+    hosts: set[str] = set()
+    for raw in competitors or []:
+        text = str(raw or "").strip()
+        host = _host_of(text)
+        if not _clean_url(text) or not host or host == own or host in hosts:
+            continue
+        out.append(text)
+        hosts.add(host)
+        if len(out) == RIVAL_COUNT:
+            break
+    return out
+
+
+def plan_keeps_rivals(plan: dict[str, Any] | None, pinned: list[str]) -> bool:
+    """True when the plan's first rivals are the pinned hosts, in order."""
+    got = [_host_of(c) for c in (plan or {}).get("competitors") or []]
+    return got[: len(pinned)] == [_host_of(c) for c in pinned]
+
+
+def _pinned_note(pinned: list[str]) -> str:
+    if not pinned:
+        return ""
+    listed = ", ".join(pinned)
+    if len(pinned) >= RIVAL_COUNT:
+        return (
+            f"\nThe competitors are fixed by the person running the study: {listed}. competitors must be exactly "
+            "these urls, in this order, and nothing else; backup_competitor is null. Every favors must be "
+            "\"product\" or one of these urls exactly as written. Never name, suggest or favor any other product."
+        )
+    return (
+        f"\nThe person running the study chose these competitors: {listed}. List them first in competitors, "
+        "exactly as written, then pick the rest as usual."
+    )
+
+
+def _pinned_names(pinned: list[str], items: list[Any]) -> dict[str, str]:
+    """Display name per pinned URL: the model's name for that host, else the host's first label."""
+    said = {
+        _host_of(str(i.get("url") or "")): str(i.get("name") or "").strip()
+        for i in items
+        if isinstance(i, dict)
+    }
+    return {c: said.get(_host_of(c)) or _host_of(c).split(".")[0].capitalize() for c in pinned}
+
+
+def rivals_with_pins(
+    pinned: list[str], items: list[Any], own: str, *, allow_assistants: bool = False
+) -> tuple[list[str], dict[str, str]]:
+    """(rivals, names): the pinned URLs first, then model picks on other hosts up to RIVAL_COUNT."""
+    names = {_clean_url(str(i.get("url") or "")): str(i.get("name") or "") for i in items if isinstance(i, dict)}
+    if not pinned:
+        return pick_competitors(items, own, limit=RIVAL_COUNT, allow_assistants=allow_assistants), names
+    taken = {_host_of(c) for c in pinned}
+    rest = [i for i in items if _host_of(str(i.get("url") if isinstance(i, dict) else i or "")) not in taken]
+    fill = pick_competitors(rest, own, limit=RIVAL_COUNT - len(pinned), allow_assistants=allow_assistants) if len(pinned) < RIVAL_COUNT else []
+    return list(pinned) + fill, {**{c: names.get(c, "") for c in fill}, **_pinned_names(pinned, items)}
+
+
+async def land_rivals(comps: list[str], pinned: list[str]) -> list[str]:
+    """Where each rival lands; a pinned URL stays as written so tags match the sites the study visits."""
+    from mvp.server import _landing_url
+
+    async def one(c: str) -> str:
+        return c if c in pinned else await _landing_url(c)
+
+    return list(await asyncio.gather(*(one(c) for c in comps)))
+
+
+def balance_favors(rows: list[dict[str, Any]], sites: list[str], per_site: int) -> list[dict[str, Any]]:
+    """Retag rows so each site in ``sites`` has ``per_site`` rows favoring it, where the rows allow.
+
+    A tag that is not one of ``sites`` is cleared first (a rival the study does not visit). Blank rows,
+    then the surplus rows of an over-full site (last first), are handed to the short sites in order.
+    """
+    out = [dict(r) for r in rows]
+    for r in out:
+        if r.get("favors") not in sites:
+            r["favors"] = ""
+    counts = {s: 0 for s in sites}
+    surplus: list[int] = []
+    for i, r in enumerate(out):
+        f = r["favors"]
+        if f:
+            counts[f] += 1
+            if counts[f] > per_site:
+                surplus.append(i)
+    free = [i for i, r in enumerate(out) if not r["favors"]] + surplus[::-1]
+    for s in sites:
+        while counts[s] < per_site and free:
+            i = free.pop(0)
+            if out[i]["favors"]:
+                counts[out[i]["favors"]] -= 1
+            out[i]["favors"] = s
+            out[i]["favors_why"] = ""
+            counts[s] += 1
+    return out
+
+
+def missing_persona_slots(rows: list[dict[str, Any]], sites: list[str]) -> dict[str, int]:
+    per_site = max(1, PERSONA_COUNT // (RIVAL_COUNT + 1))
+    return {s: per_site - n for s in sites if (n := sum(1 for r in rows if r.get("favors") == s)) < per_site}
+
+
+def _persona_swap_slots(rows: list[dict[str, Any]], sites: list[str], n: int) -> list[int]:
+    """Up to ``n`` persona indexes that can be replaced: untagged ones first, then an over-full site's last ones."""
+    per_site = max(1, PERSONA_COUNT // (RIVAL_COUNT + 1))
+    blank = [i for i, r in enumerate(rows) if r.get("favors") not in sites]
+    seen: dict[str, int] = {}
+    surplus: list[int] = []
+    for i, r in enumerate(rows):
+        f = r.get("favors")
+        if f in sites:
+            seen[f] = seen.get(f, 0) + 1
+            if seen[f] > per_site:
+                surplus.append(i)
+    return (blank + surplus[::-1])[:n]
+
+
+_PERSONA_TOPUP = """Add target customers to a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
+Already chosen (do not repeat these people): {have}
+Needed: {need}
+Return {{"personas": [{{"name": "first and last name", "role": "job title and company type",
+  "bio": "at most 20 words: situation, need, how they judge a tool",
+  "favors": "product or one competitor url exactly as listed", "why": "at most 10 words"}}]}}
+Rules: realistic buyers in this category; each is a natural fit for the product or competitor it favors. Never name
+or favor any product other than {product} and the competitors listed. No quotes."""
+
+
+async def _pinned_personas(
+    personas: list[dict[str, Any]], sites: list[str], ask: Any, *, product: str, url: str, own: str,
+    comps: list[str], names: dict[str, str], read: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    """Two personas per site: one call writes buyers for the short sites, then any gap is retagged."""
+    per_site = max(1, PERSONA_COUNT // (RIVAL_COUNT + 1))
+    rows = [dict(p) for p in personas]
+    for r in rows:
+        if r.get("favors") not in sites:
+            r["favors"] = ""
+    need = missing_persona_slots(rows, sites)
+    if need:
+        label = lambda s: product if s == "product" else f"{names.get(s) or s} ({s})"
+        try:
+            got = await ask(_PERSONA_TOPUP.format(
+                product=product, url=url,
+                rivals=", ".join(f"{names.get(c) or c} ({c})" for c in comps),
+                have="; ".join(f"{p.get('name')} ({p.get('role')})" for p in rows),
+                need="; ".join(f"{n} favoring {'product' if s == 'product' else s} ({label(s)})" for s, n in need.items()),
+            ))
+            fresh = compare_personas(got if isinstance(got, dict) else {}, own, comps, names, read)
+            fresh = [p for p in fresh if need.get(p["favors"], 0) > 0]
+            short = sum(need.values())
+            slots = _persona_swap_slots(rows, sites, short) + list(range(len(rows), PERSONA_COUNT))
+            for p in fresh:
+                if not slots or need.get(p["favors"], 0) <= 0:
+                    continue
+                i = slots.pop(0)
+                if i < len(rows):
+                    rows[i] = p
+                else:
+                    rows.append(p)
+                need[p["favors"]] -= 1
+        except Exception as exc:  # noqa: BLE001
+            print(f"[fast_plan] persona top-up skipped: {exc!r}", flush=True)
+    rows = balance_favors(rows[:PERSONA_COUNT], sites, per_site)
+    return unique_persona_names(rows, seed=own, read=read)
+
+
 _TASK_TOPUP = """Add jobs to a head-to-head comparison of {product} ({url}) against {rivals}. Reply with JSON only.
 Already chosen (do not repeat): {have}
 Needed: {need}
@@ -760,15 +930,20 @@ def compare_mode() -> bool:
 
 async def plan_from_url(
     url: str, *, timeout: float | None = None, on_competitors: Any | None = None,
-    on_personas: Any | None = None,
+    on_personas: Any | None = None, competitors: list[str] | None = None,
 ) -> dict[str, Any] | None:
-    """{"segment", "competitors", "tasks"} for a bare URL, or None on any failure."""
+    """{"segment", "competitors", "tasks"} for a bare URL, or None on any failure.
+
+    ``competitors`` are the request's rival URLs: a compare plan keeps them as its rivals (in order,
+    as written) and tags buyers and jobs against them; the model only picks rivals when fewer are given.
+    """
     if compare_mode():
         plan = await compare_plan_from_url(
             url,
             timeout=timeout or float(os.environ.get("MVP_COMPARE_PLAN_TIMEOUT_S", "25")),
             on_competitors=on_competitors,
             on_personas=on_personas,
+            competitors=competitors,
         )
         if plan:
             return plan
@@ -777,7 +952,7 @@ async def plan_from_url(
 
 async def compare_plan_from_url(
     url: str, *, timeout: float = 25.0, on_competitors: Any | None = None,
-    on_personas: Any | None = None,
+    on_personas: Any | None = None, competitors: list[str] | None = None,
 ) -> dict[str, Any] | None:
     """Split plan: competitors, then tasks and personas in parallel. Falls back to the single call.
 
@@ -786,16 +961,16 @@ async def compare_plan_from_url(
     """
     if os.environ.get("MVP_COMPARE_PLAN_SPLIT", "0") == "1":
         plan = await _split_compare_plan(
-            url, timeout=timeout, on_competitors=on_competitors, on_personas=on_personas
+            url, timeout=timeout, on_competitors=on_competitors, on_personas=on_personas, competitors=competitors
         )
         if plan:
             return plan
-    return await _single_compare_plan(url, timeout=timeout)
+    return await _single_compare_plan(url, timeout=timeout, competitors=competitors)
 
 
 async def _split_compare_plan(
     url: str, *, timeout: float = 25.0, on_competitors: Any | None = None,
-    on_personas: Any | None = None,
+    on_personas: Any | None = None, competitors: list[str] | None = None,
 ) -> dict[str, Any] | None:
     from capability.gemini_config import extract_json, gemini_chat
 
@@ -811,14 +986,16 @@ async def _split_compare_plan(
         t0 = asyncio.get_running_loop().time()
         read = await _page_read(url)
         text = prompt_text(read, 600)
-        head = await ask(_CMP_COMPETITORS.format(url=url, title=read.get("title") or "", text=text) + read_rule())
+        own = (urlsplit(url).hostname or "").removeprefix("www.")
+        pinned = pinned_rivals(competitors, own)
+        head = await ask(
+            _CMP_COMPETITORS.format(url=url, title=read.get("title") or "", text=text) + read_rule() + _pinned_note(pinned)
+        )
         if not isinstance(head, dict):
             return None
-        own = (urlsplit(url).hostname or "").removeprefix("www.")
         items = list(head.get("competitors") or [])
-        names = {_clean_url(str(i.get("url") or "")): str(i.get("name") or "") for i in items if isinstance(i, dict)}
-        raw_comps = pick_competitors(
-            items, own, limit=RIVAL_COUNT, allow_assistants=product_is_general_assistant(own, read)
+        raw_comps, names = rivals_with_pins(
+            pinned, items, own, allow_assistants=product_is_general_assistant(own, read)
         )
         if not raw_comps:
             return None
@@ -829,9 +1006,7 @@ async def _split_compare_plan(
             except Exception as exc:  # noqa: BLE001
                 print(f"[fast_plan] on_competitors failed: {exc!r}", flush=True)
         rivals = ", ".join(f"{names.get(c) or c} ({c})" for c in raw_comps)
-        from mvp.server import _landing_url
-
-        landed_f = asyncio.gather(*(_landing_url(c) for c in raw_comps))
+        landed_f = asyncio.ensure_future(land_rivals(raw_comps, pinned))
         # Both calls still run at once, but the buyers are published the moment
         # they land instead of waiting for the jobs call: gathering them meant
         # the page always got users and tasks in the same frame (measured gap
@@ -846,6 +1021,11 @@ async def _split_compare_plan(
         tasks_t = asyncio.ensure_future(ask(tasks_prompt)) if parallel else None
         personas_raw = await ask(personas_prompt)
         personas = compare_personas(personas_raw if isinstance(personas_raw, dict) else {}, own, raw_comps, names, read)
+        if pinned:
+            personas = await _pinned_personas(
+                personas, ["product"] + raw_comps, ask, product=product, url=url, own=own,
+                comps=raw_comps, names=names, read=read,
+            )
         if on_personas is not None and personas:
             try:
                 on_personas([dict(row) for row in personas])
@@ -856,6 +1036,8 @@ async def _split_compare_plan(
         tasks_raw, landed = await asyncio.gather(tasks_t, landed_f)
         landed = list(landed)
         tasks = compare_tasks(tasks_raw if isinstance(tasks_raw, dict) else {}, own, raw_comps, names)
+        if pinned:
+            tasks = balance_favors(tasks, ["product"] + raw_comps, max(1, TASK_COUNT // (RIVAL_COUNT + 1)))
         if len(tasks) < 2 or len(personas) < 2:
             return None
         remap = dict(zip(raw_comps, landed))
@@ -924,7 +1106,9 @@ async def _verify_plan(
     return (redo if isinstance(redo, dict) else data), verdict
 
 
-async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, Any] | None:
+async def _single_compare_plan(
+    url: str, *, timeout: float = 25.0, competitors: list[str] | None = None
+) -> dict[str, Any] | None:
     """Comparison plan: 2 rivals, 6 personas, 6 tasks; every site runs all 36 cells."""
     from capability.gemini_config import extract_json, gemini_chat
 
@@ -946,6 +1130,9 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
         full = f"{read.get('text') or ''} {read.get('full_text') or ''}"[:3800]
         base_prompt = _COMPARE_PROMPT.format(url=url, title=title, text=prompt_text(read), links=_links_for_prompt(read))
         base_prompt += read_rule()
+        own = (urlsplit(url).hostname or "").removeprefix("www.")
+        pinned = pinned_rivals(competitors, own)
+        base_prompt += _pinned_note(pinned)
         positioning: dict[str, Any] = {}
         if "position" in modes:
             try:
@@ -958,34 +1145,27 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
         if not isinstance(data, dict):
             return None
         verified: dict[str, Any] = {}
-        if "verify" in modes:
+        # The verify step swaps rivals it judges off-category, which would replace the ones the request pinned.
+        if "verify" in modes and not pinned:
             try:
                 data, verified = await _verify_plan(url, title, full, data, prompt, ask)
             except Exception as exc:  # noqa: BLE001
                 print(f"[fast_plan] verify skipped: {exc!r}", flush=True)
-        own = (urlsplit(url).hostname or "").removeprefix("www.")
         items = list(data.get("competitors") or [])
-        names = {
-            _clean_url(str(i.get("url") or "")): str(i.get("name") or "")
-            for i in items
-            if isinstance(i, dict)
-        }
         backup = data.get("backup_competitor")
         if isinstance(backup, dict) and backup.get("url"):
             items.append(backup)
-            names.setdefault(_clean_url(str(backup.get("url") or "")), str(backup.get("name") or ""))
-        raw_comps = pick_competitors(
-            items, own, limit=RIVAL_COUNT, allow_assistants=product_is_general_assistant(own, read)
+        raw_comps, names = rivals_with_pins(
+            pinned, items, own, allow_assistants=product_is_general_assistant(own, read)
         )
         if not raw_comps:
             return None
-        from mvp.server import _landing_url
-
-        landed = list(await asyncio.gather(*(_landing_url(c) for c in raw_comps)))
+        landed = await land_rivals(raw_comps, pinned)
         # A planned rival that was skipped hands its buyers and jobs to the backup that replaced it, so
-        # each site keeps its two personas and two tasks.
+        # each site keeps its two personas and two tasks. Pinned rivals are never swapped: a tag on a
+        # site the request did not pass is cleared and rebalanced instead.
         planned = [_clean_url(str(i.get("url") or "")) for i in (data.get("competitors") or [])[:RIVAL_COUNT] if isinstance(i, dict)]
-        dropped = [c for c in planned if c not in raw_comps]
+        dropped = [] if pinned else [c for c in planned if c not in raw_comps]
         added = [c for c in raw_comps if c not in planned]
         # Tags were written against the planner's URLs; map them to where the rival lands.
         personas = compare_personas(data, own, raw_comps + dropped, names, read)
@@ -1023,6 +1203,14 @@ async def _single_compare_plan(url: str, *, timeout: float = 25.0) -> dict[str, 
             except Exception as exc:  # noqa: BLE001
                 print(f"[fast_plan] task top-up skipped: {exc!r}", flush=True)
             need = missing_task_slots(tasks, ["product"] + landed)
+        if pinned:
+            sites = ["product"] + landed
+            tasks = balance_favors(tasks, sites, max(1, TASK_COUNT // (RIVAL_COUNT + 1)))
+            personas = await _pinned_personas(
+                personas, sites, ask, product=str(data.get("product") or own), url=url, own=own,
+                comps=landed, names=comp_names, read=read,
+            )
+            need = missing_task_slots(tasks, sites)
         if need:
             print(f"[fast_plan] task top-up still short: {need}", flush=True)
         print(f"[fast_plan] compare {url} rivals={landed} tasks={[t['prompt'] for t in tasks]}", flush=True)
