@@ -40,6 +40,9 @@ WARMUP_SEC="${LADDER_WARMUP_SEC:-240}"
 SAMPLE_WIN_SEC="${LADDER_SAMPLE_WIN_SEC:-300}"
 BLOCK_FAIL_STREAK="${LADDER_BLOCK_STREAK:-3}"
 STEADY_MIN_PPM="${LADDER_STEADY_MIN_PPM:-0.35}"
+SOAK_HOURS="${IPROYAL_SOAK_HOURS:-0}"
+RETRACE_AFTER_LADDER="${IPROYAL_RETRACE:-1}"
+STEADY_UTIL="${IPROYAL_STEADY_UTIL:-0.85}"
 
 merge_env() {
   local level=$1
@@ -214,6 +217,9 @@ exit(1 if c<steady and g>=3 else 0)" 2>/dev/null || fail=$((fail+1))
   done
   cmd_summary
   cmd_report
+  cmd_analyze_recovery remote
+  [[ "${SOAK_HOURS:-0}" != "0" ]] && cmd_soak "$(best_ok_level)" "${SOAK_HOURS}"
+  [[ "${RETRACE_AFTER_LADDER:-0}" == "1" ]] && cmd_retrace
 }
 
 cmd_summary() {
@@ -231,6 +237,140 @@ for r in rows:
         best=r[0]
 print("Best steady level (last OK):", best or "none yet")
 PY
+}
+
+best_ok_level() {
+  art_dir
+  python3 - <<PY
+from pathlib import Path
+p=Path("$ART/ladder.tsv")
+best="Lm1_serial"
+for l in p.read_text().splitlines():
+    if l.startswith("#") or not l.strip(): continue
+    r=l.split("\t")
+    if len(r)>=2 and r[1]=="ok": best=r[0]
+print(best)
+PY
+}
+
+cmd_analyze_recovery() {
+  art_dir
+  local mode="${1:-remote}"
+  local since
+  since="$(cat "$ART/started_at.txt" 2>/dev/null || echo 2026-11-11T20:00:00Z)"
+  local out="$ART/recovery.json"
+  local tmp="$ART/status_snapshot.jsonl"
+  if [[ "$mode" == remote ]]; then
+    "${GC[@]}" compute scp "$VM_NAME":/opt/ph/reuse/status_${VM_NAME}.jsonl "$tmp" --zone="$ZONE" --tunnel-through-iap --quiet 2>/dev/null || true
+  else
+  [[ -f "${1:-}" ]] && cp "$1" "$tmp"
+  fi
+  [[ -s "$tmp" ]] || { echo "no status snapshot for recovery analysis" >&2; return 1; }
+  python3 "$ROOT/scripts/vm/ph_iproyal_analyze_recovery.py" "$tmp" "$since" >"$out"
+  echo "=== recovery.json ==="
+  cat "$out"
+}
+
+cmd_soak() {
+  local level="${1:?level}"
+  local hours="${2:-2}"
+  art_dir
+  echo "===== SOAK $level for ${hours}h ====="
+  cmd_apply "$level"
+  echo "# ts	level	complete_ppm	attempt_ppm	gql429_5m	walls_5m	phsuper	pdeep_k	note" >"$ART/soak.tsv"
+  local steps=$(( hours * 3600 / 900 ))
+  [[ "$steps" -lt 1 ]] && steps=1
+  local i=0
+  while [[ "$i" -lt "$steps" ]]; do
+    sleep 900
+    line="$(cmd_sample)"
+    echo "$line" >>"$ART/soak.tsv"
+    i=$((i + 1))
+  done
+  python3 - <<PY
+import statistics
+from pathlib import Path
+rows=[l.split("\t") for l in Path("$ART/soak.tsv").read_text().splitlines() if l and not l.startswith("#")]
+c=[float(r[2]) for r in rows if len(r)>2]
+zeros=sum(1 for x in c if x<0.05)
+rep=Path("$ART/soak_summary.json")
+import json
+s={
+  "level":"$level","hours":$hours,"samples":len(c),
+  "mean_complete_ppm":round(statistics.mean(c),3) if c else 0,
+  "median_complete_ppm":round(statistics.median(c),3) if c else 0,
+  "pct_windows_zero":round(100*zeros/max(1,len(c)),1),
+}
+rep.write_text(json.dumps(s,indent=2)+"\n")
+print(json.dumps(s,indent=2))
+PY
+  cmd_report
+}
+
+cmd_retrace() {
+  art_dir
+  local steady
+  steady="$(best_ok_level)"
+  local push="${1:-}"
+  if [[ -z "$push" ]]; then
+    push="$(python3 - <<PY
+ladder = """${LADDER[*]}""".split()
+steady = """$steady"""
+for i, lv in enumerate(ladder):
+    if lv == steady and i + 1 < len(ladder):
+        print(ladder[i + 1])
+        break
+else:
+    print(steady)
+PY
+)"
+  fi
+  echo "===== RETRACE push=$push then steady=$steady ====="
+  echo "# ts	phase	complete_ppm	gql429_5m	walls_5m	note" >"$ART/retrace.tsv"
+  cmd_apply "$push"
+  local saw=0 s=0
+  while [[ "$s" -lt 24 ]]; do
+    sleep 300
+    j="$(sample_remote)"
+    c="$(echo "$j" | python3 -c "import json,sys; print(json.load(sys.stdin).get('complete_ppm',0))")"
+    g="$(echo "$j" | python3 -c "import json,sys; print(json.load(sys.stdin).get('gql429_5m',0))")"
+    w="$(echo "$j" | python3 -c "import json,sys; print(json.load(sys.stdin).get('walls_5m',0))")"
+    echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)	push	$c	$g	$w	" >>"$ART/retrace.tsv"
+    [[ "$g" -ge 2 || "$w" -ge 2 ]] && saw=$((saw + 1))
+    [[ "$saw" -ge 2 ]] && break
+    s=$((s + 1))
+  done
+  cmd_apply "$steady"
+  echo "retrace: dropped to $steady — measuring recovery (90 min)..."
+  saw=0
+  for r in $(seq 1 18); do
+    sleep 300
+    j="$(sample_remote)"
+    c="$(echo "$j" | python3 -c "import json,sys; print(json.load(sys.stdin).get('complete_ppm',0))")"
+    g="$(echo "$j" | python3 -c "import json,sys; print(json.load(sys.stdin).get('gql429_5m',0))")"
+    w="$(echo "$j" | python3 -c "import json,sys; print(json.load(sys.stdin).get('walls_5m',0))")"
+    note=""
+    python3 -c "import sys; sys.exit(0 if float('$c')>=float('${STEADY_MIN_PPM}') else 1)" 2>/dev/null \
+      && [[ "$saw" -eq 0 ]] && { saw=$r; note="recovered"; }
+    echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)	steady	$c	$g	$w	$note" >>"$ART/retrace.tsv"
+  done
+  python3 - <<PY
+from pathlib import Path
+import json
+lines=[l.split("\t") for l in Path("$ART/retrace.tsv").read_text().splitlines() if l and not l.startswith("#")]
+steady=[float(r[2]) for r in lines if len(r)>2 and r[1]=="steady"]
+rec=None
+for r in lines:
+    if len(r)>5 and r[1]=="steady" and r[5].strip()=="recovered":
+        rec=r[0]; break
+out={"steady_level":"$steady","push_level":"$push","first_recovered_sample_utc":rec,
+     "recovery_sample_index":next((i+1 for i,r in enumerate(lines) if len(r)>5 and r[5].strip()=="recovered"),None),
+     "steady_window_mean_ppm":round(sum(steady)/len(steady),3) if steady else 0}
+Path("$ART/retrace_summary.json").write_text(json.dumps(out,indent=2)+"\n")
+print(json.dumps(out,indent=2))
+PY
+  cmd_analyze_recovery remote
+  cmd_report
 }
 
 cmd_report() {
@@ -257,24 +397,53 @@ else:
     for r in lines:
         print(" ", "\t".join(r))
 print()
+rec_p=art/"recovery.json"
+soak_p=art/"soak_summary.json"
+rt_p=art/"retrace_summary.json"
+rec=soak=rt={}
+import json
+for p,d in [(rec_p,rec),(soak_p,soak),(rt_p,rt)]:
+    if p.is_file():
+        try: d.update(json.loads(p.read_text()))
+        except Exception: pass
 if best:
     lvl, _, mean_c, max_c = best[0], best[1], float(best[2]), float(best[3])
-    per=float(mean_c)
-    print(f"Recommended per-IP concurrency: {lvl}")
-    print(f"  mean complete/min (12m window): {mean_c}")
-    print(f"  peak 5m sample complete/min:    {max_c}")
+    soak_mean=float(soak.get("mean_complete_ppm") or 0)
+    util=float("$STEADY_UTIL")
+  # Operate below ladder max: long-run soak beats burst peak for buy sizing
+    if soak_mean > 0:
+        per = soak_mean * util
+        steady_note = f"soak mean {soak_mean} × util {util}"
+    else:
+        per = mean_c * util
+        steady_note = f"ladder mean {mean_c} × util {util} (run soak for tighter estimate)"
+    print(f"Max OK ladder level (burst test): {lvl}")
+    print(f"  ladder mean complete/min: {mean_c}")
+    print(f"  peak 5m sample:            {max_c}")
+    print()
+    print(f"OPTIMAL STEADY STATE (size orders on this, not peak):")
+    print(f"  target complete/min per IP: {per:.2f}  ({steady_note})")
     if best[6:7]:
-        print(f"  pdeep shape (K,TABS,port):      {best[6]}")
+        print(f"  pdeep shape at max OK:      {best[6]}")
+    if soak:
+        print(f"  long soak: {soak.get('hours')}h mean={soak.get('mean_complete_ppm')} median={soak.get('median_complete_ppm')} zero_windows={soak.get('pct_windows_zero')}%")
+    if rec:
+        print(f"  recovery after 429 block: median {rec.get('recovery_sec_median')}s p90 {rec.get('recovery_sec_p90')}s max {rec.get('recovery_sec_max')}s")
+        print(f"  long-span effective ppm (completes/hours): {rec.get('effective_complete_ppm')} ({rec.get('hours_span')}h)")
+    if rt:
+        ix=rt.get("recovery_sample_index")
+        print(f"  retrace: after forced push, back to steady in ~{ix*5 if ix else '?'} min (sample index {ix})")
+    print(f"  supervisor same-IP cooldown base: PH_CF_FLEET_REST_SEC=300 (exponential to 3600s on repeat blocks)")
     for target in (20, 30):
         n=ips_for(target, per).get(target)
-        print(f"  dedicated IPs (+1 VM each) for ~{target} complete/min fleet: ~{n}")
+        print(f"  IPs+VMs for ~{target} complete/min fleet at STEADY rate: ~{n}")
     print()
-    print("Buy rule: 1 static ISP IP per feeder VM at the recommended level.")
+    print("Buy rule: 1 static ISP IP per feeder VM at the optimal steady level (usually max OK or one below).")
     print("Do not stack multiple VMs on one IP — 429 budget is per egress.")
 else:
     print("No OK level yet — stay at Lm1_serial until ladder finishes.")
 print()
-print("Artifacts:", art/"ladder.tsv", art/"samples.tsv")
+print("Artifacts:", art/"ladder.tsv", art/"soak.tsv", art/"recovery.json", art/"retrace.tsv", art/"purchase_decision.txt")
 PY
   echo "=== purchase_decision.txt ==="
   cat "$rep"
@@ -305,8 +474,11 @@ case "${1:-}" in
   ladder) shift; cmd_ladder "${1:-Lm1_serial}" ;;
   summary) art_dir; cmd_summary ;;
   report) art_dir; cmd_report ;;
+  soak) shift; art_dir; cmd_soak "${1:?level}" "${2:-2}" ;;
+  retrace) shift; art_dir; cmd_retrace "${1:-}" ;;
+  analyze) shift; art_dir; cmd_analyze_recovery "${1:-remote}" ;;
   down) cmd_down ;;
   *)
-    echo "usage: $0 up [Lm1_serial]|apply LEVEL|sample|ladder [from_level]|summary|report|down" >&2
+    echo "usage: $0 up|apply|sample|ladder|soak LEVEL [hours]|retrace [push_level]|analyze|summary|report|down" >&2
     exit 1 ;;
 esac

@@ -1,0 +1,12 @@
+{
+  "note": "Pre-ladder-fix era (4x2 pdeep); since 2026-11-11T21:00:00Z Spain ISP",
+  "blocks": 108,
+  "completes": 443,
+  "hours_span": 6.303,
+  "effective_complete_ppm": 1.171,
+  "recovery_sec_median": 36.0,
+  "recovery_sec_p90": 40.0,
+  "recovery_sec_max": 1249.0,
+  "idle_gaps_over_3min": 6,
+  "n_recovery_samples": 106
+}
