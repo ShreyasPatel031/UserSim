@@ -4,7 +4,8 @@ Covered people = complete persons in the store. Pair model P(person upvotes laun
 ln(1+upvotes 90d), days since last upvote, topic-taste match, follows the hunter, is the hunter], trained on the 7 launch days before the
 test day (features at each training day from history before that day; all negatives of active people subsampled 10%).
 Expected covered votes E(L) = sum over active covered people of P. Combined = z(clean) + w z(ln(E + 0.1)), w leave-one-day-out from
-{0, .25, .5, 1, 2}. Timing: STRICT = only upvotes / follows from reads fetched before 00:00 PT of the test day; LENIENT = every read of
+{0, .25, .5, 1, 2}. EDGES env: none / hunter / hunter_maker (follows of the hunter, + the first named maker); "followers_feature_only"
+= the launch-level sum over active covered followers of ln(1+upvotes 90d), added to clean instead of E. Timing: STRICT = only upvotes / follows from reads fetched before 00:00 PT of the test day; LENIENT = every read of
 an upvote on an earlier day's launch (what a fresh read the night before would give). HIDDEN: votes on today's launches seen in reads
 fetched 00:05-04:00 PT of the day (re-reads in the hidden window). Coverage curve: covered people subsampled to 10/20/30/41% of votes
 (5 draws). Truth: official daily rank. Paired day bootstrap vs clean alone.
@@ -22,12 +23,19 @@ L["tops"] = [json.loads(s) if isinstance(s, str) and s.startswith("[") else [] f
 L["hunter"] = [pid(p) if isinstance(p, str) and p and not p.startswith("[") else None for p in L.poster]
 TOP = pd.Series([t for ts in L.tops for t in ts]).value_counts().index[:40].tolist(); TI = {t: i for i, t in enumerate(TOP)}
 lday = dict(zip(L.id, L.day)); ltop = {i: [TI[t] for t in ts if t in TI] for i, ts in zip(L.id, L.tops)}; lhun = dict(zip(L.id, L.hunter))
+LT = pd.DataFrame([(i, j) for i, js in ltop.items() for j in js], columns=["target_id", "j"])
+def first_maker(m):
+    try: ms = json.loads(m) if isinstance(m, str) and m.startswith("[") else []
+    except Exception: ms = []
+    ms = [x for x in ms if x and not str(x).startswith("[")]; return pid(ms[0]) if ms else None
+lmak = {i: first_maker(m) for i, m in zip(L.id, L.makers)}
+EDGES = os.environ.get("EDGES", "hunter")   # none | hunter | hunter_maker
 start = lambda d: pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
 P = pd.read_parquet(os.path.join(V3, "persons.parquet")); COV = set(P[P.complete].person_id)
 E = pd.read_parquet(os.path.join(V3, "events.parquet"), columns=["person_id", "kind", "target_id", "fetched_at"])
 E = E[E.person_id.isin(COV)]; E["fetched_at"] = pd.to_datetime(E.fetched_at, utc=True)
 U = E[E.kind == "upvote"].copy(); U["target_id"] = U.target_id.astype(str); U["lday"] = U.target_id.map(lday); U = U[U.lday.notna()]
-FO = E[(E.kind == "follows") & E.target_id.isin(set(L.hunter.dropna()))][["person_id", "target_id", "fetched_at"]]
+FO = E[(E.kind == "follows") & E.target_id.isin(set(L.hunter.dropna()) | {v for v in lmak.values() if v})][["person_id", "target_id", "fetched_at"]]
 C = pd.read_parquet(CLEAN); C["id"] = C.id.astype(str); C = C[C.day.isin(DAYS)]
 # coverage of each test launch's votes by covered people (truth side, any read)
 cov_l = U[U.lday.isin(DAYS)].groupby("target_id").person_id.nunique()
@@ -39,19 +47,20 @@ def feats(day, H, people=None):
     act = g.groupby("p").agg(n30=("dd", lambda s: (s <= 30).sum()), n90=("dd", lambda s: (s <= 90).sum()), last=("dd", "min"))
     act = act[act.n90 > 0]
     if people is not None: act = act[act.index.isin(people)]
-    tv = np.zeros((len(act), len(TOP)), np.float32); ix = {p: k for k, p in enumerate(act.index)}
-    g90 = g[(g.dd <= 90) & g.p.isin(ix)]
-    for p, t in zip(g90.p, g90.t):
-        for j in ltop.get(t, []): tv[ix[p], j] += 1
+    tv = np.zeros((len(act), len(TOP)), np.float32); ix = pd.Series(np.arange(len(act)), index=act.index)
+    g90 = g[(g.dd <= 90) & g.p.isin(act.index)].merge(LT, left_on="t", right_on="target_id")
+    if len(g90): np.add.at(tv, (ix[g90.p].values, g90.j.values), 1.0)
     tv /= np.maximum(tv.sum(1, keepdims=True), 1)
     return act, tv, ix
 def pair_X(act, tv, lineup, follows):
     rows = []
     for i in lineup:
         oh = np.zeros(len(TOP), np.float32); oh[ltop.get(i, [])] = 1
-        h = lhun.get(i); fh = act.index.isin(follows.get(h, set())) if h else np.zeros(len(act), bool)
+        h = lhun.get(i); fs = set(follows.get(h, set())) if h and EDGES != "none" else set()
+        if EDGES == "hunter_maker" and lmak.get(i): fs |= follows.get(lmak[i], set())
+        fh = act.index.isin(fs)
         rows.append(np.column_stack([np.log1p(act.n30.values), np.log1p(act.n90.values), np.log1p(act["last"].values), tv @ oh / max(oh.sum(), 1),
-                                     fh.astype(float), (act.index == h).astype(float) if h else np.zeros(len(act))]))
+                                     fh.astype(float), (act.index == h).astype(float) if h and EDGES != "none" else np.zeros(len(act))]))
     return rows
 def expected(day, mode, keep=None):
     cut = start(day); H = U if mode == "lenient" else U[U.fetched_at < cut]
@@ -70,7 +79,13 @@ def expected(day, mode, keep=None):
     m = LogisticRegression(max_iter=300).fit(X, y, sample_weight=w)
     act, tv, _ = feats(day, H, keep)
     if not len(act): return {i: 0.0 for i in lu}, len(act)
+    Fl = {}
+    for i in lu:
+        fs = set(follows.get(lhun.get(i), set())) | (follows.get(lmak.get(i), set()) if EDGES == "hunter_maker" else set())
+        Fl[i] = float(np.log1p(act.n90[act.index.isin(fs)]).sum()) if EDGES != "none" else 0.0
+    FOLL.update(Fl)
     return {i: float(m.predict_proba(X_)[:, 1].sum()) for i, X_ in zip(lu, pair_X(act, tv, lu, follows))}, len(act)
+FOLL = {}
 z = lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0
 def day_metrics(g, col):
     o = g.sort_values(col, ascending=False).id.tolist(); t = g.sort_values("rank").id.tolist()
@@ -94,10 +109,11 @@ for mode in ("strict", "lenient"):
     Es, n_act = {}, {}
     for d in DAYS:
         e, n_act[d] = expected(d, mode); Es.update(e)
-    res[mode] = {"active_people_by_day": n_act, **evaluate(Es)}; print(mode, res[mode]["gain [mean, lo, hi] top3/5/10/p1"], flush=True)
-    if mode == "lenient":
+    res[mode] = {"active_people_by_day": n_act, **evaluate(Es), "followers_feature_only": evaluate({}, hidden=dict(FOLL)) if EDGES != "none" else None}
+    json.dump(res, open(os.path.join(OUT, f"voter_harness_{EDGES}.json"), "w"), indent=1, default=float); print(mode, res[mode]["gain [mean, lo, hi] top3/5/10/p1"], flush=True)
+    if mode == "lenient" and os.environ.get("CURVE", "1") == "1":
         curve = {}
-        allp = np.array(sorted(COV)); base_cov = np.mean(list(res["coverage_of_votes_by_day"].values()))
+        allp = np.array(sorted(COV)); base_cov = float(np.nanmean(list(res["coverage_of_votes_by_day"].values())))
         for lvl in (0.10, 0.20, 0.30):
             gains = []
             for r_ in range(5):
@@ -107,10 +123,11 @@ for mode in ("strict", "lenient"):
             curve[f"{int(lvl * 100)}%"] = {"top3_gain_mean_of_5_draws": round(float(np.mean(gains)), 1), "draw_range": [round(min(gains), 1), round(max(gains), 1)]}
         curve[f"{int(round(base_cov * 100))}% (all covered)"] = {"top3_gain": res[mode]["gain [mean, lo, hi] top3/5/10/p1"][0]}
         res["coverage_curve_lenient"] = curve; print("curve", curve, flush=True)
+        json.dump(res, open(os.path.join(OUT, f"voter_harness_{EDGES}.json"), "w"), indent=1, default=float)
 # hidden-window variant: today's votes seen in reads fetched 00:05-04:00 PT of the day
 hid = {}; nread = {}
 for d in DAYS:
     a, b = start(d) + pd.Timedelta(minutes=5), start(d) + pd.Timedelta(hours=4)
     h = U[(U.lday == d) & (U.fetched_at >= a) & (U.fetched_at <= b)]; nread[d] = int(h.person_id.nunique()); hid.update(h.groupby("target_id").person_id.nunique().to_dict())
 res["hidden_window"] = {"people_reread_in_window_by_day": nread, **(evaluate({}, hidden=hid) if sum(nread.values()) else {"note": "no reads in the hidden window yet"})}
-json.dump(res, open(os.path.join(OUT, "voter_harness.json"), "w"), indent=1, default=float); print(json.dumps({k: v for k, v in res.items() if k != "design"}, default=float)[:3000])
+json.dump(res, open(os.path.join(OUT, f"voter_harness_{EDGES}.json"), "w"), indent=1, default=float); print(json.dumps({k: v for k, v in res.items() if k != "design"}, default=float)[:3000])
