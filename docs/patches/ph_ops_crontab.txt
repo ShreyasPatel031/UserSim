@@ -1,0 +1,3 @@
+# PH ops timed shadow writes (DRAFT). Times in PT via CRON_TZ; the VM runs 00:05-23:00 PT.
+CRON_TZ=America/Los_Angeles
+17,47 0-22 * * * bash ~/w/docs/patches/ph_ops_cron.sh

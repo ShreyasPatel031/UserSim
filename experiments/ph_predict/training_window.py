@@ -81,6 +81,8 @@ def month_job(a):
     c3 = [c for c in cols if c not in ID_COLS]
     if "clean_v3_nofull" in variants:
         out["clean_v3_nofull"] = fitw(tr, te, [c for c in c3 if c != "llm_full"], seed)
+    if "clean_v3_nosite" in variants:   # llm_site only (homepage text fetched after launch; 6.9% of #1s mention a PH badge)
+        out["clean_v3_nosite"] = fitw(tr, te, [c for c in c3 if c != "llm_site"], seed)
     if "clean_v3_nollm" in variants:
         out["clean_v3_nollm"] = fitw(tr, te, [c for c in c3 if not c.startswith("llm_")], seed)
     if "clean_v3_nolater" in variants:   # no llm_ and no page / video scores (pages fetched after launch day)

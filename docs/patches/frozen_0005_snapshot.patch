@@ -1,0 +1,42 @@
+--- a/experiments/ph_predict/forecast.py	2026-11-12 12:42:50.102766568 +0000
++++ b/experiments/ph_predict/forecast.py	2026-11-12 12:42:50.116823760 +0000
+@@ -1,7 +1,7 @@
+ """Forward test: train on every finished day, predict today's launches (no votes used; results not final yet).
+ Writes results/forecast_<date>.md so it can be checked after the day closes (Pacific midnight)."""
+ import sys
+-import numpy as np, pandas as pd
++import numpy as np, pandas as pd, pandas as pd
+ import features as F, model as M, run as RN
+ 
+ import llm
+@@ -13,6 +13,13 @@
+ df = RN.load_llm(df0)
+ df = df[~df.known]
+ tr, te = df[~df.is_today], df[df.is_today & (df.day == day)]
++# freeze today's 00:05 feature rows as served (orchestrator QA 10:00Z Nov 12): the shadow reads this snapshot instead of
++# rebuilding features later (later-filled inputs made its replay differ from the published forecast in 15 of 37 positions)
++import os, subprocess
++os.makedirs("data/frozen_0005", exist_ok=True)
++_fz = f"data/frozen_0005/{day}.parquet"
++te.assign(id=te.id.astype(str), frozen_at=pd.Timestamp.now(tz="UTC").isoformat()).to_parquet(_fz)
++subprocess.run(["gsutil", "-q", "cp", _fz, f"gs://usersim-bakeoff-347838016394/usersim_sim/results/frozen_0005/{day}.parquet"])
+ tr, te = M.add_fold_feats(tr, te)
+ te = te.copy()
+ src, dropped = M.live_sources(tr, te, M.LIVE_SOURCES)
+--- a/experiments/ph_predict/makerfix_shadow.py	2026-11-12 12:42:50.102798475 +0000
++++ b/experiments/ph_predict/makerfix_shadow.py	2026-11-12 12:42:50.116918894 +0000
+@@ -27,6 +27,14 @@
+     df = RN.load_llm(F.build(include_today=True))
+     tr = df[(~df.is_today) & (df.day < d) & (~df.known)]
+     a = df[df.is_today & (df.day == d) & (~df.known)].copy()
++    fz = f"data/frozen_0005/{d}.parquet"   # the 00:05 rows as served by forecast.py (inputs frozen at publish time)
++    if os.path.exists(fz):
++        Z = pd.read_parquet(fz); Z["id"] = Z.id.astype(str); a["id"] = a.id.astype(str)
++        keep = [c for c in Z.columns if c in a.columns]
++        a = Z[keep].merge(a[["id"] + [c for c in a.columns if c not in keep]], on="id", how="left")
++        print(json.dumps({"day": d, "features": "frozen_0005 snapshot", "rows": int(len(a))}), flush=True)
++    else:
++        print(json.dumps({"day": d, "features": "rebuilt (no frozen_0005 snapshot): may differ from the published 00:05 inputs"}), flush=True)
+     if a.empty:
+         print(json.dumps({"day": d, "status": "no 00:05 rows"})); return
+     ph = a.maker_ids.apply(lambda m: (not m) or any(str(x) in ("0", "", "None") for x in m))
