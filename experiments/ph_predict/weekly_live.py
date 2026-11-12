@@ -126,6 +126,16 @@ def running(day):
     L = L.dropna(subset=["weekly_rank"])
     A = L.assign(est=-L.weekly_rank.astype(float), src="weekly_rank_running")[["id", "day", "est", "src"]]
     write(day, "running", A, {"days_covered": sorted(A.day.unique().tolist()), "source": f"warehouse launches.weekly_rank after the {nxt} ranks step (est = -weekly_rank)"})
+    # running_g (orchestrator 09:45Z Nov 12; weekly_growth.md): running votes x growth still to come to the Sunday close by
+    # launch age (results/weekly_growth.json growth_by_age; after day 1 it is ~1.0, so this differs from running only slightly)
+    V = W.query(f"SELECT CAST(id AS VARCHAR) id, day, votes FROM launches WHERE day >= '{mon}' AND day <= '{end}' AND daily_rank IS NOT NULL", do_sync=False)
+    gp = os.path.join(HERE, "results", "weekly_growth.json")
+    g = {int(k): float(v) for k, v in json.load(open(gp))["growth_by_age"].items()} if os.path.exists(gp) else {}
+    left = 6 - pd.Timestamp(day).dayofweek
+    V["age"] = [(pd.Timestamp(day) - pd.Timestamp(x)).days for x in V.day]
+    V["est"] = [float(v) * float(np.prod([g.get(a + k, 1.0) for k in range(1, left + 1)])) for v, a in zip(V.votes, V.age)]
+    write(day, "running_g", V.assign(src="running_votes_x_growth")[["id", "day", "est", "src"]],
+          {"days_covered": sorted(V.day.unique().tolist()), "source": "warehouse launches.votes after the next ranks step x growth by age to Sunday close (weekly_growth.json)"})
 
 
 def r4(day):
