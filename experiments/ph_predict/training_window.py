@@ -34,6 +34,10 @@ def prep(tr, te):
     return tr, te, honest_cols(M.cols(tr, M.LIVE_SOURCES + M.PAGE_SOURCES))
 
 
+def live_cols(tr):
+    return M.cols(tr, M.LIVE_SOURCES)
+
+
 def month_job(a):
     m, seed, variants = a
     df = DF["df"]; start = pd.Timestamp(m + "-01")
@@ -43,6 +47,12 @@ def month_job(a):
     age = (start - pd.to_datetime(tr.day)).dt.days.values
     if "ref" in variants:
         out["ref"] = fitw(tr, te, cols, seed)
+    # orchestrator 03:35Z Nov 12: the deployed feature set (M.LIVE_SOURCES, follower / follow-list / promo inputs kept, no
+    # page sources) and the honest filter without the page sources, same params (LIVE_PARAMS == ctrl.fit settings)
+    if "live_month" in variants:
+        out["live_month"] = fitw(tr, te, live_cols(tr), seed)
+    if "honest_nopage_month" in variants:
+        out["honest_nopage_month"] = fitw(tr, te, honest_cols(live_cols(tr)), seed)
     for n in (60, 90, 120):
         if f"roll{n}" in variants:
             t2, e2, c2 = prep(tr0[pd.to_datetime(tr0.day) >= start - pd.Timedelta(days=n)], te0)
@@ -64,10 +74,15 @@ def month_job(a):
 
 
 def day_job(a):
-    d, seed = a
+    d, seed, dv = a
     df = DF["df"]
     tr, te, cols = prep(df[df.day < d], df[df.day == d])
-    return pd.DataFrame({"id": te.id.values, "seed": seed, "daily": fitw(tr, te, cols, seed)})
+    out = {"id": te.id.values, "seed": seed}
+    if "daily" in dv:
+        out["daily"] = fitw(tr, te, cols, seed)
+    if "live_daily" in dv:   # the deployed configuration: LIVE_SOURCES, daily expanding refit
+        out["live_daily"] = fitw(tr, te, live_cols(tr), seed)
+    return pd.DataFrame(out)
 
 
 def main():
@@ -81,7 +96,8 @@ def main():
         df["mon"] = df.day.str[:7]
     DF["df"] = df
     print(json.dumps({"rows": int(len(df)), "first_day": df.day.min(), "last_day": df.day.max(), "variants": V}), flush=True)
-    mv = [v for v in V if v != "daily"]
+    dv = [v for v in V if v in ("daily", "live_daily")]
+    mv = [v for v in V if v not in dv]
     jobs = [(m, s, mv) for m in MONTHS for s in range(5) if len(df[df.mon < m]) > 200 and len(df[df.mon == m])]
     test_days = sorted(df[df.mon.isin([j[0] for j in jobs])].day.unique())
     parts = []
@@ -89,9 +105,9 @@ def main():
         if mv:
             P = pd.concat(pool.map(month_job, jobs)); parts.append(P.groupby("id")[mv].mean())
             print("month variants done", round(time.time() - t), "s", flush=True)
-        if "daily" in V:
-            D = pd.concat(pool.map(day_job, [(d, s) for d in test_days for s in range(5)], chunksize=4))
-            parts.append(D.groupby("id")[["daily"]].mean())
+        if dv:
+            D = pd.concat(pool.map(day_job, [(d, s, dv) for d in test_days for s in range(5)], chunksize=4))
+            parts.append(D.groupby("id")[dv].mean())
             print("daily done", round(time.time() - t), "s", flush=True)
     A = pd.concat(parts, axis=1).reset_index().merge(df[["id", "day", "mon", "dailyRank", "logv"]], on="id")
     A.to_parquet(os.environ.get("TW_OUT", "results/training_window_preds.parquet"))

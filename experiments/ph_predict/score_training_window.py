@@ -30,10 +30,10 @@ def table(A, V, rng):
 def main(paths):
     rng = np.random.default_rng(0)
     A = pd.read_parquet(paths[0])
-    if len(paths) > 1:
-        D = pd.read_parquet(paths[1])[["id", "daily"]]; A = A.merge(D, on="id", how="inner")
+    for q in paths[1:]:
+        D = pd.read_parquet(q); D = D[["id"] + [c for c in D.columns if c not in A.columns]]; A = A.merge(D, on="id", how="inner")
     A = A[A.dailyRank.notna()]
-    V = [c for c in ("ref", "daily", "roll60", "roll90", "roll120", "hl30", "hl60", "hl90", "dow", "split") if c in A]
+    V = [c for c in ("ref", "daily", "live_daily", "live_month", "honest_nopage_month", "roll60", "roll90", "roll120", "hl30", "hl60", "hl90", "dow", "split") if c in A]
     res = {}
     md = ["# 00:05 launch model: training window (honest setup, 5 seeds)", ""]
     for nm, U in (("all test days (Mar - Nov 10)", A), ("Sep - Nov 10", A[A.mon >= "2026-09"]), ("Nov 1 - 10", A[A.mon == "2026-11"])):
