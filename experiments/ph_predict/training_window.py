@@ -54,6 +54,16 @@ def month_job(a):
     # orchestrator 04:45Z Nov 12: does the llm (Gemini judgements) / promo source help on the long backtest?
     if "no_llm" in variants:
         out["no_llm"] = fitw(tr, te, [c for c in cols if not c.startswith("llm_")], seed)
+    for nm, pre in (("no_llm_site", "llm_site"), ("no_llm_pitch", "llm_pitch"), ("no_llm_brand", "llm_brand")):
+        if nm in variants:
+            out[nm] = fitw(tr, te, [c for c in cols if c != pre], seed)
+    if "no_llm_promo" in variants:
+        out["no_llm_promo"] = fitw(tr, te, [c for c in cols if not c.startswith(("llm_", "promo_"))], seed)
+    # leak (leak_swap.md): maker profile availability in the cache depends on the outcome
+    if "no_maker_age" in variants:
+        out["no_maker_age"] = fitw(tr, te, [c for c in cols if c not in ("ph_maker_max_age_d", "ph_maker_min_age_d")], seed)
+    if "no_maker_prof" in variants:   # every maker-profile-derived input
+        out["no_maker_prof"] = fitw(tr, te, [c for c in cols if not c.startswith(("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers"))], seed)
     if "no_promo" in variants:
         out["no_promo"] = fitw(tr, te, [c for c in cols if not c.startswith("promo_")], seed)
     if "honest_nopage_month" in variants:
