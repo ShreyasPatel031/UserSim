@@ -1414,3 +1414,30 @@ Paired differences:
 - Second judge, RANKED vs CURRENT: questions 12.0 vs 4.2; concerns 18.7 vs 5.6.
 
 Verdict: retrieval alone does not beat RANKED. RANKED from the raw excerpt is the recipe; its interval over the current list clears zero for both lists.
+
+### 2026-11-12 E5 — does the /try "who" card hold up? (types over-represented among real voters)
+Script experiments/simlab/who_eval.py; reports/who_eval/. No Gemini generation; embeddings only.
+
+Setup:
+- 426 launches from Sep 1 (Sep 181, Oct 149, fresh 96), each with a page read and at least 15 pool voters who have at least 3 prior upvotes.
+- Time-ordered: person segments come from upvotes before the launch day; a voter's segment is the nearest index-segment centroid of their topic-share vector.
+- Truth: segments or roles with voter lift > 1.5 and at least 3 voters (1.2 segments per launch on average).
+
+Interest segments (the site's _interest_people top 3), p@3 / hit@3:
+
+| Predicted list | p@3 / hit@3 | Lift of the top segment among real voters |
+|---|---|---|
+| Site, page input | 22.9 [21.1, 24.9] / 61 | 0.95 |
+| Site, PH input | 21.9 / 59 | – |
+| Random | 10.1 / 29 | 0.56 |
+| "Globally most-voting segments" control | 29.7 / 86 | 1.25 |
+
+- Page − control p@3: −6.7 [−8.6, −4.9]; top-segment lift difference −0.30.
+- Page − random: +12.9 [11.1, 14.6].
+- Page − PH: +1.0 [−1.1, 3.1]. The page read loses nothing here.
+
+Similar-tools role types (117 launches with at least 15 bundle voters): page 7.4 [5.1, 10.3], PH 7.1, random 6.6, control 8.6. Page − control −1.1 [−3.7, 1.4].
+
+Person level (internal; 304 launches): the site's product-only score has AUC 0.49 for real voters (lift@1% 0.95), against 0.95 for activity + recency. Adding the score lowers AUC by 0.14. The same holds from PH input.
+
+Verdict: the who card's types do NOT predict who votes. They are better than random only because category matters, and worse than "the most active segments". It may only claim category-interest description ("members whose past activity centres on this category"), never "who will vote or use it". Votes come from activity.
