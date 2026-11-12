@@ -246,3 +246,13 @@ vs published 45.8 / 62.5 / 73.8 and 50% (better on 4 of 11 days, tied on 7, neve
 Honest 00:05 level: about 54 / 66 / 74. Top 10 was essentially right before; top 3 was inflated by about 9 points.
 Running: PH agent = reproduce on the VM, shadow_clean line from Nov 13, clean prior inside the pre-reveal recipe;
 orchestrator = re-test of the earlier nulls on the clean baseline (19o); E5 = audit of its results for the same leak (18j).
+
+### Queue state, 04:35 UTC Nov 12
+Running: PH agent = clean model reproduced on the VM, shadow_clean from Nov 13, clean prior in the pre-reveal recipe (19m); E5 = honesty of the page-input gain, re-runs on the masked residual, clean calibration (18k); orchestrator = re-test of earlier nulls and hunter-side refinements on the clean baseline (19o).
+Open, next to assign:
+33. Capture maker profiles BEFORE launch for every launch (dated), so maker identity becomes a legitimate input: what the official API exposes for scheduled posts' makers before 00:01 PT, and whether the 00:05 pull already names more makers than the one visible later (6 of 9 days had one non-winner fully named at 00:05).
+34. Why does Product Hunt name exactly one maker at 00:05, and which one (always the last list entry): is that maker's history informative beyond the hunter's on the clean model?
+35. Pre-reveal recipe with the clean 00:05 prior: replay on the 6–7 days and forward from Nov 13.
+36. Comment forecast features on the clean residual: the blocks that were null over the leaked LM (comment text, commenter accounts, maker replies, arrival shape).
+37. Weekly / monthly: nothing changes (they use votes), but check no weekly feature used maker identity.
+38. Website: once shadow_clean has 7 days, replace the published 00:05 line on /ph if it wins (Shreyas's call on the deployed pipeline).
