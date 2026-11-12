@@ -15,4 +15,4 @@ def ci(x):
     x=np.asarray(x,float); x=x[~np.isnan(x)]; bs=[x[rng.integers(0,len(x),len(x))].mean() for _ in range(2000)]
     return f"{100*x.mean():.1f} [{100*np.percentile(bs,2.5):.1f},{100*np.percentile(bs,97.5):.1f}]"
 for v in V:
-    P=per[v]; print(f"{v:28s}", {c: f"{100*P[c].mean():.1f}" for c in ['top3','top5','top10','p1','p2','p3']}, 'win', ci(P.win), '| d win vs honest', ci((P.win-per['honest'].win).values), 'd top3', ci((P.top3-per['honest'].top3).values))
+    P=per[v]; print(f"{v:28s}", {c: f"{100*P[c].mean():.1f}" for c in ['top3','top5','top10','p1','p2','p3']}, 'win', ci(P.win), '| d win vs first', ci((P.win-per[V[0]].win).values), 'd top3', ci((P.top3-per[V[0]].top3).values))
