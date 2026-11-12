@@ -235,3 +235,13 @@ mark the winner: it is nearly the only launch with several named makers.
 - Honest 00:05 record: 45.8/62.5/73.8 on the 8 live days written on time.
 Running: PH agent = clean launch model (19m); orchestrator = independent leak-free baseline from the launches table
 with makers masked to the 00:05 view (19n).
+
+### Clean 00:05 baseline (Nov 12, 07:10 UTC)
+19n. **Independent leak-free baseline**: done (orchestrator; scripts in gs://.../tmp/orchestrator/clean_baseline/). Launches table masked to the
+00:05 view (total maker count; at most one named maker, always the last entry; hunter never hidden). 207 days month-forward:
+53.8 [50.6, 57.2] / 66.6 / 74.1; pick #1 in top 3 64.7%; exact winner 31.9%. Hunter history carries the signal, maker count second,
+text and topics add almost nothing. On the 8 on-time live days with real 00:05 pulls: 62.5 [50, 75] / 70.0 / 76.2 and pick #1 75%,
+vs published 45.8 / 62.5 / 73.8 and 50% (better on 4 of 11 days, tied on 7, never worse; n small).
+Honest 00:05 level: about 54 / 66 / 74. Top 10 was essentially right before; top 3 was inflated by about 9 points.
+Running: PH agent = reproduce on the VM, shadow_clean line from Nov 13, clean prior inside the pre-reveal recipe;
+orchestrator = re-test of the earlier nulls on the clean baseline (19o); E5 = audit of its results for the same leak (18j).
