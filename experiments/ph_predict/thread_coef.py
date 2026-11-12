@@ -10,6 +10,7 @@ import json, os, subprocess, sys, tempfile
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE)); sys.path.insert(0, HERE)
 from early_forecast import B
+os.environ.setdefault("CF_WORK", "/tmp/claude-0/-home-user-UserSim/94f4f0ff-5cdc-5cbe-bb94-5c0d76cd2a8c/scratchpad/cmt_v2")   # comment dump cache (as thread_feats)
 FWD = "2026-11-12"
 TMP = os.environ.get("TMPDIR", "/tmp")
 
