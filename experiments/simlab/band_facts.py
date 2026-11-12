@@ -123,11 +123,15 @@ print("B0 test spearman", round(spearmanr(b0_te, -DE["rank"]).correlation, 3), f
 # ---------- retrieval and topic prior ----------
 # retrieval in the band's own pure-python TF-IDF (servable on the site without sklearn): PH text of launches, vocab fit on PH text
 # of launches <= CUT (EXPORT: all), unigrams + bigrams, 20,000 terms, min_df 3; cosine; pool = launches strictly earlier than the query day
-EXPORT = os.environ.get("EXPORT") == "1"
+EXPORT = os.environ.get("EXPORT") == "1"; RETR = os.environ.get("RETR", "py")
 ph_terms = [terms(n or "", t or "", d or "", []) for n, t, d in zip(L.name, L.tagline, L.description)]
 RIDF = build_vocab([ts for ts, d in zip(ph_terms, L.day) if EXPORT or d <= CUT], max_terms=20000)
 Xpool = tfidf(ph_terms, RIDF); pday = L.day.values; prp = L.rp.values; py = L.y.values
-Q = tfidf([terms(n, t, d, []) for n, t, d in zip(D.name, D.tagline, D.desc_long)], RIDF); Sm = (Q @ Xpool.T).toarray().astype(np.float32); RR = []
+Q = tfidf([terms(n, t, d, []) for n, t, d in zip(D.name, D.tagline, D.desc_long)], RIDF)
+if RETR == "sklearn":   # run 1: the orchestrator's vectorizer (query = page title + description + text excerpt in their prep; here the read)
+    VEC = TfidfVectorizer(ngram_range=(1, 2), min_df=3, max_features=80000, sublinear_tf=True, stop_words="english").fit(L[L.day <= CUT].phtext)
+    Xpool = VEC.transform(L.phtext); Q = VEC.transform(D.name + ". " + D.tagline + ". " + D.desc_long)
+Sm = (Q @ Xpool.T).toarray().astype(np.float32); RR = []
 for r in range(len(D)):
     s = np.where(pday < D.day.iat[r], Sm[r], -1.0); o = np.argsort(-s)[:30]; o = o[s[o] > -1]; w = np.clip(s[o], 1e-4, None)
     RR.append([prp[o].mean(), (w * prp[o]).sum() / w.sum(), (w * py[o]).sum() / w.sum(), s[o].mean(), s[o[0]]] if len(o) else [np.nan] * 5)
@@ -194,3 +198,15 @@ pd.DataFrame({"id": DE.id, "set": DE.set, "rank": rk, **{a: ARMS[a][0] for a in 
 for k in ("pooled_856", "held_sep_oct", "fresh_130", "pooled_no_ph_mention"):
     print(k, res[k]["n"]); [print(f"  {a:22s}", v) for a, v in res[k].items() if a != "n"]
 print("testimonial rate by set", res["testimonial_rate"])
+
+if os.environ.get("FREEZE"):
+    import pickle
+    MODELS = {}
+    for v in ("S_PRIMARY", "B0+facts"):
+        nm, ub = VAR[v]; Xtr = np.hstack([blk(n, TRi) for n in nm] + [b0_oof[:, None]]); mu, sd = np.nanmean(Xtr, 0), np.nanstd(Xtr, 0) + 1e-9
+        MODELS[v] = {"blocks": nm, "mu": mu, "sd": sd, "ridge": Ridge(alpha=INFO[v]["alpha"]).fit(np.nan_to_num((Xtr - mu) / sd), DT.y.values),
+                     "oof_cuts": list(np.percentile(stack(nm, ub)[0], np.arange(1, 100)))}
+    pickle.dump({"retr": RETR, "b0": fit(both(DT)), "b0_oof_cuts": list(np.percentile(b0_oof, np.arange(1, 100))), "models": MODELS, "FCOLS": FCOLS, "CUT": CUT,
+                 "ridf": RIDF, "vec": VEC if RETR == "sklearn" else None, "L": L[["id", "day", "rp", "y", "ptop", "phtext", "name", "tagline", "description"]], "VOCAB": VOCAB},
+                open(os.environ["FREEZE"], "wb"))
+    print("frozen", os.environ["FREEZE"])
