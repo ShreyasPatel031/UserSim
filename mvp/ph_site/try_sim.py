@@ -589,8 +589,8 @@ def _full_model_ref(acc: dict) -> dict:
         from mvp.ph_site.live import claims
         v = claims()["launch_model_backtest"]["values"]
         return {k: v[k] for k in ("top3", "top5", "top10")}
-    except Exception:  # noqa: BLE001
-        return {k: acc["reference_full_launch_model_honest"][k] for k in ("top3", "top5", "top10")}
+    except Exception:  # noqa: BLE001 - never fall back to the leak-inflated reference in launch_band.json
+        return None
 
 
 def _coverage() -> dict | None:

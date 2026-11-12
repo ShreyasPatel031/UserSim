@@ -88,7 +88,7 @@
    "top5": 64.5,
    "top10": 75.6
   },
-  "label": "00:05 launch model offline backtest without the leaked maker-profile inputs",
+  "label": "00:05 launch model offline backtest without the leaked maker-profile inputs; provisional until the rebuilt backtest is agreed",
   "source": "PH ops NORTH_STAR.md (c960ead5)",
   "date": "2026-11-12"
  }
