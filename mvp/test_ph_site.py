@@ -280,3 +280,13 @@ def test_page_retries_site_root(monkeypatch):
     with pytest.raises(safe_fetch.FetchError):
         asyncio.run(try_sim.step_page("https://example.com/docs/x", "9.9.9.9"))
     assert calls == ["https://example.com/docs/x", "https://example.com/"]
+
+
+def test_difficulty_label(monkeypatch):
+    conf = {"source": "from the clean shadow model", "labels": {"h3": {"label": "easy", "oos_rates": {"n": 62, "h3": 2.0, "p1t3": 0.85}}}}
+    sb = {"by_label": {"h3": {"easy": {"n": 3, "mean_hits": 1.7, "p1t3": 0.67}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: conf if "/confidence/" in path else sb if "confidence_scoreboard" in path else None)
+    d = live._difficulty("2026-11-12")
+    assert d["label"] == "easy" and d["oos_hits3"] == 2.0 and d["forward"]["n"] == 3
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    assert live._difficulty("2026-11-12") is None

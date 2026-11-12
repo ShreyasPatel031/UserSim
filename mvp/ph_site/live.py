@@ -409,6 +409,23 @@ def _prereveal_confidence(key: str, f: dict) -> dict | None:
     return out or None
 
 
+def _difficulty(day: str) -> dict | None:
+    """Day-difficulty label from the clean shadow model (results/web/confidence/<day>.json), with its out-of-sample
+    rates and, when available, the forward check. Describes the clean shadow model, not the published ranking."""
+    j = gcs.read_json(f"results/web/confidence/{day}.json", ttl=600)
+    lab = ((j or {}).get("labels") or {}).get("h3") if isinstance(j, dict) else None
+    if not isinstance(lab, dict) or not lab.get("label"):
+        return None
+    oos = lab.get("oos_rates") or {}
+    out = {"label": lab["label"], "oos_n": oos.get("n"), "oos_hits3": oos.get("h3"), "oos_p1t3": oos.get("p1t3"),
+           "source": j.get("source") or "clean shadow model"}
+    fc = gcs.read_json("results/web/confidence_scoreboard.json", ttl=600) or {}
+    fwd = (((fc.get("by_label") or {}).get("h3") or {}).get(lab["label"])) if isinstance(fc, dict) else None
+    if isinstance(fwd, dict) and fwd.get("n"):
+        out["forward"] = {"n": fwd["n"], "hits3": fwd.get("mean_hits"), "p1t3": fwd.get("p1t3")}
+    return out
+
+
 def day_view(day: str) -> dict:
     prods = _lineup(day)
     fc = forecasts(day)
@@ -455,6 +472,7 @@ def day_view(day: str) -> dict:
         b = board["ranks"].get(x["id"], {})
         x["board_rank"] = b.get("rank")
         x["board_votes"] = b.get("votes")
+    difficulty = _difficulty(day)
     on_time = [p for p in points if not p.get("late")]
     lead = (on_time or points)[-1]["key"] if points else None
     lk = gcs.read_json(f"results/web/lock/{day}.json", ttl=120) if not act["final"] else None
@@ -471,7 +489,7 @@ def day_view(day: str) -> dict:
         lock["reliability"] = ("tested right about 93% of the time after noon PT" if hr is not None and hr >= 12 else
                                "tested right only 67-81% of the time before noon PT")
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
-            "lead_point": lead, "board": {**{k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")}, "lock": lock},
+            "lead_point": lead, "difficulty": difficulty, "board": {**{k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")}, "lock": lock},
             "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _written_label(day, act["as_of"]),
                        "as_of": act["as_of"]}}
 
