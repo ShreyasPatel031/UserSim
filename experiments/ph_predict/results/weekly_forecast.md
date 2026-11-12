@@ -1,6 +1,6 @@
 # Weekly forecast (PH weekly top 3/5/10), backtest
 
-Truth = Product Hunt's official weekly_rank field (all scores below use it), weeks Monday 00:00 - Sunday 23:59 PT. It is close to, but not exactly, the order of final votes (within-week Spearman of weekly_rank with final votes 0.99; W-SUN boundaries fit best). Complete weeks held: 44 (Jan 5 - Nov 8). Scored month-forward: 40 weeks (2026-02-02 .. 2026-11-08).
+Truth = Product Hunt's official weekly_rank field (all scores below use it), weeks Monday 00:00 - Sunday 23:59 PT. It equals the order of total votes at the week's close (Sunday 23:59 PT), frozen afterwards; later votes include post-close growth (within-week Spearman of weekly_rank with final votes 0.99; W-SUN boundaries fit best). Complete weeks held: 44 (Jan 5 - Nov 8). Scored month-forward: 40 weeks (2026-02-02 .. 2026-11-08).
 
 Inputs at the end of day k (23:59 PT): final daily rank (fixed at day end), day of week, line-up size, honest pre-launch LM (OOF, Mar-Oct; median-filled before), comments and unique commenters created by the launch day's end. No final votes.
 

@@ -123,10 +123,10 @@ def main():
     S["neg_dr"] = -S.daily_rank + 1e-6 * S.dow   # plain daily rank, ties broken by later day
     cols["daily rank only"] = "neg_dr"
     E = evalk(S, cols)
-    res = {"definition": "truth = PH's official weekly_rank field (Mon 00:00 - Sun 23:59 PT); close to but NOT pure final-vote order (orchestrator 09:27Z Nov 12: final votes reproduce 3/4/10 of the official top 3/5/10 in Nov 2-8)",
+    res = {"definition": "truth = PH's official weekly_rank field (Mon 00:00 - Sun 23:59 PT); = order by total votes at the week's close (Sunday 23:59 PT), frozen afterwards (orchestrator 09:39Z Nov 12: 1-2 discordant pairs in 37k); later reads' votes include post-close growth, so score against the field",
            "complete_weeks": nweeks, "scored_weeks": int(S.wk.nunique()), "scored_range": [S.wk.min(), S.wk.max()], "table": {}}
     md = ["# Weekly forecast (PH weekly top 3/5/10), backtest", "",
-          f"Truth = Product Hunt's official weekly_rank field (all scores below use it), weeks Monday 00:00 - Sunday 23:59 PT. It is close to, but not exactly, the order of final votes "
+          f"Truth = Product Hunt's official weekly_rank field (all scores below use it), weeks Monday 00:00 - Sunday 23:59 PT. It equals the order of total votes at the week's close (Sunday 23:59 PT), frozen afterwards; later votes include post-close growth "
           f"(within-week Spearman of weekly_rank with final votes 0.99; W-SUN boundaries fit best). Complete weeks held: {nweeks} "
           f"(Jan 5 - Nov 8). Scored month-forward: {res['scored_weeks']} weeks ({S.wk.min()[:10]} .. {S.wk.max()[-10:]}).", "",
           "Inputs at the end of day k (23:59 PT): final daily rank (fixed at day end), day of week, line-up size, honest pre-launch "
