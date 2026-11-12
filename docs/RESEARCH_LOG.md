@@ -1459,3 +1459,29 @@ Two truths: pool lift, as in who_eval, and day lift (share among the launch's vo
 - RETR-5 / 10 are lower than RETR-30. Similarity weighting changes almost nothing. Page input is as good as PH input.
 - Person level within the day's voters (internal): activity AUC 0.51; + predicted segment lift 0.56; + neighbour overlap 0.55. Paired gain +0.04 [0.03, 0.04]. Small.
 - Exported who_segments_v1.json: ridge from the query embedding to the 12 segments' log day-lift. It holds segment descriptions only, trained on 3,556 launches; validation is embedded. Sent to the website agent as information.
+
+### 2026-11-12 E5 — who_segments_v1 WITHDRAWN (near-constant); sharpening fails; "addressable voters" adds nothing
+Reports: reports/who_learn/who_sharp.json and who_fix.json.
+
+The website agent found v1 near product-independent. Checked: the same top segment for every one of the 426 page reads, 3 distinct top-3 sets, and only 34% of shown segments with predicted lift > 1. Its +4.1 over "most-voting segments" was one constant beating a weaker constant. Withdrawn; the site keeps the category card with descriptive wording.
+
+Product-specific versions vs the BEST CONSTANT (mean training day-lift ranking), month-forward:
+
+| Method | Day truth p@3 vs constant (25.0) | Above-usual truth p@3 vs constant (13.5) |
+|---|---|---|
+| RIDGE (v1) | −0.1 [−1.2, 1.0]; effectively constant | +0.7 [−0.3, 1.7] |
+| Deviation from usual (113 distinct sets) | 12.4 (−12.6) | 9.6 (−3.8 [−5.7, −1.9]) |
+| Retrieval of 30 neighbours, deviation | 10.2 | 8.3 (−5.2) |
+
+A "show only predicted lift > 1" list averages 1.0 segment at 54% precision, and that segment is the constant one.
+
+Finer or learned segments, each vs its own control:
+- KM20 +1.8 [0.9, 2.8]; KM30 +0.0 (identical to its control); KM50 +1.5 [0.8, 2.2]; NMF20 −4.4 [−7.3, −1.6]. All are near-constant predictions.
+- Calibration (IDX12): predicted lift 1–1.5 → 52% truly ≥ 1.5 (n = 418); 1.5–2 → 88% (n = 16); < 1 → 4%.
+
+Addressable voters (predicted segment lift × the segment's last-30-day vote volume):
+- Within-day Spearman alone 0.22 [0.17, 0.27], against 0.62 for the clean LM.
+- Added to the clean LM (Sep ↔ Oct): top 3 / 5 / 10 change +0.0 [−1.7, 1.7] / +0.3 / +0.0.
+- Partial over launch_band_page_v1 (403 page reads): −0.04 [−0.14, 0.06].
+
+Verdict: launch text does not predict WHICH segments over-index among voters. Segment composition is roughly the same across launches, so "who" is honest only as category description. The population → launch-score link adds nothing beyond the clean model.

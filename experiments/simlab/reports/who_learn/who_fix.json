@@ -1,0 +1,264 @@
+{
+ "design": "Product-specific \"who\" vs the best constant (website agent / orchestrator, Nov 12). who_segments_v1 turned out near-constant (the\nsame #1 segment for every launch). Reuses who_learn.py's data and truths (IDX12 segments, day lift) and evaluates, month-forward:\n  CONST    top 3 by the mean training log day-lift (the best constant list)\n  RIDGE    top 3 by the ridge prediction (= who_segments_v1 recipe)\n  DEV      top 3 by ridge prediction minus the training mean (how much MORE than usual this launch draws a segment)\n  RETR30D  mean log day-lift of the 30 most similar earlier launches minus the training mean\nTruths: DAY (day lift > 1.5, >= 3 voters) and ABOVE-USUAL (day lift >= 1.5 x the segment's mean training day lift, >= 3 voters).\nAlso: share of launches whose top-3 differs from the method's most common set, p@3 on those; and a variable-length list showing only\nsegments with predicted lift > 1 (precision and mean length).",
+ "launches": 426,
+ "methods": {
+  "CONST": {
+   "distinct_top3_sets": 1,
+   "share_differs_from_modal": 0.0,
+   "distinct_top1": 1,
+   "DAY p3": [
+    24.96,
+    23.0,
+    27.0,
+    426
+   ],
+   "DAY hit3": [
+    63.15,
+    58.69,
+    67.84,
+    426
+   ],
+   "DAY p3 where set differs from modal": null,
+   "ABOVE p3": [
+    13.46,
+    11.74,
+    15.18,
+    426
+   ],
+   "ABOVE hit3": [
+    37.32,
+    32.86,
+    41.78,
+    426
+   ],
+   "ABOVE p3 where set differs from modal": null,
+   "real day lift top1": [
+    1.7,
+    1.63,
+    1.77,
+    426
+   ],
+   "real lift / usual top1": [
+    1.18,
+    1.12,
+    1.23,
+    426
+   ]
+  },
+  "RIDGE": {
+   "distinct_top3_sets": 2,
+   "share_differs_from_modal": 0.451,
+   "distinct_top1": 2,
+   "DAY p3": [
+    24.88,
+    22.85,
+    26.84,
+    426
+   ],
+   "DAY hit3": [
+    63.38,
+    59.15,
+    68.08,
+    426
+   ],
+   "DAY p3 where set differs from modal": [
+    21.35,
+    18.75,
+    23.96,
+    192
+   ],
+   "DAY p3 - CONST (paired)": [
+    -0.08,
+    -1.17,
+    1.02,
+    426
+   ],
+   "ABOVE p3": [
+    14.16,
+    12.36,
+    15.96,
+    426
+   ],
+   "ABOVE hit3": [
+    39.2,
+    34.51,
+    43.9,
+    426
+   ],
+   "ABOVE p3 where set differs from modal": [
+    13.89,
+    11.46,
+    16.32,
+    192
+   ],
+   "ABOVE p3 - CONST (paired)": [
+    0.7,
+    -0.31,
+    1.72,
+    426
+   ],
+   "real day lift top1": [
+    1.7,
+    1.62,
+    1.77,
+    426
+   ],
+   "real lift / usual top1": [
+    1.18,
+    1.13,
+    1.23,
+    426
+   ]
+  },
+  "DEV": {
+   "distinct_top3_sets": 113,
+   "share_differs_from_modal": 0.843,
+   "distinct_top1": 113,
+   "DAY p3": [
+    12.36,
+    10.56,
+    14.16,
+    426
+   ],
+   "DAY hit3": [
+    32.39,
+    28.17,
+    36.85,
+    426
+   ],
+   "DAY p3 where set differs from modal": [
+    13.65,
+    11.79,
+    15.6,
+    359
+   ],
+   "DAY p3 - CONST (paired)": [
+    -12.6,
+    -14.79,
+    -10.41,
+    426
+   ],
+   "ABOVE p3": [
+    9.62,
+    7.98,
+    11.35,
+    426
+   ],
+   "ABOVE hit3": [
+    25.59,
+    21.6,
+    29.81,
+    426
+   ],
+   "ABOVE p3 where set differs from modal": [
+    9.94,
+    8.26,
+    11.7,
+    359
+   ],
+   "ABOVE p3 - CONST (paired)": [
+    -3.83,
+    -5.71,
+    -1.88,
+    426
+   ],
+   "real day lift top1": [
+    1.26,
+    1.01,
+    1.53,
+    426
+   ],
+   "real lift / usual top1": [
+    1.28,
+    1.04,
+    1.56,
+    426
+   ]
+  },
+  "RETR30D": {
+   "distinct_top3_sets": 141,
+   "share_differs_from_modal": 0.932,
+   "distinct_top1": 141,
+   "DAY p3": [
+    10.17,
+    8.61,
+    11.66,
+    426
+   ],
+   "DAY hit3": [
+    28.87,
+    24.88,
+    33.1,
+    426
+   ],
+   "DAY p3 where set differs from modal": [
+    10.75,
+    9.07,
+    12.43,
+    397
+   ],
+   "DAY p3 - CONST (paired)": [
+    -14.79,
+    -16.98,
+    -12.44,
+    426
+   ],
+   "ABOVE p3": [
+    8.29,
+    6.89,
+    9.7,
+    426
+   ],
+   "ABOVE hit3": [
+    23.47,
+    19.48,
+    27.7,
+    426
+   ],
+   "ABOVE p3 where set differs from modal": [
+    8.65,
+    7.14,
+    10.24,
+    397
+   ],
+   "ABOVE p3 - CONST (paired)": [
+    -5.16,
+    -7.04,
+    -3.29,
+    426
+   ],
+   "real day lift top1": [
+    1.14,
+    0.91,
+    1.4,
+    426
+   ],
+   "real lift / usual top1": [
+    1.2,
+    0.98,
+    1.44,
+    426
+   ]
+  }
+ },
+ "RIDGE show only pred lift > 1": {
+  "mean shown": 1.02,
+  "share launches showing none": 0.0,
+  "precision DAY": [
+   53.87,
+   49.18,
+   58.45,
+   426
+  ]
+ },
+ "DEV show only pred above-usual > 1.25": {
+  "mean shown": 0.81,
+  "share none": 0.488,
+  "precision ABOVE": [
+   8.18,
+   5.12,
+   11.47,
+   218
+  ]
+ }
+}

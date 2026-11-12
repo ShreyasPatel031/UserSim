@@ -1,0 +1,1067 @@
+{
+ "design": "Sharpen the voter-learned \"who\" and test \"who -> where it lands\" (orchestrator, Nov 12). Builds on who_learn.py (same people,\nlaunches, time ordering: person vectors from upvotes dated before the launch day).\nA1 segmentations (fit on data before Sep 1 2026; test launches Sep 1 - Nov 10):\n   IDX12   the site index's 12 segments (who_segments_v1)\n   KM20/30/50  k-means on person upvote topic-share vectors as of Aug 31 (people with >= 3 upvotes), assignment per day = nearest\n           centroid of the person's vector before the day\n   NMF20   20 latent factors of the person x launch upvote matrix (launches before Sep 1); a person's segment = argmax loading\n           (people without pre-Sep upvotes are unassigned and dropped from voters and base)\n   Each segment described by its top topics (mean topic shares). Truth (day lift): share among the launch's voters / share among\n   all that day's voters > 1.5 with >= 3 voters AND an expected count (day share x voters) >= 1 (so small segments are not\n   rewarded by noise). Predictor: ridge (alpha 10) from the launch embedding to per-segment log day-lift, trained month-forward on\n   earlier launches with >= 15 voters; queries = the 426 page reads (and PH text).\n   Metrics by launch: p@3, hit@3, real day-lift of the top-1 and mean of the top-3, vs the control (the segmentation's 3 most-voting\n   segments over Jan-Aug) and random; paired top-1 / top-3 real lift vs IDX12.\nA2 calibration (IDX12 ridge): reliability of predicted lift >= 1.5 / >= 2 / >= 3 -> share with real day-lift >= 1.5 (>= 3 voters).\nB  \"addressable voters\" = sum over segments of (segment's share of all upvotes in the 30 days before the launch day) x predicted\n   lift (IDX12 ridge, PH input for every launch; page input for page-read launches). Within-day Spearman with -final rank alone;\n   added to the clean 00:05 LM (honest_preds_v2) by ridge month-forward over Sep-Oct (daily top 3/5/10, paired day bootstrap); and\n   pooled partial gain over launch_band_page_v1 on the page-read launches.",
+ "launches": 426,
+ "A1": {
+  "IDX12": {
+   "segments": 12,
+   "mean_true": 0.92,
+   "p3": [
+    24.8,
+    22.77,
+    26.92,
+    426
+   ],
+   "hit3": [
+    63.15,
+    58.45,
+    67.61,
+    426
+   ],
+   "real_lift_top1": [
+    1.7,
+    1.62,
+    1.77,
+    426
+   ],
+   "real_lift_top3_mean": [
+    1.18,
+    1.15,
+    1.2,
+    426
+   ],
+   "control_p3": [
+    20.58,
+    18.94,
+    22.22,
+    426
+   ],
+   "control_lift_top1": [
+    0.78,
+    0.75,
+    0.81,
+    426
+   ],
+   "random_p3": [
+    7.67,
+    7.12,
+    8.2,
+    426
+   ],
+   "p3 - control (paired)": [
+    4.23,
+    3.13,
+    5.48,
+    426
+   ],
+   "descriptions_top_topics": [
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Design Tools",
+     "Artificial Intelligence",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "iOS",
+     "Health & Fitness"
+    ],
+    [
+     "Productivity",
+     "Developer Tools",
+     "Artificial Intelligence"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Developer Tools",
+     "API",
+     "Artificial Intelligence"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Open Source",
+     "Developer Tools",
+     "Artificial Intelligence"
+    ],
+    [
+     "Marketing",
+     "Artificial Intelligence",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "SaaS",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ]
+   ]
+  },
+  "KM20": {
+   "segments": 20,
+   "mean_true": 1.26,
+   "p3": [
+    20.97,
+    19.09,
+    22.85,
+    426
+   ],
+   "hit3": [
+    57.75,
+    53.05,
+    62.44,
+    426
+   ],
+   "real_lift_top1": [
+    1.59,
+    1.53,
+    1.64,
+    426
+   ],
+   "real_lift_top3_mean": [
+    1.3,
+    1.25,
+    1.36,
+    426
+   ],
+   "control_p3": [
+    19.17,
+    17.53,
+    20.81,
+    426
+   ],
+   "control_lift_top1": [
+    1.59,
+    1.53,
+    1.65,
+    426
+   ],
+   "random_p3": [
+    6.29,
+    5.81,
+    6.76,
+    426
+   ],
+   "p3 - control (paired)": [
+    1.8,
+    0.86,
+    2.82,
+    426
+   ],
+   "descriptions_top_topics": [
+    [
+     "Artificial Intelligence",
+     "Marketing",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Sales",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Marketing"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Developer Tools",
+     "API",
+     "Marketing"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "API"
+    ],
+    [
+     "Developer Tools",
+     "Productivity",
+     "Design Tools"
+    ],
+    [
+     "Productivity",
+     "Artificial Intelligence",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Open Source",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "SaaS",
+     "Productivity"
+    ],
+    [
+     "Developer Tools",
+     "Artificial Intelligence",
+     "Open Source"
+    ],
+    [
+     "Artificial Intelligence",
+     "Design Tools",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Education",
+     "Productivity"
+    ],
+    [
+     "Marketing",
+     "Artificial Intelligence",
+     "Social Media"
+    ]
+   ],
+   "top1 lift - IDX12 (paired)": [
+    -0.11,
+    -0.16,
+    -0.06,
+    426
+   ],
+   "top3 lift - IDX12 (paired)": [
+    0.13,
+    0.07,
+    0.18,
+    426
+   ]
+  },
+  "KM30": {
+   "segments": 30,
+   "mean_true": 1.68,
+   "p3": [
+    30.2,
+    27.93,
+    32.63,
+    426
+   ],
+   "hit3": [
+    67.84,
+    63.38,
+    72.3,
+    426
+   ],
+   "real_lift_top1": [
+    1.61,
+    1.52,
+    1.7,
+    426
+   ],
+   "real_lift_top3_mean": [
+    1.39,
+    1.33,
+    1.45,
+    426
+   ],
+   "control_p3": [
+    30.2,
+    27.93,
+    32.47,
+    426
+   ],
+   "control_lift_top1": [
+    1.61,
+    1.52,
+    1.7,
+    426
+   ],
+   "random_p3": [
+    5.61,
+    5.26,
+    5.97,
+    426
+   ],
+   "p3 - control (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    426
+   ],
+   "descriptions_top_topics": [
+    [
+     "Developer Tools",
+     "Artificial Intelligence",
+     "Open Source"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Task Management"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Marketing"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Marketing",
+     "Artificial Intelligence",
+     "Open Source"
+    ],
+    [
+     "Artificial Intelligence",
+     "Sales",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Marketing",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Design Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Open Source",
+     "Developer Tools"
+    ],
+    [
+     "Developer Tools",
+     "Productivity",
+     "Design Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Social Media",
+     "Marketing"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "API"
+    ],
+    [
+     "Productivity",
+     "Artificial Intelligence",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Marketing",
+     "Analytics"
+    ],
+    [
+     "Productivity",
+     "Artificial Intelligence",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Marketing",
+     "Social Media"
+    ],
+    [
+     "SaaS",
+     "Developer Tools",
+     "Artificial Intelligence"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Software Engineering"
+    ],
+    [
+     "Developer Tools",
+     "API",
+     "Marketing"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "SaaS"
+    ],
+    [
+     "Productivity",
+     "Artificial Intelligence",
+     "iOS"
+    ],
+    [
+     "Artificial Intelligence",
+     "Website Builder",
+     "Developer Tools"
+    ]
+   ],
+   "top1 lift - IDX12 (paired)": [
+    -0.09,
+    -0.16,
+    -0.01,
+    426
+   ],
+   "top3 lift - IDX12 (paired)": [
+    0.21,
+    0.15,
+    0.28,
+    426
+   ]
+  },
+  "KM50": {
+   "segments": 50,
+   "mean_true": 1.54,
+   "p3": [
+    23.63,
+    21.36,
+    25.82,
+    426
+   ],
+   "hit3": [
+    57.04,
+    52.11,
+    61.74,
+    426
+   ],
+   "real_lift_top1": [
+    1.55,
+    1.49,
+    1.61,
+    426
+   ],
+   "real_lift_top3_mean": [
+    1.38,
+    1.32,
+    1.45,
+    426
+   ],
+   "control_p3": [
+    22.14,
+    20.11,
+    24.18,
+    426
+   ],
+   "control_lift_top1": [
+    1.55,
+    1.49,
+    1.61,
+    426
+   ],
+   "random_p3": [
+    3.07,
+    2.86,
+    3.3,
+    426
+   ],
+   "p3 - control (paired)": [
+    1.49,
+    0.78,
+    2.19,
+    426
+   ],
+   "descriptions_top_topics": [
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "API"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Social Media",
+     "Marketing"
+    ],
+    [
+     "Productivity",
+     "Developer Tools",
+     "Artificial Intelligence"
+    ],
+    [
+     "Artificial Intelligence",
+     "Design Tools",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Education",
+     "Career"
+    ],
+    [
+     "Developer Tools",
+     "API",
+     "Marketing"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Travel",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Open Source",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Website Builder",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Productivity",
+     "Health & Fitness",
+     "iOS"
+    ],
+    [
+     "Artificial Intelligence",
+     "Marketing",
+     "Productivity"
+    ],
+    [
+     "Analytics",
+     "Artificial Intelligence",
+     "SaaS"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Development"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Task Management"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "SaaS"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Mac"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "SaaS",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Marketing",
+     "Productivity"
+    ],
+    [
+     "Productivity",
+     "Artificial Intelligence",
+     "Design Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "API"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Sales"
+    ],
+    [
+     "Developer Tools",
+     "Open Source",
+     "Artificial Intelligence"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Vibe coding"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Open Source"
+    ],
+    [
+     "Developer Tools",
+     "Artificial Intelligence",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Sales",
+     "Marketing"
+    ],
+    [
+     "Developer Tools",
+     "Design Tools",
+     "Artificial Intelligence"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "SaaS"
+    ],
+    [
+     "Productivity",
+     "Artificial Intelligence",
+     "Menu Bar Apps"
+    ],
+    [
+     "Artificial Intelligence",
+     "Design Tools",
+     "Productivity"
+    ],
+    [
+     "Marketing",
+     "Artificial Intelligence",
+     "SEO"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Video"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Marketing"
+    ],
+    [
+     "SaaS",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "iOS"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Open Source"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Software Engineering"
+    ],
+    [
+     "Productivity",
+     "Artificial Intelligence",
+     "Marketing"
+    ],
+    [
+     "Menu Bar Apps",
+     "Productivity",
+     "Apple"
+    ],
+    [
+     "Artificial Intelligence",
+     "Vibe coding",
+     "Development"
+    ],
+    [
+     "Artificial Intelligence",
+     "Open Source",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Website Builder"
+    ]
+   ],
+   "top1 lift - IDX12 (paired)": [
+    -0.15,
+    -0.21,
+    -0.09,
+    426
+   ],
+   "top3 lift - IDX12 (paired)": [
+    0.21,
+    0.15,
+    0.28,
+    426
+   ]
+  },
+  "NMF20": {
+   "segments": 20,
+   "mean_true": 2.66,
+   "p3": [
+    14.31,
+    11.44,
+    17.31,
+    233
+   ],
+   "hit3": [
+    33.48,
+    27.47,
+    39.48,
+    233
+   ],
+   "real_lift_top1": [
+    1.31,
+    1.14,
+    1.48,
+    233
+   ],
+   "real_lift_top3_mean": [
+    1.15,
+    1.05,
+    1.25,
+    233
+   ],
+   "control_p3": [
+    18.74,
+    15.45,
+    22.17,
+    233
+   ],
+   "control_lift_top1": [
+    1.12,
+    1.0,
+    1.25,
+    233
+   ],
+   "random_p3": [
+    13.28,
+    12.3,
+    14.36,
+    233
+   ],
+   "p3 - control (paired)": [
+    -4.43,
+    -7.3,
+    -1.57,
+    233
+   ],
+   "descriptions_top_topics": [
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Developer Tools",
+     "Productivity"
+    ],
+    [
+     "Artificial Intelligence",
+     "Productivity",
+     "Developer Tools"
+    ]
+   ],
+   "top1 lift - IDX12 (paired)": [
+    0.01,
+    -0.15,
+    0.19,
+    233
+   ],
+   "top3 lift - IDX12 (paired)": [
+    0.05,
+    -0.05,
+    0.15,
+    233
+   ]
+  }
+ },
+ "A2_calibration_IDX12": {
+  "pred lift 0-1": {
+   "n": 4678,
+   "share_real_day_lift_ge_1.5": 0.038
+  },
+  "pred lift 1-1.5": {
+   "n": 418,
+   "share_real_day_lift_ge_1.5": 0.522
+  },
+  "pred lift 1.5-2": {
+   "n": 16,
+   "share_real_day_lift_ge_1.5": 0.875
+  },
+  "pred lift 2-3": {
+   "n": 0,
+   "share_real_day_lift_ge_1.5": null
+  },
+  "pred lift 3-99": {
+   "n": 0,
+   "share_real_day_lift_ge_1.5": null
+  },
+  "pred >= 1.5": {
+   "n": 16,
+   "share_real_ge_1.5": 0.875
+  },
+  "pred >= 2.0": {
+   "n": 0,
+   "share_real_ge_1.5": null
+  }
+ },
+ "B": {
+  "within_day_spearman_addr_ph_alone": [
+   0.22,
+   0.17,
+   0.27,
+   60
+  ],
+  "within_day_spearman_clean_LM": [
+   0.62,
+   0.58,
+   0.66,
+   60
+  ],
+  "clean LM top3/5/10": [
+   53.1,
+   66.8,
+   75.4
+  ],
+  "+addressable top3/5/10": [
+   53.1,
+   67.1,
+   75.4
+  ],
+  "difference (paired, day bootstrap)": {
+   "top3": [
+    0.0,
+    -1.7,
+    1.7
+   ],
+   "top5": [
+    0.3,
+    0.0,
+    1.0
+   ],
+   "top10": [
+    0.0,
+    -0.7,
+    0.7
+   ],
+   "days": 59
+  },
+  "partial_spearman_addr_ph_with_y_given_LM": 0.003,
+  "page-read launches": {
+   "n": 403,
+   "spearman band": 0.632,
+   "spearman addr_page": 0.128,
+   "partial spearman addr_page | band": -0.04,
+   "partial ci": [
+    -0.135,
+    0.059
+   ]
+  }
+ }
+}
