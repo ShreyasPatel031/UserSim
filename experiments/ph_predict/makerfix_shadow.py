@@ -5,13 +5,18 @@ live_sources() on the 00:05 rows, LIVE_PARAMS, 5 seeds); test rows = data/today/
   makerfix  for launches whose 00:05 maker ids include a placeholder ("0", empty, None), every maker-derived input
             (hist_maker*, hist_dayrank_hist_maker*, ph_maker*, ph_n_makers*, ph_dayrank_ph_n_makers, x_n_makers*) is set
             to missing (LightGBM's missing branch) instead of the value joined on the placeholder id
-  nollm     (orchestrator 04:45Z Nov 12) the deployed model WITHOUT the llm and promo sources (else as unfixed): the
-            replay's "live minus LLM judgements / promo" condition, scored forward next to published and makerfix
+  clean     (orchestrator 06:40Z / 07:10Z Nov 12; replaces the nollm line) the deployed model trained and served WITHOUT
+            every input that needs a named maker (PH names the day's #1 makers only after the day, so these inputs are
+            leaky in training rows): maker-profile inputs (ph_maker*, hist_maker*, hist_dayrank_hist_maker*, x_maker*,
+            x_n_makers*) and ph_n_makers_new, ph_maker_has_headline, x_any_verified, ph_self_hunted; total maker count kept.
+            Live days (clean_live.md): 61.9 / 67.1 / 76.4 vs deployed 57.1 / 64.3 / 76.4 on 14 days
 usage (VM): /opt/exp/bin/python3 makerfix_shadow.py <day> -> results/shadow_makerfix/<day>.json (prints its path)"""
 import json, os, sys
 import numpy as np, pandas as pd
 import features as F, model as M, run as RN
 
+MP = ("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers")
+ID = {"ph_n_makers_new", "ph_maker_has_headline", "x_any_verified", "ph_self_hunted"}
 MAKER = lambda c: c.startswith(("hist_maker", "hist_dayrank_hist_maker", "ph_maker", "ph_n_makers", "ph_dayrank_ph_n_makers", "x_n_makers"))
 
 
@@ -31,15 +36,18 @@ def main(d):
     fx = te.copy(); fx.loc[ph.values, mc] = np.nan
     models = [M.fit_predict(tr2, te, src, seed=s, **M.LIVE_PARAMS)[1] for s in range(5)]
     p0 = np.mean([m.predict(te[cols]) for m in models], axis=0); p1 = np.mean([m.predict(fx[cols]) for m in models], axis=0)
-    src_n = [x for x in src if x not in ("llm", "promo")]
-    p2 = np.mean([M.fit_predict(tr2, te, src_n, seed=s, **M.LIVE_PARAMS)[0] for s in range(5)], axis=0)
-    out = pd.DataFrame({"id": te.id.astype(str).values, "pred_unfixed": p0, "pred_makerfix": p1, "pred_nollm": p2, "placeholder": ph.values})
+    import lightgbm as lgb
+    cc = [c for c in cols if not c.startswith(MP) and c not in ID]
+    p2 = np.mean([lgb.LGBMRegressor(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1,
+                                    colsample_bytree=0.5, reg_lambda=1.0, random_state=s, verbose=-1, n_jobs=M.N_JOBS).fit(tr2[cc], tr2.logv).predict(te[cc])
+                  for s in range(5)], axis=0)
+    out = pd.DataFrame({"id": te.id.astype(str).values, "pred_unfixed": p0, "pred_makerfix": p1, "pred_clean": p2, "placeholder": ph.values})
     out["rank_unfixed"] = out.pred_unfixed.rank(ascending=False, method="first").astype(int)
     out["rank_makerfix"] = out.pred_makerfix.rank(ascending=False, method="first").astype(int)
-    out["rank_nollm"] = out.pred_nollm.rank(ascending=False, method="first").astype(int)
+    out["rank_clean"] = out.pred_clean.rank(ascending=False, method="first").astype(int)
     res = {"day": d, "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "inputs": "data/today/<d>.json (00:05 snapshot) only",
            "launches": int(len(out)), "placeholder_launches": int(ph.sum()), "maker_cols": mc, "sources": src, "dropped": dropped,
-           "sources_nollm": src_n, "llm_in_unfixed": "llm" in src, "promo_in_unfixed": "promo" in src,
+           "clean_cols": cc, "clean_dropped": sorted(set(cols) - set(cc)),
            "forecast": out.sort_values("rank_makerfix").round(4).to_dict("records")}
     os.makedirs(f"{RN.OUT}/shadow_makerfix", exist_ok=True)
     p = f"{RN.OUT}/shadow_makerfix/{d}.json"; json.dump(res, open(p, "w"), indent=1, default=bool)

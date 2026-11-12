@@ -28,7 +28,7 @@ def boot(x, rng):
 
 def main(p):
     rng = np.random.default_rng(0); A = pd.read_parquet(p); A = A[A.dailyRank.notna()]
-    V = [c for c in ("ref", "no_llm", "no_llm_site", "no_llm_pitch", "no_llm_brand", "no_promo", "no_llm_promo", "no_maker_age", "no_maker_prof") if c in A]
+    V = [c for c in ("ref", "no_llm", "no_llm_site", "no_llm_pitch", "no_llm_brand", "no_promo", "no_llm_promo", "no_maker_age", "no_maker_prof", "clean_v2", "clean_v2b", "clean_v3") if c in A]
     res, md = {}, ["# Leak check: honest month-forward backtest without the llm / promo sources (5 seeds)", ""]
     M = ["top3", "top5", "top10", "p1_top3", "p2_top3", "p3_top3", "exact1"]
     for nm, U in (("all scored days (Mar - Nov 10)", A), ("Sep - Oct", A[A.mon.isin(["2026-09", "2026-10"])])):

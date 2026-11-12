@@ -21,6 +21,8 @@ MONTHS = list(_M) + ["2026-11"]   # + November (partial: days with final ranks i
 from honest import honest_cols
 
 DF = {}
+ID_COLS = {"ph_maker_max_age_d", "ph_maker_min_age_d", "ph_n_makers_new", "ph_maker_has_headline", "x_n_makers_with_x", "x_any_verified",
+           "hist_maker_n", "hist_maker_rel_max", "hist_maker_top5", "hist_dayrank_hist_maker_rel_max", "ph_self_hunted"}
 P0 = dict(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1,
           colsample_bytree=0.5, reg_lambda=1.0, verbose=-1, n_jobs=1)
 
@@ -64,6 +66,18 @@ def month_job(a):
         out["no_maker_age"] = fitw(tr, te, [c for c in cols if c not in ("ph_maker_max_age_d", "ph_maker_min_age_d")], seed)
     if "no_maker_prof" in variants:   # every maker-profile-derived input
         out["no_maker_prof"] = fitw(tr, te, [c for c in cols if not c.startswith(("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers"))], seed)
+    # honest_preds_v2 (orchestrator 06:55Z Nov 12): no maker-profile inputs and no maker's-first-comment inputs (the first
+    # comment is found through the maker's identity, which PH names for the winner only after the day); v2b also without llm_full
+    MP = ("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers")
+    FC = ("ps_has_first_comment", "pf_first_comment_words", "ps_first_comment", "pf_founder_story")
+    if "clean_v2" in variants:
+        out["clean_v2"] = fitw(tr, te, [c for c in cols if not c.startswith(MP) and not c.startswith(FC)], seed)
+    # clean_v3 (orchestrator 06:20Z Nov 12 mechanism): every input that needs a maker to be NAMED (PH names the winner's
+    # makers only after the day); total maker count kept
+    if "clean_v3" in variants:
+        out["clean_v3"] = fitw(tr, te, [c for c in cols if c not in ID_COLS], seed)
+    if "clean_v2b" in variants:
+        out["clean_v2b"] = fitw(tr, te, [c for c in cols if not c.startswith(MP) and not c.startswith(FC) and c != "llm_full"], seed)
     if "no_promo" in variants:
         out["no_promo"] = fitw(tr, te, [c for c in cols if not c.startswith("promo_")], seed)
     if "honest_nopage_month" in variants:

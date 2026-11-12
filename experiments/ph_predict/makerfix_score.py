@@ -23,7 +23,7 @@ def main():
         F = F.merge(L, on="id", how="left"); F["predicted_rank"] = F.predicted_rank.fillna(999)
         real = lambda k: set(F.nsmallest(k, "daily_rank").id)
         r = {"day": d, "launches": int(len(F)), "placeholder_launches": S["placeholder_launches"]}
-        for nm, c in (("live", "predicted_rank"), ("unfixed", "rank_unfixed"), ("makerfix", "rank_makerfix"), ("nollm", "rank_nollm")):
+        for nm, c in (("live", "predicted_rank"), ("unfixed", "rank_unfixed"), ("makerfix", "rank_makerfix"), ("nollm", "rank_nollm"), ("clean", "rank_clean")):
             if c not in F:   # files written before Nov 12 have no nollm line
                 continue
             for k in (3, 5, 10):

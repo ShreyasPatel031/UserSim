@@ -60,6 +60,8 @@ def main():
         add(S["day"], "0005", "unfixed_replay", "shadow", f.sort_values("rank_unfixed").id.tolist(), S["written_at"])
         if "rank_nollm" in f:
             add(S["day"], "0005", "nollm_shadow", "shadow", f.sort_values("rank_nollm").id.tolist(), S["written_at"])
+        if "rank_clean" in f:
+            add(S["day"], "0005", "clean_shadow", "shadow", f.sort_values("rank_clean").id.tolist(), S["written_at"])
     for src, pat in (("live", os.path.join(HERE, "results", "early_forecast", "*.json")), ("replay", os.path.join(HERE, "results", "early_forecast_replay_P", "*.json"))):
         for p in sorted(glob.glob(pat)):
             E = json.load(open(p)); f = pd.DataFrame(E.get("forecast", []))
@@ -73,9 +75,9 @@ def main():
                     s = "late"
             if pt.startswith("P"):
                 for m, c in (("comment_ridge", "pred_rank"), ("api_rank", "pred_rank_api"), ("blend", "pred_rank_blend"), ("best", "pred_rank_best"),
-                             ("depth", "pred_rank_depth")):
+                             ("depth", "pred_rank_depth"), ("best_clean", "pred_rank_best_clean")):
                     # replay days without any pre-reveal API rank (Nov 2, 3: api_ranked 0) have no PH order: those rows are excluded
-                    if m in ("api_rank", "blend", "best", "depth") and E.get("api_ranked", 1) == 0:
+                    if m in ("api_rank", "blend", "best", "depth", "best_clean") and E.get("api_ranked", 1) == 0:
                         continue
                     if c in f:
                         add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
@@ -116,6 +118,7 @@ def main():
 # backtest number beside each live line (source files in results/; update here when a backtest is re-run)
 BACKTEST = {
     ("0005", "published"): ("54.7 / 64.5 / 75.6", "honest month-forward without maker-profile inputs, 214 days Mar-Nov 10 (leak_check_maker.md): #1 pick in top 3 72%, exact winner 39%. The earlier 63.0 / 69.3 / 75.0 was inflated by a leak: maker-profile availability in the cache depends on the final rank"),
+    ("0005", "clean_shadow"): ("54.7 / 64.5 / 75.6", "same model family without maker-profile inputs, month-forward 214 days (leak_check_maker.md; clean_v3 drops 4 more identity inputs); live-days replay 61.9 / 67.1 / 76.4 on 14 days vs deployed 57.1 (clean_live.md)"),
     ("0005", "makerfix_shadow"): ("-", "the earlier 60.2 / 68.6 / 75.7 (maker_resolve.md) used the leaking maker-profile cache; no clean backtest"),
     ("P1", "best"): ("66.7 / 66.7 / 78.3", "REPLAY, 6 days (Nov 2-10), leave-one-day-out choice: 0.5 x API rank + 0.5 x LM rank (api_depth.md); LM 38.9 / 60.0 / 76.7"),
     ("P2", "best"): ("72.2 / 76.7 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API rank + 0.25 x LM rank (api_depth.md)"),
@@ -133,8 +136,8 @@ BACKTEST = {
     ("week", "dayend_votes"): ("57.5 / 71.5 / 77.8", "end-of-week call without dated votes, 40 weeks (weekly_forecast.md); 100 / 80 / 90 with day-end votes on 1 week"),
     ("month", "monthlyRank"): ("75 / 75 / 80", "dated reads, 4 months (E5 monthly_northstar); 42 / 50 / 52 from daily rank"),
 }
-ORDER = [("0005", "published"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay"), ("0005", "nollm_shadow")] + \
-        [(p, m) for p in ("P0", "P1", "P2", "P3", "P4") for m in ("best", "depth", "comment_ridge", "api_rank", "blend")] + \
+ORDER = [("0005", "published"), ("0005", "clean_shadow"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay"), ("0005", "nollm_shadow")] + \
+        [(p, m) for p in ("P0", "P1", "P2", "P3", "P4") for m in ("best", "best_clean", "depth", "comment_ridge", "api_rank", "blend")] + \
         [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("R0", "r0blend_neartie"), ("R0", "r0blend_mean")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
 
 

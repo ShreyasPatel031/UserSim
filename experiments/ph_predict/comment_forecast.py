@@ -418,10 +418,25 @@ def live(day, point):
     else:
         A["pred_rank_depth"] = A.pred_rank_best
     A["watch15"] = ((A.pred_rank_best <= 15) & (point in ("P2", "P3", "P4"))).astype(int)
+    # orchestrator 07:10Z Nov 12: the same recipe with the CLEAN 00:05 model (shadow_makerfix rank_clean) as the LM prior;
+    # replay on 6 days (best_clean_replay.json): P1 72.2 vs 66.7 top 3, P2 / P3 slightly below the published-LM recipe
+    A["pred_rank_best_clean"] = np.nan
+    try:
+        sp = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
+        if not os.path.exists(sp):
+            subprocess.run(["gsutil", "-q", "cp", f"{B}/results/shadow_makerfix/{day}.json", sp])
+        if os.path.exists(sp):
+            SF = pd.DataFrame(json.load(open(sp))["forecast"])
+            if "rank_clean" in SF and A.api_rank.notna().any():
+                rc = dict(zip(SF.id.astype(str), SF.rank_clean))
+                cpos = pd.Series([rc.get(i, 999) for i in A.id], index=A.index).rank(method="first")
+                A["pred_rank_best_clean"] = (w_api * A.pred_rank_api + (1 - w_api) * cpos + 1e-6 * cpos).rank(method="first").astype(int)
+    except Exception as e:
+        print("best_clean skipped:", repr(e)[:120], flush=True)
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
