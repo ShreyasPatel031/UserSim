@@ -950,3 +950,11 @@ Part B, clean slice = the 300 Aug–Oct 2026 launches (all after the cutoff), tr
 - deployed launch reactions (BEST): complaint recall 18.2 [15.8, 20.7], precision 17.5 [14.7, 20.3]
 - BEST + D_category critic: recall 21.9 [19.2, 24.5], precision 11.3 [9.7, 13.0]; diff +3.6 [1.6, 5.7] recall, −6.1 [−8.7, −3.6] precision
 Reading: a critic pass raises complaint recall on established products (+8 to +11), but on genuinely new products it adds little (+3.6) and dilutes precision (most extra objections do not appear). Complaints remain the weak spot: about 1 in 5 real critical points anticipated for new products. A "risks and objections" section is defensible only as a checklist of possible concerns, not as a prediction.
+
+### 2026-11-12 E5 — do the page's closest matches actually upvote? No.
+Script experiments/simlab/voters_eval.py; report reports/voters_eval/. The website bundle's 5,096 people, scored with the exact site scorer (gemini-256 + trees, same product dropped from a person's tools); 114 Aug–Oct launches with >= 30 voters among them (median voters per launch about 41; base vote rate 0.8%). Launch-bootstrap 95% CIs.
+- precision@100: matches 0.98% [0.78, 1.20]; random 0.74%; activity-matched (same activity decile x recency) 1.04%; most-active 9.81%
+- matches vs activity-matched: −0.05 points [−0.30, 0.20] (ratio 0.95); lift vs base 1.23 [0.98, 1.50]
+- precision@500: matches 0.83%; random 0.82%; activity-matched 0.85% (ratio 0.97); most-active 5.72%; recall of the launch's voters in the top 500: 10.3% (random ~9.8%)
+- segments: Spearman across role segments between predicted likely share and actual vote rate +0.05 [−0.02, 0.12]
+Verdict: the tool-similarity match does not identify who upvotes; voting is driven by activity (the most active members are about 10x more likely to vote on any launch). The page should present matches as "people whose tools resemble this product", not "who would vote for it".
