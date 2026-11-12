@@ -1,0 +1,16 @@
+# One proxy URL per line (file path or http(s) URL). Order = IP index 1..N.
+# Apply with: scripts/vm/ph_iproyal_daily_pool.sh apply
+#
+# Default 5-IP split (daily < 5 confirmed):
+#   IP1  daily_heavy   — once/day launch-page heavy pass (temp e2-standard-4 or scheduled job)
+#   IP2  daily_people  — ph_people_daily page1 rotator (light PHUP)
+#   IP3  daily_spare   — overlap / 700-page days
+#   IP4  historical    — fleet pdeep L3_mid slot N
+#   IP5  historical    — fleet pdeep L3_mid slot N+1
+#
+# Example (replace with real files after purchase):
+# secrets/iproyal_daily_heavy.purl
+# secrets/iproyal_daily_people.purl
+# secrets/iproyal_daily_spare.purl
+# secrets/iproyal_hist_4.purl
+# secrets/iproyal_hist_5.purl
