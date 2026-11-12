@@ -18,8 +18,8 @@ ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 TARGET_LO="${FLEET_TARGET_LO:-20}"
 TARGET_HI="${FLEET_TARGET_HI:-30}"
 TARGET_MID="${FLEET_TARGET_MID:-25}"   # scale-down aim: stay in [LO,HI] at minimum VM cost
-MAX_VMS="${FLEET_MAX_VMS:-30}"
-MIN_VMS="${FLEET_MIN_VMS:-4}"
+MAX_VMS="${FLEET_MAX_VMS:-20}"
+MIN_VMS="${FLEET_MIN_VMS:-8}"
 MACHINE="${PH_FLEET_MACHINE:-e2-standard-2}"
 # On-demand e2-standard-2 list price ~$0.06701/hr (STANDARD provisioning).
 HOURLY_USD="${FLEET_HOURLY_USD:-0.06701}"
@@ -311,6 +311,10 @@ mid=float('$TARGET_MID')
 n=int('$n')
 min_v=int('$MIN_VMS')
 max_v=int('$MAX_VMS')
+POOL=__import__('pathlib').Path('$ROOT/secrets/iproyal.pool')
+if POOL.is_file():
+    cap=sum(1 for l in POOL.read_text().splitlines() if l.strip() and not l.strip().startswith('#'))
+    if cap: max_v=min(max_v, cap)
 step=int('${FLEET_MAX_SHRINK_STEP:-4}')
 avg_prod=float(m.get('avg_ppm_productive') or 0)
 # Prefer yield of VMs that are actually completing wholes.

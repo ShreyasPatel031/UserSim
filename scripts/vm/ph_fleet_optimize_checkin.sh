@@ -11,7 +11,9 @@ export FLEET_ART="$ART" PACE_FLEET_RUN_ID="$RUN_ID"
 export AGENT_MSGS_PROJECT="${AGENT_MSGS_PROJECT:-${GCP_PROJECT:-}}"
 [[ -n "${AGENT_MSGS_PROJECT}" ]] || { echo "set AGENT_MSGS_PROJECT or GCP_PROJECT for Pub/Sub relay" >&2; exit 1; }
 INBOX="$ART/agent_inbox.jsonl"
-export FLEET_MAX_VMS="${FLEET_MAX_VMS:-30}" PH_FLEET_STRATEGY="$ROOT/scripts/vm/ph_strategies/fleet_optimize.env"
+export FLEET_MAX_VMS="${FLEET_MAX_VMS:-20}" FLEET_MIN_VMS="${FLEET_MIN_VMS:-8}"
+PH_FLEET_STRATEGY="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_iproyal.env}"
+export PH_FLEET_STRATEGY
 LOG="$ART/checkin.log"
 HOURLY="${FLEET_HOURLY_USD:-0.06701}"
 

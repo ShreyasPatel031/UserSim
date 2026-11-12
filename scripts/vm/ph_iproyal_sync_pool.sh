@@ -26,7 +26,7 @@ for i,p in enumerate(proxies,1):
     print(i, p["ip"])
 pool_lines = []
 spain = secrets / "iproyal.purl"
-fleet_slots = int(__import__("os").environ.get("PACE_IPROYAL_FLEET_SLOTS", "5"))
+fleet_slots = int(__import__("os").environ.get("PACE_IPROYAL_FLEET_SLOTS", "20"))
 if spain.is_file() and spain.read_text().strip():
     pool_lines.append("secrets/iproyal.purl")
     print("pool head: Spain control", spain)
