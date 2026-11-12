@@ -22,7 +22,7 @@ Thread minus LM-only ridge (paired day bootstrap): top3 +2.1 [-0.3, +4.5], top5 
 | scorer | top 3 | top 5 | top 10 | #1 in top 3 | exact winner |
 |---|---|---|---|---|---|
 | honest | 57.6 | 68.2 | 74.7 | 72.0 | 40.1 |
-| clean_thread_z | 61.5 | 69.5 | 75.1 | 76.8 | 40.1 |
-| clean_stack | 61.4 | 69.4 | 75.1 | 76.8 | 40.1 |
-clean_thread_z minus clean LM alone (paired day bootstrap): top3 +3.9 [+1.1, +6.6], top5 +1.3 [-0.3, +2.8], top10 +0.3 [-0.3, +1.0], p1 +4.8 [-1.0, +10.6]
-clean_stack minus clean LM alone (paired day bootstrap): top3 +3.7 [+1.1, +6.3], top5 +1.2 [-0.4, +2.7], top10 +0.4 [-0.2, +1.0], p1 +4.8 [-1.0, +10.6]
+| clean_thread_z | 61.8 | 69.0 | 75.1 | 75.8 | 40.6 |
+| clean_stack | 61.5 | 68.7 | 75.2 | 75.8 | 39.6 |
+clean_thread_z minus clean LM alone (paired day bootstrap): top3 +4.2 [+1.8, +6.8], top5 +0.8 [-0.7, +2.2], top10 +0.4 [-0.2, +1.0], p1 +3.9 [-1.9, +9.7]
+clean_stack minus clean LM alone (paired day bootstrap): top3 +3.9 [+1.3, +6.4], top5 +0.5 [-1.0, +1.9], top10 +0.4 [-0.1, +1.1], p1 +3.9 [-1.9, +9.7]

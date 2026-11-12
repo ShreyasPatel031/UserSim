@@ -99,7 +99,9 @@ def main():
         return float(np.log(np.clip(int(m.group(1)), 1, 50))) if m else 1.0
     X["slug_num_l"] = X.slug.map(slug_num)
     zd = lambda c: X.groupby("day")[c].transform(lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0.0)
-    ZF = {"clean_thread_z": ["honest"] + TH, "clean_stack": ["honest"] + TH + ["slug_num_l"]}
+    # orchestrator 09:12Z Nov 12 audit: th_fa_* add -0.5 (dropped); nearly all the gain is th_n_pre
+    THz = ["th_has_first", "th_hunter_first", "th_n_pre"]
+    ZF = {"clean_thread_z": ["honest"] + THz, "clean_stack": ["honest"] + THz + ["slug_num_l"]}
     for f in set(sum(ZF.values(), [])):
         X["z_" + f] = zd(f)
     X["z_y"] = zd("y")
