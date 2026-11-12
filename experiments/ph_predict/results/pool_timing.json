@@ -1,0 +1,105 @@
+{
+ "days": [
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "n_per_day": {
+  "2026-11-10": {
+   "launches": 50,
+   "with_comment_1h": 48,
+   "with_comment_2h": 48,
+   "with_comment_4h": 48,
+   "with_pool_comment_1h": 22,
+   "with_pool_comment_2h": 24,
+   "with_pool_comment_4h": 29,
+   "upvote_first_seen": false,
+   "pool_size": 21004
+  },
+  "2026-11-11": {
+   "launches": 16,
+   "with_comment_1h": 16,
+   "with_comment_2h": 16,
+   "with_comment_4h": 16,
+   "with_pool_comment_1h": 11,
+   "with_pool_comment_2h": 12,
+   "with_pool_comment_4h": 14,
+   "upvote_first_seen": false,
+   "pool_size": 21004
+  }
+ },
+ "tests": {
+  "pool_c_1": {
+   "rho": 0.21,
+   "ci95": [
+    0.038,
+    0.382
+   ],
+   "days": 2,
+   "launches": 66
+  },
+  "pool_c_share_1": {
+   "rho": 0.103,
+   "ci95": [
+    0.103,
+    0.103
+   ],
+   "days": 2,
+   "launches": 64
+  },
+  "pool_c_2": {
+   "rho": 0.245,
+   "ci95": [
+    0.115,
+    0.374
+   ],
+   "days": 2,
+   "launches": 66
+  },
+  "pool_c_share_2": {
+   "rho": -0.029,
+   "ci95": [
+    -0.029,
+    -0.029
+   ],
+   "days": 2,
+   "launches": 64
+  },
+  "pool_c_4": {
+   "rho": 0.39,
+   "ci95": [
+    0.214,
+    0.565
+   ],
+   "days": 2,
+   "launches": 66
+  },
+  "pool_c_share_4": {
+   "rho": -0.117,
+   "ci95": [
+    -0.117,
+    -0.117
+   ],
+   "days": 2,
+   "launches": 64
+  },
+  "pool_c_day": {
+   "rho": 0.478,
+   "ci95": [
+    0.359,
+    0.596
+   ],
+   "days": 2,
+   "launches": 66
+  },
+  "pool_c_share_day": {
+   "rho": -0.029,
+   "ci95": [
+    -0.148,
+    0.091
+   ],
+   "days": 2,
+   "launches": 66
+  }
+ },
+ "reading": "pool leads if early (1-4 h) pool engagement predicts the shock about as well as the whole-day measure; pool follows exposure if only the whole-day measure does"
+}
