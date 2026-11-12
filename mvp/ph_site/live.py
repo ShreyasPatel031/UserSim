@@ -260,7 +260,7 @@ def _forecast_file(day: str, key: str):
     f = j["forecast"]
     # Pre-reveal files carry three orderings. The comment ridge leads (backtested on 207 days); PH's API rank and the
     # blend rest on a few replay days, so they are kept as experimental alternatives (PH ops, Nov 11).
-    field = "pred_rank"
+    field = "pred_rank_best" if key.startswith("P") and any("pred_rank_best" in r for r in f) else "pred_rank"
     ranks = {str(r["id"]): int(r[field]) for r in f if r.get(field) is not None}
     # Expected day-end votes (PH ops growth model, from Nov 12; null when unknown).
     exp = {str(r["id"]): round(float(r["exp_final_votes"])) for r in f
@@ -268,10 +268,11 @@ def _forecast_file(day: str, key: str):
     if not ranks:
         return None
     alt = {}
-    for af in ("pred_rank_blend", "pred_rank_api"):
+    for af in ("pred_rank", "pred_rank_blend", "pred_rank_api"):
         if af != field and any(af in r for r in f):
             alt[af] = {str(r["id"]): int(r[af]) for r in f if r.get(af) is not None}
-    method = "comment ridge" if key.startswith("P") else (j.get("method") or field)
+    method = ("best blend (comments, PH's hidden order, 00:05 model)" if field == "pred_rank_best"
+              else "comment ridge" if key.startswith("P") else (j.get("method") or field))
     agree = None
     if key.startswith("P"):
         # Do PH's hidden API order and the 00:05 model roughly agree on this pick? (|positions| <= 2, PH ops' rule)
@@ -353,21 +354,17 @@ _VERSION = re.compile(r"\b\d+(\.\d+)+\b|\bv\d+\b")
 
 
 def _top3_confidence(ranks: dict[str, int], prods: dict[str, dict]) -> dict[str, dict]:
-    c = claims()["top3_rate_by_rank"]
-    v = c["values"]
+    """Live per-pick record of the deployed 00:05 model (scoreboard: how often our #k finished in the final top 3)."""
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+    row = next((r for r in sb.get("summary") or [] if r.get("point") == "0005" and r.get("method") == "published"
+                and r.get("source") == "live"), None)
+    if not row:
+        return {}
     out = {}
     for pid, r in ranks.items():
-        if r > 3:
-            continue
-        name = prods.get(pid, {}).get("name", "")
-        note = short = None
-        if _BRAND.search(name):
-            note = f"brand sub-launches like this made the top 3 about {v['brand_sub_launch']:.0%} of the time"
-            short = f"brand launch: ~{v['brand_sub_launch']:.0%}"
-        elif _VERSION.search(name):
-            note = f"versioned launches like this made the top 3 about {v['versioned_name']:.0%} of the time"
-            short = f"versioned: ~{v['versioned_name']:.0%}"
-        out[pid] = {"p": v[str(r)], "note": note, "short": short, "basis": c["label"], "date": c["date"]}
+        cnt = row.get(f"p{r}_top3_count") if r <= 3 else None
+        if cnt:
+            out[pid] = {"count": cnt, "what": "top 3", "basis": f"live 00:05 calls, {row.get('first_day')} to {row.get('last_day')}"}
     return out
 
 
@@ -375,7 +372,7 @@ def _prereveal_confidence(key: str, f: dict) -> dict | None:
     """PH ops' replay of the pre-reveal picks (results/web/prereveal_confidence.json): how often pick k finished in the
     top 3 (picks 1-3) or top 5 (picks 4-5), as counts, plus whether the hidden API order and the 00:05 model agree."""
     pc = gcs.read_json("results/web/prereveal_confidence.json", ttl=3600)
-    if not pc or key not in (pc.get("by_point") or {}):
+    if not pc or key not in (pc.get("by_point") or {}) or pc.get("applies_to", "pred_rank_best") != "pred_rank_best":
         return None
     bp, out = pc["by_point"][key], {}
     ag = pc.get("by_agreement") or {}
@@ -389,7 +386,8 @@ def _prereveal_confidence(key: str, f: dict) -> dict | None:
         arate = ((ag.get("agree" if a else "disagree") or {}).get("picks1_3_in_top3" if r <= 3 else "picks1_5_in_top5")
                  if a is not None else None)
         out[pid] = {"hits": cell["hits"], "n": cell["n"], "what": "top 3" if r <= 3 else "top 5", "agree": a,
-                    "agree_rate": arate["rate"] if arate else None, "basis": f"replay, {pc.get('n_days')} days",
+                    "agree_rate": arate["rate"] if arate else None,
+                    "basis": f"{'in-sample ' if pc.get('in_sample') else ''}replay, {pc.get('n_days')} days",
                     "note": pc.get("note", "")}
     return out or None
 
@@ -409,11 +407,12 @@ def day_view(day: str) -> dict:
         score = None
         if act["final"]:
             score = {str(k): hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)}
-        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else None
+        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else (
+            _prereveal_confidence(key, f) if key.startswith("P") and f.get("rank_field") == "pred_rank_best" else None)
         exp_err = None
         if f.get("exp_votes"):
             g = claims().get("exp_votes_error", {}).get("values", {})
-            exp_err = g.get(key) or (g.get("pre_reveal") if key.startswith("P") else None)
+            exp_err = g.get(key)
         points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "top3_conf": conf,
                        "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
@@ -446,57 +445,20 @@ def day_view(day: str) -> dict:
 
 
 SB_LABEL = {"0005": "00:05 PT launch model", "P1": "pre-reveal +1 h", "P2": "pre-reveal +2 h", "P3": "pre-reveal +3 h",
-            "P4": "pre-reveal +4 h", "R0": "votes revealed", "R1": "reveal + 1 h", "R2": "reveal + 2 h", "R4": "reveal + 4 h"}
-SB_METHOD = {"published": "", "comment_ridge": "comments", "api_rank": "PH order (experimental)", "blend": "blend (experimental)",
-             "raw_votes": "votes"}
-
-
-LIVE_LATE_MIN = 60   # a 00:05 forecast counts as a live call only if produced within an hour of 00:05 PT
-
-
-def _recheck_0005_live(sb: dict) -> list[dict]:
-    """Re-derive the 00:05 'live' summary from each day's original run time (forecast_0005/<day>.json run_updated_at):
-    days produced more than LIVE_LATE_MIN minutes after 00:05 PT (backfills, late or post-reveal runs) are moved to a
-    'late' row instead of being counted as live calls."""
-    rows = [r for r in sb.get("rows") or [] if r.get("point") == "0005" and r.get("method") == "published"]
-    if not rows:
-        return sb["summary"]
-    live_rows, late_rows = [], []
-    for r in rows:
-        j = gcs.read_json(f"results/web/forecast_0005/{r['day']}.json", ttl=3600) or {}
-        ru = j.get("run_updated_at") or j.get("written_at")
-        try:
-            t = datetime.fromisoformat(str(ru).replace("Z", "+00:00")).astimezone(PT)
-        except ValueError:
-            late_rows.append(r)
-            continue
-        due = datetime.fromisoformat(r["day"]).replace(tzinfo=PT, hour=0, minute=5)
-        (live_rows if (t - due).total_seconds() <= LIVE_LATE_MIN * 60 else late_rows).append(r)
-
-    def summ(rs, source):
-        n = len(rs)
-        return {"point": "0005", "method": "published", "source": source, "days": n,
-                "first_day": min(r["day"] for r in rs), "last_day": max(r["day"] for r in rs),
-                **{f"mean_top{k}": round(sum(r[f"top{k}"] for r in rs) / n, 1) for k in (3, 5, 10)},
-                **{f"ci_top{k}": None for k in (3, 5, 10)}}
-    out = [r for r in sb["summary"] if not (r.get("point") == "0005" and r.get("method") == "published")]
-    if live_rows:
-        out.insert(0, summ(live_rows, "live"))
-    if late_rows:
-        out.append(summ(late_rows, "late"))
-    return out
+            "P4": "pre-reveal +4 h", "P0": "pre-reveal 00:45", "R0": "votes revealed", "R1": "reveal + 1 h", "R2": "reveal + 2 h", "R4": "reveal + 4 h"}
+SB_METHOD = {"published": "", "comment_ridge": "comments", "api_rank": "PH order", "blend": "blend",
+             "best": "best (shown)", "depth": "depth", "raw_votes": "votes"}
 
 
 def track_record(max_days: int = 30) -> dict:
     """Prefer the PH agent's daily scoreboard (results/web/scoreboard.json); fall back to scoring the files here."""
     sb = gcs.read_json("results/web/scoreboard.json", ttl=600)
     if sb and sb.get("summary"):
-        sb = {**sb, "summary": _recheck_0005_live(sb)}
         order = {k: i for i, k in enumerate(POINT_KEYS)}
         src_rank = {"live": 0, "late": 1, "replay": 2}
         rows = []
         for r in sb["summary"]:
-            if r.get("method") in ("makerfix_shadow", "unfixed_replay"):
+            if r.get("source") == "shadow" or r.get("method") in ("makerfix_shadow", "unfixed_replay"):
                 continue
             m = SB_METHOD.get(r.get("method"), r.get("method", ""))
             rows.append({"key": r["point"], "label": SB_LABEL.get(r["point"], r["point"]) + (f" · {m}" if m else ""),
@@ -504,6 +466,8 @@ def track_record(max_days: int = 30) -> dict:
                          "days_range": [r.get("first_day"), r.get("last_day")],
                          "top3": r.get("mean_top3"), "top5": r.get("mean_top5"), "top10": r.get("mean_top10"),
                          "experimental": "experimental" in m,
+                         "picks": {k: r.get(f"{k}_count") for k in ("p1_top3", "p2_top3", "p3_top3", "exact1")
+                                   if r.get(f"{k}_count")} or None,
                          # 95% day-bootstrap intervals, if the scoreboard carries them (NORTH_STAR shows them at 5+ days)
                          "ci": {k: r[c] for k in ("top3", "top5", "top10")
                                 for c in (f"ci_{k}", f"ci95_{k}", f"{k}_ci") if c in r} or None})
@@ -543,8 +507,16 @@ def _track_record_files(max_days: int = 30) -> dict:
 
 
 def weekly() -> dict | None:
-    names = sorted(n for n, _ in gcs.list_names("results/weekly_live/", ttl=300)
-                   if n.endswith(".json") and not n.endswith("_est.json"))
+    ptr = gcs.read_json("results/web/weekly_latest.json", ttl=300) or {}
+    pts = ptr.get("points") or {}
+    # The reveal + 4 h call if it is the newest day, else the end-of-day standings (never the 03:45 estimate).
+    pick = max((v for k, v in pts.items() if k in ("R4", "dayend") and isinstance(v, dict) and v.get("file")),
+               key=lambda v: (v.get("day") or "", v.get("written_at") or ""), default=None)
+    if pick:
+        names = [pick["file"]]
+    else:
+        names = sorted(n for n, _ in gcs.list_names("results/weekly_live/", ttl=300)
+                       if n.endswith(".json") and not n.endswith("_est.json"))
     if not names:
         return None
     j = gcs.read_json(names[-1], ttl=300) or {}

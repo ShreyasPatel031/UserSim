@@ -1,17 +1,5 @@
 {
  "_about": "Fixed offline figures quoted on /ph and /try, each with source and date; the pages label them as fixed offline figures. Only the /ph live track record is computed from saved forecast files.",
- "top3_rate_by_rank": {
-  "values": {
-   "1": 0.903,
-   "2": 0.57,
-   "3": 0.411,
-   "brand_sub_launch": 0.48,
-   "versioned_name": 0.5
-  },
-  "label": "207-day offline backtest of an earlier model run (Mar-Oct 2026), not this live model's record",
-  "source": "E5 false_favourites: experiments/simlab/reports/false_favourites/false_favourites.json, branch claude/person-model-v2",
-  "date": "2026-11-11"
- },
  "reactions_eval": {
   "values": {
    "launches": 300,
@@ -58,11 +46,15 @@
  },
  "exp_votes_error": {
   "values": {
-   "pre_reveal": "about 20% (29% at +1 h on 3 days; 30-56% for top-10 launches)",
-   "R0": "about 9.5% (15-34% for top-10 launches)",
-   "R4": "about 5% (larger for top-10 launches)"
+   "P0": "about 29% (56% for top-10 places)",
+   "P1": "about 29% (56% for top-10 places)",
+   "P2": "about 27% (36% for top-10 places)",
+   "P3": "about 21% (30% for top-10 places)",
+   "P4": "about 20% (34% for top-10 places)",
+   "R0": "about 10% (34% for top-10 places)",
+   "R4": "about 5% (15% for top-10 places)"
   },
-  "label": "median absolute error of expected day-end votes",
+  "label": "median absolute error of predicted day-end votes, pre-reveal on 3 days",
   "source": "PH ops growth model: results/growth.md",
   "date": "2026-11-12"
  },
@@ -88,6 +80,16 @@
   },
   "label": "275 real comments by 88 members",
   "source": "E5 person_sim: experiments/simlab/reports/person_sim/, branch claude/person-model-v2",
+  "date": "2026-11-12"
+ },
+ "launch_model_backtest": {
+  "values": {
+   "top3": 54.7,
+   "top5": 64.5,
+   "top10": 75.6
+  },
+  "label": "00:05 launch model offline backtest without the leaked maker-profile inputs",
+  "source": "PH ops NORTH_STAR.md (c960ead5)",
   "date": "2026-11-12"
  }
 }

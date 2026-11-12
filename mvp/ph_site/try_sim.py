@@ -573,7 +573,7 @@ def step_launch(tok: str) -> dict:
             "share_top3": b["share_top3"], "share_top10": b["share_top10"], "similar_launches": b["n"],
             "accuracy": {"days": acc["days"], "top3": acc["top3"], "top5": acc["top5"], "top10": acc["top10"],
                          "spearman": acc["within_day_spearman"],
-                         "full_model": {k: acc["reference_full_launch_model_honest"][k] for k in ("top3", "top5", "top10")}},
+                         "full_model": _full_model_ref(acc)},
             "assumed": {"hunter": "population median (unknown)", "maker history": "population median (unknown)",
                         "team ties / audience": "population median (unknown)", "launch day": "a typical day's line-up"},
             "method": (f"Percentile band from the page alone: a text model trained on {lb['trained_on']['launches']:,} "
@@ -581,6 +581,16 @@ def step_launch(tok: str) -> dict:
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
                        "(10th to 90th percentile)."),
             "honesty": _honesty(acc), "coverage": _coverage()}
+
+
+def _full_model_ref(acc: dict) -> dict:
+    """Corrected 00:05 launch-model backtest (claims.json; the 63/69/75 in older launch_band.json was leak-inflated)."""
+    try:
+        from mvp.ph_site.live import claims
+        v = claims()["launch_model_backtest"]["values"]
+        return {k: v[k] for k in ("top3", "top5", "top10")}
+    except Exception:  # noqa: BLE001
+        return {k: acc["reference_full_launch_model_honest"][k] for k in ("top3", "top5", "top10")}
 
 
 def _coverage() -> dict | None:
