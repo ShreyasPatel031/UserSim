@@ -1543,3 +1543,23 @@ Script experiments/simlab/band_facts.py; reports/band_v2/README.md. Test set: 85
 - Not exported: the pass hinges on an implementation detail of a near-null block.
 - Caches copied to gs://.../usersim_sim/tmp/e5/band/.
 - Also: stack prior with the link block. 00:05: 61.1, +0.7 [−0.7, +2.2] over thread-only. Later cuts: links stop the +3/+4 h loss but add nothing over the current early model.
+
+### 2026-11-12 E5 — /try launch-card numbers validated (856, controls); corrected banding exported; forward page-read job started
+reports/band_card/README.md.
+
+**Card checks (856, out of sample):**
+- Spearman with votes 0.310 vs the category mean 0.173: +0.137 [+0.071, +0.199].
+- Rank band coverage 83.5%, but by day size 91 / 93 / 76%.
+- Votes band 66% against a nominal 80%.
+- Top-10 chance 43 vs 33% actual.
+
+**Fixes:**
+- Percentile-of-day band: 79.8%; 81 / 81 / 79% by day size.
+- Share-of-day-votes band (p15–p85): 77.6%.
+- P(top 10% of the day): 8.2 vs 9.2%.
+
+Exported launch_band_card_v2.json, keyed to v1's deciles.
+
+**Forward job (task A):**
+- forward_band.py: daily 02:13 PT via a scheduled task. Frozen v2 scorer frozen_band.py, verified on 8 of 8 fresh rows; forward_score.py scores the days.
+- URL source: comment links only (about 40% coverage); the /r/ redirect decision is pending with the orchestrator.

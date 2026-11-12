@@ -29,6 +29,7 @@ for mon in sorted(set(DT.day.str[:7]) | set(DE.day.str[:7])):
     g_all[mon] = (gm, {t: (s_[t] + 20 * gm) / (c[t] + 20) for t in c})
 cat = lambda Dx: np.array([np.mean([g_all[d[:7]][1].get(t, g_all[d[:7]][0]) for t in tp]) for d, tp in zip(Dx.day, Dx.topics)])
 cat_oof, cat_te = cat(DT), cat(DE)
+_gm = float(np.nanmean(cat_oof)); cat_oof = np.where(np.isnan(cat_oof), _gm, cat_oof); cat_te = np.where(np.isnan(cat_te), _gm, cat_te)   # first month has no earlier launches
 
 RECENT = (pd.Timestamp(CUT) - pd.Timedelta(days=60)).strftime("%Y-%m-%d")
 def card(oof, te):
@@ -41,12 +42,12 @@ def card(oof, te):
             g = DT[(dec(p_tr) >= q - w) & (dec(p_tr) <= q + w)]; w += 1
         gr = g[g.day > RECENT]
         B[q] = {"rank": np.percentile(g["rank"], [10, 90]), "votes": np.percentile(g.votes, [10, 90]), "rq": np.percentile(g.rq, [10, 90]),
-                "sv": np.percentile(g.sv, [10, 90]), "votes_recent": np.percentile(gr.votes if len(gr) >= 20 else g.votes, [10, 90]),
+                "sv": np.percentile(g.sv, [10, 90]), "sv1585": np.percentile(g.sv, [15, 85]), "sv2080": np.percentile(g.sv, [20, 80]), "votes595": np.percentile(g.votes, [5, 95]), "rq1585": np.percentile(g.rq, [15, 85]), "votes_recent": np.percentile(gr.votes if len(gr) >= 20 else g.votes, [10, 90]),
                 "top3": float((g["rank"] <= 3).mean()), "top10": float((g["rank"] <= 10).mean()), "top10pct": float((g.rq <= 0.1).mean())}
     return p_te.astype(float), [B[q] for q in dec(p_te)]
 def const_card():
     gr = DT[DT.day > RECENT]
-    b = {"rank": np.percentile(DT["rank"], [10, 90]), "votes": np.percentile(DT.votes, [10, 90]), "rq": np.percentile(DT.rq, [10, 90]), "sv": np.percentile(DT.sv, [10, 90]),
+    b = {"rank": np.percentile(DT["rank"], [10, 90]), "votes": np.percentile(DT.votes, [10, 90]), "rq": np.percentile(DT.rq, [10, 90]), "sv": np.percentile(DT.sv, [10, 90]), "sv1585": np.percentile(DT.sv, [15, 85]), "sv2080": np.percentile(DT.sv, [20, 80]), "votes595": np.percentile(DT.votes, [5, 95]), "rq1585": np.percentile(DT.rq, [15, 85]),
          "votes_recent": np.percentile(gr.votes, [10, 90]), "top3": float((DT["rank"] <= 3).mean()), "top10": float((DT["rank"] <= 10).mean()), "top10pct": float((DT.rq <= 0.1).mean())}
     return np.zeros(len(DE)), [b] * len(DE)
 ARMS = {"page_band": card(b0_oof, b0_te), "ph_desc_band": card(ph_oof, ph_te), "CAT": card(cat_oof, cat_te), "CONST": const_card()}
@@ -65,10 +66,11 @@ res = {"design": __doc__.split("\n    python")[0], "n": len(DE), "train": len(DT
 for a, (p, B) in ARMS.items():
     o = {"spearman_votes": round(float(spearmanr(p, vt).correlation), 3) if a != "CONST" else 0.0, "spearman_-rank": round(float(spearmanr(p, -rk).correlation), 3) if a != "CONST" else 0.0,
          "width_rank": round(float(np.mean([b["rank"][1] - b["rank"][0] for b in B])), 1), "width_votes_ratio_p90_p10": round(float(np.mean([b["votes"][1] / max(b["votes"][0], 1) for b in B])), 2),
-         "width_rq": round(float(np.mean([b["rq"][1] - b["rq"][0] for b in B])), 3), "width_sv_ratio": round(float(np.mean([b["sv"][1] / max(b["sv"][0], 1e-6) for b in B])), 2), "by_subset": {}}
+         "width_rq": round(float(np.mean([b["rq"][1] - b["rq"][0] for b in B])), 3), "width_sv_ratio": round(float(np.mean([b["sv"][1] / max(b["sv"][0], 1e-6) for b in B])), 2), "width_sv1585_ratio": round(float(np.mean([b["sv1585"][1] / max(b["sv1585"][0], 1e-6) for b in B])), 2), "width_votes595_ratio": round(float(np.mean([b["votes595"][1] / max(b["votes595"][0], 1) for b in B])), 2), "by_subset": {}}
     ci, cv, cq, cs, cr = inside(B, "rank", rk), inside(B, "votes", vt), inside(B, "rq", rq), inside(B, "sv", sv), inside(B, "votes_recent", vt)
     for s, m in SUBS.items():
-        o["by_subset"][s] = {"n": int(m.sum()), "rank_band_cov": boot_cov(ci[m]), "votes_band_cov": boot_cov(cv[m]), "pct_of_day_band_cov": boot_cov(cq[m]), "share_of_day_votes_cov": boot_cov(cs[m]), "votes_recent60_cov": boot_cov(cr[m]),
+        o["by_subset"][s] = {"n": int(m.sum()), "rank_band_cov": boot_cov(ci[m]), "votes_band_cov": boot_cov(cv[m]), "pct_of_day_band_cov": boot_cov(cq[m]), "share_of_day_votes_cov": boot_cov(cs[m]), "votes_recent60_cov": boot_cov(cr[m]), "sv_p15_85_cov": boot_cov(inside(B, "sv1585", sv)[m]), "sv_p20_80_cov": boot_cov(inside(B, "sv2080", sv)[m]),
+                             "votes_p5_95_cov": boot_cov(inside(B, "votes595", vt)[m]), "pct_p15_85_cov": boot_cov(inside(B, "rq1585", rq)[m]),
                              "top10pct": calib([b for b, k in zip(B, m) if k], "top10pct", (rq[m] <= 0.1).astype(float)),
                              "top3": calib([b for b, k in zip(B, m) if k], "top3", (rk[m] <= 3).astype(float)), "top10": calib([b for b, k in zip(B, m) if k], "top10", (rk[m] <= 10).astype(float))}
     # calibration of top-3 share by predicted quartile (does the card's share hold at the extremes?)
@@ -81,5 +83,5 @@ res["page_minus_CAT_spearman_votes"] = [round(float(x), 3) for x in np.percentil
 json.dump(res, open(os.path.join(OUT, "band_card.json"), "w"), indent=1, default=float)
 for a, o in res["arms"].items():
     print(a, {k: v for k, v in o.items() if k != "by_subset"})
-    for s, v in o["by_subset"].items(): print("   ", s, v["n"], "rank", v["rank_band_cov"], "votes", v["votes_band_cov"], "pct", v["pct_of_day_band_cov"], "sv", v["share_of_day_votes_cov"], "votes60", v["votes_recent60_cov"], "top3", v["top3"]["predicted"], v["top3"]["actual"], "top10", v["top10"]["predicted"], v["top10"]["actual"], "top10%", v["top10pct"]["predicted"], v["top10pct"]["actual"])
+    for s, v in o["by_subset"].items(): print("   ", s, v["n"], "rank", v["rank_band_cov"], "votes", v["votes_band_cov"], "pct", v["pct_of_day_band_cov"], "sv", v["share_of_day_votes_cov"], "votes60", v["votes_recent60_cov"], "sv1585", v["sv_p15_85_cov"], "sv2080", v["sv_p20_80_cov"], "v595", v["votes_p5_95_cov"], "top3", v["top3"]["predicted"], v["top3"]["actual"], "top10", v["top10"]["predicted"], v["top10"]["actual"], "top10%", v["top10pct"]["predicted"], v["top10pct"]["actual"])
 print("page - CAT spearman votes", res["page_minus_CAT_spearman_votes"])
