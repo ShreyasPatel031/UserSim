@@ -10,7 +10,7 @@
   "2026-11-10"
  ],
  "method": "pred_rank_best (0.5 hidden API rank + 0.5 LM at P1; 0.75 / 0.25 at P2-P4)",
- "note": "Replay on past days, not live-scored; picks within a day are not independent, so intervals are rough.",
+ "note": "Replay on 6 past days, IN-SAMPLE: the pred_rank_best weights (w_api 0.5 / 0.75) were chosen on these same days. Picks within a day are not independent, so intervals are rough. Applies to pred_rank_best only, not to the comment-ridge pred_rank.",
  "written_at": "2026-11-12T02:19:28.330898+00:00",
  "by_point": {
   "P1": {
@@ -532,5 +532,7 @@
     ]
    }
   }
- }
+ },
+ "in_sample": true,
+ "applies_to": "pred_rank_best"
 }
