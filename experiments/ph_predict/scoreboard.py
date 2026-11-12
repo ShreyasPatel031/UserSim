@@ -78,7 +78,7 @@ def main():
             if pt.startswith("P"):
                 for m, c in (("comment_ridge", "pred_rank"), ("api_rank", "pred_rank_api"), ("blend", "pred_rank_blend"), ("best", "pred_rank_best"),
                              ("depth", "pred_rank_depth"), ("best_clean", "pred_rank_best_clean"), ("best_mix", "pred_rank_best_mix"),
-                             ("e5", "pred_rank_e5"), ("clean_thread", "pred_rank_clean_thread"), ("best_mix_th", "pred_rank_best_mix_th"), ("best_w25", "pred_rank_best_w25")):
+                             ("e5", "pred_rank_e5"), ("clean_thread", "pred_rank_clean_thread"), ("clean_thread_z", "pred_rank_clean_thread_z"), ("clean_stack", "pred_rank_clean_stack"), ("best_mix_th", "pred_rank_best_mix_th"), ("best_w25", "pred_rank_best_w25")):
                     # replay days without any pre-reveal API rank (Nov 2, 3: api_ranked 0) have no PH order: those rows are excluded
                     if m in ("api_rank", "blend", "best", "depth", "best_clean", "best_mix", "best_mix_th", "best_w25") and E.get("api_ranked", 1) == 0:
                         continue
@@ -152,7 +152,7 @@ BACKTEST = {
     ("month", "monthlyRank"): ("75 / 75 / 80", "dated reads, 4 months (E5 monthly_northstar); 42 / 50 / 52 from daily rank"),
 }
 ORDER = [("0005", "published"), ("0005", "clean_shadow"), ("0005", "clean_avg_shadow"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay"), ("0005", "nollm_shadow")] + \
-        [(p, m) for p in ("P030", "P0", "P1", "P2", "P3", "P4") for m in ("best", "best_w25", "best_clean", "best_mix", "best_mix_th", "e5", "clean_thread", "depth", "comment_ridge", "api_rank", "blend")] + \
+        [(p, m) for p in ("P030", "P0", "P1", "P2", "P3", "P4") for m in ("best", "best_w25", "best_clean", "best_mix", "best_mix_th", "e5", "clean_thread", "clean_thread_z", "clean_stack", "depth", "comment_ridge", "api_rank", "blend")] + \
         [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("R0", "r0blend_neartie"), ("R0", "r0blend_mean")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
 
 

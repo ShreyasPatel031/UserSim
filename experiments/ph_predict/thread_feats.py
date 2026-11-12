@@ -91,6 +91,37 @@ def main():
     json.dump({"feats": F, "mu": mu.to_dict(), "sd": sd.to_dict(), "coef": dict(zip(F, map(float, m.coef_))), "intercept": float(m.intercept_),
                "days": int(X.day.nunique()), "honest": "honest_preds_v2 (clean_v3 OOF); live: shadow pred_clean"},
               open(os.path.join(HERE, "results", "thread_live_model.json"), "w"), indent=1)
+    # orchestrator 08:29Z Nov 12 (stack): within-day z of every input and of the target -log(rank), ridge alpha 10, month-forward;
+    # inputs known at 00:05 only: clean LM + thread (clean_thread_z) and + slug_num_l (clean_stack; productLinks / media wait for the 00:05 read)
+    import re
+    def slug_num(s):
+        m = re.search(r"-(\d+)$", re.sub(r"-[0-9a-f]{8,}$", "", str(s)))
+        return float(np.log(np.clip(int(m.group(1)), 1, 50))) if m else 1.0
+    X["slug_num_l"] = X.slug.map(slug_num)
+    zd = lambda c: X.groupby("day")[c].transform(lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0.0)
+    ZF = {"clean_thread_z": ["honest"] + TH, "clean_stack": ["honest"] + TH + ["slug_num_l"]}
+    for f in set(sum(ZF.values(), [])):
+        X["z_" + f] = zd(f)
+    X["z_y"] = zd("y")
+    for nm, F in ZF.items():
+        Fz = ["z_" + f for f in F]; X[nm] = np.nan
+        for m in sorted(X.mon.unique())[1:]:
+            tr, te = X.mon < m, X.mon == m
+            X.loc[te, nm] = Ridge(alpha=10.0).fit(X.loc[tr, Fz], X.z_y[tr]).predict(X.loc[te, Fz])
+    S = X.dropna(subset=["ridge_lm_thread"])
+    for c in ZF:
+        P[c] = per_day(c)
+    md += ["", "## Within-day z, alpha 10 (orchestrator stack method)", "", "| scorer | top 3 | top 5 | top 10 | #1 in top 3 | exact winner |", "|---|---|---|---|---|---|"]
+    for c in ("honest", *ZF):
+        md.append(f"| {c} | " + " | ".join(f"{P[c][k].mean():.1f}" for k in ("top3", "top5", "top10", "p1", "exact")) + " |")
+    for c in ZF:
+        md.append(f"{c} minus clean LM alone (paired day bootstrap): " + ", ".join(f"{k} {boot(P[c][k] - P['honest'][k])}" for k in ("top3", "top5", "top10", "p1")))
+    zm = {}
+    for nm, F in ZF.items():
+        r = Ridge(alpha=10.0).fit(X[["z_" + f for f in F]], X.z_y)
+        zm[nm] = {"feats": F, "coef": dict(zip(F, map(float, r.coef_)))}
+    json.dump({"score": "sum(coef[f] * z_f), z_f = (x - mean_day(x)) / std_day(x) over the line-up (0 if std 0); rank by score desc",
+               "days": int(X.day.nunique()), "models": zm}, open(os.path.join(HERE, "results", "thread_live_model_z.json"), "w"), indent=1)
     open(os.path.join(HERE, "results", "thread_feats.md"), "w").write("\n".join(md) + "\n")
     json.dump({c: P[c].mean().round(2).to_dict() for c in P}, open(os.path.join(HERE, "results", "thread_feats.json"), "w"), indent=1)
     print("\n".join(md))

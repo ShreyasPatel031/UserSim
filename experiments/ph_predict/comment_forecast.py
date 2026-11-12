@@ -481,7 +481,7 @@ def live(day, point):
     # rank_clean_thread (orchestrator 09:20Z / 08:45Z Nov 12; thread_feats.md): the clean 00:05 LM + rank-neutral thread
     # maker features as of 00:05 PT (first top-level author vs hunter, pre-launch non-hunter commenters, first author's
     # earlier launches); a 00:05 forecast recorded in the P files (data cut 00:05 for the thread part)
-    A["pred_rank_clean_thread"] = np.nan; A["pred_rank_best_mix_th"] = np.nan
+    npre_th = None; A["pred_rank_clean_thread"] = np.nan; A["pred_rank_best_mix_th"] = np.nan; A["pred_rank_clean_thread_z"] = np.nan; A["pred_rank_clean_stack"] = np.nan
     try:
         tp = os.path.join(HERE, "results", "thread_live_model.json"); sp = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
         if os.path.exists(tp) and os.path.exists(sp):
@@ -518,12 +518,21 @@ def live(day, point):
                 E["lm_r"] = E.honest.rank(pct=True); E["n_day"] = np.log(len(E))
                 E["sc"] = sum(((E[f] - TM["mu"][f]) / TM["sd"][f]) * TM["coef"][f] for f in TM["feats"]) + TM["intercept"]
                 A["pred_rank_clean_thread"] = A.id.map(dict(zip(E.id, E.sc.rank(ascending=False, method="first").astype(int))))
+                # orchestrator 08:29Z Nov 12 (stack): within-day z, alpha 10 (results/thread_live_model_z.json; thread_feats.md)
+                zp = os.path.join(HERE, "results", "thread_live_model_z.json")
+                if os.path.exists(zp):
+                    import re
+                    sl = {str(x["id"]): str(x.get("slug") or "") for x in json.load(open(dp))} if os.path.exists(dp) else {}
+                    def _sn(s_):
+                        m_ = re.search(r"-(\d+)$", re.sub(r"-[0-9a-f]{8,}$", "", s_))
+                        return float(np.log(np.clip(int(m_.group(1)), 1, 50))) if m_ else 1.0
+                    E["slug_num_l"] = E.id.map(lambda i: _sn(sl.get(i, "")))
+                    for nm_, mz in json.load(open(zp))["models"].items():
+                        sc_ = sum(((E[f] - E[f].mean()) / E[f].std() if E[f].std() > 0 else E[f] * 0.0) * c for f, c in mz["coef"].items())
+                        A["pred_rank_" + nm_] = A.id.map(dict(zip(E.id, sc_.rank(ascending=False, method="first").astype(int))))
             # orchestrator (live th_n_pre gradient holds: 1.00 / 1.10 / 0.63 / 0.11 by final rank group on 6 live days):
             # pred_rank_best_mix with th_n_pre (non-hunter commenters by 00:05) as a tie-breaker, at P0 / P1 only
-            if point in ("P030", "P0", "P1") and A.pred_rank_best_mix.notna().any():
-                npre = dict(zip(E.id, E.th_n_pre))
-                A["pred_rank_best_mix_th"] = A.assign(_n=A.id.map(npre).fillna(0)).sort_values(["pred_rank_best_mix", "_n", "id"], ascending=[True, False, True]).pipe(
-                    lambda z: pd.Series(np.arange(1, len(z) + 1), index=z.index)).reindex(A.index)
+            npre_th = dict(zip(E.id, E.th_n_pre))   # used after best_mix is computed (below)
     except Exception as e:
         print("clean_thread skipped:", repr(e)[:160], flush=True)
     # orchestrator 04:10Z Nov 12 (depth analysis; provisional, scored forward): pred_rank_depth = positions 1-5 from
@@ -556,10 +565,13 @@ def live(day, point):
                                            + 1e-6 * lm_pos).rank(method="first").astype(int)
     except Exception as e:
         print("best_clean skipped:", repr(e)[:120], flush=True)
+    if npre_th is not None and point in ("P030", "P0", "P1") and A.pred_rank_best_mix.notna().any():
+        A["pred_rank_best_mix_th"] = A.assign(_n=A.id.map(npre_th).fillna(0)).sort_values(["pred_rank_best_mix", "_n", "id"], ascending=[True, False, True]).pipe(
+            lambda z: pd.Series(np.arange(1, len(z) + 1), index=z.index)).reindex(A.index)
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket

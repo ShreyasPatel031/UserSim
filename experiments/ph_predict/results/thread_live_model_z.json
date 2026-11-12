@@ -1,0 +1,44 @@
+{
+ "score": "sum(coef[f] * z_f), z_f = (x - mean_day(x)) / std_day(x) over the line-up (0 if std 0); rank by score desc",
+ "days": 238,
+ "models": {
+  "clean_thread_z": {
+   "feats": [
+    "honest",
+    "th_has_first",
+    "th_hunter_first",
+    "th_n_pre",
+    "th_fa_n",
+    "th_fa_rel"
+   ],
+   "coef": {
+    "honest": 0.5519881602502519,
+    "th_has_first": 0.009470747961783611,
+    "th_hunter_first": 0.020213652358668593,
+    "th_n_pre": 0.23138198784076033,
+    "th_fa_n": 0.02210984498605018,
+    "th_fa_rel": 0.037727639602253234
+   }
+  },
+  "clean_stack": {
+   "feats": [
+    "honest",
+    "th_has_first",
+    "th_hunter_first",
+    "th_n_pre",
+    "th_fa_n",
+    "th_fa_rel",
+    "slug_num_l"
+   ],
+   "coef": {
+    "honest": 0.5525077267959306,
+    "th_has_first": 0.009231669507918457,
+    "th_hunter_first": 0.020532844683530112,
+    "th_n_pre": 0.23162219078202534,
+    "th_fa_n": 0.02186175259678585,
+    "th_fa_rel": 0.03790472032116304,
+    "slug_num_l": 0.00907752531670397
+   }
+  }
+ }
+}
