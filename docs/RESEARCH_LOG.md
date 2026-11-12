@@ -1626,3 +1626,18 @@ All 1,293 items, adjudicator self-kappa 0.72–0.88.
 - Fresh page reads: 24.4 / 6.9 (constant 12 / 17). Precision is below the constant.
 
 **POINT-or-TOPIC standard:** BEST 78 / 78; page reads 63 / 65 (constant 20 / 33 and 25 / 44).
+
+### 2026-11-12 E5 — same-point standard: variants, ranked lists, ceiling
+reports/same_point/README.md.
+
+**Variants:**
+- No variant beats BEST on same-point precision: specific-only −6.5; retrieval pick −4.8; frequency −9.5; two-stage −0.4.
+- BEST (23.2) is not above a generic 6-item list (20.2) on PH descriptions, and is below it on page reads (14.7 vs 26.5).
+
+**Ranked lists:**
+- PH descriptions: concerns 13.1 and questions 16.7, about 2× the constant and category lists.
+- Page reads: they tie the constant.
+
+**Ceiling:** real vs real split-half same-point precision is 35.2 [29.8, 41.3]. 13% of real points are generic.
+
+Nothing exported. Forward job Nov 12 ran late (12:35Z, 4.6 h after launch, after the usage-limit outage): 15/37 with a URL, 8 read ok.
