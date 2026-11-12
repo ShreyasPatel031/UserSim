@@ -1,0 +1,336 @@
+{
+ "design": "Do questions and concerns come from what the page does NOT say? (orchestrator 03:15Z Nov 12)\nSame 300 post-cutoff launches as concerns_rank / questions_rank. Page text = PH description + held site text where available\n(raw/sites_ph.jsonl visible text, else sites.jsonl HTML stripped; first 4,000 chars). 12 information needs:\n  pricing, privacy, integrations, platforms, open_source, comparison, how_it_works, limits, team, roadmap, security, onboarding\nCalls (gemini-2.5-flash-lite, temperature 0, JSON):\n  PAGE    for each need: does the page answer it (true/false)\n  ASKED   for each need: did any real non-team comment ask about it or raise it as a concern/request (true/false)\n  ITEMS   the need (or \"other\") of each item in the RANKED concerns and RANKED questions lists (from concerns_rank/questions_rank)\n(a) lift per need: P(asked | unanswered) / P(asked | answered), launch-bootstrap 95% CI.\n(b) GAP list = unanswered needs ordered by the need's base rate of being asked among EARLIER launches of the sample (day < d;\n    leave-one-out, falls back to the overall rate); GENERIC list = all needs by the same base rate; category-level precision@3\n    and hit@3 (a listed need counts if real users asked about that need); RANKED lists scored at the same category level.\n(c) RANKED lists re-ordered with the gap signal as a 4th vote (items whose need is unanswered move up), scored with the\n    EXISTING per-item judge verdicts (theme level), paired vs the original order.",
+ "launches": 300,
+ "with_site_text": 273,
+ "share_answered_on_page": {
+  "pricing": 0.613,
+  "privacy": 0.35,
+  "integrations": 0.54,
+  "platforms": 0.42,
+  "open_source": 0.167,
+  "comparison": 0.327,
+  "how_it_works": 0.64,
+  "limits": 0.113,
+  "team": 0.277,
+  "roadmap": 0.07,
+  "security": 0.22,
+  "onboarding": 0.56
+ },
+ "share_asked": {
+  "pricing": 0.37,
+  "privacy": 0.183,
+  "integrations": 0.39,
+  "platforms": 0.34,
+  "open_source": 0.13,
+  "comparison": 0.617,
+  "how_it_works": 0.737,
+  "limits": 0.3,
+  "team": 0.627,
+  "roadmap": 0.327,
+  "security": 0.213,
+  "onboarding": 0.333
+ },
+ "lift": {
+  "pricing": {
+   "P(asked|unanswered)": 0.328,
+   "P(asked|answered)": 0.397,
+   "n_unanswered": 116,
+   "lift": 0.83,
+   "lift_ci": [
+    0.59,
+    1.122
+   ]
+  },
+  "privacy": {
+   "P(asked|unanswered)": 0.144,
+   "P(asked|answered)": 0.257,
+   "n_unanswered": 195,
+   "lift": 0.56,
+   "lift_ci": [
+    0.348,
+    0.895
+   ]
+  },
+  "integrations": {
+   "P(asked|unanswered)": 0.275,
+   "P(asked|answered)": 0.488,
+   "n_unanswered": 138,
+   "lift": 0.56,
+   "lift_ci": [
+    0.41,
+    0.756
+   ]
+  },
+  "platforms": {
+   "P(asked|unanswered)": 0.155,
+   "P(asked|answered)": 0.595,
+   "n_unanswered": 174,
+   "lift": 0.26,
+   "lift_ci": [
+    0.169,
+    0.366
+   ]
+  },
+  "open_source": {
+   "P(asked|unanswered)": 0.064,
+   "P(asked|answered)": 0.46,
+   "n_unanswered": 250,
+   "lift": 0.14,
+   "lift_ci": [
+    0.072,
+    0.243
+   ]
+  },
+  "comparison": {
+   "P(asked|unanswered)": 0.569,
+   "P(asked|answered)": 0.714,
+   "n_unanswered": 202,
+   "lift": 0.8,
+   "lift_ci": [
+    0.665,
+    0.955
+   ]
+  },
+  "how_it_works": {
+   "P(asked|unanswered)": 0.657,
+   "P(asked|answered)": 0.781,
+   "n_unanswered": 108,
+   "lift": 0.84,
+   "lift_ci": [
+    0.719,
+    0.977
+   ]
+  },
+  "limits": {
+   "P(asked|unanswered)": 0.305,
+   "P(asked|answered)": 0.265,
+   "n_unanswered": 266,
+   "lift": 1.15,
+   "lift_ci": [
+    0.703,
+    2.566
+   ]
+  },
+  "team": {
+   "P(asked|unanswered)": 0.608,
+   "P(asked|answered)": 0.675,
+   "n_unanswered": 217,
+   "lift": 0.9,
+   "lift_ci": [
+    0.756,
+    1.091
+   ]
+  },
+  "roadmap": {
+   "P(asked|unanswered)": 0.333,
+   "P(asked|answered)": 0.238,
+   "n_unanswered": 279,
+   "lift": 1.4,
+   "lift_ci": [
+    0.744,
+    4.763
+   ]
+  },
+  "security": {
+   "P(asked|unanswered)": 0.192,
+   "P(asked|answered)": 0.288,
+   "n_unanswered": 234,
+   "lift": 0.67,
+   "lift_ci": [
+    0.429,
+    1.113
+   ]
+  },
+  "onboarding": {
+   "P(asked|unanswered)": 0.288,
+   "P(asked|answered)": 0.369,
+   "n_unanswered": 132,
+   "lift": 0.78,
+   "lift_ci": [
+    0.552,
+    1.053
+   ]
+  }
+ },
+ "category_level": {
+  "GAP": {
+   "p3": [
+    44.2,
+    40.9,
+    47.8,
+    300
+   ],
+   "hit3": [
+    80.7,
+    76.3,
+    85.0,
+    300
+   ]
+  },
+  "GENERIC": {
+   "p3": [
+    66.0,
+    62.7,
+    69.3,
+    300
+   ],
+   "hit3": [
+    94.0,
+    91.3,
+    96.7,
+    300
+   ]
+  },
+  "RANKED_concerns": {
+   "p3": [
+    53.9,
+    49.5,
+    58.1,
+    191
+   ],
+   "hit3": [
+    86.9,
+    82.2,
+    91.6,
+    191
+   ]
+  },
+  "RANKED_questions": {
+   "p3": [
+    56.6,
+    52.4,
+    61.0,
+    217
+   ],
+   "hit3": [
+    88.0,
+    83.4,
+    92.2,
+    217
+   ]
+  }
+ },
+ "category_level_paired": {
+  "GAP - GENERIC": {
+   "p3": [
+    -21.8,
+    -24.9,
+    -18.9,
+    300
+   ],
+   "hit3": [
+    -13.3,
+    -17.7,
+    -9.3,
+    300
+   ]
+  },
+  "GAP - RANKED_concerns": {
+   "p3": [
+    -7.9,
+    -12.3,
+    -3.7,
+    191
+   ],
+   "hit3": [
+    -4.2,
+    -9.4,
+    1.0,
+    191
+   ]
+  },
+  "GAP - RANKED_questions": {
+   "p3": [
+    -13.3,
+    -17.4,
+    -9.0,
+    217
+   ],
+   "hit3": [
+    -6.0,
+    -11.5,
+    -0.9,
+    217
+   ]
+  }
+ },
+ "rerank_with_gap_vote": {
+  "concerns": {
+   "p3_orig": [
+    24.4,
+    21.5,
+    27.5,
+    296
+   ],
+   "p3_gap": [
+    23.9,
+    20.8,
+    26.8,
+    296
+   ],
+   "p3 diff (paired)": [
+    -0.6,
+    -1.8,
+    0.7,
+    296
+   ],
+   "hit3_orig": [
+    54.7,
+    49.0,
+    60.1,
+    296
+   ],
+   "hit3_gap": [
+    54.1,
+    48.3,
+    59.8,
+    296
+   ],
+   "hit3 diff (paired)": [
+    -0.7,
+    -3.4,
+    2.0,
+    296
+   ]
+  },
+  "questions": {
+   "p3_orig": [
+    15.5,
+    13.1,
+    18.2,
+    292
+   ],
+   "p3_gap": [
+    15.1,
+    12.7,
+    17.6,
+    292
+   ],
+   "p3 diff (paired)": [
+    -0.5,
+    -1.4,
+    0.5,
+    292
+   ],
+   "hit3_orig": [
+    37.7,
+    32.2,
+    43.5,
+    292
+   ],
+   "hit3_gap": [
+    36.3,
+    30.8,
+    41.8,
+    292
+   ],
+   "hit3 diff (paired)": [
+    -1.4,
+    -3.4,
+    0.7,
+    292
+   ]
+  }
+ },
+ "usd": 0.12
+}

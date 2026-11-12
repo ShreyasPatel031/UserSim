@@ -1040,3 +1040,10 @@ Script experiments/simlab/questions_rank.py (concerns_rank machinery; truth = on
 - RANKED (same fixed ranker): 15.4 / 15.5 / 14.2 / 37.7
 Paired: RANKED − generic p@3 +8.7 [5.7, 11.8], hit@3 +18.2 [10.6, 25.3]; question generator − generic p@3 +7.0 [4.3, 9.8]; RANKED − DEPLOYED p@3 +2.2 [−0.6, 5.1] (n.s.).
 Reading: predicted questions clear the generic FAQ list (about 1 in 7 vs 1 in 15 at the top three) but are harder than concerns; the single question-generator call does nearly as well as the full ranker.
+
+### 2026-11-12 E5 — gap detector: users ask MORE about what the page mentions, not less
+Script experiments/simlab/gap_eval.py; report reports/gap_eval/. Same 300 post-cutoff launches; page text = PH description + held site text (273/300 have site text). gemini-2.5-flash-lite labels: which of 12 needs the page answers, which real comments asked/raised, and the need of each RANKED list item. Spend $0.12.
+(a) P(asked | page silent) / P(asked | page answers) - lift < 1 for most needs: platforms 0.26 [0.17, 0.37] (15.5% vs 59.5%), open source 0.14 [0.07, 0.24] (6% vs 46%), integrations 0.56 [0.41, 0.76], privacy 0.56 [0.35, 0.90], comparison 0.80 [0.67, 0.96], how it works 0.84 [0.72, 0.98]; pricing 0.83 [0.59, 1.12], limits 1.15 [0.70, 2.57], roadmap 1.40 [0.74, 4.76], team, security, onboarding ns. Mentioning a capability draws follow-up questions about it.
+(b) category level (a listed need counts if real users raised that need): GAP list (unanswered needs by base rate) p@3 44.2 / hit@3 80.7; GENERIC (needs by base rate) 66.0 / 94.0; RANKED concerns 53.9 / 86.9; RANKED questions 56.6 / 88.0. GAP − GENERIC −21.8 [−24.9, −18.9]. (Category level is coarse: comparison, how it works and team are raised on more than 60% of launches.)
+(c) RANKED lists re-ordered with the gap vote, scored with the existing per-item verdicts: concerns p@3 −0.6 [−1.8, 0.7], questions −0.5 [−1.4, 0.5]. No gain.
+Verdict: rejected. What the page says, not what it omits, is where questions come from; the gap signal should not be shown as "users will ask about X because your page does not say it".
