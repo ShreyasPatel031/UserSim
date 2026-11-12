@@ -3,6 +3,6 @@
   "clean_thread_z": "score the with-replies version (P2 onward) as clean_thread_z; the P030-P1 version (no replies) is 'pre-fix' (orchestrator QA 13:37Z Nov 12)",
   "clean_lines_0005": "clean / clean_avg / clean_nosite shadow scores: inputs re-derived at 01:42 PT (shadow does not reproduce the published 00:05 file) until the frozen-inputs patch is approved",
   "reply_rows_read": "P2/P3 headers count reply rows fetched after the cut (13 and 38); the models used only rows fetched <= the cut; reply_rows_used added from Nov 13",
-  "capture": "live capture down from 03:00 PT (11:00Z): P4, R and C points not written ('no data: capture down')"
+  "capture": "live capture gap 03:00-05:45 PT (no snapshots 11:00Z-13:45Z; back from 13:45Z). P4, R0-R4 and C05 not written: the reveal (~04:00 PT) was not observed, so reveal-relative points cannot be timed. C06 written from the 06:00 PT read; its lock 'first_locked_at' times are capped at the first read after the gap (13:45Z)."
  }
 }
