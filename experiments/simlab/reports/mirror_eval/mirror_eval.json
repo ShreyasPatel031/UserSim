@@ -1,0 +1,130 @@
+{
+ "design": "Mirror of the gap test (orchestrator 03:40Z Nov 12): users ask about what the page MENTIONS. Same 300 post-cutoff launches.\nUses gap_eval.py's labels (which of 12 needs the page answers/mentions; the need of each RANKED item) and the existing per-item\njudge verdicts of concerns_rank / questions_rank.\n  RERANK     RANKED concerns / questions re-ordered with \"the page mentions this item's need\" as a positive vote (+0.5 on a 0-1\n             position score), scored with the existing per-item verdicts (item level)\n  MENTIONED  a list of the needs the page mentions, ordered by the need's base rate of being raised among EARLIER sample launches,\n             phrased as items (\"Users will ask about <need> - <the product>\"), judged at item level with the same judge prompts\n             as concerns_rank / questions_rank (gemini-2.5-flash)\nprecision@3 and hit@3, launch-bootstrap 95% CIs, paired vs the RANKED lists.",
+ "usd": 0.04,
+ "results": {
+  "concerns": {
+   "p3_ranked": [
+    24.4,
+    21.5,
+    27.5,
+    296
+   ],
+   "p3_rerank": [
+    24.0,
+    21.1,
+    27.0,
+    296
+   ],
+   "p3_mentioned": [
+    15.4,
+    12.9,
+    18.0,
+    293
+   ],
+   "hit3_ranked": [
+    54.7,
+    49.0,
+    60.5,
+    296
+   ],
+   "hit3_rerank": [
+    53.0,
+    47.3,
+    58.8,
+    296
+   ],
+   "hit3_mentioned": [
+    37.2,
+    31.7,
+    42.7,
+    293
+   ],
+   "p3 rerank - ranked (paired)": [
+    -0.5,
+    -1.7,
+    0.8,
+    296
+   ],
+   "hit3 rerank - ranked (paired)": [
+    -1.7,
+    -4.4,
+    1.4,
+    296
+   ],
+   "p3 mentioned - ranked (paired)": [
+    -9.0,
+    -13.0,
+    -5.1,
+    293
+   ],
+   "hit3 mentioned - ranked (paired)": [
+    -17.4,
+    -24.9,
+    -9.6,
+    293
+   ]
+  },
+  "questions": {
+   "p3_ranked": [
+    15.5,
+    13.1,
+    18.0,
+    292
+   ],
+   "p3_rerank": [
+    15.6,
+    13.1,
+    18.4,
+    292
+   ],
+   "p3_mentioned": [
+    15.9,
+    13.1,
+    18.9,
+    289
+   ],
+   "hit3_ranked": [
+    37.7,
+    32.2,
+    43.2,
+    292
+   ],
+   "hit3_rerank": [
+    37.3,
+    31.8,
+    42.8,
+    292
+   ],
+   "hit3_mentioned": [
+    35.3,
+    29.8,
+    40.8,
+    289
+   ],
+   "p3 rerank - ranked (paired)": [
+    0.1,
+    -0.9,
+    1.1,
+    292
+   ],
+   "hit3 rerank - ranked (paired)": [
+    -0.3,
+    -3.1,
+    2.4,
+    292
+   ],
+   "p3 mentioned - ranked (paired)": [
+    0.6,
+    -3.2,
+    4.6,
+    289
+   ],
+   "hit3 mentioned - ranked (paired)": [
+    -2.1,
+    -9.7,
+    5.9,
+    289
+   ]
+  }
+ }
+}

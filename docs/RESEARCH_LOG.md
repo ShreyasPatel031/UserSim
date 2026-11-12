@@ -1055,3 +1055,9 @@ Script experiments/simlab/discussion_volume.py; report reports/discussion_volume
 - bands (p10 / median / p90 comments by predicted decile, + hunter + makers): lowest decile 0 / 1 / 8, middle deciles 0 / 2–3 / 10–16, top decile 2 / 18 / 43
 - question share (launches with >= 5 comments): Spearman 0.19 product-only, 0.21 with hunter/makers - weak
 Reading: comment volume is moderately predictable, mostly from the hunter and makers (who bring their audience); the share of questions is barely predictable. A "how much reaction to expect" line should show the band (median and 10–90% range), not a point count.
+
+### 2026-11-12 E5 — mirror of the gap test ("the page mentions it" as a positive signal): closed, no gain
+Script experiments/simlab/mirror_eval.py; report reports/mirror_eval/. Same 300 launches, item-level judge verdicts; spend $0.04. p@3 / hit@3, paired vs the RANKED lists:
+- concerns: RANKED 24.4 / 54.7; re-ranked with a "page mentions this need" vote 24.0 / 53.0 (Δ p@3 −0.5 [−1.7, 0.8]); MENTIONED-needs list 15.4 / 37.2 (Δ −9.0 [−13.0, −5.1])
+- questions: RANKED 15.5 / 37.7; re-ranked 15.6 / 37.3 (Δ +0.1 [−1.0, 1.1]); MENTIONED-needs list 15.9 / 35.3 (Δ +0.6 [−3.2, 4.6])
+Reading: the association (users ask about what the page mentions) is real at the category level but adds nothing to the ranked lists at item level; a plain "mentioned needs" list matches the ranked questions list (cheaper, not better) and loses for concerns. Closed; nothing handed over.
