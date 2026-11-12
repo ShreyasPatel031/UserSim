@@ -996,3 +996,15 @@ Means (A own history / B generic member / C another person's history / D history
 Paired: A − B: same point +9.7 [3.3, 16.5], stance +6.9 [−1.7, 16.1], forced +2.4 [−9.4, 13.5]; A − C: same point +9.8 [4.4, 15.3], stance +13.5 [5.1, 22.3], forced +11.9 [2.5, 21.6]; D − A: all about 0 (tools add nothing).
 Type of comment (real: question 113, praise 105, other 26, objection 17, feature request 13): base rate (always "question") 36.9%; person's majority historical type 49.6% (+12.7 [2.6, 23.1]); A's generated stance 47.8% (+10.9 [2.6, 19.9]).
 Reading: a person's own history helps a little - it roughly doubles the chance of making the same specific point (12% -> 22%) and predicts the type of comment better than the base rate - but a reader picking the closest of four cannot tell it apart from a generic member (28.9% vs 26.5%, chance 25%). Not enough to claim individual simulated users.
+
+### 2026-11-12 E5 — what each optional input is worth to "where it would land"
+Script experiments/simlab/landing_ladder.py; report reports/landing_ladder/. 5,564 launches Mar–Oct with the product-only score and the honest LM; ridge on ln votes, expanding month-forward; 150 test days (May–Oct), paired by day, day-bootstrap 95% CIs; band = calibrated 10–90% daily-rank band from earlier months (width in ranks, coverage).
+Ladder (Spearman / top 3 / 5 / 10; band width; Δ top-3, Δ top-5 vs product-only):
+- 0 product-only: 35.2 / 30.0 / 41.1 / 61.9; band 33.5 ranks (coverage 0.85)
+- 1 + launch date & line-up size: same ranking (constant within a day); band 23.9 ranks (0.81)
+- 2 + hunter history: 56.7 / 47.6 / 62.4 / 75.3; band 20.8; Δ +17.6 [12.7, 22.7], +21.3 [17.6, 25.3]
+- 3 + maker history: 59.7 / 56.9 / 66.4 / 75.5; band 20.5; Δ +26.9 [21.6, 32.0], +25.3 [21.2, 29.3]
+- 4 + team's earlier voters (pool): no further gain (56.9 / 66.4 / 75.6)
+- 5 + full LM: 64.8 / 61.1 / 67.7 / 77.1; band 19.0; Δ +31.1, +26.7
+Each block alone on top of product-only: hunter +17.3 [12.4, 22.2] / +20.9; makers +15.3 [11.6, 19.3] / +9.6; team's earlier voters +12.7 [8.9, 16.4] / +17.7; full LM +32.7 / +27.2. Full LM alone (reference, same days): 65.3 / 62.9 / 67.5 / 77.1.
+Inputs a visitor would give: launch date (band only); the hunter's PH profile; the makers' PH profiles (maker history and the earlier-voter count are both computed from held data given the profiles). Hunter + makers recover about 85% of the gap between product-only and the full LM at top 3 (30.0 -> 56.9 vs 61–63).
