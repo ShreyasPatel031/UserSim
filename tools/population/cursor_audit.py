@@ -23,6 +23,7 @@ FULL18D = "T3OI+xr3iAvoMDMZrdryhA=="
 FULL18F = "uYYdW17hoPBJjpMGoR7lKw=="  # full18e + paging_v2.py:210 fix (no 98% / header-2 complete label); population agent 03:5xZ Nov 10
 AUDITED_BUILDS = {FULL18D, FULL18F}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
+MERGE_VM_HELD = False
 BLOCK_SINCE = os.environ.get("CURSOR_BLOCK_SINCE", "2026-11-10T09:15:00Z")  # fleet-wide PH block start (status logs)
 FOLLOW_ONLY = re.compile(r"^(followers|following):FAIL_(repeat|no_offset_end)$")
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
@@ -43,6 +44,9 @@ def lines(url):
 
 def main():
     W, dry = sys.argv[1], "--dry-run" in sys.argv
+    global MERGE_VM_HELD
+    MERGE_VM_HELD = "--merge-vm-held" in sys.argv
+    prov = {}
     stamp = time.strftime("%Y%m%dT%H%MZ", time.gmtime())
     done = {l.split("\t")[0] for l in lines(f"{CUR}/audited.tsv")}
     if "--reaudit-held" in sys.argv:  # re-score people whose latest audit result was held_gate (whole, blocked only by a gate)
@@ -82,7 +86,21 @@ def main():
             txt = "".join(sh("gsutil", "cat", u).stdout for u in logs)
             lines = txt.splitlines()
             vm_clean[vm] = (not any(EVASION.search(_strip_person(l)) for l in lines), _block_evasion(lines))
+            vm_ips[vm] = sorted((str(d.get("utc") or ""), d.get("exit_ip")) for d in map(_js, lines)
+                                if isinstance(d, dict) and d.get("event") == "exit_ip" and d.get("exit_ip"))
         return vm_clean[vm]
+
+    vm_ips = {}
+
+    def _js(l):
+        try:
+            return json.loads(l)
+        except Exception:
+            return None
+
+    def ip_at(vm, t):
+        ips = [ip for u, ip in vm_ips.get(vm, []) if u <= t]
+        return ips[-1] if ips else None
 
     def _block_evasion(lines):
         """orchestrator 10:25Z Nov 10. Returns the UTC time from which this VM's saves are held, or None:
@@ -138,6 +156,14 @@ def main():
             gate.append("vm_evasion_or_unknown")
         elif clean(vm)[1] and st[n] >= clean(vm)[1]:
             gate.append("vm_after_block_new_vm_or_ip")
+        vm_only = bool(gate) and all(x.startswith("vm_") for x in gate)
+        if ok and vm_only and MERGE_VM_HELD and vm != "unknown":
+            # 23:1xZ Nov 12 (Shreyas via orchestrator): a whole person held only by the VM/IP gate is good data; merge it
+            # with a provenance flag so these saves stay distinguishable. The gate still governs fleet behaviour.
+            prov[n] = {"vm": vm, "exit_ip_at_save": ip_at(vm, st[n]), "gate_reasons": gate,
+                       "saved_after_post_block_ip_change": "vm_after_block_new_vm_or_ip" in gate,
+                       "vm_rotation_evidence": "vm_evasion_or_unknown" in gate, "merged_by": f"cursor_audit {stamp} --merge-vm-held"}
+            gate = []
         if ok and not gate:
             if n in vm_t and not (n.lower() in rerun and st[n] > vm_t[n]):
                 res = "already_in_vm"
@@ -154,11 +180,20 @@ def main():
         for w in why + gate:
             reasons[w] += 1
         rows.append(f"{n}\t{st[n]}\t{res}\t{md5}\t{vm}\t{','.join(why + gate)}\n")
+    if prov:
+        print(f"VM_HELD_FLAGGED={sum(1 for n in merge + replace if n in prov)} post_block_ip={sum(1 for n in merge + replace if n in prov and prov[n]['saved_after_post_block_ip_change'])} "
+              f"rotation={sum(1 for n in merge + replace if n in prov and prov[n]['vm_rotation_evidence'])} exit_ip_known={sum(1 for n in merge + replace if n in prov and prov[n]['exit_ip_at_save'])}")
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
     if dry:
         return
     for n in replace:
         sh("gsutil", "-q", "cp", f"{VM}/{n}.json", f"{VM}/{n}.json.bak_cursor")
+    for n in merge + replace:
+        if n in prov:  # provenance flag written into the audited local copy before it is merged
+            f = f"{D}/people_live/vm/{n}.json"
+            d = json.load(open(f))
+            d["provenance"] = prov[n]
+            json.dump(d, open(f, "w"))
     for n in merge + replace:  # 07:5xZ Nov 10: merge the exact file audited (local copy), never the live staged object, which
         # the fleet may have overwritten since the download (an unaudited incomplete save reached vm/ that way at 06:42Z)
         sh("gsutil", "-q", "cp", f"{D}/people_live/vm/{n}.json", f"{VM}/{n}.json")
