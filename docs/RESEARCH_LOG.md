@@ -1615,3 +1615,14 @@ reports/judge_reliability/README.md. 96 launches (60 S300 BEST + 36 fresh); extr
 **Comment volume:** precision rises with it (37 → 48 → 61), and so does the constant (9 → 22).
 
 **Scoring rule:** keep 1 extraction × 1 judge.
+
+### 2026-11-12 E5 — which judge is right? gemini-2.5-pro adjudication
+All 1,293 items, adjudicator self-kappa 0.72–0.88.
+
+**Disagreement cell:** reactions the lenient judge passes and the strict one fails are 21% SAME_POINT and 73% SAME_TOPIC. The site's judge is a "same topic" judge.
+
+**SAME_POINT standard:**
+- BEST: recall 43.7 / precision 24.2 (constant 8 / 10).
+- Fresh page reads: 24.4 / 6.9 (constant 12 / 17). Precision is below the constant.
+
+**POINT-or-TOPIC standard:** BEST 78 / 78; page reads 63 / 65 (constant 20 / 33 and 25 / 44).
