@@ -128,19 +128,34 @@ function renderPeople(p){
   $("#pp-method").textContent = (p.voting_note ? p.voting_note + " " : "") + (S ? S.method + " " : "") + p.method + " " + p.note + " Segments are indicative.";
 }
 function renderLaunch(l){
-  const N = 40, x = (r)=> (Math.min(r, N)-0.5)/N*100, A = l.accuracy;
-  $("#ln").innerHTML = `<div class="grid3">
-     <div class="card"><p class="label">Likely daily rank</p><p class="big">#${l.rank_band.likely[0]}–#${l.rank_band.likely[1]}</p><p class="small muted">middle #${l.rank_band.median}; ${(l.share_top10*100).toFixed(0)}% of similar pages made the top 10, ${(l.share_top3*100).toFixed(0)}% the top 3</p></div>
-     <div class="card"><p class="label">Likely upvotes</p><p class="big">${l.votes_band.likely[0]}–${l.votes_band.likely[1]}</p><p class="small muted">middle ${l.votes_band.median}</p></div>
-     <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>
-   <div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
-   <div class="scale"><span>#1</span><span>page scores above ${l.percentile}% of past launches · band = 10th to 90th percentile of where similar pages finished</span><span>#${N}+</span></div>
-   ${l.coverage ? `<p class="small" style="margin-top:12px"><b>About ${Math.round(Number(l.coverage.share)*10)} in 10</b> past launches finished inside the band this model gave them (pooled over all scores, checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches using their PH descriptions, ${esc(l.coverage.label)}; fixed offline figure, ${esc(l.coverage.date)}).</p>` : ""}
+  const A = l.accuracy, C = l.card, pc = (x)=> Math.round(Number(x)*100);
+  const sizes = (o)=> Object.entries(o||{}).map(([k,v])=>`${esc(k)} ${pc(v)}%`).join(" · ");
+  let cards, band, cov;
+  if(C){
+    const N = Math.round(Number(C.typical_n) || 28), x = (q)=> Math.max(0, Math.min(100, Number(q)*100));
+    const V = C.validation || {};
+    cards = `<div class="grid3">
+     <div class="card"><p class="label">Where in the day's line-up</p><p class="big">${pc(C.pct_of_day[0])}–${pc(C.pct_of_day[2])}%</p><p class="small muted">from the top of the day (middle ${pc(C.pct_of_day[1])}%). On a typical day of ${N} launches: #${Number(C.rank_typical[0])}–#${Number(C.rank_typical[2])}, middle #${Number(C.rank_typical[1])}</p></div>
+     <div class="card"><p class="label">Share of the day's votes</p><p class="big">${(Number(C.share_votes[0])*100).toFixed(1)}–${(Number(C.share_votes[2])*100).toFixed(1)}%</p><p class="small muted">middle ${(Number(C.share_votes[1])*100).toFixed(1)}% of all votes cast on that day's launches</p></div>
+     <div class="card"><p class="label">Chance of the day's top 10%</p><p class="big">${pc(C.p_top10pct)}%</p><p class="small muted">Top 3 by day size: ${sizes(C.p_top3_by_size)}. Top 10: ${sizes(C.p_top10_by_size)}.</p></div></div>`;
+    band = `<div class="band" aria-label="Position in the day"><div class="l" style="left:${x(C.pct_of_day[0])}%;right:${100-x(C.pct_of_day[2])}%"></div><div class="m" style="left:${x(C.pct_of_day[1])}%"></div></div>
+     <div class="scale"><span>top of the day</span><span>10th to 90th percentile of where pages with a similar score finished</span><span>bottom</span></div>`;
+    cov = `<p class="small" style="margin-top:12px">Checked out of sample on ${Number(V.launches)} page reads (fixed offline figures, E5): the real position fell inside this band ${Math.round(Number(V.band))}% of the time (${(V.band_by_size||[]).map(v=>Math.round(Number(v))+"%").join(" / ")} on small / mid / large days; ${Math.round(Number(V.fresh))}% on 130 fresh reads); the vote-share band held ${Math.round(Number(V.share))}% of the time; the top-10% chance averaged ${Number((V.top10pct||[])[0]).toFixed(1)}% predicted vs ${Number((V.top10pct||[])[1]).toFixed(1)}% actual. We assumed: ${Object.entries(l.assumed).map(([k,v])=>esc(k)+" at "+esc(v)).join("; ")}.</p>`;
+  } else {
+    const N = 40, x = (r)=> (Math.min(r, N)-0.5)/N*100;
+    cards = `<div class="grid3">
+     <div class="card"><p class="label">Likely daily rank</p><p class="big">#${Number(l.rank_band.likely[0])}–#${Number(l.rank_band.likely[1])}</p><p class="small muted">middle #${Number(l.rank_band.median)}</p></div>
+     <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>`;
+    band = `<div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
+     <div class="scale"><span>#1</span><span>10th to 90th percentile of where similar descriptions finished</span><span>#${N}+</span></div>`;
+    cov = l.coverage ? `<p class="small" style="margin-top:12px"><b>About ${Math.round(Number(l.coverage.share)*10)} in 10</b> past launches finished inside the band this model gave them (pooled over all scores, checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches using their PH descriptions; fixed offline figure, ${esc(l.coverage.date)}).</p>` : "";
+  }
+  $("#ln").innerHTML = cards + band + cov + `
    ${l.input_note ? `<p class="small" style="margin-top:12px">${esc(l.input_note)}</p>` : ""}
    <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
-   <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
-     <tr><td>This page-only model (${Number(A.days)} days)</td><td>${A.top3.toFixed(0)}%</td><td>${A.top5.toFixed(0)}%</td><td>${A.top10.toFixed(0)}%</td></tr>
-     ${A.full_model ? `<tr><td class="muted">Full launch model with team history (offline backtest, provisional)</td><td class="muted">${Number(A.full_model.top3).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(0)}%</td></tr>` : ""}</tbody></table>
+   <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy (on PH descriptions)</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
+     <tr><td>The PH-description model (${Number(A.days)} days)</td><td>${Number(A.top3).toFixed(0)}%</td><td>${Number(A.top5).toFixed(0)}%</td><td>${Number(A.top10).toFixed(0)}%</td></tr>
+     ${A.full_model ? `<tr><td class="muted">Full launch model with team history (offline backtest)</td><td class="muted">${Number(A.full_model.top3).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(0)}%</td></tr>` : ""}</tbody></table>
    <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
 }
 

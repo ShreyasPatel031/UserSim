@@ -674,6 +674,22 @@ def step_launch(tok: str) -> dict:
     b = lb["bands"][min(9, pct // 10)]
     rk, vt = b["daily_rank_p10_p50_p90"], b["votes_p10_p50_p90"]
     acc = lb_ph["heldout_accuracy"]   # top-3/5/10 table: measured on PH descriptions (labelled as such)
+    card = None
+    if lb is not lb_ph:
+        # E5's validated card for the page band (same score and cuts): percentile of the day's line-up, share of the
+        # day's votes and P(top 10% of the day), out of sample on 856 page reads.
+        cv = gcs.read_json("site/launch_band_card_v2.json", ttl=3600)
+        if cv and cv.get("cuts_identical_to_v1"):
+            d = cv["deciles"][min(9, pct // 10)]
+            val = cv.get("validation_out_of_sample_856") or {}
+            card = {"pct_of_day": d["pct_of_day_p10_p50_p90"], "rank_typical": d["rank_band_typical_day"],
+                    "typical_n": cv.get("typical_day_size_last_8_weeks"), "share_votes": d["share_of_day_votes_p15_p50_p85"],
+                    "p_top10pct": d["p_top10pct_of_day"], "p_top3_by_size": d["p_top3_by_day_size"],
+                    "p_top10_by_size": d["p_top10_by_day_size"],
+                    "validation": {"launches": 856, "band": val.get("pct_of_day_band_coverage"),
+                                   "band_by_size": val.get("by_day_size"), "fresh": val.get("fresh_130"),
+                                   "share": val.get("share_of_day_votes_p15_p85"),
+                                   "top10pct": val.get("p_top10pct_pred_vs_actual")}}
     return {"percentile": pct, "decile": b["decile"],
             "rank_band": {"likely": [int(rk[0]), int(rk[2])], "median": int(rk[1])},
             "votes_band": {"likely": [int(vt[0]), int(vt[2])], "median": int(vt[1])},
@@ -687,7 +703,8 @@ def step_launch(tok: str) -> dict:
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
                        "(10th to 90th percentile)."),
-            "honesty": _honesty(acc), "coverage": _coverage(), "input_note": _input_note(a.get("source"))}
+            "honesty": _honesty(acc), "coverage": None if card else _coverage(), "input_note": _input_note(a.get("source")),
+            "card": card, "source": a.get("source")}
 
 
 def _input_note(source: str | None) -> str | None:
