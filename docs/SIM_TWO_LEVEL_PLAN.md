@@ -256,3 +256,5 @@ Open, next to assign:
 36. Comment forecast features on the clean residual: the blocks that were null over the leaked LM (comment text, commenter accounts, maker replies, arrival shape).
 37. Weekly / monthly: nothing changes (they use votes), but check no weekly feature used maker identity.
 38. Website: once shadow_clean has 7 days, replace the published 00:05 line on /ph if it wins (Shreyas's call on the deployed pipeline).
+19o. **Earlier nulls re-tested on the clean baseline**: done. Tranco, 85 text flags, community links, line-up competition, seven hunter-history refinements, lambdarank and classifier objectives: all still null (no top-3 or top-5 interval above zero). One gain: rank-average of ridge and LightGBM → 55.6/67.1/74.6, pick #1 in top 3 71.0% (+6.3 [+1.0, +11.6]), exact winner 39.6% (+7.7 [+2.9, +12.6]); live 8 days 58.3/72.5/76.2, pick #1 87.5%. Added to shadow_clean as a second column.
+19p. **Leak suspect in the comment forecast** (its team / non-team split uses makers named after the day): orchestrator (Opus subagent) and PH agent, running. Until it reports, treat the +6 to +9 comment gain as unverified.
