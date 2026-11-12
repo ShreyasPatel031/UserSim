@@ -308,3 +308,17 @@ Open (next to assign):
 - O4: /try rank band beyond 0.28–0.40 from a page read: page-read structured fields + nearest earlier launches' outcomes, tested against the best constant and the page-trained band on the 856-launch set.
 - O5: who on /try stays descriptive; only reopen with a new information source (e.g. followers of the hunter, which a URL does not have).
 Waiting on Shreyas: merge of the early_shock hidden-votes fix (before ~Nov 20); PR #147 merge and its Vercel key; RANKED concerns/questions build on /try; replacing the deployed 00:05 model with the clean one after ~7 scored shadow days.
+
+## Queue state, Nov 12 14:35 UTC
+Headlines: clean 00:05 backtest, conservative (no site judgement): 56.4 / 67.8 / 75.0 (214 days); + pre-launch commenter count 60.9 top 3 (+4.7 [+2.3, +7.2]), audited, live coefficient matches backtest, hit counts not yet separable. Live 15 days as-live: deployed 27/45 top 3, #1 in top 3 8/15; clean 27, 12; clean without site judgement 29, 14. Pre-reveal replay (7 days): 71.4 top 3 at 01:00 PT, 85.7 at 03:00. Official ranks = votes at the period close (daily midnight, Sunday midnight, month end); weekly running rank at Saturday end 5/6, 8/10, 18/20 (2 weeks). /try under the same-point standard: ranked concerns/questions from a pasted description beat the generic list and reach the real-vs-real ceiling; top-1 question holds from a URL (41% vs 21–23% generic); reactions are topic-level only; rank band from a page 0.28–0.40, percentile banding calibrated.
+Closed today (do not re-run): full maker team; maker-count drift; llm_full leak (never an input); ensembles / rerankers / interactions / target variants on the stack; intro-comment text; richer pre-launch comment block; link/media bundle beyond +1 (not deployable until read at launch); hidden-rank momentum; first-hours shape at 03:00; comments as vote proxy for weekly/monthly; weekly growth factor; voter-learned "who" and addressable voters; tone of reception; consensus / temperature-0 reactions; four same-point reaction variants; drafted launch post; rank-band rewrite; band v2 with page facts (borderline, forward test running).
+Running:
+- R1 (PH agent): candidate deploy model clean_nosite_thread (backtest, as-live, nightly shadow, patch file); Nov 12 scoring 09:40Z Nov 13 — first forward day for the pre-reveal lines.
+- R2 (E5): raising the top-1 question/concern from a URL; daily at-launch page-read job 02:13 PT (band v1 vs v2 forward).
+- R3 (orchestrator): QA of each night's files before the outcome; next own analysis chosen at the next check from the scored Nov 12 day (error anatomy of the first forward day).
+Open:
+- O1: forward check of the thread coefficient (stop at se ≤ 0.07, ~13 days) and clean-vs-deployed block at 25 / 50 days.
+- O2: fields that need the capture change (product links, review count at launch) — score when read at launch.
+- O3: weekly running rank + expected entrants, first score Mon Nov 16; monthly at day 20 and month end.
+- O4: top-1 concern from a URL (not established); "after using it" view under the same-point standard.
+Waiting on Shreyas: deploy of the clean 00:05 model (recommended variant: without the site judgement; with the frozen-inputs hook and the VM cron for timed steps); Data Feeder capture changes (nightly monthly reread, day boundary, launch fields, website URLs, earlier comment reads with replies); DataImpulse account (407); early_shock fix before ~Nov 20; PR #147.
