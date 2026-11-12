@@ -139,3 +139,23 @@ Overall: hit 41.9 [32.4, 52.4], generic 21.4, difference +20.5 [7.1, 34.3] (70 l
 - No split is clearly supported. Rank is not known before launch in any case.
 - The busiest launches (20+ comments) show no edge over a generic question.
 - No "works best for" note was sent.
+
+## Pasted description: length and content (paste_length.py; no new calls)
+
+Setup:
+- Top-1 from the real PH description, mean of 2 adjudications; generic = the constant first item.
+- PH descriptions are short: median 66 words, none above 100. The 100–200 and 200+ bins are empty.
+
+| bin | n | question hit / generic / diff | concern hit / generic / diff |
+|---|---|---|---|
+| all | 70 | 49.3 / 22.1 / **+27.1 [15.0, 40.0]** | 37.9 / 17.9 / **+20.0 [6.4, 34.3]** |
+| < 40 words | 16 | 46.9 / 37.5 / +9.4 [−12.5, 34.4] | 34.4 / 34.4 / 0.0 [−34.5, 31.2] |
+| 40–100 words | 54 | 50.0 / 17.6 / **+32.4 [18.5, 47.2]** | 38.9 / 13.0 / **+25.9 [13.0, 39.8]** |
+| names pricing (yes / no) | 27 / 43 | +27.8 / +26.7 | +24.1 / +17.4 |
+| names integrations (yes / no) | 21 / 49 | +9.5 [−14, 33] / +34.7 [21, 48] | +7.1 / +25.5 |
+| names a target user (yes / no) | 9 / 61 | +33.3 / +26.2 | +5.6 / +22.1 |
+
+**Reading:**
+- Below about 40 words, the top question / concern is no better than a generic one; at 40–100 words it clearly is.
+- The model's own hit rate is similar in both bins (47 vs 50). The difference is that generic items also hit on short-description launches (37.5% vs 17.6%), so this is a property of those launches, not proof that more words cause hits.
+- Naming pricing, integrations or a target user does not help. Integrations, if anything, comes with a lower edge.
