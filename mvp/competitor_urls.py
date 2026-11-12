@@ -64,9 +64,15 @@ _DEFUNCT_RE = re.compile(
     r"this product (?:has )?(?:shut|closed)|permanently closed|"
     r"domain (?:is )?for sale|buy this domain|parked (?:free|domain)|"
     r"this (?:site|page|domain) (?:can(?:no|')t be reached|is (?:unavailable|for sale))|"
-    r"website (?:has )?expired|account (?:has been )?suspended",
+    r"website (?:has )?expired|account (?:has been )?suspended|"
+    r"farewell|goodbye|sunsetting|sunsetted|discontinued|"
+    r"no longer available to new customers|service (?:has been |is being )?retired|"
+    r"we(?:'re| are) (?:shutting|closing)|end of (?:life|service)|"
+    r"thank you for (?:being part of|using)|it(?:'s| has) been (?:a )?(?:great |incredible )?journey",
     re.I,
 )
+
+_FAREWELL_PATH_RE = re.compile(r"/(?:blog|news|announcements?)/.*(?:farewell|goodbye|sunset|shutdown|closing)", re.I)
 
 # Phrases that describe our harness, not the product.
 _OUR_FAULT_RE = re.compile(
@@ -162,11 +168,129 @@ def _brand(host: str) -> str:
     return label if len(label) >= 4 else ""
 
 
+def brand_in_content(expected_name: str, url: str, body: str) -> bool:
+    """True when the page content confirms this is the expected product, not a different company with the same domain."""
+    if not expected_name or len(expected_name) < 3:
+        return True
+    name_lower = expected_name.lower().strip()
+    name_words = set(re.findall(r"[a-z0-9]+", name_lower))
+    host = registrable_host(url)
+    host_brand = _brand(host) if host else ""
+    if host_brand and host_brand.lower() == name_lower:
+        return True
+    body_lower = (body or "")[:15000].lower()
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", body_lower, re.I | re.S)
+    title = title_match.group(1) if title_match else ""
+    meta_match = re.search(r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']+)', body_lower, re.I)
+    meta_desc = meta_match.group(1) if meta_match else ""
+    check_text = f"{title} {meta_desc} {body_lower[:3000]}"
+    if name_lower in check_text:
+        return True
+    if len(name_words) >= 2 and all(w in check_text for w in name_words):
+        return True
+    return False
+
+
+def host_matches_brand(expected_name: str, url: str) -> bool:
+    """True when the URL's host matches the expected product/brand name (for 403/429 without body)."""
+    if not expected_name or len(expected_name) < 3:
+        return False
+    name_lower = re.sub(r"[^a-z0-9]", "", expected_name.lower())
+    host = registrable_host(url)
+    if not host:
+        return False
+    host_brand = _brand(host)
+    if not host_brand:
+        host_parts = host.replace(".", "").replace("-", "")
+        return name_lower in host_parts or host_parts in name_lower
+    return host_brand.lower() == name_lower or name_lower in host_brand.lower() or host_brand.lower() in name_lower
+
+
+_CATEGORY_STOP_WORDS = frozenset({
+    "a", "an", "the", "and", "or", "for", "to", "of", "in", "on", "with", "is", "are", "as", "by",
+    "that", "this", "it", "be", "was", "were", "been", "being", "have", "has", "had", "do", "does",
+    "did", "will", "would", "could", "should", "may", "might", "must", "shall", "can", "need",
+    "product", "service", "platform", "tool", "app", "application", "software", "solution",
+})
+
+
+def _category_keywords(category: str) -> set[str]:
+    """Extract meaningful keywords from a category description."""
+    words = set(re.findall(r"[a-z0-9]+", (category or "").lower()))
+    return {w for w in words if len(w) >= 2 and w not in _CATEGORY_STOP_WORDS}
+
+
+def category_matches_content(expected_category: str, body: str) -> bool:
+    """True when the page content matches the expected product category.
+    
+    Uses keyword overlap between the category description and the page's
+    title, meta description, and first ~2k chars of visible text.
+    """
+    if not expected_category or len(expected_category) < 3:
+        return True
+    keywords = _category_keywords(expected_category)
+    if not keywords:
+        return True
+    body_lower = (body or "")[:8000].lower()
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", body_lower, re.I | re.S)
+    title = title_match.group(1) if title_match else ""
+    meta_match = re.search(r'<meta[^>]+name=["\']description["\'][^>]+content=["\']([^"\']+)', body_lower, re.I)
+    meta_desc = meta_match.group(1) if meta_match else ""
+    visible = re.sub(r"<script.*?</script>|<style.*?</style>", " ", body_lower[:4000], flags=re.S | re.I)
+    visible = " ".join(re.sub(r"<[^>]+>", " ", visible).split())[:2000]
+    check_text = f"{title} {meta_desc} {visible}"
+    check_words = set(re.findall(r"[a-z0-9]+", check_text))
+    overlap = keywords & check_words
+    required = max(1, len(keywords) // 2)
+    return len(overlap) >= required
+
+
+_CATEGORY_NEGATIVE_PATTERNS = {
+    "ai": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court|fashion|luxury|clothing|apparel|handbag|leather|silk|scarves?)\b", re.I),
+    "agent": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court|fashion|luxury|clothing|apparel|handbag|leather|silk|scarves?|real\s*estate|property|realtor)\b", re.I),
+    "automation": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+    "cloud": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+    "ide": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+    "developer": re.compile(r"\b(?:law\s*firm|attorney|lawyer|legal\s*services?|litigation|court)\b", re.I),
+}
+
+
+def _has_category_negative(expected_category: str, body: str) -> bool:
+    """True if the page contains terms that contradict the expected category."""
+    if not expected_category or not body:
+        return False
+    cat_lower = expected_category.lower()
+    body_sample = (body or "")[:5000].lower()
+    for key, pattern in _CATEGORY_NEGATIVE_PATTERNS.items():
+        if key in cat_lower and pattern.search(body_sample):
+            return True
+    return False
+
+
+def identity_matches(expected_name: str, expected_category: str, url: str, body: str) -> tuple[bool, str]:
+    """Check if the page matches both the expected name AND category.
+    
+    Returns (matches, reason) where reason explains why it failed.
+    """
+    if _has_category_negative(expected_category, body):
+        return False, "wrong_category"
+    if not brand_in_content(expected_name, url, body):
+        return False, "wrong_company"
+    if expected_category and not category_matches_content(expected_category, body):
+        return False, "wrong_category"
+    return True, "ok"
+
+
 def is_non_product_host(url: str) -> bool:
     host = registrable_host(url)
     if not host:
         return True
-    return any(host == blocked or host.endswith("." + blocked) for blocked in _NON_PRODUCT_HOSTS)
+    if any(host == blocked or host.endswith("." + blocked) for blocked in _NON_PRODUCT_HOSTS):
+        return True
+    full_host = (urlparse(url).hostname or "").lower().rstrip(".")
+    if full_host.startswith("blog.") or full_host.startswith("news."):
+        return True
+    return False
 
 
 _ARTICLE_SEGMENTS = frozenset(
@@ -218,6 +342,45 @@ def unwrap_search_url(url: str) -> str:
     return raw
 
 
+async def search_result_urls(query: str, *, limit: int = 6) -> list[tuple[str, str]]:
+    """(url, title) pairs from a public web search. Empty on any failure."""
+    from html import unescape
+    from urllib.parse import quote_plus
+
+    import httpx
+
+    url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
+    try:
+        async with httpx.AsyncClient(timeout=12.0, follow_redirects=True) as client:
+            resp = await client.get(
+                url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                    )
+                },
+            )
+            html = resp.text or ""
+    except Exception:
+        return []
+    out: list[tuple[str, str]] = []
+    for match in re.finditer(
+        r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+        html,
+        flags=re.I | re.S,
+    ):
+        href = unwrap_search_url(unescape(match.group(1).strip()))
+        title = re.sub(r"<[^>]+>", "", match.group(2))
+        title = " ".join(unescape(title).split())
+        if not href.startswith("http"):
+            continue
+        out.append((href, title[:160]))
+        if len(out) >= limit:
+            break
+    return out
+
+
 def looks_like_product_page(url: str) -> bool:
     """True for a short product URL, false for articles and review roundups."""
     raw = unwrap_search_url(url)
@@ -260,8 +423,18 @@ async def probe_competitor_url(
     url: str,
     *,
     fetch: Fetcher | None = None,
+    expected_name: str | None = None,
+    expected_category: str | None = None,
 ) -> ProbeResult:
-    """Follow redirects. Keep the URL only when the final host is the same product."""
+    """Follow redirects. Keep the URL only when the final host is the same product.
+
+    When ``expected_name`` and ``expected_category`` are provided, verify the page
+    content matches both the product name AND category. A law firm page must fail
+    for an AI-agent rival even if the name matches.
+    
+    For 403/429 responses without usable body content, the URL is rejected as
+    unverified and should go to recovery (search lookup for '<name> <category>').
+    """
     requested = (url or "").strip()
     if not requested.startswith("http"):
         return ProbeResult(False, requested, "", "not_http")
@@ -280,8 +453,10 @@ async def probe_competitor_url(
             kind = "timeout"
         return ProbeResult(False, requested, "", f"{kind}:{detail}")
     final_url = _normalize_final(final_url or requested)
+    is_blocked = status in (403, 429)
     if status < 200 or status >= 400:
-        return ProbeResult(False, requested, final_url, f"http_{status}")
+        if not is_blocked:
+            return ProbeResult(False, requested, final_url, f"http_{status}")
     if not same_site(requested, final_url):
         return ProbeResult(
             False,
@@ -291,13 +466,35 @@ async def probe_competitor_url(
         )
     if is_non_product_host(final_url):
         return ProbeResult(False, requested, final_url, "not_a_product_site")
+    if _FAREWELL_PATH_RE.search(final_url):
+        return ProbeResult(False, requested, final_url, "farewell_redirect")
     snippet = (body or "")[:6000]
     if _DEFUNCT_RE.search(snippet):
         return ProbeResult(False, requested, final_url, "defunct_page")
-    # Prefer the resolved URL so agents open the live origin, not a dead alias.
+    visible = re.sub(r"<script.*?</script>|<style.*?</style>", " ", snippet, flags=re.S | re.I)
+    visible = " ".join(re.sub(r"<[^>]+>", " ", visible).split())
+    js_bounce = bool(re.search(r"window\.location|http-equiv\s*=\s*[\"']?refresh", snippet, re.I))
+    if not is_blocked and len(visible) < 40 and (js_bounce or len(snippet) < 500):
+        return ProbeResult(False, requested, final_url, "thin_page")
     canonical = final_url or requested
     if not canonical.endswith("/") and (urlparse(canonical).path in {"", "/"}):
         canonical = canonical.rstrip("/") + "/"
+    if is_blocked:
+        # 403/429 with no usable body: cannot verify category, treat as unverified
+        # and go to recovery. Brand-matching host alone is not enough.
+        if len(snippet) < 100:
+            return ProbeResult(False, requested, final_url, f"blocked_{status}_unverified")
+        # If we have body content on a blocked page, verify identity
+        if expected_name or expected_category:
+            matches, reason = identity_matches(expected_name or "", expected_category or "", canonical, body)
+            if not matches:
+                return ProbeResult(False, requested, final_url, f"blocked_{status}_{reason}")
+        return ProbeResult(True, canonical, final_url, f"blocked_{status}")
+    # For 200 OK responses, verify both name and category
+    if expected_name or expected_category:
+        matches, reason = identity_matches(expected_name or "", expected_category or "", canonical, body)
+        if not matches:
+            return ProbeResult(False, requested, final_url, reason)
     return ProbeResult(True, canonical, final_url, "ok")
 
 
@@ -325,6 +522,8 @@ async def filter_live_competitor_urls(
     exclude_hosts: set[str] | None = None,
     fetch: Fetcher | None = None,
     limit: int = 2,
+    names: dict[str, str] | None = None,
+    categories: dict[str, str] | None = None,
 ) -> tuple[list[str], list[tuple[str, str]]]:
     """Probe candidates. Return (live canonical URLs, dropped (url, reason)).
 
@@ -332,24 +531,29 @@ async def filter_live_competitor_urls(
     brief for its whole 12s timeout while the rest waited their turn — and the
     results are then walked in the original order, so which URLs are kept and
     which are dropped is exactly what probing them one by one would give.
+
+    When ``names`` and ``categories`` are provided, verify each URL's content
+    matches both the expected product name AND category.
     """
     product_host = registrable_host(product_url)
     blocked = {product_host} | {h.lower().removeprefix("www.") for h in (exclude_hosts or set()) if h}
     live: list[str] = []
     dropped: list[tuple[str, str]] = []
     seen: set[str] = set()
+    url_names = names or {}
+    url_categories = categories or {}
 
     candidates = [(raw or "").strip() for raw in urls]
     gate = asyncio.Semaphore(max(1, _probe_concurrency()))
 
     async def _probe(url: str) -> ProbeResult | None:
-        # Host checks are order-dependent (a host is blocked by whatever came
-        # before it), so they stay in the walk below; this only does the I/O.
         if not url or not registrable_host(url):
             return None
+        expected_name = url_names.get(url, "")
+        expected_cat = url_categories.get(url, "")
         async with gate:
             try:
-                return await probe_competitor_url(url, fetch=fetch)
+                return await probe_competitor_url(url, fetch=fetch, expected_name=expected_name, expected_category=expected_cat)
             except Exception as exc:  # noqa: BLE001
                 return ProbeResult(False, url, "", f"probe_error:{type(exc).__name__}")
 
