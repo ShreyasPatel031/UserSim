@@ -1,0 +1,22 @@
+{
+ "rows": {
+  "persons": 20945,
+  "handles": 46688,
+  "profiles": 26588,
+  "events": 316913
+ },
+ "refetch": {
+  "used": 16521,
+  "gone": 7,
+  "retry": 0
+ },
+ "persons_with_events_only": 281,
+ "stats": {
+  "x_field_conflict": 312,
+  "extra_self_link_demoted": 48,
+  "shared_x_handle_rows_demoted": 44
+ },
+ "missing_inputs": [],
+ "segments": "dropped (not carried over from v1)",
+ "built_at": "2026-11-02T05:42:41Z"
+}

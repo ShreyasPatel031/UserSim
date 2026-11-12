@@ -1,0 +1,31 @@
+PASS persons_unique
+PASS no_orphan_events  [0]
+PASS no_orphan_handles_profiles
+PASS no_duplicate_events
+PASS no_null_event_ts
+PASS all_source_event_people_in_persons  [0]
+PASS handles_unknown_dates_are_null
+PASS handles_fetched_dates_valid
+PASS handles_dated_share  [0.779]
+PASS profiles_unknown_dates_are_null
+PASS profiles_fetched_dates_valid
+PASS profiles_dated_share  [0.621]
+PASS no_uuid_ph_user_id
+PASS ph_user_id_numeric_or_null
+PASS parser_version_recorded
+PASS no_segments_carried
+PASS no_poison_names
+FAIL no_wispr_in_ph_text  [2]
+PASS linkedin_rows_mentioning_wispr  [['ph:constanza_hasselmann']]
+PASS one_confident_x_handle_per_person  [0]
+PASS no_shared_confident_x_handle  [0]
+PASS x_events_only_for_confident_handles
+PASS x_self_link_urls_on_platform
+PASS github_self_link_urls_on_platform
+PASS linkedin_self_link_urls_on_platform
+PASS gone_have_no_profile  [7]
+PASS has_profile_matches_profiles
+PASS display_name_null  [280]
+PASS every_good_refetch_row_used  [0]
+PASS refetch_profiles_have_numeric_id_name_joined
+OVERALL FAIL | built 2026-11-02
