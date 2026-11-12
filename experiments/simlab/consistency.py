@@ -13,6 +13,7 @@ CRITIC; cost and latency per request.
 """
 import concurrent.futures as cf, glob, gzip, hashlib, html, json, os, random, re, subprocess, sys, time, urllib.request
 import numpy as np, pandas as pd
+tb = lambda x: x if isinstance(x, bool) else str(x).strip().lower() in ("true", "yes", "1")
 
 CO, CON, LDIR, CFD, OUT = sys.argv[1:6]; os.makedirs(OUT, exist_ok=True); rng = np.random.default_rng(0)
 BASE = "https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/google/models/{m}:generateContent"
@@ -120,7 +121,7 @@ num = lambda l: "\n".join(f"{k+1}. {t[:300]}" for k, t in enumerate(l))
 def judge(s, nm, lst):
     if not TRUTH[s] or not lst: return None
     bm = (gem(JC.format(a=num(TRUTH[s]), b=num(lst[:5])), maxtok=300) or {}).get("b_matches")
-    return [bool(x) for x in bm] if isinstance(bm, list) and len(bm) == len(lst[:5]) else None
+    return [tb(x) for x in bm] if isinstance(bm, list) and len(bm) == len(lst[:5]) else None
 METH = {"SC5": SC5, "MERGED": MERGED, "PRO": PRO}
 jobs = [(s, m) for s in S for m in METH]
 with cf.ThreadPoolExecutor(10) as ex: J = dict(zip(jobs, ex.map(lambda j: run(f"j|{j[1]}|{hashlib.md5(json.dumps(METH[j[1]][j[0]]).encode()).hexdigest()[:8]}|{j[0]}", lambda: judge(j[0], j[1], METH[j[1]][j[0]])), jobs)))

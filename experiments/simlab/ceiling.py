@@ -13,6 +13,7 @@ Launch-bootstrap 95% CIs; ceiling by comment-count band; ours / ceiling ratios o
 """
 import concurrent.futures as cf, glob, gzip, hashlib, html, json, os, random, re, subprocess, sys, time, urllib.request
 import numpy as np, pandas as pd
+tb = lambda x: x if isinstance(x, bool) else str(x).strip().lower() in ("true", "yes", "1")
 
 CFD, LDIR, RV2, CON, QR, OUT = sys.argv[1:7]; os.makedirs(OUT, exist_ok=True); rng = np.random.default_rng(0)
 GEN = "https://aiplatform.googleapis.com/v1/projects/project-amer-scs-sandbox/locations/global/publishers/google/models/gemini-2.5-flash:generateContent"
@@ -103,11 +104,11 @@ def themes(x): return [str(t.get("theme")) for t in (x.get("themes") or []) if i
 def judge_rp(real, cand):
     if not real or not cand: return None
     a = gem(JUDGE.format(a=num(real), b=num(cand)), 800) or {}
-    ac, bp = a.get("a_covered", []), a.get("b_present", [])
+    ac, bp = [tb(x) for x in a.get("a_covered", [])], [tb(x) for x in a.get("b_present", [])]
     return (float(np.mean(ac)), float(np.mean(bp))) if len(ac) == len(real) and len(bp) == len(cand) else None
 def judge_list(JP, real, cand):
     if not real or not cand: return None
-    bm = (gem(JP.format(a=num(real), b=num(cand[:3])), 300) or {}).get("b_matches")
+    bm = (gem(JP.format(a=num(real), b=num(cand[:3])), 300) or {}).get("b_matches"); bm = [tb(x) for x in bm] if isinstance(bm, list) else bm
     return (float(np.mean(bm)), float(any(bm))) if isinstance(bm, list) and len(bm) == len(cand[:3]) else None
 def work(job):
     s, sp = job; A = run(f"ex|{s}|{sp}|A", lambda: extract(s, sp, "A")); B = run(f"ex|{s}|{sp}|B", lambda: extract(s, sp, "B"))
