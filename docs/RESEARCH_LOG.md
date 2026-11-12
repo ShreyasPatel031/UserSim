@@ -1563,3 +1563,23 @@ Exported launch_band_card_v2.json, keyed to v1's deciles.
 **Forward job (task A):**
 - forward_band.py: daily 02:13 PT via a scheduled task. Frozen v2 scorer frozen_band.py, verified on 8 of 8 fresh rows; forward_score.py scores the days.
 - URL source: comment links only (about 40% coverage); the /r/ redirect decision is pending with the orchestrator.
+
+### 2026-11-12 E5 — /try stability (60 fresh launches, through the site's code)
+reports/try_stability/README.md.
+
+**Band:**
+- Rerun: sd 6.2 percentile points; Spearman 0.92–0.93; 17–20% of pairs more than one decile apart. Floor (different product): 37.7 points, 68%.
+- Temperature-0 read: identical (sd 0). No accuracy cost.
+
+**Reactions and ranked lists:**
+- Reactions rerun agreement 56% (floor 1%).
+- Overlap@3: concerns 47%, questions 59% (floor 4–6%).
+
+**Accuracy by input (Spearman with −rank):**
+- Pasted PH description 0.54 [0.31, 0.70].
+- 2-sentence 0.38.
+- Page 0.33–0.39.
+- Long copy 0.29.
+- Hero text fails 26/60 and scores 0.32 when it passes.
+
+**Recommend:** read at temperature 0 + cache by URL; ask visitors for their real launch description.

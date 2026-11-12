@@ -1,0 +1,314 @@
+{
+ "design": "Prove /try fixes before the website builds them (orchestrator 10:15Z Nov 12). Uses the website's own code (origin/claude/ph-website\nmvp/ph_site: safe_fetch, try_sim.READ_PROMPT on flash-lite, try_sim._band_score with launch_band.json, person_e5.embed) as a library.\nLaunches: every ranked launch of Oct 27 - Nov 10 2026 with a product URL (at-launch primary_link, else the first non-PH link in the\nmaker's first comment); each site fetched ONCE by safe_fetch (http rewritten to https only because this container's proxy mode\nrefuses http), then read with the site's READ_PROMPT.\n1. Band inputs (score -> percentile among the band's cuts -> decile band):\n   (a) SITE now: name, tagline, summary + page_excerpt[:600], page-read topics\n   (b) READ: name + tagline + 2-sentence summary only, page-read topics\n   (c) REWRITE: a flash-lite rewrite of the page read into PH launch style (name, <= 60-char tagline, <= 260-char description,\n       3 topics from the PH vocabulary), then the band\n   (d) PH: the real PH name / tagline / description / topics (reference)\n   Spearman of the band percentile with -final rank (pooled over launches), band coverage of the true rank; paired bootstrap vs (a).\n2. Concerns and questions (launches with >= 5 identity-free truth comments): RANKED concerns (critic D_category + retrieved\n   neighbour themes + category base list, scored by neighbour frequency + agreement + Gemini likelihood; the reactions generator is\n   left out) and the single-call question generator, each fed (i) the page-read name/tagline/summary, (ii) the raw page excerpt,\n   (iii) the PH description. Blinded judges as concerns_rank / questions_rank; p@3 / hit@3, paired.\n3. Fetch failures: for every launch whose fetch or page read failed, retry (i) the root of the same domain, (ii) the at-launch\n   primary_link (PH \"website\" target) when held and different; share recovered without a headless browser.",
+ "n": 60,
+ "band_pairs": {
+  "run1 vs run2": {
+   "n": 60,
+   "mean_abs_pct_diff": 8.1,
+   "share_gt1_decile": 16.7,
+   "spearman": [
+    0.922,
+    0.861,
+    0.956
+   ]
+  },
+  "run1 vs run3": {
+   "n": 60,
+   "mean_abs_pct_diff": 7.1,
+   "share_gt1_decile": 20.0,
+   "spearman": [
+    0.929,
+    0.862,
+    0.966
+   ]
+  },
+  "run2 vs run3": {
+   "n": 60,
+   "mean_abs_pct_diff": 8.0,
+   "share_gt1_decile": 20.0,
+   "spearman": [
+    0.921,
+    0.862,
+    0.951
+   ]
+  },
+  "t0_1 vs t0_2": {
+   "n": 60,
+   "mean_abs_pct_diff": 0.0,
+   "share_gt1_decile": 0.0,
+   "spearman": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "run1 vs root": {
+   "n": 22,
+   "mean_abs_pct_diff": 17.0,
+   "share_gt1_decile": 36.4,
+   "spearman": [
+    0.745,
+    0.447,
+    0.899
+   ]
+  },
+  "run1 vs paste_ph": {
+   "n": 60,
+   "mean_abs_pct_diff": 28.4,
+   "share_gt1_decile": 65.0,
+   "spearman": [
+    0.447,
+    0.196,
+    0.639
+   ]
+  },
+  "run1 vs paste_hero": {
+   "n": 34,
+   "mean_abs_pct_diff": 23.9,
+   "share_gt1_decile": 50.0,
+   "spearman": [
+    0.577,
+    0.263,
+    0.791
+   ]
+  },
+  "run1 vs paste_para2": {
+   "n": 60,
+   "mean_abs_pct_diff": 19.3,
+   "share_gt1_decile": 43.3,
+   "spearman": [
+    0.691,
+    0.517,
+    0.805
+   ]
+  },
+  "run1 vs paste_paral": {
+   "n": 60,
+   "mean_abs_pct_diff": 21.8,
+   "share_gt1_decile": 58.3,
+   "spearman": [
+    0.567,
+    0.376,
+    0.714
+   ]
+  },
+  "paste_ph vs paste_hero": {
+   "n": 34,
+   "mean_abs_pct_diff": 18.9,
+   "share_gt1_decile": 52.9,
+   "spearman": [
+    0.615,
+    0.329,
+    0.786
+   ]
+  },
+  "paste_ph vs paste_para2": {
+   "n": 60,
+   "mean_abs_pct_diff": 21.9,
+   "share_gt1_decile": 56.7,
+   "spearman": [
+    0.61,
+    0.417,
+    0.76
+   ]
+  },
+  "paste_ph vs paste_paral": {
+   "n": 60,
+   "mean_abs_pct_diff": 25.6,
+   "share_gt1_decile": 58.3,
+   "spearman": [
+    0.606,
+    0.383,
+    0.758
+   ]
+  },
+  "run1 vs mismatch": {
+   "n": 60,
+   "mean_abs_pct_diff": 37.7,
+   "share_gt1_decile": 68.3,
+   "spearman": [
+    -0.076,
+    -0.345,
+    0.188
+   ]
+  }
+ },
+ "rerun_sd_pct": 6.2,
+ "t0_sd_pct": 0.0,
+ "mismatch_sd_pct": 26.7,
+ "median_rank_move (median, mean)": {
+  "rerun": [
+   0.0,
+   0.9
+  ],
+  "temp0": [
+   0.0,
+   0.0
+  ],
+  "mismatch": [
+   2.0,
+   3.1
+  ]
+ },
+ "accuracy_by_input": {
+  "run1": {
+   "n": 60,
+   "spearman_-rank": [
+    0.346,
+    0.102,
+    0.546
+   ]
+  },
+  "run2": {
+   "n": 60,
+   "spearman_-rank": [
+    0.391,
+    0.159,
+    0.578
+   ]
+  },
+  "run3": {
+   "n": 60,
+   "spearman_-rank": [
+    0.326,
+    0.08,
+    0.543
+   ]
+  },
+  "t0_1": {
+   "n": 60,
+   "spearman_-rank": [
+    0.337,
+    0.084,
+    0.536
+   ]
+  },
+  "t0_2": {
+   "n": 60,
+   "spearman_-rank": [
+    0.337,
+    0.088,
+    0.54
+   ]
+  },
+  "root": {
+   "n": 22,
+   "spearman_-rank": [
+    0.267,
+    -0.136,
+    0.609
+   ]
+  },
+  "paste_ph": {
+   "n": 60,
+   "spearman_-rank": [
+    0.535,
+    0.311,
+    0.7
+   ]
+  },
+  "paste_hero": {
+   "n": 34,
+   "spearman_-rank": [
+    0.315,
+    -0.042,
+    0.596
+   ]
+  },
+  "paste_para2": {
+   "n": 60,
+   "spearman_-rank": [
+    0.384,
+    0.134,
+    0.595
+   ]
+  },
+  "paste_paral": {
+   "n": 60,
+   "spearman_-rank": [
+    0.294,
+    0.036,
+    0.52
+   ]
+  },
+  "mean3": {
+   "n": 60,
+   "spearman_-rank": [
+    0.369,
+    0.133,
+    0.551
+   ]
+  }
+ },
+ "paste_failures": {
+  "ph": 0,
+  "hero": 26,
+  "para2": 0,
+  "paral": 0
+ },
+ "page_failures": 0,
+ "reactions": {
+  "agree_rerun": [
+   56.4,
+   49.7,
+   63.1,
+   60
+  ],
+  "agree_mismatch": [
+   0.8,
+   0.0,
+   2.2,
+   60
+  ],
+  "agree_page_vs_ph": [
+   30.3,
+   23.9,
+   37.2,
+   60
+  ],
+  "prec_page": [
+   9.2,
+   4.2,
+   14.2,
+   20
+  ],
+  "prec_page_run2": [
+   10.0,
+   5.0,
+   16.7,
+   20
+  ],
+  "prec_ph": [
+   19.2,
+   10.0,
+   29.2,
+   20
+  ]
+ },
+ "ranked_overlap@3": {
+  "concerns rerun": [
+   46.7,
+   40.0,
+   54.4,
+   30
+  ],
+  "concerns mismatch": [
+   4.4,
+   1.1,
+   8.9,
+   30
+  ],
+  "questions rerun": [
+   58.9,
+   50.0,
+   67.8,
+   30
+  ],
+  "questions mismatch": [
+   5.6,
+   1.1,
+   11.1,
+   30
+  ]
+ }
+}
