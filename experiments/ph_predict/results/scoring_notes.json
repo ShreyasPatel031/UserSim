@@ -1,0 +1,8 @@
+{
+ "2026-11-12": {
+  "clean_thread_z": "score the with-replies version (P2 onward) as clean_thread_z; the P030-P1 version (no replies) is 'pre-fix' (orchestrator QA 13:37Z Nov 12)",
+  "clean_lines_0005": "clean / clean_avg / clean_nosite shadow scores: inputs re-derived at 01:42 PT (shadow does not reproduce the published 00:05 file) until the frozen-inputs patch is approved",
+  "reply_rows_read": "P2/P3 headers count reply rows fetched after the cut (13 and 38); the models used only rows fetched <= the cut; reply_rows_used added from Nov 13",
+  "capture": "live capture down from 03:00 PT (11:00Z): P4, R and C points not written ('no data: capture down')"
+ }
+}

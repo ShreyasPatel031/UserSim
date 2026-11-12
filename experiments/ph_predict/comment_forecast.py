@@ -641,7 +641,7 @@ def live(day, point):
                 st_ = prev
             col_status[c_] = {"status": st_, "inputs_fetched_max": {**col_status.get(c_, {}).get("inputs_fetched_max", {}), src_: t_.isoformat() if t_ is not None else None}}
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
-           "column_status": col_status, "withdrawn_excluded": withdrawn, "reply_rows_read": n_rep_rows,
+           "column_status": col_status, "withdrawn_excluded": withdrawn, "reply_rows_read": n_rep_rows, "reply_rows_used": int(C.parent.notna().sum()),
            "hidden_rank_note": "each point's hidden API rank is the latest posts_ts read fetched <= the cut (the 15-min snapshot before it)",
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
