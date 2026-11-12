@@ -43,10 +43,14 @@ L = L.sort_values("updated_at").drop_duplicates("id", keep="last").reset_index(d
 SALT = open(os.path.join(W, "salt")).read().strip()
 import hashlib
 pid = lambda h: "p_" + hashlib.sha256((SALT + "producthunt:" + str(h).lower()).encode()).hexdigest()[:16]
-team = {}
+team, own = {}, {}
 for i, mk, po in zip(L.id, L.makers, L.poster):
     ms = json.loads(mk) if isinstance(mk, str) and mk.startswith("[") else []
     team[i] = {pid(m) for m in ms if _real(m)} | ({pid(po)} if _real(po) else set())
+    own[i] = {pid(m) for m in [m for m in ms if _real(m)][:1]} | ({pid(po)} if _real(po) else set())
+# MASK=1 (Nov 12 leak fix): the TARGET launch's own team as seen at 00:05 = poster + its first named maker (PH names the day
+# #1's other makers only after the day); earlier launches keep their full named teams.
+if os.environ.get("MASK") != "1": own = team
 P = pd.read_parquet(os.path.join(W, "preds.parquet"))[["id", "base", "day", "dailyRank", "logv"]]
 P["id"] = P.id.astype(str); P["r"] = P.logv - P.base
 P["start"] = pd.to_datetime(P.day).dt.tz_localize("UTC") + pd.to_timedelta(np.where(P.day < "2026-11-01", 7, 8), "h") + pd.Timedelta(minutes=1)
@@ -65,7 +69,7 @@ C["lstart"] = C.lid.map(lambda x: pd.Timestamp(Lday[x], tz="UTC") + pd.Timedelta
 C["h"] = (C.ts_lo - C.lstart).dt.total_seconds() / 3600
 C = C[C.h >= -0.05]                                      # a comment before launch start = slug mismatch
 first = C.groupby(["lid", "person_id"]).agg(h=("h", "min"), ts=("ts_lo", "min")).reset_index()
-first = first[[p not in team.get(l, set()) for l, p in zip(first.lid, first.person_id)]]
+first = first[[p not in own.get(l, set()) for l, p in zip(first.lid, first.person_id)]]
 print("exact comments on launches", len(C), "first-comment pairs (non-team)", len(first), flush=True)
 
 U = ev[ev.kind == "upvote"][["person_id", "target_id", "ts_lo", "extra"]].copy(); U["target_id"] = U.target_id.astype(str)
@@ -92,11 +96,11 @@ m = m[m.vday <= m.d2]
 f_up = m.groupby(["person_id", "lid"]).agg(n_up=("target_id", "size"), n_top3=("top3", lambda s: 0)).reset_index()
 mt = m[m.top3 & (m.vday >= m.d32)].groupby(["person_id", "lid"]).size().rename("n_top3_30d")
 mm = m[["person_id", "lid", "target_id"]]
-mm = mm[[bool(team.get(t, set()) & team.get(l, set())) for t, l in zip(mm.target_id, mm.lid)]]
+mm = mm[[bool(team.get(t, set()) & own.get(l, set())) for t, l in zip(mm.target_id, mm.lid)]]
 tie_up = mm.groupby(["person_id", "lid"]).size().rename("tie_up")
 m2 = uniq.merge(Ce.rename(columns={"lid": "olid"}), on="person_id"); m2 = m2[m2.ts < m2.lstart]
 f_c = m2.groupby(["person_id", "lid"]).agg(n_com=("olid", "size"), n_early=("h", lambda s: int((s <= 1).sum()))).reset_index()
-m2 = m2[[bool(team.get(o, set()) & team.get(l, set())) for o, l in zip(m2.olid, m2.lid)]]
+m2 = m2[[bool(team.get(o, set()) & own.get(l, set())) for o, l in zip(m2.olid, m2.lid)]]
 tie_c = m2.groupby(["person_id", "lid"]).size().rename("tie_com")
 F = uniq[["person_id", "lid"]].merge(f_up.drop(columns="n_top3"), how="left", on=["person_id", "lid"]).merge(f_c, how="left", on=["person_id", "lid"])
 for s in (mt, tie_up, tie_c): F = F.merge(s.reset_index(), how="left", on=["person_id", "lid"])
@@ -105,7 +109,7 @@ fo = pd.read_parquet(os.path.join(W, "v3", "events.parquet"), columns=["person_i
 indeg = fo.groupby("target_id").size()
 F["n_followers_pool"] = F.person_id.map(indeg).fillna(0)
 fset = set(zip(fo.person_id, fo.target_id)); del fo
-F["follow_tie"] = [int(any((p, t) in fset or (t, p) in fset for t in team.get(l, ()))) for p, l in zip(F.person_id, F.lid)]
+F["follow_tie"] = [int(any((p, t) in fset or (t, p) in fset for t in own.get(l, ()))) for p, l in zip(F.person_id, F.lid)]
 E = E.merge(F, on=["person_id", "lid"], how="left")
 E["oneoff"] = ((E.n_up < 5) & (E.n_com == 0)).astype(int); E["regular"] = (E.n_up >= 50).astype(int)
 E["tie"] = ((E.tie_up + E.tie_com) > 0).astype(int)
