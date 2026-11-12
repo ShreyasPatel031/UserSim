@@ -251,8 +251,9 @@ def live(day, point):
     -> results/early_forecast/<day>_<point>.json and gs://.../results/early_forecast/."""
     import subprocess, tempfile
     from early_forecast import lm_scores
-    M = json.load(open(os.path.join(HERE, "results", "comment_forecast_live_model.json")))["cuts"][point]
-    h = int(point[1:]); t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
+    M = json.load(open(os.path.join(HERE, "results", "comment_forecast_live_model.json")))["cuts"]["P1" if point == "P0" else point]
+    # P0 = 00:45 PT (orchestrator 02:15Z Nov 12): earliest useful pre-reveal point; the comment ridge uses P1's coefficients
+    h = 0.75 if point == "P0" else int(point[1:]); t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
     T = t0 + pd.Timedelta(hours=h); now = pd.Timestamp.now(tz="UTC")
     if now < T:
         print(json.dumps({"day": day, "point": point, "status": f"point {T} not reached"})); return
@@ -369,16 +370,20 @@ def live(day, point):
     A["pred_rank_estvotes"] = (A.est_votes.fillna(-1) + 1e-6 * A.lm).rank(ascending=False, method="first").astype(int)
     # orchestrator 02:00Z Nov 12 (api_depth.md): best LODO recipe on 6 days = weighted mean of rank positions of the API
     # pre-reveal rank and the 00:05 LM, w_api = 0.5 at P1 and 0.75 from P2 (chosen leave-one-day-out on every held-out day)
-    w_api = 0.5 if point == "P1" else 0.75
+    w_api = 0.5 if point in ("P0", "P1") else 0.75
     lm_pos = A.lm.rank(ascending=False, method="first")
     if A.api_rank.notna().any():
         A["pred_rank_best"] = (w_api * A.pred_rank_api + (1 - w_api) * lm_pos + 1e-6 * lm_pos).rank(method="first").astype(int)
     else:
         A["pred_rank_best"] = lm_pos.astype(int)
+    # best2 (late_builders.md): on weekends the early-hours vote order is least reliable -> w_api 0.5 at every point
+    w2 = 0.5 if pd.Timestamp(day).dayofweek >= 5 else w_api
+    A["pred_rank_best2"] = ((w2 * A.pred_rank_api + (1 - w2) * lm_pos + 1e-6 * lm_pos).rank(method="first").astype(int)
+                            if A.api_rank.notna().any() else lm_pos.astype(int))
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
