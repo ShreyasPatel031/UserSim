@@ -381,6 +381,12 @@ async def step_people(tok: str) -> dict:
                                      f"non-uses {c['values']['auc']:.0%} of the time. By design about "
                                      f"{c['values']['typical_likely_share']:.0%} of people match a typical product.")}
         out["top_people"] = [{"label": f"User {chr(65 + i)}", **p} for i, p in enumerate(sm["people"])]
+        v = claims()["matches_vs_voting"]
+        out["voting_note"] = (f"Matches are people whose tools and interests resemble this product. Fixed offline figure "
+                              f"({v['label']}, {v['date']}): they were no more likely to upvote than members with similar "
+                              f"activity ({v['values']['top_match_upvote_rate']:.1%} vs "
+                              f"{v['values']['activity_matched_rate']:.1%}), so this shows who it resonates with, not "
+                              "who will vote.")
     except Exception as exc:  # noqa: BLE001 - fall back to the interest segments alone
         print(f"[try] similar-tools scorer unavailable: {exc!r}", flush=True)
         out["similar"] = None

@@ -50,7 +50,7 @@
       <h3 style="margin:22px 0 8px">Closest matching members</h3>
       <p class="small muted">Real Product Hunt members whose own tools are closest to this product, shown only as a label, role and tier. No names, handles, avatars, links or product lists, ever.</p>
       <div class="grid2" id="pp"><p class="skeleton">Matching…</p></div>
-      <h3 style="margin:22px 0 8px">Audience segments most likely to respond</h3>
+      <h3 style="margin:22px 0 8px">Audience segments with the closest match</h3>
       <table class="rec" id="seg"><thead><tr><th>Segment</th><th>Members</th><th>Match share</th><th>vs average</th></tr></thead><tbody></tbody></table>
       <p class="small muted" id="pp-method"></p>
     </section>
@@ -118,7 +118,7 @@ function renderPeople(p){
   const roleRows = S ? S.segments.map(s=>`<tr><td>${esc(s.name)} <span class="small muted">(role)</span></td><td>${s.size.toLocaleString()}</td><td>${(s.share*100).toFixed(1)}%</td><td>${s.lift.toFixed(1)}×</td></tr>`) : [];
   const intRows = p.segments.map(s=>`<tr><td>${esc(s.name)}<br><span class="small muted">${esc(s.top_topics.join(", "))}</span></td><td>${s.size.toLocaleString()}</td><td>${(s.share*100).toFixed(0)}%</td><td>${s.lift.toFixed(1)}×</td></tr>`);
   $("#seg tbody").innerHTML = roleRows.concat(intRows).join("") || `<tr><td colspan="4" class="muted">No segment has 20+ matching members; the match is spread thin.</td></tr>`;
-  $("#pp-method").textContent = (S ? S.method + " " : "") + p.method + " " + p.note + " Segments are indicative.";
+  $("#pp-method").textContent = (p.voting_note ? p.voting_note + " " : "") + (S ? S.method + " " : "") + p.method + " " + p.note + " Segments are indicative.";
 }
 function renderLaunch(l){
   const N = 40, x = (r)=> (Math.min(r, N)-0.5)/N*100, A = l.accuracy;
