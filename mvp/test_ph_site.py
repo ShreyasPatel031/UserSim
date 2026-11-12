@@ -228,7 +228,7 @@ def test_prereveal_confidence(monkeypatch):
 
 
 def test_lock_state_read(monkeypatch):
-    lk = {"label_top3": "#3 open", "label_top5": "top 5 locked", "read_at": "2026-11-12T13:00:00Z", "rule": "r", "point": "R1"}
+    lk = {"label_top3": "2 locked, 1 open", "label_top10": "9 of 10 (vote order)", "label_top5": "top 5 locked", "read_at": "2026-11-12T13:00:00Z", "rule": "r", "point": "R1"}
     real = live.gcs.read_json
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: lk if "/lock/" in path else real(path, ttl))
     monkeypatch.setattr(live, "actuals", lambda d: {"final": False, "as_of": None, "revealed": False, "ranks": {}})
@@ -236,4 +236,4 @@ def test_lock_state_read(monkeypatch):
     monkeypatch.setattr(live, "forecasts", lambda d: {})
     monkeypatch.setattr(live, "current_board", lambda d: {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True})
     v = live.day_view("2026-11-12")
-    assert v["board"]["lock"]["label_top3"] == "#3 open" and v["board"]["lock"]["read_pt"] == "05:00 PT"
+    assert v["board"]["lock"]["label_top3"] == "2 locked, 1 open" and v["board"]["lock"]["label_top10"] and v["board"]["lock"]["read_pt"] == "05:00 PT"

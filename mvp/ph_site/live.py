@@ -434,8 +434,8 @@ def day_view(day: str) -> dict:
     lk = gcs.read_json(f"results/web/lock/{day}.json", ttl=120) if not act["final"] else None
     lock = None
     if isinstance(lk, dict) and lk.get("label_top3"):
-        lock = {k: lk.get(k) for k in ("point", "read_at", "label_top3", "label_top5", "top3_locked", "top5_locked",
-                                       "top3_first_locked_at", "rule")}
+        lock = {k: lk.get(k) for k in ("point", "read_at", "label_top3", "label_top5", "label_top10", "top3_locked",
+                                       "top5_locked", "top2_locked", "top10_locked", "top3_first_locked_at", "rule")}
         lock["read_pt"] = _pt_label(lk.get("read_at") or "")
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
             "lead_point": lead, "board": {**{k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")}, "lock": lock},
