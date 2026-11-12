@@ -83,6 +83,20 @@ def build():
     L = L.merge(H, on="id", how="left")
     L["team"] = [set(json.loads(m) if m and m.startswith("[") else []) | ({p.lower()} if p else set()) for m, p in zip(L.makers, L.poster)]
     L["team"] = [{u.lower() for u in t if u} for t in L.team]
+    # leak check (orchestrator 07:45Z Nov 12): PH names the winner's makers only after the day, so the warehouse maker list
+    # (read later) recognises winners' maker comments as team and leaves other launches' redacted makers "outside".
+    #   CF_TEAM=a  current rule: every named maker + hunter (read after the day)
+    #   CF_TEAM=b  00:05-consistent: hunter + the single maker visible at 00:05 (the LAST entry of the maker list, if named)
+    #   CF_TEAM=c  identity-free: no team split (team empty; u_out = all unique commenters, n_team = u_tie = 0)
+    rule = os.environ.get("CF_TEAM", "a")
+    if rule == "b":
+        def vis(m, p):
+            ms = json.loads(m) if m and m.startswith("[") else []
+            last = (ms[-1] or "").lower() if ms else ""
+            return ({last} if last and "redacted" not in last else set()) | ({p.lower()} if p else set())
+        L["team"] = [vis(m, p) for m, p in zip(L.makers, L.poster)]
+    elif rule == "c":
+        L["team"] = [set() for _ in L.makers]
     L["inC"] = L.slug.isin(fetched)
     cov = L.groupby("day").agg(n=("id", "size"), inC=("inC", "mean"), hon=("honest", lambda s: s.notna().mean()))
     days = sorted(cov[(cov.inC >= COVER) & (cov.hon >= COVER)].index)
@@ -119,6 +133,11 @@ def build():
                       "u_ver": int(out.drop_duplicates("user").ver.sum()), "u_prom": int(out.drop_duplicates("user").prom.sum()),
                       "u_prior": int(sum(first.get(u, T) < r.t0 for u in us)), "u_tie": tie})
     X = pd.DataFrame(X).dropna(subset=["lm"])
+    # diagnostic: team vs outside early comments by final rank group under the active rule
+    g4 = X[X.cut == 4].assign(grp=lambda x: np.select([x["rank"] == 1, x["rank"] <= 3, x["rank"] <= 10], ["#1", "#2-3", "#4-10"], "11+"))
+    stats["team_rule"] = rule
+    stats["by_rank_group_4h"] = g4.groupby("grp")[["n_c", "n_team", "u_out", "u_tie"]].mean().round(2).to_dict("index")
+    stats["named_team_size"] = L[L.day.isin(days)].assign(grp=lambda x: np.select([x.daily_rank == 1, x.daily_rank <= 3, x.daily_rank <= 10], ["#1", "#2-3", "#4-10"], "11+")).groupby("grp").team.apply(lambda s: round(float(np.mean([len(t) for t in s])), 2)).to_dict()
     X["n_day"] = X.groupby(["cut", "day"]).id.transform("size")
     X["sh_c"] = np.log((X.n_c + 0.5) / X.groupby(["cut", "day"]).n_c.transform(lambda s: (s + 0.5).sum()))
     X["r_c"] = X.groupby(["cut", "day"]).n_c.rank(pct=True)
@@ -231,7 +250,8 @@ def fit_live():
     from sklearn.linear_model import Ridge
     X = pd.read_parquet(f"{WORK}/cf_rows.parquet")
     X["lm"] = -np.log(X.groupby(["cut", "day"]).lm.rank(ascending=False, method="first"))
-    out = {"feats": LIVEF, "log1p": list(CNT), "lm": "-log(within-day 00:05 LM rank)", "cuts": {}}
+    out = {"feats": LIVEF, "log1p": list(CNT), "lm": "-log(within-day 00:05 LM rank)", "cuts": {},
+           "team_rule": os.environ.get("CF_TEAM", "a"), "lm_source": os.environ.get("CF_LM_NOTE", "honest_preds (leaked)")}
     for h in CUTS:
         Xh = X[X.cut == h]; F = Xh[LIVEF].copy()
         for c in CNT:
@@ -240,7 +260,7 @@ def fit_live():
         m = Ridge(alpha=10.0).fit((F - mu) / sd, -np.log(Xh["rank"]))
         out["cuts"][f"P{h}"] = {"coef": dict(zip(LIVEF, map(float, m.coef_))), "intercept": float(m.intercept_),
                                 "mu": mu.round(6).to_dict(), "sd": sd.round(6).to_dict(), "days": int(Xh.day.nunique())}
-    json.dump(out, open(os.path.join(HERE, "results", "comment_forecast_live_model.json"), "w"), indent=1)
+    json.dump(out, open(os.environ.get("CF_MODEL_OUT", os.path.join(HERE, "results", "comment_forecast_live_model.json")), "w"), indent=1)
     print(json.dumps({k: v["days"] for k, v in out["cuts"].items()}))
 
 
@@ -252,6 +272,12 @@ def live(day, point):
     import subprocess, tempfile
     from early_forecast import lm_scores
     M = json.load(open(os.path.join(HERE, "results", "comment_forecast_live_model.json")))["cuts"]["P1" if point == "P0" else point]
+    # identity-free model (orchestrator 08:30Z Nov 12; comment_forecast_v2_teamc.md): no team split, fitted over the clean LM;
+    # it is pred_rank from Nov 12; the old named-team model is kept as pred_rank_rule_a
+    MNF = None
+    pnf = os.path.join(HERE, "results", "comment_forecast_live_model_nf.json")
+    if os.path.exists(pnf):
+        MNF = json.load(open(pnf))["cuts"]["P1" if point == "P0" else point]
     # P0 = 00:45 PT (orchestrator 02:15Z Nov 12): earliest useful pre-reveal point; the comment ridge uses P1's coefficients
     h = 0.75 if point == "P0" else int(point[1:]); t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
     T = t0 + pd.Timedelta(hours=h); now = pd.Timestamp.now(tz="UTC")
@@ -321,10 +347,12 @@ def live(day, point):
     if not lm:
         print(json.dumps({"day": day, "point": point, "status": "no 00:05 LM forecast for the day"})); return
     lmr = pd.Series({i: lm.get(i, np.nan) for i in ids}); lmr = -np.log(lmr.rank(ascending=False, method="first", na_option="bottom"))
-    def featurise(which):
+    def featurise(which, M=M):
         rows = []
         for i in sorted(ids):
             g = C[C.id == i]; tnames, trule, tids = team.get(i, (set(), set(), set())); tset = trule if which == "rule" else tids
+            if which == "none":   # identity-free: no team split
+                tnames, tset = set(), set()
             it = g.user.isin(tset); out = g[~it]; us = [u for u in out.user.unique() if u]
             rows.append({"id": i, "n_c": len(g), "n_top": int(g.parent.isna().sum()), "n_rep": int(g.parent.notna().sum()),
                          "n_team": int(it.sum()), "u_out": len(us), "u_prior": int(sum(first.get(u, T) < t0 for u in us)),
@@ -335,12 +363,16 @@ def live(day, point):
         F = A[LIVEF].copy()
         for c in CNT:
             F[c] = np.log1p(F[c])
-        A["score"] = sum(((F[c] - M["mu"][c]) / M["sd"][c]) * M["coef"][c] for c in LIVEF) + M["intercept"]
+        A["score"] = sum(((F[c] - M["mu"][c]) / max(M["sd"][c], 1e-9)) * M["coef"][c] for c in LIVEF if M["coef"][c] != 0) + M["intercept"]
         A["pred_rank"] = A.score.rank(ascending=False, method="first").astype(int)
         return A
     A = featurise("rule")
     A2 = featurise("ids").set_index("id")
     A["pred_rank_teamids"] = A.id.map(A2.pred_rank); A["u_out_teamids"] = A.id.map(A2.u_out)
+    A["pred_rank_rule_a"] = A.pred_rank
+    if MNF is not None:
+        A3 = featurise("none", MNF).set_index("id")
+        A["pred_rank"] = A.id.map(A3.pred_rank).astype(int); A["score"] = A.id.map(A3.score); A["u_out_all"] = A.id.map(A3.u_out)
     # orchestrator 21:05Z: write three scores per point - comment ridge, API pre-reveal rank, blend (mean of rank positions)
     A["api_rank"] = A.id.map(lambda i: api[i][1] if i in api else np.nan)
     A["pred_rank_api"] = (A.api_rank.fillna(999) - 1e-6 * A.lm).rank(method="first").astype(int)
@@ -436,7 +468,7 @@ def live(day, point):
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket

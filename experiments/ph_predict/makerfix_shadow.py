@@ -45,6 +45,16 @@ def main(d):
     out["rank_unfixed"] = out.pred_unfixed.rank(ascending=False, method="first").astype(int)
     out["rank_makerfix"] = out.pred_makerfix.rank(ascending=False, method="first").astype(int)
     out["rank_clean"] = out.pred_clean.rank(ascending=False, method="first").astype(int)
+    # orchestrator 08:30Z Nov 12: rank-average of the clean LightGBM and a ridge on the same clean columns
+    from sklearn.linear_model import Ridge
+    # near-constant training columns (e.g. comp_nn_sim) explode at 00:05 (z ~ -1e9): drop them, clip z to +-5
+    rc = [c for c in cc if tr2[c].astype(float).std() > 1e-6]
+    med = tr2[rc].median().fillna(0.0); Xtr = tr2[rc].astype(float).fillna(med); Xte = te[rc].astype(float).fillna(med)
+    mu, sd = Xtr.mean(), Xtr.std().fillna(0.0) + 1e-9
+    z = lambda X: ((X - mu) / sd).fillna(0.0).clip(-5, 5)
+    out["pred_clean_ridge"] = Ridge(alpha=10.0).fit(z(Xtr), tr2.logv).predict(z(Xte))
+    out["rank_clean_lgb"] = out.rank_clean
+    out["rank_clean_avg"] = (out.pred_clean.rank(pct=True) + out.pred_clean_ridge.rank(pct=True)).rank(ascending=False, method="first").astype(int)
     res = {"day": d, "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "inputs": "data/today/<d>.json (00:05 snapshot) only",
            "launches": int(len(out)), "placeholder_launches": int(ph.sum()), "maker_cols": mc, "sources": src, "dropped": dropped,
            "clean_cols": cc, "clean_dropped": sorted(set(cols) - set(cc)),

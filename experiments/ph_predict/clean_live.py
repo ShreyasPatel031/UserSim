@@ -55,10 +55,17 @@ def main():
         rk = fin.set_index(fin.id.astype(str)).dailyRank
         X = pd.DataFrame({"id": te.id.astype(str).values, "deployed": avg(tr2, te, cd), "no_makerprof": avg(tr2, te, cm),
                           "clean_v3": avg(tr2, te, c3), "clean_v3_any": avg(tr2, te, c3 + ["any_named"])})
+        from sklearn.linear_model import Ridge
+        rc = [c for c in c3 if tr2[c].astype(float).std() > 1e-6]   # near-constant columns explode at 00:05; clip z to +-5
+        med = tr2[rc].median().fillna(0.0); Xtr = tr2[rc].astype(float).fillna(med); Xte = te[rc].astype(float).fillna(med)
+        mu, sd = Xtr.mean(), Xtr.std().fillna(0.0) + 1e-9
+        z = lambda X: ((X - mu) / sd).fillna(0.0).clip(-5, 5)
+        X["clean_v3_ridge"] = Ridge(alpha=10.0).fit(z(Xtr), tr2.logv).predict(z(Xte))
+        X["clean_v3_avg"] = X.clean_v3.rank(pct=True) + X.clean_v3_ridge.rank(pct=True)
         X["day"] = d; X["rank"] = X.id.map(rk); rows.append(X)
         print(json.dumps({"day": d, "launches": len(X), "cols": {"deployed": len(cd), "no_makerprof": len(cm), "clean_v3": len(c3)},
                           "any_named_test_mean": round(float(te.any_named.mean()), 2), "any_named_train_mean": round(float(tr2.any_named.mean()), 2)}), flush=True)
-    R = pd.concat(rows, ignore_index=True); R.to_parquet(f"{RN.OUT}/clean_live_rows.parquet")
+    R = pd.concat(rows, ignore_index=True); R.to_parquet(f"{RN.OUT}/" + os.environ.get("CL_OUT", "clean_live_rows.parquet"))
     print(json.dumps({"days": int(R.day.nunique()), "rows": int(len(R))}), flush=True)
 
 
