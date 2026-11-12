@@ -1,0 +1,219 @@
+{
+ "design": "Noise ceiling for \"what users will say\" (orchestrator 04:00Z Nov 12). Real comments are themselves a sample. For launches with\n>= 16 non-team comments (Aug-Oct 2026; the 300-launch sample first, extended from the same pool to reach 150), split the real\ncomments at random into halves A and B (3 splits). One extraction call per half (gemini-2.5-flash, temperature 0) returns, in the\nsame style as the earlier truth passes: up to 8 themes with counts, up to 6 critical themes (objections, doubting questions,\nfeature requests, most frequent first) and up to 6 questions. Then, with the SAME judge prompts as reactions_eval /\nconcerns_rank / questions_rank:\n  ceiling   half A as a \"prediction\" of half B: themes recall / precision; p@3 and hit@3 of A's top 3 critical themes and\n            questions against B's\n  ours      our deployed outputs against the same half-B truth: BEST reactions (recall / precision), RANKED concerns and RANKED\n            questions (p@3, hit@3) - available for launches in the 300 sample\nLaunch-bootstrap 95% CIs; ceiling by comment-count band; ours / ceiling ratios on the shared launches.",
+ "launches": 158,
+ "from_300_sample": 158,
+ "ceiling_all": {
+  "recall": [
+   43.9,
+   41.5,
+   46.5,
+   158
+  ],
+  "precision": [
+   40.6,
+   38.4,
+   42.9,
+   158
+  ],
+  "c_p3": [
+   27.2,
+   23.9,
+   30.6,
+   155
+  ],
+  "c_hit3": [
+   56.1,
+   50.2,
+   61.8,
+   155
+  ],
+  "q_p3": [
+   15.8,
+   12.9,
+   19.2,
+   154
+  ],
+  "q_hit3": [
+   34.4,
+   28.9,
+   40.2,
+   154
+  ]
+ },
+ "shared_launches (in the 300 sample)": {
+  "recall": {
+   "ceiling": [
+    43.9,
+    41.4,
+    46.6,
+    158
+   ],
+   "ours": [
+    55.9,
+    53.5,
+    58.3,
+    158
+   ],
+   "ours / ceiling": 1.27
+  },
+  "precision": {
+   "ceiling": [
+    40.6,
+    38.5,
+    42.9,
+    158
+   ],
+   "ours": [
+    56.8,
+    53.8,
+    59.7,
+    158
+   ],
+   "ours / ceiling": 1.4
+  },
+  "c_p3": {
+   "ceiling": [
+    27.2,
+    23.9,
+    30.5,
+    155
+   ],
+   "ours": [
+    23.3,
+    19.9,
+    26.7,
+    156
+   ],
+   "ours / ceiling": 0.86
+  },
+  "c_hit3": {
+   "ceiling": [
+    56.1,
+    50.1,
+    62.2,
+    155
+   ],
+   "ours": [
+    51.7,
+    45.7,
+    57.7,
+    156
+   ],
+   "ours / ceiling": 0.92
+  },
+  "q_p3": {
+   "ceiling": [
+    15.8,
+    13.0,
+    19.0,
+    154
+   ],
+   "ours": [
+    15.9,
+    13.3,
+    18.6,
+    155
+   ],
+   "ours / ceiling": 1.01
+  },
+  "q_hit3": {
+   "ceiling": [
+    34.4,
+    28.7,
+    39.9,
+    154
+   ],
+   "ours": [
+    37.1,
+    31.5,
+    42.8,
+    155
+   ],
+   "ours / ceiling": 1.08
+  }
+ },
+ "ceiling by comment count": {
+  "16-24": {
+   "n": 84,
+   "recall": [
+    39.1,
+    35.9,
+    42.1,
+    84
+   ],
+   "precision": [
+    36.8,
+    34.2,
+    39.6,
+    84
+   ],
+   "c_p3": [
+    24.7,
+    19.9,
+    30.1,
+    81
+   ],
+   "q_p3": [
+    15.0,
+    10.7,
+    19.6,
+    80
+   ]
+  },
+  "25-40": {
+   "n": 47,
+   "recall": [
+    46.9,
+    42.5,
+    51.2,
+    47
+   ],
+   "precision": [
+    43.2,
+    39.2,
+    47.4,
+    47
+   ],
+   "c_p3": [
+    29.3,
+    23.2,
+    35.5,
+    47
+   ],
+   "q_p3": [
+    15.5,
+    10.8,
+    20.5,
+    47
+   ]
+  },
+  "41+": {
+   "n": 27,
+   "recall": [
+    54.0,
+    47.7,
+    60.3,
+    27
+   ],
+   "precision": [
+    48.0,
+    42.4,
+    53.6,
+    27
+   ],
+   "c_p3": [
+    31.1,
+    24.9,
+    37.2,
+    27
+   ],
+   "q_p3": [
+    18.9,
+    11.5,
+    27.6,
+    27
+   ]
+  }
+ },
+ "usd": 2.11
+}

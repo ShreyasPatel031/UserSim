@@ -1,0 +1,213 @@
+{
+ "design": "Self-consistency for concerns and model strength (orchestrator 04:00Z Nov 12, item 2). Same 300 post-cutoff launches and\ncritical-theme truth as concerns_rank (complaints_eval ctruth).\n  SC5      the D_category critic prompt (launch framing, as in complaints_eval Part B) sampled 5 times at temperature 0.9\n           (gemini-2.5-flash); items embedded (gemini-embedding-001, 256-d) and clustered greedily at cosine >= 0.85; clusters\n           ranked by how many of the 5 samples raise them (ties: earlier mean position); medoid text; top 5\n  MERGED   RANKED top 5 (concerns_rank) + SC5 top 5 pooled, near-duplicates (cos >= 0.85) merged, ranked by the mean of\n           (RANKED position score) and (SC support / 5) - support as a fourth vote\n  PRO      the same D critic prompt, single call, gemini-2.5-pro (temperature 0.3, minimal thinking) vs the flash single call\n           (CRITIC in concerns_rank)\nSame blinded judge as concerns_rank (per-item b_matches); p@1, p@3, hit@3; launch-bootstrap CIs; paired vs RANKED and vs\nCRITIC; cost and latency per request.",
+ "means": {
+  "RANKED": {
+   "p1": [
+    23.3,
+    18.6,
+    28.0,
+    296
+   ],
+   "p3": [
+    24.4,
+    21.4,
+    27.4,
+    296
+   ],
+   "hit3": [
+    54.7,
+    49.0,
+    60.5,
+    296
+   ]
+  },
+  "CRITIC": {
+   "p1": [
+    15.5,
+    11.5,
+    19.9,
+    296
+   ],
+   "p3": [
+    19.4,
+    16.9,
+    22.0,
+    296
+   ],
+   "hit3": [
+    47.6,
+    41.9,
+    53.0,
+    296
+   ]
+  },
+  "SC5": {
+   "p1": [
+    20.9,
+    16.6,
+    26.0,
+    296
+   ],
+   "p3": [
+    19.1,
+    16.6,
+    21.8,
+    296
+   ],
+   "hit3": [
+    47.0,
+    41.2,
+    52.4,
+    296
+   ]
+  },
+  "MERGED": {
+   "p1": [
+    23.6,
+    18.6,
+    28.4,
+    296
+   ],
+   "p3": [
+    23.1,
+    20.0,
+    26.1,
+    296
+   ],
+   "hit3": [
+    49.0,
+    43.2,
+    54.7,
+    296
+   ]
+  },
+  "PRO": {
+   "p1": [
+    10.8,
+    7.4,
+    14.5,
+    296
+   ],
+   "p3": [
+    13.1,
+    10.8,
+    15.3,
+    296
+   ],
+   "hit3": [
+    34.5,
+    29.1,
+    39.9,
+    296
+   ]
+  }
+ },
+ "paired": {
+  "SC5 - RANKED": {
+   "p1": [
+    -2.4,
+    -8.8,
+    4.1,
+    296
+   ],
+   "p3": [
+    -5.3,
+    -9.0,
+    -1.7,
+    296
+   ],
+   "hit3": [
+    -7.8,
+    -15.2,
+    -0.3,
+    296
+   ]
+  },
+  "MERGED - RANKED": {
+   "p1": [
+    0.3,
+    -4.4,
+    5.1,
+    296
+   ],
+   "p3": [
+    -1.4,
+    -3.9,
+    1.4,
+    296
+   ],
+   "hit3": [
+    -5.7,
+    -10.8,
+    -0.7,
+    296
+   ]
+  },
+  "PRO - CRITIC": {
+   "p1": [
+    -4.7,
+    -9.1,
+    -0.7,
+    296
+   ],
+   "p3": [
+    -6.3,
+    -9.1,
+    -3.6,
+    296
+   ],
+   "hit3": [
+    -13.2,
+    -19.6,
+    -6.4,
+    296
+   ]
+  },
+  "PRO - RANKED": {
+   "p1": [
+    -12.5,
+    -18.2,
+    -6.4,
+    296
+   ],
+   "p3": [
+    -11.4,
+    -15.0,
+    -7.9,
+    296
+   ],
+   "hit3": [
+    -20.3,
+    -27.0,
+    -13.2,
+    296
+   ]
+  },
+  "SC5 - CRITIC": {
+   "p1": [
+    5.4,
+    0.3,
+    10.1,
+    296
+   ],
+   "p3": [
+    -0.2,
+    -3.0,
+    2.7,
+    296
+   ],
+   "hit3": [
+    -0.7,
+    -7.1,
+    6.1,
+    296
+   ]
+  }
+ },
+ "latency_median_s": {
+  "sc": 1.78,
+  "pro": 3.25
+ },
+ "cost_note": "SC5 = 5 flash calls + 1 embedding batch per request; PRO = 1 pro call",
+ "usd": 1.548
+}

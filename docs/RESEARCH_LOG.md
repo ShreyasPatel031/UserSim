@@ -1061,3 +1061,41 @@ Script experiments/simlab/mirror_eval.py; report reports/mirror_eval/. Same 300 
 - concerns: RANKED 24.4 / 54.7; re-ranked with a "page mentions this need" vote 24.0 / 53.0 (Δ p@3 −0.5 [−1.7, 0.8]); MENTIONED-needs list 15.4 / 37.2 (Δ −9.0 [−13.0, −5.1])
 - questions: RANKED 15.5 / 37.7; re-ranked 15.6 / 37.3 (Δ +0.1 [−1.0, 1.1]); MENTIONED-needs list 15.9 / 35.3 (Δ +0.6 [−3.2, 4.6])
 Reading: the association (users ask about what the page mentions) is real at the category level but adds nothing to the ranked lists at item level; a plain "mentioned needs" list matches the ranked questions list (cheaper, not better) and loses for concerns. Closed; nothing handed over.
+
+### 2026-11-12 E5 — noise ceiling (split-half) for reactions, concerns and questions
+Script experiments/simlab/ceiling.py; report reports/ceiling/. 158 post-cutoff launches with enough comments; each launch's real comments are split randomly into halves A and B; the bar is "half A predicts half B" under the same blinded gemini-2.5-flash judge, and our prediction is scored against half B the same way. Spend $2.11. Launch-bootstrap 95% CIs are in the report.
+
+| Measure | Ceiling (A vs B) | Ours vs B | Ratio |
+|---|---|---|---|
+| Reactions recall | 43.9 | 55.9 | 1.27 |
+| Reactions precision | 40.6 | 56.8 | 1.40 |
+| Concerns p@3 | 27.2 | 23.3 | 0.86 |
+| Concerns hit@3 | 56.1 | 51.7 | 0.92 |
+| Questions p@3 | 15.8 | 15.9 | 1.01 |
+| Questions hit@3 | 34.4 | 37.1 | 1.08 |
+
+The ceiling rises with comment count (reactions recall: 39.1 at 16–24 comments, 46.9 at 25–40, 54.0 at 41+). A half sample is a noisy, low bar that a good predictor can exceed. Honest page wording: "reactions match real users at least as well as a second group of real users would; concerns reach about 86% of that bar; questions are at it." This is not "x% of the true ceiling".
+Judge-output audit: the judge can return "true"/"false" as strings, which crashed ceiling.py; both new scripts now coerce them. Replaying 118 concerns judge calls gave 590 verdicts, all booleans, 0 strings, so earlier scripts that used bool() are not materially affected.
+
+### 2026-11-12 E5 — self-consistency and a stronger model for concerns: no gain, keep RANKED
+Script experiments/simlab/consistency.py; report reports/consistency/. Same 300 post-cutoff launches and item-level judge. Methods:
+- SC5: the D critic run 5× at temperature 0.9, clustered and ranked by support.
+- MERGED: SC5 added to RANKED as a 4th vote.
+- PRO: gemini-2.5-pro as the single-call generator.
+Spend $1.55. Latency per call: 1.78 s for SC5, 3.25 s for PRO.
+
+| Method | p@1 | p@3 | hit@3 |
+|---|---|---|---|
+| RANKED | 23.3 | 24.4 | 54.7 |
+| CRITIC | 15.5 | 19.4 | 47.6 |
+| SC5 | 20.9 | 19.1 | 47.0 |
+| MERGED | 23.6 | 23.1 | 49.0 |
+| PRO | 10.8 | 13.1 | 34.5 |
+
+Paired differences:
+- SC5 − RANKED: p@3 −5.3 [−9.0, −1.7]
+- MERGED − RANKED: p@3 −1.4 [−3.9, 1.4]; hit@3 −5.7 [−10.8, −0.7]
+- PRO − CRITIC: p@3 −6.3 [−9.1, −3.6]
+- SC5 − CRITIC: p@1 +5.4 [0.3, 10.1]; p@3 −0.2
+
+PRO outputs were well formed (6 items on every launch). They read as generic first-person complaints ("the cost is too high...") rather than launch-specific concerns. Verdict: keep RANKED unchanged.
