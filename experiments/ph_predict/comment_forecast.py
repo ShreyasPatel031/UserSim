@@ -406,10 +406,21 @@ def live(day, point):
     except Exception as e:
         print("self_hunted skipped:", repr(e)[:120], flush=True)
     A["self_hunted"] = [sh.get(i, np.nan) for i in A.id]
+    # orchestrator 04:10Z Nov 12 (depth analysis; provisional, scored forward): pred_rank_depth = positions 1-5 from
+    # pred_rank_best, positions 6+ by the equal-weight mean (w_api 0.5) of the API and LM positions; watch15 = our top 15
+    # by pred_rank_best at P2-P4 (the final top 10 was inside it for 97% of launches from 02:00 PT)
+    if A.api_rank.notna().any():
+        eq = (0.5 * A.pred_rank_api + 0.5 * lm_pos + 1e-6 * lm_pos)
+        top5 = A.pred_rank_best <= 5
+        rest = eq[~top5].rank(method="first") + 5
+        A["pred_rank_depth"] = A.pred_rank_best.where(top5, rest).astype(int)
+    else:
+        A["pred_rank_depth"] = A.pred_rank_best
+    A["watch15"] = ((A.pred_rank_best <= 15) & (point in ("P2", "P3", "P4"))).astype(int)
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
