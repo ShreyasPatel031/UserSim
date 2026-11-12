@@ -1,4 +1,5 @@
-"""Day label and per-pick probabilities from the CLEAN shadow model (orchestrator 08:53Z Nov 12, confidence_v1).
+"""Day label and per-pick probabilities from the CLEAN shadow model (orchestrator 08:53Z Nov 12, confidence_v1; day label
+from confidence_v2 since 09:00Z: two bins clear_leader / open_field, logistic on g12z, z1, t3z, ln with day sd = population sd, ddof 0).
 Rule: gs://.../tmp/orchestrator/conf/confidence_v1.json (copied to results/confidence_v1.json), fitted on honest_preds_v2
 (clean OOF scores); live input = results/shadow_makerfix/<d>.json pred_clean (the same clean_v3 inputs, daily refit).
   day label   ridge on day features (score gaps, spread, entropy, line-up size, weekend, strong hunters), cut into
@@ -11,7 +12,8 @@ import json, os, subprocess, sys
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE)); sys.path.insert(0, HERE)
 from early_forecast import B
-RULE = os.path.join(HERE, "results", "confidence_v1.json")
+RULE = os.path.join(HERE, "results", "confidence_v1.json")   # pick model
+RULE2 = os.path.join(HERE, "results", "confidence_v2.json")  # day label (orchestrator 09:00Z Nov 12: v2 replaces the v1 3-bin label)
 OUT = os.path.join(HERE, "results", "web", "confidence")
 TMP = os.environ.get("TMPDIR", "/tmp")
 
@@ -53,19 +55,19 @@ def main(day):
     if "pred_clean" not in SF or SF.pred_clean.isna().all():
         print(json.dumps({"day": day, "skipped": "no pred_clean in shadow file"})); return
     S = SF[["id", "pred_clean"]].dropna().sort_values(["pred_clean", "id"], ascending=[False, True]).reset_index(drop=True)
-    st, miss = strong_count(day, S.id.tolist())
-    x = day_feats(S.pred_clean.values, R["day_models"]["h3"]["n_above_threshold"], st)
-    x["weekend"] = float(pd.Timestamp(day).weekday() >= 5)
-    n = len(S)
-    out = {"day": day, "source": "from the clean shadow model (clean_v3, 00:05 inputs; results/shadow_makerfix pred_clean)",
-           "rule": R["version"], "launches": n, "strong_hunters": st, "poster_unknown": miss,
-           "note": "Labels and probabilities fitted month-forward on the clean backtest (194 days); oos_rates = that bin's out-of-sample "
-                   "mean hits (h3 of our top 3, h5, h10) and #1-in-top-3 rate (p1t3). Live-scored forward in confidence_scoreboard.json.",
-           "labels": {}, "picks": []}
-    for k in ("h3", "h5", "h10"):
-        if k == "h10" and n <= 10:
-            out["labels"][k] = None; continue
-        out["labels"][k] = label(R["day_models"][k], x)
+    V2 = json.load(open(RULE2)); r2 = V2["rule"]; n = len(S)
+    sc = S.pred_clean; sd = sc.std(ddof=0)   # numpy-style sd: reproduces the rule's training means (ddof 1 gives 28% clear vs 33%)
+    f2 = {"g12z": (sc[0] - sc[1]) / sd if n > 1 else 0.0, "z1": (sc[0] - sc.mean()) / sd,
+          "t3z": (sc[:3].mean() - sc[3:].mean()) / sd if n > 3 else 0.0, "ln": float(np.log(n))}
+    v = r2["intercept"] + sum((f2[f] - r2["standardize_mean"][f]) / r2["standardize_sd"][f] * c for f, c in r2["coef"].items())
+    p2 = float(1 / (1 + np.exp(-v))); lab = "clear_leader" if p2 >= r2["cutoff"] else "open_field"
+    st = V2["statement"]
+    out = {"day": day, "applies_to": "clean shadow model", "stable": True, "rule": V2["version"], "launches": n,
+           "source": "from the clean shadow model (clean_v3, 00:05 inputs; results/shadow_makerfix pred_clean); never the published ranking",
+           "label": lab, "p_clear_leader": round(p2, 3), "cutoff": r2["cutoff"],
+           "features": {k: round(float(x), 3) for k, x in f2.items()},
+           "text": st["text_" + lab], "validated_rates": st["validated_month_forward"][lab],
+           "eval": st["eval"], "picks_rule": "confidence_v1 pick_models (clean), unchanged", "picks": []}
     sc = S.pred_clean; z = (sc - sc.mean()) / sc.std(); m_next = (sc - sc.shift(-1)).fillna(0)
     for j in range(min(10, n)):
         row = {"pick": j + 1, "id": S.id[j]}
@@ -82,7 +84,7 @@ def main(day):
     for nm in (f"{day}.json", "latest.json"):
         p = os.path.join(OUT, nm); json.dump(out, open(p, "w"), indent=1)
         subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/confidence/{nm}"], check=True)
-    print(json.dumps({k: out[k] for k in ("day", "launches", "strong_hunters", "poster_unknown")} | {"labels": {k: (v or {}).get("label") for k, v in out["labels"].items()}}))
+    print(json.dumps({k: out[k] for k in ("day", "launches", "label", "p_clear_leader")}))
 
 
 def score():
@@ -97,16 +99,14 @@ def score():
             continue
         ids = [p["id"] for p in c["picks"]]
         hit = lambda k: len(set(ids[:k]) & set(t[:k]))
-        r = {"day": d, "h3": hit(3), "h5": hit(5), "h10": hit(10) if len(t) > 10 else None, "p1t3": float(ids[0] in t[:3])}
-        for k in ("h3", "h5", "h10"):
-            r["label_" + k] = (c["labels"].get(k) or {}).get("label")
-        rows.append(r)
+        rows.append({"day": d, "label": c.get("label"), "h3": hit(3), "h5": hit(5), "h10": hit(10) if len(t) > 10 else None,
+                     "p1t3": float(ids[0] in t[:3])})
     X = pd.DataFrame(rows)
-    out = {"source": "clean shadow model, confidence_v1 labels, live days scored forward", "n_days": int(len(X)), "by_label": {}, "days": rows}
-    for k in ("h3", "h5", "h10"):
-        if len(X) and X["label_" + k].notna().any():
-            out["by_label"][k] = {lab: {"n": int(len(g)), "mean_hits": round(float(g[k].mean()), 2), "p1t3": round(float(g.p1t3.mean()), 2)}
-                                  for lab, g in X.dropna(subset=["label_" + k]).groupby("label_" + k)}
+    out = {"source": "clean shadow model, confidence_v2 label (clear_leader / open_field), live days scored forward", "applies_to": "clean shadow model",
+           "n_days": int(len(X)), "by_label": {}, "days": rows}
+    if len(X):
+        out["by_label"] = {lab: {"days": int(len(g)), "p1_top3": round(float(g.p1t3.mean()), 3), "p1_top3_count": f"{int(g.p1t3.sum())} of {len(g)}",
+                                 "top3_hits": round(float(g.h3.mean()), 2), "top5_hits": round(float(g.h5.mean()), 2)} for lab, g in X.dropna(subset=["label"]).groupby("label")}
     p = os.path.join(HERE, "results", "web", "confidence_scoreboard.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/confidence_scoreboard.json"], check=True)
     print(json.dumps(out["by_label"]))
