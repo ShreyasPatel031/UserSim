@@ -79,6 +79,7 @@ def write(day, point, A, extra):
            "forecast": A.head(30)[["id", "day", "pred_rank", "est", "src"]].round(2).to_dict("records")}
     os.makedirs(OUT, exist_ok=True); p = f"{OUT}/{mon}_{day}_{point}.json"; json.dump(res, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/weekly_live/{mon}_{day}_{point}.json"], check=True)
+    import heartbeat; heartbeat.beat(f"weekly {point}", day, extra.get("data_up_to"), "ok")
     # website pointer (audit 05:00Z Nov 12): the latest file per point for the current week, so the page shows the call it
     # describes (R4 / est / dayend / reread) rather than the newest file by name
     lp = os.path.join(HERE, "results", "web", "weekly_latest.json"); os.makedirs(os.path.dirname(lp), exist_ok=True)

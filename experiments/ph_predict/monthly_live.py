@@ -80,6 +80,7 @@ def dayend(day):
         subprocess.run(["gsutil", "-q", "cp", wp, f"{B}/results/weekly_live/{mon}_{day}_reread.json"], check=True)
     os.makedirs(OUT, exist_ok=True); p = f"{OUT}/{day[:7]}_{day}_dayend.json"; json.dump(res, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/monthly_live/{day[:7]}_{day}_dayend.json"], check=True)
+    import heartbeat; heartbeat.beat("monthly dayend", day, hdr.get("fetched_at"), "partial" if early else "ok")
     print(json.dumps({k: v for k, v in res.items() if not k.startswith("forecast")}))
 
 
@@ -96,6 +97,7 @@ def running(day):
            "source": f"warehouse launches.monthly_rank after the {nxt} ranks step", "forecast_monthlyRank": L.sort_values(["monthly_rank", "id"]).id.tolist()[:30]}
     os.makedirs(OUT, exist_ok=True); p = os.path.join(OUT, f"{day[:7]}_{day}_running.json"); json.dump(res, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/monthly_live/{day[:7]}_{day}_running.json"], check=True)
+    import heartbeat; heartbeat.beat("monthly running", day, None, "ok")
     print(json.dumps({k: v for k, v in res.items() if k != "forecast_monthlyRank"}))
 
 

@@ -84,6 +84,7 @@ def main(day):
     for nm in (f"{day}.json", "latest.json"):
         p = os.path.join(OUT, nm); json.dump(out, open(p, "w"), indent=1)
         subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/confidence/{nm}"], check=True)
+    import heartbeat; heartbeat.beat("confidence", day, pd.Timestamp(day + " 00:05", tz="America/Los_Angeles").tz_convert("UTC"), "ok")
     print(json.dumps({k: out[k] for k in ("day", "launches", "label", "p_clear_leader")}))
 
 

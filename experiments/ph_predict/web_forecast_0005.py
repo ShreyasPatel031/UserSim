@@ -27,6 +27,7 @@ def main(days):
                "forecast": [{"id": i, "predicted_rank": int(r)} for i, r in zip(g.id, g["rank"])]}
         p = f"{OUT}/{d}.json"; json.dump(res, open(p, "w"), indent=1)
         subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/forecast_0005/{d}.json"], check=True)
+        import heartbeat; heartbeat.beat("forecast_0005", d, pd.Timestamp(d + " 00:05", tz="America/Los_Angeles").tz_convert("UTC"), "ok")
         print(json.dumps({"day": d, "launches": len(g)}))
 
 

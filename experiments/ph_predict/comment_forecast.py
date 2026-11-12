@@ -663,6 +663,7 @@ def live(day, point):
         os.makedirs(os.path.join(HERE, "results", "early_forecast"), exist_ok=True)
         p = os.path.join(HERE, "results", "early_forecast", f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
         subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/early_forecast/{day}_{point}.json"], check=True)
+        import heartbeat; heartbeat.beat(f"pre_reveal {point}", day, T, "late" if late else ("comments_missing" if comments_missing else "ok"))
     print(json.dumps({k: v for k, v in res.items() if k != "forecast"}))
 
 

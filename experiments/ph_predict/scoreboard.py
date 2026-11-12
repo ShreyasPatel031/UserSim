@@ -170,6 +170,7 @@ def main():
         out["clean_thread_coef"] = json.load(open(tc))
     p = os.path.join(HERE, "results", "web", "scoreboard.json"); json.dump(out, open(p, "w"), indent=1, default=str)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/scoreboard.json"], check=True)
+    import heartbeat; heartbeat.beat("scoreboard", None, None, "ok")
     north_star(X)
     print(json.dumps(summ, indent=0))
 

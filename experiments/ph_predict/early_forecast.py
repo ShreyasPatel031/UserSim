@@ -178,6 +178,7 @@ def live(day, point, method="blend", w=None):
     os.makedirs(os.path.join(HERE, "results", "early_forecast"), exist_ok=True)
     p = os.path.join(HERE, "results", "early_forecast", f"{day}_{point}.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/early_forecast/{day}_{point}.json"], check=True)
+    import heartbeat; heartbeat.beat(f"early_forecast {point}", day, t, "late" if (pd.Timestamp.now(tz="UTC") - pd.Timestamp(t)) > pd.Timedelta(minutes=90) else "ok")
     # website (results/web/lock/<day>.json): the latest lock state, "top 3 locked" vs "#3 open"
     wd = os.path.join(HERE, "results", "web", "lock"); os.makedirs(wd, exist_ok=True); wp = os.path.join(wd, f"{day}.json")
     prev = json.load(open(wp)) if os.path.exists(wp) else {}
