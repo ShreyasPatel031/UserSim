@@ -398,8 +398,10 @@ def _interest_people(a: dict) -> dict:
             "method": ("Category-interest match: each person's share of past upvotes/comments/launches per PH topic "
                        "vs this product's topics. People are real complete PH profiles with every identifier removed; "
                        "descriptors are category-level and banded."),
-            "note": f"Based on {n:,} public Product Hunt profiles; matching is approximate (who it resonates with, "
-                    "not who will use it). Segments shown only where 20 or more people back them."}
+            "note": (f"Based on {n:,} public Product Hunt profiles. These are types of members whose past Product Hunt "
+                     "activity centres on this category: they show who the product resembles, not who will vote for it "
+                     "or use it. On launch day, votes come mostly from the most active members. " + _who_test_note() +
+                     " Segments shown only where 20 or more people back them.")}
 
 
 # ---------- step 3: reactions (Gemini) ----------
@@ -515,6 +517,17 @@ def _types_from_people(p: dict, topics: list[str]) -> list[str]:
     out.append("Type E: heavy PH voter who comments often and sees dozens of similar launches a week")
     out.append("Type F: maker from an unrelated category, browsing the day's launches")
     return out
+
+
+def _who_test_note() -> str:
+    from mvp.ph_site.live import claims
+    w = claims().get("who_card_test")
+    if not w:
+        return ""
+    v = w["values"]
+    return (f"Fixed offline figure ({w['label']}, {w['date']}): the segments this card shows matched the segments "
+            f"over-represented among real voters {v['site_p3']:.0%} of the time, against {v['random_p3']:.0%} at random "
+            f"and {v['always_top_p3']:.0%} for simply naming the most-voting segments.")
 
 
 def _member_types(p: dict, topics: list[str]) -> list[str]:

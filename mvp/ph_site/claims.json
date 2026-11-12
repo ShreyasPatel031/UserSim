@@ -122,5 +122,16 @@
   "label": "page-trained band, 130 fresh page reads Oct 27-Nov 10 (out of sample; trained to Oct 24)",
   "source": "E5 launch_band_page_v1.json heldout_accuracy",
   "date": "2026-11-12"
+ },
+ "who_card_test": {
+  "values": {
+   "launches": 426,
+   "site_p3": 0.229,
+   "random_p3": 0.101,
+   "always_top_p3": 0.297
+  },
+  "label": "426 launches from Sep 1, real voters' over-represented segments, people's segments built from activity before launch day",
+  "source": "E5 who-card voter test, branch claude/person-model-v2",
+  "date": "2026-11-12"
  }
 }
