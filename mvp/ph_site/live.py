@@ -271,6 +271,9 @@ def _forecast_file(day: str, key: str):
     # blend rest on a few replay days, so they are kept as experimental alternatives (PH ops, Nov 11).
     field = "pred_rank"
     ranks = {str(r["id"]): int(r[field]) for r in f if r.get(field) is not None}
+    # Expected day-end votes (PH ops growth model, from Nov 12; null when unknown).
+    exp = {str(r["id"]): round(float(r["exp_final_votes"])) for r in f
+           if isinstance(r.get("exp_final_votes"), (int, float))}
     if not ranks:
         return None
     alt = {}
@@ -279,7 +282,7 @@ def _forecast_file(day: str, key: str):
             alt[af] = {str(r["id"]): int(r[af]) for r in f if r.get(af) is not None}
     method = "comment ridge" if key.startswith("P") else (j.get("method") or field)
     return {"ranks": ranks, "made_at": j.get("written_at", ""), "data_up_to": j.get("data_up_to", ""),
-            "method": method, "rank_field": field, "alt": alt}
+            "method": method, "rank_field": field, "alt": alt, "exp_votes": exp or None}
 
 
 def forecasts(day: str) -> dict[str, dict]:
@@ -374,7 +377,12 @@ def day_view(day: str) -> dict:
         if act["final"]:
             score = {str(k): hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)}
         conf = _top3_confidence(f["ranks"], prods) if key == "0005" else None
-        points.append({"key": key, "label": label, "time_pt": made, "top3_conf": conf, "made_at": f.get("made_at"),
+        exp_err = None
+        if f.get("exp_votes"):
+            g = claims().get("exp_votes_error", {}).get("values", {})
+            exp_err = g.get(key) or (g.get("pre_reveal") if key.startswith("P") else None)
+        points.append({"key": key, "label": label, "time_pt": made, "top3_conf": conf,
+                       "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
                        "ranks": f["ranks"], "score": score})
     # Only expose live votes after the reveal; before it they are hidden on PH too.

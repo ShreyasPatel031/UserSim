@@ -120,6 +120,7 @@ function renderPred(){
   let sees = `Could see: ${p.sees}`;
   const c0 = p.top3_conf && Object.values(p.top3_conf)[0];
   if(c0) sees += ` Top-3 rates by rank are fixed offline figures (${c0.basis}, ${c0.date}); brand sub-launches and versioned names hit less often than their rank suggests.`;
+  if(p.exp_votes) sees += ` Expected day-end votes are rough${p.exp_err ? ": typical error " + p.exp_err : ""}.`;
   if(p.score) sees += ` Scored: ${p.score["3"]}/3 of the real top 3, ${p.score["5"]}/5 of top 5, ${p.score["10"]}/10 of top 10.`;
   $("#sees").textContent = sees;
   const fin = VIEW.status.final;
@@ -130,8 +131,9 @@ function renderPred(){
     const conf = c ? `<span class="mk" title="${esc("How often the 00:05 model's pick at this rank finished in the top 3: " + c.basis)}">top-3 rate ${Math.round(Number(c.p)*100)}%</span>`
       + (c.short ? `<span class="mk hit" title="${esc(c.note)}">${esc(c.short)}</span>` : "") : "";
     const mk = x.board_rank ? `<span class="mk ${hit?"hit":"miss"}">${hit?(fin?"in final top 10":"in live top 10"):(fin?"missed top 10":"outside live top 10")}</span>` : "";
+    const ev = p.exp_votes && p.exp_votes[x.id];
     return `<li class="row c"><div class="pos">${Number(r)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
-      <div class="chips">${chips(x)}</div></div><div class="side">${moveTag(r, x.board_rank)}${mk}${conf}</div></li>`;}).join("");
+      <div class="chips">${chips(x)}${ev!=null ? `<span class="trail">expect <b>~${Number(ev)}</b> votes by day end</span>` : ""}</div></div><div class="side">${moveTag(r, x.board_rank)}${mk}${conf}</div></li>`;}).join("");
 }
 
 function renderLive(){

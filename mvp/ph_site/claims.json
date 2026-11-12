@@ -54,5 +54,15 @@
   "label": "114 past launches, Aug-Oct 2026, top-100 matches vs activity-matched members",
   "source": "E5 voters_eval: experiments/simlab/reports/voters_eval/voters_eval.json, branch claude/person-model-v2",
   "date": "2026-11-12"
+ },
+ "exp_votes_error": {
+  "values": {
+   "pre_reveal": "about 20% (30-56% for top-10 launches)",
+   "R0": "about 9.5% (15-34% for top-10 launches)",
+   "R4": "about 5% (larger for top-10 launches)"
+  },
+  "label": "median absolute error of expected day-end votes",
+  "source": "PH ops growth model: results/growth.md",
+  "date": "2026-11-12"
  }
 }

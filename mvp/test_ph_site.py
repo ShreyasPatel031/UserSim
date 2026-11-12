@@ -203,3 +203,13 @@ def test_refund_after_failed_fetch(monkeypatch):
         with pytest.raises(safe_fetch.FetchError):
             asyncio.run(try_sim.step_page("https://example.com", "7.7.7.7"))
     assert len(try_sim._mem.get(try_sim._ip_hash("7.7.7.7"), [])) == 0
+
+
+def test_exp_final_votes_read(monkeypatch):
+    doc = {"written_at": "w", "data_up_to": "d", "method": "votes",
+           "forecast": [{"id": "1", "pred_rank": 1, "exp_final_votes": 412.6}, {"id": "2", "pred_rank": 2, "exp_final_votes": None}]}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: doc)
+    f = live._forecast_file("2026-11-12", "R2")
+    assert f["exp_votes"] == {"1": 413}
+    doc["forecast"] = [{"id": "1", "pred_rank": 1}]
+    assert live._forecast_file("2026-11-12", "R1")["exp_votes"] is None
