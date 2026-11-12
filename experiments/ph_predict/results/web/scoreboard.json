@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-11T22:39:01.573976+00:00",
+ "built_at": "2026-11-12T01:58:34.179842+00:00",
  "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
  "sources": {
   "live": "written before or at its point time",

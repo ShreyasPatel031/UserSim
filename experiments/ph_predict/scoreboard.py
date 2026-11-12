@@ -59,7 +59,7 @@ def main():
                 if due is not None and pd.Timestamp(E["written_at"]) > due + pd.Timedelta(minutes=90):
                     s = "late"
             if pt.startswith("P"):
-                for m, c in (("comment_ridge", "pred_rank"), ("api_rank", "pred_rank_api"), ("blend", "pred_rank_blend")):
+                for m, c in (("comment_ridge", "pred_rank"), ("api_rank", "pred_rank_api"), ("blend", "pred_rank_blend"), ("best", "pred_rank_best")):
                     if c in f:
                         add(d, pt, m, s, f.sort_values(c).id.astype(str).tolist(), E["written_at"])
             else:
@@ -93,6 +93,10 @@ def main():
 BACKTEST = {
     ("0005", "published"): ("63.0 / 69.3 / 75.0", "honest out-of-fold LM, 207 days Mar-Oct (honest.json)"),
     ("0005", "makerfix_shadow"): ("60.2 / 68.6 / 75.7", "placeholders as missing, 245 days (maker_resolve.md; current features 59.9 / 67.7 / 75.4)"),
+    ("P1", "best"): ("66.7 / 66.7 / 78.3", "REPLAY, 6 days (Nov 2-10), leave-one-day-out choice: 0.5 x API rank + 0.5 x LM rank (api_depth.md); LM 38.9 / 60.0 / 76.7"),
+    ("P2", "best"): ("72.2 / 76.7 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API rank + 0.25 x LM rank (api_depth.md)"),
+    ("P3", "best"): ("83.3 / 80.0 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API + 0.25 x LM (P4 uses the same 03:00 read in the replay)"),
+    ("P4", "best"): ("83.3 / 80.0 / 80.0", "REPLAY, 6 days, as P3 (hourly reads; the live P4 uses the 04:00 15-min read)"),
     ("P1", "comment_ridge"): ("66.2 / 70.2 / 75.8", "live-compatible ridge, 207 days month-forward (comment_forecast.md)"),
     ("P2", "comment_ridge"): ("67.8 / 71.2 / 76.1", "same"), ("P3", "comment_ridge"): ("69.1 / 71.4 / 76.1", "same"),
     ("P4", "comment_ridge"): ("68.0 / 73.1 / 77.0", "same"),
@@ -106,7 +110,7 @@ BACKTEST = {
     ("month", "monthlyRank"): ("75 / 75 / 80", "dated reads, 4 months (E5 monthly_northstar); 42 / 50 / 52 from daily rank"),
 }
 ORDER = [("0005", "published"), ("0005", "makerfix_shadow"), ("0005", "unfixed_replay")] + \
-        [(p, m) for p in ("P1", "P2", "P3", "P4") for m in ("comment_ridge", "api_rank", "blend")] + \
+        [(p, m) for p in ("P1", "P2", "P3", "P4") for m in ("best", "comment_ridge", "api_rank", "blend")] + \
         [(p, "raw_votes") for p in ("R0", "R0q", "R0h", "R1", "R2", "R4")] + [("R0", "r0blend_neartie"), ("R0", "r0blend_mean")] + [("week", "dayend_votes"), ("month", "monthlyRank"), ("month", "votes")]
 
 
