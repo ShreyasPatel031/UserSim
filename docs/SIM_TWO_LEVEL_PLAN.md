@@ -202,3 +202,13 @@ Open, next to assign:
 24. Try-a-URL with optional hunter/maker fields: build the lookup bundle (hunter and maker histories keyed by profile) so the website can use the ladder result; validate end to end on 50 recent launches.
 25. Reveal-time forecast (75/80/88 at +15 min): blend with the pre-reveal recipe and expected final votes; LODO on the days held.
 26. What users ask: predict the questions makers get in the first hours (question themes only) and score against real questions, as a separate website section.
+
+### Queue state, 03:40 UTC Nov 12
+Running: PH agent = deployed vs backtest inputs at 00:05 (feature sets turn out identical live; the gap is input values), then launch-model target noise (19i); E5 = audience conditioning, Hacker News vs Product Hunt (18i); orchestrator = audit of every visitor-facing number (19j).
+Open, next to assign:
+27. 00:05 input values: for each of the 41 live inputs, the value at 00:05 vs the re-read value, and which ones move the forecast (follow-on to the feature-set comparison); fix or impute the ones that are simply late.
+28. Votes that Product Hunt removes later: which launches lose votes after midnight, whether it is visible on launch day (vote bursts, one-vote accounts in our pool), and whether it explains launch-model false favourites.
+29. Tie and near-tie handling at the top-3 boundary in every forecast file (official tie-break is unidentified): report top 3 with ties counted both ways.
+30. Pre-reveal recipe on the Nov 11 and Nov 12 live files once official ranks land (7th and 8th day): pooled table with intervals; refit weights LODO.
+31. Try-a-URL end to end on 30 recent launches through the actual site code path (page fetch, not the PH description): reactions recall, concerns p@3, rank band, with the page-read inputs the site really uses.
+32. Weekly call earlier in the week: probability that the current weekly top 3 survives, from how many launch days remain and the size of the leaders (calibration on 44 weeks).
