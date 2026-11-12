@@ -1379,3 +1379,18 @@ Site-compatible export (model d, retrained on _band_score's exact features), sco
 - The interval does not clear zero, so it was not sent as a replacement. Candidate file: gs://.../tmp/e5/website/launch_band_page_v1_candidate.json.
 
 Paste path: the site's /api/try/text feeds the visitor's description to launch_band.json. On the same 130, with the real PH description as the proxy, that gives Spearman 0.591 [0.47, 0.70] and coverage 89%. Confirmed: pasted launch text gets the 0.59, provided visitors paste PH-style text.
+
+### 2026-11-12 E5 — page-trained band settled (train ≤ Aug 31; test Sep + Oct held pages + 130 fresh = 856)
+Script experiments/simlab/band_settle.py; reports/band_page/band_settle.json. All arms are scored through try_sim._band_score; Spearman of band percentile with −rank; paired vs (a).
+
+| Test set | (a) PH-description band, page summary input | (b) page-trained | (d) page + PH, source flag |
+|---|---|---|---|
+| Pooled (n = 856) | 0.139, coverage 75.5% | 0.253, +0.12 [0.04, 0.19] | 0.279, coverage 83.2%, +0.14 [0.08, 0.20] |
+| Without PH-mention pages (n = 674; 21% mention PH) | – | +0.11 [0.02, 0.19] | +0.12 [0.05, 0.19] |
+| September (n = 341) | – | – | +0.11 [0.01, 0.21] |
+| October (n = 385) | – | – | +0.16 [0.06, 0.25] |
+| Fresh (n = 130) | 0.19 | +0.24 [0.07, 0.40] | 0.40, +0.21 [0.07, 0.34] |
+
+- Width is about 31 ranks for every arm.
+- Fresh reads do not flatter less than late-fetched pages; the gain is largest on them.
+- Exported launch_band_page_v1.json (model d, trained on held pages through Oct 24) to tmp/e5/website/ and sent to the website agent as information.

@@ -1,0 +1,144 @@
+{
+ "design": "Settle the page-trained band (orchestrator 08:35Z Nov 12). Train on launches up to Aug 31 2026, test on Sep + Oct held page reads\n(pages fetched Oct 25, within ~8 weeks of launch) pooled with the 130 fresh Oct 27 - Nov 10 reads. Arms, all with _band_score's exact\nfeatures (band_page_export.py) and scored through the site's own try_sim._band_score:\n  (a) PH     trained on PH-description rows only (the launch_band.json recipe); served the page read's name / tagline / summary\n  (b) PAGE   trained on page rows only; served name / tagline / summary + excerpt[:1500]\n  (d) BOTH   page + PH rows with a source flag (folded into the intercept); served like (b)\nCuts / rank bands from 5-fold out-of-fold training scores of the served input type. Paired launch-bootstrap Spearman difference vs (a)\nwith -rank, coverage, width; split by fetch lag (Sep, Oct, fresh) and without pages that mention Product Hunt. If (d) or (b) clears\nzero pooled AND keeps its sign on the 130 fresh: retrain on everything and export (band_page_export.py).",
+ "train_launches": 2248,
+ "pooled": {
+  "n": 856,
+  "a_ph": {
+   "spearman": 0.139,
+   "coverage": 0.755,
+   "width": 26.8
+  },
+  "b_page": {
+   "spearman": 0.253,
+   "coverage": 0.814,
+   "width": 31.5,
+   "minus_a (paired)": [
+    0.039,
+    0.117,
+    0.194
+   ]
+  },
+  "d_both": {
+   "spearman": 0.279,
+   "coverage": 0.832,
+   "width": 31.8,
+   "minus_a (paired)": [
+    0.08,
+    0.141,
+    0.204
+   ]
+  }
+ },
+ "pooled_no_ph_mention": {
+  "n": 674,
+  "a_ph": {
+   "spearman": 0.093,
+   "coverage": 0.742,
+   "width": 26.7
+  },
+  "b_page": {
+   "spearman": 0.197,
+   "coverage": 0.816,
+   "width": 31.5,
+   "minus_a (paired)": [
+    0.017,
+    0.105,
+    0.192
+   ]
+  },
+  "d_both": {
+   "spearman": 0.211,
+   "coverage": 0.82,
+   "width": 31.9,
+   "minus_a (paired)": [
+    0.047,
+    0.12,
+    0.189
+   ]
+  }
+ },
+ "set 2026-09": {
+  "n": 341,
+  "a_ph": {
+   "spearman": 0.114,
+   "coverage": 0.768,
+   "width": 26.4
+  },
+  "b_page": {
+   "spearman": 0.178,
+   "coverage": 0.783,
+   "width": 31.8,
+   "minus_a (paired)": [
+    -0.054,
+    0.066,
+    0.192
+   ]
+  },
+  "d_both": {
+   "spearman": 0.218,
+   "coverage": 0.815,
+   "width": 31.8,
+   "minus_a (paired)": [
+    0.006,
+    0.106,
+    0.207
+   ]
+  }
+ },
+ "set 2026-10": {
+  "n": 385,
+  "a_ph": {
+   "spearman": 0.131,
+   "coverage": 0.738,
+   "width": 27.0
+  },
+  "b_page": {
+   "spearman": 0.259,
+   "coverage": 0.834,
+   "width": 31.3,
+   "minus_a (paired)": [
+    0.015,
+    0.128,
+    0.238
+   ]
+  },
+  "d_both": {
+   "spearman": 0.287,
+   "coverage": 0.839,
+   "width": 31.9,
+   "minus_a (paired)": [
+    0.058,
+    0.154,
+    0.25
+   ]
+  }
+ },
+ "set fresh": {
+  "n": 130,
+  "a_ph": {
+   "spearman": 0.193,
+   "coverage": 0.769,
+   "width": 27.3
+  },
+  "b_page": {
+   "spearman": 0.432,
+   "coverage": 0.838,
+   "width": 31.2,
+   "minus_a (paired)": [
+    0.071,
+    0.24,
+    0.404
+   ]
+  },
+  "d_both": {
+   "spearman": 0.404,
+   "coverage": 0.854,
+   "width": 31.7,
+   "minus_a (paired)": [
+    0.069,
+    0.206,
+    0.34
+   ]
+  }
+ }
+}
