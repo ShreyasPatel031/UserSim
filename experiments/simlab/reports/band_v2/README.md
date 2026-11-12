@@ -29,3 +29,16 @@ Script: experiments/simlab/band_facts.py.
 - The facts-only stack (+0.040 [−0.009, +0.085]) does not clear zero either.
 - More fresh pages would settle it.
 - band_facts_export.py and band_v2_score.py (a pure-python reference scorer for the bundle) are ready and committed but not run.
+
+## Controls (standing rule): best constant and category mean, same sets
+
+| set | constant band (training p10–p90) | category mean (topic prior) | B0 (live v1 recipe) | B0 − category | stack S (run 2) |
+|---|---|---|---|---|---|
+| 856 | ρ 0 · coverage 79.0% · width 30 | ρ 0.152 · 78.3% · 32.0 | ρ 0.278 · 83.3% · 31.6 | +0.127 [+0.060, +0.195] | 0.324 |
+| held 726 | 0 · 78.8% · 30 | 0.138 · 78.0% · 32.1 | 0.257 · 83.1% · 31.6 | +0.119 [+0.045, +0.195] | 0.305 |
+| fresh 130 | 0 · 80.0% · 30 | 0.253 · 80.0% · 31.5 | 0.403 · 84.6% · 31.4 | +0.151 [+0.004, +0.297] | 0.432 |
+| no PH mention 647 | – | 0.119 | 0.204 | +0.085 [+0.003, +0.165] | 0.246 |
+
+- The live band beats the category mean on every set, with the interval above 0.
+- It has 4–5 points more coverage than the constant band at about the same width (31.6 vs 30 ranks).
+- The constant's coverage is close (79% vs 83%), because a p10–p90 band over all ranks covers about 80% by construction. Ranking (ρ) is the claim the constant cannot make.
