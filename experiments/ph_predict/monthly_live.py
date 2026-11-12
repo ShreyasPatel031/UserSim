@@ -24,6 +24,10 @@ def read(day):
     hdr = rows[0] if rows and rows[0].get("_header") else {}
     X = pd.DataFrame([r for r in rows if not r.get("_header")])
     X["id"] = X.id.astype(str)
+    # orchestrator 04:25Z Nov 12: the re-read lists the 00:00 PT cohort twice (once under the previous day); keep one row per
+    # id, the later launch day
+    if "launch_day_PT" in X:
+        X = X.sort_values("launch_day_PT").drop_duplicates("id", keep="last")
     return hdr, X
 
 

@@ -44,6 +44,7 @@ def earlier_votes(day):
     p = f"{tempfile.mkdtemp(prefix='ev_')}/r.jsonl"
     if subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/ph_at_launch/monthly_reread/{prev[:7]}/{prev}.jsonl", p]).returncode == 0:
         X = pd.DataFrame([json.loads(l) for l in open(p) if '"_header"' not in l])
+        X = X.assign(id=X.id.astype(str)).sort_values("launch_day_PT").drop_duplicates("id", keep="last")   # 00:00 PT cohort listed twice
         X = X[(X.launch_day_PT >= mon.strftime("%Y-%m-%d")) & (X.launch_day_PT < day)]
         if len(X):
             return X.set_index(X.id.astype(str)).votesCount.astype(float), "reread"

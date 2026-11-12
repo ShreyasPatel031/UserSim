@@ -60,9 +60,9 @@ def snaps():
 
 
 def dayend(d, T=None):
-    """latest read <= 23:59:59 PT of d over the live file and the hourly recorder; kept only if that read is >= 22:00 PT (the last 2 h add ~1%);
+    """latest read <= 00:06 PT of d+1 (the 00:01 read; else the last before midnight) over the live file and the hourly recorder; kept only if that read is >= 22:00 PT (the last 2 h add ~1%);
     the day's ranked launches only."""
-    V, ids = snaps(); e = t0(d) + pd.Timedelta(hours=24) - pd.Timedelta(seconds=1)
+    V, ids = snaps(); e = t0(d) + pd.Timedelta(hours=24, minutes=6)   # the 00:01 PT read when held (official rank = midnight votes)
     parts = [V[V.d == d].rename(columns={"a": "ts", "votes": "v"})[["ts", "id", "v"]]]
     if T is not None:
         parts.append(T[["ts", "id", "v"]])

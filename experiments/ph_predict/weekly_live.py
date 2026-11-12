@@ -39,9 +39,15 @@ def posts(d):
     return pd.DataFrame(rows, columns=["fa", "id", "v"])
 
 
+MIDNIGHT_READ = pd.Timedelta(minutes=6)   # orchestrator 04:25Z Nov 12: the official daily rank = votes at midnight PT; use the
+                                          # 00:01 PT read (fetched by 00:06) when held, else the last read before midnight
+
+
 def dayend_votes(d):
-    P = posts(d); e = day_end(d)
-    V = P[P.fa <= e].sort_values("fa").groupby("id").v.last()
+    P = posts(d); e = day_end(d) + MIDNIGHT_READ
+    # only launches read before midnight: the 00:01 snapshot also carries the NEW day's launches tagged with this day (0 votes)
+    ids = set(P[P.fa <= day_end(d)].id)
+    V = P[(P.fa <= e) & P.id.isin(ids)].sort_values("fa").groupby("id").v.last()
     src = {i: "posts_ts" for i in V.index}
     from pipeline import warehouse as W
     S = W.query(f"SELECT \"at\" AS at, CAST(launch_id AS VARCHAR) id, votes FROM vote_snapshots WHERE \"day\" = '{d}'", do_sync=False)
