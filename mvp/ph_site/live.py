@@ -420,6 +420,10 @@ def _difficulty(day: str) -> dict | None:
     # near-identical scores). Shown only when the file says stable: true.
     if not (j.get("stable") is True or lab.get("stable") is True):
         return None
+    # Validated for the clean shadow model's scores only; /ph shows the deployed model's ranking, so the label is
+    # not shown next to it (it would describe a different model's #1). Shown only if it applies to the published one.
+    if str(j.get("applies_to") or "").strip().lower() not in ("published", "published 00:05 ranking", "deployed"):
+        return None
     oos = lab.get("oos_rates") or {}
     out = {"label": lab["label"], "oos_n": oos.get("n"), "oos_hits3": oos.get("h3"), "oos_p1t3": oos.get("p1t3"),
            "source": j.get("source") or "clean shadow model"}
