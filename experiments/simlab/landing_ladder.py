@@ -26,9 +26,16 @@ L = L[L.daily_rank.notna() & L.votes.notna() & (L.day < "2026-11-11")].copy().so
 L["id"] = L.id.astype(str); L["y"] = np.log1p(pd.to_numeric(L.votes, errors="coerce").astype(float)); L["rank"] = L.daily_rank.astype(float)
 real = lambda u: bool(u) and not str(u).startswith("[")
 L["mk"] = [[str(u).lower() for u in (json.loads(m) if isinstance(m, str) and m.startswith("[") else []) if real(u)] for m in L.makers]
-L["hunter"] = L.poster.fillna("").str.lower(); L["team"] = [set(m) | ({h} if h else set()) for m, h in zip(L.mk, L.hunter)]
+L["hunter"] = L.poster.fillna("").str.lower()
+# MASK=1 (Nov 12 leak fix): PH names the day #1's makers only after the day ends, so in rows read later the winner's team is
+# named and the rest stay "[REDACTED]". The 00:05 view: the launch's own row keeps only its first named maker (others are
+# placeholders) and the TOTAL maker count; earlier launches keep their full named teams (named by the next day).
+MASK = os.environ.get("MASK") == "1"
+L["mk_all"] = L.mk; L["n_total"] = [len(json.loads(m)) if isinstance(m, str) and m.startswith("[") else 0 for m in L.makers]
+L["mk_own"] = [m[:1] for m in L.mk] if MASK else L.mk
+L["team"] = [set(m) | ({h} if h else set()) for m, h in zip(L.mk_own, L.hunter)]
 L = L.merge(pd.read_parquet(os.path.join(LAND, "landing_rows.parquet"))[["id", "base"]].assign(id=lambda d: d.id.astype(str)), on="id", how="left")
-H = pd.read_parquet(HON)[["id", "honest"]]; H["id"] = H.id.astype(str); L = L.merge(H, on="id", how="left")
+_hc = os.environ.get("HON_COL", "honest"); H = pd.read_parquet(HON)[["id", _hc]].rename(columns={_hc: "honest"}); H["id"] = H.id.astype(str); L = L.merge(H, on="id", how="left")
 L["mon"] = L.day.str[:7]; L["dow"] = pd.to_datetime(L.day).dt.dayofweek; L["lineup"] = L.groupby("day").id.transform("size")
 for k in range(7): L[f"dow{k}"] = (L.dow == k).astype(float)
 L["llineup"] = np.log(L.lineup)
@@ -44,20 +51,20 @@ def hstats(lst, d):
     return len(v), (ks <= 3).mean(), (ks <= 10).mean(), ys.mean(), ys.max()
 hh = [hstats(hist_h.get(h, []), d) for h, d in zip(L.hunter, L.day)]
 L["h_n"] = np.log1p([a[0] for a in hh]); L["h_top3"] = [a[1] for a in hh]; L["h_top10"] = [a[2] for a in hh]; L["h_ymean"] = [a[3] for a in hh]
-L["h_self"] = [float(h in set(m)) for h, m in zip(L.hunter, L.mk)]
+L["h_self"] = [float(h in set(m)) for h, m in zip(L.hunter, L.mk_own)]
 mm = []
-for ms, d in zip(L.mk, L.day):
+for ms, d in zip(L.mk_own, L.day):
     v = [x for m in ms for x in hist_m.get(m, []) if x[0] < d]
     mm.append((len(v), min([k for _, _, k in v]) if v else np.nan, np.mean([y for _, y, _ in v]) if v else np.nan, max([y for _, y, _ in v]) if v else np.nan))
-L["m_count"] = L.mk.str.len(); L["m_prior"] = np.log1p([a[0] for a in mm]); L["m_best_rank"] = np.log1p([a[1] for a in mm]); L["m_ymean"] = [a[2] for a in mm]; L["m_ymax"] = [a[3] for a in mm]
+L["m_count"] = L.n_total if MASK else L.mk.str.len(); L["m_prior"] = np.log1p([a[0] for a in mm]); L["m_best_rank"] = np.log1p([a[1] for a in mm]); L["m_ymean"] = [a[2] for a in mm]; L["m_ymax"] = [a[3] for a in mm]
 # team's earlier voters in the complete pool
 comp = set(pd.read_parquet(os.path.join(V3, "persons.parquet")).query("complete").person_id)
 ev = pd.read_parquet(os.path.join(V3, "events.parquet"), columns=["person_id", "kind", "target_id"]).query("kind == 'upvote'")
 ev = ev[ev.person_id.isin(comp)]; ev["target_id"] = ev.target_id.astype(str)
 vot = ev.groupby("target_id").person_id.apply(set).to_dict()
 by_member = {}
-for i, d, t in zip(L.id, L.day, L.team):
-    for m in t: by_member.setdefault(m, []).append((d, i))
+for i, d, t, h in zip(L.id, L.day, L.mk_all, L.hunter):       # earlier launches: full named teams
+    for m in set(t) | ({h} if h else set()): by_member.setdefault(m, []).append((d, i))
 L["ties"] = [np.log1p(len(set().union(*[vot.get(j, set()) for m in t for dd, j in by_member.get(m, []) if dd < d] or [set()]))) for t, d in zip(L.team, L.day)]
 for c in ("h_top3", "h_top10", "h_ymean", "m_best_rank", "m_ymean", "m_ymax"):
     L[c + "_na"] = L[c].isna().astype(float); L[c] = L[c].fillna(L[c].median())

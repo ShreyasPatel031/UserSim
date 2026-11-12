@@ -27,6 +27,12 @@ L = L[L.daily_rank.notna() & L.votes.notna() & (L.day < "2026-11-11")].copy().so
 L["id"] = L.id.astype(str); E = np.load(os.path.join(LAND, "launch_emb256.npy")); assert len(E) == len(L)
 L["tp"] = [set(json.loads(t)) if isinstance(t, str) and t.startswith("[") else set() for t in L.topics]
 L["team"] = [{str(u).lower() for u in (json.loads(m) if isinstance(m, str) and m.startswith("[") else []) if u and not str(u).startswith("[")} | ({str(p).lower()} if p else set()) for m, p in zip(L.makers, L.poster)]
+# MASK=1 (Nov 12 leak fix): the target launch's own team as seen at 00:05 = hunter + its FIRST named maker (PH names the
+# day #1's other makers only after the day); earlier launches keep their full named teams. Ties split by hunter / maker.
+MASK = os.environ.get("MASK") == "1"
+_mk = [[str(u).lower() for u in (json.loads(m) if isinstance(m, str) and m.startswith("[") else []) if u and not str(u).startswith("[")] for m in L.makers]
+L["own_h"] = [{str(p).lower()} if p else set() for p in L.poster]
+L["own_m"] = [set(m[:1]) if MASK else set(m) for m in _mk]
 L["v"] = pd.to_numeric(L.votes, errors="coerce").astype(float); L["rank"] = L.daily_rank.astype(float)
 lix = {i: k for k, i in enumerate(L.id)}; ldays = L.day.to_numpy(); dnum = pd.to_datetime(ldays).to_numpy().astype("datetime64[D]").astype(np.int64)
 first_by_member = {}
@@ -48,15 +54,18 @@ def feats(k):
     s = E @ E[k]; Mp = M.multiply(prior).tocsr(); Mp.eliminate_zeros(); n = np.asarray(Mp.sum(1)).ravel()
     soft = np.log(Mp @ np.exp(20 * (s - 1)) + 1e-12) / 20 + 1; mean = (Mp @ s) / np.maximum(n, 1)
     tm = (TPM @ TPM[k] > 0).astype(float); topic = (Mp @ tm) / np.maximum(n, 1)
-    tie = np.array([float(bool(t & L.team.iat[k])) for t in L.team]) if L.team.iat[k] else np.zeros(len(L)); tie[k] = 0
-    ties = np.log1p(Mp @ tie)
+    def tie_for(own):
+        if not own: return np.zeros(NP)
+        tie = np.array([float(bool(t & own)) for t in L.team]); tie[k] = 0; return np.log1p(Mp @ tie)
+    th, tm_ = tie_for(L.own_h.iat[k]), tie_for(L.own_m.iat[k]); ties = tie_for(L.own_h.iat[k] | L.own_m.iat[k])
     last = np.full(NP, -10 ** 9); c = Mp.tocoo(); np.maximum.at(last, c.row, dnum[c.col])
     rec = np.digitize(np.where(last < 0, 9999, dnum[k] - last), [7, 30, 90])
-    return np.c_[np.where(n > 0, soft, 0), mean, topic, ties, np.log1p(n), rec].astype(np.float32)
+    return np.c_[np.where(n > 0, soft, 0), mean, topic, ties, np.log1p(n), rec, th, tm_].astype(np.float32)
 
 
-COLS = ["sim_soft", "sim_mean", "topic", "ties", "act", "rec"]
-SETS = {"A_activity_recency": [4, 5], "B_plus_taste_topic": [0, 1, 2, 4, 5], "C_plus_ties": [0, 1, 2, 3, 4, 5]}
+COLS = ["sim_soft", "sim_mean", "topic", "ties", "act", "rec", "ties_hunter", "ties_maker"]
+SETS = {"A_activity_recency": [4, 5], "B_plus_taste_topic": [0, 1, 2, 4, 5], "C_plus_ties": [0, 1, 2, 3, 4, 5],
+        "C_hunter_ties": [0, 1, 2, 4, 5, 6], "C_maker_ties": [0, 1, 2, 4, 5, 7]}
 voters = lambda k: MT[k].indices
 cnt = np.diff(MT.indptr); FC = {}
 
@@ -121,7 +130,8 @@ for label, sub in (("114 launches", D[D.in114]), ("all Aug-Oct ranked", D)):
     for nm in SETS:
         g = sub[sub.scorer == nm]; o = {m: boot(g[m]) for m in MET}; o["lift100"] = boot(g.prec100 / g.base); o["lift500"] = boot(g.prec500 / g.base)
         out[nm] = o
-    for a, b in (("B_plus_taste_topic", "A_activity_recency"), ("C_plus_ties", "A_activity_recency")):
+    for a, b in (("B_plus_taste_topic", "A_activity_recency"), ("C_plus_ties", "A_activity_recency"), ("C_plus_ties", "B_plus_taste_topic"),
+                 ("C_hunter_ties", "B_plus_taste_topic"), ("C_maker_ties", "B_plus_taste_topic")):
         ga, gb = sub[sub.scorer == a].set_index("k"), sub[sub.scorer == b].set_index("k")
         out[f"{a} - {b} (paired)"] = {m: boot(ga[m] - gb[m]) for m in ("auc", "prec100", "prec500", "rec2000")}
     for split, col in (("cold vs repeat", "cold"), ("rank band", "band")):
@@ -132,7 +142,7 @@ res["calibration (pooled deciles of predicted p)"] = {nm: g[["dec", "pred", "obs
 
 # ---------- launch level
 base = pd.read_parquet(os.path.join(LAND, "landing_rows.parquet"))[["id", "base"]]; base["id"] = base.id.astype(str)
-H = pd.read_parquet(HON)[["id", "honest"]]; H["id"] = H.id.astype(str)
+_hc = os.environ.get("HON_COL", "honest"); H = pd.read_parquet(HON)[["id", _hc]].rename(columns={_hc: "honest"}); H["id"] = H.id.astype(str)
 LW = LV.pivot_table(index=["k", "id", "day", "v", "rank"], columns="scorer", values=["sum_p", "sum_top2000", "n_above"]).reset_index()
 LW.columns = ["_".join([c for c in col if c]) for col in LW.columns]
 LW = LW.merge(base, on="id", how="left").merge(H, on="id", how="left"); LW["mon"] = LW.day.str[:7]

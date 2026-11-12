@@ -53,12 +53,16 @@ def hs(lst, d):
     ys, ks = np.array([a for a, _ in v]), np.array([b for _, b in v]); return len(v), (ks <= 3).mean(), (ks <= 10).mean(), ys.mean()
 hh = [hs(hist_h.get(h, []), d) for h, d in zip(D.hunter, D.day)]
 D["h_n"] = np.log1p([a[0] for a in hh]); D["h_top3"] = [a[1] for a in hh]; D["h_top10"] = [a[2] for a in hh]; D["h_ymean"] = [a[3] for a in hh]
-D["h_self"] = [float(h in set(m)) for h, m in zip(D.hunter, D.mk)]
+# MASK=1 (Nov 12 leak fix): the launch's own makers as seen at 00:05 = its first named maker; m_count = total maker count
+MASK = os.environ.get("MASK") == "1"
+D["mk_own"] = [m[:1] for m in D.mk] if MASK else D.mk
+D["n_total"] = [len(json.loads(m)) if isinstance(m, str) and m.startswith("[") else 0 for m in D.makers]
+D["h_self"] = [float(h in set(m)) for h, m in zip(D.hunter, D.mk_own)]
 mm = []
-for ms, d in zip(D.mk, D.day):
+for ms, d in zip(D.mk_own, D.day):
     v = [x for m in ms for x in hist_m.get(m, []) if x[0] < d]
     mm.append((len(v), min([k for _, _, k in v]) if v else np.nan, np.mean([y for _, y, _ in v]) if v else np.nan, max([y for _, y, _ in v]) if v else np.nan))
-D["m_count"] = D.mk.str.len(); D["m_prior"] = np.log1p([a[0] for a in mm]); D["m_best_rank"] = np.log1p([a[1] for a in mm]); D["m_ymean"] = [a[2] for a in mm]; D["m_ymax"] = [a[3] for a in mm]
+D["m_count"] = D.n_total if MASK else D.mk.str.len(); D["m_prior"] = np.log1p([a[0] for a in mm]); D["m_best_rank"] = np.log1p([a[1] for a in mm]); D["m_ymean"] = [a[2] for a in mm]; D["m_ymax"] = [a[3] for a in mm]
 for c in ("h_top3", "h_top10", "h_ymean", "m_best_rank", "m_ymean", "m_ymax"):
     D[c + "_na"] = D[c].isna().astype(float); D[c] = D[c].fillna(D[c].median())
 SETS = {"product_only": ["base"], "both": ["base", "h_n", "h_top3", "h_top10", "h_ymean", "h_self", "h_top3_na", "m_count", "m_prior", "m_best_rank", "m_ymean", "m_ymax", "m_best_rank_na"]}

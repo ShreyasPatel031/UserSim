@@ -44,14 +44,22 @@ def build_bundle(asof):
     return bund
 
 
-def feats_from_bundle(bund, hunter, makers):
+# MASK=1 (Nov 12 leak fix, v2 outputs): PH names the day #1's makers only after the day ends, so the launch's own maker list
+# is the 00:05 view - its first named maker - and m_count = the TOTAL number of makers (named or not). On the site the visitor
+# enters the hunter, ONE (main) maker and the number of makers. Earlier launches in the bundle keep their full named teams.
+MASK = os.environ.get("MASK") == "1"; VER = "v2" if MASK else "v1"
+L["n_total"] = [len(json.loads(m)) if isinstance(m, str) and m.startswith("[") else 0 for m in L.makers]
+L["mk_own"] = [m[:1] for m in L.mk] if MASK else L.mk
+
+
+def feats_from_bundle(bund, hunter, makers, n_total=None):
     """what the site computes from the visitor's entries (handles) -> raw features with NaN for missing"""
     hb = bund.get(key(hunter), {"h": [0, 0, 0, 0.0]})["h"] if hunter else [0, 0, 0, 0.0]
     f = {"h_n": np.log1p(hb[0]), "h_top3": hb[1] / hb[0] if hb[0] else np.nan, "h_top10": hb[2] / hb[0] if hb[0] else np.nan,
          "h_ymean": hb[3] / hb[0] if hb[0] else np.nan, "h_self": float(bool(hunter) and hunter.lower() in {m.lower() for m in makers})}
     ms = [bund.get(key(m), {"m": [0, 9999, 0.0, 0.0]})["m"] for m in makers]
     n = sum(a[0] for a in ms); best = min([a[1] for a in ms] or [9999])
-    f.update({"m_count": float(len(makers)), "m_prior": np.log1p(n), "m_best_rank": np.log1p(best) if n else np.nan,
+    f.update({"m_count": float(n_total if (MASK and n_total is not None) else len(makers)), "m_prior": np.log1p(n), "m_best_rank": np.log1p(best) if n else np.nan,
               "m_ymean": sum(a[2] for a in ms) / n if n else np.nan, "m_ymax": max([a[3] for a in ms if a[0]] or [np.nan])})
     return f
 
@@ -67,7 +75,7 @@ def feature_table(df):
     rows = []
     for d, g in df.groupby("day"):
         bund = build_bundle((pd.Timestamp(d) - pd.Timedelta(days=1)).strftime("%Y-%m-%d"))
-        for r in g.itertuples(): rows.append({"id": r.id, **feats_from_bundle(bund, r.hunter, r.mk)})
+        for r in g.itertuples(): rows.append({"id": r.id, **feats_from_bundle(bund, r.hunter, r.mk_own, r.n_total)})
     return df.merge(pd.DataFrame(rows), on="id")
 
 
@@ -79,7 +87,8 @@ def finish(F, med):
 
 def fit_export(T, asof):
     """month-forward held-out scores for bands, final fit on all of T -> JSON"""
-    med = {c: float(T[c].median()) for c in NA}; T = finish(T, med); out = {"version": "ph-ladder-v1", "as_of": asof, "key": "sha256('ph-ladder-v1:' + lowercase handle)[:20]", "medians": med, "rungs": {}}
+    med = {c: float(T[c].median()) for c in NA}; T = finish(T, med); out = {"version": "ph-ladder-v2-masked" if MASK else "ph-ladder-v1", "as_of": asof,
+           "inputs": ("hunter handle; ONE main maker handle; total number of makers (m_count)" if MASK else "hunter handle; maker handles"), "key": "sha256('ph-ladder-v1:' + lowercase handle)[:20]", "medians": med, "rungs": {}}
     mons = sorted(T.mon.unique())
     for nm, cols in RUNGS.items():
         T[f"oof_{nm}"] = np.nan
@@ -108,7 +117,7 @@ TR = L[(L.day <= "2026-10-24") & L.base.notna()]; VA = L[(L.day >= "2026-10-25")
 print("train", len(TR), "validation launches", len(VA), "days", VA.day.nunique(), flush=True)
 FT = feature_table(TR); M_val = fit_export(FT, "2026-10-24")
 bund_val = build_bundle("2026-10-24")
-FV = VA.merge(pd.DataFrame([{"id": r.id, **feats_from_bundle(bund_val, r.hunter, r.mk)} for r in VA.itertuples()]), on="id")   # visitor path: bundle as of Oct 24
+FV = VA.merge(pd.DataFrame([{"id": r.id, **feats_from_bundle(bund_val, r.hunter, r.mk_own, r.n_total)} for r in VA.itertuples()]), on="id")   # visitor path: bundle as of Oct 24
 SV = score(M_val, FV)
 res = {"design": __doc__.split("\n    python")[0], "validation": {"launches": int(len(FV)), "days": int(FV.day.nunique())}}
 for nm, (s, bands) in SV.items():
@@ -126,12 +135,12 @@ for nm in RUNGS:
 samp = FV.sample(min(50, len(FV)), random_state=0); direct = []
 for r in samp.itertuples():
     hist = L[L.day <= "2026-10-24"]; hn = hist[hist.hunter == r.hunter] if r.hunter else hist.iloc[:0]
-    mk_hist = hist[[bool(set(m) & set(r.mk)) for m in hist.mk]]
-    direct.append(abs(np.log1p(len(hn)) - r.h_n) + abs(np.log1p(sum(sum(1 for m in mm if m in r.mk) for mm in mk_hist.mk)) - r.m_prior))
+    mk_hist = hist[[bool(set(m) & set(r.mk_own)) for m in hist.mk]]
+    direct.append(abs(np.log1p(len(hn)) - r.h_n) + abs(np.log1p(sum(sum(1 for m in mm if m in r.mk_own) for mm in mk_hist.mk)) - r.m_prior))
 res["validation"]["end_to_end_50_max_feature_diff"] = round(float(max(direct)), 6)
 # ---------- production: as of the latest completed day
 asof = L.day.max(); FP = feature_table(L[L.base.notna()]); M_prod = fit_export(FP, asof); bund = build_bundle(asof)
-json.dump(M_prod, open(os.path.join(OUT, "ladder_model_v1.json"), "w")); json.dump(bund, open(os.path.join(OUT, "ladder_handles_v1.json"), "w"))
-res["production"] = {"as_of": asof, "handles": len(bund), "model_bytes": os.path.getsize(os.path.join(OUT, "ladder_model_v1.json")), "bundle_bytes": os.path.getsize(os.path.join(OUT, "ladder_handles_v1.json"))}
-json.dump(res, open(os.path.join(OUT, "ladder_bundle.json"), "w"), indent=1)
+json.dump(M_prod, open(os.path.join(OUT, f"ladder_model_{VER}.json"), "w")); json.dump(bund, open(os.path.join(OUT, f"ladder_handles_{VER}.json"), "w"))
+res["production"] = {"as_of": asof, "handles": len(bund), "model_bytes": os.path.getsize(os.path.join(OUT, f"ladder_model_{VER}.json")), "bundle_bytes": os.path.getsize(os.path.join(OUT, f"ladder_handles_{VER}.json"))}
+json.dump(res, open(os.path.join(OUT, f"ladder_bundle_{VER}.json"), "w"), indent=1)
 print(json.dumps({k: v for k, v in res.items() if k != "design"}, indent=1))
