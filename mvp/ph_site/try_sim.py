@@ -478,10 +478,11 @@ def _reactions_note(grounded: bool = True, source: str | None = None) -> str:
               " Similar past launches were unavailable for this run, so these were not grounded; the figures below "
               "were measured with grounding.")
     return (f"Simulated, not real comments.{person}{ground} Fixed offline figure ({c['label']}, {c['date']}): these "
-            f"simulated comments anticipated about {v['theme_recall']:.0%} of the themes real users raised by our main "
-            f"judge (about {v['second_judge_recall']:.0%} by a stricter second judge), and about "
-            f"{v['theme_precision']:.0%} of the simulated points appeared in real comments; generic category comments "
-            f"anticipated about {v['theme_recall_generic']:.0%}. " + _vs_humans() + _page_read_note(source)
+            f"simulated comments matched about {v['theme_recall']:.0%} of the themes real users raised by our automated "
+            f"judge (range {v['theme_recall_ci'][0]:.0%}–{v['theme_recall_ci'][1]:.0%}); a stricter second judge that "
+            f"counts only the same specific point puts it at about {v['second_judge_recall']:.0%}. About "
+            f"{v['theme_precision']:.0%} of the simulated points appeared in real comments. A generic list of typical "
+            f"launch comments scores about {v['theme_recall_generic']:.0%} on the first judge. " + _vs_humans() + _page_read_note(source)
             + _rerun_note())
 
 
@@ -498,13 +499,12 @@ def _page_read_note(source: str | None) -> str:
     if source != "page":
         return ""
     from mvp.ph_site.live import claims
-    t = claims().get("try_e2e")
-    if not t or "reaction_recall_page" not in t["values"]:
+    v = claims()["reactions_eval"]["values"]
+    if "page_read_recall" not in v:
         return ""
-    v = t["values"]
-    return (f" These comments came from a read of your web page; run end to end from page reads, they anticipated about "
-            f"{v['reaction_recall_page']:.0%} of real themes with {v['reaction_precision_page']:.0%} precision "
-            f"({t['date']}).")
+    return (f" These comments came from a read of your web page, which scores lower than a pasted launch description: "
+            f"run end to end from fresh page reads, they matched about {v['page_read_recall']:.0%} of real themes, "
+            f"with {v['page_read_precision']:.0%} of the points appearing in real comments.")
 
 
 def _vs_humans() -> str:

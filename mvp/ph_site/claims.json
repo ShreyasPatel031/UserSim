@@ -2,19 +2,21 @@
  "_about": "Fixed offline figures quoted on /ph and /try, each with source and date; the pages label them as fixed offline figures. Only the /ph live track record is computed from saved forecast files.",
  "reactions_eval": {
   "values": {
-   "launches": 300,
-   "theme_recall": 0.499,
-   "theme_precision": 0.514,
-   "theme_recall_generic": 0.052,
-   "gain_vs_v1_recall": [
-    9.6,
-    14.8
+   "launches": 96,
+   "theme_recall": 0.48,
+   "theme_recall_ci": [
+    0.43,
+    0.53
    ],
-   "second_judge_recall": 0.23
+   "theme_precision": 0.53,
+   "theme_recall_generic": 0.14,
+   "second_judge_recall": 0.25,
+   "page_read_recall": 0.42,
+   "page_read_precision": 0.41
   },
-  "label": "300 past launches, blinded judge, measured on their PH descriptions",
-  "source": "E5 reactions_v2: experiments/simlab/reports/reactions_v2/reactions_v2.json (variant BEST), branch claude/person-model-v2",
-  "date": "2026-11-11"
+  "label": "96 past launches, automated judge, measured on their PH descriptions; range counts launch, truth-extraction and judge noise",
+  "source": "E5 reports/judge_reliability/README.md, branch claude/person-model-v2",
+  "date": "2026-11-12"
  },
  "similar_tools_auc": {
   "values": {
