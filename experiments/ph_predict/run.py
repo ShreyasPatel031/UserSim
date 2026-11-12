@@ -12,10 +12,10 @@ GROUPS = {"ai": ["Artificial Intelligence"], "dev": ["Developer Tools", "GitHub"
           "consumer": ["iOS", "Android", "Health & Fitness", "Lifestyle", "Games", "Education"]}
 
 
-def load_llm(df):
+def load_llm(df, provider=None):
     """LLM scores from Gemini (default) or Claude (LLM_PROVIDER=claude, cached scores only). "known" (the model says it remembers this
     launch, so it is dropped from tests) is the union of both models' flags, so both are tested on the same launches."""
-    gem = os.environ.get("LLM_PROVIDER", "gemini") == "gemini"
+    gem = (provider or os.environ.get("LLM_PROVIDER", "gemini")) == "gemini"
     known = set()
     for mode in ("pitch", "site", "brand", "full"):
         sc = {}
