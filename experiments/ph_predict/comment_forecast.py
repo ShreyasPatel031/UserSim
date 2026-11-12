@@ -271,15 +271,16 @@ def live(day, point):
     -> results/early_forecast/<day>_<point>.json and gs://.../results/early_forecast/."""
     import subprocess, tempfile
     from early_forecast import lm_scores
-    M = json.load(open(os.path.join(HERE, "results", "comment_forecast_live_model.json")))["cuts"]["P1" if point == "P0" else point]
+    M = json.load(open(os.path.join(HERE, "results", "comment_forecast_live_model.json")))["cuts"]["P1" if point in ("P0", "P030") else point]
     # identity-free model (orchestrator 08:30Z Nov 12; comment_forecast_v2_teamc.md): no team split, fitted over the clean LM;
     # it is pred_rank from Nov 12; the old named-team model is kept as pred_rank_rule_a
     MNF = None
     pnf = os.path.join(HERE, "results", "comment_forecast_live_model_nf.json")
     if os.path.exists(pnf):
-        MNF = json.load(open(pnf))["cuts"]["P1" if point == "P0" else point]
+        MNF = json.load(open(pnf))["cuts"]["P1" if point in ("P0", "P030") else point]
     # P0 = 00:45 PT (orchestrator 02:15Z Nov 12): earliest useful pre-reveal point; the comment ridge uses P1's coefficients
-    h = 0.75 if point == "P0" else int(point[1:]); t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
+    # P030 = 00:30 PT (orchestrator timing analysis Nov 12: light 0.25 hidden-rank blend already helps from 00:15)
+    h = {"P0": 0.75, "P030": 0.5}.get(point) or int(point[1:]); t0 = pd.Timestamp(day + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
     T = t0 + pd.Timedelta(hours=h); now = pd.Timestamp.now(tz="UTC")
     if now < T:
         print(json.dumps({"day": day, "point": point, "status": f"point {T} not reached"})); return
@@ -411,12 +412,16 @@ def live(day, point):
         print("exp_final_votes skipped:", repr(e)[:120], flush=True); A["exp_final_votes"] = np.nan
     # orchestrator 02:00Z Nov 12 (api_depth.md): best LODO recipe on 6 days = weighted mean of rank positions of the API
     # pre-reveal rank and the 00:05 LM, w_api = 0.5 at P1 and 0.75 from P2 (chosen leave-one-day-out on every held-out day)
-    w_api = 0.5 if point in ("P0", "P1") else 0.75
+    w_api = 0.25 if point == "P030" else (0.5 if point in ("P0", "P1") else 0.75)
     lm_pos = A.lm.rank(ascending=False, method="first")
     if A.api_rank.notna().any():
         A["pred_rank_best"] = (w_api * A.pred_rank_api + (1 - w_api) * lm_pos + 1e-6 * lm_pos).rank(method="first").astype(int)
     else:
         A["pred_rank_best"] = lm_pos.astype(int)
+    # orchestrator timing analysis (Nov 12): at P0 a lighter 0.25 weight on the hidden rank as a shadow variant (LODO picks
+    # 0.25 at 00:30, 0.5 at 01:00); scored forward next to pred_rank_best (0.5 at P0)
+    A["pred_rank_best_w25"] = ((0.25 * A.pred_rank_api + 0.75 * lm_pos + 1e-6 * lm_pos).rank(method="first").astype(int)
+                               if A.api_rank.notna().any() and point == "P0" else np.nan)
     # best2 (late_builders.md): on weekends the early-hours vote order is least reliable -> w_api 0.5 at every point
     w2 = 0.5 if pd.Timestamp(day).dayofweek >= 5 else w_api
     A["pred_rank_best2"] = ((w2 * A.pred_rank_api + (1 - w2) * lm_pos + 1e-6 * lm_pos).rank(method="first").astype(int)
@@ -447,7 +452,7 @@ def live(day, point):
         rp = os.path.join(HERE, "results", "early_model_recipe_v1_lm_com.json")
         sp = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
         if os.path.exists(rp) and os.path.exists(sp):
-            RC = json.load(open(rp)); key = {"P0": "1h", "P1": "1h", "P2": "2h", "P3": "3h", "P4": "4h"}[point]; Rk = RC["per_T"][key]
+            RC = json.load(open(rp)); key = {"P030": "1h", "P0": "1h", "P1": "1h", "P2": "2h", "P3": "3h", "P4": "4h"}[point]; Rk = RC["per_T"][key]
             SF = pd.DataFrame(json.load(open(sp))["forecast"]); pc = dict(zip(SF.id.astype(str), SF.pred_clean)) if "pred_clean" in SF else {}
             if pc:
                 start = t0 + pd.Timedelta(minutes=1); Tm = (T - start).total_seconds() / 60
@@ -515,7 +520,7 @@ def live(day, point):
                 A["pred_rank_clean_thread"] = A.id.map(dict(zip(E.id, E.sc.rank(ascending=False, method="first").astype(int))))
             # orchestrator (live th_n_pre gradient holds: 1.00 / 1.10 / 0.63 / 0.11 by final rank group on 6 live days):
             # pred_rank_best_mix with th_n_pre (non-hunter commenters by 00:05) as a tie-breaker, at P0 / P1 only
-            if point in ("P0", "P1") and A.pred_rank_best_mix.notna().any():
+            if point in ("P030", "P0", "P1") and A.pred_rank_best_mix.notna().any():
                 npre = dict(zip(E.id, E.th_n_pre))
                 A["pred_rank_best_mix_th"] = A.assign(_n=A.id.map(npre).fillna(0)).sort_values(["pred_rank_best_mix", "_n", "id"], ascending=[True, False, True]).pipe(
                     lambda z: pd.Series(np.arange(1, len(z) + 1), index=z.index)).reindex(A.index)
@@ -554,7 +559,7 @@ def live(day, point):
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
