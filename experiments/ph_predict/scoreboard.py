@@ -103,11 +103,11 @@ def main():
     ad = os.path.join(HERE, "results", "api_depth.json")
     if os.path.exists(ad):
         for r in json.load(open(ad)).get("rows", []):
-            for pt, h, cand in (("P1", 1, "wmean_0.5"), ("P2", 2, "wmean_0.75"), ("P3", 3, "wmean_0.75"), ("P4", 3, "wmean_0.75")):
+            for pt, h, cand in (("P1", 1, "wmean_0.5"), ("P2", 2, "wmean_0.75"), ("P3", 3, "wmean_0.75"), ("P4", 4, "wmean_0.75")):
                 if r["h"] == h and r["cand"] == cand and r["day"] in real:
                     rows.append({"day": r["day"], "point": pt, "method": "best", "source": "replay_in_sample", "n": None, "written_at": None,
                                  "top3": round(r["t3"], 1), "top5": round(r["t5"], 1), "top10": round(r["t10"], 1),
-                                 "p1_top3": np.nan, "p2_top3": np.nan, "p3_top3": np.nan, "exact1": np.nan})
+                                 "p1_top3": r.get("p1", np.nan), "p2_top3": r.get("p2", np.nan), "p3_top3": r.get("p3", np.nan), "exact1": r.get("exact", np.nan)})
     X = pd.DataFrame(rows).sort_values(["day", "point", "method"])
     summ = []
     for (pt, m, s), g in X.groupby(["point", "method", "source"]):

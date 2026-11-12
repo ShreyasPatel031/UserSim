@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-12T16:23:04.087096+00:00",
+ "built_at": "2026-11-12T16:39:21.778179+00:00",
  "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
  "sources": {
   "live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
@@ -231,31 +231,31 @@
    "point": "P1",
    "method": "best",
    "source": "replay_in_sample",
-   "days": 6,
+   "days": 7,
    "first_day": "2026-11-02",
-   "last_day": "2026-11-10",
-   "mean_top3": 66.7,
-   "mean_top5": 66.7,
-   "mean_top10": 78.3,
-   "p1_top3_rate": NaN,
-   "p2_top3_rate": NaN,
-   "p3_top3_rate": NaN,
-   "exact1_rate": NaN,
-   "p1_top3_count": "0 of 6",
-   "p2_top3_count": "0 of 6",
-   "p3_top3_count": "0 of 6",
-   "exact1_count": "0 of 6",
+   "last_day": "2026-11-11",
+   "mean_top3": 71.4,
+   "mean_top5": 68.6,
+   "mean_top10": 78.6,
+   "p1_top3_rate": 100.0,
+   "p2_top3_rate": 71.4,
+   "p3_top3_rate": 42.9,
+   "exact1_rate": 42.9,
+   "p1_top3_count": "7 of 7",
+   "p2_top3_count": "5 of 7",
+   "p3_top3_count": "3 of 7",
+   "exact1_count": "3 of 7",
    "ci_top3": [
-    50.0,
-    83.3
+    57.1,
+    85.7
    ],
    "ci_top5": [
-    60.0,
-    73.3
+    62.9,
+    77.1
    ],
    "ci_top10": [
-    73.3,
-    83.3
+    74.3,
+    82.9
    ]
   },
   {
@@ -337,31 +337,31 @@
    "point": "P2",
    "method": "best",
    "source": "replay_in_sample",
-   "days": 6,
+   "days": 7,
    "first_day": "2026-11-02",
-   "last_day": "2026-11-10",
-   "mean_top3": 72.2,
-   "mean_top5": 76.7,
+   "last_day": "2026-11-11",
+   "mean_top3": 76.2,
+   "mean_top5": 77.1,
    "mean_top10": 80.0,
-   "p1_top3_rate": NaN,
-   "p2_top3_rate": NaN,
-   "p3_top3_rate": NaN,
-   "exact1_rate": NaN,
-   "p1_top3_count": "0 of 6",
-   "p2_top3_count": "0 of 6",
-   "p3_top3_count": "0 of 6",
-   "exact1_count": "0 of 6",
+   "p1_top3_rate": 100.0,
+   "p2_top3_rate": 85.7,
+   "p3_top3_rate": 42.9,
+   "exact1_rate": 28.6,
+   "p1_top3_count": "7 of 7",
+   "p2_top3_count": "6 of 7",
+   "p3_top3_count": "3 of 7",
+   "exact1_count": "2 of 7",
    "ci_top3": [
-    55.6,
-    88.9
+    57.2,
+    90.5
    ],
    "ci_top5": [
-    70.0,
+    71.4,
     80.0
    ],
    "ci_top10": [
-    75.0,
-    85.0
+    75.7,
+    84.3
    ]
   },
   {
@@ -443,31 +443,31 @@
    "point": "P3",
    "method": "best",
    "source": "replay_in_sample",
-   "days": 6,
+   "days": 7,
    "first_day": "2026-11-02",
-   "last_day": "2026-11-10",
-   "mean_top3": 83.3,
+   "last_day": "2026-11-11",
+   "mean_top3": 85.7,
    "mean_top5": 80.0,
-   "mean_top10": 80.0,
-   "p1_top3_rate": NaN,
-   "p2_top3_rate": NaN,
-   "p3_top3_rate": NaN,
-   "exact1_rate": NaN,
-   "p1_top3_count": "0 of 6",
-   "p2_top3_count": "0 of 6",
-   "p3_top3_count": "0 of 6",
-   "exact1_count": "0 of 6",
+   "mean_top10": 81.4,
+   "p1_top3_rate": 100.0,
+   "p2_top3_rate": 85.7,
+   "p3_top3_rate": 71.4,
+   "exact1_rate": 28.6,
+   "p1_top3_count": "7 of 7",
+   "p2_top3_count": "6 of 7",
+   "p3_top3_count": "5 of 7",
+   "exact1_count": "2 of 7",
    "ci_top3": [
-    72.2,
-    94.5
+    76.2,
+    95.2
    ],
    "ci_top5": [
-    70.0,
-    90.0
+    71.4,
+    88.6
    ],
    "ci_top10": [
-    73.3,
-    86.7
+    75.7,
+    87.1
    ]
   },
   {
@@ -593,31 +593,31 @@
    "point": "P4",
    "method": "best",
    "source": "replay_in_sample",
-   "days": 6,
+   "days": 7,
    "first_day": "2026-11-02",
-   "last_day": "2026-11-10",
-   "mean_top3": 83.3,
+   "last_day": "2026-11-11",
+   "mean_top3": 85.7,
    "mean_top5": 80.0,
-   "mean_top10": 80.0,
-   "p1_top3_rate": NaN,
-   "p2_top3_rate": NaN,
-   "p3_top3_rate": NaN,
-   "exact1_rate": NaN,
-   "p1_top3_count": "0 of 6",
-   "p2_top3_count": "0 of 6",
-   "p3_top3_count": "0 of 6",
-   "exact1_count": "0 of 6",
+   "mean_top10": 81.4,
+   "p1_top3_rate": 100.0,
+   "p2_top3_rate": 85.7,
+   "p3_top3_rate": 71.4,
+   "exact1_rate": 28.6,
+   "p1_top3_count": "7 of 7",
+   "p2_top3_count": "6 of 7",
+   "p3_top3_count": "5 of 7",
+   "exact1_count": "2 of 7",
    "ci_top3": [
-    72.2,
-    94.5
+    76.2,
+    95.2
    ],
    "ci_top5": [
-    70.0,
-    90.0
+    71.4,
+    88.6
    ],
    "ci_top10": [
-    73.3,
-    86.7
+    75.7,
+    87.1
    ]
   },
   {
@@ -1018,10 +1018,10 @@
    "top3": 66.7,
    "top5": 60.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-02",
@@ -1048,10 +1048,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 90.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-02",
@@ -1078,10 +1078,10 @@
    "top3": 100.0,
    "top5": 100.0,
    "top10": 90.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-02",
@@ -1108,10 +1108,10 @@
    "top3": 100.0,
    "top5": 100.0,
    "top10": 90.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-02",
@@ -1153,10 +1153,10 @@
    "top3": 66.7,
    "top5": 60.0,
    "top10": 70.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 0.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-03",
@@ -1183,10 +1183,10 @@
    "top3": 100.0,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-03",
@@ -1213,10 +1213,10 @@
    "top3": 100.0,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-03",
@@ -1243,10 +1243,10 @@
    "top3": 100.0,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-03",
@@ -1303,10 +1303,10 @@
    "top3": 100.0,
    "top5": 60.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
   },
   {
    "day": "2026-11-04",
@@ -1363,10 +1363,10 @@
    "top3": 100.0,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
   },
   {
    "day": "2026-11-04",
@@ -1423,10 +1423,10 @@
    "top3": 100.0,
    "top5": 60.0,
    "top10": 90.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
   },
   {
    "day": "2026-11-04",
@@ -1483,10 +1483,10 @@
    "top3": 100.0,
    "top5": 60.0,
    "top10": 90.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
   },
   {
    "day": "2026-11-04",
@@ -1558,10 +1558,10 @@
    "top3": 33.3,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 0.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-08",
@@ -1618,10 +1618,10 @@
    "top3": 33.3,
    "top5": 60.0,
    "top10": 70.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 0.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-08",
@@ -1678,10 +1678,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 0.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-08",
@@ -1738,10 +1738,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 0.0,
+   "p3_top3": 1.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-08",
@@ -1798,10 +1798,10 @@
    "top3": 66.7,
    "top5": 60.0,
    "top10": 90.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-09",
@@ -1813,10 +1813,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-09",
@@ -1828,10 +1828,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-09",
@@ -1843,10 +1843,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-10",
@@ -1888,10 +1888,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 1.0
   },
   {
    "day": "2026-11-10",
@@ -1948,10 +1948,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 80.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-10",
@@ -2008,10 +2008,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-10",
@@ -2068,10 +2068,10 @@
    "top3": 66.7,
    "top5": 80.0,
    "top10": 70.0,
-   "p1_top3": NaN,
-   "p2_top3": NaN,
-   "p3_top3": NaN,
-   "exact1": NaN
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 0.0,
+   "exact1": 0.0
   },
   {
    "day": "2026-11-10",
@@ -2210,6 +2210,51 @@
   },
   {
    "day": "2026-11-11",
+   "point": "P1",
+   "method": "best",
+   "source": "replay_in_sample",
+   "n": NaN,
+   "written_at": NaN,
+   "top3": 100.0,
+   "top5": 80.0,
+   "top10": 80.0,
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
+  },
+  {
+   "day": "2026-11-11",
+   "point": "P2",
+   "method": "best",
+   "source": "replay_in_sample",
+   "n": NaN,
+   "written_at": NaN,
+   "top3": 100.0,
+   "top5": 80.0,
+   "top10": 80.0,
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
+  },
+  {
+   "day": "2026-11-11",
+   "point": "P3",
+   "method": "best",
+   "source": "replay_in_sample",
+   "n": NaN,
+   "written_at": NaN,
+   "top3": 100.0,
+   "top5": 80.0,
+   "top10": 90.0,
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
+  },
+  {
+   "day": "2026-11-11",
    "point": "P4",
    "method": "api_rank",
    "source": "late",
@@ -2233,6 +2278,21 @@
    "top3": 100.0,
    "top5": 80.0,
    "top10": 80.0,
+   "p1_top3": 1.0,
+   "p2_top3": 1.0,
+   "p3_top3": 1.0,
+   "exact1": 1.0
+  },
+  {
+   "day": "2026-11-11",
+   "point": "P4",
+   "method": "best",
+   "source": "replay_in_sample",
+   "n": NaN,
+   "written_at": NaN,
+   "top3": 100.0,
+   "top5": 80.0,
+   "top10": 90.0,
    "p1_top3": 1.0,
    "p2_top3": 1.0,
    "p3_top3": 1.0,
@@ -2760,6 +2820,6 @@
    },
    "2026-11-11": "no clean score"
   },
-  "written_at": "2026-11-12T16:24:14.932026+00:00"
+  "written_at": "2026-11-12T16:40:38.096543+00:00"
  }
 }

@@ -44,15 +44,15 @@ def main():
     R = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
     V = W.query('SELECT "day" d, "at" a, hours_since_start h, CAST(launch_id AS VARCHAR) id, rank_now FROM vote_snapshots', do_sync=False)
     V["a"] = pd.to_datetime(V.a, utc=True)
-    days = ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-08", "2026-11-09", "2026-11-10"]
+    days = ["2026-11-02", "2026-11-03", "2026-11-04", "2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11"]
     rows = []
     for d in days:
         truth = R[R.day == d].sort_values("daily_rank").id.tolist(); lm = lm_scores(d)
         base = sorted(truth)   # ties (launches missing from a prior) broken by id, never by final rank (orchestrator 10:35Z Nov 12)
         lmo = sorted(base, key=lambda i: -lm.get(i, -99))
         t0 = pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
-        for h in (1, 2, 3):
-            T = t0 + pd.Timedelta(hours=h); g = V[(V.d == d) & (V.a <= T)]
+        for h in (1, 2, 3, 4):   # 4 = the last read before the 04:00 PT reveal (P4)
+            T = t0 + pd.Timedelta(hours=h) - (pd.Timedelta(minutes=1) if h == 4 else pd.Timedelta(0)); g = V[(V.d == d) & (V.a <= T)]
             S = g.sort_values("a").groupby("id").rank_now.last()
             api = sorted(base, key=lambda i: (S.get(i, 999), -lm.get(i, -99)))
             ridge = None
@@ -61,10 +61,11 @@ def main():
                     F = pd.DataFrame(json.load(open(pf))["forecast"]); F["id"] = F.id.astype(str); cr = dict(zip(F.id, F.pred_rank))
                     ridge = sorted(base, key=lambda i: cr.get(i, 999)); break
             for nm, o in orders(api, lmo, ridge).items():
-                rows.append({"day": d, "h": h, "cand": nm, **{f"t{k}": tk(o, truth, k) for k in (3, 5, 10)}})
+                rows.append({"day": d, "h": h, "cand": nm, **{f"t{k}": tk(o, truth, k) for k in (3, 5, 10)},
+                             "p1": float(o[0] in truth[:3]), "p2": float(o[1] in truth[:3]), "p3": float(o[2] in truth[:3]), "exact": float(o[0] == truth[0])})
     X = pd.DataFrame(rows); X["avg"] = X[["t3", "t5", "t10"]].mean(axis=1)
-    res, md = {}, ["# Pre-reveal API rank: keeping depth (6 days, hourly reads; n = 6, no intervals)", ""]
-    for h in (1, 2, 3):
+    res, md = {}, ["# Pre-reveal API rank: keeping depth (7 days, hourly reads; n = 7, no intervals)", ""]
+    for h in (1, 2, 3, 4):
         Y = X[X.h == h]
         tab = Y.groupby("cand")[["t3", "t5", "t10"]].mean().round(1)
         fams = {"slots": [f"slots_{k}" for k in range(1, 6)], "wmean": ["wmean_0.25", "wmean_0.5", "wmean_0.75"],
