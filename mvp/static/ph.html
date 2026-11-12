@@ -22,7 +22,7 @@
     <div class="copy">
       <p class="label" id="kicker">Product Hunt · live forecast</p>
       <h1 id="title">Our call on today's leaderboard, next to the real one</h1>
-      <p class="lede">Left: our forecast, made before PH shows vote counts and updated as the day goes. For the first 4 hours it adds launch-day comments; after the 04:00 PT reveal, it uses votes. Right: Product Hunt's board as it stands, refreshed every 15 minutes.</p>
+      <p class="lede">Left: our forecast, made before PH shows vote counts and updated as the day goes. For the first 4 hours it combines Product Hunt's own order (votes still hidden) with the 00:05 forecast; after the 04:00 PT reveal, it uses votes. Right: Product Hunt's board as it stands, refreshed every 15 minutes.</p>
     </div>
     <label class="label">Day<br><select id="day" aria-label="Launch day"></select></label>
   </header>
@@ -130,7 +130,7 @@ function renderPred(){
   const p = VIEW.points.find(q=>q.key===SEL);
   if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; return; }
   const phase = p.key.startsWith("R") ? "after the vote reveal" : p.key.startsWith("P") ? "before the reveal (votes hidden)" : "before launch";
-  $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b><br>${esc(phase)}${SEL===VIEW.lead_point?" · latest":""}`;
+  $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b>${p.late ? ` <span class="tag">late</span>` : ""}<br>${esc(phase)}${p.data_cut_pt ? " · data to " + esc(p.data_cut_pt) : ""}${SEL===VIEW.lead_point?" · latest on time":""}`;
   let sees = `Could see: ${p.sees}`;
   const c0 = p.top3_conf && Object.values(p.top3_conf)[0];
   if(c0 && c0.count) sees += ` Per-pick record is from the ${c0.basis}.` + (c0.backtest ? ` For context, a ${c0.backtest.label} put our #1 in the final top 3 on ${Math.round(c0.backtest.p1*100)}% of days and on top on ${Math.round(c0.backtest.exact1*100)}% (fixed offline figure, ${c0.backtest.date}).` : "");
@@ -165,7 +165,7 @@ function renderLive(){
               "open": "Top 3 is still open", "#3 open": "#3 is still open"};
   const L10 = {"top 10 locked": "top 10 looks locked"};
   const parts = lk ? [L3[lk.label_top3] || "", lk.label_top5 === "top 5 locked" ? "top 5 looks locked" : "", L10[lk.label_top10] || ""].filter(Boolean) : [];
-  const lockTxt = parts.length ? ` ${parts.join("; ")} (as of ${lk.read_pt || "the latest read"}; provisional rule from past days: ${lk.rule || "vote ratios between places"}).` : "";
+  const lockTxt = parts.length ? ` ${parts.join("; ")} (as of ${esc(lk.read_pt || "the latest read")}; a vote-gap rule, ${esc(lk.reliability || "provisional")}).` : "";
   $("#live-note").textContent = (b.votes_hidden ? "Vote counts are hidden on Product Hunt until about 04:00 PT; this is PH's own order so far." : "Product Hunt's order and vote counts at the time shown.") + lockTxt;
   const lead = VIEW.points.find(q=>q.key===VIEW.lead_point);
   const o = VIEW.launches.filter(x=>x.board_rank).sort((a,c)=>a.board_rank-c.board_rank).slice(0,10);
@@ -189,10 +189,12 @@ async function side(){
   const live = t.rows.filter(r=>r.n_days && (r.source||"live")==="live"), other = t.rows.filter(r=>r.n_days && (r.source||"live")!=="live");
   $("#rec tbody").innerHTML = live.map(tr).join("") || `<tr><td colspan="5" class="muted">No live day scored yet.</td></tr>`;
   if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+" ("+r.source+")"})).join(""); }
+  if(t.unavailable){ $("#rec tbody").innerHTML = `<tr><td colspan="5" class="muted">Track record unavailable right now.</td></tr>`; }
   $("#rec-how").textContent = t.how;
   const w = await getJSON("/api/ph/weekly").catch(()=>null);
+  if(!w || !w.top || !w.top.length){ $("#wk-note").textContent = "No weekly call available right now."; }
   if(w && w.top){
-    $("#wk-note").textContent = `Running weekly call (week of ${esc(w.week_monday)}, ${w.point==="dayend" ? "after " + esc(w.as_of_day) + " ended" : "made at reveal + 4 h on " + esc(w.as_of_day)}): final votes of finished days${w.point==="dayend" ? "" : " plus today's votes" + (w.ratio ? " ×" + Number(w.ratio).toFixed(3) : "")}. Scored when the week ends.`;
+    $("#wk-note").textContent = `Running weekly call (week of ${w.week_monday}, ${w.point==="dayend" ? "after " + w.as_of_day + " ended" : "made at reveal + 4 h on " + w.as_of_day}): estimated weekly votes from the days so far${w.point==="dayend" ? "" : " plus today's votes" + (w.ratio ? " ×" + Number(w.ratio).toFixed(3) : "")}; estimates, not official counts. Scored when the week ends.`;
     $("#weekly").innerHTML = w.top.map(x=>`<li><span>${Number(x.pred_rank)}</span><span>${esc(x.name||"(launch "+String(x.day)+")")}</span><span>~${Math.round(Number(x.est_votes))}</span></li>`).join("");
   }
 }

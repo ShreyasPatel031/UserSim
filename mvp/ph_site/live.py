@@ -24,10 +24,10 @@ PT = ZoneInfo("America/Los_Angeles")
 # Forecast points in time order. "sees" is what the forecast could see when it was made.
 POINTS = [
     ("0005", "pre-launch", "Line-up, product pages, maker/hunter/team track record. No votes, no comments."),
-    ("P1", "pre-reveal 1", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
-    ("P2", "pre-reveal 2", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
-    ("P3", "pre-reveal 3", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
-    ("P4", "pre-reveal 4", "The 00:05 forecast + launch-day comments so far. Vote counts still hidden."),
+    ("P1", "pre-reveal 1", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
+    ("P2", "pre-reveal 2", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
+    ("P3", "pre-reveal 3", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
+    ("P4", "pre-reveal 4", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
     ("R0", "votes revealed", "First vote counts after PH reveals them (~04:00 PT) + the 00:05 forecast."),
     ("R1", "reveal + 1 h", "Vote counts and vote speed up to 1 h after the reveal + the 00:05 forecast."),
     ("R2", "reveal + 2 h", "Vote counts and vote speed up to 2 h after the reveal + the 00:05 forecast."),
@@ -115,9 +115,20 @@ def _api_detail(day: str) -> tuple[list[dict], str | None]:
     names = sorted(n for n, _ in gcs.list_names(f"raw/ph_at_launch/{day}/api_detail/", ttl=300) if n.endswith(".jsonl"))
     if not names:
         return [], None
-    rows = gcs.read_jsonl(names[-1], ttl=300)
+    rows = [r for r in gcs.read_jsonl(names[-1], ttl=300) if _launch_day(r, day) == day]
     at = max((r.get("snapshot_at") or "" for r in rows), default="") or None
     return rows, at
+
+
+def _launch_day(r: dict, default: str) -> str:
+    """Launch day = PT date of featured_at (raw files tag launches featured at exactly 00:00 PT to the previous day)."""
+    fa = r.get("featured_at") or r.get("featuredAt")
+    if fa:
+        try:
+            return datetime.fromisoformat(str(fa).replace("Z", "+00:00")).astimezone(PT).strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+    return str(r.get("day") or default)
 
 
 def _final_after(day: str) -> datetime:
@@ -328,7 +339,7 @@ def hits(pred: dict[str, int], act: dict[str, dict], k: int) -> int | None:
 def current_board(day: str) -> dict:
     """PH's own leaderboard from the latest 15-min snapshot (official API light loop). Votes only once PH shows them."""
     rows = gcs.read_tail_jsonl(f"raw/ph_at_launch/{day}/live/posts_ts.jsonl", ttl=120)
-    rows = [r for r in rows if r.get("fetch_status") == 200 and str(r.get("day", day)) == day and r.get("snapshot_ts")]
+    rows = [r for r in rows if r.get("fetch_status") == 200 and r.get("snapshot_ts") and _launch_day(r, day) == day]
     if not rows:
         return {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True}
     last = max(r["snapshot_ts"] for r in rows)
@@ -418,7 +429,14 @@ def day_view(day: str) -> dict:
         if f.get("exp_votes"):
             g = claims().get("exp_votes_error", {}).get("values", {})
             exp_err = g.get(key)
-        points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "top3_conf": conf,
+        late = False
+        try:
+            late = (datetime.fromisoformat(str(f.get("made_at")).replace("Z", "+00:00"))
+                    - datetime.fromisoformat(str(f.get("data_up_to")).replace("Z", "+00:00"))).total_seconds() > (
+                        30 if key == "0005" else 90) * 60
+        except (ValueError, TypeError):
+            pass
+        points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "late": late, "top3_conf": conf,
                        "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
                        "ranks": f["ranks"], "score": score})
@@ -436,16 +454,24 @@ def day_view(day: str) -> dict:
         b = board["ranks"].get(x["id"], {})
         x["board_rank"] = b.get("rank")
         x["board_votes"] = b.get("votes")
-    lead = points[-1]["key"] if points else None
+    on_time = [p for p in points if not p.get("late")]
+    lead = (on_time or points)[-1]["key"] if points else None
     lk = gcs.read_json(f"results/web/lock/{day}.json", ttl=120) if not act["final"] else None
     lock = None
     if isinstance(lk, dict) and lk.get("label_top3"):
         lock = {k: lk.get(k) for k in ("point", "read_at", "label_top3", "label_top5", "label_top10", "top3_locked",
                                        "top5_locked", "top2_locked", "top10_locked", "top3_first_locked_at", "rule")}
         lock["read_pt"] = _pt_label(lk.get("read_at") or "")
+        lock.pop("rule", None)   # internal text; the page states the tested reliability instead
+        try:
+            hr = datetime.fromisoformat(str(lk.get("read_at")).replace("Z", "+00:00")).astimezone(PT).hour
+        except (ValueError, TypeError):
+            hr = None
+        lock["reliability"] = ("tested right about 93% of the time after noon PT" if hr is not None and hr >= 12 else
+                               "tested right only 67-81% of the time before noon PT")
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
             "lead_point": lead, "board": {**{k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")}, "lock": lock},
-            "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _pt_label(act["as_of"] or ""),
+            "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _written_label(day, act["as_of"]),
                        "as_of": act["as_of"]}}
 
 
@@ -465,6 +491,8 @@ def track_record(max_days: int = 30) -> dict:
         for r in sb["summary"]:
             if r.get("source") == "shadow" or r.get("method") in ("makerfix_shadow", "unfixed_replay"):
                 continue
+            if str(r.get("point", "")).startswith("P") and r.get("method") not in ("best",):
+                continue   # only the pre-reveal ranking the page shows
             m = SB_METHOD.get(r.get("method"), r.get("method", ""))
             rows.append({"key": r["point"], "label": SB_LABEL.get(r["point"], r["point"]) + (f" · {m}" if m else ""),
                          "source": r.get("source"), "n_days": r.get("days", 0),
@@ -480,35 +508,9 @@ def track_record(max_days: int = 30) -> dict:
         return {"rows": rows, "computed_at": sb.get("built_at"), "source": "results/web/scoreboard.json",
                 "how": (sb.get("definition") or "") + ". Live = written in time; late = honest data cut but written "
                        "after the fact; replay = re-run afterwards on data up to the point time."}
-    return _track_record_files(max_days)
-
-
-def _track_record_files(max_days: int = 30) -> dict:
-    """Top 3/5/10 hit rate per forecast point over every day that has a final result. Computed from files only."""
-    def go():
-        per = {k: {"days": [], "h3": 0, "h5": 0, "h10": 0} for k in POINT_KEYS}
-        for day in available_days(max_days):
-            act = actuals(day)
-            if not act["final"]:
-                continue
-            for k, f in forecasts(day).items():
-                h = [hits(f["ranks"], act["ranks"], kk) for kk in (3, 5, 10)]
-                if None in h:
-                    continue
-                per[k]["days"].append(day)
-                per[k]["h3"] += h[0]; per[k]["h5"] += h[1]; per[k]["h10"] += h[2]
-        rows = []
-        for key, label, sees in POINTS:
-            r = per[key]
-            n = len(r["days"])
-            rows.append({"key": key, "label": label, "sees": sees, "n_days": n, "days": sorted(r["days"]),
-                         "top3": round(100 * r["h3"] / (3 * n)) if n else None,
-                         "top5": round(100 * r["h5"] / (5 * n)) if n else None,
-                         "top10": round(100 * r["h10"] / (10 * n)) if n else None})
-        return {"rows": rows, "computed_at": datetime.now(timezone.utc).isoformat(),
-                "how": "Share of the day's actual top 3 / 5 / 10 that the forecast put in its own top 3 / 5 / 10, "
-                       "pooled over every day with a final result and that forecast file."}
-    return gcs._cached("track", 600, go)
+    # No scoreboard -> no track record: the local fallback cannot tell live calls from late runs.
+    return {"rows": [], "computed_at": None, "source": None, "unavailable": True,
+            "how": "The track record is unavailable right now."}
 
 
 def weekly() -> dict | None:

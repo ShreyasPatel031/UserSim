@@ -54,7 +54,7 @@
    "R0": "about 10% (34% for top-10 places)",
    "R4": "about 5% (15% for top-10 places)"
   },
-  "label": "median absolute error of predicted day-end votes, pre-reveal on 3 days",
+  "label": "median absolute error of predicted day-end votes (pre-reveal points: 3 days; post-reveal points: 4 days)",
   "source": "PH ops growth model: results/growth.md",
   "date": "2026-11-12"
  },
@@ -64,7 +64,7 @@
    "recall_ratio": 1.27,
    "precision_ratio": 1.4
   },
-  "label": "158 new launches, simulated reactions vs a random half of the real comments predicting the other half",
+  "label": "158 launches from Aug-Oct 2026, measured on their PH descriptions, simulated reactions vs a random half of the real comments predicting the other half",
   "source": "E5 reports/ceiling, commit 6fdf43d7, branch claude/person-model-v2",
   "date": "2026-11-12"
  },
@@ -91,8 +91,8 @@
    "exact1": 0.32,
    "days": 214
   },
-  "label": "clean backtest of the 00:05 model with 00:05-visible inputs only (214 days, Mar-Oct 2026)",
-  "source": "PH ops honest_preds_v2 (c1dd71b5); E5 masked backtest agrees (#1 in top 3 67-71%)",
+  "label": "clean backtest of the 00:05 model with 00:05-visible inputs only (214 days, Mar to Nov 10, 2026)",
+  "source": "PH ops honest_preds_v2 (c1dd71b5)",
   "date": "2026-11-12"
  },
  "try_e2e": {
@@ -101,7 +101,11 @@
    "spearman_page": 0.32,
    "spearman_ph": 0.59,
    "coverage_page": 0.86,
-   "coverage_ph": 0.89
+   "coverage_ph": 0.89,
+   "reaction_recall_page": 0.478,
+   "reaction_precision_page": 0.519,
+   "fetch_fail_share": 0.27,
+   "fetch_fail_after_root": 0.2
   },
   "label": "/try code on 130 page reads, Oct 27-Nov 10 (band from name, tagline and summary)",
   "source": "E5 reports/try_fixes/, branch claude/person-model-v2",

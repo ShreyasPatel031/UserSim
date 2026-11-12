@@ -33,7 +33,7 @@
         <li data-s="reactions"><b>Simulate reactions</b>What they'd write</li>
         <li data-s="launch"><b>Place on PH</b>Rank and vote range</li>
       </ol>
-      <p class="small muted" style="margin:6px 0 0">No public page yet, or it needs JavaScript? <a href="#" id="paste-open">Paste a launch description instead</a>.</p>
+      <p class="small muted" style="margin:6px 0 0">No public page yet, or it needs JavaScript? About 1 in 5 pages can’t be read automatically. <a href="#" id="paste-open">Paste a launch description instead</a> (also the more accurate input).</p>
       <div id="err" class="err" hidden></div>
       <form id="paste" class="card" hidden style="margin-top:14px;max-width:40rem">
         <p class="label">Paste it like a Product Hunt launch</p>
@@ -56,8 +56,8 @@
     <section class="block">
       <header><h2>Who it resonates with</h2><span class="label" id="pp-note"></span></header>
       <div class="grid3" id="pp-stats"></div>
-      <h3 style="margin:22px 0 8px">Closest matching members</h3>
-      <p class="small muted">Real Product Hunt members whose own tools are closest to this product, shown only as a label, role and tier. No names, handles, avatars, links or product lists, ever.</p>
+      <h3 style="margin:22px 0 8px">Types of members with the closest tools</h3>
+      <p class="small muted">Each card is a type of member (a role and tool-count description shared by 20+ real members), drawn from the members whose own tools are closest to this product. No names, handles, avatars, links or product lists, ever.</p>
       <div class="grid2" id="pp"><p class="skeleton">Matching…</p></div>
       <h3 style="margin:22px 0 8px">Audience segments with the closest match</h3>
       <table class="rec" id="seg"><thead><tr><th>Segment</th><th>Members</th><th>Match share</th><th>vs average</th></tr></thead><tbody></tbody></table>
@@ -95,7 +95,7 @@ function renderProduct(a){
     <div class="grid3" style="margin-top:16px">
       <div class="card"><p class="label">Audience</p><p>${esc(a.audience)}</p><p class="label">Pricing</p><p>${esc(a.pricing)}</p></div>
       <div class="card"><p class="label">PH visitors would like</p><ul>${(a.strengths||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
-      <div class="card"><p class="label">They would question</p><ul>${(a.doubts||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+      <div class="card"><p class="label">Doubts the page may raise (read from the page; not validated)</p><ul>${(a.doubts||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
     </div>`;
   $("#full").href = a.url ? "/app?url=" + encodeURIComponent(a.url) : "/app";
 }
@@ -117,7 +117,7 @@ function renderPeople(p){
   $("#pp-stats").innerHTML = S ? `
     <div class="card"><p class="label">Members with similar tools</p><p class="big">${S.likely_count.toLocaleString()}</p><p class="small muted">of ${S.people_scored.toLocaleString()} (${(S.likely_share*100).toFixed(1)}%); a typical product gets about ${Math.round(S.typical_share*100)}%</p></div>
     <div class="card"><p class="label">Versus a typical product</p><p class="big">${vsTyp.toFixed(1)}×</p><p class="small muted">${vsTyp>=1.2?"more people than usual have similar tools":vsTyp<=0.8?"fewer people than usual have similar tools":"about the usual number of people have similar tools"}</p></div>
-    <div class="card"><p class="label">Interest match (category level)</p><p class="big">${(p.likely_share*100).toFixed(0)}%</p><p class="small muted">of ${p.people_scored.toLocaleString()} profiles whose upvotes lean to this product's PH topics; ${p.maker_share_of_likely!=null?(p.maker_share_of_likely*100).toFixed(0)+"% of them are makers":""}</p></div>`
+    <div class="card"><p class="label">Most over-represented interest segment</p><p class="big" style="font-size:24px">${esc((p.segments[0]||{}).name||"none with 20+ people")}</p><p class="small muted">${p.segments[0] ? (p.segments[0].lift).toFixed(1) + "× its usual share among people whose upvotes lean to this product's topics" : ""}</p></div>`
     : `<div class="card"><p class="label">Interest match</p><p class="big">${p.likely_count.toLocaleString()}</p><p class="small muted">${(p.likely_share*100).toFixed(0)}% of profiles</p></div>`;
   $("#pp").innerHTML = p.top_people.map(x=>`<div class="card"><h3>${esc(x.label)} <span class="tag">${esc(x.strength)}</span></h3>
      <p class="small">${esc(x.roles.join(" · "))}</p><p class="small muted">${esc(x.tier)} · description shared by ${esc(x.shared_by||"20+ members")}</p></div>`).join("")

@@ -459,7 +459,7 @@ async def step_people(tok: str) -> dict:
     return out
 
 
-def _reactions_note(grounded: bool = True) -> str:
+def _reactions_note(grounded: bool = True, source: str | None = None) -> str:
     from mvp.ph_site.live import claims
     cl = claims()
     c, ps = cl["reactions_eval"], cl.get("person_sim")
@@ -479,7 +479,20 @@ def _reactions_note(grounded: bool = True) -> str:
             f"simulated comments anticipated about {v['theme_recall']:.0%} of the themes real users raised by our main "
             f"judge (about {v['second_judge_recall']:.0%} by a stricter second judge), and about "
             f"{v['theme_precision']:.0%} of the simulated points appeared in real comments; generic category comments "
-            f"anticipated about {v['theme_recall_generic']:.0%}. " + _vs_humans())
+            f"anticipated about {v['theme_recall_generic']:.0%}. " + _vs_humans() + _page_read_note(source))
+
+
+def _page_read_note(source: str | None) -> str:
+    if source != "page":
+        return ""
+    from mvp.ph_site.live import claims
+    t = claims().get("try_e2e")
+    if not t or "reaction_recall_page" not in t["values"]:
+        return ""
+    v = t["values"]
+    return (f" These comments came from a read of your web page; run end to end from page reads, they anticipated about "
+            f"{v['reaction_recall_page']:.0%} of real themes with {v['reaction_precision_page']:.0%} precision "
+            f"({t['date']}).")
 
 
 def _vs_humans() -> str:
@@ -597,7 +610,7 @@ async def step_reactions(tok: str) -> dict:
     for r in (j.get("reactions") or [])[:6]:
         reacts.append({k: r.get(k) for k in ("type", "comment", "sentiment", "why")})   # no unvalidated vote meters
     return {"reactions": reacts, "types": types, "headline": j.get("headline_takeaway", ""), "grounded": grounded,
-            "note": _reactions_note(grounded)}
+            "note": _reactions_note(grounded, a.get("source"))}
 
 
 # ---------- step 4: launch (no LLM) ----------
@@ -625,7 +638,7 @@ def step_launch(tok: str) -> dict:
     a = use_run(tok, "launch")
     lb = gcs.read_json("results/web/launch_band.json", ttl=3600)
     if not lb:
-        raise RuntimeError("launch band missing")
+        raise ValueError("The launch placement model is unavailable right now; the other sections still work.")
     # Page reads: name/tagline/summary only (validated on 130 page reads: coverage 86% vs 82% with the raw excerpt).
     desc = a.get("ph_description") or (a.get("summary") or "")
     score = _band_score(lb, a.get("name") or "", a.get("tagline") or "", desc, a.get("topics") or [])
@@ -685,6 +698,10 @@ def _coverage() -> dict | None:
         return None
 
 
+def _r(x) -> int:
+    return int(float(x) + 0.5)   # round half up, matching the /ph page
+
+
 def _honesty(acc: dict) -> str:
     rec = ""
     try:
@@ -692,7 +709,7 @@ def _honesty(acc: dict) -> str:
         row = next(r for r in live.track_record()["rows"] if r["key"] == "0005" and r.get("source", "live") == "live")
         if row["n_days"]:
             rec = (f" Our deployed 00:05 PT launch model, which also knows the hunter, makers and team history, "
-                   f"scores {row['top3']:.0f} / {row['top5']:.0f} / {row['top10']:.0f} live over {row['n_days']} days.")
+                   f"scores {_r(row['top3'])} / {_r(row['top5'])} / {_r(row['top10'])} live over {row['n_days']} days.")
     except Exception:  # noqa: BLE001
         pass
     return (f"Pre-launch rank prediction is weak, and weaker still from a page alone. Tested month-forward on "
