@@ -34,3 +34,27 @@ Fresh-only (44) p@3, a / b / c / constant:
 - Product statement: "Paste your launch description for concerns and questions; a URL alone gives the rank band and topic-level reactions only."
 
 **Note on levels:** p@3 here is higher than in same_point.py (PH concerns 37 vs 13). That run pooled 30–60 items per adjudicator call; this one pools about 20 top-3 items. The adjudicator's strictness depends on pool size, so compare within a run, not across runs.
+
+## (e) Drafted launch post (page_path_draft.py; about $0.45 adjudicator + flash)
+
+Setup: one flash call writes the maker's launch post from the raw page excerpt, with no invented facts. All arms are re-adjudicated together in a new run on the same 70 launches.
+
+| p@3 [95%] | concerns | questions |
+|---|---|---|
+| (a) read summary | 21.9 | 26.7 |
+| (b) raw excerpt | 30.5 | 28.6 |
+| (c) real PH description | 32.9 | 37.1 |
+| **(e) drafted launch post** | **25.2** | **23.8** |
+| constant | 22.9 | 21.9 |
+
+| paired difference | concerns | questions |
+|---|---|---|
+| (e) − constant | +2.4 [−5.2, +10.0] | +1.9 [−7.1, +11.4] |
+| (e) − raw | −5.2 [−11.9, +1.0] | −4.8 [−11.4, +1.9] |
+| (e) − real description | −7.6 [−15.7, −0.0] | −13.3 [−22.4, −5.2] |
+| (c) − constant | +10.0 [+1.4, +18.1] | +15.2 [+8.6, +21.9] |
+
+**Verdict:**
+- A drafted post does not close the gap. It is no better than the constant list and slightly worse than the raw page text.
+- What helps is information the maker writes and the page lacks, not framing.
+- The paste path (the real launch description) stays the only validated route for concerns and questions.
