@@ -1,0 +1,204 @@
+{
+ "design": "Existing-fame prior at 00:05, LLM-knowledge version (orchestrator 23:00Z / 23:20Z Nov 11): 300-launch pilot.\nQuestion: does an LLM's prior knowledge of the product/company predict the per-launch surprise r = logv - honest LM?\nModel: Gemini 2.5 Flash-Lite on Vertex (temperature 0, JSON). Its stated knowledge cutoff is January 2025; every launch here\nis dated Mar-Oct 2026, so the model cannot have seen launch coverage: the whole pilot is the post-cutoff (clean) slice.\nInputs only: product name, tagline, website domain (when resolved, else \"unknown\"), launch month. No votes, ranks, comments,\nmaker handles or other PH text.\nQuestions: (a) heard of the product/company before the launch month, 0-3; (b) existing user base bucket none / thousands /\nhundreds of thousands / millions; (c) new version of an established product y/n; (d) venture-backed or known brand y/n/unknown.\nPilot: every launch on 12 random scored days of the PH comment-forecast set (cf_rows, cut +4h, 207 scored days), so that\nwithin-day statistics and the placebo work. Metrics: within-day Spearman of each answer with r (day-bootstrap CI), pooled\nSpearman with day-demeaned r (launch bootstrap); placebo = answers shuffled among launches of the same day.\nThe full run happens only if the pilot shows a residual correlation with its 95% interval above zero.",
+ "days": [
+  "2026-04-04",
+  "2026-04-09",
+  "2026-04-16",
+  "2026-05-06",
+  "2026-05-24",
+  "2026-06-01",
+  "2026-07-11",
+  "2026-08-04",
+  "2026-08-12",
+  "2026-09-14",
+  "2026-10-06",
+  "2026-10-22"
+ ],
+ "launches": 305,
+ "usd": 0.0,
+ "valid_answers": 305,
+ "distributions": {
+  "heard": {
+   "0": 302,
+   "1": 1,
+   "2": 2
+  },
+  "users": {
+   "0": 302,
+   "1": 1,
+   "2": 1,
+   "3": 1
+  },
+  "newver": {
+   "0": 303,
+   "1": 2
+  },
+  "brand": {
+   "0.0": 264,
+   "0.5": 23,
+   "1.0": 18
+  }
+ },
+ "results": {
+  "heard": {
+   "within_day_spearman_with_r": [
+    0.268,
+    -0.16,
+    0.577,
+    3
+   ],
+   "pooled_spearman_with_day_demeaned_r": [
+    0.065,
+    -0.071,
+    0.17,
+    305
+   ],
+   "placebo_within_day": [
+    -0.244,
+    -0.412,
+    -0.077,
+    3
+   ],
+   "pooled_spearman_with_logv (raw fame)": [
+    0.079,
+    -0.067,
+    0.193,
+    305
+   ],
+   "pooled_spearman_with_LM": [
+    0.1,
+    -0.001,
+    0.187,
+    305
+   ]
+  },
+  "users": {
+   "within_day_spearman_with_r": [
+    0.268,
+    -0.16,
+    0.577,
+    3
+   ],
+   "pooled_spearman_with_day_demeaned_r": [
+    0.065,
+    -0.072,
+    0.172,
+    305
+   ],
+   "placebo_within_day": [
+    -0.244,
+    -0.412,
+    -0.077,
+    3
+   ],
+   "pooled_spearman_with_logv (raw fame)": [
+    0.079,
+    -0.07,
+    0.19,
+    305
+   ],
+   "pooled_spearman_with_LM": [
+    0.1,
+    0.001,
+    0.184,
+    305
+   ]
+  },
+  "newver": {
+   "within_day_spearman_with_r": [
+    0.482,
+    0.386,
+    0.577,
+    2
+   ],
+   "pooled_spearman_with_day_demeaned_r": [
+    0.115,
+    0.076,
+    0.19,
+    305
+   ],
+   "placebo_within_day": [
+    -0.245,
+    -0.412,
+    -0.077,
+    2
+   ],
+   "pooled_spearman_with_logv (raw fame)": [
+    0.131,
+    0.089,
+    0.209,
+    305
+   ],
+   "pooled_spearman_with_LM": [
+    0.12,
+    0.079,
+    0.194,
+    305
+   ]
+  },
+  "brand": {
+   "within_day_spearman_with_r": [
+    0.037,
+    -0.105,
+    0.192,
+    12
+   ],
+   "pooled_spearman_with_day_demeaned_r": [
+    -0.032,
+    -0.148,
+    0.084,
+    305
+   ],
+   "placebo_within_day": [
+    -0.06,
+    -0.227,
+    0.109,
+    12
+   ],
+   "pooled_spearman_with_logv (raw fame)": [
+    0.183,
+    0.08,
+    0.279,
+    305
+   ],
+   "pooled_spearman_with_LM": [
+    0.275,
+    0.179,
+    0.358,
+    305
+   ]
+  },
+  "fame": {
+   "within_day_spearman_with_r": [
+    0.036,
+    -0.105,
+    0.189,
+    12
+   ],
+   "pooled_spearman_with_day_demeaned_r": [
+    -0.031,
+    -0.148,
+    0.076,
+    305
+   ],
+   "placebo_within_day": [
+    -0.061,
+    -0.225,
+    0.11,
+    12
+   ],
+   "pooled_spearman_with_logv (raw fame)": [
+    0.183,
+    0.083,
+    0.283,
+    305
+   ],
+   "pooled_spearman_with_LM": [
+    0.275,
+    0.181,
+    0.359,
+    305
+   ]
+  }
+ }
+}
