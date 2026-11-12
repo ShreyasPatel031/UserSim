@@ -1021,3 +1021,12 @@ precision@1 / @3 / @5 / hit@3 (at least one of the top three raised):
 Paired: RANKED − BASE_GENERIC p@3 +13.3 [9.9, 16.8], hit@3 +25.3 [18.2, 32.8]; RANKED − DEPLOYED p@3 +5.3 [1.9, 8.8], hit@3 +9.1 [2.0, 16.2]. "Always ask about pricing and integrations" does NOT do as well as the simulation (11% vs 24% at the top three).
 By topic p@3 (RANKED / generic / deployed): Productivity 24.8 / – / 21.2 (n 74); Open Source 25.6 / 16.7 deployed; API 24.6 / 12.3 deployed; Marketing 31.2; AI 16.7.
 Reading: the ranked list raises top-3 precision to about 1 in 4 (from about 1 in 5 for the deployed order) and at least one of its top three concerns is raised by real users on about 55% of new launches.
+
+### 2026-11-12 E5 — site lookup for the hunter/maker ladder, validated on held-out days
+Script experiments/simlab/ladder_bundle.py; report reports/ladder_bundle/. Bundle (bucket only: tmp/e5/website/ladder_handles_v1.json, 7,513 handle keys, 0.8 MB): key = sha256("ph-ladder-v1:" + lowercase handle)[:20] -> aggregate public launch outcomes (hunted: count, top-3, top-10, sum ln votes; made: count, best rank, sum and max ln votes). Model JSON (tmp/e5/website/ladder_model_v1.json, 6.5 KB): four rungs (product_only, hunter, makers, both) with medians, standardisation, ridge coefficients and calibrated rank bands.
+Validation: bundle and model as of Oct 24, every ranked launch Oct 25–Nov 10 (474 launches, 17 days) scored through the bundle path; day-bootstrap 95% CIs. Top 3 / 5 / 10, Spearman, band coverage (width):
+- product_only: 31.4 [17.6, 47.1] / 40.0 / 57.6, 34.8; 0.869 (34.1 ranks)
+- + hunter: 47.1 [37.3, 58.8] / 64.7 / 73.5, 56.1; 0.884 (31.0)
+- + makers: 49.0 [35.3, 62.7] / 50.6 / 60.6, 40.3; 0.867 (34.1)
+- + both: 56.9 [47.1, 66.7] / 65.9 / 74.7, 58.3; 0.876 (31.6)
+End-to-end: bundle-path features equal the direct history computation on 50 sampled launches (max diff 0). Bands are slightly conservative (about 87% coverage of a nominal 80%).
