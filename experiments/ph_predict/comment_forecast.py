@@ -264,7 +264,7 @@ def live(day, point):
             if f != "people_ts":
                 raise RuntimeError(f"missing live/{f}.jsonl for {day}")
             open(f"{tmp}/{f}.jsonl", "w").close()   # optional: team ids then come from the dump map only
-    team, ids, api = {}, set(), {}
+    team, ids, api, rv = {}, set(), {}, {}
     for l in open(f"{tmp}/posts_ts.jsonl"):
         r = json.loads(l)
         if r.get("fetch_status") != 200 or str(r.get("day", day)) != day:   # the line-up is fixed at 00:01 PT
@@ -275,6 +275,8 @@ def live(day, point):
         if str(r.get("source", "")).startswith("ph_api_v2") and r.get("daily_rank_at_fetch") is not None and fa <= T:
             if i not in api or fa > api[i][0]:
                 api[i] = (fa, float(r["daily_rank_at_fetch"]))
+        if r.get("reviews_count") is not None and fa <= T and (i not in rv or fa > rv[i][0]):
+            rv[i] = (fa, float(r["reviews_count"]))
     pid, pnames = {}, {}   # launch -> maker/hunter PH user ids (people_ts: user_id, role, launch_ids); username -> id
     for l in open(f"{tmp}/people_ts.jsonl"):
         r = json.loads(l)
@@ -386,12 +388,30 @@ def live(day, point):
     w2 = 0.5 if pd.Timestamp(day).dayofweek >= 5 else w_api
     A["pred_rank_best2"] = ((w2 * A.pred_rank_api + (1 - w2) * lm_pos + 1e-6 * lm_pos).rank(method="first").astype(int)
                             if A.api_rank.notna().any() else lm_pos.astype(int))
+    # orchestrator 02:40Z Nov 12: recorded only (not used in any rank) so they accrue - self_hunted (hunter is one of the
+    # makers, from the latest api_detail file stamped <= T; NaN when none yet) and has_prior_reviews (reviews_count > 0 in
+    # the latest posts_ts row fetched <= T)
+    A["has_prior_reviews"] = [float(rv[i][1] > 0) if i in rv else np.nan for i in A.id]
+    sh = {}
+    try:
+        fl = subprocess.run(["gsutil", "ls", f"{B}/raw/ph_at_launch/{day}/api_detail/"], capture_output=True, text=True).stdout.split()
+        stamp = lambda f: pd.Timestamp(pd.to_datetime(os.path.basename(f)[:13], format="%Y%m%dT%H%M")).tz_localize("America/Los_Angeles").tz_convert("UTC")
+        fl = sorted([f for f in fl if f.endswith("PT.jsonl") and stamp(f) <= T], key=stamp)
+        if fl:
+            subprocess.run(["gsutil", "-q", "cp", fl[-1], f"{tmp}/api_detail.jsonl"], check=True)
+            for l in open(f"{tmp}/api_detail.jsonl"):
+                r = json.loads(l); mk = {str(m.get("id")) for m in (r.get("makers") or []) if isinstance(m, dict)}
+                if r.get("id") is not None and r.get("userId") is not None:
+                    sh[str(r["id"])] = float(str(r["userId"]) in mk)
+    except Exception as e:
+        print("self_hunted skipped:", repr(e)[:120], flush=True)
+    A["self_hunted"] = [sh.get(i, np.nan) for i in A.id]
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
            "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
-                                                   "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes"]].round(4).to_dict("records")}
+                                                   "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket
         res["dry_run"] = True; p = os.path.join(os.environ["CF_DRY"], f"{day}_{point}.json"); json.dump(res, open(p, "w"), indent=1)
     else:
