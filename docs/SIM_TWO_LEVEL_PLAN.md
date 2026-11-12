@@ -206,7 +206,7 @@ Open, next to assign:
 ### Queue state, 03:40 UTC Nov 12
 Running: PH agent = deployed vs backtest inputs at 00:05 (feature sets turn out identical live; the gap is input values), then launch-model target noise (19i); E5 = audience conditioning, Hacker News vs Product Hunt (18i); orchestrator = audit of every visitor-facing number (19j).
 Open, next to assign:
-27. 00:05 input values: for each of the 41 live inputs, the value at 00:05 vs the re-read value, and which ones move the forecast (follow-on to the feature-set comparison); fix or impute the ones that are simply late.
+27. **00:05 inputs: the live LLM-judgement and promo sources.** Feature set and params are identical between deployed and backtest (53 columns; 41 when llm and promo are dropped). Replay without llm/promo scores 57.1/64.3/76.9 vs published 52.4/65.7/77.9 on 14 days (hint that the live LLM inputs hurt). PH agent: third 00:05 shadow line (no llm/promo) from Nov 13; per-source attribution and long-backtest ablation after the target experiment.
 28. Votes that Product Hunt removes later: which launches lose votes after midnight, whether it is visible on launch day (vote bursts, one-vote accounts in our pool), and whether it explains launch-model false favourites.
 29. Tie and near-tie handling at the top-3 boundary in every forecast file (official tie-break is unidentified): report top 3 with ties counted both ways.
 30. Pre-reveal recipe on the Nov 11 and Nov 12 live files once official ranks land (7th and 8th day): pooled table with intervals; refit weights LODO.
