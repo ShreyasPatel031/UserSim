@@ -1278,3 +1278,26 @@ Leak guard, "rank by number of identified makers" alone (215 days):
 - The profile is a smooth gradient, consistent with the genuine self-hunted signal, not a winner flag.
 
 Verdict: honest maker information adds about +2 top 3, with a CI touching 0. It mostly restores "hunted by someone else", which clean_v3 lost when ph_self_hunted was dropped. Live use needs the first top-level comment's author at 00:05 (thread position); the badge adds about +0.5.
+
+### 2026-11-12 E5 — one honest early-hours model (00:05 to +4 h) over the clean LM
+Script experiments/simlab/early_model.py; reports/early_model/. Recipes are in gs://usersim-bakeoff-347838016394/tmp/e5/early/.
+
+Setup: 238 thread-dump days, 5,550 launches. Ridge month-forward over honest_preds_v2. The team is defined only by thread position (first top-level author + hunter); no API makers list is used.
+
+Daily top 3 (clean LM alone 56.3), ridge, all blocks:
+
+| Cut | Top 3 | Gain over LM | #1 pick in top 3 | Exact winner |
+|---|---|---|---|---|
+| 00:05 | 58.2 | +2.0 [−0.5, 4.5] | 74.7 | – |
+| +1 h | 60.6 | +4.3 [1.1, 7.5] | 81.7 | – |
+| +2 h | 63.1 | +6.8 [3.0, 10.8] | 83.9 | – |
+| +3 h | 65.8 | +9.5 [5.7, 13.3] | 83.3 | – |
+| +4 h | 64.9 | +8.6 [5.2, 12.2] | 84.4 | 44.1 (LM 36.6) |
+
+- LightGBM is below ridge at every cut.
+- Ablation: comment features carry it. On top of everything else they add +2.9 / +4.7 / +3.9 at +2 / +3 / +4 h. Pool engagers are redundant given comments (+0.0 to +0.5). Thread maker features add about 0 here.
+- Cap guard: the dumps cap at 20 threads, and 68% of #1 launches are capped. On the 77 days with at most one capped launch, the gain is +0.9 / +1.7 / +2.2 / +6.9 [1.7, 12.1] / +5.6 [0.4, 10.8]. Smaller in the first 2 h, clear by 3–4 h.
+- Calibration, LM + comments, P(top 3) for picks 1–5:
+  - 00:05: .73 / .55 / .47 / .30 / .32
+  - +2 h: .86 / .57 / .44 / .36 / .25
+  - +4 h: .84 / .64 / .47 / .29 / .23
