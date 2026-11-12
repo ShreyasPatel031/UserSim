@@ -275,3 +275,18 @@ Consequence to test: the full team is public at launch on the page, so maker ide
 information that the clean model discards only because the API hides it.
 Asked for facts: Grok Bot and the Cursor agent (mailbox 20261112T0845Z_team_visibility.md), the PH agent (hourly
 API rows), and an orchestrator read of the held API rows (19q).
+
+### FACTS on maker visibility (Nov 12, 10:00 UTC) — replaces the "ROOT CAUSE" wording above
+- WEBSITE (Grok Bot, box browser, signed in and logged out; and our page captures of Nov 3, 7, 8: 0 redacted of 905 team rows):
+  the launch page lists every team member by name, at every rank, during launch day.
+- OFFICIAL API v2 (our held rows, 2,937 detail rows + 00:05 pulls + warehouse): makers are redacted on EVERY read,
+  launch day or weeks later. The hunter (post.user) is never redacted. Within a list of posts, the FIRST post of each
+  returned page has its whole team named; every other post has exactly one named maker (the last listed; the hunter
+  when the hunter is a maker). A list ordered by ranking puts the current leader first, so the leader shows its full
+  team; when the lead changes the old leader reverts to one named maker; while votes are hidden a random launch is
+  first. Final rank #21 (first of page 2) is fully named about as often as #1 (24/31); #2 and #3 are not (1/206, 1/196).
+- So the backtest leak is an artefact of list position in our API reads. Nothing about Product Hunt revealing winners.
+- Unknown: why first position and the last maker are exempt; what a single-post read returns. Grok Bot asked to confirm
+  with two ordinary paginated reads.
+- Legitimate rank-neutral maker identity we already have: the first top-level comment's author (88–96% at every rank).
+- NOT done and not to be done without Shreyas: reading one post per page to get every team through the API.
