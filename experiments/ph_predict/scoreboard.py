@@ -117,8 +117,8 @@ def main():
 
 # backtest number beside each live line (source files in results/; update here when a backtest is re-run)
 BACKTEST = {
-    ("0005", "published"): ("54.7 / 64.5 / 75.6", "honest month-forward without maker-profile inputs, 214 days Mar-Nov 10 (leak_check_maker.md): #1 pick in top 3 72%, exact winner 39%. The earlier 63.0 / 69.3 / 75.0 was inflated by a leak: maker-profile availability in the cache depends on the final rank"),
-    ("0005", "clean_shadow"): ("54.7 / 64.5 / 75.6", "same model family without maker-profile inputs, month-forward 214 days (leak_check_maker.md; clean_v3 drops 4 more identity inputs); live-days replay 61.9 / 67.1 / 76.4 on 14 days vs deployed 57.1 (clean_live.md)"),
+    ("0005", "published"): ("-", "no clean backtest: the deployed model trains on inputs that need a named maker, which PH fills in for the day's #1 only after the day (leaked 63.0 / 69.3 / 75.0). Clean equivalent: see clean_shadow"),
+    ("0005", "clean_shadow"): ("53.7 / 64.6 / 75.4", "honest_preds_v2: month-forward 214 days Mar-Nov 10 without any input that needs a named maker (leak_check_v2.md): #1 pick in top 3 69%, exact winner 32%; live-days replay 61.9 / 67.1 / 76.4 on 14 days vs deployed 57.1 (clean_live.md)"),
     ("0005", "makerfix_shadow"): ("-", "the earlier 60.2 / 68.6 / 75.7 (maker_resolve.md) used the leaking maker-profile cache; no clean backtest"),
     ("P1", "best"): ("66.7 / 66.7 / 78.3", "REPLAY, 6 days (Nov 2-10), leave-one-day-out choice: 0.5 x API rank + 0.5 x LM rank (api_depth.md); LM 38.9 / 60.0 / 76.7"),
     ("P2", "best"): ("72.2 / 76.7 / 80.0", "REPLAY, 6 days, LODO: 0.75 x API rank + 0.25 x LM rank (api_depth.md)"),
