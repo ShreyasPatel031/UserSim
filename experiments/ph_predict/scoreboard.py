@@ -126,6 +126,7 @@ def main():
     os.makedirs(os.path.join(HERE, "results", "web"), exist_ok=True)
     # orchestrator 09:12Z Nov 12: pre-registered forward check of clean_thread's signal (thread_coef.py), embedded as is
     tc = os.path.join(HERE, "results", "web", "thread_coef.json")
+    subprocess.run([sys.executable, os.path.join(HERE, "thread_coef.py")], cwd=HERE)   # refresh first (best effort)
     if os.path.exists(tc):
         out["clean_thread_coef"] = json.load(open(tc))
     p = os.path.join(HERE, "results", "web", "scoreboard.json"); json.dump(out, open(p, "w"), indent=1, default=str)
