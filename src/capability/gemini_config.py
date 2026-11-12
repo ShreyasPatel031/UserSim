@@ -126,6 +126,7 @@ async def gemini_chat(
     json_mode: bool = True,
     max_retries: int = 5,
     thinking_budget: int = 0,
+    max_output_tokens: int | None = None,
 ) -> str:
     """Call Gemini on Vertex. Returns the raw text of the first candidate.
 
@@ -139,6 +140,8 @@ async def gemini_chat(
     # 2.5 Flash thinks by default; signup/study prompts do not need it and it
     # doubles latency and cost.
     generation["thinkingConfig"] = {"thinkingBudget": int(thinking_budget)}
+    if max_output_tokens:
+        generation["maxOutputTokens"] = int(max_output_tokens)
 
     payload: dict[str, Any] = {"contents": contents, "generationConfig": generation}
     if system:

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier · Try a product</title>
+<meta name="description" content="Paste a product URL: simulated Product Hunt reactions, who it resonates with, and where it might land.">
+<link rel="icon" href="/atelier/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
+<link rel="stylesheet" href="/static/ph_site.css?v=4">
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Main">
+    <a class="mark" href="/" aria-label="Atelier home"><img src="/atelier/logo.png" alt="" width="30" height="30">Atelier</a>
+    <div class="menu label"><a href="/ph">PH forecast</a><a href="/try" aria-current="page">Try a product</a><a href="/app">Open app</a></div>
+  </nav>
+
+  <header class="head" style="grid-template-columns:minmax(0,1fr)">
+    <div class="copy">
+      <p class="label">Product Hunt simulation</p>
+      <h1>What would Product Hunt say about your product?</h1>
+      <p class="lede">We read your page, match it against real Product Hunt members (anonymised), simulate their reactions, and place it on a typical launch day.</p>
+      <form class="url" id="f">
+        <input id="u" name="url" type="url" required placeholder="https://yourproduct.com" aria-label="Product URL" autocomplete="url">
+        <button type="submit" id="go">Simulate</button>
+      </form>
+      <ol class="steps" id="steps">
+        <li data-s="page"><b>Read page</b>Fetch + understand it</li>
+        <li data-s="people"><b>Match people</b>Real PH members, anonymised</li>
+        <li data-s="reactions"><b>Simulate reactions</b>What they'd write</li>
+        <li data-s="asks"><b>Likely question</b>And concern</li>
+        <li data-s="launch"><b>Place on PH</b>Rank and vote range</li>
+      </ol>
+      <p class="small muted" style="margin:6px 0 0">No public page yet, or it needs JavaScript? About 1 in 5 pages can’t be read automatically. <a href="#" id="paste-open">Paste a launch description instead</a> (also the more accurate input).</p>
+      <div id="err" class="err" hidden></div>
+      <form id="paste" class="card" hidden style="margin-top:14px;max-width:40rem">
+        <p class="label">Paste it like a Product Hunt launch</p>
+        <p class="small muted">This is the kind of text our launch and reaction models were measured on, so it is the better input when you have it.</p>
+        <p><input id="pn" maxlength="80" required placeholder="Product name" aria-label="Product name" style="width:100%;border:1px solid var(--rule);background:transparent;padding:9px 10px;font:inherit"></p>
+        <p><input id="pt" maxlength="140" required placeholder="Tagline (one line)" aria-label="Tagline" style="width:100%;border:1px solid var(--rule);background:transparent;padding:9px 10px;font:inherit"></p>
+        <p><textarea id="pd" rows="6" minlength="80" maxlength="2000" required placeholder="Paste your launch description: at least 40 words on what it does and for whom (up to 2,000 characters)" aria-label="Description" style="width:100%;border:1px solid var(--rule);background:transparent;padding:9px 10px;font:inherit"></textarea></p>
+        <p><button type="submit" id="pgo" style="border:0;background:var(--ink);color:var(--paper);font:600 14px var(--sans);padding:11px 20px;cursor:pointer">Simulate from description</button></p>
+      </form>
+    </div>
+  </header>
+
+  <div id="out" hidden>
+    <section class="block" id="prod"></section>
+    <section class="block">
+      <header><h2>The question they’ll most likely ask</h2><span class="label">simulated</span></header>
+      <div id="ask"><p class="skeleton">Ranking likely questions…</p></div>
+    </section>
+    <section class="block">
+      <header><h2>What users will say</h2><span class="label" id="rx-note"></span></header>
+      <p class="lede" id="rx-head"></p>
+      <div id="rx"><p class="skeleton">Simulating reactions…</p></div>
+    </section>
+    <section class="block">
+      <header><h2>Who it resonates with</h2><span class="label" id="pp-note"></span></header>
+      <div class="grid3" id="pp-stats"></div>
+      <h3 style="margin:22px 0 8px">Types of members with the closest tools</h3>
+      <p class="small muted">Each card is a type of member (a role and tool-count description shared by 20+ real members), drawn from the members whose own tools are closest to this product. No names, handles, avatars, links or product lists, ever.</p>
+      <div class="grid2" id="pp"><p class="skeleton">Matching…</p></div>
+      <h3 style="margin:22px 0 8px">Audience segments with the closest match</h3>
+      <table class="rec" id="seg"><thead><tr><th>Segment</th><th>Members</th><th>Match share</th><th>vs average</th></tr></thead><tbody></tbody></table>
+      <p class="small muted" id="pp-method"></p>
+    </section>
+    <section class="block">
+      <header><h2>Where it would land on Product Hunt</h2><span class="label">a range, not a promise</span></header>
+      <div id="ln"><p class="skeleton">Placing…</p></div>
+    </section>
+    <section class="block">
+      <header><h2>Go further</h2></header>
+      <p class="lede">Run the full live simulation on this URL: simulated users drive real browsers through your product and two competitors, with a report.</p>
+      <p><a id="full" class="tag" href="/app">Run the live product simulation →</a></p>
+    </section>
+  </div>
+  <footer class="note label"><span id="caps">Limits: 3 simulations per hour, 10 per day per visitor</span><span>Atelier · not affiliated with Product Hunt</span></footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const step = (s, cls) => { const li = document.querySelector(`#steps [data-s="${s}"]`); li.className = cls; };
+async function post(path, body){
+  const r = await fetch(path, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  const j = await r.json().catch(()=>({error:"Bad response"}));
+  if(!r.ok) throw new Error(j.error || j.detail || ("HTTP "+r.status));
+  return j;
+}
+function fail(msg){ $("#err").hidden=false; $("#err").textContent = msg; }
+
+function renderProduct(a){
+  $("#prod").innerHTML = `<header><div><p class="label">${esc(a.url ? new URL(a.url).hostname : "pasted description")}</p><h2>${esc(a.name)}</h2></div>
+    <span class="label">${esc((a.topics||[]).join(" · "))}</span></header>
+    <p class="lede"><b style="color:var(--ink)">${esc(a.tagline)}</b><br>${esc(a.summary)}</p>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card"><p class="label">Audience</p><p>${esc(a.audience)}</p><p class="label">Pricing</p><p>${esc(a.pricing)}</p></div>
+      <div class="card"><p class="label">PH visitors would like (read from the page; not validated)</p><ul>${(a.strengths||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+    </div>`;
+  $("#full").href = a.url ? "/app?url=" + encodeURIComponent(a.url) : "/app";
+}
+const pct = (v)=> Math.max(0, Math.min(100, Number(v)||0));
+function renderAsks(j){
+  const card = (lab, txt) => `<div class="card"><p class="label">${lab}</p><p style="font-family:var(--serif);font-size:1.25rem;line-height:1.35">${esc(txt)}</p></div>`;
+  let h = '<div class="grid2">' + (j.question ? card("Most likely question", j.question) : "")
+    + (j.concern ? card("Most likely concern", j.concern)
+       : `<div class="card"><p class="label">Most likely concern</p><p class="muted">Only reliable from a launch description. <a href="#" class="paste-link">Paste yours</a> to see it.</p></div>`)
+    + "</div>";
+  $("#ask").innerHTML = h + `<p class="small muted">${esc(j.note)}</p>`;
+  document.querySelectorAll("#ask .paste-link").forEach(a=>a.onclick=(e)=>{e.preventDefault(); $("#paste").hidden=false; $("#pn").focus();});
+}
+function renderReactions(j){
+  $("#rx-head").textContent = j.headline || "";
+  $("#rx-note").textContent = "simulated, not real comments";
+  $("#rx").innerHTML = j.reactions.map(r=>{
+    const lab = String(r.type||"").split(":")[0];
+    return `<div class="comment"><div class="avatar" aria-hidden="true">${esc(lab.replace(/^(User|Type) /,"").charAt(0))}</div><div>
+      <div class="who"><b>${esc(lab)}</b> · ${esc(String(r.type||"").split(":").slice(1).join(":"))}</div>
+      <q>${esc(r.comment)}</q>
+      <span class="meter">${esc(r.sentiment)} · ${esc(r.why)}</span></div></div>`;}).join("") + `<p class="small muted">${esc(j.note)}</p>`;
+}
+function renderPeople(p){
+  const S = p.similar;
+  $("#pp-note").textContent = S ? `${S.people_scored.toLocaleString()} members with known tool stacks` : `${p.people_scored.toLocaleString()} members matched`;
+  const vsTyp = S ? (S.likely_share / S.typical_share) : null;
+  $("#pp-stats").innerHTML = S ? `
+    <div class="card"><p class="label">Members with similar tools</p><p class="big">${S.likely_count.toLocaleString()}</p><p class="small muted">of ${S.people_scored.toLocaleString()} (${(S.likely_share*100).toFixed(1)}%); a typical product gets about ${Math.round(S.typical_share*100)}%</p></div>
+    <div class="card"><p class="label">Versus a typical product</p><p class="big">${vsTyp.toFixed(1)}×</p><p class="small muted">${vsTyp>=1.2?"more people than usual have similar tools":vsTyp<=0.8?"fewer people than usual have similar tools":"about the usual number of people have similar tools"}</p></div>
+    <div class="card"><p class="label">Most over-represented interest segment</p><p class="big" style="font-size:24px">${esc((p.segments[0]||{}).name||"none with 20+ people")}</p><p class="small muted">${p.segments[0] ? (p.segments[0].lift).toFixed(1) + "× its usual share among people whose upvotes lean to this product's topics" : ""}</p></div>`
+    : `<div class="card"><p class="label">Interest match</p><p class="big">${p.likely_count.toLocaleString()}</p><p class="small muted">${(p.likely_share*100).toFixed(0)}% of profiles</p></div>`;
+  $("#pp").innerHTML = p.top_people.map(x=>`<div class="card"><h3>${esc(x.label)} <span class="tag">${esc(x.strength)}</span></h3>
+     <p class="small">${esc(x.roles.join(" · "))}</p><p class="small muted">${esc(x.tier)} · description shared by ${esc(x.shared_by||"20+ members")}</p></div>`).join("")
+    || `<p class="small muted">Member-level matches are unavailable right now; see the segments below.</p>`;
+  const roleRows = S ? S.segments.map(s=>`<tr><td>${esc(s.name)} <span class="small muted">(role)</span></td><td>${s.size.toLocaleString()}</td><td>${(s.share*100).toFixed(1)}%</td><td>${s.lift.toFixed(1)}×</td></tr>`) : [];
+  const intRows = p.segments.map(s=>`<tr><td>${esc(s.name)}<br><span class="small muted">${esc(s.top_topics.join(", "))}</span></td><td>${s.size.toLocaleString()}</td><td>${(s.share*100).toFixed(0)}%</td><td>${s.lift.toFixed(1)}×</td></tr>`);
+  $("#seg tbody").innerHTML = roleRows.concat(intRows).join("") || `<tr><td colspan="4" class="muted">No segment has 20+ matching members; the match is spread thin.</td></tr>`;
+  $("#pp-method").textContent = (p.voting_note ? p.voting_note + " " : "") + (S ? S.method + " " : "") + p.method + " " + p.note + " Segments are indicative.";
+}
+function renderLaunch(l){
+  const A = l.accuracy, C = l.card, pc = (x)=> Math.round(Number(x)*100);
+  const sizes = (o)=> Object.entries(o||{}).map(([k,v])=>`${esc(k)} ${pc(v)}%`).join(" · ");
+  let cards, band, cov;
+  if(C){
+    const N = Math.round(Number(C.typical_n) || 28), x = (q)=> Math.max(0, Math.min(100, Number(q)*100));
+    const V = C.validation || {};
+    cards = `<div class="grid3">
+     <div class="card"><p class="label">Where in the day's line-up</p><p class="big">${pc(C.pct_of_day[0])}–${pc(C.pct_of_day[2])}%</p><p class="small muted">from the top of the day (middle ${pc(C.pct_of_day[1])}%). On a typical day of ${N} launches: #${Number(C.rank_typical[0])}–#${Number(C.rank_typical[2])}, middle #${Number(C.rank_typical[1])}</p></div>
+     <div class="card"><p class="label">Share of the day's votes</p><p class="big">${(Number(C.share_votes[0])*100).toFixed(1)}–${(Number(C.share_votes[2])*100).toFixed(1)}%</p><p class="small muted">middle ${(Number(C.share_votes[1])*100).toFixed(1)}% of all votes cast on that day's launches</p></div>
+     <div class="card"><p class="label">Chance of the day's top 10%</p><p class="big">${pc(C.p_top10pct)}%</p><p class="small muted">Top 3 by day size: ${sizes(C.p_top3_by_size)}. Top 10: ${sizes(C.p_top10_by_size)}.</p></div></div>`;
+    band = `<div class="band" aria-label="Position in the day"><div class="l" style="left:${x(C.pct_of_day[0])}%;right:${100-x(C.pct_of_day[2])}%"></div><div class="m" style="left:${x(C.pct_of_day[1])}%"></div></div>
+     <div class="scale"><span>top of the day</span><span>10th to 90th percentile of where pages with a similar score finished</span><span>bottom</span></div>`;
+    cov = `<p class="small" style="margin-top:12px">Checked out of sample on ${Number(V.launches)} page reads (fixed offline figures, E5): the real position fell inside this band ${Math.round(Number(V.band))}% of the time (${(V.band_by_size||[]).map(v=>Math.round(Number(v))+"%").join(" / ")} on small / mid / large days); the vote-share band held ${Math.round(Number(V.share))}% of the time; the top-10% chance averaged ${Number((V.top10pct||[])[0]).toFixed(1)}% predicted vs ${Number((V.top10pct||[])[1]).toFixed(1)}% actual. We assumed: ${Object.entries(l.assumed).map(([k,v])=>esc(k)+" at "+esc(v)).join("; ")}.</p>`;
+  } else {
+    const N = 40, x = (r)=> (Math.min(r, N)-0.5)/N*100;
+    cards = `<div class="grid3">
+     <div class="card"><p class="label">Likely daily rank</p><p class="big">#${Number(l.rank_band.likely[0])}–#${Number(l.rank_band.likely[1])}</p><p class="small muted">middle #${Number(l.rank_band.median)}</p></div>
+     <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>`;
+    band = `<div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
+     <div class="scale"><span>#1</span><span>10th to 90th percentile of where similar descriptions finished</span><span>#${N}+</span></div>`;
+    cov = l.coverage ? `<p class="small" style="margin-top:12px"><b>About ${Math.round(Number(l.coverage.share)*10)} in 10</b> past launches finished inside the band this model gave them (pooled over all scores, checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches using their PH descriptions; fixed offline figure, ${esc(l.coverage.date)}).</p>` : "";
+  }
+  $("#ln").innerHTML = cards + band + cov + `
+   ${l.input_note ? `<p class="small" style="margin-top:12px">${esc(l.input_note)}</p>` : ""}
+   <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
+   <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy (on PH descriptions)</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
+     <tr><td>The PH-description model (${Number(A.days)} days)</td><td>${Number(A.top3).toFixed(0)}%</td><td>${Number(A.top5).toFixed(0)}%</td><td>${Number(A.top10).toFixed(0)}%</td></tr>
+     ${A.full_model ? `<tr><td class="muted">Full 00:05 launch model (clean offline backtest, ${Number(A.full_model.days)} days)</td><td class="muted">${Number(A.full_model.top3).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(0)}%</td></tr>` : ""}</tbody></table>
+   <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
+}
+
+async function simulate(first, body){
+  $("#err").hidden = true; $("#go").disabled = true; $("#pgo").disabled = true; $("#out").hidden = true;
+  ["page","people","reactions","asks","launch"].forEach(s=>step(s,""));
+  step("page","run");
+  let tok;
+  try {
+    const p = await post(first, body);
+    tok = p.token; step("page","done"); renderProduct(p.analysis); $("#out").hidden = false;
+    $("#caps").textContent = `Limits: ${p.caps.per_ip_hour} per hour, ${p.caps.per_ip_day} per day per visitor, ${p.caps.global_day} per day overall`;
+  } catch(err){
+    step("page","fail"); fail(err.message);
+    if(first === "/api/try/page" && !/limit|busy|configured/i.test(err.message)){
+      $("#err").textContent = err.message + " You can paste the product's name, tagline and description below instead.";
+      $("#paste").hidden = false;
+    }
+    $("#go").disabled=false; $("#pgo").disabled=false; return;
+  }
+  const run = (s, fn) => { step(s,"run"); return post("/api/try/"+s, {token: tok}).then(j=>{fn(j); step(s,"done");}).catch(err=>{step(s,"fail"); fail(err.message);}); };
+  await Promise.all([run("people", renderPeople), run("reactions", renderReactions), run("asks", renderAsks), run("launch", renderLaunch)]);
+  $("#go").disabled = false; $("#pgo").disabled = false;
+}
+$("#f").onsubmit = (e) => { e.preventDefault(); simulate("/api/try/page", {url: $("#u").value}); };
+$("#paste").onsubmit = (e) => { e.preventDefault(); simulate("/api/try/text", {name: $("#pn").value, tagline: $("#pt").value, description: $("#pd").value}); };
+$("#paste-open").onclick = (e) => { e.preventDefault(); $("#paste").hidden = false; $("#pn").focus(); };
+const q = new URLSearchParams(location.search).get("url"); if(q){ $("#u").value = q; }
+</script>
+</body>
+</html>
