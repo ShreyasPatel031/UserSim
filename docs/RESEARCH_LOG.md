@@ -1394,3 +1394,23 @@ Script experiments/simlab/band_settle.py; reports/band_page/band_settle.json. Al
 - Width is about 31 ranks for every arm.
 - Fresh reads do not flatter less than late-fetched pages; the gain is largest on them.
 - Exported launch_band_page_v1.json (model d, trained on held pages through Oct 24) to tmp/e5/website/ and sent to the website agent as information.
+
+### 2026-11-12 E5 — raising /try "They would question" (and concerns) on fresh page reads
+Script experiments/simlab/questions_try.py; reports/questions_try/. Spend $0.22.
+
+Setup: 44 fresh Oct 27–Nov 10 page reads; identity-free truth; launches with at least 3 real questions (39) or critical themes (38). Judges are blinded; a second judge was run on the first 30.
+
+| List | Questions p@3 / hit@3 | Concerns p@3 / hit@3 |
+|---|---|---|
+| CURRENT (page doubts) | 7.9 / 23.7 | 10.8 / 27.0 |
+| GENERIC | 6.0 / 17.9 | 0.9 / 2.6 |
+| RETR (10 neighbours, frequency, no LLM) | 11.5 / 28.2 | 9.6 / 23.7 |
+| RETR+LLM (flash picks from retrieved candidates using the raw excerpt) | 12.0 / 30.8 | 15.8 / 36.8 |
+| RANKED (raw excerpt) | 16.2 [10.3, 23.1] / 41.0 | 21.1 [14.9, 27.2] / 57.9 |
+
+Paired differences:
+- RANKED − CURRENT: questions p@3 +8.8 [1.8, 15.8]; concerns +10.8 [3.6, 18.0], hit@3 +32.4.
+- RETR or RETR+LLM vs RANKED: −4 to −11; for concerns RETR −11.4 [−19.3, −3.5].
+- Second judge, RANKED vs CURRENT: questions 12.0 vs 4.2; concerns 18.7 vs 5.6.
+
+Verdict: retrieval alone does not beat RANKED. RANKED from the raw excerpt is the recipe; its interval over the current list clears zero for both lists.

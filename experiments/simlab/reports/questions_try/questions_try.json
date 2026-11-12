@@ -1,0 +1,367 @@
+{
+ "design": "Raise the /try \"They would question\" list (orchestrator 08:35Z Nov 12). Fresh Oct 27 - Nov 10 launches read through the site's code\n(try_fixes cache: page read + raw excerpt; try_e2e cache: the page read's \"doubts\" = what /try shows now), identity-free truth from the\nAPI comment snapshots (maker = first top-level author), launches with >= 3 real questions (>= 3 critical themes for concerns).\nLists (top 3 judged):\n  CURRENT    the page read's \"doubts\" (current /try list)\n  GENERIC    the most frequent question themes across all retrieval-bundle launches (no product information)\n  RETR       question themes of the 10 most similar EARLIER launches (reactions_retrieval_v1, paraphrased, no verbatim comments),\n             clustered at cosine >= 0.80 and ranked by how many neighbours raised them (no LLM)\n  RETR+LLM   gemini-2.5-flash picks and orders the 5 most likely from the RETR candidates (top 15) given the raw page excerpt, adapting\n             wording to this product\n  RANKED     the try_fixes RANKED recipe from the raw excerpt (generator + retrieval + likelihood), re-judged here on the same truth\nConcerns: the same with objection / question / feature-request themes. Judges as concerns_rank / questions_rank (gemini-2.5-flash,\nblinded); a second, differently worded judge on a 30-launch subsample. p@3 / hit@3, launch bootstrap, paired vs CURRENT and RANKED.",
+ "launches": 44,
+ "usd": 0.215,
+ "questions": {
+  "launches": 39,
+  "CURRENT": {
+   "p3": [
+    7.9,
+    3.5,
+    13.2,
+    38
+   ],
+   "hit3": [
+    23.7,
+    10.5,
+    36.8,
+    38
+   ],
+   "p3 second judge (first 30)": [
+    4.2,
+    0.0,
+    9.7,
+    24
+   ]
+  },
+  "GENERIC": {
+   "p3": [
+    6.0,
+    2.6,
+    10.3,
+    39
+   ],
+   "hit3": [
+    17.9,
+    7.7,
+    30.8,
+    39
+   ],
+   "p3 second judge (first 30)": [
+    5.3,
+    1.3,
+    10.7,
+    25
+   ]
+  },
+  "RETR": {
+   "p3": [
+    11.5,
+    5.6,
+    17.5,
+    39
+   ],
+   "hit3": [
+    28.2,
+    15.4,
+    43.6,
+    39
+   ],
+   "p3 second judge (first 30)": [
+    13.3,
+    3.3,
+    23.3,
+    10
+   ]
+  },
+  "RETR+LLM": {
+   "p3": [
+    12.0,
+    6.0,
+    17.9,
+    39
+   ],
+   "hit3": [
+    30.8,
+    17.9,
+    46.2,
+    39
+   ],
+   "p3 second judge (first 30)": [
+    5.6,
+    1.4,
+    11.1,
+    24
+   ]
+  },
+  "RANKED": {
+   "p3": [
+    16.2,
+    10.3,
+    23.1,
+    39
+   ],
+   "hit3": [
+    41.0,
+    25.6,
+    56.4,
+    39
+   ],
+   "p3 second judge (first 30)": [
+    12.0,
+    5.3,
+    20.0,
+    25
+   ]
+  },
+  "RETR - CURRENT (paired)": {
+   "p3": [
+    3.9,
+    -2.6,
+    11.4,
+    38
+   ],
+   "hit3": [
+    5.3,
+    -13.2,
+    23.7,
+    38
+   ]
+  },
+  "RETR+LLM - CURRENT (paired)": {
+   "p3": [
+    4.4,
+    -2.6,
+    12.3,
+    38
+   ],
+   "hit3": [
+    7.9,
+    -10.5,
+    26.3,
+    38
+   ]
+  },
+  "RANKED - CURRENT (paired)": {
+   "p3": [
+    8.8,
+    1.8,
+    15.8,
+    38
+   ],
+   "hit3": [
+    18.4,
+    0.0,
+    36.8,
+    38
+   ]
+  },
+  "RETR - RANKED (paired)": {
+   "p3": [
+    -4.7,
+    -12.0,
+    2.6,
+    39
+   ],
+   "hit3": [
+    -12.8,
+    -30.8,
+    5.1,
+    39
+   ]
+  },
+  "RETR+LLM - RANKED (paired)": {
+   "p3": [
+    -4.3,
+    -12.0,
+    3.4,
+    39
+   ],
+   "hit3": [
+    -10.3,
+    -28.2,
+    7.7,
+    39
+   ]
+  }
+ },
+ "concerns": {
+  "launches": 38,
+  "CURRENT": {
+   "p3": [
+    10.8,
+    5.4,
+    17.1,
+    37
+   ],
+   "hit3": [
+    27.0,
+    13.5,
+    43.2,
+    37
+   ],
+   "p3 second judge (first 30)": [
+    5.6,
+    1.4,
+    11.1,
+    24
+   ]
+  },
+  "GENERIC": {
+   "p3": [
+    0.9,
+    0.0,
+    2.6,
+    38
+   ],
+   "hit3": [
+    2.6,
+    0.0,
+    7.9,
+    38
+   ],
+   "p3 second judge (first 30)": [
+    0.0,
+    0.0,
+    0.0,
+    25
+   ]
+  },
+  "RETR": {
+   "p3": [
+    9.6,
+    4.4,
+    15.8,
+    38
+   ],
+   "hit3": [
+    23.7,
+    10.5,
+    36.8,
+    38
+   ],
+   "p3 second judge (first 30)": [
+    5.8,
+    1.4,
+    11.6,
+    23
+   ]
+  },
+  "RETR+LLM": {
+   "p3": [
+    15.8,
+    8.8,
+    23.7,
+    38
+   ],
+   "hit3": [
+    36.8,
+    21.1,
+    52.6,
+    38
+   ],
+   "p3 second judge (first 30)": [
+    9.3,
+    2.7,
+    17.3,
+    25
+   ]
+  },
+  "RANKED": {
+   "p3": [
+    21.1,
+    14.9,
+    27.2,
+    38
+   ],
+   "hit3": [
+    57.9,
+    42.1,
+    73.7,
+    38
+   ],
+   "p3 second judge (first 30)": [
+    18.7,
+    10.7,
+    28.0,
+    25
+   ]
+  },
+  "RETR - CURRENT (paired)": {
+   "p3": [
+    -1.8,
+    -10.8,
+    7.2,
+    37
+   ],
+   "hit3": [
+    -5.4,
+    -24.3,
+    13.5,
+    37
+   ]
+  },
+  "RETR+LLM - CURRENT (paired)": {
+   "p3": [
+    5.4,
+    -3.6,
+    14.4,
+    37
+   ],
+   "hit3": [
+    10.8,
+    -8.1,
+    29.7,
+    37
+   ]
+  },
+  "RANKED - CURRENT (paired)": {
+   "p3": [
+    10.8,
+    3.6,
+    18.0,
+    37
+   ],
+   "hit3": [
+    32.4,
+    13.5,
+    51.4,
+    37
+   ]
+  },
+  "RETR - RANKED (paired)": {
+   "p3": [
+    -11.4,
+    -19.3,
+    -3.5,
+    38
+   ],
+   "hit3": [
+    -34.2,
+    -55.3,
+    -13.2,
+    38
+   ]
+  },
+  "RETR+LLM - RANKED (paired)": {
+   "p3": [
+    -5.3,
+    -12.3,
+    2.6,
+    38
+   ],
+   "hit3": [
+    -21.1,
+    -39.5,
+    -2.6,
+    38
+   ]
+  }
+ },
+ "generic_lists": {
+  "q": [
+   "Users inquire about the specific mechanisms for matching existing design systems and the data requirements for this.",
+   "Versioning and safety for edits/generations",
+   "What happens if an API rate limits an agent mid-task?",
+   "How does the tool distinguish between heads-down work and actual slipping?",
+   "Windows app availability"
+  ],
+  "c": [
+   "Users are asking about the recognition accuracy on cluttered backgrounds and how the app handles difficult cutouts.",
+   "Extensibility for developers (custom widgets/actions)",
+   "knowledge ingestion freshness and synchronization",
+   "Users want the ability to save favorite stations for easy access.",
+   "agent tied to laptop"
+  ]
+ }
+}
