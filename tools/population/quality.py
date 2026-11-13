@@ -240,7 +240,7 @@ _CF = f"{D}/.quality_cache.jsonl"
 def _key(p):
     try:
         st_ = os.stat(p)
-        return f"{st_.st_size}:{st_.st_mtime_ns}"
+        return f"v2:{st_.st_size}:{st_.st_mtime_ns}"  # v2: summary also carries per-tab counts
     except OSError:
         return None
 
@@ -263,7 +263,21 @@ def _info(ps):
                "meth": str(d.get("method") or "").lower(), "deep": bool(run.get("deep_passes")),
                "req_missing": [f for f in ("ph_user_id", "header", "run") if not d.get(f)],
                "states": {k: tab_state(d, k)[0] for k in TABS}, "fill": deep_fill(d), "pkg_md5": run.get("pkg_md5"),
-               "so": so_, "why": why_}
+               "so": so_, "why": why_, "ph_user_id": d.get("ph_user_id"), "tabs": _tabs(d)}
+
+
+def _tabs(d):  # per-tab n/header/newest item date, for the have_index (have_index.py)
+    out_ = {}
+    for t in ALL_TABS:
+        v = d.get(t)
+        if not isinstance(v, dict):
+            continue
+        it = v.get("items") or []
+        hd = v.get("header") if v.get("header") is not None else (d.get("header") or {}).get(t)
+        ds = [str(x.get("datetime") or x.get("date") or x.get("occurredAt") or "") for x in it if isinstance(x, dict)]
+        ds = [x for x in ds if x[:2] == "20"]
+        out_[t] = {"n": 1 if t == "about" else v.get("count", len(it)), "header": hd, "newest": max(ds) if ds else None}
+    return out_
 
 
 def _load_info():
