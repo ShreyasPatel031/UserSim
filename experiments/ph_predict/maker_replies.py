@@ -65,6 +65,8 @@ def main():
         for nm, cols in (("+ total comments", ["z_nc"]), ("+ team replies (full team)", ["z_mrep_f"]), ("+ team replies (hunter only, 00:05-safe floor)", ["z_mrep_h"]),
                          ("+ total + replies (full)", ["z_nc", "z_mrep_f"]), ("+ total + replies (hunter only)", ["z_nc", "z_mrep_h"])):
             P = lodo(BASE + cols); dP = P - base; b = np.array([dP[rng.integers(0, len(dP), len(dP))].mean(0) for _ in range(3000)])
+            if os.environ.get("MR_DUMP"):   # per-day hits for paired comparisons across base lines (orchestrator 19:10Z Nov 13)
+                pd.DataFrame(P, columns=["t3", "t5", "t10"]).assign(day=days, point=pt, variant=nm).to_csv(os.environ["MR_DUMP"], mode="a", header=not os.path.exists(os.environ["MR_DUMP"]), index=False)
             lo = [np.percentile(b[:, k], 2.5) for k in range(3)]; res[nm] = (dP.mean(0), lo, BASE + cols)
             md.append(f"| {nm} | {P[:,0].mean():.1f} | {P[:,1].mean():.1f} | {P[:,2].mean():.1f} | " +
                       " | ".join(f"{dP[:,k].mean():+.1f} [{lo[k]:+.1f}, {np.percentile(b[:,k],97.5):+.1f}]" for k in range(3)) + " |")
