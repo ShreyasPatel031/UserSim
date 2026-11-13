@@ -767,7 +767,7 @@ def _asks_note(pasted: bool, words: int | None = None) -> str:
          f"{v['q_desc' if pasted else 'q_page']} times, against {v['q_generic']} for a generic question.")
     if pasted:
         s += (f" The most likely concern did so about {v['c_desc']} times, against {v['c_generic']} for a generic "
-              f"concern; on launches with 10 or more comments, generic concerns hit about as often.")
+              f"concern.")
         if words is not None and words < 40:
             s += (f" Your description has {words} words: on past launches with descriptions under 40 words, the top "
                   f"question and concern did no better than generic ones (40 to 100 words did clearly better).")

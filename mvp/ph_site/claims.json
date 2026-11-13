@@ -88,16 +88,16 @@
  },
  "launch_model_backtest": {
   "values": {
-   "top3": 56.1,
-   "top5": 67.5,
-   "top10": 74.4,
+   "top3": 56.4,
+   "top5": 67.8,
+   "top10": 75.0,
    "p1_top3": 0.725,
    "exact1": 0.382,
-   "days": 255
+   "days": 214
   },
-  "label": "clean backtest of the 00:05 model with 00:05-visible inputs only (255 days, Mar 1 to Nov 10, 2026)",
+  "label": "current clean backtest of the 00:05 model with 00:05-visible inputs only (214 days)",
   "source": "PH ops honest_preds_v2 (c1dd71b5)",
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "pick_label": "conservative clean backtest (no site features, 207 days)",
   "pick_source": "PH agent docs/patches/README_deploy_clean_nosite_thread.md (clean_nosite)"
  },

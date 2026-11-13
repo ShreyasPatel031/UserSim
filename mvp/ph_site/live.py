@@ -556,12 +556,8 @@ def day_view(day: str) -> dict:
                                        "top5_locked", "top2_locked", "top10_locked", "top3_first_locked_at", "rule")}
         lock["read_pt"] = _pt_label(lk.get("read_at") or "")
         lock.pop("rule", None)   # internal text; the page states the tested reliability instead
-        try:
-            hr = datetime.fromisoformat(str(lk.get("read_at")).replace("Z", "+00:00")).astimezone(PT).hour
-        except (ValueError, TypeError):
-            hr = None
-        lock["reliability"] = ("tested right about 93% of the time after noon PT" if hr is not None and hr >= 12 else
-                               "tested right only 67-81% of the time before noon PT")
+        # Interim (orchestrator / E5 audit, Nov 13): no sourced reliability-by-hour figure yet.
+        lock["reliability"] = "checked against final ranks each day; no tested reliability figure is shown yet"
     fresh = _freshness(day, fc, board, act["final"])
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
             "freshness": fresh,
