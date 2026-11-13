@@ -115,6 +115,11 @@ async def ph_health():
         return out
 
     checks = await asyncio.to_thread(probe)
+    try:                                   # /try needs its code and numpy to import on this server
+        from mvp.ph_site import person_e5, try_sim  # noqa: F401
+        checks["try_imports"] = {"ok": True, "ms": 0}
+    except Exception as exc:  # noqa: BLE001
+        checks["try_imports"] = {"ok": False, "ms": 0, "error": type(exc).__name__}
     return JSONResponse({"ok": all(c["ok"] for c in checks.values()), "checks": checks,
                          "try_configured": len(os.environ.get("TRY_SIGNING_KEY", "")) >= 32,
                          "on_vercel": bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))},
@@ -158,10 +163,19 @@ def _err(exc: Exception) -> JSONResponse:
     return JSONResponse({"error": "Something went wrong on our side. Try again in a minute."}, status_code=500)
 
 
+def _load_try():
+    """Import the simulator; a missing dependency is a clean 503, never a raw server error."""
+    try:
+        from mvp.ph_site import try_sim
+        return try_sim
+    except ImportError as exc:
+        print(f"[try] import failed: {exc!r}", flush=True)
+        raise HTTPException(503, "The simulator is unavailable on this server right now.") from None
+
+
 @router.post("/api/try/page")
 async def try_page_step(request: Request):
-    from mvp.ph_site import try_sim
-
+    try_sim = _load_try()
     body = await _body(request)
     url = str(body.get("url") or "")[:2000]
     try:
@@ -174,8 +188,7 @@ async def try_page_step(request: Request):
 
 @router.post("/api/try/text")
 async def try_text_step(request: Request):
-    from mvp.ph_site import try_sim
-
+    try_sim = _load_try()
     body = await _body(request)
     try:
         return JSONResponse(await asyncio.wait_for(try_sim.step_text(
@@ -189,8 +202,7 @@ async def try_text_step(request: Request):
 
 @router.post("/api/try/{step}")
 async def try_step(step: str, request: Request):
-    from mvp.ph_site import try_sim
-
+    try_sim = _load_try()
     body = await _body(request)
     tok = str(body.get("token") or "")[:2000]
     try:
