@@ -866,8 +866,8 @@ def _input_note(source: str | None) -> str | None:
         v = cl["try_e2e"]["values"]
         return (f"Scored from the description you pasted with a model trained on Product Hunt launch descriptions. "
                 f"Tested only on launches it had not seen: rank correlation {v['spearman_ph_856']:.2f} on "
-                f"{v['ph_forward_n']} Sep–Nov launches ({v['spearman_ph']:.2f} on the {v['ph_recent_n']} most recent), "
-                f"with the real rank inside the band about 3 times in 4.")
+                f"{v['ph_forward_n']} Sep–Nov launches ({v['spearman_ph']:.2f} on the {v['ph_recent_n']} most recent); "
+                f"the real rank fell inside the band about 3 times in 4 ({v['coverage_ph_n']} launches).")
     pb = cl.get("page_band")
     if not pb:
         return "Scored from a read of your web page; the accuracy figures were measured on Product Hunt descriptions."

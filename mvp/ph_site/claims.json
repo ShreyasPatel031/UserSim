@@ -25,7 +25,7 @@
    "auc": 0.692,
    "typical_likely_share": 0.01
   },
-  "label": "held-out uses, popularity- and length-matched",
+  "label": "held-out uses, popularity- and length-matched; tools are a November snapshot",
   "source": "E5 person_bundle_gemini (Gemini-256 + trees)",
   "date": "2026-11-11"
  },
@@ -118,9 +118,10 @@
     0.56
    ],
    "ph_forward_n": 856,
-   "ph_recent_n": 130
+   "ph_recent_n": 130,
+   "coverage_ph_n": 856
   },
-  "label": "/try code on 130 page reads, Oct 27-Nov 10 (band from name, tagline and summary)",
+  "label": "description band: rank correlation 0.42 on the 130 most recent launches and 0.35 on 856 Sep\u2013Nov launches; the real rank fell inside the band about 3 times in 4 (856 launches), all forward (retrained on earlier months only)",
   "source": "E5 reports/try_fixes/, branch claude/person-model-v2",
   "date": "2026-11-12",
   "ph_note": "PH-description band figures are forward only: the same recipe retrained on earlier months; the earlier 0.59 / 89% were in-sample (launch_band.json was trained through Nov 10, including the 130 launches)",
