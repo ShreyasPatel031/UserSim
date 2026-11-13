@@ -17,8 +17,9 @@ incremental.py's known set and the pool's first_seen definition). No handle is
 taken from the store and no new handle column is added; unmatched store people are counted, never written.
 Never prints handles or values: counts only. The salt is read to hash, never printed.
 
-usage (VM, from experiments/):  python3 -m pipeline.people_full            # dry run: counts only
-                                python3 -m pipeline.people_full --write    # writes people (+ --records: people_records)
+usage (VM, from experiments/):  python3 -m pipeline.people_full                       # dry run: counts only
+                                python3 -m pipeline.people_full --write --records     # one-off full rebuild
+                                python3 -m pipeline.people_full --write --records --changed   # daily refresh (daily.py step)
 """
 import glob, hashlib, json, os, subprocess, sys, tempfile
 import numpy as np, pandas as pd
@@ -68,8 +69,8 @@ def build(con, store_dir, sl, with_records=False):
     allh = handles(con); hs = {r[0] for r in con.execute("SELECT person FROM people").fetchall() if isinstance(r[0], str)}
     key = {hid(sl, h): h for h in hs}; other = {hid(sl, h) for h in allh - hs}
     P = P[P.person_id.isin(key)].copy(); P["person"] = P.person_id.map(key)
-    cur = con.execute("SELECT * FROM people").df()
-    cur = cur.drop(columns=[c for c in ("updated_at",) if c in cur])
+    cur = con.execute("SELECT * FROM people").df(); ncols0 = len(cur.columns)
+    cur = cur[[c for c in EXISTING if c in cur]]   # only the original columns: store columns are always rewritten from the store
     out = P[["person", "person_id"] + [c for c in STORE_COLS if c in P]].rename(columns={"person_id": "store_person_id"})
     out = out.merge(cur, on="person", how="left")
     # store values fill the existing columns (store first, then the old warehouse value), same column types as today
@@ -113,7 +114,7 @@ def build(con, store_dir, sl, with_records=False):
     st = {"store_persons": int(len(pd.read_parquet(f"{store_dir}/persons.parquet", columns=["person_id"]))),
           "people_handles": len(hs), "matched": int(len(out)),
           "store_people_matching_other_warehouse_handles_not_written": int(len(other & set(pd.read_parquet(f"{store_dir}/persons.parquet", columns=["person_id"]).person_id))), "people_rows_before": int(len(cur)),
-          "people_cols_before": int(len(cur.columns)) + 1, "people_cols_after": int(len(out.columns)) + 1,
+          "people_cols_before": int(ncols0), "people_cols_after": int(len(out.columns)) + 1,
           "matched_with_joined": int(out.joined.notna().sum()), "matched_with_record": int(out.record_sha256.notna().sum()),
           "existing_people_not_in_store": int((~cur.person.isin(out.person)).sum())}
     return out, rec, st
@@ -126,13 +127,29 @@ def fetch_store(dst, with_records):
     return dst
 
 
+def changed(con, out, rec):
+    """Daily refresh: keep only people whose store pull is new or changed since the last full write (pull_finished_utc /
+    record_sha256 differ, or the person has no store columns yet), so the daily run appends small parts."""
+    try:
+        prev = con.execute("SELECT person, pull_finished_utc, record_sha256 FROM people").df()
+    except Exception:  # noqa: BLE001  (first run: no store columns in the table yet)
+        return out, rec
+    m = out.merge(prev, on="person", how="left", suffixes=("", "_prev"))
+    keep = m.pull_finished_utc_prev.isna() | (m.pull_finished_utc.astype(str) != m.pull_finished_utc_prev.astype(str)) | \
+        (m.record_sha256.astype(str) != m.record_sha256_prev.astype(str))
+    ids = set(m.person[keep.values])
+    return out[out.person.isin(ids)], (rec[rec.person.isin(ids)] if rec is not None else None)
+
+
 def main(argv):
-    write, with_records = "--write" in argv, "--records" in argv
+    write, with_records, only_changed = "--write" in argv, "--records" in argv, "--changed" in argv
     con = W.connect(do_sync=True)
     tmp = tempfile.mkdtemp(prefix="people_full_")
     try:
         out, rec, st = build(con, fetch_store(tmp, with_records), salt(), with_records)
-        st["write"] = write
+        if only_changed:
+            out, rec = changed(con, out, rec)
+        st.update(write=write, rows_written=int(len(out)) if write else 0, records_written=int(len(rec)) if (write and rec is not None) else 0)
         if write:
             W.write("people", out)
             if rec is not None and len(rec):

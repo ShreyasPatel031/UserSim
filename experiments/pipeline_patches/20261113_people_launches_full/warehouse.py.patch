@@ -1,0 +1,11 @@
+--- pipeline/warehouse.py	2026-11-01 18:21:00.644339330 +0000
++++ pipeline_patches/20261113_people_launches_full/warehouse.py	2026-11-13 14:46:18.710283247 +0000
+@@ -14,7 +14,7 @@
+ BUCKET = os.environ.get("USERSIM_BUCKET", "gs://usersim-bakeoff-347838016394/usersim_sim")
+ LOCAL = os.environ.get("USERSIM_CACHE", os.path.join(os.path.expanduser("~"), ".usersim_sim"))
+ KEYS = {   # snapshot tables: newest row per key wins (column `updated_at`)
+-    "people": ["person"], "launches": ["id"], "fetch_state": ["person", "source"], "launch_state": ["launch_id", "source"],
++    "people": ["person"], "people_records": ["person"], "launches": ["id"], "fetch_state": ["person", "source"], "launch_state": ["launch_id", "source"],
+ }
+ 
+ 
