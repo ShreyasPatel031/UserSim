@@ -10,6 +10,13 @@ from mvp.ph_site import live, safe_fetch, try_sim
 os.environ.setdefault("TRY_SIGNING_KEY", "test-key-" + "x" * 40)
 
 
+@pytest.fixture(autouse=True)
+def _not_on_vercel(monkeypatch):
+    # Tests must never touch the shared counters or run store, whatever the environment they run in.
+    monkeypatch.delenv("VERCEL", raising=False)
+    monkeypatch.delenv("VERCEL_ENV", raising=False)
+
+
 def test_product_whitelist_drops_people():
     r = {"id": 1, "name": "Prod", "tagline": "t", "slug": "prod", "topics": {"edges": [{"node": {"name": "SaaS"}}]},
          "makers": [{"username": "someone", "name": "Some One"}], "user": {"username": "hunter1"},
@@ -63,6 +70,7 @@ def test_token_roundtrip_and_tamper():
 
 def test_local_rate_limit(monkeypatch):
     monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False); monkeypatch.delenv("VERCEL_ENV", raising=False)
     try_sim._mem.clear()
     for _ in range(try_sim.CAPS["per_ip_hour"]):
         try_sim.take_slot("1.2.3.4")
