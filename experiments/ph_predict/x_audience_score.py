@@ -40,6 +40,9 @@ def main():
     if not fol and not PA:
         print(json.dumps({"status": "no follower reads yet"})); return
     H["f"] = H.handle.str.lower().map(fol); H["safe"] = (H.role == "hunter") | (H.identity_source == "0005")
+    if os.environ.get("X_API_ONLY"):   # check (a): keep only (launch, handle) pairs named by twitterUsername in the 00:05 API read
+        ok = {(str(r["launch_id"]), r["handle"]) for r in map(json.loads, open(os.environ["X_API_ONLY"]))}
+        H["safe"] = [(a, b) in ok for a, b in zip(H.launch_id, H.handle.str.lower())]
     S = H[H.safe & H.f.notna()].groupby("launch_id").f.agg(["max", "sum"])
     L = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL AND day >= '2026-10-26' AND day <= '2026-11-12'", do_sync=False)
     CL = pd.read_parquet(os.path.join(HERE, "results", "clean_live_rows_nosite.parquet")); CL["id"] = CL.id.astype(str)
@@ -94,7 +97,7 @@ def main():
         from sklearn.metrics import roc_auc_score
         if C.climbed.nunique() == 2:
             md.append(f"Climber AUC of X max followers alone: {roc_auc_score(C.climbed, C.xmax):.2f}")
-    open(os.path.join(HERE, "results", "x_audience.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
+    open(os.path.join(HERE, "results", "x_audience_apionly.md" if os.environ.get("X_API_ONLY") else "x_audience.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
 if __name__ == "__main__":
