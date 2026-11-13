@@ -194,8 +194,8 @@ recreate_slot() {
   port="$(slot_field "$slot" 2)"
   name="$(vm_name "$slot")"
   if [[ "$slot" != "1" ]] && grep -qE '^PH_IPROYAL_ROTATE_ON_RECREATE=1' "$STRATEGY_ENV" 2>/dev/null \
-    && [[ -x "$ROOT/scripts/vm/ph_iproyal_rotate_slot.sh" ]]; then
-    python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" rotate "$slot" "recreate" >/dev/null 2>&1 || true
+    && [[ -x "$ROOT/scripts/vm/ph_iproyal_refresh_slot.sh" ]]; then
+    bash "$ROOT/scripts/vm/ph_iproyal_refresh_slot.sh" "$slot" "recreate" >/dev/null 2>&1 || true
   fi
   gen=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('gen',0)+1)")
   token="${GO_TOKEN}-r${gen}"
@@ -341,7 +341,14 @@ keeper_one_pass() {
   if [[ -f "$ART/fleet_measure.json" ]]; then
     low_ppm=$(python3 -c "import json; m=json.load(open('$ART/fleet_measure.json')); c=float(m.get('complete_ppm') or 0); a=float(m.get('attempt_ppm') or 0); print(1 if c < 5 and a < 5 else 0)" 2>/dev/null || echo 0)
     fleet_recover=$(python3 -c "import json; m=json.load(open('$ART/fleet_measure.json')); c=float(m.get('complete_ppm') or 0); lo=float('${FLEET_TARGET_LO:-20}'); print(1 if c < lo else 0)" 2>/dev/null || echo 0)
-    [[ "$fleet_recover" -eq 1 ]] && keeper_nudge_budget=2
+    low_active=$(python3 -c "import json; m=json.load(open('$ART/fleet_measure.json')); a=int(m.get('active_vms') or 0); v=max(1,int(m.get('vms') or 1)); print(1 if a < max(3, v//2) else 0)" 2>/dev/null || echo 0)
+    if [[ -n "${KEEPER_NUDGE_BUDGET:-}" ]]; then
+      keeper_nudge_budget="${KEEPER_NUDGE_BUDGET}"
+    elif [[ "$fleet_recover" -eq 1 && "$low_active" -eq 1 ]]; then
+      keeper_nudge_budget="${KEEPER_NUDGE_BUDGET_LOW_ACTIVE:-12}"
+    elif [[ "$fleet_recover" -eq 1 ]]; then
+      keeper_nudge_budget="${KEEPER_NUDGE_BUDGET_BELOW_TARGET:-8}"
+    fi
   fi
   now=$(date +%s)
   while IFS=$'\t' read -r slot port; do
@@ -393,8 +400,10 @@ SUP_TAIL="
       elif [[ "$dead_for" -ge "$KEEPER_DEAD_SEC" && "$nudge_age" -ge "$KEEPER_DEAD_SEC" ]]; then
         # Prefer in-place relaunch (new GO). Full recreate only if already nudged twice with no batch.
         nudges=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('nudge_fail',0))" 2>/dev/null || echo 0)
-        if [[ "$nudges" -ge 2 ]]; then
+        if [[ "$nudges" -ge 2 && "$slot" != "1" ]]; then
           recreate_slot "$slot" "dead_after_nudges"
+        elif [[ "$nudges" -ge 2 && "$slot" == "1" ]]; then
+          nudge_go "$slot" "spain_nudge_only"
           python3 - <<PY
 import json
 from pathlib import Path

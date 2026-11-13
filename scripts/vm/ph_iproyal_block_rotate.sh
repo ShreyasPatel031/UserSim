@@ -29,7 +29,10 @@ for s in m.get("slots", []):
     walls = int(s.get("walls") or 0)
     wc = int(s.get("win_complete") or 0)
     ppm = float(s.get("ppm_complete") or s.get("ppm") or 0)
-    if st in ("cf_wall", "dead") or (walls >= walls_min and wc == 0 and ppm < 0.15):
+    # Do not rotate "dead" (batch down) — that amplifies geo churn; wakeup phsuper instead.
+    if st == "cf_wall" or (
+        walls >= walls_min and wc == 0 and ppm < 0.15 and st in ("cf_wall", "active", "stale")
+    ):
         out.append(str(slot))
 print("\\n".join(out[:20]))
 PY

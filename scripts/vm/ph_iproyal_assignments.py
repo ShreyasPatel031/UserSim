@@ -138,11 +138,28 @@ def pick_next_purl(slot: str, current: str, lines: list[str]) -> str | None:
     return None
 
 
+def rotate_cooldown_ok(slot: str, sec: float = 1200.0) -> bool:
+    st = load_state()
+    sl = st["slots"].get(slot) or {}
+    import datetime as _dt
+
+    last = sl.get("last_rotate_utc")
+    if not last:
+        return True
+    try:
+        t = _dt.datetime.fromisoformat(last.replace("Z", "+00:00"))
+        return (_dt.datetime.now(_dt.timezone.utc) - t).total_seconds() >= sec
+    except Exception:
+        return True
+
+
 def rotate(slot: int | str, reason: str = "block") -> dict:
     root = _root()
     slot = str(slot)
     if slot == "1":
         return {"ok": False, "reason": "spain_control_fixed"}
+    if not rotate_cooldown_ok(slot):
+        return {"ok": False, "reason": "rotate_cooldown", "slot": slot}
     pool = pool_path()
     lines = pool_lines(root, pool)
     st = init_from_pool()
@@ -151,11 +168,14 @@ def rotate(slot: int | str, reason: str = "block") -> dict:
     if not nxt or nxt == cur:
         return {"ok": False, "reason": "no_alternate_ip", "slot": slot, "host": purl_host(Path(cur))}
     gen = int((st["slots"].get(slot) or {}).get("gen") or 0) + 1
+    from datetime import datetime, timezone
+
     st["slots"][slot] = {
         "purl": nxt,
         "host": purl_host(Path(nxt)),
         "gen": gen,
         "last_reason": reason,
+        "last_rotate_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     save_state(st)
     return {
