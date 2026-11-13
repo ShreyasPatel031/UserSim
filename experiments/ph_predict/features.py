@@ -105,7 +105,14 @@ def build(include_today=False):
                  "description": p.get("description") or "", "topics": topics,
                  "votes": p["votesCount"], "comments": p["commentsCount"], "dailyRank": p["dailyRank"],
                  "weeklyRank": p["weeklyRank"], "monthlyRank": p["monthlyRank"],
-                 "hunter_id": hunter.get("id"), "maker_ids": [m["id"] for m in mk], "is_today": is_today}
+                 "hunter_id": hunter.get("id"), "maker_ids": [m["id"] for m in mk], "is_today": is_today,
+                 # carry-everything rule (orchestrator 12:33Z Nov 13): every daily-file field the features below do not use, kept
+                 # as one JSON text column (object dtype, "raw" is no model source, so M.cols never selects it); no handles or names
+                 "raw_fields": json.dumps({"featuredAt": p.get("featuredAt"), "createdAt": p.get("createdAt"), "website": p.get("website"),
+                                           "reviewsCount": p.get("reviewsCount"), "reviewsRating": p.get("reviewsRating"),
+                                           "media_types": [m_.get("type") for m_ in p.get("media") or []],
+                                           "hunter": {k: hunter.get(k) for k in ("id", "createdAt", "followersCount", "headline")},
+                                           "makers": [{k: m_.get(k) for k in ("id", "createdAt", "followersCount", "headline", "websiteUrl")} for m_ in mk]})}
             if is_today:  # results not final: never a label, never history
                 r.update(votes=np.nan, comments=np.nan, dailyRank=np.nan, weeklyRank=np.nan, monthlyRank=np.nan)
             mf = [m.get("followersCount") or 0 for m in mk]
