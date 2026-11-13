@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Deploy Pub/Sub push bridge: agent-msgs → Cursor API steer (no agent polling).
 set -euo pipefail
+[[ -d /home/ubuntu/google-cloud-sdk/bin ]] && export PATH="/home/ubuntu/google-cloud-sdk/bin:${PATH:-}"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 source "${PACE_ENV_FILE:-$ROOT/results/ph_tab_experiment/20261107t170953z/pace.env}"
 PROJECT="${AGENT_MSGS_PROJECT:-${GCP_PROJECT:?}}"
