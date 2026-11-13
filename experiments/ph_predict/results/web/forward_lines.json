@@ -1,5 +1,5 @@
 {
- "written_at": "2026-11-13T05:07:28.208520+00:00",
+ "written_at": "2026-11-13T18:59:21.935189+00:00",
  "note": "one entry per forward line; numbers: backtest = 214 days Apr-Oct LODO, replay = live/hidden reads on held days; forward scores live in results/web/scoreboard.json",
  "lines": [
   {
@@ -313,6 +313,54 @@
    "n_days": null,
    "number_kind": "logged input only, not in any column",
    "note": "paths pending from E5"
+  },
+  {
+   "point": "05:00",
+   "line": "velocity_v05 (shadow)",
+   "column": "results/velocity_shadow/<day>_V05.json pred_rank",
+   "inputs": "warehouse hourly vote_snapshots stamped <= the point: votes and 1 h gain; readable: votes x M(h) x (1 + b x relative 1 h velocity)",
+   "frozen_weights": "results/frozen/velocity_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "93.3 / 88.0 / 78.0",
+   "n_days": 5,
+   "number_kind": "walk-forward backtest (velocity_forecast.md), provisional; label dailyRank",
+   "note": "orchestrator 19:30Z Nov 13; shadow only"
+  },
+  {
+   "point": "08:00",
+   "line": "velocity_v08 (shadow)",
+   "column": "results/velocity_shadow/<day>_V08.json pred_rank",
+   "inputs": "warehouse hourly vote_snapshots stamped <= the point: votes and 1 h gain; readable: votes x M(h) x (1 + b x relative 1 h velocity)",
+   "frozen_weights": "results/frozen/velocity_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "85.2 / 88.9 / 86.7",
+   "n_days": 9,
+   "number_kind": "walk-forward backtest (velocity_forecast.md), provisional; label dailyRank",
+   "note": "orchestrator 19:30Z Nov 13; shadow only"
+  },
+  {
+   "point": "10:00",
+   "line": "velocity_v10 (shadow)",
+   "column": "results/velocity_shadow/<day>_V10.json pred_rank",
+   "inputs": "warehouse hourly vote_snapshots stamped <= the point: votes and 1 h gain; readable: votes x M(h) x (1 + b x relative 1 h velocity)",
+   "frozen_weights": "results/frozen/velocity_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "96.3 / 91.1 / 87.8",
+   "n_days": 9,
+   "number_kind": "walk-forward backtest (velocity_forecast.md), provisional; label dailyRank",
+   "note": "orchestrator 19:30Z Nov 13; shadow only"
+  },
+  {
+   "point": "12:00",
+   "line": "velocity_v12 (shadow)",
+   "column": "results/velocity_shadow/<day>_V12.json pred_rank",
+   "inputs": "warehouse hourly vote_snapshots stamped <= the point: votes and 1 h gain; readable: votes x M(h) x (1 + b x relative 1 h velocity)",
+   "frozen_weights": "results/frozen/velocity_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "88.9 / 91.1 / 91.1",
+   "n_days": 9,
+   "number_kind": "walk-forward backtest (velocity_forecast.md), provisional; label dailyRank",
+   "note": "orchestrator 19:30Z Nov 13; shadow only"
   }
  ],
  "publish_pick": [
