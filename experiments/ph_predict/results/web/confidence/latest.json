@@ -1,18 +1,18 @@
 {
- "day": "2026-11-12",
+ "day": "2026-11-13",
  "applies_to": "clean shadow model",
  "stable": true,
  "rule": "conf_v2",
- "launches": 37,
+ "launches": 20,
  "source": "from the clean shadow model (clean_v3, 00:05 inputs; results/shadow_makerfix pred_clean); never the published ranking",
  "label": "open_field",
- "p_clear_leader": 0.369,
+ "p_clear_leader": 0.54,
  "cutoff": 0.7787,
  "features": {
-  "g12z": 0.351,
-  "z1": 2.046,
-  "t3z": 1.871,
-  "ln": 3.611
+  "g12z": 0.126,
+  "z1": 1.754,
+  "t3z": 1.901,
+  "ln": 2.996
  },
  "text": "Open field today: on past days like this our #1 finished in the final top 3 about 68% of the time (85 of 125 days).",
  "validated_rates": {
@@ -34,74 +34,74 @@
  "picks": [
   {
    "pick": 1,
-   "id": "1310169",
-   "p_top3": 0.429,
-   "p_top5": 0.629,
-   "p_top10": 0.861
+   "id": "1293281",
+   "p_top3": 0.548,
+   "p_top5": 0.758,
+   "p_top10": 0.928
   },
   {
    "pick": 2,
-   "id": "1305854",
-   "p_top3": 0.344,
-   "p_top5": 0.497,
-   "p_top10": 0.819
+   "id": "1313622",
+   "p_top3": 0.537,
+   "p_top5": 0.713,
+   "p_top10": 0.927
   },
   {
    "pick": 3,
-   "id": "1267000",
-   "p_top3": 0.201,
-   "p_top5": 0.37,
-   "p_top10": 0.733
+   "id": "1314781",
+   "p_top3": 0.408,
+   "p_top5": 0.651,
+   "p_top10": 0.907
   },
   {
    "pick": 4,
-   "id": "1304141",
-   "p_top3": 0.242,
-   "p_top5": 0.44,
-   "p_top10": 0.757
+   "id": "1314458",
+   "p_top3": 0.424,
+   "p_top5": 0.682,
+   "p_top10": 0.906
   },
   {
    "pick": 5,
-   "id": "1303448",
-   "p_top3": 0.238,
-   "p_top5": 0.429,
-   "p_top10": 0.691
+   "id": "1282575",
+   "p_top3": 0.374,
+   "p_top5": 0.632,
+   "p_top10": 0.854
   },
   {
    "pick": 6,
-   "id": "1298575",
-   "p_top3": 0.173,
-   "p_top5": 0.323,
-   "p_top10": 0.677
+   "id": "1314761",
+   "p_top3": 0.262,
+   "p_top5": 0.491,
+   "p_top10": 0.83
   },
   {
    "pick": 7,
-   "id": "1313259",
-   "p_top3": 0.162,
-   "p_top5": 0.316,
-   "p_top10": 0.69
+   "id": "1284660",
+   "p_top3": 0.269,
+   "p_top5": 0.542,
+   "p_top10": 0.872
   },
   {
    "pick": 8,
-   "id": "1303480",
-   "p_top3": 0.146,
-   "p_top5": 0.233,
-   "p_top10": 0.571
+   "id": "1314743",
+   "p_top3": 0.107,
+   "p_top5": 0.225,
+   "p_top10": 0.612
   },
   {
    "pick": 9,
-   "id": "1308353",
-   "p_top3": 0.085,
-   "p_top5": 0.199,
-   "p_top10": 0.583
+   "id": "1312154",
+   "p_top3": 0.043,
+   "p_top5": 0.141,
+   "p_top10": 0.534
   },
   {
    "pick": 10,
-   "id": "1312481",
-   "p_top3": 0.091,
-   "p_top5": 0.146,
-   "p_top10": 0.506
+   "id": "1314471",
+   "p_top3": 0.045,
+   "p_top5": 0.098,
+   "p_top10": 0.448
   }
  ],
- "written_at": "2026-11-12T09:42:55.162855+00:00"
+ "written_at": "2026-11-13T09:39:36.393990+00:00"
 }
