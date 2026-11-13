@@ -75,10 +75,11 @@ def main():
         if fn.endswith(".json") and fn[:-5] not in keep:
             os.remove(f"{D}/people_live/vm/{fn}")
     need = [n for n in todo if man.get(n) != st[n] or not os.path.exists(f"{D}/people_live/vm/{n}.json")]
-    print(f"DOWNLOAD need={len(need)} cached={len(todo) - len(need)}")
-    for i in range(0, len(need), 500):
-        b = need[i:i + 500]
-        sh("gsutil", "-q", "-m", "cp", *[f"{STAGE}/{n}.json" for n in b], f"{D}/people_live/vm/")
+    print(f"DOWNLOAD need={len(need)} cached={len(todo) - len(need)}", flush=True)
+    for i in range(0, len(need), 2000):  # gcloud storage: ~750 files/min vs ~50/min for gsutil -m cp with long arg lists
+        b = need[i:i + 2000]
+        subprocess.run(["gcloud", "storage", "cp", "-I", f"{D}/people_live/vm/"], input="".join(f"{STAGE}/{n}.json\n" for n in b),
+                       capture_output=True, text=True)
         for n in b:
             if os.path.exists(f"{D}/people_live/vm/{n}.json"):
                 man[n] = st[n]
@@ -217,9 +218,9 @@ def main():
     # 07:5xZ Nov 10: merge the exact file audited (local copy), never the live staged object, which the fleet may have
     # overwritten since the download (an unaudited incomplete save reached vm/ that way at 06:42Z). Batches of 200, same names.
     todo_cp = [f"{D}/people_live/vm/{n}.json" for n in merge + replace]
-    batches = [todo_cp[i:i + 200] for i in range(0, len(todo_cp), 200)]
-    with ThreadPoolExecutor(4) as ex:
-        list(ex.map(lambda b: sh("gsutil", "-q", "-m", "cp", *b, f"{VM}/"), batches))
+    for i in range(0, len(todo_cp), 2000):
+        subprocess.run(["gcloud", "storage", "cp", "-I", f"{VM}/"], input="".join(f + "\n" for f in todo_cp[i:i + 2000]),
+                       capture_output=True, text=True)
     if merge + replace:
         old = sh("gsutil", "cat", f"{R}/_pacetest/merged_ledger.txt").stdout
         open(f"{W}/ledger.txt", "w").write(old + f"# cursor {stamp}\n" + "".join(x + "\n" for x in merge + replace))
