@@ -535,7 +535,7 @@ def live(day, point):
     # rank_clean_thread (orchestrator 09:20Z / 08:45Z Nov 12; thread_feats.md): the clean 00:05 LM + rank-neutral thread
     # maker features as of 00:05 PT (first top-level author vs hunter, pre-launch non-hunter commenters, first author's
     # earlier launches); a 00:05 forecast recorded in the P files (data cut 00:05 for the thread part)
-    npre_th = None; th_missing = None; A["pred_rank_clean_thread"] = np.nan; A["pred_rank_best_mix_th"] = np.nan; A["pred_rank_clean_thread_z"] = np.nan; A["pred_rank_clean_stack"] = np.nan; A["pred_rank_clean_nosite_thread"] = np.nan; A["pred_rank_clean_nosite_tb"] = np.nan; A["pred_rank_mrep"] = np.nan
+    npre_th = None; th_missing = None; th_source = None; A["pred_rank_clean_thread"] = np.nan; A["pred_rank_best_mix_th"] = np.nan; A["pred_rank_clean_thread_z"] = np.nan; A["pred_rank_clean_stack"] = np.nan; A["pred_rank_clean_nosite_thread"] = np.nan; A["pred_rank_clean_nosite_tb"] = np.nan; A["pred_rank_mrep"] = np.nan
     try:
         tp = os.path.join(HERE, "results", "thread_live_model.json"); sp = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
         if os.path.exists(tp) and os.path.exists(sp):
@@ -545,7 +545,12 @@ def live(day, point):
             subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{day}/{day}.json", dp])
             hun = {str(x["id"]): str((x.get("user") or {}).get("id") or "") for x in json.load(open(dp))} if os.path.exists(dp) else {}
             wposter = dict(zip(*[W.query("SELECT CAST(id AS VARCHAR) id, lower(poster) p FROM launches", do_sync=False)[c] for c in ("id", "p")]))
-            t5 = t0 + pd.Timedelta(minutes=5); C5 = C[C.ts <= t5].sort_values("ts")
+            t5 = t0 + pd.Timedelta(minutes=5)
+            # orchestrator 02:53Z Nov 13: th_n_pre (and the other 00:05 thread inputs) ONLY from the 00:07 PT read (fetched <= 00:12 PT);
+            # if that read is missing, the thread inputs are MISSING (fall back to clean_nosite); the capped 01:30+ reads dropped
+            # 21% of pre-launch comments and are never used for them
+            C5 = C[(C.ts <= t5) & (C.ft <= t0 + pd.Timedelta(minutes=12))].sort_values("ts")
+            no007 = C5.empty
             # first-author history by user id from the dump: launches where the id was the first top-level commenter or the hunter
             Kd = K.copy(); Kd["day"] = Kd.ts.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
             Lr = W.query("SELECT slug, day, daily_rank, poster FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
@@ -567,10 +572,13 @@ def live(day, point):
                 # unknown -> thread features MISSING (filled with the day mean below), never "everyone is a non-hunter"
                 h = hun.get(i) or phun.get(i) or name2id.get(wposter.get(i, ""), "")
                 prev = [r for d_, r in set(fa_hist.get(fa, [])) if d_ < day] if fa else []
-                rows.append({"id": i, "honest": pc.get(i, np.nan), "th_has_first": float(fa is not None),
-                             "th_hunter_first": float(bool(fa) and fa == h) if h else np.nan, "th_n_pre": float(g[g.user != h].user.nunique()) if h else np.nan,
+                rows.append({"id": i, "honest": pc.get(i, np.nan), "th_has_first": np.nan if no007 else float(fa is not None),
+                             "th_hunter_first": float(bool(fa) and fa == h) if (h and not no007) else np.nan,
+                             "th_n_pre": float(g[g.user != h].user.nunique()) if (h and not no007) else np.nan,
                              "th_fa_n": float(np.log1p(len(prev))), "th_fa_rel": (sum(prev) + 1.0) / (len(prev) + 2) if prev else 0.5})
-            E = pd.DataFrame(rows); th_missing = int(E.th_n_pre.isna().sum())
+            E = pd.DataFrame(rows); th_missing = int(E.th_n_pre.isna().sum()); th_source = "missing: no 00:07 PT read" if no007 else "00:07 PT read"
+            if no007:   # constant inputs -> zero weight in the within-day z models; the columns then follow clean_nosite
+                E["th_has_first"] = 0.0
             for f_ in ("th_hunter_first", "th_n_pre"):
                 E[f_] = E[f_].fillna(E[f_].mean() if E[f_].notna().any() else TM["mu"][f_])
             if E.honest.notna().any():
@@ -735,7 +743,7 @@ def live(day, point):
     res = {"day": day, "point": point, "data_up_to": T.isoformat(), "method": "comments_ridge", "launches": int(len(A)),
            "column_status": col_status, "withdrawn_excluded": withdrawn, "reply_rows_read": n_rep_rows, "reply_rows_used": int(C.parent.notna().sum()), "precut_rank_rows": n_precut,
            "hidden_rank_note": "each point's hidden API rank is the latest posts_ts read fetched <= the cut (the 15-min snapshot before it)",
-           "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "written_at": now.isoformat(),
+           "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "th_n_pre_source": th_source, "written_at": now.isoformat(),
            "api_ranked": int(A.api_rank.notna().sum()),
            "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_clean_nosite_thread", "pred_rank_clean_nosite_tb", "pred_rank_best_thread", "pred_rank_hr", "pred_rank_hr_clean", "pred_rank_hybrid", "pred_rank_mrep", "pred_rank_best_cnosite", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
