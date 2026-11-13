@@ -1,0 +1,237 @@
+{
+ "version": "2026-11-13-recal82",
+ "basis": "month-forward scores of the deployed product-only ridge recipe, 2026 launches Mar - Nov 10",
+ "launches": 6027,
+ "decile_by": "score percentile (map with the existing score_percentile_cuts)",
+ "nominal_level": 0.82,
+ "measured": {
+  "coverage_of_80pct_claim_on_856 (Sep 1 - Nov 10, month-forward)": [
+   80.5,
+   77.6,
+   83.1
+  ],
+  "coverage_on_130_fresh": [
+   80.0,
+   72.3,
+   86.9
+  ],
+  "mean_width_share_of_day_rank_range": 77.2,
+  "previous_table_same_test": {
+   "coverage": 79.2,
+   "width": 75.1
+  }
+ },
+ "caveat": "Coarse: the 80% band spans about three quarters of a day's ranks. Product-only: no team, hunter, audience or line-up.",
+ "bands": [
+  {
+   "decile": 0,
+   "daily_rank_p09_p50_p91": [
+    7.0,
+    20.0,
+    53.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.045,
+    0.324,
+    0.758
+   ],
+   "votes_p09_p50_p91": [
+    61.0,
+    82.0,
+    142.81999999999994
+   ],
+   "share_top3": 0.027,
+   "share_top10": 0.194,
+   "n": 602
+  },
+  {
+   "decile": 1,
+   "daily_rank_p09_p50_p91": [
+    5.0,
+    16.0,
+    37.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.068,
+    0.406,
+    0.821
+   ],
+   "votes_p09_p50_p91": [
+    65.0,
+    89.0,
+    188.82000000000005
+   ],
+   "share_top3": 0.055,
+   "share_top10": 0.282,
+   "n": 603
+  },
+  {
+   "decile": 2,
+   "daily_rank_p09_p50_p91": [
+    4.0,
+    17.0,
+    43.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.066,
+    0.394,
+    0.84
+   ],
+   "votes_p09_p50_p91": [
+    64.0,
+    89.0,
+    207.2800000000002
+   ],
+   "share_top3": 0.066,
+   "share_top10": 0.269,
+   "n": 603
+  },
+  {
+   "decile": 3,
+   "daily_rank_p09_p50_p91": [
+    4.0,
+    15.0,
+    41.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.072,
+    0.422,
+    0.838
+   ],
+   "votes_p09_p50_p91": [
+    65.0,
+    93.0,
+    221.90999999999997
+   ],
+   "share_top3": 0.07,
+   "share_top10": 0.329,
+   "n": 602
+  },
+  {
+   "decile": 4,
+   "daily_rank_p09_p50_p91": [
+    4.0,
+    14.0,
+    37.82000000000005
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.086,
+    0.457,
+    0.865
+   ],
+   "votes_p09_p50_p91": [
+    68.0,
+    99.0,
+    237.82000000000005
+   ],
+   "share_top3": 0.081,
+   "share_top10": 0.378,
+   "n": 603
+  },
+  {
+   "decile": 5,
+   "daily_rank_p09_p50_p91": [
+    3.0,
+    13.0,
+    38.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.089,
+    0.516,
+    0.893
+   ],
+   "votes_p09_p50_p91": [
+    67.0,
+    103.0,
+    305.2800000000002
+   ],
+   "share_top3": 0.131,
+   "share_top10": 0.41,
+   "n": 603
+  },
+  {
+   "decile": 6,
+   "daily_rank_p09_p50_p91": [
+    2.0,
+    12.0,
+    34.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.1,
+    0.534,
+    0.929
+   ],
+   "votes_p09_p50_p91": [
+    70.0,
+    109.0,
+    350.3699999999998
+   ],
+   "share_top3": 0.169,
+   "share_top10": 0.452,
+   "n": 602
+  },
+  {
+   "decile": 7,
+   "daily_rank_p09_p50_p91": [
+    2.0,
+    10.0,
+    33.82000000000005
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.138,
+    0.597,
+    0.94
+   ],
+   "votes_p09_p50_p91": [
+    71.0,
+    126.0,
+    348.82000000000005
+   ],
+   "share_top3": 0.194,
+   "share_top10": 0.532,
+   "n": 603
+  },
+  {
+   "decile": 8,
+   "daily_rank_p09_p50_p91": [
+    2.0,
+    9.0,
+    26.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.17,
+    0.662,
+    0.942
+   ],
+   "votes_p09_p50_p91": [
+    77.0,
+    132.0,
+    381.2000000000005
+   ],
+   "share_top3": 0.199,
+   "share_top10": 0.554,
+   "n": 603
+  },
+  {
+   "decile": 9,
+   "daily_rank_p09_p50_p91": [
+    1.0,
+    7.0,
+    25.0
+   ],
+   "rank_percentile_p09_p50_p91": [
+    0.187,
+    0.734,
+    0.969
+   ],
+   "votes_p09_p50_p91": [
+    78.18,
+    157.0,
+    420.6400000000001
+   ],
+   "share_top3": 0.275,
+   "share_top10": 0.642,
+   "n": 603
+  }
+ ]
+}
