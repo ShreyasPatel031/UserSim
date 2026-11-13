@@ -63,6 +63,13 @@ def main():
     ag = np.array(ag)
     md += ["", f"Top-3 agreement, (b) + th_n_pre vs clean_nosite + th_n_pre, per day: all 3 same {np.mean(ag == 3):.1%}, >= 2 same {np.mean(ag >= 2):.1%}, mean overlap {ag.mean():.2f} of 3 ({len(days)} days).", "",
            "Rule (orchestrator): not worse = interval of the top-3 difference includes 0 and the mean is within 1.5 points."]
+    fp = f"{HERE}/results/frozen/readable_v2_th_20261113.json"
+    if SUF == "_v2" and not os.path.exists(fp):   # orchestrator 18:46Z: v2 input set fixed on the first half; weights fit on all 214 days
+        import json
+        m = Ridge(alpha=3.0).fit(A[["z_b", "z_npre"]], A.y)
+        json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": len(days), "coef": {"z_readable": float(m.coef_[0]), "z_npre": float(m.coef_[1])},
+                   "inputs": "z within day: shadow_readable pred_readable_v2 (00:05 rows), th_n_pre (night's first comment read)",
+                   "backtest": "readable_model_v2.md: (b)+th vs clean+th top 3 -1.2 [-3.4, +0.9] all 214 days, -1.2 [-4.4, +1.6] last 107"}, open(fp, "w"), indent=1)
     open(f"{HERE}/results/readable_model{SUF}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
