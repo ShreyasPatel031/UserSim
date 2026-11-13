@@ -62,7 +62,7 @@ PREDICTED ITEMS (numbered 1..):
 Return JSON {{"items": ["SAME_POINT"|"NOT" per predicted item], "real": [[numbers of the predicted items that make the same point as R1], ...one list per real point]}}"""
 async def adj(key, comments, real, lists, pre):
     if key in C: return C[key]
-    if USD["usd"] > 3.0: return None
+    if USD["usd"] > float(os.environ.get("ADJ_CAP", "3.0")): return None
     pool = list(dict.fromkeys(x for v in lists.values() for x in v)); random.Random(key).shuffle(pool)
     p = ADJ2.format(what="concerns" if pre == "RC" else "questions", one="concern, objection or request" if pre == "RC" else "question",
                     comments="\n".join(f"- {str(x)[:300]}" for x in list(comments)[:40]), real="\n".join(f"R{i+1}. {x}" for i, x in enumerate(real)),

@@ -39,3 +39,46 @@ All numbers are % with [95% CI], n = 68–69. Gains are paired bootstrap over la
 - Single run.
 - The b20 prompt was fixed before the run (no tuning on these launches).
 - Judge strictness depends on pool size, so compare arms only within this run.
+
+## Replication (orchestrator 02:16Z Nov 13), script retrieval_rep.py
+
+**Setup:**
+- Recipe frozen.
+- New set: 100 launches, Sep 28 – Oct 19, not in the first 70. No unused fresh page read had ≥ 5 comments, so these are all held page reads (fetched Oct 25, 1–4 weeks late).
+- All 170 launches were re-adjudicated on a b20 / c / d pool. The first-70 numbers therefore differ slightly from the table above.
+
+**b20 − deployed (c), % [95% CI]:**
+
+| | new 100 | pooled 170 | pooled, excluding leak-flagged targets |
+|---|---|---|---|
+| **questions, page** p@3 | **0.0 [−4.5, +4.5]** | +3.0 [−1.0, +6.9] | +0.7 [−3.4, +4.6] |
+| questions, page recall / top-1 | +1.2 / +2.1 (ns) | +3.0 / +3.0 (ns) | |
+| concerns, page p@3 | +4.9 [−0.4, +10.9] | **+7.5 [+3.0, +12.0]** | **+7.4 [+2.8, +12.0]** |
+| concerns, page recall | +5.8 [−1.6, +13.3] | +6.5 [+0.9, +12.1] | |
+| concerns, PH p@3 | **+12.3 [+6.3, +18.6]** | **+12.4 [+7.9, +17.1]** | **+12.5 [+7.8, +18.0]** |
+| concerns, PH recall / top-1 | +11.8 / +14.7 (both > 0) | +13.5 / +14.6 (both > 0) | |
+| questions, PH p@3 / recall | +5.2 [−0.3, +10.7] / **+10.8 [+3.6, +17.9]** | +4.9 [+0.6, +9.3] / +7.9 [+2.6, +13.1] | +5.2 / +8.0 (both > 0) |
+
+**Verdict:** the page-path questions gain did NOT replicate. Concerns replicate on both paths, strongly on the PH description.
+
+**Thin neighbours** (top-1 cosine in the bottom third, about 0.89 or below):
+- No gain with an interval above 0.
+- On the page path, both b20 and deployed fall below the constant list (concerns p@3: 9 / 6 vs 16). A weak page read is the likely cause.
+
+**PH description under 40 words (n = 30):**
+- Concerns, PH: +12.2 [+3.3, +22.2].
+- Questions, PH recall: +15.1 [+4.3, +26.3].
+- Everything else is not distinguishable from zero.
+
+**Judge noise** (second item order, 26–28 new launches):
+- Item labels agree 92–94%.
+- The b20 − c p@3 estimate moves by up to 4 points between the two orders.
+
+**Leak check** (20 neighbours × 170 targets × 2 modes):
+- The run excludes only the exact slug stem. "-N" relaunch variants slip through: 7 targets (PH) and 3 (page) have an earlier launch of the same product among their neighbours.
+- 21 / 17 have a name or slug containing the target's.
+- 14 / 10 neighbours share a named maker. 163 of 170 targets have at least one named maker; the rest are redacted.
+- These are earlier launches, so there is no future leak. Excluding every flagged target (23 PH / 19 page) leaves the results unchanged, as the last column shows.
+- If shipped, the recipe should also exclude "-N" stems and shared makers.
+
+**Cost:** adjudicator about $1.8 for this run.
