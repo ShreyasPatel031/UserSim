@@ -79,6 +79,35 @@ def main():
                      "hist_hunter_n_mean_2026": round(float(n.hist_hunter_n.mean()), 3), "seconds": round(time.time() - t0)})
         print(json.dumps(info, default=str)); return
     MONTHS = [m for m in TW.MONTHS if m >= "2026-03"]; P = []
+    # DECOMP=1 (orchestrator 05:05Z Nov 13): where the gain comes from. df (above) = the 2025-inclusive build: its 2026 rows carry hunter
+    # history that already includes 2025. dfo = the plain 2026 build (features.D = the real data dir): no 2025 anywhere.
+    #   pure     dfo 2026 rows                           (no 2025 at all)
+    #   histonly df 2026 rows                            (2025 only through the rebuilt hunter history; = "only2026" above)
+    #   rowsonly dfo 2026 rows + df 2025 rows            (2025 only as extra training rows)
+    #   both     df all rows                             (= "h25" above)
+    if os.environ.get("DECOMP") == "1":
+        real = os.path.join(os.path.dirname(os.path.abspath(F.__file__)), "data")
+        Fh = F.D; F.D = real; dfo = RN.load_llm(F.build()); F.D = Fh
+        dfo = dfo[~dfo.known].copy(); dfo["id"] = dfo.id.astype(str); dfo["mon"] = dfo.day.str[:7]
+        cols_all = sorted(set(df.columns) & set(dfo.columns)); D25 = df[old][cols_all]
+        hh = dfo.set_index("id").hist_hunter_n; flag = (df[~old].set_index("id").hist_hunter_n > hh.reindex(df[~old].id).values)
+        for m in MONTHS:
+            te_o, te_h = dfo[dfo.mon == m], df[(df.mon == m) & ~old]
+            if te_o.empty:
+                continue
+            for nm, tr0, te0 in (("pure", dfo[dfo.mon < m], te_o), ("histonly", df[(df.mon < m) & ~old], te_h),
+                                 ("rowsonly", pd.concat([dfo[dfo.mon < m][cols_all], D25]), te_o[cols_all]), ("both", df[df.mon < m], te_h)):
+                tr, te, cols = TW.prep(tr0, te0)
+                cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")]
+                for s in range(SEEDS):
+                    P.append(pd.DataFrame({"id": te.id.values, "variant": nm, "seed": s, "pred": TW.fitw(tr, te, cols, s)}))
+            print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
+        R = pd.concat(P); R.to_parquet("results/history_retrain_decomp_seeds.parquet")
+        A = R.groupby(["id", "variant"]).pred.mean().unstack().reset_index().merge(dfo[["id", "day", "dailyRank"]], on="id")
+        A["h_has_2025"] = A.id.map(flag.to_dict()).fillna(False)
+        A = A[(A.day >= "2026-04-01") & (A.day <= "2026-10-31")]; A.to_parquet("results/history_retrain_decomp_preds.parquet")
+        print(json.dumps({"decomp_rows": int(len(A)), "days": int(A.day.nunique()), "share_hunter_with_2025": round(float(A.h_has_2025.mean()), 3)}))
+        return
     for m in MONTHS:
         te0 = df[df.mon == m]
         if te0.empty:
