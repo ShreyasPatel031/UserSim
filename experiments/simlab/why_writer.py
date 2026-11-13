@@ -16,7 +16,7 @@ After-the-fact file  <day>_after.json  (written once the day is final; never sho
   daily rank, line-up size (warehouse), so the site can describe how the 20 nearest earlier launches finished.
 Every item carries a note id; notes hold the measured strength (basis, n, interval). Descriptive items say they did not improve the forecast.
     python why_writer.py forecast <day> <store dir> <scratchpad> <out dir>     (line-up from raw/daily/<day>/today_0005.json)
-    python why_writer.py after    <day> <store dir> <scratchpad> <out dir>     (joined.parquet + live comments_ts by commenter_user_id)
+    python why_writer.py after    <day> <store dir> <scratchpad> <out dir>     (join date from store persons, else acct/joined.parquet)
     python why_writer.py try      -     -           <scratchpad> <out dir>
 """
 import hashlib, json, os, subprocess, sys
@@ -135,7 +135,8 @@ if MODE == "forecast":
     write(f"{DAY}_0005.json", out, {"day": DAY, "point": "0005", "data_cut": D0.isoformat(), "store_reads_before": D0.isoformat(), "held_people": len(held),
         "held_people_definition": "people in our store (store_v3 persons) with at least one read fetched before the data cut"})
 if MODE == "after":
-    J = pd.read_parquet(f"{SP}/acct/joined.parquet").drop_duplicates("person_id"); J["jt"] = pd.to_datetime(J.joined, utc=True, errors="coerce"); J["uid"] = pd.to_numeric(J.ph_user_id, errors="coerce")
+    PJ = pd.read_parquet(f"{ST}/persons.parquet")
+    J = (PJ[["person_id", "joined", "ph_user_id"]] if {"joined", "ph_user_id"} <= set(PJ.columns) else pd.read_parquet(f"{SP}/acct/joined.parquet")).drop_duplicates("person_id"); J["jt"] = pd.to_datetime(J.joined, utc=True, errors="coerce"); J["uid"] = pd.to_numeric(J.ph_user_id, errors="coerce")
     jt = J.dropna(subset=["jt"]).set_index("person_id").jt; um = J.dropna(subset=["uid"]).set_index("person_id").uid; ju = J.dropna(subset=["uid"]).drop_duplicates("uid").set_index("uid").jt
     W = warehouse.table("launches", do_sync=True).sort_values("updated_at").drop_duplicates("id", keep="last"); W["id"] = W.id.astype(str); ids = set(W[W.day == DAY].id)
     U = E[(E.kind == "upvote") & E.target_id.astype(str).isin(ids)].drop_duplicates(["person_id", "target_id"]).copy(); U["target_id"] = U.target_id.astype(str)
