@@ -33,3 +33,24 @@ weighted by each person's past top-10 hit rate. Blended as z(clean 00:05) + w z(
   1. The thinning assumption ignores late builders: launches whose votes arrive after the reveal. The PH agent found a median 19% of votes after the reveal, and early leaders that did not hold.
   2. The relevant comparison at 01:00–02:45 PT is the hidden-rank blend already deployed (about 67–72% top 3 at 01:00–02:00 on 6 days), not clean alone. So the realistic increment is at most about +11–16 top 3, and likely less.
 - The first real nights decide it. The scorer runs as soon as the Cursor files land.
+
+## Against the right baseline: the hidden rank (hidden_vs_rank.py)
+
+Setup:
+- Days: Nov 2, 3, 4, 8, 9, 10, 11. Held votes per day: 1,630 / 1,885 / 1,565 / 625 / 511 / 3 / 0.
+- Thinned held votes are added to the hidden rank read at the same hour.
+- 7-day bootstrap, with draws averaged within each day. Top-3 gain [95%]:
+
+| hidden rank read | hidden rank alone top 3 | + held votes, 30% / 50% / 70% pre-03:00 | + identity-weighted (climber rate, other days), 30% / 50% / 70% |
+|---|---|---|---|
+| 01:00 | 71.4 | +11.0 [−1.9, 25.2] / +8.3 [−4.8, 20.7] / +3.8 [−13.8, 18.3] | +7.9 / +8.3 / +5.0 (all span 0) |
+| 02:00 | 71.4 | +15.0 [2.4, 29.8] / +10.7 [−2.9, 23.8] / +9.8 [−10.5, 27.6] | +12.1 / +13.8 / +10.2 (all span 0) |
+| 03:00 | 76.2 | +11.2 [−1.4, 25.2] / +6.2 [−4.8, 17.9] / +4.8 [−12.6, 19.8] | +5.0 / +5.0 / −0.5 |
+
+Top-5 gains: +16 to +18 at 01:00 (above 0 at 30–70%); +11 to +13 at 02:00; +6 to +8 at 03:00.
+
+**Reading:**
+- The thinning proxy leaks: random thinning of FINAL votes keeps a share of the votes cast after 03:00. That is exactly the late-climber information the hidden rank lacks, so the increment is an upper bound.
+- The gain shrinks as the assumed pre-03:00 share grows, i.e. as less late information leaks. It is not stable, and most intervals span 0 over 7 days (two of them with almost no held votes).
+- Identity weighting by past climber votes is no better than plain counts.
+- Plainly: with real early-vote timing, the increment over the hidden rank cannot be distinguished from about zero on held data. Only real Cursor nights can show it.
