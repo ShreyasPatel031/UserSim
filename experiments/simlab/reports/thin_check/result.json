@@ -1,0 +1,546 @@
+{
+ "n": 164,
+ "with votes": 164,
+ "thin share @0.886": 0.311,
+ "thin share by final-votes quartile": {
+  "Q1": [
+   0.409,
+   44,
+   88.0
+  ],
+  "Q2": [
+   0.263,
+   38,
+   122.0
+  ],
+  "Q3": [
+   0.31,
+   42,
+   205.0
+  ],
+  "Q4 largest": [
+   0.25,
+   40,
+   316.0
+  ]
+ },
+ "thin share, final rank <= 10 vs > 10": [
+  [
+   0.283,
+   113
+  ],
+  [
+   0.373,
+   51
+  ]
+ ],
+ "spearman(top-1 cos, ln votes)": 0.057,
+ "policies|p@3": {
+  "thr 0.886 -> common": {
+   "level": [
+    27.0,
+    22.6,
+    31.3,
+    164
+   ]
+  },
+  "thr 0.886 -> deployed ranked": {
+   "level": [
+    23.6,
+    19.3,
+    27.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -3.5,
+    -5.7,
+    -1.4,
+    164
+   ]
+  },
+  "thr 0.87 -> common": {
+   "level": [
+    26.2,
+    21.5,
+    30.9,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.8,
+    -2.8,
+    1.2,
+    164
+   ]
+  },
+  "thr 0.87 -> deployed ranked": {
+   "level": [
+    24.6,
+    19.9,
+    29.3,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -2.4,
+    -4.7,
+    -0.2,
+    164
+   ]
+  },
+  "thr 0.85 -> common": {
+   "level": [
+    25.4,
+    20.9,
+    30.3,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -1.6,
+    -3.9,
+    0.6,
+    164
+   ]
+  },
+  "thr 0.85 -> deployed ranked": {
+   "level": [
+    24.6,
+    19.9,
+    29.1,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -2.4,
+    -5.1,
+    0.0,
+    164
+   ]
+  },
+  "thr 0.83 -> common": {
+   "level": [
+    24.6,
+    20.1,
+    29.3,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -2.4,
+    -5.1,
+    0.0,
+    164
+   ]
+  },
+  "thr 0.83 -> deployed ranked": {
+   "level": [
+    24.6,
+    19.9,
+    29.3,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -2.4,
+    -4.9,
+    0.0,
+    164
+   ]
+  },
+  "thr none (always b20) -> common": {
+   "level": [
+    24.6,
+    20.1,
+    29.3,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -2.4,
+    -5.1,
+    -0.2,
+    164
+   ]
+  },
+  "thr none (always b20) -> deployed ranked": {
+   "level": [
+    24.6,
+    19.9,
+    29.5,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -2.4,
+    -5.1,
+    0.0,
+    164
+   ]
+  }
+ },
+ "policies|recall": {
+  "thr 0.886 -> common": {
+   "level": [
+    24.2,
+    19.4,
+    28.9,
+    164
+   ]
+  },
+  "thr 0.886 -> deployed ranked": {
+   "level": [
+    22.5,
+    17.8,
+    27.4,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -1.7,
+    -4.7,
+    1.2,
+    164
+   ]
+  },
+  "thr 0.87 -> common": {
+   "level": [
+    25.0,
+    20.3,
+    29.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.8,
+    -1.2,
+    2.8,
+    164
+   ]
+  },
+  "thr 0.87 -> deployed ranked": {
+   "level": [
+    23.6,
+    19.0,
+    28.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.6,
+    -3.3,
+    2.0,
+    164
+   ]
+  },
+  "thr 0.85 -> common": {
+   "level": [
+    24.2,
+    19.6,
+    29.1,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.0,
+    -2.4,
+    2.6,
+    164
+   ]
+  },
+  "thr 0.85 -> deployed ranked": {
+   "level": [
+    23.8,
+    19.2,
+    28.6,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.4,
+    -2.8,
+    2.2,
+    164
+   ]
+  },
+  "thr 0.83 -> common": {
+   "level": [
+    24.0,
+    19.4,
+    28.9,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.2,
+    -2.8,
+    2.4,
+    164
+   ]
+  },
+  "thr 0.83 -> deployed ranked": {
+   "level": [
+    24.0,
+    19.4,
+    28.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.2,
+    -2.6,
+    2.4,
+    164
+   ]
+  },
+  "thr none (always b20) -> common": {
+   "level": [
+    24.0,
+    19.0,
+    28.9,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.2,
+    -2.6,
+    2.4,
+    164
+   ]
+  },
+  "thr none (always b20) -> deployed ranked": {
+   "level": [
+    24.0,
+    19.3,
+    28.9,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.2,
+    -2.8,
+    2.4,
+    164
+   ]
+  }
+ },
+ "policies|top1": {
+  "thr 0.886 -> common": {
+   "level": [
+    26.8,
+    20.7,
+    33.5,
+    164
+   ]
+  },
+  "thr 0.886 -> deployed ranked": {
+   "level": [
+    25.0,
+    18.9,
+    31.7,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -1.8,
+    -4.9,
+    1.2,
+    164
+   ]
+  },
+  "thr 0.87 -> common": {
+   "level": [
+    27.4,
+    20.7,
+    34.1,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.6,
+    -2.4,
+    3.7,
+    164
+   ]
+  },
+  "thr 0.87 -> deployed ranked": {
+   "level": [
+    26.2,
+    20.1,
+    32.9,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    -0.6,
+    -4.3,
+    3.0,
+    164
+   ]
+  },
+  "thr 0.85 -> common": {
+   "level": [
+    28.0,
+    21.3,
+    34.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    1.2,
+    -2.4,
+    4.9,
+    164
+   ]
+  },
+  "thr 0.85 -> deployed ranked": {
+   "level": [
+    27.4,
+    20.7,
+    34.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.6,
+    -3.0,
+    4.3,
+    164
+   ]
+  },
+  "thr 0.83 -> common": {
+   "level": [
+    27.4,
+    20.7,
+    34.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.6,
+    -3.0,
+    4.3,
+    164
+   ]
+  },
+  "thr 0.83 -> deployed ranked": {
+   "level": [
+    27.4,
+    20.7,
+    34.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.6,
+    -3.7,
+    4.9,
+    164
+   ]
+  },
+  "thr none (always b20) -> common": {
+   "level": [
+    27.4,
+    20.7,
+    34.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.6,
+    -3.0,
+    4.9,
+    164
+   ]
+  },
+  "thr none (always b20) -> deployed ranked": {
+   "level": [
+    27.4,
+    20.7,
+    34.8,
+    164
+   ],
+   "vs deployed policy (0.886 -> common)": [
+    0.6,
+    -3.0,
+    4.3,
+    164
+   ]
+  }
+ },
+ "thin third head to head (page, concerns)": {
+  "p@3": {
+   "b20": [
+    9.2,
+    3.3,
+    15.7,
+    51
+   ],
+   "deployed ranked (c)": [
+    5.9,
+    2.6,
+    9.8,
+    51
+   ],
+   "common (d)": [
+    17.0,
+    11.1,
+    22.9,
+    51
+   ],
+   "b20 - common": [
+    -7.8,
+    -15.7,
+    -0.7,
+    51
+   ],
+   "c - common": [
+    -11.1,
+    -17.0,
+    -5.2,
+    51
+   ]
+  },
+  "recall": {
+   "b20": [
+    14.4,
+    7.8,
+    22.2,
+    51
+   ],
+   "deployed ranked (c)": [
+    9.5,
+    3.6,
+    17.0,
+    51
+   ],
+   "common (d)": [
+    15.0,
+    9.2,
+    20.9,
+    51
+   ],
+   "b20 - common": [
+    -0.7,
+    -8.5,
+    7.2,
+    51
+   ],
+   "c - common": [
+    -5.6,
+    -14.4,
+    3.9,
+    51
+   ]
+  },
+  "top1": {
+   "b20": [
+    11.8,
+    3.9,
+    21.6,
+    51
+   ],
+   "deployed ranked (c)": [
+    3.9,
+    0.0,
+    9.8,
+    51
+   ],
+   "common (d)": [
+    9.8,
+    2.0,
+    19.6,
+    51
+   ],
+   "b20 - common": [
+    2.0,
+    -9.8,
+    13.8,
+    51
+   ],
+   "c - common": [
+    -5.9,
+    -15.7,
+    3.9,
+    51
+   ]
+  }
+ },
+ "est_usd_this_run": 0.0,
+ "note": "saved from the run log (the exec'd prefix changes cwd)"
+}

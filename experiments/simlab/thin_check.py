@@ -8,7 +8,7 @@ and strict-judge labels (no new generation if the cache is complete). Page path,
     python thin_check.py <ph-website worktree> <scratchpad> <page_path out dir> <rr dir (cache)> <out dir>
 """
 import os, sys, json
-HERE = os.path.dirname(os.path.abspath(__file__)); OUT = sys.argv[5]; sys.argv = sys.argv[:5]
+HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.path.abspath(sys.argv[5]); sys.argv = sys.argv[:5]
 RP = open(os.path.join(HERE, "retrieval_rep.py")).read(); exec(RP[:RP.index("def mb(v):")])
 os.makedirs(OUT, exist_ok=True)
 sys.path.insert(0, os.path.join(HERE, "..")); from pipeline import warehouse  # noqa: E402
