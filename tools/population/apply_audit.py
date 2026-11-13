@@ -81,16 +81,11 @@ def main():
           f"missing_local={len(missing)}", flush=True)
     if missing:
         sys.exit("audited local copies missing; not applying")
-    # 1. backups (only those not yet made by this run)
-    audit_t = sh("gsutil", "ls", "-l", f"{CUR}/audit_{stamp}.tsv").stdout.split()[1]
-    have = {}
-    for l in sh("gsutil", "ls", "-l", f"{VM}/*.bak_cursor").stdout.splitlines():
-        p = l.split()
-        if len(p) == 3 and p[2].startswith("gs://"):
-            have[p[2].rsplit("/", 1)[1][:-len(".json.bak_cursor")]] = p[1]
-    need = [r[0] for r in todo if r[2] == "replace" and have.get(r[0], "") < audit_t]
-    with ThreadPoolExecutor(32) as ex:
-        list(ex.map(lambda n: sh("gsutil", "-q", "cp", f"{VM}/{n}.json", f"{VM}/{n}.json.bak_cursor"), need))
+    # 1. backups: vm/_bak_cursor/<stamp>/<n>.json (bulk server-side copy); only those not already backed up for this stamp
+    have = {l.rsplit("/", 1)[-1][:-5] for l in sh("gsutil", "ls", f"{VM}/_bak_cursor/{stamp}/").stdout.splitlines() if l.endswith(".json")}
+    need = [r[0] for r in todo if r[2] == "replace" and r[0] not in have]
+    if need:
+        sh("gcloud", "storage", "cp", "-I", f"{VM}/_bak_cursor/{stamp}/", input="".join(f"{VM}/{n}.json\n" for n in need))
     print(f"BACKUPS made={len(need)} already={sum(r[2] == 'replace' for r in todo) - len(need)}", flush=True)
     # 2. provenance
     ev, added = {}, 0
@@ -113,6 +108,12 @@ def main():
         json.dump(d, open(f, "w"))
         added += 1
     print(f"PROVENANCE added={added}", flush=True)
+    # 2b. lossless merge (12:3xZ Nov 13): union every audited copy with the person's current store record, so a newer pull
+    # never drops an item or field an older pull saw
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import union_merge
+    uc = union_merge.union_with_store(D, VM, [r[0] for r in todo], f"{W}/cursor_audit_cache/store_current")
+    print(f"UNION {uc}", flush=True)
     # 3. upload, 4 batches of 1000 at once
     files = [f"{D}/{r[0]}.json" for r in todo]
     batches = [files[i:i + 1000] for i in range(0, len(files), 1000)]

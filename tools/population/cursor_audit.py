@@ -224,14 +224,22 @@ def main():
     open(f"{W}/audit.tsv", "w").write("# name\tstaged_utc\tresult\tpkg_md5\tvm\treasons\n" + "".join(rows))
     sh("gsutil", "-q", "cp", f"{W}/audit.tsv", f"{CUR}/audit_{stamp}.tsv")
     from concurrent.futures import ThreadPoolExecutor
-    with ThreadPoolExecutor(24) as ex:  # backups need a rename per file
-        list(ex.map(lambda n: sh("gsutil", "-q", "cp", f"{VM}/{n}.json", f"{VM}/{n}.json.bak_cursor"), replace))
+    # 12:1xZ Nov 13: backups go to vm/_bak_cursor/<stamp>/<n>.json in one bulk server-side copy (a rename per file ran
+    # ~3 files/s; with hundreds of re-pulls per hour the backup step outlived the run)
+    if replace:
+        subprocess.run(["gcloud", "storage", "cp", "-I", f"{VM}/_bak_cursor/{stamp}/"], input="".join(f"{VM}/{n}.json\n" for n in replace),
+                       capture_output=True, text=True)
     for n in merge + replace:
         if n in prov:  # provenance flag written into the audited local copy before it is merged
             f = f"{D}/people_live/vm/{n}.json"
             d = json.load(open(f))
             d["provenance"] = prov[n]
             json.dump(d, open(f, "w"))
+    # 12:3xZ Nov 13: lossless merge: union each audited copy with the person's current store record before upload
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import union_merge
+    if merge + replace:
+        print(f"UNION {union_merge.union_with_store(f'{D}/people_live/vm', VM, merge + replace, f'{W}/cursor_audit_cache/store_current')}", flush=True)
     # 07:5xZ Nov 10: merge the exact file audited (local copy), never the live staged object, which the fleet may have
     # overwritten since the download (an unaudited incomplete save reached vm/ that way at 06:42Z). Batches of 200, same names.
     todo_cp = [f"{D}/people_live/vm/{n}.json" for n in merge + replace]
