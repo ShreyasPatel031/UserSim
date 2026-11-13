@@ -10,7 +10,8 @@ covered (>= 1 eligible member), store path.
 PROFILE FIELDS (forward test, orchestrator 14:51Z Nov 13), from team members whose person record was pulled before D 01:00 PT
 (persons.pull_finished_utc; the fleet's job 1 pulls team members at/after 00:05): n_team_pulled_0100, prof_has_headline, prof_has_bio,
 prof_badges_max, prof_streak_any, prof_ranks_any, prof_mh_prior_max (maker_history launches dated before D - 12 h),
-prof_reviews_before (reviews the members wrote, dated before D). Counts only. Read the partials at about 9 scored days.
+prof_reviews_before (reviews the members wrote, dated before D). n_team_estab (orchestrator 19:50Z): eligible members (held before D)
+with prior footing >= 30 days before D (a team role on an earlier launch or >= 5 upvotes on launches dated then). Counts only. Read the partials at about 9 scored days.
     python team_shadow.py <today_0005.json (path or gs://)> <YYYY-MM-DD> <store dir> <salt dir> <out .jsonl>
 """
 import hashlib, json, os, subprocess, sys
@@ -37,6 +38,14 @@ def features(lineup, day, store, salt_dir):
     E = pd.read_parquet(os.path.join(store, "events.parquet"), columns=["person_id", "kind", "target_id"]); U = E[(E.kind == "upvote") & E.person_id.isin(elig)].copy()
     U["target_id"] = U.target_id.astype(str); U = U.drop_duplicates(["person_id", "target_id"]); U["d"] = U.target_id.map(lday); U = U[U.d.notna() & (U.d < D) & (U.d >= D - pd.Timedelta(days=30))]
     G = {p: g for p, g in U.groupby("person_id")}; out = []
+    d30 = D - pd.Timedelta(days=30); UA = E[(E.kind == "upvote") & E.person_id.isin(elig)].drop_duplicates(["person_id", "target_id"]).copy()
+    UA["d"] = UA.target_id.astype(str).map(lday); old_up = UA[UA.d.notna() & (UA.d <= d30)].groupby("person_id").size()
+    role30 = set()
+    for p_, m_, d_ in zip(W.poster, W.makers, pd.to_datetime(W.day)):
+        if d_ <= d30:
+            for h in ([p_] if isinstance(p_, str) and p_ and not p_.startswith("[") else []) + (json.loads(m_) if isinstance(m_, str) and m_.startswith("[") else []):
+                if h and not str(h).startswith("["): role30.add(pid(h))
+    ESTAB = {m: (m in role30) or old_up.get(m, 0) >= 5 for m in elig}
     PP = P.set_index("person_id"); PP["pulled"] = pd.to_datetime(PP.get("pull_finished_utc"), utc=True, errors="coerce")
     for c in ("headline", "bio", "badges_count", "streak", "ranks_text_json", "maker_history_json"):
         if c not in PP: PP[c] = None
@@ -60,6 +69,7 @@ def features(lineup, day, store, salt_dir):
         o["prof_ranks_any"] = any(hl(PP.at[m, "ranks_text_json"]) and PP.at[m, "ranks_text_json"] not in ("[]", "null") for m in pm)
         o["prof_mh_prior_max"] = int(max([sum(t < cut - pd.Timedelta(hours=12) for t in MH.get(m, [])) for m in pm], default=0))
         o["prof_reviews_before"] = int(sum(int((RVt.get(m, pd.Series([], dtype="datetime64[ns, UTC]")) < cut).sum()) for m in pm))
+        o["n_team_estab"] = sum(1 for m in em if ESTAB.get(m, False))   # held before the day AND prior footing (>= 30 d): team role or >= 5 upvotes
         o["store"] = os.path.abspath(store); out.append(o)
     return out
 if __name__ == "__main__":
