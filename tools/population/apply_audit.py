@@ -94,7 +94,7 @@ def main():
     print(f"BACKUPS made={len(need)} already={sum(r[2] == 'replace' for r in todo) - len(need)}", flush=True)
     # 2. provenance
     ev, added = {}, 0
-    for n, st_utc, res, md5, vm = (r[:5] for r in todo):
+    for n, st_utc, res, md5, vm in (r[:5] for r in todo):
         if vm not in ev:
             ev[vm] = vm_evidence(SC, vm)
         rot, held, ips = ev[vm]
