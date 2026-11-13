@@ -229,7 +229,7 @@ def run(W):
     for b in br:
         st = state.setdefault(b["feed"], {"open_since": now.isoformat(), "last_alert": None})
         la = ts(st["last_alert"]) if st.get("last_alert") else None
-        alert = la is None or (now - la).total_seconds() / 60 >= REALERT_MIN
+        alert = la is None or (now - la).total_seconds() / 60 >= REALERT_MIN - 3  # 3 min slack: ticks drift, so a 30-min tick still re-alerts
         if alert:
             st["last_alert"] = now.isoformat()
             due.append(b)
