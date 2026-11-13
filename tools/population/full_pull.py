@@ -114,7 +114,10 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
                          capped_large=bool(v.get("capped_large") or v.get("status") == "capped_large"),
                          signed_out_cap=bool(t == "upvotes" and (v.get("upvotes_capped") or (v.get("complete_not_visible") and 190 <= n <= 210))),
                          end_reason=er, paging_ended=pe, paging_pages=pp))
-        for i, it in enumerate(items, 1):
+        # events are emitted from items AND items_earlier (12:4xZ Nov 13): a later pull's record carries the items only
+        # earlier pulls saw under items_earlier; the tab's header/count/complete above stay the newest pull's, but no
+        # edge, upvote, comment or review an earlier pull saw is dropped from the store
+        for i, it in enumerate(items + (v.get("items_earlier") or []), 1):
             url = it.get("url") or ""
             prod = PRODUCT.search(url)
             lm = LAUNCH.search(url)
