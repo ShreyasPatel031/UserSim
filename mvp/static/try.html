@@ -158,7 +158,7 @@ function renderLaunch(l){
      <div class="card"><p class="label">Likely daily rank</p><p class="big">#${Number(l.rank_band.likely[0])}–#${Number(l.rank_band.likely[1])}</p><p class="small muted">middle #${Number(l.rank_band.median)}</p></div>
      <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>`;
     band = `<div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
-     <div class="scale"><span>#1</span><span>10th to 90th percentile of where similar descriptions finished</span><span>#${N}+</span></div>`;
+     <div class="scale"><span>#1</span><span>${esc(l.band_level || "10th to 90th percentile")} of where similar descriptions finished</span><span>#${N}+</span></div>`;
     cov = l.coverage ? `<p class="small" style="margin-top:12px"><b>About ${Math.round(Number(l.coverage.share)*10)} in 10</b> past launches finished inside the band this model gave them (pooled over all scores, checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches using their PH descriptions; fixed offline figure, ${esc(l.coverage.date)}).</p>` : "";
   }
   $("#ln").innerHTML = cards + band + cov + `

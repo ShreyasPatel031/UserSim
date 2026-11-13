@@ -918,6 +918,18 @@ def step_launch(tok: str) -> dict:
     pct = sum(1 for c in lb["score_percentile_cuts"] if c < score)
     b = lb["bands"][min(9, pct // 10)]
     rk, vt = b["daily_rank_p10_p50_p90"], b["votes_p10_p50_p90"]
+    recal = None
+    if lb is lb_ph:
+        # Pasted descriptions: E5's recalibrated quantile table for the same score deciles (month-forward; the "80%
+        # band" covered 80.5% of 856 launches). Same model and cuts; only the band edges change.
+        rc = gcs.read_json("site/launch_band_recal82_v1.json", ttl=3600)
+        rows = (rc or {}).get("bands") or []
+        if len(rows) == 10 and all("daily_rank_p09_p50_p91" in r for r in rows):
+            rb = rows[min(9, pct // 10)]
+            rk, vt = rb["daily_rank_p09_p50_p91"], rb["votes_p09_p50_p91"]
+            b = {**b, "share_top3": rb.get("share_top3", b["share_top3"]),
+                 "share_top10": rb.get("share_top10", b["share_top10"]), "n": rb.get("n", b["n"])}
+            recal = str(rc.get("caveat") or "")[:300]
     acc = lb_ph["heldout_accuracy"]   # top-3/5/10 table: measured on PH descriptions (labelled as such)
     card = None
     if lb is not lb_ph:
@@ -947,7 +959,9 @@ def step_launch(tok: str) -> dict:
             "method": (f"Percentile band from the page alone: a text model trained on {lb['trained_on']['launches']:,} "
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
-                       "(10th to 90th percentile)."),
+                       + ("(the middle 80%, recalibrated on launches the model had not seen). " + recal if recal
+                          else "(10th to 90th percentile).")),
+            "band_level": "80% band" if recal else "10th to 90th percentile",
             "honesty": _honesty(acc, a.get("source")), "coverage": None,  # one coverage figure per band: input note (pasted) / card (page)
             "input_note": _input_note(a.get("source")),
             "card": card, "source": a.get("source")}
@@ -962,7 +976,8 @@ def _input_note(source: str | None) -> str | None:
         return (f"Scored from the description you pasted with a model trained on Product Hunt launch descriptions. "
                 f"Tested only on launches it had not seen: rank correlation {v['spearman_ph_856']:.2f} on "
                 f"{v['ph_forward_n']} Sep–Nov launches ({v['spearman_ph']:.2f} on the {v['ph_recent_n']} most recent); "
-                f"the real rank fell inside the band about 3 times in 4 ({v['coverage_ph_n']} launches).")
+                f"the real rank fell inside the 80% band {v['coverage_ph']:.1%} of the time ({v['coverage_ph_n']} "
+                f"launches). The band is coarse: it spans about three quarters of a day's ranks.")
     pb = cl.get("page_band")
     if not pb:
         return "Scored from a read of your web page; the accuracy figures were measured on Product Hunt descriptions."

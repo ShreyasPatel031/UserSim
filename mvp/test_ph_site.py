@@ -364,11 +364,16 @@ def test_launch_step_returns_input_note(monkeypatch):
                     "share_top3": 0.1, "share_top10": 0.3, "n": 100} for i in range(10)],
           "heldout_accuracy": {"days": 200, "top3": 29, "top5": 40, "top10": 60, "within_day_spearman": 0.2},
           "trained_on": {"launches": 1000, "days": ["2026-01-01", "2026-11-10"]}}
-    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: lb if n.endswith("launch_band.json") else None)
+    rc = {"caveat": "Coarse.", "bands": [{"daily_rank_p09_p50_p91": [2, 6, 30], "votes_p09_p50_p91": [9, 40, 300],
+                                          "share_top3": 0.2, "share_top10": 0.5, "n": 600} for _ in range(10)]}
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: lb if n.endswith("launch_band.json") else
+                        rc if n.endswith("launch_band_recal82_v1.json") else None)
     monkeypatch.setattr(try_sim, "use_run", lambda tok, step: {"name": "X", "tagline": "y", "ph_description": "z " * 50,
                                                                 "topics": [], "source": "pasted"})
     out = try_sim.step_launch("t")
     assert out["input_note"] and "0.35" in out["input_note"] and out["coverage"] is None
+    assert out["rank_band"] == {"likely": [2, 30], "median": 6} and out["band_level"] == "80% band"
+    assert "80.5%" in out["input_note"] and "Coarse." in out["method"]
 
 
 def test_why_is_sanitised(monkeypatch):
