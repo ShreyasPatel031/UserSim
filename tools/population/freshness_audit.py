@@ -8,7 +8,8 @@ Feeds and their maximum allowed gap (orchestrator 20:54Z Nov 13, for Shreyas):
   day_close_read           a snapshots/<day+1>T2345..2359PT read of day D, present by 00:05 PT                           once/day
   first_comment_read       an api_comments read at 00:07 PT (00:00-00:15 PT window) present by 00:20 PT                  once/day
   fleet_status             mailbox/from_cursor/status.json "utc"; VMs alive vs 20 expected; dead slots                     20 min
-  vote_snapshots           warehouse raw/vote_snapshots/<PT day>.jsonl: newest object write and newest "at" row             75 min
+  vote_snapshots_daily_export  bucket raw/vote_snapshots/<PT day>.jsonl (daily export): previous PT day present by 08:00Z  daily
+  (the hourly table is in the pipeline VM warehouse, 75 min; checked from a PH ops freshness figure once one exists)
   live_capture_heartbeat also reads mailbox/from_cursor/ph_live_capture.status.md (Cursor loop) and takes the newer
 Modes:
   check   now: prints breaches as JSON lines and appends open/closed gaps to the local ledger (W/downtime_ledger.jsonl)
@@ -150,27 +151,14 @@ def check():
                         "vms_alive": alive, "vms_expected": 20, "dead_slots": dead})
     except Exception:
         out.append({"feed": "fleet_status", "last_good": None, "note": "status.json unreadable"})
-    vs = sh("gcloud", "storage", "objects", "list", f"{G}/raw/vote_snapshots/*.jsonl", "--format=value(name,update_time)")
-    rows = [l.split("\t") for l in vs.splitlines() if "\t" in l]
-    if rows:
-        name, upd = max(rows, key=lambda r: r[1])
-        last_at = None
-        for l in sh("gsutil", "cat", f"gs://{G.split('//')[1].split('/')[0]}/{name}").splitlines():
-            try:
-                a = ts(json.loads(l).get("at"))
-            except Exception:
-                continue
-            if a and (not last_at or a > last_at):
-                last_at = a
-        wr = ts(upd.replace("+0000", "+00:00"))
-        last = max(x for x in (wr, last_at) if x) if (wr or last_at) else None
-        newest_day = name.rsplit("/", 1)[-1][:-6]
-        if not last or (now - last).total_seconds() / 60 > 75:
-            out.append({"feed": "vote_snapshots", "newest_file_day": newest_day, "last_write": wr.isoformat() if wr else None,
-                        "last_row_at": last_at.isoformat() if last_at else None,
-                        "gap_min": round((now - (wr or last_at)).total_seconds() / 60, 1), "limit_min": 75})
-    else:
-        out.append({"feed": "vote_snapshots", "last_good": None, "note": "no files"})
+    # bucket raw/vote_snapshots is a once-a-day export (orchestrator 21:45Z): the previous PT day's file must exist by 08:00Z
+    vs = sh("gcloud", "storage", "objects", "list", f"{G}/raw/vote_snapshots/*.jsonl", "--format=value(name)")
+    days = sorted(l.rsplit("/", 1)[-1][:-6] for l in vs.splitlines() if l.endswith(".jsonl"))
+    prev = (now.astimezone(PT).date() - dt.timedelta(days=1)).isoformat()
+    due = dt.datetime.combine(dt.date.fromisoformat(prev) + dt.timedelta(days=1), dt.time(8, 0), UTC)
+    if now >= due and prev not in days:
+        out.append({"feed": "vote_snapshots_daily_export", "missing_day": prev, "due_utc": due.isoformat(),
+                    "newest_day": days[-1] if days else None, "late_min": round((now - due).total_seconds() / 60, 1)})
     return out
 
 
