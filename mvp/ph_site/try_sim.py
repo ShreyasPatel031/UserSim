@@ -853,7 +853,7 @@ def step_launch(tok: str) -> dict:
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
                        "(10th to 90th percentile)."),
-            "honesty": _honesty(acc, a.get("source")), "coverage": None if card else _coverage(), "input_note": _input_note(a.get("source")),
+            "honesty": _honesty(acc, a.get("source")), "coverage": None,   # one coverage figure per band: the input note (pasted) or the card (page) "input_note": _input_note(a.get("source")),
             "card": card, "source": a.get("source")}
 
 
@@ -863,16 +863,18 @@ def _input_note(source: str | None) -> str | None:
     cl = claims()
     if source == "pasted":
         v = cl["try_e2e"]["values"]
-        return (f"Scored from the description you pasted with the model trained on Product Hunt launch descriptions "
-                f"(on {v['launches']} fresh launches: rank correlation {v['spearman_ph']:.2f}, real rank inside the band "
-                f"{v['coverage_ph']:.0%} of the time).")
+        return (f"Scored from the description you pasted with a model trained on Product Hunt launch descriptions. "
+                f"Tested only on launches it had not seen: rank correlation {v['spearman_ph_856']:.2f} on "
+                f"{v['ph_forward_n']} Sep–Nov launches ({v['spearman_ph']:.2f} on the {v['ph_recent_n']} most recent), "
+                f"with the real rank inside the band about 3 times in 4.")
     pb = cl.get("page_band")
     if not pb:
         return "Scored from a read of your web page; the accuracy figures were measured on Product Hunt descriptions."
     v = pb["values"]
     return (f"Scored from your web page alone with a model trained on product web pages: on {v['n']} held-out "
-            f"launches its rank correlation was {v['spearman']:.2f} ({pb['date']}). A pasted launch description is the "
-            f"stronger input (rank correlation {cl['try_e2e']['values']['spearman_ph']:.2f}). The top-3 table below was "
+            f"launches its rank correlation was {v['spearman']:.2f} ({pb['date']}). A pasted launch description scored "
+            f"somewhat higher on the same launches ({cl['try_e2e']['values']['spearman_ph_856']:.2f} vs "
+            f"{v['spearman']:.2f}). The top-3 table below was "
             "measured on Product Hunt descriptions.")
 
 def _full_model_ref(acc: dict) -> dict:

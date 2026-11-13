@@ -104,14 +104,27 @@
  "try_e2e": {
   "values": {
    "launches": 130,
-   "spearman_ph": 0.59,
-   "coverage_ph": 0.89,
+   "spearman_ph": 0.42,
+   "coverage_ph": 0.76,
    "fetch_fail_share": 0.27,
-   "fetch_fail_after_root": 0.2
+   "fetch_fail_after_root": 0.2,
+   "spearman_ph_856": 0.353,
+   "spearman_ph_856_ci": [
+    0.29,
+    0.41
+   ],
+   "spearman_ph_ci": [
+    0.27,
+    0.56
+   ],
+   "ph_forward_n": 856,
+   "ph_recent_n": 130
   },
   "label": "/try code on 130 page reads, Oct 27-Nov 10 (band from name, tagline and summary)",
   "source": "E5 reports/try_fixes/, branch claude/person-model-v2",
-  "date": "2026-11-12"
+  "date": "2026-11-12",
+  "ph_note": "PH-description band figures are forward only: the same recipe retrained on earlier months; the earlier 0.59 / 89% were in-sample (launch_band.json was trained through Nov 10, including the 130 launches)",
+  "ph_source": "E5 forward check of results/web/launch_band.json recipe, relayed by orchestrator 2026-11-13"
  },
  "page_band": {
   "values": {
