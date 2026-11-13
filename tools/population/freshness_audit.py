@@ -9,7 +9,8 @@ Feeds and their maximum allowed gap (orchestrator 20:54Z Nov 13, for Shreyas):
   first_comment_read       an api_comments read at 00:07 PT (00:00-00:15 PT window) present by 00:20 PT                  once/day
   fleet_status             mailbox/from_cursor/status.json "utc"; VMs alive vs 20 expected; dead slots                     20 min
   vote_snapshots_daily_export  bucket raw/vote_snapshots/<PT day>.jsonl (daily export): previous PT day present by 08:00Z  daily
-  (the hourly table is in the pipeline VM warehouse, 75 min; checked from a PH ops freshness figure once one exists)
+  vote_snapshots_hourly    tables/vote_snapshots/<YYYYMMDDTHHMMSS>-<hex>.parquet, one part per hourly load: newest
+                           upload time and that part's max(at) and row count                                              75 min
   live_capture_heartbeat also reads mailbox/from_cursor/ph_live_capture.status.md (Cursor loop) and takes the newer
 Modes:
   check   now: prints breaches as JSON lines and appends open/closed gaps to the local ledger (W/downtime_ledger.jsonl)
@@ -162,6 +163,26 @@ def check():
     if now >= due and prev not in days:
         out.append({"feed": "vote_snapshots_daily_export", "missing_day": prev, "due_utc": due.isoformat(),
                     "newest_day": days[-1] if days else None, "late_min": round((now - due).total_seconds() / 60, 1)})
+    # hourly warehouse load (PH ops 22:35Z): one parquet part per load; VM is off 23:00-00:05 PT (~65-70 min, under 75)
+    parts = [l.split("\t") for l in sh("gcloud", "storage", "objects", "list", f"{G}/tables/vote_snapshots/*.parquet",
+                                        "--format=value(name,creation_time)").splitlines() if "\t" in l]
+    if parts:
+        name, ct = max(parts, key=lambda r: r[1])
+        up = ts(ct.replace("+0000", "+00:00"))
+        if not up or (now - up).total_seconds() / 60 > 75:
+            row = {"feed": "vote_snapshots_hourly", "last_load": up.isoformat() if up else None,
+                   "gap_min": round((now - up).total_seconds() / 60, 1) if up else None, "limit_min": 75}
+            try:
+                import io
+                import pandas as pd
+                df = pd.read_parquet(io.BytesIO(subprocess.run(["gsutil", "cat", f"gs://{G.split('//')[1].split('/')[0]}/{name}"],
+                                                               capture_output=True).stdout))
+                row.update({"last_part_rows": len(df), "last_part_max_at": str(df["at"].max())})
+            except Exception:
+                pass
+            out.append(row)
+    else:
+        out.append({"feed": "vote_snapshots_hourly", "last_load": None, "note": "no parts"})
     return out
 
 

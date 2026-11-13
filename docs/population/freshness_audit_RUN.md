@@ -11,9 +11,10 @@ when a live feed stops. It detects only; it never changes, restarts or scales an
 | posts_ts | `raw/ph_at_launch/<PT day>/live/posts_ts.jsonl`, `snapshot_ts` | 20 min |
 | comments_ts | `raw/ph_at_launch/<PT day>/api_comments/<tag>PT.jsonl` | 20 min 00:00–02:00 PT, else 60 |
 | fleet status | `mailbox/from_cursor/status.json` `utc`, alive slots vs 20 | 20 min, 20 VMs |
+| vote_snapshots hourly load | `tables/vote_snapshots/*.parquet` newest part upload time (one part per load; VM off 23:00–00:05 PT) | 75 min |
 | vote_snapshots export | `raw/vote_snapshots/<PT day>.jsonl` (daily export) | previous PT day by 08:00Z |
 
-Not yet covered: the hourly warehouse table (it needs a freshness file from PH ops), store build cadence, and daily
+Not yet covered: store build cadence, and daily
 people jobs 1–5.
 
 ## Run it every 15 minutes on an always-on machine
