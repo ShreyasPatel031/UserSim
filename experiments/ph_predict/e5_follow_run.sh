@@ -9,7 +9,10 @@ OUT="$B/tmp/e5/follow_shadow/shadow_$D.jsonl"
 if gsutil -q stat "$OUT"; then echo "exists $OUT"; exit 0; fi
 gsutil -q stat "$B/raw/daily/$D/today_0005.json" || { echo "no 00:05 read for $D"; exit 1; }
 mkdir -p "$W/store" "$W/s"
-gsutil -q -m cp -n "$B/raw/population/store_v3/events.parquet" "$B/raw/population/store_v3/persons.parquet" "$W/store/"
+# store (orchestrator via E5 06:09Z Nov 13): E5's merged store until the population agent publishes the official merged one
+STORE="${E5_STORE:-$B/tmp/e5/merged_store_20261113}"; SD="$W/store_$(basename "$STORE")"; mkdir -p "$SD"
+gsutil -q -m cp -n "$STORE/events.parquet" "$STORE/persons.parquet" "$SD/"
 [ -s "$W/s/salt" ] || gsutil -q cp "$B/raw/population/_salt" "$W/s/salt"
-python3 -I "$W/follow_shadow.py" "$B/raw/daily/$D/today_0005.json" "$D" "$W/store" "$W/s" "$W/out_$D.jsonl"
+python3 -I "$W/follow_shadow.py" "$B/raw/daily/$D/today_0005.json" "$D" "$SD" "$W/s" "$W/out_$D.jsonl"
+echo "{\"day\": \"$D\", \"store\": \"$STORE\", \"written_at\": \"$(date -u +%FT%TZ)\"}" | gsutil -q cp - "$B/tmp/e5/follow_shadow/shadow_$D.store.json"
 gsutil -q cp "$W/out_$D.jsonl" "$OUT"; echo "wrote $OUT"
