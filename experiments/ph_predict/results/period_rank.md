@@ -30,3 +30,16 @@
 - weekly_live gains a "reread" point: the week's launches by votes in each day's 23:50 PT read. Sunday's file is the week-end call. monthly_live writes it and weekly_live score() scores it.
 
 **Next check (needs a second read file):** does today's running monthlyRank equal the order of votes in an earlier read (e.g. yesterday's 23:50 PT)? That would give PH's update lag.
+
+## PH period-rank update lag (one-off check, written 2026-11-13 08:51Z)
+
+Reads: D = monthly_reread 2026-11-12 (fetched 2026-11-13T07:59:59Z, the day-end read), D-1 = 2026-11-11 (fetched 2026-11-11T21:31:37Z, mid-day Nov 11 PT).
+
+| rank | compared with | top 3 | top 5 | top 10 | Spearman | n |
+|---|---|---|---|---|---|---|
+| monthlyRank (all November launches) | vs votes same read (D) | 100.0 | 100.0 | 100.0 | 0.9999 | 380 |
+| monthlyRank (all November launches) | vs votes previous read (D-1) | 100.0 | 100.0 | 100.0 | 0.9974 | 340 |
+| weeklyRank (week Nov 9-15 launches) | vs votes same read (D) | 100.0 | 100.0 | 100.0 | 0.9998 | 141 |
+| weeklyRank (week Nov 9-15 launches) | vs votes previous read (D-1) | 100.0 | 100.0 | 80.0 | 0.9937 | 101 |
+
+Verdict: both period ranks match the SAME read's vote order (monthly Spearman 0.9999 vs 0.9974 for D-1; weekly 0.9998 vs 0.9937, top 10 100 vs 80): no one-day lag; PH's running monthly / weekly ranks are vote order at the read time. Caveat: D-1 is a mid-day read; re-check with two consecutive day-end reads (Nov 13 vs Nov 12).
