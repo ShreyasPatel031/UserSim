@@ -1,0 +1,636 @@
+{
+ "design": "Voter-based 00:05 forecast harness (orchestrator 22:53Z Nov 12; re-run with one command on a new store snapshot).\nDays: Oct 29-31, Nov 2, 3, 4, 8, 9, 10, 11. Line-up and clean score: PH agent's clean_live_rows_nosite.parquet (clean_v3_nosite, as live).\nCovered people = complete persons in the store. Pair model P(person upvotes launch): logistic regression on [ln(1+upvotes 30d),\nln(1+upvotes 90d), days since last upvote, topic-taste match, follows the hunter, is the hunter], trained on the 7 launch days before the\ntest day (features at each training day from history before that day; all negatives of active people subsampled 10%).\nExpected covered votes E(L) = sum over active covered people of P. Combined = z(clean) + w z(ln(E + 0.1)), w leave-one-day-out from\n{0, .25, .5, 1, 2}. EDGES env: none / hunter / hunter_maker (follows of the hunter, + the first named maker); \"followers_feature_only\"\n= the launch-level sum over active covered followers of ln(1+upvotes 90d), added to clean instead of E. Timing: STRICT = only upvotes / follows from reads fetched before 00:00 PT of the test day; LENIENT = every read of\nan upvote on an earlier day's launch (what a fresh read the night before would give). HIDDEN: votes on today's launches seen in reads\nfetched 00:05-04:00 PT of the day (re-reads in the hidden window). Coverage curve: covered people subsampled to 10/20/30/41% of votes\n(5 draws). Truth: official daily rank. Paired day bootstrap vs clean alone.",
+ "days": [
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "train_days_cached": 67,
+ "first_train_day": "2026-09-05",
+ "placebo top3/5/10": [
+  26.7,
+  36.0,
+  52.0
+ ],
+ "clean_nosite top3/5/10": [
+  66.7,
+  68.0,
+  72.0
+ ],
+ "placebo - clean": [
+  [
+   -40.0,
+   -60.0,
+   -20.0
+  ],
+  [
+   -32.0,
+   -56.0,
+   -12.0
+  ],
+  [
+   -20.0,
+   -32.0,
+   -8.0
+  ]
+ ],
+ "A7": {
+  "train_days": 7,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "hun",
+   "back"
+  ],
+  "recall@N": [
+   32.5,
+   29.6,
+   35.4,
+   124
+  ],
+  "recall@2N": [
+   47.4,
+   44.1,
+   50.7,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.24,
+   0.389
+  ],
+  "top3/5/10": [
+   26.7,
+   56.0,
+   74.0
+  ],
+  "vs placebo": [
+   [
+    0.0,
+    -26.7,
+    33.3
+   ],
+   [
+    20.0,
+    -4.0,
+    52.0
+   ],
+   [
+    22.0,
+    14.0,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -40.0,
+    -73.3,
+    -6.7
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    2.0,
+    -10.0,
+    14.0
+   ]
+  ]
+ },
+ "A30": {
+  "train_days": 30,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "hun",
+   "back"
+  ],
+  "recall@N": [
+   36.3,
+   33.5,
+   39.2,
+   124
+  ],
+  "recall@2N": [
+   49.0,
+   46.0,
+   51.8,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.293,
+   0.37
+  ],
+  "top3/5/10": [
+   26.7,
+   56.0,
+   74.0
+  ],
+  "vs placebo": [
+   [
+    0.0,
+    -20.0,
+    20.0
+   ],
+   [
+    20.0,
+    -4.0,
+    52.0
+   ],
+   [
+    22.0,
+    14.0,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -40.0,
+    -73.3,
+    -13.3
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    2.0,
+    -10.0,
+    12.0
+   ]
+  ]
+ },
+ "A60": {
+  "train_days": 60,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "hun",
+   "back"
+  ],
+  "recall@N": [
+   34.5,
+   31.5,
+   37.4,
+   124
+  ],
+  "recall@2N": [
+   47.3,
+   44.3,
+   50.4,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.269,
+   0.369
+  ],
+  "top3/5/10": [
+   26.7,
+   56.0,
+   74.0
+  ],
+  "vs placebo": [
+   [
+    0.0,
+    -20.0,
+    20.0
+   ],
+   [
+    20.0,
+    -4.0,
+    52.0
+   ],
+   [
+    22.0,
+    14.0,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -40.0,
+    -73.3,
+    -13.3
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    2.0,
+    -10.0,
+    12.0
+   ]
+  ]
+ },
+ "A30+cf": {
+  "train_days": 30,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "hun",
+   "back",
+   "cf"
+  ],
+  "recall@N": [
+   36.2,
+   33.3,
+   38.9,
+   124
+  ],
+  "recall@2N": [
+   48.2,
+   45.2,
+   51.3,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.284,
+   0.46
+  ],
+  "top3/5/10": [
+   20.0,
+   56.0,
+   70.0
+  ],
+  "vs placebo": [
+   [
+    -6.7,
+    -26.7,
+    20.0
+   ],
+   [
+    20.0,
+    -4.0,
+    52.0
+   ],
+   [
+    18.0,
+    6.0,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -46.7,
+    -80.0,
+    -20.0
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    -2.0,
+    -12.0,
+    6.0
+   ]
+  ]
+ },
+ "CF-only": {
+  "train_days": 30,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "cf"
+  ],
+  "recall@N": [
+   37.3,
+   34.1,
+   40.3,
+   124
+  ],
+  "recall@2N": [
+   53.7,
+   50.1,
+   56.9,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.36,
+   0.361
+  ],
+  "top3/5/10": [
+   13.3,
+   40.0,
+   70.0
+  ],
+  "vs placebo": [
+   [
+    -13.3,
+    -26.7,
+    0.0
+   ],
+   [
+    4.0,
+    -24.0,
+    28.0
+   ],
+   [
+    18.0,
+    10.0,
+    30.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -53.3,
+    -80.0,
+    -33.3
+   ],
+   [
+    -28.0,
+    -48.0,
+    -4.0
+   ],
+   [
+    -2.0,
+    -12.0,
+    8.0
+   ]
+  ]
+ },
+ "A30+wk": {
+  "train_days": 30,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "hun",
+   "back",
+   "wk"
+  ],
+  "recall@N": [
+   36.4,
+   33.7,
+   39.2,
+   124
+  ],
+  "recall@2N": [
+   48.5,
+   45.5,
+   51.5,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.291,
+   0.385
+  ],
+  "top3/5/10": [
+   26.7,
+   56.0,
+   74.0
+  ],
+  "vs placebo": [
+   [
+    0.0,
+    -20.0,
+    20.0
+   ],
+   [
+    20.0,
+    -8.0,
+    52.0
+   ],
+   [
+    22.0,
+    14.0,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -40.0,
+    -73.3,
+    -13.3
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    2.0,
+    -10.0,
+    14.0
+   ]
+  ]
+ },
+ "A30+fol (undated)": {
+  "train_days": 30,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "hun",
+   "back",
+   "fol"
+  ],
+  "recall@N": [
+   38.4,
+   35.3,
+   41.2,
+   124
+  ],
+  "recall@2N": [
+   49.9,
+   46.8,
+   52.8,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.295,
+   0.393
+  ],
+  "top3/5/10": [
+   26.7,
+   56.0,
+   76.0
+  ],
+  "vs placebo": [
+   [
+    0.0,
+    -26.7,
+    33.3
+   ],
+   [
+    20.0,
+    -4.0,
+    52.0
+   ],
+   [
+    24.0,
+    16.0,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -40.0,
+    -73.3,
+    -6.7
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    4.0,
+    -8.0,
+    14.0
+   ]
+  ]
+ },
+ "A30 back-only team tie": {
+  "train_days": 30,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "back"
+  ],
+  "recall@N": [
+   36.3,
+   33.4,
+   39.0,
+   124
+  ],
+  "recall@2N": [
+   48.9,
+   45.8,
+   51.8,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.293,
+   0.37
+  ],
+  "top3/5/10": [
+   26.7,
+   56.0,
+   74.0
+  ],
+  "vs placebo": [
+   [
+    0.0,
+    -20.0,
+    20.0
+   ],
+   [
+    20.0,
+    -8.0,
+    52.0
+   ],
+   [
+    22.0,
+    14.0,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -40.0,
+    -73.3,
+    -13.3
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    2.0,
+    -10.0,
+    12.0
+   ]
+  ]
+ },
+ "FULL": {
+  "train_days": 30,
+  "features": [
+   "n30",
+   "n90",
+   "last",
+   "taste",
+   "fol",
+   "hun",
+   "back",
+   "wk",
+   "cf"
+  ],
+  "recall@N": [
+   37.4,
+   34.5,
+   40.5,
+   124
+  ],
+  "recall@2N": [
+   49.5,
+   46.4,
+   52.4,
+   124
+  ],
+  "calibration: median E / displayed votes, Spearman(E, votes)": [
+   0.289,
+   0.441
+  ],
+  "top3/5/10": [
+   33.3,
+   56.0,
+   72.0
+  ],
+  "vs placebo": [
+   [
+    6.7,
+    -20.0,
+    40.0
+   ],
+   [
+    20.0,
+    -4.0,
+    52.0
+   ],
+   [
+    20.0,
+    12.0,
+    30.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -33.3,
+    -66.7,
+    -6.7
+   ],
+   [
+    -12.0,
+    -28.0,
+    0.0
+   ],
+   [
+    0.0,
+    -10.0,
+    8.0
+   ]
+  ]
+ }
+}

@@ -1,0 +1,405 @@
+{
+ "design": "Voter-based 00:05 forecast harness (orchestrator 22:53Z Nov 12; re-run with one command on a new store snapshot).\nDays: Oct 29-31, Nov 2, 3, 4, 8, 9, 10, 11. Line-up and clean score: PH agent's clean_live_rows_nosite.parquet (clean_v3_nosite, as live).\nCovered people = complete persons in the store. Pair model P(person upvotes launch): logistic regression on [ln(1+upvotes 30d),\nln(1+upvotes 90d), days since last upvote, topic-taste match, follows the hunter, is the hunter], trained on the 7 launch days before the\ntest day (features at each training day from history before that day; all negatives of active people subsampled 10%).\nExpected covered votes E(L) = sum over active covered people of P. Combined = z(clean) + w z(ln(E + 0.1)), w leave-one-day-out from\n{0, .25, .5, 1, 2}. EDGES env: none / hunter / hunter_maker (follows of the hunter, + the first named maker); \"followers_feature_only\"\n= the launch-level sum over active covered followers of ln(1+upvotes 90d), added to clean instead of E. Timing: STRICT = only upvotes / follows from reads fetched before 00:00 PT of the test day; LENIENT = every read of\nan upvote on an earlier day's launch (what a fresh read the night before would give). HIDDEN: votes on today's launches seen in reads\nfetched 00:05-04:00 PT of the day (re-reads in the hidden window). Coverage curve: covered people subsampled to 10/20/30/41% of votes\n(5 draws). Truth: official daily rank. Paired day bootstrap vs clean alone.",
+ "days": [
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "placebo (tie-averaged) top3/5/10": [
+  26.4,
+  34.2,
+  53.4
+ ],
+ "clean_nosite top3/5/10": [
+  66.7,
+  68.0,
+  72.0
+ ],
+ "COUNT": {
+  "R-precision (list size = the launch's real held-voter count; calibration-free)": [
+   25.6,
+   23.1,
+   28.0,
+   124
+  ],
+  "recall@N": [
+   27.4,
+   24.7,
+   30.0,
+   124
+  ],
+  "recall@2N": [
+   45.8,
+   42.4,
+   49.1,
+   124
+  ],
+  "recall@N by voter type (1 / 2-4 / 5+ votes that day)": {
+   "1": [
+    2.9,
+    0.8,
+    6.1,
+    74
+   ],
+   "2-4": [
+    15.7,
+    11.7,
+    20.4,
+    112
+   ],
+   "5+": [
+    39.8,
+    36.1,
+    43.6,
+    124
+   ]
+  },
+  "top3/5/10": [
+   33.3,
+   60.0,
+   74.0
+  ],
+  "vs placebo": [
+   [
+    7.0,
+    -10.6,
+    30.1
+   ],
+   [
+    25.8,
+    10.1,
+    44.8
+   ],
+   [
+    20.6,
+    10.0,
+    30.9
+   ]
+  ],
+  "vs clean": [
+   [
+    -33.3,
+    -66.7,
+    -6.7
+   ],
+   [
+    -8.0,
+    -24.0,
+    0.0
+   ],
+   [
+    2.0,
+    -10.0,
+    12.0
+   ]
+  ],
+  "calibration median E/displayed, Spearman": [
+   0.242,
+   0.459
+  ]
+ },
+ "HYBRID": {
+  "R-precision (list size = the launch's real held-voter count; calibration-free)": [
+   29.0,
+   26.6,
+   31.1,
+   124
+  ],
+  "recall@N": [
+   49.5,
+   46.4,
+   52.6,
+   124
+  ],
+  "recall@2N": [
+   67.5,
+   64.6,
+   70.6,
+   124
+  ],
+  "recall@N by voter type (1 / 2-4 / 5+ votes that day)": {
+   "1": [
+    6.7,
+    3.2,
+    11.1,
+    74
+   ],
+   "2-4": [
+    22.6,
+    17.8,
+    27.9,
+    112
+   ],
+   "5+": [
+    72.7,
+    68.9,
+    76.2,
+    124
+   ]
+  },
+  "top3/5/10": [
+   40.0,
+   68.0,
+   76.0
+  ],
+  "vs placebo": [
+   [
+    13.6,
+    -6.6,
+    36.2
+   ],
+   [
+    33.8,
+    15.6,
+    58.4
+   ],
+   [
+    22.6,
+    13.5,
+    31.7
+   ]
+  ],
+  "vs clean": [
+   [
+    -26.7,
+    -66.7,
+    0.0
+   ],
+   [
+    0.0,
+    -20.0,
+    16.0
+   ],
+   [
+    4.0,
+    -8.0,
+    14.0
+   ]
+  ],
+  "calibration median E/displayed, Spearman": [
+   0.5,
+   0.754
+  ]
+ },
+ "CHOICE": {
+  "R-precision (list size = the launch's real held-voter count; calibration-free)": [
+   19.2,
+   17.0,
+   21.4,
+   124
+  ],
+  "recall@N": [
+   59.0,
+   55.8,
+   62.3,
+   124
+  ],
+  "recall@2N": [
+   72.2,
+   69.1,
+   75.4,
+   124
+  ],
+  "recall@N by voter type (1 / 2-4 / 5+ votes that day)": {
+   "1": [
+    17.8,
+    11.9,
+    24.4,
+    74
+   ],
+   "2-4": [
+    31.0,
+    25.5,
+    36.5,
+    112
+   ],
+   "5+": [
+    81.6,
+    78.2,
+    84.4,
+    124
+   ]
+  },
+  "top3/5/10": [
+   40.0,
+   60.0,
+   72.0
+  ],
+  "vs placebo": [
+   [
+    13.6,
+    -6.6,
+    36.2
+   ],
+   [
+    25.8,
+    10.0,
+    44.8
+   ],
+   [
+    18.6,
+    7.5,
+    32.0
+   ]
+  ],
+  "vs clean": [
+   [
+    -26.7,
+    -66.7,
+    0.0
+   ],
+   [
+    -8.0,
+    -24.0,
+    0.0
+   ],
+   [
+    0.0,
+    -10.0,
+    8.0
+   ]
+  ],
+  "calibration median E/displayed, Spearman": [
+   1.794,
+   0.756
+  ]
+ },
+ "person-level top-3 hit (same voter person-days)": {
+  "CHOICE (softmax + clean prior)": [
+   43.2,
+   41.0,
+   45.3,
+   1355
+  ],
+  "COUNT cond": [
+   30.4,
+   28.4,
+   32.4,
+   1355
+  ],
+  "(a) clean order for everyone": [
+   40.5,
+   38.1,
+   42.5,
+   1355
+  ],
+  "(b) team ties only": [
+   32.9,
+   30.8,
+   35.1,
+   1355
+  ],
+  "(c) ORACLE final rank order": [
+   55.2,
+   52.9,
+   57.5,
+   1355
+  ]
+ },
+ "person-level top-3 hit by voter type": {
+  "1": {
+   "CHOICE (softmax + clean prior)": [
+    52.1,
+    48.5,
+    55.7,
+    718
+   ],
+   "COUNT cond": [
+    32.3,
+    28.8,
+    35.5,
+    718
+   ],
+   "(a) clean order for everyone": [
+    50.1,
+    46.5,
+    53.8,
+    718
+   ],
+   "(b) team ties only": [
+    38.2,
+    34.5,
+    41.9,
+    718
+   ],
+   "(c) ORACLE final rank order": [
+    68.7,
+    65.2,
+    72.1,
+    718
+   ]
+  },
+  "2-4": {
+   "CHOICE (softmax + clean prior)": [
+    35.8,
+    33.2,
+    38.4,
+    473
+   ],
+   "COUNT cond": [
+    29.7,
+    27.4,
+    32.1,
+    473
+   ],
+   "(a) clean order for everyone": [
+    31.8,
+    29.3,
+    34.1,
+    473
+   ],
+   "(b) team ties only": [
+    28.3,
+    26.0,
+    30.8,
+    473
+   ],
+   "(c) ORACLE final rank order": [
+    44.0,
+    40.7,
+    47.3,
+    473
+   ]
+  },
+  "5+": {
+   "CHOICE (softmax + clean prior)": [
+    25.8,
+    23.2,
+    28.2,
+    164
+   ],
+   "COUNT cond": [
+    24.3,
+    22.2,
+    26.6,
+    164
+   ],
+   "(a) clean order for everyone": [
+    23.1,
+    20.9,
+    25.4,
+    164
+   ],
+   "(b) team ties only": [
+    23.0,
+    20.8,
+    25.4,
+    164
+   ],
+   "(c) ORACLE final rank order": [
+    28.1,
+    25.6,
+    30.7,
+    164
+   ]
+  }
+ },
+ "CHOICE - (a) clean order, person hit": [
+  2.8,
+  1.1,
+  4.4,
+  1355
+ ]
+}
