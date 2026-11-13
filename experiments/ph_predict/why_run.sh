@@ -1,13 +1,13 @@
 #!/bin/bash
-# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 14d314b5), people-side "why" items.
+# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 fcbcd617), people-side "why" items.
 # No LLM, no Product Hunt requests, CPU only. Salted ids + counts only; the salt is read by the script, never printed.
-# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of 14d314b5>
+# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of fcbcd617>
 #   forecast D: at/after 00:10 PT on D (store reads fetched before 00:00 PT only) -> results/web/why_shadow/<D>_0005.json
 #   after D:    ~09:00 PT on D+1, after the store merge -> results/web/why_shadow/<D>_after.json
 #   try -:      weekly /try neighbour sidecar -> results/web/why_shadow/try_neighbours_v1.json
 set -euo pipefail
 MODE="$1"; D="$2"; W="$3"; WT="$4"; B=gs://usersim-bakeoff-347838016394/usersim_sim
-PIN=14d314b5   # the single source of truth for the pin (E5 14:37Z Nov 13); the worktree is moved / recreated here
+PIN=fcbcd617   # the single source of truth for the pin (E5 14:54Z Nov 13); the worktree is moved / recreated here
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 if [ ! -d "$WT/.git" ] && [ ! -f "$WT/.git" ]; then git -C "$REPO" fetch -q origin claude/person-model-v2; git -C "$REPO" worktree add -q --detach "$WT" "$PIN"; fi
 [ "$(git -C "$WT" rev-parse --short=8 HEAD)" = "$PIN" ] || { git -C "$REPO" fetch -q origin claude/person-model-v2 || true; git -C "$WT" checkout -q --detach "$PIN"; }
