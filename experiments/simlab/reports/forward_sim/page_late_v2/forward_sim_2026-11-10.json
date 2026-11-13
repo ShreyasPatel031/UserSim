@@ -4,9 +4,9 @@
  "lineup": 50,
  "lineup_from_warehouse": 0,
  "judged_launches_5plus_comments": 11,
- "page_reads_held": 0,
+ "page_reads_held": 36,
  "final_ranks_available": 50,
- "minutes": 2.2,
+ "minutes": 0.0,
  "concerns": {
   "ph|dep": {
    "precision": [
@@ -229,5 +229,5 @@
    "spearman_pct_vs_final_rank": 0.478
   }
  },
- "est_usd_judge": 0.13
+ "est_usd_judge": 0.0
 }

@@ -6,7 +6,7 @@
  "judged_launches_5plus_comments": 14,
  "page_reads_held": 8,
  "final_ranks_available": 37,
- "minutes": 2.5,
+ "minutes": 0.0,
  "concerns": {
   "ph|dep": {
    "precision": [
@@ -284,5 +284,5 @@
    "spearman_pct_vs_final_rank": 0.683
   }
  },
- "est_usd_judge": 0.15
+ "est_usd_judge": 0.0
 }
