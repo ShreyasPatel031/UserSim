@@ -70,6 +70,13 @@ def main():
     for nm in VARS:
         P = np.array(res[nm]); dP = P - base; b = np.array([dP[rng.integers(0, len(dP), len(dP))].mean(0) for _ in range(3000)])
         md.append(f"| {nm} | {P[:,0].mean():.1f} | {P[:,1].mean():.1f} | {dP[:,0].mean():+.1f} [{np.percentile(b[:,0],2.5):+.1f}, {np.percentile(b[:,0],97.5):+.1f}] | {dP[:,1].mean():+.1f} [{np.percentile(b[:,1],2.5):+.1f}, {np.percentile(b[:,1],97.5):+.1f}] |")
+    # orchestrator 01:47Z Nov 13: freeze the clean_nosite_tb weights (all 214 days, clean positions 2-6) for the live column
+    fp = os.path.join(HERE, "results", "frozen", "clean_nosite_tb_20261113.json")
+    if not os.path.exists(fp):
+        m = Ridge(alpha=3.0).fit(W26[["z_clean", "z_npre"]], W26.y); os.makedirs(os.path.dirname(fp), exist_ok=True)
+        json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": len(days), "rows": "clean positions 2-6",
+                   "coef": {"z_clean": float(m.coef_[0]), "z_npre": float(m.coef_[1])},
+                   "note": "z within day over all launches; re-order only clean_nosite positions 2-6 by this score"}, open(fp, "w"), indent=1)
     open(os.path.join(HERE, "results", "tiebreak.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 

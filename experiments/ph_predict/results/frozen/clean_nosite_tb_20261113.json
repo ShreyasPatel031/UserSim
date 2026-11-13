@@ -1,0 +1,10 @@
+{
+ "frozen_at": "2026-11-13T01:48:41.648365+00:00",
+ "days": 214,
+ "rows": "clean positions 2-6",
+ "coef": {
+  "z_clean": 0.5816778631900632,
+  "z_npre": 0.20318152513928212
+ },
+ "note": "z within day over all launches; re-order only clean_nosite positions 2-6 by this score"
+}
