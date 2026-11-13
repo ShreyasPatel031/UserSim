@@ -72,7 +72,7 @@ def main():
     subprocess.run(["gsutil", "-q", "-m", "cp", "-n", f"{B}/results/grok_forecast/*.json", gd + "/"], stderr=subprocess.DEVNULL)
     for gp in sorted(glob.glob(os.path.join(gd, "*.json"))):
         try:
-            G = json.load(open(gp)); d = G["day"]; tp = os.path.join(gd, f".lineup_{d}.json")
+            G = json.load(open(gp)); d = G["day"]; tp = os.path.join(os.environ.get("TMPDIR", "/tmp"), f"sb_lineup_{d}.json")   # line-up holds usernames: never inside the repo
             if not os.path.exists(tp):
                 subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{d}/today_0005.json", tp], stderr=subprocess.DEVNULL)
             sl = {x["slug"]: str(x["id"]) for x in json.load(open(tp))}
