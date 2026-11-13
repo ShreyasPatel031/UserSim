@@ -1,0 +1,152 @@
+{
+ "design": "Explain arm 2 from arm 2 itself: tree-SHAP groups vs the readable stumps (orchestrator 23:36Z Nov 13). Counts only.\nInputs: PH ops' dump tmp/ph_ops/arm2_explain (X, seed-mean pred_contrib SHAP, 35 boosters + rescore, stump points, group map).\nSHAP groups (40 inputs): hunter record (hist_hunter_*, ph_hunter_age_d, ph_hunter_n_same_day, dayrank hunter transforms), pitch (llm_pitch),\nbrand (llm_brand), topic (topic_*, ph_n_topics), competition (comp_nn_*), media (ph_n_media, ph_has_video, dayrank media), team size\n(ph_n_makers, dayrank makers), promotion (promo_*, x_company_has_x), text (txt_ridge, desc/tagline/name length), day/lineup (weekday,\nday_n_launches, busy_*). Stumps: 10 inputs in 7 groups (PH ops map); stated drivers = top3_groups (by |summed points|, as the why file).\nSHAP drivers of a pick = groups ranked by within-day-centred contribution (contribution minus the day mean; only differences move ranks).\nPicks = arm 2's top 3 per day (214 days). (a) fidelity: set the stated driver group's inputs (top 1, or top 3 groups) to the day median and\nre-score with the deployed boosters (other launches unchanged); share of picks that drop out of the top 3; baseline = a random SHAP group.\n(b) agreement: SHAP top group == stump top group. (c) usefulness: pick accuracy (official rank <= 3) by dominant group and by\nconcentration (top group's share of the positive centred contribution), day bootstrap.",
+ "days": 214,
+ "picks": 642,
+ "pick accuracy (rank <= 3)": [
+  60.6,
+  57.8,
+  63.6,
+  642
+ ],
+ "(a) fidelity: share of picks dropping out of top 3 when the stated drivers are set to the day median": {
+  "SHAP top-1 group": [
+   45.0,
+   40.5,
+   49.7,
+   642
+  ],
+  "SHAP top-3 groups": [
+   81.9,
+   77.6,
+   86.1,
+   642
+  ],
+  "stumps top-1 stated group": [
+   22.4,
+   19.0,
+   26.2,
+   642
+  ],
+  "stumps top-3 stated groups": [
+   58.4,
+   53.4,
+   63.7,
+   642
+  ],
+  "stumps top-1 stated group, all arm-2 inputs of that group": [
+   37.7,
+   33.3,
+   42.2,
+   642
+  ],
+  "random SHAP group (baseline)": [
+   13.1,
+   10.6,
+   15.9,
+   642
+  ]
+ },
+ "(a) paired SHAP top-1 - stumps top-1": [
+  22.6,
+  18.5,
+  26.5,
+  642
+ ],
+ "(a) paired SHAP top-3 - stumps top-3": [
+  23.5,
+  19.9,
+  27.6,
+  642
+ ],
+ "(b) agreement: SHAP top group == stumps top group": [
+  76.0,
+  72.9,
+  79.3,
+  642
+ ],
+ "(b) SHAP top group in stumps' top 3": [
+  96.4,
+  94.9,
+  97.7,
+  642
+ ],
+ "(b) SHAP top-group distribution": {
+  "hunter record": 483,
+  "team size": 130,
+  "pitch": 19,
+  "text": 3,
+  "day/lineup": 3,
+  "topic": 2,
+  "competition": 1,
+  "promotion": 1
+ },
+ "(b) stumps top-group distribution": {
+  "hunter record": 529,
+  "team size": 69,
+  "pitch": 34,
+  "topic": 9,
+  "text": 1
+ },
+ "(c) pick accuracy by explanation": {
+  "SHAP dominant group": {
+   "hunter record": [
+    59.2,
+    55.7,
+    62.9,
+    483
+   ],
+   "team size": [
+    65.4,
+    57.9,
+    73.4,
+    130
+   ],
+   "pitch": [
+    57.9,
+    33.3,
+    78.9,
+    19
+   ]
+  },
+  "stumps top group": {
+   "hunter record": [
+    61.4,
+    58.1,
+    65.0,
+    529
+   ],
+   "pitch": [
+    38.2,
+    21.2,
+    54.5,
+    34
+   ],
+   "team size": [
+    65.2,
+    54.5,
+    75.4,
+    69
+   ]
+  },
+  "SHAP concentration": {
+   "<0.4 spread": [
+    64.0,
+    57.7,
+    70.4,
+    178
+   ],
+   "0.4-0.6": [
+    61.1,
+    56.6,
+    65.7,
+    337
+   ],
+   ">0.6 single driver": [
+    54.3,
+    46.3,
+    62.5,
+    127
+   ]
+  }
+ }
+}
