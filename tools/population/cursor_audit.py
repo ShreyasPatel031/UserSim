@@ -76,14 +76,21 @@ def main():
             os.remove(f"{D}/people_live/vm/{fn}")
     need = [n for n in todo if man.get(n) != st[n] or not os.path.exists(f"{D}/people_live/vm/{n}.json")]
     print(f"DOWNLOAD need={len(need)} cached={len(todo) - len(need)}", flush=True)
-    for i in range(0, len(need), 2000):  # gcloud storage: ~750 files/min vs ~50/min for gsutil -m cp with long arg lists
-        b = need[i:i + 2000]
+    import threading
+    from concurrent.futures import ThreadPoolExecutor as _TPE
+    lock = threading.Lock()
+
+    def _dl(b):  # gcloud storage, 4 batches of 500 at once; the manifest is saved after each batch (restarts lose <=2k files)
         subprocess.run(["gcloud", "storage", "cp", "-I", f"{D}/people_live/vm/"], input="".join(f"{STAGE}/{n}.json\n" for n in b),
                        capture_output=True, text=True)
-        for n in b:
-            if os.path.exists(f"{D}/people_live/vm/{n}.json"):
-                man[n] = st[n]
-        open(man_f, "w").write("".join(f"{k}\t{v}\n" for k, v in man.items() if k in keep))
+        with lock:
+            for n in b:
+                if os.path.exists(f"{D}/people_live/vm/{n}.json"):
+                    man[n] = st[n]
+            open(man_f + ".tmp", "w").write("".join(f"{k}\t{v}\n" for k, v in man.items() if k in keep))
+            os.replace(man_f + ".tmp", man_f)
+    with _TPE(4) as ex:
+        list(ex.map(_dl, [need[i:i + 500] for i in range(0, len(need), 500)]))
     sh("gsutil", "-q", "-m", "cp", f"{STAGE}/_signedin_upvotes/*.json", f"{D}/signedin_upvotes/")
     sys.argv = ["quality.py", D, "2026-11-05T00:00:00Z", "/dev/null", "/dev/null"]
     with contextlib.redirect_stdout(io.StringIO()):
