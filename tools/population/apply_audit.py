@@ -52,7 +52,7 @@ def vm_evidence(SC, vm):
              for fn in os.listdir(f"{SC}/{sub}") if fn.startswith(vm + ".")]
     lines = "".join(open(f, errors="replace").read() for f in files).splitlines()
     rot = any(EVASION.search(strip(l)) for l in lines)
-    recs = sorted((str(d.get("utc") or d.get("ts") or ""), d) for d in map(js, lines) if isinstance(d, dict))
+    recs = sorted(((str(d.get("utc") or d.get("ts") or ""), d) for d in map(js, lines) if isinstance(d, dict)), key=lambda x: x[0])
     times = [t for t, _ in recs if t]
     held = None
     if times and times[0] >= BLOCK_SINCE:
