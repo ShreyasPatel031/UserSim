@@ -81,11 +81,19 @@ def main():
         S3 = g[g.a <= t3].sort_values("a").groupby("id").rank_now.last()
         for i, r in S3.items():
             if 11 <= r <= 19 and i in set(X.id):
-                cl.append({"id": i, "climbed": int(X.set_index("id").daily_rank[i] <= 10), "xmax": float(X.set_index("id").xmax[i])})
+                cl.append({"id": i, "climbed": int(X.set_index("id").daily_rank[i] <= 10), "xmax": float(X.set_index("id").xmax[i]),
+                           "xhas": float(X.set_index("id").xhas[i])})
     C = pd.DataFrame(cl)
     if len(C):
         md += ["", f"Climber check (hidden rank 11-19 at 03:00 PT, {len(C)} launches): mean log1p X max followers, ended top 10 "
-               f"{C[C.climbed == 1].xmax.mean():.2f} (n {int(C.climbed.sum())}) vs not {C[C.climbed == 0].xmax.mean():.2f} (n {int((C.climbed == 0).sum())})"]
+               f"{C[C.climbed == 1].xmax.mean():.2f} (n {int(C.climbed.sum())}) vs not {C[C.climbed == 0].xmax.mean():.2f} (n {int((C.climbed == 0).sum())}); "
+               f"share with a safe-set handle {C[C.climbed == 1].xhas.mean():.2f} vs {C[C.climbed == 0].xhas.mean():.2f}; "
+               f"among launches with a handle, mean log1p X max {C[(C.climbed == 1) & (C.xhas == 1)].xmax.mean():.2f} "
+               f"(n {int(((C.climbed == 1) & (C.xhas == 1)).sum())}) vs {C[(C.climbed == 0) & (C.xhas == 1)].xmax.mean():.2f} "
+               f"(n {int(((C.climbed == 0) & (C.xhas == 1)).sum())})"]
+        from sklearn.metrics import roc_auc_score
+        if C.climbed.nunique() == 2:
+            md.append(f"Climber AUC of X max followers alone: {roc_auc_score(C.climbed, C.xmax):.2f}")
     open(os.path.join(HERE, "results", "x_audience.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
