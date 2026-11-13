@@ -31,7 +31,7 @@
         <li data-s="page"><b>Read page</b>Fetch + understand it</li>
         <li data-s="people"><b>Match people</b>Real PH members, anonymised</li>
         <li data-s="reactions"><b>Simulate reactions</b>What they'd write</li>
-        <li data-s="asks"><b>Likely question</b>And concern</li>
+        <li data-s="asks"><b>Likely question</b>And concerns</li>
         <li data-s="launch"><b>Place on PH</b>Rank and vote range</li>
       </ol>
       <p class="small muted" style="margin:6px 0 0">No public page yet, or it needs JavaScript? About 1 in 5 pages can’t be read automatically. <a href="#" id="paste-open">Paste a launch description instead</a> (also the more accurate input).</p>
@@ -50,7 +50,7 @@
   <div id="out" hidden>
     <section class="block" id="prod"></section>
     <section class="block">
-      <header><h2>The question they’ll most likely ask</h2><span class="label">simulated</span></header>
+      <header><h2>What they’ll most likely ask and object to</h2><span class="label">simulated</span></header>
       <div id="ask"><p class="skeleton">Ranking likely questions…</p></div>
     </section>
     <section class="block">
@@ -105,13 +105,11 @@ function renderProduct(a){
 }
 const pct = (v)=> Math.max(0, Math.min(100, Number(v)||0));
 function renderAsks(j){
-  const card = (lab, txt) => `<div class="card"><p class="label">${lab}</p><p style="font-family:var(--serif);font-size:1.25rem;line-height:1.35">${esc(txt)}</p></div>`;
-  let h = '<div class="grid2">' + (j.question ? card("Most likely question", j.question) : "")
-    + (j.concern ? card("Most likely concern", j.concern)
-       : `<div class="card"><p class="label">Most likely concern</p><p class="muted">Only reliable from a launch description. <a href="#" class="paste-link">Paste yours</a> to see it.</p></div>`)
-    + "</div>";
-  $("#ask").innerHTML = h + `<p class="small muted">${esc(j.note)}</p>`;
-  document.querySelectorAll("#ask .paste-link").forEach(a=>a.onclick=(e)=>{e.preventDefault(); $("#paste").hidden=false; $("#pn").focus();});
+  const big = 'style="font-family:var(--serif);font-size:1.25rem;line-height:1.35"';
+  const lab = {retrieval: "Most likely concerns", earlier_method: "Likely concerns (earlier method)", common: "Common concerns (few similar past launches)"}[j.concerns_basis] || "Likely concerns";
+  const q = j.question ? `<div class="card"><p class="label">Most likely question</p><p ${big}>${esc(j.question)}</p></div>` : "";
+  const c = (j.concerns||[]).length ? `<div class="card"><p class="label">${lab}</p><ol style="margin:0;padding-left:1.2em">${j.concerns.map(x=>`<li style="margin:0 0 8px">${esc(x)}</li>`).join("")}</ol></div>` : "";
+  $("#ask").innerHTML = `<div class="grid2">${q}${c}</div><p class="small muted">${esc(j.note)}</p>`;
 }
 function renderReactions(j){
   $("#rx-head").textContent = j.headline || "";

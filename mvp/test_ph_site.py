@@ -302,10 +302,18 @@ def test_asks_rank_pick_and_note():
     # candidate 2 has the highest likelihood and the others tie: it is picked
     assert try_sim._rank_pick(["a", "b"], [], np.zeros((0, 4), np.float32), X, [1, 1, 5, 1]) == 2
     page, pasted = try_sim._asks_note(False), try_sim._asks_note(True)
-    assert "2 in 5" in page and "concern" in page and "Paste" in page
-    assert "1 in 2" in pasted and "most likely concern did so" in pasted
+    assert "2 in 5" in page and "about 1 in 4 of these concerns" in page
+    assert "1 in 2" in pasted and "about 1 in 3 of these concerns" in pasted
+    assert "no accuracy figure" in try_sim._asks_note(True, 60, "earlier_method") and "1 in 3" not in try_sim._asks_note(True, 60, "earlier_method")
+    assert "common concerns" in try_sim._asks_note(False, None, "common")
     assert try_sim.STEP_USES["asks"] == 1
     assert "under 40 words" in try_sim._asks_note(True, 25) and "under 40 words" not in try_sim._asks_note(True, 60)
+    R = {"emb": np.array([[1, 0], [0.9, 0.1], [0, 1]], np.float32),
+         "rows": [{"slug_stem": "acme-2", "themes": []}, {"slug_stem": "other", "themes": ["objection: too pricey", "praise: nice"]},
+                  {"slug_stem": "third", "themes": ["question: is there an API?"]}]}
+    nb, s1 = try_sim._b20_neighbours(R, np.array([1, 0], np.float32), "Acme")
+    assert nb == [1, 2] and abs(s1 - 0.9) < 1e-6           # the product's own earlier launch (acme-2) is excluded
+    assert try_sim._b20_points(R, nb) == "[1] too pricey\n[2] is there an API?"
 
 
 def test_ph_steady_state_freshness(monkeypatch):

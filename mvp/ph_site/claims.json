@@ -152,8 +152,6 @@
    "q_desc": "1 in 2",
    "q_page": "2 in 5",
    "q_generic": "1 in 5",
-   "c_desc": "2 in 5",
-   "c_generic": "1 in 5",
    "ceiling": "1 in 3",
    "q_desc_range": [
     0.49,
@@ -164,14 +162,6 @@
     0.21,
     0.23
    ],
-   "c_desc_range": [
-    0.34,
-    0.41
-   ],
-   "c_generic_range": [
-    0.16,
-    0.2
-   ],
    "ceiling_range": [
     0.32,
     0.35
@@ -181,5 +171,21 @@
   "label": "70 past launches, top item judged against real comments by gemini-2.5-pro for the same specific point, two independent adjudications",
   "source": "E5 reports/judge_reliability/README.md, branch claude/person-model-v2",
   "date": "2026-11-12"
+ },
+ "concerns_b20": {
+  "values": {
+   "desc": "1 in 3",
+   "page": "1 in 4",
+   "generic": "1 in 6",
+   "p3_desc": 0.372,
+   "p3_page": 0.246,
+   "p3_generic": 0.165,
+   "p3_desc_deployed": 0.248,
+   "p3_page_deployed": 0.171,
+   "launches": 170
+  },
+  "label": "170 past launches, strict same-point judge (gemini-2.5-pro), top 3 concerns",
+  "source": "E5 reports/retrieval_react/RECIPE_b20_concerns.md (retrieval_rep.json), commit 3295e9b9, branch claude/person-model-v2",
+  "date": "2026-11-13"
  }
 }
