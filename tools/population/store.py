@@ -618,6 +618,27 @@ def build(data_dir, out_dir, salt, complete=None):
         pool = pd.concat([pool, add], ignore_index=True)
     pool = pool.merge(prof, on="person_id", how="left")
     pool["has_record"] = pool.ph_user_id.notna() | pool.pull_finished_utc.notna()
+    # why each person was pulled (request_provenance.py over every request batch list): earliest entry route plus every
+    # route, earliest first; the full table is copied next to persons as request_provenance.parquet
+    rp_f = f"{data_dir}/request_provenance.parquet"
+    if os.path.exists(rp_f):
+        rp = pd.read_parquet(rp_f)
+        rp.to_parquet(f"{out_dir}/request_provenance.parquet", index=False)
+        rp = rp[rp.person_id.isin(set(pool.person_id))].sort_values(["person_id", "requested_utc", "batch_file", "batch_rank"])
+        NONENTRY = {"repull_fix", "completion", "repull_gap", "upvote_refresh_complete", "pool_upvote_refresh"}
+        ent = rp[~rp.route.isin(NONENTRY)].groupby("person_id").head(1).set_index("person_id")
+        allr = rp.groupby("person_id").apply(lambda g: json.dumps([{"route": r, "seed": sd, "batch": b, "requested_utc": t}
+                                                                     for r, sd, b, t in zip(g.route, g.seed, g.batch_file, g.requested_utc)]))
+        pool["entry_route"] = pool.person_id.map(ent.route)
+        pool["entry_seed"] = pool.person_id.map(ent.seed)
+        pool["entry_batch"] = pool.person_id.map(ent.batch_file)
+        pool["entry_requested_utc"] = pool.person_id.map(ent.requested_utc)
+        pool["request_provenance_json"] = pool.person_id.map(allr)
+        pool["n_request_batches"] = pool.person_id.map(rp.groupby("person_id").batch_file.nunique()).fillna(0).astype(int)
+        print("PROVENANCE:", json.dumps({"with_record": int(pool.has_record.sum()),
+                                         "with_record_attributed": int((pool.has_record & pool.request_provenance_json.notna()).sum()),
+                                         "with_record_entry_route": int((pool.has_record & pool.entry_route.notna()).sum()),
+                                         "entry_route_counts": pool[pool.has_record].entry_route.value_counts().to_dict()}))
     pool.to_parquet(f"{out_dir}/persons.parquet", index=False)
     xt = x_timelines(data_dir, OK_X_DIRS)  # orchestrator Nov 8 02:39Z: every X timeline labelled; partial unless x_end
     if len(xt):
