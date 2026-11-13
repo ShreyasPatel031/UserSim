@@ -87,6 +87,8 @@ for d in DAYS:
         if am: rows.append({"id": i, "day": d, "n_back": len(v), "votes": float(pd.to_numeric(L.loc[L.id == i, "votes"]).iloc[0]), "pred": pm, "act": am, "day_b": dm_, "top_b": tm_})
     HIST[d] = [(ltops.get(r["id"], set()), r["act"], r["n_back"]) for r in rows if r["day"] == d]
     print(d, len(rows), round(time.time() - t0), flush=True)
+import pickle
+if os.environ.get("ROWS"): pickle.dump(rows, open(os.environ["ROWS"], "wb"))   # per-launch mixes (launch ids + shares only); scratch
 R = [r for r in rows if r["n_back"] >= 20 and r["day_b"] is not None]
 def lb(v):
     v = np.asarray(v, float); v = v[~np.isnan(v)]; bs = [v[rng.integers(0, len(v), len(v))].mean() for _ in range(2000)]
