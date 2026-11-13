@@ -1,0 +1,361 @@
+{
+ "design": "Voter-based 00:05 forecast harness (orchestrator 22:53Z Nov 12; re-run with one command on a new store snapshot).\nDays: Oct 29-31, Nov 2, 3, 4, 8, 9, 10, 11. Line-up and clean score: PH agent's clean_live_rows_nosite.parquet (clean_v3_nosite, as live).\nCovered people = complete persons in the store. Pair model P(person upvotes launch): logistic regression on [ln(1+upvotes 30d),\nln(1+upvotes 90d), days since last upvote, topic-taste match, follows the hunter, is the hunter], trained on the 7 launch days before the\ntest day (features at each training day from history before that day; all negatives of active people subsampled 10%).\nExpected covered votes E(L) = sum over active covered people of P. Combined = z(clean) + w z(ln(E + 0.1)), w leave-one-day-out from\n{0, .25, .5, 1, 2}. EDGES env: none / hunter / hunter_maker (follows of the hunter, + the first named maker); \"followers_feature_only\"\n= the launch-level sum over active covered followers of ln(1+upvotes 90d), added to clean instead of E. Timing: STRICT = only upvotes / follows from reads fetched before 00:00 PT of the test day; LENIENT = every read of\nan upvote on an earlier day's launch (what a fresh read the night before would give). HIDDEN: votes on today's launches seen in reads\nfetched 00:05-04:00 PT of the day (re-reads in the hidden window). Coverage curve: covered people subsampled to 10/20/30/41% of votes\n(5 draws). Truth: official daily rank. Paired day bootstrap vs clean alone.",
+ "days": [
+  "2026-10-25",
+  "2026-10-26",
+  "2026-10-27",
+  "2026-10-28",
+  "2026-10-29",
+  "2026-10-30",
+  "2026-10-31",
+  "2026-11-01",
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "train_days": 30,
+ "placebo (tie-averaged) top3/5/10": [
+  29.2,
+  31.9,
+  51.2
+ ],
+ "clean_nosite top3/5/10": [
+  64.4,
+  70.7,
+  76.0
+ ],
+ "softmax: taste": {
+  "hist": {
+   "top3/5/10": [
+    26.7,
+    37.3,
+    58.0
+   ],
+   "vs placebo": [
+    [
+     -2.5,
+     -17.4,
+     11.5
+    ],
+    [
+     5.5,
+     -1.7,
+     12.2
+    ],
+    [
+     6.8,
+     -0.5,
+     13.7
+    ]
+   ],
+   "vs clean": [
+    [
+     -37.8,
+     -53.3,
+     -22.2
+    ],
+    [
+     -33.3,
+     -41.3,
+     -24.0
+    ],
+    [
+     -18.0,
+     -25.3,
+     -10.0
+    ]
+   ],
+   "calibration median E/displayed, Spearman": [
+    0.75,
+    0.466
+   ]
+  },
+  "ORACLE (realised vote count)": {
+   "top3/5/10": [
+    26.7,
+    37.3,
+    58.0
+   ],
+   "vs placebo": [
+    [
+     -2.5,
+     -18.6,
+     11.4
+    ],
+    [
+     5.5,
+     -1.8,
+     12.5
+    ],
+    [
+     6.8,
+     -0.2,
+     13.8
+    ]
+   ],
+   "vs clean": [
+    [
+     -37.8,
+     -53.3,
+     -22.2
+    ],
+    [
+     -33.3,
+     -41.3,
+     -24.0
+    ],
+    [
+     -18.0,
+     -26.0,
+     -10.0
+    ]
+   ],
+   "calibration median E/displayed, Spearman": [
+    0.745,
+    0.431
+   ]
+  },
+  "recall@N (hist k)": [
+   19.1,
+   17.8,
+   20.4,
+   348
+  ],
+  "recall@2N (hist k)": [
+   34.5,
+   32.7,
+   36.3,
+   348
+  ],
+  "person-level top-3 hit": [
+   25.9,
+   25.2,
+   26.6,
+   11649
+  ]
+ },
+ "softmax: taste+cf": {
+  "hist": {
+   "top3/5/10": [
+    17.8,
+    40.0,
+    64.0
+   ],
+   "vs placebo": [
+    [
+     -11.4,
+     -25.0,
+     2.3
+    ],
+    [
+     8.1,
+     -4.2,
+     19.7
+    ],
+    [
+     12.8,
+     7.2,
+     17.8
+    ]
+   ],
+   "vs clean": [
+    [
+     -46.7,
+     -62.2,
+     -31.1
+    ],
+    [
+     -30.7,
+     -44.0,
+     -17.3
+    ],
+    [
+     -12.0,
+     -18.0,
+     -6.0
+    ]
+   ],
+   "calibration median E/displayed, Spearman": [
+    0.741,
+    0.509
+   ]
+  },
+  "ORACLE (realised vote count)": {
+   "top3/5/10": [
+    20.0,
+    44.0,
+    64.0
+   ],
+   "vs placebo": [
+    [
+     -9.2,
+     -23.6,
+     4.5
+    ],
+    [
+     12.1,
+     1.0,
+     22.7
+    ],
+    [
+     12.8,
+     6.6,
+     18.6
+    ]
+   ],
+   "vs clean": [
+    [
+     -44.4,
+     -60.0,
+     -28.9
+    ],
+    [
+     -26.7,
+     -38.7,
+     -14.7
+    ],
+    [
+     -12.0,
+     -18.0,
+     -5.3
+    ]
+   ],
+   "calibration median E/displayed, Spearman": [
+    0.722,
+    0.494
+   ]
+  },
+  "recall@N (hist k)": [
+   20.0,
+   18.6,
+   21.4,
+   348
+  ],
+  "recall@2N (hist k)": [
+   33.8,
+   32.0,
+   35.8,
+   348
+  ],
+  "person-level top-3 hit": [
+   19.0,
+   18.4,
+   19.6,
+   11649
+  ]
+ },
+ "softmax: taste+cf+team": {
+  "hist": {
+   "top3/5/10": [
+    40.0,
+    64.0,
+    71.3
+   ],
+   "vs placebo": [
+    [
+     10.8,
+     -8.3,
+     31.8
+    ],
+    [
+     32.1,
+     18.7,
+     44.7
+    ],
+    [
+     20.1,
+     14.4,
+     26.1
+    ]
+   ],
+   "vs clean": [
+    [
+     -24.4,
+     -42.2,
+     -6.7
+    ],
+    [
+     -6.7,
+     -16.0,
+     1.3
+    ],
+    [
+     -4.7,
+     -10.0,
+     2.0
+    ]
+   ],
+   "calibration median E/displayed, Spearman": [
+    0.556,
+    0.689
+   ]
+  },
+  "ORACLE (realised vote count)": {
+   "top3/5/10": [
+    40.0,
+    64.0,
+    70.7
+   ],
+   "vs placebo": [
+    [
+     10.8,
+     -9.9,
+     32.1
+    ],
+    [
+     32.1,
+     18.7,
+     44.7
+    ],
+    [
+     19.4,
+     13.9,
+     25.1
+    ]
+   ],
+   "vs clean": [
+    [
+     -24.4,
+     -44.4,
+     -4.4
+    ],
+    [
+     -6.7,
+     -14.7,
+     1.3
+    ],
+    [
+     -5.3,
+     -10.7,
+     1.3
+    ]
+   ],
+   "calibration median E/displayed, Spearman": [
+    0.567,
+    0.629
+   ]
+  },
+  "recall@N (hist k)": [
+   18.4,
+   17.2,
+   19.6,
+   348
+  ],
+  "recall@2N (hist k)": [
+   30.6,
+   29.0,
+   32.2,
+   348
+  ],
+  "person-level top-3 hit": [
+   43.4,
+   42.6,
+   44.2,
+   11649
+  ]
+ }
+}
