@@ -5,7 +5,7 @@
 Walk-forward by month exactly as history_retrain (train on months < m, test month m, Apr-Oct 2026).
   (a) ridge on within-day z-scores (missing -> 0 after z), one weight per input
   (b) additive monotone GBM: LightGBM, num_leaves=2 (stumps, so the score is a sum of per-input step functions), monotone sign per
-      input from the full-data ridge sign, 5 seeds; per-launch contributions = pred_contrib summed per input
+      input from that month's training-data ridge sign (no future data), 5 seeds; per-launch contributions = pred_contrib summed per input
 Output: results/readable_preds.parquet (id, day, a, b) + results/readable_contrib.parquet (id, input, points; model b, seed 0)."""
 import json, os, sys, time
 import numpy as np, pandas as pd
@@ -26,12 +26,14 @@ def zday(D):
 def main():
     t0 = time.time(); df = RN.load_llm(F.build()); df = df[~df.known].copy(); df["mon"] = df.day.str[:7]
     df["y"] = df.logv
-    zall = zday(df); sign = np.sign(Ridge(alpha=3.0).fit(zall[df.mon < "2026-11"], df.y[df.mon < "2026-11"]).coef_).astype(int)
-    out, contrib = [], []
+    out, contrib, signs = [], [], {}
     for m in MONTHS:
-        tr, te = df[df.mon < m], df[df.mon == m]
-        if te.empty: continue
-        a = Ridge(alpha=3.0).fit(zday(tr), tr.y).predict(zday(te))
+        tr0, te0 = df[df.mon < m], df[df.mon == m]
+        if te0.empty: continue
+        tr, te, _ = TW.prep(tr0, te0)   # fold features (topic priors, competitor similarity) built from the training months only, as clean_nosite
+        tr = tr.assign(y=tr.logv)
+        rz = Ridge(alpha=3.0).fit(zday(tr), tr.y); sign = np.where(rz.coef_ >= 0, 1, -1).astype(int); signs[m] = dict(zip(X10, map(int, sign)))
+        a = rz.predict(zday(te))
         bs = []
         for s in range(5):
             g = lgb.LGBMRegressor(n_estimators=600, learning_rate=0.03, num_leaves=2, min_child_samples=40, subsample=0.8, subsample_freq=1,
@@ -44,7 +46,8 @@ def main():
         out.append(pd.DataFrame({"id": te.id.astype(str).values, "day": te.day.values, "a": a, "b": np.mean(bs, 0)}))
         print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
     pd.concat(out).to_parquet("results/readable_preds.parquet"); pd.concat(contrib).to_parquet("results/readable_contrib.parquet")
-    print(json.dumps({"sign": dict(zip(X10, map(int, sign))), "rows": int(sum(len(o) for o in out))}))
+    json.dump(signs, open("results/readable_signs.json", "w"), indent=1)
+    print(json.dumps({"signs_last_month": signs[max(signs)], "rows": int(sum(len(o) for o in out))}))
 
 
 if __name__ == "__main__":
