@@ -10,6 +10,7 @@ if all missed backers of the buckets so far were hits (cumulative A, A+B, A+B+D,
 """
 import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); src = open(os.path.join(HERE, "who_backs2.py")).read(); exec(src[src.index("import os, sys, json, time"):src.index("ARMS = {")])
+voters = U[U.lday.isin(DAYS)].groupby("target_id").person_id.agg(set).to_dict()
 JT = pd.to_datetime(pd.read_parquet(os.path.join(V3, "persons.parquet")).set_index("person_id").joined, utc=True, errors="coerce")
 nday = U[U.lday.isin(DAYS)].groupby(["person_id", "lday"]).size()
 cols = COLS; rows = []; rev = []
