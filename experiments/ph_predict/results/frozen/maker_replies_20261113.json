@@ -1,0 +1,19 @@
+{
+ "frozen_at": "2026-11-13T02:54:32.170790+00:00",
+ "days": "214 Apr-Oct",
+ "team": "hunter only (00:05-safe)",
+ "features": "z within day: clean_nosite, th_n_pre, log1p distinct non-hunter commenters <= T, log1p total comments <= T, log1p hunter replies <= T",
+ "points": {
+  "P030": {
+   "coef": {
+    "z_clean": 0.5580463141899656,
+    "z_npre": 0.05535814370322725,
+    "z_nu": 0.1390799230799088,
+    "z_nc": 0.09685335546934123,
+    "z_mrep_h": 0.028965956483420926
+   },
+   "intercept": 9.610078358895743e-17,
+   "cut_minutes": 30
+  }
+ }
+}
