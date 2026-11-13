@@ -44,13 +44,15 @@ def _fill(dst, src):
             _fill(dst[k], v)
 
 
-def union(new, old):
-    """newest pull untouched; everything only the older record had is kept beside it (see module docstring)."""
+def union(new, old, keep_base=False):
+    """newest pull untouched; everything only the older record had is kept beside it (see module docstring).
+    keep_base=True: `new` stays the base even if `old` carries a later time (recovery from copies that never passed the
+    audit must not let such a copy become the main record)."""
     if not isinstance(old, dict):
         return new
     if not isinstance(new, dict):
         return old
-    if _fin(old) > _fin(new):
+    if not keep_base and _fin(old) > _fin(new):
         new, old = old, new
     out = copy.deepcopy(new)
     of = _fin(old)
