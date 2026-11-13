@@ -1,0 +1,236 @@
+{
+ "design": "Time-zone mechanism for late climbers (orchestrator 02:04Z Nov 13). Location sources: people_v3g profiles.location (PH / X / other\nplatform profiles) and Grok Bot's X persons.jsonl location; free text mapped to Americas / Europe-Africa / Asia-Pacific by a keyword\ntable (countries, US states / abbreviations, major cities); ambiguous or unmapped -> unknown. Team = hunter (always safe) + the first named\nmaker in the launches table (safe at 00:05 in most reads). A launch's team region = majority of its known team members' regions.\n(1) coverage per launch Oct 26 - Nov 11; (2) rank change from the hidden rank at 01:00 / 02:00 / 03:00 PT to the final rank by team\nregion, 7 hidden-window days, day bootstrap; (3) if Americas teams climb: hidden rank + region offset, leave-day-out, top 3/5/10;\n(4) held voters with a known region: share of a launch's voters from the Americas vs its climb (hidden-rank days) and vs its residual over\nthe clean score (Oct 1 - Nov 10). Counts only.",
+ "people_with_region": 4401,
+ "region_counts_people": {
+  "Americas": 1966,
+  "Europe-Africa": 1452,
+  "Asia-Pacific": 983
+ },
+ "launches_oct26_nov11": 462,
+ "team_region_coverage": {
+  "unknown": 386,
+  "Americas": 46,
+  "Europe-Africa": 15,
+  "Asia-Pacific": 13,
+  "mixed": 2
+ },
+ "share_launches_with_known_team_region": 0.165,
+ "climb": {
+  "01:00": {
+   "Americas": {
+    "launches": 20,
+    "days": 6,
+    "mean_climb": 1.5,
+    "day_ci": [
+     -1.32,
+     5.77
+    ]
+   },
+   "Asia-Pacific": {
+    "launches": 3,
+    "days": 3,
+    "mean_climb": 4.67,
+    "day_ci": [
+     0.0,
+     8.0
+    ]
+   },
+   "Europe-Africa": {
+    "launches": 6,
+    "days": 4,
+    "mean_climb": 2.0,
+    "day_ci": [
+     -4.5,
+     9.25
+    ]
+   },
+   "mixed": {
+    "launches": 1,
+    "days": 1,
+    "mean_climb": 4.0,
+    "day_ci": [
+     NaN,
+     NaN
+    ]
+   },
+   "unknown": {
+    "launches": 151,
+    "days": 6,
+    "mean_climb": -0.5,
+    "day_ci": [
+     -1.01,
+     0.64
+    ]
+   }
+  },
+  "02:00": {
+   "Americas": {
+    "launches": 20,
+    "days": 6,
+    "mean_climb": 0.95,
+    "day_ci": [
+     -0.5,
+     4.67
+    ]
+   },
+   "Asia-Pacific": {
+    "launches": 3,
+    "days": 3,
+    "mean_climb": 7.67,
+    "day_ci": [
+     1.0,
+     12.0
+    ]
+   },
+   "Europe-Africa": {
+    "launches": 6,
+    "days": 4,
+    "mean_climb": 0.17,
+    "day_ci": [
+     -6.0,
+     5.0
+    ]
+   },
+   "mixed": {
+    "launches": 1,
+    "days": 1,
+    "mean_climb": 2.0,
+    "day_ci": [
+     NaN,
+     NaN
+    ]
+   },
+   "unknown": {
+    "launches": 152,
+    "days": 6,
+    "mean_climb": -0.19,
+    "day_ci": [
+     -0.67,
+     0.37
+    ]
+   }
+  },
+  "03:00": {
+   "Americas": {
+    "launches": 20,
+    "days": 6,
+    "mean_climb": 0.85,
+    "day_ci": [
+     -0.88,
+     4.23
+    ]
+   },
+   "Asia-Pacific": {
+    "launches": 3,
+    "days": 3,
+    "mean_climb": 8.67,
+    "day_ci": [
+     1.0,
+     13.0
+    ]
+   },
+   "Europe-Africa": {
+    "launches": 6,
+    "days": 4,
+    "mean_climb": 2.67,
+    "day_ci": [
+     -1.88,
+     7.88
+    ]
+   },
+   "mixed": {
+    "launches": 1,
+    "days": 1,
+    "mean_climb": 0.0,
+    "day_ci": [
+     NaN,
+     NaN
+    ]
+   },
+   "unknown": {
+    "launches": 152,
+    "days": 6,
+    "mean_climb": -0.22,
+    "day_ci": [
+     -0.7,
+     0.21
+    ]
+   }
+  }
+ },
+ "offset": {
+  "01:00": {
+   "hidden_alone_top3": 61.90476190476189,
+   "gain top3/5/10": [
+    [
+     -4.8,
+     -14.3,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     -1.4,
+     -4.3,
+     0.0
+    ]
+   ]
+  },
+  "02:00": {
+   "hidden_alone_top3": 57.142857142857125,
+   "gain top3/5/10": [
+    [
+     -4.8,
+     -14.3,
+     0.0
+    ],
+    [
+     2.9,
+     0.0,
+     8.6
+    ],
+    [
+     -2.9,
+     -5.7,
+     0.0
+    ]
+   ]
+  },
+  "03:00": {
+   "hidden_alone_top3": 61.90476190476189,
+   "gain top3/5/10": [
+    [
+     -4.8,
+     -14.3,
+     0.0
+    ],
+    [
+     -2.9,
+     -11.4,
+     5.7
+    ],
+    [
+     0.0,
+     -5.7,
+     5.7
+    ]
+   ]
+  }
+ },
+ "voters": {
+  "held_voters_with_region": 743,
+  "launches_with_>=5_regioned_voters_hidden_days": 13,
+  "spearman(americas share, climb after 01:00)": 0.124,
+  "spearman(americas share, climb after 02:00)": -0.016,
+  "spearman(americas share, climb after 03:00)": -0.036,
+  "oct1_nov10: launches": 146,
+  "spearman(americas share, finish above clean rank)": [
+   0.034,
+   -0.126,
+   0.187
+  ]
+ }
+}
