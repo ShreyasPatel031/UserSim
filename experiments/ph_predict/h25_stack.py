@@ -20,8 +20,9 @@ def hits(o, t):
 
 def main():
     from pipeline import warehouse as W
-    A = pd.read_parquet(os.path.join(HERE, "results", "history_retrain_decomp_preds.parquet")); A["id"] = A.id.astype(str); A = A.dropna(subset=["dailyRank"] + ARMS)
-    S = pd.read_parquet(os.path.join(HERE, "results", "history_retrain_decomp_seeds.parquet")); S["id"] = S.id.astype(str)
+    SUF = sys.argv[1] if len(sys.argv) > 1 else ""   # "_arm1" / "_arm2" (DECOMP runs per arm)
+    A = pd.read_parquet(os.path.join(HERE, "results", f"history_retrain_decomp_preds{SUF}.parquet")); A["id"] = A.id.astype(str); A = A.dropna(subset=["dailyRank"] + ARMS)
+    S = pd.read_parquet(os.path.join(HERE, "results", f"history_retrain_decomp_seeds{SUF}.parquet")); S["id"] = S.id.astype(str)
     L = W.query("SELECT CAST(id AS VARCHAR) id, slug, day, poster FROM launches", do_sync=False); L["poster"] = L.poster.fillna("").str.lower()
     K, _ = CF.load_comments(); K = K.merge(L[["slug", "id", "day", "poster"]], on="slug")
     K["t5"] = [(pd.Timestamp(d, tz="America/Los_Angeles") + pd.Timedelta(minutes=5)).tz_convert("UTC") for d in K.day]
@@ -82,12 +83,12 @@ def main():
         X = tb(a); md.append(f"| {a} tie-break (pos 2-6 by z({a}) + z(th_n_pre)) | {X[:,0].mean():.1f} | {X[:,1].mean():.1f} | {X[:,2].mean():.1f} | {ci(X - R0)} |")
     import json
     fp = os.path.join(HERE, "results", "frozen", "h25_th_20261113.json")
-    if not os.path.exists(fp):   # orchestrator 05:05Z: combined column h25 + th_n_pre, weights frozen on the 214 days
+    if not os.path.exists(fp) and not SUF:   # orchestrator 05:05Z: combined column h25 + th_n_pre, weights frozen on the 214 days
         m = Ridge(alpha=3.0).fit(A[["z_both", "z_npre"]], A.y)
         json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": len(days), "coef": {"z_h25": float(m.coef_[0]), "z_npre": float(m.coef_[1])},
                    "inputs": "z within day: shadow_h25 pred_clean_nosite_h25, th_n_pre (00:07 read only)", "backtest": "both + th_n_pre LODO, see h25_stack.md"},
                   open(fp, "w"), indent=1)
-    open(os.path.join(HERE, "results", "h25_stack.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
+    open(os.path.join(HERE, "results", f"h25_stack{SUF}.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
 if __name__ == "__main__":
