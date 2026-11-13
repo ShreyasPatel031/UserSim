@@ -13,7 +13,7 @@ RP = open(os.path.join(HERE, "retrieval_rep.py")).read(); exec(RP[:RP.index("def
 os.makedirs(OUT, exist_ok=True)
 sys.path.insert(0, os.path.join(HERE, "..")); from pipeline import warehouse  # noqa: E402
 WL = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last")
-vk = {(s, d): (float(v) if v == v else np.nan, float(r) if r == r else np.nan) for s, d, v, r in zip(WL.slug, WL.day, pd.to_numeric(WL.votes, errors="coerce"), WL.daily_rank)}
+vk = {(s, d): (v, r) for s, d, v, r in zip(WL.slug, WL.day, pd.to_numeric(WL.votes, errors="coerce").astype(float).values, pd.to_numeric(WL.daily_rank, errors="coerce").astype(float).values)}
 met = {"p@3": lambda o: float(np.mean(o["lab"][:3])), "recall": lambda o: o["rec"] if o["rec"] is not None else np.nan, "top1": lambda o: float(o["lab"][0])}
 g = lambda o, nm, m: met[m](o[nm]) if o and o.get(nm) and o[nm]["lab"] else np.nan
 rows = [(x, r, mt) for x, r, mt in R if r.get("RC") and mt.get("sim1|page") is not None]
