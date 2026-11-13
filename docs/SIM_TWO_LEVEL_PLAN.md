@@ -322,3 +322,46 @@ Open:
 - O3: weekly running rank + expected entrants, first score Mon Nov 16; monthly at day 20 and month end.
 - O4: top-1 concern from a URL (not established); "after using it" view under the same-point standard.
 Waiting on Shreyas: deploy of the clean 00:05 model (recommended variant: without the site judgement; with the frozen-inputs hook and the VM cron for timed steps); Data Feeder capture changes (nightly monthly reread, day boundary, launch fields, website URLs, earlier comment reads with replies); DataImpulse account (407); early_shock fix before ~Nov 20; PR #147.
+
+## Queue state (Nov 13, 10:40 UTC)
+Headlines now:
+- Deployed: the 00:05 PT run of Nov 13 published with the clean model (first clean day; Nov 12, last old-model day, scored 1/3, 1/5, 6/10).
+- Clean 00:05 backtest: 56.4 / 67.8 / 75.0 (214 days; unaffected by the duplicate-id check).
+- With pre-launch commenters (th_n_pre): 60.1 / 68.7 / 75.3 (214 days); gain top 3 +3.5 [+1.3, +5.9] after the thread-missingness check. Live rule: th_n_pre only from the night's first comment read if it lands by 00:30 PT, missing otherwise.
+- 00:30 with total comments: top 3 61.2 -> 63.1 (+1.9 [+0.8, +3.0]), top 10 -0.4.
+- Pre-reveal replay, 7 days (Nov 2, 3, 4, 8, 9, 10, 11): 00:30 hidden-rank blend top 10 71.4 -> 81.4 (top-10 only); 01:00 hr_clean 71.4 / 65.7 / 84.3; 03:00 hidden rank 76.2 / 71.4 / 81.4, top 10 85.7 with the clean prior; 03:45 hybrid 76.2 / 80.0 / 88.6.
+- Reveal is 04:00 PT on every clean day. Plain vote order after it (9 days; early points 5): 04:00 66.7 / 72.0 / 84.0; 05:00 86.7 / 88.0 / 84.0; 06:00 86.7 / 88.0 / 90.0; 08:00 95.2 / 91.4 / 92.9; 12:00 95.2 / 91.4 / 95.7; 20:00 95.2 / 97.1 / 97.1. Top 3 crosses 90 at 08:00 PT, top 10 at 06:00 PT.
+- Weekly at close from votes 82 [76, 88] / 88 / 90 (43 weeks; a later 2026 re-check gives 80 / 86 / 87 on 42 weeks); monthly at close 80 / 82 / 85. 2025 lists lower (weekly 62 / 75 / 80, monthly 57 / 64 / 70; cause unknown).
+- /try simulator: b20 concerns replicate three times (pooled page p@3 +7.5 [+3.0, +12.0], PH description +12.4 [+7.9, +17.1]; confirmation half +6.5 / +9.3). Page-path questions did not replicate.
+- /try rank band, corrected (month-forward): Spearman 0.353 [0.292, 0.412] on 856 launches, 0.417 on the 130 fresh; 80% band covers 75.5%. The 0.59 figure was in-sample and is withdrawn.
+- Voter coverage on the merged store (provisional): Oct 29 - Nov 4 69.26% of votes, 94.60% on top-3 launches; unseeded Oct 1-24 48.37% / 80.30%. Caveat: the seeded week is inflated because merged people were drawn from those launches' voters; quote the unseeded figure alongside.
+Closed tonight (null or not adopted):
+- 00:05 held data: commenter identity (count is the signal); comment timing split; direct P(top 10)/P(top 5) models; six unscored day/comment fields; hunter account age; self-hunt adjustment; shrinkage of unstable inputs; day-regime variants (weekday, normalisation, lambdarank, top-10 weight, regime split); product history and version flags; new-hunter segment model (+0.4, not wired); team track record (coverage 5.9%); time-zone climbers; rank movement and comment counts before the reveal; vote velocity; 04:00-05:00 blends.
+- Outside audience: X pre-launch mentions; X team handles; 00:05 API-only handles; hunter has X handle; domain popularity/age (Tranco, RDAP); site-cache signals (GitHub etc.); Wikipedia pageviews.
+- Voter data: voter-expected votes at ~28% and at ~70% coverage (gain 0.0, weight 0 on all 10 days); follower-edge features; simulated hidden-window ceiling (not distinguishable from zero over hidden rank); accidental in-window pulls (noise); summed LLM person simulation; held follow edges beyond the hunter's followersCount; person-day choice test.
+- Simulator: page -> description two-step; b20 page-path questions; verbatim retrieval; bigger bank; b20 for general reactions; k/points sweep; gap-based page questions; kNN-20 rank band; retrieval who-mix (card stays withdrawn); Vertex Gemini person/launch baselines; flash pairwise near-tie re-ordering (harmful).
+Adopted as forward shadow lines tonight (frozen weights; registry results/web/forward_lines.json, 26 lines):
+- 00:05: clean_nosite_tb (tie-break on clean ranks 2-6 with pre-launch commenters); clean_nosite_hf (hunter followersCount from the 00:05 read, top-10 candidate only); rank_clean_nosite_h25 and its pure-2026 twin.
+- 00:30 (P030): pred_rank_mrep (hunter-only replies + total comments; publish pick); pred_rank_eh (hidden-rank blend, top 10 only); h25_th.
+- 01:00 (P1): mrep with the 00:05-safe full team.
+- 01:00 / 02:00 / 03:00: hr, hr_clean, best, best_cnosite (hr_clean is the 01:00 and 02:00 publish pick).
+- 03:00 and 03:45 (P345): hybrid (top 5 from hidden order, slots 6-10 from the model; publish pick).
+- Weekly/monthly running vote order (already live), scored Mon Nov 16; follow_shadow.py logged nightly; forward climber check in morning scoring.
+- Note: P030/P1 are currently written at the 02:17 PT run, not at their clock time.
+Running / waiting on data:
+- 2025 history four-arm retrain (317 day files landed; corrected so far top 3 +0.9 ns, rho +0.016 [+0.005, +0.028]); full year, 5+ seeds.
+- 2025 comments pilot (1 file; pre-launch commenter check on 2025 pilot days).
+- X-buzz nightly (first freeze Nov 13, files written 00:19 PT) and backfill Nov 9-12 (Data Feeder holds no query rules; Grok Bot asked).
+- Decisions API pilot: harness ready, sending stubbed; needs the AI Studio key.
+- Hidden-window panel re-read (2,000 most active, 10 nights, expect 400-500 early votes a night): needs the Cursor agent.
+- Nightly 00:07 comment-vote read (first night landed 00:15 PT; slot fixed for tomorrow).
+- Forward simulator record: Nov 11 band coverage 84.6%, Spearman 0.29; Nov 12 91.9%, 0.52 (n 37); comment-judged launches still 2.
+Open, not started:
+- Hunter followersCount at 00:05 forward test: about 9 scored days to detect a partial of 0.2; 3 held (Nov 10-12), so 6 more (decide ~Nov 19).
+- Pre-launch comment votes re-test after ~5 nights of the 00:07 feed (Nov 13-17); honest held reads exist on 4 days only.
+- Day-of-week close correction (Sunday 0.82-0.83, Saturday 0.91-0.95, month's last day 0.72) as a weekly/monthly shadow line: +3 [1, 5] top 10 on the 2026 backtest; score Nov 16, Nov 23, Dec 1.
+- Why 2025 frozen daily ranks disagree with today's vote order 9.3% vs 4.1% in 2026 (vote removals vs a rank-rule change), using repeat reads of 2025 day files.
+- Late-climber study re-run at 15 days with a true ~04:00 PT read (5 now).
+- Team following count, product followers, reviewsRating from a 00:03-00:07 PT read: re-test at 30 days.
+- 2024 history once 2025 is done: check the learning-curve extrapolation (+1.6 to +2.9 top 3 at 700-1,000 days).
+Waiting on Shreyas: AI Studio key for the Decisions API; website branch merge and the b20 concerns recipe; fleet size after the zero-gain voter result; a nudge to the Cursor agent (no reply since Nov 12 22:32 UTC); a model/version tag in the published forecast file (pipeline change; today the VM md5 is the only evidence of which model published).
