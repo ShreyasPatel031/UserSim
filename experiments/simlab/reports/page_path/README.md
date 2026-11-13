@@ -159,3 +159,26 @@ Setup:
 - Below about 40 words, the top question / concern is no better than a generic one; at 40–100 words it clearly is.
 - The model's own hit rate is similar in both bins (47 vs 50). The difference is that generic items also hit on short-description launches (37.5% vs 17.6%), so this is a property of those launches, not proof that more words cause hits.
 - Naming pricing, integrations or a target user does not help. Integrations, if anything, comes with a lower edge.
+
+## Two-step page path for REACTIONS (page_react2.py; 70 launches; about $0.44 adjudicator + flash)
+
+Setup: every list comes from the deployed step_reactions; scored as same-point precision (gemini-2.5-pro reading the real comments, pooled).
+
+| list | precision [95%] |
+|---|---|
+| page read (current URL path) | 23.1 [18.1, 28.6] |
+| two-step: flash 120–200-word description from the page, then the description path | 25.5 [20.0, 31.2] |
+| real PH description (pasted path) | **37.4 [32.1, 42.9]** |
+| generic 6 comments | 27.9 [22.1, 33.3] |
+
+| paired | Δ precision |
+|---|---|
+| two-step − page | +2.4 [−1.9, +6.7] |
+| two-step − generic | −2.4 [−9.5, +5.2] |
+| page − generic | −4.8 [−11.7, +1.9] |
+| real description − generic | **+9.5 [+3.6, +15.5]** |
+| two-step − real description | −11.9 [−18.1, −6.0] |
+
+**Verdict:**
+- The two-step does not raise page-based reactions above the generic list.
+- Only the maker's real description does, for reactions as for concerns and questions.
