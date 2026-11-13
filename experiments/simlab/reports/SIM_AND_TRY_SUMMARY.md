@@ -113,7 +113,15 @@ Counts only. Intervals are 95% bootstrap (launch- or day-level, as stated). All 
 ### 2.3 Backer mix per launch ("who it resonates with"; `who_backs/who_mix2.json`, 291 launches)
 - The predicted share by segment (age, activity tier, maker, topic cluster) is worse on absolute error than both the day-average and the topic-average baseline, in all 5 families.
 - But it ranks launches better on relative skew. Spearman across launches: age 0.22 vs 0.14, activity tier 0.18 vs 0.11, topic 0.12 vs about 0.
-- Running now: re-centred and shrunk versions, plus a test of whether the mix deviation predicts the launch's residual against clean.
+- Re-centred and shrunk versions (`mix_eval.json`):
+  - both remove the bias, tying the day baseline (differences −0.02 to +0.03 share points);
+  - both beat the topic baseline on age, activity tier and maker;
+  - neither beats BOTH baselines in any family, so the pass bar fails;
+  - the relative-only wording stands.
+- Forecast value: the predicted "skews to accounts under 30 days" deviation correlates with how far the launch beat its clean-forecast rank, Spearman +0.17 [+0.04, +0.30] (348 launches).
+  - The placebo (held team count) gives +0.06 [−0.04, +0.17], or +0.11 [+0.02, +0.20] on launches with 20+ held backers.
+  - The other deviations are about 0.
+  - Weak, and possibly selection-driven; not a forecast input.
 - Fallback card wording (accepted): relative statements only, such as "skews younger than a typical launch (rank correlation 0.2, 291 launches)".
 
 ### 2.4 Voter harness (summing held people's expected votes into the forecast)
@@ -151,7 +159,6 @@ Counts only. Intervals are 95% bootstrap (launch- or day-level, as stated). All 
 - The website renderer is built (8b1b0e3) and goes live with its follow-up PR.
 
 ## 5. Open / scheduled
-- Backer-mix re-centred, shrunk and forecast-value results: running.
 - Decisions API Nov 13 forward scoring: 09:30Z Nov 14. X-buzz scoring for Nov 13 after final ranks. The X-buzz backfill for Nov 9–12 and the 2025 comment pull have not landed.
 - Team-profile forward test (badges, streak and similar, pulled by 01:00 PT): read the partials at about 9 scored days.
 - Daily /try forward test (`forward_sim.py`) runs as PH ops' morning job; paired intervals after 7 scored days.
