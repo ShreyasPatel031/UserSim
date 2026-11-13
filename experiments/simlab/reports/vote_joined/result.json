@@ -1,0 +1,244 @@
+{
+ "(a) coverage": {
+  "files read": 94662,
+  "with joined": 94662,
+  "with ph_user_id": 77772,
+  "store persons with joined": [
+   73700,
+   76678
+  ],
+  "complete persons with joined": [
+   65740,
+   65740
+  ],
+  "id->joined isotonic CV abs err days (median, p90, p99)": [
+   6.238,
+   51.18,
+   414.1
+  ],
+  "upvoter rows with joined: 62 over-covered / all Oct1-Nov10": [
+   [
+    22433,
+    22454
+   ],
+   [
+    85440,
+    85597
+   ]
+  ],
+  "upvoter rows with age < 0 (joined after launch day start; same-day signups)": 1766
+ },
+ "(b/d) launches": {
+  "with >=5 upvoters with joined": 1218,
+  "over-covered among them": 62,
+  "with matched pool": 62
+ },
+ "u7": {
+  "over mean": 0.044,
+  "matched mean": 0.0636,
+  "diff [95% CI]": [
+   -0.0197,
+   -0.0267,
+   -0.0129
+  ],
+  "top-3 diff (n=43)": [
+   -0.0099,
+   -0.0156,
+   -0.0037
+  ]
+ },
+ "u30": {
+  "over mean": 0.1052,
+  "matched mean": 0.1368,
+  "diff [95% CI]": [
+   -0.0316,
+   -0.0413,
+   -0.0219
+  ],
+  "top-3 diff (n=43)": [
+   -0.0185,
+   -0.027,
+   -0.0095
+  ]
+ },
+ "u90": {
+  "over mean": 0.2212,
+  "matched mean": 0.2184,
+  "diff [95% CI]": [
+   0.0028,
+   -0.0139,
+   0.0194
+  ],
+  "top-3 diff (n=43)": [
+   0.0266,
+   0.0082,
+   0.0459
+  ]
+ },
+ "u365": {
+  "over mean": 0.4937,
+  "matched mean": 0.4316,
+  "diff [95% CI]": [
+   0.062,
+   0.0436,
+   0.08
+  ],
+  "top-3 diff (n=43)": [
+   0.0871,
+   0.07,
+   0.1036
+  ]
+ },
+ "near50": {
+  "over mean": 0.0808,
+  "matched mean": 0.0238,
+  "diff [95% CI]": [
+   0.057,
+   0.0439,
+   0.0703
+  ],
+  "top-3 diff (n=43)": [
+   0.0647,
+   0.0515,
+   0.0788
+  ]
+ },
+ "near500": {
+  "over mean": 0.2023,
+  "matched mean": 0.0854,
+  "diff [95% CI]": [
+   0.1169,
+   0.098,
+   0.1369
+  ],
+  "top-3 diff (n=43)": [
+   0.13,
+   0.1107,
+   0.1497
+  ]
+ },
+ "near50_excess": {
+  "over mean": 0.0626,
+  "matched mean": 0.0138,
+  "diff [95% CI]": [
+   0.0489,
+   0.0357,
+   0.0613
+  ],
+  "top-3 diff (n=43)": [
+   0.056,
+   0.0433,
+   0.0697
+  ]
+ },
+ "near500_excess": {
+  "over mean": 0.099,
+  "matched mean": 0.0249,
+  "diff [95% CI]": [
+   0.0741,
+   0.0574,
+   0.0913
+  ],
+  "top-3 diff (n=43)": [
+   0.0866,
+   0.0689,
+   0.1041
+  ]
+ },
+ "(c) weights by age cell": {
+  "n near-complete launches": 84,
+  "cell totals": {
+   "30-365d": 10878,
+   "<30d": 3071,
+   ">365d": 14366
+  },
+  "weights fold mean [min, max]": {
+   "30-365d": [
+    0.482,
+    0.466,
+    0.497
+   ],
+   "<30d": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   ">365d": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "OOF MAE cells / single": [
+   46.4,
+   50.05
+  ],
+  "MAE gain [95% CI]": [
+   3.65,
+   1.75,
+   5.75
+  ]
+ },
+ "(e) early commenters": {
+  "launches with thread dumps + clean pred": 5391,
+  "with >=3 early non-team commenters with joined": 1398,
+  "days": 235,
+  "early commenters with joined / all": [
+   11717,
+   12690
+  ],
+  "mean young share <30/<90/<365": [
+   0.1965,
+   0.2949,
+   0.4875
+  ],
+  "y30 -> y | clean LM + ln(1+n early)": {
+   "partial r": -0.1528,
+   "95% CI (day bootstrap)": [
+    -0.2136,
+    -0.0864
+   ],
+   "slope": -0.2795
+  },
+  "y30 -> top3 | clean LM + ln(1+n early)": {
+   "partial r": -0.1057,
+   "95% CI (day bootstrap)": [
+    -0.1607,
+    -0.0483
+   ],
+   "slope": -0.191
+  },
+  "y90 -> y | clean LM + ln(1+n early)": {
+   "partial r": -0.1755,
+   "95% CI (day bootstrap)": [
+    -0.2298,
+    -0.1177
+   ],
+   "slope": -0.2706
+  },
+  "y90 -> top3 | clean LM + ln(1+n early)": {
+   "partial r": -0.1116,
+   "95% CI (day bootstrap)": [
+    -0.1668,
+    -0.0527
+   ],
+   "slope": -0.1699
+  },
+  "y365 -> y | clean LM + ln(1+n early)": {
+   "partial r": -0.1712,
+   "95% CI (day bootstrap)": [
+    -0.2274,
+    -0.1122
+   ],
+   "slope": -0.2546
+  },
+  "y365 -> top3 | clean LM + ln(1+n early)": {
+   "partial r": -0.0835,
+   "95% CI (day bootstrap)": [
+    -0.1388,
+    -0.0241
+   ],
+   "slope": -0.1228
+  }
+ }
+}
