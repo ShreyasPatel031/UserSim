@@ -36,3 +36,16 @@ once the arm-2 score is in, first-time hunter adds almost nothing. Self-hunted i
 ## Side result: arm 2 with the 00:30 comment inputs inside (lc_comments run)
 vs deployed arm 2: +3.1 [+0.9, +5.5] / +0.9 [-0.5, +2.3] / +0.7 [-0.1, +1.4] (last 107: +4.0 [+1.2, +7.2]). But at 00:30 the published line is mrep,
 and vs mrep it is +0.8 [-1.6, +3.2] / -0.3 / +0.5: no deploy at 00:30.
+
+## D. Brand split: new product from a known company vs update to an established product (brand_kind.py)
+Gemini 2.5 Flash, one listwise call per 2026 day (316 days, $0.32): 0 = new company / standalone product (6,348), 1 = new product from a known
+company (303), 2 = update / new version of an established product (373). Arm 2 + the two flags inside the model (JOINT, 2025 rows missing them), 5 seeds:
+
+| | top 3 | top 5 | top 10 |
+|---|---|---|---|
+| arm 2 + brand kind, all days | -1.4 [-2.5, -0.3] | -0.1 [-0.8, +0.7] | -0.1 [-0.5, +0.2] |
+| last 107 | -1.2 [-2.8, +0.0] | +0.0 [-1.1, +1.1] | -0.1 [-0.6, +0.4] |
+
+Worse; not deployed. Arm 2's top-3 picks are right 63.3% for kind 0 but 49.1% (53 picks) for new-from-known and 50.0% (74) for updates:
+the two kinds are over-picked equally, so the split does not separate the weak brand picks. Both kinds do finish top 3 more often than kind 0
+overall (18.1% / 21.1% vs 11.9%), so the model already credits them; it over-credits both by the same amount.
