@@ -27,8 +27,14 @@ def get(path):
 def main():
     from pipeline import warehouse as W
     R = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
-    V = W.query('SELECT "day" d, "at" a, CAST(launch_id AS VARCHAR) id, rank_now FROM vote_snapshots WHERE rank_now IS NOT NULL', do_sync=False)
-    V["a"] = pd.to_datetime(V.a, utc=True)
+    # raw recorder files (E5 23:45Z Nov 13): the warehouse vote_snapshots table misses the pre-reveal rows of Nov 5-7; dedup (launch, at)
+    VR = []
+    for d_ in pd.date_range("2026-10-25", "2026-11-13").strftime("%Y-%m-%d"):
+        f_ = get(f"{B}/raw/vote_snapshots/{d_}.jsonl")
+        if f_:
+            VR += [json.loads(l) for l in open(f_)]
+    V = pd.DataFrame(VR).dropna(subset=["rank_now"]).rename(columns={"day": "d", "at": "a", "launch_id": "id"})[["d", "a", "id", "rank_now"]]
+    V["id"] = V.id.astype(str); V["a"] = pd.to_datetime(V.a, utc=True); V = V.drop_duplicates(["id", "a"])
     CL = pd.read_parquet(f"{HERE}/results/clean_live_rows_nosite.parquet"); CL["id"] = CL.id.astype(str)
     clean = {d: dict(zip(g.id, g.clean_v3_nosite)) for d, g in CL.groupby("day")}; CLSUB = set()
     for f in glob.glob(f"{HERE}/results/shadow_makerfix/*.json"):
@@ -38,6 +44,10 @@ def main():
             col = "pred_clean_nosite" if "pred_clean_nosite" in S else "pred_clean" if "pred_clean" in S else None   # Nov 12 file predates the nosite column
             if col:
                 clean[d] = dict(zip(S.id.astype(str), S[col])); CLSUB.add(d) if col == "pred_clean" else None
+    TWn = pd.read_parquet(f"{HERE}/results/tw_nosite.parquet"); TWn["id"] = TWn.id.astype(str)   # month-fold clean_nosite stand-in (Nov 5-7)
+    for d_, g_ in TWn.dropna(subset=["clean_v3_nosite"]).groupby("day"):
+        if d_ >= "2026-10-25" and d_ not in clean:
+            clean[d_] = dict(zip(g_.id, g_.clean_v3_nosite)); CLSUB.add(d_)
     A2 = pd.read_parquet(f"{HERE}/results/history_retrain_decomp_preds_nov_arm2.parquet"); A2["id"] = A2.id.astype(str)
     arm2 = {d: dict(zip(g.id, g.both)) for d, g in A2.groupby("day")}
     FZ = json.load(open(f"{HERE}/results/frozen/prereveal_hr_clean_20261113.json"))["points"]
@@ -100,7 +110,7 @@ def main():
     md = ["# Pre-reveal lines on every replay day with hidden ranks (orchestrator 21:00Z Nov 13)", "",
           f"Days ({len(days)}): {', '.join(d[5:] for d in days)}; new vs the 7-day freeze ({len(new)}): {', '.join(d[5:] for d in new)}. "
           "Frozen weights (fit on the 7 old days) -> the new days are out-of-sample. Label = dailyRank. Diff = shadow minus the published line at that point, paired, day bootstrap 95%.", "",
-          "Day sources: " + "; ".join(f"{d[5:]} {info[d]['src']}{'' if info[d]['comments'] else ' no-comments'}{'' if info[d]['clean'] else ' no-clean'}{' clean-with-site stand-in' if d in CLSUB else ''}{'' if info[d]['arm2'] else ' no-arm2'}" for d in days), "",
+          "Day sources: " + "; ".join(f"{d[5:]} {info[d]['src']}{'' if info[d]['comments'] else ' no-comments'}{'' if info[d]['clean'] else ' no-clean'}{' clean stand-in (clean-with-site 00:05 or month-fold clean_nosite)' if d in CLSUB else ''}{'' if info[d]['arm2'] else ' no-arm2'}" for d in days), "",
           "| point | line | days | top 3 | top 5 | top 10 | diff vs published, all days (t3 / t5 / t10) | new days only: diff (t3 / t5 / t10) |", "|---|---|---|---|---|---|---|---|"]
     def ci(a, b):
         dd = a - b; bs = np.array([dd[rng.integers(0, len(dd), len(dd))].mean(0) for _ in range(4000)])
