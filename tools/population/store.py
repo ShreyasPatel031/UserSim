@@ -375,7 +375,8 @@ def _cached_load(fp, ids, upload_time, filled, data_dir):
 # text, earlier_records and items_earlier included), and persons.parquet gains typed columns for the profile fields.
 # The build fails if any person file is not carried byte-for-byte.
 PROFILE_COLS = ["ph_user_id", "name", "joined", "headline", "bio", "badges_count", "streak", "links_json", "badges_json",
-                "ranks_text_json", "maker_history_json", "header_json", "pull_finished_utc", "pulls_merged", "has_provenance"]
+                "ranks_text_json", "maker_history_json", "header_json", "pull_finished_utc", "pulls_merged", "has_provenance",
+                "signed_in_upvotes_json"]
 
 
 def _latest_person_files(data_dir):
@@ -397,7 +398,7 @@ def _latest_person_files(data_dir):
 def _records_part(args):
     """worker: write one records part file; return profile rows and counts."""
     import pyarrow as pa, pyarrow.parquet as pq
-    k, items, out_dir, salt, comp = args
+    k, items, out_dir, salt, comp, sio = args
     ids = Ids(salt)
     schema = pa.schema([("person_id", pa.string()), ("complete", pa.bool_()), ("pull_finished_utc", pa.string()),
                         ("record_sha256", pa.string()), ("record_json", pa.large_string())])
@@ -425,7 +426,8 @@ def _records_part(args):
                      "badges_json": dj(a.get("badges")), "ranks_text_json": dj(a.get("ranks_text")),
                      "maker_history_json": dj(a.get("maker_history")), "header_json": dj(d.get("header")),
                      "pull_finished_utc": fin, "pulls_merged": len(d.get("pull_history") or []) or 1,
-                     "has_provenance": "provenance" in d})
+                     "has_provenance": "provenance" in d,
+                     "signed_in_upvotes_json": dj(sio.get(h))})
     if rows:
         pq.write_table(pa.Table.from_pylist(rows, schema=schema), f"{out_dir}/records/part-{k:04d}.parquet", compression="zstd")
     return prof, len(rows), bad
@@ -438,7 +440,14 @@ def build_records(data_dir, out_dir, salt, complete=None, workers=4):
     os.makedirs(f"{out_dir}/records", exist_ok=True)
     for f in glob.glob(f"{out_dir}/records/part-*.parquet"):
         os.remove(f)
-    chunks = [(i // 2000, files[i:i + 2000], out_dir, salt, complete) for i in range(0, len(files), 2000)]
+    sio = {}  # signed-in upvote read markers (header, got, utc, vm) from raw/_pacetest/shared/_signedin_upvotes and the babysitter queue
+    for p in glob.glob(f"{data_dir}/signedin_upvotes/*.json"):
+        try:
+            sio[os.path.basename(p)[:-5].lower()] = json.load(open(p))
+        except Exception:
+            pass
+    chunks = [(i // 2000, files[i:i + 2000], out_dir, salt, complete, {h: sio[h] for h, _ in files[i:i + 2000] if h in sio})
+              for i in range(0, len(files), 2000)]
     prof, n, bad = [], 0, 0
     with mp.get_context("fork").Pool(workers) as pool:
         for pr, k, b in pool.imap_unordered(_records_part, chunks):

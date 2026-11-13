@@ -60,7 +60,9 @@ def union(new, old, keep_base=False):
         ot, nt = old.get(t), out.get(t)
         if not isinstance(ot, dict):
             continue
-        if not isinstance(nt, dict):  # tab absent from the newest pull: keep the older tab whole, under the archive below
+        if not isinstance(nt, dict):  # tab the newest pull did not read (e.g. a one-tab upvote refresh): keep the older read in place
+            out[t] = copy.deepcopy(ot)
+            out[t]["_carried_from"] = of
             continue
         seen = {_item_key(t, x) for x in (nt.get("items") or [])}
         earlier = list(nt.get("items_earlier") or [])
@@ -80,9 +82,6 @@ def union(new, old, keep_base=False):
     arch = list(new.get("earlier_records") or []) + list(old.get("earlier_records") or [])
     o2 = {k: (v if k not in TABS or not isinstance(v, dict) else {kk: vv for kk, vv in v.items() if kk not in ("items", "items_earlier")})
           for k, v in old.items() if k not in ("earlier_records", "pull_history")}
-    for t in TABS:  # a tab the newest pull lacks keeps its items in the archive
-        if isinstance(old.get(t), dict) and not isinstance(out.get(t), dict):
-            o2[t] = copy.deepcopy(old[t])
     if _fin(o2) != _fin(new) or o2.get("run") != new.get("run"):  # re-merging a record into itself archives nothing
         arch.append(o2)
     uniq, keys = [], set()

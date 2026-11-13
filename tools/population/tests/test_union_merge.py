@@ -45,3 +45,14 @@ def test_empty_items_earlier_on_older_record_is_kept():
     old["upvotes"]["items_earlier"] = []
     new = rec("2026-11-13T00:00:00Z", ["a"], [])
     assert U.lost(old, U.union(new, old)) == (0, 0)
+
+
+def test_one_tab_refresh_never_replaces_a_whole_record():
+    whole = rec("2026-11-10T00:00:00Z", ["a", "b"], ["u1", "u2"], {"about": {"joined": "2020-01-01"}})
+    refresh = {"run": {"finished_utc": "2026-11-13T00:00:00Z"}, "upvotes": {"header": 3, "count": 3,
+               "items": [{"post_id": "c"}, {"post_id": "a"}, {"post_id": "b"}]}}
+    m = U.union(refresh, whole)
+    assert U.lost(whole, m) == (0, 0) and U.lost(refresh, m) == (0, 0)
+    assert [x["ph_user_id"] for x in m["followers"]["items"]] == ["u1", "u2"]  # followers tab kept in place
+    assert m["about"]["joined"] == "2020-01-01"
+    assert [x["post_id"] for x in m["upvotes"]["items"]] == ["c", "a", "b"]
