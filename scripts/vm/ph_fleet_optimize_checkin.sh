@@ -7,7 +7,7 @@ export GCP_PROJECT PACE_ZONE MVP_GCS_BUCKET
 RUN_ID="${PACE_FLEET_RUN_ID:-$(cat "$ROOT/results/ph_fleet_full/latest_run.txt")}"
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
-export FLEET_ART="$ART" PACE_FLEET_RUN_ID="$RUN_ID"
+export FLEET_ART="$ART" PACE_FLEET_RUN_ID="$RUN_ID" PACE_REPO_ROOT="$ROOT"
 export AGENT_MSGS_PROJECT="${AGENT_MSGS_PROJECT:-${GCP_PROJECT:-}}"
 [[ -n "${AGENT_MSGS_PROJECT}" ]] || { echo "set AGENT_MSGS_PROJECT or GCP_PROJECT for Pub/Sub relay" >&2; exit 1; }
 INBOX="$ART/agent_inbox.jsonl"
@@ -17,6 +17,15 @@ export PH_FLEET_STRATEGY
 LOG="$ART/checkin.log"
 HOURLY="${FLEET_HOURLY_USD:-0.06701}"
 
+chmod +x "$ROOT/scripts/vm/ph_fleet_live_priority.sh" 2>/dev/null || true
+if [[ -x "$ROOT/scripts/vm/ph_fleet_live_priority.sh" ]]; then
+  bash "$ROOT/scripts/vm/ph_fleet_live_priority.sh" status >>"$LOG" 2>&1 || true
+  # shellcheck source=/dev/null
+  eval "$(bash "$ROOT/scripts/vm/ph_fleet_live_priority.sh" env 2>/dev/null)" || true
+  if [[ "${PH_FLEET_LIVE_PRIORITY_HOLD:-0}" == "1" ]]; then
+    echo "$(date -u +%FT%TZ) LIVE_PRIORITY_HOLD stale=${PH_FLEET_LIVE_STALE_FEEDS:-?} FLEET_MAX_VMS=${FLEET_MAX_VMS:-?}" >>"$LOG"
+  fi
+fi
 if [[ -f "$ROOT/secrets/iproyal.env" && -x "$ROOT/scripts/vm/ph_iproyal_sync_pool.sh" ]]; then
   bash "$ROOT/scripts/vm/ph_iproyal_sync_pool.sh" >>"$LOG" 2>&1 || true
 fi
@@ -107,16 +116,23 @@ fi
 
 chmod +x "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" "$ROOT/scripts/vm/ph_iproyal_refresh_slot.sh" 2>/dev/null || true
 chmod +x "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" "$ROOT/scripts/vm/ph_iproyal_rotate_slot.sh" 2>/dev/null || true
-export PACE_REPO_ROOT="$ROOT"
-bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
-bash "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" >>"$LOG" 2>&1 || true
+if [[ "${PH_FLEET_LIVE_PRIORITY_HOLD:-0}" != "1" ]]; then
+  bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
+  bash "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" >>"$LOG" 2>&1 || true
+else
+  echo "$(date -u +%FT%TZ) LIVE_PRIORITY skip utilization_recover block_rotate" >>"$LOG"
+fi
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
 # Hung batches: limited kicks; CF block exit is port-swap via PH_BLOCK_NEW_PORT on supervisor.
 export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
 # Below target, never mass-kick (port-swap on supervisor handles CF; kicks were killing long whole pulls).
 python3 -c "import sys; sys.exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null && export FLEET_CF_RECOVER_MAX_KICKS=0
 "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
-KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
+if [[ "${PH_FLEET_LIVE_PRIORITY_HOLD:-0}" != "1" ]]; then
+  KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
+else
+  echo "$(date -u +%FT%TZ) LIVE_PRIORITY skip keeper" >>"$LOG"
+fi
 # Below target: still shed idle slots when yield collapsed (many VMs, ~0.3 ppm each).
 FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
 export FLEET_AUTOSCALE_NO_SHED=1
@@ -138,7 +154,11 @@ export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET
 
 rerun_pct="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(100*float('$rerun_ppm' or 0)/a,1))")"
 eff_pop="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(float('$ppm' or 0)/a,4))")"  # complete per attempt = Population-aligned efficiency
-relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. OPS: no pause-on-block from agents; sustained block => rotate Finland dedicated IP (slot1 included); new IP on keeper recreate. GOAL lastweek 100%. PH_RR_FILES=0945Z_lastweek_votes(953),vmgate,follow,signedin,overnight. full18f uYYdW17hoPBJjpMGoR7lKw== save=_pacetest/shared."
+live_note=""
+if [[ -f "$ART/live_feed_health.json" ]]; then
+  live_note="$(python3 -c "import json; r=json.load(open('$ART/live_feed_health.json')); print('live_feeds_ok='+('yes' if not r.get('throttle') else 'NO stale='+','.join([f['feed'] for f in r.get('feeds',[]) if f.get('stale')])) )" 2>/dev/null || true)"
+fi
+relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. ${live_note} POLICY: live 15m feeds win — any stale posts_ts/snapshots/api_comments => historical throttle (IPROYAL_DAILY_IPS=${IPROYAL_DAILY_IPS:-2} reserved). OPS: no pause-on-block from agents; sustained block => rotate Finland dedicated IP (slot1 included); new IP on keeper recreate. GOAL lastweek 100%. PH_RR_FILES=0945Z_lastweek_votes(953),vmgate,follow,signedin,overnight. full18f uYYdW17hoPBJjpMGoR7lKw== save=_pacetest/shared."
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
 relay_msg+=". VM smoke sample $sampled rows: complete=$complete incomplete=$incomplete (legacy header/tab; Population whole() is authority). RR_ONLY queue rerun_whole_20261110T0230Z_lastweek_priority.txt (no port rotate)."
 if [[ "$incomplete" -gt 0 ]]; then
