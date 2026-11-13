@@ -371,22 +371,28 @@ def _hid(sl, u):
 
 
 def people_from_store(con, d, dry, local=None):
-    """Bundle 11 (orchestrator 15:26Z Nov 13): the people step reads the population store (raw/population/store_v3: events,
-    tabs; full depth, every pull merged losslessly) instead of the page-1 delivery folders (raw/ph_people_daily/, last
-    delivered Nov 2-3). Writes the same warehouse tables with the same columns:
-      events      upvotes (person, launch_id, date = launch day, kind "upvote", date_quality "launch_day"), only person x launch
-                  pairs not already in events (the warehouse convention for every upvote: PH shows no upvote time; the store's
-                  own ts_quality for upvotes is "snapshot"/"bounded", i.e. not an event time either)
-      follows     (person, followee, observed_on = PT day the store first saw the follow, new_since_last = True), only pairs
-                  not already in follows
-      fetch_state one row per person and source ("store_v3_upvotes", "store_v3_follows") when the store's tab pull is newer
-                  than the last row written for it: last_fetched = that pull's PT day, status 200, items = tab count,
-                  complete = the store's tab complete flag
-      people      new commenters (the comments step's list), first_seen = d, as before
-    Mapping: the store keys people on a salted id; warehouse rows key on the username. Store ids are matched to the usernames
-    the warehouse already holds (people, events, comments, follows) by hashing those usernames with the salt (never printed).
-    Store people / followees with no warehouse username are counted, not written (no new people rows; bundle 10 rule); the
-    store keeps them. Fails loudly when the store cannot be read. local: a directory holding events/tabs parquet (dry tests)."""
+    """Bundle 11 (orchestrator 15:26Z / 15:4xZ Nov 13): the people step reads the population store (raw/population/store_v3:
+    events, tabs; full depth, every pull merged losslessly) instead of the page-1 delivery folders (raw/ph_people_daily/,
+    last delivered Nov 2-3). Nothing in the store's upvotes or follows is dropped: every (person, target) pair goes either to
+    the existing tables (same columns as before) or to a new unmatched table keyed on the store's own salted ids:
+      events            upvotes of a person the warehouse knows by handle, on a launch in the launches table:
+                        (person, launch_id, date = launch day, kind "upvote", date_quality "launch_day"), the warehouse convention
+                        for every upvote (PH shows no upvote time)
+      events_unmatched  every other store upvote: (person_id, target_id, kind, date, date_quality, reason) with the store's own
+                        date (PT day of ts_lo if set, else of ts_hi) and quality (ts_quality: snapshot / bounded / ...), reason
+                        person_no_handle or launch_not_in_warehouse
+      follows           follows where both sides have a warehouse handle: (person, followee, observed_on = PT day the store
+                        first saw it, new_since_last = True)
+      follows_unmatched every other store follow: (person_id, followee_id, first_seen, reason), salted ids, reason
+                        person_no_handle or followee_no_handle
+      fetch_state       one row per person and source ("store_v3_upvotes", "store_v3_follows") when the store's tab pull is newer
+                        than the last row written for it
+      people            new commenters (the comments step's list), first_seen = d, as before
+    Handles: store ids are matched to the usernames the warehouse already holds by hashing those usernames with the salt
+    (never printed); no handle is ever read from the store or written to the unmatched tables. Dedup is incremental: a pair
+    already in its table is not written again. Check (per kind): distinct store pairs == pairs in the matched table +
+    pairs in the unmatched table after this run, else the step fails. Fails loudly when the store or salt cannot be read.
+    local: a directory holding events/tabs parquet (dry tests)."""
     import pyarrow.parquet as pq, tempfile, shutil
     tmp = None
     try:
@@ -402,7 +408,7 @@ def people_from_store(con, d, dry, local=None):
         sl = (open(os.environ["PEOPLE_SALT_FILE"]).read() if sl_p is None else sl_p.stdout).strip()
         if not sl:
             return None, {"items": 0, "status": "failed: salt unreadable"}
-        E = pq.read_table(f"{src}/events.parquet", columns=["person_id", "kind", "target_id", "first_seen_at", "source"],
+        E = pq.read_table(f"{src}/events.parquet", columns=["person_id", "kind", "target_id", "ts_lo", "ts_hi", "ts_quality", "first_seen_at"],
                           filters=[("kind", "in", ["upvote", "follows"])]).to_pandas()
         T = pq.read_table(f"{src}/tabs.parquet", columns=["person_id", "tab", "count", "complete", "fetched_at"],
                           filters=[("tab", "in", ["upvotes", "following"])]).to_pandas()
@@ -411,49 +417,82 @@ def people_from_store(con, d, dry, local=None):
     finally:
         if tmp:
             shutil.rmtree(tmp, ignore_errors=True)   # everything needed is in memory by now
+    def rows(q):
+        try:
+            return con.execute(q).fetchall()
+        except Exception:   # table not created yet (first run)
+            return []
     names = set()
     for q in ("SELECT DISTINCT person FROM people", "SELECT DISTINCT person FROM events", "SELECT DISTINCT person FROM comments",
               "SELECT DISTINCT person FROM follows", "SELECT DISTINCT followee FROM follows"):
-        names |= {r[0] for r in con.execute(q).fetchall() if r[0]}
+        names |= {r[0] for r in rows(q) if r[0]}
     newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
     names |= set(newp)
     u_of = {_hid(sl, u): u for u in names}
-    E["person"] = E.person_id.map(u_of); T["person"] = T.person_id.map(u_of)
+    pt = lambda s: s.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
+    E["person"] = E.person_id.map(u_of)
     stats = {"store_people": int(E.person_id.nunique()), "store_people_mapped": int(E.loc[E.person.notna(), "person_id"].nunique())}
-    # upvotes -> events
-    day = dict(con.execute("SELECT id, day FROM launches").fetchall())
-    have = set(map(tuple, con.execute("SELECT person, launch_id FROM events WHERE kind = 'upvote'").fetchall()))
-    U = E[(E.kind == "upvote") & E.person.notna()].drop_duplicates(["person", "target_id"])
-    U = U[U.target_id.isin(day.keys())]
-    U = U[[(p, t) not in have for p, t in zip(U.person, U.target_id)]]
-    ev = pd.DataFrame({"person": U.person.values, "launch_id": U.target_id.values, "date": U.target_id.map(day).values,
-                       "kind": "upvote", "date_quality": "launch_day"})
-    stats["upvotes_unknown_launch"] = int(((E.kind == "upvote") & E.person.notna() & ~E.target_id.isin(day.keys())).sum())
-    # follows -> follows (followee is a salted id in the store: mapped to the username where the warehouse has it)
-    Fo = E[(E.kind == "follows") & E.person.notna()].copy(); Fo["followee"] = Fo.target_id.map(u_of)
-    stats["follows_followee_unmapped"] = int(Fo.followee.isna().sum())
-    Fo = Fo[Fo.followee.notna()].sort_values("first_seen_at").drop_duplicates(["person", "followee"])
-    havef = set(map(tuple, con.execute("SELECT person, followee FROM follows").fetchall()))
-    Fo = Fo[[(p, f) not in havef for p, f in zip(Fo.person, Fo.followee)]]
-    fo = pd.DataFrame({"person": Fo.person.values, "followee": Fo.followee.values,
-                       "observed_on": Fo.first_seen_at.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d").values,
-                       "new_since_last": True})
-    # fetch_state: one row per (person, source) whose store pull is newer than the last row written for it
-    last = dict(((p, s), v) for p, s, v in con.execute(
-        "SELECT person, source, max(last_fetched) FROM fetch_state WHERE source IN ('store_v3_upvotes','store_v3_follows') GROUP BY 1, 2").fetchall())
+    check, out_t = {}, {}
+    # ---- upvotes
+    day = dict(rows("SELECT id, day FROM launches"))
+    U = E[E.kind == "upvote"].sort_values("first_seen_at").drop_duplicates(["person_id", "target_id"])
+    ok = U.person.notna() & U.target_id.isin(day.keys())
+    have = set(map(tuple, rows("SELECT person, launch_id FROM events WHERE kind = 'upvote'")))
+    M = U[ok]; Mn = M[[(p, t) not in have for p, t in zip(M.person, M.target_id)]]
+    out_t["events"] = pd.DataFrame({"person": Mn.person.values, "launch_id": Mn.target_id.values, "date": Mn.target_id.map(day).values,
+                                    "kind": "upvote", "date_quality": "launch_day"})
+    have_u = set(map(tuple, rows("SELECT person_id, target_id FROM events_unmatched WHERE kind = 'upvote'")))
+    X = U[~ok]; Xn = X[[(p, t) not in have_u for p, t in zip(X.person_id, X.target_id)]]
+    out_t["events_unmatched"] = pd.DataFrame({
+        "person_id": Xn.person_id.values, "target_id": Xn.target_id.values, "kind": "upvote",
+        "date": pt(Xn.ts_lo.fillna(Xn.ts_hi)).values, "date_quality": Xn.ts_quality.fillna("unknown").values,
+        "reason": pd.Series(Xn.person.isna().values).map({True: "person_no_handle", False: "launch_not_in_warehouse"}).values})
+    in_m = sum((p, t) in have for p, t in zip(M.person, M.target_id)) + len(Mn)
+    in_x = sum((p, t) in have_u for p, t in zip(X.person_id, X.target_id)) + len(Xn)
+    check["upvote"] = {"store_pairs": len(U), "in_events": int(in_m), "in_events_unmatched": int(in_x),
+                       "written_events": len(Mn), "written_unmatched": len(Xn),
+                       "unmatched_by_reason": out_t["events_unmatched"].reason.value_counts().to_dict() if len(Xn) else {}}
+    # ---- follows (followee is a salted id in the store)
+    Fo = E[E.kind == "follows"].sort_values("first_seen_at").drop_duplicates(["person_id", "target_id"]).copy()
+    Fo["followee"] = Fo.target_id.map(u_of)
+    ok = Fo.person.notna() & Fo.followee.notna()
+    havef = set(map(tuple, rows("SELECT person, followee FROM follows")))
+    M = Fo[ok]; Mn = M[[(p, f) not in havef for p, f in zip(M.person, M.followee)]]
+    out_t["follows"] = pd.DataFrame({"person": Mn.person.values, "followee": Mn.followee.values, "observed_on": pt(Mn.first_seen_at).values,
+                                     "new_since_last": True})
+    havefu = set(map(tuple, rows("SELECT person_id, followee_id FROM follows_unmatched")))
+    X = Fo[~ok]; Xn = X[[(p, f) not in havefu for p, f in zip(X.person_id, X.target_id)]]
+    out_t["follows_unmatched"] = pd.DataFrame({
+        "person_id": Xn.person_id.values, "followee_id": Xn.target_id.values, "first_seen": pt(Xn.first_seen_at).values,
+        "reason": pd.Series(Xn.person.isna().values).map({True: "person_no_handle", False: "followee_no_handle"}).values})
+    in_m = sum((p, f) in havef for p, f in zip(M.person, M.followee)) + len(Mn)
+    in_x = sum((p, f) in havefu for p, f in zip(X.person_id, X.target_id)) + len(Xn)
+    check["follows"] = {"store_pairs": len(Fo), "in_follows": int(in_m), "in_follows_unmatched": int(in_x),
+                        "written_follows": len(Mn), "written_unmatched": len(Xn),
+                        "unmatched_by_reason": out_t["follows_unmatched"].reason.value_counts().to_dict() if len(Xn) else {}}
+    # ---- fetch_state
+    T["person"] = T.person_id.map(u_of)
+    last = dict(((p, s), v) for p, s, v in rows(
+        "SELECT person, source, max(last_fetched) FROM fetch_state WHERE source IN ('store_v3_upvotes','store_v3_follows') GROUP BY 1, 2"))
     T = T[T.person.notna()].copy(); T["source"] = T.tab.map({"upvotes": "store_v3_upvotes", "following": "store_v3_follows"})
-    T["last_fetched"] = T.fetched_at.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
+    T["last_fetched"] = pt(T.fetched_at)
     T = T[[str(l) > str(last.get((p, s)) or "") for p, s, l in zip(T.person, T.source, T.last_fetched)]]
-    st = pd.DataFrame({"person": T.person.values, "source": T.source.values, "last_fetched": T.last_fetched.values, "status": 200,
-                       "items": pd.to_numeric(T["count"], errors="coerce").values, "complete": T.complete.astype(bool).values})
+    out_t["fetch_state"] = pd.DataFrame({"person": T.person.values, "source": T.source.values, "last_fetched": T.last_fetched.values,
+                                         "status": 200, "items": pd.to_numeric(T["count"], errors="coerce").values,
+                                         "complete": T.complete.astype(bool).values})
+    bad = [k for k, c in check.items() if c["store_pairs"] != list(c.values())[1] + list(c.values())[2]]
+    res = {"items": sum(len(v) for v in out_t.values()), "source": "store_v3", **{k: len(v) for k, v in out_t.items()},
+           "new_people": len(newp), **stats, "check": check}
+    if bad:   # never write a partial picture
+        res["status"] = f"failed: store pairs != matched + unmatched for {bad}"
+        return out_t, res
     if not dry:
-        for t, df in (("events", ev), ("follows", fo), ("fetch_state", st)):
-            if len(df):
-                W.write(t, df)
+        for t in ("events", "events_unmatched", "follows", "follows_unmatched", "fetch_state"):
+            if len(out_t[t]):
+                W.write(t, out_t[t])
         if newp:
             W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
-    return (ev, fo, st, newp), {"items": len(ev) + len(fo), "source": "store_v3", "events": len(ev), "follows": len(fo),
-                                "fetch_state": len(st), "new_people": len(newp), **stats}
+    return out_t, res
 
 
 @step("people")

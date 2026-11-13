@@ -15,12 +15,14 @@ mkdir -p $W/backup_b11
 case "$PART" in
 pipeline)
   cur=$(m $X/pipeline/daily.py)
-  if [ "$cur" = 27f0578d ]; then NEW=$Pd/daily.py; WANT=04f9a65c
-  elif [ "$cur" = 6e80e47e ]; then NEW=$Pd/daily_over_b10.py; WANT=a52df06c
-  else echo "deployed daily.py ($cur) is neither pre-b10 (27f0578d) nor b10 (6e80e47e): rebase the patch first"; exit 1; fi
-  test "$(m $NEW)" = "$WANT" || { echo "source file is not the b11 version"; exit 1; }
-  (cd $X && tar cf $W/backup_b11/before_pipeline.tar pipeline/daily.py)
+  curw=$(m $X/pipeline/warehouse.py)
+  if [ "$cur" = 27f0578d ] && [ "$curw" = c89671dc ]; then NEW=$Pd/daily.py; WANT=03c9fa7b; NEWW=$Pd/warehouse.py; WANTW=a2d08cdf
+  elif [ "$cur" = 6e80e47e ] && [ "$curw" = d5a50870 ]; then NEW=$Pd/daily_over_b10.py; WANT=6392b6be; NEWW=$Pd/warehouse_over_b10.py; WANTW=6c9d2a83
+  else echo "deployed daily.py ($cur) / warehouse.py ($curw) are neither pre-b10 (27f0578d / c89671dc) nor b10 (6e80e47e / d5a50870): rebase the patch first"; exit 1; fi
+  test "$(m $NEW)" = "$WANT" && test "$(m $NEWW)" = "$WANTW" || { echo "source files are not the b11 versions"; exit 1; }
+  (cd $X && tar cf $W/backup_b11/before_pipeline.tar pipeline/daily.py pipeline/warehouse.py)
   cp $NEW $X/pipeline/daily.py.new && mv $X/pipeline/daily.py.new $X/pipeline/daily.py
+  cp $NEWW $X/pipeline/warehouse.py.new && mv $X/pipeline/warehouse.py.new $X/pipeline/warehouse.py
   cp $Pd/queue_unpulled_commenters.py $X/pipeline/queue_unpulled_commenters.py
   cd $X && python3 -c "
 import pipeline.daily as D, pipeline.queue_unpulled_commenters as Q, inspect
@@ -28,9 +30,11 @@ assert not hasattr(D, 'PERSON_CAP') and D.PERSON_BUDGET > 0
 src = inspect.getsource(D)
 assert 'f.unlink()' not in src and 'os.replace(new, old)' in src
 assert 'queue_write(\"scroll_deeper\"' in src and 'has_next' in src
-assert 'def people_from_store' in src and 'PEOPLE_SRC\", \"store_v3\"' in src
+assert 'def people_from_store' in src and 'PEOPLE_SRC\", \"store_v3\"' in src and 'events_unmatched' in src
+import pipeline.warehouse as Wh
+assert 'events_unmatched' in Wh.KEYS and 'follows_unmatched' in Wh.KEYS
 print('imports ok')"
-  test "$(m $X/pipeline/daily.py)" = "$WANT" && echo "deploy ok: b11 pipeline ($WANT)";;
+  test "$(m $X/pipeline/daily.py)" = "$WANT" && test "$(m $X/pipeline/warehouse.py)" = "$WANTW" && echo "deploy ok: b11 pipeline (daily $WANT, warehouse $WANTW)";;
 scraper)
   gsutil -q cp $B/scrapers_deploy/daily.py $W/backup_b11/scrapers_daily.py
   test "$(m $W/backup_b11/scrapers_daily.py)" = 2f661bb4 || { echo "scrapers_deploy/daily.py is not the expected version"; exit 1; }
