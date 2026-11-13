@@ -193,6 +193,9 @@ def build(include_today=False):
     return df
 
 
+RED = {"0", "", "None", None}   # placeholder maker ids (API v2 redacts makers; all redacted makers share id "0")
+
+
 def add_history(df):
     """hist_: how the hunter's and makers' EARLIER launches did (other launches only; strictly earlier days, so
     it is known before launch). rel = log votes minus that day's mean; top5 = finished top 5 that day."""
@@ -204,7 +207,7 @@ def add_history(df):
     for day, g in df.groupby("day", sort=True):
         for _, r in g.iterrows():
             h = H.get(r.hunter_id, [])
-            ms = [x for m in r.maker_ids for x in Mk.get(m, [])]
+            ms = [x for m in r.maker_ids if str(m) not in RED for x in Mk.get(m, [])]   # redacted makers share id "0" (Nov 13 data bug)
             feats.append({
                 "hist_hunter_n": len(h), "hist_hunter_rel": np.mean([x[0] for x in h]) if h else np.nan,
                 "hist_hunter_top5": np.mean([x[1] for x in h]) if h else np.nan,
@@ -212,6 +215,6 @@ def add_history(df):
                 "hist_maker_top5": np.mean([x[1] for x in ms]) if ms else np.nan})
         for _, r in g.iterrows():  # add today's results only after the whole day is featurised
             H.setdefault(r.hunter_id, []).append((r._rel, r._top5))
-            for m in set(r.maker_ids):
+            for m in set(r.maker_ids) - RED:
                 Mk.setdefault(m, []).append((r._rel, r._top5))
     return pd.concat([df, pd.DataFrame(feats, index=df.index)], axis=1).drop(columns=["_rel", "_top5"])

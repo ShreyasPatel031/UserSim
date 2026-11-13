@@ -2,7 +2,8 @@
 (1) Ridge lines on the clean_nosite OOF base (mrep = clean+th_n_pre+nu+nc+mrep_h; clean+th = clean+th_n_pre), weights fit month-forward on
     the most recent N 2026 days before the test month, N in 60/100/150/all.
 (2) LightGBM arm-2 joint models with the 00:30 comment inputs inside (history_retrain.py JOINT=1 JOINT_COLS=th_n_pre,nu,nc,mrep_h):
-    pure_th = 2026 rows only, HIST_N = 60/100/150/all; both_th = + 2025 rows with comment inputs missing.
+    pure_th = 2026 rows only, HIST_N = 60/100/150/all; both_th = + 2025 rows with comment inputs missing (HIST_N keeps the most recent N
+    days, so both_th at N < all has no 2025 rows: it differs from pure_th only by the build).
 Test days: 2026-04-01..2026-10-24 (comment dumps end Oct 25). Paired bootstrap 4000 over days, 95%.
 usage: python lc_comments.py -> results/lc_comments.md"""
 import os, sys
@@ -95,7 +96,7 @@ def main():
         # log-days fit on pure_th (2026 only): slope per doubling of 2026 history, extrapolate to +365 days of comment-bearing rows
         if all(("pure_th", N) in G for N in NS):
             # effective N per test month: min(N, days available before the month)
-            B["mon"] = B.day.str[:7]; avail = {m: A[A.mon < m].day.nunique() for m in B.mon.unique()}
+            B["mon"] = B.day.str[:7]; avail = {m: (pd.Timestamp(m + "-01") - pd.Timestamp("2026-01-01")).days for m in B.mon.unique()}   # GBM trains on 2026 from Jan 1
             dmon = B.groupby("day").mon.first().sort_index()
             rows = []
             for N in NS:
