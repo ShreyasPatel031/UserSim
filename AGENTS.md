@@ -53,3 +53,6 @@ header counts are stored. Anything less is not written, not counted, not reporte
    worse, the black box stays as the forecast and the explainable model runs beside it as the explanation, labelled with its own
    measured accuracy. The orchestrator takes these calls and records each one in docs/RESEARCH_LOG.md.
 4. Every explanation shown anywhere carries its measured predictive value (number, days, backtest or forward).
+5. **Deploying.** A model that is better on the leak-free backtest (paired on the same days, interval clear of noise on a
+   north-star cut) is deployed; there is no wait for live days (Shreyas, Nov 13: "if its better on backtest deploy"). The model
+   it replaces keeps running as a forward shadow line, and the orchestrator reverts if the new one trails it on scored live days.
