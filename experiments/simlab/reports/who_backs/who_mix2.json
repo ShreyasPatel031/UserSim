@@ -1,0 +1,423 @@
+{
+ "design": "Voter-based 00:05 forecast harness (orchestrator 22:53Z Nov 12; re-run with one command on a new store snapshot).\nDays: Oct 29-31, Nov 2, 3, 4, 8, 9, 10, 11. Line-up and clean score: PH agent's clean_live_rows_nosite.parquet (clean_v3_nosite, as live).\nCovered people = complete persons in the store. Pair model P(person upvotes launch): logistic regression on [ln(1+upvotes 30d),\nln(1+upvotes 90d), days since last upvote, topic-taste match, follows the hunter, is the hunter], trained on the 7 launch days before the\ntest day (features at each training day from history before that day; all negatives of active people subsampled 10%).\nExpected covered votes E(L) = sum over active covered people of P. Combined = z(clean) + w z(ln(E + 0.1)), w leave-one-day-out from\n{0, .25, .5, 1, 2}. EDGES env: none / hunter / hunter_maker (follows of the hunter, + the first named maker); \"followers_feature_only\"\n= the launch-level sum over active covered followers of ln(1+upvotes 90d), added to clean instead of E. Timing: STRICT = only upvotes / follows from reads fetched before 00:00 PT of the test day; LENIENT = every read of\nan upvote on an earlier day's launch (what a fresh read the night before would give). HIDDEN: votes on today's launches seen in reads\nfetched 00:05-04:00 PT of the day (re-reads in the hidden window). Coverage curve: covered people subsampled to 10/20/30/41% of votes\n(5 draws). Truth: official daily rank. Paired day bootstrap vs clean alone.",
+ "days": [
+  "2026-10-25",
+  "2026-10-26",
+  "2026-10-27",
+  "2026-10-28",
+  "2026-10-29",
+  "2026-10-30",
+  "2026-10-31",
+  "2026-11-01",
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "launches with >= 20 held backers (and a baseline)": 291,
+ "coverage held backers / displayed votes (median, IQR)": [
+  0.522,
+  0.414,
+  0.651
+ ],
+ "all": {
+  "age": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     5.69,
+     5.43,
+     5.98,
+     291
+    ],
+    [
+     5.58,
+     5.3,
+     5.84,
+     291
+    ],
+    [
+     5.78,
+     5.51,
+     6.07,
+     291
+    ]
+   ],
+   "model - day baseline": [
+    0.11,
+    -0.03,
+    0.26,
+    291
+   ],
+   "model - topic baseline": [
+    -0.09,
+    -0.25,
+    0.06,
+    291
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.221,
+    0.144,
+    0.127
+   ]
+  },
+  "tier_k": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     14.11,
+     13.34,
+     14.88,
+     291
+    ],
+    [
+     11.75,
+     11.05,
+     12.49,
+     291
+    ],
+    [
+     12.36,
+     11.63,
+     13.09,
+     291
+    ]
+   ],
+   "model - day baseline": [
+    2.36,
+    2.05,
+    2.65,
+    291
+   ],
+   "model - topic baseline": [
+    1.76,
+    1.42,
+    2.12,
+    291
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.184,
+    0.107,
+    0.11
+   ]
+  },
+  "tier_30": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     5.71,
+     5.42,
+     6.0,
+     291
+    ],
+    [
+     4.88,
+     4.61,
+     5.16,
+     291
+    ],
+    [
+     5.18,
+     4.89,
+     5.47,
+     291
+    ]
+   ],
+   "model - day baseline": [
+    0.83,
+    0.52,
+    1.12,
+    291
+   ],
+   "model - topic baseline": [
+    0.53,
+    0.22,
+    0.84,
+    291
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.01,
+    0.043,
+    0.023
+   ]
+  },
+  "maker": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     4.28,
+     3.89,
+     4.68,
+     291
+    ],
+    [
+     4.01,
+     3.65,
+     4.41,
+     291
+    ],
+    [
+     4.2,
+     3.83,
+     4.61,
+     291
+    ]
+   ],
+   "model - day baseline": [
+    0.27,
+    0.01,
+    0.54,
+    291
+   ],
+   "model - topic baseline": [
+    0.08,
+    -0.22,
+    0.38,
+    291
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.17,
+    0.202,
+    0.131
+   ]
+  },
+  "topic": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     1.96,
+     1.87,
+     2.06,
+     291
+    ],
+    [
+     1.72,
+     1.64,
+     1.8,
+     291
+    ],
+    [
+     1.71,
+     1.63,
+     1.79,
+     291
+    ]
+   ],
+   "model - day baseline": [
+    0.25,
+    0.16,
+    0.32,
+    291
+   ],
+   "model - topic baseline": [
+    0.25,
+    0.17,
+    0.33,
+    291
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.115,
+    -0.068,
+    -0.022
+   ]
+  },
+  "families where model beats BOTH baselines (interval < 0)": []
+ },
+ "coverage >= 0.5 subset": {
+  "launches": 165,
+  "age": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     5.32,
+     4.98,
+     5.67,
+     165
+    ],
+    [
+     5.03,
+     4.73,
+     5.35,
+     165
+    ],
+    [
+     5.21,
+     4.88,
+     5.56,
+     165
+    ]
+   ],
+   "model - day baseline": [
+    0.28,
+    0.09,
+    0.47,
+    165
+   ],
+   "model - topic baseline": [
+    0.1,
+    -0.09,
+    0.31,
+    165
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.253,
+    0.128,
+    0.137
+   ]
+  },
+  "tier_k": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     12.06,
+     11.23,
+     12.91,
+     165
+    ],
+    [
+     9.8,
+     9.05,
+     10.55,
+     165
+    ],
+    [
+     10.4,
+     9.67,
+     11.13,
+     165
+    ]
+   ],
+   "model - day baseline": [
+    2.26,
+    1.85,
+    2.66,
+    165
+   ],
+   "model - topic baseline": [
+    1.66,
+    1.17,
+    2.12,
+    165
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.14,
+    0.071,
+    0.067
+   ]
+  },
+  "tier_30": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     5.44,
+     5.03,
+     5.84,
+     165
+    ],
+    [
+     4.32,
+     3.96,
+     4.68,
+     165
+    ],
+    [
+     4.63,
+     4.3,
+     4.98,
+     165
+    ]
+   ],
+   "model - day baseline": [
+    1.13,
+    0.74,
+    1.52,
+    165
+   ],
+   "model - topic baseline": [
+    0.81,
+    0.41,
+    1.21,
+    165
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.031,
+    -0.053,
+    0.007
+   ]
+  },
+  "maker": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     3.23,
+     2.87,
+     3.61,
+     165
+    ],
+    [
+     3.02,
+     2.69,
+     3.39,
+     165
+    ],
+    [
+     3.18,
+     2.82,
+     3.56,
+     165
+    ]
+   ],
+   "model - day baseline": [
+    0.21,
+    -0.18,
+    0.59,
+    165
+   ],
+   "model - topic baseline": [
+    0.05,
+    -0.36,
+    0.46,
+    165
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.177,
+    0.164,
+    0.106
+   ]
+  },
+  "topic": {
+   "MAE share points (model / day baseline / topic baseline)": [
+    [
+     1.85,
+     1.73,
+     1.97,
+     165
+    ],
+    [
+     1.51,
+     1.41,
+     1.61,
+     165
+    ],
+    [
+     1.51,
+     1.41,
+     1.61,
+     165
+    ]
+   ],
+   "model - day baseline": [
+    0.34,
+    0.24,
+    0.45,
+    165
+   ],
+   "model - topic baseline": [
+    0.34,
+    0.24,
+    0.44,
+    165
+   ],
+   "mean Spearman across launches (model / day / topic)": [
+    0.135,
+    -0.034,
+    0.031
+   ]
+  },
+  "families where model beats BOTH baselines (interval < 0)": []
+ }
+}
