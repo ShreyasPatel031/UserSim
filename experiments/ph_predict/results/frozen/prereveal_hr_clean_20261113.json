@@ -1,0 +1,53 @@
+{
+ "frozen_at": "2026-11-13T01:45:00.903625+00:00",
+ "days": [
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "alpha": 3.0,
+ "features": [
+  "z_lpos",
+  "z_move",
+  "z_nc",
+  "z_nu",
+  "z_clean"
+ ],
+ "note": "z within day; lpos = log hidden-rank position, move = log pos at 01:00 - log pos now, nc / nu = log1p comments / distinct commenters created <= the point, clean = clean_nosite 00:05 score; target z(-log final rank)",
+ "points": {
+  "P1": {
+   "coef": {
+    "z_lpos": -0.41293345056685204,
+    "z_move": 0.0,
+    "z_nc": 0.3427348969169167,
+    "z_nu": -0.166718081559554,
+    "z_clean": 0.429892053339028
+   },
+   "intercept": 2.173951406343999e-16
+  },
+  "P2": {
+   "coef": {
+    "z_lpos": -0.5858709822480763,
+    "z_move": -0.002717037125790813,
+    "z_nc": 0.2679060417940589,
+    "z_nu": -0.19022103354226827,
+    "z_clean": 0.3301358214292304
+   },
+   "intercept": 1.97146320683718e-16
+  },
+  "P3": {
+   "coef": {
+    "z_lpos": -0.651023469347842,
+    "z_move": -0.027916786048502392,
+    "z_nc": 0.2608103647448696,
+    "z_nu": -0.1700854592349614,
+    "z_clean": 0.2515508276480801
+   },
+   "intercept": 2.9688142899927876e-16
+  }
+ }
+}

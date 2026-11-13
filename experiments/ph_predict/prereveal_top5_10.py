@@ -99,6 +99,17 @@ def main():
             res.append({"point": f"{h:02d}:00", "variant": nm, "days": len(P),
                         **{f"top{k}": round(float(P[:, j].mean()), 1) for j, k in enumerate((3, 5, 10))},
                         **{f"top{k}_ci": [round(float(np.percentile(b[:, j], 2.5)), 1), round(float(np.percentile(b[:, j], 97.5)), 1)] for j, k in enumerate((3, 5, 10))}})
+    # orchestrator 01:43Z Nov 13: freeze variant d's weights (full 7-day fit per point) for the forward shadow line hr_clean
+    fz = {"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": days, "alpha": 3.0, "features": VAR["d + clean_nosite"],
+          "note": "z within day; lpos = log hidden-rank position, move = log pos at 01:00 - log pos now, nc / nu = log1p comments / "
+                  "distinct commenters created <= the point, clean = clean_nosite 00:05 score; target z(-log final rank)", "points": {}}
+    for h in (1, 2, 3):
+        Xh = X[X.h == h]; m = Ridge(alpha=3.0).fit(Xh[VAR["d + clean_nosite"]], Xh.y)
+        fz["points"][f"P{h}"] = {"coef": dict(zip(VAR["d + clean_nosite"], map(float, m.coef_))), "intercept": float(m.intercept_)}
+    os.makedirs(os.path.join(HERE, "results", "frozen"), exist_ok=True)
+    fp = os.path.join(HERE, "results", "frozen", "prereveal_hr_clean_20261113.json")
+    if not os.path.exists(fp):   # frozen once: never overwritten
+        json.dump(fz, open(fp, "w"), indent=1)
     out = {"replay": True, "method": __doc__.split("\n")[0], "days": info, "rows": res, **per, "written_at": pd.Timestamp.now(tz="UTC").isoformat()}
     p = os.path.join(HERE, "results", "web", "prereveal_top5_10.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/prereveal_top5_10.json"], check=True)
