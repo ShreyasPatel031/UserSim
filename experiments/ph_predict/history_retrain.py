@@ -20,6 +20,21 @@ import features as F, run as RN, model as M
 import training_window as TW
 OLD_NAN = ("promo_", "busy_", "x_")
 FOL = ["ph_hunter_followers", "ph_dayrank_ph_hunter_followers"]
+SEEDS = int(os.environ.get("SEEDS", "5"))   # orchestrator 04:50Z: >= 5 seeds per arm; seed spread reported next to the paired interval
+
+
+def oof_topic(tr):
+    """topic_prior_max / _mean on the TRAINING rows recomputed out of fold (4 whole-day folds, same shrinkage as model.add_fold_feats)."""
+    tr = tr.copy(); y = (tr.logv - tr.groupby("day").logv.transform("mean")).values
+    folds = np.array(pd.factorize(tr.day)[0]) % 4; mx, mn = np.zeros(len(tr)), np.zeros(len(tr))
+    for k in range(4):
+        ex = tr[folds != k][["topics"]].assign(rel=y[folds != k]).explode("topics")
+        st = ex.groupby("topics").rel.agg(["mean", "count"]); tm = (st["mean"] * st["count"] / (st["count"] + 20)).to_dict()
+        sel = folds == k
+        mx[sel] = [max([tm.get(t, 0) for t in ts] or [0]) for ts in tr.topics[sel]]
+        mn[sel] = [np.mean([tm.get(t, 0) for t in ts] or [0]) for ts in tr.topics[sel]]
+    tr["topic_prior_max"], tr["topic_prior_mean"] = mx, mn
+    return tr
 
 
 def build(src):
@@ -71,20 +86,33 @@ def main():
         for nm, tr0 in (("only2026", df[(df.mon < m) & ~old]), ("h25", df[df.mon < m])):
             tr, te, cols = TW.prep(tr0, te0)
             cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")]
-            for var, cc in ((nm, cols), (nm + "_nofol", [c for c in cols if c not in FOL])):
-                p = np.mean([TW.fitw(tr, te, cc, s) for s in range(3)], axis=0)
-                P.append(pd.DataFrame({"id": te.id.values, "variant": var, "pred": p}))
+            trs = {"": tr}
+            if os.environ.get("OOF_TOPIC") == "1":   # orchestrator 04:50Z: training rows must not see their own result in their topic prior
+                trs["_ooftopic"] = oof_topic(tr)
+            for suf, tr_ in trs.items():
+                for var, cc in ((nm + suf, cols), (nm + suf + "_nofol", [c for c in cols if c not in FOL])):
+                    for s in range(SEEDS):
+                        P.append(pd.DataFrame({"id": te.id.values, "variant": var, "seed": s, "pred": TW.fitw(tr_, te, cc, s)}))
         print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
-    P = pd.concat(P).pivot_table(index="id", columns="variant", values="pred").reset_index().merge(df[["id", "day", "dailyRank"]], on="id")
+    R = pd.concat(P)
+    SP = {}   # seed spread: each seed's own score, per variant
+    for (var, sd), g in R.groupby(["variant", "seed"]):
+        g = g.merge(df[["id", "day", "dailyRank"]], on="id"); g = g[(g.day >= "2026-04-01") & (g.day <= "2026-10-31")]
+        SP.setdefault(var, []).append(score(g.rename(columns={"pred": "x"}), "x").mean(0))
+    P = R.groupby(["id", "variant"]).pred.mean().unstack().reset_index().merge(df[["id", "day", "dailyRank"]], on="id")
     P = P[(P.day >= "2026-04-01") & (P.day <= "2026-10-31")]
     P.to_parquet(f"results/history_retrain{'_arm2' if os.environ.get('ARM') == '2' else ''}_preds.parquet")
-    rng = np.random.default_rng(0); md = [f"# 2025 + 2026 training vs 2026-only, clean_nosite ({P.day.nunique()} days Apr-Oct; month-forward; 3 seeds)", "",
+    rng = np.random.default_rng(0); md = [f"# 2025 + 2026 training vs 2026-only, clean_nosite ({P.day.nunique()} days Apr-Oct; month-forward; {SEEDS} seeds, mean prediction)", "",
           "```", json.dumps(info), "```", "", "| variant | top 3 | top 5 | top 10 | daily Spearman | diff vs 2026-only (t3 / t5 / t10 / rho, 95%) |", "|---|---|---|---|---|---|"]
-    for base, alt in (("only2026", "h25"), ("only2026_nofol", "h25_nofol")):
+    pairs = [("only2026", "h25"), ("only2026_nofol", "h25_nofol")] + ([("only2026_ooftopic", "h25_ooftopic"), ("h25", "h25_ooftopic")] if "h25_ooftopic" in P else [])
+    md[-2] = "| variant | top 3 | top 5 | top 10 | daily Spearman | seed spread (sd over seeds: t3 / t5 / t10 / rho) | diff vs base (t3 / t5 / t10 / rho, 95%) |"
+    md[-1] = "|---|---|---|---|---|---|---|"
+    for base, alt in pairs:
         B_, A_ = score(P, base), score(P, alt); dP = A_ - B_
         b = np.array([dP[rng.integers(0, len(dP), len(dP))].mean(0) for _ in range(3000)])
         for nm, X in ((base, B_), (alt, A_)):
-            md.append(f"| {nm} | {X[:,0].mean():.1f} | {X[:,1].mean():.1f} | {X[:,2].mean():.1f} | {np.nanmean(X[:,3]):.3f} | " +
+            sd_ = np.std(np.array(SP[nm]), axis=0)
+            md.append(f"| {nm} | {X[:,0].mean():.1f} | {X[:,1].mean():.1f} | {X[:,2].mean():.1f} | {np.nanmean(X[:,3]):.3f} | {sd_[0]:.1f} / {sd_[1]:.1f} / {sd_[2]:.1f} / {sd_[3]:.3f} | " +
                       (" / ".join(f"{dP[:,k].mean():+.{3 if k == 3 else 1}f} [{np.percentile(b[:,k],2.5):+.{3 if k == 3 else 1}f}, {np.percentile(b[:,k],97.5):+.{3 if k == 3 else 1}f}]" for k in range(4)) if nm == alt else "-") + " |")
     open(f"results/history_retrain{'_arm2' if os.environ.get('ARM') == '2' else ''}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
