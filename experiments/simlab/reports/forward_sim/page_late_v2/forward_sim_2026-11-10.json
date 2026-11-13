@@ -1,0 +1,233 @@
+{
+ "design": "FORWARD test of the /try simulator on a past launch day (orchestrator 06:33Z Nov 13). Run each morning on the previous day\n(script only, not scheduled). Everything the simulator sees is dated before the launch: the 00:05 PT read (name, tagline,\ndescription, topics; launches missing from that read are added from the warehouse launches table, same submitted text), the site's retrieval bank (reactions_retrieval_v1, Jan 1 - Oct 24) and models (launch_band.json trained to\nNov 10; page band to Aug 31); page text only from E5's forward page read of that day (tmp/e5/band/forward/<day>/, fetched on the\nlaunch day) when held. No Product Hunt requests: comments come from the bucket's launch-day API pulls\n(raw/ph_at_launch/<day>/{api_comments,api_replies,api_comments_catchup,api_fills}/*.jsonl, union, deduplicated); team comments (hunter / makers by PH user id, and the first\ntop-level commenter) are dropped; launches with >= 5 remaining comments are judged.\nSimulator, exactly as deployed (mvp/ph_site/try_sim.py, branch claude/ph-website): step_text (pasted path) / new_run(page read)\n(page path) -> step_reactions (6 reactions), step_asks (1 question + 1 concern), step_launch (band). b20 (RECIPE_b20_concerns):\nconcerns on both paths, questions on the pasted path; thin-neighbour rule (PH 0.898 / page 0.886: fall back / constant).\nJudge: gemini-2.5-pro, temperature 0, sees the real comments, one pooled blinded call per launch per kind (concerns, questions,\nreactions) with the launch's real top points (flash extraction) -> precision (p@1 for the deployed single item, p@3 for b20, over\n6 for reactions), recall of real points, top-1. Band: final daily rank inside the 10th-90th percentile rank band; within-day\nSpearman of the percentile with final rank (all launches of the day with a pasted-path score).\nOutput: <out>/forward_sim_<day>.json (counts and scores only) and per-launch rows <out>/forward_sim_<day>_rows.jsonl (ids, labels).",
+ "day": "2026-11-10",
+ "lineup": 50,
+ "lineup_from_warehouse": 0,
+ "judged_launches_5plus_comments": 11,
+ "page_reads_held": 0,
+ "final_ranks_available": 50,
+ "minutes": 2.2,
+ "concerns": {
+  "ph|dep": {
+   "precision": [
+    36.4,
+    9.1,
+    63.6,
+    11
+   ],
+   "recall": [
+    6.1,
+    0.0,
+    15.2,
+    11
+   ],
+   "top1": [
+    36.4,
+    9.1,
+    63.6,
+    11
+   ]
+  },
+  "page|dep": {
+   "precision": null,
+   "recall": null,
+   "top1": null
+  },
+  "ph|b20": {
+   "precision": [
+    37.5,
+    16.7,
+    58.3,
+    8
+   ],
+   "recall": [
+    45.8,
+    24.9,
+    66.7,
+    8
+   ],
+   "top1": [
+    37.5,
+    12.5,
+    75.0,
+    8
+   ]
+  },
+  "page|b20": {
+   "precision": null,
+   "recall": null,
+   "top1": null
+  },
+  "const": {
+   "precision": [
+    27.3,
+    15.2,
+    39.4,
+    11
+   ],
+   "recall": [
+    21.2,
+    6.1,
+    39.4,
+    11
+   ],
+   "top1": [
+    27.3,
+    0.0,
+    54.5,
+    11
+   ]
+  },
+  "ph b20 - const p@3": [
+   16.7,
+   -4.2,
+   45.8,
+   8
+  ],
+  "ph b20 - dep top1": [
+   0.0,
+   -37.5,
+   37.5,
+   8
+  ]
+ },
+ "questions": {
+  "ph|dep": {
+   "precision": [
+    9.1,
+    0.0,
+    27.3,
+    11
+   ],
+   "recall": [
+    12.1,
+    0.0,
+    30.3,
+    11
+   ],
+   "top1": [
+    9.1,
+    0.0,
+    27.3,
+    11
+   ]
+  },
+  "page|dep": {
+   "precision": null,
+   "recall": null,
+   "top1": null
+  },
+  "ph|b20": {
+   "precision": [
+    29.2,
+    16.7,
+    41.7,
+    8
+   ],
+   "recall": [
+    45.8,
+    16.7,
+    79.2,
+    8
+   ],
+   "top1": [
+    37.5,
+    0.0,
+    75.0,
+    8
+   ]
+  },
+  "const": {
+   "precision": [
+    18.2,
+    3.0,
+    39.4,
+    11
+   ],
+   "recall": [
+    6.1,
+    0.0,
+    15.2,
+    11
+   ],
+   "top1": [
+    27.3,
+    0.0,
+    54.5,
+    11
+   ]
+  },
+  "ph b20 - const p@3": [
+   16.7,
+   0.0,
+   33.3,
+   8
+  ],
+  "ph b20 - dep top1": [
+   25.0,
+   0.0,
+   62.5,
+   8
+  ]
+ },
+ "reactions": {
+  "ph|dep": {
+   "precision": [
+    42.4,
+    22.7,
+    62.1,
+    11
+   ],
+   "recall": [
+    39.4,
+    22.7,
+    56.1,
+    11
+   ],
+   "top1": [
+    54.5,
+    27.3,
+    81.8,
+    11
+   ]
+  },
+  "page|dep": {
+   "precision": null,
+   "recall": null,
+   "top1": null
+  },
+  "const": {
+   "precision": [
+    27.3,
+    13.6,
+    42.4,
+    11
+   ],
+   "recall": [
+    18.2,
+    10.6,
+    25.8,
+    11
+   ],
+   "top1": [
+    54.5,
+    27.3,
+    81.8,
+    11
+   ]
+  }
+ },
+ "band": {
+  "ph": {
+   "n": 50,
+   "coverage_10_90": [
+    82.0,
+    70.0,
+    92.0,
+    50
+   ],
+   "spearman_pct_vs_final_rank": 0.478
+  }
+ },
+ "est_usd_judge": 0.13
+}
