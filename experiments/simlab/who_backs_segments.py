@@ -15,9 +15,9 @@ def team(p, m):
     hs = [p] if isinstance(p, str) and p and not p.startswith("[") else []
     try: hs += [x for x in json.loads(m) if x and not str(x).startswith("[")] if isinstance(m, str) and m.startswith("[") else []
     except Exception: pass
-    return any(pid(h) in comp for h in hs)
+    return sum(pid(h) in comp for h in dict.fromkeys(hs))
 th = {i: team(p, m) for i, p, m in zip(L.id, L.poster, L.makers)}
-D["team_held"] = D.id.map(th).fillna(False); D["votes"] = D.votes.astype(float); D["share"] = D.n_held / D.votes
+D["n_team_held"] = D.id.map(th).fillna(0).astype(float); D["team_held"] = D.n_team_held > 0; D["votes"] = D.votes.astype(float); D["share"] = D.n_held / D.votes
 D["rk_E"] = D.groupby("day").E.rank(ascending=False); D["rk_C"] = D.groupby("day").clean_v3_nosite.rank(ascending=False)
 D["errE"] = (D.rk_E - D["rank"]).abs(); D["errC"] = (D.rk_C - D["rank"]).abs(); D["top3"] = D["rank"] <= 3
 D["E_hit"] = D.rk_E <= 3; D["C_hit"] = D.rk_C <= 3
@@ -34,4 +34,14 @@ for seg in ("team_held", "share_t", "votes_t"):
         o[str(k)] = {"rank error E - clean (mean, lower = E better)": bt(g.errE - g.errC),
                      "real top-3 launches: share E puts in its top 3 / clean": [bt(t3.E_hit.astype(float)), bt(t3.C_hit.astype(float))]}
     res[seg] = o
+# placebo (orchestrator 17:47Z): rank by number of held team members alone (ties broken by a fixed random draw)
+D["plac"] = D.n_team_held + rng.random(len(D)) * 1e-3
+def dm(g, col):
+    o = g.sort_values(col, ascending=False).id.tolist(); t = g.sort_values("rank").id.tolist(); return [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
+days = sorted(D.day.unique()); A = {c: np.array([dm(D[D.day == d], c) for d in days]) for c in ("E", "plac", "clean_v3_nosite")}
+def pd_(a, b):
+    df = A[a] - A[b]; bs = np.array([df[rng.integers(0, len(days), len(days))].mean(0) for _ in range(4000)])
+    return [[round(float(df[:, j].mean()), 1), round(float(np.percentile(bs[:, j], 2.5)), 1), round(float(np.percentile(bs[:, j], 97.5)), 1)] for j in range(3)]
+res["placebo"] = {"days": len(days), "levels top3/5/10": {k: v.mean(0).round(1).tolist() for k, v in A.items()},
+                  "E - placebo": pd_("E", "plac"), "placebo - clean": pd_("plac", "clean_v3_nosite"), "E - clean": pd_("E", "clean_v3_nosite")}
 json.dump(res, open(os.path.join(OUT, "who_backs_segments.json"), "w"), indent=1); print(json.dumps(res))
