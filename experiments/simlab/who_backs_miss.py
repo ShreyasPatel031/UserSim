@@ -35,7 +35,8 @@ for d in DAYS:
             if x[ci["back"]] == 0 and x[ci["fol"]] == 0 and x[ci["hun"]] == 0 and x[ci["taste"]] == 0: a["B"] += 1; continue
             if nday.get((q, d), 0) >= 5: a["D"] += 1; continue
             a["C"] += 1; dist.append(rk[k] - N + 1)
-        rows.append({"id": i, "day": d, "n_voters": len(v), "hit": len(v & top), "N": N, **a, "c_dist_med": float(np.median(dist)) if dist else np.nan})
+        rp = len(v & set(act.index[o[:len(v)]])) / len(v)
+        rows.append({"id": i, "day": d, "n_voters": len(v), "hit": len(v & top), "N": N, "rprec": rp, **a, "c_dist_med": float(np.median(dist)) if dist else np.nan})
         nv = [q for q in top if q not in v]
         if nv: rev.append({"n30_nonvoters_med": float(np.median([n30[idx[q]] for q in nv])), "n30_voters_med": float(np.median([n30[idx[q]] for q in v if q in idx])) if any(q in idx for q in v) else np.nan,
                            "share_top1000": float(np.mean([q in top1k for q in nv])), "share_voted_other": float(np.mean([q in voted_any for q in nv])), "n": len(nv)})
@@ -44,7 +45,7 @@ def lb(v):
     v = np.asarray(v, float); v = v[~np.isnan(v)]; bs = [v[rng.integers(0, len(v), len(v))].mean() for _ in range(2000)]
     return [round(float(v.mean()) * 100, 1), round(float(np.percentile(bs, 2.5)) * 100, 1), round(float(np.percentile(bs, 97.5)) * 100, 1), len(v)]
 miss = R.n_voters - R.hit; R = R[miss > 0].assign(miss=miss[miss > 0])
-res = {"launches": len(R), "days": DAYS, "recall@N": lb(R.hit / R.n_voters), "missed held backers total": int(R.miss.sum())}
+res = {"launches": len(R), "days": DAYS, "R-precision FULL (list size = real held-voter count)": lb(R.rprec), "recall@N": lb(R.hit / R.n_voters), "missed held backers total": int(R.miss.sum())}
 res["bucket shares of missed backers (mean over launches)"] = {b: lb(R[b] / R.miss) for b in ("A", "B", "D", "C")}
 res["A account-age split (share of A)"] = {k: round(float(R[k].sum() / max(R.A.sum(), 1)), 3) for k in ("A_age<30", "A_age30-365", "A_age>365")}
 res["C distance below N (places): median of launch medians, IQR"] = [float(np.nanmedian(R.c_dist_med)), float(np.nanpercentile(R.c_dist_med, 25)), float(np.nanpercentile(R.c_dist_med, 75))]

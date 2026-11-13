@@ -8,7 +8,8 @@ Arms (expected backers E(L) = sum over people, ranked per launch for recall):
   COUNT       P = a_p x cond
   HYBRID      P = sqrt(COUNT x min(1, k_p x s_pL)), s = softmax choice share (taste+cf+team+clean prior, who_choice.py)
   CHOICE      P = min(1, k_p x s_pL) (the who_choice.py softmax+prior arm, recomputed here for the same rows)
-Metrics as before (recall at N / 2N, calibration, launch top 3/5/10 vs tie-averaged placebo and clean), plus:
+R-precision (recall when the list is as long as the launch's real number of held voters) is reported because recall at N = round(E)
+depends on calibration (a larger E gives a longer list). Metrics as before (recall at N / 2N, calibration, launch top 3/5/10 vs tie-averaged placebo and clean), plus:
   person-level top-3 hit for CHOICE vs baselines on the same voter person-days: (a) everyone gets the clean_nosite order;
   (b) the person's team ties only (back + fol + hun; ties broken by a fixed random draw); (c) ORACLE: final daily rank order.
   Splits of recall and person hit by voter type that day: 1 vote, 2-4, 5+. Counts only.
@@ -53,7 +54,8 @@ for d in DAYS:
             EE[i] = float(P[:, j].sum()); v = Y[:, j] > 0
             if v.sum():
                 o = np.argsort(-P[:, j]); N = max(1, int(round(P[:, j].sum()))); inN = np.zeros(len(o), bool); inN[o[:N]] = True; in2N = np.zeros(len(o), bool); in2N[o[:2 * N]] = True
-                rows.append({"arm": nm, "id": i, "r1": inN[v].mean(), "r2": in2N[v].mean(), **{f"r1_{t}": (inN[v & (vtype == t)].mean() if (v & (vtype == t)).any() else np.nan) for t in ("1", "2-4", "5+")}})
+                nv = int(v.sum()); rp = v[o[:nv]].mean()
+                rows.append({"arm": nm, "id": i, "rprec": rp, "r1": inN[v].mean(), "r2": in2N[v].mean(), **{f"r1_{t}": (inN[v & (vtype == t)].mean() if (v & (vtype == t)).any() else np.nan) for t in ("1", "2-4", "5+")}})
     # person-level top-3 hit on voter person-days
     vm = kreal > 0; cl = np.array([prior_s.get(i, 0) for i in ids]); fr = np.array([-float(D.loc[D.id == i, "rank"].iloc[0]) for i in ids])
     tie = X[:, :, FI["back"]] + X[:, :, FI["fol"]] + X[:, :, FI["hun"]] + rng.random(X.shape[:2]) * 1e-3
@@ -68,7 +70,7 @@ res = {"design": __doc__.split("\n    python")[0], "days": DAYS, "placebo (tie-a
 for nm, EE in (("COUNT", Ecount), ("HYBRID", Ehyb), ("CHOICE", Echo)):
     D["E"] = D.id.map(EE).fillna(0); A = np.array([dm(D[D.day == d], "E") for d in DAYS]); g = R[R.arm == nm]
     cal = D[D.E > 0].assign(v=D.id.map(votes).astype(float)); cal = cal[cal.v > 0]
-    res[nm] = {"recall@N": lb(g.r1), "recall@2N": lb(g.r2), "recall@N by voter type (1 / 2-4 / 5+ votes that day)": {t: lb(g[f"r1_{t}"]) for t in ("1", "2-4", "5+")},
+    res[nm] = {"R-precision (list size = the launch's real held-voter count; calibration-free)": lb(g.rprec), "recall@N": lb(g.r1), "recall@2N": lb(g.r2), "recall@N by voter type (1 / 2-4 / 5+ votes that day)": {t: lb(g[f"r1_{t}"]) for t in ("1", "2-4", "5+")},
                "top3/5/10": A.mean(0).round(1).tolist(), "vs placebo": pdiff(A, PL), "vs clean": pdiff(A, CL),
                "calibration median E/displayed, Spearman": [round(float((cal.E / cal.v).median()), 3), round(float(spearmanr(cal.E, cal.v).correlation), 3)]}
 cols = [c for c in PH.columns if c != "type"]
