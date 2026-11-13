@@ -10,7 +10,7 @@ TH = os.environ.get("TH_FILE", "/tmp/claude-0/-home-user-UserSim/94f4f0ff-5cdc-5
 
 
 def main():
-    R = pd.read_parquet(f"{HERE}/results/readable_preds.parquet"); R["id"] = R.id.astype(str)
+    SUF = os.environ.get("READABLE_SUF", ""); R = pd.read_parquet(f"{HERE}/results/readable_preds{SUF}.parquet"); R["id"] = R.id.astype(str)
     D = pd.read_parquet(f"{HERE}/results/history_retrain_decomp_preds_arm1.parquet")[["id", "day", "dailyRank", "pure"]]; D["id"] = D.id.astype(str)
     A = D.merge(R[["id", "a", "b"]], on="id").dropna(subset=["dailyRank", "pure", "a", "b"])
     T = pd.read_parquet(f"{HERE}/results/tw_nosite.parquet"); T["id"] = T.id.astype(str)
@@ -45,7 +45,7 @@ def main():
     P2 = lodo(["z_pure", "z_npre"]); md.append(f"| clean_nosite + th_n_pre (reference) | {P2[:,0].mean():.1f} | {P2[:,1].mean():.1f} | {P2[:,2].mean():.1f} | {np.nanmean(P2[:,3]):.3f} | - | - |")
     md += [row("(a) + th_n_pre", lodo(["z_a", "z_npre"]), P2), row("(b) + th_n_pre", lodo(["z_b", "z_npre"]), P2), "",
            "Rule (orchestrator): not worse = interval of the top-3 difference includes 0 and the mean is within 1.5 points."]
-    open(f"{HERE}/results/readable_model.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
+    open(f"{HERE}/results/readable_model{SUF}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
 if __name__ == "__main__":

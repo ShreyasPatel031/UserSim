@@ -13,6 +13,11 @@ import features as F, run as RN, training_window as TW
 from sklearn.linear_model import Ridge
 import lightgbm as lgb
 X10 = ["hist_hunter_rel", "hist_hunter_n", "llm_pitch", "llm_brand", "topic_prior_mean", "comp_nn_max", "ph_n_media", "ph_has_video", "ph_n_makers", "promo_cov"]
+# READABLE_SET=v2: drops the three near-zero stumps of v1 (llm_brand, ph_has_video, comp_nn_max: mean |points| <= 0.005) for the text-model
+# score, the hunter's past top-5 count and hunter account age; outputs get the _v2 suffix
+SET = os.environ.get("READABLE_SET", "v1"); SUF = "" if SET == "v1" else "_" + SET
+if SET == "v2":
+    X10 = ["hist_hunter_rel", "hist_hunter_n", "hist_hunter_top5", "llm_pitch", "topic_prior_mean", "txt_ridge", "ph_n_media", "ph_n_makers", "ph_hunter_age_d", "promo_cov"]
 MONTHS = [m for m in TW.MONTHS if "2026-04" <= m <= "2026-10"]
 
 
@@ -45,8 +50,8 @@ def main():
                     contrib.append(pd.DataFrame({"id": te.id.astype(str).values, "input": c, "points": pc[:, k]}))
         out.append(pd.DataFrame({"id": te.id.astype(str).values, "day": te.day.values, "a": a, "b": np.mean(bs, 0)}))
         print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
-    pd.concat(out).to_parquet("results/readable_preds.parquet"); pd.concat(contrib).to_parquet("results/readable_contrib.parquet")
-    json.dump(signs, open("results/readable_signs.json", "w"), indent=1)
+    pd.concat(out).to_parquet(f"results/readable_preds{SUF}.parquet"); pd.concat(contrib).to_parquet(f"results/readable_contrib{SUF}.parquet")
+    json.dump(signs, open(f"results/readable_signs{SUF}.json", "w"), indent=1)
     print(json.dumps({"signs_last_month": signs[max(signs)], "rows": int(sum(len(o) for o in out))}))
 
 
