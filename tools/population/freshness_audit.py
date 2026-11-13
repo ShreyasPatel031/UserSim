@@ -8,6 +8,8 @@ Feeds and their maximum allowed gap (orchestrator 20:54Z Nov 13, for Shreyas):
   day_close_read           a snapshots/<day+1>T2345..2359PT read of day D, present by 00:05 PT                           once/day
   first_comment_read       an api_comments read at 00:07 PT (00:00-00:15 PT window) present by 00:20 PT                  once/day
   fleet_status             mailbox/from_cursor/status.json "utc"; VMs alive vs 20 expected; dead slots                     20 min
+  vote_snapshots           warehouse raw/vote_snapshots/<PT day>.jsonl: newest object write and newest "at" row             75 min
+  live_capture_heartbeat also reads mailbox/from_cursor/ph_live_capture.status.md (Cursor loop) and takes the newer
 Modes:
   check   now: prints breaches as JSON lines and appends open/closed gaps to the local ledger (W/downtime_ledger.jsonl)
   backfill DAY_FROM DAY_TO: every gap over the limits, per feed, from the files; prints per-day totals
@@ -120,9 +122,12 @@ def backfill(d0, d1):
 def check():
     now = dt.datetime.now(UTC)
     out = []
-    st = sh("gsutil", "cat", f"{G}/mailbox/from_grokbot/ph_live_capture.status.md")
-    m = re.search(r"updated:\s*(\S+)", st)
-    hb = ts(m.group(1)) if m else None
+    hbs = []
+    for who in ("from_grokbot", "from_cursor"):
+        m = re.search(r"updated:\s*(\S+)", sh("gsutil", "cat", f"{G}/mailbox/{who}/ph_live_capture.status.md"))
+        if m and ts(m.group(1)):
+            hbs.append(ts(m.group(1)))
+    hb = max(hbs) if hbs else None
     if not hb or (now - hb).total_seconds() / 60 > 20:
         out.append({"feed": "live_capture_heartbeat", "last_good": hb.isoformat() if hb else None,
                     "gap_min": round((now - hb).total_seconds() / 60, 1) if hb else None, "limit_min": 20})
@@ -145,6 +150,44 @@ def check():
                         "vms_alive": alive, "vms_expected": 20, "dead_slots": dead})
     except Exception:
         out.append({"feed": "fleet_status", "last_good": None, "note": "status.json unreadable"})
+    vs = sh("gcloud", "storage", "objects", "list", f"{G}/raw/vote_snapshots/*.jsonl", "--format=value(name,update_time)")
+    rows = [l.split("\t") for l in vs.splitlines() if "\t" in l]
+    if rows:
+        name, upd = max(rows, key=lambda r: r[1])
+        last_at = None
+        for l in sh("gsutil", "cat", f"gs://{G.split('//')[1].split('/')[0]}/{name}").splitlines():
+            try:
+                a = ts(json.loads(l).get("at"))
+            except Exception:
+                continue
+            if a and (not last_at or a > last_at):
+                last_at = a
+        wr = ts(upd.replace("+0000", "+00:00"))
+        last = max(x for x in (wr, last_at) if x) if (wr or last_at) else None
+        newest_day = name.rsplit("/", 1)[-1][:-6]
+        if not last or (now - last).total_seconds() / 60 > 75:
+            out.append({"feed": "vote_snapshots", "newest_file_day": newest_day, "last_write": wr.isoformat() if wr else None,
+                        "last_row_at": last_at.isoformat() if last_at else None,
+                        "gap_min": round((now - (wr or last_at)).total_seconds() / 60, 1), "limit_min": 75})
+    else:
+        out.append({"feed": "vote_snapshots", "last_good": None, "note": "no files"})
+    return out
+
+
+def first_comment_reads(d0, d1):
+    """per PT day: time of the first api_comments read after 00:00 PT (pooled across launch-day folders)."""
+    D0, D1 = dt.date.fromisoformat(d0), dt.date.fromisoformat(d1)
+    cms = set()
+    day = D0 - dt.timedelta(days=2)
+    while day <= D1:
+        cms |= set(day_series(day.isoformat())[1])
+        day += dt.timedelta(days=1)
+    out = {}
+    day = D0
+    while day <= D1:
+        f = sorted(t for t in cms if t.astimezone(PT).date() == day)
+        out[day.isoformat()] = f[0].astimezone(PT).strftime("%H:%M PT") if f else None
+        day += dt.timedelta(days=1)
     return out
 
 
@@ -158,6 +201,9 @@ def main():
             for b in br:
                 f.write(json.dumps({"checked_utc": dt.datetime.now(UTC).isoformat(), **b}) + "\n")
         print(f"FRESHNESS breaches={len(br)}")
+    elif mode == "first_comment":
+        for d, t in first_comment_reads(sys.argv[3], sys.argv[4]).items():
+            print(d, t)
     else:
         rows, per_day, no_close, no_first = backfill(sys.argv[3], sys.argv[4])
         with open(f"{W}/downtime_ledger.jsonl", "w") as f:
