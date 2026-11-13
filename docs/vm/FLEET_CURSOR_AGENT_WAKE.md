@@ -15,23 +15,24 @@ Dedupe: handler writes `usersim_sim/mailbox/from_cursor/wake_dedupe/{messageId}`
 ## One-time setup
 
 1. Cursor Dashboard → **API Keys** → create a key.
-2. GCP Secret Manager (project = `AGENT_MSGS_PROJECT`):
+2. Cloud Agent **environment secret** `FLEET_CURSOR_WAKE_API_KEY` (same key) so fleet babysit agents can run `ph_fleet_cursor_wake_deploy.sh` without pasting the key in chat.
+3. GCP Secret Manager (project = `AGENT_MSGS_PROJECT`):
 
    ```bash
    printf '%s' "$CURSOR_API_KEY" | gcloud secrets create cursor-fleet-api-key \
      --project=PROJECT --data-file=-
    ```
 
-3. Deploy:
+4. Deploy:
 
    ```bash
-   export CURSOR_API_KEY=...  # only needed if not using --set-secrets above
+   # Uses FLEET_CURSOR_WAKE_API_KEY or CURSOR_API_KEY from the agent shell when creating the GCP secret
    export FLEET_CURSOR_BC_ID=bc-....      # this Cursor chat's id, or leave unset
    bash scripts/vm/ph_fleet_cursor_publish_bc.sh   # writes bc id to GCS for the bridge
    bash scripts/vm/ph_fleet_cursor_wake_deploy.sh
    ```
 
-4. Each fleet check-in runs `ph_fleet_cursor_publish_bc.sh` when `CURSOR_CONVERSATION_ID` is set (Cloud Agent VM).
+5. Each fleet check-in runs `ph_fleet_cursor_publish_bc.sh` when `CURSOR_CONVERSATION_ID` is set (Cloud Agent VM).
 
 ## Peers (Population / Claude / Grok)
 

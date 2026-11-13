@@ -23,11 +23,12 @@ SECRET_ARGS=()
 if gcloud secrets describe "$SECRET_NAME" --project="$PROJECT" >/dev/null 2>&1; then
   SECRET_ARGS=(--set-secrets="CURSOR_API_KEY=${SECRET_NAME}:latest")
   echo "Mounting Secret Manager $SECRET_NAME on Cloud Run."
-elif [[ -n "${CURSOR_API_KEY:-}" ]]; then
-  echo "Creating $SECRET_NAME from CURSOR_API_KEY in shell..." >&2
-  printf '%s' "$CURSOR_API_KEY" | gcloud secrets create "$SECRET_NAME" \
+elif [[ -n "${FLEET_CURSOR_WAKE_API_KEY:-}" || -n "${CURSOR_API_KEY:-}" ]]; then
+  _wake_key="${FLEET_CURSOR_WAKE_API_KEY:-$CURSOR_API_KEY}"
+  echo "Creating $SECRET_NAME from FLEET_CURSOR_WAKE_API_KEY in shell..." >&2
+  printf '%s' "$_wake_key" | gcloud secrets create "$SECRET_NAME" \
     --project="$PROJECT" --replication-policy=automatic --data-file=- 2>/dev/null \
-    || printf '%s' "$CURSOR_API_KEY" | gcloud secrets versions add "$SECRET_NAME" --project="$PROJECT" --data-file=-
+    || printf '%s' "$_wake_key" | gcloud secrets versions add "$SECRET_NAME" --project="$PROJECT" --data-file=-
   SECRET_ARGS=(--set-secrets="CURSOR_API_KEY=${SECRET_NAME}:latest")
 else
   echo "WARN: no $SECRET_NAME and no CURSOR_API_KEY — steer will 503 until secret exists (Cursor Dashboard → API Keys)." >&2
