@@ -35,7 +35,10 @@ def build(src):
     F.D = root
     df = RN.load_llm(F.build()); df = df[~df.known].copy(); df["id"] = df.id.astype(str)
     df["mon"] = df.day.str[:7]; old = df.day < "2026-01-01"
-    nan_cols = [c for c in df.columns if c.startswith(OLD_NAN)]
+    # ARM=1 (default): llm_* missing on 2025 rows; ARM=2: keep the 2025 llm_pitch / llm_brand scored by h25_llm.py (llm_site / llm_full
+    # stay missing: no 2025 homepage text, no team facts)
+    arm2 = os.environ.get("ARM", "1") == "2"
+    nan_cols = [c for c in df.columns if c.startswith(OLD_NAN) or (c.startswith("llm_") and not (arm2 and c in ("llm_pitch", "llm_brand")))]
     df.loc[old, nan_cols] = np.nan
     return df, nan_cols
 
@@ -74,7 +77,7 @@ def main():
         print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
     P = pd.concat(P).pivot_table(index="id", columns="variant", values="pred").reset_index().merge(df[["id", "day", "dailyRank"]], on="id")
     P = P[(P.day >= "2026-04-01") & (P.day <= "2026-10-31")]
-    P.to_parquet("results/history_retrain_preds.parquet")
+    P.to_parquet(f"results/history_retrain{'_arm2' if os.environ.get('ARM') == '2' else ''}_preds.parquet")
     rng = np.random.default_rng(0); md = [f"# 2025 + 2026 training vs 2026-only, clean_nosite ({P.day.nunique()} days Apr-Oct; month-forward; 3 seeds)", "",
           "```", json.dumps(info), "```", "", "| variant | top 3 | top 5 | top 10 | daily Spearman | diff vs 2026-only (t3 / t5 / t10 / rho, 95%) |", "|---|---|---|---|---|---|"]
     for base, alt in (("only2026", "h25"), ("only2026_nofol", "h25_nofol")):
@@ -83,7 +86,7 @@ def main():
         for nm, X in ((base, B_), (alt, A_)):
             md.append(f"| {nm} | {X[:,0].mean():.1f} | {X[:,1].mean():.1f} | {X[:,2].mean():.1f} | {np.nanmean(X[:,3]):.3f} | " +
                       (" / ".join(f"{dP[:,k].mean():+.{3 if k == 3 else 1}f} [{np.percentile(b[:,k],2.5):+.{3 if k == 3 else 1}f}, {np.percentile(b[:,k],97.5):+.{3 if k == 3 else 1}f}]" for k in range(4)) if nm == alt else "-") + " |")
-    open("results/history_retrain.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
+    open(f"results/history_retrain{'_arm2' if os.environ.get('ARM') == '2' else ''}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
 if __name__ == "__main__":
