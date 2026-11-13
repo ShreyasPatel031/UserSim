@@ -32,7 +32,7 @@ ITEMS = {
     "follow_ties": {"label": "Held people following the hunter or makers", "unit": "people", "note": "n_follow"},
     "follow_ties_active": {"label": "...of whom upvoted something in the last 30 days", "unit": "people", "note": "n_follow"},
     "expected_held_votes": {"label": "Expected votes from held people (pair model)", "unit": "votes", "note": "n_ehv"},
-    "audience_tiers": {"label": "Activity of backers and followers vs all held people", "unit": "share by tier", "note": "n_tiers"},
+    "audience_tiers": {"label": "Activity of backers and followers vs all held people (upvotes on launches in the 90 days before the day)", "unit": "share by tier: 0 / 1-9 / 10-99 / 100+ upvotes in 90 days", "note": "n_tiers"},
     "young_upvoters": {"label": "Listed upvoters with accounts 1-12 months old", "unit": "share", "note": "n_young"},
     "created_together": {"label": "Listed upvoters whose accounts were created close together", "unit": "share above chance", "note": "n_clus"},
     "young_early_commenters": {"label": "Early commenters (first 4 h) with accounts under a year old", "unit": "share", "note": "n_ycom"},
@@ -41,7 +41,8 @@ NOTES = {
     "n_hf": "An input to the 00:05 forecast (read at 00:05 PT).",
     "n_backers": "Descriptive. Adding team-support counts to the clean forecast plus early comments changed top-3 accuracy by +0.8 points "
                  "(95% interval -1.1 to +2.7; 176 days): no measured improvement.",
-    "n_follow": "Descriptive. Summing held people's expected votes, follows of the hunter and makers included, gave 0.0 top-3 gain over "
+    "n_follow": "Leak-safe: counts only follows seen in reads fetched before 00:00 PT of the launch day (so the follow existed before "
+                "the launch), among people in our store. Descriptive. Summing held people's expected votes, follows of the hunter and makers included, gave 0.0 top-3 gain over "
                 "the clean forecast on 10 test days (Oct 29 - Nov 11). Held people cover about 41-57% of a launch's votes.",
     "n_ehv": "Descriptive. The voter_harness pair model (held people's recent activity, topic taste, follows of the hunter and first maker; "
              "trained on the 7 previous days) summed per launch gave 0.0 top-3 gain over the clean forecast on 10 test days (Oct 29 - Nov 11). "
@@ -59,7 +60,7 @@ def put(o, k, v, n, cov=None):
     if n is not None and n < MIN: return
     o[k] = {"value": v, "n_people": n, "coverage": cov, "note": ITEMS[k]["note"]}
 def write(name, launches, extra):
-    doc = {"as_of": pd.Timestamp.now(tz="UTC").isoformat(), "shadow": True, "min_group": MIN, **extra,
+    doc = {"as_of": extra.pop("data_cut", pd.Timestamp.now(tz="UTC").isoformat()), "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "shadow": True, "min_group": MIN, **extra,
            "items": ITEMS, "notes": NOTES, "launches": launches}
     p = os.path.join(OUT, name); json.dump(doc, open(p, "w"), indent=1, default=float); print("wrote", p, len(launches))
 if MODE == "try":
@@ -90,7 +91,8 @@ if MODE == "forecast":
     lday = dict(zip(W.id, W.day)); U["d"] = U.target_id.map(lday); U = U[U.d.notna()]
     d30 = (pd.Timestamp(DAY) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); d90 = (pd.Timestamp(DAY) - pd.Timedelta(days=90)).strftime("%Y-%m-%d")
     act30 = set(U[U.d >= d30].person_id); n90 = U[U.d >= d90].groupby("person_id").size()
-    held = set(Eb.person_id); F = Eb[Eb.kind == "follows"]; fol = F.groupby("target_id").person_id.apply(set).to_dict()
+    SP_ = set(pd.read_parquet(f"{ST}/persons.parquet").person_id); held = set(Eb.person_id) & SP_
+    U = U[U.person_id.isin(SP_)]; F = Eb[(Eb.kind == "follows") & Eb.person_id.isin(SP_)]; fol = F.groupby("target_id").person_id.apply(set).to_dict()
     tiers = lambda ps: (lambda s: {"0": float((s == 0).mean()), "1-9": float(((s >= 1) & (s < 10)).mean()), "10-99": float(((s >= 10) & (s < 100)).mean()), "100+": float((s >= 100).mean())})(pd.Series([n90.get(p, 0) for p in ps]))
     typical = tiers(list(held)); out = {}
     for p in line:
@@ -129,7 +131,8 @@ if MODE == "forecast":
                                                 "coverage": {"share_from_1000_most_active": round(ek.get(i, 0) / ev[i], 3) if ev[i] > 0 else None}}
     except Exception as e:
         print("expected_held_votes skipped:", repr(e)[:200])
-    write(f"{DAY}_0005.json", out, {"day": DAY, "point": "0005", "store_reads_before": D0.isoformat(), "held_people": len(held)})
+    write(f"{DAY}_0005.json", out, {"day": DAY, "point": "0005", "data_cut": D0.isoformat(), "store_reads_before": D0.isoformat(), "held_people": len(held),
+        "held_people_definition": "people in our store (store_v3 persons) with at least one read fetched before the data cut"})
 if MODE == "after":
     J = pd.read_parquet(f"{SP}/acct/joined.parquet").drop_duplicates("person_id"); J["jt"] = pd.to_datetime(J.joined, utc=True, errors="coerce"); J["uid"] = pd.to_numeric(J.ph_user_id, errors="coerce")
     jt = J.dropna(subset=["jt"]).set_index("person_id").jt; um = J.dropna(subset=["uid"]).set_index("person_id").uid; ju = J.dropna(subset=["uid"]).drop_duplicates("uid").set_index("uid").jt
