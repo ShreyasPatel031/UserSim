@@ -149,10 +149,33 @@ def main():
             if "pred_clean" in SF and SF.pred_clean.notna().any():
                 clean[os.path.basename(f_)[:10]] = (SF.sort_values("pred_clean", ascending=False).id.astype(str).tolist(), "shadow")
         pub = {r["day"]: r for r in out["rows"] if r["point"] == "0005" and r["method"] == "published" and r["source"] == "live"}
+        # model switch (orchestrator 00:26Z Nov 13): from results/model_switch.json "clean_from" day on, the published forecast IS
+        # the clean model; "deployed" then means the OLD model's nightly shadow replay (shadow_makerfix rank_unfixed)
+        msw = os.path.join(HERE, "results", "model_switch.json")
+        sw_from = json.load(open(msw)).get("clean_from") if os.path.exists(msw) else None
+        if sw_from:
+            old_ = {r["day"]: r for r in out["rows"] if r["point"] == "0005" and r["method"] == "unfixed_replay" and r["day"] >= sw_from}
+            for d_, r_ in old_.items():
+                pub[d_] = r_
+                if d_ in pub and any(x["day"] == d_ and x["method"] == "published" and x["source"] == "live" for x in out["rows"]):
+                    pr_ = next(x for x in out["rows"] if x["day"] == d_ and x["method"] == "published" and x["source"] == "live")
+                    clean.setdefault(d_, None)
+            out["model_switch"] = {"clean_from": sw_from, "deployed_after_switch": "old model, shadow replay (unfixed_replay)",
+                                   "clean_after_switch": "published forecast"}
         rows_cd = []
-        for d_, (o_, src_) in sorted(clean.items()):
+        if sw_from:
+            for r_ in out["rows"]:
+                if r_["point"] == "0005" and r_["method"] == "published" and r_["source"] == "live" and r_["day"] >= sw_from:
+                    clean[r_["day"]] = ("__published__", "published (clean model deployed)")
+        for d_, (o_, src_) in sorted((k, v) for k, v in clean.items() if v is not None):
             t_ = Rk[Rk.day == d_].sort_values("daily_rank").id.tolist()
             if d_ not in pub or len(t_) < 3:
+                continue
+            if o_ == "__published__":   # clean side = the published row's own scores
+                pr_ = next(x for x in out["rows"] if x["day"] == d_ and x["method"] == "published" and x["source"] == "live")
+                rows_cd.append({"day": d_, "clean_source": src_, "clean_top3": pr_["top3"], "clean_p1_top3": float(pr_["p1_top3"]) * 100,
+                                "clean_exact1": float(pr_["exact1"]) * 100, "deployed_top3": pub[d_]["top3"],
+                                "deployed_p1_top3": float(pub[d_]["p1_top3"]) * 100, "deployed_exact1": float(pub[d_]["exact1"]) * 100})
                 continue
             rows_cd.append({"day": d_, "clean_source": src_, "clean_top3": len(set(o_[:3]) & set(t_[:3])) / 3 * 100, "clean_p1_top3": float(o_[0] in t_[:3]) * 100,
                             "clean_exact1": float(o_[0] == t_[0]) * 100, "deployed_top3": pub[d_]["top3"], "deployed_p1_top3": float(pub[d_]["p1_top3"]) * 100,
