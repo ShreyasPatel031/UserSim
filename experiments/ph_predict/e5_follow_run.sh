@@ -1,5 +1,5 @@
 #!/bin/bash
-# Nightly logged input (orchestrator 05:00Z Nov 13): E5's follow_shadow.py (claude/person-model-v2 3c399c39) on the day's 00:05 line-up.
+# Nightly logged input (orchestrator 05:00Z Nov 13): E5's follow_shadow.py (claude/person-model-v2 a754cb28) on the day's 00:05 line-up.
 # Run after the 00:05 read exists (any timed run after 01:00 PT). No Product Hunt requests. Ids and counts only; the salt is read by
 # the script, never printed. Writes gs://.../tmp/e5/follow_shadow/shadow_<D>.jsonl unless it already exists.
 # usage: bash e5_follow_run.sh <YYYY-MM-DD> <work dir holding follow_shadow.py, store/, s/salt>
