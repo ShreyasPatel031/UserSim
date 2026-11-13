@@ -22,7 +22,8 @@ MAKER = lambda c: c.startswith(("hist_maker", "hist_dayrank_hist_maker", "ph_mak
 
 def main(d):
     now = pd.Timestamp.now(tz="America/Los_Angeles")
-    if now.strftime("%Y-%m-%d") == d and now.hour < 1:
+    # TW_EARLY=1 (bundle 12, timed writes on the VM): allowed from 00:20 PT once the pipeline's forecast parquet exists (tw.sh checks it)
+    if now.strftime("%Y-%m-%d") == d and now.hour < 1 and os.environ.get("TW_EARLY") != "1":
         print(json.dumps({"day": d, "status": "before 01:00 PT; not running"})); return
     df = RN.load_llm(F.build(include_today=True))
     tr = df[(~df.is_today) & (df.day < d) & (~df.known)]

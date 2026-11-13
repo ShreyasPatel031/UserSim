@@ -9,8 +9,10 @@ set -euo pipefail
 MODE="$1"; D="$2"; W="$3"; WT="$4"; B=gs://usersim-bakeoff-347838016394/usersim_sim
 PIN=fcbcd617   # the single source of truth for the pin (E5 14:54Z Nov 13); the worktree is moved / recreated here
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
-if [ ! -d "$WT/.git" ] && [ ! -f "$WT/.git" ]; then git -C "$REPO" fetch -q origin claude/person-model-v2; git -C "$REPO" worktree add -q --detach "$WT" "$PIN"; fi
-[ "$(git -C "$WT" rev-parse --short=8 HEAD)" = "$PIN" ] || { git -C "$REPO" fetch -q origin claude/person-model-v2 || true; git -C "$WT" checkout -q --detach "$PIN"; }
+# bundle 12 (VM, no git): a plain copy of the pinned tree with a .pin file holding PIN is used as is
+if [ -f "$WT/.pin" ] && [ "$(cat "$WT/.pin")" = "$PIN" ]; then :
+elif [ ! -d "$WT/.git" ] && [ ! -f "$WT/.git" ]; then git -C "$REPO" fetch -q origin claude/person-model-v2; git -C "$REPO" worktree add -q --detach "$WT" "$PIN"; fi
+[ -f "$WT/.pin" ] || [ "$(git -C "$WT" rev-parse --short=8 HEAD)" = "$PIN" ] || { git -C "$REPO" fetch -q origin claude/person-model-v2 || true; git -C "$WT" checkout -q --detach "$PIN"; }
 case "$MODE" in forecast) F="${D}_0005.json";; after) F="${D}_after.json";; try) F="try_neighbours_v1.json";; *) echo "bad mode"; exit 2;; esac
 # skip only when a NON-EMPTY file exists (an empty one, e.g. an 'after' run before the merge, is rewritten)
 if [ "${FORCE:-0}" != 1 ] && [ "$MODE" != try ] && gsutil -q stat "$B/results/web/why/$F"; then
