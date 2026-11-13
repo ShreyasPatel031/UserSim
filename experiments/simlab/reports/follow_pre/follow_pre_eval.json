@@ -1,0 +1,60 @@
+{
+ "design": "Evaluate the before-launch held-follower count on Nov 10 - 11 (and Nov 12 once final ranks land): coverage, within-day Spearman with\nfinal rank, partial correlation beyond clean_v3_nosite (th_n_pre not held), vs the all-edges (leaky) count; and n days needed.",
+ "days": {
+  "2026-11-10": {
+   "launches": 50,
+   "with_rank_and_clean": 50,
+   "eligible_people": 37446,
+   "coverage_pre>0": 0.56,
+   "median_pre": 1.0,
+   "median_all": 1.0,
+   "leak_ratio_all_over_pre_median": 1.028,
+   "spearman_pre": 0.421,
+   "partial_pre": 0.121,
+   "spearman_all": 0.418,
+   "partial_all": 0.12,
+   "spearman_ph_hunter": 0.427,
+   "partial_ph_hunter": 0.152,
+   "spearman_clean": 0.472,
+   "spearman_pre_vs_ph_hunter_followers": 0.927,
+   "median all/pre ratio: top10 / others": [
+    1.045,
+    1.0
+   ],
+   "mean_all_minus_pre: top10 / others": [
+    152.0,
+    5.9
+   ]
+  },
+  "2026-11-11": {
+   "launches": 16,
+   "with_rank_and_clean": 16,
+   "eligible_people": 38507,
+   "coverage_pre>0": 0.812,
+   "median_pre": 95.0,
+   "median_all": 95.0,
+   "leak_ratio_all_over_pre_median": 1.0,
+   "spearman_pre": 0.665,
+   "partial_pre": 0.278,
+   "spearman_all": 0.665,
+   "partial_all": 0.278,
+   "spearman_ph_hunter": 0.664,
+   "partial_ph_hunter": 0.29,
+   "spearman_clean": 0.797,
+   "spearman_pre_vs_ph_hunter_followers": 0.959,
+   "median all/pre ratio: top10 / others": [
+    1.0,
+    1.0
+   ],
+   "mean_all_minus_pre: top10 / others": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "n_days_for_partial_0.2": {
+  "per_day_sd_assumed": 0.21,
+  "n_days": 9,
+  "note": "per-day sd from the 14-day follower-count partials (Oct 26 - Nov 11); detection = mean partial's 95% interval excludes 0 with 80% power"
+ }
+}
