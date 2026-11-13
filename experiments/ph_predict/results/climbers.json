@@ -1,0 +1,94 @@
+{
+ "days": {
+  "2026-10-25": "no early read",
+  "2026-10-26": "no early read",
+  "2026-10-27": {
+   "early_source": "posts_ts",
+   "early_read_PT": "12:06",
+   "launches": 20,
+   "comments": true
+  },
+  "2026-10-28": {
+   "early_source": "posts_ts",
+   "early_read_PT": "12:06",
+   "launches": 31,
+   "comments": true
+  },
+  "2026-10-29": {
+   "early_source": "posts_ts",
+   "early_read_PT": "12:06",
+   "launches": 30,
+   "comments": true
+  },
+  "2026-10-30": {
+   "early_source": "posts_ts",
+   "early_read_PT": "12:06",
+   "launches": 20,
+   "comments": true
+  },
+  "2026-10-31": {
+   "early_source": "posts_ts",
+   "early_read_PT": "12:06",
+   "launches": 22,
+   "comments": true
+  },
+  "2026-11-01": {
+   "early_source": "posts_ts",
+   "early_read_PT": "12:06",
+   "launches": 19,
+   "comments": true
+  },
+  "2026-11-02": {
+   "early_source": "posts_ts",
+   "early_read_PT": "11:50",
+   "launches": 18,
+   "comments": true
+  },
+  "2026-11-03": {
+   "early_source": "posts_ts",
+   "early_read_PT": "11:50",
+   "launches": 38,
+   "comments": true
+  },
+  "2026-11-04": {
+   "early_source": "posts_ts",
+   "early_read_PT": "04:00",
+   "launches": 34,
+   "comments": true
+  },
+  "2026-11-08": {
+   "early_source": "posts_ts",
+   "early_read_PT": "04:00",
+   "launches": 17,
+   "comments": true
+  },
+  "2026-11-09": {
+   "early_source": "posts_ts",
+   "early_read_PT": "04:00",
+   "launches": 25,
+   "comments": false
+  },
+  "2026-11-10": {
+   "early_source": "posts_ts",
+   "early_read_PT": "04:00",
+   "launches": 50,
+   "comments": true
+  },
+  "2026-11-11": {
+   "early_source": "posts_ts",
+   "early_read_PT": "04:00",
+   "launches": 26,
+   "comments": true
+  }
+ },
+ "n": 350,
+ "climbers": 9,
+ "faders": 6,
+ "coef_all_four": {
+  "z_early": -0.8994958262937615,
+  "z_clean": 0.04341604030558378,
+  "z_npre": 0.06611053552048202,
+  "z_team": -0.010235257209357905,
+  "z_ntopics": 0.019839641996613543
+ }
+}
