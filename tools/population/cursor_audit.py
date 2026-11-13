@@ -11,7 +11,7 @@ Pass -> copied into people_live/vm/ (an existing vm/ file is replaced only for a
 Fail -> raw/_cursor/requeue.txt (back on the queue) unless it is a follow-list-only fail (held for the offset re-page).
 Per-handle reasons go only to raw/_cursor/audit_<stamp>.tsv. mailbox/to_cursor/audit_<stamp>.md gets counts only.
 """
-import collections, contextlib, io, json, os, re, runpy, subprocess, sys, time
+import collections, contextlib, glob, io, json, os, re, runpy, subprocess, sys, time
 
 G = "gs://usersim-bakeoff-347838016394/usersim_sim"
 R = f"{G}/raw"
@@ -51,8 +51,12 @@ def main():
     done = {l.split("\t")[0] for l in lines(f"{CUR}/audited.tsv")}
     if "--reaudit-held" in sys.argv:  # re-score people whose latest audit result was held_gate (whole, blocked only by a gate)
         last = {}
-        for u in sorted(sh("gsutil", "ls", f"{CUR}/audit_*.tsv").stdout.split()):
-            for l in lines(u):
+        # 04:5xZ Nov 13: one bulk copy, not one gsutil cat per audit file (105 files)
+        AC = f"{W}/cursor_audit_cache/audits"
+        os.makedirs(AC, exist_ok=True)
+        sh("gcloud", "storage", "rsync", f"{CUR}/", f"{AC}/", "--exclude", r"^(?!audit_.*\.tsv$).*")
+        for u in sorted(glob.glob(f"{AC}/audit_*.tsv")):
+            for l in [x for x in open(u).read().splitlines() if x.strip() and not x.startswith("#")]:
                 f = l.split("\t")
                 if len(f) >= 3: last[f"{f[0]}@{f[1]}"] = f[2]
         held = {k for k, v in last.items() if v == "held_gate"}
@@ -101,13 +105,18 @@ def main():
     for u in sh("gsutil", "ls", f"{R}/population/requests/rerun_whole_*.txt").stdout.split():
         rerun |= {l.split()[0].lstrip("@").lower() for l in lines(u)}
     vm_clean = {}
+    SC = f"{W}/cursor_audit_cache/status"  # 04:5xZ Nov 13: one incremental sync of all status logs (277 files, ~185 MB)
+    for sub, src in (("stage", f"{STAGE}/status/"), ("vm", f"{R}/ph_population/people_live/vm/status/")):
+        os.makedirs(f"{SC}/{sub}", exist_ok=True)
+        sh("gcloud", "storage", "rsync", src, f"{SC}/{sub}/")
+    print("STATUS_SYNCED", time.strftime("%H:%M:%SZ", time.gmtime()), flush=True)
 
     def clean(vm):
         if vm not in vm_clean:
             # 20:1xZ Nov 12: "{vm}.*", not "{vm}*": the bare glob also read VMs -10..-19 for VM -1 (-40..-49 for -4, ...),
             # so a VM was judged on other VMs' rotation/block events. Logs are {vm}.jsonl and {vm}.supervisor.jsonl.
-            logs = sh("gsutil", "ls", f"{STAGE}/status/{vm}.*", f"{R}/ph_population/people_live/vm/status/{vm}.*").stdout.split()
-            txt = "".join(sh("gsutil", "cat", u).stdout for u in logs)
+            logs = sorted(glob.glob(f"{SC}/stage/{vm}.*") + glob.glob(f"{SC}/vm/{vm}.*"))  # local status mirror, synced once per run
+            txt = "".join(open(u, errors="replace").read() for u in logs)
             lines = txt.splitlines()
             vm_clean[vm] = (not any(EVASION.search(_strip_person(l)) for l in lines), _block_evasion(lines))
             vm_ips[vm] = sorted((str(d.get("utc") or ""), d.get("exit_ip")) for d in map(_js, lines)
