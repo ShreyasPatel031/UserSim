@@ -95,11 +95,21 @@ def salt():
     return subprocess.run(["gsutil", "cat", f"{BUCKET}/raw/population/_salt"], capture_output=True, text=True, check=True).stdout.strip()
 
 
+# orchestrator 08:39Z Nov 13: E5's merged store (store_v3 + 22,614 audit pulls), labelled provisional, until the population agent
+# publishes its official merged store_v* (then set POOL_STORE to it). The store path is recorded in every output row.
+STORE = os.environ.get("POOL_STORE", f"{BUCKET}/tmp/e5/merged_store_20261113")
+STORE_LABEL = os.environ.get("POOL_STORE_LABEL", "merged store, provisional (E5 merged_store_20261113)")
+
+
 def v3():
     d = tempfile.mkdtemp(prefix="v3_")
     for f in ("events", "persons", "tabs"):
-        subprocess.run(["gsutil", "-q", "cp", f"{BUCKET}/raw/population/store_v3/{f}.parquet", d], check=True)
-    return {f: pd.read_parquet(f"{d}/{f}.parquet") for f in ("events", "persons", "tabs")}
+        subprocess.run(["gsutil", "-q", "cp", f"{STORE}/{f}.parquet", d], check=True)
+    try:
+        return {f: pd.read_parquet(f"{d}/{f}.parquet") for f in ("events", "persons", "tabs")}
+    finally:   # Nov 13: every run used to leave its store copy in TMPDIR (162 copies, 14 GB filled the disk)
+        import shutil
+        shutil.rmtree(d, ignore_errors=True)
 
 
 def completeness(L, E, V, sl):
@@ -326,7 +336,9 @@ def hourly_once(L, E0, sl, base_ids):
             "coverage_heldout_not_top100": round(float(D.Ph.sum() / D.Vh.sum()), 3), "ci_heldout": ci(2),
             "voters_in_window": int(len(voters)), "people_tracked": int(len(base_ids | pulled)),
             "people_added_vs_base": int(len(pulled - base_ids)), "added_who_voted_in_window": int(len((pulled - base_ids) & voters)),
-            "store_v3_events_mtime": subprocess.run(["gsutil", "stat", f"{BUCKET}/raw/population/store_v3/events.parquet"], capture_output=True, text=True).stdout.split("Update time:")[-1].split("\n")[0].strip()}
+            "store": STORE, "store_label": STORE_LABEL,
+            "coverage_note": "last-week (Oct 29 - Nov 4) coverage is selection-inflated (the pool was seeded from it); Oct 1-24 (coverage_complete_all / _top3) is the unseeded reference",
+            "store_v3_events_mtime": subprocess.run(["gsutil", "stat", f"{STORE}/events.parquet"], capture_output=True, text=True).stdout.split("Update time:")[-1].split("\n")[0].strip()}
 
 
 def hourly(loop=True):
