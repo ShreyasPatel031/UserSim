@@ -8,8 +8,8 @@ exec 8>"$W/.quality.lock"; flock -n 8 || { echo "quality run already active"; ex
 mkdir -p $R/people_live/vm $R/people_live/vm_pgql
 # 05:5xZ Nov 13: gcloud storage rsync (gsutil rsync over ~75k objects outlived the container's ~30-min restarts)
 gcloud storage rsync --delete-unmatched-destination-objects --exclude '.*(_code|logs|status|heartbeat|deep_list|claims)/.*|heartbeat.*' $B/raw/ph_population/people_live/vm/ $R/people_live/vm/ >/dev/null 2>&1
-gsutil -q -m rsync -r -x '.*\.log$' $B/raw/ph_population/people_live/vm_pgql/ $R/people_live/vm_pgql/
-mkdir -p $R/people_live/deep_list && gsutil -q -m rsync -d $B/raw/ph_population/people_live/vm/deep_list/ $R/people_live/deep_list/
+gcloud storage rsync -r --exclude '.*\.log$' $B/raw/ph_population/people_live/vm_pgql/ $R/people_live/vm_pgql/ >/dev/null 2>&1
+mkdir -p $R/people_live/deep_list && gcloud storage rsync --delete-unmatched-destination-objects $B/raw/ph_population/people_live/vm/deep_list/ $R/people_live/deep_list/ >/dev/null 2>&1
 mkdir -p $R/signedin_upvotes && gcloud storage rsync $B/raw/_babysitter/signedin_upvotes/ $R/signedin_upvotes/ >/dev/null 2>&1
 gcloud storage rsync $B/raw/_pacetest/shared/_signedin_upvotes/ $R/signedin_upvotes/ >/dev/null 2>&1  # staged signed-in queue (Cursor fleet, merged via cursor_audit)
 gsutil -q cp $B/raw/_pacetest/merged_ledger.txt $R/merged_ledger.txt 2>/dev/null || rm -f $R/merged_ledger.txt

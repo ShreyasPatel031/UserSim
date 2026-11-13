@@ -146,104 +146,6 @@ for p_ in glob.glob(f"{D}/people_live/deep_list/*.json"):
     except Exception:
         pass
 
-rows, people = [], {}
-# kind comes from the pull's method (pgql pulls are also written to vm/<h>.json), not from the folder
-files = [(p, "fast_c32") for p in glob.glob(f"{D}/people_live/vm_pgql/_run_*/*.json")] + \
-        [(p, "vm") for p in glob.glob(f"{D}/people_live/vm/*.json")]
-unreadable = 0
-for p, src in files:
-    try:
-        d = json.load(open(p))
-    except Exception:
-        unreadable += 1
-        continue
-    if not isinstance(d, dict) or ("upvotes" not in d and "header" not in d):
-        continue
-    fin = (d.get("run") or {}).get("finished_utc") or d.get("fetched_at") or ""
-    if fin < SINCE:
-        continue
-    meth = str(d.get("method") or "").lower()
-    kind = "fast_c32" if (src == "fast_c32" or "pgql" in meth) else ("deep" if (d.get("run") or {}).get("deep_passes") else "full")
-    h = handle_of(d, p)
-    req_missing = [f for f in ("ph_user_id", "header", "run") if not d.get(f)]
-    states = {k: tab_state(d, k)[0] for k in TABS}
-    q = queued.get(h, set())
-    for k in TABS:  # a short fast tab already on the person's deep_list is pending deep, not an open gap
-        if kind == "fast_c32" and states[k].startswith("FAIL_short") and ("*" in q or k in q):
-            states[k] = states[k].replace("FAIL_short", "queued_deep")
-    fill = deep_fill(d)
-    rows.append({"handle": h, "kind": kind, "finished": fin, "states": states, "fill": fill, "req_missing": req_missing,
-                 "pkg_md5": (d.get("run") or {}).get("pkg_md5")})
-    people.setdefault(h, []).append(rows[-1])
-
-by_kind = Counter(r["kind"] for r in rows)
-lines = [f"# Person-pull data quality since {SINCE} (population agent; counts only)", "",
-         f"Pulls checked: {len(rows):,} ({dict(by_kind)}); people {len(people):,}; unreadable files {unreadable}.", ""]
-flags = []
-for kind in ("fast_c32", "full", "deep"):
-    rs = [r for r in rows if r["kind"] == kind]
-    if not rs:
-        continue
-    lines += [f"## {kind}: {len(rs):,} pulls", "", "| Tab | complete | ph_limit | rating_only | FAIL_short | FAIL_repeat | FAIL_no_offset_end | queued_deep | partial | no_header | missing_tab | dup |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
-    for k in TABS:
-        c = Counter(r["states"][k].split("+")[0] for r in rs); dup = sum(1 for r in rs if "+dup" in r["states"][k])
-        lines.append(f"| {k} | {c['complete']} | {c['ph_limit']} | {c['rating_only']} | {c['FAIL_short']} | {c['FAIL_repeat']} | {c['FAIL_no_offset_end']} | {c['queued_deep']} | {c['partial']} | {c['no_header']} | {c['missing_tab']} | {dup} |")
-        if c["FAIL_partial"]:
-            flags.append((kind, k, "partial after no-budget build", c["FAIL_partial"], "a per-person budget/timeout still cut this tab (should not exist after 00:30Z)"))
-        if c["FAIL_short"]:
-            flags.append((kind, k, "FAIL_short", c["FAIL_short"], "list stopped short of the header with no server end recorded, and NOT on the person's deep_list (paging/cap in our code; nobody will fix it)"))
-        if c["FAIL_repeat"]:
-            flags.append((kind, k, "FAIL_repeat", c["FAIL_repeat"], "follower/following page chain repeated pages and stopped short of the header; needs the offset re-page (server_end_offset)"))
-        if c["FAIL_no_offset_end"]:
-            flags.append((kind, k, "FAIL_no_offset_end", c["FAIL_no_offset_end"], "follower/following list short of the header with no offset re-page end (E5 class 3); needs the full18b re-page"))
-        if dup:
-            flags.append((kind, k, "duplicate ids", dup, "merge or paging repeated items"))
-        if kind != "fast_c32" and c["no_header"]:
-            flags.append((kind, k, "no_header", c["no_header"], "header not read (deep must load the profile page)"))
-    req = Counter(f for r in rs for f in r["req_missing"])
-    fills = defaultdict(Counter)
-    for r in rs:
-        for f, v in r["fill"].items():
-            fills[f]["n/a" if v is None else ("ok" if v else "missing")] += 1
-    lines += ["", f"Required fields missing: {dict(req) or 'none'}", "",
-              "| Deep-fill item | ok | missing | n/a |", "|---|---|---|---|"]
-    for f, c in fills.items():
-        lines.append(f"| {f} | {c['ok']} | {c['missing']} | {c['n/a']} |")
-        if kind != "fast_c32" and c["missing"]:
-            flags.append((kind, f, "not filled", c["missing"], "full/deep pull left a field a complete record needs"))
-    if req and kind != "fast_c32":
-        flags.append((kind, "required", "missing fields", sum(req.values()), str(dict(req))))
-    lines.append("")
-
-# did a later vm/ pull fill what the fast pull left?
-pairs = Counter(); still = Counter()
-for h, rs in people.items():
-    fast = [r for r in rs if r["kind"] == "fast_c32"]; later = [r for r in rs if r["kind"] != "fast_c32"]
-    if not fast or not later:
-        continue
-    f0 = max(fast, key=lambda r: r["finished"]); l0 = max(later, key=lambda r: r["finished"])
-    if l0["finished"] <= f0["finished"]:
-        continue
-    pairs["people"] += 1
-    for f, v in l0["fill"].items():
-        if f0["fill"].get(f) is False:
-            pairs[f] += 1
-            if v is False:
-                still[f] += 1
-lines += ["## Fast pull followed by a later full/deep pull", "",
-          f"People: {pairs['people']}. Items the fast pull lacked and the later pull still lacks: {dict(still) or 'none'} "
-          f"(of {dict((k, v) for k, v in pairs.items() if k != 'people')})", ""]
-for f, n in still.items():
-    flags.append(("deep_after_fast", f, "deep did not fill", n, "deep pass skipped this item"))
-lines += ["## Flags", ""] + ([f"- {k} / {t}: {what} x{n} — {cause}" for k, t, what, n, cause in flags] or ["- none"])
-open(OUT_MD, "w").write("\n".join(lines) + "\n")
-with open(OUT_ROWS, "w") as f:
-    for r in rows:
-        f.write(json.dumps(r) + "\n")
-print("\n".join(lines[-(len(flags) + 2):]))
-print(f"FLAGS={len(flags)}")
-
-
 # ---------- person-level OUTPUT check (Shreyas, Nov 5 03:00Z): every saved person scored against the full definition ----------
 # A saved person (latest vm/<h>.json) is COMPLETE only if: all 10 tabs present; header has followers, following, hunted,
 # collections, stacks, reviews, upvotes; every list tab complete or server-ended (no FAIL_short / partial / no_header);
@@ -322,26 +224,197 @@ def person_complete(d, h=None):
     return not why, why
 
 
-latest = {}
-for p in glob.glob(f"{D}/people_live/vm/*.json"):
+rows, people = [], {}
+# kind comes from the pull's method (pgql pulls are also written to vm/<h>.json), not from the folder
+files = [(p, "fast_c32") for p in glob.glob(f"{D}/people_live/vm_pgql/_run_*/*.json")] + \
+        [(p, "vm") for p in glob.glob(f"{D}/people_live/vm/*.json")]
+unreadable = 0
+# 06:3xZ Nov 13: every file is parsed once, in parallel, into a small per-file summary that is cached on disk (key: path,
+# size, mtime). The old two full passes over the ~6 GB store, holding every latest record in memory, outlived the
+# container's ~30-min restarts. Results are identical: only the signed-in queue check, which depends on other files,
+# is applied after the cache.
+INFO = {}  # path -> summary (None = unreadable)
+_CF = f"{D}/.quality_cache.jsonl"
+
+
+def _key(p):
+    try:
+        st_ = os.stat(p)
+        return f"{st_.st_size}:{st_.st_mtime_ns}"
+    except OSError:
+        return None
+
+
+def _info(ps):
+    p, src = ps
     try:
         d = json.load(open(p))
     except Exception:
+        return p, None
+    if not isinstance(d, dict) or ("upvotes" not in d and "header" not in d):
+        return p, {"skip": True}
+    run = d.get("run") or {}
+    h = handle_of(d, p)
+    so_ = signed_out_end(d)
+    ok_, why_ = person_complete(d, "\x00") if src == "vm" else (None, None)
+    if why_:
+        why_ = [w for w in why_ if w != "upvotes:signed_out_end_not_queued_signed_in"]
+    return p, {"h": h, "fin": run.get("finished_utc") or d.get("fetched_at") or "", "fin_run": str(run.get("finished_utc") or ""),
+               "meth": str(d.get("method") or "").lower(), "deep": bool(run.get("deep_passes")),
+               "req_missing": [f for f in ("ph_user_id", "header", "run") if not d.get(f)],
+               "states": {k: tab_state(d, k)[0] for k in TABS}, "fill": deep_fill(d), "pkg_md5": run.get("pkg_md5"),
+               "so": so_, "why": why_}
+
+
+def _load_info():
+    cache = {}
+    if os.path.exists(_CF):
+        for l in open(_CF):
+            try:
+                e = json.loads(l)
+                cache[e["p"]] = e
+            except Exception:
+                pass
+    todo_, keys = [], {}
+    for p, src in files:
+        k = _key(p)
+        keys[p] = k
+        e = cache.get(p)
+        if e is not None and e.get("k") == k:
+            INFO[p] = e.get("i")
+        else:
+            todo_.append((p, src))
+    print(f"QUALITY_CACHE hit={len(files) - len(todo_)} parse={len(todo_)}", file=sys.stderr, flush=True)
+    out = open(_CF, "a")
+    it = None
+    if __name__ == "__main__" and len(todo_) > 200:
+        import multiprocessing as mp
+        pool = mp.get_context("fork").Pool(max(1, (os.cpu_count() or 2)))
+        it = pool.imap_unordered(_info, todo_, chunksize=50)
+    else:
+        it = map(_info, todo_)
+    for n_, (p, i) in enumerate(it, 1):
+        INFO[p] = i
+        out.write(json.dumps({"p": p, "k": keys[p], "i": i}) + "\n")
+        if n_ % 2000 == 0:
+            out.flush()
+    out.close()
+
+
+rows, people = [], {}
+_load_info()
+for p, src in files:
+    i = INFO.get(p)
+    if i is None:
+        unreadable += 1
         continue
-    if isinstance(d, dict) and ("upvotes" in d or "header" in d):
-        h_ = handle_of(d, p)  # 12:2xZ Nov 10: <h>.json and an old <h>_f1fix.json map to one handle; keep the newer pull
-        fin = lambda x: str((x.get("run") or {}).get("finished_utc") or "")
-        if h_ not in latest or fin(d) >= fin(latest[h_]):
-            latest[h_] = d
+    if i.get("skip"):
+        continue
+    fin = i["fin"]
+    if fin < SINCE:
+        continue
+    meth = i["meth"]
+    kind = "fast_c32" if (src == "fast_c32" or "pgql" in meth) else ("deep" if i["deep"] else "full")
+    h = i["h"]
+    states = dict(i["states"])
+    q = queued.get(h, set())
+    for k in TABS:  # a short fast tab already on the person's deep_list is pending deep, not an open gap
+        if kind == "fast_c32" and states[k].startswith("FAIL_short") and ("*" in q or k in q):
+            states[k] = states[k].replace("FAIL_short", "queued_deep")
+    rows.append({"handle": h, "kind": kind, "finished": fin, "states": states, "fill": i["fill"], "req_missing": i["req_missing"],
+                 "pkg_md5": i["pkg_md5"]})
+    people.setdefault(h, []).append(rows[-1])
+
+by_kind = Counter(r["kind"] for r in rows)
+lines = [f"# Person-pull data quality since {SINCE} (population agent; counts only)", "",
+         f"Pulls checked: {len(rows):,} ({dict(by_kind)}); people {len(people):,}; unreadable files {unreadable}.", ""]
+flags = []
+for kind in ("fast_c32", "full", "deep"):
+    rs = [r for r in rows if r["kind"] == kind]
+    if not rs:
+        continue
+    lines += [f"## {kind}: {len(rs):,} pulls", "", "| Tab | complete | ph_limit | rating_only | FAIL_short | FAIL_repeat | FAIL_no_offset_end | queued_deep | partial | no_header | missing_tab | dup |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for k in TABS:
+        c = Counter(r["states"][k].split("+")[0] for r in rs); dup = sum(1 for r in rs if "+dup" in r["states"][k])
+        lines.append(f"| {k} | {c['complete']} | {c['ph_limit']} | {c['rating_only']} | {c['FAIL_short']} | {c['FAIL_repeat']} | {c['FAIL_no_offset_end']} | {c['queued_deep']} | {c['partial']} | {c['no_header']} | {c['missing_tab']} | {dup} |")
+        if c["FAIL_partial"]:
+            flags.append((kind, k, "partial after no-budget build", c["FAIL_partial"], "a per-person budget/timeout still cut this tab (should not exist after 00:30Z)"))
+        if c["FAIL_short"]:
+            flags.append((kind, k, "FAIL_short", c["FAIL_short"], "list stopped short of the header with no server end recorded, and NOT on the person's deep_list (paging/cap in our code; nobody will fix it)"))
+        if c["FAIL_repeat"]:
+            flags.append((kind, k, "FAIL_repeat", c["FAIL_repeat"], "follower/following page chain repeated pages and stopped short of the header; needs the offset re-page (server_end_offset)"))
+        if c["FAIL_no_offset_end"]:
+            flags.append((kind, k, "FAIL_no_offset_end", c["FAIL_no_offset_end"], "follower/following list short of the header with no offset re-page end (E5 class 3); needs the full18b re-page"))
+        if dup:
+            flags.append((kind, k, "duplicate ids", dup, "merge or paging repeated items"))
+        if kind != "fast_c32" and c["no_header"]:
+            flags.append((kind, k, "no_header", c["no_header"], "header not read (deep must load the profile page)"))
+    req = Counter(f for r in rs for f in r["req_missing"])
+    fills = defaultdict(Counter)
+    for r in rs:
+        for f, v in r["fill"].items():
+            fills[f]["n/a" if v is None else ("ok" if v else "missing")] += 1
+    lines += ["", f"Required fields missing: {dict(req) or 'none'}", "",
+              "| Deep-fill item | ok | missing | n/a |", "|---|---|---|---|"]
+    for f, c in fills.items():
+        lines.append(f"| {f} | {c['ok']} | {c['missing']} | {c['n/a']} |")
+        if kind != "fast_c32" and c["missing"]:
+            flags.append((kind, f, "not filled", c["missing"], "full/deep pull left a field a complete record needs"))
+    if req and kind != "fast_c32":
+        flags.append((kind, "required", "missing fields", sum(req.values()), str(dict(req))))
+    lines.append("")
+
+# did a later vm/ pull fill what the fast pull left?
+pairs = Counter(); still = Counter()
+for h, rs in people.items():
+    fast = [r for r in rs if r["kind"] == "fast_c32"]; later = [r for r in rs if r["kind"] != "fast_c32"]
+    if not fast or not later:
+        continue
+    f0 = max(fast, key=lambda r: r["finished"]); l0 = max(later, key=lambda r: r["finished"])
+    if l0["finished"] <= f0["finished"]:
+        continue
+    pairs["people"] += 1
+    for f, v in l0["fill"].items():
+        if f0["fill"].get(f) is False:
+            pairs[f] += 1
+            if v is False:
+                still[f] += 1
+lines += ["## Fast pull followed by a later full/deep pull", "",
+          f"People: {pairs['people']}. Items the fast pull lacked and the later pull still lacks: {dict(still) or 'none'} "
+          f"(of {dict((k, v) for k, v in pairs.items() if k != 'people')})", ""]
+for f, n in still.items():
+    flags.append(("deep_after_fast", f, "deep did not fill", n, "deep pass skipped this item"))
+lines += ["## Flags", ""] + ([f"- {k} / {t}: {what} x{n} — {cause}" for k, t, what, n, cause in flags] or ["- none"])
+open(OUT_MD, "w").write("\n".join(lines) + "\n")
+with open(OUT_ROWS, "w") as f:
+    for r in rows:
+        f.write(json.dumps(r) + "\n")
+print("\n".join(lines[-(len(flags) + 2):]))
+print(f"FLAGS={len(flags)}")
+
+
+latest = {}  # handle -> summary of its newest vm/ pull (12:2xZ Nov 10: <h>.json and an old <h>_f1fix.json map to one handle)
+for p, src in files:
+    i = INFO.get(p)
+    if src != "vm" or not i or i.get("skip"):
+        continue
+    if i["h"] not in latest or i["fin_run"] >= latest[i["h"]]["fin_run"]:
+        latest[i["h"]] = i
+
+
+def _pc(h, i):  # person_complete from the cached per-file result plus the signed-in queue (other files)
+    why = (["upvotes:signed_out_end_not_queued_signed_in"] if i["so"] and (h or "").lower() not in signed_in_q else []) + list(i["why"])
+    return not why, why
+
+
 pc = Counter(); reasons = Counter(); origin = Counter(); so = Counter(); complete_rows = []
-for h, d in latest.items():
-    ok, why = person_complete(d, h)
+for h, i in latest.items():
+    ok, why = _pc(h, i)
     if ok:
-        complete_rows.append((h.lower(), "whole_signed_out" if signed_out_end(d) else "whole"))
-    o = "pgql_lists_only" if "pgql" in str(d.get("method") or "").lower() and not (d.get("run") or {}).get("deep_passes") else \
-        ("deep" if (d.get("run") or {}).get("deep_passes") else "full")
+        complete_rows.append((h.lower(), "whole_signed_out" if i["so"] else "whole"))
+    o = "pgql_lists_only" if "pgql" in i["meth"] and not i["deep"] else ("deep" if i["deep"] else "full")
     pc[(o, ok)] += 1; origin[o] += 1
-    if ok and signed_out_end(d):
+    if ok and i["so"]:
         so[o] += 1
     for w in why:
         reasons[(o, w.split(":")[0] + ":" + w.split(":")[1].split(",")[0] if ":" in w else w)] += 1
@@ -357,9 +430,9 @@ out += ["", "Top reasons (origin, reason): " + "; ".join(f"{o} {w} x{n:,}" for (
 mled = set()
 if os.path.exists(f"{D}/merged_ledger.txt"):
     mled = {l.strip().lower() for l in open(f"{D}/merged_ledger.txt") if l.strip() and not l.startswith("#")}
-m_in = {h: d for h, d in latest.items() if h.lower() in mled}
-m_bad = Counter(w.split(":")[0] + ":" + w.split(":")[1] if ":" in w else w for h, d in m_in.items() for w in person_complete(d, h)[1])
-m_inc = sum(1 for h, d in m_in.items() if not person_complete(d, h)[0])
+m_in = {h: i for h, i in latest.items() if h.lower() in mled}
+m_bad = Counter(w.split(":")[0] + ":" + w.split(":")[1] if ":" in w else w for h, i in m_in.items() for w in _pc(h, i)[1])
+m_inc = sum(1 for h, i in m_in.items() if not _pc(h, i)[0])
 out += ["", f"Merged pace-test people: ledger {len(mled):,}; in vm/ {len(m_in):,}; **MERGED_INCOMPLETE {m_inc:,}**" + (f" (reasons: {dict(m_bad.most_common(6))})" if m_inc else "")]
 open(OUT_MD, "a").write("\n".join(out) + "\n")
 # PH agent 22:37Z Nov 7: the COMPLETE set, one "handle<TAB>whole|whole_signed_out" per line, next to the rows file
