@@ -14,7 +14,10 @@ Feeds and their maximum allowed gap (orchestrator 20:54Z Nov 13, for Shreyas):
 Modes:
   check   now: prints breaches as JSON lines and appends open/closed gaps to the local ledger (W/downtime_ledger.jsonl)
   backfill DAY_FROM DAY_TO: every gap over the limits, per feed, from the files; prints per-day totals
-Counts and times only. Usage: freshness_audit.py W check | W backfill 2026-11-01 2026-11-13
+  run    standalone (cron, no LLM, no session): check, then per breach a ledger row in GCS, an ALERT file in GCS and a
+         Grok Bot webhook call (tools/grokbot_post.sh, if its credentials file exists); re-alerts a feed at most every
+         30 min while its breach lasts; writes a "closed" row when a feed recovers. Run note: docs/population/freshness_audit_RUN.md
+Counts and times only. Usage: freshness_audit.py W check | W run | W backfill 2026-11-01 2026-11-13 | W first_comment D0 D1
 """
 import datetime as dt
 import json
@@ -179,8 +182,67 @@ def first_comment_reads(d0, d1):
     return out
 
 
+REALERT_MIN = 30
+
+
+def put(text, url):
+    subprocess.run(["gsutil", "-q", "cp", "-", url], input=text, text=True, check=False)
+
+
+def run(W):
+    """one cron tick: check, write GCS rows, ALERT file and webhook per breach (re-alert every 30 min), close recovered."""
+    import os
+    now = dt.datetime.now(UTC)
+    stamp = now.strftime("%Y%m%dT%H%M%SZ")
+    state_f = os.path.join(W, "freshness_state.json")
+    try:
+        state = json.load(open(state_f))
+    except Exception:
+        state = {}  # feed -> {"open_since": iso, "last_alert": iso}
+    try:
+        br = check()
+    except Exception as e:  # the audit itself failing is a breach too
+        br = [{"feed": "freshness_audit_itself", "note": f"check failed: {type(e).__name__}"}]
+    rows, due = [], []
+    now_feeds = {b["feed"] for b in br}
+    for b in br:
+        st = state.setdefault(b["feed"], {"open_since": now.isoformat(), "last_alert": None})
+        la = ts(st["last_alert"]) if st.get("last_alert") else None
+        alert = la is None or (now - la).total_seconds() / 60 >= REALERT_MIN
+        if alert:
+            st["last_alert"] = now.isoformat()
+            due.append(b)
+        rows.append({"checked_utc": now.isoformat(), "status": "open", "open_since": st["open_since"], "alerted": alert, **b})
+    for f in [f for f in state if f not in now_feeds]:
+        rows.append({"checked_utc": now.isoformat(), "status": "closed", "feed": f, "open_since": state[f]["open_since"],
+                     "minutes_open": round((now - ts(state[f]["open_since"])).total_seconds() / 60, 1)})
+        del state[f]
+    if rows:  # one object per tick: no read-modify-write race between runners
+        put("".join(json.dumps(r) + "\n" for r in rows), f"{G}/raw/_audit/checks/{stamp}.jsonl")
+    if due:
+        lines = [f"# FRESHNESS ALERT {stamp}", "", f"{len(br)} feed(s) over their limit (detection only; no feed was changed).", ""]
+        for b in br:
+            lines.append("- " + ", ".join(f"{k}={v}" for k, v in b.items()))
+        text = "\n".join(lines) + "\n"
+        put(text, f"{G}/raw/_audit/ALERT_{stamp}.md")
+        here = os.path.dirname(os.path.abspath(__file__))
+        post = os.path.join(here, "..", "grokbot_post.sh")
+        env = os.environ.get("GROKBOT_WEBHOOK_ENV", "/root/.usersim/grokbot_webhook.env")
+        if os.path.exists(env) and os.path.exists(post):
+            summary = "; ".join(f"{b['feed']} gap {b.get('gap_min')} min (limit {b.get('limit_min')})" for b in due)
+            r = subprocess.run([post, "freshness-audit", "live feed down", summary], capture_output=True, text=True)
+            print(f"WEBHOOK rc={r.returncode} {r.stdout.strip()[:120]}")
+        else:
+            print("WEBHOOK skipped (no credentials file)")
+    json.dump(state, open(state_f, "w"))
+    print(f"FRESHNESS_RUN {stamp} breaches={len(br)} alerted={len(due)} closed={sum(1 for r in rows if r['status'] == 'closed')}")
+    return 1 if br else 0
+
+
 def main():
     W, mode = sys.argv[1], sys.argv[2]
+    if mode == "run":
+        sys.exit(run(W))
     if mode == "check":
         br = check()
         for b in br:
