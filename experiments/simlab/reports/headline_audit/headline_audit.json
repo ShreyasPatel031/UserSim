@@ -1,0 +1,200 @@
+{
+ "design": "Audit of the arm-2 / clean headline (orchestrator 23:30Z Nov 13). Read-only. Counts only.\nPH ops' scoring (history_retrain.py on claude/ph-ops-agent): field = launches of the day with features, MINUS launches any LLM pass\nflagged 'known' (run.load_llm: the model says it remembers the launch; union over pitch/site/brand/full, Gemini and Claude); true top k\n= the k smallest dailyRank WITHIN that field; model order = score desc, ties by id; overlap/k; Apr 1 - Oct 31, every day in the file.\nFull field here = the warehouse launches table (official daily_rank). (a) PH ops' rule on its own file. (b) plain: true top k = official\ndaily_rank 1..k among all featured launches; launches missing from the arm-2 file are ranked last by the model (cannot be picked) -\nlower bound - and alternatively placed at their day's median score. Same for clean_v3 (honest_preds_v2), and arm 2 - clean.",
+ "days": 214,
+ "field": {
+  "warehouse launches (full field)": 5036,
+  "arm2 file launches": 5034,
+  "full-field launches missing from arm2 file": 3,
+  "days affected": 3,
+  "missing launches with official rank <= 3 / <= 10": [
+   1,
+   1
+  ],
+  "arm2 ids not in warehouse": 1,
+  "missing honest (clean) score in full field": 3,
+  "days whose ranks are not 1..n contiguous in warehouse": 38,
+  "rank disagreements arm2 dailyRank vs warehouse daily_rank": 0
+ },
+ "(a) PH ops rule, arm2 file": {
+  "arm2": [
+   [
+    60.7,
+    57.8,
+    63.7
+   ],
+   [
+    68.4,
+    65.8,
+    70.9
+   ],
+   [
+    75.7,
+    74.0,
+    77.4
+   ]
+  ],
+  "n days": 214
+ },
+ "(a) on launches with both scores": {
+  "days": 214,
+  "arm2": [
+   [
+    60.7,
+    57.6,
+    63.7
+   ],
+   [
+    68.4,
+    65.8,
+    70.9
+   ],
+   [
+    75.7,
+    74.1,
+    77.4
+   ]
+  ],
+  "clean_v3": [
+   [
+    57.6,
+    54.2,
+    60.9
+   ],
+   [
+    68.3,
+    65.7,
+    71.0
+   ],
+   [
+    74.8,
+    72.9,
+    76.5
+   ]
+  ],
+  "arm2 - clean": [
+   [
+    3.1,
+    0.6,
+    5.8
+   ],
+   [
+    0.1,
+    -1.6,
+    1.8
+   ],
+   [
+    0.9,
+    0.1,
+    1.7
+   ]
+  ]
+ },
+ "(b) plain official top k, full field, unscored ranked last": {
+  "days": 214,
+  "arm2": [
+   [
+    60.7,
+    57.8,
+    63.7
+   ],
+   [
+    68.3,
+    65.7,
+    70.8
+   ],
+   [
+    75.7,
+    74.0,
+    77.3
+   ]
+  ],
+  "clean_v3": [
+   [
+    57.6,
+    54.4,
+    60.9
+   ],
+   [
+    68.3,
+    65.7,
+    70.9
+   ],
+   [
+    74.8,
+    73.0,
+    76.4
+   ]
+  ],
+  "arm2 - clean": [
+   [
+    3.1,
+    0.8,
+    5.8
+   ],
+   [
+    0.0,
+    -1.7,
+    1.7
+   ],
+   [
+    0.9,
+    0.1,
+    1.7
+   ]
+  ]
+ },
+ "(b) plain official top k, full field, unscored at day median": {
+  "days": 214,
+  "arm2": [
+   [
+    60.7,
+    57.6,
+    63.9
+   ],
+   [
+    68.3,
+    65.8,
+    70.9
+   ],
+   [
+    75.7,
+    74.1,
+    77.3
+   ]
+  ],
+  "clean_v3": [
+   [
+    57.6,
+    54.5,
+    60.7
+   ],
+   [
+    68.3,
+    65.7,
+    70.9
+   ],
+   [
+    74.8,
+    73.1,
+    76.5
+   ]
+  ],
+  "arm2 - clean": [
+   [
+    3.1,
+    0.6,
+    5.6
+   ],
+   [
+    0.0,
+    -1.7,
+    1.7
+   ],
+   [
+    0.9,
+    0.1,
+    1.7
+   ]
+  ]
+ }
+}
