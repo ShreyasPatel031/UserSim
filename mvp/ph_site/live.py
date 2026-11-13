@@ -480,7 +480,7 @@ def why(day: str, point: str, ids: set[str]) -> dict | None:
         return None
     floor = max(WHY_MIN_GROUP, int(j.get("min_group") or 0))
     notes = {str(k): str(v)[:500] for k, v in (j.get("notes") or {}).items()}
-    items = {str(k): {"label": str(v.get("label") or k)[:120], "unit": str(v.get("unit") or "")[:40],
+    items = {str(k): {"label": str(v.get("label") or k)[:200], "unit": str(v.get("unit") or "")[:120],
                       "note": notes.get(str(v.get("note")), "")}
              for k, v in j["items"].items() if isinstance(v, dict)}
     out = {}
