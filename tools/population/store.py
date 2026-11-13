@@ -9,6 +9,7 @@ Upvote bounds: PH lists upvotes newest-vote-first and shows no cast time, so for
   and if an earlier read of the same person did not show it while showing a vote that is older in a later read, lo >= that read's fetched_at.
 
 Usage:
+  python tools/population/store.py records DATA_DIR OUT_DIR --salt-file SALT [--complete-file F]  # lossless records (run first)
   python tools/population/store.py build DATA_DIR OUT_DIR --salt-file SALT   # DATA_DIR laid out as in inventory.py
   python tools/population/store.py validate-pilot DIR                         # raw/ph_population/<run>/ as declared by Data Feeder
 """
@@ -378,56 +379,46 @@ PROFILE_COLS = ["ph_user_id", "name", "joined", "headline", "bio", "badges_count
 
 
 def _latest_person_files(data_dir):
-    """newest saved record per person in people_live/vm/ (a <h>_f1fix.json copy only if newer than <h>.json)."""
-    best = {}
+    """newest saved record per person in people_live/vm/ (a <h>_f1fix.json copy only if newer than <h>.json; only those pairs
+    are opened to compare)."""
+    by = defaultdict(list)
     for fn in os.listdir(f"{data_dir}/people_live/vm"):
-        if not fn.endswith(".json"):
-            continue
-        h = fn[:-5].replace("_f1fix", "").lower()
-        p = f"{data_dir}/people_live/vm/{fn}"
+        if fn.endswith(".json"):
+            by[fn[:-5].replace("_f1fix", "").lower()].append(f"{data_dir}/people_live/vm/{fn}")
+
+    def fin(p):
         try:
-            fin = str((json.load(open(p)).get("run") or {}).get("finished_utc") or "")
+            return str((json.load(open(p)).get("run") or {}).get("finished_utc") or "")
         except Exception:
-            fin = ""
-        if h not in best or fin > best[h][0]:
-            best[h] = (fin, p)
-    return {h: p for h, (fin, p) in best.items()}
+            return ""
+    return {h: (ps[0] if len(ps) == 1 else max(ps, key=fin)) for h, ps in by.items()}
 
 
-def build_records(data_dir, out_dir, ids, complete=None):
+def _records_part(args):
+    """worker: write one records part file; return profile rows and counts."""
     import pyarrow as pa, pyarrow.parquet as pq
-    files = _latest_person_files(data_dir)
-    writer, rows, n, bad = None, [], 0, 0
-    prof = []
+    k, items, out_dir, salt, comp = args
+    ids = Ids(salt)
     schema = pa.schema([("person_id", pa.string()), ("complete", pa.bool_()), ("pull_finished_utc", pa.string()),
                         ("record_sha256", pa.string()), ("record_json", pa.large_string())])
-
-    def flush():
-        nonlocal writer, rows
-        if not rows:
-            return
-        t = pa.Table.from_pylist(rows, schema=schema)
-        if writer is None:
-            writer = pq.ParquetWriter(f"{out_dir}/records.parquet", schema, compression="zstd")
-        writer.write_table(t)
-        rows = []
-    for h, p in sorted(files.items()):
+    rows, prof, bad = [], [], 0
+    dj = lambda x: json.dumps(x, sort_keys=True, default=str) if x is not None else None
+    for h, p in items:
         raw = open(p, "rb").read()
         try:
             d = json.loads(raw)
+            txt = raw.decode("utf-8")
         except Exception:
             bad += 1
             continue
-        txt = raw.decode("utf-8")
         sha = hashlib.sha256(raw).hexdigest()
         if hashlib.sha256(txt.encode("utf-8")).hexdigest() != sha:  # carried byte-for-byte or the build fails
             raise RuntimeError("record not carried byte-for-byte")
         pid = ids(h)
         a = d.get("about") or {}
         fin = str((d.get("run") or {}).get("finished_utc") or "")
-        rows.append({"person_id": pid, "complete": (h in complete) if complete is not None else None, "pull_finished_utc": fin,
+        rows.append({"person_id": pid, "complete": (h in comp) if comp is not None else None, "pull_finished_utc": fin,
                      "record_sha256": sha, "record_json": txt})
-        dj = lambda x: json.dumps(x, sort_keys=True, default=str) if x is not None else None
         prof.append({"person_id": pid, "ph_user_id": str(d.get("ph_user_id")) if d.get("ph_user_id") is not None else None,
                      "name": d.get("name"), "joined": a.get("joined"), "headline": a.get("headline"), "bio": a.get("bio"),
                      "badges_count": a.get("badges_count"), "streak": dj(a.get("streak")), "links_json": dj(a.get("links")),
@@ -435,18 +426,33 @@ def build_records(data_dir, out_dir, ids, complete=None):
                      "maker_history_json": dj(a.get("maker_history")), "header_json": dj(d.get("header")),
                      "pull_finished_utc": fin, "pulls_merged": len(d.get("pull_history") or []) or 1,
                      "has_provenance": "provenance" in d})
-        n += 1
-        if len(rows) >= 2000:
-            flush()
-    flush()
-    if writer is not None:
-        writer.close()
+    if rows:
+        pq.write_table(pa.Table.from_pylist(rows, schema=schema), f"{out_dir}/records/part-{k:04d}.parquet", compression="zstd")
+    return prof, len(rows), bad
+
+
+def build_records(data_dir, out_dir, salt, complete=None, workers=4):
+    """records/part-*.parquet (every person's newest saved record verbatim) + person_profile.parquet (typed profile columns)."""
+    import multiprocessing as mp
+    files = sorted(_latest_person_files(data_dir).items())
+    os.makedirs(f"{out_dir}/records", exist_ok=True)
+    for f in glob.glob(f"{out_dir}/records/part-*.parquet"):
+        os.remove(f)
+    chunks = [(i // 2000, files[i:i + 2000], out_dir, salt, complete) for i in range(0, len(files), 2000)]
+    prof, n, bad = [], 0, 0
+    with mp.get_context("fork").Pool(workers) as pool:
+        for pr, k, b in pool.imap_unordered(_records_part, chunks):
+            prof += pr
+            n += k
+            bad += b
     if n != len(files) - bad:
         raise RuntimeError(f"records: {n} written for {len(files) - bad} readable person files")
     pr = pd.DataFrame(prof)
     pr["joined"] = pd.to_datetime(pr["joined"], utc=True, errors="coerce", format="mixed")
+    pr.to_parquet(f"{out_dir}/person_profile.parquet", index=False)
     rep = {"person_files": len(files), "records_written": n, "unreadable_files": bad, "fields_not_carried": 0,
            "joined_present": int(pr.joined.notna().sum()), "ph_user_id_present": int(pr.ph_user_id.notna().sum())}
+    json.dump(rep, open(f"{out_dir}/records_report.json", "w"))
     return pr, rep
 
 
@@ -589,7 +595,11 @@ def build(data_dir, out_dir, salt, complete=None):
     if complete is not None:
         cids = {ids(h) for h in complete}
         pool["complete"] = pool.person_id.isin(cids)
-    prof, rrep = build_records(data_dir, out_dir, ids, complete)
+    if os.path.exists(f"{out_dir}/person_profile.parquet"):  # written by `store.py records` (run first: the two together outlive a run)
+        prof = pd.read_parquet(f"{out_dir}/person_profile.parquet")
+        rrep = json.load(open(f"{out_dir}/records_report.json"))
+    else:
+        prof, rrep = build_records(data_dir, out_dir, salt, complete)
     print("RECORDS:", json.dumps(rrep))
     extra = sorted(set(prof.person_id) - set(pool.person_id))
     if extra:
@@ -669,12 +679,18 @@ def check_store(events, pool):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["build", "validate-pilot"])
+    ap.add_argument("cmd", choices=["build", "records", "validate-pilot"])
     ap.add_argument("paths", nargs="+")
     ap.add_argument("--salt-file")
     ap.add_argument("--complete-file", help="latest_complete.txt: build full-pull tabs/events from complete people only")
     a = ap.parse_args()
-    if a.cmd == "build":
+    if a.cmd == "records":
+        comp = None
+        if a.complete_file:
+            comp = {l.split("\t")[0].split()[0].lstrip("@").lower() for l in open(a.complete_file) if l.strip() and not l.startswith("#")}
+        os.makedirs(a.paths[1], exist_ok=True)
+        print("RECORDS:", json.dumps(build_records(a.paths[0], a.paths[1], open(a.salt_file).read().strip(), comp)[1]))
+    elif a.cmd == "build":
         salt = open(a.salt_file).read().strip()
         comp = None
         if a.complete_file:
