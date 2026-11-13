@@ -1,12 +1,16 @@
 #!/bin/bash
-# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 66b19971), people-side "why" items.
+# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 8617e29d), people-side "why" items.
 # No LLM, no Product Hunt requests, CPU only. Salted ids + counts only; the salt is read by the script, never printed.
-# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of 66b19971>
+# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of 8617e29d>
 #   forecast D: at/after 00:10 PT on D (store reads fetched before 00:00 PT only) -> results/web/why_shadow/<D>_0005.json
 #   after D:    ~09:00 PT on D+1, after the store merge -> results/web/why_shadow/<D>_after.json
 #   try -:      weekly /try neighbour sidecar -> results/web/why_shadow/try_neighbours_v1.json
 set -euo pipefail
 MODE="$1"; D="$2"; W="$3"; WT="$4"; B=gs://usersim-bakeoff-347838016394/usersim_sim
+PIN=8617e29d   # the single source of truth for the pin (E5 13:23Z Nov 13); the worktree is moved / recreated here
+REPO="$(cd "$(dirname "$0")/../.." && pwd)"
+if [ ! -d "$WT/.git" ] && [ ! -f "$WT/.git" ]; then git -C "$REPO" fetch -q origin claude/person-model-v2; git -C "$REPO" worktree add -q --detach "$WT" "$PIN"; fi
+[ "$(git -C "$WT" rev-parse --short=8 HEAD)" = "$PIN" ] || { git -C "$REPO" fetch -q origin claude/person-model-v2 || true; git -C "$WT" checkout -q --detach "$PIN"; }
 case "$MODE" in forecast) F="${D}_0005.json";; after) F="${D}_after.json";; try) F="try_neighbours_v1.json";; *) echo "bad mode"; exit 2;; esac
 # skip only when a NON-EMPTY file exists (an empty one, e.g. an 'after' run before the merge, is rewritten)
 if [ "${FORCE:-0}" != 1 ] && [ "$MODE" != try ] && gsutil -q stat "$B/results/web/why/$F"; then
@@ -24,7 +28,7 @@ python3 -I - "$W/out/$F" <<'PY'
 import json, re, sys
 t = open(sys.argv[1]).read(); d = json.loads(t)
 assert not re.search(r'"p_[0-9a-f]{16}"|\bp_[0-9a-f]{16}\b', t), "salted id in output"
-assert d.get("shadow") is True or sys.argv[1].endswith("try_neighbours_v1.json"), "shadow flag missing"
+assert d.get("shadow") is True, "shadow flag missing"
 L = d.get("launches") or d.get("rows") or {}
 V = list(L.values()) if isinstance(L, dict) else L
 print(json.dumps({"file": sys.argv[1].rsplit("/", 1)[-1], "launches": len(V), "items_per_launch": round(sum(len(x) for x in V if isinstance(x, dict)) / max(len(V), 1), 2)}))
