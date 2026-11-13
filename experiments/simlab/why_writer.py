@@ -32,6 +32,8 @@ ITEMS = {
     "follow_ties": {"label": "Held people following the hunter or makers", "unit": "people", "note": "n_follow"},
     "follow_ties_active": {"label": "...of whom upvoted something in the last 30 days", "unit": "people", "note": "n_follow"},
     "expected_held_votes": {"label": "Expected votes from people we hold", "unit": "votes", "note": "n_ehv"},
+    "team_profile": {"label": "Team members with a headline or bio on their profile", "unit": "members", "note": "n_tprof"},
+    "team_reviews_written": {"label": "Reviews the team wrote before launch day", "unit": "reviews", "note": "n_trev"},
     "audience_tiers": {"label": "Activity of backers and followers vs all held people (upvotes on launches in the 90 days before the day)", "unit": "share by tier: 0 / 1-9 / 10-99 / 100+ upvotes in 90 days", "note": "n_tiers"},
     "young_upvoters": {"label": "Listed upvoters with accounts 1-12 months old", "unit": "share", "note": "n_young"},
     "created_together": {"label": "Listed upvoters whose accounts were created close together", "unit": "share above chance", "note": "n_clus"},
@@ -48,6 +50,11 @@ NOTES = {
              "Descriptive. The voter_harness pair model (held people's recent activity, topic taste, follows of the hunter and first maker; "
              "trained on the 7 previous days) summed per launch gave 0.0 top-3 gain over the clean forecast on 10 test days (Oct 29 - Nov 11). "
              "Held people cover about 41-57% of a launch's votes, so this is not a vote forecast. Coverage gives the share from the 1,000 most active.",
+    "n_tprof": "Descriptive. Team profiles read before the launch day only. In a Mar - Oct backtest (profiles read in Nov, so a possible leak), "
+               "'team has a bio or headline' changed top-3 by +1.3 points (95% interval 0.0 to +2.7; 176 days) over the clean forecast plus early "
+               "comments; a forward test is running. Not a forecast input.",
+    "n_trev": "Descriptive. Reviews dated before the launch day. Backtest partial r +0.10 (0.07 to 0.13) beyond the clean forecast; top-3 +0.6 "
+              "(-0.8 to +1.9; 176 days): no measured improvement. Not a forecast input.",
     "n_tiers": "Descriptive only. Audience-mix features did not improve the forecast in testing.",
     "n_young": "After the fact. Upvoters with 1-12 month old accounts count about half in the displayed total (fitted weight 0.48, "
                "84 near-complete launches); the share alone did not explain the gap out of sample (interval includes 0).",
@@ -96,6 +103,12 @@ if MODE == "forecast":
     U = U[U.person_id.isin(SP_)]; F = Eb[(Eb.kind == "follows") & Eb.person_id.isin(SP_)]; fol = F.groupby("target_id").person_id.apply(set).to_dict()
     tiers = lambda ps: (lambda s: {"0": float((s == 0).mean()), "1-9": float(((s >= 1) & (s < 10)).mean()), "10-99": float(((s >= 10) & (s < 100)).mean()), "100+": float((s >= 100).mean())})(pd.Series([n90.get(p, 0) for p in ps]))
     typical = tiers(list(held)); out = {}
+    PPf = pd.read_parquet(f"{ST}/persons.parquet").set_index("person_id")
+    PPf["pulled"] = pd.to_datetime(PPf["pull_finished_utc"], utc=True, errors="coerce") if "pull_finished_utc" in PPf else pd.NaT
+    for c in ("headline", "bio"):
+        if c not in PPf: PPf[c] = None
+    RVe = E[E.kind == "review"] if "review" in set(E.kind.unique()) else E.iloc[:0]
+    RVt = {p: pd.to_datetime(g.fetched_at, utc=True) for p, g in RVe.groupby("person_id")}
     for p in line:
         o = {}; hun = (p.get("user") or {}); team = {pid(u["username"]) for u in [hun] + (p.get("makers") or []) if u and u.get("username")}
         hf = hun.get("followersCount"); o["hunter_followers"] = {"value": hf, "n_people": None, "coverage": None, "note": "n_hf"} if hf is not None else None
@@ -104,6 +117,13 @@ if MODE == "forecast":
         named = len(team); cov = {"team_members_named": named}
         put(o, "held_backers", len(backers), len(backers), cov); put(o, "follow_ties", len(follows), len(follows), cov)
         fa = follows & act30; put(o, "follow_ties_active", len(fa), len(fa), cov)
+        PPs = PPf.reindex([t for t in team if t in PPf.index]); PPs = PPs[PPs.pulled < D0] if len(PPs) else PPs
+        if len(PPs):
+            hl = lambda v: isinstance(v, str) and bool(v.strip())
+            o["team_profile"] = {"value": {"members_read_before_day": int(len(PPs)), "with_headline": int(sum(hl(v) for v in PPs.headline)), "with_bio": int(sum(hl(v) for v in PPs.bio))},
+                                 "n_people": None, "coverage": cov, "note": "n_tprof"}
+            nrev = int(sum(int((RVt.get(m, pd.Series([], dtype="datetime64[ns, UTC]")) < D0).sum()) for m in PPs.index))
+            o["team_reviews_written"] = {"value": nrev, "n_people": None, "coverage": cov, "note": "n_trev"}
         grp = backers | follows
         if len(grp) >= MIN: o["audience_tiers"] = {"value": {"this launch": tiers(list(grp)), "all held people": typical}, "n_people": len(grp), "coverage": cov, "note": "n_tiers"}
         out[str(p["id"])] = {k: v for k, v in o.items() if v}
