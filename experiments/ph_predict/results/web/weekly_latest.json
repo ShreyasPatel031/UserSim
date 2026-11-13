@@ -17,15 +17,15 @@
    "file": "results/weekly_live/2026-11-09_2026-11-12_est.json"
   },
   "running": {
-   "day": "2026-11-11",
-   "written_at": "2026-11-12T09:47:48.248977+00:00",
-   "file": "results/weekly_live/2026-11-09_2026-11-11_running.json"
+   "day": "2026-11-12",
+   "written_at": "2026-11-13T10:26:26.008362+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-12_running.json"
   },
   "running_g": {
-   "day": "2026-11-11",
-   "written_at": "2026-11-12T09:47:52.491378+00:00",
-   "file": "results/weekly_live/2026-11-09_2026-11-11_running_g.json"
+   "day": "2026-11-12",
+   "written_at": "2026-11-13T10:26:32.152548+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-12_running_g.json"
   }
  },
- "updated_at": "2026-11-13T08:19:33.204203+00:00"
+ "updated_at": "2026-11-13T10:26:32.152548+00:00"
 }
