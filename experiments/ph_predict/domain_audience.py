@@ -131,7 +131,7 @@ def main():
         P = lodo(["z_clean", "z_npre"] + cols); dP = P - base; b = np.array([dP[rng.integers(0, len(dP), len(dP))].mean(0) for _ in range(3000)])
         md.append(f"| {nm} | {P[:,0].mean():.1f} | {P[:,1].mean():.1f} | {P[:,2].mean():.1f} | " +
                   " | ".join(f"{dP[:,k].mean():+.1f} [{np.percentile(b[:,k],2.5):+.1f}, {np.percentile(b[:,k],97.5):+.1f}]" for k in range(3)) + " |")
-    g = X.groupby("is_shared").daily_rank.agg(["size", "median"]); md += ["", "Final rank by host type (ranked launches with a held domain only): " +
+    g = X[X.has_dom == 1].groupby("is_shared").daily_rank.agg(["size", "median"]); md += ["", "Final rank by host type (ranked launches with a held domain only): " +
           "; ".join(f"{'shared' if k else 'own'} n {int(r['size'])}, median rank {r['median']:.0f}" for k, r in g.iterrows() if k in (0, 1) and len(held))]
     V = W.query('SELECT "day" d, "at" a, CAST(launch_id AS VARCHAR) id, rank_now FROM vote_snapshots WHERE rank_now IS NOT NULL', do_sync=False)
     V["a"] = pd.to_datetime(V.a, utc=True); cl = []; XI = X.set_index("id")
