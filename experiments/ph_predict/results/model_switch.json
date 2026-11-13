@@ -1,1 +1,10 @@
-{"clean_from": "2026-11-13", "evidence": "VM forecast.py md5 ef8e28d3 (main 736c65ff clean_nosite path); daily_20261113T0806.log forecast step ok, 20 launches; forecast_2026-11-13 published 08:18:35Z", "written_at": "2026-11-13T09:09:40Z"}
+{
+ "clean_from": "2026-11-13",
+ "evidence": "VM forecast.py md5 ef8e28d3 (main 736c65ff clean_nosite path); daily_20261113T0806.log forecast step ok, 20 launches; forecast_2026-11-13 published 08:18:35Z",
+ "written_at": "2026-11-13T09:09:40Z",
+ "arm2_from": "2026-11-14",
+ "arm2_deployed_at": "2026-11-13T19:08:47.703553+00:00",
+ "arm2_forecast_md5": "61538501",
+ "previous_forecast_md5": "ef8e28d3",
+ "arm2_note": "published 00:05 order = arm 2 (2025-trained, h25_live.py); clean_nosite stays in forecast_<day>.parquet pred and as the makerfix shadow line; revert if arm 2 trails clean over the first 10 scored days (orchestrator 19:06Z)"
+}
