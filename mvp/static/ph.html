@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=4">
+<link rel="stylesheet" href="/static/ph_site.css?v=5">
 </head>
 <body>
 <div class="wrap">
@@ -20,45 +20,42 @@
 
   <header class="head">
     <div class="copy">
-      <p class="label" id="kicker">Product Hunt · live forecast</p>
-      <h1 id="title">Our call on today's leaderboard, next to the real one</h1>
-      <p class="small" id="notice" hidden style="margin:8px 0 0;border-left:3px solid var(--ink);padding:4px 10px"></p>
-      <p class="lede">Left: our forecast, made before PH shows vote counts and updated as the day goes. For the first 4 hours it combines Product Hunt's own order (votes still hidden) with the 00:05 forecast; after the 04:00 PT reveal, it uses votes. Right: Product Hunt's board as it stands, refreshed every 15 minutes.</p>
+      <p class="label" id="kicker">Product Hunt</p>
+      <h1 id="title">Our forecast vs. the real leaderboard</h1>
+      <p class="small" id="notice" hidden></p>
     </div>
     <label class="label">Day<br><select id="day" aria-label="Launch day"></select></label>
   </header>
 
-  <div class="duo">
+  <div class="vs" id="vs">
     <section class="col" aria-labelledby="pred-h">
       <header class="colhead">
-        <div><p class="label">Predicted</p><h2 id="pred-h">Our call</h2></div>
+        <div><p class="label">Forecast</p><h2 id="pred-h">Our call</h2></div>
         <p class="stamp" id="pred-stamp"></p>
       </header>
-      <div class="timeline" id="timeline" role="group" aria-label="Forecast made at"></div>
-      <p class="sees" id="sees"></p>
       <ol class="board" id="pred" aria-live="polite"><li class="skeleton">Loading…</li></ol>
     </section>
+    <div class="links" aria-hidden="true"><svg id="links"></svg></div>
     <section class="col" aria-labelledby="live-h">
       <header class="colhead">
-        <div><p class="label" id="live-k">Live on Product Hunt</p><h2 id="live-h">Current leaders</h2></div>
+        <div><p class="label" id="live-k">Product Hunt</p><h2 id="live-h">Live leaderboard</h2></div>
         <p class="stamp" id="live-stamp"></p>
       </header>
-      <p class="sees" id="live-note"></p>
       <ol class="board" id="live" aria-live="polite"><li class="skeleton">Loading…</li></ol>
     </section>
   </div>
+  <p class="legend small"><span class="key"></span> in our top 10 and in the real top 10<span id="score"></span></p>
+  <section class="whyp" id="whyp" hidden></section>
 
   <div class="strip">
     <section class="panel" aria-labelledby="tr-h">
       <h2 id="tr-h">Track record</h2>
-      <p class="muted small">Computed by the PH agent’s daily scoreboard from saved forecast files and official final ranks. “Live” rows count only forecasts written in time; replays and late runs are listed separately.</p>
       <table class="rec" id="rec"><thead><tr><th>Live calls</th><th>Days</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody><tr><td colspan="5" class="muted">Loading the scoreboard…</td></tr></tbody></table>
-      <details class="more" id="rec-more" hidden><summary>Replays and late runs (not live calls)</summary><table class="rec"><thead><tr><th>Forecast</th><th>Days</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody></tbody></table></details>
-      <p class="small muted" id="rec-how"></p>
+      <details class="more" id="rec-more" hidden><summary>More (fewer than 3 days, replays, late runs)</summary><table class="rec"><thead><tr><th>Forecast</th><th>Days</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody></tbody></table></details>
     </section>
     <section class="panel" aria-labelledby="wk-h">
       <h2 id="wk-h">This week so far</h2>
-      <p class="muted small" id="wk-note"></p>
+      <p class="muted small" id="wk-note">Loading…</p>
       <ol class="mini" id="weekly"></ol>
       <h2 id="mo-h" hidden style="margin-top:22px">This month so far</h2>
       <p class="muted small" id="mo-note" hidden></p>
@@ -66,7 +63,7 @@
     </section>
     <section class="panel">
       <h2>Launching soon?</h2>
-      <p class="muted">Paste your product's URL and see what PH members would say, who it resonates with, and where it might land.</p>
+      <p class="muted">See what PH members would say about your product.</p>
       <p><a href="/try" class="tag">Try a product →</a></p>
     </section>
   </div>
@@ -87,7 +84,7 @@ function icon(p){
   const h=hash(p.id||p.name), g=(GLYPH.find(([t])=>(p.topics||[]).includes(t))||[])[1]||"·";
   return `<div class="icon" style="--dot:${3+(h%4)}px;--dop:${(0.16+((h>>3)%5)*0.06).toFixed(2)}" aria-hidden="true"><span>${letter}</span><i>${esc(g)}</i></div>`;
 }
-let VIEW=null, SEL=null;
+let VIEW=null;
 const link = (x)=> x.slug ? `<a href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name);
 const chips = (x)=> (x.topics||[]).slice(0,2).map(t=>`<span class="t">${esc(t)}</span>`).join("");
 
@@ -107,113 +104,77 @@ function failed(sel, what, e){
 
 async function load(day){
   try { VIEW = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
-  catch(e){ failed("#pred", "the forecast", e); failed("#live", "the live board", e); return; }
+  catch(e){ failed("#pred", "the forecast", e); failed("#live", "the leaderboard", e); return; }
   $("#day").innerHTML = VIEW.days.map(d=>`<option ${d===VIEW.day?"selected":""}>${esc(d)}</option>`).join("");
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
-  $("#kicker").textContent = `Product Hunt · ${isToday ? "live forecast" : "forecast"} · ${VIEW.day}`;
-  $("#title").textContent = st.final ? "Our calls next to the final board" : "Our call on today's leaderboard, next to the real one";
-  $("#asof").textContent = st.final ? `Final result (${st.as_of_pt})` : `Board as of ${VIEW.board.as_of_pt || "—"}${(VIEW.freshness||{}).board_stale ? " (not updating)" : ""}`;
+  $("#kicker").textContent = `Product Hunt · ${VIEW.day}`;
+  $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
   const fr = VIEW.freshness || {}, msgs = [];
   if(VIEW.notice) msgs.push(VIEW.notice);
-  (fr.capture_gaps||[]).forEach(g=> msgs.push(g.to_pt
-    ? `No Product Hunt data was captured between ${g.from_pt} and ${g.to_pt}${isToday?" today":""}.`
-    : `Product Hunt data has not been updated since ${g.from_pt}; the boards below show the last reading.`));
-  if((fr.missing_labels||[]).length) msgs.push(`Not made ${isToday?"today":"this day"}: ${fr.missing_labels.join(", ")}. The latest forecast that was made is shown.`);
+  (fr.capture_gaps||[]).forEach(g=> msgs.push(g.to_pt ? `No data ${g.from_pt}–${g.to_pt}.` : `Not updated since ${g.from_pt}.`));
   $("#notice").hidden = !msgs.length; $("#notice").textContent = msgs.join(" ");
-  const pts = VIEW.points.map(p=>p.key);
-  if(!SEL || !pts.includes(SEL)) SEL = VIEW.lead_point;
-  timeline(); renderPred(); renderLive();
+  renderPred(); renderLive(); drawLinks();
 }
 
-function timeline(){
-  $("#timeline").innerHTML = VIEW.points.map(p=>`<button type="button" data-k="${esc(p.key)}" aria-pressed="${SEL===p.key}"><small>${esc(p.label)}</small>${esc(p.time_pt||"")}</button>`).join("");
-  $("#timeline").querySelectorAll("button").forEach(b=>b.onclick=()=>{SEL=b.dataset.k; timeline(); renderPred();});
+function row(pos, x, votes, voteLabel, hit){
+  return `<li class="row c${hit ? " hit" : ""}" data-id="${esc(x.id)}"><div class="pos">${Number(pos)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
+    <div class="chips">${chips(x)}</div></div>${votes!=null
+      ? `<div class="vote"><span class="tri"></span><b>${esc(votes)}</b><small>${esc(voteLabel)}</small></div>`
+      : `<div class="vote hidden"><span class="tri"></span><b>—</b><small>${esc(voteLabel)}</small></div>`}</li>`;
 }
 
-function moveTag(pred, now){
-  if(!now) return "";
-  if(VIEW && VIEW.status.final) return `<span class="now ${now===pred?"same":now<pred?"up":"down"}" title="Final daily rank">final #${Number(now)}</span>`;
-  const cls = now===pred ? "same" : now<pred ? "up" : "down";
-  return `<span class="now ${cls}" title="Place on the live board">now #${Number(now)}</span>`;
-}
-
-function whyBlock(id, key){
-  const out = [];
-  [[key, "What we knew about this launch when this forecast was made"], ["after", "Measured after the day ended (not known at forecast time)"]].forEach(([k, head])=>{
-    const W = (VIEW.why||{})[k], row = W && W.launches[id];
-    if(!row) return;
-    const lines = Object.keys(W.items).filter(i=>row[i]).map(i=>{
-      const it = W.items[i], r = row[i];
-      let v;
-      if(typeof r.value === "object"){
-        v = Object.entries(r.value).map(([g, d])=>`${esc(g)}: ${Object.entries(d).map(([t, x])=>`${esc(t)}: ${(Number(x)*100).toFixed(0)}%`).join(" · ")}`).join("<br>");
-      } else v = /share/.test(it.unit) ? (Number(r.value)*100).toFixed(0) + "%" : Number(r.value).toLocaleString();
-      const cov = Object.entries(r.coverage||{}).map(([a,b])=>`${esc(a.replace(/_/g," "))} ${/^share/.test(a) ? (Number(b)*100).toFixed(0)+"%" : Number(b).toLocaleString()}`).join(", ");
-      return `<li><b>${esc(it.label)}:</b> ${v}${(()=>{ const bits = []; if(r.n_people && r.n_people !== r.value) bits.push(Number(r.n_people).toLocaleString() + " people"); if(cov) bits.push(cov); return bits.length ? ` <span class="muted">(${bits.join("; ")})</span>` : ""; })()}<br><span class="muted">${esc(it.note)}</span></li>`;
-    });
-    if(lines.length) out.push(`<p class="label" style="margin:10px 0 4px">${esc(head)}${W.as_of_pt ? " · read " + esc(W.as_of_pt) : ""}${W.shadow ? " · test data" : ""}</p><ul class="small" style="margin:0;padding-left:1.1em">${lines.join("")}</ul>`);
-  });
-  return out.length ? `<details class="more why"><summary>Why: what we know about this launch</summary>${out.join("")}<p class="small muted" style="margin-top:8px">Counts are of people whose public Product Hunt activity we hold, in groups of 20 or more. They describe the launch; unless a line says otherwise, they did not improve the forecast in testing.</p></details>` : "";
+function liveTop(){
+  return VIEW.launches.filter(x=>x.board_rank).sort((a,c)=>a.board_rank-c.board_rank).slice(0,10);
 }
 
 function renderPred(){
-  const p = VIEW.points.find(q=>q.key===SEL);
-  if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; return; }
-  const phase = p.key.startsWith("R") ? "after the vote reveal" : p.key.startsWith("P") ? "before the reveal (votes hidden)" : "before launch";
-  $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b>${p.late ? ` <span class="tag">late</span>` : ""}<br>${esc(phase)}${p.data_cut_pt ? " · data to " + esc(p.data_cut_pt) : ""}${SEL===VIEW.lead_point?" · latest on time":""}`;
-  let sees = `Could see: ${p.sees}`;
-  const c0 = p.top3_conf && Object.values(p.top3_conf)[0];
-  if(c0 && c0.count) sees += ` Per-pick record is from the ${c0.basis}.` + (c0.backtest ? ` For context, a ${c0.backtest.label} put our #1 in the final top 3 on ${Math.round(c0.backtest.p1*100)}% of days and on top on ${Math.round(c0.backtest.exact1*100)}% (fixed offline figure, ${c0.backtest.date}).` : "");
-  else if(c0 && c0.hits!=null) sees += ` Pick figures are an in-sample replay on ${Number(c0.n)} past days (the ranking's weights were chosen on those days), so treat them as optimistic.`;
-  const D = VIEW.difficulty;
-  if(D && p.key==="0005"){
-    sees += " " + D.text + (D.forward ? ` Forward check so far: our #1 finished top 3 on ${esc(D.forward.p1_top3_count || "")} such days.` : "");
-  }
-  if(p.exp_votes) sees += ` Expected day-end votes are rough${p.exp_err ? ": typical error " + p.exp_err : ""}.`;
-  if(p.score) sees += ` Scored: ${p.score["3"]}/3 of the real top 3, ${p.score["5"]}/5 of top 5, ${p.score["10"]}/10 of top 10.`;
-  $("#sees").textContent = sees;
-  const fin = VIEW.status.final;
+  const p = VIEW.points.find(q=>q.key===VIEW.lead_point);
+  if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; $("#pred-stamp").textContent = ""; return; }
+  $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b>`;
+  const real = new Set(liveTop().map(x=>x.id));
   const o = VIEW.launches.filter(x=>p.ranks[x.id]).sort((a,b)=>p.ranks[a.id]-p.ranks[b.id]).slice(0,10);
   $("#pred").innerHTML = o.map(x=>{
-    const r = p.ranks[x.id], hit = x.board_rank && x.board_rank<=10;
-    const c = p.top3_conf && p.top3_conf[x.id];
-    const conf = !c ? "" : c.count
-      ? `<span class="mk" title="${esc("Live record of the deployed 00:05 model: " + c.basis)}">our #${Number(r)}: ${esc(c.what)} on ${esc(c.count)} live days</span>`
-      : c.hits!=null
-      ? `<span class="mk" title="${esc(c.basis + ". " + c.note)}">${esc(c.what)} on ${Number(c.hits)} of ${Number(c.n)} days (in-sample replay)</span>`
-        + (c.agree!=null ? `<span class="mk ${c.agree?"hit":""}">${c.agree?"signals agree":"signals disagree"}</span>` : "")
-      : "";
-    const mk = x.board_rank ? `<span class="mk ${hit?"hit":"miss"}">${hit?(fin?"in final top 10":"in live top 10"):(fin?"missed top 10":"outside live top 10")}</span>` : "";
     const ev = p.exp_votes && p.exp_votes[x.id];
-    return `<li class="row c"><div class="pos">${Number(r)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
-      <div class="chips">${chips(x)}${ev!=null ? `<span class="trail">expect <b>~${Number(ev)}</b> votes by day end</span>` : ""}</div></div><div class="side">${moveTag(r, x.board_rank)}${mk}${conf}</div>${whyBlock(x.id, p.key)}</li>`;}).join("");
+    return row(p.ranks[x.id], x, ev!=null ? "~" + Number(ev) : null, "est.", real.has(x.id));
+  }).join("");
+  const hits = o.filter(x=>real.has(x.id)).length;
+  $("#score").textContent = real.size ? ` · ${hits} of 10 ${VIEW.status.final ? "" : "so far"}` : "";
+  document.querySelectorAll("#pred .row").forEach(li=>li.onclick=(e)=>{ if(e.target.closest("a")) return; showWhy(li.dataset.id, p.key); });
 }
 
 function renderLive(){
   const b = VIEW.board, fin = VIEW.status.final;
-  $("#live-k").textContent = fin ? "Final on Product Hunt" : "Live on Product Hunt";
-  $("#live-h").textContent = fin ? "Final leaders" : "Current leaders";
+  $("#live-h").textContent = fin ? "Final leaderboard" : "Live leaderboard";
   const fr = VIEW.freshness || {};
-  $("#live-stamp").innerHTML = fr.board_stale
-    ? `<span class="tag">${esc(fr.board_stale_label)}</span><br>normally refreshes every 15 min`
-    : b.as_of_pt ? `${fin?"Final":"Updated"} <b>${esc(b.as_of_pt)}</b><br>${fin?"end of day":"refreshes every 15 min"}` : "";
-  const lk = b.lock;
-  const L3 = {"3 locked": "Top 3 looks locked", "top 3 locked": "Top 3 looks locked", "2 locked, 1 open": "Top 2 look locked, #3 is still open",
-              "open": "Top 3 is still open", "#3 open": "#3 is still open"};
-  const L10 = {"top 10 locked": "top 10 looks locked"};
-  const parts = lk ? [L3[lk.label_top3] || "", lk.label_top5 === "top 5 locked" ? "top 5 looks locked" : "", L10[lk.label_top10] || ""].filter(Boolean) : [];
-  const lockTxt = parts.length ? ` ${parts.join("; ")} (as of ${esc(lk.read_pt || "the latest read")}; a vote-gap rule, ${esc(lk.reliability || "provisional")}).` : "";
-  $("#live-note").textContent = (b.votes_hidden ? "Vote counts are hidden on Product Hunt until about 04:00 PT; this is PH's own order so far." : "Product Hunt's order and vote counts at the time shown.") + lockTxt;
+  $("#live-stamp").innerHTML = fr.board_stale ? `<span class="tag">${esc(fr.board_stale_label)}</span>`
+    : b.as_of_pt ? `${fin ? "Final" : "Updated"} <b>${esc(b.as_of_pt)}</b>` : "";
   const lead = VIEW.points.find(q=>q.key===VIEW.lead_point);
-  const o = VIEW.launches.filter(x=>x.board_rank).sort((a,c)=>a.board_rank-c.board_rank).slice(0,10);
-  $("#live").innerHTML = o.map(x=>{
-    const pr = lead && lead.ranks[x.id];
-    const vote = x.board_votes!=null ? `<div class="vote"><span class="tri"></span><b>${Number(x.board_votes)}</b><small>votes</small></div>`
-       : fin ? `<div class="vote hidden" title="Final rank only; vote count not recorded for this day"><span class="tri"></span><b>—</b><small>final</small></div>`
-       : `<div class="vote hidden" title="Hidden on Product Hunt until about 04:00 PT"><span class="tri"></span><b>—</b><small>hidden</small></div>`;
-    return `<li class="row c"><div class="pos">${Number(x.board_rank)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
-      <div class="chips">${chips(x)}${pr?`<span class="trail">we said <b>#${Number(pr)}</b></span>`:""}</div></div>${vote}</li>`;}).join("")
-    || `<li class="skeleton">${fin ? "No line-up file for this day; the score above still comes from the final top 10." : "The board appears after the 00:01 PT launch."}</li>`;
+  const ours = new Set(lead ? Object.entries(lead.ranks).filter(([,r])=>r<=10).map(([id])=>id) : []);
+  $("#live").innerHTML = liveTop().map(x=>row(x.board_rank, x, x.board_votes!=null ? Number(x.board_votes) : null,
+      x.board_votes!=null ? "votes" : (fin ? "final" : "hidden"), ours.has(x.id))).join("")
+    || `<li class="skeleton">${fin ? "No line-up for this day." : "The board appears after the 00:01 PT launch."}</li>`;
+}
+
+function drawLinks(){
+  const svg = $("#links"), box = svg.parentNode.getBoundingClientRect();
+  svg.setAttribute("width", box.width); svg.setAttribute("height", box.height);
+  const right = new Map([...document.querySelectorAll("#live .row")].map(li=>[li.dataset.id, li]));
+  const paths = [...document.querySelectorAll("#pred .row")].map(li=>{
+    const r = right.get(li.dataset.id);
+    if(!r || box.width < 8) return "";
+    const a = li.getBoundingClientRect(), c = r.getBoundingClientRect();
+    const y1 = a.top + a.height/2 - box.top, y2 = c.top + c.height/2 - box.top, w = box.width;
+    return `<path d="M0 ${y1} C ${w*0.5} ${y1}, ${w*0.5} ${y2}, ${w} ${y2}"/><circle cx="0" cy="${y1}" r="3"/><circle cx="${w}" cy="${y2}" r="3"/>`;
+  }).join("");
+  svg.innerHTML = paths;
+}
+window.addEventListener("resize", ()=>{ if(VIEW) drawLinks(); });
+
+function showWhy(id, key){
+  const html = whyBlock(id, key), x = VIEW.launches.find(l=>l.id===id), el = $("#whyp");
+  if(!html){ el.hidden = true; return; }
+  el.hidden = false; el.innerHTML = `<h3>Why: ${esc(x ? x.name : "")}</h3>` + html;
+  el.querySelector("details") && (el.querySelector("details").open = true);
 }
 
 async function side(){
@@ -223,32 +184,29 @@ async function side(){
   const f = (v)=> v==null ? "—" : Math.round(v)+"%";
   const ci = (r,k)=> (r.ci && Array.isArray(r.ci[k])) ? `<br><span class="small muted">${Math.round(r.ci[k][0])}–${Math.round(r.ci[k][1])}</span>` : "";
   const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${Number(r.n_days)}</td><td>${f(r.top3)}${ci(r,"top3")}</td><td>${f(r.top5)}${ci(r,"top5")}</td><td>${f(r.top10)}${ci(r,"top10")}</td></tr>`;
-  const live = t.rows.filter(r=>r.n_days && (r.source||"live")==="live"), other = t.rows.filter(r=>r.n_days && (r.source||"live")!=="live");
+  const isLive = (r)=> (r.source||"live")==="live";
+  const live = t.rows.filter(r=>r.n_days >= 3 && isLive(r)), other = t.rows.filter(r=>r.n_days && !(r.n_days >= 3 && isLive(r)));
   $("#rec tbody").innerHTML = live.map(tr).join("") || `<tr><td colspan="5" class="muted">No live day scored yet.</td></tr>`;
-  if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+" ("+({replay_in_sample:"in-sample replay: weights chosen on these days", replay:"replay", late:"late, not a live call"}[r.source]||r.source)+")"})).join(""); }
+  if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+(isLive(r) ? "" : " ("+({replay_in_sample:"in-sample replay", replay:"replay", late:"late"}[r.source]||r.source)+")")})).join(""); }
   if(t.unavailable){ $("#rec tbody").innerHTML = `<tr><td colspan="5" class="muted">Track record unavailable right now.</td></tr>`; }
-  $("#rec-how").textContent = t.how;
-  const w = await getJSON("/api/ph/weekly").catch(()=>null);
+    const w = await getJSON("/api/ph/weekly").catch(()=>null);
   if(!w || !w.top || !w.top.length){ $("#wk-note").textContent = "No weekly call available right now."; }
   if(w && w.top){
-    if(w.point==="running"){
-      $("#wk-note").textContent = `Product Hunt's own running weekly rank (week of ${w.week_monday}, after ${w.as_of_day} ended). Official standings so far, not our forecast; launches later this week can still enter.`;
-    } else
-    $("#wk-note").textContent = `Running weekly call (week of ${w.week_monday}, ${w.point==="dayend" ? "after " + w.as_of_day + " ended" : "made at reveal + 4 h on " + w.as_of_day}): estimated weekly votes from the days so far${w.point==="dayend" ? "" : " plus today's votes" + (w.ratio ? " ×" + Number(w.ratio).toFixed(3) : "")}; estimates, not official counts. Scored when the week ends.`;
+    $("#wk-note").textContent = w.point==="running" ? `PH's standings so far · week of ${w.week_monday}` : `Our weekly call · week of ${w.week_monday}`;
     $("#weekly").innerHTML = w.top.map(x=>`<li><span>${Number(x.pred_rank)}</span><span>${esc(x.name||"(launch "+String(x.day)+")")}</span><span>${x.est_votes==null ? "" : "~"+Math.round(Number(x.est_votes))}</span></li>`).join("");
     const m = w.month;
     if(m && m.top && m.top.length){
       ["#mo-h","#mo-note","#monthly"].forEach(s=>$(s).hidden=false);
-      $("#mo-note").textContent = `Product Hunt's own running monthly rank (${m.month}, after ${m.as_of_day} ended). Official standings so far; later launches can still enter.`;
+      $("#mo-note").textContent = `PH's standings so far · ${m.month}`;
       $("#monthly").innerHTML = m.top.map(x=>`<li><span>${Number(x.rank)}</span><span>${esc(x.name||"(a launch this month)")}</span><span></span></li>`).join("");
     }
   }
 }
 
-$("#day").onchange = (e)=>{ SEL=null; load(e.target.value); };
+$("#day").onchange = (e)=>{ $("#whyp").hidden = true; load(e.target.value); };
 load(); side();
-// Upstream snapshots land every 15 min; poll every 3 min so a new one shows quickly. Stay on the latest forecast unless the visitor picked another.
-setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final){ if(SEL===VIEW.lead_point) SEL=null; load(VIEW.day); } }, 3*60*1000);
+// Upstream snapshots land every 15 min; poll every 3 min so a new one shows quickly.
+setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final) load(VIEW.day); }, 3*60*1000);
 </script>
 </body>
 </html>
