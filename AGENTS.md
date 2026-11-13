@@ -56,3 +56,16 @@ header counts are stored. Anything less is not written, not counted, not reporte
 5. **Deploying.** A model that is better on the leak-free backtest (paired on the same days, interval clear of noise on a
    north-star cut) is deployed; there is no wait for live days (Shreyas, Nov 13: "if its better on backtest deploy"). The model
    it replaces keeps running as a forward shadow line, and the orchestrator reverts if the new one trails it on scored live days.
+
+## Rule for every agent: who owns pulls, and downtime (Shreyas, Nov 13 2026)
+
+- **Long-term pulls belong to the Cursor fleet.** Every standing or long-running pull (the 15-minute launch-day capture, the
+  day-close and first-comment reads, weekly and monthly close reads, daily people jobs, history backfills, people completion)
+  runs on the Cursor agent's always-on machines. The Data Feeder is for one-off experimental pulls only. No agent files a
+  standing pull with the Data Feeder.
+- **Live feeds come first.** New incoming data is never dropped to make room for historical pulls; machines move from
+  historical work to live feeds the moment a live feed falls behind.
+- **Downtime is audited, not discovered.** The population agent checks every live feed every 15 minutes against its maximum
+  allowed gap (15-minute capture: 20 minutes), alerts Grok Bot by webhook and the orchestrator within 1 minute of a breach,
+  re-alerts every 30 minutes, and keeps the downtime ledger (raw/_audit/downtime_ledger.jsonl). A gap nobody raised is a
+  failure of the audit.

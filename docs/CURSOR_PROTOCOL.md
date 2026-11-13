@@ -86,3 +86,12 @@ Starting allocation: 6 daily, 14 historical (see the split note of Nov 13). The 
 6. Remove idle time: no IP waits on a queue; when a job finishes early its IPs move to historical the same minute.
 7. Weekly review (the orchestrator files it, the fleet supplies the numbers): for each job, IPs used, data per IP-hour, band breaches, moves made; then one proposal: the smallest IP count that kept every band for the last 7 days with one spare, and how long the historical queue takes at that count. Changing the total of 20 is Shreyas's decision.
 8. When the historical queue is empty and all bands have held for 7 days, propose reducing the total. When a band cannot be held at 20, propose the increase with the measured shortfall.
+
+
+## Ownership (Shreyas, Nov 13 2026, 20:48Z)
+
+Long-term pulls are the Cursor fleet's: the 15-minute launch-day capture, day-close (23:45-23:59 PT) and 00:07 PT comment reads,
+weekly and monthly close reads, daily jobs 1-5, 2024/2023 day lists, comment backfills, people completion. The Data Feeder runs
+one-off experimental pulls only. Handover: mailbox/to_cursor/20261113T2052Z_URGENT_long_term_pulls_are_yours.md. Live-feed band:
+snapshot lateness <= 120 s, no gap over 20 minutes; on a breach machines move from historical to live at once and an incident
+file is written to from_cursor/. The population agent audits every feed every 15 minutes and keeps raw/_audit/downtime_ledger.jsonl.
