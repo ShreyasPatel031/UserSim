@@ -74,7 +74,7 @@ def union(new, old, keep_base=False):
             if isinstance(y, dict) and "_carried_from" not in y:
                 y["_carried_from"] = of
             earlier.append(y)
-        if earlier:
+        if earlier or "items_earlier" in ot or "items_earlier" in nt:  # an empty list an older record had is kept too
             nt["items_earlier"] = earlier
     # every older record (minus its item lists, which are now in items_earlier) is archived whole
     arch = list(new.get("earlier_records") or []) + list(old.get("earlier_records") or [])

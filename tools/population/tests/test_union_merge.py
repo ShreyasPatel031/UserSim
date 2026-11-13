@@ -38,3 +38,10 @@ def test_order_and_idempotence():
     assert j(U.union(m, old)) == j(m) and j(U.union(m, m)) == j(m)
     m2 = U.union(rec("2026-11-14T00:00:00Z", [], []), m)  # three pulls deep: still nothing lost
     assert U.lost(old, m2) == (0, 0) and U.lost(new, m2) == (0, 0)
+
+
+def test_empty_items_earlier_on_older_record_is_kept():
+    old = rec("2026-11-10T00:00:00Z", ["a"], [])
+    old["upvotes"]["items_earlier"] = []
+    new = rec("2026-11-13T00:00:00Z", ["a"], [])
+    assert U.lost(old, U.union(new, old)) == (0, 0)
