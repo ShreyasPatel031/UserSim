@@ -9,6 +9,9 @@ Team = hunter + named (non-redacted) makers of the launch (warehouse). Per launc
               team role: plausibly entered the store via this launch
 (1) Pool days Nov 4, 8, 9, 10, 11, base clean_v3_nosite: base z(clean) + w z(ln(1+feature)), w leave-one-day-out from {0, .25, .5, 1, 2};
     paired top 3/5/10 vs base (day bootstrap); partial Spearman of the feature with the clean residual (clean rank - final rank).
+held_noself held team members not requested via THIS launch's launch_team seed (provenance); held_indep held team members whose
+              entry route is outcome-independent (not launch_team / recent_launch_linked / lastweek_launch_voter / discovery_follower_of_makers /
+              voternet_follow_graph)
 (2) All days Mar 1 - Nov 10, base clean_v3 (honest_preds_v2; clean_nosite is not held before Oct 25): month-forward ridge on within-day z,
     target z(-ln rank), base [clean] vs + each feature; paired top 3/5/10, day bootstrap; days with >= 10 launches.
     python team_inc.py <store dir> <scratchpad> <out dir>
@@ -26,6 +29,13 @@ def mk(m):
     except Exception: return []
 L["team"] = [list(dict.fromkeys(pid(h) for h in (([p] if isinstance(p, str) and p and not p.startswith("[") else []) + mk(m)))) for p, m in zip(L.poster, L.makers)]
 P = pd.read_parquet(f"{ST}/persons.parquet"); comp = set(P[P.complete].person_id); pool = set(P[P.complete & P.in_pool].person_id)
+# provenance (store_v3 19:58Z): outcome-linked entry routes vs outcome-independent ones; and launch_team seeds per person
+OUTCOME_ROUTES = {"launch_team", "recent_launch_linked", "lastweek_launch_voter", "discovery_follower_of_makers", "voternet_follow_graph"}
+indep = set(P[P.complete & ~P.entry_route.isin(OUTCOME_ROUTES)].person_id) if "entry_route" in P else set()
+RP = pd.read_parquet(f"{ST}/request_provenance.parquet") if os.path.exists(f"{ST}/request_provenance.parquet") else pd.DataFrame(columns=["person_id", "route", "seed"])
+team_seed = {}
+for p_, s_ in zip(RP[RP.route == "launch_team"].person_id, RP[RP.route == "launch_team"].seed.astype(str)):
+    if ":" in s_: team_seed.setdefault(p_, set()).add(":".join(s_.split(":")[:2]))
 E = pd.read_parquet(f"{ST}/events.parquet", columns=["person_id", "kind", "target_id"]); U = E[(E.kind == "upvote") & E.person_id.isin(comp)].drop_duplicates(["person_id", "target_id"]).copy()
 U["target_id"] = U.target_id.astype(str); U["d"] = U.target_id.map(dict(zip(L.id, L.day))); U = U[U.d.notna()]
 UD = {p: np.sort(g.d.values) for p, g in U.groupby("person_id")}
@@ -34,7 +44,9 @@ for d, t in zip(L.day, L.team):
     for p in t: roles.setdefault(p, []).append(d)
 def feats(r):
     D = pd.Timestamp(r.day); d90 = (D - pd.Timedelta(days=90)).strftime("%Y-%m-%d"); d30 = (D - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
-    held = [p for p in r.team if p in comp]; o = {"held_full": len(held), "held_pool": sum(p in pool for p in held)}
+    held = [p for p in r.team if p in comp]; key = f"{r.day}:{r.slug}"
+    o = {"held_full": len(held), "held_pool": sum(p in pool for p in held), "held_noself": sum(key not in team_seed.get(p, set()) for p in held),
+         "held_indep": sum(p in indep for p in held)}
     a = e = v = 0
     for p in held:
         u = UD.get(p, np.array([])); before = u[u < r.day] if len(u) else u
@@ -44,7 +56,7 @@ def feats(r):
         if p in pool: v += int(not len(before) and not any(x < r.day for x in roles.get(p, [])))
     o.update({"active90": a, "estab": e, "entry_via": v}); return o
 L = pd.concat([L.reset_index(drop=True), pd.DataFrame([feats(r) for r in L.itertuples()])], axis=1)
-FE = ["held_full", "held_pool", "active90", "estab"]; z = lambda s: (s - s.mean()) / (s.std() or 1)
+FE = ["held_full", "held_pool", "active90", "estab", "held_noself", "held_indep"]; z = lambda s: (s - s.mean()) / (s.std() or 1)
 def dm(g, col):
     o = g.sort_values(col, ascending=False).id.tolist(); t = g.sort_values("rank").id.tolist(); return [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
 def pdiff(a, b):
