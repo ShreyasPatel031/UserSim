@@ -33,4 +33,5 @@
 | + total + replies (full) | 63.6 | 71.6 | 76.6 | +1.9 [+0.3, +3.4] | +1.3 [+0.2, +2.4] | +0.2 [-0.4, +0.8] |
 | + total + replies (hunter only) | 62.8 | 71.1 | 76.5 | +1.1 [-0.2, +2.3] | +0.8 [+0.1, +1.6] | +0.0 [-0.5, +0.6] |
 
-Frozen (positive top-3 interval, hunter-only variant): P030 -> results/frozen/maker_replies_20261113.json
+Frozen P1 full-team weights -> results/frozen/maker_replies_P1_fullteam_20261113.json
+Frozen file exists; not overwritten.

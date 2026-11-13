@@ -624,15 +624,27 @@ def live(day, point):
             # orchestrator 02:53Z Nov 13 (maker_replies.md, 214-day LODO +1.9 [+0.8, +3.0] top 3 at 00:30): pred_rank_mrep at P030 =
             # frozen ridge on z(clean_nosite) + z(th_n_pre) + z(log1p distinct non-hunter commenters <= T) + z(log1p total comments
             # <= T) + z(log1p hunter replies <= T); team = hunter only (00:05-safe). results/frozen/maker_replies_20261113.json
-            mrp = os.path.join(HERE, "results", "frozen", "maker_replies_20261113.json")
-            if (point == "P030" or os.environ.get("MREP_TEST")) and os.path.exists(mrp) and "pred_clean_nosite" in SF:
-                MW = json.load(open(mrp))["points"]["P030"]["coef"]; cnz = dict(zip(SF.id.astype(str), SF.pred_clean_nosite))
+            # P1 (orchestrator 02:57Z Nov 13): weights from the FULL-team 214-day fit (maker_replies_P1_fullteam_20261113.json); live team =
+            # the 00:05-safe set: hunter + makers named with a real id in raw/daily/<d>/today_0005.json (redacted makers carry id 0)
+            mrp = os.path.join(HERE, "results", "frozen", "maker_replies_P1_fullteam_20261113.json" if point == "P1" else "maker_replies_20261113.json")
+            if (point in ("P030", "P1") or os.environ.get("MREP_TEST")) and os.path.exists(mrp) and "pred_clean_nosite" in SF:
+                MW = json.load(open(mrp))["points"]["P1" if point == "P1" else "P030"]["coef"]; cnz = dict(zip(SF.id.astype(str), SF.pred_clean_nosite))
                 hid = {i: (hun.get(i) or phun.get(i) or name2id.get(wposter.get(i, ""), "")) for i in A.id}
+                team05 = {i: {hid[i]} - {""} for i in A.id}
+                if point == "P1":
+                    p05 = f"{tmp}/today_0005.json"
+                    subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{day}/today_0005.json", p05], stderr=subprocess.DEVNULL)
+                    if os.path.exists(p05):
+                        for x_ in json.load(open(p05)):
+                            if str(x_.get("id")) in team05:
+                                team05[str(x_["id"])] |= {str(m_.get("id")) for m_ in (x_.get("makers") or [])
+                                                          if m_.get("id") and str(m_.get("id")) != "0" and m_.get("username") != "[REDACTED]"}
                 Fm = pd.DataFrame({"id": A.id.values}); Fm["clean"] = Fm.id.map(cnz); Fm["clean"] = Fm.clean.fillna(Fm.clean.min() - 0.1)
                 Fm["npre"] = Fm.id.map(npre_th).fillna(0)
                 Fm["nu"] = np.log1p([C[(C.id == i) & (C.user != hid[i])].user.nunique() for i in Fm.id])
                 Fm["nc"] = np.log1p([int((C.id == i).sum()) for i in Fm.id])
                 Fm["mrep_h"] = np.log1p([int(((C.id == i) & (C.user == hid[i]) & C.parent.notna()).sum()) if hid[i] else 0 for i in Fm.id])
+                Fm["mrep"] = np.log1p([int(((C.id == i) & C.user.isin(team05[i]) & C.parent.notna()).sum()) for i in Fm.id])
                 zz_ = lambda s_: (s_ - s_.mean()) / s_.std() if s_.std() > 0 else s_ * 0.0
                 sc_m = sum(zz_(Fm[f.replace("z_", "")]) * c for f, c in MW.items())
                 A["pred_rank_mrep"] = A.id.map(dict(zip(Fm.id, sc_m.rank(ascending=False, method="first").astype(int))))

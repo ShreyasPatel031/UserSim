@@ -1,0 +1,327 @@
+{
+ "written_at": "2026-11-13T03:01:05.052251+00:00",
+ "note": "one entry per forward line; numbers: backtest = 214 days Apr-Oct LODO, replay = live/hidden reads on held days; forward scores live in results/web/scoreboard.json",
+ "lines": [
+  {
+   "point": "00:05",
+   "line": "published",
+   "column": "forecast.py (VM) / web_forecast_0005",
+   "inputs": "clean_nosite model: launch fields, no maker-profile or ID inputs, no llm_site",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "56.4 / 67.8 / 75.0",
+   "n_days": 214,
+   "number_kind": "backtest (conservative clean headline)",
+   "note": "deployed on the VM from Nov 13 (main 736c65ff, md5 ef8e28d3)"
+  },
+  {
+   "point": "00:05",
+   "line": "clean_shadow",
+   "column": "shadow_makerfix rank_clean",
+   "inputs": "clean_v3 LightGBM (with llm_site)",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "see scoreboard clean_shadow",
+   "n_days": null,
+   "number_kind": "forward",
+   "note": ""
+  },
+  {
+   "point": "00:07",
+   "line": "clean_nosite_thread",
+   "column": "pred_rank_clean_nosite_thread",
+   "inputs": "clean_nosite + th_n_pre etc. from the 00:07 read only",
+   "frozen_weights": "thread_live_model_z_nosite.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "60.9 top 3 (+4.7 [+2.3, +7.1])",
+   "n_days": 214,
+   "number_kind": "backtest",
+   "note": "flat on live days so far; written in P files from P030"
+  },
+  {
+   "point": "00:07",
+   "line": "clean_nosite_tb",
+   "column": "pred_rank_clean_nosite_tb",
+   "inputs": "clean_nosite positions 2-6 re-ordered by z(clean)+z(th_n_pre)",
+   "frozen_weights": "results/frozen/clean_nosite_tb_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "+3.6 top 3 vs clean_nosite",
+   "n_days": 214,
+   "number_kind": "backtest",
+   "note": ""
+  },
+  {
+   "point": "00:30",
+   "line": "mrep",
+   "column": "pred_rank_mrep (P030)",
+   "inputs": "clean_nosite + th_n_pre (00:07 read) + distinct commenters + total comments + hunter replies <= 00:30",
+   "frozen_weights": "results/frozen/maker_replies_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "63.1 / 69.4 / 76.0 (+1.9 [+0.8, +3.0] top 3 vs 61.2 base)",
+   "n_days": 214,
+   "number_kind": "backtest",
+   "note": ""
+  },
+  {
+   "point": "00:30",
+   "line": "best_mix_th",
+   "column": "pred_rank_best_mix_th (P030)",
+   "inputs": "published LM / clean blend + hidden rank, near-ties by th_n_pre",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "see scoreboard",
+   "n_days": null,
+   "number_kind": "forward",
+   "note": ""
+  },
+  {
+   "point": "00:30",
+   "line": "hybrid",
+   "column": "pred_rank_hybrid (P030)",
+   "inputs": "hidden order top 5 + hr_clean (P1 weights) 6+",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "n/a (no 00:30 replay)",
+   "n_days": null,
+   "number_kind": "forward",
+   "note": ""
+  },
+  {
+   "point": "01:00",
+   "line": "hr_clean",
+   "column": "pred_rank_hr_clean (P1)",
+   "inputs": "hidden rank + move + comments + commenters + clean_nosite",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "71.4 / 65.7 / 84.3",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "01:00",
+   "line": "hybrid",
+   "column": "pred_rank_hybrid (P1)",
+   "inputs": "hidden order top 5 + hr_clean 6+",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "57.1 / 54.3 / 84.3",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "01:00",
+   "line": "mrep",
+   "column": "pred_rank_mrep (P1)",
+   "inputs": "clean_nosite + th_n_pre + commenters + total comments + team replies <= 01:00; live team = hunter + makers named at 00:05",
+   "frozen_weights": "results/frozen/maker_replies_P1_fullteam_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "63.6 / 71.6 / 76.6 full team; hunter-only floor 62.8 / 71.1 / 76.5",
+   "n_days": 214,
+   "number_kind": "backtest (no hidden rank)",
+   "note": ""
+  },
+  {
+   "point": "02:00",
+   "line": "hr_clean",
+   "column": "pred_rank_hr_clean (P2)",
+   "inputs": "as P1",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "66.7 / 74.3 / 84.3",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "02:00",
+   "line": "hidden rank",
+   "column": "pred_rank_api (P2)",
+   "inputs": "API hidden rank",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "71.4 / 65.7 / 77.1",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "02:00",
+   "line": "hybrid",
+   "column": "pred_rank_hybrid (P2)",
+   "inputs": "hidden top 5 + hr_clean 6+",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "71.4 / 65.7 / 84.3",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "03:00",
+   "line": "hybrid",
+   "column": "pred_rank_hybrid (P3)",
+   "inputs": "hidden top 5 + hr_clean 6+",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "76.2 / 71.4 / 85.7",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "03:00",
+   "line": "hr_clean",
+   "column": "pred_rank_hr_clean (P3)",
+   "inputs": "as P1",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "76.2 / 71.4 / 85.7",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "03:45",
+   "line": "hybrid",
+   "column": "pred_rank_hybrid (P345)",
+   "inputs": "hidden top 5 + hr_clean (P345 weights) 6+",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_P345_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "76.2 / 80.0 / 88.6",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "03:45",
+   "line": "hr_clean",
+   "column": "pred_rank_hr_clean (P345)",
+   "inputs": "as P1, 03:45 read",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_P345_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "71.4 / 77.1 / 88.6",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "04:00",
+   "line": "raw_votes",
+   "column": "early_forecast R0",
+   "inputs": "vote order at the reveal (04:00 PT sharp)",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "66.7 / 72.0 / 84.0",
+   "n_days": 5,
+   "number_kind": "replay (reveal_curve)",
+   "note": "model + clean adds +2 top 10 only"
+  },
+  {
+   "point": "05:00-06:00",
+   "line": "raw_votes",
+   "column": "early_forecast C05 / C06 / R1 / R2",
+   "inputs": "vote order",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "86.7 / 88.0 / 84.0 at 05:00; 86.7 / 88.0 / 90.0 at 06:00",
+   "n_days": 5,
+   "number_kind": "replay",
+   "note": ""
+  },
+  {
+   "point": "08:00+",
+   "line": "raw_votes",
+   "column": "early_forecast R4 / C12 / C16",
+   "inputs": "vote order",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "95.2 / 91.4 / 92.9 at 08:00; 95.2 / 91.4 / 95.7 at 12:00",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": "top 3 >= 90 from 08:00, top 10 >= 90 from 06:00"
+  },
+  {
+   "point": "week",
+   "line": "running",
+   "column": "weekly_live running",
+   "inputs": "PH running weeklyRank = vote order at the freshest read",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "10 / 21 / 42 hits (8 as-of points, 2 weeks)",
+   "n_days": 14,
+   "number_kind": "replay (weekly_growth.md)",
+   "note": "first official score Mon Nov 16"
+  },
+  {
+   "point": "month",
+   "line": "running",
+   "column": "monthly_live running",
+   "inputs": "monthlyRank = vote order at the nightly read; close call from the 23:50 PT reread",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "75 / 75 / 80 (dated reads, 4 months)",
+   "n_days": null,
+   "number_kind": "replay (E5)",
+   "note": ""
+  }
+ ],
+ "publish_pick": [
+  {
+   "point": "00:05",
+   "line": "published",
+   "reason": "deployed clean_nosite; the thread lines need the 00:07 read so they start at 00:07-00:30"
+  },
+  {
+   "point": "00:30",
+   "line": "mrep",
+   "reason": "only 00:30 line with a positive 214-day interval (+1.9 top 3) and 00:05-safe inputs"
+  },
+  {
+   "point": "01:00",
+   "line": "hr_clean",
+   "reason": "best 7-day replay at 01:00 on every k (71.4 / 65.7 / 84.3); mrep and hybrid are lower there"
+  },
+  {
+   "point": "02:00",
+   "line": "hr_clean",
+   "reason": "best top 5 / top 10 (74.3 / 84.3); hidden rank is better on top 3 (71.4 vs 66.7), 7 days only"
+  },
+  {
+   "point": "03:00",
+   "line": "hybrid",
+   "reason": "ties hr_clean (76.2 / 71.4 / 85.7) and keeps the plain hidden top 5"
+  },
+  {
+   "point": "03:45",
+   "line": "hybrid",
+   "reason": "best of both on 7 days (76.2 / 80.0 / 88.6)"
+  },
+  {
+   "point": "04:00",
+   "line": "raw_votes",
+   "reason": "the reveal; models add nothing on top 3 / top 5"
+  },
+  {
+   "point": "05:00-06:00",
+   "line": "raw_votes",
+   "reason": "velocity and clean add nothing after 04:30"
+  },
+  {
+   "point": "08:00+",
+   "line": "raw_votes",
+   "reason": "92-96 on 7 days"
+  },
+  {
+   "point": "week",
+   "line": "running",
+   "reason": "vote order at the freshest read"
+  },
+  {
+   "point": "month",
+   "line": "running",
+   "reason": "vote order at the nightly read"
+  }
+ ]
+}

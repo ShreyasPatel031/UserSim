@@ -63,6 +63,16 @@ def main():
             md.append(f"| {nm} | {P[:,0].mean():.1f} | {P[:,1].mean():.1f} | {P[:,2].mean():.1f} | " +
                       " | ".join(f"{dP[:,k].mean():+.1f} [{lo[k]:+.1f}, {np.percentile(b[:,k],97.5):+.1f}]" for k in range(3)) + " |")
         md.append("")
+        if pt == "P1":   # orchestrator 02:57Z Nov 13: P1 live uses the true 00:05-safe set with weights from the FULL-team fit
+            fp1 = os.path.join(HERE, "results", "frozen", "maker_replies_P1_fullteam_20261113.json")
+            if not os.path.exists(fp1):
+                cols1 = res["+ total + replies (full)"][2]; m1 = Ridge(alpha=3.0).fit(X[cols1], X.y)
+                json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": "214 Apr-Oct", "team_fit": "full team (hunter + warehouse makers)",
+                           "team_live": "hunter + makers named (non-redacted id) in raw/daily/<d>/today_0005.json",
+                           "features": "z within day: clean_nosite, th_n_pre, log1p distinct non-hunter commenters <= 01:00, log1p total comments <= 01:00, log1p team replies <= 01:00",
+                           "points": {"P1": {"coef": dict(zip([c.replace("mrep_f", "mrep") for c in cols1], map(float, m1.coef_))), "intercept": float(m1.intercept_), "cut_minutes": 60}}},
+                          open(fp1, "w"), indent=1)
+                md.append(f"Frozen P1 full-team weights -> {os.path.relpath(fp1, HERE)}")
         safe = res["+ total + replies (hunter only)"]
         if safe[0][0] > 0 and safe[1][0] > 0:   # positive top-3 interval for the 00:05-safe variant -> freeze
             m = Ridge(alpha=3.0).fit(X[safe[2]], X.y)
