@@ -88,8 +88,11 @@ feeds = [
     ("api_comments", f"{base}/api_comments/", "prefix_latest"),
 ]
 
+CRITICAL_FEEDS = frozenset({"posts_ts", "snapshots"})
+
 rows = []
 any_stale = False
+critical_stale = False
 worst_age = 0.0
 
 for name, path, kind in feeds:
@@ -124,6 +127,8 @@ for name, path, kind in feeds:
     )
     if stale:
         any_stale = True
+        if name in CRITICAL_FEEDS:
+            critical_stale = True
     worst_age = max(worst_age, age)
     rows.append(row)
 
@@ -140,8 +145,8 @@ if pool.exists():
     )
 
 hist_cap = max(0, pool_lines - daily_n) if pool_lines else int(os.environ.get("FLEET_MAX_VMS", "20"))
-# Under throttle, hold historical fleet well below live reservation.
-throttle_max = int(os.environ.get("FLEET_LIVE_THROTTLE_MAX_VMS", str(min(hist_cap, max(4, hist_cap // 2)))))
+throttle = critical_stale
+throttle_max = int(os.environ.get("FLEET_LIVE_THROTTLE_MAX_VMS", str(hist_cap)))
 throttle_min = int(os.environ.get("FLEET_LIVE_THROTTLE_MIN_VMS", str(min(4, throttle_max))))
 
 report = {
@@ -154,16 +159,17 @@ report = {
     ),
     "feeds": rows,
     "any_stale": any_stale,
+    "critical_stale": critical_stale,
     "worst_age_sec": round(worst_age, 1),
     "ip_pool_total": pool_lines,
     "ip_daily_reserved": daily_n,
     "historical_slot_cap": hist_cap,
-    "throttle": any_stale,
-    "throttle_fleet_max_vms": throttle_max if any_stale else None,
-    "throttle_fleet_min_vms": throttle_min if any_stale else None,
+    "throttle": throttle,
+    "throttle_fleet_max_vms": throttle_max if throttle else None,
+    "throttle_fleet_min_vms": throttle_min if throttle else None,
 }
 Path(out_path).write_text(json.dumps(report, indent=2) + "\n")
-if any_stale:
+if throttle:
     Path(throttle_path).write_text(now.strftime("%Y-%m-%dT%H:%M:%SZ") + "\n")
 else:
     Path(throttle_path).unlink(missing_ok=True)
@@ -184,14 +190,22 @@ if not p.exists():
     raise SystemExit(0)
 r=json.loads(p.read_text())
 if r.get('throttle'):
-    cap=r.get('throttle_fleet_max_vms') or 8
+    cap=r.get('historical_slot_cap') or r.get('throttle_fleet_max_vms') or 18
     print(f'export PH_FLEET_LIVE_PRIORITY_HOLD=1')
     print(f'export FLEET_MAX_VMS={cap}')
+    print(f'export FLEET_AUTOSCALE_NO_SHED=1')
     print(f'export FLEET_HISTORICAL_THROTTLE=1')
     print(f'export KEEPER_NUDGE_BUDGET=0')
     print(f'export FLEET_CF_RECOVER_MAX_KICKS=0')
     stale=[f[\"feed\"] for f in r.get(\"feeds\",[]) if f.get(\"stale\")]
     print(f'export PH_FLEET_LIVE_STALE_FEEDS=\"{\",\".join(stale)}\"')
+elif r.get('any_stale'):
+    stale=[f[\"feed\"] for f in r.get(\"feeds\",[]) if f.get(\"stale\")]
+    print(f'export PH_FLEET_LIVE_SECONDARY_STALE=\"{\",\".join(stale)}\"')
+    print('export PH_FLEET_LIVE_PRIORITY_HOLD=0')
+    cap=r.get('historical_slot_cap')
+    if cap and cap>0:
+        print(f'export FLEET_MAX_VMS={cap}')
 else:
     pool=r.get('ip_pool_total') or 0
     daily=r.get('ip_daily_reserved') or $DAILY_N

@@ -17,7 +17,7 @@ There is **no separate numeric SLA** in mailbox text beyond this **15-minute sam
 |--------|------|-----------|
 | `live/posts_ts.jsonl` | Launch vote/rank time series + `monthly_rank_at_fetch` | ≤15m between updates |
 | `snapshots/*_api.jsonl` | Official API 15m buckets | New object each bucket |
-| `api_comments/*` | Comment API sidecar per bucket | New object each bucket |
+| `api_comments/*` | Comment API sidecar per bucket | New object each bucket; **secondary** for fleet throttle (warn only unless `posts_ts`/`snapshots` stale) |
 | `live/coverage_ts.jsonl` | Coverage companion to live pull | Tracks `posts_ts` cadence |
 
 Historical fleet people pulls (Population `people_live/vm`) are **backfill**; they may run slower but must **not** steal sticky IPs or VM budget from daily/live capture when any row above is stale (`ph_fleet_live_priority.sh`).
