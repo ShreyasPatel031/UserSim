@@ -1,0 +1,353 @@
+{
+ "design": "Where would a product land? Retrieval of similar past launches vs the PH agent's product-only ridge (orchestrator 23:20Z\nNov 11). Base = web_launch_band.py's product-only ridge (TF-IDF 1-2 grams + top-80 topic flags + lengths, Ridge alpha 3,\ntarget ln(1+votes), month-forward from the third month; 222 days with >= 10 launches), re-implemented on the same warehouse\nlaunches table.\nRetrieval features for launch L on day d (neighbours = launches dated strictly before d; excluded: same slug stem, same\nname, any shared real maker/poster), embedding = gemini-embedding-001 256-d of \"name. tagline. description[:800]\":\n  for k in 5, 10, 25: mean / median ln(1+votes), mean within-day rank percentile, share top 3, share top 10,\n  similarity-weighted mean ln(1+votes); max similarity; topic base rates (first topic) over launches before d: mean\n  ln(1+votes), share top 10, count.\nModels (month-forward, same months): RIDGE+R = base design + standardised retrieval block; LGBM+R = LightGBM on retrieval\nblock + lengths + n_topics + the base ridge's held-out score; and on top of the FULL honest launch model (207 comment-forecast\ndays): ridge(honest LM + retrieval block), month-forward.\nMetrics: within-day Spearman with -daily rank, daily top 3/5/10 overlap; paired by day vs the base, 4000 day-bootstrap draws.\nBand calibration: rank band = 10th-90th percentile of final daily rank among earlier months' launches in the same score\ndecile (decile cut points from earlier months too); coverage = share of month-m launches whose true rank falls in the band.",
+ "page|all 856": {
+  "deployed": [
+   0.278,
+   0.218,
+   0.337,
+   856
+  ],
+  "knn20": [
+   0.2,
+   0.135,
+   0.261,
+   856
+  ],
+  "blend (mean of ranks)": [
+   0.273,
+   0.213,
+   0.335,
+   856
+  ],
+  "knn20 - deployed": [
+   -0.079,
+   -0.145,
+   -0.011,
+   856
+  ],
+  "blend (mean of ranks) - deployed": [
+   -0.005,
+   -0.039,
+   0.026,
+   856
+  ]
+ },
+ "page|fresh": {
+  "deployed": [
+   0.403,
+   0.24,
+   0.535,
+   130
+  ],
+  "knn20": [
+   0.251,
+   0.084,
+   0.411,
+   130
+  ],
+  "blend (mean of ranks)": [
+   0.372,
+   0.217,
+   0.521,
+   130
+  ],
+  "knn20 - deployed": [
+   -0.152,
+   -0.311,
+   0.006,
+   130
+  ],
+  "blend (mean of ranks) - deployed": [
+   -0.031,
+   -0.11,
+   0.049,
+   130
+  ]
+ },
+ "page|held Sep-Oct": {
+  "deployed": [
+   0.257,
+   0.186,
+   0.324,
+   726
+  ],
+  "knn20": [
+   0.195,
+   0.126,
+   0.267,
+   726
+  ],
+  "blend (mean of ranks)": [
+   0.258,
+   0.187,
+   0.325,
+   726
+  ],
+  "knn20 - deployed": [
+   -0.061,
+   -0.133,
+   0.008,
+   726
+  ],
+  "blend (mean of ranks) - deployed": [
+   0.001,
+   -0.034,
+   0.035,
+   726
+  ]
+ },
+ "page|thin neighbours (top-1 cos bottom third)": {
+  "deployed": [
+   0.206,
+   0.087,
+   0.317,
+   285
+  ],
+  "knn20": [
+   0.13,
+   0.007,
+   0.244,
+   285
+  ],
+  "blend (mean of ranks)": [
+   0.203,
+   0.094,
+   0.306,
+   285
+  ],
+  "knn20 - deployed": [
+   -0.075,
+   -0.206,
+   0.06,
+   285
+  ],
+  "blend (mean of ranks) - deployed": [
+   -0.002,
+   -0.068,
+   0.064,
+   285
+  ]
+ },
+ "page|not thin": {
+  "deployed": [
+   0.306,
+   0.232,
+   0.377,
+   571
+  ],
+  "knn20": [
+   0.229,
+   0.155,
+   0.304,
+   571
+  ],
+  "blend (mean of ranks)": [
+   0.301,
+   0.224,
+   0.374,
+   571
+  ],
+  "knn20 - deployed": [
+   -0.077,
+   -0.153,
+   -0.003,
+   571
+  ],
+  "blend (mean of ranks) - deployed": [
+   -0.005,
+   -0.044,
+   0.033,
+   571
+  ]
+ },
+ "page|thin_cut_cos": 0.8837,
+ "page|calibration (80% band, Sep <-> Oct+fresh cross-fit)": {
+  "deployed": {
+   "coverage_80": 75.1,
+   "mean_width_pct_of_day": 72.4
+  },
+  "knn20": {
+   "coverage_80": 75.2,
+   "mean_width_pct_of_day": 74.8
+  },
+  "blend (mean of ranks)": {
+   "coverage_80": 76.6,
+   "mean_width_pct_of_day": 73.2
+  }
+ },
+ "ph|all 856": {
+  "deployed": [
+   0.353,
+   0.292,
+   0.412,
+   856
+  ],
+  "knn20": [
+   0.284,
+   0.218,
+   0.343,
+   856
+  ],
+  "blend (mean of ranks)": [
+   0.37,
+   0.312,
+   0.428,
+   856
+  ],
+  "knn20 - deployed": [
+   -0.069,
+   -0.131,
+   -0.008,
+   856
+  ],
+  "blend (mean of ranks) - deployed": [
+   0.017,
+   -0.017,
+   0.05,
+   856
+  ]
+ },
+ "ph|fresh": {
+  "deployed": [
+   0.417,
+   0.265,
+   0.562,
+   130
+  ],
+  "knn20": [
+   0.251,
+   0.083,
+   0.405,
+   130
+  ],
+  "blend (mean of ranks)": [
+   0.388,
+   0.219,
+   0.53,
+   130
+  ],
+  "knn20 - deployed": [
+   -0.166,
+   -0.332,
+   -0.009,
+   130
+  ],
+  "blend (mean of ranks) - deployed": [
+   -0.029,
+   -0.113,
+   0.058,
+   130
+  ]
+ },
+ "ph|held Sep-Oct": {
+  "deployed": [
+   0.35,
+   0.284,
+   0.414,
+   726
+  ],
+  "knn20": [
+   0.293,
+   0.226,
+   0.361,
+   726
+  ],
+  "blend (mean of ranks)": [
+   0.373,
+   0.308,
+   0.436,
+   726
+  ],
+  "knn20 - deployed": [
+   -0.057,
+   -0.124,
+   0.009,
+   726
+  ],
+  "blend (mean of ranks) - deployed": [
+   0.023,
+   -0.015,
+   0.061,
+   726
+  ]
+ },
+ "ph|thin neighbours (top-1 cos bottom third)": {
+  "deployed": [
+   0.406,
+   0.299,
+   0.508,
+   285
+  ],
+  "knn20": [
+   0.255,
+   0.145,
+   0.364,
+   285
+  ],
+  "blend (mean of ranks)": [
+   0.387,
+   0.281,
+   0.48,
+   285
+  ],
+  "knn20 - deployed": [
+   -0.151,
+   -0.259,
+   -0.041,
+   285
+  ],
+  "blend (mean of ranks) - deployed": [
+   -0.019,
+   -0.075,
+   0.033,
+   285
+  ]
+ },
+ "ph|not thin": {
+  "deployed": [
+   0.323,
+   0.246,
+   0.396,
+   571
+  ],
+  "knn20": [
+   0.298,
+   0.222,
+   0.373,
+   571
+  ],
+  "blend (mean of ranks)": [
+   0.363,
+   0.289,
+   0.432,
+   571
+  ],
+  "knn20 - deployed": [
+   -0.025,
+   -0.103,
+   0.047,
+   571
+  ],
+  "blend (mean of ranks) - deployed": [
+   0.039,
+   -0.002,
+   0.076,
+   571
+  ]
+ },
+ "ph|thin_cut_cos": 0.8987,
+ "ph|calibration (80% band, Sep <-> Oct+fresh cross-fit)": {
+  "deployed": {
+   "coverage_80": 75.5,
+   "mean_width_pct_of_day": 72.6
+  },
+  "knn20": {
+   "coverage_80": 76.9,
+   "mean_width_pct_of_day": 74.5
+  },
+  "blend (mean of ranks)": {
+   "coverage_80": 76.4,
+   "mean_width_pct_of_day": 71.9
+  }
+ }
+}
