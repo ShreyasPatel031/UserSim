@@ -3,7 +3,7 @@
 description, topics; launches missing from that read are added from the warehouse launches table, same submitted text), the site's retrieval bank (reactions_retrieval_v1, Jan 1 - Oct 24) and models (launch_band.json trained to
 Nov 10; page band to Aug 31); page text only from E5's forward page read of that day (tmp/e5/band/forward/<day>/, fetched on the
 launch day) when held. No Product Hunt requests: comments come from the bucket's launch-day API pulls
-(raw/ph_at_launch/<day>/api_comments/*.jsonl, union, deduplicated); team comments (hunter / makers named at 00:05, and the first
+(raw/ph_at_launch/<day>/{api_comments,api_replies,api_comments_catchup,api_fills}/*.jsonl, union, deduplicated); team comments (hunter / makers by PH user id, and the first
 top-level commenter) are dropped; launches with >= 5 remaining comments are judged.
 Simulator, exactly as deployed (mvp/ph_site/try_sim.py, branch claude/ph-website): step_text (pasted path) / new_run(page read)
 (page path) -> step_reactions (6 reactions), step_asks (1 question + 1 concern), step_launch (band). b20 (RECIPE_b20_concerns):
@@ -40,17 +40,22 @@ CF = os.path.join(OUT, f"cache_{DAY}.json"); C = json.load(open(CF)) if os.path.
 csave = lambda: json.dump(C, open(CF, "w")); USD = {"judge": 0.0}
 # ---------- comments ----------
 com = {}
-for f in ls(f"{BK}/raw/ph_at_launch/{DAY}/api_comments/"):
-    for l in gcat(f).decode().split("\n"):
-        if l.strip():
-            x = json.loads(l); com.setdefault(str(x["post_id"]), {})[x["comment_id"]] = x
+for sub in ("api_comments", "api_replies", "api_comments_catchup", "api_fills"):
+    for f in ls(f"{BK}/raw/ph_at_launch/{DAY}/{sub}/"):
+        if not f.endswith(".jsonl"): continue
+        for l in gcat(f).decode().split("\n"):
+            if l.strip():
+                x = json.loads(l)
+                if x.get("post_id") and x.get("comment_id") and x.get("body") is not None and x.get("createdAt"): com.setdefault(str(x["post_id"]), {}).setdefault(x["comment_id"], x)
 clean = lambda t: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t or ""))).strip()
 real = {}
 for x in LU:
-    team = {str(u.get("username", "")).lower() for u in [x.get("user") or {}] + (x.get("makers") or []) if u.get("username")}
+    # team by PH user id: comment usernames in the bucket are "[REDACTED]", so matching on usernames dropped every comment on any
+    # launch with a redacted maker name (fixed 21:00Z Nov 13)
+    team = {str(u.get("id")) for u in [x.get("user") or {}] + (x.get("makers") or []) if u.get("id")}
     cs = list(com.get(str(x["id"]), {}).values()); tops = sorted([(c["createdAt"], c.get("commenter_user_id")) for c in cs if not c.get("parentId")])
     first = tops[0][1] if tops else None
-    keep = [clean(c["body"]) for c in sorted(cs, key=lambda c: c["createdAt"]) if str(c.get("username", "")).lower() not in team and c.get("commenter_user_id") != first and len(clean(c["body"])) > 15]
+    keep = [clean(c["body"]) for c in sorted(cs, key=lambda c: c["createdAt"]) if str(c.get("commenter_user_id")) not in team and c.get("commenter_user_id") != first and len(clean(c["body"])) > 15]
     if len(keep) >= 5: real[str(x["id"])] = keep
 # ---------- final ranks (official, if already in the warehouse cache / clean_nosite) ----------
 rank = {}
