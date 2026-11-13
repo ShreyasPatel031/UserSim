@@ -41,3 +41,15 @@ header counts are stored. Anything less is not written, not counted, not reporte
   `about.joined` and `ph_user_id`, so agents reported "no account age held" while every saved profile had it.)
 - Before believing "we don't hold X", read a raw file, not only the built store.
 - Any agent that sees a cap or a dropped field fixes it and tells Shreyas.
+
+## Rule for every agent: how models are chosen (Shreyas, Nov 13 2026)
+
+1. **North star first: predictive value.** Product Hunt daily / weekly / monthly top 3 / 5 / 10. A model is only reliable if it
+   predicts; an explanation without predictive value is not used.
+2. **Second metric: observability.** For every forecast we must be able to say why it says what it says, and simulate as much
+   as possible of how users react to a product (who backs it, what they say, where it lands).
+3. **Choosing between models.** When an explainable or simulating model predicts as well as a black-box one (its north-star
+   score is not worse beyond noise on the same days, paired), the explainable one wins and replaces it. When it predicts clearly
+   worse, the black box stays as the forecast and the explainable model runs beside it as the explanation, labelled with its own
+   measured accuracy. The orchestrator takes these calls and records each one in docs/RESEARCH_LOG.md.
+4. Every explanation shown anywhere carries its measured predictive value (number, days, backtest or forward).
