@@ -457,6 +457,63 @@ def _difficulty(day: str) -> dict | None:
     return out
 
 
+WHY_MIN_GROUP = 20
+
+
+def _why_prefix() -> str:
+    # The published path. A local-only override lets the shadow files be previewed; it is ignored on the deployed site.
+    import os
+    o = os.environ.get("PH_WHY_PREFIX")
+    return o if o and not (os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV")) else "results/web/why"
+
+
+def _why_num(v):
+    return round(float(v), 4) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+
+
+def why(day: str, point: str, ids: set[str]) -> dict | None:
+    """Per-launch explanation items written by the model owners (results/web/why/<day>_<point>.json): aggregates only.
+    Re-checked here before anything is served: only launches in the day's line-up, only numbers (or one level of named
+    numeric shares), and no item that rests on fewer than 20 people."""
+    j = gcs.read_json(f"{_why_prefix()}/{day}_{point}.json", ttl=300)
+    if not isinstance(j, dict) or not isinstance(j.get("launches"), dict) or not isinstance(j.get("items"), dict):
+        return None
+    floor = max(WHY_MIN_GROUP, int(j.get("min_group") or 0))
+    notes = {str(k): str(v)[:500] for k, v in (j.get("notes") or {}).items()}
+    items = {str(k): {"label": str(v.get("label") or k)[:120], "unit": str(v.get("unit") or "")[:40],
+                      "note": notes.get(str(v.get("note")), "")}
+             for k, v in j["items"].items() if isinstance(v, dict)}
+    out = {}
+    for pid, row in j["launches"].items():
+        if str(pid) not in ids or not isinstance(row, dict):
+            continue
+        keep = {}
+        for k, it in row.items():
+            if k not in items or not isinstance(it, dict):
+                continue
+            n = it.get("n_people")
+            if isinstance(n, (int, float)) and n < floor:
+                continue                                     # never show a group under the floor
+            val = it.get("value")
+            if isinstance(val, dict):
+                v = {str(a)[:40]: {str(b)[:20]: _why_num(x) for b, x in d.items() if _why_num(x) is not None}
+                     for a, d in val.items() if isinstance(d, dict)}
+            else:
+                v = _why_num(val)
+            if v is None or v == {}:
+                continue
+            cov = {str(a)[:40]: int(b) for a, b in (it.get("coverage") or {}).items()
+                   if isinstance(b, (int, float)) and not isinstance(b, bool)} if isinstance(it.get("coverage"), dict) else {}
+            keep[k] = {"value": v, "n_people": int(n) if isinstance(n, (int, float)) else None, "coverage": cov}
+        if keep:
+            out[str(pid)] = keep
+    if not out:
+        return None
+    used = {k for r in out.values() for k in r}
+    return {"as_of": str(j.get("as_of") or ""), "as_of_pt": _pt_label(str(j.get("as_of") or "")), "shadow": bool(j.get("shadow")),
+            "items": {k: v for k, v in items.items() if k in used}, "launches": out}
+
+
 # Nominal data cut of each point (PT, hours after midnight); a point counts as "not made" once its cut is 90 min past.
 NOMINAL_CUT_H = {"0005": 0.08, "P1": 1, "P2": 2, "P3": 3, "P4": 4, "R0": 4, "R1": 5, "R2": 6, "R4": 8}
 BOARD_STALE_MIN = 35
@@ -559,8 +616,18 @@ def day_view(day: str) -> dict:
         # Interim (orchestrator / E5 audit, Nov 13): no sourced reliability-by-hour figure yet.
         lock["reliability"] = "checked against final ranks each day; no tested reliability figure is shown yet"
     fresh = _freshness(day, fc, board, act["final"])
+    ids = set(prods)
+    whys = {}
+    for pt in [p["key"] for p in points] + (["after"] if act["final"] else []):
+        try:
+            w = why(day, pt, ids)
+        except Exception as exc:  # noqa: BLE001 - explanations are optional; never take the page down
+            print(f"[ph] why {pt} unavailable: {exc!r}", flush=True)
+            w = None
+        if w:
+            whys[pt] = w
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
-            "freshness": fresh,
+            "freshness": fresh, "why": whys,
             "lead_point": lead, "difficulty": difficulty, "board": {**{k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")}, "lock": lock},
             "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _written_label(day, act["as_of"]),
                        "as_of": act["as_of"]}}

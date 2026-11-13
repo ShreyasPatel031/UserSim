@@ -137,6 +137,25 @@ function moveTag(pred, now){
   return `<span class="now ${cls}" title="Place on the live board">now #${Number(now)}</span>`;
 }
 
+function whyBlock(id, key){
+  const out = [];
+  [[key, "What we knew about this launch when this forecast was made"], ["after", "Measured after the day ended (not known at forecast time)"]].forEach(([k, head])=>{
+    const W = (VIEW.why||{})[k], row = W && W.launches[id];
+    if(!row) return;
+    const lines = Object.keys(W.items).filter(i=>row[i]).map(i=>{
+      const it = W.items[i], r = row[i];
+      let v;
+      if(typeof r.value === "object"){
+        v = Object.entries(r.value).map(([g, d])=>`${esc(g)}: ${Object.entries(d).map(([t, x])=>`${esc(t)}: ${(Number(x)*100).toFixed(0)}%`).join(" · ")}`).join("<br>");
+      } else v = /share/.test(it.unit) ? (Number(r.value)*100).toFixed(0) + "%" : Number(r.value).toLocaleString();
+      const cov = Object.entries(r.coverage||{}).map(([a,b])=>`${esc(a.replace(/_/g," "))} ${Number(b)}`).join(", ");
+      return `<li><b>${esc(it.label)}:</b> ${v}${(()=>{ const bits = []; if(r.n_people && r.n_people !== r.value) bits.push(Number(r.n_people).toLocaleString() + " people"); if(cov) bits.push(cov); return bits.length ? ` <span class="muted">(${bits.join("; ")})</span>` : ""; })()}<br><span class="muted">${esc(it.note)}</span></li>`;
+    });
+    if(lines.length) out.push(`<p class="label" style="margin:10px 0 4px">${esc(head)}${W.as_of_pt ? " · read " + esc(W.as_of_pt) : ""}${W.shadow ? " · test data" : ""}</p><ul class="small" style="margin:0;padding-left:1.1em">${lines.join("")}</ul>`);
+  });
+  return out.length ? `<details class="more why"><summary>Why: what we know about this launch</summary>${out.join("")}<p class="small muted" style="margin-top:8px">Counts are of people whose public Product Hunt activity we hold, in groups of 20 or more. They describe the launch; unless a line says otherwise, they did not improve the forecast in testing.</p></details>` : "";
+}
+
 function renderPred(){
   const p = VIEW.points.find(q=>q.key===SEL);
   if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; return; }
@@ -167,7 +186,7 @@ function renderPred(){
     const mk = x.board_rank ? `<span class="mk ${hit?"hit":"miss"}">${hit?(fin?"in final top 10":"in live top 10"):(fin?"missed top 10":"outside live top 10")}</span>` : "";
     const ev = p.exp_votes && p.exp_votes[x.id];
     return `<li class="row c"><div class="pos">${Number(r)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
-      <div class="chips">${chips(x)}${ev!=null ? `<span class="trail">expect <b>~${Number(ev)}</b> votes by day end</span>` : ""}</div></div><div class="side">${moveTag(r, x.board_rank)}${mk}${conf}</div></li>`;}).join("");
+      <div class="chips">${chips(x)}${ev!=null ? `<span class="trail">expect <b>~${Number(ev)}</b> votes by day end</span>` : ""}</div></div><div class="side">${moveTag(r, x.board_rank)}${mk}${conf}</div>${whyBlock(x.id, p.key)}</li>`;}).join("");
 }
 
 function renderLive(){

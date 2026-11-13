@@ -360,3 +360,26 @@ def test_launch_step_returns_input_note(monkeypatch):
                                                                 "topics": [], "source": "pasted"})
     out = try_sim.step_launch("t")
     assert out["input_note"] and "0.35" in out["input_note"] and out["coverage"] is None
+
+
+def test_why_is_sanitised(monkeypatch):
+    from mvp.ph_site import live, gcs
+    f = {"as_of": "2026-11-13T08:10:00+00:00", "min_group": 20, "shadow": True,
+         "items": {"held_backers": {"label": "Backers", "unit": "people", "note": "n1"},
+                   "tiers": {"label": "Tiers", "unit": "share by tier", "note": "n1"}},
+         "notes": {"n1": "Descriptive."},
+         "launches": {"1": {"held_backers": {"value": 120, "n_people": 120, "coverage": {"team_members_named": 2}, "note": "n1"},
+                            "tiers": {"value": {"this launch": {"0": 0.5, "x": "bob"}}, "n_people": 40},
+                            "secret": {"value": 3, "n_people": 50}},
+                      "2": {"held_backers": {"value": 7, "n_people": 7, "username": "bob"}},
+                      "999": {"held_backers": {"value": 500, "n_people": 500}}}}
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: f if n == "results/web/why/2026-11-13_0005.json" else None)
+    monkeypatch.delenv("PH_WHY_PREFIX", raising=False)
+    w = live.why("2026-11-13", "0005", {"1", "2"})
+    assert set(w["launches"]) == {"1"}                      # under-20 group and unknown launch dropped
+    assert set(w["launches"]["1"]) == {"held_backers", "tiers"} and "bob" not in str(w)
+    assert w["launches"]["1"]["tiers"]["value"] == {"this launch": {"0": 0.5}}
+    assert w["items"]["held_backers"]["note"] == "Descriptive." and w["shadow"] is True
+    assert live.why("2026-11-13", "P1", {"1"}) is None
+    monkeypatch.setenv("PH_WHY_PREFIX", "tmp/e5/why_shadow"); monkeypatch.setenv("VERCEL", "1")
+    assert live._why_prefix() == "results/web/why"         # the preview override is ignored on the deployed site

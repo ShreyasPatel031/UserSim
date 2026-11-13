@@ -188,3 +188,8 @@ footer.note { padding-block: 18px; display: flex; justify-content: space-between
 .duo .timeline button { flex: 1 1 0; min-width: 0; padding: 8px 8px 7px; font-size: 12.5px; white-space: nowrap; }
 .duo .timeline button small { font-size: 9.5px; letter-spacing: .05em; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 560px) { .duo .timeline button { flex: 1 0 auto; } }
+
+/* per-launch explanation: spans the whole row, text wraps */
+.row > .why { grid-column: 1 / -1; margin: 6px 0 2px; }
+.row > .why p, .row > .why li { white-space: normal; overflow: visible; text-overflow: clip; }
+.row > .why li { margin: 0 0 8px; }
