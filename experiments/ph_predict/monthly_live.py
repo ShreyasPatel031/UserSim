@@ -28,12 +28,18 @@ def read(day):
             continue
         h = json.loads(open(p).readline() or "{}")
         fa = h.get("fetched_at") if h.get("_header") else None
-        if fa and pd.Timestamp(fa) >= closed and (best is None or pd.Timestamp(fa) < best[0]):
+        fe = h.get("fetched_at_end") if h.get("_header") else None
+        # Nov 13: the Nov 12 re-read started 23:59:59 PT (1 s before the close) and ran to 00:03:50 PT; a read that starts within
+        # 5 min before the close and ends after it counts as the day-end read (flagged straddles_close in the header used)
+        ok = fa and (pd.Timestamp(fa) >= closed or (fe and pd.Timestamp(fa) >= closed - pd.Timedelta(minutes=5) and pd.Timestamp(fe) >= closed))
+        if ok and (best is None or pd.Timestamp(fa) < best[0]):
             best = (pd.Timestamp(fa), p)
     if best is None:
         return None, None
     rows = [json.loads(l) for l in open(best[1])]
     hdr = rows[0] if rows and rows[0].get("_header") else {}
+    if hdr and pd.Timestamp(hdr.get("fetched_at")) < closed:
+        hdr = {**hdr, "straddles_close": True}
     X = pd.DataFrame([r for r in rows if not r.get("_header")])
     X["id"] = X.id.astype(str)
     # orchestrator 04:25Z Nov 12: the re-read lists the 00:00 PT cohort twice (once under the previous day); keep one row per
