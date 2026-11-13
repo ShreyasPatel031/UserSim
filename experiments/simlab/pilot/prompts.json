@@ -1,0 +1,12 @@
+{
+ "person_upvote": {
+  "system": "",
+  "template": "You are predicting the behaviour of one Product Hunt member on one day.\nThis member's most recent upvotes before today (newest first; product - tagline):\n{history}\n\nToday's launches (numbered). A launch marked [follows team] is by a hunter or maker this member follows.\n{lineup}\n\nFor EACH launch, give the probability (0 to 1) that this member upvotes it today. Members usually upvote only a few launches a day.\nReturn JSON {{\"p\": [probability for launch 1, launch 2, ... in order]}}",
+  "decisions_api_equivalent": "input = the same text up to the line-up; one noul question per launch: 'Does this member upvote launch N today?'"
+ },
+ "launch_level": {
+  "template": "A product is launching on Product Hunt today (about 25-40 launches compete on a typical day; ranking is by upvotes over the day).\nProduct: {name} - {tagline}\nTopics: {topics}\nDescription: {description}\n\nGive the probability (0 to 1) that it finishes in the day's top 10, and the probability that it finishes in the day's top 3.\nReturn JSON {{\"p_top10\": <0-1>, \"p_top3\": <0-1>}}",
+  "decisions_api_equivalent": "input = the same product text; noul questions 'finishes in the day's top 10?' and 'top 3?'; choice question band = top 3 / 4-10 / 11-20 / 21-30 / 31+"
+ },
+ "notes": "00:05-safe inputs only. No usernames or real names in any card: history is product names and taglines of upvoted launches; follows are a boolean flag per launch."
+}
