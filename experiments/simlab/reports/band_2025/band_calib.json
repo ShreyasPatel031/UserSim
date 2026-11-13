@@ -1,0 +1,89 @@
+{
+ "design": "Month-forward recalibration of the /try description band so the 80% band covers 80% (orchestrator 19:30Z Nov 13, part c).\nRe-uses band_2025.py's month-forward OOF scores (exec'd; arms A0 = current 2026 ln(votes) ridge and A4 = 2025+2026 ln(votes)).\nBand: score decile (cut points from earlier months' OOF scores) -> quantiles of the within-day rank percentile among earlier-month\nlaunches in that decile. CURRENT = nominal 10th-90th quantiles, fit on the earlier months. RECAL = nominal level widened per test\nmonth (grid 0.80..0.98) until coverage on the earlier months' own leave-one-month-out is >= 80% (conformal-style; test month never\nused). Test: the 856 (Sep 1 - Nov 10) and the 130 fresh; coverage and mean width (share of the day's rank range). Counts only.",
+ "A0 2026 ln(votes) [current]": {
+  "nominal level chosen per test month": {
+   "2026-09": 0.82,
+   "2026-10": 0.82,
+   "2026-11": 0.82
+  },
+  "current | 856": {
+   "coverage_80 [CI]": [
+    79.2,
+    76.5,
+    82.0,
+    856
+   ],
+   "mean width (share of day's rank range)": 75.1
+  },
+  "current | fresh 130": {
+   "coverage_80 [CI]": [
+    79.2,
+    72.3,
+    86.2,
+    130
+   ],
+   "mean width (share of day's rank range)": 74.8
+  },
+  "recal | 856": {
+   "coverage_80 [CI]": [
+    80.5,
+    77.6,
+    83.1,
+    856
+   ],
+   "mean width (share of day's rank range)": 77.2
+  },
+  "recal | fresh 130": {
+   "coverage_80 [CI]": [
+    80.0,
+    72.3,
+    86.9,
+    130
+   ],
+   "mean width (share of day's rank range)": 76.6
+  }
+ },
+ "A4 2025+2026 ln(votes)": {
+  "nominal level chosen per test month": {
+   "2026-09": 0.82,
+   "2026-10": 0.82,
+   "2026-11": 0.82
+  },
+  "current | 856": {
+   "coverage_80 [CI]": [
+    78.3,
+    75.5,
+    80.8,
+    856
+   ],
+   "mean width (share of day's rank range)": 75.0
+  },
+  "current | fresh 130": {
+   "coverage_80 [CI]": [
+    78.5,
+    71.5,
+    85.4,
+    130
+   ],
+   "mean width (share of day's rank range)": 75.1
+  },
+  "recal | 856": {
+   "coverage_80 [CI]": [
+    80.6,
+    77.9,
+    83.3,
+    856
+   ],
+   "mean width (share of day's rank range)": 77.5
+  },
+  "recal | fresh 130": {
+   "coverage_80 [CI]": [
+    82.3,
+    75.4,
+    88.5,
+    130
+   ],
+   "mean width (share of day's rank range)": 77.3
+  }
+ }
+}
