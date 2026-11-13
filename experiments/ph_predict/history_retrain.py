@@ -113,21 +113,25 @@ def main():
         dfo = dfo[~dfo.known].copy(); dfo["id"] = dfo.id.astype(str); dfo["mon"] = dfo.day.str[:7]
         cols_all = sorted(set(df.columns) & set(dfo.columns)); D25 = df[old][cols_all]
         hh = dfo.set_index("id").hist_hunter_n; flag = (df[~old].set_index("id").hist_hunter_n > hh.reindex(df[~old].id).values)
-        for m in MONTHS:
+        # DECOMP_TAG (item 3b, 11:33Z Nov 13): DECOMP_MONTHS="2026-10,2026-11" -> pure + both only, no Apr-Oct clip, files *_decomp{TAG}
+        DT = os.environ.get("DECOMP_TAG", ""); DM = os.environ.get("DECOMP_MONTHS")
+        for m in ([x for x in MONTHS if x in DM.split(",")] if DM else MONTHS):
             te_o, te_h = dfo[dfo.mon == m], df[(df.mon == m) & ~old]
             if te_o.empty:
                 continue
             for nm, tr0, te0 in (("pure", dfo[dfo.mon < m], te_o), ("histonly", df[(df.mon < m) & ~old], te_h),
                                  ("rowsonly", pd.concat([dfo[dfo.mon < m][cols_all], D25]), te_o[cols_all]), ("both", df[df.mon < m], te_h)):
+                if DT and nm not in ("pure", "both"):
+                    continue
                 tr, te, cols = TW.prep(tr0, te0)
                 cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")]
                 for s in range(SEEDS):
                     P.append(pd.DataFrame({"id": te.id.values, "variant": nm, "seed": s, "pred": TW.fitw(tr, te, cols, s)}))
             print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
-        R = pd.concat(P); R.to_parquet("results/history_retrain_decomp_seeds.parquet")
+        R = pd.concat(P); R.to_parquet(f"results/history_retrain_decomp_seeds{DT}.parquet")
         A = R.groupby(["id", "variant"]).pred.mean().unstack().reset_index().merge(dfo[["id", "day", "dailyRank"]], on="id")
         A["h_has_2025"] = A.id.map(flag.to_dict()).fillna(False)
-        A = A[(A.day >= "2026-04-01") & (A.day <= "2026-10-31")]; A.to_parquet("results/history_retrain_decomp_preds.parquet")
+        A = A if DT else A[(A.day >= "2026-04-01") & (A.day <= "2026-10-31")]; A.to_parquet(f"results/history_retrain_decomp_preds{DT}.parquet")
         print(json.dumps({"decomp_rows": int(len(A)), "days": int(A.day.nunique()), "share_hunter_with_2025": round(float(A.h_has_2025.mean()), 3)}))
         return
     for m in MONTHS:

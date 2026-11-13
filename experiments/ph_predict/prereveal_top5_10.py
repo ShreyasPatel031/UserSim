@@ -30,6 +30,12 @@ def main():
     V = W.query('SELECT "day" d, "at" a, CAST(launch_id AS VARCHAR) id, rank_now FROM vote_snapshots WHERE rank_now IS NOT NULL', do_sync=False)
     V["a"] = pd.to_datetime(V.a, utc=True)
     CL = pd.read_parquet(os.path.join(HERE, "results", "clean_live_rows_nosite.parquet")); CL["id"] = CL.id.astype(str)
+    # PR_BASE / PR_COL / PR_SUF (orchestrator 11:33Z Nov 13 item 3b): swap the clean base (e.g. arm-2 "both" month-fold preds);
+    # replay only: nothing frozen, web file not written or uploaded, output results/prereveal{PR_SUF}.md
+    SUF = os.environ.get("PR_SUF", "")
+    if os.environ.get("PR_BASE"):
+        B_ = pd.read_parquet(os.environ["PR_BASE"]); B_["id"] = B_.id.astype(str)
+        CL = B_[["id", "day", os.environ.get("PR_COL", "both")]].dropna().rename(columns={os.environ.get("PR_COL", "both"): "clean_v3_nosite"})
     cl = {d: dict(zip(g.id, g.clean_v3_nosite)) for d, g in CL.groupby("day")}
     rows, info = [], {}
     for d in sorted(set(R.day) & set(pd.date_range("2026-10-25", "2026-11-12").strftime("%Y-%m-%d"))):
@@ -116,6 +122,10 @@ def main():
     for h in (1, 2, 3):
         Xh = X[X.h == h]; m = Ridge(alpha=3.0).fit(Xh[VAR["d + clean_nosite"]], Xh.y)
         fz["points"][f"P{h}"] = {"coef": dict(zip(VAR["d + clean_nosite"], map(float, m.coef_))), "intercept": float(m.intercept_)}
+    if SUF:
+        R_ = pd.DataFrame(res)[["point", "variant", "days", "top3", "top5", "top10", "top3_ci", "top5_ci", "top10_ci"]]
+        open(os.path.join(HERE, "results", f"prereveal{SUF}.md"), "w").write(f"# pre-reveal replay, base {os.environ.get('PR_COL', 'both')} from {os.path.basename(os.environ.get('PR_BASE', ''))}\n\n" + R_.to_markdown(index=False) + "\n")
+        print(R_.to_string(index=False)); return
     os.makedirs(os.path.join(HERE, "results", "frozen"), exist_ok=True)
     fp = os.path.join(HERE, "results", "frozen", "prereveal_hr_clean_20261113.json")
     if not os.path.exists(fp):   # frozen once: never overwritten
