@@ -71,7 +71,7 @@ for d in DAYS:
         v = voters.get(i, set()); p = m.predict_proba(Xi)[:, 1]
         pm = mix(dict(zip(act.index, p)), at); am = mix({q: 1.0 for q in v}, at) if v else None
         prev = [x for dd in sorted(HIST) if dd < d for x in HIST[dd]]
-        p7 = [x for dd in sorted(HIST) if dd < d][-7:]; day_pool = [x for dd in p7 for x in HIST[dd]]
+        p7 = [dd for dd in sorted(HIST) if dd < d][-7:]; day_pool = [x for dd in p7 for x in HIST[dd]]
         d30 = (pd.Timestamp(d) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); top_pool = [x for dd in sorted(HIST) if d30 <= dd < d for x in HIST[dd] if x[0] & ltops.get(i, set())]
         def pool(P):
             if not P: return None
