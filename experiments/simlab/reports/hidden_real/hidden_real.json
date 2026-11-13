@@ -1,0 +1,255 @@
+{
+ "design": "Hidden-window early votes from REAL pulls (orchestrator 09:34Z Nov 13). Complete people of the merged store whose full pull\n(upvotes tab, fetched_at = run finish) happened between 00:30 and 04:00 PT on a launch day: their upvote lists show that day's votes\ncast before the pull. Early count E(L) = number of such people with an upvote on launch L. Days Nov 5-12 (only days with >= 100 such\npeople are scored). Base scores: clean_v3_nosite (clean_live_rows_nosite) and the hidden rank (warehouse vote_snapshots rank_now, the\nlast read at or before the median pull time, votes still hidden; held Nov 8-13). Truth: final daily rank (clean rows).\nPer day: Spearman(E, -rank); partial beyond the hidden rank and beyond clean; top 3/5/10 of hidden alone vs hidden + w z(log1p E) and\nclean vs clean + w z(log1p E) (w leave-day-out from {0, .25, .5, 1, 2}); people curve: E from a random 25% / 50% / 100% of the window people.\nCounts only.",
+ "days": {
+  "2026-11-05": {
+   "people_in_window": 798,
+   "launches": 0
+  },
+  "2026-11-06": {
+   "people_in_window": 0,
+   "launches": 0
+  },
+  "2026-11-07": {
+   "people_in_window": 0,
+   "launches": 0
+  },
+  "2026-11-08": {
+   "people_in_window": 14,
+   "launches": 17
+  },
+  "2026-11-09": {
+   "people_in_window": 1569,
+   "launches": 23,
+   "hidden_read_pt": "01:00",
+   "window_upvotes_on_day_launches": 0,
+   "median_pull_pt": "01:03",
+   "share_of_final_votes": null
+  },
+  "2026-11-10": {
+   "people_in_window": 523,
+   "launches": 50,
+   "hidden_read_pt": "00:06",
+   "window_upvotes_on_day_launches": 0,
+   "median_pull_pt": "00:50",
+   "share_of_final_votes": null
+  },
+  "2026-11-11": {
+   "people_in_window": 2358,
+   "launches": 16,
+   "hidden_read_pt": "02:00",
+   "window_upvotes_on_day_launches": 25,
+   "median_pull_pt": "02:34",
+   "share_of_final_votes": null
+  },
+  "2026-11-12": {
+   "people_in_window": 0,
+   "launches": 0
+  }
+ },
+ "per_day": {
+  "2026-11-09": {
+   "E25": {
+    "spearman": NaN,
+    "partial_beyond_clean": -0.069,
+    "partial_beyond_hidden": 0.027
+   },
+   "E50": {
+    "spearman": NaN,
+    "partial_beyond_clean": -0.069,
+    "partial_beyond_hidden": 0.027
+   },
+   "E100": {
+    "spearman": NaN,
+    "partial_beyond_clean": -0.069,
+    "partial_beyond_hidden": 0.027
+   },
+   "spearman_clean": 0.542,
+   "spearman_hidden": 0.7,
+   "top3/5/10": {
+    "clean": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "hidden": [
+     100.0,
+     80.0,
+     70.0
+    ],
+    "clean+E w0.25": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "hidden+E w0.25": [
+     100.0,
+     80.0,
+     70.0
+    ],
+    "clean+E w0.5": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "hidden+E w0.5": [
+     100.0,
+     80.0,
+     70.0
+    ],
+    "clean+E w1": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "hidden+E w1": [
+     100.0,
+     80.0,
+     70.0
+    ],
+    "clean+E w2": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "hidden+E w2": [
+     100.0,
+     80.0,
+     70.0
+    ]
+   }
+  },
+  "2026-11-10": {
+   "E25": {
+    "spearman": NaN,
+    "partial_beyond_clean": 0.018,
+    "partial_beyond_hidden": null
+   },
+   "E50": {
+    "spearman": NaN,
+    "partial_beyond_clean": 0.018,
+    "partial_beyond_hidden": null
+   },
+   "E100": {
+    "spearman": NaN,
+    "partial_beyond_clean": 0.018,
+    "partial_beyond_hidden": null
+   },
+   "spearman_clean": 0.472,
+   "spearman_hidden": null,
+   "top3/5/10": {
+    "clean": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "clean+E w0.25": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "clean+E w0.5": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "clean+E w1": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "clean+E w2": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ]
+   }
+  },
+  "2026-11-11": {
+   "E25": {
+    "spearman": 0.364,
+    "partial_beyond_clean": 0.206,
+    "partial_beyond_hidden": 0.144
+   },
+   "E50": {
+    "spearman": 0.0,
+    "partial_beyond_clean": -0.181,
+    "partial_beyond_hidden": -0.296
+   },
+   "E100": {
+    "spearman": 0.086,
+    "partial_beyond_clean": -0.119,
+    "partial_beyond_hidden": -0.242
+   },
+   "spearman_clean": 0.797,
+   "spearman_hidden": 0.762,
+   "top3/5/10": {
+    "clean": [
+     100.0,
+     80.0,
+     90.0
+    ],
+    "hidden": [
+     100.0,
+     80.0,
+     80.0
+    ],
+    "clean+E w0.25": [
+     100.0,
+     80.0,
+     90.0
+    ],
+    "hidden+E w0.25": [
+     100.0,
+     80.0,
+     80.0
+    ],
+    "clean+E w0.5": [
+     100.0,
+     80.0,
+     70.0
+    ],
+    "hidden+E w0.5": [
+     100.0,
+     80.0,
+     70.0
+    ],
+    "clean+E w1": [
+     100.0,
+     80.0,
+     60.0
+    ],
+    "hidden+E w1": [
+     100.0,
+     80.0,
+     70.0
+    ],
+    "clean+E w2": [
+     100.0,
+     80.0,
+     60.0
+    ],
+    "hidden+E w2": [
+     100.0,
+     80.0,
+     60.0
+    ]
+   }
+  }
+ },
+ "clean+E vs clean (lodo w)": {
+  "days": 3,
+  "mean gain top3/5/10": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ "hidden+E vs hidden (lodo w)": {
+  "days": 2,
+  "mean gain top3/5/10": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ }
+}
