@@ -36,7 +36,10 @@ for _f in sorted(glob.glob(os.path.expanduser("~/.usersim_sim/launches/*.parquet
             LU.append({"id": str(r.id), "name": r.name, "tagline": r.tagline, "description": r.description, "slug": r.slug, "user": {"username": r.poster} if isinstance(r.poster, str) and not r.poster.startswith("[") else {},
                        "makers": [{"username": m} for m in _mk], "_from": "warehouse"}); _have.add(str(r.id))
     except Exception: pass
-CF = os.path.join(OUT, f"cache_{DAY}.json"); C = json.load(open(CF)) if os.path.exists(CF) else {}
+CF = os.path.join(OUT, f"cache_{DAY}.json"); PREDICT = os.environ.get("FWD_PREDICT") == "1"   # nightly mode: predict every launch, freeze, no judging
+FROZEN = os.environ.get("FWD_FROZEN") or f"{BK}/tmp/e5/forward_sim/{DAY}/predictions_frozen.json"
+if not os.path.exists(CF) and subprocess.run(["gsutil", "-q", "cp", FROZEN, CF], capture_output=True).returncode == 0: print("restored frozen predictions", flush=True)
+C = json.load(open(CF)) if os.path.exists(CF) else {}
 csave = lambda: json.dump(C, open(CF, "w")); USD = {"judge": 0.0}
 # ---------- comments ----------
 com = {}
@@ -144,7 +147,7 @@ async def one(x, sem):
             for pth, (tok, an) in paths.items():
                 try: o[f"band|{pth}"] = try_sim.step_launch(tok)
                 except Exception as e: o[f"band|{pth}"] = {"err": type(e).__name__}
-                if i in real:
+                if i in real or PREDICT:
                     try: o[f"RX|{pth}"] = [r.get("comment") for r in (await try_sim.step_reactions(tok))["reactions"]][:6]
                     except Exception: o[f"RX|{pth}"] = []
                     try: a = await try_sim.step_asks(tok); o[f"RC|{pth}|dep"] = [a["concern"]] if a.get("concern") else []; o[f"RQ|{pth}|dep"] = [a["question"]] if a.get("question") else []
@@ -152,11 +155,15 @@ async def one(x, sem):
                     src = (n, t, d) if pth == "ph" else (an.get("name") or n, an.get("tagline") or t, an.get("page_excerpt") or "")
                     for pre in (("RC", "RQ") if pth == "ph" else ("RC",)):
                         items, s1 = await b20(*src, pre, pth, x.get("slug") or ""); o[f"{pre}|{pth}|b20"] = items; o[f"sim1|{pth}"] = s1
-            if i in real:
+            o["pred_at"] = pd.Timestamp.now(tz="UTC").isoformat()
+            if i in real and not PREDICT:
                 T = await cj(EX.format(c="\n".join(f"- {c[:400]}" for c in real[i][:40])), tok=1500)
                 o["real"] = {"RC": [str(z) for z in T.get("critical") or []][:3], "RQ": [str(z) for z in T.get("questions") or []][:3], "RX": [str(z) for z in T.get("points") or []][:6]}
             C[k] = o; csave()
         o = C[k]; J = {}
+        if i in real and not o.get("real") and not PREDICT:   # morning: real points for a launch predicted at night (predictions untouched)
+            T = await cj(EX.format(c="\n".join(f"- {c[:400]}" for c in real[i][:40])), tok=1500)
+            o["real"] = {"RC": [str(z) for z in T.get("critical") or []][:3], "RQ": [str(z) for z in T.get("questions") or []][:3], "RX": [str(z) for z in T.get("points") or []][:6]}; C[k] = o; csave()
         if i in real and o.get("real"):
             for pre in ("RC", "RQ", "RX"):
                 ls_ = {kk.split("|", 1)[1]: v for kk, v in o.items() if kk.startswith(pre + "|") and isinstance(v, list) and v}
@@ -167,6 +174,10 @@ async def one(x, sem):
 async def main():
     sem = asyncio.Semaphore(4); return await asyncio.gather(*[one(x, sem) for x in LU])
 t0 = time.time(); RES = asyncio.run(main())
+if PREDICT:
+    subprocess.run(["gsutil", "-q", "cp", "-n", CF, FROZEN])   # -n: never overwrite the first frozen copy
+    print(json.dumps({"day": DAY, "mode": "predict", "lineup": len(LU), "pasted_path": sum(1 for o, _ in RES if "band|ph" in o), "page_path": sum(1 for o, _ in RES if "band|page" in o),
+                      "page_reads_held": len(PR), "frozen": FROZEN, "at": pd.Timestamp.now(tz="UTC").isoformat()})); sys.exit(0)
 def mb(v):
     v = np.array([z for z in v if z is not None and not np.isnan(z)], float)
     if not len(v): return None
