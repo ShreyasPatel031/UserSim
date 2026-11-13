@@ -365,6 +365,50 @@
    "number_kind": "walk-forward backtest (velocity_forecast.md), provisional; label dailyRank",
    "note": "orchestrator 19:30Z Nov 13; shadow only; NOT ESTABLISHED (orchestrator 23:58Z Nov 13): E5's leave-one-day-out replication with b refit gives -3.0 [-9.1, 0] at 05:00, -2.6 at 08:00, +2.6 (ns) at 10:00/12:00 (claude/person-model-v2 b0c46c46, reports/intraday_replicate/); shadow only, not carried into any deploy table until forward days say otherwise",
    "status": "not established"
+  },
+  {
+   "point": "01:00",
+   "line": "hr_clean_arm2 (shadow)",
+   "column": "results/early_forecast/<day>_P1.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
+   "frozen_date": "2026-11-13",
+   "status": "not established",
+   "number_kind": "replay on 11 pre-reveal days (prereveal_12day.md); label dailyRank",
+   "note": "orchestrator 21:06Z / 00:10Z Nov 14: shadow only. NOT ESTABLISHED: E5's leave-one-day-out blend weight gives -3.0 [-18, +12] top 3 at 01:00, +3.0 [0, +9] at 02:00, +3.0 [-9, +15] at 03:00 over the plain hidden rank (claude/person-model-v2 3a413557, reports/hidden_blend/); only top 10 at 01:00 holds (+6.4 [0, +13]). Re-test under rule 5 at 13 scored days (P2, P345 top 10) and 18 (P1)."
+  },
+  {
+   "point": "02:00",
+   "line": "hr_clean_arm2 (shadow)",
+   "column": "results/early_forecast/<day>_P2.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
+   "frozen_date": "2026-11-13",
+   "status": "not established",
+   "number_kind": "replay on 11 pre-reveal days (prereveal_12day.md); label dailyRank",
+   "note": "orchestrator 21:06Z / 00:10Z Nov 14: shadow only. NOT ESTABLISHED: E5's leave-one-day-out blend weight gives -3.0 [-18, +12] top 3 at 01:00, +3.0 [0, +9] at 02:00, +3.0 [-9, +15] at 03:00 over the plain hidden rank (claude/person-model-v2 3a413557, reports/hidden_blend/); only top 10 at 01:00 holds (+6.4 [0, +13]). Re-test under rule 5 at 13 scored days (P2, P345 top 10) and 18 (P1)."
+  },
+  {
+   "point": "03:00",
+   "line": "hr_clean_arm2 (shadow)",
+   "column": "results/early_forecast/<day>_P3.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
+   "frozen_date": "2026-11-13",
+   "status": "not established",
+   "number_kind": "replay on 11 pre-reveal days (prereveal_12day.md); label dailyRank",
+   "note": "orchestrator 21:06Z / 00:10Z Nov 14: shadow only. NOT ESTABLISHED: E5's leave-one-day-out blend weight gives -3.0 [-18, +12] top 3 at 01:00, +3.0 [0, +9] at 02:00, +3.0 [-9, +15] at 03:00 over the plain hidden rank (claude/person-model-v2 3a413557, reports/hidden_blend/); only top 10 at 01:00 holds (+6.4 [0, +13]). Re-test under rule 5 at 13 scored days (P2, P345 top 10) and 18 (P1)."
+  },
+  {
+   "point": "03:45",
+   "line": "hr_clean_arm2 (shadow)",
+   "column": "results/early_forecast/<day>_P345.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
+   "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
+   "frozen_date": "2026-11-13",
+   "status": "not established",
+   "number_kind": "replay on 11 pre-reveal days (prereveal_12day.md); label dailyRank",
+   "note": "orchestrator 21:06Z / 00:10Z Nov 14: shadow only. NOT ESTABLISHED: E5's leave-one-day-out blend weight gives -3.0 [-18, +12] top 3 at 01:00, +3.0 [0, +9] at 02:00, +3.0 [-9, +15] at 03:00 over the plain hidden rank (claude/person-model-v2 3a413557, reports/hidden_blend/); only top 10 at 01:00 holds (+6.4 [0, +13]). Re-test under rule 5 at 13 scored days (P2, P345 top 10) and 18 (P1)."
   }
  ],
  "publish_pick": [
