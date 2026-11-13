@@ -35,6 +35,23 @@ Day sources: 11-02 vote_snapshots; 11-03 vote_snapshots; 11-04 posts_ts; 11-05 v
 | P345 | best_cnosite_arm2 | 11 | 75.8 | 74.5 | 76.4 | +3.0 [-6.1, +12.1] / -1.8 [-5.5, +0.0] / -0.9 [-3.6, +1.8] | +8.3 / +0.0 / +0.0 (4) |
 | P345 | hybrid_arm2 | 11 | 72.7 | 76.4 | 79.1 | +0.0 [+0.0, +0.0] / +0.0 [+0.0, +0.0] / +1.8 [+0.0, +4.5] | +0.0 / +0.0 / +0.0 (4) |
 
+## Leave-one-day-out hr_clean vs the plain hidden rank (orchestrator 00:10Z Nov 14; weights refit without the test day)
+
+| point | line | days | top 3 | top 5 | top 10 | minus plain hidden rank (t3 / t5 / t10) |
+|---|---|---|---|---|---|---|
+| P1 | plain hidden rank | 11 | 60.6 | 52.7 | 60.9 | - |
+| P1 | hr_clean, LODO weights | 11 | 72.7 | 67.3 | 74.5 | +12.1 [+0.0, +24.2] / +14.5 [+3.6, +25.5] / +13.6 [+8.2, +19.1] |
+| P1 | hybrid (hidden top 5 + LODO hr_clean) | 11 | 60.6 | 52.7 | 75.5 | +0.0 [+0.0, +0.0] / +0.0 [+0.0, +0.0] / +14.5 [+9.1, +20.0] |
+| P2 | plain hidden rank | 11 | 69.7 | 63.6 | 68.2 | - |
+| P2 | hr_clean, LODO weights | 11 | 69.7 | 72.7 | 75.5 | +0.0 [-12.1, +12.1] / +9.1 [+3.6, +14.5] / +7.3 [+1.8, +12.7] |
+| P2 | hybrid (hidden top 5 + LODO hr_clean) | 11 | 69.7 | 63.6 | 75.5 | +0.0 [+0.0, +0.0] / +0.0 [+0.0, +0.0] / +7.3 [+2.7, +12.7] |
+| P3 | plain hidden rank | 11 | 72.7 | 70.9 | 72.7 | - |
+| P3 | hr_clean, LODO weights | 11 | 72.7 | 70.9 | 76.4 | +0.0 [-9.1, +9.1] / +0.0 [-5.5, +5.5] / +3.6 [+0.9, +6.4] |
+| P3 | hybrid (hidden top 5 + LODO hr_clean) | 11 | 72.7 | 70.9 | 76.4 | +0.0 [+0.0, +0.0] / +0.0 [+0.0, +0.0] / +3.6 [+0.9, +6.4] |
+| P345 | plain hidden rank | 11 | 72.7 | 76.4 | 74.5 | - |
+| P345 | hr_clean, LODO weights | 11 | 72.7 | 74.5 | 78.2 | +0.0 [-9.1, +9.1] / -1.8 [-5.5, +0.0] / +3.6 [+0.0, +7.3] |
+| P345 | hybrid (hidden top 5 + LODO hr_clean) | 11 | 72.7 | 76.4 | 78.2 | +0.0 [+0.0, +0.0] / +0.0 [+0.0, +0.0] / +3.6 [+0.0, +7.3] |
+
 ## Rule-5 check (all days interval > 0 AND same sign on the new days; top 3 not worse)
 
 - P1 hybrid top 10: +0.9 [-1.8, +3.6]; at this effect ~99 days total for the interval to clear 0 (~88 more)
@@ -55,10 +72,13 @@ Day sources: 11-02 vote_snapshots; 11-03 vote_snapshots; 11-04 posts_ts; 11-05 v
 - P345 best_cnosite_arm2 top 3: +3.0 [-6.1, +12.1]; at this effect ~99 days total for the interval to clear 0 (~88 more)
 - P345 hybrid_arm2 top 10: +1.8 [+0.0, +4.5]; at this effect ~18 days total for the interval to clear 0 (~7 more)
 
-## Update 23:55Z: 11 days from the raw recorder files
-The warehouse vote_snapshots table misses the pre-reveal rows of Nov 5-7. The raw recorder files have them (00:06 / 01:00 / 02:00 / 03:00 PT, votes 0),
-so the replay now reads raw/vote_snapshots/<d>.jsonl, deduplicated by (launch, at). Nov 5-7 use the month-fold clean_nosite as a clean stand-in
-(no 00:05 shadow file those days). The table above is the 11-day run; there are 4 out-of-sample days (Nov 5, 6, 7, 12).
-Still nothing qualifies. hr_clean with the arm-2 prior: P1 top 3 +3.0 [+0.0, +9.1] (needs about 25 days), P2 +6.1 [+0.0, +15.2] (about 18), P345 top 10 +1.8 [+0.0, +4.5] (about 18);
-on the 4 new days it is 0 / 0 / +8.3 / +8.3 top 3 at P1 / P2 / P3 / P345: no loss, a small gain late.
-Plain hidden rank, 11 days: 60.6 / 69.7 / 72.7 / 72.7 top 3 at 01:00 / 02:00 / 03:00 / 03:45.
+## Leave-one-day-out hr_clean vs plain hidden rank, both rank sources (orchestrator 00:10Z Nov 14)
+Main run (above): latest read at or before T from live posts_ts, else the recorder. `prereveal_12day_recorder_only.md` (PR_SRC=vs) uses recorder
+reads only, as E5 did; its plain hidden rank reproduces E5's (69.7 / 69.7 / 72.7 top 3 at 01:00 / 02:00 / 03:00).
+Recorder-only, 11 days, hr_clean refit without the test day, minus the plain hidden rank (top 3 / 5 / 10):
+- 01:00: +6.1 [-6.1, +18.2] / +10.9 [+1.8, +21.8] / +10.0 [+5.5, +14.5]
+- 02:00: +0.0 [-9.1, +9.1] / +7.3 [+0.0, +14.5] / +7.3 [+2.7, +11.8]
+- 03:00: 0 / 0 / +3.6 [-0.9, +8.2]  (hybrid: top 5 equal by construction, top 10 +3.6 [-0.9, +8.2])
+- 03:45: 0 / 0 / +4.5 [+0.9, +9.1]  (hybrid: +4.5 [+0.9, +8.2])
+The hidden rank + clean prior + comments blend is not worse on top 3 anywhere, and beats the plain hidden rank beyond noise on top 5 at 01:00 and top 10
+at 01:00, 02:00 and 03:45. E5's blend (hidden rank + arm-2 prior only, no comments) is a different line: the comment counts carry the 01:00 gain.

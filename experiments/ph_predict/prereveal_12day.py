@@ -54,7 +54,7 @@ def main():
     FZ.update(json.load(open(f"{HERE}/results/frozen/prereveal_hr_clean_P345_20261113.json"))["points"])
     zf = lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0.0
     hits = lambda o, t: [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
-    res, info = {}, {}
+    res, info = {}, {}; ZL = []
     for d in sorted(set(R.day) & set(pd.date_range("2026-10-25", "2026-11-12").strftime("%Y-%m-%d"))):
         truth = R[R.day == d].sort_values("daily_rank"); ids = truth.id.tolist()
         if len(ids) < 10:
@@ -76,6 +76,8 @@ def main():
         pos, src = {}, {}
         for p, h in [("P0", 1)] + list(HS.items()):
             S = H[H.a <= t0 + pd.Timedelta(hours=h)].sort_values("a").groupby("id").r.last(); src[p] = "posts_ts"
+            if os.environ.get("PR_SRC") == "vs":   # recorder reads only (E5's source), for the baseline reconciliation
+                S = S.iloc[0:0]
             if S.empty:
                 S = G[G.a <= t0 + pd.Timedelta(hours=h)].sort_values("a").groupby("id").r.last(); src[p] = "vote_snapshots"
             if not S.empty:
@@ -98,6 +100,8 @@ def main():
                 if d not in prior:
                     continue
                 Z = base.copy(); Z["clean"] = pd.Series(ids, index=ids).map(prior.get(d, {})).astype(float); Z["clean"] = Z.clean.fillna(Z.clean.mean() if Z.clean.notna().any() else 0)
+                if pn == "clean":   # keep the per-day frame for the leave-one-day-out fit (orchestrator 00:10Z Nov 14)
+                    ZL.append(Z.assign(day=d, point=p, final=truth.set_index("id").daily_rank.reindex(ids).values, hr=posT.values))
                 sc = sum(zf(Z[f.replace("z_", "")]) * c for f, c in FZ[p]["coef"].items())
                 o_hc = sc.sort_values(ascending=False, kind="stable").index.tolist()
                 cpos = Z.clean.rank(ascending=False, method="first")
@@ -136,6 +140,26 @@ def main():
                         se = (hi[k] - lo[k]) / 3.92
                         need = int(np.ceil(len(dd) * (1.96 * se / m[k]) ** 2)) if m[k] > 0 else None
                         verdict.append(f"{p} {nm} {kn}: {m[k]:+.1f} [{lo[k]:+.1f}, {hi[k]:+.1f}]; at this effect ~{need} days total for the interval to clear 0 (~{max(0, need - len(dd))} more)")
+    # leave-one-day-out hr_clean (ridge alpha 3 on z features, refit without the test day) and its hybrid, vs the plain hidden rank
+    from sklearn.linear_model import Ridge
+    ZA = pd.concat(ZL); feats = ["lpos", "move", "nc", "nu", "clean"]
+    for c in feats:
+        ZA["z_" + c] = ZA.groupby(["day", "point"])[c].transform(zf)
+    ZA["y"] = ZA.groupby(["day", "point"]).final.transform(lambda s_: zf(-np.log(s_)))
+    md += ["", "## Leave-one-day-out hr_clean vs the plain hidden rank (orchestrator 00:10Z Nov 14; weights refit without the test day)", "",
+           "| point | line | days | top 3 | top 5 | top 10 | minus plain hidden rank (t3 / t5 / t10) |", "|---|---|---|---|---|---|---|"]
+    for p in HS:
+        Zp = ZA[ZA.point == p]; dd = sorted(Zp.day.unique()); H_, L_, Y_ = [], [], []
+        for d in dd:
+            tr, te = Zp[Zp.day != d], Zp[Zp.day == d]; t = te.sort_values("final").index.tolist()
+            sc = Ridge(alpha=3.0).fit(tr[["z_" + f for f in feats]], tr.y).predict(te[["z_" + f for f in feats]])
+            o_hr = te.sort_values("hr", kind="stable").index.tolist(); o_lc = te.assign(s=sc).sort_values("s", ascending=False, kind="stable").index.tolist()
+            H_.append(hits(o_hr, t)); L_.append(hits(o_lc, t)); Y_.append(hits(o_hr[:5] + [i for i in o_lc if i not in set(o_hr[:5])], t))
+        H_ = np.array(H_)
+        md.append(f"| {p} | plain hidden rank | {len(dd)} | {H_[:,0].mean():.1f} | {H_[:,1].mean():.1f} | {H_[:,2].mean():.1f} | - |")
+        for nm, X_ in (("hr_clean, LODO weights", np.array(L_)), ("hybrid (hidden top 5 + LODO hr_clean)", np.array(Y_))):
+            m, lo, hi = ci(X_, H_)
+            md.append(f"| {p} | {nm} | {len(dd)} | {X_[:,0].mean():.1f} | {X_[:,1].mean():.1f} | {X_[:,2].mean():.1f} | " + " / ".join(f"{m[k]:+.1f} [{lo[k]:+.1f}, {hi[k]:+.1f}]" for k in range(3)) + " |")
     md += ["", "## Rule-5 check (all days interval > 0 AND same sign on the new days; top 3 not worse)", ""] + [f"- {v}" for v in verdict]
     open(f"{HERE}/results/prereveal_12day.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
