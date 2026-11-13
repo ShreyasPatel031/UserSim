@@ -1,5 +1,5 @@
 {
- "written_at": "2026-11-13T03:01:05.052251+00:00",
+ "written_at": "2026-11-13T05:07:28.208520+00:00",
  "note": "one entry per forward line; numbers: backtest = 214 days Apr-Oct LODO, replay = live/hidden reads on held days; forward scores live in results/web/scoreboard.json",
  "lines": [
   {
@@ -265,6 +265,54 @@
    "n_days": null,
    "number_kind": "replay (E5)",
    "note": ""
+  },
+  {
+   "point": "00:30",
+   "line": "eh",
+   "column": "pred_rank_eh (P030)",
+   "inputs": "-log hidden position <= 00:30 + clean_nosite + th_n_pre (00:07 read)",
+   "frozen_weights": "results/frozen/early_hidden_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "61.9 / 65.7 / 81.4 (top 10 +10.0 [+2.9, +18.6])",
+   "n_days": 7,
+   "number_kind": "replay",
+   "note": "top-10 line; top 3 below clean"
+  },
+  {
+   "point": "00:07",
+   "line": "clean_nosite_hf",
+   "column": "pred_rank_clean_nosite_hf (P030 file)",
+   "inputs": "clean_nosite + th_n_pre (00:07 read) + log1p hunter followersCount from the 00:05 read only",
+   "frozen_weights": "results/frozen/clean_nosite_hf_20261113.json",
+   "frozen_date": "2026-11-13",
+   "number_top3_5_10": "59.0 / 68.8 / 75.6 (diffs -1.1 / +0.1 / +0.3 [-0.1, +0.7])",
+   "n_days": 214,
+   "number_kind": "backtest (hunter followers = later profile read; stable per orchestrator check)",
+   "note": "top-10 candidate; score top 10 each morning"
+  },
+  {
+   "point": "00:05",
+   "line": "clean_nosite_h25",
+   "column": "shadow_h25 rank_clean_nosite_h25",
+   "inputs": "clean_nosite trained on 2025 + 2026 (old-row rules), no ph_month; twin rank_clean_nosite_noph = 2026-only",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "58.3 / 67.8 / 74.9 vs 55.3 / 67.3 / 74.7 (top 3 +3.0 [+1.1, +5.0], seed sd 0.7)",
+   "n_days": 214,
+   "number_kind": "backtest, 95 days of 2025 in training",
+   "note": "retrained nightly on whatever 2025 days have landed"
+  },
+  {
+   "point": "00:05",
+   "line": "e5_follow_features (logged input)",
+   "column": "E5 follow_shadow.py nightly file",
+   "inputs": "edges only from people pulled before the launch day (E5)",
+   "frozen_weights": null,
+   "frozen_date": null,
+   "number_top3_5_10": "needs ~9 scored days",
+   "n_days": null,
+   "number_kind": "logged input only, not in any column",
+   "note": "paths pending from E5"
   }
  ],
  "publish_pick": [
