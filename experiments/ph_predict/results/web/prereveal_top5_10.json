@@ -6,6 +6,7 @@
    "rank_source": [
     "vote_snapshots",
     "vote_snapshots",
+    "vote_snapshots",
     "vote_snapshots"
    ],
    "comments": true,
@@ -14,6 +15,7 @@
   },
   "2026-11-03": {
    "rank_source": [
+    "vote_snapshots",
     "vote_snapshots",
     "vote_snapshots",
     "vote_snapshots"
@@ -26,6 +28,7 @@
    "rank_source": [
     "posts_ts",
     "posts_ts",
+    "posts_ts",
     "posts_ts"
    ],
    "comments": true,
@@ -34,6 +37,7 @@
   },
   "2026-11-08": {
    "rank_source": [
+    "posts_ts",
     "posts_ts",
     "posts_ts",
     "posts_ts"
@@ -46,6 +50,7 @@
    "rank_source": [
     "posts_ts",
     "posts_ts",
+    "posts_ts",
     "posts_ts"
    ],
    "comments": false,
@@ -56,6 +61,7 @@
    "rank_source": [
     "posts_ts",
     "posts_ts",
+    "posts_ts",
     "posts_ts"
    ],
    "comments": true,
@@ -64,6 +70,7 @@
   },
   "2026-11-11": {
    "rank_source": [
+    "posts_ts",
     "posts_ts",
     "posts_ts",
     "posts_ts"
@@ -155,6 +162,26 @@
    ]
   },
   {
+   "point": "01:00",
+   "variant": "e hybrid: hidden top 5 + hr_clean 6-10",
+   "days": 7,
+   "top3": 57.1,
+   "top5": 54.3,
+   "top10": 84.3,
+   "top3_ci": [
+    33.3,
+    76.2
+   ],
+   "top5_ci": [
+    40.0,
+    65.7
+   ],
+   "top10_ci": [
+    81.4,
+    87.1
+   ]
+  },
+  {
    "point": "02:00",
    "variant": "a hidden rank",
    "days": 7,
@@ -210,7 +237,7 @@
     77.1
    ],
    "top10_ci": [
-    68.6,
+    67.1,
     81.4
    ]
   },
@@ -231,7 +258,27 @@
    ],
    "top10_ci": [
     81.4,
-    87.1
+    88.6
+   ]
+  },
+  {
+   "point": "02:00",
+   "variant": "e hybrid: hidden top 5 + hr_clean 6-10",
+   "days": 7,
+   "top3": 71.4,
+   "top5": 65.7,
+   "top10": 84.3,
+   "top3_ci": [
+    57.1,
+    85.7
+   ],
+   "top5_ci": [
+    54.3,
+    74.3
+   ],
+   "top10_ci": [
+    81.4,
+    88.6
    ]
   },
   {
@@ -243,14 +290,14 @@
    "top10": 81.4,
    "top3_ci": [
     57.1,
-    95.2
+    90.5
    ],
    "top5_ci": [
     60.0,
     80.0
    ],
    "top10_ci": [
-    74.3,
+    72.9,
     87.1
    ]
   },
@@ -333,6 +380,126 @@
     80.0,
     90.0
    ]
+  },
+  {
+   "point": "03:00",
+   "variant": "e hybrid: hidden top 5 + hr_clean 6-10",
+   "days": 7,
+   "top3": 76.2,
+   "top5": 71.4,
+   "top10": 85.7,
+   "top3_ci": [
+    57.1,
+    90.5
+   ],
+   "top5_ci": [
+    60.0,
+    80.0
+   ],
+   "top10_ci": [
+    80.0,
+    90.0
+   ]
+  },
+  {
+   "point": "03:45",
+   "variant": "a hidden rank",
+   "days": 7,
+   "top3": 76.2,
+   "top5": 80.0,
+   "top10": 84.3,
+   "top3_ci": [
+    57.1,
+    90.5
+   ],
+   "top5_ci": [
+    80.0,
+    80.0
+   ],
+   "top10_ci": [
+    78.6,
+    88.6
+   ]
+  },
+  {
+   "point": "03:45",
+   "variant": "b + movement",
+   "days": 7,
+   "top3": 76.2,
+   "top5": 80.0,
+   "top10": 84.3,
+   "top3_ci": [
+    57.1,
+    90.5
+   ],
+   "top5_ci": [
+    80.0,
+    80.0
+   ],
+   "top10_ci": [
+    78.6,
+    88.6
+   ]
+  },
+  {
+   "point": "03:45",
+   "variant": "c + comments",
+   "days": 7,
+   "top3": 71.4,
+   "top5": 80.0,
+   "top10": 84.3,
+   "top3_ci": [
+    57.1,
+    85.7
+   ],
+   "top5_ci": [
+    80.0,
+    80.0
+   ],
+   "top10_ci": [
+    78.6,
+    88.6
+   ]
+  },
+  {
+   "point": "03:45",
+   "variant": "d + clean_nosite",
+   "days": 7,
+   "top3": 71.4,
+   "top5": 77.1,
+   "top10": 88.6,
+   "top3_ci": [
+    57.1,
+    85.7
+   ],
+   "top5_ci": [
+    71.4,
+    80.0
+   ],
+   "top10_ci": [
+    84.3,
+    92.9
+   ]
+  },
+  {
+   "point": "03:45",
+   "variant": "e hybrid: hidden top 5 + hr_clean 6-10",
+   "days": 7,
+   "top3": 76.2,
+   "top5": 80.0,
+   "top10": 88.6,
+   "top3_ci": [
+    57.1,
+    90.5
+   ],
+   "top5_ci": [
+    80.0,
+    80.0
+   ],
+   "top10_ci": [
+    84.3,
+    92.9
+   ]
   }
  ],
  "misses_at_0300": {
@@ -402,5 +569,5 @@
    ]
   }
  },
- "written_at": "2026-11-13T01:45:00.914987+00:00"
+ "written_at": "2026-11-13T02:43:29.653513+00:00"
 }

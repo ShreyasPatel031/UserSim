@@ -1,0 +1,33 @@
+{
+ "frozen_at": "2026-11-13T02:41:52.393482+00:00",
+ "days": [
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "alpha": 3.0,
+ "features": [
+  "z_lpos",
+  "z_move",
+  "z_nc",
+  "z_nu",
+  "z_clean"
+ ],
+ "note": "z within day; lpos = log hidden-rank position, move = log pos at 01:00 - log pos now, nc / nu = log1p comments / distinct commenters created <= the point, clean = clean_nosite 00:05 score; target z(-log final rank)",
+ "points": {
+  "P345": {
+   "coef": {
+    "z_lpos": -0.6924723787111812,
+    "z_move": -0.00041189623111549266,
+    "z_nc": 0.2023437767432678,
+    "z_nu": -0.13396771237935015,
+    "z_clean": 0.21369461326027023
+   },
+   "intercept": 2.5543725052240585e-16
+  }
+ }
+}

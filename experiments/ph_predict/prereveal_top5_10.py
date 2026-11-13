@@ -14,6 +14,9 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.di
 from early_forecast import B
 from sklearn.linear_model import Ridge
 TMP = os.environ.get("TMPDIR", "/tmp")
+HS = (1, 2, 3, 3.75)   # 03:45 PT = last pre-reveal read (orchestrator 02:39Z Nov 13; reveal is 04:00 PT sharp)
+LAB = lambda h: f"{int(h):02d}:{int(round((h % 1) * 60)):02d}"
+PN = lambda h: "P345" if h == 3.75 else f"P{int(h)}"
 
 
 def get(path):
@@ -50,7 +53,7 @@ def main():
             C = pd.DataFrame({"id": C.launch_id.astype(str), "u": C.commenter_user_id.fillna(C.get("user_id")).astype(str),
                               "ts": pd.to_datetime(C.created_at, utc=True, errors="coerce")})
         pos = {}
-        for h in (1, 2, 3):
+        for h in HS:
             S = H[H.a <= t0 + pd.Timedelta(hours=h)].sort_values("a").groupby("id").r.last(); srcs.append("posts_ts")
             if S.empty:   # per point: fall back to the warehouse hourly recorder
                 S = G[G.a <= t0 + pd.Timedelta(hours=h)].sort_values("a").groupby("id").r.last(); srcs[-1] = "vote_snapshots"
@@ -60,7 +63,7 @@ def main():
         if 3 not in pos:
             continue
         info[d] = {"rank_source": srcs, "comments": bool(cp), "clean": d in cl, "launches": len(ids)}
-        for h in (1, 2, 3):
+        for h in [h_ for h_ in HS if h_ in pos]:
             T = t0 + pd.Timedelta(hours=h); Ch = C[C.ts <= T]
             for i in ids:
                 c = Ch[Ch.id == i]
@@ -78,9 +81,12 @@ def main():
     days = sorted(X.day.unique()); rng = np.random.default_rng(0); res = []; per = {}
     def hits(o, t):
         return [len(set(o[:k]) & set(t[:k])) for k in (3, 5, 10)]
-    for h in (1, 2, 3):
+    for h in HS:
         Xh = X[X.h == h]
-        for nm, F in [("constant: hidden rank at 03:00", None)] + list(VAR.items()):
+        if Xh.empty:
+            continue
+        days = sorted(Xh.day.unique())
+        for nm, F in [("constant: hidden rank at 03:00", None)] + list(VAR.items()) + [("e hybrid: hidden top 5 + hr_clean 6-10", "hybrid")]:
             if F is None and h != 3:
                 continue
             pd_ = []
@@ -88,6 +94,10 @@ def main():
                 te = Xh[Xh.day == d]; tr = Xh[Xh.day != d]; t = te.sort_values("final").id.tolist()
                 if F is None:
                     o = te.sort_values(["lpos", "id"]).id.tolist()
+                elif F == "hybrid":   # orchestrator 02:39Z Nov 13: top 3 / top 5 from the plain hidden order, slots 6-10 from hr_clean
+                    h5 = te.sort_values(["lpos", "id"]).id.tolist()[:5]
+                    D_ = VAR["d + clean_nosite"]; sc = Ridge(alpha=3.0).fit(tr[D_], tr.y).predict(te[D_])
+                    o = h5 + [i for i in te.assign(s=sc).sort_values(["s", "id"], ascending=[False, True]).id if i not in set(h5)]
                 else:
                     sc = Ridge(alpha=3.0).fit(tr[F], tr.y).predict(te[F]); o = te.assign(s=sc).sort_values(["s", "id"], ascending=[False, True]).id.tolist()
                 pd_.append(hits(o, t))
@@ -96,7 +106,7 @@ def main():
                         f"top{k}": sorted(int(np.exp(te.set_index("id").lpos[i])) for i in set(t[:k]) - set(o[:k])) for k in (5, 10)}
             P = np.array(pd_, float) / np.array([3, 5, 10]) * 100
             b = np.array([P[rng.integers(0, len(P), len(P))].mean(0) for _ in range(3000)])
-            res.append({"point": f"{h:02d}:00", "variant": nm, "days": len(P),
+            res.append({"point": LAB(h), "variant": nm, "days": len(P),
                         **{f"top{k}": round(float(P[:, j].mean()), 1) for j, k in enumerate((3, 5, 10))},
                         **{f"top{k}_ci": [round(float(np.percentile(b[:, j], 2.5)), 1), round(float(np.percentile(b[:, j], 97.5)), 1)] for j, k in enumerate((3, 5, 10))}})
     # orchestrator 01:43Z Nov 13: freeze variant d's weights (full 7-day fit per point) for the forward shadow line hr_clean
@@ -110,6 +120,13 @@ def main():
     fp = os.path.join(HERE, "results", "frozen", "prereveal_hr_clean_20261113.json")
     if not os.path.exists(fp):   # frozen once: never overwritten
         json.dump(fz, open(fp, "w"), indent=1)
+    fp4 = os.path.join(HERE, "results", "frozen", "prereveal_hr_clean_P345_20261113.json")   # 03:45 PT point, frozen separately
+    X4 = X[X.h == 3.75]
+    if not os.path.exists(fp4) and len(X4):
+        m = Ridge(alpha=3.0).fit(X4[VAR["d + clean_nosite"]], X4.y)
+        json.dump({**{k: v for k, v in fz.items() if k != "points"}, "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": sorted(X4.day.unique()),
+                   "points": {"P345": {"coef": dict(zip(VAR["d + clean_nosite"], map(float, m.coef_))), "intercept": float(m.intercept_)}}},
+                  open(fp4, "w"), indent=1)
     out = {"replay": True, "method": __doc__.split("\n")[0], "days": info, "rows": res, **per, "written_at": pd.Timestamp.now(tz="UTC").isoformat()}
     p = os.path.join(HERE, "results", "web", "prereveal_top5_10.json"); json.dump(out, open(p, "w"), indent=1)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/prereveal_top5_10.json"], check=True)
