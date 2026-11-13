@@ -1,0 +1,167 @@
+--- ../../pipeline/daily.py	2026-11-03 09:12:22.619043234 +0000
++++ daily.py	2026-11-13 15:19:14.487507465 +0000
+@@ -20,7 +20,36 @@
+ PH = os.path.join(EXP, "ph_predict"); RAW = os.path.join(PH, "data")
+ sys.path.insert(0, PH)
+ PERSONA_CAP = int(os.environ.get("PERSONA_CAP", "6000"))      # person-days rated per day (cost cap: ~$0.80)
+-PERSON_CAP = int(os.environ.get("PERSON_CAP", "8000"))        # pages per day for people (cost cap: ~$2.40)
++# No-caps rule (AGENTS.md, Nov 13; bundle 11): PERSON_CAP no longer truncates. PERSON_BUDGET (pages per run) is a budget guard
++# only: people beyond it are persisted to the bucket queue and read FIRST by the next run (never dropped).
++PERSON_BUDGET = int(os.environ.get("PERSON_BUDGET", os.environ.get("PERSON_CAP", "8000")))
++REQ = "gs://usersim-bakeoff-347838016394/usersim_sim/raw/requests/pipeline"   # durable queues (handles live in the bucket only)
++
++
++def _gcat_lines(path):
++    r = subprocess.run(["gsutil", "-q", "cat", path], capture_output=True, text=True)
++    return [l.strip() for l in r.stdout.splitlines() if l.strip()] if r.returncode == 0 else []
++
++
++def _gput_lines(path, lines, dry):
++    """Write a queue file to the bucket (temp object, then move: a reader never sees a half-written queue)."""
++    if dry:
++        return
++    tmp = path + ".tmp"
++    subprocess.run(["gsutil", "-q", "cp", "-", tmp], input="\n".join(lines) + ("\n" if lines else ""), text=True, check=True)
++    subprocess.run(["gsutil", "-q", "mv", tmp, path], check=True)
++
++
++def queue_read(name):
++    """Every pending entry of a durable queue (raw/requests/pipeline/<name>/pending.txt)."""
++    return _gcat_lines(f"{REQ}/{name}/pending.txt")
++
++
++def queue_write(name, entries, dry):
++    """Replace the pending list (deduplicated, order kept) and keep a dated copy for audit."""
++    seen = set(); entries = [e for e in entries if not (e in seen or seen.add(e))]
++    _gput_lines(f"{REQ}/{name}/pending.txt", entries, dry)
++    return len(entries)
+ RUNS = []
+ VM_USD_PER_HOUR = 0.134      # e2-standard-4 on demand, us-central1 (the pipeline machine)
+ BOOT_SECONDS = 180           # boot, wait, upload and shutdown around the steps
+@@ -214,15 +243,37 @@
+ def s_ranks(d, con, dry):
+     import collect_ph as C
+     end = dt.date.fromisoformat(d) - dt.timedelta(days=1); start = end - dt.timedelta(days=30)
+-    for k in range((end - start).days + 1):               # re-read: weekly / monthly ranks are still settling
+-        f = C.OUT / f"{start + dt.timedelta(days=k)}.json"
+-        if f.exists():
+-            f.unlink()
+-    C.main(start, end)
++    # re-read (weekly / monthly ranks are still settling) into a fresh folder, verify every file, THEN replace the old one;
++    # the old file is never deleted first (bundle 11: a failed re-pull used to leave the day missing)
++    import pathlib, tempfile
++    final = C.OUT; tmpd = pathlib.Path(tempfile.mkdtemp(prefix="ranks_", dir=str(final.parent)))
++    C.OUT = tmpd
++    try:
++        C.main(start, end)
++    finally:
++        C.OUT = final
++    replaced, kept = 0, []
++    for k in range((end - start).days + 1):
++        day = (start + dt.timedelta(days=k)).isoformat(); new, old = tmpd / f"{day}.json", final / f"{day}.json"
++        try:
++            rows = json.loads(new.read_text())
++            ok = isinstance(rows, list) and (len(rows) > 0 or not old.exists() or not json.loads(old.read_text()))
++            ok = ok and (not old.exists() or len(rows) >= 0.9 * len(json.loads(old.read_text())))   # a re-read never shrinks a day by >10%
++        except Exception:  # noqa: BLE001
++            ok = False
++        if ok and not dry:
++            os.replace(new, old); replaced += 1
++        elif not ok:
++            kept.append(day)
++    import shutil
++    shutil.rmtree(tmpd, ignore_errors=True)
+     L = pd.concat([day_rows((start + dt.timedelta(days=k)).isoformat()) for k in range((end - start).days + 1)])
+     if not dry:
+         W.write("launches", L)
+-    return {"items": len(L)}
++    out = {"items": len(L), "replaced": replaced}
++    if kept:
++        out["status"] = f"partial: {len(kept)} re-read day files failed verification and the previous files were kept ({', '.join(kept[:5])})"
++    return out
+ 
+ 
+ @step("comments")
+@@ -231,7 +282,7 @@
+     plan = INC.plan(con, d); slugs = plan["comments"]
+     recs = F.get_many([PC.url(s) for s in slugs], threads=8)
+     sid = dict(con.execute("SELECT slug, id FROM launches").fetchall())
+-    rows, st, bad = [], [], 0
++    rows, st, bad, extra_pages = [], [], 0, 0
+     with gzip.open(f"{RAW}/comments/page_daily_{d}.jsonl.gz", "wt") as f:
+         for s, r in zip(slugs, recs):
+             f.write(json.dumps({"url": r["url"], "status": r["status"], "route": r["route"], "html": r["body"]}) + "\n")
+@@ -240,19 +291,34 @@
+             except Exception:  # noqa: BLE001
+                 bad += 1
+                 continue
+-            rows += [dict(c, slug=s) for c in cr]; st.append({"launch_id": sid.get(s), "slug": s, "source": "comments", "last_fetched": d, "items": len(cr)})
++            # bundle 11: page 1 holds 50 threads; read every further page until the source says there is none
++            page = 1
++            while info.get("has_next") and page < 200:
++                page += 1; rp = F.get_many([PC.url(s, page=page)], threads=1)[0]
++                f.write(json.dumps({"url": rp["url"], "status": rp["status"], "route": rp["route"], "html": rp["body"], "page": page}) + "\n")
++                try:
++                    info, more = PC.parse(json.loads(rp["body"]))
++                except Exception:  # noqa: BLE001
++                    break
++                if not more:
++                    break
++                cr += more; extra_pages += 1
++            rows += [dict(c, slug=s) for c in cr]; st.append({"launch_id": sid.get(s), "slug": s, "source": "comments", "last_fetched": d, "items": len(cr),
++                                                              "complete": not info.get("has_next")})
+     team = {r[0]: set(json.loads(r[1])) | {r[2]} for r in con.execute("SELECT slug, makers, poster FROM launches WHERE day = ?", [INC.days_before(d, 1)]).fetchall()}
+     C = pd.DataFrame([{"person": c["username"], "launch_id": sid.get(c["slug"]), "slug": c["slug"], "date": (c["created"] or "")[:10],
+                        "text": None} for c in rows if c.get("username") and c["username"] not in team.get(c["slug"], set())])
+     newp = INC.new_people_from_comments(rows, plan["known"])
+     json.dump(newp, open(f"/tmp/new_people_{d}.json", "w"))
++    # bundle 11: new commenters also go to a durable pull queue (they used to be counted, then pulled only if a later step ran)
++    queue_write("new_commenters", queue_read("new_commenters") + list(newp), dry)
+     usd, nbytes = F.cost(recs)
+     if not dry and len(C):
+         W.write("comments", C)
+         W.write("events", C.assign(kind="comment", date_quality="exact")[["person", "launch_id", "date", "kind", "date_quality"]])
+         W.write("launch_state", pd.DataFrame(st))
+     log_spend(d, "comments", usd, dry)
+-    out = {"items": len(C), "bytes": nbytes, "usd": sum(usd.values())}
++    out = {"items": len(C), "bytes": nbytes, "usd": sum(usd.values()), "extra_thread_pages": extra_pages}
+     if slugs and bad / len(slugs) > 0.5:   # blocked or unparseable pages: never "ok"
+         out["status"] = f"failed: {bad} of {len(slugs)} comment pages blocked or unparseable"
+     return out
+@@ -312,6 +378,9 @@
+             if newp:
+                 W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
+         json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))
++        # bundle 11: people whose page 1 did not reach their newest known item go to the durable scroll-deeper queue (the
++        # population fleet's full pulls read it); before, the list sat in /tmp and nothing read it
++        queue_write("scroll_deeper", queue_read("scroll_deeper") + list(deeper), dry)
+         recs = U + Fo; bad = sum(r["status"] != 200 for r in recs)
+         out = {"items": len(ev) + len(fo), "delivery_day": day, "people": len(recs)}
+         if not recs or bad / len(recs) > 0.5:
+@@ -320,8 +389,13 @@
+     import importlib.util
+     plan = INC.plan(con, d)
+     newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
+-    upv = (newp + plan["refresh_upvotes"])[:PERSON_CAP]
+-    fol = (newp + plan["follows"])[: max(0, PERSON_CAP - len(upv))]
++    # bundle 11: no truncation. The queues left by earlier runs are read FIRST; anything past the per-run budget is written
++    # back to the queue for the next run (never dropped)
++    prev_deeper = queue_read("scroll_deeper"); carry_u = queue_read("people_upvotes"); carry_f = queue_read("people_follows")
++    want_u = list(dict.fromkeys(carry_u + prev_deeper + newp + plan["refresh_upvotes"]))
++    want_f = list(dict.fromkeys(carry_f + newp + plan["follows"]))
++    upv = want_u[:PERSON_BUDGET]; fol = want_f[: max(0, PERSON_BUDGET - len(upv))]
++    queue_write("people_upvotes", want_u[len(upv):], dry); queue_write("people_follows", want_f[len(fol):], dry)
+     recs_u = F.get_many([f"https://www.producthunt.com/@{u}/upvotes" for u in upv], threads=12, start_route=1)
+     recs_f = F.get_many([f"https://www.producthunt.com/@{u}/following" for u in fol], threads=12, start_route=1)
+     parse = lambda script, recs: [json.loads(l) for l in subprocess.run(
+@@ -336,7 +410,9 @@
+             W.write(t, df)
+         if newp:
+             W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
+-    json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))   # scrolled later, stop-at-known (rare)
++    json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))
++    # bundle 11: the scroll-deeper list is durable; this run consumed the previous queue (want_u above), so it is replaced
++    queue_write("scroll_deeper", list(deeper), dry)
+     usd, nbytes = F.cost(recs_u + recs_f); log_spend(d, "people", usd, dry)
+     out = {"items": len(ev) + len(fo), "bytes": nbytes, "usd": sum(usd.values())}
+     # a blocked fetch must not pass as "ok" (Oct 30 - Nov 1: every upvote page was 403 and the step still said ok)
