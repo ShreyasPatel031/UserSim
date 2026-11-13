@@ -26,7 +26,7 @@ def main(d):
         if e != "days" and not e.startswith("build_cache") and not os.path.exists(f"{root}/{e}"):
             os.symlink(f"{real}/{e}", f"{root}/{e}")
     import glob
-    for fn in glob.glob(f"{real}/days/*.json") + glob.glob(f"{src_dir}/*.json"):
+    for fn in glob.glob(f"{real}/days/*.json") + HR.src_files(src_dir):
         dst = f"{root}/days/{os.path.basename(fn)}"
         if not os.path.exists(dst):
             os.symlink(os.path.abspath(fn), dst)

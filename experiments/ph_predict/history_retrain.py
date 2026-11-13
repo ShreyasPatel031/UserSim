@@ -11,7 +11,10 @@ Columns = clean_v3_nosite (honest_cols over LIVE + PAGE sources, minus ID_COLS, 
 Test: month-forward over training_window.MONTHS (same as the clean backtest); 2026-only = train rows day >= 2026-01-01 and month
 < test month; h25 = train rows of 2025 + 2026 before the test month. 3 seeds. Score on Apr-Oct days: top 3/5/10, daily Spearman,
 paired day bootstrap. Output results/history_retrain.md + results/history_retrain_preds.parquet.
-usage (VM, from ph_predict): PYTHONPATH=~/w/mk H25_SRC=<dir of 2025 json> python3 history_retrain.py [--probe]
+usage (VM, from ph_predict): PYTHONPATH=~/w/mk H25_SRC=<dir of 2025 json>[,<dir>...] python3 history_retrain.py [--probe]
+H25_SRC: one dir or a comma-separated list (2025,2024,2023); the old-row rules apply to every row before 2026-01-01.
+ARM3=1 (arm 3, Nov 13): arm 2 rules (llm_pitch / llm_brand kept where scored) + 2024 and 2023 lists; defaults H25_DATA=~/w/h25/data_arm3
+(never the arm-2 dir: build() only adds symlinks, so one dir per source set), H25_SRC=~/w/ph_history/2025,~/w/ph_history/2024,~/w/ph_history/2023.
 --probe: unit test only (build + old-row rules + feature sanity on whatever 2025 days exist; no fitting)."""
 import glob, json, os, sys, time
 os.environ.setdefault("LGB_THREADS", "1")
@@ -19,6 +22,15 @@ import numpy as np, pandas as pd
 import features as F, run as RN, model as M
 import training_window as TW
 OLD_NAN = ("promo_", "busy_", "x_")
+if os.environ.get("ARM3") == "1":
+    os.environ["ARM"] = "2"
+    os.environ.setdefault("H25_DATA", "~/w/h25/data_arm3")
+    os.environ.setdefault("H25_SRC", ",".join(os.path.expanduser(f"~/w/ph_history/{y}") for y in (2025, 2024, 2023)))
+
+
+def src_files(src):
+    """*.json of every dir in H25_SRC (one dir or a comma-separated list)."""
+    return [fn for d in src.split(",") if d.strip() for fn in sorted(glob.glob(f"{os.path.expanduser(d.strip())}/*.json"))]
 FOL = ["ph_hunter_followers", "ph_dayrank_ph_hunter_followers"]
 SEEDS = int(os.environ.get("SEEDS", "5"))   # orchestrator 04:50Z: >= 5 seeds per arm; seed spread reported next to the paired interval
 
@@ -43,7 +55,7 @@ def build(src):
     for e in os.listdir(real):
         if e != "days" and not e.startswith("build_cache") and not os.path.exists(f"{root}/{e}"):
             os.symlink(f"{real}/{e}", f"{root}/{e}")
-    for fn in glob.glob(f"{real}/days/*.json") + glob.glob(f"{src}/*.json"):
+    for fn in glob.glob(f"{real}/days/*.json") + src_files(src):
         dst = f"{root}/days/{os.path.basename(fn)}"
         if not os.path.exists(dst):
             os.symlink(os.path.abspath(fn), dst)
@@ -88,24 +100,30 @@ def main():
     # JOINT=1 (orchestrator 11:33Z Nov 13): th_n_pre INSIDE the LightGBM model (2026 rows from comment dumps, 2025 rows missing);
     # lines: pure+th (no 2025, th input), both+th (2025 rows, th missing on them). TH_FILE = parquet id, th_n_pre.
     if os.environ.get("JOINT") == "1":
-        th = pd.read_parquet(os.path.expanduser(os.environ["TH_FILE"])); th["id"] = th.id.astype(str); thm = dict(zip(th.id, th.th_n_pre))
+        # JOINT_COLS (orchestrator 20:16Z Nov 13): comma list of TH_FILE columns put inside the model (default th_n_pre), e.g. the 00:30
+        # comment inputs th_n_pre,nu,nc,mrep_h; HIST_N caps training to the most recent N days; JOINT_TAG names the output parquet
+        JC = os.environ.get("JOINT_COLS", "th_n_pre").split(","); HNj = os.environ.get("HIST_N")
+        th = pd.read_parquet(os.path.expanduser(os.environ["TH_FILE"])); th["id"] = th.id.astype(str)
         real = os.path.join(os.path.dirname(os.path.abspath(F.__file__)), "data")
         Fh = F.D; F.D = real; dfo = RN.load_llm(F.build()); F.D = Fh
         dfo = dfo[~dfo.known].copy(); dfo["id"] = dfo.id.astype(str); dfo["mon"] = dfo.day.str[:7]
         for X_ in (df, dfo):
-            X_["th_n_pre"] = X_.id.map(thm).astype(float)
-        df.loc[old, "th_n_pre"] = np.nan
+            for c in JC:
+                X_[c] = X_.id.map(dict(zip(th.id, th[c]))).astype(float)
+        df.loc[old, JC] = np.nan
         for m in MONTHS:
             for nm, tr0, te0 in (("pure_th", dfo[dfo.mon < m], dfo[dfo.mon == m]), ("both_th", df[df.mon < m], df[(df.mon == m) & ~old])):
                 if te0.empty:
                     continue
+                if HNj:
+                    dd = sorted(tr0.day.unique()); tr0 = tr0[tr0.day.isin(dd[-int(HNj):])]
                 tr, te, cols = TW.prep(tr0, te0)
-                cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")] + ["th_n_pre"]
+                cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month") and c not in JC] + JC
                 for s in range(SEEDS):
                     P.append(pd.DataFrame({"id": te.id.values, "variant": nm, "seed": s, "pred": TW.fitw(tr, te, cols, s)}))
             print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
         R = pd.concat(P); tag = f"_arm{os.environ.get('ARM', '1')}"
-        R.groupby(["id", "variant"]).pred.mean().unstack().reset_index().to_parquet(f"results/history_retrain_joint{tag}.parquet")
+        R.groupby(["id", "variant"]).pred.mean().unstack().reset_index().to_parquet(f"results/history_retrain_joint{tag}{os.environ.get('JOINT_TAG', '')}.parquet")
         print(json.dumps({"joint_rows": int(R.id.nunique())})); return
     if os.environ.get("DECOMP") == "1":
         real = os.path.join(os.path.dirname(os.path.abspath(F.__file__)), "data")

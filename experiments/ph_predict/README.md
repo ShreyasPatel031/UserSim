@@ -63,3 +63,30 @@ New finished days come in with `python3 collect_ph.py <from> <to>`; then rerun `
 - **Not used:** GitHub stars (the container's GitHub token only reaches this repo), LinkedIn (999), Reddit
   (blocked; its API keys are not readable by this service account), Google/DataForSEO search (secrets not
   readable), producthunt.com pages (403; scraping them through proxies was ruled out).
+
+## 2024 + 2023 history pull and arm 3 (prepared Nov 13; starts only on Shreyas's direct yes)
+
+Pull (pipeline VM, from `~/w/experiments/ph_predict`; same query and file shape as the 2025 lists; about 860 calls for 723 days,
+range 723-1,075; spare complexity only, sleeps when the next call would take the bucket under 3,125 / 6,250; pauses 23:45-01:00 PT;
+resumable, the 8 landed 2024 days are kept):
+
+    bash run_history_pull.sh dry-run      # plan only, no requests
+    bash run_history_pull.sh start        # setsid nohup; token set as in run_daily.sh, never printed
+    bash run_history_pull.sh status       # days in bucket / local, calls used, last event
+    bash run_history_pull.sh stop
+
+The machine powers off at 23:55 PT: after 01:00 PT run `start` again (it resumes at the first missing day).
+
+Arm 3 (2025 + 2024 + 2023 rows, arm-2 rules: every row before 2026-01-01 gets promo_/busy_/x_ missing and llm_* missing except
+scored llm_pitch / llm_brand; private dir ~/w/h25/data_arm3, never the arm-2 dir), as rows land:
+
+    gsutil -m rsync -r gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_history/2024 ~/w/ph_history/2024
+    gsutil -m rsync -r gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_history/2023 ~/w/ph_history/2023
+    ARM3=1 PYTHONPATH=~/w/mk:. python3 history_retrain.py --probe            # build data_arm3 + old-row sanity
+    ARM3=1 PYTHONPATH=~/w/mk:. python3 h25_llm.py probe                      # memorisation probe (Gemini, 12 days/year)
+    ARM3=1 SKIP_YEARS=<years flagged LEAK, if any> CAP_USD=10 PYTHONPATH=~/w/mk:. python3 h25_llm.py score
+    ARM3=1 DECOMP=1 DECOMP_TAG=_arm3 SEEDS=5 PYTHONPATH=~/w/mk:. python3 history_retrain.py
+    python3 arm3_compare.py                                                  # arm 3 vs arm 2, same 214 days, rule 5 verdict
+
+`H25_SRC` takes a comma-separated list of dirs (default under ARM3=1: ~/w/ph_history/2025,2024,2023); h25_shadow.py / h25_live.py
+read it the same way, so `ARM3=1` there gives the arm-3 shadow / live line once rule 5 passes.
