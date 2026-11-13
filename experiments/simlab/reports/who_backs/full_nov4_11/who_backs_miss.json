@@ -1,0 +1,93 @@
+{
+ "launches": 124,
+ "days": [
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "R-precision FULL (list size = real held-voter count)": [
+  28.4,
+  26.6,
+  30.3,
+  124
+ ],
+ "recall@N": [
+  38.4,
+  35.7,
+  41.3,
+  124
+ ],
+ "missed held backers total": 4545,
+ "bucket shares of missed backers (mean over launches)": {
+  "A": [
+   4.7,
+   3.5,
+   6.0,
+   124
+  ],
+  "B": [
+   4.0,
+   2.0,
+   6.7,
+   124
+  ],
+  "D": [
+   41.1,
+   37.1,
+   45.4,
+   124
+  ],
+  "C": [
+   50.1,
+   45.8,
+   54.4,
+   124
+  ]
+ },
+ "A account-age split (share of A)": {
+  "A_age<30": 0.227,
+  "A_age30-365": 0.159,
+  "A_age>365": 0.614
+ },
+ "C distance below N (places): median of launch medians, IQR": [
+  296.5,
+  200.5,
+  517.0
+ ],
+ "oracle recall@N": {
+  "fix A": [
+   41.6,
+   39.1,
+   44.2,
+   124
+  ],
+  "fix A+B": [
+   44.2,
+   41.6,
+   47.1,
+   124
+  ],
+  "fix A+B+D": [
+   69.1,
+   66.0,
+   71.9,
+   124
+  ],
+  "fix all": [
+   100.0,
+   100.0,
+   100.0,
+   124
+  ]
+ },
+ "reverse: top-N people who did not vote": {
+  "median upvotes 30d non-voters vs voters": [
+   184.0,
+   96.2
+  ],
+  "share among 1,000 most active (mean)": 1.0,
+  "share who voted for another launch that day (mean)": 0.666
+ }
+}
