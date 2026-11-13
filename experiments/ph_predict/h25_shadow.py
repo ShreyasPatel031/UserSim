@@ -33,7 +33,11 @@ def main(d):
     F.D = root
     df = RN.load_llm(F.build(include_today=True)); df["id"] = df.id.astype(str)
     old = df.day < "2026-01-01"
+    # arm 2 (orchestrator 04:39Z Nov 13; history_retrain arm 2: top 3 +3.9 [+1.6, +6.5] vs pure, rho +0.028): keep the Gemini-scored
+    # 2025 llm_pitch / llm_brand (h25_llm.py private cache); arm 1 = every llm_* missing on 2025 rows (the original h25 line)
+    df2 = df.copy()
     df.loc[old, [c for c in df.columns if c.startswith(HR.OLD_NAN) or c.startswith("llm_")]] = np.nan
+    df2.loc[old, [c for c in df2.columns if c.startswith(HR.OLD_NAN) or (c.startswith("llm_") and c not in ("llm_pitch", "llm_brand"))]] = np.nan
     tr = df[(~df.is_today) & (df.day < d) & (~df.known)]
     a = df[df.is_today & (df.day == d) & (~df.known)].copy()
     if a.empty:
@@ -44,7 +48,8 @@ def main(d):
     F.D = real; dfo = RN.load_llm(F.build(include_today=True)); dfo["id"] = dfo.id.astype(str); F.D = root
     tro = dfo[(~dfo.is_today) & (dfo.day < d) & (~dfo.known)]; ao = dfo[dfo.is_today & (dfo.day == d) & (~dfo.known)].copy()
     P = {}
-    for nm, trx, ax in (("h25", tr, a), ("pure", tro, ao)):
+    tr2_ = df2[(~df2.is_today) & (df2.day < d) & (~df2.known)]
+    for nm, trx, ax in (("h25", tr, a), ("h25llm", tr2_, a), ("pure", tro, ao)):
         tr2, te = M.add_fold_feats(trx, ax)
         src, _ = M.live_sources(tr2, te, M.LIVE_SOURCES)
         cols = M.cols(tr2, src)
@@ -55,6 +60,8 @@ def main(d):
         P[nm + "_ids"] = te.id.astype(str).values
     out = pd.DataFrame({"id": P["h25_ids"], "pred_clean_nosite_h25": P["h25"]})
     out["pred_clean_nosite_pure"] = out.id.map(dict(zip(P["pure_ids"], P["pure"])))
+    out["pred_clean_nosite_h25llm"] = out.id.map(dict(zip(P["h25llm_ids"], P["h25llm"])))
+    out["rank_clean_nosite_h25llm"] = out.pred_clean_nosite_h25llm.rank(ascending=False, method="first")
     out["rank_clean_nosite_h25"] = out.pred_clean_nosite_h25.rank(ascending=False, method="first").astype(int)
     out["rank_clean_nosite_pure"] = out.pred_clean_nosite_pure.rank(ascending=False, method="first")
     res = {"day": d, "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "inputs": "data/today/<d>.json (00:05 snapshot) only; training adds raw/ph_history/2025",
