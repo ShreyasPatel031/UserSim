@@ -360,11 +360,113 @@ def people_delivery(d):
     return None, [], []
 
 
+STORE_V3 = os.environ.get("PEOPLE_STORE", "gs://usersim-bakeoff-347838016394/usersim_sim/raw/population/store_v3")
+SALT_GS = "gs://usersim-bakeoff-347838016394/usersim_sim/raw/population/_salt"
+
+
+def _hid(sl, u):
+    """store_v3's person key: "p_" + sha256(salt + "producthunt:" + lower(username))[:16] (pool_size.hid, people_full.hid)."""
+    import hashlib
+    return "p_" + hashlib.sha256((sl + "producthunt:" + str(u).lower()).encode()).hexdigest()[:16]
+
+
+def people_from_store(con, d, dry, local=None):
+    """Bundle 11 (orchestrator 15:26Z Nov 13): the people step reads the population store (raw/population/store_v3: events,
+    tabs; full depth, every pull merged losslessly) instead of the page-1 delivery folders (raw/ph_people_daily/, last
+    delivered Nov 2-3). Writes the same warehouse tables with the same columns:
+      events      upvotes (person, launch_id, date = launch day, kind "upvote", date_quality "launch_day"), only person x launch
+                  pairs not already in events (the warehouse convention for every upvote: PH shows no upvote time; the store's
+                  own ts_quality for upvotes is "snapshot"/"bounded", i.e. not an event time either)
+      follows     (person, followee, observed_on = PT day the store first saw the follow, new_since_last = True), only pairs
+                  not already in follows
+      fetch_state one row per person and source ("store_v3_upvotes", "store_v3_follows") when the store's tab pull is newer
+                  than the last row written for it: last_fetched = that pull's PT day, status 200, items = tab count,
+                  complete = the store's tab complete flag
+      people      new commenters (the comments step's list), first_seen = d, as before
+    Mapping: the store keys people on a salted id; warehouse rows key on the username. Store ids are matched to the usernames
+    the warehouse already holds (people, events, comments, follows) by hashing those usernames with the salt (never printed).
+    Store people / followees with no warehouse username are counted, not written (no new people rows; bundle 10 rule); the
+    store keeps them. Fails loudly when the store cannot be read. local: a directory holding events/tabs parquet (dry tests)."""
+    import pyarrow.parquet as pq, tempfile, shutil
+    tmp = None
+    try:
+        if local:
+            src = local
+        else:
+            tmp = src = tempfile.mkdtemp(prefix="ppl_store_")
+            for f in ("events.parquet", "tabs.parquet"):
+                if subprocess.run(["gsutil", "-q", "cp", f"{STORE_V3}/{f}", f"{src}/{f}"]).returncode:
+                    return None, {"items": 0, "status": f"failed: cannot read {STORE_V3}/{f}"}
+        sl_p = subprocess.run(["gsutil", "-q", "cat", SALT_GS], capture_output=True, text=True) if not os.environ.get("PEOPLE_SALT_FILE") \
+            else None
+        sl = (open(os.environ["PEOPLE_SALT_FILE"]).read() if sl_p is None else sl_p.stdout).strip()
+        if not sl:
+            return None, {"items": 0, "status": "failed: salt unreadable"}
+        E = pq.read_table(f"{src}/events.parquet", columns=["person_id", "kind", "target_id", "first_seen_at", "source"],
+                          filters=[("kind", "in", ["upvote", "follows"])]).to_pandas()
+        T = pq.read_table(f"{src}/tabs.parquet", columns=["person_id", "tab", "count", "complete", "fetched_at"],
+                          filters=[("tab", "in", ["upvotes", "following"])]).to_pandas()
+        if E.empty or T.empty:
+            return None, {"items": 0, "status": f"failed: store_v3 events/tabs empty ({len(E)} / {len(T)} rows)"}
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)   # everything needed is in memory by now
+    names = set()
+    for q in ("SELECT DISTINCT person FROM people", "SELECT DISTINCT person FROM events", "SELECT DISTINCT person FROM comments",
+              "SELECT DISTINCT person FROM follows", "SELECT DISTINCT followee FROM follows"):
+        names |= {r[0] for r in con.execute(q).fetchall() if r[0]}
+    newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
+    names |= set(newp)
+    u_of = {_hid(sl, u): u for u in names}
+    E["person"] = E.person_id.map(u_of); T["person"] = T.person_id.map(u_of)
+    stats = {"store_people": int(E.person_id.nunique()), "store_people_mapped": int(E.loc[E.person.notna(), "person_id"].nunique())}
+    # upvotes -> events
+    day = dict(con.execute("SELECT id, day FROM launches").fetchall())
+    have = set(map(tuple, con.execute("SELECT person, launch_id FROM events WHERE kind = 'upvote'").fetchall()))
+    U = E[(E.kind == "upvote") & E.person.notna()].drop_duplicates(["person", "target_id"])
+    U = U[U.target_id.isin(day.keys())]
+    U = U[[(p, t) not in have for p, t in zip(U.person, U.target_id)]]
+    ev = pd.DataFrame({"person": U.person.values, "launch_id": U.target_id.values, "date": U.target_id.map(day).values,
+                       "kind": "upvote", "date_quality": "launch_day"})
+    stats["upvotes_unknown_launch"] = int(((E.kind == "upvote") & E.person.notna() & ~E.target_id.isin(day.keys())).sum())
+    # follows -> follows (followee is a salted id in the store: mapped to the username where the warehouse has it)
+    Fo = E[(E.kind == "follows") & E.person.notna()].copy(); Fo["followee"] = Fo.target_id.map(u_of)
+    stats["follows_followee_unmapped"] = int(Fo.followee.isna().sum())
+    Fo = Fo[Fo.followee.notna()].sort_values("first_seen_at").drop_duplicates(["person", "followee"])
+    havef = set(map(tuple, con.execute("SELECT person, followee FROM follows").fetchall()))
+    Fo = Fo[[(p, f) not in havef for p, f in zip(Fo.person, Fo.followee)]]
+    fo = pd.DataFrame({"person": Fo.person.values, "followee": Fo.followee.values,
+                       "observed_on": Fo.first_seen_at.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d").values,
+                       "new_since_last": True})
+    # fetch_state: one row per (person, source) whose store pull is newer than the last row written for it
+    last = dict(((p, s), v) for p, s, v in con.execute(
+        "SELECT person, source, max(last_fetched) FROM fetch_state WHERE source IN ('store_v3_upvotes','store_v3_follows') GROUP BY 1, 2").fetchall())
+    T = T[T.person.notna()].copy(); T["source"] = T.tab.map({"upvotes": "store_v3_upvotes", "following": "store_v3_follows"})
+    T["last_fetched"] = T.fetched_at.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
+    T = T[[str(l) > str(last.get((p, s)) or "") for p, s, l in zip(T.person, T.source, T.last_fetched)]]
+    st = pd.DataFrame({"person": T.person.values, "source": T.source.values, "last_fetched": T.last_fetched.values, "status": 200,
+                       "items": pd.to_numeric(T["count"], errors="coerce").values, "complete": T.complete.astype(bool).values})
+    if not dry:
+        for t, df in (("events", ev), ("follows", fo), ("fetch_state", st)):
+            if len(df):
+                W.write(t, df)
+        if newp:
+            W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
+    return (ev, fo, st, newp), {"items": len(ev) + len(fo), "source": "store_v3", "events": len(ev), "follows": len(fo),
+                                "fetch_state": len(st), "new_people": len(newp), **stats}
+
+
 @step("people")
 def s_people(d, con, dry):
-    """New commenters' and stale people's upvote and following pages. Default (PEOPLE_SRC=delivery): read Data Feeder's
-    daily refresh; fails loudly when no folder is there or most of its fetches failed. PEOPLE_SRC=fetch: fetch here."""
-    if os.environ.get("PEOPLE_SRC", "delivery") == "delivery":
+    """New commenters' and stale people's upvotes and follows. Default (PEOPLE_SRC=store_v3, bundle 11): read the population
+    store (people_from_store; fails loudly when the store is unreadable). PEOPLE_SRC=delivery: Data Feeder's page-1 folders
+    (fails loudly when none is there). PEOPLE_SRC=fetch: fetch here."""
+    # bundle 11 (orchestrator 15:26Z Nov 13): default source is the population store (full depth). PEOPLE_SRC=delivery
+    # reads the old page-1 folders; PEOPLE_SRC=fetch fetches here
+    if os.environ.get("PEOPLE_SRC", "store_v3") == "store_v3":
+        _, out = people_from_store(con, d, dry)
+        return out
+    if os.environ.get("PEOPLE_SRC") == "delivery":
         day, U, Fo = people_delivery(d)
         if day is None:
             return {"items": 0, "status": f"failed: no Data Feeder people delivery for {d} or the day before ({PEOPLE_BUCKET})"}

@@ -15,8 +15,8 @@ mkdir -p $W/backup_b11
 case "$PART" in
 pipeline)
   cur=$(m $X/pipeline/daily.py)
-  if [ "$cur" = 27f0578d ]; then NEW=$Pd/daily.py; WANT=56b0fec9
-  elif [ "$cur" = 6e80e47e ]; then NEW=$Pd/daily_over_b10.py; WANT=609be045
+  if [ "$cur" = 27f0578d ]; then NEW=$Pd/daily.py; WANT=04f9a65c
+  elif [ "$cur" = 6e80e47e ]; then NEW=$Pd/daily_over_b10.py; WANT=a52df06c
   else echo "deployed daily.py ($cur) is neither pre-b10 (27f0578d) nor b10 (6e80e47e): rebase the patch first"; exit 1; fi
   test "$(m $NEW)" = "$WANT" || { echo "source file is not the b11 version"; exit 1; }
   (cd $X && tar cf $W/backup_b11/before_pipeline.tar pipeline/daily.py)
@@ -28,6 +28,7 @@ assert not hasattr(D, 'PERSON_CAP') and D.PERSON_BUDGET > 0
 src = inspect.getsource(D)
 assert 'f.unlink()' not in src and 'os.replace(new, old)' in src
 assert 'queue_write(\"scroll_deeper\"' in src and 'has_next' in src
+assert 'def people_from_store' in src and 'PEOPLE_SRC\", \"store_v3\"' in src
 print('imports ok')"
   test "$(m $X/pipeline/daily.py)" = "$WANT" && echo "deploy ok: b11 pipeline ($WANT)";;
 scraper)
