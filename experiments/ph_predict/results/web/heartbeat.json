@@ -24,7 +24,7 @@
   "monthly dayend": {
    "day": "2026-11-12",
    "data_cut": null,
-   "written_at": "2026-11-12T16:26:03.493113+00:00",
+   "written_at": "2026-11-13T08:19:48.635344+00:00",
    "status": "missing read",
    "late_min": null
   },
@@ -41,7 +41,14 @@
    "written_at": "2026-11-13T00:18:51.789997+00:00",
    "status": "ok",
    "late_min": 18.9
+  },
+  "weekly dayend": {
+   "day": "2026-11-12",
+   "data_cut": null,
+   "written_at": "2026-11-13T08:19:35.705544+00:00",
+   "status": "ok",
+   "late_min": null
   }
  },
- "updated_at": "2026-11-13T00:29:17.295523+00:00"
+ "updated_at": "2026-11-13T08:19:48.635344+00:00"
 }
