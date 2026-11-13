@@ -1,0 +1,332 @@
+{
+ "design": "Is the summed per-person LLM upvote probability a real launch signal beyond the clean 00:05 score? (orchestrator 04:41Z Nov 13)\nDays Oct 26 - Nov 11 with a clean_v3_nosite score (line-up = those launches). Per day, up to 1,000 complete people of the Nov 10 store\nsampled WITHOUT replacement with probability proportional to their upvotes dated in the 30 days before the day (people with none are\nnot eligible) - no conditioning on voting that day. Card = pilot/prompts.json person_upvote (30 most recent upvotes dated strictly before\nthe day: product - tagline; line-up in a fixed hashed order: name - tagline + [follows team] flag). gemini-2.5-flash-lite, temperature 0,\nthinking off. Launch scores: SUM (sum of p), SUM_NOFOLLOW (sum over people who follow nobody on the team), RANKMEAN (mean over people of\nthe launch's within-person rank percentile). Learning curve: first 100 / 300 / 1,000 sampled people. Test: leave-day-out ridge on\nwithin-day z of [clean, score] vs clean; top 3/5/10 overlap, paired day bootstrap; within-day Spearman; partial correlation beyond clean\n(within-day rank residuals). th_n_pre is not held on these days. Leak checks in the output.",
+ "days": 14,
+ "launches": 354,
+ "person_days": 14000,
+ "leak_checks": {
+  "card_upvotes_on_or_after_day": 0,
+  "cards": 14000,
+  "launch_text": "name and tagline only (fixed at submission, visible at 00:05); history = earlier launches' name / tagline",
+  "caveat": "upvote dates are the upvoted launch's day; a late vote on an older launch cast on or after the target day cannot be excluded (store has no vote timestamps); follows are undated snapshots"
+ },
+ "people_100": {
+  "SUM": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -9.524,
+     4.762
+    ],
+    [
+     -1.429,
+     -4.286,
+     0.0
+    ],
+    [
+     0.0,
+     -2.857,
+     2.857
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    0.397,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    0.397,
+    0.302,
+    0.499
+   ],
+   "partial beyond clean [lo, hi]": [
+    0.152,
+    0.054,
+    0.261
+   ]
+  },
+  "SUM_NOFOLLOW": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -7.143,
+     0.0
+    ],
+    [
+     1.429,
+     0.0,
+     4.286
+    ],
+    [
+     -0.714,
+     -2.143,
+     0.0
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    -0.092,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    -0.092,
+    -0.215,
+    0.044
+   ],
+   "partial beyond clean [lo, hi]": [
+    -0.055,
+    -0.179,
+    0.066
+   ]
+  },
+  "RANKMEAN": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -9.524,
+     4.762
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     -0.714,
+     -2.857,
+     1.429
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    0.383,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    0.383,
+    0.296,
+    0.469
+   ],
+   "partial beyond clean [lo, hi]": [
+    0.132,
+    0.032,
+    0.244
+   ]
+  },
+  "clean top3/5/10": [
+   64.3,
+   70.0,
+   76.4
+  ]
+ },
+ "people_300": {
+  "SUM": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -11.905,
+     4.762
+    ],
+    [
+     -1.429,
+     -4.286,
+     0.0
+    ],
+    [
+     -0.714,
+     -2.857,
+     1.429
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    0.394,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    0.394,
+    0.297,
+    0.497
+   ],
+   "partial beyond clean [lo, hi]": [
+    0.149,
+    0.045,
+    0.273
+   ]
+  },
+  "SUM_NOFOLLOW": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -7.143,
+     0.0
+    ],
+    [
+     1.429,
+     0.0,
+     4.286
+    ],
+    [
+     -0.714,
+     -2.143,
+     0.0
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    -0.083,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    -0.083,
+    -0.208,
+    0.043
+   ],
+   "partial beyond clean [lo, hi]": [
+    -0.052,
+    -0.186,
+    0.076
+   ]
+  },
+  "RANKMEAN": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -9.524,
+     4.762
+    ],
+    [
+     -1.429,
+     -4.286,
+     0.0
+    ],
+    [
+     -0.714,
+     -3.571,
+     1.429
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    0.366,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    0.366,
+    0.274,
+    0.462
+   ],
+   "partial beyond clean [lo, hi]": [
+    0.114,
+    0.009,
+    0.227
+   ]
+  },
+  "clean top3/5/10": [
+   64.3,
+   70.0,
+   76.4
+  ]
+ },
+ "people_1000": {
+  "SUM": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -9.524,
+     4.762
+    ],
+    [
+     -1.429,
+     -4.286,
+     0.0
+    ],
+    [
+     0.0,
+     -2.857,
+     2.857
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    0.402,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    0.402,
+    0.307,
+    0.501
+   ],
+   "partial beyond clean [lo, hi]": [
+    0.151,
+    0.041,
+    0.274
+   ]
+  },
+  "SUM_NOFOLLOW": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     1.429,
+     0.0,
+     4.286
+    ],
+    [
+     -0.714,
+     -2.143,
+     0.0
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    -0.061,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    -0.061,
+    -0.191,
+    0.072
+   ],
+   "partial beyond clean [lo, hi]": [
+    -0.035,
+    -0.166,
+    0.092
+   ]
+  },
+  "RANKMEAN": {
+   "gain top3/5/10 [lo, hi]": [
+    [
+     -2.381,
+     -9.524,
+     4.762
+    ],
+    [
+     -1.429,
+     -4.286,
+     0.0
+    ],
+    [
+     -0.714,
+     -2.857,
+     1.429
+    ]
+   ],
+   "within_day_spearman score / clean": [
+    0.386,
+    0.61
+   ],
+   "spearman score [lo, hi]": [
+    0.386,
+    0.302,
+    0.473
+   ],
+   "partial beyond clean [lo, hi]": [
+    0.134,
+    0.037,
+    0.239
+   ]
+  },
+  "clean top3/5/10": [
+   64.3,
+   70.0,
+   76.4
+  ]
+ },
+ "est_usd": 2.53,
+ "latency_s_median": 1.0
+}
