@@ -82,3 +82,60 @@ All numbers are % with [95% CI], n = 68–69. Gains are paired bootstrap over la
 - If shipped, the recipe should also exclude "-N" stems and shared makers.
 
 **Cost:** adjudicator about $1.8 for this run.
+
+## Extensions (orchestrator 02:39Z Nov 13), scripts bank_v2.py and b20_ext.py: no recipe change
+
+Setup:
+- Same pooled 170 launches, both input paths.
+- Recipe neighbour exclusions.
+- Strict pro judge, one pooled call per launch per part. Compare arms only within a part; pool sizes differ between parts.
+- Cost: about $3.7 for the judge, $2.8 for generation, and $0.06 for the bank.
+
+**(1) Bank size.**
+- v1 holds 3,371 launches (Jan 1 – Oct 24, ≥ 5 non-team comments, 6.0 themes per launch).
+- v2 holds 4,517 launches (Jan 1 – Nov 10). It adds the launches with 3–4 comments and the Oct 27 – Nov 10 API pulls, at 5.8 themes per launch.
+
+| | value |
+|---|---|
+| thin share below recipe thresholds, v1 → v2 | PH 36.5 → 34.7%, page 33.5 → 31.2% |
+| concerns p@3, b20 on v2 − b20 on v1 | page −1.4 [−3.8, +0.8], PH −1.4 [−4.6, +1.6] |
+| concerns top-1, v2 − v1 | page +4.2 [−0.6, +9.6], PH +1.8 [−3.0, +6.0] |
+
+The bigger bank gives no gain. Keep v1.
+
+The b20 replication against deployed holds again in this pool:
+- p@3: page +4.2 [+0.4, +7.8], PH +10.6 [+6.4, +14.8].
+- Recall: page +5.5 [+1.3, +9.9], PH +12.0 [+6.8, +17.3].
+
+**(2) b20 for general reactions** (6 comments of any type, including praise). Compared against deployed step_reactions and a constant 6.
+
+| b20-R − deployed | precision over 6 | p@3 | recall | top-1 |
+|---|---|---|---|---|
+| page | −4.4 [−7.5, −1.4] | +0.6 [−3.9, +5.1] | −2.1 [−5.1, +0.8] | +1.9 [−6.8, +9.3] |
+| PH | −6.2 [−9.5, −2.6] | −2.5 [−7.0, +2.3] | −3.8 [−7.3, −0.4] | +8.6 [+0.6, +16.7] |
+
+Levels for b20-R / deployed / constant (precision over 6): page 26.7 / 31.2 / 14.7, PH 41.8 / 47.9 / 14.7.
+
+Deployed already grounds on the themes of its 10 nearest launches and also reads the page. b20-R loses on the main metric, so there is no reactions recipe.
+
+The judge here (real-points prompt, 3-arm pool) is more lenient than in the earlier reactions runs (24% / 7–15%). Compare these levels only within this table.
+
+**(3) Neighbour count × points sweep**, concerns, bank v1.
+
+On the dev half (73 launches, p@3 mean over both paths), every setting lands between 18.5 and 22.1:
+
+| | p2 | p4 | p8 |
+|---|---|---|---|
+| k10 | 19.2 | 21.7 | 19.9 |
+| k20 | 20.5 | 21.7 | 18.5 |
+| k40 | **22.1** | 21.7 | 21.9 |
+
+The best setting, k40 p2, beats k20 p4 by only +0.5 [−2.3, +3.7] on the dev half.
+
+On the confirmation half (93 page / 93 PH launches), k40 p2 − recipe k20 p4:
+- p@3: page +1.1 [−2.2, +4.3], PH −1.8 [−6.1, +2.2].
+- Recall: page +0.2, PH −4.1 [−9.1, +1.1].
+
+The recipe itself again beats deployed on this half: p@3 page +6.5 [+1.8, +11.1], PH +9.3 [+3.9, +14.7].
+
+**Verdict:** no change. Keep RECIPE_b20_concerns.md as it is: bank v1, k = 20, 4 points per neighbour, concerns on both paths and questions on the pasted path. Reactions stay on deployed.
