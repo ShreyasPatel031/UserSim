@@ -8,7 +8,8 @@ D="$1"; W="$2"; WT="$3"; B=gs://usersim-bakeoff-347838016394/usersim_sim
 OUT="$B/tmp/e5/team_shadow/team_shadow_$D.jsonl"
 if gsutil -q stat "$OUT"; then echo "exists $OUT"; exit 0; fi
 gsutil -q stat "$B/raw/daily/$D/today_0005.json" || { echo "no 00:05 read for $D"; exit 1; }
-STORE="${E5_STORE:-$B/tmp/e5/merged_store_20261113}"; SD="$W/store_$(basename "$STORE")"; mkdir -p "$SD" "$W/s"
+# official merged store (orchestrator 11:49Z Nov 13); it is rewritten in place, so the local copy is keyed by events.parquet generation
+STORE="${E5_STORE:-$B/raw/population/store_v3}"; GEN=$(gsutil stat "$STORE/events.parquet" | awk '/Generation:/{print $2}'); SD="$W/store_$(basename "$STORE")_$GEN"; mkdir -p "$SD" "$W/s"
 gsutil -q -m cp -n "$STORE/events.parquet" "$STORE/persons.parquet" "$STORE/tabs.parquet" "$SD/"
 [ -s "$W/s/salt" ] || gsutil -q cp "$B/raw/population/_salt" "$W/s/salt"
 cd "$WT/experiments/simlab"

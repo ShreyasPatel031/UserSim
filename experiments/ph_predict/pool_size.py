@@ -95,10 +95,10 @@ def salt():
     return subprocess.run(["gsutil", "cat", f"{BUCKET}/raw/population/_salt"], capture_output=True, text=True, check=True).stdout.strip()
 
 
-# orchestrator 08:39Z Nov 13: E5's merged store (store_v3 + 22,614 audit pulls), labelled provisional, until the population agent
+# orchestrator 11:49Z Nov 13: official merged store raw/population/store_v3 (was: 08:39Z E5's merged store (store_v3 + 22,614 audit pulls), labelled provisional, until the population agent
 # publishes its official merged store_v* (then set POOL_STORE to it). The store path is recorded in every output row.
-STORE = os.environ.get("POOL_STORE", f"{BUCKET}/tmp/e5/merged_store_20261113")
-STORE_LABEL = os.environ.get("POOL_STORE_LABEL", "merged store, provisional (E5 merged_store_20261113)")
+STORE = os.environ.get("POOL_STORE", f"{BUCKET}/raw/population/store_v3")
+STORE_LABEL = os.environ.get("POOL_STORE_LABEL", "official merged store (raw/population/store_v3, published 11:48Z Nov 13)")
 
 
 def v3():
