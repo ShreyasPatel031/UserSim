@@ -31,3 +31,22 @@ LLM generation and judging use gemini-2.5-flash / pro on 2026 launches, which ar
 4. **similar_tools_auc.** Wording is fine. Optionally add "tools are a November snapshot".
 
 The scope is claims.json only. Numbers hard-coded in page templates were not audited.
+
+## Hardcoded numbers in templates and page copy (claude/ph-website e5a99ca3: mvp/static/ph.html, try.html, mvp/ph_site/live.py, try_sim.py)
+
+| where | text | source | verdict |
+|---|---|---|---|
+| ph.html l.26; live.py l.27–34 | "first 4 hours … PH's own order + 00:05 forecast; after the 04:00 PT reveal, it uses votes" | pipeline timing | **matches** (reveal 04:00 PT) |
+| live.py l.135 / l.147 | "daily rank … only stable from 03:00 PT the next day" | operational rule | ok |
+| ph.html l.148 / l.164 | "Pick figures are an in-sample replay on N past days … optimistic" | prereveal_confidence.json (n from data) | **ok**, honest label. Tonight's pre-reveal replay covers 7 days; N comes from the file, so check the file says 7 |
+| live.py l.563–564 | lock reliability: "tested right about 93% of the time after noon PT" / "only 67–81% before noon PT" | hardcoded; no source in code | **stale / unsourced**. Tonight's evidence is 92 / 94 / 96 (top 3 / 5 / 10) by 08:00 PT. If the lock backtest is now that, "only 67–81% before noon" understates it. The PH agent should give the lock-label backtest by hour, and the text should be generated from that file |
+| try_sim._full_model_ref (via claims launch_model_backtest) | 00:05 model 56.1 / 67.5 / 74.4, 255 days | claims.json | **stale**: current clean backtest is 56.4 / 67.8 / 75.0 |
+| try_sim._honesty | description-only model "29% / 40% / 60% of the real top 3 / 5 / 10", 222 days month-forward | launch_band.json heldout_accuracy (computed) | **clean** |
+| try_sim._honesty | "deployed 00:05 model … scores X / Y / Z live over N days" | live track record (computed) | ok |
+| try_sim l.769 | "on launches with 10 or more comments, generic concerns hit about as often" | not found in E5 reports | **cannot tell**: source needed, or drop |
+| try_sim l.772 | "under 40 words … no better than generic (40 to 100 words did clearly better)" | E5 page_path/paste_length | **matches** |
+| try.html l.81 | "3 simulations per hour, 10 per day per visitor" | try_sim CAPS defaults (TRY_PER_IP_HOUR 3, TRY_PER_IP_DAY 10) | matches the code defaults; production env overrides cannot be checked |
+| try.html l.62–66, l.133 | "Who it resonates with … Most over-represented interest segment" | similar-tools scorer + interest segments | **mismatch with evidence**: segment over-representation did not beat the best constant (who_fix; retrieval who_mix, Nov 13: top-2 hit 14–17% vs constant 44%). The withdrawn segment claim is still displayed. Remove the "most over-represented interest segment" card, or relabel it "segment with the most similar-tool members (not validated as a predictor of voters)" |
+| try.html l.65 / try_sim l.404 | "description shared by 20+ real members" / "20 or more people" | display rule | ok |
+| try_sim l.429 / l.516 / l.584 | 13.6k profiles, 5,096 people, AUC 0.69, 10 neighbours | docstrings (not shown) | ok |
+| weekly (live.py l.611 on) | weekly call, computed from results/web/weekly_*.json | data | no hardcoded number. If a weekly accuracy is shown, the source is the close backtest 82 / 88 / 90 (data, not template) |
