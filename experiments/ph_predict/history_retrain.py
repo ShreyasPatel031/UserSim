@@ -137,6 +137,16 @@ def main():
                                  ("rowsonly", pd.concat([dfo[dfo.mon < m][cols_all], D25]), te_o[cols_all]), ("both", df[df.mon < m], te_h)):
                 if DT and nm not in ("pure", "both"):
                     continue
+                # learning curve (orchestrator 19:44Z Nov 13): HIST_N = keep only the most recent N training days before month m (both only)
+                # SEASON = same | other: keep 2025 rows only from the test month's calendar month, or only from the other months (both only)
+                HN, SEA = os.environ.get("HIST_N"), os.environ.get("SEASON")
+                if (HN or SEA) and nm != "both":
+                    continue
+                if HN:
+                    dd = sorted(tr0.day.unique()); tr0 = tr0[tr0.day.isin(dd[-int(HN):])]
+                if SEA:
+                    o25 = tr0.day < "2026-01-01"; same = tr0.day.str[5:7] == m[5:7]
+                    tr0 = tr0[~o25 | (same if SEA == "same" else ~same)]
                 tr, te, cols = TW.prep(tr0, te0)
                 cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")]
                 for s in range(SEEDS):
