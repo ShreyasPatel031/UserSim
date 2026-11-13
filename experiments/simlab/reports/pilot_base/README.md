@@ -68,3 +68,35 @@ flash gives P(top 10) and P(top 3) from name, tagline, topics and description. D
 It is overconfident in the middle and upper bins.
 
 **Verdict.** No gain over the clean model, and the probabilities are poorly calibrated.
+
+## (C) Pairwise near-ties (orchestrator 05:34Z Nov 13). Script: pairwise_base.py; prompt in pilot/prompts.json "pairwise"
+
+**Method.**
+- Model: gemini-2.5-flash, temperature 0.
+- Pairs: all 21 pairs among the clean model's ranks 2–8, asked in both orders, using 00:05 text only.
+- Ranks 2–8 are re-ordered by total wins and by Bradley-Terry strength.
+
+**Data.** LIVE = Oct 26 – Nov 11 (clean_v3_nosite). BACK = 40 random honest_preds_v2 days, Apr – Oct, possibly inside the training data (36 days had ≥ 10 launches). Cost $0.34.
+
+| | days | pair accuracy vs final order | clean top 3 / top 5 | wins − clean | Bradley-Terry − clean |
+|---|---|---|---|---|---|
+| LIVE | 14 | 56.2% | 64.3 / 70.0 | −14.3 [−21.4, −4.8] / −11.4 [−20.0, −2.9] | −14.3 [−23.8, −7.1] / −11.4 [−20.0, −2.9] |
+| BACK | 36 | 50.5% | 56.5 / 65.6 | −13.9 [−23.1, −4.6] / −7.2 [−12.8, −1.7] | −13.9 [−23.1, −5.6] / −7.2 [−12.8, −1.7] |
+
+**Verdict.** Within the near-tie band, the LLM's pairwise call is close to a coin flip (50–56%). Re-ordering by it loses 7–14 points of top 3 / top 5. Null, and harmful.
+
+## Decisions API harness (decisions_harness.py): dry run, nothing sent
+
+Every request for the fixed samples is built and validated against the documented schema, with 0 errors:
+
+| use | requests | questions | max questions / request | est. input tokens | est. cost |
+|---|---|---|---|---|---|
+| person (1,442 person-days) | 1,442 | 31,794 | 34 | 2.26M | $0.23 |
+| launch (14 days; top-10, top-3, band + 21 pairs per day) | 14 | 1,348 | 171 | 87k | $0.01 |
+| judge (300 pro-labelled items, 144 launches; pro SAME_POINT share 20%) | 144 | 300 | 5 | 111k | $0.01 |
+
+Scaling estimates:
+- The 14,000-card summed-simulation test would cost about $2.2.
+- 60 backtest launch days would cost about $0.04.
+
+The judge sample (real comment text) lives in the bucket only: tmp/e5/pilot/judge_sample.json, built by decisions_judge_sample.py.

@@ -8,5 +8,10 @@
   "template": "A product is launching on Product Hunt today (about 25-40 launches compete on a typical day; ranking is by upvotes over the day).\nProduct: {name} - {tagline}\nTopics: {topics}\nDescription: {description}\n\nGive the probability (0 to 1) that it finishes in the day's top 10, and the probability that it finishes in the day's top 3.\nReturn JSON {{\"p_top10\": <0-1>, \"p_top3\": <0-1>}}",
   "decisions_api_equivalent": "input = the same product text; noul questions 'finishes in the day's top 10?' and 'top 3?'; choice question band = top 3 / 4-10 / 11-20 / 21-30 / 31+"
  },
- "notes": "00:05-safe inputs only. No usernames or real names in any card: history is product names and taglines of upvoted launches; follows are a boolean flag per launch."
+ "notes": "00:05-safe inputs only. No usernames or real names in any card: history is product names and taglines of upvoted launches; follows are a boolean flag per launch.",
+ "pairwise": {
+  "template": "Two products are launching on Product Hunt today, competing on the same day's leaderboard (ranked by upvotes over the day).\nProduct A: {a_name} - {a_tagline}\nTopics: {a_topics}\n{a_desc}\n\nProduct B: {b_name} - {b_tagline}\nTopics: {b_topics}\n{b_desc}\n\nWhich one will get more upvotes today? Return JSON {{\"winner\": \"A\" or \"B\", \"p_a\": <probability 0-1 that A gets more upvotes>}}",
+  "inputs": "name, tagline, topics, description[:600] (00:05-safe); both orders (A/B swapped) per pair",
+  "decisions_api_equivalent": "input = the two product texts; one choice question {A, B} 'Which gets more upvotes today?' per order; or one request per day with all pairs as questions over the shared line-up text"
+ }
 }

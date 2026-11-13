@@ -1,0 +1,110 @@
+{
+ "design": "Pairwise near-tie baseline for the Decisions API pilot (orchestrator 05:34Z Nov 13). gemini-2.5-flash on Vertex, temperature 0, thinking\noff, prompt pilot/prompts.json \"pairwise\" (00:05-safe text only). For each day: the clean model's ranks 2-8 (7 launches); all 21 pairs in\nboth orders (42 calls); P(A beats B) = mean of p_a and 1 - p_b' over the two orders. Re-order ranks 2-8 by (a) wins (sum of P over the 6\nopponents) and (b) Bradley-Terry strengths (MM fit), rank 1 kept. Compare top 3 / top 5 overlap with the final daily rank vs the clean\norder, paired day bootstrap. Sets: LIVE = Oct 26 - Nov 11 (clean_v3_nosite; th_n_pre not held) and BACK = 40 random honest_preds_v2 days\nApr - Oct (seed 0; possibly inside the model's training data).",
+ "backtest_days": [
+  "2026-04-01",
+  "2026-04-03",
+  "2026-04-05",
+  "2026-04-07",
+  "2026-04-08",
+  "2026-04-14",
+  "2026-04-17",
+  "2026-04-18",
+  "2026-05-01",
+  "2026-05-05",
+  "2026-05-17",
+  "2026-05-23",
+  "2026-06-01",
+  "2026-06-15",
+  "2026-06-26",
+  "2026-06-27",
+  "2026-06-30",
+  "2026-07-09",
+  "2026-07-10",
+  "2026-07-14",
+  "2026-07-17",
+  "2026-07-19",
+  "2026-07-25",
+  "2026-07-26",
+  "2026-08-06",
+  "2026-08-12",
+  "2026-08-21",
+  "2026-08-22",
+  "2026-08-28",
+  "2026-09-02",
+  "2026-09-11",
+  "2026-09-13",
+  "2026-09-15",
+  "2026-09-21",
+  "2026-09-22",
+  "2026-09-24",
+  "2026-10-05",
+  "2026-10-11",
+  "2026-10-14",
+  "2026-10-20"
+ ],
+ "LIVE": {
+  "days": 14,
+  "pair_accuracy_vs_final_order": 56.2,
+  "clean top3/top5": [
+   64.3,
+   70.0
+  ],
+  "wins - clean top3/top5": [
+   [
+    -14.3,
+    -21.4,
+    -4.8
+   ],
+   [
+    -11.4,
+    -20.0,
+    -2.9
+   ]
+  ],
+  "bt - clean top3/top5": [
+   [
+    -14.3,
+    -23.8,
+    -7.1
+   ],
+   [
+    -11.4,
+    -20.0,
+    -2.9
+   ]
+  ]
+ },
+ "BACK": {
+  "days": 36,
+  "pair_accuracy_vs_final_order": 50.5,
+  "clean top3/top5": [
+   56.5,
+   65.6
+  ],
+  "wins - clean top3/top5": [
+   [
+    -13.9,
+    -23.1,
+    -4.6
+   ],
+   [
+    -7.2,
+    -12.8,
+    -1.7
+   ]
+  ],
+  "bt - clean top3/top5": [
+   [
+    -13.9,
+    -23.1,
+    -5.6
+   ],
+   [
+    -7.2,
+    -12.8,
+    -1.7
+   ]
+  ]
+ },
+ "est_usd": 0.34
+}
