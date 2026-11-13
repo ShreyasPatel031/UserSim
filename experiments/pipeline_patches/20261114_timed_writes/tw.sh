@@ -105,5 +105,13 @@ web_forecast)
 scoreboard)
   inwindow && { ST="inside 00:05-01:00 PT: deferred"; logline; exit 0; }
   sync_wh; ST=$(nicep scoreboard.py 2>&1 | tail -1 | cut -c1-200); logline;;
+inputs_backup)  # 22:30 PT: arm-2 inputs to raw/model_inputs/arm2/<week monday>/ (changed files only), manifest rewritten, latest pointer
+  WK=$(date -d "$D -$(( DOW - 1 )) days" +%Y%m%d); DST=$B/raw/model_inputs/arm2/$WK; SRC=/home/agent/w/experiments/ph_predict/data
+  nice -n 19 ionice -c3 gsutil -q -m rsync -r -x '^vote_sim_.*\.(npy|npz)$' $SRC/ $DST/ph_predict_data/ > $TW/tmp/ib.log 2>&1 && IN=" rsync:ok" || IN=" rsync:failed"
+  (cd $SRC && find -L . -type f ! -regex './vote_sim_.*\.\(npy\|npz\)' -printf '%P\t%s\n' | sort | while IFS=$'\t' read p s; do printf '%s\t%s\t%s\n' "$p" "$s" "$(md5sum < "$p" | cut -c1-32)"; done) > $TW/tmp/manifest.tsv
+  gsutil -q cp $TW/tmp/manifest.tsv $DST/manifest_ph_predict_data.tsv
+  gsutil -q cp /home/agent/w/arm2_live/h25_live.py /home/agent/w/arm2_live/history_retrain.py $DST/code/
+  echo "{\"folder\": \"$DST\", \"files\": $(wc -l < $TW/tmp/manifest.tsv), \"updated_utc\": \"$(date -u +%FT%TZ)\", \"ph_history_2025\": \"$B/raw/ph_history/2025/\"}" | gsutil -q cp - $B/raw/model_inputs/arm2/latest.json
+  ST="backup $WK"; logline;;
 *) echo "unknown job $JOB"; exit 2;;
 esac

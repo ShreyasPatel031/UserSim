@@ -21,6 +21,7 @@ CRON_TZ=America/Los_Angeles
 5 10 * * * bash /home/agent/w/tw/tw.sh V10; bash /home/agent/w/tw/tw.sh why_after
 5 12 * * * bash /home/agent/w/tw/tw.sh C12; bash /home/agent/w/tw/tw.sh V12
 5 16 * * * bash /home/agent/w/tw/tw.sh C16
+30 22 * * * bash /home/agent/w/tw/tw.sh inputs_backup
 # catch-up: any write missed earlier (VM late start, missing input) is retried; every job skips when its output exists
 15 2,5,9,13,17,21 * * * for j in shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12; do bash /home/agent/w/tw/tw.sh $j; done
 # END usersim-b12

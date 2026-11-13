@@ -35,6 +35,7 @@ its output exists, so both can run.
 | 05:05 / 06:05 / 08:05 | R1 + C05 + V05 / R2 + C06 / R4 (+ weekly r4) + V08 | |
 | 08:10 | daily_scores (makerfix_score, confidence score; Mondays weekly score + growth fit; 1st monthly score), scoreboard | |
 | 10:05 / 12:05 / 16:05 | V10 + why_after (+ team relog) / C12 + V12 / C16 | |
+| 22:30 | inputs_backup: arm-2 inputs (VM ph_predict/data minus vote_sim arrays, + deployed arm-2 code) to `raw/model_inputs/arm2/<week Monday>/`, changed files only, manifest rewritten, `raw/model_inputs/arm2/latest.json` pointer (orchestrator 23:46Z) | |
 | 02:15, 05:15, 09:15, 13:15, 17:15, 21:15 | catch-up: every job above; each skips if its output exists | |
 
 Each job logs one line, `<job> <day> written at <UTC> | inputs: x:present y:missing | <script status>`, to
