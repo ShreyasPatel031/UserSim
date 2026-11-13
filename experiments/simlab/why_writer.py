@@ -73,7 +73,7 @@ if MODE == "try":
     for i, m in enumerate(RBM):
         v = k.get((m["slug_stem"], m["day"]))
         if v: rows[str(i)] = {"day": m["day"], "final_votes": float(v[0]), "daily_rank": int(v[1]), "lineup_size": int(v[2])}
-    json.dump({"bundle": "reactions_retrieval_v1", "rows_matched": len(rows), "rows_total": len(RBM), "note": NOTES["n_try"], "rows": rows},
+    json.dump({"shadow": True, "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "bundle": "reactions_retrieval_v1", "rows_matched": len(rows), "rows_total": len(RBM), "note": NOTES["n_try"], "rows": rows},
               open(os.path.join(OUT, "try_neighbours_v1.json"), "w")); print("try rows", len(rows), "of", len(RBM)); sys.exit()
 D0 = pd.Timestamp(DAY).tz_localize(PT).tz_convert("UTC")
 E = pd.read_parquet(f"{ST}/events.parquet", columns=["person_id", "kind", "target_id", "fetched_at"])
