@@ -69,3 +69,23 @@ After deploy, the PH ops routine keeps running as catch-up (no double writes: ev
 - hr_clean_arm2 (approved 21:06Z as a forward shadow, to be added after tonight's runs) goes in by rebuilding the tarball at the new commit
   (`build_b12.sh <commit>`) and redeploying with the new md5.
 - The VM powers off 23:55-00:05 PT, so nothing runs then (nothing is due).
+
+## vote_snapshots loader gap (orchestrator 00:10Z Nov 14)
+`pipeline/hourly.py` appends the raw copy (`raw/vote_snapshots/<d>.jsonl`) before it writes the warehouse part, so a failed part write
+loses that hour in the warehouse only. `pipeline/vs_reconcile.py` (new, not a change to hourly.py) compares the two per day, counts only:
+
+| day | raw rows (deduped) | warehouse rows (deduped) | missing in warehouse | warehouse duplicates |
+|---|---|---|---|---|
+| Nov 1 | 342 | 608 (361) | 0 | 247 |
+| Nov 4 | 816 | 782 | 34 | 0 |
+| Nov 5 | 846 | 0 | 846 | 0 |
+| Nov 6 | 1,299 | 316 | 983 | 0 |
+| Nov 7 | 570 | 408 | 162 | 0 |
+| Oct 31, Nov 2-3, 8-12 | equal | equal | 0 | 0 |
+
+(The raw files have no duplicate (launch_id, at) rows; the extra rows per hour on Nov 5-6 are more launches. The warehouse holds 247
+duplicate rows on Nov 1, plus 19 rows that are not in that day's raw file.)
+- One-time backfill after deploy: `python3 -m pipeline.vs_reconcile fix 2026-11-04 2026-11-05 2026-11-06 2026-11-07` adds the 2,025 missing
+  rows as one extra part per day (existing parts are never rewritten), then re-checks (warehouse deduped = raw deduped per day; exit 1 otherwise).
+- Nightly from then on: cron `vs_check` at 01:15 PT on yesterday with VS_FIX=1. It logs the counts to results/timed_writes/<day>.log.
+- Nov 1's duplicates are left in place (readers dedup on (launch_id, at)); removing them would mean rewriting a part, which is out of scope here.

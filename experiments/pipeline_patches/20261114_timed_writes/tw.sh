@@ -113,5 +113,8 @@ inputs_backup)  # 22:30 PT: arm-2 inputs to raw/model_inputs/arm2/<week monday>/
   gsutil -q cp /home/agent/w/arm2_live/h25_live.py /home/agent/w/arm2_live/history_retrain.py $DST/code/
   echo "{\"folder\": \"$DST\", \"files\": $(wc -l < $TW/tmp/manifest.tsv), \"updated_utc\": \"$(date -u +%FT%TZ)\", \"ph_history_2025\": \"$B/raw/ph_history/2025/\"}" | gsutil -q cp - $B/raw/model_inputs/arm2/latest.json
   ST="backup $WK"; logline;;
+vs_check)       # 01:15 PT: warehouse vote_snapshots vs the raw recorder file for yesterday (counts only); VS_FIX=1 also adds missing rows
+  cd $X; M=check; [ "${VS_FIX:-0}" = 1 ] && M=fix
+  ST=$(nice -n 19 python3 -m pipeline.vs_reconcile $M $Y 2>&1 | tail -1 | cut -c1-300); IN=" raw_vote_snapshots:$(has $B/raw/vote_snapshots/$Y.jsonl && echo present || echo missing)"; logline;;
 *) echo "unknown job $JOB"; exit 2;;
 esac
