@@ -18,8 +18,19 @@ TOPIC="${AGENT_MSGS_TOPIC:-agent-msgs}"
 SRC="$ROOT/deploy/fleet_cursor_wake"
 FILTER='attributes.to = "fleet-cursor" OR (attributes.to = "all" AND attributes.from != "fleet-cursor")'
 
-if [[ -z "${CURSOR_API_KEY:-}" ]]; then
-  echo "CURSOR_API_KEY not set in shell — deploy will fail steer until Secret Manager secret cursor-fleet-api-key exists." >&2
+SECRET_NAME="cursor-fleet-api-key"
+SECRET_ARGS=()
+if gcloud secrets describe "$SECRET_NAME" --project="$PROJECT" >/dev/null 2>&1; then
+  SECRET_ARGS=(--set-secrets="CURSOR_API_KEY=${SECRET_NAME}:latest")
+  echo "Mounting Secret Manager $SECRET_NAME on Cloud Run."
+elif [[ -n "${CURSOR_API_KEY:-}" ]]; then
+  echo "Creating $SECRET_NAME from CURSOR_API_KEY in shell..." >&2
+  printf '%s' "$CURSOR_API_KEY" | gcloud secrets create "$SECRET_NAME" \
+    --project="$PROJECT" --replication-policy=automatic --data-file=- 2>/dev/null \
+    || printf '%s' "$CURSOR_API_KEY" | gcloud secrets versions add "$SECRET_NAME" --project="$PROJECT" --data-file=-
+  SECRET_ARGS=(--set-secrets="CURSOR_API_KEY=${SECRET_NAME}:latest")
+else
+  echo "WARN: no $SECRET_NAME and no CURSOR_API_KEY — steer will 503 until secret exists (Cursor Dashboard → API Keys)." >&2
 fi
 
 echo "Deploying Cloud Run $SERVICE in $PROJECT ($REGION)..."
@@ -30,7 +41,7 @@ gcloud run deploy "$SERVICE" \
   --clear-base-image \
   --no-allow-unauthenticated \
   --set-env-vars="FUNCTION_TARGET=wake,MVP_GCS_BUCKET=${MVP_GCS_BUCKET:-},FLEET_CURSOR_BC_ID=${FLEET_CURSOR_BC_ID:-${CURSOR_CONVERSATION_ID:-}}" \
-  ${CURSOR_API_KEY:+--set-secrets=CURSOR_API_KEY=cursor-fleet-api-key:latest} \
+  "${SECRET_ARGS[@]}" \
   --quiet
 
 URL="$(gcloud run services describe "$SERVICE" --project="$PROJECT" --region="$REGION" --format='value(status.url)')"
