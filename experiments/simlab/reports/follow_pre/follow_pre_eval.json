@@ -2,53 +2,81 @@
  "design": "Evaluate the before-launch held-follower count on Nov 10 - 11 (and Nov 12 once final ranks land): coverage, within-day Spearman with\nfinal rank, partial correlation beyond clean_v3_nosite (th_n_pre not held), vs the all-edges (leaky) count; and n days needed.",
  "days": {
   "2026-11-10": {
+   "base": "clean_v3_nosite",
    "launches": 50,
    "with_rank_and_clean": 50,
-   "eligible_people": 37446,
-   "coverage_pre>0": 0.56,
+   "eligible_people": 36996,
+   "coverage_pre>0": 0.54,
    "median_pre": 1.0,
-   "median_all": 1.0,
-   "leak_ratio_all_over_pre_median": 1.028,
-   "spearman_pre": 0.421,
-   "partial_pre": 0.121,
-   "spearman_all": 0.418,
-   "partial_all": 0.12,
+   "median_all": 4.0,
+   "leak_ratio_all_over_pre_median": 2.424,
+   "spearman_pre": 0.455,
+   "partial_pre": 0.181,
+   "spearman_all": 0.551,
+   "partial_all": 0.354,
    "spearman_ph_hunter": 0.427,
    "partial_ph_hunter": 0.152,
    "spearman_clean": 0.472,
-   "spearman_pre_vs_ph_hunter_followers": 0.927,
+   "spearman_pre_vs_ph_hunter_followers": 0.919,
    "median all/pre ratio: top10 / others": [
-    1.045,
-    1.0
+    1.388,
+    2.5
    ],
    "mean_all_minus_pre: top10 / others": [
-    152.0,
-    5.9
+    1235.8,
+    29.5
    ]
   },
   "2026-11-11": {
+   "base": "clean_v3_nosite",
    "launches": 16,
    "with_rank_and_clean": 16,
-   "eligible_people": 38507,
+   "eligible_people": 41398,
    "coverage_pre>0": 0.812,
-   "median_pre": 95.0,
-   "median_all": 95.0,
-   "leak_ratio_all_over_pre_median": 1.0,
-   "spearman_pre": 0.665,
-   "partial_pre": 0.278,
-   "spearman_all": 0.665,
-   "partial_all": 0.278,
+   "median_pre": 132.5,
+   "median_all": 154.5,
+   "leak_ratio_all_over_pre_median": 1.162,
+   "spearman_pre": 0.66,
+   "partial_pre": 0.265,
+   "spearman_all": 0.66,
+   "partial_all": 0.265,
    "spearman_ph_hunter": 0.664,
    "partial_ph_hunter": 0.29,
    "spearman_clean": 0.797,
-   "spearman_pre_vs_ph_hunter_followers": 0.959,
+   "spearman_pre_vs_ph_hunter_followers": 0.968,
    "median all/pre ratio: top10 / others": [
-    1.0,
-    1.0
+    1.14,
+    1.833
    ],
    "mean_all_minus_pre: top10 / others": [
-    0.0,
-    0.0
+    726.3,
+    24.6
+   ]
+  },
+  "2026-11-12": {
+   "base": "deployed 00:05 pred",
+   "launches": 37,
+   "with_rank_and_clean": 37,
+   "eligible_people": 51775,
+   "coverage_pre>0": 0.757,
+   "median_pre": 47.0,
+   "median_all": 49.0,
+   "leak_ratio_all_over_pre_median": 1.045,
+   "spearman_pre": 0.749,
+   "partial_pre": 0.44,
+   "spearman_all": 0.743,
+   "partial_all": 0.425,
+   "spearman_ph_hunter": 0.778,
+   "partial_ph_hunter": 0.521,
+   "spearman_clean": 0.677,
+   "spearman_pre_vs_ph_hunter_followers": 0.969,
+   "median all/pre ratio: top10 / others": [
+    1.068,
+    1.033
+   ],
+   "mean_all_minus_pre: top10 / others": [
+    657.8,
+    89.4
    ]
   }
  },

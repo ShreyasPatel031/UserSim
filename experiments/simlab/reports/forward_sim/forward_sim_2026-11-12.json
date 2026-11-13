@@ -5,8 +5,8 @@
  "lineup_from_warehouse": 0,
  "judged_launches_5plus_comments": 2,
  "page_reads_held": 8,
- "final_ranks_available": 0,
- "minutes": 0.5,
+ "final_ranks_available": 37,
+ "minutes": 0.0,
  "concerns": {
   "ph|dep": {
    "precision": [
@@ -217,6 +217,27 @@
    ]
   }
  },
- "band": "final ranks not available yet",
- "est_usd_judge": 0.02
+ "band": {
+  "ph": {
+   "n": 37,
+   "coverage_10_90": [
+    91.9,
+    81.1,
+    100.0,
+    37
+   ],
+   "spearman_pct_vs_final_rank": 0.516
+  },
+  "page": {
+   "n": 8,
+   "coverage_10_90": [
+    75.0,
+    50.0,
+    100.0,
+    8
+   ],
+   "spearman_pct_vs_final_rank": 0.683
+  }
+ },
+ "est_usd_judge": 0.0
 }

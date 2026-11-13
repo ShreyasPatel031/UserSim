@@ -9,15 +9,22 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); from follow_shad
 V3, SALTD, CNS, LDIR, OUT = sys.argv[1:6]; DAYS = sys.argv[6:]; os.makedirs(OUT, exist_ok=True)
 CN = pd.read_parquet(CNS)[["id", "day", "clean_v3_nosite", "rank"]].rename(columns={"rank": "rank_cn"}); CN["id"] = CN.id.astype(str)
 L = pd.concat([pd.read_parquet(f) for f in glob.glob(os.path.join(LDIR, "*.parquet"))]).sort_values("updated_at").drop_duplicates("id", keep="last"); L["id"] = L.id.astype(str)
-rk = dict(zip(L.id, L.daily_rank)); res = {"design": __doc__.split("\n    python")[0], "days": {}}; allpc = {"pre": [], "all": [], "ph_hunter": []}
+rk = dict(zip(L.id, L.daily_rank))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")); from pipeline import warehouse  # noqa: E402
+_W = warehouse.table("launches", do_sync=True); _W = _W.sort_values("updated_at").drop_duplicates("id", keep="last"); rk.update({str(i): r for i, r in zip(_W.id, _W.daily_rank) if r == r})
+res = {"design": __doc__.split("\n    python")[0], "days": {}}; allpc = {"pre": [], "all": [], "ph_hunter": []}
 def partial(y, c, x):
     y, c, x = (pd.Series(a).rank().to_numpy() for a in (y, c, x)); ry = y - np.polyval(np.polyfit(c, y, 1), c); rx = x - np.polyval(np.polyfit(c, x, 1), c)
     return float(np.corrcoef(ry, rx)[0, 1])
 for d in DAYS:
     F = pd.DataFrame(features(load_json(f"gs://usersim-bakeoff-347838016394/usersim_sim/raw/daily/{d}/today_0005.json"), d, V3, SALTD))
     F["rank"] = F.launch_id.map(rk); F = F.merge(CN[CN.day == d][["id", "clean_v3_nosite", "rank_cn"]], left_on="launch_id", right_on="id", how="left"); F["rank"] = F["rank"].fillna(F.rank_cn)
+    base = "clean_v3_nosite"
+    if F.clean_v3_nosite.notna().sum() < 8:   # no clean row for the day: deployed 00:05 pred (labelled)
+        _fc = pd.read_parquet(__import__("io").BytesIO(__import__("subprocess").run(["gsutil", "cat", f"gs://usersim-bakeoff-347838016394/usersim_sim/raw/daily/{d}/forecast_{d}.parquet"], capture_output=True).stdout))
+        F["clean_v3_nosite"] = F.launch_id.map(dict(zip(_fc.id.astype(str), _fc.pred))); base = "deployed 00:05 pred"
     G = F[F["rank"].notna() & F.clean_v3_nosite.notna()]; y = -G["rank"].to_numpy()
-    o = {"launches": len(F), "with_rank_and_clean": len(G), "eligible_people": int(F.eligible_people.iat[0]), "coverage_pre>0": round(float((F.held_followers_pre > 0).mean()), 3),
+    o = {"base": base, "launches": len(F), "with_rank_and_clean": len(G), "eligible_people": int(F.eligible_people.iat[0]), "coverage_pre>0": round(float((F.held_followers_pre > 0).mean()), 3),
          "median_pre": float(F.held_followers_pre.median()), "median_all": float(F.held_followers_all.median()),
          "leak_ratio_all_over_pre_median": round(float((F.held_followers_all / F.held_followers_pre.replace(0, np.nan)).median()), 3)}
     if len(G) >= 8:
