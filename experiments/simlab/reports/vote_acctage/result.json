@@ -1,0 +1,188 @@
+{
+ "(1) id->createdAt fit": {
+  "ref users": 6914,
+  "CV median abs err hours": 427.03,
+  "p90 hours": 2882.9,
+  "p99 hours": 41567.7,
+  "2024+ accounts n / median h": [
+   3390,
+   193.17
+  ],
+  "max ref id created": "2026-11-13"
+ },
+ "(2) coverage of numeric ids": {
+  "store persons": [
+   22258,
+   76678
+  ],
+  "complete persons": [
+   11325,
+   65740
+  ],
+  "upvoter rows on the 62 over-covered (with id / all)": [
+   10094,
+   22454
+  ],
+  "upvoter rows, all Oct1-Nov10 launches (with id / all)": [
+   41618,
+   85597
+  ],
+  "note": "id-known people come from maker/hunter/profile sources, so they skew towards makers"
+ },
+ "(3/4) launches": {
+  "with >=5 id-known upvoters": 1136,
+  "over-covered among them": 62,
+  "with matched pool": 62
+ },
+ "u30": {
+  "over mean": 0.0346,
+  "matched mean": 0.0392,
+  "diff [95% CI]": [
+   -0.0046,
+   -0.0099,
+   0.0011
+  ],
+  "top-3 diff (n=43)": [
+   -0.0027,
+   -0.0089,
+   0.0033
+  ]
+ },
+ "u90": {
+  "over mean": 0.0452,
+  "matched mean": 0.0471,
+  "diff [95% CI]": [
+   -0.0019,
+   -0.0073,
+   0.0033
+  ],
+  "top-3 diff (n=43)": [
+   -0.0011,
+   -0.0072,
+   0.0049
+  ]
+ },
+ "u365": {
+  "over mean": 0.4045,
+  "matched mean": 0.3575,
+  "diff [95% CI]": [
+   0.0471,
+   0.0298,
+   0.0653
+  ],
+  "top-3 diff (n=43)": [
+   0.0626,
+   0.0449,
+   0.08
+  ]
+ },
+ "near50": {
+  "over mean": 0.0265,
+  "matched mean": 0.0108,
+  "diff [95% CI]": [
+   0.0158,
+   0.0099,
+   0.0226
+  ],
+  "top-3 diff (n=43)": [
+   0.0153,
+   0.0094,
+   0.022
+  ]
+ },
+ "near500": {
+  "over mean": 0.078,
+  "matched mean": 0.0321,
+  "diff [95% CI]": [
+   0.0459,
+   0.0358,
+   0.057
+  ],
+  "top-3 diff (n=43)": [
+   0.0485,
+   0.037,
+   0.06
+  ]
+ },
+ "near50_excess": {
+  "over mean": 0.0208,
+  "matched mean": 0.007,
+  "diff [95% CI]": [
+   0.0138,
+   0.0077,
+   0.0203
+  ],
+  "top-3 diff (n=43)": [
+   0.0132,
+   0.0072,
+   0.0201
+  ]
+ },
+ "near500_excess": {
+  "over mean": 0.0416,
+  "matched mean": 0.0098,
+  "diff [95% CI]": [
+   0.0318,
+   0.0221,
+   0.0422
+  ],
+  "top-3 diff (n=43)": [
+   0.0349,
+   0.0241,
+   0.0472
+  ]
+ },
+ "(3b) weights (displayed ~ store upvoters by account-age cell, [0,1], 5-fold CV by launch)": {
+  "cells": [
+   "30-90d",
+   "90-365d",
+   "<30d",
+   ">365d",
+   "no id"
+  ],
+  "cell totals": [
+   152,
+   4673,
+   455,
+   7776,
+   15285
+  ],
+  "weights (fold mean, min-max)": {
+   "30-90d": [
+    0.829,
+    0.611,
+    1.0
+   ],
+   "90-365d": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "<30d": [
+    0.7,
+    0.0,
+    1.0
+   ],
+   ">365d": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "no id": [
+    0.639,
+    0.604,
+    0.664
+   ]
+  },
+  "OOF MAE age cells / single weight": [
+   47.57,
+   50.16
+  ],
+  "MAE gain (single - cells) [95% CI]": [
+   2.59,
+   0.82,
+   4.45
+  ],
+  "n launches (near-complete: store upvoters >= 0.9 x displayed)": 84
+ }
+}
