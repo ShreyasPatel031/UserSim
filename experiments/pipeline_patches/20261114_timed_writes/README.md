@@ -1,5 +1,7 @@
 # Bundle 12: timed writes as cron jobs on the pipeline VM (prepared 2026-11-13, NOT deployed)
 
+> The tarball eecc0f55 / ff04f7b9 predates the inputs_backup job (997a2487) and hr_clean_arm2; it is rebuilt with both on Nov 14 morning and this README gets the new commit + md5 before any deploy.
+
 Asked by the orchestrator at 22:45Z Nov 13. Deploying needs Shreyas's direct word.
 
 ## Why
