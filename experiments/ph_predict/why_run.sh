@@ -1,7 +1,7 @@
 #!/bin/bash
-# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 5a23e0a3), people-side "why" items.
+# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 f9114274), people-side "why" items.
 # No LLM, no Product Hunt requests, CPU only. Salted ids + counts only; the salt is read by the script, never printed.
-# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of 5a23e0a3>
+# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of f9114274>
 #   forecast D: at/after 00:10 PT on D (store reads fetched before 00:00 PT only) -> results/web/why_shadow/<D>_0005.json
 #   after D:    ~09:00 PT on D+1, after the store merge -> results/web/why_shadow/<D>_after.json
 #   try -:      weekly /try neighbour sidecar -> results/web/why_shadow/try_neighbours_v1.json
@@ -9,7 +9,7 @@ set -euo pipefail
 MODE="$1"; D="$2"; W="$3"; WT="$4"; B=gs://usersim-bakeoff-347838016394/usersim_sim
 case "$MODE" in forecast) F="${D}_0005.json";; after) F="${D}_after.json";; try) F="try_neighbours_v1.json";; *) echo "bad mode"; exit 2;; esac
 # skip only when a NON-EMPTY file exists (an empty one, e.g. an 'after' run before the merge, is rewritten)
-if [ "$MODE" != try ] && gsutil -q stat "$B/results/web/why_shadow/$F"; then
+if [ "${FORCE:-0}" != 1 ] && [ "$MODE" != try ] && gsutil -q stat "$B/results/web/why_shadow/$F"; then
   N=$(gsutil cat "$B/results/web/why_shadow/$F" | python3 -I -c "import json,sys; print(len(json.load(sys.stdin).get('launches') or {}))")
   if [ "$N" -gt 0 ]; then echo "exists $F ($N launches)"; exit 0; fi
 fi
