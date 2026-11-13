@@ -29,3 +29,15 @@ header counts are stored. Anything less is not written, not counted, not reporte
   doubling on each further block, cap 2 h), then resumes at half the workers, and steps back up after an hour clean
   (Shreyas, Nov 5 05:35 UTC). The sustainable rate is whatever Product Hunt allows without evasion.
 - Any agent that sees this rule broken alerts Grok Bot by webhook within 1 minute, naming the agent.
+
+## Rule for every agent: no caps, no dropped fields (Shreyas, Nov 13 2026)
+
+- **No caps on pulls.** No agent puts a cap, sample, "pilot", "first N", day limit or capacity percentage on a data pull, and no
+  agent cancels or shrinks a pull. A pull fetches everything the source returns, for everyone it applies to; the only limits are
+  the source's own (its rate limit, its blocks, handled by the back-off rule above) and not starving the live midnight capture.
+  If a pull does not fit in a day it continues the next day. Analyses on held data may use samples; pulls may not.
+- **No dropped fields.** Everything that is pulled is kept, in the raw file and all the way into the built store and warehouse.
+  A store or table build that leaves out a field present in the raw files fails its check. (Found Nov 13: the store build dropped
+  `about.joined` and `ph_user_id`, so agents reported "no account age held" while every saved profile had it.)
+- Before believing "we don't hold X", read a raw file, not only the built store.
+- Any agent that sees a cap or a dropped field fixes it and tells Shreyas.
