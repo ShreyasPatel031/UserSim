@@ -40,14 +40,20 @@ for i,p in enumerate(proxies,1):
 pool_lines = []
 spain = secrets / "iproyal.purl"
 fleet_slots = int(__import__("os").environ.get("PACE_IPROYAL_FLEET_SLOTS", "20"))
-if spain.is_file() and spain.read_text().strip():
+include_spain = __import__("os").environ.get("PACE_IPROYAL_INCLUDE_SPAIN", "").strip() in (
+    "1",
+    "true",
+    "yes",
+)
+if include_spain and spain.is_file() and spain.read_text().strip():
     pool_lines.append("secrets/iproyal.purl")
     print("pool head: Spain control", spain)
+else:
+    print("pool: Finland-only (PACE_IPROYAL_INCLUDE_SPAIN unset)")
 fi_cap = max(0, fleet_slots - len(pool_lines))
 pool_lines.extend(paths[:fi_cap])
 header = (
-    "# Slot N → line N. Line 1 = Spain control (secrets/iproyal.purl) when present; "
-    "then Finland ISP order from API.\n"
+    "# Slot N → line N. Finland ISP from API (set PACE_IPROYAL_INCLUDE_SPAIN=1 to prepend secrets/iproyal.purl).\n"
 )
 spares = paths[fi_cap:]
 body = "\n".join(pool_lines)

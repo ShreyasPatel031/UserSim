@@ -400,17 +400,8 @@ SUP_TAIL="
       elif [[ "$dead_for" -ge "$KEEPER_DEAD_SEC" && "$nudge_age" -ge "$KEEPER_DEAD_SEC" ]]; then
         # Prefer in-place relaunch (new GO). Full recreate only if already nudged twice with no batch.
         nudges=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('nudge_fail',0))" 2>/dev/null || echo 0)
-        if [[ "$nudges" -ge 2 && "$slot" != "1" ]]; then
+        if [[ "$nudges" -ge 2 ]]; then
           recreate_slot "$slot" "dead_after_nudges"
-        elif [[ "$nudges" -ge 2 && "$slot" == "1" ]]; then
-          nudge_go "$slot" "spain_nudge_only"
-          python3 - <<PY
-import json
-from pathlib import Path
-p=Path("$ART/keeper_state.json"); st=json.loads(p.read_text())
-st.setdefault("slots",{}).setdefault("$slot",{})["nudge_fail"]=0
-p.write_text(json.dumps(st, indent=2))
-PY
         else
           nudge_go "$slot" "dead_${dead_for}s"
           keeper_nudge_budget=$((keeper_nudge_budget - 1))

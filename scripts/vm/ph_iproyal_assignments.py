@@ -156,8 +156,6 @@ def rotate_cooldown_ok(slot: str, sec: float = 1200.0) -> bool:
 def rotate(slot: int | str, reason: str = "block") -> dict:
     root = _root()
     slot = str(slot)
-    if slot == "1":
-        return {"ok": False, "reason": "spain_control_fixed"}
     if not rotate_cooldown_ok(slot):
         return {"ok": False, "reason": "rotate_cooldown", "slot": slot}
     pool = pool_path()

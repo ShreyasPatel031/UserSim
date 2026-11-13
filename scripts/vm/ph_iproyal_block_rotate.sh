@@ -23,7 +23,7 @@ walls_min = int("$WALLS_MIN")
 out = []
 for s in m.get("slots", []):
     slot = int(s.get("slot") or 0)
-    if slot <= 1:
+    if slot < 1:
         continue
     st = s.get("state") or ""
     walls = int(s.get("walls") or 0)
@@ -49,7 +49,7 @@ SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccou
 GC=(gcloud --account="$SA")
 ZONE="${PACE_ZONE:?}"
 while IFS=$'\t' read -r slot _; do
-  [[ -z "$slot" || "$slot" == "1" ]] && continue
+  [[ -z "$slot" ]] && continue
   (( n >= MAX )) && break
   name="feeder-fleet-${RUN_ID}-${slot}"
   st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"

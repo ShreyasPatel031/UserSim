@@ -10,7 +10,6 @@ RUN_ID="${RUN_ID,,}"
 export PACE_FLEET_RUN_ID="$RUN_ID" FLEET_ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 SLOT="${1:?slot}"
 REASON="${2:-restart}"
-[[ "$SLOT" == "1" ]] && exit 0
 
 purl_before="$(python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" get "$SLOT")"
 host_before="$(python3 -c "import urllib.parse as u; print(u.urlparse(open('$purl_before').read().strip()).hostname or '')")"

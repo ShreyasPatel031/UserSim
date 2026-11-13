@@ -20,6 +20,6 @@ export FLEET_MAX_VMS="$WANT" FLEET_MIN_VMS="${FLEET_MIN_VMS:-8}" FLEET_TARGET_LO
 export PH_FLEET_STRATEGY="$ROOT/scripts/vm/ph_strategies/fleet_iproyal.env"
 echo "iproyal optimize: pool_lines=$N deploy_slots=$N max_vms=$WANT run=$RUN_ID level=$IPROYAL_FLEET_LEVEL"
 bash "$ROOT/scripts/vm/ph_iproyal_deploy_fleet.sh"
-MSG="POPULATION_COORD IPRoyal optimize $(date -u +%FT%TZ): scaled run=$RUN_ID to $N VMs (max $WANT). Slot1=Spain fixed; slots2+ rotate dedicated IP on sustained block + on VM recreate (pool up to 20 FI ISPs). L3_mid+fleet_iproyal. Goal 20 complete/min. zero_incomplete=UNVERIFIED."
+MSG="POPULATION_COORD IPRoyal optimize $(date -u +%FT%TZ): scaled run=$RUN_ID to $N VMs (max $WANT). Finland-only pool (Spain retired on slot1). Rotate dedicated IP on block + VM recreate. L3_mid+fleet_iproyal. Goal 20 complete/min. zero_incomplete=UNVERIFIED."
 bash "$ROOT/scripts/vm/ph_fleet_agent_relay.sh" population fleet-cursor "$MSG"
 bash "$ROOT/scripts/vm/ph_fleet_agent_relay.sh" all fleet-cursor "fleet-cursor IPRoyal fleet optimize: $N feeders live, $WANT cap when pool hits 20 lines. Mailbox status.json updated each 15m."
