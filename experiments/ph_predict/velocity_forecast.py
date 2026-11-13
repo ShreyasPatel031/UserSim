@@ -44,11 +44,14 @@ def main():
             X["day"] = d; X["h"] = h; X["wd"] = t0.weekday(); rows.append(X)
     A = pd.concat(rows, ignore_index=True); days = sorted(A.day.unique())
     A["relv"] = A.g1 / A.groupby(["day", "h"]).g1.transform("mean").replace(0, np.nan); A["relv"] = A.relv.fillna(1.0)
+    A["relc"] = A.cg1 / A.groupby(["day", "h"]).cg1.transform("mean").replace(0, np.nan); A["relc"] = A.relc.fillna(1.0)
+    A["zp"] = A.groupby(["day", "h"]).prior.transform(lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0).fillna(0)
     def hits(o, t): return [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
     rng = np.random.default_rng(0); md = [f"# Velocity forecast after reveal ({len(days)} days with hourly snapshots, {days[0]}..{days[-1]}; walk-forward by day)", "",
           "| h (PT) | days | (i) votes t3/t5/t10 | (ii) readable extrapolation | (iii) GBM | (ii) - (i) t3 / t5 / t10 (95%) | (iii) - (i) | (ii) - (iii) |", "|---|---|---|---|---|---|---|---|"]
+    md4 = ["", "## (iv) readable + comment velocity + clean prior (grid on earlier days)", "", "| h (PT) | days | (iv) t3/t5/t10 | (iv) - (i) (95%) | (iv) - (ii) (95%) |", "|---|---|---|---|---|"]
     for h in HS:
-        R = {"i": [], "ii": [], "iii": []}
+        R = {"i": [], "ii": [], "iii": [], "iv": []}
         for k, d in enumerate(days):
             te = A[(A.day == d) & (A.h == h)]; tr = A[(A.day < d) & (A.h == h)]
             if te.empty or tr.day.nunique() < 3: continue
@@ -60,17 +63,27 @@ def main():
                 sc = [np.mean(hits(x.assign(s=x.votes * M * (1 + b * (x.relv - 1))).sort_values(["s", "id"], ascending=[False, True]).id.tolist(), x.sort_values("daily_rank").id.tolist())) for _, x in tr.groupby("day")]
                 if best is None or np.mean(sc) > best: best, bb = np.mean(sc), b
             R["ii"].append(hits(te.assign(s=te.votes * M * (1 + bb * (te.relv - 1))).sort_values(["s", "id"], ascending=[False, True]).id.tolist(), t))
+            # (iv) readable + comment velocity + clean prior: votes x M x (1 + b (relv-1) + c (relc-1) + p zp), grid on earlier days
+            best4, prm = None, (0, 0, 0)
+            for b_ in (0.0, 0.05, 0.1, 0.2):
+                for c_ in (0.0, 0.05, 0.1, 0.2):
+                    for p_ in (0.0, 0.02, 0.05, 0.1):
+                        sc = [np.mean(hits(x.assign(s=x.votes * (1 + b_ * (x.relv - 1) + c_ * (x.relc - 1) + p_ * x.zp)).sort_values(["s", "id"], ascending=[False, True]).id.tolist(), x.sort_values("daily_rank").id.tolist())) for _, x in tr.groupby("day")]
+                        if best4 is None or np.mean(sc) > best4: best4, prm = np.mean(sc), (b_, c_, p_)
+            b_, c_, p_ = prm
+            R["iv"].append(hits(te.assign(s=te.votes * (1 + b_ * (te.relv - 1) + c_ * (te.relc - 1) + p_ * te.zp)).sort_values(["s", "id"], ascending=[False, True]).id.tolist(), t))
             F = ["votes", "g1", "g2", "comments", "cg1", "hours_since_start", "prior", "wd"]
             g = lgb.LGBMRegressor(n_estimators=200, learning_rate=0.05, num_leaves=7, min_child_samples=10, verbose=-1).fit(tr[F], np.log1p(tr.final))
             R["iii"].append(hits(te.assign(s=g.predict(te[F])).sort_values(["s", "id"], ascending=[False, True]).id.tolist(), t))
         if not R["i"]: continue
-        I, II, III = (np.array(R[k]) for k in ("i", "ii", "iii"))
+        I, II, III, IV = (np.array(R[k]) for k in ("i", "ii", "iii", "iv"))
         def ci(D):
             b = np.array([D[rng.integers(0, len(D), len(D))].mean(0) for _ in range(3000)]); lo, hi = np.percentile(b, 2.5, 0), np.percentile(b, 97.5, 0)
             return " / ".join(f"{D[:, j].mean():+.1f} [{lo[j]:+.1f}, {hi[j]:+.1f}]" for j in range(3))
         f = lambda X: " / ".join(f"{X[:, j].mean():.1f}" for j in range(3))
         md.append(f"| {h:02d}:00 | {len(I)} | {f(I)} | {f(II)} | {f(III)} | {ci(II - I)} | {ci(III - I)} | {ci(II - III)} |")
-    md += ["", "Walk-forward: day d uses only earlier days (needs 3) for M(h), b and the GBM; first test day is the 4th day held. Snapshot at h must be within 65 min of h."]
+        md4.append(f"| {h:02d}:00 | {len(I)} | {f(IV)} | {ci(IV - I)} | {ci(IV - II)} |")
+    md += md4 + ["", "Walk-forward: day d uses only earlier days (needs 3) for M(h), b and the GBM; first test day is the 4th day held. Snapshot at h must be within 65 min of h."]
     open(os.path.join(HERE, "results", "velocity_forecast.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
