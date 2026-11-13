@@ -78,6 +78,34 @@ def score(A, col):
     return np.array(out)
 
 
+
+def refit(tr, te, cols, seed, m):
+    """Arm-2 re-fit choices (orchestrator 20:32Z Nov 13). HP = JSON overrides of TW.P0 (capacity); RECENCY_HL = half-life in days of a
+    recency weight (age from the test month start); W2025 = weight on rows before 2026; OBJ = lambdarank3 | lambdarank10 (LambdaRank within
+    day, graded relevance top3=4, 4-5=3, 6-10=2, 11-20=1, else 0; truncation level 3 or 10). Unset = TW.fitw exactly (deployed arm 2)."""
+    HP, HL, W25, OBJ = os.environ.get("HP"), os.environ.get("RECENCY_HL"), os.environ.get("W2025"), os.environ.get("OBJ")
+    if not (HP or HL or W25 or OBJ):
+        return TW.fitw(tr, te, cols, seed)
+    import lightgbm as lgb
+    p = dict(TW.P0)
+    if HP:   # JSON, or k:v,k:v (shell / xargs strip quotes)
+        try:
+            p.update(json.loads(HP))
+        except ValueError:
+            p.update({k.strip(' {}"'): (int if v.strip(' {}"').isdigit() else float)(v.strip(' {}"')) for k, v in (kv.split(":") for kv in HP.split(","))})
+    w = np.ones(len(tr))
+    if HL:
+        age = (pd.Timestamp(m + "-01") - pd.to_datetime(tr.day)).dt.days.values; w = w * 0.5 ** (age / float(HL))
+    if W25:
+        w = w * np.where(tr.day.values < "2026-01-01", float(W25), 1.0)
+    if not OBJ:
+        return lgb.LGBMRegressor(random_state=seed, **p).fit(tr[cols], tr.logv, sample_weight=w).predict(te[cols])
+    t = tr.assign(_w=w).sort_values("day"); r = t.groupby("day").logv.rank(ascending=False, method="first")
+    rel = np.select([r <= 3, r <= 5, r <= 10, r <= 20], [4, 3, 2, 1], 0)
+    k = 3 if OBJ.endswith("3") else 10
+    mdl = lgb.LGBMRanker(random_state=seed, objective="lambdarank", lambdarank_truncation_level=k, **p)
+    return mdl.fit(t[cols], rel, group=t.groupby("day", sort=True).size().values).predict(te[cols])
+
 def main():
     t0 = time.time(); src = os.environ.get("H25_SRC", os.path.expanduser("~/w/ph_history/2025"))
     df, nan_cols = build(src); old = df.day < "2026-01-01"
@@ -165,10 +193,12 @@ def main():
                 if SEA:
                     o25 = tr0.day < "2026-01-01"; same = tr0.day.str[5:7] == m[5:7]
                     tr0 = tr0[~o25 | (same if SEA == "same" else ~same)]
+                if os.environ.get("DECOMP_ONLY") and nm != os.environ["DECOMP_ONLY"]:
+                    continue
                 tr, te, cols = TW.prep(tr0, te0)
                 cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")]
                 for s in range(SEEDS):
-                    P.append(pd.DataFrame({"id": te.id.values, "variant": nm, "seed": s, "pred": TW.fitw(tr, te, cols, s)}))
+                    P.append(pd.DataFrame({"id": te.id.values, "variant": nm, "seed": s, "pred": refit(tr, te, cols, s, m)}))
             print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
         R = pd.concat(P); R.to_parquet(f"results/history_retrain_decomp_seeds{DT}.parquet")
         A = R.groupby(["id", "variant"]).pred.mean().unstack().reset_index().merge(dfo[["id", "day", "dailyRank"]], on="id")
