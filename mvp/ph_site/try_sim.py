@@ -853,7 +853,8 @@ def step_launch(tok: str) -> dict:
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
                        "(10th to 90th percentile)."),
-            "honesty": _honesty(acc, a.get("source")), "coverage": None,   # one coverage figure per band: the input note (pasted) or the card (page) "input_note": _input_note(a.get("source")),
+            "honesty": _honesty(acc, a.get("source")), "coverage": None,  # one coverage figure per band: input note (pasted) / card (page)
+            "input_note": _input_note(a.get("source")),
             "card": card, "source": a.get("source")}
 
 

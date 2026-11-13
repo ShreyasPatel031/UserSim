@@ -337,3 +337,18 @@ def test_forecast_0005_markdown_fallback(monkeypatch):
     lineup.append({"id": 44, "name": "Delta"}); lineup.append({"id": 55, "name": "Eps"}); lineup.append({"id": 66, "name": "Z"})
     lineup.append({"id": 77, "name": "Y"}); lineup.append({"id": 88, "name": "X"}); lineup.append({"id": 99, "name": "W"})
     assert live._forecast_0005_md("2026-11-12") is None      # too few names matched: no partial order shown
+
+
+def test_launch_step_returns_input_note(monkeypatch):
+    from mvp.ph_site import try_sim, gcs
+    lb = {"vocab": {}, "intercept": 0.0, "topics_order": [], "dense_mean": [0, 0, 0], "dense_sd": [1, 1, 1],
+          "dense_coef": [0, 0, 0], "score_percentile_cuts": list(range(-50, 50)),
+          "bands": [{"decile": i + 1, "daily_rank_p10_p50_p90": [1, 5, 20], "votes_p10_p50_p90": [10, 50, 200],
+                    "share_top3": 0.1, "share_top10": 0.3, "n": 100} for i in range(10)],
+          "heldout_accuracy": {"days": 200, "top3": 29, "top5": 40, "top10": 60, "within_day_spearman": 0.2},
+          "trained_on": {"launches": 1000, "days": ["2026-01-01", "2026-11-10"]}}
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: lb if n.endswith("launch_band.json") else None)
+    monkeypatch.setattr(try_sim, "use_run", lambda tok, step: {"name": "X", "tagline": "y", "ph_description": "z " * 50,
+                                                                "topics": [], "source": "pasted"})
+    out = try_sim.step_launch("t")
+    assert out["input_note"] and "0.35" in out["input_note"] and out["coverage"] is None
