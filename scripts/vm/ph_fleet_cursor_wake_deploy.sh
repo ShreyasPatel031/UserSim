@@ -4,8 +4,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 source "${PACE_ENV_FILE:-$ROOT/results/ph_tab_experiment/20261107t170953z/pace.env}"
 PROJECT="${AGENT_MSGS_PROJECT:-${GCP_PROJECT:?}}"
-REGION="${FLEET_WAKE_REGION:-$(gcloud config get-value run/region 2>/dev/null | tr -d '\r')}"
-[[ -n "$REGION" ]] || { echo "set FLEET_WAKE_REGION or gcloud run/region" >&2; exit 1; }
+REGION="${FLEET_WAKE_REGION:-}"
+if [[ -z "$REGION" ]]; then
+  REGION="$(gcloud config get-value run/region 2>/dev/null | tr -d '\r' || true)"
+fi
+if [[ -z "$REGION" ]]; then
+  REGION="$(gcloud run services list --project="$PROJECT" --filter="metadata.name=$SERVICE" --format='value(metadata.labels.cloud.googleapis.com/location)' 2>/dev/null | head -1)"
+fi
+[[ -n "$REGION" ]] || { echo "set FLEET_WAKE_REGION" >&2; exit 1; }
 SERVICE="fleet-cursor-wake"
 SUB="fleet-cursor-wake"
 TOPIC="${AGENT_MSGS_TOPIC:-agent-msgs}"
@@ -21,8 +27,9 @@ gcloud run deploy "$SERVICE" \
   --project="$PROJECT" \
   --region="$REGION" \
   --source="$SRC" \
+  --clear-base-image \
   --no-allow-unauthenticated \
-  --set-env-vars="MVP_GCS_BUCKET=${MVP_GCS_BUCKET:-},FLEET_CURSOR_BC_ID=${FLEET_CURSOR_BC_ID:-${CURSOR_CONVERSATION_ID:-}}" \
+  --set-env-vars="FUNCTION_TARGET=wake,MVP_GCS_BUCKET=${MVP_GCS_BUCKET:-},FLEET_CURSOR_BC_ID=${FLEET_CURSOR_BC_ID:-${CURSOR_CONVERSATION_ID:-}}" \
   ${CURSOR_API_KEY:+--set-secrets=CURSOR_API_KEY=cursor-fleet-api-key:latest} \
   --quiet
 
@@ -35,7 +42,6 @@ if gcloud pubsub subscriptions describe "$SUB" --project="$PROJECT" >/dev/null 2
     --push-endpoint="${URL}" \
     --push-auth-service-account="$SA" \
     --push-auth-token-audience="$URL" \
-    --message-filter="$FILTER" \
     --quiet
 else
   gcloud pubsub subscriptions create "$SUB" \
