@@ -324,7 +324,24 @@ def hourly_once(L, E0, sl, base_ids):
                       "lastweek_coverage_all_tracked": round(float(Lw.pa.sum() / Lw.votes.sum()), 4) if len(Lw) else None,
                       "lastweek_complete_voters": int(cw.pid.nunique()), "lastweek_gap_to_80pct": round(0.8 - lw_cov, 4) if lw_cov is not None else None,
                       "lastweek_votes_needed_for_80pct": int(0.8 * Lw.votes.sum() - Lw.pc.sum())}
-    complete_block = {**lastweek_block, "complete_people": int(len(complete)), "complete_voters_in_window": int(Uc.pid.nunique()),
+    # capped headline (orchestrator 11:54Z Nov 13): listed upvoters exceed PH's displayed votesCount on many top launches (count-time
+    # discounting, votes_drift.md), so per-launch coverage is capped at 1 before summing; uncapped figures kept for continuity
+    cap = lambda X, col: float(np.minimum(X[col], X.votes).sum() / X.votes.sum()) if len(X) and X.votes.sum() > 0 else None
+    t3t = Lt.top3 if "top3" in Lt else Lt.daily_rank <= 3
+    capped_block = {"capped_coverage_complete_all": round(cap(Lt, "pc"), 4), "capped_coverage_complete_top3": round(cap(Lt[t3t], "pc"), 4),
+                    "capped_coverage_complete_heldout": round(cap(Lt[Lt.held], "pc"), 4) if "held" in Lt else None,
+                    "capped_lastweek_coverage_complete_all": round(cap(Lw, "pc"), 4) if len(Lw) else None,
+                    "capped_lastweek_coverage_complete_top3": round(cap(Lw[t3], "pc"), 4) if t3.any() else None,
+                    "headline": "capped_* (per-launch coverage capped at 1)"}
+    # raw ratio: all store upvoters (any person, deduped person x launch) / displayed votes, per launch with final votes > 0
+    Bu = B.drop_duplicates(); Lr = L[(L.votes > 0) & L.daily_rank.notna()].copy(); Lr["up"] = Lr.id.map(Bu.groupby("id").size()).fillna(0)
+    Lr = Lr[Lr.up > 0]; Lr["r"] = Lr.up / Lr.votes
+    Lr["band"] = pd.cut(Lr.daily_rank, [0, 3, 10, 30, 1e9], labels=["1-3", "4-10", "11-30", "31+"]); Lr["month"] = Lr.day.str[:7]
+    rs = lambda g: {"n": int(len(g)), "share_above_1": round(float((g.r > 1).mean()), 3), "median": round(float(g.r.median()), 3), "p90": round(float(g.r.quantile(0.9)), 3)}
+    ratio_block = {"upvoters_over_displayed": {"note": "launches with >= 1 store upvoter; store coverage of a launch is partial, so the ratio is a lower bound",
+                                                "by_band": {str(k): rs(g) for k, g in Lr.groupby("band", observed=True)},
+                                                "by_month": {k: rs(g) for k, g in Lr.groupby("month")}, "all": rs(Lr)}}
+    complete_block = {**capped_block, **ratio_block, **lastweek_block, "complete_people": int(len(complete)), "complete_voters_in_window": int(Uc.pid.nunique()),
                       "coverage_complete_all": round(float(Dc.P.sum() / Dc.V.sum()), 4), "coverage_complete_top3": round(float(Dc.P3.sum() / Dc.V3.sum()), 4),
                       "coverage_complete_heldout": round(float(Dc.Ph.sum() / Dc.Vh.sum()), 4),
                       "complete_source": COMPLETE_SRC[0], "note": "headline = complete people only (whole-person rule); coverage_all etc. also count lists-only and page-1 pool upvotes"}
