@@ -1,0 +1,298 @@
+{
+ "design": "Voter-based 00:05 forecast harness (orchestrator 22:53Z Nov 12; re-run with one command on a new store snapshot).\nDays: Oct 29-31, Nov 2, 3, 4, 8, 9, 10, 11. Line-up and clean score: PH agent's clean_live_rows_nosite.parquet (clean_v3_nosite, as live).\nCovered people = complete persons in the store. Pair model P(person upvotes launch): logistic regression on [ln(1+upvotes 30d),\nln(1+upvotes 90d), days since last upvote, topic-taste match, follows the hunter, is the hunter], trained on the 7 launch days before the\ntest day (features at each training day from history before that day; all negatives of active people subsampled 10%).\nExpected covered votes E(L) = sum over active covered people of P. Combined = z(clean) + w z(ln(E + 0.1)), w leave-one-day-out from\n{0, .25, .5, 1, 2}. EDGES env: none / hunter / hunter_maker (follows of the hunter, + the first named maker); \"followers_feature_only\"\n= the launch-level sum over active covered followers of ln(1+upvotes 90d), added to clean instead of E. Timing: STRICT = only upvotes / follows from reads fetched before 00:00 PT of the test day; LENIENT = every read of\nan upvote on an earlier day's launch (what a fresh read the night before would give). HIDDEN: votes on today's launches seen in reads\nfetched 00:05-04:00 PT of the day (re-reads in the hidden window). Coverage curve: covered people subsampled to 10/20/30/41% of votes\n(5 draws). Truth: official daily rank. Paired day bootstrap vs clean alone.",
+ "follows_used": true,
+ "active_people_by_day": {
+  "2026-10-25": 11077,
+  "2026-10-26": 10991,
+  "2026-10-27": 10919,
+  "2026-10-28": 10870,
+  "2026-10-29": 10753,
+  "2026-10-30": 10777,
+  "2026-10-31": 10830,
+  "2026-11-01": 10855,
+  "2026-11-02": 10821,
+  "2026-11-03": 10808,
+  "2026-11-04": 10745,
+  "2026-11-08": 10599,
+  "2026-11-09": 10588,
+  "2026-11-10": 10526,
+  "2026-11-11": 10421
+ },
+ "pair_coefs_by_day": {
+  "2026-10-25": {
+   "coef_n30": 1.258,
+   "coef_n90": -0.607,
+   "coef_last": -1.169,
+   "coef_taste": -0.207,
+   "coef_follows": 1.095,
+   "coef_is_hunter": 0.069,
+   "coef_backed": 0.609
+  },
+  "2026-10-26": {
+   "coef_n30": 1.199,
+   "coef_n90": -0.561,
+   "coef_last": -1.132,
+   "coef_taste": -0.166,
+   "coef_follows": 1.034,
+   "coef_is_hunter": 0.076,
+   "coef_backed": 0.653
+  },
+  "2026-10-27": {
+   "coef_n30": 1.117,
+   "coef_n90": -0.458,
+   "coef_last": -1.103,
+   "coef_taste": -0.157,
+   "coef_follows": 1.13,
+   "coef_is_hunter": 0.099,
+   "coef_backed": 0.676
+  },
+  "2026-10-28": {
+   "coef_n30": 1.038,
+   "coef_n90": -0.372,
+   "coef_last": -1.034,
+   "coef_taste": -0.173,
+   "coef_follows": 1.02,
+   "coef_is_hunter": 0.093,
+   "coef_backed": 0.764
+  },
+  "2026-10-29": {
+   "coef_n30": 1.045,
+   "coef_n90": -0.381,
+   "coef_last": -1.058,
+   "coef_taste": -0.201,
+   "coef_follows": 1.048,
+   "coef_is_hunter": 0.103,
+   "coef_backed": 0.597
+  },
+  "2026-10-30": {
+   "coef_n30": 1.073,
+   "coef_n90": -0.414,
+   "coef_last": -1.038,
+   "coef_taste": -0.237,
+   "coef_follows": 1.125,
+   "coef_is_hunter": 0.127,
+   "coef_backed": 0.519
+  },
+  "2026-10-31": {
+   "coef_n30": 1.045,
+   "coef_n90": -0.394,
+   "coef_last": -0.954,
+   "coef_taste": -0.202,
+   "coef_follows": 1.153,
+   "coef_is_hunter": 0.125,
+   "coef_backed": 0.663
+  },
+  "2026-11-01": {
+   "coef_n30": 1.074,
+   "coef_n90": -0.445,
+   "coef_last": -0.946,
+   "coef_taste": -0.12,
+   "coef_follows": 1.053,
+   "coef_is_hunter": 0.138,
+   "coef_backed": 0.76
+  },
+  "2026-11-02": {
+   "coef_n30": 1.101,
+   "coef_n90": -0.462,
+   "coef_last": -0.963,
+   "coef_taste": -0.193,
+   "coef_follows": 1.106,
+   "coef_is_hunter": 0.146,
+   "coef_backed": 0.675
+  },
+  "2026-11-03": {
+   "coef_n30": 1.087,
+   "coef_n90": -0.414,
+   "coef_last": -0.911,
+   "coef_taste": -0.163,
+   "coef_follows": 0.953,
+   "coef_is_hunter": 0.112,
+   "coef_backed": 0.811
+  },
+  "2026-11-04": {
+   "coef_n30": 1.105,
+   "coef_n90": -0.454,
+   "coef_last": -0.87,
+   "coef_taste": -0.081,
+   "coef_follows": 0.996,
+   "coef_is_hunter": 0.141,
+   "coef_backed": 0.92
+  },
+  "2026-11-08": {
+   "coef_n30": 1.275,
+   "coef_n90": -0.522,
+   "coef_last": -0.932,
+   "coef_taste": 0.375,
+   "coef_follows": 0.961,
+   "coef_is_hunter": 0.075,
+   "coef_backed": 1.136
+  },
+  "2026-11-09": {
+   "coef_n30": 1.278,
+   "coef_n90": -0.476,
+   "coef_last": -0.872,
+   "coef_taste": 0.27,
+   "coef_follows": 0.893,
+   "coef_is_hunter": 0.063,
+   "coef_backed": 1.239
+  },
+  "2026-11-10": {
+   "coef_n30": 1.262,
+   "coef_n90": -0.421,
+   "coef_last": -0.942,
+   "coef_taste": 0.279,
+   "coef_follows": 0.798,
+   "coef_is_hunter": 0.084,
+   "coef_backed": 1.227
+  },
+  "2026-11-11": {
+   "coef_n30": 1.297,
+   "coef_n90": -0.415,
+   "coef_last": -0.988,
+   "coef_taste": 0.154,
+   "coef_follows": 0.796,
+   "coef_is_hunter": 0.101,
+   "coef_backed": 1.176
+  }
+ },
+ "E standalone": {
+  "days": 15,
+  "arm top3/5/10": [
+   40.0,
+   61.3,
+   72.0
+  ],
+  "clean_nosite top3/5/10": [
+   64.4,
+   70.7,
+   76.0
+  ],
+  "arm - clean [mean, lo, hi]": [
+   [
+    -24.4,
+    -44.4,
+    -4.4
+   ],
+   [
+    -9.3,
+    -17.3,
+    -1.3
+   ],
+   [
+    -4.0,
+    -10.0,
+    2.0
+   ]
+  ],
+  "not_worse_on_top3": false
+ },
+ "E_age standalone": {
+  "days": 15,
+  "arm top3/5/10": [
+   40.0,
+   62.7,
+   72.0
+  ],
+  "clean_nosite top3/5/10": [
+   64.4,
+   70.7,
+   76.0
+  ],
+  "arm - clean [mean, lo, hi]": [
+   [
+    -24.4,
+    -44.4,
+    -4.4
+   ],
+   [
+    -8.0,
+    -16.0,
+    0.0
+   ],
+   [
+    -4.0,
+    -10.0,
+    2.0
+   ]
+  ],
+  "not_worse_on_top3": false
+ },
+ "E_age + th_n_pre (2-input)": {
+  "days": 7,
+  "arm top3/5/10": [
+   57.1,
+   68.6,
+   71.4
+  ],
+  "clean_nosite top3/5/10": [
+   71.4,
+   68.6,
+   77.1
+  ],
+  "arm - clean [mean, lo, hi]": [
+   [
+    -14.3,
+    -47.6,
+    14.3
+   ],
+   [
+    0.0,
+    -17.1,
+    14.3
+   ],
+   [
+    -5.7,
+    -15.7,
+    4.3
+   ]
+  ],
+  "not_worse_on_top3": false,
+  "weights": {
+   "2026-11-01": 0.25,
+   "2026-11-02": 0.25,
+   "2026-11-03": 0.25,
+   "2026-11-04": 0.25,
+   "2026-11-08": 0.25,
+   "2026-11-10": 0.25,
+   "2026-11-11": 0.25
+  }
+ },
+ "E_age standalone, same days as 2-input": {
+  "days": 7,
+  "arm top3/5/10": [
+   38.1,
+   60.0,
+   71.4
+  ],
+  "clean_nosite top3/5/10": [
+   71.4,
+   68.6,
+   77.1
+  ],
+  "arm - clean [mean, lo, hi]": [
+   [
+    -33.3,
+    -66.7,
+    -0.0
+   ],
+   [
+    -8.6,
+    -22.9,
+    2.9
+   ],
+   [
+    -5.7,
+    -12.9,
+    1.4
+   ]
+  ],
+  "not_worse_on_top3": false
+ },
+ "coverage": {
+  "launches": 348,
+  "share of held voters in scored active population (mean over launches)": 0.946,
+  "share of held voters in top-N by P, N = round(E) (mean)": 0.284,
+  "E / displayed votes (median)": 0.672,
+  "held voters / displayed votes (median)": 0.5
+ }
+}

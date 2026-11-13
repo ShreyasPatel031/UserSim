@@ -98,4 +98,7 @@ res["coverage"] = {"launches": len(cv), "share of held voters in scored active p
                    "E / displayed votes (median)": round(float((cv.id.map(lambda i: R[i]["E"]) / cv.votes).median()), 3),
                    "held voters / displayed votes (median)": round(float((cv.n_voters_held / cv.votes).median()), 3)}
 json.dump(res, open(os.path.join(OUTD, f"who_backs_follows{int(FOL)}.json"), "w"), indent=1, default=float)
+if os.environ.get("DUMP"):   # per-launch scores (launch ids + numbers only) for the segment analysis; scratch, not committed
+    D.assign(backed=D.id.map(lambda i: R.get(i, {}).get("in_pop", 0)), n_held=D.id.map(lambda i: R.get(i, {}).get("n_voters_held", 0)),
+             hunter=D.id.map(lhun), maker=D.id.map(lmak)).drop(columns=["hunter", "maker"]).to_parquet(os.environ["DUMP"])
 print(json.dumps({k: v for k, v in res.items() if k not in ("design", "pair_coefs_by_day")}, default=float))
