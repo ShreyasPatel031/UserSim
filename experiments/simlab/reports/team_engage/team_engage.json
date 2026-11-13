@@ -1,0 +1,289 @@
+{
+ "design": "Team's own recent community engagement before launch (orchestrator 10:34Z Nov 13). No LLM. Counts only.\nTeam = hunter (launches.poster, always) and, variant TEAM, also every named maker (launches.makers; the 00:05 read lists makers, the\nwarehouse list may be later: flagged). Members count only if COMPLETE in the merged store (61,468). Per member, strictly before 00:00 PT of\nthe target launch day:\n  up7 / up30   upvotes given on launches dated in the 7 / 30 days before (an upvote's date = the acted-on launch's day: upvote rows are\n               snapshots, so a late vote on an older launch cast after the target day cannot be excluded - stated leak risk)\n  com30        comments (exact createdAt) on other launches in the 30 days before\n  forum14      forum posts / discussions (exact) in the 14 days before\n  makers30     distinct first-named makers of the launches upvoted in the 30 days before\n  days_since   days since the member's last dated activity (upvoted launch day / comment / discussion) before the day (capped 365)\nTeam value = sum over members (days_since: min). Launches without a complete member: missing (indicator) - coverage reported.\nTests (launches with an honest_preds_v2 score, Mar 1 - Nov 10): standardized difference top-3 / top-10 vs rest among covered launches\n(day bootstrap); within-day partial Spearman beyond the clean score; beyond the hunter's followersCount (deployed forecast files, Oct 28 on)\n; leave-day-out ridge top 3/5/10, paired day bootstrap.",
+ "launches": 6024,
+ "days": 255,
+ "coverage": {
+  "hunter complete": 0.231,
+  "hunter or a named maker complete": 0.346
+ },
+ "hunter only": {
+  "up7": {
+   "std_diff_top3_vs_rest": [
+    0.6,
+    0.071,
+    1.127,
+    24
+   ],
+   "partial_beyond_clean": [
+    0.084,
+    -0.001,
+    0.17,
+    99
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.141,
+    -0.603,
+    0.68,
+    3
+   ]
+  },
+  "up30": {
+   "std_diff_top3_vs_rest": [
+    0.623,
+    0.097,
+    1.177,
+    28
+   ],
+   "partial_beyond_clean": [
+    0.078,
+    -0.004,
+    0.159,
+    114
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.158,
+    -0.597,
+    0.543,
+    3
+   ]
+  },
+  "com30": {
+   "std_diff_top3_vs_rest": [
+    0.465,
+    -0.023,
+    0.966,
+    28
+   ],
+   "partial_beyond_clean": [
+    0.017,
+    -0.07,
+    0.097,
+    109
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.073,
+    -0.423,
+    0.351,
+    3
+   ]
+  },
+  "forum14": {
+   "std_diff_top3_vs_rest": [
+    -0.092,
+    -0.532,
+    0.583,
+    15
+   ],
+   "partial_beyond_clean": [
+    -0.026,
+    -0.129,
+    0.081,
+    63
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.359,
+    0.299,
+    0.418,
+    2
+   ]
+  },
+  "makers30": {
+   "std_diff_top3_vs_rest": [
+    0.633,
+    0.123,
+    1.172,
+    28
+   ],
+   "partial_beyond_clean": [
+    0.082,
+    0.0,
+    0.155,
+    113
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.13,
+    -0.597,
+    0.543,
+    3
+   ]
+  },
+  "days_since": {
+   "std_diff_top3_vs_rest": [
+    -0.161,
+    -0.44,
+    0.161,
+    29
+   ],
+   "partial_beyond_clean": [
+    -0.024,
+    -0.095,
+    0.047,
+    117
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.119,
+    -0.079,
+    0.317,
+    2
+   ]
+  }
+ },
+ "hunter + named makers": {
+  "up7": {
+   "std_diff_top3_vs_rest": [
+    1.008,
+    0.834,
+    1.188,
+    163
+   ],
+   "partial_beyond_clean": [
+    0.205,
+    0.15,
+    0.259,
+    172
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.315,
+    0.021,
+    0.581,
+    3
+   ]
+  },
+  "up30": {
+   "std_diff_top3_vs_rest": [
+    1.035,
+    0.863,
+    1.21,
+    170
+   ],
+   "partial_beyond_clean": [
+    0.199,
+    0.143,
+    0.256,
+    180
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.224,
+    -0.319,
+    0.505,
+    3
+   ]
+  },
+  "com30": {
+   "std_diff_top3_vs_rest": [
+    0.293,
+    0.112,
+    0.497,
+    168
+   ],
+   "partial_beyond_clean": [
+    0.053,
+    -0.006,
+    0.109,
+    180
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    -0.094,
+    -0.283,
+    0.005,
+    3
+   ]
+  },
+  "forum14": {
+   "std_diff_top3_vs_rest": [
+    0.131,
+    -0.038,
+    0.326,
+    97
+   ],
+   "partial_beyond_clean": [
+    0.041,
+    -0.033,
+    0.114,
+    103
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.196,
+    0.167,
+    0.225,
+    2
+   ]
+  },
+  "makers30": {
+   "std_diff_top3_vs_rest": [
+    1.045,
+    0.864,
+    1.227,
+    169
+   ],
+   "partial_beyond_clean": [
+    0.205,
+    0.151,
+    0.26,
+    179
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    0.288,
+    -0.133,
+    0.507,
+    3
+   ]
+  },
+  "days_since": {
+   "std_diff_top3_vs_rest": [
+    0.057,
+    -0.088,
+    0.208,
+    170
+   ],
+   "partial_beyond_clean": [
+    -0.007,
+    -0.061,
+    0.05,
+    181
+   ],
+   "partial_beyond_hunter_followers (Oct 28+)": [
+    -0.181,
+    -0.523,
+    0.108,
+    3
+   ]
+  }
+ },
+ "month-forward top3/5/10 gain (H)": [
+  [
+   -0.3,
+   -0.9,
+   0.0
+  ],
+  [
+   -0.2,
+   -0.6,
+   0.2
+  ],
+  [
+   -0.1,
+   -0.5,
+   0.3
+  ],
+  193
+ ],
+ "month-forward top3/5/10 gain (T)": [
+  [
+   2.9,
+   1.0,
+   5.0
+  ],
+  [
+   0.0,
+   -1.3,
+   1.3
+  ],
+  [
+   -0.3,
+   -1.0,
+   0.4
+  ],
+  193
+ ]
+}
