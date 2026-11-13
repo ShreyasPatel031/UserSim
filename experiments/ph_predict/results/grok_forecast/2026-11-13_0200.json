@@ -1,0 +1,103 @@
+{
+  "day": "2026-11-13",
+  "point": "0200",
+  "written_at": "2026-11-13T10:07:00Z",
+  "window_start": "2026-11-11T08:05:00Z",
+  "window_end": "2026-11-13T10:00:00Z",
+  "inputs": {
+    "lineup": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/daily/2026-11-13/today_0005.json",
+    "lineup_fields_used": [
+      "name",
+      "tagline",
+      "slug",
+      "website",
+      "makers.twitterUsername",
+      "user.twitterUsername"
+    ],
+    "x_search_window": {
+      "start": "2026-11-11T08:05:00Z",
+      "end": "2026-11-13T08:17:27Z"
+    },
+    "excluded": [
+      "dailyRank",
+      "weeklyRank",
+      "monthlyRank",
+      "votesCount",
+      "commentsCount",
+      "any other Product Hunt rank or vote field",
+      "Product Hunt web pages"
+    ],
+    "note": "Website fields in the lineup were Product Hunt API redirect URLs, not product domains. X url: queries cannot include '/'; searches used product names, slugs, and listed maker/hunter handles. No Product Hunt pages were loaded.",
+    "x_buzz_0010": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_at_launch/2026-11-13/x_buzz_0010.jsonl",
+    "x_buzz_0200": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_at_launch/2026-11-13/x_buzz_0200.jsonl",
+    "x_search_window_delta": {
+      "start": "2026-11-13T08:05:00Z",
+      "end": "2026-11-13T10:00:00Z"
+    },
+    "x_reads_used_this_run": 15,
+    "x_label": "Samples capped at 25 results (X's own limit) are lower bounds"
+  },
+  "forecast": [
+    {
+      "rank": 1,
+      "name": "Gemini 4 Hydrogen",
+      "slug": "gemini-4-hydrogen",
+      "reason": "Still the loudest by far: 921 more posts since 00:05 PT (about 15.2k total over the 48h window) on the fast agentic-coding model."
+    },
+    {
+      "rank": 2,
+      "name": "Claude Meetings",
+      "slug": "claude-meetings",
+      "reason": "301 more posts since 00:05 PT (about 5.5k total) with availability questions and news coverage including a 73k-follower account."
+    },
+    {
+      "rank": 3,
+      "name": "Expo Simulators",
+      "slug": "expo-simulators",
+      "reason": "23 more posts since 00:05 PT, with quote-posts of the official intro from 11-34k follower accounts (74 likes on the top one); developer-focused and on-tagline, but smaller volume than the top two."
+    },
+    {
+      "rank": 4,
+      "name": "Google Pixel Tag",
+      "slug": "google-pixel-tag",
+      "reason": "26 more posts but sampled chatter is thin and cooling; earlier 295 posts and a 527k-follower unboxing keep it ahead of the quiet launches."
+    },
+    {
+      "rank": 5,
+      "name": "WHOOP Humans",
+      "slug": "whoop-humans",
+      "reason": "Only 2 more posts (35 earlier); coverage has cooled, though it was real launch coverage of the health-data social network."
+    },
+    {
+      "rank": 6,
+      "name": "Paxper",
+      "slug": "paxper",
+      "reason": "The product account announced it is live on Product Hunt around 00:15 PT (3 likes, 5 replies, 16 followers); small but the only launch with a self-announce on X."
+    },
+    {
+      "rank": 7,
+      "name": "Replicate",
+      "slug": "replicate-3",
+      "reason": "No on-topic X posts in the window, but the lineup text is a sharp, free Webflow/Framer-to-Claude/Codex hook and lists a widely followed hunter handle; ranking rests on that text, not observed buzz."
+    },
+    {
+      "rank": 8,
+      "name": "Burnstate",
+      "slug": "burnstate",
+      "reason": "No on-topic X posts; the tagline (pacing Claude Code, Codex, and Cursor limits in the menu bar) is unusually timely, which is the only reason it sits above other silent launches."
+    },
+    {
+      "rank": 9,
+      "name": "Trainn MCP",
+      "slug": "trainn-mcp",
+      "reason": "No X posts found; ranked on lineup text alone \u2014 an MCP that turns any AI chat into product videos and courses, which is a clear, current-tooling hook."
+    },
+    {
+      "rank": 10,
+      "name": "Pocket Studio for Supabase",
+      "slug": "pocket-studio-for-supabase",
+      "reason": "No X posts found; the tagline is a concrete Android Supabase dashboard and SQL editor, a specific gap that is easier to picture than the other silent, more generic tools."
+    }
+  ],
+  "supersedes_note": "Updates 2026-11-13_0030.json, which is left intact."
+}

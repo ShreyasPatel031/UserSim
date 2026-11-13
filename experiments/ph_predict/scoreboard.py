@@ -66,6 +66,22 @@ def main():
             add(S["day"], "0005", "clean_avg_shadow", "shadow", f.sort_values("rank_clean_avg").id.tolist(), S["written_at"])
         if "rank_clean_nosite" in f:
             add(S["day"], "0005", "clean_nosite_shadow", "shadow", f.sort_values("rank_clean_nosite").id.tolist(), S["written_at"])
+    # Grok Bot's frozen X-buzz forecasts (orchestrator 00:25Z Nov 13): results/grok_forecast/<day>_0030.json / _0200.json, top 10 by slug;
+    # source live only if written before the reveal (~04:00 PT); slugs mapped to ids through raw/daily/<day>/today_0005.json
+    gd = os.path.join(HERE, "results", "grok_forecast"); os.makedirs(gd, exist_ok=True)
+    subprocess.run(["gsutil", "-q", "-m", "cp", "-n", f"{B}/results/grok_forecast/*.json", gd + "/"], stderr=subprocess.DEVNULL)
+    for gp in sorted(glob.glob(os.path.join(gd, "*.json"))):
+        try:
+            G = json.load(open(gp)); d = G["day"]; tp = os.path.join(gd, f".lineup_{d}.json")
+            if not os.path.exists(tp):
+                subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{d}/today_0005.json", tp], stderr=subprocess.DEVNULL)
+            sl = {x["slug"]: str(x["id"]) for x in json.load(open(tp))}
+            ids = [sl[r["slug"]] for r in sorted(G["forecast"], key=lambda r: r["rank"]) if r.get("slug") in sl]
+            reveal = pd.Timestamp(d, tz="America/Los_Angeles") + pd.Timedelta(hours=4)
+            src_g = "live" if pd.Timestamp(G["written_at"]) < reveal else "late"
+            add(d, {"0030": "P030", "0200": "P2"}.get(G.get("point"), "P030"), f"grok_{G.get('point')}", src_g, ids, G["written_at"])
+        except Exception as e:  # noqa: BLE001
+            print("grok skipped", gp, repr(e)[:120])
     for src, pat in (("live", os.path.join(HERE, "results", "early_forecast", "*.json")), ("replay", os.path.join(HERE, "results", "early_forecast_replay_P", "*.json"))):
         for p in sorted(glob.glob(pat)):
             E = json.load(open(p)); f = pd.DataFrame(E.get("forecast", []))
