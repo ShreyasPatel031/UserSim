@@ -549,7 +549,11 @@ def live(day, point):
             # orchestrator 02:53Z Nov 13: th_n_pre (and the other 00:05 thread inputs) ONLY from the 00:07 PT read (fetched <= 00:12 PT);
             # if that read is missing, the thread inputs are MISSING (fall back to clean_nosite); the capped 01:30+ reads dropped
             # 21% of pre-launch comments and are never used for them
-            C5 = C[(C.ts <= t5) & (C.ft <= t0 + pd.Timedelta(minutes=12))].sort_values("ts")
+            # Nov 13: the "00:07" read actually landed at 00:15 PT, so the rule is the night's FIRST comment read (all rows fetched within
+            # 5 min of the earliest fetch), provided it landed by 00:30 PT; never a later (capped 01:30+) read
+            f0 = C.ft.min() if len(C) else pd.NaT
+            ok0 = pd.notna(f0) and f0 <= t0 + pd.Timedelta(minutes=30)
+            C5 = C[(C.ts <= t5) & (C.ft <= f0 + pd.Timedelta(minutes=5))].sort_values("ts") if ok0 else C.iloc[0:0]
             no007 = C5.empty
             # first-author history by user id from the dump: launches where the id was the first top-level commenter or the hunter
             Kd = K.copy(); Kd["day"] = Kd.ts.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
@@ -576,7 +580,7 @@ def live(day, point):
                              "th_hunter_first": float(bool(fa) and fa == h) if (h and not no007) else np.nan,
                              "th_n_pre": float(g[g.user != h].user.nunique()) if (h and not no007) else np.nan,
                              "th_fa_n": float(np.log1p(len(prev))), "th_fa_rel": (sum(prev) + 1.0) / (len(prev) + 2) if prev else 0.5})
-            E = pd.DataFrame(rows); th_missing = int(E.th_n_pre.isna().sum()); th_source = "missing: no 00:07 PT read" if no007 else "00:07 PT read"
+            E = pd.DataFrame(rows); th_missing = int(E.th_n_pre.isna().sum()); th_source = "missing: no first comment read by 00:30 PT" if no007 else f"first comment read, fetched {f0.tz_convert('America/Los_Angeles').strftime('%H:%M:%S')} PT"
             if no007:   # constant inputs -> zero weight in the within-day z models; the columns then follow clean_nosite
                 E["th_has_first"] = 0.0
             for f_ in ("th_hunter_first", "th_n_pre"):
