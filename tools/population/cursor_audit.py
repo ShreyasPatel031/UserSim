@@ -186,23 +186,29 @@ def main():
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
     if dry:
         return
-    for n in replace:
-        sh("gsutil", "-q", "cp", f"{VM}/{n}.json", f"{VM}/{n}.json.bak_cursor")
+    # 01:5xZ Nov 13: write the decision list first, so an interrupted run leaves a record of what it was merging, then copy
+    # in parallel (one gsutil per file ran ~1 file/s: 18.6k people would take ~5 h)
+    open(f"{W}/audit.tsv", "w").write("# name\tstaged_utc\tresult\tpkg_md5\tvm\treasons\n" + "".join(rows))
+    sh("gsutil", "-q", "cp", f"{W}/audit.tsv", f"{CUR}/audit_{stamp}.tsv")
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(24) as ex:  # backups need a rename per file
+        list(ex.map(lambda n: sh("gsutil", "-q", "cp", f"{VM}/{n}.json", f"{VM}/{n}.json.bak_cursor"), replace))
     for n in merge + replace:
         if n in prov:  # provenance flag written into the audited local copy before it is merged
             f = f"{D}/people_live/vm/{n}.json"
             d = json.load(open(f))
             d["provenance"] = prov[n]
             json.dump(d, open(f, "w"))
-    for n in merge + replace:  # 07:5xZ Nov 10: merge the exact file audited (local copy), never the live staged object, which
-        # the fleet may have overwritten since the download (an unaudited incomplete save reached vm/ that way at 06:42Z)
-        sh("gsutil", "-q", "cp", f"{D}/people_live/vm/{n}.json", f"{VM}/{n}.json")
+    # 07:5xZ Nov 10: merge the exact file audited (local copy), never the live staged object, which the fleet may have
+    # overwritten since the download (an unaudited incomplete save reached vm/ that way at 06:42Z). Batches of 200, same names.
+    todo_cp = [f"{D}/people_live/vm/{n}.json" for n in merge + replace]
+    batches = [todo_cp[i:i + 200] for i in range(0, len(todo_cp), 200)]
+    with ThreadPoolExecutor(4) as ex:
+        list(ex.map(lambda b: sh("gsutil", "-q", "-m", "cp", *b, f"{VM}/"), batches))
     if merge + replace:
         old = sh("gsutil", "cat", f"{R}/_pacetest/merged_ledger.txt").stdout
         open(f"{W}/ledger.txt", "w").write(old + f"# cursor {stamp}\n" + "".join(x + "\n" for x in merge + replace))
         sh("gsutil", "-q", "cp", f"{W}/ledger.txt", f"{R}/_pacetest/merged_ledger.txt")
-    open(f"{W}/audit.tsv", "w").write("# name\tstaged_utc\tresult\tpkg_md5\tvm\treasons\n" + "".join(rows))
-    sh("gsutil", "-q", "cp", f"{W}/audit.tsv", f"{CUR}/audit_{stamp}.tsv")
     old = sh("gsutil", "cat", f"{CUR}/audited.tsv").stdout
     open(f"{W}/audited.tsv", "w").write(old + "".join(f"{n}@{st[n]}\t{stamp}\n" for n in todo))
     sh("gsutil", "-q", "cp", f"{W}/audited.tsv", f"{CUR}/audited.tsv")
