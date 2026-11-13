@@ -1,0 +1,14 @@
+{
+ "files": 22614,
+ "parse_errors": 0,
+ "parsed_people": 22614,
+ "replaced": 2715,
+ "new_people": 20796,
+ "store_v3_complete": 39774,
+ "latest_complete_ids": 40687,
+ "complete_after_merge": 61468,
+ "complete_dropped_no_full_pull_rows": 911,
+ "events": 13079980,
+ "upvotes": 2234602,
+ "follows": 10220159
+}
