@@ -190,9 +190,10 @@ if not p.exists():
     raise SystemExit(0)
 r=json.loads(p.read_text())
 if r.get('throttle'):
-    cap=r.get('historical_slot_cap') or r.get('throttle_fleet_max_vms') or 18
+    tmin=int(r.get('throttle_fleet_min_vms') or 4)
     print(f'export PH_FLEET_LIVE_PRIORITY_HOLD=1')
-    print(f'export FLEET_MAX_VMS={cap}')
+    print(f'export FLEET_MIN_VMS={tmin}')
+    print(f'export FLEET_MAX_VMS={tmin}')
     print(f'export FLEET_AUTOSCALE_NO_SHED=1')
     print(f'export FLEET_HISTORICAL_THROTTLE=1')
     print(f'export KEEPER_NUDGE_BUDGET=0')

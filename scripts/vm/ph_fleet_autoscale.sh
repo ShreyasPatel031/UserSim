@@ -363,7 +363,15 @@ print(' '.join(str(s) for s in cand[:drop]))
   elif [[ -n "$idle_drop" ]]; then
     echo "SHED skipped (FLEET_AUTOSCALE_NO_SHED=1): would drop $idle_drop"
   fi
-  if python3 -c "import sys; sys.exit(0 if float('$use_ppm') < float('$TARGET_LO') else 1)"; then
+  if [[ "${FLEET_HISTORICAL_THROTTLE:-0}" == "1" ]]; then
+    # Live critical stale: yield historical capacity; never scale up or cost-optimize while feeds are down.
+    if [[ $n -gt $MAX_VMS ]]; then
+      echo "LIVE throttle → scale $n → $MAX_VMS VMs (yield for daily/live feeders)"
+      cmd_scale_to "$MAX_VMS"
+    else
+      echo "LIVE throttle — hold $n VMs (cap=$MAX_VMS)"
+    fi
+  elif python3 -c "import sys; sys.exit(0 if float('$use_ppm') < float('$TARGET_LO') else 1)"; then
     if [[ $n -gt $desired && $n -gt $MIN_VMS ]]; then
       echo "UNDER target but overprovisioned → scale $n → $desired"
       cmd_scale_to "$desired"
