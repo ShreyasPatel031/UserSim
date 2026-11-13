@@ -22,6 +22,12 @@ def main():
     L = W.query("SELECT CAST(id AS VARCHAR) id, slug, day, daily_rank, poster, makers FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
     L["poster"] = L.poster.fillna("").str.lower()
     T = pd.read_parquet(os.path.join(HERE, "results", "tw_nosite.parquet")); T["id"] = T.id.astype(str)
+    # MR_BASE (orchestrator 11:33Z Nov 13 item 3): swap the base line, e.g. "both" of history_retrain_decomp_preds_arm2.parquet;
+    # MR_SUF names the output md, and nothing is frozen in that mode
+    SUF = os.environ.get("MR_SUF", "")
+    if os.environ.get("MR_BASE"):
+        col = os.environ.get("MR_COL", "both"); B_ = pd.read_parquet(os.environ["MR_BASE"]); B_["id"] = B_.id.astype(str)
+        T = B_[["id", col]].dropna().rename(columns={col: "clean_v3_nosite"})
     X0 = L.merge(T[["id", "clean_v3_nosite"]].rename(columns={"clean_v3_nosite": "clean"}), on="id")
     X0 = X0[(X0.day >= "2026-04-01") & (X0.day <= "2026-10-31")].copy()
     K, _ = CF.load_comments(); K = K.merge(L[["slug", "id", "day", "poster", "makers"]], on="slug")
@@ -63,7 +69,7 @@ def main():
             md.append(f"| {nm} | {P[:,0].mean():.1f} | {P[:,1].mean():.1f} | {P[:,2].mean():.1f} | " +
                       " | ".join(f"{dP[:,k].mean():+.1f} [{lo[k]:+.1f}, {np.percentile(b[:,k],97.5):+.1f}]" for k in range(3)) + " |")
         md.append("")
-        if pt == "P1":   # orchestrator 02:57Z Nov 13: P1 live uses the true 00:05-safe set with weights from the FULL-team fit
+        if pt == "P1" and not SUF:   # orchestrator 02:57Z Nov 13: P1 live uses the true 00:05-safe set with weights from the FULL-team fit
             fp1 = os.path.join(HERE, "results", "frozen", "maker_replies_P1_fullteam_20261113.json")
             if not os.path.exists(fp1):
                 cols1 = res["+ total + replies (full)"][2]; m1 = Ridge(alpha=3.0).fit(X[cols1], X.y)
@@ -78,14 +84,14 @@ def main():
             m = Ridge(alpha=3.0).fit(X[safe[2]], X.y)
             frozen[pt] = {"coef": dict(zip(safe[2], map(float, m.coef_))), "intercept": float(m.intercept_), "cut_minutes": mins}
     fp = os.path.join(HERE, "results", "frozen", "maker_replies_20261113.json")
-    if frozen and not os.path.exists(fp):
+    if frozen and not os.path.exists(fp) and not SUF:
         json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": "214 Apr-Oct", "team": "hunter only (00:05-safe)",
                    "features": "z within day: clean_nosite, th_n_pre, log1p distinct non-hunter commenters <= T, log1p total comments <= T, log1p hunter replies <= T",
                    "points": frozen}, open(fp, "w"), indent=1)
         md.append(f"Frozen (positive top-3 interval, hunter-only variant): {', '.join(frozen)} -> {os.path.relpath(fp, HERE)}")
     else:
         md.append("Nothing frozen: no point has a positive top-3 interval for the 00:05-safe (hunter-only) variant." if not frozen else "Frozen file exists; not overwritten.")
-    open(os.path.join(HERE, "results", "maker_replies.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
+    open(os.path.join(HERE, "results", f"maker_replies{SUF}.md"), "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
 if __name__ == "__main__":
