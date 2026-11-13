@@ -403,6 +403,13 @@ def build(data_dir, out_dir, salt, complete=None):
     if os.path.exists(f"{data_dir}/people_live/_upload_times.json"):
         up_times = json.load(open(f"{data_dir}/people_live/_upload_times.json"))
     tab_rows, fp_events = [], []
+    ev_done = []  # 11:4xZ Nov 13 (complete mode): de-duplicated 2,000-file chunks; holding ~65k small frames and one global
+    # sort over all of them ran past the 15 GB memory limit. One file per person in complete mode, so a duplicate (re-pull of
+    # the same person) can only sit inside one file and per-chunk de-duplication gives the same rows as the global pass.
+    KEY = ["person_id", "kind", "target_id", "ts_lo"]
+
+    def _fold_events(chunk):
+        return pd.concat(chunk, ignore_index=True).sort_values("first_seen_at").drop_duplicates(KEY, keep="first")
     filled = json.load(open(f"{data_dir}/people_live/f1_filled.json")) if os.path.exists(f"{data_dir}/people_live/f1_filled.json") else {}
     vm = sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/light/**/*.json", recursive=True)) \
         + sorted(glob.glob(f"{data_dir}/people_live/vm_pgql/_run_*/*.json"))
@@ -427,10 +434,22 @@ def build(data_dir, out_dir, salt, complete=None):
             tab_rows.append(t_)
         if len(e_):
             fp_events.append(e_)
-    if fp_events:
-        e_ = pd.concat(fp_events, ignore_index=True)
-        # re-pulls of the same person: one row per (person, kind, target, time), earliest first_seen kept
-        e_ = e_.sort_values("first_seen_at").drop_duplicates(["person_id", "kind", "target_id", "ts_lo"], keep="first")
+        if complete is not None and len(fp_events) >= 2000:
+            ev_done.append(_fold_events(fp_events))
+            fp_events = []
+        if len(tab_rows) >= 2000:
+            tab_rows = [pd.concat(tab_rows, ignore_index=True)]
+    if complete is not None and fp_events:
+        ev_done.append(_fold_events(fp_events))
+        fp_events = []
+    if fp_events or ev_done:
+        if complete is not None:
+            e_ = pd.concat(ev_done, ignore_index=True) if len(ev_done) > 1 else ev_done[0]
+            del ev_done
+        else:
+            e_ = pd.concat(fp_events, ignore_index=True)
+            # re-pulls of the same person: one row per (person, kind, target, time), earliest first_seen kept
+            e_ = e_.sort_values("first_seen_at").drop_duplicates(KEY, keep="first")
         api_cids = set()
         for e0 in ev:
             if len(e0) and "source" in e0:
@@ -449,10 +468,37 @@ def build(data_dir, out_dir, salt, complete=None):
     print("X drops:", json.dumps(xrep, default=str))
     if len(xe):
         ev.append(xe.drop_duplicates(["person_id", "target_id"]))
-    events = pd.concat([e for e in ev if len(e)], ignore_index=True)
-    events = events.drop_duplicates(["person_id", "kind", "target_id", "ts_lo", "source"])
-    for c in ["ts_lo", "ts_hi", "first_seen_at", "fetched_at"]:
-        events[c] = pd.to_datetime(events[c], utc=True)
+    # 11:5xZ Nov 13: events are written piece by piece. The de-dup key includes `source`, so pieces whose source sets
+    # do not overlap cannot share a duplicate; overlapping pieces are merged first. Same rows as the old global
+    # concat + drop_duplicates, without one ~11 GB frame (the 65k-person build ran past the 15 GB memory limit).
+    pieces = [e for e in ev if len(e)]
+    del ev
+    groups = []  # [(set of sources, [pieces])]
+    for e in pieces:
+        src = set(e.source.astype(str).unique())
+        hit = [g for g in groups if g[0] & src]
+        for g in hit:
+            groups.remove(g)
+        groups.append((src.union(*[g[0] for g in hit]), [x for g in hit for x in g[1]] + [e]))
+    del pieces
+    import pyarrow as pa, pyarrow.parquet as pq
+    writer, schema, stats = None, None, _StoreStats()
+    while groups:
+        _, parts = groups.pop()
+        e = pd.concat(parts, ignore_index=True) if len(parts) > 1 else parts[0]
+        del parts
+        e = e.drop_duplicates(["person_id", "kind", "target_id", "ts_lo", "source"])
+        for c in ["ts_lo", "ts_hi", "first_seen_at", "fetched_at"]:
+            e[c] = pd.to_datetime(e[c], utc=True)
+        stats.add(e)
+        t = pa.Table.from_pandas(e, preserve_index=False)
+        if writer is None:
+            schema = t.schema
+            writer = pq.ParquetWriter(f"{out_dir}/events.parquet", schema)
+        writer.write_table(t.select(schema.names).cast(schema))
+        del e, t
+    if writer is not None:
+        writer.close()
     pool = pd.DataFrame({"person_id": sorted(set(ids_map.values()))})
     pool["in_pool"] = True
     # people pulled who are not in the Nov 2 pool (discovery for the 48 h coverage plan): same salted ids, in_pool False
@@ -460,14 +506,51 @@ def build(data_dir, out_dir, salt, complete=None):
     if complete is not None:
         cids = {ids(h) for h in complete}
         pool["complete"] = pool.person_id.isin(cids)
-    events.to_parquet(f"{out_dir}/events.parquet", index=False)
     pool.to_parquet(f"{out_dir}/persons.parquet", index=False)
     xt = x_timelines(data_dir, OK_X_DIRS)  # orchestrator Nov 8 02:39Z: every X timeline labelled; partial unless x_end
     if len(xt):
         xt.to_parquet(f"{out_dir}/x_timelines.parquet", index=False)
         print("X timelines:", json.dumps({"people": len(xt), "end_reason": xt.end_reason.value_counts().to_dict(),
                                           "timeline_status": xt.timeline_status.value_counts().to_dict()}))
-    return events, pool
+    return stats, pool
+
+
+class _StoreStats:
+    """check_store and the kind/source summary, accumulated over event pieces (sources never span pieces)."""
+
+    def __init__(self):
+        self.c, self.persons, self.summary = Counter_(), set(), []
+
+    def add(self, e):
+        key = ["person_id", "kind", "target_id", "source", "ts_lo"]
+        up = e[e.kind == "upvote"]
+        self.c["events"] += len(e)
+        self.c["dup_keys"] += int(e.duplicated(key).sum())
+        self.c["upvote_order_conflicts"] += int((e.ts_quality == "order_conflict").sum())
+        self.c["upvote_lo_gt_hi"] += int((up.ts_lo > up.ts_hi + pd.Timedelta(minutes=1)).sum())
+        self.c["upvote_lo_missing"] += int((up.ts_lo.isna() & (up.ts_quality == "bounded")).sum())
+        self.c["null_person"] += int(e.person_id.isna().sum())
+        self.c["fetched_or_exact_n"] += int(((e.fetched_at.notna()) | (e.ts_quality == "exact")).sum())
+        self.persons |= set(e.person_id.dropna())
+        self._pp = getattr(self, "_pp", [])
+        self._pp.append(e.person_id)
+        self.summary.append(e.groupby(["kind", "source", "ts_quality"]).agg(events=("person_id", "size"), people=("person_id", "nunique")))
+
+    def check(self, pool):
+        c = {k: v for k, v in self.c.items() if k != "fetched_or_exact_n"}
+        c["fetched_or_exact"] = self.c["fetched_or_exact_n"] / max(1, self.c["events"])
+        core = set(pool[pool.in_pool].person_id)
+        c["pool_people_with_events"] = len(self.persons & core)
+        c["events_outside_pool_people"] = int(sum((~s.isin(core)).sum() for s in self._pp))
+        c["pulled_non_pool_people"] = int((~pool.in_pool).sum())
+        c["pass"] = c["dup_keys"] == 0 and c["upvote_lo_gt_hi"] == 0 and c["null_person"] == 0
+        return c
+
+    def table(self):
+        return pd.concat(self.summary).groupby(level=[0, 1, 2]).sum().to_string() if self.summary else ""
+
+
+from collections import Counter as Counter_
 
 
 def check_store(events, pool):
@@ -503,9 +586,9 @@ if __name__ == "__main__":
         comp = None
         if a.complete_file:
             comp = {l.split("\t")[0].split()[0].lstrip("@").lower() for l in open(a.complete_file) if l.strip() and not l.startswith("#")}
-        ev, pool = build(a.paths[0], a.paths[1], salt, comp)
-        print(json.dumps(check_store(ev, pool), indent=1))
-        print(ev.groupby(["kind", "source", "ts_quality"]).agg(events=("person_id", "size"), people=("person_id", "nunique")).to_string())
+        stats, pool = build(a.paths[0], a.paths[1], salt, comp)
+        print(json.dumps(stats.check(pool), indent=1))
+        print(stats.table())
     else:
         ok, rep = validate_pilot(a.paths[0])
         print(json.dumps(rep, indent=1, default=str))
