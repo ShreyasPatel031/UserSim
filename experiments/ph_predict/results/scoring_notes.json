@@ -4,5 +4,9 @@
   "clean_lines_0005": "clean / clean_avg / clean_nosite shadow scores: inputs re-derived at 01:42 PT (shadow does not reproduce the published 00:05 file) until the frozen-inputs patch is approved",
   "reply_rows_read": "P2/P3 headers count reply rows fetched after the cut (13 and 38); the models used only rows fetched <= the cut; reply_rows_used added from Nov 13",
   "capture": "live capture gap 03:00-05:45 PT (no snapshots 11:00Z-13:45Z; back from 13:45Z). P4, R0-R4 and C05 not written: the reveal (~04:00 PT) was not observed, so reveal-relative points cannot be timed. C06 written from the 06:00 PT read; its lock 'first_locked_at' times are capped at the first read after the gap (13:45Z)."
+ },
+ "2026-11-13": {
+  "model_switch": "the published 00:05 forecast is the clean_nosite model from Nov 13 (VM forecast.py md5 ef8e28d3); pipeline shadows that use forecast_<d>.parquet pred (shadow_daycal, shadow_honest_a2, early_shock) change base from this day; scoreboard deployed side = unfixed_replay shadow after the switch",
+  "first_comment_read": "the 00:07 read landed 00:15:11 PT (month re-read drained the quota); th_n_pre from the first read by 00:30 PT"
  }
 }
