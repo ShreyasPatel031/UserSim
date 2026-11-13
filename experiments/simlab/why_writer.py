@@ -31,6 +31,7 @@ ITEMS = {
     "held_backers": {"label": "Held people who backed this team before", "unit": "people", "note": "n_backers"},
     "follow_ties": {"label": "Held people following the hunter or makers", "unit": "people", "note": "n_follow"},
     "follow_ties_active": {"label": "...of whom upvoted something in the last 30 days", "unit": "people", "note": "n_follow"},
+    "expected_held_votes": {"label": "Expected votes from held people (pair model)", "unit": "votes", "note": "n_ehv"},
     "audience_tiers": {"label": "Activity of backers and followers vs all held people", "unit": "share by tier", "note": "n_tiers"},
     "young_upvoters": {"label": "Listed upvoters with accounts 1-12 months old", "unit": "share", "note": "n_young"},
     "created_together": {"label": "Listed upvoters whose accounts were created close together", "unit": "share above chance", "note": "n_clus"},
@@ -42,6 +43,9 @@ NOTES = {
                  "(95% interval -1.1 to +2.7; 176 days): no measured improvement.",
     "n_follow": "Descriptive. Summing held people's expected votes, follows of the hunter and makers included, gave 0.0 top-3 gain over "
                 "the clean forecast on 10 test days (Oct 29 - Nov 11). Held people cover about 41-57% of a launch's votes.",
+    "n_ehv": "Descriptive. The voter_harness pair model (held people's recent activity, topic taste, follows of the hunter and first maker; "
+             "trained on the 7 previous days) summed per launch gave 0.0 top-3 gain over the clean forecast on 10 test days (Oct 29 - Nov 11). "
+             "Held people cover about 41-57% of a launch's votes, so this is not a vote forecast. Coverage gives the share from the 1,000 most active.",
     "n_tiers": "Descriptive only. Audience-mix features did not improve the forecast in testing.",
     "n_young": "After the fact. Upvoters with 1-12 month old accounts count about half in the displayed total (fitted weight 0.48, "
                "84 near-complete launches); the share alone did not explain the gap out of sample (interval includes 0).",
@@ -100,6 +104,31 @@ if MODE == "forecast":
         grp = backers | follows
         if len(grp) >= MIN: o["audience_tiers"] = {"value": {"this launch": tiers(list(grp)), "all held people": typical}, "n_people": len(grp), "coverage": cov, "note": "n_tiers"}
         out[str(p["id"])] = {k: v for k, v in o.items() if v}
+    # expected held votes: voter_harness pair model, strict timing (reads fetched before 00:00 PT), EDGES=hunter_maker
+    try:
+        import tempfile
+        tmp = tempfile.mkdtemp(); ld = os.path.join(tmp, "launches"); os.makedirs(ld)
+        WA = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last"); WA["id"] = WA.id.astype(str)
+        lu_ids = [str(p["id"]) for p in line]; WA = WA[~WA.id.isin(lu_ids)]
+        add = pd.DataFrame([{"id": str(p["id"]), "slug": p.get("slug"), "day": DAY, "topics": json.dumps([e["node"]["name"] for e in ((p.get("topics") or {}).get("edges") or [])]),
+                             "poster": (p.get("user") or {}).get("username"), "makers": json.dumps([m.get("username") for m in (p.get("makers") or []) if m.get("username")]),
+                             "daily_rank": 0.0, "votes": np.nan, "updated_at": "9999"} for p in line])
+        pd.concat([WA, add], ignore_index=True)[["id", "slug", "day", "topics", "poster", "makers", "daily_rank", "votes", "updated_at"]].astype({"daily_rank": float, "updated_at": str}).to_parquet(os.path.join(ld, "l.parquet"))
+        pd.DataFrame({"id": lu_ids, "day": DAY}).to_parquet(os.path.join(tmp, "clean.parquet"))
+        os.environ["EDGES"] = "hunter_maker"; argv0 = sys.argv; sys.argv = ["voter_harness.py", ST, os.path.join(tmp, "clean.parquet"), ld, os.path.join(SP, "early"), os.path.join(tmp, "o")]
+        VH = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "voter_harness.py")).read(); g = {"__name__": "vh", "__file__": "voter_harness.py"}
+        exec(VH[:VH.index("FOLL = {}")] + "FOLL = {}\n", g); sys.argv = argv0; g["C"] = pd.DataFrame({"id": lu_ids, "day": DAY})
+        ev, nact = g["expected"](DAY, "strict"); print("ehv active people", nact, "launches", len(ev), "sum", round(sum(ev.values()), 1))
+        act, _, _ = g["feats"](DAY, g["U"][g["U"].fetched_at < g["start"](DAY)]); top = set(act.sort_values("n90", ascending=False).index[:1000])
+        ek, _ = g["expected"](DAY, "strict", top)
+        for i in lu_ids:
+            if i in out or True:
+                o = out.setdefault(i, {})
+                if nact >= MIN and ev.get(i) is not None:
+                    o["expected_held_votes"] = {"value": round(ev[i], 1), "n_people": int(nact), "note": "n_ehv",
+                                                "coverage": {"share_from_1000_most_active": round(ek.get(i, 0) / ev[i], 3) if ev[i] > 0 else None}}
+    except Exception as e:
+        print("expected_held_votes skipped:", repr(e)[:200])
     write(f"{DAY}_0005.json", out, {"day": DAY, "point": "0005", "store_reads_before": D0.isoformat(), "held_people": len(held)})
 if MODE == "after":
     J = pd.read_parquet(f"{SP}/acct/joined.parquet").drop_duplicates("person_id"); J["jt"] = pd.to_datetime(J.joined, utc=True, errors="coerce"); J["uid"] = pd.to_numeric(J.ph_user_id, errors="coerce")
