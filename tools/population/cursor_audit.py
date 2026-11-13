@@ -91,7 +91,8 @@ def main():
             os.replace(man_f + ".tmp", man_f)
     with _TPE(4) as ex:
         list(ex.map(_dl, [need[i:i + 500] for i in range(0, len(need), 500)]))
-    sh("gsutil", "-q", "-m", "cp", f"{STAGE}/_signedin_upvotes/*.json", f"{D}/signedin_upvotes/")
+    # 04:1xZ Nov 13: incremental sync (11.9k files; gsutil -m cp re-copied all of them, ~15 min, on every run)
+    sh("gcloud", "storage", "rsync", f"{STAGE}/_signedin_upvotes/", f"{D}/signedin_upvotes/")
     sys.argv = ["quality.py", D, "2026-11-05T00:00:00Z", "/dev/null", "/dev/null"]
     with contextlib.redirect_stdout(io.StringIO()):
         g = runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "quality.py"))
