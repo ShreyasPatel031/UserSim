@@ -376,7 +376,7 @@ def test_why_is_sanitised(monkeypatch):
          "items": {"held_backers": {"label": "Backers", "unit": "people", "note": "n1"},
                    "tiers": {"label": "Tiers", "unit": "share by tier", "note": "n1"}},
          "notes": {"n1": "Descriptive."},
-         "launches": {"1": {"held_backers": {"value": 120, "n_people": 120, "coverage": {"team_members_named": 2}, "note": "n1"},
+         "launches": {"1": {"held_backers": {"value": 120, "n_people": 120, "coverage": {"team_members_named": 2, "share_from_1000_most_active": 0.715}, "note": "n1"},
                             "tiers": {"value": {"this launch": {"0": 0.5, "x": "bob"}}, "n_people": 40},
                             "secret": {"value": 3, "n_people": 50}},
                       "2": {"held_backers": {"value": 7, "n_people": 7, "username": "bob"}},
@@ -388,6 +388,7 @@ def test_why_is_sanitised(monkeypatch):
     assert set(w["launches"]["1"]) == {"held_backers", "tiers"} and "bob" not in str(w)
     assert w["launches"]["1"]["tiers"]["value"] == {"this launch": {"0": 0.5}}
     assert w["items"]["held_backers"]["note"] == "Descriptive." and w["shadow"] is True
+    assert w["launches"]["1"]["held_backers"]["coverage"] == {"team_members_named": 2, "share_from_1000_most_active": 0.715}
     assert live.why("2026-11-13", "P1", {"1"}) is None
     monkeypatch.setenv("PH_WHY_PREFIX", "tmp/e5/why_shadow"); monkeypatch.setenv("VERCEL", "1")
     assert live._why_prefix() == "results/web/why"         # the preview override is ignored on the deployed site

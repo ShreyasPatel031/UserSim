@@ -148,7 +148,7 @@ function whyBlock(id, key){
       if(typeof r.value === "object"){
         v = Object.entries(r.value).map(([g, d])=>`${esc(g)}: ${Object.entries(d).map(([t, x])=>`${esc(t)}: ${(Number(x)*100).toFixed(0)}%`).join(" · ")}`).join("<br>");
       } else v = /share/.test(it.unit) ? (Number(r.value)*100).toFixed(0) + "%" : Number(r.value).toLocaleString();
-      const cov = Object.entries(r.coverage||{}).map(([a,b])=>`${esc(a.replace(/_/g," "))} ${Number(b)}`).join(", ");
+      const cov = Object.entries(r.coverage||{}).map(([a,b])=>`${esc(a.replace(/_/g," "))} ${/^share/.test(a) ? (Number(b)*100).toFixed(0)+"%" : Number(b).toLocaleString()}`).join(", ");
       return `<li><b>${esc(it.label)}:</b> ${v}${(()=>{ const bits = []; if(r.n_people && r.n_people !== r.value) bits.push(Number(r.n_people).toLocaleString() + " people"); if(cov) bits.push(cov); return bits.length ? ` <span class="muted">(${bits.join("; ")})</span>` : ""; })()}<br><span class="muted">${esc(it.note)}</span></li>`;
     });
     if(lines.length) out.push(`<p class="label" style="margin:10px 0 4px">${esc(head)}${W.as_of_pt ? " · read " + esc(W.as_of_pt) : ""}${W.shadow ? " · test data" : ""}</p><ul class="small" style="margin:0;padding-left:1.1em">${lines.join("")}</ul>`);

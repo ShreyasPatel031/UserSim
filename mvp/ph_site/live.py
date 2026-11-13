@@ -502,7 +502,8 @@ def why(day: str, point: str, ids: set[str]) -> dict | None:
                 v = _why_num(val)
             if v is None or v == {}:
                 continue
-            cov = {str(a)[:40]: int(b) for a, b in (it.get("coverage") or {}).items()
+            cov = {str(a)[:40]: (int(b) if float(b).is_integer() else round(float(b), 3))
+                   for a, b in (it.get("coverage") or {}).items()
                    if isinstance(b, (int, float)) and not isinstance(b, bool)} if isinstance(it.get("coverage"), dict) else {}
             keep[k] = {"value": v, "n_people": int(n) if isinstance(n, (int, float)) else None, "coverage": cov}
         if keep:
