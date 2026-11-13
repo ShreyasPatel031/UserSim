@@ -1,0 +1,242 @@
+{
+ "design": "Hidden rank + arm-2 prior blend, independent replication (orchestrator 00:00Z Nov 14). Counts only.\nHidden rank = rank_now in raw/vote_snapshots at 01:00 / 02:00 / 03:00 PT (03:45 = the 03:00 read; votes are 0 on all pre-04:00 reads).\nPrior = per-launch arm-2 score (file given; column given). Blend = w x within-day rank(prior) + (1 - w) x hidden rank (rank average),\nw from {0, .1, ..., 1} chosen leave-one-day-out (best mean top 3/5/10 on the other days). Truth = warehouse daily_rank. Paired gains vs\nplain hidden rank, day bootstrap; also prior alone and the in-fit best w.",
+ "prior": [
+  "/tmp/claude-0/-home-user-UserSim/d06a24f8-55f2-52b0-9f28-1e7e4ec267d8/scratchpad/fc/*.parquet",
+  "pred"
+ ],
+ "days requested": [
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-05",
+  "2026-11-06",
+  "2026-11-07",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12"
+ ],
+ "01:00": {
+  "days": [
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12"
+  ],
+  "hidden rank top3/5/10": [
+   76.2,
+   65.7,
+   65.7
+  ],
+  "prior alone": [
+   47.6,
+   54.3,
+   74.3
+  ],
+  "in-fit blend (w=0.4)": [
+   71.4,
+   77.1,
+   74.3
+  ],
+  "in-fit blend - hidden [CI]": [
+   [
+    -4.8,
+    -23.8,
+    14.3
+   ],
+   [
+    11.4,
+    2.9,
+    22.9
+   ],
+   [
+    8.6,
+    4.3,
+    12.9
+   ]
+  ],
+  "LODO blend top3/5/10": [
+   71.4,
+   77.1,
+   74.3
+  ],
+  "LODO blend - hidden [CI]": [
+   [
+    -4.8,
+    -23.8,
+    14.3
+   ],
+   [
+    11.4,
+    2.9,
+    22.9
+   ],
+   [
+    8.6,
+    4.3,
+    12.9
+   ]
+  ],
+  "LODO weights": [
+   0.4,
+   0.4,
+   0.4,
+   0.4,
+   0.4,
+   0.4,
+   0.4
+  ]
+ },
+ "02:00": {
+  "days": [
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12"
+  ],
+  "hidden rank top3/5/10": [
+   71.4,
+   74.3,
+   74.3
+  ],
+  "prior alone": [
+   47.6,
+   54.3,
+   74.3
+  ],
+  "in-fit blend (w=0.4)": [
+   71.4,
+   77.1,
+   77.1
+  ],
+  "in-fit blend - hidden [CI]": [
+   [
+    0.0,
+    -14.3,
+    14.3
+   ],
+   [
+    2.9,
+    -5.7,
+    11.4
+   ],
+   [
+    2.9,
+    -4.3,
+    10.0
+   ]
+  ],
+  "LODO blend top3/5/10": [
+   71.4,
+   77.1,
+   77.1
+  ],
+  "LODO blend - hidden [CI]": [
+   [
+    0.0,
+    -14.3,
+    14.3
+   ],
+   [
+    2.9,
+    -5.7,
+    11.4
+   ],
+   [
+    2.9,
+    -4.3,
+    8.6
+   ]
+  ],
+  "LODO weights": [
+   0.4,
+   0.3,
+   0.3,
+   0.4,
+   0.3,
+   0.3,
+   0.3
+  ]
+ },
+ "03:00 (also 03:45)": {
+  "days": [
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12"
+  ],
+  "hidden rank top3/5/10": [
+   71.4,
+   80.0,
+   75.7
+  ],
+  "prior alone": [
+   47.6,
+   54.3,
+   74.3
+  ],
+  "in-fit blend (w=0.2)": [
+   81.0,
+   82.9,
+   78.6
+  ],
+  "in-fit blend - hidden [CI]": [
+   [
+    9.5,
+    0.0,
+    19.0
+   ],
+   [
+    2.9,
+    0.0,
+    8.6
+   ],
+   [
+    2.9,
+    0.0,
+    5.7
+   ]
+  ],
+  "LODO blend top3/5/10": [
+   81.0,
+   80.0,
+   77.1
+  ],
+  "LODO blend - hidden [CI]": [
+   [
+    9.5,
+    0.0,
+    19.0
+   ],
+   [
+    0.0,
+    -8.6,
+    8.6
+   ],
+   [
+    1.4,
+    -2.9,
+    5.7
+   ]
+  ],
+  "LODO weights": [
+   0.3,
+   0.3,
+   0.3,
+   0.2,
+   0.2,
+   0.2,
+   0.2
+  ]
+ }
+}
