@@ -8,7 +8,7 @@ gemini-embedding-001 256-d of "name. tagline. description[:800]" (the v1 text). 
 import concurrent.futures as cf, glob, gzip, html, json, os, re, subprocess, sys, time, urllib.request
 import numpy as np, pandas as pd
 SP, OUT = sys.argv[1:3]; os.makedirs(OUT, exist_ok=True); HERE = os.path.dirname(os.path.abspath(__file__))
-RB = open(os.path.join(HERE, "reactions_retrieval_bundle.py")).read(); exec(RB[RB.index("_tok = {"):RB.index("# same pool construction")]); exec(RB[RB.index("NT = \"\"\""):RB.index("need = [")])
+RB = open(os.path.join(HERE, "reactions_retrieval_bundle.py")).read(); exec(RB[RB.index("URL = "):RB.index("# same pool construction")]); exec(RB[RB.index("NT = \"\"\""):RB.index("need = [")])
 L = pd.concat([pd.read_parquet(f) for f in glob.glob(os.path.join(SP, "early/launches/*.parquet"))]).sort_values("updated_at").drop_duplicates("id", keep="last")
 L = L[L.daily_rank.notna() & L.votes.notna() & (L.day < "2026-11-11")].sort_values(["day", "id"]).reset_index(drop=True); L["id"] = L.id.astype(str)
 LE = np.load(os.path.join(SP, "land/launch_emb256.npy")); assert len(LE) == len(L)
@@ -42,9 +42,10 @@ for m in V1:
 CF = os.path.join(OUT, "themes_cache.json"); TC = json.load(open(CF)) if os.path.exists(CF) else {}
 rows = sorted(k for k, c in com.items() if len(c) >= 3); need = [k for k in rows if k not in v1 and str(L.id.iat[k]) not in TC]
 print("v1 mapped", len(v1), "of", len(V1), "| v2 candidates", len(rows), "new to extract", len(need), flush=True)
-with cf.ThreadPoolExecutor(8) as ex:
-    for k, th in zip(need, ex.map(lambda k: gem(NT.format(c="\n".join(f"- {t[:300]}" for t in list(com[k].values())[:30]))), need)):
+with cf.ThreadPoolExecutor(16) as ex:
+    for n_, (k, th) in enumerate(zip(need, ex.map(lambda k: gem(NT.format(c="\n".join(f"- {t[:300]}" for t in list(com[k].values())[:30]))), need))):
         TC[str(L.id.iat[k])] = th[:6]
+        if n_ % 200 == 199: json.dump(TC, open(CF, "w")); print("extracted", n_ + 1, "usd", round(USD["usd"], 3), flush=True)
 json.dump(TC, open(CF, "w"))
 scrub = lambda t: re.sub(r"@\w[\w.-]*", "someone", str(t))
 meta = []
