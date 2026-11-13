@@ -1,5 +1,5 @@
 #!/bin/bash
-# Nightly logged input #2 (orchestrator GO via E5, 10:39Z Nov 13): E5's team_shadow.py (claude/person-model-v2 fcbcd617 since 14:54Z Nov 13: profile fields + pulled-by-01:00 count) on the
+# Nightly logged input #2 (orchestrator GO via E5, 10:39Z Nov 13): E5's team_shadow.py (claude/person-model-v2 4e4dd4e9 since 19:50Z Nov 13: + n_team_estab) on the
 # day's 00:05 line-up. No LLM, no Product Hunt requests; ids and counts only; the salt is read by the script, never printed.
 # Needs a worktree of that commit (it imports experiments/pipeline/warehouse.py). Skips if E5's file for <D> already exists.
 # usage: bash e5_team_run.sh <YYYY-MM-DD> <work dir holding s/salt> <worktree of aed7f324>
