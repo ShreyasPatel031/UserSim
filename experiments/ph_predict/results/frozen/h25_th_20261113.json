@@ -1,0 +1,10 @@
+{
+ "frozen_at": "2026-11-13T05:23:22.478045+00:00",
+ "days": 214,
+ "coef": {
+  "z_h25": 0.5940296913284132,
+  "z_npre": 0.1952155829983558
+ },
+ "inputs": "z within day: shadow_h25 pred_clean_nosite_h25, th_n_pre (00:07 read only)",
+ "backtest": "both + th_n_pre LODO, see h25_stack.md"
+}
