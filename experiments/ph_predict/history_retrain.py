@@ -85,6 +85,28 @@ def main():
     #   histonly df 2026 rows                            (2025 only through the rebuilt hunter history; = "only2026" above)
     #   rowsonly dfo 2026 rows + df 2025 rows            (2025 only as extra training rows)
     #   both     df all rows                             (= "h25" above)
+    # JOINT=1 (orchestrator 11:33Z Nov 13): th_n_pre INSIDE the LightGBM model (2026 rows from comment dumps, 2025 rows missing);
+    # lines: pure+th (no 2025, th input), both+th (2025 rows, th missing on them). TH_FILE = parquet id, th_n_pre.
+    if os.environ.get("JOINT") == "1":
+        th = pd.read_parquet(os.path.expanduser(os.environ["TH_FILE"])); th["id"] = th.id.astype(str); thm = dict(zip(th.id, th.th_n_pre))
+        real = os.path.join(os.path.dirname(os.path.abspath(F.__file__)), "data")
+        Fh = F.D; F.D = real; dfo = RN.load_llm(F.build()); F.D = Fh
+        dfo = dfo[~dfo.known].copy(); dfo["id"] = dfo.id.astype(str); dfo["mon"] = dfo.day.str[:7]
+        for X_ in (df, dfo):
+            X_["th_n_pre"] = X_.id.map(thm).astype(float)
+        df.loc[old, "th_n_pre"] = np.nan
+        for m in MONTHS:
+            for nm, tr0, te0 in (("pure_th", dfo[dfo.mon < m], dfo[dfo.mon == m]), ("both_th", df[df.mon < m], df[(df.mon == m) & ~old])):
+                if te0.empty:
+                    continue
+                tr, te, cols = TW.prep(tr0, te0)
+                cols = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")] + ["th_n_pre"]
+                for s in range(SEEDS):
+                    P.append(pd.DataFrame({"id": te.id.values, "variant": nm, "seed": s, "pred": TW.fitw(tr, te, cols, s)}))
+            print(json.dumps({"month": m, "seconds": round(time.time() - t0)}), flush=True)
+        R = pd.concat(P); tag = f"_arm{os.environ.get('ARM', '1')}"
+        R.groupby(["id", "variant"]).pred.mean().unstack().reset_index().to_parquet(f"results/history_retrain_joint{tag}.parquet")
+        print(json.dumps({"joint_rows": int(R.id.nunique())})); return
     if os.environ.get("DECOMP") == "1":
         real = os.path.join(os.path.dirname(os.path.abspath(F.__file__)), "data")
         Fh = F.D; F.D = real; dfo = RN.load_llm(F.build()); F.D = Fh
