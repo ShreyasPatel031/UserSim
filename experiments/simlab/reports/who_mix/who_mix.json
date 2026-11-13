@@ -1,0 +1,417 @@
+{
+ "design": "A \"who\" learned from real voters (orchestrator, Nov 12). Same 426 launches, truth rules and time ordering as who_eval.py\n(person segment = nearest index-segment centroid of the person's upvote topic shares, upvotes before the launch day).\nTwo truths per launch: POOL lift = segment share among the launch's voters / share among pool people with >= 3 prior upvotes;\nDAY lift = share among the launch's voters / share among ALL voters of that day's launches (removes \"active people vote\").\nTruly over-represented: lift > 1.5 and >= 3 voters.\nPredictors (month-forward: only launches dated before the test month's first day are used):\n  SITE      the site's _interest_people top 3 (page-read topics)\n  CONTROL   the 3 segments with the most voters over Jan-Aug launches; RANDOM expected values\n  RETR-k    mean of the real voter lift vectors (per truth) of the k most similar earlier launches with >= 15 voters\n            (gemini-embedding of name. tagline. description; query = page read or PH description), k = 5 / 10 / 30, plain and\n            similarity-weighted (softmax over cosine, temperature 0.05)\n  RIDGE     ridge (alpha 10) from the query embedding to log lift per segment, trained on earlier launches with >= 15 voters\nPerson level (internal): candidates = people who voted for any launch that day; AUC / lift@1% for the launch's voters of activity\n(prior upvotes) alone, + the predicted lift of the person's segment (RETR-10, day truth), + overlap (voted for any of the 10\nretrieved neighbours); rank-mean combinations.",
+ "coverage": {
+  "page_read_launches_Sep_Nov": 477,
+  "with_30plus_held_voters": 212,
+  "share": 0.444,
+  "median_held_voters": 77
+ },
+ "all|page": {
+  "jsd RETR20": [
+   7.87,
+   7.41,
+   8.32,
+   212
+  ],
+  "jsd GLOBAL": [
+   7.79,
+   7.35,
+   8.31,
+   212
+  ],
+  "jsd TOPIC": [
+   7.69,
+   7.24,
+   8.11,
+   212
+  ],
+  "jsd RETR20 - GLOBAL": [
+   0.08,
+   -0.23,
+   0.37,
+   212
+  ],
+  "jsd RETR20 - TOPIC": [
+   0.18,
+   -0.05,
+   0.41,
+   212
+  ],
+  "hit RETR20": [
+   13.68,
+   10.61,
+   17.22,
+   212
+  ],
+  "hit GLOBAL": [
+   44.34,
+   40.57,
+   47.88,
+   212
+  ],
+  "hit TOPIC": [
+   17.69,
+   14.39,
+   21.23,
+   212
+  ],
+  "hit RETR20 - GLOBAL": [
+   -30.66,
+   -35.61,
+   -25.47,
+   212
+  ],
+  "hit RETR20 - TOPIC": [
+   -4.01,
+   -8.25,
+   0.0,
+   212
+  ],
+  "jsd RETR20 - GLOBAL, thin third": [
+   0.44,
+   0.02,
+   0.84,
+   71
+  ]
+ },
+ "all|ph": {
+  "jsd RETR20": [
+   7.47,
+   7.03,
+   7.93,
+   212
+  ],
+  "jsd GLOBAL": [
+   7.79,
+   7.31,
+   8.3,
+   212
+  ],
+  "jsd TOPIC": [
+   7.69,
+   7.25,
+   8.14,
+   212
+  ],
+  "jsd RETR20 - GLOBAL": [
+   -0.32,
+   -0.63,
+   -0.05,
+   212
+  ],
+  "jsd RETR20 - TOPIC": [
+   -0.22,
+   -0.41,
+   -0.01,
+   212
+  ],
+  "hit RETR20": [
+   17.45,
+   13.92,
+   20.99,
+   212
+  ],
+  "hit GLOBAL": [
+   44.34,
+   41.04,
+   48.11,
+   212
+  ],
+  "hit TOPIC": [
+   17.69,
+   14.39,
+   21.23,
+   212
+  ],
+  "hit RETR20 - GLOBAL": [
+   -26.89,
+   -32.55,
+   -20.99,
+   212
+  ],
+  "hit RETR20 - TOPIC": [
+   -0.24,
+   -4.25,
+   4.01,
+   212
+  ],
+  "jsd RETR20 - GLOBAL, thin third": [
+   -0.16,
+   -0.67,
+   0.32,
+   71
+  ]
+ },
+ "Sep|page": {
+  "jsd RETR20": [
+   7.48,
+   6.87,
+   8.14,
+   96
+  ],
+  "jsd GLOBAL": [
+   7.13,
+   6.55,
+   7.73,
+   96
+  ],
+  "jsd TOPIC": [
+   7.25,
+   6.67,
+   7.86,
+   96
+  ],
+  "jsd RETR20 - GLOBAL": [
+   0.35,
+   -0.01,
+   0.73,
+   96
+  ],
+  "jsd RETR20 - TOPIC": [
+   0.23,
+   -0.09,
+   0.56,
+   96
+  ],
+  "hit RETR20": [
+   10.94,
+   6.77,
+   15.62,
+   96
+  ],
+  "hit GLOBAL": [
+   41.67,
+   36.46,
+   46.35,
+   96
+  ],
+  "hit TOPIC": [
+   15.1,
+   10.42,
+   19.79,
+   96
+  ],
+  "hit RETR20 - GLOBAL": [
+   -30.73,
+   -36.98,
+   -23.96,
+   96
+  ],
+  "hit RETR20 - TOPIC": [
+   -4.17,
+   -10.42,
+   1.56,
+   96
+  ],
+  "jsd RETR20 - GLOBAL, thin third": [
+   0.72,
+   0.32,
+   1.12,
+   40
+  ]
+ },
+ "Sep|ph": {
+  "jsd RETR20": [
+   7.14,
+   6.53,
+   7.75,
+   96
+  ],
+  "jsd GLOBAL": [
+   7.13,
+   6.5,
+   7.71,
+   96
+  ],
+  "jsd TOPIC": [
+   7.25,
+   6.64,
+   7.88,
+   96
+  ],
+  "jsd RETR20 - GLOBAL": [
+   0.01,
+   -0.35,
+   0.4,
+   96
+  ],
+  "jsd RETR20 - TOPIC": [
+   -0.11,
+   -0.39,
+   0.16,
+   96
+  ],
+  "hit RETR20": [
+   15.62,
+   10.42,
+   20.31,
+   96
+  ],
+  "hit GLOBAL": [
+   41.67,
+   36.46,
+   46.37,
+   96
+  ],
+  "hit TOPIC": [
+   15.1,
+   10.42,
+   19.8,
+   96
+  ],
+  "hit RETR20 - GLOBAL": [
+   -26.04,
+   -33.33,
+   -18.23,
+   96
+  ],
+  "hit RETR20 - TOPIC": [
+   0.52,
+   -5.21,
+   6.25,
+   96
+  ],
+  "jsd RETR20 - GLOBAL, thin third": [
+   0.16,
+   -0.35,
+   0.67,
+   38
+  ]
+ },
+ "Oct-Nov|page": {
+  "jsd RETR20": [
+   8.19,
+   7.52,
+   8.85,
+   116
+  ],
+  "jsd GLOBAL": [
+   8.34,
+   7.62,
+   9.11,
+   116
+  ],
+  "jsd TOPIC": [
+   8.04,
+   7.4,
+   8.71,
+   116
+  ],
+  "jsd RETR20 - GLOBAL": [
+   -0.14,
+   -0.56,
+   0.28,
+   116
+  ],
+  "jsd RETR20 - TOPIC": [
+   0.15,
+   -0.18,
+   0.48,
+   116
+  ],
+  "hit RETR20": [
+   15.95,
+   11.21,
+   20.69,
+   116
+  ],
+  "hit GLOBAL": [
+   46.55,
+   41.81,
+   51.3,
+   116
+  ],
+  "hit TOPIC": [
+   19.83,
+   15.52,
+   25.0,
+   116
+  ],
+  "hit RETR20 - GLOBAL": [
+   -30.6,
+   -38.79,
+   -22.41,
+   116
+  ],
+  "hit RETR20 - TOPIC": [
+   -3.88,
+   -9.48,
+   1.72,
+   116
+  ],
+  "jsd RETR20 - GLOBAL, thin third": [
+   0.08,
+   -0.72,
+   0.86,
+   31
+  ]
+ },
+ "Oct-Nov|ph": {
+  "jsd RETR20": [
+   7.74,
+   7.08,
+   8.39,
+   116
+  ],
+  "jsd GLOBAL": [
+   8.34,
+   7.61,
+   9.06,
+   116
+  ],
+  "jsd TOPIC": [
+   8.04,
+   7.43,
+   8.7,
+   116
+  ],
+  "jsd RETR20 - GLOBAL": [
+   -0.6,
+   -1.04,
+   -0.17,
+   116
+  ],
+  "jsd RETR20 - TOPIC": [
+   -0.3,
+   -0.62,
+   -0.01,
+   116
+  ],
+  "hit RETR20": [
+   18.97,
+   14.22,
+   24.14,
+   116
+  ],
+  "hit GLOBAL": [
+   46.55,
+   41.81,
+   51.72,
+   116
+  ],
+  "hit TOPIC": [
+   19.83,
+   15.09,
+   24.57,
+   116
+  ],
+  "hit RETR20 - GLOBAL": [
+   -27.59,
+   -35.36,
+   -19.4,
+   116
+  ],
+  "hit RETR20 - TOPIC": [
+   -0.86,
+   -6.91,
+   5.17,
+   116
+  ],
+  "jsd RETR20 - GLOBAL, thin third": [
+   -0.54,
+   -1.36,
+   0.26,
+   33
+  ]
+ }
+}
