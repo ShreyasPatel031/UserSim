@@ -64,10 +64,25 @@ def main():
     if not todo:
         return
     D = f"{W}/cursor_audit"
-    sh("rm", "-rf", D)
+    # 02:2xZ Nov 13: keep downloaded saves between runs (manifest name -> staged time), so a run cut off by a machine restart
+    # resumes instead of re-downloading ~19k files; a save re-staged since (new time) is fetched again
+    man_f = f"{D}/manifest.tsv"
+    man = dict(l.rstrip("\n").split("\t", 1) for l in open(man_f)) if os.path.exists(man_f) else {}
     for p in ("people_live/vm", "people_live/deep_list", "signedin_upvotes"):
         os.makedirs(f"{D}/{p}", exist_ok=True)
-    sh("gsutil", "-q", "-m", "cp", *[f"{STAGE}/{n}.json" for n in todo], f"{D}/people_live/vm/")
+    keep = set(todo)
+    for fn in os.listdir(f"{D}/people_live/vm"):  # only this run's people are scored (quality.py reads the whole dir)
+        if fn.endswith(".json") and fn[:-5] not in keep:
+            os.remove(f"{D}/people_live/vm/{fn}")
+    need = [n for n in todo if man.get(n) != st[n] or not os.path.exists(f"{D}/people_live/vm/{n}.json")]
+    print(f"DOWNLOAD need={len(need)} cached={len(todo) - len(need)}")
+    for i in range(0, len(need), 500):
+        b = need[i:i + 500]
+        sh("gsutil", "-q", "-m", "cp", *[f"{STAGE}/{n}.json" for n in b], f"{D}/people_live/vm/")
+        for n in b:
+            if os.path.exists(f"{D}/people_live/vm/{n}.json"):
+                man[n] = st[n]
+        open(man_f, "w").write("".join(f"{k}\t{v}\n" for k, v in man.items() if k in keep))
     sh("gsutil", "-q", "-m", "cp", f"{STAGE}/_signedin_upvotes/*.json", f"{D}/signedin_upvotes/")
     sys.argv = ["quality.py", D, "2026-11-05T00:00:00Z", "/dev/null", "/dev/null"]
     with contextlib.redirect_stdout(io.StringIO()):
