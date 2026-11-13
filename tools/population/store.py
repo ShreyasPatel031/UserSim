@@ -367,6 +367,89 @@ def _cached_load(fp, ids, upload_time, filled, data_dir):
     return out
 
 
+# ---------- lossless person records (14:0xZ Nov 13) ----------
+# Shreyas: every piece of information pulled is kept. store_v3 used to carry only 135 of the 1,464 key paths found in the
+# per-person files (no join date, ph_user_id, name, bio, headline, links, badges, streak, maker history, upvote taglines,
+# follower headlines, ...). records.parquet now holds every person's saved record VERBATIM (record_json = the file's exact
+# text, earlier_records and items_earlier included), and persons.parquet gains typed columns for the profile fields.
+# The build fails if any person file is not carried byte-for-byte.
+PROFILE_COLS = ["ph_user_id", "name", "joined", "headline", "bio", "badges_count", "streak", "links_json", "badges_json",
+                "ranks_text_json", "maker_history_json", "header_json", "pull_finished_utc", "pulls_merged", "has_provenance"]
+
+
+def _latest_person_files(data_dir):
+    """newest saved record per person in people_live/vm/ (a <h>_f1fix.json copy only if newer than <h>.json)."""
+    best = {}
+    for fn in os.listdir(f"{data_dir}/people_live/vm"):
+        if not fn.endswith(".json"):
+            continue
+        h = fn[:-5].replace("_f1fix", "").lower()
+        p = f"{data_dir}/people_live/vm/{fn}"
+        try:
+            fin = str((json.load(open(p)).get("run") or {}).get("finished_utc") or "")
+        except Exception:
+            fin = ""
+        if h not in best or fin > best[h][0]:
+            best[h] = (fin, p)
+    return {h: p for h, (fin, p) in best.items()}
+
+
+def build_records(data_dir, out_dir, ids, complete=None):
+    import pyarrow as pa, pyarrow.parquet as pq
+    files = _latest_person_files(data_dir)
+    writer, rows, n, bad = None, [], 0, 0
+    prof = []
+    schema = pa.schema([("person_id", pa.string()), ("complete", pa.bool_()), ("pull_finished_utc", pa.string()),
+                        ("record_sha256", pa.string()), ("record_json", pa.large_string())])
+
+    def flush():
+        nonlocal writer, rows
+        if not rows:
+            return
+        t = pa.Table.from_pylist(rows, schema=schema)
+        if writer is None:
+            writer = pq.ParquetWriter(f"{out_dir}/records.parquet", schema, compression="zstd")
+        writer.write_table(t)
+        rows = []
+    for h, p in sorted(files.items()):
+        raw = open(p, "rb").read()
+        try:
+            d = json.loads(raw)
+        except Exception:
+            bad += 1
+            continue
+        txt = raw.decode("utf-8")
+        sha = hashlib.sha256(raw).hexdigest()
+        if hashlib.sha256(txt.encode("utf-8")).hexdigest() != sha:  # carried byte-for-byte or the build fails
+            raise RuntimeError("record not carried byte-for-byte")
+        pid = ids(h)
+        a = d.get("about") or {}
+        fin = str((d.get("run") or {}).get("finished_utc") or "")
+        rows.append({"person_id": pid, "complete": (h in complete) if complete is not None else None, "pull_finished_utc": fin,
+                     "record_sha256": sha, "record_json": txt})
+        dj = lambda x: json.dumps(x, sort_keys=True, default=str) if x is not None else None
+        prof.append({"person_id": pid, "ph_user_id": str(d.get("ph_user_id")) if d.get("ph_user_id") is not None else None,
+                     "name": d.get("name"), "joined": a.get("joined"), "headline": a.get("headline"), "bio": a.get("bio"),
+                     "badges_count": a.get("badges_count"), "streak": dj(a.get("streak")), "links_json": dj(a.get("links")),
+                     "badges_json": dj(a.get("badges")), "ranks_text_json": dj(a.get("ranks_text")),
+                     "maker_history_json": dj(a.get("maker_history")), "header_json": dj(d.get("header")),
+                     "pull_finished_utc": fin, "pulls_merged": len(d.get("pull_history") or []) or 1,
+                     "has_provenance": "provenance" in d})
+        n += 1
+        if len(rows) >= 2000:
+            flush()
+    flush()
+    if writer is not None:
+        writer.close()
+    if n != len(files) - bad:
+        raise RuntimeError(f"records: {n} written for {len(files) - bad} readable person files")
+    pr = pd.DataFrame(prof)
+    pr["joined"] = pd.to_datetime(pr["joined"], utc=True, errors="coerce", format="mixed")
+    rep = {"person_files": len(files), "records_written": n, "unreadable_files": bad, "fields_not_carried": 0,
+           "joined_present": int(pr.joined.notna().sum()), "ph_user_id_present": int(pr.ph_user_id.notna().sum())}
+    return pr, rep
+
+
 # ---------- build ----------
 def build(data_dir, out_dir, salt, complete=None):
     """complete: optional set of lower-case handles (whole-person rule). When given, full pulls are read only from
@@ -506,6 +589,16 @@ def build(data_dir, out_dir, salt, complete=None):
     if complete is not None:
         cids = {ids(h) for h in complete}
         pool["complete"] = pool.person_id.isin(cids)
+    prof, rrep = build_records(data_dir, out_dir, ids, complete)
+    print("RECORDS:", json.dumps(rrep))
+    extra = sorted(set(prof.person_id) - set(pool.person_id))
+    if extra:
+        add = pd.DataFrame({"person_id": extra, "in_pool": False})
+        if "complete" in pool:
+            add["complete"] = add.person_id.isin({ids(h) for h in complete})
+        pool = pd.concat([pool, add], ignore_index=True)
+    pool = pool.merge(prof, on="person_id", how="left")
+    pool["has_record"] = pool.ph_user_id.notna() | pool.pull_finished_utc.notna()
     pool.to_parquet(f"{out_dir}/persons.parquet", index=False)
     xt = x_timelines(data_dir, OK_X_DIRS)  # orchestrator Nov 8 02:39Z: every X timeline labelled; partial unless x_end
     if len(xt):

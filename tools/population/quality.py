@@ -200,6 +200,8 @@ def person_complete(d, h=None):
     for t in ALL_TABS:
         if not isinstance(d.get(t), dict):
             why.append(f"missing_tab:{t}")
+    if not (d.get("about") or {}).get("joined"):  # 14:0xZ Nov 13 (orchestrator, for Shreyas): the join date on the profile page
+        why.append("about:joined_missing")
     hdr = d.get("header") or {}
     miss = [k for k in HDR_KEYS if hdr.get(k) is None]
     if miss:
@@ -240,7 +242,7 @@ _CF = f"{D}/.quality_cache.jsonl"
 def _key(p):
     try:
         st_ = os.stat(p)
-        return f"v2:{st_.st_size}:{st_.st_mtime_ns}"  # v2: summary also carries per-tab counts
+        return f"v3:{st_.st_size}:{st_.st_mtime_ns}"  # v2: summary also carries per-tab counts
     except OSError:
         return None
 
