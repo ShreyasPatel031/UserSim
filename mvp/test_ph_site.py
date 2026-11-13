@@ -311,6 +311,7 @@ def test_asks_rank_pick_and_note():
     assert try_sim._rank_pick(["a", "b"], [], np.zeros((0, 4), np.float32), X, [1, 1, 5, 1]) == 2
     page, pasted = try_sim._asks_note(False), try_sim._asks_note(True)
     assert "2 in 5" in page and "about 1 in 4 of these concerns" in page
+    assert "backtest only" in page and "backtest only" not in pasted and "forward check on 13 new launches" in pasted
     assert "1 in 2" in pasted and "about 1 in 3 of these concerns" in pasted
     assert "no accuracy figure" in try_sim._asks_note(True, 60, "earlier_method") and "1 in 3" not in try_sim._asks_note(True, 60, "earlier_method")
     assert "common concerns" in try_sim._asks_note(False, None, "common")

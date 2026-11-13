@@ -852,6 +852,12 @@ def _asks_note(pasted: bool, words: int | None = None, basis: str = "retrieval")
         s += (f" Concerns are based on what real users raised on similar earlier launches ({b['label']}, {b['date']}): "
               f"about {bv['desc' if pasted else 'page']} of these concerns matched a point real commenters raised on "
               f"comparable launches, against about {bv['generic']} for a common list.")
+        fw = b.get("forward") or {}
+        if pasted and fw.get("desc_n"):
+            s += (f" A forward check on {fw['desc_n']} new launches ({fw['window']}) gave {fw['desc_p3']:.0%}; a small "
+                  f"sample.")
+        elif not pasted and not fw.get("page_n"):
+            s += " The page-read figure is from a backtest only; it has not yet been checked on new launches."
     elif basis == "earlier_method":
         s += (" Few similar past launches were found for this product, so the concerns come from our earlier method and "
               "carry no accuracy figure.")
