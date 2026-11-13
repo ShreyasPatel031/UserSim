@@ -69,7 +69,7 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Complete the incomplete (new) | every saved person finished to PH's end | 11,087 incomplete + 192 merged-incomplete kept; 12,466 at signed-out upvote end queued for signed-in | completion-pass queue from population agent by 18:00Z Nov 13; Cursor runs it in the batch slots |
 | Who votes (outside the pool) | not exposed by PH | discovery tiers 53,834 complete of 329,080 queued; pool growth 22,120 (+52 today) | need list 345,460 rows ≈ 20 days at today's rate; have_index/need_list stale since Nov 8 → population agent refresh by 18:00Z Nov 13 |
 | Comments per launch, dated | every new comment per snapshot with commenter id and created_at | API: 00:07 PT read with votesCount (first landed 00:15 PT tonight; 00:07 from Nov 14), new comments every 15 min, replies merged; daily-pipeline comments step blocked on proxy (37/37) | API not at limit; Data Feeder confirms 00:07 landing on Nov 14 (PH agent checks at 00:20 PT); pipeline step redundant for comments |
-| Historical comment timestamps (new) | 2025 comment created_at per launch day | pilot not started (1 file in comments_2025/) | API budget 92% free; Data Feeder start pilot (10 days) by 00:00Z Nov 14 |
+| Historical comment timestamps (new) | 2025 comment created_at per launch day | not started (1 file in comments_2025/) | API budget 92% free; Data Feeder pulls all 365 days, no pilot, no cap (AGENTS.md Nov 13); start now |
 | Historical daily lists (new) | every featured launch 2024–2026 with ranks/votes | 2025: 339 of 365 days (manifest 10:46Z); 2024: 1 day | API not at limit; finish 2025 today, then 2024 if PH agent wants it; Data Feeder; 18:00Z Nov 13 |
 | Week/month close re-read (new) | full re-read at 23:50 PT each night, done before 00:00 PT | ran 23:59 PT Nov 12, 381 rows; starved the 00:07 slot | late; fix (start earlier/finish by 00:00 PT) in for Nov 13 night; Data Feeder; 08:00Z Nov 14 |
 | Team's pre-launch activity | team comments + dated upvotes on others' launches, 30 d before | comments exact-time; upvotes dated to launch, leaky unless the member was pulled before the day (E5 Nov 13) | forward only: pulls before launch day (hidden-window panel helps); E5 shadow; none new |
@@ -117,7 +117,7 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 ### Status Nov 11 (10:50 UTC, orchestrator daily review)
 - **Complete PH people:** 39,781 (whole + whole signed-out), unchanged since Nov 10. The fleet has been paused since the 09:15Z Nov 10 block, so the daily rate is 0.
 - **Last-week vote coverage, complete only:** 41.2% of all votes, 56.7% of top-3 votes; 9,098 votes short of 80%.
-- **Pulls are held on purpose.** Nov 11 tests showed that more people, follower lists and audience counts do not move the simulation. The team-audience pull was withdrawn. Rule: no large pull without a pilot on held data.
+- **No caps, no pilots on pulls (AGENTS.md, Nov 13).** The Nov 11 'no large pull without a pilot' line is withdrawn. A pull fetches everything the source returns; analyses on held data may sample.
 - **New data since yesterday:**
   - product info for all 35,032 stacked / reviewed / collected / hunted products, by official API, in raw/products_info/;
   - the daily maker X read was requested. Nov 11 was partial: 4 of 23 makers, all late. The handle source is being moved to the official API field.
