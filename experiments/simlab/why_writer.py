@@ -31,7 +31,7 @@ ITEMS = {
     "held_backers": {"label": "Held people who backed this team before", "unit": "people", "note": "n_backers"},
     "follow_ties": {"label": "Held people following the hunter or makers", "unit": "people", "note": "n_follow"},
     "follow_ties_active": {"label": "...of whom upvoted something in the last 30 days", "unit": "people", "note": "n_follow"},
-    "expected_held_votes": {"label": "Expected votes from held people (pair model)", "unit": "votes", "note": "n_ehv"},
+    "expected_held_votes": {"label": "Expected votes from people we hold", "unit": "votes", "note": "n_ehv"},
     "audience_tiers": {"label": "Activity of backers and followers vs all held people (upvotes on launches in the 90 days before the day)", "unit": "share by tier: 0 / 1-9 / 10-99 / 100+ upvotes in 90 days", "note": "n_tiers"},
     "young_upvoters": {"label": "Listed upvoters with accounts 1-12 months old", "unit": "share", "note": "n_young"},
     "created_together": {"label": "Listed upvoters whose accounts were created close together", "unit": "share above chance", "note": "n_clus"},
@@ -44,7 +44,8 @@ NOTES = {
     "n_follow": "Leak-safe: counts only follows seen in reads fetched before 00:00 PT of the launch day (so the follow existed before "
                 "the launch), among people in our store. Descriptive. Summing held people's expected votes, follows of the hunter and makers included, gave 0.0 top-3 gain over "
                 "the clean forecast on 10 test days (Oct 29 - Nov 11). Held people cover about 41-57% of a launch's votes.",
-    "n_ehv": "Descriptive. The voter_harness pair model (held people's recent activity, topic taste, follows of the hunter and first maker; "
+    "n_ehv": "Leak-safe: every input (upvotes, follows of the hunter and first maker) comes from reads fetched before 00:00 PT of the launch day. "
+             "Descriptive. The voter_harness pair model (held people's recent activity, topic taste, follows of the hunter and first maker; "
              "trained on the 7 previous days) summed per launch gave 0.0 top-3 gain over the clean forecast on 10 test days (Oct 29 - Nov 11). "
              "Held people cover about 41-57% of a launch's votes, so this is not a vote forecast. Coverage gives the share from the 1,000 most active.",
     "n_tiers": "Descriptive only. Audience-mix features did not improve the forecast in testing.",
