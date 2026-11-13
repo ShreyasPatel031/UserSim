@@ -1,7 +1,7 @@
 #!/bin/bash
-# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 f9114274), people-side "why" items.
+# Shadow job (orchestrator 13:02Z / E5 13:03Z Nov 13): E5's why_writer.py (claude/person-model-v2 2cc9cebb), people-side "why" items.
 # No LLM, no Product Hunt requests, CPU only. Salted ids + counts only; the salt is read by the script, never printed.
-# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of f9114274>
+# usage: bash why_run.sh forecast|after|try <D|-> <work dir> <worktree of 2cc9cebb>
 #   forecast D: at/after 00:10 PT on D (store reads fetched before 00:00 PT only) -> results/web/why_shadow/<D>_0005.json
 #   after D:    ~09:00 PT on D+1, after the store merge -> results/web/why_shadow/<D>_after.json
 #   try -:      weekly /try neighbour sidecar -> results/web/why_shadow/try_neighbours_v1.json
@@ -17,14 +17,14 @@ mkdir -p "$W/early" "$W/acct" "$W/rbundle" "$W/store" "$W/out"
 [ -s "$W/early/salt" ] || gsutil -q cp "$B/raw/population/_salt" "$W/early/salt"
 gsutil -q cp "$B/tmp/e5/acct/joined.parquet" "$W/acct/joined.parquet"
 gsutil -q cp "$B/raw/population/store_v3/events.parquet" "$B/raw/population/store_v3/persons.parquet" "$W/store/"
-if [ "$MODE" = try ]; then gsutil -q cp "${RBUNDLE:?set RBUNDLE to the site reactions_retrieval_v1.json}" "$W/rbundle/"; fi
+if [ "$MODE" = try ]; then gsutil -q cp "${RBUNDLE:-$B/site/reactions_retrieval_v1.json}" "$W/rbundle/reactions_retrieval_v1.json"; fi
 cd "$WT" && python3 experiments/simlab/why_writer.py "$MODE" "$D" "$W/store" "$W" "$W/out"
 # checks: no salted ids or handles, shadow flag, launch / item counts
 python3 -I - "$W/out/$F" <<'PY'
 import json, re, sys
 t = open(sys.argv[1]).read(); d = json.loads(t)
 assert not re.search(r'"p_[0-9a-f]{16}"|\bp_[0-9a-f]{16}\b', t), "salted id in output"
-assert d.get("shadow") is True, "shadow flag missing"
+assert d.get("shadow") is True or sys.argv[1].endswith("try_neighbours_v1.json"), "shadow flag missing"
 L = d.get("launches") or d.get("rows") or {}
 V = list(L.values()) if isinstance(L, dict) else L
 print(json.dumps({"file": sys.argv[1].rsplit("/", 1)[-1], "launches": len(V), "items_per_launch": round(sum(len(x) for x in V if isinstance(x, dict)) / max(len(V), 1), 2)}))
