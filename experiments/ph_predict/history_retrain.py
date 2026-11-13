@@ -113,6 +113,20 @@ def main():
         dfo = dfo[~dfo.known].copy(); dfo["id"] = dfo.id.astype(str); dfo["mon"] = dfo.day.str[:7]
         cols_all = sorted(set(df.columns) & set(dfo.columns)); D25 = df[old][cols_all]
         hh = dfo.set_index("id").hist_hunter_n; flag = (df[~old].set_index("id").hist_hunter_n > hh.reindex(df[~old].id).values)
+        # TARGET (orchestrator 19:00Z Nov 13): official dailyRank is vote order frozen at day close; later-read votesCount disagrees on
+        # 4.2% (2026) / 9.4% (2025) of top-10 pairs. TARGET=rank -> logv := -log(dailyRank); TARGET=ordered -> each day's log votes
+        # re-assigned in dailyRank order (same values, official order). Default (unset) = later-read log votes, as deployed.
+        TG = os.environ.get("TARGET")
+        if TG:
+            def retarget(X):
+                X = X.copy(); ok = X.dailyRank.notna()
+                if TG == "rank":
+                    X.loc[ok, "logv"] = -np.log(X.loc[ok, "dailyRank"].astype(float))
+                elif TG == "ordered":
+                    for d, g in X[ok].groupby("day"):
+                        X.loc[g.sort_values("dailyRank").index, "logv"] = np.sort(g.logv.values)[::-1]
+                return X
+            df = retarget(df); dfo = retarget(dfo)
         # DECOMP_TAG (item 3b, 11:33Z Nov 13): DECOMP_MONTHS="2026-10,2026-11" -> pure + both only, no Apr-Oct clip, files *_decomp{TAG}
         DT = os.environ.get("DECOMP_TAG", ""); DM = os.environ.get("DECOMP_MONTHS")
         for m in ([x for x in MONTHS if x in DM.split(",")] if DM else MONTHS):

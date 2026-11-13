@@ -1,0 +1,86 @@
+{
+ "2026-04": {
+  "hist_hunter_rel": 1,
+  "hist_hunter_n": 1,
+  "hist_hunter_top5": 1,
+  "llm_pitch": 1,
+  "topic_prior_mean": 1,
+  "txt_ridge": 1,
+  "ph_n_media": 1,
+  "ph_n_makers": 1,
+  "ph_hunter_age_d": 1,
+  "promo_cov": 1
+ },
+ "2026-05": {
+  "hist_hunter_rel": 1,
+  "hist_hunter_n": 1,
+  "hist_hunter_top5": 1,
+  "llm_pitch": 1,
+  "topic_prior_mean": 1,
+  "txt_ridge": 1,
+  "ph_n_media": 1,
+  "ph_n_makers": 1,
+  "ph_hunter_age_d": 1,
+  "promo_cov": 1
+ },
+ "2026-06": {
+  "hist_hunter_rel": 1,
+  "hist_hunter_n": 1,
+  "hist_hunter_top5": 1,
+  "llm_pitch": 1,
+  "topic_prior_mean": 1,
+  "txt_ridge": 1,
+  "ph_n_media": 1,
+  "ph_n_makers": 1,
+  "ph_hunter_age_d": 1,
+  "promo_cov": 1
+ },
+ "2026-07": {
+  "hist_hunter_rel": 1,
+  "hist_hunter_n": 1,
+  "hist_hunter_top5": 1,
+  "llm_pitch": 1,
+  "topic_prior_mean": 1,
+  "txt_ridge": 1,
+  "ph_n_media": 1,
+  "ph_n_makers": 1,
+  "ph_hunter_age_d": 1,
+  "promo_cov": 1
+ },
+ "2026-08": {
+  "hist_hunter_rel": 1,
+  "hist_hunter_n": 1,
+  "hist_hunter_top5": 1,
+  "llm_pitch": 1,
+  "topic_prior_mean": 1,
+  "txt_ridge": 1,
+  "ph_n_media": 1,
+  "ph_n_makers": 1,
+  "ph_hunter_age_d": 1,
+  "promo_cov": 1
+ },
+ "2026-09": {
+  "hist_hunter_rel": 1,
+  "hist_hunter_n": 1,
+  "hist_hunter_top5": 1,
+  "llm_pitch": 1,
+  "topic_prior_mean": 1,
+  "txt_ridge": 1,
+  "ph_n_media": 1,
+  "ph_n_makers": 1,
+  "ph_hunter_age_d": 1,
+  "promo_cov": 1
+ },
+ "2026-10": {
+  "hist_hunter_rel": 1,
+  "hist_hunter_n": 1,
+  "hist_hunter_top5": 1,
+  "llm_pitch": 1,
+  "topic_prior_mean": 1,
+  "txt_ridge": 1,
+  "ph_n_media": 1,
+  "ph_n_makers": 1,
+  "ph_hunter_age_d": 1,
+  "promo_cov": 1
+ }
+}

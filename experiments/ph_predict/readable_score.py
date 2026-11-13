@@ -43,7 +43,25 @@ def main():
           row("clean_nosite OOF line (tw_nosite)", alone("oof"), P), "", "## + th_n_pre (LODO ridge), vs clean_nosite + th_n_pre", "",
           "| line | top 3 | top 5 | top 10 | daily rho | diff (95%) | call |", "|---|---|---|---|---|---|---|"]
     P2 = lodo(["z_pure", "z_npre"]); md.append(f"| clean_nosite + th_n_pre (reference) | {P2[:,0].mean():.1f} | {P2[:,1].mean():.1f} | {P2[:,2].mean():.1f} | {np.nanmean(P2[:,3]):.3f} | - | - |")
-    md += [row("(a) + th_n_pre", lodo(["z_a", "z_npre"]), P2), row("(b) + th_n_pre", lodo(["z_b", "z_npre"]), P2), "",
+    Bt = lodo(["z_b", "z_npre"])
+    md += [row("(a) + th_n_pre", lodo(["z_a", "z_npre"]), P2), row("(b) + th_n_pre", Bt, P2), ""]
+    # orchestrator 18:46Z guard: input set chosen on the first half only; report last half and all days separately
+    half = len(days) // 2
+    md += [f"## Split (input set chosen on the first {half} days only; days {days[0]}..{days[half - 1]} | {days[half]}..{days[-1]})", "",
+           "| line | days | diff t3 / t5 / t10 / rho vs reference (95%) | call |", "|---|---|---|---|"]
+    for nm, X, ref in (("(b) alone vs clean_nosite", alone("b"), P), ("(b) + th_n_pre vs clean_nosite + th_n_pre", Bt, P2)):
+        for lab, sl in (("first half", slice(0, half)), ("last half", slice(half, None)), ("all", slice(None))):
+            c = ci((X - ref)[sl]); nw = c[0][1] <= 0 <= c[0][2] and abs(c[0][0]) <= 1.5
+            md.append(f"| {nm} | {lab} | " + " / ".join(f"{m:+.{3 if k == 3 else 1}f} [{l:+.{3 if k == 3 else 1}f}, {h:+.{3 if k == 3 else 1}f}]" for k, (m, l, h) in enumerate(c)) + f" | {'not worse' if nw else 'worse'} |")
+    # agreement: how often (b)+th and clean+th pick the same top 3 per day (LODO scores)
+    ag = []
+    for d in days:
+        te, tr = A[A.day == d], A[A.day != d]
+        sb = Ridge(alpha=3.0).fit(tr[["z_b", "z_npre"]], tr.y).predict(te[["z_b", "z_npre"]]); sc = Ridge(alpha=3.0).fit(tr[["z_pure", "z_npre"]], tr.y).predict(te[["z_pure", "z_npre"]])
+        tb = set(te.assign(s=sb).sort_values(["s", "id"], ascending=[False, True]).id[:3]); tc = set(te.assign(s=sc).sort_values(["s", "id"], ascending=[False, True]).id[:3])
+        ag.append(len(tb & tc))
+    ag = np.array(ag)
+    md += ["", f"Top-3 agreement, (b) + th_n_pre vs clean_nosite + th_n_pre, per day: all 3 same {np.mean(ag == 3):.1%}, >= 2 same {np.mean(ag >= 2):.1%}, mean overlap {ag.mean():.2f} of 3 ({len(days)} days).", "",
            "Rule (orchestrator): not worse = interval of the top-3 difference includes 0 and the mean is within 1.5 points."]
     open(f"{HERE}/results/readable_model{SUF}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 

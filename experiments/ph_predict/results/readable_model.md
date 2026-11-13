@@ -17,4 +17,17 @@ Inputs (10, all in the deployed clean_nosite set, known at 00:05): hunter track 
 | (a) + th_n_pre | 57.3 | 67.7 | 73.3 | 0.595 | -2.8 [-5.3, -0.5] / -0.8 [-2.7, +0.9] / -1.9 [-3.0, -0.8] / -0.027 [-0.044, -0.009] | worse |
 | (b) + th_n_pre | 58.4 | 68.3 | 74.6 | 0.615 | -1.7 [-4.2, +0.6] / -0.2 [-1.7, +1.3] / -0.7 [-1.5, +0.3] / -0.007 [-0.023, +0.011] | worse |
 
+## Split (input set chosen on the first 107 days only; days 2026-04-01..2026-07-16 | 2026-07-17..2026-10-31)
+
+| line | days | diff t3 / t5 / t10 / rho vs reference (95%) | call |
+|---|---|---|---|
+| (b) alone vs clean_nosite | first half | -3.4 [-6.9, +0.0] / -1.1 [-3.6, +1.3] / -0.7 [-2.1, +0.7] / +0.001 [-0.030, +0.034] | worse |
+| (b) alone vs clean_nosite | last half | -2.8 [-6.5, +1.2] / -1.1 [-3.2, +0.9] / -0.7 [-2.0, +0.5] / -0.022 [-0.042, -0.002] | worse |
+| (b) alone vs clean_nosite | all | -3.1 [-5.8, -0.3] / -1.1 [-2.7, +0.5] / -0.7 [-1.6, +0.2] / -0.010 [-0.028, +0.009] | worse |
+| (b) + th_n_pre vs clean_nosite + th_n_pre | first half | -1.2 [-4.7, +2.2] / -0.9 [-3.2, +1.5] / -0.4 [-1.7, +1.0] / +0.002 [-0.024, +0.033] | not worse |
+| (b) + th_n_pre vs clean_nosite + th_n_pre | last half | -2.2 [-5.6, +0.9] / +0.6 [-1.1, +2.4] / -0.9 [-2.1, +0.3] / -0.016 [-0.035, +0.001] | worse |
+| (b) + th_n_pre vs clean_nosite + th_n_pre | all | -1.7 [-4.0, +0.8] / -0.2 [-1.7, +1.3] / -0.7 [-1.6, +0.2] / -0.007 [-0.023, +0.011] | worse |
+
+Top-3 agreement, (b) + th_n_pre vs clean_nosite + th_n_pre, per day: all 3 same 53.3%, >= 2 same 95.3%, mean overlap 2.49 of 3 (214 days).
+
 Rule (orchestrator): not worse = interval of the top-3 difference includes 0 and the mean is within 1.5 points.
