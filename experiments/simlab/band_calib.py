@@ -31,13 +31,13 @@ for a in ARMS:
             return np.concatenate(cv).mean() if cv else 0
         lvl = next((x for x in np.round(np.arange(0.80, 0.99, 0.02), 2) if loo(x) >= 0.80), 0.98); lv[m] = float(lvl)
         c1, w1 = band(tr, te, a, lvl)
-        out["current"].append(pd.DataFrame({"id": te.id, "cov": c0, "w": w0})); out["recal"].append(pd.DataFrame({"id": te.id, "cov": c1, "w": w1}))
+        out["current"].append(pd.DataFrame({"id": te.id, "covr": c0, "w": w0})); out["recal"].append(pd.DataFrame({"id": te.id, "covr": c1, "w": w1}))
     o = {"nominal level chosen per test month": lv}
     for k, v in out.items():
         D = pd.concat(v); D["set"] = D.id.map(setmap)
         for sub, S in (("856", D), ("fresh 130", D[D.set == "fresh"])):
-            bs = [S.cov.to_numpy()[rng.integers(0, len(S), len(S))].mean() for _ in range(2000)]
-            o[f"{k} | {sub}"] = {"coverage_80 [CI]": [round(float(S.cov.mean()) * 100, 1), round(float(np.percentile(bs, 2.5)) * 100, 1), round(float(np.percentile(bs, 97.5)) * 100, 1), len(S)],
+            bs = [S.covr.to_numpy()[rng.integers(0, len(S), len(S))].mean() for _ in range(2000)]
+            o[f"{k} | {sub}"] = {"coverage_80 [CI]": [round(float(S.covr.mean()) * 100, 1), round(float(np.percentile(bs, 2.5)) * 100, 1), round(float(np.percentile(bs, 97.5)) * 100, 1), len(S)],
                                  "mean width (share of day's rank range)": round(float(S.w.mean()) * 100, 1)}
     res[a] = o; print(a, json.dumps(o), flush=True)
 json.dump(res, open(os.path.join(OUT, "band_calib.json"), "w"), indent=1, default=float)
