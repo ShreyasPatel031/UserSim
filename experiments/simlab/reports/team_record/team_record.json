@@ -1,0 +1,11 @@
+{
+ "design": "Team track record from the people store (orchestrator 02:07Z Nov 13). The clean 00:05 model already holds the hunter's record\n(hist_hunter_n / _rel / _top5, warehouse launches) and drops every maker-history input (hist_maker_*), so this adds:\n  maker (first named maker, safe at 00:05 in most reads), from the person's complete \"launched\" + \"hunted\" tabs in the store, launches dated\n  strictly before the target day: n past launches, best and median ln(1+final votes), n that finished daily top 5, days since the last;\n  relaunch: an earlier ranked launch of the same product (same slug stem / name), its ln votes;\n  hunter: median final daily rank of past hunts from the store's hunted tab (OVERLAPS clean's hist_hunter_rel; reported separately).\nPast launches' final votes / ranks are frozen, so values read after the target day cannot have changed; tab MEMBERSHIP was read in Nov\n(a launch made after the target day is excluded by date). Coverage per launch first; < 15% -> stop.\nLeave-day-out over Mar 1 - Nov 10 (honest_preds_v2 = clean 00:05 as-of score; th_n_pre is not held over the window): ridge on within-day z of\n[clean, feature block], weight chosen on other days; top 3/5/10, paired day bootstrap.",
+ "coverage": {
+  "launches": 6024,
+  "maker_identified_and_complete": 0.231,
+  "maker_with_past_launches": 0.031,
+  "relaunch": 0.031,
+  "hunter_with_past_hunts_in_store": 0.018,
+  "any_new_feature": 0.059
+ }
+}
