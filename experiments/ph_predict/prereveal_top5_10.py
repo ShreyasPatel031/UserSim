@@ -124,7 +124,7 @@ def main():
         fz["points"][f"P{h}"] = {"coef": dict(zip(VAR["d + clean_nosite"], map(float, m.coef_))), "intercept": float(m.intercept_)}
     if SUF:
         R_ = pd.DataFrame(res)[["point", "variant", "days", "top3", "top5", "top10", "top3_ci", "top5_ci", "top10_ci"]]
-        open(os.path.join(HERE, "results", f"prereveal{SUF}.md"), "w").write(f"# pre-reveal replay, base {os.environ.get('PR_COL', 'both')} from {os.path.basename(os.environ.get('PR_BASE', ''))}\n\n" + R_.to_markdown(index=False) + "\n")
+        open(os.path.join(HERE, "results", f"prereveal{SUF}.md"), "w").write(f"# pre-reveal replay, base {os.environ.get('PR_COL', 'both')} from {os.path.basename(os.environ.get('PR_BASE', ''))}\n\n" + "```\n" + R_.to_string(index=False) + "\n```\n")
         print(R_.to_string(index=False)); return
     os.makedirs(os.path.join(HERE, "results", "frozen"), exist_ok=True)
     fp = os.path.join(HERE, "results", "frozen", "prereveal_hr_clean_20261113.json")
