@@ -6,7 +6,9 @@
 set -euo pipefail
 D="$1"; W="$2"; B=gs://usersim-bakeoff-347838016394/usersim_sim
 OUT="$B/tmp/e5/follow_shadow/shadow_$D.jsonl"
-if gsutil -q stat "$OUT"; then echo "exists $OUT"; exit 0; fi
+# also runs E5's team_shadow (e5_team_run.sh) at the end when its worktree exists (scratchpad/e5wt at aed7f324)
+team() { WT="$(dirname "$W")/e5wt"; [ -d "$WT" ] && bash "$(dirname "$0")/e5_team_run.sh" "$D" "$W" "$WT" || echo "team_shadow: no worktree $WT"; }
+if gsutil -q stat "$OUT"; then echo "exists $OUT"; team; exit 0; fi
 gsutil -q stat "$B/raw/daily/$D/today_0005.json" || { echo "no 00:05 read for $D"; exit 1; }
 mkdir -p "$W/store" "$W/s"
 # store (orchestrator via E5 06:09Z Nov 13): E5's merged store until the population agent publishes the official merged one
@@ -16,3 +18,4 @@ gsutil -q -m cp -n "$STORE/events.parquet" "$STORE/persons.parquet" "$SD/"
 python3 -I "$W/follow_shadow.py" "$B/raw/daily/$D/today_0005.json" "$D" "$SD" "$W/s" "$W/out_$D.jsonl"
 echo "{\"day\": \"$D\", \"store\": \"$STORE\", \"written_at\": \"$(date -u +%FT%TZ)\"}" | gsutil -q cp - "$B/tmp/e5/follow_shadow/shadow_$D.store.json"
 gsutil -q cp "$W/out_$D.jsonl" "$OUT"; echo "wrote $OUT"
+team
