@@ -36,3 +36,9 @@ Each line needs Shreyas's direct word. None may run between 23:30 and 01:00 PT. 
    Evidence: pre-registered top 5 +1.5 [+0.2, +2.8] (2026) / +1.8 [+0.4, +3.1] (2025); top 3 not established.
    Prerequisite: steps 3, 4 and 5.
    Rollback: `bash ~/w/stage/arm3/deploy_arm3.sh unpublish` (arm 2 publishes again at the next 00:05).
+
+NEXT BUNDLE MANIFEST ADDITIONS (not deployed; to be built as a new named bundle):
+- ~/w/arm2_live/ctrl.py, md5 b47fc28f (= ~/w/mk/ctrl.py). It is imported by training_window.py through history_retrain. Its absence
+  caused the Nov 14 00:05 arm-2 fallback. It was added by hand at 09:02Z Nov 14, and no manifest tracks it yet. The bundle's
+  deploy check should md5-verify it and import-gate h25_live.
+- ph_n_makers drop: pending the drop_nmakers.py result (orchestrator rule: goes in if 2026 top 5 is not worse beyond noise).
