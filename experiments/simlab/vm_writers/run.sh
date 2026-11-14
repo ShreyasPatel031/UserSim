@@ -12,12 +12,16 @@ miss=""; for f in a2x/X.parquet; do [ -s "$ASSETS/$f" ] || miss="$miss $f"; done
 case "$JOB" in held_team_*) [ -s "$ASSETS/early/salt" ] || miss="$miss early/salt";; esac
 [ -n "$miss" ] && { echo "$(date -u +%FT%TZ) $JOB FAIL inputs missing:$miss" | tee -a "$LOG"; exit 3; }
 cd "$HERE/simlab"; export PYTHONPATH="$HERE:${PYTHONPATH:-}"
+period_score_run() { local r=0   # week on Sundays, month on the month's last day; both on a Sunday month end; rc = first failure
+  [ "$(date -d "$D" +%u)" = 7 ] && { python period_score.py week "$D" "$ASSETS" || r=$?; }
+  [ "$(date -d "$D + 1 day" +%d)" = 01 ] && { python period_score.py month "$D" "$ASSETS" || { m=$?; [ $r = 0 ] && r=$m; }; }
+  return $r; }
 case "$JOB" in
   track_record)      cmd="python track_record.py $ASSETS";;
   prob_0005)         cmd="python prob_writer.py 0005 ${2:-$TODAY} $ASSETS";;
   prob_prereveal)    cmd="python prob_writer.py prereveal ${2:-$TODAY} $ASSETS";;
   period)            cmd="python period_writer.py ${2:-$YDAY} $ASSETS";;
-  period_score)      D=${2:-$YDAY}; cmd="true"; [ "$(date -d $D +%u)" = 7 ] && cmd="python period_score.py week $D $ASSETS"; [ "$(date -d "$D + 1 day" +%d)" = 01 ] && cmd="$cmd; python period_score.py month $D $ASSETS";;
+  period_score)      D=${2:-$YDAY}; cmd=period_score_run;;   # a function: "$cmd" with ';' inside never ran the month (bug sweep 6, repro_B6.sh)
   held_team_predict) cmd="python held_team_shadow.py predict ${2:-$TODAY} $ASSETS";;
   held_team_score)   cmd="python held_team_shadow.py score ${2:-$YDAY} $ASSETS";;
   *) echo "unknown job $JOB"; exit 64;;

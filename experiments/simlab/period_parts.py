@@ -3,7 +3,7 @@ newest-row-per-launch merge, which kept two dropped launches in week Nov 2-8). P
 initial snapshot counts as written 2026-10-28T00:00Z. Counts and launch ids only."""
 import glob, os, re
 import pandas as pd
-LOC = os.path.expanduser("~/.usersim_sim/launches"); PT = "America/Los_Angeles"
+LOC = os.path.join(os.environ.get("USERSIM_CACHE", os.path.expanduser("~/.usersim_sim")), "launches"); PT = "America/Los_Angeles"   # LOC: same root as pipeline/warehouse.py LOCAL (bug sweep 7)
 COLS = ["id", "day", "votes", "weekly_rank", "monthly_rank", "updated_at"]
 
 

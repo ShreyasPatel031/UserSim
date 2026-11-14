@@ -24,7 +24,8 @@ if KIND == "0005":
     if raw:
         J12 = json.loads(raw); R = pd.DataFrame(J12.get("ranking") or []); PUBM = J12.get("model"); src = f"results/web/predictions (model {PUBM})"
         # the logistic is fit on arm-2 scores: use it only when the published model is arm 2; any fallback model -> position rank table
-        if PUBM == "arm2" and "score" in R and R.score.notna().all(): S = R[["id", "score"]].rename(columns={"score": "s"})
+        if not len(R) or not {"id", "rank"} <= set(R): src = None   # none_available night (model null, empty ranking): fall through, never crash
+        elif PUBM == "arm2" and "score" in R and R.score.notna().all(): S = R[["id", "score"]].rename(columns={"score": "s"})
         else: S = R[["id", "rank"]]
     if S is None:
         fc = os.path.join(SP, f"fcp_{D}.parquet")
@@ -57,8 +58,9 @@ if KIND == "0005":
 else:
     FZ = json.load(open(os.path.join(PM, "frozen_prob_prereveal.json"))); S = None
     raw = gcat(f"{B}/results/web/predictions/{D}_prereveal.json")
-    if raw: S = pd.DataFrame(json.loads(raw).get("ranking") or [])[["id", "rank"]]; src = "results/web/predictions"
-    else:
+    R = pd.DataFrame(json.loads(raw).get("ranking") or []) if raw else pd.DataFrame()
+    if len(R) and {"id", "rank"} <= set(R): S = R[["id", "rank"]]; src = "results/web/predictions"
+    else:   # no file, or a none_available night (empty ranking)
         raw = gcat(f"{B}/results/early_forecast/{D}_P345.json")
         if raw:
             F = pd.DataFrame(json.loads(raw).get("forecast") or [])
