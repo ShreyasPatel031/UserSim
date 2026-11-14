@@ -782,7 +782,7 @@ def test_prereveal_gets_rank_mapped_votes(monkeypatch):
     monkeypatch.setattr(live.gcs, "_cached", lambda key, ttl, fn: fn())
     f = live.forecasts("2026-11-14")
     assert f["0005"]["exp_votes"] == {"a": 147, "b": 54}
-    assert f["PRE"]["exp_votes"] == {"b": 147, "a": 54} and "1 day" in f["PRE"]["vote_err"]
+    assert f["PRE"]["exp_votes"] == {"b": 147, "a": 54} and "17%" in f["PRE"]["vote_err"]
 
 
 def test_explain_sanitised(monkeypatch):
