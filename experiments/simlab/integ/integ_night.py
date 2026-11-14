@@ -125,7 +125,7 @@ for kind, fn in (("midnight", "0005"), ("prereveal", "prereveal")):
             a3fail_exp = LC2 and os.environ.get("ARM3PUB") == "1" and not a3ok
             want_name = want + (" (arm3 failed)" if a3fail_exp else "")
             Fo = F.assign(id=F.id.astype(str)).sort_values([col, "id"], ascending=[False, True]).id.tolist()
-            base_m = J["model"].split(" (")[0]; lab = ACC["ACC3"] if base_m == "arm3" else (ACC["acc0"](base_m) if "acc0" in ACC else ACC["ACC0_BY"].get(base_m))
+            base_m = J["model"].split(" (")[0]; lab = ACC["acc0"](base_m) if "acc0" in ACC else (ACC["ACC3"] if base_m == "arm3" else ACC["ACC0_BY"].get(base_m))
             Fp = F.assign(id=F.id.astype(str)).sort_values("published_rank").id.tolist() if "published_rank" in F else None
             h.update({"expected model": want, "arm3 expected from env": a3want, "arm3 in parquet": bool(a3ok), "label == ACC0_BY/ACC3[model]": J["backtest"] == lab,
                       "label is arm3's own (not the unset placeholder)": (J["backtest"] != "arm 3 (backtest label not set)") if J["model"] == "arm3" else None,

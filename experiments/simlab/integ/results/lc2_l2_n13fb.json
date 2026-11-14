@@ -1,0 +1,404 @@
+{
+ "day": "2026-11-13",
+ "mode": "fallback",
+ "handoffs": {
+  "A lineup -> forecast parquet": {
+   "rc": 0,
+   "exists": true,
+   "log arm2 line": [
+    "published model: arm3 | fallback: clean_nosite (arm2 error RuntimeError: arm2: today rows 20, 2025 training rows 0) | arm3: arm3 published ({'inputs': 62, 'new_feats': 22, 'model': 'BAAI/bge-small-en-v1.5@5c38ec7c', 'embedded': 57, 'embed_s': 5.4, 'cache_rows': 12231}); arm 2 kept as shadow"
+   ],
+   "day all D": true,
+   "rows / lineup": [
+    20,
+    20
+   ],
+   "ids == lineup": true,
+   "pred_arm2 present": 0,
+   "expected arm2": false,
+   "PASS": true
+  },
+  "B forecast -> 2026-11-13_0005.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-13",
+   "model": "arm3",
+   "fallback_used": null,
+   "label": "56.3 / 66.3 / 77.6 top 3 / 5 / 10 on 183 backtest days (Apr-Oct 2026, month-forward, 20 seeds, pre-registered harness; t",
+   "rows": 20,
+   "ids == lineup": true,
+   "ids missing / extra vs lineup": [
+    0,
+    0
+   ],
+   "latest pointer == this file": true,
+   "inputs": {
+    "forecast_parquet": "present",
+    "pred_arm2": "missing",
+    "pred_arm3": "published",
+    "input_guard": "absent"
+   },
+   "expected model": "arm3",
+   "arm3 expected from env": true,
+   "arm3 in parquet": true,
+   "label == ACC0_BY/ACC3[model]": false,
+   "label is arm3's own (not the unset placeholder)": true,
+   "order == parquet sort": true,
+   "order == parquet published_rank": true,
+   "label == ACC0_BY[model]": false,
+   "expected model name": "arm3",
+   "arm3 failure named (model / fallback_used)": null,
+   "parquet published_model": "arm3",
+   "PASS": false
+  },
+  "B forecast + recorder -> 2026-11-13_prereveal.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-13",
+   "model": "hybrid_vm",
+   "fallback_used": "stale_read",
+   "label": "72.2 / 75.0 / 71.7 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone; label source: build constant (read olde",
+   "rows": 20,
+   "ids == lineup": false,
+   "ids missing / extra vs lineup": [
+    1,
+    1
+   ],
+   "latest pointer == this file": true,
+   "inputs": {
+    "recorder_T": "present (read 03:00:00 PT)",
+    "recorder_0100": "present (read 01:00:00 PT)",
+    "forecast_parquet": "present",
+    "weights": "present",
+    "recorder_T_stale": true
+   },
+   "label == acc1(model, fb)": true,
+   "recorder read (PT)": "present (read 03:00:00 PT)",
+   "PASS": false
+  },
+  "C 2026-11-13_0005.json -> probabilities/2026-11-13_0005.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-13",
+   "status": "ok",
+   "source": "results/web/predictions (model arm3)",
+   "method": "rank table by position (published model not arm 2, or no scores)",
+   "basis": "arm 2 walk-forward backtest, 2026-04-01 to 2026-10-31 (183 days with >= 10 ranked launches)",
+   "basis_n_days": 183,
+   "ids/order == published ranking": true,
+   "rows": 20,
+   "input_note": true,
+   "method matches published model": true,
+   "PASS": true
+  },
+  "C 2026-11-13_prereveal.json -> probabilities/2026-11-13_prereveal.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-13",
+   "status": "ok",
+   "source": "results/web/predictions (model hybrid_vm, fallback_used stale_read)",
+   "names producing model": true,
+   "ids/order == published": true,
+   "PASS": true
+  },
+  "C raw/daily/2026-11-13/forecast parquet -> period 2026-11-12 (predicted entrants)": {
+   "rc": 0,
+   "weekly exists": true,
+   "monthly exists": true,
+   "weekly": {
+    "day": "2026-11-12",
+    "entrants": {
+     "entrants": {
+      "day": "2026-11-13",
+      "n": 20,
+      "source": "raw/daily/2026-11-13/forecast_2026-11-13.parquet pred_arm3 (arm 3, published)",
+      "calibration log1p(votes) = a + b*pred": [
+       -0.153,
+       1.012
+      ],
+      "calibration rows (months < 2026-11)": 5034,
+      "calibration note": "fit on arm-2 preds, applied to arm-3 preds: approximate",
+      "note": "entrant predictions from a forecast built on polluted hunter-history inputs (stale data/today rows); fix pending",
+      "calibration source": "backtest only: arm-2 walk-forward preds (assets a2x/X.parquet 'both', Apr-Oct) x warehouse votes; no live preds"
+     }
+    },
+    "reads D parquet": true,
+    "names col": false
+   },
+   "monthly": {
+    "day": "2026-11-12",
+    "entrants": {
+     "entrants": {
+      "day": "2026-11-13",
+      "inserted": false,
+      "reason": "monthly: shadow only"
+     }
+    },
+    "reads D parquet": false,
+    "names col": false
+   }
+  },
+  "C published files -> track_record_v1.json": {
+   "rc": 0,
+   "exists": true,
+   "rows for D": [
+    {
+     "day": "2026-11-13",
+     "prediction": "03:45 PT",
+     "flag": "replay",
+     "line": "hybrid_vm (bundle 12a), PH ops leave-one-day-out orders, live 00:05 prior",
+     "status": "scored",
+     "n_ranked": 21,
+     "n_launches": 21,
+     "hits_top3": 2,
+     "hits_top5": 5,
+     "hits_top10": 8
+    },
+    {
+     "day": "2026-11-13",
+     "prediction": "03:45 PT",
+     "flag": "replay with fixed 00:05 inputs",
+     "line": "hybrid_vm with the fixed-prior weights (bundle 12a.3), PH ops leave-one-day-out orders",
+     "status": "scored",
+     "n_ranked": 21,
+     "n_launches": 21,
+     "hits_top3": 2,
+     "hits_top5": 5,
+     "hits_top10": 8
+    },
+    {
+     "day": "2026-11-13",
+     "prediction": "03:45 PT",
+     "flag": "replay (hidden rank alone)",
+     "line": "Product Hunt's hidden order at the 03:00 read",
+     "status": "scored",
+     "n_ranked": 21,
+     "n_launches": 21,
+     "hits_top3": 2,
+     "hits_top5": 5,
+     "hits_top10": 8
+    }
+   ],
+   "mentions D": true
+  },
+  "C period_score 2026-11-12": {
+   "rc": 0,
+   "last": "2026-11-14T21:54:41Z period_score rc=0 inputs present (a2x/X.parquet, ph2025, frozen tables) |"
+  }
+ },
+ "probes": {
+  "baseline (all inputs, decoys planted)": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-13",
+     "model": "arm3",
+     "fallback_used": "None",
+     "backtest": "56.3 / 66.3 / 77.6 top 3 / 5 / 10 on 183 backtest days (Apr-Oct 2026, month-forward, 20 seeds, pre-registered ",
+     "n": 20
+    },
+    "prereveal": {
+     "day": "2026-11-13",
+     "model": "hybrid_vm",
+     "fallback_used": "stale_read",
+     "backtest": "72.2 / 75.0 / 71.7 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone; label source: build constant ",
+     "n": 20
+    },
+    "prob_0005": {
+     "day": "2026-11-13",
+     "status": "ok",
+     "source": "results/web/predictions (model arm3)",
+     "n": 20
+    },
+    "prob_prereveal": {
+     "day": "2026-11-13",
+     "status": "ok",
+     "source": "results/web/predictions (model hybrid_vm, fallback_used stale_read)",
+     "n": 20
+    },
+    "period_weekly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'n': 20, 'source': 'raw/daily/2026-11-13/forecast_2026-11-13.parquet pred_arm3 (arm 3, published)', 'calibration log1p(votes) = a + b*pred",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'monthly: shadow only'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "forecast parquet missing (VM results + raw/daily)": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-13",
+     "model": "None",
+     "fallback_used": "none_available",
+     "backtest": "no model ran (no forecast for this night)",
+     "n": 0
+    },
+    "prereveal": {
+     "day": "2026-11-13",
+     "model": "hybrid_vm",
+     "fallback_used": "no_prior+stale_read",
+     "backtest": "72.2 / 75.0 / 71.7 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone; label source: build constant ",
+     "n": 20
+    },
+    "prob_0005": {
+     "day": "2026-11-13",
+     "status": "not published",
+     "n": 0
+    },
+    "prob_prereveal": {
+     "day": "2026-11-13",
+     "status": "ok",
+     "source": "results/web/predictions (model hybrid_vm, fallback_used no_prior+stale_read)",
+     "n": 20
+    },
+    "period_weekly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-13'}",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-13'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "recorder file missing": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-13",
+     "model": "arm3",
+     "fallback_used": "None",
+     "backtest": "56.3 / 66.3 / 77.6 top 3 / 5 / 10 on 183 backtest days (Apr-Oct 2026, month-forward, 20 seeds, pre-registered ",
+     "n": 20
+    },
+    "prereveal": {
+     "day": "2026-11-13",
+     "model": "midnight_order",
+     "fallback_used": "midnight_order",
+     "backtest": "56.3 / 66.3 / 77.6 top 3 / 5 / 10 on 183 backtest days (Apr-Oct 2026, month-forward, 20 seeds, pre-registered ",
+     "n": 20
+    },
+    "prob_0005": {
+     "day": "2026-11-13",
+     "status": "ok",
+     "source": "results/web/predictions (model arm3)",
+     "n": 20
+    },
+    "prob_prereveal": {
+     "day": "2026-11-13",
+     "status": "ok",
+     "source": "results/web/predictions (model midnight_order, fallback_used midnight_order)",
+     "n": 20
+    },
+    "period_weekly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'n': 20, 'source': 'raw/daily/2026-11-13/forecast_2026-11-13.parquet pred_arm3 (arm 3, published)', 'calibration log1p(votes) = a + b*pred",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'monthly: shadow only'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "forecast + recorder missing": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-13",
+     "model": "None",
+     "fallback_used": "none_available",
+     "backtest": "no model ran (no forecast for this night)",
+     "n": 0
+    },
+    "prereveal": {
+     "day": "2026-11-13",
+     "model": "None",
+     "fallback_used": "none_available",
+     "backtest": "no model ran (no pre-reveal read)",
+     "n": 0
+    },
+    "prob_0005": {
+     "day": "2026-11-13",
+     "status": "not published",
+     "n": 0
+    },
+    "prob_prereveal": {
+     "day": "2026-11-13",
+     "status": "not published",
+     "n": 0
+    },
+    "period_weekly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-13'}",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-13'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "published prediction files missing (writers only)": {
+   "outputs": {
+    "0005": null,
+    "prereveal": null,
+    "prob_0005": {
+     "day": "2026-11-13",
+     "status": "ok",
+     "source": "raw/daily forecast pred_arm3 (model arm3 published)",
+     "n": 20
+    },
+    "prob_prereveal": {
+     "day": "2026-11-13",
+     "status": "not published",
+     "n": 0
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "published files + raw/daily/D missing (writers only)": {
+   "outputs": {
+    "0005": null,
+    "prereveal": null,
+    "prob_0005": {
+     "day": "2026-11-13",
+     "status": "not published",
+     "n": 0
+    },
+    "prob_prereveal": {
+     "day": "2026-11-13",
+     "status": "not published",
+     "n": 0
+    },
+    "period_weekly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-13'}",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-12",
+     "entrants": "{'day': '2026-11-13', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-13'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "line-up today/D missing -> forecast": "skipped (SKIP_A_PROBE)"
+ },
+ "notes": [],
+ "gsutil reads served from real bucket (non-chain paths)": [
+  "raw/ph_history/2025/",
+  "tables",
+  "tmp/e5/vm_writers/assets/a2x/"
+ ]
+}
