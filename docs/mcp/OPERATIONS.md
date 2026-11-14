@@ -93,6 +93,15 @@ The VM service account needs **Secret Manager Secret Accessor** on these secrets
 
 Non-secret config (URLs, project ids, feature toggles that are not credentials) may remain in `/etc/usersim/env` or move to `limits.json` when appropriate.
 
+## Website /ph and /try (Vercel env)
+
+- `PH_CLIENT_ID`, `PH_CLIENT_SECRET`: the site's own Product Hunt app (not the pipeline's), for the live board.
+- `CRON_SECRET`: Bearer secret for `/api/ph/cron/snapshot` (15-minute record).
+- `TRY_SIGNING_KEY`: signs /try run tokens.
+- New env values take effect only on the next deployment. Deploys started through Vercel's API have their own daily cap
+  (`api-deployments-free-per-day`); a merge to main deploys through git.
+- Health: `/api/ph/health` → `live_board.configured` should be true and `age_s` under about 120.
+
 ## Check what is live
 
 ```bash
