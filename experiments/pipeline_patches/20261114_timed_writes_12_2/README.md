@@ -1,3 +1,25 @@
+# Bundle 12.2 = 12.1 + E5 vm_writers 427f222b (UNDEPLOYED; orchestrator 18:37Z Nov 14). 12 and 12.1 are withdrawn; their folders are untouched.
+
+Deploy line, unchanged in form: `bash deploy_b12.sh 419bc02e af3a96ca` (the tw code tarball of 12.1). This folder's deploy_b12.sh pins
+E5W_MD5=427f222b, file tmp/e5/vm_writers/e5_vm_writers_12_2.tgz (E5 e7d6b79a). After extracting, it checks vm_writers/MANIFEST.md5 (18 files).
+E5's fixes: B3 (prob_writer none_available + arm-2 calibration on fallback nights), B6 (run.sh period_score month never ran),
+B7 (period_parts reads $USERSIM_CACHE), all five writers synced from simlab.
+
+Checks (Nov 14 ~19:25Z, VM scratch /home/agent/w/phops_tm/b122; dry_e5w.sh in this folder):
+- tarball md5 427f222b; manifest 18/18 OK; bash -n run.sh OK.
+- import gate on the 5 writers (cwd simlab, PYTHONPATH=vm_writers, env -i, /opt/exp/bin/python3): 38 imports ok, 0 failed.
+- Every e5w job under tw.sh's environment (env -i; PATH cron-like plus /opt/exp/bin; USERSIM_CACHE=<scratch>/cache synced from tables/;
+  TZ, TMPDIR, ASSETS, LOG as tw.sh sets them). Every gsutil write to gs:// was stubbed (logged, nothing written).
+  - track_record ok (183 scored backtest days, 11 replay days at 03:45); prob_0005 ok; prob_prereveal ok; period ok (month 10 / 398).
+  - period_score ok on Nov 13 (no period ends that day), Oct 31 (month end: month score + track record) and Nov 8 (Sunday: week score).
+  - held_team_predict and held_team_score stop with "inputs missing: early/salt", as designed: the salt is not in scratch and is never copied.
+  - 9 stubbed writes, all to E5's tmp/e5/website paths.
+- The why-driver 183-day labels are NOT in 12.2 yet (TODO: recompute the readable (b)+th_n_pre and SHAP figures on 183 days).
+- Item 8 (bug sweep), not live code in this bundle:
+  - the weekly "launch_model" score reading `pred` lives in pipeline/daily.py, so it goes in live-code 1;
+  - the comment ridge's LM mismatch is labelled in scoreboard.json method_notes.comment_ridge
+    ("LM input from a different model than fitted"; my routine's scoreboard.py, additive field).
+
 > DEPLOY LINES (orchestrator 15:21Z Nov 14):
 > - "Deploy bundle 12"   = `bash deploy_b12.sh 256e2f2e 8c7aadea` (tarball tw_code_256e2f2e.tgz; its tw.sh / sched12 are the gated ones, no arm-3 jobs;
 >   E5 vm_writers pinned f9abf3e0 in deploy_b12.sh).
