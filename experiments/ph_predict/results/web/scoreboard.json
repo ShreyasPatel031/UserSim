@@ -1,5 +1,5 @@
 {
- "built_at": "2026-11-14T16:45:21.385382+00:00",
+ "built_at": "2026-11-14T20:18:39.008777+00:00",
  "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
  "sources": {
   "live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
@@ -4429,7 +4429,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": "old full model"
   },
   {
    "day": "2026-10-26",
@@ -4445,7 +4446,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-10-27",
@@ -4461,7 +4463,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-10-28",
@@ -4477,7 +4480,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-10-29",
@@ -4493,7 +4497,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-10-30",
@@ -4509,7 +4514,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-10-31",
@@ -4525,7 +4531,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-01",
@@ -4541,7 +4548,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-02",
@@ -4557,7 +4565,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-02",
@@ -4573,7 +4582,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-02",
@@ -4589,7 +4599,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-02",
@@ -4605,7 +4616,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-02",
@@ -4621,7 +4633,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-02",
@@ -4637,7 +4650,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-02",
@@ -4653,7 +4667,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-02",
@@ -4669,7 +4684,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-02",
@@ -4685,7 +4701,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4701,7 +4718,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-03",
@@ -4717,7 +4735,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4733,7 +4752,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4749,7 +4769,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4765,7 +4786,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4781,7 +4803,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4797,7 +4820,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4813,7 +4837,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-03",
@@ -4829,7 +4854,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4845,7 +4871,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-04",
@@ -4861,7 +4888,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4877,7 +4905,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4893,7 +4922,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4909,7 +4939,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4925,7 +4956,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4941,7 +4973,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4957,7 +4990,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4973,7 +5007,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -4989,7 +5024,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -5005,7 +5041,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -5021,7 +5058,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -5037,7 +5075,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -5053,7 +5092,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -5069,7 +5109,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -5085,7 +5126,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-04",
@@ -5101,7 +5143,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5117,7 +5160,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-08",
@@ -5133,7 +5177,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5149,7 +5194,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5165,7 +5211,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5181,7 +5228,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5197,7 +5245,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5213,7 +5262,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5229,7 +5279,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5245,7 +5296,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5261,7 +5313,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5277,7 +5330,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5293,7 +5347,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5309,7 +5364,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5325,7 +5381,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5341,7 +5398,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5357,7 +5415,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-08",
@@ -5373,7 +5432,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-09",
@@ -5389,7 +5449,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-09",
@@ -5405,7 +5466,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-09",
@@ -5421,7 +5483,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-09",
@@ -5437,7 +5500,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-09",
@@ -5453,7 +5517,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5469,7 +5534,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-10",
@@ -5485,7 +5551,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5501,7 +5568,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5517,7 +5585,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5533,7 +5602,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5549,7 +5619,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5565,7 +5636,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5581,7 +5653,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5597,7 +5670,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5613,7 +5687,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5629,7 +5704,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5645,7 +5721,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5661,7 +5738,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5677,7 +5755,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5693,7 +5772,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5709,7 +5789,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-10",
@@ -5725,7 +5806,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5741,7 +5823,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5757,7 +5840,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-11",
@@ -5773,7 +5857,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5789,7 +5874,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5805,7 +5891,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5821,7 +5908,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5837,7 +5925,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5853,7 +5942,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5869,7 +5959,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5885,7 +5976,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5901,7 +5993,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5917,7 +6010,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5933,7 +6027,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5949,7 +6044,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5965,7 +6061,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5981,7 +6078,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -5997,7 +6095,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -6013,7 +6112,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -6029,7 +6129,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -6045,7 +6146,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -6061,7 +6163,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-11",
@@ -6077,7 +6180,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6093,7 +6197,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6109,7 +6214,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6125,7 +6231,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6141,7 +6248,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "old full model"
   },
   {
    "day": "2026-11-12",
@@ -6157,7 +6265,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6173,7 +6282,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6189,7 +6299,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6205,7 +6316,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6221,7 +6333,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6237,7 +6350,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6253,7 +6367,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6269,7 +6384,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6285,7 +6401,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6301,7 +6418,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6317,7 +6435,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6333,7 +6452,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6349,7 +6469,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6365,7 +6486,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6381,7 +6503,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6397,7 +6520,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6413,7 +6537,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6429,7 +6554,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6445,7 +6571,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6461,7 +6588,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6477,7 +6605,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6493,7 +6622,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6509,7 +6639,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6525,7 +6656,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6541,7 +6673,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6557,7 +6690,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6573,7 +6707,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6589,7 +6724,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6605,7 +6741,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6621,7 +6758,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6637,7 +6775,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6653,7 +6792,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6669,7 +6809,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6685,7 +6826,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6701,7 +6843,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6717,7 +6860,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6733,7 +6877,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6749,7 +6894,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6765,7 +6911,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6781,7 +6928,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6797,7 +6945,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6813,7 +6962,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6829,7 +6979,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6845,7 +6996,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6861,7 +7013,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6877,7 +7030,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6893,7 +7047,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6909,7 +7064,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6925,7 +7081,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6941,7 +7098,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6957,7 +7115,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6973,7 +7132,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -6989,7 +7149,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7005,7 +7166,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7021,7 +7183,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7037,7 +7200,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7053,7 +7217,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7069,7 +7234,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7085,7 +7251,8 @@
    "p2_top3": 0.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7101,7 +7268,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7117,7 +7285,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7133,7 +7302,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-12",
@@ -7149,7 +7319,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7165,7 +7336,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7181,7 +7353,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7197,7 +7370,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7213,7 +7387,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7229,7 +7404,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": "clean_nosite"
   },
   {
    "day": "2026-11-13",
@@ -7245,7 +7421,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7261,7 +7438,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7277,7 +7455,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7293,7 +7472,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7309,7 +7489,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7325,7 +7506,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7341,7 +7523,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7357,7 +7540,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7373,7 +7557,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7389,7 +7574,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7405,7 +7591,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7421,7 +7608,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7437,7 +7625,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7453,7 +7642,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7469,7 +7659,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7485,7 +7676,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7501,7 +7693,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7517,7 +7710,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7533,7 +7727,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7549,7 +7744,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7565,7 +7761,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7581,7 +7778,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7597,7 +7795,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7613,7 +7812,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7629,7 +7829,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7645,7 +7846,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7661,7 +7863,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7677,7 +7880,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7693,7 +7897,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7709,7 +7914,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7725,7 +7931,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7741,7 +7948,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7757,7 +7965,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7773,7 +7982,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7789,7 +7999,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7805,7 +8016,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7821,7 +8033,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7837,7 +8050,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7853,7 +8067,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7869,7 +8084,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7885,7 +8101,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7901,7 +8118,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7917,7 +8135,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7933,7 +8152,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7949,7 +8169,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7965,7 +8186,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7981,7 +8203,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -7997,7 +8220,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8013,7 +8237,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8029,7 +8254,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8045,7 +8271,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8061,7 +8288,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8077,7 +8305,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8093,7 +8322,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8109,7 +8339,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8125,7 +8356,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8141,7 +8373,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8157,7 +8390,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8173,7 +8407,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8189,7 +8424,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8205,7 +8441,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8221,7 +8458,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8237,7 +8475,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8253,7 +8492,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8269,7 +8509,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8285,7 +8526,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8301,7 +8543,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8317,7 +8560,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8333,7 +8577,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8349,7 +8594,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8365,7 +8611,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8381,7 +8628,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8397,7 +8645,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8413,7 +8662,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8429,7 +8679,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8445,7 +8696,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8461,7 +8713,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8477,7 +8730,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8493,7 +8747,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8509,7 +8764,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8525,7 +8781,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8541,7 +8798,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8557,7 +8815,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8573,7 +8832,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8589,7 +8849,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8605,7 +8866,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8621,7 +8883,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8637,7 +8900,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8653,7 +8917,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8669,7 +8934,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8685,7 +8951,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8701,7 +8968,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8717,7 +8985,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8733,7 +9002,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8749,7 +9019,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8765,7 +9036,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8781,7 +9053,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8797,7 +9070,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8813,7 +9087,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8829,7 +9104,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8845,7 +9121,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8861,7 +9138,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8877,7 +9155,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8893,7 +9172,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8909,7 +9189,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8925,7 +9206,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8941,7 +9223,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8957,7 +9240,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8973,7 +9257,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -8989,7 +9274,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9005,7 +9291,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9021,7 +9308,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9037,7 +9325,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9053,7 +9342,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9069,7 +9359,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9085,7 +9376,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9101,7 +9393,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9117,7 +9410,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9133,7 +9427,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9149,7 +9444,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9165,7 +9461,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9181,7 +9478,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9197,7 +9495,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9213,7 +9512,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9229,7 +9529,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9245,7 +9546,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9261,7 +9563,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9277,7 +9580,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9293,7 +9597,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9309,7 +9614,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9325,7 +9631,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9341,7 +9648,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9357,7 +9665,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 0.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9373,7 +9682,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9389,7 +9699,8 @@
    "p2_top3": 0.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9405,7 +9716,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
+   "input_flag": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9421,7 +9733,8 @@
    "p2_top3": 1.0,
    "p3_top3": 0.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9437,7 +9750,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9453,7 +9767,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9469,7 +9784,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9485,7 +9801,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   },
   {
    "day": "2026-11-13",
@@ -9501,7 +9818,8 @@
    "p2_top3": 1.0,
    "p3_top3": 1.0,
    "exact1": 1.0,
-   "input_flag": null
+   "input_flag": null,
+   "model": null
   }
  ],
  "actual_top10": {
@@ -9764,7 +10082,10 @@
   "2026-11-12": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)",
   "2026-11-13": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"
  },
- "input_flag": "rows of the 00:05 forecast and the pre-reveal P points on flagged days; R / C / velocity points use votes and are not flagged",
+ "method_notes": {
+  "comment_ridge": "LM input from a different model than fitted: the ridge's LM coefficient was fit on E5's honest pre-launch model ranks; live it reads the published 00:05 model's ranks (old full model to Nov 12, clean_nosite Nov 13-14, arm 2 from Nov 15)"
+ },
+ "input_flag": "rows of the 00:05 forecast, the pre-reveal P points, weekly / monthly lines (all read a 00:05 score) on flagged days; R / C and velocity V points use votes only (velocity_shadow.py reads no 00:05 score) and are not flagged",
  "model_switch": {
   "clean_from": "2026-11-13",
   "deployed_after_switch": "old model, shadow replay (unfixed_replay)",
@@ -9977,6 +10298,6 @@
     "clean_missing": 1
    }
   },
-  "written_at": "2026-11-14T16:46:51.442470+00:00"
+  "written_at": "2026-11-14T20:20:12.254692+00:00"
  }
 }
