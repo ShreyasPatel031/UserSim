@@ -548,7 +548,8 @@ def _freshness(day: str, fc: dict, board: dict, final: bool) -> dict:
             age = (datetime.now(timezone.utc) - datetime.fromisoformat(str(board.get("as_of")).replace("Z", "+00:00"))).total_seconds() / 60
         except (ValueError, TypeError):
             age = None
-        if age is None or age > BOARD_STALE_MIN:
+        limit = 5 if board.get("source") == "Product Hunt API" else BOARD_STALE_MIN
+        if age is None or age > limit:
             out["board_stale"] = True
             out["board_stale_label"] = (f"not updated since {board.get('as_of_pt')}" if board.get("as_of_pt")
                                         else "no live reading yet today")
@@ -558,10 +559,35 @@ def _freshness(day: str, fc: dict, board: dict, final: bool) -> dict:
     return out
 
 
+def _api_board(day: str) -> dict | None:
+    """The site's own Product Hunt API board (mvp/ph_site/ph_live.py); None when unconfigured and never saved."""
+    from mvp.ph_site import ph_live
+    try:
+        return ph_live.board(day)
+    except Exception as exc:  # noqa: BLE001 - fall back to the capture files
+        print(f"[ph] live board unavailable: {type(exc).__name__}", flush=True)
+        return None
+
+
 def day_view(day: str) -> dict:
     prods = _lineup(day)
     fc = forecasts(day)
     act = actuals(day)
+    api = _api_board(day)
+    if api:
+        for r in api["launches"]:                  # launches the line-up files missed (or no files at all)
+            if r["id"] not in prods:
+                prods[r["id"]] = {"id": r["id"], "name": r["name"], "tagline": r["tagline"], "slug": r["slug"],
+                                  "topics": r["topics"], "thumb": r["thumb"]}
+            elif not prods[r["id"]].get("thumb") and r.get("thumb"):
+                prods[r["id"]]["thumb"] = r["thumb"]
+        if act["final"] and api.get("final"):      # official ranks kept; vote counts filled from the API's final read
+            av = {r["id"]: r["votes"] for r in api["launches"]}
+            act = {**act, "ranks": {k: {**v, "votes": v.get("votes") if v.get("votes") is not None else av.get(k)}
+                                    for k, v in act["ranks"].items()}}
+        if api.get("final") and not act["final"]:
+            act = {"final": True, "as_of": api["fetched_at"], "revealed": True, "source": "Product Hunt API, after the day closed",
+                   "ranks": {r["id"]: {"rank": r["rank"], "votes": r["votes"]} for r in api["launches"]}}
     points = []
     for key, label, sees in POINTS:
         if key not in fc:
@@ -598,8 +624,14 @@ def day_view(day: str) -> dict:
         launches.append({**p, "actual_rank": a.get("rank") if act["final"] else None,
                          "current_rank": a.get("rank") if act["revealed"] else None,
                          "votes": a.get("votes") if act["revealed"] else None})
-    board = current_board(day) if not act["final"] else {"as_of": act["as_of"], "as_of_pt": _pt_label(act["as_of"] or ""),
-                                                          "ranks": act["ranks"], "votes_hidden": False}
+    if act["final"]:
+        board = {"as_of": act["as_of"], "as_of_pt": _pt_label(act["as_of"] or ""), "ranks": act["ranks"], "votes_hidden": False}
+    elif api:
+        board = {"as_of": api["fetched_at"], "as_of_pt": _pt_label(api["fetched_at"]), "votes_hidden": api["votes_hidden"],
+                 "source": "Product Hunt API",
+                 "ranks": {r["id"]: {"rank": r["rank"], "votes": r["votes"], "comments": r["comments"]} for r in api["launches"]}}
+    else:
+        board = current_board(day)
     for x in launches:
         b = board["ranks"].get(x["id"], {})
         x["board_rank"] = b.get("rank")
@@ -629,7 +661,8 @@ def day_view(day: str) -> dict:
             whys[pt] = w
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
             "freshness": fresh, "why": whys,
-            "lead_point": lead, "difficulty": difficulty, "board": {**{k: board[k] for k in ("as_of", "as_of_pt", "votes_hidden")}, "lock": lock},
+            "lead_point": lead, "difficulty": difficulty,
+            "board": {**{k: board.get(k) for k in ("as_of", "as_of_pt", "votes_hidden", "source")}, "lock": lock},
             "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _written_label(day, act["as_of"]),
                        "as_of": act["as_of"]}}
 

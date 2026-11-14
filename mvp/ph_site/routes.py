@@ -80,14 +80,13 @@ async def _ph_today(day: str | None):
     if day and not DAY.match(day):
         raise HTTPException(400, "day must be YYYY-MM-DD")
     days = await asyncio.to_thread(live.available_days)
-    if not days:
-        raise HTTPException(503, "no forecasts yet")
-    d = day if day in days else days[0]
+    today = live.today_pt()
+    if today not in days:
+        days = [today] + days            # today always exists: its board comes live from Product Hunt's API
+    # Never show another day's picks under today's date: no day given means today, forecasts or not.
+    d = day if day in days else today
     view = await asyncio.to_thread(live.day_view, d)
     view["days"] = days
-    if not day and d != live.today_pt():
-        # Steady state: the PH pipeline has written nothing for today yet (or is down); show the latest day, labelled.
-        view["notice"] = f"No forecast for today ({live.today_pt()}) has arrived yet; showing {d}, the latest day with data."
     return _json(view, 60)
 
 
@@ -104,7 +103,6 @@ async def ph_health():
         for name, fn in (("list_days", live.available_days),
                          ("scoreboard", lambda: bool(gcs.read_json("results/web/scoreboard.json", ttl=0))),
                          ("forecast_0005", lambda: bool(live.forecasts(live.available_days()[0]))),
-                         ("live_board", lambda: bool(live.current_board(live.today_pt())["ranks"])),
                          ("person_index", lambda: gcs.read_bytes("site/person_index_v1.npz", ttl=0) is not None)):
             t = time.time()
             try:
@@ -115,6 +113,14 @@ async def ph_health():
         return out
 
     checks = await asyncio.to_thread(probe)
+    from mvp.ph_site import ph_live
+    try:
+        await asyncio.to_thread(lambda: ph_live.board(live.today_pt()))  # refreshes it if older than a minute
+    except Exception:  # noqa: BLE001 - reported through health() below
+        pass
+    lb = await asyncio.to_thread(ph_live.health)
+    checks["live_board"] = {"ok": bool(lb["configured"] and lb["age_s"] is not None and lb["age_s"] < 600), "ms": 0,
+                            **{k: lb[k] for k in ("configured", "age_s", "launches", "last_ok_at", "last_error", "last_error_at")}}
     try:                                   # /try needs its code and numpy to import on this server
         from mvp.ph_site import person_e5, try_sim  # noqa: F401
         checks["try_imports"] = {"ok": True, "ms": 0}

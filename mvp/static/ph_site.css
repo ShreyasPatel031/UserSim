@@ -372,3 +372,6 @@ footer.note { padding-block: 18px; display: flex; justify-content: space-between
   .vs .col { padding-top: 16px; }
   .vs .colhead { margin-bottom: 10px; }
 }
+
+.legend .final { margin-left: 18px; color: var(--ink); }
+.vs .stamp { line-height: 1.5; }

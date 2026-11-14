@@ -15,6 +15,8 @@ def _not_on_vercel(monkeypatch):
     # Tests must never touch the shared counters or run store, whatever the environment they run in.
     monkeypatch.delenv("VERCEL", raising=False)
     monkeypatch.delenv("VERCEL_ENV", raising=False)
+    for k in ("PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET"):   # no live Product Hunt calls from tests
+        monkeypatch.delenv(k, raising=False)
 
 
 def test_product_whitelist_drops_people():
@@ -243,6 +245,7 @@ def test_lock_state_read(monkeypatch):
     monkeypatch.setattr(live, "_lineup", lambda d: {})
     monkeypatch.setattr(live, "forecasts", lambda d: {})
     monkeypatch.setattr(live, "current_board", lambda d: {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True})
+    monkeypatch.setattr(live, "_api_board", lambda d: None)
     v = live.day_view("2026-11-12")
     assert v["board"]["lock"]["label_top3"] == "2 locked, 1 open" and v["board"]["lock"]["label_top10"] and v["board"]["lock"]["read_pt"] == "05:00 PT"
 
@@ -398,3 +401,126 @@ def test_why_is_sanitised(monkeypatch):
     assert live.why("2026-11-13", "P1", {"1"}) is None
     monkeypatch.setenv("PH_WHY_PREFIX", "tmp/e5/why_shadow"); monkeypatch.setenv("VERCEL", "1")
     assert live._why_prefix() == "results/web/why"         # the preview override is ignored on the deployed site
+
+
+# ---------- live board from Product Hunt's API (mvp/ph_site/ph_live.py) ----------
+
+def _live_env(monkeypatch, now_pt):
+    """In-memory GCS + frozen clock for ph_live."""
+    import json as _json
+    from datetime import datetime as _dt
+    from mvp.ph_site import ph_live, gcs
+    store = {}
+
+    class Blob:
+        def __init__(self, name): self.name = name
+        def upload_from_string(self, data, content_type=None): store[self.name] = data
+
+    class Bucket:
+        def blob(self, name): return Blob(name)
+
+    monkeypatch.setattr(gcs, "_bucket", lambda: Bucket())
+    monkeypatch.setattr(gcs, "read_json", lambda path, ttl=0: _json.loads(store[f"{gcs.ROOT}/{path}"]) if f"{gcs.ROOT}/{path}" in store else None)
+    monkeypatch.setenv("PH_TOKEN", "test-token")
+    ph_live._mem.clear()
+    ph_live._state.update(last_error=None, last_error_at=None, last_ok_at=None)
+    clock = {"now": now_pt}
+
+    class FakeDT(_dt):
+        @classmethod
+        def now(cls, tz=None):
+            n = clock["now"]
+            return n.astimezone(tz) if tz else n.replace(tzinfo=None)
+
+    monkeypatch.setattr(ph_live, "datetime", FakeDT)
+    return ph_live, store, clock
+
+
+def _nodes(day, n=3, votes=10):
+    return [{"id": str(100 + i), "name": f"P{i}", "tagline": "t", "slug": f"p{i}", "featuredAt": f"{day}T08:01:00Z",
+             "votesCount": votes * (n - i), "commentsCount": 2, "dailyRank": i + 1,
+             "thumbnail": {"url": "https://ph-files.imgix.net/x.png"}, "topics": {"edges": [{"node": {"name": "AI"}}]}}
+            for i in range(n)]
+
+
+def test_live_board_fresh_cached_and_persisted(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    calls = []
+    fetch = lambda d: calls.append(d) or _nodes(d)
+    b = ph_live.board("2026-11-14", fetch=fetch)
+    assert [r["rank"] for r in b["launches"]] == [1, 2, 3] and b["launches"][0]["votes"] == 30 and not b["votes_hidden"]
+    assert "usersim_sim/site/live_board/latest.json" in store and "usersim_sim/site/live_board/2026-11-14.json" in store
+    clock["now"] = now + timedelta(seconds=30)
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 1                                   # within the minute: no second upstream call
+    ph_live._mem.clear()                                     # another instance, cold, within the same minute
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 1                                   # it reuses the persisted snapshot
+    clock["now"] = now + timedelta(seconds=90)
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 2
+
+
+def test_live_board_upstream_down_or_rate_limited_serves_last_good(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    good = ph_live.board("2026-11-14", fetch=_nodes)
+    for err in ("rate limited", "network: ConnectTimeout", "http 502"):
+        clock["now"] += timedelta(minutes=2)
+        def boom(d, err=err): raise ph_live.Upstream(err)
+        b = ph_live.board("2026-11-14", fetch=boom)
+        assert b["fetched_at"] == good["fetched_at"] and len(b["launches"]) == 3
+        assert ph_live._state["last_error"] == err
+    clock["now"] += timedelta(minutes=2)
+    b = ph_live.board("2026-11-14", fetch=lambda d: [])    # an empty reply never blanks a good board
+    assert len(b["launches"]) == 3 and ph_live._state["last_error"] == "empty response"
+    ph_live._mem.clear()                                    # cold start while upstream is down: persisted copy
+    clock["now"] += timedelta(minutes=2)
+    b = ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(ph_live.Upstream("http 503")))
+    assert b and len(b["launches"]) == 3
+
+
+def test_live_board_cold_start_no_data_and_unconfigured(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 0, 2, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    assert ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(ph_live.Upstream("http 500"))) is None
+    monkeypatch.delenv("PH_TOKEN")
+    calls = []
+    assert ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d)) is None and not calls
+
+
+def test_live_board_pre_reveal_hides_votes_and_rollover(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    PTZ = ZoneInfo("America/Los_Angeles")
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 23, 58, tzinfo=PTZ))
+    ph_live.board("2026-11-14", fetch=_nodes)
+    clock["now"] = _dt(2026, 11, 15, 0, 3, tzinfo=PTZ)      # day rolls over at 00:00 PT
+    b = ph_live.board("2026-11-15", fetch=lambda d: _nodes(d, votes=0))
+    assert b["day"] == "2026-11-15" and b["votes_hidden"] and all(r["votes"] is None for r in b["launches"])
+    y = ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(AssertionError("must not refetch before close")))
+    assert y["day"] == "2026-11-14" and len(y["launches"]) == 3 and not y["final"]
+    clock["now"] = _dt(2026, 11, 15, 3, 5, tzinfo=PTZ)      # after 03:00 PT next day: one final re-read
+    calls = []
+    y = ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d, votes=20))
+    assert y["final"] and calls == ["2026-11-14"] and y["launches"][0]["votes"] == 60
+    ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d))
+    assert calls == ["2026-11-14"]                          # final is read once
+
+
+def test_live_board_keeps_only_product_fields(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    n = _nodes("2026-11-14", 1)
+    n[0]["makers"] = [{"username": "secret_handle"}]; n[0]["user"] = {"username": "hunter_handle"}
+    n[0]["thumbnail"] = {"url": "https://evil.example/x.png"}
+    b = ph_live.board("2026-11-14", fetch=lambda d: n)
+    assert "secret_handle" not in str(b) and "hunter_handle" not in str(b) and b["launches"][0]["thumb"] is None

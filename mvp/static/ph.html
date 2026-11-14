@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=10">
+<link rel="stylesheet" href="/static/ph_site.css?v=11">
 </head>
 <body>
 <div class="wrap">
@@ -126,14 +126,18 @@ function pointFor(v){
 function tabs(){
   const has = {mid: !!pointFor("mid"), pre: !!pointFor("pre")};
   if(!TAB || !has[TAB]) TAB = has.pre ? "pre" : "mid";
-  ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.disabled = !has[v]; b.setAttribute("aria-selected", String(TAB===v));
-    const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Not made yet";
+  ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
+    const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Expected " + EXPECT[v];
     b.onclick = ()=>{ TAB = v; renderPred(); renderLive(); drawLinks(); }; });
 }
+const EXPECT = {mid: "00:05 PT", pre: "03:45 PT"};
 function renderPred(){
   tabs();
   const p = pointFor(TAB);
-  if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; return; }
+  if(!p){
+    $("#pred").innerHTML = `<li class="skeleton">Not yet available${VIEW.day === VIEW.today ? ` · expected ${EXPECT[TAB]}` : " for this day"}.</li>`;
+    legend(); return;
+  }
   const real = new Map(liveTop().map(x=>[x.id, x.board_rank]));
   const o = VIEW.launches.filter(x=>p.ranks[x.id]).sort((a,b)=>p.ranks[a.id]-p.ranks[b.id]).slice(0,10);
   const sts = o.map(x=>real.size ? status(p.ranks[x.id], real.get(x.id)) : "");
@@ -141,19 +145,35 @@ function renderPred(){
     const ev = p.exp_votes && p.exp_votes[x.id];
     return row(p.ranks[x.id], x, ev!=null ? "~" + Number(ev) : null, "est.", sts[i]);
   }).join("");
-  const n = (k)=> sts.filter(v=>v===k).length;
-  $("#legend").innerHTML = real.size
+  legend(sts);
+  document.querySelectorAll("#pred .row").forEach(li=>li.onclick=(e)=>{ if(e.target.closest("a")) return; showWhy(li.dataset.id, p.key); });
+}
+
+function legend(sts){
+  const n = (k)=> (sts||[]).filter(v=>v===k).length;
+  let h = sts && sts.some(Boolean)
     ? `<span class="key exact"></span>Exact rank ${n("exact")}<span class="key near"></span>In top 10, other rank ${n("near")}<span class="key miss"></span>Missed ${n("miss")}${VIEW.status.final ? "" : " · so far"}`
     : "";
-  document.querySelectorAll("#pred .row").forEach(li=>li.onclick=(e)=>{ if(e.target.closest("a")) return; showWhy(li.dataset.id, p.key); });
+  if(VIEW.status.final){
+    const sc = (v, name)=>{ const p = pointFor(v); return p && p.score ? `<span class="final">${name}: top 3 ${p.score["3"]}/3 · top 5 ${p.score["5"]}/5 · top 10 ${p.score["10"]}/10</span>` : ""; };
+    h += sc("mid", "Product only") + sc("pre", "Product + comments");
+  }
+  $("#legend").innerHTML = h;
+}
+function ago(iso){
+  const m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000));
+  return m < 1 ? "just now" : m < 60 ? `${m} min ago` : `${Math.floor(m/60)} h ${m%60} min ago`;
 }
 
 function renderLive(){
   const b = VIEW.board, fin = VIEW.status.final;
   $("#live-h").textContent = fin ? "Final leaderboard" : "Live leaderboard";
   const fr = VIEW.freshness || {};
-  $("#live-stamp").innerHTML = fr.board_stale ? `<span class="tag">${esc(fr.board_stale_label)}</span>`
-    : b.as_of_pt ? `${fin ? "Final" : "Updated"} <b>${esc(b.as_of_pt)}</b>` : "";
+  $("#live-stamp").innerHTML = fin ? (b.as_of_pt ? `Final <b>${esc(b.as_of_pt)}</b>` : "Final")
+    : b.source === "Product Hunt API" && b.as_of
+      ? (b.votes_hidden ? `Votes hidden by Product Hunt until 04:00 PT<br>` : "") + `<span class="${fr.board_stale ? "tag" : ""}">Updated ${esc(ago(b.as_of))}</span>`
+      : fr.board_stale ? `<span class="tag">${esc(fr.board_stale_label)}</span>`
+      : b.as_of_pt ? `Updated <b>${esc(b.as_of_pt)}</b>` : "";
   const lead = pointFor(TAB);
   const ranks = lead ? lead.ranks : {};
   $("#live").innerHTML = liveTop().map(x=>row(x.board_rank, x, x.board_votes!=null ? Number(x.board_votes) : null,
@@ -230,8 +250,8 @@ function goDay(step){
 $("#day-prev").onclick = ()=>goDay(1);
 $("#day-next").onclick = ()=>goDay(-1);
 load(); side();
-// Upstream snapshots land every 15 min; poll every 3 min so a new one shows quickly.
-setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final) load(VIEW.day); }, 3*60*1000);
+// The board is read from Product Hunt's API at most once a minute on the server; poll at the same pace.
+setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final && !document.hidden) load(VIEW.day); }, 60*1000);
 </script>
 </body>
 </html>
