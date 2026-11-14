@@ -24,3 +24,12 @@ Paired against the reference: both −1.4 [−3.0, 0.0] / −0.2 / −0.2; pure 
 Arm 2 minus pure, rebuilt: top 3 +3.1 [+0.5, +5.6]; last 107 days +3.7 [+0.3, +7.2].
 
 **Label tests.** Results are in labels_score.json, produced by e5_a2_labels.py with 5 seeds and a paired day bootstrap.
+
+## LLM score noise, no-call version (Nov 14)
+No new Gemini calls were made; the call was blocked by a permission check.
+
+**retest_pairs.py → retest_pairs.json.** Stored pairs only:
+- Relaunches of the same product name (n 398). Their text and lineup differ, so this is an upper bound on noise, not test-retest.
+- Claude vs Gemini on the same launch (inter-model).
+
+**e5_llm_noise.py → noise_score.json.** Gaussian noise is added to the test rows' llm_pitch / llm_brand in the arm-2 rebuild, with the models fixed. 3 draws × 5 seeds; the result is the change in top 3 / 5 / 10 with a paired day bootstrap.

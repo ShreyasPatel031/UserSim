@@ -1,0 +1,54 @@
+{
+ "pitch: relaunch pairs (same name, different launch)": {
+  "n": 398,
+  "pearson": [
+   0.279,
+   0.179,
+   0.383
+  ],
+  "spearman": 0.229,
+  "share_changed_>=1_step": 0.872,
+  "mean_abs_diff": 14.19,
+  "sd_of_diff/sqrt2 (per-sample noise sd)": 12.78,
+  "sd_score": 15.06
+ },
+ "pitch: Claude vs Gemini, same launch (inter-model, not retest)": {
+  "n": 6572,
+  "pearson": [
+   0.576,
+   0.557,
+   0.593
+  ],
+  "spearman": 0.553,
+  "share_changed_>=1_step": 0.938,
+  "mean_abs_diff": 21.25,
+  "sd_of_diff/sqrt2 (per-sample noise sd)": 10.39,
+  "sd_score": 18.69
+ },
+ "brand: relaunch pairs (same name, different launch)": {
+  "n": 396,
+  "pearson": [
+   0.66,
+   0.477,
+   0.806
+  ],
+  "spearman": 0.598,
+  "share_changed_>=1_step": 0.063,
+  "mean_abs_diff": 0.11,
+  "sd_of_diff/sqrt2 (per-sample noise sd)": 0.35,
+  "sd_score": 0.59
+ },
+ "brand: Claude vs Gemini, same launch (inter-model, not retest)": {
+  "n": 6521,
+  "pearson": [
+   0.812,
+   0.787,
+   0.834
+  ],
+  "spearman": 0.721,
+  "share_changed_>=1_step": 0.085,
+  "mean_abs_diff": 0.12,
+  "sd_of_diff/sqrt2 (per-sample noise sd)": 0.31,
+  "sd_score": 0.71
+ }
+}
