@@ -36,10 +36,17 @@ def period(per, d):
 
 
 def held(asof):
-    """What the writer sees at time `asof`: every part written by then, newest row per id (warehouse rule)."""
-    P = [read(f) for ts, f in parts() if ts <= asof]
+    """What the board may use at time `asof` (orchestrator 13:36Z fix 4): for each PT day, the rows of the NEWEST part written by then that
+    covers that day (holds rows of that day); older parts only for days no newer part covers. A launch dropped by a later reread of its day
+    is therefore dropped from the board (the newest-row merge kept it)."""
+    P = [(ts, read(f)) for ts, f in parts() if ts <= asof]
     if not P: return pd.DataFrame(columns=COLS)
-    return pd.concat(P).sort_values("updated_at").drop_duplicates("id", keep="last")
+    out, seen = [], set()
+    for ts, x in sorted(P, key=lambda t: t[0], reverse=True):
+        x = x[x.votes.notna()] if x.votes.notna().any() else x
+        new = x[~x.day.isin(seen)]
+        if len(new): out.append(new); seen |= set(new.day)
+    return pd.concat(out).drop_duplicates("id", keep="first")
 
 
 def missing_days(per, d, asof):
@@ -65,5 +72,10 @@ def truth(per, d):
         if ts <= c: continue
         x = read(f); dd = pd.to_datetime(x.day); g = x[(dd >= s) & (dd <= e)]
         if g.votes.notna().any():
+            # completeness (orchestrator 13:36Z fix 1): the reread covers only the 31 days before it, so the part must hold every PT day
+            # of the period and a non-null rank for every launch in it; otherwise no truth (never a partial one)
+            have = set(g.day); want = {x_.strftime("%Y-%m-%d") for x_ in pd.date_range(s, e)}
+            if want - have or g[col].isna().any():
+                return None, ts, f"no complete truth read ({os.path.basename(f)}: missing days {sorted(want - have)[:3]}{'...' if len(want - have) > 3 else ''}, null ranks {int(g[col].isna().sum())})"
             return g[["id", col]].rename(columns={col: "rank"}).dropna(), ts, os.path.basename(f)
     return None, None, None

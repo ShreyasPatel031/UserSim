@@ -37,13 +37,14 @@ for per in ("week", "month"):
     if (per == "week" and c >= 7) or c is None:
         out.update({"status": "no chance shown at this point", "call_point": c})
     else:
-        g = L[(pd.to_datetime(L.day) >= start) & (pd.to_datetime(L.day) <= d)].dropna(subset=["votes"]).sort_values("votes", ascending=False).reset_index(drop=True)
+        HB = PP.held(pd.Timestamp.now(tz="UTC"))   # fix 4: newest part per day, not the newest-row merge
+        g = HB[(pd.to_datetime(HB.day) >= start) & (pd.to_datetime(HB.day) <= d)].dropna(subset=["votes"]).sort_values("votes", ascending=False).reset_index(drop=True)
         rows = []
         for i, r in g.iterrows():
             o = {"id": r.id, "running_position": i + 1, "votes_now": int(r.votes)}
             for k in (3, 5, 10):
                 v = FZ["position tables"][f"{per}_top{k}"].get(f"{c}|{i + 1}")
-                o[f"p_final_top{k}"] = None if v is None else round(float(v), 3) if i < 15 else 0.0
+                o[f"p_final_top{k}"] = 0.0 if i >= 15 else None if v is None else round(float(v), 3)   # fix 3: below 15 = 0, as documented
             rows.append(o)
         for k in (3, 5, 10):   # chances never rise with a worse running position
             m = 1.0

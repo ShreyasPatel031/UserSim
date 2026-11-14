@@ -16,7 +16,7 @@ W.sync(); s, e = PP.period(per, D0); T, tts, tpart = PP.truth(per, D0)
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True).stdout
 res = {"board": per, "period": [s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d")], "written_at": pd.Timestamp.now(tz="UTC").isoformat()}
 if T is None:
-    res["status"] = "no truth read yet (no launches part with votes after the close)"; print(json.dumps(res)); sys.exit(0)
+    res["status"] = tpart if tpart else "no truth read yet (no launches part with votes after the close)"; print(json.dumps(res)); sys.exit(0)
 tr = {k: set(T[T["rank"] <= k].id) for k in (3, 5, 10)}
 res.update({"truth": {"part": tpart, "read_at_utc": tts.isoformat(), "read_at_pt": tts.tz_convert("America/Los_Angeles").strftime("%Y-%m-%d %H:%M PT"), "launches": int(len(T))}, "days": []})
 for D in pd.date_range(s, e - pd.Timedelta(days=1)):
@@ -27,14 +27,19 @@ for D in pd.date_range(s, e - pd.Timedelta(days=1)):
         j = json.loads(live); flag = "live"; rd = j.get("written_at"); stale = j.get("stale_days_missing", [])
         lines[j.get("board_line", "votes_only")] = [r["id"] for r in j.get("launches", [])]
         if j.get("shadow_votes_only"): lines["votes_only"] = [r["id"] for r in j["shadow_votes_only"]]   # both lines scored (orchestrator 13:06Z)
+        if j.get("shadow_with_entrants"): lines["with_entrants_shadow"] = [r["id"] for r in j["shadow_with_entrants"]]   # monthly days 1-7 (fix 5)
     else:
-        order, upd = PP.board(per, d, run); flag = "replay"; rd = upd; stale = PP.missing_days(per, d, run); lines["votes_only"] = order
+        order, upd = PP.board(per, d, run); flag = "replay"; rd = upd; stale = PP.missing_days(per, d, run)
+        lines["votes_only"] = [] if (per == "month" and D.day < 10) else order   # the writer shows no monthly board before day 10
     for line, order in lines.items():
+        if not order:   # fix 2: no board that day -> labelled, never scored as 0 hits, excluded from averages and headlines
+            res["days"].append({"day": d, "flag": flag, "line": line, "status": "no board"}); continue
         row = {"day": d, "board_day": (pd.Timestamp(d) + pd.Timedelta(days=1)).strftime("%Y-%m-%d") + " 00:05 (votes through " + d + " + predicted line-up)" if line == "with_entrants" else d + " close (votes only)", "flag": flag, "line": line, "board_size": len(order), "board_read_latest_updated_at": str(rd), "status": "stale: days missing" if stale else "ok", "days_missing": stale}
         for k in (3, 5, 10):
             row[f"top{k}"] = len(set(order[:k]) & tr[k]); row[f"ceiling_top{k}"] = len(tr[k] & set(order)) if order else 0
         res["days"].append(row)
-hdd = [r for r in res["days"] if pd.Timestamp(r["day"]).weekday() == 5] if per == "week" else [r for r in res["days"] if r["day"] == res["days"][-1]["day"]] if res["days"] else []
+SC = [r for r in res["days"] if r["status"] != "no board"]
+hdd = [r for r in SC if pd.Timestamp(r["day"]).weekday() == 5] if per == "week" else [r for r in SC if r["day"] == SC[-1]["day"]] if SC else []
 res["headlines"] = hdd; pref = [r for r in hdd if r["line"] == "with_entrants"] or hdd
 res["headline"] = pref[0] if pref else None
 out = os.path.join(SP, f"period_score_{per}_{s:%Y%m%d}{'_replay' if REPLAY else ''}.json"); json.dump(res, open(out, "w"), indent=1, default=str)
@@ -51,4 +56,4 @@ for h in res["headlines"]:
 if res["headlines"]:
     TR["entries"].sort(key=lambda x: (x["board"], x["period_start"], x["flag"], x.get("line", ""))); TR["updated_at"] = res["written_at"]
     json.dump(TR, open(TRp, "w"), indent=1); subprocess.run(["gsutil", "-q", "cp", TRp, f"{B}/tmp/e5/website/period_track_record.json"], check=True)
-print(json.dumps({"headline": res["headline"], "days": [[r["day"], r["flag"], r.get("line"), r["status"], r["top3"], r["top5"], r["top10"], r["ceiling_top3"], r["ceiling_top5"], r["ceiling_top10"]] for r in res["days"]], "truth": res["truth"]}))
+print(json.dumps({"headline": res["headline"], "days": [[r["day"], r["flag"], r.get("line"), r["status"], r["top3"], r["top5"], r["top10"], r["ceiling_top3"], r["ceiling_top5"], r["ceiling_top10"]] for r in res["days"] if r["status"] != "no board"], "no_board_days": [r["day"] for r in res["days"] if r["status"] == "no board"], "truth": res["truth"]}))
