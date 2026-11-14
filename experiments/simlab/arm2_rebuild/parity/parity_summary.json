@@ -1,0 +1,254 @@
+{
+ "nights": 15,
+ "rows in both": 374,
+ "only live / only backtest": [
+  2,
+  19
+ ],
+ "columns": {
+  "ph_n_makers": {
+   "share_equal (mean over nights)": 0.96,
+   "nights differing": 8,
+   "mean_abs_diff_sd": 0.03,
+   "expected": false
+  },
+  "ph_hunter_age_d": {
+   "share_equal (mean over nights)": 0.999,
+   "nights differing": 1,
+   "mean_abs_diff_sd": 0.001,
+   "expected": false
+  },
+  "ph_n_media": {
+   "share_equal (mean over nights)": 0.959,
+   "nights differing": 10,
+   "mean_abs_diff_sd": 0.033,
+   "expected": false
+  },
+  "ph_has_video": {
+   "share_equal (mean over nights)": 0.991,
+   "nights differing": 2,
+   "mean_abs_diff_sd": 0.023,
+   "expected": false
+  },
+  "ph_n_topics": {
+   "share_equal (mean over nights)": 0.992,
+   "nights differing": 2,
+   "mean_abs_diff_sd": 0.009,
+   "expected": false
+  },
+  "ph_weekday": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "ph_day_n_launches": {
+   "share_equal (mean over nights)": 0.533,
+   "nights differing": 7,
+   "mean_abs_diff_sd": 1.4,
+   "expected": true
+  },
+  "ph_desc_len": {
+   "share_equal (mean over nights)": 0.959,
+   "nights differing": 10,
+   "mean_abs_diff_sd": 0.02,
+   "expected": false
+  },
+  "ph_tagline_len": {
+   "share_equal (mean over nights)": 0.964,
+   "nights differing": 9,
+   "mean_abs_diff_sd": 0.04,
+   "expected": false
+  },
+  "ph_name_len": {
+   "share_equal (mean over nights)": 0.994,
+   "nights differing": 2,
+   "mean_abs_diff_sd": 0.01,
+   "expected": false
+  },
+  "x_company_has_x": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "busy_same_day": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "busy_7d": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "hist_hunter_n": {
+   "share_equal (mean over nights)": 0.805,
+   "nights differing": 15,
+   "mean_abs_diff_sd": 0.007,
+   "expected": true
+  },
+  "hist_hunter_rel": {
+   "share_equal (mean over nights)": 0.805,
+   "nights differing": 15,
+   "mean_abs_diff_sd": 0.003,
+   "expected": true
+  },
+  "hist_hunter_top5": {
+   "share_equal (mean over nights)": 0.807,
+   "nights differing": 15,
+   "mean_abs_diff_sd": 0.002,
+   "expected": true
+  },
+  "ph_hunter_n_same_day": {
+   "share_equal (mean over nights)": 0.997,
+   "nights differing": 1,
+   "mean_abs_diff_sd": 0.013,
+   "expected": true
+  },
+  "ph_dayrank_ph_hunter_age_d": {
+   "share_equal (mean over nights)": 0.55,
+   "nights differing": 8,
+   "mean_abs_diff_sd": 0.048,
+   "expected": false
+  },
+  "ph_dayrank_ph_n_makers": {
+   "share_equal (mean over nights)": 0.432,
+   "nights differing": 9,
+   "mean_abs_diff_sd": 0.072,
+   "expected": false
+  },
+  "ph_dayrank_ph_n_media": {
+   "share_equal (mean over nights)": 0.427,
+   "nights differing": 11,
+   "mean_abs_diff_sd": 0.09,
+   "expected": false
+  },
+  "hist_dayrank_hist_hunter_rel": {
+   "share_equal (mean over nights)": 0.824,
+   "nights differing": 7,
+   "mean_abs_diff_sd": 0.056,
+   "expected": true
+  },
+  "promo_posts": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_posts_launch": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_posts_li": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_posts_x": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_posts_founder": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_cov": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_cov_press": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_cov_hn": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "promo_cov_reddit": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "llm_pitch": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  },
+  "llm_brand": {
+   "share_equal (mean over nights)": 1.0,
+   "nights differing": 0,
+   "mean_abs_diff_sd": 0.0,
+   "expected": false
+  }
+ },
+ "unexpected columns: nights alerted": {
+  "ph_dayrank_ph_n_media": 11,
+  "ph_n_media": 10,
+  "ph_desc_len": 10,
+  "ph_dayrank_ph_n_makers": 9,
+  "ph_tagline_len": 9,
+  "ph_n_makers": 8,
+  "ph_dayrank_ph_hunter_age_d": 8,
+  "ph_n_topics": 2,
+  "ph_name_len": 2,
+  "ph_has_video": 2,
+  "ph_hunter_age_d": 1
+ },
+ "set change per swapped column (mean members changed top3/5/10 over nights)": {
+  "ph_desc_len": [
+   0.0,
+   0.0,
+   0.07
+  ],
+  "ph_day_n_launches": [
+   0.0,
+   0.07,
+   0.07
+  ],
+  "ph_n_makers": [
+   0.07,
+   0.0,
+   0.07
+  ],
+  "ph_dayrank_ph_n_makers": [
+   0.0,
+   0.0,
+   0.07
+  ],
+  "hist_dayrank_hist_hunter_rel": [
+   0.0,
+   0.0,
+   0.07
+  ]
+ },
+ "set change all live columns together (mean, max top3/5/10)": [
+  [
+   0.13,
+   0.2,
+   0.27
+  ],
+  [
+   1,
+   1,
+   2
+  ]
+ ]
+}
