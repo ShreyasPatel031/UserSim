@@ -1,0 +1,7 @@
+# BEGIN usersim-b12a
+CRON_TZ=America/Los_Angeles
+20 0 * * * bash /home/agent/w/tw12a/run.sh midnight
+45 3 * * * bash /home/agent/w/tw12a/run.sh rec
+47 3 * * * bash /home/agent/w/tw12a/run.sh prereveal
+50 23 * * * bash /home/agent/w/tw12a/run.sh rec
+# END usersim-b12a
