@@ -102,12 +102,16 @@ for name, path, kind in feeds:
         row["error"] = err
         row["stale"] = True
         any_stale = True
+        if name in CRITICAL_FEEDS:
+            critical_stale = True
         rows.append(row)
         continue
     if not latest:
         row["error"] = "no_objects"
         row["stale"] = True
         any_stale = True
+        if name in CRITICAL_FEEDS:
+            critical_stale = True
         rows.append(row)
         continue
     mtime, obj, size = latest

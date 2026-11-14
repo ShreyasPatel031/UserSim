@@ -156,7 +156,7 @@ rerun_pct="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(100*floa
 eff_pop="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(float('$ppm' or 0)/a,4))")"  # complete per attempt = Population-aligned efficiency
 live_note=""
 if [[ -f "$ART/live_feed_health.json" ]]; then
-  live_note="$(python3 -c "import json; r=json.load(open('$ART/live_feed_health.json')); print('live_feeds_ok='+('yes' if not r.get('throttle') else 'NO stale='+','.join([f['feed'] for f in r.get('feeds',[]) if f.get('stale')])) )" 2>/dev/null || true)"
+  live_note="$(python3 -c "import json; r=json.load(open('$ART/live_feed_health.json')); stale=[f['feed'] for f in r.get('feeds',[]) if f.get('stale')]; print('live_feeds_ok='+('yes' if not r.get('any_stale') else 'NO stale='+','.join(stale)))" 2>/dev/null || true)"
 fi
 relay_msg="Fleet check-in run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm rerun_ppm=$rerun_ppm rerun_pct=${rerun_pct}% complete_per_attempt=$eff_pop vms=$n vm~\$$vm_day/day eff_complete_over_compute=${eff}. ${live_note} POLICY: live 15m feeds win — any stale posts_ts/snapshots/api_comments => historical throttle (IPROYAL_DAILY_IPS=${IPROYAL_DAILY_IPS:-2} reserved). OPS: no pause-on-block from agents; sustained block => rotate Finland dedicated IP (slot1 included); new IP on keeper recreate. GOAL lastweek 100%. PH_RR_FILES=0945Z_lastweek_votes(953),vmgate,follow,signedin,overnight. full18f uYYdW17hoPBJjpMGoR7lKw== save=_pacetest/shared."
 [[ -n "$proxy_day" ]] && relay_msg+=" proxy_est~\$$proxy_day/day (Impulse ~\$4/GB, sampled ${proxy_gb}GB recent pulls)"
