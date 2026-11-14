@@ -581,6 +581,18 @@ def test_midnight_accuracy_rows_never_pooled(monkeypatch):
     assert a["pre"][0]["flag"] == "replay" and a["pre"][0]["top10"] == 78.2
 
 
+def test_prereveal_replay_note_and_hidden_rank_row(monkeypatch):
+    tr = {"summary": {
+        "03:45 PT | replay (hidden rank alone)": {"all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [73.3, None, None, 12]}},
+        "03:45 PT | replay": {"note": "top-10 edge +4.2", "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [77.5, None, None, 12]},
+                              "superseded 11-day figure (weights fit on all days)": {"top10 hits %": [77.3, 0, 0, 11]}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
+    pre = live.accuracy()["pre"]
+    assert [r["flag"] for r in pre] == ["replay", "Product Hunt's hidden order alone"]
+    assert pre[0]["top10"] == 77.5 and pre[0]["days"] == 12 and pre[0]["note"] == "top-10 edge +4.2"
+    assert pre[1]["top10"] == 73.3 and "note" not in pre[1]
+
+
 def test_published_prediction_files(monkeypatch):
     files = {
         "results/web/predictions/2026-11-14_0005.json": {"day": "2026-11-14", "kind": "0005", "model": "arm2", "fallback_used": None,

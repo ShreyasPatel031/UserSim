@@ -377,6 +377,8 @@ def accuracy() -> dict:
         try:
             row = {"flag": flag, "top3": a["top3 hits %"][0], "top5": a["top5 hits %"][0], "top10": a["top10 hits %"][0],
                    "days": a["top10 hits %"][3]}
+            if (b or {}).get("note"):
+                row["note"] = str(b["note"])
         except (KeyError, IndexError, TypeError):
             continue
         if tab:
@@ -391,7 +393,12 @@ def accuracy() -> dict:
                 r["flag"] = f"backtest ({r['days']} days)"
                 r["days"] = None
         out["mid"] = keep + [dict(r) for r in m["rows"]]
-    order = {"live": 0, "live, previous model": 1, "backtest (Sep–Oct)": 3, "replay": 4}
+    # 03:45 tab (E5, Nov 14): the leave-one-day-out replay of the hybrid, shown beside Product Hunt's hidden order alone.
+    for r in out["pre"]:
+        if r["flag"] == "replay (hidden rank alone)":
+            r["flag"] = "Product Hunt's hidden order alone"
+    order = {"live": 0, "live, previous model": 1, "backtest (Sep–Oct)": 3, "replay": 4,
+             "Product Hunt's hidden order alone": 5}
     for v in out.values():
         v.sort(key=lambda r: order.get(r["flag"], 2))
     return out

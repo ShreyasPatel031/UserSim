@@ -177,7 +177,7 @@ function accLine(){
   let acc = "";
   if(!earlier){
     // The track record (per-day hits against the official rank) wins; the file's own line only when there is none.
-    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}`).join("; ")
+    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}${r.note ? ` (${r.note})` : ""}`).join("; ")
       || p.backtest_line || "";
     if(acc && p.fallback) acc += " (this day used a fallback)";
   }
