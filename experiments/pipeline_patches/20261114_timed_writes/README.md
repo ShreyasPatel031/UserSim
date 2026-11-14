@@ -89,3 +89,16 @@ duplicate rows on Nov 1, plus 19 rows that are not in that day's raw file.)
   rows as one extra part per day (existing parts are never rewritten), then re-checks (warehouse deduped = raw deduped per day; exit 1 otherwise).
 - Nightly from then on: cron `vs_check` at 01:15 PT on yesterday with VS_FIX=1. It logs the counts to results/timed_writes/<day>.log.
 - Nov 1's duplicates are left in place (readers dedup on (launch_id, at)); removing them would mean rewriting a part, which is out of scope here.
+
+## E5's no-LLM website writers (E5 01:37Z Nov 14; folded in, NOT deployed)
+- Tarball `gs://.../tmp/e5/vm_writers/e5_vm_writers.tgz` (md5 **393c556f**, 22 KB; same files in git: experiments/simlab/vm_writers/ on
+  claude/person-model-v2 @ a3487608). Pinned asset `tmp/e5/vm_writers/assets/a2x/X.parquet` (the arm-2 explain dump). The 2025 lists sync from raw/ph_history/2025.
+- Install: extract to /home/agent/w/tw/e5_vm_writers, `ASSETS=/home/agent/w/tw/e5_assets`. The salt for held_team_* is copied by deploy from
+  `raw/population/_salt` to `$ASSETS/early/salt` (mode 600; read only to hash, never printed or logged), exactly as why_run.sh does today.
+- Entry `bash vm_writers/run.sh <job> [day]`; exit codes 2 sync, 3 inputs missing, 64 bad job; one log line per run.
+- Cron (UTC, E5's schedule; in the b12 block after a `CRON_TZ=UTC` line):
+  `20 8 * * *` prob_0005 + held_team_predict; `20 9` period; `25 9` track_record; `30 9` held_team_score; `7 12` prob_prereveal.
+  In winter (PST) 08:20 UTC = 00:20 PT, so prob_0005 / held_team_predict run inside 00:05-01:00 PT. Both are read-only on bucket files and
+  make no API calls; they start after the pipeline's forecast parquet exists (run.sh exits 3 otherwise and the 09:20 slot retries).
+- Cutover: once the VM cron is live and its first log lines are rc 0, tell E5 so its container stops writing the same files.
+- Stays with E5: the Gemini-judged forward /try record (needs a Gemini key on the VM and a pinned claude/ph-website checkout; ~$0.15-0.30/night).
