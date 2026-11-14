@@ -42,3 +42,7 @@ NEXT BUNDLE MANIFEST ADDITIONS (not deployed; to be built as a new named bundle)
   caused the Nov 14 00:05 arm-2 fallback. It was added by hand at 09:02Z Nov 14, and no manifest tracks it yet. The bundle's
   deploy check should md5-verify it and import-gate h25_live.
 - ph_n_makers drop: CLOSED, NOT ADOPTED (orchestrator 23:34Z Nov 14: worse beyond noise on 4 of 6 cells; the deployed input set is kept).
+- NEXT BUNDLE BUILT, NOT DEPLOYED: pipeline_patches/20261115_next_bundle, staged on the VM at ~/w/stage/20261115_next_bundle
+  (deploy_nb.sh d838cd7d; check passed). It carries ctrl.py b47fc28f -> ~/w/arm2_live and readable_shadow.py 67e6b613 -> ~/w/tw/h25
+  (per-launch "values" = raw X10 inputs for the site's "why"). Run it after step 6: `bash ~/w/stage/20261115_next_bundle/deploy_nb.sh deploy`;
+  rollback with `… rollback`. Deploys only on Shreyas's word.

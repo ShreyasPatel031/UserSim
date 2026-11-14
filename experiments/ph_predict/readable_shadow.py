@@ -39,6 +39,10 @@ def main(d):
         P.append(g.predict(te[X10])); pc = g.predict(te[X10], pred_contrib=True); C += pc[:, :len(X10)] / 5; base.append(pc[:, -1].mean())
     out = pd.DataFrame({"id": te.id.values, "pred_readable_v2": np.mean(P, 0)}); out["rank_readable_v2"] = out.pred_readable_v2.rank(ascending=False, method="first").astype(int)
     out["points"] = [dict(zip(X10, map(lambda v: round(float(v), 4), row))) for row in C]
+    # raw input values per launch, from the 00:05 rows before prep (orchestrator 23:35Z Nov 14: the site's "why" shows them for the
+    # inputs E5 cannot read from the snapshot); missing -> null
+    raw = te0.drop_duplicates("id", keep="last").set_index("id").reindex(out.id)[X10]
+    out["values"] = [{c: (None if pd.isna(v) else round(float(v), 4)) for c, v in zip(X10, row)} for row in raw.itertuples(index=False)]
     res = {"day": d, "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "model": "readable v2: additive monotone stumps, 10 inputs (readable_model_v2.md)",
            "inputs": "data/today/<d>.json (00:05 snapshot) only", "labels": LABEL, "signs": dict(zip(X10, map(int, sign))), "base_value": round(float(np.mean(base)), 4),
            "train_days": int(tr.day.nunique()), "launches": int(len(out)), "accuracy_backtest": "214 days Apr-Oct: alone 54.4 / 66.8 / 74.5; + th_n_pre 58.9 / 69.2 / 74.5 (top 3/5/10)",
