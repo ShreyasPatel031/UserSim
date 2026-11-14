@@ -1,0 +1,60 @@
+{
+ "labelled_days_2026": 317,
+ "launches": 7045,
+ "known": 1,
+ "days_with_known": 1,
+ "known_ranked": 1,
+ "known_top1": 1,
+ "known_top3": 1,
+ "known_top10": 1,
+ "backtest Apr-Oct": {
+  "days": 214,
+  "known": 1,
+  "days_with_known": 1,
+  "top1": 1,
+  "top3": 1,
+  "top10": 1,
+  "known_top3_days": [
+   "2026-04-24"
+  ]
+ },
+ "live Oct 25-Nov 13": {
+  "days": 20,
+  "known": 0,
+  "days_with_known": 0,
+  "top1": 0,
+  "top3": 0,
+  "top10": 0,
+  "known_top3_days": []
+ },
+ "backtest_183_rule": {
+  "both": {
+   "days": 183,
+   "a_excluded": [
+    58.1,
+    65.2,
+    76.9
+   ],
+   "b_kept_as_misses": [
+    58.1,
+    65.1,
+    76.9
+   ],
+   "days_where_b_lower_top3": 0
+  },
+  "pure": {
+   "days": 183,
+   "a_excluded": [
+    54.5,
+    64.7,
+    76.0
+   ],
+   "b_kept_as_misses": [
+    54.5,
+    64.7,
+    76.0
+   ],
+   "days_where_b_lower_top3": 0
+  }
+ }
+}
