@@ -69,3 +69,12 @@ header counts are stored. Anything less is not written, not counted, not reporte
   allowed gap (15-minute capture: 20 minutes), alerts Grok Bot by webhook and the orchestrator within 1 minute of a breach,
   re-alerts every 30 minutes, and keeps the downtime ledger (raw/_audit/downtime_ledger.jsonl). A gap nobody raised is a
   failure of the audit.
+
+## Rule for every agent: the website's live board and published predictions (Shreyas, Nov 14 2026)
+
+- **The live leaderboard on the website is always live and comes straight from Product Hunt's official API**, fetched by the
+  website's own server-side code (cached, last good snapshot served on any upstream error). It depends on no agent session,
+  no Data Feeder, no fleet machine and not on the pipeline VM.
+- **Exactly two predictions are published:** the midnight forecast (00:05 PT) and one before-reveal forecast (03:45 PT, the
+  last point before votes appear at 04:00 PT). Both are written by code on the VM, never by an agent session, each with its
+  write time, the inputs present or missing, and the fallback used. Every other forecast point is an internal shadow line.
