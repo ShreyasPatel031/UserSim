@@ -1,0 +1,281 @@
+{
+ "method": "Error anatomy of the 03:45 hybrid's top-3 misses (orchestrator 23:52Z Nov 14). PRE-REGISTERED buckets, run as a detached job.\n\nThe published 03:45 order is hybrid_vm = hidden top 5 (recorder rank_now at 03:45) + ridge order for 6+, so its top 3 IS the hidden top 3\nat 03:45; the prior can only move ranks 6+. Per day (recorder file raw/vote_snapshots/<d>.jsonl, the writer's source; latest read <= the\npoint + 90 s within 65 min): hidden position at 01:00 / 02:00 / 03:00 / 03:45, comments at 03:45, rank by votes at the reveal (first read at\nor after 04:00 where >= half the launches show votes) and at 04:30; 00:05 rank = the clean_nosite prior order (prereveal_votes.priors);\nfinal rank = truth_daily.json (warehouse fallback, flagged, when the day is not in it yet); final votes from the warehouse.\nA miss = a final top-3 launch outside our top 3 (paired with the lowest-placed wrong pick in our top 3). Buckets, first match wins:\n  (a) hidden order wrong at 03:45 but right by 04:30: the missed launch is in the 04:30 top 3 by votes\n  (b) the 00:05 prior pulled it the wrong way: the missed launch was hidden top 3 at 03:45 but not in our top 3 (0 by construction)\n  (c) near-tie at close: final votes of the missed launch and the displaced pick within 5%\n  (d) other\nOracle top 3 per bucket: share of top-3 slots hit if every miss in that bucket were fixed (the other misses stay).\nusage: python miss_anatomy_0345.py [day ...] -> results/miss_anatomy_0345.{json,md}",
+ "days": {
+  "2026-11-02": {
+   "truth": "truth_daily",
+   "hits": 3,
+   "launches": 18
+  },
+  "2026-11-03": {
+   "truth": "truth_daily",
+   "hits": 3,
+   "launches": 38
+  },
+  "2026-11-04": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 35
+  },
+  "2026-11-05": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 36
+  },
+  "2026-11-06": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 54
+  },
+  "2026-11-07": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 24
+  },
+  "2026-11-08": {
+   "truth": "truth_daily",
+   "hits": 1,
+   "launches": 17
+  },
+  "2026-11-09": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 25
+  },
+  "2026-11-10": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 50
+  },
+  "2026-11-11": {
+   "truth": "truth_daily",
+   "hits": 3,
+   "launches": 26
+  },
+  "2026-11-12": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 37
+  },
+  "2026-11-13": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 20
+  }
+ },
+ "top3_hits_pct": 72.2,
+ "misses": 10,
+ "by_bucket": {
+  "a": 2,
+  "b": 0,
+  "c": 1,
+  "d": 7
+ },
+ "oracle_top3_if_bucket_fixed": {
+  "a": 77.8,
+  "b": 72.2,
+  "c": 75.0,
+  "d": 91.7
+ },
+ "rows": [
+  {
+   "day": "2026-11-04",
+   "missed": "1300148",
+   "displaced_by": "1272509",
+   "bucket": "d",
+   "final_rank": 3,
+   "hidden_01:00": 5.0,
+   "hidden_02:00": 5.0,
+   "hidden_03:00": 5.0,
+   "hidden_03:45": 5.0,
+   "rank_0005": 1.0,
+   "comments_0345": 10.0,
+   "reveal_rank": 6.0,
+   "rank_0430": 6.0,
+   "climbed_after_reveal": true,
+   "final_votes": 279.0,
+   "displaced_final_votes": 175.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 11.0
+  },
+  {
+   "day": "2026-11-05",
+   "missed": "1301788",
+   "displaced_by": "1301590",
+   "bucket": "a",
+   "final_rank": 2,
+   "hidden_01:00": 3.0,
+   "hidden_02:00": 3.0,
+   "hidden_03:00": 4.0,
+   "hidden_03:45": 4.0,
+   "rank_0005": 1.0,
+   "comments_0345": 9.0,
+   "reveal_rank": 2.0,
+   "rank_0430": 2.0,
+   "climbed_after_reveal": false,
+   "final_votes": 256.0,
+   "displaced_final_votes": 155.0,
+   "displaced_hidden_0345": 2.0,
+   "displaced_rank_0005": 5.0
+  },
+  {
+   "day": "2026-11-06",
+   "missed": "1305524",
+   "displaced_by": "1306038",
+   "bucket": "d",
+   "final_rank": 3,
+   "hidden_01:00": 17.0,
+   "hidden_02:00": 24.0,
+   "hidden_03:00": 22.0,
+   "hidden_03:45": 22.0,
+   "rank_0005": 6.0,
+   "comments_0345": 5.0,
+   "reveal_rank": 9.0,
+   "rank_0430": 9.0,
+   "climbed_after_reveal": true,
+   "final_votes": 170.0,
+   "displaced_final_votes": 75.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 45.0
+  },
+  {
+   "day": "2026-11-07",
+   "missed": "1288128",
+   "displaced_by": "1302002",
+   "bucket": "d",
+   "final_rank": 3,
+   "hidden_01:00": 15.0,
+   "hidden_02:00": 17.0,
+   "hidden_03:00": 4.0,
+   "hidden_03:45": 4.0,
+   "rank_0005": 1.0,
+   "comments_0345": 1.0,
+   "reveal_rank": 4.0,
+   "rank_0430": 4.0,
+   "climbed_after_reveal": true,
+   "final_votes": 258.0,
+   "displaced_final_votes": 206.0,
+   "displaced_hidden_0345": 1.0,
+   "displaced_rank_0005": 4.0
+  },
+  {
+   "day": "2026-11-08",
+   "missed": "1298958",
+   "displaced_by": "1307984",
+   "bucket": "d",
+   "final_rank": 1,
+   "hidden_01:00": 9.0,
+   "hidden_02:00": 11.0,
+   "hidden_03:00": 14.0,
+   "hidden_03:45": 14.0,
+   "rank_0005": 1.0,
+   "comments_0345": 7.0,
+   "reveal_rank": 15.0,
+   "rank_0430": 15.0,
+   "climbed_after_reveal": true,
+   "final_votes": 295.0,
+   "displaced_final_votes": 105.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 15.0
+  },
+  {
+   "day": "2026-11-08",
+   "missed": "1301987",
+   "displaced_by": "1302760",
+   "bucket": "d",
+   "final_rank": 2,
+   "hidden_01:00": 8.0,
+   "hidden_02:00": 6.0,
+   "hidden_03:00": 5.0,
+   "hidden_03:45": 5.0,
+   "rank_0005": 4.0,
+   "comments_0345": 2.0,
+   "reveal_rank": 5.0,
+   "rank_0430": 5.0,
+   "climbed_after_reveal": true,
+   "final_votes": 220.0,
+   "displaced_final_votes": 167.0,
+   "displaced_hidden_0345": 2.0,
+   "displaced_rank_0005": 8.0
+  },
+  {
+   "day": "2026-11-09",
+   "missed": "1307104",
+   "displaced_by": "1306799",
+   "bucket": "d",
+   "final_rank": 1,
+   "hidden_01:00": 3.0,
+   "hidden_02:00": 4.0,
+   "hidden_03:00": 4.0,
+   "hidden_03:45": 4.0,
+   "rank_0005": 15.0,
+   "comments_0345": 10.0,
+   "reveal_rank": 4.0,
+   "rank_0430": 4.0,
+   "climbed_after_reveal": true,
+   "final_votes": 442.0,
+   "displaced_final_votes": 240.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 4.0
+  },
+  {
+   "day": "2026-11-10",
+   "missed": "1305545",
+   "displaced_by": "1296366",
+   "bucket": "d",
+   "final_rank": 3,
+   "hidden_01:00": 29.0,
+   "hidden_02:00": 9.0,
+   "hidden_03:00": 13.0,
+   "hidden_03:45": 13.0,
+   "rank_0005": 9.0,
+   "comments_0345": 1.0,
+   "reveal_rank": 50.0,
+   "rank_0430": 50.0,
+   "climbed_after_reveal": true,
+   "final_votes": 290.0,
+   "displaced_final_votes": 246.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 4.0
+  },
+  {
+   "day": "2026-11-12",
+   "missed": "1298575",
+   "displaced_by": "1312557",
+   "bucket": "c",
+   "final_rank": 3,
+   "hidden_01:00": 3.0,
+   "hidden_02:00": 4.0,
+   "hidden_03:00": 4.0,
+   "hidden_03:45": 4.0,
+   "rank_0005": 6.0,
+   "comments_0345": 7.0,
+   "reveal_rank": 4.0,
+   "rank_0430": 4.0,
+   "climbed_after_reveal": true,
+   "final_votes": 294.0,
+   "displaced_final_votes": 281.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 11.0
+  },
+  {
+   "day": "2026-11-13",
+   "missed": "1314781",
+   "displaced_by": "1313622",
+   "bucket": "a",
+   "final_rank": 3,
+   "hidden_01:00": 4.0,
+   "hidden_02:00": 5.0,
+   "hidden_03:00": 4.0,
+   "hidden_03:45": 4.0,
+   "rank_0005": 2.0,
+   "comments_0345": 2.0,
+   "reveal_rank": 3.0,
+   "rank_0430": 3.0,
+   "climbed_after_reveal": false,
+   "final_votes": 276.0,
+   "displaced_final_votes": 172.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 1.0
+  }
+ ]
+}
