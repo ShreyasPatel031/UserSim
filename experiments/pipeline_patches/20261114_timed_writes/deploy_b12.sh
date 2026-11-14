@@ -27,6 +27,12 @@ gsutil -q cp $B/deploy/b12/tw_code_$C.tgz $T
 rm -rf $W/tw.new; mkdir -p $W/tw.new; tar xzf $T -C $W/tw.new --strip-components=1
 ln -sfn $W/experiments/ph_predict/data $W/tw.new/experiments/ph_predict/data          # read-only use of the pipeline's data dir
 for d in logs locks tmp cache cmt e5/why; do mkdir -p $W/tw.new/$d; done
+# E5 vm_writers (pinned tarball md5; E5 commit facba879, 14:46Z Nov 14) + the salt for held_team_* (mode 600; read only to hash, never printed)
+E5W_MD5=3ff1b86b; gsutil -q cp $B/tmp/e5/vm_writers/e5_vm_writers.tgz $BK/e5_vm_writers.tgz
+[ "$(md5sum < $BK/e5_vm_writers.tgz | cut -c1-8)" = "$E5W_MD5" ] || { echo "e5 vm_writers tarball md5 mismatch: not deploying"; exit 1; }
+mkdir -p $W/tw.new/e5_vm_writers $W/tw.new/e5_assets/early; tar xzf $BK/e5_vm_writers.tgz -C $W/tw.new/e5_vm_writers
+(umask 077; gsutil -q cp $B/raw/population/_salt $W/tw.new/e5_assets/early/salt) || { echo "salt copy failed: not deploying"; exit 1; }
+bash -n $W/tw.new/e5_vm_writers/vm_writers/run.sh; command -v python > /dev/null || { echo "vm_writers run.sh calls python: not on PATH"; exit 1; }
 [ -f $TW/experiments/ph_predict/results/team_pulled_0100.jsonl ] && cp $TW/experiments/ph_predict/results/team_pulled_0100.jsonl $W/tw.new/experiments/ph_predict/results/
 # HARD IMPORT GATE (orchestrator 09:12Z Nov 14): every module each job imports, exactly as tw.sh runs it from cron (user agent,
 # PYTHONPATH unset unless tw.sh sets it, /opt/exp/bin/python3, tw.sh's cwd per job; paths of the new tree = the final tree's layout).
@@ -41,6 +47,8 @@ gate "vs_reconcile (-m)" "cd $N/experiments && $PYG -m:pipeline.vs_reconcile"
 gate "E5 follow_shadow (python3 -I)" "cd $P && env -u PYTHONPATH /opt/exp/bin/python3 -I $N/import_gate.py --isolated $N/e5/e5f/follow_shadow.py"
 gate "E5 team_shadow" "cd $N/e5/e5wt/experiments/simlab && $PYG team_shadow.py"
 gate "E5 why_writer" "cd $N/e5/e5why && $PYG experiments/simlab/why_writer.py"
+gate "E5 vm_writers (run.sh: cd simlab, PYTHONPATH=vm_writers)" "cd $N/e5_vm_writers/vm_writers/simlab && env PYTHONPATH=$N/e5_vm_writers/vm_writers \
+  /opt/exp/bin/python3 $N/import_gate.py prob_writer.py period_parts.py period_score.py period_writer.py track_record.py held_team_shadow.py"
 # the published 00:05 arm-2 branch: the pipeline's forecast.py as the daily step runs it (cwd ph_predict, PYTHONPATH unset): this imports
 # h25_live from ~/w/arm2_live and, through it, training_window -> ctrl / honest (the Nov 14 miss)
 gate "arm-2 branch (pipeline forecast.py)" "cd $W/experiments/ph_predict && $PYG forecast.py"

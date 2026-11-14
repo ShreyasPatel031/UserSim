@@ -116,5 +116,9 @@ inputs_backup)  # 22:30 PT: arm-2 inputs to raw/model_inputs/arm2/<week monday>/
 vs_check)       # 01:15 PT: warehouse vote_snapshots vs the raw recorder file for yesterday (counts only); VS_FIX=1 also adds missing rows
   cd $X; M=check; [ "${VS_FIX:-0}" = 1 ] && M=fix
   ST=$(nice -n 19 python3 -m pipeline.vs_reconcile $M $Y 2>&1 | tail -1 | cut -c1-300); IN=" raw_vote_snapshots:$(has $B/raw/vote_snapshots/$Y.jsonl && echo present || echo missing)"; logline;;
+e5w:*)          # E5's no-LLM website writers (vm_writers tarball, pinned md5 in deploy_b12.sh); E5's own day defaults; read-only
+  J=${JOB#e5w:}; IN=" e5_vm_writers:$([ -f $TW/e5_vm_writers/vm_writers/run.sh ] && echo present || echo missing)"
+  ST=$(ASSETS=$TW/e5_assets LOG=$TW/logs/e5_writers.log nice -n 19 bash $TW/e5_vm_writers/vm_writers/run.sh $J 2>&1 | tail -1 | cut -c1-300); RC=$?
+  ST="rc=$RC $ST"; logline;;   # pipefail is set: RC is run.sh's exit code (2 sync, 3 inputs missing, 64 bad job)
 *) echo "unknown job $JOB"; exit 2;;
 esac

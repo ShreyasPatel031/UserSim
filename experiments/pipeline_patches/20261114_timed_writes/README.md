@@ -91,13 +91,17 @@ duplicate rows on Nov 1, plus 19 rows that are not in that day's raw file.)
 - Nov 1's duplicates are left in place (readers dedup on (launch_id, at)); removing them would mean rewriting a part, which is out of scope here.
 
 ## E5's no-LLM website writers (E5 01:37Z Nov 14; folded in, NOT deployed)
-- Tarball `gs://.../tmp/e5/vm_writers/e5_vm_writers.tgz` (md5 **d3554f92** (updated Nov 14, E5 commit 6d006d12: all-NaN pred_arm2 guard, track_record closed days only); same files in git: experiments/simlab/vm_writers/ on
+- Tarball `gs://.../tmp/e5/vm_writers/e5_vm_writers.tgz` (md5 **3ff1b86b** (updated 12:46Z Nov 14, E5 commit facba879: new job period_score, period_writer staleness flag, new simlab/period_parts.py; before: d3554f92 / 6d006d12); same files in git: experiments/simlab/vm_writers/ on
   claude/person-model-v2 @ a3487608). Pinned asset `tmp/e5/vm_writers/assets/a2x/X.parquet` (the arm-2 explain dump). The 2025 lists sync from raw/ph_history/2025.
 - Install: extract to /home/agent/w/tw/e5_vm_writers, `ASSETS=/home/agent/w/tw/e5_assets`. The salt for held_team_* is copied by deploy from
   `raw/population/_salt` to `$ASSETS/early/salt` (mode 600; read only to hash, never printed or logged), exactly as why_run.sh does today.
 - Entry `bash vm_writers/run.sh <job> [day]`; exit codes 2 sync, 3 inputs missing, 64 bad job; one log line per run.
 - Cron (UTC, E5's schedule; in the b12 block after a `CRON_TZ=UTC` line):
   `35 8 * * *` prob_0005 + held_team_predict; `20 9` period + prob_0005 + held_team_predict (re-run); `25 9` track_record; `30 9` held_team_score; `7 12` prob_prereveal.
+  AS DEPLOYED (sched12.txt, Pacific wall clock through tick12.sh; the VM cron ignores CRON_TZ): tw.sh jobs `e5w:<job>` at 00:35 prob_0005 +
+  held_team_predict; 01:20 period + prob_0005 + held_team_predict; 01:25 track_record; 01:27 period_score (after period; Sundays weekly,
+  month-end monthly, else no-op); 01:31 held_team_score; 04:07 prob_prereveal. deploy_b12.sh pins the tarball md5 (E5W_MD5), extracts it to
+  tw/e5_vm_writers, copies the salt (mode 600) and import-gates the six simlab scripts as run.sh runs them.
   In winter (PST) 08:20 UTC = 00:20 PT, inside 00:05-01:00 PT. E5 confirmed (01:39Z) that both jobs are read-only: no PH API, no LLM, and they
   write only to tmp/e5/... in the bucket. Exit codes: run.sh exits 3 only for missing ASSETS inputs (a2x/X.parquet; the salt for held_team_*).
   With no forecast yet, prob_0005 falls back (predictions file -> raw/daily pred_arm2 -> forecast_0005 ranks) or writes "not published" with rc 0.
