@@ -145,12 +145,20 @@ for i in ids:
     WHYB[i] = {"top_drivers": [{"input": k, "points": pts.get(k)} for k in (f.get("top_inputs") or [])[:3]], "rank_in_explanation_model": f.get("rank_explanation_model")}
 
 names = {str(p["id"]): p.get("name") for p in line}
+def lab_text(L): return "; ".join(f"{k}: {v}" for k, v in L.items()) if isinstance(L, dict) else str(L)
+def with_label(b, L):   # the website reads each block's "accuracy_label" (orchestrator 22:04Z)
+    if isinstance(b, list): return {"items": b, "accuracy_label": lab_text(L)}
+    if isinstance(b, dict): return {**b, "accuracy_label": lab_text(L)}
+    return {"status": NA, "accuracy_label": lab_text(L)}
+def blocks(i):
+    return {"name": names.get(i), "who": with_label(WHO.get(i), WHO_LABEL), "say": with_label(SAY.get(i), SAY_LABEL),
+            "competitors": with_label(COMP.get(i), COMP_LABEL), "why": with_label(WHYB.get(i), WHY_LABEL)}
 out = {"day": DAY, "version": "explain_v1", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),
        "READ_ME": "Per launch: who (predicted backers as segments of held people), say (predicted comments), competitors (similar earlier launches "
                   "and what their commenters said), why (explanation-model drivers). Every block has its own measured value; 'not available' means we "
                   "do not have it, never a guess. No usernames or person ids.",
        "labels": {"who": WHO_LABEL, "say": SAY_LABEL, "competitors": COMP_LABEL, "why": WHY_LABEL},
-       "launches": {i: {"name": names.get(i), "who": WHO.get(i), "say": SAY.get(i), "competitors": COMP.get(i), "why": WHYB.get(i)} for i in ids}}
+       "launches": {i: blocks(i) for i in ids}}
 p = os.path.join(OUT, f"{DAY}.json"); json.dump(out, open(p, "w"), indent=1, default=float)
 if UP: subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/explain/{DAY}.json"], check=True)
 print(json.dumps({"day": DAY, "launches": len(ids), "who_ok": sum("segments" in (v or {}) for v in WHO.values()), "say_ok": sum("reactions" in v for v in SAY.values()),
