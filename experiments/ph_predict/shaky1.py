@@ -35,6 +35,9 @@ TR25 = {d: {i: r for i, r in zip(g.id, g.dailyRank) if pd.notna(r)} for d, g in 
 TR25 = {d: v for d, v in TR25.items() if len(v) >= 10}
 A = pd.read_parquet(R("history_retrain_decomp_preds_arm2.parquet")); A["id"] = A.id.astype(str)
 FEATS = ["margin", "margin_z", "ln", "h_n", "h_top5", "self_hunted", "first", "crowd1", "crowd2", "weekend"]
+# correction (maker audit, Nov 14 23:40Z): "first" and "self_hunted" need named makers, which stored rows reveal after close; DROP removes them
+FEATS = [c for c in FEATS if c not in os.environ.get("DROP", "").split(",")]
+OUTN = os.environ.get("OUTN", "shaky1")
 
 
 def f(i, c, default=0.0):
@@ -89,4 +92,4 @@ for yr, D in (("2025 (in-sample, fitted here)", D25), ("2026 TEST", D26)):
                "top3_hits_arm2": boot(D.top3.values), "top3_hits_demote_secondary": boot(dem), "demote_minus_arm2": boot(dem - D.top3.values)}
     print(yr, json.dumps(res[yr]))
 print("coef", coef); print(json.dumps(desc))
-json.dump(res, open(R("shaky1.json"), "w"), indent=1, default=str)
+json.dump(res, open(R(f"{OUTN}.json"), "w"), indent=1, default=str)
