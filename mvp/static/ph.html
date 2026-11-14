@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=9">
+<link rel="stylesheet" href="/static/ph_site.css?v=10">
 </head>
 <body>
 <div class="wrap">
@@ -188,7 +188,7 @@ async function side(){
   try {
     const t = await getJSON("/api/ph/track-record");
     const r = (t.rows||[]).find(x=>x.key==="0005" && (x.source||"live")==="live");
-    if(r && r.n_days) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Math.round(r.top10)}%</b></span> of each day's top 10 before public votes.`;
+    if(r && r.n_days) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`;
   } catch(e){ /* the line is optional */ }
 }
 
