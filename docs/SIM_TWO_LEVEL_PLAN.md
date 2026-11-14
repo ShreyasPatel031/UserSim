@@ -388,3 +388,20 @@ Open:
 - Weekly / monthly: running vote order is the forecast; first live weekly score Mon Nov 16; calibrated stay-probabilities in progress.
 - Ceiling: a 00:05 forecast tops out around 63-75 top 3; 90 first looks reachable 05:00-10:00 PT (plain votes 88 at 05:00, 92 at 10:00).
 Infrastructure waiting on Shreyas: PH API token for the Cursor fleet; bundles 10 / 11 / 12 / 12a; website hosting steps (#149).
+
+### Queue state (Nov 14, 13:00 UTC)
+
+Published: 00:05 PT arm 2. Backtest on the live day rule (>= 10 ranked launches): 58.1 / 65.2 / 76.9 on 183 days (60.7 / 68.4 / 75.7 on all 214 only with the label "short-list days included"); gain over clean_nosite +3.6 [+0.9, +6.2] top 3. Expected at real 00:05 conditions about 57.8 / 65.1 / 76.5. 03:45 PT hybrid: replay 72.7 / 74.5 / 77.3 on 11 days.
+
+Closed today (null or nothing to recover): bad-2025-label drops; 30-day label lag; hunter-history depth (3 months = all); "will be ranked" gate; line-up skew fixes; llm_pitch brittleness variants (monotone, percentile, bins, noise augmentation); LLM averaging without fresh calls (bounded at about +1.5, needs calls).
+
+Adopted today: missing-input losses measured (hunter history -6.7, LLM scores -3.0 top 3) and input-guards patch prepared (undeployed); weekly / monthly scorer with stale flag (headline Saturday board vs weekly rank from the Monday read); VM daily reread in the downtime audit; day rule on every track record row; arm-2 backup pinned (training day list, md5 manifest).
+
+Running: E5 - arm 2 vs clean_nosite replayed as-of on the held 00:05 line-ups (direct live penalty); orchestrator subagent - new 00:05 signals from held day files (same-day competition, retrieval prior, product recurrence).
+
+Open:
+- Fresh Gemini re-scores of llm_pitch (retest noise; matched re-score from 00:05 text for the 5% edited texts). Blocked on Shreyas's permission.
+- 2024 / 2023 day lists: about +0.5 to +1.5 top 3 via training rows only; owed in full, low urgency; Cursor fleet.
+- Days for the morning lines (pre-reveal blends 13-25 scored days, velocity ~30); first live weekly score Mon Nov 16.
+- Forward shadows to read: visible makers at 00:05, hr_clean_arm2, slots 6-10 by prior only; arm 2 first 10 live days (revert check).
+- Commenter count reads at 00:03 and 00:27 PT (needs the live capture back).
