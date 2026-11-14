@@ -1,0 +1,33 @@
+--- /tmp/claude-0/-home-user-UserSim/94f4f0ff-5cdc-5cbe-bb94-5c0d76cd2a8c/scratchpad/vmcode/forecast.vm.py	2026-11-14 16:40:49.164081428 +0000
++++ forecast.py	2026-11-14 18:41:31.101280024 +0000
+@@ -11,8 +11,12 @@
+ for mode in ("pitch", "site", "brand", "full"):  # same blind LLM judgements as the backtest rows get
+     llm.run_day(day, df0[df0.day == day], mode)
+ df = RN.load_llm(df0)
+-df = df[~df.known]
+-tr, te = df[~df.is_today], df[df.is_today & (df.day == day)]
++# KNOWN LAUNCHES (bug sweep item 1, orchestrator 18:40Z Nov 14; undeployed): a launch Gemini says it remembers is dropped from TRAINING
++# only. Tonight's known launches stay in the ranked line-up with every llm_* input blank, and the files say "known to the LLM".
++KNOWN = set(df.id[df.known & df.is_today & (df.day == day)].astype(str))
++df = df[~df.known | (df.is_today & (df.day == day))]
++tr, te = df[~df.is_today], df[df.is_today & (df.day == day)].copy()
++te.loc[te.id.astype(str).isin(KNOWN), [c for c in te.columns if c.startswith("llm_")]] = np.nan
+ tr, te = M.add_fold_feats(tr, te)
+ te = te.copy()
+ src, dropped = M.live_sources(tr, te, M.LIVE_SOURCES)
+@@ -49,11 +53,13 @@
+ L = [f"# Forecast for {day} (made before results; {len(te)} featured launches at fetch time)\n",
+      "| Predicted rank | Product | Tagline | Hunter PH followers |", "|---|---|---|---|"]
+ for i, (_, r) in enumerate(te.iterrows()):
+-    L.append(f"| {i + 1} | {r['name']} | {r.tagline} | {int(np.expm1(r.ph_hunter_followers))} |")
++    L.append(f"| {i + 1} | {r['name']}{' (known to the LLM; ranked without LLM inputs)' if str(r.id) in KNOWN else ''} | {r.tagline} | {int(np.expm1(r.ph_hunter_followers))} |")
+ open(f"{RN.OUT}/forecast_{day}.md", "w").write("\n".join(L) + "\n")
+ # the launch model's raw prediction (log votes) per launch: the offset for shadow forecasts (pipeline.daily s_shadow)
+ AUD = ["ph_hunter_followers", "x_maker_sum_followers", "x_company_followers", "promo_reactions", "promo_posts"]   # E1 v2's audience inputs
+-te[["id", "day", "pred", "pred_arm2"] + [c for c in AUD if c in te]].assign(id=te.id.astype(str)).to_parquet(f"{RN.OUT}/forecast_{day}.parquet")
++# published_rank + known (ids-not-names fix, bug sweep item 4: daily.py reads the forecasts table rows from here, not from names in the .md)
++te[["id", "day", "pred", "pred_arm2"] + [c for c in AUD if c in te]].assign(id=te.id.astype(str), published_rank=np.arange(1, len(te) + 1),
++    known=te.id.astype(str).isin(KNOWN)).to_parquet(f"{RN.OUT}/forecast_{day}.parquet")
+ import json, os
+ os.makedirs(f"{RN.OUT}/dash", exist_ok=True)
+ json.dump([{"rank": i + 1, "product": r["name"], "tagline": r.tagline, "hunter_followers": int(np.expm1(r.ph_hunter_followers)),

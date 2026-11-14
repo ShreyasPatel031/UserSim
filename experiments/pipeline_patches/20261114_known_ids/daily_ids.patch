@@ -1,0 +1,20 @@
+--- /tmp/claude-0/-home-user-UserSim/94f4f0ff-5cdc-5cbe-bb94-5c0d76cd2a8c/scratchpad/vmcode/daily.vm.py	2026-11-14 18:40:50.768509513 +0000
++++ daily.py	2026-11-14 18:41:11.793461445 +0000
+@@ -141,6 +141,17 @@
+ python3 forecast.py {d}'''], cwd=PH, check=True)
+     import re
+     rows = []
++    # ids from the forecast parquet (id + published_rank), not from names in the .md (bug sweep item 4: Oct 29 had 2 duplicated names, so
++    # 2 launches lost their id). Falls back to the .md parse only for a parquet without published_rank (older forecast.py).
++    FP = pd.read_parquet(f"{PH}/results/forecast_{d}.parquet") if os.path.exists(f"{PH}/results/forecast_{d}.parquet") else None
++    if FP is not None and "published_rank" in FP:
++        nm = {str(p["id"]): p["name"] for p in json.load(open(f"{RAW}/today/{d}.json"))}
++        for r in FP.sort_values("published_rank").itertuples():
++            rows.append({"forecast_date": d, "model": "launch_model", "predicted_rank": int(r.published_rank), "name": nm.get(str(r.id), ""),
++                         "launch_id": str(r.id), "made_on": d})
++        if not dry:
++            W.write("forecasts", pd.DataFrame(rows))
++        return {"items": len(rows), "source": "forecast parquet ids"}
+     name2id = {p["name"].strip(): str(p["id"]) for p in json.load(open(f"{RAW}/today/{d}.json"))}
+     for l in open(f"{PH}/results/forecast_{d}.md"):
+         m = re.match(r"\|\s*(\d+)\s*\|\s*(.+?)\s*\|", l)

@@ -1,0 +1,12 @@
+--- /tmp/claude-0/-home-user-UserSim/94f4f0ff-5cdc-5cbe-bb94-5c0d76cd2a8c/scratchpad/vmcode/h25_live.vm.py	2026-11-14 16:40:49.264081434 +0000
++++ h25_live.py	2026-11-14 18:41:11.793284009 +0000
+@@ -29,7 +29,8 @@
+         F.D = real
+     df["id"] = df.id.astype(str); old = df.day < "2026-01-01"
+     df.loc[old, [c for c in df.columns if c.startswith(HR.OLD_NAN) or (c.startswith("llm_") and c not in ("llm_pitch", "llm_brand"))]] = np.nan
+-    tr = df[(~df.is_today) & (df.day < day) & (~df.known)]; te = df[df.is_today & (df.day == day) & (~df.known)].copy()
++    tr = df[(~df.is_today) & (df.day < day) & (~df.known)]; te = df[df.is_today & (df.day == day)].copy()   # KNOWN (bug sweep item 1; undeployed): known launches stay in tonight's line-up
++    te.loc[te.known.astype(bool), [c for c in te.columns if c.startswith("llm_")]] = np.nan   # with every llm_* input blank; training still drops them
+     if te.empty or old[tr.index].sum() == 0: raise RuntimeError(f"arm2: today rows {len(te)}, 2025 training rows {int(old[tr.index].sum())}")
+     tr, te = M.add_fold_feats(tr, te); src, _ = M.live_sources(tr, te, M.LIVE_SOURCES)
+     cc = [c for c in M.cols(tr, src) if not c.startswith(MP) and c not in ID and c not in ("llm_site", "ph_month")]
