@@ -26,6 +26,20 @@ def forecast(d):
     return pd.read_parquet(p) if os.path.exists(p) else None
 
 
+def guard(d):
+    """Input-guard summary for the published inputs block (bundle 13 forecast_inputs_<d>.json; counts only)."""
+    p = f"{PH}/results/forecast_inputs_{d}.json"
+    if not os.path.exists(p):
+        p = f"/tmp/forecast_inputs_{d}.json"; subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{d}/forecast_inputs_{d}.json", p], capture_output=True)
+    if not os.path.exists(p):
+        return {"input_guard": "absent"}
+    G = json.load(open(p)); st = G.get("store", {}); lm = G.get("llm", {}); cv = G.get("coverage", {})
+    return {"store_fallback": st.get("fallback"), "store_missing_days": st.get("still_missing_days", st.get("missing_days")),
+            **{f"llm_{m}_missing": lm.get(m, {}).get("missing") for m in ("pitch", "brand")},
+            **{f"{k}_share": cv.get(k, {}).get("share_with_input") for k in ("promo", "busy", "site")},
+            "alerts": [a.get("kind") for a in G.get("alerts", [])]}
+
+
 def names(d):
     p = f"{PH}/data/vote_snapshots/{d}.jsonl"; V = pd.DataFrame([json.loads(l) for l in open(p)]) if os.path.exists(p) else pd.DataFrame()
     return (V, dict(zip(V.launch_id.astype(str), V.name))) if len(V) else (V, {})
@@ -43,12 +57,12 @@ def put(d, kind, out):
 def midnight(d):
     F = forecast(d); _, nm = names(d); now = dt.datetime.now(dt.timezone.utc).isoformat()
     if F is None or not len(F):
-        put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": None, "fallback_used": "none_available", "inputs": {"forecast_parquet": "missing"},
+        put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": None, "fallback_used": "none_available", "inputs": {"forecast_parquet": "missing", **guard(d)},
                         "written_at": now, "backtest": ACC0, "ranking": []}); return
     F["id"] = F.id.astype(str); arm2 = "pred_arm2" in F and F.pred_arm2.notna().all(); col = "pred_arm2" if arm2 else "pred"
     F = F.sort_values([col, "id"], ascending=[False, True]).reset_index(drop=True)
     put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": "arm2" if arm2 else "clean_nosite", "fallback_used": None if arm2 else "clean_nosite_fallback",
-                    "inputs": {"forecast_parquet": "present", "pred_arm2": "present" if arm2 else "missing"}, "written_at": now, "backtest": ACC0,
+                    "inputs": {"forecast_parquet": "present", "pred_arm2": "present" if arm2 else "missing", **guard(d)}, "written_at": now, "backtest": ACC0,
                     "ranking": [{"rank": k + 1, "id": r.id, "name": nm.get(r.id), "score": round(float(r[col]), 4)} for k, r in F.iterrows()]})
 
 

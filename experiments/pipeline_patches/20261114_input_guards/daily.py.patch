@@ -1,0 +1,27 @@
+--- a/experiments/pipeline/daily.py (VM 27f0578d)
++++ b/experiments/pipeline/daily.py
+@@ -149,6 +149,10 @@
+                          "launch_id": name2id.get(m.group(2).strip()), "made_on": d})
+     if not dry:
+         W.write("forecasts", pd.DataFrame(rows))
++    gi = f"{PH}/results/forecast_inputs_{d}.json"   # input guard (bundle 13): alerts make the step "degraded", not failed
++    al = json.load(open(gi)).get("alerts", []) if os.path.exists(gi) else [{"kind": "guard", "msg": "forecast_inputs file missing"}]
++    if al:
++        return {"items": len(rows), "status": "degraded: " + "; ".join(a["msg"] for a in al)[:400]}
+     return {"items": len(rows)}
+ 
+ 
+@@ -506,10 +510,13 @@
+     files = [f"{RAW}/today/{d}.json", f"{RAW}/comments/page_daily_{d}.jsonl.gz", f"{PH}/results/forecast_{d}.md",
+              f"{PH}/results/forecast_{d}.parquet",          # the honest prior in log votes (early_shock.py reads it)
+              f"{RAW}/sim_live/pnx_{d}.json"]                # popscore's live outputs (early_shock.py reads them)
++    files += [f"{PH}/results/forecast_inputs_{d}.json"]  # input guard record (bundle 13)
+     files = [f for f in files if os.path.exists(f)]
+     if not dry:
+         for f in files:
+             subprocess.run(["gsutil", "-q", "cp", f, f"{W.BUCKET}/raw/daily/{d}/"], check=False)
++        # the day store after the ranks step (final days through d-1): input_guard.store_check restores missing days from here
++        subprocess.run(["gsutil", "-q", "-m", "rsync", f"{RAW}/days", f"{W.BUCKET}/raw/store/days"], check=False)
+     return {"items": len(files)}
+ 
+ 

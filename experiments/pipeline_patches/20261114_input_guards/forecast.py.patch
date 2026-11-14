@@ -1,0 +1,31 @@
+--- a/experiments/ph_predict/forecast.py (VM 61538501)
++++ b/experiments/ph_predict/forecast.py
+@@ -7,9 +7,12 @@
+ import llm
+ 
+ day = sys.argv[1]
++import input_guard as G   # input guards (bundle 13): store freshness, llm coverage with retry, promo/busy/site alerts
++G.store_check(day)        # may point F.D at an overlay store with missing days restored from the bucket (never writes the real store)
+ df0 = F.build(include_today=True)
+ for mode in ("pitch", "site", "brand", "full"):  # same blind LLM judgements as the backtest rows get
+     llm.run_day(day, df0[df0.day == day], mode)
++G.llm_check(day, df0[df0.day == day])   # pitch/brand for every launch: re-score the missing subset with backoff, record the rest
+ df = RN.load_llm(df0)
+ df = df[~df.known]
+ tr, te = df[~df.is_today], df[df.is_today & (df.day == day)]
+@@ -17,6 +20,7 @@
+ te = te.copy()
+ src, dropped = M.live_sources(tr, te, M.LIVE_SOURCES)
+ print("sources", src, "dropped (empty today, filled in training):", dropped, flush=True)
++G.coverage(te); G.STATE["dropped_sources"] = dropped
+ # the configuration the backtest scores (liveexp.py / pipeline.backtest), averaged over 5 seeds (+0.6 daily top 3)
+ # DEPLOY candidate clean_nosite (orchestrator 14:40Z Nov 12): the 00:05 model trained and served without any input that
+ # needs a NAMED maker (maker profiles, ID set) and without llm_site; published order = this clean score. Backtest 214 days
+@@ -45,6 +49,7 @@
+ except Exception as e:
+     ARM2 = f"fallback: clean_nosite (arm2 error {type(e).__name__}: {str(e)[:160]})"
+ print("published model:", ARM2, flush=True)
++G.STATE["published_model"] = ARM2; print("input guard:", G.finish(day, RN.OUT), flush=True)
+ te = te.sort_values("score", ascending=False)
+ L = [f"# Forecast for {day} (made before results; {len(te)} featured launches at fetch time)\n",
+      "| Predicted rank | Product | Tagline | Hunter PH followers |", "|---|---|---|---|"]
