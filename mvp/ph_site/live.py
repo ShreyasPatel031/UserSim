@@ -651,6 +651,66 @@ def why(day: str, point: str, ids: set[str]) -> dict | None:
             "items": {k: v for k, v in items.items() if k in used}, "launches": out}
 
 
+# --- /ph explain panel: per-launch who / say / competitors / why (E5, results/web/explain/<day>.json) -------------------
+EXPLAIN_BLOCKS = ("who", "say", "competitors", "why")
+_EXPLAIN_DENY = {"username", "usernames", "handle", "handles", "user", "users", "user_id", "user_ids", "profile", "profiles",
+                 "profile_url", "email", "person", "people", "voter", "voters", "ids", "url", "urls", "link", "links", "twitter", "x_handle"}
+_ACC_KEYS = ("accuracy_label", "accuracy", "measured_accuracy", "label_accuracy")
+
+
+def _explain_clean(v, depth=0):
+    """Aggregates only: text, numbers, short lists, small dicts. No usernames/handles/links, no group under the floor."""
+    if depth > 4 or v is None or isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return round(float(v), 4) if not float(v).is_integer() else int(v)
+    if isinstance(v, str):
+        t = _clean_text(v)[:320]
+        return None if not t or re.search(r"(^|\s)@\w", t) or t.lower() in ("not available", "n/a") else t
+    if isinstance(v, list):
+        out = [x for x in (_explain_clean(i, depth + 1) for i in v[:8]) if x not in (None, {}, [])]
+        return out or None
+    if isinstance(v, dict):
+        n = v.get("n_people")
+        if isinstance(n, (int, float)) and not isinstance(n, bool) and n < WHY_MIN_GROUP:
+            return None
+        out = {}
+        for k, x in v.items():
+            ks = str(k)[:40]
+            if ks.lower() in _EXPLAIN_DENY:
+                continue
+            c = _explain_clean(x, depth + 1)
+            if c not in (None, {}, []):
+                out[ks] = c
+        return out or None
+    return None
+
+
+def explain(day: str, ids: set[str]) -> dict | None:
+    j = gcs.read_json(f"results/web/explain/{day}.json", ttl=300)
+    if not isinstance(j, dict):
+        return None
+    rows = j.get("launches") if isinstance(j.get("launches"), dict) else {k: v for k, v in j.items() if isinstance(v, dict)}
+    out = {}
+    for pid, row in rows.items():
+        if str(pid) not in ids or not isinstance(row, dict):
+            continue
+        keep = {}
+        for b in EXPLAIN_BLOCKS:
+            blk = row.get(b)
+            if not isinstance(blk, dict) or blk.get("available") is False or str(blk.get("status") or "").lower() == "not available":
+                continue
+            acc = next((blk[k] for k in _ACC_KEYS if isinstance(blk.get(k), str)), "")
+            body = _explain_clean({k: v for k, v in blk.items() if k not in _ACC_KEYS and k not in ("available", "status")})
+            if body:
+                keep[b] = {"accuracy": _clean_text(acc)[:300], "body": body}
+        if keep:
+            out[str(pid)] = keep
+    if not out:
+        return None
+    return {"as_of": str(j.get("as_of") or j.get("written_at") or ""), "launches": out}
+
+
 # Nominal data cut of each point (PT, hours after midnight); a point counts as "not made" once its cut is 90 min past.
 NOMINAL_CUT_H = {"0005": 0.08, "PRE": 3.75}
 BOARD_STALE_MIN = 35

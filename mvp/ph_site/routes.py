@@ -172,6 +172,18 @@ async def ph_health():
                         headers={"Cache-Control": "no-store"})
 
 
+@router.get("/api/ph/explain")
+async def ph_explain(day: str = ""):
+    d = day if re.fullmatch(r"\d{4}-\d{2}-\d{2}", day or "") else live.today_pt()
+    try:
+        lu = await asyncio.to_thread(live._lineup, d)
+        ids = {str(k) for k in lu}
+        return _json(await asyncio.to_thread(live.explain, d, ids) or {"launches": {}}, 120)
+    except Exception as exc:  # noqa: BLE001 - optional panel, never a blank page
+        print(f"[ph] explain failed: {exc!r}", flush=True)
+        return _json({"launches": {}}, 30)
+
+
 @router.get("/api/ph/weekly")
 async def ph_weekly():
     from mvp.ph_site import live

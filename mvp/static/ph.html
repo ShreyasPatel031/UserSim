@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=14">
+<link rel="stylesheet" href="/static/ph_site.css?v=15">
 </head>
 <body>
 <div class="wrap">
@@ -54,6 +54,7 @@
   </div>
   <p class="legend small" id="legend"></p>
   <p class="acc small" id="acc"></p>
+  <section class="explain" id="explain" hidden></section>
   <section class="whyp" id="whyp" hidden></section>
 
   <footer class="note label"><span>Forecasts by Atelier · not affiliated with Product Hunt</span><span id="asof"></span></footer>
@@ -108,7 +109,51 @@ async function load(day){
 
   $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
   metric(); renderPred(); renderLive(); drawLinks();
+  loadExplain(VIEW.day);
 }
+
+// Click a launch -> who backs it / what they will say / competitors / why (E5 explain file; blocks may be missing).
+let EXPL = {launches: {}}, EXPL_DAY = null, EXPL_ID = null;
+async function loadExplain(day){
+  if(EXPL_DAY === day && day === VIEW.day && Object.keys(EXPL.launches).length) { markExplain(); return; }
+  try { EXPL = await getJSON("/api/ph/explain?day=" + encodeURIComponent(day)); EXPL_DAY = day; } catch(e){ EXPL = {launches: {}}; }
+  if(day !== VIEW.day) return;
+  markExplain();
+}
+function markExplain(){
+  document.querySelectorAll("#pred li.row, #live li.row").forEach(li=>li.classList.toggle("has-explain", !!EXPL.launches[li.dataset.id]));
+  if(EXPL_ID && !EXPL.launches[EXPL_ID]) $("#explain").hidden = true;
+}
+const EXPL_TITLE = {who: "Who is predicted to back it", say: "What they will say", competitors: "Competitors", why: "Why the model predicts this"};
+const LABEL_KEYS = ["label","segment","name","text","question","concern","reaction","driver","feature","title","product","launch"];
+function fmtNum(k, n){
+  return (/share|prob|conf|coverage|rate|pct|p_/i.test(k) && n >= 0 && n <= 1) ? Math.round(n*100) + "%" : String(n);
+}
+function rend(v, k = ""){
+  if(v == null) return "";
+  if(typeof v === "number") return `<span class="ex-n">${esc(fmtNum(k, v))}</span>`;
+  if(typeof v === "string") return `<span>${esc(v)}</span>`;
+  if(Array.isArray(v)) return `<ul class="ex-l">${v.map(i=>`<li>${rend(i, k)}</li>`).join("")}</ul>`;
+  const keys = Object.keys(v), lk = LABEL_KEYS.find(x=>typeof v[x] === "string");
+  const rest = keys.filter(x=>x !== lk).map(x=>{
+    const val = v[x], plain = typeof val === "number" || typeof val === "string";
+    return plain ? `<span class="ex-kv"><i>${esc(x.replace(/_/g," "))}</i> ${rend(val, x)}</span>` : `<div class="ex-sub"><i>${esc(x.replace(/_/g," "))}</i>${rend(val, x)}</div>`;
+  }).join("");
+  return `${lk ? `<b>${esc(v[lk])}</b> ` : ""}${rest}`;
+}
+function showExplain(id){
+  const d = EXPL.launches[id], x = VIEW.launches.find(l=>l.id===id), el = $("#explain");
+  if(!d || !x){ el.hidden = true; return; }
+  EXPL_ID = id;
+  el.hidden = false;
+  el.innerHTML = `<h3>${esc(x.name)}${x.slug ? ` <a class="ex-ph" href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">View on Product Hunt ↗</a>` : ""}</h3>` + ["who","say","competitors","why"].filter(b=>d[b]).map(b=>
+    `<div class="ex-block"><h4>${EXPL_TITLE[b]}</h4>${rend(d[b].body)}${d[b].accuracy ? `<p class="ex-acc">${esc(d[b].accuracy)}</p>` : ""}</div>`).join("");
+  el.scrollIntoView({behavior: "smooth", block: "nearest"});
+}
+document.addEventListener("click", e=>{
+  const li = e.target.closest && e.target.closest("li.row.has-explain");
+  if(li){ e.preventDefault(); showExplain(li.dataset.id); }     // the panel links out to Product Hunt
+});
 
 // Match status: exact = same rank on both boards; near = in both top 10s at a different rank; miss = only on this board.
 function status(predRank, realRank){
