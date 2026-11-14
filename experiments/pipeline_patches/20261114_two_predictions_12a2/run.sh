@@ -5,8 +5,10 @@
 # status file gs://.../results/timed_writes/status_12a_<job>.json {job, day, rc, written_at, due_pt} for the freshness audit.
 set -uo pipefail
 J=${1:?job}; TW=/home/agent/w/tw12a; B=gs://usersim-bakeoff-347838016394/usersim_sim
-export PATH=/opt/exp/bin:$PATH TZ=America/Los_Angeles; D=$(date +%F); mkdir -p $TW/logs $TW/locks
-exec 8>$TW/locks/$J.lock
+export PATH=/opt/exp/bin:$PATH TZ=America/Los_Angeles; D=$(date +%F); mkdir -p $TW/logs /home/agent/w/tw12a.locks
+# lock dir OUTSIDE the versioned trees (~/w/tw12a is a symlink flipped by deploy_b12a.sh): a job still running in the old tree and the same job
+# started in the new tree take the same lock, so they can never overlap across a flip (E5 pre-flight 20:31Z Nov 14)
+exec 8>/home/agent/w/tw12a.locks/$J.lock
 flock -n 8 || { echo "$J $D skipped: locked (an earlier attempt is still running) $(date -u +%FT%TZ)" >> $TW/logs/$D.log; exit 0; }
 # a retry slot (any midnight slot after the first, 00:20 PT) does not wait for the parquet: a missing parquet means none_available now and
 # the next slot tries again, so an attempt never holds the lock across the next slot

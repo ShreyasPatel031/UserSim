@@ -28,7 +28,7 @@ fi
 H=$(TZ=America/Los_Angeles date +%H%M); [ "$H" -lt 0005 ] || [ "$H" -ge 0100 ] || { echo "inside 00:05-01:00 PT: not deploying"; exit 1; }
 [ "$(id -un)" = agent ] || { echo "run as user agent (the crontab owner): not deploying"; exit 1; }
 S=${1:?folder}; m() { md5sum < "$1" | cut -c1-8; }
-declare -A WANT=( [two_predictions.py]=eaa4e1f4 [import_gate.py]=be4891b9 [lineup_reread.py]=4fa6b418 [recorder_extra.py]=c1231100 [run.sh]=782fb204 [tick.sh]=d446e816 [sched12a.txt]=4cec4d5e [cron12a.txt]=0e2c7f4d [hybrid_vmonly_P345_20261114.json]=b8a59cdd )
+declare -A WANT=( [two_predictions.py]=eaa4e1f4 [import_gate.py]=be4891b9 [lineup_reread.py]=4fa6b418 [recorder_extra.py]=c1231100 [run.sh]=5cd8b9e5 [tick.sh]=d446e816 [sched12a.txt]=4cec4d5e [cron12a.txt]=0e2c7f4d [hybrid_vmonly_P345_20261114.json]=b8a59cdd )
 # weights pin (written by install_fixedprior_weights.sh): once the fixed-prior weights are live, a redeploy must carry them, never revert to 16912cd6
 [ -s $DIRS/weights_pin ] && [ "${WANT[hybrid_vmonly_P345_20261114.json]}" != "$(cat $DIRS/weights_pin)" ] && { echo "weights pin $(cat $DIRS/weights_pin) is live; this folder carries ${WANT[hybrid_vmonly_P345_20261114.json]}: refusing (would revert the fixed-prior weights)"; exit 1; }
 # 12a.3 carries the fixed-prior weights and labels: only after the today-rows fix is live (its marker exists)
