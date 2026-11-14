@@ -157,9 +157,18 @@ def main():
     day_flags = {d_: flag_txt for d_ in sorted(X.day[hit].unique())}
     # which model produced each published 00:05 row (explanation audit, orchestrator Nov 14): old full model Oct 25 - Nov 12, clean_nosite
     # Nov 13 - 14 (model switch, model_switch.clean_from), arm 2 from Nov 15 (Shreyas Nov 13: "if its better on backtest deploy")
+    _PM = {}
+    def _pub_model(d_):   # arm-3 audit 4: the producing model as written in the published file; date rule only before those files existed
+        if d_ not in _PM:
+            try:
+                _PM[d_] = json.loads(subprocess.run(["gsutil", "cat", f"{B}/results/web/predictions/{d_}_0005.json"], capture_output=True, text=True, timeout=60).stdout).get("model")
+            except Exception:
+                _PM[d_] = None
+        return _PM[d_]
     def _model(r_):
         if str(r_.point) != "0005" or r_.method != "published": return None
-        return "old full model" if r_.day <= "2026-11-12" else "clean_nosite" if r_.day <= "2026-11-14" else "arm 2"
+        m_ = _pub_model(r_.day) if r_.day >= "2026-11-14" else None
+        return m_ or ("old full model" if r_.day <= "2026-11-12" else "clean_nosite" if r_.day <= "2026-11-14" else "arm 2")
     X["model"] = pd.Series([_model(r_) for r_ in X.itertuples()], index=X.index, dtype=object)
     out = {"built_at": pd.Timestamp.now(tz="UTC").isoformat(),
            "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",

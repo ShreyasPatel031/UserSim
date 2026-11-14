@@ -20,8 +20,8 @@ def acc_label():
         r = next(x for x in T["rows"] if x["model"] == "readable_v2" and x.get("top10") is not None)
         return (f"explanation model (readable v2, no th_n_pre), {r['top3']} / {r['top5']} / {r['top10']} on {r['n_days']} backtest days ({r['rule']}); "
                 f"label source: table {T.get('computed_at', '?')[:16]}")
-    except Exception:
-        return ACC + "; label source: build constant"
+    except Exception:   # the model producing the drivers is readable v2 alone (readable_shadow.py's own accuracy_backtest field)
+        return "explanation model (readable v2, no th_n_pre), 54.4 / 66.8 / 74.5 on 214 backtest days; label source: build constant"
 SECOND = "separate readable model, 58.9 / 69.2 / 74.5; typical effect of each input"
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True)
 
@@ -49,7 +49,13 @@ def main(d):
     W2 = copy.deepcopy(W); sh = gcat(f"{B}/results/shadow_arm2_shap/{d}.json"); n_sh = 0
     if sh.returncode == 0:
         SH = json.loads(sh.stdout)
-        W2["items"]["forecast_drivers_shap"] = {"label": "Why the forecast ranks it here", "note": SH["label"], "caution": SH["caution"],
+        try:
+            pm_ = json.loads(gcat(f"{B}/results/web/predictions/{d}_0005.json").stdout).get("model") or ""
+        except Exception:
+            pm_ = ""
+        shap_lab = ("Why the arm 2 shadow ranks it here (arm 2 shadow, not the published model: arm 3 was published)" if pm_.startswith("arm3")
+                    else "Why the forecast ranks it here")
+        W2["items"]["forecast_drivers_shap"] = {"label": shap_lab, "note": SH["label"], "caution": SH["caution"],
                                                 "unit": SH["unit"], "groups": SH["groups"], "second_line": SECOND, "status": SH["status"]}
         for i, v in SH["launches"].items():
             W2.setdefault("launches", {}).setdefault(i, {})["forecast_drivers_shap"] = v; n_sh += 1

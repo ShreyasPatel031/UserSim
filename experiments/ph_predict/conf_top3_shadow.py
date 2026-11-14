@@ -21,7 +21,8 @@ def main(d):
     if not os.path.exists(loc):
         print(json.dumps({"day": d, "status": "no forecast parquet"})); sys.exit(1)
     T = pd.read_parquet(loc); T["id"] = T.id.astype(str)
-    base = "pred_arm2" if "pred_arm2" in T and T.pred_arm2.notna().all() else "pred"
+    # published column first (arm-3 audit 5): arm 3 when it was published, else arm 2, else clean_nosite (flagged)
+    base = next((c for c in ("pred_arm3", "pred_arm2") if c in T and T[c].notna().all()), "pred")
     T = T.sort_values([base, "id"], ascending=[False, True]).reset_index(drop=True); s = T[base].values; n = len(T)
     if n < 4:
         print(json.dumps({"day": d, "status": "fewer than 4 launches"})); sys.exit(1)
@@ -31,7 +32,7 @@ def main(d):
         p = 1 / (1 + np.exp(-(b0 + sum(c[x] * f[x] for x in c))))
         picks.append({"pick": k + 1, "id": T.id[k], "p_top3": round(float(p), 3), "about_n_in_10": int(round(p * 10))})
     exp = sum(x["p_top3"] for x in picks); tier = next(t for t in TIERS if t[1] <= exp < t[2])
-    out = {"day": d, "applies_to": "published 00:05 order" + ("" if base == "pred_arm2" else " (FALLBACK: arm 2 missing, clean_nosite score)"),
+    out = {"day": d, "applies_to": "published 00:05 order" + ("" if base == "pred_arm2" else " (arm 3 published; calibration was fit on arm-2 scores)" if base == "pred_arm3" else " (FALLBACK: arm 2 missing, clean_nosite score)"),
            "base": base, "launches": n, "expected_right": round(exp, 2), "tier": tier[0],
            "tier_accuracy_backtest": {t[0]: t[3] for t in TIERS}, "note": NOTE, "picks": picks, "written_at": pd.Timestamp.now(tz="UTC").isoformat()}
     print(json.dumps({k: out[k] for k in ("day", "base", "expected_right", "tier")}), [(x["pick"], x["about_n_in_10"]) for x in picks])
