@@ -762,3 +762,11 @@ def test_input_flag_per_day(monkeypatch):
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: sb if path.endswith("scoreboard.json") else None)
     assert live.input_flag("2026-11-10").startswith("built on polluted hunter-history inputs")
     assert live.input_flag("2026-10-20") is None
+
+
+def test_published_0005_scores_become_vote_estimates(monkeypatch):
+    f = {"day": "2026-11-14", "kind": "0005", "model": "clean_nosite", "ranking": [
+        {"rank": 1, "id": "11", "score": 5.2794}, {"rank": 2, "id": "22"}]}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: f if path.endswith("_0005.json") else None)
+    a = live._published("2026-11-14", "0005")
+    assert a["exp_votes"] == {"11": 195} and "±19%" in a["vote_err"]
