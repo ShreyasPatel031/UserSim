@@ -38,6 +38,20 @@ if os.environ.get("LC1") == "1":   # live-code 1 (forecast 4eabc2af, h25_live ff
     shutil.copy(f"{LC}/h25_live.py", f"{A}/home/w/arm2_live/")
     g = open(f"{A}/code/input_guard.py").read(); import re as _re
     open(f"{A}/code/input_guard.py", "w").write(_re.sub(r"(?m)^( *)llm\.run_day\(.*$", r'\1raise RuntimeError("E5 local run: no Gemini")', g))
+if os.environ.get("ARM3PUB") == "1":   # arm 3 PUBLISHED: live-code 1 forecast.py + bundle-13 switch hunk merged as written (lines after it unchanged)
+    fp = f"{A}/code/forecast.py"; src = open(fp).read()
+    hunk = open(f"{PHO}/pipeline_patches/20261114_arm3_shadow/forecast_publish_switch.patch").read()
+    sw = "\n".join(l[1:] for l in hunk.split("@@ -44,7 +44,22 @@")[1].split("@@")[0].splitlines() if l.startswith("+"))
+    assert 'print("published model:", ARM2, flush=True)\n' in src
+    src = src.replace('print("published model:", ARM2, flush=True)\n', sw + "\n", 1)
+    src = src.replace('te[["id", "day", "pred", "pred_arm2"] + [c for c in AUD if c in te]]', 'te[["id", "day", "pred", "pred_arm2"] + (["pred_arm3"] if te.pred_arm3.notna().any() else []) + [c for c in AUD if c in te]]', 1)
+    open(fp, "w").write(src)
+    a3 = f"{A}/home/w/arm3_live"; os.makedirs(a3, exist_ok=True)
+    for f in ("arm3_live.py", "arm3_feats.py"): shutil.copy(f"{PHO}/pipeline_patches/20261114_arm3_shadow/{f}", a3)
+    for f in ("history_retrain.py", "ctrl.py", "honest.py", "training_window.py"):
+        if os.path.exists(f"{SP}/a2rb/code/{f}"): shutil.copy(f"{SP}/a2rb/code/{f}", a3)
+    open(f"{a3}/PUBLISH", "w").write("test")
+    if os.environ.get("ARM3_BREAK") == "import": os.remove(f"{a3}/arm3_feats.py")
 for e in os.listdir(R):
     if e not in ("days", "today") and not e.startswith("build_cache"): os.symlink(f"{R}/{e}", f"{A}/root/{e}")
 for f in glob.glob(f"{R}/days/*.json"):
@@ -47,7 +61,8 @@ for f in glob.glob(f"{R}/today/*.json"):
 os.symlink(f"{A}/root", f"{A}/code/data"); os.makedirs(f"{A}/code/results")
 def run_forecast():
     h25 = f"{A}/h25empty" if MODE == "fallback" else f"{SP}/rb/h25src"
-    return sh(f"GUARD_NO_UPLOAD=1 GUARD_LLM_BACKOFF=0 HOME={A}/home H25_DATA={A}/h25data H25_SRC={h25} LGB_THREADS=4 HF_HUB_OFFLINE=1 python forecast.py {D}", cwd=f"{A}/code", t=2400)
+    hf = os.environ.get("ARM3_HF_HOME", os.environ.get("HF_HOME", os.path.expanduser("~/.cache/huggingface")))
+    return sh(f"HF_HOME={hf} ARM3_CACHE={os.environ.get('ARM3_CACHE', A + '/arm3cache')} GUARD_NO_UPLOAD=1 GUARD_LLM_BACKOFF=0 HOME={A}/home H25_DATA={A}/h25data H25_SRC={h25} LGB_THREADS=4 HF_HUB_OFFLINE=1 python forecast.py {D}", cwd=f"{A}/code", t=2400)
 PQ = f"{A}/code/results/forecast_{D}.parquet"
 if os.environ.get("REUSE_A") == "1" and os.path.exists(f"{KEEP}/forecast.parquet"):
     shutil.copy(f"{KEEP}/forecast.parquet", PQ); rc = 0; out = open(f"{KEEP}/forecast.log").read()
@@ -70,7 +85,7 @@ if F is not None:
     h["PASS"] = h["day all D"] and h["ids == lineup"] and ((h["pred_arm2 present"] == len(F)) if MODE == "normal" else h["pred_arm2 present"] == 0)
 
 # ---------- B: two_predictions 12a.2 ----------
-B = f"{W}/B"; shutil.copytree(f"{PHO}/pipeline_patches/20261114_two_predictions_12a2", f"{B}/tw", ignore=shutil.ignore_patterns("__pycache__", "out"))
+B = f"{W}/B"; shutil.copytree(f"{PHO}/pipeline_patches/" + os.environ.get("TP_FOLDER", "20261114_two_predictions_12a2"), f"{B}/tw", ignore=shutil.ignore_patterns("__pycache__", "out"))
 PHD = f"{B}/ph"; os.makedirs(f"{PHD}/results"); os.makedirs(f"{PHD}/data/vote_snapshots")
 src = open(f"{B}/tw/two_predictions.py").read(); assert 'PH = "/home/agent/w/experiments/ph_predict"' in src
 open(f"{B}/tw/two_predictions.py", "w").write(src.replace('PH = "/home/agent/w/experiments/ph_predict"', f'PH = "{PHD}"'))
