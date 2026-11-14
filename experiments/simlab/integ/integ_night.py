@@ -105,9 +105,16 @@ for kind, fn in (("midnight", "0005"), ("prereveal", "prereveal")):
                   "ids == lineup": sorted(rid) == sorted(LINEUP), "ids missing / extra vs lineup": [len(set(LINEUP) - set(rid)), len(set(rid) - set(LINEUP))],
                   "latest pointer == this file": L == J, "inputs": J.get("inputs")})
         if kind == "midnight":
-            want = "arm2" if MODE == "normal" else "clean_nosite"; col = "pred_arm2" if want == "arm2" else "pred"
+            a3ok = "pred_arm3" in F and F.pred_arm3.notna().all()
+            a3want = os.environ.get("ARM3PUB") == "1" and not os.environ.get("ARM3_BREAK") and not os.environ.get("ARM3_HF_HOME")
+            want = "arm3" if a3ok else ("arm2" if MODE == "normal" else "clean_nosite"); col = {"arm3": "pred_arm3", "arm2": "pred_arm2"}.get(want, "pred")
             Fo = F.assign(id=F.id.astype(str)).sort_values([col, "id"], ascending=[False, True]).id.tolist()
-            h.update({"expected model": want, "label == ACC0_BY[model]": J["backtest"] == ACC["ACC0_BY"][J["model"]], "order == parquet sort": rid == Fo})
+            lab = ACC["ACC3"] if J["model"] == "arm3" else ACC["ACC0_BY"].get(J["model"])
+            Fp = F.assign(id=F.id.astype(str)).sort_values("published_rank").id.tolist() if "published_rank" in F else None
+            h.update({"expected model": want, "arm3 expected from env": a3want, "arm3 in parquet": bool(a3ok), "label == ACC0_BY/ACC3[model]": J["backtest"] == lab,
+                      "label is arm3's own (not the unset placeholder)": (J["backtest"] != "arm 3 (backtest label not set)") if J["model"] == "arm3" else None,
+                      "order == parquet sort": rid == Fo, "order == parquet published_rank": (rid == Fp) if Fp else None})
+            h["label == ACC0_BY[model]"] = h["label == ACC0_BY/ACC3[model]"]
             h["PASS"] = J["day"] == D and J["model"] == want and h["label == ACC0_BY[model]"] and h["ids == lineup"] and h["order == parquet sort"] and h["latest pointer == this file"]
         else:
             h.update({"label == acc1(model, fb)": J["backtest"] == ACC["acc1"](J["model"], J["fallback_used"], "arm2" if MODE == "normal" else "clean_nosite"),

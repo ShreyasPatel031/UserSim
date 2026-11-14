@@ -90,6 +90,13 @@ for (pred, flag), g in S[S.status == "scored"].groupby(["prediction", "flag"]):
         o[nm] = {f"top{k} hits %": ci(gg[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}
     o["share of days with 0/1/2/3 of the top 3 right"] = {str(k): round(float((g.hits_top3 == k).mean()), 3) for k in range(4)}
     o["first/last day"] = [g.day.iloc[0], g.day.iloc[-1]]; o["n_days"] = int(len(g)); o["day rule"] = DAY_RULE; summ[f"{pred} | {flag}"] = o
+    if flag == "live" and "model" in g:   # arm 3 pre-publish audit: never let one live line hide a model change (arm 2 days vs arm 3 days)
+        mg = g.assign(m=g.model.fillna("unknown").astype(str) + g.fallback_used.map(lambda x: f" (fallback: {x})" if isinstance(x, str) and x else ""))
+        o["models"] = mg.m.value_counts().to_dict()
+        if mg.m.nunique() > 1:
+            o["WARNING"] = "this live line mixes days from more than one published model; show the per-model lines below, not the pooled one"
+            o["by model"] = {m: {"n_days": int(len(gm)), "first/last day": [gm.day.iloc[0], gm.day.iloc[-1]],
+                                 **{f"top{k} hits %": ci(gm[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}} for m, gm in mg.groupby("m")}
 for (pred, flag), g in S[S.status.isin(["scored", "excluded: fewer than 10 ranked"]) & S.hits_top3.notna()].groupby(["prediction", "flag"]):
     if (g.status != "scored").any() and f"{pred} | {flag}" in summ:   # labelled extra, never the headline: every day incl. short lists
         summ[f"{pred} | {flag}"]["extra: all days incl. fewer than 10 ranked (not comparable to live)"] = {
