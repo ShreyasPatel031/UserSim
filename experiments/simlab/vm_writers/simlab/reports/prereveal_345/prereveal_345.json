@@ -1,0 +1,673 @@
+{
+ "design": "The 03:45 PT before-reveal call (orchestrator 00:58Z Nov 14). Raw recorder files, agreed read rule: hidden rank at T = latest\nraw/vote_snapshots rank_now with at <= T (dedup launch, at); 03:45 = the 03:00 read. Days Nov 2-12 (11). Label: warehouse daily_rank, all\nfeatured launches. Every parameter chosen leave-one-day-out (best mean top 3/5/10 on the other 10 days). Counts only.\nFeatures at 03:00: r3 (hidden rank), r0/r1/r2 (00:06/01:00/02:00), comments (total comment count on the same read; distinct non-team\ncommenters are not recorded on Nov 5 and 9, so the total is used everywhere), growth since 01:00, prior = arm 2 (PH ops nov_arm2 'both',\nmonth-fold, final-read inputs).\nLines: PLAIN = r3. HYBRID (re-implemented from its definition: hidden top 5 + hr_clean order for slots 6+; hr_clean = LODO ridge alpha 3 on\nwithin-day z of log r3, r1 - r3, log1p comments, log1p growth, prior; target z(-ln rank)).\n(a) MOMENTUM: r3 - k (r3 - r_e), e in {00:06, 01:00, 02:00}, k in {-1, -.5, .25, .5, 1}; persistence first: within-day Spearman of\n    (r1 - r3) with (r3 - final rank).\n(b) COMMENT tie-break (adjacent only): r3 - d x clip(z, -1, 1) with d in {.25, .5, .75, .99} (each shift < 1, so only neighbours can swap); z = within-day\n    z of log1p comments or of log1p growth. (c) ARM-2 tie-break, same form with z(prior). (d) slots 6-10 with the hidden top 5 kept:\n    by r3 (= plain), hr_clean (= hybrid), prior only, comments only, momentum (LODO).\nCeiling: share of final top 3 already in the hidden top 3 at 03:00; where the misses sit at 03:00 (4-5, 6-10, 11+).",
+ "days": [
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-05",
+  "2026-11-06",
+  "2026-11-07",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12"
+ ],
+ "launches": 359,
+ "ceiling: final top 3 already in hidden top 3 at 03:00 (mean %)": 72.7,
+ "final top-3 misses by 03:00 hidden rank": {
+  "4-5": 6,
+  "6-10": 0,
+  "11+": 3
+ },
+ "days where hidden top 3 == final top 3 (as sets)": 3,
+ "persistence: within-day Spearman of (01:00->03:00 climb) with (03:00 -> final climb)": [
+  -0.022,
+  -0.286,
+  0.33,
+  11
+ ],
+ "PLAIN hidden rank top3/5/10": [
+  72.7,
+  74.5,
+  72.7
+ ],
+ "HYBRID (LODO hr_clean slots 6+) top3/5/10": [
+  72.7,
+  74.5,
+  78.2
+ ],
+ "HYBRID - PLAIN": [
+  [
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   5.5,
+   0.9,
+   10.0
+  ]
+ ],
+ "(a) momentum": {
+  "LODO top3/5/10": [
+   72.7,
+   72.7,
+   69.1
+  ],
+  "vs PLAIN": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -1.8,
+    -5.5,
+    0.0
+   ],
+   [
+    -3.6,
+    -7.3,
+    0.0
+   ]
+  ],
+  "vs HYBRID": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -1.8,
+    -5.5,
+    0.0
+   ],
+   [
+    -9.1,
+    -11.8,
+    -6.4
+   ]
+  ],
+  "chosen per held-out day": [
+   [
+    "r2",
+    "0.25"
+   ],
+   [
+    "r2",
+    "0.25"
+   ],
+   [
+    "r1",
+    "0.25"
+   ],
+   [
+    "r2",
+    "0.25"
+   ],
+   [
+    "r2",
+    "0.25"
+   ],
+   [
+    "r1",
+    "0.25"
+   ],
+   [
+    "r1",
+    "0.25"
+   ],
+   [
+    "r1",
+    "0.25"
+   ],
+   [
+    "r2",
+    "0.25"
+   ],
+   [
+    "r2",
+    "0.25"
+   ],
+   [
+    "r2",
+    "0.25"
+   ]
+  ]
+ },
+ "(b) comments tie-break (total)": {
+  "LODO top3/5/10": [
+   72.7,
+   74.5,
+   72.7
+  ],
+  "vs PLAIN": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ],
+  "vs HYBRID": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -5.5,
+    -10.0,
+    -0.9
+   ]
+  ],
+  "chosen per held-out day": [
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.25"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ],
+   [
+    "zc",
+    "0.75"
+   ]
+  ]
+ },
+ "(b) comments tie-break (growth since 01:00)": {
+  "LODO top3/5/10": [
+   72.7,
+   74.5,
+   72.7
+  ],
+  "vs PLAIN": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ],
+  "vs HYBRID": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -5.5,
+    -10.0,
+    -0.9
+   ]
+  ],
+  "chosen per held-out day": [
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.25"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ],
+   [
+    "zg",
+    "0.75"
+   ]
+  ]
+ },
+ "(c) arm-2 tie-break": {
+  "LODO top3/5/10": [
+   72.7,
+   72.7,
+   72.7
+  ],
+  "vs PLAIN": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -1.8,
+    -5.5,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ],
+  "vs HYBRID": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -1.8,
+    -5.5,
+    0.0
+   ],
+   [
+    -5.5,
+    -10.0,
+    -0.9
+   ]
+  ],
+  "chosen per held-out day": [
+   [
+    "zp",
+    "0.75"
+   ],
+   [
+    "zp",
+    "0.75"
+   ],
+   [
+    "zp",
+    "0.75"
+   ],
+   [
+    "zp",
+    "0.25"
+   ],
+   [
+    "zp",
+    "0.25"
+   ],
+   [
+    "zp",
+    "0.75"
+   ],
+   [
+    "zp",
+    "0.25"
+   ],
+   [
+    "zp",
+    "0.25"
+   ],
+   [
+    "zp",
+    "0.75"
+   ],
+   [
+    "zp",
+    "0.25"
+   ],
+   [
+    "zp",
+    "0.25"
+   ]
+  ]
+ },
+ "(d) slots 6+ by prior only": {
+  "top3/5/10": [
+   72.7,
+   74.5,
+   76.4
+  ],
+  "vs PLAIN": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    3.6,
+    -0.9,
+    8.2
+   ]
+  ],
+  "vs HYBRID": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -1.8,
+    -7.3,
+    4.5
+   ]
+  ]
+ },
+ "(d) slots 6+ by comments only": {
+  "top3/5/10": [
+   72.7,
+   74.5,
+   64.5
+  ],
+  "vs PLAIN": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -8.2,
+    -18.2,
+    4.5
+   ]
+  ],
+  "vs HYBRID": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -13.6,
+    -23.6,
+    -3.6
+   ]
+  ]
+ },
+ "(d) slots 6+ by hidden rank (= plain)": {
+  "top3/5/10": [
+   72.7,
+   74.5,
+   72.7
+  ],
+  "vs PLAIN": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ],
+  "vs HYBRID": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -5.5,
+    -10.0,
+    -0.9
+   ]
+  ]
+ },
+ "per day (plain, hybrid) top3/5/10 hits %": {
+  "2026-11-02": {
+   "plain": [
+    100.0,
+    80.0,
+    90.0
+   ],
+   "hybrid": [
+    100.0,
+    80.0,
+    90.0
+   ],
+   "n launches": 18
+  },
+  "2026-11-03": {
+   "plain": [
+    100.0,
+    80.0,
+    90.0
+   ],
+   "hybrid": [
+    100.0,
+    80.0,
+    100.0
+   ],
+   "n launches": 38
+  },
+  "2026-11-04": {
+   "plain": [
+    66.66666666666666,
+    80.0,
+    90.0
+   ],
+   "hybrid": [
+    66.66666666666666,
+    80.0,
+    90.0
+   ],
+   "n launches": 34
+  },
+  "2026-11-05": {
+   "plain": [
+    66.66666666666666,
+    80.0,
+    80.0
+   ],
+   "hybrid": [
+    66.66666666666666,
+    80.0,
+    90.0
+   ],
+   "n launches": 35
+  },
+  "2026-11-06": {
+   "plain": [
+    66.66666666666666,
+    40.0,
+    30.0
+   ],
+   "hybrid": [
+    66.66666666666666,
+    40.0,
+    30.0
+   ],
+   "n launches": 55
+  },
+  "2026-11-07": {
+   "plain": [
+    66.66666666666666,
+    80.0,
+    70.0
+   ],
+   "hybrid": [
+    66.66666666666666,
+    80.0,
+    60.0
+   ],
+   "n launches": 24
+  },
+  "2026-11-08": {
+   "plain": [
+    33.33333333333333,
+    80.0,
+    60.0
+   ],
+   "hybrid": [
+    33.33333333333333,
+    80.0,
+    80.0
+   ],
+   "n launches": 17
+  },
+  "2026-11-09": {
+   "plain": [
+    66.66666666666666,
+    80.0,
+    80.0
+   ],
+   "hybrid": [
+    66.66666666666666,
+    80.0,
+    90.0
+   ],
+   "n launches": 25
+  },
+  "2026-11-10": {
+   "plain": [
+    66.66666666666666,
+    60.0,
+    80.0
+   ],
+   "hybrid": [
+    66.66666666666666,
+    60.0,
+    80.0
+   ],
+   "n launches": 50
+  },
+  "2026-11-11": {
+   "plain": [
+    100.0,
+    80.0,
+    80.0
+   ],
+   "hybrid": [
+    100.0,
+    80.0,
+    90.0
+   ],
+   "n launches": 26
+  },
+  "2026-11-12": {
+   "plain": [
+    66.66666666666666,
+    80.0,
+    50.0
+   ],
+   "hybrid": [
+    66.66666666666666,
+    80.0,
+    60.0
+   ],
+   "n launches": 37
+  }
+ }
+}
