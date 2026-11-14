@@ -161,7 +161,9 @@ def main():
            "per_pick": "p1/p2/p3_top3 = our #1/#2/#3 pick finished in the final top 3; exact1 = our #1 was the winner",
            "time_shown": "written_at (when the forecast file was written), not the data cut",
            "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual,
-           "day_flags": day_flags, "input_flag": "rows of the 00:05 forecast, the pre-reveal P points, weekly / monthly lines (all read a 00:05 score) on flagged days; R / C and velocity V points use votes only (velocity_shadow.py reads no 00:05 score) and are not flagged"}
+           "day_flags": day_flags,
+           "method_notes": {"comment_ridge": "LM input from a different model than fitted: the ridge's LM coefficient was fit on E5's honest pre-launch "
+                                              "model ranks; live it reads the published 00:05 model's ranks (old full model to Nov 12, clean_nosite Nov 13-14, arm 2 from Nov 15)"}, "input_flag": "rows of the 00:05 forecast, the pre-reveal P points, weekly / monthly lines (all read a 00:05 score) on flagged days; R / C and velocity V points use votes only (velocity_shadow.py reads no 00:05 score) and are not flagged"}
     os.makedirs(os.path.join(HERE, "results", "web"), exist_ok=True)
     # orchestrator 12:47Z Nov 12: running clean vs deployed block, re-read at 25 and 50 live days (model-switch decision).
     # deployed = the published 00:05 forecast (live rows); clean = shadow_makerfix pred_clean when written, else the
