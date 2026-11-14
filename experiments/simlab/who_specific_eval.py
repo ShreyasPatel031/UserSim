@@ -37,13 +37,18 @@ for D in TDAYS:
         ls_ = set().union(*[by_team.get(x, set()) for x in team]) - {str(l)} if team else set()
         pool[l] = Hb[Hb.target_id.isin(ls_)].person_id.unique().tolist() if ls_ else []
     lists["team_pool"] = {l: v for l, v in pool.items() if len(v) >= 20}
+    mpool = {}
+    for l in PM.columns:
+        mk_ = lmak.get(str(l)); ls_ = (by_team.get(mk_, set()) - {str(l)}) if mk_ else set()
+        mpool[l] = Hb[Hb.target_id.isin(ls_)].person_id.unique().tolist() if ls_ else []
+    lists["maker_pool"] = {l: v for l, v in mpool.items() if len(v) >= 20}
     def tdist(ps):
         q = [p for p in ps if p in ix.index]; return tvec[ix[q].values].mean(0) if q else None
     for l in PM.columns:
         o = obs.get(str(l), set())
         if len(o) < 10: continue
         a_s = sdist(o); a_t = tdist(o); r = {"day": D, "launch": str(l), "n": len(o)}
-        r["in_team_pool"] = len(o & set(pool.get(l, [])))
+        r["in_team_pool"] = len(o & set(pool.get(l, []))); r["in_maker_pool"] = len(o & set(mpool.get(l, []))); r["has_maker_pool"] = l in lists["maker_pool"]
         for kind, L_ in lists.items():
             if l not in L_ or len(L_) < 2: continue
             own_s = tvd(a_s, sdist(L_[l])); oth_s = np.mean([tvd(a_s, sdist(L_[j])) for j in L_ if j != l])
@@ -58,7 +63,8 @@ def ci(c):
     bs = [wm(P.iloc[rng.integers(0, len(P), len(P))], c) for _ in range(2000)]
     return [round(100 * wm(P, c), 2), round(100 * float(np.percentile(bs, 2.5)), 2), round(100 * float(np.percentile(bs, 97.5)), 2)]
 out = {"design": DOC.split("\n    python")[0], "launches": int(len(P)), "backers": int(P.n.sum()),
-       "specificity (TV points x100; > 0 = own list fits own backers better than other launches' lists) [CI]": {f"{k} {kind}": ci(f"{k}_{kind}") for k in ("seg", "top") for kind in ("p", "ratio", "team_pool") if f"{k}_{kind}" in P},
+       "specificity (TV points x100; > 0 = own list fits own backers better than other launches' lists) [CI]": {f"{k} {kind}": ci(f"{k}_{kind}") for k in ("seg", "top") for kind in ("p", "ratio", "team_pool", "maker_pool") if f"{k}_{kind}" in P},
+       "launches with a maker pool >= 20": int(P.has_maker_pool.sum()), "share of actual held backers inside the maker pool": round(float(P.in_maker_pool.sum() / P.n.sum()), 3),
        "share of actual held backers inside the launch's team pool": round(float(P.in_team_pool.sum() / P.n.sum()), 3),
        "mean overlap of a launch's top 200 with other same-day launches' top 200": {kind: round(float(P[f"overlap_{kind}"].mean()), 3) for kind in ("p", "ratio", "team_pool") if f"overlap_{kind}" in P}}
 os.makedirs(f"{SP}/backer", exist_ok=True); json.dump(out, open(f"{SP}/backer/who_specific_eval.json", "w"), indent=1, default=float)

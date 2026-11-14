@@ -29,6 +29,10 @@ for D in DAYS:
     Ld = W[W.day == D]
     T = TD.get(D, {}); ranks = T.get("ranks", {})
     UD = U[U.target_id.isin(set(Ld.id)) & U.person_id.isin(held)]
+    lday_ = dict(zip(W.id, W.day)); U_l = U.target_id.map(lday_)
+    d30 = (pd.Timestamp(D) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
+    n30 = U[(U_l < D) & (U_l >= d30) & U.person_id.isin(held)].groupby("person_id").size()
+    HEAVY = set(n30[n30 >= n30.quantile(0.8)].index) if len(n30) else set()
     blocks = {}
     for r in Ld.itertuples():
         who = UD[UD.target_id == r.id].person_id.unique()
@@ -39,6 +43,8 @@ for D in DAYS:
         blocks[r.id] = {"name": r.name, "who_actually": {
             "segments": big + ([{"segment": "smaller groups (each under 20 people)", "n_held_backers": small}] if small else []),
             "observed_held_backers": int(len(who)), "displayed_votes": disp,
+            "heavy_upvoter_share": round(len(set(who) & HEAVY) / len(who), 3) if len(who) else None,
+            "heavy_upvoter_share_definition": "share of these backers in the top 20% of held people by upvotes on launches of the 30 days before the day (20% of active held people by construction)",
             "observed_over_displayed": round(len(who) / disp, 3) if disp else None,
             "final_daily_rank": ranks.get(r.id),
             "profile_reads_of_these_backers": {"first": str(rd.min())[:10] if len(rd) else None, "last": str(rd.max())[:10] if len(rd) else None},

@@ -1,0 +1,447 @@
+{
+ "metric": "BACKER PREDICTION, 3 arms, strict: recall at N (N = observed backers), pooled; launch-bootstrap 95% intervals",
+ "how": "Score the three backer-prediction arms (CF-only, A7, raw most-active) under one metric (orchestrator 22:34Z Nov 14).\nPer launch: o = observed backers = people held before the freeze (a read before 00:00 PT of D) AND re-read after the day closed whose own upvote\nlist contains the launch; N = |o|; each arm's list is ranked within the re-read people; hits = |top N \u2229 o|.\nPooled recall per arm = sum(hits) / sum(N) over all scored launches; 95% interval and the paired difference vs raw = launch bootstrap (2000).\nThe raw arm = held people ranked by upvotes on launches of the 30 days before D, from reads fetched before 00:00 PT of D.\n  python backer_arms_score.py <store dir> <scratchpad> <day> [<day> ...] [--no-upload]\nWrites results/web/backer_prediction_arms.json (accumulating rows per (day, store read)) and results/web/north_star_rows_e5.json (best arm).",
+ "written_at": "2026-11-14T23:40:50.801446+00:00",
+ "rows": [
+  {
+   "day": "2026-11-08",
+   "status": "scored",
+   "store_read_until": "2026-11-13 19:21",
+   "days_after_close": 4.47,
+   "launches_scored": 17,
+   "held_people_reread_after_close": 45766,
+   "frozen_at": "2026-11-14T22:39",
+   "leak_checks": {
+    "svd_max_launch_day": "2026-11-06",
+    "reads_before": "2026-11-08 08:00",
+    "follows_used": false
+   }
+  },
+  {
+   "day": "2026-11-09",
+   "status": "scored",
+   "store_read_until": "2026-11-13 19:21",
+   "days_after_close": 3.47,
+   "launches_scored": 23,
+   "held_people_reread_after_close": 30556,
+   "frozen_at": "2026-11-14T22:41",
+   "leak_checks": {
+    "svd_max_launch_day": "2026-11-08",
+    "reads_before": "2026-11-09 08:00",
+    "follows_used": false
+   }
+  },
+  {
+   "day": "2026-11-10",
+   "status": "scored",
+   "store_read_until": "2026-11-13 19:21",
+   "days_after_close": 2.47,
+   "launches_scored": 36,
+   "held_people_reread_after_close": 26808,
+   "frozen_at": "2026-11-14T22:43",
+   "leak_checks": {
+    "svd_max_launch_day": "2026-11-09",
+    "reads_before": "2026-11-10 08:00",
+    "follows_used": false
+   }
+  },
+  {
+   "day": "2026-11-11",
+   "status": "scored",
+   "store_read_until": "2026-11-13 19:21",
+   "days_after_close": 1.47,
+   "launches_scored": 15,
+   "held_people_reread_after_close": 14672,
+   "frozen_at": "2026-11-14T22:45",
+   "leak_checks": {
+    "svd_max_launch_day": "2026-11-10",
+    "reads_before": "2026-11-11 08:00",
+    "follows_used": false
+   }
+  },
+  {
+   "day": "2026-11-12",
+   "status": "scored",
+   "store_read_until": "2026-11-13 19:21",
+   "days_after_close": 0.47,
+   "launches_scored": 37,
+   "held_people_reread_after_close": 8182,
+   "frozen_at": "2026-11-14T22:47",
+   "leak_checks": {
+    "svd_max_launch_day": "2026-11-11",
+    "reads_before": "2026-11-12 08:00",
+    "follows_used": false
+   }
+  },
+  {
+   "day": "2026-11-13",
+   "status": "no observed held backers",
+   "store_read_until": "2026-11-13 19:21",
+   "days_after_close": -0.53,
+   "launches_scored": 0,
+   "held_people_reread_after_close": 0,
+   "frozen_at": "2026-11-14T22:49",
+   "leak_checks": {
+    "svd_max_launch_day": "2026-11-12",
+    "reads_before": "2026-11-13 08:00",
+    "follows_used": false
+   }
+  }
+ ],
+ "summary": {
+  "2026-11-08": {
+   "launches": 17,
+   "observed_backers": 612,
+   "CF-only": [
+    25.7,
+    17.6,
+    31.5
+   ],
+   "A7": [
+    20.9,
+    15.2,
+    26.2
+   ],
+   "CF+back": [
+    25.3,
+    16.9,
+    31.4
+   ],
+   "CF+intensity": [
+    24.8,
+    15.0,
+    31.7
+   ],
+   "raw most-active": [
+    21.6,
+    17.2,
+    24.5
+   ],
+   "CF+back minus CF-only (paired)": [
+    -0.3,
+    -3.8,
+    3.7
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    -0.8,
+    -4.5,
+    2.3
+   ],
+   "CF-only minus raw (paired)": [
+    4.1,
+    -0.5,
+    7.8
+   ],
+   "A7 minus raw (paired)": [
+    -0.7,
+    -4.4,
+    3.2
+   ],
+   "CF+back minus raw (paired)": [
+    3.8,
+    -0.9,
+    7.2
+   ],
+   "CF+intensity minus raw (paired)": [
+    3.3,
+    -2.1,
+    7.5
+   ]
+  },
+  "2026-11-09": {
+   "launches": 23,
+   "observed_backers": 735,
+   "CF-only": [
+    31.8,
+    23.3,
+    35.9
+   ],
+   "A7": [
+    29.8,
+    20.5,
+    34.5
+   ],
+   "CF+back": [
+    31.7,
+    22.2,
+    36.1
+   ],
+   "CF+intensity": [
+    32.1,
+    23.0,
+    36.9
+   ],
+   "raw most-active": [
+    26.7,
+    19.6,
+    30.1
+   ],
+   "CF+back minus CF-only (paired)": [
+    -0.1,
+    -1.7,
+    0.8
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    0.3,
+    -2.1,
+    2.3
+   ],
+   "CF-only minus raw (paired)": [
+    5.2,
+    2.7,
+    6.9
+   ],
+   "A7 minus raw (paired)": [
+    3.1,
+    0.6,
+    4.7
+   ],
+   "CF+back minus raw (paired)": [
+    5.0,
+    2.4,
+    6.7
+   ],
+   "CF+intensity minus raw (paired)": [
+    5.4,
+    2.0,
+    7.6
+   ]
+  },
+  "2026-11-10": {
+   "launches": 36,
+   "observed_backers": 124,
+   "CF-only": [
+    8.1,
+    1.3,
+    11.3
+   ],
+   "A7": [
+    6.5,
+    0.0,
+    10.1
+   ],
+   "CF+back": [
+    6.5,
+    0.0,
+    9.9
+   ],
+   "CF+intensity": [
+    7.3,
+    0.0,
+    11.0
+   ],
+   "raw most-active": [
+    6.5,
+    0.0,
+    10.5
+   ],
+   "CF+back minus CF-only (paired)": [
+    -1.6,
+    -3.3,
+    0.0
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    -0.8,
+    -3.0,
+    0.0
+   ],
+   "CF-only minus raw (paired)": [
+    1.6,
+    0.0,
+    4.7
+   ],
+   "A7 minus raw (paired)": [
+    0.0,
+    -1.6,
+    2.9
+   ],
+   "CF+back minus raw (paired)": [
+    0.0,
+    -1.5,
+    3.0
+   ],
+   "CF+intensity minus raw (paired)": [
+    0.8,
+    0.0,
+    3.2
+   ]
+  },
+  "2026-11-11": {
+   "launches": 15,
+   "observed_backers": 51,
+   "CF-only": [
+    2.0,
+    0.0,
+    4.2
+   ],
+   "A7": [
+    2.0,
+    0.0,
+    4.2
+   ],
+   "CF+back": [
+    2.0,
+    0.0,
+    4.3
+   ],
+   "CF+intensity": [
+    2.0,
+    0.0,
+    4.3
+   ],
+   "raw most-active": [
+    2.0,
+    0.0,
+    4.3
+   ],
+   "CF+back minus CF-only (paired)": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "CF-only minus raw (paired)": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "A7 minus raw (paired)": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "CF+back minus raw (paired)": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "CF+intensity minus raw (paired)": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "2026-11-12": {
+   "launches": 37,
+   "observed_backers": 108,
+   "CF-only": [
+    7.4,
+    1.4,
+    10.8
+   ],
+   "A7": [
+    2.8,
+    0.0,
+    5.6
+   ],
+   "CF+back": [
+    3.7,
+    0.0,
+    7.0
+   ],
+   "CF+intensity": [
+    5.6,
+    1.3,
+    9.1
+   ],
+   "raw most-active": [
+    6.5,
+    0.0,
+    10.1
+   ],
+   "CF+back minus CF-only (paired)": [
+    -3.7,
+    -7.5,
+    1.4
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    -1.9,
+    -3.8,
+    0.0
+   ],
+   "CF-only minus raw (paired)": [
+    0.9,
+    0.0,
+    3.1
+   ],
+   "A7 minus raw (paired)": [
+    -3.7,
+    -7.7,
+    1.4
+   ],
+   "CF+back minus raw (paired)": [
+    -2.8,
+    -7.3,
+    3.8
+   ],
+   "CF+intensity minus raw (paired)": [
+    -0.9,
+    -3.6,
+    2.3
+   ]
+  },
+  "ALL": {
+   "launches": 128,
+   "observed_backers": 1630,
+   "CF-only": [
+    25.2,
+    19.2,
+    29.4
+   ],
+   "A7": [
+    22.0,
+    16.1,
+    26.5
+   ],
+   "CF+back": [
+    24.6,
+    18.1,
+    29.1
+   ],
+   "CF+intensity": [
+    24.8,
+    18.3,
+    29.8
+   ],
+   "raw most-active": [
+    21.1,
+    16.9,
+    24.2
+   ],
+   "CF+back minus CF-only (paired)": [
+    -0.6,
+    -2.1,
+    1.0
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    -0.4,
+    -2.0,
+    1.3
+   ],
+   "CF-only minus raw (paired)": [
+    4.0,
+    2.0,
+    5.8
+   ],
+   "A7 minus raw (paired)": [
+    0.9,
+    -1.4,
+    2.9
+   ],
+   "CF+back minus raw (paired)": [
+    3.5,
+    1.2,
+    5.3
+   ],
+   "CF+intensity minus raw (paired)": [
+    3.7,
+    1.2,
+    5.8
+   ]
+  }
+ }
+}

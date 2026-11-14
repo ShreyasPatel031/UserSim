@@ -68,6 +68,7 @@ try:
     if "--who-only" in sys.argv: print(json.dumps({"day": DAY, "frozen_launches": len(fr), "n_active": int(nact)})); sys.exit(0)
     TOPN = list(g["TOP"]) if "TOP" in g else None
     seg_all = pd.Series([segmap.get(p, "no headline or bio") for p in act.index], index=act.index) if act is not None else None
+    names = {str(p_["id"]): p_.get("name") for p_ in line}; WHY = json.loads(gcat(f"{B}/results/web/why/{DAY}_0005.json") or "{}")
     TEAMPOOL = {}
     try:
         L_, lh_, lm_ = g["L"], g["lhun"], g["lmak"]; bt_ = {}
@@ -75,10 +76,17 @@ try:
             for t_ in (lh_.get(l_), lm_.get(l_)):
                 if t_: bt_.setdefault(t_, set()).add(l_)
         Hs = g["U"][(g["U"].fetched_at < g["start"](DAY)) & (g["U"].lday < DAY)]
+        HUNTPOOL, MAKERPOOL, HUNTER_OF = {}, {}, {}
         for i_ in ids:
             team_ = [x for x in (lh_.get(i_), lm_.get(i_)) if x]
             ls_ = set().union(*[bt_.get(x, set()) for x in team_]) - {i_} if team_ else set()
             TEAMPOOL[i_] = Hs[Hs.target_id.isin(ls_)].person_id.unique().tolist() if ls_ else []
+            h_, m_ = lh_.get(i_), lm_.get(i_); HUNTER_OF[i_] = h_
+            lh_s = (bt_.get(h_, set()) - {i_}) if h_ else set(); lm_s = (bt_.get(m_, set()) - {i_}) if (m_ and m_ != h_) else set()
+            HUNTPOOL[i_] = Hs[Hs.target_id.isin(lh_s)].person_id.unique().tolist() if lh_s else []
+            MAKERPOOL[i_] = Hs[Hs.target_id.isin(lm_s)].person_id.unique().tolist() if lm_s else []
+        n30_ = Hs[Hs.lday >= (pd.Timestamp(DAY) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")].groupby("person_id").size()
+        HEAVY = set(n30_[n30_ >= n30_.quantile(0.8)].index); BASE_HEAVY = len(HEAVY) / max(len(n30_), 1)
     except Exception as e:
         print("team pool failed:", repr(e)[:200])
     # orchestrator 22:54Z Nov 14: "who" segments come from the CF-only backer lists (forward line, 25.2% of held backers named) when frozen
@@ -122,23 +130,30 @@ try:
             o = sorted(cand, key=lambda j: -dist[j] / base_t[j])[:5]
             likes = [{"topic": TOPN[j], "share_of_their_recent_upvotes": round(float(dist[j]), 3), "share_for_all_held_active": round(float(base_t[j]), 3),
                       "lift": round(float(dist[j] / base_t[j]), 2), "n_people": len(top_i)} for j in o]
-        # team pool (launch-specific by construction): held people who upvoted an earlier launch of this hunter / first maker, reads before 00:00 PT
-        tp = TEAMPOOL.get(i, [])
-        team_block = {"n_held_people": len(tp)}
-        if len(tp) >= MIN and base_seg is not None:
-            ts2 = pd.Series([segmap.get(q, "no headline or bio") for q in tp]).value_counts()
-            team_block["segments_by_lift"] = sorted([{"segment": s_, "n": int(n_), "share": round(n_ / len(tp), 3), "share_of_all_held_active": round(float(base_seg.get(s_, 0)), 3),
-                                                     "lift": round((n_ / len(tp)) / float(base_seg.get(s_)), 2) if base_seg.get(s_, 0) > 0 else None}
-                                                    for s_, n_ in ts2.items() if n_ >= MIN], key=lambda r: -(r["lift"] or 0))
+        def pool_block(tp, shared_note=None):
+            b_ = {"n_held_people": len(tp)}
+            if len(tp) < MIN: b_["note"] = "fewer than 20 held people; not shown"; return b_
+            if shared_note: b_["shared_with"] = shared_note
+            b_["heavy_upvoter_share"] = round(len(set(tp) & HEAVY) / len(tp), 3); b_["heavy_upvoter_share_all_held_active"] = round(BASE_HEAVY, 3)
+            if base_seg is not None:
+                ts2 = pd.Series([segmap.get(q, "no headline or bio") for q in tp]).value_counts()
+                b_["segments_by_lift"] = sorted([{"segment": s_, "n": int(n_), "share": round(n_ / len(tp), 3), "share_of_all_held_active": round(float(base_seg.get(s_, 0)), 3),
+                                                  "lift": round((n_ / len(tp)) / float(base_seg.get(s_)), 2) if base_seg.get(s_, 0) > 0 else None}
+                                                 for s_, n_ in ts2.items() if n_ >= MIN], key=lambda r: -(r["lift"] or 0))
             if tv is not None and TOPN:
                 tpi = [q for q in tp if q in ix.index]
                 if len(tpi) >= MIN:
                     d2 = tv[ix[tpi].values].mean(0); bt = tv.mean(0); c2 = [j for j in range(len(TOPN)) if d2[j] >= 0.02 and bt[j] > 0]
-                    team_block["topics_by_lift"] = [{"topic": TOPN[j], "share": round(float(d2[j]), 3), "share_for_all_held_active": round(float(bt[j]), 3), "lift": round(float(d2[j] / bt[j]), 2), "n_people": len(tpi)}
-                                                    for j in sorted(c2, key=lambda j: -d2[j] / bt[j])[:5]]
-        elif len(tp) < MIN:
-            team_block["note"] = "fewer than 20 held people backed this team before; not shown"
-        WHO[i] = {"team_past_backers": team_block, "segments_by_lift": lift_rows, "segments": rows, "expected_held_votes": round(float(tot), 1), "n_held_active_people": int(nact),
+                    b_["topics_by_lift"] = [{"topic": TOPN[j], "share": round(float(d2[j]), 3), "share_for_all_held_active": round(float(bt[j]), 3), "lift": round(float(d2[j] / bt[j]), 2), "n_people": len(tpi)}
+                                            for j in sorted(c2, key=lambda j: -d2[j] / bt[j])[:5]]
+            return b_
+        same_h = [names.get(j) for j in ids if j != i and HUNTER_OF.get(j) and HUNTER_OF.get(j) == HUNTER_OF.get(i)]
+        hunter_block = pool_block(HUNTPOOL.get(i, []), (f"identical for today's other launches by the same hunter: {', '.join(n for n in same_h if n)}" if same_h else None))
+        maker_block = pool_block(MAKERPOOL.get(i, []))
+        wl = (WHY.get("launches", {}).get(i) or {}) if isinstance(WHY, dict) else {}
+        network = {k: (wl.get(k) or {}).get("value") for k in ("follow_ties", "follow_ties_active", "hunter_followers")}
+        network["note"] = "follows of the hunter or makers among held people (reads before 00:00 PT) and the hunter's follower count; network size varies far more between launches than role mix does"
+        WHO[i] = {"network": network, "hunter_past_backers": hunter_block, "maker_past_backers": maker_block, "segments_by_lift": lift_rows, "segments": rows, "expected_held_votes": round(float(tot), 1), "n_held_active_people": int(nact),
                   "what_likely_backers_upvote": likes, "what_likely_backers_dislike": NA + " (we observe upvotes and follows, not dislikes)",
                   "likely_backers_definition": "the 200 held people ranked highest for this launch by the CF-only backer model; segments and topics are shown by lift = their share among these 200 / their share among all held active people that day (lift > 1: over-represented); groups under 20 people hidden"}
 except Exception as e:
@@ -156,10 +171,12 @@ try:
                      "launch_specificity": ("TESTED, NOT LAUNCH-SPECIFIC: a launch's top 200 overlap 90% with other launches' top 200 the same day, and a launch's own list "
                                             "fits its actual held backers no better than other launches' lists (roles +0.09 TV points, 95% interval -0.43 to +0.52; 44 launches, "
                                             "1,450 backers, Nov 8-12 forward). 'segments_by_lift' describes today's generally likely backers, not this launch's."),
-                     "team_past_backers": ("held people who upvoted an earlier launch of this launch's hunter or first maker (reads before 00:00 PT). Launch-specific by "
-                                           "construction; 50% of actual held backers came from this pool (Nov 8-12, 1,450 backers). Its role mix fits the launch's "
-                                           "backers better than other launches' pools by +1.7 TV points (95% interval -1.0 to +4.9) and topics by +1.5 (-0.1 to +2.6): "
-                                           "positive but not yet clear of zero")}
+                     "hunter_past_backers": ("held people who upvoted an earlier launch by this hunter (reads before 00:00 PT). 50% of actual held backers came from the "
+                                             "hunter-or-maker pool (Nov 8-12, 1,450 backers); its role mix fits its own launch better than other launches' pools by +1.7 TV points "
+                                             "(95% interval -1.0 to +4.9), topics +1.5 (-0.1 to +2.6). Identical for launches sharing a hunter (it is the hunter's audience, not the product's)"),
+                     "maker_past_backers": ("held people who upvoted an earlier launch by this launch's first maker (other than the hunter). Rarely available: 9 of 44 test "
+                                            "launches had >= 20 such people, holding 2.3% of actual held backers; topics +2.1 TV points (-0.2 to +5.6)"),
+                     "heavy_upvoter_share": "share of the pool in the top 20% of held people by upvotes in the 30 days before the day (base = 20% by construction among people active in those 30 days)"}
 except NameError:
     pass
 
@@ -245,7 +262,12 @@ for i in ids:
     def _drv(lbl):
         key = lab2key.get(lbl); d_ = DEF.get(key, (lbl, NA))
         v = vals.get(key) if key else None
-        return {"input": d_[0], "points": pts.get(lbl), "raw_value": (round(float(v), 3) if isinstance(v, (int, float)) else NA + " (not yet written by the readable model's daily file)"),
+        rv = (round(float(v), 3) if isinstance(v, (int, float)) else NA + " (not yet written by the readable model's daily file)")
+        if key == "ph_n_makers" and isinstance(v, (int, float)):
+            pm = next((p_ for p_ in line if str(p_["id"]) == i), {}); hid = sum(str(m.get("id")) == "0" for m in (pm.get("makers") or []))
+            if v == 0: rv = "0: makers not shown by Product Hunt (the model reads this as the smallest possible team, which lowers the score; not a solo team)"
+            elif hid: rv = f"{int(v)} (including {hid} whose names Product Hunt hides)"
+        return {"input": d_[0], "points": pts.get(lbl), "raw_value": rv,
                 "definition": d_[1]}
     WHYB[i] = {"top_drivers": [_drv(k) for k in (f.get("top_inputs") or [])[:3]], "rank_in_explanation_model": f.get("rank_explanation_model"),
                "all_inputs": [_drv(DEF[k][0] if False else (RD.get("labels") or {}).get(k, k)) for k in DEF]}
