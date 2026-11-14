@@ -12,6 +12,8 @@ when a live feed stops. It detects only; it never changes, restarts or scales an
 | comments_ts | `raw/ph_at_launch/<PT day>/api_comments/<tag>PT.jsonl` | 20 min 00:00–02:00 PT, else 60 |
 | fleet status | `mailbox/from_cursor/status.json` `utc`, alive slots vs 20 | 20 min, 20 VMs |
 | vote_snapshots hourly load | `tables/vote_snapshots/*.parquet` newest part upload time (one part per load; VM off 23:00–00:05 PT) | 75 min |
+| day-close read | `snapshots/` tag 23:45–00:05 PT for the previous day | by 00:05 PT |
+| first comment read | `api_comments/` read 00:00–00:15 PT | by 00:20 PT |
 | vote_snapshots export | `raw/vote_snapshots/<PT day>.jsonl` (daily export) | previous PT day by 08:00Z |
 
 Not yet covered: store build cadence, and daily

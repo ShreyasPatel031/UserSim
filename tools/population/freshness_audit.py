@@ -163,6 +163,24 @@ def check():
     if now >= due and prev not in days:
         out.append({"feed": "vote_snapshots_daily_export", "missing_day": prev, "due_utc": due.isoformat(),
                     "newest_day": days[-1] if days else None, "late_min": round((now - due).total_seconds() / 60, 1)})
+    # once-a-day reads (live check): day-close read of yesterday by 00:05 PT, first comment read of today by 00:20 PT;
+    # reported until 12:00 PT, after which the backfill ledger carries them
+    pn = now.astimezone(PT)
+    if pn.hour < 12:
+        today, yday = pn.date(), pn.date() - dt.timedelta(days=1)
+        if (pn.hour, pn.minute) >= (0, 5):
+            snaps = set()
+            for d_ in (yday, today):
+                snaps |= set(day_series(d_.isoformat())[2])
+            tags = {f"{yday.strftime('%Y%m%d')}T23{m:02d}PT" for m in range(45, 60)} | \
+                {f"{today.strftime('%Y%m%d')}T00{m:02d}PT" for m in range(0, 6)}
+            if not any(any(x.startswith(t) for t in tags) for x in snaps):
+                out.append({"feed": "day_close_read", "day_pt": yday.isoformat(), "due_pt": "00:05", "note": "no 23:45-00:05 PT snapshot"})
+        if (pn.hour, pn.minute) >= (0, 20):
+            pool = set(cms) | set(day_series(yday.isoformat())[1])  # a launch day's reads can sit in the previous day's folder
+            cm0 = [t for t in pool if t.astimezone(PT).date() == today and t.astimezone(PT).hour == 0 and t.astimezone(PT).minute <= 15]
+            if not cm0:
+                out.append({"feed": "first_comment_read", "day_pt": today.isoformat(), "due_pt": "00:20", "note": "no 00:00-00:15 PT comment read"})
     # hourly warehouse load (PH ops 22:35Z): one parquet part per load; VM is off 23:00-00:05 PT (~65-70 min, under 75)
     parts = [l.split("\t") for l in sh("gcloud", "storage", "objects", "list", f"{G}/tables/vote_snapshots/*.parquet",
                                         "--format=value(name,creation_time)").splitlines() if "\t" in l]
