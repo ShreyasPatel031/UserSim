@@ -68,6 +68,19 @@ try:
     if "--who-only" in sys.argv: print(json.dumps({"day": DAY, "frozen_launches": len(fr), "n_active": int(nact)})); sys.exit(0)
     TOPN = list(g["TOP"]) if "TOP" in g else None
     seg_all = pd.Series([segmap.get(p, "no headline or bio") for p in act.index], index=act.index) if act is not None else None
+    TEAMPOOL = {}
+    try:
+        L_, lh_, lm_ = g["L"], g["lhun"], g["lmak"]; bt_ = {}
+        for l_ in L_.id:
+            for t_ in (lh_.get(l_), lm_.get(l_)):
+                if t_: bt_.setdefault(t_, set()).add(l_)
+        Hs = g["U"][(g["U"].fetched_at < g["start"](DAY)) & (g["U"].lday < DAY)]
+        for i_ in ids:
+            team_ = [x for x in (lh_.get(i_), lm_.get(i_)) if x]
+            ls_ = set().union(*[bt_.get(x, set()) for x in team_]) - {i_} if team_ else set()
+            TEAMPOOL[i_] = Hs[Hs.target_id.isin(ls_)].person_id.unique().tolist() if ls_ else []
+    except Exception as e:
+        print("team pool failed:", repr(e)[:200])
     # orchestrator 22:54Z Nov 14: "who" segments come from the CF-only backer lists (forward line, 25.2% of held backers named) when frozen
     CFL = None
     try:
@@ -94,14 +107,40 @@ try:
                          "n_held_people_scored": int(len(gg)), "n_likely (chance >= 5%)": int((gg.p >= 0.05).sum())})
         rows.sort(key=lambda r: -r["expected_votes"])
         top = df.p.sort_values(ascending=False).index[:200]
-        likes = None
+        likes = None; lift_rows = None
+        # launch-specific view (website item 1, orchestrator 23:19Z): the TOP 200 of the ranking vs all held active people (base), with lift
+        base_seg = seg_all.value_counts(normalize=True) if seg_all is not None else None
+        if base_seg is not None:
+            ts_ = pd.Series([segmap.get(q, "no headline or bio") for q in top]).value_counts()
+            lift_rows = sorted([{"segment": s_, "n_in_top_200": int(n_), "share_in_top_200": round(n_ / len(top), 3), "share_of_all_held_active": round(float(base_seg.get(s_, 0)), 3),
+                                 "lift": round((n_ / len(top)) / float(base_seg.get(s_, np.nan)), 2) if base_seg.get(s_, 0) > 0 else None}
+                                for s_, n_ in ts_.items() if n_ >= MIN], key=lambda r: -(r["lift"] or 0))
         if tv is not None and TOPN:
-            ix = pd.Series(np.arange(len(act)), index=act.index); top = [q for q in top if q in ix.index]; w = df.p.loc[top].values
-            dist = (tv[ix[top].values] * w[:, None]).sum(0) / max(w.sum(), 1e-9); o = np.argsort(-dist)[:5]
-            likes = [{"topic": TOPN[j], "share_of_their_recent_upvotes": round(float(dist[j]), 3)} for j in o if dist[j] > 0]
-        WHO[i] = {"segments": rows, "expected_held_votes": round(float(tot), 1), "n_held_active_people": int(nact),
+            ix = pd.Series(np.arange(len(act)), index=act.index); top_i = [q for q in top if q in ix.index]
+            dist = tv[ix[top_i].values].mean(0) if top_i else np.zeros(len(TOPN)); base_t = tv.mean(0)
+            cand = [j for j in range(len(TOPN)) if dist[j] >= 0.02 and base_t[j] > 0]
+            o = sorted(cand, key=lambda j: -dist[j] / base_t[j])[:5]
+            likes = [{"topic": TOPN[j], "share_of_their_recent_upvotes": round(float(dist[j]), 3), "share_for_all_held_active": round(float(base_t[j]), 3),
+                      "lift": round(float(dist[j] / base_t[j]), 2), "n_people": len(top_i)} for j in o]
+        # team pool (launch-specific by construction): held people who upvoted an earlier launch of this hunter / first maker, reads before 00:00 PT
+        tp = TEAMPOOL.get(i, [])
+        team_block = {"n_held_people": len(tp)}
+        if len(tp) >= MIN and base_seg is not None:
+            ts2 = pd.Series([segmap.get(q, "no headline or bio") for q in tp]).value_counts()
+            team_block["segments_by_lift"] = sorted([{"segment": s_, "n": int(n_), "share": round(n_ / len(tp), 3), "share_of_all_held_active": round(float(base_seg.get(s_, 0)), 3),
+                                                     "lift": round((n_ / len(tp)) / float(base_seg.get(s_)), 2) if base_seg.get(s_, 0) > 0 else None}
+                                                    for s_, n_ in ts2.items() if n_ >= MIN], key=lambda r: -(r["lift"] or 0))
+            if tv is not None and TOPN:
+                tpi = [q for q in tp if q in ix.index]
+                if len(tpi) >= MIN:
+                    d2 = tv[ix[tpi].values].mean(0); bt = tv.mean(0); c2 = [j for j in range(len(TOPN)) if d2[j] >= 0.02 and bt[j] > 0]
+                    team_block["topics_by_lift"] = [{"topic": TOPN[j], "share": round(float(d2[j]), 3), "share_for_all_held_active": round(float(bt[j]), 3), "lift": round(float(d2[j] / bt[j]), 2), "n_people": len(tpi)}
+                                                    for j in sorted(c2, key=lambda j: -d2[j] / bt[j])[:5]]
+        elif len(tp) < MIN:
+            team_block["note"] = "fewer than 20 held people backed this team before; not shown"
+        WHO[i] = {"team_past_backers": team_block, "segments_by_lift": lift_rows, "segments": rows, "expected_held_votes": round(float(tot), 1), "n_held_active_people": int(nact),
                   "what_likely_backers_upvote": likes, "what_likely_backers_dislike": NA + " (we observe upvotes and follows, not dislikes)",
-                  "likely_backers_definition": "the 200 held people with the highest chance of upvoting this launch; topics weighted by that chance, from their upvotes in the 90 days before the day"}
+                  "likely_backers_definition": "the 200 held people ranked highest for this launch by the CF-only backer model; segments and topics are shown by lift = their share among these 200 / their share among all held active people that day (lift > 1: over-represented); groups under 20 people hidden"}
 except Exception as e:
     print("who failed:", repr(e)[:300]); WHO = {i: {"status": NA, "reason": f"vote model step failed: {type(e).__name__}"} for i in ids}
 WHY = json.loads(gcat(f"{B}/results/web/why/{DAY}_0005.json") or "{}")
@@ -113,7 +152,14 @@ WHO_LABEL = {"segment_rule": "keyword rule on each held person's own headline an
 try:
     if CFL:
         WHO_LABEL = {**WHO_LABEL, "model": "CF-only backer model (activity + co-upvote neighbour score, SVD k=32 on upvotes dated before the day; reads before 00:00 PT; no follows); segments and expected votes over each launch's 2,000 most likely held people",
-                     "predictive_value": "25.2% of held backers named, 128 launches, forward (Nov 8-12, strict; +4.0 points [+1.9, +5.9] over a most-active list)"}
+                     "predictive_value": "25.2% of held backers named, 128 launches, forward (Nov 8-12, strict; +4.0 points [+1.9, +5.9] over a most-active list)",
+                     "launch_specificity": ("TESTED, NOT LAUNCH-SPECIFIC: a launch's top 200 overlap 90% with other launches' top 200 the same day, and a launch's own list "
+                                            "fits its actual held backers no better than other launches' lists (roles +0.09 TV points, 95% interval -0.43 to +0.52; 44 launches, "
+                                            "1,450 backers, Nov 8-12 forward). 'segments_by_lift' describes today's generally likely backers, not this launch's."),
+                     "team_past_backers": ("held people who upvoted an earlier launch of this launch's hunter or first maker (reads before 00:00 PT). Launch-specific by "
+                                           "construction; 50% of actual held backers came from this pool (Nov 8-12, 1,450 backers). Its role mix fits the launch's "
+                                           "backers better than other launches' pools by +1.7 TV points (95% interval -1.0 to +4.9) and topics by +1.5 (-0.1 to +2.6): "
+                                           "positive but not yet clear of zero")}
 except NameError:
     pass
 
@@ -168,12 +214,41 @@ rv = next((r for r in NS.get("rows", []) if r.get("model") == "readable_v2"), No
 WHY_LABEL = {"model": "readable explanation model (readable v2 stumps), not the published 00:05 model",
              "predictive_value": (f"{rv['top3']} / {rv['top5']} / {rv['top10']} top 3 / 5 / 10 on {rv['n_days']} backtest days ({rv['rule']})" if rv else NA),
              "fidelity": NA + " (agreement between these drivers and the published model's order has not been re-measured for the current published model)"}
+# input definitions (from PH ops' code: readable_shadow.py X10, features.py, model.py, history_retrain.py, llm.py, promo_features.py)
+DEF = {"hist_hunter_rel": ("hunter track record (relative)", "mean, over the hunter's earlier launches, of log(1+votes) minus that day's mean log(1+votes); 0 = average"),
+       "hist_hunter_n": ("hunter launches before", "number of earlier launches by this hunter in our history (strictly earlier days)"),
+       "hist_hunter_top5": ("hunter top-5 rate before", "share (0-1) of this hunter's earlier launches that finished in the day's top 5 (a rate, not a count)"),
+       "llm_pitch": ("Gemini pitch score", "Gemini's estimated chance (0-100 %) that the launch finishes in the day's top 5, judged from the pitch only (name, tagline, description, topics), all of the day's launches in one call"),
+       "topic_prior_mean": ("topic prior", "average over the launch's topics of how those topics' launches did relative to their day (log-vote scale, shrunk towards 0 for rare topics)"),
+       "txt_ridge": ("text model score", "a word-based model (TF-IDF ridge) of the name, tagline and description, trained on past launches, predicting log votes relative to the day's mean; 0 = average"),
+       "ph_n_media": ("media items", "number of images and videos on the launch page"),
+       "ph_n_makers": ("team size", "number of makers listed on the launch"),
+       "ph_hunter_age_d": ("hunter account age", "days between the hunter's Product Hunt account creation and the launch day"),
+       "promo_cov": ("pre-launch coverage", "number of press / Hacker News / Reddit / other coverage items dated before launch day (Gemini + Google Search read)")}
+RD = json.loads(gcat(f"{B}/results/shadow_readable/{DAY}.json") or "{}")
+lab2key = {v: k for k, v in (RD.get("labels") or {}).items()}
+VALS = {str(r.get("id")): r.get("values") or {} for r in RD.get("forecast", [])}   # PH ops' readable_shadow 'values' (when written)
+def _snap_vals(p_):   # exact from the 00:05 snapshot, same formulas as features.py
+    v = {"ph_n_makers": len(p_.get("makers") or []), "ph_n_media": len(p_.get("media") or [])}
+    ca = (p_.get("user") or {}).get("createdAt")
+    if ca:
+        c_ = pd.Timestamp(ca); c_ = c_.tz_convert("UTC").tz_localize(None) if c_.tzinfo else c_
+        v["ph_hunter_age_d"] = int((pd.Timestamp(DAY) - c_).days)
+    return v
+SNAP = {str(p_["id"]): _snap_vals(p_) for p_ in line}
 WHYB = {}
 for i in ids:
     f = (WHY.get("launches", {}).get(i) or {}).get("forecast_drivers")
     if not f: WHYB[i] = {"status": NA}; continue
     pts = f.get("points") or {}
-    WHYB[i] = {"top_drivers": [{"input": k, "points": pts.get(k)} for k in (f.get("top_inputs") or [])[:3]], "rank_in_explanation_model": f.get("rank_explanation_model")}
+    vals = {**SNAP.get(i, {}), **VALS.get(i, {})}
+    def _drv(lbl):
+        key = lab2key.get(lbl); d_ = DEF.get(key, (lbl, NA))
+        v = vals.get(key) if key else None
+        return {"input": d_[0], "points": pts.get(lbl), "raw_value": (round(float(v), 3) if isinstance(v, (int, float)) else NA + " (not yet written by the readable model's daily file)"),
+                "definition": d_[1]}
+    WHYB[i] = {"top_drivers": [_drv(k) for k in (f.get("top_inputs") or [])[:3]], "rank_in_explanation_model": f.get("rank_explanation_model"),
+               "all_inputs": [_drv(DEF[k][0] if False else (RD.get("labels") or {}).get(k, k)) for k in DEF]}
 
 names = {str(p["id"]): p.get("name") for p in line}
 def lab_text(L): return "; ".join(f"{k}: {v}" for k, v in L.items()) if isinstance(L, dict) else str(L)
