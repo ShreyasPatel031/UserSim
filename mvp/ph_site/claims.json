@@ -258,5 +258,25 @@
   "label": "expm1 of the 00:05 launch model's log1p-votes prediction (raw/daily/<d>/forecast_<d>.parquet pred) vs final Product Hunt votes (site/live_board/<d>.json, final), Nov 4 and 8-13",
   "source": "website agent, computed 2026-11-14",
   "date": "2026-11-14"
+ },
+ "vote_error_pre": {
+  "text": "est. = the vote level the midnight model expects at each rank today; typical error ±14% (±23% for top-10 finishers), 1 day so far",
+  "values": {
+   "mdape_all": 13.6,
+   "band80_all": [
+    0.74,
+    1.23
+   ],
+   "mdape_top10": 23.2,
+   "band80_top10": [
+    0.72,
+    1.28
+   ],
+   "n": 20,
+   "days": 1
+  },
+  "label": "03:45 order (pred_rank_hybrid) mapped to the sorted expm1 midnight log-vote predictions, vs final votes (site/live_board), Nov 13 (the only day with both files)",
+  "source": "website agent, computed 2026-11-14",
+  "date": "2026-11-14"
  }
 }

@@ -460,6 +460,15 @@ def forecasts(day: str) -> dict[str, dict]:
                 keep[k] = legacy[k]
         if keep.get("0005") is pub["0005"] and legacy["0005"] and legacy["0005"].get("exp_votes") and not keep["0005"].get("exp_votes"):
             keep["0005"]["exp_votes"] = legacy["0005"]["exp_votes"]
+        # Product + comments carries no vote figure of its own: give each of its ranks the vote level the midnight model
+        # expects at that position today (k-th largest midnight estimate), so the column reads in votes and stays in order.
+        pre, mid = keep.get("PRE"), keep.get("0005")
+        if pre and pre.get("ranks") and not pre.get("exp_votes") and mid and mid.get("exp_votes"):
+            levels = sorted(mid["exp_votes"].values(), reverse=True)
+            ev = {i: levels[r - 1] for i, r in pre["ranks"].items() if 0 < r <= len(levels)}
+            if ev:
+                pre = dict(pre, exp_votes=ev, vote_err=(claims().get("vote_error_pre") or {}).get("text"))
+                keep["PRE"] = pre
         out = keep                                        # only the two published predictions leave the server
         return out
     return gcs._cached("fc:" + day, 120, go)
