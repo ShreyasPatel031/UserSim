@@ -23,10 +23,11 @@ ACC0_BY = {"arm2": "58.0 / 65.2 / 76.5 top 3 / 5 / 10 on 184 backtest days with 
 ACC0 = ACC0_BY["arm2"]
 ACC3 = os.environ.get("ARM3_BACKTEST_LABEL") or open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "arm3_backtest_label.txt")).read().strip() \
     if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "arm3_backtest_label.txt")) else "arm 3 (backtest label not set)"
-ACC1 = ("79.2 top 10 (72.2 / 76.7 top 3 / 5, the hidden order's), leave-one-day-out replay on 12 days (Nov 2-13) with the fixed 00:05 prior; "
-        "top-10 edge over the hidden order +5.8 [+1.7, +10.0], 12 days")
-ACC1_HIDDEN = "72.2 / 76.7 / 73.3 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone"
-ACC1_NOPRIOR = "not backtested without the 00:05 prior; the hidden order alone scores 72.2 / 76.7 / 73.3 on 12 days (Nov 2-13)"
+# scoreboard convention (E5 20:43Z): unranked launches stay in the order and count as misses; truth = the day's full final ranking
+ACC1 = ("72.2 / 75.0 / 78.3 top 3 / 5 / 10, leave-one-day-out replay on 12 days (Nov 2-13) with the fixed 00:05 prior; top 3 and top 5 are "
+        "the hidden order's; top-10 edge over the hidden order +6.7 [+1.7, +11.7], 12 days")
+ACC1_HIDDEN = "72.2 / 75.0 / 71.7 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone"
+ACC1_NOPRIOR = "not backtested without the 00:05 prior; the hidden order alone scores 72.2 / 75.0 / 71.7 on 12 days (Nov 2-13)"
 def acc1(model, fb, col=None):
     """accuracy line for the 03:45 file by what actually produced the order"""
     fb = fb or ""

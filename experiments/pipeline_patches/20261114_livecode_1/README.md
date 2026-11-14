@@ -24,5 +24,7 @@ Dry run (dry_livecode.sh, Nov 14 ~20:20Z, VM scratch trees, both on features 033
 - Missing line-up (day 2099-01-01): exits 1 with "no line-up for 2099-01-01: data/today/2099-01-01.json missing or empty", and no forecast files.
   The store guard first alerts on the missing days, as expected for a far-future day.
 - The real llm_* dirs were not modified during the runs.
+- E5's check (20:43Z): on Nov 12 the repro hunk changes the order from #2 (top-10 overlap 9), i.e. at the measured run-to-run noise level.
+  Without the repro hunk, live-code 1 equals the current code exactly.
 - Not exercised by data: a known launch (0 in 2026 live nights; 1 in all of 2026). The code path is the same column blanking as h25_live's
   old-row rule.

@@ -1,3 +1,17 @@
+# 12a.3 UPDATE (20:45Z Nov 14, E5 pre-flight 2): two_predictions.py now bcbaf6b6; deploy_b12a.sh e4db3524; install_fixedprior_weights.sh 73911b63.
+- Labels on the scoreboard convention: unranked launches stay in the order and count as misses; truth = the day's full final ranking.
+  - hybrid (fixed prior): 72.2 / 75.0 / 78.3, LODO 12 days, edge over hidden +6.7 [+1.7, +11.7];
+  - hidden alone: 72.2 / 75.0 / 71.7 (matches E5's recomputation).
+  - Orders: results/replay_orders/hybrid_lodo_orders_fixedprior.json (incl. unranked launches; 2 unranked launches in the 12 days).
+  - Live-prior hybrid under the same rule: 77.5 when re-run with unranked rows in the day inputs; E5 gets 76.7 by inserting them into the stored
+    orders without a refit.
+- Weights pin:
+  - The installer writes the pin BEFORE the flip and removes it if the deploy fails without the new weights live.
+  - Both 12a deploy scripts also refuse when the LIVE tree carries b8a59cdd and the folder does not.
+  - rollback rewrites the pin from the restored tree.
+  - A rollback with no previous tree refuses (removal only via `remove`).
+The earlier "75.0 is not reproducible / 76.7" correction was wrong: it came from dropping unranked launches from the replay orders.
+
 # Bundle 12a.3 = 12a.2 + fixed-prior hybrid weights + corrected labels + two 03:45 writer fixes (UNDEPLOYED; replaces 12a.2 after E5's re-check)
 Deploy ONLY after the today-rows fix (features.py 033d7bd7) is live: the new weights and the 79.2 label assume a fixed 00:05 prior.
 - hybrid_vmonly_P345_20261114.json: content of 20261114_hybrid_fixedprior (md5 b8a59cdd; was 16912cd6). Same file name, so two_predictions reads it unchanged.

@@ -19,7 +19,7 @@ hits = lambda o, t: [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
 PTS = {"P3": 3.0}   # 03:45 uses the 03:00 read in the backtest (no 03:45 recorder read existed); live adds one
 
 
-TAG = os.environ.get("TAG", ""); CP = None
+TAG = os.environ.get("TAG", ""); CP = None; KU = os.environ.get("KEEP_UNRANKED") == "1"; TRUTHFULL = {}
 if os.environ.get("CLEAN_PRIOR"):   # "<parquet>:<column>" with id, day columns
     _p, _c = os.environ["CLEAN_PRIOR"].rsplit(":", 1); _X = pd.read_parquet(_p); _X["id"] = _X.id.astype(str)
     CP = {d: dict(zip(g.id, g[_c])) for d, g in _X.groupby("day")}
@@ -49,11 +49,14 @@ def main():
         s1 = at(1.0)
         for p, h in PTS.items():
             sT = at(h); ids = [i for i in truth.id if i in sT.index]
+            TRUTHFULL[d] = truth.id.tolist()
+            if KU: ids = ids + sorted(i for i in sT.index if i not in set(ids))   # KEEP_UNRANKED: unranked launches stay in the order (scoreboard rule)
             if len(ids) < 10:
                 continue
+            TR_ = truth.set_index("id").daily_rank.to_dict()
             posT = sT.rank_now.reindex(ids).rank(method="first"); pos1 = s1.rank_now.reindex(ids).fillna(999).rank(method="first")
             for i in ids:
-                rows.append({"day": d, "point": p, "id": i, "final": int(truth.set_index("id").daily_rank[i]), "pos": posT[i], "lpos": np.log(posT[i]),
+                rows.append({"day": d, "point": p, "id": i, "final": (int(TR_[i]) if i in TR_ else np.nan), "pos": posT[i], "lpos": np.log(posT[i]),
                              "move": np.log(pos1[i]) - np.log(posT[i]), "nc_rec": np.log1p(sT.comments.get(i, 0) or 0), "clean": cp.get(i, twc.get(i, np.nan))})
     X = pd.DataFrame(rows); X["clean"] = X.groupby("day").clean.transform(lambda s: s.fillna(s.min() - 0.1) if s.notna().any() else s.fillna(0))
     F = ["lpos", "move", "nc_rec", "clean"]; ZF = ["z_" + f for f in F]
@@ -64,13 +67,14 @@ def main():
     def hyb(te, sc):
         oh = te.sort_values(["pos", "id"]).id.tolist(); ol = te.assign(s=sc).sort_values(["s", "id"], ascending=[False, True]).id.tolist()
         return oh[:5] + [i for i in ol if i not in set(oh[:5])]
-    def t10(te, order): t = te.sort_values("final").id.tolist(); return hits(order, t)[2]
+    def t10(te, order):
+        t = TRUTHFULL[te.day.iloc[0]] if KU else te.sort_values("final").id.tolist(); return hits(order, t)[2]
     def fit(trd, ycol="y", alpha=None):
-        tr = pd.concat([G[d] for d in trd])
+        tr = pd.concat([G[d] for d in trd]); tr = tr[tr[ycol].notna()]
         if alpha is None:   # regularisation chosen inside the fold: inner leave-one-day-out on the training days, best mean top 10
             best = None
             for a_ in AL:
-                v = np.mean([t10(G[x], hyb(G[x], Ridge(alpha=a_).fit(pd.concat([G[z] for z in trd if z != x])[ZF], pd.concat([G[z] for z in trd if z != x])[ycol]).predict(G[x][ZF]))) for x in trd])
+                v = np.mean([t10(G[x], hyb(G[x], Ridge(alpha=a_).fit(*(lambda q: (q[ZF], q[ycol]))(pd.concat([G[z] for z in trd if z != x]).dropna(subset=[ycol]))).predict(G[x][ZF]))) for x in trd])
                 best = (v, a_) if best is None or v > best[0] else best
             alpha = best[1]
         return Ridge(alpha=alpha).fit(tr[ZF], tr[ycol]), alpha
@@ -80,7 +84,8 @@ def main():
     ORD = {}   # per-day orders so every published number can be rebuilt (orchestrator 20:11Z Nov 14)
     for d in dd:
         m, a_ = fit([x for x in dd if x != d]); alphas[d] = a_; o_ = hyb(G[d], m.predict(G[d][ZF])); L1[d] = t10(G[d], o_)
-        ORD[d] = {"truth_order": G[d].sort_values("final").id.tolist(), "truth_ranks": dict(zip(G[d].id, map(int, G[d].final))),
+        ORD[d] = {"truth_order": (TRUTHFULL[d] if KU else G[d].sort_values("final").id.tolist()),
+                  "truth_ranks": {i: int(f) for i, f in zip(G[d].id, G[d].final) if f == f}, "unranked_in_order": [i for i, f in zip(G[d].id, G[d].final) if f != f],
                   "hidden": G[d].sort_values(["pos", "id"]).id.tolist(), "lodo_hybrid": o_, "lodo_alpha": a_,
                   "prior6": G[d].sort_values(["pos", "id"]).id.tolist()[:5] + [i for i in G[d].sort_values(["clean", "id"], ascending=[False, True]).id if i not in set(G[d].sort_values(["pos", "id"]).id.tolist()[:5])],
                   "n_ids": int(len(G[d])), "prior_source": src.get(d)}
@@ -104,7 +109,7 @@ def main():
             g.loc[k, "yp"] = rng.permutation(g.loc[k, "y"].values); g.loc[~k, "yp"] = g.loc[~k, "y"]; Xs[d] = g
         gains = []
         for d in dd:
-            tr = pd.concat([Xs[x] for x in dd if x != d]); m = Ridge(alpha=3.0).fit(tr[ZF], tr.yp)
+            tr = pd.concat([Xs[x] for x in dd if x != d]).dropna(subset=["yp"]); m = Ridge(alpha=3.0).fit(tr[ZF], tr.yp)
             gains.append(t10(G[d], hyb(G[d], m.predict(G[d][ZF]))) - H[d])
         perm.append(np.mean(gains))
     pval = float((np.sum(np.array(perm) >= obs) + 1) / (len(perm) + 1))
@@ -116,7 +121,7 @@ def main():
           f"95th pct {np.percentile(perm, 95):+.2f}, one-sided p = {pval:.3f}.", f"Alphas chosen per fold: {sorted(set(alphas.values()))} ({list(alphas.values())}).",
           "Per day (hidden / LODO / L2O / prior): " + "; ".join(f"{d[5:]} {H[d]:.0f}/{L1[d]:.0f}/{L2[d]:.0f}/{P6[d]:.0f}" for d in dd)]
     if TAG:   # all-day fit on the frozen file's days (Nov 2-12, alpha 3), same format as frozen/hybrid_vmonly_P345_20261114.json
-        tr = pd.concat([G[d] for d in dd if d <= "2026-11-12"]); m = Ridge(alpha=3.0).fit(tr[ZF], tr.y)
+        tr = pd.concat([G[d] for d in dd if d <= "2026-11-12"]).dropna(subset=["y"]); m = Ridge(alpha=3.0).fit(tr[ZF], tr.y)
         json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": f"2026-11-02..2026-11-12 ({sum(d <= '2026-11-12' for d in dd)})", "alpha": 3.0,
                    "features": ZF, "coef": dict(zip(ZF, map(float, m.coef_))), "intercept": float(m.intercept_), "clean_prior": os.environ.get("CLEAN_PRIOR"),
                    "note": "UNDEPLOYED (today-rows refit). z within day; lpos = log hidden-rank position (recorder rank_now), move = log pos at 01:00 - log pos at T, "

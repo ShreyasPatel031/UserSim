@@ -16,9 +16,15 @@ DIRS=$W/tw12a.d; mkdir -p $DIRS
 flip() { ln -sfn "$1" $W/tw12a.tmp && mv -Tf $W/tw12a.tmp $T; }
 if [ "${1:-}" = rollback ] && [ -s $DIRS/previous ] && [ -d "$(cat $DIRS/previous)" ]; then
   P_=$(cat $DIRS/previous); C_=$(readlink -f $T 2>/dev/null || true); flip "$P_"; echo "rolled back: tw12a -> $P_ (was $C_); cron block kept"
-  [ -n "$C_" ] && echo "$C_" > $DIRS/rolled_back_from; rm -f $DIRS/previous; exit 0
+  [ -n "$C_" ] && echo "$C_" > $DIRS/rolled_back_from; rm -f $DIRS/previous
+  # the weights pin follows the restored tree (E5 pre-flight 2): pinned only if the restored tree carries the fixed-prior weights
+  RW=$(md5sum < $P_/hybrid_vmonly_P345_20261114.json 2>/dev/null | cut -c1-8); if [ "$RW" = b8a59cdd ]; then echo b8a59cdd > $DIRS/weights_pin; else rm -f $DIRS/weights_pin; fi
+  echo "weights pin now: $(cat $DIRS/weights_pin 2>/dev/null || echo none)"; exit 0
 fi
-if [ "${1:-}" = rollback ] || [ "${1:-}" = remove ]; then   # no previous tree to return to (first deploy) or explicit removal
+if [ "${1:-}" = rollback ]; then   # no previous tree: refuse (a second rollback must never remove 12a); full removal only via `remove`
+  echo "rollback: no previous tree recorded in $DIRS/previous; refusing (use 'remove' to take 12a off the VM)"; exit 1
+fi
+if [ "${1:-}" = remove ]; then   # explicit full removal
   crontab -l 2>/dev/null | strip > $BK/crontab.after_rollback.$STAMP
   grep -q "run_daily.sh" $BK/crontab.after_rollback.$STAMP || { echo "rollback result lacks the @reboot run_daily line: refusing"; exit 1; }
   crontab $BK/crontab.after_rollback.$STAMP && echo "b12a block removed (backup $BK/crontab.$STAMP)"
@@ -30,6 +36,9 @@ H=$(TZ=America/Los_Angeles date +%H%M); [ "$H" -lt 0005 ] || [ "$H" -ge 0100 ] |
 S=${1:?folder}; m() { md5sum < "$1" | cut -c1-8; }
 declare -A WANT=( [two_predictions.py]=b31d0074 [import_gate.py]=be4891b9 [lineup_reread.py]=4fa6b418 [recorder_extra.py]=c1231100 [run.sh]=5cd8b9e5 [tick.sh]=d446e816 [sched12a.txt]=4cec4d5e [cron12a.txt]=0e2c7f4d [hybrid_vmonly_P345_20261114.json]=16912cd6 )
 # weights pin (written by install_fixedprior_weights.sh): once the fixed-prior weights are live, a redeploy must carry them, never revert to 16912cd6
+LIVEW=$(md5sum < $T/hybrid_vmonly_P345_20261114.json 2>/dev/null | cut -c1-8 || true)
+# the LIVE tree's weights count as a pin too (covers a kill between the flip and the pin write)
+[ "$LIVEW" = b8a59cdd ] && [ "${WANT[hybrid_vmonly_P345_20261114.json]}" != b8a59cdd ] && { echo "live tree carries the fixed-prior weights b8a59cdd; this folder carries ${WANT[hybrid_vmonly_P345_20261114.json]}: refusing"; exit 1; }
 [ -s $DIRS/weights_pin ] && [ "${WANT[hybrid_vmonly_P345_20261114.json]}" != "$(cat $DIRS/weights_pin)" ] && { echo "weights pin $(cat $DIRS/weights_pin) is live; this folder carries ${WANT[hybrid_vmonly_P345_20261114.json]}: refusing (would revert the fixed-prior weights)"; exit 1; }
 for f in "${!WANT[@]}"; do [ "$(m $S/$f)" = "${WANT[$f]}" ] || { echo "$f md5 $(m $S/$f) != ${WANT[$f]}"; exit 1; }; done
 [ -s $BK/crontab.$STAMP ] || { echo "current crontab empty or unreadable: refusing (expected the @reboot run_daily line)"; exit 1; }
