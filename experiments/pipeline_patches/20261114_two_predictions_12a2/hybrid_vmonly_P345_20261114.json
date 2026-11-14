@@ -1,0 +1,19 @@
+{
+ "frozen_at": "2026-11-14T00:49:44.237076+00:00",
+ "days": "2026-11-02..2026-11-12 (11)",
+ "alpha": 3.0,
+ "features": [
+  "z_lpos",
+  "z_move",
+  "z_nc_rec",
+  "z_clean"
+ ],
+ "coef": {
+  "z_lpos": -0.598221118790435,
+  "z_move": -0.015419007375922006,
+  "z_nc_rec": 0.11397530956349328,
+  "z_clean": 0.21677601489180137
+ },
+ "intercept": 1.8057514845560732e-16,
+ "note": "z within day; lpos = log hidden-rank position (recorder rank_now), move = log pos at 01:00 - log pos at T, nc_rec = log1p recorder commentsCount at T, clean = 00:05 forecast parquet pred; target z(-log final rank); slots 6+ only (top 5 = hidden rank)"
+}
