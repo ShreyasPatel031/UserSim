@@ -24,14 +24,14 @@ It makes no API call and runs no model.
   That is the same as the published feed-based hybrid (72.7 / 74.5 / 77.3). Top 3 and top 5 equal the plain hidden rank (72.7 / 74.5);
   top 10 is +4.5 [+0.0, +9.1] over it, with leave-one-day-out weights (`experiments/ph_predict/hybrid_vmonly.py`, results/hybrid_vmonly.md).
 - Fallback order, named in `fallback_used`:
-  1. hybrid_vm
-  2. hybrid_vm without the clean term (forecast parquet missing)
-  3. plain hidden rank (weights file missing)
-  4. the 00:05 midnight order (no recorder read within 65 min of 03:45)
+  1. hybrid_vm (fallback_used null)
+  2. no_prior: hybrid_vm without the clean term (forecast parquet missing)
+  3. hidden_rank_only: plain hidden rank (weights file missing)
+  4. midnight_order: the 00:05 order (no recorder read within 65 min of 03:45)
 
 ## File fields (both files)
-`day`, `kind` (0005 | prereveal), `time`, `model` (arm2 | clean_nosite | hybrid_vm ... | plain hidden rank | midnight order),
-`fallback_used` (null or the reason), `inputs` (each input present/missing; recorder read time), `written_at` (UTC), `backtest` (accuracy line),
+`day`, `kind` (0005 | prereveal), `time`, `model` (00:05: arm2 | clean_nosite; 03:45: hybrid_vm | hidden_rank_only | midnight_order), `fallback_used` (null | clean_nosite_fallback | no_prior | hidden_rank_only | midnight_order | none_available),
+`inputs` (each input present/missing; recorder read time), `written_at` (UTC), `backtest` (accuracy line),
 `ranking` [{rank, id, name, score (midnight only)}].
 
 ## Tested (dry, on the VM, no upload)

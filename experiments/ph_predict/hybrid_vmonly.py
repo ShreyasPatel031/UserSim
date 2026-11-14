@@ -73,6 +73,10 @@ def main():
                f"| {lab} | VM-only hybrid (hidden top 5 + ridge 6+) | {Y[:,0].mean():.1f} | {Y[:,1].mean():.1f} | {Y[:,2].mean():.1f} | {ci(Y)} |",
                f"| {lab} | 00:05 clean prior alone (reference) | {O[:,0].mean():.1f} | {O[:,1].mean():.1f} | {O[:,2].mean():.1f} | {ci(O)} |"]
         out[p] = (len(dd), Y.mean(0))
+        if p == "P345" and os.environ.get("HV_DUMP"):   # per-day hits of the line that will be published (orchestrator 01:36Z Nov 14)
+            json.dump({"line": "hybrid_vm (bundle 12a), 03:45 PT", "label": "official dailyRank, all featured launches", "read_rule": "recorder rank_now latest <= T within 65 min, after 23:55 PT; 03:45 = 03:00 read",
+                       "weights": "leave-one-day-out", "days": [{"day": d, "hits_top3": int(round(y[0] * 3 / 100)), "hits_top5": int(round(y[1] * 5 / 100)), "hits_top10": int(round(y[2] * 10 / 100))} for d, y in zip(dd, Y)],
+                       "mean_top3_5_10": [round(float(v), 1) for v in Y.mean(0)]}, open(os.environ["HV_DUMP"], "w"), indent=1)
     md += ["", "Published 03:45 hybrid (feed comments + distinct commenters, frozen P345 weights), recorder-only reads, 11 days: 72.7 / 74.5 / 77.3 (prereveal_12day_recorder_only.md)."]
     Xp = X[X.point == "P345"]; m = Ridge(alpha=3.0).fit(Xp[["z_" + f for f in F]], Xp.y)
     fz = f"{HERE}/results/frozen/hybrid_vmonly_P345_20261114.json"

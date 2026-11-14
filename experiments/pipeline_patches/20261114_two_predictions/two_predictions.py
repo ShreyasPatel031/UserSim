@@ -7,7 +7,9 @@
                  the 03:00 read) and the 00:05 forecast parquet. Fallback order, named in the file:
                    1 hybrid_vm   2 hybrid_vm without the clean term (parquet missing)   3 plain hidden rank (weights file missing)
                    4 the 00:05 midnight order (no recorder read within 65 min of 03:45)
-Also writes <kind>_latest.json pointers. Counts and launch names only (no people). usage: python3 two_predictions.py midnight|prereveal [YYYY-MM-DD]"""
+fallback_used codes: null (normal) | clean_nosite_fallback (00:05: arm 2 missing) | no_prior (03:45: written without the midnight forecast)
+| hidden_rank_only (03:45: weights missing) | midnight_order (03:45: no pre-reveal read; the midnight order is shown) | none_available.
+model values: 00:05 arm2 | clean_nosite; 03:45 hybrid_vm | hidden_rank_only | midnight_order. Also writes <kind>_latest.json pointers. Counts and launch names only (no people). usage: python3 two_predictions.py midnight|prereveal [YYYY-MM-DD]"""
 import datetime as dt, json, os, subprocess, sys
 import numpy as np, pandas as pd
 from zoneinfo import ZoneInfo
@@ -41,11 +43,11 @@ def put(d, kind, out):
 def midnight(d):
     F = forecast(d); _, nm = names(d); now = dt.datetime.now(dt.timezone.utc).isoformat()
     if F is None or not len(F):
-        put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": None, "fallback_used": "none available", "inputs": {"forecast_parquet": "missing"},
+        put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": None, "fallback_used": "none_available", "inputs": {"forecast_parquet": "missing"},
                         "written_at": now, "backtest": ACC0, "ranking": []}); return
     F["id"] = F.id.astype(str); arm2 = "pred_arm2" in F and F.pred_arm2.notna().all(); col = "pred_arm2" if arm2 else "pred"
     F = F.sort_values([col, "id"], ascending=[False, True]).reset_index(drop=True)
-    put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": "arm2" if arm2 else "clean_nosite", "fallback_used": None if arm2 else "clean_nosite (arm 2 missing)",
+    put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": "arm2" if arm2 else "clean_nosite", "fallback_used": None if arm2 else "clean_nosite_fallback",
                     "inputs": {"forecast_parquet": "present", "pred_arm2": "present" if arm2 else "missing"}, "written_at": now, "backtest": ACC0,
                     "ranking": [{"rank": k + 1, "id": r.id, "name": nm.get(r.id), "score": round(float(r[col]), 4)} for k, r in F.iterrows()]})
 
@@ -65,25 +67,25 @@ def prereveal(d):
     fz = f"{TW}/hybrid_vmonly_P345_20261114.json"; inp["weights"] = "present" if os.path.exists(fz) else "missing"
     if sT is None:
         if F is None or not len(F):
-            put(d, "prereveal", {"day": d, "kind": "prereveal", "time": "03:45 PT", "model": None, "fallback_used": "none available", "inputs": inp,
+            put(d, "prereveal", {"day": d, "kind": "prereveal", "time": "03:45 PT", "model": None, "fallback_used": "none_available", "inputs": inp,
                                  "written_at": now.isoformat(), "backtest": ACC1, "ranking": []}); return
         F["id"] = F.id.astype(str); col = "pred_arm2" if "pred_arm2" in F and F.pred_arm2.notna().all() else "pred"
-        order = F.sort_values([col, "id"], ascending=[False, True]).id.tolist(); model = "midnight order"; fb = "4: no recorder read within 65 min of 03:45 PT"
+        order = F.sort_values([col, "id"], ascending=[False, True]).id.tolist(); model = "midnight_order"; fb = "midnight_order"
     else:
         ids = list(sT.index); pos = sT.rank_now.rank(method="first")
         hid = sorted(ids, key=lambda i: (pos[i], i))
         if inp["weights"] == "missing":
-            order = hid; model = "plain hidden rank"; fb = "3: weights file missing"
+            order = hid; model = "hidden_rank_only"; fb = "hidden_rank_only"
         else:
             W = json.load(open(fz))["coef"]; pos1 = (s1.rank_now.reindex(ids).fillna(999) if s1 is not None else pd.Series(999, index=ids)).rank(method="first")
             Z = pd.DataFrame({"lpos": np.log(pos), "move": np.log(pos1) - np.log(pos), "nc_rec": np.log1p(sT.comments.fillna(0).astype(float))}, index=ids)
             if inp["forecast_parquet"] == "present":
                 F["id"] = F.id.astype(str); Z["clean"] = Z.index.map(dict(zip(F.id, F.pred))).astype(float); Z["clean"] = Z.clean.fillna(Z.clean.min() - 0.1)
             else:
-                Z["clean"] = 0.0; fb = "2: forecast parquet missing, clean term dropped"
+                Z["clean"] = 0.0; fb = "no_prior"
             sc = sum(zf(Z[f.replace("z_", "")]) * c for f, c in W.items())
             rest = [i for i in sc.sort_values(ascending=False).index if i not in set(hid[:5])]
-            order = hid[:5] + rest; model = "hybrid_vm (hidden rank top 5 + ridge 6+)"
+            order = hid[:5] + rest; model = "hybrid_vm"
     put(d, "prereveal", {"day": d, "kind": "prereveal", "time": "03:45 PT", "model": model, "fallback_used": fb, "inputs": inp, "written_at": now.isoformat(),
                          "backtest": ACC1, "ranking": [{"rank": k + 1, "id": i, "name": nm.get(i)} for k, i in enumerate(order)]})
 

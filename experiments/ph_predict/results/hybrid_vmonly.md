@@ -12,4 +12,3 @@ Recorder reads only (E5's rule: latest rank_now <= T, within 65 min, after 23:55
 | 03:45 | 00:05 clean prior alone (reference) | 51.5 | 52.7 | 70.9 | -21.2 [-39.4, +0.0] / -21.8 [-34.5, -9.1] / -1.8 [-7.3, +4.5] |
 
 Published 03:45 hybrid (feed comments + distinct commenters, frozen P345 weights), recorder-only reads, 11 days: 72.7 / 74.5 / 77.3 (prereveal_12day_recorder_only.md).
-Frozen all-day fit -> results/frozen/hybrid_vmonly_P345_20261114.json: lpos -0.598, move -0.015, nc_rec +0.114, clean +0.217
