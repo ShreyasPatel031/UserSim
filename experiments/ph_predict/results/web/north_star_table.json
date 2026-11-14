@@ -1,6 +1,6 @@
 {
- "computed_at": "2026-11-14T22:30:29.392931+00:00",
- "e5_rows": "merged 1 rows (computed_at 2026-11-14T22:29:18.136789+00:00)",
+ "computed_at": "2026-11-14T23:07:57.176094+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-14T22:52:49.320908+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [
   {
@@ -245,6 +245,18 @@
    "last_day": "2026-10-25",
    "rule": "share of the board's top k in the official weekly top k",
    "source": "results/weekly_board_pred_days.csv",
+   "gain_vs_current_board": {
+    "top3": 2.6,
+    "top5": 5.1,
+    "top10": 7.1,
+    "n_weeks": 28,
+    "n_board_days": 196,
+    "text": "+2.6 / +5.1 / +7.1 (28 weeks, leak-free calibration)",
+    "intervals": "+2.6 [+1.7, +3.4] / +5.1 [+4.2, +6.0] / +7.1 [+6.2, +8.0] (week bootstrap 95%)",
+    "without_mondays": "without Mondays: +1.2 / +3.1 / +5.5",
+    "note": "most of the gain is Mon-Tue",
+    "source": "results/weekly_board_audit.json (V2_strict_calibration)"
+   },
    "producer": "PH"
   },
   {
@@ -263,23 +275,56 @@
   },
   {
    "point": "0005",
-   "model": "backer prediction (voter_harness pair model)",
-   "method": "replay with strict timing (reads before 00:00 PT), scored against held people's own upvote lists read up to 2026-11-13 19:21",
+   "model": "backer prediction: CF-only",
+   "method": "forward-style strict replay/nightly freeze (reads before 00:00 PT; SVD on upvotes dated before the day; no follows)",
    "metric": "recall at N (N = observed held backers per launch), pooled",
-   "value": 17.9,
-   "baseline_most_active": 21.1,
-   "n_days": 5,
+   "value": 25.2,
+   "interval": [
+    19.2,
+    29.5
+   ],
+   "arms": {
+    "CF-only": [
+     25.2,
+     19.2,
+     29.5
+    ],
+    "A7": [
+     22.0,
+     15.9,
+     26.7
+    ],
+    "raw most-active": [
+     21.1,
+     16.8,
+     24.4
+    ]
+   },
+   "paired_vs_raw": {
+    "CF-only": [
+     4.0,
+     1.9,
+     5.9
+    ],
+    "A7": [
+     0.9,
+     -1.6,
+     2.9
+    ]
+   },
+   "n_launches": 128,
    "n_backers": 1630,
    "first_day": "2026-11-08",
    "last_day": "2026-11-12",
-   "rule": "observed backers = people held before the freeze and re-read after the day closed whose own upvote list contains the launch; our list and the baseline are ranked within those re-read people; N = observed backers per launch",
-   "source": "results/web/backer_prediction.json",
+   "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
+   "source": "results/web/backer_prediction_arms.json",
    "top3": null,
    "top5": null,
    "top10": null,
+   "n_days": null,
    "producer": "E5",
    "merged_from": "results/web/north_star_rows_e5.json",
-   "merged_computed_at": "2026-11-14T22:29:18.136789+00:00"
+   "merged_computed_at": "2026-11-14T22:52:49.320908+00:00"
   }
  ]
 }

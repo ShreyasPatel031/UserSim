@@ -102,6 +102,16 @@ if os.path.exists(R("weekly_board_pred_days.csv")):
                  "top3": round(Wb.b_3.mean() * 100, 1), "top5": round(Wb.b_5.mean() * 100, 1), "top10": round(Wb.b_10.mean() * 100, 1),
                  "n_days": int(len(Wb)), "first_day": Wb.day.min(), "last_day": Wb.day.max(), "rule": "share of the board's top k in the official weekly top k",
                  "source": "results/weekly_board_pred_days.csv"})
+    # gain of inserting D's 00:05 line-up vs the current running board (audit V2: truth file, calibration fitted before each week)
+    if os.path.exists(R("weekly_board_audit.json")):
+        A = json.load(open(R("weekly_board_audit.json")))["variants"]["V2_strict_calibration"]
+        f = lambda r: f"{r['diff']:+.1f} [{r['ci'][0]:+.1f}, {r['ci'][1]:+.1f}]"
+        rows[-1]["gain_vs_current_board"] = {
+            "top3": A["top3"]["diff"], "top5": A["top5"]["diff"], "top10": A["top10"]["diff"], "n_weeks": A["weeks"], "n_board_days": A["board_days"],
+            "text": f"+{A['top3']['diff']:.1f} / +{A['top5']['diff']:.1f} / +{A['top10']['diff']:.1f} ({A['weeks']} weeks, leak-free calibration)",
+            "intervals": " / ".join(f(A[f"top{k}"]) for k in (3, 5, 10)) + " (week bootstrap 95%)",
+            "without_mondays": "without Mondays: " + " / ".join(f"{A['excluding_monday'][f'top{k}']['diff']:+.1f}" for k in (3, 5, 10)),
+            "note": "most of the gain is Mon-Tue", "source": "results/weekly_board_audit.json (V2_strict_calibration)"}
 rows.append({"point": "monthly", "model": "board", "method": "not yet scored (first score Dec 1)", "top3": None, "top5": None, "top10": None, "n_days": 0,
              "first_day": None, "last_day": None, "rule": "official monthly_rank", "source": None})
 # E5's rows (backer prediction etc.): merged as-is, tagged with their source; E5 never writes this table
@@ -112,7 +122,7 @@ if _E5.returncode == 0:
     try:
         _e5 = json.loads(_E5.stdout)
         for r in _e5.get("rows", []):
-            r = dict(r); r.setdefault("top3", None); r.setdefault("top5", None); r.setdefault("top10", None)
+            r = dict(r); r.setdefault("n_days", None); r.setdefault("top3", None); r.setdefault("top5", None); r.setdefault("top10", None)
             r["producer"] = "E5"; r["merged_from"] = E5_SRC; r["merged_computed_at"] = _e5.get("computed_at")
             rows.append(r)
         e5_status = f"merged {len(_e5.get('rows', []))} rows (computed_at {_e5.get('computed_at')})"
@@ -123,4 +133,4 @@ for r in rows: r.setdefault("producer", "PH")
 out = {"computed_at": pd.Timestamp.now(tz="UTC").isoformat(), "e5_rows": e5_status, "truth": TRUTH_SRC + "; rank <= k; >= 10 ranked; unranked picks are misses", "rows": rows}
 p = R("web/north_star_table.json"); json.dump(out, open(p, "w"), indent=1)
 subprocess.run(["gsutil", "-q", "cp", p, "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/north_star_table.json"], check=False)
-for r in rows: print(f"{r['point']:9s} {r['model']:32s} {r['top3']} / {r['top5']} / {r['top10']}  n={r['n_days']} {r['first_day']}..{r['last_day']}")
+for r in rows: print(f"{r['point']:9s} {r['model']:32s} {r['top3']} / {r['top5']} / {r['top10']}  n={r.get('n_days')} {r.get('first_day')}..{r.get('last_day')}")
