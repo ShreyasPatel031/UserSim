@@ -1,0 +1,30 @@
+--- a/experiments/ph_predict/forecast.py (VM 61538501)
++++ b/experiments/ph_predict/forecast.py
+@@ -27,8 +27,16 @@
+ cc = [c for c in M.cols(tr, src) if not c.startswith(MP) and c not in ID and c != "llm_site"]
+ P_ = dict(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1,
+           colsample_bytree=0.5, reg_lambda=1.0)   # = makerfix_shadow's clean line / training_window P0
+-te["pred"] = np.mean([lgb.LGBMRegressor(random_state=s, verbose=-1, n_jobs=M.N_JOBS, **P_).fit(tr[cc], tr.logv).predict(te[cc])
+-                      for s in range(5)], axis=0)
++# REPRODUCIBILITY (orchestrator 15:47Z Nov 14; undeployed): (day, id) row order, deterministic row-wise LightGBM, fixed threads, 20 seeds,
++# input sha256 + versions written to results/forecast_repro_<day>.json (an audit rerun on the same snapshot is bit-identical)
++import hashlib, json as _json
++RS = int(os.environ.get("REPRO_SEEDS", "20")); RJ = int(os.environ.get("REPRO_JOBS", "4"))
++tr = tr.sort_values(["day", "id"], kind="stable"); te = te.sort_values(["day", "id"], kind="stable")
++_sha = lambda X: hashlib.sha256(pd.util.hash_pandas_object(X, index=False).values.tobytes()).hexdigest()[:16]
++te["pred"] = np.mean([lgb.LGBMRegressor(random_state=s, verbose=-1, deterministic=True, force_row_wise=True, n_jobs=RJ, **P_).fit(tr[cc], tr.logv).predict(te[cc])
++                      for s in range(RS)], axis=0)
++REPRO = {"clean_nosite": {"seeds": RS, "sha_train": _sha(tr[cc + ["logv"]]), "sha_test": _sha(te[["id"] + cc]), "inputs": len(cc)},
++         "versions": {"lightgbm": lgb.__version__, "numpy": np.__version__, "pandas": pd.__version__}}
+ te["score"] = te.pred
+ # PUBLISHED 00:05 ORDER = arm 2 (Shreyas, direct, Nov 13 ~19:10Z: "if its better on backtest deploy"; orchestrator call 19:06Z):
+ # 2025-trained clean_nosite with Gemini pitch/brand on 2025 rows (h25_live.py; 214 days top 3 60.7 vs 56.9, +3.9 [+1.4, +6.5]).
+@@ -45,6 +53,8 @@
+ except Exception as e:
+     ARM2 = f"fallback: clean_nosite (arm2 error {type(e).__name__}: {str(e)[:160]})"
+ print("published model:", ARM2, flush=True)
++REPRO["arm2"] = {k: v for k, v in (info.items() if "info" in dir() and isinstance(info, dict) else []) if k in ("seeds", "sha_train", "sha_test", "versions", "inputs")}
++REPRO["published"] = ARM2; _json.dump(REPRO, open(f"{RN.OUT}/forecast_repro_{day}.json", "w"), indent=1); print("repro:", _json.dumps(REPRO)[:300], flush=True)
+ te = te.sort_values("score", ascending=False)
+ L = [f"# Forecast for {day} (made before results; {len(te)} featured launches at fetch time)\n",
+      "| Predicted rank | Product | Tagline | Hunter PH followers |", "|---|---|---|---|"]

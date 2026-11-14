@@ -1,0 +1,7 @@
+--- a/experiments/ph_predict/why_drivers.py
++++ b/experiments/ph_predict/why_drivers.py
+@@ main(d): after items["forecast_drivers"] is set
++    try:   # tie note (pipeline_patches/20261114_repro/tie_note.py; undeployed)
++        import tie_note as TN; W["items"]["tie_note"] = TN.tie_note(os.path.expanduser(f"~/w/experiments/ph_predict/results/forecast_{d}.parquet"))
++    except Exception as e:
++        W["items"]["tie_note"] = {"status": f"not written ({type(e).__name__})"}
