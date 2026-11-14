@@ -20,7 +20,7 @@ mk() {   # $1 tree, $2 forecast.py source, $3 h25_live source or -, $4 extra (in
 }
 mk A $PH/forecast.py - - none; mk B $N/forecast.py $N/h25_live.py $N/input_guard.py none
 mk C $N/forecast.py $N/h25_live.py $N/input_guard.py real; mk D $N/forecast.py $N/h25_live.py $N/input_guard.py broken
-run() { X=$T/$1; (cd $X/ph && env -i HOME=$X PATH=/opt/exp/bin:/usr/bin:/bin TZ=America/Los_Angeles CLOUDSDK_CONFIG=/home/agent/.config/gcloud \
+run() { local X=$T/$1; (cd $X/ph && env -i HOME=$X PATH=/opt/exp/bin:/usr/bin:/bin TZ=America/Los_Angeles CLOUDSDK_CONFIG=/home/agent/.config/gcloud \
   HF_HOME=/home/agent/.cache/huggingface H25_DATA=$X/h25root H25_SRC=$W/ph_history/2025 PYTHONPATH=$W/mk LGB_THREADS=3 nice /opt/exp/bin/python3 forecast.py $D > $X/run.log 2>&1; echo "rc=$?" >> $X/run.log); }
 for X in A B C D; do run $X; echo "$X: $(grep -h "published model" $T/$X/run.log | cut -c1-230) | $(tail -1 $T/$X/run.log)"; done
 /opt/exp/bin/python3 - $T $D <<PY

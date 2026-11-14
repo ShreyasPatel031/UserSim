@@ -1,3 +1,8 @@
+# 12a.5 = 12a.4 + arm-3 label from the table + named arm-3 failure (UNDEPLOYED; arm-3 audit items 2 and 3). Supersedes 12a.4 after E5's re-check.
+two_predictions.py ccb316f9, arm3_backtest_label.txt afc4cfb1 (now in WANT), deploy_b12a.sh cab1bd88.
+The ranking follows the parquet's published_rank when present. "arm3 failed" in published_model gives model "arm2 (arm3 failed)" and
+fallback_used "arm3_failed" (+clean_nosite_fallback when arm 2 also failed).
+
 # 12a.4 = 12a.3 + labels from the one table (UNDEPLOYED; orchestrator 20:51Z Nov 14). two_predictions.py 4d8362e0 (pinned in deploy_b12a.sh).
 Every accuracy line is read from results/web/north_star_table.json by (point, model): 00:05 backtest rows for arm2 / clean_nosite, before-reveal
 'hybrid_vm (fixed prior)' and 'hidden_rank_only'. The label ends "label source: table <computed_at>". If the table can't be read, the 12a.3

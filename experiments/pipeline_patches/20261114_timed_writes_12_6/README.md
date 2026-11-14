@@ -1,3 +1,9 @@
+# Bundle 12.6 (UNDEPLOYED; orchestrator 21:24Z Nov 14). E5 vm_writers 844c4673 (e5_vm_writers_12_6.tgz). tw.sh exports WHY_LABEL_FROM_TABLE=1.
+FINAL deploy line (from this folder): `bash deploy_b12.sh aa94a20b fc631adb`. New code tarball tw_code_aa94a20b.tgz (md5 fc631adb) carrying the
+arm-3 audit fixes to scoreboard / conf_top3_shadow / why_drivers and this tw.sh.
+Checks 21:28Z (VM scratch b126, writes stubbed, tw.sh env): manifest OK; track_record, prob_0005, prob_prereveal, period, period_score rc 0;
+period_score Oct 31 / Nov 8 rc 0; held_team_* rc 3 (no salt); 5 stubbed writes, all tmp/e5/website.
+
 # Bundle 12.5 = 12.4 with E5 vm_writers c01927d0 (UNDEPLOYED; orchestrator 20:43Z Nov 14). Supersedes 12.4 / 12.3: E5's writers read the
 today-rows marker's fixed_from per day (12.4 would drop the "polluted inputs" note on the deploy evening for days built before the fix).
 Only change vs 12.4: deploy_b12.sh E5W_MD5=c01927d0, file tmp/e5/vm_writers/e5_vm_writers_12_5.tgz.
