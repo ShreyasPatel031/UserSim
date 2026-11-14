@@ -8,6 +8,8 @@ Feeds and their maximum allowed gap (orchestrator 20:54Z Nov 13, for Shreyas):
   day_close_read           a snapshots/<day+1>T2345..2359PT read of day D, present by 00:05 PT                           once/day
   first_comment_read       an api_comments read at 00:07 PT (00:00-00:15 PT window) present by 00:20 PT                  once/day
   fleet_status             mailbox/from_cursor/status.json "utc"; VMs alive vs 20 expected; dead slots                     20 min
+  launch_reread            tables/launches/<YYYYMMDDTHHMMSS>-<hex>.parquet: the pipeline VM's daily ~00:16 PT reread of the
+                           month (a part spanning 31 days whose last day is D) must exist by 01:30 PT on D+1   daily
   vote_snapshots_daily_export  bucket raw/vote_snapshots/<PT day>.jsonl (daily export): previous PT day present by 08:00Z  daily
   vote_snapshots_hourly    tables/vote_snapshots/<YYYYMMDDTHHMMSS>-<hex>.parquet, one part per hourly load: newest
                            upload time and that part's max(at) and row count                                              75 min
@@ -185,6 +187,17 @@ def check():
             cm0 = [t for t in pool if t.astimezone(PT).date() == today and t.astimezone(PT).hour == 0 and t.astimezone(PT).minute <= 15]
             if not cm0:
                 out.append({"feed": "first_comment_read", "day_pt": today.isoformat(), "due_pt": "00:20", "note": "no 00:00-00:15 PT comment read"})
+    # daily month reread of launches (orchestrator 12:38Z Nov 14): yesterday's part by 01:30 PT today
+    pn2 = now.astimezone(PT)
+    if (pn2.hour, pn2.minute) >= (1, 30):
+        yd = (pn2.date() - dt.timedelta(days=1)).isoformat()
+        st_, w_, due_ = launch_reread_status(yd, launch_rereads())
+        if st_ != "on_time":
+            row = {"feed": "launch_reread", "day_pt": yd, "status": st_, "due_utc": due_.astimezone(UTC).isoformat(),
+                   "written_utc": w_.isoformat() if w_ else None}
+            if pn2.weekday() == 0:  # Monday's reread feeds the weekly truth read
+                row["critical"] = "weekly truth read"
+            out.append(row)
     # hourly warehouse load (PH ops 22:35Z): one parquet part per load; VM is off 23:00-00:05 PT (~65-70 min, under 75)
     parts = [l.split("\t") for l in sh("gcloud", "storage", "objects", "list", f"{G}/tables/vote_snapshots/*.parquet",
                                         "--format=value(name,creation_time)").splitlines() if "\t" in l]
@@ -206,6 +219,41 @@ def check():
     else:
         out.append({"feed": "vote_snapshots_hourly", "last_load": None, "note": "no parts"})
     return out
+
+
+def launch_rereads():
+    """{day D: (part name, written_utc)} for every daily month reread part in tables/launches (a part spanning >= 20 days;
+    D = its last day). Reads only the 'day' and 'updated_at' columns."""
+    import io
+    import pandas as pd
+    out = {}
+    names = [l for l in sh("gcloud", "storage", "objects", "list", f"{G}/tables/launches/*.parquet", "--format=value(name)").splitlines() if l]
+    bucket = G.split("//")[1].split("/")[0]
+    for n in names:
+        if n.rsplit("/", 1)[-1].startswith("initial"):
+            continue
+        raw = subprocess.run(["gsutil", "cat", f"gs://{bucket}/{n}"], capture_output=True).stdout
+        try:
+            df = pd.read_parquet(io.BytesIO(raw), columns=["day", "updated_at"])
+        except Exception:
+            continue
+        days = sorted(df["day"].astype(str).unique())
+        if len(days) < 20:
+            continue
+        w = ts(str(df["updated_at"].max()))
+        d = days[-1]
+        if d not in out or (w and w < out[d][1]):
+            out[d] = (n.rsplit("/", 1)[-1], w)
+    return out
+
+
+def launch_reread_status(day, rr):
+    """(status, written_utc) for day D: on_time / late / missing, against 01:30 PT on D+1."""
+    due = dt.datetime.combine(dt.date.fromisoformat(day) + dt.timedelta(days=1), dt.time(1, 30), PT)
+    if day not in rr:
+        return "missing", None, due
+    w = rr[day][1]
+    return ("on_time" if w and w <= due else "late"), w, due
 
 
 def first_comment_reads(d0, d1):
@@ -294,6 +342,26 @@ def main():
             for b in br:
                 f.write(json.dumps({"checked_utc": dt.datetime.now(UTC).isoformat(), **b}) + "\n")
         print(f"FRESHNESS breaches={len(br)}")
+    elif mode == "launch_reread":
+        rr = launch_rereads()
+        D0, D1 = dt.date.fromisoformat(sys.argv[3]), dt.date.fromisoformat(sys.argv[4])
+        rows = []
+        d = D0
+        while d <= D1:
+            st_, w_, due_ = launch_reread_status(d.isoformat(), rr)
+            if due_ <= dt.datetime.now(UTC):
+                rows.append({"feed": "launch_reread", "day_pt": d.isoformat(), "status": st_,
+                             "due_utc": due_.astimezone(UTC).isoformat(), "written_utc": w_.isoformat() if w_ else None,
+                             "late_min": round((w_ - due_).total_seconds() / 60, 1) if w_ and st_ == "late" else None})
+            d += dt.timedelta(days=1)
+        with open(f"{W}/launch_reread_ledger.jsonl", "w") as f:
+            for r in rows:
+                f.write(json.dumps(r) + "\n")
+        for r in rows:
+            if r["status"] != "on_time":
+                print(r["day_pt"], r["status"], r["written_utc"], r["late_min"])
+        from collections import Counter
+        print("LAUNCH_REREAD", dict(Counter(r["status"] for r in rows)))
     elif mode == "first_comment":
         for d, t in first_comment_reads(sys.argv[3], sys.argv[4]).items():
             print(d, t)
