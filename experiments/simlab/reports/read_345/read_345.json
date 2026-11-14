@@ -1,0 +1,109 @@
+{
+ "design": "Value of the extra 03:30 / 03:45 recorder read (orchestrator 01:36Z Nov 14). Counts only. Direction only at this n.\n(a) posts_ts (15-min, daily_rank_at_fetch, fetched_at) on days with pre-reveal ranks: hidden order at 03:00 vs 03:30 vs 03:45 PT (latest\n    read <= T within 20 min); top-10 position changes; top 3/5/10 vs official daily_rank, paired; comment counts 03:00 -> 03:45.\n(b) vote_snapshots (hourly rank_now) on the 11 recorder days: 01:00 vs 02:00 vs 03:00, same metrics (does the order converge?).",
+ "(a) days": [
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11"
+ ],
+ "(a) posts_ts 15-min": {
+  "days": 5,
+  "03:00 top3/5/10": [
+   66.7,
+   72.0,
+   76.0
+  ],
+  "03:30": [
+   66.7,
+   76.0,
+   80.0
+  ],
+  "03:45": [
+   66.7,
+   76.0,
+   80.0
+  ],
+  "03:45 - 03:00 [CI]": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    4.0,
+    0.0,
+    12.0
+   ],
+   [
+    4.0,
+    0.0,
+    8.0
+   ]
+  ],
+  "top-10 positions changed 03:00->03:30 / ->03:45 (mean per day)": [
+   5.4,
+   6.2
+  ],
+  "comments 03:00->03:45: new comments per day, share of launches gaining": [
+   19.8,
+   0.3
+  ]
+ },
+ "(b) vote_snapshots hourly": {
+  "days": 11,
+  "01:00": [
+   69.7,
+   56.4,
+   62.7
+  ],
+  "02:00": [
+   69.7,
+   65.5,
+   69.1
+  ],
+  "03:00": [
+   72.7,
+   74.5,
+   72.7
+  ],
+  "02:00 - 01:00 [CI]": [
+   [
+    -0.0,
+    -12.1,
+    12.1
+   ],
+   [
+    9.1,
+    3.6,
+    14.5
+   ],
+   [
+    6.4,
+    0.0,
+    12.7
+   ]
+  ],
+  "03:00 - 02:00 [CI]": [
+   [
+    3.0,
+    0.0,
+    9.1
+   ],
+   [
+    9.1,
+    0.0,
+    18.2
+   ],
+   [
+    3.6,
+    -1.8,
+    9.1
+   ]
+  ],
+  "top-10 positions changed 01->02 / 02->03 (mean per day)": [
+   7.36,
+   6.18
+  ]
+ }
+}
