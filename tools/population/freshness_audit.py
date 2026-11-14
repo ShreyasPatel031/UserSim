@@ -191,12 +191,16 @@ def check():
     pn2 = now.astimezone(PT)
     if (pn2.hour, pn2.minute) >= (1, 30):
         yd = (pn2.date() - dt.timedelta(days=1)).isoformat()
-        st_, w_, due_ = launch_reread_status(yd, launch_rereads())
-        if st_ != "on_time":
+        rr_ = launch_rereads()
+        st_, w_, due_ = launch_reread_status(yd, rr_)
+        cov = reread_coverage(yd, rr_[yd][2]) if yd in rr_ else {}
+        if st_ != "on_time" or cov:
             row = {"feed": "launch_reread", "day_pt": yd, "status": st_, "due_utc": due_.astimezone(UTC).isoformat(),
-                   "written_utc": w_.isoformat() if w_ else None}
-            if pn2.weekday() == 0:  # Monday's reread feeds the weekly truth read
+                   "written_utc": w_.isoformat() if w_ else None, "coverage_problems": cov or None}
+            if pn2.weekday() == 0:  # Monday's reread is the weekly truth read
                 row["critical"] = "weekly truth read"
+            if pn2.day in (1, 2):  # the closed month is only in the 1st and 2nd rereads; both missing = unrecoverable
+                row["critical"] = "monthly truth read (unrecoverable if the 1st and 2nd both miss)"
             out.append(row)
     # hourly warehouse load (PH ops 22:35Z): one parquet part per load; VM is off 23:00-00:05 PT (~65-70 min, under 75)
     parts = [l.split("\t") for l in sh("gcloud", "storage", "objects", "list", f"{G}/tables/vote_snapshots/*.parquet",
@@ -234,7 +238,7 @@ def launch_rereads():
             continue
         raw = subprocess.run(["gsutil", "cat", f"gs://{bucket}/{n}"], capture_output=True).stdout
         try:
-            df = pd.read_parquet(io.BytesIO(raw), columns=["day", "updated_at"])
+            df = pd.read_parquet(io.BytesIO(raw), columns=["id", "day", "votes", "weekly_rank", "monthly_rank", "updated_at"])
         except Exception:
             continue
         days = sorted(df["day"].astype(str).unique())
@@ -243,7 +247,56 @@ def launch_rereads():
         w = ts(str(df["updated_at"].max()))
         d = days[-1]
         if d not in out or (w and w < out[d][1]):
-            out[d] = (n.rsplit("/", 1)[-1], w)
+            out[d] = (n.rsplit("/", 1)[-1], w, df)
+    return out
+
+
+def reread_coverage(day, df):
+    """coverage of the reread for day D (read on D+1): every PT day D-30..D has >= 1 launch row and no null votes; when
+    D+1 is a Monday, the closed week D-6..D has weekly_rank on every row; when D+1 is the 1st, the closed month has
+    monthly_rank on every row. Returns {} when complete, else the problems as counts."""
+    D = dt.date.fromisoformat(day)
+    read_day = D + dt.timedelta(days=1)
+    df = df.assign(day=df["day"].astype(str))
+    have = df.groupby("day").size().to_dict()
+    window = [(D - dt.timedelta(days=i)).isoformat() for i in range(30, -1, -1)]
+    prob = {}
+    miss = [d for d in window if not have.get(d)]
+    if miss:
+        prob["days_without_rows"] = miss
+    nv = int(df[df["day"].isin(window)]["votes"].isna().sum())
+    if nv:
+        prob["null_votes_rows"] = nv
+    if read_day.weekday() == 0:
+        wk = [(D - dt.timedelta(days=i)).isoformat() for i in range(6, -1, -1)]
+        sub = df[df["day"].isin(wk)]
+        bad = [d for d in wk if not have.get(d)] + [f"{int(sub['weekly_rank'].isna().sum())} rows without weekly_rank"] \
+            if (any(not have.get(d) for d in wk) or sub["weekly_rank"].isna().any()) else []
+        if bad:
+            prob["weekly_truth_read_incomplete"] = bad
+    if read_day.day == 1:
+        m0 = D.replace(day=1)
+        mo = [(m0 + dt.timedelta(days=i)).isoformat() for i in range((D - m0).days + 1)]
+        sub = df[df["day"].isin(mo)]
+        if any(not have.get(d) for d in mo) or sub["monthly_rank"].isna().any():
+            prob["monthly_truth_read_incomplete"] = [d for d in mo if not have.get(d)] + \
+                [f"{int(sub['monthly_rank'].isna().sum())} rows without monthly_rank"]
+    return prob
+
+
+def reread_dropouts(rr):
+    """{D: {launch_day: n}}: launches present in the previous reread but absent from D's reread, per launch day, for the
+    days both windows cover."""
+    out = {}
+    days = sorted(rr)
+    for a, b in zip(days, days[1:]):
+        pa, pb = rr[a][2].assign(day=rr[a][2]["day"].astype(str)), rr[b][2].assign(day=rr[b][2]["day"].astype(str))
+        common = set(pa["day"]) & set(pb["day"])
+        ida = pa[pa["day"].isin(common)].groupby("day")["id"].apply(set)
+        idb = pb[pb["day"].isin(common)].groupby("day")["id"].apply(set)
+        drop = {d: len(ida[d] - idb.get(d, set())) for d in ida.index if ida[d] - idb.get(d, set())}
+        if drop:
+            out[b] = {"vs_previous_reread": a, "dropped_by_launch_day": drop}
     return out
 
 
@@ -344,22 +397,29 @@ def main():
         print(f"FRESHNESS breaches={len(br)}")
     elif mode == "launch_reread":
         rr = launch_rereads()
+        drops = reread_dropouts(rr)
         D0, D1 = dt.date.fromisoformat(sys.argv[3]), dt.date.fromisoformat(sys.argv[4])
         rows = []
         d = D0
         while d <= D1:
             st_, w_, due_ = launch_reread_status(d.isoformat(), rr)
             if due_ <= dt.datetime.now(UTC):
-                rows.append({"feed": "launch_reread", "day_pt": d.isoformat(), "status": st_,
+                k = d.isoformat()
+                rd = d + dt.timedelta(days=1)
+                rows.append({"feed": "launch_reread", "day_pt": k, "status": st_,
                              "due_utc": due_.astimezone(UTC).isoformat(), "written_utc": w_.isoformat() if w_ else None,
-                             "late_min": round((w_ - due_).total_seconds() / 60, 1) if w_ and st_ == "late" else None})
+                             "late_min": round((w_ - due_).total_seconds() / 60, 1) if w_ and st_ == "late" else None,
+                             "truth_read": "weekly" if rd.weekday() == 0 else ("monthly" if rd.day == 1 else None),
+                             "coverage_problems": (reread_coverage(k, rr[k][2]) or None) if k in rr else None,
+                             "dropouts": drops.get(k)})
             d += dt.timedelta(days=1)
         with open(f"{W}/launch_reread_ledger.jsonl", "w") as f:
             for r in rows:
                 f.write(json.dumps(r) + "\n")
         for r in rows:
-            if r["status"] != "on_time":
-                print(r["day_pt"], r["status"], r["written_utc"], r["late_min"])
+            if r["status"] != "on_time" or r["coverage_problems"] or r["dropouts"] or r["truth_read"]:
+                print(r["day_pt"], r["status"], r["late_min"], "truth=" + str(r["truth_read"]),
+                      "cov=" + json.dumps(r["coverage_problems"]), "drop=" + json.dumps(r["dropouts"]))
         from collections import Counter
         print("LAUNCH_REREAD", dict(Counter(r["status"] for r in rows)))
     elif mode == "first_comment":

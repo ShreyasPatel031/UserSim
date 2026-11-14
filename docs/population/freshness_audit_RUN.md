@@ -14,7 +14,7 @@ when a live feed stops. It detects only; it never changes, restarts or scales an
 | vote_snapshots hourly load | `tables/vote_snapshots/*.parquet` newest part upload time (one part per load; VM off 23:00–00:05 PT) | 75 min |
 | day-close read | `snapshots/` tag 23:45–00:05 PT for the previous day | by 00:05 PT |
 | first comment read | `api_comments/` read 00:00–00:15 PT | by 00:20 PT |
-| launch reread | `tables/launches/*.parquet` 31-day part ending day D (~00:16 PT run) | by 01:30 PT on D+1; Mondays critical |
+| launch reread | `tables/launches/*.parquet` 31-day part ending day D (~00:16 PT run) | by 01:30 PT on D+1; must cover all 31 days with votes; Monday read must hold the closed week with weekly_rank, the 1st/2nd the closed month with monthly_rank (critical); drop-outs vs the previous reread counted per launch day |
 | vote_snapshots export | `raw/vote_snapshots/<PT day>.jsonl` (daily export) | previous PT day by 08:00Z |
 
 Not yet covered: store build cadence, and daily
