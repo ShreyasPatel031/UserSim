@@ -104,7 +104,23 @@ if os.path.exists(R("weekly_board_pred_days.csv")):
                  "source": "results/weekly_board_pred_days.csv"})
 rows.append({"point": "monthly", "model": "board", "method": "not yet scored (first score Dec 1)", "top3": None, "top5": None, "top10": None, "n_days": 0,
              "first_day": None, "last_day": None, "rule": "official monthly_rank", "source": None})
-out = {"computed_at": pd.Timestamp.now(tz="UTC").isoformat(), "truth": TRUTH_SRC + "; rank <= k; >= 10 ranked; unranked picks are misses", "rows": rows}
+# E5's rows (backer prediction etc.): merged as-is, tagged with their source; E5 never writes this table
+E5_SRC = "results/web/north_star_rows_e5.json"
+_E5 = subprocess.run(["gsutil", "cat", "gs://usersim-bakeoff-347838016394/usersim_sim/" + E5_SRC], capture_output=True, text=True)
+e5_status = "missing"
+if _E5.returncode == 0:
+    try:
+        _e5 = json.loads(_E5.stdout)
+        for r in _e5.get("rows", []):
+            r = dict(r); r.setdefault("top3", None); r.setdefault("top5", None); r.setdefault("top10", None)
+            r["producer"] = "E5"; r["merged_from"] = E5_SRC; r["merged_computed_at"] = _e5.get("computed_at")
+            rows.append(r)
+        e5_status = f"merged {len(_e5.get('rows', []))} rows (computed_at {_e5.get('computed_at')})"
+    except Exception as e:
+        e5_status = f"unreadable: {type(e).__name__}"
+print("E5 rows:", e5_status)
+for r in rows: r.setdefault("producer", "PH")
+out = {"computed_at": pd.Timestamp.now(tz="UTC").isoformat(), "e5_rows": e5_status, "truth": TRUTH_SRC + "; rank <= k; >= 10 ranked; unranked picks are misses", "rows": rows}
 p = R("web/north_star_table.json"); json.dump(out, open(p, "w"), indent=1)
 subprocess.run(["gsutil", "-q", "cp", p, "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/north_star_table.json"], check=False)
 for r in rows: print(f"{r['point']:9s} {r['model']:32s} {r['top3']} / {r['top5']} / {r['top10']}  n={r['n_days']} {r['first_day']}..{r['last_day']}")
