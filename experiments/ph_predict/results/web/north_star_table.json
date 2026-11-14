@@ -1,5 +1,6 @@
 {
- "computed_at": "2026-11-14T21:40:22.146367+00:00",
+ "computed_at": "2026-11-14T22:30:29.392931+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-14T22:29:18.136789+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [
   {
@@ -13,7 +14,8 @@
    "first_day": "2026-04-01",
    "last_day": "2026-10-31",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/history_retrain_decomp_preds_arm2.parquet"
+   "source": "results/history_retrain_decomp_preds_arm2.parquet",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -26,7 +28,8 @@
    "first_day": "2026-04-01",
    "last_day": "2026-10-31",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/history_retrain_decomp_preds_arm2.parquet"
+   "source": "results/history_retrain_decomp_preds_arm2.parquet",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -39,7 +42,8 @@
    "first_day": "2026-04-01",
    "last_day": "2026-10-31",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/arm3_vs_arm2_preds.parquet"
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -52,7 +56,8 @@
    "first_day": "2026-04-01",
    "last_day": "2026-10-31",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/arm3_vs_arm2_preds.parquet"
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -82,7 +87,8 @@
    "first_day": "2026-04-01",
    "last_day": "2026-10-31",
    "rule": "difference in points, paired day bootstrap 10,000",
-   "source": "results/arm3_vs_arm2_preds.parquet"
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -112,7 +118,8 @@
    "first_day": "2025-03-01",
    "last_day": "2025-12-05",
    "rule": "difference in points, paired day bootstrap 10,000; truth = the 2025 lists' dailyRank (not in the truth file)",
-   "source": "results/arm3_vs_arm2_preds.parquet"
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -125,7 +132,8 @@
    "first_day": "2026-04-01",
    "last_day": "2026-10-31",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/readable_preds_v2.parquet"
+   "source": "results/readable_preds_v2.parquet",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -138,7 +146,8 @@
    "first_day": "2026-10-25",
    "last_day": "2026-11-12",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/web/scoreboard_orders.json"
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -151,7 +160,8 @@
    "first_day": "2026-10-29",
    "last_day": "2026-11-12",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/web/scoreboard_orders.json"
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -164,7 +174,8 @@
    "first_day": "2026-11-13",
    "last_day": "2026-11-13",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/web/scoreboard_orders.json"
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
   },
   {
    "point": "0005",
@@ -177,7 +188,8 @@
    "first_day": "2026-11-13",
    "last_day": "2026-11-13",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/web/scoreboard_orders.json"
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
   },
   {
    "point": "prereveal",
@@ -190,7 +202,8 @@
    "first_day": "2026-11-02",
    "last_day": "2026-11-13",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/hybrid_lodo_ku_orders.json"
+   "source": "results/hybrid_lodo_ku_orders.json",
+   "producer": "PH"
   },
   {
    "point": "prereveal",
@@ -203,7 +216,8 @@
    "first_day": "2026-11-02",
    "last_day": "2026-11-13",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/hybrid_lodo_ku_fixedprior_orders.json"
+   "source": "results/hybrid_lodo_ku_fixedprior_orders.json",
+   "producer": "PH"
   },
   {
    "point": "prereveal",
@@ -216,7 +230,8 @@
    "first_day": "2026-11-02",
    "last_day": "2026-11-13",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
-   "source": "results/hybrid_lodo_ku_orders.json"
+   "source": "results/hybrid_lodo_ku_orders.json",
+   "producer": "PH"
   },
   {
    "point": "weekly",
@@ -229,7 +244,8 @@
    "first_day": "2026-04-06",
    "last_day": "2026-10-25",
    "rule": "share of the board's top k in the official weekly top k",
-   "source": "results/weekly_board_pred_days.csv"
+   "source": "results/weekly_board_pred_days.csv",
+   "producer": "PH"
   },
   {
    "point": "monthly",
@@ -242,7 +258,28 @@
    "first_day": null,
    "last_day": null,
    "rule": "official monthly_rank",
-   "source": null
+   "source": null,
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "backer prediction (voter_harness pair model)",
+   "method": "replay with strict timing (reads before 00:00 PT), scored against held people's own upvote lists read up to 2026-11-13 19:21",
+   "metric": "recall at N (N = observed held backers per launch), pooled",
+   "value": 17.9,
+   "baseline_most_active": 21.1,
+   "n_days": 5,
+   "n_backers": 1630,
+   "first_day": "2026-11-08",
+   "last_day": "2026-11-12",
+   "rule": "observed backers = people held before the freeze and re-read after the day closed whose own upvote list contains the launch; our list and the baseline are ranked within those re-read people; N = observed backers per launch",
+   "source": "results/web/backer_prediction.json",
+   "top3": null,
+   "top5": null,
+   "top10": null,
+   "producer": "E5",
+   "merged_from": "results/web/north_star_rows_e5.json",
+   "merged_computed_at": "2026-11-14T22:29:18.136789+00:00"
   }
  ]
 }
