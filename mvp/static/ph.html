@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=15">
+<link rel="stylesheet" href="/static/ph_site.css?v=16">
 </head>
 <body>
 <div class="wrap">
@@ -124,30 +124,48 @@ function markExplain(){
   document.querySelectorAll("#pred li.row, #live li.row").forEach(li=>li.classList.toggle("has-explain", !!EXPL.launches[li.dataset.id]));
   if(EXPL_ID && !EXPL.launches[EXPL_ID]) $("#explain").hidden = true;
 }
-const EXPL_TITLE = {who: "Who is predicted to back it", say: "What they will say", competitors: "Competitors", why: "Why the model predicts this"};
-const LABEL_KEYS = ["label","segment","name","text","question","concern","reaction","driver","feature","title","product","launch"];
-function fmtNum(k, n){
-  return (/share|prob|conf|coverage|rate|pct|p_/i.test(k) && n >= 0 && n <= 1) ? Math.round(n*100) + "%" : String(n);
+const EXPL_TITLE = {who: "Who is predicted to back it", say: "What they may say", competitors: "Closest earlier launches", why: "Why the model predicts this"};
+const pct = (n)=> Math.round(Number(n) * 100) + "%";
+const ul = (a)=> Array.isArray(a) && a.length ? `<ul class="ex-l">${a.map(i=>`<li>${esc(typeof i === "string" ? i : JSON.stringify(i))}</li>`).join("")}</ul>` : "";
+function exWho(d, L){
+  const segs = (d.segments || []).map(s=>`<tr><td>${esc(s.segment)}</td><td class="n">${pct(s.share_of_held_expected_votes)}</td><td class="n">${esc(s.expected_votes)}</td><td class="n">${esc(s["n_likely (chance >= 5%)"] ?? "")}</td></tr>`).join("");
+  const topics = (d.what_likely_backers_upvote || []).map(t=>`<li>${esc(t.topic)} <span class="ex-n">${pct(t.share_of_their_recent_upvotes)}</span></li>`).join("");
+  return `<p class="ex-sum">Among the ${Number(d.n_held_active_people || 0).toLocaleString()} people we hold profiles for, about <b>${esc(d.expected_held_votes)}</b> votes are expected, by role:</p>
+    <table class="ex-t"><thead><tr><th>Role (from their own bio)</th><th class="n">Share</th><th class="n">Exp. votes</th><th class="n">Likely*</th></tr></thead><tbody>${segs}</tbody></table>
+    <p class="ex-acc">*people with a 5%+ chance of voting.</p>
+    ${topics ? `<h5>What the likeliest backers upvote</h5><ul class="ex-l">${topics}</ul>` : ""}`;
 }
-function rend(v, k = ""){
-  if(v == null) return "";
-  if(typeof v === "number") return `<span class="ex-n">${esc(fmtNum(k, v))}</span>`;
-  if(typeof v === "string") return `<span>${esc(v)}</span>`;
-  if(Array.isArray(v)) return `<ul class="ex-l">${v.map(i=>`<li>${rend(i, k)}</li>`).join("")}</ul>`;
-  const keys = Object.keys(v), lk = LABEL_KEYS.find(x=>typeof v[x] === "string");
-  const rest = keys.filter(x=>x !== lk).map(x=>{
-    const val = v[x], plain = typeof val === "number" || typeof val === "string";
-    return plain ? `<span class="ex-kv"><i>${esc(x.replace(/_/g," "))}</i> ${rend(val, x)}</span>` : `<div class="ex-sub"><i>${esc(x.replace(/_/g," "))}</i>${rend(val, x)}</div>`;
-  }).join("");
-  return `${lk ? `<b>${esc(v[lk])}</b> ` : ""}${rest}`;
+function exSay(d, L){
+  const part = (t, a, lab)=> a && a.length ? `<h5>${t}${lab ? ` <small>${esc(lab)}</small>` : ""}</h5>${ul(a)}` : "";
+  return part("Concerns", d.top_concerns, L.top_concerns) + part("Questions", d.top_questions, L.top_questions) + part("Sample reactions", d.reactions, L.reactions)
+    + `<p class="ex-acc">Written by our simulator from the launch's own text before any comments existed.</p>`;
+}
+function exComp(d, L){
+  const arr = Array.isArray(d) ? d : (d.items || []);
+  return arr.map(c=>`<div class="ex-c"><b>${esc(c.name)}</b> <span class="ex-kv">${esc(c.launch_date || "")}${c.final_daily_rank ? ` · finished #${esc(c.final_daily_rank)}` : ""}${c.final_votes ? ` · ${Math.round(c.final_votes)} votes` : ""} · ${pct(c.similarity)} similar</span>
+    ${c.commenters_praised ? `<div class="ex-sub"><i>People liked</i>${ul(c.commenters_praised)}</div>` : ""}${c.commenters_complained ? `<div class="ex-sub"><i>People disliked</i>${ul(c.commenters_complained)}</div>` : ""}</div>`).join("")
+    + `<p class="ex-acc">Praise and complaints are paraphrased from real commenters, not quotes.</p>`;
+}
+function exWhy(d, L){
+  const dr = (d.top_drivers || []).map(r=>`<li>${esc(r.input)} <span class="ex-n">${Number(r.points) > 0 ? "+" : ""}${esc(r.points)}</span></li>`).join("");
+  return `<ul class="ex-l">${dr}</ul>${d.rank_in_explanation_model ? `<p class="ex-acc">This simpler model would rank it #${esc(d.rank_in_explanation_model)}.</p>` : ""}
+    <p class="ex-acc">A readable stand-in, not the published model. Points are how much each input moved its score.</p>`;
+}
+const EX_RENDER = {who: exWho, say: exSay, competitors: exComp, why: exWhy};
+function exAcc(b, L){
+  const keys = {who: ["predictive_value","coverage"], say: [], competitors: ["predictive_value"], why: ["predictive_value","fidelity"]}[b] || [];
+  const t = keys.map(k=>L[k]).filter(Boolean);
+  return t.length ? `<p class="ex-acc"><b>Accuracy:</b> ${t.map(esc).join(" ")}</p>` : "";
 }
 function showExplain(id){
   const d = EXPL.launches[id], x = VIEW.launches.find(l=>l.id===id), el = $("#explain");
   if(!d || !x){ el.hidden = true; return; }
   EXPL_ID = id;
   el.hidden = false;
-  el.innerHTML = `<h3>${esc(x.name)}${x.slug ? ` <a class="ex-ph" href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">View on Product Hunt ↗</a>` : ""}</h3>` + ["who","say","competitors","why"].filter(b=>d[b]).map(b=>
-    `<div class="ex-block"><h4>${EXPL_TITLE[b]}</h4>${rend(d[b].body)}${d[b].accuracy ? `<p class="ex-acc">${esc(d[b].accuracy)}</p>` : ""}</div>`).join("");
+  el.innerHTML = `<h3>${esc(x.name)}${x.slug ? ` <a class="ex-ph" href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">View on Product Hunt ↗</a>` : ""}</h3>` +
+    ["who","say","competitors","why"].filter(b=>d[b]).map(b=>{
+      const L = (EXPL.labels || {})[b] || {};
+      return `<div class="ex-block"><h4>${EXPL_TITLE[b]}</h4>${EX_RENDER[b](d[b], L)}${exAcc(b, L)}</div>`; }).join("");
   el.scrollIntoView({behavior: "smooth", block: "nearest"});
 }
 document.addEventListener("click", e=>{
