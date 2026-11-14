@@ -46,7 +46,7 @@ if KIND == "0005":
             for k in (3, 5, 10):
                 m = FZ["models"][f"top{k}"]; lin = m["intercept"] + sum(m["coef"][f] * F_[f] for f in FZ["features"]); S[f"p_top{k}"] = rescale(1 / (1 + np.exp(-lin)), min(k, n))
         else:
-            S = S.sort_values("rank").reset_index(drop=True); method = "rank table fallback (no scores published)"
+            S = S.sort_values("rank").reset_index(drop=True); method = "rank table by position (published model not arm 2, or no scores)"
             for k in (3, 5, 10):
                 tb = {int(a): b for a, b in FZ["fallback rank table (no scores)"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale(np.minimum(np.arange(1, n + 1), 16).astype(int).tolist() and [tb.get(min(r, 16), 0.0) for r in range(1, n + 1)], min(k, n))
         S["rank"] = np.arange(1, n + 1)
