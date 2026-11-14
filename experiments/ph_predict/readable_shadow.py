@@ -31,6 +31,11 @@ def main(d):
     if te0.empty:
         print(json.dumps({"day": d, "status": "no 00:05 rows"})); return
     tr, te, _ = TW.prep(tr0, te0)
+    # ph_n_makers == 0 means "makers not visible in the read", not a team of zero (orchestrator 23:56Z Nov 14, from E5's finding):
+    # treat it as missing in training and serving, and show it as null in "values"
+    for Z in (tr, te):
+        Z.loc[Z.ph_n_makers == 0, "ph_n_makers"] = np.nan
+    te0 = te0.copy(); te0.loc[te0.ph_n_makers == 0, "ph_n_makers"] = np.nan
     sign = np.where(Ridge(alpha=3.0).fit(zday(tr), tr.logv).coef_ >= 0, 1, -1).astype(int)
     P, C, base = [], np.zeros((len(te), len(X10))), []
     for s in range(5):
