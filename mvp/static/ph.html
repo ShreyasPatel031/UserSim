@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=6">
+<link rel="stylesheet" href="/static/ph_site.css?v=8">
 </head>
 <body>
 <div class="wrap">
@@ -24,16 +24,20 @@
       <h1 id="title">Live Product Hunt user simulations</h1>
       <p class="metric" id="metric"></p>
     </div>
-    <label class="label">Day<br><select id="day" aria-label="Launch day"></select></label>
+    <div class="daystep" role="group" aria-label="Launch day">
+      <button type="button" id="day-prev" aria-label="Previous day"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span id="day-label" aria-live="polite">—</span>
+      <button type="button" id="day-next" aria-label="Next day"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
   </header>
 
   <div class="vs" id="vs">
     <section class="col" aria-labelledby="pred-h">
       <header class="colhead">
-        <div><p class="label">Forecast</p><h2 id="pred-h">Our call</h2></div>
+        <div><p class="label">Our call<span class="wide"> · user simulations</span></p><h2 id="pred-h">Predicted votes</h2></div>
         <div class="tabs" role="tablist" aria-label="Forecast">
-          <button type="button" role="tab" id="tab-mid" data-v="mid">Midnight</button>
-          <button type="button" role="tab" id="tab-pre" data-v="pre">Before votes</button>
+          <button type="button" role="tab" id="tab-mid" data-v="mid">Product only</button>
+          <button type="button" role="tab" id="tab-pre" data-v="pre">Product + comments</button>
         </div>
       </header>
       <ol class="board" id="pred" aria-live="polite"><li class="skeleton">Loading…</li></ol>
@@ -88,9 +92,9 @@ function failed(sel, what, e){
 async function load(day){
   try { VIEW = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
   catch(e){ failed("#pred", "the forecast", e); failed("#live", "the leaderboard", e); return; }
-  $("#day").innerHTML = VIEW.days.map(d=>`<option ${d===VIEW.day?"selected":""}>${esc(d)}</option>`).join("");
+  dayStep();
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
-  $("#kicker").textContent = `Product Hunt · ${VIEW.day}`;
+
   $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
   renderPred(); renderLive(); drawLinks();
 }
@@ -174,11 +178,25 @@ async function side(){
   try {
     const t = await getJSON("/api/ph/track-record");
     const r = (t.rows||[]).find(x=>x.key==="0005" && (x.source||"live")==="live");
-    if(r && r.n_days) $("#metric").textContent = `So far our user simulations have predicted ${Math.round(r.top10)}% of each day's top 10 before public votes (${r.n_days} days).`;
+    if(r && r.n_days) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Math.round(r.top10)}%</b></span> of each day's top 10 before public votes.`;
   } catch(e){ /* the line is optional */ }
 }
 
-$("#day").onchange = (e)=>{ $("#whyp").hidden = true; TAB = null; load(e.target.value); };
+// Day stepper: VIEW.days is newest first; "previous" goes back in time.
+function dayStep(){
+  const d = VIEW.days, i = d.indexOf(VIEW.day);
+  const fmt = new Date(VIEW.day + "T12:00:00").toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"});
+  $("#day-label").textContent = VIEW.day === VIEW.today ? `Today · ${fmt}` : fmt;
+  $("#day-prev").disabled = i < 0 || i >= d.length - 1;
+  $("#day-next").disabled = i <= 0;
+}
+function goDay(step){
+  const d = VIEW.days, i = d.indexOf(VIEW.day), j = i + step;
+  if(j < 0 || j >= d.length) return;
+  $("#whyp").hidden = true; TAB = null; load(d[j]);
+}
+$("#day-prev").onclick = ()=>goDay(1);
+$("#day-next").onclick = ()=>goDay(-1);
 load(); side();
 // Upstream snapshots land every 15 min; poll every 3 min so a new one shows quickly.
 setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final) load(VIEW.day); }, 3*60*1000);
