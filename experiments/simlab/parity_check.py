@@ -23,6 +23,7 @@ OLD_NAN = ("promo_", "busy_", "x_")
 MP = ("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers"); ID = {"ph_n_makers_new", "ph_maker_has_headline", "x_any_verified", "ph_self_hunted"}
 EXPECTED_PREFIX = ("hist_", "ph_hunter_n_same_day", "ph_day_n_launches", "txt_", "topic_prior")
 ALERT = float(os.environ.get("ALERT_SHARE", "0.0")); TMP = tempfile.mkdtemp()
+import parity_rules
 d2 = (pd.Timestamp(D) - pd.Timedelta(days=2)).strftime("%Y-%m-%d")
 def root(name, live):
     r = f"{TMP}/{name}"; os.makedirs(f"{r}/days"); os.makedirs(f"{r}/today")
@@ -78,8 +79,7 @@ for c in cols:
 Z = X.copy()
 for c in cols: Z[c] = Lx[c].values
 res["set change top3/5/10 (members changed) per swapped column (only nonzero)"] = chg; res["set change, all live columns together"] = ch(pr(Z))
-unexp = {c: v for c, v in res["columns"].items() if not v.get("expected") and v["share_equal"] < 1 - ALERT}
-res["UNEXPECTED differing columns"] = unexp; res["status"] = "ALERT" if unexp else "ok"
+unexp = parity_rules.classify(res, ALERT)
 s = json.dumps(res, default=float)
 if OUT: open(OUT, "w").write(s)
 print(json.dumps({k: v for k, v in res.items() if k != "columns"}, default=float)); shutil.rmtree(TMP, ignore_errors=True)
