@@ -57,6 +57,15 @@ try:
     exec(src, g)
     res = g["expected_pp"](DAY, "strict")
     PPROB, nact, act, tv = res if len(res) == 4 else (res[0], res[1], None, None)
+    # BACKER PREDICTION (north star, Shreyas Nov 14): freeze each launch's ranked held people (salted person ids only; PRIVATE bucket path,
+    # never on the site), scored later by backer_score.py as who_actually fills in
+    fr = [pd.DataFrame({"launch_id": i, "person_id": p.sort_values(ascending=False).index[:2000], "p": p.sort_values(ascending=False).values[:2000]}).assign(rank=lambda x: range(1, len(x) + 1))
+          for i, p in PPROB.items() if isinstance(p, pd.Series)]
+    if fr:
+        FR = pd.concat(fr, ignore_index=True).assign(day=DAY, frozen_at=pd.Timestamp.now(tz="UTC").isoformat(), n_active=int(nact))
+        fp = os.path.join(OUT, f"backer_pred_{DAY}.parquet"); FR.to_parquet(fp)
+        if UP or "--freeze" in sys.argv: subprocess.run(["gsutil", "-q", "cp", fp, f"{B}/tmp/e5/private/backer_pred/{DAY}.parquet"], check=True)
+    if "--who-only" in sys.argv: print(json.dumps({"day": DAY, "frozen_launches": len(fr), "n_active": int(nact)})); sys.exit(0)
     TOPN = list(g["TOP"]) if "TOP" in g else None
     seg_all = pd.Series([segmap.get(p, "no headline or bio") for p in act.index], index=act.index) if act is not None else None
     for i in ids:
