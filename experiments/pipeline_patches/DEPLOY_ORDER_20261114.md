@@ -41,4 +41,4 @@ NEXT BUNDLE MANIFEST ADDITIONS (not deployed; to be built as a new named bundle)
 - ~/w/arm2_live/ctrl.py, md5 b47fc28f (= ~/w/mk/ctrl.py). It is imported by training_window.py through history_retrain. Its absence
   caused the Nov 14 00:05 arm-2 fallback. It was added by hand at 09:02Z Nov 14, and no manifest tracks it yet. The bundle's
   deploy check should md5-verify it and import-gate h25_live.
-- ph_n_makers drop: drop_nmakers.md. By the rule it goes in (2026 top 5 -1.0 [-2.8, +0.9]), but top 3 / top 10 and 2025 are worse beyond noise. AWAITING the orchestrator's call.
+- ph_n_makers drop: CLOSED, NOT ADOPTED (orchestrator 23:34Z Nov 14: worse beyond noise on 4 of 6 cells; the deployed input set is kept).
