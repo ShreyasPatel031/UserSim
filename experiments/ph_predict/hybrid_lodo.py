@@ -77,8 +77,13 @@ def main():
     H = {d: t10(G[d], G[d].sort_values(["pos", "id"]).id.tolist()) for d in dd}
     P6 = {d: t10(G[d], G[d].sort_values(["pos", "id"]).id.tolist()[:5] + [i for i in G[d].sort_values(["clean", "id"], ascending=[False, True]).id if i not in set(G[d].sort_values(["pos", "id"]).id.tolist()[:5])]) for d in dd}
     L1, alphas = {}, {}
+    ORD = {}   # per-day orders so every published number can be rebuilt (orchestrator 20:11Z Nov 14)
     for d in dd:
-        m, a_ = fit([x for x in dd if x != d]); alphas[d] = a_; L1[d] = t10(G[d], hyb(G[d], m.predict(G[d][ZF])))
+        m, a_ = fit([x for x in dd if x != d]); alphas[d] = a_; o_ = hyb(G[d], m.predict(G[d][ZF])); L1[d] = t10(G[d], o_)
+        ORD[d] = {"truth_order": G[d].sort_values("final").id.tolist(), "truth_ranks": dict(zip(G[d].id, map(int, G[d].final))),
+                  "hidden": G[d].sort_values(["pos", "id"]).id.tolist(), "lodo_hybrid": o_, "lodo_alpha": a_,
+                  "prior6": G[d].sort_values(["pos", "id"]).id.tolist()[:5] + [i for i in G[d].sort_values(["clean", "id"], ascending=[False, True]).id if i not in set(G[d].sort_values(["pos", "id"]).id.tolist()[:5])],
+                  "n_ids": int(len(G[d])), "prior_source": src.get(d)}
     import itertools
     L2 = {d: [] for d in dd}
     for a, b in itertools.combinations(dd, 2):
@@ -118,6 +123,9 @@ def main():
                            "nc_rec = log1p recorder commentsCount at T, clean = as-of-night clean_nosite from the today-rows replay; target z(-log final rank); slots 6+ only"},
                   open(f"{HERE}/results/frozen/hybrid_vmonly_P345{TAG}_20261114.json", "w"), indent=1)
         md.insert(1, f"CLEAN_PRIOR = {os.environ.get('CLEAN_PRIOR')}; prior source per day: {sorted(set(src.values()))}")
+    json.dump({"rule": "truth = warehouse launches.daily_rank, restricted to ids present in the recorder read at the point (03:00 PT, latest read within 65 min); "
+                        "top k = the first k of those ranked ids (not rank <= k); hidden = recorder rank_now order; ties by id",
+               "point": list(PTS), "days": ORD}, open(f"{HERE}/results/hybrid_lodo{TAG}_orders.json", "w"), indent=0)
     open(f"{HERE}/results/hybrid_lodo{TAG}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 

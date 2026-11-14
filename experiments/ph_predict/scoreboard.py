@@ -32,7 +32,7 @@ def main():
     today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
     R = W.query(f"SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL AND day >= '2026-10-25' AND day < '{today}'", do_sync=False)
     real = {d: g.sort_values("daily_rank") for d, g in R.groupby("day")}
-    rows = []
+    rows = []; ORDERS = []   # per-row orders, written to results/web/scoreboard_orders.json
 
     def add(day, point, method, source, ranked_ids, written_at=None):
         g = real.get(day)
@@ -42,6 +42,7 @@ def main():
         if len(set(ids) & set(g.id)) < 10:
             return
         sub = g.id.tolist()   # the day's full final ranking (the number-of-record convention)
+        ORDERS.append({"day": day, "point": point, "method": method, "source": source, "order": [str(i) for i in ids], "truth": [str(i) for i in sub]})
         t3 = set(sub[:3])
         rows.append({"day": day, "point": point, "method": method, "source": source, "n": len(ids), "written_at": written_at,
                      **{f"top{k}": round(ov(ids, sub, k), 1) for k in (3, 5, 10)},
@@ -116,11 +117,14 @@ def main():
     # the site's P order is pred_rank_best: its replay record (api_depth.py, hourly hidden API rank on Nov 2-10, weights chosen
     # on the same days -> IN-SAMPLE) as source replay_in_sample; P1 = 01:00 read w 0.5, P2 / P3 = 02:00 / 03:00 reads w 0.75,
     # P4 = the 03:00 read (no pre-04:00 hourly read later than that). Per-pick fields from the replay are not held (NaN).
+    # api_depth replay rows hold hit rates only (no per-day order): they cannot be rebuilt by anyone else, so they are listed as such
     ad = os.path.join(HERE, "results", "api_depth.json")
     if os.path.exists(ad):
         for r in json.load(open(ad)).get("rows", []):
             for pt, h, cand in (("P1", 1, "wmean_0.5"), ("P2", 2, "wmean_0.75"), ("P3", 3, "wmean_0.75"), ("P4", 4, "wmean_0.75")):
                 if r["h"] == h and r["cand"] == cand and r["day"] in real:
+                    ORDERS.append({"day": r["day"], "point": pt, "method": "best", "source": "replay_in_sample", "order": None, "truth": None,
+                                   "note": "order not stored (api_depth.json keeps hit rates only); not rebuildable"})
                     rows.append({"day": r["day"], "point": pt, "method": "best", "source": "replay_in_sample", "n": None, "written_at": None,
                                  "top3": round(r["t3"], 1), "top5": round(r["t5"], 1), "top10": round(r["t10"], 1),
                                  "p1_top3": r.get("p1", np.nan), "p2_top3": r.get("p2", np.nan), "p3_top3": r.get("p3", np.nan), "exact1": r.get("exact", np.nan)})
@@ -232,6 +236,11 @@ def main():
         out["clean_thread_coef"] = json.load(open(tc))
     p = os.path.join(HERE, "results", "web", "scoreboard.json"); json.dump(out, open(p, "w"), indent=1, default=str)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/scoreboard.json"], check=True)
+    # per-row orders and truth next to the scores (orchestrator 20:11Z Nov 14: every published number rebuildable by someone else)
+    po = os.path.join(HERE, "results", "web", "scoreboard_orders.json")
+    json.dump({"built_at": out["built_at"], "truth": "warehouse launches.daily_rank, the day's full final ranking; topK = overlap of our first K with the first K of truth",
+               "rows": ORDERS}, open(po, "w"))
+    subprocess.run(["gsutil", "-q", "cp", po, f"{B}/results/web/scoreboard_orders.json"], check=True)
     import heartbeat; heartbeat.beat("scoreboard", None, None, "ok")
     north_star(X)
     print(json.dumps(summ, indent=0))
