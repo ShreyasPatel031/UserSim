@@ -131,32 +131,40 @@ def _query(http, tok_ref: list, a: str, b: str) -> list[dict]:
         cur = p["pageInfo"].get("endCursor")
 
 
-def _complete(nodes: list[dict]) -> bool:
+def _rank_gap(nodes: list[dict]) -> bool:
     ranks = sorted(int(n["dailyRank"]) for n in nodes if isinstance(n.get("dailyRank"), int) and n["dailyRank"] > 0)
-    return not ranks or ranks[-1] <= len(nodes)
+    return bool(ranks) and ranks[-1] > len(nodes)
 
 
 def _fetch_upstream(day: str) -> list[dict]:
-    """All featured launches of PT day `day`, as raw API nodes. Raises Upstream on any failure.
-    Same window as the PH ops collector (posts created that PT day, kept when featuredAt is that day). If Product
-    Hunt's daily ranks show launches missing (rank > count; e.g. scheduled earlier), it re-reads with a 3-day window."""
+    """All featured launches of PT day `day`, as raw API nodes. Raises Upstream on any paging or parse failure.
+    Complete means every page parsed and the API reported no further page. Rank gaps are normal on Product Hunt
+    (a skipped rank after a tie, a launch hidden later), so a gap never makes a list "incomplete"; it only triggers
+    one extra read with a 3-day window in case a launch was created before the day, and the larger list wins."""
     import httpx
+
+    def keep(nodes):
+        seen, out = set(), []
+        for n in nodes:
+            k = str(n.get("id"))
+            if k in seen or (n.get("featuredAt") and _pt_day(n["featuredAt"]) != day):
+                continue
+            seen.add(k)
+            out.append(n)
+        return out
 
     with httpx.Client(timeout=UPSTREAM_TIMEOUT_S) as http:
         tok = [_token(http)]
-        out = []
-        for back in (0, 2):
-            a, b = _window(day, back)
-            seen, out = set(), []
-            for n in _query(http, tok, a, b):
-                k = str(n.get("id"))
-                if k in seen or (n.get("featuredAt") and _pt_day(n["featuredAt"]) != day):
-                    continue
-                seen.add(k)
-                out.append(n)
-            if _complete(out):
-                return out
-        raise Upstream("incomplete line-up")
+        a, b = _window(day)
+        out = keep(_query(http, tok, a, b))
+        if _rank_gap(out):
+            try:
+                wide = keep(_query(http, tok, *_window(day, 2)))
+                if len(wide) > len(out):
+                    out = wide
+            except Upstream:
+                pass                                   # the first read is complete on its own
+        return out
 
 
 def _snapshot(day: str, nodes: list[dict], final: bool) -> dict:

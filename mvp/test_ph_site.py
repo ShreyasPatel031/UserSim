@@ -707,4 +707,27 @@ def test_B7_B8_token_remint_and_partial_errors(monkeypatch):
         ph_live._query(Http([R(200, {"errors": [{"message": "boom"}], "data": None})]), ["t"], "a", "b")
     with _pt.raises(ph_live.RateLimited):
         ph_live._query(Http([R(200, {"errors": [{"error": "rate_limit_reached", "details": {"reset_in": 120}}]})]), ["t"], "a", "b")
-    assert ph_live._complete([{"dailyRank": 1}, {"dailyRank": 3}]) is False   # a launch is missing: never served as complete
+    assert ph_live._rank_gap([{"dailyRank": 1}, {"dailyRank": 3}]) is True
+
+
+
+def test_rank_gaps_and_ties_are_not_incomplete(monkeypatch):
+    from mvp.ph_site import ph_live
+    def node(i, r): return {"id": i, "name": f"N{i}", "dailyRank": r, "featuredAt": "2026-11-14T08:01:00Z", "votesCount": 10}
+    tie = [node(1, 1), node(2, 2), node(3, 3), node(4, 3), node(5, 5)]          # two rank 3s, no rank 4
+    gap = [node(1, 1), node(2, 2), node(3, 4), node(4, 5)]                      # rank 3 hidden later
+    for nodes, reads in ((tie, 1), (gap, 2)):
+        calls = []
+        def fake_query(http, tok, a, b, nodes=nodes):
+            calls.append(a); return list(nodes)
+        monkeypatch.setattr(ph_live, "_query", fake_query)
+        monkeypatch.setattr(ph_live, "_token", lambda http: "t")
+        out = ph_live._fetch_upstream("2026-11-14")
+        assert len(out) == len(nodes) and len(calls) == reads      # a gap costs one wider re-read; the list is still served
+    snap = ph_live._snapshot("2026-11-14", tie, final=True)
+    assert [r["rank"] for r in snap["launches"]] == [1, 2, 3, 3, 5]              # ties shown as ties
+    def broken(http, tok, a, b): raise ph_live.Upstream("too many pages")
+    monkeypatch.setattr(ph_live, "_query", broken)
+    import pytest as _pt
+    with _pt.raises(ph_live.Upstream):
+        ph_live._fetch_upstream("2026-11-14")                                     # paging failure: last good is served
