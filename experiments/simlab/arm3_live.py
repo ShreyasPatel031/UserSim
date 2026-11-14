@@ -47,7 +47,8 @@ def predict(day):
         F.D = real
     df["id"] = df.id.astype(str); old = df.day < "2026-01-01"
     df.loc[old, [c for c in df.columns if c.startswith(HR.OLD_NAN) or (c.startswith("llm_") and c not in ("llm_pitch", "llm_brand"))]] = np.nan
-    df = df[~df.known & ((df.day < day) | (df.is_today & (df.day == day)))].reset_index(drop=True)
+    # training rows: finished days from the day files only (older data/today/<d>.json files are is_today with no label; PH ops 14:20Z fix)
+    df = df[~df.known & (((df.day < day) & ~df.is_today) | (df.is_today & (df.day == day)))].reset_index(drop=True)
     tod = (df.is_today & (df.day == day)).values
     if not tod.any(): raise RuntimeError(f"arm3: no 00:05 line-up rows for {day}")
     E, einfo = _cache_embed(df, tod)
