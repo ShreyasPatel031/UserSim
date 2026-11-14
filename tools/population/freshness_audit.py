@@ -390,7 +390,9 @@ def run(W):
             due.append(b)
         rows.append({"checked_utc": now.isoformat(), "status": "open", "open_since": st["open_since"], "alerted": alert, **b})
     for f in [f for f in state if f not in now_feeds]:
-        rows.append({"checked_utc": now.isoformat(), "status": "closed", "feed": f, "open_since": state[f]["open_since"],
+        aged = f in ("day_close_read", "first_comment_read") and now.astimezone(PT).hour >= 12
+        rows.append({"checked_utc": now.isoformat(), "status": "aged_out_missed" if aged else "closed", "feed": f,
+                     "open_since": state[f]["open_since"],
                      "minutes_open": round((now - ts(state[f]["open_since"])).total_seconds() / 60, 1)})
         del state[f]
     if rows:  # one object per tick: no read-modify-write race between runners
