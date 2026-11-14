@@ -1,7 +1,7 @@
 {
  "prediction": "03:45 PT",
  "basis": "hybrid order on 11 replay days 2026-11-02..2026-11-12",
- "recipe": "position r in the published 03:45 order (1 = top pick; 11+ pooled as 16); p_k = table[r]; rescale the day to sum to min(k, n); cells shrunk with a Jeffreys prior ((hits + 0.5) / (n + 1)) so no position shows 0% or 100% on 11 days",
+ "recipe": "position r in the published 03:45 order (1 = top pick; 11+ pooled as 16); p_k = table[r]; rescale the day to sum to min(k, n)",
  "table": {
   "top3": {
    "1": 0.875,

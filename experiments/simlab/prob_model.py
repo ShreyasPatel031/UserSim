@@ -27,6 +27,8 @@ def rescale(p, k):
     return p
 def rtable(T, k, col="r"): return {int(r): float(v) for r, v in T.assign(rb=T[col].clip(upper=16)).groupby("rb")[f"y{k}"].mean().items()}
 X = pd.read_parquet(f"{SP}/a2x/X.parquet"); X["id"] = X.id.astype(str)
+# day rule (orchestrator 12:45Z Nov 14): only days with >= 10 ranked launches, as the track record and the live scoreboard
+_nr = X.groupby("day").dailyRank.apply(lambda s: s.notna().sum()); X = X[X.day.isin(_nr[_nr >= int(os.environ.get("MIN_RANKED", "10"))].index)].copy()
 D = pd.concat([feats(g, "both") for _, g in X.groupby("day")]); D["mon"] = D.day.str[:7]
 for k in KS: D[f"y{k}"] = (D.dailyRank <= k).astype(float)
 for k in KS: D[f"p{k}"] = np.nan; D[f"t{k}"] = np.nan; D[f"b{k}"] = np.nan
@@ -57,7 +59,7 @@ def evalset(S, name):
                         "reliability (bin: mean predicted %, observed %, n)": {str(i): [round(float(r.pred) * 100, 1), round(float(r.obs) * 100, 1), int(r.n)] for i, r in rel.iterrows()}}
     return o
 res = {"design": __doc__.split("\n    python")[0], "(1) 00:05 all scored days (May-Oct)": evalset(S, "all"), "(1) 00:05 Sep-Oct": evalset(S[S.day >= "2026-09-01"], "sepoct")}
-FZ = {"prediction": "00:05 PT", "basis": f"arm 2 walk-forward backtest, {X.day.min()} to {X.day.max()} ({X.day.nunique()} days)", "features": FE,
+FZ = {"prediction": "00:05 PT", "basis": f"arm 2 walk-forward backtest, {X.day.min()} to {X.day.max()} ({X.day.nunique()} days with >= 10 ranked launches)", "features": FE,
       "recipe": "sort the day's launches by score desc; r = 1..n; z = within-day z of score; gap_up = z(prev) - z (0 for r=1); gap_dn = z - z(next) (0 for last); lnr = ln r; lnn = ln n; p_k = logistic(intercept + coef . features); rescale the day's p_k to sum to min(k, n) (cap 1, iterate)",
       "models": {}}
 for k in KS:
