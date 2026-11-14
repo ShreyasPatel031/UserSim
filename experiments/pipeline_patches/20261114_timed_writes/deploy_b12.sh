@@ -27,8 +27,8 @@ gsutil -q cp $B/deploy/b12/tw_code_$C.tgz $T
 rm -rf $W/tw.new; mkdir -p $W/tw.new; tar xzf $T -C $W/tw.new --strip-components=1
 ln -sfn $W/experiments/ph_predict/data $W/tw.new/experiments/ph_predict/data          # read-only use of the pipeline's data dir
 for d in logs locks tmp cache cmt e5/why; do mkdir -p $W/tw.new/$d; done
-# E5 vm_writers (pinned tarball md5 cd7fcebd, E5 12:49Z Nov 14: track_record >= 10 ranked day rule + 00:05 prob calibration refit on 183 days, 05bb6003; E5 holds further changes) + the salt for held_team_* (mode 600; read only to hash, never printed)
-E5W_MD5=cd7fcebd; gsutil -q cp $B/tmp/e5/vm_writers/e5_vm_writers.tgz $BK/e5_vm_writers.tgz
+# E5 vm_writers (pinned tarball md5 f9abf3e0, E5 4e6dac7d 13:35Z Nov 14: period_writer predicted entrants (needs the D+1 00:05 parquet; 01:20 PT slot), period_score scores both lines) + the salt for held_team_* (mode 600; read only to hash, never printed)
+E5W_MD5=f9abf3e0; gsutil -q cp $B/tmp/e5/vm_writers/e5_vm_writers.tgz $BK/e5_vm_writers.tgz
 [ "$(md5sum < $BK/e5_vm_writers.tgz | cut -c1-8)" = "$E5W_MD5" ] || { echo "e5 vm_writers tarball md5 mismatch: not deploying"; exit 1; }
 mkdir -p $W/tw.new/e5_vm_writers $W/tw.new/e5_assets/early; tar xzf $BK/e5_vm_writers.tgz -C $W/tw.new/e5_vm_writers
 (umask 077; gsutil -q cp $B/raw/population/_salt $W/tw.new/e5_assets/early/salt) || { echo "salt copy failed: not deploying"; exit 1; }

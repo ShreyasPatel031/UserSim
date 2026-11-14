@@ -91,7 +91,7 @@ duplicate rows on Nov 1, plus 19 rows that are not in that day's raw file.)
 - Nov 1's duplicates are left in place (readers dedup on (launch_id, at)); removing them would mean rewriting a part, which is out of scope here.
 
 ## E5's no-LLM website writers (E5 01:37Z Nov 14; folded in, NOT deployed)
-- Tarball `gs://.../tmp/e5/vm_writers/e5_vm_writers.tgz` (md5 **cd7fcebd** (final pin 12:49Z Nov 14: 00:05 prob calibration refit on 183 days (05bb6003) + track_record day rule >= 10 ranked launches; before: e09d5bae, 3ff1b86b (facba879): new job period_score, period_writer staleness flag, new simlab/period_parts.py; before: d3554f92 / 6d006d12); same files in git: experiments/simlab/vm_writers/ on
+- Tarball `gs://.../tmp/e5/vm_writers/e5_vm_writers.tgz` (md5 **f9abf3e0** (13:35Z Nov 14, E5 4e6dac7d: period_writer predicted entrants (reads raw/daily/<D+1>/forecast parquet; votes-only fallback named), period_score scores both lines; before: cd7fcebd = 00:05 prob calibration refit on 183 days (05bb6003) + track_record day rule >= 10 ranked launches; before: e09d5bae, 3ff1b86b (facba879): new job period_score, period_writer staleness flag, new simlab/period_parts.py; before: d3554f92 / 6d006d12); same files in git: experiments/simlab/vm_writers/ on
   claude/person-model-v2 @ a3487608). Pinned asset `tmp/e5/vm_writers/assets/a2x/X.parquet` (the arm-2 explain dump). The 2025 lists sync from raw/ph_history/2025.
 - Install: extract to /home/agent/w/tw/e5_vm_writers, `ASSETS=/home/agent/w/tw/e5_assets`. The salt for held_team_* is copied by deploy from
   `raw/population/_salt` to `$ASSETS/early/salt` (mode 600; read only to hash, never printed or logged), exactly as why_run.sh does today.
