@@ -780,7 +780,7 @@ def explain(day: str, ids: set[str]) -> dict | None:
     for pid, row in ((w or {}).get("launches") or {}).items() if isinstance(w, dict) else []:
         fd = (row or {}).get("forecast_drivers") if isinstance(row, dict) else None
         pts = fd.get("points") if isinstance(fd, dict) else None
-        if str(pid) in out and isinstance(pts, dict) and "why" in out[str(pid)]:
+        if str(pid) in out and isinstance(pts, dict) and "why" in out[str(pid)] and not out[str(pid)]["why"].get("all_inputs"):
             out[str(pid)]["why"]["all_inputs"] = [{"input": _ex_text(k, 60), "points": round(float(v), 4)}
                                                   for k, v in pts.items() if isinstance(v, (int, float)) and not isinstance(v, bool)][:20]
     if not out:
