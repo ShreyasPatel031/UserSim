@@ -1,0 +1,35 @@
+--- a/experiments/ph_predict/forecast.py (VM 61538501)
++++ b/experiments/ph_predict/forecast.py
+@@ -44,7 +44,22 @@
+         ARM2 = f"fallback: clean_nosite (arm2 missing for {int(te.pred_arm2.isna().sum())} launches)"
+ except Exception as e:
+     ARM2 = f"fallback: clean_nosite (arm2 error {type(e).__name__}: {str(e)[:160]})"
+-print("published model:", ARM2, flush=True)
++# ARM 3 PUBLISH SWITCH (bundle 13, undeployed): only when ~/w/arm3_live/PUBLISH exists (created by deploy_arm3.sh publish, on Shreyas's
++# direct word). Then the published 00:05 order = pred_arm3 (E5 arm3_live, pinned bge-small, offline); arm 2 stays in the parquet as the
++# shadow column pred_arm2. Any arm-3 failure keeps the arm-2 (or clean_nosite) order and says why. Without the file nothing changes.
++te["pred_arm3"] = np.nan; ARM3 = "off (no PUBLISH file)"
++if os.path.exists(os.path.expanduser("~/w/arm3_live/PUBLISH")):
++    try:
++        os.environ.setdefault("HF_HUB_OFFLINE", "1"); os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
++        sys.path.insert(0, os.path.expanduser("~/w/arm3_live")); import arm3_live
++        PB, info3 = arm3_live.predict(day); te["pred_arm3"] = te.id.astype(str).map(dict(zip(PB.id, PB.pred_arm3)))
++        if te.pred_arm3.notna().all():
++            te["score"] = te.pred_arm3; ARM3 = f"arm3 published ({info3}); arm 2 kept as shadow"
++        else:
++            te["pred_arm3"] = np.nan; ARM3 = f"arm3 missing for some launches: kept {ARM2}"
++    except Exception as e:
++        te["pred_arm3"] = np.nan; ARM3 = f"arm3 error {type(e).__name__}: {str(e)[:160]}: kept {ARM2}"
++print("published model:", ARM3 if ARM3.startswith("arm3 published") else ARM2, "| arm3:", ARM3, flush=True)
+ te = te.sort_values("score", ascending=False)
+ L = [f"# Forecast for {day} (made before results; {len(te)} featured launches at fetch time)\n",
+      "| Predicted rank | Product | Tagline | Hunter PH followers |", "|---|---|---|---|"]
+@@ -53,7 +68,7 @@
+ open(f"{RN.OUT}/forecast_{day}.md", "w").write("\n".join(L) + "\n")
+ # the launch model's raw prediction (log votes) per launch: the offset for shadow forecasts (pipeline.daily s_shadow)
+ AUD = ["ph_hunter_followers", "x_maker_sum_followers", "x_company_followers", "promo_reactions", "promo_posts"]   # E1 v2's audience inputs
+-te[["id", "day", "pred", "pred_arm2"] + [c for c in AUD if c in te]].assign(id=te.id.astype(str)).to_parquet(f"{RN.OUT}/forecast_{day}.parquet")
++te[["id", "day", "pred", "pred_arm2"] + (["pred_arm3"] if te.pred_arm3.notna().any() else []) + [c for c in AUD if c in te]].assign(id=te.id.astype(str)).to_parquet(f"{RN.OUT}/forecast_{day}.parquet")
+ import json, os
+ os.makedirs(f"{RN.OUT}/dash", exist_ok=True)
+ json.dump([{"rank": i + 1, "product": r["name"], "tagline": r.tagline, "hunter_followers": int(np.expm1(r.ph_hunter_followers)),

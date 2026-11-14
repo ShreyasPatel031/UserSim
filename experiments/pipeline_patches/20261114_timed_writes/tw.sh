@@ -122,5 +122,15 @@ e5w:*)          # E5's no-LLM website writers (vm_writers tarball, pinned md5 in
   J=${JOB#e5w:}; IN=" e5_vm_writers:$([ -f $TW/e5_vm_writers/vm_writers/run.sh ] && echo present || echo missing)"
   ST=$(ASSETS=$TW/e5_assets LOG=$TW/logs/e5_writers.log nice -n 19 bash $TW/e5_vm_writers/vm_writers/run.sh $J 2>&1 | tail -1 | cut -c1-300); RC=$?
   ST="rc=$RC $ST"; logline;;   # pipefail is set: RC is run.sh's exit code (2 sync, 3 inputs missing, 64 bad job)
+arm3_shadow)    # 01:20 PT (bundle 13): arm 3 shadow on the 00:05 line-up -> ~/w/arm3_live/results + results/shadow_arm3/ (never the published file)
+  if [ "${FORCE:-0}" != 1 ] && has $B/results/shadow_arm3/$D.json; then ST="exists"; logline; exit 0; fi
+  need $FC forecast_parquet || { logline; exit 0; }
+  [ -f /home/agent/w/arm3_live/arm3_live.py ] || { ST="arm3_live not installed"; logline; exit 0; }
+  ST=$(cd /home/agent/w/experiments/ph_predict && env -u PYTHONPATH PYTHONPATH=/home/agent/w/experiments/ph_predict HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+       LGB_THREADS=2 nice -n 19 ionice -c3 python3 /home/agent/w/arm3_live/arm3_shadow_run.py $D 2>&1 | tail -1 | cut -c1-300); logline;;
+arm3_prewarm)   # 22:40 PT (bundle 13): embed today's finished-day text into the arm-3 cache so 00:05 only embeds the new line-up
+  [ -f /home/agent/w/arm3_live/arm3_live.py ] || { ST="arm3_live not installed"; logline; exit 0; }
+  ST=$(cd /home/agent/w/experiments/ph_predict && env -u PYTHONPATH PYTHONPATH=/home/agent/w/experiments/ph_predict HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
+       nice -n 19 ionice -c3 python3 /home/agent/w/arm3_live/arm3_shadow_run.py prewarm $(date -d "$D +1 day" +%F) 2>&1 | tail -1 | cut -c1-300); logline;;
 *) echo "unknown job $JOB"; exit 2;;
 esac

@@ -20,15 +20,17 @@
 12:05 C12 V12
 16:05 C16
 22:30 inputs_backup
+22:40 arm3_prewarm
 01:15 env:VS_FIX=1 vs_check
 01:20 e5w:period e5w:prob_0005 e5w:held_team_predict
+01:21 arm3_shadow
 01:25 e5w:track_record
 01:27 e5w:period_score
 01:31 e5w:held_team_score
 04:07 e5w:prob_prereveal
-02:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
-05:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
-09:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
+02:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12 arm3_shadow
+05:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12 arm3_shadow
+09:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12 arm3_shadow
 13:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
 17:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
 21:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
