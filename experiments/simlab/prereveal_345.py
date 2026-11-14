@@ -84,6 +84,7 @@ for fam, grid in FAM.items():
 SL = {"prior only": lambda r: -r.zp.values, "comments only": lambda r: -r.zc.values, "hidden rank (= plain)": lambda r: r.r3.values}
 for nm, f in SL.items():
     A = np.array([hits(hybrid_order(D[d], None, f), D[d]) for d in DAYS]); res[f"(d) slots 6+ by {nm}"] = {"top3/5/10": A.mean(0).round(1).tolist(), "vs PLAIN": ci(A - PL), "vs HYBRID": ci(A - HY)}
+res["per day (plain, hybrid) top3/5/10 hits %"] = {d: {"plain": PL[i].tolist(), "hybrid": HY[i].tolist(), "n launches": len(D[d])} for i, d in enumerate(DAYS)}
 json.dump(res, open(os.path.join(OUT, "prereveal_345.json"), "w"), indent=1, default=str)
 for k, v in res.items():
     if k not in ("design",): print(k, json.dumps(v, default=str)[:700])

@@ -20,4 +20,6 @@ FWD_PREDICT=1 env -u VERCEL python forward_sim.py $TODAY $WT $SP $OUT >> $LOG 2>
 # held-team shadow column (orchestrator 00:42Z Nov 14): score yesterday, then predict today with the frozen weight
 python held_team_shadow.py score $YDAY $SP >> $LOG 2>&1
 python held_team_shadow.py predict $TODAY $SP >> $LOG 2>&1
+# website track record (orchestrator 01:02Z Nov 14): rebuild tmp/e5/website/track_record_v1.json incl. yesterday's live rows
+python track_record.py $SP >> $LOG 2>&1
 echo "end $(date -u +%FT%TZ)" >> $LOG; tail -c 1500 $LOG
