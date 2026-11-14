@@ -123,3 +123,20 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
   - the daily maker X read was requested. Nov 11 was partial: 4 of 23 makers, all late. The handle source is being moved to the official API field.
 - **Live capture:** official-API loop healthy. Nov 9 PASS; Nov 10 FAIL on one snapshot (94%); Nov 11 PASS so far. Maker headers: Nov 10 70/70, Nov 11 0/23 (Cloudflare interstitial, stopped, no retry). At-launch posts/makers/products.jsonl absent, because route 4 is off.
 - **Gaps unchanged:** X timelines partial (pass 1 at 4,300 of 8,902); no per-vote timestamps (PH only); `[REDACTED]` maker fix not yet in the deployed pipeline.
+
+
+## Collection status, Nov 14 2026 (daily review)
+
+| Feed | Ideal | Have (Nov 14, 10:45 UTC) | Gap and cheapest step | Owner |
+|---|---|---|---|---|
+| 15-minute launch-day capture (posts, comments, ranks) | every 15 min, all day, every day | none since Nov 13 19:00 UTC; Nov 14 folder empty | site-run snapshot endpoint is built (site/live_board/<day>_ts/); needs the site deployed + a scheduler; Cursor fleet needs a PH API token | Shreyas (hosting, token), Cursor fleet |
+| Day-close votes (23:45-23:59 PT) | every day | missed Nov 4, 5, 6, 13 | site 23:50 PT slot once deployed; VM read needs the instance schedule moved to 23:55 PT | Shreyas |
+| First comment reads (00:03 and 00:27 PT) | every night | on time on 2 of 11 nights; missed Nov 14 | filed with the Cursor fleet (API only) | Cursor fleet |
+| VM hourly recorder (rank, votes, comments) | hourly 00:06-23:00 PT + 03:45 PT | running; 2,025 rows missing from the warehouse for Nov 4-7 (raw intact) | bundle 12a (03:45 read) and bundle 12 (loader fix) | Shreyas's word, PH agent |
+| Pipeline comments step | all comments nightly | Nov 14: 21 of 21 pages blocked or unparseable | move to the official API; diagnosis due after 13:10 UTC | PH agent |
+| Pipeline sites step / website URL at 00:05 | every launch | 0 of 29 on Nov 14; 2 of 28 usable URLs | resolved URL field at the 00:05 read | Cursor fleet / PH agent |
+| People, complete (every tab) | everyone on the need list | 72,000+ complete of ~80,100 saved; about 2-3 per minute on 2-4 of 20 VMs | fleet back to 20; completion queue (10,301 + 297 + 13,338 legacy) | Cursor fleet |
+| History day lists | 2023-2026 | 2026 and 2025 complete (365); 2024: 8 files; 2023: 0 | pull 2024 then 2023 (expected about +2 top 3) | Cursor fleet; PH agent fallback on Shreyas's word |
+| 2025 comments | all 4,923 launches | 1 file | ranked below the day lists (+0.6 top 3 expected) | Cursor fleet |
+| Weekly / monthly close reads | every Sunday and month end | none yet; first due Sun Nov 15 23:45 PT | filed; needs a token on the fleet or the site scheduler | Cursor fleet |
+| Downtime audit | every 15 min, alerts within 1 min | every 30 min inside an agent session; standalone script ready | a host for the cron + webhook file | Shreyas, Cursor fleet |
