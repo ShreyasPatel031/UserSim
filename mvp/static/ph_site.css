@@ -230,3 +230,15 @@ footer.note { padding-block: 18px; display: flex; justify-content: space-between
   .vs .stamp { display: none; }
   .links { padding-top: calc(24px + 64px + 12px + 1px); }
 }
+
+/* /ph v6: two forecast tabs, one metric line */
+.metric { margin: 0; font-size: 17px; color: var(--soft); max-width: 44rem; }
+.tabs { display: inline-flex; border: 1px solid var(--ink); align-self: end; }
+.tabs button { border: 0; background: transparent; font: 400 12.5px/1 var(--sans); padding: 8px 12px; cursor: pointer; color: var(--ink); }
+.tabs button + button { border-left: 1px solid var(--ink); }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.tabs button:disabled { color: var(--faint); cursor: default; }
+.tabs button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (max-width: 760px) { .tabs button { padding: 6px 7px; font-size: 11px; } .vs .colhead { flex-direction: column; align-items: flex-start; } }
+.vs .colhead { height: 64px; min-height: 0; }
+@media (max-width: 760px) { .vs .colhead { height: 92px; justify-content: flex-end; gap: 6px; } }

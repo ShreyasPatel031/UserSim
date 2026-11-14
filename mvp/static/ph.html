@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=5">
+<link rel="stylesheet" href="/static/ph_site.css?v=6">
 </head>
 <body>
 <div class="wrap">
@@ -21,8 +21,8 @@
   <header class="head">
     <div class="copy">
       <p class="label" id="kicker">Product Hunt</p>
-      <h1 id="title">Our forecast vs. the real leaderboard</h1>
-      <p class="small" id="notice" hidden></p>
+      <h1 id="title">Live Product Hunt user simulations</h1>
+      <p class="metric" id="metric"></p>
     </div>
     <label class="label">Day<br><select id="day" aria-label="Launch day"></select></label>
   </header>
@@ -31,7 +31,10 @@
     <section class="col" aria-labelledby="pred-h">
       <header class="colhead">
         <div><p class="label">Forecast</p><h2 id="pred-h">Our call</h2></div>
-        <p class="stamp" id="pred-stamp"></p>
+        <div class="tabs" role="tablist" aria-label="Forecast">
+          <button type="button" role="tab" id="tab-mid" data-v="mid">Midnight</button>
+          <button type="button" role="tab" id="tab-pre" data-v="pre">Before votes</button>
+        </div>
       </header>
       <ol class="board" id="pred" aria-live="polite"><li class="skeleton">Loading…</li></ol>
     </section>
@@ -47,26 +50,6 @@
   <p class="legend small"><span class="key"></span> in our top 10 and in the real top 10<span id="score"></span></p>
   <section class="whyp" id="whyp" hidden></section>
 
-  <div class="strip">
-    <section class="panel" aria-labelledby="tr-h">
-      <h2 id="tr-h">Track record</h2>
-      <table class="rec" id="rec"><thead><tr><th>Live calls</th><th>Days</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody><tr><td colspan="5" class="muted">Loading the scoreboard…</td></tr></tbody></table>
-      <details class="more" id="rec-more" hidden><summary>More (fewer than 3 days, replays, late runs)</summary><table class="rec"><thead><tr><th>Forecast</th><th>Days</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody></tbody></table></details>
-    </section>
-    <section class="panel" aria-labelledby="wk-h">
-      <h2 id="wk-h">This week so far</h2>
-      <p class="muted small" id="wk-note">Loading…</p>
-      <ol class="mini" id="weekly"></ol>
-      <h2 id="mo-h" hidden style="margin-top:22px">This month so far</h2>
-      <p class="muted small" id="mo-note" hidden></p>
-      <ol class="mini" id="monthly" hidden></ol>
-    </section>
-    <section class="panel">
-      <h2>Launching soon?</h2>
-      <p class="muted">See what PH members would say about your product.</p>
-      <p><a href="/try" class="tag">Try a product →</a></p>
-    </section>
-  </div>
   <footer class="note label"><span>Forecasts by Atelier · not affiliated with Product Hunt</span><span id="asof"></span></footer>
 </div>
 
@@ -84,7 +67,7 @@ function icon(p){
   const h=hash(p.id||p.name), g=(GLYPH.find(([t])=>(p.topics||[]).includes(t))||[])[1]||"·";
   return `<div class="icon" style="--dot:${3+(h%4)}px;--dop:${(0.16+((h>>3)%5)*0.06).toFixed(2)}" aria-hidden="true"><span>${letter}</span><i>${esc(g)}</i></div>`;
 }
-let VIEW=null;
+let VIEW=null, TAB=null;
 const link = (x)=> x.slug ? `<a href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name);
 const chips = (x)=> (x.topics||[]).slice(0,2).map(t=>`<span class="t">${esc(t)}</span>`).join("");
 
@@ -109,10 +92,6 @@ async function load(day){
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
   $("#kicker").textContent = `Product Hunt · ${VIEW.day}`;
   $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
-  const fr = VIEW.freshness || {}, msgs = [];
-  if(VIEW.notice) msgs.push(VIEW.notice);
-  (fr.capture_gaps||[]).forEach(g=> msgs.push(g.to_pt ? `No data ${g.from_pt}–${g.to_pt}.` : `Not updated since ${g.from_pt}.`));
-  $("#notice").hidden = !msgs.length; $("#notice").textContent = msgs.join(" ");
   renderPred(); renderLive(); drawLinks();
 }
 
@@ -127,10 +106,24 @@ function liveTop(){
   return VIEW.launches.filter(x=>x.board_rank).sort((a,c)=>a.board_rank-c.board_rank).slice(0,10);
 }
 
+// Two forecasts only, both made before Product Hunt shows vote counts:
+// "Midnight" = the 00:05 PT forecast; "Before votes" = the latest pre-reveal forecast (on time if one exists).
+function pointFor(v){
+  if(v === "mid") return VIEW.points.find(q=>q.key==="0005") || null;
+  const pre = VIEW.points.filter(q=>/^P\d$/.test(q.key));
+  return pre.filter(q=>!q.late).pop() || pre.pop() || null;
+}
+function tabs(){
+  const has = {mid: !!pointFor("mid"), pre: !!pointFor("pre")};
+  if(!TAB || !has[TAB]) TAB = has.pre ? "pre" : "mid";
+  ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.disabled = !has[v]; b.setAttribute("aria-selected", String(TAB===v));
+    const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Not made yet";
+    b.onclick = ()=>{ TAB = v; renderPred(); renderLive(); drawLinks(); }; });
+}
 function renderPred(){
-  const p = VIEW.points.find(q=>q.key===VIEW.lead_point);
-  if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; $("#pred-stamp").textContent = ""; return; }
-  $("#pred-stamp").innerHTML = `Made <b>${esc(p.time_pt)}</b>`;
+  tabs();
+  const p = pointFor(TAB);
+  if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; return; }
   const real = new Set(liveTop().map(x=>x.id));
   const o = VIEW.launches.filter(x=>p.ranks[x.id]).sort((a,b)=>p.ranks[a.id]-p.ranks[b.id]).slice(0,10);
   $("#pred").innerHTML = o.map(x=>{
@@ -148,7 +141,7 @@ function renderLive(){
   const fr = VIEW.freshness || {};
   $("#live-stamp").innerHTML = fr.board_stale ? `<span class="tag">${esc(fr.board_stale_label)}</span>`
     : b.as_of_pt ? `${fin ? "Final" : "Updated"} <b>${esc(b.as_of_pt)}</b>` : "";
-  const lead = VIEW.points.find(q=>q.key===VIEW.lead_point);
+  const lead = pointFor(TAB);
   const ours = new Set(lead ? Object.entries(lead.ranks).filter(([,r])=>r<=10).map(([id])=>id) : []);
   $("#live").innerHTML = liveTop().map(x=>row(x.board_rank, x, x.board_votes!=null ? Number(x.board_votes) : null,
       x.board_votes!=null ? "votes" : (fin ? "final" : "hidden"), ours.has(x.id))).join("")
@@ -178,32 +171,14 @@ function showWhy(id, key){
 }
 
 async function side(){
-  let t;
-  try { t = await getJSON("/api/ph/track-record"); }
-  catch(e){ $("#rec tbody").innerHTML = `<tr><td colspan="5" class="muted">Couldn't load the scoreboard (${esc(e.message)}).</td></tr>`; return; }
-  const f = (v)=> v==null ? "—" : Math.round(v)+"%";
-  const ci = (r,k)=> (r.ci && Array.isArray(r.ci[k])) ? `<br><span class="small muted">${Math.round(r.ci[k][0])}–${Math.round(r.ci[k][1])}</span>` : "";
-  const tr = (r)=> `<tr><td>${esc(r.label)}</td><td>${Number(r.n_days)}</td><td>${f(r.top3)}${ci(r,"top3")}</td><td>${f(r.top5)}${ci(r,"top5")}</td><td>${f(r.top10)}${ci(r,"top10")}</td></tr>`;
-  const isLive = (r)=> (r.source||"live")==="live";
-  const live = t.rows.filter(r=>r.n_days >= 3 && isLive(r)), other = t.rows.filter(r=>r.n_days && !(r.n_days >= 3 && isLive(r)));
-  $("#rec tbody").innerHTML = live.map(tr).join("") || `<tr><td colspan="5" class="muted">No live day scored yet.</td></tr>`;
-  if(other.length){ $("#rec-more").hidden = false; $("#rec-more tbody").innerHTML = other.map(r=>tr({...r, label: r.label+(isLive(r) ? "" : " ("+({replay_in_sample:"in-sample replay", replay:"replay", late:"late"}[r.source]||r.source)+")")})).join(""); }
-  if(t.unavailable){ $("#rec tbody").innerHTML = `<tr><td colspan="5" class="muted">Track record unavailable right now.</td></tr>`; }
-    const w = await getJSON("/api/ph/weekly").catch(()=>null);
-  if(!w || !w.top || !w.top.length){ $("#wk-note").textContent = "No weekly call available right now."; }
-  if(w && w.top){
-    $("#wk-note").textContent = w.point==="running" ? `PH's standings so far · week of ${w.week_monday}` : `Our weekly call · week of ${w.week_monday}`;
-    $("#weekly").innerHTML = w.top.map(x=>`<li><span>${Number(x.pred_rank)}</span><span>${esc(x.name||"(launch "+String(x.day)+")")}</span><span>${x.est_votes==null ? "" : "~"+Math.round(Number(x.est_votes))}</span></li>`).join("");
-    const m = w.month;
-    if(m && m.top && m.top.length){
-      ["#mo-h","#mo-note","#monthly"].forEach(s=>$(s).hidden=false);
-      $("#mo-note").textContent = `PH's standings so far · ${m.month}`;
-      $("#monthly").innerHTML = m.top.map(x=>`<li><span>${Number(x.rank)}</span><span>${esc(x.name||"(a launch this month)")}</span><span></span></li>`).join("");
-    }
-  }
+  try {
+    const t = await getJSON("/api/ph/track-record");
+    const r = (t.rows||[]).find(x=>x.key==="0005" && (x.source||"live")==="live");
+    if(r && r.n_days) $("#metric").textContent = `So far our user simulations have predicted ${Math.round(r.top10)}% of each day's top 10 before public votes (${r.n_days} days).`;
+  } catch(e){ /* the line is optional */ }
 }
 
-$("#day").onchange = (e)=>{ $("#whyp").hidden = true; load(e.target.value); };
+$("#day").onchange = (e)=>{ $("#whyp").hidden = true; TAB = null; load(e.target.value); };
 load(); side();
 // Upstream snapshots land every 15 min; poll every 3 min so a new one shows quickly.
 setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final) load(VIEW.day); }, 3*60*1000);
