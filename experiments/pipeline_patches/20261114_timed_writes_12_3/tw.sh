@@ -6,6 +6,8 @@
 # usage: tw.sh <job> [YYYY-MM-DD]   (day defaults to today's Pacific day; jobs listed in tw.cron and README.md)
 set -uo pipefail
 JOB="${1:?job}"; TW=/home/agent/w/tw; X=$TW/experiments; P=$X/ph_predict; B=gs://usersim-bakeoff-347838016394/usersim_sim
+# today-rows fix marker (written by deploy_today_rows.sh): E5's writers drop their "polluted inputs, fix pending" note once it is set
+[ -s /home/agent/w/today_rows_fix.json ] && export TODAY_ROWS_FIX_DEPLOYED=1 TODAY_BUG_FIXED=$(/opt/exp/bin/python3 -c "import json; print(json.load(open('/home/agent/w/today_rows_fix.json'))['fixed_from'])" 2>/dev/null)
 export PATH=/opt/exp/bin:$PATH TZ=America/Los_Angeles USERSIM_CACHE=$TW/cache TMPDIR=$TW/tmp LGB_THREADS=${LGB_THREADS:-2} MPLBACKEND=Agg
 export CF_WORK=$TW/cmt LLM_PROVIDER=gemini SKIP_CLAUDE=1
 unset PH_TOKEN   # never inherited: these jobs make no Product Hunt requests

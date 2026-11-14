@@ -11,7 +11,8 @@ W=/home/agent/w; P=$W/experiments/ph_predict; N=$W/today_rows.new; BK=$W/backup_
 OLD=981c5ded; NEW=033d7bd7; T=$W/phops_tm/today_rows_deploy; mkdir -p $T
 m8() { md5sum "$1" | cut -c1-8; }
 rollback() { [ -f $BK/features.py ] && [ "$(m8 $BK/features.py)" = $OLD ] || { echo "ROLLBACK: no $OLD backup at $BK"; exit 2; }
-  cp $BK/features.py $P/features.py.rb && mv $P/features.py.rb $P/features.py && echo "ROLLED BACK: $P/features.py = $(m8 $P/features.py)"; }
+  cp $BK/features.py $P/features.py.rb && mv $P/features.py.rb $P/features.py && echo "ROLLED BACK: $P/features.py = $(m8 $P/features.py)"
+  rm -f $W/today_rows_fix.json; gsutil -q rm gs://usersim-bakeoff-347838016394/usersim_sim/results/web/today_rows_fix.json 2>/dev/null || true; }
 MODE=${1:-}
 case "$MODE" in
 rollback) rollback; exit $?;;
@@ -46,4 +47,10 @@ env PYTHONPATH=$W/arm2_live:. $PY $T/bin/import_gate.py $W/arm2_live/h25_live.py
 env PYTHONPATH=. $PY $T/bin/test_today_rows.py $(realpath $P/data) $D 2099-01-01 || ok=0
 env PYTHONPATH=. nice $PY $T/bin/dryrun_tonight.py $T || ok=0
 [ $ok = 1 ] || { echo "POST-INSTALL CHECK FAILED: rolling back"; rollback; exit 1; }
-echo "DEPLOYED today-rows fix: $P/features.py = $NEW; rollback: bash $N/deploy_today_rows.sh rollback"
+# (6) record the fix date in ONE place: ~/w/today_rows_fix.json (+ bucket copy results/web/today_rows_fix.json). fixed_from = the first 00:05
+# night that runs with the fix (today if installed before 00:05 PT, else tomorrow). Readers: scoreboard.py (TODAY_BUG_FIXED, from the bucket copy)
+# and tw.sh (exports TODAY_ROWS_FIX_DEPLOYED=1 + TODAY_BUG_FIXED for E5's writers). rollback removes both.
+FX=$(TZ=America/Los_Angeles date +%H%M); if [ "$FX" -lt 0005 ]; then FROM=$(TZ=America/Los_Angeles date +%F); else FROM=$(TZ=America/Los_Angeles date -d tomorrow +%F); fi
+echo "{\"fixed_from\": \"$FROM\", \"features_md5\": \"$NEW\", \"installed_at\": \"$(date -u +%FT%TZ)\"}" > $W/today_rows_fix.json
+gsutil -q cp $W/today_rows_fix.json gs://usersim-bakeoff-347838016394/usersim_sim/results/web/today_rows_fix.json || echo "WARN: bucket copy of today_rows_fix.json failed (local marker written)"
+echo "DEPLOYED today-rows fix: $P/features.py = $NEW; fixed_from $FROM; rollback: bash $N/deploy_today_rows.sh rollback"

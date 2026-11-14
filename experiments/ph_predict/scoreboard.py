@@ -141,6 +141,12 @@ def main():
     # built with stale data/today/ rows in the hunter history (pipeline_patches/20261114_today_rows). Set TODAY_BUG_FIXED to the first night the
     # fix runs live; days from then on are not flagged.
     TODAY_BUG_FROM, TODAY_BUG_FIXED = "2026-10-26", os.environ.get("TODAY_BUG_FIXED") or None
+    if not TODAY_BUG_FIXED:   # the one marker deploy_today_rows.sh writes (bucket copy); absent = fix not live
+        try:
+            _m = subprocess.run(["gsutil", "cat", "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/today_rows_fix.json"], capture_output=True, text=True)
+            TODAY_BUG_FIXED = json.loads(_m.stdout)["fixed_from"] if _m.returncode == 0 and _m.stdout.strip() else None
+        except Exception:
+            TODAY_BUG_FIXED = None
     flag_txt = "built on polluted hunter-history inputs (today-rows bug, " + (f"fixed {TODAY_BUG_FIXED})" if TODAY_BUG_FIXED else "fix not yet live)")
     hit = (X.day >= TODAY_BUG_FROM) & ((X.day < TODAY_BUG_FIXED) if TODAY_BUG_FIXED else True) & (X.point.astype(str).eq("0005") | X.point.astype(str).str.startswith("P") | X.method.astype(str).str.contains("weekly|monthly"))
     X["input_flag"] = pd.Series([flag_txt if h else None for h in hit], index=X.index, dtype=object)
