@@ -48,3 +48,17 @@
 Excluded: id:len (identifier / timestamp text); id:nonempty (identifier / timestamp text); name:len (arm-2 input (ph_name_len)); tagline:len (arm-2 input (ph_tagline_len)); createdAt:len (identifier / timestamp text); createdAt:nonempty (identifier / timestamp text); featuredAt:len (identifier / timestamp text); featuredAt:nonempty (identifier / timestamp text); description:len (arm-2 input (ph_desc_len)); topics.edges:n (arm-2 input (ph_n_topics)); topics.edges[].node:nonempty (arm-2 input (ph_n_topics)); topics.edges[].node.name:nonempty (arm-2 input (ph_n_topics)); media:n (arm-2 input (ph_n_media)); makers:n (arm-2 input (ph_n_makers)); makers[].twitterUsername:nonempty (clean policy: needs named makers); makers[].headline:nonempty (clean policy: needs named makers); makers[].username:nonempty (clean policy: needs named makers); makers[].name:nonempty (clean policy: needs named makers); makers[].createdAt:nonempty (clean policy: needs named makers); makers[].websiteUrl:nonempty (clean policy: needs named makers); makers[].followersCount:nonempty (clean policy: needs named makers); makers[].followersCount:mean (clean policy: needs named makers); makers[].followersCount:max (clean policy: needs named makers); makers[].id:nonempty (clean policy: needs named makers); user.id:len (identifier / timestamp text); user.id:nonempty (identifier / timestamp text); user.createdAt:len (identifier / timestamp text); user.createdAt:nonempty (identifier / timestamp text); drv.hunter_age_d_at_create (arm-2 input (ph_hunter_age_d))
 
 Picked for the arm-2 test: ['drv.slug_suffix_n', 'slug:len']
+
+## Corrections after the first run (b6b51614 -> facd33ff), stated before the arm-2 test
+- topics.edges[].node(:name):nonempty are the topic count, which is ph_n_topics, an arm-2 input; the mapping had missed them. Now excluded.
+- user.followersCount (hunter followers) passed the pre-registered check (Spearman 0.949), but its stored value includes
+  outcome-dependent post-launch growth (log stored/00:05: others +0.89, top 3 +0.06; small hunters go 2 -> 31). Marked leaky.
+  Its score +0.081 [+0.046, +0.115] is still shown. Arm 2 already drops it ('nofol').
+
+## Arm 2 + {drv.slug_suffix_n, slug:len} (rawfield_arm2.py @ facd33ff; paired, 5 seeds, day bootstrap 95%)
+| year | days | arm 2 | plus | top 3 | top 5 | top 10 |
+|---|---|---|---|---|---|---|
+| 2025 (first) | 204 | 49.3 / 60.8 / 78.9 | 48.5 / 60.5 / 79.0 | -0.8 [-2.3, +0.7] | -0.3 [-1.3, +0.6] | +0.1 [-0.4, +0.6] |
+| 2026 (once) | 184 | 56.0 / 65.7 / 76.2 | 56.0 / 64.9 / 76.7 | 0.0 [-1.8, +1.8] | -0.8 [-1.7, +0.2] | +0.4 [-0.1, +1.0] |
+
+Verdict: no gain. Nothing is added to arm 2. The raw PH record has no unscored, knowable field that improves arm 2.
