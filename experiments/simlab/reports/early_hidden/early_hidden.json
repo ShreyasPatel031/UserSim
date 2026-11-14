@@ -1,0 +1,331 @@
+{
+ "design": "Hidden rank in the first minutes vs the midnight forecast (orchestrator 01:44Z Nov 14). Nov 2-12; direction only. Counts only.\nHidden rank at T: recorder vote_snapshots rank_now (00:06 read, 01:00), and posts_ts daily_rank_at_fetch at 00:15 / 00:30 / 00:45 (15-min\nfeed, days where present; latest read <= T within 20 min). Label: official daily_rank. Arm 2 = nov_arm2 'both' (month-fold, built from\nfinal-read inputs: a mild advantage). (1) plain hidden order vs final; what the 00:06 order correlates with (within-day Spearman with the\n00:05 API list order, launch id order, name alphabetical). (2) arm 2 alone vs hidden order, paired. (3) rank-average blend w x rank(arm2)\n+ (1 - w) x hidden rank, w in {0, .1, ..., 1} leave-one-day-out; gain vs arm 2 and vs hidden order.",
+ "(1) 00:06 hidden order: mean within-day Spearman with": {
+  "final rank": 0.384,
+  "launch id order": 0.108,
+  "name alphabetical": -0.004,
+  "arm 2": 0.336,
+  "days": 11
+ },
+ "00:06": {
+  "days": 11,
+  "hidden rank top3/5/10": [
+   30.3,
+   38.2,
+   57.3
+  ],
+  "arm 2 top3/5/10": [
+   63.6,
+   61.8,
+   70.9
+  ],
+  "arm 2 - hidden": [
+   [
+    33.3,
+    18.2,
+    51.5
+   ],
+   [
+    23.6,
+    9.1,
+    40.0
+   ],
+   [
+    13.6,
+    1.8,
+    23.6
+   ]
+  ],
+  "LODO blend top3/5/10": [
+   57.6,
+   60.0,
+   70.9
+  ],
+  "blend - arm 2": [
+   [
+    -6.1,
+    -15.2,
+    0.0
+   ],
+   [
+    -1.8,
+    -5.5,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ],
+  "blend - hidden": [
+   [
+    27.3,
+    12.1,
+    48.5
+   ],
+   [
+    21.8,
+    9.1,
+    36.4
+   ],
+   [
+    13.6,
+    1.8,
+    23.6
+   ]
+  ],
+  "LODO weights on arm 2": [
+   1.0,
+   1.0,
+   1.0,
+   0.9,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.9,
+   1.0,
+   1.0
+  ]
+ },
+ "00:15": {
+  "days": 0
+ },
+ "00:30": {
+  "days": 6,
+  "hidden rank top3/5/10": [
+   33.3,
+   46.7,
+   61.7
+  ],
+  "arm 2 top3/5/10": [
+   55.6,
+   60.0,
+   68.3
+  ],
+  "arm 2 - hidden": [
+   [
+    22.2,
+    5.6,
+    44.4
+   ],
+   [
+    13.3,
+    3.3,
+    26.7
+   ],
+   [
+    6.7,
+    -5.0,
+    18.3
+   ]
+  ],
+  "LODO blend top3/5/10": [
+   61.1,
+   60.0,
+   71.7
+  ],
+  "blend - arm 2": [
+   [
+    5.6,
+    0.0,
+    16.7
+   ],
+   [
+    0.0,
+    -10.0,
+    10.0
+   ],
+   [
+    3.3,
+    0.0,
+    6.7
+   ]
+  ],
+  "blend - hidden": [
+   [
+    27.8,
+    11.1,
+    44.4
+   ],
+   [
+    13.3,
+    6.7,
+    20.0
+   ],
+   [
+    10.0,
+    -1.7,
+    21.7
+   ]
+  ],
+  "LODO weights on arm 2": [
+   0.8,
+   0.8,
+   0.8,
+   0.8,
+   0.8,
+   0.8
+  ]
+ },
+ "00:45": {
+  "days": 6,
+  "hidden rank top3/5/10": [
+   44.4,
+   56.7,
+   65.0
+  ],
+  "arm 2 top3/5/10": [
+   55.6,
+   60.0,
+   66.7
+  ],
+  "arm 2 - hidden": [
+   [
+    11.1,
+    -11.1,
+    33.3
+   ],
+   [
+    3.3,
+    -13.3,
+    26.7
+   ],
+   [
+    1.7,
+    -6.7,
+    8.3
+   ]
+  ],
+  "LODO blend top3/5/10": [
+   55.6,
+   63.3,
+   68.3
+  ],
+  "blend - arm 2": [
+   [
+    0.0,
+    -16.7,
+    16.7
+   ],
+   [
+    3.3,
+    -10.0,
+    16.7
+   ],
+   [
+    1.7,
+    -8.3,
+    11.7
+   ]
+  ],
+  "blend - hidden": [
+   [
+    11.1,
+    -16.7,
+    38.9
+   ],
+   [
+    6.7,
+    -16.7,
+    23.3
+   ],
+   [
+    3.3,
+    -3.3,
+    10.0
+   ]
+  ],
+  "LODO weights on arm 2": [
+   0.4,
+   0.6,
+   0.7,
+   0.5,
+   0.6,
+   0.4
+  ]
+ },
+ "01:00": {
+  "days": 11,
+  "hidden rank top3/5/10": [
+   69.7,
+   56.4,
+   62.7
+  ],
+  "arm 2 top3/5/10": [
+   60.6,
+   61.8,
+   68.2
+  ],
+  "arm 2 - hidden": [
+   [
+    -9.1,
+    -30.3,
+    12.1
+   ],
+   [
+    5.5,
+    -9.1,
+    18.2
+   ],
+   [
+    5.5,
+    -0.9,
+    11.8
+   ]
+  ],
+  "LODO blend top3/5/10": [
+   66.7,
+   63.6,
+   69.1
+  ],
+  "blend - arm 2": [
+   [
+    6.1,
+    -9.1,
+    21.2
+   ],
+   [
+    1.8,
+    -5.5,
+    9.1
+   ],
+   [
+    0.9,
+    -4.5,
+    6.4
+   ]
+  ],
+  "blend - hidden": [
+   [
+    -3.0,
+    -18.2,
+    12.1
+   ],
+   [
+    7.3,
+    -7.3,
+    21.8
+   ],
+   [
+    6.4,
+    0.0,
+    12.7
+   ]
+  ],
+  "LODO weights on arm 2": [
+   0.7,
+   0.7,
+   0.7,
+   0.7,
+   0.7,
+   0.4,
+   0.4,
+   0.7,
+   0.7,
+   0.7,
+   0.7
+  ]
+ }
+}
