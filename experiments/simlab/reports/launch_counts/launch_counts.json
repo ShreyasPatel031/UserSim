@@ -1,0 +1,274 @@
+{
+ "design": "Launch-time audience counts read at the start of the day (orchestrator 01:48Z Nov 14). Counts only; direction only.\nPer launch on live days Nov 3-12 (final ranks known), reads strictly before 01:00 PT:\n  hunter_followers     raw/daily/<d>/today_0005.json user.followersCount (file written ~00:06 PT)\n  team_followers       sum of makers[].followersCount in the same file (hunter counted once)\n  team_following       sum of 'following' over the launch's team in raw/ph_at_launch/<d>/makers_header.jsonl, rows fetched < 01:00 PT\n  reviews_count / reviews_rating   raw/ph_at_launch/<d>/live/products_ts.jsonl, earliest read, kept only if fetched < 01:00 PT\n  (product followers: null in every products_ts row - not captured)\nMetrics: within-day Spearman of log1p(count) with final rank (sign: + = more -> better rank); within-day Spearman with the residual of the\npublished 00:05 forecast (results/web/forecast_0005 predicted_rank - final rank) and of arm 2 (nov_arm2 'both' rank - final rank); day\nbootstrap. Add-on: rank-average arm 2 with the count, weight leave-one-day-out, top 3/5/10 vs arm 2 paired.",
+ "qualifying reads per day": {
+  "2026-11-03": {
+   "launches": 0,
+   "makers_header rows < 01:00": 0,
+   "products_ts reads < 01:00": 0
+  },
+  "2026-11-04": {
+   "launches": 35,
+   "makers_header rows < 01:00": 0,
+   "products_ts reads < 01:00": 35
+  },
+  "2026-11-05": {
+   "launches": 0,
+   "makers_header rows < 01:00": 0,
+   "products_ts reads < 01:00": 0
+  },
+  "2026-11-06": {
+   "launches": 0,
+   "makers_header rows < 01:00": 0,
+   "products_ts reads < 01:00": 0
+  },
+  "2026-11-07": {
+   "launches": 0,
+   "makers_header rows < 01:00": 0,
+   "products_ts reads < 01:00": 0
+  },
+  "2026-11-08": {
+   "launches": 17,
+   "makers_header rows < 01:00": 19,
+   "products_ts reads < 01:00": 32
+  },
+  "2026-11-09": {
+   "launches": 23,
+   "makers_header rows < 01:00": 32,
+   "products_ts reads < 01:00": 0
+  },
+  "2026-11-10": {
+   "launches": 50,
+   "makers_header rows < 01:00": 70,
+   "products_ts reads < 01:00": 0
+  },
+  "2026-11-11": {
+   "launches": 16,
+   "makers_header rows < 01:00": 23,
+   "products_ts reads < 01:00": 0
+  },
+  "2026-11-12": {
+   "launches": 37,
+   "makers_header rows < 01:00": 50,
+   "products_ts reads < 01:00": 0
+  }
+ },
+ "launches with final rank": 177,
+ "coverage (share non-null)": {
+  "hunter_followers": 1.0,
+  "team_followers": 1.0,
+  "team_following": 0.808,
+  "reviews_count": 0.215,
+  "reviews_rating": 0.215
+ },
+ "hunter_followers": {
+  "Spearman with final rank (+ = more -> better)": [
+   0.591,
+   0.489,
+   0.69,
+   6
+  ],
+  "with published 00:05 residual (+ = count predicts finishing above the forecast)": [
+   -0.18,
+   -0.282,
+   -0.082,
+   6
+  ],
+  "with arm-2 residual": [
+   -0.137,
+   -0.269,
+   -0.011,
+   6
+  ]
+ },
+ "team_followers": {
+  "Spearman with final rank (+ = more -> better)": [
+   0.603,
+   0.509,
+   0.697,
+   6
+  ],
+  "with published 00:05 residual (+ = count predicts finishing above the forecast)": [
+   -0.188,
+   -0.282,
+   -0.094,
+   6
+  ],
+  "with arm-2 residual": [
+   -0.144,
+   -0.26,
+   -0.025,
+   6
+  ]
+ },
+ "team_following": {
+  "Spearman with final rank (+ = more -> better)": [
+   0.446,
+   0.385,
+   0.534,
+   4
+  ],
+  "with published 00:05 residual (+ = count predicts finishing above the forecast)": [
+   -0.192,
+   -0.282,
+   -0.104,
+   4
+  ],
+  "with arm-2 residual": [
+   -0.205,
+   -0.298,
+   -0.111,
+   4
+  ]
+ },
+ "reviews_count": {
+  "Spearman with final rank (+ = more -> better)": [
+   0.337,
+   0.337,
+   0.337,
+   1
+  ],
+  "with published 00:05 residual (+ = count predicts finishing above the forecast)": [
+   -0.054,
+   -0.054,
+   -0.054,
+   1
+  ],
+  "with arm-2 residual": [
+   -0.029,
+   -0.029,
+   -0.029,
+   1
+  ]
+ },
+ "reviews_rating": {
+  "Spearman with final rank (+ = more -> better)": [
+   0.26,
+   0.26,
+   0.26,
+   1
+  ],
+  "with published 00:05 residual (+ = count predicts finishing above the forecast)": [
+   -0.095,
+   -0.095,
+   -0.095,
+   1
+  ],
+  "with arm-2 residual": [
+   -0.07,
+   -0.07,
+   -0.07,
+   1
+  ]
+ },
+ "add-on to arm 2: reviews_count (LODO weight)": {
+  "days": 6,
+  "arm 2 top3/5/10": [
+   55.6,
+   60.0,
+   68.3
+  ],
+  "blend": [
+   55.6,
+   60.0,
+   68.3
+  ],
+  "blend - arm 2 [CI]": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ]
+ },
+ "penalty on team_followers (LODO)": {
+  "weights": [
+   0,
+   0.1,
+   0.1,
+   0.1,
+   0.1,
+   0.1
+  ],
+  "blend - arm 2 [CI]": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ]
+ },
+ "penalty on hunter_followers (LODO)": {
+  "weights": [
+   0,
+   0.1,
+   0.1,
+   0.1,
+   0.1,
+   0.1
+  ],
+  "blend - arm 2 [CI]": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ]
+ },
+ "penalty on team_following (LODO)": {
+  "weights": [
+   0.2,
+   0,
+   0.2,
+   0,
+   0,
+   0.2
+  ],
+  "blend - arm 2 [CI]": [
+   [
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    -3.3,
+    -10.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0
+   ]
+  ]
+ }
+}
