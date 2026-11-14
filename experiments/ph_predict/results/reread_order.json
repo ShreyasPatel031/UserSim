@@ -1,0 +1,1955 @@
+{
+ "method": "Re-read order for the daily upvote_refresh job (orchestrator 22:55Z Nov 14). Held data only; nothing is pulled.\n\nQuestion: the job reads each person's Upvotes tab newest first down to the first held upvote. Which order of people\nrecovers the most of yesterday's votes per page read?\n\nData\n  people   complete people in store_v3 (persons.complete, whole-person rule), salted ids only\n  votes    their dated upvotes (events.parquet, kind=upvote), dated by the upvoted launch's PT day (store upvote times are\n           fetch snapshots, not vote times), deduped person x launch\n  truth    day d = launches of day d (Oct 1 - Nov 12) with final votes; a person counts for day d only if their upvotes tab\n           was read after d closed (fetched_at >= d+1 08:00Z), so every order is scored on the same people\n  coverage per-launch min(recovered upvoters, displayed votes) / displayed votes, summed (pool_size.py capped headline)\nOrders (each day, using only votes on launches dated before d)\n  a  most active first: upvotes on launches of d-30..d-1\n  b  E5's CF-only predicted backers of day d's launches first (tmp/e5/private/backer_arms/<d>.parquet, arm CF-only;\n     score = sum of p over the day's listed launches; lists frozen with reads before d 00:00 PT), then the rest by (a).\n     Only Nov 8-12 exist, so (b) is compared on those 5 days in a separate run\n  c  any upvote in d-7..d-1 first, random within groups\n  d  random\n  e  (extra) upvotes on launches of d-7..d-1 (7-day count)\nCost: the job reads the people in order up to a budget of N people each morning. A person costs max(1, ceil(n/20)) pages,\n  n = their upvotes since the job last read them (launch-dated); everyone is taken as freshly read the day before the run\n  starts. People not read keep accumulating, so their next read costs more.\nIntervals: launch bootstrap (1000) over the window's launches; paired differences vs (a) on the same resamples.\nusage: python reread_order.py DATA_DIR -> results/reread_order.json + .md   (counts only)",
+ "people_complete": 69483,
+ "oct_level": {
+  "all": 0.517,
+  "top3": 0.836
+ },
+ "main_oct1_nov12": {
+  "days": [
+   "2026-10-01",
+   "2026-11-12",
+   43
+  ],
+  "launches": 1287,
+  "eligible_people_mean": 64655,
+  "read_everyone": {
+   "votes_recovered": 81018.0,
+   "cov_all": 0.5099,
+   "cov_top3": 0.7677,
+   "pages_per_day": 64659
+  },
+  "budgets": {
+   "1000": {
+    "a": {
+     "votes_recovered": 54125.0,
+     "cov_all": 0.3577,
+     "cov_top3": 0.5219,
+     "pages_per_day": 1007,
+     "votes_per_page": 1.25,
+     "ci": {
+      "votes": [
+       50528.9,
+       58003.1
+      ],
+      "all": [
+       0.3432,
+       0.3721
+      ],
+      "top3": [
+       0.4896,
+       0.5545
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "c": {
+     "votes_recovered": 27192.0,
+     "cov_all": 0.1799,
+     "cov_top3": 0.2803,
+     "pages_per_day": 1016,
+     "votes_per_page": 0.622,
+     "ci": {
+      "votes": [
+       25236.65,
+       29506.475
+      ],
+      "all": [
+       0.1713,
+       0.1885
+      ],
+      "top3": [
+       0.2611,
+       0.3015
+      ],
+      "dv": [
+       -28789.275,
+       -25101.6
+      ],
+      "dall": [
+       -0.1848,
+       -0.1705
+      ],
+      "dtop3": [
+       -0.2592,
+       -0.2221
+      ]
+     }
+    },
+    "d": {
+     "votes_recovered": 1259.0,
+     "cov_all": 0.0083,
+     "cov_top3": 0.0128,
+     "pages_per_day": 1013,
+     "votes_per_page": 0.029,
+     "ci": {
+      "votes": [
+       1146.0,
+       1381.0
+      ],
+      "all": [
+       0.0078,
+       0.0089
+      ],
+      "top3": [
+       0.0114,
+       0.0143
+      ],
+      "dv": [
+       -56680.025,
+       -49353.85
+      ],
+      "dall": [
+       -0.3633,
+       -0.3349
+      ],
+      "dtop3": [
+       -0.5413,
+       -0.4767
+      ]
+     }
+    },
+    "e": {
+     "votes_recovered": 58214.0,
+     "cov_all": 0.3837,
+     "cov_top3": 0.5589,
+     "pages_per_day": 1005,
+     "votes_per_page": 1.348,
+     "ci": {
+      "votes": [
+       54286.725,
+       62549.725
+      ],
+      "all": [
+       0.368,
+       0.3991
+      ],
+      "top3": [
+       0.5238,
+       0.5953
+      ],
+      "dv": [
+       3628.975,
+       4630.025
+      ],
+      "dall": [
+       0.0234,
+       0.0288
+      ],
+      "dtop3": [
+       0.0291,
+       0.0463
+      ]
+     }
+    }
+   },
+   "5000": {
+    "a": {
+     "votes_recovered": 73659.0,
+     "cov_all": 0.4694,
+     "cov_top3": 0.719,
+     "pages_per_day": 5004,
+     "votes_per_page": 0.342,
+     "ci": {
+      "votes": [
+       68051.15,
+       79889.25
+      ],
+      "all": [
+       0.4483,
+       0.4904
+      ],
+      "top3": [
+       0.6731,
+       0.7622
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "c": {
+     "votes_recovered": 70129.0,
+     "cov_all": 0.4511,
+     "cov_top3": 0.6866,
+     "pages_per_day": 5004,
+     "votes_per_page": 0.326,
+     "ci": {
+      "votes": [
+       64858.75,
+       76052.7
+      ],
+      "all": [
+       0.4303,
+       0.4709
+      ],
+      "top3": [
+       0.6426,
+       0.7299
+      ],
+      "dv": [
+       -4028.025,
+       -3060.825
+      ],
+      "dall": [
+       -0.0201,
+       -0.0164
+      ],
+      "dtop3": [
+       -0.038,
+       -0.027
+      ]
+     }
+    },
+    "d": {
+     "votes_recovered": 6322.0,
+     "cov_all": 0.0418,
+     "cov_top3": 0.0651,
+     "pages_per_day": 5027,
+     "votes_per_page": 0.029,
+     "ci": {
+      "votes": [
+       5843.95,
+       6837.25
+      ],
+      "all": [
+       0.0397,
+       0.0439
+      ],
+      "top3": [
+       0.0602,
+       0.0701
+      ],
+      "dv": [
+       -73023.6,
+       -62156.475
+      ],
+      "dall": [
+       -0.4467,
+       -0.4079
+      ],
+      "dtop3": [
+       -0.6943,
+       -0.6118
+      ]
+     }
+    },
+    "e": {
+     "votes_recovered": 70129.0,
+     "cov_all": 0.4511,
+     "cov_top3": 0.6866,
+     "pages_per_day": 5004,
+     "votes_per_page": 0.326,
+     "ci": {
+      "votes": [
+       64858.75,
+       76052.7
+      ],
+      "all": [
+       0.4303,
+       0.4709
+      ],
+      "top3": [
+       0.6426,
+       0.7299
+      ],
+      "dv": [
+       -4028.025,
+       -3060.825
+      ],
+      "dall": [
+       -0.0201,
+       -0.0164
+      ],
+      "dtop3": [
+       -0.038,
+       -0.027
+      ]
+     }
+    }
+   },
+   "20000": {
+    "a": {
+     "votes_recovered": 76180.0,
+     "cov_all": 0.4837,
+     "cov_top3": 0.7372,
+     "pages_per_day": 19698,
+     "votes_per_page": 0.09,
+     "ci": {
+      "votes": [
+       70341.4,
+       82567.025
+      ],
+      "all": [
+       0.4622,
+       0.5047
+      ],
+      "top3": [
+       0.693,
+       0.7803
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "c": {
+     "votes_recovered": 72746.0,
+     "cov_all": 0.4664,
+     "cov_top3": 0.7085,
+     "pages_per_day": 19698,
+     "votes_per_page": 0.086,
+     "ci": {
+      "votes": [
+       67357.9,
+       78800.2
+      ],
+      "all": [
+       0.4456,
+       0.4865
+      ],
+      "top3": [
+       0.6647,
+       0.7511
+      ],
+      "dv": [
+       -3894.025,
+       -2996.8
+      ],
+      "dall": [
+       -0.0189,
+       -0.0156
+      ],
+      "dtop3": [
+       -0.0335,
+       -0.024
+      ]
+     }
+    },
+    "d": {
+     "votes_recovered": 24428.0,
+     "cov_all": 0.1616,
+     "cov_top3": 0.2531,
+     "pages_per_day": 19713,
+     "votes_per_page": 0.029,
+     "ci": {
+      "votes": [
+       22672.725,
+       26483.2
+      ],
+      "all": [
+       0.1543,
+       0.1689
+      ],
+      "top3": [
+       0.2375,
+       0.2704
+      ],
+      "dv": [
+       -56143.4,
+       -47717.825
+      ],
+      "dall": [
+       -0.3372,
+       -0.3074
+      ],
+      "dtop3": [
+       -0.5153,
+       -0.4519
+      ]
+     }
+    },
+    "e": {
+     "votes_recovered": 72746.0,
+     "cov_all": 0.4664,
+     "cov_top3": 0.7085,
+     "pages_per_day": 19698,
+     "votes_per_page": 0.086,
+     "ci": {
+      "votes": [
+       67357.9,
+       78800.2
+      ],
+      "all": [
+       0.4456,
+       0.4865
+      ],
+      "top3": [
+       0.6647,
+       0.7511
+      ],
+      "dv": [
+       -3894.025,
+       -2996.8
+      ],
+      "dall": [
+       -0.0189,
+       -0.0156
+      ],
+      "dtop3": [
+       -0.0335,
+       -0.024
+      ]
+     }
+    }
+   }
+  },
+  "targets": {
+   "oct_level": {
+    "all": 0.517,
+    "top3": 0.836
+   },
+   "95pct_of_read_everyone": {
+    "all": 0.4844,
+    "top3": 0.7293
+   },
+   "99pct_of_read_everyone": {
+    "all": 0.5048,
+    "top3": 0.76
+   }
+  },
+  "pages_to_target": {
+   "a": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 21299,
+      "pages_per_day": 20936
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 8567,
+      "pages_per_day": 8567
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 59194,
+      "pages_per_day": 55399
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 56665,
+      "pages_per_day": 53233
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      268,
+      0.1966,
+      0.2448
+     ],
+     [
+      500,
+      514,
+      0.2753,
+      0.3686
+     ],
+     [
+      1000,
+      1007,
+      0.3577,
+      0.5219
+     ],
+     [
+      2000,
+      2005,
+      0.4251,
+      0.6503
+     ],
+     [
+      3000,
+      3004,
+      0.4507,
+      0.6915
+     ],
+     [
+      5000,
+      5004,
+      0.4694,
+      0.719
+     ],
+     [
+      7500,
+      7504,
+      0.4758,
+      0.7286
+     ],
+     [
+      10000,
+      9994,
+      0.478,
+      0.7303
+     ],
+     [
+      15000,
+      14878,
+      0.4809,
+      0.7339
+     ],
+     [
+      20000,
+      19698,
+      0.4837,
+      0.7372
+     ],
+     [
+      30000,
+      29233,
+      0.4894,
+      0.7436
+     ],
+     [
+      40000,
+      38451,
+      0.4952,
+      0.7503
+     ],
+     [
+      50000,
+      47521,
+      0.5004,
+      0.7562
+     ],
+     [
+      70000,
+      64659,
+      0.5099,
+      0.7677
+     ]
+    ]
+   },
+   "c": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 38297,
+      "pages_per_day": 36881
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 34826,
+      "pages_per_day": 33681
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 63303,
+      "pages_per_day": 58921
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 62296,
+      "pages_per_day": 58058
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      278,
+      0.0459,
+      0.0725
+     ],
+     [
+      500,
+      525,
+      0.0931,
+      0.1432
+     ],
+     [
+      1000,
+      1016,
+      0.1799,
+      0.2803
+     ],
+     [
+      2000,
+      2007,
+      0.3509,
+      0.544
+     ],
+     [
+      3000,
+      3004,
+      0.4487,
+      0.6834
+     ],
+     [
+      5000,
+      5004,
+      0.4511,
+      0.6866
+     ],
+     [
+      7500,
+      7504,
+      0.4541,
+      0.6906
+     ],
+     [
+      10000,
+      9994,
+      0.457,
+      0.6948
+     ],
+     [
+      15000,
+      14878,
+      0.4618,
+      0.7016
+     ],
+     [
+      20000,
+      19698,
+      0.4664,
+      0.7085
+     ],
+     [
+      30000,
+      29233,
+      0.4762,
+      0.7227
+     ],
+     [
+      40000,
+      38451,
+      0.4861,
+      0.7364
+     ],
+     [
+      50000,
+      47521,
+      0.4946,
+      0.7478
+     ],
+     [
+      70000,
+      64659,
+      0.5099,
+      0.7677
+     ]
+    ]
+   },
+   "d": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 65727,
+      "pages_per_day": 60998
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 65245,
+      "pages_per_day": 60585
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 69142,
+      "pages_per_day": 63924
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 69050,
+      "pages_per_day": 63845
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      254,
+      0.0026,
+      0.0037
+     ],
+     [
+      500,
+      507,
+      0.0046,
+      0.0069
+     ],
+     [
+      1000,
+      1013,
+      0.0083,
+      0.0128
+     ],
+     [
+      2000,
+      2020,
+      0.0165,
+      0.0251
+     ],
+     [
+      3000,
+      3024,
+      0.0247,
+      0.0378
+     ],
+     [
+      5000,
+      5027,
+      0.0418,
+      0.0651
+     ],
+     [
+      7500,
+      7528,
+      0.0618,
+      0.0969
+     ],
+     [
+      10000,
+      10018,
+      0.0824,
+      0.1277
+     ],
+     [
+      15000,
+      14897,
+      0.1233,
+      0.1919
+     ],
+     [
+      20000,
+      19713,
+      0.1616,
+      0.2531
+     ],
+     [
+      30000,
+      29243,
+      0.2408,
+      0.3769
+     ],
+     [
+      40000,
+      38457,
+      0.3186,
+      0.4982
+     ],
+     [
+      50000,
+      47524,
+      0.3905,
+      0.6063
+     ],
+     [
+      70000,
+      64659,
+      0.5099,
+      0.7677
+     ]
+    ]
+   },
+   "e": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 38297,
+      "pages_per_day": 36881
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 34826,
+      "pages_per_day": 33681
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 63303,
+      "pages_per_day": 58921
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 62296,
+      "pages_per_day": 58058
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      263,
+      0.2292,
+      0.2676
+     ],
+     [
+      500,
+      506,
+      0.3092,
+      0.4062
+     ],
+     [
+      1000,
+      1005,
+      0.3837,
+      0.5589
+     ],
+     [
+      2000,
+      2004,
+      0.4337,
+      0.6558
+     ],
+     [
+      3000,
+      3004,
+      0.4487,
+      0.6835
+     ],
+     [
+      5000,
+      5004,
+      0.4511,
+      0.6866
+     ],
+     [
+      7500,
+      7504,
+      0.4541,
+      0.6906
+     ],
+     [
+      10000,
+      9994,
+      0.457,
+      0.6948
+     ],
+     [
+      15000,
+      14878,
+      0.4618,
+      0.7016
+     ],
+     [
+      20000,
+      19698,
+      0.4664,
+      0.7085
+     ],
+     [
+      30000,
+      29233,
+      0.4762,
+      0.7227
+     ],
+     [
+      40000,
+      38451,
+      0.4861,
+      0.7364
+     ],
+     [
+      50000,
+      47521,
+      0.4946,
+      0.7478
+     ],
+     [
+      70000,
+      64659,
+      0.5099,
+      0.7677
+     ]
+    ]
+   }
+  }
+ },
+ "oct_only_read_everyone": {
+  "votes_recovered": 61753.0,
+  "cov_all": 0.5462,
+  "cov_top3": 0.8351,
+  "pages_per_day": 69486
+ },
+ "with_b_2026-11-08_2026-11-12": {
+  "days": [
+   "2026-11-08",
+   "2026-11-12",
+   5
+  ],
+  "launches": 155,
+  "eligible_people_mean": 29310,
+  "read_everyone": {
+   "votes_recovered": 3341.0,
+   "cov_all": 0.18,
+   "cov_top3": 0.279,
+   "pages_per_day": 29312
+  },
+  "budgets": {
+   "1000": {
+    "a": {
+     "votes_recovered": 2918.0,
+     "cov_all": 0.1573,
+     "cov_top3": 0.2354,
+     "pages_per_day": 1002,
+     "votes_per_page": 0.582,
+     "ci": {
+      "votes": [
+       2202.975,
+       3764.275
+      ],
+      "all": [
+       0.1258,
+       0.1916
+      ],
+      "top3": [
+       0.1409,
+       0.341
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "b": {
+     "votes_recovered": 2424.0,
+     "cov_all": 0.1306,
+     "cov_top3": 0.1915,
+     "pages_per_day": 1003,
+     "votes_per_page": 0.483,
+     "ci": {
+      "votes": [
+       1882.975,
+       3072.225
+      ],
+      "all": [
+       0.1082,
+       0.1549
+      ],
+      "top3": [
+       0.1217,
+       0.267
+      ],
+      "dv": [
+       -743.025,
+       -293.0
+      ],
+      "dall": [
+       -0.0386,
+       -0.0161
+      ],
+      "dtop3": [
+       -0.0821,
+       -0.013
+      ]
+     }
+    },
+    "c": {
+     "votes_recovered": 2167.0,
+     "cov_all": 0.1168,
+     "cov_top3": 0.1747,
+     "pages_per_day": 1003,
+     "votes_per_page": 0.432,
+     "ci": {
+      "votes": [
+       1661.95,
+       2761.2
+      ],
+      "all": [
+       0.0963,
+       0.1399
+      ],
+      "top3": [
+       0.1088,
+       0.2536
+      ],
+      "dv": [
+       -1033.075,
+       -503.975
+      ],
+      "dall": [
+       -0.0545,
+       -0.0285
+      ],
+      "dtop3": [
+       -0.108,
+       -0.0232
+      ]
+     }
+    },
+    "d": {
+     "votes_recovered": 150.0,
+     "cov_all": 0.0081,
+     "cov_top3": 0.009,
+     "pages_per_day": 1002,
+     "votes_per_page": 0.03,
+     "ci": {
+      "votes": [
+       120.0,
+       181.0
+      ],
+      "all": [
+       0.0069,
+       0.0094
+      ],
+      "top3": [
+       0.0065,
+       0.0118
+      ],
+      "dv": [
+       -3596.375,
+       -2061.975
+      ],
+      "dall": [
+       -0.1836,
+       -0.1182
+      ],
+      "dtop3": [
+       -0.3299,
+       -0.1337
+      ]
+     }
+    },
+    "e": {
+     "votes_recovered": 2869.0,
+     "cov_all": 0.1546,
+     "cov_top3": 0.2347,
+     "pages_per_day": 1002,
+     "votes_per_page": 0.573,
+     "ci": {
+      "votes": [
+       2143.675,
+       3743.05
+      ],
+      "all": [
+       0.1223,
+       0.1902
+      ],
+      "top3": [
+       0.1366,
+       0.3457
+      ],
+      "dv": [
+       -87.0,
+       -9.975
+      ],
+      "dall": [
+       -0.0047,
+       -0.0005
+      ],
+      "dtop3": [
+       -0.0071,
+       0.0075
+      ]
+     }
+    }
+   },
+   "5000": {
+    "a": {
+     "votes_recovered": 3178.0,
+     "cov_all": 0.1713,
+     "cov_top3": 0.2644,
+     "pages_per_day": 5002,
+     "votes_per_page": 0.127,
+     "ci": {
+      "votes": [
+       2381.275,
+       4147.1
+      ],
+      "all": [
+       0.136,
+       0.211
+      ],
+      "top3": [
+       0.1536,
+       0.3931
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "b": {
+     "votes_recovered": 3178.0,
+     "cov_all": 0.1713,
+     "cov_top3": 0.2644,
+     "pages_per_day": 5002,
+     "votes_per_page": 0.127,
+     "ci": {
+      "votes": [
+       2381.275,
+       4147.1
+      ],
+      "all": [
+       0.136,
+       0.211
+      ],
+      "top3": [
+       0.1536,
+       0.3931
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "c": {
+     "votes_recovered": 2992.0,
+     "cov_all": 0.1612,
+     "cov_top3": 0.2497,
+     "pages_per_day": 5002,
+     "votes_per_page": 0.12,
+     "ci": {
+      "votes": [
+       2222.95,
+       3916.225
+      ],
+      "all": [
+       0.1275,
+       0.1997
+      ],
+      "top3": [
+       0.1448,
+       0.3714
+      ],
+      "dv": [
+       -238.0,
+       -138.975
+      ],
+      "dall": [
+       -0.0121,
+       -0.0079
+      ],
+      "dtop3": [
+       -0.0213,
+       -0.0091
+      ]
+     }
+    },
+    "d": {
+     "votes_recovered": 530.0,
+     "cov_all": 0.0286,
+     "cov_top3": 0.0457,
+     "pages_per_day": 5003,
+     "votes_per_page": 0.021,
+     "ci": {
+      "votes": [
+       413.975,
+       667.05
+      ],
+      "all": [
+       0.0241,
+       0.0335
+      ],
+      "top3": [
+       0.033,
+       0.0603
+      ],
+      "dv": [
+       -3486.075,
+       -1939.95
+      ],
+      "dall": [
+       -0.1798,
+       -0.1107
+      ],
+      "dtop3": [
+       -0.3374,
+       -0.1163
+      ]
+     }
+    },
+    "e": {
+     "votes_recovered": 2992.0,
+     "cov_all": 0.1612,
+     "cov_top3": 0.2497,
+     "pages_per_day": 5002,
+     "votes_per_page": 0.12,
+     "ci": {
+      "votes": [
+       2222.95,
+       3916.225
+      ],
+      "all": [
+       0.1275,
+       0.1997
+      ],
+      "top3": [
+       0.1448,
+       0.3714
+      ],
+      "dv": [
+       -238.0,
+       -138.975
+      ],
+      "dall": [
+       -0.0121,
+       -0.0079
+      ],
+      "dtop3": [
+       -0.0213,
+       -0.0091
+      ]
+     }
+    }
+   },
+   "20000": {
+    "a": {
+     "votes_recovered": 3270.0,
+     "cov_all": 0.1762,
+     "cov_top3": 0.2728,
+     "pages_per_day": 17370,
+     "votes_per_page": 0.038,
+     "ci": {
+      "votes": [
+       2445.875,
+       4245.225
+      ],
+      "all": [
+       0.1412,
+       0.2156
+      ],
+      "top3": [
+       0.164,
+       0.3979
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "b": {
+     "votes_recovered": 3270.0,
+     "cov_all": 0.1762,
+     "cov_top3": 0.2728,
+     "pages_per_day": 17370,
+     "votes_per_page": 0.038,
+     "ci": {
+      "votes": [
+       2445.875,
+       4245.225
+      ],
+      "all": [
+       0.1412,
+       0.2156
+      ],
+      "top3": [
+       0.164,
+       0.3979
+      ],
+      "dv": [
+       0.0,
+       0.0
+      ],
+      "dall": [
+       0.0,
+       0.0
+      ],
+      "dtop3": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "c": {
+     "votes_recovered": 3207.0,
+     "cov_all": 0.1728,
+     "cov_top3": 0.2659,
+     "pages_per_day": 17370,
+     "votes_per_page": 0.037,
+     "ci": {
+      "votes": [
+       2404.95,
+       4153.075
+      ],
+      "all": [
+       0.1395,
+       0.2105
+      ],
+      "top3": [
+       0.1615,
+       0.3878
+      ],
+      "dv": [
+       -100.0,
+       -33.0
+      ],
+      "dall": [
+       -0.0051,
+       -0.0019
+      ],
+      "dtop3": [
+       -0.0127,
+       -0.0025
+      ]
+     }
+    },
+    "d": {
+     "votes_recovered": 2008.0,
+     "cov_all": 0.1082,
+     "cov_top3": 0.1571,
+     "pages_per_day": 17371,
+     "votes_per_page": 0.023,
+     "ci": {
+      "votes": [
+       1615.975,
+       2457.225
+      ],
+      "all": [
+       0.0931,
+       0.1244
+      ],
+      "top3": [
+       0.1143,
+       0.2116
+      ],
+      "dv": [
+       -1778.05,
+       -824.875
+      ],
+      "dall": [
+       -0.0924,
+       -0.0469
+      ],
+      "dtop3": [
+       -0.1993,
+       -0.0464
+      ]
+     }
+    },
+    "e": {
+     "votes_recovered": 3207.0,
+     "cov_all": 0.1728,
+     "cov_top3": 0.2659,
+     "pages_per_day": 17370,
+     "votes_per_page": 0.037,
+     "ci": {
+      "votes": [
+       2404.95,
+       4153.075
+      ],
+      "all": [
+       0.1395,
+       0.2105
+      ],
+      "top3": [
+       0.1615,
+       0.3878
+      ],
+      "dv": [
+       -100.0,
+       -33.0
+      ],
+      "dall": [
+       -0.0051,
+       -0.0019
+      ],
+      "dtop3": [
+       -0.0127,
+       -0.0025
+      ]
+     }
+    }
+   }
+  },
+  "targets": {
+   "oct_level": {
+    "all": 0.517,
+    "top3": 0.836
+   },
+   "95pct_of_read_everyone": {
+    "all": 0.171,
+    "top3": 0.2651
+   },
+   "99pct_of_read_everyone": {
+    "all": 0.1782,
+    "top3": 0.2762
+   }
+  },
+  "pages_to_target": {
+   "a": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 4531,
+      "pages_per_day": 4533
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 5826,
+      "pages_per_day": 5828
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 28946,
+      "pages_per_day": 22738
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 28229,
+      "pages_per_day": 22308
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      252,
+      0.1166,
+      0.1491
+     ],
+     [
+      500,
+      502,
+      0.142,
+      0.196
+     ],
+     [
+      1000,
+      1002,
+      0.1573,
+      0.2354
+     ],
+     [
+      2000,
+      2002,
+      0.1675,
+      0.2581
+     ],
+     [
+      3000,
+      3002,
+      0.1701,
+      0.2618
+     ],
+     [
+      5000,
+      5002,
+      0.1713,
+      0.2644
+     ],
+     [
+      7500,
+      7502,
+      0.1722,
+      0.2663
+     ],
+     [
+      10000,
+      9919,
+      0.1737,
+      0.2683
+     ],
+     [
+      15000,
+      13919,
+      0.1754,
+      0.2716
+     ],
+     [
+      20000,
+      17370,
+      0.1762,
+      0.2728
+     ],
+     [
+      30000,
+      23370,
+      0.1784,
+      0.2769
+     ],
+     [
+      40000,
+      26649,
+      0.18,
+      0.279
+     ],
+     [
+      50000,
+      28649,
+      0.18,
+      0.279
+     ],
+     [
+      70000,
+      29312,
+      0.18,
+      0.279
+     ]
+    ]
+   },
+   "b": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 4660,
+      "pages_per_day": 4662
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 5826,
+      "pages_per_day": 5828
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 28946,
+      "pages_per_day": 22738
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 28229,
+      "pages_per_day": 22308
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      253,
+      0.0927,
+      0.1227
+     ],
+     [
+      500,
+      503,
+      0.1092,
+      0.1551
+     ],
+     [
+      1000,
+      1003,
+      0.1306,
+      0.1915
+     ],
+     [
+      2000,
+      2002,
+      0.1653,
+      0.2517
+     ],
+     [
+      3000,
+      3002,
+      0.1697,
+      0.2614
+     ],
+     [
+      5000,
+      5002,
+      0.1713,
+      0.2644
+     ],
+     [
+      7500,
+      7502,
+      0.1722,
+      0.2663
+     ],
+     [
+      10000,
+      9919,
+      0.1737,
+      0.2683
+     ],
+     [
+      15000,
+      13919,
+      0.1754,
+      0.2716
+     ],
+     [
+      20000,
+      17370,
+      0.1762,
+      0.2728
+     ],
+     [
+      30000,
+      23370,
+      0.1784,
+      0.2769
+     ],
+     [
+      40000,
+      26649,
+      0.18,
+      0.279
+     ],
+     [
+      50000,
+      28649,
+      0.18,
+      0.279
+     ],
+     [
+      70000,
+      29312,
+      0.18,
+      0.279
+     ]
+    ]
+   },
+   "c": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 16971,
+      "pages_per_day": 15279
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 18816,
+      "pages_per_day": 16553
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 34941,
+      "pages_per_day": 24990
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 35560,
+      "pages_per_day": 25193
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      253,
+      0.0406,
+      0.0574
+     ],
+     [
+      500,
+      503,
+      0.0738,
+      0.1061
+     ],
+     [
+      1000,
+      1003,
+      0.1168,
+      0.1747
+     ],
+     [
+      2000,
+      2002,
+      0.1592,
+      0.2454
+     ],
+     [
+      3000,
+      3002,
+      0.1601,
+      0.247
+     ],
+     [
+      5000,
+      5002,
+      0.1612,
+      0.2497
+     ],
+     [
+      7500,
+      7502,
+      0.1647,
+      0.2532
+     ],
+     [
+      10000,
+      9919,
+      0.167,
+      0.2575
+     ],
+     [
+      15000,
+      13919,
+      0.1698,
+      0.2624
+     ],
+     [
+      20000,
+      17370,
+      0.1728,
+      0.2659
+     ],
+     [
+      30000,
+      23370,
+      0.1768,
+      0.2732
+     ],
+     [
+      40000,
+      26649,
+      0.1797,
+      0.2786
+     ],
+     [
+      50000,
+      28649,
+      0.1799,
+      0.279
+     ],
+     [
+      70000,
+      29312,
+      0.18,
+      0.279
+     ]
+    ]
+   },
+   "d": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 43136,
+      "pages_per_day": 27276
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 44164,
+      "pages_per_day": 27482
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 54037,
+      "pages_per_day": 28783
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 55744,
+      "pages_per_day": 28839
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      251,
+      0.002,
+      0.0012
+     ],
+     [
+      500,
+      501,
+      0.0049,
+      0.0037
+     ],
+     [
+      1000,
+      1002,
+      0.0081,
+      0.009
+     ],
+     [
+      2000,
+      2002,
+      0.0117,
+      0.0178
+     ],
+     [
+      3000,
+      3002,
+      0.0172,
+      0.026
+     ],
+     [
+      5000,
+      5003,
+      0.0286,
+      0.0457
+     ],
+     [
+      7500,
+      7503,
+      0.0431,
+      0.0653
+     ],
+     [
+      10000,
+      9920,
+      0.0593,
+      0.0868
+     ],
+     [
+      15000,
+      13920,
+      0.08,
+      0.1196
+     ],
+     [
+      20000,
+      17371,
+      0.1082,
+      0.1571
+     ],
+     [
+      30000,
+      23371,
+      0.1467,
+      0.2198
+     ],
+     [
+      40000,
+      26649,
+      0.1679,
+      0.2579
+     ],
+     [
+      50000,
+      28649,
+      0.1777,
+      0.2751
+     ],
+     [
+      70000,
+      29312,
+      0.18,
+      0.279
+     ]
+    ]
+   },
+   "e": {
+    "need": {
+     "oct_level_all": null,
+     "oct_level_top3": null,
+     "95pct_of_read_everyone_all": {
+      "people": 16971,
+      "pages_per_day": 15279
+     },
+     "95pct_of_read_everyone_top3": {
+      "people": 18816,
+      "pages_per_day": 16553
+     },
+     "99pct_of_read_everyone_all": {
+      "people": 34941,
+      "pages_per_day": 24990
+     },
+     "99pct_of_read_everyone_top3": {
+      "people": 35560,
+      "pages_per_day": 25193
+     }
+    },
+    "curve_people_pages_covall_covtop3": [
+     [
+      250,
+      252,
+      0.1218,
+      0.1581
+     ],
+     [
+      500,
+      502,
+      0.1419,
+      0.2022
+     ],
+     [
+      1000,
+      1002,
+      0.1546,
+      0.2347
+     ],
+     [
+      2000,
+      2002,
+      0.1595,
+      0.2458
+     ],
+     [
+      3000,
+      3002,
+      0.1601,
+      0.247
+     ],
+     [
+      5000,
+      5002,
+      0.1612,
+      0.2497
+     ],
+     [
+      7500,
+      7502,
+      0.1647,
+      0.2532
+     ],
+     [
+      10000,
+      9919,
+      0.167,
+      0.2575
+     ],
+     [
+      15000,
+      13919,
+      0.1698,
+      0.2624
+     ],
+     [
+      20000,
+      17370,
+      0.1728,
+      0.2659
+     ],
+     [
+      30000,
+      23370,
+      0.1768,
+      0.2732
+     ],
+     [
+      40000,
+      26649,
+      0.1797,
+      0.2786
+     ],
+     [
+      50000,
+      28649,
+      0.1799,
+      0.279
+     ],
+     [
+      70000,
+      29312,
+      0.18,
+      0.279
+     ]
+    ]
+   }
+  }
+ }
+}
