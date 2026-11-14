@@ -33,8 +33,13 @@ for d in nights:
         if fn[:10] <= cut: os.symlink(os.path.realpath(f"{REAL}/days/{fn}"), f"{r}/days/{fn}")
     for fn in os.listdir(f"{REAL}/today"):
         if (fn[:10] <= d) if MODE == "polluted" else (fn[:10] == d): os.symlink(os.path.realpath(f"{REAL}/today/{fn}"), f"{r}/today/{fn}")
+    # the live h25 data dir holds two private real dirs (Gemini 2025 llm_pitch / llm_brand caches); without them h25llm == h25
+    os.makedirs(r2); H25 = os.path.expanduser("~/w/h25/data")
+    for e in os.listdir(H25):
+        if not os.path.islink(f"{H25}/{e}") and e != "days": os.symlink(os.path.realpath(f"{H25}/{e}"), f"{r2}/{e}")
     F.D = r; os.environ["H25_DATA"] = r2; _cache.clear(); st = {}
-    for nm, mod in (("makerfix", MS), ("h25", HS), ("readable", RS)):
+    ONLY = set(os.environ.get("ONLY", "makerfix,h25,readable").split(","))
+    for nm, mod in [x for x in (("makerfix", MS), ("h25", HS), ("readable", RS)) if x[0] in ONLY]:
         F.D = r
         try: mod.main(d); st[nm] = "ok"
         except Exception as e: st[nm] = f"{type(e).__name__}: {str(e)[:120]}"
