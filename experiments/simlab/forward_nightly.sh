@@ -26,4 +26,7 @@ python track_record.py $SP >> $LOG 2>&1
 python prob_writer.py 0005 $TODAY $SP >> $LOG 2>&1
 # running weekly / monthly boards with stated chances (orchestrator 01:28Z Nov 14), for the PT day just closed
 python period_writer.py $YDAY $SP >> $LOG 2>&1
+# period scorer (orchestrator 12:38Z Nov 14): after a week / month closes, score its boards vs the first read after the close
+[ "$(date -d $YDAY +%u)" = 7 ] && python period_score.py week $YDAY $SP >> $LOG 2>&1
+[ "$(date -d "$YDAY + 1 day" +%d)" = 01 ] && python period_score.py month $YDAY $SP >> $LOG 2>&1
 echo "end $(date -u +%FT%TZ)" >> $LOG; tail -c 1500 $LOG

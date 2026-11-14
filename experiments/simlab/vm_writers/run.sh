@@ -1,6 +1,6 @@
 #!/bin/bash
 # E5 website writers for the VM cron (bundle 12). No LLM, no git at run time. Idempotent (re-running rewrites the same files).
-#   bash run.sh <job> [day]   job: track_record | prob_0005 | prob_prereveal | period | held_team_predict | held_team_score
+#   bash run.sh <job> [day]   job: track_record | prob_0005 | prob_prereveal | period | period_score | held_team_predict | held_team_score
 #   day defaults: prob_0005 / prob_prereveal / held_team_predict -> today PT; period / held_team_score -> yesterday PT.
 # ASSETS (default $HOME/e5_assets) is synced from gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/vm_writers/assets/ and the 2025 lists;
 # held_team_* also need the person-id salt at $ASSETS/early/salt (the same salt the store builders use; NOT in the bundle).
@@ -17,6 +17,7 @@ case "$JOB" in
   prob_0005)         cmd="python prob_writer.py 0005 ${2:-$TODAY} $ASSETS";;
   prob_prereveal)    cmd="python prob_writer.py prereveal ${2:-$TODAY} $ASSETS";;
   period)            cmd="python period_writer.py ${2:-$YDAY} $ASSETS";;
+  period_score)      D=${2:-$YDAY}; cmd="true"; [ "$(date -d $D +%u)" = 7 ] && cmd="python period_score.py week $D $ASSETS"; [ "$(date -d "$D + 1 day" +%d)" = 01 ] && cmd="$cmd; python period_score.py month $D $ASSETS";;
   held_team_predict) cmd="python held_team_shadow.py predict ${2:-$TODAY} $ASSETS";;
   held_team_score)   cmd="python held_team_shadow.py score ${2:-$YDAY} $ASSETS";;
   *) echo "unknown job $JOB"; exit 64;;

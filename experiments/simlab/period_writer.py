@@ -11,6 +11,7 @@ import json, os, subprocess, sys
 import numpy as np, pandas as pd
 D, SP = sys.argv[1:3]; HERE = os.path.dirname(os.path.abspath(__file__)); B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 sys.path.insert(0, os.path.dirname(HERE)); from pipeline import warehouse as W
+import period_parts as PP   # staleness guard (orchestrator 12:38Z Nov 14)
 FZ = json.load(open(os.path.join(HERE, "reports", "period_prob", "frozen_period_prob.json"))); CAL = json.load(open(os.path.join(HERE, "reports", "period_prob", "period_prob.json")))
 L = W.table("launches", do_sync=True).sort_values("updated_at").drop_duplicates("id", keep="last"); L["id"] = L.id.astype(str); L["votes"] = pd.to_numeric(L.votes, errors="coerce")
 d = pd.Timestamp(D)
@@ -36,6 +37,9 @@ for per in ("week", "month"):
         out.update({"status": "ok", "call_point": c, "method": "position table by (call point, running position), 2025 + 2026 complete periods",
                     "calibration": {f"top{k}": {kk: CAL[f"{per} | all"][f"top{k}"][kk] for kk in ("Brier skill vs base rate [CI]", "Brier skill vs position-only [CI]")} for k in (3, 5, 10)},
                     "note": "running votes are current reads; chances are historical shares for that position and call point", "launches": rows})
+    miss = PP.missing_days(per, D, pd.Timestamp.now(tz="UTC")); out["stale_days_missing"] = miss
+    if miss:   # a day of the period so far has no read after its close (as Nov 5-7): never publish a silently stale board
+        out["status"] = "stale: days missing"; out["stale_note"] = "no launches read with votes after the close of: " + ", ".join(miss)
     p = os.path.join(SP, f"prob_{D}_{per}.json"); json.dump(out, open(p, "w"), indent=1, default=float)
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/tmp/e5/website/probabilities/{D}_{'weekly' if per == 'week' else 'monthly'}.json"], check=True)
     print(per, out["status"], out.get("call_point"), len(out.get("launches", [])))
