@@ -32,6 +32,12 @@ os.makedirs(f"{A}/code")
 for f in glob.glob(f"{PHO}/ph_predict/*.py") + glob.glob(f"{SP}/a2rb/code/*.py"): shutil.copy(f, f"{A}/code/")
 for f in ("features.py", "forecast.py"): shutil.copy(f"{PHO}/pipeline_patches/20261114_today_rows/{f}", f"{A}/code/")
 shutil.copy(f"{PHO}/pipeline_patches/20261114_today_rows/h25_live.py", f"{A}/home/w/arm2_live/"); shutil.copy(f"{SP}/a2rb/code/history_retrain.py", f"{A}/home/w/arm2_live/")
+if os.environ.get("LC1") == "1":   # live-code 1 (forecast 4eabc2af, h25_live ff40d796, input_guard 01547d5b) on features 033d7bd7; no Gemini: run_day -> raise
+    LC = f"{PHO}/pipeline_patches/20261114_livecode_1"
+    for f in ("forecast.py", "input_guard.py"): shutil.copy(f"{LC}/{f}", f"{A}/code/")
+    shutil.copy(f"{LC}/h25_live.py", f"{A}/home/w/arm2_live/")
+    g = open(f"{A}/code/input_guard.py").read(); import re as _re
+    open(f"{A}/code/input_guard.py", "w").write(_re.sub(r"(?m)^( *)llm\.run_day\(.*$", r'\1raise RuntimeError("E5 local run: no Gemini")', g))
 for e in os.listdir(R):
     if e not in ("days", "today") and not e.startswith("build_cache"): os.symlink(f"{R}/{e}", f"{A}/root/{e}")
 for f in glob.glob(f"{R}/days/*.json"):
@@ -41,7 +47,7 @@ for f in glob.glob(f"{R}/today/*.json"):
 os.symlink(f"{A}/root", f"{A}/code/data"); os.makedirs(f"{A}/code/results")
 def run_forecast():
     h25 = f"{A}/h25empty" if MODE == "fallback" else f"{SP}/rb/h25src"
-    return sh(f"HOME={A}/home H25_DATA={A}/h25data H25_SRC={h25} LGB_THREADS=4 HF_HUB_OFFLINE=1 python forecast.py {D}", cwd=f"{A}/code", t=2400)
+    return sh(f"GUARD_NO_UPLOAD=1 GUARD_LLM_BACKOFF=0 HOME={A}/home H25_DATA={A}/h25data H25_SRC={h25} LGB_THREADS=4 HF_HUB_OFFLINE=1 python forecast.py {D}", cwd=f"{A}/code", t=2400)
 PQ = f"{A}/code/results/forecast_{D}.parquet"
 if os.environ.get("REUSE_A") == "1" and os.path.exists(f"{KEEP}/forecast.parquet"):
     shutil.copy(f"{KEEP}/forecast.parquet", PQ); rc = 0; out = open(f"{KEEP}/forecast.log").read()
