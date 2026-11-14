@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=17">
+<link rel="stylesheet" href="/static/ph_site.css?v=18">
 </head>
 <body>
 <div class="wrap">
@@ -54,7 +54,7 @@
   </div>
   <p class="legend small" id="legend"></p>
   <p class="acc small" id="acc"></p>
-  <section class="explain" id="explain" hidden></section>
+  <div class="exmodal" id="explain" hidden></div>
   <section class="whyp" id="whyp" hidden></section>
 
   <footer class="note label"><span>Forecasts by Atelier · not affiliated with Product Hunt</span><span id="asof"></span></footer>
@@ -124,62 +124,102 @@ function markExplain(){
   document.querySelectorAll("#pred li.row, #live li.row").forEach(li=>li.classList.toggle("has-explain", !!EXPL.launches[li.dataset.id]));
   if(EXPL_ID && !EXPL.launches[EXPL_ID]) $("#explain").hidden = true;
 }
-const EXPL_TITLE = {who_actually: "Who actually voted (people we hold)", who: "Who is predicted to back it", say: "What they may say", competitors: "Closest earlier launches", why: "Why the model predicts this"};
+const short = (t, n = 110)=> { t = String(t || ""); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : t; };
 const pct = (n)=> Math.round(Number(n) * 100) + "%";
-const ul = (a)=> Array.isArray(a) && a.length ? `<ul class="ex-l">${a.map(i=>`<li>${esc(typeof i === "string" ? i : JSON.stringify(i))}</li>`).join("")}</ul>` : "";
-function exWho(d, L){
-  const segs = (d.segments || []).map(s=>`<tr><td>${esc(s.segment)}</td><td class="n">${pct(s.share_of_held_expected_votes)}</td><td class="n">${esc(s.expected_votes)}</td><td class="n">${esc(s["n_likely (chance >= 5%)"] ?? "")}</td></tr>`).join("");
-  const topics = (d.what_likely_backers_upvote || []).map(t=>`<li>${esc(t.topic)} <span class="ex-n">${pct(t.share_of_their_recent_upvotes)}</span></li>`).join("");
-  return `<p class="ex-sum">Among the ${Number(d.n_held_active_people || 0).toLocaleString()} people we hold profiles for, about <b>${esc(d.expected_held_votes)}</b> votes are expected, by role:</p>
-    <table class="ex-t"><thead><tr><th>Role (from their own bio)</th><th class="n">Share</th><th class="n">Exp. votes</th><th class="n">Likely*</th></tr></thead><tbody>${segs}</tbody></table>
-    <p class="ex-acc">*people with a 5%+ chance of voting.</p>
-    ${topics ? `<h5>What the likeliest backers upvote</h5><ul class="ex-l">${topics}</ul>` : ""}`;
+const arr = (d)=> Array.isArray(d) ? d : (d && d.items) || [];
+const bar = (label, frac, val, cls = "")=> `<div class="bx ${cls}"><span class="bl">${esc(label)}</span><span class="bt"><i style="width:${Math.max(2, Math.min(100, frac * 100))}%"></i></span><span class="bv">${esc(val)}</span></div>`;
+// Plain one-line answers to "how much can I trust this?"; the owner's full label sits under "Details".
+const TRUST = {
+  who: "Describes who is likely to back it. It did not improve the vote forecast, and we hold about half of real voters.",
+  say: "About 1 in 3 predicted concerns or questions matched a real commenter's point in past tests.",
+  competitors: "Real earlier launches. Likes and dislikes are paraphrased from their real comments. Similar does not mean same rank.",
+  why: "From a simpler stand-in model (right on about 3 of 4 top-10 picks in backtests), not the published one.",
+  who_actually: "Seen after the day, from profiles we hold. A floor, not all voters; it fills in as profiles are re-read."};
+function trust(b){
+  const L = (EXPL.labels || {})[b] || {}, full = Object.entries(L).map(([k, v])=> k === "text" ? v : `${k.replace(/_/g, " ")}: ${v}`).join(" · ");
+  return `<details class="trust"><summary>How reliable? ${esc(TRUST[b] || "")}</summary>${full ? `<p>${esc(full)}</p>` : ""}</details>`;
 }
-function exSay(d, L){
-  const part = (t, a, lab)=> a && a.length ? `<h5>${t}${lab ? ` <small>${esc(lab)}</small>` : ""}</h5>${ul(a)}` : "";
-  return part("Concerns", d.top_concerns, L.top_concerns) + part("Questions", d.top_questions, L.top_questions) + part("Sample reactions", d.reactions, L.reactions)
-    + `<p class="ex-acc">Written by our simulator from the launch's own text before any comments existed.</p>`;
+function exWho(d){
+  const segs = (d.segments || []), max = Math.max(...segs.map(s=>s.share_of_held_expected_votes || 0), .01);
+  const topics = d.what_likely_backers_upvote || [], tmax = Math.max(...topics.map(t=>t.share_of_their_recent_upvotes || 0), .01);
+  return `<p class="lede">Of the ${Number(d.n_held_active_people || 0).toLocaleString()} active people we hold profiles for, we expect about <b>${esc(d.expected_held_votes)}</b> votes. By role:</p>
+    ${segs.filter(s=>s.share_of_held_expected_votes >= .01).map(s=>bar(s.segment, s.share_of_held_expected_votes / max, pct(s.share_of_held_expected_votes))).join("")}
+    ${topics.length ? `<h5>What its likeliest backers usually upvote</h5>${topics.map(t=>bar(t.topic, t.share_of_their_recent_upvotes / tmax, pct(t.share_of_their_recent_upvotes), "alt")).join("")}` : ""}
+    ${trust("who")}`;
 }
-function exComp(d, L){
-  const arr = Array.isArray(d) ? d : (d.items || []);
-  return arr.map(c=>`<div class="ex-c"><b>${esc(c.name)}</b> <span class="ex-kv">${esc(c.launch_date || "")}${c.final_daily_rank ? ` · finished #${esc(c.final_daily_rank)}` : ""}${c.final_votes ? ` · ${Math.round(c.final_votes)} votes` : ""} · ${pct(c.similarity)} similar</span>
-    ${c.commenters_praised ? `<div class="ex-sub"><i>People liked</i>${ul(c.commenters_praised)}</div>` : ""}${c.commenters_complained ? `<div class="ex-sub"><i>People disliked</i>${ul(c.commenters_complained)}</div>` : ""}</div>`).join("")
-    + `<p class="ex-acc">Praise and complaints are paraphrased from real commenters, not quotes.</p>`;
+function exSay(d){
+  const card = (t, cls)=> `<div class="q ${cls}">${esc(t)}</div>`;
+  const re = d.reactions || [];
+  return `${(d.top_concerns || []).length ? `<h5>Likely worries</h5>${d.top_concerns.map(t=>card(t, "worry")).join("")}` : ""}
+    ${(d.top_questions || []).length ? `<h5>Likely questions</h5>${d.top_questions.map(t=>card(t, "ask")).join("")}` : ""}
+    ${re.length ? `<details class="more"><summary>${re.length} sample reactions</summary>${re.map(t=>card(t, "react")).join("")}</details>` : ""}
+    <p class="note">Written by our simulator from the launch's own page, before any real comments existed.</p>${trust("say")}`;
 }
-function exWhy(d, L){
-  const dr = (d.top_drivers || []).map(r=>`<li>${esc(r.input)} <span class="ex-n">${Number(r.points) > 0 ? "+" : ""}${esc(r.points)}</span></li>`).join("");
-  return `<ul class="ex-l">${dr}</ul>${d.rank_in_explanation_model ? `<p class="ex-acc">This simpler model would rank it #${esc(d.rank_in_explanation_model)}.</p>` : ""}
-    <p class="ex-acc">A readable stand-in, not the published model. Points are how much each input moved its score.</p>`;
+function exComp(d){
+  return arr(d).map(c=>`<div class="comp"><div class="ch"><b>${esc(c.name)}</b>${c.final_daily_rank ? `<span class="rk">#${esc(c.final_daily_rank)}</span>` : ""}<span class="sm">${c.final_votes ? Math.round(c.final_votes) + " votes · " : ""}${esc(c.launch_date || "")}</span></div>
+    ${bar("Similarity", c.similarity || 0, pct(c.similarity || 0), "thin")}
+    <div class="pills">${(c.commenters_praised || []).map(t=>`<span class="pill up">👍 ${esc(short(t, 80))}</span>`).join("")}${(c.commenters_complained || []).map(t=>`<span class="pill dn">👎 ${esc(short(t, 80))}</span>`).join("")}</div></div>`).join("") + trust("competitors");
 }
-function exActual(d, L){
-  const pc = (n)=> Math.round(Number(n) * 100) + "%";
-  const segs = (d.segments || []).map(s=>`<li>${esc(s.segment)} <span class="ex-n">${esc(s.n_held_backers)}</span></li>`).join("");
-  const rr = d.held_people_reread_after_the_day != null && d.held_people_total ? pc(d.held_people_reread_after_the_day / d.held_people_total) : null;
-  return `<p class="ex-sum">Of <b>${esc(d.displayed_votes)}</b> displayed votes, we can see <b>${esc(d.observed_held_backers)}</b> backers (${pc(d.observed_over_displayed)}), by role:</p>
-    <ul class="ex-l">${segs}</ul>
-    ${rr ? `<p class="ex-acc">How complete: ${rr} of the ${Number(d.held_people_total).toLocaleString()} people we hold have been re-read since this day ended; this fills in as profiles are re-read${d.profile_reads_of_these_backers ? ` (reads ${esc(d.profile_reads_of_these_backers.first)} to ${esc(d.profile_reads_of_these_backers.last)})` : ""}.</p>` : ""}
-    <p class="ex-acc">A floor, not all voters. The share can pass 100% because Product Hunt's displayed votes count some young accounts at about half.</p>`;
+function exWhy(d){
+  const dr = d.top_drivers || [], m = Math.max(...dr.map(r=>Math.abs(r.points || 0)), .001);
+  return `<p class="lede">What pushed this launch up or down in our model${d.rank_in_explanation_model ? ` (it ranks it <b>#${esc(d.rank_in_explanation_model)}</b>)` : ""}:</p>
+    ${dr.map(r=>{ const v = Number(r.points) || 0, w = Math.abs(v) / m * 50;
+      return `<div class="dv"><span class="bl">${esc(r.input)}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : `right:50%`}"></i></span><span class="bv">${v >= 0 ? "▲" : "▼"}</span></div>`; }).join("")}
+    ${trust("why")}`;
 }
-const EX_RENDER = {who_actually: exActual, who: exWho, say: exSay, competitors: exComp, why: exWhy};
-function exAcc(b, L){
-  const keys = {who: ["predictive_value","coverage"], say: [], competitors: ["predictive_value"], why: ["predictive_value","fidelity"], who_actually: []}[b] || [];
-  const t = keys.map(k=>L[k]).concat(L.text ? [L.text] : []).filter(Boolean);
-  return t.length ? `<p class="ex-acc"><b>Accuracy:</b> ${t.map(esc).join(" ")}</p>` : "";
+function exActual(d){
+  const segs = d.segments || [], max = Math.max(...segs.map(s=>s.n_held_backers || 0), 1);
+  const rr = d.held_people_total ? d.held_people_reread_after_the_day / d.held_people_total : null;
+  return `<p class="lede">Product Hunt shows <b>${esc(d.displayed_votes)}</b> votes. We can see <b>${esc(d.observed_held_backers)}</b> of the people behind them. By role:</p>
+    ${segs.map(s=>bar(s.segment, s.n_held_backers / max, s.n_held_backers)).join("")}
+    ${rr != null ? `<h5>How complete is this?</h5>${bar("Profiles re-read since the day", rr, pct(rr), "alt")}` : ""}
+    <p class="note">The count can pass the displayed votes: Product Hunt counts some young accounts at about half.</p>${trust("who_actually")}`;
 }
+// Overview: four facts and talking points for the founder, built only from the blocks above.
+function exOverview(d){
+  const w = d.who && (d.who.segments || [])[0], topic = d.who && (d.who.what_likely_backers_upvote || [])[0];
+  const worry = d.say && (d.say.top_concerns || [])[0], ask = d.say && (d.say.top_questions || [])[0];
+  const cs = arr(d.competitors), best = cs.slice().sort((a, b)=>(a.final_daily_rank || 99) - (b.final_daily_rank || 99))[0];
+  const gap = cs.map(c=>(c.commenters_complained || [])[0]).filter(Boolean)[0];
+  const drv = d.why && (d.why.top_drivers || []).slice().sort((a, b)=>b.points - a.points);
+  const up = drv && drv[0], down = drv && drv.filter(r=>r.points < 0).sort((a, b)=>a.points - b.points)[0];
+  const tile = (k, v, s = "")=> v ? `<div class="tile"><small>${k}</small><b>${esc(v)}</b>${s ? `<span>${esc(s)}</span>` : ""}</div>` : "";
+  const pts = [
+    w && topic ? `Write the launch post for <b>${esc(w.segment)}</b>: they are the biggest likely group (${pct(w.share_of_held_expected_votes)}), and they mostly upvote <b>${esc(topic.topic)}</b>.` : "",
+    worry ? `Answer this worry in the first comment, before anyone asks: <i>“${esc(short(worry, 140))}”</i>` : "",
+    ask && ask !== worry ? `Put this answer on the page: <i>“${esc(short(ask, 140))}”</i>` : "",
+    gap ? `People complained about a similar product (${esc(cs.find(c=>(c.commenters_complained || [])[0] === gap).name)}): <i>“${esc(short(gap, 110))}”</i>. Show how this one avoids it.` : "",
+    down ? `Weakest signal in our model: <b>${esc(down.input)}</b>.` : ""].filter(Boolean);
+  return `<div class="tiles">${tile("Main backers", w && w.segment, w && pct(w.share_of_held_expected_votes) + " of expected votes")}
+    ${tile("Top worry", worry && short(worry, 70))}${tile("Closest past launch", best && best.name, best && best.final_daily_rank ? `finished #${best.final_daily_rank}` : "")}
+    ${tile("Biggest boost", up && up.input, down ? `biggest drag: ${down.input}` : "")}</div>
+    ${pts.length ? `<h5>Talking points for the founder</h5><ol class="pitch">${pts.map(t=>`<li>${t}</li>`).join("")}</ol><p class="note">Built only from the tabs here; each tab says how reliable it is.</p>` : ""}`;
+}
+const TABS = [["overview", "Overview", exOverview], ["who_actually", "Who voted", null], ["who", "Who backs it", null], ["say", "What they'll say", null], ["competitors", "Competitors", null], ["why", "Why", null]];
+const BLOCK_FN = {who_actually: exActual, who: exWho, say: exSay, competitors: exComp, why: exWhy};
+let EX_TAB = "overview";
 function showExplain(id){
   const d = EXPL.launches[id], x = VIEW.launches.find(l=>l.id===id), el = $("#explain");
   if(!d || !x){ el.hidden = true; return; }
   EXPL_ID = id;
-  el.hidden = false;
-  el.innerHTML = `<h3>${esc(x.name)}${x.slug ? ` <a class="ex-ph" href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">View on Product Hunt ↗</a>` : ""}</h3>` +
-    ["who_actually","who","say","competitors","why"].filter(b=>d[b]).map(b=>{
-      const L = (EXPL.labels || {})[b] || {};
-      return `<div class="ex-block"><h4>${EXPL_TITLE[b]}</h4>${EX_RENDER[b](d[b], L)}${exAcc(b, L)}</div>`; }).join("");
-  el.scrollIntoView({behavior: "smooth", block: "nearest"});
+  const tabs = TABS.filter(([k])=> k === "overview" ? (d.who || d.say || d.competitors || d.why) : d[k]);
+  if(!tabs.find(([k])=>k === EX_TAB)) EX_TAB = tabs[0][0];
+  const body = EX_TAB === "overview" ? exOverview(d) : BLOCK_FN[EX_TAB](d[EX_TAB]);
+  el.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(x.name)}">
+    <header><div class="ttl">${icon(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.tagline || "")}</p></div></div><button class="x" aria-label="Close">×</button></header>
+    <nav class="extabs">${tabs.map(([k, t])=>`<button data-t="${k}" aria-pressed="${k === EX_TAB}">${t}</button>`).join("")}</nav>
+    <div class="exbody">${body}</div>
+    ${x.slug ? `<footer><a href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">View on Product Hunt ↗</a></footer>` : ""}</div>`;
+  el.hidden = false; document.body.classList.add("modal-open");
+  el.querySelector(".x").onclick = closeExplain;
+  el.querySelectorAll(".extabs button").forEach(b=>b.onclick = ()=>{ EX_TAB = b.dataset.t; showExplain(id); });
 }
+function closeExplain(){ $("#explain").hidden = true; document.body.classList.remove("modal-open"); }
+document.addEventListener("keydown", e=>{ if(e.key === "Escape") closeExplain(); });
 document.addEventListener("click", e=>{
+  if(e.target.id === "explain") return closeExplain();               // click on the dimmed backdrop
   const li = e.target.closest && e.target.closest("li.row.has-explain");
-  if(li){ e.preventDefault(); showExplain(li.dataset.id); }     // the panel links out to Product Hunt
+  if(li){ e.preventDefault(); EX_TAB = "overview"; showExplain(li.dataset.id); }
 });
 
 // Match status: exact = same rank on both boards; near = in both top 10s at a different rank; miss = only on this board.
