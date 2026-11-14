@@ -1,0 +1,111 @@
+{
+ "design": "Anatomy of CF-only's forward misses (orchestrator 22:54Z Nov 14). Strict, Nov 8-12, same frozen CF-only lists and the same scoring as\nbacker_arms_score.py: o = held-before-freeze AND re-read-after-close people whose upvote list contains the launch; N = |o|; CF-only list ranked\nwithin the re-read people; a MISS = a person in o not in the top N. Each miss goes to the FIRST bucket that applies:\n  (a) backed this team before: upvoted (reads before 00:00 PT of D) an earlier launch whose hunter or first maker is this launch's\n  (b) follows the hunter or first maker in a follow read fetched before 00:00 PT of D (dated). Follows seen only in reads fetched later are\n      reported separately as (b-undated) and NOT used for bucketing\n  (c) taste-near: in the launch's CF-only list ranked within (N, 5N] (just below the cut). The literal \"launch in their CF top 20\" is true for\n      every person on days with <= 20 launches, so the near-cut rank is used instead\n  (d) not active: no upvote on launches of the 30 days before D (reads before 00:00 PT of D)\n  (e) none of these\nPer bucket: share of misses (launch bootstrap 95%), and the oracle recall at N if every miss in that bucket were named (pooled).",
+ "launches": 128,
+ "observed_backers": 1629,
+ "misses": 1219,
+ "CF-only recall at N (pooled)": 25.2,
+ "buckets": {
+  "(a) backed this team before": {
+   "n": 524,
+   "share of misses %": [
+    43.0,
+    29.1,
+    54.9
+   ],
+   "oracle recall at N if fixed %": 57.3
+  },
+  "(b) follows hunter / first maker (dated)": {
+   "n": 25,
+   "share of misses %": [
+    2.1,
+    0.8,
+    3.6
+   ],
+   "oracle recall at N if fixed %": 26.7
+  },
+  "(c) taste-near (CF rank in (N, 5N])": {
+   "n": 276,
+   "share of misses %": [
+    22.6,
+    15.5,
+    30.0
+   ],
+   "oracle recall at N if fixed %": 42.1
+  },
+  "(d) not active in the 30 days before": {
+   "n": 78,
+   "share of misses %": [
+    6.4,
+    4.0,
+    9.5
+   ],
+   "oracle recall at N if fixed %": 30.0
+  },
+  "(e) none of these": {
+   "n": 316,
+   "share of misses %": [
+    25.9,
+    19.8,
+    33.7
+   ],
+   "oracle recall at N if fixed %": 44.6
+  }
+ },
+ "(b-undated) follows seen only in later reads, among misses": {
+  "n": 235,
+  "share of misses %": 19.3
+ },
+ "backed-before pool (re-read, held before freeze)": {
+  "people per launch (median)": 0.0,
+  "N per launch (median)": 2.0,
+  "share of the pool who voted %": 1.5,
+  "pool / N (pooled)": 30.99
+ },
+ "per day": {
+  "2026-11-08": {
+   "N": 611,
+   "misses": 454,
+   "a": 200,
+   "b": 3,
+   "c": 136,
+   "d": 7,
+   "e": 108
+  },
+  "2026-11-09": {
+   "N": 735,
+   "misses": 501,
+   "a": 237,
+   "b": 13,
+   "c": 138,
+   "d": 9,
+   "e": 104
+  },
+  "2026-11-10": {
+   "N": 124,
+   "misses": 114,
+   "a": 34,
+   "b": 5,
+   "c": 1,
+   "d": 31,
+   "e": 43
+  },
+  "2026-11-11": {
+   "N": 51,
+   "misses": 50,
+   "a": 13,
+   "b": 0,
+   "c": 1,
+   "d": 17,
+   "e": 19
+  },
+  "2026-11-12": {
+   "N": 108,
+   "misses": 100,
+   "a": 40,
+   "b": 4,
+   "c": 0,
+   "d": 14,
+   "e": 42
+  }
+ }
+}

@@ -50,7 +50,9 @@ for D in TDAYS:
             elif p not in active30: b["d"] += 1
             else: b["e"] += 1
             if p in fol_u and p not in fol_d: b_und += 1
-        rows.append({"day": D, "launch": str(lid), "N": n, "hits": n - len(miss), "miss": len(miss), **b, "b_undated": b_und})
+        pool_b = backed & reread & hf
+        rows.append({"day": D, "launch": str(lid), "N": n, "hits": n - len(miss), "miss": len(miss), **b, "b_undated": b_und,
+                     "backed_pool": len(pool_b), "backed_pool_voted": len(pool_b & o)})
 P = pd.DataFrame(rows); rng = np.random.default_rng(0)
 def boot(f):
     v = [f(P.iloc[rng.integers(0, len(P), len(P))]) for _ in range(2000)]; return [round(float(np.percentile(v, 2.5)), 1), round(float(np.percentile(v, 97.5)), 1)]
@@ -62,6 +64,8 @@ for k, nm in NAMES.items():
     out["buckets"][nm] = {"n": int(P[k].sum()), "share of misses %": [round(100 * P[k].sum() / P.miss.sum(), 1)] + boot(lambda x, k=k: 100 * x[k].sum() / max(x.miss.sum(), 1)),
                           "oracle recall at N if fixed %": round(100 * (P.hits.sum() + P[k].sum()) / P.N.sum(), 1)}
 out["(b-undated) follows seen only in later reads, among misses"] = {"n": int(P.b_undated.sum()), "share of misses %": round(100 * P.b_undated.sum() / P.miss.sum(), 1)}
+out["backed-before pool (re-read, held before freeze)"] = {"people per launch (median)": float(P.backed_pool.median()), "N per launch (median)": float(P.N.median()),
+    "share of the pool who voted %": round(100 * P.backed_pool_voted.sum() / max(P.backed_pool.sum(), 1), 1), "pool / N (pooled)": round(P.backed_pool.sum() / P.N.sum(), 2)}
 out["per day"] = {d: {"N": int(x.N.sum()), "misses": int(x.miss.sum()), **{k: int(x[k].sum()) for k in NAMES}} for d, x in P.groupby("day")}
 os.makedirs(f"{SP}/backer", exist_ok=True); json.dump(out, open(f"{SP}/backer/miss_anatomy.json", "w"), indent=1, default=float)
 print(json.dumps(out, default=float)[:3000])
