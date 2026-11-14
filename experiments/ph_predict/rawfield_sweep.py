@@ -22,7 +22,13 @@ HERE = os.path.dirname(os.path.abspath(__file__)); R = lambda p: os.path.join(HE
 X = pd.read_parquet(sys.argv[1]); L = pd.read_parquet(sys.argv[2]); L["id"] = L.id.astype(str)
 FIELDS = [c for c in X.columns if c not in ("id", "day", "kind")]
 SAME = {"media:n": "ph_n_media", "topics.edges:n": "ph_n_topics", "makers:n": "ph_n_makers", "description:len": "ph_desc_len",
-        "tagline:len": "ph_tagline_len", "name:len": "ph_name_len", "drv.hunter_age_d_at_create": "ph_hunter_age_d"}
+        "tagline:len": "ph_tagline_len", "name:len": "ph_name_len", "drv.hunter_age_d_at_create": "ph_hunter_age_d",
+        # CORRECTION after the first run (b6b51614): both are the topic count = ph_n_topics; the mapping missed them
+        "topics.edges[].node:nonempty": "ph_n_topics", "topics.edges[].node.name:nonempty": "ph_n_topics"}
+# CORRECTION after the first run: user.followersCount passed the pre-registered test (Spearman 0.949) but its stored value includes
+# post-launch growth that depends on the outcome (log stored/00:05: others +0.89, top 3 +0.06; small hunters 2 -> 31); it is the hunter
+# follower count arm 2 already drops as read-at-fetch (history_retrain 'nofol'). Marked leaky; its score is still reported.
+POSTHOC_LEAKY = {"user.followersCount": "stored value includes outcome-dependent post-launch follower growth (log stored/00:05: others +0.89, top 3 +0.06)"}
 OUTCOME = lambda c: c.split(":")[0] in ("votesCount", "commentsCount", "reviewsCount", "reviewsRating") or "Rank" in c
 excl = {}
 for c in FIELDS:
@@ -43,7 +49,8 @@ for c in cand:
     else:
         rho = float(pd.Series(s[mm]).rank().corr(pd.Series(t[mm]).rank())) if mm.sum() > 2 else np.nan; ok = pres >= 0.8 and rho >= 0.9; stat = {"spearman": round(rho, 3)}
     know[c] = {"status": "knowable" if ok else "leaky", "present_0005": round(pres, 3), **stat, "n": int(m.sum())}
-K = [c for c, v in know.items() if v["status"] == "knowable"]
+    if c in POSTHOC_LEAKY: know[c].update({"status": "leaky", "why": POSTHOC_LEAKY[c]})
+K = [c for c, v in know.items() if v["status"] == "knowable" or c in POSTHOC_LEAKY]
 # residuals on the 184 scored days
 A = pd.read_parquet(R("history_retrain_decomp_preds_arm2.parquet")); A["id"] = A.id.astype(str)
 A = A.merge(L[["id", "votes"]], on="id"); A["res"] = np.log1p(A.votes.astype(float)) - A.both
@@ -63,7 +70,7 @@ for c in K:
     bs = [per[rng.integers(0, len(per), len(per))].mean() for _ in range(4000)]
     score[c] = {"rho": round(float(per.mean()), 4), "ci": [round(float(np.percentile(bs, 2.5)), 4), round(float(np.percentile(bs, 97.5)), 4)],
                 "n_days": len(per), "coverage": round(float(A[c].notna().mean()), 3)}
-clear = sorted([c for c, v in score.items() if "ci" in v and (v["ci"][0] > 0 or v["ci"][1] < 0)], key=lambda c: -abs(score[c]["rho"]))
+clear = sorted([c for c, v in score.items() if "ci" in v and (v["ci"][0] > 0 or v["ci"][1] < 0) and c not in POSTHOC_LEAKY], key=lambda c: -abs(score[c]["rho"]))
 out = {"method": __doc__, "excluded": excl, "knowability": know, "score": score, "clear_of_zero": clear, "picked": clear[:3],
        "ph_at_launch": "raw/ph_at_launch/<day>/ (posts, makers, products, external, followers, api_*): Oct 4 / Nov 3 onwards; listed, too short to score on 184 days"}
 json.dump(out, open(R("rawfield_sweep.json"), "w"), indent=1)
