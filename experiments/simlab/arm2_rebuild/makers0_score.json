@@ -1,0 +1,92 @@
+{
+ "2025": {
+  "days": 219,
+  "launches": 3891,
+  "zero_maker_launches": 208,
+  "top3": {
+   "arm2": 48.4,
+   "fix": 49.3,
+   "fix - arm2 [95% day bootstrap]": [
+    0.91,
+    -0.15,
+    2.13
+   ]
+  },
+  "top5": {
+   "arm2": 61.5,
+   "fix": 60.8,
+   "fix - arm2 [95% day bootstrap]": [
+    -0.64,
+    -1.37,
+    0.09
+   ]
+  },
+  "top10": {
+   "arm2": 79.0,
+   "fix": 79.3,
+   "fix - arm2 [95% day bootstrap]": [
+    0.32,
+    -0.09,
+    0.73
+   ]
+  },
+  "zero-maker launches: predicted within-day rank change (fix - arm2; negative = moved up)": {
+   "n": 208,
+   "mean": -0.08,
+   "median": 0.0,
+   "share moved up": 0.221,
+   "share unchanged": 0.567
+  }
+ },
+ "2026": {
+  "days": 184,
+  "launches": 4830,
+  "zero_maker_launches": 422,
+  "top3": {
+   "arm2": 56.5,
+   "fix": 56.3,
+   "fix - arm2 [95% day bootstrap]": [
+    -0.18,
+    -1.45,
+    0.91
+   ]
+  },
+  "top5": {
+   "arm2": 65.2,
+   "fix": 65.1,
+   "fix - arm2 [95% day bootstrap]": [
+    -0.11,
+    -0.87,
+    0.65
+   ]
+  },
+  "top10": {
+   "arm2": 76.5,
+   "fix": 76.4,
+   "fix - arm2 [95% day bootstrap]": [
+    -0.11,
+    -0.54,
+    0.33
+   ]
+  },
+  "zero-maker launches: predicted within-day rank change (fix - arm2; negative = moved up)": {
+   "n": 422,
+   "mean": 0.15,
+   "median": 0.0,
+   "share moved up": 0.182,
+   "share unchanged": 0.566
+  }
+ },
+ "decision (pre-registered: adopt if all six lower bounds > -1.0)": {
+  "lower bounds": {
+   "2025 top3": -0.15,
+   "2025 top5": -1.37,
+   "2025 top10": -0.09,
+   "2026 top3": -1.45,
+   "2026 top5": -0.87,
+   "2026 top10": -0.54
+  },
+  "adopt": false,
+  "clear gain at top 3 in both years": false
+ }
+}
