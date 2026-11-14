@@ -142,7 +142,7 @@ def main():
     # fix runs live; days from then on are not flagged.
     TODAY_BUG_FROM, TODAY_BUG_FIXED = "2026-10-26", os.environ.get("TODAY_BUG_FIXED") or None
     flag_txt = "built on polluted hunter-history inputs (today-rows bug, " + (f"fixed {TODAY_BUG_FIXED})" if TODAY_BUG_FIXED else "fix not yet live)")
-    hit = (X.day >= TODAY_BUG_FROM) & ((X.day < TODAY_BUG_FIXED) if TODAY_BUG_FIXED else True) & (X.point.astype(str).eq("0005") | X.point.astype(str).str.startswith("P"))
+    hit = (X.day >= TODAY_BUG_FROM) & ((X.day < TODAY_BUG_FIXED) if TODAY_BUG_FIXED else True) & (X.point.astype(str).eq("0005") | X.point.astype(str).str.match(r"^(P|V)") | X.method.astype(str).str.contains("weekly|monthly"))
     X["input_flag"] = pd.Series([flag_txt if h else None for h in hit], index=X.index, dtype=object)
     day_flags = {d_: flag_txt for d_ in sorted(X.day[hit].unique())}
     out = {"built_at": pd.Timestamp.now(tz="UTC").isoformat(),
@@ -155,7 +155,7 @@ def main():
            "per_pick": "p1/p2/p3_top3 = our #1/#2/#3 pick finished in the final top 3; exact1 = our #1 was the winner",
            "time_shown": "written_at (when the forecast file was written), not the data cut",
            "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual,
-           "day_flags": day_flags, "input_flag": "rows of the 00:05 forecast and the pre-reveal P points on flagged days; R / C / velocity points use votes and are not flagged"}
+           "day_flags": day_flags, "input_flag": "rows of the 00:05 forecast, the pre-reveal P points, velocity V points and weekly / monthly lines (all read a 00:05 score) on flagged days; R / C points use votes and are not flagged"}
     os.makedirs(os.path.join(HERE, "results", "web"), exist_ok=True)
     # orchestrator 12:47Z Nov 12: running clean vs deployed block, re-read at 25 and 50 live days (model-switch decision).
     # deployed = the published 00:05 forecast (live rows); clean = shadow_makerfix pred_clean when written, else the
