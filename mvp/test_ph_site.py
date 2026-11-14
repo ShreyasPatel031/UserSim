@@ -572,12 +572,16 @@ def test_cron_endpoint_requires_secret(monkeypatch):
 
 def test_midnight_accuracy_rows_never_pooled(monkeypatch):
     tr = {"summary": {"00:05 PT | backtest": {"all days": {"top3 hits %": [60.7, 57.8, 63.7, 214], "top5 hits %": [68.4, 0, 0, 214], "top10 hits %": [75.7, 0, 0, 214]}},
+                      "00:05 PT | live, previous published model": {"all days": {"top3 hits %": [51.5, 0, 0, 11], "top5 hits %": [60.0, None, None, 11], "top10 hits %": [73.6, None, None, 11]}},
+                      "00:05 PT | backtest (clean_nosite, fallback model)": {"all days": {"top3 hits %": [54.5, 0, 0, 183], "top5 hits %": [64.7, 0, 0, 183], "top10 hits %": [76.0, 0, 0, 183]}},
                       "03:45 PT | replay": {"all days": {"top3 hits %": [72.7, 0, 0, 11], "top5 hits %": [74.5, 0, 0, 11], "top10 hits %": [78.2, 0, 0, 11]}}}}
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
     a = live.accuracy()
     flags = [r["flag"] for r in a["mid"]]
     assert flags == ["live, previous model", "backtest (214 days)", "backtest (Sep–Oct)"]
     assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 59
+    live_prev = a["mid"][0]
+    assert (live_prev["top10"], live_prev["days"]) == (73.6, 11) and "polluted hunter-history inputs" in live_prev["note"]
     assert a["pre"][0]["flag"] == "replay" and a["pre"][0]["top10"] == 78.2
 
 

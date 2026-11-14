@@ -126,7 +126,7 @@
    ],
    "coverage_ph_fresh130": 0.8
   },
-  "label": "description band: rank correlation 0.42 on the 130 most recent launches and 0.35 on 856 Sep\u2013Nov launches; the recalibrated 80% band covered 80.5% of 856 launches (80.0% of the 130 most recent), all month-forward",
+  "label": "description band: rank correlation 0.42 on the 130 most recent launches and 0.35 on 856 Sep–Nov launches; the recalibrated 80% band covered 80.5% of 856 launches (80.0% of the 130 most recent), all month-forward",
   "source": "E5 reports/try_fixes/, branch claude/person-model-v2",
   "date": "2026-11-13",
   "ph_note": "PH-description band figures are forward only: the same recipe retrained on earlier months; the earlier 0.59 / 89% were in-sample (launch_band.json was trained through Nov 10, including the 130 launches)",
@@ -200,7 +200,7 @@
     0.42
    ],
    "desc_n": 32,
-   "window": "Nov 8\u201312, 2026",
+   "window": "Nov 8–12, 2026",
    "page_n": 0,
    "source": "E5 forward scorer after the team-filter fix (6584bf6f), 2026-11-14"
   }
@@ -208,24 +208,18 @@
  "midnight_accuracy": {
   "rows": [
    {
-    "flag": "backtest (Sep\u2013Oct)",
+    "flag": "backtest (Sep–Oct)",
     "top3": 57.1,
     "top5": 67.5,
     "top10": 76.4,
     "days": 59,
     "approx": true
-   },
-   {
-    "flag": "live, previous model",
-    "top3": 48.1,
-    "top5": 55.6,
-    "top10": 75.6,
-    "days": 9
    }
   ],
-  "label": "00:05 PT tab: deployed arm 2 backtest Sep\u2013Oct 2026, days with 10+ ranked launches (monthly spread Apr\u2013Oct 56\u201367% top 3, no trend); live rows are the previous published model (clean_nosite), Nov 1\u20134 and 8\u201312",
-  "source": "E5 reports/drift_0005, commit 27ad976b, branch claude/person-model-v2; accepted by the orchestrator",
-  "date": "2026-11-14"
+  "label": "00:05 PT tab: deployed arm 2 backtest Sep–Oct 2026, days with 10+ ranked launches; the live row is read from E5's track record ('live, previous published model', scoreboard figures) and carries PH ops' input flag",
+  "source": "E5 reports/drift_0005 (27ad976b); live row and flag per orchestrator via PH ops, 2026-11-14",
+  "date": "2026-11-14",
+  "live_note": "built on polluted hunter-history inputs, Oct 26–Nov 13; old full model through Nov 12"
  },
  "launch_model_arm2": {
   "values": {
@@ -234,7 +228,7 @@
    "top10": 76.9,
    "days": 183
   },
-  "label": "deployed 00:05 model (arm 2), walk-forward backtest Apr\u2013Oct 2026, days with at least 10 launches ranked",
+  "label": "deployed 00:05 model (arm 2), walk-forward backtest Apr–Oct 2026, days with at least 10 launches ranked",
   "source": "E5 tmp/e5/website/track_record_v1.json (day rule: 10+ ranked launches), 2026-11-14",
   "date": "2026-11-14"
  }

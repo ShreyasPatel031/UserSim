@@ -389,13 +389,18 @@ def accuracy() -> dict:
                 row["note"] = str(b["note"])
         except (KeyError, IndexError, TypeError):
             continue
+        if tab == "mid" and flag == "live, previous published model":
+            row["flag"] = "live, previous model"     # what was actually published (scoreboard), never a replay
         if tab:
             out[tab].append(row)
     # 00:05 tab (E5 drift_0005, Nov 14): the Sep–Oct backtest of the deployed model and the previous model's live
     # days replace the 214-day backtest; the new model's own live rows (flag "live") are kept from the file.
     m = claims().get("midnight_accuracy")
     if m:
-        keep = [r for r in out["mid"] if r["flag"] in ("live", "backtest")]
+        keep = [r for r in out["mid"] if r["flag"] in ("live", "backtest", "live, previous model")]
+        for r in keep:
+            if r["flag"] == "live, previous model" and m.get("live_note"):
+                r["note"] = str(m["live_note"])
         for r in keep:
             if r["flag"] == "backtest":
                 r["flag"] = f"backtest ({r['days']} days)"

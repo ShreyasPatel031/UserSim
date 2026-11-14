@@ -189,7 +189,7 @@ function metric(){
   const cur = rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
   const r = cur || prev;
   if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`
-    + (cur ? "" : ` <span class="mnote">Previous model, live, ${Number(prev.days)} days.</span>`);
+    + (cur ? "" : ` <span class="mnote">Previous model, live, ${Number(prev.days)} days${prev.note ? `; ${esc(prev.note)}` : ""}.</span>`);
 }
 function legend(sts){
   accLine();
