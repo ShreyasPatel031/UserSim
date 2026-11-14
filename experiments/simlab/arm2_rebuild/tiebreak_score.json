@@ -1,0 +1,236 @@
+{
+ "2025 days": 219,
+ "2026 days": 183,
+ "2025 grid (top-3 change vs arm 2, picks changed % at cut 3)": {
+  "arm3 | 0.01": {
+   "top3 change": 0.457,
+   "picks changed %": 4.1
+  },
+  "arm3 | 0.02": {
+   "top3 change": 0.913,
+   "picks changed %": 7.8
+  },
+  "arm3 | 0.037": {
+   "top3 change": 1.065,
+   "picks changed %": 11.0
+  },
+  "arm3 | 0.05": {
+   "top3 change": 1.065,
+   "picks changed %": 14.6
+  },
+  "arm3 | 0.075": {
+   "top3 change": 1.522,
+   "picks changed %": 19.6
+  },
+  "arm3 | 0.1": {
+   "top3 change": 1.218,
+   "picks changed %": 21.5
+  },
+  "readable | 0.01": {
+   "top3 change": 0.761,
+   "picks changed %": 5.5
+  },
+  "readable | 0.02": {
+   "top3 change": 1.065,
+   "picks changed %": 11.4
+  },
+  "readable | 0.037": {
+   "top3 change": 1.522,
+   "picks changed %": 17.8
+  },
+  "readable | 0.05": {
+   "top3 change": 1.522,
+   "picks changed %": 21.9
+  },
+  "readable | 0.075": {
+   "top3 change": 1.674,
+   "picks changed %": 26.0
+  },
+  "readable | 0.1": {
+   "top3 change": 1.674,
+   "picks changed %": 29.2
+  },
+  "hist_hunter_rel | 0.01": {
+   "top3 change": 0.304,
+   "picks changed %": 3.2
+  },
+  "hist_hunter_rel | 0.02": {
+   "top3 change": 0.457,
+   "picks changed %": 6.4
+  },
+  "hist_hunter_rel | 0.037": {
+   "top3 change": 0.761,
+   "picks changed %": 10.0
+  },
+  "hist_hunter_rel | 0.05": {
+   "top3 change": 0.304,
+   "picks changed %": 13.2
+  },
+  "hist_hunter_rel | 0.075": {
+   "top3 change": 0.761,
+   "picks changed %": 16.4
+  },
+  "hist_hunter_rel | 0.1": {
+   "top3 change": 0.913,
+   "picks changed %": 19.6
+  },
+  "llm_pitch | 0.01": {
+   "top3 change": 0.609,
+   "picks changed %": 4.1
+  },
+  "llm_pitch | 0.02": {
+   "top3 change": 0.609,
+   "picks changed %": 7.3
+  },
+  "llm_pitch | 0.037": {
+   "top3 change": 1.37,
+   "picks changed %": 12.3
+  },
+  "llm_pitch | 0.05": {
+   "top3 change": 0.913,
+   "picks changed %": 17.8
+  },
+  "llm_pitch | 0.075": {
+   "top3 change": 1.218,
+   "picks changed %": 21.9
+  },
+  "llm_pitch | 0.1": {
+   "top3 change": 0.913,
+   "picks changed %": 24.7
+  },
+  "meanrank | 0.01": {
+   "top3 change": 0.761,
+   "picks changed %": 5.5
+  },
+  "meanrank | 0.02": {
+   "top3 change": 1.218,
+   "picks changed %": 11.9
+  },
+  "meanrank | 0.037": {
+   "top3 change": 1.37,
+   "picks changed %": 15.1
+  },
+  "meanrank | 0.05": {
+   "top3 change": 1.522,
+   "picks changed %": 19.6
+  },
+  "meanrank | 0.075": {
+   "top3 change": 1.674,
+   "picks changed %": 23.7
+  },
+  "meanrank | 0.1": {
+   "top3 change": 1.674,
+   "picks changed %": 25.6
+  }
+ },
+ "2025 choice": {
+  "tie-breaker": "readable",
+  "threshold": 0.075,
+  "top3 change": 1.674,
+  "picks changed %": 26.0
+ },
+ "2026 test (183-day rule)": {
+  "top3": {
+   "arm2 %": 57.2,
+   "with tie-breaker %": 56.6,
+   "change [CI]": [
+    -0.55,
+    -2.19,
+    1.09
+   ],
+   "near-tie days": 91,
+   "near-tie days: arm2 % / with % ": [
+    52.7,
+    51.6
+   ],
+   "near-tie days change [CI]": [
+    -1.1,
+    -4.4,
+    2.2
+   ],
+   "picks changed (days)": 38,
+   "picks changed % of days": 20.8
+  },
+  "top5": {
+   "arm2 %": 64.8,
+   "with tie-breaker %": 65.0,
+   "change [CI]": [
+    0.22,
+    -0.87,
+    1.31
+   ],
+   "near-tie days": 102,
+   "near-tie days: arm2 % / with % ": [
+    63.3,
+    63.7
+   ],
+   "near-tie days change [CI]": [
+    0.39,
+    -1.57,
+    2.35
+   ],
+   "picks changed (days)": 43,
+   "picks changed % of days": 23.5
+  },
+  "top10": {
+   "arm2 %": 76.3,
+   "with tie-breaker %": 76.2,
+   "change [CI]": [
+    -0.16,
+    -0.71,
+    0.38
+   ],
+   "near-tie days": 125,
+   "near-tie days: arm2 % / with % ": [
+    75.3,
+    75.0
+   ],
+   "near-tie days change [CI]": [
+    -0.24,
+    -1.04,
+    0.56
+   ],
+   "picks changed (days)": 49,
+   "picks changed % of days": 26.8
+  }
+ },
+ "check: 2026 near-tie at 0.037 (cut 3)": {
+  "days": 53,
+  "arm2 top3 % near / clear": [
+   49.7,
+   60.3
+  ]
+ },
+ "2026 all candidates at the chosen threshold, top 3 (not used for the choice)": {
+  "arm3": [
+   -0.73,
+   -2.37,
+   0.91
+  ],
+  "clean_nosite": [
+   -0.36,
+   -2.0,
+   1.1
+  ],
+  "readable": [
+   -0.55,
+   -2.19,
+   1.09
+  ],
+  "hist_hunter_rel": [
+   -0.91,
+   -2.55,
+   0.73
+  ],
+  "llm_pitch": [
+   -0.91,
+   -2.91,
+   1.09
+  ],
+  "meanrank": [
+   0.18,
+   -1.64,
+   2.0
+  ]
+ }
+}
