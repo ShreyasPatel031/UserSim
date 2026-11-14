@@ -68,10 +68,25 @@ try:
     if "--who-only" in sys.argv: print(json.dumps({"day": DAY, "frozen_launches": len(fr), "n_active": int(nact)})); sys.exit(0)
     TOPN = list(g["TOP"]) if "TOP" in g else None
     seg_all = pd.Series([segmap.get(p, "no headline or bio") for p in act.index], index=act.index) if act is not None else None
+    # orchestrator 22:54Z Nov 14: "who" segments come from the CF-only backer lists (forward line, 25.2% of held backers named) when frozen
+    CFL = None
+    try:
+        raw_cf = subprocess.run(["gsutil", "cat", f"{B}/tmp/e5/private/backer_arms/{DAY}.parquet"], capture_output=True).stdout
+        lp_cf = os.path.join(SP, "bp", f"backer_arms_{DAY}.parquet")
+        if raw_cf: os.makedirs(os.path.dirname(lp_cf), exist_ok=True); open(lp_cf, "wb").write(raw_cf)
+        if os.path.exists(lp_cf):
+            A_ = pd.read_parquet(lp_cf); A_ = A_[A_.arm == "CF-only"]
+            CFL = {str(l): pd.Series(g.p.values, index=g.person_id.values) for l, g in A_.groupby("launch_id")}
+    except Exception as e:
+        print("CF-only lists not used:", repr(e)[:200])
     for i in ids:
-        p = PPROB.get(i)
+        p = CFL.get(i) if CFL else PPROB.get(i)
+        if CFL and p is not None and seg_all is not None:
+            seg_all_i = pd.Series([segmap.get(q, "no headline or bio") for q in p.index], index=p.index)
+        else:
+            seg_all_i = seg_all.reindex(p.index) if (p is not None and isinstance(p, pd.Series) and seg_all is not None) else None
         if p is None or not isinstance(p, pd.Series) or nact < MIN: WHO[i] = {"status": NA, "reason": "vote model not fitted (fewer than 20 held active people or training upvotes)"}; continue
-        df = pd.DataFrame({"p": p.values, "seg": seg_all.values}, index=p.index); tot = df.p.sum()
+        df = pd.DataFrame({"p": p.values, "seg": seg_all_i.values}, index=p.index); tot = df.p.sum()
         rows = []
         for s, gg in df.groupby("seg"):
             if len(gg) < MIN: continue
@@ -81,7 +96,7 @@ try:
         top = df.p.sort_values(ascending=False).index[:200]
         likes = None
         if tv is not None and TOPN:
-            ix = pd.Series(np.arange(len(act)), index=act.index); w = df.p.loc[top].values
+            ix = pd.Series(np.arange(len(act)), index=act.index); top = [q for q in top if q in ix.index]; w = df.p.loc[top].values
             dist = (tv[ix[top].values] * w[:, None]).sum(0) / max(w.sum(), 1e-9); o = np.argsort(-dist)[:5]
             likes = [{"topic": TOPN[j], "share_of_their_recent_upvotes": round(float(dist[j]), 3)} for j in o if dist[j] > 0]
         WHO[i] = {"segments": rows, "expected_held_votes": round(float(tot), 1), "n_held_active_people": int(nact),
@@ -90,10 +105,17 @@ try:
 except Exception as e:
     print("who failed:", repr(e)[:300]); WHO = {i: {"status": NA, "reason": f"vote model step failed: {type(e).__name__}"} for i in ids}
 WHY = json.loads(gcat(f"{B}/results/web/why/{DAY}_0005.json") or "{}")
+
 WHO_LABEL = {"segment_rule": "keyword rule on each held person's own headline and bio (first match in this order: investors, designers, developers, marketers, product managers, founders/indie makers, students)",
              "model": "voter_harness pair model (held people's recent upvotes, topic taste, follows of the hunter and first maker; trained on the 7 previous days; reads fetched before 00:00 PT)",
              "predictive_value": "summed per launch it gave 0.0 top-3 gain over the clean forecast on 10 forward test days (Oct 29 - Nov 11): descriptive, not a vote forecast",
              "coverage": "held people cast about 41-57% of a launch's votes (measured on past launches; this is the share of real upvoters whose whole profile we hold)"}
+try:
+    if CFL:
+        WHO_LABEL = {**WHO_LABEL, "model": "CF-only backer model (activity + co-upvote neighbour score, SVD k=32 on upvotes dated before the day; reads before 00:00 PT; no follows); segments and expected votes over each launch's 2,000 most likely held people",
+                     "predictive_value": "25.2% of held backers named, 128 launches, forward (Nov 8-12, strict; +4.0 points [+1.9, +5.9] over a most-active list)"}
+except NameError:
+    pass
 
 # ---------------- say ----------------
 PF = json.loads(gcat(f"{B}/tmp/e5/forward_sim/{DAY}/predictions_frozen.json") or "{}")
