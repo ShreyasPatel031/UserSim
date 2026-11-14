@@ -145,6 +145,12 @@ def main():
     hit = (X.day >= TODAY_BUG_FROM) & ((X.day < TODAY_BUG_FIXED) if TODAY_BUG_FIXED else True) & (X.point.astype(str).eq("0005") | X.point.astype(str).str.startswith("P") | X.method.astype(str).str.contains("weekly|monthly"))
     X["input_flag"] = pd.Series([flag_txt if h else None for h in hit], index=X.index, dtype=object)
     day_flags = {d_: flag_txt for d_ in sorted(X.day[hit].unique())}
+    # which model produced each published 00:05 row (explanation audit, orchestrator Nov 14): old full model Oct 25 - Nov 12, clean_nosite
+    # Nov 13 - 14 (model switch, model_switch.clean_from), arm 2 from Nov 15 (Shreyas Nov 13: "if its better on backtest deploy")
+    def _model(r_):
+        if str(r_.point) != "0005" or r_.method != "published": return None
+        return "old full model" if r_.day <= "2026-11-12" else "clean_nosite" if r_.day <= "2026-11-14" else "arm 2"
+    X["model"] = pd.Series([_model(r_) for r_ in X.itertuples()], index=X.index, dtype=object)
     out = {"built_at": pd.Timestamp.now(tz="UTC").isoformat(),
            "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
            "sources": {"live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
