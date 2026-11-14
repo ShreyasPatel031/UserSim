@@ -103,8 +103,8 @@ def prereveal(d):
             sc = sum(zf(Z[f.replace("z_", "")]) * c for f, c in W.items())
             rest = [i for i in sc.sort_values(ascending=False).index if i not in set(hid[:5])]
             order = hid[:5] + rest; model = "hybrid_vm"
-        if sT.a.max() < ptc("03:44") and fb is None:   # T-read older than 03:44 PT: still hybrid_vm, but flagged so done_ok fails,
-            fb = "stale_read"                            # the 03:52 retry runs and the page says the read is stale
+        if sT.a.max() < ptc("03:44"):   # T-read older than 03:44 PT: still the same model, but flagged so done_ok fails, the 03:52 retry
+            fb = f"{fb}+stale_read" if fb else "stale_read"; inp["recorder_T_stale"] = True   # runs and the page says so
     put(d, "prereveal", {"day": d, "kind": "prereveal", "time": "03:45 PT", "model": model, "fallback_used": fb, "inputs": inp, "written_at": now.isoformat(),
                          "backtest": ACC1, "ranking": [{"rank": k + 1, "id": i, "name": nm.get(i)} for k, i in enumerate(order)]})
 

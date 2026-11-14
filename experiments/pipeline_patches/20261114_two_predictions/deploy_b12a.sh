@@ -19,7 +19,7 @@ fi
 H=$(TZ=America/Los_Angeles date +%H%M); [ "$H" -lt 0005 ] || [ "$H" -ge 0100 ] || { echo "inside 00:05-01:00 PT: not deploying"; exit 1; }
 [ "$(id -un)" = agent ] || { echo "run as user agent (the crontab owner): not deploying"; exit 1; }
 S=${1:?folder}; m() { md5sum < "$1" | cut -c1-8; }
-declare -A WANT=( [two_predictions.py]=0f17e09e [import_gate.py]=a4ec25f0 [recorder_extra.py]=c1231100 [run.sh]=72a5d852 [tick.sh]=d446e816 [sched12a.txt]=a64806ba [cron12a.txt]=0e2c7f4d [hybrid_vmonly_P345_20261114.json]=16912cd6 )
+declare -A WANT=( [two_predictions.py]=44b666b2 [import_gate.py]=88c0147b [recorder_extra.py]=c1231100 [run.sh]=f12303cd [tick.sh]=d446e816 [sched12a.txt]=a64806ba [cron12a.txt]=0e2c7f4d [hybrid_vmonly_P345_20261114.json]=16912cd6 )
 for f in "${!WANT[@]}"; do [ "$(m $S/$f)" = "${WANT[$f]}" ] || { echo "$f md5 $(m $S/$f) != ${WANT[$f]}"; exit 1; }; done
 [ -s $BK/crontab.$STAMP ] || { echo "current crontab empty or unreadable: refusing (expected the @reboot run_daily line)"; exit 1; }
 # stage, check and gate in tw12a.stage; the live tree is replaced only after every check passes

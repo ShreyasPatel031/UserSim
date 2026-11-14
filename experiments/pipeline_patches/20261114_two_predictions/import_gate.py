@@ -11,6 +11,7 @@ Any failure -> exit 1 with one line per failure. usage: python3 import_gate.py [
 import ast
 import importlib
 import os
+import pwd
 import sys
 
 if sys.path and sys.path[0] == os.path.dirname(os.path.abspath(__file__)):
@@ -68,5 +69,5 @@ for t in args:
 for b in bad:
     print("IMPORT GATE FAIL", b, flush=True)
 print(f"import gate: {n_ok} imports ok, {len(bad)} failed ({len(args)} targets, cwd {os.getcwd()}, "
-      f"PYTHONPATH={os.environ.get('PYTHONPATH', '<unset>')}, user {os.environ.get('USER', '?')}, {sys.executable})", flush=True)
+      f"PYTHONPATH={os.environ.get('PYTHONPATH', '<unset>')}, user {pwd.getpwuid(os.geteuid()).pw_name}, {sys.executable})", flush=True)
 sys.exit(1 if bad else 0)
