@@ -23,7 +23,9 @@ rows = []
 X = pd.read_parquet(f"{SP}/a2x/X.parquet"); X["id"] = X.id.astype(str)
 for d, g in X.groupby("day"):
     t = g.sort_values("dailyRank").id.tolist(); o = g.sort_values(["both", "id"], ascending=[False, True]).id.tolist()
-    rows.append({"day": d, "prediction": "00:05 PT", "flag": "backtest", "line": "arm 2 walk-forward fold", "status": "scored", "n_launches": len(g),
+    nr = int(g.dailyRank.notna().sum())   # same day rule as live rows (orchestrator 12:45Z Nov 14): >= 10 ranked launches
+    rows.append({"day": d, "prediction": "00:05 PT", "flag": "backtest", "line": "arm 2 walk-forward fold", "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked",
+                 "n_launches": len(g), "n_ranked": nr,
                  "hits_top3": len(set(o[:3]) & set(t[:3])), "hits_top5": len(set(o[:5]) & set(t[:5])), "hits_top10": len(set(o[:10]) & set(t[:10]))})
 # 03:45 replay = the line that will be published (bundle 12a hybrid_vm, PH ops' per-day replay hits, read rule agreed with E5, LODO
 # weights); E5's re-implementation of the earlier hybrid (78.2 top 10) is no longer used here (orchestrator / PH ops, Nov 14).
@@ -31,7 +33,8 @@ HV = json.loads(gcat(f"{B}/tmp/ph_ops/hybrid_vmonly_days.json") or b"[]")
 HV = HV.get("days", HV) if isinstance(HV, dict) else HV
 NL = {d: v["n launches"] for d, v in json.load(open(os.path.join(HERE, "reports", "prereveal_345", "prereveal_345.json")))["per day (plain, hybrid) top3/5/10 hits %"].items()}
 for v in HV:
-    rows.append({"day": v["day"], "prediction": "03:45 PT", "flag": "replay", "line": "hybrid_vm (bundle 12a), PH ops replay, LODO weights", "status": "scored",
+    nr = len(RK.get(v["day"], {}))
+    rows.append({"day": v["day"], "prediction": "03:45 PT", "flag": "replay", "line": "hybrid_vm (bundle 12a), PH ops replay, LODO weights", "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked", "n_ranked": nr,
                  "n_launches": NL.get(v["day"]), "hits_top3": int(v["hits_top3"]), "hits_top5": int(v["hits_top5"]), "hits_top10": int(v["hits_top10"])})
 today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
 for d in [x for x in pd.date_range("2026-11-14", today).strftime("%Y-%m-%d") if x < today]:   # closed PT days only
@@ -45,19 +48,25 @@ for d in [x for x in pd.date_range("2026-11-14", today).strftime("%Y-%m-%d") if 
         if used == newp: F = pd.DataFrame(J.get("ranking") or []); col = "rank"   # bundle 12a: ranking [{rank, id, name(, score)}], rank 1 = top pick
         else: F = pd.DataFrame(J.get("forecast") or [])
         if F.empty or col not in F: rows.append({**base, "status": "not published"}); continue
-        if d not in RK or len(RK[d]) < 10: rows.append({**base, "status": "pending final ranks"}); continue
+        if d not in RK: rows.append({**base, "status": "pending final ranks"}); continue
+        if len(RK[d]) < 10: rows.append({**base, "status": "excluded: fewer than 10 ranked", "n_ranked": len(RK[d])}); continue
         F["id"] = F.id.astype(str); o = F.dropna(subset=[col]).sort_values(col).id.tolist(); h = hits(o, d)
         rows.append({**base, "status": "scored", "n_launches": len(RK[d]), "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
 def ci(v):
     v = np.asarray(v, float); bs = [v[rng.integers(0, len(v), len(v))].mean() for _ in range(4000)]
     return [round(float(v.mean()), 1), round(float(np.percentile(bs, 2.5)), 1), round(float(np.percentile(bs, 97.5)), 1), len(v)]
+DAY_RULE = "a day counts only when >= 10 of its launches have an official daily rank (same rule for backtest, replay and live)"
 S = pd.DataFrame(rows); summ = {}
 for (pred, flag), g in S[S.status == "scored"].groupby(["prediction", "flag"]):
     g = g.sort_values("day"); o = {}
     for nm, gg in (("last 7 days", g.tail(7)), ("last 30 days", g.tail(30)), ("all days", g)):
         o[nm] = {f"top{k} hits %": ci(gg[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}
     o["share of days with 0/1/2/3 of the top 3 right"] = {str(k): round(float((g.hits_top3 == k).mean()), 3) for k in range(4)}
-    o["first/last day"] = [g.day.iloc[0], g.day.iloc[-1]]; summ[f"{pred} | {flag}"] = o
+    o["first/last day"] = [g.day.iloc[0], g.day.iloc[-1]]; o["n_days"] = int(len(g)); o["day rule"] = DAY_RULE; summ[f"{pred} | {flag}"] = o
+for (pred, flag), g in S[S.status.isin(["scored", "excluded: fewer than 10 ranked"]) & S.hits_top3.notna()].groupby(["prediction", "flag"]):
+    if (g.status != "scored").any() and f"{pred} | {flag}" in summ:   # labelled extra, never the headline: every day incl. short lists
+        summ[f"{pred} | {flag}"]["extra: all days incl. fewer than 10 ranked (not comparable to live)"] = {
+            "n_days": int(len(g)), **{f"top{k} hits %": ci(g[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}}
 out = {"version": "track_record_v1", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),
        "READ_ME": "backtest = model re-run on past days it was not trained on (00:05, Apr-Oct); replay = the 03:45 rule re-run on recorded "
                   "pre-reveal reads (Nov 2-12); live = what the site actually published, scored against the official daily rank. Never pool "
