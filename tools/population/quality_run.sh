@@ -34,5 +34,5 @@ mkdir -p "$REPO/docs/population/quality"; cp $W/quality_$TS.md "$REPO/docs/popul
 (cd "$REPO" && git add docs/population/quality/$TS.md && git commit -q -m "population: person-pull quality report $TS (counts only)
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01WkCrUNzmycpWe5dkydHRnU" && timeout 60 git push -q origin claude/population-data)
+Claude-Session: https://claude.ai/code/session_01WkCrUNzmycpWe5dkydHRnU")  # no push: each push triggers a Vercel deploy (Nov 14); reports are pushed in batches
 cat $W/quality_$TS.out | tail -20
