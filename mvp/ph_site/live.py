@@ -372,7 +372,12 @@ def accuracy() -> dict:
             continue
         if tab:
             out[tab].append(row)
-    order = {"live": 0, "backtest": 1, "replay": 2}
+    # 00:05 tab (E5 drift_0005, Nov 14): the Sep–Oct backtest of the deployed model and the previous model's live
+    # days replace the 214-day backtest; the new model's own live rows (flag "live") are kept from the file.
+    m = claims().get("midnight_accuracy")
+    if m:
+        out["mid"] = [r for r in out["mid"] if r["flag"] == "live"] + [dict(r) for r in m["rows"]]
+    order = {"live": 0, "backtest (Sep–Oct)": 1, "live, previous model": 2, "backtest": 3, "replay": 4}
     for v in out.values():
         v.sort(key=lambda r: order.get(r["flag"], 9))
     return out

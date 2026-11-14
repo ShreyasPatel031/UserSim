@@ -156,7 +156,8 @@ function accLine(){
   const p = pointFor(TAB), rows = ((VIEW.accuracy||{})[TAB]) || [];
   const name = TAB === "mid" ? "Product only (00:05 PT)" : "Product + comments (03:45 PT)";
   const fl = {backtest: "backtest", replay: "replay", live: "live"};
-  const parts = rows.map(r=>`${fl[r.flag] || r.flag} on ${Number(r.days)} days: top 3 ${Number(r.top3).toFixed(1)}% · top 5 ${Number(r.top5).toFixed(1)}% · top 10 ${Number(r.top10).toFixed(1)}%`);
+  const pc = (v, r)=> r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`;
+  const parts = rows.map(r=>`${fl[r.flag] || r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}`);
   const made = p && p.time_pt ? ` · made ${p.time_pt}` : "";
   const fb = p && p.fallback ? ` · fallback: ${p.fallback}` : "";
   $("#acc").textContent = parts.length ? `${name}${made}${fb} — ${parts.join("; ")}` : (p ? `${name}${made}${fb}` : "");
