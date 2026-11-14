@@ -20,6 +20,7 @@ for i, c in com.items():
         o[f"c{m}"] = len({p for p, t in c.values() if t <= lim and p != r.h}); o[f"t{m}"] = len({p for p, t in c.values() if t <= lim and p not in r.team})
     rows.append(o)
 X = pd.DataFrame(rows).merge(L[["id", "day", "daily_rank"]], on="id"); X["thp"] = X["c5"]
+if os.environ.get("DUMP"): X[["id", "day", "c0", "t0"]].to_parquet(os.environ["DUMP"]); sys.exit(0)
 A2 = pd.read_parquet(A2P)[["id", "both"]]; A2["id"] = A2.id.astype(str)
 res = {"design": __doc__.split("\n    python")[0], "launches with thread dumps": len(X), "days": int(X.day.nunique()), "dump days": [X.day.min(), X.day.max()]}
 def dsp(g, a, b):

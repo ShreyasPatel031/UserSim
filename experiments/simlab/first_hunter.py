@@ -73,6 +73,7 @@ for r in L.itertuples():
     for k in FEATS: o[f"t_{k}"] = (max([x[k] for x in tf]) if k == "age_d" else sum(x[k] for x in tf)) if tf else 0.0
     rows.append(o)
 L = L.merge(pd.DataFrame(rows), on="id"); L["mon"] = L.day.str[:7]
+if os.environ.get("DUMP"): L[["id", "day", "fth", "t_top5_365", "t_up365", "h_top5_365"]].to_parquet(os.environ["DUMP"]); sys.exit(0)   # per-launch features for the joint stack
 z = lambda s: (s - s.mean()) / (s.std() or 1)
 L["zb"] = L.groupby("day").both.transform(z); L["y"] = L.groupby("day")["rank"].transform(lambda r: z(-np.log(r)))
 L["a2rank"] = L.groupby("day").both.rank(ascending=False); L["resid"] = L.a2rank - L["rank"]

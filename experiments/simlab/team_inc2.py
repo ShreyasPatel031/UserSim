@@ -21,6 +21,7 @@ def feats2(r):
         if jok and ((len(before) and (before >= d180).any()) or any(x >= d180 for x in rl)): b += 1
     o.update({"asof_any": a, "asof180": b}); return o
 L = pd.concat([L.reset_index(drop=True), pd.DataFrame([feats2(r) for r in L.itertuples()])], axis=1)
+if os.environ.get("DUMP"): L[["id", "day", "estab", "asof_any", "held_indep"]].to_parquet(os.environ["DUMP"]); sys.exit(0)
 FE = ["held_full", "held_indep", "active90", "estab", "asof_any", "asof180"]; z = lambda s: (s - s.mean()) / (s.std() or 1)
 def dm(g, col):
     o = g.sort_values(col, ascending=False).id.tolist(); t = g.sort_values("rank").id.tolist(); return [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
