@@ -375,3 +375,5 @@ footer.note { padding-block: 18px; display: flex; justify-content: space-between
 
 .legend .final { margin-left: 18px; color: var(--ink); }
 .vs .stamp { line-height: 1.5; }
+
+.acc { margin: 4px 0 0; color: var(--soft); font-variant-numeric: tabular-nums; }

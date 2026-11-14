@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=11">
+<link rel="stylesheet" href="/static/ph_site.css?v=12">
 </head>
 <body>
 <div class="wrap">
@@ -53,6 +53,7 @@
     </section>
   </div>
   <p class="legend small" id="legend"></p>
+  <p class="acc small" id="acc"></p>
   <section class="whyp" id="whyp" hidden></section>
 
   <footer class="note label"><span>Forecasts by Atelier · not affiliated with Product Hunt</span><span id="asof"></span></footer>
@@ -120,7 +121,9 @@ function liveTop(){
 // "Midnight" = the 00:05 PT forecast; "Before votes" = the latest pre-reveal forecast (on time if one exists).
 function pointFor(v){
   if(v === "mid") return VIEW.points.find(q=>q.key==="0005") || null;
-  const pre = VIEW.points.filter(q=>/^P\d$/.test(q.key));
+  const pub = VIEW.points.find(q=>q.key==="PRE");      // the published 03:45 PT prediction
+  if(pub) return pub;
+  const pre = VIEW.points.filter(q=>/^P\d$/.test(q.key)); // days before it existed
   return pre.filter(q=>!q.late).pop() || pre.pop() || null;
 }
 function tabs(){
@@ -149,7 +152,17 @@ function renderPred(){
   document.querySelectorAll("#pred .row").forEach(li=>li.onclick=(e)=>{ if(e.target.closest("a")) return; showWhy(li.dataset.id, p.key); });
 }
 
+function accLine(){
+  const p = pointFor(TAB), rows = ((VIEW.accuracy||{})[TAB]) || [];
+  const name = TAB === "mid" ? "Product only (00:05 PT)" : "Product + comments (03:45 PT)";
+  const fl = {backtest: "backtest", replay: "replay", live: "live"};
+  const parts = rows.map(r=>`${fl[r.flag] || r.flag} on ${Number(r.days)} days: top 3 ${Number(r.top3).toFixed(1)}% · top 5 ${Number(r.top5).toFixed(1)}% · top 10 ${Number(r.top10).toFixed(1)}%`);
+  const made = p && p.time_pt ? ` · made ${p.time_pt}` : "";
+  const fb = p && p.fallback ? ` · fallback: ${p.fallback}` : "";
+  $("#acc").textContent = parts.length ? `${name}${made}${fb} — ${parts.join("; ")}` : (p ? `${name}${made}${fb}` : "");
+}
 function legend(sts){
+  accLine();
   const n = (k)=> (sts||[]).filter(v=>v===k).length;
   let h = sts && sts.some(Boolean)
     ? `<span class="key exact"></span>Exact rank ${n("exact")}<span class="key near"></span>In top 10, other rank ${n("near")}<span class="key miss"></span>Missed ${n("miss")}${VIEW.status.final ? "" : " · so far"}`

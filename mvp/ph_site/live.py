@@ -32,6 +32,7 @@ POINTS = [
     ("R1", "reveal + 1 h", "Vote counts and vote speed up to 1 h after the reveal + the 00:05 forecast."),
     ("R2", "reveal + 2 h", "Vote counts and vote speed up to 2 h after the reveal + the 00:05 forecast."),
     ("R4", "reveal + 4 h", "Vote counts and vote speed up to 4 h after the reveal + the 00:05 forecast."),
+    ("PRE", "before reveal", "Product Hunt's hidden order, comments and the 00:05 forecast at 03:45 PT, the last read before votes show."),
 ]
 POINT_KEYS = [p[0] for p in POINTS]
 
@@ -324,6 +325,59 @@ def _forecast_file(day: str, key: str):
             "method": method, "rank_field": field, "alt": alt, "exp_votes": exp or None, "agree": agree}
 
 
+def _published(day: str, kind: str) -> dict | None:
+    j = gcs.read_json(f"results/web/predictions/{day}_{kind}.json", ttl=120)
+    if not isinstance(j, dict) or str(j.get("day")) != day or not isinstance(j.get("ranking"), list):
+        return None
+    ranks = {}
+    for r in j["ranking"]:
+        try:
+            ranks[str(r["id"])] = int(r["rank"])
+        except (KeyError, TypeError, ValueError):
+            continue
+    if not ranks:
+        return None
+    cut_h, cut_m = (0, 5) if kind == "0005" else (3, 45)
+    return {"ranks": ranks, "made_at": j.get("written_at", ""), "method": str(j.get("model") or "")[:80],
+            "data_up_to": datetime.fromisoformat(day).replace(hour=cut_h, minute=cut_m, tzinfo=PT).isoformat(),
+            "fallback": j.get("fallback_used"), "backtest_line": str(j.get("backtest") or "")[:200], "exp_votes": None,
+            "source": f"results/web/predictions/{day}_{kind}.json"}
+
+
+def _p345(day: str) -> dict | None:
+    j = gcs.read_json(f"results/early_forecast/{day}_P345.json", ttl=120)
+    f = (j or {}).get("forecast") or []
+    ranks = {str(r["id"]): int(r["pred_rank_hybrid"]) for r in f if isinstance(r.get("pred_rank_hybrid"), (int, float))}
+    if not ranks:
+        return None
+    exp = {str(r["id"]): round(float(r["exp_final_votes"])) for r in f if isinstance(r.get("exp_final_votes"), (int, float))}
+    return {"ranks": ranks, "made_at": j.get("written_at", ""), "data_up_to": j.get("data_up_to", ""),
+            "method": "hybrid (hidden rank top 5 + ridge 6+)", "exp_votes": exp or None,
+            "source": f"results/early_forecast/{day}_P345.json"}
+
+
+def accuracy() -> dict:
+    """Track record of the two published predictions (E5, tmp/e5/website/track_record_v1.json): one block per
+    prediction and flag (backtest / replay / live), never pooled across flags."""
+    t = gcs.read_json("tmp/e5/website/track_record_v1.json", ttl=1800) or {}
+    out = {"mid": [], "pre": []}
+    for key, b in (t.get("summary") or {}).items():
+        pred, _, flag = str(key).partition(" | ")
+        tab = "mid" if pred.startswith("00:05") else "pre" if pred.startswith("03:45") else None
+        a = (b or {}).get("all days") or {}
+        try:
+            row = {"flag": flag, "top3": a["top3 hits %"][0], "top5": a["top5 hits %"][0], "top10": a["top10 hits %"][0],
+                   "days": a["top10 hits %"][3]}
+        except (KeyError, IndexError, TypeError):
+            continue
+        if tab:
+            out[tab].append(row)
+    order = {"live": 0, "backtest": 1, "replay": 2}
+    for v in out.values():
+        v.sort(key=lambda r: order.get(r["flag"], 9))
+    return out
+
+
 def forecasts(day: str) -> dict[str, dict]:
     def go():
         out = {}
@@ -331,9 +385,22 @@ def forecasts(day: str) -> dict[str, dict]:
         if f:
             out["0005"] = f
         for k in POINT_KEYS[1:]:
+            if k == "PRE":
+                continue
             f = _forecast_file(day, k)
             if f:
                 out[k] = f
+        # The two published predictions (PH ops, Nov 14): results/web/predictions/<day>_0005.json and
+        # <day>_prereveal.json, written by code on the VM. Until those exist: the 00:05 forecast above, and the 03:45
+        # hybrid line in results/early_forecast/<day>_P345.json (pred_rank_hybrid).
+        p0 = _published(day, "0005")
+        if p0:
+            if out.get("0005", {}).get("exp_votes") and not p0.get("exp_votes"):
+                p0["exp_votes"] = out["0005"]["exp_votes"]
+            out["0005"] = p0
+        pre = _published(day, "prereveal") or _p345(day)
+        if pre:
+            out["PRE"] = pre
         return out
     return gcs._cached("fc:" + day, 120, go)
 
@@ -516,7 +583,7 @@ def why(day: str, point: str, ids: set[str]) -> dict | None:
 
 
 # Nominal data cut of each point (PT, hours after midnight); a point counts as "not made" once its cut is 90 min past.
-NOMINAL_CUT_H = {"0005": 0.08, "P1": 1, "P2": 2, "P3": 3, "P4": 4, "R0": 4, "R1": 5, "R2": 6, "R4": 8}
+NOMINAL_CUT_H = {"0005": 0.08, "PRE": 3.75}
 BOARD_STALE_MIN = 35
 
 
@@ -609,13 +676,13 @@ def day_view(day: str) -> dict:
         try:
             late = (datetime.fromisoformat(str(f.get("made_at")).replace("Z", "+00:00"))
                     - datetime.fromisoformat(str(f.get("data_up_to")).replace("Z", "+00:00"))).total_seconds() > (
-                        30 if key == "0005" else 90) * 60
+                        60 if key == "0005" else 90) * 60
         except (ValueError, TypeError):
             pass
         points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "late": late, "top3_conf": conf,
                        "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
-                       "ranks": f["ranks"], "score": score})
+                       "ranks": f["ranks"], "score": score, "fallback": f.get("fallback"), "source": f.get("source")})
     # Only expose live votes after the reveal; before it they are hidden on PH too.
     ranks = act["ranks"] if act["revealed"] else {}
     launches = []

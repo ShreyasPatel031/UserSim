@@ -87,7 +87,32 @@ async def _ph_today(day: str | None):
     d = day if day in days else today
     view = await asyncio.to_thread(live.day_view, d)
     view["days"] = days
+    try:
+        view["accuracy"] = await asyncio.to_thread(live.accuracy)
+    except Exception:  # noqa: BLE001 - the accuracy line is optional
+        view["accuracy"] = {}
     return _json(view, 60)
+
+
+@router.api_route("/api/ph/cron/snapshot", methods=["GET", "POST"])
+async def ph_cron_snapshot(request: Request):
+    """Scheduler entry point (every 15 min on the clock PT, and 23:50 PT): append this slot's leaderboard snapshot.
+    Needs `Authorization: Bearer <CRON_SECRET>` (Vercel Cron sends exactly this)."""
+    import hmac
+    import os
+
+    from mvp.ph_site import ph_live
+
+    secret = os.environ.get("CRON_SECRET", "")
+    if len(secret) < 16:
+        return JSONResponse({"error": "CRON_SECRET is not set on this server"}, status_code=503)
+    if not hmac.compare_digest(request.headers.get("authorization", ""), f"Bearer {secret}"):
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+    try:
+        return JSONResponse(await asyncio.to_thread(ph_live.append_slot), headers={"Cache-Control": "no-store"})
+    except Exception as exc:  # noqa: BLE001
+        print(f"[ph_live] cron failed: {exc!r}", flush=True)
+        return JSONResponse({"error": "snapshot failed", "kind": type(exc).__name__}, status_code=500)
 
 
 @router.get("/api/ph/health")
@@ -121,6 +146,8 @@ async def ph_health():
     lb = await asyncio.to_thread(ph_live.health)
     checks["live_board"] = {"ok": bool(lb["configured"] and lb["age_s"] is not None and lb["age_s"] < 600), "ms": 0,
                             **{k: lb[k] for k in ("configured", "age_s", "launches", "last_ok_at", "last_error", "last_error_at")}}
+    ts = await asyncio.to_thread(ph_live.ts_health, live.today_pt())
+    checks["live_record"] = {"ok": "error" not in ts, "ms": 0, **ts}
     try:                                   # /try needs its code and numpy to import on this server
         from mvp.ph_site import person_e5, try_sim  # noqa: F401
         checks["try_imports"] = {"ok": True, "ms": 0}

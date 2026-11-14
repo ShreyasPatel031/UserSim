@@ -341,8 +341,8 @@ def test_ph_steady_state_freshness(monkeypatch):
     assert f["capture_gaps"][-1]["to_pt"] is None
     fresh = live._freshness(today, {}, {"as_of": datetime.now(timezone.utc).isoformat(), "as_of_pt": "x"}, final=False)
     assert not fresh["board_stale"]
-    past = live._freshness("2026-11-01", {"0005": {}, "P1": {}}, {}, final=True)
-    assert "P2" in past["missing_points"] and "0005" not in past["missing_points"] and not past["board_stale"]
+    past = live._freshness("2026-11-01", {"0005": {}}, {}, final=True)
+    assert past["missing_points"] == ["PRE"] and not past["board_stale"]      # only the two published predictions count
 
 
 def test_forecast_0005_markdown_fallback(monkeypatch):
@@ -413,8 +413,12 @@ def _live_env(monkeypatch, now_pt):
     store = {}
 
     class Blob:
-        def __init__(self, name): self.name = name
-        def upload_from_string(self, data, content_type=None): store[self.name] = data
+        def __init__(self, name): self.name, self.metadata = name, None
+        def upload_from_string(self, data, content_type=None, if_generation_match=None):
+            if if_generation_match == 0 and self.name in store:
+                from google.api_core.exceptions import PreconditionFailed
+                raise PreconditionFailed("exists")
+            store[self.name] = data
 
     class Bucket:
         def blob(self, name): return Blob(name)
@@ -524,3 +528,42 @@ def test_live_board_keeps_only_product_fields(monkeypatch):
     n[0]["thumbnail"] = {"url": "https://evil.example/x.png"}
     b = ph_live.board("2026-11-14", fetch=lambda d: n)
     assert "secret_handle" not in str(b) and "hunter_handle" not in str(b) and b["launches"][0]["thumb"] is None
+
+
+def test_live_record_slots_append_only(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    PTZ = ZoneInfo("America/Los_Angeles")
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 3, 46, tzinfo=PTZ))
+    assert ph_live.slot_for(_dt(2026, 11, 14, 3, 46)) == "0345" and ph_live.slot_for(_dt(2026, 11, 14, 23, 51)) == "2350"
+    assert ph_live.slot_for(_dt(2026, 11, 14, 23, 46)) == "2345" and ph_live.slot_for(_dt(2026, 11, 14, 0, 0)) == "0000"
+    r = ph_live.append_slot(fetch=lambda d: _nodes(d, votes=0))
+    assert r["status"] == "written" and r["slot"] == "0345" and r["rows"] == 3
+    rows = [__import__("json").loads(l) for l in store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"].splitlines()]
+    assert rows[0]["votes"] is None and set(rows[0]) == {"snapshot_ts", "slot", "id", "slug", "votes", "comments", "rank", "featured_at"}
+    clock["now"] += timedelta(minutes=2)                    # same slot again: never rewritten
+    before = store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"]
+    assert ph_live.append_slot(fetch=lambda d: _nodes(d, votes=99))["status"] == "exists"
+    assert store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"] == before
+    clock["now"] = _dt(2026, 11, 14, 4, 1, tzinfo=PTZ)
+    r = ph_live.append_slot(fetch=lambda d: _nodes(d, votes=5))
+    assert r["slot"] == "0400" and r["status"] == "written"
+
+
+def test_live_record_skips_empty_day(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 15, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    r = ph_live.append_slot(fetch=lambda d: [])
+    assert r["status"] == "skipped" and not any("_ts/" in k for k in store)
+
+
+def test_cron_endpoint_requires_secret(monkeypatch):
+    from fastapi.testclient import TestClient
+    from mvp.server import app
+    c = TestClient(app)
+    monkeypatch.delenv("CRON_SECRET", raising=False)
+    assert c.get("/api/ph/cron/snapshot").status_code == 503
+    monkeypatch.setenv("CRON_SECRET", "s" * 32)
+    assert c.get("/api/ph/cron/snapshot").status_code == 401
+    assert c.get("/api/ph/cron/snapshot", headers={"Authorization": "Bearer wrong"}).status_code == 401

@@ -134,6 +134,7 @@ def _snapshot(day: str, nodes: list[dict], final: bool) -> dict:
             "rank": int(n["dailyRank"]) if isinstance(n.get("dailyRank"), int) and n["dailyRank"] > 0 else None,
             "votes": None if hidden else (int(n["votesCount"]) if isinstance(n.get("votesCount"), int) else None),
             "comments": int(n["commentsCount"]) if isinstance(n.get("commentsCount"), int) else None,
+            "featured_at": str(n.get("featuredAt") or "")[:40] or None,
         })
     rows.sort(key=lambda r: (r["rank"] is None, r["rank"] or 0, -(r["votes"] or 0)))
     for i, r in enumerate(rows, 1):            # fill missing ranks after the ranked ones, in API order
@@ -223,6 +224,50 @@ def _refresh(day: str, last: dict | None, fetch, final: bool) -> dict | None:
         return snap
     finally:
         _lock.release()
+
+
+# ---------- durable 15-minute record of the day (site/live_board/<day>_ts/<HHMM>.jsonl) ----------
+
+def slot_for(now_pt: datetime) -> str:
+    """:00/:15/:30/:45 PT, plus the day-close read at 23:50 PT. (03:45 PT is a regular slot.)"""
+    if now_pt.hour == 23 and 50 <= now_pt.minute < 55:
+        return "2350"
+    return f"{now_pt.hour:02d}{now_pt.minute - now_pt.minute % 15:02d}"
+
+
+def append_slot(*, fetch=None) -> dict:
+    """Write this slot's snapshot once (create-only object: never overwritten, so the record is append-only).
+    Called by the scheduler every 15 minutes and at 23:50 PT; repeated calls in the same slot are no-ops."""
+    now = datetime.now(PT)
+    day, slot = now.strftime("%Y-%m-%d"), slot_for(now)
+    path = f"site/live_board/{day}_ts/{slot}.jsonl"
+    snap = board(day, fetch=fetch)
+    if not snap or snap.get("day") != day or not snap.get("launches"):
+        return {"day": day, "slot": slot, "status": "skipped", "reason": "no board for today yet"}
+    age = _age_s(snap)
+    rows = [{"snapshot_ts": snap["fetched_at"], "slot": slot, "id": r["id"], "slug": r["slug"], "votes": r["votes"],
+             "comments": r["comments"], "rank": r["rank"], "featured_at": r.get("featured_at")} for r in snap["launches"]]
+    from google.api_core.exceptions import PreconditionFailed
+    blob = gcs._bucket().blob(f"{gcs.ROOT}/{path}")
+    blob.metadata = {"rows": str(len(rows)), "upstream_age_s": str(int(age or 0))}
+    try:
+        blob.upload_from_string("\n".join(json.dumps(r) for r in rows) + "\n", content_type="application/x-ndjson",
+                                if_generation_match=0)
+    except PreconditionFailed:
+        return {"day": day, "slot": slot, "status": "exists"}
+    _state["last_ts_append_at"] = datetime.now(timezone.utc).isoformat()
+    return {"day": day, "slot": slot, "status": "written", "rows": len(rows), "upstream_age_s": int(age or 0),
+            "stale": bool(age and age > 5 * 60)}
+
+
+def ts_health(day: str) -> dict:
+    try:
+        blobs = list(gcs._bucket().client.list_blobs(gcs.BUCKET, prefix=f"{gcs.ROOT}/site/live_board/{day}_ts/"))
+    except Exception as exc:  # noqa: BLE001
+        return {"error": type(exc).__name__}
+    rows = sum(int((b.metadata or {}).get("rows") or 0) for b in blobs)
+    last = max((b.updated for b in blobs if b.updated), default=None)
+    return {"slots_today": len(blobs), "rows_today": rows, "last_ts_append_at": last.isoformat() if last else None}
 
 
 def health() -> dict:
