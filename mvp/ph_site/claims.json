@@ -260,23 +260,9 @@
   "date": "2026-11-14"
  },
  "vote_error_pre": {
-  "text": "est. = the vote level the midnight model expects at each rank today; typical error ±14% (±23% for top-10 finishers), 1 day so far",
-  "values": {
-   "mdape_all": 13.6,
-   "band80_all": [
-    0.74,
-    1.23
-   ],
-   "mdape_top10": 23.2,
-   "band80_top10": [
-    0.72,
-    1.28
-   ],
-   "n": 20,
-   "days": 1
-  },
-  "label": "03:45 order (pred_rank_hybrid) mapped to the sorted expm1 midnight log-vote predictions, vs final votes (site/live_board), Nov 13 (the only day with both files)",
-  "source": "website agent, computed 2026-11-14",
+  "text": "est. = the 00:05 model's vote levels placed in today's hidden order; typically within 17% of the final count (12 days, 378 launches)",
+  "label": "PH agent test: per-launch 03:45 vote estimates did not beat this method on final votes (-2.4 points of error [-4.7, +0.3], 12 days, 378 launches)",
+  "source": "claude/ph-ops-agent results/prereveal_votes.md, relayed by the orchestrator 2026-11-14",
   "date": "2026-11-14"
  }
 }
