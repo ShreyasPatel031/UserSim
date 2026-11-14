@@ -27,7 +27,7 @@ PT = ZoneInfo("America/Los_Angeles")
 CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "3")),
         "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "10")),
         "global_day": int(os.environ.get("TRY_GLOBAL_DAY", "150")),
-        "gemini_calls_per_run": 6, "gemini_calls_max_per_run": 7, "embedding_calls_per_run": 5, "max_output_tokens_per_run": 8200}
+        "gemini_calls_per_run": 5, "gemini_calls_max_per_run": 8, "embedding_calls_per_run": 5, "max_output_tokens_per_run": 8800}
 MODEL = os.environ.get("TRY_GEMINI_MODEL", "gemini-2.5-flash-lite")
 TOKEN_TTL_S = 900
 
@@ -657,25 +657,79 @@ def _pct_rank(v: np.ndarray) -> np.ndarray:
     return (out + 1) / len(v)
 
 
-def _rank_pick(gen: list[str], nth: list[tuple[str, int]], NX: np.ndarray, X: np.ndarray, ratings) -> str | None:
+def _rank_order(gen: list[str], nth: list[tuple[str, int]], NX: np.ndarray, X: np.ndarray, ratings, top: int = 5) -> list[int]:
     """E5's RANKED score for candidates = generated + retrieved: neighbour frequency + cross-source agreement + Gemini
-    likelihood, each as a percentile rank; returns the top item."""
+    likelihood, each as a percentile rank. Returns candidate indices, best first, near-duplicates (cosine >= 0.90) dropped."""
+    if not len(X):
+        return []
     own = np.array([j for _, j in nth])
-    retr_n = len(X) - len(gen)
-    g = np.array(["GEN"] * len(gen) + ["RETR"] * retr_n)
+    g = np.array(["GEN"] * len(gen) + ["RETR"] * (len(X) - len(gen)))
     S_ = X @ X.T
     a = np.array([len(set(own[(NX @ X[i]) >= 0.80])) if len(nth) else 0 for i in range(len(X))], float)
     b = np.array([((S_[i] >= 0.80) & (g != g[i])).sum() for i in range(len(X))], float)
     c = np.array(ratings if isinstance(ratings, list) and len(ratings) == len(X) else [3] * len(X), float)
     sc = (_pct_rank(a) + _pct_rank(b) + _pct_rank(c)) / 3
-    return None if not len(sc) else int(np.argmax(sc))
+    out, used = [], np.zeros(len(X), bool)
+    for i in np.argsort(-sc, kind="stable"):
+        if used[i]:
+            continue
+        out.append(int(i))
+        used |= S_[i] >= 0.90
+        if len(out) == top:
+            break
+    return out
+
+
+def _rank_pick(gen, nth, NX, X, ratings) -> int | None:
+    o = _rank_order(gen, nth, NX, X, ratings, top=1)
+    return o[0] if o else None
+
+
+# E5's retrieval-condensed concerns ("b20", RECIPE_b20_concerns.md): real points from the 20 most similar earlier
+# launches, condensed by one gemini-2.5-flash call. Below these nearest-neighbour similarities (the bottom third of the
+# 170 test launches) the recipe does not apply.
+B20_MIN_SIM = {"pasted": 0.898, "page": 0.886}
+COMMON_CONCERNS = ["Pricing is unclear or too high.", "How is this different from existing alternatives?",
+                   "Concerns about data privacy and security."]
+_B20_PROMPT = ("A new product is launching on Product Hunt today.\nProduct: {name} - {tagline}\n{text}\n"
+               "Real users raised these points in the launch comments of the 20 most similar EARLIER launches (one line "
+               "per point, launch number first):\n{points}\n"
+               "Using these real points as evidence of what this audience asks about, write the 3 concerns, objections or "
+               "feature requests most likely to be raised about THIS product,\nmost likely first, each reworded for this "
+               "product. Return JSON {{\"items\": [\"...\", \"...\", \"...\"]}}")
+
+
+def _b20_neighbours(R: dict, q: np.ndarray, name: str, k: int = 20) -> tuple[list[int], float]:
+    """The k most similar earlier launches, never the same product's earlier launches (stems compared without a trailing
+    -N); also the cosine of the nearest one kept."""
+    import re as _re
+    base = lambda st: _re.sub(r"-\d+$", "", st or "")
+    own = base(_slug_stem(name))
+    sims = R["emb"] @ q
+    nb = []
+    for j in np.argsort(-sims):
+        if own and base(str(R["rows"][int(j)].get("slug_stem") or "")) == own:
+            continue
+        nb.append(int(j))
+        if len(nb) == k:
+            break
+    return nb, (float(sims[nb[0]]) if nb else 0.0)
+
+
+def _b20_points(R: dict, nb: list[int]) -> str:
+    rex = _ask_res()["concerns"]
+    lines = []
+    for i, j in enumerate(nb, 1):
+        pts = [rex.sub("", t) for t in (R["rows"][j].get("themes") or []) if rex.match(t)][:4]
+        lines.extend(f"[{i}] {t}" for t in pts)
+    return "\n".join(lines)[:6000]
 
 
 async def step_asks(tok: str) -> dict:
-    """The single most likely question (and, from a pasted launch description, the single most likely concern), with the
-    hit rates E5 measured on the strict same-specific-point standard. Page reads use the raw page excerpt (measured
-    better than the summary); the concern is only shown from a pasted description (the only input where it beat a
-    generic concern reliably)."""
+    """The single most likely question (E5's RANKED recipe) and the 3 most likely concerns (E5's retrieval-condensed
+    recipe "b20"), each with the figures E5 measured on the strict same-specific-point standard. Page reads use the
+    raw page excerpt. Where few similar past launches exist, concerns fall back (pasted: RANKED; page: a common list)
+    and carry no accuracy figure."""
     import asyncio
 
     from capability.gemini_config import extract_json, gemini_chat
@@ -685,7 +739,6 @@ async def step_asks(tok: str) -> dict:
     pasted = bool(a.get("ph_description"))
     name, tagline = a.get("name") or "", a.get("tagline") or ""
     desc = a["ph_description"] if pasted else (a.get("page_excerpt") or a.get("summary") or "")
-    kinds = ["questions", "concerns"] if pasted else ["questions"]
     res = _ask_res()
 
     async def cj(prompt, temp, tok_):
@@ -696,10 +749,6 @@ async def step_asks(tok: str) -> dict:
             print(f"[try] asks call failed: {exc!r}", flush=True)
             return {}
 
-    gens = await asyncio.gather(*[cj(_ASK_GEN[k].format(name=name, tagline=tagline,
-                                                         desc=desc[:1500 if k == "concerns" else 1200]), 0.3, 800)
-                                  for k in kinds])
-    gens = {k: [str(x) for x in (g.get("items") or [])][:6] for k, g in zip(kinds, gens)}
     q = await person_e5.embed(f"{name}. {tagline}. {desc[:800]}")
     R = _retrieval()
     own_stem = _slug_stem(name)
@@ -711,68 +760,114 @@ async def step_asks(tok: str) -> dict:
         nb.append(int(j))
         if len(nb) == 25:
             break
-    nth = {k: [(res[k].sub("", t), j) for j in nb for t in (R["rows"][j].get("themes") or []) if res[k].match(t)]
-           for k in kinds}
-    texts = list(dict.fromkeys(t for k in kinds for t, _ in nth[k]))[:200]
-    nth = {k: [(t, j) for t, j in nth[k] if t in set(texts)] for k in kinds}
-    E = await person_e5.embed_many(texts) if texts else np.zeros((0, 256), np.float32)
-    pos = {t: i for i, t in enumerate(texts)}
-    cands = {}
-    for k in kinds:
-        NX = E[[pos[t] for t, _ in nth[k]]] if nth[k] else np.zeros((0, 256), np.float32)
-        retr = []
-        if len(NX):
-            own = np.array([j for _, j in nth[k]])
-            SS = NX @ NX.T
-            cnt = np.array([len(set(own[SS[i] >= 0.80])) for i in range(len(NX))])
-            used = np.zeros(len(NX), bool)
-            for i in np.argsort(-cnt, kind="stable"):
-                if used[i]:
-                    continue
-                retr.append(nth[k][i][0])
-                used |= SS[i] >= 0.80
-                if len(retr) == 8:
-                    break
-        cands[k] = (gens[k] + retr, NX)
-    allc = list(dict.fromkeys(t for k in kinds for t in cands[k][0]))
-    CE = await person_e5.embed_many(allc) if allc else np.zeros((0, 256), np.float32)
-    cpos = {t: i for i, t in enumerate(allc)}
-    what = {"concerns": "concerns (objections, doubting questions, feature requests)", "questions": "questions to the makers"}
-    num = lambda l: "\n".join(f"{i + 1}. {str(t)[:300]}" for i, t in enumerate(l))
-    likes = await asyncio.gather(*[cj(_ASK_LIKE.format(name=name, tagline=tagline, desc=desc[:1200], what=what[k],
-                                                       c=num(cands[k][0])), 0.0, 300) for k in kinds])
-    out = {}
-    for k, lk in zip(kinds, likes):
-        items, NX = cands[k]
-        if not items:
-            continue
-        i = _rank_pick(gens[k], nth[k], NX, CE[[cpos[t] for t in items]], lk.get("ratings"))
-        if i is not None:
-            out[k[:-1]] = items[i]
-    if not out:
-        raise RuntimeError("no question or concern could be produced")
-    return {"question": out.get("question"), "concern": out.get("concern"), "source": "pasted" if pasted else "page",
-            "note": _asks_note(pasted, len(desc.split()) if pasted else None)}
 
+    async def ranked(kinds: list[str]) -> dict:
+        """kind -> items, most likely first (E5 RANKED)."""
+        gens = await asyncio.gather(*[cj(_ASK_GEN[k].format(name=name, tagline=tagline,
+                                                             desc=desc[:1500 if k == "concerns" else 1200]), 0.3, 800)
+                                      for k in kinds])
+        gens = {k: [str(x) for x in (g.get("items") or [])][:6] for k, g in zip(kinds, gens)}
+        nth = {k: [(res[k].sub("", t), j) for j in nb for t in (R["rows"][j].get("themes") or []) if res[k].match(t)]
+               for k in kinds}
+        texts = list(dict.fromkeys(t for k in kinds for t, _ in nth[k]))[:200]
+        keep = set(texts)
+        nth = {k: [(t, j) for t, j in nth[k] if t in keep] for k in kinds}
+        E = await person_e5.embed_many(texts) if texts else np.zeros((0, 256), np.float32)
+        pos = {t: i for i, t in enumerate(texts)}
+        cands = {}
+        for k in kinds:
+            NX = E[[pos[t] for t, _ in nth[k]]] if nth[k] else np.zeros((0, 256), np.float32)
+            retr = []
+            if len(NX):
+                own = np.array([j for _, j in nth[k]])
+                SS = NX @ NX.T
+                cnt = np.array([len(set(own[SS[i] >= 0.80])) for i in range(len(NX))])
+                used = np.zeros(len(NX), bool)
+                for i in np.argsort(-cnt, kind="stable"):
+                    if used[i]:
+                        continue
+                    retr.append(nth[k][i][0])
+                    used |= SS[i] >= 0.80
+                    if len(retr) == 8:
+                        break
+            cands[k] = (list(dict.fromkeys(gens[k] + retr)), NX, len(dict.fromkeys(gens[k])))
+        allc = list(dict.fromkeys(t for k in kinds for t in cands[k][0]))
+        CE = await person_e5.embed_many(allc) if allc else np.zeros((0, 256), np.float32)
+        cpos = {t: i for i, t in enumerate(allc)}
+        what = {"concerns": "concerns (objections, doubting questions, feature requests)",
+                "questions": "questions to the makers"}
+        num = lambda l: "\n".join(f"{i + 1}. {str(t)[:300]}" for i, t in enumerate(l))
+        likes = await asyncio.gather(*[cj(_ASK_LIKE.format(name=name, tagline=tagline, desc=desc[:1200], what=what[k],
+                                                           c=num(cands[k][0])), 0.0, 300) for k in kinds])
+        out = {}
+        for k, lk in zip(kinds, likes):
+            items, NX, n_gen = cands[k]
+            order = _rank_order(items[:n_gen], nth[k], NX, CE[[cpos[t] for t in items]], lk.get("ratings"))
+            out[k] = [items[i] for i in order]
+        return out
 
-def _asks_note(pasted: bool, words: int | None = None) -> str:
-    from mvp.ph_site.live import claims
-    t = claims().get("top_items")
-    if not t:
-        return "Simulated, not a real comment."
-    v = t["values"]
-    src = "pasted launch description" if pasted else "web page"
-    s = (f"Simulated, not real comments. Fixed offline figure ({t['label']}, {t['date']}): from a {src}, the most likely "
-         f"question made the same specific point as a real user's question about "
-         f"{v['q_desc' if pasted else 'q_page']} times, against {v['q_generic']} for a generic question.")
-    if pasted:
-        s += (f" The most likely concern did so about {v['c_desc']} times, against {v['c_generic']} for a generic "
-              f"concern; on launches with 10 or more comments, generic concerns hit about as often.")
-        if words is not None and words < 40:
-            s += (f" Your description has {words} words: on past launches with descriptions under 40 words, the top "
-                  f"question and concern did no better than generic ones (40 to 100 words did clearly better).")
+    async def b20() -> list[str]:
+        pts = _b20_points(R, nb20)
+        if not pts:
+            return []
+        j = await cj(_B20_PROMPT.format(name=name, tagline=tagline, text=desc[:1500], points=pts), 0.0, 600)
+        return [str(x) for x in (j.get("items") or []) if str(x).strip()][:3]
+
+    nb20, s1 = _b20_neighbours(R, q, name)
+    thin = s1 < B20_MIN_SIM["pasted" if pasted else "page"]
+    if thin and pasted:
+        r = await ranked(["questions", "concerns"])
+        concerns, basis = r.get("concerns", [])[:3], "earlier_method"
+    elif thin:
+        r = await ranked(["questions"])
+        concerns, basis = list(COMMON_CONCERNS), "common"
     else:
-        s += " Paste your launch description to also see the most likely concern (it is only reliable from a description)."
+        r, concerns = await asyncio.gather(ranked(["questions"]), b20())
+        basis = "retrieval"
+        if not concerns:                       # the condensing call failed: the recipe's fallback
+            if pasted:
+                concerns, basis = (await ranked(["concerns"])).get("concerns", [])[:3], "earlier_method"
+            else:
+                concerns, basis = list(COMMON_CONCERNS), "common"
+    question = (r.get("questions") or [None])[0]
+    if not question and not concerns:
+        raise RuntimeError("no question or concern could be produced")
+    return {"question": question, "concerns": concerns, "concerns_basis": basis,
+            "source": "pasted" if pasted else "page",
+            "note": _asks_note(pasted, len(desc.split()) if pasted else None, basis)}
+
+
+def _asks_note(pasted: bool, words: int | None = None, basis: str = "retrieval") -> str:
+    from mvp.ph_site.live import claims
+    cl = claims()
+    t, b = cl.get("top_items"), cl.get("concerns_b20")
+    if not t or not b:
+        return "Simulated, not real comments."
+    v, bv = t["values"], b["values"]
+    src = "pasted launch description" if pasted else "web page"
+    s = (f"Simulated, not real comments. Fixed offline figures. Question ({t['label']}, {t['date']}): from a {src}, the "
+         f"most likely question made the same specific point as a real user's question about "
+         f"{v['q_desc' if pasted else 'q_page']} times, against {v['q_generic']} for a generic question.")
+    if basis == "retrieval":
+        s += (f" Concerns are based on what real users raised on similar earlier launches ({b['label']}, {b['date']}): "
+              f"about {bv['desc' if pasted else 'page']} of these concerns matched a point real commenters raised on "
+              f"comparable launches, against about {bv['generic']} for a common list.")
+        fw = b.get("forward") or {}
+        if pasted and fw.get("desc_n"):
+            s += (f" A forward check on {fw['desc_n']} new launches ({fw['window']}) gave {fw['desc_p3']:.0%}; a small "
+                  f"sample.")
+        elif not pasted and not fw.get("page_n"):
+            s += " The page-read figure is from a backtest only; it has not yet been checked on new launches."
+    elif basis == "earlier_method":
+        s += (" Few similar past launches were found for this product, so the concerns come from our earlier method and "
+              "carry no accuracy figure.")
+    else:
+        s += " Few similar past launches were found for this product; showing common concerns, with no accuracy figure."
+    if pasted and words is not None and words < 40:
+        s += (f" Your description has {words} words: on past launches with descriptions under 40 words, the top question "
+              f"did no better than a generic one (40 to 100 words did clearly better).")
+    if not pasted and basis == "retrieval":
+        s += " A pasted launch description gives closer concerns."
     return s
 
 
@@ -823,6 +918,18 @@ def step_launch(tok: str) -> dict:
     pct = sum(1 for c in lb["score_percentile_cuts"] if c < score)
     b = lb["bands"][min(9, pct // 10)]
     rk, vt = b["daily_rank_p10_p50_p90"], b["votes_p10_p50_p90"]
+    recal = None
+    if lb is lb_ph:
+        # Pasted descriptions: E5's recalibrated quantile table for the same score deciles (month-forward; the "80%
+        # band" covered 80.5% of 856 launches). Same model and cuts; only the band edges change.
+        rc = gcs.read_json("site/launch_band_recal82_v1.json", ttl=3600)
+        rows = (rc or {}).get("bands") or []
+        if len(rows) == 10 and all("daily_rank_p09_p50_p91" in r for r in rows):
+            rb = rows[min(9, pct // 10)]
+            rk, vt = rb["daily_rank_p09_p50_p91"], rb["votes_p09_p50_p91"]
+            b = {**b, "share_top3": rb.get("share_top3", b["share_top3"]),
+                 "share_top10": rb.get("share_top10", b["share_top10"]), "n": rb.get("n", b["n"])}
+            recal = str(rc.get("caveat") or "")[:300]
     acc = lb_ph["heldout_accuracy"]   # top-3/5/10 table: measured on PH descriptions (labelled as such)
     card = None
     if lb is not lb_ph:
@@ -852,8 +959,11 @@ def step_launch(tok: str) -> dict:
             "method": (f"Percentile band from the page alone: a text model trained on {lb['trained_on']['launches']:,} "
                        f"featured launches ({lb['trained_on']['days'][0]} to {lb['trained_on']['days'][1]}) scores "
                        f"this page above {pct}% of them. The ranges are where launches in that tenth actually finished "
-                       "(10th to 90th percentile)."),
-            "honesty": _honesty(acc, a.get("source")), "coverage": None if card else _coverage(), "input_note": _input_note(a.get("source")),
+                       + ("(the middle 80%, recalibrated on launches the model had not seen). " + recal if recal
+                          else "(10th to 90th percentile).")),
+            "band_level": "80% band" if recal else "10th to 90th percentile",
+            "honesty": _honesty(acc, a.get("source")), "coverage": None,  # one coverage figure per band: input note (pasted) / card (page)
+            "input_note": _input_note(a.get("source")),
             "card": card, "source": a.get("source")}
 
 
@@ -863,23 +973,26 @@ def _input_note(source: str | None) -> str | None:
     cl = claims()
     if source == "pasted":
         v = cl["try_e2e"]["values"]
-        return (f"Scored from the description you pasted with the model trained on Product Hunt launch descriptions "
-                f"(on {v['launches']} fresh launches: rank correlation {v['spearman_ph']:.2f}, real rank inside the band "
-                f"{v['coverage_ph']:.0%} of the time).")
+        return (f"Scored from the description you pasted with a model trained on Product Hunt launch descriptions. "
+                f"Tested only on launches it had not seen: rank correlation {v['spearman_ph_856']:.2f} on "
+                f"{v['ph_forward_n']} Sep–Nov launches ({v['spearman_ph']:.2f} on the {v['ph_recent_n']} most recent); "
+                f"the real rank fell inside the 80% band {v['coverage_ph']:.1%} of the time ({v['coverage_ph_n']} "
+                f"launches). The band is coarse: it spans about three quarters of a day's ranks.")
     pb = cl.get("page_band")
     if not pb:
         return "Scored from a read of your web page; the accuracy figures were measured on Product Hunt descriptions."
     v = pb["values"]
     return (f"Scored from your web page alone with a model trained on product web pages: on {v['n']} held-out "
-            f"launches its rank correlation was {v['spearman']:.2f} ({pb['date']}). A pasted launch description is the "
-            f"stronger input (rank correlation {cl['try_e2e']['values']['spearman_ph']:.2f}). The top-3 table below was "
+            f"launches its rank correlation was {v['spearman']:.2f} ({pb['date']}). A pasted launch description scored "
+            f"somewhat higher on the same launches ({cl['try_e2e']['values']['spearman_ph_856']:.2f} vs "
+            f"{v['spearman']:.2f}). The top-3 table below was "
             "measured on Product Hunt descriptions.")
 
 def _full_model_ref(acc: dict) -> dict:
     """Corrected 00:05 launch-model backtest (claims.json; the 63/69/75 in older launch_band.json was leak-inflated)."""
     try:
         from mvp.ph_site.live import claims
-        v = claims()["launch_model_backtest"]["values"]
+        v = claims()["launch_model_arm2"]["values"]       # the deployed 00:05 model from Nov 14
         return {**{k: v[k] for k in ("top3", "top5", "top10")}, "days": v["days"]}
     except Exception:  # noqa: BLE001 - never fall back to the leak-inflated reference in launch_band.json
         return None
@@ -904,8 +1017,8 @@ def _honesty(acc: dict, source: str | None = None) -> str:
         from mvp.ph_site import live
         row = next(r for r in live.track_record()["rows"] if r["key"] == "0005" and r.get("source", "live") == "live")
         if row["n_days"]:
-            rec = (f" Our deployed 00:05 PT launch model, which also knows the hunter, makers and team history, "
-                   f"scores {_r(row['top3'])} / {_r(row['top5'])} / {_r(row['top10'])} live over {row['n_days']} days.")
+            rec = (f" Our previous 00:05 PT launch model, which also knew the hunter, makers and team history, "
+                   f"scored {_r(row['top3'])} / {_r(row['top5'])} / {_r(row['top10'])} live over {row['n_days']} days.")
     except Exception:  # noqa: BLE001
         pass
     return (f"Pre-launch rank prediction is weak, and weaker still from a page alone. Tested month-forward on "

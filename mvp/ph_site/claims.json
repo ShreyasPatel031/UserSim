@@ -25,7 +25,7 @@
    "auc": 0.692,
    "typical_likely_share": 0.01
   },
-  "label": "held-out uses, popularity- and length-matched",
+  "label": "held-out uses, popularity- and length-matched; tools are a November snapshot",
   "source": "E5 person_bundle_gemini (Gemini-256 + trees)",
   "date": "2026-11-11"
  },
@@ -88,30 +88,49 @@
  },
  "launch_model_backtest": {
   "values": {
-   "top3": 56.1,
-   "top5": 67.5,
-   "top10": 74.4,
+   "top3": 56.4,
+   "top5": 67.8,
+   "top10": 75.0,
    "p1_top3": 0.725,
    "exact1": 0.382,
-   "days": 255
+   "days": 214
   },
-  "label": "clean backtest of the 00:05 model with 00:05-visible inputs only (255 days, Mar 1 to Nov 10, 2026)",
+  "label": "current clean backtest of the 00:05 model with 00:05-visible inputs only (214 days)",
   "source": "PH ops honest_preds_v2 (c1dd71b5)",
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "pick_label": "conservative clean backtest (no site features, 207 days)",
   "pick_source": "PH agent docs/patches/README_deploy_clean_nosite_thread.md (clean_nosite)"
  },
  "try_e2e": {
   "values": {
    "launches": 130,
-   "spearman_ph": 0.59,
-   "coverage_ph": 0.89,
+   "spearman_ph": 0.42,
+   "coverage_ph": 0.805,
    "fetch_fail_share": 0.27,
-   "fetch_fail_after_root": 0.2
+   "fetch_fail_after_root": 0.2,
+   "spearman_ph_856": 0.353,
+   "spearman_ph_856_ci": [
+    0.29,
+    0.41
+   ],
+   "spearman_ph_ci": [
+    0.27,
+    0.56
+   ],
+   "ph_forward_n": 856,
+   "ph_recent_n": 130,
+   "coverage_ph_n": 856,
+   "coverage_ph_ci": [
+    0.776,
+    0.831
+   ],
+   "coverage_ph_fresh130": 0.8
   },
-  "label": "/try code on 130 page reads, Oct 27-Nov 10 (band from name, tagline and summary)",
+  "label": "description band: rank correlation 0.42 on the 130 most recent launches and 0.35 on 856 Sep–Nov launches; the recalibrated 80% band covered 80.5% of 856 launches (80.0% of the 130 most recent), all month-forward",
   "source": "E5 reports/try_fixes/, branch claude/person-model-v2",
-  "date": "2026-11-12"
+  "date": "2026-11-13",
+  "ph_note": "PH-description band figures are forward only: the same recipe retrained on earlier months; the earlier 0.59 / 89% were in-sample (launch_band.json was trained through Nov 10, including the 130 launches)",
+  "ph_source": "E5 forward check and band_2025/launch_band_recal82_v1.json (site/launch_band_recal82_v1.json), 2026-11-13"
  },
  "page_band": {
   "values": {
@@ -138,8 +157,6 @@
    "q_desc": "1 in 2",
    "q_page": "2 in 5",
    "q_generic": "1 in 5",
-   "c_desc": "2 in 5",
-   "c_generic": "1 in 5",
    "ceiling": "1 in 3",
    "q_desc_range": [
     0.49,
@@ -150,14 +167,6 @@
     0.21,
     0.23
    ],
-   "c_desc_range": [
-    0.34,
-    0.41
-   ],
-   "c_generic_range": [
-    0.16,
-    0.2
-   ],
    "ceiling_range": [
     0.32,
     0.35
@@ -167,5 +176,67 @@
   "label": "70 past launches, top item judged against real comments by gemini-2.5-pro for the same specific point, two independent adjudications",
   "source": "E5 reports/judge_reliability/README.md, branch claude/person-model-v2",
   "date": "2026-11-12"
+ },
+ "concerns_b20": {
+  "values": {
+   "desc": "1 in 3",
+   "page": "1 in 4",
+   "generic": "1 in 6",
+   "p3_desc": 0.372,
+   "p3_page": 0.246,
+   "p3_generic": 0.165,
+   "p3_desc_deployed": 0.248,
+   "p3_page_deployed": 0.171,
+   "launches": 170,
+   "scored": 164
+  },
+  "label": "164 scored of 170 past launches, strict same-point judge (gemini-2.5-pro), top 3 concerns",
+  "source": "E5 reports/retrieval_react/RECIPE_b20_concerns.md (retrieval_rep.json), commit 3295e9b9, branch claude/person-model-v2",
+  "date": "2026-11-14",
+  "forward": {
+   "desc_p3": 0.333,
+   "desc_ci": [
+    0.25,
+    0.42
+   ],
+   "desc_n": 32,
+   "window": "Nov 8–12, 2026",
+   "page_n": 0,
+   "source": "E5 forward scorer after the team-filter fix (6584bf6f), 2026-11-14"
+  }
+ },
+ "midnight_accuracy": {
+  "rows": [
+   {
+    "flag": "backtest (Sep–Oct)",
+    "top3": 57.1,
+    "top5": 67.5,
+    "top10": 76.4,
+    "days": 59,
+    "approx": true
+   },
+   {
+    "flag": "replay with fixed inputs (not live)",
+    "top3": 54.5,
+    "top5": 61.8,
+    "top10": 73.6,
+    "days": 11
+   }
+  ],
+  "label": "00:05 PT tab: deployed arm 2 backtest Sep–Oct 2026, days with 10+ ranked launches; the live row is read from E5's track record ('live, previous published model', scoreboard figures) and carries PH ops' input flag",
+  "source": "E5 reports/drift_0005 (27ad976b); live row and flag per orchestrator via PH ops, 2026-11-14; fixed-input replay: PH ops experiments/ph_predict/results/today_rows_replay.md (361fe1eb)",
+  "date": "2026-11-14",
+  "live_note": "built on polluted hunter-history inputs, Oct 26–Nov 13; old full model through Nov 12"
+ },
+ "launch_model_arm2": {
+  "values": {
+   "top3": 58.1,
+   "top5": 65.2,
+   "top10": 76.9,
+   "days": 183
+  },
+  "label": "deployed 00:05 model (arm 2), walk-forward backtest Apr–Oct 2026, days with at least 10 launches ranked",
+  "source": "E5 tmp/e5/website/track_record_v1.json (day rule: 10+ ranked launches), 2026-11-14",
+  "date": "2026-11-14"
  }
 }

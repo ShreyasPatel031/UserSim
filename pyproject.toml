@@ -16,4 +16,6 @@ dependencies = [
     "google-auth>=2.48",
     "google-cloud-storage>=2.14.0",
     "google-cloud-compute>=1.19.0",
+    # /try (mvp/ph_site): embeddings and the person scorer. Vercel installs from this list, not requirements*.txt.
+    "numpy>=1.26",
 ]

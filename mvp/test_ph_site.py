@@ -10,6 +10,15 @@ from mvp.ph_site import live, safe_fetch, try_sim
 os.environ.setdefault("TRY_SIGNING_KEY", "test-key-" + "x" * 40)
 
 
+@pytest.fixture(autouse=True)
+def _not_on_vercel(monkeypatch):
+    # Tests must never touch the shared counters or run store, whatever the environment they run in.
+    monkeypatch.delenv("VERCEL", raising=False)
+    monkeypatch.delenv("VERCEL_ENV", raising=False)
+    for k in ("PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET"):   # no live Product Hunt calls from tests
+        monkeypatch.delenv(k, raising=False)
+
+
 def test_product_whitelist_drops_people():
     r = {"id": 1, "name": "Prod", "tagline": "t", "slug": "prod", "topics": {"edges": [{"node": {"name": "SaaS"}}]},
          "makers": [{"username": "someone", "name": "Some One"}], "user": {"username": "hunter1"},
@@ -63,6 +72,7 @@ def test_token_roundtrip_and_tamper():
 
 def test_local_rate_limit(monkeypatch):
     monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False); monkeypatch.delenv("VERCEL_ENV", raising=False)
     try_sim._mem.clear()
     for _ in range(try_sim.CAPS["per_ip_hour"]):
         try_sim.take_slot("1.2.3.4")
@@ -227,16 +237,17 @@ def test_prereveal_confidence(monkeypatch):
     assert out["b"]["what"] == "top 5" and out["b"]["agree_rate"] == 65.7 and "c" not in out
 
 
-def test_lock_state_read(monkeypatch):
-    lk = {"label_top3": "2 locked, 1 open", "label_top10": "9 of 10 (vote order)", "label_top5": "top 5 locked", "read_at": "2026-11-12T13:00:00Z", "rule": "r", "point": "R1"}
-    real = live.gcs.read_json
-    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: lk if "/lock/" in path else real(path, ttl))
+def test_lock_not_in_payload(monkeypatch):
+    # The vote-gap lock has no sourced reliability figure, so it is no longer sent to the page (E5 audit, Nov 14).
     monkeypatch.setattr(live, "actuals", lambda d: {"final": False, "as_of": None, "revealed": False, "ranks": {}})
     monkeypatch.setattr(live, "_lineup", lambda d: {})
     monkeypatch.setattr(live, "forecasts", lambda d: {})
     monkeypatch.setattr(live, "current_board", lambda d: {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True})
+    monkeypatch.setattr(live, "_api_board", lambda d: None)
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [])
     v = live.day_view("2026-11-12")
-    assert v["board"]["lock"]["label_top3"] == "2 locked, 1 open" and v["board"]["lock"]["label_top10"] and v["board"]["lock"]["read_pt"] == "05:00 PT"
+    assert "lock" not in v["board"] and "reliab" not in str(v)
 
 
 def test_final_only_from_official_rank_after_3am(monkeypatch):
@@ -302,10 +313,19 @@ def test_asks_rank_pick_and_note():
     # candidate 2 has the highest likelihood and the others tie: it is picked
     assert try_sim._rank_pick(["a", "b"], [], np.zeros((0, 4), np.float32), X, [1, 1, 5, 1]) == 2
     page, pasted = try_sim._asks_note(False), try_sim._asks_note(True)
-    assert "2 in 5" in page and "concern" in page and "Paste" in page
-    assert "1 in 2" in pasted and "most likely concern did so" in pasted
+    assert "2 in 5" in page and "about 1 in 4 of these concerns" in page
+    assert "backtest only" in page and "backtest only" not in pasted and "forward check on 32 new launches" in pasted
+    assert "1 in 2" in pasted and "about 1 in 3 of these concerns" in pasted
+    assert "no accuracy figure" in try_sim._asks_note(True, 60, "earlier_method") and "1 in 3" not in try_sim._asks_note(True, 60, "earlier_method")
+    assert "common concerns" in try_sim._asks_note(False, None, "common")
     assert try_sim.STEP_USES["asks"] == 1
     assert "under 40 words" in try_sim._asks_note(True, 25) and "under 40 words" not in try_sim._asks_note(True, 60)
+    R = {"emb": np.array([[1, 0], [0.9, 0.1], [0, 1]], np.float32),
+         "rows": [{"slug_stem": "acme-2", "themes": []}, {"slug_stem": "other", "themes": ["objection: too pricey", "praise: nice"]},
+                  {"slug_stem": "third", "themes": ["question: is there an API?"]}]}
+    nb, s1 = try_sim._b20_neighbours(R, np.array([1, 0], np.float32), "Acme")
+    assert nb == [1, 2] and abs(s1 - 0.9) < 1e-6           # the product's own earlier launch (acme-2) is excluded
+    assert try_sim._b20_points(R, nb) == "[1] too pricey\n[2] is there an API?"
 
 
 def test_ph_steady_state_freshness(monkeypatch):
@@ -321,8 +341,8 @@ def test_ph_steady_state_freshness(monkeypatch):
     assert f["capture_gaps"][-1]["to_pt"] is None
     fresh = live._freshness(today, {}, {"as_of": datetime.now(timezone.utc).isoformat(), "as_of_pt": "x"}, final=False)
     assert not fresh["board_stale"]
-    past = live._freshness("2026-11-01", {"0005": {}, "P1": {}}, {}, final=True)
-    assert "P2" in past["missing_points"] and "0005" not in past["missing_points"] and not past["board_stale"]
+    past = live._freshness("2026-11-01", {"0005": {}}, {}, final=True)
+    assert past["missing_points"] == ["PRE"] and not past["board_stale"]      # only the two published predictions count
 
 
 def test_forecast_0005_markdown_fallback(monkeypatch):
@@ -337,3 +357,408 @@ def test_forecast_0005_markdown_fallback(monkeypatch):
     lineup.append({"id": 44, "name": "Delta"}); lineup.append({"id": 55, "name": "Eps"}); lineup.append({"id": 66, "name": "Z"})
     lineup.append({"id": 77, "name": "Y"}); lineup.append({"id": 88, "name": "X"}); lineup.append({"id": 99, "name": "W"})
     assert live._forecast_0005_md("2026-11-12") is None      # too few names matched: no partial order shown
+
+
+def test_launch_step_returns_input_note(monkeypatch):
+    from mvp.ph_site import try_sim, gcs
+    lb = {"vocab": {}, "intercept": 0.0, "topics_order": [], "dense_mean": [0, 0, 0], "dense_sd": [1, 1, 1],
+          "dense_coef": [0, 0, 0], "score_percentile_cuts": list(range(-50, 50)),
+          "bands": [{"decile": i + 1, "daily_rank_p10_p50_p90": [1, 5, 20], "votes_p10_p50_p90": [10, 50, 200],
+                    "share_top3": 0.1, "share_top10": 0.3, "n": 100} for i in range(10)],
+          "heldout_accuracy": {"days": 200, "top3": 29, "top5": 40, "top10": 60, "within_day_spearman": 0.2},
+          "trained_on": {"launches": 1000, "days": ["2026-01-01", "2026-11-10"]}}
+    rc = {"caveat": "Coarse.", "bands": [{"daily_rank_p09_p50_p91": [2, 6, 30], "votes_p09_p50_p91": [9, 40, 300],
+                                          "share_top3": 0.2, "share_top10": 0.5, "n": 600} for _ in range(10)]}
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: lb if n.endswith("launch_band.json") else
+                        rc if n.endswith("launch_band_recal82_v1.json") else None)
+    monkeypatch.setattr(try_sim, "use_run", lambda tok, step: {"name": "X", "tagline": "y", "ph_description": "z " * 50,
+                                                                "topics": [], "source": "pasted"})
+    out = try_sim.step_launch("t")
+    assert out["input_note"] and "0.35" in out["input_note"] and out["coverage"] is None
+    assert out["rank_band"] == {"likely": [2, 30], "median": 6} and out["band_level"] == "80% band"
+    assert "80.5%" in out["input_note"] and "Coarse." in out["method"]
+
+
+def test_why_is_sanitised(monkeypatch):
+    from mvp.ph_site import live, gcs
+    f = {"as_of": "2026-11-13T08:10:00+00:00", "min_group": 20, "shadow": True,
+         "items": {"held_backers": {"label": "Backers", "unit": "people", "note": "n1"},
+                   "tiers": {"label": "Tiers", "unit": "share by tier", "note": "n1"}},
+         "notes": {"n1": "Descriptive."},
+         "launches": {"1": {"held_backers": {"value": 120, "n_people": 120, "coverage": {"team_members_named": 2, "share_from_1000_most_active": 0.715}, "note": "n1"},
+                            "tiers": {"value": {"this launch": {"0": 0.5, "x": "bob"}}, "n_people": 40},
+                            "secret": {"value": 3, "n_people": 50}},
+                      "2": {"held_backers": {"value": 7, "n_people": 7, "username": "bob"}},
+                      "999": {"held_backers": {"value": 500, "n_people": 500}}}}
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: f if n == "results/web/why/2026-11-13_0005.json" else None)
+    monkeypatch.delenv("PH_WHY_PREFIX", raising=False)
+    w = live.why("2026-11-13", "0005", {"1", "2"})
+    assert set(w["launches"]) == {"1"}                      # under-20 group and unknown launch dropped
+    assert set(w["launches"]["1"]) == {"held_backers", "tiers"} and "bob" not in str(w)
+    assert w["launches"]["1"]["tiers"]["value"] == {"this launch": {"0": 0.5}}
+    assert w["items"]["held_backers"]["note"] == "Descriptive." and w["shadow"] is True
+    assert w["launches"]["1"]["held_backers"]["coverage"] == {"team_members_named": 2, "share_from_1000_most_active": 0.715}
+    assert live.why("2026-11-13", "P1", {"1"}) is None
+    monkeypatch.setenv("PH_WHY_PREFIX", "tmp/e5/why_shadow"); monkeypatch.setenv("VERCEL", "1")
+    assert live._why_prefix() == "results/web/why"         # the preview override is ignored on the deployed site
+
+
+# ---------- live board from Product Hunt's API (mvp/ph_site/ph_live.py) ----------
+
+def _live_env(monkeypatch, now_pt):
+    """In-memory GCS + frozen clock for ph_live."""
+    import json as _json
+    from datetime import datetime as _dt
+    from mvp.ph_site import ph_live, gcs
+    store = {}
+
+    class Blob:
+        def __init__(self, name): self.name, self.metadata = name, None
+        def upload_from_string(self, data, content_type=None, if_generation_match=None):
+            if if_generation_match == 0 and self.name in store:
+                from google.api_core.exceptions import PreconditionFailed
+                raise PreconditionFailed("exists")
+            store[self.name] = data
+
+    class Bucket:
+        def blob(self, name): return Blob(name)
+
+    monkeypatch.setattr(gcs, "_bucket", lambda: Bucket())
+    monkeypatch.setattr(gcs, "read_json", lambda path, ttl=0: _json.loads(store[f"{gcs.ROOT}/{path}"]) if f"{gcs.ROOT}/{path}" in store else None)
+    monkeypatch.setenv("PH_TOKEN", "test-token")
+    ph_live._mem.clear()
+    ph_live._state.update(last_error=None, last_error_at=None, last_ok_at=None)
+    clock = {"now": now_pt}
+
+    class FakeDT(_dt):
+        @classmethod
+        def now(cls, tz=None):
+            n = clock["now"]
+            return n.astimezone(tz) if tz else n.replace(tzinfo=None)
+
+    monkeypatch.setattr(ph_live, "datetime", FakeDT)
+    return ph_live, store, clock
+
+
+def _nodes(day, n=3, votes=10):
+    return [{"id": str(100 + i), "name": f"P{i}", "tagline": "t", "slug": f"p{i}", "featuredAt": f"{day}T08:01:00Z",
+             "votesCount": votes * (n - i), "commentsCount": 2, "dailyRank": i + 1,
+             "thumbnail": {"url": "https://ph-files.imgix.net/x.png"}, "topics": {"edges": [{"node": {"name": "AI"}}]}}
+            for i in range(n)]
+
+
+def test_live_board_fresh_cached_and_persisted(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    calls = []
+    fetch = lambda d: calls.append(d) or _nodes(d)
+    b = ph_live.board("2026-11-14", fetch=fetch)
+    assert [r["rank"] for r in b["launches"]] == [1, 2, 3] and b["launches"][0]["votes"] == 30 and not b["votes_hidden"]
+    assert "usersim_sim/site/live_board/latest.json" in store and "usersim_sim/site/live_board/2026-11-14.json" in store
+    clock["now"] = now + timedelta(seconds=30)
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 1                                   # within the minute: no second upstream call
+    ph_live._mem.clear()                                     # another instance, cold, within the same minute
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 1                                   # it reuses the persisted snapshot
+    clock["now"] = now + timedelta(seconds=90)
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 2
+
+
+def test_live_board_upstream_down_or_rate_limited_serves_last_good(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    good = ph_live.board("2026-11-14", fetch=_nodes)
+    for err in ("rate limited", "network: ConnectTimeout", "http 502"):
+        clock["now"] += timedelta(minutes=2)
+        def boom(d, err=err): raise ph_live.Upstream(err)
+        b = ph_live.board("2026-11-14", fetch=boom)
+        assert b["fetched_at"] == good["fetched_at"] and len(b["launches"]) == 3
+        assert ph_live._state["last_error"] == err
+    clock["now"] += timedelta(minutes=2)
+    b = ph_live.board("2026-11-14", fetch=lambda d: [])    # an empty reply never blanks a good board
+    assert len(b["launches"]) == 3 and ph_live._state["last_error"] == "empty response"
+    ph_live._mem.clear()                                    # cold start while upstream is down: persisted copy
+    clock["now"] += timedelta(minutes=2)
+    b = ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(ph_live.Upstream("http 503")))
+    assert b and len(b["launches"]) == 3
+
+
+def test_live_board_cold_start_no_data_and_unconfigured(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 0, 2, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    assert ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(ph_live.Upstream("http 500"))) is None
+    monkeypatch.delenv("PH_TOKEN")
+    calls = []
+    assert ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d)) is None and not calls
+
+
+def test_live_board_pre_reveal_hides_votes_and_rollover(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    PTZ = ZoneInfo("America/Los_Angeles")
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 23, 58, tzinfo=PTZ))
+    ph_live.board("2026-11-14", fetch=_nodes)
+    clock["now"] = _dt(2026, 11, 15, 0, 3, tzinfo=PTZ)      # day rolls over at 00:00 PT
+    b = ph_live.board("2026-11-15", fetch=lambda d: _nodes(d, votes=0))
+    assert b["day"] == "2026-11-15" and b["votes_hidden"] and all(r["votes"] is None for r in b["launches"])
+    y = ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(AssertionError("must not refetch before close")))
+    assert y["day"] == "2026-11-14" and len(y["launches"]) == 3 and not y["final"]
+    clock["now"] = _dt(2026, 11, 15, 3, 5, tzinfo=PTZ)      # after 03:00 PT next day: one final re-read
+    calls = []
+    y = ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d, votes=20))
+    assert y["final"] and calls == ["2026-11-14"] and y["launches"][0]["votes"] == 60
+    ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d))
+    assert calls == ["2026-11-14"]                          # final is read once
+
+
+def test_live_board_keeps_only_product_fields(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    n = _nodes("2026-11-14", 1)
+    n[0]["makers"] = [{"username": "secret_handle"}]; n[0]["user"] = {"username": "hunter_handle"}
+    n[0]["thumbnail"] = {"url": "https://evil.example/x.png"}
+    b = ph_live.board("2026-11-14", fetch=lambda d: n)
+    assert "secret_handle" not in str(b) and "hunter_handle" not in str(b) and b["launches"][0]["thumb"] is None
+
+
+def test_live_record_slots_append_only(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    PTZ = ZoneInfo("America/Los_Angeles")
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 3, 46, tzinfo=PTZ))
+    assert ph_live.slot_for(_dt(2026, 11, 14, 3, 46)) == "0345" and ph_live.slot_for(_dt(2026, 11, 14, 23, 51)) == "2350"
+    assert ph_live.slot_for(_dt(2026, 11, 14, 23, 46)) == "2345" and ph_live.slot_for(_dt(2026, 11, 14, 0, 0)) == "0000"
+    r = ph_live.append_slot(fetch=lambda d: _nodes(d, votes=0))
+    assert r["status"] == "written" and r["slot"] == "0345" and r["rows"] == 3
+    rows = [__import__("json").loads(l) for l in store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"].splitlines()]
+    assert rows[0]["votes"] is None and set(rows[0]) == {"snapshot_ts", "slot", "id", "slug", "votes", "comments", "rank", "featured_at"}
+    clock["now"] += timedelta(minutes=2)                    # same slot again: never rewritten
+    before = store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"]
+    assert ph_live.append_slot(fetch=lambda d: _nodes(d, votes=99))["status"] == "exists"
+    assert store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"] == before
+    clock["now"] = _dt(2026, 11, 14, 4, 1, tzinfo=PTZ)
+    r = ph_live.append_slot(fetch=lambda d: _nodes(d, votes=5))
+    assert r["slot"] == "0400" and r["status"] == "written"
+
+
+def test_live_record_skips_empty_day(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 15, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    r = ph_live.append_slot(fetch=lambda d: [])
+    assert r["status"] == "skipped" and not any("_ts/" in k for k in store)
+
+
+def test_cron_endpoint_requires_secret(monkeypatch):
+    from fastapi.testclient import TestClient
+    from mvp.server import app
+    c = TestClient(app)
+    monkeypatch.delenv("CRON_SECRET", raising=False)
+    assert c.get("/api/ph/cron/snapshot").status_code == 503
+    monkeypatch.setenv("CRON_SECRET", "s" * 32)
+    assert c.get("/api/ph/cron/snapshot").status_code == 401
+    assert c.get("/api/ph/cron/snapshot", headers={"Authorization": "Bearer wrong"}).status_code == 401
+
+
+
+def test_midnight_accuracy_rows_never_pooled(monkeypatch):
+    tr = {"summary": {"00:05 PT | backtest": {"all days": {"top3 hits %": [60.7, 57.8, 63.7, 214], "top5 hits %": [68.4, 0, 0, 214], "top10 hits %": [75.7, 0, 0, 214]}},
+                      "00:05 PT | live, previous published model": {"all days": {"top3 hits %": [51.5, 0, 0, 11], "top5 hits %": [60.0, None, None, 11], "top10 hits %": [73.6, None, None, 11]}},
+                      "00:05 PT | backtest (clean_nosite, fallback model)": {"all days": {"top3 hits %": [54.5, 0, 0, 183], "top5 hits %": [64.7, 0, 0, 183], "top10 hits %": [76.0, 0, 0, 183]}},
+                      "03:45 PT | replay": {"all days": {"top3 hits %": [72.7, 0, 0, 11], "top5 hits %": [74.5, 0, 0, 11], "top10 hits %": [78.2, 0, 0, 11]}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
+    a = live.accuracy()
+    flags = [r["flag"] for r in a["mid"]]
+    assert flags == ["live, previous model", "replay with fixed inputs (not live)", "backtest (214 days)", "backtest (Sep–Oct)"]
+    fixed = a["mid"][1]
+    assert (fixed["top3"], fixed["top5"], fixed["top10"], fixed["days"]) == (54.5, 61.8, 73.6, 11) and "note" not in fixed
+    assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 59
+    live_prev = a["mid"][0]
+    assert (live_prev["top10"], live_prev["days"]) == (73.6, 11) and "polluted hunter-history inputs" in live_prev["note"]
+    assert a["pre"][0]["flag"] == "replay" and a["pre"][0]["top10"] == 78.2
+
+
+def test_prereveal_replay_note_and_hidden_rank_row(monkeypatch):
+    tr = {"summary": {
+        "03:45 PT | replay (hidden rank alone)": {"all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [73.3, None, None, 12]}},
+        "03:45 PT | replay": {"note": "top-10 edge +4.2", "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [77.5, None, None, 12]},
+                              "superseded 11-day figure (weights fit on all days)": {"top10 hits %": [77.3, 0, 0, 11]}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
+    pre = live.accuracy()["pre"]
+    assert [r["flag"] for r in pre] == ["replay", "Product Hunt's hidden order alone"]
+    assert pre[0]["top10"] == 77.5 and pre[0]["days"] == 12 and pre[0]["note"] == "top-10 edge +4.2"
+    assert pre[1]["top10"] == 73.3 and "note" not in pre[1]
+
+
+def test_published_prediction_files(monkeypatch):
+    files = {
+        "results/web/predictions/2026-11-14_0005.json": {"day": "2026-11-14", "kind": "0005", "model": "arm2", "fallback_used": None,
+            "written_at": "2026-11-14T08:30:00Z", "backtest": "60.7 / 68.4 / 75.7", "ranking": [{"rank": 1, "id": 11, "name": "A", "score": 1.2}, {"rank": 2, "id": 22, "name": "B"}]},
+        "results/web/predictions/2026-11-14_prereveal.json": {"day": "2026-11-14", "kind": "prereveal", "model": "midnight_order",
+            "fallback_used": "midnight_order", "written_at": "2026-11-14T11:47:00Z", "ranking": [{"rank": 1, "id": 22}]},
+        "results/web/predictions/2026-11-15_prereveal.json": {"day": "2026-11-15", "model": "none_available", "fallback_used": "none_available", "ranking": []},
+        "results/web/predictions/2026-11-16_0005.json": {"day": "2026-11-15", "ranking": [{"rank": 1, "id": 1}]},   # wrong day inside
+    }
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    a = live._published("2026-11-14", "0005")
+    assert a["ranks"] == {"11": 1, "22": 2} and a["fallback"] is None and a["data_up_to"].startswith("2026-11-14T00:05")
+    b = live._published("2026-11-14", "prereveal")
+    assert b["fallback"] == "midnight_order" and b["data_up_to"].startswith("2026-11-14T03:45")
+    c = live._published("2026-11-15", "prereveal")
+    assert c["fallback"] == "none_available" and c["ranks"] == {}
+    assert live._published("2026-11-16", "0005") is None          # never another day's picks under this date
+
+
+# ---------- stability review (orchestrator, Nov 14): one test per finding ----------
+
+def test_A1_latest_json_only_holds_today(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 15, 4, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    ph_live.board("2026-11-14", fetch=_nodes)                # a past day re-read after it closed
+    assert "usersim_sim/site/live_board/2026-11-14.json" in store
+    assert "usersim_sim/site/live_board/latest.json" not in store
+    ph_live.board("2026-11-15", fetch=_nodes)
+    assert __import__("json").loads(store["usersim_sim/site/live_board/latest.json"])["day"] == "2026-11-15"
+
+
+def test_A2_page_survives_broken_blocks(monkeypatch):
+    def boom(*a, **k): raise RuntimeError("storage down")
+    monkeypatch.setattr(live, "_lineup", boom)
+    monkeypatch.setattr(live, "forecasts", boom)
+    monkeypatch.setattr(live, "actuals", boom)
+    monkeypatch.setattr(live, "current_board", boom)
+    monkeypatch.setattr(live, "_freshness", boom)
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    api = {"day": "2026-11-14", "fetched_at": "2026-11-14T12:00:00+00:00", "votes_hidden": False, "final": False,
+           "launches": [{"id": "1", "name": "A", "tagline": "t", "slug": "a", "topics": [], "thumb": None, "rank": 1, "votes": 9, "comments": 1}]}
+    monkeypatch.setattr(live, "_api_board", lambda d: api)
+    v = live.day_view("2026-11-14")
+    assert v["points"] == [] and v["launches"][0]["board_rank"] == 1 and v["board"]["source"] == "Product Hunt API"
+    v2 = live.board_only_view("2026-11-14")
+    assert v2["launches"][0]["board_votes"] == 9 and v2["points"] == []
+
+
+def test_A5_A6_A7_only_two_fixed_predictions(monkeypatch):
+    files = {
+        "results/web/predictions/2026-11-15_0005.json": {"day": "2026-11-15", "model": "arm2", "ranking": [{"rank": 1, "id": 7}]},
+        "results/web/predictions/2026-11-16_0005.json": {"day": "2026-11-16", "model": "none_available", "fallback_used": "none_available", "ranking": []},
+        "results/early_forecast/2026-11-15_P345.json": {"forecast": [{"id": 8, "pred_rank_hybrid": 1}], "written_at": "x"},
+        "results/early_forecast/2026-11-15_P2.json": {"forecast": [{"id": 9, "pred_rank_best": 1}]},
+        "results/early_forecast/2026-11-13_P345.json": {"forecast": [{"id": 5, "pred_rank_hybrid": 1}], "written_at": "x"},
+    }
+    names = [("results/web/predictions/2026-11-15_0005.json", ""), ("results/web/predictions/2026-11-16_0005.json", "")]
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: names if "predictions" in prefix else [])
+    monkeypatch.setattr(live.gcs, "_cache", {})
+    legacy = {"ranks": {"3": 1}, "made_at": "y", "data_up_to": "z", "method": "old"}
+    monkeypatch.setattr(live, "_forecast_0005", lambda d: dict(legacy))
+    f15 = live.forecasts("2026-11-15")
+    assert set(f15) <= {"0005", "PRE"}                                 # A5: no internal points leave the server
+    assert f15["0005"]["ranks"] == {"7": 1}                            # A6: the published file is the day's only list
+    assert f15["PRE"]["ranks"] == {"8": 1}                             # 03:45 hybrid until a published prereveal file exists
+    f16 = live.forecasts("2026-11-16")
+    assert f16["0005"]["ranks"] == {"3": 1} and f16["0005"]["fallback"] == "earlier_forecast"   # A7, labelled
+    files["results/web/predictions/2026-11-16_prereveal.json"] = {"day": "2026-11-16", "model": "none_available", "fallback_used": "none_available", "ranking": []}
+    files["results/early_forecast/2026-11-16_P345.json"] = {"forecast": [{"id": 6, "pred_rank_hybrid": 1}], "written_at": "x"}
+    names.append(("results/web/predictions/2026-11-16_prereveal.json", ""))
+    live.gcs._cache.clear()
+    pre16 = live.forecasts("2026-11-16")["PRE"]
+    assert pre16["fallback"] == "none_available" and pre16["ranks"] == {}      # never the P345 shadow line
+    f17 = live.forecasts("2026-11-17")
+    assert "0005" not in f17                                           # A6: published era, not written yet: nothing shown
+    f13 = live.forecasts("2026-11-13")
+    assert f13["0005"]["ranks"] == {"3": 1} and f13["PRE"]["ranks"] == {"5": 1}   # before the cutover: files live then
+
+
+def test_B6_rate_limit_backs_off(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    good = ph_live.board("2026-11-14", fetch=_nodes)
+    calls = []
+    def limited(d):
+        calls.append(d); raise ph_live.RateLimited(300)
+    clock["now"] += timedelta(minutes=2)
+    assert ph_live.board("2026-11-14", fetch=limited)["fetched_at"] == good["fetched_at"]
+    assert len(calls) == 1 and ph_live._state["backoff_until"]
+    for _ in range(3):                                          # within the reset window: no further upstream calls
+        clock["now"] += timedelta(minutes=1)
+        ph_live._mem.clear()
+        assert ph_live.board("2026-11-14", fetch=limited) is not None
+    assert len(calls) == 1
+
+
+def test_B7_B8_token_remint_and_partial_errors(monkeypatch):
+    from mvp.ph_site import ph_live
+    monkeypatch.delenv("PH_TOKEN", raising=False)
+    monkeypatch.setenv("PH_CLIENT_ID", "cid"); monkeypatch.setenv("PH_CLIENT_SECRET", "sec")
+    ph_live._minted.clear()
+
+    class R:
+        def __init__(self, code, body): self.status_code, self._b = code, body
+        def json(self): return self._b
+
+    page = lambda nodes, more=False: {"data": {"posts": {"edges": [{"node": n} for n in nodes], "pageInfo": {"hasNextPage": more, "endCursor": "c"}}}}
+    seq = []
+
+    class Http:
+        def __init__(self, replies): self.replies, self.tokens = replies, 0
+        def post(self, url, json=None, headers=None, timeout=None):
+            if url == ph_live.TOKEN_URL:
+                self.tokens += 1
+                return R(200, {"access_token": f"t{self.tokens}"})
+            seq.append(headers["Authorization"])
+            return self.replies.pop(0)
+
+    h = Http([R(401, {}), R(200, page([{"id": 1, "dailyRank": 1}]))])
+    tok = [ph_live._token(h)]
+    out = ph_live._query(h, tok, "a", "b")
+    assert len(out) == 1 and seq == ["Bearer t1", "Bearer t2"]                    # B7: re-minted once on 401
+    partial = page([{"id": 1, "dailyRank": 1}]); partial["errors"] = [{"message": "thumbnail unavailable"}]
+    assert len(ph_live._query(Http([R(200, partial)]), ["t"], "a", "b")) == 1      # B8: data with a partial error is used
+    import pytest as _pt
+    with _pt.raises(ph_live.Upstream):
+        ph_live._query(Http([R(200, {"errors": [{"message": "boom"}], "data": None})]), ["t"], "a", "b")
+    with _pt.raises(ph_live.RateLimited):
+        ph_live._query(Http([R(200, {"errors": [{"error": "rate_limit_reached", "details": {"reset_in": 120}}]})]), ["t"], "a", "b")
+    assert ph_live._rank_gap([{"dailyRank": 1}, {"dailyRank": 3}]) is True
+
+
+
+def test_rank_gaps_and_ties_are_not_incomplete(monkeypatch):
+    from mvp.ph_site import ph_live
+    def node(i, r): return {"id": i, "name": f"N{i}", "dailyRank": r, "featuredAt": "2026-11-14T08:01:00Z", "votesCount": 10}
+    tie = [node(1, 1), node(2, 2), node(3, 3), node(4, 3), node(5, 5)]          # two rank 3s, no rank 4
+    gap = [node(1, 1), node(2, 2), node(3, 4), node(4, 5)]                      # rank 3 hidden later
+    for nodes, reads in ((tie, 1), (gap, 2)):
+        calls = []
+        def fake_query(http, tok, a, b, nodes=nodes):
+            calls.append(a); return list(nodes)
+        monkeypatch.setattr(ph_live, "_query", fake_query)
+        monkeypatch.setattr(ph_live, "_token", lambda http: "t")
+        out = ph_live._fetch_upstream("2026-11-14")
+        assert len(out) == len(nodes) and len(calls) == reads      # a gap costs one wider re-read; the list is still served
+    snap = ph_live._snapshot("2026-11-14", tie, final=True)
+    assert [r["rank"] for r in snap["launches"]] == [1, 2, 3, 3, 5]              # ties shown as ties
+    def broken(http, tok, a, b): raise ph_live.Upstream("too many pages")
+    monkeypatch.setattr(ph_live, "_query", broken)
+    import pytest as _pt
+    with _pt.raises(ph_live.Upstream):
+        ph_live._fetch_upstream("2026-11-14")                                     # paging failure: last good is served
+
+
+def test_input_flag_per_day(monkeypatch):
+    sb = {"day_flags": {"2026-11-10": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: sb if path.endswith("scoreboard.json") else None)
+    assert live.input_flag("2026-11-10").startswith("built on polluted hunter-history inputs")
+    assert live.input_flag("2026-10-20") is None

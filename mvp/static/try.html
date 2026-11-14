@@ -31,7 +31,7 @@
         <li data-s="page"><b>Read page</b>Fetch + understand it</li>
         <li data-s="people"><b>Match people</b>Real PH members, anonymised</li>
         <li data-s="reactions"><b>Simulate reactions</b>What they'd write</li>
-        <li data-s="asks"><b>Likely question</b>And concern</li>
+        <li data-s="asks"><b>Likely question</b>And concerns</li>
         <li data-s="launch"><b>Place on PH</b>Rank and vote range</li>
       </ol>
       <p class="small muted" style="margin:6px 0 0">No public page yet, or it needs JavaScript? About 1 in 5 pages can’t be read automatically. <a href="#" id="paste-open">Paste a launch description instead</a> (also the more accurate input).</p>
@@ -50,7 +50,7 @@
   <div id="out" hidden>
     <section class="block" id="prod"></section>
     <section class="block">
-      <header><h2>The question they’ll most likely ask</h2><span class="label">simulated</span></header>
+      <header><h2>What they’ll most likely ask and object to</h2><span class="label">simulated</span></header>
       <div id="ask"><p class="skeleton">Ranking likely questions…</p></div>
     </section>
     <section class="block">
@@ -105,13 +105,11 @@ function renderProduct(a){
 }
 const pct = (v)=> Math.max(0, Math.min(100, Number(v)||0));
 function renderAsks(j){
-  const card = (lab, txt) => `<div class="card"><p class="label">${lab}</p><p style="font-family:var(--serif);font-size:1.25rem;line-height:1.35">${esc(txt)}</p></div>`;
-  let h = '<div class="grid2">' + (j.question ? card("Most likely question", j.question) : "")
-    + (j.concern ? card("Most likely concern", j.concern)
-       : `<div class="card"><p class="label">Most likely concern</p><p class="muted">Only reliable from a launch description. <a href="#" class="paste-link">Paste yours</a> to see it.</p></div>`)
-    + "</div>";
-  $("#ask").innerHTML = h + `<p class="small muted">${esc(j.note)}</p>`;
-  document.querySelectorAll("#ask .paste-link").forEach(a=>a.onclick=(e)=>{e.preventDefault(); $("#paste").hidden=false; $("#pn").focus();});
+  const big = 'style="font-family:var(--serif);font-size:1.25rem;line-height:1.35"';
+  const lab = {retrieval: "Most likely concerns", earlier_method: "Likely concerns (earlier method)", common: "Common concerns (few similar past launches)"}[j.concerns_basis] || "Likely concerns";
+  const q = j.question ? `<div class="card"><p class="label">Most likely question</p><p ${big}>${esc(j.question)}</p></div>` : "";
+  const c = (j.concerns||[]).length ? `<div class="card"><p class="label">${lab}</p><ol style="margin:0;padding-left:1.2em">${j.concerns.map(x=>`<li style="margin:0 0 8px">${esc(x)}</li>`).join("")}</ol></div>` : "";
+  $("#ask").innerHTML = `<div class="grid2">${q}${c}</div><p class="small muted">${esc(j.note)}</p>`;
 }
 function renderReactions(j){
   $("#rx-head").textContent = j.headline || "";
@@ -130,7 +128,7 @@ function renderPeople(p){
   $("#pp-stats").innerHTML = S ? `
     <div class="card"><p class="label">Members with similar tools</p><p class="big">${S.likely_count.toLocaleString()}</p><p class="small muted">of ${S.people_scored.toLocaleString()} (${(S.likely_share*100).toFixed(1)}%); a typical product gets about ${Math.round(S.typical_share*100)}%</p></div>
     <div class="card"><p class="label">Versus a typical product</p><p class="big">${vsTyp.toFixed(1)}×</p><p class="small muted">${vsTyp>=1.2?"more people than usual have similar tools":vsTyp<=0.8?"fewer people than usual have similar tools":"about the usual number of people have similar tools"}</p></div>
-    <div class="card"><p class="label">Most over-represented interest segment</p><p class="big" style="font-size:24px">${esc((p.segments[0]||{}).name||"none with 20+ people")}</p><p class="small muted">${p.segments[0] ? (p.segments[0].lift).toFixed(1) + "× its usual share among people whose upvotes lean to this product's topics" : ""}</p></div>`
+    <div class="card"><p class="label">Most over-represented interest segment</p><p class="big" style="font-size:24px">${esc((p.segments[0]||{}).name||"none with 20+ people")}</p><p class="small muted">${p.segments[0] ? (p.segments[0].lift).toFixed(1) + "× its usual share among people whose upvotes lean to this product's topics. Descriptive only: not validated as a predictor of who votes." : ""}</p></div>`
     : `<div class="card"><p class="label">Interest match</p><p class="big">${p.likely_count.toLocaleString()}</p><p class="small muted">${(p.likely_share*100).toFixed(0)}% of profiles</p></div>`;
   $("#pp").innerHTML = p.top_people.map(x=>`<div class="card"><h3>${esc(x.label)} <span class="tag">${esc(x.strength)}</span></h3>
      <p class="small">${esc(x.roles.join(" · "))}</p><p class="small muted">${esc(x.tier)} · description shared by ${esc(x.shared_by||"20+ members")}</p></div>`).join("")
@@ -160,7 +158,7 @@ function renderLaunch(l){
      <div class="card"><p class="label">Likely daily rank</p><p class="big">#${Number(l.rank_band.likely[0])}–#${Number(l.rank_band.likely[1])}</p><p class="small muted">middle #${Number(l.rank_band.median)}</p></div>
      <div class="card"><p class="label">We assumed</p>${Object.entries(l.assumed).map(([k,v])=>`<p class="small"><b>${esc(k)}</b>: ${esc(v)}</p>`).join("")}</div></div>`;
     band = `<div class="band" aria-label="Rank band"><div class="l" style="left:${x(l.rank_band.likely[0])}%;right:${100-x(l.rank_band.likely[1])}%"></div><div class="m" style="left:${x(l.rank_band.median)}%"></div></div>
-     <div class="scale"><span>#1</span><span>10th to 90th percentile of where similar descriptions finished</span><span>#${N}+</span></div>`;
+     <div class="scale"><span>#1</span><span>${esc(l.band_level || "10th to 90th percentile")} of where similar descriptions finished</span><span>#${N}+</span></div>`;
     cov = l.coverage ? `<p class="small" style="margin-top:12px"><b>About ${Math.round(Number(l.coverage.share)*10)} in 10</b> past launches finished inside the band this model gave them (pooled over all scores, checked on ${Number(l.coverage.launches).toLocaleString()} held-out launches using their PH descriptions; fixed offline figure, ${esc(l.coverage.date)}).</p>` : "";
   }
   $("#ln").innerHTML = cards + band + cov + `
@@ -168,7 +166,7 @@ function renderLaunch(l){
    <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
    <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy (on PH descriptions)</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
      <tr><td>The PH-description model (${Number(A.days)} days)</td><td>${Number(A.top3).toFixed(0)}%</td><td>${Number(A.top5).toFixed(0)}%</td><td>${Number(A.top10).toFixed(0)}%</td></tr>
-     ${A.full_model ? `<tr><td class="muted">Full 00:05 launch model (clean offline backtest, ${Number(A.full_model.days)} days)</td><td class="muted">${Number(A.full_model.top3).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(0)}%</td></tr>` : ""}</tbody></table>
+     ${A.full_model ? `<tr><td class="muted">Full 00:05 launch model (backtest, ${Number(A.full_model.days)} days)</td><td class="muted">${Number(A.full_model.top3).toFixed(1)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(1)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(1)}%</td></tr>` : ""}</tbody></table>
    <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
 }
 
