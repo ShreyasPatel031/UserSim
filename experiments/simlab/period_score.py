@@ -22,28 +22,33 @@ res.update({"truth": {"part": tpart, "read_at_utc": tts.isoformat(), "read_at_pt
 for D in pd.date_range(s, e - pd.Timedelta(days=1)):
     d = D.strftime("%Y-%m-%d"); run = pd.Timestamp(d, tz="UTC") + pd.Timedelta(days=1, hours=9, minutes=20)
     live = None if REPLAY else gcat(f"{B}/tmp/e5/website/probabilities/{d}_{'weekly' if per == 'week' else 'monthly'}.json")
+    lines = {}
     if live:
-        j = json.loads(live); order = [r["id"] for r in j.get("launches", [])]; flag = "live"; rd = j.get("written_at"); stale = j.get("stale_days_missing", [])
+        j = json.loads(live); flag = "live"; rd = j.get("written_at"); stale = j.get("stale_days_missing", [])
+        lines[j.get("board_line", "votes_only")] = [r["id"] for r in j.get("launches", [])]
+        if j.get("shadow_votes_only"): lines["votes_only"] = [r["id"] for r in j["shadow_votes_only"]]   # both lines scored (orchestrator 13:06Z)
     else:
-        order, upd = PP.board(per, d, run); flag = "replay"; rd = upd; stale = PP.missing_days(per, d, run)
-    held_ids = set(PP.held(run).id) if flag == "replay" else set(order)
-    row = {"day": d, "flag": flag, "board_size": len(order), "board_read_latest_updated_at": str(rd), "status": "stale: days missing" if stale else "ok", "days_missing": stale}
-    for k in (3, 5, 10):
-        row[f"top{k}"] = len(set(order[:k]) & tr[k]); row[f"ceiling_top{k}"] = len(tr[k] & set(order)) if order else 0
-    res["days"].append(row)
-hd = [r for r in res["days"] if pd.Timestamp(r["day"]).weekday() == 5] if per == "week" else res["days"][-1:]
-res["headline"] = hd[0] if hd else None
+        order, upd = PP.board(per, d, run); flag = "replay"; rd = upd; stale = PP.missing_days(per, d, run); lines["votes_only"] = order
+    for line, order in lines.items():
+        row = {"day": d, "flag": flag, "line": line, "board_size": len(order), "board_read_latest_updated_at": str(rd), "status": "stale: days missing" if stale else "ok", "days_missing": stale}
+        for k in (3, 5, 10):
+            row[f"top{k}"] = len(set(order[:k]) & tr[k]); row[f"ceiling_top{k}"] = len(tr[k] & set(order)) if order else 0
+        res["days"].append(row)
+hdd = [r for r in res["days"] if pd.Timestamp(r["day"]).weekday() == 5] if per == "week" else [r for r in res["days"] if r["day"] == res["days"][-1]["day"]] if res["days"] else []
+res["headlines"] = hdd; pref = [r for r in hdd if r["line"] == "with_entrants"] or hdd
+res["headline"] = pref[0] if pref else None
 out = os.path.join(SP, f"period_score_{per}_{s:%Y%m%d}{'_replay' if REPLAY else ''}.json"); json.dump(res, open(out, "w"), indent=1, default=str)
 subprocess.run(["gsutil", "-q", "cp", out, f"{B}/tmp/e5/website/period_scores/{os.path.basename(out)}"], check=True)
 # track record: one entry per (board, period, flag); replace an earlier entry for the same key
 TRp = os.path.join(SP, "period_track_record.json"); raw = gcat(f"{B}/tmp/e5/website/period_track_record.json")
 TR = json.loads(raw) if raw else {"note": "weekly / monthly board scores; flags live / replay never pooled; truth = first read after the close, that part only", "entries": []}
 h = res["headline"]
-if h:
-    key = (per, res["period"][0], h["flag"]); TR["entries"] = [x for x in TR["entries"] if (x["board"], x["period_start"], x["flag"]) != key]
-    TR["entries"].append({"board": per, "period_start": res["period"][0], "flag": h["flag"], "headline_day": h["day"], "status": h["status"],
+for h in res["headlines"]:
+    key = (per, res["period"][0], h["flag"], h["line"]); TR["entries"] = [x for x in TR["entries"] if (x["board"], x["period_start"], x["flag"], x.get("line", "votes_only")) != key]
+    TR["entries"].append({"board": per, "period_start": res["period"][0], "flag": h["flag"], "line": h["line"], "headline_day": h["day"], "status": h["status"],
                           "hits top3/5/10": [h["top3"], h["top5"], h["top10"]], "ceiling top3/5/10": [h["ceiling_top3"], h["ceiling_top5"], h["ceiling_top10"]],
                           "board_read": h["board_read_latest_updated_at"], "truth_read_pt": res["truth"]["read_at_pt"], "truth_part": tpart})
-    TR["entries"].sort(key=lambda x: (x["board"], x["period_start"], x["flag"])); TR["updated_at"] = res["written_at"]
+if res["headlines"]:
+    TR["entries"].sort(key=lambda x: (x["board"], x["period_start"], x["flag"], x.get("line", ""))); TR["updated_at"] = res["written_at"]
     json.dump(TR, open(TRp, "w"), indent=1); subprocess.run(["gsutil", "-q", "cp", TRp, f"{B}/tmp/e5/website/period_track_record.json"], check=True)
-print(json.dumps({"headline": h, "days": [[r["day"], r["flag"], r["status"], r["top3"], r["top5"], r["top10"], r["ceiling_top3"], r["ceiling_top5"], r["ceiling_top10"]] for r in res["days"]], "truth": res["truth"]}))
+print(json.dumps({"headline": res["headline"], "days": [[r["day"], r["flag"], r.get("line"), r["status"], r["top3"], r["top5"], r["top10"], r["ceiling_top3"], r["ceiling_top5"], r["ceiling_top10"]] for r in res["days"]], "truth": res["truth"]}))
