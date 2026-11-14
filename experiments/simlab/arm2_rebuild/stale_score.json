@@ -1,0 +1,628 @@
+{
+ "clean_nosite": {
+  "n_days": 17,
+  "clean (as-of, only today/D)": [
+   62.7,
+   69.4,
+   75.3
+  ],
+  "stale (as the VM ran)": [
+   64.7,
+   67.1,
+   74.1
+  ],
+  "stale - clean (bug cost)": [
+   [
+    2.0,
+    -3.9,
+    7.8
+   ],
+   [
+    -2.4,
+    -7.1,
+    2.4
+   ],
+   [
+    -1.2,
+    -2.9,
+    0.0
+   ]
+  ],
+  "top-3 picks changed per night (mean, max)": [
+   0.29,
+   1
+  ],
+  "top-10 picks changed per night (mean, max)": [
+   0.35,
+   2
+  ],
+  "nights with a different #1": 4,
+  "per night": [
+   {
+    "day": "2026-10-25",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-26",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-27",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     90.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     90.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 1
+   },
+   {
+    "day": "2026-10-28",
+    "clean": [
+     33.33333333333333,
+     20.0,
+     80.0
+    ],
+    "stale": [
+     33.33333333333333,
+     40.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 1
+   },
+   {
+    "day": "2026-10-29",
+    "clean": [
+     100.0,
+     60.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     60.0,
+     70.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 2,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-30",
+    "clean": [
+     66.66666666666666,
+     100.0,
+     80.0
+    ],
+    "stale": [
+     66.66666666666666,
+     100.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-31",
+    "clean": [
+     33.33333333333333,
+     100.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     70.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-01",
+    "clean": [
+     100.0,
+     60.0,
+     80.0
+    ],
+    "stale": [
+     100.0,
+     60.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 1
+   },
+   {
+    "day": "2026-11-02",
+    "clean": [
+     33.33333333333333,
+     60.0,
+     90.0
+    ],
+    "stale": [
+     33.33333333333333,
+     60.0,
+     90.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-03",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-04",
+    "clean": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     60.0,
+     70.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-08",
+    "clean": [
+     100.0,
+     60.0,
+     70.0
+    ],
+    "stale": [
+     100.0,
+     60.0,
+     70.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-09",
+    "clean": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "stale": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-10",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 1,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-11",
+    "clean": [
+     100.0,
+     80.0,
+     80.0
+    ],
+    "stale": [
+     100.0,
+     60.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-12",
+    "clean": [
+     33.33333333333333,
+     40.0,
+     50.0
+    ],
+    "stale": [
+     33.33333333333333,
+     20.0,
+     50.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 2,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-13",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     90.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 1,
+    "top1 changed": 1
+   }
+  ]
+ },
+ "arm 2": {
+  "n_days": 17,
+  "clean (as-of, only today/D)": [
+   64.7,
+   70.6,
+   76.5
+  ],
+  "stale (as the VM ran)": [
+   62.7,
+   68.2,
+   76.5
+  ],
+  "stale - clean (bug cost)": [
+   [
+    -2.0,
+    -9.8,
+    5.9
+   ],
+   [
+    -2.4,
+    -7.1,
+    2.4
+   ],
+   [
+    0.0,
+    -2.9,
+    2.9
+   ]
+  ],
+  "top-3 picks changed per night (mean, max)": [
+   0.41,
+   1
+  ],
+  "top-10 picks changed per night (mean, max)": [
+   0.71,
+   2
+  ],
+  "nights with a different #1": 4,
+  "per night": [
+   {
+    "day": "2026-10-25",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-26",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 1,
+    "top1 changed": 1
+   },
+   {
+    "day": "2026-10-27",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     90.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     90.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-28",
+    "clean": [
+     33.33333333333333,
+     40.0,
+     80.0
+    ],
+    "stale": [
+     33.33333333333333,
+     40.0,
+     80.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-29",
+    "clean": [
+     100.0,
+     60.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     60.0,
+     70.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 1,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-10-30",
+    "clean": [
+     66.66666666666666,
+     100.0,
+     80.0
+    ],
+    "stale": [
+     66.66666666666666,
+     100.0,
+     90.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 1,
+    "top1 changed": 1
+   },
+   {
+    "day": "2026-10-31",
+    "clean": [
+     66.66666666666666,
+     100.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     70.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-01",
+    "clean": [
+     100.0,
+     60.0,
+     80.0
+    ],
+    "stale": [
+     100.0,
+     60.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-02",
+    "clean": [
+     33.33333333333333,
+     80.0,
+     90.0
+    ],
+    "stale": [
+     33.33333333333333,
+     60.0,
+     90.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-03",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 1,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-04",
+    "clean": [
+     33.33333333333333,
+     60.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     60.0,
+     80.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 2,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-08",
+    "clean": [
+     100.0,
+     60.0,
+     80.0
+    ],
+    "stale": [
+     66.66666666666666,
+     40.0,
+     70.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 1,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-09",
+    "clean": [
+     33.33333333333333,
+     60.0,
+     80.0
+    ],
+    "stale": [
+     33.33333333333333,
+     60.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 0,
+    "top1 changed": 1
+   },
+   {
+    "day": "2026-11-10",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     70.0
+    ],
+    "stale": [
+     66.66666666666666,
+     80.0,
+     60.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 2,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-11",
+    "clean": [
+     100.0,
+     80.0,
+     80.0
+    ],
+    "stale": [
+     100.0,
+     80.0,
+     80.0
+    ],
+    "top3 picks changed": 0,
+    "top10 picks changed": 1,
+    "top1 changed": 0
+   },
+   {
+    "day": "2026-11-12",
+    "clean": [
+     33.33333333333333,
+     20.0,
+     40.0
+    ],
+    "stale": [
+     66.66666666666666,
+     40.0,
+     50.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 2,
+    "top1 changed": 1
+   },
+   {
+    "day": "2026-11-13",
+    "clean": [
+     66.66666666666666,
+     80.0,
+     90.0
+    ],
+    "stale": [
+     33.33333333333333,
+     80.0,
+     90.0
+    ],
+    "top3 picks changed": 1,
+    "top10 picks changed": 0,
+    "top1 changed": 0
+   }
+  ]
+ }
+}

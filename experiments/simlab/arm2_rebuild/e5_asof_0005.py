@@ -20,6 +20,9 @@ def root(d, mode, with25):
         b = os.path.basename(fn)[:10]
         if b < d or (mode == "final" and b == d): os.symlink(fn, f"{r}/days/{os.path.basename(fn)}")
     if mode == "asof": os.symlink(f"{REAL}/today/{d}.json", f"{r}/today/{d}.json")
+    if mode == "asof_stale":   # the VM's data/today/ as it stood that night: every earlier 00:05 line-up file plus today's (orchestrator 16:33Z bug)
+        for fn in glob.glob(f"{REAL}/today/*.json"):
+            if os.path.basename(fn)[:10] <= d: os.symlink(fn, f"{r}/today/{os.path.basename(fn)}")
     if with25:
         for fn in glob.glob(f"{H25}/*.json"): os.symlink(os.path.abspath(fn), f"{r}/days/{os.path.basename(fn)}")
     return r
@@ -28,16 +31,16 @@ def fit(tr, te, arm2):
     cc = [c for c in M.cols(tr, src) if not c.startswith(MP) and c not in ID and c != "llm_site" and not (arm2 and c == "ph_month")]
     return np.mean([lgb.LGBMRegressor(random_state=s, verbose=-1, n_jobs=M.N_JOBS, **P_).fit(tr[cc], tr.logv).predict(te[cc]) for s in range(5)], axis=0), te
 for d in sys.argv[2:]:
-    for mode in ("asof", "final"):
+    for mode in os.environ.get("MODES", "asof,final").split(","):
         t0 = time.time(); res = {}
         for arm2 in (False, True):
             F.D = root(d, mode, arm2)
-            df = RN.load_llm(F.build(include_today=(mode == "asof"))); df["id"] = df.id.astype(str); F.D = REAL
+            df = RN.load_llm(F.build(include_today=mode.startswith("asof"))); df["id"] = df.id.astype(str); F.D = REAL
             if arm2:
                 old = df.day < "2026-01-01"
                 df.loc[old, [c for c in df.columns if c.startswith(HR.OLD_NAN) or (c.startswith("llm_") and c not in ("llm_pitch", "llm_brand"))]] = np.nan
             df = df[~df.known]
-            te = df[(df.day == d) & (df.is_today if mode == "asof" else ~df.is_today)].copy(); tr = df[(~df.is_today) & (df.day < d)]
+            te = df[(df.day == d) & (df.is_today if mode.startswith("asof") else ~df.is_today)].copy(); tr = df[(~df.is_today) & (df.day < d)]
             if te.empty: res = None; break
             p, te2 = fit(tr, te, arm2); res["pred_arm2" if arm2 else "pred_clean"] = dict(zip(te2.id, p))
             res.setdefault("n_launches", len(te)); res.setdefault("llm_pitch_present", int(te.llm_pitch.notna().sum()))
