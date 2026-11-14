@@ -56,9 +56,11 @@ for per in ("week", "month"):
             pr = [{"id": r.id, "votes_now": None, "predicted_final_votes": round(float(r.pv), 1), "source": "predicted", **{f"p_final_top{k}": None for k in (3, 5, 10)}} for r in ENT.itertuples()]
             board = sorted(rows + pr, key=lambda o: -(o["votes_now"] if o["source"] == "votes" else o["predicted_final_votes"]))
             for i, o in enumerate(board): o["board_position"] = i + 1
-            out.update({"board_line": "with_entrants", "entrants": {"day": NXT, "n": len(pr), **ENT_INFO}, "shadow_votes_only": [dict(o) for o in rows]})
+            out.update({"board_line": "with_entrants", "entrants": {"day": NXT, "n": len(pr), **ENT_INFO}, "shadow_votes_only": [dict(o) for o in rows],
+                        "board_day": {"launches (with_entrants)": f"{NXT} 00:05 PT board: votes through {D} + {NXT} line-up predicted",
+                                      "shadow_votes_only": f"{D} close board: votes through {D}"}})
         else:
-            board = rows; out.update({"board_line": "votes_only", "entrants": {"day": NXT, "inserted": False, "reason": ("next day not in this period" if not same else ENT_INFO if ENT is None else "monthly: shadow only")}})
+            board = rows; out.update({"board_day": {"launches (votes_only)": f"{D} close board: votes through {D}"}, "board_line": "votes_only", "entrants": {"day": NXT, "inserted": False, "reason": ("next day not in this period" if not same else ENT_INFO if ENT is None else "monthly: shadow only")}})
         rows = board
         out.update({"status": "ok", "call_point": c, "method": "position table by (call point, running position), 2025 + 2026 complete periods",
                     "calibration": {f"top{k}": {kk: CAL[f"{per} | all"][f"top{k}"][kk] for kk in ("Brier skill vs base rate [CI]", "Brier skill vs position-only [CI]")} for k in (3, 5, 10)},

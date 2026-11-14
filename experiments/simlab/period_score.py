@@ -30,7 +30,7 @@ for D in pd.date_range(s, e - pd.Timedelta(days=1)):
     else:
         order, upd = PP.board(per, d, run); flag = "replay"; rd = upd; stale = PP.missing_days(per, d, run); lines["votes_only"] = order
     for line, order in lines.items():
-        row = {"day": d, "flag": flag, "line": line, "board_size": len(order), "board_read_latest_updated_at": str(rd), "status": "stale: days missing" if stale else "ok", "days_missing": stale}
+        row = {"day": d, "board_day": (pd.Timestamp(d) + pd.Timedelta(days=1)).strftime("%Y-%m-%d") + " 00:05 (votes through " + d + " + predicted line-up)" if line == "with_entrants" else d + " close (votes only)", "flag": flag, "line": line, "board_size": len(order), "board_read_latest_updated_at": str(rd), "status": "stale: days missing" if stale else "ok", "days_missing": stale}
         for k in (3, 5, 10):
             row[f"top{k}"] = len(set(order[:k]) & tr[k]); row[f"ceiling_top{k}"] = len(tr[k] & set(order)) if order else 0
         res["days"].append(row)
