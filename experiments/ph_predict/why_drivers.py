@@ -7,10 +7,21 @@ Also notes the th_n_pre status for the day (from P030: first comment read time, 
 SHADOW (orchestrator 12:50Z Nov 14): when results/shadow_arm2_shap/<d>.json exists (arm2_shap.py, SHAP groups from the deployed arm-2
 boosters), the why_shadow copy ONLY also gets items["forecast_drivers_shap"] and per launch "forecast_drivers_shap" (first line: the model's
 own groups; second line: the readable stump points, already in forecast_drivers). The live why/ copy is unchanged."""
-import json, subprocess, sys
+import json, os, subprocess, sys
 import pandas as pd
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 ACC = "explanation model, 58.9 / 69.2 / 74.5 on 214 backtest days; shares 2 of 3 top picks with the forecast on 97.7% of days"
+# LABEL SOURCE (orchestrator 20:51Z Nov 14; UNDEPLOYED switch, off by default so the routine's live label does not change until the next build
+# turns it on): WHY_LABEL_FROM_TABLE=1 takes the explanation-model figure from results/web/north_star_table.json (model readable_v2).
+def acc_label():
+    if os.environ.get("WHY_LABEL_FROM_TABLE") != "1": return ACC
+    try:
+        T = json.loads(subprocess.run(["gsutil", "cat", "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/north_star_table.json"], capture_output=True, text=True, timeout=60).stdout)
+        r = next(x for x in T["rows"] if x["model"] == "readable_v2" and x.get("top10") is not None)
+        return (f"explanation model (readable v2, no th_n_pre), {r['top3']} / {r['top5']} / {r['top10']} on {r['n_days']} backtest days ({r['rule']}); "
+                f"label source: table {T.get('computed_at', '?')[:16]}")
+    except Exception:
+        return ACC + "; label source: build constant"
 SECOND = "separate readable model, 58.9 / 69.2 / 74.5; typical effect of each input"
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True)
 
@@ -24,7 +35,7 @@ def main(d):
     if p.returncode == 0:
         P = json.loads(p.stdout); th = P.get("th_n_pre_source") or ("th_n_pre missing (first comment read not landed by 00:30 PT)" if P.get("th_missing") or P.get("comments_missing") else "unknown")
     W.setdefault("items", {})["forecast_drivers"] = {"label": "Why the forecast ranks it here (explanation model)", "unit": "points (log-vote scale)",
-                                                     "note": ACC, "model": R.get("model"), "inputs": lab, "th_n_pre": th, "base_value": R.get("base_value")}
+                                                     "note": acc_label(), "model": R.get("model"), "inputs": lab, "th_n_pre": th, "base_value": R.get("base_value")}
     n = 0
     for f in R["forecast"]:
         i = str(f["id"]); pts = sorted(((lab.get(k, k), v) for k, v in f["points"].items()), key=lambda x: -abs(x[1]))
