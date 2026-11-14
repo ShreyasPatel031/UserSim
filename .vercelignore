@@ -28,3 +28,9 @@ mvp/requirements.txt
 *.gguf
 *.pt
 *.bin
+
+# Not used by the app; keeps the function under Vercel's 500 MB limit now that numpy is installed for /try
+experiments
+experiments/**
+reports
+reports/**
