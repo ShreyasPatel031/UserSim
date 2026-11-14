@@ -770,3 +770,16 @@ def test_published_0005_scores_become_vote_estimates(monkeypatch):
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: f if path.endswith("_0005.json") else None)
     a = live._published("2026-11-14", "0005")
     assert a["exp_votes"] == {"11": 195} and "±19%" in a["vote_err"]
+
+
+def test_prereveal_gets_rank_mapped_votes(monkeypatch):
+    files = {"results/web/predictions/2026-11-14_0005.json": {"day": "2026-11-14", "kind": "0005", "model": "m",
+                 "ranking": [{"rank": 1, "id": "a", "score": 5.0}, {"rank": 2, "id": "b", "score": 4.0}]},
+             "results/web/predictions/2026-11-14_prereveal.json": {"day": "2026-11-14", "kind": "prereveal", "model": "h",
+                 "ranking": [{"rank": 1, "id": "b"}, {"rank": 2, "id": "a"}]}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [(k, None) for k in files])
+    monkeypatch.setattr(live.gcs, "_cached", lambda key, ttl, fn: fn())
+    f = live.forecasts("2026-11-14")
+    assert f["0005"]["exp_votes"] == {"a": 147, "b": 54}
+    assert f["PRE"]["exp_votes"] == {"b": 147, "a": 54} and "1 day" in f["PRE"]["vote_err"]
