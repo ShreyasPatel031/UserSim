@@ -1,0 +1,1852 @@
+{
+ "today (D)": "2026-11-14",
+ "yesterday (D-1)": "2026-11-13",
+ "lineup ids D / D-1 only": [
+  28,
+  20
+ ],
+ "cases": {
+  "S0 baseline": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1(i) D_0005 missing": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [
+     "0005"
+    ],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {},
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1(ii) D_0005 missing, D-1 file + 0005_latest at D-1": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [
+     "0005"
+    ],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {},
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1(ii') D-1 content copied under D's name": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [
+     "0005"
+    ],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {},
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1(iii) D_0005 model clean_nosite but arm-2 label": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1(iii') D_0005 none_available (legacy forecast_0005 export present)": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "launch model (deployed 00:05 PT)",
+     "fallback": "earlier_forecast",
+     "source": null,
+     "made": "00:13 PT",
+     "late": false,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": ""
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1(iv) D_0005 written yesterday 20:00 PT (before its 00:05 cut)": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "Nov 13, 20:00 PT",
+     "late": false,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1(iv') D_0005 written 09:30 PT (late)": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "09:30 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F2(i) D_prereveal missing": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [
+     "PRE"
+    ],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F2(ii) D_prereveal missing, D-1 file + latest at D-1": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [
+     "PRE"
+    ],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F2(iii) D_prereveal midnight_order with hybrid label": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "midnight_order",
+     "fallback": "midnight_order",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F1+F2(i) both published files missing (cutover passed)": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [
+     "0005",
+     "PRE"
+    ],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {},
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F3(ii) forecast_0005/D.json holds D-1's export (+ D_0005 none_available)": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "launch model (deployed 00:05 PT)",
+     "fallback": "earlier_forecast",
+     "source": null,
+     "made": "Nov 13, 00:13 PT",
+     "late": false,
+     "top3": [
+      "1313622",
+      "1293281",
+      "1314781"
+     ],
+     "backtest_line": ""
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 20,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F4(i) raw/daily/D missing (line-up files)": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F4(ii) raw/daily/D/today_0005.json holds D-1's line-up": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 48,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 20,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F5(ii) why D_0005 holds D-1's file": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {},
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F5(iii) why D_0005 present while 00:05 is a clean_nosite fallback": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F6(i) live_board latest + D missing": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "no live reading yet today"
+   },
+   "board": {
+    "as_of": null,
+    "as_of_pt": "",
+    "votes_hidden": true,
+    "source": null
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F6(ii) live_board latest holds D-1's board": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "no live reading yet today"
+   },
+   "board": {
+    "as_of": null,
+    "as_of_pt": "",
+    "votes_hidden": true,
+    "source": null
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F6(iv) live_board latest from today 01:00 PT": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 01:00 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T09:00:00+00:00",
+    "as_of_pt": "01:00 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F7(i) track_record_v1.json missing": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (Sep\u2013Oct)",
+      57.1,
+      59
+     ]
+    ],
+    "pre": []
+   },
+   "input_flag": null
+  },
+  "F7(iv) track_record_v1.json written 5 days ago": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F8(iii) scoreboard day_flags only for D-1": {
+   "status": 200,
+   "day": "2026-11-14",
+   "n_launches": 28,
+   "points": [
+    {
+     "key": "0005",
+     "method": "clean_nosite",
+     "fallback": "clean_nosite_fallback: arm 2 import erro",
+     "source": "results/web/predictions/2026-11-14_0005.json",
+     "made": "02:23 PT",
+     "late": true,
+     "top3": [
+      "1301510",
+      "1314543",
+      "1313358"
+     ],
+     "backtest_line": "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
+    },
+    {
+     "key": "PRE",
+     "method": "hybrid_vm",
+     "fallback": "live capture down; VM recorder only",
+     "source": "results/web/predictions/2026-11-14_prereveal.json",
+     "made": "03:49 PT",
+     "late": false,
+     "top3": [
+      "1313358",
+      "1301510",
+      "1314882"
+     ],
+     "backtest_line": "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads"
+    }
+   ],
+   "n yesterday ids shown": 0,
+   "freshness": {
+    "missing_points": [],
+    "board_stale": true,
+    "board_stale_label": "not updated since 10:56 PT"
+   },
+   "board": {
+    "as_of": "2026-11-14T18:56:59.165966+00:00",
+    "as_of_pt": "10:56 PT",
+    "votes_hidden": false,
+    "source": "Product Hunt API"
+   },
+   "why": {
+    "0005": "2026-11-14T08:00:00+00:00"
+   },
+   "accuracy": {
+    "mid": [
+     [
+      "live, previous model",
+      51.5,
+      11
+     ],
+     [
+      "replay with fixed inputs (not live)",
+      54.5,
+      11
+     ],
+     [
+      "backtest (183 days)",
+      58.1,
+      null
+     ]
+    ],
+    "pre": [
+     [
+      "replay",
+      72.2,
+      12
+     ],
+     [
+      "Product Hunt's hidden order alone",
+      72.2,
+      12
+     ]
+    ]
+   },
+   "input_flag": null
+  },
+  "F9 baseline weekly": {
+   "status": 200,
+   "week_monday": "2026-11-09",
+   "as_of_day": "2026-11-13",
+   "point": "running",
+   "written_at": "2026-11-14T14:31:34.001884+00:00",
+   "top3": [
+    "1288148",
+    "1307104",
+    "1305854"
+   ],
+   "month": {
+    "month": "2026-11",
+    "as_of_day": "2026-11-13",
+    "written_at": "2026-11-14T14:31:52.139271+00:00"
+   }
+  },
+  "F9(i) weekly_latest pointer missing": {
+   "status": 200,
+   "week_monday": "2026-11-09",
+   "as_of_day": "2026-11-13",
+   "point": "running_g",
+   "written_at": "2026-11-14T14:31:40.797941+00:00",
+   "top3": [
+    "1288148",
+    "1307104",
+    "1305854"
+   ],
+   "month": {
+    "month": "2026-11",
+    "as_of_day": "2026-11-13",
+    "written_at": "2026-11-14T14:31:52.139271+00:00"
+   }
+  },
+  "F9(iv) weekly_latest points at last week's file": {
+   "status": 200,
+   "week_monday": "2026-11-09",
+   "as_of_day": "2026-11-11",
+   "point": "R4",
+   "written_at": "2026-11-12T09:29:55.177732+00:00",
+   "top3": [
+    "1288148",
+    "1307104",
+    "1302788"
+   ],
+   "month": {
+    "month": "2026-11",
+    "as_of_day": "2026-11-13",
+    "written_at": "2026-11-14T14:31:52.139271+00:00"
+   }
+  },
+  "F9(iv') newest monthly_live is last month's": {
+   "status": 200,
+   "week_monday": "2026-11-09",
+   "as_of_day": "2026-11-13",
+   "point": "running",
+   "written_at": "2026-11-14T14:31:34.001884+00:00",
+   "top3": [
+    "1288148",
+    "1307104",
+    "1305854"
+   ],
+   "month": {
+    "month": "2026-10",
+    "as_of_day": "2026-10-31",
+    "written_at": "2026-11-14T14:31:52.139271+00:00"
+   }
+  }
+ }
+}
