@@ -67,6 +67,17 @@ for (pred, flag), g in S[S.status.isin(["scored", "excluded: fewer than 10 ranke
     if (g.status != "scored").any() and f"{pred} | {flag}" in summ:   # labelled extra, never the headline: every day incl. short lists
         summ[f"{pred} | {flag}"]["extra: all days incl. fewer than 10 ranked (not comparable to live)"] = {
             "n_days": int(len(g)), **{f"top{k} hits %": ci(g[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}}
+# 03:45 replay headline (orchestrator 15:45Z Nov 14): PH ops' 12-day leave-one-day-out check (claude/ph-ops-agent results/hybrid_lodo.md),
+# replacing the 11-day in-sample-weight figure; the per-day replay rows below stay as recorded. Point values as published by PH ops.
+LODO = {"method": "leave-one-day-out", "n_days": 12, "first/last day": ["2026-11-02", "2026-11-13"], "source": "claude/ph-ops-agent experiments/ph_predict/results/hybrid_lodo.md",
+        "day rule": DAY_RULE}
+if "03:45 PT | replay" in summ:
+    summ["03:45 PT | replay"]["superseded 11-day figure (weights fit on all days)"] = summ["03:45 PT | replay"].get("all days")
+summ["03:45 PT | replay"] = {**LODO, "line": "hybrid_vm (hidden top 5 + ridge slots 6+)", "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [77.5, None, None, 12]},
+                             "note": "top-10 edge over Product Hunt's hidden order +4.2 [0.0, +8.3], not yet established (12 days)",
+                             **({"superseded 11-day figure (weights fit on all days)": summ["03:45 PT | replay"]["superseded 11-day figure (weights fit on all days)"]} if "03:45 PT | replay" in summ and "superseded 11-day figure (weights fit on all days)" in summ["03:45 PT | replay"] else {})}
+summ["03:45 PT | replay (hidden rank alone)"] = {**LODO, "method": "no fitted weights", "line": "Product Hunt's hidden order at 03:00/03:45 read",
+                                                 "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [73.3, None, None, 12]}}
 out = {"version": "track_record_v1", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),
        "READ_ME": "backtest = model re-run on past days it was not trained on (00:05, Apr-Oct); replay = the 03:45 rule re-run on recorded "
                   "pre-reveal reads (Nov 2-12); live = what the site actually published, scored against the official daily rank. Never pool "
