@@ -86,3 +86,15 @@ header counts are stored. Anything less is not written, not counted, not reporte
 - The population agent messages the orchestrator only when something changes, plus one summary every 6 hours.
 - The public website comes first: an outage of any feed a public page depends on is reported to Shreyas as "the public page is
   stale since X", never only as a data-feed incident.
+
+## Rule for every agent: two more north-star metrics (Shreyas, Nov 14 2026)
+
+- **Coverage:** of the votes cast each day, the share cast by people in our store (complete people, each counted once per
+  launch). Reported daily by the population agent for all launches and for top-3 launches.
+- **Backer prediction:** of the held people who actually voted for a launch, the share we named in advance (recall at N,
+  N = the number of held backers). Measured forward nightly by E5; about 29% on Nov 13. Used for now as the proxy for
+  "representative voters who will vote".
+- Both are tracked next to daily / weekly / monthly top 3 / 5 / 10, and both should rise over time.
+- Already-complete people are kept current by a daily upvote refresh that reads only the Upvotes tab, newest first, down to
+  the first upvote already held (the diff), and appends the new upvotes. This is an update of a complete person, not a
+  new pull, so it does not conflict with "pulled whole or not at all".
