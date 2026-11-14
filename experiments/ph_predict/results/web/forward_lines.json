@@ -422,6 +422,28 @@
    "n_days": 11,
    "number_kind": "replay Nov 2-12 (E5 reports/prereveal_345 @ e0440a08); vs plain +0/+0/+3.6 [-0.9,+8.2]; vs hybrid 0/0/-1.8 [-7.3,+4.5]",
    "note": "E5 / orchestrator 01:02Z Nov 14; shadow only"
+  },
+  {
+   "point": "00:30",
+   "line": "hidden_0030 (shadow)",
+   "column": "pred_rank_hidden_0030 + pred_rank_hidden_plain (to be added to the 00:30 point)",
+   "inputs": "within-day rank of pred_arm2 (00:05) and hidden rank at T (recorder rank_now or posts_ts daily_rank_at_fetch, latest <= T in the agreed window)",
+   "frozen_weights": "w = 0.8 on the arm-2 rank (E5 leave-one-day-out, reports/early_hidden @ 5891ed3d)",
+   "frozen_date": "2026-11-14",
+   "status": "not established",
+   "number_kind": "replay Nov 2-12: +5.6 [0, +16.7] top 3 vs arm 2 (6 days); ~70-190 days to settle +5",
+   "note": "E5 / orchestrator 01:48Z Nov 14; log nightly, never published"
+  },
+  {
+   "point": "01:00",
+   "line": "hidden_0100 (shadow)",
+   "column": "pred_rank_hidden_0100 + pred_rank_hidden_plain (to be added to the 01:00 point)",
+   "inputs": "within-day rank of pred_arm2 (00:05) and hidden rank at T (recorder rank_now or posts_ts daily_rank_at_fetch, latest <= T in the agreed window)",
+   "frozen_weights": "w = 0.7 on the arm-2 rank (E5 leave-one-day-out, reports/early_hidden @ 5891ed3d)",
+   "frozen_date": "2026-11-14",
+   "status": "not established",
+   "number_kind": "replay Nov 2-12: +6.1 [-9, +21] top 3 vs arm 2 (11 days); ~70-190 days to settle +5",
+   "note": "E5 / orchestrator 01:48Z Nov 14; log nightly, never published"
   }
  ],
  "publish_pick": [
