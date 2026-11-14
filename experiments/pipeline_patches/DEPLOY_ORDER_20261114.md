@@ -1,0 +1,38 @@
+# Ordered deploy list for Shreyas (Nov 14, ~22:20Z). Every line runs ON usersim-pipeline as user agent; every file is staged there now.
+Each line needs Shreyas's direct word. None may run between 23:30 and 01:00 PT. Steps 1-2 are tonight's candidates; 3-7 come after.
+
+1. TODAY-ROWS FIX: `bash ~/w/today_rows.new/deploy_today_rows.sh deploy` (script cc69181a)
+   Changes: ph_predict/features.py 981c5ded -> 033d7bd7 (the line-up build reads only the target day's file; unlabelled rows never enter history).
+   It writes the fix-date marker ~/w/today_rows_fix.json (+ bucket copy).
+   Prerequisite: none. Refuses 23:30-01:00 PT. Rehearsal (`check`) passed at this md5.
+   Rollback: `bash ~/w/today_rows.new/deploy_today_rows.sh rollback` (restores 981c5ded, removes the marker). A killed deploy resumes on rerun.
+2. TWO PUBLISHED PREDICTIONS (12a.2): `bash ~/w/stage/b12a2/deploy_b12a.sh ~/w/stage/b12a2` (deploy_b12a.sh 3d87bfb4)
+   Changes: adds the 1-minute tick cron block; writes predictions/<d>_0005.json at 00:25 PT and <d>_prereveal.json at 03:50 PT from the VM.
+   Labels: live-prior hybrid. ~/w/tw12a becomes a symlink to a versioned tree.
+   Prerequisite: none (step 1 first is the safe order).
+   Rollback: `bash ~/w/stage/b12a2/deploy_b12a.sh rollback` (flips to the previous tree; on a first deploy it refuses: use `... remove` to take 12a off).
+3. FIXED-PRIOR HYBRID WEIGHTS + TABLE LABELS (12a.5): `bash ~/w/stage/b12a5/install_fixedprior_weights.sh ~/w/stage/b12a5` (installer 73911b63; deploy_b12a.sh cab1bd88)
+   Changes: weights 16912cd6 -> b8a59cdd (pinned, no silent revert); two_predictions ccb316f9 reads every label from north_star_table.json;
+   arm-3 label and named arm-3 failure.
+   Prerequisite: step 1's marker (refuses without it) and step 2.
+   Rollback: `bash ~/w/stage/b12a5/deploy_b12a.sh rollback` (back to the 12a.2 tree; the weights pin follows the restored tree).
+4. ARM-3 FILES, SHADOW ONLY: `bash ~/w/stage/arm3/deploy_arm3.sh install` (4731fe2e)
+   Changes: creates ~/w/arm3_live (E5 modules, bge-small offline cache). No PUBLISH file, so nothing published changes.
+   Prerequisite: none. Run BEFORE step 5, because live-code 2 then replaces its arm3_live.py with e62eae24.
+   Rollback: `bash ~/w/stage/arm3/deploy_arm3.sh rollback`.
+5. LIVE-CODE 2: `bash ~/w/livecode2.new/deploy_livecode2.sh deploy` (e49fdba6)
+   Changes: forecast.py 61538501 -> 3c7da1b5, arm2_live/h25_live.py e3af37b4 -> ff40d796, pipeline/daily.py 27f0578d -> 54456921, new input_guard.py
+   01547d5b, arm3_live.py -> e62eae24 (if step 4 ran). Brings in input guards, reproducible fits, explicit-day build, known launches kept,
+   ids from the parquet, one published-model name, and the arm-3 switch (inert without PUBLISH).
+   Prerequisite: step 1 (refuses unless features.py is 033d7bd7).
+   Rollback: `bash ~/w/livecode2.new/deploy_livecode2.sh rollback`.
+6. TIMED WRITES + E5 WRITERS (bundle 12.8): `cd ~/w/stage/b12_8 && bash deploy_b12.sh a6626fcf ee976fde` (985c6ef8)
+   Changes: the tw.sh scheduler (shadows, P points, why files and drivers, website files, E5's writers 79abe5d5 incl. the nightly truth job).
+   It exports the fix marker and WHY_LABEL_FROM_TABLE=1.
+   Prerequisite: steps 1 and 5 (its scripts expect live-code 2's parquet columns).
+   Rollback: `bash ~/w/stage/b12_8/deploy_b12.sh rollback` (restores the crontab backup; the tree is moved to backup_b12/).
+7. PUBLISH ARM 3 (only after E5's arm-3 night audit, passed at 5183b614, and Shreyas's separate word): `bash ~/w/stage/arm3/deploy_arm3.sh publish`
+   Changes: creates ~/w/arm3_live/PUBLISH, so from the next 00:05 run the published order is arm 3 and arm 2 stays as a shadow.
+   Evidence: pre-registered top 5 +1.5 [+0.2, +2.8] (2026) / +1.8 [+0.4, +3.1] (2025); top 3 not established.
+   Prerequisite: steps 3, 4 and 5.
+   Rollback: `bash ~/w/stage/arm3/deploy_arm3.sh unpublish` (arm 2 publishes again at the next 00:05).

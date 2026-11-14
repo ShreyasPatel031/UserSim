@@ -1,3 +1,9 @@
+# Bundle 12.8 (UNDEPLOYED; orchestrator 22:13Z Nov 14) = 12.7 with E5 vm_writers 79abe5d5 (e5_vm_writers_12_8.tgz: arm-2 logistic on
+"arm2 (arm3 failed)" nights). Replaces 12.7. New code tarball tw_code_a6626fcf.tgz (md5 ee976fde) carrying why_drivers' table-sourced second line.
+FINAL deploy line (on the VM, staged at ~/w/stage/b12_8): `cd ~/w/stage/b12_8 && bash deploy_b12.sh a6626fcf ee976fde` (deploy_b12.sh 985c6ef8).
+Checks 22:15Z (VM scratch b128, writes stubbed, tw.sh env): manifest OK; truth, track_record, prob_0005, prob_prereveal, period, period_score rc 0;
+period_score Oct 31 / Nov 8 rc 0; held_team_* rc 3 (no salt); 12 stubbed writes.
+
 # Bundle 12.7 (UNDEPLOYED; orchestrator 21:38Z Nov 14) = 12.6 with E5 vm_writers bc381a88 (e5_vm_writers_12_7.tgz). Replaces 12.6.
 E5's track_record job now runs truth_daily -> truth_crosscheck -> track_record (01:25 PT slot), so the truth files are rebuilt nightly. A separate
 run.sh job `truth` also exists; it is not scheduled separately here, because track_record covers it.
