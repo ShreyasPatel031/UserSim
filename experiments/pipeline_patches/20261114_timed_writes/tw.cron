@@ -1,28 +1,5 @@
-# Bundle 12 timed writes (installed by deploy_b12.sh between the BEGIN/END markers; times are Pacific). The VM runs 00:05-23:55 PT.
+# Bundle 12 (installed by deploy_b12.sh in its own exactly-matched block). The VM's Debian cron ignores CRON_TZ and the clock is UTC,
+# so cron runs tick12.sh every minute and it starts the jobs whose Pacific time is now (sched12.txt, DST-aware).
 # BEGIN usersim-b12
-CRON_TZ=America/Los_Angeles
-20 0 * * * bash /home/agent/w/tw/tw.sh shadow_clean
-30 0 * * * bash /home/agent/w/tw/tw.sh P030
-45 0 * * * bash /home/agent/w/tw/tw.sh P0
-0 1 * * * bash /home/agent/w/tw/tw.sh P1
-5 1 * * * bash /home/agent/w/tw/tw.sh shadow_h25; bash /home/agent/w/tw/tw.sh shadow_readable; bash /home/agent/w/tw/tw.sh e5; bash /home/agent/w/tw/tw.sh why
-10 1 * * * bash /home/agent/w/tw/tw.sh dayend; bash /home/agent/w/tw/tw.sh web_forecast; bash /home/agent/w/tw/tw.sh scoreboard
-0 2 * * * bash /home/agent/w/tw/tw.sh P2
-0 3 * * * bash /home/agent/w/tw/tw.sh P3
-45 3 * * * bash /home/agent/w/tw/tw.sh P345
-0 4 * * * bash /home/agent/w/tw/tw.sh P4
-5 4 * * * bash /home/agent/w/tw/tw.sh R0
-20 4 * * * bash /home/agent/w/tw/tw.sh R0q; bash /home/agent/w/tw/tw.sh weekly_est
-35 4 * * * bash /home/agent/w/tw/tw.sh R0h
-5 5 * * * bash /home/agent/w/tw/tw.sh R1; bash /home/agent/w/tw/tw.sh C05; bash /home/agent/w/tw/tw.sh V05
-5 6 * * * bash /home/agent/w/tw/tw.sh R2; bash /home/agent/w/tw/tw.sh C06
-5 8 * * * bash /home/agent/w/tw/tw.sh R4; bash /home/agent/w/tw/tw.sh V08
-10 8 * * * bash /home/agent/w/tw/tw.sh daily_scores; bash /home/agent/w/tw/tw.sh scoreboard
-5 10 * * * bash /home/agent/w/tw/tw.sh V10; bash /home/agent/w/tw/tw.sh why_after
-5 12 * * * bash /home/agent/w/tw/tw.sh C12; bash /home/agent/w/tw/tw.sh V12
-5 16 * * * bash /home/agent/w/tw/tw.sh C16
-30 22 * * * bash /home/agent/w/tw/tw.sh inputs_backup
-15 1 * * * VS_FIX=1 bash /home/agent/w/tw/tw.sh vs_check
-# catch-up: any write missed earlier (VM late start, missing input) is retried; every job skips when its output exists
-15 2,5,9,13,17,21 * * * for j in shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12; do bash /home/agent/w/tw/tw.sh $j; done
+* * * * * bash /home/agent/w/tw/tick12.sh
 # END usersim-b12

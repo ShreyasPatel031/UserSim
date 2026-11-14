@@ -1,0 +1,28 @@
+00:20 shadow_clean
+00:30 P030
+00:45 P0
+01:00 P1
+01:05 shadow_h25 shadow_readable e5 why
+01:10 dayend web_forecast scoreboard
+02:00 P2
+03:00 P3
+03:45 P345
+04:00 P4
+04:05 R0
+04:20 R0q weekly_est
+04:35 R0h
+05:05 R1 C05 V05
+06:05 R2 C06
+08:05 R4 V08
+08:10 daily_scores scoreboard
+10:05 V10 why_after
+12:05 C12 V12
+16:05 C16
+22:30 inputs_backup
+01:15 env:VS_FIX=1 vs_check
+02:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
+05:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
+09:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
+13:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
+17:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12
+21:15 catchup shadow_clean P030 P0 P1 P2 P3 P345 P4 shadow_h25 shadow_readable e5 why dayend R0 R0q R0h R1 R2 R4 C05 C06 C12 C16 V05 V08 V10 V12

@@ -1,19 +1,29 @@
 # Bundle 12a: the two published predictions, written on the VM (prepared 2026-11-14, NOT deployed)
 
 Shreyas (via the orchestrator, 00:52Z Nov 14): the predictions are exactly two, the midnight one and one before the reveal, and they must be stable.
-This split of bundle 12 is the minimum for that. Deploying needs Shreyas's direct word: it changes the VM crontab and adds two official
-Product Hunt API reads a day (the same query as the hourly recorder).
+This split of bundle 12 is the minimum for that. Deploying needs Shreyas's direct word: it changes the VM crontab and adds one official
+Product Hunt API read a day (03:45 PT; the same query as the hourly recorder, about 100 of the 6,250 points per 15 min).
 
-## What runs (Pacific time, VM crontab block `usersim-b12a`)
-| time | job | writes |
+## What runs (Pacific wall-clock time; review fixes of 01:55Z Nov 14 applied)
+The VM runs Debian cron 3.0pl1 with its clock on UTC, and that cron ignores CRON_TZ (review B4). So the crontab gets one line in its own
+block, `* * * * * bash /home/agent/w/tw12a/tick.sh`. Each minute, tick.sh starts the jobs in `sched12a.txt` whose America/Los_Angeles HH:MM is
+now (DST-aware). It also writes a heartbeat (`last_tick`, copied hourly to results/timed_writes/tick_12a.txt). The deploy waits for a tick to prove it.
+
+| PT | job | writes |
 |---|---|---|
-| 00:20 | midnight: waits for the pipeline's own `results/forecast_<d>.parquet` (up to 40 min; no API, no model run) | `results/web/predictions/<d>_0005.json` + `0005_latest.json` |
-| 03:45 | rec: one extra recorder read (pipeline/hourly.py `_snapshot`, same query, same lock; the hourly loop skips a 2nd read per hour) | raw/vote_snapshots/<d>.jsonl + warehouse part, as hourly |
-| 03:47 | prereveal: hybrid_vm from the 03:45 read | `results/web/predictions/<d>_prereveal.json` + `prereveal_latest.json` |
-| 23:50 | rec: day-close read (votes at 23:50 PT without the Data Feeder; the VM shuts down at 23:55) | as hourly |
+| 00:20, retry 00:35 | midnight: waits for the pipeline's own `results/forecast_<d>.parquet` (no API, no model run) | `results/web/predictions/<d>_0005.json` + `0005_latest.json` |
+| 03:45 | rec: one extra recorder read (pipeline/hourly.py `_snapshot`, same query and lock) | raw/vote_snapshots/<d>.jsonl + warehouse part |
+| 03:47, retry 03:52 | prereveal: hybrid_vm from the 03:45 read (reads up to 90 s after 03:45:00 count; the read used is in `inputs`) | `<d>_prereveal.json` + `prereveal_latest.json` |
 
-The midnight job runs inside 00:05-01:00 PT. It only reads the parquet the pipeline has already written and copies one JSON to the bucket.
-It makes no API call and runs no model.
+- A retry slot is skipped if the file already exists with no fallback.
+- Each run is retried once after 60 s and exits with the final rc (review B5).
+- Each run writes `results/timed_writes/status_12a_<job>.json` {job, day, rc, written_at, due_pt}. Due times for the freshness audit: midnight 00:25 PT, prereveal 03:50 PT.
+- **No 23:50 PT read (review B1):** the instance schedule stops the VM at 23:00 PT (`last -x`: down 07:00-08:05 UTC every day), so it would never run.
+  Cost: the VM's hourly series ends with the 23:00 PT read. The last hour of votes before close is not recorded by the VM; the label is
+  unaffected, since it is the official dailyRank. Moving the shutdown to 23:55 would add about 55 min of VM time a day (about $0.10), and that is an
+  instance-schedule change for Shreyas.
+- The 03:45 cut and every read window are built in America/Los_Angeles, not as offsets from midnight (review A9).
+- The midnight job runs inside 00:05-01:00 PT. It only reads the parquet the pipeline has already written and copies one JSON to the bucket.
 
 ## The before-reveal model: hybrid_vm (only VM-produced inputs)
 - Hidden top 5 = recorder `rank_now` order at 03:45 (the 03:00 read if no 03:45 read; reads must be within 65 min of 03:45 and after 23:55 PT).
@@ -39,5 +49,11 @@ Nov 12 and 13: midnight writes with model clean_nosite, fallback "clean_nosite (
 (Nov 14). Prereveal writes hybrid_vm with every input present (03:00 read; no 03:45 read existed yet). Launch names are present.
 
 ## Deploy / rollback
-`bash deploy_b12a.sh <this folder>` (outside 00:05-01:00 PT): it checks md5s, backs up the crontab, copies 5 files to /home/agent/w/tw12a,
-syntax-checks them, adds the cron block and checks that the @reboot run_daily line survived. `bash deploy_b12a.sh rollback` restores the crontab.
+`bash deploy_b12a.sh <this folder>`, outside 00:05-01:00 PT:
+- Checks the md5s and saves a timestamped crontab backup.
+- Refuses if the crontab is empty.
+- Copies the files to /home/agent/w/tw12a and syntax-checks them.
+- Replaces only the exactly-matched `usersim-b12a` block, so bundle 12's block and the @reboot line are untouched in either order (review B2).
+- Checks the @reboot run_daily line and waits for a tick.
+
+`bash deploy_b12a.sh rollback` removes only this block and moves the tree aside. It never restores a whole file, and it refuses if the result would lose the @reboot line (review B3).

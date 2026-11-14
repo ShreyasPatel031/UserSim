@@ -53,16 +53,19 @@ def midnight(d):
 
 
 def prereveal(d):
-    now = dt.datetime.now(dt.timezone.utc); t0 = pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC"); T = t0 + pd.Timedelta(hours=3.75)
+    now = dt.datetime.now(dt.timezone.utc); t0 = pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC")
+    ptc = lambda hm: pd.Timestamp(f"{d} {hm}", tz="America/Los_Angeles").tz_convert("UTC")   # wall-clock Pacific, DST-safe (review A9)
+    TOL = pd.Timedelta(seconds=int(os.environ.get("READ_TOL_S", "90")))   # the 03:45 read is stamped seconds after 03:45:00 (review A8)
     V, nm = names(d); inp = {}; fb = None
     if len(V):
         V["launch_id"] = V.launch_id.astype(str); V["a"] = pd.to_datetime(V["at"], utc=True); V = V.drop_duplicates(["launch_id", "at"]).dropna(subset=["rank_now"])
-    def at(h):
-        Tt = t0 + pd.Timedelta(hours=h)
-        s = V[(V.a <= Tt) & (V.a >= Tt - pd.Timedelta(minutes=65)) & (V.a >= t0 - pd.Timedelta(minutes=5))] if len(V) else V
+    def at(hm):
+        Tt = ptc(hm)
+        s = V[(V.a <= Tt + TOL) & (V.a >= Tt - pd.Timedelta(minutes=65)) & (V.a >= t0 - pd.Timedelta(minutes=5))] if len(V) else V
         return s.sort_values("a").groupby("launch_id").last() if len(s) else None
-    sT, s1 = at(3.75), at(1.0)
-    inp["recorder_T"] = f"present ({sT.a.max():%H:%MZ})" if sT is not None else "missing"; inp["recorder_0100"] = "present" if s1 is not None else "missing"
+    sT, s1 = at("03:45"), at("01:00")
+    rd = lambda x: x.a.max().tz_convert("America/Los_Angeles").strftime("%H:%M:%S PT") if x is not None else None
+    inp["recorder_T"] = f"present (read {rd(sT)})" if sT is not None else "missing"; inp["recorder_0100"] = f"present (read {rd(s1)})" if s1 is not None else "missing"
     F = forecast(d); inp["forecast_parquet"] = "present" if F is not None and len(F) else "missing"
     fz = f"{TW}/hybrid_vmonly_P345_20261114.json"; inp["weights"] = "present" if os.path.exists(fz) else "missing"
     if sT is None:
