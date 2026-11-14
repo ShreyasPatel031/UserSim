@@ -814,3 +814,18 @@ def test_explain_route_without_file(monkeypatch):
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
     r = TestClient(app).get("/api/ph/explain?day=2026-11-14")
     assert r.status_code == 200 and r.json() == {"launches": {}}
+
+
+def test_explain_who_actually_and_block_labels(monkeypatch):
+    j = {"launches": {"11": {"name": "X",
+            "who_actually": {"segments": [{"segment": "developers", "n_held_backers": 65}, {"segment": "tiny", "n_held_backers": 7}],
+                             "observed_held_backers": 214, "displayed_votes": 301, "observed_over_displayed": 0.711,
+                             "held_people_reread_after_the_day": 57408, "held_people_total": 81131,
+                             "accuracy_label": "observed after the fact; a floor"},
+            "competitors": {"items": [{"name": "R", "similarity": 0.7}], "accuracy_label": {"predictive_value": "descriptive"}}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: j if path.endswith("explain/2026-11-07.json") else None)
+    e = live.explain("2026-11-07", {"11"})
+    wa = e["launches"]["11"]["who_actually"]
+    assert wa["segments"] == [{"segment": "developers", "n_held_backers": 65}] and wa["observed_over_displayed"] == 0.711
+    assert "accuracy_label" not in wa and e["labels"]["who_actually"]["text"].startswith("observed")
+    assert e["labels"]["competitors"]["predictive_value"] == "descriptive"
