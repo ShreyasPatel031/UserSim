@@ -749,3 +749,10 @@ def test_rank_gaps_and_ties_are_not_incomplete(monkeypatch):
     import pytest as _pt
     with _pt.raises(ph_live.Upstream):
         ph_live._fetch_upstream("2026-11-14")                                     # paging failure: last good is served
+
+
+def test_input_flag_per_day(monkeypatch):
+    sb = {"day_flags": {"2026-11-10": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: sb if path.endswith("scoreboard.json") else None)
+    assert live.input_flag("2026-11-10").startswith("built on polluted hunter-history inputs")
+    assert live.input_flag("2026-10-20") is None

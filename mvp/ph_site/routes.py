@@ -100,6 +100,10 @@ async def _ph_today(day: str | None):
         view["accuracy"] = await asyncio.to_thread(live.accuracy)
     except Exception:  # noqa: BLE001 - the accuracy line is optional
         view["accuracy"] = {}
+    try:
+        view["input_flag"] = await asyncio.to_thread(live.input_flag, d)
+    except Exception:  # noqa: BLE001 - the input warning is optional
+        view["input_flag"] = None
     return _json(view, 60)
 
 

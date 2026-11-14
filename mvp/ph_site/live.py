@@ -365,6 +365,14 @@ def _p345(day: str) -> dict | None:
             "source": f"results/early_forecast/{day}_P345.json"}
 
 
+def input_flag(day: str) -> str | None:
+    """PH ops' per-day input warning for the 00:05 and pre-reveal predictions (scoreboard.json day_flags), e.g.
+    'built on polluted hunter-history inputs (today-rows bug, fix not yet live)'. Plain text only, capped."""
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+    f = (sb.get("day_flags") or {}).get(day) if isinstance(sb.get("day_flags"), dict) else None
+    return _clean_text(f)[:160] if isinstance(f, str) and f.strip() else None
+
+
 def accuracy() -> dict:
     """Track record of the two published predictions (E5, tmp/e5/website/track_record_v1.json): one block per
     prediction and flag (backtest / replay / live), never pooled across flags."""

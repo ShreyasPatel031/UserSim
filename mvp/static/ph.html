@@ -181,7 +181,8 @@ function accLine(){
       || p.backtest_line || "";
     if(acc && p.fallback) acc += " (this day used a fallback)";
   }
-  $("#acc").textContent = `${name}${made}${fb}${acc ? " — " + acc : ""}`;
+  const flag = VIEW.input_flag ? ` · Note: this day's prediction was ${VIEW.input_flag}` : "";
+  $("#acc").textContent = `${name}${made}${fb}${acc ? " — " + acc : ""}${flag}`;
 }
 function metric(){
   const rows = ((VIEW.accuracy||{}).mid) || [];
