@@ -48,6 +48,10 @@ def main():
     for d_, g_ in TWn.dropna(subset=["clean_v3_nosite"]).groupby("day"):
         if d_ >= "2026-10-25" and d_ not in clean:
             clean[d_] = dict(zip(g_.id, g_.clean_v3_nosite)); CLSUB.add(d_)
+    if os.environ.get("CLEAN_PRIOR"):   # today-rows replay (orchestrator 17:34Z Nov 14): as-of-night clean_nosite replaces the prior where it exists
+        _p, _c = os.environ["CLEAN_PRIOR"].rsplit(":", 1); _X = pd.read_parquet(_p); _X["id"] = _X.id.astype(str)
+        for d_, g_ in _X.groupby("day"): clean[d_] = dict(zip(g_.id, g_[_c]))
+        print("CLEAN_PRIOR", os.environ["CLEAN_PRIOR"], "days", _X.day.nunique(), flush=True)
     A2 = pd.read_parquet(f"{HERE}/results/history_retrain_decomp_preds_nov_arm2.parquet"); A2["id"] = A2.id.astype(str)
     arm2 = {d: dict(zip(g.id, g.both)) for d, g in A2.groupby("day")}
     FZ = json.load(open(f"{HERE}/results/frozen/prereveal_hr_clean_20261113.json"))["points"]
@@ -161,7 +165,8 @@ def main():
             m, lo, hi = ci(X_, H_)
             md.append(f"| {p} | {nm} | {len(dd)} | {X_[:,0].mean():.1f} | {X_[:,1].mean():.1f} | {X_[:,2].mean():.1f} | " + " / ".join(f"{m[k]:+.1f} [{lo[k]:+.1f}, {hi[k]:+.1f}]" for k in range(3)) + " |")
     md += ["", "## Rule-5 check (all days interval > 0 AND same sign on the new days; top 3 not worse)", ""] + [f"- {v}" for v in verdict]
-    open(f"{HERE}/results/prereveal_12day.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
+    md.insert(1, f"CLEAN_PRIOR = {os.environ.get('CLEAN_PRIOR')}") if os.environ.get("CLEAN_PRIOR") else None
+    open(f"{HERE}/results/prereveal_12day{os.environ.get('TAG', '')}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
 if __name__ == "__main__":
