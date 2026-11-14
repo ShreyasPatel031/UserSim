@@ -1,0 +1,13 @@
+--- a/experiments/ph_predict/forecast.py (VM 61538501)
++++ b/experiments/ph_predict/forecast.py
+@@ -7,7 +7,9 @@
+ import llm
+ 
+ day = sys.argv[1]
+-df0 = F.build(include_today=True)
++df0 = F.build(include_today=day)   # TODAY-ROWS FIX: this day's line-up only (data/today/<day>.json), never the newest other file
++if not (df0.is_today & (df0.day == day)).any():   # no line-up for this day: stop here; no forecast_<day> file, so the 00:05 writer reports none_available
++    sys.exit(f"no line-up for {day}: data/today/{day}.json missing or empty")
+ for mode in ("pitch", "site", "brand", "full"):  # same blind LLM judgements as the backtest rows get
+     llm.run_day(day, df0[df0.day == day], mode)
+ df = RN.load_llm(df0)

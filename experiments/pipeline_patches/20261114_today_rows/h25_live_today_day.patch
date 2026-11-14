@@ -1,0 +1,11 @@
+--- a/arm2_live/h25_live.py (VM e3af37b4)
++++ b/arm2_live/h25_live.py
+@@ -24,7 +24,7 @@
+         if not os.path.exists(dst): os.symlink(os.path.abspath(fn), dst)
+     F.D = root
+     try:
+-        df = RN.load_llm(F.build(include_today=True))
++        df = RN.load_llm(F.build(include_today=day))   # TODAY-ROWS FIX: this day's line-up only; missing -> empty test set -> RuntimeError below -> forecast.py fallback
+     finally:
+         F.D = real
+     df["id"] = df.id.astype(str); old = df.day < "2026-01-01"

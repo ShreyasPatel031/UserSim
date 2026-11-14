@@ -17,5 +17,14 @@ Test: test_today_rows.py (live-style frame from the real data dir with all 18 to
 (425 stale today rows; 7 of 11 rel NaN; 423 same-day counts). Patched: PASS (28 today rows = the test day).
 arm2_diff.py: Nov 14 arm-2 order with current vs fixed features (scratch roots only).
 
+Missing line-up (orchestrator 16:35Z): the callers now pass the day, include_today=day (forecast.py 61538501 -> 2641e01b, forecast_today_day.patch;
+arm2_live/h25_live.py e3af37b4 -> 9ed1c7c4, h25_live_today_day.patch). If data/today/<d>.json is missing, the build has no today rows.
+- forecast.py exits non-zero before the LLM step: "no line-up for <d>". No forecast_<d> file is written, so two_predictions reports none_available.
+- h25_live: the test set is empty, so it raises RuntimeError and forecast.py falls back (it also stops on the line above).
+Even before this change, rows keep their own file date, and both callers select day == d. So a missing line-up never ranked yesterday's line-up as today's;
+it gave an empty test set (old code: forecast.py failed later in the fit). Test check 4 (d2 = 2026-11-15, no file): the explicit-day build has
+0 today rows, and the newest-file build has 0 rows dated d2. PASS.
+Overlap: forecast.py is also patched by input_guards, arm3_shadow and repro; this hunk is line 10 only.
+
 Deploy: copy features.py to ~/w/experiments/ph_predict/ (h25_live imports it from there). Needs Shreyas's direct word.
 Overlap: no other undeployed bundle patches features.py.
