@@ -13,3 +13,6 @@ All four take the ph-ops checkout root and exit 0 when fixed.
 - repro_A12.py: import_gate.py on the Nov 14 missing ctrl/honest case.
 
 All pass on d9b9a96f (two_predictions.py 0f17e09e). A9–A11 fail on 263785f8 as expected; A12 tests a file new in d9b9a96f.
+
+## Bundle 12a.1 (0bc2ef0d, folder 20261114_two_predictions_12a1)
+repro_A13.py: with no pred_arm3 column (or a partly filled one, or pred_arm2 all NaN, or no parquet), 12a.1 writes the same 0005 and prereveal JSON as the verified 12a, apart from written_at. A9-A12 were re-run against the 12a1 folder; all pass.
