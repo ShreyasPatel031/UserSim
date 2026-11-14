@@ -11,6 +11,7 @@ Only product fields (id, name, tagline, slug, topics) and counts leave this modu
 """
 from __future__ import annotations
 
+import math
 import ast
 import json
 import re
@@ -329,12 +330,15 @@ def _published(day: str, kind: str) -> dict | None:
     j = gcs.read_json(f"results/web/predictions/{day}_{kind}.json", ttl=120)
     if not isinstance(j, dict) or str(j.get("day")) != day or not isinstance(j.get("ranking"), list):
         return None
-    ranks = {}
+    ranks, exp = {}, {}
     for r in j["ranking"]:
         try:
             ranks[str(r["id"])] = int(r["rank"])
         except (KeyError, TypeError, ValueError):
             continue
+        # 00:05 score = the launch model's expected log1p(day-end votes) (PH ops model.py / features.py logv).
+        if kind == "0005" and isinstance(r.get("score"), (int, float)) and 0 < r["score"] < 12:
+            exp[str(r["id"])] = int(round(math.expm1(float(r["score"]))))
     none = str(j.get("model") or "") == "none_available" or str(j.get("fallback_used") or "") == "none_available"
     if not ranks and not none:
         return None
@@ -342,7 +346,8 @@ def _published(day: str, kind: str) -> dict | None:
     return {"ranks": ranks, "made_at": j.get("written_at", ""), "method": str(j.get("model") or "")[:80],
             "data_up_to": datetime.fromisoformat(day).replace(hour=cut_h, minute=cut_m, tzinfo=PT).isoformat(),
             "fallback": "none_available" if none else (str(j.get("fallback_used"))[:40] if j.get("fallback_used") else None),
-            "backtest_line": str(j.get("backtest") or "")[:200], "exp_votes": None,
+            "backtest_line": str(j.get("backtest") or "")[:200], "exp_votes": exp or None,
+            "vote_err": (claims().get("vote_error_0005") or {}).get("text") if exp else None,
             "source": f"results/web/predictions/{day}_{kind}.json"}
 
 
@@ -386,7 +391,9 @@ def accuracy() -> dict:
             row = {"flag": flag, "top3": a["top3 hits %"][0], "top5": a["top5 hits %"][0], "top10": a["top10 hits %"][0],
                    "days": a["top10 hits %"][3]}
             if (b or {}).get("note"):
-                row["note"] = str(b["note"])
+                n = str(b["note"])
+                n = n.split(" (settled")[0] if len(n) > 160 else n      # keep the headline of a long note
+                row["note"] = n if len(n) <= 160 else n[:157].rsplit(" ", 1)[0] + "…"
         except (KeyError, IndexError, TypeError):
             continue
         if tab == "mid" and flag == "live, previous published model":
@@ -753,7 +760,7 @@ def day_view(day: str) -> dict:
         except (ValueError, TypeError):
             pass
         points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "late": late, "top3_conf": conf,
-                       "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "made_at": f.get("made_at"),
+                       "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "vote_err": f.get("vote_err"), "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
                        "ranks": f["ranks"], "score": score, "fallback": f.get("fallback"), "source": f.get("source"),
                        "backtest_line": f.get("backtest_line")})

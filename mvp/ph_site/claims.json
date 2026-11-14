@@ -238,5 +238,25 @@
   "label": "deployed 00:05 model (arm 2), walk-forward backtest Apr–Oct 2026, days with at least 10 launches ranked",
   "source": "E5 tmp/e5/website/track_record_v1.json (day rule: 10+ ranked launches), 2026-11-14",
   "date": "2026-11-14"
+ },
+ "vote_error_0005": {
+  "text": "est. = midnight model's expected day-end votes; typical error ±19% (±32% for top-10 finishers), 7 days",
+  "values": {
+   "mdape_all": 19.2,
+   "band80_all": [
+    0.66,
+    1.44
+   ],
+   "mdape_top10": 31.6,
+   "band80_top10": [
+    0.44,
+    1.45
+   ],
+   "n": 197,
+   "days": 7
+  },
+  "label": "expm1 of the 00:05 launch model's log1p-votes prediction (raw/daily/<d>/forecast_<d>.parquet pred) vs final Product Hunt votes (site/live_board/<d>.json, final), Nov 4 and 8-13",
+  "source": "website agent, computed 2026-11-14",
+  "date": "2026-11-14"
  }
 }
