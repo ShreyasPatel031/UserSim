@@ -1,0 +1,31 @@
+{
+ "day": "2026-11-14",
+ "status": "FAIL",
+ "counts": {
+  "posts": 306,
+  "fallback_post_rows": 0,
+  "snapshots": 11,
+  "launches": 28,
+  "absent_unread": 0,
+  "byid_rows": 0,
+  "vote_drops": 0,
+  "roster": 28,
+  "roster_source": "pipeline list (createdAt in PT day)",
+  "not_this_day_rows": 0,
+  "not_this_day_launches": 0
+ },
+ "fail": [
+  "posts: missing columns ['slug']",
+  "coverage_ts.jsonl missing",
+  "10 snapshot gaps > 20 min: 08:06-09:00Z, 09:00-10:00Z, 10:00-11:00Z, 11:00-12:00Z, 12:00-13:00Z, 13:00-14:00Z",
+  "capture stale: no snapshot since 18:00Z (144 min)"
+ ],
+ "warn": [
+  "comments_ts.jsonl missing",
+  "board_ts.jsonl missing",
+  "people_ts.jsonl missing",
+  "products_ts.jsonl missing",
+  "api_comments/ missing"
+ ],
+ "checked_at": "2026-11-14T20:23:31Z"
+}
