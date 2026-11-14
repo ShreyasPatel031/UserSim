@@ -9,8 +9,18 @@ import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.dirname(HERE))
 from pipeline import warehouse as W
 R = lambda p: os.path.join(HERE, "results", p)
-Rk = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
-Rk["day"] = Rk.day.astype(str).str[:10]; TRUTH = {d: g.sort_values("daily_rank") for d, g in Rk.groupby("day")}
+# THE single truth source (orchestrator 20:54Z / 21:38Z): E5's results/web/truth_daily.json (first warehouse part after the PT close).
+# Fallback, flagged in every row, only if that file cannot be read: the warehouse launches table.
+_TD = subprocess.run(["gsutil", "cat", "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/truth_daily.json"], capture_output=True, text=True)
+TRUTH_SRC = "results/web/truth_daily.json (E5: first warehouse part after the PT close)"
+try:
+    _T = json.loads(_TD.stdout)["days"]
+    TRUTH = {d: pd.DataFrame({"id": list(v["ranks"].keys()), "daily_rank": list(v["ranks"].values())}).sort_values("daily_rank") for d, v in _T.items()}
+    TRUTH_FLAGS = {d: v.get("flags", []) for d, v in _T.items()}
+except Exception:
+    Rk = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
+    Rk["day"] = Rk.day.astype(str).str[:10]; TRUTH = {d: g.sort_values("daily_rank") for d, g in Rk.groupby("day")}; TRUTH_FLAGS = {}
+    TRUTH_SRC = "FALLBACK warehouse launches.daily_rank (truth_daily.json unreadable)"
 def hk(order, d):
     g = TRUTH.get(d)
     if g is None or len(g) < 10: return None
@@ -37,6 +47,26 @@ if os.path.exists(R("arm3_vs_arm2_preds.parquet")):
             h = hk(g.sort_values([col, "id"], ascending=[False, True]).id.tolist(), d)
             if h is not None: H.append(h); D.append(d)
         rows.append(row("0005", model, "backtest, month-forward Apr-Oct 2026, 20 seeds, pre-registered harness", H, D, "results/arm3_vs_arm2_preds.parquet"))
+if os.path.exists(R("arm3_vs_arm2_preds.parquet")):
+    PP = pd.read_parquet(R("arm3_vs_arm2_preds.parquet")); PP["id"] = PP.id.astype(str); rng = np.random.default_rng(0)
+    for yr in ("2026", "2025"):
+        X_, D_ = [], []
+        for d, g in PP[PP.year == yr].groupby("day"):
+            if yr == "2026":
+                a = hk(g.sort_values(["arm2", "id"], ascending=[False, True]).id.tolist(), d); b = hk(g.sort_values(["arm3", "id"], ascending=[False, True]).id.tolist(), d)
+            else:
+                r_ = pd.to_numeric(g.dailyRank, errors="coerce")
+                if r_.notna().sum() < 10: continue
+                f_ = lambda c: [len(set(g.sort_values([c, "id"], ascending=[False, True]).id[:k]) & set(g.id[r_ <= k])) / k * 100 for k in (3, 5, 10)]
+                a, b = f_("arm2"), f_("arm3")
+            if a is None: continue
+            X_.append(np.array(b) - np.array(a)); D_.append(d)
+        X_ = np.array(X_); bs = np.array([X_[rng.integers(0, len(X_), len(X_))].mean(0) for _ in range(10000)])
+        ci = {f"top{k}": [round(float(X_[:, i].mean()), 1), round(float(np.percentile(bs[:, i], 2.5)), 1), round(float(np.percentile(bs[:, i], 97.5)), 1)] for i, k in enumerate((3, 5, 10))}
+        rows.append({"point": "0005", "model": "arm3 - arm2 (paired)", "method": f"pre-registered: primary top 5, secondary top 10; {yr} month-forward, 20 seeds",
+                     "top3": ci["top3"][0], "top5": ci["top5"][0], "top10": ci["top10"][0], "ci95": ci, "n_days": int(len(X_)), "first_day": min(D_), "last_day": max(D_),
+                     "rule": "difference in points, paired day bootstrap 10,000" + ("" if yr == "2026" else "; truth = the 2025 lists' dailyRank (not in the truth file)"),
+                     "source": "results/arm3_vs_arm2_preds.parquet"})
 # explanation model (why drivers): readable v2 stumps, column b of the backtest predictions (no th_n_pre: the th_n_pre variant's orders are not stored)
 if os.path.exists(R("readable_preds_v2.parquet")):
     Rd = pd.read_parquet(R("readable_preds_v2.parquet")); Rd["id"] = Rd.id.astype(str); H, D = [], []
@@ -74,7 +104,7 @@ if os.path.exists(R("weekly_board_pred_days.csv")):
                  "source": "results/weekly_board_pred_days.csv"})
 rows.append({"point": "monthly", "model": "board", "method": "not yet scored (first score Dec 1)", "top3": None, "top5": None, "top10": None, "n_days": 0,
              "first_day": None, "last_day": None, "rule": "official monthly_rank", "source": None})
-out = {"computed_at": pd.Timestamp.now(tz="UTC").isoformat(), "truth": "warehouse launches.daily_rank (final), rank <= k; unranked picks are misses", "rows": rows}
+out = {"computed_at": pd.Timestamp.now(tz="UTC").isoformat(), "truth": TRUTH_SRC + "; rank <= k; >= 10 ranked; unranked picks are misses", "rows": rows}
 p = R("web/north_star_table.json"); json.dump(out, open(p, "w"), indent=1)
 subprocess.run(["gsutil", "-q", "cp", p, "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/north_star_table.json"], check=False)
 for r in rows: print(f"{r['point']:9s} {r['model']:32s} {r['top3']} / {r['top5']} / {r['top10']}  n={r['n_days']} {r['first_day']}..{r['last_day']}")
