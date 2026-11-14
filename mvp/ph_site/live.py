@@ -410,7 +410,7 @@ def accuracy() -> dict:
     for r in out["pre"]:
         if r["flag"] == "replay (hidden rank alone)":
             r["flag"] = "Product Hunt's hidden order alone"
-    order = {"live": 0, "live, previous model": 1, "backtest (Sep–Oct)": 3, "replay": 4,
+    order = {"live": 0, "live, previous model": 1, "replay with fixed inputs (not live)": 1.5, "backtest (Sep–Oct)": 3, "replay": 4,
              "Product Hunt's hidden order alone": 5}
     for v in out.values():
         v.sort(key=lambda r: order.get(r["flag"], 2))

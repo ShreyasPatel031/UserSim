@@ -214,10 +214,17 @@
     "top10": 76.4,
     "days": 59,
     "approx": true
+   },
+   {
+    "flag": "replay with fixed inputs (not live)",
+    "top3": 54.5,
+    "top5": 61.8,
+    "top10": 73.6,
+    "days": 11
    }
   ],
   "label": "00:05 PT tab: deployed arm 2 backtest Sep–Oct 2026, days with 10+ ranked launches; the live row is read from E5's track record ('live, previous published model', scoreboard figures) and carries PH ops' input flag",
-  "source": "E5 reports/drift_0005 (27ad976b); live row and flag per orchestrator via PH ops, 2026-11-14",
+  "source": "E5 reports/drift_0005 (27ad976b); live row and flag per orchestrator via PH ops, 2026-11-14; fixed-input replay: PH ops experiments/ph_predict/results/today_rows_replay.md (361fe1eb)",
   "date": "2026-11-14",
   "live_note": "built on polluted hunter-history inputs, Oct 26–Nov 13; old full model through Nov 12"
  },

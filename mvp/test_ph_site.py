@@ -578,7 +578,9 @@ def test_midnight_accuracy_rows_never_pooled(monkeypatch):
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
     a = live.accuracy()
     flags = [r["flag"] for r in a["mid"]]
-    assert flags == ["live, previous model", "backtest (214 days)", "backtest (Sep–Oct)"]
+    assert flags == ["live, previous model", "replay with fixed inputs (not live)", "backtest (214 days)", "backtest (Sep–Oct)"]
+    fixed = a["mid"][1]
+    assert (fixed["top3"], fixed["top5"], fixed["top10"], fixed["days"]) == (54.5, 61.8, 73.6, 11) and "note" not in fixed
     assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 59
     live_prev = a["mid"][0]
     assert (live_prev["top10"], live_prev["days"]) == (73.6, 11) and "polluted hunter-history inputs" in live_prev["note"]
