@@ -1,0 +1,181 @@
+{
+ "day": "2026-11-13",
+ "model": "gemini-decision-1",
+ "lineup": 20,
+ "scored": 20,
+ "missing_rank": 0,
+ "topk": {
+  "clean": {
+   "top3": [
+    66.7,
+    20.8,
+    93.9,
+    2
+   ],
+   "top5": [
+    80.0,
+    37.6,
+    96.4,
+    4
+   ],
+   "top10": [
+    80.0,
+    49.0,
+    94.3,
+    8
+   ]
+  },
+  "decisions_p_top10": {
+   "top3": [
+    33.3,
+    6.1,
+    79.2,
+    1
+   ],
+   "top5": [
+    40.0,
+    11.8,
+    76.9,
+    2
+   ],
+   "top10": [
+    70.0,
+    39.7,
+    89.2,
+    7
+   ]
+  },
+  "decisions_p_top3": {
+   "top3": [
+    33.3,
+    6.1,
+    79.2,
+    1
+   ],
+   "top5": [
+    40.0,
+    11.8,
+    76.9,
+    2
+   ],
+   "top10": [
+    70.0,
+    39.7,
+    89.2,
+    7
+   ]
+  }
+ },
+ "pairwise_all": {
+  "clean": [
+   82.6,
+   75.6,
+   89.4
+  ],
+  "decisions_p_top10": [
+   71.6,
+   58.1,
+   83.3
+  ],
+  "decisions_p_top3": [
+   72.6,
+   60.6,
+   83.3
+  ],
+  "decisions_p_top10 - clean": [
+   -11.1,
+   -26.4,
+   2.6
+  ]
+ },
+ "pairwise_ranks_2_8": {
+  "n_pairs": 21,
+  "decisions": [
+   42.9,
+   24.5,
+   63.5,
+   9
+  ],
+  "clean": [
+   81.0,
+   60.0,
+   92.3,
+   17
+  ],
+  "decisions - clean": [
+   -38.1,
+   -61.9,
+   -14.3
+  ],
+  "order_consistency (|p_ab - (1-p_ba)| mean)": 0.035
+ },
+ "calibration": {
+  "top10": {
+   "actual_rate": 0.5,
+   "mean_stated_decisions": 0.366,
+   "mean_stated_e5": 0.5,
+   "brier_decisions": [
+    0.2169,
+    0.1528,
+    0.288
+   ],
+   "brier_e5": [
+    0.1238,
+    0.0483,
+    0.2219
+   ],
+   "brier_base_rate (in-sample)": 0.25,
+   "decisions - e5": [
+    0.0932,
+    -0.0058,
+    0.1866
+   ],
+   "decisions by stated halves [stated, actual, n]": [
+    [
+     0.26,
+     0.3,
+     10
+    ],
+    [
+     0.47,
+     0.7,
+     10
+    ]
+   ]
+  },
+  "top3": {
+   "actual_rate": 0.15,
+   "mean_stated_decisions": 0.236,
+   "mean_stated_e5": 0.15,
+   "brier_decisions": [
+    0.1146,
+    0.0474,
+    0.1996
+   ],
+   "brier_e5": [
+    0.0822,
+    0.0203,
+    0.1599
+   ],
+   "brier_base_rate (in-sample)": 0.1275,
+   "decisions - e5": [
+    0.0324,
+    -0.0429,
+    0.0936
+   ],
+   "decisions by stated halves [stated, actual, n]": [
+    [
+     0.14,
+     0.1,
+     10
+    ],
+    [
+     0.33,
+     0.2,
+     10
+    ]
+   ]
+  }
+ },
+ "note": "One day, n=20; intervals are within-day only. E5 probabilities for 2026-11-13 came from the rank-table fallback on the clean order (no scores were published that night), so they rank like clean."
+}

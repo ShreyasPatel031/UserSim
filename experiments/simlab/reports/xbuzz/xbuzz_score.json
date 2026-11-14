@@ -1,0 +1,75 @@
+{
+ "design": "Score Grok Bot's pre-launch X-buzz count against final daily rank (orchestrator 08:34Z Nov 13). No LLM.\nBuzz: raw/ph_at_launch/<day>/x_buzz_backfill.jsonl if present, else x_buzz_0010.jsonl (post_count in the 48 h before launch; slug-keyed,\nmapped to launch ids by the 00:05 read / warehouse launches). Missing launches count as 0 posts (reported).\nBase: clean_v3_nosite (PH agent clean_live_rows_nosite.parquet, origin/claude/ph-ops-agent) where the day is held, else the deployed\n00:05 pred (raw/daily/<day>/forecast_<day>.parquet), labelled. th_n_pre is not held for these days. Final rank: warehouse launches\n(daily_rank, synced), fallback the clean rows' rank.\nPer day: Spearman(log1p posts, -rank); partial beyond the base (within-day rank residuals); top 3/5/10 of base vs base + w z(log1p\nposts) (w leave-day-out from {0, .25, .5, 1, 2} by mean top3+top5 on the other days; with one day, every w is shown) vs RULE_t (launches\nwith posts >= t first by count, the rest by base; t fixed at 100 and 1,000); blind spot = launches the base ranks outside its top 5\nthat finish top 3, and how many of them buzz flags (>= 100 / >= 1,000 posts). Paired day bootstrap when >= 3 days.",
+ "days": {
+  "2026-11-13": {
+   "buzz_file": "0010",
+   "base": "deployed 00:05 pred",
+   "launches_scored": 20,
+   "buzz_missing_as_0": 0,
+   "buzz_rows": 20
+  }
+ },
+ "per_day": {
+  "2026-11-13": {
+   "spearman_buzz": 0.147,
+   "spearman_base": 0.829,
+   "partial_buzz_beyond_base": -0.211,
+   "top3/5/10": {
+    "base": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "w0": [
+     66.66666666666666,
+     80.0,
+     80.0
+    ],
+    "w0.25": [
+     33.33333333333333,
+     80.0,
+     80.0
+    ],
+    "w0.5": [
+     33.33333333333333,
+     80.0,
+     80.0
+    ],
+    "w1": [
+     33.33333333333333,
+     60.0,
+     80.0
+    ],
+    "w2": [
+     33.33333333333333,
+     20.0,
+     80.0
+    ],
+    "rule100": [
+     33.33333333333333,
+     40.0,
+     80.0
+    ],
+    "rule1000": [
+     33.33333333333333,
+     80.0,
+     80.0
+    ]
+   },
+   "blind_spot_top3_outside_base_top5": 0,
+   "flagged_by_buzz >=100 / >=1000": [
+    0,
+    0
+   ],
+   "launches_with_posts >=100 / >=1000": [
+    4,
+    2
+   ]
+  }
+ },
+ "days_needed_top3_gain_5pts": {
+  "assumed_per_day_sd": 16.0,
+  "n_days": 81,
+  "note": "two-sided 5%, 80% power; a 10-point gain needs about a quarter of that"
+ }
+}
