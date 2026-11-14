@@ -1,6 +1,6 @@
 # Bundle 12: timed writes as cron jobs on the pipeline VM (prepared 2026-11-13, NOT deployed)
 
-> The tarball eecc0f55 / ff04f7b9 predates the inputs_backup job (997a2487) and hr_clean_arm2; it is rebuilt with both on Nov 14 morning and this README gets the new commit + md5 before any deploy.
+> Tarball rebuilt 13:10Z Nov 14 at 88b350e8 (md5 2011af51): inputs_backup, vs_check, import gate, E5 vm_writers jobs. NOT yet in it: the comment_forecast shadow columns (hr_clean_arm2 / slots6_prior / hidden_0030 / hidden_0100) and why_drivers SHAP groups; a rebuild follows those and this pin changes again before any deploy.
 
 Asked by the orchestrator at 22:45Z Nov 13. Deploying needs Shreyas's direct word.
 
@@ -12,8 +12,8 @@ usersim-pipeline at their real clock times. No session is needed. The session's 
 its output exists, so both can run.
 
 ## What it installs (nothing of the deployed pipeline is changed)
-- `/home/agent/w/tw/`: code from a pinned tarball `gs://.../deploy/b12/tw_code_eecc0f55.tgz` (md5 **ff04f7b9**, 2.8 MB; built by
-  `build_b12.sh eecc0f55`). It holds experiments/ph_predict (*.py, results/frozen, small result files), experiments/pipeline (warehouse reader),
+- `/home/agent/w/tw/`: code from a pinned tarball `gs://.../deploy/b12/tw_code_88b350e8.tgz` (md5 **2011af51**, 2.8 MB; built by
+  `build_b12.sh 88b350e8`). It holds experiments/ph_predict (*.py, results/frozen, small result files), experiments/pipeline (warehouse reader),
   h25/ (the shadow scripts as run today), and E5's pinned code (why_writer @ fcbcd617, team_shadow @ 4e4dd4e9, follow_shadow @ 3c399c39,
   as plain copies with `.pin` files; no git on the VM).
 - Own results dir, own warehouse cache (`USERSIM_CACHE=/home/agent/w/tw/cache`, rsynced from the bucket tables), own tmp and logs.
@@ -60,7 +60,7 @@ Each job logs one line, `<job> <day> written at <UTC> | inputs: x:present y:miss
 ## Deploy / rollback
 ```
 gcloud compute ssh usersim-pipeline ...   # outside 00:05-01:00 PT
-bash deploy_b12.sh eecc0f55 ff04f7b9      # fetch tarball, md5 check, back up crontab (+ any earlier tw tree), extract, smoke-test imports, install cron block
+bash deploy_b12.sh 88b350e8 2011af51      # fetch tarball, md5 check, back up crontab (+ any earlier tw tree), extract, smoke-test imports, install cron block
 bash deploy_b12.sh rollback               # restore the crontab backup; move the tw tree to backup_b12/
 ```
 After deploy, the PH ops routine keeps running as catch-up (no double writes: every write skips when its output exists).
