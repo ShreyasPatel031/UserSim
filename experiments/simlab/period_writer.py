@@ -31,13 +31,14 @@ def entrants():
     fc = subprocess.run(["gsutil", "cat", f"{B}/raw/daily/{NXT}/forecast_{NXT}.parquet"], capture_output=True).stdout
     if not fc: return None, "no 00:05 forecast for " + NXT
     import io; F = pd.read_parquet(io.BytesIO(fc)); F["id"] = F.id.astype(str)
-    col = "pred_arm2" if "pred_arm2" in F and F.pred_arm2.notna().all() else "pred"
+    # the PUBLISHED 00:05 column (arm 3 when the PUBLISH switch wrote pred_arm3, else arm 2, else clean_nosite): pre-publish audit Nov 14
+    col = next(c for c in ("pred_arm3", "pred_arm2", "pred") if c == "pred" or (c in F and F[c].notna().all()))
     X = pd.read_parquet(os.path.join(SP, "a2x", "X.parquet"))[["id", "day", "both"]]; X["id"] = X.id.astype(str)
     X = X.merge(L[["id", "votes"]], on="id").dropna(subset=["votes"]); X = X[X.day.str[:7] < NXT[:7]]
     a, b = (0.0, 1.0) if X.empty else tuple(np.polyfit(X.both, np.log1p(X.votes), 1)[::-1])
-    F["pv"] = np.expm1(a + b * F[col]); return F, {"source": f"raw/daily/{NXT}/forecast_{NXT}.parquet {col}" + ("" if col == "pred_arm2" else " (arm 2 missing: clean_nosite)"),
+    F["pv"] = np.expm1(a + b * F[col]); return F, {"source": f"raw/daily/{NXT}/forecast_{NXT}.parquet {col}" + {"pred_arm3": " (arm 3, published)", "pred_arm2": "", "pred": " (arm 2 missing: clean_nosite)"}[col],
                                                     "calibration log1p(votes) = a + b*pred": [round(float(a), 3), round(float(b), 3)], "calibration rows (months < " + NXT[:7] + ")": int(len(X)),
-                                                    **({} if col == "pred_arm2" else {"calibration note": "fit on arm-2 preds, applied to clean_nosite preds (arm 2 missing): approximate"})}
+                                                    **({} if col == "pred_arm2" else {"calibration note": f"fit on arm-2 preds, applied to {'arm-3' if col == 'pred_arm3' else 'clean_nosite'} preds: approximate"})}
 ENT, ENT_INFO = entrants()
 for per in ("week", "month"):
     if per == "week": start = d - pd.Timedelta(days=d.weekday()); c = d.weekday() + 1

@@ -55,7 +55,10 @@ _RO = f"{SP}/a2x/replay_orders_345.json"
 RO = json.load(open(_RO)) if os.path.exists(_RO) else {"days": {}}
 for d, v in sorted(RO["days"].items()):
     T = first_part_truth(d) or {}; nr = len(T)
-    for flag, key, line in (("replay", "hybrid", "hybrid_vm (bundle 12a), PH ops leave-one-day-out orders"), ("replay (hidden rank alone)", "hidden", "Product Hunt's hidden order at the 03:00 read")):
+    for flag, key, line in (("replay", "hybrid", "hybrid_vm (bundle 12a), PH ops leave-one-day-out orders, live 00:05 prior"),
+                            ("replay with fixed 00:05 inputs", "hybrid_fixed", "hybrid_vm with the fixed-prior weights (bundle 12a.3), PH ops leave-one-day-out orders"),
+                            ("replay (hidden rank alone)", "hidden", "Product Hunt's hidden order at the 03:00 read")):
+        if key not in v: continue
         h = hits_k(v[key], T) if T else [None] * 3
         rows.append({"day": d, "prediction": "03:45 PT", "flag": flag, "line": line, "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked",
                      "n_ranked": nr, "n_launches": len(v[key]), "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
@@ -91,12 +94,11 @@ for (pred, flag), g in S[S.status.isin(["scored", "excluded: fewer than 10 ranke
     if (g.status != "scored").any() and f"{pred} | {flag}" in summ:   # labelled extra, never the headline: every day incl. short lists
         summ[f"{pred} | {flag}"]["extra: all days incl. fewer than 10 ranked (not comparable to live)"] = {
             "n_days": int(len(g)), **{f"top{k} hits %": ci(g[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}}
-RO_NOTE = ("settled Nov 14: orders keep every launch in the 03:00 read, as the live 03:45 file does, and an unranked pick counts as a miss, as on the live "
-           "scoreboard. PH ops' replay left out launches that never got a daily rank (Nov 4, Nov 5: one each), which gave {ph}")
-if "03:45 PT | replay" in summ:
-    summ["03:45 PT | replay"]["note"] = RO_NOTE.format(ph="72.2 / 76.7 / 77.5; the Nov 5 launch's slot among 6+ is unknown, placed at 6 (top 10 77.5 if placed last)")
-if "03:45 PT | replay (hidden rank alone)" in summ:
-    summ["03:45 PT | replay (hidden rank alone)"]["note"] = RO_NOTE.format(ph="72.2 / 76.7 / 73.3")
+RO_NOTE = ("orders keep every launch in the 03:00 read (unranked launches stay in the day inputs and the weights are refit, as the live 03:45 "
+           "writer does); an unranked pick counts as a miss, as on the live scoreboard (settled Nov 14)")
+for k_, extra in (("03:45 PT | replay", ""), ("03:45 PT | replay (hidden rank alone)", ""),
+                  ("03:45 PT | replay with fixed 00:05 inputs", "; not live until the today-rows fix and bundle 12a.3 are deployed")):
+    if k_ in summ: summ[k_]["note"] = RO_NOTE + extra
 # (orchestrator 15:52Z Nov 14, explanation audit item 1) the line published Oct 29 - Nov 13 was NOT arm 2 / clean_nosite: Oct 29 - Nov 12 the
 # old FULL launch model (all live inputs incl. named-maker inputs and llm_site; forecast.py before af6c25c2), Nov 13 clean_nosite
 # (scoreboard model_switch clean_from 2026-11-13). Figure from results/web/scoreboard.json summary (point 0005, method published, live).

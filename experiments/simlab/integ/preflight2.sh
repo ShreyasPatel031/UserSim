@@ -80,6 +80,12 @@ sed 's#^flip \$N$#kill -9 $$#' $S3/deploy_b12a.sh > $S3/k.sh; FAKE_PT=2205 bash 
 sed 's#^flip \$N$#flip $N; kill -9 $$#' $S3/deploy_b12a.sh > $S3/k.sh; FAKE_PT=2210 bash $S3/k.sh $S3 > /dev/null 2>&1; say "12a.3 killed right after the flip -> live two_predictions $(tp), weights $(wt), block lines $(grep -c usersim-b12a $MB/crontab.txt), pin $(cat $W/tw12a.d/weights_pin 2>/dev/null || echo none)"; rm -f $S3/k.sh
 sed 's#^mkdir -p \$W/tw12a.d && echo b8a59cdd#kill -9 $$; mkdir -p $W/tw12a.d \&\& echo b8a59cdd#' $S3/install_fixedprior_weights.sh > $S3/ki.sh; base; FAKE_PT=2200 bash $S2/deploy_b12a.sh $S2 > /dev/null 2>&1; echo '{"fixed_from": "2026-11-15"}' > $W/today_rows_fix.json
 FAKE_PT=2205 bash $S3/ki.sh $S3 > /dev/null 2>&1; FAKE_PT=2210 bash $S2/deploy_b12a.sh $S2 > $MB/l 2>&1; say "installer killed after the deploy, before the pin; then 12a.2 redeploy -> rc=$? weights now $(wt) (b8a59cdd = fixed prior kept, 16912cd6 = silently reverted)"; rm -f $S3/ki.sh
+# gap (a), revised installer: kill INSIDE the installer's deploy right after the flip (pin written before the flip), then a 12a.2 redeploy
+base; FAKE_PT=2200 bash $S2/deploy_b12a.sh $S2 > /dev/null 2>&1; echo '{"fixed_from": "2026-11-15"}' > $W/today_rows_fix.json
+mkdir -p $MB/s3k; cp -r $S3/. $MB/s3k/; sed -i 's#^flip \$N$#flip $N; kill -9 $$#' $MB/s3k/deploy_b12a.sh
+FAKE_PT=2205 bash $MB/s3k/install_fixedprior_weights.sh $MB/s3k > /dev/null 2>&1; say "installer: deploy killed right after the flip -> weights $(wt) pin $(cat $W/tw12a.d/weights_pin 2>/dev/null || echo none)"
+FAKE_PT=2210 bash $S2/deploy_b12a.sh $S2 > $MB/l 2>&1; say "  then 12a.2 redeploy -> rc=$? '$(tail -1 $MB/l | cut -c1-80)' weights $(wt)"
+rm -f $W/tw12a.d/weights_pin; FAKE_PT=2215 bash $S2/deploy_b12a.sh $S2 > $MB/l 2>&1; say "  pin deleted by hand, live tree still fixed-prior; 12a.2 redeploy -> rc=$? '$(tail -1 $MB/l | cut -c1-70)' weights $(wt)"
 # ---------------- deploy_b12.sh (12_3) ----------------
 DB=$PP/20261114_timed_writes_12_3/deploy_b12.sh; say "== deploy_b12 $(m8 $DB): pins $(grep -o 'E5W_MD5=[0-9a-f]*' $DB) file $(grep -o 'e5_vm_writers[_0-9]*.tgz' $DB | head -1)"
 echo done >> $OUT

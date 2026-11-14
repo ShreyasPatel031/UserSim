@@ -11,6 +11,8 @@ for name, rel in (("b12", "20261114_timed_writes/deploy_b12.sh"), ("b12a", "2026
     s = open(f"{PP}/{rel}").read().replace("/home/agent/w", f"{tmp}/w").replace("export PATH=/opt/exp/bin:$PATH", f"export PATH={stub}:$PATH")
     os.makedirs(f"{tmp}/w"); open(f"{tmp}/d.sh", "w").write(s); env = dict(os.environ, PATH=f"{stub}:{os.environ['PATH']}")
     rb = subprocess.run(["bash", f"{tmp}/d.sh", "rollback"], capture_output=True, text=True, env=env)
+    if rb.returncode != 0 and "use 'remove'" in rb.stdout + rb.stderr:   # 12a after E5 pre-flight 2: no previous tree -> rollback refuses; removal is `remove`
+        rb = subprocess.run(["bash", f"{tmp}/d.sh", "remove"], capture_output=True, text=True, env=env)
     dp = subprocess.run(["bash", f"{tmp}/d.sh", "abc123", "deadbeef"] if name == "b12" else ["bash", f"{tmp}/d.sh", tmp], capture_output=True, text=True, env=env)
     res[name] = {"rollback rc": rb.returncode, "rollback out": (rb.stdout + rb.stderr).strip()[-120:], "deploy rc": dp.returncode, "deploy out": (dp.stdout + dp.stderr).strip()[-80:]}
 ok = all(r["rollback rc"] == 0 and r["deploy rc"] != 0 and "not deploying" in r["deploy out"] for r in res.values())

@@ -48,8 +48,10 @@ if KIND == "0005":
                 m = FZ["models"][f"top{k}"]; lin = m["intercept"] + sum(m["coef"][f] * F_[f] for f in FZ["features"]); S[f"p_top{k}"] = rescale(1 / (1 + np.exp(-lin)), min(k, n))
         else:
             S = S.sort_values("rank").reset_index(drop=True); method = "rank table by position (published model not arm 2, or no scores)"
-            if src and "arm2" not in src: out["basis_note"] = ("hit rates by position in arm 2's backtest order; tonight's order is not arm 2 (clean_nosite scores 54.5 vs 58.1 "
-                                                               "top 3 on the same 183 days), so these chances are likely a little high")
+            if src and "model arm3" in src: out["basis_note"] = ("hit rates by position in arm 2's backtest order; tonight's order is arm 3, whose own "
+                                                                 "backtest is above arm 2's at top 5 / top 10, so these chances are likely a little low (arm-3 position table pending)")
+            elif src and "arm2" not in src: out["basis_note"] = ("hit rates by position in arm 2's backtest order; tonight's order is not arm 2 (clean_nosite scores 54.3 vs 58.0 "
+                                                                 "top 3 on the same 184 days), so these chances are likely a little high")
             for k in (3, 5, 10):
                 tb = {int(a): b for a, b in FZ["fallback rank table (no scores)"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale(np.minimum(np.arange(1, n + 1), 16).astype(int).tolist() and [tb.get(min(r, 16), 0.0) for r in range(1, n + 1)], min(k, n))
         S["rank"] = np.arange(1, n + 1)
@@ -76,7 +78,7 @@ else:
                 tb = {int(a): b for a, b in F0["fallback rank table (no scores)"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale([tb.get(min(r, 16), 0.0) for r in S["rank"]], min(k, n))
             S["rank"] = np.arange(1, n + 1)
             out.update({"prediction": "03:45 PT", "status": "ok", "source": src, "method": "00:05 rank table by position (the 03:45 file shows the 00:05 order: no pre-reveal read)",
-                        "basis": F0["basis"], "basis_n_days": 183, **({"basis_note": "hit rates by position in arm 2's backtest order; tonight's 00:05 order is clean_nosite (54.5 vs 58.1 top 3 on the same 183 days), so these chances are likely a little high"} if "clean_nosite" in str(J3.get("backtest")) else {}), "launches": [{"id": r.id, "rank": int(r["rank"]), **{f"p_top{k}": round(float(r[f"p_top{k}"]), 3) for k in (3, 5, 10)}} for _, r in S.iterrows()]})
+                        "basis": F0["basis"], "basis_n_days": 183, **({"basis_note": "hit rates by position in arm 2's backtest order; tonight's 00:05 order is clean_nosite (54.3 vs 58.0 top 3 on the same 184 days), so these chances are likely a little high"} if "clean_nosite" in str(J3.get("backtest")) else {}), "launches": [{"id": r.id, "rank": int(r["rank"]), **{f"p_top{k}": round(float(r[f"p_top{k}"]), 3) for k in (3, 5, 10)}} for _, r in S.iterrows()]})
             S = None
     if S is not None and KIND != "0005" and out.get("status") != "ok":
         for k in (3, 5, 10):
