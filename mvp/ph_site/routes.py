@@ -159,16 +159,6 @@ async def ph_health():
                         headers={"Cache-Control": "no-store"})
 
 
-@router.get("/api/ph/track-record")
-async def ph_track():
-    from mvp.ph_site import live
-
-    try:
-        return _json(await asyncio.to_thread(live.track_record), 300)
-    except Exception as exc:  # noqa: BLE001
-        return _data_down(exc)
-
-
 @router.get("/api/ph/weekly")
 async def ph_weekly():
     from mvp.ph_site import live

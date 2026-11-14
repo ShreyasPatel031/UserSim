@@ -187,17 +187,22 @@
    "p3_generic": 0.165,
    "p3_desc_deployed": 0.248,
    "p3_page_deployed": 0.171,
-   "launches": 170
+   "launches": 170,
+   "scored": 164
   },
-  "label": "170 past launches, strict same-point judge (gemini-2.5-pro), top 3 concerns",
+  "label": "164 scored of 170 past launches, strict same-point judge (gemini-2.5-pro), top 3 concerns",
   "source": "E5 reports/retrieval_react/RECIPE_b20_concerns.md (retrieval_rep.json), commit 3295e9b9, branch claude/person-model-v2",
-  "date": "2026-11-13",
+  "date": "2026-11-14",
   "forward": {
-   "desc_p3": 0.359,
-   "desc_n": 13,
-   "window": "Nov 8-12, 2026",
+   "desc_p3": 0.333,
+   "desc_ci": [
+    0.25,
+    0.42
+   ],
+   "desc_n": 32,
+   "window": "Nov 8\u201312, 2026",
    "page_n": 0,
-   "source": "PH ops forward_sim (pins ef1a54f4 / e5a99ca3), 2026-11-13"
+   "source": "E5 forward scorer after the team-filter fix (6584bf6f), 2026-11-14"
   }
  },
  "midnight_accuracy": {
@@ -207,7 +212,7 @@
     "top3": 56,
     "top5": 67,
     "top10": 76,
-    "days": null,
+    "days": 61,
     "approx": true
    },
    {

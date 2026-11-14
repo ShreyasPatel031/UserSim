@@ -237,17 +237,17 @@ def test_prereveal_confidence(monkeypatch):
     assert out["b"]["what"] == "top 5" and out["b"]["agree_rate"] == 65.7 and "c" not in out
 
 
-def test_lock_state_read(monkeypatch):
-    lk = {"label_top3": "2 locked, 1 open", "label_top10": "9 of 10 (vote order)", "label_top5": "top 5 locked", "read_at": "2026-11-12T13:00:00Z", "rule": "r", "point": "R1"}
-    real = live.gcs.read_json
-    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: lk if "/lock/" in path else real(path, ttl))
+def test_lock_not_in_payload(monkeypatch):
+    # The vote-gap lock has no sourced reliability figure, so it is no longer sent to the page (E5 audit, Nov 14).
     monkeypatch.setattr(live, "actuals", lambda d: {"final": False, "as_of": None, "revealed": False, "ranks": {}})
     monkeypatch.setattr(live, "_lineup", lambda d: {})
     monkeypatch.setattr(live, "forecasts", lambda d: {})
     monkeypatch.setattr(live, "current_board", lambda d: {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True})
     monkeypatch.setattr(live, "_api_board", lambda d: None)
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [])
     v = live.day_view("2026-11-12")
-    assert v["board"]["lock"]["label_top3"] == "2 locked, 1 open" and v["board"]["lock"]["label_top10"] and v["board"]["lock"]["read_pt"] == "05:00 PT"
+    assert "lock" not in v["board"] and "reliab" not in str(v)
 
 
 def test_final_only_from_official_rank_after_3am(monkeypatch):
@@ -314,7 +314,7 @@ def test_asks_rank_pick_and_note():
     assert try_sim._rank_pick(["a", "b"], [], np.zeros((0, 4), np.float32), X, [1, 1, 5, 1]) == 2
     page, pasted = try_sim._asks_note(False), try_sim._asks_note(True)
     assert "2 in 5" in page and "about 1 in 4 of these concerns" in page
-    assert "backtest only" in page and "backtest only" not in pasted and "forward check on 13 new launches" in pasted
+    assert "backtest only" in page and "backtest only" not in pasted and "forward check on 32 new launches" in pasted
     assert "1 in 2" in pasted and "about 1 in 3 of these concerns" in pasted
     assert "no accuracy figure" in try_sim._asks_note(True, 60, "earlier_method") and "1 in 3" not in try_sim._asks_note(True, 60, "earlier_method")
     assert "common concerns" in try_sim._asks_note(False, None, "common")
@@ -567,3 +567,15 @@ def test_cron_endpoint_requires_secret(monkeypatch):
     monkeypatch.setenv("CRON_SECRET", "s" * 32)
     assert c.get("/api/ph/cron/snapshot").status_code == 401
     assert c.get("/api/ph/cron/snapshot", headers={"Authorization": "Bearer wrong"}).status_code == 401
+
+
+
+def test_midnight_accuracy_rows_never_pooled(monkeypatch):
+    tr = {"summary": {"00:05 PT | backtest": {"all days": {"top3 hits %": [60.7, 57.8, 63.7, 214], "top5 hits %": [68.4, 0, 0, 214], "top10 hits %": [75.7, 0, 0, 214]}},
+                      "03:45 PT | replay": {"all days": {"top3 hits %": [72.7, 0, 0, 11], "top5 hits %": [74.5, 0, 0, 11], "top10 hits %": [78.2, 0, 0, 11]}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
+    a = live.accuracy()
+    flags = [r["flag"] for r in a["mid"]]
+    assert flags == ["live, previous model", "backtest (214 days)", "backtest (Sep–Oct)"]
+    assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 61
+    assert a["pre"][0]["flag"] == "replay" and a["pre"][0]["top10"] == 78.2

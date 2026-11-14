@@ -376,10 +376,15 @@ def accuracy() -> dict:
     # days replace the 214-day backtest; the new model's own live rows (flag "live") are kept from the file.
     m = claims().get("midnight_accuracy")
     if m:
-        out["mid"] = [r for r in out["mid"] if r["flag"] == "live"] + [dict(r) for r in m["rows"]]
-    order = {"live": 0, "backtest (Sep–Oct)": 1, "live, previous model": 2, "backtest": 3, "replay": 4}
+        keep = [r for r in out["mid"] if r["flag"] in ("live", "backtest")]
+        for r in keep:
+            if r["flag"] == "backtest":
+                r["flag"] = f"backtest ({r['days']} days)"
+                r["days"] = None
+        out["mid"] = keep + [dict(r) for r in m["rows"]]
+    order = {"live": 0, "live, previous model": 1, "backtest (Sep–Oct)": 3, "replay": 4}
     for v in out.values():
-        v.sort(key=lambda r: order.get(r["flag"], 9))
+        v.sort(key=lambda r: order.get(r["flag"], 2))
     return out
 
 
@@ -687,7 +692,8 @@ def day_view(day: str) -> dict:
         points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "late": late, "top3_conf": conf,
                        "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
-                       "ranks": f["ranks"], "score": score, "fallback": f.get("fallback"), "source": f.get("source")})
+                       "ranks": f["ranks"], "score": score, "fallback": f.get("fallback"), "source": f.get("source"),
+                       "backtest_line": f.get("backtest_line")})
     # Only expose live votes after the reveal; before it they are hidden on PH too.
     ranks = act["ranks"] if act["revealed"] else {}
     launches = []
@@ -734,7 +740,7 @@ def day_view(day: str) -> dict:
     return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
             "freshness": fresh, "why": whys,
             "lead_point": lead, "difficulty": difficulty,
-            "board": {**{k: board.get(k) for k in ("as_of", "as_of_pt", "votes_hidden", "source")}, "lock": lock},
+            "board": {k: board.get(k) for k in ("as_of", "as_of_pt", "votes_hidden", "source")},
             "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _written_label(day, act["as_of"]),
                        "as_of": act["as_of"]}}
 

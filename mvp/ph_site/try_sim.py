@@ -1017,8 +1017,8 @@ def _honesty(acc: dict, source: str | None = None) -> str:
         from mvp.ph_site import live
         row = next(r for r in live.track_record()["rows"] if r["key"] == "0005" and r.get("source", "live") == "live")
         if row["n_days"]:
-            rec = (f" Our deployed 00:05 PT launch model, which also knows the hunter, makers and team history, "
-                   f"scores {_r(row['top3'])} / {_r(row['top5'])} / {_r(row['top10'])} live over {row['n_days']} days.")
+            rec = (f" Our previous 00:05 PT launch model, which also knew the hunter, makers and team history, "
+                   f"scored {_r(row['top3'])} / {_r(row['top5'])} / {_r(row['top10'])} live over {row['n_days']} days.")
     except Exception:  # noqa: BLE001
         pass
     return (f"Pre-launch rank prediction is weak, and weaker still from a page alone. Tested month-forward on "

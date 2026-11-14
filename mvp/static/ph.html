@@ -98,7 +98,7 @@ async function load(day){
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
 
   $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
-  renderPred(); renderLive(); drawLinks();
+  metric(); renderPred(); renderLive(); drawLinks();
 }
 
 // Match status: exact = same rank on both boards; near = in both top 10s at a different rank; miss = only on this board.
@@ -128,7 +128,7 @@ function pointFor(v){
 }
 function tabs(){
   const has = {mid: !!pointFor("mid"), pre: !!pointFor("pre")};
-  if(!TAB || !has[TAB]) TAB = has.pre ? "pre" : "mid";
+  if(!TAB) TAB = has.pre ? "pre" : "mid";      // a tab the visitor picks stays picked, even if its file is missing
   ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
     const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Expected " + EXPECT[v];
     b.onclick = ()=>{ TAB = v; renderPred(); renderLive(); drawLinks(); }; });
@@ -153,14 +153,21 @@ function renderPred(){
 }
 
 function accLine(){
-  const p = pointFor(TAB), rows = ((VIEW.accuracy||{})[TAB]) || [];
-  const name = TAB === "mid" ? "Product only (00:05 PT)" : "Product + comments (03:45 PT)";
-  const fl = {backtest: "backtest", replay: "replay", live: "live"};
-  const pc = (v, r)=> r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`;
-  const parts = rows.map(r=>`${fl[r.flag] || r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}`);
+  const p = pointFor(TAB);
+  const earlier = TAB === "pre" && p && p.key !== "PRE";        // days before the published 03:45 line existed
+  const name = TAB === "mid" ? "Product only (00:05 PT)" : earlier ? "Product + comments (earlier method)" : "Product + comments (03:45 PT)";
   const made = p && p.time_pt ? ` · made ${p.time_pt}` : "";
-  const fb = p && p.fallback ? ` · fallback: ${p.fallback}` : "";
-  $("#acc").textContent = parts.length ? `${name}${made}${fb} — ${parts.join("; ")}` : (p ? `${name}${made}${fb}` : "");
+  const fb = p && p.fallback ? " · a fallback model was used" : "";
+  const pc = (v, r)=> r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`;
+  let acc = "";
+  if(p && p.backtest_line) acc = p.backtest_line;                 // the published file's own accuracy line
+  else if(!earlier) acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}`).join("; ");
+  $("#acc").textContent = p ? `${name}${made}${fb}${acc ? " — " + acc : ""}` : "";
+}
+function metric(){
+  const rows = ((VIEW.accuracy||{}).mid) || [];
+  const r = rows.find(x=>x.flag==="live") || rows.find(x=>x.flag==="live, previous model");
+  if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`;
 }
 function legend(sts){
   accLine();
@@ -218,14 +225,6 @@ function showWhy(id, key){
   el.querySelector("details") && (el.querySelector("details").open = true);
 }
 
-async function side(){
-  try {
-    const t = await getJSON("/api/ph/track-record");
-    const r = (t.rows||[]).find(x=>x.key==="0005" && (x.source||"live")==="live");
-    if(r && r.n_days) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`;
-  } catch(e){ /* the line is optional */ }
-}
-
 // Day stepper: VIEW.days is newest first; "previous" goes back in time.
 function dayStep(){
   const d = VIEW.days, i = d.indexOf(VIEW.day);
@@ -263,7 +262,7 @@ function goDay(step){
 }
 $("#day-prev").onclick = ()=>goDay(1);
 $("#day-next").onclick = ()=>goDay(-1);
-load(); side();
+load();
 // The board is read from Product Hunt's API at most once a minute on the server; poll at the same pace.
 setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final && !document.hidden) load(VIEW.day); }, 60*1000);
 </script>
