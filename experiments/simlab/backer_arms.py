@@ -69,7 +69,9 @@ def day_cols(t, H, UF, pi):
         out.append((i, np.column_stack([X, act.index.isin(bk).astype(float), cf])))
     return act, out
 COLS = ["n30", "n90", "last", "taste", "fol", "hun", "back", "cf"]; ci = {c: k for k, c in enumerate(COLS)}
-ARMS = {"CF-only": (30, ["n30", "n90", "last", "cf"]), "A7": (7, ["n30", "n90", "last", "taste", "hun", "back"])}
+ARMS = {"CF-only": (30, ["n30", "n90", "last", "cf"]), "A7": (7, ["n30", "n90", "last", "taste", "hun", "back"]),
+        "CF+back": (30, ["n30", "n90", "last", "cf", "back"])}   # 4th arm (miss anatomy 22:54Z: 43% of CF-only misses had backed this team before)
+if os.environ.get("ARMS_ONLY"): ARMS = {k: v for k, v in ARMS.items() if k in os.environ["ARMS_ONLY"].split(",")}
 rng = np.random.default_rng(0)
 for D in TDAYS:
     cut = start(D); H = U[U.fetched_at < cut]
@@ -98,7 +100,10 @@ for D in TDAYS:
     if not frames: continue
     FR = pd.concat(frames, ignore_index=True).assign(day=D, frozen_at=pd.Timestamp.now(tz="UTC").isoformat(), n_active=len(act), svd_rows=len(pi),
                                                        svd_max_lday=str(H0.lday.max()), reads_before=str(cut), train_days=len(TRAIN))
-    fp = os.path.join(SP, "bp", f"backer_arms_{D}.parquet"); os.makedirs(os.path.dirname(fp), exist_ok=True); FR.to_parquet(fp)
+    fp = os.path.join(SP, "bp", f"backer_arms_{D}.parquet"); os.makedirs(os.path.dirname(fp), exist_ok=True)
+    if os.environ.get("ARMS_ONLY") and os.path.exists(fp):
+        old_ = pd.read_parquet(fp); FR = pd.concat([old_[~old_.arm.isin(FR.arm.unique())], FR], ignore_index=True)
+    FR.to_parquet(fp)
     if UP: subprocess.run(["gsutil", "-q", "cp", fp, f"{B}/tmp/e5/private/backer_arms/{D}.parquet"], check=True)
     print(json.dumps({"day": D, "launches": int(FR.launch_id.nunique()), "arms": sorted(FR.arm.unique()), "n_active": len(act), "train_days": len(TRAIN),
                       "svd_max_lday": str(H0.lday.max()), "reads_before": str(cut), "sec": round(time.time() - t0)}), flush=True)

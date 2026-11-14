@@ -18,7 +18,7 @@ held = set(pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id"]).perso
 last_read = U.groupby("person_id").ft.max(); first_read = U.groupby("person_id").ft.min(); store_time = U.ft.max()
 W = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last"); W["id"] = W.id.astype(str); W["day"] = W.day.astype(str).str[:10]
 U["lday"] = U.target_id.map(dict(zip(W.id, W.day)))
-ARMS = ["CF-only", "A7", "raw most-active"]
+ARMS = ["CF-only", "A7", "CF+back", "raw most-active"]; FIT = ["CF-only", "A7", "CF+back"]
 rows, per_launch = [], []
 for D in DAYS:
     raw = subprocess.run(["gsutil", "cat", f"{B}/tmp/e5/private/backer_arms/{D}.parquet"], capture_output=True).stdout
@@ -36,7 +36,7 @@ for D in DAYS:
         o = obs.get(str(lid), set()); n = len(o)
         if not n: continue
         r = {"day": D, "launch_id": str(lid), "N": n}
-        for arm in ("CF-only", "A7"):
+        for arm in FIT:
             g = FR[(FR.launch_id == lid) & (FR.arm == arm)]
             g = g[g.person_id.isin(reread)].sort_values("rank"); r[arm] = len(set(g.person_id.iloc[:n]) & o) if len(g) else np.nan
         r["raw most-active"] = len(set(raw_list[:n]) & o); per_launch.append(r); n_day += 1
@@ -51,21 +51,22 @@ def boot(df, f):
 summary = {}
 if len(P):
     for D in sorted(P.day.unique()) + ["ALL"]:
-        df = P if D == "ALL" else P[P.day == D]; df = df.dropna(subset=["CF-only", "A7"])
+        df = P if D == "ALL" else P[P.day == D]; df = df.dropna(subset=[a for a in FIT if a in df])
         if not len(df): continue
         s = {"launches": int(len(df)), "observed_backers": int(df.N.sum())}
-        for a in ARMS: s[a] = [round(pooled(df, a), 1)] + boot(df, lambda x, a=a: pooled(x, a))
-        for a in ("CF-only", "A7"): s[f"{a} minus raw (paired)"] = [round(pooled(df, a) - pooled(df, "raw most-active"), 1)] + boot(df, lambda x, a=a: pooled(x, a) - pooled(x, "raw most-active"))
+        for a in [a for a in ARMS if a in df]: s[a] = [round(pooled(df, a), 1)] + boot(df, lambda x, a=a: pooled(x, a))
+        if "CF+back" in df: s["CF+back minus CF-only (paired)"] = [round(pooled(df, "CF+back") - pooled(df, "CF-only"), 1)] + boot(df, lambda x: pooled(x, "CF+back") - pooled(x, "CF-only"))
+        for a in [a for a in FIT if a in df]: s[f"{a} minus raw (paired)"] = [round(pooled(df, a) - pooled(df, "raw most-active"), 1)] + boot(df, lambda x, a=a: pooled(x, a) - pooled(x, "raw most-active"))
         summary[D] = s
 out = {"metric": "BACKER PREDICTION, 3 arms, strict: recall at N (N = observed backers), pooled; launch-bootstrap 95% intervals",
        "how": __doc__.split("\n    python")[0], "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "rows": rows, "summary": summary}
 os.makedirs(f"{SP}/backer", exist_ok=True); p = f"{SP}/backer/backer_arms_score.json"; json.dump(out, open(p, "w"), indent=1, default=float)
 ns = []
 if "ALL" in summary:
-    s = summary["ALL"]; best = max(ARMS, key=lambda a: s[a][0])
+    s = summary["ALL"]; best = max([a for a in ARMS if a in s], key=lambda a: s[a][0])
     ns = [{"point": "0005", "model": f"backer prediction: {best}", "method": "forward-style strict replay/nightly freeze (reads before 00:00 PT; SVD on upvotes dated before the day; no follows)",
            "metric": "recall at N (N = observed held backers per launch), pooled", "value": s[best][0], "interval": s[best][1:],
-           "arms": {a: s[a] for a in ARMS}, "paired_vs_raw": {a: s[f"{a} minus raw (paired)"] for a in ("CF-only", "A7")},
+           "arms": {a: s[a] for a in ARMS if a in s}, "paired_vs_raw": {a: s[f"{a} minus raw (paired)"] for a in FIT if f"{a} minus raw (paired)" in s},
            "n_launches": s["launches"], "n_backers": s["observed_backers"], "first_day": min(P.day), "last_day": max(P.day),
            "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
            "source": "results/web/backer_prediction_arms.json", "top3": None, "top5": None, "top10": None}]
