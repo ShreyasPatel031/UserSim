@@ -79,7 +79,10 @@ for f in ls(f"{BK}/tmp/e5/band/forward/{DAY}/"):
 REC = open(os.path.join(HERE, "reports/retrieval_react/RECIPE_b20_concerns.md")).read(); COND = REC[REC.index("```\n") + 4:REC.index("\n```", REC.index("```\n") + 4)]
 COND = COND.replace("{", "{{").replace("}", "}}").replace("{{name}}", "{n}").replace("{{tagline}}", "{t}").replace("{{text}}", "{d}").replace("{{points}}", "{p}").replace("{{what}}", "{what}")
 WHAT = {"RC": "concerns, objections or feature requests", "RQ": "questions to the makers"}; PREX = {"RC": ("objection", "question", "feature request", "feature_request"), "RQ": ("question",)}
-THR = {"ph": 0.898, "page": 0.886}; CONST = {"RC": ["Pricing is unclear or too high.", "How is this different from existing alternatives?", "Concerns about data privacy and security."],
+# PH-path thin rule dropped (orchestrator 14:34Z Nov 14; cached strict-judge labels, 164 launches): on thin PH launches (s1 < 0.898) b20 beats
+# the deployed fallback, concerns p@3 30.2 vs 11.1 (+19.1 [+11.1, +27.2]), questions +19.3 [+9.9, +28.1]; always-b20 overall +6.3
+# [+3.5, +9.3] p@3, non-thin unchanged. Page path keeps 0.886 (thin page: deployed 17.0 > b20 9.2).
+THR = {"ph": float(os.environ.get("B20_THR_PH", "0.0")), "page": 0.886}; CONST = {"RC": ["Pricing is unclear or too high.", "How is this different from existing alternatives?", "Concerns about data privacy and security."],
       "RQ": ["What does the pricing look like?", "Does it integrate with the tools I already use?", "Is there a free plan or trial?"],
       "RX": ["Congrats on the launch!", "How is this different from existing alternatives?", "What does the pricing look like?", "Does it integrate with the tools I already use?", "The interface looks clean and easy to use.", "Is there a free plan or trial?"]}
 st = lambda s: re.sub(r"-\d+$", "", str(s))
