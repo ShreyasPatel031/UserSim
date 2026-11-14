@@ -33,3 +33,6 @@ No new Gemini calls were made; the call was blocked by a permission check.
 - Claude vs Gemini on the same launch (inter-model).
 
 **e5_llm_noise.py → noise_score.json.** Gaussian noise is added to the test rows' llm_pitch / llm_brand in the arm-2 rebuild, with the models fixed. 3 draws × 5 seeds; the result is the change in top 3 / 5 / 10 with a paired day bootstrap.
+
+## Scope note (Nov 14, today-rows bug)
+All as-of replays here (e5_asof_0005.py, e5_asof_arm3.py) are **as-of replays on clean inputs**: each private root holds only today/<d>.json. They describe the FIXED feature path, not what live produced. The live path read every data/today file; asof_stale replays measure that difference.

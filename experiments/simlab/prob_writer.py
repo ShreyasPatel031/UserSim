@@ -73,6 +73,9 @@ else:
                     "calibration (replay, leave-one-day-out)": {f"top{k}": {"Brier skill vs base rate": cal[f"top{k}"]["Brier skill vs base rate"], "rank cells % [CI], n": cal[f"top{k}"]["pooled rank cells: % finishing top k [CI], n (positions 1-10, 16+ = 11+)"]} for k in (3, 5, 10)},
                     "caveat": "11 replay days: per-position rates have wide intervals (e.g. position 3: 45% [18, 73] for top 3).",
                     "launches": [{"id": r.id, "rank": int(r["rank"]), **{f"p_top{k}": round(float(r[f"p_top{k}"]), 3) for k in (3, 5, 10)}} for _, r in S.iterrows()]})
+if out.get("status") == "ok" and os.environ.get("TODAY_ROWS_FIX_DEPLOYED") != "1":   # orchestrator 16:38Z scope audit
+    out["input_note"] = ("the live 00:05 forecast these chances are built on used polluted hunter-history inputs (stale data/today rows); fix pending"
+                         if KIND == "0005" else "the 03:45 order's clean prior term comes from the live 00:05 forecast, built on polluted hunter-history inputs (stale data/today rows); fix pending")
 p = os.path.join(SP, f"prob_{D}_{KIND}.json"); json.dump(out, open(p, "w"), indent=1, default=float)
 subprocess.run(["gsutil", "-q", "cp", p, f"{B}/tmp/e5/website/probabilities/{D}_{KIND}.json"], check=True)
 print(json.dumps({k: v for k, v in out.items() if k not in ("launches", "calibration (backtest, May-Oct)", "calibration (replay, leave-one-day-out)")}), "launches", len(out.get("launches", [])))

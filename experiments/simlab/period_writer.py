@@ -57,6 +57,8 @@ for per in ("week", "month"):
             pr = [{"id": r.id, "votes_now": None, "predicted_final_votes": round(float(r.pv), 1), "source": "predicted", **{f"p_final_top{k}": None for k in (3, 5, 10)}} for r in ENT.itertuples()]
             board = sorted(rows + pr, key=lambda o: -(o["votes_now"] if o["source"] == "votes" else o["predicted_final_votes"]))
             for i, o in enumerate(board): o["board_position"] = i + 1
+            ENT_INFO = {**ENT_INFO, **({"note": "entrant predictions from a forecast built on polluted hunter-history inputs (stale data/today rows); fix pending"} if os.environ.get("TODAY_ROWS_FIX_DEPLOYED") != "1" else {}),
+                        "calibration source": "backtest only: arm-2 walk-forward preds (assets a2x/X.parquet 'both', Apr-Oct) x warehouse votes; no live preds"}
             out.update({"board_line": "with_entrants", "entrants": {"day": NXT, "n": len(pr), **ENT_INFO}, "shadow_votes_only": [dict(o) for o in rows],
                         "board_day": {"launches (with_entrants)": f"{NXT} 00:05 PT board: votes through {D} + {NXT} line-up predicted",
                                       "shadow_votes_only": f"{D} close board: votes through {D}"}})
