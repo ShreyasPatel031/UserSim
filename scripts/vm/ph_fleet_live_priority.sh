@@ -190,36 +190,22 @@ import json
 from pathlib import Path
 p=Path('$status_json')
 if not p.exists():
-    print('PH_FLEET_LIVE_PRIORITY_HOLD=0')
-    raise SystemExit(0)
-r=json.loads(p.read_text())
-if r.get('throttle'):
-    tmin=int(r.get('throttle_fleet_min_vms') or 4)
-    print(f'export PH_FLEET_LIVE_PRIORITY_HOLD=1')
-    print(f'export FLEET_MIN_VMS={tmin}')
-    print(f'export FLEET_MAX_VMS={tmin}')
-    print(f'export FLEET_AUTOSCALE_NO_SHED=1')
-    print(f'export FLEET_HISTORICAL_THROTTLE=1')
-    print(f'export KEEPER_NUDGE_BUDGET=0')
-    print(f'export FLEET_CF_RECOVER_MAX_KICKS=0')
-    stale=[f[\"feed\"] for f in r.get(\"feeds\",[]) if f.get(\"stale\")]
-    print(f'export PH_FLEET_LIVE_STALE_FEEDS=\"{\",\".join(stale)}\"')
-elif r.get('any_stale'):
-    stale=[f[\"feed\"] for f in r.get(\"feeds\",[]) if f.get(\"stale\")]
-    print(f'export PH_FLEET_LIVE_SECONDARY_STALE=\"{\",\".join(stale)}\"')
-    print('export PH_FLEET_LIVE_PRIORITY_HOLD=0')
-    cap=r.get('historical_slot_cap')
-    if cap and cap>0:
-        print(f'export FLEET_MAX_VMS={cap}')
-else:
-    pool=r.get('ip_pool_total') or 0
-    daily=r.get('ip_daily_reserved') or $DAILY_N
-    cap=r.get('historical_slot_cap')
-    if cap and cap>0:
-        print(f'export FLEET_MAX_VMS={cap}')
     print('export PH_FLEET_LIVE_PRIORITY_HOLD=0')
     print('export FLEET_HISTORICAL_THROTTLE=0')
+    raise SystemExit(0)
+r=json.loads(p.read_text())
+cap=r.get('historical_slot_cap')
+if cap and cap>0:
+    print(f'export FLEET_MAX_VMS={cap}')
+stale=[f[\"feed\"] for f in r.get(\"feeds\",[]) if f.get(\"stale\")]
+if stale:
+    print(f'export PH_FLEET_LIVE_STALE_FEEDS=\"{\",\".join(stale)}\"')
+    print('export PH_FLEET_LIVE_STALE_WARNING=1')
+else:
     print('export PH_FLEET_LIVE_STALE_FEEDS=')
+# Monitor live GCS for check-in relay only — never cap historical fleet on stale live.
+print('export PH_FLEET_LIVE_PRIORITY_HOLD=0')
+print('export FLEET_HISTORICAL_THROTTLE=0')
 "
     ;;
   *)

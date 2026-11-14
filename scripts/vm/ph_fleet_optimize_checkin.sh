@@ -22,8 +22,8 @@ if [[ -x "$ROOT/scripts/vm/ph_fleet_live_priority.sh" ]]; then
   bash "$ROOT/scripts/vm/ph_fleet_live_priority.sh" status >>"$LOG" 2>&1 || true
   # shellcheck source=/dev/null
   eval "$(bash "$ROOT/scripts/vm/ph_fleet_live_priority.sh" env 2>/dev/null)" || true
-  if [[ "${PH_FLEET_LIVE_PRIORITY_HOLD:-0}" == "1" ]]; then
-    echo "$(date -u +%FT%TZ) LIVE_PRIORITY_HOLD stale=${PH_FLEET_LIVE_STALE_FEEDS:-?} FLEET_MAX_VMS=${FLEET_MAX_VMS:-?}" >>"$LOG"
+  if [[ -n "${PH_FLEET_LIVE_STALE_FEEDS:-}" ]]; then
+    echo "$(date -u +%FT%TZ) live_gcs_stale=${PH_FLEET_LIVE_STALE_FEEDS} (historical fleet not capped)" >>"$LOG"
   fi
 fi
 if [[ -f "$ROOT/secrets/iproyal.env" && -x "$ROOT/scripts/vm/ph_iproyal_sync_pool.sh" ]]; then
@@ -116,23 +116,15 @@ fi
 
 chmod +x "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" "$ROOT/scripts/vm/ph_iproyal_refresh_slot.sh" 2>/dev/null || true
 chmod +x "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" "$ROOT/scripts/vm/ph_iproyal_rotate_slot.sh" 2>/dev/null || true
-if [[ "${PH_FLEET_LIVE_PRIORITY_HOLD:-0}" != "1" ]]; then
-  bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
-  bash "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" >>"$LOG" 2>&1 || true
-else
-  echo "$(date -u +%FT%TZ) LIVE_PRIORITY skip utilization_recover block_rotate" >>"$LOG"
-fi
+bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
+bash "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" >>"$LOG" 2>&1 || true
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
 # Hung batches: limited kicks; CF block exit is port-swap via PH_BLOCK_NEW_PORT on supervisor.
 export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
 # Below target, never mass-kick (port-swap on supervisor handles CF; kicks were killing long whole pulls).
 python3 -c "import sys; sys.exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null && export FLEET_CF_RECOVER_MAX_KICKS=0
 "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
-if [[ "${PH_FLEET_LIVE_PRIORITY_HOLD:-0}" != "1" ]]; then
-  KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
-else
-  echo "$(date -u +%FT%TZ) LIVE_PRIORITY skip keeper" >>"$LOG"
-fi
+KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
 # Below target: still shed idle slots when yield collapsed (many VMs, ~0.3 ppm each).
 FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
 export FLEET_AUTOSCALE_NO_SHED=1
