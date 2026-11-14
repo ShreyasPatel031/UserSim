@@ -658,7 +658,7 @@ _EXPLAIN_DENY = {"username", "usernames", "handle", "handles", "user", "users", 
 _ACC_KEYS = ("accuracy_label", "accuracy", "measured_accuracy", "label_accuracy")
 
 
-def _explain_clean(v, depth=0):
+def _explain_clean(v, depth=0):  # noqa: C901
     """Aggregates only: text, numbers, short lists, small dicts. No usernames/handles/links, no group under the floor."""
     if depth > 4 or v is None or isinstance(v, bool):
         return None
@@ -666,14 +666,15 @@ def _explain_clean(v, depth=0):
         return round(float(v), 4) if not float(v).is_integer() else int(v)
     if isinstance(v, str):
         t = _clean_text(v)[:320]
-        return None if not t or re.search(r"(^|\s)@\w", t) or t.lower() in ("not available", "n/a") else t
+        return None if not t or re.search(r"(^|\s)@\w", t) or t.lower().startswith(("not available", "n/a")) else t
     if isinstance(v, list):
-        out = [x for x in (_explain_clean(i, depth + 1) for i in v[:8]) if x not in (None, {}, [])]
+        out = [x for x in (_explain_clean(i, depth + 1) for i in v[:12]) if x not in (None, {}, [])]
         return out or None
     if isinstance(v, dict):
-        n = v.get("n_people")
-        if isinstance(n, (int, float)) and not isinstance(n, bool) and n < WHY_MIN_GROUP:
-            return None
+        for nk in ("n_people", "n_held_people_scored"):
+            n = v.get(nk)
+            if isinstance(n, (int, float)) and not isinstance(n, bool) and n < WHY_MIN_GROUP:
+                return None
         out = {}
         for k, x in v.items():
             ks = str(k)[:40]
@@ -687,6 +688,8 @@ def _explain_clean(v, depth=0):
 
 
 def explain(day: str, ids: set[str]) -> dict | None:
+    """E5's per-launch explanation (results/web/explain/<day>.json): blocks who / say / competitors / why, each with the
+    owner's accuracy labels (top-level "labels"). Aggregates only; "not available ..." strings hide that sub-item."""
     j = gcs.read_json(f"results/web/explain/{day}.json", ttl=300)
     if not isinstance(j, dict):
         return None
@@ -697,18 +700,18 @@ def explain(day: str, ids: set[str]) -> dict | None:
             continue
         keep = {}
         for b in EXPLAIN_BLOCKS:
-            blk = row.get(b)
-            if not isinstance(blk, dict) or blk.get("available") is False or str(blk.get("status") or "").lower() == "not available":
-                continue
-            acc = next((blk[k] for k in _ACC_KEYS if isinstance(blk.get(k), str)), "")
-            body = _explain_clean({k: v for k, v in blk.items() if k not in _ACC_KEYS and k not in ("available", "status")})
+            body = _explain_clean(row.get(b))
             if body:
-                keep[b] = {"accuracy": _clean_text(acc)[:300], "body": body}
+                keep[b] = body
         if keep:
             out[str(pid)] = keep
     if not out:
         return None
-    return {"as_of": str(j.get("as_of") or j.get("written_at") or ""), "launches": out}
+    labels = {}
+    for b, d in (j.get("labels") or {}).items() if isinstance(j.get("labels"), dict) else []:
+        if b in EXPLAIN_BLOCKS and isinstance(d, dict):
+            labels[b] = {str(k)[:40]: _clean_text(v)[:420] for k, v in d.items() if isinstance(v, str) and _clean_text(v)}
+    return {"as_of": str(j.get("written_at") or ""), "labels": labels, "launches": out}
 
 
 # Nominal data cut of each point (PT, hours after midnight); a point counts as "not made" once its cut is 90 min past.

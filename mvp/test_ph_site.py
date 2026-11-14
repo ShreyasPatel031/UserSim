@@ -786,22 +786,26 @@ def test_prereveal_gets_rank_mapped_votes(monkeypatch):
 
 
 def test_explain_sanitised(monkeypatch):
-    j = {"as_of": "2026-11-14T22:00:00Z", "launches": {
-        "11": {"who": {"accuracy_label": "backtest 70% coverage", "segments": [
-                   {"label": "AI builders", "share": 0.4, "n_people": 120, "username": "someone"},
-                   {"label": "tiny", "share": 0.1, "n_people": 5}]},
-               "say": {"available": False},
-               "competitors": {"items": [{"name": "Rival", "rank": 3, "praised": ["fast", "ping @bob"], "url": "https://x"}]},
-               "why": {"status": "not available"}},
-        "99": {"who": {"items": [{"label": "x"}]}}}}
+    j = {"written_at": "2026-11-14T22:00:00Z", "labels": {"who": {"predictive_value": "descriptive, 0.0 gain"}},
+         "launches": {
+        "11": {"name": "X",
+               "who": {"segments": [{"segment": "developers", "share_of_held_expected_votes": 0.4, "n_held_people_scored": 120},
+                                    {"segment": "tiny", "share_of_held_expected_votes": 0.1, "n_held_people_scored": 5}],
+                       "what_likely_backers_dislike": "not available (we observe upvotes only)"},
+               "say": {"top_concerns": ["Another reader?", "ping @bob"], "per_item_confidence": "not available (none)"},
+               "competitors": [{"name": "Rival", "final_daily_rank": 3, "commenters_praised": ["fast"],
+                                "commenters_complained": "not available", "url": "https://x"}],
+               "why": {"top_drivers": [{"input": "team size", "points": -0.08}], "rank_in_explanation_model": 11}},
+        "99": {"who": {"segments": [{"segment": "x"}]}}}}
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: j if path.endswith("explain/2026-11-14.json") else None)
     e = live.explain("2026-11-14", {"11"})
-    assert set(e["launches"]) == {"11"} and set(e["launches"]["11"]) == {"who", "competitors"}
-    segs = e["launches"]["11"]["who"]["body"]["segments"]
-    assert segs == [{"label": "AI builders", "share": 0.4, "n_people": 120}]
-    assert e["launches"]["11"]["who"]["accuracy"].startswith("backtest")
-    comp = e["launches"]["11"]["competitors"]["body"]["items"][0]
-    assert comp == {"name": "Rival", "rank": 3, "praised": ["fast"]}
+    L = e["launches"]["11"]
+    assert set(e["launches"]) == {"11"} and set(L) == {"who", "say", "competitors", "why"}
+    assert L["who"]["segments"] == [{"segment": "developers", "share_of_held_expected_votes": 0.4, "n_held_people_scored": 120}]
+    assert "what_likely_backers_dislike" not in L["who"] and "per_item_confidence" not in L["say"]
+    assert L["say"]["top_concerns"] == ["Another reader?"]
+    assert L["competitors"] == [{"name": "Rival", "final_daily_rank": 3, "commenters_praised": ["fast"]}]
+    assert e["labels"]["who"]["predictive_value"].startswith("descriptive")
 
 
 def test_explain_route_without_file(monkeypatch):
