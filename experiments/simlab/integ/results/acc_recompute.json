@@ -1,0 +1,3146 @@
+{
+ "truth rule": "for day d: the FIRST warehouse `launches` part written after d's close (d+1 00:00 PT) that holds rows of d (the initial snapshot counts\nas written 2026-10-28T00:00Z), its daily_rank; a day counts only when >= 10 of its launches have a rank. top-k hits % = |pred top k \u2229\n{launches with daily_rank <= k}| / k x 100, mean over days.",
+ "track_record_v1": {
+  "00:05 PT | backtest": {
+   "published": [
+    58.1,
+    65.2,
+    76.9,
+    183
+   ],
+   "recomputed": {
+    "top3": [
+     58.0,
+     54.9,
+     61.1,
+     184
+    ],
+    "top5": 65.2,
+    "top10": 76.5,
+    "n_days": 184,
+    "days": [
+     "2026-04-01",
+     "2026-10-31"
+    ],
+    "days_lt10_ranked_included": []
+   },
+   "verdict": "differs [-0.1, 0.0, -0.4, 1] (top3/5/10 points, days)",
+   "note": "preds: assets a2x/X.parquet 'both' (arm 2 walk-forward)",
+   "X dailyRank (build-time truth) instead": null
+  },
+  "00:05 PT | backtest (clean_nosite, fallback model)": {
+   "published": [
+    54.5,
+    64.7,
+    76.0,
+    183
+   ],
+   "recomputed": {
+    "top3": [
+     54.3,
+     51.1,
+     57.4,
+     184
+    ],
+    "top5": 64.7,
+    "top10": 75.7,
+    "n_days": 184,
+    "days": [
+     "2026-04-01",
+     "2026-10-31"
+    ],
+    "days_lt10_ranked_included": []
+   },
+   "verdict": "differs [-0.2, 0.0, -0.3, 1] (top3/5/10 points, days)",
+   "note": "preds: history_retrain_decomp_preds_arm2.parquet 'pure'"
+  },
+  "00:05 PT | live, previous published model": {
+   "published": [
+    51.5,
+    60.0,
+    73.6,
+    11
+   ],
+   "recomputed": {
+    "top3": [
+     51.5,
+     39.4,
+     66.7,
+     11
+    ],
+    "top5": 60.0,
+    "top10": 73.6,
+    "n_days": 11,
+    "days": [
+     "2026-10-29",
+     "2026-11-13"
+    ],
+    "days_lt10_ranked_included": []
+   },
+   "verdict": "match",
+   "note": "preds: results/web/forecast_0005/<d>.json; days = the scoreboard's live rows 2026-10-29..2026-11-13",
+   "same files, every day >= 10 ranked Oct 29+": {
+    "top3": [
+     53.8,
+     43.6,
+     64.1,
+     13
+    ],
+    "top5": 63.1,
+    "top10": 75.4,
+    "n_days": 13,
+    "days": [
+     "2026-10-29",
+     "2026-11-13"
+    ],
+    "days_lt10_ranked_included": []
+   }
+  },
+  "03:45 PT | replay": {
+   "published": [
+    72.2,
+    75.0,
+    77.5,
+    12
+   ],
+   "recomputed": {
+    "top3": [
+     72.7
+    ],
+    "top5": 74.5,
+    "top10": 77.3,
+    "n_days": 11,
+    "days": [
+     "2026-11-02",
+     "2026-11-12"
+    ]
+   },
+   "verdict": "differs [0.5, -0.5, -0.2, -1] (top3/5/10 points, days)",
+   "note": "orders not stored: mean of PH ops' per-day hits (tmp/ph_ops/hybrid_vmonly_days.json) only; truth not re-read"
+  },
+  "03:45 PT | replay (hidden rank alone)": {
+   "published": [
+    72.2,
+    75.0,
+    73.3,
+    12
+   ],
+   "recomputed": {
+    "top3": [
+     72.2,
+     61.1,
+     83.3,
+     12
+    ],
+    "top5": 75.0,
+    "top10": 71.7,
+    "n_days": 12,
+    "days": [
+     "2026-11-02",
+     "2026-11-13"
+    ],
+    "days_lt10_ranked_included": []
+   },
+   "verdict": "differs [0.0, 0.0, -1.6, 0] (top3/5/10 points, days)",
+   "note": "recorder rank_now, latest read <= 03:45 PT within 65 min (= the 03:00 read), Nov 2-13"
+  }
+ },
+ "scoreboard": {
+  "0005 | published | late": {
+   "published": [
+    61.1,
+    70.0,
+    83.3,
+    6
+   ],
+   "recomputed": [
+    61.1,
+    70.0,
+    83.3,
+    6
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "0005 | published | live": {
+   "published": [
+    51.5,
+    60.0,
+    73.6,
+    11
+   ],
+   "recomputed": [
+    51.5,
+    60.0,
+    73.6,
+    11
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "C05 | raw_votes | late": {
+   "published": [
+    100.0,
+    90.0,
+    85.0,
+    2
+   ],
+   "recomputed": [
+    100.0,
+    90.0,
+    85.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "C06 | raw_votes | late": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "C06 | raw_votes | live": {
+   "published": [
+    100.0,
+    80.0,
+    70.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    70.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "C12 | raw_votes | late": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "C12 | raw_votes | live": {
+   "published": [
+    100.0,
+    80.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "C16 | raw_votes | late": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "C16 | raw_votes | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | api_rank | live": {
+   "published": [
+    66.7,
+    60.0,
+    60.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    60.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | best | live": {
+   "published": [
+    50.0,
+    60.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    60.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | best_clean | backfill": {
+   "published": [
+    50.0,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | best_cnosite | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | best_mix | backfill": {
+   "published": [
+    50.0,
+    70.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    70.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | best_mix_th | backfill": {
+   "published": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | best_thread | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | best_w25 | live": {
+   "published": [
+    50.0,
+    50.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | blend | backfill": {
+   "published": [
+    33.3,
+    40.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    33.3,
+    40.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | blend | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | clean_nosite_tb | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | clean_nosite_thread | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | clean_stack | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | clean_thread | backfill": {
+   "published": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | clean_thread_z | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | comment_ridge | backfill": {
+   "published": [
+    33.3,
+    20.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    33.3,
+    20.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | comment_ridge | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | depth | live": {
+   "published": [
+    50.0,
+    60.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    60.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | e5 | backfill": {
+   "published": [
+    50.0,
+    50.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | hr | live": {
+   "published": [
+    66.7,
+    80.0,
+    70.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    70.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | hr_clean | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P0 | hybrid | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | api_rank | live": {
+   "published": [
+    50.0,
+    60.0,
+    60.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    60.0,
+    60.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | best | live": {
+   "published": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | best_clean | backfill": {
+   "published": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | best_cnosite | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | best_mix | backfill": {
+   "published": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | best_mix_th | backfill": {
+   "published": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | best_thread | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | blend | backfill": {
+   "published": [
+    33.3,
+    20.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    33.3,
+    20.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | blend | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | clean_nosite_hf | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | clean_nosite_tb | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | clean_nosite_thread | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | clean_stack | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | clean_thread | backfill": {
+   "published": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | clean_thread_z | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | comment_ridge | backfill": {
+   "published": [
+    33.3,
+    20.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    33.3,
+    20.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | comment_ridge | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | depth | live": {
+   "published": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | e5 | backfill": {
+   "published": [
+    50.0,
+    60.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    60.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | eh | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | grok_0030 | live": {
+   "published": [
+    33.3,
+    20.0,
+    60.0,
+    1
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | h25_th | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | hr | live": {
+   "published": [
+    66.7,
+    80.0,
+    70.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    70.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | hr_clean | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | hybrid | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P030 | mrep | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | api_rank | live": {
+   "published": [
+    83.3,
+    70.0,
+    60.0,
+    2
+   ],
+   "recomputed": [
+    83.3,
+    70.0,
+    60.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | api_rank | replay": {
+   "published": [
+    33.3,
+    46.7,
+    63.3,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | best | live": {
+   "published": [
+    66.7,
+    70.0,
+    75.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    70.0,
+    75.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | best | replay_in_sample": {
+   "published": [
+    71.4,
+    68.6,
+    78.6,
+    7
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | best_clean | backfill": {
+   "published": [
+    66.7,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | best_cnosite | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | best_mix | backfill": {
+   "published": [
+    66.7,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | best_mix_th | backfill": {
+   "published": [
+    66.7,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | best_thread | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | blend | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | blend | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | blend | replay": {
+   "published": [
+    55.6,
+    66.7,
+    73.3,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | clean_nosite_tb | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | clean_nosite_thread | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | clean_stack | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | clean_thread | backfill": {
+   "published": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | clean_thread_z | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | comment_ridge | backfill": {
+   "published": [
+    33.3,
+    20.0,
+    60.0,
+    1
+   ],
+   "recomputed": [
+    33.3,
+    20.0,
+    60.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | comment_ridge | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | comment_ridge | replay": {
+   "published": [
+    46.7,
+    68.0,
+    74.0,
+    5
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | depth | live": {
+   "published": [
+    66.7,
+    70.0,
+    75.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    70.0,
+    75.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | e5 | backfill": {
+   "published": [
+    66.7,
+    60.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | hr | live": {
+   "published": [
+    66.7,
+    80.0,
+    70.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    70.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | hr_clean | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | hybrid | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P1 | mrep | backfill": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | api_rank | live": {
+   "published": [
+    66.7,
+    90.0,
+    60.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    90.0,
+    60.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | api_rank | replay": {
+   "published": [
+    55.6,
+    60.0,
+    76.7,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | best | live": {
+   "published": [
+    66.7,
+    90.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    90.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | best | replay_in_sample": {
+   "published": [
+    76.2,
+    77.1,
+    80.0,
+    7
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | best_clean | live": {
+   "published": [
+    83.3,
+    90.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    83.3,
+    90.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | best_cnosite | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | best_mix | live": {
+   "published": [
+    66.7,
+    90.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    90.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | best_thread | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | blend | live": {
+   "published": [
+    50.0,
+    90.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    90.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | blend | replay": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | clean_nosite_tb | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | clean_nosite_thread | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | clean_stack | live": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | clean_thread | live": {
+   "published": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | clean_thread_z | live": {
+   "published": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | comment_ridge | live": {
+   "published": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    50.0,
+    65.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | comment_ridge | replay": {
+   "published": [
+    46.7,
+    68.0,
+    78.0,
+    5
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | depth | live": {
+   "published": [
+    66.7,
+    90.0,
+    75.0,
+    2
+   ],
+   "recomputed": [
+    66.7,
+    90.0,
+    75.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | e5 | live": {
+   "published": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "recomputed": [
+    50.0,
+    70.0,
+    70.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | grok_0200 | live": {
+   "published": [
+    33.3,
+    20.0,
+    60.0,
+    1
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | hr | live": {
+   "published": [
+    66.7,
+    100.0,
+    70.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    70.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | hr_clean | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P2 | hybrid | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | api_rank | late": {
+   "published": [
+    66.7,
+    80.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | api_rank | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | api_rank | replay": {
+   "published": [
+    55.6,
+    60.0,
+    73.3,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best | late": {
+   "published": [
+    66.7,
+    80.0,
+    60.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    60.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best | replay_in_sample": {
+   "published": [
+    85.7,
+    80.0,
+    81.4,
+    7
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best_clean | late": {
+   "published": [
+    100.0,
+    80.0,
+    60.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    60.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best_clean | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best_cnosite | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best_mix | late": {
+   "published": [
+    66.7,
+    80.0,
+    60.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    60.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best_mix | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | best_thread | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | blend | late": {
+   "published": [
+    100.0,
+    80.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | blend | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | blend | replay": {
+   "published": [
+    66.7,
+    73.3,
+    76.7,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_nosite_tb | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_nosite_thread | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_stack | late": {
+   "published": [
+    66.7,
+    40.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    40.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_stack | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_thread | late": {
+   "published": [
+    33.3,
+    40.0,
+    60.0,
+    1
+   ],
+   "recomputed": [
+    33.3,
+    40.0,
+    60.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_thread | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_thread_z | late": {
+   "published": [
+    66.7,
+    40.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    40.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | clean_thread_z | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | comment_ridge | late": {
+   "published": [
+    66.7,
+    40.0,
+    50.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    40.0,
+    50.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | comment_ridge | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | comment_ridge | replay": {
+   "published": [
+    46.7,
+    68.0,
+    78.0,
+    5
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | depth | late": {
+   "published": [
+    66.7,
+    80.0,
+    60.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    60.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | depth | live": {
+   "published": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | e5 | late": {
+   "published": [
+    66.7,
+    60.0,
+    60.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    60.0,
+    60.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | e5 | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | hr | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | hr_clean | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P3 | hybrid | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | api_rank | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | best | live": {
+   "published": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | best_clean | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | best_cnosite | live": {
+   "published": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | best_mix | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | best_thread | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | blend | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | clean_nosite_tb | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | clean_nosite_thread | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | clean_stack | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | clean_thread | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | clean_thread_z | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | comment_ridge | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | depth | live": {
+   "published": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | e5 | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | hr | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | hr_clean | live": {
+   "published": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P345 | hybrid | live": {
+   "published": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | api_rank | late": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | api_rank | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | api_rank | replay": {
+   "published": [
+    55.6,
+    73.3,
+    83.3,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | best | late": {
+   "published": [
+    100.0,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | best | live": {
+   "published": [
+    100.0,
+    80.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | best | replay_in_sample": {
+   "published": [
+    85.7,
+    80.0,
+    81.4,
+    7
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "partial: 1/7 days have stored orders; differs [14.3, 0.0, -1.4, 0] (top3/5/10 points, days)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | best_clean | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | best_mix | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | best_thread | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | blend | late": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | blend | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | blend | replay": {
+   "published": [
+    66.7,
+    73.3,
+    83.3,
+    3
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | clean_nosite_tb | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | clean_nosite_thread | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | clean_stack | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | clean_thread | live": {
+   "published": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    100.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | clean_thread_z | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | comment_ridge | late": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | comment_ridge | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | comment_ridge | replay": {
+   "published": [
+    46.7,
+    72.0,
+    80.0,
+    5
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | depth | late": {
+   "published": [
+    100.0,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | depth | live": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | e5 | live": {
+   "published": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "recomputed": [
+    66.7,
+    80.0,
+    80.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "P4 | hr | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R0 | r0blend_mean | live": {
+   "published": [
+    66.7,
+    80.0,
+    100.0,
+    1
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "R0 | r0blend_neartie | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": null,
+   "verdict": "not recomputable (no stored order for this method)",
+   "days with < 10 ranked in its day list": []
+  },
+  "R0 | raw_votes | late": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R0 | raw_votes | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R0h | raw_votes | late": {
+   "published": [
+    100.0,
+    90.0,
+    85.0,
+    2
+   ],
+   "recomputed": [
+    100.0,
+    90.0,
+    85.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R0q | raw_votes | late": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R0q | raw_votes | live": {
+   "published": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    100.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R1 | raw_votes | late": {
+   "published": [
+    100.0,
+    90.0,
+    85.0,
+    2
+   ],
+   "recomputed": [
+    100.0,
+    90.0,
+    85.0,
+    2
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R2 | raw_votes | live": {
+   "published": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    80.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  },
+  "R4 | raw_votes | live": {
+   "published": [
+    100.0,
+    100.0,
+    90.0,
+    1
+   ],
+   "recomputed": [
+    100.0,
+    100.0,
+    90.0,
+    1
+   ],
+   "verdict": "match",
+   "days with < 10 ranked in its day list": []
+  }
+ },
+ "period": {
+  "month 2026-10-01 | replay | votes_only": {
+   "published hits": [
+    3,
+    5,
+    10
+   ],
+   "status": "ok",
+   "truth_read_pt": "2026-11-01 06:13 PT",
+   "board_read": "2026-10-31T07:13:37Z",
+   "verdict": "not recomputed here (board orders live in the period files; see note)"
+  },
+  "week 2026-10-26 | replay | votes_only": {
+   "published hits": [
+    1,
+    4,
+    8
+   ],
+   "status": "stale: days missing",
+   "truth_read_pt": "2026-11-02 00:21 PT",
+   "board_read": "2026-10-31T13:07:11Z",
+   "verdict": "not recomputed here (board orders live in the period files; see note)"
+  },
+  "week 2026-11-02 | replay | votes_only": {
+   "published hits": [
+    3,
+    4,
+    9
+   ],
+   "status": "ok",
+   "truth_read_pt": "2026-11-09 00:18 PT",
+   "board_read": "2026-11-08T08:17:26Z",
+   "verdict": "not recomputed here (board orders live in the period files; see note)"
+  }
+ }
+}
