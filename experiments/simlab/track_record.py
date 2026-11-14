@@ -34,7 +34,7 @@ for v in HV:
     rows.append({"day": v["day"], "prediction": "03:45 PT", "flag": "replay", "line": "hybrid_vm (bundle 12a), PH ops replay, LODO weights", "status": "scored",
                  "n_launches": NL.get(v["day"]), "hits_top3": int(v["hits_top3"]), "hits_top5": int(v["hits_top5"]), "hits_top10": int(v["hits_top10"])})
 today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
-for d in pd.date_range("2026-11-14", today, inclusive="left").strftime("%Y-%m-%d"):
+for d in [x for x in pd.date_range("2026-11-14", today).strftime("%Y-%m-%d") if x < today]:   # closed PT days only
     for pred, path, col0, newp in (("00:05 PT", f"{B}/results/web/forecast_0005/{d}.json", "predicted_rank", f"{B}/results/web/predictions/{d}_0005.json"),
                                   ("03:45 PT", f"{B}/results/early_forecast/{d}_P345.json", "pred_rank_hybrid", f"{B}/results/web/predictions/{d}_prereveal.json")):
         col = col0; raw, used = gcat(newp), newp   # bundle 12a paths (model name + fallback_used) when present, the old paths otherwise

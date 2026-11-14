@@ -23,7 +23,7 @@ if MODE == "predict":
     gc = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True).stdout
     LU = json.loads(gc(f"{B}/raw/daily/{D}/today_0005.json")); fc = os.path.join(SP, f"fc_{D}.parquet")
     subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{D}/forecast_{D}.parquet", fc]); F = pd.read_parquet(fc); F["id"] = F.id.astype(str)
-    col = os.environ.get("HTS_COL") or ("pred_arm2" if "pred_arm2" in F else None)
+    col = os.environ.get("HTS_COL") or ("pred_arm2" if "pred_arm2" in F and F.pred_arm2.notna().all() else None)
     if col is None: print(json.dumps({"day": D, "error": "no pred_arm2 in forecast parquet", "cols": F.columns.tolist()})); sys.exit(1)
     st = os.path.join(SP, "store_live"); os.makedirs(st, exist_ok=True)
     for f in ("persons.parquet", "events.parquet"): subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/population/store_v3/{f}", st])

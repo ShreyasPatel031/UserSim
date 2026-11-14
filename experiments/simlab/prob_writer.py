@@ -23,13 +23,15 @@ if KIND == "0005":
     raw = gcat(f"{B}/results/web/predictions/{D}_0005.json")
     if raw:
         R = pd.DataFrame(json.loads(raw).get("ranking") or []); src = "results/web/predictions"
-        if "score" in R: S = R[["id", "score"]].rename(columns={"score": "s"})
+        if "score" in R and R.score.notna().all(): S = R[["id", "score"]].rename(columns={"score": "s"})
         else: S = R[["id", "rank"]]
     if S is None:
         fc = os.path.join(SP, f"fcp_{D}.parquet")
         if subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{D}/forecast_{D}.parquet", fc]).returncode == 0 and os.path.getsize(fc) > 0:
             F = pd.read_parquet(fc)
-            if "pred_arm2" in F: S = F[["id", "pred_arm2"]].rename(columns={"pred_arm2": "s"}); src = "raw/daily forecast pred_arm2"
+            if "pred_arm2" in F and F.pred_arm2.notna().all(): S = F[["id", "pred_arm2"]].rename(columns={"pred_arm2": "s"}); src = "raw/daily forecast pred_arm2"
+            elif "pred" in F and F.pred.notna().all():   # arm 2 missing: the published order is clean_nosite (pred); rank table only
+                S = F.sort_values("pred", ascending=False).reset_index(drop=True)[["id"]].assign(rank=lambda x: range(1, len(x) + 1)); src = "raw/daily forecast pred (clean_nosite; pred_arm2 missing)"
     if S is None:
         raw = gcat(f"{B}/results/web/forecast_0005/{D}.json")
         if raw: S = pd.DataFrame(json.loads(raw)["forecast"]).rename(columns={"predicted_rank": "rank"})[["id", "rank"]]; src = "results/web/forecast_0005 (ranks only)"
