@@ -25,11 +25,14 @@ for d, g in X.groupby("day"):
     t = g.sort_values("dailyRank").id.tolist(); o = g.sort_values(["both", "id"], ascending=[False, True]).id.tolist()
     rows.append({"day": d, "prediction": "00:05 PT", "flag": "backtest", "line": "arm 2 walk-forward fold", "status": "scored", "n_launches": len(g),
                  "hits_top3": len(set(o[:3]) & set(t[:3])), "hits_top5": len(set(o[:5]) & set(t[:5])), "hits_top10": len(set(o[:10]) & set(t[:10]))})
-R = json.load(open(os.path.join(HERE, "reports", "prereveal_345", "prereveal_345.json")))["per day (plain, hybrid) top3/5/10 hits %"]
-for d, v in R.items():
-    h = [int(round(x * k / 100)) for x, k in zip(v["hybrid"], (3, 5, 10))]
-    rows.append({"day": d, "prediction": "03:45 PT", "flag": "replay", "line": "hybrid (hidden top 5 + hr_clean 6+), LODO", "status": "scored", "n_launches": v["n launches"],
-                 "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
+# 03:45 replay = the line that will be published (bundle 12a hybrid_vm, PH ops' per-day replay hits, read rule agreed with E5, LODO
+# weights); E5's re-implementation of the earlier hybrid (78.2 top 10) is no longer used here (orchestrator / PH ops, Nov 14).
+HV = json.loads(gcat(f"{B}/tmp/ph_ops/hybrid_vmonly_days.json") or b"[]")
+HV = HV.get("days", HV) if isinstance(HV, dict) else HV
+NL = {d: v["n launches"] for d, v in json.load(open(os.path.join(HERE, "reports", "prereveal_345", "prereveal_345.json")))["per day (plain, hybrid) top3/5/10 hits %"].items()}
+for v in HV:
+    rows.append({"day": v["day"], "prediction": "03:45 PT", "flag": "replay", "line": "hybrid_vm (bundle 12a), PH ops replay, LODO weights", "status": "scored",
+                 "n_launches": NL.get(v["day"]), "hits_top3": int(v["hits_top3"]), "hits_top5": int(v["hits_top5"]), "hits_top10": int(v["hits_top10"])})
 today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
 for d in pd.date_range("2026-11-14", today, inclusive="left").strftime("%Y-%m-%d"):
     for pred, path, col0, newp in (("00:05 PT", f"{B}/results/web/forecast_0005/{d}.json", "predicted_rank", f"{B}/results/web/predictions/{d}_0005.json"),
