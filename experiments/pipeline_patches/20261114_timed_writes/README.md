@@ -97,8 +97,12 @@ duplicate rows on Nov 1, plus 19 rows that are not in that day's raw file.)
   `raw/population/_salt` to `$ASSETS/early/salt` (mode 600; read only to hash, never printed or logged), exactly as why_run.sh does today.
 - Entry `bash vm_writers/run.sh <job> [day]`; exit codes 2 sync, 3 inputs missing, 64 bad job; one log line per run.
 - Cron (UTC, E5's schedule; in the b12 block after a `CRON_TZ=UTC` line):
-  `20 8 * * *` prob_0005 + held_team_predict; `20 9` period; `25 9` track_record; `30 9` held_team_score; `7 12` prob_prereveal.
-  In winter (PST) 08:20 UTC = 00:20 PT, so prob_0005 / held_team_predict run inside 00:05-01:00 PT. Both are read-only on bucket files and
-  make no API calls; they start after the pipeline's forecast parquet exists (run.sh exits 3 otherwise and the 09:20 slot retries).
+  `35 8 * * *` prob_0005 + held_team_predict; `20 9` period + prob_0005 + held_team_predict (re-run); `25 9` track_record; `30 9` held_team_score; `7 12` prob_prereveal.
+  In winter (PST) 08:20 UTC = 00:20 PT, inside 00:05-01:00 PT. E5 confirmed (01:39Z) that both jobs are read-only: no PH API, no LLM, and they
+  write only to tmp/e5/... in the bucket. Exit codes: run.sh exits 3 only for missing ASSETS inputs (a2x/X.parquet; the salt for held_team_*).
+  With no forecast yet, prob_0005 falls back (predictions file -> raw/daily pred_arm2 -> forecast_0005 ranks) or writes "not published" with rc 0.
+  held_team_predict exits 1 without the forecast parquet or pred_arm2 and writes nothing (gsutil cp -n); a re-run is safe. It downloads
+  store_v3 persons + events (~300 MB) each run. Schedule used here: prob_0005 + held_team_predict at **08:35 UTC (00:35 PT)**, plus one idempotent
+  re-run at 09:20 UTC.
 - Cutover: once the VM cron is live and its first log lines are rc 0, tell E5 so its container stops writing the same files.
 - Stays with E5: the Gemini-judged forward /try record (needs a Gemini key on the VM and a pinned claude/ph-website checkout; ~$0.15-0.30/night).
