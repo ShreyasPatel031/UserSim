@@ -1,14 +1,14 @@
 {
  "source": "clean shadow model, confidence_v2 label (clear_leader / open_field), live days scored forward",
  "applies_to": "clean shadow model",
- "n_days": 1,
+ "n_days": 2,
  "by_label": {
   "open_field": {
-   "days": 1,
-   "p1_top3": 0.0,
-   "p1_top3_count": "0 of 1",
-   "top3_hits": 1.0,
-   "top5_hits": 1.0
+   "days": 2,
+   "p1_top3": 0.5,
+   "p1_top3_count": "1 of 2",
+   "top3_hits": 1.5,
+   "top5_hits": 2.5
   }
  },
  "days": [
@@ -19,6 +19,14 @@
    "h5": 1,
    "h10": 5,
    "p1t3": 0.0
+  },
+  {
+   "day": "2026-11-13",
+   "label": "open_field",
+   "h3": 2,
+   "h5": 4,
+   "h10": 8,
+   "p1t3": 1.0
   }
  ]
 }
