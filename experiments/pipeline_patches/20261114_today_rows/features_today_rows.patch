@@ -1,0 +1,35 @@
+--- a/experiments/ph_predict/features.py (VM 981c5ded)
++++ b/experiments/ph_predict/features.py
+@@ -91,7 +91,13 @@
+         for k, v in (json.load(open(f"{D}/{extra}")) if os.path.exists(f"{D}/{extra}") else {}).items():
+             audf.setdefault(k, {}).update(v)
+     import external as E
+-    files = sorted(glob.glob(f"{D}/days/*.json")) + (sorted(glob.glob(f"{D}/today/*.json")) if include_today else [])
++    files = sorted(glob.glob(f"{D}/days/*.json"))
++    if include_today:   # TODAY-ROWS FIX (Nov 14, undeployed): only the target day's line-up, never older today/ files (they stay on disk
++        # for months and used to enter add_history as unlabelled rows). include_today=True -> the newest today/ file; a 'YYYY-MM-DD' -> that day.
++        have = {os.path.basename(f)[:10] for f in files}
++        tf = sorted(glob.glob(f"{D}/today/*.json"))
++        want = include_today if isinstance(include_today, str) else (os.path.basename(tf[-1])[:10] if tf else None)
++        files += [f for f in tf if os.path.basename(f)[:10] == want and want not in have]
+     for fn in files:
+         day = os.path.basename(fn)[:10]
+         is_today = "/today/" in fn
+@@ -174,6 +180,8 @@
+             r.update(audf.get(p["id"], {}))  # aud_: predicted audience from people's history (audience.py)
+             rows.append(r)
+     df = pd.DataFrame(rows)
++    if include_today:   # a launch already in days/ never also counts as a today row
++        df = df[~(df.is_today & df.id.isin(set(df.id[~df.is_today])))].reset_index(drop=True)
+     df = add_history(df)
+     df["ph_hunter_n_same_day"] = df.groupby(["day", "hunter_id"]).id.transform("count")
+     for c in ["ph_hunter_followers", "ph_hunter_age_d", "ph_n_makers", "ph_n_media", "x_hunter_followers",
+@@ -204,6 +212,8 @@
+                 "hist_maker_n": len(ms), "hist_maker_rel_max": max([x[0] for x in ms]) if ms else np.nan,
+                 "hist_maker_top5": np.mean([x[1] for x in ms]) if ms else np.nan})
+         for _, r in g.iterrows():  # add today's results only after the whole day is featurised
++            if r.get("is_today", False) or not np.isfinite(r.votes):   # unlabelled rows never become history
++                continue
+             H.setdefault(r.hunter_id, []).append((r._rel, r._top5))
+             for m in set(r.maker_ids):
+                 Mk.setdefault(m, []).append((r._rel, r._top5))
