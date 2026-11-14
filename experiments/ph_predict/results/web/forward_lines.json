@@ -369,7 +369,7 @@
   {
    "point": "01:00",
    "line": "hr_clean_arm2 (shadow)",
-   "column": "results/early_forecast/<day>_P1.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "column": "results/early_forecast/<day>_P1.json pred_rank_hr_clean_arm2 (comment_forecast.py from Nov 15; blank until pred_arm2 exists in the 00:05 parquet)",
    "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
    "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
    "frozen_date": "2026-11-13",
@@ -380,7 +380,7 @@
   {
    "point": "02:00",
    "line": "hr_clean_arm2 (shadow)",
-   "column": "results/early_forecast/<day>_P2.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "column": "results/early_forecast/<day>_P2.json pred_rank_hr_clean_arm2 (comment_forecast.py from Nov 15; blank until pred_arm2 exists in the 00:05 parquet)",
    "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
    "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
    "frozen_date": "2026-11-13",
@@ -391,7 +391,7 @@
   {
    "point": "03:00",
    "line": "hr_clean_arm2 (shadow)",
-   "column": "results/early_forecast/<day>_P3.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "column": "results/early_forecast/<day>_P3.json pred_rank_hr_clean_arm2 (comment_forecast.py from Nov 15; blank until pred_arm2 exists in the 00:05 parquet)",
    "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
    "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
    "frozen_date": "2026-11-13",
@@ -402,7 +402,7 @@
   {
    "point": "03:45",
    "line": "hr_clean_arm2 (shadow)",
-   "column": "results/early_forecast/<day>_P345.json pred_rank_hr_clean_arm2 (added after the Nov 14 timed runs)",
+   "column": "results/early_forecast/<day>_P345.json pred_rank_hr_clean_arm2 (comment_forecast.py from Nov 15; blank until pred_arm2 exists in the 00:05 parquet)",
    "inputs": "hidden rank position, move since 01:00, comments, distinct commenters <= T, prior = live 00:05 arm-2 score (pred_arm2)",
    "frozen_weights": "results/frozen/prereveal_hr_clean_20261113.json (P345: prereveal_hr_clean_P345_20261113.json)",
    "frozen_date": "2026-11-13",
@@ -413,7 +413,7 @@
   {
    "point": "03:45",
    "line": "slots6_prior (shadow)",
-   "column": "to be written with the 03:45 point (plain hidden rank top 5 + remaining by pred_arm2)",
+   "column": "results/early_forecast/<day>_P345.json pred_rank_slots6_prior (plain hidden rank top 5 + remaining by pred_arm2; comment_forecast.py from Nov 15)",
    "inputs": "recorder rank_now at 03:45 (03:00 in replay), 00:05 arm-2 score",
    "frozen_weights": null,
    "frozen_date": "2026-11-14",
@@ -426,7 +426,7 @@
   {
    "point": "00:30",
    "line": "hidden_0030 (shadow)",
-   "column": "pred_rank_hidden_0030 + pred_rank_hidden_plain (to be added to the 00:30 point)",
+   "column": "results/early_forecast/<day>_P030.json pred_rank_hidden_0030 + pred_rank_hidden_plain (comment_forecast.py from Nov 15)",
    "inputs": "within-day rank of pred_arm2 (00:05) and hidden rank at T (recorder rank_now or posts_ts daily_rank_at_fetch, latest <= T in the agreed window)",
    "frozen_weights": "w = 0.8 on the arm-2 rank (E5 leave-one-day-out, reports/early_hidden @ 5891ed3d)",
    "frozen_date": "2026-11-14",
@@ -437,7 +437,7 @@
   {
    "point": "01:00",
    "line": "hidden_0100 (shadow)",
-   "column": "pred_rank_hidden_0100 + pred_rank_hidden_plain (to be added to the 01:00 point)",
+   "column": "results/early_forecast/<day>_P1.json pred_rank_hidden_0100 + pred_rank_hidden_plain (comment_forecast.py from Nov 15)",
    "inputs": "within-day rank of pred_arm2 (00:05) and hidden rank at T (recorder rank_now or posts_ts daily_rank_at_fetch, latest <= T in the agreed window)",
    "frozen_weights": "w = 0.7 on the arm-2 rank (E5 leave-one-day-out, reports/early_hidden @ 5891ed3d)",
    "frozen_date": "2026-11-14",

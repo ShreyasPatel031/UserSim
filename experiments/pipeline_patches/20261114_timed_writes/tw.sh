@@ -62,6 +62,8 @@ why)            # forecast-side why file (E5 why_writer at the pin in why_run.sh
   bash $0 why_drivers "$D";;
 why_drivers)
   need $B/results/web/why/${D}_0005.json why; need $B/results/shadow_readable/$D.json shadow_readable; need $B/results/early_forecast/${D}_P030.json P030
+  # SHADOW (orchestrator 12:50Z Nov 14): SHAP groups from the deployed arm-2 boosters first (refit as at 00:05, nice 19; never blocks drivers)
+  if ! has $B/results/shadow_arm2_shap/$D.json && has $FC; then (JOB=arm2_shap; ST=$(nicep arm2_shap.py $D 2>&1 | tail -1 | cut -c1-200); logline) || true; fi
   ST=$(nicep why_drivers.py $D 2>&1 | tail -1 | cut -c1-200); logline
   bash $0 conf_top3 "$D";;
 conf_top3)

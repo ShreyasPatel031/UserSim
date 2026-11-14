@@ -778,6 +778,46 @@ def live(day, point):
         h5 = A.sort_values(["pred_rank_api", "id"]).id.tolist()[:5]
         rest = [i for i in A.sort_values(["pred_rank_hr_clean", "id"]).id if i not in set(h5)]
         A["pred_rank_hybrid"] = A.id.map({i: k + 1 for k, i in enumerate(h5 + rest)})
+    # orchestrator 12:50Z Nov 14 (registered "not established" in results/web/forward_lines.json; shadow only, never published):
+    #   hr_clean_arm2 (P1/P2/P3/P345)  the frozen hr_clean ridge with the prior = live 00:05 arm-2 score (pred_arm2) instead of clean_nosite
+    #   slots6_prior (P345)            plain hidden top 5, slots 6+ by pred_arm2 (E5 prereveal_345 @ e0440a08)
+    #   hidden_0030 (P030, w 0.8) / hidden_0100 (P1, w 0.7)  w x within-day rank(pred_arm2) + (1 - w) x hidden rank (E5 early_hidden @ 5891ed3d)
+    #   hidden_plain (P030, P1)        the plain hidden order at T, logged next to them
+    for c_ in ("pred_rank_hr_clean_arm2", "pred_rank_slots6_prior", "pred_rank_hidden_0030", "pred_rank_hidden_0100", "pred_rank_hidden_plain"):
+        A[c_] = np.nan
+    arm2_src = None
+    try:
+        fp_ = os.path.join(WORK, f"forecast_{day}.parquet")
+        if not os.path.exists(fp_):
+            subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{day}/forecast_{day}.parquet", fp_], capture_output=True)
+        FA = pd.read_parquet(fp_) if os.path.exists(fp_) else None
+        if FA is not None and "pred_arm2" in FA and FA.pred_arm2.notna().all() and A.pred_rank_api.notna().any():
+            arm2_src = "raw/daily forecast parquet pred_arm2"
+            a2 = A.id.map(dict(zip(FA.id.astype(str), FA.pred_arm2))).astype(float)
+            a2 = a2.fillna(a2.min() - 0.1)                     # a launch missing from the 00:05 list goes last on the prior
+            posT = A.pred_rank_api.rank(method="first")
+            ra2 = a2.rank(ascending=False, method="first")
+            if point in ("P030", "P1"):
+                A["pred_rank_hidden_plain"] = posT.astype(int)
+                w_ = 0.8 if point == "P030" else 0.7
+                A[f"pred_rank_hidden_{'0030' if point == 'P030' else '0100'}"] = (w_ * ra2 + (1 - w_) * posT + 1e-6 * ra2).rank(method="first").astype(int)
+            if point == "P345":
+                h5 = A.sort_values(["pred_rank_api", "id"]).id.tolist()[:5]
+                rest = [i for i in A.assign(_a=a2).sort_values(["_a", "id"], ascending=[False, True]).id if i not in set(h5)]
+                A["pred_rank_slots6_prior"] = A.id.map({i: k + 1 for k, i in enumerate(h5 + rest)})
+            if point in ("P1", "P2", "P3", "P345"):
+                fz2 = os.path.join(HERE, "results", "frozen", "prereveal_hr_clean_P345_20261113.json" if point == "P345" else "prereveal_hr_clean_20261113.json")
+                Hh = pd.DataFrame(hr_hist, columns=["a", "id", "r"])
+                p1 = Hh[Hh.a <= t0 + pd.Timedelta(hours=1)].sort_values("a").groupby("id").r.last()
+                pos1 = pd.Series([p1.get(i, 999) for i in A.id], index=A.index).rank(method="first")
+                cC = C.groupby("id").size(); cU = C.groupby("id").user.nunique()
+                Z2 = pd.DataFrame({"lpos": np.log(posT), "move": np.log(pos1) - np.log(posT), "nc": np.log1p(A.id.map(cC).fillna(0)),
+                                   "nu": np.log1p(A.id.map(cU).fillna(0)), "clean": a2}, index=A.index)
+                zf2 = lambda s_: (s_ - s_.mean()) / s_.std() if s_.std() > 0 else s_ * 0.0
+                fzw2 = json.load(open(fz2))["points"][point]["coef"]
+                A["pred_rank_hr_clean_arm2"] = sum(zf2(Z2[f.replace("z_", "")]) * c for f, c in fzw2.items()).rank(ascending=False, method="first").astype(int)
+    except Exception as e:
+        print("arm2 shadow lines skipped:", repr(e)[:160], flush=True)
     if npre_th is not None and point in ("P030", "P0", "P1") and A.pred_rank_best_mix.notna().any():
         # QA 10:00Z Nov 12: sorting the strict best_mix ranking never let the tie-break act; near-ties of the blended score
         # (same 0.5-rank-unit bucket) are now ordered by th_n_pre
@@ -785,7 +825,7 @@ def live(day, point):
             lambda z: pd.Series(np.arange(1, len(z) + 1), index=z.index)).reindex(A.index)
     if comments_missing:   # blank every column that reads comments (identity-free ridge, old rule, team ids, thread lines, e5)
         for c_ in [c for c in A.columns if c in ("pred_rank", "pred_rank_rule_a", "pred_rank_teamids", "pred_rank_blend", "pred_rank_e5", "e5_score",
-                   "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "pred_rank_mrep", "n_c", "u_out",
+                   "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "pred_rank_mrep", "pred_rank_hr_clean_arm2", "n_c", "u_out",
                    "u_out_teamids", "u_tie", "score")]:
             A[c_] = np.nan
     sp_ = os.path.join(HERE, "results", "shadow_makerfix", f"{day}.json")
@@ -793,10 +833,10 @@ def live(day, point):
         inmax["clean_shadow"] = pd.Timestamp(json.load(open(sp_)).get("written_at") or pd.Timestamp(os.path.getmtime(sp_), unit="s", tz="UTC"))
     late = (now - T) > pd.Timedelta(minutes=90)
     dep = {"comments": ["pred_rank", "pred_rank_rule_a", "pred_rank_teamids", "pred_rank_blend", "pred_rank_e5", "pred_rank_clean_thread",
-                        "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "pred_rank_best_thread", "pred_rank_clean_nosite_thread", "pred_rank_hr_clean", "pred_rank_clean_nosite_tb", "pred_rank_hybrid", "pred_rank_mrep"],
+                        "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_mix_th", "pred_rank_best_thread", "pred_rank_clean_nosite_thread", "pred_rank_hr_clean", "pred_rank_clean_nosite_tb", "pred_rank_hybrid", "pred_rank_mrep", "pred_rank_hr_clean_arm2"],
            "clean_shadow": ["pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_best_mix_th", "pred_rank_e5", "pred_rank_clean_thread",
                             "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_best_thread", "pred_rank_clean_nosite_thread", "pred_rank_hr_clean", "pred_rank_best_cnosite", "pred_rank_clean_nosite_tb", "pred_rank_hybrid", "pred_rank_mrep", "pred_rank_eh", "pred_rank_clean_nosite_hf", "pred_rank_h25_th", "pred_rank_readable_v2_th"],
-           "posts": ["pred_rank_api", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "pred_rank_estvotes", "pred_rank_hr"]}
+           "posts": ["pred_rank_api", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "pred_rank_estvotes", "pred_rank_hr", "pred_rank_hr_clean_arm2", "pred_rank_slots6_prior", "pred_rank_hidden_0030", "pred_rank_hidden_0100", "pred_rank_hidden_plain"]}
     col_status = {}
     for src_, cols_ in dep.items():
         for c_ in cols_:
@@ -810,8 +850,8 @@ def live(day, point):
            "column_status": col_status, "withdrawn_excluded": withdrawn, "reply_rows_read": n_rep_rows, "reply_rows_used": int(C.parent.notna().sum()), "precut_rank_rows": n_precut,
            "hidden_rank_note": "each point's hidden API rank is the latest posts_ts read fetched <= the cut (the 15-min snapshot before it)",
            "lm_matched": int(A.lm_matched.sum()), "team_known": int(sum(1 for i in ids if team.get(i, (0, 0, 0))[1])), "team_rule": "named makers + hunter by username (training rule)", "comments": int(len(C)), "comments_missing": comments_missing, "thread_hunter_missing": th_missing, "th_n_pre_source": th_source, "written_at": now.isoformat(),
-           "api_ranked": int(A.api_rank.notna().sum()),
-           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_clean_nosite_thread", "pred_rank_clean_nosite_tb", "pred_rank_best_thread", "pred_rank_hr", "pred_rank_hr_clean", "pred_rank_hybrid", "pred_rank_mrep", "pred_rank_eh", "pred_rank_clean_nosite_hf", "pred_rank_h25_th", "pred_rank_readable_v2_th", "pred_rank_best_cnosite", "pred_rank_best_mix_th", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
+           "api_ranked": int(A.api_rank.notna().sum()), "arm2_prior_source": arm2_src,
+           "forecast": A.sort_values("pred_rank")[["id", "pred_rank", "pred_rank_api", "pred_rank_blend", "pred_rank_best", "pred_rank_best2", "pred_rank_best_w25", "pred_rank_depth", "watch15", "pred_rank_best_clean", "pred_rank_best_mix", "pred_rank_e5", "pred_rank_clean_thread", "pred_rank_clean_thread_z", "pred_rank_clean_stack", "pred_rank_clean_nosite_thread", "pred_rank_clean_nosite_tb", "pred_rank_best_thread", "pred_rank_hr", "pred_rank_hr_clean", "pred_rank_hybrid", "pred_rank_mrep", "pred_rank_eh", "pred_rank_clean_nosite_hf", "pred_rank_h25_th", "pred_rank_readable_v2_th", "pred_rank_best_cnosite", "pred_rank_best_mix_th", "pred_rank_hr_clean_arm2", "pred_rank_slots6_prior", "pred_rank_hidden_0030", "pred_rank_hidden_0100", "pred_rank_hidden_plain", "e5_score", "pred_rank_rule_a", "pred_rank_teamids", "api_rank", "n_c", "u_out", "u_out_teamids", "u_tie", "lm", "score",
                                                    "cv_sum", "cv_max", "cv_maker1", "cv_per_out", "cv_growth1h", "cv_snapshot",
                                                    "pred_rank_estvotes", "est_votes", "est_vel60", "weekly_rank", "exp_final_votes", "self_hunted", "has_prior_reviews"]].round(4).astype(object).where(lambda z: z.notna(), None).to_dict("records")}
     if os.environ.get("CF_DRY"):   # retro / test run: local scratch only, never the live results folder or bucket

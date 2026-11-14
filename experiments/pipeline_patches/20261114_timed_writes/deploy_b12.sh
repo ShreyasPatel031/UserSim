@@ -40,7 +40,7 @@ bash -n $W/tw.new/e5_vm_writers/vm_writers/run.sh; command -v python > /dev/null
 N=$W/tw.new; PYG="env -u PYTHONPATH /opt/exp/bin/python3 $N/import_gate.py"; P=$N/experiments/ph_predict
 gate() { echo "gate: $1"; (eval "$2") || { echo "import gate failed: $1: not deploying"; exit 1; }; }
 gate "tw.sh python jobs" "cd $P && $PYG comment_forecast.py early_forecast.py velocity_shadow.py conf_live.py conf_top3_shadow.py why_drivers.py \
-  weekly_live.py monthly_live.py makerfix_shadow.py makerfix_score.py growth.py web_forecast_0005.py scoreboard.py"
+  weekly_live.py monthly_live.py makerfix_shadow.py makerfix_score.py growth.py web_forecast_0005.py scoreboard.py arm2_shap.py"
 gate "h25_shadow (tw.sh PYTHONPATH)" "cd $W/experiments/ph_predict && env PYTHONPATH=/home/agent/w/mk:.:$N/h25 /opt/exp/bin/python3 $N/import_gate.py $N/h25/h25_shadow.py"
 gate "readable_shadow (tw.sh PYTHONPATH)" "cd $W/experiments/ph_predict && env PYTHONPATH=/home/agent/w/mk:. /opt/exp/bin/python3 $N/import_gate.py $N/h25/readable_shadow.py"
 gate "vs_reconcile (-m)" "cd $N/experiments && $PYG -m:pipeline.vs_reconcile"
