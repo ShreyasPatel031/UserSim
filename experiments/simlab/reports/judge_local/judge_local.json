@@ -1,0 +1,58 @@
+{
+ "items": 2160,
+ "launches": 123,
+ "judge base rate": 0.24,
+ "seconds per model (all items)": {
+  "cross-encoder/nli-deberta-v3-small": 1840.6,
+  "BAAI/bge-reranker-base": 2816.1
+ },
+ "item AUC": {
+  "nli": 0.53,
+  "rerank": 0.567
+ },
+ "best": "rerank",
+ "launch-level pearson (judged p@3 vs proxy, LODO threshold)": 0.171,
+ "recipe ordering": {
+  "RC": {
+   "judged by arm": {
+    "b20": 36.7,
+    "const": 14.8,
+    "dep": 25.2
+   },
+   "proxy by arm": {
+    "b20": 35.3,
+    "const": 6.7,
+    "dep": 17.1
+   },
+   "judged b20 thin/non-thin": {
+    "false": 38.1,
+    "true": 34.1
+   },
+   "proxy b20 thin/non-thin": {
+    "false": 33.3,
+    "true": 38.9
+   }
+  },
+  "RQ": {
+   "judged by arm": {
+    "b20": 30.3,
+    "const": 10.5,
+    "dep": 26.4
+   },
+   "proxy by arm": {
+    "b20": 38.0,
+    "const": 19.6,
+    "dep": 29.2
+   },
+   "judged b20 thin/non-thin": {
+    "false": 29.4,
+    "true": 31.9
+   },
+   "proxy b20 thin/non-thin": {
+    "false": 36.4,
+    "true": 40.7
+   }
+  }
+ },
+ "gate (AUC >= 0.80)": "FAIL"
+}
