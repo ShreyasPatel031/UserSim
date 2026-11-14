@@ -652,10 +652,15 @@ def why(day: str, point: str, ids: set[str]) -> dict | None:
 
 
 # --- /ph explain panel: per-launch who / say / competitors / why (E5, results/web/explain/<day>.json) -------------------
-EXPLAIN_BLOCKS = ("who", "say", "competitors", "why")
+EXPLAIN_BLOCKS = ("who", "say", "competitors", "why", "who_actually")
 _EXPLAIN_DENY = {"username", "usernames", "handle", "handles", "user", "users", "user_id", "user_ids", "profile", "profiles",
                  "profile_url", "email", "person", "people", "voter", "voters", "ids", "url", "urls", "link", "links", "twitter", "x_handle"}
 _ACC_KEYS = ("accuracy_label", "accuracy", "measured_accuracy", "label_accuracy")
+
+
+def _ex_text(v, n):
+    """Whitespace-normalised text cut at n characters (the page's _clean_text stops at 200, too short for these)."""
+    return " ".join(str(v or "").split())[:n]
 
 
 def _explain_clean(v, depth=0):  # noqa: C901
@@ -665,13 +670,13 @@ def _explain_clean(v, depth=0):  # noqa: C901
     if isinstance(v, (int, float)):
         return round(float(v), 4) if not float(v).is_integer() else int(v)
     if isinstance(v, str):
-        t = _clean_text(v)[:320]
+        t = _ex_text(v, 320)
         return None if not t or re.search(r"(^|\s)@\w", t) or t.lower().startswith(("not available", "n/a")) else t
     if isinstance(v, list):
         out = [x for x in (_explain_clean(i, depth + 1) for i in v[:12]) if x not in (None, {}, [])]
         return out or None
     if isinstance(v, dict):
-        for nk in ("n_people", "n_held_people_scored"):
+        for nk in ("n_people", "n_held_people_scored", "n_held_backers"):
             n = v.get(nk)
             if isinstance(n, (int, float)) and not isinstance(n, bool) and n < WHY_MIN_GROUP:
                 return None
@@ -694,23 +699,29 @@ def explain(day: str, ids: set[str]) -> dict | None:
     if not isinstance(j, dict):
         return None
     rows = j.get("launches") if isinstance(j.get("launches"), dict) else {k: v for k, v in j.items() if isinstance(v, dict)}
-    out = {}
+    out, labels = {}, {}
+    top = j.get("labels") if isinstance(j.get("labels"), dict) else {}
+    for b, d in top.items():
+        if b in EXPLAIN_BLOCKS and isinstance(d, dict):
+            labels[b] = {str(k)[:40]: _ex_text(v, 700) for k, v in d.items() if isinstance(v, str) and _ex_text(v, 700)}
     for pid, row in rows.items():
         if str(pid) not in ids or not isinstance(row, dict):
             continue
         keep = {}
         for b in EXPLAIN_BLOCKS:
-            body = _explain_clean(row.get(b))
+            raw = row.get(b)
+            if isinstance(raw, dict) and "accuracy_label" in raw:          # per-block label inside the block (Nov 14 file)
+                al, raw = raw["accuracy_label"], {k: v for k, v in raw.items() if k != "accuracy_label"}
+                if b not in labels:
+                    labels[b] = ({str(k)[:40]: _ex_text(v, 700) for k, v in al.items() if isinstance(v, str) and _ex_text(v, 700)}
+                                 if isinstance(al, dict) else {"text": _ex_text(al, 1000)} if isinstance(al, str) and _ex_text(al, 1000) else {})
+            body = _explain_clean(raw)
             if body:
                 keep[b] = body
         if keep:
             out[str(pid)] = keep
     if not out:
         return None
-    labels = {}
-    for b, d in (j.get("labels") or {}).items() if isinstance(j.get("labels"), dict) else []:
-        if b in EXPLAIN_BLOCKS and isinstance(d, dict):
-            labels[b] = {str(k)[:40]: _clean_text(v)[:420] for k, v in d.items() if isinstance(v, str) and _clean_text(v)}
     return {"as_of": str(j.get("written_at") or ""), "labels": labels, "launches": out}
 
 
