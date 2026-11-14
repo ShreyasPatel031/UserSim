@@ -16,3 +16,6 @@ All pass on d9b9a96f (two_predictions.py 0f17e09e). A9–A11 fail on 263785f8 as
 
 ## Bundle 12a.1 (0bc2ef0d, folder 20261114_two_predictions_12a1)
 repro_A13.py: with no pred_arm3 column (or a partly filled one, or pred_arm2 all NaN, or no parquet), 12a.1 writes the same 0005 and prereveal JSON as the verified 12a, apart from written_at. A9-A12 were re-run against the 12a1 folder; all pass.
+
+## Today-rows bug (Nov 14)
+repro_A14.py: builds a clean root (only today/D) and a stale root (every earlier today file, as on the VM). Fails on features.py 981c5ded: Nov 13 has 405 stale rows, 9 of 20 lineup launches with different hunter history, and 403 doubled same-day counts. Passes on the PH ops fix 033d7bd7.
