@@ -167,7 +167,8 @@ WHO_LABEL = {"segment_rule": "keyword rule on each held person's own headline an
 try:
     if CFL:
         WHO_LABEL = {**WHO_LABEL, "model": "CF-only backer model (activity + co-upvote neighbour score, SVD k=32 on upvotes dated before the day; reads before 00:00 PT; no follows); segments and expected votes over each launch's 2,000 most likely held people",
-                     "predictive_value": "25.2% of held backers named, 128 launches, forward (Nov 8-12, strict; +4.0 points [+1.9, +5.9] over a most-active list)",
+                     "predictive_value": ("CF 25.2% vs most-active 21.1% of held backers named (+4.0; day-resampled interval about -1 to +5; clear on Nov 9 only; "
+                                          "5 days, 128 launches, forward Nov 8-12 strict); the gain exists only among held people re-read after the day"),
                      "launch_specificity": ("TESTED, NOT LAUNCH-SPECIFIC: a launch's top 200 overlap 90% with other launches' top 200 the same day, and a launch's own list "
                                             "fits its actual held backers no better than other launches' lists (roles +0.09 TV points, 95% interval -0.43 to +0.52; 44 launches, "
                                             "1,450 backers, Nov 8-12 forward). 'segments_by_lift' describes today's generally likely backers, not this launch's."),

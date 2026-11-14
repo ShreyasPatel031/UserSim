@@ -1,7 +1,7 @@
 """Score the three backer-prediction arms (CF-only, A7, raw most-active) under one metric (orchestrator 22:34Z Nov 14).
 Per launch: o = observed backers = people held before the freeze (a read before 00:00 PT of D) AND re-read after the day closed whose own upvote
 list contains the launch; N = |o|; each arm's list is ranked within the re-read people; hits = |top N ∩ o|.
-Pooled recall per arm = sum(hits) / sum(N) over all scored launches; 95% interval and the paired difference vs raw = launch bootstrap (2000).
+Pooled recall per arm = sum(hits) / sum(N) over all scored launches; 95% interval and paired differences = DAY bootstrap (2000; launches of one day resampled together).
 The raw arm = held people ranked by upvotes on launches of the 30 days before D, from reads fetched before 00:00 PT of D.
   python backer_arms_score.py <store dir> <scratchpad> <day> [<day> ...] [--no-upload]
 Writes results/web/backer_prediction_arms.json (accumulating rows per (day, store read)) and results/web/north_star_rows_e5.json (best arm)."""
@@ -47,7 +47,11 @@ for D in DAYS:
 P = pd.DataFrame(per_launch)
 def pooled(df, a): return 100 * df[a].sum() / df.N.sum()
 def boot(df, f):
-    v = [f(df.iloc[rng.integers(0, len(df), len(df))]) for _ in range(2000)]; return [round(float(np.percentile(v, 2.5)), 1), round(float(np.percentile(v, 97.5)), 1)]
+    # DAY (cluster) bootstrap (orchestrator audit 23:37Z Nov 14): launches of one day share one raw list and one re-read set
+    days = df.day.unique(); grp = {d: df[df.day == d] for d in days}
+    if len(days) < 2: return [None, None]
+    v = [f(pd.concat([grp[d] for d in rng.choice(days, len(days))])) for _ in range(2000)]
+    return [round(float(np.percentile(v, 2.5)), 1), round(float(np.percentile(v, 97.5)), 1)]
 summary = {}
 if len(P):
     for D in sorted(P.day.unique()) + ["ALL"]:
@@ -59,7 +63,7 @@ if len(P):
             if a5 in df and df[a5].notna().all(): s[f"{a5} minus CF-only (paired)"] = [round(pooled(df, a5) - pooled(df, "CF-only"), 1)] + boot(df, lambda x, a5=a5: pooled(x, a5) - pooled(x, "CF-only"))
         for a in [a for a in FIT if a in df]: s[f"{a} minus raw (paired)"] = [round(pooled(df, a) - pooled(df, "raw most-active"), 1)] + boot(df, lambda x, a=a: pooled(x, a) - pooled(x, "raw most-active"))
         summary[D] = s
-out = {"metric": "BACKER PREDICTION, 3 arms, strict: recall at N (N = observed backers), pooled; launch-bootstrap 95% intervals",
+out = {"metric": "BACKER PREDICTION, strict: recall at N (N = observed backers), pooled; DAY-bootstrap 95% intervals",
        "how": __doc__.split("\n    python")[0], "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "rows": rows, "summary": summary}
 os.makedirs(f"{SP}/backer", exist_ok=True); p = f"{SP}/backer/backer_arms_score.json"; json.dump(out, open(p, "w"), indent=1, default=float)
 ns = []
@@ -70,6 +74,11 @@ if "ALL" in summary:
            "arms": {a: s[a] for a in ARMS if a in s}, "paired_vs_raw": {a: s[f"{a} minus raw (paired)"] for a in FIT if f"{a} minus raw (paired)" in s},
            "n_launches": s["launches"], "n_backers": s["observed_backers"], "first_day": min(P.day), "last_day": max(P.day),
            "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
+           "label": (f"CF {s[best][0]}% vs most-active {s['raw most-active'][0]}% (+{s.get(f'{best} minus raw (paired)', [None])[0]}; "
+                     f"day-resampled interval {s.get(f'{best} minus raw (paired)', [None, None, None])[1]} to {s.get(f'{best} minus raw (paired)', [None, None, None])[2]} "
+                     f"(only {len(set(P.day))} days, so this interval is unstable; an independent re-score on an earlier store snapshot gave -0.8 to +4.8); "
+                     f"{s['launches']} launches, 83% of backers on Nov 8-9; within-day launch intervals clear of 0 on Nov 9 only; tied on Nov 10-12; "
+                     f"the gain exists only among held people re-read after the day (without that filter the arms tie))"),
            "source": "results/web/backer_prediction_arms.json", "top3": None, "top5": None, "top10": None}]
 json.dump({"computed_at": out["written_at"], "rows": ns}, open(f"{SP}/backer/north_star_rows_e5.json", "w"), indent=1)
 if UP:
