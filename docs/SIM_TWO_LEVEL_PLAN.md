@@ -405,3 +405,20 @@ Open:
 - Days for the morning lines (pre-reveal blends 13-25 scored days, velocity ~30); first live weekly score Mon Nov 16.
 - Forward shadows to read: visible makers at 00:05, hr_clean_arm2, slots 6-10 by prior only; arm 2 first 10 live days (revert check).
 - Commenter count reads at 00:03 and 00:27 PT (needs the live capture back).
+
+### Queue state (Nov 14, 15:35 UTC)
+
+Published: 00:05 PT arm 2 (backtest on the live day rule 58.1 / 65.2 / 76.9, 183 days; live record starts Nov 15: the line published Oct 25-Nov 13 was the old full model). 03:45 PT hybrid. Weekly board = votes order + today's line-up at calibrated predicted votes (+2.5 / +5.2 / +7.3 over votes-only, all board days), from E5's nightly.
+
+Deploy candidate (needs Shreyas's word): arm 3 = arm 2 + same-day crowding + novelty/retrieval + repeat-product inputs: top 10 about +1 (0.9 to 1.6, three code bases, full and live-pattern thinned line-ups, 2025 holdout +1.0, placebo-clean, no leak), top 5 about +1, no top-3 gain; real early line-ups (36 days) inconclusive.
+
+Closed today: bad 2025 labels, label lag, hunter-history depth and form, ranked gate, line-up skew fixes, thinned-line-up training, llm_pitch brittleness, topic momentum, within-day relative inputs, outside-audience link flags, probabilistic weekly insertion, similarity-based judge-free scorer, 2025 comments as simulator history.
+
+Running: PH agent - training emphasis (top-of-day row weights, tail, clipping, recency); E5 - local judge-like scorer for the simulator; orchestrator subagent - run-to-run determinism of the published forecast (near-tie flips).
+
+Open:
+- Gemini calls in E5's session (permission): llm_pitch retest noise and matched 00:05-text re-score; simulator fallbacks for thin launches (topic priors, description-only).
+- Comment data for the simulator forward score (proxy 407, capture down; official-API comments fallback prepared).
+- Arm 3 forward shadow; arm 2 first 10 live days; first live weekly score Mon Nov 16; November monthly truth read Dec 1-2.
+- Nightly 01:00 PT line-up record (bundle 12a.1) to grow the real-line-up sample.
+- 2024 / 2023 day lists (about +0.5 to +1.5 top 3 via rows; low urgency; Cursor fleet).
