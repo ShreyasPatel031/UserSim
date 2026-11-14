@@ -58,6 +58,7 @@ def main():
     voters = defaultdict(set)      # launch id -> set of person keys
     read_after = defaultdict(set)  # launch id -> voters whose newest read finished after the launch day
     pulls_after = {}
+    refreshed = set()
     for k, fn in files.items():
         try:
             d = json.load(open(os.path.join(vm, fn)))
@@ -69,7 +70,18 @@ def main():
             pid = str((x or {}).get("post_id") or "")
             if pid in in_any:
                 voters[pid].add(k)
-        pulls_after[k] = fin
+        # upvote_refresh (fleet job from Nov 14): the newest read of the Upvotes tab is the latest of the whole-person
+        # pull and any refresh delta's read time (any key under upvotes holding "refresh"/"delta" with a read time)
+        last = fin
+        for kk, vv in u.items():
+            if "refresh" in kk or "delta" in kk:
+                for e in (vv if isinstance(vv, list) else [vv]):
+                    if isinstance(e, dict):
+                        t = str(e.get("read_utc") or e.get("read_at") or e.get("finished_utc") or "")
+                        if t > last:
+                            last = t
+                            refreshed.add(k)
+        pulls_after[k] = last
     out = {"complete_people_in_store": len(files)}
     for d0, d1 in wins:
         ids = [pid for pid, (d, v, r) in L.items() if d0 <= d <= d1]
@@ -96,6 +108,12 @@ def main():
             "share_outside_seed": round(Hn / Vn, 4) if seed and Vn else None,
             "held_voters": len(held), "held_votes_read_after_launch_day": after,
         }
+    import datetime as _dt
+    now = _dt.datetime.now(_dt.timezone.utc)
+    ages = sorted((now - _dt.datetime.fromisoformat(v.replace("Z", "+00:00"))).total_seconds() / 86400
+                  for v in pulls_after.values() if v)
+    out["upvote_refresh"] = {"complete_people": len(files), "people_with_refresh_delta": len(refreshed),
+                             "median_days_since_last_upvotes_read": round(ages[len(ages) // 2], 2) if ages else None}
     print(json.dumps(out, indent=1))
 
 
