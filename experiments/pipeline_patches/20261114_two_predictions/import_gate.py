@@ -44,11 +44,18 @@ for t in args:
         s = os.path.abspath(t)
         tree = ast.parse(open(s).read(), s)
         extra = []
+        ns = {"__builtins__": {}, "os": os, "__file__": s}   # literals, __file__-relative paths and simple top-level names (HERE = ...)
+        for n in tree.body:
+            if isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name):
+                try:
+                    ns[n.targets[0].id] = eval(ast.unparse(n.value), ns)
+                except Exception:   # noqa: BLE001
+                    pass
         for n in ast.walk(tree):
             if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "insert"
                     and ast.unparse(n.func.value) == "sys.path" and len(n.args) == 2):
                 try:
-                    extra.append(eval(ast.unparse(n.args[1]), {"__builtins__": {}, "os": os}))   # literals / os.path.expanduser(literal)
+                    extra.insert(0, os.path.normpath(eval(ast.unparse(n.args[1]), ns)))   # each insert(0, x) goes in front
                 except Exception:   # noqa: BLE001
                     print(f"note {t}: sys.path.insert({ast.unparse(n.args[1])}) not resolvable statically", flush=True)
         sys.path[:] = extra + ([] if iso else [os.path.dirname(s)]) + BASE
