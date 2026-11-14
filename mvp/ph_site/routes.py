@@ -174,6 +174,7 @@ async def ph_health():
 
 @router.get("/api/ph/explain")
 async def ph_explain(day: str = ""):
+    from mvp.ph_site import live
     d = day if re.fullmatch(r"\d{4}-\d{2}-\d{2}", day or "") else live.today_pt()
     try:
         lu = await asyncio.to_thread(live._lineup, d)
