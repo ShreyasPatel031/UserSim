@@ -38,7 +38,21 @@ if os.environ.get("LC1") == "1":   # live-code 1 (forecast 4eabc2af, h25_live ff
     shutil.copy(f"{LC}/h25_live.py", f"{A}/home/w/arm2_live/")
     g = open(f"{A}/code/input_guard.py").read(); import re as _re
     open(f"{A}/code/input_guard.py", "w").write(_re.sub(r"(?m)^( *)llm\.run_day\(.*$", r'\1raise RuntimeError("E5 local run: no Gemini")', g))
-if os.environ.get("ARM3PUB") == "1":   # arm 3 PUBLISHED: live-code 1 forecast.py + bundle-13 switch hunk merged as written (lines after it unchanged)
+LC2 = os.environ.get("LC2") == "1"
+if LC2:   # live-code 2 (forecast 3c7da1b5, h25_live ff40d796, input_guard 01547d5b, arm3_live e62eae24) on features 033d7bd7; no Gemini
+    LC = f"{PHO}/pipeline_patches/20261114_livecode_2"
+    for f in ("forecast.py", "input_guard.py"): shutil.copy(f"{LC}/{f}", f"{A}/code/")
+    shutil.copy(f"{LC}/h25_live.py", f"{A}/home/w/arm2_live/")
+    g = open(f"{A}/code/input_guard.py").read(); import re as _re
+    open(f"{A}/code/input_guard.py", "w").write(_re.sub(r"(?m)^( *)llm\.run_day\(.*$", r'\1raise RuntimeError("E5 local run: no Gemini")', g))
+if os.environ.get("ARM3PUB") == "1" and LC2:   # live-code 2 carries the switch itself; bundle 13 dir with live-code 2's arm3_live
+    a3 = f"{A}/home/w/arm3_live"; os.makedirs(a3, exist_ok=True)
+    shutil.copy(f"{PHO}/pipeline_patches/20261114_arm3_shadow/arm3_feats.py", a3); shutil.copy(f"{PHO}/pipeline_patches/20261114_livecode_2/arm3_live.py", a3)
+    for f in ("history_retrain.py", "ctrl.py", "honest.py", "training_window.py"):
+        if os.path.exists(f"{SP}/a2rb/code/{f}"): shutil.copy(f"{SP}/a2rb/code/{f}", a3)
+    open(f"{a3}/PUBLISH", "w").write("test")
+    if os.environ.get("ARM3_BREAK") == "import": os.remove(f"{a3}/arm3_feats.py")
+elif os.environ.get("ARM3PUB") == "1":   # arm 3 PUBLISHED: live-code 1 forecast.py + bundle-13 switch hunk merged as written (lines after it unchanged)
     fp = f"{A}/code/forecast.py"; src = open(fp).read()
     hunk = open(f"{PHO}/pipeline_patches/20261114_arm3_shadow/forecast_publish_switch.patch").read()
     sw = "\n".join(l[1:] for l in hunk.split("@@ -44,7 +44,22 @@")[1].split("@@")[0].splitlines() if l.startswith("+"))
@@ -108,14 +122,20 @@ for kind, fn in (("midnight", "0005"), ("prereveal", "prereveal")):
             a3ok = "pred_arm3" in F and F.pred_arm3.notna().all()
             a3want = os.environ.get("ARM3PUB") == "1" and not os.environ.get("ARM3_BREAK") and not os.environ.get("ARM3_HF_HOME")
             want = "arm3" if a3ok else ("arm2" if MODE == "normal" else "clean_nosite"); col = {"arm3": "pred_arm3", "arm2": "pred_arm2"}.get(want, "pred")
+            a3fail_exp = LC2 and os.environ.get("ARM3PUB") == "1" and not a3ok
+            want_name = want + (" (arm3 failed)" if a3fail_exp else "")
             Fo = F.assign(id=F.id.astype(str)).sort_values([col, "id"], ascending=[False, True]).id.tolist()
-            lab = ACC["ACC3"] if J["model"] == "arm3" else ACC["ACC0_BY"].get(J["model"])
+            base_m = J["model"].split(" (")[0]; lab = ACC["ACC3"] if base_m == "arm3" else (ACC["acc0"](base_m) if "acc0" in ACC else ACC["ACC0_BY"].get(base_m))
             Fp = F.assign(id=F.id.astype(str)).sort_values("published_rank").id.tolist() if "published_rank" in F else None
             h.update({"expected model": want, "arm3 expected from env": a3want, "arm3 in parquet": bool(a3ok), "label == ACC0_BY/ACC3[model]": J["backtest"] == lab,
                       "label is arm3's own (not the unset placeholder)": (J["backtest"] != "arm 3 (backtest label not set)") if J["model"] == "arm3" else None,
                       "order == parquet sort": rid == Fo, "order == parquet published_rank": (rid == Fp) if Fp else None})
             h["label == ACC0_BY[model]"] = h["label == ACC0_BY/ACC3[model]"]
+            h.update({"expected model name": want_name, "arm3 failure named (model / fallback_used)": (J["model"] == want_name and str(J["fallback_used"]).startswith("arm3_failed")) if a3fail_exp else None,
+                      "parquet published_model": str(F.published_model.iloc[0]) if "published_model" in F else None})
+            if LC2: want = want_name
             h["PASS"] = J["day"] == D and J["model"] == want and h["label == ACC0_BY[model]"] and h["ids == lineup"] and h["order == parquet sort"] and h["latest pointer == this file"]
+            if LC2: h["PASS"] = h["PASS"] and h["label is arm3's own (not the unset placeholder)"] is not False and h["arm3 failure named (model / fallback_used)"] is not False
         else:
             h.update({"label == acc1(model, fb)": J["backtest"] == ACC["acc1"](J["model"], J["fallback_used"], "arm2" if MODE == "normal" else "clean_nosite"),
                       "recorder read (PT)": J["inputs"].get("recorder_T")})
