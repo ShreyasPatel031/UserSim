@@ -209,10 +209,10 @@
   "rows": [
    {
     "flag": "backtest (Sep\u2013Oct)",
-    "top3": 56,
-    "top5": 67,
-    "top10": 76,
-    "days": 61,
+    "top3": 57.1,
+    "top5": 67.5,
+    "top10": 76.4,
+    "days": 59,
     "approx": true
    },
    {
@@ -223,7 +223,7 @@
     "days": 9
    }
   ],
-  "label": "00:05 PT tab: deployed arm 2 backtest Sep\u2013Oct 2026 (monthly spread Apr\u2013Oct 56\u201367% top 3, no trend); live rows are the previous published model (clean_nosite), Nov 1\u20134 and 8\u201312",
+  "label": "00:05 PT tab: deployed arm 2 backtest Sep\u2013Oct 2026, days with 10+ ranked launches (monthly spread Apr\u2013Oct 56\u201367% top 3, no trend); live rows are the previous published model (clean_nosite), Nov 1\u20134 and 8\u201312",
   "source": "E5 reports/drift_0005, commit 27ad976b, branch claude/person-model-v2; accepted by the orchestrator",
   "date": "2026-11-14"
  },

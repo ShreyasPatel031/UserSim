@@ -577,7 +577,7 @@ def test_midnight_accuracy_rows_never_pooled(monkeypatch):
     a = live.accuracy()
     flags = [r["flag"] for r in a["mid"]]
     assert flags == ["live, previous model", "backtest (214 days)", "backtest (Sep–Oct)"]
-    assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 61
+    assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 59
     assert a["pre"][0]["flag"] == "replay" and a["pre"][0]["top10"] == 78.2
 
 
