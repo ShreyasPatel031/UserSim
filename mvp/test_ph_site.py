@@ -802,3 +802,11 @@ def test_explain_sanitised(monkeypatch):
     assert e["launches"]["11"]["who"]["accuracy"].startswith("backtest")
     comp = e["launches"]["11"]["competitors"]["body"]["items"][0]
     assert comp == {"name": "Rival", "rank": 3, "praised": ["fast"]}
+
+
+def test_explain_route_without_file(monkeypatch):
+    from fastapi.testclient import TestClient
+    from mvp.server import app
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    r = TestClient(app).get("/api/ph/explain?day=2026-11-14")
+    assert r.status_code == 200 and r.json() == {"launches": {}}
