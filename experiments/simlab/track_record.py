@@ -32,10 +32,16 @@ for d, v in R.items():
                  "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
 today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
 for d in pd.date_range("2026-11-14", today, inclusive="left").strftime("%Y-%m-%d"):
-    for pred, path, col in (("00:05 PT", f"{B}/results/web/forecast_0005/{d}.json", "predicted_rank"), ("03:45 PT", f"{B}/results/early_forecast/{d}_P345.json", "pred_rank_hybrid")):
-        raw = gcat(path); base = {"day": d, "prediction": pred, "flag": "live", "line": "published file " + path.split("/results/")[1]}
+    for pred, path, col, newp in (("00:05 PT", f"{B}/results/web/forecast_0005/{d}.json", "predicted_rank", f"{B}/results/web/predictions/{d}_0005.json"),
+                                  ("03:45 PT", f"{B}/results/early_forecast/{d}_P345.json", "pred_rank_hybrid", f"{B}/results/web/predictions/{d}_prereveal.json")):
+        raw, used = gcat(newp), newp   # bundle 12a paths (model name + fallback_used) when present, the old paths otherwise
+        if not raw: raw, used = gcat(path), path
+        base = {"day": d, "prediction": pred, "flag": "live", "line": "published file " + used.split("/results/")[1]}
         if not raw: rows.append({**base, "status": "not published"}); continue
-        F = pd.DataFrame(json.loads(raw).get("forecast") or [])
+        J = json.loads(raw); base.update({"model": J.get("model") or J.get("method"), "fallback_used": J.get("fallback_used")})
+        F = pd.DataFrame(J.get("forecast") or J.get("predictions") or [])
+        if used == newp and col not in F:
+            col = next((c for c in ("predicted_rank", "pred_rank", "rank") if c in F), col)
         if F.empty or col not in F: rows.append({**base, "status": "not published"}); continue
         if d not in RK or len(RK[d]) < 10: rows.append({**base, "status": "pending final ranks"}); continue
         F["id"] = F.id.astype(str); o = F.dropna(subset=[col]).sort_values(col).id.tolist(); h = hits(o, d)
