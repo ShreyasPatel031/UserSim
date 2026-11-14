@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=8">
+<link rel="stylesheet" href="/static/ph_site.css?v=9">
 </head>
 <body>
 <div class="wrap">
@@ -26,8 +26,9 @@
     </div>
     <div class="daystep" role="group" aria-label="Launch day">
       <button type="button" id="day-prev" aria-label="Previous day"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <span id="day-label" aria-live="polite">—</span>
+      <button type="button" id="day-label" class="daylabel" aria-haspopup="dialog" aria-expanded="false" aria-live="polite">—</button>
       <button type="button" id="day-next" aria-label="Next day"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="daygrid" id="daygrid" role="dialog" aria-label="Pick a day" hidden></div>
     </div>
   </header>
 
@@ -51,7 +52,7 @@
       <ol class="board" id="live" aria-live="polite"><li class="skeleton">Loading…</li></ol>
     </section>
   </div>
-  <p class="legend small"><span class="key"></span> in our top 10 and in the real top 10<span id="score"></span></p>
+  <p class="legend small" id="legend"></p>
   <section class="whyp" id="whyp" hidden></section>
 
   <footer class="note label"><span>Forecasts by Atelier · not affiliated with Product Hunt</span><span id="asof"></span></footer>
@@ -99,8 +100,13 @@ async function load(day){
   renderPred(); renderLive(); drawLinks();
 }
 
-function row(pos, x, votes, voteLabel, hit){
-  return `<li class="row c${hit ? " hit" : ""}" data-id="${esc(x.id)}"><div class="pos">${Number(pos)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
+// Match status: exact = same rank on both boards; near = in both top 10s at a different rank; miss = only on this board.
+function status(predRank, realRank){
+  if(!predRank || predRank > 10 || !realRank || realRank > 10) return "miss";
+  return predRank === realRank ? "exact" : "near";
+}
+function row(pos, x, votes, voteLabel, st){
+  return `<li class="row c ${st || ""}" data-id="${esc(x.id)}"><div class="pos">${Number(pos)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
     <div class="chips">${chips(x)}</div></div>${votes!=null
       ? `<div class="vote"><span class="tri"></span><b>${esc(votes)}</b><small>${esc(voteLabel)}</small></div>`
       : `<div class="vote hidden"><span class="tri"></span><b>—</b><small>${esc(voteLabel)}</small></div>`}</li>`;
@@ -128,14 +134,17 @@ function renderPred(){
   tabs();
   const p = pointFor(TAB);
   if(!p){ $("#pred").innerHTML = `<li class="skeleton">No forecast yet today.</li>`; return; }
-  const real = new Set(liveTop().map(x=>x.id));
+  const real = new Map(liveTop().map(x=>[x.id, x.board_rank]));
   const o = VIEW.launches.filter(x=>p.ranks[x.id]).sort((a,b)=>p.ranks[a.id]-p.ranks[b.id]).slice(0,10);
-  $("#pred").innerHTML = o.map(x=>{
+  const sts = o.map(x=>real.size ? status(p.ranks[x.id], real.get(x.id)) : "");
+  $("#pred").innerHTML = o.map((x, i)=>{
     const ev = p.exp_votes && p.exp_votes[x.id];
-    return row(p.ranks[x.id], x, ev!=null ? "~" + Number(ev) : null, "est.", real.has(x.id));
+    return row(p.ranks[x.id], x, ev!=null ? "~" + Number(ev) : null, "est.", sts[i]);
   }).join("");
-  const hits = o.filter(x=>real.has(x.id)).length;
-  $("#score").textContent = real.size ? ` · ${hits} of 10 ${VIEW.status.final ? "" : "so far"}` : "";
+  const n = (k)=> sts.filter(v=>v===k).length;
+  $("#legend").innerHTML = real.size
+    ? `<span class="key exact"></span>Exact rank ${n("exact")}<span class="key near"></span>In top 10, other rank ${n("near")}<span class="key miss"></span>Missed ${n("miss")}${VIEW.status.final ? "" : " · so far"}`
+    : "";
   document.querySelectorAll("#pred .row").forEach(li=>li.onclick=(e)=>{ if(e.target.closest("a")) return; showWhy(li.dataset.id, p.key); });
 }
 
@@ -146,9 +155,9 @@ function renderLive(){
   $("#live-stamp").innerHTML = fr.board_stale ? `<span class="tag">${esc(fr.board_stale_label)}</span>`
     : b.as_of_pt ? `${fin ? "Final" : "Updated"} <b>${esc(b.as_of_pt)}</b>` : "";
   const lead = pointFor(TAB);
-  const ours = new Set(lead ? Object.entries(lead.ranks).filter(([,r])=>r<=10).map(([id])=>id) : []);
+  const ranks = lead ? lead.ranks : {};
   $("#live").innerHTML = liveTop().map(x=>row(x.board_rank, x, x.board_votes!=null ? Number(x.board_votes) : null,
-      x.board_votes!=null ? "votes" : (fin ? "final" : "hidden"), ours.has(x.id))).join("")
+      x.board_votes!=null ? "votes" : (fin ? "final" : "hidden"), lead ? status(ranks[x.id], x.board_rank) : "")).join("")
     || `<li class="skeleton">${fin ? "No line-up for this day." : "The board appears after the 00:01 PT launch."}</li>`;
 }
 
@@ -161,7 +170,8 @@ function drawLinks(){
     if(!r || box.width < 8) return "";
     const a = li.getBoundingClientRect(), c = r.getBoundingClientRect();
     const y1 = a.top + a.height/2 - box.top, y2 = c.top + c.height/2 - box.top, w = box.width;
-    return `<path d="M0 ${y1} C ${w*0.5} ${y1}, ${w*0.5} ${y2}, ${w} ${y2}"/><circle cx="0" cy="${y1}" r="3"/><circle cx="${w}" cy="${y2}" r="3"/>`;
+    const k = li.classList.contains("exact") ? "exact" : "near";
+    return `<g class="${k}"><path d="M0 ${y1} C ${w*0.5} ${y1}, ${w*0.5} ${y2}, ${w} ${y2}"/><circle cx="0" cy="${y1}" r="3"/><circle cx="${w}" cy="${y2}" r="3"/></g>`;
   }).join("");
   svg.innerHTML = paths;
 }
@@ -190,6 +200,28 @@ function dayStep(){
   $("#day-prev").disabled = i < 0 || i >= d.length - 1;
   $("#day-next").disabled = i <= 0;
 }
+function dayGrid(){
+  const g = $("#daygrid"), have = new Set(VIEW.days);
+  const days = [...VIEW.days].sort();
+  if(!days.length){ g.innerHTML = ""; return; }
+  const months = [...new Set(days.map(d=>d.slice(0,7)))];
+  g.innerHTML = months.map(m=>{
+    const first = new Date(m + "-01T12:00:00"), lead = (first.getDay() + 6) % 7;   // Monday-first
+    const last = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+    const cells = Array.from({length: lead}, ()=>`<span></span>`).concat(Array.from({length: last}, (_, i)=>{
+      const d = `${m}-${String(i + 1).padStart(2, "0")}`;
+      return have.has(d) ? `<button type="button" data-d="${d}" aria-pressed="${d===VIEW.day}"${d===VIEW.today ? ' class="today"' : ""}>${i + 1}</button>` : `<span class="off">${i + 1}</span>`;
+    }));
+    return `<div class="month"><p class="label">${first.toLocaleDateString("en-US", {month: "long", year: "numeric"})}</p>
+      <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="cells">${cells.join("")}</div></div>`;
+  }).reverse().join("");
+  g.querySelectorAll("button[data-d]").forEach(b=>b.onclick=()=>{ closeGrid(); $("#whyp").hidden = true; TAB = null; load(b.dataset.d); });
+}
+function closeGrid(){ $("#daygrid").hidden = true; $("#day-label").setAttribute("aria-expanded", "false"); }
+$("#day-label").onclick = (e)=>{ e.stopPropagation(); const g = $("#daygrid");
+  if(g.hidden){ dayGrid(); g.hidden = false; $("#day-label").setAttribute("aria-expanded", "true"); } else closeGrid(); };
+document.addEventListener("click", (e)=>{ if(!e.target.closest(".daystep")) closeGrid(); });
+document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeGrid(); });
 function goDay(step){
   const d = VIEW.days, i = d.indexOf(VIEW.day), j = i + step;
   if(j < 0 || j >= d.length) return;
