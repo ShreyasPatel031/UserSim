@@ -383,3 +383,17 @@ footer.note { padding-block: 18px; display: flex; justify-content: space-between
 .mnote, .acc, .metric { overflow-wrap: anywhere; }
 body { overflow-x: hidden; }
 .metric .mnote { white-space: normal; display: block; }
+
+/* v15: explain panel */
+li.row.has-explain { cursor: pointer; }
+li.row.has-explain .prod h3::after { content: " ▾"; color: var(--soft); font-size: 12px; }
+.explain { margin: 22px 0; padding: 18px 20px; border: 1px solid var(--line, #d9d2c3); background: color-mix(in srgb, var(--paper) 92%, #000 3%); }
+.explain h3 { margin: 0 0 10px; font: 600 20px/1.3 var(--serif, Georgia, serif); }
+.explain h4 { margin: 14px 0 6px; font: 600 12px/1.3 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+.explain .ex-l { margin: 0; padding-left: 18px; font-size: 14.5px; line-height: 1.5; }
+.explain .ex-kv { display: inline-block; margin-right: 12px; font-size: 13px; color: var(--soft); }
+.explain .ex-kv i, .explain .ex-sub i { font-style: normal; text-transform: capitalize; margin-right: 4px; }
+.explain .ex-sub { margin: 4px 0 0 0; font-size: 13.5px; }
+.explain .ex-n { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+.explain .ex-acc { margin: 6px 0 0; font-size: 11.5px; color: var(--soft); }
+.explain .ex-ph { font: 400 12px/1 var(--sans); margin-left: 8px; color: var(--soft); }
