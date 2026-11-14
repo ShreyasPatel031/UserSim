@@ -24,6 +24,8 @@ python held_team_shadow.py predict $TODAY $SP >> $LOG 2>&1
 python track_record.py $SP >> $LOG 2>&1
 # per-launch probabilities, 00:05 (orchestrator 01:20Z Nov 14); the 03:45 file is written by the 12:07Z job
 python prob_writer.py 0005 $TODAY $SP >> $LOG 2>&1
+# arm-2 live-vs-backtest parity for yesterday (orchestrator 19:16Z Nov 14): message the orchestrator only on a "PARITY ALERT" line
+bash parity_nightly.sh $SP >> $LOG 2>&1
 # running weekly / monthly boards with stated chances (orchestrator 01:28Z Nov 14), for the PT day just closed
 python period_writer.py $YDAY $SP >> $LOG 2>&1
 # period scorer (orchestrator 12:38Z Nov 14): after a week / month closes, score its boards vs the first read after the close
