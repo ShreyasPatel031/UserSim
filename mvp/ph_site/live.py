@@ -346,6 +346,13 @@ def _published(day: str, kind: str) -> dict | None:
             "source": f"results/web/predictions/{day}_{kind}.json"}
 
 
+def _cutover(kind: str) -> str | None:
+    """Earliest day with a published prediction file of this kind (results/web/predictions/<day>_<kind>.json)."""
+    days = sorted(n.rsplit("/", 1)[-1][:10] for n, _ in gcs.list_names("results/web/predictions/", ttl=600)
+                  if n.endswith(f"_{kind}.json") and n.rsplit("/", 1)[-1][:10].count("-") == 2)
+    return days[0] if days else None
+
+
 def _p345(day: str) -> dict | None:
     j = gcs.read_json(f"results/early_forecast/{day}_P345.json", ttl=120)
     f = (j or {}).get("forecast") or []
@@ -402,17 +409,28 @@ def forecasts(day: str) -> dict[str, dict]:
             f = _forecast_file(day, k)
             if f:
                 out[k] = f
-        # The two published predictions (PH ops, Nov 14): results/web/predictions/<day>_0005.json and
-        # <day>_prereveal.json, written by code on the VM. Until those exist: the 00:05 forecast above, and the 03:45
-        # hybrid line in results/early_forecast/<day>_P345.json (pred_rank_hybrid).
-        p0 = _published(day, "0005")
-        if p0:
-            if out.get("0005", {}).get("exp_votes") and not p0.get("exp_votes"):
-                p0["exp_votes"] = out["0005"]["exp_votes"]
-            out["0005"] = p0
-        pre = _published(day, "prereveal") or _p345(day)
-        if pre:
-            out["PRE"] = pre
+        # The two published predictions (PH ops, Nov 14), one fixed list each per day:
+        #  - from the first day a published file exists for a kind (its cutover day), only the published file is shown,
+        #    so the list never changes once shown; before it is written the tab says "not yet available";
+        #  - a published file marked none_available is superseded by the day's real forecast file if there is one;
+        #  - days before the cutover keep the files that were live then (00:05 forecast, the 03:45 hybrid in P345).
+        legacy = {"0005": out.get("0005"), "PRE": _p345(day)}
+        pub = {"0005": _published(day, "0005"), "PRE": _published(day, "prereveal")}
+        cut = {"0005": _cutover("0005"), "PRE": _cutover("prereveal")}
+        keep = {}
+        for k in ("0005", "PRE"):
+            p = pub[k]
+            if p and p.get("fallback") != "none_available":
+                keep[k] = p
+            elif p:                                       # none_available
+                keep[k] = legacy[k] or p
+            elif cut[k] and day >= cut[k]:
+                pass                                      # published era, not written yet
+            elif legacy[k]:
+                keep[k] = legacy[k]
+        if keep.get("0005") is pub["0005"] and legacy["0005"] and legacy["0005"].get("exp_votes") and not keep["0005"].get("exp_votes"):
+            keep["0005"]["exp_votes"] = legacy["0005"]["exp_votes"]
+        out = keep                                        # only the two published predictions leave the server
         return out
     return gcs._cached("fc:" + day, 120, go)
 
@@ -648,10 +666,31 @@ def _api_board(day: str) -> dict | None:
         return None
 
 
+def board_only_view(day: str) -> dict:
+    """The live board with no predictions: used when the day view itself fails."""
+    api = _api_board(day) or {"launches": [], "fetched_at": None, "votes_hidden": False}
+    launches = [{"id": r["id"], "name": r["name"], "tagline": r["tagline"], "slug": r["slug"], "topics": r.get("topics") or [],
+                 "thumb": r["thumb"], "board_rank": r["rank"], "board_votes": r["votes"]} for r in api["launches"]]
+    return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": [],
+            "freshness": {"missing_points": [], "missing_labels": [], "capture_gaps": [], "board_stale": False,
+                          "board_stale_label": ""}, "why": {}, "lead_point": None,
+            "board": {"as_of": api["fetched_at"], "as_of_pt": _pt_label(api["fetched_at"] or ""),
+                      "votes_hidden": api["votes_hidden"], "source": "Product Hunt API" if api["fetched_at"] else None},
+            "status": {"final": bool(api.get("final")), "revealed": True, "as_of_pt": "", "as_of": api["fetched_at"]}}
+
+
+def _safe(fn, default, what: str):
+    try:
+        return fn()
+    except Exception as exc:  # noqa: BLE001 - one broken file or storage error must not take the page down
+        print(f"[ph] {what} unavailable: {type(exc).__name__}", flush=True)
+        return default
+
+
 def day_view(day: str) -> dict:
-    prods = _lineup(day)
-    fc = forecasts(day)
-    act = actuals(day)
+    prods = _safe(lambda: _lineup(day), {}, "line-up")
+    fc = _safe(lambda: forecasts(day), {}, "forecasts")
+    act = _safe(lambda: actuals(day), {"final": False, "as_of": None, "revealed": False, "ranks": {}}, "actuals")
     api = _api_board(day)
     if api:
         for r in api["launches"]:                  # launches the line-up files missed (or no files at all)
@@ -678,8 +717,7 @@ def day_view(day: str) -> dict:
         score = None
         if act["final"]:
             score = {str(k): hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)}
-        conf = _top3_confidence(f["ranks"], prods) if key == "0005" else (
-            _prereveal_confidence(key, f) if key.startswith("P") and f.get("rank_field") == "pred_rank_best" else None)
+        conf = None
         exp_err = None
         if f.get("exp_votes"):
             g = claims().get("exp_votes_error", {}).get("values", {})
@@ -711,24 +749,17 @@ def day_view(day: str) -> dict:
                  "source": "Product Hunt API",
                  "ranks": {r["id"]: {"rank": r["rank"], "votes": r["votes"], "comments": r["comments"]} for r in api["launches"]}}
     else:
-        board = current_board(day)
+        board = _safe(lambda: current_board(day), {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True}, "capture board")
     for x in launches:
         b = board["ranks"].get(x["id"], {})
         x["board_rank"] = b.get("rank")
         x["board_votes"] = b.get("votes")
-    difficulty = _difficulty(day)
+    difficulty = None
     on_time = [p for p in points if not p.get("late")]
     lead = (on_time or points)[-1]["key"] if points else None
-    lk = gcs.read_json(f"results/web/lock/{day}.json", ttl=120) if not act["final"] else None
-    lock = None
-    if isinstance(lk, dict) and lk.get("label_top3"):
-        lock = {k: lk.get(k) for k in ("point", "read_at", "label_top3", "label_top5", "label_top10", "top3_locked",
-                                       "top5_locked", "top2_locked", "top10_locked", "top3_first_locked_at", "rule")}
-        lock["read_pt"] = _pt_label(lk.get("read_at") or "")
-        lock.pop("rule", None)   # internal text; the page states the tested reliability instead
-        # Interim (orchestrator / E5 audit, Nov 13): no sourced reliability-by-hour figure yet.
-        lock["reliability"] = "checked against final ranks each day; no tested reliability figure is shown yet"
-    fresh = _freshness(day, fc, board, act["final"])
+    fresh = _safe(lambda: _freshness(day, fc, board, act["final"]),
+                  {"missing_points": [], "missing_labels": [], "capture_gaps": [], "board_stale": False, "board_stale_label": ""},
+                  "freshness")
     ids = set(prods)
     whys = {}
     for pt in [p["key"] for p in points] + (["after"] if act["final"] else []):

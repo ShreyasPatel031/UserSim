@@ -28,14 +28,14 @@ TOKEN_URL = "https://api.producthunt.com/v2/oauth/token"
 MIN_INTERVAL_S = 60          # at most one upstream refresh per minute, across all instances
 UPSTREAM_TIMEOUT_S = 8
 REVEAL_HOUR_PT = 4           # Product Hunt hides vote counts until about 04:00 PT
-FIELDS = ("id name tagline slug featuredAt votesCount commentsCount dailyRank "
-          "thumbnail{url} topics(first:3){edges{node{name}}}")
+FIELDS = "id name tagline slug featuredAt votesCount commentsCount dailyRank thumbnail{url}"
 QUERY = ("query($a:DateTime!,$b:DateTime!,$c:String){ posts(first:20, after:$c, featured:true, postedAfter:$a, "
          "postedBefore:$b, order:NEWEST){ pageInfo{hasNextPage endCursor} edges{node{%s}}}}" % FIELDS)
 
 _lock = threading.Lock()
 _mem: dict[str, dict] = {}          # day -> last good snapshot held by this instance
-_state = {"last_error": None, "last_error_at": None, "last_ok_at": None, "upstream_calls": 0}
+_state = {"last_error": None, "last_error_at": None, "last_ok_at": None, "upstream_calls": 0, "backoff_until": None,
+          "backoff_n": 0, "last_partial": None}
 _minted: dict[str, str] = {}
 
 
@@ -63,10 +63,10 @@ def _token(http) -> str:
     return _minted[cid]
 
 
-def _window(day: str) -> tuple[str, str]:
+def _window(day: str, back_days: int = 0) -> tuple[str, str]:
     d = datetime.fromisoformat(day).date()
     a = datetime.combine(d, datetime.min.time(), PT)
-    return a.isoformat(), (a + timedelta(days=1)).isoformat()
+    return (a - timedelta(days=back_days)).isoformat(), (a + timedelta(days=1)).isoformat()
 
 
 def _pt_day(iso: str | None) -> str | None:
@@ -76,46 +76,87 @@ def _pt_day(iso: str | None) -> str | None:
         return None
 
 
-def _fetch_upstream(day: str) -> list[dict]:
-    """All featured launches of PT day `day`, as raw API nodes. Raises Upstream on any failure."""
+class RateLimited(Upstream):
+    def __init__(self, reset_in: int | None):
+        super().__init__("rate limited")
+        self.reset_in = reset_in
+
+
+def _query(http, tok_ref: list, a: str, b: str) -> list[dict]:
+    """Every page of the window. A partial GraphQL error with data is accepted only for a page that came back whole."""
     import httpx
 
-    a, b = _window(day)
-    nodes, cur, pages = [], None, 0
-    with httpx.Client(timeout=UPSTREAM_TIMEOUT_S) as http:
-        tok = _token(http)
-        while True:
-            _state["upstream_calls"] += 1
-            try:
-                r = http.post(ENDPOINT, json={"query": QUERY, "variables": {"a": a, "b": b, "c": cur}},
-                              headers={"Authorization": f"Bearer {tok}", "Accept": "application/json"})
-            except httpx.HTTPError as exc:
-                raise Upstream(f"network: {type(exc).__name__}") from None
-            try:
-                body = r.json()
-            except ValueError:
-                raise Upstream(f"http {r.status_code}") from None
-            errs = body.get("errors") or []
-            if errs:
-                e = errs[0] if isinstance(errs[0], dict) else {}
-                raise Upstream("rate limited" if e.get("error") == "rate_limit_reached" else f"api error: {str(e.get('error') or e.get('message') or 'unknown')[:60]}")
-            if r.status_code != 200:
-                raise Upstream(f"http {r.status_code}")
-            p = (body.get("data") or {}).get("posts") or {}
-            nodes += [e["node"] for e in p.get("edges") or [] if isinstance(e, dict) and e.get("node")]
-            pages += 1
-            info = p.get("pageInfo") or {}
-            if not info.get("hasNextPage") or pages >= 8:
-                break
-            cur = info.get("endCursor")
-    seen, out = set(), []
-    for n in nodes:
-        k = str(n.get("id"))
-        if k in seen or (n.get("featuredAt") and _pt_day(n["featuredAt"]) != day):
+    nodes, cur, pages, reminted = [], None, 0, False
+    while True:
+        _state["upstream_calls"] += 1
+        try:
+            r = http.post(ENDPOINT, json={"query": QUERY, "variables": {"a": a, "b": b, "c": cur}},
+                          headers={"Authorization": f"Bearer {tok_ref[0]}", "Accept": "application/json"})
+        except httpx.HTTPError as exc:
+            raise Upstream(f"network: {type(exc).__name__}") from None
+        if r.status_code == 401 and not reminted and not os.environ.get("PH_TOKEN"):
+            _minted.clear()                     # a rejected or expired minted token: mint a new one, once
+            tok_ref[0] = _token(http)
+            reminted = True
             continue
-        seen.add(k)
-        out.append(n)
-    return out
+        try:
+            body = r.json()
+        except ValueError:
+            raise Upstream(f"http {r.status_code}") from None
+        errs = [e for e in (body.get("errors") or []) if isinstance(e, dict)] or (
+            [{"error": "unknown"}] if body.get("errors") else [])
+        for e in errs:
+            if e.get("error") == "rate_limit_reached":
+                try:
+                    reset = int((e.get("details") or {}).get("reset_in"))
+                except (TypeError, ValueError):
+                    reset = None
+                raise RateLimited(reset)
+        if r.status_code == 429:
+            raise RateLimited(None)
+        if r.status_code != 200:
+            raise Upstream(f"http {r.status_code}")
+        p = (body.get("data") or {}).get("posts")
+        if not isinstance(p, dict) or not isinstance(p.get("edges"), list) or not isinstance(p.get("pageInfo"), dict):
+            msg = errs[0].get("error") or errs[0].get("message") if errs else "no posts in reply"
+            raise Upstream(f"api error: {str(msg)[:60]}")
+        if errs:
+            _state["last_partial"] = str(errs[0].get("error") or errs[0].get("message") or "partial")[:60]
+        nodes += [e["node"] for e in p["edges"] if isinstance(e, dict) and isinstance(e.get("node"), dict)]
+        pages += 1
+        if not p["pageInfo"].get("hasNextPage"):
+            return nodes
+        if pages >= 12:
+            raise Upstream("too many pages")    # never serve a list we know is cut short
+        cur = p["pageInfo"].get("endCursor")
+
+
+def _complete(nodes: list[dict]) -> bool:
+    ranks = sorted(int(n["dailyRank"]) for n in nodes if isinstance(n.get("dailyRank"), int) and n["dailyRank"] > 0)
+    return not ranks or ranks[-1] <= len(nodes)
+
+
+def _fetch_upstream(day: str) -> list[dict]:
+    """All featured launches of PT day `day`, as raw API nodes. Raises Upstream on any failure.
+    Same window as the PH ops collector (posts created that PT day, kept when featuredAt is that day). If Product
+    Hunt's daily ranks show launches missing (rank > count; e.g. scheduled earlier), it re-reads with a 3-day window."""
+    import httpx
+
+    with httpx.Client(timeout=UPSTREAM_TIMEOUT_S) as http:
+        tok = [_token(http)]
+        out = []
+        for back in (0, 2):
+            a, b = _window(day, back)
+            seen, out = set(), []
+            for n in _query(http, tok, a, b):
+                k = str(n.get("id"))
+                if k in seen or (n.get("featuredAt") and _pt_day(n["featuredAt"]) != day):
+                    continue
+                seen.add(k)
+                out.append(n)
+            if _complete(out):
+                return out
+        raise Upstream("incomplete line-up")
 
 
 def _snapshot(day: str, nodes: list[dict], final: bool) -> dict:
@@ -155,7 +196,10 @@ def _persist(snap: dict) -> None:
     try:
         b = gcs._bucket()
         data = json.dumps(snap)
-        for p in ("site/live_board/latest.json", f"site/live_board/{snap['day']}.json"):
+        paths = [f"site/live_board/{snap['day']}.json"]
+        if snap["day"] == datetime.now(PT).strftime("%Y-%m-%d"):
+            paths.append("site/live_board/latest.json")   # latest.json only ever holds today's board
+        for p in paths:
             b.blob(f"{gcs.ROOT}/{p}").upload_from_string(data, content_type="application/json")
     except Exception as exc:  # noqa: BLE001 - persistence is best effort; memory still serves this instance
         print(f"[ph_live] persist failed: {type(exc).__name__}", flush=True)
@@ -200,14 +244,53 @@ def board(day: str, *, fetch=None) -> dict | None:
     return snap
 
 
+def _backoff_active() -> bool:
+    now = datetime.now(timezone.utc)
+    until = _state.get("backoff_until")
+    if not until:
+        j = _read_persisted_any("site/live_board/backoff.json")
+        until = (j or {}).get("until")
+    try:
+        return bool(until) and datetime.fromisoformat(until) > now
+    except (TypeError, ValueError):
+        return False
+
+
+def _set_backoff(reset_in: int | None) -> None:
+    """Honour Product Hunt's reset time; otherwise back off 1, 2, 4 ... 15 minutes. Shared with other instances."""
+    n = _state["backoff_n"] = _state.get("backoff_n", 0) + 1
+    wait = reset_in + 5 if reset_in else min(60 * 2 ** (n - 1), 900)
+    until = (datetime.now(timezone.utc) + timedelta(seconds=wait)).isoformat()
+    _state["backoff_until"] = until
+    try:
+        gcs._bucket().blob(f"{gcs.ROOT}/site/live_board/backoff.json").upload_from_string(
+            json.dumps({"until": until, "reason": "rate limited"}), content_type="application/json")
+    except Exception:  # noqa: BLE001 - in-memory back-off still applies
+        pass
+
+
+def _read_persisted_any(path: str) -> dict | None:
+    try:
+        j = gcs.read_json(path, ttl=30)
+        return j if isinstance(j, dict) else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _refresh(day: str, last: dict | None, fetch, final: bool) -> dict | None:
     if not configured():
+        return last
+    if _backoff_active():                      # rate limited: serve the last good board until the reset time
         return last
     if not _lock.acquire(blocking=False):      # another thread is fetching: serve what we have
         return last
     try:
         try:
             nodes = fetch(day)
+        except RateLimited as exc:
+            _note_error("rate limited")
+            _set_backoff(exc.reset_in)
+            return last
         except Upstream as exc:
             _note_error(str(exc))
             return last
@@ -220,6 +303,7 @@ def _refresh(day: str, last: dict | None, fetch, final: bool) -> dict | None:
         snap = _snapshot(day, nodes, final)
         _mem[day] = snap
         _state["last_ok_at"] = snap["fetched_at"]
+        _state["backoff_n"], _state["backoff_until"] = 0, None
         _persist(snap)
         return snap
     finally:
@@ -277,4 +361,5 @@ def health() -> dict:
     return {"configured": configured(), "age_s": None if age is None else int(age),
             "launches": len((snap or {}).get("launches") or []) if snap and snap.get("day") == today else 0,
             "last_ok_at": _state["last_ok_at"] or (snap or {}).get("fetched_at"),
-            "last_error": _state["last_error"], "last_error_at": _state["last_error_at"]}
+            "last_error": _state["last_error"], "last_error_at": _state["last_error_at"],
+            "backoff_until": _state.get("backoff_until"), "upstream_calls_since_start": _state["upstream_calls"]}

@@ -598,3 +598,113 @@ def test_published_prediction_files(monkeypatch):
     c = live._published("2026-11-15", "prereveal")
     assert c["fallback"] == "none_available" and c["ranks"] == {}
     assert live._published("2026-11-16", "0005") is None          # never another day's picks under this date
+
+
+# ---------- stability review (orchestrator, Nov 14): one test per finding ----------
+
+def test_A1_latest_json_only_holds_today(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 15, 4, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    ph_live.board("2026-11-14", fetch=_nodes)                # a past day re-read after it closed
+    assert "usersim_sim/site/live_board/2026-11-14.json" in store
+    assert "usersim_sim/site/live_board/latest.json" not in store
+    ph_live.board("2026-11-15", fetch=_nodes)
+    assert __import__("json").loads(store["usersim_sim/site/live_board/latest.json"])["day"] == "2026-11-15"
+
+
+def test_A2_page_survives_broken_blocks(monkeypatch):
+    def boom(*a, **k): raise RuntimeError("storage down")
+    monkeypatch.setattr(live, "_lineup", boom)
+    monkeypatch.setattr(live, "forecasts", boom)
+    monkeypatch.setattr(live, "actuals", boom)
+    monkeypatch.setattr(live, "current_board", boom)
+    monkeypatch.setattr(live, "_freshness", boom)
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    api = {"day": "2026-11-14", "fetched_at": "2026-11-14T12:00:00+00:00", "votes_hidden": False, "final": False,
+           "launches": [{"id": "1", "name": "A", "tagline": "t", "slug": "a", "topics": [], "thumb": None, "rank": 1, "votes": 9, "comments": 1}]}
+    monkeypatch.setattr(live, "_api_board", lambda d: api)
+    v = live.day_view("2026-11-14")
+    assert v["points"] == [] and v["launches"][0]["board_rank"] == 1 and v["board"]["source"] == "Product Hunt API"
+    v2 = live.board_only_view("2026-11-14")
+    assert v2["launches"][0]["board_votes"] == 9 and v2["points"] == []
+
+
+def test_A5_A6_A7_only_two_fixed_predictions(monkeypatch):
+    files = {
+        "results/web/predictions/2026-11-15_0005.json": {"day": "2026-11-15", "model": "arm2", "ranking": [{"rank": 1, "id": 7}]},
+        "results/web/predictions/2026-11-16_0005.json": {"day": "2026-11-16", "model": "none_available", "fallback_used": "none_available", "ranking": []},
+        "results/early_forecast/2026-11-15_P345.json": {"forecast": [{"id": 8, "pred_rank_hybrid": 1}], "written_at": "x"},
+        "results/early_forecast/2026-11-15_P2.json": {"forecast": [{"id": 9, "pred_rank_best": 1}]},
+        "results/early_forecast/2026-11-13_P345.json": {"forecast": [{"id": 5, "pred_rank_hybrid": 1}], "written_at": "x"},
+    }
+    names = [("results/web/predictions/2026-11-15_0005.json", ""), ("results/web/predictions/2026-11-16_0005.json", "")]
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: names if "predictions" in prefix else [])
+    monkeypatch.setattr(live.gcs, "_cache", {})
+    legacy = {"ranks": {"3": 1}, "made_at": "y", "data_up_to": "z", "method": "old"}
+    monkeypatch.setattr(live, "_forecast_0005", lambda d: dict(legacy))
+    f15 = live.forecasts("2026-11-15")
+    assert set(f15) <= {"0005", "PRE"}                                 # A5: no internal points leave the server
+    assert f15["0005"]["ranks"] == {"7": 1}                            # A6: the published file is the day's only list
+    assert f15["PRE"]["ranks"] == {"8": 1}                             # 03:45 hybrid until a published prereveal file exists
+    f16 = live.forecasts("2026-11-16")
+    assert f16["0005"]["ranks"] == {"3": 1}                            # A7: a real forecast supersedes none_available
+    f17 = live.forecasts("2026-11-17")
+    assert "0005" not in f17                                           # A6: published era, not written yet: nothing shown
+    f13 = live.forecasts("2026-11-13")
+    assert f13["0005"]["ranks"] == {"3": 1} and f13["PRE"]["ranks"] == {"5": 1}   # before the cutover: files live then
+
+
+def test_B6_rate_limit_backs_off(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    good = ph_live.board("2026-11-14", fetch=_nodes)
+    calls = []
+    def limited(d):
+        calls.append(d); raise ph_live.RateLimited(300)
+    clock["now"] += timedelta(minutes=2)
+    assert ph_live.board("2026-11-14", fetch=limited)["fetched_at"] == good["fetched_at"]
+    assert len(calls) == 1 and ph_live._state["backoff_until"]
+    for _ in range(3):                                          # within the reset window: no further upstream calls
+        clock["now"] += timedelta(minutes=1)
+        ph_live._mem.clear()
+        assert ph_live.board("2026-11-14", fetch=limited) is not None
+    assert len(calls) == 1
+
+
+def test_B7_B8_token_remint_and_partial_errors(monkeypatch):
+    from mvp.ph_site import ph_live
+    monkeypatch.delenv("PH_TOKEN", raising=False)
+    monkeypatch.setenv("PH_CLIENT_ID", "cid"); monkeypatch.setenv("PH_CLIENT_SECRET", "sec")
+    ph_live._minted.clear()
+
+    class R:
+        def __init__(self, code, body): self.status_code, self._b = code, body
+        def json(self): return self._b
+
+    page = lambda nodes, more=False: {"data": {"posts": {"edges": [{"node": n} for n in nodes], "pageInfo": {"hasNextPage": more, "endCursor": "c"}}}}
+    seq = []
+
+    class Http:
+        def __init__(self, replies): self.replies, self.tokens = replies, 0
+        def post(self, url, json=None, headers=None, timeout=None):
+            if url == ph_live.TOKEN_URL:
+                self.tokens += 1
+                return R(200, {"access_token": f"t{self.tokens}"})
+            seq.append(headers["Authorization"])
+            return self.replies.pop(0)
+
+    h = Http([R(401, {}), R(200, page([{"id": 1, "dailyRank": 1}]))])
+    tok = [ph_live._token(h)]
+    out = ph_live._query(h, tok, "a", "b")
+    assert len(out) == 1 and seq == ["Bearer t1", "Bearer t2"]                    # B7: re-minted once on 401
+    partial = page([{"id": 1, "dailyRank": 1}]); partial["errors"] = [{"message": "thumbnail unavailable"}]
+    assert len(ph_live._query(Http([R(200, partial)]), ["t"], "a", "b")) == 1      # B8: data with a partial error is used
+    import pytest as _pt
+    with _pt.raises(ph_live.Upstream):
+        ph_live._query(Http([R(200, {"errors": [{"message": "boom"}], "data": None})]), ["t"], "a", "b")
+    with _pt.raises(ph_live.RateLimited):
+        ph_live._query(Http([R(200, {"errors": [{"error": "rate_limit_reached", "details": {"reset_in": 120}}]})]), ["t"], "a", "b")
+    assert ph_live._complete([{"dailyRank": 1}, {"dailyRank": 3}]) is False   # a launch is missing: never served as complete

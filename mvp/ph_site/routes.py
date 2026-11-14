@@ -79,13 +79,22 @@ async def _ph_today(day: str | None):
 
     if day and not DAY.match(day):
         raise HTTPException(400, "day must be YYYY-MM-DD")
-    days = await asyncio.to_thread(live.available_days)
+    try:
+        days = await asyncio.to_thread(live.available_days)
+    except Exception:  # noqa: BLE001 - storage listing down: today and the requested day still work
+        days = []
     today = live.today_pt()
     if today not in days:
         days = [today] + days            # today always exists: its board comes live from Product Hunt's API
+    if day and day not in days and day < today:
+        days = sorted(set(days) | {day}, reverse=True)
     # Never show another day's picks under today's date: no day given means today, forecasts or not.
     d = day if day in days else today
-    view = await asyncio.to_thread(live.day_view, d)
+    try:
+        view = await asyncio.to_thread(live.day_view, d)
+    except Exception as exc:  # noqa: BLE001 - last resort: the live board alone, never a blank page
+        print(f"[ph] day view failed: {exc!r}", flush=True)
+        view = await asyncio.to_thread(live.board_only_view, d)
     view["days"] = days
     try:
         view["accuracy"] = await asyncio.to_thread(live.accuracy)

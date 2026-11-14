@@ -92,8 +92,17 @@ function failed(sel, what, e){
 }
 
 async function load(day){
-  try { VIEW = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
-  catch(e){ failed("#pred", "the forecast", e); failed("#live", "the leaderboard", e); return; }
+  let v;
+  try { v = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
+  catch(e){
+    if(VIEW && (!day || day === VIEW.day)){        // keep the last rendered board; say how old it is
+      const at = VIEW.board && VIEW.board.as_of;
+      $("#live-stamp").innerHTML = `<span class="tag">Couldn't refresh${at ? " · board from " + esc(ago(at)) : ""}</span>`;
+      return;
+    }
+    failed("#pred", "the forecast", e); failed("#live", "the leaderboard", e); return;
+  }
+  VIEW = v;
   dayStep();
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
 
@@ -121,10 +130,7 @@ function liveTop(){
 // "Midnight" = the 00:05 PT forecast; "Before votes" = the latest pre-reveal forecast (on time if one exists).
 function pointFor(v){
   if(v === "mid") return VIEW.points.find(q=>q.key==="0005") || null;
-  const pub = VIEW.points.find(q=>q.key==="PRE");      // the published 03:45 PT prediction
-  if(pub) return pub;
-  const pre = VIEW.points.filter(q=>/^P\d$/.test(q.key)); // days before it existed
-  return pre.filter(q=>!q.late).pop() || pre.pop() || null;
+  return VIEW.points.find(q=>q.key==="PRE") || null;   // the published 03:45 PT prediction only
 }
 function tabs(){
   const has = {mid: !!pointFor("mid"), pre: !!pointFor("pre")};
@@ -162,8 +168,8 @@ const FALLBACK = {
 function accLine(){
   const p = pointFor(TAB);
   if(!p || p.fallback === "none_available"){ $("#acc").textContent = ""; return; }
-  const earlier = TAB === "pre" && p.key !== "PRE";        // days before the published 03:45 line existed
-  const name = TAB === "mid" ? "Product only (00:05 PT)" : earlier ? "Product + comments (earlier method)" : "Product + comments (03:45 PT)";
+  const earlier = false;
+  const name = TAB === "mid" ? "Product only (00:05 PT)" : "Product + comments (03:45 PT)";
   const made = p.time_pt ? ` · made ${p.time_pt}` : "";
   const fb = p.fallback ? ` · ${FALLBACK[p.fallback] || "a fallback model was used"}` : "";
   const pc = (v, r)=> r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`;
@@ -278,7 +284,13 @@ $("#day-prev").onclick = ()=>goDay(1);
 $("#day-next").onclick = ()=>goDay(-1);
 load();
 // The board is read from Product Hunt's API at most once a minute on the server; poll at the same pace.
-setInterval(()=>{ if(VIEW && VIEW.day===VIEW.today && !VIEW.status.final && !document.hidden) load(VIEW.day); }, 60*1000);
+const ptToday = ()=> new Intl.DateTimeFormat("en-CA", {timeZone: "America/Los_Angeles"}).format(new Date());
+setInterval(()=>{
+  if(!VIEW || document.hidden) return;
+  if(VIEW.day === VIEW.today && ptToday() !== VIEW.today){ TAB = null; load(); return; }   // midnight PT: move to the new day
+  if(VIEW.day === VIEW.today && !VIEW.status.final) load(VIEW.day);
+}, 60*1000);
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && VIEW && VIEW.day === VIEW.today && ptToday() !== VIEW.today){ TAB = null; load(); } });
 </script>
 </body>
 </html>
