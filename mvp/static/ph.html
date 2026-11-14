@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=21">
+<link rel="stylesheet" href="/static/ph_site.css?v=22">
 </head>
 <body>
 <div class="wrap">
@@ -131,15 +131,17 @@ const info = (t)=> `<details class="info"><summary aria-label="What does this me
 const bar = (label, frac, val, cls = "", tip = "")=> `<div class="bx ${cls}"><span class="bl">${esc(label)}${tip ? info(tip) : ""}</span><span class="bt"><i style="width:${Math.max(2, Math.min(100, frac * 100))}%"></i></span><span class="bv">${val}</span></div>`;
 // What each input of the explanation model measures, in plain words.
 const FACTOR = {
-  "Gemini pitch score": "An AI model (Google's Gemini) reads the name, tagline and description and rates how clear and compelling the pitch is. Higher = a pitch launches like this usually win with.",
-  "hunter top-5 finishes before": "How many launches the hunter (the person who posted it) has taken into a day's top 5 before. Hunters with a winning record bring an audience.",
+  "Gemini pitch score": "Gemini's estimated chance (0–100%) that the launch finishes in the day's top 5, judged from the pitch alone (name, tagline, description, topics), with all of the day's launches compared in one go.",
+  "hunter top-5 finishes before": "The share of the hunter's earlier launches that finished in a day's top 5 (a rate, not a count).",
+  "hunter top-5 rate before": "The share of the hunter's earlier launches that finished in a day's top 5 (a rate, not a count).",
   "hunter launches before": "How many launches the hunter has posted before.",
-  "hunter track record (relative)": "How the hunter's past launches ranked compared with the other launches on their days.",
+  "hunter track record (relative)": "How many votes the hunter's earlier launches got compared with the other launches on their days (0 = average).",
   "hunter account age": "How long the hunter's Product Hunt account has existed.",
   "team size": "How many makers are listed on the launch.",
-  "pre-launch promotion": "Signs it was promoted before launch day, for example posts announcing it or an active company account on X.",
-  "topic prior": "How launches in the same Product Hunt topics usually do.",
-  "text model score": "A text model's score for the wording of the name, tagline and description, learned from past launches.",
+  "pre-launch promotion": "Press, Hacker News, Reddit or other coverage dated before launch day, found by Gemini with Google Search.",
+  "pre-launch coverage": "Press, Hacker News, Reddit or other coverage dated before launch day, found by Gemini with Google Search.",
+  "topic prior": "How launches in the same Product Hunt topics usually do against their day (rare topics count less).",
+  "text model score": "A word-based model of the name, tagline and description, trained on past launches: how many votes that wording usually gets against the day's average (0 = average).",
   "media items": "How many images and videos are in the gallery."};
 const votesPct = (p)=> { const v = Math.round((Math.exp(Number(p) || 0) - 1) * 100); return (v > 0 ? "+" : "") + v + "% votes"; };
 const TRUST = {
@@ -169,7 +171,13 @@ function exWho(d, aud){
   const a = aud || {}, missing = !a.follow_ties && !a.held_backers;
   const pu = a.power_users, lift = pu && pu.usual ? pu.share / pu.usual : null;
   const segs = (d && d.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((x, s)=>x + s.n_held_people_scored, 0) || 1;
-  return `<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
+  const tp = d && d.team_past_backers;
+  const liftRows = (rows, lab, base)=> rows.map(x=>`<div class="bx2"><span class="bl">${esc(x[lab])}</span><span class="bt"><i class="share" style="width:${Math.min(100, x.share / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i><i class="base" style="left:${Math.min(100, x[base] / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i></span><span class="bv">${pct(x.share)}</span><span class="lift ${x.lift >= 1.3 ? "hi" : x.lift <= .77 ? "lo" : ""}">${Number(x.lift).toFixed(1)}×</span></div>`).join("");
+  const tpHtml = tp && tp.n_held_people > 0 ? `<h5>People who backed this team before</h5>
+    <p class="lede"><b>${n0(tp.n_held_people)}</b> people we hold upvoted an earlier launch by this hunter or first maker. About half of the backers we can see on a launch usually come from this group.${info("Held people who upvoted an earlier launch of this hunter or first maker. Unlike the general likely-backer list, this group is specific to the team: across past launches it held about 50% of the real backers we could see.")}</p>
+    ${(tp.segments_by_lift || []).length ? `<div class="legend2"><span><i class="k share"></i>share of them</span><span><i class="k base"></i>share of everyone we hold</span></div>${liftRows(tp.segments_by_lift, "segment", "share_of_all_held_active")}` : ""}
+    ${(tp.topics_by_lift || []).length ? `<h5>What they upvote more than most people</h5>${liftRows(tp.topics_by_lift, "topic", "share_for_all_held_active")}` : ""}` : "";
+  return `${tpHtml}<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
     ${missing ? `<p class="note">No follower or past-backer counts: this team's profiles are not among the people we hold.</p>` : ""}
     ${lift ? `<div class="aud"><span class="bl">Heavy upvoters in that audience${info("Share of its followers and past backers who upvoted 10+ launches in the last 90 days, against the typical launch today. Heavy upvoters vote early and often.")}</span><b>${pct(pu.share)}</b><span class="rkof">${pu.day_median ? `typical today ${pct(pu.day_median)}` : `${lift.toFixed(1)}× usual`}</span></div>` : ""}
     ${segs.length ? `<details class="more"><summary>Roles of likely backers (a typical mix)</summary>
@@ -198,8 +206,9 @@ function exWhy(d){
   return `<p class="lede">Everything our explanation model measures, and how much each one moved this launch's predicted votes${d.rank_in_explanation_model ? ` (it ranks it <b>#${esc(d.rank_in_explanation_model)}</b>)` : ""}. Tap a factor to see what it means.</p>
     <div class="legend2"><span><i class="k up"></i>pushes votes up</span><span><i class="k dn"></i>pulls votes down</span></div>
     ${all.map(r=>{ const v = Number(r.points) || 0, w = Math.abs(v) / m * 50;
-      const rv = (RAW || {})[r.input];
-      return `<details class="fx"><summary><span class="bl">${esc(r.input)}${rv != null ? ` <em class="rv">${esc(rv)}</em>` : ""}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : "right:50%"}"></i></span><span class="bv ${v >= 0 ? "pos" : "neg"}">${votesPct(v)}</span></summary><p>${esc(FACTOR[r.input] || "An input of the explanation model.")}</p></details>`; }).join("")}
+      const rv0 = r.input === "hunter account age" && (RAW || {})[r.input] ? RAW[r.input] : typeof r.raw_value === "number" ? r.raw_value : (RAW || {})[r.input];
+      const rv = typeof rv0 === "number" ? (Number.isInteger(rv0) ? rv0 : +rv0.toFixed(2)) : rv0;
+      return `<details class="fx"><summary><span class="bl">${esc(r.input)}${rv != null ? ` <em class="rv">${esc(rv)}</em>` : ""}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : "right:50%"}"></i></span><span class="bv ${v >= 0 ? "pos" : "neg"}">${votesPct(v)}</span></summary><p>${esc(r.definition || FACTOR[r.input] || "An input of the explanation model.")}</p></details>`; }).join("")}
     <p class="note">This readable model uses these 10 inputs. The published forecast uses about 40 (hunter record, pitch, brand, topic, competition, media, team, promotion, wording, day), so small factors like media items move little here.</p>
     <p class="note">"+19% votes" means: with everything else the same, this factor alone moves the predicted votes up by about 19% compared with a typical launch that day.</p>${trust("why")}`;
 }
@@ -233,7 +242,10 @@ function exOverview(d){
     : tier(f) === "top" ? `You have one of today's biggest networks: <b>${n0(f.value)}</b> people we hold follow the hunter or makers (#${f.rank} of the ${f.of} launches whose network we can see). Make sure they know it's live.`
     : tier(f) === "middle" ? `Your network is mid-sized for today: <b>${n0(f.value)}</b> followers we hold (#${f.rank} of ${f.of}). Votes beyond it depend on the pitch.`
     : `Your network is one of today's smallest we can see (<b>${n0(f.value)}</b> followers we hold, #${f.rank} of ${f.of}). Reach beyond it: the first comment and the gallery have to win strangers.`;
+  const tp = d.who && d.who.team_past_backers, lean = tp && tp.n_held_people > 0 && (tp.segments_by_lift || []).filter(x=>x.lift >= 1.3 && x.n >= 20)[0];
+  const tlean = tp && tp.n_held_people > 0 && (tp.topics_by_lift || []).filter(x=>x.lift >= 1.3)[0];
   const pts = [net,
+    lean ? `People who backed your earlier launches lean towards <b>${esc(lean.segment)}</b> (${Number(lean.lift).toFixed(1)}× their usual share)${tlean ? ` and upvote <b>${esc(tlean.topic)}</b> launches more than most` : ""}. Speak to them first.` : "",
     pu && pu.day_median && pu.share / pu.day_median >= 1.5 ? `Your audience has more heavy upvoters than most launches today (${pct(pu.share)} vs a typical ${pct(pu.day_median)}). They vote in the first hours, so be in the comments early.` : "",
     own ? `Your earlier launch <b>${esc(own.name)}</b> finished #${esc(own.final_daily_rank)} with ${Math.round(own.final_votes || 0)} votes.${(own.commenters_complained || [])[0] ? ` Its commenters disliked: <i>“${esc(own.commenters_complained[0])}”</i> Show what changed.` : ""}` : "",
     worry ? `Answer this worry in the first comment, before anyone asks: <i>“${esc(worry)}”</i>` : "",
