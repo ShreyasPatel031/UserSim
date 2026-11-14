@@ -44,7 +44,7 @@ def priors():
 
 def build():
     sys.path.insert(0, os.path.dirname(HERE)); from pipeline import warehouse as W
-    L = W.query("SELECT CAST(id AS VARCHAR) id, CAST(day AS VARCHAR) day, votes FROM launches WHERE votes IS NOT NULL AND day >= '2026-10-25'", do_sync=False)
+    L = W.query("SELECT CAST(id AS VARCHAR) AS id, CAST(day AS VARCHAR) AS day, votes FROM launches WHERE votes IS NOT NULL AND CAST(day AS VARCHAR) >= '2026-10-25'", do_sync=False)
     L["day"] = L.day.str[:10]; clean = priors(); rows = []
     import estvotes as EV
     for d in pd.date_range("2026-10-25", "2026-11-13").strftime("%Y-%m-%d"):
