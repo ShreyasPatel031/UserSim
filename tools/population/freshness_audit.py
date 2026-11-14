@@ -69,6 +69,9 @@ def comment_limit(t):
     return 20 if p.hour < 2 else 60
 
 
+LAST_ANY_POSTS = None  # newest posts_ts row of any source (incl. stopgap rows): the public leaderboard's freshness
+
+
 def day_series(day):
     """(posts snapshot times, comment read times, snapshot tags) for one PT day."""
     base = f"{G}/raw/ph_at_launch/{day}"
@@ -81,6 +84,11 @@ def day_series(day):
             continue
         t = ts(d.get("snapshot_ts") or d.get("fetched_at"))
         if t:
+            global LAST_ANY_POSTS
+            if LAST_ANY_POSTS is None or t > LAST_ANY_POSTS:  # what the public /ph leaderboard shows, any source
+                LAST_ANY_POSTS = t
+            if str(d.get("list_source") or "").startswith("stopgap"):  # hourly reconstruction, not the 15-min capture
+                continue
             posts.append(t)
     cm = [tag_ts(u.rsplit("/", 1)[-1]) for u in sh("gsutil", "ls", f"{base}/api_comments/").split()]
     snaps = [u.rsplit("/", 1)[-1] for u in sh("gsutil", "ls", f"{base}/snapshots/").split()]
@@ -147,8 +155,13 @@ def check():
     for feed, series, lim in (("posts_ts", posts, 20), ("comments_ts", cms, comment_limit(now))):
         last = max(series) if series else None
         if not last or (now - last).total_seconds() / 60 > lim:
-            out.append({"feed": feed, "day_pt": day, "last_good": last.isoformat() if last else None,
-                        "gap_min": round((now - last).total_seconds() / 60, 1) if last else None, "limit_min": lim})
+            row = {"feed": feed, "day_pt": day, "last_good": last.isoformat() if last else None,
+                   "gap_min": round((now - last).total_seconds() / 60, 1) if last else None, "limit_min": lim}
+            if feed == "posts_ts":
+                row["note"] = "capture rows only; stopgap_from_warehouse rows ignored"
+                if LAST_ANY_POSTS:
+                    row["public_leaderboard_stale_since_pt"] = LAST_ANY_POSTS.astimezone(PT).strftime("%Y-%m-%d %H:%M PT")
+            out.append(row)
     try:
         fs = json.loads(sh("gsutil", "cat", f"{G}/mailbox/from_cursor/status.json"))
         fu = ts(fs.get("utc"))
@@ -364,7 +377,11 @@ def run(W):
     if rows:  # one object per tick: no read-modify-write race between runners
         put("".join(json.dumps(r) + "\n" for r in rows), f"{G}/raw/_audit/checks/{stamp}.jsonl")
     if due:
-        lines = [f"# FRESHNESS ALERT {stamp}", "", f"{len(br)} feed(s) over their limit (detection only; no feed was changed).", ""]
+        lines = [f"# FRESHNESS ALERT {stamp}", ""]
+        pl = next((b.get("public_leaderboard_stale_since_pt") for b in br if b.get("public_leaderboard_stale_since_pt")), None)
+        if pl:
+            lines += [f"Public website leaderboard: stale since {pl}", ""]
+        lines += [f"{len(br)} feed(s) over their limit (detection only; no feed was changed).", ""]
         for b in br:
             lines.append("- " + ", ".join(f"{k}={v}" for k, v in b.items()))
         text = "\n".join(lines) + "\n"
