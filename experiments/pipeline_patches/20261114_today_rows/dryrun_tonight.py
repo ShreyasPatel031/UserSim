@@ -6,7 +6,7 @@ usage (VM, cwd ~/w/experiments/ph_predict, PYTHONPATH unset): python3 dryrun_ton
 import json, os, shutil, sys
 sys.path.insert(0, os.path.expanduser("~/w/arm2_live"))
 import features as F
-T = sys.argv[1]; REAL = os.path.realpath(F.D); H25 = os.path.expanduser("~/w/h25/data")
+T = sys.argv[1]; REAL = os.path.realpath("data"); F.D = REAL; H25 = os.path.expanduser("~/w/h25/data")
 d = max(f[:10] for f in os.listdir(f"{REAL}/today")); fails = []
 df = F.build(include_today=True); te = df[df.is_today]
 seen = set(df.hunter_id[~df.is_today & df.votes.notna()])

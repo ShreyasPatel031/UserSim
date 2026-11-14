@@ -6,6 +6,7 @@
 usage (VM, cwd ~/w/experiments/ph_predict): python3 test_equiv_hunks.py <old features dir> <new features dir> <real data dir> <d> <scratch dir>"""
 import json, os, shutil, subprocess, sys
 OLD, NEW, REAL, d, T = sys.argv[1:6]; REAL = os.path.realpath(REAL); os.makedirs(T, exist_ok=True)
+PH = os.getcwd()   # ph_predict; subprocesses run with cwd=T so `python -c` (cwd first on sys.path) cannot pick up ph_predict/features.py
 
 
 def root(name, today_files, days_files=None, edit=None):
@@ -21,7 +22,7 @@ def root(name, today_files, days_files=None, edit=None):
 def frame(fdir, r, inc, out):
     code = ("import sys, features as F; F.D = sys.argv[1]; inc = sys.argv[2]; inc = True if inc == 'True' else inc\n"
             "df = F.build(include_today=inc); df.to_pickle(sys.argv[3]); print(F.__file__)")
-    p = subprocess.run([sys.executable, "-c", code, r, inc, out], env={**os.environ, "PYTHONPATH": f"{fdir}:."}, capture_output=True, text=True)
+    p = subprocess.run([sys.executable, "-c", code, r, inc, out], env={**os.environ, "PYTHONPATH": f"{fdir}:{PH}"}, capture_output=True, text=True, cwd=T)
     assert p.returncode == 0, p.stderr[-800:]; assert p.stdout.strip().startswith(fdir), (fdir, p.stdout)
     import pandas as pd; return pd.read_pickle(out)
 
@@ -54,7 +55,7 @@ code3 = ("import numpy as np, pandas as pd, features as F, json\n"
          " 'dailyRank': [1, np.nan, 2, 5, 6, 7], 'hunter_id': ['h','h','h','o','o','o'], 'maker_ids': [['m'],['m'],['m'],['q'],['q'],['q']], 'is_today': [False]*6})\n"
          "H = F.add_history(X).set_index('id'); print(json.dumps({'n': int(H.loc['c','hist_hunter_n']), 'rel_finite': bool(np.isfinite(H.loc['c','hist_hunter_rel'])), 'maker_n': int(H.loc['c','hist_maker_n'])}))")
 for nm, fdir in (("old", OLD), ("new", NEW)):
-    p = subprocess.run([sys.executable, "-c", code3], env={**os.environ, "PYTHONPATH": f"{fdir}:."}, capture_output=True, text=True); R[f"H3_{nm}"] = json.loads(p.stdout.strip().splitlines()[-1])
+    p = subprocess.run([sys.executable, "-c", code3], env={**os.environ, "PYTHONPATH": f"{fdir}:{PH}"}, capture_output=True, text=True, cwd=T); R[f"H3_{nm}"] = json.loads(p.stdout.strip().splitlines()[-1])
 R["H3_pass"] = R["H3_new"] == {"n": 1, "rel_finite": True, "maker_n": 1} and R["H3_old"]["n"] == 2
 for r in ("clean", "polluted", "h2"): shutil.rmtree(f"{T}/{r}", ignore_errors=True)
 for f in ("o_c", "n_c", "n_p", "n_s", "o_h", "n_h"): os.remove(f"{T}/{f}.pkl")
