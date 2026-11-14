@@ -12,9 +12,9 @@ MP = ("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_maker
 ID = {"ph_n_makers_new", "ph_maker_has_headline", "x_any_verified", "ph_self_hunted"}
 P_ = dict(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1, colsample_bytree=0.5, reg_lambda=1.0)
 # REPRODUCIBILITY (orchestrator 15:47Z Nov 14; undeployed): rows sorted by (day, id) before every fit (LightGBM bags by row position),
-# deterministic / row-wise LightGBM with a fixed thread count, 20 seeds (REPRO_SEEDS), sha256 of the exact training / test inputs + versions.
+# deterministic / row-wise LightGBM with a fixed thread count, 5 seeds (REPRO_SEEDS; 20 tested, no gain), sha256 of the exact training / test inputs + versions.
 import hashlib
-REPRO_SEEDS = int(os.environ.get("REPRO_SEEDS", "20")); REPRO_JOBS = int(os.environ.get("REPRO_JOBS", "4"))
+REPRO_SEEDS = int(os.environ.get("REPRO_SEEDS", "5")); REPRO_JOBS = int(os.environ.get("REPRO_JOBS", "4"))
 P_DET = dict(deterministic=True, force_row_wise=True, n_jobs=REPRO_JOBS)
 
 

@@ -6,10 +6,10 @@
            colsample_bytree=0.5, reg_lambda=1.0)   # = makerfix_shadow's clean line / training_window P0
 -te["pred"] = np.mean([lgb.LGBMRegressor(random_state=s, verbose=-1, n_jobs=M.N_JOBS, **P_).fit(tr[cc], tr.logv).predict(te[cc])
 -                      for s in range(5)], axis=0)
-+# REPRODUCIBILITY (orchestrator 15:47Z Nov 14; undeployed): (day, id) row order, deterministic row-wise LightGBM, fixed threads, 20 seeds,
++# REPRODUCIBILITY (orchestrator 15:47Z Nov 14; undeployed): (day, id) row order, deterministic row-wise LightGBM, fixed threads, 5 seeds (20 tested, no gain),
 +# input sha256 + versions written to results/forecast_repro_<day>.json (an audit rerun on the same snapshot is bit-identical)
 +import hashlib, json as _json
-+RS = int(os.environ.get("REPRO_SEEDS", "20")); RJ = int(os.environ.get("REPRO_JOBS", "4"))
++RS = int(os.environ.get("REPRO_SEEDS", "5")); RJ = int(os.environ.get("REPRO_JOBS", "4"))
 +tr = tr.sort_values(["day", "id"], kind="stable"); te = te.sort_values(["day", "id"], kind="stable")
 +_sha = lambda X: hashlib.sha256(pd.util.hash_pandas_object(X, index=False).values.tobytes()).hexdigest()[:16]
 +te["pred"] = np.mean([lgb.LGBMRegressor(random_state=s, verbose=-1, deterministic=True, force_row_wise=True, n_jobs=RJ, **P_).fit(tr[cc], tr.logv).predict(te[cc])

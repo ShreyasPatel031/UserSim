@@ -27,10 +27,10 @@ ID = {"ph_n_makers_new", "ph_maker_has_headline", "x_any_verified", "ph_self_hun
 cc = [c for c in M.cols(tr, src) if not c.startswith(MP) and c not in ID and c != "llm_site"]
 P_ = dict(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1,
           colsample_bytree=0.5, reg_lambda=1.0)   # = makerfix_shadow's clean line / training_window P0
-# REPRODUCIBILITY (orchestrator 15:47Z Nov 14; undeployed): (day, id) row order, deterministic row-wise LightGBM, fixed threads, 20 seeds,
+# REPRODUCIBILITY (orchestrator 15:47Z Nov 14; undeployed): (day, id) row order, deterministic row-wise LightGBM, fixed threads, 5 seeds (20 tested, no gain),
 # input sha256 + versions written to results/forecast_repro_<day>.json (an audit rerun on the same snapshot is bit-identical)
 import hashlib, json as _json
-RS = int(os.environ.get("REPRO_SEEDS", "20")); RJ = int(os.environ.get("REPRO_JOBS", "4"))
+RS = int(os.environ.get("REPRO_SEEDS", "5")); RJ = int(os.environ.get("REPRO_JOBS", "4"))
 tr = tr.sort_values(["day", "id"], kind="stable"); te = te.sort_values(["day", "id"], kind="stable")
 _sha = lambda X: hashlib.sha256(pd.util.hash_pandas_object(X, index=False).values.tobytes()).hexdigest()[:16]
 te["pred"] = np.mean([lgb.LGBMRegressor(random_state=s, verbose=-1, deterministic=True, force_row_wise=True, n_jobs=RJ, **P_).fit(tr[cc], tr.logv).predict(te[cc])
