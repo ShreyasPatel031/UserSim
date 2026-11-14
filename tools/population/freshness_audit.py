@@ -138,6 +138,10 @@ def check():
                     "gap_min": round((now - hb).total_seconds() / 60, 1) if hb else None, "limit_min": 20})
     day = now.astimezone(PT).date().isoformat()
     posts, cms, _ = day_series(day)
+    # captures for a launch day keep landing in its own folder after midnight PT: pool yesterday's folder too, so the
+    # gap is measured from the true last capture (a fresh, empty day folder must never read as "no data" or as fresh)
+    yp, yc, _ = day_series((now.astimezone(PT).date() - dt.timedelta(days=1)).isoformat())
+    posts, cms = posts + yp, cms + yc
     for feed, series, lim in (("posts_ts", posts, 20), ("comments_ts", cms, comment_limit(now))):
         last = max(series) if series else None
         if not last or (now - last).total_seconds() / 60 > lim:
