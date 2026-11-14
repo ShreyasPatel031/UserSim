@@ -1,0 +1,12 @@
+{
+ "w": [
+  0.681,
+  0.176
+ ],
+ "terms": [
+  "z(pred_arm2)",
+  "z(log1p asof_any)"
+ ],
+ "fit": "ridge alpha 10, full backtest Apr-Oct (156 days), arm 2 'both' + asof_any (held_strict.py)",
+ "frozen_at": "2026-11-14T01:00Z"
+}

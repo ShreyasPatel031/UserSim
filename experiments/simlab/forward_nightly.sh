@@ -17,4 +17,7 @@ if gsutil -q stat gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/forward_s
 else echo "no frozen predictions for $YDAY: nothing to judge" >> $LOG; fi
 env -u VERCEL python forward_band.py $TODAY $SP $WT >> $LOG 2>&1
 FWD_PREDICT=1 env -u VERCEL python forward_sim.py $TODAY $WT $SP $OUT >> $LOG 2>&1
+# held-team shadow column (orchestrator 00:42Z Nov 14): score yesterday, then predict today with the frozen weight
+python held_team_shadow.py score $YDAY $SP >> $LOG 2>&1
+python held_team_shadow.py predict $TODAY $SP >> $LOG 2>&1
 echo "end $(date -u +%FT%TZ)" >> $LOG; tail -c 1500 $LOG

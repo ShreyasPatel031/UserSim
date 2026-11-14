@@ -1,0 +1,299 @@
+{
+ "design": "Held-team count: stricter backtest + forward power (orchestrator 00:42Z Nov 14). Counts only. Base: arm 2 (PH ops 'both', Apr-Oct).\nFeatures per launch (team = hunter + named makers; held = complete in the provenance store):\n  asof_any   held team members with >= 1 dated activity before the launch day (team_inc2; the stack's L2)\n  recent30   held team members whose LAST dated event before the launch day (upvote on an earlier-dated launch, or an earlier team role)\n             is within 30 days of it; nothing after the launch is used\n  placebo    each recent30 member replaced by a random held NON-team person matched on entry route, pull week (pull_finished_utc) and\n             prior-activity bin (log2(1 + dated upvotes before the day)); counted if that person is recent30 too. Same selection mechanics,\n             no tie to the launch: its gain is what store selection alone buys.\nMonth-forward ridge on within-day z (target z(-ln rank)): arm2 vs arm2 + z(log1p f); paired top 3/5/10, day bootstrap; by launch-age tercile.\nPower: per-day paired top-3 differences of arm2 + asof_any (frozen full-fit weight) vs arm2, with the feature thinned to a forward coverage\n(share of launches with f > 0) of c; days needed for 80% power at alpha 0.05: n = ((1.96 + 0.84) sd / mean)^2, mean scaled to +3 at full\nbacktest coverage. Coverages: Nov 13 live (2 established / 20 launches = 0.10), 0.25, 0.5, backtest, and a full-team pull (share of\nlaunches with any team member holding an earlier team role in the 2025 lists / 2026 warehouse = upper bound).",
+ "scored days": 156,
+ "launches": 3943,
+ "arm2 top3/5/10": [
+  58.5,
+  66.5,
+  77.9
+ ],
+ "coverage (share of launches with f > 0)": {
+  "asof_any": 0.236,
+  "recent30": 0.171,
+  "placebo": 0.076
+ },
+ "arm2 + asof_any": {
+  "top3/5/10": [
+   60.9,
+   66.7,
+   77.3
+  ],
+  "vs arm2": [
+   [
+    2.4,
+    0.2,
+    4.5
+   ],
+   [
+    0.1,
+    -1.3,
+    1.5
+   ],
+   [
+    -0.6,
+    -1.7,
+    0.4
+   ]
+  ],
+  "by age tercile (0 = oldest), top 3/5/10": {
+   "0": [
+    [
+     2.6,
+     0.0,
+     5.8
+    ],
+    [
+     0.0,
+     -2.3,
+     2.7
+    ],
+    [
+     -0.6,
+     -2.5,
+     1.3
+    ]
+   ],
+   "1": [
+    [
+     2.6,
+     -0.6,
+     5.8
+    ],
+    [
+     0.8,
+     -1.2,
+     2.7
+    ],
+    [
+     -1.2,
+     -2.9,
+     0.8
+    ]
+   ],
+   "2": [
+    [
+     1.9,
+     -2.6,
+     6.4
+    ],
+    [
+     -0.4,
+     -2.7,
+     1.9
+    ],
+    [
+     -0.2,
+     -1.7,
+     1.3
+    ]
+   ]
+  }
+ },
+ "arm2 + recent30": {
+  "top3/5/10": [
+   59.2,
+   66.3,
+   77.4
+  ],
+  "vs arm2": [
+   [
+    0.6,
+    -1.5,
+    2.8
+   ],
+   [
+    -0.3,
+    -1.5,
+    1.0
+   ],
+   [
+    -0.6,
+    -1.6,
+    0.5
+   ]
+  ],
+  "by age tercile (0 = oldest), top 3/5/10": {
+   "0": [
+    [
+     -0.0,
+     -3.2,
+     3.8
+    ],
+    [
+     -0.4,
+     -2.7,
+     1.9
+    ],
+    [
+     0.0,
+     -1.9,
+     2.1
+    ]
+   ],
+   "1": [
+    [
+     2.6,
+     -0.6,
+     5.8
+    ],
+    [
+     0.8,
+     -1.2,
+     3.1
+    ],
+    [
+     -1.2,
+     -3.1,
+     0.8
+    ]
+   ],
+   "2": [
+    [
+     -0.6,
+     -5.8,
+     3.8
+    ],
+    [
+     -1.2,
+     -3.5,
+     1.2
+    ],
+    [
+     -0.6,
+     -2.3,
+     1.2
+    ]
+   ]
+  }
+ },
+ "arm2 + placebo": {
+  "top3/5/10": [
+   58.8,
+   66.7,
+   77.4
+  ],
+  "vs arm2": [
+   [
+    0.2,
+    -1.7,
+    2.1
+   ],
+   [
+    0.1,
+    -0.8,
+    1.2
+   ],
+   [
+    -0.6,
+    -1.3,
+    0.1
+   ]
+  ],
+  "by age tercile (0 = oldest), top 3/5/10": {
+   "0": [
+    [
+     -0.0,
+     -2.6,
+     2.6
+    ],
+    [
+     0.0,
+     -2.3,
+     2.3
+    ],
+    [
+     -0.2,
+     -1.5,
+     1.2
+    ]
+   ],
+   "1": [
+    [
+     2.6,
+     0.6,
+     5.1
+    ],
+    [
+     0.4,
+     0.0,
+     1.2
+    ],
+    [
+     -0.8,
+     -1.9,
+     0.4
+    ]
+   ],
+   "2": [
+    [
+     -1.9,
+     -7.1,
+     2.6
+    ],
+    [
+     0.0,
+     -1.5,
+     1.5
+    ],
+    [
+     -0.8,
+     -1.9,
+     0.2
+    ]
+   ]
+  }
+ },
+ "recent30 - placebo (paired)": [
+  [
+   0.4,
+   -1.5,
+   2.1
+  ],
+  [
+   -0.4,
+   -1.4,
+   0.8
+  ],
+  [
+   0.0,
+   -0.8,
+   0.9
+  ]
+ ],
+ "power (frozen full-fit weight, asof_any)": {
+  "weight (zb, z_asof_any)": [
+   0.681,
+   0.176
+  ],
+  "Nov 13 live (0.10)": {
+   "per-day top-3 diff sd": 12.7,
+   "share of days with any top-3 change": 0.142,
+   "assumed effect (top 3)": 0.05,
+   "days for 80% power": 424166
+  },
+  "0.25": {
+   "per-day top-3 diff sd": 13.7,
+   "share of days with any top-3 change": 0.173,
+   "assumed effect (top 3)": 3.0,
+   "days for 80% power": 163
+  },
+  "0.50": {
+   "per-day top-3 diff sd": 13.7,
+   "share of days with any top-3 change": 0.173,
+   "assumed effect (top 3)": 3.0,
+   "days for 80% power": 163
+  },
+  "backtest (0.24)": {
+   "per-day top-3 diff sd": 13.7,
+   "share of days with any top-3 change": 0.173,
+   "assumed effect (top 3)": 3.0,
+   "days for 80% power": 163
+  },
+  "full-team pull upper bound (0.44)": {
+   "per-day top-3 diff sd": 13.7,
+   "share of days with any top-3 change": 0.173,
+   "assumed effect (top 3)": 3.0,
+   "days for 80% power": 163
+  }
+ }
+}
