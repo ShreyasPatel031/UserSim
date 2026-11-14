@@ -359,10 +359,9 @@ def _p345(day: str) -> dict | None:
     ranks = {str(r["id"]): int(r["pred_rank_hybrid"]) for r in f if isinstance(r.get("pred_rank_hybrid"), (int, float))}
     if not ranks:
         return None
-    # No vote estimate on the page (orchestrator, Nov 14): exp_final_votes measured 32% median error on 1 forward day,
-    # 20.5% on 3 backtest days, so it is not shown.
+    exp = {str(r["id"]): round(float(r["exp_final_votes"])) for r in f if isinstance(r.get("exp_final_votes"), (int, float))}
     return {"ranks": ranks, "made_at": j.get("written_at", ""), "data_up_to": j.get("data_up_to", ""),
-            "method": "hybrid (hidden rank top 5 + ridge 6+)", "exp_votes": None,
+            "method": "hybrid (hidden rank top 5 + ridge 6+)", "exp_votes": exp or None,
             "source": f"results/early_forecast/{day}_P345.json"}
 
 

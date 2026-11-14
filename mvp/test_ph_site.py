@@ -762,10 +762,3 @@ def test_input_flag_per_day(monkeypatch):
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: sb if path.endswith("scoreboard.json") else None)
     assert live.input_flag("2026-11-10").startswith("built on polluted hunter-history inputs")
     assert live.input_flag("2026-10-20") is None
-
-
-def test_prereveal_has_no_vote_estimate(monkeypatch):
-    f = {"written_at": "2026-11-13T11:46:00Z", "forecast": [{"id": 1, "pred_rank_hybrid": 1, "exp_final_votes": 186.8}]}
-    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: f if path.endswith("_P345.json") else None)
-    p = live._p345("2026-11-13")
-    assert p["ranks"] == {"1": 1} and p["exp_votes"] is None

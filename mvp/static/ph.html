@@ -197,6 +197,8 @@ function legend(sts){
   let h = sts && sts.some(Boolean)
     ? `<span class="key exact"></span>Exact rank ${n("exact")}<span class="key near"></span>In top 10, other rank ${n("near")}<span class="key miss"></span>Missed ${n("miss")}${VIEW.status.final ? "" : " · so far"}`
     : "";
+  const p0 = pointFor(TAB);
+  if(p0 && p0.exp_votes) h += `<span class="final">est. = expected day-end votes, typical error about ±30% (1 forward day)</span>`;
   if(VIEW.status.final){
     const sc = (v, name)=>{ const p = pointFor(v); return p && p.score ? `<span class="final">${name}: top 3 ${p.score["3"]}/3 · top 5 ${p.score["5"]}/5 · top 10 ${p.score["10"]}/10</span>` : ""; };
     h += sc("mid", "Product only") + sc("pre", "Product + comments");
