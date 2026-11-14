@@ -114,6 +114,24 @@ summ["00:05 PT | live, previous published model"] = {"line": "old full launch mo
     "source": "results/web/scoreboard.json summary (0005 / published / live)", "day rule": DAY_RULE}
 for k_, was in (("00:05 PT | backtest", "58.1 / 65.2 / 76.9 on 183 days"), ("00:05 PT | backtest (clean_nosite, fallback model)", "54.5 / 64.7 / 76.0 on 183 days")):
     if k_ in summ: summ[k_]["note"] = RESTATED.format(was=was)
+# ONE truth source (orchestrator 20:54Z Nov 14): headline numbers come from PH ops' results/web/north_star_table.json rows; E5's own
+# recomputation (truth = results/web/truth_daily.json rule) stays next to them as "cross-check" (nightly truth_crosscheck.py flags mismatches).
+NS = json.loads(gcat(f"{B}/results/web/north_star_table.json") or b"{}")
+NSMAP = {"00:05 PT | backtest": [("0005", "arm2", "5 seeds")], "00:05 PT | backtest (clean_nosite, fallback model)": [("0005", "clean_nosite", "5 seeds")],
+         "03:45 PT | replay": [("prereveal", "hybrid_vm (live prior)", "")], "03:45 PT | replay with fixed 00:05 inputs": [("prereveal", "hybrid_vm (fixed prior)", "")],
+         "03:45 PT | replay (hidden rank alone)": [("prereveal", "hidden_rank_only", "")],
+         "00:05 PT | live, previous published model": [("0005", "old full model", "live writes only"), ("0005", "clean_nosite", "live writes only")]}
+for k_, keys in NSMAP.items():
+    rs = [r for pt, m, sub in keys for r in NS.get("rows", []) if r["point"] == pt and r["model"] == m and sub in r["method"]]
+    if k_ not in summ or not rs: continue
+    mine = summ[k_].get("all days")
+    summ[k_]["north_star_rows"] = rs
+    if len(rs) == 1:
+        r = rs[0]; summ[k_]["all days"] = {f"top{k} hits %": [r[f"top{k}"], None, None, r["n_days"]] for k in (3, 5, 10)}
+    summ[k_]["headline_source"] = "results/web/north_star_table.json (PH ops; the number of record)" + ("" if len(rs) == 1 else ": one row per model, see north_star_rows")
+    summ[k_]["cross-check (E5 recomputation, truth_daily rule, 95% day-bootstrap interval)"] = mine
+    if "note" in summ[k_]: summ[k_]["cross-check note"] = summ[k_].pop("note")
+    summ[k_]["truth (headline)"] = NS.get("truth")
 out = {"version": "track_record_v1", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),
        "READ_ME": "backtest = model re-run on past days it was not trained on (00:05, Apr-Oct); replay = the 03:45 rule re-run on recorded "
                   "pre-reveal reads (Nov 2-13); live = what the site actually published, scored against the official daily rank. Never pool "

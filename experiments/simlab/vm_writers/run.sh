@@ -1,6 +1,6 @@
 #!/bin/bash
 # E5 website writers for the VM cron (bundle 12). No LLM, no git at run time. Idempotent (re-running rewrites the same files).
-#   bash run.sh <job> [day]   job: track_record | prob_0005 | prob_prereveal | period | period_score | held_team_predict | held_team_score
+#   bash run.sh <job> [day]   job: track_record (runs truth + cross-check first) | truth | prob_0005 | prob_prereveal | period | period_score | held_team_predict | held_team_score
 #   day defaults: prob_0005 / prob_prereveal / held_team_predict -> today PT; period / held_team_score -> yesterday PT.
 # ASSETS (default $HOME/e5_assets) is synced from gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/vm_writers/assets/ and the 2025 lists;
 # held_team_* also need the person-id salt at $ASSETS/early/salt (the same salt the store builders use; NOT in the bundle).
@@ -16,8 +16,13 @@ period_score_run() { local r=0   # week on Sundays, month on the month's last da
   [ "$(date -d "$D" +%u)" = 7 ] && { python period_score.py week "$D" "$ASSETS" || r=$?; }
   [ "$(date -d "$D + 1 day" +%d)" = 01 ] && { python period_score.py month "$D" "$ASSETS" || { m=$?; [ $r = 0 ] && r=$m; }; }
   return $r; }
+track_run() {   # ONE truth source (orchestrator 20:54Z Nov 14): truth files first, then the cross-check (rc 3 = mismatch, logged, not fatal), then the track record
+  python truth_daily.py "$ASSETS" || return $?
+  python truth_crosscheck.py "$ASSETS"; local x=$?; [ $x = 0 ] || echo "$(date -u +%FT%TZ) truth_crosscheck rc=$x (3 = north-star mismatch; see tmp/e5/website/truth_crosscheck.json)" >> "$LOG"
+  python track_record.py "$ASSETS"; }
 case "$JOB" in
-  track_record)      cmd="python track_record.py $ASSETS";;
+  track_record)      cmd=track_run;;   # truth_daily -> truth_crosscheck -> track_record
+  truth)             cmd="python truth_daily.py $ASSETS";;
   prob_0005)         cmd="python prob_writer.py 0005 ${2:-$TODAY} $ASSETS";;
   prob_prereveal)    cmd="python prob_writer.py prereveal ${2:-$TODAY} $ASSETS";;
   period)            cmd="python period_writer.py ${2:-$YDAY} $ASSETS";;
