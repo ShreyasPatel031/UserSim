@@ -335,12 +335,14 @@ def _published(day: str, kind: str) -> dict | None:
             ranks[str(r["id"])] = int(r["rank"])
         except (KeyError, TypeError, ValueError):
             continue
-    if not ranks:
+    none = str(j.get("model") or "") == "none_available" or str(j.get("fallback_used") or "") == "none_available"
+    if not ranks and not none:
         return None
     cut_h, cut_m = (0, 5) if kind == "0005" else (3, 45)
     return {"ranks": ranks, "made_at": j.get("written_at", ""), "method": str(j.get("model") or "")[:80],
             "data_up_to": datetime.fromisoformat(day).replace(hour=cut_h, minute=cut_m, tzinfo=PT).isoformat(),
-            "fallback": j.get("fallback_used"), "backtest_line": str(j.get("backtest") or "")[:200], "exp_votes": None,
+            "fallback": "none_available" if none else (str(j.get("fallback_used"))[:40] if j.get("fallback_used") else None),
+            "backtest_line": str(j.get("backtest") or "")[:200], "exp_votes": None,
             "source": f"results/web/predictions/{day}_{kind}.json"}
 
 

@@ -226,5 +226,16 @@
   "label": "00:05 PT tab: deployed arm 2 backtest Sep\u2013Oct 2026 (monthly spread Apr\u2013Oct 56\u201367% top 3, no trend); live rows are the previous published model (clean_nosite), Nov 1\u20134 and 8\u201312",
   "source": "E5 reports/drift_0005, commit 27ad976b, branch claude/person-model-v2; accepted by the orchestrator",
   "date": "2026-11-14"
+ },
+ "launch_model_arm2": {
+  "values": {
+   "top3": 60.7,
+   "top5": 68.4,
+   "top10": 75.7,
+   "days": 214
+  },
+  "label": "deployed 00:05 model (arm 2), walk-forward backtest Apr 1\u2013Oct 31, 2026",
+  "source": "E5 track_record_v1.json / PH ops bundle 12a",
+  "date": "2026-11-14"
  }
 }

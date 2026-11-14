@@ -166,7 +166,7 @@ function renderLaunch(l){
    <p class="lede" style="margin-top:18px">${esc(l.honesty)}</p>
    <table class="rec" style="max-width:520px;margin-top:10px"><thead><tr><th>Held-out accuracy (on PH descriptions)</th><th>Top 3</th><th>Top 5</th><th>Top 10</th></tr></thead><tbody>
      <tr><td>The PH-description model (${Number(A.days)} days)</td><td>${Number(A.top3).toFixed(0)}%</td><td>${Number(A.top5).toFixed(0)}%</td><td>${Number(A.top10).toFixed(0)}%</td></tr>
-     ${A.full_model ? `<tr><td class="muted">Previous 00:05 launch model (clean offline backtest, ${Number(A.full_model.days)} days)</td><td class="muted">${Number(A.full_model.top3).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(0)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(0)}%</td></tr>` : ""}</tbody></table>
+     ${A.full_model ? `<tr><td class="muted">Full 00:05 launch model (backtest, ${Number(A.full_model.days)} days)</td><td class="muted">${Number(A.full_model.top3).toFixed(1)}%</td><td class="muted">${Number(A.full_model.top5).toFixed(1)}%</td><td class="muted">${Number(A.full_model.top10).toFixed(1)}%</td></tr>` : ""}</tbody></table>
    <p class="small muted">${esc(l.method)} <a href="/ph">See our live forecast record →</a></p>`;
 }
 

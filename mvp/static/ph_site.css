@@ -377,3 +377,4 @@ footer.note { padding-block: 18px; display: flex; justify-content: space-between
 .vs .stamp { line-height: 1.5; }
 
 .acc { margin: 4px 0 0; color: var(--soft); font-variant-numeric: tabular-nums; }
+.metric .mnote { font-size: 12.5px; color: var(--soft); white-space: nowrap; }

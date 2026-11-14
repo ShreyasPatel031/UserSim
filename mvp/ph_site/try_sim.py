@@ -992,7 +992,7 @@ def _full_model_ref(acc: dict) -> dict:
     """Corrected 00:05 launch-model backtest (claims.json; the 63/69/75 in older launch_band.json was leak-inflated)."""
     try:
         from mvp.ph_site.live import claims
-        v = claims()["launch_model_backtest"]["values"]
+        v = claims()["launch_model_arm2"]["values"]       # the deployed 00:05 model from Nov 14
         return {**{k: v[k] for k in ("top3", "top5", "top10")}, "days": v["days"]}
     except Exception:  # noqa: BLE001 - never fall back to the leak-inflated reference in launch_band.json
         return None

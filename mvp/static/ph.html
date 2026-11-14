@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=12">
+<link rel="stylesheet" href="/static/ph_site.css?v=13">
 </head>
 <body>
 <div class="wrap">
@@ -137,8 +137,8 @@ const EXPECT = {mid: "00:05 PT", pre: "03:45 PT"};
 function renderPred(){
   tabs();
   const p = pointFor(TAB);
-  if(!p){
-    $("#pred").innerHTML = `<li class="skeleton">Not yet available${VIEW.day === VIEW.today ? ` · expected ${EXPECT[TAB]}` : " for this day"}.</li>`;
+  if(!p || p.fallback === "none_available"){
+    $("#pred").innerHTML = `<li class="skeleton">${p ? "Not available for this day." : `Not yet available${VIEW.day === VIEW.today ? ` · expected ${EXPECT[TAB]}` : " for this day"}.`}</li>`;
     legend(); return;
   }
   const real = new Map(liveTop().map(x=>[x.id, x.board_rank]));
@@ -152,22 +152,36 @@ function renderPred(){
   document.querySelectorAll("#pred .row").forEach(li=>li.onclick=(e)=>{ if(e.target.closest("a")) return; showWhy(li.dataset.id, p.key); });
 }
 
+// Fallback codes (PH ops bundle 12a) in plain words (E5).
+const FALLBACK = {
+  clean_nosite_fallback: "made by our previous midnight model (the main model's inputs were not ready)",
+  no_prior: "made without the midnight forecast; Product Hunt's hidden order and comments only",
+  hidden_rank_only: "Product Hunt's hidden order as is (our adjustments were unavailable)",
+  midnight_order: "no pre-reveal read was available, so this repeats the midnight forecast",
+};
 function accLine(){
   const p = pointFor(TAB);
-  const earlier = TAB === "pre" && p && p.key !== "PRE";        // days before the published 03:45 line existed
+  if(!p || p.fallback === "none_available"){ $("#acc").textContent = ""; return; }
+  const earlier = TAB === "pre" && p.key !== "PRE";        // days before the published 03:45 line existed
   const name = TAB === "mid" ? "Product only (00:05 PT)" : earlier ? "Product + comments (earlier method)" : "Product + comments (03:45 PT)";
-  const made = p && p.time_pt ? ` · made ${p.time_pt}` : "";
-  const fb = p && p.fallback ? " · a fallback model was used" : "";
+  const made = p.time_pt ? ` · made ${p.time_pt}` : "";
+  const fb = p.fallback ? ` · ${FALLBACK[p.fallback] || "a fallback model was used"}` : "";
   const pc = (v, r)=> r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`;
   let acc = "";
-  if(p && p.backtest_line) acc = p.backtest_line;                 // the published file's own accuracy line
-  else if(!earlier) acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}`).join("; ");
-  $("#acc").textContent = p ? `${name}${made}${fb}${acc ? " — " + acc : ""}` : "";
+  if(!earlier){
+    // The track record (per-day hits against the official rank) wins; the file's own line only when there is none.
+    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}`).join("; ")
+      || p.backtest_line || "";
+    if(acc && p.fallback) acc += " (this day used a fallback)";
+  }
+  $("#acc").textContent = `${name}${made}${fb}${acc ? " — " + acc : ""}`;
 }
 function metric(){
   const rows = ((VIEW.accuracy||{}).mid) || [];
-  const r = rows.find(x=>x.flag==="live") || rows.find(x=>x.flag==="live, previous model");
-  if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`;
+  const cur = rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
+  const r = cur || prev;
+  if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`
+    + (cur ? "" : ` <span class="mnote">Previous model, live, ${Number(prev.days)} days.</span>`);
 }
 function legend(sts){
   accLine();

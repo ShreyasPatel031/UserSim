@@ -579,3 +579,22 @@ def test_midnight_accuracy_rows_never_pooled(monkeypatch):
     assert flags == ["live, previous model", "backtest (214 days)", "backtest (Sep–Oct)"]
     assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 61
     assert a["pre"][0]["flag"] == "replay" and a["pre"][0]["top10"] == 78.2
+
+
+def test_published_prediction_files(monkeypatch):
+    files = {
+        "results/web/predictions/2026-11-14_0005.json": {"day": "2026-11-14", "kind": "0005", "model": "arm2", "fallback_used": None,
+            "written_at": "2026-11-14T08:30:00Z", "backtest": "60.7 / 68.4 / 75.7", "ranking": [{"rank": 1, "id": 11, "name": "A", "score": 1.2}, {"rank": 2, "id": 22, "name": "B"}]},
+        "results/web/predictions/2026-11-14_prereveal.json": {"day": "2026-11-14", "kind": "prereveal", "model": "midnight_order",
+            "fallback_used": "midnight_order", "written_at": "2026-11-14T11:47:00Z", "ranking": [{"rank": 1, "id": 22}]},
+        "results/web/predictions/2026-11-15_prereveal.json": {"day": "2026-11-15", "model": "none_available", "fallback_used": "none_available", "ranking": []},
+        "results/web/predictions/2026-11-16_0005.json": {"day": "2026-11-15", "ranking": [{"rank": 1, "id": 1}]},   # wrong day inside
+    }
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    a = live._published("2026-11-14", "0005")
+    assert a["ranks"] == {"11": 1, "22": 2} and a["fallback"] is None and a["data_up_to"].startswith("2026-11-14T00:05")
+    b = live._published("2026-11-14", "prereveal")
+    assert b["fallback"] == "midnight_order" and b["data_up_to"].startswith("2026-11-14T03:45")
+    c = live._published("2026-11-15", "prereveal")
+    assert c["fallback"] == "none_available" and c["ranks"] == {}
+    assert live._published("2026-11-16", "0005") is None          # never another day's picks under this date
