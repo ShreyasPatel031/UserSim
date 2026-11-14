@@ -35,6 +35,14 @@ def main():
             k = fn[:-5].replace("_f1fix", "").lower().lstrip("@")
             if k not in files or "_f1fix" in files[k]:
                 files[k] = fn
+    # cache of list sizes per file, keyed by (name, size, mtime): reading ~80k records each cycle took ~10 min and pushed
+    # the :20/:50 cycle past its time limit (Nov 14 00:1xZ); only changed files are re-read
+    cache_f = os.path.join(os.path.dirname(os.path.abspath(vm)), ".follows_cache.json")
+    try:
+        cache = json.load(open(cache_f))
+    except Exception:
+        cache = {}
+    new_cache = {}
     c = collections.Counter()
     with open(out, "w") as o:
         for h, r in q.items():
@@ -45,11 +53,18 @@ def main():
             n = {"followers": None, "following": None}
             hd = dict(n)
             try:
-                d = json.load(open(os.path.join(vm, files[h])))
-                for k in n:
-                    t = d.get(k) or {}
-                    n[k] = len(t.get("items") or [])
-                    hd[k] = (d.get("header") or {}).get(k)
+                fp = os.path.join(vm, files[h])
+                stt = os.stat(fp)
+                key = f"{files[h]}|{stt.st_size}|{stt.st_mtime_ns}"
+                if key in cache:
+                    n, hd = cache[key]
+                else:
+                    d = json.load(open(fp))
+                    for k in n:
+                        t = d.get(k) or {}
+                        n[k] = len(t.get("items") or [])
+                        hd[k] = (d.get("header") or {}).get(k)
+                new_cache[key] = [n, hd]
             except Exception:
                 pass
             full = fo in END and fi in END
@@ -59,7 +74,10 @@ def main():
                                 "followers_header": hd["followers"], "following_header": hd["following"],
                                 "full": full, "finished_utc": r.get("finished"),
                                 "source": "people_live_whole"}) + "\n")
-    print(f"FOLLOWS_SUMMARY people={sum(c.values())} full={c['full']} partial={c['partial']}")
+    tmp = cache_f + ".tmp"
+    json.dump(new_cache, open(tmp, "w"))
+    os.replace(tmp, cache_f)
+    print(f"FOLLOWS_SUMMARY cache_hits={sum(1 for k in new_cache if k in cache)} people={sum(c.values())} full={c['full']} partial={c['partial']}")
 
 
 if __name__ == "__main__":
