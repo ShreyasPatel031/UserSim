@@ -4,7 +4,7 @@ word to PH ops). Same as h25_live.predict (private data dir with the 2025 lists,
 Embedding cache: <cache dir>/arm3_emb.npz {ids, E} for launches of finished days (text from the day files); today's launches are always
 embedded fresh from the 00:05 text. predict(day) -> (DataFrame(id, pred_arm3), info). ANY failure raises; the caller (forecast.py patch)
 catches it, writes pred_arm3 = NaN and logs the reason, so the published arm-2 order is never touched.
-Env: H25_DATA, H25_SRC as h25_live; ARM3_CACHE (default ~/w/arm3_live/cache); ARM3_NORM (plain | strong)."""
+Env: H25_DATA, H25_SRC as h25_live; ARM3_CACHE (default ~/w/arm3_live/cache); ARM3_NORM (strong default | plain)."""
 import glob, os, time
 import numpy as np, pandas as pd
 import features as F, model as M, run as RN
@@ -51,7 +51,7 @@ def predict(day):
     tod = (df.is_today & (df.day == day)).values
     if not tod.any(): raise RuntimeError(f"arm3: no 00:05 line-up rows for {day}")
     E, einfo = _cache_embed(df, tod)
-    X, NEW = A3.add_feats(df, E, norm=os.environ.get("ARM3_NORM", "plain"), line_up=tod)
+    X, NEW = A3.add_feats(df, E, norm=os.environ.get("ARM3_NORM", "strong"), line_up=tod)
     tr, te = X[~tod], X[tod].copy()
     tr, te = M.add_fold_feats(tr, te); src, _ = M.live_sources(tr, te, M.LIVE_SOURCES)
     cc = [c for c in M.cols(tr, src) if not c.startswith(MP) and c not in ID and c not in ("llm_site", "ph_month")] + NEW
