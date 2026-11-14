@@ -37,13 +37,14 @@ for per in ("week", "month"):
     if (per == "week" and c >= 7) or c is None:
         out.update({"status": "no chance shown at this point", "call_point": c})
     else:
-        g = L[(pd.to_datetime(L.day) >= start) & (pd.to_datetime(L.day) <= d)].dropna(subset=["votes"]).sort_values("votes", ascending=False).reset_index(drop=True)
+        HB = PP.held(pd.Timestamp.now(tz="UTC"))   # fix 4: newest part per day, not the newest-row merge
+        g = HB[(pd.to_datetime(HB.day) >= start) & (pd.to_datetime(HB.day) <= d)].dropna(subset=["votes"]).sort_values("votes", ascending=False).reset_index(drop=True)
         rows = []
         for i, r in g.iterrows():
             o = {"id": r.id, "running_position": i + 1, "votes_now": int(r.votes)}
             for k in (3, 5, 10):
                 v = FZ["position tables"][f"{per}_top{k}"].get(f"{c}|{i + 1}")
-                o[f"p_final_top{k}"] = None if v is None else round(float(v), 3) if i < 15 else 0.0
+                o[f"p_final_top{k}"] = 0.0 if i >= 15 else None if v is None else round(float(v), 3)   # fix 3: below 15 = 0, as documented
             rows.append(o)
         for k in (3, 5, 10):   # chances never rise with a worse running position
             m = 1.0
@@ -56,6 +57,8 @@ for per in ("week", "month"):
             pr = [{"id": r.id, "votes_now": None, "predicted_final_votes": round(float(r.pv), 1), "source": "predicted", **{f"p_final_top{k}": None for k in (3, 5, 10)}} for r in ENT.itertuples()]
             board = sorted(rows + pr, key=lambda o: -(o["votes_now"] if o["source"] == "votes" else o["predicted_final_votes"]))
             for i, o in enumerate(board): o["board_position"] = i + 1
+            ENT_INFO = {**ENT_INFO, **({"note": "entrant predictions from a forecast built on polluted hunter-history inputs (stale data/today rows); fix pending"} if os.environ.get("TODAY_ROWS_FIX_DEPLOYED") != "1" else {}),
+                        "calibration source": "backtest only: arm-2 walk-forward preds (assets a2x/X.parquet 'both', Apr-Oct) x warehouse votes; no live preds"}
             out.update({"board_line": "with_entrants", "entrants": {"day": NXT, "n": len(pr), **ENT_INFO}, "shadow_votes_only": [dict(o) for o in rows],
                         "board_day": {"launches (with_entrants)": f"{NXT} 00:05 PT board: votes through {D} + {NXT} line-up predicted",
                                       "shadow_votes_only": f"{D} close board: votes through {D}"}})
@@ -69,6 +72,13 @@ for per in ("week", "month"):
         g2 = L[(pd.to_datetime(L.day) >= start) & (pd.to_datetime(L.day) <= d)].dropna(subset=["votes"])
         sb = [{"id": r.id, "value": float(r.votes), "source": "votes"} for r in g2.itertuples()] + [{"id": r.id, "value": round(float(r.pv), 1), "source": "predicted"} for r in ENT.itertuples()]
         out["shadow_with_entrants"] = [{"id": o["id"], "board_position": i + 1, "source": o["source"]} for i, o in enumerate(sorted(sb, key=lambda o: -o["value"]))]
+    try:   # measured accuracy of this board (orchestrator 15:52Z audit item 6): scored periods so far, flags never pooled
+        TRk = json.loads(subprocess.run(["gsutil", "cat", f"{B}/tmp/e5/website/period_track_record.json"], capture_output=True).stdout or b"{}")
+        E_ = [e for e in TRk.get("entries", []) if e.get("board") == per]
+        out["accuracy"] = {"definition": "hits = board's top k that finished in the final " + ("weekly" if per == "week" else "monthly") + " top k (first read after the close); headline = Saturday board (week) / last board before the close (month)",
+                           "n_periods": len(E_), "periods": [{k: e.get(k) for k in ("period_start", "flag", "line", "headline_day", "status", "hits top3/5/10", "ceiling top3/5/10")} for e in E_],
+                           "note": "replay = rebuilt from held reads, not a live call; live periods are added after each close"}
+    except Exception: pass
     miss = PP.missing_days(per, D, pd.Timestamp.now(tz="UTC")); out["stale_days_missing"] = miss
     if miss:   # a day of the period so far has no read after its close (as Nov 5-7): never publish a silently stale board
         out["status"] = "stale: days missing"; out["stale_note"] = "no launches read with votes after the close of: " + ", ".join(miss)

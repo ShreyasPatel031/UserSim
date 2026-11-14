@@ -22,8 +22,10 @@ if KIND == "0005":
     FZ = json.load(open(os.path.join(PM, "frozen_prob_0005.json"))); src = None; S = None
     raw = gcat(f"{B}/results/web/predictions/{D}_0005.json")
     if raw:
-        R = pd.DataFrame(json.loads(raw).get("ranking") or []); src = "results/web/predictions"
-        if "score" in R and R.score.notna().all(): S = R[["id", "score"]].rename(columns={"score": "s"})
+        J12 = json.loads(raw); R = pd.DataFrame(J12.get("ranking") or []); PUBM = J12.get("model"); src = f"results/web/predictions (model {PUBM})"
+        # the logistic is fit on arm-2 scores: use it only when the published model is arm 2; any fallback model -> position rank table
+        if not len(R) or not {"id", "rank"} <= set(R): src = None   # none_available night (model null, empty ranking): fall through, never crash
+        elif PUBM == "arm2" and "score" in R and R.score.notna().all(): S = R[["id", "score"]].rename(columns={"score": "s"})
         else: S = R[["id", "rank"]]
     if S is None:
         fc = os.path.join(SP, f"fcp_{D}.parquet")
@@ -45,18 +47,20 @@ if KIND == "0005":
             for k in (3, 5, 10):
                 m = FZ["models"][f"top{k}"]; lin = m["intercept"] + sum(m["coef"][f] * F_[f] for f in FZ["features"]); S[f"p_top{k}"] = rescale(1 / (1 + np.exp(-lin)), min(k, n))
         else:
-            S = S.sort_values("rank").reset_index(drop=True); method = "rank table fallback (no scores published)"
+            S = S.sort_values("rank").reset_index(drop=True); method = "rank table by position (published model not arm 2, or no scores)"
             for k in (3, 5, 10):
                 tb = {int(a): b for a, b in FZ["fallback rank table (no scores)"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale(np.minimum(np.arange(1, n + 1), 16).astype(int).tolist() and [tb.get(min(r, 16), 0.0) for r in range(1, n + 1)], min(k, n))
         S["rank"] = np.arange(1, n + 1)
-        out.update({"prediction": "00:05 PT", "status": "ok", "source": src, "method": method, "basis": FZ["basis"],
+        out.update({"prediction": "00:05 PT", "status": "ok", "source": src, "method": method, "basis": FZ["basis"], "basis_n_days": 183,
+                    "calibration basis": "frozen logistic refit on the 183 backtest days with >= 10 ranked launches (Brier skill top 3 0.346; was 0.349 on 214)",
                     "calibration (backtest, May-Oct)": {f"top{k}": {"Brier skill vs base rate": CAL["(1) 00:05 all scored days (May-Oct)"][f"top{k}"]["Brier skill vs base rate [CI]"], "reliability": CAL["(1) 00:05 all scored days (May-Oct)"][f"top{k}"]["reliability (bin: mean predicted %, observed %, n)"]} for k in (3, 5, 10)},
                     "launches": [{"id": r.id, "rank": int(r["rank"]), **{f"p_top{k}": round(float(r[f"p_top{k}"]), 3) for k in (3, 5, 10)}} for _, r in S.iterrows()]})
 else:
     FZ = json.load(open(os.path.join(PM, "frozen_prob_prereveal.json"))); S = None
     raw = gcat(f"{B}/results/web/predictions/{D}_prereveal.json")
-    if raw: S = pd.DataFrame(json.loads(raw).get("ranking") or [])[["id", "rank"]]; src = "results/web/predictions"
-    else:
+    R = pd.DataFrame(json.loads(raw).get("ranking") or []) if raw else pd.DataFrame()
+    if len(R) and {"id", "rank"} <= set(R): S = R[["id", "rank"]]; src = "results/web/predictions"
+    else:   # no file, or a none_available night (empty ranking)
         raw = gcat(f"{B}/results/early_forecast/{D}_P345.json")
         if raw:
             F = pd.DataFrame(json.loads(raw).get("forecast") or [])
@@ -67,10 +71,13 @@ else:
         for k in (3, 5, 10):
             tb = {int(a): b for a, b in FZ["table"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale([tb.get(r if r <= 10 else 16, 0.0) for r in S["rank"]], min(k, n))
         cal = CAL["(2) 03:45 replay (hybrid order), rank-only table"]
-        out.update({"prediction": "03:45 PT", "status": "ok", "source": src, "method": "rank table (position in the published 03:45 order)", "basis": FZ["basis"],
+        out.update({"prediction": "03:45 PT", "status": "ok", "source": src, "method": "rank table (position in the published 03:45 order)", "basis": FZ["basis"], "basis_n_days": 11,
                     "calibration (replay, leave-one-day-out)": {f"top{k}": {"Brier skill vs base rate": cal[f"top{k}"]["Brier skill vs base rate"], "rank cells % [CI], n": cal[f"top{k}"]["pooled rank cells: % finishing top k [CI], n (positions 1-10, 16+ = 11+)"]} for k in (3, 5, 10)},
                     "caveat": "11 replay days: per-position rates have wide intervals (e.g. position 3: 45% [18, 73] for top 3).",
                     "launches": [{"id": r.id, "rank": int(r["rank"]), **{f"p_top{k}": round(float(r[f"p_top{k}"]), 3) for k in (3, 5, 10)}} for _, r in S.iterrows()]})
+if out.get("status") == "ok" and os.environ.get("TODAY_ROWS_FIX_DEPLOYED") != "1":   # orchestrator 16:38Z scope audit
+    out["input_note"] = ("the live 00:05 forecast these chances are built on used polluted hunter-history inputs (stale data/today rows); fix pending"
+                         if KIND == "0005" else "the 03:45 order's clean prior term comes from the live 00:05 forecast, built on polluted hunter-history inputs (stale data/today rows); fix pending")
 p = os.path.join(SP, f"prob_{D}_{KIND}.json"); json.dump(out, open(p, "w"), indent=1, default=float)
 subprocess.run(["gsutil", "-q", "cp", p, f"{B}/tmp/e5/website/probabilities/{D}_{KIND}.json"], check=True)
 print(json.dumps({k: v for k, v in out.items() if k not in ("launches", "calibration (backtest, May-Oct)", "calibration (replay, leave-one-day-out)")}), "launches", len(out.get("launches", [])))

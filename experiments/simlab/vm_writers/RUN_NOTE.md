@@ -20,3 +20,8 @@ Still in E5's session (needs Gemini): the forward /try record (forward_band.py +
 the try_sim simulator from the claude/ph-website code, gemini-2.5-pro judge). To move it the VM needs: a Gemini key (Vertex service
 account or API key) in the VM secret store, a checkout of claude/ph-website at a pinned commit (try_sim, person_e5, safe_fetch), the
 frozen band pickles (tmp/e5/forward_assets/), and about $0.15-0.30 of Gemini per night.
+
+## Build 12.2 (Nov 14, after the bug sweep)
+Build with `bash vm_writers/build.sh [--sync] <out.tgz>`. The build fails if any vm_writers/simlab/*.py, frozen report JSON or pipeline/warehouse.py differs from its source, or if a writer imports a module the tarball lacks. MANIFEST.md5 travels inside; builds are deterministic.
+Built: gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/vm_writers/e5_vm_writers_12_2.tgz, md5 427f222b2d6ea723bdda5e4f90f54b9f (18 files). Bundles 12 and 12.1 (tarball f9abf3e0) are withdrawn.
+Checked on the BUILT tarball: manifest verifies; all .py compile; repro_B3 / B6 / B7 pass; every run.sh job (prob_0005 and prob_prereveal Nov 14, period Nov 13, track_record, period_score Nov 8) rc 0 with bucket writes stubbed.

@@ -40,12 +40,14 @@ def frame(live):
     return df[~df.known]
 L, B = frame(True), frame(False)
 lt = L[L.is_today & (L.day == D)].set_index("id"); bt = B[(B.day == D) & ~B.is_today].set_index("id")
+dup = {"live": int(lt.index.duplicated().sum()), "backtest": int(bt.index.duplicated().sum())}   # Oct 29: 29 vs 27 fold rows came from repeated ids
+lt = lt[~lt.index.duplicated(keep="last")]; bt = bt[~bt.index.duplicated(keep="last")]
 both = sorted(set(lt.index) & set(bt.index))
 trB = B[(B.day < D) & ~B.is_today & (B.day.str[:7] < D[:7])]
 src, _ = M.live_sources(trB, bt.reset_index(), M.LIVE_SOURCES)
 cols = [c for c in M.cols(trB, src) if not c.startswith(MP) and c not in ID and c not in ("llm_site", "ph_month")]
 raw = [c for c in cols if c in lt.columns and c in bt.columns]
-res = {"day": D, "live rows": len(lt), "backtest rows": len(bt), "in both": len(both), "only live": len(set(lt.index) - set(bt.index)), "only backtest": len(set(bt.index) - set(lt.index)), "columns": {}}
+res = {"day": D, "live rows": len(lt), "backtest rows": len(bt), "in both": len(both), "only live": len(set(lt.index) - set(bt.index)), "only backtest": len(set(bt.index) - set(lt.index)), "duplicate ids dropped": dup, "columns": {}}
 for c in raw:
     a = pd.to_numeric(lt.loc[both, c], errors="coerce").astype(float); b = pd.to_numeric(bt.loc[both, c], errors="coerce").astype(float)
     eq = (np.isclose(a, b, atol=1e-9, rtol=0) | (a.isna() & b.isna())); sd = float(pd.to_numeric(bt[c], errors="coerce").std() or 1.0)
@@ -58,10 +60,11 @@ trL = L[(~L.is_today) & (L.day <= d2)]
 _, teL = M.add_fold_feats(trL, lt.loc[both].reset_index()); trB2, teB = M.add_fold_feats(trB, bt.loc[both].reset_index())
 fold = [c for c in cols if c not in raw or c.startswith(("txt_", "topic_prior"))]
 for c in [c for c in cols if c.startswith(("txt_", "topic_prior"))]:
-    a, b = teL[c].astype(float).values, teB[c].astype(float).values; sd = float(trB2[c].std() or 1.0)
+    tl = teL.drop_duplicates("id", keep="last").set_index("id").reindex(teB.id)   # align by id, never by position (line-ups can differ in size)
+    a, b = tl[c].astype(float).values, teB[c].astype(float).values; sd = float(trB2[c].std() or 1.0)
     res["columns"][c] = {"share_equal": round(float(np.mean(np.isclose(a, b, atol=1e-9))), 3), "mean_abs_diff_sd": round(float(np.nanmean(np.abs(a - b)) / sd), 3), "expected": True, "fold feature": True}
 # set change: model on backtest path, swap live columns in
-X = teB.copy(); Lx = teL.set_index("id").reindex(X.id)
+X = teB.copy(); Lx = teL.drop_duplicates("id", keep="last").set_index("id").reindex(X.id)
 ms = [lgb.LGBMRegressor(random_state=s, verbose=-1, n_jobs=M.N_JOBS, n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1,
                         colsample_bytree=0.5, reg_lambda=1.0).fit(trB2[cols], trB2.logv) for s in range(3)]
 pr = lambda Z: np.mean([m.predict(Z[cols]) for m in ms], axis=0)
