@@ -1,0 +1,15 @@
+{
+ "items": 2160,
+ "item AUC on LLM subsample": {
+  "llm": 0.543
+ },
+ "llm subsample n": 300,
+ "llm item AUC (subsample)": 0.543,
+ "timing": {
+  "qwen2.5-0.5b (subsample)": [
+   299.9,
+   300
+  ]
+ },
+ "bge cos_rel AUC on same subsample (from proxy_items)": null
+}
