@@ -1,3 +1,10 @@
+> DEPLOY LINES (orchestrator 15:21Z Nov 14):
+> - "Deploy bundle 12"   = `bash deploy_b12.sh 256e2f2e 8c7aadea` (tarball tw_code_256e2f2e.tgz; its tw.sh / sched12 are the gated ones, no arm-3 jobs;
+>   E5 vm_writers pinned f9abf3e0 in deploy_b12.sh).
+> - "Deploy bundle 12.1" = `bash deploy_b12.sh 419bc02e af3a96ca` (tarball tw_code_419bc02e.tgz = 12 + arm3_shadow 01:21 PT / arm3_prewarm 22:40 PT
+>   jobs, which no-op unless ~/w/arm3_live is installed by bundle 13). All gates re-run on the VM 15:35Z: 14 job scripts 138 imports, h25 12,
+>   readable 10, vs_reconcile 1, E5 follow 6 / team 7 / why 10, arm-2 branch 11, E5 vm_writers (f9abf3e0) 42 - all ok.
+
 # Bundle 12: timed writes as cron jobs on the pipeline VM (prepared 2026-11-13, NOT deployed)
 
 > Tarball rebuilt ~13:30Z Nov 14 at 256e2f2e (md5 8c7aadea): inputs_backup, vs_check, import gate, E5 vm_writers jobs (pin cd7fcebd), comment_forecast shadow columns (hr_clean_arm2 / slots6_prior / hidden_0030 / hidden_0100 / hidden_plain), arm2_shap.py (SHAP groups from the deployed arm-2 boosters, why_shadow only) in the why step. Every import gate passes on the VM against this tarball.
