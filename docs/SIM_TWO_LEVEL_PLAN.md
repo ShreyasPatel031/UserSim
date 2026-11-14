@@ -365,3 +365,26 @@ Open, not started:
 - Team following count, product followers, reviewsRating from a 00:03-00:07 PT read: re-test at 30 days.
 - 2024 history once 2025 is done: check the learning-curve extrapolation (+1.6 to +2.9 top 3 at 700-1,000 days).
 Waiting on Shreyas: AI Studio key for the Decisions API; website branch merge and the b20 concerns recipe; fleet size after the zero-gain voter result; a nudge to the Cursor agent (no reply since Nov 12 22:32 UTC); a model/version tag in the published forecast file (pipeline change; today the VM md5 is the only evidence of which model published).
+
+
+## Queue state (Nov 14, 01:00 UTC)
+Published (Shreyas, Nov 14): exactly two predictions. 00:05 PT = arm 2 (2025-trained; backtest 60.7 / 68.4 / 75.7 on 214 days; independent
+audit +4.4 [+1.9, +6.9] top 3 over clean_nosite; Sep-Oct level ~56; live from Nov 14). 03:45 PT = hybrid (hidden top 5 + slot rule for 6-10;
+replay 72.7 / 74.5 / 78.2 on 11 days). Live board on the site comes straight from the PH API. All other points are shadow lines.
+Closed Nov 13-14 (null, leak, or not surviving out of sample): readable 10-input model as the forecast (kept as a labelled second
+explanation); who-backs-it people model as the forecast (kept as explanation; names ~26% of backers); backer mix (relative-only card);
+held-team count and "established member" (store selection; matched placebo); visible-maker count (API names the winner's makers later);
+maker-comment content; first-time-hunter people features; top-10 re-ranker; brand split; arm-2 re-fit (capacity, weights, ranking loss,
+blends, seeds); training on dailyRank; 2025 rows for the /try band; typed concerns; concerns merge; re-rank of positions 4-15 by activity;
+velocity after reveal (fails leave-one-day-out); hidden rank + arm-2 prior blend (fails leave-one-day-out); momentum and tie-breaks at
+03:45; monthly/weekly vote-growth model (votes at close are enough); launch images (tested Oct 29-31; no bytes held).
+Adopted: arm 2 at 00:05; why-file drivers from the deployed model (SHAP groups, fidelity 45%); calibrated day confidence and per-launch
+probabilities (shadow / optional card); /try band recalibrated to 80.5% coverage; simulator nightly forward record; track record file.
+Open:
+- More history: 2024 and 2023 day lists (expected ~+2 top 3 per the learning curve); with the Cursor fleet, prepared VM fallback.
+- Days for the morning lines: pre-reveal blends need ~13-25 scored days, velocity ~30; recorder reads at 03:45 and 23:50 PT (bundle 12a).
+- Commenter count read at 00:03 PT (+2 at 00:05, interval touching 0) and 00:27 PT (the 00:30 input).
+- Forward shadows to read: held-team (no fleet capacity for it), visible makers at 00:05 (~60 days), hr_clean_arm2, slots 6-10 by prior only.
+- Weekly / monthly: running vote order is the forecast; first live weekly score Mon Nov 16; calibrated stay-probabilities in progress.
+- Ceiling: a 00:05 forecast tops out around 63-75 top 3; 90 first looks reachable 05:00-10:00 PT (plain votes 88 at 05:00, 92 at 10:00).
+Infrastructure waiting on Shreyas: PH API token for the Cursor fleet; bundles 10 / 11 / 12 / 12a; website hosting steps (#149).
