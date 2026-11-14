@@ -16,6 +16,6 @@ tp.forecast = lambda d: pd.DataFrame({"id": ids, "pred": range(12), "pred_arm2":
 got = {}; tp.put = lambda d, kind, out: got.update(out)
 tp.prereveal(D)
 top5 = [r["id"] for r in got.get("ranking", [])[:5]]
-ok = top5 == o345[:5] and "11:45" in str(got.get("inputs", {}).get("recorder_T"))
+rt = str(got.get("inputs", {}).get("recorder_T")); ok = top5 == o345[:5] and ("11:45" in rt or "03:45" in rt) and got.get("fallback_used") is None
 print(json.dumps({"recorder_T": got.get("inputs", {}).get("recorder_T"), "fallback_used": got.get("fallback_used"), "top5": top5, "want (03:45 order)": o345[:5], "A8 fixed": ok}))
 sys.exit(0 if ok else 1)
