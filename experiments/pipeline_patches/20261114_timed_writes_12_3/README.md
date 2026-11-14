@@ -1,6 +1,12 @@
 # Bundle 12.3 = 12.2 with E5 vm_writers 1ee2a33f (UNDEPLOYED; orchestrator 20:00Z Nov 14). 12.2 is superseded; 12 / 12.1 / 12.2 folders untouched.
 Only change vs 12.2: deploy_b12.sh pins E5W_MD5=1ee2a33f, file tmp/e5/vm_writers/e5_vm_writers_12_3.tgz (B8: prob writer label on 03:45 fallback nights).
-Deploy line:  from this folder.
+Deploy line: `bash deploy_b12.sh 6b669e0a 42a97563` from this folder. Code tarball gs://.../deploy/b12/tw_code_6b669e0a.tgz, md5 42a97563,
+built by build_b12.sh from commit 6b669e0a; it carries tw.sh with the today-rows marker export.
+E5W pin: 1ee2a33f (12.3). E5's 12.4 supersedes it (12.3's track_record would overwrite the restated site rows); swap E5W_MD5 + file name
+when E5 sends the 12.4 md5. The tw_code tarball does not change.
+TODAY_ROWS_FIX_DEPLOYED: tw.sh exports it (with TODAY_BUG_FIXED) at the top whenever ~/w/today_rows_fix.json exists. run.sh is started by tw.sh's
+e5w:* case as a child process, so it inherits both. No crontab line runs run.sh directly.
+Safe order: today-rows (+ marker) -> 12a.2 -> fixed-prior weights (install_fixedprior_weights.sh, 12a.3) -> live-code 1 -> bundle 12.4.
 Checks, Nov 14 ~20:02Z, VM scratch /home/agent/w/phops_tm/b123, gsutil writes stubbed:
 - md5 1ee2a33f; manifest OK; bash -n OK.
 - track_record / prob_0005 / prob_prereveal / period / period_score ok; period_score Oct 31 (month) and Nov 8 (Sunday) rc 0.
