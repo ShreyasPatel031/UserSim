@@ -1,0 +1,491 @@
+{
+ "design": "Live error anatomy of the published 00:05 forecast, Nov 1-4 and 8-12 (orchestrator 01:16Z Nov 14). Counts and launch ids only.\nPublished picks: results/web/forecast_0005/<day>.json predicted_rank (clean_nosite line); its score (for the pick-3 / pick-4 margin) from\nraw/daily/<day>/forecast_<day>.parquet `pred` where that file exists. Truth: official daily_rank (warehouse). Arm 2: PH ops' nov_arm2\n'both' (month-fold; built from final-read inputs, so a mild advantage). Per day: the published top 3 vs the official top 3; for every\nmissed winner: its published rank, first-time hunter (no featured hunt on an earlier day in the 2025 lists / 2026 warehouse), self-hunt\n(hunter among named makers); the day's #1 vote share (late votes) and field size; margin pick 3 - pick 4 (z of pred within day); arm 2's\ntop 3 and its hits. Buckets per missed winner: flat day (#1 share < 0.12), newcomer winner (first-time hunter), published had it at 4-5,\nat 6-10, at 11+. Confidence: PH ops' frozen arm-2 top-3 confidence (top3_confidence_arm2_20261113.json) -> expected top-3 hits per day\nfrom arm 2's scores; tiers by the backtest terciles of that expectation (open / normal / sure).",
+ "days": 9,
+ "missed winners": 14,
+ "published top 3 (live clean_nosite) %": 48.1,
+ "arm 2 (month-fold) on same days %": 58.3,
+ "arm2 - published, paired [CI]": [
+  12.5,
+  0.0,
+  25.0,
+  8
+ ],
+ "missed winners: share by bucket": {
+  "flat day": 0.43,
+  "newcomer (first-time hunter)": 0.0,
+  "self-hunt": 0.07,
+  "published had it at 4-5": 0.5,
+  "published had it at 6-10": 0.36,
+  "published had it at 11+ / unranked": 0.14,
+  "arm 2 had it in its top 3": 0.29
+ },
+ "confidence tiers (arm 2 frozen fit; backtest tercile cut-offs)": {
+  "cut-offs expected hits": [
+   1.72,
+   1.9
+  ],
+  "published hits by tier": {
+   "normal": {
+    "mean": 2.5,
+    "count": 2
+   },
+   "open": {
+    "mean": 1.0,
+    "count": 4
+   },
+   "sure": {
+    "mean": 1.0,
+    "count": 2
+   }
+  },
+  "arm2 hits by tier": {
+   "normal": {
+    "mean": 2.5,
+    "count": 2
+   },
+   "open": {
+    "mean": 1.5,
+    "count": 4
+   },
+   "sure": {
+    "mean": 1.5,
+    "count": 2
+   }
+  }
+ },
+ "per day": [
+  {
+   "day": "2026-11-01",
+   "field": 19,
+   "published hits top3": 2,
+   "arm2 hits top3": null,
+   "#1 vote share": 0.177,
+   "pub margin pick3-pick4 (z)": null,
+   "arm2 expected top-3 hits": null,
+   "arm2 confidence tier": null,
+   "published top 3": [
+    "1293162",
+    "1293647",
+    "1297554"
+   ],
+   "official top 3": [
+    "1298578",
+    "1293162",
+    "1293647"
+   ],
+   "arm2 top 3": []
+  },
+  {
+   "day": "2026-11-02",
+   "field": 18,
+   "published hits top3": 1,
+   "arm2 hits top3": 2,
+   "#1 vote share": 0.159,
+   "pub margin pick3-pick4 (z)": null,
+   "arm2 expected top-3 hits": 1.64,
+   "arm2 confidence tier": "open",
+   "published top 3": [
+    "1285435",
+    "1301292",
+    "1294656"
+   ],
+   "official top 3": [
+    "1292351",
+    "1285435",
+    "1300992"
+   ],
+   "arm2 top 3": [
+    "1285435",
+    "1300992",
+    "1294656"
+   ]
+  },
+  {
+   "day": "2026-11-03",
+   "field": 38,
+   "published hits top3": 1,
+   "arm2 hits top3": 2,
+   "#1 vote share": 0.103,
+   "pub margin pick3-pick4 (z)": 0.174,
+   "arm2 expected top-3 hits": 1.96,
+   "arm2 confidence tier": "sure",
+   "published top 3": [
+    "1297285",
+    "1162044",
+    "1302018"
+   ],
+   "official top 3": [
+    "1279115",
+    "1162044",
+    "1296045"
+   ],
+   "arm2 top 3": [
+    "1162044",
+    "1302018",
+    "1296045"
+   ]
+  },
+  {
+   "day": "2026-11-04",
+   "field": 34,
+   "published hits top3": 1,
+   "arm2 hits top3": 2,
+   "#1 vote share": 0.123,
+   "pub margin pick3-pick4 (z)": 0.055,
+   "arm2 expected top-3 hits": 1.64,
+   "arm2 confidence tier": "open",
+   "published top 3": [
+    "1295432",
+    "1300934",
+    "1295912"
+   ],
+   "official top 3": [
+    "1295912",
+    "1302148",
+    "1300148"
+   ],
+   "arm2 top 3": [
+    "1300934",
+    "1295912",
+    "1300148"
+   ]
+  },
+  {
+   "day": "2026-11-08",
+   "field": 17,
+   "published hits top3": 2,
+   "arm2 hits top3": 2,
+   "#1 vote share": 0.131,
+   "pub margin pick3-pick4 (z)": 0.529,
+   "arm2 expected top-3 hits": 1.77,
+   "arm2 confidence tier": "normal",
+   "published top 3": [
+    "1306739",
+    "1304829",
+    "1298958"
+   ],
+   "official top 3": [
+    "1298958",
+    "1301987",
+    "1306739"
+   ],
+   "arm2 top 3": [
+    "1298958",
+    "1306739",
+    "1304829"
+   ]
+  },
+  {
+   "day": "2026-11-09",
+   "field": 25,
+   "published hits top3": 1,
+   "arm2 hits top3": 1,
+   "#1 vote share": 0.127,
+   "pub margin pick3-pick4 (z)": 0.089,
+   "arm2 expected top-3 hits": 2.02,
+   "arm2 confidence tier": "sure",
+   "published top 3": [
+    "1306678",
+    "1293370",
+    "1305634"
+   ],
+   "official top 3": [
+    "1307104",
+    "1302788",
+    "1293370"
+   ],
+   "arm2 top 3": [
+    "1305634",
+    "1306678",
+    "1293370"
+   ]
+  },
+  {
+   "day": "2026-11-10",
+   "field": 50,
+   "published hits top3": 1,
+   "arm2 hits top3": 1,
+   "#1 vote share": 0.098,
+   "pub margin pick3-pick4 (z)": 0.74,
+   "arm2 expected top-3 hits": 1.51,
+   "arm2 confidence tier": "open",
+   "published top 3": [
+    "1296366",
+    "1288148",
+    "1309685"
+   ],
+   "official top 3": [
+    "1288148",
+    "1290845",
+    "1305545"
+   ],
+   "arm2 top 3": [
+    "1309685",
+    "1288148",
+    "1296366"
+   ]
+  },
+  {
+   "day": "2026-11-11",
+   "field": 26,
+   "published hits top3": 3,
+   "arm2 hits top3": 3,
+   "#1 vote share": 0.097,
+   "pub margin pick3-pick4 (z)": 0.078,
+   "arm2 expected top-3 hits": 1.76,
+   "arm2 confidence tier": "normal",
+   "published top 3": [
+    "1296277",
+    "1285122",
+    "1311491"
+   ],
+   "official top 3": [
+    "1285122",
+    "1311491",
+    "1296277"
+   ],
+   "arm2 top 3": [
+    "1296277",
+    "1311491",
+    "1285122"
+   ]
+  },
+  {
+   "day": "2026-11-12",
+   "field": 37,
+   "published hits top3": 1,
+   "arm2 hits top3": 1,
+   "#1 vote share": 0.088,
+   "pub margin pick3-pick4 (z)": 0.333,
+   "arm2 expected top-3 hits": 1.56,
+   "arm2 confidence tier": "open",
+   "published top 3": [
+    "1303480",
+    "1310169",
+    "1305854"
+   ],
+   "official top 3": [
+    "1305854",
+    "1308353",
+    "1298575"
+   ],
+   "arm2 top 3": [
+    "1310674",
+    "1313259",
+    "1298575"
+   ]
+  }
+ ],
+ "per miss / wrong pick": [
+  {
+   "day": "2026-11-01",
+   "missed winner id": "1298578",
+   "official rank": 1,
+   "published rank": 6,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-01",
+   "wrong pick id": "1297554",
+   "its official rank": 19
+  },
+  {
+   "day": "2026-11-02",
+   "missed winner id": "1292351",
+   "official rank": 1,
+   "published rank": 5,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-02",
+   "missed winner id": "1300992",
+   "official rank": 3,
+   "published rank": 6,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": true
+  },
+  {
+   "day": "2026-11-02",
+   "wrong pick id": "1301292",
+   "its official rank": 12
+  },
+  {
+   "day": "2026-11-02",
+   "wrong pick id": "1294656",
+   "its official rank": 4
+  },
+  {
+   "day": "2026-11-03",
+   "missed winner id": "1279115",
+   "official rank": 1,
+   "published rank": 5,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": true,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-03",
+   "missed winner id": "1296045",
+   "official rank": 3,
+   "published rank": 4,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": true,
+   "arm2 had it in top 3": true
+  },
+  {
+   "day": "2026-11-03",
+   "wrong pick id": "1297285",
+   "its official rank": 9
+  },
+  {
+   "day": "2026-11-03",
+   "wrong pick id": "1302018",
+   "its official rank": 7
+  },
+  {
+   "day": "2026-11-04",
+   "missed winner id": "1302148",
+   "official rank": 2,
+   "published rank": 6,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-04",
+   "missed winner id": "1300148",
+   "official rank": 3,
+   "published rank": 4,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": true
+  },
+  {
+   "day": "2026-11-04",
+   "wrong pick id": "1295432",
+   "its official rank": 8
+  },
+  {
+   "day": "2026-11-04",
+   "wrong pick id": "1300934",
+   "its official rank": 10
+  },
+  {
+   "day": "2026-11-08",
+   "missed winner id": "1301987",
+   "official rank": 2,
+   "published rank": 4,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-08",
+   "wrong pick id": "1304829",
+   "its official rank": 9
+  },
+  {
+   "day": "2026-11-09",
+   "missed winner id": "1307104",
+   "official rank": 1,
+   "published rank": 13,
+   "first-time hunter": false,
+   "self-hunt": true,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-09",
+   "missed winner id": "1302788",
+   "official rank": 2,
+   "published rank": 5,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": false,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-09",
+   "wrong pick id": "1306678",
+   "its official rank": 8
+  },
+  {
+   "day": "2026-11-09",
+   "wrong pick id": "1305634",
+   "its official rank": 10
+  },
+  {
+   "day": "2026-11-10",
+   "missed winner id": "1290845",
+   "official rank": 2,
+   "published rank": 4,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": true,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-10",
+   "missed winner id": "1305545",
+   "official rank": 3,
+   "published rank": 6,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": true,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-10",
+   "wrong pick id": "1296366",
+   "its official rank": 4
+  },
+  {
+   "day": "2026-11-10",
+   "wrong pick id": "1309685",
+   "its official rank": 7
+  },
+  {
+   "day": "2026-11-12",
+   "missed winner id": "1308353",
+   "official rank": 2,
+   "published rank": 11,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": true,
+   "arm2 had it in top 3": false
+  },
+  {
+   "day": "2026-11-12",
+   "missed winner id": "1298575",
+   "official rank": 3,
+   "published rank": 9,
+   "first-time hunter": false,
+   "self-hunt": false,
+   "flat day (#1 share < 0.12)": true,
+   "arm2 had it in top 3": true
+  },
+  {
+   "day": "2026-11-12",
+   "wrong pick id": "1303480",
+   "its official rank": 24
+  },
+  {
+   "day": "2026-11-12",
+   "wrong pick id": "1310169",
+   "its official rank": 20
+  }
+ ]
+}
