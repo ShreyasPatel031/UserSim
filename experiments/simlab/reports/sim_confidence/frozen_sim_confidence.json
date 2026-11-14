@@ -1,0 +1,64 @@
+{
+ "RC": {
+  "features": [
+   "is_b20",
+   "rank",
+   "s1",
+   "thin",
+   "lwords",
+   "ilen",
+   "gen",
+   "agree",
+   "redun"
+  ],
+  "coef": {
+   "is_b20": -0.1032,
+   "rank": -0.1319,
+   "s1": -0.1385,
+   "thin": -0.1536,
+   "lwords": 0.0329,
+   "ilen": 0.8236,
+   "gen": -0.4542,
+   "agree": 1.4287,
+   "redun": 0.9847
+  },
+  "intercept": -5.8506,
+  "const_list": [
+   "Pricing is unclear or too high.",
+   "How is this different from existing alternatives?",
+   "Concerns about data privacy and security."
+  ],
+  "embedding": "BAAI/bge-small-en-v1.5@5c38ec7c (cosines)"
+ },
+ "RQ": {
+  "features": [
+   "is_b20",
+   "rank",
+   "s1",
+   "thin",
+   "lwords",
+   "ilen",
+   "gen",
+   "agree",
+   "redun"
+  ],
+  "coef": {
+   "is_b20": -0.3416,
+   "rank": -0.3048,
+   "s1": -0.3676,
+   "thin": 0.0867,
+   "lwords": -0.1475,
+   "ilen": 0.6941,
+   "gen": -0.8255,
+   "agree": 2.234,
+   "redun": 0.898
+  },
+  "intercept": -4.6386,
+  "const_list": [
+   "How much does it cost?",
+   "How is this different from existing alternatives?",
+   "Is there an API or integrations?"
+  ],
+  "embedding": "BAAI/bge-small-en-v1.5@5c38ec7c (cosines)"
+ }
+}

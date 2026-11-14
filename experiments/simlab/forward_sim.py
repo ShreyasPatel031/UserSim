@@ -161,6 +161,10 @@ async def one(x, sem):
                         if pre == "RQ" and pth == "ph" and items and o.get("RQ|ph|dep"):   # questions: b20 top 2 + the deployed question
                             items = list(items[:2]) + [q for q in o["RQ|ph|dep"][:1] if q not in items[:2]]   # (orchestrator 14:36Z; +3.9 [+0.8, +6.7] p@3)
                         o[f"{pre}|{pth}|b20"] = items; o[f"sim1|{pth}"] = s1
+                        if pth == "ph":   # measured chance each item is judged right (sim_confidence.py; observability, order unchanged)
+                            import sim_conf
+                            cb, cd = sim_conf.conf(pre, items, o.get(f"{pre}|ph|dep"), s1, len(str(d).split()))
+                            o[f"{pre}|ph|b20|conf"] = cb; o[f"{pre}|ph|dep|conf"] = cd
             o["pred_at"] = pd.Timestamp.now(tz="UTC").isoformat()
             if i in real and not PREDICT:
                 T = await cj(EX.format(c="\n".join(f"- {c[:400]}" for c in real[i][:40])), tok=1500)
