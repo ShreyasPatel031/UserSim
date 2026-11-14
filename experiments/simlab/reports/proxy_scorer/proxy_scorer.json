@@ -1,0 +1,92 @@
+{
+ "items": 2160,
+ "launches": 123,
+ "judge base rate": 0.24,
+ "item AUC per score": {
+  "cos_max": 0.583,
+  "cos_top3": 0.582,
+  "cos_rel": 0.636,
+  "lex": 0.55,
+  "ce_max": 0.612
+ },
+ "item AUC, LODO logistic of all scores": 0.629,
+ "item AUC by kind": {
+  "RC": 0.639,
+  "RQ": 0.626
+ },
+ "launch-level p@3 proxy vs judged": {
+  "pearson (thresholded)": 0.224,
+  "pearson (mean prob)": 0.263,
+  "spearman (mean prob)": 0.245,
+  "n launch-arm-kind cells": 720
+ },
+ "recipe ordering": {
+  "RC": {
+   "judged p@3 by arm": {
+    "b20": 36.7,
+    "const": 14.8,
+    "dep": 25.2
+   },
+   "proxy p@3 by arm": {
+    "b20": 47.9,
+    "const": 1.4,
+    "dep": 14.6
+   },
+   "judged by thin": {
+    "false": 38.1,
+    "true": 34.1
+   },
+   "proxy by thin": {
+    "false": 45.5,
+    "true": 52.4
+   }
+  },
+  "RQ": {
+   "judged p@3 by arm": {
+    "b20": 30.3,
+    "const": 10.5,
+    "dep": 26.4
+   },
+   "proxy p@3 by arm": {
+    "b20": 49.6,
+    "const": 4.1,
+    "dep": 28.7
+   },
+   "judged by thin": {
+    "false": 29.4,
+    "true": 31.9
+   },
+   "proxy by thin": {
+    "false": 49.1,
+    "true": 50.4
+   }
+  }
+ },
+ "item AUC by comment volume": {
+  "<5": [
+   0.377,
+   54,
+   3
+  ],
+  "5-9": [
+   0.533,
+   495,
+   28
+  ],
+  "10-19": [
+   0.641,
+   738,
+   43
+  ],
+  "20-39": [
+   0.637,
+   603,
+   34
+  ],
+  "40+": [
+   0.685,
+   270,
+   15
+  ]
+ }
+}
