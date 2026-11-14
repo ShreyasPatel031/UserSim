@@ -53,3 +53,19 @@ h25_shadow.py, readable_shadow.py, forecast_arm2.py, forecast_week.py, sim_forec
 today/ day, so it would replay only the newest one. Until those callers pass the day (later patch), run catch-ups with a scratch root whose today/
 holds only <d>.json (as today_replay.py does).
 Overlap: no other undeployed bundle patches features.py.
+
+## Results (Nov 14, ~17:25Z; every run logs which features.py it loaded)
+- test_equiv_hunks.py (old 981c5ded vs new 033d7bd7):
+  - E1 clean root old == new: TRUE;
+  - E2 new on the polluted root == old on the clean root: TRUE;
+  - E3 date string == True: TRUE;
+  - H2 synthetic duplicate-id today row: old 21 rows, new 20, PASS;
+  - H3 add_history synthetic: old n=2, rel NaN, maker_n 2 vs new n=1, finite, 1, PASS.
+- deploy_today_rows.sh check: staged test PASS (checks 1-4); DRY RUN PASS. 28 today rows, Nov 14 only, 0 rel NaN; arm 2 scored 28 of 28, 0 NaN, 40 inputs.
+- arm2_diff.py, Nov 14 arm 2 (28 launches), current vs fixed:
+  - top 3 same set (#2 and #3 swap); top 5 same set; top 10 shares 8;
+  - fixed ranks of current's top 10: [1, 3, 2, 4, 5, 6, 13, 8, 7, 15].
+- Published line replay (results/today_rows_replay.md), 16 nights, polluted vs fixed: 52.1 / 58.8 / 74.4 vs 58.3 / 63.8 / 75.6;
+  fixed - polluted +6.2 [-2.1, +14.6] top 3 (direction only).
+- Correction: the first runs of arm2_diff.py and test_equiv_hunks.py used `python -c` with cwd = ph_predict, so both arms imported the live
+  features.py. The module-path assertion caught it, and nothing from those runs was reported. The scripts now run with cwd outside ph_predict.

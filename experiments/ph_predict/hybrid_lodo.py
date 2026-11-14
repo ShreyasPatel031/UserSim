@@ -19,6 +19,12 @@ hits = lambda o, t: [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
 PTS = {"P3": 3.0}   # 03:45 uses the 03:00 read in the backtest (no 03:45 recorder read existed); live adds one
 
 
+TAG = os.environ.get("TAG", ""); CP = None
+if os.environ.get("CLEAN_PRIOR"):   # "<parquet>:<column>" with id, day columns
+    _p, _c = os.environ["CLEAN_PRIOR"].rsplit(":", 1); _X = pd.read_parquet(_p); _X["id"] = _X.id.astype(str)
+    CP = {d: dict(zip(g.id, g[_c])) for d, g in _X.groupby("day")}
+
+
 def main():
     from pipeline import warehouse as W
     R = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
@@ -30,11 +36,13 @@ def main():
         t0 = pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC"); truth = R[R.day == d].sort_values("daily_rank")
         fc = tempfile.mkdtemp(dir=TMP) + "/f.parquet"; subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{d}/forecast_{d}.parquet", fc], capture_output=True)
         cp = {}
-        if os.path.exists(fc):
+        if CP is not None:   # CLEAN_PRIOR override (today-rows replay, orchestrator 16:38Z Nov 14): the as-of-night clean_nosite score
+            cp = CP.get(d, {})
+        elif os.path.exists(fc):
             F_ = pd.read_parquet(fc)
             if len(F_):
                 cp = dict(zip(F_.id.astype(str), F_.pred))
-        src[d] = "forecast parquet pred" if cp else "month-fold clean_nosite stand-in"
+        src[d] = (f"CLEAN_PRIOR {os.environ['CLEAN_PRIOR']}" if CP is not None and cp else "forecast parquet pred" if cp else "") or "month-fold clean_nosite stand-in"
         def at(h):
             T = t0 + pd.Timedelta(hours=h); s = V[(V.a <= T) & (V.a >= T - pd.Timedelta(minutes=65)) & (V.a >= t0 - pd.Timedelta(minutes=5))]
             return s.sort_values("a").groupby("launch_id").last()
@@ -102,7 +110,15 @@ def main():
           f"Permutation (slots-6+ labels shuffled within day, LODO refit, 200 draws): observed gain {obs:+.2f}, permutation mean {np.mean(perm):+.2f}, "
           f"95th pct {np.percentile(perm, 95):+.2f}, one-sided p = {pval:.3f}.", f"Alphas chosen per fold: {sorted(set(alphas.values()))} ({list(alphas.values())}).",
           "Per day (hidden / LODO / L2O / prior): " + "; ".join(f"{d[5:]} {H[d]:.0f}/{L1[d]:.0f}/{L2[d]:.0f}/{P6[d]:.0f}" for d in dd)]
-    open(f"{HERE}/results/hybrid_lodo.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
+    if TAG:   # all-day fit on the frozen file's days (Nov 2-12, alpha 3), same format as frozen/hybrid_vmonly_P345_20261114.json
+        tr = pd.concat([G[d] for d in dd if d <= "2026-11-12"]); m = Ridge(alpha=3.0).fit(tr[ZF], tr.y)
+        json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": f"2026-11-02..2026-11-12 ({sum(d <= '2026-11-12' for d in dd)})", "alpha": 3.0,
+                   "features": ZF, "coef": dict(zip(ZF, map(float, m.coef_))), "intercept": float(m.intercept_), "clean_prior": os.environ.get("CLEAN_PRIOR"),
+                   "note": "UNDEPLOYED (today-rows refit). z within day; lpos = log hidden-rank position (recorder rank_now), move = log pos at 01:00 - log pos at T, "
+                           "nc_rec = log1p recorder commentsCount at T, clean = as-of-night clean_nosite from the today-rows replay; target z(-log final rank); slots 6+ only"},
+                  open(f"{HERE}/results/frozen/hybrid_vmonly_P345{TAG}_20261114.json", "w"), indent=1)
+        md.insert(1, f"CLEAN_PRIOR = {os.environ.get('CLEAN_PRIOR')}; prior source per day: {sorted(set(src.values()))}")
+    open(f"{HERE}/results/hybrid_lodo{TAG}.md", "w").write("\n".join(md) + "\n"); print("\n".join(md))
 
 
 if __name__ == "__main__":
