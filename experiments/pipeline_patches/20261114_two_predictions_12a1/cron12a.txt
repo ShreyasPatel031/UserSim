@@ -1,0 +1,3 @@
+# BEGIN usersim-b12a
+* * * * * bash /home/agent/w/tw12a/tick.sh
+# END usersim-b12a

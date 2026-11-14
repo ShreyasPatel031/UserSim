@@ -15,8 +15,6 @@ import numpy as np, pandas as pd
 from zoneinfo import ZoneInfo
 PH = "/home/agent/w/experiments/ph_predict"; TW = os.path.dirname(os.path.abspath(__file__)); B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 PT = ZoneInfo("America/Los_Angeles"); ACC0 = "60.7 / 68.4 / 75.7 top 3 / 5 / 10 on 214 backtest days (Apr-Oct 2026)"
-ACC3 = os.environ.get("ARM3_BACKTEST_LABEL") or open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "arm3_backtest_label.txt")).read().strip() \
-    if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "arm3_backtest_label.txt")) else "arm 3 (backtest label not set)"
 ACC1 = "72.7 / 74.5 / 77.3 top 3 / 5 / 10 on 11 days (Nov 2-12, recorder reads; top 3 and top 5 equal the plain hidden rank, top 10 +4.5)"
 zf = lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0.0
 
@@ -62,12 +60,9 @@ def midnight(d):
         put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": None, "fallback_used": "none_available", "inputs": {"forecast_parquet": "missing", **guard(d)},
                         "written_at": now, "backtest": ACC0, "ranking": []}); return
     F["id"] = F.id.astype(str); arm2 = "pred_arm2" in F and F.pred_arm2.notna().all(); col = "pred_arm2" if arm2 else "pred"
-    arm3 = "pred_arm3" in F and F.pred_arm3.notna().all()   # bundle 13: present only when arm 3 was PUBLISHED at 00:05 (PUBLISH switch)
-    if arm3:
-        col = "pred_arm3"
     F = F.sort_values([col, "id"], ascending=[False, True]).reset_index(drop=True)
-    put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": "arm3" if arm3 else ("arm2" if arm2 else "clean_nosite"), "fallback_used": None if (arm3 or arm2) else "clean_nosite_fallback",
-                    "inputs": {"forecast_parquet": "present", "pred_arm2": "present" if arm2 else "missing", "pred_arm3": "published" if arm3 else "not published", **guard(d)}, "written_at": now, "backtest": ACC3 if arm3 else ACC0,
+    put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": "arm2" if arm2 else "clean_nosite", "fallback_used": None if arm2 else "clean_nosite_fallback",
+                    "inputs": {"forecast_parquet": "present", "pred_arm2": "present" if arm2 else "missing", **guard(d)}, "written_at": now, "backtest": ACC0,
                     "ranking": [{"rank": k + 1, "id": r.id, "name": nm.get(r.id), "score": round(float(r[col]), 4)} for k, r in F.iterrows()]})
 
 

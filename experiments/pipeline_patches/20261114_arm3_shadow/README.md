@@ -13,7 +13,7 @@ Step 1 SHADOW (no change to the published file):
 Step 2 PUBLISH (separate switch): `forecast.py` = VM 61538501 + forecast_publish_switch.patch: if ~/w/arm3_live/PUBLISH exists, the 00:05
   order = pred_arm3, arm 2 stays as pred_arm2; any arm-3 failure keeps arm 2 and says why; without the file nothing changes (no new
   parquet column). `deploy_arm3.sh publish` gates and creates the file; `unpublish` / `rollback` are always allowed.
-  two_predictions.py (bundle 12a) publishes pred_arm3 when present with model "arm3" and the label from arm3_backtest_label.txt.
+  two_predictions.py (bundle 12a.1, ../20261114_two_predictions_12a1/) publishes pred_arm3 when present with model "arm3" and the label from arm3_backtest_label.txt.
   NOTE: forecast.py is also changed by the input-guards bundle (20261114_input_guards); deploy one combined file.
 
 VM dry run 14:40Z Nov 14 (scratch dir, DRY=1): offline model ok; E5 tests pass; gate 23 imports ok; prewarm 11,968 launches 390 s.
