@@ -16,7 +16,8 @@ def run(m, F):
     m.forecast = lambda d: None if F is None else F.copy(); m.put = lambda d, kind, out: got.__setitem__(kind, out)
     if hasattr(m, "guard"): m.guard = lambda d: {}
     m.midnight(D); m.prereveal(D)
-    strip = lambda o: {k: v for k, v in o.items() if k != "written_at"}
+    IGN = {"written_at"} | set(filter(None, os.environ.get("A13_IGNORE", "").split(",")))  # 12a.2 check: A13_IGNORE=backtest
+    strip = lambda o: {k: v for k, v in o.items() if k not in IGN}
     return {k: strip(v) for k, v in got.items()}
 base = pd.DataFrame({"id": ids, "pred": np.linspace(1, 2, 12), "pred_arm2": np.linspace(2, 1, 12)})
 old, new = load("20261114_two_predictions"), load("20261114_two_predictions_12a1")

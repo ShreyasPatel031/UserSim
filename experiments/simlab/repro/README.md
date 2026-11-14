@@ -19,3 +19,7 @@ repro_A13.py: with no pred_arm3 column (or a partly filled one, or pred_arm2 all
 
 ## Today-rows bug (Nov 14)
 repro_A14.py: builds a clean root (only today/D) and a stale root (every earlier today file, as on the VM). Fails on features.py 981c5ded: Nov 13 has 405 stale rows, 9 of 20 lineup launches with different hunter history, and 403 doubled same-day counts. Passes on the PH ops fix 033d7bd7.
+
+## Bundle 12a.2 (f399a88e, folder 20261114_two_predictions_12a2; two_predictions.py b31d0074)
+A9-A12 re-run with 20261114_two_predictions mapped to the 12a2 folder: all pass. A13 run with old = 12a1, new = 12a2 and A13_IGNORE=backtest: equivalent in all four cases (outputs differ only in the "backtest" label). If pred_arm3 is ever fully filled, 12a.2 still publishes model arm3, as 12a.1 did.
+repro_A15.py: for each producing branch (midnight arm2 / clean_nosite fallback / none_available; prereveal hybrid_vm / hidden_rank_only / stale_read / no_prior / midnight_order), checks that the 12a.2 label carries the logged figures and that every other field matches 12a.1. All 8 branches pass.
