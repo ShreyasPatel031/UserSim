@@ -22,4 +22,6 @@ python held_team_shadow.py score $YDAY $SP >> $LOG 2>&1
 python held_team_shadow.py predict $TODAY $SP >> $LOG 2>&1
 # website track record (orchestrator 01:02Z Nov 14): rebuild tmp/e5/website/track_record_v1.json incl. yesterday's live rows
 python track_record.py $SP >> $LOG 2>&1
+# per-launch probabilities, 00:05 (orchestrator 01:20Z Nov 14); the 03:45 file is written by the 12:07Z job
+python prob_writer.py 0005 $TODAY $SP >> $LOG 2>&1
 echo "end $(date -u +%FT%TZ)" >> $LOG; tail -c 1500 $LOG
