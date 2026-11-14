@@ -1,0 +1,5 @@
+# Bundle 12 (installed by deploy_b12.sh in its own exactly-matched block). The VM's Debian cron ignores CRON_TZ and the clock is UTC,
+# so cron runs tick12.sh every minute and it starts the jobs whose Pacific time is now (sched12.txt, DST-aware).
+# BEGIN usersim-b12
+* * * * * bash /home/agent/w/tw/tick12.sh
+# END usersim-b12

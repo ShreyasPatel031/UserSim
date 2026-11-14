@@ -13,6 +13,10 @@ B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 ACC = "explanation model, 58.9 / 69.2 / 74.5 on 214 backtest days; shares 2 of 3 top picks with the forecast on 97.7% of days"
 # LABEL SOURCE (orchestrator 20:51Z Nov 14; UNDEPLOYED switch, off by default so the routine's live label does not change until the next build
 # turns it on): WHY_LABEL_FROM_TABLE=1 takes the explanation-model figure from results/web/north_star_table.json (model readable_v2).
+def second_label():   # the SHAP block's second line: the same table figure as acc_label (orchestrator 22:13Z)
+    if os.environ.get("WHY_LABEL_FROM_TABLE") != "1": return SECOND
+    a_ = acc_label()
+    return ("separate readable model, " + a_.split("), ", 1)[1].split(";", 1)[0] + "; typical effect of each input" if "), " in a_ else SECOND)
 def acc_label():
     if os.environ.get("WHY_LABEL_FROM_TABLE") != "1": return ACC
     try:
@@ -56,7 +60,7 @@ def main(d):
         shap_lab = ("Why the arm 2 shadow ranks it here (arm 2 shadow, not the published model: arm 3 was published)" if pm_.startswith("arm3")
                     else "Why the forecast ranks it here")
         W2["items"]["forecast_drivers_shap"] = {"label": shap_lab, "note": SH["label"], "caution": SH["caution"],
-                                                "unit": SH["unit"], "groups": SH["groups"], "second_line": SECOND, "status": SH["status"]}
+                                                "unit": SH["unit"], "groups": SH["groups"], "second_line": second_label(), "status": SH["status"]}
         for i, v in SH["launches"].items():
             W2.setdefault("launches", {}).setdefault(i, {})["forecast_drivers_shap"] = v; n_sh += 1
     loc2 = loc.replace(".json", "_shadow.json"); json.dump(W2, open(loc2, "w"), indent=1)
