@@ -6,6 +6,7 @@ Every call is logged to $FB_LOG as JSON."""
 import json, os, re, shutil, subprocess, sys
 FB = os.environ["FB"]; REAL = os.environ["REAL_GSUTIL"]; PFX = "gs://usersim-bakeoff-347838016394/usersim_sim/"
 AUTH = re.compile(os.environ.get("AUTH_RE", r"^(results/|raw/daily/|tmp/e5/website/|tmp/e5/held_team_shadow/)"))
+RENV = {**os.environ, "HOME": os.environ.get("REAL_HOME", os.environ["HOME"])}   # the writers run with a private HOME; gsutil auth lives in the real one
 a = [x for x in sys.argv[1:] if x not in ("-q", "-m")]; op = a[0] if a else ""; args = a[1:]
 def log(**k): open(os.environ["FB_LOG"], "a").write(json.dumps({"op": op, **k}) + "\n")
 rel = lambda p: p[len(PFX):] if p.startswith(PFX) else None
@@ -19,10 +20,10 @@ if op == "cat":
     src, lp = readable(args[0]); log(path=rel(args[0]), src=src)
     if src == "fb": sys.stdout.buffer.write(open(lp, "rb").read()); sys.exit(0)
     if src == "missing": sys.exit(1)
-    sys.exit(subprocess.run([REAL, "cat", args[0]]).returncode)
+    sys.exit(subprocess.run(env=RENV, args=[REAL, "cat", args[0]]).returncode)
 if op == "stat":
     src, _ = readable(args[0]); log(path=rel(args[0]), src=src)
-    if src == "real": sys.exit(subprocess.run([REAL, "-q", "stat", args[0]]).returncode)
+    if src == "real": sys.exit(subprocess.run(env=RENV, args=[REAL, "-q", "stat", args[0]]).returncode)
     sys.exit(0 if src == "fb" else 1)
 if op == "cp":
     s, d = [x for x in args if not x.startswith("-")][-2:]
@@ -31,7 +32,7 @@ if op == "cp":
     src, lp = readable(s); log(path=rel(s), src=src)
     if src == "fb": shutil.copy(lp, d); sys.exit(0)
     if src == "missing": sys.exit(1)
-    sys.exit(subprocess.run([REAL, "-q", "cp", s, d]).returncode)
+    sys.exit(subprocess.run(env=RENV, args=[REAL, "-q", "cp", s, d]).returncode)
 if op == "rsync":
     s, d = [x for x in args if not x.startswith("-")][-2:]
     if d.startswith(PFX):
@@ -40,7 +41,7 @@ if op == "rsync":
     if AUTH.search(r):
         if os.path.isdir(local(s)): shutil.copytree(local(s), d, dirs_exist_ok=True); sys.exit(0)
         sys.exit(1)
-    sys.exit(subprocess.run([REAL, "-q", "-m", "rsync", "-r", s, d]).returncode)
+    sys.exit(subprocess.run(env=RENV, args=[REAL, "-q", "-m", "rsync", "-r", s, d]).returncode)
 if op == "ls":
-    log(path=rel(args[-1]) if args else None, src="real-ls"); sys.exit(subprocess.run([REAL] + sys.argv[1:]).returncode)
+    log(path=rel(args[-1]) if args else None, src="real-ls"); sys.exit(subprocess.run(env=RENV, args=[REAL] + sys.argv[1:]).returncode)
 log(path=None, src="unsupported " + " ".join(sys.argv[1:])); sys.exit(2)

@@ -11,11 +11,13 @@ import json, os, re, shutil, subprocess, sys, glob
 import pandas as pd
 D, MODE, W = sys.argv[1:4]; SP = "/tmp/claude-0/-home-user-UserSim/d06a24f8-55f2-52b0-9f28-1e7e4ec267d8/scratchpad"
 P1 = (pd.Timestamp(D) - pd.Timedelta(days=1)).strftime("%Y-%m-%d"); HERE = os.path.dirname(os.path.abspath(__file__))
-R = f"{SP}/a2rb/ph_predict_data"; PHO = f"{SP}/phops/experiments"; TGZ = f"{SP}/e5_vm_writers_12_2.tgz"
+R = f"{SP}/a2rb/ph_predict_data"; PHO = f"{SP}/phops/experiments"; TGZ = os.environ.get("TGZ", f"{SP}/e5_vm_writers_12_2.tgz")
+KEEP = f"{W}.forecast_cache"   # REUSE_A=1: reuse a finished forecast step for this night/mode (it takes ~10 min)
+if os.environ.get("REUSE_A") != "1": shutil.rmtree(KEEP, ignore_errors=True)
 shutil.rmtree(W, ignore_errors=True); os.makedirs(W)
 FB, BIN = f"{W}/fb", f"{W}/bin"; os.makedirs(FB); os.makedirs(BIN)
 REAL = shutil.which("gsutil"); shutil.copy(f"{HERE}/gsutil_stub.py", f"{BIN}/gsutil")
-ENV = {**os.environ, "PATH": f"{BIN}:" + os.environ["PATH"], "FB": FB, "REAL_GSUTIL": REAL, "FB_LOG": f"{W}/gsutil.log", "TZ": "America/Los_Angeles"}
+ENV = {**os.environ, "PATH": f"{BIN}:" + os.environ["PATH"], "FB": FB, "REAL_GSUTIL": REAL, "FB_LOG": f"{W}/gsutil.log", "TZ": "America/Los_Angeles", "REAL_HOME": os.environ["HOME"]}
 ENV.pop("VERCEL", None)
 REP = {"day": D, "mode": MODE, "handoffs": {}, "probes": {}, "notes": []}
 def sh(cmd, env=None, cwd=None, t=2400):
@@ -40,8 +42,13 @@ os.symlink(f"{A}/root", f"{A}/code/data"); os.makedirs(f"{A}/code/results")
 def run_forecast():
     h25 = f"{A}/h25empty" if MODE == "fallback" else f"{SP}/rb/h25src"
     return sh(f"HOME={A}/home H25_DATA={A}/h25data H25_SRC={h25} LGB_THREADS=4 HF_HUB_OFFLINE=1 python forecast.py {D}", cwd=f"{A}/code", t=2400)
-rc, out = run_forecast(); open(f"{W}/A_forecast.log", "w").write(out)
 PQ = f"{A}/code/results/forecast_{D}.parquet"
+if os.environ.get("REUSE_A") == "1" and os.path.exists(f"{KEEP}/forecast.parquet"):
+    shutil.copy(f"{KEEP}/forecast.parquet", PQ); rc = 0; out = open(f"{KEEP}/forecast.log").read()
+else:
+    rc, out = run_forecast()
+    if os.path.exists(PQ): os.makedirs(KEEP, exist_ok=True); shutil.copy(PQ, f"{KEEP}/forecast.parquet"); open(f"{KEEP}/forecast.log", "w").write(out)
+open(f"{W}/A_forecast.log", "w").write(out)
 def upload_vm():   # what the VM pipeline publishes after the forecast
     os.makedirs(fbp(f"raw/daily/{D}"), exist_ok=True)
     if os.path.exists(PQ): shutil.copy(PQ, fbp(f"raw/daily/{D}/forecast_{D}.parquet"))
@@ -67,7 +74,7 @@ def stage_b_inputs(pq=True, rec=True):
     if rec and os.path.exists(f"{R}/vote_snapshots/{D}.jsonl"): shutil.copy(f"{R}/vote_snapshots/{D}.jsonl", f"{PHD}/data/vote_snapshots/{D}.jsonl")
 def run_b(kind): return sh(f"python3 two_predictions.py {kind} {D}", cwd=f"{B}/tw")
 stage_b_inputs()
-ACC = {}; exec(src.split("zf = lambda")[0].split("from zoneinfo import ZoneInfo")[1].replace('PH = "/home/agent/w/experiments/ph_predict"', "PH = ''"), {"os": os, "__file__": f"{B}/tw/two_predictions.py", "ZoneInfo": __import__("zoneinfo").ZoneInfo}, ACC)
+ACC = {"os": os, "__file__": f"{B}/tw/two_predictions.py", "ZoneInfo": __import__("zoneinfo").ZoneInfo}; exec(src.split("zf = lambda")[0].split("from zoneinfo import ZoneInfo")[1], ACC)
 for kind, fn in (("midnight", "0005"), ("prereveal", "prereveal")):
     rc, out = run_b(kind); open(f"{W}/B_{kind}.log", "w").write(out); J = jl(fbp(f"results/web/predictions/{D}_{fn}.json")); L = jl(fbp(f"results/web/predictions/{fn}_latest.json"))
     h = REP["handoffs"][f"B forecast{' + recorder' if kind == 'prereveal' else ''} -> {D}_{fn}.json"] = {"rc": rc, "exists": J is not None}
@@ -187,8 +194,10 @@ REP["probes"]["published prediction files missing (writers only)"] = {"outputs":
 plant_decoys(); reset_outputs(); upload_vm(); stage_b_inputs(); run_b("midnight"); run_b("prereveal"); rm(fbp(f"results/web/predictions/{D}_*.json"), fbp(f"raw/daily/{D}"))
 for job, day in (("prob_0005", D), ("prob_prereveal", D), ("period", P1)): run_c(job, day)
 REP["probes"]["published files + raw/daily/D missing (writers only)"] = {"outputs": summary(), "decoy ids found in": scan(OUTS())}
-# A with the line-up missing (the forecast step itself)
-rm(PQ); os.remove(f"{A}/root/today/{D}.json"); rc, out = run_forecast(); open(f"{W}/A_nolineup.log", "w").write(out)
-REP["probes"]["line-up today/D missing -> forecast"] = {"rc": rc, "parquet written": os.path.exists(PQ), "last lines": out.strip().splitlines()[-3:]}
+# A with the line-up missing (the forecast step itself); SKIP_A_PROBE=1 skips it (re-runs of the writer stage only)
+if os.environ.get("SKIP_A_PROBE") == "1": REP["probes"]["line-up today/D missing -> forecast"] = "skipped (SKIP_A_PROBE)"
+else:
+    rm(PQ); os.remove(f"{A}/root/today/{D}.json"); rc, out = run_forecast(); open(f"{W}/A_nolineup.log", "w").write(out)
+    REP["probes"]["line-up today/D missing -> forecast"] = {"rc": rc, "parquet written": os.path.exists(PQ), "last lines": out.strip().splitlines()[-3:]}
 REP["gsutil reads served from real bucket (non-chain paths)"] = sorted({json.loads(l)["path"] for l in open(f"{W}/gsutil.log") if json.loads(l)["src"] in ("real", "real-rsync") and json.loads(l)["path"]})[:40]
 json.dump(REP, open(f"{W}/report.json", "w"), indent=1, default=str); print("done", flush=True)

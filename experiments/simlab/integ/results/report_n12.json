@@ -1,0 +1,377 @@
+{
+ "day": "2026-11-12",
+ "mode": "normal",
+ "handoffs": {
+  "A lineup -> forecast parquet": {
+   "rc": 0,
+   "exists": true,
+   "log arm2 line": [
+    "published model: arm2 published ({'train_rows_2025': 5208, 'train_days': 680, 'inputs': 40})"
+   ],
+   "day all D": true,
+   "rows / lineup": [
+    37,
+    37
+   ],
+   "ids == lineup": true,
+   "pred_arm2 present": 37,
+   "expected arm2": true,
+   "PASS": true
+  },
+  "B forecast -> 2026-11-12_0005.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-12",
+   "model": "arm2",
+   "fallback_used": null,
+   "label": "58.1 / 65.2 / 76.9 top 3 / 5 / 10 on 183 backtest days with at least 10 ranked launches (Apr-Oct 2026); model: arm 2",
+   "rows": 37,
+   "ids == lineup": true,
+   "ids missing / extra vs lineup": [
+    0,
+    0
+   ],
+   "latest pointer == this file": true,
+   "inputs": {
+    "forecast_parquet": "present",
+    "pred_arm2": "present",
+    "input_guard": "absent"
+   },
+   "expected model": "arm2",
+   "label == ACC0_BY[model]": true,
+   "order == parquet sort": true,
+   "PASS": true
+  },
+  "B forecast + recorder -> 2026-11-12_prereveal.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-12",
+   "model": "hybrid_vm",
+   "fallback_used": "stale_read",
+   "label": "72.2 / 75.0 / 73.3 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone (read older than 03:44 PT)",
+   "rows": 37,
+   "ids == lineup": true,
+   "ids missing / extra vs lineup": [
+    0,
+    0
+   ],
+   "latest pointer == this file": true,
+   "inputs": {
+    "recorder_T": "present (read 03:00:00 PT)",
+    "recorder_0100": "present (read 01:00:00 PT)",
+    "forecast_parquet": "present",
+    "weights": "present",
+    "recorder_T_stale": true
+   },
+   "label == acc1(model, fb)": true,
+   "recorder read (PT)": "present (read 03:00:00 PT)",
+   "PASS": true
+  },
+  "C 2026-11-12_0005.json -> probabilities/2026-11-12_0005.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-12",
+   "status": "ok",
+   "source": "results/web/predictions (model arm2)",
+   "method": "frozen logistic on score position",
+   "basis": "arm 2 walk-forward backtest, 2026-04-01 to 2026-10-31 (183 days with >= 10 ranked launches)",
+   "basis_n_days": 183,
+   "ids/order == published ranking": true,
+   "rows": 37,
+   "input_note": true,
+   "method matches published model": true,
+   "PASS": true
+  },
+  "C 2026-11-12_prereveal.json -> probabilities/2026-11-12_prereveal.json": {
+   "rc": 0,
+   "exists": true,
+   "day": "2026-11-12",
+   "status": "ok",
+   "source": "results/web/predictions",
+   "names producing model": false,
+   "ids/order == published": true,
+   "PASS": true
+  },
+  "C raw/daily/2026-11-12/forecast parquet -> period 2026-11-11 (predicted entrants)": {
+   "rc": 0,
+   "weekly exists": true,
+   "monthly exists": true,
+   "weekly": {
+    "day": "2026-11-11",
+    "entrants": {
+     "entrants": {
+      "day": "2026-11-12",
+      "n": 37,
+      "source": "raw/daily/2026-11-12/forecast_2026-11-12.parquet pred_arm2",
+      "calibration log1p(votes) = a + b*pred": [
+       -0.153,
+       1.012
+      ],
+      "calibration rows (months < 2026-11)": 5034,
+      "note": "entrant predictions from a forecast built on polluted hunter-history inputs (stale data/today rows); fix pending",
+      "calibration source": "backtest only: arm-2 walk-forward preds (assets a2x/X.parquet 'both', Apr-Oct) x warehouse votes; no live preds"
+     }
+    },
+    "reads D parquet": true,
+    "names col": true
+   },
+   "monthly": {
+    "day": "2026-11-11",
+    "entrants": {
+     "entrants": {
+      "day": "2026-11-12",
+      "inserted": false,
+      "reason": "monthly: shadow only"
+     }
+    },
+    "reads D parquet": false,
+    "names col": false
+   }
+  },
+  "C published files -> track_record_v1.json": {
+   "rc": 0,
+   "exists": true,
+   "rows for D": [
+    {
+     "day": "2026-11-12",
+     "prediction": "03:45 PT",
+     "flag": "replay",
+     "line": "hybrid_vm (bundle 12a), PH ops replay, LODO weights",
+     "status": "scored",
+     "n_ranked": 37,
+     "n_launches": 37,
+     "hits_top3": 2,
+     "hits_top5": 4,
+     "hits_top10": 5
+    }
+   ],
+   "mentions D": true
+  },
+  "C period_score 2026-11-11": {
+   "rc": 0,
+   "last": "2026-11-14T19:39:28Z period_score rc=0 inputs present (a2x/X.parquet, ph2025, frozen tables) |"
+  }
+ },
+ "probes": {
+  "baseline (all inputs, decoys planted)": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-12",
+     "model": "arm2",
+     "fallback_used": "None",
+     "backtest": "58.1 / 65.2 / 76.9 top 3 / 5 / 10 on 183 backtest days with at least 10 ranked launches (Apr-Oct 2026); model:",
+     "n": 37
+    },
+    "prereveal": {
+     "day": "2026-11-12",
+     "model": "hybrid_vm",
+     "fallback_used": "stale_read",
+     "backtest": "72.2 / 75.0 / 73.3 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone (read older than 03:44 PT)",
+     "n": 37
+    },
+    "prob_0005": {
+     "day": "2026-11-12",
+     "status": "ok",
+     "source": "results/web/predictions (model arm2)",
+     "n": 37
+    },
+    "prob_prereveal": {
+     "day": "2026-11-12",
+     "status": "ok",
+     "source": "results/web/predictions",
+     "n": 37
+    },
+    "period_weekly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'n': 37, 'source': 'raw/daily/2026-11-12/forecast_2026-11-12.parquet pred_arm2', 'calibration log1p(votes) = a + b*pred': [-0.153, 1.012],",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'monthly: shadow only'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "forecast parquet missing (VM results + raw/daily)": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-12",
+     "model": "None",
+     "fallback_used": "none_available",
+     "backtest": "no model ran (no forecast for this night)",
+     "n": 0
+    },
+    "prereveal": {
+     "day": "2026-11-12",
+     "model": "hybrid_vm",
+     "fallback_used": "no_prior+stale_read",
+     "backtest": "72.2 / 75.0 / 73.3 top 3 / 5 / 10 on 12 days (Nov 2-13): the hidden order alone (read older than 03:44 PT)",
+     "n": 37
+    },
+    "prob_0005": {
+     "day": "2026-11-12",
+     "status": "not published",
+     "n": 0
+    },
+    "prob_prereveal": {
+     "day": "2026-11-12",
+     "status": "ok",
+     "source": "results/web/predictions",
+     "n": 37
+    },
+    "period_weekly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-12'}",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-12'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "recorder file missing": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-12",
+     "model": "arm2",
+     "fallback_used": "None",
+     "backtest": "58.1 / 65.2 / 76.9 top 3 / 5 / 10 on 183 backtest days with at least 10 ranked launches (Apr-Oct 2026); model:",
+     "n": 37
+    },
+    "prereveal": {
+     "day": "2026-11-12",
+     "model": "midnight_order",
+     "fallback_used": "midnight_order",
+     "backtest": "58.1 / 65.2 / 76.9 top 3 / 5 / 10 on 183 backtest days with at least 10 ranked launches (Apr-Oct 2026); model:",
+     "n": 37
+    },
+    "prob_0005": {
+     "day": "2026-11-12",
+     "status": "ok",
+     "source": "results/web/predictions (model arm2)",
+     "n": 37
+    },
+    "prob_prereveal": {
+     "day": "2026-11-12",
+     "status": "ok",
+     "source": "results/web/predictions",
+     "n": 37
+    },
+    "period_weekly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'n': 37, 'source': 'raw/daily/2026-11-12/forecast_2026-11-12.parquet pred_arm2', 'calibration log1p(votes) = a + b*pred': [-0.153, 1.012],",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'monthly: shadow only'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "forecast + recorder missing": {
+   "outputs": {
+    "0005": {
+     "day": "2026-11-12",
+     "model": "None",
+     "fallback_used": "none_available",
+     "backtest": "no model ran (no forecast for this night)",
+     "n": 0
+    },
+    "prereveal": {
+     "day": "2026-11-12",
+     "model": "None",
+     "fallback_used": "none_available",
+     "backtest": "no model ran (no pre-reveal read)",
+     "n": 0
+    },
+    "prob_0005": {
+     "day": "2026-11-12",
+     "status": "not published",
+     "n": 0
+    },
+    "prob_prereveal": {
+     "day": "2026-11-12",
+     "status": "not published",
+     "n": 0
+    },
+    "period_weekly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-12'}",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-12'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "published prediction files missing (writers only)": {
+   "outputs": {
+    "0005": null,
+    "prereveal": null,
+    "prob_0005": {
+     "day": "2026-11-12",
+     "status": "ok",
+     "source": "raw/daily forecast pred_arm2",
+     "n": 37
+    },
+    "prob_prereveal": {
+     "day": "2026-11-12",
+     "status": "not published",
+     "n": 0
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "published files + raw/daily/D missing (writers only)": {
+   "outputs": {
+    "0005": null,
+    "prereveal": null,
+    "prob_0005": {
+     "day": "2026-11-12",
+     "status": "not published",
+     "n": 0
+    },
+    "prob_prereveal": {
+     "day": "2026-11-12",
+     "status": "not published",
+     "n": 0
+    },
+    "period_weekly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-12'}",
+     "status": "ok"
+    },
+    "period_monthly": {
+     "day": "2026-11-11",
+     "entrants": "{'day': '2026-11-12', 'inserted': False, 'reason': 'no 00:05 forecast for 2026-11-12'}",
+     "status": "ok"
+    }
+   },
+   "decoy ids found in": {}
+  },
+  "line-up today/D missing -> forecast": {
+   "rc": 1,
+   "parquet written": false,
+   "last lines": [
+    "no line-up for 2026-11-12: data/today/2026-11-12.json missing or empty"
+   ]
+  }
+ },
+ "notes": [],
+ "gsutil reads served from real bucket (non-chain paths)": [
+  "raw/ph_history/2025/",
+  "tables",
+  "tmp/e5/vm_writers/assets/a2x/",
+  "tmp/ph_ops/hybrid_vmonly_days.json"
+ ]
+}

@@ -28,7 +28,8 @@ def entrants():
     X = X.merge(L[["id", "votes"]], on="id").dropna(subset=["votes"]); X = X[X.day.str[:7] < NXT[:7]]
     a, b = (0.0, 1.0) if X.empty else tuple(np.polyfit(X.both, np.log1p(X.votes), 1)[::-1])
     F["pv"] = np.expm1(a + b * F[col]); return F, {"source": f"raw/daily/{NXT}/forecast_{NXT}.parquet {col}" + ("" if col == "pred_arm2" else " (arm 2 missing: clean_nosite)"),
-                                                    "calibration log1p(votes) = a + b*pred": [round(float(a), 3), round(float(b), 3)], "calibration rows (months < " + NXT[:7] + ")": int(len(X))}
+                                                    "calibration log1p(votes) = a + b*pred": [round(float(a), 3), round(float(b), 3)], "calibration rows (months < " + NXT[:7] + ")": int(len(X)),
+                                                    **({} if col == "pred_arm2" else {"calibration note": "fit on arm-2 preds, applied to clean_nosite preds (arm 2 missing): approximate"})}
 ENT, ENT_INFO = entrants()
 for per in ("week", "month"):
     if per == "week": start = d - pd.Timedelta(days=d.weekday()); c = d.weekday() + 1

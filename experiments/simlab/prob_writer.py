@@ -48,6 +48,8 @@ if KIND == "0005":
                 m = FZ["models"][f"top{k}"]; lin = m["intercept"] + sum(m["coef"][f] * F_[f] for f in FZ["features"]); S[f"p_top{k}"] = rescale(1 / (1 + np.exp(-lin)), min(k, n))
         else:
             S = S.sort_values("rank").reset_index(drop=True); method = "rank table by position (published model not arm 2, or no scores)"
+            if src and "arm2" not in src: out["basis_note"] = ("hit rates by position in arm 2's backtest order; tonight's order is not arm 2 (clean_nosite scores 54.5 vs 58.1 "
+                                                               "top 3 on the same 183 days), so these chances are likely a little high")
             for k in (3, 5, 10):
                 tb = {int(a): b for a, b in FZ["fallback rank table (no scores)"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale(np.minimum(np.arange(1, n + 1), 16).astype(int).tolist() and [tb.get(min(r, 16), 0.0) for r in range(1, n + 1)], min(k, n))
         S["rank"] = np.arange(1, n + 1)
@@ -58,8 +60,8 @@ if KIND == "0005":
 else:
     FZ = json.load(open(os.path.join(PM, "frozen_prob_prereveal.json"))); S = None
     raw = gcat(f"{B}/results/web/predictions/{D}_prereveal.json")
-    R = pd.DataFrame(json.loads(raw).get("ranking") or []) if raw else pd.DataFrame()
-    if len(R) and {"id", "rank"} <= set(R): S = R[["id", "rank"]]; src = "results/web/predictions"
+    J3 = json.loads(raw) if raw else {}; R = pd.DataFrame(J3.get("ranking") or []); M3, FB3 = J3.get("model"), J3.get("fallback_used")
+    if len(R) and {"id", "rank"} <= set(R): S = R[["id", "rank"]]; src = f"results/web/predictions (model {M3}, fallback_used {FB3})"   # integration audit: name the producer
     else:   # no file, or a none_available night (empty ranking)
         raw = gcat(f"{B}/results/early_forecast/{D}_P345.json")
         if raw:
@@ -68,9 +70,19 @@ else:
     if S is None: out.update({"prediction": "03:45 PT", "status": "not published"})
     else:
         S["id"] = S.id.astype(str); S = S.sort_values("rank").reset_index(drop=True); n = len(S); S["rank"] = np.arange(1, n + 1)
+        if M3 == "midnight_order":   # integration audit: the 03:45 file shows the 00:05 order (no pre-reveal read): the hybrid replay table does not apply
+            F0 = json.load(open(os.path.join(PM, "frozen_prob_0005.json")))
+            for k in (3, 5, 10):
+                tb = {int(a): b for a, b in F0["fallback rank table (no scores)"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale([tb.get(min(r, 16), 0.0) for r in S["rank"]], min(k, n))
+            S["rank"] = np.arange(1, n + 1)
+            out.update({"prediction": "03:45 PT", "status": "ok", "source": src, "method": "00:05 rank table by position (the 03:45 file shows the 00:05 order: no pre-reveal read)",
+                        "basis": F0["basis"], "basis_n_days": 183, **({"basis_note": "hit rates by position in arm 2's backtest order; tonight's 00:05 order is clean_nosite (54.5 vs 58.1 top 3 on the same 183 days), so these chances are likely a little high"} if "clean_nosite" in str(J3.get("backtest")) else {}), "launches": [{"id": r.id, "rank": int(r["rank"]), **{f"p_top{k}": round(float(r[f"p_top{k}"]), 3) for k in (3, 5, 10)}} for _, r in S.iterrows()]})
+            S = None
+    if S is not None and KIND != "0005" and out.get("status") != "ok":
         for k in (3, 5, 10):
             tb = {int(a): b for a, b in FZ["table"][f"top{k}"].items()}; S[f"p_top{k}"] = rescale([tb.get(r if r <= 10 else 16, 0.0) for r in S["rank"]], min(k, n))
         cal = CAL["(2) 03:45 replay (hybrid order), rank-only table"]
+        if M3 not in (None, "hybrid_vm") or FB3: out["basis_note"] = f"rank table from the hybrid_vm replay; this night's order: model {M3}, fallback_used {FB3}"
         out.update({"prediction": "03:45 PT", "status": "ok", "source": src, "method": "rank table (position in the published 03:45 order)", "basis": FZ["basis"], "basis_n_days": 11,
                     "calibration (replay, leave-one-day-out)": {f"top{k}": {"Brier skill vs base rate": cal[f"top{k}"]["Brier skill vs base rate"], "rank cells % [CI], n": cal[f"top{k}"]["pooled rank cells: % finishing top k [CI], n (positions 1-10, 16+ = 11+)"]} for k in (3, 5, 10)},
                     "caveat": "11 replay days: per-position rates have wide intervals (e.g. position 3: 45% [18, 73] for top 3).",
