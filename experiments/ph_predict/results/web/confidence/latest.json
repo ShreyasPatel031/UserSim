@@ -1,32 +1,32 @@
 {
- "day": "2026-11-13",
+ "day": "2026-11-14",
  "applies_to": "clean shadow model",
  "stable": true,
  "rule": "conf_v2",
- "launches": 20,
+ "launches": 28,
  "source": "from the clean shadow model (clean_v3, 00:05 inputs; results/shadow_makerfix pred_clean); never the published ranking",
- "label": "open_field",
- "p_clear_leader": 0.54,
+ "label": "clear_leader",
+ "p_clear_leader": 0.789,
  "cutoff": 0.7787,
  "features": {
-  "g12z": 0.126,
-  "z1": 1.754,
-  "t3z": 1.901,
-  "ln": 2.996
+  "g12z": 0.551,
+  "z1": 2.75,
+  "t3z": 2.606,
+  "ln": 3.332
  },
- "text": "Open field today: on past days like this our #1 finished in the final top 3 about 68% of the time (85 of 125 days).",
+ "text": "Clear leader today: on past days like this our #1 finished in the final top 3 about 85% of the time (59 of 69 days).",
  "validated_rates": {
-  "days": 125,
-  "p1_top3": 0.68,
+  "days": 69,
+  "p1_top3": 0.855,
   "p1_ci": [
-   0.6,
-   0.76
+   0.768,
+   0.928
   ],
-  "p1_count": "85 of 125",
-  "top3_hits": 1.656,
+  "p1_count": "59 of 69",
+  "top3_hits": 1.971,
   "top3_hits_ci": [
-   1.536,
-   1.776
+   1.826,
+   2.13
   ]
  },
  "eval": "month-forward, May 1 - Nov 10 2026, 194 days; label fixed on training months; CIs day bootstrap",
@@ -34,74 +34,74 @@
  "picks": [
   {
    "pick": 1,
-   "id": "1293281",
-   "p_top3": 0.548,
-   "p_top5": 0.758,
-   "p_top10": 0.928
+   "id": "1301510",
+   "p_top3": 0.741,
+   "p_top5": 0.863,
+   "p_top10": 0.958
   },
   {
    "pick": 2,
-   "id": "1313622",
-   "p_top3": 0.537,
-   "p_top5": 0.713,
-   "p_top10": 0.927
+   "id": "1313358",
+   "p_top3": 0.593,
+   "p_top5": 0.728,
+   "p_top10": 0.925
   },
   {
    "pick": 3,
-   "id": "1314781",
-   "p_top3": 0.408,
-   "p_top5": 0.651,
-   "p_top10": 0.907
+   "id": "1314543",
+   "p_top3": 0.477,
+   "p_top5": 0.687,
+   "p_top10": 0.913
   },
   {
    "pick": 4,
-   "id": "1314458",
-   "p_top3": 0.424,
-   "p_top5": 0.682,
-   "p_top10": 0.906
+   "id": "1288376",
+   "p_top3": 0.386,
+   "p_top5": 0.626,
+   "p_top10": 0.875
   },
   {
    "pick": 5,
-   "id": "1282575",
-   "p_top3": 0.374,
-   "p_top5": 0.632,
-   "p_top10": 0.854
+   "id": "1314882",
+   "p_top3": 0.282,
+   "p_top5": 0.52,
+   "p_top10": 0.779
   },
   {
    "pick": 6,
-   "id": "1314761",
-   "p_top3": 0.262,
-   "p_top5": 0.491,
-   "p_top10": 0.83
+   "id": "1315082",
+   "p_top3": 0.125,
+   "p_top5": 0.28,
+   "p_top10": 0.658
   },
   {
    "pick": 7,
-   "id": "1284660",
-   "p_top3": 0.269,
-   "p_top5": 0.542,
-   "p_top10": 0.872
+   "id": "1310337",
+   "p_top3": 0.076,
+   "p_top5": 0.187,
+   "p_top10": 0.553
   },
   {
    "pick": 8,
-   "id": "1314743",
-   "p_top3": 0.107,
-   "p_top5": 0.225,
-   "p_top10": 0.612
+   "id": "1305977",
+   "p_top3": 0.097,
+   "p_top5": 0.183,
+   "p_top10": 0.523
   },
   {
    "pick": 9,
-   "id": "1312154",
-   "p_top3": 0.043,
-   "p_top5": 0.141,
-   "p_top10": 0.534
+   "id": "1310689",
+   "p_top3": 0.053,
+   "p_top5": 0.156,
+   "p_top10": 0.541
   },
   {
    "pick": 10,
-   "id": "1314471",
-   "p_top3": 0.045,
-   "p_top5": 0.098,
-   "p_top10": 0.448
+   "id": "1315433",
+   "p_top3": 0.035,
+   "p_top5": 0.071,
+   "p_top10": 0.346
   }
  ],
- "written_at": "2026-11-13T09:39:36.393990+00:00"
+ "written_at": "2026-11-14T14:30:21.995146+00:00"
 }

@@ -3,9 +3,9 @@
   "forecast_0005": {
    "day": "2026-11-14",
    "data_cut": "2026-11-14 08:05:00+00:00",
-   "written_at": "2026-11-14T11:50:22.229464+00:00",
+   "written_at": "2026-11-14T14:32:53.088563+00:00",
    "status": "late",
-   "late_min": 225.4
+   "late_min": 387.9
   },
   "weekly est": {
    "day": "2026-11-13",
@@ -17,16 +17,16 @@
   "scoreboard": {
    "day": null,
    "data_cut": null,
-   "written_at": "2026-11-14T11:52:14.680679+00:00",
+   "written_at": "2026-11-14T14:34:39.027044+00:00",
    "status": "ok",
    "late_min": null
   },
   "monthly dayend": {
-   "day": "2026-11-12",
-   "data_cut": "2026-11-13T07:59:59Z",
-   "written_at": "2026-11-13T08:36:58.348038+00:00",
-   "status": "ok",
-   "late_min": 37.0
+   "day": "2026-11-13",
+   "data_cut": null,
+   "written_at": "2026-11-14T14:31:27.312110+00:00",
+   "status": "missing read",
+   "late_min": null
   },
   "early_forecast C12": {
    "day": "2026-11-12",
@@ -43,18 +43,18 @@
    "late_min": 18.9
   },
   "weekly dayend": {
-   "day": "2026-11-12",
+   "day": "2026-11-13",
    "data_cut": null,
-   "written_at": "2026-11-13T08:19:35.705544+00:00",
+   "written_at": "2026-11-14T14:31:16.229602+00:00",
    "status": "ok",
    "late_min": null
   },
   "confidence": {
-   "day": "2026-11-13",
-   "data_cut": "2026-11-13 08:05:00+00:00",
-   "written_at": "2026-11-13T09:39:41.093294+00:00",
+   "day": "2026-11-14",
+   "data_cut": "2026-11-14 08:05:00+00:00",
+   "written_at": "2026-11-14T14:30:26.555930+00:00",
    "status": "late",
-   "late_min": 94.7
+   "late_min": 385.4
   },
   "pre_reveal P0": {
    "day": "2026-11-13",
@@ -85,23 +85,23 @@
    "late_min": 26.3
   },
   "weekly running": {
-   "day": "2026-11-12",
+   "day": "2026-11-13",
    "data_cut": null,
-   "written_at": "2026-11-13T10:26:28.121660+00:00",
+   "written_at": "2026-11-14T14:31:36.276247+00:00",
    "status": "ok",
    "late_min": null
   },
   "weekly running_g": {
-   "day": "2026-11-12",
+   "day": "2026-11-13",
    "data_cut": null,
-   "written_at": "2026-11-13T10:26:34.210765+00:00",
+   "written_at": "2026-11-14T14:31:43.427493+00:00",
    "status": "ok",
    "late_min": null
   },
   "monthly running": {
-   "day": "2026-11-12",
+   "day": "2026-11-13",
    "data_cut": null,
-   "written_at": "2026-11-13T10:26:45.269429+00:00",
+   "written_at": "2026-11-14T14:31:54.356613+00:00",
    "status": "ok",
    "late_min": null
   },
@@ -162,5 +162,5 @@
    "late_min": 278.0
   }
  },
- "updated_at": "2026-11-14T11:52:14.680679+00:00"
+ "updated_at": "2026-11-14T14:34:39.027044+00:00"
 }

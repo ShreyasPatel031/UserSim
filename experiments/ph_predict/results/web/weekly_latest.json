@@ -2,9 +2,9 @@
  "week_monday": "2026-11-09",
  "points": {
   "dayend": {
-   "day": "2026-11-12",
-   "written_at": "2026-11-13T08:19:33.204203+00:00",
-   "file": "results/weekly_live/2026-11-09_2026-11-12_dayend.json"
+   "day": "2026-11-13",
+   "written_at": "2026-11-14T14:31:13.960821+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-13_dayend.json"
   },
   "R4": {
    "day": "2026-11-11",
@@ -17,15 +17,15 @@
    "file": "results/weekly_live/2026-11-09_2026-11-13_est.json"
   },
   "running": {
-   "day": "2026-11-12",
-   "written_at": "2026-11-13T10:26:26.008362+00:00",
-   "file": "results/weekly_live/2026-11-09_2026-11-12_running.json"
+   "day": "2026-11-13",
+   "written_at": "2026-11-14T14:31:34.001884+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-13_running.json"
   },
   "running_g": {
-   "day": "2026-11-12",
-   "written_at": "2026-11-13T10:26:32.152548+00:00",
-   "file": "results/weekly_live/2026-11-09_2026-11-12_running_g.json"
+   "day": "2026-11-13",
+   "written_at": "2026-11-14T14:31:40.797941+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-13_running_g.json"
   }
  },
- "updated_at": "2026-11-13T12:23:39.558254+00:00"
+ "updated_at": "2026-11-14T14:31:40.797941+00:00"
 }

@@ -23,7 +23,7 @@ if [ "$M" = publish ]; then
   touch $A/PUBLISH; echo "arm 3 PUBLISH set $(date -u +%FT%TZ)"; exit 0
 fi
 S=${2:?folder}; m() { md5sum < "$1" | cut -c1-8; }
-declare -A WANT=( [arm3_feats.py]=8cfe9192 [arm3_live.py]=ad2fab6a [test_arm3_feats.py]=1a418cbf [arm3_shadow_run.py]=29d6809e [import_gate.py]=be4891b9 )
+declare -A WANT=( [arm3_feats.py]=8cfe9192 [arm3_live.py]=09a6a113 [test_arm3_feats.py]=1a418cbf [arm3_shadow_run.py]=29d6809e [import_gate.py]=be4891b9 )
 for f in "${!WANT[@]}"; do [ "$(m $S/$f)" = "${WANT[$f]}" ] || { echo "$f md5 $(m $S/$f) != ${WANT[$f]}"; exit 1; }; done
 N=$W/arm3_live.stage; rm -rf /home/agent/w/arm3_live.stage; mkdir -p $N/cache $N/results
 for f in "${!WANT[@]}"; do cp $S/$f $N/$f; done; cp $W/arm2_live/history_retrain.py $W/arm2_live/ctrl.py $W/arm2_live/honest.py $N/   # pinned copies, as arm2_live (Nov 14 ctrl miss)

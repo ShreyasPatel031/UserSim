@@ -1,0 +1,228 @@
+{
+ "week_monday": "2026-11-09",
+ "day": "2026-11-13",
+ "point": "dayend",
+ "written_at": "2026-11-14T14:31:13.960821+00:00",
+ "launches": 160,
+ "days_covered": [
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12",
+  "2026-11-13"
+ ],
+ "sunday_call": false,
+ "dropped_not_featured": 0,
+ "forecast": [
+  {
+   "id": "1288148",
+   "day": "2026-11-10",
+   "pred_rank": 1,
+   "est": 438.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1307104",
+   "day": "2026-11-09",
+   "pred_rank": 2,
+   "est": 417.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1305854",
+   "day": "2026-11-12",
+   "pred_rank": 3,
+   "est": 382.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1302788",
+   "day": "2026-11-09",
+   "pred_rank": 4,
+   "est": 359.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1308353",
+   "day": "2026-11-12",
+   "pred_rank": 5,
+   "est": 337.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1293281",
+   "day": "2026-11-13",
+   "pred_rank": 6,
+   "est": 315.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1290845",
+   "day": "2026-11-10",
+   "pred_rank": 7,
+   "est": 306.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1285122",
+   "day": "2026-11-11",
+   "pred_rank": 8,
+   "est": 298.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1293370",
+   "day": "2026-11-09",
+   "pred_rank": 9,
+   "est": 288.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1311491",
+   "day": "2026-11-11",
+   "pred_rank": 10,
+   "est": 284.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1298575",
+   "day": "2026-11-12",
+   "pred_rank": 11,
+   "est": 281.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1312557",
+   "day": "2026-11-12",
+   "pred_rank": 12,
+   "est": 264.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1296277",
+   "day": "2026-11-11",
+   "pred_rank": 13,
+   "est": 239.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1305545",
+   "day": "2026-11-10",
+   "pred_rank": 14,
+   "est": 236.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1296366",
+   "day": "2026-11-10",
+   "pred_rank": 15,
+   "est": 232.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1310787",
+   "day": "2026-11-10",
+   "pred_rank": 16,
+   "est": 230.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1306799",
+   "day": "2026-11-09",
+   "pred_rank": 17,
+   "est": 227.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1282575",
+   "day": "2026-11-13",
+   "pred_rank": 18,
+   "est": 223.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1308411",
+   "day": "2026-11-10",
+   "pred_rank": 19,
+   "est": 219.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1314781",
+   "day": "2026-11-13",
+   "pred_rank": 20,
+   "est": 208.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1311828",
+   "day": "2026-11-11",
+   "pred_rank": 21,
+   "est": 177.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1310674",
+   "day": "2026-11-12",
+   "pred_rank": 22,
+   "est": 170.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1314761",
+   "day": "2026-11-13",
+   "pred_rank": 23,
+   "est": 167.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1296250",
+   "day": "2026-11-09",
+   "pred_rank": 24,
+   "est": 162.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1313622",
+   "day": "2026-11-13",
+   "pred_rank": 25,
+   "est": 160.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1266350",
+   "day": "2026-11-09",
+   "pred_rank": 26,
+   "est": 157.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1306167",
+   "day": "2026-11-11",
+   "pred_rank": 27,
+   "est": 150.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1311866",
+   "day": "2026-11-12",
+   "pred_rank": 28,
+   "est": 147.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1309685",
+   "day": "2026-11-10",
+   "pred_rank": 29,
+   "est": 137.0,
+   "src": "posts_ts"
+  },
+  {
+   "id": "1308023",
+   "day": "2026-11-09",
+   "pred_rank": 30,
+   "est": 135.0,
+   "src": "posts_ts"
+  }
+ ]
+}
