@@ -19,7 +19,7 @@ for f in h25_shadow.py history_retrain.py readable_shadow.py readable_model.py; 
 git -C $R archive fcbcd617 experiments/simlab experiments/pipeline | tar x -C $O/tw/e5/e5why; echo fcbcd617 > $O/tw/e5/e5why/.pin
 git -C $R archive 4e4dd4e9 experiments/simlab experiments/pipeline | tar x -C $O/tw/e5/e5wt; echo 4e4dd4e9 > $O/tw/e5/e5wt/.pin
 git -C $R show 3c399c39:experiments/simlab/follow_shadow.py > $O/tw/e5/e5f/follow_shadow.py
-cp $(dirname "$0")/tw.sh $(dirname "$0")/tw.cron $(dirname "$0")/tick12.sh $(dirname "$0")/sched12.txt $O/tw/
+cp $(dirname "$0")/tw.sh $(dirname "$0")/tw.cron $(dirname "$0")/tick12.sh $(dirname "$0")/sched12.txt $(dirname "$0")/import_gate.py $O/tw/
 echo "$C" > $O/tw/COMMIT
 tar czf $O/tw_code_$C.tgz -C $O tw
 M=$(md5sum < $O/tw_code_$C.tgz | cut -c1-8); S=$(du -h $O/tw_code_$C.tgz | cut -f1)

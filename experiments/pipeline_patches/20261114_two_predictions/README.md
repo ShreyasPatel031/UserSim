@@ -57,3 +57,14 @@ Nov 12 and 13: midnight writes with model clean_nosite, fallback "clean_nosite (
 - Checks the @reboot run_daily line and waits for a tick.
 
 `bash deploy_b12a.sh rollback` removes only this block and moves the tree aside. It never restores a whole file, and it refuses if the result would lose the @reboot line (review B3).
+
+## Residual fixes (12:36Z Nov 14)
+- prereveal: a T-read older than 03:44 PT keeps model hybrid_vm but sets fallback_used "stale_read" (done_ok fails, 03:52 retry runs, page says so).
+- midnight: extra 01:30 PT slot; done_ok treats none_available (any fallback) as not done, so a late parquet replaces it.
+- deploy_b12a.sh / deploy_b12.sh: the 00:05-01:00 PT guard sits below the rollback branch (rollback always allowed); deploy must run as agent.
+- HARD IMPORT GATE (import_gate.py): every module each job imports, imported as cron runs it (cwd, `env -u PYTHONPATH` or the job's own
+  PYTHONPATH, /opt/exp/bin/python3, -I where the job uses it); abort on any failure. b12a stages into tw12a.stage and replaces the live tree
+  only after the gate. b12 also gates the arm-2 branch (pipeline forecast.py -> ~/w/arm2_live/h25_live -> training_window -> ctrl/honest).
+- VM tests 12:50Z: gate ok for two_predictions (8 imports), recorder_extra (5), pipeline forecast.py (11); a missing module inside a
+  function fails rc=1; the Nov 14 miss replayed (arm2_live without ctrl.py/honest.py) fails "No module named 'ctrl'" rc=1.
+  DRY prereveal 2026-11-14 under env -u PYTHONPATH: hybrid_vm, fallback_used stale_read (read 03:00 PT), as on the night.

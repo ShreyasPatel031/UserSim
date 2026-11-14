@@ -8,6 +8,8 @@ J=${1:?job}; TW=/home/agent/w/tw12a; B=gs://usersim-bakeoff-347838016394/usersim
 export PATH=/opt/exp/bin:$PATH TZ=America/Los_Angeles; D=$(date +%F); mkdir -p $TW/logs $TW/locks
 exec 8>$TW/locks/$J.lock; flock -n 8 || exit 0
 declare -A DUE=([midnight]="00:25" [prereveal]="03:50" [rec]="03:45")
+# done = written with a model and fallback_used null; none_available / stale_read / any fallback is NOT done, so the next slot (00:35, 01:30;
+# 03:52) rewrites it once the input lands (orchestrator 12:36Z Nov 14)
 done_ok() { gsutil cat $B/results/web/predictions/${D}_$1.json 2>/dev/null | python3 -c "import json,sys; d=json.load(sys.stdin); sys.exit(0 if d.get('fallback_used') is None and d.get('model') else 1)" 2>/dev/null; }
 attempt() {
   case "$J" in
