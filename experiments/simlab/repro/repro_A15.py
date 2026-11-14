@@ -31,7 +31,8 @@ CASES = {"midnight arm2": ("0005", PQ, None, True, ["58.1 / 65.2 / 76.9", "183",
          "prereveal stale_read": ("prereveal", PQ, STALE, True, ["72.2 / 75.0 / 73.3", "older than 03:44"]),
          "prereveal no_prior": ("prereveal", None, FULL, True, ["72.2 / 75.0 / 73.3"]),
          "prereveal midnight_order": ("prereveal", PQ, [], True, ["58.1 / 65.2 / 76.9", "00:05 order"])}
-old, new = load("20261114_two_predictions_12a1", "a1"), load("20261114_two_predictions_12a2", "a2"); res = {}
+old, new = load(os.environ.get("A15_OLD", "20261114_two_predictions_12a1"), "a1"), load(os.environ.get("A15_NEW", "20261114_two_predictions_12a2"), "a2"); res = {}
+if os.environ.get("A15_WANT"): CASES = {k: (*v[:4], json.load(open(os.environ["A15_WANT"]))[k]) for k, v in CASES.items()}   # other bundle's expected label strings
 for nm, (kind, F, reads, w, want) in CASES.items():
     a, b = run(old, kind, F, reads, w), run(new, kind, F, reads, w)
     same = {k: v for k, v in a.items() if k != "backtest"} == {k: v for k, v in b.items() if k != "backtest"}

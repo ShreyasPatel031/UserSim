@@ -19,6 +19,14 @@ d = pd.Timestamp(D); NXT = (d + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
 # top 3/5/10, always-insert not worse than Mon-Wed only): this file is written ~01:20 PT on D+1, after D+1's 00:05 forecast exists, so the
 # board = days <= D by votes + D+1's line-up at calibrated arm-2 predicted final votes when D+1 is in the same period. Calibration
 # log1p(votes) = a + b * pred fit AS OF: arm-2 walk-forward preds (assets a2x/X.parquet 'both') x warehouse votes, months < D+1's month.
+def polluted(day):
+    """True when `day`'s 00:05 forecast was built before the today-rows fix: the fix-date marker (tw.sh exports TODAY_BUG_FIXED = its
+    fixed_from) decides per day; TODAY_ROWS_FIX_DEPLOYED alone (no date) is not enough, because tw.sh sets it the evening the fix is
+    installed while that evening's files still describe polluted nights (E5 pre-flight 20:31Z Nov 14)."""
+    fx = os.environ.get("TODAY_BUG_FIXED", "").strip()
+    return not (len(fx) == 10 and str(day) >= fx)
+
+
 def entrants():
     fc = subprocess.run(["gsutil", "cat", f"{B}/raw/daily/{NXT}/forecast_{NXT}.parquet"], capture_output=True).stdout
     if not fc: return None, "no 00:05 forecast for " + NXT
@@ -58,7 +66,7 @@ for per in ("week", "month"):
             pr = [{"id": r.id, "votes_now": None, "predicted_final_votes": round(float(r.pv), 1), "source": "predicted", **{f"p_final_top{k}": None for k in (3, 5, 10)}} for r in ENT.itertuples()]
             board = sorted(rows + pr, key=lambda o: -(o["votes_now"] if o["source"] == "votes" else o["predicted_final_votes"]))
             for i, o in enumerate(board): o["board_position"] = i + 1
-            ENT_INFO = {**ENT_INFO, **({"note": "entrant predictions from a forecast built on polluted hunter-history inputs (stale data/today rows); fix pending"} if os.environ.get("TODAY_ROWS_FIX_DEPLOYED") != "1" else {}),
+            ENT_INFO = {**ENT_INFO, **({"note": "entrant predictions from a forecast built on polluted hunter-history inputs (stale data/today rows); fix pending"} if polluted(NXT) else {}),
                         "calibration source": "backtest only: arm-2 walk-forward preds (assets a2x/X.parquet 'both', Apr-Oct) x warehouse votes; no live preds"}
             out.update({"board_line": "with_entrants", "entrants": {"day": NXT, "n": len(pr), **ENT_INFO}, "shadow_votes_only": [dict(o) for o in rows],
                         "board_day": {"launches (with_entrants)": f"{NXT} 00:05 PT board: votes through {D} + {NXT} line-up predicted",

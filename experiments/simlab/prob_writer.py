@@ -87,7 +87,13 @@ else:
                     "calibration (replay, leave-one-day-out)": {f"top{k}": {"Brier skill vs base rate": cal[f"top{k}"]["Brier skill vs base rate"], "rank cells % [CI], n": cal[f"top{k}"]["pooled rank cells: % finishing top k [CI], n (positions 1-10, 16+ = 11+)"]} for k in (3, 5, 10)},
                     "caveat": "11 replay days: per-position rates have wide intervals (e.g. position 3: 45% [18, 73] for top 3).",
                     "launches": [{"id": r.id, "rank": int(r["rank"]), **{f"p_top{k}": round(float(r[f"p_top{k}"]), 3) for k in (3, 5, 10)}} for _, r in S.iterrows()]})
-if out.get("status") == "ok" and os.environ.get("TODAY_ROWS_FIX_DEPLOYED") != "1":   # orchestrator 16:38Z scope audit
+def polluted(day):
+    """True when `day`'s 00:05 forecast was built before the today-rows fix: the fix-date marker (tw.sh exports TODAY_BUG_FIXED = its
+    fixed_from) decides per day; TODAY_ROWS_FIX_DEPLOYED alone (no date) is not enough, because tw.sh sets it the evening the fix is
+    installed while that evening's files still describe polluted nights (E5 pre-flight 20:31Z Nov 14)."""
+    fx = os.environ.get("TODAY_BUG_FIXED", "").strip()
+    return not (len(fx) == 10 and str(day) >= fx)
+if out.get("status") == "ok" and polluted(D):   # orchestrator 16:38Z scope audit; per-day since the pre-flight
     out["input_note"] = ("the live 00:05 forecast these chances are built on used polluted hunter-history inputs (stale data/today rows); fix pending"
                          if KIND == "0005" else "the 03:45 order's clean prior term comes from the live 00:05 forecast, built on polluted hunter-history inputs (stale data/today rows); fix pending")
 p = os.path.join(SP, f"prob_{D}_{KIND}.json"); json.dump(out, open(p, "w"), indent=1, default=float)

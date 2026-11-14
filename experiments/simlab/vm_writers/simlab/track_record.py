@@ -49,13 +49,16 @@ if os.path.exists(_CN):
     backtest_rows(Hc, "pure", "backtest (clean_nosite, fallback model)", "clean_nosite (published only when arm 2 is missing)")
 # 03:45 replay = the line that will be published (bundle 12a hybrid_vm, PH ops' per-day replay hits, read rule agreed with E5, LODO
 # weights); E5's re-implementation of the earlier hybrid (78.2 top 10) is no longer used here (orchestrator / PH ops, Nov 14).
-HV = json.loads(gcat(f"{B}/tmp/ph_ops/hybrid_vmonly_days.json") or b"[]")
-HV = HV.get("days", HV) if isinstance(HV, dict) else HV
-NL = {d: v["n launches"] for d, v in json.load(open(os.path.join(HERE, "reports", "prereveal_345", "prereveal_345.json")))["per day (plain, hybrid) top3/5/10 hits %"].items()}
-for v in HV:
-    nr = len(first_part_truth(v["day"]) or {})
-    rows.append({"day": v["day"], "prediction": "03:45 PT", "flag": "replay", "line": "hybrid_vm (bundle 12a), PH ops replay, LODO weights", "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked", "n_ranked": nr,
-                 "n_launches": NL.get(v["day"]), "hits_top3": int(v["hits_top3"]), "hits_top5": int(v["hits_top5"]), "hits_top10": int(v["hits_top10"])})
+# 03:45 replay rows (orchestrator 20:31Z Nov 14): scored here from per-day ORDERS (assets a2x/replay_orders_345.json: PH ops' leave-one-day-out
+# hybrid orders + the recorder's hidden order, every launch in the 03:00 read kept as in the live file), with the live scoreboard's rule.
+_RO = f"{SP}/a2x/replay_orders_345.json"
+RO = json.load(open(_RO)) if os.path.exists(_RO) else {"days": {}}
+for d, v in sorted(RO["days"].items()):
+    T = first_part_truth(d) or {}; nr = len(T)
+    for flag, key, line in (("replay", "hybrid", "hybrid_vm (bundle 12a), PH ops leave-one-day-out orders"), ("replay (hidden rank alone)", "hidden", "Product Hunt's hidden order at the 03:00 read")):
+        h = hits_k(v[key], T) if T else [None] * 3
+        rows.append({"day": d, "prediction": "03:45 PT", "flag": flag, "line": line, "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked",
+                     "n_ranked": nr, "n_launches": len(v[key]), "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
 today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
 for d in [x for x in pd.date_range("2026-11-14", today).strftime("%Y-%m-%d") if x < today]:   # closed PT days only
     for pred, path, col0, newp in (("00:05 PT", f"{B}/results/web/forecast_0005/{d}.json", "predicted_rank", f"{B}/results/web/predictions/{d}_0005.json"),
@@ -88,11 +91,12 @@ for (pred, flag), g in S[S.status.isin(["scored", "excluded: fewer than 10 ranke
     if (g.status != "scored").any() and f"{pred} | {flag}" in summ:   # labelled extra, never the headline: every day incl. short lists
         summ[f"{pred} | {flag}"]["extra: all days incl. fewer than 10 ranked (not comparable to live)"] = {
             "n_days": int(len(g)), **{f"top{k} hits %": ci(g[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}}
-# 03:45 replay (orchestrator 20:11Z Nov 14): computed from the per-day file (tmp/ph_ops/hybrid_vmonly_days.json), never hard-coded. PH ops'
-# 12-day leave-one-day-out figure (72.2 / 75.0 / 77.5, Nov 2-13) returns once Nov 13 and the per-day orders are in that file.
+RO_NOTE = ("settled Nov 14: orders keep every launch in the 03:00 read, as the live 03:45 file does, and an unranked pick counts as a miss, as on the live "
+           "scoreboard. PH ops' replay left out launches that never got a daily rank (Nov 4, Nov 5: one each), which gave {ph}")
 if "03:45 PT | replay" in summ:
-    summ["03:45 PT | replay"]["note"] = ("computed from PH ops' stored per-day hits (Nov 2-12); their 12-day leave-one-day-out figure 72.2 / 75.0 / 77.5 "
-                                         "(Nov 2-13) is shown again once Nov 13 is in the per-day file")
+    summ["03:45 PT | replay"]["note"] = RO_NOTE.format(ph="72.2 / 76.7 / 77.5; the Nov 5 launch's slot among 6+ is unknown, placed at 6 (top 10 77.5 if placed last)")
+if "03:45 PT | replay (hidden rank alone)" in summ:
+    summ["03:45 PT | replay (hidden rank alone)"]["note"] = RO_NOTE.format(ph="72.2 / 76.7 / 73.3")
 # (orchestrator 15:52Z Nov 14, explanation audit item 1) the line published Oct 29 - Nov 13 was NOT arm 2 / clean_nosite: Oct 29 - Nov 12 the
 # old FULL launch model (all live inputs incl. named-maker inputs and llm_site; forecast.py before af6c25c2), Nov 13 clean_nosite
 # (scoreboard model_switch clean_from 2026-11-13). Figure from results/web/scoreboard.json summary (point 0005, method published, live).
@@ -101,15 +105,9 @@ summ["00:05 PT | live, previous published model"] = {"line": "old full launch mo
     "source": "results/web/scoreboard.json summary (0005 / published / live)", "day rule": DAY_RULE}
 for k_, was in (("00:05 PT | backtest", "58.1 / 65.2 / 76.9 on 183 days"), ("00:05 PT | backtest (clean_nosite, fallback model)", "54.5 / 64.7 / 76.0 on 183 days")):
     if k_ in summ: summ[k_]["note"] = RESTATED.format(was=was)
-# hidden order alone: E5's recomputation from the recorder files (latest read <= 03:45 PT within 65 min, Nov 2-13) with first-part truth
-# (integ/acc_recompute.py); PH ops' truth source gives 73.3 at top 10; being reconciled (orchestrator 20:11Z Nov 14).
-summ["03:45 PT | replay (hidden rank alone)"] = {"method": "no fitted weights", "n_days": 12, "first/last day": ["2026-11-02", "2026-11-13"], "day rule": DAY_RULE,
-    "line": "Product Hunt's hidden order at the 03:00/03:45 read", "source": "E5 recomputation, experiments/simlab/integ/acc_recompute.py",
-    "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [71.7, None, None, 12]},
-    "note": "top 10: 71.7 by our recomputation, 73.3 by PH ops' truth source; being reconciled"}
 out = {"version": "track_record_v1", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),
        "READ_ME": "backtest = model re-run on past days it was not trained on (00:05, Apr-Oct); replay = the 03:45 rule re-run on recorded "
-                  "pre-reveal reads (Nov 2-12); live = what the site actually published, scored against the official daily rank. Never pool "
+                  "pre-reveal reads (Nov 2-13); live = what the site actually published, scored against the official daily rank. Never pool "
                   "or average across flags; show each with its own label and interval. Intervals: 95% day bootstrap. Hits = how many of our "
                   "top k were in the real top k.",
        "summary": summ, "days": rows}

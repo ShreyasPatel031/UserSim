@@ -1,0 +1,4 @@
+{"midnight arm2": ["58.0 / 65.2 / 76.5", "184", "arm 2"], "midnight clean_nosite fallback": ["54.3 / 64.7 / 75.7", "184", "clean_nosite"],
+ "midnight none_available": ["no model"], "prereveal hybrid_vm": ["leave-one-day-out", "12 days"],
+ "prereveal hidden_rank_only": ["72.2 / 75.0 / 71.7", "hidden order alone"], "prereveal stale_read": ["72.2 / 75.0 / 71.7", "older than 03:44"],
+ "prereveal no_prior": ["72.2 / 75.0 / 71.7"], "prereveal midnight_order": ["58.0 / 65.2 / 76.5", "00:05 order"]}
