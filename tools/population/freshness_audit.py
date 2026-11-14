@@ -167,12 +167,18 @@ def check():
         h = json.loads(urllib.request.urlopen("https://usersim.vercel.app/api/ph/health", timeout=20).read())
         lb = (h.get("checks") or {}).get("live_board") or {}
         lok = ts(lb.get("last_ok_at")) if lb.get("last_ok_at") else None
-        if not lb.get("ok") or not lok or (now - lok).total_seconds() / 60 > 20:
+        age = lb.get("age_s")
+        if lb.get("configured") is False or age is None or age > 300:  # orchestrator 20:18Z: > 300 s or unconfigured = critical
             why = "not configured" if lb.get("configured") is False else (lb.get("last_error") or "stale")
-            out.append({"feed": "public_leaderboard", "public_leaderboard_stale_since_pt":
+            out.append({"feed": "public_leaderboard", "critical": True, "public_leaderboard_stale_since_pt":
                         lok.astimezone(PT).strftime("%Y-%m-%d %H:%M PT") if lok else None,
-                        "gap_min": round((now - lok).total_seconds() / 60, 1) if lok else None, "limit_min": 20,
-                        "reason": why, "configured": lb.get("configured")})
+                        "age_s": age, "limit_s": 300, "reason": why, "configured": lb.get("configured")})
+        lr = (h.get("checks") or {}).get("live_record") or {}
+        pn3 = now.astimezone(PT)
+        site_from = dt.datetime(2026, 11, 14, 21, 20, tzinfo=UTC)  # the new build went live ~20:18Z; give its cron an hour
+        if not lr.get("slots_today") and now >= site_from and (pn3.hour, pn3.minute) >= (1, 0):  # the site's 15-min snapshot job not triggered
+            out.append({"feed": "site_live_record", "slots_today": lr.get("slots_today"), "rows_today": lr.get("rows_today"),
+                        "last_ts_append_at": lr.get("last_ts_append_at"), "note": "15-min snapshot job not triggered"})
     except Exception as e:
         out.append({"feed": "public_leaderboard", "note": f"health endpoint unreadable: {type(e).__name__}"})
     try:
