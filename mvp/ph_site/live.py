@@ -423,7 +423,10 @@ def forecasts(day: str) -> dict[str, dict]:
             if p and p.get("fallback") != "none_available":
                 keep[k] = p
             elif p:                                       # none_available
-                keep[k] = legacy[k] or p
+                if k == "0005" and legacy[k]:             # the VM's own 00:05 forecast, labelled as such
+                    keep[k] = {**legacy[k], "fallback": "earlier_forecast"}
+                else:                                     # P345 is a shadow line now: never shown as the prediction
+                    keep[k] = p
             elif cut[k] and day >= cut[k]:
                 pass                                      # published era, not written yet
             elif legacy[k]:

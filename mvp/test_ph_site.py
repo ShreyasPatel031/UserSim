@@ -649,7 +649,13 @@ def test_A5_A6_A7_only_two_fixed_predictions(monkeypatch):
     assert f15["0005"]["ranks"] == {"7": 1}                            # A6: the published file is the day's only list
     assert f15["PRE"]["ranks"] == {"8": 1}                             # 03:45 hybrid until a published prereveal file exists
     f16 = live.forecasts("2026-11-16")
-    assert f16["0005"]["ranks"] == {"3": 1}                            # A7: a real forecast supersedes none_available
+    assert f16["0005"]["ranks"] == {"3": 1} and f16["0005"]["fallback"] == "earlier_forecast"   # A7, labelled
+    files["results/web/predictions/2026-11-16_prereveal.json"] = {"day": "2026-11-16", "model": "none_available", "fallback_used": "none_available", "ranking": []}
+    files["results/early_forecast/2026-11-16_P345.json"] = {"forecast": [{"id": 6, "pred_rank_hybrid": 1}], "written_at": "x"}
+    names.append(("results/web/predictions/2026-11-16_prereveal.json", ""))
+    live.gcs._cache.clear()
+    pre16 = live.forecasts("2026-11-16")["PRE"]
+    assert pre16["fallback"] == "none_available" and pre16["ranks"] == {}      # never the P345 shadow line
     f17 = live.forecasts("2026-11-17")
     assert "0005" not in f17                                           # A6: published era, not written yet: nothing shown
     f13 = live.forecasts("2026-11-13")
