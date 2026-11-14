@@ -20,20 +20,40 @@ RK = {d: dict(zip(g.id, g.daily_rank.astype(float))) for d, g in L.groupby("day"
 def hits(pred_order, d):
     t = sorted(RK[d], key=lambda i: RK[d][i]); return [int(len(set(pred_order[:k]) & set(t[:k]))) for k in (3, 5, 10)]
 rows = []
-X = pd.read_parquet(f"{SP}/a2x/X.parquet"); X["id"] = X.id.astype(str)
-for d, g in X.groupby("day"):
-    t = g.sort_values("dailyRank").id.tolist(); o = g.sort_values(["both", "id"], ascending=[False, True]).id.tolist()
-    nr = int(g.dailyRank.notna().sum())   # same day rule as live rows (orchestrator 12:45Z Nov 14): >= 10 ranked launches
-    rows.append({"day": d, "prediction": "00:05 PT", "flag": "backtest", "line": "arm 2 walk-forward fold", "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked",
-                 "n_launches": len(g), "n_ranked": nr,
-                 "hits_top3": len(set(o[:3]) & set(t[:3])), "hits_top5": len(set(o[:5]) & set(t[:5])), "hits_top10": len(set(o[:10]) & set(t[:10]))})
+# TRUTH RULE (orchestrator 20:11Z Nov 14, after E5's independent recomputation): the first warehouse launches part written after the day's
+# close (the initial snapshot counts as 2026-10-28T00:00Z), its daily_rank; a day counts when >= 10 launches are ranked; hits = our top k
+# that finished with daily_rank <= k. Replaces the build-time dailyRank in a2x/X.parquet and the "first k ranked present" definition.
+import period_parts as PP
+_FP = {}
+def first_part_truth(d):
+    if d not in _FP:
+        _FP[d] = None
+        for ts, f in PP.parts():
+            if ts < PP.close_utc(d): continue
+            g = pd.read_parquet(f, columns=["id", "day", "daily_rank"]); g = g[g.day.astype(str).str[:10] == d]
+            if len(g): _FP[d] = {str(i): float(r) for i, r in zip(g.id, g.daily_rank) if pd.notna(r)}; break
+    return _FP[d]
+def hits_k(order, T): return [int(len(set(order[:k]) & {i for i, r in T.items() if r <= k})) for k in (3, 5, 10)]
+RESTATED = "restated Nov 14: truth from the first read after close (rank <= k); was {was}"
+def backtest_rows(df, col, flag, line):
+    for d, g in df.groupby("day"):
+        T = first_part_truth(d) or {}; o = g.sort_values([col, "id"], ascending=[False, True]).id.astype(str).tolist(); nr = len(T)
+        h = hits_k(o, T) if T else [None] * 3
+        rows.append({"day": d, "prediction": "00:05 PT", "flag": flag, "line": line, "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked",
+                     "n_launches": len(g), "n_ranked": nr, "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
+X = pd.read_parquet(f"{SP}/a2x/X.parquet"); X["id"] = X.id.astype(str); X["day"] = X.day.astype(str).str[:10]
+backtest_rows(X, "both", "backtest", "arm 2 walk-forward fold")
+_CN = f"{SP}/a2x/history_retrain_decomp_preds_arm2.parquet"   # PH ops' month-forward preds; 'pure' = clean_nosite
+if os.path.exists(_CN):
+    Hc = pd.read_parquet(_CN); Hc["id"] = Hc.id.astype(str); Hc["day"] = Hc.day.astype(str).str[:10]
+    backtest_rows(Hc, "pure", "backtest (clean_nosite, fallback model)", "clean_nosite (published only when arm 2 is missing)")
 # 03:45 replay = the line that will be published (bundle 12a hybrid_vm, PH ops' per-day replay hits, read rule agreed with E5, LODO
 # weights); E5's re-implementation of the earlier hybrid (78.2 top 10) is no longer used here (orchestrator / PH ops, Nov 14).
 HV = json.loads(gcat(f"{B}/tmp/ph_ops/hybrid_vmonly_days.json") or b"[]")
 HV = HV.get("days", HV) if isinstance(HV, dict) else HV
 NL = {d: v["n launches"] for d, v in json.load(open(os.path.join(HERE, "reports", "prereveal_345", "prereveal_345.json")))["per day (plain, hybrid) top3/5/10 hits %"].items()}
 for v in HV:
-    nr = len(RK.get(v["day"], {}))
+    nr = len(first_part_truth(v["day"]) or {})
     rows.append({"day": v["day"], "prediction": "03:45 PT", "flag": "replay", "line": "hybrid_vm (bundle 12a), PH ops replay, LODO weights", "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked", "n_ranked": nr,
                  "n_launches": NL.get(v["day"]), "hits_top3": int(v["hits_top3"]), "hits_top5": int(v["hits_top5"]), "hits_top10": int(v["hits_top10"])})
 today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
@@ -48,10 +68,11 @@ for d in [x for x in pd.date_range("2026-11-14", today).strftime("%Y-%m-%d") if 
         if used == newp: F = pd.DataFrame(J.get("ranking") or []); col = "rank"   # bundle 12a: ranking [{rank, id, name(, score)}], rank 1 = top pick
         else: F = pd.DataFrame(J.get("forecast") or [])
         if F.empty or col not in F: rows.append({**base, "status": "not published"}); continue
-        if d not in RK: rows.append({**base, "status": "pending final ranks"}); continue
-        if len(RK[d]) < 10: rows.append({**base, "status": "excluded: fewer than 10 ranked", "n_ranked": len(RK[d])}); continue
-        F["id"] = F.id.astype(str); o = F.dropna(subset=[col]).sort_values(col).id.tolist(); h = hits(o, d)
-        rows.append({**base, "status": "scored", "n_launches": len(RK[d]), "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
+        T = first_part_truth(d)
+        if T is None: rows.append({**base, "status": "pending final ranks"}); continue
+        if len(T) < 10: rows.append({**base, "status": "excluded: fewer than 10 ranked", "n_ranked": len(T)}); continue
+        F["id"] = F.id.astype(str); o = F.dropna(subset=[col]).sort_values(col).id.tolist(); h = hits_k(o, T)
+        rows.append({**base, "status": "scored", "n_launches": len(T), "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
 def ci(v):
     v = np.asarray(v, float); bs = [v[rng.integers(0, len(v), len(v))].mean() for _ in range(4000)]
     return [round(float(v.mean()), 1), round(float(np.percentile(bs, 2.5)), 1), round(float(np.percentile(bs, 97.5)), 1), len(v)]
@@ -67,27 +88,25 @@ for (pred, flag), g in S[S.status.isin(["scored", "excluded: fewer than 10 ranke
     if (g.status != "scored").any() and f"{pred} | {flag}" in summ:   # labelled extra, never the headline: every day incl. short lists
         summ[f"{pred} | {flag}"]["extra: all days incl. fewer than 10 ranked (not comparable to live)"] = {
             "n_days": int(len(g)), **{f"top{k} hits %": ci(g[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}}
-# 03:45 replay headline (orchestrator 15:45Z Nov 14): PH ops' 12-day leave-one-day-out check (claude/ph-ops-agent results/hybrid_lodo.md),
-# replacing the 11-day in-sample-weight figure; the per-day replay rows below stay as recorded. Point values as published by PH ops.
-LODO = {"method": "leave-one-day-out", "n_days": 12, "first/last day": ["2026-11-02", "2026-11-13"], "source": "claude/ph-ops-agent experiments/ph_predict/results/hybrid_lodo.md",
-        "day rule": DAY_RULE}
+# 03:45 replay (orchestrator 20:11Z Nov 14): computed from the per-day file (tmp/ph_ops/hybrid_vmonly_days.json), never hard-coded. PH ops'
+# 12-day leave-one-day-out figure (72.2 / 75.0 / 77.5, Nov 2-13) returns once Nov 13 and the per-day orders are in that file.
 if "03:45 PT | replay" in summ:
-    summ["03:45 PT | replay"]["superseded 11-day figure (weights fit on all days)"] = summ["03:45 PT | replay"].get("all days")
-summ["03:45 PT | replay"] = {**LODO, "line": "hybrid_vm (hidden top 5 + ridge slots 6+)", "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [77.5, None, None, 12]},
-                             "note": "top-10 edge over Product Hunt's hidden order +4.2 [0.0, +8.3], not yet established (12 days)",
-                             **({"superseded 11-day figure (weights fit on all days)": summ["03:45 PT | replay"]["superseded 11-day figure (weights fit on all days)"]} if "03:45 PT | replay" in summ and "superseded 11-day figure (weights fit on all days)" in summ["03:45 PT | replay"] else {})}
+    summ["03:45 PT | replay"]["note"] = ("computed from PH ops' stored per-day hits (Nov 2-12); their 12-day leave-one-day-out figure 72.2 / 75.0 / 77.5 "
+                                         "(Nov 2-13) is shown again once Nov 13 is in the per-day file")
 # (orchestrator 15:52Z Nov 14, explanation audit item 1) the line published Oct 29 - Nov 13 was NOT arm 2 / clean_nosite: Oct 29 - Nov 12 the
 # old FULL launch model (all live inputs incl. named-maker inputs and llm_site; forecast.py before af6c25c2), Nov 13 clean_nosite
 # (scoreboard model_switch clean_from 2026-11-13). Figure from results/web/scoreboard.json summary (point 0005, method published, live).
 summ["00:05 PT | live, previous published model"] = {"line": "old full launch model (Oct 29 - Nov 12) then clean_nosite (Nov 13)", "flag": "live", "n_days": 11,
     "first/last day": ["2026-10-29", "2026-11-13"], "all days": {"top3 hits %": [51.5, 39.4, 63.6, 11], "top5 hits %": [60.0, None, None, 11], "top10 hits %": [73.6, None, None, 11]},
     "source": "results/web/scoreboard.json summary (0005 / published / live)", "day rule": DAY_RULE}
-# clean_nosite's own backtest (the fallback model on nights arm 2 is missing, e.g. Nov 14): PH ops' month-forward preds, 'pure' column, >= 10 ranked
-summ["00:05 PT | backtest (clean_nosite, fallback model)"] = {"line": "clean_nosite (published only when arm 2 is missing)", "flag": "backtest", "n_days": 183, "method": "month-forward, 5 seeds",
-    "first/last day": ["2026-04-01", "2026-10-31"], "all days": {"top3 hits %": [54.5, 51.2, 57.6, 183], "top5 hits %": [64.7, 62.1, 67.4, 183], "top10 hits %": [76.0, 74.3, 77.8, 183]},
-    "source": "claude/ph-ops-agent results/history_retrain_decomp_preds_arm2.parquet column pure", "day rule": DAY_RULE}
-summ["03:45 PT | replay (hidden rank alone)"] = {**LODO, "method": "no fitted weights", "line": "Product Hunt's hidden order at 03:00/03:45 read",
-                                                 "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [73.3, None, None, 12]}}
+for k_, was in (("00:05 PT | backtest", "58.1 / 65.2 / 76.9 on 183 days"), ("00:05 PT | backtest (clean_nosite, fallback model)", "54.5 / 64.7 / 76.0 on 183 days")):
+    if k_ in summ: summ[k_]["note"] = RESTATED.format(was=was)
+# hidden order alone: E5's recomputation from the recorder files (latest read <= 03:45 PT within 65 min, Nov 2-13) with first-part truth
+# (integ/acc_recompute.py); PH ops' truth source gives 73.3 at top 10; being reconciled (orchestrator 20:11Z Nov 14).
+summ["03:45 PT | replay (hidden rank alone)"] = {"method": "no fitted weights", "n_days": 12, "first/last day": ["2026-11-02", "2026-11-13"], "day rule": DAY_RULE,
+    "line": "Product Hunt's hidden order at the 03:00/03:45 read", "source": "E5 recomputation, experiments/simlab/integ/acc_recompute.py",
+    "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [71.7, None, None, 12]},
+    "note": "top 10: 71.7 by our recomputation, 73.3 by PH ops' truth source; being reconciled"}
 out = {"version": "track_record_v1", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),
        "READ_ME": "backtest = model re-run on past days it was not trained on (00:05, Apr-Oct); replay = the 03:45 rule re-run on recorded "
                   "pre-reveal reads (Nov 2-12); live = what the site actually published, scored against the official daily rank. Never pool "

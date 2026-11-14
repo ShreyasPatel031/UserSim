@@ -17,18 +17,28 @@ if gsutil -q stat gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/forward_s
 else echo "no frozen predictions for $YDAY: nothing to judge" >> $LOG; fi
 env -u VERCEL python forward_band.py $TODAY $SP $WT >> $LOG 2>&1
 FWD_PREDICT=1 env -u VERCEL python forward_sim.py $TODAY $WT $SP $OUT >> $LOG 2>&1
-# held-team shadow column (orchestrator 00:42Z Nov 14): score yesterday, then predict today with the frozen weight
-python held_team_shadow.py score $YDAY $SP >> $LOG 2>&1
-python held_team_shadow.py predict $TODAY $SP >> $LOG 2>&1
-# website track record (orchestrator 01:02Z Nov 14): rebuild tmp/e5/website/track_record_v1.json incl. yesterday's live rows
-python track_record.py $SP >> $LOG 2>&1
-# per-launch probabilities, 00:05 (orchestrator 01:20Z Nov 14); the 03:45 file is written by the 12:07Z job
-python prob_writer.py 0005 $TODAY $SP >> $LOG 2>&1
-# arm-2 live-vs-backtest parity for yesterday (orchestrator 19:16Z Nov 14): message the orchestrator only on a "PARITY ALERT" line
+# SINGLE-WRITER RULE (orchestrator 20:21Z Nov 14): the website writers below also run on the VM (bundle 12, tw.sh e5w:* jobs from the vm_writers
+# tarball). Heartbeat = an "e5w:" line in the VM's own job log results/timed_writes/<day>.log for today or yesterday (PT). If present, the VM
+# owns tmp/e5/website/* and this container writes nothing there; E5_CONTAINER_WRITERS=1 forces the container run (manual fallback only).
+# The decision is logged and written to tmp/e5/website/writer_owner.json so anyone can see who wrote last night's files.
+BK=gs://usersim-bakeoff-347838016394/usersim_sim
+vm_live() { for d in $TODAY $YDAY; do gsutil cat $BK/results/timed_writes/$d.log 2>/dev/null | grep -q "^e5w:" && return 0; done; return 1; }
+if vm_live && [ "${E5_CONTAINER_WRITERS:-0}" != 1 ]; then OWNER=vm; echo "website writers: VM heartbeat found (e5w: in results/timed_writes) -> container writers skipped" >> $LOG
+else OWNER=container; [ "${E5_CONTAINER_WRITERS:-0}" = 1 ] && echo "website writers: forced container run (E5_CONTAINER_WRITERS=1)" >> $LOG
+  # held-team shadow column (orchestrator 00:42Z Nov 14): score yesterday, then predict today with the frozen weight
+  python held_team_shadow.py score $YDAY $SP >> $LOG 2>&1
+  python held_team_shadow.py predict $TODAY $SP >> $LOG 2>&1
+  # website track record (orchestrator 01:02Z Nov 14): rebuild tmp/e5/website/track_record_v1.json incl. yesterday's live rows
+  python track_record.py $SP >> $LOG 2>&1
+  # per-launch probabilities, 00:05 (orchestrator 01:20Z Nov 14); the 03:45 file is written by the 12:07Z job
+  python prob_writer.py 0005 $TODAY $SP >> $LOG 2>&1
+  # running weekly / monthly boards with stated chances (orchestrator 01:28Z Nov 14), for the PT day just closed
+  python period_writer.py $YDAY $SP >> $LOG 2>&1
+  # period scorer (orchestrator 12:38Z Nov 14): after a week / month closes, score its boards vs the first read after the close
+  [ "$(date -d $YDAY +%u)" = 7 ] && python period_score.py week $YDAY $SP >> $LOG 2>&1
+  [ "$(date -d "$YDAY + 1 day" +%d)" = 01 ] && python period_score.py month $YDAY $SP >> $LOG 2>&1
+fi
+echo "{\"owner\": \"$OWNER\", \"checked_at\": \"$(date -u +%FT%TZ)\", \"rule\": \"VM e5w: heartbeat in results/timed_writes/<day>.log -> VM writes; else container\"}" | gsutil -q cp - $BK/tmp/e5/website/writer_owner.json || true
+# arm-2 live-vs-backtest parity for yesterday (orchestrator 19:16Z Nov 14; not a website writer): message the orchestrator only on "PARITY ALERT"
 bash parity_nightly.sh $SP >> $LOG 2>&1
-# running weekly / monthly boards with stated chances (orchestrator 01:28Z Nov 14), for the PT day just closed
-python period_writer.py $YDAY $SP >> $LOG 2>&1
-# period scorer (orchestrator 12:38Z Nov 14): after a week / month closes, score its boards vs the first read after the close
-[ "$(date -d $YDAY +%u)" = 7 ] && python period_score.py week $YDAY $SP >> $LOG 2>&1
-[ "$(date -d "$YDAY + 1 day" +%d)" = 01 ] && python period_score.py month $YDAY $SP >> $LOG 2>&1
 echo "end $(date -u +%FT%TZ)" >> $LOG; tail -c 1500 $LOG
