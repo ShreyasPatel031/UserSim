@@ -1,0 +1,136 @@
+{
+ "ph RQ": {
+  "b20 top1": 35.4,
+  "deployed top1": 29.9,
+  "b20 - deployed (all)": [
+   5.5,
+   -3.0,
+   14.0,
+   164
+  ],
+  "thin": [
+   3.5,
+   -10.5,
+   17.5,
+   57
+  ],
+  "non-thin": [
+   6.5,
+   -4.7,
+   16.8,
+   107
+  ]
+ },
+ "ph RC": {
+  "b20 top1": 41.5,
+  "deployed top1": 26.8,
+  "b20 - deployed (all)": [
+   14.6,
+   6.1,
+   23.2,
+   164
+  ],
+  "thin": [
+   1.9,
+   -11.1,
+   14.8,
+   54
+  ],
+  "non-thin": [
+   20.9,
+   10.0,
+   31.8,
+   110
+  ]
+ },
+ "page RQ": {
+  "b20 top1": 22.0,
+  "deployed top1": 18.9,
+  "b20 - deployed (all)": [
+   3.0,
+   -4.3,
+   10.4,
+   164
+  ],
+  "thin": [
+   3.8,
+   -3.8,
+   11.3,
+   53
+  ],
+  "non-thin": [
+   2.7,
+   -7.2,
+   12.6,
+   111
+  ]
+ },
+ "page RC": {
+  "b20 top1": 27.4,
+  "deployed top1": 20.7,
+  "b20 - deployed (all)": [
+   6.7,
+   -1.8,
+   15.2,
+   164
+  ],
+  "thin": [
+   7.8,
+   -2.0,
+   17.6,
+   51
+  ],
+  "non-thin": [
+   6.2,
+   -5.3,
+   17.7,
+   113
+  ]
+ },
+ "ph RQ confidence-chosen top": {
+  "top1": 35.4,
+  "conf top - deployed top (all)": [
+   5.5,
+   -1.8,
+   12.8,
+   164
+  ],
+  "thin": [
+   1.8,
+   -8.8,
+   12.3,
+   57
+  ],
+  "non-thin": [
+   7.5,
+   -1.9,
+   15.9,
+   107
+  ],
+  "share picked from b20": 0.65,
+  "note": "frozen coefficients fit on all these labels (in-sample)"
+ },
+ "ph RC confidence-chosen top": {
+  "top1": 50.0,
+  "conf top - deployed top (all)": [
+   23.2,
+   15.2,
+   31.1,
+   164
+  ],
+  "thin": [
+   7.4,
+   -5.6,
+   20.4,
+   54
+  ],
+  "non-thin": [
+   30.9,
+   20.9,
+   40.9,
+   110
+  ],
+  "share picked from b20": 0.97,
+  "note": "frozen coefficients fit on all these labels (in-sample)"
+ }
+}
