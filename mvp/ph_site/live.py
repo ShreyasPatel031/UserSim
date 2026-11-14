@@ -720,6 +720,14 @@ def explain(day: str, ids: set[str]) -> dict | None:
                 keep[b] = body
         if keep:
             out[str(pid)] = keep
+    # Every input of the readable explanation model, with its points (results/web/why/<day>_0005.json forecast_drivers).
+    w = gcs.read_json(f"{_why_prefix()}/{day}_0005.json", ttl=600)
+    for pid, row in ((w or {}).get("launches") or {}).items() if isinstance(w, dict) else []:
+        fd = (row or {}).get("forecast_drivers") if isinstance(row, dict) else None
+        pts = fd.get("points") if isinstance(fd, dict) else None
+        if str(pid) in out and isinstance(pts, dict) and "why" in out[str(pid)]:
+            out[str(pid)]["why"]["all_inputs"] = [{"input": _ex_text(k, 60), "points": round(float(v), 4)}
+                                                  for k, v in pts.items() if isinstance(v, (int, float)) and not isinstance(v, bool)][:20]
     if not out:
         return None
     return {"as_of": str(j.get("written_at") or ""), "labels": labels, "launches": out}

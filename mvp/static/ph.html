@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=18">
+<link rel="stylesheet" href="/static/ph_site.css?v=19">
 </head>
 <body>
 <div class="wrap">
@@ -124,11 +124,24 @@ function markExplain(){
   document.querySelectorAll("#pred li.row, #live li.row").forEach(li=>li.classList.toggle("has-explain", !!EXPL.launches[li.dataset.id]));
   if(EXPL_ID && !EXPL.launches[EXPL_ID]) $("#explain").hidden = true;
 }
-const short = (t, n = 110)=> { t = String(t || ""); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : t; };
+const short = (t)=> String(t || "");
 const pct = (n)=> Math.round(Number(n) * 100) + "%";
 const arr = (d)=> Array.isArray(d) ? d : (d && d.items) || [];
-const bar = (label, frac, val, cls = "")=> `<div class="bx ${cls}"><span class="bl">${esc(label)}</span><span class="bt"><i style="width:${Math.max(2, Math.min(100, frac * 100))}%"></i></span><span class="bv">${esc(val)}</span></div>`;
-// Plain one-line answers to "how much can I trust this?"; the owner's full label sits under "Details".
+const info = (t)=> `<details class="info"><summary aria-label="What does this mean?">i</summary><p>${t}</p></details>`;
+const bar = (label, frac, val, cls = "", tip = "")=> `<div class="bx ${cls}"><span class="bl">${esc(label)}${tip ? info(tip) : ""}</span><span class="bt"><i style="width:${Math.max(2, Math.min(100, frac * 100))}%"></i></span><span class="bv">${val}</span></div>`;
+// What each input of the explanation model measures, in plain words.
+const FACTOR = {
+  "Gemini pitch score": "An AI model (Google's Gemini) reads the name, tagline and description and rates how clear and compelling the pitch is. Higher = a pitch launches like this usually win with.",
+  "hunter top-5 finishes before": "How many launches the hunter (the person who posted it) has taken into a day's top 5 before. Hunters with a winning record bring an audience.",
+  "hunter launches before": "How many launches the hunter has posted before.",
+  "hunter track record (relative)": "How the hunter's past launches ranked compared with the other launches on their days.",
+  "hunter account age": "How long the hunter's Product Hunt account has existed.",
+  "team size": "How many makers are listed on the launch.",
+  "pre-launch promotion": "Signs it was promoted before launch day, for example posts announcing it or an active company account on X.",
+  "topic prior": "How launches in the same Product Hunt topics usually do.",
+  "text model score": "A text model's score for the wording of the name, tagline and description, learned from past launches.",
+  "media items": "How many images and videos are in the gallery."};
+const votesPct = (p)=> { const v = Math.round((Math.exp(Number(p) || 0) - 1) * 100); return (v > 0 ? "+" : "") + v + "% votes"; };
 const TRUST = {
   who: "Describes who is likely to back it. It did not improve the vote forecast, and we hold about half of real voters.",
   say: "About 1 in 3 predicted concerns or questions matched a real commenter's point in past tests.",
@@ -139,60 +152,72 @@ function trust(b){
   const L = (EXPL.labels || {})[b] || {}, full = Object.entries(L).map(([k, v])=> k === "text" ? v : `${k.replace(/_/g, " ")}: ${v}`).join(" · ");
   return `<details class="trust"><summary>How reliable? ${esc(TRUST[b] || "")}</summary>${full ? `<p>${esc(full)}</p>` : ""}</details>`;
 }
+// "Who": everyone we hold leans to developers, so show each role against its usual share; >1.2x is what is specific to this launch.
 function exWho(d){
-  const segs = (d.segments || []), max = Math.max(...segs.map(s=>s.share_of_held_expected_votes || 0), .01);
+  const segs = (d.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((a, s)=>a + s.n_held_people_scored, 0) || 1;
+  const rows = segs.map(s=>({...s, base: s.n_held_people_scored / tot, lift: (s.share_of_held_expected_votes || 0) / (s.n_held_people_scored / tot)}))
+    .filter(s=>s.share_of_held_expected_votes >= .01).sort((a, b)=>b.lift - a.lift);
+  const max = Math.max(...rows.map(s=>s.share_of_held_expected_votes), .01);
   const topics = d.what_likely_backers_upvote || [], tmax = Math.max(...topics.map(t=>t.share_of_their_recent_upvotes || 0), .01);
-  return `<p class="lede">Of the ${Number(d.n_held_active_people || 0).toLocaleString()} active people we hold profiles for, we expect about <b>${esc(d.expected_held_votes)}</b> votes. By role:</p>
-    ${segs.filter(s=>s.share_of_held_expected_votes >= .01).map(s=>bar(s.segment, s.share_of_held_expected_votes / max, pct(s.share_of_held_expected_votes))).join("")}
-    ${topics.length ? `<h5>What its likeliest backers usually upvote</h5>${topics.map(t=>bar(t.topic, t.share_of_their_recent_upvotes / tmax, pct(t.share_of_their_recent_upvotes), "alt")).join("")}` : ""}
-    ${trust("who")}`;
+  const stand = rows.filter(s=>s.lift >= 1.2).map(s=>s.segment);
+  return `<p class="lede">${stand.length ? `Compared with everyone we hold, this launch draws unusually many <b>${esc(stand.join(", "))}</b>.` : "Its likely backers look like the usual Product Hunt crowd: no role stands out."}</p>
+    <div class="legend2"><span><i class="k share"></i>share of its likely votes</span><span><i class="k base"></i>usual share</span></div>
+    ${rows.map(s=>`<div class="bx2"><span class="bl">${esc(s.segment)}</span><span class="bt"><i class="share" style="width:${s.share_of_held_expected_votes / max * 100}%"></i><i class="base" style="left:${Math.min(100, s.base / max * 100)}%"></i></span>
+      <span class="bv">${pct(s.share_of_held_expected_votes)}</span><span class="lift ${s.lift >= 1.2 ? "hi" : s.lift <= .8 ? "lo" : ""}">${s.lift.toFixed(1)}×</span></div>`).join("")}
+    <p class="note">Everyone we hold leans towards developers, so most launches show developers first. The ×-number says how much more (or less) than usual each role is drawn to this launch.${info("Roles come from each person's own Product Hunt headline and bio. 'Usual share' is that role's share of the 10,000+ active people we hold. 1.0× = typical; 1.5× = half again as many as usual.")}</p>
+    ${topics.length ? `<h5>What its likeliest backers usually upvote</h5>${topics.map(t=>bar(t.topic, t.share_of_their_recent_upvotes / tmax, pct(t.share_of_their_recent_upvotes))).join("")}` : ""}
+    <p class="note">About ${esc(d.expected_held_votes)} votes expected from the ${Number(d.n_held_active_people || 0).toLocaleString()} active people we hold.</p>${trust("who")}`;
 }
 function exSay(d){
   const card = (t, cls)=> `<div class="q ${cls}">${esc(t)}</div>`;
   const re = d.reactions || [];
-  return `${(d.top_concerns || []).length ? `<h5>Likely worries</h5>${d.top_concerns.map(t=>card(t, "worry")).join("")}` : ""}
+  return `<p class="note top">Written by our AI simulator from the launch's own page, before any real comments existed. These are not real people.${info("One AI model reads the launch page and writes the comments it expects. It is not yet a panel of real, representative backers. In past tests about 1 in 3 predicted worries or questions matched a point a real commenter made.")}</p>
+    ${(d.top_concerns || []).length ? `<h5>Likely worries</h5>${d.top_concerns.map(t=>card(t, "worry")).join("")}` : ""}
     ${(d.top_questions || []).length ? `<h5>Likely questions</h5>${d.top_questions.map(t=>card(t, "ask")).join("")}` : ""}
-    ${re.length ? `<details class="more"><summary>${re.length} sample reactions</summary>${re.map(t=>card(t, "react")).join("")}</details>` : ""}
-    <p class="note">Written by our simulator from the launch's own page, before any real comments existed.</p>${trust("say")}`;
+    ${re.length ? `<details class="more"><summary>${re.length} AI-written sample reactions</summary>${re.map(t=>card(t, "react")).join("")}</details>` : ""}${trust("say")}`;
 }
 function exComp(d){
-  return arr(d).map(c=>`<div class="comp"><div class="ch"><b>${esc(c.name)}</b>${c.final_daily_rank ? `<span class="rk">#${esc(c.final_daily_rank)}</span>` : ""}<span class="sm">${c.final_votes ? Math.round(c.final_votes) + " votes · " : ""}${esc(c.launch_date || "")}</span></div>
-    ${bar("Similarity", c.similarity || 0, pct(c.similarity || 0), "thin")}
-    <div class="pills">${(c.commenters_praised || []).map(t=>`<span class="pill up">👍 ${esc(short(t, 80))}</span>`).join("")}${(c.commenters_complained || []).map(t=>`<span class="pill dn">👎 ${esc(short(t, 80))}</span>`).join("")}</div></div>`).join("") + trust("competitors");
+  const tip = "How close its name, tagline and description are to this launch, in meaning (a text-embedding match, 0–100%). It says nothing about how the launch ranked.";
+  return `<p class="lede">Earlier launches whose description is closest to this one, and what their real commenters said.</p>` + arr(d).map(c=>`<div class="comp"><div class="ch"><b>${esc(c.name)}</b>${c.final_daily_rank ? `<span class="rk">finished #${esc(c.final_daily_rank)}</span>` : ""}<span class="sm">${c.final_votes ? Math.round(c.final_votes) + " votes · " : ""}${esc(c.launch_date || "")}</span></div>
+    ${bar("Description match", c.similarity || 0, pct(c.similarity || 0), "thin", tip)}
+    <div class="pills">${(c.commenters_praised || []).map(t=>`<span class="pill up">Liked: ${esc(t)}</span>`).join("")}${(c.commenters_complained || []).map(t=>`<span class="pill dn">Disliked: ${esc(t)}</span>`).join("")}</div></div>`).join("") + trust("competitors");
 }
 function exWhy(d){
-  const dr = d.top_drivers || [], m = Math.max(...dr.map(r=>Math.abs(r.points || 0)), .001);
-  return `<p class="lede">What pushed this launch up or down in our model${d.rank_in_explanation_model ? ` (it ranks it <b>#${esc(d.rank_in_explanation_model)}</b>)` : ""}:</p>
-    ${dr.map(r=>{ const v = Number(r.points) || 0, w = Math.abs(v) / m * 50;
-      return `<div class="dv"><span class="bl">${esc(r.input)}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : `right:50%`}"></i></span><span class="bv">${v >= 0 ? "▲" : "▼"}</span></div>`; }).join("")}
-    ${trust("why")}`;
+  const all = (d.all_inputs && d.all_inputs.length ? d.all_inputs : d.top_drivers || []).slice().sort((a, b)=>Math.abs(b.points) - Math.abs(a.points));
+  const m = Math.max(...all.map(r=>Math.abs(r.points || 0)), .001);
+  return `<p class="lede">Everything our explanation model measures, and how much each one moved this launch's predicted votes${d.rank_in_explanation_model ? ` (it ranks it <b>#${esc(d.rank_in_explanation_model)}</b>)` : ""}. Tap a factor to see what it means.</p>
+    <div class="legend2"><span><i class="k up"></i>pushes votes up</span><span><i class="k dn"></i>pulls votes down</span></div>
+    ${all.map(r=>{ const v = Number(r.points) || 0, w = Math.abs(v) / m * 50;
+      return `<details class="fx"><summary><span class="bl">${esc(r.input)}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : "right:50%"}"></i></span><span class="bv ${v >= 0 ? "pos" : "neg"}">${votesPct(v)}</span></summary><p>${esc(FACTOR[r.input] || "An input of the explanation model.")}</p></details>`; }).join("")}
+    <p class="note">"+19% votes" means: with everything else the same, this factor alone moves the predicted votes up by about 19% compared with a typical launch that day.</p>${trust("why")}`;
 }
 function exActual(d){
   const segs = d.segments || [], max = Math.max(...segs.map(s=>s.n_held_backers || 0), 1);
   const rr = d.held_people_total ? d.held_people_reread_after_the_day / d.held_people_total : null;
   return `<p class="lede">Product Hunt shows <b>${esc(d.displayed_votes)}</b> votes. We can see <b>${esc(d.observed_held_backers)}</b> of the people behind them. By role:</p>
-    ${segs.map(s=>bar(s.segment, s.n_held_backers / max, s.n_held_backers)).join("")}
-    ${rr != null ? `<h5>How complete is this?</h5>${bar("Profiles re-read since the day", rr, pct(rr), "alt")}` : ""}
+    ${segs.map(s=>bar(s.segment, s.n_held_backers / max, esc(s.n_held_backers))).join("")}
+    ${rr != null ? `<h5>How complete is this?</h5>${bar("Profiles re-read since the day", rr, pct(rr))}` : ""}
     <p class="note">The count can pass the displayed votes: Product Hunt counts some young accounts at about half.</p>${trust("who_actually")}`;
 }
-// Overview: four facts and talking points for the founder, built only from the blocks above.
 function exOverview(d){
-  const w = d.who && (d.who.segments || [])[0], topic = d.who && (d.who.what_likely_backers_upvote || [])[0];
+  const segs = (d.who && d.who.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((a, s)=>a + s.n_held_people_scored, 0) || 1;
+  const lifted = segs.map(s=>({...s, lift: s.share_of_held_expected_votes / (s.n_held_people_scored / tot)})).filter(s=>s.share_of_held_expected_votes >= .03).sort((a, b)=>b.lift - a.lift)[0];
+  const topic = d.who && (d.who.what_likely_backers_upvote || [])[0];
   const worry = d.say && (d.say.top_concerns || [])[0], ask = d.say && (d.say.top_questions || [])[0];
   const cs = arr(d.competitors), best = cs.slice().sort((a, b)=>(a.final_daily_rank || 99) - (b.final_daily_rank || 99))[0];
-  const gap = cs.map(c=>(c.commenters_complained || [])[0]).filter(Boolean)[0];
-  const drv = d.why && (d.why.top_drivers || []).slice().sort((a, b)=>b.points - a.points);
-  const up = drv && drv[0], down = drv && drv.filter(r=>r.points < 0).sort((a, b)=>a.points - b.points)[0];
+  const gapC = cs.find(c=>(c.commenters_complained || [])[0]);
+  const all = (d.why && (d.why.all_inputs || d.why.top_drivers)) || [];
+  const up = all.slice().sort((a, b)=>b.points - a.points)[0], down = all.filter(r=>r.points < 0).sort((a, b)=>a.points - b.points)[0];
   const tile = (k, v, s = "")=> v ? `<div class="tile"><small>${k}</small><b>${esc(v)}</b>${s ? `<span>${esc(s)}</span>` : ""}</div>` : "";
   const pts = [
-    w && topic ? `Write the launch post for <b>${esc(w.segment)}</b>: they are the biggest likely group (${pct(w.share_of_held_expected_votes)}), and they mostly upvote <b>${esc(topic.topic)}</b>.` : "",
-    worry ? `Answer this worry in the first comment, before anyone asks: <i>“${esc(short(worry, 140))}”</i>` : "",
-    ask && ask !== worry ? `Put this answer on the page: <i>“${esc(short(ask, 140))}”</i>` : "",
-    gap ? `People complained about a similar product (${esc(cs.find(c=>(c.commenters_complained || [])[0] === gap).name)}): <i>“${esc(short(gap, 110))}”</i>. Show how this one avoids it.` : "",
-    down ? `Weakest signal in our model: <b>${esc(down.input)}</b>.` : ""].filter(Boolean);
-  return `<div class="tiles">${tile("Main backers", w && w.segment, w && pct(w.share_of_held_expected_votes) + " of expected votes")}
-    ${tile("Top worry", worry && short(worry, 70))}${tile("Closest past launch", best && best.name, best && best.final_daily_rank ? `finished #${best.final_daily_rank}` : "")}
-    ${tile("Biggest boost", up && up.input, down ? `biggest drag: ${down.input}` : "")}</div>
+    lifted && lifted.lift >= 1.2 && topic ? `Write the launch post for <b>${esc(lifted.segment)}</b>: this launch draws ${lifted.lift.toFixed(1)}× more of them than usual, and its likely backers mostly upvote <b>${esc(topic.topic)}</b>.` : "",
+    worry ? `Answer this worry in the first comment, before anyone asks: <i>“${esc(worry)}”</i>` : "",
+    ask && ask !== worry ? `Put this answer on the page: <i>“${esc(ask)}”</i>` : "",
+    gapC ? `People disliked this in a similar product (${esc(gapC.name)}): <i>“${esc(gapC.commenters_complained[0])}”</i> Show how this one avoids it.` : "",
+    down ? `Weakest factor in our model: <b>${esc(down.input)}</b> (${votesPct(down.points)}). ${esc(FACTOR[down.input] || "")}` : ""].filter(Boolean);
+  return `<div class="tiles">${lifted && lifted.lift >= 1.2 ? tile("Drawn more than usual", lifted.segment, `${lifted.lift.toFixed(1)}× the usual share`) : tile("Likely backers", "The usual Product Hunt crowd", "no role stands out")}
+    ${tile("Top worry", worry)}${tile("Closest past launch", best && best.name, best && best.final_daily_rank ? `finished #${best.final_daily_rank}` : "")}
+    ${tile("Biggest boost", up && up.input, up ? votesPct(up.points) + (down ? ` · biggest drag: ${down.input}` : "") : "")}</div>
     ${pts.length ? `<h5>Talking points for the founder</h5><ol class="pitch">${pts.map(t=>`<li>${t}</li>`).join("")}</ol><p class="note">Built only from the tabs here; each tab says how reliable it is.</p>` : ""}`;
 }
 const TABS = [["overview", "Overview", exOverview], ["who_actually", "Who voted", null], ["who", "Who backs it", null], ["say", "What they'll say", null], ["competitors", "Competitors", null], ["why", "Why", null]];

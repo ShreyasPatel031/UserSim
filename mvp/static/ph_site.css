@@ -442,3 +442,32 @@ ol.pitch { margin: 0; padding-left: 20px; } ol.pitch li { margin: 6px 0; }
   .exmodal { padding: 0; align-items: flex-end; } .exmodal .sheet { max-height: 92vh; width: 100%; border-radius: 14px 14px 0 0; }
   .tiles { grid-template-columns: 1fr; } .bx, .dv { grid-template-columns: minmax(96px, 42%) 1fr 42px; }
 }
+
+/* v19: leaderboard palette, info toggles, who vs usual, all factors */
+.bx .bt i { background: var(--near); } .bx.thin .bt i { background: color-mix(in srgb, var(--near) 70%, var(--paper)); }
+.dv .dt i.pos, .fx .dt i.pos { background: var(--exact); } .dv .dt i.neg, .fx .dt i.neg { background: var(--miss); }
+.q.worry { border-color: var(--miss); } .q.ask { border-color: var(--near); } .q.react { border-color: var(--soft); }
+.pill.up { background: color-mix(in srgb, var(--exact) 15%, var(--paper)); color: var(--exact-ink); } .pill.dn { background: color-mix(in srgb, var(--miss) 12%, var(--paper)); color: var(--miss-ink); }
+.pill { border-radius: 6px; line-height: 1.35; }
+details.info { display: inline-block; margin-left: 6px; vertical-align: middle; }
+details.info > summary { list-style: none; display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--soft); font: 600 10.5px/1 var(--serif, Georgia, serif); font-style: italic; color: var(--soft); cursor: pointer; }
+details.info > summary::-webkit-details-marker { display: none; }
+details.info[open] > p { display: block; margin: 6px 0; padding: 8px 10px; font-size: 12.5px; line-height: 1.45; color: var(--ink); background: color-mix(in srgb, var(--near) 10%, var(--paper)); border: 1px solid var(--line, #e3dccd); white-space: normal; }
+.bx .bl, .bx2 .bl { min-width: 0; }
+.bx2 { display: grid; grid-template-columns: minmax(110px, 36%) 1fr 40px 40px; gap: 8px; align-items: center; margin: 6px 0; font-size: 13.5px; }
+.bx2 .bt { position: relative; height: 12px; background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.bx2 .bt i.share { position: absolute; left: 0; top: 0; bottom: 0; background: var(--near); }
+.bx2 .bt i.base { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); }
+.bx2 .bv { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bx2 .lift { text-align: right; font-size: 12.5px; color: var(--soft); font-variant-numeric: tabular-nums; } .bx2 .lift.hi { color: var(--exact-ink); font-weight: 700; } .bx2 .lift.lo { color: var(--miss-ink); }
+.legend2 { display: flex; gap: 16px; font-size: 12px; color: var(--soft); margin: 4px 0 8px; } .legend2 .k { display: inline-block; width: 12px; height: 10px; margin-right: 5px; vertical-align: -1px; }
+.legend2 .k.share { background: var(--near); } .legend2 .k.base { width: 2px; height: 12px; background: var(--ink); } .legend2 .k.up { background: var(--exact); } .legend2 .k.dn { background: var(--miss); }
+details.fx { border-bottom: 1px solid var(--line, #eee6d6); } details.fx > summary { list-style: none; display: grid; grid-template-columns: minmax(120px, 40%) 1fr 92px; gap: 10px; align-items: center; padding: 7px 0; cursor: pointer; font-size: 13.5px; }
+details.fx > summary::-webkit-details-marker { display: none; } details.fx > summary .bl::after { content: " ⓘ"; color: var(--soft); font-size: 11px; }
+details.fx .dt { position: relative; height: 12px; background: color-mix(in srgb, var(--ink) 7%, transparent); } details.fx .dt::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--soft); }
+details.fx .dt i { position: absolute; top: 0; bottom: 0; } details.fx .bv { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 12.5px; }
+details.fx .bv.pos { color: var(--exact-ink); } details.fx .bv.neg { color: var(--miss-ink); }
+details.fx > p { margin: 0 0 10px; font-size: 13px; color: var(--soft); }
+.exbody .note.top { margin: 0 0 6px; }
+.tile b { font-weight: 600; }
+@media (max-width: 640px) { .bx2 { grid-template-columns: minmax(92px, 38%) 1fr 36px 36px; } details.fx > summary { grid-template-columns: minmax(100px, 42%) 1fr 78px; } }
