@@ -722,6 +722,61 @@ def explain(day: str, ids: set[str]) -> dict | None:
             out[str(pid)] = keep
     # Every input of the readable explanation model, with its points (results/web/why/<day>_0005.json forecast_drivers).
     w = gcs.read_json(f"{_why_prefix()}/{day}_0005.json", ttl=600)
+    # Existing audience: counts that differ a lot between launches (followers, past backers, expected held votes), each
+    # with its rank among the day's launches. Counts only; a count under the group floor is never shown.
+    AUD = ("hunter_followers", "follow_ties", "follow_ties_active", "held_backers", "expected_held_votes")
+    wl = (w or {}).get("launches") if isinstance(w, dict) and isinstance(w.get("launches"), dict) else {}
+    vals = {k: {} for k in AUD}
+    for pid, row in wl.items():
+        for k in AUD:
+            v = ((row or {}).get(k) or {}).get("value") if isinstance(row, dict) else None
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and (k in ("hunter_followers", "expected_held_votes") or v >= WHY_MIN_GROUP):
+                vals[k][str(pid)] = float(v)
+    pus = []
+    for pid in list(out):
+        aud = {}
+        for k in AUD:
+            if pid in vals[k]:
+                ordered = sorted(vals[k].values(), reverse=True)
+                aud[k] = {"value": vals[k][pid], "rank": ordered.index(vals[k][pid]) + 1, "of": len(ordered)}
+        row = wl.get(pid) or {}
+        tiers = ((row.get("audience_tiers") or {}).get("value") or {}) if isinstance(row, dict) else {}
+        n_t = (row.get("audience_tiers") or {}).get("n_people") if isinstance(row, dict) else None
+        if isinstance(tiers, dict) and isinstance(n_t, (int, float)) and n_t >= WHY_MIN_GROUP:
+            t, a = tiers.get("this launch") or {}, tiers.get("all held people") or {}
+            if isinstance(t.get("100+"), (int, float)) and isinstance(a.get("100+"), (int, float)):
+                aud["power_users"] = {"share": round(float(t["10-99"] or 0) + float(t["100+"]), 3),
+                                      "usual": round(float(a.get("10-99") or 0) + float(a["100+"]), 3)}
+        aud["n_launches"] = len(vals["expected_held_votes"]) or len(wl)
+        if "power_users" in aud:
+            pus.append(aud["power_users"]["share"])
+        if len(aud) > 1:
+            out[pid]["audience"] = aud
+    if pus:                                   # compare with the day's median launch, not with everyone we hold
+        med = sorted(pus)[len(pus) // 2]
+        for v in out.values():
+            if "power_users" in v.get("audience", {}):
+                v["audience"]["power_users"]["day_median"] = med
+    # Raw values a founder can act on, from the 00:05 line-up file (counts and dates only, never names).
+    raw = {}
+    lu = gcs.read_json(f"raw/daily/{day}/today_0005.json", ttl=600) or gcs.read_json(f"raw/daily/{day}/{day}.json", ttl=600) or []
+    for r in lu if isinstance(lu, list) else []:
+        if not isinstance(r, dict) or str(r.get("id")) not in out:
+            continue
+        u = r.get("user") if isinstance(r.get("user"), dict) else {}
+        age = None
+        try:
+            age = (datetime.fromisoformat(f"{day}T00:00:00+00:00") - datetime.fromisoformat(str(u.get("createdAt")).replace("Z", "+00:00"))).days
+        except (TypeError, ValueError):
+            pass
+        def _n(v):
+            return len(v) if isinstance(v, list) else (len(v.get("edges") or []) if isinstance(v, dict) else None)
+        raw[str(r["id"])] = {"team size": _n(r.get("makers")), "media items": _n(r.get("media")),
+                             "hunter account age": f"{age // 365} y {age % 365 // 30} mo" if isinstance(age, int) and age >= 0 else None,
+                             "topics": [str(((e or {}).get("node") or {}).get("name") or "")[:40] for e in ((r.get("topics") or {}).get("edges") or [])][:6]
+                             if isinstance(r.get("topics"), dict) else None}
+    for pid, rv in raw.items():
+        out[pid]["raw"] = {k: v for k, v in rv.items() if v not in (None, [], "")}
     for pid, row in ((w or {}).get("launches") or {}).items() if isinstance(w, dict) else []:
         fd = (row or {}).get("forecast_drivers") if isinstance(row, dict) else None
         pts = fd.get("points") if isinstance(fd, dict) else None
