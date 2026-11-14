@@ -14,7 +14,7 @@ import lightgbm as lgb
 import features as F, model as M, run as RN
 MODE = os.environ["MODE"]; T, OUT = sys.argv[1], sys.argv[2]; first = sys.argv[3] if len(sys.argv) > 3 else "2026-10-26"
 last = sys.argv[4] if len(sys.argv) > 4 else "2026-11-14"; os.makedirs(OUT, exist_ok=True)
-REAL = os.path.realpath(F.D); MP = ("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers")
+REAL = os.path.realpath(os.environ.get("DATA_DIR", "data")); MP = ("ph_maker", "hist_maker", "hist_dayrank_hist_maker", "x_maker", "x_n_makers")
 ID = {"ph_n_makers_new", "ph_maker_has_headline", "x_any_verified", "ph_self_hunted"}
 P_ = dict(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1, colsample_bytree=0.5, reg_lambda=1.0)
 print("features from", os.path.realpath(F.__file__), flush=True)
