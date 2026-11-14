@@ -138,10 +138,11 @@ def main():
         for X_ in (df, dfo):
             for c in JC:
                 X_[c] = X_.id.map(dict(zip(th.id, th[c]))).astype(float)
-        df.loc[old, JC] = np.nan
+        if os.environ.get("JOINT_KEEP_2025") != "1":   # JOINT_KEEP_2025=1: the extra inputs exist on 2025 rows too (e.g. topic momentum)
+            df.loc[old, JC] = np.nan
         for m in MONTHS:
             for nm, tr0, te0 in (("pure_th", dfo[dfo.mon < m], dfo[dfo.mon == m]), ("both_th", df[df.mon < m], df[(df.mon == m) & ~old])):
-                if te0.empty:
+                if te0.empty or nm not in os.environ.get("JOINT_VARIANTS", "pure_th,both_th").split(","):
                     continue
                 if HNj:
                     dd = sorted(tr0.day.unique()); tr0 = tr0[tr0.day.isin(dd[-int(HNj):])]
