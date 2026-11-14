@@ -78,3 +78,11 @@ header counts are stored. Anything less is not written, not counted, not reporte
 - **Exactly two predictions are published:** the midnight forecast (00:05 PT) and one before-reveal forecast (03:45 PT, the
   last point before votes appear at 04:00 PT). Both are written by code on the VM, never by an agent session, each with its
   write time, the inputs present or missing, and the fallback used. Every other forecast point is an internal shadow line.
+
+## Rule for every agent: token use (Shreyas, Nov 14 2026)
+
+- Experiments keep running, but **one experiment per agent at a time**, reported **once when finished**. No interim messages,
+  no acknowledgements, no progress pings between agents. A correction is sent only when a reported number was wrong.
+- The population agent messages the orchestrator only when something changes, plus one summary every 6 hours.
+- The public website comes first: an outage of any feed a public page depends on is reported to Shreyas as "the public page is
+  stale since X", never only as a data-feed incident.
