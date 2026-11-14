@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=19">
+<link rel="stylesheet" href="/static/ph_site.css?v=21">
 </head>
 <body>
 <div class="wrap">
@@ -152,21 +152,30 @@ function trust(b){
   const L = (EXPL.labels || {})[b] || {}, full = Object.entries(L).map(([k, v])=> k === "text" ? v : `${k.replace(/_/g, " ")}: ${v}`).join(" · ");
   return `<details class="trust"><summary>How reliable? ${esc(TRUST[b] || "")}</summary>${full ? `<p>${esc(full)}</p>` : ""}</details>`;
 }
-// "Who": everyone we hold leans to developers, so show each role against its usual share; >1.2x is what is specific to this launch.
-function exWho(d){
-  const segs = (d.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((a, s)=>a + s.n_held_people_scored, 0) || 1;
-  const rows = segs.map(s=>({...s, base: s.n_held_people_scored / tot, lift: (s.share_of_held_expected_votes || 0) / (s.n_held_people_scored / tot)}))
-    .filter(s=>s.share_of_held_expected_votes >= .01).sort((a, b)=>b.lift - a.lift);
-  const max = Math.max(...rows.map(s=>s.share_of_held_expected_votes), .01);
-  const topics = d.what_likely_backers_upvote || [], tmax = Math.max(...topics.map(t=>t.share_of_their_recent_upvotes || 0), .01);
-  const stand = rows.filter(s=>s.lift >= 1.2).map(s=>s.segment);
-  return `<p class="lede">${stand.length ? `Compared with everyone we hold, this launch draws unusually many <b>${esc(stand.join(", "))}</b>.` : "Its likely backers look like the usual Product Hunt crowd: no role stands out."}</p>
-    <div class="legend2"><span><i class="k share"></i>share of its likely votes</span><span><i class="k base"></i>usual share</span></div>
-    ${rows.map(s=>`<div class="bx2"><span class="bl">${esc(s.segment)}</span><span class="bt"><i class="share" style="width:${s.share_of_held_expected_votes / max * 100}%"></i><i class="base" style="left:${Math.min(100, s.base / max * 100)}%"></i></span>
-      <span class="bv">${pct(s.share_of_held_expected_votes)}</span><span class="lift ${s.lift >= 1.2 ? "hi" : s.lift <= .8 ? "lo" : ""}">${s.lift.toFixed(1)}×</span></div>`).join("")}
-    <p class="note">Everyone we hold leans towards developers, so most launches show developers first. The ×-number says how much more (or less) than usual each role is drawn to this launch.${info("Roles come from each person's own Product Hunt headline and bio. 'Usual share' is that role's share of the 10,000+ active people we hold. 1.0× = typical; 1.5× = half again as many as usual.")}</p>
-    ${topics.length ? `<h5>What its likeliest backers usually upvote</h5>${topics.map(t=>bar(t.topic, t.share_of_their_recent_upvotes / tmax, pct(t.share_of_their_recent_upvotes))).join("")}` : ""}
-    <p class="note">About ${esc(d.expected_held_votes)} votes expected from the ${Number(d.n_held_active_people || 0).toLocaleString()} active people we hold.</p>${trust("who")}`;
+// "Who": the launch's existing audience (varies a lot between launches), ranked against the day's other launches.
+// Roles by bio keyword barely differ between launches, for predicted and for real backers alike, so they sit folded.
+const n0 = (v)=> Math.round(Number(v)).toLocaleString();
+const rk = (o)=> o ? `<span class="rkof">#${o.rank} of ${o.of} today</span>` : "";
+function audRows(a){
+  if(!a) return "";
+  const r = (lab, o, tip, fmt = n0)=> o ? `<div class="aud"><span class="bl">${lab}${info(tip)}</span><b>${fmt(o.value)}</b>${rk(o)}</div>` : "";
+  return r("Expected votes from people we hold", a.expected_held_votes, "Summed chance that each of the ~10,700 active people we hold upvotes it, from their past upvotes and whether they follow the hunter or first maker. We hold about half of real voters, so real votes are higher. On past days this ranked launches close to how they finished.", v=>Number(v).toFixed(1))
+    + r("Hunter's followers", a.hunter_followers, "Followers of the person who posted it, read at 00:05 PT.")
+    + r("People we hold who follow the hunter or makers", a.follow_ties, "Follows that existed before launch day, among people we hold.")
+    + r("…of them active in the last 30 days", a.follow_ties_active, "Followers who upvoted something in the 30 days before the launch.")
+    + r("People who backed this team before", a.held_backers, "People we hold who upvoted an earlier launch by this team's members.");
+}
+function exWho(d, aud){
+  const a = aud || {}, missing = !a.follow_ties && !a.held_backers;
+  const pu = a.power_users, lift = pu && pu.usual ? pu.share / pu.usual : null;
+  const segs = (d && d.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((x, s)=>x + s.n_held_people_scored, 0) || 1;
+  return `<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
+    ${missing ? `<p class="note">No follower or past-backer counts: this team's profiles are not among the people we hold.</p>` : ""}
+    ${lift ? `<div class="aud"><span class="bl">Heavy upvoters in that audience${info("Share of its followers and past backers who upvoted 10+ launches in the last 90 days, against the typical launch today. Heavy upvoters vote early and often.")}</span><b>${pct(pu.share)}</b><span class="rkof">${pu.day_median ? `typical today ${pct(pu.day_median)}` : `${lift.toFixed(1)}× usual`}</span></div>` : ""}
+    ${segs.length ? `<details class="more"><summary>Roles of likely backers (a typical mix)</summary>
+      ${segs.filter(s=>s.share_of_held_expected_votes >= .02).map(s=>bar(s.segment, s.share_of_held_expected_votes / .4, pct(s.share_of_held_expected_votes))).join("")}
+      <p class="note">Roles from bios barely differ between launches, for real backers too: across 23 past launches, developers were 18–38% of the backers we could see, and marketers 15–27%.</p></details>` : ""}
+    ${trust("who")}`;
 }
 function exSay(d){
   const card = (t, cls)=> `<div class="q ${cls}">${esc(t)}</div>`;
@@ -174,7 +183,7 @@ function exSay(d){
   return `<p class="note top">Written by our AI simulator from the launch's own page, before any real comments existed. These are not real people.${info("One AI model reads the launch page and writes the comments it expects. It is not yet a panel of real, representative backers. In past tests about 1 in 3 predicted worries or questions matched a point a real commenter made.")}</p>
     ${(d.top_concerns || []).length ? `<h5>Likely worries</h5>${d.top_concerns.map(t=>card(t, "worry")).join("")}` : ""}
     ${(d.top_questions || []).length ? `<h5>Likely questions</h5>${d.top_questions.map(t=>card(t, "ask")).join("")}` : ""}
-    ${re.length ? `<details class="more"><summary>${re.length} AI-written sample reactions</summary>${re.map(t=>card(t, "react")).join("")}</details>` : ""}${trust("say")}`;
+    <p class="note">A panel of 12 simulated backers drawn from people we hold is being built; sample reactions return when it is.</p>${trust("say")}`;
 }
 function exComp(d){
   const tip = "How close its name, tagline and description are to this launch, in meaning (a text-embedding match, 0–100%). It says nothing about how the launch ranked.";
@@ -182,13 +191,16 @@ function exComp(d){
     ${bar("Description match", c.similarity || 0, pct(c.similarity || 0), "thin", tip)}
     <div class="pills">${(c.commenters_praised || []).map(t=>`<span class="pill up">Liked: ${esc(t)}</span>`).join("")}${(c.commenters_complained || []).map(t=>`<span class="pill dn">Disliked: ${esc(t)}</span>`).join("")}</div></div>`).join("") + trust("competitors");
 }
+let RAW = {};
 function exWhy(d){
   const all = (d.all_inputs && d.all_inputs.length ? d.all_inputs : d.top_drivers || []).slice().sort((a, b)=>Math.abs(b.points) - Math.abs(a.points));
   const m = Math.max(...all.map(r=>Math.abs(r.points || 0)), .001);
   return `<p class="lede">Everything our explanation model measures, and how much each one moved this launch's predicted votes${d.rank_in_explanation_model ? ` (it ranks it <b>#${esc(d.rank_in_explanation_model)}</b>)` : ""}. Tap a factor to see what it means.</p>
     <div class="legend2"><span><i class="k up"></i>pushes votes up</span><span><i class="k dn"></i>pulls votes down</span></div>
     ${all.map(r=>{ const v = Number(r.points) || 0, w = Math.abs(v) / m * 50;
-      return `<details class="fx"><summary><span class="bl">${esc(r.input)}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : "right:50%"}"></i></span><span class="bv ${v >= 0 ? "pos" : "neg"}">${votesPct(v)}</span></summary><p>${esc(FACTOR[r.input] || "An input of the explanation model.")}</p></details>`; }).join("")}
+      const rv = (RAW || {})[r.input];
+      return `<details class="fx"><summary><span class="bl">${esc(r.input)}${rv != null ? ` <em class="rv">${esc(rv)}</em>` : ""}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : "right:50%"}"></i></span><span class="bv ${v >= 0 ? "pos" : "neg"}">${votesPct(v)}</span></summary><p>${esc(FACTOR[r.input] || "An input of the explanation model.")}</p></details>`; }).join("")}
+    <p class="note">This readable model uses these 10 inputs. The published forecast uses about 40 (hunter record, pitch, brand, topic, competition, media, team, promotion, wording, day), so small factors like media items move little here.</p>
     <p class="note">"+19% votes" means: with everything else the same, this factor alone moves the predicted votes up by about 19% compared with a typical launch that day.</p>${trust("why")}`;
 }
 function exActual(d){
@@ -199,26 +211,43 @@ function exActual(d){
     ${rr != null ? `<h5>How complete is this?</h5>${bar("Profiles re-read since the day", rr, pct(rr))}` : ""}
     <p class="note">The count can pass the displayed votes: Product Hunt counts some young accounts at about half.</p>${trust("who_actually")}`;
 }
+const words = (t)=> new Set(String(t || "").toLowerCase().match(/[a-z]{4,}/g) || []);
+const overlap = (x, y)=> { const A = words(x), B = words(y); let n = 0; A.forEach(w=>B.has(w) && n++); return n / Math.max(1, Math.min(A.size, B.size)); };
+// Same product = one name (without version numbers) is the start of the other: "Dex" / "Dex Semantics", not "Gemini 4 Argon" / "Gemini Robotics".
+const sameProduct = (a, b)=> { const k = (t)=> String(t || "").toLowerCase().replace(/[0-9.]+/g, " ").replace(/[^a-z]+/g, " ").trim();
+  const x = k(a), y = k(b); return !!x && !!y && (x === y || (x + " ").startsWith(y + " ") || (y + " ").startsWith(x + " ")); };
 function exOverview(d){
-  const segs = (d.who && d.who.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((a, s)=>a + s.n_held_people_scored, 0) || 1;
-  const lifted = segs.map(s=>({...s, lift: s.share_of_held_expected_votes / (s.n_held_people_scored / tot)})).filter(s=>s.share_of_held_expected_votes >= .03).sort((a, b)=>b.lift - a.lift)[0];
-  const topic = d.who && (d.who.what_likely_backers_upvote || [])[0];
-  const worry = d.say && (d.say.top_concerns || [])[0], ask = d.say && (d.say.top_questions || [])[0];
-  const cs = arr(d.competitors), best = cs.slice().sort((a, b)=>(a.final_daily_rank || 99) - (b.final_daily_rank || 99))[0];
-  const gapC = cs.find(c=>(c.commenters_complained || [])[0]);
+  const a = d.audience || {}, e = a.expected_held_votes, f = a.follow_ties, pu = a.power_users, raw = d.raw || {};
+  const name = (VIEW.launches.find(l=>l.id === EXPL_ID) || {}).name;
+  const worry = d.say && (d.say.top_concerns || [])[0];
+  const ask = d.say && (d.say.top_questions || []).find(q=>overlap(q, worry) < .5);
+  const cs = arr(d.competitors), own = cs.find(c=>sameProduct(c.name, name)), others = cs.filter(c=>c !== own);
+  const best = others.slice().sort((x, y)=>(x.final_daily_rank || 99) - (y.final_daily_rank || 99))[0];
+  const gapC = others.find(c=>(c.commenters_complained || [])[0]);
   const all = (d.why && (d.why.all_inputs || d.why.top_drivers)) || [];
-  const up = all.slice().sort((a, b)=>b.points - a.points)[0], down = all.filter(r=>r.points < 0).sort((a, b)=>a.points - b.points)[0];
-  const tile = (k, v, s = "")=> v ? `<div class="tile"><small>${k}</small><b>${esc(v)}</b>${s ? `<span>${esc(s)}</span>` : ""}</div>` : "";
-  const pts = [
-    lifted && lifted.lift >= 1.2 && topic ? `Write the launch post for <b>${esc(lifted.segment)}</b>: this launch draws ${lifted.lift.toFixed(1)}× more of them than usual, and its likely backers mostly upvote <b>${esc(topic.topic)}</b>.` : "",
+  const up = all.slice().sort((x, y)=>y.points - x.points)[0], down = all.filter(r=>r.points < 0).sort((x, y)=>x.points - y.points)[0];
+  const strong = (r)=> r && Math.abs(Math.exp(r.points) - 1) >= .05;
+  const tile = (k, v, sub = "")=> v ? `<div class="tile"><small>${k}</small><b>${v}</b>${sub ? `<span>${sub}</span>` : ""}</div>` : "";
+  const tier = (o)=> o.rank <= Math.ceil(o.of / 3) ? "top" : o.rank > Math.floor(o.of * 2 / 3) ? "bottom" : "middle";
+  const net = !f ? `We can't see your team's Product Hunt network (your profiles aren't among the people we hold), so most early votes will come from people who don't know you yet. The pitch and the first comment carry the launch.`
+    : tier(f) === "top" ? `You have one of today's biggest networks: <b>${n0(f.value)}</b> people we hold follow the hunter or makers (#${f.rank} of the ${f.of} launches whose network we can see). Make sure they know it's live.`
+    : tier(f) === "middle" ? `Your network is mid-sized for today: <b>${n0(f.value)}</b> followers we hold (#${f.rank} of ${f.of}). Votes beyond it depend on the pitch.`
+    : `Your network is one of today's smallest we can see (<b>${n0(f.value)}</b> followers we hold, #${f.rank} of ${f.of}). Reach beyond it: the first comment and the gallery have to win strangers.`;
+  const pts = [net,
+    pu && pu.day_median && pu.share / pu.day_median >= 1.5 ? `Your audience has more heavy upvoters than most launches today (${pct(pu.share)} vs a typical ${pct(pu.day_median)}). They vote in the first hours, so be in the comments early.` : "",
+    own ? `Your earlier launch <b>${esc(own.name)}</b> finished #${esc(own.final_daily_rank)} with ${Math.round(own.final_votes || 0)} votes.${(own.commenters_complained || [])[0] ? ` Its commenters disliked: <i>“${esc(own.commenters_complained[0])}”</i> Show what changed.` : ""}` : "",
     worry ? `Answer this worry in the first comment, before anyone asks: <i>“${esc(worry)}”</i>` : "",
-    ask && ask !== worry ? `Put this answer on the page: <i>“${esc(ask)}”</i>` : "",
+    ask ? `Put this answer on the page: <i>“${esc(ask)}”</i>` : "",
     gapC ? `People disliked this in a similar product (${esc(gapC.name)}): <i>“${esc(gapC.commenters_complained[0])}”</i> Show how this one avoids it.` : "",
-    down ? `Weakest factor in our model: <b>${esc(down.input)}</b> (${votesPct(down.points)}). ${esc(FACTOR[down.input] || "")}` : ""].filter(Boolean);
-  return `<div class="tiles">${lifted && lifted.lift >= 1.2 ? tile("Drawn more than usual", lifted.segment, `${lifted.lift.toFixed(1)}× the usual share`) : tile("Likely backers", "The usual Product Hunt crowd", "no role stands out")}
-    ${tile("Top worry", worry)}${tile("Closest past launch", best && best.name, best && best.final_daily_rank ? `finished #${best.final_daily_rank}` : "")}
-    ${tile("Biggest boost", up && up.input, up ? votesPct(up.points) + (down ? ` · biggest drag: ${down.input}` : "") : "")}</div>
-    ${pts.length ? `<h5>Talking points for the founder</h5><ol class="pitch">${pts.map(t=>`<li>${t}</li>`).join("")}</ol><p class="note">Built only from the tabs here; each tab says how reliable it is.</p>` : ""}`;
+    strong(down) && down.input === "team size" && raw["team size"] != null && raw["team size"] <= 2 ? `${raw["team size"] === 0 ? "No makers are" : raw["team size"] === 1 ? "Only 1 maker is" : "Only 2 makers are"} listed on the launch. Launches that list the whole team do better in our model (${votesPct(down.points)} here): add the team as makers.` :
+    strong(down) ? `Weakest factor in our model: <b>${esc(down.input)}</b> (${votesPct(down.points)}). ${esc(FACTOR[down.input] || "")}` : ""].filter(Boolean);
+  return `<div class="tiles">${tile("Expected votes from people we hold", e && Number(e.value).toFixed(1), e && `#${e.rank} of ${e.of} today`)}
+    ${tile("Network we can see", f ? n0(f.value) + " followers" : "Not visible", f ? `#${f.rank} of ${f.of} launches we can see` : "team not among people we hold")}
+    ${tile("Top worry", worry && esc(worry))}
+    ${tile("Biggest boost", strong(up) ? esc(up.input) : "No strong boost", strong(up) ? votesPct(up.points) : "every factor is close to typical")}
+    ${own ? tile("Your earlier launch", esc(own.name), `finished #${esc(own.final_daily_rank)}`) : best ? tile("Closest past launch", esc(best.name), best.final_daily_rank ? `finished #${best.final_daily_rank}` : "") : ""}
+    ${pu && pu.day_median ? tile("Heavy upvoters in its audience", pct(pu.share), `typical launch today: ${pct(pu.day_median)}`) : ""}</div>
+    <h5>Talking points for the founder</h5><ol class="pitch">${pts.map(t=>`<li>${t}</li>`).join("")}</ol><p class="note">Built only from the tabs here; each tab says how reliable it is.</p>`;
 }
 const TABS = [["overview", "Overview", exOverview], ["who_actually", "Who voted", null], ["who", "Who backs it", null], ["say", "What they'll say", null], ["competitors", "Competitors", null], ["why", "Why", null]];
 const BLOCK_FN = {who_actually: exActual, who: exWho, say: exSay, competitors: exComp, why: exWhy};
@@ -227,9 +256,10 @@ function showExplain(id){
   const d = EXPL.launches[id], x = VIEW.launches.find(l=>l.id===id), el = $("#explain");
   if(!d || !x){ el.hidden = true; return; }
   EXPL_ID = id;
-  const tabs = TABS.filter(([k])=> k === "overview" ? (d.who || d.say || d.competitors || d.why) : d[k]);
+  const tabs = TABS.filter(([k])=> k === "overview" ? (d.who || d.say || d.competitors || d.why) : k === "who" ? (d.who || d.audience) : d[k]);
   if(!tabs.find(([k])=>k === EX_TAB)) EX_TAB = tabs[0][0];
-  const body = EX_TAB === "overview" ? exOverview(d) : BLOCK_FN[EX_TAB](d[EX_TAB]);
+  RAW = d.raw || {};
+  const body = EX_TAB === "overview" ? exOverview(d) : EX_TAB === "who" ? exWho(d.who, d.audience) : BLOCK_FN[EX_TAB](d[EX_TAB]);
   el.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(x.name)}">
     <header><div class="ttl">${icon(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.tagline || "")}</p></div></div><button class="x" aria-label="Close">×</button></header>
     <nav class="extabs">${tabs.map(([k, t])=>`<button data-t="${k}" aria-pressed="${k === EX_TAB}">${t}</button>`).join("")}</nav>

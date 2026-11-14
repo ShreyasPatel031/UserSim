@@ -471,3 +471,10 @@ details.fx > p { margin: 0 0 10px; font-size: 13px; color: var(--soft); }
 .exbody .note.top { margin: 0 0 6px; }
 .tile b { font-weight: 600; }
 @media (max-width: 640px) { .bx2 { grid-template-columns: minmax(92px, 38%) 1fr 36px 36px; } details.fx > summary { grid-template-columns: minmax(100px, 42%) 1fr 78px; } }
+
+/* v20: audience rows */
+.aud { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--line, #eee6d6); font-size: 14px; }
+.aud b { font-variant-numeric: tabular-nums; font-size: 15px; } .rkof { font-size: 12px; color: var(--soft); white-space: nowrap; min-width: 92px; text-align: right; }
+
+/* v21 */
+details.fx .rv { font-style: normal; font-size: 12px; color: var(--soft); margin-left: 4px; }
