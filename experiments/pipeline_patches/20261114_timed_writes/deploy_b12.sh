@@ -27,8 +27,8 @@ gsutil -q cp $B/deploy/b12/tw_code_$C.tgz $T
 rm -rf $W/tw.new; mkdir -p $W/tw.new; tar xzf $T -C $W/tw.new --strip-components=1
 ln -sfn $W/experiments/ph_predict/data $W/tw.new/experiments/ph_predict/data          # read-only use of the pipeline's data dir
 for d in logs locks tmp cache cmt e5/why; do mkdir -p $W/tw.new/$d; done
-# E5 vm_writers (pinned tarball md5; E5 commit facba879, 14:46Z Nov 14) + the salt for held_team_* (mode 600; read only to hash, never printed)
-E5W_MD5=3ff1b86b; gsutil -q cp $B/tmp/e5/vm_writers/e5_vm_writers.tgz $BK/e5_vm_writers.tgz
+# E5 vm_writers (pinned tarball md5 e09d5bae, E5 12:47Z Nov 14: track_record >= 10 ranked launches day rule) + the salt for held_team_* (mode 600; read only to hash, never printed)
+E5W_MD5=e09d5bae; gsutil -q cp $B/tmp/e5/vm_writers/e5_vm_writers.tgz $BK/e5_vm_writers.tgz
 [ "$(md5sum < $BK/e5_vm_writers.tgz | cut -c1-8)" = "$E5W_MD5" ] || { echo "e5 vm_writers tarball md5 mismatch: not deploying"; exit 1; }
 mkdir -p $W/tw.new/e5_vm_writers $W/tw.new/e5_assets/early; tar xzf $BK/e5_vm_writers.tgz -C $W/tw.new/e5_vm_writers
 (umask 077; gsutil -q cp $B/raw/population/_salt $W/tw.new/e5_assets/early/salt) || { echo "salt copy failed: not deploying"; exit 1; }
