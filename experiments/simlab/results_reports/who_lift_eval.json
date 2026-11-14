@@ -1,0 +1,48 @@
+{
+ "design": "Is the explain \"who\" launch-specific? (orchestrator 23:19Z Nov 14, website item 1). Strict Nov 8-12, frozen CF-only lists.\nPer launch: actual = held backers (held before the freeze AND re-read after the day, upvote list contains the launch), n >= 10.\nDistributions compared: role segments (keyword rule on own headline + bio, as on the site) and topic taste (share of each topic among the\nperson's upvotes on launches of the 90 days before D, from reads before 00:00 PT; averaged over the group).\n  predicted = the CF-only list's top K (K = N_E = expected held backers, 200, 2000); base = all held active people that day.\nScore = total-variation distance to the actual backers' distribution (0 = identical). Gain = TV(base) - TV(predicted) (> 0: our list is closer\nthan the base population). Pooled over launches, weighted by backers; launch bootstrap 95% intervals. Aggregates only.",
+ "launches": 44,
+ "backers": 1450,
+ "median N_E": 13.0,
+ "TV distance x100 to actual backers (weighted)": {
+  "seg_base": 24.41,
+  "seg_NE": 39.27,
+  "seg_200": 17.11,
+  "seg_2000": 21.3,
+  "top_base": 12.96,
+  "top_NE": 12.42,
+  "top_200": 10.88,
+  "top_2000": 10.77
+ },
+ "gain vs base (TV points x100, >0 = closer than base) [CI]": {
+  "seg top-NE": [
+   -14.86,
+   -21.06,
+   -9.02
+  ],
+  "seg top-200": [
+   7.3,
+   5.41,
+   8.91
+  ],
+  "seg top-2000": [
+   3.11,
+   2.42,
+   3.57
+  ],
+  "top top-NE": [
+   0.54,
+   -0.95,
+   2.13
+  ],
+  "top top-200": [
+   2.07,
+   0.9,
+   3.48
+  ],
+  "top top-2000": [
+   2.19,
+   1.7,
+   2.58
+  ]
+ }
+}

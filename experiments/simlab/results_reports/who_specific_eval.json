@@ -1,0 +1,43 @@
+{
+ "design": "Launch-SPECIFICITY of the explain \"who\" (follow-up to who_lift_eval.py: being closer than the base population only shows the list is made\nof active people, which every launch's list is). Strict Nov 8-12, frozen CF-only lists (top 2000 per launch).\nPer launch i with >= 10 actual held backers (held before freeze AND re-read after the day):\n  list \"p\"     = top 200 by CF-only probability for i\n  list \"ratio\" = top 200 by p_i / mean over the day's launches of p_j (a person missing from launch j's top 2000 gets that list's minimum p)\nSpecificity = mean over other same-day launches j of TV(actual_i, list_j) - TV(actual_i, list_i)   (> 0: i's own list matches i's backers\nbetter than other launches' lists do). Role segments and topic taste as on the site. Weighted by backers; launch bootstrap 95%.",
+ "launches": 44,
+ "backers": 1450,
+ "specificity (TV points x100; > 0 = own list fits own backers better than other launches' lists) [CI]": {
+  "seg p": [
+   0.09,
+   -0.43,
+   0.52
+  ],
+  "seg ratio": [
+   -0.58,
+   -2.67,
+   1.53
+  ],
+  "seg team_pool": [
+   1.66,
+   -1.02,
+   4.89
+  ],
+  "top p": [
+   0.02,
+   -0.25,
+   0.31
+  ],
+  "top ratio": [
+   -1.12,
+   -2.61,
+   0.49
+  ],
+  "top team_pool": [
+   1.51,
+   -0.1,
+   2.6
+  ]
+ },
+ "share of actual held backers inside the launch's team pool": 0.5,
+ "mean overlap of a launch's top 200 with other same-day launches' top 200": {
+  "p": 0.9,
+  "ratio": 0.259,
+  "team_pool": 8.207
+ }
+}
