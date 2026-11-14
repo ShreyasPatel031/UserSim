@@ -25,11 +25,9 @@ _tok = {"t": "", "at": 0}
 _lk = threading.Lock()
 
 
-def token(refresh=False):
-    """Access token, refreshed every 5 min (gcloud can return a cached token close to expiry) or when refresh=True
-    (after a 401)."""
+def token():
     with _lk:
-        if refresh or time.time() - _tok["at"] > 300:
+        if time.time() - _tok["at"] > 1800:
             _tok["t"] = subprocess.check_output(["gcloud", "auth", "print-access-token"], text=True).strip()
             _tok["at"] = time.time()
         return _tok["t"]

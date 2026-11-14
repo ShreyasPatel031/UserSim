@@ -87,7 +87,7 @@ def build(include_today=False):
     wbav = _jl("ext_wb.jsonl")
     cmf = json.load(open(f"{D}/cm_features.json")) if os.path.exists(f"{D}/cm_features.json") else {}
     audf = json.load(open(f"{D}/aud_features.json")) if os.path.exists(f"{D}/aud_features.json") else {}
-    for extra in ("aud2_features.json", "recip_features.json", "fol_features.json", "seg_features.json", "promo_features.json", "ctx_features.json", "agg_features.json", "agt_features.json", "aga_features.json", "pss_features.json", "ptr_features.json", "tka_features.json", "tkb_features.json", "tkc_features.json", "tkd_features.json", "tke_features.json", "psn_features.json", "sim_features.json", "sc_features.json", "scd_features.json", "ps_features.json", "vs_features.json", "pf_features.json", "psp_features.json", "pst_features.json", "psh_features.json", "psq_features.json", "tpc_features.json", "tpd_features.json", "cmp_features.json", "tmc_features.json", "tmd_features.json", "upw_features.json"):  # step-2 audience, reciprocity (rec_), sample followers (fol_)
+    for extra in ("aud2_features.json", "recip_features.json", "fol_features.json", "seg_features.json", "promo_features.json", "ctx_features.json", "agg_features.json", "agt_features.json", "aga_features.json", "pss_features.json", "ptr_features.json", "tka_features.json", "tkb_features.json", "tkc_features.json", "tkd_features.json", "tke_features.json", "psn_features.json", "sim_features.json", "sc_features.json", "scd_features.json"):  # step-2 audience, reciprocity (rec_), sample followers (fol_)
         for k, v in (json.load(open(f"{D}/{extra}")) if os.path.exists(f"{D}/{extra}") else {}).items():
             audf.setdefault(k, {}).update(v)
     import external as E
@@ -105,14 +105,7 @@ def build(include_today=False):
                  "description": p.get("description") or "", "topics": topics,
                  "votes": p["votesCount"], "comments": p["commentsCount"], "dailyRank": p["dailyRank"],
                  "weeklyRank": p["weeklyRank"], "monthlyRank": p["monthlyRank"],
-                 "hunter_id": hunter.get("id"), "maker_ids": [m["id"] for m in mk], "is_today": is_today,
-                 # carry-everything rule (orchestrator 12:33Z Nov 13): every daily-file field the features below do not use, kept
-                 # as one JSON text column (object dtype, "raw" is no model source, so M.cols never selects it); no handles or names
-                 "raw_fields": json.dumps({"featuredAt": p.get("featuredAt"), "createdAt": p.get("createdAt"), "website": p.get("website"),
-                                           "reviewsCount": p.get("reviewsCount"), "reviewsRating": p.get("reviewsRating"),
-                                           "media_types": [m_.get("type") for m_ in p.get("media") or []],
-                                           "hunter": {k: hunter.get(k) for k in ("id", "createdAt", "followersCount", "headline")},
-                                           "makers": [{k: m_.get(k) for k in ("id", "createdAt", "followersCount", "headline", "websiteUrl")} for m_ in mk]})}
+                 "hunter_id": hunter.get("id"), "maker_ids": [m["id"] for m in mk], "is_today": is_today}
             if is_today:  # results not final: never a label, never history
                 r.update(votes=np.nan, comments=np.nan, dailyRank=np.nan, weeklyRank=np.nan, monthlyRank=np.nan)
             mf = [m.get("followersCount") or 0 for m in mk]
@@ -193,9 +186,6 @@ def build(include_today=False):
     return df
 
 
-RED = {"0", "", "None", None}   # placeholder maker ids (API v2 redacts makers; all redacted makers share id "0")
-
-
 def add_history(df):
     """hist_: how the hunter's and makers' EARLIER launches did (other launches only; strictly earlier days, so
     it is known before launch). rel = log votes minus that day's mean; top5 = finished top 5 that day."""
@@ -207,7 +197,7 @@ def add_history(df):
     for day, g in df.groupby("day", sort=True):
         for _, r in g.iterrows():
             h = H.get(r.hunter_id, [])
-            ms = [x for m in r.maker_ids if str(m) not in RED for x in Mk.get(m, [])]   # redacted makers share id "0" (Nov 13 data bug)
+            ms = [x for m in r.maker_ids for x in Mk.get(m, [])]
             feats.append({
                 "hist_hunter_n": len(h), "hist_hunter_rel": np.mean([x[0] for x in h]) if h else np.nan,
                 "hist_hunter_top5": np.mean([x[1] for x in h]) if h else np.nan,
@@ -215,6 +205,6 @@ def add_history(df):
                 "hist_maker_top5": np.mean([x[1] for x in ms]) if ms else np.nan})
         for _, r in g.iterrows():  # add today's results only after the whole day is featurised
             H.setdefault(r.hunter_id, []).append((r._rel, r._top5))
-            for m in set(r.maker_ids) - RED:
+            for m in set(r.maker_ids):
                 Mk.setdefault(m, []).append((r._rel, r._top5))
     return pd.concat([df, pd.DataFrame(feats, index=df.index)], axis=1).drop(columns=["_rel", "_top5"])
