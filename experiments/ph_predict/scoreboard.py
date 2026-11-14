@@ -137,6 +137,14 @@ def main():
             row[f"ci_top{k}"] = [round(float(c[0]), 1), round(float(c[1]), 1)] if c is not None else None
         summ.append(row)
     actual = {d: g.head(10).id.tolist() for d, g in real.items()}
+    # TODAY-ROWS BUG flag (orchestrator 16:38Z Nov 14): from Oct 26 every 00:05 model score (and the P points that use it as their prior) was
+    # built with stale data/today/ rows in the hunter history (pipeline_patches/20261114_today_rows). Set TODAY_BUG_FIXED to the first night the
+    # fix runs live; days from then on are not flagged.
+    TODAY_BUG_FROM, TODAY_BUG_FIXED = "2026-10-26", os.environ.get("TODAY_BUG_FIXED") or None
+    flag_txt = "built on polluted hunter-history inputs (today-rows bug, " + (f"fixed {TODAY_BUG_FIXED})" if TODAY_BUG_FIXED else "fix not yet live)")
+    hit = (X.day >= TODAY_BUG_FROM) & ((X.day < TODAY_BUG_FIXED) if TODAY_BUG_FIXED else True) & (X.point.astype(str).eq("0005") | X.point.astype(str).str.startswith("P"))
+    X["input_flag"] = pd.Series([flag_txt if h else None for h in hit], index=X.index, dtype=object)
+    day_flags = {d_: flag_txt for d_ in sorted(X.day[hit].unique())}
     out = {"built_at": pd.Timestamp.now(tz="UTC").isoformat(),
            "definition": "topK = share of the forecast's top K that finished in the day's final daily top K (all ranked launches of the day), x100; days are PT dates",
            "sources": {"live": "00:05 forecast written within 30 min of 00:05 PT; P / R points within 90 min of their data cut",
@@ -146,7 +154,8 @@ def main():
                        "replay_in_sample": "replay whose recipe weights were chosen on the same days (pred_rank_best on Nov 2-10)"},
            "per_pick": "p1/p2/p3_top3 = our #1/#2/#3 pick finished in the final top 3; exact1 = our #1 was the winner",
            "time_shown": "written_at (when the forecast file was written), not the data cut",
-           "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual}
+           "summary": summ, "rows": X.to_dict("records"), "actual_top10": actual,
+           "day_flags": day_flags, "input_flag": "rows of the 00:05 forecast and the pre-reveal P points on flagged days; R / C / velocity points use votes and are not flagged"}
     os.makedirs(os.path.join(HERE, "results", "web"), exist_ok=True)
     # orchestrator 12:47Z Nov 12: running clean vs deployed block, re-read at 25 and 50 live days (model-switch decision).
     # deployed = the published 00:05 forecast (live rows); clean = shadow_makerfix pred_clean when written, else the
