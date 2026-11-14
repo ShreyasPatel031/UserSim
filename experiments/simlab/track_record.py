@@ -76,6 +76,16 @@ if "03:45 PT | replay" in summ:
 summ["03:45 PT | replay"] = {**LODO, "line": "hybrid_vm (hidden top 5 + ridge slots 6+)", "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [77.5, None, None, 12]},
                              "note": "top-10 edge over Product Hunt's hidden order +4.2 [0.0, +8.3], not yet established (12 days)",
                              **({"superseded 11-day figure (weights fit on all days)": summ["03:45 PT | replay"]["superseded 11-day figure (weights fit on all days)"]} if "03:45 PT | replay" in summ and "superseded 11-day figure (weights fit on all days)" in summ["03:45 PT | replay"] else {})}
+# (orchestrator 15:52Z Nov 14, explanation audit item 1) the line published Oct 29 - Nov 13 was NOT arm 2 / clean_nosite: Oct 29 - Nov 12 the
+# old FULL launch model (all live inputs incl. named-maker inputs and llm_site; forecast.py before af6c25c2), Nov 13 clean_nosite
+# (scoreboard model_switch clean_from 2026-11-13). Figure from results/web/scoreboard.json summary (point 0005, method published, live).
+summ["00:05 PT | live, previous published model"] = {"line": "old full launch model (Oct 29 - Nov 12) then clean_nosite (Nov 13)", "flag": "live", "n_days": 11,
+    "first/last day": ["2026-10-29", "2026-11-13"], "all days": {"top3 hits %": [51.5, 39.4, 63.6, 11], "top5 hits %": [60.0, None, None, 11], "top10 hits %": [73.6, None, None, 11]},
+    "source": "results/web/scoreboard.json summary (0005 / published / live)", "day rule": DAY_RULE}
+# clean_nosite's own backtest (the fallback model on nights arm 2 is missing, e.g. Nov 14): PH ops' month-forward preds, 'pure' column, >= 10 ranked
+summ["00:05 PT | backtest (clean_nosite, fallback model)"] = {"line": "clean_nosite (published only when arm 2 is missing)", "flag": "backtest", "n_days": 183, "method": "month-forward, 5 seeds",
+    "first/last day": ["2026-04-01", "2026-10-31"], "all days": {"top3 hits %": [54.5, 51.2, 57.6, 183], "top5 hits %": [64.7, 62.1, 67.4, 183], "top10 hits %": [76.0, 74.3, 77.8, 183]},
+    "source": "claude/ph-ops-agent results/history_retrain_decomp_preds_arm2.parquet column pure", "day rule": DAY_RULE}
 summ["03:45 PT | replay (hidden rank alone)"] = {**LODO, "method": "no fitted weights", "line": "Product Hunt's hidden order at 03:00/03:45 read",
                                                  "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [73.3, None, None, 12]}}
 out = {"version": "track_record_v1", "written_at": pd.Timestamp.now(tz="UTC").isoformat(),

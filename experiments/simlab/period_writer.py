@@ -70,6 +70,13 @@ for per in ("week", "month"):
         g2 = L[(pd.to_datetime(L.day) >= start) & (pd.to_datetime(L.day) <= d)].dropna(subset=["votes"])
         sb = [{"id": r.id, "value": float(r.votes), "source": "votes"} for r in g2.itertuples()] + [{"id": r.id, "value": round(float(r.pv), 1), "source": "predicted"} for r in ENT.itertuples()]
         out["shadow_with_entrants"] = [{"id": o["id"], "board_position": i + 1, "source": o["source"]} for i, o in enumerate(sorted(sb, key=lambda o: -o["value"]))]
+    try:   # measured accuracy of this board (orchestrator 15:52Z audit item 6): scored periods so far, flags never pooled
+        TRk = json.loads(subprocess.run(["gsutil", "cat", f"{B}/tmp/e5/website/period_track_record.json"], capture_output=True).stdout or b"{}")
+        E_ = [e for e in TRk.get("entries", []) if e.get("board") == per]
+        out["accuracy"] = {"definition": "hits = board's top k that finished in the final " + ("weekly" if per == "week" else "monthly") + " top k (first read after the close); headline = Saturday board (week) / last board before the close (month)",
+                           "n_periods": len(E_), "periods": [{k: e.get(k) for k in ("period_start", "flag", "line", "headline_day", "status", "hits top3/5/10", "ceiling top3/5/10")} for e in E_],
+                           "note": "replay = rebuilt from held reads, not a live call; live periods are added after each close"}
+    except Exception: pass
     miss = PP.missing_days(per, D, pd.Timestamp.now(tz="UTC")); out["stale_days_missing"] = miss
     if miss:   # a day of the period so far has no read after its close (as Nov 5-7): never publish a silently stale board
         out["status"] = "stale: days missing"; out["stale_note"] = "no launches read with votes after the close of: " + ", ".join(miss)
