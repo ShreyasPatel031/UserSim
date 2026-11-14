@@ -42,6 +42,7 @@ VH = open(os.path.join(HERE, "voter_harness.py")).read(); i0 = VH.index("DAYS = 
 VH = VH[:i0] + "DAYS = " + json.dumps(TDAYS) + VH[i1:]
 g = {"__name__": "vh", "__file__": "voter_harness.py"}; exec(VH[:VH.index("FOLL = {}")], g); sys.argv = argv0
 U, L, feats, pair_X, LT, ltop, lhun, lmak, start = (g[k] for k in ("U", "L", "feats", "pair_X", "LT", "ltop", "lhun", "lmak", "start"))
+lday = dict(zip(L.id, L.day))
 by_team = {}
 for i in L.id:
     for t in (lhun.get(i), lmak.get(i)):
@@ -55,6 +56,7 @@ def day_cols(t, H, UF, pi):
     if not len(act) or not lu: return None
     base = pair_X(act, tv, lu, {})   # n30, n90, last, taste, (follows = 0: none passed), is_hunter
     rows = np.array([pi.get(p, -1) for p in act.index]); have = rows >= 0; d0 = pd.Timestamp(t); out = []
+    tot_up = Ht.groupby("person_id").size().reindex(act.index).fillna(0).values   # all upvotes before t (for bk_share)
     for i, X in zip(lu, base):
         ls = set().union(*[by_team.get(x, set()) for x in (lhun.get(i), lmak.get(i)) if x]) - {i}
         bk = set(Ht[Ht.target_id.isin(ls)].person_id) if ls else set()
@@ -66,11 +68,25 @@ def day_cols(t, H, UF, pi):
         cf = np.zeros(len(act))
         if aud:
             c = UF[aud].mean(0); c /= max(np.linalg.norm(c), 1e-9); cf[have] = UF[rows[have]] @ c
-        out.append((i, np.column_stack([X, act.index.isin(bk).astype(float), cf])))
+        # backing intensity (arm 5, pre-registered 23:16Z): only upvotes on the team's launches dated before t, from reads before the cut
+        bkr = np.zeros(len(act)); bkn = np.zeros(len(act)); bkd = np.full(len(act), np.log1p(365.0)); bks = np.zeros(len(act))
+        if ls:
+            tb = Ht[Ht.target_id.isin(ls)]
+            if len(tb):
+                recent = max(ls, key=lambda x: lday.get(x, ""))
+                cnt = tb.groupby("person_id").target_id.nunique(); last = tb.groupby("person_id").lday.max()
+                ix_ = pd.Index(act.index)
+                bkr = ix_.isin(set(tb[tb.target_id == recent].person_id)).astype(float)
+                bkn = np.log1p(cnt.reindex(ix_).fillna(0).values)
+                dd = (d0 - pd.to_datetime(last.reindex(ix_))).dt.days
+                bkd = np.where(dd.notna(), np.log1p(dd.fillna(365).clip(lower=0)), np.log1p(365.0))
+                bks = np.where(tot_up > 0, tb.groupby("person_id").size().reindex(ix_).fillna(0).values / np.maximum(tot_up, 1), 0.0)
+        out.append((i, np.column_stack([X, act.index.isin(bk).astype(float), cf, bkr, bkn, bkd, bks])))
     return act, out
-COLS = ["n30", "n90", "last", "taste", "fol", "hun", "back", "cf"]; ci = {c: k for k, c in enumerate(COLS)}
+COLS = ["n30", "n90", "last", "taste", "fol", "hun", "back", "cf", "bk_recent", "bk_n", "bk_days", "bk_share"]; ci = {c: k for k, c in enumerate(COLS)}
 ARMS = {"CF-only": (30, ["n30", "n90", "last", "cf"]), "A7": (7, ["n30", "n90", "last", "taste", "hun", "back"]),
-        "CF+back": (30, ["n30", "n90", "last", "cf", "back"])}   # 4th arm (miss anatomy 22:54Z: 43% of CF-only misses had backed this team before)
+        "CF+back": (30, ["n30", "n90", "last", "cf", "back"]),
+        "CF+intensity": (30, ["n30", "n90", "last", "cf", "bk_recent", "bk_n", "bk_days", "bk_share"])}   # arm 5, pre-registered a01f8b96   # 4th arm (miss anatomy 22:54Z: 43% of CF-only misses had backed this team before)
 if os.environ.get("ARMS_ONLY"): ARMS = {k: v for k, v in ARMS.items() if k in os.environ["ARMS_ONLY"].split(",")}
 rng = np.random.default_rng(0)
 for D in TDAYS:

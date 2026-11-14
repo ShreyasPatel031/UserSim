@@ -18,7 +18,7 @@ held = set(pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id"]).perso
 last_read = U.groupby("person_id").ft.max(); first_read = U.groupby("person_id").ft.min(); store_time = U.ft.max()
 W = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last"); W["id"] = W.id.astype(str); W["day"] = W.day.astype(str).str[:10]
 U["lday"] = U.target_id.map(dict(zip(W.id, W.day)))
-ARMS = ["CF-only", "A7", "CF+back", "raw most-active"]; FIT = ["CF-only", "A7", "CF+back"]
+ARMS = ["CF-only", "A7", "CF+back", "CF+intensity", "raw most-active"]; FIT = ["CF-only", "A7", "CF+back", "CF+intensity"]
 rows, per_launch = [], []
 for D in DAYS:
     raw = subprocess.run(["gsutil", "cat", f"{B}/tmp/e5/private/backer_arms/{D}.parquet"], capture_output=True).stdout
@@ -55,7 +55,8 @@ if len(P):
         if not len(df): continue
         s = {"launches": int(len(df)), "observed_backers": int(df.N.sum())}
         for a in [a for a in ARMS if a in df]: s[a] = [round(pooled(df, a), 1)] + boot(df, lambda x, a=a: pooled(x, a))
-        if "CF+back" in df: s["CF+back minus CF-only (paired)"] = [round(pooled(df, "CF+back") - pooled(df, "CF-only"), 1)] + boot(df, lambda x: pooled(x, "CF+back") - pooled(x, "CF-only"))
+        for a5 in ("CF+back", "CF+intensity"):
+            if a5 in df and df[a5].notna().all(): s[f"{a5} minus CF-only (paired)"] = [round(pooled(df, a5) - pooled(df, "CF-only"), 1)] + boot(df, lambda x, a5=a5: pooled(x, a5) - pooled(x, "CF-only"))
         for a in [a for a in FIT if a in df]: s[f"{a} minus raw (paired)"] = [round(pooled(df, a) - pooled(df, "raw most-active"), 1)] + boot(df, lambda x, a=a: pooled(x, a) - pooled(x, "raw most-active"))
         summary[D] = s
 out = {"metric": "BACKER PREDICTION, 3 arms, strict: recall at N (N = observed backers), pooled; launch-bootstrap 95% intervals",
