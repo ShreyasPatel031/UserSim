@@ -14,4 +14,4 @@ Overlaps: forecast.py is also patched by 20261114_input_guards (store restore an
 
 20 seeds vs 5: paired backtest on the 183-day rule (results/history_retrain_joint_arm2_s20.parquet vs decomp 'both'). The result goes
 in the README when the run ends. If it is worse beyond noise, set `REPRO_SEEDS=5`; the determinism changes stay either way.
-Runtime: 20 seeds is about 4x the fit time of 5 (seconds per fit on the VM). The 00:05 job's 300 s timeout has room.
+Runtime: 20 seeds is about 4x the fit time of 5. forecast_today.sh has no timeout on forecast.py; time one run on a scratch copy before deploy.
