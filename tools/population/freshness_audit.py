@@ -159,9 +159,22 @@ def check():
                    "gap_min": round((now - last).total_seconds() / 60, 1) if last else None, "limit_min": lim}
             if feed == "posts_ts":
                 row["note"] = "capture rows only; stopgap_from_warehouse rows ignored"
-                if LAST_ANY_POSTS:
-                    row["public_leaderboard_stale_since_pt"] = LAST_ANY_POSTS.astimezone(PT).strftime("%Y-%m-%d %H:%M PT")
             out.append(row)
+    # public website leaderboard (orchestrator 20:01Z Nov 14): since ~18:57Z the site reads PH itself and serves
+    # site/live_board/latest.json as last-good; its health endpoint says how fresh that is. Limit 20 min.
+    try:
+        import urllib.request
+        h = json.loads(urllib.request.urlopen("https://usersim.vercel.app/api/ph/health", timeout=20).read())
+        lb = (h.get("checks") or {}).get("live_board") or {}
+        lok = ts(lb.get("last_ok_at")) if lb.get("last_ok_at") else None
+        if not lb.get("ok") or not lok or (now - lok).total_seconds() / 60 > 20:
+            why = "not configured" if lb.get("configured") is False else (lb.get("last_error") or "stale")
+            out.append({"feed": "public_leaderboard", "public_leaderboard_stale_since_pt":
+                        lok.astimezone(PT).strftime("%Y-%m-%d %H:%M PT") if lok else None,
+                        "gap_min": round((now - lok).total_seconds() / 60, 1) if lok else None, "limit_min": 20,
+                        "reason": why, "configured": lb.get("configured")})
+    except Exception as e:
+        out.append({"feed": "public_leaderboard", "note": f"health endpoint unreadable: {type(e).__name__}"})
     try:
         fs = json.loads(sh("gsutil", "cat", f"{G}/mailbox/from_cursor/status.json"))
         fu = ts(fs.get("utc"))
