@@ -187,10 +187,11 @@ def check():
         slots = fs.get("slots_summary") or []
         dead = [s.get("slot") for s in slots if s.get("state") in ("dead", "stale")]  # stale = no recent progress (Nov 15)
         alive = sum(1 for s in slots if s.get("state") not in ("dead", "stale"))
-        if not fu or (now - fu).total_seconds() / 60 > 20 or alive < 20 or dead:
+        expected = len(slots)  # the slots the fleet lists (18 since Nov 13); a fixed 20 kept this open forever
+        if not fu or (now - fu).total_seconds() / 60 > 20 or not expected or alive < expected or dead:
             out.append({"feed": "fleet_status", "last_good": fu.isoformat() if fu else None,
                         "gap_min": round((now - fu).total_seconds() / 60, 1) if fu else None, "limit_min": 20,
-                        "vms_alive": alive, "vms_expected": 20, "dead_slots": dead})
+                        "vms_alive": alive, "vms_expected": expected, "dead_slots": dead})
     except Exception:
         out.append({"feed": "fleet_status", "last_good": None, "note": "status.json unreadable"})
     # bucket raw/vote_snapshots is a once-a-day export (orchestrator 21:45Z): the previous PT day's file must exist by 08:00Z
