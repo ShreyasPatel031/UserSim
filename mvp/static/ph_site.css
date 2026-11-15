@@ -487,3 +487,6 @@ details.fx .rv { font-style: normal; font-size: 12px; color: var(--soft); margin
 .persona .ph { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 4px; } .persona .seg { font-weight: 600; font-size: 13.5px; } .persona .sm { font-size: 12px; color: var(--soft); }
 .persona .ph .iv { margin-left: auto; border-radius: 999px; } .persona .re { margin: 4px 0; font-size: 14px; }
 .persona .pc { margin: 3px 0; font-size: 13.5px; padding-left: 10px; border-left: 3px solid; } .persona .pc.worry { border-color: var(--miss); } .persona .pc.ask { border-color: var(--near); }
+
+/* v24 */
+.persona .seg small { font-weight: 400; color: var(--soft); }
