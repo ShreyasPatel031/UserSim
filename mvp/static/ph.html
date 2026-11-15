@@ -112,7 +112,7 @@ async function load(day){
   loadExplain(VIEW.day);
 }
 
-// Click a launch -> who backs it / what they will say / competitors / why (E5 explain file; blocks may be missing).
+// Click a launch -> who votes / what they will say / competitors / why (E5 explain file; blocks may be missing).
 let EXPL = {launches: {}}, EXPL_DAY = null, EXPL_ID = null;
 async function loadExplain(day){
   if(EXPL_DAY === day && day === VIEW.day && Object.keys(EXPL.launches).length) { markExplain(); return; }
@@ -145,7 +145,7 @@ const FACTOR = {
   "media items": "How many images and videos are in the gallery."};
 const votesPct = (p)=> { const v = Math.round((Math.exp(Number(p) || 0) - 1) * 100); return (v > 0 ? "+" : "") + v + "% votes"; };
 const TRUST = {
-  who: "Describes who is likely to back it. It did not improve the vote forecast, and we hold about half of real voters.",
+  who: "Describes who is likely to vote for it. It did not improve the vote forecast, and we hold about half of real voters.",
   say: "About 1 in 3 predicted concerns or questions matched a real commenter's point in past tests.",
   competitors: "Real earlier launches. Likes and dislikes are paraphrased from their real comments. Similar does not mean same rank.",
   why: "From a simpler stand-in model (right on about 3 of 4 top-10 picks in backtests), not the published one.",
@@ -155,7 +155,7 @@ function trust(b){
   return `<details class="trust"><summary>How reliable? ${esc(TRUST[b] || "")}</summary>${full ? `<p>${esc(full)}</p>` : ""}</details>`;
 }
 // "Who": the launch's existing audience (varies a lot between launches), ranked against the day's other launches.
-// Roles by bio keyword barely differ between launches, for predicted and for real backers alike, so they sit folded.
+// Roles by bio keyword barely differ between launches, for predicted and for real voters alike, so they sit folded.
 const n0 = (v)=> Math.round(Number(v)).toLocaleString();
 const rk = (o)=> o ? `<span class="rkof">#${o.rank} of ${o.of} today</span>` : "";
 function audRows(a){
@@ -165,7 +165,7 @@ function audRows(a){
     + r("Hunter's followers", a.hunter_followers, "Followers of the person who posted it, read at 00:05 PT.")
     + r("People we hold who follow the hunter or makers", a.follow_ties, "Follows that existed before launch day, among people we hold.")
     + r("…of them active in the last 30 days", a.follow_ties_active, "Followers who upvoted something in the 30 days before the launch.")
-    + r("People who backed this team before", a.held_backers, "People we hold who upvoted an earlier launch by this team's members.");
+    + r("People who voted for this team before", a.held_backers, "People we hold who upvoted an earlier launch by this team's members.");
 }
 function exWho(d, aud){
   const a = aud || {}, missing = !a.follow_ties && !a.held_backers;
@@ -173,16 +173,16 @@ function exWho(d, aud){
   const segs = (d && d.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((x, s)=>x + s.n_held_people_scored, 0) || 1;
   const tp = d && d.team_past_backers;
   const liftRows = (rows, lab, base)=> rows.map(x=>`<div class="bx2"><span class="bl">${esc(x[lab])}</span><span class="bt"><i class="share" style="width:${Math.min(100, x.share / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i><i class="base" style="left:${Math.min(100, x[base] / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i></span><span class="bv">${pct(x.share)}</span><span class="lift ${x.lift >= 1.3 ? "hi" : x.lift <= .77 ? "lo" : ""}">${Number(x.lift).toFixed(1)}×</span></div>`).join("");
-  const tpHtml = tp && tp.n_held_people > 0 ? `<h5>People who backed this team before</h5>
-    <p class="lede"><b>${n0(tp.n_held_people)}</b> people we hold upvoted an earlier launch by this hunter or first maker. About half of the backers we can see on a launch usually come from this group.${info("Held people who upvoted an earlier launch of this hunter or first maker. Unlike the general likely-backer list, this group is specific to the team: across past launches it held about 50% of the real backers we could see.")}</p>
+  const tpHtml = tp && tp.n_held_people > 0 ? `<h5>People who voted for this team before</h5>
+    <p class="lede"><b>${n0(tp.n_held_people)}</b> people we hold upvoted an earlier launch by this hunter or first maker. About half of the voters we can see on a launch usually come from this group.${info("Held people who upvoted an earlier launch of this hunter or first maker. Unlike the general likely-voter list, this group is specific to the team: across past launches it held about 50% of the real voters we could see.")}</p>
     ${(tp.segments_by_lift || []).length ? `<div class="legend2"><span><i class="k share"></i>share of them</span><span><i class="k base"></i>share of everyone we hold</span></div>${liftRows(tp.segments_by_lift, "segment", "share_of_all_held_active")}` : ""}
     ${(tp.topics_by_lift || []).length ? `<h5>What they upvote more than most people</h5>${liftRows(tp.topics_by_lift, "topic", "share_for_all_held_active")}` : ""}` : "";
   return `${tpHtml}<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
-    ${missing ? `<p class="note">No follower or past-backer counts: this team's profiles are not among the people we hold.</p>` : ""}
-    ${lift ? `<div class="aud"><span class="bl">Heavy upvoters in that audience${info("Share of its followers and past backers who upvoted 10+ launches in the last 90 days, against the typical launch today. Heavy upvoters vote early and often.")}</span><b>${pct(pu.share)}</b><span class="rkof">${pu.day_median ? `typical today ${pct(pu.day_median)}` : `${lift.toFixed(1)}× usual`}</span></div>` : ""}
-    ${segs.length ? `<details class="more"><summary>Roles of likely backers (a typical mix)</summary>
+    ${missing ? `<p class="note">No follower or past-voter counts: this team's profiles are not among the people we hold.</p>` : ""}
+    ${lift ? `<div class="aud"><span class="bl">Heavy upvoters in that audience${info("Share of its followers and past voters who upvoted 10+ launches in the last 90 days, against the typical launch today. Heavy upvoters vote early and often.")}</span><b>${pct(pu.share)}</b><span class="rkof">${pu.day_median ? `typical today ${pct(pu.day_median)}` : `${lift.toFixed(1)}× usual`}</span></div>` : ""}
+    ${segs.length ? `<details class="more"><summary>Roles of likely voters (a typical mix)</summary>
       ${segs.filter(s=>s.share_of_held_expected_votes >= .02).map(s=>bar(s.segment, s.share_of_held_expected_votes / .4, pct(s.share_of_held_expected_votes))).join("")}
-      <p class="note">Roles from bios barely differ between launches, for real backers too: across 23 past launches, developers were 18–38% of the backers we could see, and marketers 15–27%.</p></details>` : ""}
+      <p class="note">Roles from bios barely differ between launches, for real voters too: across 23 past launches, developers were 18–38% of the voters we could see, and marketers 15–27%.</p></details>` : ""}
     ${trust("who")}`;
 }
 function exSay(d){
@@ -191,8 +191,8 @@ function exSay(d){
   let panel = "";
   if(items.length){
     const cnt = {high: 0, medium: 0, low: 0}; items.forEach(x=>cnt[x.interest] = (cnt[x.interest] || 0) + 1);
-    const src = /past/.test(pp.source_people || "") ? "people who backed this team's earlier launches" : "today's likeliest backers";
-    panel = `<p class="lede"><b>${items.length} simulated backers</b>, each speaking for a group of real people we hold (drawn from ${src}).${info(esc(pp.accuracy_label || ""))}</p>
+    const src = /past/.test(pp.source_people || "") ? "people who voted for this team's earlier launches" : "today's likeliest voters";
+    panel = `<p class="lede"><b>${items.length} simulated voters</b>, each speaking for a group of real people we hold (drawn from ${src}).${info(esc(pp.accuracy_label || ""))}</p>
       <div class="interest"><span class="lab">Interest</span>${["high","medium","low"].map(k=>cnt[k] ? `<span class="iv ${k}" style="flex:${cnt[k]}">${cnt[k]} ${k}</span>` : "").join("")}</div>
       ${items.map(x=>`<div class="persona"><div class="ph"><span class="seg">${esc(x.segment)}</span><span class="sm">speaks for ${esc(x.n_people)} people</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
         ${x.reaction ? `<p class="re">“${esc(x.reaction)}”</p>` : ""}
@@ -258,7 +258,7 @@ function exOverview(d){
   const tp = d.who && d.who.team_past_backers, lean = tp && tp.n_held_people > 0 && (tp.segments_by_lift || []).filter(x=>x.lift >= 1.3 && x.n >= 20)[0];
   const tlean = tp && tp.n_held_people > 0 && (tp.topics_by_lift || []).filter(x=>x.lift >= 1.3)[0];
   const pts = [net,
-    lean ? `People who backed your earlier launches lean towards <b>${esc(lean.segment)}</b> (${Number(lean.lift).toFixed(1)}× their usual share)${tlean ? ` and upvote <b>${esc(tlean.topic)}</b> launches more than most` : ""}. Speak to them first.` : "",
+    lean ? `People who voted for your earlier launches lean towards <b>${esc(lean.segment)}</b> (${Number(lean.lift).toFixed(1)}× their usual share)${tlean ? ` and upvote <b>${esc(tlean.topic)}</b> launches more than most` : ""}. Speak to them first.` : "",
     pu && pu.day_median && pu.share / pu.day_median >= 1.5 ? `Your audience has more heavy upvoters than most launches today (${pct(pu.share)} vs a typical ${pct(pu.day_median)}). They vote in the first hours, so be in the comments early.` : "",
     own ? `Your earlier launch <b>${esc(own.name)}</b> finished #${esc(own.final_daily_rank)} with ${Math.round(own.final_votes || 0)} votes.${(own.commenters_complained || [])[0] ? ` Its commenters disliked: <i>“${esc(own.commenters_complained[0])}”</i> Show what changed.` : ""}` : "",
     worry ? `Answer this worry in the first comment, before anyone asks: <i>“${esc(worry)}”</i>` : "",
@@ -274,7 +274,7 @@ function exOverview(d){
     ${pu && pu.day_median ? tile("Heavy upvoters in its audience", pct(pu.share), `typical launch today: ${pct(pu.day_median)}`) : ""}</div>
     <h5>Talking points for the founder</h5><ol class="pitch">${pts.map(t=>`<li>${t}</li>`).join("")}</ol><p class="note">Built only from the tabs here; each tab says how reliable it is.</p>`;
 }
-const TABS = [["overview", "Overview", exOverview], ["who_actually", "Who voted", null], ["who", "Who backs it", null], ["say", "What they'll say", null], ["competitors", "Competitors", null], ["why", "Why", null]];
+const TABS = [["overview", "Overview", exOverview], ["who_actually", "Who voted", null], ["who", "Who votes", null], ["say", "What they'll say", null], ["competitors", "Competitors", null], ["why", "Why", null]];
 const BLOCK_FN = {who_actually: exActual, who: exWho, say: exSay, competitors: exComp, why: exWhy};
 let EX_TAB = "overview";
 function showExplain(id){
