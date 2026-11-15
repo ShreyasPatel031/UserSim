@@ -13,13 +13,13 @@ set -u; W=${NB_W:-/home/agent/w}; N=$(cd "$(dirname "$0")" && pwd); M="${1:?chec
 H=$(TZ=America/Los_Angeles date +%H%M); if [ "$M" != check ] && [ "$M" != rollback ] && { [ "$H" -ge 2330 ] || [ "$H" -lt 100 ]; }; then echo "refused: 23:30-01:00 PT"; exit 1; fi
 (cd $N && md5sum -c --quiet MANIFEST.md5) || { echo "manifest mismatch"; exit 1; }
 m8() { [ -e "$1" ] && md5sum < "$1" | cut -c1-8 || echo none; }
-h25src() { case $(m8 $1) in ff40d796|88c206ce) echo h25_live.py;; e3af37b4|66a1a4b1) echo h25_live_cur.py;; *) echo "";; esac; }
+h25src() { case $(m8 $1) in ff40d796|88c206ce|2f49972b) echo h25_live.py;; e3af37b4|66a1a4b1|364b3b2a) echo h25_live_cur.py;; *) echo "";; esac; }
 # plan lines: <src> <dest> <allowed base md5s, comma; "new" = may be absent; "any" = no check>
 plan() {   # $1 = root prefix (W for deploy, scratch mirror for check); $2 = h25 | all
   local R=$1; local s; s=$(h25src $R/arm2_live/h25_live.py)
   [ -n "$s" ] || { echo "PLANFAIL arm2_live/h25_live.py md5 $(m8 $R/arm2_live/h25_live.py) not ff40d796/e3af37b4"; return; }
   echo "rootlink.py $R/arm2_live/rootlink.py new,38e37fba"
-  echo "$s $R/arm2_live/h25_live.py ff40d796,e3af37b4,88c206ce,66a1a4b1"
+  echo "$s $R/arm2_live/h25_live.py ff40d796,e3af37b4,88c206ce,66a1a4b1,2f49972b,364b3b2a"
   [ "$2" = h25 ] && return
   echo "ctrl.py $R/arm2_live/ctrl.py any"
   echo "readable_shadow.py $R/tw/h25/readable_shadow.py c26c69be,2851a666"

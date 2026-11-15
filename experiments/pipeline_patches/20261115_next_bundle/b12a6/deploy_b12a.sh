@@ -34,7 +34,7 @@ fi
 H=$(TZ=America/Los_Angeles date +%H%M); [ "$H" -lt 0005 ] || [ "$H" -ge 0100 ] || { echo "inside 00:05-01:00 PT: not deploying"; exit 1; }
 [ "$(id -un)" = agent ] || { echo "run as user agent (the crontab owner): not deploying"; exit 1; }
 S=${1:?folder}; m() { md5sum < "$1" | cut -c1-8; }
-declare -A WANT=( [arm3_backtest_label.txt]=afc4cfb1 [two_predictions.py]=3388bd96 [import_gate.py]=be4891b9 [lineup_reread.py]=4fa6b418 [recorder_extra.py]=c1231100 [run.sh]=5cd8b9e5 [tick.sh]=d446e816 [sched12a.txt]=4cec4d5e [cron12a.txt]=0e2c7f4d [hybrid_vmonly_P345_20261114.json]=b8a59cdd )
+declare -A WANT=( [arm3_backtest_label.txt]=afc4cfb1 [two_predictions.py]=06ad5350 [arm2_backtest_nulls.json]=c9207a34 [import_gate.py]=be4891b9 [lineup_reread.py]=4fa6b418 [recorder_extra.py]=c1231100 [run.sh]=5cd8b9e5 [tick.sh]=d446e816 [sched12a.txt]=4cec4d5e [cron12a.txt]=0e2c7f4d [hybrid_vmonly_P345_20261114.json]=b8a59cdd )
 # weights pin (written by install_fixedprior_weights.sh): once the fixed-prior weights are live, a redeploy must carry them, never revert to 16912cd6
 LIVEW=$(md5sum < $T/hybrid_vmonly_P345_20261114.json 2>/dev/null | cut -c1-8 || true)
 # the LIVE tree's weights count as a pin too (covers a kill between the flip and the pin write)

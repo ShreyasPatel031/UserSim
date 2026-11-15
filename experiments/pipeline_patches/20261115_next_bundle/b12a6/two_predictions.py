@@ -96,6 +96,31 @@ def names(d):
     return (V, dict(zip(V.launch_id.astype(str), V.name))) if len(V) else (V, {})
 
 
+
+def arm2_input_check(d):
+    """live null rate of each arm-2 input (sidecar written by h25_live from the rows fed to the boosters) vs the backtest rate
+    (arm2_backtest_nulls.json); inputs more than 10 points above the backtest are listed as missing, and an alert file is raised
+    (orchestrator 08:22Z Nov 15). Returns the fields for the published file's inputs."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    try:
+        base = json.load(open(os.path.join(here, "arm2_backtest_nulls.json")))["null_rate"]
+    except Exception:  # noqa: BLE001
+        return {"arm2_input_nulls": "baseline missing"}
+    live = None
+    for p in (os.environ.get("A2N_PATH", f"/home/agent/w/experiments/ph_predict/data/arm2_input_nulls/{d}.json"),):
+        if os.path.exists(p): live = json.load(open(p)); break
+    if live is None:
+        r = subprocess.run(["gsutil", "cat", f"{B}/raw/daily/{d}/arm2_input_nulls_{d}.json"], capture_output=True, text=True, timeout=60)
+        if r.returncode == 0: live = json.loads(r.stdout)
+    if live is None:
+        return {"arm2_input_nulls": "absent"}
+    miss = sorted(c for c, v in live["null_rate"].items() if v - base.get(c, 0.0) > 0.10)
+    if miss:
+        msg = f"arm2 inputs missing on {d}: " + ", ".join(f"{c} {live['null_rate'][c]:.0%} live vs {base.get(c, 0.0):.0%} backtest" for c in miss)
+        subprocess.run(["gsutil", "-q", "cp", "-", f"{B}/results/timed_writes/alerts/{d}_arm2_inputs_{dt.datetime.now(dt.timezone.utc):%H%M}.txt"],
+                       input=msg, text=True, capture_output=True, timeout=60)
+    return {"arm2_input_nulls": "present", "missing": miss}
+
 def put(d, kind, out):
     os.makedirs(f"{TW}/out", exist_ok=True); p = f"{TW}/out/{d}_{kind}.json"; json.dump(out, open(p, "w"), indent=1)
     if os.environ.get("DRY") == "1":
@@ -121,7 +146,7 @@ def midnight(d):
     fb0 = None if (arm3 or arm2) else "clean_nosite_fallback"
     if a3fail: fb0 = "arm3_failed" + ("" if arm2 else "+clean_nosite_fallback")
     put(d, "0005", {"day": d, "kind": "0005", "time": "00:05 PT", "model": ("arm3" if arm3 else ("arm2" if arm2 else "clean_nosite")) + (" (arm3 failed)" if a3fail else ""), "fallback_used": fb0,
-                    "inputs": {"forecast_parquet": "present", "pred_arm2": "present" if arm2 else "missing", **({"pred_arm3": "published"} if arm3 else {}), **guard(d)}, "written_at": now, "backtest": acc0("arm3") if arm3 else acc0("arm2" if arm2 else "clean_nosite"),
+                    "inputs": {"forecast_parquet": "present", "pred_arm2": "present" if arm2 else "missing", **(arm2_input_check(d) if arm2 else {}), **({"pred_arm3": "published"} if arm3 else {}), **guard(d)}, "written_at": now, "backtest": acc0("arm3") if arm3 else acc0("arm2" if arm2 else "clean_nosite"),
                     "ranking": [{"rank": k + 1, "id": r.id, "name": nm.get(r.id), "score": round(float(r[col]), 4)} for k, r in F.iterrows()]})
 
 
