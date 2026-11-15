@@ -264,5 +264,32 @@
   "label": "PH agent test: per-launch 03:45 vote estimates did not beat this method on final votes (-2.4 points of error [-4.7, +0.3], 12 days, 378 launches)",
   "source": "claude/ph-ops-agent results/prereveal_votes.md, relayed by the orchestrator 2026-11-14",
   "date": "2026-11-14"
+ },
+ "prereveal_audit": {
+  "row": {
+   "flag": "replayed from the 03:00 PT read",
+   "top3": 72.2,
+   "top5": 75.0,
+   "top10": 77.5,
+   "days": 12,
+   "ci": {
+    "top3": [
+     61,
+     83
+    ],
+    "top5": [
+     67,
+     83
+    ],
+    "top10": [
+     67.5,
+     86
+    ]
+   },
+   "note": "top 3 and top 5 are Product Hunt's hidden order itself; the hybrid's own gain is top 10, +5.8 [+0.8, +10.8] over the hidden order alone, from the 00:05 prior"
+  },
+  "label": "independent audit reproduced the before-reveal accuracy exactly; no leak (hidden-order reads before the reveal, all vote counts 0)",
+  "source": "orchestrator relay, 2026-11-15",
+  "date": "2026-11-15"
  }
 }

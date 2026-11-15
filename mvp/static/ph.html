@@ -365,11 +365,11 @@ function accLine(){
   const name = TAB === "mid" ? "Product only (00:05 PT)" : "Product + comments (03:45 PT)";
   const made = p.time_pt ? ` · made ${p.time_pt}` : "";
   const fb = p.fallback ? ` · ${FALLBACK[p.fallback] || "a fallback model was used"}` : "";
-  const pc = (v, r)=> r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`;
+  const pc = (v, r, k)=> (r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`) + (r.ci && r.ci[k] ? ` [${r.ci[k][0]}–${r.ci[k][1]}]` : "");
   let acc = "";
   if(!earlier){
     // The track record (per-day hits against the official rank) wins; the file's own line only when there is none.
-    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r)} · top 5 ${pc(r.top5, r)} · top 10 ${pc(r.top10, r)}${r.note ? ` (${r.note})` : ""}`).join("; ")
+    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r, "top3")} · top 5 ${pc(r.top5, r, "top5")} · top 10 ${pc(r.top10, r, "top10")}${r.note ? ` (${r.note})` : ""}`).join("; ")
       || p.backtest_line || "";
     if(acc && p.fallback) acc += " (this day used a fallback)";
   }

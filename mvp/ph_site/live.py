@@ -417,8 +417,13 @@ def accuracy() -> dict:
     for r in out["pre"]:
         if r["flag"] == "replay (hidden rank alone)":
             r["flag"] = "Product Hunt's hidden order alone"
+    # Independent audit (orchestrator, Nov 15): the replay is from the 03:00 PT read; top 3 / 5 are PH's hidden order
+    # itself and only top 10 is the hybrid's own gain. The audited row (with 12-day intervals) replaces the file's row.
+    pa = claims().get("prereveal_audit")
+    if pa and pa.get("row"):
+        out["pre"] = [r for r in out["pre"] if r["flag"] != "replay"] + [dict(pa["row"])]
     order = {"live": 0, "live, previous model": 1, "replay with fixed inputs (not live)": 1.5, "backtest (Sep–Oct)": 3, "replay": 4,
-             "Product Hunt's hidden order alone": 5}
+             "replayed from the 03:00 PT read": 4, "Product Hunt's hidden order alone": 5}
     for v in out.values():
         v.sort(key=lambda r: order.get(r["flag"], 2))
     return out
