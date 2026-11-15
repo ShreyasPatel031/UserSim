@@ -34,6 +34,25 @@ if [[ -f "${PACE_IPROYAL_POOL:-$ROOT/secrets/iproyal.pool}" && -x "$ROOT/scripts
 fi
 
 export FLEET_WINDOW_MIN="${FLEET_WINDOW_MIN:-15}"
+# Stall guard: empty pdeep_list + completion_queue on GCS => seed work (Population stall), do not wait idle.
+if [[ -x "$ROOT/scripts/vm/ph_fleet_seed_completion_queue.sh" ]]; then
+  _qlines="$(python3 - "$MVP_GCS_BUCKET" "$RUN_ID" <<'PY' 2>/dev/null || echo 0
+import subprocess, sys
+b, run = sys.argv[1], sys.argv[2].lower()
+slots = [ln.split()[0] for ln in open(f"results/ph_fleet_full/{run}/slots.tsv") if ln.strip() and not ln.startswith("#")]
+tot = 0
+for s in slots:
+    r = subprocess.run(["gcloud", "storage", "cat", f"gs://{b}/usersim_sim/raw/ph_population/people_live/vm/pdeep_list.feeder-fleet-{run}-{s}.txt"], capture_output=True, text=True)
+    tot += len([x for x in (r.stdout or "").splitlines() if x.strip()])
+print(tot)
+PY
+)"
+  _cq="$(gcloud storage ls "gs://${MVP_GCS_BUCKET}/usersim_sim/raw/_cursor/completion_queue_"*.txt 2>/dev/null | tail -1 || true)"
+  if [[ "${_qlines:-0}" -lt 50 && -n "${_cq:-}" ]]; then
+    echo "$(date -u +%FT%TZ) STALL_SEED pdeep_list_lines=${_qlines} queue=${_cq##gs://${MVP_GCS_BUCKET}/}" >>"$LOG"
+    PACE_FLEET_RUN_ID="$RUN_ID" bash "$ROOT/scripts/vm/ph_fleet_seed_completion_queue.sh" "${_cq##gs://${MVP_GCS_BUCKET}/}" >>"$LOG" 2>&1 || true
+  fi
+fi
 measure="$(python3 "$ROOT/scripts/vm/ph_fleet_measure.py" 2>/dev/null)" || measure="{}"
 chmod +x "$ROOT/scripts/vm/ph_fleet_fixes_audit.sh" "$ROOT/scripts/vm/ph_fleet_population_coord.sh" 2>/dev/null || true
 # Never source fleet_optimize.env here (PH_BLOCK_NEW_PORT=1 breaks IPRoyal). Strategy = PH_FLEET_STRATEGY only.
@@ -125,22 +144,14 @@ export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
 python3 -c "import sys; sys.exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null && export FLEET_CF_RECOVER_MAX_KICKS=0
 "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
 KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
-# Below target: still shed idle slots when yield collapsed (many VMs, ~0.3 ppm each).
+# Below target: never shed VMs — wake pullers instead (orchestrator: restore throughput first).
 FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
 export FLEET_AUTOSCALE_NO_SHED=1
-python3 -c "
-import json
-m=json.load(open('$ART/fleet_measure.json'))
-c=float(m.get('complete_ppm') or 0)
-lo=float('${FLEET_TARGET_LO}')
-ap=float(m.get('avg_ppm_productive') or 0)
-nv=int(m.get('vms') or 0)
-if c >= lo:
-    raise SystemExit(0)
-if ap < 0.75 and nv > 22:
-    raise SystemExit(0)  # allow shed
-raise SystemExit(1)
-" 2>/dev/null && export FLEET_AUTOSCALE_NO_SHED=0 || true
+_apm="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('attempt_ppm',0))" 2>/dev/null || echo 0)"
+if python3 -c "exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO}') or float('${_apm}' or 0) < float('${FLEET_TARGET_LO}') else 1)" 2>/dev/null; then
+  export FLEET_WAKEUP_MAX="${FLEET_WAKEUP_MAX:-18}"
+  bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
+fi
 export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET_MID:-25}"
 "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
 
