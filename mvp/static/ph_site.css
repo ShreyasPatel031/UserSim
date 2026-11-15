@@ -261,20 +261,20 @@ footer.note { padding-block: 18px; display: flex; justify-content: space-between
 @media (max-width: 760px) { .vs .colhead .wide { display: none; } }
 
 /* /ph v9: match colours, date grid, fit-to-screen */
-:root { --exact: #2f8f4e; --exact-ink: #1f6b38; --near: #c99a0b; --near-ink: #8a6a06; --miss: #c2412d; --miss-ink: #9a2f1f; }
-.vs .row.exact { background: color-mix(in srgb, var(--exact) 15%, var(--paper)); }
-.vs .row.near  { background: color-mix(in srgb, var(--near) 18%, var(--paper)); }
+:root { --exact: #1d6f3a; --exact-ink: #134d27; --top: #7cc26b; --top-ink: #3f7f30; --near: #c99a0b; --near-ink: #8a6a06; --miss: #c2412d; --miss-ink: #9a2f1f; }
+.vs .row.exact { background: color-mix(in srgb, var(--exact) 40%, var(--paper)); }
+.vs .row.near  { background: color-mix(in srgb, var(--top) 18%, var(--paper)); }
 .vs .row.miss  { background: color-mix(in srgb, var(--miss) 12%, var(--paper)); }
-.vs .row.exact .pos { color: var(--exact-ink); } .vs .row.near .pos { color: var(--near-ink); } .vs .row.miss .pos { color: var(--miss-ink); }
-.vs .row.exact .vote { border-color: var(--exact-ink); } .vs .row.near .vote { border-color: var(--near-ink); } .vs .row.miss .vote { border-color: var(--miss-ink); }
+.vs .row.exact .pos { color: var(--exact-ink); } .vs .row.near .pos { color: var(--top-ink); } .vs .row.miss .pos { color: var(--miss-ink); }
+.vs .row.exact .vote { border-color: var(--exact-ink); } .vs .row.near .vote { border-color: var(--top-ink); } .vs .row.miss .vote { border-color: var(--miss-ink); }
 .links g path { fill: none; stroke-width: 1.8; opacity: .9; }
 .links g.exact path { stroke: var(--exact); } .links g.exact circle { fill: var(--exact); }
-.links g.near path { stroke: var(--near); } .links g.near circle { fill: var(--near); }
+.links g.near path { stroke: var(--top); } .links g.near circle { fill: var(--top); }
 .legend { gap: 6px; flex-wrap: wrap; }
 .legend .key { width: 12px; height: 12px; display: inline-block; margin-left: 10px; }
 .legend .key:first-child { margin-left: 0; }
-.legend .key.exact { background: color-mix(in srgb, var(--exact) 15%, var(--paper)); border: 1px solid var(--exact-ink); }
-.legend .key.near { background: color-mix(in srgb, var(--near) 18%, var(--paper)); border: 1px solid var(--near-ink); }
+.legend .key.exact { background: color-mix(in srgb, var(--exact) 40%, var(--paper)); border: 1px solid var(--exact-ink); }
+.legend .key.near { background: color-mix(in srgb, var(--top) 18%, var(--paper)); border: 1px solid var(--top-ink); }
 .legend .key.miss { background: color-mix(in srgb, var(--miss) 12%, var(--paper)); border: 1px solid var(--miss-ink); }
 
 .daystep { position: relative; }
