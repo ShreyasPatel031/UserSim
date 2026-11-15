@@ -7,9 +7,9 @@
    "file": "results/weekly_live/2026-11-09_2026-11-13_dayend.json"
   },
   "R4": {
-   "day": "2026-11-11",
-   "written_at": "2026-11-12T09:29:55.177732+00:00",
-   "file": "results/weekly_live/2026-11-09_2026-11-11_R4.json"
+   "day": "2026-11-15",
+   "written_at": "2026-11-15T16:20:17.412506+00:00",
+   "file": "results/weekly_live/2026-11-09_2026-11-15_R4.json"
   },
   "est": {
    "day": "2026-11-15",
@@ -27,5 +27,5 @@
    "file": "results/weekly_live/2026-11-09_2026-11-14_running_g.json"
   }
  },
- "updated_at": "2026-11-15T12:34:02.793592+00:00"
+ "updated_at": "2026-11-15T16:20:17.412506+00:00"
 }
