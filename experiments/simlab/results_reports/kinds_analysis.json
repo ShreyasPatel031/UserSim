@@ -1,0 +1,1912 @@
+{
+ "people": 7332,
+ "votes": 214816,
+ "launches": 2046,
+ "kinds": [
+  {
+   "id": 0,
+   "name": "Voice & Note Apps",
+   "what": "Applications focused on voice recording, transcription, and note-taking, often with AI assistance.",
+   "launches": 144,
+   "votes": 12110,
+   "examples": [
+    "GetCompress",
+    "Foley",
+    "Earnote",
+    "BUD",
+    "Claire Mail"
+   ]
+  },
+  {
+   "id": 1,
+   "name": "AI Agent Infrastructure",
+   "what": "Platforms and tools designed to manage, secure, and enhance AI agents and their interactions.",
+   "launches": 268,
+   "votes": 35390,
+   "examples": [
+    "Tines 3B",
+    "Clocknext",
+    "ngrok AI Gateway",
+    "Token Harbor",
+    "Opencontroller by lyzr"
+   ]
+  },
+  {
+   "id": 2,
+   "name": "AI Personal Assistants",
+   "what": "AI-powered assistants that automate tasks, manage workflows, and provide personalized support.",
+   "launches": 275,
+   "votes": 33556,
+   "examples": [
+    "The New Calendly",
+    "Semos.ai Manager Agents",
+    "Backdrop",
+    "Slashy Assistant",
+    "Genchi"
+   ]
+  },
+  {
+   "id": 3,
+   "name": "AI Coding Tools",
+   "what": "Tools and agents that assist with coding, development, and code management using AI.",
+   "launches": 222,
+   "votes": 20631,
+   "examples": [
+    "vantage.ai",
+    "Termy",
+    "Nimbalyst Wiki",
+    "CodeBurn",
+    "VibeiDE"
+   ]
+  },
+  {
+   "id": 4,
+   "name": "Mac Utility Apps",
+   "what": "Utilities and enhancements specifically designed for macOS to improve productivity and system management.",
+   "launches": 170,
+   "votes": 8651,
+   "examples": [
+    "pawl",
+    "fswitcher",
+    "Textly",
+    "AirBuddy 3",
+    "Outlook Google Calendar Sync for Mac"
+   ]
+  },
+  {
+   "id": 5,
+   "name": "AI Creative Tools",
+   "what": "AI-powered applications for video generation, motion design, presentations, and creative content editing.",
+   "launches": 114,
+   "votes": 14979,
+   "examples": [
+    "MiniMax H3",
+    "Fuser Apps",
+    "Animatica Marionette",
+    "AI Slide Editor by CubeOne",
+    "NeuroVidz"
+   ]
+  },
+  {
+   "id": 6,
+   "name": "New AI Models",
+   "what": "New releases and updates of large language models and AI models from various developers.",
+   "launches": 100,
+   "votes": 10930,
+   "examples": [
+    "Gemini 3.7 Flash",
+    "MiniMax M3.1 Flash",
+    "FUTO Swipe",
+    "Gemini 3.8 text-to-speech models",
+    "GLM-Legal"
+   ]
+  },
+  {
+   "id": 7,
+   "name": "AI Agent Context & Memory",
+   "what": "Tools that provide context, memory, and data management for AI agents to improve their performance.",
+   "launches": 137,
+   "votes": 18167,
+   "examples": [
+    "dot.",
+    "Folio AI",
+    "Refs",
+    "CoreSpeed",
+    "Omni by xpander"
+   ]
+  },
+  {
+   "id": 8,
+   "name": "Niche Hardware & Apps",
+   "what": "Unique hardware products and specialized applications for specific personal or niche uses.",
+   "launches": 146,
+   "votes": 10526,
+   "examples": [
+    "OASIS 1 Ring",
+    "Grindoro",
+    "Squishy",
+    "Headroom",
+    "PacerTrip"
+   ]
+  },
+  {
+   "id": 9,
+   "name": "Business & Dev Tools",
+   "what": "Tools for business operations, incident management, analytics, and developer workflows.",
+   "launches": 198,
+   "votes": 19116,
+   "examples": [
+    "Sidedoor",
+    "Doneas",
+    "Rindler",
+    "Openstatus Incident Management",
+    "Human Behavior"
+   ]
+  },
+  {
+   "id": 10,
+   "name": "Productivity & Lifestyle Apps",
+   "what": "Applications focused on personal productivity, organization, learning, and lifestyle enhancements.",
+   "launches": 133,
+   "votes": 7189,
+   "examples": [
+    "FocusWrite",
+    "Enhanced for Todoist",
+    "Yamanote 3D",
+    "Browser Notes",
+    "Snipplet"
+   ]
+  },
+  {
+   "id": 11,
+   "name": "AI Marketing & Growth",
+   "what": "AI-powered tools for marketing, ad optimization, lead generation, and business growth strategies.",
+   "launches": 139,
+   "votes": 23571,
+   "examples": [
+    "VisibAI",
+    "Omnia Agent",
+    "Dedica",
+    "Superdraft",
+    "Basedash Suggestions"
+   ]
+  }
+ ],
+ "attr_base_share": {
+  "investor": 0.016,
+  "designer": 0.1,
+  "developer": 0.262,
+  "marketer": 0.26,
+  "product manager": 0.027,
+  "founder": 0.35,
+  "student": 0.023,
+  "sales / bizdev": 0.043,
+  "creator / writer": 0.059,
+  "data / analyst": 0.027,
+  "ops / support": 0.075,
+  "no bio": 0.077,
+  "has launched a product": 0.452,
+  "new account (< 1 year)": 0.477,
+  "veteran (5+ years)": 0.161,
+  "1k+ followers": 0.026,
+  "heavy voter (top 10%)": 0.72
+ },
+ "cells": [
+  {
+   "kind": 0,
+   "attr": "investor",
+   "lift": 1.01,
+   "lo": 0.9,
+   "hi": 1.16,
+   "share": 0.017
+  },
+  {
+   "kind": 0,
+   "attr": "designer",
+   "lift": 1.02,
+   "lo": 0.97,
+   "hi": 1.07,
+   "share": 0.102
+  },
+  {
+   "kind": 0,
+   "attr": "developer",
+   "lift": 1.01,
+   "lo": 0.97,
+   "hi": 1.05,
+   "share": 0.264
+  },
+  {
+   "kind": 0,
+   "attr": "marketer",
+   "lift": 0.95,
+   "lo": 0.9,
+   "hi": 0.99,
+   "share": 0.247
+  },
+  {
+   "kind": 0,
+   "attr": "product manager",
+   "lift": 0.99,
+   "lo": 0.89,
+   "hi": 1.08,
+   "share": 0.027
+  },
+  {
+   "kind": 0,
+   "attr": "founder",
+   "lift": 1.01,
+   "lo": 0.97,
+   "hi": 1.06,
+   "share": 0.355
+  },
+  {
+   "kind": 0,
+   "attr": "student",
+   "lift": 0.97,
+   "lo": 0.84,
+   "hi": 1.09,
+   "share": 0.023
+  },
+  {
+   "kind": 0,
+   "attr": "sales / bizdev",
+   "lift": 0.95,
+   "lo": 0.85,
+   "hi": 1.05,
+   "share": 0.041
+  },
+  {
+   "kind": 0,
+   "attr": "creator / writer",
+   "lift": 1.07,
+   "lo": 1.0,
+   "hi": 1.14,
+   "share": 0.064
+  },
+  {
+   "kind": 0,
+   "attr": "data / analyst",
+   "lift": 0.97,
+   "lo": 0.86,
+   "hi": 1.07,
+   "share": 0.026
+  },
+  {
+   "kind": 0,
+   "attr": "ops / support",
+   "lift": 0.94,
+   "lo": 0.85,
+   "hi": 1.04,
+   "share": 0.07
+  },
+  {
+   "kind": 0,
+   "attr": "no bio",
+   "lift": 1.06,
+   "lo": 0.99,
+   "hi": 1.15,
+   "share": 0.082
+  },
+  {
+   "kind": 0,
+   "attr": "has launched a product",
+   "lift": 1.0,
+   "lo": 0.96,
+   "hi": 1.04,
+   "share": 0.451
+  },
+  {
+   "kind": 0,
+   "attr": "new account (< 1 year)",
+   "lift": 0.99,
+   "lo": 0.96,
+   "hi": 1.03,
+   "share": 0.472
+  },
+  {
+   "kind": 0,
+   "attr": "veteran (5+ years)",
+   "lift": 1.02,
+   "lo": 0.92,
+   "hi": 1.11,
+   "share": 0.163
+  },
+  {
+   "kind": 0,
+   "attr": "1k+ followers",
+   "lift": 0.98,
+   "lo": 0.8,
+   "hi": 1.17,
+   "share": 0.025
+  },
+  {
+   "kind": 0,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.01,
+   "lo": 0.98,
+   "hi": 1.03,
+   "share": 0.725
+  },
+  {
+   "kind": 1,
+   "attr": "investor",
+   "lift": 0.89,
+   "lo": 0.82,
+   "hi": 0.97,
+   "share": 0.015
+  },
+  {
+   "kind": 1,
+   "attr": "designer",
+   "lift": 0.96,
+   "lo": 0.93,
+   "hi": 0.99,
+   "share": 0.096
+  },
+  {
+   "kind": 1,
+   "attr": "developer",
+   "lift": 0.98,
+   "lo": 0.96,
+   "hi": 1.01,
+   "share": 0.258
+  },
+  {
+   "kind": 1,
+   "attr": "marketer",
+   "lift": 1.0,
+   "lo": 0.97,
+   "hi": 1.03,
+   "share": 0.261
+  },
+  {
+   "kind": 1,
+   "attr": "product manager",
+   "lift": 0.96,
+   "lo": 0.92,
+   "hi": 1.02,
+   "share": 0.026
+  },
+  {
+   "kind": 1,
+   "attr": "founder",
+   "lift": 0.94,
+   "lo": 0.91,
+   "hi": 0.96,
+   "share": 0.328
+  },
+  {
+   "kind": 1,
+   "attr": "student",
+   "lift": 0.97,
+   "lo": 0.91,
+   "hi": 1.03,
+   "share": 0.023
+  },
+  {
+   "kind": 1,
+   "attr": "sales / bizdev",
+   "lift": 1.05,
+   "lo": 0.99,
+   "hi": 1.11,
+   "share": 0.045
+  },
+  {
+   "kind": 1,
+   "attr": "creator / writer",
+   "lift": 0.94,
+   "lo": 0.91,
+   "hi": 0.98,
+   "share": 0.056
+  },
+  {
+   "kind": 1,
+   "attr": "data / analyst",
+   "lift": 0.98,
+   "lo": 0.91,
+   "hi": 1.05,
+   "share": 0.026
+  },
+  {
+   "kind": 1,
+   "attr": "ops / support",
+   "lift": 1.04,
+   "lo": 0.98,
+   "hi": 1.11,
+   "share": 0.078
+  },
+  {
+   "kind": 1,
+   "attr": "no bio",
+   "lift": 0.99,
+   "lo": 0.93,
+   "hi": 1.04,
+   "share": 0.076
+  },
+  {
+   "kind": 1,
+   "attr": "has launched a product",
+   "lift": 0.97,
+   "lo": 0.95,
+   "hi": 1.0,
+   "share": 0.44
+  },
+  {
+   "kind": 1,
+   "attr": "new account (< 1 year)",
+   "lift": 1.0,
+   "lo": 0.98,
+   "hi": 1.02,
+   "share": 0.475
+  },
+  {
+   "kind": 1,
+   "attr": "veteran (5+ years)",
+   "lift": 0.94,
+   "lo": 0.89,
+   "hi": 0.99,
+   "share": 0.151
+  },
+  {
+   "kind": 1,
+   "attr": "1k+ followers",
+   "lift": 0.88,
+   "lo": 0.77,
+   "hi": 0.98,
+   "share": 0.023
+  },
+  {
+   "kind": 1,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.0,
+   "lo": 0.98,
+   "hi": 1.02,
+   "share": 0.719
+  },
+  {
+   "kind": 2,
+   "attr": "investor",
+   "lift": 0.9,
+   "lo": 0.82,
+   "hi": 1.0,
+   "share": 0.015
+  },
+  {
+   "kind": 2,
+   "attr": "designer",
+   "lift": 0.99,
+   "lo": 0.96,
+   "hi": 1.02,
+   "share": 0.099
+  },
+  {
+   "kind": 2,
+   "attr": "developer",
+   "lift": 0.92,
+   "lo": 0.9,
+   "hi": 0.94,
+   "share": 0.242
+  },
+  {
+   "kind": 2,
+   "attr": "marketer",
+   "lift": 1.05,
+   "lo": 1.02,
+   "hi": 1.08,
+   "share": 0.275
+  },
+  {
+   "kind": 2,
+   "attr": "product manager",
+   "lift": 1.01,
+   "lo": 0.95,
+   "hi": 1.07,
+   "share": 0.028
+  },
+  {
+   "kind": 2,
+   "attr": "founder",
+   "lift": 0.97,
+   "lo": 0.95,
+   "hi": 1.0,
+   "share": 0.34
+  },
+  {
+   "kind": 2,
+   "attr": "student",
+   "lift": 1.05,
+   "lo": 0.97,
+   "hi": 1.12,
+   "share": 0.025
+  },
+  {
+   "kind": 2,
+   "attr": "sales / bizdev",
+   "lift": 1.05,
+   "lo": 0.99,
+   "hi": 1.1,
+   "share": 0.045
+  },
+  {
+   "kind": 2,
+   "attr": "creator / writer",
+   "lift": 0.97,
+   "lo": 0.93,
+   "hi": 1.02,
+   "share": 0.057
+  },
+  {
+   "kind": 2,
+   "attr": "data / analyst",
+   "lift": 1.08,
+   "lo": 1.01,
+   "hi": 1.15,
+   "share": 0.029
+  },
+  {
+   "kind": 2,
+   "attr": "ops / support",
+   "lift": 1.09,
+   "lo": 1.02,
+   "hi": 1.16,
+   "share": 0.082
+  },
+  {
+   "kind": 2,
+   "attr": "no bio",
+   "lift": 0.96,
+   "lo": 0.92,
+   "hi": 1.01,
+   "share": 0.074
+  },
+  {
+   "kind": 2,
+   "attr": "has launched a product",
+   "lift": 0.97,
+   "lo": 0.95,
+   "hi": 0.99,
+   "share": 0.439
+  },
+  {
+   "kind": 2,
+   "attr": "new account (< 1 year)",
+   "lift": 1.0,
+   "lo": 0.98,
+   "hi": 1.02,
+   "share": 0.476
+  },
+  {
+   "kind": 2,
+   "attr": "veteran (5+ years)",
+   "lift": 0.92,
+   "lo": 0.87,
+   "hi": 0.97,
+   "share": 0.148
+  },
+  {
+   "kind": 2,
+   "attr": "1k+ followers",
+   "lift": 0.91,
+   "lo": 0.81,
+   "hi": 1.02,
+   "share": 0.024
+  },
+  {
+   "kind": 2,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.0,
+   "lo": 0.99,
+   "hi": 1.02,
+   "share": 0.721
+  },
+  {
+   "kind": 3,
+   "attr": "investor",
+   "lift": 1.04,
+   "lo": 0.94,
+   "hi": 1.14,
+   "share": 0.017
+  },
+  {
+   "kind": 3,
+   "attr": "designer",
+   "lift": 0.97,
+   "lo": 0.94,
+   "hi": 1.01,
+   "share": 0.098
+  },
+  {
+   "kind": 3,
+   "attr": "developer",
+   "lift": 1.09,
+   "lo": 1.06,
+   "hi": 1.12,
+   "share": 0.285
+  },
+  {
+   "kind": 3,
+   "attr": "marketer",
+   "lift": 0.95,
+   "lo": 0.91,
+   "hi": 0.99,
+   "share": 0.248
+  },
+  {
+   "kind": 3,
+   "attr": "product manager",
+   "lift": 1.08,
+   "lo": 0.98,
+   "hi": 1.17,
+   "share": 0.03
+  },
+  {
+   "kind": 3,
+   "attr": "founder",
+   "lift": 1.03,
+   "lo": 0.99,
+   "hi": 1.08,
+   "share": 0.362
+  },
+  {
+   "kind": 3,
+   "attr": "student",
+   "lift": 1.04,
+   "lo": 0.96,
+   "hi": 1.11,
+   "share": 0.024
+  },
+  {
+   "kind": 3,
+   "attr": "sales / bizdev",
+   "lift": 1.02,
+   "lo": 0.94,
+   "hi": 1.09,
+   "share": 0.044
+  },
+  {
+   "kind": 3,
+   "attr": "creator / writer",
+   "lift": 0.94,
+   "lo": 0.89,
+   "hi": 0.99,
+   "share": 0.056
+  },
+  {
+   "kind": 3,
+   "attr": "data / analyst",
+   "lift": 1.0,
+   "lo": 0.92,
+   "hi": 1.09,
+   "share": 0.026
+  },
+  {
+   "kind": 3,
+   "attr": "ops / support",
+   "lift": 0.98,
+   "lo": 0.89,
+   "hi": 1.06,
+   "share": 0.073
+  },
+  {
+   "kind": 3,
+   "attr": "no bio",
+   "lift": 0.96,
+   "lo": 0.91,
+   "hi": 1.01,
+   "share": 0.074
+  },
+  {
+   "kind": 3,
+   "attr": "has launched a product",
+   "lift": 1.01,
+   "lo": 0.97,
+   "hi": 1.04,
+   "share": 0.457
+  },
+  {
+   "kind": 3,
+   "attr": "new account (< 1 year)",
+   "lift": 1.04,
+   "lo": 1.01,
+   "hi": 1.07,
+   "share": 0.495
+  },
+  {
+   "kind": 3,
+   "attr": "veteran (5+ years)",
+   "lift": 1.01,
+   "lo": 0.94,
+   "hi": 1.07,
+   "share": 0.162
+  },
+  {
+   "kind": 3,
+   "attr": "1k+ followers",
+   "lift": 0.92,
+   "lo": 0.8,
+   "hi": 1.06,
+   "share": 0.024
+  },
+  {
+   "kind": 3,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.03,
+   "lo": 1.01,
+   "hi": 1.05,
+   "share": 0.743
+  },
+  {
+   "kind": 4,
+   "attr": "investor",
+   "lift": 1.04,
+   "lo": 0.89,
+   "hi": 1.18,
+   "share": 0.017
+  },
+  {
+   "kind": 4,
+   "attr": "designer",
+   "lift": 1.11,
+   "lo": 1.03,
+   "hi": 1.18,
+   "share": 0.112
+  },
+  {
+   "kind": 4,
+   "attr": "developer",
+   "lift": 1.09,
+   "lo": 1.06,
+   "hi": 1.13,
+   "share": 0.287
+  },
+  {
+   "kind": 4,
+   "attr": "marketer",
+   "lift": 0.9,
+   "lo": 0.85,
+   "hi": 0.94,
+   "share": 0.234
+  },
+  {
+   "kind": 4,
+   "attr": "product manager",
+   "lift": 0.95,
+   "lo": 0.85,
+   "hi": 1.06,
+   "share": 0.026
+  },
+  {
+   "kind": 4,
+   "attr": "founder",
+   "lift": 1.09,
+   "lo": 1.04,
+   "hi": 1.13,
+   "share": 0.381
+  },
+  {
+   "kind": 4,
+   "attr": "student",
+   "lift": 1.02,
+   "lo": 0.87,
+   "hi": 1.16,
+   "share": 0.024
+  },
+  {
+   "kind": 4,
+   "attr": "sales / bizdev",
+   "lift": 0.84,
+   "lo": 0.75,
+   "hi": 0.94,
+   "share": 0.036
+  },
+  {
+   "kind": 4,
+   "attr": "creator / writer",
+   "lift": 1.19,
+   "lo": 1.1,
+   "hi": 1.28,
+   "share": 0.071
+  },
+  {
+   "kind": 4,
+   "attr": "data / analyst",
+   "lift": 0.91,
+   "lo": 0.78,
+   "hi": 1.03,
+   "share": 0.024
+  },
+  {
+   "kind": 4,
+   "attr": "ops / support",
+   "lift": 0.86,
+   "lo": 0.79,
+   "hi": 0.96,
+   "share": 0.064
+  },
+  {
+   "kind": 4,
+   "attr": "no bio",
+   "lift": 1.16,
+   "lo": 1.08,
+   "hi": 1.24,
+   "share": 0.089
+  },
+  {
+   "kind": 4,
+   "attr": "has launched a product",
+   "lift": 1.05,
+   "lo": 1.01,
+   "hi": 1.08,
+   "share": 0.475
+  },
+  {
+   "kind": 4,
+   "attr": "new account (< 1 year)",
+   "lift": 1.04,
+   "lo": 1.0,
+   "hi": 1.09,
+   "share": 0.497
+  },
+  {
+   "kind": 4,
+   "attr": "veteran (5+ years)",
+   "lift": 1.2,
+   "lo": 1.12,
+   "hi": 1.27,
+   "share": 0.194
+  },
+  {
+   "kind": 4,
+   "attr": "1k+ followers",
+   "lift": 1.49,
+   "lo": 1.23,
+   "hi": 1.75,
+   "share": 0.039
+  },
+  {
+   "kind": 4,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.02,
+   "lo": 1.0,
+   "hi": 1.04,
+   "share": 0.732
+  },
+  {
+   "kind": 5,
+   "attr": "investor",
+   "lift": 0.9,
+   "lo": 0.8,
+   "hi": 1.03,
+   "share": 0.015
+  },
+  {
+   "kind": 5,
+   "attr": "designer",
+   "lift": 1.06,
+   "lo": 0.99,
+   "hi": 1.12,
+   "share": 0.106
+  },
+  {
+   "kind": 5,
+   "attr": "developer",
+   "lift": 0.93,
+   "lo": 0.88,
+   "hi": 0.97,
+   "share": 0.243
+  },
+  {
+   "kind": 5,
+   "attr": "marketer",
+   "lift": 1.05,
+   "lo": 1.0,
+   "hi": 1.1,
+   "share": 0.274
+  },
+  {
+   "kind": 5,
+   "attr": "product manager",
+   "lift": 1.0,
+   "lo": 0.92,
+   "hi": 1.09,
+   "share": 0.028
+  },
+  {
+   "kind": 5,
+   "attr": "founder",
+   "lift": 0.97,
+   "lo": 0.92,
+   "hi": 1.02,
+   "share": 0.34
+  },
+  {
+   "kind": 5,
+   "attr": "student",
+   "lift": 0.93,
+   "lo": 0.84,
+   "hi": 1.02,
+   "share": 0.022
+  },
+  {
+   "kind": 5,
+   "attr": "sales / bizdev",
+   "lift": 0.97,
+   "lo": 0.87,
+   "hi": 1.06,
+   "share": 0.042
+  },
+  {
+   "kind": 5,
+   "attr": "creator / writer",
+   "lift": 1.1,
+   "lo": 1.04,
+   "hi": 1.17,
+   "share": 0.065
+  },
+  {
+   "kind": 5,
+   "attr": "data / analyst",
+   "lift": 1.02,
+   "lo": 0.92,
+   "hi": 1.13,
+   "share": 0.027
+  },
+  {
+   "kind": 5,
+   "attr": "ops / support",
+   "lift": 0.98,
+   "lo": 0.88,
+   "hi": 1.06,
+   "share": 0.073
+  },
+  {
+   "kind": 5,
+   "attr": "no bio",
+   "lift": 0.98,
+   "lo": 0.89,
+   "hi": 1.07,
+   "share": 0.075
+  },
+  {
+   "kind": 5,
+   "attr": "has launched a product",
+   "lift": 0.98,
+   "lo": 0.93,
+   "hi": 1.03,
+   "share": 0.444
+  },
+  {
+   "kind": 5,
+   "attr": "new account (< 1 year)",
+   "lift": 0.97,
+   "lo": 0.94,
+   "hi": 1.01,
+   "share": 0.464
+  },
+  {
+   "kind": 5,
+   "attr": "veteran (5+ years)",
+   "lift": 0.92,
+   "lo": 0.85,
+   "hi": 1.02,
+   "share": 0.149
+  },
+  {
+   "kind": 5,
+   "attr": "1k+ followers",
+   "lift": 0.94,
+   "lo": 0.78,
+   "hi": 1.13,
+   "share": 0.024
+  },
+  {
+   "kind": 5,
+   "attr": "heavy voter (top 10%)",
+   "lift": 0.97,
+   "lo": 0.93,
+   "hi": 1.01,
+   "share": 0.699
+  },
+  {
+   "kind": 6,
+   "attr": "investor",
+   "lift": 1.31,
+   "lo": 1.17,
+   "hi": 1.45,
+   "share": 0.022
+  },
+  {
+   "kind": 6,
+   "attr": "designer",
+   "lift": 0.97,
+   "lo": 0.9,
+   "hi": 1.02,
+   "share": 0.097
+  },
+  {
+   "kind": 6,
+   "attr": "developer",
+   "lift": 1.13,
+   "lo": 1.09,
+   "hi": 1.17,
+   "share": 0.297
+  },
+  {
+   "kind": 6,
+   "attr": "marketer",
+   "lift": 0.92,
+   "lo": 0.86,
+   "hi": 0.97,
+   "share": 0.239
+  },
+  {
+   "kind": 6,
+   "attr": "product manager",
+   "lift": 1.1,
+   "lo": 0.99,
+   "hi": 1.21,
+   "share": 0.03
+  },
+  {
+   "kind": 6,
+   "attr": "founder",
+   "lift": 1.08,
+   "lo": 1.04,
+   "hi": 1.11,
+   "share": 0.377
+  },
+  {
+   "kind": 6,
+   "attr": "student",
+   "lift": 0.94,
+   "lo": 0.83,
+   "hi": 1.06,
+   "share": 0.022
+  },
+  {
+   "kind": 6,
+   "attr": "sales / bizdev",
+   "lift": 0.9,
+   "lo": 0.82,
+   "hi": 0.97,
+   "share": 0.039
+  },
+  {
+   "kind": 6,
+   "attr": "creator / writer",
+   "lift": 0.98,
+   "lo": 0.91,
+   "hi": 1.06,
+   "share": 0.058
+  },
+  {
+   "kind": 6,
+   "attr": "data / analyst",
+   "lift": 0.94,
+   "lo": 0.83,
+   "hi": 1.04,
+   "share": 0.025
+  },
+  {
+   "kind": 6,
+   "attr": "ops / support",
+   "lift": 0.81,
+   "lo": 0.73,
+   "hi": 0.9,
+   "share": 0.061
+  },
+  {
+   "kind": 6,
+   "attr": "no bio",
+   "lift": 1.1,
+   "lo": 1.03,
+   "hi": 1.19,
+   "share": 0.085
+  },
+  {
+   "kind": 6,
+   "attr": "has launched a product",
+   "lift": 1.12,
+   "lo": 1.09,
+   "hi": 1.14,
+   "share": 0.505
+  },
+  {
+   "kind": 6,
+   "attr": "new account (< 1 year)",
+   "lift": 0.91,
+   "lo": 0.87,
+   "hi": 0.94,
+   "share": 0.433
+  },
+  {
+   "kind": 6,
+   "attr": "veteran (5+ years)",
+   "lift": 1.35,
+   "lo": 1.27,
+   "hi": 1.43,
+   "share": 0.217
+  },
+  {
+   "kind": 6,
+   "attr": "1k+ followers",
+   "lift": 1.66,
+   "lo": 1.46,
+   "hi": 1.85,
+   "share": 0.043
+  },
+  {
+   "kind": 6,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.03,
+   "lo": 1.0,
+   "hi": 1.06,
+   "share": 0.741
+  },
+  {
+   "kind": 7,
+   "attr": "investor",
+   "lift": 1.0,
+   "lo": 0.88,
+   "hi": 1.11,
+   "share": 0.016
+  },
+  {
+   "kind": 7,
+   "attr": "designer",
+   "lift": 0.99,
+   "lo": 0.93,
+   "hi": 1.05,
+   "share": 0.099
+  },
+  {
+   "kind": 7,
+   "attr": "developer",
+   "lift": 1.02,
+   "lo": 0.98,
+   "hi": 1.06,
+   "share": 0.267
+  },
+  {
+   "kind": 7,
+   "attr": "marketer",
+   "lift": 1.04,
+   "lo": 1.0,
+   "hi": 1.07,
+   "share": 0.27
+  },
+  {
+   "kind": 7,
+   "attr": "product manager",
+   "lift": 0.95,
+   "lo": 0.87,
+   "hi": 1.04,
+   "share": 0.026
+  },
+  {
+   "kind": 7,
+   "attr": "founder",
+   "lift": 1.0,
+   "lo": 0.96,
+   "hi": 1.04,
+   "share": 0.349
+  },
+  {
+   "kind": 7,
+   "attr": "student",
+   "lift": 1.03,
+   "lo": 0.93,
+   "hi": 1.12,
+   "share": 0.024
+  },
+  {
+   "kind": 7,
+   "attr": "sales / bizdev",
+   "lift": 1.08,
+   "lo": 1.0,
+   "hi": 1.15,
+   "share": 0.046
+  },
+  {
+   "kind": 7,
+   "attr": "creator / writer",
+   "lift": 0.98,
+   "lo": 0.92,
+   "hi": 1.04,
+   "share": 0.058
+  },
+  {
+   "kind": 7,
+   "attr": "data / analyst",
+   "lift": 1.0,
+   "lo": 0.91,
+   "hi": 1.1,
+   "share": 0.027
+  },
+  {
+   "kind": 7,
+   "attr": "ops / support",
+   "lift": 1.09,
+   "lo": 0.97,
+   "hi": 1.2,
+   "share": 0.081
+  },
+  {
+   "kind": 7,
+   "attr": "no bio",
+   "lift": 0.96,
+   "lo": 0.9,
+   "hi": 1.03,
+   "share": 0.074
+  },
+  {
+   "kind": 7,
+   "attr": "has launched a product",
+   "lift": 0.99,
+   "lo": 0.95,
+   "hi": 1.03,
+   "share": 0.448
+  },
+  {
+   "kind": 7,
+   "attr": "new account (< 1 year)",
+   "lift": 1.0,
+   "lo": 0.96,
+   "hi": 1.04,
+   "share": 0.477
+  },
+  {
+   "kind": 7,
+   "attr": "veteran (5+ years)",
+   "lift": 1.0,
+   "lo": 0.92,
+   "hi": 1.09,
+   "share": 0.161
+  },
+  {
+   "kind": 7,
+   "attr": "1k+ followers",
+   "lift": 0.98,
+   "lo": 0.82,
+   "hi": 1.17,
+   "share": 0.025
+  },
+  {
+   "kind": 7,
+   "attr": "heavy voter (top 10%)",
+   "lift": 0.99,
+   "lo": 0.96,
+   "hi": 1.02,
+   "share": 0.713
+  },
+  {
+   "kind": 8,
+   "attr": "investor",
+   "lift": 0.96,
+   "lo": 0.83,
+   "hi": 1.1,
+   "share": 0.016
+  },
+  {
+   "kind": 8,
+   "attr": "designer",
+   "lift": 1.02,
+   "lo": 0.96,
+   "hi": 1.1,
+   "share": 0.102
+  },
+  {
+   "kind": 8,
+   "attr": "developer",
+   "lift": 0.99,
+   "lo": 0.94,
+   "hi": 1.05,
+   "share": 0.259
+  },
+  {
+   "kind": 8,
+   "attr": "marketer",
+   "lift": 0.92,
+   "lo": 0.87,
+   "hi": 0.97,
+   "share": 0.239
+  },
+  {
+   "kind": 8,
+   "attr": "product manager",
+   "lift": 0.99,
+   "lo": 0.87,
+   "hi": 1.09,
+   "share": 0.027
+  },
+  {
+   "kind": 8,
+   "attr": "founder",
+   "lift": 1.02,
+   "lo": 0.95,
+   "hi": 1.1,
+   "share": 0.358
+  },
+  {
+   "kind": 8,
+   "attr": "student",
+   "lift": 0.99,
+   "lo": 0.85,
+   "hi": 1.14,
+   "share": 0.023
+  },
+  {
+   "kind": 8,
+   "attr": "sales / bizdev",
+   "lift": 0.89,
+   "lo": 0.8,
+   "hi": 0.99,
+   "share": 0.038
+  },
+  {
+   "kind": 8,
+   "attr": "creator / writer",
+   "lift": 1.02,
+   "lo": 0.94,
+   "hi": 1.11,
+   "share": 0.061
+  },
+  {
+   "kind": 8,
+   "attr": "data / analyst",
+   "lift": 0.85,
+   "lo": 0.76,
+   "hi": 0.98,
+   "share": 0.023
+  },
+  {
+   "kind": 8,
+   "attr": "ops / support",
+   "lift": 0.82,
+   "lo": 0.74,
+   "hi": 0.93,
+   "share": 0.062
+  },
+  {
+   "kind": 8,
+   "attr": "no bio",
+   "lift": 1.09,
+   "lo": 0.98,
+   "hi": 1.19,
+   "share": 0.084
+  },
+  {
+   "kind": 8,
+   "attr": "has launched a product",
+   "lift": 1.0,
+   "lo": 0.95,
+   "hi": 1.05,
+   "share": 0.451
+  },
+  {
+   "kind": 8,
+   "attr": "new account (< 1 year)",
+   "lift": 1.05,
+   "lo": 1.01,
+   "hi": 1.08,
+   "share": 0.499
+  },
+  {
+   "kind": 8,
+   "attr": "veteran (5+ years)",
+   "lift": 1.02,
+   "lo": 0.93,
+   "hi": 1.13,
+   "share": 0.165
+  },
+  {
+   "kind": 8,
+   "attr": "1k+ followers",
+   "lift": 1.16,
+   "lo": 0.94,
+   "hi": 1.4,
+   "share": 0.03
+  },
+  {
+   "kind": 8,
+   "attr": "heavy voter (top 10%)",
+   "lift": 0.98,
+   "lo": 0.92,
+   "hi": 1.03,
+   "share": 0.703
+  },
+  {
+   "kind": 9,
+   "attr": "investor",
+   "lift": 1.12,
+   "lo": 1.0,
+   "hi": 1.25,
+   "share": 0.018
+  },
+  {
+   "kind": 9,
+   "attr": "designer",
+   "lift": 0.99,
+   "lo": 0.94,
+   "hi": 1.04,
+   "share": 0.099
+  },
+  {
+   "kind": 9,
+   "attr": "developer",
+   "lift": 1.04,
+   "lo": 1.01,
+   "hi": 1.08,
+   "share": 0.273
+  },
+  {
+   "kind": 9,
+   "attr": "marketer",
+   "lift": 0.97,
+   "lo": 0.92,
+   "hi": 1.01,
+   "share": 0.252
+  },
+  {
+   "kind": 9,
+   "attr": "product manager",
+   "lift": 1.0,
+   "lo": 0.92,
+   "hi": 1.08,
+   "share": 0.027
+  },
+  {
+   "kind": 9,
+   "attr": "founder",
+   "lift": 1.04,
+   "lo": 1.0,
+   "hi": 1.09,
+   "share": 0.365
+  },
+  {
+   "kind": 9,
+   "attr": "student",
+   "lift": 1.02,
+   "lo": 0.94,
+   "hi": 1.11,
+   "share": 0.024
+  },
+  {
+   "kind": 9,
+   "attr": "sales / bizdev",
+   "lift": 0.97,
+   "lo": 0.87,
+   "hi": 1.06,
+   "share": 0.042
+  },
+  {
+   "kind": 9,
+   "attr": "creator / writer",
+   "lift": 0.98,
+   "lo": 0.92,
+   "hi": 1.03,
+   "share": 0.058
+  },
+  {
+   "kind": 9,
+   "attr": "data / analyst",
+   "lift": 0.95,
+   "lo": 0.85,
+   "hi": 1.04,
+   "share": 0.025
+  },
+  {
+   "kind": 9,
+   "attr": "ops / support",
+   "lift": 1.0,
+   "lo": 0.91,
+   "hi": 1.1,
+   "share": 0.075
+  },
+  {
+   "kind": 9,
+   "attr": "no bio",
+   "lift": 1.01,
+   "lo": 0.94,
+   "hi": 1.09,
+   "share": 0.077
+  },
+  {
+   "kind": 9,
+   "attr": "has launched a product",
+   "lift": 1.02,
+   "lo": 0.99,
+   "hi": 1.06,
+   "share": 0.463
+  },
+  {
+   "kind": 9,
+   "attr": "new account (< 1 year)",
+   "lift": 1.02,
+   "lo": 0.99,
+   "hi": 1.05,
+   "share": 0.486
+  },
+  {
+   "kind": 9,
+   "attr": "veteran (5+ years)",
+   "lift": 1.05,
+   "lo": 0.97,
+   "hi": 1.12,
+   "share": 0.168
+  },
+  {
+   "kind": 9,
+   "attr": "1k+ followers",
+   "lift": 1.08,
+   "lo": 0.94,
+   "hi": 1.25,
+   "share": 0.028
+  },
+  {
+   "kind": 9,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.0,
+   "lo": 0.98,
+   "hi": 1.03,
+   "share": 0.723
+  },
+  {
+   "kind": 10,
+   "attr": "investor",
+   "lift": 1.04,
+   "lo": 0.89,
+   "hi": 1.19,
+   "share": 0.017
+  },
+  {
+   "kind": 10,
+   "attr": "designer",
+   "lift": 1.02,
+   "lo": 0.95,
+   "hi": 1.09,
+   "share": 0.102
+  },
+  {
+   "kind": 10,
+   "attr": "developer",
+   "lift": 1.1,
+   "lo": 1.06,
+   "hi": 1.14,
+   "share": 0.288
+  },
+  {
+   "kind": 10,
+   "attr": "marketer",
+   "lift": 0.91,
+   "lo": 0.85,
+   "hi": 0.97,
+   "share": 0.238
+  },
+  {
+   "kind": 10,
+   "attr": "product manager",
+   "lift": 0.95,
+   "lo": 0.8,
+   "hi": 1.1,
+   "share": 0.026
+  },
+  {
+   "kind": 10,
+   "attr": "founder",
+   "lift": 1.1,
+   "lo": 1.05,
+   "hi": 1.14,
+   "share": 0.384
+  },
+  {
+   "kind": 10,
+   "attr": "student",
+   "lift": 1.02,
+   "lo": 0.84,
+   "hi": 1.18,
+   "share": 0.024
+  },
+  {
+   "kind": 10,
+   "attr": "sales / bizdev",
+   "lift": 0.78,
+   "lo": 0.68,
+   "hi": 0.9,
+   "share": 0.034
+  },
+  {
+   "kind": 10,
+   "attr": "creator / writer",
+   "lift": 1.12,
+   "lo": 1.03,
+   "hi": 1.23,
+   "share": 0.067
+  },
+  {
+   "kind": 10,
+   "attr": "data / analyst",
+   "lift": 0.94,
+   "lo": 0.81,
+   "hi": 1.09,
+   "share": 0.025
+  },
+  {
+   "kind": 10,
+   "attr": "ops / support",
+   "lift": 0.9,
+   "lo": 0.8,
+   "hi": 1.01,
+   "share": 0.067
+  },
+  {
+   "kind": 10,
+   "attr": "no bio",
+   "lift": 1.1,
+   "lo": 0.99,
+   "hi": 1.21,
+   "share": 0.084
+  },
+  {
+   "kind": 10,
+   "attr": "has launched a product",
+   "lift": 1.03,
+   "lo": 0.99,
+   "hi": 1.07,
+   "share": 0.467
+  },
+  {
+   "kind": 10,
+   "attr": "new account (< 1 year)",
+   "lift": 1.07,
+   "lo": 1.03,
+   "hi": 1.1,
+   "share": 0.508
+  },
+  {
+   "kind": 10,
+   "attr": "veteran (5+ years)",
+   "lift": 1.1,
+   "lo": 1.02,
+   "hi": 1.17,
+   "share": 0.177
+  },
+  {
+   "kind": 10,
+   "attr": "1k+ followers",
+   "lift": 1.21,
+   "lo": 1.02,
+   "hi": 1.39,
+   "share": 0.031
+  },
+  {
+   "kind": 10,
+   "attr": "heavy voter (top 10%)",
+   "lift": 1.02,
+   "lo": 0.99,
+   "hi": 1.04,
+   "share": 0.732
+  },
+  {
+   "kind": 11,
+   "attr": "investor",
+   "lift": 1.08,
+   "lo": 0.98,
+   "hi": 1.2,
+   "share": 0.018
+  },
+  {
+   "kind": 11,
+   "attr": "designer",
+   "lift": 1.03,
+   "lo": 0.99,
+   "hi": 1.08,
+   "share": 0.103
+  },
+  {
+   "kind": 11,
+   "attr": "developer",
+   "lift": 0.93,
+   "lo": 0.9,
+   "hi": 0.95,
+   "share": 0.242
+  },
+  {
+   "kind": 11,
+   "attr": "marketer",
+   "lift": 1.1,
+   "lo": 1.06,
+   "hi": 1.14,
+   "share": 0.285
+  },
+  {
+   "kind": 11,
+   "attr": "product manager",
+   "lift": 1.01,
+   "lo": 0.93,
+   "hi": 1.09,
+   "share": 0.028
+  },
+  {
+   "kind": 11,
+   "attr": "founder",
+   "lift": 0.97,
+   "lo": 0.94,
+   "hi": 1.01,
+   "share": 0.34
+  },
+  {
+   "kind": 11,
+   "attr": "student",
+   "lift": 0.98,
+   "lo": 0.89,
+   "hi": 1.07,
+   "share": 0.023
+  },
+  {
+   "kind": 11,
+   "attr": "sales / bizdev",
+   "lift": 1.07,
+   "lo": 1.0,
+   "hi": 1.15,
+   "share": 0.046
+  },
+  {
+   "kind": 11,
+   "attr": "creator / writer",
+   "lift": 1.01,
+   "lo": 0.96,
+   "hi": 1.06,
+   "share": 0.06
+  },
+  {
+   "kind": 11,
+   "attr": "data / analyst",
+   "lift": 1.1,
+   "lo": 1.01,
+   "hi": 1.18,
+   "share": 0.029
+  },
+  {
+   "kind": 11,
+   "attr": "ops / support",
+   "lift": 1.05,
+   "lo": 0.98,
+   "hi": 1.14,
+   "share": 0.079
+  },
+  {
+   "kind": 11,
+   "attr": "no bio",
+   "lift": 0.93,
+   "lo": 0.88,
+   "hi": 0.98,
+   "share": 0.072
+  },
+  {
+   "kind": 11,
+   "attr": "has launched a product",
+   "lift": 1.0,
+   "lo": 0.97,
+   "hi": 1.02,
+   "share": 0.45
+  },
+  {
+   "kind": 11,
+   "attr": "new account (< 1 year)",
+   "lift": 0.96,
+   "lo": 0.94,
+   "hi": 0.99,
+   "share": 0.459
+  },
+  {
+   "kind": 11,
+   "attr": "veteran (5+ years)",
+   "lift": 0.93,
+   "lo": 0.86,
+   "hi": 1.0,
+   "share": 0.149
+  },
+  {
+   "kind": 11,
+   "attr": "1k+ followers",
+   "lift": 0.76,
+   "lo": 0.65,
+   "hi": 0.87,
+   "share": 0.02
+  },
+  {
+   "kind": 11,
+   "attr": "heavy voter (top 10%)",
+   "lift": 0.97,
+   "lo": 0.95,
+   "hi": 1.0,
+   "share": 0.7
+  }
+ ],
+ "lift_table_split_half_correlation": 0.6,
+ "taste_variance_explained_by_k": {
+  "2": 0.094,
+  "3": 0.13,
+  "4": 0.15,
+  "5": 0.167,
+  "6": 0.182,
+  "7": 0.191,
+  "8": 0.201
+ },
+ "separation": {
+  "main role (first match)": {
+   "observed": 0.1617,
+   "chance": 0.1387,
+   "ratio": 1.17,
+   "groups": 13
+  },
+  "has launched a product": {
+   "observed": 0.0725,
+   "chance": 0.0478,
+   "ratio": 1.52,
+   "groups": 2
+  },
+  "followers 1k+": {
+   "observed": 0.0206,
+   "chance": 0.0155,
+   "ratio": 1.33,
+   "groups": 2
+  },
+  "account age (new / mid / veteran)": {
+   "observed": 0.1044,
+   "chance": 0.0655,
+   "ratio": 1.59,
+   "groups": 3
+  },
+  "activity (heavy voter)": {
+   "observed": 0.0853,
+   "chance": 0.0431,
+   "ratio": 1.98,
+   "groups": 2
+  },
+  "current v4 groups": {
+   "observed": 0.0889,
+   "chance": 0.054,
+   "ratio": 1.65,
+   "groups": 3
+  },
+  "current v4 subgroups": {
+   "observed": 0.1726,
+   "chance": 0.1337,
+   "ratio": 1.29,
+   "groups": 11
+  },
+  "taste clusters k=3": {
+   "observed": 0.2555,
+   "chance": 0.0682,
+   "ratio": 3.74,
+   "groups": 3
+  },
+  "taste clusters k=4": {
+   "observed": 0.265,
+   "chance": 0.0806,
+   "ratio": 3.29,
+   "groups": 4
+  },
+  "taste clusters k=5": {
+   "observed": 0.2944,
+   "chance": 0.0932,
+   "ratio": 3.16,
+   "groups": 5
+  },
+  "taste clusters k=8": {
+   "observed": 0.3346,
+   "chance": 0.1207,
+   "ratio": 2.77,
+   "groups": 8
+  },
+  "role x taste k=4": {
+   "observed": 0.3709,
+   "chance": 0.2686,
+   "ratio": 1.38,
+   "groups": 52
+  }
+ }
+}

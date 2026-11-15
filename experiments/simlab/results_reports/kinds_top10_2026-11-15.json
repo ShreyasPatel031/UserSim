@@ -1,0 +1,512 @@
+{
+ "snapshot": "2026-11-15 12:15 PT",
+ "taste_groups": {
+  "AI business & growth crowd": {
+   "people": 1527,
+   "share_of_votes": 0.247
+  },
+  "Model & coding-tool developers": {
+   "people": 1701,
+   "share_of_votes": 0.233
+  },
+  "Occasional business-tool voters": {
+   "people": 1498,
+   "share_of_votes": 0.133
+  },
+  "Indie app & Mac utility fans": {
+   "people": 1715,
+   "share_of_votes": 0.317
+  },
+  "AI creative-tool crowd": {
+   "people": 891,
+   "share_of_votes": 0.07
+  }
+ },
+ "validation_knn_mix": {
+  "launches": 550,
+  "distance model": 0.235,
+  "distance typical-mix": 0.271,
+  "paired": [
+   -0.036,
+   -0.044,
+   -0.027
+  ]
+ },
+ "top10": [
+  {
+   "id": "1315641",
+   "rank": 1,
+   "name": "Rakazo",
+   "votes": 274,
+   "comments": 25,
+   "tagline": "The open source Grok Bot alternative you actually own",
+   "kind": "AI Personal Assistants",
+   "mix": {
+    "AI business & growth crowd": 0.143,
+    "Model & coding-tool developers": 0.293,
+    "Occasional business-tool voters": 0.091,
+    "Indie app & Mac utility fans": 0.429,
+    "AI creative-tool crowd": 0.044
+   },
+   "lift": {
+    "AI business & growth crowd": 0.58,
+    "Model & coding-tool developers": 1.26,
+    "Occasional business-tool voters": 0.69,
+    "Indie app & Mac utility fans": 1.35,
+    "AI creative-tool crowd": 0.63
+   },
+   "similar_past_launches": [
+    "MausBot",
+    "OpenBot",
+    "Grok Bot",
+    "Codync",
+    "kwant"
+   ],
+   "team_earlier_launches": 1,
+   "team_earlier_backers_tracked": 311,
+   "team_backers_lift": {
+    "AI business & growth crowd": 0.39,
+    "Model & coding-tool developers": 1.08,
+    "Occasional business-tool voters": 0.83,
+    "Indie app & Mac utility fans": 2.09,
+    "AI creative-tool crowd": 0.09
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.22,
+    "founder": 1.29,
+    "marketer": 1.4,
+    "designer": 1.13,
+    "investor": 1.75,
+    "has launched a product": 1.24,
+    "veteran (5+ years)": 1.62
+   },
+   "real_comments_captured": 26,
+   "real_comment_themes": {
+    "id": "1315641",
+    "praise": "A fast-paced, incredible open-source Grok Bot alternative that allows bringing any model or sandbox provider, supports ChatGPT, and is highly recommended for personal and customer work. Self-hosting is a big deal for client documents.",
+    "concerns_or_questions": "Is it possible to add integration to a marketplace? Is there a per-bot spend cap? What about a short daily report per agent, what it did, what it skipped, and why? Can one bring their own models? Do routines check in while long-running work is in progress?",
+    "tone": "Enthusiastic, appreciative, curious"
+   }
+  },
+  {
+   "id": "1310949",
+   "rank": 2,
+   "name": "Frevana Multiplayer",
+   "votes": 191,
+   "comments": 29,
+   "tagline": "AI that grows your business alongside your team",
+   "kind": "AI Agent Infrastructure",
+   "mix": {
+    "AI business & growth crowd": 0.215,
+    "Model & coding-tool developers": 0.255,
+    "Occasional business-tool voters": 0.14,
+    "Indie app & Mac utility fans": 0.318,
+    "AI creative-tool crowd": 0.073
+   },
+   "lift": {
+    "AI business & growth crowd": 0.87,
+    "Model & coding-tool developers": 1.09,
+    "Occasional business-tool voters": 1.06,
+    "Indie app & Mac utility fans": 1.0,
+    "AI creative-tool crowd": 1.03
+   },
+   "similar_past_launches": [
+    "Solid",
+    "SquidHub",
+    "AI Employees by Easy-Peasy.AI",
+    "Hosted Agents in Cluing",
+    "Kopai"
+   ],
+   "team_earlier_launches": 2571,
+   "team_earlier_backers_tracked": 25873,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.01,
+    "Model & coding-tool developers": 1.01,
+    "Occasional business-tool voters": 0.99,
+    "Indie app & Mac utility fans": 1.0,
+    "AI creative-tool crowd": 0.99
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.01,
+    "founder": 1.01,
+    "marketer": 1.01,
+    "designer": 1.01,
+    "investor": 1.01,
+    "has launched a product": 1.01,
+    "veteran (5+ years)": 1.01
+   },
+   "real_comments_captured": 24,
+   "real_comment_themes": {
+    "id": "1310949",
+    "praise": "The multiplayer idea is great for sharing AI agents and turning one person's workflow into a team resource, saving a lot of time. The ability to tweak and share agents is useful, and the support for BYOK and integration with SaaS apps is appreciated.",
+    "concerns_or_questions": "Is there an example of the actual output? How easy is it to share custom skills? How is the interface designed for agent-human interaction? If an agent is shared, is access to connected tools also shared? What happens if someone edits a shared skill? Does the whole team get it? Does anyone get pinged when a teammate changes a shared skill? Can one set an owner per agent task to approve output?",
+    "tone": "Curious, appreciative, practical"
+   }
+  },
+  {
+   "id": "1307742",
+   "rank": 3,
+   "name": "Tulvo",
+   "votes": 177,
+   "comments": 13,
+   "tagline": "Smart & adaptive workspace to manage all your work",
+   "kind": "AI Personal Assistants",
+   "mix": {
+    "AI business & growth crowd": 0.243,
+    "Model & coding-tool developers": 0.171,
+    "Occasional business-tool voters": 0.198,
+    "Indie app & Mac utility fans": 0.333,
+    "AI creative-tool crowd": 0.055
+   },
+   "lift": {
+    "AI business & growth crowd": 0.98,
+    "Model & coding-tool developers": 0.73,
+    "Occasional business-tool voters": 1.49,
+    "Indie app & Mac utility fans": 1.05,
+    "AI creative-tool crowd": 0.79
+   },
+   "similar_past_launches": [
+    "IrisGo for Solopreneurs",
+    "Communicate",
+    "Jottoo",
+    "Crewdle AI",
+    "Albato AI"
+   ],
+   "team_earlier_launches": 273,
+   "team_earlier_backers_tracked": 11929,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.04,
+    "Model & coding-tool developers": 0.94,
+    "Occasional business-tool voters": 0.92,
+    "Indie app & Mac utility fans": 1.0,
+    "AI creative-tool crowd": 1.19
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.01,
+    "founder": 1.0,
+    "marketer": 1.05,
+    "designer": 1.04,
+    "investor": 0.98,
+    "has launched a product": 0.98,
+    "veteran (5+ years)": 0.9
+   },
+   "real_comments_captured": 17,
+   "real_comment_themes": {
+    "id": "1307742",
+    "praise": "A promising product that can describe a business in one sentence and generate working boards and customer tables. The ability to update the workspace from various sources and connect to a single dataset is a standout feature.",
+    "concerns_or_questions": "How is it different from other platforms that generate web apps? How hard is it to get data out if a team outgrows it? What happens when the AI makes a change to an existing database? Is there a way to review or undo structural changes? Can it turn meeting notes into tasks?",
+    "tone": "Positive, inquisitive, practical"
+   }
+  },
+  {
+   "id": "1313926",
+   "rank": 4,
+   "name": "Talyn",
+   "votes": 127,
+   "comments": 17,
+   "tagline": "Run Claude Code and Codex in parallel cloud sandboxes",
+   "kind": "AI Coding Tools",
+   "mix": {
+    "AI business & growth crowd": 0.128,
+    "Model & coding-tool developers": 0.33,
+    "Occasional business-tool voters": 0.061,
+    "Indie app & Mac utility fans": 0.46,
+    "AI creative-tool crowd": 0.021
+   },
+   "lift": {
+    "AI business & growth crowd": 0.52,
+    "Model & coding-tool developers": 1.42,
+    "Occasional business-tool voters": 0.46,
+    "Indie app & Mac utility fans": 1.45,
+    "AI creative-tool crowd": 0.3
+   },
+   "similar_past_launches": [
+    "Hyrax AI",
+    "ManyAgents",
+    "Parallax",
+    "GitBot",
+    "Reason"
+   ],
+   "team_earlier_launches": 284,
+   "team_earlier_backers_tracked": 10756,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.14,
+    "Model & coding-tool developers": 1.07,
+    "Occasional business-tool voters": 0.9,
+    "Indie app & Mac utility fans": 1.03,
+    "AI creative-tool crowd": 0.73
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.05,
+    "founder": 1.05,
+    "marketer": 1.11,
+    "designer": 1.05,
+    "investor": 1.05,
+    "has launched a product": 1.05,
+    "veteran (5+ years)": 1.06
+   },
+   "real_comments_captured": 17,
+   "real_comment_themes": {
+    "id": "1313926",
+    "praise": "A very interesting product that helps automate the babysitting of AI code, especially for fixing failing checks. The detail of tokens staying outside the sandbox and the caching of boxes for faster startups are appreciated.",
+    "concerns_or_questions": "When it fixes a failing check, does one see the diff before it pushes? Does it ever run out of GitHub API budget? How are secrets handled in the sandbox? Where does one see it when the AI stops to ask a question? What happens when two parallel processes touch the same file? Do parallel sandboxes share repo context, or does each agent re-read the whole repo?",
+    "tone": "Intrigued, practical, curious"
+   }
+  },
+  {
+   "id": "1316659",
+   "rank": 5,
+   "name": "HuntMonitor",
+   "votes": 123,
+   "comments": 11,
+   "tagline": null,
+   "note": "not in the 00:05 list (added later); no text held",
+   "real_comments_captured": 12,
+   "real_comment_themes": {
+    "id": "1316659",
+    "praise": "A useful tool with a clean, simple, and accurate interface for monitoring Product Hunt launches.",
+    "concerns_or_questions": "Does it cover products that are featured? Is it just logging data, or does it have insider intel? Could it have automated alerts for momentum changes or ranking drops, and weekly performance reports? Does it get around Product Hunt's upvote visibility restriction? Does it show votes per hour? Which numbers are worth watching for a first-time launcher?",
+    "tone": "Appreciative, curious, strategic"
+   }
+  },
+  {
+   "id": "1317198",
+   "rank": 6,
+   "name": "Canvas by AgentGrid.io",
+   "votes": 108,
+   "comments": 14,
+   "tagline": "Agentic Design Canvas - A visual way to collaborate with AI",
+   "kind": "AI Agent Infrastructure",
+   "mix": {
+    "AI business & growth crowd": 0.196,
+    "Model & coding-tool developers": 0.254,
+    "Occasional business-tool voters": 0.102,
+    "Indie app & Mac utility fans": 0.373,
+    "AI creative-tool crowd": 0.074
+   },
+   "lift": {
+    "AI business & growth crowd": 0.79,
+    "Model & coding-tool developers": 1.09,
+    "Occasional business-tool voters": 0.77,
+    "Indie app & Mac utility fans": 1.18,
+    "AI creative-tool crowd": 1.06
+   },
+   "similar_past_launches": [
+    "AgentGrid.io",
+    "Figma Agent",
+    "Acebuilder",
+    "Doop",
+    "guilds.run"
+   ],
+   "team_earlier_launches": 2327,
+   "team_earlier_backers_tracked": 25046,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.01,
+    "Model & coding-tool developers": 1.01,
+    "Occasional business-tool voters": 1.0,
+    "Indie app & Mac utility fans": 1.0,
+    "AI creative-tool crowd": 0.98
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.01,
+    "founder": 1.01,
+    "marketer": 1.01,
+    "designer": 1.01,
+    "investor": 0.99,
+    "has launched a product": 1.01,
+    "veteran (5+ years)": 1.01
+   },
+   "real_comments_captured": 15,
+   "real_comment_themes": {
+    "id": "1317198",
+    "praise": "A fantastic and useful tool that makes building with AI easier, especially for visual collaboration. The idea of the canvas as a shared state is a real difference from chat-style tools.",
+    "concerns_or_questions": "When one fixes something by hand, and the agent picks up again, does it see the edit or can it overwrite it? What happens when one and the agent change the same element at the same time? Can existing Tailwind config be loaded to stick to a spacing scale? How does the handoff work when taking a design from Canvas into one's own codebase?",
+    "tone": "Positive, curious, practical"
+   }
+  },
+  {
+   "id": "1307385",
+   "rank": 7,
+   "name": "TwoBucket",
+   "votes": 106,
+   "comments": 11,
+   "tagline": "Beginner-friendly mobile detailing software for bookings",
+   "kind": "Niche Hardware & Apps",
+   "mix": {
+    "AI business & growth crowd": 0.149,
+    "Model & coding-tool developers": 0.164,
+    "Occasional business-tool voters": 0.14,
+    "Indie app & Mac utility fans": 0.512,
+    "AI creative-tool crowd": 0.034
+   },
+   "lift": {
+    "AI business & growth crowd": 0.6,
+    "Model & coding-tool developers": 0.7,
+    "Occasional business-tool voters": 1.06,
+    "Indie app & Mac utility fans": 1.62,
+    "AI creative-tool crowd": 0.49
+   },
+   "similar_past_launches": [
+    "Jottoo",
+    "Cluinn",
+    "Crewdle AI",
+    "Mo",
+    "ConnectMachine 2.0"
+   ],
+   "team_earlier_launches": 0,
+   "team_earlier_backers_tracked": 0,
+   "real_comments_captured": 11,
+   "real_comment_themes": {
+    "id": "1307385",
+    "praise": "A well-niched product for mobile detailers, with deposits and tips built-in. The focus on a specific solo operator group is appreciated.",
+    "concerns_or_questions": "Is there a way to move a whole day's visits at once and let customers pick new slots? Could it include AI-powered vehicle inspection? How are the first users being found? How does a detailer who has never used booking software get started easily?",
+    "tone": "Supportive, curious, appreciative"
+   }
+  },
+  {
+   "id": "1317137",
+   "rank": 8,
+   "name": "Perit Marketplace",
+   "votes": 95,
+   "comments": 10,
+   "tagline": "Sell your data and RL tasks to frontier AI labs",
+   "kind": "AI Agent Infrastructure",
+   "mix": {
+    "AI business & growth crowd": 0.238,
+    "Model & coding-tool developers": 0.232,
+    "Occasional business-tool voters": 0.179,
+    "Indie app & Mac utility fans": 0.303,
+    "AI creative-tool crowd": 0.048
+   },
+   "lift": {
+    "AI business & growth crowd": 0.96,
+    "Model & coding-tool developers": 1.0,
+    "Occasional business-tool voters": 1.35,
+    "Indie app & Mac utility fans": 0.96,
+    "AI creative-tool crowd": 0.68
+   },
+   "similar_past_launches": [
+    "Kopai",
+    "Context.dev",
+    "UnitPay",
+    "YC has it",
+    "Prefactor"
+   ],
+   "team_earlier_launches": 2377,
+   "team_earlier_backers_tracked": 25497,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.01,
+    "Model & coding-tool developers": 1.01,
+    "Occasional business-tool voters": 0.99,
+    "Indie app & Mac utility fans": 0.99,
+    "AI creative-tool crowd": 1.0
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.01,
+    "founder": 1.01,
+    "marketer": 1.01,
+    "designer": 1.01,
+    "investor": 0.99,
+    "has launched a product": 1.01,
+    "veteran (5+ years)": 1.01
+   },
+   "real_comments_captured": 8,
+   "real_comment_themes": null
+  },
+  {
+   "id": "1315819",
+   "rank": 9,
+   "name": "Remindly",
+   "votes": 94,
+   "comments": 7,
+   "tagline": "Notes that remind you, on iPhone, iPad, Mac and web",
+   "kind": "Mac Utility Apps",
+   "mix": {
+    "AI business & growth crowd": 0.052,
+    "Model & coding-tool developers": 0.131,
+    "Occasional business-tool voters": 0.161,
+    "Indie app & Mac utility fans": 0.64,
+    "AI creative-tool crowd": 0.016
+   },
+   "lift": {
+    "AI business & growth crowd": 0.21,
+    "Model & coding-tool developers": 0.56,
+    "Occasional business-tool voters": 1.21,
+    "Indie app & Mac utility fans": 2.02,
+    "AI creative-tool crowd": 0.23
+   },
+   "similar_past_launches": [
+    "Flyout",
+    "Harbor",
+    "NoteWorthy",
+    "Remind",
+    "Notif"
+   ],
+   "team_earlier_launches": 1,
+   "team_earlier_backers_tracked": 56,
+   "team_backers_lift": {
+    "AI business & growth crowd": 0.26,
+    "Model & coding-tool developers": 0.94,
+    "Occasional business-tool voters": 0.8,
+    "Indie app & Mac utility fans": 2.18,
+    "AI creative-tool crowd": 0.45
+   },
+   "team_backers_roles_lift": {
+    "developer": 0.7,
+    "founder": 1.65,
+    "marketer": 1.33,
+    "designer": 0.78,
+    "investor": 1.29,
+    "has launched a product": 1.18,
+    "veteran (5+ years)": 0.89
+   },
+   "real_comments_captured": 7,
+   "real_comment_themes": {
+    "id": "1315819",
+    "praise": "A useful tool for notes with reminders, especially for specific use cases like recipes with fold timers. The location-based reminders and offline functionality are nice touches.",
+    "concerns_or_questions": "Does the 'arrive somewhere' reminder work on iPad too? Does the Evernote import bring over existing reminders or only text and tags? Do repeating reminders still go off if the phone has no signal?",
+    "tone": "Appreciative, curious, practical"
+   }
+  },
+  {
+   "id": "1307607",
+   "rank": 10,
+   "name": "Spiik",
+   "votes": 88,
+   "comments": 7,
+   "tagline": "AI note taker for meetings & lectures. No bot on your calls.",
+   "kind": "Voice & Note Apps",
+   "mix": {
+    "AI business & growth crowd": 0.136,
+    "Model & coding-tool developers": 0.142,
+    "Occasional business-tool voters": 0.15,
+    "Indie app & Mac utility fans": 0.517,
+    "AI creative-tool crowd": 0.055
+   },
+   "lift": {
+    "AI business & growth crowd": 0.55,
+    "Model & coding-tool developers": 0.61,
+    "Occasional business-tool voters": 1.13,
+    "Indie app & Mac utility fans": 1.63,
+    "AI creative-tool crowd": 0.78
+   },
+   "similar_past_launches": [
+    "Cluinn",
+    "Ellis",
+    "Smart Jelly",
+    "Loqui",
+    "Epilude Notetaker"
+   ],
+   "team_earlier_launches": 0,
+   "team_earlier_backers_tracked": 0,
+   "real_comments_captured": 7,
+   "real_comment_themes": {
+    "id": "1307607",
+    "praise": "A helpful AI note-taker for meetings and lectures, especially the feature to tap any line to hear it again. The ability to ask the recording questions is also highly valued.",
+    "concerns_or_questions": "How does the 'no bot' feature work on Mac, specifically regarding system audio and mic as separate tracks? Does speaker labeling hold up with multiple people using one laptop mic? Do flashcards work from a full hour of audio without prior transcript editing? Can one ask questions across several recordings at once?",
+    "tone": "Intrigued, practical, curious"
+   }
+  }
+ ],
+ "usd": 0.0059
+}
