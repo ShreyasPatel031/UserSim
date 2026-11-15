@@ -1,0 +1,131 @@
+{
+ "launches": 4830,
+ "days": 184,
+ "#1 shown driver NOT in arm 2's top 3 (% of launches) [day CI]": [
+  9.1,
+  7.8,
+  10.4
+ ],
+ "#1 shown driver differs from arm 2's #1 (%)": [
+  44.5,
+  41.9,
+  47.1
+ ],
+ "top-3 overlap (%)": [
+  75.3,
+  74.2,
+  76.3
+ ],
+ "sign agreement of shown top-3 drivers (%)": [
+  99.7,
+  99.5,
+  99.8
+ ],
+ "Spearman of |attribution| over the 10 inputs (x100)": [
+  81.7,
+  80.4,
+  82.8
+ ],
+ "share of arm 2 |attribution| on inputs readable_v2 does not have (%)": [
+  9.1,
+  8.8,
+  9.4
+ ],
+ "arm 2's largest group is an input readable_v2 does not have (% of launches)": [
+  6.0,
+  5.1,
+  6.8
+ ],
+ "per input (sorted: most over-shown vs arm 2 first)": [
+  {
+   "input": "Gemini pitch score",
+   "shown in top 3 %": 60.6,
+   "in arm 2 top 3 %": 36.7,
+   "shown #1 %": 24.2,
+   "arm 2 #1 %": 7.3,
+   "sign agreement when shown %": 99.6,
+   "mean |shown| / mean |arm 2|": 1.54
+  },
+  {
+   "input": "hunter top-5 rate before",
+   "shown in top 3 %": 58.9,
+   "in arm 2 top 3 %": 46.3,
+   "shown #1 %": 16.3,
+   "arm 2 #1 %": 3.1,
+   "sign agreement when shown %": 99.8,
+   "mean |shown| / mean |arm 2|": 1.26
+  },
+  {
+   "input": "text model score",
+   "shown in top 3 %": 17.9,
+   "in arm 2 top 3 %": 16.1,
+   "shown #1 %": 2.7,
+   "arm 2 #1 %": 1.7,
+   "sign agreement when shown %": 100.0,
+   "mean |shown| / mean |arm 2|": 1.2
+  },
+  {
+   "input": "hunter account age",
+   "shown in top 3 %": 29.6,
+   "in arm 2 top 3 %": 28.1,
+   "shown #1 %": 8.1,
+   "arm 2 #1 %": 5.0,
+   "sign agreement when shown %": 98.9,
+   "mean |shown| / mean |arm 2|": 1.16
+  },
+  {
+   "input": "pre-launch coverage",
+   "shown in top 3 %": 2.3,
+   "in arm 2 top 3 %": 1.2,
+   "shown #1 %": 0.6,
+   "arm 2 #1 %": 0.1,
+   "sign agreement when shown %": 97.3,
+   "mean |shown| / mean |arm 2|": 1.56
+  },
+  {
+   "input": "topic prior",
+   "shown in top 3 %": 6.3,
+   "in arm 2 top 3 %": 6.1,
+   "shown #1 %": 0.8,
+   "arm 2 #1 %": 0.8,
+   "sign agreement when shown %": 100.0,
+   "mean |shown| / mean |arm 2|": 1.17
+  },
+  {
+   "input": "hunter launches before",
+   "shown in top 3 %": 4.2,
+   "in arm 2 top 3 %": 4.8,
+   "shown #1 %": 0.2,
+   "arm 2 #1 %": 0.6,
+   "sign agreement when shown %": 100.0,
+   "mean |shown| / mean |arm 2|": 0.85
+  },
+  {
+   "input": "media items",
+   "shown in top 3 %": 2.9,
+   "in arm 2 top 3 %": 3.8,
+   "shown #1 %": 0.6,
+   "arm 2 #1 %": 0.4,
+   "sign agreement when shown %": 100.0,
+   "mean |shown| / mean |arm 2|": 0.74
+  },
+  {
+   "input": "team size",
+   "shown in top 3 %": 74.1,
+   "in arm 2 top 3 %": 79.2,
+   "shown #1 %": 35.2,
+   "arm 2 #1 %": 46.1,
+   "sign agreement when shown %": 100.0,
+   "mean |shown| / mean |arm 2|": 0.96
+  },
+  {
+   "input": "hunter track record (relative)",
+   "shown in top 3 %": 43.2,
+   "in arm 2 top 3 %": 77.8,
+   "shown #1 %": 11.4,
+   "arm 2 #1 %": 34.9,
+   "sign agreement when shown %": 99.5,
+   "mean |shown| / mean |arm 2|": 0.73
+  }
+ ]
+}
