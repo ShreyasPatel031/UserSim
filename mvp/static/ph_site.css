@@ -412,8 +412,8 @@ body.modal-open { overflow: hidden; }
 .exmodal .ttl { display: flex; gap: 12px; align-items: center; } .exmodal .ttl .icon { width: 44px; height: 44px; flex: none; }
 .exmodal h3 { margin: 0; font: 600 22px/1.2 var(--serif, Georgia, serif); } .exmodal header p { margin: 2px 0 0; font-size: 13.5px; color: var(--soft); }
 .exmodal .x { border: 0; background: none; font-size: 28px; line-height: 1; cursor: pointer; color: var(--soft); padding: 0 4px; }
-.extabs { display: flex; gap: 6px; padding: 0 20px 10px; overflow-x: auto; border-bottom: 1px solid var(--line, #e3dccd); }
-.extabs button { flex: none; border: 1px solid var(--line, #d9d2c3); background: transparent; padding: 6px 12px; font: 500 13px var(--sans); cursor: pointer; border-radius: 999px; color: var(--ink); }
+.extabs { flex: none; display: flex; gap: 6px; padding: 0 20px 10px; overflow-x: auto; border-bottom: 1px solid var(--line, #e3dccd); }
+.extabs button { flex: none; display: inline-flex; align-items: center; line-height: 1.2; white-space: nowrap; -webkit-appearance: none; appearance: none; border: 1px solid var(--line, #d9d2c3); background: transparent; padding: 6px 12px; font: 500 13px var(--sans); cursor: pointer; border-radius: 999px; color: var(--ink); }
 .extabs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .exbody { padding: 16px 20px 20px; overflow-y: auto; font-size: 14.5px; line-height: 1.5; }
 .exmodal footer { padding: 10px 20px; border-top: 1px solid var(--line, #e3dccd); font-size: 13px; }
