@@ -88,9 +88,16 @@ ARMS = {"CF-only": (30, ["n30", "n90", "last", "cf"]), "A7": (7, ["n30", "n90", 
         "CF+back": (30, ["n30", "n90", "last", "cf", "back"]),
         "CF+intensity": (30, ["n30", "n90", "last", "cf", "bk_recent", "bk_n", "bk_days", "bk_share"])}   # arm 5, pre-registered a01f8b96   # 4th arm (miss anatomy 22:54Z: 43% of CF-only misses had backed this team before)
 if os.environ.get("ARMS_ONLY"): ARMS = {k: v for k, v in ARMS.items() if k in os.environ["ARMS_ONLY"].split(",")}
+if os.environ.get("RING") == "1": ARMS = {k + "/ring": v for k, v in ARMS.items()}
 rng = np.random.default_rng(0)
 for D in TDAYS:
     cut = start(D); H = U[U.fetched_at < cut]
+    n_ring = None
+    if os.environ.get("RING") == "1":   # remove likely-discounted (ring) people's upvotes from CF training (dated flag: reads before cut, launches before D-1)
+        import ringlib
+        Wv = WA.assign(votes=pd.to_numeric(WA.votes, errors="coerce"), day=WA.day.astype(str).str[:10])[["id", "day", "votes"]]
+        RF, n_oc_l = ringlib.dated_flags(H[["person_id", "target_id", "lday"]], Wv, (pd.Timestamp(D) - pd.Timedelta(days=1)).strftime("%Y-%m-%d"))
+        H = H[~H.person_id.isin(RF)]; n_ring = len(RF)
     H0 = H[H.lday < D]; pi = {p: k for k, p in enumerate(H0.person_id.unique())}; li = {l: k for k, l in enumerate(H0.target_id.unique())}
     M = csr_matrix((np.ones(len(H0)), (H0.person_id.map(pi).values, H0.target_id.map(li).values)), shape=(len(pi), len(li)))
     uu, ss, _ = svds(M.astype(float), k=32); UF = uu * ss; UF /= np.maximum(np.linalg.norm(UF, axis=1, keepdims=True), 1e-9)
@@ -122,4 +129,4 @@ for D in TDAYS:
     FR.to_parquet(fp)
     if UP: subprocess.run(["gsutil", "-q", "cp", fp, f"{B}/tmp/e5/private/backer_arms/{D}.parquet"], check=True)
     print(json.dumps({"day": D, "launches": int(FR.launch_id.nunique()), "arms": sorted(FR.arm.unique()), "n_active": len(act), "train_days": len(TRAIN),
-                      "svd_max_lday": str(H0.lday.max()), "reads_before": str(cut), "sec": round(time.time() - t0)}), flush=True)
+                      "svd_max_lday": str(H0.lday.max()), "reads_before": str(cut), "ring_flagged": n_ring, "sec": round(time.time() - t0)}), flush=True)
