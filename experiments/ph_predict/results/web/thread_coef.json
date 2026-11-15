@@ -7,19 +7,19 @@
  "stop_rule": "se <= 0.07 on forward days (from 2026-11-12)",
  "forward_from": "2026-11-12",
  "forward": {
-  "days": 2,
-  "launches": 57,
-  "coef_th_n_pre": 0.289,
-  "se": 0.087,
-  "coef_clean": 0.555,
+  "days": 3,
+  "launches": 85,
+  "coef_th_n_pre": 0.214,
+  "se": 0.108,
+  "coef_clean": 0.575,
   "stop_reached": false
  },
  "all_live": {
-  "days": 11,
-  "launches": 299,
-  "coef_th_n_pre": 0.234,
-  "se": 0.074,
-  "coef_clean": 0.574
+  "days": 12,
+  "launches": 327,
+  "coef_th_n_pre": 0.217,
+  "se": 0.07,
+  "coef_clean": 0.58
  },
  "per_day": {
   "2026-10-29": {
@@ -81,7 +81,12 @@
    "launches": 21,
    "hunter_missing": 0,
    "clean_missing": 1
+  },
+  "2026-11-14": {
+   "launches": 28,
+   "hunter_missing": 0,
+   "clean_missing": 0
   }
  },
- "written_at": "2026-11-14T20:20:12.254692+00:00"
+ "written_at": "2026-11-15T12:36:30.047918+00:00"
 }
