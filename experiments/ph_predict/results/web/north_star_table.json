@@ -1,6 +1,6 @@
 {
- "computed_at": "2026-11-14T23:07:57.176094+00:00",
- "e5_rows": "merged 1 rows (computed_at 2026-11-14T22:52:49.320908+00:00)",
+ "computed_at": "2026-11-15T02:41:28.352209+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-14T23:48:12.112890+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [
   {
@@ -203,6 +203,24 @@
    "last_day": "2026-11-13",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
    "source": "results/hybrid_lodo_ku_orders.json",
+   "edge_vs_hidden": {
+    "top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10": [
+     5.8,
+     0.8,
+     10.8
+    ],
+    "n_days": 12
+   },
    "producer": "PH"
   },
   {
@@ -217,6 +235,24 @@
    "last_day": "2026-11-13",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
    "source": "results/hybrid_lodo_ku_fixedprior_orders.json",
+   "edge_vs_hidden": {
+    "top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10": [
+     6.7,
+     1.7,
+     11.7
+    ],
+    "n_days": 12
+   },
    "producer": "PH"
   },
   {
@@ -280,36 +316,56 @@
    "metric": "recall at N (N = observed held backers per launch), pooled",
    "value": 25.2,
    "interval": [
-    19.2,
-    29.5
+    6.3,
+    29.7
    ],
    "arms": {
     "CF-only": [
      25.2,
-     19.2,
-     29.5
+     6.3,
+     29.7
     ],
     "A7": [
      22.0,
-     15.9,
-     26.7
+     3.6,
+     27.4
+    ],
+    "CF+back": [
+     24.6,
+     4.1,
+     29.7
+    ],
+    "CF+intensity": [
+     24.8,
+     5.2,
+     30.0
     ],
     "raw most-active": [
      21.1,
-     16.8,
-     24.4
+     5.4,
+     25.1
     ]
    },
    "paired_vs_raw": {
     "CF-only": [
      4.0,
-     1.9,
-     5.9
+     0.9,
+     4.8
     ],
     "A7": [
      0.9,
-     -1.6,
-     2.9
+     -1.8,
+     2.8
+    ],
+    "CF+back": [
+     3.5,
+     -1.4,
+     4.7
+    ],
+    "CF+intensity": [
+     3.7,
+     -0.2,
+     5.0
     ]
    },
    "n_launches": 128,
@@ -317,6 +373,7 @@
    "first_day": "2026-11-08",
    "last_day": "2026-11-12",
    "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
+   "label": "CF 25.2% vs most-active 21.1% (+4.0; day-resampled interval 0.9 to 4.8 (only 5 days, so this interval is unstable; an independent re-score on an earlier store snapshot gave -0.8 to +4.8); 128 launches, 83% of backers on Nov 8-9; within-day launch intervals clear of 0 on Nov 9 only; tied on Nov 10-12; the gain exists only among held people re-read after the day (without that filter the arms tie))",
    "source": "results/web/backer_prediction_arms.json",
    "top3": null,
    "top5": null,
@@ -324,7 +381,7 @@
    "n_days": null,
    "producer": "E5",
    "merged_from": "results/web/north_star_rows_e5.json",
-   "merged_computed_at": "2026-11-14T22:52:49.320908+00:00"
+   "merged_computed_at": "2026-11-14T23:48:12.112890+00:00"
   }
  ]
 }

@@ -88,13 +88,22 @@ for m, rs in by.items():
         if D: rows.append(row("0005", m, f"published 00:05 rows ({lab})", H, D, "results/web/scoreboard_orders.json"))
 # before-reveal: LODO replay orders incl. unranked launches
 for f, model, key in (("hybrid_lodo_ku_orders.json", "hybrid_vm (live prior)", "lodo_hybrid"), ("hybrid_lodo_ku_fixedprior_orders.json", "hybrid_vm (fixed prior)", "lodo_hybrid"),
-                      ("hybrid_lodo_ku_orders.json", "hidden_rank_only", "hidden")):
+                      ("hybrid_lodo_ku_orders.json", "hidden_rank_only", "hidden"),
+                      ("hybrid_lodo_ku_0345_orders.json", "hybrid_vm (03:45 read)", "lodo_hybrid")):   # live 03:45 point; rows only once 03:45 reads exist
     if not os.path.exists(R(f)): continue
     O = json.load(open(R(f)))["days"]; H, D = [], []
     for d, v in sorted(O.items()):
         h = hk(v[key], d)
         if h is not None: H.append(h); D.append(d)
-    rows.append(row("prereveal", model, "leave-one-day-out replay, 03:00 recorder read, unranked launches kept in the order", H, D, f"results/{f}"))
+    if not D: continue
+    rows.append(row("prereveal", model, f"leave-one-day-out replay, {'03:45' if '0345' in f else '03:00'} recorder read, unranked launches kept in the order", H, D, f"results/{f}"))
+    # paired edge over the hidden order (same days), day bootstrap 95% (orchestrator 02:37Z Nov 15: the writer reads this, not a constant)
+    if key != "hidden":
+        Hh = {d: hk(v["hidden"], d) for d, v in O.items()}; P = np.array([np.array(h) - np.array(Hh[d]) for h, d in zip(H, D) if Hh.get(d) is not None])
+        if len(P):
+            rng = np.random.default_rng(0); bs = np.array([P[rng.integers(0, len(P), len(P))].mean(0) for _ in range(4000)])
+            rows[-1]["edge_vs_hidden"] = {f"top{k}": [round(float(P[:, j].mean()), 1), round(float(np.percentile(bs[:, j], 2.5)), 1), round(float(np.percentile(bs[:, j], 97.5)), 1)]
+                                          for j, k in enumerate((3, 5, 10))} | {"n_days": int(len(P))}
 # weekly board (b): predicted entrants inserted, all board days (truth = official weekly_rank; its own rule)
 if os.path.exists(R("weekly_board_pred_days.csv")):
     Wb = pd.read_csv(R("weekly_board_pred_days.csv"))

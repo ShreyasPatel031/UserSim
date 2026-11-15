@@ -16,7 +16,10 @@ B = "gs://usersim-bakeoff-347838016394/usersim_sim"; TMP = os.environ.get("TMPDI
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True)
 zf = lambda s: (s - s.mean()) / s.std() if s.std() > 0 else s * 0.0
 hits = lambda o, t: [len(set(o[:k]) & set(t[:k])) / k * 100 for k in (3, 5, 10)]
-PTS = {"P3": 3.0}   # 03:45 uses the 03:00 read in the backtest (no 03:45 recorder read existed); live adds one
+PTS = {"P3": float(os.environ.get("READ_H", "3.0"))}   # 03:45 uses the 03:00 read in the backtest (no 03:45 recorder read existed); live adds one
+# READ_H=3.75 READ_TOL_MIN=10 TAG=_ku_0345 KEEP_UNRANKED=1 (orchestrator 02:37Z Nov 15): the live 03:45 point, only on days with a recorder
+# read within 10 min before 03:45 PT (the 15-minute capture); other days are skipped, so the line starts empty and grows nightly
+TOL = float(os.environ.get("READ_TOL_MIN", "65"))
 
 
 TAG = os.environ.get("TAG", ""); CP = None; KU = os.environ.get("KEEP_UNRANKED") == "1"; TRUTHFULL = {}
@@ -44,7 +47,7 @@ def main():
                 cp = dict(zip(F_.id.astype(str), F_.pred))
         src[d] = (f"CLEAN_PRIOR {os.environ['CLEAN_PRIOR']}" if CP is not None and cp else "forecast parquet pred" if cp else "") or "month-fold clean_nosite stand-in"
         def at(h):
-            T = t0 + pd.Timedelta(hours=h); s = V[(V.a <= T) & (V.a >= T - pd.Timedelta(minutes=65)) & (V.a >= t0 - pd.Timedelta(minutes=5))]
+            T = t0 + pd.Timedelta(hours=h); s = V[(V.a <= T + pd.Timedelta(seconds=90)) & (V.a >= T - pd.Timedelta(minutes=TOL if h == PTS["P3"] else 65)) & (V.a >= t0 - pd.Timedelta(minutes=5))]
             return s.sort_values("a").groupby("launch_id").last()
         s1 = at(1.0)
         for p, h in PTS.items():
@@ -58,6 +61,9 @@ def main():
             for i in ids:
                 rows.append({"day": d, "point": p, "id": i, "final": (int(TR_[i]) if i in TR_ else np.nan), "pos": posT[i], "lpos": np.log(posT[i]),
                              "move": np.log(pos1[i]) - np.log(posT[i]), "nc_rec": np.log1p(sT.comments.get(i, 0) or 0), "clean": cp.get(i, twc.get(i, np.nan))})
+    if not rows:   # e.g. READ_H=3.75 before any 03:45 read exists: an empty orders file, so the table shows no row yet
+        json.dump({"rule": f"no day with a recorder read within {TOL:g} min before {PTS['P3']} h", "point": list(PTS), "days": {}},
+                  open(f"{HERE}/results/hybrid_lodo{TAG}_orders.json", "w")); print("no days with a read at the point"); return
     X = pd.DataFrame(rows); X["clean"] = X.groupby("day").clean.transform(lambda s: s.fillna(s.min() - 0.1) if s.notna().any() else s.fillna(0))
     F = ["lpos", "move", "nc_rec", "clean"]; ZF = ["z_" + f for f in F]
     for c in F:

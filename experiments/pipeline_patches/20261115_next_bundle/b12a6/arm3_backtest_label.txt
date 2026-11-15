@@ -1,0 +1,1 @@
+56.3 / 66.3 / 77.6 top 3 / 5 / 10 on 183 backtest days (Apr-Oct 2026, month-forward, 20 seeds, pre-registered harness; truth = final daily rank <= k); model: arm 3 (arm 2 + E5 line-up / retrieval / relaunch inputs)

@@ -23,3 +23,8 @@ Every replaced file must have its expected base md5 or nothing changes. The 23:3
 
 Order: DEPLOY_ORDER steps 1-6, then `deploy`. For tonight's arm-2 fix alone: step 1 + `deploy_h25` (optionally after step 5; if deploy_h25 runs
 first, step 5 will refuse because it expects e3af37b4; then run step 5 and deploy_h25 again, which picks h25_live.py).
+
+## b12a6/ (the before-reveal writer, as a new named 12a build; deploy with `bash b12a6/deploy_b12a.sh <path>/b12a6`, atomic flip, instead of 12a.5)
+12a.5's files with two_predictions.py 3388bd96 (WANT updated in deploy_b12a.sh 2621d21e). The 03:45 accuracy label and its top-10 edge over the hidden order
+are read from north_star_table.json (prereveal rows now carry edge_vs_hidden, paired, day bootstrap). The row is the fixed-prior one only when
+~/w/today_rows_fix.json exists (step 1 deployed); otherwise the live-prior one (+5.8 [+0.8, +10.8]). The build-constant fallback names both edges.
