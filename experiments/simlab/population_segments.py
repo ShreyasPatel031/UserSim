@@ -190,6 +190,7 @@ else: KF = 3 * K
 G = fit_groups(CUT, K); lab = pd.concat([G["core"], G["weak"]]); log("groups", lab.value_counts().sort_index().to_dict())
 # stable ids vs previous run
 prev = json.loads(gcat(f"{B}/results/web/segments/latest.json") or "{}") if UP else (json.load(open(os.path.join(OUTD, "latest.json"))) if os.path.exists(os.path.join(OUTD, "latest.json")) else {})
+if "--rename" in sys.argv: prev = {}   # one-off: segmentation design changed (v1 taste -> v2 kind-of-user); do not inherit old names
 remap = {j: j for j in range(K)}; prev_names = {}
 if prev.get("groups"):
     pc = {g["id"]: np.array(g["_topic_centroid"]) for g in prev["groups"] if "_topic_centroid" in g and g.get("_topics") == G["topics"]}

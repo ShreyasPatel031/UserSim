@@ -10,7 +10,7 @@ import json, os, re, sys
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, ".."))
 from pipeline import warehouse  # noqa: E402
-ST, SMP, OUT = sys.argv[1:4]; MIN, K = 20, 12
+ST, SMP, OUT = sys.argv[1:4]; MIN, K = 20, int(os.environ.get("PANEL_K", 12))
 EW = open(os.path.join(HERE, "explain_writer.py")).read(); exec(EW[EW.index("SEG = ["):EW.index("WHO, COV = {}, {}")])
 PJ = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "headline", "bio"]).drop_duplicates("person_id")
 seg = dict(zip(PJ.person_id, (PJ.headline.fillna("") + " " + PJ.bio.fillna("")).map(seg_of)))

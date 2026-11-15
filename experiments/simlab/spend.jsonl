@@ -20,3 +20,6 @@
 {"t": "persona_appeal_run2", "provider": "gcp", "usd": 0.18, "note": "54 Gemini 2.5 Flash calls, measured tokens (stopped to raise concurrency)"}
 {"t": "persona_appeal", "provider": "gcp", "usd": 17.166, "note": "5078 Gemini 2.5 Flash calls (appeal backfill 2026-01..10), tokens in 5596098 out 6194772"}
 {"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0432, "note": "27 Gemini 2.5 Flash calls, tokens in 17374 out 15203"}
+{"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0839, "note": "27 Gemini 2.5 Flash calls, tokens in 28602 out 30137"}
+{"t": "panel_groups_harness", "provider": "gcp", "usd": 11.79, "note": "panel variants V1 x4, HYBRID_V1, V2_SHARE5, HYBRID_V2, HYBRID_V2_S5, HYBRID_V2_K24 on the 279-launch harness, gens + judges + complaint judges"}
+{"t": "segments_naming_and_nov14", "provider": "gcp", "usd": 0.6, "note": "segment naming runs (v1, v2 live, two Aug-1 fits) + Nov 14 panel rebuilds; estimated"}

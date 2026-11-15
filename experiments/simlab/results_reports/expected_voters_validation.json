@@ -1,0 +1,34 @@
+{
+ "day": "2026-11-14",
+ "validation": {
+  "history_days": [
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12"
+  ],
+  "launch_group_cells": 1115,
+  "count calibration: slope of observed on predicted (1 = calibrated)": 0.536,
+  "count correlation": 0.591,
+  "observed / predicted total": 0.809,
+  "group-mix total variation (launches with >= 10 observed voters) [mean, 95% launch bootstrap]": {
+   "expected-voters model": [
+    0.185,
+    0.156,
+    0.219
+   ],
+   "base mix": [
+    0.24,
+    0.216,
+    0.266
+   ],
+   "model minus base (paired)": [
+    -0.054,
+    -0.075,
+    -0.032
+   ]
+  }
+ },
+ "label": "Expected voters by group: the CF-only voter model's per-person probabilities (people we track; reads before 00:00 PT), recalibrated on 5 earlier scored days (isotonic reliability curve; tail factor 1.24 for voters outside each 2,000-person list), summed by data-driven group (segments cut 2026-11-15). 'Expected votes on PH' multiplies by 2.7 displayed votes per tracked voter (history median; approximate). Leave-one-day-out check: observed/predicted 0.809, group-count correlation 0.591; group mix vs base mix [-0.054, -0.075, -0.032] (negative = better than base)."
+}

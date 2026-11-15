@@ -10,7 +10,7 @@ import numpy as np, pandas as pd
 DOC = __doc__; HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = open(os.path.join(HERE, "backer_arms.py")).read(); exec(SRC[:SRC.index("def day_cols(")])
 EW = open(os.path.join(HERE, "explain_writer.py")).read(); exec(EW[EW.index("SEG = ["):EW.index("WHO, COV = {}, {}")])
-MIN, K = 20, 12; TOPN = list(g["TOP"]); D = TDAYS[0]
+MIN, K = 20, int(os.environ.get("PANEL_K", 24)); TOPN = list(g["TOP"]); D = TDAYS[0]
 PJ = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "headline", "bio"]).drop_duplicates("person_id")
 seg = dict(zip(PJ.person_id, (PJ.headline.fillna("") + " " + PJ.bio.fillna("")).map(seg_of)))
 import segments_lib; SEGL, SEGP = segments_lib.load(os.environ.get("SEG_SP"))   # data-driven segments override the keyword roles

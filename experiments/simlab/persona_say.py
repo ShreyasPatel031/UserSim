@@ -48,14 +48,14 @@ ids = [i for i in line if (cards.get(i) or {}).get("personas")][:LIM]
 with cf.ThreadPoolExecutor(6) as ex: OUT = dict(ex.map(one, ids))
 usd = round(llm.USAGE["in"] / 1e6 * 0.30 + llm.USAGE["out"] / 1e6 * 2.50, 4)
 open(os.path.join(HERE, "spend.jsonl"), "a").write(json.dumps({"t": f"persona_say_{D}", "provider": "gcp", "usd": usd, "note": f"{len(ids)} Gemini 2.5 Flash calls, tokens in {llm.USAGE['in']} out {llm.USAGE['out']}"}) + "\n")
-LABEL = ("persona panel: Gemini 2.5 Flash speaking as aggregated groups (each >= 20 held people of one data-driven segment: clusters of real "
-         "users by what they upvote, split by how they engage; profiles and calibration in results/web/segments/latest.json) from this launch's likely "
-         "backers (team past backers when >= 20, else the CF-only top 200), given only the launch's 00:05 text. Simulated, not real comments. "
-         "Validated on 279 past launches (real PH comments, judged recall/precision of points raised): 12-group panel recall 54.1% "
-         "[51.5, 56.7] vs 38.9% for the site's plain simulation (paired +15.4 [12.5, 18.3]), precision 47.6% (paired +4.3 [0.7, 8.1]). Directly paired vs the best earlier simulation (retrieval-grounded) on the same 279: recall +6.0 "
-         "[3.3, 8.8], real complaints caught 23.4% vs 17.4% (+6.0 [2.7, 9.2]), precision -2.7 [-6.6, 1.2]. Predictive value for rank (4,540 launches, Apr-Oct 2026): the panel's interest does not predict where a "
-         "launch lands beyond the rank model (within-day Spearman with the model's residual -0.01 [-0.05, 0.02]; with votes alone 0.04 "
-         "[0.01, 0.08]); read it as an explanation of likely reactions, not a forecast")
+LABEL = ("persona panel: Gemini 2.5 Flash speaking as up to 24 groups of this launch's likely voters (team's earlier voters when >= 20, else the "
+         "CF-only top 200), each >= 20 real people of one data-driven segment (kind of user: activity, making, followers, curation, links, comments, "
+         "taste; k chosen by held-out fit; profiles in results/web/segments/latest.json), grounded in what that segment says in its own past comments "
+         "(paraphrased). Given only the launch's 00:05 text. Simulated, not real comments. Validated on 276 past launches against real PH comments "
+         "(segments fit before every launch): recall of points raised 64.8% [62.2, 67.3] vs 54.3% for the previous 12-persona panel (paired +10.5 "
+         "[8.1, 12.9]), precision +5.6 [1.6, 9.7], real complaints caught 23.7% (unchanged, +0.2 [-3.0, 3.3]). Panel interest does not predict "
+         "rank beyond the rank model (within-day Spearman with its residual -0.01 [-0.05, 0.02]); read it as likely reactions, not a forecast")
+
 p = os.path.join(SP, "explain", f"{D}.json")
 J = json.loads(gcat(f"{B}/results/web/explain/{D}.json") or open(p).read())
 for lid, v in OUT.items():
