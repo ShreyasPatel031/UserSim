@@ -1,6 +1,6 @@
 {
- "computed_at": "2026-11-15T02:41:28.352209+00:00",
- "e5_rows": "merged 1 rows (computed_at 2026-11-14T23:48:12.112890+00:00)",
+ "computed_at": "2026-11-15T21:27:34.151303+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-15T11:31:05.419142+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [
   {
@@ -381,7 +381,7 @@
    "n_days": null,
    "producer": "E5",
    "merged_from": "results/web/north_star_rows_e5.json",
-   "merged_computed_at": "2026-11-14T23:48:12.112890+00:00"
+   "merged_computed_at": "2026-11-15T11:31:05.419142+00:00"
   }
  ]
 }
