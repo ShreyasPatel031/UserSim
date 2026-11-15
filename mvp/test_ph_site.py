@@ -829,3 +829,18 @@ def test_explain_who_actually_and_block_labels(monkeypatch):
     assert wa["segments"] == [{"segment": "developers", "n_held_backers": 65}] and wa["observed_over_displayed"] == 0.711
     assert "accuracy_label" not in wa and e["labels"]["who_actually"]["text"].startswith("observed")
     assert e["labels"]["competitors"]["predictive_value"] == "descriptive"
+
+
+def test_live_aggregate_includes_today_in_progress(monkeypatch):
+    from mvp.ph_site import live
+    tr = {"days": [{"day": "2026-11-14", "prediction": "00:05 PT", "flag": "live", "status": "scored",
+                    "hits_top3": 2, "hits_top5": 4, "hits_top10": 6, "fallback_used": "fb"}]}
+    monkeypatch.setattr(live.gcs, "read_json", lambda *a, **k: tr)
+    ids = [f"p{i}" for i in range(12)]
+    view = {"day": "2026-11-15", "today": "2026-11-15", "status": {"final": False},
+            "launches": [{"id": x, "board_rank": i + 1} for i, x in enumerate(ids)],
+            "points": [{"key": "0005", "ranks": {x: i + 1 for i, x in enumerate(ids)}}]}
+    row = live.live_aggregate(view)["mid"]
+    assert row["days"] == 2 and row["in_progress"] is True
+    assert row["hits"] == {"top3": [5, 6], "top5": [9, 10], "top10": [16, 20]}
+    assert row["per_day"][0]["fallback"] == "fb" and row["per_day"][1]["final"] is False

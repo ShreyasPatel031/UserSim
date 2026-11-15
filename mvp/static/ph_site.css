@@ -491,3 +491,5 @@ details.fx .rv { font-style: normal; font-size: 12px; color: var(--soft); margin
 
 /* v24 */
 .persona .seg small { font-weight: 400; color: var(--soft); }
+
+.persona ul.pcl { margin: 2px 0 8px 18px; padding: 0; font-size: 13.5px; line-height: 1.45; } .persona ul.pcl li + li { margin-top: 3px; } .persona p.pc + ul.pcl { margin-top: 0; } .persona p.pc:has(+ ul.pcl) { margin-bottom: 2px; }

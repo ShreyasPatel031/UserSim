@@ -678,7 +678,7 @@ def _explain_clean(v, depth=0):  # noqa: C901
         t = _ex_text(v, 320)
         return None if not t or re.search(r"(^|\s)@\w", t) or t.lower().startswith(("not available", "n/a")) else t
     if isinstance(v, list):
-        out = [x for x in (_explain_clean(i, depth + 1) for i in v[:12]) if x not in (None, {}, [])]
+        out = [x for x in (_explain_clean(i, depth + 1) for i in v[:30]) if x not in (None, {}, [])]
         return out or None
     if isinstance(v, dict):
         for nk in ("n_people", "n_held_people_scored", "n_held_backers"):
@@ -1061,3 +1061,40 @@ def monthly() -> dict | None:
     top = [{"id": i, "rank": n, "name": lookup.get(i, {}).get("name") or pretty(slugs.get(i)),
             "slug": lookup.get(i, {}).get("slug") or slugs.get(i)} for n, i in enumerate(ids, 1)]
     return {"month": month, "as_of_day": day, "written_at": j.get("written_at"), "top": top}
+
+
+_LIVE_PRED = {"mid": ("00:05 PT", "0005"), "pre": ("03:45 PT", "PRE")}
+
+
+def live_aggregate(view: dict) -> dict:
+    """The 'live' accuracy row: every published live day so far, today included while it runs (scored on the current
+    board, replaced by the official result once the day is settled). Settled days come from E5's track record
+    (official rank <= k, >= 10 ranked, unranked picks are misses); today's hits use the same rule on the live board."""
+    t = gcs.read_json("tmp/e5/website/track_record_v1.json", ttl=1800) or {}
+    day, today = view.get("day"), view.get("today") or today_pt()
+    board = {x["id"]: {"rank": x.get("board_rank")} for x in view.get("launches") or [] if x.get("board_rank")}
+    out = {}
+    for tab, (pred, key) in _LIVE_PRED.items():
+        per = {}
+        for r in t.get("days") or []:
+            if r.get("flag") == "live" and r.get("prediction") == pred and r.get("status") == "scored" \
+                    and all(isinstance(r.get(f"hits_top{k}"), int) for k in (3, 5, 10)):
+                per[r["day"]] = {"day": r["day"], "h": [r["hits_top3"], r["hits_top5"], r["hits_top10"]],
+                                 "final": True, "fallback": r.get("fallback_used") or None}
+        p = next((x for x in view.get("points") or [] if x.get("key") == key), None)
+        if day == today and day not in per and p and p.get("ranks") and len(board) >= 10:
+            h = [hits(p["ranks"], board, k) for k in (3, 5, 10)]
+            if None not in h:
+                fin = bool((view.get("status") or {}).get("final"))
+                per[day] = {"day": day, "h": h, "final": fin, "fallback": p.get("fallback") or None}
+        if not per:
+            continue
+        days = [per[d] for d in sorted(per)]
+        n = len(days)
+        tot = [sum(x["h"][i] for x in days) for i in range(3)]
+        out[tab] = {"flag": "live", "days": n, "first_day": days[0]["day"], "last_day": days[-1]["day"],
+                    "in_progress": any(not x["final"] for x in days),
+                    "hits": {f"top{k}": [tot[i], k * n] for i, k in enumerate((3, 5, 10))},
+                    "top3": round(100 * tot[0] / (3 * n), 1), "top5": round(100 * tot[1] / (5 * n), 1),
+                    "top10": round(100 * tot[2] / (10 * n), 1), "per_day": days}
+    return out
