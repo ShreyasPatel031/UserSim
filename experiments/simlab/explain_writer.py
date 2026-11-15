@@ -229,7 +229,7 @@ except Exception as e:
 # ---------------- why ----------------
 NS = json.loads(gcat(f"{B}/results/web/north_star_table.json") or "{}")
 rv = next((r for r in NS.get("rows", []) if r.get("model") == "readable_v2"), None)
-WHY_LABEL = {"model": "readable explanation model (readable v2 stumps), not the published 00:05 model",
+WHY_LABEL = {"model": "a simpler readable model, not the one used; it over-weights pre-launch coverage and pitch score (readable v2 stumps; audit: its #1 driver is outside the published model's top 3 for 14% of launches, 184 days 2026)",
              "predictive_value": (f"{rv['top3']} / {rv['top5']} / {rv['top10']} top 3 / 5 / 10 on {rv['n_days']} backtest days ({rv['rule']})" if rv else NA),
              "fidelity": NA + " (agreement between these drivers and the published model's order has not been re-measured for the current published model)"}
 # input definitions (from PH ops' code: readable_shadow.py X10, features.py, model.py, history_retrain.py, llm.py, promo_features.py)
@@ -273,6 +273,38 @@ for i in ids:
     WHYB[i] = {"top_drivers": [_drv(k) for k in (f.get("top_inputs") or [])[:3]], "rank_in_explanation_model": f.get("rank_explanation_model"),
                "all_inputs": [_drv(DEF[k][0] if False else (RD.get("labels") or {}).get(k, k)) for k in DEF]}
 
+# ---------------- why from the PUBLISHED model (orchestrator 00:07Z Nov 15): arm-2 TreeSHAP when results/shadow_arm2_shap/<d>.json exists ----
+SHN = {"hunter record": ("hunter's track record and reach", "how the hunter's earlier launches did (relative votes, top-5 rate, number of launches), the hunter's account age and followers"),
+       "pitch": ("Gemini pitch score", "Gemini's estimated chance (0-100 %) that the launch finishes in the day's top 5, judged from the pitch only (name, tagline, description, topics)"),
+       "brand": ("brand recognition (Gemini)", "Gemini's 0-3 rating of how well known the company or brand already was before this launch"),
+       "topic": ("topic", "how launches in this launch's topics did relative to their day (prior), number of topics, topic flags such as AI / developer tools"),
+       "competition": ("similar earlier launches", "how similar earlier launches (nearest neighbours by text) did: their mean and best results and the similarity"),
+       "media": ("media on the page", "number of images and videos, and whether there is a video (count and its rank within the day)"),
+       "team size": ("team size", "number of makers listed (and its rank within the day); 0 means Product Hunt shows no makers"),
+       "promotion": ("pre-launch promotion and coverage", "posts and coverage about the launch dated before launch day (Gemini + Google Search read), and whether the company has an X account"),
+       "text": ("text", "a word-based model of the name, tagline and description trained on past launches, plus the length of the name, tagline and description"),
+       "day/lineup": ("day and line-up context", "inputs about the day itself (number of launches, weekday, how busy the past week was); mostly the same for every launch of the day")}
+SHF = os.environ.get("SHAP_FILE")
+SH = json.load(open(SHF)) if SHF and os.path.exists(SHF) else json.loads(gcat(f"{B}/results/shadow_arm2_shap/{DAY}.json") or "{}")
+if SH.get("launches"):
+    gm = SH.get("group_map", {}); AC = next((r for r in NS.get("rows", []) if r.get("model") == "arm2" and "5 seeds" in r.get("method", "")), None)
+    for i in ids:
+        L_ = SH["launches"].get(i)
+        if not L_: WHYB[i] = {"status": NA, "reason": "launch not in the published model's explanation file"}; continue
+        gc = L_.get("groups_centred", {}); vals = L_.get("values", {})
+        ranked = [g for g in sorted(gc, key=lambda g: -abs(gc[g])) if g != "day/lineup"]
+        def gdrv(g):
+            nm, df_ = SHN.get(g, (g, NA))
+            raw = {c: vals.get(c) for c, gg in gm.items() if gg == g}
+            if g == "team size" and raw.get("ph_n_makers") == 0: raw["ph_n_makers"] = "0: makers not shown by Product Hunt"
+            return {"input": nm, "points": gc.get(g), "direction": "raises" if (gc.get(g) or 0) > 0 else "lowers", "raw_values": raw, "definition": df_}
+        WHYB[i] = {"top_drivers": [gdrv(g) for g in ranked[:3]], "all_groups": [gdrv(g) for g in ranked],
+                   "day_context": {"points": gc.get("day/lineup"), "definition": SHN["day/lineup"][1], "note": "shown once per day; it cannot explain the order within the day"},
+                   "rank_in_published_model": L_.get("rank_arm2"), "concentrated": L_.get("concentrated")}
+    WHY_LABEL = {"model": "the published 00:05 model itself (arm 2): its own TreeSHAP contributions, 5 seeds, grouped into named inputs and centred on the day's mean",
+                 "predictive_value": (f"{AC['top3']} / {AC['top5']} / {AC['top10']} top 3 / 5 / 10 on {AC['n_days']} backtest days ({AC['rule']})" if AC else NA),
+                 "fidelity": f"exact: the contributions add up to the model's prediction (check: max |sum - prediction| = {SH.get('checks', {}).get('max |sum(shap) - seed-mean pred|')})",
+                 "unit": SH.get("unit"), "source": f"results/shadow_arm2_shap/{DAY}.json"}
 names = {str(p["id"]): p.get("name") for p in line}
 def lab_text(L): return "; ".join(f"{k}: {v}" for k, v in L.items()) if isinstance(L, dict) else str(L)
 def with_label(b, L):   # the website reads each block's "accuracy_label" (orchestrator 22:04Z)
