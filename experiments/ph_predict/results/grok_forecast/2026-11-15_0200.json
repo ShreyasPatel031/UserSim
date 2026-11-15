@@ -1,0 +1,97 @@
+{
+  "day": "2026-11-15",
+  "point": "0200",
+  "written_at": "2026-11-15T10:10:32Z",
+  "window_start": "2026-11-13T08:00:00Z",
+  "window_end": "2026-11-15T10:00:00Z",
+  "inputs": {
+    "lineup": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/daily/2026-11-15/today_0005.json",
+    "lineup_fields_used": [
+      "name",
+      "tagline",
+      "slug",
+      "website",
+      "makers.twitterUsername",
+      "user.twitterUsername"
+    ],
+    "x_buzz_0010": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_at_launch/2026-11-15/x_buzz_0010.jsonl",
+    "x_buzz_0200": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_at_launch/2026-11-15/x_buzz_0200.jsonl",
+    "x_search_window_delta": {
+      "start": "2026-11-15T08:21:07Z",
+      "end": "2026-11-15T10:00:00Z"
+    },
+    "x_reads_used_this_run": 15,
+    "x_label": "Samples capped at 25 results (X's own limit) are lower bounds",
+    "excluded": [
+      "dailyRank",
+      "weeklyRank",
+      "monthlyRank",
+      "votesCount",
+      "commentsCount",
+      "any other Product Hunt rank or vote field",
+      "Product Hunt web pages"
+    ]
+  },
+  "forecast": [
+    {
+      "rank": 1,
+      "name": "Rakazo",
+      "slug": "rakazo-2",
+      "reason": "Launch-morning surge: 25+ new congratulation/support posts from 11+ accounts (lower bound at X's 25-result cap, 118 likes+reposts) on top of 44 pre-launch posts and a maker post."
+    },
+    {
+      "rank": 2,
+      "name": "ByteAsk Cloud Agents",
+      "slug": "byteask-cloud-agents",
+      "reason": "Heaviest pre-launch X conversation (149 posts in 48h, incl. a 69k-follower account); no new launch-morning posts through 02:00 PT, so it slips just behind Rakazo."
+    },
+    {
+      "rank": 3,
+      "name": "Tulvo",
+      "slug": "tulvo",
+      "reason": "Only sustained maker pre-announce (9 countdown posts) plus 6 new live/reminder posts from 4 accounts after 00:21 PT, including a 'LIVE' announcement."
+    },
+    {
+      "rank": 4,
+      "name": "Frevana Multiplayer",
+      "slug": "frevana-multiplayer",
+      "reason": "New since 00:21 PT: an automated Product Hunt share and an excited reply (2 posts); larger replier account (~28k followers) but little else."
+    },
+    {
+      "rank": 5,
+      "name": "Remindly",
+      "slug": "remindly-6",
+      "reason": "One official launch announcement earlier; no new posts since; modest signal."
+    },
+    {
+      "rank": 6,
+      "name": "Talyn",
+      "slug": "talyn-2",
+      "reason": "One tiny-account launch post; lineup text (parallel Claude Code/Codex sandboxes) fits a hot AI-dev-tools topic."
+    },
+    {
+      "rank": 7,
+      "name": "Perit Marketplace",
+      "slug": "perit-marketplace",
+      "reason": "No X posts; ranked from lineup text (data/RL tasks for AI labs) and a notable hunter handle."
+    },
+    {
+      "rank": 8,
+      "name": "Polylane for Security",
+      "slug": "polylane-for-security",
+      "reason": "No X posts; lineup text only (security tooling has broad appeal)."
+    },
+    {
+      "rank": 9,
+      "name": "Spiik",
+      "slug": "spiik",
+      "reason": "No X posts; lineup text only (no-bot AI meeting notes)."
+    },
+    {
+      "rank": 10,
+      "name": "Canvas by AgentGrid.io",
+      "slug": "canvas-by-agentgrid-io",
+      "reason": "No X posts; lineup text only (AI design canvas)."
+    }
+  ]
+}

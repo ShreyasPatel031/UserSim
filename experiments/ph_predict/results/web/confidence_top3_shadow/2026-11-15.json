@@ -1,0 +1,35 @@
+{
+ "day": "2026-11-15",
+ "applies_to": "published 00:05 order",
+ "base": "pred_arm2",
+ "launches": 15,
+ "expected_right": 1.86,
+ "tier": "normal",
+ "tier_accuracy_backtest": {
+  "open": 53.8,
+  "normal": 62.8,
+  "sure": 67.8
+ },
+ "note": "shadow; per-pick probability that the pick finishes top 3, calibrated month-forward on 184 backtest days (May-Oct); not on the website until ~30 live days",
+ "picks": [
+  {
+   "pick": 1,
+   "id": "1307742",
+   "p_top3": 0.701,
+   "about_n_in_10": 7
+  },
+  {
+   "pick": 2,
+   "id": "1310949",
+   "p_top3": 0.631,
+   "about_n_in_10": 6
+  },
+  {
+   "pick": 3,
+   "id": "1317198",
+   "p_top3": 0.528,
+   "about_n_in_10": 5
+  }
+ ],
+ "written_at": "2026-11-15T12:32:48.340069+00:00"
+}
