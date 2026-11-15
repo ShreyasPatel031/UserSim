@@ -223,9 +223,18 @@ def check():
     pn2 = now.astimezone(PT)
     if (pn2.hour, pn2.minute) >= (1, 30):
         yd = (pn2.date() - dt.timedelta(days=1)).isoformat()
-        rr_ = launch_rereads()
-        st_, w_, due_ = launch_reread_status(yd, rr_)
-        cov = reread_coverage(yd, rr_[yd][2]) if yd in rr_ else {}
+        import os as _os
+        okf = _os.path.expanduser("~/.cache/freshness_launch_reread_ok.txt")  # days already verified on time + covered
+        done = set(open(okf).read().split()) if _os.path.exists(okf) else set()
+        if yd in done:
+            st_, cov = "on_time", {}
+        else:
+            rr_ = launch_rereads()
+            st_, w_, due_ = launch_reread_status(yd, rr_)
+            cov = reread_coverage(yd, rr_[yd][2]) if yd in rr_ else {}
+            if st_ == "on_time" and not cov:
+                _os.makedirs(_os.path.dirname(okf), exist_ok=True)
+                open(okf, "a").write(yd + "\n")
         if st_ != "on_time" or cov:
             row = {"feed": "launch_reread", "day_pt": yd, "status": st_, "due_utc": due_.astimezone(UTC).isoformat(),
                    "written_utc": w_.isoformat() if w_ else None, "coverage_problems": cov or None}
