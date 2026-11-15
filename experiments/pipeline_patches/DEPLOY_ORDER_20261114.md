@@ -42,7 +42,7 @@ NEXT BUNDLE MANIFEST ADDITIONS (not deployed; to be built as a new named bundle)
   caused the Nov 14 00:05 arm-2 fallback. It was added by hand at 09:02Z Nov 14, and no manifest tracks it yet. The bundle's
   deploy check should md5-verify it and import-gate h25_live.
 - ph_n_makers drop: CLOSED, NOT ADOPTED (orchestrator 23:34Z Nov 14: worse beyond noise on 4 of 6 cells; the deployed input set is kept).
-- NEXT BUNDLE BUILT, NOT DEPLOYED: pipeline_patches/20261115_next_bundle, staged on the VM at ~/w/stage/20261115_next_bundle
-  (deploy_nb.sh 5e04d231; check passed). It carries ctrl.py b47fc28f -> ~/w/arm2_live and readable_shadow.py 2851a666 -> ~/w/tw/h25
+- NEXT BUNDLE BUILT, NOT DEPLOYED (now also the llm-link fix for arm 2: `deploy_nb.sh deploy_h25` installs only that, before 23:30 PT; see ph_predict/audit_nullinputs/README.md): pipeline_patches/20261115_next_bundle, staged on the VM at ~/w/stage/20261115_next_bundle
+  (deploy_nb.sh 6de06617; check passed). It carries ctrl.py b47fc28f -> ~/w/arm2_live and readable_shadow.py 2851a666 -> ~/w/tw/h25
   (per-launch "values" = raw X10 inputs for the site's "why"; ph_n_makers == 0 treated as missing), and arm2_shap.py 92f9e80d -> ~/w/tw/experiments/ph_predict (arm 2 TreeSHAP, groups and per-input centred, + raw input values; run nightly by 12.8's why_drivers job). Run it after step 6: `bash ~/w/stage/20261115_next_bundle/deploy_nb.sh deploy`;
   rollback with `… rollback`. Deploys only on Shreyas's word.
