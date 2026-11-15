@@ -56,7 +56,7 @@ def main():
         health = {}
     lb = (health.get("checks") or {}).get("live_board") or {}
     lr = (health.get("checks") or {}).get("live_record") or {}
-    alive = sum(1 for s in fleet.get("slots_summary") or [] if s.get("state") != "dead")
+    alive = sum(1 for s in fleet.get("slots_summary") or [] if s.get("state") not in ("dead", "stale"))
     wk = next((v for k, v in vc.items() if k.endswith("2026-11-14") and k.startswith("2026-11-08")), {}) or \
         next((v for k, v in vc.items() if ".." in k and k.startswith("2026-11-0")), {})
     octw = vc.get("2026-10-01..2026-10-24", {})

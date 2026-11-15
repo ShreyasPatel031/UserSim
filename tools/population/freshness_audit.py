@@ -185,8 +185,8 @@ def check():
         fs = json.loads(sh("gsutil", "cat", f"{G}/mailbox/from_cursor/status.json"))
         fu = ts(fs.get("utc"))
         slots = fs.get("slots_summary") or []
-        dead = [s.get("slot") for s in slots if s.get("state") == "dead"]
-        alive = sum(1 for s in slots if s.get("state") != "dead")
+        dead = [s.get("slot") for s in slots if s.get("state") in ("dead", "stale")]  # stale = no recent progress (Nov 15)
+        alive = sum(1 for s in slots if s.get("state") not in ("dead", "stale"))
         if not fu or (now - fu).total_seconds() / 60 > 20 or alive < 20 or dead:
             out.append({"feed": "fleet_status", "last_good": fu.isoformat() if fu else None,
                         "gap_min": round((now - fu).total_seconds() / 60, 1) if fu else None, "limit_min": 20,
