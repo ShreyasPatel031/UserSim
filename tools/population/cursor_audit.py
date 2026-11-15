@@ -65,6 +65,12 @@ def main():
     st = lsl(f"{STAGE}/*.json")
     todo = sorted(n for n, t in st.items() if t >= START and f"{n}@{t}" not in done)
     print(f"STAGED_NEW={len(todo)}")
+    # 07:5xZ Nov 15: cap one run's batch (oldest saves first) so the cycle finishes inside its time limit at 18 VMs; the
+    # rest stay un-audited and are taken by the next run (nothing is dropped)
+    cap = int(os.environ.get("CURSOR_AUDIT_MAX", "0") or 0)
+    if cap and len(todo) > cap:
+        todo = sorted(todo, key=lambda n: st[n])[:cap]
+        print(f"CAPPED to {cap} oldest; the rest go to the next run", flush=True)
     if not todo:
         return
     D = f"{W}/cursor_audit"
