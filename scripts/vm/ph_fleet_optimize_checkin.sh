@@ -169,6 +169,10 @@ if [[ "$incomplete" -gt 0 ]]; then
 fi
 relay_msg+=" zero_incomplete=UNVERIFIED. Request Population repair_list recheck loop."
 "$ROOT/scripts/vm/ph_fleet_agent_relay.sh" population fleet-cursor "$relay_msg" >>"$LOG" 2>&1 || true
+act_n="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('active_vms',0))" 2>/dev/null || echo 0)"
+stale_n="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('stale_vms',0))" 2>/dev/null || echo 0)"
+orch_short="fleet-cursor run=$RUN_ID complete_ppm=$ppm attempt_ppm=$attempt_ppm active_slots=$act_n stale=$stale_n vms=$n. 15m window: active=person status row within 10m (not VM up). status=gs://${MVP_GCS_BUCKET}/usersim_sim/mailbox/from_cursor/status.json stall=gs://${MVP_GCS_BUCKET}/usersim_sim/mailbox/from_cursor/stall_20261115.status.md"
+"$ROOT/scripts/vm/ph_fleet_agent_relay.sh" orchestrator fleet-cursor "$orch_short" >>"$LOG" 2>&1 || true
 short_all="fleet-cursor check-in run=$RUN_ID complete_ppm=$ppm vms=$n. status=gs://${MVP_GCS_BUCKET}/usersim_sim/mailbox/from_cursor/status.json (15m). Reply mailbox=usersim_sim/mailbox/from_cursor/."
 "$ROOT/scripts/vm/ph_fleet_agent_relay.sh" all fleet-cursor "$short_all" >>"$LOG" 2>&1 || true
 chmod +x "$ROOT/scripts/vm/ph_fleet_cursor_mailbox_status.sh" 2>/dev/null || true
