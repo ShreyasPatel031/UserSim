@@ -52,7 +52,9 @@ LABEL = ("persona panel: Gemini 2.5 Flash speaking as aggregated groups (each >=
          "backers (team past backers when >= 20, else the CF-only top 200), given only the launch's 00:05 text. Simulated, not real comments. "
          "Validated on 279 past launches (real PH comments, judged recall/precision of points raised): 12-group panel recall 54.1% "
          "[51.5, 56.7] vs 38.9% for the site's plain simulation (paired +15.4 [12.5, 18.3]), precision 47.6% (paired +4.3 [0.7, 8.1]). Directly paired vs the best earlier simulation (retrieval-grounded) on the same 279: recall +6.0 "
-         "[3.3, 8.8], real complaints caught 23.4% vs 17.4% (+6.0 [2.7, 9.2]), precision -2.7 [-6.6, 1.2]")
+         "[3.3, 8.8], real complaints caught 23.4% vs 17.4% (+6.0 [2.7, 9.2]), precision -2.7 [-6.6, 1.2]. Predictive value for rank (4,540 launches, Apr-Oct 2026): the panel's interest does not predict where a "
+         "launch lands beyond the rank model (within-day Spearman with the model's residual -0.01 [-0.05, 0.02]; with votes alone 0.04 "
+         "[0.01, 0.08]); read it as an explanation of likely reactions, not a forecast")
 p = os.path.join(SP, "explain", f"{D}.json")
 J = json.loads(gcat(f"{B}/results/web/explain/{D}.json") or open(p).read())
 for lid, v in OUT.items():

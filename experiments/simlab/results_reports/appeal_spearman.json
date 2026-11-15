@@ -1,0 +1,23 @@
+{
+ "days": 210,
+ "launches with appeal (test)": 4540,
+ "launches (test)": 5034,
+ "spearman appeal_mean vs arm2 residual (mean over days) [95% day bootstrap, n days]": [
+  -0.014,
+  -0.051,
+  0.024,
+  210
+ ],
+ "spearman appeal_mean vs logv (raw, for scale)": [
+  0.044,
+  0.006,
+  0.082,
+  210
+ ],
+ "spearman appeal_high vs arm2 residual": [
+  -0.016,
+  -0.052,
+  0.019,
+  210
+ ]
+}

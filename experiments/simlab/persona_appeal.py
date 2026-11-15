@@ -11,7 +11,8 @@ sys.path.insert(0, os.path.join(SP, "phops", "experiments", "ph_predict")); impo
 import persona_prompt as pm  # noqa: E402
 cards = json.load(open(CARDS)); smp = json.load(open(SMP))
 done = {json.loads(l)["slug"] for l in open(OUT)} if os.path.exists(OUT) else set()
-prev_usd = sum(json.loads(l).get("usd", 0) for l in open(OUT)) if os.path.exists(OUT) else 0.0
+SPF = OUT + ".spend.json"   # cumulative spend from the process-wide token counter (per-record deltas overlap across threads, so not used)
+prev_usd = json.load(open(SPF))["usd"] if os.path.exists(SPF) else 0.0
 lock = threading.Lock(); f = open(OUT, "a"); IV = {"high": 2, "medium": 1, "low": 0}
 usd = lambda: prev_usd + llm.USAGE["in"] / 1e6 * 0.30 + llm.USAGE["out"] / 1e6 * 2.50
 def one(x):
@@ -19,19 +20,18 @@ def one(x):
     P_ = (cards.get(x["slug"]) or {}).get("personas") or []
     if not P_: return None
     tp = json.loads(x["topics"]) if isinstance(x["topics"], str) and x["topics"].startswith("[") else []
-    i0, o0 = llm.USAGE["in"], llm.USAGE["out"]
     txt = llm.gemini_call(pm.PROMPT.format(name=x["name"], tagline=x["tagline"] or "", desc=(x["description"] or "")[:1200], topics=", ".join(tp),
                                            groups="\n".join(pm.gtxt(i, g) for i, g in enumerate(P_))), 3000)
     try: R = [r for r in json.loads(txt)["reactions"] if isinstance(r, dict)]
     except Exception: R = []
     iv = [IV[r.get("interest")] for r in R if r.get("interest") in IV]
     rec = {"slug": x["slug"], "id": x["id"], "day": x["day"], "n_personas": len(P_), "n_parsed": len(iv),
-           "appeal_high": (sum(v == 2 for v in iv) / len(iv)) if iv else None, "appeal_mean": (sum(iv) / len(iv)) if iv else None,
-           "usd": round((llm.USAGE["in"] - i0) / 1e6 * 0.30 + (llm.USAGE["out"] - o0) / 1e6 * 2.50, 6)}
-    with lock: f.write(json.dumps(rec) + "\n"); f.flush()
+           "appeal_high": (sum(v == 2 for v in iv) / len(iv)) if iv else None, "appeal_mean": (sum(iv) / len(iv)) if iv else None}
+    with lock:
+        f.write(json.dumps(rec) + "\n"); f.flush(); json.dump({"usd": round(usd(), 4), "tokens": llm.USAGE}, open(SPF, "w"))
     return "ok"
 todo = [x for x in smp if x["slug"] not in done]
-with cf.ThreadPoolExecutor(8) as ex: st = list(ex.map(one, todo))
+with cf.ThreadPoolExecutor(40) as ex: st = list(ex.map(one, todo))
 total = round(usd(), 3)
 open(os.path.join(HERE, "spend.jsonl"), "a").write(json.dumps({"t": "persona_appeal", "provider": "gcp", "usd": round(total - prev_usd, 3),
     "note": f"{st.count('ok')} Gemini 2.5 Flash calls (appeal backfill 2026-01..10), tokens in {llm.USAGE['in']} out {llm.USAGE['out']}"}) + "\n")

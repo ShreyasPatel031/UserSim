@@ -16,3 +16,6 @@
 {"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0028, "note": "2 Gemini 2.5 Flash calls, tokens in 1050 out 990"}
 {"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0562, "note": "26 Gemini 2.5 Flash calls, tokens in 19974 out 20078"}
 {"t": "persona_retrieval_eval", "provider": "gcp", "usd": 1.842, "note": "PERSONA12R gens + judges + complaint judges, 279 launches"}
+{"t": "persona_appeal_run1", "provider": "gcp", "usd": 2.80, "note": "849 Gemini 2.5 Flash calls (estimated at measured $0.0033/call; process killed at time limit before logging)"}
+{"t": "persona_appeal_run2", "provider": "gcp", "usd": 0.18, "note": "54 Gemini 2.5 Flash calls, measured tokens (stopped to raise concurrency)"}
+{"t": "persona_appeal", "provider": "gcp", "usd": 17.166, "note": "5078 Gemini 2.5 Flash calls (appeal backfill 2026-01..10), tokens in 5596098 out 6194772"}
