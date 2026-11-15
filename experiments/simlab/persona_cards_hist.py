@@ -28,6 +28,40 @@ by_member = {}
 for i, d, t in zip(W.id, W.day, W.team):
     for u in t: by_member.setdefault(u, []).append((d, i))
 voters = U.groupby("target_id").person_id.agg(set).to_dict()
+SPEC = bool(os.environ.get("SPECTRUM"))
+LEAF = [l for l, v in SEGP.items() if "subgroup_size" in v] + [l for l, v in SEGP.items() if "subgroup_size" not in v and not any(k.startswith(l + " / ") for k in SEGP)]
+MEM = {}
+for p_, l in seg.items(): MEM.setdefault(l, []).append(p_)
+RNG = np.random.default_rng(0)
+
+
+def interest(lift): return "high" if lift >= 1.5 else ("medium" if lift >= 0.67 else "low")
+
+
+def spectrum(D, people):
+    """One card per leaf unit. share = unit share of this launch's likely-voter pool; base_share = unit share of held upvotes in the 30 days
+    before D; lift = share / base_share; interest from lift (>= 1.5 high, >= 0.67 medium, else low). Card profile from the unit's members in
+    the pool when >= 20, else from 400 random members of the unit (upvotes in the 90 days before D)."""
+    d30 = (pd.Timestamp(D) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); d90 = (pd.Timestamp(D) - pd.Timedelta(days=90)).strftime("%Y-%m-%d")
+    base = U[(U.lday < D) & (U.lday >= d30)].person_id.map(seg); base = base[base.isin(set(LEAF))].value_counts(normalize=True)
+    mix = pd.Series([seg.get(p_) for p_ in people]); mix = mix[mix.isin(set(LEAF))].value_counts(normalize=True)
+    out = []
+    for l in LEAF:
+        sh, b = float(mix.get(l, 0.0)), float(base.get(l, 0.0)); lift = sh / b if b else 0.0
+        inpool = [p_ for p_ in people if seg.get(p_) == l]
+        c = inpool if len(inpool) >= MIN else list(RNG.choice(MEM.get(l, []), min(400, len(MEM.get(l, []))), replace=False))
+        g = U[U.person_id.isin(set(c)) & (U.lday < D) & (U.lday >= d90)]
+        tc = pd.Series([t for i in g.target_id for t in (ltops.get(i) or [])]).value_counts(normalize=True).head(4)
+        n30 = g[g.lday >= d30].groupby("person_id").size().reindex(c).fillna(0)
+        prods = g.groupby("target_id").person_id.nunique().sort_values(ascending=False).head(6)
+        out.append({"segment": l, "n_people": int(SEGP[l].get("subgroup_size") or SEGP[l].get("group_size")), "segment_profile": SEGP[l],
+                    "share_of_expected_voters": round(sh, 3), "base_share": round(b, 3), "lift": round(lift, 2), "interest": interest(lift),
+                    "median_upvotes_last_30_days": float(n30.median()) if len(n30) else 0.0,
+                    "topic_shares": [{"topic": t, "share": round(float(v), 3)} for t, v in tc.items()],
+                    "products_they_commonly_upvoted": [{"product": lname.get(t, "?"), "share_of_group": round(float(n / len(c)), 2)} for t, n in prods.items() if n >= 3]})
+    return sorted(out, key=lambda r: -r["lift"])
+
+
 cards = {}
 for x in json.load(open(SMP)):
     D, lid = x["day"], x["id"]; team = mk(x["makers"]) | ({str(x["poster"]).lower()} if x.get("poster") else set())
@@ -39,6 +73,8 @@ for x in json.load(open(SMP)):
         pool = set().union(*[voters.get(i, set()) for i in tl]) if tl else set(); src = "same-topic backers (30 days before)"
     people = sorted(pool)
     if len(people) < MIN: cards[x["slug"]] = {"status": "fewer than 20 people"}; continue
+    if SPEC:   # spectrum panel: one voice per leaf unit (every subgroup + groups without subgroups), sorted by lift
+        cards[x["slug"]] = {"source": src, "n_source_people": len(people), "personas": spectrum(D, people)}; continue
     sg = pd.Series([seg.get(p, segments_lib.INACTIVE if SEGL else "no headline or bio") for p in people]); big = sg.value_counts(); big = big[big >= MIN]
     if big.empty: cards[x["slug"]] = {"status": "no segment >= 20"}; continue
     THR = float(os.environ.get("PANEL_SHARE", 0))   # panel-size rule: one persona per segment holding >= THR of the likely voters

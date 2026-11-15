@@ -64,14 +64,14 @@ def fit(days):
     return iso, float(c), k_cov
 
 
-def base_share(day):
+def base_share(day, M=None):
     d30 = (pd.Timestamp(day) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); st = PP.close_utc(day) - pd.Timedelta(days=1)
-    b = U[(U.lday < day) & (U.lday >= d30) & (U.ft < st)].person_id.map(GRP).dropna().value_counts(normalize=True)
+    b = U[(U.lday < day) & (U.lday >= d30) & (U.ft < st)].person_id.map(M or GRP).dropna().value_counts(normalize=True)
     return b
 
 
-def group_table(F, iso, c, k_cov, bshare):
-    F = F.assign(g=F.person_id.map(GRP)).dropna(subset=["g"]); F["pc"] = iso.predict(F.p) * c
+def group_table(F, iso, c, k_cov, bshare, M=None):
+    F = F.assign(g=F.person_id.map(M or GRP)).dropna(subset=["g"]); F["pc"] = iso.predict(F.p) * c
     out = {}
     for lid, f in F.groupby("launch_id"):
         e = f.groupby(f.g).pc.sum(); tot = e.sum()
@@ -145,6 +145,10 @@ for lid, v in out.items():
         ppl = (POOLS.get(lid) or {}).get(k) or []
         gm[f"{k}_past_voters (people)"] = mix_rows(pd.Series([GRP.get(p_) for p_ in ppl]).dropna().astype(int).value_counts().to_dict()) if len(ppl) >= 20 else {"note": f"{len(ppl)} held people; fewer than 20, not shown"}
     v["group_mix"] = gm
+# leaf units (every subgroup + groups without subgroups) for the spectrum panel (spectrum_say.py): same recalibrated probabilities, summed by unit
+bsu = base_share(D, SUBU); TS = group_table(FD, iso, c, k_cov, bsu, SUBU)
+json.dump({"day": D, "k_cov": k_cov, "base_share": {k: float(v) for k, v in bsu.items()}, "launches": {l: t for l, t in TS.items()},
+           "validation_subgroup": VAL["subgroup-level check"]}, open(os.path.join(SP, "segments", f"expected_sub_{D}.json"), "w"), indent=1, default=float)
 json.dump({"day": D, "validation": VAL, "label": LABEL, "launches": out}, open(os.path.join(SP, "segments", f"expected_{D}.json"), "w"), indent=1, default=float)
 p = os.path.join(SP, "explain", f"{D}.json"); J = json.loads(gcat(f"{B}/results/web/explain/{D}.json") or (open(p).read() if os.path.exists(p) else "{}"))
 if J.get("launches"):
