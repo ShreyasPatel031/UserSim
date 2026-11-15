@@ -1,0 +1,576 @@
+{
+ "day": "2026-11-14",
+ "taste_groups": {
+  "AI business & growth crowd": {
+   "people": 1527,
+   "share_of_votes": 0.247
+  },
+  "Model & coding-tool developers": {
+   "people": 1701,
+   "share_of_votes": 0.233
+  },
+  "Occasional business-tool voters": {
+   "people": 1498,
+   "share_of_votes": 0.133
+  },
+  "Indie app & Mac utility fans": {
+   "people": 1715,
+   "share_of_votes": 0.317
+  },
+  "AI creative-tool crowd": {
+   "people": 891,
+   "share_of_votes": 0.07
+  }
+ },
+ "validation_knn_mix": {
+  "launches": 550,
+  "distance model": 0.235,
+  "distance typical-mix": 0.271,
+  "paired": [
+   -0.036,
+   -0.044,
+   -0.027
+  ]
+ },
+ "top10": [
+  {
+   "id": "1301510",
+   "rank": 1,
+   "name": "HiringNow",
+   "votes": 298,
+   "comments": 28,
+   "tagline": "AI job agent that finds & apply for jobs before anyone else.",
+   "kind": "AI Personal Assistants",
+   "mix": {
+    "AI business & growth crowd": 0.172,
+    "Model & coding-tool developers": 0.207,
+    "Occasional business-tool voters": 0.163,
+    "Indie app & Mac utility fans": 0.4,
+    "AI creative-tool crowd": 0.058
+   },
+   "lift": {
+    "AI business & growth crowd": 0.7,
+    "Model & coding-tool developers": 0.89,
+    "Occasional business-tool voters": 1.23,
+    "Indie app & Mac utility fans": 1.26,
+    "AI creative-tool crowd": 0.83
+   },
+   "similar_past_launches": [
+    "Hira",
+    "AINA",
+    "Jobmate AI",
+    "HireKey",
+    "Toby"
+   ],
+   "topics": [
+    "Productivity",
+    "Artificial Intelligence",
+    "Career"
+   ],
+   "team_earlier_launches": 2328,
+   "team_earlier_backers_tracked": 25069,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.01,
+    "Model & coding-tool developers": 1.01,
+    "Occasional business-tool voters": 1.0,
+    "Indie app & Mac utility fans": 1.0,
+    "AI creative-tool crowd": 0.98
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.01,
+    "founder": 1.01,
+    "marketer": 1.01,
+    "designer": 1.01,
+    "investor": 0.99,
+    "has launched a product": 1.01,
+    "veteran (5+ years)": 1.01
+   },
+   "real_comments_captured": 22,
+   "real_comment_themes": {
+    "id": "1301510",
+    "praise": "It's a much-needed product, especially for freshers, that helps job seekers find opportunities faster and before they hit major job boards. The idea of monitoring career pages and tailoring resumes is highly valued.",
+    "concerns_or_questions": "Commenters want to know if it filters by role, experience, work preference, and location. They also ask about career growth plans, the technical data collection process (ATS APIs vs. scraping), future roadmap features, how it maintains high match quality, how it differs from other tools, and if users can use their own API key. There's also a question about previewing tailored content before application.",
+    "tone": "Excited, curious, appreciative, hopeful"
+   }
+  },
+  {
+   "id": "1315068",
+   "rank": 2,
+   "name": "Businesses in ChatGPT",
+   "votes": 218,
+   "comments": 8,
+   "tagline": "Help customers discover your business through ChatGPT",
+   "kind": "AI Marketing & Growth",
+   "mix": {
+    "AI business & growth crowd": 0.169,
+    "Model & coding-tool developers": 0.288,
+    "Occasional business-tool voters": 0.157,
+    "Indie app & Mac utility fans": 0.345,
+    "AI creative-tool crowd": 0.041
+   },
+   "lift": {
+    "AI business & growth crowd": 0.68,
+    "Model & coding-tool developers": 1.24,
+    "Occasional business-tool voters": 1.18,
+    "Indie app & Mac utility fans": 1.09,
+    "AI creative-tool crowd": 0.58
+   },
+   "similar_past_launches": [
+    "ChatGPT Images 2.5",
+    "ChatGPT Work",
+    "Dots by OpenAI",
+    "Microsoft Copilot",
+    "Tobira Site Agent"
+   ],
+   "topics": [
+    "Analytics",
+    "Marketing",
+    "Artificial Intelligence"
+   ],
+   "team_earlier_launches": 20,
+   "team_earlier_backers_tracked": 1451,
+   "team_backers_lift": {
+    "AI business & growth crowd": 0.69,
+    "Model & coding-tool developers": 1.73,
+    "Occasional business-tool voters": 0.7,
+    "Indie app & Mac utility fans": 1.1,
+    "AI creative-tool crowd": 0.45
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.31,
+    "founder": 1.15,
+    "marketer": 1.03,
+    "designer": 1.28,
+    "investor": 0.8,
+    "has launched a product": 1.23,
+    "veteran (5+ years)": 1.36
+   },
+   "real_comments_captured": 6,
+   "real_comment_themes": {
+    "id": "1315068",
+    "praise": "It's a great innovation for local businesses, providing a new layer of local search and a way to manage their appearance in ChatGPT.",
+    "concerns_or_questions": "There's a concern about identity verification failing without an option to reapply. Commenters also ask if the business agent can take direct quote requests and if owners can see which questions led to their profile.",
+    "tone": "Positive, curious, problem-aware"
+   }
+  },
+  {
+   "id": "1313358",
+   "rank": 3,
+   "name": "Dex Semantics",
+   "votes": 207,
+   "comments": 33,
+   "tagline": "Let your agent build analytics with 25% fewer errors",
+   "kind": "AI Agent Infrastructure",
+   "mix": {
+    "AI business & growth crowd": 0.148,
+    "Model & coding-tool developers": 0.334,
+    "Occasional business-tool voters": 0.083,
+    "Indie app & Mac utility fans": 0.396,
+    "AI creative-tool crowd": 0.039
+   },
+   "lift": {
+    "AI business & growth crowd": 0.6,
+    "Model & coding-tool developers": 1.43,
+    "Occasional business-tool voters": 0.62,
+    "Indie app & Mac utility fans": 1.25,
+    "AI creative-tool crowd": 0.55
+   },
+   "similar_past_launches": [
+    "Plurai Simulation",
+    "Tiden",
+    "Living Brain",
+    "Open Index",
+    "Reason"
+   ],
+   "topics": [
+    "Analytics",
+    "Developer Tools",
+    "GitHub",
+    "Data & Analytics"
+   ],
+   "team_earlier_launches": 2438,
+   "team_earlier_backers_tracked": 25608,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.01,
+    "Model & coding-tool developers": 1.0,
+    "Occasional business-tool voters": 1.0,
+    "Indie app & Mac utility fans": 1.0,
+    "AI creative-tool crowd": 0.99
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.0,
+    "founder": 1.01,
+    "marketer": 1.01,
+    "designer": 1.01,
+    "investor": 0.99,
+    "has launched a product": 1.01,
+    "veteran (5+ years)": 1.01
+   },
+   "real_comments_captured": 32,
+   "real_comment_themes": {
+    "id": "1313358",
+    "praise": "The YAML semantic layer is a key feature, and the tool is praised for addressing both intelligence and reliability in AI-driven analytics. Keeping semantic definitions close to the code is seen as a good approach.",
+    "concerns_or_questions": "Commenters are curious about how it handles inconsistent metric definitions, definition drift, and schema changes. They ask if it automatically suggests updates, if it's for building knowledge graphs, and how to structure semantic declarations. There's also a question about whether it flags changes for human review or fixes them automatically.",
+    "tone": "Intrigued, appreciative, technical, curious"
+   }
+  },
+  {
+   "id": "1314543",
+   "rank": 4,
+   "name": "Gemini Robotics 2.5",
+   "votes": 165,
+   "comments": 3,
+   "tagline": "Gemini Robotics 2.5: Google\u2019s most capable robot model",
+   "kind": "New AI Models",
+   "mix": {
+    "AI business & growth crowd": 0.086,
+    "Model & coding-tool developers": 0.437,
+    "Occasional business-tool voters": 0.09,
+    "Indie app & Mac utility fans": 0.348,
+    "AI creative-tool crowd": 0.04
+   },
+   "lift": {
+    "AI business & growth crowd": 0.35,
+    "Model & coding-tool developers": 1.88,
+    "Occasional business-tool voters": 0.68,
+    "Indie app & Mac utility fans": 1.1,
+    "AI creative-tool crowd": 0.56
+   },
+   "similar_past_launches": [
+    "Gemini Robotics 2",
+    "Gemini 3.6 Flash Family",
+    "Gemini 4 Argon",
+    "Gemini 3.7 Flash",
+    "Google Gemini 3.8 Flash and Cyber"
+   ],
+   "topics": [
+    "Artificial Intelligence",
+    "GitHub",
+    "YouTube"
+   ],
+   "team_earlier_launches": 372,
+   "team_earlier_backers_tracked": 13158,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.1,
+    "Model & coding-tool developers": 1.02,
+    "Occasional business-tool voters": 0.99,
+    "Indie app & Mac utility fans": 0.97,
+    "AI creative-tool crowd": 0.87
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.04,
+    "founder": 1.03,
+    "marketer": 1.07,
+    "designer": 1.02,
+    "investor": 1.07,
+    "has launched a product": 1.02,
+    "veteran (5+ years)": 0.99
+   },
+   "real_comments_captured": 3,
+   "real_comment_themes": {
+    "id": "1314543",
+    "praise": "The native support for 3D Gaussian splats is a big deal, allowing captured scenes to integrate directly into Blender's pipeline.",
+    "concerns_or_questions": "Commenters are curious if there's a path from splat capture to a clean, watertight mesh within Blender, and how Cycles handles relighting or shadow casting given that splats bake in lighting from capture.",
+    "tone": "Enthusiastic, technical, curious"
+   }
+  },
+  {
+   "id": "1314882",
+   "rank": 5,
+   "name": "Blender 5.3",
+   "votes": 133,
+   "comments": 5,
+   "tagline": "3D Gaussian splats, now native to Blender",
+   "kind": "AI Creative Tools",
+   "mix": {
+    "AI business & growth crowd": 0.088,
+    "Model & coding-tool developers": 0.319,
+    "Occasional business-tool voters": 0.131,
+    "Indie app & Mac utility fans": 0.365,
+    "AI creative-tool crowd": 0.097
+   },
+   "lift": {
+    "AI business & growth crowd": 0.36,
+    "Model & coding-tool developers": 1.37,
+    "Occasional business-tool voters": 0.99,
+    "Indie app & Mac utility fans": 1.15,
+    "AI creative-tool crowd": 1.37
+   },
+   "similar_past_launches": [
+    "Blender Agent Bridge",
+    "Spline V2",
+    "Instagram Edits for Desktop",
+    "Unreal Engine 5.8",
+    "Figma Motion"
+   ],
+   "topics": [
+    "Design Tools",
+    "3D Modeling"
+   ],
+   "team_earlier_launches": 271,
+   "team_earlier_backers_tracked": 11906,
+   "team_backers_lift": {
+    "AI business & growth crowd": 1.04,
+    "Model & coding-tool developers": 0.94,
+    "Occasional business-tool voters": 0.92,
+    "Indie app & Mac utility fans": 1.0,
+    "AI creative-tool crowd": 1.19
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.0,
+    "founder": 0.99,
+    "marketer": 1.05,
+    "designer": 1.03,
+    "investor": 0.97,
+    "has launched a product": 0.98,
+    "veteran (5+ years)": 0.9
+   },
+   "real_comments_captured": 5,
+   "real_comment_themes": {
+    "id": "1314882",
+    "praise": "Native splats are a big deal, allowing captured scenes to integrate directly into Blender's pipeline.",
+    "concerns_or_questions": "Commenters are curious if there's a path from splat capture to a clean, watertight mesh within Blender, and how Cycles handles relighting or shadow casting given that splats bake in lighting from capture.",
+    "tone": "Enthusiastic, technical, curious"
+   }
+  },
+  {
+   "id": "1281561",
+   "rank": 6,
+   "name": "CaptureFlow",
+   "votes": 105,
+   "comments": 18,
+   "tagline": "Open-source screen recorder with instant share links",
+   "kind": "Productivity & Lifestyle Apps",
+   "mix": {
+    "AI business & growth crowd": 0.097,
+    "Model & coding-tool developers": 0.218,
+    "Occasional business-tool voters": 0.18,
+    "Indie app & Mac utility fans": 0.487,
+    "AI creative-tool crowd": 0.017
+   },
+   "lift": {
+    "AI business & growth crowd": 0.39,
+    "Model & coding-tool developers": 0.94,
+    "Occasional business-tool voters": 1.36,
+    "Indie app & Mac utility fans": 1.54,
+    "AI creative-tool crowd": 0.25
+   },
+   "similar_past_launches": [
+    "Lumiko",
+    "Capptivo",
+    "Skreno",
+    "Glideo",
+    "Reelbird"
+   ],
+   "topics": [
+    "Chrome Extensions",
+    "Productivity",
+    "Open Source",
+    "GitHub"
+   ],
+   "team_earlier_launches": 0,
+   "team_earlier_backers_tracked": 0,
+   "real_comments_captured": 11,
+   "real_comment_themes": {
+    "id": "1281561",
+    "praise": "It's a useful open-source alternative to other screen recorders, especially the MCP angle which allows AI agents to record demos and drop links into PR descriptions.",
+    "concerns_or_questions": "Commenters want to know if the agent can record short before-and-after videos for UI changes, if the viewer needs an account to leave timestamped comments, and if it can be self-hosted.",
+    "tone": "Appreciative, curious, practical"
+   }
+  },
+  {
+   "id": "1300330",
+   "rank": 7,
+   "name": "Kokonut UI",
+   "votes": 101,
+   "comments": 6,
+   "tagline": "Open-source UI components for your AI agent",
+   "kind": "AI Coding Tools",
+   "mix": {
+    "AI business & growth crowd": 0.13,
+    "Model & coding-tool developers": 0.317,
+    "Occasional business-tool voters": 0.079,
+    "Indie app & Mac utility fans": 0.452,
+    "AI creative-tool crowd": 0.022
+   },
+   "lift": {
+    "AI business & growth crowd": 0.53,
+    "Model & coding-tool developers": 1.36,
+    "Occasional business-tool voters": 0.6,
+    "Indie app & Mac utility fans": 1.43,
+    "AI creative-tool crowd": 0.31
+   },
+   "similar_past_launches": [
+    "agentmash",
+    "ilse",
+    "Persona.js",
+    "One Roof",
+    "HeyZoku"
+   ],
+   "topics": [
+    "Open Source",
+    "Developer Tools",
+    "Artificial Intelligence",
+    "GitHub"
+   ],
+   "team_earlier_launches": 0,
+   "team_earlier_backers_tracked": 0,
+   "real_comments_captured": 6,
+   "real_comment_themes": {
+    "id": "1300330",
+    "praise": "The AI chat parts, especially tool calls and diff review, are highly valued. The receipt printer effect is also loved for its character.",
+    "concerns_or_questions": "Commenters ask if the receipt printer effect is available as a standalone component and if there are plans to add a quote card that highlights exact sentences matched in a source.",
+    "tone": "Enthusiastic, appreciative, curious"
+   }
+  },
+  {
+   "id": "1310337",
+   "rank": 8,
+   "name": "Uber Parking",
+   "votes": 97,
+   "comments": 3,
+   "tagline": "Find, compare and reserve parking inside the Uber app",
+   "kind": "Niche Hardware & Apps",
+   "mix": {
+    "AI business & growth crowd": 0.129,
+    "Model & coding-tool developers": 0.224,
+    "Occasional business-tool voters": 0.163,
+    "Indie app & Mac utility fans": 0.439,
+    "AI creative-tool crowd": 0.046
+   },
+   "lift": {
+    "AI business & growth crowd": 0.52,
+    "Model & coding-tool developers": 0.96,
+    "Occasional business-tool voters": 1.23,
+    "Indie app & Mac utility fans": 1.39,
+    "AI creative-tool crowd": 0.65
+   },
+   "similar_past_launches": [
+    "Mira Tours",
+    "miso.com",
+    "MeetPoint",
+    "Badgey",
+    "ToDo.is"
+   ],
+   "topics": [
+    "Ridesharing",
+    "Travel",
+    "Maps"
+   ],
+   "team_earlier_launches": 15,
+   "team_earlier_backers_tracked": 1112,
+   "team_backers_lift": {
+    "AI business & growth crowd": 0.98,
+    "Model & coding-tool developers": 1.22,
+    "Occasional business-tool voters": 0.64,
+    "Indie app & Mac utility fans": 1.44,
+    "AI creative-tool crowd": 0.39
+   },
+   "team_backers_roles_lift": {
+    "developer": 1.2,
+    "founder": 1.24,
+    "marketer": 1.39,
+    "designer": 1.25,
+    "investor": 1.27,
+    "has launched a product": 1.17,
+    "veteran (5+ years)": 1.23
+   },
+   "real_comments_captured": 4,
+   "real_comment_themes": {
+    "id": "1310337",
+    "praise": "Integrating parking into the Uber app makes sense and is seen as a brilliant business move, turning Uber into a super-app.",
+    "concerns_or_questions": "No specific concerns or questions were raised, only positive affirmations.",
+    "tone": "Positive, impressed, strategic"
+   }
+  },
+  {
+   "id": "1310969",
+   "rank": 9,
+   "name": "Antelog",
+   "votes": 94,
+   "comments": 24,
+   "tagline": "Stops AI coding agents from leaking or destroying your data",
+   "kind": "AI Coding Tools",
+   "mix": {
+    "AI business & growth crowd": 0.138,
+    "Model & coding-tool developers": 0.305,
+    "Occasional business-tool voters": 0.084,
+    "Indie app & Mac utility fans": 0.448,
+    "AI creative-tool crowd": 0.026
+   },
+   "lift": {
+    "AI business & growth crowd": 0.56,
+    "Model & coding-tool developers": 1.31,
+    "Occasional business-tool voters": 0.63,
+    "Indie app & Mac utility fans": 1.41,
+    "AI creative-tool crowd": 0.36
+   },
+   "similar_past_launches": [
+    "asklog",
+    "Annotate",
+    "ManyAgents",
+    "GitBot",
+    "Lancetta"
+   ],
+   "topics": [
+    "Developer Tools",
+    "Artificial Intelligence",
+    "Security"
+   ],
+   "team_earlier_launches": 0,
+   "team_earlier_backers_tracked": 0,
+   "real_comments_captured": 19,
+   "real_comment_themes": {
+    "id": "1310969",
+    "praise": "The product addresses a critical need for preventing AI agents from causing data loss or leaks, especially the audit log and the ability to add project-specific rules.",
+    "concerns_or_questions": "Commenters ask about the audit log's scan capabilities, if it catches scripts reading .env files, if it works with MCP tools, how it handles false positives, how it differentiates production from test environments, and what happens when a command is blocked (does the agent get feedback). There are also questions about where the audit trail data is stored.",
+    "tone": "Concerned, curious, relieved, technical"
+   }
+  },
+  {
+   "id": "1306959",
+   "rank": 10,
+   "name": "Replay",
+   "votes": 92,
+   "comments": 11,
+   "tagline": "Mac meeting recorder with no bot. Pay once, no subscription",
+   "kind": "Voice & Note Apps",
+   "mix": {
+    "AI business & growth crowd": 0.073,
+    "Model & coding-tool developers": 0.135,
+    "Occasional business-tool voters": 0.165,
+    "Indie app & Mac utility fans": 0.601,
+    "AI creative-tool crowd": 0.027
+   },
+   "lift": {
+    "AI business & growth crowd": 0.29,
+    "Model & coding-tool developers": 0.58,
+    "Occasional business-tool voters": 1.24,
+    "Indie app & Mac utility fans": 1.9,
+    "AI creative-tool crowd": 0.38
+   },
+   "similar_past_launches": [
+    "Cluinn",
+    "Epilude Notetaker",
+    "Ulpaso",
+    "Remind",
+    "HyNote for Mac"
+   ],
+   "topics": [
+    "Mac",
+    "Productivity",
+    "Meetings"
+   ],
+   "team_earlier_launches": 0,
+   "team_earlier_backers_tracked": 0,
+   "real_comments_captured": 9,
+   "real_comment_themes": {
+    "id": "1306959",
+    "praise": "The 'no bot' feature is a major selling point, as it avoids awkwardness in meetings. The pay-once model and separate me/them audio tracks are also highly appreciated.",
+    "concerns_or_questions": "Commenters ask about the transcript quality with overlapping speech or non-native accents, if it picks up other people's audio with headphones, if it works with different browsers, and if the other person gets any sign of recording.",
+    "tone": "Appreciative, practical, curious"
+   }
+  }
+ ],
+ "usd": 0.0055
+}
