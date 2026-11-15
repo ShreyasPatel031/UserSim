@@ -1,0 +1,65 @@
+{
+ "days": [
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12"
+ ],
+ "within_person_auc (0.5 = no launch preference)": [
+  0.533,
+  0.521,
+  0.688
+ ],
+ "people": 545,
+ "launches": 75,
+ "p": {
+  "recall@N %": [
+   28.951,
+   7.937,
+   32.697
+  ],
+  "hits in top 15 per launch": [
+   2.187,
+   0.462,
+   3.519
+  ],
+  "distinct people across top-15 lists (per day, mean)": 15.3
+ },
+ "lift": {
+  "recall@N %": [
+   4.787,
+   4.173,
+   11.111
+  ],
+  "hits in top 15 per launch": [
+   0.32,
+   0.159,
+   0.659
+  ],
+  "distinct people across top-15 lists (per day, mean)": 34.1
+ },
+ "blend": {
+  "recall@N %": [
+   28.343,
+   7.937,
+   32.55
+  ],
+  "hits in top 15 per launch": [
+   2.24,
+   0.431,
+   3.624
+  ],
+  "distinct people across top-15 lists (per day, mean)": 17.4
+ },
+ "lift minus p recall@N (paired)": [
+  -24.164,
+  -27.702,
+  3.175
+ ],
+ "blend minus p recall@N (paired)": [
+  -0.608,
+  -1.16,
+  0.0
+ ]
+}

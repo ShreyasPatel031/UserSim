@@ -107,7 +107,8 @@ BLOCKS = {"activity": ["ln_up90", "ln_up730", "ln_lifetime_upvotes", "ln_comment
           "social": ["ln_followers", "ln_following", "account_years"], "curation": ["ln_reviews", "ln_stacks", "ln_collections", "ln_badges"],
           "links": ["has_x", "has_linkedin", "has_github", "has_website"], "comment_text": [f"ctext{i}" for i in range(8)] + ["has_comment_text"],
           "role": [r for r, _ in ROLES] + ["no headline or bio"]}
-TASTE_W = 2.0   # taste counts double: segments are used to say who votes for what
+VOTERS = bool(os.environ.get("VOTERS")); VOTERS_DAYS = int(os.environ.get("VOTERS_DAYS", 180)); VOTERS_MIN = int(os.environ.get("VOTERS_MIN", 3))
+TASTE_W = float(os.environ.get("TASTE_W", 3.0 if VOTERS else 2.0))   # taste weighted up: segments are used to say who votes for what
 
 
 def fit_groups(cut, k, seed=0, topics=None):   # v2: every held person, kind-of-user features (dated taste + activity; undated profile state)
@@ -116,7 +117,11 @@ def fit_groups(cut, k, seed=0, topics=None):   # v2: every held person, kind-of-
     TP = U.assign(t=U.target_id.map(ltops)).explode("t").dropna(subset=["t"])
     tc = TP.t.value_counts(); topics = topics or list(tc[tc >= 200].index)
     ti = {t: i for i, t in enumerate(topics)}; TP = TP[TP.t.isin(ti)]
-    ppl = list(PJ.index); pi = {p: i for i, p in enumerate(ppl)}; TP = TP[TP.person_id.isin(pi)]
+    ppl = list(PJ.index)
+    if VOTERS:   # v4: cluster only people who vote (>= VOTERS_MIN dated upvotes in the VOTERS_DAYS before the cut); everyone else is "rare voters" (group -1, not split)
+        dv = (pd.Timestamp(cut) - pd.Timedelta(days=VOTERS_DAYS)).strftime("%Y-%m-%d"); nv = U[U.lday >= dv].groupby("person_id").size()
+        act = set(nv[nv >= VOTERS_MIN].index); ppl = [p for p in ppl if p in act]
+    pi = {p: i for i, p in enumerate(ppl)}; TP = TP[TP.person_id.isin(pi)]
     M = csr_matrix((np.ones(len(TP)), (TP.person_id.map(pi), TP.t.map(ti))), shape=(len(ppl), len(topics)))
     Tt = TfidfTransformer().fit(M[np.asarray(M.sum(1)).ravel() >= MIN_UP]).transform(M).toarray(); Tt /= np.linalg.norm(Tt, axis=1, keepdims=True) + 1e-9
     conf = np.minimum(1.0, n.reindex(ppl).fillna(0).values / 10.0)[:, None]   # taste weight grows with evidence: full at >= 10 dated upvotes
@@ -126,7 +131,7 @@ def fit_groups(cut, k, seed=0, topics=None):   # v2: every held person, kind-of-
     X = X.join(PROFILE.reindex(ppl).fillna(0)).join(CT.reindex(ppl).fillna(0)); X["has_comment_text"] = X.index.isin(CT.index).astype(float)
     X = X.join(RM.reindex(ppl).fillna(0))
     Z = (X - X.mean()) / (X.std() + 1e-9)
-    parts = [Tt * conf * TASTE_W] + [Z[c].values / np.sqrt(len(c)) for c in BLOCKS.values()]
+    parts = [Tt * conf * TASTE_W] + [Z[c].values / np.sqrt(len(c)) for b, c in BLOCKS.items() if not (VOTERS and b == "activity")]   # v4: activity level left out
     F = np.hstack(parts); bad = ~np.isfinite(F)
     if bad.any(): log("non-finite feature cells set to 0:", int(bad.sum()), "columns:", sorted({c for c in X.columns if not np.isfinite(Z[c].values).all()})[:8]); F[bad] = 0
     km = MiniBatchKMeans(k, random_state=seed, n_init=5, batch_size=8192).fit(F)
@@ -211,6 +216,7 @@ log("chosen", json.dumps({k: v for k, v in KSEL["chosen"].items() if k != "subgr
 # ---------- fit at the cut; stable ids by member overlap with the previous run
 G = fit_groups(CUT, K); lab = pd.concat([G["core"], G["weak"]]); log("groups", lab.value_counts().sort_index().to_dict())
 def overlap_map(cur, prv, thr=0.5):   # Hungarian on Jaccard of member sets; returns {cur label: prev label} for pairs with J >= thr, and the J values
+    cur, prv = cur.dropna(), prv.dropna()   # v4: the voter set changes between the fit and the cut
     cl, pl = sorted(cur.unique()), sorted(prv.unique()); cs = {a: set(cur.index[cur == a]) for a in cl}; ps = {b: set(prv.index[prv == b]) for b in pl}
     J = np.array([[len(cs[a] & ps[b]) / max(1, len(cs[a] | ps[b])) for b in pl] for a in cl]); r, c = linear_sum_assignment(-J)
     return {cl[a]: pl[b] for a, b in zip(r, c) if J[a, b] >= thr}, {cl[a]: round(float(J[a, b]), 3) for a, b in zip(r, c)}
@@ -389,7 +395,7 @@ def vf_lift(lbl):   # per unit: top-5 lifted topics from upvotes before cp; upvo
                   "votes_for_holds": bool(num / max(1e-12, den) >= 1.2 and len(L_in) >= 10 and nv >= 20)}
     return out
 VG = vf_lift(labc); gm, _ = overlap_map(lab, labc.reindex(lab.index), thr=0.0)
-cur_sub = (lab.astype(str) + "." + sub.reindex(lab.index).astype(str)); cp_sub = (labc.astype(str) + "." + nest_lab.astype(str)).reindex(lab.index)
+cur_sub = (lab.astype(str) + "." + sub.reindex(lab.index).astype(str)); cp_sub = (labc.astype(str) + "." + nest_lab.astype(str)).reindex(lab.index).dropna()
 VS = vf_lift((labc.astype(str) + "." + nest_lab.astype(str))); sm_all, _ = overlap_map(cur_sub, cp_sub, thr=0.0)
 per_g = {g: VG[gm[g]] for g in gm if gm[g] in VG}; per_s = {u: VS[sm_all[u]] for u in sm_all if sm_all[u] in VS}
 NOTE = ("upvote rate on last week's launches in this unit's top-5 topics vs its rate on other launches, relative to everyone else (1 = no signal); "

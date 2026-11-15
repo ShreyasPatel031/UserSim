@@ -1,0 +1,52 @@
+{
+ "people": 545,
+ "launches": 75,
+ "within_person_auc (0.5 = no launch preference)": {
+  "p": [
+   0.533,
+   0.521,
+   0.688
+  ],
+  "topic_lift": [
+   0.57,
+   0.498,
+   0.598
+  ],
+  "tie": [
+   0.647,
+   0.625,
+   0.738
+  ],
+  "combined": [
+   0.668,
+   0.658,
+   0.773
+  ]
+ },
+ "combined minus p, within-person auc (paired)": [
+  0.135,
+  0.076,
+  0.154
+ ],
+ "p": {
+  "recall@N %": [
+   28.951,
+   7.937,
+   32.697
+  ],
+  "distinct people across top-15 lists %": 15.3
+ },
+ "combined": {
+  "recall@N %": [
+   27.66,
+   5.747,
+   31.556
+  ],
+  "distinct people across top-15 lists %": 33.4
+ },
+ "combined minus p recall@N (paired)": [
+  -1.292,
+  -2.299,
+  -1.0
+ ]
+}
