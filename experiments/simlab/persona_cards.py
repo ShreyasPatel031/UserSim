@@ -24,7 +24,11 @@ for lid in [str(p["id"]) for p in LINE.get(D, [])]:
     team = [x for x in (lhun.get(lid), lmak.get(lid)) if x]
     ls = set().union(*[by_team.get(x, set()) for x in team]) - {lid} if team else set()
     pool = Hb[Hb.target_id.isin(ls)].person_id.unique().tolist() if ls else []
-    src, people = ("team past backers", pool) if len(pool) >= MIN else ("CF-only top 200", A_[A_.launch_id == lid].sort_values("rank").person_id.iloc[:200].tolist())
+    cf_rank = A_[A_.launch_id == lid].sort_values("rank").person_id.tolist()
+    if len(pool) >= K * MIN: src, people = "team past voters", pool
+    else:   # 24 personas x >= 20 people needs >= 480: the team's earlier voters first, topped up with the CF-only ranking for this launch
+        ps_ = set(pool); people = list(pool) + [q for q in cf_rank if q not in ps_][:max(0, K * MIN - len(pool))]
+        src = ("team past voters + CF-only top-up" if len(pool) >= MIN else "CF-only ranking (top %d)" % len(people))
     if len(people) < MIN: cards[lid] = {"status": "not available (fewer than 20 people)"}; continue
     sg = pd.Series([seg.get(p, segments_lib.INACTIVE if SEGL else "no headline or bio") for p in people])
     vc0 = sg.value_counts(); small = set(vc0[vc0 < MIN].index)   # a subgroup with < 20 people in this pool folds into its group label

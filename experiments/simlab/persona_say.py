@@ -11,31 +11,15 @@ sys.path.insert(0, os.path.join(SP, "phops", "experiments", "ph_predict")); impo
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
 cards = json.loads(gcat(f"{B}/tmp/e5/persona_cards/{D}.json") or open(os.path.join(SP, "persona", f"persona_cards_{D}.json")).read())["launches"]
 line = {str(p["id"]): p for p in json.loads(gcat(f"{B}/raw/daily/{D}/today_0005.json"))}
-PROMPT = """You simulate how distinct audience groups on Product Hunt react to a product launch. Each group below is a real aggregate of
-20 or more Product Hunt users (their role, how active they are, the topics they upvote and products they commonly upvoted). Speak as a
-typical member of each group, in a short Product Hunt comment voice. Be specific to THIS product; do not praise generically.
-
-LAUNCH
-Name: {name}
-Tagline: {tagline}
-Description: {desc}
-Topics: {topics}
-
-GROUPS
-{groups}
-
-For EVERY group (same order), return JSON only:
-{{"reactions": [{{"group": <number>, "reaction": "<1-2 sentences>", "concern": "<one specific concern or objection>", "question": "<one question they would ask the makers>", "interest": "high"|"medium"|"low"}}, ...]}}"""
-def gtxt(i, g):
-    tops = ", ".join(f"{t['topic']} {round(100 * t['share'])}%" for t in g.get("topic_shares", []))
-    prods = ", ".join(p["product"] for p in g.get("products_they_commonly_upvoted", [])[:5])
-    return f"{i + 1}. {g['segment']} ({g['n_people']} people; median {g['median_upvotes_last_30_days']:.0f} upvotes in 30 days); upvote topics: {tops}; products they upvoted: {prods}"
+import importlib.util as _ilu   # the validated harness prompt (persona_prompt.py: who / says / share grounding)
+_sp = _ilu.spec_from_file_location("persona_prompt", os.path.join(HERE, "persona_prompt.py")); _pm = _ilu.module_from_spec(_sp); _sp.loader.exec_module(_pm)
+PROMPT, gtxt = _pm.PROMPT, _pm.gtxt
 def one(lid):
     c = cards.get(lid) or {}; P_ = c.get("personas") or []; p = line.get(lid)
     if not P_ or not p: return lid, None
     topics = ", ".join(e["node"]["name"] for e in ((p.get("topics") or {}).get("edges") or []))
     txt = llm.gemini_call(PROMPT.format(name=p.get("name"), tagline=p.get("tagline"), desc=(p.get("description") or "")[:1200], topics=topics,
-                                        groups="\n".join(gtxt(i, g) for i, g in enumerate(P_))), 3000)
+                                        groups="\n".join(gtxt(i, g) for i, g in enumerate(P_))), max(3000, 300 * len(P_)))
     try: R = json.loads(txt)["reactions"]
     except Exception: return lid, {"status": "not available (model reply not parseable)"}
     items = []
@@ -44,7 +28,7 @@ def one(lid):
         if 0 <= k < len(P_): items.append({"segment": P_[k]["segment"], "n_people": P_[k]["n_people"], **({"segment_profile": P_[k]["segment_profile"]} if P_[k].get("segment_profile") else {}), "reaction": r.get("reaction"), "concern": r.get("concern"),
                                            "question": r.get("question"), "interest": r.get("interest")})
     return lid, {"source_people": c.get("source"), "items": items}
-ids = [i for i in line if (cards.get(i) or {}).get("personas")][:LIM]
+ids = [i for i in line if (cards.get(i) or {}).get("personas") and (not os.environ.get("ONLY_IDS") or i in os.environ["ONLY_IDS"].split(","))][:LIM]
 with cf.ThreadPoolExecutor(6) as ex: OUT = dict(ex.map(one, ids))
 usd = round(llm.USAGE["in"] / 1e6 * 0.30 + llm.USAGE["out"] / 1e6 * 2.50, 4)
 open(os.path.join(HERE, "spend.jsonl"), "a").write(json.dumps({"t": f"persona_say_{D}", "provider": "gcp", "usd": usd, "note": f"{len(ids)} Gemini 2.5 Flash calls, tokens in {llm.USAGE['in']} out {llm.USAGE['out']}"}) + "\n")

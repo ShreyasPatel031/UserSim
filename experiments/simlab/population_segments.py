@@ -404,11 +404,22 @@ log("calibration", json.dumps(cal)[:500])
 for g_ in groups:
     g_["calibration"] = {**per_g.get(g_["id"], {"votes_for_holds": False, "note_missing": "no out-of-sample match"}), "note": NOTE}
     for s_ in g_["subgroups"]: s_["calibration"] = per_s.get(s_["id"], {"votes_for_holds": False, "note_missing": "no out-of-sample match"})
+def segment_label(cal):
+    tv = cal["backer_group_mix_total_variation (lower better) [mean, 95% launch bootstrap]"]
+    return (f"Segments: {K} top-level groups of all held Product Hunt users by KIND of user (activity, making, followers, curation, links, comments, "
+            f"taste), k chosen in 3-5 by held-out fit, with 3-5 subgroups only where they add held-out fit; every unit >= 20 people; names and 'says' are "
+            f"Gemini summaries of measured statistics and members' own past comments (paraphrased). PLAIN CALIBRATION: at the group level these "
+            f"segments do NOT predict which launches people vote for better than 'everyone votes like the average' (last week's {cal['launches']} "
+            f"launches: group-mix distance {tv['segments model'][0]} vs {tv['population mix'][0]} for the population mix, paired "
+            f"{tv['model minus population (paired)']}); 'votes for' held out of sample for {cal['groups where votes_for holds']} groups and "
+            f"{cal['subgroups where votes_for holds']} subgroups (votes_for_holds flags). Per launch, expected-voter mix vs base (leave-one-day-out, "
+            f"Nov 8-12): groups -0.011 [-0.026, +0.008] (not better), subgroups -0.063 [-0.086, -0.041] (better); the earlier 12-group version "
+            f"scored -0.054 [-0.075, -0.032] - the 3-5 grouping (Shreyas, Nov 15) trades that predictive edge for readability.")
+
+
 pub = {"cut": CUT, "how": __doc__.split("\n    python")[0], "k": K, "k_rule": "top level 3-5 (Shreyas, Nov 15), chosen by held-out log-likelihood per vote; subgroups 3-5 only where they add held-out fit", "k_selection (held-out log-likelihood per vote, fit 7 days earlier)": KSEL, "people_segmented": int(len(lab)), "people_low_signal (1-4 upvotes, assigned by topics)": int(len(G["weak"])),
        "people_not_active_in_window": len(inactive), "groups": groups, "calibration": cal,
-       "accuracy_label": ("Segments are clusters of real held Product Hunt users by what they upvoted in the 180 days before the cut and how they engage "
-                          "(aggregates only, every group and subgroup >= 20 people). Names and 'says' are Gemini summaries of the measured statistics and the "
-                          "members' own comments, not quotes. 'votes_for' is checked out of sample every run (calibration).")}
+       "accuracy_label": segment_label(cal)}
 p = os.path.join(OUTD, f"{CUT}.json"); json.dump(pub, open(p, "w"), indent=1, default=float); json.dump(pub, open(os.path.join(OUTD, "latest.json"), "w"), indent=1, default=float)
 pp = os.path.join(OUTD, f"members_{CUT}.parquet")
 pd.DataFrame({"person_id": list(lab.index) + inactive, "group": list(lab.values) + [-1] * len(inactive), "subgroup": [f"{int(g)}.{int(s)}" for g, s in zip(lab.values, sub.reindex(lab.index).values)] + ["-1"] * len(inactive),
