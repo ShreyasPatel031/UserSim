@@ -75,7 +75,8 @@ def main(d):
     Cc = G - G.mean()                                                       # within-day centred
     rank = pd.Series(PA.pred_arm2.values, index=ids).rank(ascending=False, method="first").astype(int)
     L = {}
-    for i in ids:
+    assert len(X) == len(ids), "booster input rows != predicted launches"
+    for k, i in enumerate(ids):
         r = Cc.loc[i].sort_values(key=lambda s: -s.abs())
         pos = Cc.loc[i][Cc.loc[i] > 0]
         top_pos = Cc.loc[i].sort_values(ascending=False)
@@ -83,7 +84,9 @@ def main(d):
         L[i] = {"rank_arm2": int(rank[i]), "score": round(float(PA.set_index(PA.id.astype(str)).pred_arm2[i]), 4),
                 "groups_centred": {g: round(float(v), 4) for g, v in r.items()},
                 "top_groups": [g for g in top_pos.index[:3] if top_pos[g] > 0],
-                "concentration": round(conc, 3) if conc is not None else None, "concentrated": bool(conc is not None and conc > 0.6)}
+                "concentration": round(conc, 3) if conc is not None else None, "concentrated": bool(conc is not None and conc > 0.6),
+                # arm 2's own input values for this launch, exactly as fed to the boosters (orchestrator 00:03Z Nov 15; null if missing)
+                "values": {c: (None if pd.isna(v) else round(float(v), 4)) for c, v in zip(cols, X.iloc[k].values)}}
     out = {"day": d, "kind": "arm2_shap_shadow", "status": "shadow only, not on the website", "label": LABEL, "caution": CAUTION,
            "unit": "points (log-vote scale), contribution minus the day mean", "groups": sorted(set(grp(c) for c in cols)), "inputs": len(cols),
            "group_map": {c: grp(c) for c in cols}, "group_map_source": "E5 claude/person-model-v2 b6450b3a arm2_explain.py",

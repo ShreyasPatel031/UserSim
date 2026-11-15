@@ -10,3 +10,4 @@
 `bash deploy_nb.sh deploy`: refuses 23:30-01:00 PT and when 12.8 is not deployed. It backs files up to ~/w/nb_backup, installs, gates, and rolls back on failure.
 `bash deploy_nb.sh rollback`: restores the backups.
 Order: after DEPLOY_ORDER step 6 (bundle 12.8).
+| arm2_shap.py | 5e2e9112 | ~/w/tw/experiments/ph_predict/arm2_shap.py: arm 2's own TreeSHAP (5 seeds, refit as at 00:05, groups centred within the day) plus each launch's raw arm-2 input "values". Bundle 12.8's why_drivers job already runs it nightly; it writes results/shadow_arm2_shap/<d>.json. Dry run on the VM for Nov 14: 28 launches, 40 inputs, max |sum(shap) - pred| = 0.0 |
