@@ -393,7 +393,7 @@ SUP_TAIL="
       [[ "$nudge_age" -eq 0 ]] && nudge_age=99999
       if [[ "$block_pause" -eq 1 ]]; then
         echo "KEEPER skip nudge slot=$slot dead_${dead_for}s (PH_FLEET_BLOCK_PAUSE)" | tee -a "$ART/keeper.log"
-      elif [[ "$low_ppm" -eq 1 && "$dead_for" -lt 900 ]]; then
+      elif [[ "$low_ppm" -eq 1 && "$dead_for" -lt 900 && "$low_active" -eq 0 ]]; then
         echo "KEEPER skip recover slot=$slot dead_${dead_for}s (fleet_ppm<5 — supervisor backoff)" | tee -a "$ART/keeper.log"
       elif [[ "$keeper_nudge_budget" -le 0 ]]; then
         echo "KEEPER skip recover slot=$slot (nudge budget exhausted below target)" | tee -a "$ART/keeper.log"
