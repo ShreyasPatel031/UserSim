@@ -478,3 +478,12 @@ details.fx > p { margin: 0 0 10px; font-size: 13px; color: var(--soft); }
 
 /* v21 */
 details.fx .rv { font-style: normal; font-size: 12px; color: var(--soft); margin-left: 4px; }
+
+/* v23: persona panel */
+.interest { display: flex; gap: 2px; align-items: stretch; margin: 6px 0 12px; font-size: 12px; } .interest .lab { color: var(--soft); margin-right: 8px; align-self: center; }
+.iv { padding: 3px 8px; white-space: nowrap; font-size: 12px; } .iv.high { background: color-mix(in srgb, var(--exact) 20%, var(--paper)); color: var(--exact-ink); }
+.iv.medium { background: color-mix(in srgb, var(--near) 22%, var(--paper)); color: var(--near-ink); } .iv.low { background: color-mix(in srgb, var(--miss) 15%, var(--paper)); color: var(--miss-ink); }
+.persona { padding: 10px 0 12px; border-bottom: 1px solid var(--line, #eee6d6); }
+.persona .ph { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 4px; } .persona .seg { font-weight: 600; font-size: 13.5px; } .persona .sm { font-size: 12px; color: var(--soft); }
+.persona .ph .iv { margin-left: auto; border-radius: 999px; } .persona .re { margin: 4px 0; font-size: 14px; }
+.persona .pc { margin: 3px 0; font-size: 13.5px; padding-left: 10px; border-left: 3px solid; } .persona .pc.worry { border-color: var(--miss); } .persona .pc.ask { border-color: var(--near); }

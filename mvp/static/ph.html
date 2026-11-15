@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=22">
+<link rel="stylesheet" href="/static/ph_site.css?v=23">
 </head>
 <body>
 <div class="wrap">
@@ -187,11 +187,23 @@ function exWho(d, aud){
 }
 function exSay(d){
   const card = (t, cls)=> `<div class="q ${cls}">${esc(t)}</div>`;
-  const re = d.reactions || [];
-  return `<p class="note top">Written by our AI simulator from the launch's own page, before any real comments existed. These are not real people.${info("One AI model reads the launch page and writes the comments it expects. It is not yet a panel of real, representative backers. In past tests about 1 in 3 predicted worries or questions matched a point a real commenter made.")}</p>
-    ${(d.top_concerns || []).length ? `<h5>Likely worries</h5>${d.top_concerns.map(t=>card(t, "worry")).join("")}` : ""}
-    ${(d.top_questions || []).length ? `<h5>Likely questions</h5>${d.top_questions.map(t=>card(t, "ask")).join("")}` : ""}
-    <p class="note">A panel of 12 simulated backers drawn from people we hold is being built; sample reactions return when it is.</p>${trust("say")}`;
+  const pp = d.panel || d.persona_panel, items = (pp && pp.items) || [];
+  let panel = "";
+  if(items.length){
+    const cnt = {high: 0, medium: 0, low: 0}; items.forEach(x=>cnt[x.interest] = (cnt[x.interest] || 0) + 1);
+    const src = /past/.test(pp.source_people || "") ? "people who backed this team's earlier launches" : "today's likeliest backers";
+    panel = `<p class="lede"><b>${items.length} simulated backers</b>, each speaking for a group of real people we hold (drawn from ${src}).${info(esc(pp.accuracy_label || ""))}</p>
+      <div class="interest"><span class="lab">Interest</span>${["high","medium","low"].map(k=>cnt[k] ? `<span class="iv ${k}" style="flex:${cnt[k]}">${cnt[k]} ${k}</span>` : "").join("")}</div>
+      ${items.map(x=>`<div class="persona"><div class="ph"><span class="seg">${esc(x.segment)}</span><span class="sm">speaks for ${esc(x.n_people)} people</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
+        ${x.reaction ? `<p class="re">“${esc(x.reaction)}”</p>` : ""}
+        ${x.concern ? `<p class="pc worry"><b>Worry:</b> ${esc(x.concern)}</p>` : ""}${x.question ? `<p class="pc ask"><b>Asks:</b> ${esc(x.question)}</p>` : ""}</div>`).join("")}
+      <p class="note">Simulated by an AI speaking as each group, from the launch's own page; not real comments.</p>
+      <details class="trust"><summary>How reliable? On 279 past launches this panel caught 54% of the points real commenters raised (the older single-AI version caught 39%); about half of its points matched a real one.</summary><p>${esc(pp.accuracy_label || "")}</p></details>`;
+  }
+  const older = `${(d.top_concerns || []).length ? `<h5>Likely worries</h5>${d.top_concerns.map(t=>card(t, "worry")).join("")}` : ""}
+    ${(d.top_questions || []).length ? `<h5>Likely questions</h5>${d.top_questions.map(t=>card(t, "ask")).join("")}` : ""}`;
+  return items.length ? panel + (older.trim() ? `<details class="more"><summary>Earlier single-AI predictions</summary>${older}${trust("say")}</details>` : "")
+    : `<p class="note top">Written by our AI simulator from the launch's own page, before any real comments existed. These are not real people.</p>${older}${trust("say")}`;
 }
 function exComp(d){
   const tip = "How close its name, tagline and description are to this launch, in meaning (a text-embedding match, 0–100%). It says nothing about how the launch ranked.";
@@ -228,7 +240,8 @@ const sameProduct = (a, b)=> { const k = (t)=> String(t || "").toLowerCase().rep
 function exOverview(d){
   const a = d.audience || {}, e = a.expected_held_votes, f = a.follow_ties, pu = a.power_users, raw = d.raw || {};
   const name = (VIEW.launches.find(l=>l.id === EXPL_ID) || {}).name;
-  const worry = d.say && (d.say.top_concerns || [])[0];
+  const panelItems = ((d.say && d.say.persona_panel) || {}).items || [];
+  const worry = (panelItems.find(x=>x.interest === "high" && x.concern) || panelItems.find(x=>x.concern) || {}).concern || (d.say && (d.say.top_concerns || [])[0]);
   const ask = d.say && (d.say.top_questions || []).find(q=>overlap(q, worry) < .5);
   const cs = arr(d.competitors), own = cs.find(c=>sameProduct(c.name, name)), others = cs.filter(c=>c !== own);
   const best = others.slice().sort((x, y)=>(x.final_daily_rank || 99) - (y.final_daily_rank || 99))[0];
