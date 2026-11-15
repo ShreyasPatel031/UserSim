@@ -1,0 +1,111 @@
+{
+ "design": "# Pre-registration: per-launch calibration of CF scores (orchestrator 02:56Z Nov 15; miss bucket (c) \"taste-near\" = 22.6% of misses)\n\nWritten before any arm output exists.\n\n- **Lists:** the frozen CF-only lists (top 2,000 held people per launch, logistic p; reads before 00:00 PT of D). Days: every f",
+ "days": [
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12"
+ ],
+ "launches": 128,
+ "observed_voters": 1630,
+ "Nhat_total": 2051,
+ "per_day_observed": {
+  "2026-11-08": 612,
+  "2026-11-09": 735,
+  "2026-11-10": 124,
+  "2026-11-11": 51,
+  "2026-11-12": 108
+ },
+ "CF": {
+  "recall@N": [
+   25.15,
+   6.33,
+   29.66
+  ],
+  "recall@Nhat": [
+   21.6,
+   0.9,
+   32.18
+  ],
+  "precision@Nhat": [
+   17.16,
+   2.05,
+   18.06
+  ]
+ },
+ "ASSIGN-EXP": {
+  "recall@N": [
+   23.93,
+   6.33,
+   29.18
+  ],
+  "recall@Nhat": [
+   20.0,
+   0.9,
+   31.14
+  ],
+  "precision@Nhat": [
+   15.89,
+   2.05,
+   17.11
+  ]
+ },
+ "ASSIGN-30D": {
+  "recall@N": [
+   23.07,
+   6.1,
+   28.09
+  ],
+  "recall@Nhat": [
+   19.2,
+   0.9,
+   30.44
+  ],
+  "precision@Nhat": [
+   15.26,
+   2.27,
+   16.7
+  ]
+ },
+ "ASSIGN-EXP minus CF (paired)": {
+  "recall@N": [
+   -1.23,
+   -2.47,
+   0.0
+  ],
+  "recall@Nhat": [
+   -1.6,
+   -2.78,
+   0.0
+  ],
+  "per_day recall@N": {
+   "2026-11-08": -2.78,
+   "2026-11-09": -0.41,
+   "2026-11-10": 0.0,
+   "2026-11-11": 0.0,
+   "2026-11-12": 0.0
+  }
+ },
+ "ASSIGN-EXP adopt (pre-registered: recall@N lower bound > 0)": false,
+ "ASSIGN-30D minus CF (paired)": {
+  "recall@N": [
+   -2.09,
+   -3.34,
+   0.0
+  ],
+  "recall@Nhat": [
+   -2.39,
+   -3.65,
+   0.0
+  ],
+  "per_day recall@N": {
+   "2026-11-08": -3.76,
+   "2026-11-09": -1.5,
+   "2026-11-10": 0.0,
+   "2026-11-11": 0.0,
+   "2026-11-12": 0.0
+  }
+ },
+ "ASSIGN-30D adopt (pre-registered: recall@N lower bound > 0)": false
+}
