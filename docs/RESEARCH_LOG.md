@@ -2288,3 +2288,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - Nov 15 14:25 UTC: Grok Bot daily population merge (older 22k pool, DRAFT): no upvote re-reads after Nov 3 for that pool; Nov 14 X batch failed; biggest needs are upvote re-reads (22,154) and following (17,719), the same gap as upvote_refresh. Fleet stalled 4 h (18 VMs billed ~$29/day idle); Shreyas told.
 - Nov 15 14:36 UTC hourly check + mailbox checked. Leaderboard live. Fleet still stalled (status above).
 - Nov 15 15:36 UTC hourly check + mailbox checked. Leaderboard live. Fleet status above.
+- Nov 15 16:36 UTC hourly check + mailbox checked. Leaderboard live. Fleet status above.
