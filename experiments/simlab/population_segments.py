@@ -38,11 +38,13 @@ CUT = opt("--cut", pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")); K = int(opt
 MIN_UP, MIN_N, WIN = 5, 20, 730
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"; OUTD = os.path.join(SP, "segments"); os.makedirs(OUTD, exist_ok=True)
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
-t0 = time.time(); log = lambda *a: print(round(time.time() - t0), *a, flush=True)
+rng = np.random.default_rng(0); t0 = time.time(); log = lambda *a: print(round(time.time() - t0), *a, flush=True)
 
 # ---------- data (dated)
-E = pd.read_parquet(f"{ST}/events.parquet", columns=["person_id", "kind", "target_id", "fetched_at", "extra"])
-E["ft"] = pd.to_datetime(E.fetched_at, utc=True); E = E[E.ft < pd.Timestamp(CUT, tz="UTC")]
+E = pd.read_parquet(f"{ST}/events.parquet", columns=["person_id", "kind", "target_id", "fetched_at", "extra", "ts_lo"])
+E["ft"] = pd.to_datetime(E.fetched_at, utc=True)
+if E.ft.min() < pd.Timestamp(CUT, tz="UTC"): E = E[E.ft < pd.Timestamp(CUT, tz="UTC")]
+else: print("historical cut: reads were all fetched after the cut; dating by launch day (upvotes) and comment time instead", flush=True)
 W = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last"); W["id"] = W.id.astype(str); W["day"] = W.day.astype(str).str[:10]
 W["tops"] = W.topics.map(lambda t: json.loads(t) if isinstance(t, str) and t.startswith("[") else [])
 if os.environ.get("H25_SRC"):   # 2025 featured launches (daily API files): the warehouse starts 2026-01-01
@@ -63,26 +65,101 @@ ROLES = [("investor", r"\b(investor|vc|venture|angel)\b"), ("designer", r"(desig
 txt = (PJ.headline.fillna("") + " " + PJ.bio.fillna("")).str.lower()
 RM = pd.DataFrame({r: txt.str.contains(rx, regex=True) for r, rx in ROLES}, index=PJ.index).astype(float); RM["no headline or bio"] = (txt.str.strip() == "").astype(float)
 log("data", len(U0))
+cmt_ids = E[(E.kind == "comment") & (pd.to_datetime(E.ts_lo, utc=True) < pd.Timestamp(CUT, tz="UTC"))][["person_id", "extra"]].copy()   # comments written before the cut only
+cmt_ids["cid"] = cmt_ids.extra.map(lambda e: json.loads(e).get("comment_id") if isinstance(e, str) and e.startswith("{") else None)
+want = dict(zip(cmt_ids.cid.dropna().astype(str), cmt_ids.dropna(subset=["cid"]).person_id)); ctext = {}
+for f in sorted(glob.glob(os.path.join(CFD, "page*.jsonl.gz"))):
+    for line in gzip.open(f):
+        x = json.loads(line)
+        try: p_ = json.loads(x["html"])["data"]["post"]
+        except Exception: continue
+        if not p_: continue
+        def walk(nd):
+            i = str(nd.get("id"))
+            if i in want:
+                t = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", nd.get("bodyHtml") or ""))).strip()
+                if len(t) > 25: ctext.setdefault(want[i], []).append(t[:400])
+            for e in ((nd.get("replies") or {}).get("edges") or []): walk(e["node"])
+        for e in ((p_.get("threads") or {}).get("edges") or []): walk(e["node"])
+log("comment texts for people", len(ctext))
 
 
-def fit_groups(cut, k, seed=0, topics=None):
-    d0 = (pd.Timestamp(cut) - pd.Timedelta(days=WIN)).strftime("%Y-%m-%d")
-    U = U0[(U0.lday < cut) & (U0.lday >= d0)]
-    n = U.groupby("person_id").size(); core = n[n >= MIN_UP].index; weak = n[(n < MIN_UP)].index
+PH = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "joined", "badges_count", "links_json", "maker_history_json", "header_json"]).drop_duplicates("person_id").set_index("person_id")
+HD = PH.header_json.map(lambda h: json.loads(h) if isinstance(h, str) and h.startswith("{") else {})
+hv = lambda k_: pd.to_numeric(HD.map(lambda h: h.get(k_)), errors="coerce").fillna(0).clip(lower=0).astype(float)
+LK = PH.links_json.map(lambda h: " ".join(json.loads(h)) if isinstance(h, str) and h.startswith("[") else "").str.lower()
+from sklearn.decomposition import TruncatedSVD  # noqa: E402
+from sklearn.feature_extraction.text import TfidfVectorizer  # noqa: E402
+CTX = pd.Series({p_: " ".join(v) for p_, v in ctext.items()})
+_tv = TfidfVectorizer(min_df=5, max_features=20000, stop_words="english", sublinear_tf=True).fit(CTX.values)
+CT = pd.DataFrame(TruncatedSVD(8, random_state=0).fit_transform(_tv.transform(CTX.values)), index=CTX.index, columns=[f"ctext{i}" for i in range(8)])
+PROFILE = pd.DataFrame({   # UNDATED profile state (read Nov 2026): kind-of-user descriptors, not used as vote labels
+    "ln_lifetime_upvotes": np.log1p(hv("upvotes")), "ln_followers": np.log1p(hv("followers")),
+    "ln_following": np.log1p(hv("following")), "ln_products": np.log1p(hv("products")),
+    "ln_hunted": np.log1p(hv("hunted")), "ln_reviews": np.log1p(hv("reviews")),
+    "ln_stacks": np.log1p(hv("stacks")), "ln_collections": np.log1p(hv("collections")),
+    "ln_badges": np.log1p(PH.badges_count.fillna(0).astype(float)),
+    "account_years": ((pd.Timestamp(CUT, tz="UTC") - pd.to_datetime(PH.joined, utc=True, errors="coerce")).dt.days / 365.25).clip(0, 15).fillna(0),
+    "ln_maker_history": np.log1p(PH.maker_history_json.map(lambda h: len(json.loads(h)) if isinstance(h, str) and h.startswith("[") else 0).astype(float)),
+    "has_x": LK.str.contains(r"twitter\.com|x\.com/").astype(float), "has_linkedin": LK.str.contains("linkedin").astype(float),
+    "has_github": LK.str.contains("github").astype(float), "has_website": (LK.str.len() > 0).astype(float)}, index=PH.index)
+BLOCKS = {"activity": ["ln_up90", "ln_up730", "ln_lifetime_upvotes", "ln_comments", "has_dated_upvote"], "making": ["ln_products", "ln_hunted", "ln_maker_history"],
+          "social": ["ln_followers", "ln_following", "account_years"], "curation": ["ln_reviews", "ln_stacks", "ln_collections", "ln_badges"],
+          "links": ["has_x", "has_linkedin", "has_github", "has_website"], "comment_text": [f"ctext{i}" for i in range(8)] + ["has_comment_text"],
+          "role": [r for r, _ in ROLES] + ["no headline or bio"]}
+TASTE_W = 2.0   # taste counts double: segments are used to say who votes for what
+
+
+def fit_groups(cut, k, seed=0, topics=None):   # v2: every held person, kind-of-user features (dated taste + activity; undated profile state)
+    d0 = (pd.Timestamp(cut) - pd.Timedelta(days=WIN)).strftime("%Y-%m-%d"); d90 = (pd.Timestamp(cut) - pd.Timedelta(days=90)).strftime("%Y-%m-%d")
+    U = U0[(U0.lday < cut) & (U0.lday >= d0)]; n = U.groupby("person_id").size()
     TP = U.assign(t=U.target_id.map(ltops)).explode("t").dropna(subset=["t"])
     tc = TP.t.value_counts(); topics = topics or list(tc[tc >= 200].index)
     ti = {t: i for i, t in enumerate(topics)}; TP = TP[TP.t.isin(ti)]
-    ppl = list(n.index); pi = {p: i for i, p in enumerate(ppl)}
+    ppl = list(PJ.index); pi = {p: i for i, p in enumerate(ppl)}; TP = TP[TP.person_id.isin(pi)]
     M = csr_matrix((np.ones(len(TP)), (TP.person_id.map(pi), TP.t.map(ti))), shape=(len(ppl), len(topics)))
-    T = TfidfTransformer().fit(M[[pi[p] for p in core]]); Tt = T.transform(M).toarray(); Tt /= np.linalg.norm(Tt, axis=1, keepdims=True) + 1e-9
-    F = Tt[[pi[p] for p in core]]   # topic taste only: launch co-vote factors (SVD) clustered people by active WEEKS, not taste (dry run, Nov 15)
-    km = MiniBatchKMeans(k, random_state=seed, n_init=5, batch_size=4096).fit(F)
-    g = pd.Series(km.labels_, index=core)
-    # weak people: nearest group by topic profile (topic part of the centroids)
-    TC = np.array([Tt[[pi[p] for p in g.index[g == j]]].mean(0) for j in range(k)]); TC /= np.linalg.norm(TC, axis=1, keepdims=True) + 1e-9
-    wv = Tt[[pi[p] for p in weak]]; ok = np.linalg.norm(wv, axis=1) > 0
-    gw = pd.Series(np.argmax(wv[ok] @ TC.T, axis=1), index=np.array(weak)[ok])
-    return {"core": g, "weak": gw, "U": U, "topics": topics, "TC": TC, "n": n}
+    Tt = TfidfTransformer().fit(M[np.asarray(M.sum(1)).ravel() >= MIN_UP]).transform(M).toarray(); Tt /= np.linalg.norm(Tt, axis=1, keepdims=True) + 1e-9
+    conf = np.minimum(1.0, n.reindex(ppl).fillna(0).values / 10.0)[:, None]   # taste weight grows with evidence: full at >= 10 dated upvotes
+    X = pd.DataFrame(index=ppl)
+    X["ln_up90"] = np.log1p(U[U.lday >= d90].groupby("person_id").size().reindex(ppl).fillna(0)); X["ln_up730"] = np.log1p(n.reindex(ppl).fillna(0))
+    X["ln_comments"] = np.log1p(STYLE_RAW["comments"].reindex(ppl).fillna(0)); X["has_dated_upvote"] = (n.reindex(ppl).fillna(0) > 0).astype(float)
+    X = X.join(PROFILE.reindex(ppl).fillna(0)).join(CT.reindex(ppl).fillna(0)); X["has_comment_text"] = X.index.isin(CT.index).astype(float)
+    X = X.join(RM.reindex(ppl).fillna(0))
+    Z = (X - X.mean()) / (X.std() + 1e-9)
+    parts = [Tt * conf * TASTE_W] + [Z[c].values / np.sqrt(len(c)) for c in BLOCKS.values()]
+    F = np.hstack(parts); bad = ~np.isfinite(F)
+    if bad.any(): log("non-finite feature cells set to 0:", int(bad.sum()), "columns:", sorted({c for c in X.columns if not np.isfinite(Z[c].values).all()})[:8]); F[bad] = 0
+    km = MiniBatchKMeans(k, random_state=seed, n_init=5, batch_size=8192).fit(F)
+    g = pd.Series(km.labels_, index=ppl)
+    TC = np.array([(Tt * conf)[(km.labels_ == j)].mean(0) for j in range(k)]); TC /= np.linalg.norm(TC, axis=1, keepdims=True) + 1e-9
+    return {"core": g, "weak": pd.Series(dtype=int), "U": U, "topics": topics, "TC": TC, "n": n, "X": X, "centroids": km.cluster_centers_, "F": F}
+
+
+def nest(Gk, kf, seed=0):   # subgroups: k-means on the full feature vector inside each group, ~kf in total (proportional to size), each >= MIN_N
+    lab_, F = Gk["core"], Gk["F"]; fine = pd.Series(0, index=lab_.index); N = len(lab_)
+    for g in sorted(lab_.unique()):
+        ix = np.flatnonzero(lab_.values == g); k = int(max(1, min(round(kf * len(ix) / N), len(ix) // MIN_N)))
+        lb = MiniBatchKMeans(k, random_state=seed, n_init=3, batch_size=4096).fit_predict(F[ix]) if k > 1 else np.zeros(len(ix), int)
+        vc = pd.Series(lb).value_counts(); small = set(vc[vc < MIN_N].index)
+        if small: lb = np.array([vc.index[0] if x in small else x for x in lb])
+        fine.iloc[ix] = lb
+    return fine
+
+
+def heldout_ll(Gc, cp, cut, alpha=1.0):   # mean log P(voter) per held-out vote: P = mix_g(launch) / n_g, mix from vote share x topic affinity
+    labc = Gc["core"]; Ux = Gc["U"].assign(g=lambda x: x.person_id.map(labc), t=lambda x: x.target_id.map(ltops)).explode("t").dropna(subset=["t"]).reset_index(drop=True)
+    A = pd.crosstab(Ux.g, Ux.t).reindex(range(labc.max() + 1)).fillna(0)
+    pop = A.sum(0) / A.values.sum(); A = (A + alpha * 50 * pop).div((A + alpha * 50 * pop).sum(1), axis=0); Ar = A / pop
+    r30 = (pd.Timestamp(cp) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
+    vs = Gc["U"][Gc["U"].lday >= r30].person_id.map(labc).value_counts().reindex(range(labc.max() + 1)).fillna(0) + 1; vs = vs / vs.sum()
+    ng = labc.value_counts().reindex(range(labc.max() + 1)).fillna(0)
+    Un = U0[(U0.lday >= cp) & (U0.lday < cut) & U0.person_id.isin(labc.index)]; per = []
+    for lid, g_ in Un.groupby("target_id"):
+        if len(g_) < 20: continue
+        tps = [t for t in (ltops.get(lid) or []) if t in Ar.columns]
+        mix = vs * (Ar[tps].mean(axis=1) if tps else 1.0); mix = mix / mix.sum()
+        gv = g_.person_id.map(labc).values; per.append(float(np.mean(np.log(mix.values[gv] / ng.values[gv]))))
+    return np.array(per)
 
 
 def topic_aff(G, U):   # group x topic propensity: share of the group's upvotes on launches with that topic
@@ -90,6 +167,25 @@ def topic_aff(G, U):   # group x topic propensity: share of the group's upvotes 
     A = pd.crosstab(Ux.g, Ux.t); return A.div(A.sum(1), axis=0)
 
 
+# ---------- choose k by held-out fit (fit at C - 7 days, score last week's voters), unless --k given
+cp0 = (pd.Timestamp(CUT) - pd.Timedelta(days=7)).strftime("%Y-%m-%d"); KSEL = {}
+if "--k" not in sys.argv:
+    base = None
+    for k_ in (1, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128):
+        ll = np.mean([heldout_ll(fit_groups(cp0, k_, seed=sd), cp0, CUT) for sd in ((0,) if k_ == 1 else (0, 1))], axis=0)   # 2 k-means seeds averaged
+        if base is None: base = ll
+        d = ll - base; bs_ = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(1000)]
+        KSEL[k_] = {"mean_log_lik_per_vote": round(float(ll.mean()), 4), "gain_vs_k1 [95% launch bootstrap]": [round(float(d.mean()), 4), round(float(np.percentile(bs_, 2.5)), 4), round(float(np.percentile(bs_, 97.5)), 4)], "launches": int(len(ll))}
+        log("k", k_, KSEL[k_])
+    ks = [k_ for k_ in KSEL if k_ > 1]; best = max(ks, key=lambda k_: KSEL[k_]["mean_log_lik_per_vote"]); gb = KSEL[best]["gain_vs_k1 [95% launch bootstrap]"]
+    KF = min(k_ for k_ in ks if KSEL[k_]["gain_vs_k1 [95% launch bootstrap]"][0] >= gb[1])            # fine level: within the best k's interval
+    K = min(k_ for k_ in ks if KSEL[k_]["gain_vs_k1 [95% launch bootstrap]"][0] >= 0.85 * gb[0])      # groups: smallest k with >= 85% of the best gain
+    Gn = fit_groups(cp0, K); fn = nest(Gn, KF); llg = heldout_ll(Gn, cp0, CUT)
+    lln = heldout_ll({"core": Gn["core"] * 1000 + fn, "U": Gn["U"]} | {"core": pd.Series(pd.factorize(Gn["core"] * 1000 + fn)[0], index=fn.index)}, cp0, CUT)
+    KSEL["nested (groups x subgroups)"] = {"groups": K, "subgroups_target": KF, "gain_vs_k1 groups": round(float((llg - base).mean()), 4),
+                                         "gain_vs_k1 nested subgroups": round(float((lln - base).mean()), 4), "flat best k": best}
+    log("chosen groups", K, "subgroups ~", KF, KSEL["nested (groups x subgroups)"])
+else: KF = 3 * K
 # ---------- fit at the cut
 G = fit_groups(CUT, K); lab = pd.concat([G["core"], G["weak"]]); log("groups", lab.value_counts().sort_index().to_dict())
 # stable ids vs previous run
@@ -111,41 +207,18 @@ lab = lab.map(remap); G["core"] = G["core"].map(remap); G["weak"] = G["weak"].ma
 # ---------- subgroups (style within group)
 c30 = (pd.Timestamp(CUT) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); n30 = G["U"][G["U"].lday >= c30].groupby("person_id").size()
 ST_ = pd.DataFrame(index=lab.index)
-ST_["ln_up30"] = np.log1p(n30.reindex(lab.index).fillna(0)); ST_["comment_rate"] = (STYLE_RAW["comments"].reindex(lab.index).fillna(0) / (G["n"].reindex(lab.index) + 1)).clip(0, 3)
+ST_["ln_up30"] = np.log1p(n30.reindex(lab.index).fillna(0)); ST_["comment_rate"] = (STYLE_RAW["comments"].reindex(lab.index).fillna(0) / (G["n"].reindex(lab.index).fillna(0) + 1)).clip(0, 3)
 ST_["made"] = (STYLE_RAW["made"].reindex(lab.index).fillna(0) > 0).astype(float); ST_["reviews_stacks"] = np.log1p(STYLE_RAW["reviews_stacks"].reindex(lab.index).fillna(0))
 ST_["ln_follows"] = np.log1p(STYLE_RAW["follows"].reindex(lab.index).fillna(0))
 ST_ = ST_.join(RM.reindex(lab.index).fillna(0))
-Zs = (ST_ - ST_.mean()) / (ST_.std() + 1e-9); sub = pd.Series(0, index=lab.index)
-for g in sorted(lab.unique()):
-    idx = lab.index[lab == g]; k = 4 if len(idx) >= 4000 else 3 if len(idx) >= 1500 else 2 if len(idx) >= 200 else 1
-    if k > 1:
-        lb = KMeans(k, random_state=0, n_init=5).fit_predict(Zs.loc[idx].values)
-        vc = pd.Series(lb).value_counts(); small = set(vc[vc < MIN_N].index)
-        if small: lb = np.array([vc.index[0] if x in small else x for x in lb])
-        sub.loc[idx] = lb
+ST_ = ST_.fillna(0); Zs = (ST_ - ST_.mean()) / (ST_.std() + 1e-9); sub = pd.Series(0, index=lab.index)
+sub = nest(G, KF).reindex(lab.index).fillna(0).astype(int)
 log("subgroups done")
 
 # ---------- descriptors
 pop_t = G["U"].assign(t=G["U"].target_id.map(ltops)).explode("t").dropna(subset=["t"]); pop_share = pop_t.t.value_counts(normalize=True)
 pop_prod = G["U"].groupby("target_id").person_id.nunique() / max(1, G["U"].person_id.nunique())
-cmt_ids = E[E.kind == "comment"][["person_id", "extra"]].copy()
-cmt_ids["cid"] = cmt_ids.extra.map(lambda e: json.loads(e).get("comment_id") if isinstance(e, str) and e.startswith("{") else None)
-want = dict(zip(cmt_ids.cid.dropna().astype(str), cmt_ids.dropna(subset=["cid"]).person_id)); ctext = {}
-for f in sorted(glob.glob(os.path.join(CFD, "page*.jsonl.gz"))):
-    for line in gzip.open(f):
-        x = json.loads(line)
-        try: p_ = json.loads(x["html"])["data"]["post"]
-        except Exception: continue
-        if not p_: continue
-        def walk(nd):
-            i = str(nd.get("id"))
-            if i in want:
-                t = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", nd.get("bodyHtml") or ""))).strip()
-                if len(t) > 25: ctext.setdefault(want[i], []).append(t[:400])
-            for e in ((nd.get("replies") or {}).get("edges") or []): walk(e["node"])
-        for e in ((p_.get("threads") or {}).get("edges") or []): walk(e["node"])
-log("comment texts for people", len(ctext))
-rng = np.random.default_rng(0)
+
 
 
 POP_ROLE = RM.reindex(lab.index).fillna(0); POP_ROLE = POP_ROLE[POP_ROLE["no headline or bio"] == 0].mean()
@@ -166,6 +239,9 @@ def describe(people):
             "share_commenting": round(float((STYLE_RAW["comments"].reindex(people).fillna(0) > 0).mean()), 3),
             "share_made_or_hunted_a_launch": round(float((STYLE_RAW["made"].reindex(people).fillna(0) > 0).mean()), 3),
             "share_no_headline_or_bio": round(float(1 - hasbio.mean()), 3),
+            "profile_medians": {k_: round(float(np.expm1(PROFILE[k_].reindex(people).median()) if k_.startswith("ln_") else PROFILE[k_].reindex(people).median()), 1)
+                                for k_ in ("ln_lifetime_upvotes", "ln_followers", "ln_following", "ln_products", "account_years")},
+            "share_with_link": {k_: round(float(PROFILE[k_].reindex(people).mean()), 3) for k_ in ("has_x", "has_linkedin", "has_github")},
             "roles_among_people_with_bio": {r: round(float(rm.loc[hasbio, r].mean()), 3) for r, _ in ROLES} if hasbio.any() else {},
             "role_lift_vs_population": {r: round(float(rm.loc[hasbio, r].mean() / POP_ROLE[r]), 2) for r, _ in ROLES if POP_ROLE[r] > 0} if hasbio.any() else {},
             "topics_by_lift": [{"topic": t, "share": round(float(tg[t]), 3), "lift": round(float(v), 2)} for t, v in lift.head(10).items()],
@@ -176,7 +252,7 @@ def describe(people):
 
 sys.path.insert(0, os.path.join(SP, "phops", "experiments", "ph_predict"))
 NAMEP = """You name and describe audience segments of Product Hunt users for a launch-analytics site. The segments below were found by
-clustering real users on WHAT THEY UPVOTE ({level}). Almost everyone on Product Hunt is a developer or founder interested in AI, so those
+clustering real users on what they upvote and what KIND of user they are (activity, making, followers, curation, links, comments) ({level}). Almost everyone on Product Hunt is a developer or founder interested in AI, so those
 traits do NOT distinguish segments: a name must come from what is DISTINCTIVE for that segment versus the others (topics and products with
 high lift, role lift > 1.3, activity level relative to the population median of {pop_act:.0f} upvotes, commenting / making rates).
 Every name must be clearly different from every other name (including the fixed names listed). Do not use the words "AI", "builders",
@@ -192,7 +268,7 @@ Return an entry for every segment that is not marked FIXED."""
 
 def seg_block(sid, d, fixed=None, style=None):
     st = {k: d[k] for k in ("n_people", "median_upvotes_in_window", "median_upvotes_last_30_days", "share_commenting", "share_made_or_hunted_a_launch",
-                            "share_no_headline_or_bio", "role_lift_vs_population")}
+                            "share_no_headline_or_bio", "role_lift_vs_population", "profile_medians", "share_with_link")}
     st["topics_by_lift"] = [(t["topic"], t["lift"]) for t in d["topics_by_lift"][:8]]; st["products_distinctive"] = [(x["product"], x["lift"]) for x in d["products_distinctive"][:6]]
     if style: st["engagement_style_vs_population_z"] = style
     head = f"[{sid}] FIXED NAME: {fixed}" if fixed else f"[{sid}]"
@@ -280,7 +356,7 @@ log("calibration", json.dumps(cal)[:400])
 
 for g_ in groups:
     if g_["id"] in per_g: g_["calibration"] = {**per_g[g_["id"]], "note": "upvote rate on last week's launches in this group's top topics vs its rate elsewhere, relative to everyone else (1 = no signal); groups fit on data up to 7 days earlier"}
-pub = {"cut": CUT, "how": __doc__.split("\n    python")[0], "k": K, "people_segmented": int(len(lab)), "people_low_signal (1-4 upvotes, assigned by topics)": int(len(G["weak"])),
+pub = {"cut": CUT, "how": __doc__.split("\n    python")[0], "k": K, "k_selection (held-out log-likelihood per vote, fit 7 days earlier)": KSEL, "people_segmented": int(len(lab)), "people_low_signal (1-4 upvotes, assigned by topics)": int(len(G["weak"])),
        "people_not_active_in_window": len(inactive), "groups": groups, "calibration": cal,
        "accuracy_label": ("Segments are clusters of real held Product Hunt users by what they upvoted in the 180 days before the cut and how they engage "
                           "(aggregates only, every group and subgroup >= 20 people). Names and 'says' are Gemini summaries of the measured statistics and the "

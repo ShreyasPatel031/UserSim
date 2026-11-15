@@ -209,18 +209,20 @@ Return JSON {{"themes": ["<type>: <theme>", ...]}} with 8 themes."""
 
 
 PCARDS = json.load(open(os.environ["PERSONA_CARDS"])) if os.environ.get("PERSONA_CARDS") else {}
-def gen_persona(s, n, k=0):   # persona panel (persona_say.py prompt), first n personas; candidate = reaction + concern + question in one comment
+ALTC = {}
+def gen_persona(s, n, k=0, cards=None):   # persona panel (persona_say.py prompt), first n personas; candidate = reaction + concern + question in one comment
     import importlib.util
     sp = importlib.util.spec_from_file_location("psay_prompt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "persona_prompt.py")); pm = importlib.util.module_from_spec(sp); sp.loader.exec_module(pm)
-    P_ = (PCARDS.get(s) or {}).get("personas") or []
+    if cards and cards not in ALTC: ALTC[cards] = json.load(open(cards))
+    P_ = ((ALTC[cards] if cards else PCARDS).get(s) or {}).get("personas") or []
     if not P_: return []
     r = bys[s]; topics = ", ".join(json.loads(r.topics)) if isinstance(r.topics, str) and r.topics.startswith("[") else ""
     a = gem(pm.PROMPT.format(name=r.name, tagline=r.tagline or "", desc=(r.description or "")[:1200], topics=topics,
-                             groups="\n".join(pm.gtxt(i, g) for i, g in enumerate(P_[:n]))) + (ret_block(s, k) if k else ""), "gemini-2.5-flash", 0.0, 3000, tag=f"PERSONA{n}{'R' if k else ''}")
+                             groups="\n".join(pm.gtxt(i, g) for i, g in enumerate(P_[:n]))) + (ret_block(s, k) if k else ""), "gemini-2.5-flash", 0.0, max(3000, 260 * len(P_[:n])), tag=f"PERSONA{n}{'R' if k else ''}")
     return [f"{x.get('reaction', '')} Concern: {x.get('concern', '')} Question: {x.get('question', '')}" for x in ((a or {}).get("reactions") or []) if isinstance(x, dict)][:n]
 def gen(s, v):
     cfg = VAR[v]
-    if cfg.get("persona"): return gen_persona(s, cfg["persona"], cfg.get("k", 0))
+    if cfg.get("persona"): return gen_persona(s, cfg["persona"], cfg.get("k", 0), cfg.get("cards"))
     model, temp, n, k = cfg.get("model", "gemini-2.5-flash-lite"), cfg.get("temp", 0.7), cfg.get("n", 6), cfg.get("k", 0)
     two = None
     if cfg.get("two"):
@@ -233,6 +235,8 @@ VAR = {"R3": {"k": 3}, "R5": {"k": 5}, "R10": {"k": 10}, "N10": {"n": 10}, "N15"
        "FLASH3": {"model": "gemini-2.5-flash", "temp": 0.3}, "LITE3": {"temp": 0.3}, "SITE": {"site": True},
        "PERSONA6": {"persona": 6}, "PERSONA12": {"persona": 12}, "PERSONA12R": {"persona": 12, "k": 10}}
 if os.environ.get("BEST"): VAR["BEST"] = json.loads(os.environ["BEST"])
+for _k, _v in os.environ.items():   # SEGCARDS_<NAME>=<cards json>: data-driven panel variants (persona per selected group; size set by the cards)
+    if _k.startswith("SEGCARDS_"): VAR[_k[9:]] = {"persona": 99, "cards": _v}
 todo = [v for v in VAR if not ONLY or v in ONLY]
 
 JUDGE = """List A = themes real users raised about a product. List B = candidate themes.

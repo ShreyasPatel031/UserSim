@@ -14,7 +14,7 @@ def _gs(path, binary=False):
 
 def load(sp=None):
     loc = os.path.join(sp, "segments") if sp else None
-    pub = _gs("results/web/segments/latest.json"); mem = _gs("tmp/e5/private/segments/latest.parquet", True)
+    pub, mem = (None, None) if os.environ.get("SEG_LOCAL") else (_gs("results/web/segments/latest.json"), _gs("tmp/e5/private/segments/latest.parquet", True))
     if pub and mem: J, M = json.loads(pub), pd.read_parquet(io.BytesIO(mem))
     elif loc and os.path.exists(os.path.join(loc, "latest.json")):
         J = json.load(open(os.path.join(loc, "latest.json"))); M = pd.read_parquet(os.path.join(loc, f"members_{J['cut']}.parquet"))
@@ -29,3 +29,15 @@ def load(sp=None):
         names[f"{g['id']}"] = gname
     lab = {p: (names.get(s) or names.get(str(g)) or INACTIVE) if int(g) >= 0 else INACTIVE for p, g, s in zip(M.person_id, M.group, M.subgroup)}
     return lab, prof
+
+
+def load_groups(sp=None):
+    """person_id -> group id (int, -1 none) and group id -> public profile (name, who, says, votes_for, sizes, calibration)."""
+    loc = os.path.join(sp, "segments") if sp else None
+    pub, mem = (None, None) if os.environ.get("SEG_LOCAL") else (_gs("results/web/segments/latest.json"), _gs("tmp/e5/private/segments/latest.parquet", True))
+    if pub and mem: J, M = json.loads(pub), pd.read_parquet(io.BytesIO(mem))
+    elif loc and os.path.exists(os.path.join(loc, "latest.json")):
+        J = json.load(open(os.path.join(loc, "latest.json"))); M = pd.read_parquet(os.path.join(loc, f"members_{J['cut']}.parquet"))
+    else: return {}, {}, None
+    prof = {int(g["id"]): {k: g.get(k) for k in ("name", "who", "says", "votes_for", "n_people", "topics_by_lift", "calibration")} for g in J["groups"]}
+    return dict(zip(M.person_id, M.group.astype(int))), prof, J["cut"]

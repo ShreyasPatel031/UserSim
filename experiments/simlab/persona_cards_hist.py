@@ -41,7 +41,11 @@ for x in json.load(open(SMP)):
     if len(people) < MIN: cards[x["slug"]] = {"status": "fewer than 20 people"}; continue
     sg = pd.Series([seg.get(p, segments_lib.INACTIVE if SEGL else "no headline or bio") for p in people]); big = sg.value_counts(); big = big[big >= MIN]
     if big.empty: cards[x["slug"]] = {"status": "no segment >= 20"}; continue
-    alloc = np.floor(K * big / big.sum()).astype(int); rem = K - alloc.sum()
+    THR = float(os.environ.get("PANEL_SHARE", 0))   # panel-size rule: one persona per segment holding >= THR of the likely voters
+    if THR:
+        big = big[big / len(people) >= THR]; big = big if len(big) else sg.value_counts().head(1)
+        alloc = pd.Series(1, index=big.index); rem = 0
+    else: alloc = np.floor(K * big / big.sum()).astype(int); rem = K - alloc.sum()
     for s_ in (big / big.sum() * K - alloc).sort_values(ascending=False).index[:rem]: alloc[s_] += 1
     d90 = (pd.Timestamp(D) - pd.Timedelta(days=90)).strftime("%Y-%m-%d"); d30 = (pd.Timestamp(D) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
     Ub = U[U.person_id.isin(set(people)) & (U.lday < D) & (U.lday >= d90)]

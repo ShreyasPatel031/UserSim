@@ -18,4 +18,6 @@ def gtxt(i, g):
     tops = ", ".join(f"{t['topic']} {round(100 * t['share'])}%" for t in g.get("topic_shares", []))
     prods = ", ".join(p["product"] for p in g.get("products_they_commonly_upvoted", [])[:5])
     pr = g.get("segment_profile") or {}; who = f"; who they are: {pr['who']}" if pr.get("who") else ""
+    if pr.get("says"): who += "; what members of this group typically say on launches (paraphrased from their own past comments): " + " / ".join(pr["says"][:3])
+    if g.get("share_of_expected_voters") is not None: who += f"; share of this launch's expected voters: {round(100 * g['share_of_expected_voters'])}%"
     return f"{i + 1}. {g['segment']} ({g['n_people']} people; median {g['median_upvotes_last_30_days']:.0f} upvotes in 30 days){who}; upvote topics: {tops}; products they upvoted: {prods}"
