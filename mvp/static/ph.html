@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=25">
+<link rel="stylesheet" href="/static/ph_site.css?v=26">
 </head>
 <body>
 <div class="wrap">
@@ -161,8 +161,7 @@ const rk = (o)=> o ? `<span class="rkof">#${o.rank} of ${o.of} today</span>` : "
 function audRows(a){
   if(!a) return "";
   const r = (lab, o, tip, fmt = n0)=> o ? `<div class="aud"><span class="bl">${lab}${info(tip)}</span><b>${fmt(o.value)}</b>${rk(o)}</div>` : "";
-  return r("Expected votes from people we hold", a.expected_held_votes, "Summed chance that each of the ~10,700 active people we hold upvotes it, from their past upvotes and whether they follow the hunter or first maker. We hold about half of real voters, so real votes are higher. On past days this ranked launches close to how they finished.", v=>Number(v).toFixed(1))
-    + r("Hunter's followers", a.hunter_followers, "Followers of the person who posted it, read at 00:05 PT.")
+  return r("Hunter's followers", a.hunter_followers, "Followers of the person who posted it, read at 00:05 PT.")
     + r("People we hold who follow the hunter or makers", a.follow_ties, "Follows that existed before launch day, among people we hold.")
     + r("…of them active in the last 30 days", a.follow_ties_active, "Followers who upvoted something in the 30 days before the launch.")
     + r("People who voted for this team before", a.held_backers, "People we hold who upvoted an earlier launch by this team's members.");
@@ -275,9 +274,7 @@ function exOverview(d){
     gapC ? `People disliked this in a similar product (${esc(gapC.name)}): <i>“${esc(gapC.commenters_complained[0])}”</i> Show how this one avoids it.` : "",
     strong(down) && down.input === "team size" && raw["team size"] != null && raw["team size"] <= 2 ? `${raw["team size"] === 0 ? "No makers are" : raw["team size"] === 1 ? "Only 1 maker is" : "Only 2 makers are"} listed on the launch. Launches that list the whole team do better in our model (${votesPct(down.points)} here): add the team as makers.` :
     strong(down) ? `Weakest factor in our model: <b>${esc(down.input)}</b> (${votesPct(down.points)}). ${esc(FACTOR[down.input] || "")}` : ""].filter(Boolean);
-  return `<div class="tiles">${tile("Expected votes from people we hold", e && Number(e.value).toFixed(1), e && `#${e.rank} of ${e.of} today`)}
-    ${tile("Network we can see", f ? n0(f.value) + " followers" : "Not visible", f ? `#${f.rank} of ${f.of} launches we can see` : "team not among people we hold")}
-    ${tile("Top worry", worry && esc(worry))}
+  return `<div class="tiles">${tile("Top worry", worry && esc(worry))}
     ${tile("Biggest boost", strong(up) ? esc(up.input) : "No strong boost", strong(up) ? votesPct(up.points) : "every factor is close to typical")}
     ${own ? tile("Your earlier launch", esc(own.name), `finished #${esc(own.final_daily_rank)}`) : best ? tile("Closest past launch", esc(best.name), best.final_daily_rank ? `finished #${best.final_daily_rank}` : "") : ""}
     ${pu && pu.day_median ? tile("Heavy upvoters in its audience", pct(pu.share), `typical launch today: ${pct(pu.day_median)}`) : ""}</div>
