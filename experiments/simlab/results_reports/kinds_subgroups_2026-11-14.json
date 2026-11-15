@@ -1,0 +1,812 @@
+{
+ "day": "2026-11-14",
+ "groups": {
+  "Model & coding-tool developers": {
+   "variance_explained_by_k": {
+    "2": 0.056,
+    "3": 0.084,
+    "4": 0.105,
+    "5": 0.119,
+    "6": 0.13
+   },
+   "k_chosen": 4,
+   "separation_of_launches_vs_chance": 2.0,
+   "subgroups": [
+    {
+     "id": "1.0",
+     "people": 420,
+     "share_of_group_votes": 0.125,
+     "median_votes": 9.0,
+     "kinds_more": [
+      [
+       "AI Coding Tools",
+       1.56
+      ],
+      [
+       "AI Agent Context & Memory",
+       1.44
+      ],
+      [
+       "Voice & Note Apps",
+       1.1
+      ],
+      [
+       "AI Agent Infrastructure",
+       1.05
+      ]
+     ],
+     "kinds_less": [
+      [
+       "Business & Dev Tools",
+       0.71
+      ],
+      [
+       "Niche Hardware & Apps",
+       0.62
+      ],
+      [
+       "New AI Models",
+       0.47
+      ]
+     ],
+     "attrs": {
+      "developer": 0.98,
+      "founder": 1.14,
+      "marketer": 0.96,
+      "designer": 0.69,
+      "investor": 0.97,
+      "student": 0.52,
+      "has launched a product": 1.09,
+      "new account (< 1 year)": 1.09,
+      "veteran (5+ years)": 0.84,
+      "heavy voter (top 10%)": 0.45
+     },
+     "distinctive_launches": [
+      "SKI: Free voice coding for Claude Code, Codex and more",
+      "Dograh: The open source VAPI alternative",
+      "Prefactor: Evaluate your AI Agents in real-time",
+      "Rill Browser: The browser where Claude Code and Codex work beside you",
+      "NitroStack: Build, test, and deploy MCP servers in one place",
+      "Prelint: Prevent product drift in AI-written code",
+      "BAND for Developers: Coding agents, meet teamwork",
+      "TheySaid 4.0: See how users will react, right where you build.",
+      "Onepin: AI voiceover with every name, price and date said right",
+      "beacon.sh: Open-source self-improving memory for AI coding agents",
+      "Jockey by TwelveLabs: Your entire video library: organized, searchable, understood",
+      "Harness by Autonomous: Every coding agent, every machine, one command center."
+     ],
+     "name": "AI Agent Development",
+     "goes_for": "They go for tools that help build, evaluate, and integrate AI agents, especially those focused on voice and coding."
+    },
+    {
+     "id": "1.1",
+     "people": 537,
+     "share_of_group_votes": 0.218,
+     "median_votes": 10.0,
+     "kinds_more": [
+      [
+       "Business & Dev Tools",
+       1.39
+      ],
+      [
+       "AI Agent Infrastructure",
+       1.32
+      ],
+      [
+       "AI Coding Tools",
+       1.26
+      ],
+      [
+       "AI Agent Context & Memory",
+       0.98
+      ]
+     ],
+     "kinds_less": [
+      [
+       "AI Creative Tools",
+       0.67
+      ],
+      [
+       "Niche Hardware & Apps",
+       0.66
+      ],
+      [
+       "New AI Models",
+       0.52
+      ]
+     ],
+     "attrs": {
+      "developer": 1.01,
+      "founder": 0.86,
+      "marketer": 0.87,
+      "designer": 0.82,
+      "investor": 0.38,
+      "student": 1.06,
+      "has launched a product": 0.99,
+      "new account (< 1 year)": 0.91,
+      "veteran (5+ years)": 1.09,
+      "heavy voter (top 10%)": 0.72
+     },
+     "distinctive_launches": [
+      "Tabstack Browser Automation: Automate the web in your app or agent, no browser to host",
+      "Coldtea.ai: Make your software self-driving",
+      "Cortex: Turn API specs into docs, SDKs, and MCP servers",
+      "Tines 3B: The secure environment for agents, apps, and automations",
+      "Vendo : Let your users build their own features inside your product",
+      "Ito: AI code review that runs your code",
+      "Inferock Bench: An independent receipt for every LLM API call",
+      "Olostep: Turn the Web into Clean Data for AI",
+      "oqoqo: Build evals and custom benchmarks for real-world tasks",
+      "BrowserAct Cloud: Scrape any data from any website with one prompt",
+      "Tencent EdgeOne Makers: Ship AI agents like web apps, in minutes.",
+      "Mastra Factory: From issue to production, run by agents.",
+      "ngrok AI Gateway: One private gateway for every AI model",
+      "Context.dev: One API to scrape, enrich, and extract the internet"
+     ],
+     "name": "AI Automation & Infrastructure",
+     "goes_for": "They go for tools that automate web processes, provide robust infrastructure for AI agents, and improve code quality and testing."
+    },
+    {
+     "id": "1.2",
+     "people": 408,
+     "share_of_group_votes": 0.483,
+     "median_votes": 30.0,
+     "kinds_more": [
+      [
+       "AI Marketing & Growth",
+       1.2
+      ],
+      [
+       "AI Creative Tools",
+       1.18
+      ],
+      [
+       "Niche Hardware & Apps",
+       1.16
+      ],
+      [
+       "Voice & Note Apps",
+       1.14
+      ]
+     ],
+     "kinds_less": [
+      [
+       "AI Agent Infrastructure",
+       0.9
+      ],
+      [
+       "New AI Models",
+       0.87
+      ],
+      [
+       "AI Coding Tools",
+       0.81
+      ]
+     ],
+     "attrs": {
+      "developer": 0.9,
+      "founder": 1.11,
+      "marketer": 1.38,
+      "designer": 1.3,
+      "investor": 1.83,
+      "student": 1.5,
+      "has launched a product": 0.96,
+      "new account (< 1 year)": 1.02,
+      "veteran (5+ years)": 0.85,
+      "heavy voter (top 10%)": 2.03
+     },
+     "distinctive_launches": [
+      "Teachoo: AI that helps you learn anything and everything.",
+      "WinnerAdSpy: Turn competitor ad insights into winning app campaigns",
+      "SavorApp_AI: Capture what matters and move your intentions forward",
+      "Orbit: Stop doomscrolling. Earn every app unlock.",
+      "TwinMind for Desktop: Transcribe meetings and dictate anywhere on Mac & Windows",
+      "Cekura Bench: Speech-to-speech model benchmarks on live phone calls",
+      "Veltrix AI for E-commerce: Find how your e-commerce business could earn more",
+      "Retriever AI: Free AI browser agent: find leads, reach out, apply to jobs",
+      "Quest: Your personal AI advisor for a more intentional life",
+      "MOVO AI: The world's first long-form video agent for mobile",
+      "myPip: Vibe code, publish, and monetize games with AI",
+      "Dageno AI 2.0: See why AI recommends your competitors instead of you",
+      "Precise Edit by Ideogram: Precise editing with context window",
+      "Statable Analytics: Web analytics built for you and your AI agents"
+     ],
+     "name": "AI-Enhanced Productivity",
+     "goes_for": "They go for AI tools that enhance personal and business productivity, particularly in creative, marketing, and note-taking applications."
+    },
+    {
+     "id": "1.3",
+     "people": 336,
+     "share_of_group_votes": 0.174,
+     "median_votes": 11.5,
+     "kinds_more": [
+      [
+       "New AI Models",
+       2.34
+      ],
+      [
+       "Niche Hardware & Apps",
+       1.27
+      ],
+      [
+       "AI Creative Tools",
+       1.02
+      ],
+      [
+       "Voice & Note Apps",
+       0.92
+      ]
+     ],
+     "kinds_less": [
+      [
+       "AI Coding Tools",
+       0.79
+      ],
+      [
+       "AI Marketing & Growth",
+       0.75
+      ],
+      [
+       "Business & Dev Tools",
+       0.75
+      ]
+     ],
+     "attrs": {
+      "developer": 1.12,
+      "founder": 0.91,
+      "marketer": 0.8,
+      "designer": 1.31,
+      "investor": 1.01,
+      "student": 0.91,
+      "has launched a product": 0.96,
+      "new account (< 1 year)": 1.0,
+      "veteran (5+ years)": 1.24,
+      "heavy voter (top 10%)": 0.87
+     },
+     "distinctive_launches": [
+      "GPT-5.6: A new standard for intelligence and efficiency",
+      "OpenAI Agents API: Cloud agents, run on OpenAI's Codex harness",
+      "ChatGPT Images 2.5: Sharper visuals, faster flow, better creative control",
+      "Claude Fable 5.1: Claude\u2019s most advanced models for coding and knowledge work",
+      "Gemini 4 Carbon: Google's next frontier model",
+      "Google Gemini 3.8 Flash and Cyber: Next-gen Gemini for agents, reasoning, and cyber security",
+      "GPT-6 Astra: OpenAI's most capable model for end-to-end work",
+      "Gemini 3.7 Flash: Google's smartest workhorse yet for coding & agents",
+      "Dots by OpenAI: Always on agents built to handle everything",
+      "Agentic Video Understanding in Gemini: Agentic video analysis for faster, smarter Gemini insights",
+      "Claude Dashboards & Motion: Ask Claude for live dashboards and animated explainers",
+      "Qwen3.8-Max: Qwen\u2019s most capable model for coding and cowork",
+      "Claude Duet: Proactive agent that understands what needs your attention",
+      "Kimi K3: The world's first open 3T-class model"
+     ],
+     "name": "Cutting-Edge AI Models",
+     "goes_for": "They go for the newest and most advanced AI models from major developers, focusing on their capabilities in coding, reasoning, and creative tasks."
+    }
+   ]
+  },
+  "Indie app & Mac utility fans": {
+   "variance_explained_by_k": {
+    "2": 0.088,
+    "3": 0.117,
+    "4": 0.139,
+    "5": 0.154,
+    "6": 0.165
+   },
+   "k_chosen": 4,
+   "separation_of_launches_vs_chance": 1.67,
+   "subgroups": [
+    {
+     "id": "3.0",
+     "people": 427,
+     "share_of_group_votes": 0.167,
+     "median_votes": 15.0,
+     "kinds_more": [
+      [
+       "AI Coding Tools",
+       1.4
+      ],
+      [
+       "Mac Utility Apps",
+       1.21
+      ],
+      [
+       "Productivity & Lifestyle Apps",
+       1.21
+      ],
+      [
+       "Voice & Note Apps",
+       1.14
+      ]
+     ],
+     "kinds_less": [
+      [
+       "AI Personal Assistants",
+       0.77
+      ],
+      [
+       "AI Creative Tools",
+       0.77
+      ],
+      [
+       "AI Marketing & Growth",
+       0.65
+      ]
+     ],
+     "attrs": {
+      "developer": 1.1,
+      "founder": 0.9,
+      "marketer": 0.72,
+      "designer": 0.8,
+      "investor": 0.89,
+      "student": 0.88,
+      "has launched a product": 1.05,
+      "new account (< 1 year)": 0.92,
+      "veteran (5+ years)": 1.13,
+      "heavy voter (top 10%)": 0.64
+     },
+     "distinctive_launches": [
+      "PulseDev: Click any UI bug on localhost and your AI agent fixes it",
+      "Cortex: Turn API specs into docs, SDKs, and MCP servers",
+      "Beam.win: Run AI agents on one Mac and use its windows on another",
+      "Inbox Zero: Open-source Superhuman alternative",
+      "beacon.sh: Open-source self-improving memory for AI coding agents",
+      "bytemail: Native Mac email: every inbox, in your notch, no trackers",
+      "Talanoa: Email that feels like chat",
+      "Dedica: Check if AI agents can use your website",
+      "/dev/null: a social network for devs"
+     ],
+     "name": "AI Dev & Mac Productivity",
+     "goes_for": "They go for AI tools that assist in coding and development, alongside practical Mac utility and productivity apps."
+    },
+    {
+     "id": "3.1",
+     "people": 444,
+     "share_of_group_votes": 0.592,
+     "median_votes": 77.5,
+     "kinds_more": [
+      [
+       "AI Marketing & Growth",
+       1.17
+      ],
+      [
+       "AI Agent Infrastructure",
+       1.11
+      ],
+      [
+       "AI Agent Context & Memory",
+       1.11
+      ],
+      [
+       "New AI Models",
+       1.1
+      ]
+     ],
+     "kinds_less": [
+      [
+       "Voice & Note Apps",
+       0.83
+      ],
+      [
+       "Productivity & Lifestyle Apps",
+       0.83
+      ],
+      [
+       "Mac Utility Apps",
+       0.76
+      ]
+     ],
+     "attrs": {
+      "developer": 1.07,
+      "founder": 1.15,
+      "marketer": 1.6,
+      "designer": 0.97,
+      "investor": 0.64,
+      "student": 1.22,
+      "has launched a product": 1.22,
+      "new account (< 1 year)": 1.05,
+      "veteran (5+ years)": 0.77,
+      "heavy voter (top 10%)": 2.36
+     },
+     "distinctive_launches": [
+      "iFixAi: Independent auditing of AI agents to uncover misalignment",
+      "Reflexio: Behavioral learning that makes AI agents better over time",
+      "Assembly Studio: AI app builder that grows your revenue",
+      "Pegasus 1.6 by TwelveLabs: Transforms egocentric video into robot training data",
+      "Opengeni: Ship AI agents within minutes. Infrastructure for Agents",
+      "AdAnt 2.0: Muse for Social Media Marketing",
+      "ZenABM : Create, optimize & report on LinkedIn Ads from any AI tool",
+      "Busabase: The general system of record for AI agents",
+      "Retriever AI: Free AI browser agent: find leads, reach out, apply to jobs",
+      "Hexis: Git-backed skills, tools & context for AI agents",
+      "siift: Turn AI noise into better business decisions",
+      "Anomalo: Your data is always talking. Don't miss what it's saying.",
+      "Tines 3B: The secure environment for agents, apps, and automations",
+      "Clears: Move beyond AI coding to Agentic Software Delivery"
+     ],
+     "name": "AI Agent Infrastructure & Marketing",
+     "goes_for": "They go for advanced AI agent infrastructure, context, and memory solutions, as well as AI tools for marketing and growth."
+    },
+    {
+     "id": "3.2",
+     "people": 484,
+     "share_of_group_votes": 0.142,
+     "median_votes": 14.0,
+     "kinds_more": [
+      [
+       "Niche Hardware & Apps",
+       1.33
+      ],
+      [
+       "AI Creative Tools",
+       1.23
+      ],
+      [
+       "Voice & Note Apps",
+       1.22
+      ],
+      [
+       "New AI Models",
+       1.14
+      ]
+     ],
+     "kinds_less": [
+      [
+       "AI Agent Context & Memory",
+       0.83
+      ],
+      [
+       "AI Agent Infrastructure",
+       0.8
+      ],
+      [
+       "AI Coding Tools",
+       0.75
+      ]
+     ],
+     "attrs": {
+      "developer": 0.89,
+      "founder": 0.96,
+      "marketer": 0.92,
+      "designer": 1.1,
+      "investor": 1.38,
+      "student": 1.21,
+      "has launched a product": 0.88,
+      "new account (< 1 year)": 1.05,
+      "veteran (5+ years)": 0.91,
+      "heavy voter (top 10%)": 0.5
+     },
+     "distinctive_launches": [
+      "OpenArt Director: Direct cinematic videos through chat",
+      "Gemini Spark: Your 24/7 personal AI agent",
+      "Acti: Agentic keyboard for mobile commands and search",
+      "Paradigm: Turn any goal into a personalized, adaptive learning path.",
+      "Voiskey: AI voice typing that sounds right in every app",
+      "Hyperfocus: Planner that turns goals into daily progress",
+      "OpenSEO: The open source Ahrefs alternative",
+      "Meridian: Don't let your work go unnoticed. Get promoted!"
+     ],
+     "name": "Creative AI & Niche Apps",
+     "goes_for": "They go for AI tools that foster creativity, new AI models, and niche hardware or software applications."
+    },
+    {
+     "id": "3.3",
+     "people": 360,
+     "share_of_group_votes": 0.098,
+     "median_votes": 10.0,
+     "kinds_more": [
+      [
+       "Mac Utility Apps",
+       2.03
+      ],
+      [
+       "Niche Hardware & Apps",
+       1.72
+      ],
+      [
+       "Productivity & Lifestyle Apps",
+       1.69
+      ],
+      [
+       "Voice & Note Apps",
+       1.46
+      ]
+     ],
+     "kinds_less": [
+      [
+       "AI Agent Infrastructure",
+       0.56
+      ],
+      [
+       "AI Marketing & Growth",
+       0.55
+      ],
+      [
+       "New AI Models",
+       0.51
+      ]
+     ],
+     "attrs": {
+      "developer": 0.94,
+      "founder": 0.99,
+      "marketer": 0.7,
+      "designer": 1.14,
+      "investor": 1.06,
+      "student": 0.58,
+      "has launched a product": 0.82,
+      "new account (< 1 year)": 0.97,
+      "veteran (5+ years)": 1.26,
+      "heavy voter (top 10%)": 0.42
+     },
+     "distinctive_launches": [
+      "Badgey: Your iPhone becomes a name badge that faces the room"
+     ],
+     "name": "Core Mac Utilities",
+     "goes_for": "They go for essential Mac utility apps, niche hardware, and general productivity and lifestyle tools."
+    }
+   ]
+  }
+ },
+ "subgroup_base_share_of_all_votes": {
+  "AI Agent Development": 0.029,
+  "AI Automation & Infrastructure": 0.051,
+  "AI-Enhanced Productivity": 0.113,
+  "Cutting-Edge AI Models": 0.041,
+  "AI Dev & Mac Productivity": 0.053,
+  "AI Agent Infrastructure & Marketing": 0.188,
+  "Creative AI & Niche Apps": 0.045,
+  "Core Mac Utilities": 0.031
+ },
+ "top10": [
+  {
+   "rank": 1,
+   "name": "HiringNow",
+   "votes": 298,
+   "subgroup_lift": {
+    "AI Agent Development": 0.7,
+    "AI Automation & Infrastructure": 0.74,
+    "AI-Enhanced Productivity": 1.08,
+    "Cutting-Edge AI Models": 0.67,
+    "AI Dev & Mac Productivity": 1.1,
+    "AI Agent Infrastructure & Marketing": 1.37,
+    "Creative AI & Niche Apps": 1.21,
+    "Core Mac Utilities": 0.96
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.02,
+    "AI Automation & Infrastructure": 0.037,
+    "AI-Enhanced Productivity": 0.122,
+    "Cutting-Edge AI Models": 0.027,
+    "AI Dev & Mac Productivity": 0.058,
+    "AI Agent Infrastructure & Marketing": 0.259,
+    "Creative AI & Niche Apps": 0.054,
+    "Core Mac Utilities": 0.029
+   }
+  },
+  {
+   "rank": 2,
+   "name": "Businesses in ChatGPT",
+   "votes": 218,
+   "subgroup_lift": {
+    "AI Agent Development": 0.64,
+    "AI Automation & Infrastructure": 0.59,
+    "AI-Enhanced Productivity": 1.17,
+    "Cutting-Edge AI Models": 2.67,
+    "AI Dev & Mac Productivity": 0.84,
+    "AI Agent Infrastructure & Marketing": 1.18,
+    "Creative AI & Niche Apps": 1.34,
+    "Core Mac Utilities": 0.56
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.019,
+    "AI Automation & Infrastructure": 0.03,
+    "AI-Enhanced Productivity": 0.131,
+    "Cutting-Edge AI Models": 0.109,
+    "AI Dev & Mac Productivity": 0.044,
+    "AI Agent Infrastructure & Marketing": 0.223,
+    "Creative AI & Niche Apps": 0.06,
+    "Core Mac Utilities": 0.017
+   }
+  },
+  {
+   "rank": 3,
+   "name": "Dex Semantics",
+   "votes": 207,
+   "subgroup_lift": {
+    "AI Agent Development": 2.16,
+    "AI Automation & Infrastructure": 1.75,
+    "AI-Enhanced Productivity": 1.08,
+    "Cutting-Edge AI Models": 1.51,
+    "AI Dev & Mac Productivity": 1.76,
+    "AI Agent Infrastructure & Marketing": 1.32,
+    "Creative AI & Niche Apps": 0.73,
+    "Core Mac Utilities": 0.68
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.063,
+    "AI Automation & Infrastructure": 0.089,
+    "AI-Enhanced Productivity": 0.121,
+    "Cutting-Edge AI Models": 0.061,
+    "AI Dev & Mac Productivity": 0.093,
+    "AI Agent Infrastructure & Marketing": 0.249,
+    "Creative AI & Niche Apps": 0.033,
+    "Core Mac Utilities": 0.021
+   }
+  },
+  {
+   "rank": 4,
+   "name": "Gemini Robotics 2.5",
+   "votes": 165,
+   "subgroup_lift": {
+    "AI Agent Development": 0.52,
+    "AI Automation & Infrastructure": 0.91,
+    "AI-Enhanced Productivity": 1.58,
+    "Cutting-Edge AI Models": 4.86,
+    "AI Dev & Mac Productivity": 0.75,
+    "AI Agent Infrastructure & Marketing": 1.19,
+    "Creative AI & Niche Apps": 1.44,
+    "Core Mac Utilities": 0.61
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.015,
+    "AI Automation & Infrastructure": 0.046,
+    "AI-Enhanced Productivity": 0.178,
+    "Cutting-Edge AI Models": 0.198,
+    "AI Dev & Mac Productivity": 0.039,
+    "AI Agent Infrastructure & Marketing": 0.225,
+    "Creative AI & Niche Apps": 0.065,
+    "Core Mac Utilities": 0.019
+   }
+  },
+  {
+   "rank": 5,
+   "name": "Blender 5.3",
+   "votes": 133,
+   "subgroup_lift": {
+    "AI Agent Development": 0.46,
+    "AI Automation & Infrastructure": 0.64,
+    "AI-Enhanced Productivity": 1.25,
+    "Cutting-Edge AI Models": 3.27,
+    "AI Dev & Mac Productivity": 0.98,
+    "AI Agent Infrastructure & Marketing": 1.09,
+    "Creative AI & Niche Apps": 1.6,
+    "Core Mac Utilities": 1.18
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.013,
+    "AI Automation & Infrastructure": 0.032,
+    "AI-Enhanced Productivity": 0.14,
+    "Cutting-Edge AI Models": 0.133,
+    "AI Dev & Mac Productivity": 0.052,
+    "AI Agent Infrastructure & Marketing": 0.205,
+    "Creative AI & Niche Apps": 0.072,
+    "Core Mac Utilities": 0.036
+   }
+  },
+  {
+   "rank": 6,
+   "name": "CaptureFlow",
+   "votes": 105,
+   "subgroup_lift": {
+    "AI Agent Development": 1.1,
+    "AI Automation & Infrastructure": 0.9,
+    "AI-Enhanced Productivity": 0.95,
+    "Cutting-Edge AI Models": 0.83,
+    "AI Dev & Mac Productivity": 1.63,
+    "AI Agent Infrastructure & Marketing": 1.26,
+    "Creative AI & Niche Apps": 1.62,
+    "Core Mac Utilities": 2.97
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.032,
+    "AI Automation & Infrastructure": 0.046,
+    "AI-Enhanced Productivity": 0.107,
+    "Cutting-Edge AI Models": 0.034,
+    "AI Dev & Mac Productivity": 0.086,
+    "AI Agent Infrastructure & Marketing": 0.237,
+    "Creative AI & Niche Apps": 0.073,
+    "Core Mac Utilities": 0.091
+   }
+  },
+  {
+   "rank": 7,
+   "name": "Kokonut UI",
+   "votes": 101,
+   "subgroup_lift": {
+    "AI Agent Development": 2.69,
+    "AI Automation & Infrastructure": 1.76,
+    "AI-Enhanced Productivity": 0.96,
+    "Cutting-Edge AI Models": 1.01,
+    "AI Dev & Mac Productivity": 2.67,
+    "AI Agent Infrastructure & Marketing": 1.29,
+    "Creative AI & Niche Apps": 0.75,
+    "Core Mac Utilities": 1.08
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.078,
+    "AI Automation & Infrastructure": 0.089,
+    "AI-Enhanced Productivity": 0.108,
+    "Cutting-Edge AI Models": 0.041,
+    "AI Dev & Mac Productivity": 0.141,
+    "AI Agent Infrastructure & Marketing": 0.243,
+    "Creative AI & Niche Apps": 0.034,
+    "Core Mac Utilities": 0.033
+   }
+  },
+  {
+   "rank": 8,
+   "name": "Uber Parking",
+   "votes": 97,
+   "subgroup_lift": {
+    "AI Agent Development": 0.64,
+    "AI Automation & Infrastructure": 0.64,
+    "AI-Enhanced Productivity": 0.91,
+    "Cutting-Edge AI Models": 1.72,
+    "AI Dev & Mac Productivity": 0.99,
+    "AI Agent Infrastructure & Marketing": 1.23,
+    "Creative AI & Niche Apps": 2.01,
+    "Core Mac Utilities": 2.09
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.019,
+    "AI Automation & Infrastructure": 0.032,
+    "AI-Enhanced Productivity": 0.103,
+    "Cutting-Edge AI Models": 0.07,
+    "AI Dev & Mac Productivity": 0.052,
+    "AI Agent Infrastructure & Marketing": 0.232,
+    "Creative AI & Niche Apps": 0.09,
+    "Core Mac Utilities": 0.064
+   }
+  },
+  {
+   "rank": 9,
+   "name": "Antelog",
+   "votes": 94,
+   "subgroup_lift": {
+    "AI Agent Development": 2.4,
+    "AI Automation & Infrastructure": 1.53,
+    "AI-Enhanced Productivity": 1.06,
+    "Cutting-Edge AI Models": 0.95,
+    "AI Dev & Mac Productivity": 2.48,
+    "AI Agent Infrastructure & Marketing": 1.36,
+    "Creative AI & Niche Apps": 0.72,
+    "Core Mac Utilities": 0.9
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.07,
+    "AI Automation & Infrastructure": 0.077,
+    "AI-Enhanced Productivity": 0.119,
+    "Cutting-Edge AI Models": 0.038,
+    "AI Dev & Mac Productivity": 0.131,
+    "AI Agent Infrastructure & Marketing": 0.257,
+    "Creative AI & Niche Apps": 0.032,
+    "Core Mac Utilities": 0.028
+   }
+  },
+  {
+   "rank": 10,
+   "name": "Replay",
+   "votes": 92,
+   "subgroup_lift": {
+    "AI Agent Development": 0.53,
+    "AI Automation & Infrastructure": 0.4,
+    "AI-Enhanced Productivity": 0.68,
+    "Cutting-Edge AI Models": 0.57,
+    "AI Dev & Mac Productivity": 2.22,
+    "AI Agent Infrastructure & Marketing": 1.46,
+    "Creative AI & Niche Apps": 2.25,
+    "Core Mac Utilities": 3.46
+   },
+   "subgroup_share": {
+    "AI Agent Development": 0.015,
+    "AI Automation & Infrastructure": 0.02,
+    "AI-Enhanced Productivity": 0.076,
+    "Cutting-Edge AI Models": 0.023,
+    "AI Dev & Mac Productivity": 0.118,
+    "AI Agent Infrastructure & Marketing": 0.276,
+    "Creative AI & Niche Apps": 0.101,
+    "Core Mac Utilities": 0.106
+   }
+  }
+ ],
+ "usd": 0.0022
+}
