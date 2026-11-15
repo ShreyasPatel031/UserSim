@@ -1,0 +1,56 @@
+{
+ "over_count_launches": 165,
+ "launches_with_held_and_shown": 7045,
+ "excess_total": 12266,
+ "heavy cut (upvotes in 30 days)": 12.0,
+ "candidates": {
+  "oc>=5 & oc share>=0.1": {
+   "recall of over-count excess %": 100.0,
+   "flagged share of held voters on over-count launches %": 67.5,
+   "flagged share of held voters on at-or-below-count launches %": 29.9,
+   "people flagged": 2593
+  },
+  "oc>=5 & oc share>=0.2": {
+   "recall of over-count excess %": 99.0,
+   "flagged share of held voters on over-count launches %": 51.5,
+   "flagged share of held voters on at-or-below-count launches %": 14.4,
+   "people flagged": 1874
+  },
+  "oc>=5 & oc share>=0.3": {
+   "recall of over-count excess %": 95.0,
+   "flagged share of held voters on over-count launches %": 37.3,
+   "flagged share of held voters on at-or-below-count launches %": 7.0,
+   "people flagged": 1378
+  },
+  "oc>=3 & oc share>=0.3": {
+   "recall of over-count excess %": 98.1,
+   "flagged share of held voters on over-count launches %": 40.1,
+   "flagged share of held voters on at-or-below-count launches %": 7.5,
+   "people flagged": 2097
+  },
+  "oc>=8 & oc share>=0.2": {
+   "recall of over-count excess %": 97.3,
+   "flagged share of held voters on over-count launches %": 47.5,
+   "flagged share of held voters on at-or-below-count launches %": 13.0,
+   "people flagged": 1334
+  },
+  "oc>=5": {
+   "recall of over-count excess %": 100.0,
+   "flagged share of held voters on over-count launches %": 73.5,
+   "flagged share of held voters on at-or-below-count launches %": 42.6,
+   "people flagged": 2989
+  },
+  "oc>=5 & young(<365d)": {
+   "recall of over-count excess %": 90.2,
+   "flagged share of held voters on over-count launches %": 32.8,
+   "flagged share of held voters on at-or-below-count launches %": 18.4,
+   "people flagged": 1473
+  },
+  "oc>=5 & heavy": {
+   "recall of over-count excess %": 87.7,
+   "flagged share of held voters on over-count launches %": 43.2,
+   "flagged share of held voters on at-or-below-count launches %": 23.7,
+   "people flagged": 1167
+  }
+ }
+}

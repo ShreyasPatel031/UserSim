@@ -1,0 +1,43 @@
+{
+ "2026": {
+  "days": 184,
+  "launches": 4830,
+  "zero_maker_launches": 0,
+  "top3": {
+   "arm2": 56.5,
+   "fix": 55.8,
+   "fix - arm2 [95% day bootstrap]": [
+    -0.72,
+    -2.54,
+    1.09
+   ]
+  },
+  "top5": {
+   "arm2": 65.2,
+   "fix": 65.2,
+   "fix - arm2 [95% day bootstrap]": [
+    0.0,
+    -0.87,
+    0.87
+   ]
+  },
+  "top10": {
+   "arm2": 76.5,
+   "fix": 76.5,
+   "fix - arm2 [95% day bootstrap]": [
+    0.05,
+    -0.38,
+    0.49
+   ]
+  }
+ },
+ "decision (pre-registered: adopt if all six lower bounds > -1.0)": {
+  "lower bounds": {
+   "2026 top3": -2.54,
+   "2026 top5": -0.87,
+   "2026 top10": -0.38
+  },
+  "adopt": false,
+  "clear gain at top 3 in both years": false
+ }
+}

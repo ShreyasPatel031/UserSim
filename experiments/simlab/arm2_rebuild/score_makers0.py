@@ -32,7 +32,7 @@ for yr, Y in D.groupby("year"):
                           "fix - arm2 [95% day bootstrap]": [round(float(d.mean()), 2), round(float(np.percentile(bs, 2.5)), 2), round(float(np.percentile(bs, 97.5)), 2)]}
     res[yr] = out
 S = pd.DataFrame(sub)
-for yr, g in S.groupby("year"):
+for yr, g in (S.groupby("year") if len(S) else []):
     res[yr]["zero-maker launches: predicted within-day rank change (fix - arm2; negative = moved up)"] = {
         "n": int(len(g)), "mean": round(float(g.d_rank.mean()), 2), "median": float(g.d_rank.median()), "share moved up": round(float((g.d_rank < 0).mean()), 3),
         "share unchanged": round(float((g.d_rank == 0).mean()), 3)}

@@ -1,0 +1,94 @@
+{
+ "design": "Backer prediction with likely-discounted (ring) votes removed (orchestrator 00:51Z Nov 15, item 2). Strict, same rules as backer_arms_score.py:\no = held-before-freeze AND re-read-after-close people whose upvote list contains the launch, MINUS people flagged by ringlib.dated_flags\n(reads fetched before 00:00 PT of D, over-count launches dated before D-1). N = |o|; each list ranked within the re-read people (flagged removed).\nLists: CF-only (trained with ring votes) and CF-only/ring (ring votes removed from CF training); raw most-active and raw/ring (activity\ncounted without flagged people, flagged people excluded). Pooled recall; paired differences; DAY bootstrap 2000.\nAlso: share of observed backers removed as flagged.",
+ "per_day": {
+  "2026-11-08": {
+   "flagged people (dated)": 0,
+   "over-count launches used": 0,
+   "observed backers before / after removing flagged": [
+    612,
+    612
+   ]
+  },
+  "2026-11-09": {
+   "flagged people (dated)": 0,
+   "over-count launches used": 4,
+   "observed backers before / after removing flagged": [
+    749,
+    735
+   ]
+  },
+  "2026-11-10": {
+   "flagged people (dated)": 30,
+   "over-count launches used": 20,
+   "observed backers before / after removing flagged": [
+    124,
+    124
+   ]
+  },
+  "2026-11-11": {
+   "flagged people (dated)": 305,
+   "over-count launches used": 63,
+   "observed backers before / after removing flagged": [
+    65,
+    45
+   ]
+  },
+  "2026-11-12": {
+   "flagged people (dated)": 669,
+   "over-count launches used": 95,
+   "observed backers before / after removing flagged": [
+    108,
+    94
+   ]
+  }
+ },
+ "launches": 128,
+ "observed_backers (ring removed)": 1610,
+ "CF-only": [
+  25.2,
+  4.5,
+  29.6
+ ],
+ "CF-only/ring": [
+  25.2,
+  4.5,
+  30.0
+ ],
+ "raw": [
+  21.1,
+  4.0,
+  25.1
+ ],
+ "raw/ring": [
+  21.2,
+  4.5,
+  25.2
+ ],
+ "CF-only/ring minus CF-only (paired)": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "raw/ring minus raw (paired)": [
+  0.1,
+  -0.2,
+  1.1
+ ],
+ "CF-only/ring minus raw/ring (paired)": [
+  3.9,
+  0.0,
+  4.8
+ ],
+ "CF-only minus raw (paired)": [
+  4.0,
+  0.5,
+  4.9
+ ],
+ "per-day differences CF-only/ring minus CF-only": {
+  "2026-11-08": 0.0,
+  "2026-11-09": 0.0,
+  "2026-11-10": 0.0,
+  "2026-11-11": 0.0,
+  "2026-11-12": 0.0
+ }
+}
