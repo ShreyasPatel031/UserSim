@@ -25,8 +25,11 @@ def load(sp=None):
         for s in g.get("subgroups", []):
             lab = f"{gname} / {s.get('name') or 'subgroup ' + s['id']}"; names[s["id"]] = lab
             prof[lab] = {"segment_id": s["id"], "group": gname, "who": s.get("who") or g.get("who"), "says": s.get("says") or g.get("says"),
-                         "votes_for": s.get("votes_for") or g.get("votes_for"), "group_size": g["n_people"], "subgroup_size": s["n_people"], "segments_cut": J["cut"]}
+                         "votes_for": s.get("votes_for") or g.get("votes_for"), "group_size": g["n_people"], "subgroup_size": s["n_people"], "segments_cut": J["cut"],
+                         "votes_for_holds": (s.get("calibration") or {}).get("votes_for_holds")}
         names[f"{g['id']}"] = gname
+        prof[gname] = {"segment_id": str(g["id"]), "group": gname, "who": g.get("who"), "says": g.get("says"), "votes_for": g.get("votes_for"),
+                       "group_size": g["n_people"], "segments_cut": J["cut"], "votes_for_holds": (g.get("calibration") or {}).get("votes_for_holds")}
     lab = {p: (names.get(s) or names.get(str(g)) or INACTIVE) if int(g) >= 0 else INACTIVE for p, g, s in zip(M.person_id, M.group, M.subgroup)}
     return lab, prof
 

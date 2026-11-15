@@ -8,27 +8,50 @@
    "2026-11-11",
    "2026-11-12"
   ],
-  "launch_group_cells": 1115,
-  "count calibration: slope of observed on predicted (1 = calibrated)": 0.536,
-  "count correlation": 0.591,
+  "launch_group_cells": 444,
+  "count calibration: slope of observed on predicted (1 = calibrated)": 0.513,
+  "count correlation": 0.576,
   "observed / predicted total": 0.809,
   "group-mix total variation (launches with >= 10 observed voters) [mean, 95% launch bootstrap]": {
    "expected-voters model": [
-    0.185,
-    0.156,
-    0.219
+    0.09,
+    0.073,
+    0.109
    ],
    "base mix": [
-    0.24,
-    0.216,
-    0.266
+    0.1,
+    0.089,
+    0.114
    ],
    "model minus base (paired)": [
-    -0.054,
-    -0.075,
-    -0.032
+    -0.011,
+    -0.026,
+    0.008
    ]
+  },
+  "subgroup-level check": {
+   "launch_group_cells": 1202,
+   "count calibration: slope of observed on predicted (1 = calibrated)": 0.533,
+   "count correlation": 0.58,
+   "observed / predicted total": 0.809,
+   "group-mix total variation (launches with >= 10 observed voters) [mean, 95% launch bootstrap]": {
+    "expected-voters model": [
+     0.2,
+     0.17,
+     0.235
+    ],
+    "base mix": [
+     0.263,
+     0.239,
+     0.29
+    ],
+    "model minus base (paired)": [
+     -0.063,
+     -0.086,
+     -0.041
+    ]
+   }
   }
  },
- "label": "Expected voters by group: the CF-only voter model's per-person probabilities (people we track; reads before 00:00 PT), recalibrated on 5 earlier scored days (isotonic reliability curve; tail factor 1.24 for voters outside each 2,000-person list), summed by data-driven group (segments cut 2026-11-15). 'Expected votes on PH' multiplies by 2.7 displayed votes per tracked voter (history median; approximate). Leave-one-day-out check: observed/predicted 0.809, group-count correlation 0.591; group mix vs base mix [-0.054, -0.075, -0.032] (negative = better than base)."
+ "label": "Expected voters by group: the CF-only voter model's per-person probabilities (people we track; reads before 00:00 PT), recalibrated on 5 earlier scored days (isotonic reliability curve; tail factor 1.24 for voters outside each 2,000-person list), summed by data-driven group (segments cut 2026-11-15). 'Expected votes on PH' multiplies by 2.7 displayed votes per tracked voter (history median; approximate). Leave-one-day-out check: observed/predicted 0.809, group-count correlation 0.576; group mix vs base mix [-0.011, -0.026, 0.008] (negative = better than base)."
 }

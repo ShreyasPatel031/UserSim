@@ -23,3 +23,6 @@
 {"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0839, "note": "27 Gemini 2.5 Flash calls, tokens in 28602 out 30137"}
 {"t": "panel_groups_harness", "provider": "gcp", "usd": 11.79, "note": "panel variants V1 x4, HYBRID_V1, V2_SHARE5, HYBRID_V2, HYBRID_V2_S5, HYBRID_V2_K24 on the 279-launch harness, gens + judges + complaint judges"}
 {"t": "segments_naming_and_nov14", "provider": "gcp", "usd": 0.6, "note": "segment naming runs (v1, v2 live, two Aug-1 fits) + Nov 14 panel rebuilds; estimated"}
+{"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0775, "note": "28 Gemini 2.5 Flash calls, tokens in 26999 out 27767"}
+{"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.1123, "note": "28 Gemini 2.5 Flash calls, tokens in 36530 out 40519"}
+{"t": "segments_3to5_and_harness", "provider": "gcp", "usd": 2.9, "note": "HYBRID_V3_K24 harness ($2.59) + segment naming + Nov 14 panel rebuilds"}

@@ -167,54 +167,91 @@ def topic_aff(G, U):   # group x topic propensity: share of the group's upvotes 
     A = pd.crosstab(Ux.g, Ux.t); return A.div(A.sum(1), axis=0)
 
 
-# ---------- choose k by held-out fit (fit at C - 7 days, score last week's voters), unless --k given
+# ---------- choose k (Shreyas, Nov 15: "keep 3-5, then 3-5 subgroups if necessary"): top level k in 3..5 by held-out fit (fit at C - 7 days,
+# score last week's voters); k = 12 reported for the trade-off. Subgroups: 3..5 per group only where splitting adds held-out fit.
 cp0 = (pd.Timestamp(CUT) - pd.Timedelta(days=7)).strftime("%Y-%m-%d"); KSEL = {}
-if "--k" not in sys.argv:
-    base = None
-    for k_ in (1, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128):
-        ll = np.mean([heldout_ll(fit_groups(cp0, k_, seed=sd), cp0, CUT) for sd in ((0,) if k_ == 1 else (0, 1))], axis=0)   # 2 k-means seeds averaged
-        if base is None: base = ll
-        d = ll - base; bs_ = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(1000)]
-        KSEL[k_] = {"mean_log_lik_per_vote": round(float(ll.mean()), 4), "gain_vs_k1 [95% launch bootstrap]": [round(float(d.mean()), 4), round(float(np.percentile(bs_, 2.5)), 4), round(float(np.percentile(bs_, 97.5)), 4)], "launches": int(len(ll))}
-        log("k", k_, KSEL[k_])
-    ks = [k_ for k_ in KSEL if k_ > 1]; best = max(ks, key=lambda k_: KSEL[k_]["mean_log_lik_per_vote"]); gb = KSEL[best]["gain_vs_k1 [95% launch bootstrap]"]
-    KF = min(k_ for k_ in ks if KSEL[k_]["gain_vs_k1 [95% launch bootstrap]"][0] >= gb[1])            # fine level: within the best k's interval
-    K = min(k_ for k_ in ks if KSEL[k_]["gain_vs_k1 [95% launch bootstrap]"][0] >= 0.85 * gb[0])      # groups: smallest k with >= 85% of the best gain
-    Gn = fit_groups(cp0, K); fn = nest(Gn, KF); llg = heldout_ll(Gn, cp0, CUT)
-    lln = heldout_ll({"core": Gn["core"] * 1000 + fn, "U": Gn["U"]} | {"core": pd.Series(pd.factorize(Gn["core"] * 1000 + fn)[0], index=fn.index)}, cp0, CUT)
-    KSEL["nested (groups x subgroups)"] = {"groups": K, "subgroups_target": KF, "gain_vs_k1 groups": round(float((llg - base).mean()), 4),
-                                         "gain_vs_k1 nested subgroups": round(float((lln - base).mean()), 4), "flat best k": best}
-    log("chosen groups", K, "subgroups ~", KF, KSEL["nested (groups x subgroups)"])
-else: KF = 3 * K
-# ---------- fit at the cut
-G = fit_groups(CUT, K); lab = pd.concat([G["core"], G["weak"]]); log("groups", lab.value_counts().sort_index().to_dict())
-# stable ids vs previous run
-prev = json.loads(gcat(f"{B}/results/web/segments/latest.json") or "{}") if UP else (json.load(open(os.path.join(OUTD, "latest.json"))) if os.path.exists(os.path.join(OUTD, "latest.json")) else {})
-if "--rename" in sys.argv: prev = {}   # one-off: segmentation design changed (v1 taste -> v2 kind-of-user); do not inherit old names
-remap = {j: j for j in range(K)}; prev_names = {}
-if prev.get("groups"):
-    pc = {g["id"]: np.array(g["_topic_centroid"]) for g in prev["groups"] if "_topic_centroid" in g and g.get("_topics") == G["topics"]}
-    if pc:
-        ids = sorted(pc); S = G["TC"] @ np.array([pc[i] for i in ids]).T; r, c = linear_sum_assignment(-S)
-        used = set()
-        for a, b in zip(r, c):
-            if S[a, b] > 0.8: remap[a] = ids[b]; used.add(ids[b])
-        free = [i for i in range(100) if i not in used]
-        for a in range(K):
-            if a not in [x for x, y in zip(r, c) if S[x, y] > 0.8]: remap[a] = free.pop(0)
-        prev_names = {g["id"]: g for g in prev["groups"]}
-lab = lab.map(remap); G["core"] = G["core"].map(remap); G["weak"] = G["weak"].map(remap)
+def bsd(d):
+    b_ = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(1000)]
+    return [round(float(d.mean()), 4), round(float(np.percentile(b_, 2.5)), 4), round(float(np.percentile(b_, 97.5)), 4)]
+base = heldout_ll(fit_groups(cp0, 1), cp0, CUT)
+for k_ in (3, 4, 5, 12):
+    ll = np.mean([heldout_ll(fit_groups(cp0, k_, seed=sd), cp0, CUT) for sd in (0, 1)], axis=0)
+    KSEL[k_] = {"mean_log_lik_per_vote": round(float(ll.mean()), 4), "gain_vs_k1 [95% launch bootstrap]": bsd(ll - base), "launches": int(len(ll))}
+    log("k", k_, KSEL[k_])
+if "--k" not in sys.argv: K = max((3, 4, 5), key=lambda k_: KSEL[k_]["mean_log_lik_per_vote"])
+Gn = fit_groups(cp0, K); lln = heldout_ll(Gn, cp0, CUT)
 
-# ---------- subgroups (style within group)
+
+def split(Gk, g, ks, seed=0):   # split group g of fit Gk into ks k-means subgroups (each >= MIN_N); returns per-person sub index (0 elsewhere)
+    lab_, F = Gk["core"], Gk["F"]; out = pd.Series(0, index=lab_.index); ix = np.flatnonzero(lab_.values == g)
+    if ks <= 1 or len(ix) < ks * MIN_N: return out
+    lb = KMeans(ks, random_state=seed, n_init=5).fit_predict(F[ix]); vc = pd.Series(lb).value_counts(); small = set(vc[vc < MIN_N].index)
+    if small: lb = np.array([vc.index[0] if x in small else x for x in lb])
+    out.iloc[ix] = pd.factorize(lb)[0]; return out
+
+
+SUBK_cp, SUBSEL = {}, {}
+for g in range(K):
+    best = (1, None)
+    for ks in (3, 4, 5):
+        sg_ = split(Gn, g, ks); lab2 = pd.Series(pd.factorize(Gn["core"].astype(str) + "." + sg_.astype(str))[0], index=sg_.index)
+        d = heldout_ll({"core": lab2, "U": Gn["U"]}, cp0, CUT) - lln; b_ = bsd(d)
+        SUBSEL[f"{g}:{ks}"] = {"gain_vs_unsplit [95% launch bootstrap]": b_}
+        if b_[1] > 0 and (best[1] is None or b_[0] > best[1][0]): best = (ks, b_)
+    SUBK_cp[g] = best[0]
+nest_lab = pd.Series(0, index=Gn["core"].index)
+for g in range(K): nest_lab = nest_lab + split(Gn, g, SUBK_cp[g])
+labn = pd.Series(pd.factorize(Gn["core"].astype(str) + "." + nest_lab.astype(str))[0], index=nest_lab.index)
+lln2 = heldout_ll({"core": labn, "U": Gn["U"]}, cp0, CUT)
+KSEL["chosen"] = {"groups": K, "subgroups per group (fit 7 days earlier)": SUBK_cp, "gain_vs_k1 groups": bsd(lln - base), "gain_vs_k1 groups+subgroups": bsd(lln2 - base),
+                  "chosen minus k=12 (log-lik per vote)": round(KSEL[K]["mean_log_lik_per_vote"] - KSEL[12]["mean_log_lik_per_vote"], 4),
+                  "groups+subgroups minus k=12": round(float(lln2.mean()) - KSEL[12]["mean_log_lik_per_vote"], 4), "subgroup splits tested": SUBSEL}
+log("chosen", json.dumps({k: v for k, v in KSEL["chosen"].items() if k != "subgroup splits tested"}))
+
+# ---------- fit at the cut; stable ids by member overlap with the previous run
+G = fit_groups(CUT, K); lab = pd.concat([G["core"], G["weak"]]); log("groups", lab.value_counts().sort_index().to_dict())
+def overlap_map(cur, prv, thr=0.5):   # Hungarian on Jaccard of member sets; returns {cur label: prev label} for pairs with J >= thr, and the J values
+    cl, pl = sorted(cur.unique()), sorted(prv.unique()); cs = {a: set(cur.index[cur == a]) for a in cl}; ps = {b: set(prv.index[prv == b]) for b in pl}
+    J = np.array([[len(cs[a] & ps[b]) / max(1, len(cs[a] | ps[b])) for b in pl] for a in cl]); r, c = linear_sum_assignment(-J)
+    return {cl[a]: pl[b] for a, b in zip(r, c) if J[a, b] >= thr}, {cl[a]: round(float(J[a, b]), 3) for a, b in zip(r, c)}
+prev = json.loads(gcat(f"{B}/results/web/segments/latest.json") or "{}") if UP else (json.load(open(os.path.join(OUTD, "latest.json"))) if os.path.exists(os.path.join(OUTD, "latest.json")) else {})
+if "--rename" in sys.argv: prev = {}   # segmentation design changed; do not inherit old ids or names
+prevM = None
+if prev.get("groups"):
+    raw = subprocess.run(["gsutil", "cat", f"{B}/tmp/e5/private/segments/latest.parquet"], capture_output=True).stdout if UP else None
+    import io  # noqa: E402
+    prevM = pd.read_parquet(io.BytesIO(raw)) if raw else (pd.read_parquet(os.path.join(OUTD, f"members_{prev['cut']}.parquet")) if os.path.exists(os.path.join(OUTD, f"members_{prev['cut']}.parquet")) else None)
+remap, JG, prev_names = {j: j for j in range(K)}, {}, {}
+if prevM is not None:
+    pm, JG = overlap_map(lab, prevM.set_index("person_id").group.reindex(lab.index).fillna(-1).astype(int))
+    pm = {a: b for a, b in pm.items() if b >= 0}; used = set(pm.values()); free = [i for i in range(100) if i not in used and i not in {g["id"] for g in prev["groups"]}]
+    remap = {a: (pm[a] if a in pm else free.pop(0)) for a in range(K)}; prev_names = {g["id"]: g for g in prev["groups"]}
+JG = {remap[a]: v for a, v in JG.items()}
+lab = lab.map(remap); G["core"] = G["core"].map(remap); G["weak"] = G["weak"].map(remap)
+inv = {v: k for k, v in remap.items()}
+
+# ---------- subgroups at the cut: the number chosen on the earlier fit, carried to the matching current group (member overlap)
+gmap_cp, _ = overlap_map(lab, Gn["core"].reindex(lab.index), thr=0.0)
 c30 = (pd.Timestamp(CUT) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); n30 = G["U"][G["U"].lday >= c30].groupby("person_id").size()
 ST_ = pd.DataFrame(index=lab.index)
 ST_["ln_up30"] = np.log1p(n30.reindex(lab.index).fillna(0)); ST_["comment_rate"] = (STYLE_RAW["comments"].reindex(lab.index).fillna(0) / (G["n"].reindex(lab.index).fillna(0) + 1)).clip(0, 3)
 ST_["made"] = (STYLE_RAW["made"].reindex(lab.index).fillna(0) > 0).astype(float); ST_["reviews_stacks"] = np.log1p(STYLE_RAW["reviews_stacks"].reindex(lab.index).fillna(0))
 ST_["ln_follows"] = np.log1p(STYLE_RAW["follows"].reindex(lab.index).fillna(0))
 ST_ = ST_.join(RM.reindex(lab.index).fillna(0))
-ST_ = ST_.fillna(0); Zs = (ST_ - ST_.mean()) / (ST_.std() + 1e-9); sub = pd.Series(0, index=lab.index)
-sub = nest(G, KF).reindex(lab.index).fillna(0).astype(int)
-log("subgroups done")
+ST_ = ST_.fillna(0); Zs = (ST_ - ST_.mean()) / (ST_.std() + 1e-9)
+sub = pd.Series(0, index=lab.index); SUBK = {}
+for g in sorted(lab.unique()):
+    SUBK[g] = SUBK_cp.get(gmap_cp.get(g), 1); sub = sub + split({"core": G["core"], "F": G["F"]}, g, SUBK[g])
+# stable subgroup ids within a kept group
+if prevM is not None:
+    for g in sorted(lab.unique()):
+        ix = lab.index[lab == g]; ps_ = prevM.set_index("person_id").subgroup.reindex(ix).fillna("-1")
+        ps_ = ps_[ps_.str.startswith(f"{g}.")]
+        if len(ps_) and sub.loc[ix].nunique() > 1:
+            sm, _ = overlap_map(sub.loc[ix], ps_.map(lambda x: int(x.split(".")[1])))
+            used = set(sm.values()); free = [i for i in range(20) if i not in used]
+            sub.loc[ix] = sub.loc[ix].map(lambda x: sm[x] if x in sm else free[x % len(free)])
+log("subgroups", SUBK)
 
 # ---------- descriptors
 pop_t = G["U"].assign(t=G["U"].target_id.map(ltops)).explode("t").dropna(subset=["t"]); pop_share = pop_t.t.value_counts(normalize=True)
@@ -290,14 +327,14 @@ def name_batch(items, level, parent=""):   # items: [(id, desc, fixed_name_or_No
 GD, SD, keepg = {}, {}, {}
 for g in sorted(lab.unique()):
     ppl = lab.index[lab == g]; GD[g] = describe(ppl); pv = prev_names.get(int(g))
-    keepg[g] = pv if pv and pv.get("name") and len({t["topic"] for t in GD[g]["topics_by_lift"]} & {t["topic"] for t in pv.get("topics_by_lift", [])}) >= 5 else None
+    keepg[g] = pv if pv and pv.get("name") and JG.get(g, 0) >= 0.5 else None   # same id and >= 50% member overlap keeps the name
     for s_ in sorted(sub.loc[ppl].unique()):
         sp_ = ppl[sub.loc[ppl].values == s_]
         if len(sp_) < MIN_N: continue
         ds = describe(sp_); sty = Zs.loc[sp_].mean().round(2).to_dict(); ds["style_vs_population_z"] = {k: v for k, v in sty.items() if abs(v) >= 0.3}
         SD[(g, s_)] = ds
 log("descriptors done")
-GN = name_batch([(str(int(g)), GD[g], (keepg[g] or {}).get("name"), None) for g in GD], "groups, clustered on topic taste")
+GN = name_batch([(str(int(g)), GD[g], (keepg[g] or {}).get("name"), None) for g in GD], "top-level groups (3-5), clustered on what kind of user people are")
 for g in GD:
     if keepg[g]: GN[str(int(g))] = {k: keepg[g].get(k) for k in ("name", "who", "says", "votes_for")}
 groups = []
@@ -308,56 +345,66 @@ for g in sorted(GD):
         if g2 != g: continue
         pm_ = next((x for x in (pv or {}).get("subgroups", []) if x.get("id") == f"{int(g)}.{int(s_)}"), None)
         items.append((f"{int(g)}.{int(s_)}", ds, (pm_ or {}).get("name"), ds["style_vs_population_z"]))
-    SN = name_batch(items, "subgroups of ONE group, split by engagement style (activity, commenting, making, reviews, follows, role); name them by how "
+    SN = {} if len(items) <= 1 else name_batch(items, "subgroups of ONE group, split by engagement style (activity, commenting, making, reviews, follows, role); name them by how "
                     "they differ from each other within the group", f"PARENT GROUP: {nm.get('name')} - {nm.get('who')}") if items else {}
     for sid, ds, fx, _ in items:
         if fx: pm_ = next(x for x in pv["subgroups"] if x.get("id") == sid); SN[sid] = {k: pm_.get(k) for k in ("name", "who", "says", "votes_for")}
-    subs = [{"id": sid, **SN[sid], **{k: v for k, v in ds.items() if not k.startswith("_")}, "n_comment_samples": len(ds["_comments"])} for sid, ds, _, _ in items]
-    tc = G["TC"][[k for k, v in remap.items() if v == g][0]]; d = GD[g]
+    subs = [{"id": sid, **SN[sid], **{k: v for k, v in ds.items() if not k.startswith("_")}, "n_comment_samples": len(ds["_comments"])} for sid, ds, _, _ in items] if len(items) > 1 else []
+    tc = G["TC"][inv[g]]; d = GD[g]
     groups.append({"id": int(g), **nm, **{k: v for k, v in d.items() if not k.startswith("_")}, "n_comment_samples": len(d["_comments"]),
-                   "renamed_this_run": not pv, "subgroups": subs, "_topic_centroid": [round(float(x), 5) for x in tc], "_topics": G["topics"]})
+                   "renamed_this_run": not pv, "member_overlap_with_previous_run": JG.get(g), "subgroups": subs, "_topic_centroid": [round(float(x), 5) for x in tc], "_topics": G["topics"]})
     log("group", g, nm.get("name"), "|", [x["name"] for x in subs])
 inactive = sorted(set(PJ.index) - set(lab.index))
 
 # ---------- calibration (out of sample, every run)
-cp = (pd.Timestamp(CUT) - pd.Timedelta(days=7)).strftime("%Y-%m-%d"); Gc = fit_groups(cp, K, topics=G["topics"]); labc = pd.concat([Gc["core"], Gc["weak"]])
+cp = cp0; Gc = Gn; labc = Gc["core"]
 Ac = topic_aff(Gc, Gc["U"]); r30 = (pd.Timestamp(cp) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
-size = Gc["U"][(Gc["U"].lday >= r30) & Gc["U"].person_id.isin(labc.index)].person_id.map(labc).value_counts(normalize=True).reindex(sorted(labc.unique())).fillna(0)   # share of recent upvotes
-popt = (Ac.mul(size.reindex(Ac.index).fillna(0), axis=0)).sum(0); Ar = Ac / popt   # group affinity ratio per topic
-Un = U0[(U0.lday >= cp) & (U0.lday < CUT)]; tv_m, tv_p, rows = [], [], []
+size = Gc["U"][(Gc["U"].lday >= r30) & Gc["U"].person_id.isin(labc.index)].person_id.map(labc).value_counts(normalize=True).reindex(sorted(labc.unique())).fillna(0)
+popt = (Ac.mul(size.reindex(Ac.index).fillna(0), axis=0)).sum(0); Ar = Ac / popt
+Un = U0[(U0.lday >= cp) & (U0.lday < CUT)]; tv_m, tv_p = [], []
 for lid, g_ in Un.groupby("target_id"):
     bk = g_.person_id[g_.person_id.isin(labc.index)]
     if len(bk) < 20: continue
     act = labc.reindex(bk).value_counts(normalize=True).reindex(size.index).fillna(0)
     tps = [t for t in (ltops.get(lid) or []) if t in Ac.columns]
     if not tps: continue
-    mod = size * Ar[tps].mean(1).reindex(size.index).fillna(1); mod = mod / mod.sum()
+    mod = size * Ar[tps].mean(axis=1).reindex(size.index).fillna(1); mod = mod / mod.sum()
     tv_m.append(0.5 * np.abs(act - mod).sum()); tv_p.append(0.5 * np.abs(act - size).sum())
 tv_m, tv_p = np.array(tv_m), np.array(tv_p)
 bs = lambda v: [round(float(v.mean()), 3)] + [round(float(np.percentile([v[rng.integers(0, len(v), len(v))].mean() for _ in range(2000)], q)), 3) for q in (2.5, 97.5)]
-cS = Gc["TC"] @ G["TC"].T if Gc["topics"] == G["topics"] else None   # map calibration-fit groups to the current groups (topic centroids)
-cmap = {}
-if cS is not None:
-    r_i, c_i = linear_sum_assignment(-cS); cmap = {int(a): int(remap[b]) for a, b in zip(r_i, c_i) if cS[a, b] > 0.7}
-lifts, per_g = [], {}
-for j in Ac.index:
-    top5 = list(Ar.loc[j][Ac.loc[j] >= 0.01].sort_values(ascending=False).head(5).index)
-    L_in = [l for l in Un.target_id.unique() if set(ltops.get(l) or []) & set(top5)]; L_out = [l for l in Un.target_id.unique() if l not in set(L_in)]
-    mem = set(labc.index[labc == j]); oth = set(labc.index) - mem
-    if not L_in or not mem: continue
-    r_ = lambda Ls, P: len(Un[Un.target_id.isin(set(Ls)) & Un.person_id.isin(P)]) / (len(P) * len(Ls))
-    lifts.append(round(r_(L_in, mem) / max(1e-9, r_(L_in, oth)) / max(1e-9, r_(L_out, mem) / max(1e-9, r_(L_out, oth))), 2))
-    if int(j) in cmap: per_g[cmap[int(j)]] = {"votes_for_lift_out_of_sample": lifts[-1], "launches_in_its_topics_last_7_days": len(L_in)}
+ULn = Un.target_id.unique()
+def vf_lift(lbl):   # per unit: top-5 lifted topics from upvotes before cp; upvote-rate lift on last week's launches in those topics (relative, 1 = none)
+    Ux = Gc["U"].assign(g=lambda x: x.person_id.map(lbl), t=lambda x: x.target_id.map(ltops)).explode("t").dropna(subset=["t", "g"]).reset_index(drop=True)
+    A_ = pd.crosstab(Ux.g, Ux.t); A_ = A_.div(A_.sum(1), axis=0); pop_ = Ux.t.value_counts(normalize=True); out = {}
+    for u in A_.index:
+        mem = set(lbl.index[lbl == u])
+        if len(mem) < MIN_N: continue
+        top5 = list((A_.loc[u] / pop_.reindex(A_.columns))[A_.loc[u] >= 0.01].sort_values(ascending=False).head(5).index)
+        L_in = [l for l in ULn if set(ltops.get(l) or []) & set(top5)]; L_out = [l for l in ULn if l not in set(L_in)]; oth = set(lbl.index) - mem
+        if not L_in or not L_out: continue
+        r_ = lambda Ls, P: len(Un[Un.target_id.isin(set(Ls)) & Un.person_id.isin(P)]) / max(1, len(P) * len(Ls))
+        num = r_(L_in, mem) / max(1e-12, r_(L_in, oth)); den = r_(L_out, mem) / max(1e-12, r_(L_out, oth))
+        nv = len(Un[Un.target_id.isin(set(L_in)) & Un.person_id.isin(mem)])
+        out[u] = {"votes_for_lift_out_of_sample": round(num / max(1e-12, den), 2), "launches_in_its_topics_last_7_days": len(L_in), "member_votes_on_them": int(nv),
+                  "votes_for_holds": bool(num / max(1e-12, den) >= 1.2 and len(L_in) >= 10 and nv >= 20)}
+    return out
+VG = vf_lift(labc); gm, _ = overlap_map(lab, labc.reindex(lab.index), thr=0.0)
+cur_sub = (lab.astype(str) + "." + sub.reindex(lab.index).astype(str)); cp_sub = (labc.astype(str) + "." + nest_lab.astype(str)).reindex(lab.index)
+VS = vf_lift((labc.astype(str) + "." + nest_lab.astype(str))); sm_all, _ = overlap_map(cur_sub, cp_sub, thr=0.0)
+per_g = {g: VG[gm[g]] for g in gm if gm[g] in VG}; per_s = {u: VS[sm_all[u]] for u in sm_all if sm_all[u] in VS}
+NOTE = ("upvote rate on last week's launches in this unit's top-5 topics vs its rate on other launches, relative to everyone else (1 = no signal); "
+        "units fit on data up to 7 days earlier and matched by member overlap; holds = lift >= 1.2 with >= 10 such launches and >= 20 member votes")
 cal = {"cut": CUT, "fit_cut": cp, "launches": int(len(tv_m)),
        "backer_group_mix_total_variation (lower better) [mean, 95% launch bootstrap]": {"segments model": bs(tv_m) if len(tv_m) else None, "population mix": bs(tv_p) if len(tv_p) else None,
                                                                                  "model minus population (paired)": bs(tv_m - tv_p) if len(tv_m) else None},
-       "votes_for holdout: relative upvote-rate lift on launches in the group's top-5 lifted topics (median over groups; 1 = no signal)": float(np.median(lifts)) if lifts else None,
-       "per_group_lift": lifts, "per_current_group": per_g}
-log("calibration", json.dumps(cal)[:400])
-
+       "votes_for holdout median lift (groups)": float(np.median([v["votes_for_lift_out_of_sample"] for v in VG.values()])) if VG else None,
+       "groups where votes_for holds": f"{sum(v['votes_for_holds'] for v in per_g.values())} of {len(per_g)}",
+       "subgroups where votes_for holds": f"{sum(v['votes_for_holds'] for v in per_s.values())} of {len(per_s)}"}
+log("calibration", json.dumps(cal)[:500])
 for g_ in groups:
-    if g_["id"] in per_g: g_["calibration"] = {**per_g[g_["id"]], "note": "upvote rate on last week's launches in this group's top topics vs its rate elsewhere, relative to everyone else (1 = no signal); groups fit on data up to 7 days earlier"}
-pub = {"cut": CUT, "how": __doc__.split("\n    python")[0], "k": K, "k_selection (held-out log-likelihood per vote, fit 7 days earlier)": KSEL, "people_segmented": int(len(lab)), "people_low_signal (1-4 upvotes, assigned by topics)": int(len(G["weak"])),
+    g_["calibration"] = {**per_g.get(g_["id"], {"votes_for_holds": False, "note_missing": "no out-of-sample match"}), "note": NOTE}
+    for s_ in g_["subgroups"]: s_["calibration"] = per_s.get(s_["id"], {"votes_for_holds": False, "note_missing": "no out-of-sample match"})
+pub = {"cut": CUT, "how": __doc__.split("\n    python")[0], "k": K, "k_rule": "top level 3-5 (Shreyas, Nov 15), chosen by held-out log-likelihood per vote; subgroups 3-5 only where they add held-out fit", "k_selection (held-out log-likelihood per vote, fit 7 days earlier)": KSEL, "people_segmented": int(len(lab)), "people_low_signal (1-4 upvotes, assigned by topics)": int(len(G["weak"])),
        "people_not_active_in_window": len(inactive), "groups": groups, "calibration": cal,
        "accuracy_label": ("Segments are clusters of real held Product Hunt users by what they upvoted in the 180 days before the cut and how they engage "
                           "(aggregates only, every group and subgroup >= 20 people). Names and 'says' are Gemini summaries of the measured statistics and the "

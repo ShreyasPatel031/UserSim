@@ -19,7 +19,7 @@ H = U[U.fetched_at < start(D)]; Hb = H[H.lday < D]; act, tvec, ix = feats(D, H)
 d30 = (pd.Timestamp(D) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); d90 = (pd.Timestamp(D) - pd.Timedelta(days=90)).strftime("%Y-%m-%d")
 n30 = Hb[Hb.lday >= d30].groupby("person_id").size(); names = dict(zip(WA.id.astype(str), WA.name))
 A_ = pd.read_parquet(os.path.join(SP, "bp", f"backer_arms_{D}.parquet")); A_ = A_[A_.arm == "CF-only"]
-cards = {}
+cards, POOLS = {}, {}
 for lid in [str(p["id"]) for p in LINE.get(D, [])]:
     team = [x for x in (lhun.get(lid), lmak.get(lid)) if x]
     ls = set().union(*[by_team.get(x, set()) for x in team]) - {lid} if team else set()
@@ -27,6 +27,10 @@ for lid in [str(p["id"]) for p in LINE.get(D, [])]:
     src, people = ("team past backers", pool) if len(pool) >= MIN else ("CF-only top 200", A_[A_.launch_id == lid].sort_values("rank").person_id.iloc[:200].tolist())
     if len(people) < MIN: cards[lid] = {"status": "not available (fewer than 20 people)"}; continue
     sg = pd.Series([seg.get(p, segments_lib.INACTIVE if SEGL else "no headline or bio") for p in people])
+    vc0 = sg.value_counts(); small = set(vc0[vc0 < MIN].index)   # a subgroup with < 20 people in this pool folds into its group label
+    if small: sg = sg.map(lambda x: x.split(" / ")[0] if x in small else x)
+    POOLS[lid] = {"hunter": Hb[Hb.target_id.isin(by_team.get(lhun.get(lid), set()) - {lid})].person_id.unique().tolist() if lhun.get(lid) else [],
+                  "maker": Hb[Hb.target_id.isin(by_team.get(lmak.get(lid), set()) - {lid})].person_id.unique().tolist() if lmak.get(lid) else [], "source": src}
     big = sg.value_counts(); big = big[big >= MIN]
     if big.empty: cards[lid] = {"status": "not available (no segment with >= 20 people)"}; continue
     alloc = np.floor(K * big / big.sum()).astype(int); rem = K - alloc.sum()
@@ -34,6 +38,7 @@ for lid in [str(p["id"]) for p in LINE.get(D, [])]:
     P_ = []
     for s_, k_ in alloc.items():
         grp = [p for p, x in zip(people, sg) if x == s_]
+        k_ = min(k_, max(1, len(grp) // MIN)) if k_ else 0   # never split below 20 people per persona (was collapsing to one card)
         chunks = [grp[j::k_] for j in range(k_)] if k_ else []   # k_ interleaved sub-groups; each must hold >= 20 people
         chunks = [c for c in chunks if len(c) >= MIN] or ([grp] if k_ else [])
         for c in chunks[:k_]:
@@ -45,7 +50,8 @@ for lid in [str(p["id"]) for p in LINE.get(D, [])]:
                        "topic_shares": top_t, "products_they_commonly_upvoted": prods})
     cards[lid] = {"source": src, "n_source_people": len(people), "personas": P_}
 out = {"day": D, "design": DOC.split("\n    python")[0], "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "launches": cards}
-os.makedirs(os.path.join(SP, "persona"), exist_ok=True); p = os.path.join(SP, "persona", f"persona_cards_{D}.json"); json.dump(out, open(p, "w"), indent=1, default=float)
+os.makedirs(os.path.join(SP, "persona"), exist_ok=True); json.dump(POOLS, open(os.path.join(SP, "persona", f"pools_{D}.json"), "w"))   # PRIVATE (salted ids), local only
+p = os.path.join(SP, "persona", f"persona_cards_{D}.json"); json.dump(out, open(p, "w"), indent=1, default=float)
 if UP: subprocess.run(["gsutil", "-q", "cp", p, f"{B}/tmp/e5/persona_cards/{D}.json"], check=True)
 print(json.dumps({"day": D, "launches": len(cards), "with_personas": sum("personas" in v for v in cards.values()),
                   "personas": sum(len(v.get("personas", [])) for v in cards.values())}))
