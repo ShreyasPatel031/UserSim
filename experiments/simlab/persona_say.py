@@ -48,7 +48,8 @@ ids = [i for i in line if (cards.get(i) or {}).get("personas")][:LIM]
 with cf.ThreadPoolExecutor(6) as ex: OUT = dict(ex.map(one, ids))
 usd = round(llm.USAGE["in"] / 1e6 * 0.30 + llm.USAGE["out"] / 1e6 * 2.50, 4)
 open(os.path.join(HERE, "spend.jsonl"), "a").write(json.dumps({"t": f"persona_say_{D}", "provider": "gcp", "usd": usd, "note": f"{len(ids)} Gemini 2.5 Flash calls, tokens in {llm.USAGE['in']} out {llm.USAGE['out']}"}) + "\n")
-LABEL = ("persona panel: Gemini 2.5 Flash speaking as aggregated groups (each >= 20 held people of one role segment) from this launch's likely "
+LABEL = ("persona panel: Gemini 2.5 Flash speaking as aggregated groups (each >= 20 held people of one data-driven segment: clusters of real "
+         "users by what they upvote, split by how they engage; profiles and calibration in results/web/segments/latest.json) from this launch's likely "
          "backers (team past backers when >= 20, else the CF-only top 200), given only the launch's 00:05 text. Simulated, not real comments. "
          "Validated on 279 past launches (real PH comments, judged recall/precision of points raised): 12-group panel recall 54.1% "
          "[51.5, 56.7] vs 38.9% for the site's plain simulation (paired +15.4 [12.5, 18.3]), precision 47.6% (paired +4.3 [0.7, 8.1]). Directly paired vs the best earlier simulation (retrieval-grounded) on the same 279: recall +6.0 "

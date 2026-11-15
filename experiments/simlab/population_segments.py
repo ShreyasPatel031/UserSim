@@ -65,12 +65,12 @@ RM = pd.DataFrame({r: txt.str.contains(rx, regex=True) for r, rx in ROLES}, inde
 log("data", len(U0))
 
 
-def fit_groups(cut, k, seed=0):
+def fit_groups(cut, k, seed=0, topics=None):
     d0 = (pd.Timestamp(cut) - pd.Timedelta(days=WIN)).strftime("%Y-%m-%d")
     U = U0[(U0.lday < cut) & (U0.lday >= d0)]
     n = U.groupby("person_id").size(); core = n[n >= MIN_UP].index; weak = n[(n < MIN_UP)].index
     TP = U.assign(t=U.target_id.map(ltops)).explode("t").dropna(subset=["t"])
-    tc = TP.t.value_counts(); topics = list(tc[tc >= 200].index)
+    tc = TP.t.value_counts(); topics = topics or list(tc[tc >= 200].index)
     ti = {t: i for i, t in enumerate(topics)}; TP = TP[TP.t.isin(ti)]
     ppl = list(n.index); pi = {p: i for i, p in enumerate(ppl)}
     M = csr_matrix((np.ones(len(TP)), (TP.person_id.map(pi), TP.t.map(ti))), shape=(len(ppl), len(topics)))
@@ -243,7 +243,7 @@ for g in sorted(GD):
 inactive = sorted(set(PJ.index) - set(lab.index))
 
 # ---------- calibration (out of sample, every run)
-cp = (pd.Timestamp(CUT) - pd.Timedelta(days=7)).strftime("%Y-%m-%d"); Gc = fit_groups(cp, K); labc = pd.concat([Gc["core"], Gc["weak"]])
+cp = (pd.Timestamp(CUT) - pd.Timedelta(days=7)).strftime("%Y-%m-%d"); Gc = fit_groups(cp, K, topics=G["topics"]); labc = pd.concat([Gc["core"], Gc["weak"]])
 Ac = topic_aff(Gc, Gc["U"]); r30 = (pd.Timestamp(cp) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
 size = Gc["U"][(Gc["U"].lday >= r30) & Gc["U"].person_id.isin(labc.index)].person_id.map(labc).value_counts(normalize=True).reindex(sorted(labc.unique())).fillna(0)   # share of recent upvotes
 popt = (Ac.mul(size.reindex(Ac.index).fillna(0), axis=0)).sum(0); Ar = Ac / popt   # group affinity ratio per topic
@@ -261,7 +261,7 @@ bs = lambda v: [round(float(v.mean()), 3)] + [round(float(np.percentile([v[rng.i
 cS = Gc["TC"] @ G["TC"].T if Gc["topics"] == G["topics"] else None   # map calibration-fit groups to the current groups (topic centroids)
 cmap = {}
 if cS is not None:
-    r_i, c_i = linear_sum_assignment(-cS); cmap = {int(a): int(remap[b]) for a, b in zip(r_i, c_i) if cS[a, b] > 0.8}
+    r_i, c_i = linear_sum_assignment(-cS); cmap = {int(a): int(remap[b]) for a, b in zip(r_i, c_i) if cS[a, b] > 0.7}
 lifts, per_g = [], {}
 for j in Ac.index:
     top5 = list(Ar.loc[j][Ac.loc[j] >= 0.01].sort_values(ascending=False).head(5).index)
