@@ -192,7 +192,7 @@ function exSay(d){
   if(items.length){
     const cnt = {high: 0, medium: 0, low: 0}; items.forEach(x=>cnt[x.interest] = (cnt[x.interest] || 0) + 1);
     const src = /past/.test(pp.source_people || "") ? "people who voted for this team's earlier launches" : "today's likeliest voters";
-    panel = `<p class="lede"><b>${items.length} simulated voters</b>, each speaking for a group of real people we hold (drawn from ${src}).${info(esc(pp.accuracy_label || ""))}</p>
+    panel = `<p class="lede"><b>${items.length} voter group${items.length === 1 ? "" : "s"}</b>, each a simulated voice for a group of real people we hold with the same role (drawn from ${src}).${info("How many groups: one per 20+ people of the same role among this launch's likely voters, up to 12. Launches whose team has past voters get groups from them (usually 12); others get groups from today's 200 likeliest voters (usually 4–5). " + esc(pp.accuracy_label || ""))}</p>
       <div class="interest"><span class="lab">Interest</span>${["high","medium","low"].map(k=>cnt[k] ? `<span class="iv ${k}" style="flex:${cnt[k]}">${cnt[k]} ${k}</span>` : "").join("")}</div>
       ${items.map(x=>`<div class="persona"><div class="ph"><span class="seg">${esc(x.segment)}</span><span class="sm">speaks for ${esc(x.n_people)} people</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
         ${x.reaction ? `<p class="re">“${esc(x.reaction)}”</p>` : ""}
