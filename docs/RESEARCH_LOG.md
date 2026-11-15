@@ -2269,3 +2269,13 @@ Model switches, direction reviews and agenda changes, newest last.
 - Nov 15 09:36 UTC hourly check + mailbox checked. Leaderboard live (Nov 15). No new written Cursor reply. Agents on their single items (PH agent: arm-2 null check + anatomy; E5: Nov 15 forward score).
 - Nov 15 10:22 UTC: Data Feeder 2025 comment-timestamps pull reports status failed (missing input /workspace/ph_history/out/2025/2025-01-01.json). It is a history backfill, which belongs to the Cursor fleet under the Nov 13 rule; not re-routed now (the fleet has not picked up its queued jobs). Logged.
 - Nov 15 10:36 UTC hourly check + mailbox checked. Leaderboard live. No new written Cursor reply. No new agent results.
+
+## Nov 15 daily collection review (10:55 UTC, orchestrator)
+- **Complete people:** 79,819 (store, 08:45Z) of 87.5k saved; 192 merged-incomplete. Tiers from have_index (stale, Nov 13 11:05Z, 65,740 complete): likely 1,270/1,646, active 498/2,642, other 63,972/75,196. Completion list 13,744 at that rebuild.
+- **Rate:** population audits merged ~10,300 people Nov 14 11:22Z–Nov 15 10:31Z (~7.4/min average; ~35/min in the 09:21–10:31Z audits). Fleet's own 15-min figure fell to 4.4 complete/min at 10:35Z: of 18 slots, 5 at a Cloudflare wall (at the limit, back-off applies), 7 dead and 6 stale (not at any limit).
+- **Closed since Nov 14:** 15-min live capture restored (≥95%; 02:30 PT 17/17 and 28/28); fleet back to 18 VMs from 2–4; complete people 72k+ → 79.8k.
+- **Open:** upvote_refresh (0 refreshed, median 3.88 days), daily_launch_teams, topics + comment-body backfill, weekly close read (first due Nov 15 23:45 PT), hidden-window re-read — all Cursor fleet, unacknowledged since Nov 13 20:58Z. have_index/need_list rebuild (population agent). Babysitter scorecard last written Nov 4; no dashboard/latest.json. X rollout 5,600/8,953 unchanged since Nov 13.
+- **Shreyas only:** DataImpulse proxy 407 (daily page capture failing since Nov 12); scheduler for the site 15-min snapshot job and day-close slot; GCP Nov 14 $74 > $50 soft cap (no harness runs queued).
+- **Coverage:** Oct 1–24 51.7/82.2 (seeds out 38.7/64.9; ring-flagged out 44.6/63.5); Nov 8–14 20.3/29.8. The recent-week drop says current voters are not yet in the pool.
+- **Dashboard:** rebuilt from GCS; 7 JSON assets re-uploaded and datasets repointed (version-pinned); tier/tab counts now from the Nov 13 have_index (was Nov 4 in the description); live capture shows Nov 15 snapshots. No new babysitter datasets (none published).
+- DATA_SPEC.md PH table and collection-status table updated to Nov 15 with limit / at-it / step / owner / date per row.
