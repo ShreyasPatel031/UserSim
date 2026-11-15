@@ -87,6 +87,9 @@ for f in sorted(glob.glob(os.path.join(CFD, "page*.jsonl.gz"))):
         for e in ((p_.get("threads") or {}).get("edges") or []): walk(e["node"])
 elig = [s for s, c in com.items() if len(c) >= 8 and "2026-08" <= bys[s].day <= "2026-10-31"]
 random.Random(0).shuffle(elig); S = elig[:300]
+if os.environ.get("DUMP_S"):   # persona variant prep: write the 300-launch sample (slug, id, day, poster, makers, topics) and stop
+    json.dump([{"slug": s, "id": str(bys[s].id), "day": str(bys[s].day)[:10], "poster": bys[s].poster, "makers": bys[s].makers, "topics": bys[s].topics,
+                "name": bys[s].name, "tagline": bys[s].tagline, "description": (bys[s].description or "")[:1500]} for s in S], open(os.environ["DUMP_S"], "w")); sys.exit(0)
 C0 = json.load(open(os.path.join(RS, "cache_site.json")))
 truth = {s: C0[f"truth|{s}"] for s in S if C0.get(f"truth|{s}")}
 v0 = {s: C0.get(f"persona|{s}") for s in S}
@@ -202,8 +205,20 @@ feature request, comparison to named alternatives. Be specific to this product; 
 Return JSON {{"themes": ["<type>: <theme>", ...]}} with 8 themes."""
 
 
+PCARDS = json.load(open(os.environ["PERSONA_CARDS"])) if os.environ.get("PERSONA_CARDS") else {}
+def gen_persona(s, n):   # persona panel (persona_say.py prompt), first n personas; candidate = reaction + concern + question in one comment
+    import importlib.util
+    sp = importlib.util.spec_from_file_location("psay_prompt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "persona_prompt.py")); pm = importlib.util.module_from_spec(sp); sp.loader.exec_module(pm)
+    P_ = (PCARDS.get(s) or {}).get("personas") or []
+    if not P_: return []
+    r = bys[s]; topics = ", ".join(json.loads(r.topics)) if isinstance(r.topics, str) and r.topics.startswith("[") else ""
+    a = gem(pm.PROMPT.format(name=r.name, tagline=r.tagline or "", desc=(r.description or "")[:1200], topics=topics,
+                             groups="\n".join(pm.gtxt(i, g) for i, g in enumerate(P_[:n]))), "gemini-2.5-flash", 0.0, 3000, tag=f"PERSONA{n}")
+    return [f"{x.get('reaction', '')} Concern: {x.get('concern', '')} Question: {x.get('question', '')}" for x in ((a or {}).get("reactions") or []) if isinstance(x, dict)][:n]
 def gen(s, v):
-    cfg = VAR[v]; model, temp, n, k = cfg.get("model", "gemini-2.5-flash-lite"), cfg.get("temp", 0.7), cfg.get("n", 6), cfg.get("k", 0)
+    cfg = VAR[v]
+    if cfg.get("persona"): return gen_persona(s, cfg["persona"])
+    model, temp, n, k = cfg.get("model", "gemini-2.5-flash-lite"), cfg.get("temp", 0.7), cfg.get("n", 6), cfg.get("k", 0)
     two = None
     if cfg.get("two"):
         r = bys[s]; two = ((gem(TWO1.format(name=r.name, tagline=r.tagline, desc=(r.description or "")[:1500]), model, temp, 800, tag=v + "_p1") or {}).get("themes") or [])[:8]
@@ -212,7 +227,8 @@ def gen(s, v):
 
 
 VAR = {"R3": {"k": 3}, "R5": {"k": 5}, "R10": {"k": 10}, "N10": {"n": 10}, "N15": {"n": 15}, "TWO": {"two": True},
-       "FLASH3": {"model": "gemini-2.5-flash", "temp": 0.3}, "LITE3": {"temp": 0.3}, "SITE": {"site": True}}
+       "FLASH3": {"model": "gemini-2.5-flash", "temp": 0.3}, "LITE3": {"temp": 0.3}, "SITE": {"site": True},
+       "PERSONA6": {"persona": 6}, "PERSONA12": {"persona": 12}}
 if os.environ.get("BEST"): VAR["BEST"] = json.loads(os.environ["BEST"])
 todo = [v for v in VAR if not ONLY or v in ONLY]
 
