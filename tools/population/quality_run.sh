@@ -30,9 +30,5 @@ gsutil -q cp $W/quality_$TS.jsonl $B/raw/_babysitter/quality/$TS.jsonl
 # follow-list status per person (hashed ids, no handles) for the Data Feeder master (merge_daily.py reads follows_whole/latest.jsonl)
 gsutil -q cp $B/raw/population/_salt $W/_salt_fs && python3 -I "$REPO/tools/population/follows_summary.py" $W/_salt_fs $W/quality_$TS.jsonl $R/people_live/vm $W/follows_whole_$TS.jsonl \
   && gsutil -q cp $W/follows_whole_$TS.jsonl $B/raw/population/follows_whole/latest.jsonl; rm -f $W/_salt_fs
-mkdir -p "$REPO/docs/population/quality"; cp $W/quality_$TS.md "$REPO/docs/population/quality/$TS.md"
-(cd "$REPO" && git add docs/population/quality/$TS.md && git commit -q -m "population: person-pull quality report $TS (counts only)
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01WkCrUNzmycpWe5dkydHRnU")  # no push: each push triggers a Vercel deploy (Nov 14); reports are pushed in batches
+gsutil -q cp $W/quality_$TS.md $B/raw/_babysitter/quality/$TS.md  # per-cycle report goes to the bucket, not git (Nov 15: no commit per cycle)
 cat $W/quality_$TS.out | tail -20
