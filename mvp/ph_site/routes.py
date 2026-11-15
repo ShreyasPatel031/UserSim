@@ -98,6 +98,10 @@ async def _ph_today(day: str | None):
     view["days"] = days
     try:
         view["accuracy"] = await asyncio.to_thread(live.accuracy)
+        agg = await asyncio.to_thread(live.live_aggregate, view)
+        for tab, row in agg.items():   # the live row = every live day so far, today included while it runs
+            rows = [r for r in view["accuracy"].get(tab, []) if r.get("flag") != "live"]
+            view["accuracy"][tab] = [row] + rows
     except Exception:  # noqa: BLE001 - the accuracy line is optional
         view["accuracy"] = {}
     try:

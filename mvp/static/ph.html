@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=27">
+<link rel="stylesheet" href="/static/ph_site.css?v=28">
 </head>
 <body>
 <div class="wrap">
@@ -194,17 +194,26 @@ function exWho(d, aud){
 }
 function exSay(d){
   const card = (t, cls)=> `<div class="q ${cls}">${esc(t)}</div>`;
-  const pp = d.panel || d.persona_panel, items = (pp && pp.items) || [];
+  const pp = d.panel || d.persona_panel, raw = (pp && pp.items) || [];
+  // One card per voter group: the panel can speak several times for the same group; merge those voices.
+  const RANK = {high: 3, medium: 2, low: 1}, byseg = new Map();
+  raw.forEach(x=>{ const k = x.segment || "?", g = byseg.get(k);
+    if(!g){ byseg.set(k, {...x, n_people: Number(x.n_people) || 0, reactions: x.reaction ? [x.reaction] : [], concerns: x.concern ? [x.concern] : [], questions: x.question ? [x.question] : [], votes: {[x.interest]: 1}}); return; }
+    g.n_people += Number(x.n_people) || 0; g.votes[x.interest] = (g.votes[x.interest] || 0) + 1;
+    if(x.reaction) g.reactions.push(x.reaction); if(x.concern) g.concerns.push(x.concern); if(x.question) g.questions.push(x.question); });
+  const items = [...byseg.values()].map(g=>({...g, interest: Object.entries(g.votes).sort((a, b)=>b[1] - a[1] || RANK[b[0]] - RANK[a[0]])[0][0]})).sort((a, b)=>b.n_people - a.n_people);
+  const totN = items.reduce((t, x)=>t + x.n_people, 0) || 1;
   let panel = "";
   if(items.length){
-    const cnt = {high: 0, medium: 0, low: 0}; items.forEach(x=>cnt[x.interest] = (cnt[x.interest] || 0) + 1);
+    const cnt = {high: 0, medium: 0, low: 0}; raw.forEach(x=>cnt[x.interest] = (cnt[x.interest] || 0) + 1);
     const src = /past/.test(pp.source_people || "") ? "people who voted for this team's earlier launches" : "today's likeliest voters";
-    panel = `<p class="lede"><b>${items.length} voter group${items.length === 1 ? "" : "s"}</b>, each a simulated voice for one of our data-driven voter groups (people we hold, clustered by what they upvote and how they engage), drawn from ${src}.${info(esc(pp.accuracy_label || ""))}</p>
+    panel = `<p class="lede"><b>${items.length} voter group${items.length === 1 ? "" : "s"}</b>, from ${raw.length} simulated voices, one card per subgroup of real voters (people we hold, clustered by what they upvote and how they engage), drawn from ${src}.${info(esc(pp.accuracy_label || ""))}</p>
       <div class="interest"><span class="lab">Interest</span>${["high","medium","low"].map(k=>cnt[k] ? `<span class="iv ${k}" style="flex:${cnt[k]}">${cnt[k]} ${k}</span>` : "").join("")}</div>
       ${items.map(x=>{ const sp = x.segment_profile || {}, grp = sp.group || x.segment, sub = sp.group && x.segment.includes(" / ") ? x.segment.split(" / ").slice(1).join(" / ") : "";
-        return `<div class="persona"><div class="ph"><span class="seg">${esc(grp)}${sub ? ` <small>· ${esc(sub)}</small>` : ""}${sp.who ? info(esc(sp.who) + (sp.votes_for ? " " + esc(sp.votes_for) : "")) : ""}</span><span class="sm">speaks for ${esc(x.n_people)} people</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
-        ${x.reaction ? `<p class="re">“${esc(x.reaction)}”</p>` : ""}
-        ${x.concern ? `<p class="pc worry"><b>Worry:</b> ${esc(x.concern)}</p>` : ""}${x.question ? `<p class="pc ask"><b>Asks:</b> ${esc(x.question)}</p>` : ""}</div>`; }).join("")}
+        return `<div class="persona"><div class="ph"><span class="seg">${esc(grp)}${sub ? ` <small>· ${esc(sub)}</small>` : ""}${sp.who ? info(esc(sp.who) + (sp.votes_for ? " " + esc(sp.votes_for) : "")) : ""}</span><span class="sm">${n0(x.n_people)} people · ${pct(x.n_people / totN)} of likely voters</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
+        ${x.reactions[0] ? `<p class="re">“${esc(x.reactions[0])}”</p>` : ""}
+        ${x.concerns.length ? `<p class="pc worry"><b>Worr${x.concerns.length > 1 ? "ies" : "y"}:</b></p><ul class="pcl worry">${x.concerns.slice(0, 3).map(t=>`<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+        ${x.questions.length ? `<p class="pc ask"><b>Asks:</b></p><ul class="pcl ask">${x.questions.slice(0, 3).map(t=>`<li>${esc(t)}</li>`).join("")}</ul>` : ""}</div>`; }).join("")}
       <p class="note">Simulated by an AI speaking as each group, from the launch's own page; not real comments.</p>
       <details class="trust"><summary>How reliable? On 279 past launches this panel caught 54% of the points real commenters raised (the older single-AI version caught 39%); about half of its points matched a real one.</summary><p>${esc(pp.accuracy_label || "")}</p></details>`;
   }
@@ -364,6 +373,16 @@ const FALLBACK = {
   midnight_order: "no pre-reveal read was available, so this repeats the midnight forecast",
   earlier_forecast: "the published model had no data, so this is our earlier midnight forecast",
 };
+const mdy = (d)=> { const [y, m, dd] = String(d).split("-").map(Number); return new Date(y, m - 1, dd).toLocaleDateString("en-US", {month: "short", day: "numeric"}); };
+function liveSpan(r){
+  const rng = r.first_day === r.last_day ? mdy(r.first_day) : `${mdy(r.first_day)}–${mdy(r.last_day)}`;
+  return `${rng} (${r.days} day${r.days === 1 ? "" : "s"}${r.in_progress ? ", today in progress" : ""})`;
+}
+function liveTxt(r){
+  const h = (k)=> `${r.hits[k][0]}/${r.hits[k][1]} (${Number(r[k]).toFixed(0)}%)`;
+  const by = (r.per_day || []).map(x=>`${mdy(x.day)}${x.final ? "" : " so far"} ${x.h[0]}/3 · ${x.h[1]}/5 · ${x.h[2]}/10${x.fallback ? " (fallback model)" : ""}`).join("; ");
+  return `live, ${liveSpan(r)}: top 3 ${h("top3")} · top 5 ${h("top5")} · top 10 ${h("top10")}${by ? ` [by day: ${by}]` : ""}`;
+}
 function accLine(){
   const p = pointFor(TAB);
   if(!p || p.fallback === "none_available"){ $("#acc").textContent = ""; return; }
@@ -375,7 +394,8 @@ function accLine(){
   let acc = "";
   if(!earlier){
     // The track record (per-day hits against the official rank) wins; the file's own line only when there is none.
-    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r, "top3")} · top 5 ${pc(r.top5, r, "top5")} · top 10 ${pc(r.top10, r, "top10")}${r.note ? ` (${r.note})` : ""}`).join("; ")
+    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=> r.hits ? liveTxt(r)
+      : `${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r, "top3")} · top 5 ${pc(r.top5, r, "top5")} · top 10 ${pc(r.top10, r, "top10")}${r.note ? ` (${r.note})` : ""}`).join("; ")
       || p.backtest_line || "";
     if(acc && p.fallback) acc += " (this day used a fallback)";
   }
@@ -386,7 +406,8 @@ function metric(){
   const rows = ((VIEW.accuracy||{}).mid) || [];
   const cur = rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
   const r = cur || prev;
-  if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`
+  if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes`
+    + (cur && cur.hits ? ` <span class="mnote">(${cur.hits.top10[0]} of ${cur.hits.top10[1]}, live, ${esc(liveSpan(cur))}).</span>` : ".")
     + (cur ? "" : ` <span class="mnote">Previous model, live, ${Number(prev.days)} days${prev.note ? `; ${esc(prev.note)}` : ""}.</span>`);
 }
 function legend(sts){
