@@ -284,6 +284,18 @@ SHN = {"hunter record": ("hunter's track record and reach", "how the hunter's ea
        "promotion": ("pre-launch promotion and coverage", "posts and coverage about the launch dated before launch day (Gemini + Google Search read), and whether the company has an X account"),
        "text": ("text", "a word-based model of the name, tagline and description trained on past launches, plus the length of the name, tagline and description"),
        "day/lineup": ("day and line-up context", "inputs about the day itself (number of launches, weekday, how busy the past week was); mostly the same for every launch of the day")}
+COLN = {"hist_hunter_rel": "hunter track record (relative votes)", "hist_dayrank_hist_hunter_rel": "hunter track record (rank within the day)",
+        "hist_hunter_top5": "hunter top-5 rate", "hist_hunter_n": "hunter launches before", "ph_hunter_age_d": "hunter account age",
+        "ph_dayrank_ph_hunter_age_d": "hunter account age (rank within the day)", "ph_hunter_n_same_day": "hunter's other launches the same day",
+        "llm_pitch": "Gemini pitch score", "llm_brand": "brand recognition (Gemini)", "topic_prior_mean": "topic prior (mean)", "topic_prior_max": "topic prior (best topic)",
+        "topic_is_ai": "AI topic", "topic_is_dev": "developer-tools topic", "ph_n_topics": "number of topics", "comp_nn_mean": "similar launches' mean result",
+        "comp_nn_max": "similar launches' best result", "comp_nn_sim": "similarity to earlier launches", "ph_n_media": "media items", "ph_dayrank_ph_n_media": "media items (rank within the day)",
+        "ph_has_video": "has a video", "ph_n_makers": "team size", "ph_dayrank_ph_n_makers": "team size (rank within the day)", "promo_cov": "pre-launch coverage items",
+        "promo_posts": "pre-launch posts", "promo_posts_launch": "pre-launch posts about the launch", "promo_posts_founder": "founder posts before launch",
+        "promo_posts_x": "posts on X before launch", "promo_posts_li": "posts on LinkedIn before launch", "promo_cov_hn": "Hacker News coverage", "promo_cov_reddit": "Reddit coverage",
+        "promo_cov_press": "press coverage", "x_company_has_x": "company has an X account", "txt_ridge": "text model score", "ph_name_len": "name length",
+        "ph_desc_len": "description length", "ph_tagline_len": "tagline length", "ph_weekday": "weekday", "ph_day_n_launches": "launches that day",
+        "busy_same_day": "busy day", "busy_7d": "busy past week"}
 SHF = os.environ.get("SHAP_FILE")
 SH = json.load(open(SHF)) if SHF and os.path.exists(SHF) else json.loads(gcat(f"{B}/results/shadow_arm2_shap/{DAY}.json") or "{}")
 if SH.get("launches"):
@@ -297,9 +309,13 @@ if SH.get("launches"):
             nm, df_ = SHN.get(g, (g, NA))
             raw = {c: vals.get(c) for c, gg in gm.items() if gg == g}
             if g == "team size" and raw.get("ph_n_makers") == 0: raw["ph_n_makers"] = "0: makers not shown by Product Hunt"
-            return {"input": nm, "points": gc.get(g), "direction": "raises" if (gc.get(g) or 0) > 0 else "lowers", "raw_values": raw, "definition": df_}
+            pic = L_.get("per_input_centred") or {}
+            parts = sorted([(c, v) for c, v in pic.items() if gm.get(c) == g], key=lambda t: -abs(t[1]))
+            detail = [{"input": COLN.get(c, c), "points": round(float(v), 4), "raw_value": raw.get(c)} for c, v in parts[:4] if abs(v) >= 0.005]
+            return {"input": nm, "points": gc.get(g), "direction": "raises" if (gc.get(g) or 0) > 0 else "lowers", "raw_values": raw, "definition": df_,
+                    **({"main_inputs": detail} if detail else {})}
         WHYB[i] = {"top_drivers": [gdrv(g) for g in ranked[:3]], "all_groups": [gdrv(g) for g in ranked],
-                   "day_context": {"points": gc.get("day/lineup"), "definition": SHN["day/lineup"][1], "note": "shown once per day; it cannot explain the order within the day"},
+                   "day_context": {"points": gc.get("day/lineup"), "definition": SHN["day/lineup"][1], "note": "day-level inputs; mostly the same for every launch of the day, so they explain little of the order within the day (small differences come from interactions)"},
                    "rank_in_published_model": L_.get("rank_arm2"), "concentrated": L_.get("concentrated")}
     WHY_LABEL = {"model": "the published 00:05 model itself (arm 2): its own TreeSHAP contributions, 5 seeds, grouped into named inputs and centred on the day's mean",
                  "predictive_value": (f"{AC['top3']} / {AC['top5']} / {AC['top10']} top 3 / 5 / 10 on {AC['n_days']} backtest days ({AC['rule']})" if AC else NA),
