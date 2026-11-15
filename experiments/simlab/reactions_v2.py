@@ -185,14 +185,17 @@ def build_types(s, n):
     return [f"User {chr(65 + i)}: {x}" if i < 26 else x for i, x in enumerate(t)]
 
 
+def ret_block(s, k):   # BEST's retrieval ingredient: themes of the k most similar earlier launches
+    nb = neighbours(s, k); th = [t for o in nb for t in nb_themes(o)]
+    return "\n\nFor grounding: users of similar past Product Hunt products raised these points (other products, not this one; reuse only what plausibly applies here):\n" + "\n".join(f"- {t}" for t in th[:6 * k])
+
+
 def prompt_for(s, n=6, k=0, site=False, two=None):
     r = bys[s]; desc = (r.description or "")[:1500]
     excerpt = site_txt.get(str(r.id), desc) if site else desc
     p = SITE_PROMPT.format(name=r.name, tagline=r.tagline or "", summary=desc, pricing="unknown", strengths="", doubts="",
                            excerpt=excerpt[:2500], types="\n".join(build_types(s, n)))
-    if k:
-        nb = neighbours(s, k); th = [t for o in nb for t in nb_themes(o)]
-        p += "\n\nFor grounding: users of similar past Product Hunt products raised these points (other products, not this one; reuse only what plausibly applies here):\n" + "\n".join(f"- {t}" for t in th[:6 * k])
+    if k: p += ret_block(s, k)
     if two:
         p += "\n\nFirst-pass expected themes for THIS product (cover them where they fit the member type):\n" + "\n".join(f"- {t}" for t in two)
     return p
@@ -206,18 +209,18 @@ Return JSON {{"themes": ["<type>: <theme>", ...]}} with 8 themes."""
 
 
 PCARDS = json.load(open(os.environ["PERSONA_CARDS"])) if os.environ.get("PERSONA_CARDS") else {}
-def gen_persona(s, n):   # persona panel (persona_say.py prompt), first n personas; candidate = reaction + concern + question in one comment
+def gen_persona(s, n, k=0):   # persona panel (persona_say.py prompt), first n personas; candidate = reaction + concern + question in one comment
     import importlib.util
     sp = importlib.util.spec_from_file_location("psay_prompt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "persona_prompt.py")); pm = importlib.util.module_from_spec(sp); sp.loader.exec_module(pm)
     P_ = (PCARDS.get(s) or {}).get("personas") or []
     if not P_: return []
     r = bys[s]; topics = ", ".join(json.loads(r.topics)) if isinstance(r.topics, str) and r.topics.startswith("[") else ""
     a = gem(pm.PROMPT.format(name=r.name, tagline=r.tagline or "", desc=(r.description or "")[:1200], topics=topics,
-                             groups="\n".join(pm.gtxt(i, g) for i, g in enumerate(P_[:n]))), "gemini-2.5-flash", 0.0, 3000, tag=f"PERSONA{n}")
+                             groups="\n".join(pm.gtxt(i, g) for i, g in enumerate(P_[:n]))) + (ret_block(s, k) if k else ""), "gemini-2.5-flash", 0.0, 3000, tag=f"PERSONA{n}{'R' if k else ''}")
     return [f"{x.get('reaction', '')} Concern: {x.get('concern', '')} Question: {x.get('question', '')}" for x in ((a or {}).get("reactions") or []) if isinstance(x, dict)][:n]
 def gen(s, v):
     cfg = VAR[v]
-    if cfg.get("persona"): return gen_persona(s, cfg["persona"])
+    if cfg.get("persona"): return gen_persona(s, cfg["persona"], cfg.get("k", 0))
     model, temp, n, k = cfg.get("model", "gemini-2.5-flash-lite"), cfg.get("temp", 0.7), cfg.get("n", 6), cfg.get("k", 0)
     two = None
     if cfg.get("two"):
@@ -228,7 +231,7 @@ def gen(s, v):
 
 VAR = {"R3": {"k": 3}, "R5": {"k": 5}, "R10": {"k": 10}, "N10": {"n": 10}, "N15": {"n": 15}, "TWO": {"two": True},
        "FLASH3": {"model": "gemini-2.5-flash", "temp": 0.3}, "LITE3": {"temp": 0.3}, "SITE": {"site": True},
-       "PERSONA6": {"persona": 6}, "PERSONA12": {"persona": 12}}
+       "PERSONA6": {"persona": 6}, "PERSONA12": {"persona": 12}, "PERSONA12R": {"persona": 12, "k": 10}}
 if os.environ.get("BEST"): VAR["BEST"] = json.loads(os.environ["BEST"])
 todo = [v for v in VAR if not ONLY or v in ONLY]
 
@@ -306,5 +309,33 @@ if os.environ.get("CROSS"):
     res["cross_judge_100"] = {"variant": v, "V0": {m: boot(J0[m]) for m in J0}, v: {m: boot(J1[m]) for m in J1},
                               "diff (paired)": {m: boot(J1.loc[j, m] - J0.loc[j, m]) for m in J0}}
     print("cross", res["cross_judge_100"], flush=True)
+if os.environ.get("PAIRS"):   # PREREG_persona_retrieval.md: same launches for all arms, paired by launch; complaint recall (complaints_eval Part B truth + judge)
+    arms = os.environ["PAIRS"].split(","); Ds = {v: score({s: C.get(f"gen|{v}|{s}") for s in S}, tag=v) for v in arms}
+    common = sorted(set.intersection(*[set(D.index) for D in Ds.values()]))
+    CT = json.load(open(os.environ["CTRUTH"])); TB = {s: CT.get(f"ctruth|{s}") or [] for s in common}
+    CJ = """List A = criticisms real users raised about a product (complaints, missing features). List B = candidate statements.
+For each item in A: is it substantially covered by some item in B (same specific concern, not merely the same broad area)?
+For each item in B: is it a criticism/concern/request (true) or praise/neutral (false); and does it substantially match some item in A?
+Return JSON {{"a_covered": [true/false per A item], "b_is_criticism": [true/false per B item], "b_matches": [true/false per B item]}}.
+A:
+{a}
+B:
+{b}"""
+    def cj(s, cand):
+        a = gem(CJ.format(a="\n".join(f"{k+1}. {t}" for k, t in enumerate(TB[s])), b="\n".join(f"{k+1}. {t}" for k, t in enumerate(cand))), "gemini-2.5-flash", 0.0, 1200)
+        if not isinstance(a, dict) or len(a.get("a_covered", [])) != len(TB[s]): return None
+        return float(np.mean([bool(x) for x in a["a_covered"]]))
+    CR = {}
+    for v in arms:
+        jobs = [s for s in common if TB[s]]
+        with cf.ThreadPoolExecutor(8) as ex:
+            CR[v] = pd.Series(dict(zip(jobs, ex.map(lambda s: run(f"cj|{v}|{hashlib.md5(json.dumps(C.get(f'gen|{v}|{s}')).encode()).hexdigest()[:10]}|{s}", lambda: cj(s, C.get(f"gen|{v}|{s}"))), jobs))), dtype=float)
+    out = {"launches": len(common), "launches with critical truth": int(sum(bool(TB[s]) for s in common)),
+           "arms": {v: {**{m: boot(Ds[v].loc[common, m]) for m in ("recall", "recall_w", "precision")}, "complaint_recall": boot(CR[v])} for v in arms}, "paired": {}}
+    for a_, b_ in [x.split("-") for x in os.environ.get("PAIRS_DIFF", "").split(",") if x]:
+        cc = CR[a_].index.intersection(CR[b_].index)
+        out["paired"][f"{a_} - {b_}"] = {**{m: boot(Ds[a_].loc[common, m] - Ds[b_].loc[common, m]) for m in ("recall", "recall_w", "precision")},
+                                         "complaint_recall": boot(CR[a_].loc[cc] - CR[b_].loc[cc])}
+    res["persona_retrieval"] = out; print("pairs", json.dumps(out), flush=True)
 res["usd_total_this_run"] = round(USD["usd"], 3)
 json.dump(res, open(resf, "w"), indent=1); json.dump(C, open(cache_f, "w"))
