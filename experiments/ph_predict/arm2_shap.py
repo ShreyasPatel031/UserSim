@@ -73,6 +73,7 @@ def main(d):
     S = pd.DataFrame(C[:, :-1], columns=cols, index=ids)
     G = S.T.groupby([grp(c) for c in cols]).sum().T                       # group contribution per launch
     Cc = G - G.mean()                                                       # within-day centred
+    Sc = S - S.mean()                                                       # per input column, within-day centred (E5 00:07Z Nov 15)
     rank = pd.Series(PA.pred_arm2.values, index=ids).rank(ascending=False, method="first").astype(int)
     L = {}
     assert len(X) == len(ids), "booster input rows != predicted launches"
@@ -83,6 +84,7 @@ def main(d):
         conc = float(top_pos.iloc[0] / pos.sum()) if len(pos) and pos.sum() > 0 else None
         L[i] = {"rank_arm2": int(rank[i]), "score": round(float(PA.set_index(PA.id.astype(str)).pred_arm2[i]), 4),
                 "groups_centred": {g: round(float(v), 4) for g, v in r.items()},
+                "per_input_centred": {c: round(float(v), 4) for c, v in Sc.loc[i].items()},
                 "top_groups": [g for g in top_pos.index[:3] if top_pos[g] > 0],
                 "concentration": round(conc, 3) if conc is not None else None, "concentrated": bool(conc is not None and conc > 0.6),
                 # arm 2's own input values for this launch, exactly as fed to the boosters (orchestrator 00:03Z Nov 15; null if missing)
