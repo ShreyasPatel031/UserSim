@@ -13,6 +13,8 @@ EW = open(os.path.join(HERE, "explain_writer.py")).read(); exec(EW[EW.index("SEG
 MIN, K = 20, 12; TOPN = list(g["TOP"]); D = TDAYS[0]
 PJ = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "headline", "bio"]).drop_duplicates("person_id")
 seg = dict(zip(PJ.person_id, (PJ.headline.fillna("") + " " + PJ.bio.fillna("")).map(seg_of)))
+import segments_lib; SEGL, SEGP = segments_lib.load(os.environ.get("SEG_SP"))   # data-driven segments override the keyword roles
+if SEGL: seg = {p: SEGL.get(p, segments_lib.INACTIVE) for p in seg}
 H = U[U.fetched_at < start(D)]; Hb = H[H.lday < D]; act, tvec, ix = feats(D, H)
 d30 = (pd.Timestamp(D) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); d90 = (pd.Timestamp(D) - pd.Timedelta(days=90)).strftime("%Y-%m-%d")
 n30 = Hb[Hb.lday >= d30].groupby("person_id").size(); names = dict(zip(WA.id.astype(str), WA.name))
@@ -24,7 +26,7 @@ for lid in [str(p["id"]) for p in LINE.get(D, [])]:
     pool = Hb[Hb.target_id.isin(ls)].person_id.unique().tolist() if ls else []
     src, people = ("team past backers", pool) if len(pool) >= MIN else ("CF-only top 200", A_[A_.launch_id == lid].sort_values("rank").person_id.iloc[:200].tolist())
     if len(people) < MIN: cards[lid] = {"status": "not available (fewer than 20 people)"}; continue
-    sg = pd.Series([seg.get(p, "no headline or bio") for p in people])
+    sg = pd.Series([seg.get(p, segments_lib.INACTIVE if SEGL else "no headline or bio") for p in people])
     big = sg.value_counts(); big = big[big >= MIN]
     if big.empty: cards[lid] = {"status": "not available (no segment with >= 20 people)"}; continue
     alloc = np.floor(K * big / big.sum()).astype(int); rem = K - alloc.sum()
@@ -39,7 +41,7 @@ for lid in [str(p["id"]) for p in LINE.get(D, [])]:
             top_t = [{"topic": TOPN[j], "share": round(float(tdist[j]), 3)} for j in np.argsort(-tdist)[:4] if tdist[j] > 0]
             ups = Hb[(Hb.lday >= d90) & Hb.person_id.isin(set(c))].groupby("target_id").person_id.nunique().sort_values(ascending=False)
             prods = [{"product": names.get(t, "?"), "share_of_group": round(float(n / len(c)), 2)} for t, n in ups.head(6).items() if n >= 3]
-            P_.append({"segment": s_, "n_people": len(c), "median_upvotes_last_30_days": float(n30.reindex(c).fillna(0).median()),
+            P_.append({"segment": s_, "n_people": len(c), **({"segment_profile": SEGP[s_]} if s_ in SEGP else {}), "median_upvotes_last_30_days": float(n30.reindex(c).fillna(0).median()),
                        "topic_shares": top_t, "products_they_commonly_upvoted": prods})
     cards[lid] = {"source": src, "n_source_people": len(people), "personas": P_}
 out = {"day": D, "design": DOC.split("\n    python")[0], "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "launches": cards}

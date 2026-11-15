@@ -41,7 +41,7 @@ def one(lid):
     items = []
     for r in R:
         k = int(r.get("group", 0)) - 1
-        if 0 <= k < len(P_): items.append({"segment": P_[k]["segment"], "n_people": P_[k]["n_people"], "reaction": r.get("reaction"), "concern": r.get("concern"),
+        if 0 <= k < len(P_): items.append({"segment": P_[k]["segment"], "n_people": P_[k]["n_people"], **({"segment_profile": P_[k]["segment_profile"]} if P_[k].get("segment_profile") else {}), "reaction": r.get("reaction"), "concern": r.get("concern"),
                                            "question": r.get("question"), "interest": r.get("interest")})
     return lid, {"source_people": c.get("source"), "items": items}
 ids = [i for i in line if (cards.get(i) or {}).get("personas")][:LIM]

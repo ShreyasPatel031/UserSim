@@ -40,6 +40,8 @@ WHO, COV = {}, {}
 try:
     PP = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "headline", "bio"]).drop_duplicates("person_id")
     segmap = dict(zip(PP.person_id, (PP.headline.fillna("") + " " + PP.bio.fillna("")).map(seg_of)))
+    import segments_lib; _SL, _ = segments_lib.load(SP)   # data-driven segments (population_segments.py) override the keyword roles
+    if _SL: segmap = {p: _SL.get(p, segments_lib.INACTIVE) for p in segmap}
     tmp = tempfile.mkdtemp(); ld = os.path.join(tmp, "launches"); os.makedirs(ld)
     WA = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last"); WA["id"] = WA.id.astype(str); WA = WA[~WA.id.isin(ids)]
     add = pd.DataFrame([{"id": str(p["id"]), "slug": p.get("slug"), "day": DAY, "topics": json.dumps([e["node"]["name"] for e in ((p.get("topics") or {}).get("edges") or [])]),

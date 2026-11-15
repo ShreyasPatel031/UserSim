@@ -17,4 +17,5 @@ For EVERY group (same order), return JSON only:
 def gtxt(i, g):
     tops = ", ".join(f"{t['topic']} {round(100 * t['share'])}%" for t in g.get("topic_shares", []))
     prods = ", ".join(p["product"] for p in g.get("products_they_commonly_upvoted", [])[:5])
-    return f"{i + 1}. {g['segment']} ({g['n_people']} people; median {g['median_upvotes_last_30_days']:.0f} upvotes in 30 days); upvote topics: {tops}; products they upvoted: {prods}"
+    pr = g.get("segment_profile") or {}; who = f"; who they are: {pr['who']}" if pr.get("who") else ""
+    return f"{i + 1}. {g['segment']} ({g['n_people']} people; median {g['median_upvotes_last_30_days']:.0f} upvotes in 30 days){who}; upvote topics: {tops}; products they upvoted: {prods}"

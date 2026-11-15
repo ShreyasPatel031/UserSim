@@ -1,0 +1,298 @@
+"""Data-driven population segments (Shreyas, Nov 15: replace the keyword role labels; groups and subgroups labelled with who they are, what
+they likely say and who they likely vote for; keep recalibrating).
+
+DATING: everything uses launches dated before the cut C and reads fetched before C (default: now). Re-run nightly; segments keep stable ids.
+1. Groups (taste). People with >= MIN_UP upvotes on launches of the 730 days before C. Features = TF-IDF topic profile (L2) of
+   the launches they upvoted (launch co-vote SVD factors were tried and dropped: they grouped people by active weeks, not taste). MiniBatchKMeans, K groups. People with 1..MIN_UP-1 upvotes are assigned to the nearest
+   group by their topic profile (flag low_signal). People with no upvote in the window: group "not active in the last 180 days".
+2. Subgroups (style, within each group). Standardised [ln(1+upvotes 30d), comment rate, made/hunted a launch, reviews+stacks, follows,
+   role keywords (multi-hot; no headline/bio is its own column)]; KMeans with k = 2..4 by group size, each subgroup >= 20 people.
+3. Descriptors (computed, aggregate only): size, activity, role mix, share commenting / making, topics by lift vs the whole population,
+   products most upvoted (share of the group and lift), and up to 60 of the group's own comments (text matched by comment id from the
+   launch-page dump, condensed by Gemini into themes, never quoted).
+4. Names: Gemini 2.5 Flash names ALL groups in one comparative call (then each group's subgroups in one call) from the descriptors only,
+   told that shared traits (developer / founder / AI) do not distinguish and names must differ; topic-lift fallback if the call fails.
+   Stable ids: new centroids are matched to the previous run's (Hungarian, cosine); a matched group keeps its id and name unless its
+   descriptors drift (top-10 lifted topics overlap < 5), then it is renamed.
+5. Calibration (every run): cut C' = C - 7 days, refit groups on data before C', then for each launch dated in [C', C) with >= 20 held
+   backers compare the backers' group mix with (a) the model mix (group sizes x each group's affinity for the launch's topics) and
+   (b) the population mix (group shares of upvotes in the 30 days before C'). Metric = mean total-variation distance (lower is better), launch bootstrap. Also: per group, the upvote-rate
+   lift on launches whose first topic is one of the group's top-5 lifted topics (does "votes_for" hold out of sample?). Appended to
+   history so drift is visible.
+Outputs: PRIVATE person -> group/subgroup (salted ids) gs://.../tmp/e5/private/segments/<C>.parquet; PUBLIC (aggregates, groups/subgroups
+>= 20 people, no ids/usernames/headlines): results/web/segments/<C>.json and results/web/segments/latest.json; calibration history
+results/web/segments/calibration_history.jsonl. Launch topics: warehouse (2026) + H25_SRC daily files (2025) when set.
+    H25_SRC=<dir> python population_segments.py <store dir> <cf dir> <scratchpad> [--cut YYYY-MM-DD] [--k 12] [--no-upload] [--no-llm]"""
+import gzip, glob, html, json, os, re, subprocess, sys, time
+import numpy as np, pandas as pd
+from scipy.optimize import linear_sum_assignment
+from scipy.sparse import csr_matrix
+from scipy.sparse.linalg import svds
+from sklearn.cluster import KMeans, MiniBatchKMeans
+from sklearn.feature_extraction.text import TfidfTransformer
+HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, ".."))
+from pipeline import warehouse  # noqa: E402
+args = [a for a in sys.argv[1:] if not a.startswith("--")]; ST, CFD, SP = args[:3]
+opt = lambda k, d: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else d
+CUT = opt("--cut", pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")); K = int(opt("--k", 12)); UP = "--no-upload" not in sys.argv; LLM = "--no-llm" not in sys.argv
+MIN_UP, MIN_N, WIN = 5, 20, 730
+B = "gs://usersim-bakeoff-347838016394/usersim_sim"; OUTD = os.path.join(SP, "segments"); os.makedirs(OUTD, exist_ok=True)
+gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
+t0 = time.time(); log = lambda *a: print(round(time.time() - t0), *a, flush=True)
+
+# ---------- data (dated)
+E = pd.read_parquet(f"{ST}/events.parquet", columns=["person_id", "kind", "target_id", "fetched_at", "extra"])
+E["ft"] = pd.to_datetime(E.fetched_at, utc=True); E = E[E.ft < pd.Timestamp(CUT, tz="UTC")]
+W = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last"); W["id"] = W.id.astype(str); W["day"] = W.day.astype(str).str[:10]
+W["tops"] = W.topics.map(lambda t: json.loads(t) if isinstance(t, str) and t.startswith("[") else [])
+if os.environ.get("H25_SRC"):   # 2025 featured launches (daily API files): the warehouse starts 2026-01-01
+    x25 = [(str(e["id"]), os.path.basename(f)[:10], e.get("name"), [t["node"]["name"] for t in ((e.get("topics") or {}).get("edges") or [])] if isinstance(e.get("topics"), dict) else (e.get("topics") or []))
+           for f in glob.glob(os.path.join(os.environ["H25_SRC"], "*.json")) for e in json.load(open(f))]
+    W = pd.concat([pd.DataFrame(x25, columns=["id", "day", "name", "tops"]), W[["id", "day", "name", "tops"]]]).drop_duplicates("id", keep="last")
+lday = dict(zip(W.id, W.day)); ltops = dict(zip(W.id, W.tops)); lname = dict(zip(W.id, W.name))
+U0 = E[E.kind == "upvote"][["person_id", "target_id"]].copy(); U0["target_id"] = U0.target_id.astype(str); U0["lday"] = U0.target_id.map(lday); U0 = U0[U0.lday.notna()].drop_duplicates(["person_id", "target_id"])
+PJ = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "headline", "bio"]).drop_duplicates("person_id").set_index("person_id")
+cnt = lambda k: E[E.kind == k].groupby("person_id").size()
+STYLE_RAW = {"comments": cnt("comment"), "made": cnt("launched").add(cnt("hunted"), fill_value=0), "reviews_stacks": cnt("review").add(cnt("stack"), fill_value=0),
+             "follows": cnt("follows")}
+ROLES = [("investor", r"\b(investor|vc|venture|angel)\b"), ("designer", r"(design|\bux\b|\bui\b|figma|illustrat)"),
+         ("developer", r"(engineer|developer|\bdev\b|software|full[- ]?stack|backend|frontend|programm|devops|data scien|machine learning|\bml\b|\bai\b)"),
+         ("marketer", r"(marketing|marketer|growth|\bseo\b|content|brand|social media|copywrit|community)"),
+         ("product", r"(product manager|\bpm\b|product lead|product owner|head of product)"),
+         ("founder", r"(founder|\bceo\b|indie|maker|solopreneur|bootstrap|entrepreneur)"), ("student", r"(student|university|college)")]
+txt = (PJ.headline.fillna("") + " " + PJ.bio.fillna("")).str.lower()
+RM = pd.DataFrame({r: txt.str.contains(rx, regex=True) for r, rx in ROLES}, index=PJ.index).astype(float); RM["no headline or bio"] = (txt.str.strip() == "").astype(float)
+log("data", len(U0))
+
+
+def fit_groups(cut, k, seed=0):
+    d0 = (pd.Timestamp(cut) - pd.Timedelta(days=WIN)).strftime("%Y-%m-%d")
+    U = U0[(U0.lday < cut) & (U0.lday >= d0)]
+    n = U.groupby("person_id").size(); core = n[n >= MIN_UP].index; weak = n[(n < MIN_UP)].index
+    TP = U.assign(t=U.target_id.map(ltops)).explode("t").dropna(subset=["t"])
+    tc = TP.t.value_counts(); topics = list(tc[tc >= 200].index)
+    ti = {t: i for i, t in enumerate(topics)}; TP = TP[TP.t.isin(ti)]
+    ppl = list(n.index); pi = {p: i for i, p in enumerate(ppl)}
+    M = csr_matrix((np.ones(len(TP)), (TP.person_id.map(pi), TP.t.map(ti))), shape=(len(ppl), len(topics)))
+    T = TfidfTransformer().fit(M[[pi[p] for p in core]]); Tt = T.transform(M).toarray(); Tt /= np.linalg.norm(Tt, axis=1, keepdims=True) + 1e-9
+    F = Tt[[pi[p] for p in core]]   # topic taste only: launch co-vote factors (SVD) clustered people by active WEEKS, not taste (dry run, Nov 15)
+    km = MiniBatchKMeans(k, random_state=seed, n_init=5, batch_size=4096).fit(F)
+    g = pd.Series(km.labels_, index=core)
+    # weak people: nearest group by topic profile (topic part of the centroids)
+    TC = np.array([Tt[[pi[p] for p in g.index[g == j]]].mean(0) for j in range(k)]); TC /= np.linalg.norm(TC, axis=1, keepdims=True) + 1e-9
+    wv = Tt[[pi[p] for p in weak]]; ok = np.linalg.norm(wv, axis=1) > 0
+    gw = pd.Series(np.argmax(wv[ok] @ TC.T, axis=1), index=np.array(weak)[ok])
+    return {"core": g, "weak": gw, "U": U, "topics": topics, "TC": TC, "n": n}
+
+
+def topic_aff(G, U):   # group x topic propensity: share of the group's upvotes on launches with that topic
+    lab = pd.concat([G["core"], G["weak"]]); Ux = U[U.person_id.isin(lab.index)].assign(g=lambda x: x.person_id.map(lab), t=lambda x: x.target_id.map(ltops)).explode("t").dropna(subset=["t"]).reset_index(drop=True)
+    A = pd.crosstab(Ux.g, Ux.t); return A.div(A.sum(1), axis=0)
+
+
+# ---------- fit at the cut
+G = fit_groups(CUT, K); lab = pd.concat([G["core"], G["weak"]]); log("groups", lab.value_counts().sort_index().to_dict())
+# stable ids vs previous run
+prev = json.loads(gcat(f"{B}/results/web/segments/latest.json") or "{}") if UP else (json.load(open(os.path.join(OUTD, "latest.json"))) if os.path.exists(os.path.join(OUTD, "latest.json")) else {})
+remap = {j: j for j in range(K)}; prev_names = {}
+if prev.get("groups"):
+    pc = {g["id"]: np.array(g["_topic_centroid"]) for g in prev["groups"] if "_topic_centroid" in g and g.get("_topics") == G["topics"]}
+    if pc:
+        ids = sorted(pc); S = G["TC"] @ np.array([pc[i] for i in ids]).T; r, c = linear_sum_assignment(-S)
+        used = set()
+        for a, b in zip(r, c):
+            if S[a, b] > 0.8: remap[a] = ids[b]; used.add(ids[b])
+        free = [i for i in range(100) if i not in used]
+        for a in range(K):
+            if a not in [x for x, y in zip(r, c) if S[x, y] > 0.8]: remap[a] = free.pop(0)
+        prev_names = {g["id"]: g for g in prev["groups"]}
+lab = lab.map(remap); G["core"] = G["core"].map(remap); G["weak"] = G["weak"].map(remap)
+
+# ---------- subgroups (style within group)
+c30 = (pd.Timestamp(CUT) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); n30 = G["U"][G["U"].lday >= c30].groupby("person_id").size()
+ST_ = pd.DataFrame(index=lab.index)
+ST_["ln_up30"] = np.log1p(n30.reindex(lab.index).fillna(0)); ST_["comment_rate"] = (STYLE_RAW["comments"].reindex(lab.index).fillna(0) / (G["n"].reindex(lab.index) + 1)).clip(0, 3)
+ST_["made"] = (STYLE_RAW["made"].reindex(lab.index).fillna(0) > 0).astype(float); ST_["reviews_stacks"] = np.log1p(STYLE_RAW["reviews_stacks"].reindex(lab.index).fillna(0))
+ST_["ln_follows"] = np.log1p(STYLE_RAW["follows"].reindex(lab.index).fillna(0))
+ST_ = ST_.join(RM.reindex(lab.index).fillna(0))
+Zs = (ST_ - ST_.mean()) / (ST_.std() + 1e-9); sub = pd.Series(0, index=lab.index)
+for g in sorted(lab.unique()):
+    idx = lab.index[lab == g]; k = 4 if len(idx) >= 4000 else 3 if len(idx) >= 1500 else 2 if len(idx) >= 200 else 1
+    if k > 1:
+        lb = KMeans(k, random_state=0, n_init=5).fit_predict(Zs.loc[idx].values)
+        vc = pd.Series(lb).value_counts(); small = set(vc[vc < MIN_N].index)
+        if small: lb = np.array([vc.index[0] if x in small else x for x in lb])
+        sub.loc[idx] = lb
+log("subgroups done")
+
+# ---------- descriptors
+pop_t = G["U"].assign(t=G["U"].target_id.map(ltops)).explode("t").dropna(subset=["t"]); pop_share = pop_t.t.value_counts(normalize=True)
+pop_prod = G["U"].groupby("target_id").person_id.nunique() / max(1, G["U"].person_id.nunique())
+cmt_ids = E[E.kind == "comment"][["person_id", "extra"]].copy()
+cmt_ids["cid"] = cmt_ids.extra.map(lambda e: json.loads(e).get("comment_id") if isinstance(e, str) and e.startswith("{") else None)
+want = dict(zip(cmt_ids.cid.dropna().astype(str), cmt_ids.dropna(subset=["cid"]).person_id)); ctext = {}
+for f in sorted(glob.glob(os.path.join(CFD, "page*.jsonl.gz"))):
+    for line in gzip.open(f):
+        x = json.loads(line)
+        try: p_ = json.loads(x["html"])["data"]["post"]
+        except Exception: continue
+        if not p_: continue
+        def walk(nd):
+            i = str(nd.get("id"))
+            if i in want:
+                t = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", nd.get("bodyHtml") or ""))).strip()
+                if len(t) > 25: ctext.setdefault(want[i], []).append(t[:400])
+            for e in ((nd.get("replies") or {}).get("edges") or []): walk(e["node"])
+        for e in ((p_.get("threads") or {}).get("edges") or []): walk(e["node"])
+log("comment texts for people", len(ctext))
+rng = np.random.default_rng(0)
+
+
+POP_ROLE = RM.reindex(lab.index).fillna(0); POP_ROLE = POP_ROLE[POP_ROLE["no headline or bio"] == 0].mean()
+POP_ACT = float(G["n"].reindex(lab.index).fillna(0).median())
+
+
+def describe(people):
+    people = list(people); Ug = G["U"][G["U"].person_id.isin(set(people))]
+    tg = Ug.assign(t=Ug.target_id.map(ltops)).explode("t").dropna(subset=["t"]).t.value_counts(normalize=True)
+    lift = (tg / pop_share.reindex(tg.index)).dropna(); lift = lift[tg.reindex(lift.index) >= 0.01].sort_values(ascending=False)
+    pr = Ug.groupby("target_id").person_id.nunique() / len(people); pl = (pr / pop_prod.reindex(pr.index)).dropna()
+    top_prod = pr[pr >= 0.05].sort_values(ascending=False).head(8)
+    dist = pl[(pr.reindex(pl.index) >= 0.03)].sort_values(ascending=False).head(8)   # distinctive: most over-represented vs the population
+    rm = RM.reindex(people).fillna(0); hasbio = rm["no headline or bio"] == 0
+    cm = [t for p in rng.permutation(people)[:4000] for t in ctext.get(p, [])[:2]][:60]
+    return {"n_people": len(people), "median_upvotes_last_30_days": float(n30.reindex(people).fillna(0).median()),
+            "median_upvotes_in_window": float(G["n"].reindex(people).fillna(0).median()),
+            "share_commenting": round(float((STYLE_RAW["comments"].reindex(people).fillna(0) > 0).mean()), 3),
+            "share_made_or_hunted_a_launch": round(float((STYLE_RAW["made"].reindex(people).fillna(0) > 0).mean()), 3),
+            "share_no_headline_or_bio": round(float(1 - hasbio.mean()), 3),
+            "roles_among_people_with_bio": {r: round(float(rm.loc[hasbio, r].mean()), 3) for r, _ in ROLES} if hasbio.any() else {},
+            "role_lift_vs_population": {r: round(float(rm.loc[hasbio, r].mean() / POP_ROLE[r]), 2) for r, _ in ROLES if POP_ROLE[r] > 0} if hasbio.any() else {},
+            "topics_by_lift": [{"topic": t, "share": round(float(tg[t]), 3), "lift": round(float(v), 2)} for t, v in lift.head(10).items()],
+            "products_most_upvoted": [{"product": lname.get(i, "?"), "share_of_group": round(float(v), 3), "lift": round(float(pl.get(i, np.nan)), 2)} for i, v in top_prod.items()],
+            "products_distinctive": [{"product": lname.get(i, "?"), "share_of_group": round(float(pr[i]), 3), "lift": round(float(v), 2)} for i, v in dist.items()],
+            "_comments": cm}
+
+
+sys.path.insert(0, os.path.join(SP, "phops", "experiments", "ph_predict"))
+NAMEP = """You name and describe audience segments of Product Hunt users for a launch-analytics site. The segments below were found by
+clustering real users on WHAT THEY UPVOTE ({level}). Almost everyone on Product Hunt is a developer or founder interested in AI, so those
+traits do NOT distinguish segments: a name must come from what is DISTINCTIVE for that segment versus the others (topics and products with
+high lift, role lift > 1.3, activity level relative to the population median of {pop_act:.0f} upvotes, commenting / making rates).
+Every name must be clearly different from every other name (including the fixed names listed). Do not use the words "AI", "builders",
+"native", "fluent" or "explorers" unless that segment's own lift data justifies it uniquely. Comment samples are members' own comments:
+summarise recurring themes, never quote, never name people.
+{parent}
+SEGMENTS:
+{segs}
+Return JSON only: {{"segments": [{{"id": "<id>", "name": "<2-5 words>", "who": "<one sentence: who they are, from the data>",
+"says": ["<recurring theme in what they say on launches>", "<another>", "<another>"], "votes_for": "<one sentence: which launches they back, naming topic areas>"}}, ...]}}
+Return an entry for every segment that is not marked FIXED."""
+
+
+def seg_block(sid, d, fixed=None, style=None):
+    st = {k: d[k] for k in ("n_people", "median_upvotes_in_window", "median_upvotes_last_30_days", "share_commenting", "share_made_or_hunted_a_launch",
+                            "share_no_headline_or_bio", "role_lift_vs_population")}
+    st["topics_by_lift"] = [(t["topic"], t["lift"]) for t in d["topics_by_lift"][:8]]; st["products_distinctive"] = [(x["product"], x["lift"]) for x in d["products_distinctive"][:6]]
+    if style: st["engagement_style_vs_population_z"] = style
+    head = f"[{sid}] FIXED NAME: {fixed}" if fixed else f"[{sid}]"
+    return head + " " + json.dumps(st) + "\n  comments: " + (" | ".join(c[:220] for c in d["_comments"][:20]) or "(none)")
+
+
+def name_batch(items, level, parent=""):   # items: [(id, desc, fixed_name_or_None, style)]
+    fallback = {sid: {"name": " & ".join(t["topic"] for t in d["topics_by_lift"][:2]) + (" (very active)" if d["median_upvotes_in_window"] > 3 * POP_ACT else ""),
+                      "who": None, "says": None, "votes_for": "launches in " + ", ".join(t["topic"] for t in d["topics_by_lift"][:4])} for sid, d, _, _ in items}
+    if not LLM or all(f for _, _, f, _ in items): return fallback
+    import llm
+    out = llm.gemini_call(NAMEP.format(level=level, pop_act=POP_ACT, parent=parent, segs="\n".join(seg_block(*x) for x in items)), 6000)
+    try: R = {str(r["id"]): r for r in json.loads(out)["segments"]}
+    except Exception: return fallback
+    return {sid: ({k: R[sid].get(k) for k in ("name", "who", "says", "votes_for")} if sid in R and R[sid].get("name") else fallback[sid]) for sid, _, _, _ in items}
+
+
+GD, SD, keepg = {}, {}, {}
+for g in sorted(lab.unique()):
+    ppl = lab.index[lab == g]; GD[g] = describe(ppl); pv = prev_names.get(int(g))
+    keepg[g] = pv if pv and pv.get("name") and len({t["topic"] for t in GD[g]["topics_by_lift"]} & {t["topic"] for t in pv.get("topics_by_lift", [])}) >= 5 else None
+    for s_ in sorted(sub.loc[ppl].unique()):
+        sp_ = ppl[sub.loc[ppl].values == s_]
+        if len(sp_) < MIN_N: continue
+        ds = describe(sp_); sty = Zs.loc[sp_].mean().round(2).to_dict(); ds["style_vs_population_z"] = {k: v for k, v in sty.items() if abs(v) >= 0.3}
+        SD[(g, s_)] = ds
+log("descriptors done")
+GN = name_batch([(str(int(g)), GD[g], (keepg[g] or {}).get("name"), None) for g in GD], "groups, clustered on topic taste")
+for g in GD:
+    if keepg[g]: GN[str(int(g))] = {k: keepg[g].get(k) for k in ("name", "who", "says", "votes_for")}
+groups = []
+for g in sorted(GD):
+    nm = GN[str(int(g))]; pv = keepg[g]
+    items = []
+    for (g2, s_), ds in SD.items():
+        if g2 != g: continue
+        pm_ = next((x for x in (pv or {}).get("subgroups", []) if x.get("id") == f"{int(g)}.{int(s_)}"), None)
+        items.append((f"{int(g)}.{int(s_)}", ds, (pm_ or {}).get("name"), ds["style_vs_population_z"]))
+    SN = name_batch(items, "subgroups of ONE group, split by engagement style (activity, commenting, making, reviews, follows, role); name them by how "
+                    "they differ from each other within the group", f"PARENT GROUP: {nm.get('name')} - {nm.get('who')}") if items else {}
+    for sid, ds, fx, _ in items:
+        if fx: pm_ = next(x for x in pv["subgroups"] if x.get("id") == sid); SN[sid] = {k: pm_.get(k) for k in ("name", "who", "says", "votes_for")}
+    subs = [{"id": sid, **SN[sid], **{k: v for k, v in ds.items() if not k.startswith("_")}, "n_comment_samples": len(ds["_comments"])} for sid, ds, _, _ in items]
+    tc = G["TC"][[k for k, v in remap.items() if v == g][0]]; d = GD[g]
+    groups.append({"id": int(g), **nm, **{k: v for k, v in d.items() if not k.startswith("_")}, "n_comment_samples": len(d["_comments"]),
+                   "renamed_this_run": not pv, "subgroups": subs, "_topic_centroid": [round(float(x), 5) for x in tc], "_topics": G["topics"]})
+    log("group", g, nm.get("name"), "|", [x["name"] for x in subs])
+inactive = sorted(set(PJ.index) - set(lab.index))
+
+# ---------- calibration (out of sample, every run)
+cp = (pd.Timestamp(CUT) - pd.Timedelta(days=7)).strftime("%Y-%m-%d"); Gc = fit_groups(cp, K); labc = pd.concat([Gc["core"], Gc["weak"]])
+Ac = topic_aff(Gc, Gc["U"]); r30 = (pd.Timestamp(cp) - pd.Timedelta(days=30)).strftime("%Y-%m-%d")
+size = Gc["U"][(Gc["U"].lday >= r30) & Gc["U"].person_id.isin(labc.index)].person_id.map(labc).value_counts(normalize=True).reindex(sorted(labc.unique())).fillna(0)   # share of recent upvotes
+popt = (Ac.mul(size.reindex(Ac.index).fillna(0), axis=0)).sum(0); Ar = Ac / popt   # group affinity ratio per topic
+Un = U0[(U0.lday >= cp) & (U0.lday < CUT)]; tv_m, tv_p, rows = [], [], []
+for lid, g_ in Un.groupby("target_id"):
+    bk = g_.person_id[g_.person_id.isin(labc.index)]
+    if len(bk) < 20: continue
+    act = labc.reindex(bk).value_counts(normalize=True).reindex(size.index).fillna(0)
+    tps = [t for t in (ltops.get(lid) or []) if t in Ac.columns]
+    if not tps: continue
+    mod = size * Ar[tps].mean(1).reindex(size.index).fillna(1); mod = mod / mod.sum()
+    tv_m.append(0.5 * np.abs(act - mod).sum()); tv_p.append(0.5 * np.abs(act - size).sum())
+tv_m, tv_p = np.array(tv_m), np.array(tv_p)
+bs = lambda v: [round(float(v.mean()), 3)] + [round(float(np.percentile([v[rng.integers(0, len(v), len(v))].mean() for _ in range(2000)], q)), 3) for q in (2.5, 97.5)]
+cS = Gc["TC"] @ G["TC"].T if Gc["topics"] == G["topics"] else None   # map calibration-fit groups to the current groups (topic centroids)
+cmap = {}
+if cS is not None:
+    r_i, c_i = linear_sum_assignment(-cS); cmap = {int(a): int(remap[b]) for a, b in zip(r_i, c_i) if cS[a, b] > 0.8}
+lifts, per_g = [], {}
+for j in Ac.index:
+    top5 = list(Ar.loc[j][Ac.loc[j] >= 0.01].sort_values(ascending=False).head(5).index)
+    L_in = [l for l in Un.target_id.unique() if set(ltops.get(l) or []) & set(top5)]; L_out = [l for l in Un.target_id.unique() if l not in set(L_in)]
+    mem = set(labc.index[labc == j]); oth = set(labc.index) - mem
+    if not L_in or not mem: continue
+    r_ = lambda Ls, P: len(Un[Un.target_id.isin(set(Ls)) & Un.person_id.isin(P)]) / (len(P) * len(Ls))
+    lifts.append(round(r_(L_in, mem) / max(1e-9, r_(L_in, oth)) / max(1e-9, r_(L_out, mem) / max(1e-9, r_(L_out, oth))), 2))
+    if int(j) in cmap: per_g[cmap[int(j)]] = {"votes_for_lift_out_of_sample": lifts[-1], "launches_in_its_topics_last_7_days": len(L_in)}
+cal = {"cut": CUT, "fit_cut": cp, "launches": int(len(tv_m)),
+       "backer_group_mix_total_variation (lower better) [mean, 95% launch bootstrap]": {"segments model": bs(tv_m) if len(tv_m) else None, "population mix": bs(tv_p) if len(tv_p) else None,
+                                                                                 "model minus population (paired)": bs(tv_m - tv_p) if len(tv_m) else None},
+       "votes_for holdout: relative upvote-rate lift on launches in the group's top-5 lifted topics (median over groups; 1 = no signal)": float(np.median(lifts)) if lifts else None,
+       "per_group_lift": lifts, "per_current_group": per_g}
+log("calibration", json.dumps(cal)[:400])
+
+for g_ in groups:
+    if g_["id"] in per_g: g_["calibration"] = {**per_g[g_["id"]], "note": "upvote rate on last week's launches in this group's top topics vs its rate elsewhere, relative to everyone else (1 = no signal); groups fit on data up to 7 days earlier"}
+pub = {"cut": CUT, "how": __doc__.split("\n    python")[0], "k": K, "people_segmented": int(len(lab)), "people_low_signal (1-4 upvotes, assigned by topics)": int(len(G["weak"])),
+       "people_not_active_in_window": len(inactive), "groups": groups, "calibration": cal,
+       "accuracy_label": ("Segments are clusters of real held Product Hunt users by what they upvoted in the 180 days before the cut and how they engage "
+                          "(aggregates only, every group and subgroup >= 20 people). Names and 'says' are Gemini summaries of the measured statistics and the "
+                          "members' own comments, not quotes. 'votes_for' is checked out of sample every run (calibration).")}
+p = os.path.join(OUTD, f"{CUT}.json"); json.dump(pub, open(p, "w"), indent=1, default=float); json.dump(pub, open(os.path.join(OUTD, "latest.json"), "w"), indent=1, default=float)
+pp = os.path.join(OUTD, f"members_{CUT}.parquet")
+pd.DataFrame({"person_id": list(lab.index) + inactive, "group": list(lab.values) + [-1] * len(inactive), "subgroup": [f"{int(g)}.{int(s)}" for g, s in zip(lab.values, sub.reindex(lab.index).values)] + ["-1"] * len(inactive),
+              "low_signal": [p_ in set(G["weak"].index) for p_ in lab.index] + [False] * len(inactive)}).to_parquet(pp)
+hist = os.path.join(OUTD, "calibration_history.jsonl"); open(hist, "a").write(json.dumps(cal, default=float) + "\n")
+if UP:
+    for a, b in ((p, f"results/web/segments/{CUT}.json"), (p, "results/web/segments/latest.json"), (pp, f"tmp/e5/private/segments/{CUT}.parquet"), (pp, "tmp/e5/private/segments/latest.parquet")):
+        subprocess.run(["gsutil", "-q", "cp", a, f"{B}/{b}"], check=True)
+    old = gcat(f"{B}/results/web/segments/calibration_history.jsonl"); open(os.path.join(OUTD, "_h.jsonl"), "w").write(old + json.dumps(cal, default=float) + "\n")
+    subprocess.run(["gsutil", "-q", "cp", os.path.join(OUTD, "_h.jsonl"), f"{B}/results/web/segments/calibration_history.jsonl"], check=True)
+print(json.dumps({"groups": [(g["id"], g.get("name"), g["n_people"], len(g["subgroups"])) for g in groups], "calibration": cal}, default=float))

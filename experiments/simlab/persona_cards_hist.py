@@ -8,12 +8,14 @@ upvotes were fetched in Nov 2026. No usernames, ids or headlines in the output.
     python persona_cards_hist.py <store dir> <sample json> <out json>"""
 import json, os, re, sys
 import numpy as np, pandas as pd
-HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, ".."))
+HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, ".."))
 from pipeline import warehouse  # noqa: E402
 ST, SMP, OUT = sys.argv[1:4]; MIN, K = 20, 12
 EW = open(os.path.join(HERE, "explain_writer.py")).read(); exec(EW[EW.index("SEG = ["):EW.index("WHO, COV = {}, {}")])
 PJ = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "headline", "bio"]).drop_duplicates("person_id")
 seg = dict(zip(PJ.person_id, (PJ.headline.fillna("") + " " + PJ.bio.fillna("")).map(seg_of)))
+import segments_lib; SEGL, SEGP = segments_lib.load(os.environ.get("SEG_SP"))   # data-driven segments override the keyword roles
+if SEGL: seg = {p: SEGL.get(p, segments_lib.INACTIVE) for p in seg}
 E = pd.read_parquet(f"{ST}/events.parquet", columns=["person_id", "kind", "target_id"]); U = E[E.kind == "upvote"].copy(); del E
 U["target_id"] = U.target_id.astype(str)
 W = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_duplicates("id", keep="last"); W["id"] = W.id.astype(str); W["day"] = W.day.astype(str).str[:10]
@@ -37,7 +39,7 @@ for x in json.load(open(SMP)):
         pool = set().union(*[voters.get(i, set()) for i in tl]) if tl else set(); src = "same-topic backers (30 days before)"
     people = sorted(pool)
     if len(people) < MIN: cards[x["slug"]] = {"status": "fewer than 20 people"}; continue
-    sg = pd.Series([seg.get(p, "no headline or bio") for p in people]); big = sg.value_counts(); big = big[big >= MIN]
+    sg = pd.Series([seg.get(p, segments_lib.INACTIVE if SEGL else "no headline or bio") for p in people]); big = sg.value_counts(); big = big[big >= MIN]
     if big.empty: cards[x["slug"]] = {"status": "no segment >= 20"}; continue
     alloc = np.floor(K * big / big.sum()).astype(int); rem = K - alloc.sum()
     for s_ in (big / big.sum() * K - alloc).sort_values(ascending=False).index[:rem]: alloc[s_] += 1
@@ -52,7 +54,7 @@ for x in json.load(open(SMP)):
             tc = pd.Series([t for i in g.target_id for t in (ltops.get(i) or [])]).value_counts(normalize=True).head(4)
             n30 = g[g.lday >= d30].groupby("person_id").size().reindex(c).fillna(0)
             prods = g.groupby("target_id").person_id.nunique().sort_values(ascending=False).head(6)
-            P_.append({"segment": s_, "n_people": len(c), "median_upvotes_last_30_days": float(n30.median()),
+            P_.append({"segment": s_, "n_people": len(c), **({"segment_profile": SEGP[s_]} if s_ in SEGP else {}), "median_upvotes_last_30_days": float(n30.median()),
                        "topic_shares": [{"topic": t, "share": round(float(v), 3)} for t, v in tc.items()],
                        "products_they_commonly_upvoted": [{"product": lname.get(t, "?"), "share_of_group": round(float(n / len(c)), 2)} for t, n in prods.items() if n >= 3]})
     cards[x["slug"]] = {"source": src, "n_source_people": len(people), "personas": P_}
