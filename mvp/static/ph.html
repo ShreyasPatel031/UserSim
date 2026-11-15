@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=28">
+<link rel="stylesheet" href="/static/ph_site.css?v=29">
 </head>
 <body>
 <div class="wrap">
@@ -108,7 +108,7 @@ async function load(day){
   const isToday = VIEW.day === VIEW.today, st = VIEW.status;
 
   $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
-  metric(); renderPred(); renderLive(); drawLinks();
+  renderPred(); metric(); renderLive(); drawLinks();
   loadExplain(VIEW.day);
 }
 
@@ -344,7 +344,7 @@ function tabs(){
   if(!TAB) TAB = has.pre ? "pre" : "mid";      // a tab the visitor picks stays picked, even if its file is missing
   ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
     const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Expected " + EXPECT[v];
-    b.onclick = ()=>{ TAB = v; renderPred(); renderLive(); drawLinks(); }; });
+    b.onclick = ()=>{ TAB = v; renderPred(); metric(); renderLive(); drawLinks(); }; });
 }
 const EXPECT = {mid: "00:05 PT", pre: "03:45 PT"};
 function renderPred(){
@@ -392,7 +392,7 @@ function accLine(){
   $("#acc").textContent = `${name}${made}${fb}${acc ? " — " + acc : ""}${flag}`;
 }
 function metric(){
-  const rows = ((VIEW.accuracy||{}).mid) || [];
+  const rows = ((VIEW.accuracy||{})[TAB === "pre" ? "pre" : "mid"]) || [];
   const cur = rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
   const r = cur || prev;
   if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`
