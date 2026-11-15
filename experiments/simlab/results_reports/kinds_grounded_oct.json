@@ -1,0 +1,143 @@
+{
+ "launches": 39,
+ "real_points": 272,
+ "arms": {
+  "PERSONA": {
+   "recall": [
+    4.3,
+    1.2,
+    8.6
+   ],
+   "precision": [
+    2.1,
+    0.6,
+    4.1
+   ],
+   "topic_recall": [
+    29.2,
+    21.9,
+    36.4
+   ],
+   "topic_precision": [
+    17.3,
+    12.6,
+    22.2
+   ]
+  },
+  "PERSONA+REAL": {
+   "recall": [
+    6.5,
+    2.5,
+    11.3
+   ],
+   "precision": [
+    3.0,
+    1.3,
+    4.9
+   ],
+   "topic_recall": [
+    33.9,
+    24.9,
+    43.2
+   ],
+   "topic_precision": [
+    17.9,
+    13.2,
+    23.3
+   ]
+  },
+  "REAL-ONLY": {
+   "recall": [
+    7.4,
+    3.4,
+    12.4
+   ],
+   "precision": [
+    3.8,
+    1.9,
+    6.0
+   ],
+   "topic_recall": [
+    37.5,
+    29.8,
+    45.4
+   ],
+   "topic_precision": [
+    17.1,
+    13.2,
+    21.2
+   ]
+  }
+ },
+ "paired": {
+  "PERSONA+REAL minus PERSONA": {
+   "recall": [
+    2.2,
+    -2.5,
+    7.6
+   ],
+   "precision": [
+    0.9,
+    -1.5,
+    3.2
+   ],
+   "topic_recall": [
+    4.8,
+    -5.1,
+    15.5
+   ],
+   "topic_precision": [
+    0.6,
+    -5.3,
+    6.8
+   ]
+  },
+  "PERSONA+REAL minus REAL-ONLY": {
+   "recall": [
+    -0.9,
+    -6.2,
+    4.3
+   ],
+   "precision": [
+    -0.9,
+    -3.4,
+    1.5
+   ],
+   "topic_recall": [
+    -3.5,
+    -13.1,
+    6.2
+   ],
+   "topic_precision": [
+    0.9,
+    -4.3,
+    6.2
+   ]
+  },
+  "REAL-ONLY minus PERSONA": {
+   "recall": [
+    3.2,
+    -0.1,
+    6.7
+   ],
+   "precision": [
+    1.7,
+    -0.4,
+    4.1
+   ],
+   "topic_recall": [
+    8.3,
+    -2.2,
+    18.9
+   ],
+   "topic_precision": [
+    -0.2,
+    -5.8,
+    5.1
+   ]
+  }
+ },
+ "usd": 0.359,
+ "grounding helps (pre-registered)": false,
+ "personas add value (pre-registered)": false
+}
