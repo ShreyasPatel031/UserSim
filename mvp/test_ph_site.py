@@ -584,7 +584,7 @@ def test_midnight_accuracy_rows_never_pooled(monkeypatch):
     assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 59
     live_prev = a["mid"][0]
     assert (live_prev["top10"], live_prev["days"]) == (73.6, 11) and "polluted hunter-history inputs" in live_prev["note"]
-    assert a["pre"][0]["flag"] == "replay" and a["pre"][0]["top10"] == 78.2
+    assert a["pre"][0]["flag"] == "replayed from the 03:00 PT read" and a["pre"][0]["top10"] == 77.5      # audited row replaces the file row
 
 
 def test_prereveal_replay_note_and_hidden_rank_row(monkeypatch):
@@ -594,8 +594,8 @@ def test_prereveal_replay_note_and_hidden_rank_row(monkeypatch):
                               "superseded 11-day figure (weights fit on all days)": {"top10 hits %": [77.3, 0, 0, 11]}}}}
     monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
     pre = live.accuracy()["pre"]
-    assert [r["flag"] for r in pre] == ["replay", "Product Hunt's hidden order alone"]
-    assert pre[0]["top10"] == 77.5 and pre[0]["days"] == 12 and pre[0]["note"] == "top-10 edge +4.2"
+    assert [r["flag"] for r in pre] == ["replayed from the 03:00 PT read", "Product Hunt's hidden order alone"]
+    assert pre[0]["top10"] == 77.5 and pre[0]["days"] == 12 and pre[0]["ci"]["top10"] == [67.5, 86] and "hidden order itself" in pre[0]["note"]
     assert pre[1]["top10"] == 73.3 and "note" not in pre[1]
 
 
