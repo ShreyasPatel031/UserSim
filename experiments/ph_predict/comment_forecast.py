@@ -32,15 +32,30 @@ LMF = ["lm", "r_lm", "n_day"]
 FEATS = ["n_c", "n_top", "n_rep", "n_team", "u_out", "u_ver", "u_prom", "u_prior", "u_tie", "sh_c", "lm", "n_day", "r_c", "r_lm"]
 
 
+def fresh_copy(remote, local):
+    """download remote -> local when local is missing or the bucket object is newer (stale-input audit Nov 15: the cached copies were
+    never refreshed). Atomic replace; a failed stat or download keeps the existing copy and returns False."""
+    import subprocess
+    try:
+        r = subprocess.run(["gsutil", "ls", "-l", remote], capture_output=True, text=True, timeout=120)
+        if r.returncode != 0:
+            return False
+        rt = pd.Timestamp(r.stdout.split()[1]).timestamp()
+        if os.path.exists(local) and os.path.getmtime(local) >= rt:
+            return True
+        tmp = local + ".part"
+        if subprocess.run(["gsutil", "-q", "cp", remote, tmp], capture_output=True, timeout=600).returncode == 0:
+            os.replace(tmp, local); os.utime(local, (rt, rt)); return True
+    except Exception:  # noqa: BLE001
+        pass
+    return False
+
+
 def fetch():
     os.makedirs(WORK, exist_ok=True)
     for f in ("page1", "page1b", "page1c", "page2"):
-        p = f"{WORK}/{f}.jsonl.gz"
-        if not os.path.exists(p):
-            os.system(f"gsutil -q cp {B}/raw/ph_predict_data/comments/{f}.jsonl.gz {p}")
-    p = f"{WORK}/honest_preds.parquet"
-    if not os.path.exists(p):
-        os.system(f"gsutil -q cp {B}/tmp/e5/honest/honest_preds.parquet {p}")
+        fresh_copy(f"{B}/raw/ph_predict_data/comments/{f}.jsonl.gz", f"{WORK}/{f}.jsonl.gz")
+    fresh_copy(f"{B}/tmp/e5/honest/honest_preds.parquet", f"{WORK}/honest_preds.parquet")
 
 
 _KC = {}
@@ -788,8 +803,7 @@ def live(day, point):
     arm2_src = None
     try:
         fp_ = os.path.join(WORK, f"forecast_{day}.parquet")
-        if not os.path.exists(fp_):
-            subprocess.run(["gsutil", "-q", "cp", f"{B}/raw/daily/{day}/forecast_{day}.parquet", fp_], capture_output=True)
+        fresh_copy(f"{B}/raw/daily/{day}/forecast_{day}.parquet", fp_)   # a 00:05 rerun replaces the cached copy (stale-input audit Nov 15)
         FA = pd.read_parquet(fp_) if os.path.exists(fp_) else None
         if FA is not None and "pred_arm2" in FA and FA.pred_arm2.notna().all() and A.pred_rank_api.notna().any():
             arm2_src = "raw/daily forecast parquet pred_arm2"

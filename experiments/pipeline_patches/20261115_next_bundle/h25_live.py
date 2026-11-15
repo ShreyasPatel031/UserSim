@@ -25,20 +25,7 @@ def input_sha(X):
 def predict(day):
     root = os.path.expanduser(os.environ.get("H25_DATA", "~/w/h25/data")); src_dir = os.path.expanduser(os.environ.get("H25_SRC", "~/w/ph_history/2025"))
     real = F.D; os.makedirs(f"{root}/days", exist_ok=True)
-    for e in os.listdir(real):
-        if e != "days" and not e.startswith("build_cache") and not os.path.exists(f"{root}/{e}"):
-            os.symlink(f"{real}/{e}", f"{root}/{e}")
-    # llm_*_gemini (and any llm_* dir) are REAL directories in the private root (2025 scores + per-file links to 2026 files made once on
-    # Nov 13), so a new day's Gemini file was never visible to arm 2 (llm_pitch / llm_brand null for every launch from Nov 14; null-input
-    # audit 01:00Z Nov 15). Link every missing file of the real dir into them on each run.
-    for e in os.listdir(real):
-        rp, dp = f"{real}/{e}", f"{root}/{e}"
-        if e.startswith("llm_") and os.path.isdir(rp) and os.path.isdir(dp) and not os.path.islink(dp):
-            for fn in os.listdir(rp):
-                if not os.path.lexists(f"{dp}/{fn}"): os.symlink(f"{rp}/{fn}", f"{dp}/{fn}")
-    for fn in glob.glob(f"{real}/days/*.json") + glob.glob(f"{src_dir}/*.json"):
-        dst = f"{root}/days/{os.path.basename(fn)}"
-        if not os.path.exists(dst): os.symlink(os.path.abspath(fn), dst)
+    import rootlink; _RL = rootlink.link_root(real, root, glob.glob(f"{src_dir}/*.json"))   # stale-input audit Nov 15: shared root builder (llm_* real dirs, broken links)
     F.D = root
     try:
         df = RN.load_llm(F.build(include_today=day))   # TODAY-ROWS callers: this day's line-up only; missing -> empty test set -> RuntimeError -> fallback
