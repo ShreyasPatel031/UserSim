@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=23">
+<link rel="stylesheet" href="/static/ph_site.css?v=24">
 </head>
 <body>
 <div class="wrap">
@@ -173,10 +173,11 @@ function exWho(d, aud){
   const segs = (d && d.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((x, s)=>x + s.n_held_people_scored, 0) || 1;
   const tp = d && d.team_past_backers;
   const liftRows = (rows, lab, base)=> rows.map(x=>`<div class="bx2"><span class="bl">${esc(x[lab])}</span><span class="bt"><i class="share" style="width:${Math.min(100, x.share / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i><i class="base" style="left:${Math.min(100, x[base] / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i></span><span class="bv">${pct(x.share)}</span><span class="lift ${x.lift >= 1.3 ? "hi" : x.lift <= .77 ? "lo" : ""}">${Number(x.lift).toFixed(1)}×</span></div>`).join("");
-  const tpHtml = tp && tp.n_held_people > 0 ? `<h5>People who voted for this team before</h5>
-    <p class="lede"><b>${n0(tp.n_held_people)}</b> people we hold upvoted an earlier launch by this hunter or first maker. About half of the voters we can see on a launch usually come from this group.${info("Held people who upvoted an earlier launch of this hunter or first maker. Unlike the general likely-voter list, this group is specific to the team: across past launches it held about 50% of the real voters we could see.")}</p>
-    ${(tp.segments_by_lift || []).length ? `<div class="legend2"><span><i class="k share"></i>share of them</span><span><i class="k base"></i>share of everyone we hold</span></div>${liftRows(tp.segments_by_lift, "segment", "share_of_all_held_active")}` : ""}
-    ${(tp.topics_by_lift || []).length ? `<h5>What they upvote more than most people</h5>${liftRows(tp.topics_by_lift, "topic", "share_for_all_held_active")}` : ""}` : "";
+  const pool = (p, who)=> p && p.n_held_people >= 20 ? `<h5>People who voted for ${who} before</h5>
+    <p class="lede"><b>${n0(p.n_held_people)}</b> people we hold upvoted an earlier launch by ${who}.${p.heavy_upvoter_share != null ? ` ${pct(p.heavy_upvoter_share)} of them are heavy upvoters (vs ${pct(p.heavy_upvoter_share_all_held_active)} of everyone active).` : ""}${info("Held people who upvoted an earlier launch of " + who + ". This group is specific to the team: across past launches about half of the real voters we could see came from past voters of the hunter or maker.")}</p>
+    ${(p.segments_by_lift || []).length ? `<div class="legend2"><span><i class="k share"></i>share of them</span><span><i class="k base"></i>share of everyone we hold</span></div>${liftRows(p.segments_by_lift, "segment", "share_of_all_held_active")}` : ""}
+    ${(p.topics_by_lift || []).length ? `<h5>What they upvote more than most people</h5>${liftRows(p.topics_by_lift, "topic", "share_for_all_held_active")}` : ""}` : "";
+  const tpHtml = pool(d && (d.hunter_past_backers || d.team_past_backers), "this hunter") + pool(d && d.maker_past_backers, "these makers");
   return `${tpHtml}<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
     ${missing ? `<p class="note">No follower or past-voter counts: this team's profiles are not among the people we hold.</p>` : ""}
     ${lift ? `<div class="aud"><span class="bl">Heavy upvoters in that audience${info("Share of its followers and past voters who upvoted 10+ launches in the last 90 days, against the typical launch today. Heavy upvoters vote early and often.")}</span><b>${pct(pu.share)}</b><span class="rkof">${pu.day_median ? `typical today ${pct(pu.day_median)}` : `${lift.toFixed(1)}× usual`}</span></div>` : ""}
@@ -192,11 +193,12 @@ function exSay(d){
   if(items.length){
     const cnt = {high: 0, medium: 0, low: 0}; items.forEach(x=>cnt[x.interest] = (cnt[x.interest] || 0) + 1);
     const src = /past/.test(pp.source_people || "") ? "people who voted for this team's earlier launches" : "today's likeliest voters";
-    panel = `<p class="lede"><b>${items.length} voter group${items.length === 1 ? "" : "s"}</b>, each a simulated voice for a group of real people we hold with the same role (drawn from ${src}).${info("How many groups: one per 20+ people of the same role among this launch's likely voters, up to 12. Launches whose team has past voters get groups from them (usually 12); others get groups from today's 200 likeliest voters (usually 4–5). " + esc(pp.accuracy_label || ""))}</p>
+    panel = `<p class="lede"><b>${items.length} voter group${items.length === 1 ? "" : "s"}</b>, each a simulated voice for one of our data-driven voter groups (people we hold, clustered by what they upvote and how they engage), drawn from ${src}.${info(esc(pp.accuracy_label || ""))}</p>
       <div class="interest"><span class="lab">Interest</span>${["high","medium","low"].map(k=>cnt[k] ? `<span class="iv ${k}" style="flex:${cnt[k]}">${cnt[k]} ${k}</span>` : "").join("")}</div>
-      ${items.map(x=>`<div class="persona"><div class="ph"><span class="seg">${esc(x.segment)}</span><span class="sm">speaks for ${esc(x.n_people)} people</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
+      ${items.map(x=>{ const sp = x.segment_profile || {}, grp = sp.group || x.segment, sub = sp.group && x.segment.includes(" / ") ? x.segment.split(" / ").slice(1).join(" / ") : "";
+        return `<div class="persona"><div class="ph"><span class="seg">${esc(grp)}${sub ? ` <small>· ${esc(sub)}</small>` : ""}${sp.who ? info(esc(sp.who) + (sp.votes_for ? " " + esc(sp.votes_for) : "")) : ""}</span><span class="sm">speaks for ${esc(x.n_people)} people</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
         ${x.reaction ? `<p class="re">“${esc(x.reaction)}”</p>` : ""}
-        ${x.concern ? `<p class="pc worry"><b>Worry:</b> ${esc(x.concern)}</p>` : ""}${x.question ? `<p class="pc ask"><b>Asks:</b> ${esc(x.question)}</p>` : ""}</div>`).join("")}
+        ${x.concern ? `<p class="pc worry"><b>Worry:</b> ${esc(x.concern)}</p>` : ""}${x.question ? `<p class="pc ask"><b>Asks:</b> ${esc(x.question)}</p>` : ""}</div>`; }).join("")}
       <p class="note">Simulated by an AI speaking as each group, from the launch's own page; not real comments.</p>
       <details class="trust"><summary>How reliable? On 279 past launches this panel caught 54% of the points real commenters raised (the older single-AI version caught 39%); about half of its points matched a real one.</summary><p>${esc(pp.accuracy_label || "")}</p></details>`;
   }
@@ -255,7 +257,7 @@ function exOverview(d){
     : tier(f) === "top" ? `You have one of today's biggest networks: <b>${n0(f.value)}</b> people we hold follow the hunter or makers (#${f.rank} of the ${f.of} launches whose network we can see). Make sure they know it's live.`
     : tier(f) === "middle" ? `Your network is mid-sized for today: <b>${n0(f.value)}</b> followers we hold (#${f.rank} of ${f.of}). Votes beyond it depend on the pitch.`
     : `Your network is one of today's smallest we can see (<b>${n0(f.value)}</b> followers we hold, #${f.rank} of ${f.of}). Reach beyond it: the first comment and the gallery have to win strangers.`;
-  const tp = d.who && d.who.team_past_backers, lean = tp && tp.n_held_people > 0 && (tp.segments_by_lift || []).filter(x=>x.lift >= 1.3 && x.n >= 20)[0];
+  const tp = d.who && [d.who.maker_past_backers, d.who.hunter_past_backers, d.who.team_past_backers].find(p=>p && p.n_held_people >= 20), lean = tp && tp.n_held_people > 0 && (tp.segments_by_lift || []).filter(x=>x.lift >= 1.3 && x.n >= 20)[0];
   const tlean = tp && tp.n_held_people > 0 && (tp.topics_by_lift || []).filter(x=>x.lift >= 1.3)[0];
   const pts = [net,
     lean ? `People who voted for your earlier launches lean towards <b>${esc(lean.segment)}</b> (${Number(lean.lift).toFixed(1)}× their usual share)${tlean ? ` and upvote <b>${esc(tlean.topic)}</b> launches more than most` : ""}. Speak to them first.` : "",
