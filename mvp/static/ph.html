@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=24">
+<link rel="stylesheet" href="/static/ph_site.css?v=25">
 </head>
 <body>
 <div class="wrap">
@@ -178,7 +178,14 @@ function exWho(d, aud){
     ${(p.segments_by_lift || []).length ? `<div class="legend2"><span><i class="k share"></i>share of them</span><span><i class="k base"></i>share of everyone we hold</span></div>${liftRows(p.segments_by_lift, "segment", "share_of_all_held_active")}` : ""}
     ${(p.topics_by_lift || []).length ? `<h5>What they upvote more than most people</h5>${liftRows(p.topics_by_lift, "topic", "share_for_all_held_active")}` : ""}` : "";
   const tpHtml = pool(d && (d.hunter_past_backers || d.team_past_backers), "this hunter") + pool(d && d.maker_past_backers, "these makers");
-  return `${tpHtml}<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
+  const gm = (d && d.group_mix) || {}, gRows = (r)=> (Array.isArray(r) ? r : []).filter(x=>x.name).map(x=>({group: x.name, share: x.expected_share || 0, base: x.base_share || 0, lift: x.lift || 0}));
+  const gChart = (rows)=> `<div class="legend2"><span><i class="k share"></i>share of these voters</span><span><i class="k base"></i>usual share of upvotes</span></div>${liftRows(rows, "group", "base")}`;
+  const gPools = [["hunter_past_voters (people)", "the hunter"], ["maker_past_voters (people)", "the makers"]].map(([k, who])=>{ const r = gRows(gm[k]); return r.length ? `<h6>People who voted for ${who} before</h6>${gChart(r)}` : ""; }).join("");
+  const gLaunch = gRows(gm["launch (expected voters)"]);
+  const gHtml = gPools || gLaunch.length ? `<h5>Voter groups${info("5 groups of real Product Hunt voters, clustered by what they upvote (81,131 people). The bar is the group's share of these voters; the tick is its usual share of all upvotes. 2.0× means twice its usual share. " + (gm.accuracy_label || ""))}</h5>
+    ${gPools || `<p class="note">This team has no earlier voters we hold, so there is nothing team-specific to show.</p>`}
+    ${gLaunch.length ? `<details class="more"${gPools ? "" : " open"}><summary>Expected voters by group</summary>${gChart(gLaunch)}<p class="note">This mix is about the same for every launch today (Tech Innovators cast most upvotes on Product Hunt). Last week it predicted the real voter mix no better than the usual mix, so treat the team pools above as the signal.</p></details>` : ""}` : "";
+  return `${gHtml}${tpHtml}<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
     ${missing ? `<p class="note">No follower or past-voter counts: this team's profiles are not among the people we hold.</p>` : ""}
     ${lift ? `<div class="aud"><span class="bl">Heavy upvoters in that audience${info("Share of its followers and past voters who upvoted 10+ launches in the last 90 days, against the typical launch today. Heavy upvoters vote early and often.")}</span><b>${pct(pu.share)}</b><span class="rkof">${pu.day_median ? `typical today ${pct(pu.day_median)}` : `${lift.toFixed(1)}× usual`}</span></div>` : ""}
     ${segs.length ? `<details class="more"><summary>Roles of likely voters (a typical mix)</summary>
