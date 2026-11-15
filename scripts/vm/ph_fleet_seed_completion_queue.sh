@@ -21,11 +21,15 @@ from pathlib import Path
 tmp = os.environ["SEED_TMP"]
 slots = os.environ.get("SEED_SLOTS", "").split()
 ns = max(1, int(os.environ.get("SEED_N", "1") or 1))
-handles = [
-    ln.strip().lower().lstrip("@")
-    for ln in Path(f"{tmp}/queue.txt").read_text().splitlines()
-    if ln.strip() and not ln.lstrip().startswith("#")
-]
+handles = []
+for ln in Path(f"{tmp}/queue.txt").read_text().splitlines():
+    s = ln.strip()
+    if not s or s.startswith("#"):
+        continue
+    # completion_queue is handle<TAB>tabs<TAB>reasons — never feed tabs into pdeep as handle
+    h = s.split("\t", 1)[0].split()[0].lower().lstrip("@")
+    if h:
+        handles.append(h)
 for i, slot in enumerate(slots):
     part = [h for j, h in enumerate(handles) if j % ns == i]
     Path(f"{tmp}/pdeep_list.{slot}.txt").write_text("\n".join(part) + ("\n" if part else ""))
