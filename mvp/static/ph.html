@@ -373,16 +373,6 @@ const FALLBACK = {
   midnight_order: "no pre-reveal read was available, so this repeats the midnight forecast",
   earlier_forecast: "the published model had no data, so this is our earlier midnight forecast",
 };
-const mdy = (d)=> { const [y, m, dd] = String(d).split("-").map(Number); return new Date(y, m - 1, dd).toLocaleDateString("en-US", {month: "short", day: "numeric"}); };
-function liveSpan(r){
-  const rng = r.first_day === r.last_day ? mdy(r.first_day) : `${mdy(r.first_day)}–${mdy(r.last_day)}`;
-  return `${rng} (${r.days} day${r.days === 1 ? "" : "s"}${r.in_progress ? ", today in progress" : ""})`;
-}
-function liveTxt(r){
-  const h = (k)=> `${r.hits[k][0]}/${r.hits[k][1]} (${Number(r[k]).toFixed(0)}%)`;
-  const by = (r.per_day || []).map(x=>`${mdy(x.day)}${x.final ? "" : " so far"} ${x.h[0]}/3 · ${x.h[1]}/5 · ${x.h[2]}/10${x.fallback ? " (fallback model)" : ""}`).join("; ");
-  return `live, ${liveSpan(r)}: top 3 ${h("top3")} · top 5 ${h("top5")} · top 10 ${h("top10")}${by ? ` [by day: ${by}]` : ""}`;
-}
 function accLine(){
   const p = pointFor(TAB);
   if(!p || p.fallback === "none_available"){ $("#acc").textContent = ""; return; }
@@ -394,8 +384,7 @@ function accLine(){
   let acc = "";
   if(!earlier){
     // The track record (per-day hits against the official rank) wins; the file's own line only when there is none.
-    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=> r.hits ? liveTxt(r)
-      : `${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r, "top3")} · top 5 ${pc(r.top5, r, "top5")} · top 10 ${pc(r.top10, r, "top10")}${r.note ? ` (${r.note})` : ""}`).join("; ")
+    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r, "top3")} · top 5 ${pc(r.top5, r, "top5")} · top 10 ${pc(r.top10, r, "top10")}${r.note ? ` (${r.note})` : ""}`).join("; ")
       || p.backtest_line || "";
     if(acc && p.fallback) acc += " (this day used a fallback)";
   }
@@ -407,7 +396,7 @@ function metric(){
   const cur = rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
   const r = cur || prev;
   if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes`
-    + (cur && cur.hits ? ` <span class="mnote">(${cur.hits.top10[0]} of ${cur.hits.top10[1]}, live, ${esc(liveSpan(cur))}).</span>` : ".")
+    + ".")
     + (cur ? "" : ` <span class="mnote">Previous model, live, ${Number(prev.days)} days${prev.note ? `; ${esc(prev.note)}` : ""}.</span>`);
 }
 function legend(sts){
