@@ -531,6 +531,51 @@
    "gen_usd_per_request": 0.00371,
    "median_latency_s": 7.37,
    "calls_per_request": 1
+  },
+  "PERSONA12R": {
+   "cfg": {
+    "persona": 12,
+    "k": 10
+   },
+   "recall": [
+    53.8,
+    51.3,
+    56.3,
+    280
+   ],
+   "recall_w": [
+    60.0,
+    57.3,
+    62.7,
+    280
+   ],
+   "precision": [
+    47.4,
+    44.1,
+    50.7,
+    280
+   ],
+   "recall - V0 (paired)": [
+    15.0,
+    12.3,
+    17.8,
+    279
+   ],
+   "recall_w - V0 (paired)": [
+    13.5,
+    10.4,
+    16.5,
+    279
+   ],
+   "precision - V0 (paired)": [
+    4.0,
+    0.2,
+    7.7,
+    279
+   ],
+   "gen_usd_per_request": 0.00408,
+   "median_latency_s": 8.03,
+   "calls_per_request": 1
   }
  },
  "V0 site current": {
@@ -553,7 +598,7 @@
    299
   ]
  },
- "usd_total_this_run": 1.852,
+ "usd_total_this_run": 1.842,
  "cross_judge_100": {
   "variant": "BEST",
   "V0": {
@@ -615,6 +660,170 @@
     13.7,
     100
    ]
+  }
+ },
+ "persona_retrieval": {
+  "launches": 279,
+  "launches with critical truth": 275,
+  "arms": {
+   "PERSONA12": {
+    "recall": [
+     54.1,
+     51.4,
+     56.7,
+     279
+    ],
+    "recall_w": [
+     60.0,
+     57.0,
+     62.8,
+     279
+    ],
+    "precision": [
+     47.6,
+     44.4,
+     50.9,
+     279
+    ],
+    "complaint_recall": [
+     23.4,
+     20.7,
+     26.3,
+     275
+    ]
+   },
+   "PERSONA12R": {
+    "recall": [
+     53.7,
+     51.2,
+     56.1,
+     279
+    ],
+    "recall_w": [
+     59.9,
+     57.2,
+     62.6,
+     279
+    ],
+    "precision": [
+     47.3,
+     44.0,
+     50.7,
+     279
+    ],
+    "complaint_recall": [
+     23.2,
+     20.5,
+     26.0,
+     275
+    ]
+   },
+   "BEST": {
+    "recall": [
+     48.0,
+     45.5,
+     50.7,
+     279
+    ],
+    "recall_w": [
+     56.9,
+     53.9,
+     59.8,
+     279
+    ],
+    "precision": [
+     50.3,
+     47.4,
+     53.1,
+     279
+    ],
+    "complaint_recall": [
+     17.4,
+     15.0,
+     19.9,
+     275
+    ]
+   }
+  },
+  "paired": {
+   "PERSONA12R - PERSONA12": {
+    "recall": [
+     -0.4,
+     -2.8,
+     2.1,
+     279
+    ],
+    "recall_w": [
+     -0.2,
+     -2.6,
+     2.3,
+     279
+    ],
+    "precision": [
+     -0.3,
+     -4.0,
+     3.1,
+     279
+    ],
+    "complaint_recall": [
+     -0.2,
+     -3.1,
+     2.7,
+     275
+    ]
+   },
+   "PERSONA12 - BEST": {
+    "recall": [
+     6.0,
+     3.3,
+     8.8,
+     279
+    ],
+    "recall_w": [
+     3.1,
+     -0.1,
+     6.4,
+     279
+    ],
+    "precision": [
+     -2.7,
+     -6.6,
+     1.2,
+     279
+    ],
+    "complaint_recall": [
+     6.0,
+     2.7,
+     9.2,
+     275
+    ]
+   },
+   "PERSONA12R - BEST": {
+    "recall": [
+     5.7,
+     3.1,
+     8.1,
+     279
+    ],
+    "recall_w": [
+     3.0,
+     0.1,
+     6.0,
+     279
+    ],
+    "precision": [
+     -3.0,
+     -6.6,
+     0.7,
+     279
+    ],
+    "complaint_recall": [
+     5.8,
+     2.6,
+     9.0,
+     275
+    ]
+   }
   }
  }
 }

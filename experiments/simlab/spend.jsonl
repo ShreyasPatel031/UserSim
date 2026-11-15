@@ -15,3 +15,4 @@
 {"t":"persona_lab","provider":"gcp","usd":1.80,"note":"9,426 Gemini calls (rate/pick3/summary x Flash/Flash-Lite), measured tokens"}
 {"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0028, "note": "2 Gemini 2.5 Flash calls, tokens in 1050 out 990"}
 {"t": "persona_say_2026-11-14", "provider": "gcp", "usd": 0.0562, "note": "26 Gemini 2.5 Flash calls, tokens in 19974 out 20078"}
+{"t": "persona_retrieval_eval", "provider": "gcp", "usd": 1.842, "note": "PERSONA12R gens + judges + complaint judges, 279 launches"}
