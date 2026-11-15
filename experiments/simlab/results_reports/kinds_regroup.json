@@ -1,0 +1,1430 @@
+{
+ "variance_explained_fine": {
+  "8": 0.201,
+  "12": 0.228,
+  "16": 0.245,
+  "20": 0.258,
+  "24": 0.268
+ },
+ "variance_explained_parents": {
+  "3": 0.112,
+  "4": 0.122,
+  "5": 0.131,
+  "6": 0.15
+ },
+ "parents_chosen": 3,
+ "fine_k": 16,
+ "separation_vs_chance": {
+  "parents": 3.55,
+  "subgroups": 2.21
+ },
+ "held_out_subgroup_mix": {
+  "launches": 550,
+  "model": 0.335,
+  "typical mix": 0.372,
+  "paired": [
+   -0.037,
+   -0.045,
+   -0.03
+  ]
+ },
+ "parents": [
+  {
+   "id": 0,
+   "name": "AI Agent Applications",
+   "people": 2628,
+   "share_of_votes": 0.309
+  },
+  {
+   "id": 1,
+   "name": "AI Development & Models",
+   "people": 2770,
+   "share_of_votes": 0.4
+  },
+  {
+   "id": 2,
+   "name": "Productivity & Utilities",
+   "people": 1934,
+   "share_of_votes": 0.291
+  }
+ ],
+ "subgroups": [
+  {
+   "id": 0,
+   "parent": 2,
+   "people": 565,
+   "share_of_votes": 0.054,
+   "median_votes": 12.0,
+   "kinds_more": [
+    [
+     "Voice & Note Apps",
+     1.5
+    ],
+    [
+     "Niche Hardware & Apps",
+     1.46
+    ],
+    [
+     "AI Personal Assistants",
+     1.37
+    ],
+    [
+     "Mac Utility Apps",
+     1.1
+    ]
+   ],
+   "kinds_less": [
+    [
+     "New AI Models",
+     0.81
+    ],
+    [
+     "AI Agent Infrastructure",
+     0.8
+    ],
+    [
+     "AI Coding Tools",
+     0.79
+    ]
+   ],
+   "attrs": {
+    "developer": 0.87,
+    "founder": 1.01,
+    "marketer": 1.01,
+    "designer": 1.15,
+    "investor": 0.63,
+    "student": 1.36,
+    "has launched a product": 1.0,
+    "new account (< 1 year)": 1.15,
+    "veteran (5+ years)": 0.78,
+    "heavy voter (top 10%)": 0.64
+   },
+   "distinctive_launch_ids": [
+    "1153345",
+    "1182460",
+    "1181072",
+    "1176131",
+    "1187340",
+    "1187416",
+    "1175569",
+    "1179055",
+    "1180034",
+    "1180522",
+    "1164597",
+    "1182736",
+    "1183892",
+    "1189320"
+   ],
+   "distinctive_launches": [
+    "Ellis: AI notes for in-person meetings",
+    "Lyto: \"One AI agent across your browser, tools, and messages \"",
+    "Sunrise: A real planner for Google Tasks",
+    "Atlas: Every AI tool you use should know how your company works",
+    "AirKaren: AI that fights customer service for you",
+    "ChecklistFox: AI checklist maker for beautiful pdfs, free & instant",
+    "Grok by SpaceXAI for Word: Draft, restructure & tighten wording from panel inside Word",
+    "note.md: your notes and research documentation now a local LLM Memory",
+    "GetCompress: Lossless media compression without context switching",
+    "Gemini Spark: Your 24/7 personal AI agent",
+    "Toyo: Exec assistant who lives in iMessage and calls your phone",
+    "Dotient: Your local semantic search app",
+    "Decode by Entropik: Mira, AI moderated interviews that read how people feel",
+    "PlugThis: Create your own Chrome Extensions by chatting with AI"
+   ],
+   "name": "Personal AI & Utilities",
+   "goes_for": "This subgroup favors voice and note apps, niche hardware, and AI personal assistants.",
+   "parent_name": "Productivity & Utilities"
+  },
+  {
+   "id": 1,
+   "parent": 1,
+   "people": 658,
+   "share_of_votes": 0.117,
+   "median_votes": 18.0,
+   "kinds_more": [
+    [
+     "AI Coding Tools",
+     1.64
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     1.48
+    ],
+    [
+     "Mac Utility Apps",
+     1.28
+    ],
+    [
+     "Business & Dev Tools",
+     1.15
+    ]
+   ],
+   "kinds_less": [
+    [
+     "AI Personal Assistants",
+     0.75
+    ],
+    [
+     "AI Creative Tools",
+     0.65
+    ],
+    [
+     "AI Marketing & Growth",
+     0.59
+    ]
+   ],
+   "attrs": {
+    "developer": 1.37,
+    "founder": 1.01,
+    "marketer": 0.77,
+    "designer": 0.97,
+    "investor": 0.65,
+    "student": 1.24,
+    "has launched a product": 1.02,
+    "new account (< 1 year)": 1.11,
+    "veteran (5+ years)": 1.1,
+    "heavy voter (top 10%)": 1.3
+   },
+   "distinctive_launch_ids": [
+    "1213363",
+    "1217674",
+    "1220079",
+    "1227189",
+    "1212310",
+    "1226285",
+    "1226829",
+    "1226056",
+    "1226610",
+    "1220844",
+    "1227128",
+    "1225203",
+    "1224561",
+    "1216349"
+   ],
+   "distinctive_launches": [
+    "npm i -g hotcell: Local sandboxes for AI agents on your Mac, Linux, bare metal",
+    "bb: The IDE that builds itself",
+    "Gitar: AI code review that fixes what it finds",
+    "Shape: The agentic IDE for designers and programmers",
+    "agent-manager: The fastest workflow for developing with AI",
+    "Berd: Weird, playful desktop app for building with AI agents",
+    "Glasp for Firefox: Highlight and summarize any page, PDF, or video in Firefox",
+    "Edgemetry: Privacy-first web analytics on Cloudflare's free tier",
+    "NobodyWho: Run AI models on any device",
+    "Startup Program by Recall.ai: Startup program for meeting recording infrastructure",
+    "Aloud: Turn spoken feedback into tasks your coding agent can run",
+    "bitdrift.ai: The world\u2019s first agentic mobile observability platform",
+    "Hansel by Seedling: Your email, your server, your keys so you're not locked out",
+    "Crew: A tiny crew of monsters for your Claude Code agents"
+   ],
+   "name": "Coding & Mac Productivity",
+   "goes_for": "This subgroup is interested in AI coding tools, productivity apps, and Mac utilities.",
+   "parent_name": "AI Development & Models"
+  },
+  {
+   "id": 2,
+   "parent": 0,
+   "people": 398,
+   "share_of_votes": 0.044,
+   "median_votes": 18.0,
+   "kinds_more": [
+    [
+     "AI Creative Tools",
+     2.13
+    ],
+    [
+     "Voice & Note Apps",
+     1.36
+    ],
+    [
+     "AI Personal Assistants",
+     1.33
+    ],
+    [
+     "AI Agent Infrastructure",
+     1.28
+    ]
+   ],
+   "kinds_less": [
+    [
+     "Business & Dev Tools",
+     0.29
+    ],
+    [
+     "Mac Utility Apps",
+     0.2
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     0.17
+    ]
+   ],
+   "attrs": {
+    "developer": 0.74,
+    "founder": 0.76,
+    "marketer": 1.17,
+    "designer": 0.99,
+    "investor": 0.54,
+    "student": 0.84,
+    "has launched a product": 1.1,
+    "new account (< 1 year)": 0.71,
+    "veteran (5+ years)": 0.42,
+    "heavy voter (top 10%)": 1.22
+   },
+   "distinctive_launch_ids": [
+    "1278100",
+    "1189136",
+    "1198766",
+    "1214622",
+    "1257670",
+    "1255660",
+    "1223837",
+    "1251122",
+    "1196080",
+    "1185996",
+    "1190387",
+    "1203499",
+    "1297033",
+    "1243621"
+   ],
+   "distinctive_launches": [
+    "Openbroca: Lightweight AI dictation for Mac that sounds like you",
+    "API Claws by Buda: Build self-improving agent harness with one API",
+    "Athena by Shoplazza: An orchestrator agent for your entire commerce stack",
+    "Nuphos: The AI-Native DevOps Workspace.",
+    "ToneBird: AI reply assistant that remembers your relationships",
+    "Sai: The autonomous computer fleet at your command",
+    "OmniVibe: Marketplace for agent creators & users",
+    "MosMos: Voice writing that works before, during, and after meetings",
+    "Teable 3.0: AI Spreadsheet for Business",
+    "PodcastorAI: Your AI twin hosts your video podcast",
+    "Miora: Scale your creativity on editable canvas with agent memory",
+    "Memmy Agent: Let every AI remember the same you.",
+    "SpeakON Agent: Turn natural speech into real work for an agent to complete",
+    "Loqua: Speak naturally and move from thoughts to being done"
+   ],
+   "name": "AI Creative & Voice",
+   "goes_for": "This subgroup favors AI tools for creative tasks, voice applications, and personal assistants.",
+   "parent_name": "AI Agent Applications"
+  },
+  {
+   "id": 3,
+   "parent": 1,
+   "people": 544,
+   "share_of_votes": 0.055,
+   "median_votes": 10.0,
+   "kinds_more": [
+    [
+     "Business & Dev Tools",
+     1.55
+    ],
+    [
+     "AI Agent Infrastructure",
+     1.33
+    ],
+    [
+     "AI Coding Tools",
+     1.08
+    ],
+    [
+     "AI Agent Context & Memory",
+     1.06
+    ]
+   ],
+   "kinds_less": [
+    [
+     "Voice & Note Apps",
+     0.64
+    ],
+    [
+     "AI Creative Tools",
+     0.63
+    ],
+    [
+     "Mac Utility Apps",
+     0.52
+    ]
+   ],
+   "attrs": {
+    "developer": 1.11,
+    "founder": 1.08,
+    "marketer": 0.73,
+    "designer": 0.55,
+    "investor": 0.65,
+    "student": 0.79,
+    "has launched a product": 1.19,
+    "new account (< 1 year)": 0.91,
+    "veteran (5+ years)": 1.37,
+    "heavy voter (top 10%)": 0.64
+   },
+   "distinctive_launch_ids": [
+    "1173475",
+    "1173357",
+    "1234391",
+    "1183905",
+    "1185115",
+    "1255292",
+    "1216287",
+    "1220459",
+    "1177352",
+    "1175845",
+    "1178443",
+    "1166992",
+    "1202312",
+    "1237032"
+   ],
+   "distinctive_launches": [
+    "Tabstack Dev Tools: Ditch your scraper. Make one API call with any tool.",
+    "Tabstack Browser Automation: Automate the web in your app or agent, no browser to host",
+    "Almanac: The agent with a second brain",
+    "Octolens: Social listening for the agent era",
+    "Context.dev: One API to scrape, enrich, and extract the internet",
+    "Answers by Context.dev: Give it a research task + the JSON shape you want back.",
+    "Bullet: 30-60% faster than Claude Code and Codex",
+    "Replay QA for Teams: Autonomous QA for teams who ship faster than they can verify",
+    "Cloud World Model: Simulate AWS, GCP & DigitalOcean without paying the bill",
+    "MentionDrop MCP: Give your AI agent live market signals",
+    "Stripe.Directory: New way for you & agents to search for businesses on Stripe",
+    "TryCase: Disposable test environments for AI coding agents",
+    "box: Simple computers for agent w/ full VMs",
+    "Hyperprobe: Lets your AI agents debug production without redeploying"
+   ],
+   "name": "Business & Agent Dev",
+   "goes_for": "This subgroup focuses on business and development tools, especially for AI agent infrastructure.",
+   "parent_name": "AI Development & Models"
+  },
+  {
+   "id": 4,
+   "parent": 1,
+   "people": 423,
+   "share_of_votes": 0.103,
+   "median_votes": 20.0,
+   "kinds_more": [
+    [
+     "New AI Models",
+     2.8
+    ],
+    [
+     "Niche Hardware & Apps",
+     1.17
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     1.12
+    ],
+    [
+     "AI Creative Tools",
+     1.04
+    ]
+   ],
+   "kinds_less": [
+    [
+     "AI Agent Infrastructure",
+     0.85
+    ],
+    [
+     "AI Personal Assistants",
+     0.83
+    ],
+    [
+     "AI Marketing & Growth",
+     0.73
+    ]
+   ],
+   "attrs": {
+    "developer": 1.28,
+    "founder": 1.18,
+    "marketer": 1.0,
+    "designer": 1.21,
+    "investor": 1.85,
+    "student": 0.91,
+    "has launched a product": 1.15,
+    "new account (< 1 year)": 0.85,
+    "veteran (5+ years)": 1.55,
+    "heavy voter (top 10%)": 1.38
+   },
+   "distinctive_launch_ids": [
+    "1259530",
+    "1257464",
+    "1277837",
+    "1257371",
+    "1305716",
+    "1275196",
+    "1271953",
+    "1274026",
+    "1305719",
+    "1263860",
+    "1257720",
+    "1271325",
+    "1246159",
+    "1264913"
+   ],
+   "distinctive_launches": [
+    "Gemini 3.8 text-to-speech models: Gemini 3.8 Flash TTS and Gemini 3.8 Flash-Lite TTS",
+    "Grok 4.7: SpaceXAI's most powerful model for coding and knowledge work",
+    "Microsoft Maia 300: Microsoft\u2019s own AI chip, headed to multi-gigawatts",
+    "Googlebook: The laptop your Android phone has been waiting for",
+    "Google Omni 1.2 Flash: Gemini Omni 1.2 Flash: 15s AI video at $0.07 per second",
+    "Microsoft-Decision-1: Microsoft\u2019s decision model for agents and workflows",
+    "Nano Banana 2.1: Google's image model with sharper design and mask editing",
+    "Odyssey 3: A world model that simulates physics in real time",
+    "GPT\u20116 Cyber: OpenAI\u2019s cyber model, with vetted access for defenders",
+    "Eleven v4 and Eleven v4 Turbo: Elevenlabs' fastest and most emotive voice models yet",
+    "MiMo-V2.6: Open omnimodal intelligence, trained in public",
+    "Introducing Video Editor in Manus 2.0: Anyone Can Now Make A Video Worth Posting",
+    "AirPods 5: 1.5x Active Noise Cancellation, AI Siri, Live Translation",
+    "ChatGPT Space: Create, collaborate, and build together with AI in Space"
+   ],
+   "name": "New AI Models & Hardware",
+   "goes_for": "This subgroup primarily upvotes new AI models, niche hardware, and productivity apps.",
+   "parent_name": "AI Development & Models"
+  },
+  {
+   "id": 5,
+   "parent": 1,
+   "people": 497,
+   "share_of_votes": 0.04,
+   "median_votes": 9.0,
+   "kinds_more": [
+    [
+     "AI Agent Context & Memory",
+     1.7
+    ],
+    [
+     "AI Coding Tools",
+     1.37
+    ],
+    [
+     "AI Personal Assistants",
+     1.04
+    ],
+    [
+     "AI Marketing & Growth",
+     1.02
+    ]
+   ],
+   "kinds_less": [
+    [
+     "Mac Utility Apps",
+     0.6
+    ],
+    [
+     "New AI Models",
+     0.55
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     0.54
+    ]
+   ],
+   "attrs": {
+    "developer": 1.12,
+    "founder": 1.2,
+    "marketer": 1.02,
+    "designer": 0.69,
+    "investor": 0.86,
+    "student": 0.77,
+    "has launched a product": 1.2,
+    "new account (< 1 year)": 0.99,
+    "veteran (5+ years)": 1.09,
+    "heavy voter (top 10%)": 0.42
+   },
+   "distinctive_launch_ids": [
+    "1217602",
+    "1264719",
+    "1208711",
+    "1209541",
+    "1217382",
+    "1271039",
+    "1295110",
+    "1186033",
+    "1223790",
+    "1052113",
+    "1187127",
+    "1253553",
+    "1198265",
+    "1208194"
+   ],
+   "distinctive_launches": [
+    "DocsAlot CLI: Let Claude or Codex create and maintain good looking docs",
+    "DocsAlot MCP Connector: Maintain your help-center by asking Claude, Cursor or Codex",
+    "SKI: Free voice coding for Claude Code, Codex and more",
+    "Greplica: Self updating wiki for coding agents",
+    "Dograh: The open source VAPI alternative",
+    "Extrovert: Run LinkedIn outreach from your agent",
+    "Radar: You don't need an AI SRE. Give your agent Radar.",
+    "Construct Computer: Your AI coworker gets a computer. You get your day back.",
+    "Dial: Give your AI agent a real phone number in 10 seconds",
+    "NINA: Guide users step by step inside your product.",
+    "AI Search Console: Prompt analytics and citation mapping for AI search",
+    "ProductBridge: AI-native customer support and feedback agent",
+    "Artifacts by Databox: Ask your AI Analyst and get back a ready-to-share report",
+    "/mission for Claude Code: Give Claude Code missions to spawn a team of agents"
+   ],
+   "name": "AI Agent Coding",
+   "goes_for": "This subgroup supports AI agent context, memory, and coding tools.",
+   "parent_name": "AI Development & Models"
+  },
+  {
+   "id": 6,
+   "parent": 2,
+   "people": 559,
+   "share_of_votes": 0.065,
+   "median_votes": 13.0,
+   "kinds_more": [
+    [
+     "Productivity & Lifestyle Apps",
+     1.62
+    ],
+    [
+     "Business & Dev Tools",
+     1.51
+    ],
+    [
+     "Mac Utility Apps",
+     1.47
+    ],
+    [
+     "Niche Hardware & Apps",
+     1.33
+    ]
+   ],
+   "kinds_less": [
+    [
+     "AI Agent Infrastructure",
+     0.8
+    ],
+    [
+     "AI Coding Tools",
+     0.75
+    ],
+    [
+     "New AI Models",
+     0.7
+    ]
+   ],
+   "attrs": {
+    "developer": 1.04,
+    "founder": 1.14,
+    "marketer": 0.93,
+    "designer": 1.05,
+    "investor": 1.27,
+    "student": 1.11,
+    "has launched a product": 1.15,
+    "new account (< 1 year)": 1.05,
+    "veteran (5+ years)": 1.16,
+    "heavy voter (top 10%)": 0.85
+   },
+   "distinctive_launch_ids": [
+    "1191928",
+    "1180294",
+    "1190245",
+    "1196481",
+    "1181257",
+    "1183800",
+    "1202753",
+    "1195790",
+    "1196883",
+    "1156488",
+    "1190996",
+    "1189818",
+    "1195155",
+    "1190855"
+   ],
+   "distinctive_launches": [
+    "Copresent: Turn your phone into a Google Slides remote",
+    "New small business tools by IFTTT: Run your business with HubSpot, Figma, and more",
+    "Knowledge Atlas by Fini: The self-learning knowledge base that improves itself",
+    "Nuvio: Connect your X bio to your MRR and GA4 for auto updates",
+    "Group Subscriptions by beehiiv: Sell subscriptions to teams, companies, and organizations.",
+    "Tinkerfont: Free font playground for live websites",
+    "Redential: A developer credential that proves what you built, NDA safe.",
+    "Branda: Turn any domain into on-brand ads, MIT Open Source",
+    "Tiptap AI Toolkit: Empower your AI to directly edit documents in real time.",
+    "Sami: Automate ad budgets across Google, LinkedIn & Meta ads",
+    "Breva: Turn your Mac trackpad into a gentle breathing guide",
+    "Kickbacks CLI: The terminal and Mac menu bar companion for Kickbacks.ai",
+    "Manta AI: Your AI agent for autonomous web app testing",
+    "Orbit for Mac: Every Google account, in a single window"
+   ],
+   "name": "Productivity & Business Tools",
+   "goes_for": "This subgroup supports productivity and lifestyle apps, business tools, and Mac utilities.",
+   "parent_name": "Productivity & Utilities"
+  },
+  {
+   "id": 7,
+   "parent": 0,
+   "people": 131,
+   "share_of_votes": 0.004,
+   "median_votes": 6.0,
+   "kinds_more": [
+    [
+     "AI Creative Tools",
+     3.06
+    ],
+    [
+     "Business & Dev Tools",
+     1.96
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     1.87
+    ],
+    [
+     "Niche Hardware & Apps",
+     1.47
+    ]
+   ],
+   "kinds_less": [
+    [
+     "AI Agent Context & Memory",
+     0.22
+    ],
+    [
+     "AI Personal Assistants",
+     0.19
+    ],
+    [
+     "AI Coding Tools",
+     0.16
+    ]
+   ],
+   "attrs": {
+    "developer": 0.2,
+    "founder": 0.15,
+    "marketer": 0.08,
+    "designer": 0.16,
+    "investor": 0.0,
+    "student": 0.0,
+    "has launched a product": 0.15,
+    "new account (< 1 year)": 1.16,
+    "veteran (5+ years)": 0.09,
+    "heavy voter (top 10%)": 0.0
+   },
+   "distinctive_launch_ids": [
+    "1193863",
+    "1190010",
+    "1197428",
+    "1189574",
+    "1199341",
+    "1196222",
+    "1190387",
+    "1191785",
+    "1187484",
+    "1157021",
+    "1174789",
+    "1185300",
+    "1188837",
+    "1190657"
+   ],
+   "distinctive_launches": [
+    "CodeNearby 2.0: Tinder for developers! Find coding partners & build together",
+    "ExploreYC: Open-source API for Y Combinator & a16z company data",
+    "Zro: Private inference for coding agents",
+    "JustVibe: The search engine for doing, with apps built for you",
+    "Phantomstory: Launch a third-party blog to win AEO with just two clicks ",
+    "Velo 3.0: AI video infrastructure to explain, train, and sell faster.",
+    "Miora: Scale your creativity on editable canvas with agent memory",
+    "ChatCut: Your AI video editor in ChatGPT, desktop, and web",
+    "AI Media Buyer By Creatify: Your ads, managed by AI that gets smarter daily.",
+    "Clark: An AI coworker with its own cloud computer",
+    "Paradigm: Turn any goal into a personalized, adaptive learning path.",
+    "AnySearch: Real-time structured search trusted by agents and developers",
+    "Auriko : Trading desk for LLM calls",
+    "Osaurus: Open source agents that run 100% locally on your Mac"
+   ],
+   "name": "New AI Creative Tools",
+   "goes_for": "This subgroup is interested in new AI creative tools, business tools, and productivity apps.",
+   "parent_name": "AI Agent Applications"
+  },
+  {
+   "id": 8,
+   "parent": 1,
+   "people": 470,
+   "share_of_votes": 0.054,
+   "median_votes": 11.0,
+   "kinds_more": [
+    [
+     "New AI Models",
+     2.22
+    ],
+    [
+     "AI Agent Infrastructure",
+     1.22
+    ],
+    [
+     "AI Agent Context & Memory",
+     1.14
+    ],
+    [
+     "AI Coding Tools",
+     1.13
+    ]
+   ],
+   "kinds_less": [
+    [
+     "Productivity & Lifestyle Apps",
+     0.61
+    ],
+    [
+     "Niche Hardware & Apps",
+     0.59
+    ],
+    [
+     "Mac Utility Apps",
+     0.37
+    ]
+   ],
+   "attrs": {
+    "developer": 1.16,
+    "founder": 1.08,
+    "marketer": 0.81,
+    "designer": 1.0,
+    "investor": 1.82,
+    "student": 1.02,
+    "has launched a product": 1.04,
+    "new account (< 1 year)": 0.99,
+    "veteran (5+ years)": 1.34,
+    "heavy voter (top 10%)": 0.78
+   },
+   "distinctive_launch_ids": [
+    "1222158",
+    "1222359",
+    "1226841",
+    "1215966",
+    "1240758",
+    "1198643",
+    "1211631",
+    "1256682",
+    "1205704",
+    "1222612",
+    "1258400",
+    "1213396",
+    "1214908",
+    "1216156"
+   ],
+   "distinctive_launches": [
+    "DeepSeek Harness: Composable agent harness where everything is a plugin",
+    "Gemini 3.7 Flash: Google's smartest workhorse yet for coding & agents",
+    "Grok 4.6: Frontier Intelligence for Long-Running Agents",
+    "Cloudflare OS: Build the AI operating system for your company",
+    "GPT-6 Astra: OpenAI's most capable model for end-to-end work",
+    "Kimi K3: The world's first open 3T-class model",
+    "DeepSeek-V4-Flash-0731: Frontier agent intelligence at Flash prices",
+    "Jev: Fast, structured AI decisions for software automation",
+    "Claude Opus 5: Near-Fable 5 intelligence at half the price",
+    "GLM-5.3: Coding leap from scaled post-training on the same base",
+    "Claude Opus 5.5: Anthropic's first model in their new Claude 5.5 family",
+    "Qwen3.8-Max: Qwen\u2019s most capable model for coding and cowork",
+    "Cloudflare Wallets: the programmable wallet for the agentic Internet",
+    "Muse Code: Meta\u2019s terminal agent for long-horizon coding"
+   ],
+   "name": "AI Model & Agent Dev",
+   "goes_for": "This subgroup backs new AI models, AI agent infrastructure, and coding tools.",
+   "parent_name": "AI Development & Models"
+  },
+  {
+   "id": 9,
+   "parent": 0,
+   "people": 150,
+   "share_of_votes": 0.033,
+   "median_votes": 46.5,
+   "kinds_more": [
+    [
+     "AI Agent Infrastructure",
+     1.56
+    ],
+    [
+     "AI Personal Assistants",
+     1.54
+    ],
+    [
+     "AI Agent Context & Memory",
+     1.21
+    ],
+    [
+     "AI Marketing & Growth",
+     1.18
+    ]
+   ],
+   "kinds_less": [
+    [
+     "New AI Models",
+     0.25
+    ],
+    [
+     "Mac Utility Apps",
+     0.16
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     0.13
+    ]
+   ],
+   "attrs": {
+    "developer": 0.66,
+    "founder": 0.37,
+    "marketer": 1.88,
+    "designer": 1.35,
+    "investor": 1.42,
+    "student": 1.92,
+    "has launched a product": 0.68,
+    "new account (< 1 year)": 1.02,
+    "veteran (5+ years)": 0.04,
+    "heavy voter (top 10%)": 2.98
+   },
+   "distinctive_launch_ids": [
+    "1201843",
+    "1233411",
+    "1176251",
+    "1244851",
+    "1178224",
+    "1181934",
+    "1214232",
+    "1225168",
+    "1286920",
+    "1202911",
+    "1197378",
+    "1232856",
+    "1204933",
+    "1219589"
+   ],
+   "distinctive_launches": [
+    " Laxis: Make meeting notes awesome, type 4x faster, translate live",
+    "Noodle Seed: Your product in AI and AI in your product",
+    "BestDefense.io: Pentest and patch every deploy with AI",
+    "Cline Desktop App: An open-source app for open-weight models",
+    "Foresight by Lightning Rod: Predict anything with AI",
+    "Macro: Unifies your work into one app with shared memory",
+    "Rindler: Automate the web work your team does by hand",
+    "Caddi: Agent that builds agents by only showing your work only once",
+    "Synter Canvas: Your AI agent runs ads across 30+ ad platforms",
+    "Airtop for Google Ads Automation: Build campaigns, optimize spend, and create reports.",
+    "Fluree AI: Give every AI agent trusted context",
+    "Referent: The AI-native OS for modern law firms",
+    "ngrok AI Gateway: One private gateway for every AI model",
+    "Checksum AI: Your coding agent\u2019s testing buddy"
+   ],
+   "name": "All-round heavy voters, AI",
+   "goes_for": "This subgroup votes for a wide range of AI agent infrastructure, personal assistants, and marketing tools.",
+   "parent_name": "AI Agent Applications"
+  },
+  {
+   "id": 10,
+   "parent": 0,
+   "people": 621,
+   "share_of_votes": 0.051,
+   "median_votes": 11.0,
+   "kinds_more": [
+    [
+     "AI Marketing & Growth",
+     2.08
+    ],
+    [
+     "AI Personal Assistants",
+     1.24
+    ],
+    [
+     "Business & Dev Tools",
+     1.2
+    ],
+    [
+     "AI Agent Context & Memory",
+     1.06
+    ]
+   ],
+   "kinds_less": [
+    [
+     "AI Coding Tools",
+     0.56
+    ],
+    [
+     "New AI Models",
+     0.47
+    ],
+    [
+     "Mac Utility Apps",
+     0.45
+    ]
+   ],
+   "attrs": {
+    "developer": 0.95,
+    "founder": 1.26,
+    "marketer": 1.27,
+    "designer": 0.98,
+    "investor": 1.95,
+    "student": 0.85,
+    "has launched a product": 1.2,
+    "new account (< 1 year)": 0.86,
+    "veteran (5+ years)": 1.3,
+    "heavy voter (top 10%)": 0.5
+   },
+   "distinctive_launch_ids": [
+    "1174501",
+    "1169569",
+    "1184640",
+    "1253187",
+    "1180569",
+    "1167122",
+    "1242849",
+    "1173208",
+    "1178721",
+    "1187127",
+    "1204238",
+    "1178153",
+    "1131659",
+    "1194188"
+   ],
+   "distinctive_launches": [
+    "Retool: Build anywhere. Govern in Retool.",
+    "Folderly Lens : Domain health analysis for high performance email campaigns",
+    "Needle: The proactive GTM agent in Slack and Teams",
+    "Sell to State: Search 3M government contracts in 64 countries",
+    "ConnectMachine 2.0: AI digital business card that remembers everyone you meet",
+    "Jesse: Stop building Apollo/Clay lists. Search the live internet.",
+    "AINA: Find your job search blind spots with an AI coach",
+    "Honestly: See what Reddit and TikTok honestly think about your product",
+    "Fuzzy AI: We warm your prospects before reaching out",
+    "AI Search Console: Prompt analytics and citation mapping for AI search",
+    "CrawlRaven: SEO Hub for GSC + GA4 + a 200-point crawl",
+    "Bluerails Discovery : The rails AI agents use to find and pay you",
+    "Badge: AI agents collect peer reviews to generate proof of work",
+    "Goose Ads Remixer: Remix the ads already winning in your niche"
+   ],
+   "name": "AI Marketing & Business",
+   "goes_for": "This subgroup focuses on AI for marketing, growth, personal assistance, and business development.",
+   "parent_name": "AI Agent Applications"
+  },
+  {
+   "id": 11,
+   "parent": 0,
+   "people": 259,
+   "share_of_votes": 0.01,
+   "median_votes": 7.0,
+   "kinds_more": [
+    [
+     "Niche Hardware & Apps",
+     2.63
+    ],
+    [
+     "AI Creative Tools",
+     2.16
+    ],
+    [
+     "AI Agent Infrastructure",
+     2.11
+    ],
+    [
+     "AI Marketing & Growth",
+     1.12
+    ]
+   ],
+   "kinds_less": [
+    [
+     "AI Coding Tools",
+     0.27
+    ],
+    [
+     "Mac Utility Apps",
+     0.24
+    ],
+    [
+     "Business & Dev Tools",
+     0.21
+    ]
+   ],
+   "attrs": {
+    "developer": 0.3,
+    "founder": 0.29,
+    "marketer": 0.63,
+    "designer": 0.91,
+    "investor": 0.27,
+    "student": 0.19,
+    "has launched a product": 0.3,
+    "new account (< 1 year)": 1.41,
+    "veteran (5+ years)": 0.14,
+    "heavy voter (top 10%)": 0.07
+   },
+   "distinctive_launch_ids": [
+    "1173176",
+    "1167541",
+    "1175263",
+    "1173214",
+    "1177976",
+    "1166336",
+    "1186299",
+    "1195137",
+    "1191609",
+    "1188837",
+    "1174789",
+    "1191785",
+    "1192591",
+    "1190090"
+   ],
+   "distinctive_launches": [
+    "Tencent EdgeOne Makers: Ship AI agents like web apps, in minutes.",
+    "OpenArt Director: Direct cinematic videos through chat",
+    "Unreal Engine 5.8: Build unreal games with AI agents",
+    "BrowserAct: Web browser automation for AI agents",
+    "Acti: Agentic keyboard for mobile commands and search",
+    "API to MCP: Turn any API into an MCP server for AI agents",
+    "V2Fun: Generate 3D character with 8K textures and AI motion capture",
+    "Loova Ads Studio: Create AI ads that convert, not just look good",
+    "ClawTeams: The first goal-driven, proactive AI team for e-commerce",
+    "Auriko : Trading desk for LLM calls",
+    "Paradigm: Turn any goal into a personalized, adaptive learning path.",
+    "ChatCut: Your AI video editor in ChatGPT, desktop, and web",
+    "AgentKey: One-stop live data marketplace for your agent",
+    "ZooData: The data layer for AI agents"
+   ],
+   "name": "Niche AI Creative",
+   "goes_for": "This subgroup backs niche hardware, AI creative tools, and AI agent infrastructure.",
+   "parent_name": "AI Agent Applications"
+  },
+  {
+   "id": 12,
+   "parent": 0,
+   "people": 440,
+   "share_of_votes": 0.034,
+   "median_votes": 10.0,
+   "kinds_more": [
+    [
+     "AI Creative Tools",
+     2.18
+    ],
+    [
+     "AI Marketing & Growth",
+     1.45
+    ],
+    [
+     "AI Agent Context & Memory",
+     1.07
+    ],
+    [
+     "New AI Models",
+     0.97
+    ]
+   ],
+   "kinds_less": [
+    [
+     "Niche Hardware & Apps",
+     0.73
+    ],
+    [
+     "AI Agent Infrastructure",
+     0.72
+    ],
+    [
+     "AI Coding Tools",
+     0.66
+    ]
+   ],
+   "attrs": {
+    "developer": 0.86,
+    "founder": 1.08,
+    "marketer": 1.23,
+    "designer": 0.92,
+    "investor": 1.29,
+    "student": 0.87,
+    "has launched a product": 0.92,
+    "new account (< 1 year)": 0.97,
+    "veteran (5+ years)": 0.99,
+    "heavy voter (top 10%)": 0.43
+   },
+   "distinctive_launch_ids": [
+    "1252189",
+    "1275489",
+    "1266889",
+    "1269915",
+    "1176687",
+    "1288999",
+    "1251151",
+    "1194188",
+    "1280966",
+    "1255211",
+    "1252325",
+    "1195137",
+    "1298578",
+    "1196222"
+   ],
+   "distinctive_launches": [
+    "Clueso MCP: Create and edit videos by chatting",
+    "CutBay: AI Video Agent: Turn Anything into Videos via Chat",
+    "ngram 2.0: Create explainers, screencasts, and AI avatar videos",
+    "Spira Maxima: Video model that turns script into viral social media videos",
+    "Thumbmagic: AI thumbnail generator trained on top-performing thumbnails",
+    "Videco: Turn every video into a content campaign with AI",
+    "MePersona: Answer every fan comment in your voice",
+    "Goose Ads Remixer: Remix the ads already winning in your niche",
+    "Fastlane 2.0: Create, launch and scale winning ads with AI",
+    "MOVO AI: The world's first long-form video agent for mobile",
+    "Ami AI: Lovable for getting customers",
+    "Loova Ads Studio: Create AI ads that convert, not just look good",
+    "Screen Studio 4.0: Glass Loupe, Camera Cutout, Edit by Transcript, and more",
+    "Velo 3.0: AI video infrastructure to explain, train, and sell faster."
+   ],
+   "name": "AI Video & Marketing",
+   "goes_for": "This subgroup prefers AI tools for creative content, especially video, and marketing.",
+   "parent_name": "AI Agent Applications"
+  },
+  {
+   "id": 13,
+   "parent": 0,
+   "people": 629,
+   "share_of_votes": 0.133,
+   "median_votes": 26.0,
+   "kinds_more": [
+    [
+     "AI Marketing & Growth",
+     1.51
+    ],
+    [
+     "AI Personal Assistants",
+     1.27
+    ],
+    [
+     "AI Agent Infrastructure",
+     1.17
+    ],
+    [
+     "AI Agent Context & Memory",
+     1.15
+    ]
+   ],
+   "kinds_less": [
+    [
+     "New AI Models",
+     0.41
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     0.3
+    ],
+    [
+     "Mac Utility Apps",
+     0.17
+    ]
+   ],
+   "attrs": {
+    "developer": 0.85,
+    "founder": 0.92,
+    "marketer": 1.35,
+    "designer": 1.17,
+    "investor": 0.45,
+    "student": 0.91,
+    "has launched a product": 0.9,
+    "new account (< 1 year)": 0.78,
+    "veteran (5+ years)": 0.74,
+    "heavy voter (top 10%)": 1.75
+   },
+   "distinctive_launch_ids": [
+    "1170423",
+    "1178752",
+    "1253413",
+    "1220624",
+    "1246291",
+    "1250743",
+    "1166306",
+    "1181363",
+    "1176406",
+    "1221864",
+    "1086254",
+    "1205332",
+    "1238864",
+    "1234433"
+   ],
+   "distinctive_launches": [
+    "Agentic videos by D-ID: Interactive videos that talk back ",
+    "Fuser Apps: Vibecode apps, sites & games on everyone's favorite canvas",
+    "Promptic: Optimize GenAI applications for quality and cost",
+    "Oasis: Where humans and agents come to work.",
+    "Modeinspect: 99 Days Free AI Credits - Design product UI in your codebase",
+    "Ari by Ariso: AI bar raiser for the most ambitious teams",
+    "Proxy Tester by ScrapeOps: Benchmark proxies for reliable, target-specific scraping",
+    "Ogment AI: Your AI coworker, in Slack. Just tag @O.",
+    "Brain\u00b2 by ClickUp: One AI that knows your entire company and acts on it",
+    "Human Behavior: Product analytics told you what happened. We handle it.",
+    "HAQQ Legal AI on Mobile: Bringing legal understanding to anyone with a phone",
+    "Ycode AI Agents: Build websites with AI",
+    "Relaticle: Open-source CRM with approval-gated AI writes",
+    "OpenTag: AI coworker lives on Slack and Teams"
+   ],
+   "name": "AI Agent & Marketing",
+   "goes_for": "This subgroup supports AI marketing, personal assistants, and agent infrastructure.",
+   "parent_name": "AI Agent Applications"
+  },
+  {
+   "id": 14,
+   "parent": 2,
+   "people": 810,
+   "share_of_votes": 0.172,
+   "median_votes": 20.0,
+   "kinds_more": [
+    [
+     "Mac Utility Apps",
+     2.44
+    ],
+    [
+     "Productivity & Lifestyle Apps",
+     1.91
+    ],
+    [
+     "Niche Hardware & Apps",
+     1.68
+    ],
+    [
+     "Voice & Note Apps",
+     1.45
+    ]
+   ],
+   "kinds_less": [
+    [
+     "AI Agent Context & Memory",
+     0.78
+    ],
+    [
+     "AI Agent Infrastructure",
+     0.72
+    ],
+    [
+     "AI Marketing & Growth",
+     0.6
+    ]
+   ],
+   "attrs": {
+    "developer": 1.17,
+    "founder": 1.1,
+    "marketer": 0.79,
+    "designer": 1.28,
+    "investor": 0.79,
+    "student": 1.12,
+    "has launched a product": 1.0,
+    "new account (< 1 year)": 1.09,
+    "veteran (5+ years)": 1.2,
+    "heavy voter (top 10%)": 1.45
+   },
+   "distinctive_launch_ids": [
+    "1302369",
+    "1262113",
+    "1281723",
+    "1303046",
+    "1291173",
+    "1301210",
+    "1301556",
+    "1284666",
+    "1291025",
+    "1300789",
+    "1297811",
+    "1297995",
+    "1283558",
+    "1297563"
+   ],
+   "distinctive_launches": [
+    "Brink: Turn your MacBook trackpad's edges into controls",
+    "DALI AI by SupplyzPro: The ERP you never need to open",
+    "AfterLid: Keep your Mac working. Check in from your phone.",
+    "Sendu: Drop files easily across your local network",
+    "CutCat: Skip or mute marked scenes while you watch Netflix",
+    "Remote Gaze: Your Mac on your iPad and iPhone with no in-between server",
+    "NotchIsland: Free, open-source Dynamic Island for the MacBook notch",
+    "Switch Lab: Hear and type on keyboard switches before you buy them",
+    "Knock: Create shortcuts by hitting your mac",
+    "Archie: Mac Screenshot Manager & Notch Shelf",
+    "Hemmed: Hide Mac menu bar clutter and pin individual actions",
+    "Hamdori: A tiny 3D hamster that lives on your desktop",
+    "Latch: The app blocker you unlock by walking to your key",
+    "chalk: learn anything, anywhere"
+   ],
+   "name": "Mac & Productivity Apps",
+   "goes_for": "This subgroup is keen on Mac utility apps, productivity tools, and niche hardware.",
+   "parent_name": "Productivity & Utilities"
+  },
+  {
+   "id": 15,
+   "parent": 1,
+   "people": 178,
+   "share_of_votes": 0.031,
+   "median_votes": 33.0,
+   "kinds_more": [
+    [
+     "AI Coding Tools",
+     1.57
+    ],
+    [
+     "AI Agent Infrastructure",
+     1.23
+    ],
+    [
+     "AI Agent Context & Memory",
+     1.18
+    ],
+    [
+     "AI Creative Tools",
+     1.17
+    ]
+   ],
+   "kinds_less": [
+    [
+     "Productivity & Lifestyle Apps",
+     0.45
+    ],
+    [
+     "Mac Utility Apps",
+     0.29
+    ],
+    [
+     "Niche Hardware & Apps",
+     0.17
+    ]
+   ],
+   "attrs": {
+    "developer": 0.92,
+    "founder": 0.45,
+    "marketer": 1.58,
+    "designer": 1.02,
+    "investor": 1.2,
+    "student": 2.15,
+    "has launched a product": 0.42,
+    "new account (< 1 year)": 1.53,
+    "veteran (5+ years)": 0.24,
+    "heavy voter (top 10%)": 2.31
+   },
+   "distinctive_launch_ids": [
+    "1217440",
+    "1264605",
+    "1265035",
+    "1222819",
+    "1244102",
+    "1257662",
+    "1246693",
+    "1258149",
+    "1220779",
+    "1247082",
+    "1267423",
+    "1274680",
+    "1281483",
+    "1262537"
+   ],
+   "distinctive_launches": [
+    "dif.sh: Markdown feature flags your coding agent installs for you",
+    "Pegasus 1.6 by TwelveLabs: Transforms egocentric video into robot training data",
+    "Inferock: Serverless inference, with credits back for failed calls.",
+    "Semos.ai Manager Agents: AI agents purpose-built for managers ",
+    "Autonomyware: Idea to physical product, engineer anything you can imagine",
+    "Onepin: AI voiceover with every name, price and date said right",
+    "Kilo Code for iOS and Android: Start coding agents, control sessions, review PRs. Anywhere.",
+    "Macaly Cloud: Build and publish sites with your Claude or ChatGPT",
+    "Inferock Bench: An independent receipt for every LLM API call",
+    "Superset Mobile: Your coding agents, now in your pocket",
+    "HireKey: Your recruiter-informed AI copilot for tech job search",
+    "Jockey by TwelveLabs: Your entire video library: organized, searchable, understood",
+    "Harness by Autonomous: Every coding agent, every machine, one command center.",
+    "AUDR by Chargebee: Open standard for tracking agent run costs"
+   ],
+   "name": "All-round heavy voters, Dev",
+   "goes_for": "This subgroup votes for AI coding tools, agent infrastructure, and creative tools.",
+   "parent_name": "AI Development & Models"
+  }
+ ],
+ "usd": 0.0041
+}

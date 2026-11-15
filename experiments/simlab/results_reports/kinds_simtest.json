@@ -1,0 +1,52 @@
+{
+ "people_scored": 179,
+ "people_asked": 180,
+ "launches_per_day": {
+  "2026-11-03": 29,
+  "2026-11-04": 23,
+  "2026-11-05": 22
+ },
+ "within_person_auc": {
+  "sim": [
+   0.643,
+   0.61,
+   0.675
+  ],
+  "emb": [
+   0.7,
+   0.67,
+   0.728
+  ],
+  "pop": [
+   0.843,
+   0.815,
+   0.868
+  ],
+  "blend": [
+   0.678,
+   0.646,
+   0.708
+  ]
+ },
+ "sim minus emb (paired)": [
+  -0.057,
+  -0.084,
+  -0.031
+ ],
+ "blend minus emb (paired)": [
+  -0.022,
+  -0.04,
+  -0.005
+ ],
+ "sim minus pop (paired)": [
+  -0.201,
+  -0.233,
+  -0.167
+ ],
+ "top3 picks that were real votes: sim / embedding / votes cast": [
+  94,
+  84,
+  436
+ ],
+ "usd": 0.14
+}
