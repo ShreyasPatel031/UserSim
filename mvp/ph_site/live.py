@@ -1076,7 +1076,16 @@ def live_aggregate(view: dict) -> dict:
     out = {}
     for tab, (pred, key) in _LIVE_PRED.items():
         per = {}
+        if tab == "mid":   # every published 00:05 day from the very start (PH agent's scoreboard), whatever the model
+            sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+            for r in sb.get("rows") or []:
+                if r.get("point") == "0005" and r.get("method") == "published" and r.get("source") == "live" \
+                        and all(isinstance(r.get(f"top{k}"), (int, float)) for k in (3, 5, 10)):
+                    per[r["day"]] = {"day": r["day"], "h": [round(r[f"top{k}"] * k / 100) for k in (3, 5, 10)],
+                                     "final": True, "fallback": r.get("input_flag") or None}
         for r in t.get("days") or []:
+            if r.get("day") in per:
+                continue
             if r.get("flag") == "live" and r.get("prediction") == pred and r.get("status") == "scored" \
                     and all(isinstance(r.get(f"hits_top{k}"), int) for k in (3, 5, 10)):
                 per[r["day"]] = {"day": r["day"], "h": [r["hits_top3"], r["hits_top5"], r["hits_top10"]],
