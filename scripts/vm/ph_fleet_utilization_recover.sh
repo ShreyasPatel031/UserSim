@@ -19,6 +19,13 @@ GC=(gcloud --account="$SA")
 ZONE="${PACE_ZONE:?}"
 VM_GCS="${PACE_GCS_VM_ROOT:-gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 TS="$(date +%s)"
+FLEET_SKIP_STALE_UNHANG=0
+STALE_UNHANG_MIN="${FLEET_STALE_UNHANG_MIN_COMPLETE_PPM:-6}"
+_cur_ppm="$(python3 -c "import json; print(json.load(open('$ART/fleet_measure.json')).get('complete_ppm',0))" 2>/dev/null || echo 0)"
+if python3 -c "exit(0 if float('${_cur_ppm}') < float('$STALE_UNHANG_MIN') else 1)" 2>/dev/null; then
+  FLEET_SKIP_STALE_UNHANG=1
+  echo "stale_unhang_paused complete_ppm=${_cur_ppm} min=${STALE_UNHANG_MIN}"
+fi
 
 mapfile -t targets < <(python3 - <<PY
 import json
@@ -104,6 +111,9 @@ for s in m.get('slots',[]):
 raise SystemExit(1)
 " 2>/dev/null && use_stale=1
   if [[ "$use_stale" == 1 ]]; then
+  if [[ "$FLEET_SKIP_STALE_UNHANG" == 1 ]]; then
+    continue
+  fi
   if python3 -c "
 import json, time, sys
 from pathlib import Path
