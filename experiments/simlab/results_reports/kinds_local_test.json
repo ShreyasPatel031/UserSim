@@ -1,0 +1,121 @@
+{
+ "Q1": {
+  "lift correlation across launches (a vs b)": 0.1,
+  "median lift correlation, all subgroup pairs": -0.01,
+  "taste-centroid cosine (a vs b)": 0.57,
+  "nearest subgroup to a": "Productivity & Business Tools",
+  "nearest subgroup to b": "Mac & Productivity Apps",
+  "launches where one is >= 1.5x and the other <= 0.8x": 298,
+  "launches": 1916,
+  "examples a high, b low": [
+   "DALI AI by SupplyzPro",
+   "CutCat",
+   "Remote Gaze",
+   "Hemmed",
+   "Archie",
+   "Hamdori"
+  ],
+  "examples b high, a low": [
+   "npm i -g hotcell",
+   "bb",
+   "Gitar",
+   "agent-manager",
+   "Startup Program by Recall.ai",
+   "NobodyWho"
+  ]
+ },
+ "launches": 293,
+ "median market size": 2176.0,
+ "median voters in market": 36.0,
+ "within-market AUC: d (ours-not-theirs)": [
+  0.5865,
+  0.5723,
+  0.6017
+ ],
+ "within-market AUC: plain similarity": [
+  0.4455,
+  0.429,
+  0.4604
+ ],
+ "d minus similarity (paired)": [
+  0.1409,
+  0.1219,
+  0.1596
+ ],
+ "vote rate: top 15% d / market / bottom 15% d": [
+  [
+   0.0422,
+   0.038,
+   0.0467
+  ],
+  [
+   0.0311,
+   0.0279,
+   0.0343
+  ],
+  [
+   0.0236,
+   0.02,
+   0.0275
+  ]
+ ],
+ "Brier skill vs market rate (2-fold CV, higher is better)": {
+  "shared parents (3)": [
+   0.0053,
+   0.0043,
+   0.0063
+  ],
+  "shared subgroups (16)": [
+   0.0252,
+   0.0201,
+   0.0307
+  ],
+  "local k=3": [
+   0.0056,
+   0.0043,
+   0.0067
+  ],
+  "local k=6": [
+   0.0168,
+   0.0137,
+   0.0198
+  ],
+  "local k=16": [
+   0.0372,
+   0.0305,
+   0.044
+  ],
+  "local: 3 bands of d": [
+   0.0026,
+   0.0014,
+   0.0037
+  ]
+ },
+ "paired vs shared subgroups (16)": {
+  "shared parents (3)": [
+   -0.0199,
+   -0.0248,
+   -0.0154
+  ],
+  "local k=3": [
+   -0.0196,
+   -0.0246,
+   -0.0149
+  ],
+  "local k=6": [
+   -0.0083,
+   -0.012,
+   -0.0051
+  ],
+  "local k=16": [
+   0.0121,
+   0.0084,
+   0.0157
+  ],
+  "local: 3 bands of d": [
+   -0.0225,
+   -0.0279,
+   -0.0176
+  ]
+ }
+}

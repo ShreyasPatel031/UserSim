@@ -1,0 +1,2011 @@
+{
+ "day": "2026-11-14",
+ "products": [
+  {
+   "id": "1301510",
+   "rank": 1,
+   "name": "HiringNow",
+   "tagline": "AI job agent that finds & apply for jobs before anyone else.",
+   "market_people": 2142,
+   "win": {
+    "people": 322,
+    "roles_vs_market": {
+     "designer": 0.8,
+     "investor": 0.7,
+     "student": 1.18
+    },
+    "median_votes": 16.0,
+    "competitors_backed_more": [
+     [
+      "Sidedoor",
+      3.33
+     ],
+     [
+      "Hira",
+      2.12
+     ],
+     [
+      "AINA",
+      2.0
+     ],
+     [
+      "Jobmate AI",
+      1.9
+     ],
+     [
+      "Reactive Resume v6",
+      1.76
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "ToDo.is",
+      0.37
+     ],
+     [
+      "Knockin'",
+      0.28
+     ],
+     [
+      "SuperIntern",
+      0.26
+     ],
+     [
+      "Cedric AI for Meetings",
+      0.22
+     ],
+     [
+      "AI Employees by Easy-Peasy.AI",
+      0.0
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Sidedoor: This is clever, especially the second-degree connection piece. Most job search tools just show you your direct network, but the referral that actually matters is usually two hops away. Quick question: when you surface those unexpected connections, how does it ",
+     "on Sidedoor: Wow, this is clever! It can also be used for freelancing. When I switched to freelancing full time in 2021, I could use something like this. I did everything manually. I went through my emails, Facebook friends, and LinkedIn. I then checked who can help me out",
+     "on Sidedoor: This is an interesting approach. I'm currently exploring career opportunities myself, so I'm curious how do you decide which connection is the best person to reach out to when there are several possible referral paths?",
+     "on Bono AI: Congrats on the launch! The pivot story is a great one, going from a website builder to realizing the actual bottleneck was voice, not features, feels like a genuinely earned insight rather than a repositioning exercise. Really like that you're tracking the hu",
+     "on Vela: The tool seems quite interesting. Do you support integrations with the most common ATS? Thanks!",
+     "on 1752vc Pitch Deck Analyzer: the community behind 1752 and this product is very helpful and engaged. this analyzer helped find some blindspots in my deck already!",
+     "on myAIcademy: do you offer learnings paths as opposed to just learn by app?",
+     "on AINA: \ud83d\udc4b Hey Product Hunt! I'm Natallia, founder of AINA! After 10+ years around hiring, HR tech, and operations, I kept seeing the same problem from the candidate side: people can be great at what they do and still have very little clarity on why their job search is",
+     "on AINA: I love the name! In this part of the world, aaina means mirror. And it aptly suits the product intent, i.e., to show where we currently stand and where we can be. With the job situation all over the world, this is a much needed invention especially for folks w",
+     "on AINA: Very interesting, better career coaching is even more necessary in the age when people mass-apply and mass-reject"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "HiringNow's ability to find jobs before they hit major boards and manage approvals for applications is a game-changer for me.",
+      "why_this": "I'm constantly looking for AI agents that can handle complex tasks with user oversight, and HiringNow's 'Find First' feature, combined with the approval process for applications, aligns perfectly with my interest in efficient, controlled automation.",
+      "the_difference": "The core difference is the 'Find First' capability, monitoring 247,000+ company career sites every 5 minutes, which means I'm seeing opportunities before they're widely advertised, giving me a significant edge over competitors like 1752vc Pitch Deck Analyzer that focus on different aspects of the job search.",
+      "would_drop_it_if": "I would drop HiringNow if the approval process for applications became cumbersome or if I couldn't quickly review the important parts before saying yes, similar to my concerns about approvals for changes in other AI tools."
+     },
+     {
+      "user": 2,
+      "verdict": "HiringNow's comprehensive approach to finding and applying for jobs, especially its direct application feature, makes it stand out.",
+      "why_this": "I'm drawn to HiringNow because it offers a complete solution for job searching, from finding jobs on company sites to applying directly, which is more hands-on and proactive than what I've seen in AINA or HireKey, which are more about coaching or strategic application.",
+      "the_difference": "The direct application on the employer's own site, with my approval, is the one thing that makes it different for me; it's a level of automation and integration that goes beyond the interview practice of Toby or the resume building of Reactive Resume v6.",
+      "would_drop_it_if": "I would drop it if the setup and ongoing usage weren't out-of-the-box and intuitive, as I'm keen on tools that are easy to implement and use without extensive configuration."
+     },
+     {
+      "user": 3,
+      "verdict": "HiringNow's proactive job discovery and direct application with approval is exactly what I need to stay ahead in the job market.",
+      "why_this": "I'm interested in HiringNow because it addresses the 'blind spots' I've experienced with AI agents in marketing \u2013 it's good at the work but needs oversight. The 'Find First' and 'Apply First' with approval directly tackles this by giving me control over the final submission.",
+      "the_difference": "The ability to monitor 247,000+ company career sites every 5 minutes and apply directly on the employer's site, with my approval, is the unique selling point that sets it apart from HireKey, which is more focused on strategic application and resume tailoring.",
+      "would_drop_it_if": "I would drop it if the AI's job matching or resume tailoring wasn't precise enough, leading to irrelevant applications or if the approval process became a bottleneck."
+     },
+     {
+      "user": 4,
+      "verdict": "HiringNow's early job discovery and direct application with user approval offers a powerful advantage in a competitive market.",
+      "why_this": "I'm drawn to HiringNow because it offers a proactive and efficient way to find and apply for jobs, especially the 'Find First' feature. While I've backed AINA for coaching, HiringNow's direct application capability is a more active solution to job searching.",
+      "the_difference": "The key difference is HiringNow's ability to check company career sites every 5 minutes and apply directly on the employer's site with approval, which is a more direct and faster approach than the peer review collection of Badge or the coaching of AINA.",
+      "would_drop_it_if": "I would drop it if the AI's matching or application process felt like an 'echo-chamber' that amplified my biases or if it lacked sufficient guardrails to ensure quality and relevance in applications."
+     }
+    ]
+   },
+   "lose": {
+    "people": 108,
+    "roles_vs_market": {
+     "founder": 1.31,
+     "marketer": 1.33,
+     "designer": 0.65,
+     "investor": 1.57,
+     "student": 0.0,
+     "product manager": 2.02
+    },
+    "median_votes": 84.5,
+    "competitors_backed_more": [
+     [
+      "ToneBird",
+      4.2
+     ],
+     [
+      "SuperIntern",
+      3.5
+     ],
+     [
+      "Knockin'",
+      3.42
+     ],
+     [
+      "Cedric AI for Meetings",
+      3.42
+     ],
+     [
+      "Superhuman Go",
+      2.63
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Reactive Resume v6",
+      0.37
+     ],
+     [
+      "Hira",
+      0.0
+     ],
+     [
+      "Sidedoor",
+      0.0
+     ],
+     [
+      "AI Employees by Easy-Peasy.AI",
+      0.0
+     ],
+     [
+      "Jottoo",
+      0.0
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on myAIcademy:  How do you handle updating lessons so quickly when tools change every few days, and is the simulator running real API environments or guided mock setups?",
+     "on Knockin': This is very suitable for me. I need to introduce myself and my project to many people.",
+     "on Knockin': As a freelancer, I literally say the same 3 sentences about my background on every single intro call lol. If this actually gets people up to speed before we even hop on, that's a real win. Also smart that you added a QR code + email signature, that's usually w",
+     "on ToneBird: Glad the final send stays with the user. I'd want help wording a difficult investor update, with a chance to check every sentence before it goes out.",
+     "on Teachoo:  The photo upload featured looks helpful. Can it understand questions from a notebook photo?",
+     "on Retriever AI: Congrats Bhavani and Arjun on bringing free Retriever to Product Hunt. The DOM harness plus site skills that make repeat tasks cheaper is the interesting part of the cost story. When a skill is learned in the Chrome extension on a logged-in site, does that sam",
+     "on Badge: Can candidates choose which reviewers to invite, or does Badge recommend people automatically?!",
+     "on AINA: Happy launch! Do you plan to add a feature to analyze LinkedIn profiles too, not just CVs?"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "HiringNow lacks the personalized, interactive AI agent experience I value, and I'm concerned about data privacy with automated applications.",
+      "competitor_has": "Knockin' provides a dynamic, chat-based AI business card that allows for interactive engagement and booking, which is a more personalized and controlled interaction than HiringNow's automated application process. Cedric AI for Meetings also offers a more interactive agent experience.",
+      "would_switch_if": "I would switch if HiringNow offered a more interactive and personalized AI agent experience, perhaps allowing me to chat with the agent about specific job opportunities or application strategies, and if it provided clear, robust data privacy and security guarantees for my personal information and application data.",
+      "dealbreaker": "My dealbreaker with HiringNow is the lack of transparency and control over how my data is handled during the automated application process, especially given my past concerns about privacy and security with AI tools."
+     },
+     {
+      "user": 2,
+      "verdict": "HiringNow's automated application process feels too impersonal and lacks the human-like interaction and coaching I prefer from job search tools.",
+      "competitor_has": "Retriever AI and Superhuman Go, while not directly comparable in features, represent a preference for tools that offer more nuanced, human-like interaction or highly personalized experiences. HiringNow's automated application lacks the 'experience from the outside world' or the 'understanding' that I look for in AI tools.",
+      "would_switch_if": "I would switch if HiringNow incorporated a more conversational AI interface that could provide personalized feedback and coaching, similar to an AI coach, rather than just automating applications. It would need to feel less like a machine and more like a supportive assistant.",
+      "dealbreaker": "The dealbreaker for me is the purely automated, 'set it and forget it' nature of the application process. I prefer tools that allow for more personal input and interaction, ensuring the applications truly reflect my unique profile and aspirations, rather than just a generic auto-fill."
+     },
+     {
+      "user": 3,
+      "verdict": "HiringNow's focus on early application misses the strategic guidance and profile strengthening that I value from competitors.",
+      "competitor_has": "HireKey provides recruiter-informed strategic guidance for tech job seekers, helping to assess role fit and tailor resumes effectively, which goes beyond just finding and applying for jobs. Badge also offers a unique way to build proof of work through peer reviews, strengthening a candidate's profile.",
+      "would_switch_if": "I would switch if HiringNow integrated more strategic elements, such as AI-driven insights into role fit, personalized feedback on my profile's strengths and weaknesses for specific jobs, and perhaps even a way to gather 'proof of work' like Badge, to ensure my applications are not just early, but also highly competitive.",
+      "dealbreaker": "My dealbreaker is that HiringNow, despite its speed, doesn't seem to offer the deeper strategic insights or profile enhancement features that I've found valuable in tools like HireKey, which help me understand 'why AI recommends your competitors instead of you'."
+     },
+     {
+      "user": 4,
+      "verdict": "HiringNow's automated application, while fast, lacks the strategic depth and personalized insights that I get from other AI job search tools.",
+      "competitor_has": "HireKey offers recruiter-informed insights and helps assess role fit, which is crucial for strategic applications. Retriever AI also focuses on finding the right fit. Cedric AI for Meetings, while different, shows a preference for AI agents that can handle more complex, nuanced tasks beyond simple automation.",
+      "would_switch_if": "I would switch if HiringNow provided more in-depth analysis of job descriptions, offering strategic advice on how to best position myself for each role, similar to how I'd expect an AI agent to understand media content deeply, rather than just automating the application process.",
+      "dealbreaker": "The dealbreaker for me is the potential for a high volume of applications without sufficient strategic alignment or personalized messaging. I need a tool that helps me 'find the right investors' for my career, not just apply to many jobs."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "HiringNow uniquely wins users who prioritize speed and early access to job opportunities, coupled with controlled automation for applications.",
+    "what_wins_them": "The specific feature that wins them is the 'Find First' capability, monitoring 247,000+ company career sites every 5 minutes, and the 'Apply First' with user approval.",
+    "who_you_lose_and_to_whom": "HiringNow loses users to competitors like Knockin', HireKey, and Retriever AI, who prioritize personalized interaction, strategic guidance, and deeper profile enhancement.",
+    "what_loses_them": "The specific missing thing is the lack of personalized, interactive AI coaching, strategic insights into role fit, and robust data privacy assurances for automated applications.",
+    "move": "Introduce an 'AI Coach' module that provides strategic insights, personalized feedback on profile strength for specific jobs, and a more interactive chat interface for application review, while also clearly outlining data privacy protocols for automated applications."
+   }
+  },
+  {
+   "id": "1315068",
+   "rank": 2,
+   "name": "Businesses in ChatGPT",
+   "tagline": "Help customers discover your business through ChatGPT",
+   "market_people": 2253,
+   "win": {
+    "people": 338,
+    "roles_vs_market": {
+     "student": 1.63,
+     "product manager": 1.41
+    },
+    "median_votes": 19.0,
+    "competitors_backed_more": [
+     [
+      "Okara",
+      1.74
+     ],
+     [
+      "GPT-6 Sol & Luna",
+      1.69
+     ],
+     [
+      "Dots by OpenAI",
+      1.67
+     ],
+     [
+      "GoodSocials",
+      1.62
+     ],
+     [
+      "Microsoft Copilot",
+      1.55
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Notra",
+      0.5
+     ],
+     [
+      "Bono AI",
+      0.38
+     ],
+     [
+      "AI Employees by Easy-Peasy.AI",
+      0.38
+     ],
+     [
+      "Neopress",
+      0.22
+     ],
+     [
+      "SquadRoom",
+      0.16
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Crewdle AI: How do you handle context between models? Is there a source of truth where I can store all instructions and reference documents/knowledge base?",
+     "on Crewdle AI: With usage-based billing, is there a way to set a hard monthly spend cap or alerts? For a small business, an autonomous agent running around the clock could get unpredictable, so I'd want guardrails.",
+     "on VisibAI: Nice work shipping this! What made you decide to build this now?",
+     "on Bono AI: I love products that change the workflow instead of just adding more AI on top of it. Talking is how most founders think, so turning conversations into authentic content makes a lot of sense. Curious to see how well it preserves someone's unique voice after a ",
+     "on ChatGPT Work: Can it stick with recurring tasks (content scheduling, file cleanup) unattended, or does it need a human check-in each run?",
+     "on GoodSocials: The approval-first workflow is thoughtful\u2014how do you measure whether scheduled posts outperform manual drafts?",
+     "on GPT-6 Sol & Luna: Intereting to see GPT 6 Sol and Luna focused on different use cases the lower cost and faster models could be really useful for everyday AI workflows",
+     "on Okara: The distribution problem is honestly one of the hardest parts of building a product. The idea of an AI marketing team is pretty interesting, but it only works if the advice is actually tailored to the product and audience.Generic AI marketing advice won\u2019t work",
+     "on Dots by OpenAI: Looking great, haven't tested it yet, but will give it a try! How does it differ from the ChatGPT app?",
+     "on ReSO AI: Congrats  on the launch, for most of the AI visibility tools I noticed they share lot of data and thesis but lacks in specific actions. How you guys are solving it?"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "This product is a game-changer for businesses looking to leverage the evolving AI landscape for customer discovery.",
+      "why_this": "I'm constantly looking for ways to integrate AI into marketing and customer acquisition, and 'Businesses in ChatGPT' offers a direct channel to how customers find businesses in the AI era, which is a unique proposition compared to general AI agents or SEO tools.",
+      "the_difference": "The ability to claim a business profile and manage information directly within ChatGPT, combined with discovery insights, is a unique and powerful offering that no other competitor directly addresses in the same way.",
+      "would_drop_it_if": "I would drop it if the 'discovery insights' were generic or unactionable, or if the Business Agent functionality remained inaccessible to most businesses for an extended period."
+     },
+     {
+      "user": 2,
+      "verdict": "This product offers a crucial new avenue for solopreneurs and small businesses to be discovered by customers through AI.",
+      "why_this": "As a solopreneur, I'm always looking for efficient ways to reach customers. 'Businesses in ChatGPT' provides a direct way to manage my presence where customers are increasingly searching, which is more targeted than general AI workflow automation or AI CMO tools.",
+      "the_difference": "The core difference is the direct integration with ChatGPT for business discovery and management, offering a specific channel for customer acquisition that other AI tools I've backed, like Microsoft Copilot, don't provide in the same focused way.",
+      "would_drop_it_if": "I would drop it if the platform became overly complex to manage for a single person, or if the cost outweighed the actual customer leads generated through ChatGPT."
+     },
+     {
+      "user": 3,
+      "verdict": "This product is an essential tool for businesses to adapt to the new AI-driven customer discovery paradigm.",
+      "why_this": "I'm drawn to tools that simplify complex processes and provide clear value. 'Businesses in ChatGPT' offers a straightforward way to manage how my business appears in AI search, which is a more direct and impactful approach than general AI agents or design tools.",
+      "the_difference": "The unique aspect is the direct control and insights into how my business is discovered within ChatGPT, which is a specific and growing channel for customer interaction that other AI tools don't specifically cater to.",
+      "would_drop_it_if": "I would drop it if the platform didn't provide clear, measurable results on how it's improving my business's visibility and customer engagement within ChatGPT."
+     },
+     {
+      "user": 4,
+      "verdict": "This product is a forward-thinking solution for marketers to optimize business visibility in the AI era.",
+      "why_this": "As a marketer, I'm always looking for new channels to reach customers. 'Businesses in ChatGPT' offers a direct way to manage and optimize how my business is found in AI, which is a more strategic play than general AI image generation or collaborative spaces.",
+      "the_difference": "The ability to claim a business profile and gain discovery insights specifically within ChatGPT is a unique and powerful differentiator, allowing for targeted optimization in a new and critical search environment.",
+      "would_drop_it_if": "I would drop it if the 'discovery insights' were not granular enough to inform actionable marketing strategies, or if the Business Agent creation process was too restrictive or complex."
+     }
+    ]
+   },
+   "lose": {
+    "people": 132,
+    "roles_vs_market": {
+     "developer": 1.31,
+     "designer": 0.65,
+     "investor": 0.0,
+     "student": 0.0,
+     "product manager": 0.52
+    },
+    "median_votes": 133.5,
+    "competitors_backed_more": [
+     [
+      "SquadRoom",
+      3.25
+     ],
+     [
+      "Notra",
+      2.4
+     ],
+     [
+      "GPT-Live",
+      2.31
+     ],
+     [
+      "Web Search API",
+      2.23
+     ],
+     [
+      "Neopress",
+      2.2
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "VisibAI",
+      0.96
+     ],
+     [
+      "ChatGPT Space",
+      0.91
+     ],
+     [
+      "Microsoft Copilot",
+      0.79
+     ],
+     [
+      "Lovable Growth Tools",
+      0.64
+     ],
+     [
+      "ChatGPT for Teens",
+      0.44
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on VisibAI: The hard part with a visibility score like this is LLM nondeterminism \u2014 ask ChatGPT the same recommendation query twice and you can get different brands back. Do you sample each query multiple times and average into the 0-100, or is it a single-shot snapshot? ",
+     "on GPT-Live: the pause and interruption handling is what I've been most curious about \u2014 natural back-and-forth is still the hardest part of voice UX. building on the voice side too and the latency when delegating to a background reasoning model is the piece I'd love to str",
+     "on ChatGPT Work: The phone-to-desktop handoff is the piece I'd test first: when I start a task on mobile and resume on desktop, does the in-progress state sync through my account, or does the desktop re-run it from the top? And do Scheduled Tasks fire server-side when my machi",
+     "on ACME.BOT: The interview-first step is the interesting bit \u2014 most SEO tools skip straight to generating commodity content. Once I answer the questions for a topic, does it persist that expertise as reusable context for future posts, or is each article a fresh interview? ",
+     "on ACME.BOT: The interview-as-the-one-input-competitors-can't-copy framing is the right wedge. I care as much about getting cited in AI answers now \u2014 ChatGPT, Perplexity, Google's AI overviews \u2014 as I do about ranking in classic search, and first-hand expertise seems like e",
+     "on GPT-6 Astra: Fyi message from Thibault Sottiaux : \"We will give one banked reset for every day you don't have access to Astra on your paid ChatGPT plan, starting today. Team is moving mountains to give access as fast as we can.\"",
+     "on ReSO AI: The weekly fixes are what caught my attention. SEO tools already give us more data than we know what to do with Having a clear list of what to work on next sounds much more useful.",
+     "on SquadRoom: One owner per task is a nice detail here, Kartike. It's much easier to follow a handoff when you can see who's responsible for it and what happened along the way. Congrats on the launch!",
+     "on Bluerails Discovery : The shift from human buyers to AI agents as the discovery layer is underrated \u2014 most tools are still optimizing for Google. Congrats on the launch!"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "While interesting, this product doesn't offer the comprehensive AI visibility tracking and content generation I need.",
+      "competitor_has": "ACME.BOT and Visiby offer more robust AI SEO and brand visibility tracking across multiple AI platforms, including how AI recommends my brand and gets cited, which 'Businesses in ChatGPT' seems to lack beyond its own ecosystem.",
+      "would_switch_if": "I would switch if 'Businesses in ChatGPT' offered comprehensive brand citation tracking across various AI platforms and provided tools for generating AI-optimized content based on those insights, similar to what ACME.BOT does with interview-driven SEO.",
+      "dealbreaker": "My dealbreaker is the apparent lack of broader AI visibility tracking and the inability to actively influence how my brand is cited and recommended by AI agents outside of the ChatGPT environment."
+     },
+     {
+      "user": 2,
+      "verdict": "This product is too narrow in scope compared to the broader AI agent capabilities I'm already using.",
+      "competitor_has": "I've backed products like ChatGPT Images 2.5 and GPT-6 Astra, which offer broader AI capabilities, from advanced image generation to always-on agents that can handle a multitude of tasks. 'Businesses in ChatGPT' feels very specific to one platform.",
+      "would_switch_if": "I would switch if 'Businesses in ChatGPT' integrated more broadly with other AI agent ecosystems or offered more advanced, multi-modal capabilities beyond just business profiles and discovery within ChatGPT.",
+      "dealbreaker": "The dealbreaker is its limited scope to just ChatGPT. I need AI tools that can operate across various platforms and perform diverse functions, not just manage a profile in one specific AI."
+     },
+     {
+      "user": 3,
+      "verdict": "This product doesn't provide the multi-platform AI visibility and content creation tools I rely on.",
+      "competitor_has": "I've backed Visiby, which helps track and grow visibility across multiple AI search platforms. 'Businesses in ChatGPT' focuses solely on ChatGPT, which is too narrow for my needs when I'm also concerned with platforms like Perplexity, Gemini, and Google AI Overviews.",
+      "would_switch_if": "I would switch if 'Businesses in ChatGPT' expanded its scope to include multi-platform AI visibility tracking, brand mention monitoring, and actionable insights across all major AI search engines, not just ChatGPT.",
+      "dealbreaker": "The dealbreaker is the exclusive focus on ChatGPT. My business needs to be visible and optimized across the entire AI search landscape, and this product doesn't offer that comprehensive coverage."
+     },
+     {
+      "user": 4,
+      "verdict": "This product lacks the comprehensive agentic capabilities and broader ecosystem integration I expect from AI tools.",
+      "competitor_has": "ChatGPT Space offers a shared canvas for creating and collaborating with AI, integrating links, files, and ideas. This product seems to be a static profile management tool within ChatGPT, lacking the dynamic, collaborative, and agentic features I'm used to.",
+      "would_switch_if": "I would switch if 'Businesses in ChatGPT' evolved into a more dynamic platform, allowing for active, agent-driven engagement with customers, perhaps even integrating with other business tools and offering more advanced, customizable AI agent interactions.",
+      "dealbreaker": "My dealbreaker is the perceived passivity of the 'Business Agent' and the lack of broader integration with other AI tools and workflows. I need active, intelligent agents, not just a profile."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "You uniquely win founders and marketers who are actively seeking direct channels for customer discovery and management within the evolving AI landscape.",
+    "what_wins_them": "The specific feature of claiming a business profile, managing information, and exploring discovery insights directly within ChatGPT.",
+    "who_you_lose_and_to_whom": "You lose users to competitors like ACME.BOT, Visiby, and ChatGPT Space who offer broader AI visibility tracking, multi-platform content generation, or more comprehensive agentic capabilities.",
+    "what_loses_them": "The specific missing thing is the lack of broader AI visibility tracking across multiple platforms, comprehensive content generation tools, and more dynamic, multi-modal agentic features beyond a single platform's profile management.",
+    "move": "Expand the 'discovery insights' to include brand mentions and recommendations across other major AI search platforms (e.g., Perplexity, Gemini, Google AI Overviews) and offer tools to influence those citations, without losing the core ChatGPT-specific value."
+   }
+  },
+  {
+   "id": "1313358",
+   "rank": 3,
+   "name": "Dex Semantics",
+   "tagline": "Let your agent build analytics with 25% fewer errors",
+   "market_people": 2158,
+   "win": {
+    "people": 324,
+    "roles_vs_market": {
+     "student": 0.41
+    },
+    "median_votes": 35.0,
+    "competitors_backed_more": [
+     [
+      "Grok 4.5",
+      2.15
+     ],
+     [
+      "Claude Dashboards & Motion",
+      2.03
+     ],
+     [
+      "Open Index",
+      1.93
+     ],
+     [
+      "Plurai Simulation",
+      1.76
+     ],
+     [
+      "Hy4 preview",
+      1.46
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Tiden",
+      0.5
+     ],
+     [
+      "AgentKey",
+      0.45
+     ],
+     [
+      "Hyperresearch",
+      0.18
+     ],
+     [
+      "QualityLayer",
+      0.17
+     ],
+     [
+      "Agent Inbox",
+      0.09
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on AgentKey: Really interesting approach. One question: if I already have my own API keys for some providers, can I use those with AgentKey, or does everything go through the AgentKey account?",
+     "on AgentConnect: I\u2019ve tried a few multi-agent setups, and the agents often just keep replying to each other without actually converging. How does AgentConnect behave in those situation?",
+     "on AgentConnect: Tagging an agent where work already happens, instead of asking the team to move into yet another chat app \u2014 that's the right call, and it's the part most competitors get wrong. Provider-neutral, self-hosted, Apache 2.0 is a strong combination for anyone who do",
+     "on Open Index: Hey  I'm curious how much the graph structure improves agent performance compared to just throwing the same data into a vector store?",
+     "on Clears: \ud83d\udc4b Hi Product Hunt, I\u2019m Tzahi, co-founder and CEO of Clears.ai . Before starting Clears, I spent more than 10 years leading R&D teams. Over the last two years, my Co-founder and I have spoken with hundreds of CTOs and VP R&Ds about how AI is changing software d",
+     "on Clears: Really cool! Delivering a software end to end by doing whole things using workflows. Congrats on launch.",
+     "on Clears: Congrats on the launch! The risk/confidence scoring before autonomous execution is the part I want to understand better, is that scoring done statically from the ticket description, or does Clears actually inspect the codebase to calibrate complexity before sp",
+     "on BAND for Developers: How does this handle a team that changes size? I'm freelance and bring other developers in when the workload spikes, so it's two people one month and five the next. The expensive part was never the coding \u2014 it's getting someone up to speed on a codebase they'v"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Dex Semantics offers a crucial layer of validation for AI-driven analytics, which is essential given my focus on preventing errors and ensuring data integrity.",
+      "why_this": "I'm drawn to Dex Semantics because it directly addresses the problem of 'obsolete assumptions' in analytics, which resonates with my past interest in tools like Dageno AI 2.0 that help understand why AI makes certain recommendations. The idea of embedding declarations as code, rather than relying on a separate tool, aligns with my preference for integrated solutions, similar to how I appreciate Opal Reader for its direct functionality.",
+      "the_difference": "The core difference for me is Dex Semantics' focus on formalizing analytical model declarations within the code itself, directly tackling the root cause of errors in AI-generated analytics, rather than just identifying them after the fact like some security models I've upvoted.",
+      "would_drop_it_if": "I would drop Dex Semantics if it became a third-party tool that required constant context switching or if its integration with existing analytical models proved to be overly complex and cumbersome, negating the benefit of 'declarations live in your models as code'."
+     },
+     {
+      "user": 2,
+      "verdict": "Dex Semantics' approach to embedding analytical declarations directly into models is a game-changer for ensuring data quality and preventing costly errors in AI-driven business operations.",
+      "why_this": "As a founder, I'm constantly looking for ways to improve data quality and prevent errors, especially in critical areas like M&A transactions where 'source data quality issues / discrepancies / missing data / disparate sources' are common. Dex Semantics' promise of 25% fewer errors by adding declarations directly to models is a significant advantage over general agent improvement tools like AgentKey, which don't specifically address the analytical model's internal logic.",
+      "the_difference": "The unique aspect of Dex Semantics is its ability to capture 'row meaning, join nature, how numbers add up, and decisional assumptions' directly within the analytical models as code, providing a foundational layer of correctness that other tools I've seen don't offer.",
+      "would_drop_it_if": "I would drop Dex Semantics if it didn't effectively handle the complexities of real-world data quality issues, such as 'discrepancies / missing data / disparate sources,' or if the overhead of maintaining these declarations became too high for fast-growing startups."
+     },
+     {
+      "user": 3,
+      "verdict": "Dex Semantics' method of embedding analytical declarations directly into code offers a robust way to ensure accuracy in AI-generated insights, which is crucial for marketers relying on data.",
+      "why_this": "As a marketer, I rely heavily on accurate data and insights, and the idea of 'one wrong (but plausible) number can steer a giant enterprise... in the wrong (and disastrous) direction' resonates deeply. While I've upvoted tools like Living Brain for memory and Claude Dashboards & Motion for visualization, Dex Semantics addresses the fundamental correctness of the underlying analytics, which is a more proactive approach to data integrity.",
+      "the_difference": "The key differentiator for Dex Semantics is its ability to embed 'declarations to your analytical models' as code, providing a verifiable and auditable layer of semantic understanding that prevents errors at the source, unlike tools that focus on agent interaction or output visualization.",
+      "would_drop_it_if": "I would drop Dex Semantics if the process of adding and maintaining these declarations became overly technical or required deep coding expertise, making it inaccessible for a marketer like myself who needs to understand and trust the data."
+     },
+     {
+      "user": 4,
+      "verdict": "Dex Semantics' approach to embedding analytical declarations directly into models is a powerful way to ensure the reliability of AI-generated analytics, which is critical for any data-driven operation.",
+      "why_this": "I'm drawn to Dex Semantics because it directly tackles the problem of analytical errors, which is a significant concern when dealing with AI agents. While I've upvoted tools like Arcjet AI security models for agent security, Dex Semantics focuses on the internal logic and assumptions of the analytical models themselves, providing a more fundamental layer of correctness. The idea of 'declarations live in your models as code' is appealing for its integration and control.",
+      "the_difference": "The unique aspect of Dex Semantics is its ability to formalize 'row meaning, join nature, how numbers add up, and decisional assumptions' directly within the analytical model's code, offering a proactive way to prevent errors that other tools I've seen don't address at this foundational level.",
+      "would_drop_it_if": "I would drop Dex Semantics if it proved difficult to integrate with various analytical platforms or if the benefits in error reduction didn't outweigh the effort required to implement and maintain the declarations."
+     }
+    ]
+   },
+   "lose": {
+    "people": 106,
+    "roles_vs_market": {
+     "marketer": 1.18,
+     "designer": 0.63,
+     "investor": 0.48,
+     "student": 0.83,
+     "product manager": 0.78
+    },
+    "median_votes": 111.0,
+    "competitors_backed_more": [
+     [
+      "Heard",
+      2.91
+     ],
+     [
+      "Agent Inbox",
+      2.61
+     ],
+     [
+      "Hyperresearch",
+      2.51
+     ],
+     [
+      "Flatbread",
+      2.42
+     ],
+     [
+      "yggy",
+      2.4
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Grok 4.5",
+      0.6
+     ],
+     [
+      "Shepherd Terminal",
+      0.28
+     ],
+     [
+      "Plurai Simulation",
+      0.0
+     ],
+     [
+      "Open Index",
+      0.0
+     ],
+     [
+      "Flare",
+      0.0
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on AgentKey: Congrats Mogu! I run agents on Claude Code daily and the key-juggling problem is real, half my setup time is auth, not logic. My question is about runaway spend: agents loop, and a scraping loop could eat a month of credits in an afternoon. Can I set a per-tas",
+     "on Heard: congratulations! love seeing tools that reduce context switching. how does Heard integrate with Claude Code, Cursor and Codex? is setup just a few clicks?",
+     "on Heard: Congratulations! the workflow sounds perfect for developers who multitask. can heard be configured to ignore specific repositories or projects? that would be useful for reducing noise.",
+     "on Heard: AI should not be controlling our life, while it should be companion - Heard is the thing you definitely need but might always be ignoring. We give AI and agents a voice, that you hear and you will be heard - that brings to a harmonic vibe for AI and human.",
+     "on Heard: Congratulations! \ud83d\ude80 The open source angle is a big plus. are you accepting community contributions already? which areas of the project need the most help?",
+     "on Heard: The one clear story positioning is compelling. does Heard generate summaries continuously or at scheduled intervals? can users choose the cadence? that seems important for different workflows.",
+     "on MemoryCustodian: the deleted like code phrasing is doing more work than it looks. deleting a memory file takes it out of the working tree, but if it was ever committed it stays in history, in every clone, and in every fork. so forgetting is reversible for anyone holding the re"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "While Dex Semantics addresses analytical errors, it lacks the comprehensive intent verification and memory management that I prioritize for robust agent development.",
+      "competitor_has": "Tiden, which I backed, offers intent verification for coding agents, ensuring that the agent built what I actually asked for, and Living Brain provides an interoperable memory layer for agentic AI, capturing and connecting knowledge across conversations. Dex Semantics doesn't seem to offer these broader agent verification and memory capabilities.",
+      "would_switch_if": "I would switch to Dex Semantics if it integrated intent verification for analytical model outputs, similar to Tiden, and offered a way to connect these analytical declarations with a persistent, interoperable memory layer like Living Brain, ensuring the analytical assumptions are consistent with broader agent knowledge.",
+      "dealbreaker": "My dealbreaker with Dex Semantics is its narrow focus solely on analytical model declarations without addressing the broader challenges of agent intent verification and comprehensive knowledge management, which are critical for reliable AI systems."
+     },
+     {
+      "user": 2,
+      "verdict": "Dex Semantics' focus on analytical declarations is interesting, but it doesn't provide the comprehensive self-improving memory and agent security I look for in developer tools.",
+      "competitor_has": "beacon.sh, which I upvoted, offers open-source self-improving memory for AI coding agents, and I'm also interested in agent security as seen by my past comments on preventing AI-generated changes from breaking production. Dex Semantics focuses on analytical model declarations, which is a different problem space than the general agent memory and security I prioritize.",
+      "would_switch_if": "I would switch to Dex Semantics if it could demonstrate how its analytical declarations directly contribute to or integrate with self-improving agent memory, allowing agents to learn and refine their analytical assumptions over time, or if it offered robust security mechanisms for these declarations.",
+      "dealbreaker": "My dealbreaker with Dex Semantics is its lack of clear integration with or contribution to the self-improving memory and security aspects of AI agents, which are crucial for preventing 'malicious behavior from self-improving workflows' and ensuring system stability."
+     },
+     {
+      "user": 3,
+      "verdict": "Dex Semantics' focus on analytical declarations is too specific; I need broader intent verification and memory management for my agent development.",
+      "competitor_has": "Tiden, which I backed, provides intent verification for coding agents, ensuring they build what I asked for, and Living Brain offers an interoperable memory layer for agentic AI, capturing and connecting knowledge. Dex Semantics' focus on analytical model declarations doesn't cover these broader aspects of agent reliability and knowledge retention.",
+      "would_switch_if": "I would switch to Dex Semantics if it expanded its scope to include intent verification for the entire agent workflow, not just analytical models, and if it could seamlessly integrate its declarations with a comprehensive memory layer like Living Brain, ensuring consistency across all agent operations.",
+      "dealbreaker": "My dealbreaker with Dex Semantics is its limited scope to analytical model declarations, as I need a more holistic solution for verifying agent intent and managing knowledge across all aspects of agent development, similar to the comprehensive approach of Tiden and Living Brain."
+     },
+     {
+      "user": 4,
+      "verdict": "While Dex Semantics aims to reduce analytical errors, it doesn't offer the comprehensive agent orchestration and sandbox environments that I prioritize for managing production agents.",
+      "competitor_has": "AgentGrid.io and AgentKey, which I upvoted, focus on agent orchestration and management, and I'm also interested in sandbox alternatives like agentOS for safe agent execution. Dex Semantics' focus on analytical model declarations is a specific aspect, but it doesn't provide the broader infrastructure for deploying and managing agents in production.",
+      "would_switch_if": "I would switch to Dex Semantics if it integrated its analytical declaration capabilities directly into an agent orchestration platform, allowing me to manage and verify the analytical integrity of agents within a broader production environment, or if it offered a sandbox for testing these declarations.",
+      "dealbreaker": "My dealbreaker with Dex Semantics is its lack of integration with agent orchestration and sandbox environments, which are essential for me to confidently deploy and manage agents in production, as I need to ensure not just analytical correctness but also overall agent behavior and security."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "You uniquely win users who prioritize foundational data integrity and error prevention within AI-driven analytics, especially those who see the value in embedding semantic declarations directly into code.",
+    "what_wins_them": "The specific feature that wins them is the ability to add 'declarations to your analytical models, which capture row meaning, join nature, how numbers add up, and decisional assumptions' directly as code, leading to '25% fewer tasks failed'.",
+    "who_you_lose_and_to_whom": "You lose users to Tiden, Living Brain, beacon.sh, AgentGrid.io, and AgentKey, who prioritize broader agent intent verification, comprehensive memory management, self-improving agent capabilities, and agent orchestration/sandbox environments.",
+    "what_loses_them": "The specific missing thing is the lack of broader agent verification (intent, memory, security) and orchestration capabilities beyond analytical model declarations.",
+    "move": "Integrate Dex Semantics' declaration capabilities with a robust intent verification framework for agent outputs and explore how these declarations can inform and be informed by a persistent, self-improving agent memory layer, potentially through partnerships with tools like Tiden or Living Brain."
+   }
+  },
+  {
+   "id": "1314543",
+   "rank": 4,
+   "name": "Gemini Robotics 2.5",
+   "tagline": "Gemini Robotics 2.5: Google\u2019s most capable robot model",
+   "market_people": 1721,
+   "win": {
+    "people": 259,
+    "roles_vs_market": {
+     "investor": 0.78,
+     "student": 0.66
+    },
+    "median_votes": 27.0,
+    "competitors_backed_more": [
+     [
+      "Google Omni 1.2 Flash",
+      2.7
+     ],
+     [
+      "Odyssey 3",
+      2.63
+     ],
+     [
+      "Google Gemini 3.8 Flash and Cyber",
+      2.34
+     ],
+     [
+      "Canva Brush",
+      2.27
+     ],
+     [
+      "Nano Banana 2.1",
+      2.13
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Gemini Spark",
+      0.93
+     ],
+     [
+      "GLM-5.3-Flash",
+      0.81
+     ],
+     [
+      "Hy4 preview",
+      0.76
+     ],
+     [
+      "Gemini Omni Flash",
+      0.75
+     ],
+     [
+      "Qwen3.8-Max",
+      0.4
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on GLM-5.3-Flash: I wonder when GLM models will finally learn to understand/read images sent to them.",
+     "on Microduck: im ordering for my son right now, love it.",
+     "on Gemini Agent for Google Cloud: Hey Product Hunt \ud83d\udc4b \"AI coworker\" has been one of the hottest categories on PH all year, and today Google Cloud shipped its own take. At Gemini at Work 2026 they announced the Gemini agent: one agent for questions, knowledge work, images and media, and code, al"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "This is a significant leap in practical robotics, moving beyond theoretical models to real-world application.",
+      "why_this": "I'm drawn to Gemini Robotics 2.5 because it's not just another AI model; it's directly impacting physical tasks with impressive success rates, which is a clear differentiator from the more abstract Gemini 4 Argon or Genie 4 that I've also upvoted.",
+      "the_difference": "The concrete, high success rates in real-world tasks like Mercedes-Benz parts-kitting, and the ability to handle deformable objects, is what truly sets it apart for me.",
+      "would_drop_it_if": "I would drop it if the real-world success rates proved to be significantly lower than advertised or if it couldn't adapt to new, unstructured environments as promised."
+     },
+     {
+      "user": 2,
+      "verdict": "The tangible improvements in task success and speed for physical robots make Gemini Robotics 2.5 a standout.",
+      "why_this": "I'm interested in Gemini Robotics 2.5 because it offers a clear, measurable improvement in robot performance for physical tasks, unlike the more general AI models like Gemini 4 Argon or the image-focused Nano Banana 2.1.",
+      "the_difference": "The 30% to 100% higher success rate and 20% to 30% faster task completion are the key metrics that make this product uniquely appealing.",
+      "would_drop_it_if": "I would drop it if the performance gains were only applicable to a very narrow set of tasks or if it required extensive, specialized training for each new application."
+     },
+     {
+      "user": 3,
+      "verdict": "Gemini Robotics 2.5's focus on practical, dexterous manipulation for robots is exactly what I'm looking for.",
+      "why_this": "I'm drawn to Gemini Robotics 2.5 because it directly addresses the challenge of teaching robots complex physical skills, which is a more tangible application than the general agentic models like Harness\u00b2 or the video-to-training-data focus of Pegasus 1.6 by TwelveLabs.",
+      "the_difference": "Its ability to handle delicate items, deformable objects, and tool use across various robot types, as demonstrated by tasks like tying bows and folding pants, is the unique selling point for me.",
+      "would_drop_it_if": "I would drop it if it couldn't seamlessly integrate with a wide range of existing robot hardware or if the 'reasoning guidance' for safety proved ineffective in dynamic environments."
+     },
+     {
+      "user": 4,
+      "verdict": "This model's ability to translate vision and language into precise physical actions for robots is a game-changer.",
+      "why_this": "Gemini Robotics 2.5 stands out because it's about making robots truly functional in the physical world, which is a more compelling application than the general AI models like Gemini Spark or the open-source biped Microduck, which I've also upvoted.",
+      "the_difference": "The direct translation of visual and linguistic input into hand and arm movements, enabling complex tasks like packing pastries with tongs, is the unique aspect that captures my attention.",
+      "would_drop_it_if": "I would drop it if the model struggled with generalization to new, unseen objects or if the latency in action execution was too high for real-time industrial applications."
+     }
+    ]
+   },
+   "lose": {
+    "people": 106,
+    "roles_vs_market": {
+     "developer": 1.39,
+     "investor": 1.43,
+     "student": 0.81,
+     "product manager": 1.16
+    },
+    "median_votes": 111.5,
+    "competitors_backed_more": [
+     [
+      "Hy4 preview",
+      2.88
+     ],
+     [
+      "Qwen3.8-Max",
+      2.42
+     ],
+     [
+      "Gemini 3.7 Flash",
+      2.14
+     ],
+     [
+      "Gemini Robotics 2",
+      2.14
+     ],
+     [
+      "Google Omni 1.2 Flash",
+      1.93
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Canva Brush",
+      0.87
+     ],
+     [
+      "Gemini 3.8 & 3.8 Live Extended Thinking",
+      0.74
+     ],
+     [
+      "Gemini Agent for Google Cloud",
+      0.7
+     ],
+     [
+      "Gemini Spark",
+      0.64
+     ],
+     [
+      "Pegasus 1.6 by TwelveLabs",
+      0.36
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Gemini Spark: the \"checks with you before major actions\" line is the crux \u2014 persistent agents live or die on knowing when NOT to act on their own. is that boundary user-configured, or does it learn where your comfort line is over time?",
+     "on GPT-6 Astra: Fyi message from Thibault Sottiaux : \"We will give one banked reset for every day you don't have access to Astra on your paid ChatGPT plan, starting today. Team is moving mountains to give access as fast as we can.\""
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "While impressive, Gemini Robotics 2.5 lacks the broad agentic capabilities and direct user control I value in other Google models.",
+      "competitor_has": "Google Gemini 3.8 Flash and Cyber offers more comprehensive agentic workflows and cybersecurity capabilities, which are crucial for my use cases, and Odyssey 3 provides a broader platform for AI agents.",
+      "would_switch_if": "I would switch if Gemini Robotics 2.5 offered a more accessible interface for developers to build custom agentic workflows on top of its physical manipulation capabilities, similar to what I've seen with Glasshand for giving agents control over devices.",
+      "dealbreaker": "My dealbreaker would be if it remains a highly specialized model for robotics partners only, without broader access or integration into general-purpose agent platforms."
+     },
+     {
+      "user": 2,
+      "verdict": "Gemini Robotics 2.5 is too focused on physical robotics, lacking the creative and general-purpose agentic features I find in other models.",
+      "competitor_has": "Genie 4 allows me to turn a prompt into a living world I can steer, which is a much more creative and interactive application of AI, and Qwen3.8-Max offers broader language model capabilities for various agentic tasks.",
+      "would_switch_if": "I would switch if Gemini Robotics 2.5 could be easily integrated into a broader agentic framework, allowing my agents to not just control robots but also interact with digital environments and perform more diverse tasks, similar to what agentmash aims for.",
+      "dealbreaker": "The dealbreaker for me is its narrow focus on physical robot control without a clear path to integrate with or enhance more general-purpose AI agent development."
+     },
+     {
+      "user": 3,
+      "verdict": "Gemini Robotics 2.5 is too specialized for physical tasks, and I prefer models with broader reasoning and cybersecurity capabilities.",
+      "competitor_has": "Gemini 4 Carbon is our strongest model with state-of-the-art cybersecurity and long horizon capabilities, which are critical for the complex work I do, and Genie 4 offers creative world-building.",
+      "would_switch_if": "I would switch if Gemini Robotics 2.5 could demonstrate how its VLA model directly contributes to or enhances the long-horizon reasoning and cybersecurity aspects that I value in models like Gemini 4 Carbon, perhaps by enabling physical penetration testing or automated hardware security analysis.",
+      "dealbreaker": "My dealbreaker is if it remains solely a physical manipulation model without evolving to address more abstract, complex problem-solving and security challenges."
+     },
+     {
+      "user": 4,
+      "verdict": "While the physical dexterity is impressive, Gemini Robotics 2.5 lacks the general-purpose agentic intelligence and coding capabilities I need.",
+      "competitor_has": "Gemini 3.7 Flash is our most intelligent workhorse model yet for coding and agents, and Gemini 4 Argon is Google\u2019s frontier AI model for complex, long-horizon professional work, both of which are more aligned with my developer needs.",
+      "would_switch_if": "I would switch if Gemini Robotics 2.5 offered a robust API and SDK that allowed developers to easily integrate its VLA capabilities into custom agentic applications, enabling robots to perform complex coding tasks or interact with development environments in a physical way.",
+      "dealbreaker": "The dealbreaker is if it remains a black-box solution primarily for robotics partners, without offering the flexibility and extensibility that I get from more general-purpose Gemini models for agent development."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "You uniquely win users who prioritize tangible, high-success-rate physical robot manipulation in real-world, unstructured environments.",
+    "what_wins_them": "The specific features that win them are the high success rates (30-100% higher) and faster task completion (20-30% faster) in complex physical tasks, including handling deformable objects and tool use, as demonstrated in the Mercedes-Benz pilot.",
+    "who_you_lose_and_to_whom": "You lose users to Gemini 3.8 Flash and Cyber, Gemini 4 Carbon, Gemini 3.7 Flash, and Genie 4, who prioritize broader agentic capabilities, cybersecurity, creative world-building, and general-purpose coding/reasoning.",
+    "what_loses_them": "The specific missing thing that loses them is the lack of broader agentic workflows, cybersecurity features, creative interaction, and direct developer accessibility for general-purpose AI agent development beyond physical robot control.",
+    "move": "Offer a developer-focused API and SDK that allows for seamless integration of Gemini Robotics 2.5's VLA capabilities into custom agentic applications, enabling agents to perform physical tasks as part of broader, more complex digital and physical workflows, potentially including physical security testing or automated hardware interaction."
+   }
+  },
+  {
+   "id": "1314882",
+   "rank": 5,
+   "name": "Blender 5.3",
+   "tagline": "3D Gaussian splats, now native to Blender",
+   "market_people": 2335,
+   "win": {
+    "people": 351,
+    "roles_vs_market": {
+     "developer": 1.22,
+     "founder": 1.37,
+     "designer": 1.35,
+     "investor": 1.33,
+     "student": 1.33
+    },
+    "median_votes": 80.0,
+    "competitors_backed_more": [
+     [
+      "Instagram Edits for Desktop",
+      3.92
+     ],
+     [
+      "Higgsfield Miracle",
+      3.5
+     ],
+     [
+      "Genie 4",
+      3.19
+     ],
+     [
+      "Blender Agent Bridge",
+      3.16
+     ],
+     [
+      "Google Omni 1.2 Flash",
+      2.93
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Google Flow for iOS & Android",
+      0.78
+     ],
+     [
+      "Gemini Omni Flash",
+      0.5
+     ],
+     [
+      "Unreal Engine 5.8",
+      0.39
+     ],
+     [
+      "Miora",
+      0.23
+     ],
+     [
+      "V2Fun",
+      0.22
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Figma Motion: This is a big step for design-to-dev handoff \ud83d\ude80 Having motion timelines, easing, keyframes, and code export inside the same Figma file should reduce a lot of guesswork between designers and developers. Curious how well the exported React or CSS matches producti",
+     "on Miora: Hey cool this treats memory as something you can inspect and edit rather than a black box the model manages on its own. A lot of \"personalization\" in AI tools happens invisibly, so letting someone add or remove a specific rule changes the trust relationship wi",
+     "on Miora: The editable Agent Memory holding a brand's rules and taboos is more useful to me than one-shot generators that forget my taste every brief. Day-one question: is that taste memory one global profile, or scoped per project so a client brand's rules don't bleed ",
+     "on Premation: Congrats on the launch! This looks super promising. When are you planning to release a native Mac version?",
+     "on Atlas by World Labs: Love that Atlas treats text, images, video, and 3D as one unified world model instead of separate pipelines, and simulating space-time for robotics is a genuinely forward-looking touch.",
+     "on Google Flow for iOS & Android: I have it already on the phone, and don't know what to do with it.. great to see it's launch here though",
+     "on Kling 4.0: Just finished a massive video project, I wish this launch would have taken place 1-2 weeks ago!",
+     "on Figma Agent: if I prompt an edit on a frame that uses components from our library, does the instance stay linked or does it get detached? asking because detached instances are the thing that quietly breaks a design system.",
+     "on UseIt Studio: The dimensions and dielines in the editable file caught my eye. Those details matter when the next step is actually making the box, and being able to change one part on the canvas makes sense.",
+     "on zCAD AI: Hey Product Hunt! \ud83d\udc4b I\u2019m part of the design team behind zCAD.AI . As a designer, my hope for zCAD.AI is to give people more freedom to explore ideas and more ability to turn them into something real. CAD gives us powerful, precise tools, but using them often me"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Blender 5.3's native 3D Gaussian splats and DLSS 4.5 denoising are a game-changer for integrating real-world captures into my 3D projects.",
+      "why_this": "I'm drawn to Blender 5.3 over competitors like Figma Agent or Genie 4 because it directly addresses the challenge of bringing captured 3D scenes into a robust 3D environment for further manipulation and rendering, which is something the others don't offer in the same integrated way. The DLSS 4.5 denoising is also a huge plus for workflow efficiency.",
+      "the_difference": "The native 3D Gaussian splats, allowing direct integration of captured scenes into Blender's existing powerful toolset, is the one thing that makes it uniquely appealing.",
+      "would_drop_it_if": "I would drop it if the performance with Gaussian splats became unmanageable on my hardware, or if the integration with other Blender features felt clunky and required too many workarounds."
+     },
+     {
+      "user": 2,
+      "verdict": "The ability to natively work with 3D Gaussian splats within Blender, combined with performance improvements like DLSS 4.5, makes Blender 5.3 a significant upgrade for my development workflows.",
+      "why_this": "Blender 5.3 stands out because it brings advanced 3D capture capabilities directly into a familiar and powerful open-source environment. Competitors like Spline V2 or Unreal Engine 5.8 focus more on agentic workflows or game development, which isn't my primary need right now. The DLSS 4.5 denoising is also a practical improvement for daily use.",
+      "the_difference": "The native support for 3D Gaussian splats across Blender's core features, allowing for seamless integration of real-world captures into my 3D projects, is the key differentiator.",
+      "would_drop_it_if": "I would drop it if the Gaussian splat implementation proved unstable or if the performance gains from DLSS 4.5 were negligible on my system, making the workflow more frustrating than beneficial."
+     },
+     {
+      "user": 3,
+      "verdict": "Blender 5.3's native 3D Gaussian splats and the new Projects system offer a streamlined way to incorporate real-world elements into my creative projects, which is a huge time-saver.",
+      "why_this": "I'm choosing Blender 5.3 because it offers a direct solution for integrating captured 3D data into a creative pipeline, which is something competitors like Instagram Edits for Desktop or Figma Motion don't provide. The new Projects system also sounds like a great way to keep my assets organized, which is often a pain point.",
+      "the_difference": "The native 3D Gaussian splats, enabling the direct use of photo/video captured scenes within Blender, is the standout feature for me.",
+      "would_drop_it_if": "I would drop it if the learning curve for effectively using Gaussian splats within Blender was too steep, or if the Projects system didn't genuinely simplify asset management."
+     },
+     {
+      "user": 4,
+      "verdict": "Blender 5.3's native 3D Gaussian splats and the ability to arrange objects in the Outliner are practical improvements that enhance my design and development workflow.",
+      "why_this": "Blender 5.3's native 3D Gaussian splats are a compelling reason to use it over competitors like Figma Agent or Genie 4, as it allows for direct integration of real-world captures into my 3D scenes. The small but significant improvement of arranging objects in the Outliner also shows attention to user experience.",
+      "the_difference": "The native integration of 3D Gaussian splats directly into Blender's core rendering and editing capabilities is the unique selling point for me.",
+      "would_drop_it_if": "I would drop it if the Gaussian splat feature was difficult to use or if it introduced significant compatibility issues with my existing Blender projects and assets."
+     }
+    ]
+   },
+   "lose": {
+    "people": 124,
+    "roles_vs_market": {
+     "founder": 0.82,
+     "marketer": 1.36,
+     "investor": 0.0,
+     "student": 0.0
+    },
+    "median_votes": 65.0,
+    "competitors_backed_more": [
+     [
+      "V2Fun",
+      2.82
+     ],
+     [
+      "Miora",
+      2.79
+     ],
+     [
+      "UseIt Studio",
+      2.44
+     ],
+     [
+      "zCAD AI",
+      2.39
+     ],
+     [
+      "Google Gemini 3.8 Flash and Cyber",
+      1.39
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Screen Studio 4.0",
+      0.15
+     ],
+     [
+      "Blender Agent Bridge",
+      0.0
+     ],
+     [
+      "Genie 4",
+      0.0
+     ],
+     [
+      "Firefox 157",
+      0.0
+     ],
+     [
+      "Google Omni 1.2 Flash",
+      0.0
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Miora: I would love a presentation mode that turns selected canvas nodes into a clean client review flow.",
+     "on Miora: What formats can users export for image, video, UI, and 3D assets?",
+     "on Miora: Congrats on your launch! One canvas for UI, video, image, and 3D sounds incredibly satisfying.",
+     "on V2Fun: Hi Product Hunt! This is Tammy \ud83d\udc4b We\u2019re excited to launch V2Fun today. Creating a usable 3D character is still too fragmented. You often need one tool for modeling, another for texturing, another for animation, and sometimes even a motion capture setup just to ",
+     "on V2Fun: Would love to see more examples for game-ready characters.",
+     "on V2Fun: Congrats on the launch! Bringing modeling, 8K texturing, and motion capture into one workflow solves a real pain \u2014 hopping between three tools just to get one character moving has always been the worst part. AI mocap from regular videos is the standout for me.",
+     "on V2Fun: seems fun. I have many experiences with those tools , there are multiple issues : main pain is messy geometry. I need low poly too. most of the time animations and rigid body only support humanoid. should be very good with creatures too not just humans charact"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Blender 5.3 seems to lack the robust AI agent integration that I value in other tools, making it less appealing for my current workflows.",
+      "competitor_has": "UseIt Studio, which I backed, offers a strong AI design agent for real, editable project files, and other tools I've upvoted focus heavily on AI agents for various tasks. Blender 5.3 doesn't seem to have that deep, integrated AI agent functionality for scene inspection or workflow assistance.",
+      "would_switch_if": "I would switch if Blender 5.3 introduced a comprehensive, native AI agent system that could inspect scenes, suggest optimizations, or automate complex tasks within the 3D environment, similar to what I see in other agent-focused tools.",
+      "dealbreaker": "The lack of significant AI agent integration for automating or assisting with complex 3D workflows is a dealbreaker for me, as I'm increasingly relying on agentic tools."
+     },
+     {
+      "user": 2,
+      "verdict": "Blender 5.3's focus on Gaussian splats is interesting, but it doesn't offer the comprehensive AI agent and world-building capabilities that I find in tools like PixVerse R2 or Wanaka Studio.",
+      "competitor_has": "PixVerse R2 and Wanaka Studio, which I've upvoted, provide real-time world models and AI game engines that allow for exploring and changing worlds, or making and publishing 3D games with AI. Blender 5.3, while powerful for 3D, doesn't seem to offer that level of agent-driven world creation or game development.",
+      "would_switch_if": "I would switch if Blender 5.3 integrated advanced AI agent capabilities for generative world-building, intelligent asset creation, or real-time interactive scene manipulation, moving beyond just importing captured data.",
+      "dealbreaker": "The absence of a strong, integrated AI agent framework for generative design and interactive world creation is a dealbreaker, as my focus is on building dynamic, AI-driven environments."
+     },
+     {
+      "user": 3,
+      "verdict": "While 3D Gaussian splats are neat, Blender 5.3 doesn't address the messy geometry and animation issues that I frequently encounter and that other tools are starting to tackle with AI.",
+      "competitor_has": "I've commented on the 'messy geometry' and 'animation' issues in 3D tools. While I haven't seen a perfect solution, tools like V2Fun and Miora, which I've upvoted, are in the space of generative 3D and might offer different approaches to clean geometry or animation. Blender 5.3's release notes don't mention improvements in these specific areas.",
+      "would_switch_if": "I would switch if Blender 5.3 introduced AI-powered tools for automatically cleaning up messy geometry from imported splats or other sources, and if it offered more robust and flexible animation tools, especially for non-humanoid rigs.",
+      "dealbreaker": "The continued struggle with messy geometry and limited animation support for diverse models, which I've experienced in other 3D tools, would be a dealbreaker if Blender 5.3 doesn't offer significant improvements or AI assistance in these areas."
+     },
+     {
+      "user": 4,
+      "verdict": "Blender 5.3's new features are good, but it lacks the comprehensive AI agent integration for design and workflow automation that I find essential in tools like UseIt Studio.",
+      "competitor_has": "UseIt Studio, which I've upvoted, is an 'AI design agent for real, editable project files.' This level of AI assistance for design and project management is what I'm looking for. Blender 5.3's updates are more about core 3D capabilities rather than agentic workflow enhancements.",
+      "would_switch_if": "I would switch if Blender 5.3 developed a robust, open-source AI agent ecosystem that could genuinely assist with design tasks, automate repetitive actions, and integrate seamlessly with other agentic tools I use, similar to what I see in UseIt Studio.",
+      "dealbreaker": "The absence of a strong, integrated AI agent for design and workflow automation within Blender is a dealbreaker, as I'm increasingly relying on these types of tools for efficiency."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "You uniquely win users who prioritize integrating real-world captured 3D scenes directly into a powerful, familiar 3D environment for further manipulation and rendering.",
+    "what_wins_them": "The native 3D Gaussian splats across Geometry Nodes, Workbench, EEVEE, and Cycles, combined with DLSS 4.5 viewport denoising and the new Projects system.",
+    "who_you_lose_and_to_whom": "You lose users to competitors like UseIt Studio, Wanaka Studio, PixVerse R2, and other agent-focused tools that offer deep AI agent integration for design, world-building, and workflow automation.",
+    "what_loses_them": "The lack of comprehensive, native AI agent integration for generative design, workflow automation, intelligent scene assistance, and addressing issues like messy geometry or advanced animation.",
+    "move": "Integrate an open-source AI agent framework within Blender that can inspect scenes, suggest optimizations, automate repetitive tasks, and potentially assist with geometry cleanup or animation, without compromising the core 3D Gaussian splat functionality."
+   }
+  },
+  {
+   "id": "1281561",
+   "rank": 6,
+   "name": "CaptureFlow",
+   "tagline": "Open-source screen recorder with instant share links",
+   "market_people": 1523,
+   "win": {
+    "people": 229,
+    "roles_vs_market": {
+     "designer": 0.42,
+     "investor": 0.28,
+     "student": 0.55,
+     "product manager": 0.63
+    },
+    "median_votes": 26.0,
+    "competitors_backed_more": [
+     [
+      "Annotate",
+      2.61
+     ],
+     [
+      "opensend.cc",
+      2.0
+     ],
+     [
+      "Capptivo",
+      1.8
+     ],
+     [
+      "LiveDemo",
+      1.76
+     ],
+     [
+      "Rescript",
+      1.42
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "OneDeploy",
+      0.48
+     ],
+     [
+      "Reelbird",
+      0.42
+     ],
+     [
+      "Zella",
+      0.22
+     ],
+     [
+      "Smooth Recorder",
+      0.21
+     ],
+     [
+      "Skreno",
+      0.18
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on LiveDemo: Since it's open source, can you self host the whole thing including the AI voiceover part, or does that piece still need a hosted API key from you guys?",
+     "on LiveDemo: Congrats George, fifth launch is real persistence! We build sales demos constantly and the \u201cdemo was an afterthought\u201d line hits home. My question is about the open-source angle: if I self-host from the GitHub repo, do lead capture and the engagement analytics ",
+     "on Replay QA: This is awesome! I'm looking forward to digging into this. Might write a forum when I do. Congrats on the launch. Nice to see  in the mix. \ud83e\udd29",
+     "on RecordMeeting: Hey Product Hunt! Nathan here, founder of Qualtir. We built Record Meeting because most AI notetakers still send a bot into your call. That awkward \"Notetaker has joined\" moment kills the vibe on sales calls, interviews, and internal meetings. Record Meeting w",
+     "on RecordMeeting: The fact that no bot joins the call is a really thoughtful design choice, finally someone thought about how awkward it feels when a random attendee suddenly appears in your meeting.",
+     "on RecordMeeting: Really practical feature \u2014 invisible recording without killing the conversation flow.",
+     "on Rescript: How do you handle longer videos or really dense transcripts in the browser? I'm curious if there's a practical file size limit before things start getting sluggish, since everything's running locally.",
+     "on Capptivo: Congrats on the launch! I just gave it a try and found a small bug: when I record with the camera enabled, the face-cam frame just shows up as a black box in the editor. Testing on MacBook with Tahoe 26.6.",
+     "on DataBlur: Congrats on launching DataBlur! Blurring more instead of less when in doubt is such a smart move. Are shortcuts (or Stream Deck support) on your roadmap for quick toggles during calls?",
+     "on FrameOS: this looks like the sort of things that quietly makes your work come across as more polished than it is. The finished results feel really sharp, and that is exactly the impression I want when I put something in front of people"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "CaptureFlow's self-hosting and agent recording features are a game-changer for my workflow, especially with the smooth user experience.",
+      "why_this": "I'm drawn to CaptureFlow over competitors like Capptivo because of the self-hosting option and the integration with coding agents. The 'smoothness and familiarity' I look for in apps is definitely present here, and being able to control my data and automate recordings with AI is a huge plus for a founder like me who's always building bots and cloud agents.",
+      "the_difference": "The ability to self-host on Cloudflare and have coding agents record demos for pull requests is the one thing that makes CaptureFlow uniquely valuable for my development and deployment processes.",
+      "would_drop_it_if": "I would drop CaptureFlow if the self-hosting became overly complex to maintain or if the agent recording feature proved unreliable or difficult to integrate with my existing AI tools."
+     },
+     {
+      "user": 2,
+      "verdict": "The AI agent recording and self-hosting capabilities of CaptureFlow are exactly what I need for managing and automating documentation and demos.",
+      "why_this": "CaptureFlow's agent recording feature, especially with the MCP server integration, is a huge draw for me, aligning with my interest in 'self maintaining docs' and giving 'more control on when the tasks are invoked.' While I've upvoted Capptivo, CaptureFlow's focus on AI agents recording directly addresses my need for automated, controlled content creation.",
+      "the_difference": "The unique selling point for me is the 'coding agents can record too' feature, allowing AI to generate demos and how-tos, which is crucial for managing complex systems and ensuring consistent documentation.",
+      "would_drop_it_if": "I would drop CaptureFlow if the agent recording feature led to 'conflicting answers' or if there wasn't a 'clear record of who asked for what and wh' for auditability, as I've seen with other agent tools."
+     },
+     {
+      "user": 3,
+      "verdict": "CaptureFlow's agent recording and open-source nature, especially with the GitHub integration, are perfect for my developer workflow.",
+      "why_this": "As a developer, the open-source nature and the 'coding agents can record too' feature, particularly the GitHub integration where a video link plays directly, are what make CaptureFlow stand out. I've upvoted opensend.cc and Replay QA, but CaptureFlow's direct utility for agentic development and validating findings is more aligned with my current needs.",
+      "the_difference": "The ability for 'coding agents to record too' and the seamless integration with GitHub, where 'a video link into GitHub and it plays right there on the page,' is the key differentiator for my development workflow.",
+      "would_drop_it_if": "I would drop CaptureFlow if the agent recording feature suffered from the same 'tool calls that depend on results from previous calls' issues that 'agent models fall apart for me' with, making it unreliable for complex workflows."
+     },
+     {
+      "user": 4,
+      "verdict": "CaptureFlow's AI agent recording and self-hosting options are compelling for automating content creation and maintaining control.",
+      "why_this": "I'm interested in CaptureFlow because of its AI agent recording capabilities and the self-hosting option, which aligns with my interest in 'AI scraper solutions' and building 'the AI operating system for your company.' While I've upvoted Replay QA, CaptureFlow's direct integration with AI agents for content creation is a more advanced solution for my needs.",
+      "the_difference": "The most significant difference for me is the 'AI agent can now record for you' feature, which offers a powerful way to automate content generation and integrate with my existing AI tools.",
+      "would_drop_it_if": "I would drop CaptureFlow if the agent recording feature didn't live up to its promise of being 'optimized for' specific use cases or if the self-hosting became too cumbersome to manage."
+     }
+    ]
+   },
+   "lose": {
+    "people": 78,
+    "roles_vs_market": {
+     "founder": 1.18,
+     "marketer": 1.47,
+     "investor": 0.81,
+     "product manager": 1.39
+    },
+    "median_votes": 151.0,
+    "competitors_backed_more": [
+     [
+      "Zella",
+      5.21
+     ],
+     [
+      "Lumiko",
+      3.17
+     ],
+     [
+      "OpenScreen 2",
+      2.89
+     ],
+     [
+      "opensend.cc",
+      2.67
+     ],
+     [
+      "Loom Record for agents",
+      2.57
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Rescript",
+      0.83
+     ],
+     [
+      "Capptivo",
+      0.72
+     ],
+     [
+      "Annotate",
+      0.7
+     ],
+     [
+      "VoiceGecko",
+      0.63
+     ],
+     [
+      "DataBlur",
+      0.45
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Glideo: I've been looking for a simple way to create cleaner product demos without spending hours editing, and Glideo looks like a really interesting approach. The automatic zooming and click tracking seem like they could make screen recordings much more engaging whil"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "CaptureFlow lacks the automatic editing and polish that I value in screen recording tools, making it less appealing for my marketing needs.",
+      "competitor_has": "Smooth Recorder, which I've upvoted, likely offers more automated editing features like zoom-pan or cursor tracking that make videos look polished without manual effort. CaptureFlow seems to focus more on raw recording and sharing, which isn't as appealing for creating marketing content.",
+      "would_switch_if": "I would switch to CaptureFlow if it incorporated advanced, automated editing features similar to what I've seen in other tools, allowing for polished, professional-looking videos with minimal manual intervention, especially for 'placing my brand in the top comments of viral videos.'",
+      "dealbreaker": "The lack of automatic editing and visual polish is a dealbreaker. For marketing, the final presentation is crucial, and if CaptureFlow requires significant manual editing to achieve that, it's not for me."
+     },
+     {
+      "user": 2,
+      "verdict": "CaptureFlow's lack of advanced, automated editing features for polished demos is a significant drawback compared to competitors I prefer.",
+      "competitor_has": "OpenScreen 2, which I've upvoted, likely provides more sophisticated editing capabilities, perhaps with automated zoom or cursor highlighting, that are essential for creating professional-looking product demos. CaptureFlow's focus on basic recording and sharing doesn't meet that need.",
+      "would_switch_if": "I would switch to CaptureFlow if it offered automated editing features that could turn raw recordings into polished demos, similar to what I'd expect from a tool designed for 'turning buying signals into booked sales calls' or showcasing 'GitHub New PR Overview' effectively.",
+      "dealbreaker": "The absence of automated editing and visual enhancement features is a dealbreaker. I need tools that help me create high-quality, engaging demos without extensive manual post-production."
+     },
+     {
+      "user": 3,
+      "verdict": "CaptureFlow doesn't offer the automated editing and visual enhancements that I value in screen recording tools for design and marketing.",
+      "competitor_has": "Screen Studio 4.0, which I've upvoted, offers features like 'Glass Loupe, Camera Cutout, Edit by Transcript' that provide a much higher level of polish and control over the final video. Smooth Recorder also likely has automated editing. CaptureFlow seems to be more about raw capture and sharing, which isn't what I need for 'beautifully crafted' content.",
+      "would_switch_if": "I would switch to CaptureFlow if it integrated advanced, automated editing features like auto-zoom, cursor highlighting, or transcript-based editing, allowing me to create visually appealing and professional demos for design and marketing purposes.",
+      "dealbreaker": "The lack of automated visual enhancements and editing capabilities is a dealbreaker. For a designer and marketer, the aesthetic quality and ease of creating polished content are paramount."
+     },
+     {
+      "user": 4,
+      "verdict": "CaptureFlow's basic recording and sharing fall short of the automated editing and polish I get from competitors like Reelbird and OpenScreen 2.",
+      "competitor_has": "Reelbird and OpenScreen 2, both of which I've upvoted, likely offer automated editing features like auto-zoom, smooth cursor, and captions that significantly enhance the quality of the recorded demos. CaptureFlow's focus on simple recording and sharing doesn't provide that level of polish.",
+      "would_switch_if": "I would switch to CaptureFlow if it incorporated automated editing features that could transform raw recordings into polished, professional-looking videos, similar to what I've experienced with Reelbird, especially for creating engaging content.",
+      "dealbreaker": "The absence of automated editing and visual polish is a dealbreaker. I need tools that can quickly produce high-quality, engaging videos without requiring extensive manual editing."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "CaptureFlow uniquely wins founders and developers who prioritize open-source solutions, self-hosting, and the innovative integration of AI agents for automated recording and content creation.",
+    "what_wins_them": "The specific features that win them are the 'coding agents can record too' functionality, the open-source nature, and the self-hosting option on Cloudflare, which provides control and automation for their development and documentation workflows.",
+    "who_you_lose_and_to_whom": "CaptureFlow loses marketers and designers to competitors like Smooth Recorder, OpenScreen 2, Screen Studio 4.0, and Reelbird.",
+    "what_loses_them": "The specific missing thing that loses them is the lack of automated editing features, such as auto-zoom, cursor tracking, and other visual enhancements that create polished, professional-looking videos with minimal manual effort.",
+    "move": "Introduce an 'Auto-Polish' feature that leverages AI to automatically add zoom-ins on clicks, smooth cursor movements, and basic visual enhancements to recordings, without requiring manual editing, while keeping the core agent recording and self-hosting features intact."
+   }
+  },
+  {
+   "id": "1300330",
+   "rank": 7,
+   "name": "Kokonut UI",
+   "tagline": "Open-source UI components for your AI agent",
+   "market_people": 2150,
+   "win": {
+    "people": 323,
+    "roles_vs_market": {
+     "marketer": 0.74,
+     "designer": 0.79,
+     "investor": 0.61,
+     "student": 0.83
+    },
+    "median_votes": 24.0,
+    "competitors_backed_more": [
+     [
+      "Skybridge",
+      3.05
+     ],
+     [
+      "Plurai Simulation",
+      1.96
+     ],
+     [
+      "Persona.js",
+      1.78
+     ],
+     [
+      "Claude Code Artifacts",
+      1.46
+     ],
+     [
+      "daily.dev for agents",
+      1.42
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "ManyAgents",
+      0.37
+     ],
+     [
+      "One Roof",
+      0.36
+     ],
+     [
+      "Superagent",
+      0.32
+     ],
+     [
+      "Shepherd Terminal",
+      0.27
+     ],
+     [
+      "Mudroom",
+      0.21
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Claude Code Artifacts: The auto-republishing live pages from full session context is the part I'd actually use, sharing in-progress work usually means stopping to write a status update. Does it handle multiple repos in one session? Congrats on shipping.",
+     "on Claude Code Artifacts: The live artifact angle makes sense for PR walkthroughs and incident notes; the key question for teams will be how access and staleness are handled when the underlying session keeps changing.",
+     "on Claude Code Artifacts: The auto-republishing live pages are clearly the headline feature, but I keep thinking about the flip side: sometimes I'd want to freeze a version rather than have it shift under me as the session keeps moving. Is there a way to pin a snapshot alongside the li",
+     "on Claude Code Artifacts: If I were using this during incident work, the auto-refreshing page plus version restore is the part I'd care about most. Curious whether humans can add notes on top, or is it strictly generated from the Claude session context?",
+     "on Persona.js: WebMCP-native is the part that grabs me. Most \"AI chat widgets\" just bolt a chatbox onto a page, but having the chat actually talk to your frontend through MCP feels like a much cleaner way to let the AI do real things instead of just answering FAQs.",
+     "on Persona.js: This is great, just at the right time. This could make chat widgets as easy to add to existing websites as including a new Google Font or FontAwesome. And the WebMCP is great so other agents can use the site. Makes it extremely useful. Quick question, can you ",
+     "on Skybridge: I've used Skybridge to build an MCP app for ChatGPT. Definitely the best OSS solution out there!",
+     "on Skybridge: The local emulator with hot reload is the part that stands out to me, the rebuild and reconnect loop for MCP apps has been rough. Does the tunnel handle auth flows when testing against Claude, or is that still manual? Congrats on shipping.",
+     "on Skybridge: Thanks for the release! I have been using Skybridge to develop a few apps and v1 has made it a breeze, especially with the new devtools UI ! Shoutout to the team who made it happen !",
+     "on Heard: AI should not be controlling our life, while it should be companion - Heard is the thing you definitely need but might always be ignoring. We give AI and agents a voice, that you hear and you will be heard - that brings to a harmonic vibe for AI and human."
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Kokonut UI's focus on AI chat components and direct agent integration is exactly what I need for building more sophisticated agentic applications.",
+      "why_this": "I've upvoted Persona.js and Skybridge, but Kokonut UI's specific components for tool calls, diff review, and citations are far more advanced and directly applicable to the agent workflows I'm interested in, unlike the more general chat UIs or frameworks.",
+      "the_difference": "The direct integration with agents via MCP and the provision of Markdown docs for agents to find and install components is a game-changer, making agents truly 'operators' rather than just autocomplete.",
+      "would_drop_it_if": "I would drop it if the components became difficult for agents to parse or if the MCP integration became unreliable, forcing me to manually manage component installation and usage."
+     },
+     {
+      "user": 2,
+      "verdict": "The open-source nature and the specific AI chat components of Kokonut UI are perfect for a designer like me who wants to build sophisticated agent interfaces without starting from scratch.",
+      "why_this": "While I upvoted Skybridge for its framework, Kokonut UI's ready-to-use AI chat components, especially for things like tool approval and context meters, are much more valuable for quickly prototyping and building agent UIs than a general framework.",
+      "the_difference": "The focus on 'AI chat parts' like tool calls and diff review, combined with the open-source nature, allows me to quickly implement complex agent interactions that feel right, without having to design them from the ground up.",
+      "would_drop_it_if": "I would drop it if the components were not easily customizable with my project's design tokens or if the library became closed-source, limiting my ability to adapt them."
+     },
+     {
+      "user": 3,
+      "verdict": "Kokonut UI's agent-first approach to component installation and its specialized AI chat components are exactly what I need to streamline my agent development workflow.",
+      "why_this": "I've upvoted React UI Kit V7 and Skybridge, but Kokonut UI's ability for agents to directly find, install, and edit components via MCP, and its specific AI-focused components, are a significant step up from general UI kits or frameworks that require more manual intervention.",
+      "the_difference": "The ability for agents to 'search and install all 100+ components over MCP' and the provision of Markdown docs for agents to understand and use the components is a unique and powerful feature that truly integrates with an agentic workflow.",
+      "would_drop_it_if": "I would drop it if the MCP integration became unstable or if the components introduced significant performance overhead, making my agent applications slow or unreliable."
+     },
+     {
+      "user": 4,
+      "verdict": "Kokonut UI's focus on AI-specific components and its agent-friendly documentation are crucial for building robust agentic applications, especially for a founder like me who values efficient development.",
+      "why_this": "I upvoted SKI for voice coding, but Kokonut UI provides the actual UI building blocks that my agents need to interact with users effectively, especially with components like tool approval and inline citations, which are missing from general coding tools.",
+      "the_difference": "The provision of every docs page as Markdown for agents, along with rules for agents to prioritize Kokonut UI components, ensures that my agents can build consistent and functional UIs without me having to constantly intervene or 'clean context'.",
+      "would_drop_it_if": "I would drop it if the component library didn't keep pace with new AI interaction patterns or if the agent integration became overly complex to manage, negating the efficiency gains."
+     }
+    ]
+   },
+   "lose": {
+    "people": 96,
+    "roles_vs_market": {
+     "founder": 1.55,
+     "investor": 3.39,
+     "student": 1.4,
+     "product manager": 1.27
+    },
+    "median_votes": 131.0,
+    "competitors_backed_more": [
+     [
+      "One Roof",
+      8.47
+     ],
+     [
+      "Mudroom",
+      5.6
+     ],
+     [
+      "ilse",
+      5.41
+     ],
+     [
+      "MemoryCustodian",
+      4.61
+     ],
+     [
+      "ManyAgents",
+      4.15
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Kombai Gallery",
+      0.73
+     ],
+     [
+      "Claude Code Artifacts",
+      0.67
+     ],
+     [
+      "Superagent",
+      0.55
+     ],
+     [
+      "Skybridge",
+      0.35
+     ],
+     [
+      "Persona.js",
+      0.31
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Persona.js: The WebMCP bet makes sense and drop-in on existing sites looks like the unlock! One thing we keep hitting building agents - the token-efficiency win can flip once a page exposes 20+ tools, since every schema rides in context each turn. As far as I understand P",
+     "on Persona.js: How does tool discovery work safely, like can the page expose only certain actions and require a user confirmation before anything runs?",
+     "on Heard: Congrats on the launch! How are you guys attributing events to the right agent when they're separate processes, parsing stdout or tapping the hooks Claude Code and Codex expose?",
+     "on MemoryCustodian: Repo-native is the right instinct \u2014 memory that lives outside the repo drifts away from the code it describes almost immediately, and then you're maintaining two sources of truth about the same system. The question that follows is what happens on a branch. If ",
+     "on HeyZoku: Voice as the control layer makes sense for orchestration specifically \u2014 you're issuing intent, not typing code, and intent is the part that survives being spoken. Where I'd expect it to get awkward is the return path. Agents running in parallel produce output ",
+     "on GitBot: slack ping when a bot run fails would save me checking manually!..",
+     "on Parallax: The subscription fallback is the detail I like here. I'd want the handover to stay visible so I can tell which agent picked up the work and why.",
+     "on buddylist: The shared project folder is the detail I like here. Switching agents mid-task is a lot less appealing if you have to explain the whole job again."
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Kokonut UI offers interesting AI components, but it lacks the broader agent orchestration and contextual awareness that I find in tools like SKI and MemoryCustodian.",
+      "competitor_has": "SKI provides voice control for agents, which is a powerful way to manage and direct agent workflows, and MemoryCustodian likely offers a more robust way to manage agent context and memory, which is crucial for complex agent interactions.",
+      "would_switch_if": "I would switch if Kokonut UI integrated more deeply with agent orchestration platforms, allowing for more complex multi-agent interactions and better contextual management beyond just UI components.",
+      "dealbreaker": "The lack of a clear path for agents to manage their own context and memory within the UI components, potentially leading to 'stale context' issues that I'm actively trying to avoid."
+     },
+     {
+      "user": 2,
+      "verdict": "While the AI components are neat, Kokonut UI doesn't address the fundamental need for agent orchestration and a shared workspace that I get from tools like Heard and Claude Code Artifacts.",
+      "competitor_has": "Heard and Claude Code Artifacts likely provide a more comprehensive environment for agents to collaborate, share artifacts, and manage their work, which is essential for my workflow as a founder/investor looking at broader agent capabilities.",
+      "would_switch_if": "I would switch if Kokonut UI evolved into a more complete agent development environment, offering not just components but also tools for agent collaboration, artifact management, and a 'no screen, no desk' approach to agent interaction.",
+      "dealbreaker": "The focus solely on UI components without addressing the underlying agent orchestration and collaboration challenges means it's just another library, not a solution for managing agent teams."
+     },
+     {
+      "user": 3,
+      "verdict": "Kokonut UI's components are useful, but it doesn't offer the real-time collaborative agent environment or the ability to 'reshape' existing applications that I value in agentmash and ilse.",
+      "competitor_has": "agentmash provides a 'shared context layer' for agents to collaborate, and ilse allows agents to directly modify existing applications by pointing and describing changes, which is a more direct and powerful way to interact with code than just providing components.",
+      "would_switch_if": "I would switch if Kokonut UI offered a way for agents to collaboratively build and modify UIs in real-time, similar to how agentmash enables shared context, or if it allowed agents to 'reshape' existing UI elements with its components.",
+      "dealbreaker": "The lack of real-time collaborative features for agents and the inability to directly modify existing UI elements through agent commands, which is a core benefit of tools like ilse."
+     },
+     {
+      "user": 4,
+      "verdict": "Kokonut UI provides good components, but it doesn't offer the comprehensive agent orchestration and management capabilities that I find in One Roof and PulseDev.",
+      "competitor_has": "One Roof provides a 'one place for chorus coding' with multiple agents and an 'Inbox for everything they ask you,' which is crucial for managing complex agent workflows, and PulseDev likely offers more robust agent skill management and versioning.",
+      "would_switch_if": "I would switch if Kokonut UI integrated with a more robust agent orchestration platform, allowing me to manage multiple agents building UIs, track their progress, and handle their requests in a centralized manner.",
+      "dealbreaker": "The absence of a clear framework for managing agent skills, versioning, and dependencies when using these components, which is a concern I've raised with other agent tools."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "Kokonut UI uniquely wins developers and founders who are building sophisticated AI agent applications and need specialized UI components that integrate directly with their agent workflows.",
+    "what_wins_them": "The specific AI chat components (tool calls, diff review, citations) and the direct agent integration via MCP with Markdown documentation for agents.",
+    "who_you_lose_and_to_whom": "Kokonut UI loses users to agentmash, ilse, One Roof, SKI, MemoryCustodian, Heard, and Claude Code Artifacts, who prioritize broader agent orchestration, real-time collaboration, and contextual awareness.",
+    "what_loses_them": "The lack of comprehensive agent orchestration, real-time collaborative features, deeper contextual management, and the ability for agents to 'reshape' existing applications.",
+    "move": "Integrate with a popular agent orchestration framework or provide a clear path for agents to manage their own context and collaborate on UI development, potentially by offering a 'shared context layer' for UI components."
+   }
+  },
+  {
+   "id": "1310337",
+   "rank": 8,
+   "name": "Uber Parking",
+   "tagline": "Find, compare and reserve parking inside the Uber app",
+   "market_people": 2043,
+   "win": {
+    "people": 307,
+    "roles_vs_market": {
+     "developer": 1.36,
+     "marketer": 0.83,
+     "investor": 2.4,
+     "student": 1.25
+    },
+    "median_votes": 38.0,
+    "competitors_backed_more": [
+     [
+      "MeetPoint",
+      3.33
+     ],
+     [
+      "LooGo",
+      2.9
+     ],
+     [
+      "X Money",
+      2.56
+     ],
+     [
+      "Badgey",
+      2.27
+     ],
+     [
+      "Google Fitbit Edge",
+      2.16
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "JustVibe",
+      0.64
+     ],
+     [
+      "miso.com",
+      0.56
+     ],
+     [
+      "Parasocial",
+      0.35
+     ],
+     [
+      "Snipplet",
+      0.31
+     ],
+     [
+      "Knockin'",
+      0.28
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on MeetPoint: Literally had this exact WhatsApp debate with friends last week. \"Fairest\" mode is pure genius. Upvoted!",
+     "on Gemini Spark: Really interesting direction. \ud83d\ude80 I'm curious how Gemini Spark decides when to ask for approval versus acting autonomously. Is that based on the type of task, user-defined rules, or does it learn preferences over time?",
+     "on JustVibe: How does JustVibe ensure that user-created apps remain accurate, reliable, and useful over time as the underlying information changes?",
+     "on JustVibe: Love that JustVibe turns a search query straight into a working app instead of a list of links. Shifting search from finding to actually doing is a genuinely fresh take. Congrats on the launch!",
+     "on AirKaren: I really love the idea because sometimes I only go through half the claim and then I give up. My question is : Has there ever been some company airlines that refused to deal with the claims that AirKaren Made ?",
+     "on Spycost: Love the idea, I've been burned by fake discounts before, but I also wonder how often the best price is worth waiting weeks or months for.",
+     "on Detourmap: This is genuinely really cool. I already found two museums nearby that I\u2019d never heard of, and even some surprisingly large caves in a neighboring town, including one with a lake. What I really like is that it helps you find places you wouldn\u2019t even know to se",
+     "on Nepotism Network: You can do great things if you know a friend, who knows a friend who knows a friend Hey Product Hunt \ud83d\udc4b I'm Ankush, developer of NepoNet. A month ago we launched  Computer here and it finished #1 Product of the Day . That wasn't luck, and it definitely wasn't c",
+     "on Pass Designer: Love that the live preview uses the same rendering as iOS and watchOS, so what you design is genuinely what ships to the Wallet. That trust in the preview is what makes this so useful.",
+     "on Mira Tours: Does it work in other languages, say Greek? And how do you make sure the stories are actually true and not made up by the AI?"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Uber Parking is a game-changer for simplifying my travel logistics, especially with the Uber One benefits.",
+      "why_this": "I'm constantly juggling multiple apps for different tasks, and the idea of having parking integrated directly into Uber, which I already use for rides and food, is incredibly appealing. It's about reducing friction in my day-to-day.",
+      "the_difference": "The seamless integration into the existing Uber app and ecosystem, allowing me to find, compare, reserve, and pay for parking without ever leaving the app, is the unique selling point for me.",
+      "would_drop_it_if": "If the pricing became significantly higher than dedicated parking apps like SpotHero, or if the availability of parking options was severely limited compared to those apps, I would drop it."
+     },
+     {
+      "user": 2,
+      "verdict": "The UX of Uber Parking looks fantastic, and the convenience of having it within an app I already use is a major draw.",
+      "why_this": "I appreciate well-designed user experiences, and the promise of an interactive map with upfront pricing within the Uber app sounds incredibly intuitive. The ability to filter by type and amenities is also a big plus for finding exactly what I need.",
+      "the_difference": "The 'one app for everything' approach, specifically integrating parking into the Uber ecosystem, is what sets this apart from other travel or utility apps I've seen.",
+      "would_drop_it_if": "If the app frequently glitched during booking or payment, or if the license plate recognition/QR code entry system proved unreliable, I would quickly lose trust and stop using it."
+     },
+     {
+      "user": 3,
+      "verdict": "As a developer, the efficiency of Uber Parking, especially with the Uber Wallet integration, is a clear win.",
+      "why_this": "I value efficiency and streamlined processes. The ability to pay with my existing Uber Wallet and extend reservations directly from the app means less time fumbling with payment methods or worrying about expired parking.",
+      "the_difference": "The complete end-to-end parking solution, from discovery to payment and extension, all within a single, familiar app, is the key differentiator for me.",
+      "would_drop_it_if": "If the parking instructions were unclear or if I frequently encountered issues with lot entry/exit due to the app's system, it would become more of a hassle than a convenience."
+     },
+     {
+      "user": 4,
+      "verdict": "Uber Parking's integration into an existing platform I use daily makes it a compelling choice over standalone solutions.",
+      "why_this": "I'm drawn to solutions that reduce cognitive load and integrate into my existing workflows. Having parking within Uber, an app I already open regularly, means one less app to manage and remember.",
+      "the_difference": "The primary difference is the consolidation of a common task (parking) into a widely used, multi-purpose app (Uber), leveraging existing user data and payment methods.",
+      "would_drop_it_if": "If the search results were consistently inaccurate, showing unavailable or incorrect parking options, or if the pricing was not transparent and had hidden fees, I would stop using it."
+     }
+    ]
+   },
+   "lose": {
+    "people": 98,
+    "roles_vs_market": {
+     "founder": 0.78,
+     "marketer": 1.5,
+     "designer": 0.85,
+     "investor": 0.0,
+     "student": 0.0,
+     "product manager": 1.33
+    },
+    "median_votes": 88.5,
+    "competitors_backed_more": [
+     [
+      "Snipplet",
+      3.39
+     ],
+     [
+      "miso.com",
+      3.29
+     ],
+     [
+      "Hark",
+      3.13
+     ],
+     [
+      "Aximote",
+      2.93
+     ],
+     [
+      "Parasocial",
+      2.54
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "LooGo",
+      0.38
+     ],
+     [
+      "Firefox 157",
+      0.34
+     ],
+     [
+      "Mira Tours",
+      0.0
+     ],
+     [
+      "MeetPoint",
+      0.0
+     ],
+     [
+      "Google Fitbit Edge",
+      0.0
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on JustVibe: This is a strong direction. I like the framing of search results becoming usable software instead of just links or text answers. The big question for me is persistence: once JustVibe creates an app, how editable and reliable is it over time? For travel plannin",
+     "on ChatGPT Work: The phone-to-desktop handoff is the piece I'd test first: when I start a task on mobile and resume on desktop, does the in-progress state sync through my account, or does the desktop re-run it from the top? And do Scheduled Tasks fire server-side when my machi",
+     "on Aximote: Congrats on launching today  Very interesting concept what is the usp of Aximote compared to other OEM apps?"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "While the integration is neat, I'm concerned about the lack of advanced features and customization I get from dedicated parking apps.",
+      "competitor_has": "Dedicated parking apps often have more granular control over reservation details, specific lot information beyond basic amenities, and sometimes even real-time availability updates that feel more robust than what's described here.",
+      "would_switch_if": "I would switch if Uber Parking offered more detailed information about each parking spot, like specific stall numbers or real-time occupancy, and allowed for more flexible booking modifications beyond just extending the reservation.",
+      "dealbreaker": "My dealbreaker would be if the pricing was consistently higher than other apps for the same parking spots, or if the app didn't reliably show all available options in a given area."
+     },
+     {
+      "user": 2,
+      "verdict": "The convenience is there, but I'm wary of another app trying to be everything, potentially sacrificing depth for breadth.",
+      "competitor_has": "Dedicated travel and utility apps often provide more in-depth filtering, comparison tools, and customer support specifically tailored to their niche, which can be crucial when issues arise.",
+      "would_switch_if": "I would switch if Uber Parking offered competitive loyalty programs or exclusive discounts that genuinely outweighed the benefits of using a specialized parking app, or if it provided advanced analytics on my parking habits.",
+      "dealbreaker": "A dealbreaker would be if the app became bloated and slow due to too many features, or if customer service for parking issues was difficult to access or resolve within the Uber ecosystem."
+     },
+     {
+      "user": 3,
+      "verdict": "As a founder, I look for robust, specialized tools, and Uber Parking feels like a convenience feature rather than a comprehensive solution.",
+      "competitor_has": "Specialized apps often have features like monthly parking options, corporate accounts, or integration with specific business travel platforms that are essential for my needs.",
+      "would_switch_if": "I would switch if Uber Parking introduced robust business features, such as easy expense reporting integration, multi-user accounts for teams, or the ability to manage recurring parking reservations.",
+      "dealbreaker": "My dealbreaker would be if the app lacked the ability to easily manage and track business-related parking expenses, or if it didn't offer competitive rates for longer-term parking needs."
+     },
+     {
+      "user": 4,
+      "verdict": "While the integration is smart, I'm concerned about the potential for 'overfitting' to Uber's existing model, potentially limiting parking options.",
+      "competitor_has": "Dedicated parking apps often have a wider network of independent lots and garages, and their recommendation algorithms are solely focused on parking, potentially leading to better, more diverse options.",
+      "would_switch_if": "I would switch if Uber Parking demonstrated a commitment to expanding its network beyond SpotHero's existing footprint and offered truly unique or exclusive parking deals not found elsewhere.",
+      "dealbreaker": "My dealbreaker would be if the app's recommendations were biased towards certain lots or if it consistently failed to show me the cheapest or most convenient options available in a given area."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "You uniquely win users who prioritize seamless integration and convenience within an existing, trusted ecosystem.",
+    "what_wins_them": "The specific feature or trait that wins them is the 'one app for everything' approach, integrating parking into the Uber app with existing payment and user data.",
+    "who_you_lose_and_to_whom": "You lose users who prefer specialized tools with deeper features and broader options to dedicated parking apps like SpotHero (implied) or other niche travel/utility apps.",
+    "what_loses_them": "The specific missing thing that loses them is the perceived lack of advanced features, granular control, and comprehensive options compared to specialized parking solutions.",
+    "move": "Introduce a 'Pro' or 'Business' mode within Uber Parking that offers advanced filtering, monthly parking options, and expense reporting features to cater to users needing more depth without cluttering the main interface for casual users."
+   }
+  },
+  {
+   "id": "1310969",
+   "rank": 9,
+   "name": "Antelog",
+   "tagline": "Stops AI coding agents from leaking or destroying your data",
+   "market_people": 1972,
+   "win": {
+    "people": 296,
+    "roles_vs_market": {
+     "founder": 0.85,
+     "investor": 1.37,
+     "student": 0.77
+    },
+    "median_votes": 39.5,
+    "competitors_backed_more": [
+     [
+      "Annotate",
+      2.3
+     ],
+     [
+      "Cronloop AI",
+      1.92
+     ],
+     [
+      "asklog",
+      1.76
+     ],
+     [
+      "Atlaso",
+      1.55
+     ],
+     [
+      "VibeDefend by CybeDefend",
+      1.51
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "One Roof",
+      0.54
+     ],
+     [
+      "Harness by Autonomous",
+      0.5
+     ],
+     [
+      "buddylist",
+      0.42
+     ],
+     [
+      "Port22",
+      0.42
+     ],
+     [
+      "Parallax",
+      0.4
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on AgentPeek: It would be great to have something like a notification bell that rings when Claude Code finishes generating)",
+     "on Heard: Congratulations on the launch! This solves a problem i run into daily with multiple AI agents.how does Heard decide which updates are important enough to speak instead of reading everything? is the prioritisation customizable for different workflows?",
+     "on Heard: Huge congrats on the launch,  Solving the outbound half of the agent interface is such an underrated vector. qq can we adjust a 'verbosity slider' to only hear critical errors instead of full updates?",
+     "on Heard: Congrats! quick question : how does Heard protect sensitive project information during processing? are summaries generated locally whenever possible?",
+     "on SKI: hahaha, this is interesting! Now this will definitely feel like having a junior programmer with me. How are you handling accents? especially when it comes to code, where specific keywords and syntax is very important?",
+     "on tablo: The mood states are a nice touch, glanceable beats precise for anything living in a screen corner. Also just relate to the actual problem here, I tab away from a session for two minutes and completely forget it exists until I stumble back into that terminal. T",
+     "on Port22: The approval card answers the trust question well. What I'd want to know is the network side, is the phone talking to the Mac directly over the same wifi, or through a relay so it still works once you've actually left the house and you're on cellular? That's u",
+     "on Annotate: hi, very nice product! do u have in the roadmap a Windows map as well?",
+     "on Superagent: nice product, do u plan to release it for Windows too?",
+     "on VibeDefend by CybeDefend: great to have new security products in the devtools space. I love that you have dedicated comparison pages for existing tools - really easy to differentiate. kudos on the launch!"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Antelog is a crucial safety net for AI coding agents, preventing catastrophic data loss and providing an immutable audit trail.",
+      "why_this": "I'm always looking for ways to improve developer workflows and ensure code quality, as seen by my upvotes for GitHub New PR Overview and LiveReview. Antelog directly addresses a critical risk in the AI agent space that other tools don't, which is data integrity and security.",
+      "the_difference": "The immutable log of every AI action, combined with the proactive blocking of dangerous commands, is what truly sets Antelog apart from competitors like GitBot, which focuses more on bot creation, or Agent Clan, which is about gesture control.",
+      "would_drop_it_if": "I would drop Antelog if it started to significantly slow down my AI agents' performance or if it failed to reliably block dangerous actions, leading to a data incident."
+     },
+     {
+      "user": 2,
+      "verdict": "Antelog provides essential guardrails for AI agents, ensuring they don't cause unintended damage while offering full transparency into their actions.",
+      "why_this": "As a developer, I'm constantly evaluating tools that enhance productivity and reliability, like Maxma for ad performance or Latch.ai for accounting automation. Antelog's focus on preventing AI agent mishaps and providing a detailed log is a unique and valuable offering that my previously upvoted tools like Claude Code usage tracking by LangWatch don't fully cover.",
+      "the_difference": "The ability to block potentially destructive actions before they happen, coupled with the comprehensive logging of every command and data transfer, is the key differentiator for Antelog. It's about control and safety, which is distinct from just tracking usage or managing agents.",
+      "would_drop_it_if": "I would drop Antelog if it became overly intrusive, requiring constant manual approvals for routine tasks, or if its logging mechanism proved to be incomplete or easily tampered with."
+     },
+     {
+      "user": 3,
+      "verdict": "Antelog offers peace of mind by safeguarding against AI agent errors and providing a clear record of their activities.",
+      "why_this": "I'm interested in tools that provide a robust and transparent experience, whether it's for immersive content creation or managing AI memory like Atlaso. Antelog's promise of preventing AI disasters and offering a verifiable log aligns with my desire for reliable and accountable AI systems.",
+      "the_difference": "The proactive blocking of harmful actions and the immutable record of all AI activity are the unique selling points for Antelog. While Atlaso focuses on unified memory, Antelog focuses on safety and transparency of actions.",
+      "would_drop_it_if": "I would drop Antelog if it introduced significant friction into my AI agent workflows or if its protective measures were easily bypassed by sophisticated agents."
+     },
+     {
+      "user": 4,
+      "verdict": "Antelog is a critical tool for developers to prevent AI agent mishaps and maintain full visibility into their operations.",
+      "why_this": "As a developer, I'm always looking for tools that improve efficiency and prevent issues, like ProtoMap for dependency management or CuriousLM for private AI. Antelog's focus on preventing data leaks and destruction by AI agents is a direct solution to a major concern that other tools I've upvoted, like Cronloop AI, don't address.",
+      "the_difference": "The core difference is Antelog's ability to actively block dangerous AI actions and provide a detailed, unalterable log of everything the AI does. This goes beyond mere monitoring or orchestration, offering a layer of security and accountability.",
+      "would_drop_it_if": "I would drop Antelog if it proved to be incompatible with new AI agents or if its protective mechanisms were found to have significant vulnerabilities."
+     }
+    ]
+   },
+   "lose": {
+    "people": 111,
+    "roles_vs_market": {
+     "founder": 1.39,
+     "designer": 1.65,
+     "student": 1.37,
+     "product manager": 0.56
+    },
+    "median_votes": 146.0,
+    "competitors_backed_more": [
+     [
+      "Codync",
+      7.2
+     ],
+     [
+      "Parallax",
+      3.55
+     ],
+     [
+      "GitBot",
+      2.8
+     ],
+     [
+      "Harness by Autonomous",
+      2.74
+     ],
+     [
+      "Superagent",
+      2.6
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Claude Code usage tracking by LangWatch ",
+      0.88
+     ],
+     [
+      "VibeDefend by CybeDefend",
+      0.54
+     ],
+     [
+      "Faylee",
+      0.24
+     ],
+     [
+      "Agent Inbox",
+      0.23
+     ],
+     [
+      "Cronloop AI",
+      0.0
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on SKI: Small feedback upfront, when I simple click on \"Download for Mac\" on the website, the download on my device doesn`t start. Workaround found, if I do right click and open in a new tab, then it start the download.",
+     "on Claude Code usage tracking by LangWatch : Congrats! How much overhead does the tracking introduce during long-running Claude Code sessions?",
+     "on Claude Code usage tracking by LangWatch : Good to note that individual developers can use it for free before rolling it out to larger teams. The pricing that I see on the top nav is for LangWatch or for this specific tool?",
+     "on Claude Code usage tracking by LangWatch : Most observability tools focus on applications. This one focuses on the developers building them. Good to have LangWatch back on PH.",
+     "on Claude Code usage tracking by LangWatch : Congrats! One feature I'd enjoy is benchmarking cost efficiency across different coding models for the same task. Is that possible?",
+     "on Claude Code usage tracking by LangWatch : The replay functionality could be just as useful for learning as it is for troubleshooting. :)",
+     "on Claude Code usage tracking by LangWatch : Looking forward to seeing historical trends showing how coding workflows evolve over months. :D",
+     "on Claude Code usage tracking by LangWatch : This solves a problem many developers don't realize they have until the AI bill shows up. And if they have setup the credit card that's a red zone LOL",
+     "on Claude Code usage tracking by LangWatch : The combination of cost tracking, session replay, and tool tracing makes this much more than another analytics dashboard. Congrats on launching!!!",
+     "on Rill Browser: I opened History at the end of the day and it read like a diary. I\u2019ve never looked at my Chrome history for fun. Congratulations on the launch"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Antelog is interesting for security, but it doesn't offer the comprehensive agent management and interaction features I value.",
+      "competitor_has": "Annotate provides a seamless way to create video prompts for AI agents, which is crucial for guiding complex tasks. BrowserOS neo and Freebuff offer broader agent management and interaction capabilities that Antelog lacks. I'm used to running parallel agents and having a rich environment for them, as I mentioned with Superset.",
+      "would_switch_if": "I would switch if Antelog integrated robust visual prompting, multi-agent orchestration, and a more interactive environment for managing agent tasks, similar to what I get with Annotate or BrowserOS neo, while still maintaining its security features.",
+      "dealbreaker": "My dealbreaker would be if Antelog only focused on blocking and logging without offering any tools to enhance the agent's ability to understand and execute complex instructions effectively."
+     },
+     {
+      "user": 2,
+      "verdict": "Antelog's security focus is good, but I need more advanced agent orchestration and memory management.",
+      "competitor_has": "Faylee and Harness by Autonomous provide more comprehensive agent orchestration and memory management, allowing for more complex and interconnected AI workflows. Living Brain, which I upvoted, focuses on an interoperable memory layer, which is key for advanced agentic AI.",
+      "would_switch_if": "I would switch if Antelog expanded its capabilities to include advanced agent orchestration, shared memory management across agents, and tools for building more sophisticated agentic systems, while retaining its security features.",
+      "dealbreaker": "My dealbreaker would be if Antelog remained solely a 'brake' and 'logger' without evolving into a platform that helps build and manage more intelligent and interconnected AI agent systems."
+     },
+     {
+      "user": 3,
+      "verdict": "Antelog addresses a valid security concern, but I prioritize tools that enhance agent capabilities and workflow orchestration.",
+      "competitor_has": "GitBot allows me to turn repetitive tasks into reusable bots, and Port22 and Harness by Autonomous offer more robust agent orchestration and management features. I'm a founder and developer, so I'm looking for tools that empower agents to do more, not just prevent them from doing wrong.",
+      "would_switch_if": "I would switch if Antelog integrated features for creating, managing, and orchestrating agent workflows, similar to GitBot or Port22, allowing me to build more powerful and reliable AI solutions, in addition to its security benefits.",
+      "dealbreaker": "My dealbreaker would be if Antelog's security measures were so restrictive that they hindered the development and deployment of innovative AI agent applications."
+     },
+     {
+      "user": 4,
+      "verdict": "Antelog's safety features are valuable, but I'm more focused on tools that enable multi-agent collaboration and advanced agent capabilities.",
+      "competitor_has": "ManyAgents provides a comprehensive environment for running a team of AI coding agents, including orchestration, review, and a built-in browser. Rill Browser and CodeBurn also offer more integrated development and testing environments for agents. My upvote for MAO (Team up Claude Code, Codex and Grok on one canvas) shows my interest in collaborative agent work.",
+      "would_switch_if": "I would switch if Antelog evolved into a platform that not only secured agents but also facilitated multi-agent collaboration, advanced orchestration, and integrated testing environments, similar to ManyAgents.",
+      "dealbreaker": "My dealbreaker would be if Antelog remained a standalone security tool without offering features that enhance the overall productivity and collaborative potential of AI coding agents."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "You uniquely win developers and founders who prioritize data security, integrity, and an immutable audit trail for their AI coding agents.",
+    "what_wins_them": "The specific feature that wins them is the proactive blocking of dangerous AI actions (like deleting databases or leaking secrets) combined with the immutable, comprehensive logging of every AI command and data transfer.",
+    "who_you_lose_and_to_whom": "You lose developers and founders to competitors like Annotate, ManyAgents, Faylee, Harness by Autonomous, and GitBot, who prioritize advanced agent orchestration, visual prompting, multi-agent collaboration, and broader agent management features.",
+    "what_loses_them": "The specific missing thing is the lack of comprehensive agent management, orchestration, interactive prompting, and tools for building more complex, collaborative, and capable AI agent systems.",
+    "move": "Consider integrating a 'safe execution' or 'sandboxed orchestration' layer that allows users to define and manage multi-agent workflows within Antelog's secure environment, providing some of the orchestration benefits of competitors while maintaining your core security promise."
+   }
+  },
+  {
+   "id": "1306959",
+   "rank": 10,
+   "name": "Replay",
+   "tagline": "Mac meeting recorder with no bot. Pay once, no subscription",
+   "market_people": 1356,
+   "win": {
+    "people": 204,
+    "roles_vs_market": {
+     "investor": 0.74,
+     "student": 0.72
+    },
+    "median_votes": 74.5,
+    "competitors_backed_more": [
+     [
+      "MeetPaw",
+      3.22
+     ],
+     [
+      "Sales Studio",
+      2.44
+     ],
+     [
+      "Loqui",
+      2.43
+     ],
+     [
+      "Smart Jelly",
+      2.42
+     ],
+     [
+      "Flyout",
+      2.36
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Cotypist",
+      0.44
+     ],
+     [
+      "Hansel",
+      0.34
+     ],
+     [
+      "Speechius",
+      0.33
+     ],
+     [
+      "Epilude",
+      0.31
+     ],
+     [
+      "HealthyNotch",
+      0.3
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Juno: One of the most interesting launches today! The part some people might miss is that live transcription brings its own trust problem like a word commits on screen, then self-correction rewrites it a beat later and now I'm watching my own text flicker. I wonder ",
+     "on Cotypist: How do you keep the first suggestion after an idle pause from eating a cold-read penalty? Do you pin a hot subset or just accept the occasional slow first token? Great work, you guys are on the right path!",
+     "on RecordMeeting: Is there a time limit for meeting recordings?",
+     "on HyNote for Mac: Interesting idea. Congrats on launch. Will it be allowed for IOs?",
+     "on HyNote for Mac: Crazy! I am gonna try it. Was looking for something like this for some time now. Just curious about the privacy policy. Does the data go online?",
+     "on Dictantor: Dictantor is a cool name. Points for that if I'm being honest..",
+     "on MeetPaw: Seems like a great product! Planning to use almost regularly \ud83c\udf1f Brownie points for being open-source!",
+     "on MeetPaw: Small but great idea & it's real implementation with open source code. Thanks",
+     "on MeetPaw: Can you set up a keyboard shortcut so you don\u2019t have to open the menu at all?",
+     "on MeetPaw: Congrats Naz on launching MeetPaw. Keeping it free, open source and local with no signup matters for a tool that needs access to my calendars and meeting accounts. If it does make it into the Mac App Store, will that version keep the same features as the open-"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Replay's local processing and one-time payment model are highly appealing, especially the separate audio tracks for better analysis.",
+      "why_this": "I'm drawn to Replay because it avoids the bot intrusion that other notetakers have, and the one-time payment is a huge plus compared to constant subscriptions. The separate audio tracks for 'Me' and 'Them' are a unique feature that would be incredibly useful for detailed analysis, which Cluinn and MeetPaw don't offer in the same way.",
+      "the_difference": "The ability to record with no bot joining the call and having separate audio tracks for each speaker, all processed locally with a single payment, is the key differentiator for me.",
+      "would_drop_it_if": "I would drop Replay if it started requiring a subscription for core features or if the local processing became unreliable or too slow, especially for the transcription and summary generation."
+     },
+     {
+      "user": 2,
+      "verdict": "Replay's bot-free, local recording with separate audio tracks and on-device processing aligns perfectly with my privacy and control preferences.",
+      "why_this": "I appreciate Replay's approach to privacy by keeping everything local and not having a bot join the call, which is a common annoyance. The separate audio tracks and on-device transcription are features that stand out, as I'm always looking for tools that give me more control over my data and workflow, unlike generic notetakers.",
+      "the_difference": "The complete on-device processing, including transcription and summaries, without a bot joining the meeting, and the separate audio tracks for 'Me' and 'Them' are what make Replay unique and appealing.",
+      "would_drop_it_if": "I would drop Replay if it introduced any cloud-based processing for sensitive meeting data or if the on-device AI features like summaries and action items became less accurate or required constant updates that broke functionality."
+     },
+     {
+      "user": 3,
+      "verdict": "Replay's one-time payment and bot-free, local recording with separate audio tracks are a significant improvement over subscription-based alternatives.",
+      "why_this": "As a founder, I'm constantly looking for tools that offer value without recurring costs, and Replay's one-time payment is a major draw. The bot-free recording and separate audio tracks are also crucial for maintaining a professional meeting environment and getting precise transcripts, which Ulpaso offers for basic transcription but not with the same level of detail.",
+      "the_difference": "The combination of a one-time payment, no bot joining the call, and the separate audio tracks for 'Me' and 'Them' processed entirely on-device is the unique selling proposition for me.",
+      "would_drop_it_if": "I would drop Replay if the quality of the on-device transcription and summarization significantly degraded, or if it started requiring a subscription for future updates or advanced features."
+     },
+     {
+      "user": 4,
+      "verdict": "Replay's commitment to privacy through local processing and the absence of a meeting bot are key advantages for my workflow.",
+      "why_this": "I'm very focused on privacy, and Replay's on-device processing and no-bot approach are exactly what I look for. HyNote for Mac is good for local transcription, but Replay's additional features like separate audio tracks and on-device summaries without a bot joining the call make it more comprehensive and appealing for my marketing needs.",
+      "the_difference": "The complete privacy of on-device processing for transcripts, summaries, and action items, combined with the absence of a meeting bot and separate audio tracks, is the standout feature.",
+      "would_drop_it_if": "I would drop Replay if it ever compromised on its local-only processing for sensitive data or if the Apple Intelligence features for summaries and action items became unreliable or required an internet connection for core functionality."
+     }
+    ]
+   },
+   "lose": {
+    "people": 63,
+    "roles_vs_market": {
+     "founder": 0.72,
+     "marketer": 1.24,
+     "designer": 1.82,
+     "investor": 1.2,
+     "student": 0.58,
+     "product manager": 0.69
+    },
+    "median_votes": 117.0,
+    "competitors_backed_more": [
+     [
+      "RecordMeeting",
+      5.65
+     ],
+     [
+      "Cotypist",
+      3.96
+     ],
+     [
+      "HealthyNotch",
+      3.35
+     ],
+     [
+      "Speechius",
+      2.69
+     ],
+     [
+      "TouchGrass",
+      2.24
+     ]
+    ],
+    "competitors_backed_less": [
+     [
+      "Zella",
+      0.0
+     ],
+     [
+      "NotchX",
+      0.0
+     ],
+     [
+      "Chunk",
+      0.0
+     ],
+     [
+      "Koi",
+      0.0
+     ],
+     [
+      "Sales Studio",
+      0.0
+     ]
+    ],
+    "their_comments_on_competitors": [
+     "on Hansel: Juggling different tasks and trying to understand what useful stuff I got done today sounds familiar... I'd definitely try it if I had Mac. Looks promising! Good luck on your launch, Ben!"
+    ],
+    "interviews": [
+     {
+      "user": 1,
+      "verdict": "Replay is missing the real-time interaction and bulk processing capabilities that I value in other tools.",
+      "competitor_has": "HyNote for Mac provides excellent local transcription, and I'm used to tools that can handle bulk processing of data, which Replay doesn't seem to offer for meeting analysis. I also appreciate tools that integrate well with existing workflows for exporting data.",
+      "would_switch_if": "I would switch if Replay offered a robust way to export and analyze meeting data in bulk, perhaps with customizable templates for summaries, and if it could integrate with other agentic platforms for deeper insights beyond just local storage.",
+      "dealbreaker": "My dealbreaker would be the inability to easily export and integrate the meeting data with other tools for further analysis or if the search functionality across past meetings was not powerful enough to quickly find specific information."
+     },
+     {
+      "user": 2,
+      "verdict": "Replay lacks the real-time, in-meeting question answering and broader language support that I find crucial in competitors.",
+      "competitor_has": "Cluinn's ability to answer questions during the call is a game-changer for me, as it provides immediate value. I also need broader language support, which some competitors offer, and Replay's reliance on Apple Intelligence might limit that.",
+      "would_switch_if": "I would switch if Replay integrated real-time, in-meeting question answering capabilities similar to Cluinn, and significantly expanded its language support beyond what Apple Intelligence currently offers, while maintaining its local processing.",
+      "dealbreaker": "The dealbreaker for me is the absence of real-time, in-meeting question answering. Waiting until after the call for summaries and action items is less efficient than getting answers when they're needed most."
+     },
+     {
+      "user": 3,
+      "verdict": "Replay's post-meeting processing is less appealing than the real-time interaction and broader ecosystem integration offered by competitors.",
+      "competitor_has": "Pauta provides a private memory for every conversation, which implies a more integrated and accessible knowledge base. MeetPaw offers instant meeting creation, which is a different but valuable real-time utility. Replay's focus is purely on post-meeting analysis, which is a step behind.",
+      "would_switch_if": "I would switch if Replay offered more real-time interaction during meetings, perhaps with smart cards for unanswered questions like Cluinn, or if it could integrate its local recordings into a broader, searchable knowledge base that's easily accessible and shareable.",
+      "dealbreaker": "My dealbreaker is the lack of any real-time assistance or interaction during the meeting itself. The value is all post-call, which means I'm still missing opportunities for immediate insights or actions."
+     },
+     {
+      "user": 4,
+      "verdict": "Replay's lack of broader platform support and integration with other developer tools makes it less attractive than competitors.",
+      "competitor_has": "TouchGrass and Speechius offer local transcription, but I'm looking for tools that can integrate with my development workflow, perhaps by allowing custom scripting or API access to the transcribed data. Replay's focus on Apple's ecosystem and local files feels a bit isolated.",
+      "would_switch_if": "I would switch if Replay offered more developer-friendly features, such as an API for accessing and processing the local meeting data, or if it could integrate with other agentic platforms for more advanced analysis and automation.",
+      "dealbreaker": "The dealbreaker for me is the limited extensibility and integration with other tools. While local processing is good, if I can't easily leverage that data in my own scripts or other applications, its utility is diminished."
+     }
+    ]
+   },
+   "synthesis": {
+    "who_you_uniquely_win": "You uniquely win users who prioritize privacy, a bot-free meeting experience, and a one-time payment model for comprehensive local meeting analysis.",
+    "what_wins_them": "The specific features that win them are the absence of a meeting bot, separate audio tracks for 'Me' and 'Them', entirely on-device processing for transcripts, summaries, and action items, and the one-time payment model.",
+    "who_you_lose_and_to_whom": "You lose users to competitors like Cluinn, Pauta, and other tools that offer real-time in-meeting assistance, broader language support, or deeper integration with developer workflows and bulk data processing.",
+    "what_loses_them": "The specific missing things are real-time, in-meeting question answering, broader language support beyond Apple Intelligence, and robust integration/export capabilities for developer workflows or bulk data analysis.",
+    "move": "Consider exploring a 'real-time insights' feature that, while still local and bot-free, could flag key questions or discussion points during the call for immediate review, without compromising the core privacy and local processing value proposition."
+   }
+  }
+ ],
+ "usd": 0.061
+}
