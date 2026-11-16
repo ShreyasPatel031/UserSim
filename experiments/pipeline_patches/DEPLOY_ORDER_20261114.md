@@ -55,3 +55,12 @@ DEPLOYED Nov 15 ~19:50 PT (03:52Z Nov 16), under Shreyas's standing rule (chat, 
   afterwards gave llm_pitch / llm_brand null 0% (was 100%) and hist_hunter_rel|has_history 0% (was 25%).
   Rollback: bash ~/w/stage/20261115_next_bundle/deploy_nb.sh rollback (backup map ~/w/nb_backup/map.txt).
 - NOTE step 5 (live-code 2) expects h25_live e3af37b4 and will now refuse. To run it: deploy_nb.sh rollback, then step 5, then deploy_nb.sh deploy_h25 (it picks the ff40d796 variant).
+
+## Rehearsal standard (orchestrator 09:54Z Nov 16; applies to every deploy from now on)
+"Rehearsed" means: each CHANGED job ran end to end on the latest real day, with DRY output to scratch, before install. An import gate or a bash -n alone is NOT a rehearsal (Nov 16: readable_shadow 2851a666 passed its import gate and failed its first nightly run).
+- Next bundle: `bash ~/w/stage/20261116_next_bundle_r5/run_chain.sh deploy|deploy_h25` runs check -> `rehearse.sh <day>` -> deploy and stops at the first failure. rehearse.sh runs arm2_live (full predict), readable_shadow, h25_shadow, arm2_shap, comment_forecast P030, arm3_shadow (and tw.sh syntax) for every file that differs from the installed one, from scratch code trees (results/ is a copy, data/ read-only), with a gsutil stub that refuses every upload / rm. `REHEARSE_ALL=1` runs all jobs; `REHEARSE_DAY` picks the day. First full run: Nov 16, 7/7 jobs passed.
+- Every other deploy script (12a, 12.8, live-code, arm 3): its entry in this file must name the end-to-end DRY command run on the latest real day and its result before the deploy line. Template:
+  `N. <name>: <deploy command> (<md5>)`
+  `   Rehearsal: <end-to-end DRY command on <day>, outputs to scratch> -> <result>`
+  `   Post-deploy check: <command> -> <expected>`
+  `   Rollback: <command>`
