@@ -22,7 +22,7 @@ mapfile -t targets < <(python3 - <<PY
 import json
 from pathlib import Path
 m=json.loads(Path("$ART/fleet_measure.json").read_text())
-dead, cf, stale = [], [], []
+dead, cf, stale, stale_warm = [], [], [], []
 age_min = int("${STALE_AGE}")
 for s in m.get("slots", []):
     slot=int(s.get("slot") or 0)
@@ -40,8 +40,18 @@ for s in m.get("slots", []):
         and age >= age_min
     ):
         stale.append(slot)
+    elif (
+        st == "stale"
+        and s.get("batch")
+        and wc == 0
+        and age >= 600
+        and age < age_min
+    ):
+        stale_warm.append(slot)
 # dead, then hung stale (batch alive, no person row in 10m), then cf_wall
 ordered = dead + sorted(stale, key=lambda x: -next(
+    (ss.get("age") or 0 for ss in m.get("slots", []) if int(ss.get("slot") or 0) == x), 0
+)) + sorted(stale_warm, key=lambda x: -next(
     (ss.get("age") or 0 for ss in m.get("slots", []) if int(ss.get("slot") or 0) == x), 0
 )) + cf
 _skip = {int(x) for x in """$FLEET_UPVOTE_SLOTS""".split() if x.strip().isdigit()}
@@ -82,7 +92,12 @@ import json
 from pathlib import Path
 m=json.loads(Path('$ART/fleet_measure.json').read_text())
 for s in m.get('slots',[]):
-  if int(s.get('slot') or 0)==int('$slot') and s.get('state')=='stale' and s.get('batch'):
+  if int(s.get('slot') or 0)!=int('$slot'):
+    continue
+  if s.get('state')!='stale' or not s.get('batch'):
+    continue
+  age=int(s.get('age') or 0)
+  if age>=int('$STALE_AGE'):
     raise SystemExit(0)
 raise SystemExit(1)
 " 2>/dev/null && use_stale=1
@@ -92,7 +107,7 @@ raise SystemExit(1)
     --ssh-flag=-oConnectTimeout=12 </dev/null --command='pgrep -f "[p]deep.py|[p]h_batch.py" >/dev/null || exit 1
 f=$(ls -t /opt/ph/reuse/run_*.log 2>/dev/null | head -1) || exit 1
 find "$f" -mmin -12 2>/dev/null | grep -q . || exit 1
-tail -30 "$f" 2>/dev/null | grep -qE "paged|repage|op_seen|Profile|FINGERPRINT" && { echo STALE_SKIP_ACTIVE_PULL; exit 0; }
+tail -40 "$f" 2>/dev/null | grep -qE "paged|repage|op_seen|Profile" && { echo STALE_SKIP_ACTIVE_PULL; exit 0; }
 exit 1' 2>/dev/null | grep -q STALE_SKIP_ACTIVE_PULL && skip=1
   if [[ "$skip" == 1 ]]; then
     echo "stale_skip_active_pull slot=$slot"
