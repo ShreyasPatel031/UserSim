@@ -43,7 +43,9 @@ def history_rows(day):   # per listed re-read person: p, y; plus per-launch obse
     reread = set(last_read[last_read > close].index) & held; hf = set(first_read[first_read < st].index) & held; ok = reread & hf
     if not ok: return None
     obs = U[(U.lday == day) & U.person_id.isin(ok)].groupby("target_id").person_id.agg(set).to_dict()
-    F = F[F.person_id.isin(ok)].copy(); F["y"] = [p_ in obs.get(l, ()) for l, p_ in zip(F.launch_id, F.person_id)]
+    F = F[F.person_id.isin(ok)].copy()
+    if F.empty: return None   # no listed person was re-read after this day's close yet: not scorable
+    F["y"] = [p_ in obs.get(l, ()) for l, p_ in zip(F.launch_id, F.person_id)]
     L = pd.DataFrame({"launch_id": list(F.launch_id.unique())}); L["obs"] = L.launch_id.map(lambda l: len(obs.get(l, ()))); L["shown"] = L.launch_id.map(shown)
     L["reread_share"] = len(ok) / max(1, len(hf)); L["day"] = day
     ov = {l: obs.get(l, set()) for l in L.launch_id}
@@ -71,7 +73,9 @@ def base_share(day, M=None):
 
 
 def group_table(F, iso, c, k_cov, bshare, M=None):
-    F = F.assign(g=F.person_id.map(M or GRP)).dropna(subset=["g"]); F["pc"] = iso.predict(F.p) * c
+    F = F.assign(g=F.person_id.map(M or GRP)).dropna(subset=["g"])
+    if F.empty: return {}
+    F["pc"] = iso.predict(F.p) * c
     out = {}
     for lid, f in F.groupby("launch_id"):
         e = f.groupby(f.g).pc.sum(); tot = e.sum()
