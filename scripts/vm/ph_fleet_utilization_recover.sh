@@ -23,8 +23,7 @@ FLEET_SKIP_STALE_UNHANG=0
 STALE_UNHANG_MIN="${FLEET_STALE_UNHANG_MIN_COMPLETE_PPM:-6}"
 if [[ "${FLEET_HOLD_UNHANG:-0}" == 1 ]]; then
   FLEET_SKIP_STALE_UNHANG=1
-  MAX=0
-  echo "stale_unhang_paused FLEET_HOLD_UNHANG=1 (orchestrator: no unhang/wakeup thrash)"
+  echo "stale_unhang_paused FLEET_HOLD_UNHANG=1 (no stale_unhang loops; dead/cf wakeup still allowed)"
 fi
 _cur_ppm="$(python3 -c "import json; print(json.load(open('$ART/fleet_measure.json')).get('complete_ppm',0))" 2>/dev/null || echo 0)"
 if [[ "${FLEET_SKIP_STALE_UNHANG}" != 1 ]] && python3 -c "exit(0 if float('${_cur_ppm}') < float('$STALE_UNHANG_MIN') else 1)" 2>/dev/null; then

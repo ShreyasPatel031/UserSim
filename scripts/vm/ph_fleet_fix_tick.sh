@@ -9,7 +9,7 @@ source "$PACE_ENV_FILE"
 unset PACE_SERVICE_ACCOUNT
 # Orchestrator crisis: no stale_unhang / wakeup loops while clean supervisor restart runs.
 export FLEET_HOLD_UNHANG="${FLEET_HOLD_UNHANG:-1}"
-export FLEET_WAKEUP_MAX="${FLEET_WAKEUP_MAX:-0}"
+export FLEET_WAKEUP_MAX="${FLEET_WAKEUP_MAX:-12}"
 python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
 bash "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" >/dev/null 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh"

@@ -1,7 +1,7 @@
 # upvote_refresh.status (fleet-cursor)
 
 **Run:** `20261108t082000z`  
-**Updated (UTC):** `2026-11-16T18:12Z`  
+**Updated (UTC):** `2026-11-16T22:40Z`  
 **LIVE_PRIORITY_HOLD:** no historical fleet scale-up  
 
 ## Root cause (08:50Z orchestrator / Population audit)
@@ -69,6 +69,17 @@ E5 writes `usersim_sim/raw/_cursor/refresh_priority_<YYYY-MM-DD>.txt` (~2.3k pre
 | Progress | `ph_fleet_refresh_priority_progress.py` |
 
 **Now (18:34Z):** merged `refresh_upvotes_20261116T1834Z_priority_merged.txt` (days **13→16** oldest-first + activity tail); rolled **9/27/38**. ACK orchestrator `22625546419676885`; DONE relay when **2026-11-13** drained (`upvote_refresh_priority.state.json`, tmux watch).
+
+## Progress (22:40Z) — orchestrator restart + priority reapply
+
+| Metric | Value |
+|--------|--------|
+| RCA (stale thrash) | `FLEET_HOLD_UNHANG=1` had set `FLEET_WAKEUP_MAX=0` → **zero** dead/cf wakeups; fixed (hold still blocks stale_unhang only) |
+| Stale restart | `ph_fleet_inplace_restart_slots.sh` **9 27 38 40 34 31 29 30** (existing IPs) |
+| Priority queue | `refresh_upvotes_20261116T2235Z_priority_merged.txt` (**82,700** handles; day **13** first **2,256**); seeded + ROLL_OK **9/27/38** |
+| Workers | `ph_batch --mode repullupvotes` live on **9/27/38** since **22:37Z** |
+| Stamped SB uploads | **0** so far post-restart (ramp ~36s/tab); watch `_pacetest/shared` + `done_n` in priority progress |
+| Fleet post-fix | **22:38Z** measure: complete_ppm **1.93**, active **6**, stale **9** (recovering) |
 
 ## References
 

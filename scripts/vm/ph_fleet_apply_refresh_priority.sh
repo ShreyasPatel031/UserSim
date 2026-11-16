@@ -61,6 +61,8 @@ print(json.dumps(state, indent=2))
 PY
 
 export PACE_ENV_FILE="$ROOT/results/ph_fleet_full/${RUN_ID}/pace.env"
+export GCP_PROJECT="${GCP_PROJECT:-$(gcloud config get-value project 2>/dev/null)}"
+export PACE_ZONE="${PACE_ZONE:-$(gcloud compute instances list --filter="name=feeder-fleet-${RUN_ID}-30" --format='value(zone.basename())' 2>/dev/null)}"
 export PRESERVE_QUEUE_CACHE=0
 bash "$ROOT/scripts/vm/ph_fleet_seed_upvote_refresh.sh" "$MERGED_GCS"
 export ONLY_SLOTS="$UPVOTE_SLOTS"
