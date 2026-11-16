@@ -7,7 +7,7 @@ Writes, from files already in the bucket (counts only, no handles):
                                             need_missing, freshness, coverage, fleet, summary) in one file
 Inputs: HAVE_INDEX (local have_index.jsonl from have_index.py), NEED (need_list.jsonl), the newest vote_coverage ledger
 row, the newest freshness check rows, the launch-reread ledger, the fleet status.json and the site health endpoint.
-Usage: scorecard.py HAVE_INDEX NEED_LIST OUT_DIR
+Usage: scorecard.py HAVE_INDEX NEED_LIST OUT_DIR [VM_DIR]   (VM_DIR: count store people carrying an upvote refresh)
 """
 import collections
 import datetime as dt
@@ -56,7 +56,25 @@ def main():
         health = {}
     lb = (health.get("checks") or {}).get("live_board") or {}
     lr = (health.get("checks") or {}).get("live_record") or {}
-    alive = sum(1 for s in fleet.get("slots_summary") or [] if s.get("state") not in ("dead", "stale"))
+    slots = fleet.get("slots_summary") or []
+    states = collections.Counter(str(s.get("state")) for s in slots)
+    alive = states.get("active", 0)  # stale = no recent progress, cf_wall = Cloudflare-blocked, dead = down (Nov 16)
+    # 24-h rate from Population's own audit ledgers: staged whole-person saves (not FAIL) in the last 24 h / 1440 min
+    since = (now - dt.timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    cut = (now - dt.timedelta(hours=25)).strftime("%Y%m%dT%H%MZ")
+    tsvs = [l for l in sh("gsutil", "ls", f"{G}/raw/_cursor/audit_*.tsv").split() if l.rsplit("audit_", 1)[-1][:-4] >= cut]
+    n24, fail24 = 0, 0
+    for t in tsvs:
+        for l in sh("gsutil", "cat", t).splitlines():
+            c = l.split("\t")
+            if len(c) > 2 and not l.startswith("#") and c[1] >= since:
+                fail24 += c[2] == "fail"
+                n24 += c[2] != "fail"
+    ref_n = None
+    if len(sys.argv) > 4:  # VM_DIR: store records carrying a whole-person upvote refresh (fleet 08:53Z Nov 16)
+        g = subprocess.run(["grep", "-rlE", "--include=*.json", '"upvotes_refreshed_at"|"refresh"[^,]{0,40}read_utc', sys.argv[4]],
+                           capture_output=True, text=True).stdout
+        ref_n = len({os.path.basename(x)[:-5].replace("_f1fix", "").lower() for x in g.split()})
     wk = next((v for k, v in vc.items() if k.endswith("2026-11-14") and k.startswith("2026-11-08")), {}) or \
         next((v for k, v in vc.items() if ".." in k and k.startswith("2026-11-0")), {})
     octw = vc.get("2026-10-01..2026-10-24", {})
@@ -72,7 +90,11 @@ def main():
                                                          "share_all_without_flagged", "share_top3_without_flagged", "launches_over_100pct_by_variant")}
                           for k, v in vc.items() if ".." in k},
         "freshness_open": [{k: c.get(k) for k in ("feed", "open_since", "gap_min", "vms_alive", "slots_today")} for c in open_feeds],
-        "fleet": {"status_utc": fleet.get("utc"), "vms_alive": alive},
+        "fleet": {"status_utc": fleet.get("utc"), "slots": len(slots), "slot_states": dict(states), "vms_alive": alive,
+                  "complete_ppm_15m_fleet": fleet.get("complete_ppm_15m"), "attempt_ppm_15m_fleet": fleet.get("attempt_ppm_15m"),
+                  "whole_person_saves_24h": n24, "complete_ppm_24h_audited": round(n24 / 1440, 2), "fail_24h": fail24},
+        "upvote_refresh": {"store_people_with_refresh": ref_n,
+                           "daily_audit": vc.get("upvote_refresh")},
         "site": {"live_board_configured": lb.get("configured"), "live_board_age_s": lb.get("age_s"), "snapshot_slots_today": lr.get("slots_today")},
     }
     os.makedirs(out, exist_ok=True)
@@ -100,13 +122,15 @@ Tabs still needed (people): {', '.join(f'{t} {n:,}' for t, n in tab_needed.most_
 |---|---|---|---|
 | Vote total per launch over the day | every launch every 15 min | 15-min API capture (Data Feeder); 25 h 50 min outage Nov 13 19:00Z - Nov 14 20:50Z; day-close Nov 13 and first comment read Nov 14 missed | ledger raw/_audit/; capture owner Data Feeder / Cursor |
 | Exposure (board position) | homepage + leaderboard every 15 min | public leaderboard live (configured {lb.get('configured')}, age {lb.get('age_s')} s); site 15-min snapshot job slots today {lr.get('slots_today')} | site job not triggered since ~20:18Z Nov 14; owner website agent |
-| Who votes, when (pool) | every held person's new upvotes within 1 h of the launch day | daily vote coverage above; upvote_refresh job not yet writing (median days since last Upvotes read in the coverage row) | upvote_refresh owner Cursor fleet |
+| Who votes, when (pool) | every held person's new upvotes within 1 h of the launch day | daily vote coverage above; upvote_refresh: {ref_n if ref_n is not None else 'n/a'} store people carry a refresh read (median days since last Upvotes read in the coverage row) | upvote_refresh owner Cursor fleet |
 | Who votes (outside the pool) | n/a on PH | pool growth via fleet; {need_n:,} on the need list | orchestrator |
 | Daily month reread of launches (warehouse) | 31-day part by 01:30 PT D+1 | ledger raw/_audit/launch_reread_ledger.jsonl; missing D=Nov 4-6, late D=Oct 27/29/31 | pipeline VM owner |
 | Person records, whole-person | every held person complete | {sum(comp.values()):,} of {total:,} | fleet completion queue raw/_cursor/completion_queue_*.txt |
 
 ## Fleet
-- status.json {fleet.get('utc')}: {alive} VMs alive of 20.
+- status.json {fleet.get('utc')}: {alive} of {len(slots)} slots active; states {dict(states)} (stale = no recent progress, cf_wall = Cloudflare-blocked).
+- Fleet complete people per minute: {fleet.get('complete_ppm_15m')} (fleet, last 15 min); {round(n24 / 1440, 2)} over 24 h ({n24:,} whole-person saves audited by Population, {fail24} FAIL).
+- upvote_refresh: {ref_n if ref_n is not None else 'n/a'} store people carry a refresh read; daily audit: {vc.get('upvote_refresh')}.
 
 ## Open
 """ + "".join(f"- {c.get('feed')}: open since {c.get('open_since')}\n" for c in open_feeds)

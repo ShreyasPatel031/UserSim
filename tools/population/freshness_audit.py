@@ -185,8 +185,8 @@ def check():
         fs = json.loads(sh("gsutil", "cat", f"{G}/mailbox/from_cursor/status.json"))
         fu = ts(fs.get("utc"))
         slots = fs.get("slots_summary") or []
-        dead = [s.get("slot") for s in slots if s.get("state") in ("dead", "stale")]  # stale = no recent progress (Nov 15)
-        alive = sum(1 for s in slots if s.get("state") not in ("dead", "stale"))
+        dead = [s.get("slot") for s in slots if s.get("state") in ("dead", "stale", "cf_wall")]  # stale = no recent progress (Nov 15)
+        alive = sum(1 for s in slots if s.get("state") not in ("dead", "stale", "cf_wall"))  # cf_wall = Cloudflare-blocked (Nov 16)
         expected = len(slots)  # the slots the fleet lists (18 since Nov 13); a fixed 20 kept this open forever
         if not fu or (now - fu).total_seconds() / 60 > 20 or not expected or alive < expected or dead:
             out.append({"feed": "fleet_status", "last_good": fu.isoformat() if fu else None,
