@@ -49,7 +49,8 @@ def main():
     prov = {}
     stamp = time.strftime("%Y%m%dT%H%MZ", time.gmtime())
     done = {l.split("\t")[0] for l in lines(f"{CUR}/audited.tsv")}
-    if "--reaudit-held" in sys.argv:  # re-score people whose latest audit result was held_gate (whole, blocked only by a gate)
+    if "--reaudit-held" in sys.argv or "--reaudit-already-incomplete" in sys.argv:
+        # --reaudit-held: re-score people whose latest audit result was held_gate (whole, blocked only by a gate)
         last = {}
         # 04:5xZ Nov 13: one bulk copy, not one gsutil cat per audit file (105 files)
         AC = f"{W}/cursor_audit_cache/audits"
@@ -59,9 +60,16 @@ def main():
             for l in [x for x in open(u).read().splitlines() if x.strip() and not x.startswith("#")]:
                 f = l.split("\t")
                 if len(f) >= 3: last[f"{f[0]}@{f[1]}"] = f[2]
-        held = {k for k, v in last.items() if v == "held_gate"}
-        print(f"REAUDIT_HELD={len(held)}")
-        done -= held
+        if "--reaudit-held" in sys.argv:
+            held = {k for k, v in last.items() if v == "held_gate"}
+            print(f"REAUDIT_HELD={len(held)}")
+            done -= held
+        if "--reaudit-already-incomplete" in sys.argv:  # whole saves skipped as already_in_vm while the store copy was incomplete
+            cf_ = sorted(glob.glob(f"{W}/quality_*_complete.txt"))
+            comp_ = {l.split("\t")[0].strip().lower() for l in open(cf_[-1]) if l.strip()}
+            again = {k for k, v in last.items() if v == "already_in_vm" and k.rsplit("@", 1)[0].lower() not in comp_}
+            print(f"REAUDIT_ALREADY_INCOMPLETE={len(again)}")
+            done -= again
     st = lsl(f"{STAGE}/*.json")
     todo = sorted(n for n, t in st.items() if t >= START and f"{n}@{t}" not in done)
     print(f"STAGED_NEW={len(todo)}")
@@ -110,6 +118,12 @@ def main():
     rerun = set()
     for u in sh("gsutil", "ls", f"{R}/population/requests/rerun_whole_*.txt").stdout.split():
         rerun |= {l.split()[0].lstrip("@").lower() for l in lines(u)}
+    # 17:3xZ Nov 16: a whole save of a person whose store record is NOT complete always replaces it (lossless union).
+    # Before, only rerun_whole lists could replace, so completion-queue pulls that came back whole were marked
+    # already_in_vm and never merged (169 at 17:22Z). Store completeness = the newest quality_*_complete.txt.
+    cf = sorted(glob.glob(f"{W}/quality_*_complete.txt"))
+    store_complete = {l.split("\t")[0].strip().lower() for l in open(cf[-1]) if l.strip()} if cf else None
+    print(f"STORE_COMPLETE_SET={len(store_complete) if store_complete is not None else 'missing'}", flush=True)
     vm_clean = {}
     SC = f"{W}/cursor_audit_cache/status"  # 04:5xZ Nov 13: one incremental sync of all status logs (277 files, ~185 MB)
     for sub, src in (("stage", f"{STAGE}/status/"), ("vm", f"{R}/ph_population/people_live/vm/status/")):
@@ -204,7 +218,8 @@ def main():
                        "vm_rotation_evidence": "vm_evasion_or_unknown" in gate, "merged_by": f"cursor_audit {stamp} --merge-vm-held"}
             gate = []
         if ok and not gate:
-            if n in vm_t and not (n.lower() in rerun and st[n] > vm_t[n]):
+            stored_incomplete = store_complete is not None and n.lower() not in store_complete
+            if n in vm_t and not stored_incomplete and not (n.lower() in rerun and st[n] > vm_t[n]):
                 res = "already_in_vm"
             else:
                 res = "replace" if n in vm_t else "merge"
