@@ -86,7 +86,7 @@ E5 writes `usersim_sim/raw/_cursor/refresh_priority_<YYYY-MM-DD>.txt` (~2.3k pre
 | Metric | Value |
 |--------|--------|
 | Clean restart | **23:36–23:39Z** priority `2336Z`, pdeep seed+roll (non-upvote), inplace **11** slots |
-| Upvote RCA | `ph_batch --mode repullupvotes` **stuck before first log** (0-byte `run_*.log` since **14:38Z**); process in `poll()` — likely **portscreen/autorecover prescreen** hang; no camoufox → **0** stamped SB uploads |
+| Upvote RCA | **Pre-start `for h in handles` gsutil backup** on ~**27k**/VM partition + full `gsutil ls B/*.json` before `start` event → workers stuck **hours** with 0-byte run logs (not prescreen). Fix: **`patch_repull_upvotes_lazy_bak.py`** (lazy per-person backup; skip vm-wide have scan) |
 | Seed fix | `ph_fleet_seed_completion_queue.sh` now **skips slots 9/27/38** (ab4aa49c) |
 | Post-restart | **~23:40Z** complete_ppm **0.8**, active **6**, stale **10**; refresh **0/2256** |
 | Live feeds | **23:45 / 23:50 PT** weekly close + monthly re-read **preempt** fleet work (timer subs) |
