@@ -14,7 +14,8 @@ VM_GCS="${PACE_VM_GCS:-gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population/peop
 OVERLAY_GCS="${VM_GCS}/_code/overlays"
 STRATEGY="${PH_FLEET_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 D="$ROOT/scripts/vm/reuse_overlays"
-GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
+# Never inherit PH_GO_MODE from upvote_refresh in the parent shell (that pushed repullupvotes GO fleet-wide).
+GO_TOKEN="pdeep:fleet-${RUN_ID}"
 UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
 UPVOTE_GO=""
 UPVOTE_STRATEGY="${PH_UPVOTE_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_upvote_refresh.env}"
