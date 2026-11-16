@@ -2301,3 +2301,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - Nov 15 22:36 UTC hourly check + mailbox checked. Leaderboard live. Fleet recovered (population: 14/20 alive, saves from 16 VMs; complete_ppm 4.7–9.9). No wake needed this hour unless the rate falls.
 - Nov 15 22:55 UTC: E5 REAL24-focused (pre-registered; 168 launches): theme F1 36.6 vs panel 51.7 (−15.1 [−18.8,−11.4]); worse than unfocused REAL24 too. Not adopted; panel stays (PANEL − REAL24 theme F1 +9.3 [5.7,13.2] replicates). E5 back to the Nov 15 forward score; no new harness runs.
 - Nov 15 23:36 UTC hourly check + mailbox checked. Leaderboard live; fleet status above.
+- Nov 16 00:36 UTC hourly check + mailbox checked. Leaderboard live. Fleet recovered (status above). Wake sent for the two unstarted standing jobs (upvote_refresh with its own slots now; daily_launch_teams).
