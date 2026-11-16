@@ -32,7 +32,10 @@ def _item_key(t, x):
     v = x.get(k) if k else None
     if v in (None, ""):
         v = x.get("url") or x.get("id")
-    return f"{k}:{v}" if v not in (None, "") else json.dumps(x, sort_keys=True, default=str)
+    # 21:1xZ Nov 16: the _carried_from stamp union() adds is not part of the item; an id-less item keyed by its whole
+    # body changed key once stamped, so lost() flagged a kept item as lost (and re-merges could duplicate it)
+    return f"{k}:{v}" if v not in (None, "") else json.dumps({a: b for a, b in x.items() if a != "_carried_from"},
+                                                             sort_keys=True, default=str)
 
 
 def _fill(dst, src):

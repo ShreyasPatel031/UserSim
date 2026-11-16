@@ -56,3 +56,17 @@ def test_one_tab_refresh_never_replaces_a_whole_record():
     assert [x["ph_user_id"] for x in m["followers"]["items"]] == ["u1", "u2"]  # followers tab kept in place
     assert m["about"]["joined"] == "2020-01-01"
     assert [x["post_id"] for x in m["upvotes"]["items"]] == ["c", "a", "b"]
+
+
+def test_idless_item_carried_forward_is_not_reported_lost():
+    # Nov 16 21:01Z: an activity item with no id/url, keyed by its body, changed key once union() stamped _carried_from,
+    # so lost() refused a lossless merge; a re-merge must not duplicate it either
+    bare = {"type": "started a discussion", "product": "p", "url": None, "datetime": "2026-10-20T19:28:39-07:00", "text": None}
+    rich = dict(bare, url="https://example.invalid/p/1", event_id="1")
+    old = {"run": {"finished_utc": "2026-11-04T02:47:59Z"}, "activity": {"items": [bare]}}
+    new = {"run": {"finished_utc": "2026-11-16T20:00:00Z"}, "activity": {"items": [rich]}}
+    m = U.union(new, old)
+    assert U.lost(old, m) == (0, 0)
+    m2 = U.union(new, m)
+    assert U.lost(m, m2) == (0, 0)
+    assert len(m2["activity"].get("items_earlier") or []) == len(m["activity"].get("items_earlier") or [])
