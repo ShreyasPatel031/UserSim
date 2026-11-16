@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 source "${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t082000z/pace.env}"
 export GCP_PROJECT MVP_GCS_BUCKET
 TAG="${1:-$(date -u +%Y%m%dT%H%MZ)}"
-PRIORITY_DAYS="${REFRESH_PRIORITY_DAYS:-2026-11-13 2026-11-14 2026-11-15}"
+PRIORITY_DAYS="${REFRESH_PRIORITY_DAYS:-2026-11-13 2026-11-14 2026-11-15 2026-11-16}"
 TAIL_GCS="${REFRESH_TAIL_GCS:-usersim_sim/raw/_cursor/refresh_upvotes_20261116T0145Z_fleet.txt}"
 OUT_OBJ="usersim_sim/raw/_cursor/refresh_upvotes_${TAG}_priority_merged.txt"
 TMP="$(mktemp -d)"

@@ -58,6 +58,18 @@ When `repullupvotes` runs via `ph_batch.py`, saves historically went to **`peopl
 | Upvote slot state | **9/38** `dead` (win_complete=0); **27** `dead` but win_complete=1 in 15m window |
 | Action | `ph_fleet_inplace_restart_slots.sh 9 27 38` → **INPLACE_RESTART_STARTING** (GO=`upvote_go.token`) |
 
+## refresh_priority (orchestrator 18:10Z)
+
+E5 writes `usersim_sim/raw/_cursor/refresh_priority_<YYYY-MM-DD>.txt` (~2.3k predicted voters/day). Fleet drains **priority days first** (after 00:00 PT close), then activity tail `refresh_upvotes_*_fleet.txt`.
+
+| Step | Script |
+|------|--------|
+| Merge + wait | `ph_fleet_apply_refresh_priority.sh` |
+| Watch + done relay | `ph_fleet_refresh_priority_watch.sh` (tmux) |
+| Progress | `ph_fleet_refresh_priority_progress.py` |
+
+**Now (18:34Z):** merged `refresh_upvotes_20261116T1834Z_priority_merged.txt` (days **13→16** oldest-first + activity tail); rolled **9/27/38**. ACK orchestrator `22625546419676885`; DONE relay when **2026-11-13** drained (`upvote_refresh_priority.state.json`, tmux watch).
+
 ## References
 
 - `scripts/vm/ph_fleet_start_upvote_refresh.sh`, `fleet_upvote_refresh.env`
