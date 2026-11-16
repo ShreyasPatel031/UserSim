@@ -9,7 +9,8 @@ items_earlier). Reported for all launches and the day's top 3 (daily_rank <= 3),
 ph_discounted_likely; a column, nobody is deleted), plus:
   - over-count: launches where held upvoters exceed PH's displayed votes (count, and 3 post_ids for a check);
   - reads after launch day: held voters whose last Upvotes read is after the launch's PT day (only they can show it);
-  - upvote_refresh audit: people with a refresh delta, median days since the last Upvotes read.
+  - upvote_refresh audit: people with a refresh delta (upvotes.refresh*/delta* read_utc, or upvotes_refreshed_at from a whole-person
+    refresh resave), median days since the last Upvotes read.
 People are keyed by ph_user_id (file name only when the record has none). Launch facts come from tables/launches
 parquet parts ordered by read time (initial backfill first, then the daily rereads; the latest read of a launch wins).
 Counts only to stdout. Usage:
@@ -76,6 +77,10 @@ def main():
         key = str(d.get("ph_user_id") or "") or f"file:{h}"
         u = d.get("upvotes") or {}
         last = str((d.get("run") or {}).get("finished_utc") or "")
+        rt = str(d.get("upvotes_refreshed_at") or u.get("refreshed_at") or "")  # fleet 08:53Z Nov 16: whole-person refresh resave
+        if rt > last:
+            last = rt
+            refreshed.add(key)
         for kk, vv in u.items():  # upvote_refresh deltas (fleet job from Nov 14)
             if "refresh" in kk or "delta" in kk:
                 for e in (vv if isinstance(vv, list) else [vv]):
