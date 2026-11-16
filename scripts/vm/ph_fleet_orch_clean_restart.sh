@@ -10,7 +10,7 @@ RUN_ID="${PACE_FLEET_RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 QUEUE="${FLEET_COMPLETION_QUEUE:-usersim_sim/raw/_cursor/completion_queue_20261115T1100Z.txt}"
 export FLEET_HOLD_UNHANG=1
-export FLEET_WAKEUP_MAX=0
+export FLEET_WAKEUP_MAX=12
 export PH_FLEET_STRATEGY_ENV="${PH_FLEET_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 # Seeded pdeep_list is only used when RR_ONLY is off.
 export PH_FLEET_COMPLETION_DRAIN="${PH_FLEET_COMPLETION_DRAIN:-1}"

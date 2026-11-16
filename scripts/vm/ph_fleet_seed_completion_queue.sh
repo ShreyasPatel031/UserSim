@@ -9,7 +9,8 @@ RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 QUEUE="${1:-usersim_sim/raw/_cursor/completion_queue_20261115T1100Z.txt}"
 PREFIX="usersim_sim/raw/ph_population/people_live/vm"
-mapfile -t slots < <(awk 'NF && $1 !~ /^#/{print $1}' "$ART/slots.tsv")
+UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+mapfile -t slots < <(awk -v skip=" $UPVOTE_SLOTS " 'NF && $1 !~ /^#/ && index(skip, " "$1" ")==0 {print $1}' "$ART/slots.tsv")
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 gcloud storage cp "gs://${MVP_GCS_BUCKET}/${QUEUE}" "$TMP/queue.txt"
