@@ -98,3 +98,11 @@ header counts are stored. Anything less is not written, not counted, not reporte
 - Already-complete people are kept current by a daily upvote refresh that reads only the Upvotes tab, newest first, down to
   the first upvote already held (the diff), and appends the new upvotes. This is an update of a complete person, not a
   new pull, so it does not conflict with "pulled whole or not at all".
+
+## Rule for every agent: deploying rehearsed fixes (Shreyas, Nov 16 2026)
+
+Shreyas, verbatim: "The PH agent may deploy any rehearsed fix without asking me."
+
+- A fix on the deploy list (experiments/pipeline_patches/DEPLOY_ORDER_*.md) that has passed its VM rehearsal (check mode, import gates, rollback tested) is deployed by the PH agent without waiting for Shreyas, in the listed order, outside 23:30-01:00 PT.
+- Each deploy is logged in docs/RESEARCH_LOG.md with its commit, check result and rollback command. A failed post-deploy check is rolled back at once.
+- Model swaps (for example publishing arm 3) are not fixes; they follow the "how models are chosen" rule.
