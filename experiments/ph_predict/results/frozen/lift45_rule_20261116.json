@@ -1,0 +1,5 @@
+{"rule": "lift45 R(k, m): c = better published-00:05-ranked of hidden #4/#5 at the 03:45 read; if r0005(c) <= k and r0005(hidden #3) > m, swap hidden #3 and c",
+ "k": 4, "m": 10, "frozen_at": "2026-11-16T10:50Z",
+ "source": "lift45.py (f925a3d9) all-days best on 11 days Nov 2-15 (Nov 5-7 lack a published forecast in the warehouse; Nov 16 not yet in truth)",
+ "status": "forward shadow line from the night of Nov 17 (not adopted: LODO top-3 difference +6.1 [0.0, +15.2], lower bound not > 0)",
+ "scoring": "forward nights only (Nov 17 on): rule top 3 vs current hybrid top 3 against truth_daily; inputs = recorder read <= 03:45 PT + 90 s and warehouse forecasts launch_model"}
