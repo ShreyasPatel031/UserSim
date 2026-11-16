@@ -1,7 +1,7 @@
 # upvote_refresh.status (fleet-cursor)
 
 **Run:** `20261108t082000z`  
-**Updated (UTC):** `2026-11-16T22:40Z`  
+**Updated (UTC):** `2026-11-16T23:42Z`  
 **LIVE_PRIORITY_HOLD:** no historical fleet scale-up  
 
 ## Root cause (08:50Z orchestrator / Population audit)
@@ -80,6 +80,16 @@ E5 writes `usersim_sim/raw/_cursor/refresh_priority_<YYYY-MM-DD>.txt` (~2.3k pre
 | Workers | `ph_batch --mode repullupvotes` live on **9/27/38** since **22:37Z** |
 | Stamped SB uploads | **0** so far post-restart (ramp ~36s/tab); watch `_pacetest/shared` + `done_n` in priority progress |
 | Fleet post-fix | **22:38Z** measure: complete_ppm **1.93**, active **6**, stale **9** (recovering) |
+
+## Progress (23:42Z) — orchestrator 23:35Z + upvote RCA
+
+| Metric | Value |
+|--------|--------|
+| Clean restart | **23:36–23:39Z** priority `2336Z`, pdeep seed+roll (non-upvote), inplace **11** slots |
+| Upvote RCA | `ph_batch --mode repullupvotes` **stuck before first log** (0-byte `run_*.log` since **14:38Z**); process in `poll()` — likely **portscreen/autorecover prescreen** hang; no camoufox → **0** stamped SB uploads |
+| Seed fix | `ph_fleet_seed_completion_queue.sh` now **skips slots 9/27/38** (ab4aa49c) |
+| Post-restart | **~23:40Z** complete_ppm **0.8**, active **6**, stale **10**; refresh **0/2256** |
+| Live feeds | **23:45 / 23:50 PT** weekly close + monthly re-read **preempt** fleet work (timer subs) |
 
 ## References
 
