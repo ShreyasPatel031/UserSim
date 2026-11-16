@@ -1,0 +1,13 @@
+{
+ "day": "2026-11-15",
+ "checked_at": "2026-11-16T18:10Z",
+ "store_v3_written": "2026-11-16T10:25:57Z",
+ "scorable": false,
+ "parts": ["who.group_mix vs actual held voters (group and subgroup)", "CF-only and raw voter lists at N-hat"],
+ "why": "Scoring needs listed people (the frozen ~2,260-person CF list) who were held before the day and re-read after its close. None of the listed people has been re-read after the close of Nov 13, Nov 14 or Nov 15.",
+ "held_people_read_after_close": {"2026-11-13": 9859, "2026-11-14": 3108, "2026-11-15": 96},
+ "of_those_first_read_before_the_day": {"2026-11-13": 431, "2026-11-14": 431, "2026-11-15": 0},
+ "listed_people_reread_after_close": {"2026-11-13": 0, "2026-11-14": 0, "2026-11-15": 0},
+ "reading": "Reads since Nov 14 are almost all first reads of new people, not re-reads of held ones. The last day with re-read listed people is Nov 12.",
+ "needed": "Re-read the listed people after each day's close (ids in tmp/e5/private/backer_arms/<day>.parquet, arm CF-only), or a full held re-read."
+}
