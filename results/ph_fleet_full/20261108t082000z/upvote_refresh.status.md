@@ -1,7 +1,7 @@
 # upvote_refresh.status (fleet-cursor)
 
 **Run:** `20261108t082000z`  
-**Updated (UTC):** `2026-11-16T09:19Z`  
+**Updated (UTC):** `2026-11-16T18:12Z`  
 **LIVE_PRIORITY_HOLD:** no historical fleet scale-up  
 
 ## Root cause (08:50Z orchestrator / Population audit)
@@ -41,6 +41,22 @@ When `repullupvotes` runs via `ph_batch.py`, saves historically went to **`peopl
 | Pages read (mean / p95) | pending |
 | New upvotes appended | pending |
 | Dedicated slots | **9, 27, 38** — **ph_batch `--mode repullupvotes`** confirmed running |
+
+## Progress (11:09Z) — write gate RCA
+
+| Metric | Value |
+|--------|--------|
+| RCA | `ph_batch.py` full7 gate allowed only `--mode pdeep`; `repullupvotes` exited rc=5 instantly (`only pdeep PDEEP_MODE=full may write`) |
+| Fix | `patch_repallow_upvotes_write.py` + supervisor overlay sync; rolled **9/27/38** (`ROLL_OK`) |
+| Verify | Slot **9** running `ph_batch.py --mode repullupvotes` after roll |
+
+## Progress (10:59Z)
+
+| Metric | Value |
+|--------|--------|
+| Fleet measure | `complete_ppm=1.87`, `active_vms=8` (gates not met; `stale_unhang` paused) |
+| Upvote slot state | **9/38** `dead` (win_complete=0); **27** `dead` but win_complete=1 in 15m window |
+| Action | `ph_fleet_inplace_restart_slots.sh 9 27 38` → **INPLACE_RESTART_STARTING** (GO=`upvote_go.token`) |
 
 ## References
 
