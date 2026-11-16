@@ -62,6 +62,18 @@ for d, v in sorted(RO["days"].items()):
         h = hits_k(v[key], T) if T else [None] * 3
         rows.append({"day": d, "prediction": "03:45 PT", "flag": flag, "line": line, "status": "scored" if nr >= 10 else "excluded: fewer than 10 ranked",
                      "n_ranked": nr, "n_launches": len(v[key]), "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
+# (orchestrator 13:29Z Nov 16) clean_nosite was published on Nov 13 too, before results/web/forecast_0005 files existed: its order is only in
+# results/web/scoreboard_orders.json. Count it in the live line so the clean_nosite per-model line covers every scored day (Nov 13 + Nov 14),
+# as truth_crosscheck.py does. model_switch clean_from in results/web/scoreboard.json marks the first clean_nosite day.
+_SB = json.loads(gcat(f"{B}/results/web/scoreboard.json") or b"{}"); _CF = (_SB.get("model_switch") or {}).get("clean_from") or "2026-11-13"
+for r_ in (json.loads(gcat(f"{B}/results/web/scoreboard_orders.json") or b"{}").get("rows") or []):
+    if r_.get("point") == "0005" and r_.get("method") == "published" and r_.get("source") == "live" and _CF <= r_.get("day", "") < "2026-11-14":
+        base = {"day": r_["day"], "prediction": "00:05 PT", "flag": "live", "line": "published order in web/scoreboard_orders.json (no forecast_0005 file before Nov 14)", "model": "clean_nosite", "fallback_used": None}
+        T = first_part_truth(r_["day"])
+        if T is None: rows.append({**base, "status": "pending final ranks"})
+        elif len(T) < 10: rows.append({**base, "status": "excluded: fewer than 10 ranked", "n_ranked": len(T)})
+        else:
+            h = hits_k([str(i) for i in r_["order"]], T); rows.append({**base, "status": "scored", "n_launches": len(T), "hits_top3": h[0], "hits_top5": h[1], "hits_top10": h[2]})
 today = pd.Timestamp.now(tz="America/Los_Angeles").strftime("%Y-%m-%d")
 for d in [x for x in pd.date_range("2026-11-14", today).strftime("%Y-%m-%d") if x < today]:   # closed PT days only
     for pred, path, col0, newp in (("00:05 PT", f"{B}/results/web/forecast_0005/{d}.json", "predicted_rank", f"{B}/results/web/predictions/{d}_0005.json"),
@@ -92,10 +104,10 @@ for (pred, flag), g in S[S.status == "scored"].groupby(["prediction", "flag"]):
     o["first/last day"] = [g.day.iloc[0], g.day.iloc[-1]]; o["n_days"] = int(len(g)); o["day rule"] = DAY_RULE; summ[f"{pred} | {flag}"] = o
     if flag == "live" and "model" in g:   # arm 3 pre-publish audit: never let one live line hide a model change (arm 2 days vs arm 3 days)
         mg = g.assign(m=g.model.fillna("unknown").astype(str) + g.fallback_used.map(lambda x: f" (fallback: {x})" if isinstance(x, str) and x else ""))
-        o["models"] = mg.m.value_counts().to_dict()
+        o["models"] = mg.m.value_counts().to_dict(); mg = mg.assign(mf=mg.m, m=g.model.fillna("unknown").astype(str))   # per-model lines group by the model alone; fallback notes are listed, not split out
         if mg.m.nunique() > 1:
             o["WARNING"] = "this live line mixes days from more than one published model; show the per-model lines below, not the pooled one"
-            o["by model"] = {m: {"n_days": int(len(gm)), "first/last day": [gm.day.iloc[0], gm.day.iloc[-1]],
+            o["by model"] = {m: {"n_days": int(len(gm)), "first/last day": [gm.day.iloc[0], gm.day.iloc[-1]], "days_with_a_fallback_note": {d_: f_ for d_, f_ in zip(gm.day, gm.fallback_used) if isinstance(f_, str) and f_},
                                  **{f"top{k} hits %": ci(gm[f"hits_top{k}"] / k * 100) for k in (3, 5, 10)}} for m, gm in mg.groupby("m")}
 for (pred, flag), g in S[S.status.isin(["scored", "excluded: fewer than 10 ranked"]) & S.hits_top3.notna()].groupby(["prediction", "flag"]):
     if (g.status != "scored").any() and f"{pred} | {flag}" in summ:   # labelled extra, never the headline: every day incl. short lists
@@ -110,6 +122,7 @@ for k_, extra in (("03:45 PT | replay", ""), ("03:45 PT | replay (hidden rank al
 # old FULL launch model (all live inputs incl. named-maker inputs and llm_site; forecast.py before af6c25c2), Nov 13 clean_nosite
 # (scoreboard model_switch clean_from 2026-11-13). Figure from results/web/scoreboard.json summary (point 0005, method published, live).
 summ["00:05 PT | live, previous published model"] = {"line": "old full launch model (Oct 29 - Nov 12) then clean_nosite (Nov 13)", "flag": "live", "n_days": 11,
+    "overlap_note": "Nov 13 (clean_nosite) is also counted in '00:05 PT | live' under model clean_nosite; never add the two lines",
     "first/last day": ["2026-10-29", "2026-11-13"], "all days": {"top3 hits %": [51.5, 39.4, 63.6, 11], "top5 hits %": [60.0, None, None, 11], "top10 hits %": [73.6, None, None, 11]},
     "source": "results/web/scoreboard.json summary (0005 / published / live)", "day rule": DAY_RULE}
 for k_, was in (("00:05 PT | backtest", "58.1 / 65.2 / 76.9 on 183 days"), ("00:05 PT | backtest (clean_nosite, fallback model)", "54.5 / 64.7 / 76.0 on 183 days")):
@@ -139,5 +152,5 @@ out = {"version": "track_record_v1", "written_at": pd.Timestamp.now(tz="UTC").is
                   "top k were in the real top k.",
        "summary": summ, "days": rows}
 p = os.path.join(SP, "track_record_v1.json"); json.dump(out, open(p, "w"), indent=1, default=float)
-subprocess.run(["gsutil", "-q", "cp", p, f"{B}/tmp/e5/website/track_record_v1.json"], check=True)
+if "--no-upload" not in sys.argv: subprocess.run(["gsutil", "-q", "cp", p, f"{B}/tmp/e5/website/track_record_v1.json"], check=True)
 print(json.dumps(summ, default=float)[:3000]); print("statuses", S.groupby(["prediction", "flag", "status"]).size().to_dict())
