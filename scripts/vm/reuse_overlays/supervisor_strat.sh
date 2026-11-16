@@ -64,11 +64,13 @@ apply_overlays() {
     "$B/_code/overlays/patch_same_ip_only.py" \
     "$B/_code/overlays/patch_cf_fast_fail.py" \
     "$B/_code/overlays/patch_person_tab_budget.py" \
+    "$B/_code/overlays/patch_ph_batch_tab_progress.py" \
+    "$B/_code/overlays/patch_pdeep_tab_watchdog.py" \
     "$B/_code/overlays/patch_repull_upvotes_pervm.py" \
     "$B/_code/overlays/patch_ph_batch_save_sb.py" \
     "$B/_code/overlays/patch_repull_upvotes_staging.py" \
     "$B/_code/overlays/patch_repallow_upvotes_write.py" "$OVERLAYS/" 2>/dev/null || true
-  for _patch in patch_week_bytes.py patch_week_start.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_same_ip_only.py patch_lazy_tabs.py patch_lazy_tabs_sync.py patch_require_full_save.py patch_pdeep_partition.py patch_pdeep_rr_only.py patch_pdeep_coverage_queue.py patch_cf_fast_fail.py patch_person_tab_budget.py patch_repull_upvotes_pervm.py patch_ph_batch_save_sb.py patch_repull_upvotes_staging.py patch_repallow_upvotes_write.py; do
+  for _patch in patch_week_bytes.py patch_week_start.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_same_ip_only.py patch_lazy_tabs.py patch_lazy_tabs_sync.py patch_require_full_save.py patch_pdeep_partition.py patch_pdeep_rr_only.py patch_pdeep_coverage_queue.py patch_cf_fast_fail.py patch_person_tab_budget.py patch_ph_batch_tab_progress.py patch_pdeep_tab_watchdog.py patch_repull_upvotes_pervm.py patch_ph_batch_save_sb.py patch_repull_upvotes_staging.py patch_repallow_upvotes_write.py; do
     if [[ -f "$OVERLAYS/$_patch" && -x $PY ]]; then
       $PY "$OVERLAYS/$_patch" >>supervisor.log 2>&1 || true
     fi
