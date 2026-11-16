@@ -48,3 +48,10 @@ NEXT BUNDLE MANIFEST ADDITIONS (not deployed; to be built as a new named bundle)
   rollback with `… rollback`. Deploys only on Shreyas's word.
 - Before-reveal writer 12a.6 (orchestrator 02:37Z Nov 15): 20261115_next_bundle/b12a6 replaces step 3's 12a.5 folder when deployed (label and top-10 edge from the table). A 03:45 replay line (hybrid_lodo READ_H=3.75) is scored nightly by the PH ops session; it stays empty until 03:45 reads exist.
 - Stale-input audit (orchestrator 01:37Z Nov 15): the next bundle also carries the shared root builder rootlink.py (arm 2, arm 3, the tw 2025 shadows), comment_forecast cache refresh and tw.sh sync_wh alerting. See 20261115_next_bundle/README.md. Tonight only `deploy_h25` (with step 1) matters; the rest rides with step 6.
+
+DEPLOYED Nov 15 ~19:50 PT (03:52Z Nov 16), under Shreyas's standing rule (chat, Nov 16: rehearsed deploy-list fixes go in without asking):
+- Step 1 today-rows fix: features.py 033d7bd7, marker ~/w/today_rows_fix.json (fixed_from 2026-11-16). Check and dry run passed; the post-deploy run had 0 hunters with history and a null hist_hunter_rel.
+- deploy_nb.sh deploy_h25: ~/w/arm2_live/h25_live.py 364b3b2a (over e3af37b4) + rootlink.py 38e37fba. Bundle check passed. A live arm-2 run for Nov 15
+  afterwards gave llm_pitch / llm_brand null 0% (was 100%) and hist_hunter_rel|has_history 0% (was 25%).
+  Rollback: bash ~/w/stage/20261115_next_bundle/deploy_nb.sh rollback (backup map ~/w/nb_backup/map.txt).
+- NOTE step 5 (live-code 2) expects h25_live e3af37b4 and will now refuse. To run it: deploy_nb.sh rollback, then step 5, then deploy_nb.sh deploy_h25 (it picks the ff40d796 variant).
