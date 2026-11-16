@@ -10,6 +10,8 @@ ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 [[ -f "$ART/fleet_measure.json" ]] || exit 0
 MAX="${FLEET_WAKEUP_MAX:-10}"
 STALE_AGE="${FLEET_STALE_AGE_SEC:-600}"
+# Dedicated repullupvotes slots: do not phsuper-restart (would kill upvote_refresh).
+FLEET_UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
 GC=(gcloud --account="$SA")
 ZONE="${PACE_ZONE:?}"
@@ -42,7 +44,9 @@ for s in m.get("slots", []):
 ordered = dead + sorted(stale, key=lambda x: -next(
     (ss.get("age") or 0 for ss in m.get("slots", []) if int(ss.get("slot") or 0) == x), 0
 )) + cf
-print("\\n".join(str(x) for x in ordered[: int("$MAX")]))
+_skip = {int(x) for x in """$FLEET_UPVOTE_SLOTS""".split() if x.strip().isdigit()}
+_filt = [x for x in ordered if int(x) not in _skip]
+print("\\n".join(str(x) for x in _filt[: int("$MAX")]))
 PY
 )
 
@@ -65,6 +69,10 @@ n=0
 nu=0
 for slot in "${targets[@]}"; do
   [[ -z "$slot" ]] && continue
+  if [[ " ${FLEET_UPVOTE_SLOTS} " == *" $slot "* ]]; then
+    echo "skip_upvote_refresh slot=$slot"
+    continue
+  fi
   name="feeder-fleet-${RUN_ID}-${slot}"
   st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
   [[ "$st" == RUNNING ]] || continue
