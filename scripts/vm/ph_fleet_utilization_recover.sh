@@ -9,7 +9,7 @@ RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 [[ -f "$ART/fleet_measure.json" ]] || exit 0
 MAX="${FLEET_WAKEUP_MAX:-10}"
-STALE_AGE="${FLEET_STALE_AGE_SEC:-600}"
+STALE_AGE="${FLEET_STALE_AGE_SEC:-2400}"
 # Dedicated repullupvotes slots: do not phsuper-restart (would kill upvote_refresh).
 FLEET_UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
@@ -87,6 +87,17 @@ for s in m.get('slots',[]):
 raise SystemExit(1)
 " 2>/dev/null && use_stale=1
   if [[ "$use_stale" == 1 ]]; then
+  skip=0
+  "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
+    --ssh-flag=-oConnectTimeout=12 </dev/null --command='pgrep -f "[p]deep.py|[p]h_batch.py" >/dev/null || exit 1
+f=$(ls -t /opt/ph/reuse/run_*.log 2>/dev/null | head -1) || exit 1
+find "$f" -mmin -12 2>/dev/null | grep -q . || exit 1
+tail -30 "$f" 2>/dev/null | grep -qE "paged|repage|op_seen|Profile|FINGERPRINT" && { echo STALE_SKIP_ACTIVE_PULL; exit 0; }
+exit 1' 2>/dev/null | grep -q STALE_SKIP_ACTIVE_PULL && skip=1
+  if [[ "$skip" == 1 ]]; then
+    echo "stale_skip_active_pull slot=$slot"
+    continue
+  fi
     tok="pdeep:fleet-${RUN_ID}-recover-${TS}-${slot}"
     echo "$tok" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
     "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
