@@ -10,7 +10,7 @@ ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 [[ -f "$ART/fleet_measure.json" ]] || exit 0
 MAX="${FLEET_WAKEUP_MAX:-10}"
 STALE_AGE="${FLEET_STALE_AGE_SEC:-2400}"
-UNHANG_COOLDOWN="${FLEET_UNHANG_COOLDOWN_SEC:-1200}"
+UNHANG_COOLDOWN="${FLEET_UNHANG_COOLDOWN_SEC:-1800}"
 COOLDOWN_FILE="$ART/unhang_cooldown.json"
 # Dedicated repullupvotes slots: do not phsuper-restart (would kill upvote_refresh).
 FLEET_UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
