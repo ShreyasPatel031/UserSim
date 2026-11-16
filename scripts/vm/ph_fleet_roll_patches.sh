@@ -15,6 +15,11 @@ OVERLAY_GCS="${VM_GCS}/_code/overlays"
 STRATEGY="${PH_FLEET_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 D="$ROOT/scripts/vm/reuse_overlays"
 GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
+UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+UPVOTE_GO=""
+UPVOTE_STRATEGY="${PH_UPVOTE_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_upvote_refresh.env}"
+[[ -f "$ART/upvote_go.token" ]] && UPVOTE_GO="$(tr -d '\n' <"$ART/upvote_go.token")"
+[[ -z "$UPVOTE_GO" ]] && UPVOTE_GO="repullupvotes:fleet-upvote-${RUN_ID}"
 
 if [[ "${SKIP_UPLOAD:-0}" != 1 ]]; then
   "${GC[@]}" storage cp "$D"/*.py "$D/supervisor_strat.sh" "$D/ensure_geoip.sh" "$D/proxy_geo_sync.sh" "${OVERLAY_GCS}/"
@@ -52,9 +57,15 @@ while IFS=$'\t' read -r slot _port; do
   st="$("${GC[@]}" compute instances describe "$name" --zone="$PACE_ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
   [[ "$st" == RUNNING ]] || continue
   (
+    slot_go="$GO_TOKEN"
+    slot_strat="$STRATEGY"
+    if [[ " ${UPVOTE_SLOTS} " == *" $slot "* ]]; then
+      slot_go="$UPVOTE_GO"
+      slot_strat="$UPVOTE_STRATEGY"
+    fi
     "${GC[@]}" compute instances add-metadata "$name" --zone="$PACE_ZONE" \
-      --metadata-from-file="ph-strategy-env=$STRATEGY" >/dev/null 2>&1 || true
-    echo "$GO_TOKEN" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
+      --metadata-from-file="ph-strategy-env=$slot_strat" >/dev/null 2>&1 || true
+    echo "$slot_go" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
     r="$("${GC[@]}" compute ssh "$name" --zone="$PACE_ZONE" --tunnel-through-iap --quiet --ssh-flag=-oConnectTimeout=15 \
       </dev/null --command="$REMOTE_CMD" 2>/dev/null | tail -1 || true)"
     echo "==> roll $name ${r:-SSH_FAIL}"

@@ -1,40 +1,46 @@
 # upvote_refresh.status (fleet-cursor)
 
 **Run:** `20261108t082000z`  
-**Started (UTC):** `2026-11-16T00:35:55Z` (first roll); **queue rebuild** `2026-11-16T01:40:56Z`  
-**Started:** yes  
+**Updated (UTC):** `2026-11-16T08:54Z`  
+**LIVE_PRIORITY_HOLD:** no historical fleet scale-up  
 
-## Configuration
+## Root cause (08:50Z orchestrator / Population audit)
+
+Slots **9, 27, 38** were labeled upvote_refresh but **`GO.*` was overwritten to `pdeep:fleet-…` by fleet-wide patch rolls** — workers ran full **pdeep**, not **`repullupvotes`**.  
+When `repullupvotes` runs via `ph_batch.py`, saves historically went to **`people_live/vm/{handle}.json`**, not Population staging **`raw/_pacetest/shared`**, so audits saw **0 refresh deltas**.
+
+## Fix deployed (08:51–08:54Z)
+
+1. **`patch_ph_batch_save_sb.py`** — uploads `out/{handle}.json` → **`PH_SAVE_B`** = `gs://…/usersim_sim/raw/_pacetest/shared/{handle}.json` (same as pdeep).
+2. **`patch_repull_upvotes_staging.py`** — load base person from **SB**; on success set:
+   - **`upvotes_refreshed_at`** (UTC string, `now()`)
+   - **`upvotes.refresh`**: `{read_utc, delta: {items_before, items_after, items_added}}`
+   - **`run.upvotes_repulled`**, **`run.finished_utc`** (Population may also use **`run.finished_utc`**)
+3. **`ph_fleet_roll_patches.sh`** — slots **9/27/38** keep **`repullupvotes:…`** GO + **`fleet_upvote_refresh.env`** on full-fleet rolls (`upvote_go.token`).
+4. Restarted: **`repullupvotes:fleet-upvote-20261108t082000z-20261116T0851Z`**, queue **`raw/_cursor/refresh_upvotes_20261116T0145Z_fleet.txt`** (82,661 handles).
+
+## Where refresh output lands (contract)
 
 | Item | Value |
 |------|--------|
-| Mode | `repullupvotes` (Upvotes tab only, diff stop at first held upvote) |
-| Source queue | `raw/_cursor/refresh_upvotes_20261116T0145Z_fleet.txt` (**82,661** complete people, no cap) |
-| Order | Upvotes on launches dated **2026-10-17 … 2026-11-15** (`store_v3/events.parquet`; ties random seed 42) |
-| Dedicated slots | **9, 27, 38** (~27,554 / 27,554 / 27,553 handles) |
-| GO token | `repullupvotes:fleet-upvote-20261108t082000z-20261116T0140Z` |
-| Strategy | `fleet_upvote_refresh.env` — same-IP back-off, no IPRoyal rotate on block |
-| Historical fleet | **18 VMs** (`LIVE_PRIORITY_HOLD`, no scale-up) |
+| **GCS path** | `gs://{bucket}/usersim_sim/raw/_pacetest/shared/{handle}.json` |
+| **Format** | Whole-person JSON (existing complete record merged) |
+| **Upvotes** | `upvotes.items[]` replaced/merged; paging in `upvotes.paging` |
+| **Refresh stamp** | Top-level **`upvotes_refreshed_at`**; nested **`upvotes.refresh.read_utc`** + **`upvotes.refresh.delta.*`** |
+| **Run time** | **`run.finished_utc`** on upload |
+| **Logs** | `{vm}/logs/{handle}.log` under `people_live/vm` |
+| **Status** | `{vm}/status/{vm}.jsonl` events with `mode=repullupvotes` |
 
-## Progress (daily)
+## Progress (08:54Z)
 
 | Metric | Value |
 |--------|--------|
-| People refreshed (2026-11-16 PT day) | ~40+ since 00:35Z roll; **restarted at top of new queue** after 01:40Z rebuild |
-| Pages read (mean / p95) | pending hourly scrape from slot `status_*.jsonl` |
-| New upvotes appended | pending Population merge tallies |
-| Queue prior (deprecated) | `refresh_upvotes_20261112T2300Z.txt` (39,848 only) |
-
-## Fleet context (01:41Z measure)
-
-- Main completion fleet: **10.8 complete_ppm**, **6 active** slots (upvote slots 9/27/38 excluded from utilization recover restarts).
-- Builder: `scripts/vm/ph_fleet_build_upvote_refresh_queue.py` (rebuild daily from `have_index.jsonl` + events).
-
-## Not started
-
-- **daily_launch_teams** — no `launch_teams` mode on current `reuse.tgz`.
+| People refreshed (staging uploads w/ stamp) | **0** (workers just relaunched; first SB merges pending) |
+| Pages read (mean / p95) | pending |
+| New upvotes appended | pending |
+| Dedicated slots | **9, 27, 38** — **ph_batch `--mode repullupvotes`** confirmed running |
 
 ## References
 
-- `mailbox/to_cursor/20261114T2220Z_upvote_refresh_diff.md`
-- `mailbox/to_cursor/20261114T2305Z_upvote_refresh_order.md`
+- `scripts/vm/ph_fleet_start_upvote_refresh.sh`, `fleet_upvote_refresh.env`
+- `results/ph_fleet_full/20261108t082000z/upvote_go.token`
