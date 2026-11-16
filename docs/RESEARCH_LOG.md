@@ -2350,3 +2350,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - Nov 16 20:36 UTC hourly check + mailbox checked. Leaderboard live; fleet above.
 - Nov 16 21:36 UTC hourly check + mailbox checked. Leaderboard live; fleet above.
 - Nov 16 22:36 UTC hourly check + mailbox checked. Leaderboard live; fleet above.
+- Nov 16 23:37 UTC hourly check + mailbox checked. Leaderboard live. Fleet collapsed again (0.6/min, 9 stale, 2 dead); no reply to 22:36Z; upvote_refresh 0 stamped after 23 h. Wake sent; escalated to Shreyas.
