@@ -1,6 +1,6 @@
 {
- "computed_at": "2026-11-15T21:27:34.151303+00:00",
- "e5_rows": "merged 1 rows (computed_at 2026-11-15T11:31:05.419142+00:00)",
+ "computed_at": "2026-11-16T13:36:56.956345+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-16T10:44:37.854947+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [
   {
@@ -169,10 +169,10 @@
    "method": "published 00:05 rows (live + late writes)",
    "top3": 66.7,
    "top5": 80.0,
-   "top10": 80.0,
-   "n_days": 1,
+   "top10": 70.0,
+   "n_days": 2,
    "first_day": "2026-11-13",
-   "last_day": "2026-11-13",
+   "last_day": "2026-11-14",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
    "source": "results/web/scoreboard_orders.json",
    "producer": "PH"
@@ -183,10 +183,38 @@
    "method": "published 00:05 rows (live writes only)",
    "top3": 66.7,
    "top5": 80.0,
+   "top10": 70.0,
+   "n_days": 2,
+   "first_day": "2026-11-13",
+   "last_day": "2026-11-14",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm2",
+   "method": "published 00:05 rows (live + late writes)",
+   "top3": 66.7,
+   "top5": 40.0,
    "top10": 80.0,
    "n_days": 1,
-   "first_day": "2026-11-13",
-   "last_day": "2026-11-13",
+   "first_day": "2026-11-15",
+   "last_day": "2026-11-15",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm2",
+   "method": "published 00:05 rows (live writes only)",
+   "top3": 66.7,
+   "top5": 40.0,
+   "top10": 80.0,
+   "n_days": 1,
+   "first_day": "2026-11-15",
+   "last_day": "2026-11-15",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
    "source": "results/web/scoreboard_orders.json",
    "producer": "PH"
@@ -314,66 +342,66 @@
    "model": "backer prediction: CF-only",
    "method": "forward-style strict replay/nightly freeze (reads before 00:00 PT; SVD on upvotes dated before the day; no follows)",
    "metric": "recall at N (N = observed held backers per launch), pooled",
-   "value": 25.2,
+   "value": 23.7,
    "interval": [
-    6.3,
-    29.7
+    3.2,
+    28.9
    ],
    "arms": {
     "CF-only": [
-     25.2,
-     6.3,
-     29.7
+     23.7,
+     3.2,
+     28.9
     ],
     "A7": [
-     22.0,
-     3.6,
-     27.4
+     21.1,
+     2.4,
+     27.1
     ],
     "CF+back": [
-     24.6,
-     4.1,
-     29.7
+     23.3,
+     2.4,
+     28.7
     ],
     "CF+intensity": [
-     24.8,
-     5.2,
-     30.0
+     23.5,
+     3.8,
+     29.0
     ],
     "raw most-active": [
-     21.1,
-     5.4,
-     25.1
+     20.7,
+     6.9,
+     24.7
     ]
    },
    "paired_vs_raw": {
     "CF-only": [
-     4.0,
-     0.9,
-     4.8
+     3.0,
+     -3.9,
+     4.4
     ],
     "A7": [
-     0.9,
-     -1.8,
-     2.8
+     0.5,
+     -4.7,
+     2.7
     ],
     "CF+back": [
-     3.5,
-     -1.4,
-     4.7
+     2.7,
+     -4.7,
+     4.2
     ],
     "CF+intensity": [
-     3.7,
-     -0.2,
-     5.0
+     2.9,
+     -3.4,
+     4.3
     ]
    },
-   "n_launches": 128,
-   "n_backers": 1630,
+   "n_launches": 131,
+   "n_backers": 1718,
    "first_day": "2026-11-08",
-   "last_day": "2026-11-12",
+   "last_day": "2026-11-14",
    "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
-   "label": "CF 25.2% vs most-active 21.1% (+4.0; day-resampled interval 0.9 to 4.8 (only 5 days, so this interval is unstable; an independent re-score on an earlier store snapshot gave -0.8 to +4.8); 128 launches, 83% of backers on Nov 8-9; within-day launch intervals clear of 0 on Nov 9 only; tied on Nov 10-12; the gain exists only among held people re-read after the day (without that filter the arms tie))",
+   "label": "CF 23.7% vs most-active 20.7% (+3.0; day-resampled interval -3.9 to 4.4 (only 7 days, so this interval is unstable; an independent re-score on an earlier store snapshot gave -0.8 to +4.8); 131 launches, 83% of backers on Nov 8-9; within-day launch intervals clear of 0 on Nov 9 only; tied on Nov 10-12; the gain exists only among held people re-read after the day (without that filter the arms tie))",
    "source": "results/web/backer_prediction_arms.json",
    "top3": null,
    "top5": null,
@@ -381,7 +409,7 @@
    "n_days": null,
    "producer": "E5",
    "merged_from": "results/web/north_star_rows_e5.json",
-   "merged_computed_at": "2026-11-15T11:31:05.419142+00:00"
+   "merged_computed_at": "2026-11-16T10:44:37.854947+00:00"
   }
  ]
 }
