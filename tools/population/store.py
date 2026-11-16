@@ -555,6 +555,7 @@ def build(data_dir, out_dir, salt, complete=None):
                 api_cids |= {json.loads(x).get("comment_id") for x in a.extra}
         cid = e_.extra.map(lambda x: json.loads(x).get("comment_id") if isinstance(x, str) else None)
         ev.append(e_[~((e_.kind == "comment") & cid.isin(api_cids - {None}))])
+        del e_, cid  # 10:1xZ Nov 16: the unfiltered frame stayed alive through the writer loop (92k-person build OOM)
     if tab_rows:  # latest pull per (person, tab); a light upvotes read never replaces a full pull's other tabs (it has none)
         tr = pd.concat(tab_rows, ignore_index=True).sort_values("fetched_at")
         tr = tr.drop_duplicates(["person_id", "tab"], keep="last")
@@ -589,12 +590,15 @@ def build(data_dir, out_dir, salt, complete=None):
         for c in ["ts_lo", "ts_hi", "first_seen_at", "fetched_at"]:
             e[c] = pd.to_datetime(e[c], utc=True)
         stats.add(e)
-        t = pa.Table.from_pandas(e, preserve_index=False)
-        if writer is None:
-            schema = t.schema
+        # written in 1M-row slices: one arrow copy of the largest piece (~all full-pull events) ran past 15 GB (Nov 16)
+        if writer is None:  # schema from the whole frame, so an all-null column in the first slice cannot type it as null
+            schema = pa.Schema.from_pandas(e, preserve_index=False)
             writer = pq.ParquetWriter(f"{out_dir}/events.parquet", schema)
-        writer.write_table(t.select(schema.names).cast(schema))
-        del e, t
+        for i in range(0, len(e), 1_000_000):
+            t = pa.Table.from_pandas(e.iloc[i:i + 1_000_000], preserve_index=False)
+            writer.write_table(t.select(schema.names).cast(schema))
+            del t
+        del e
     if writer is not None:
         writer.close()
     pool = pd.DataFrame({"person_id": sorted(set(ids_map.values()))})
