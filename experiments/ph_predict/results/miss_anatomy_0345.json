@@ -60,21 +60,31 @@
    "truth": "truth_daily",
    "hits": 2,
    "launches": 20
+  },
+  "2026-11-14": {
+   "truth": "truth_daily",
+   "hits": 2,
+   "launches": 28
+  },
+  "2026-11-15": {
+   "truth": "truth_daily",
+   "hits": 3,
+   "launches": 17
   }
  },
- "top3_hits_pct": 72.2,
- "misses": 10,
+ "top3_hits_pct": 73.8,
+ "misses": 11,
  "by_bucket": {
   "a": 2,
   "b": 0,
   "c": 1,
-  "d": 7
+  "d": 8
  },
  "oracle_top3_if_bucket_fixed": {
-  "a": 77.8,
-  "b": 72.2,
-  "c": 75.0,
-  "d": 91.7
+  "a": 78.6,
+  "b": 73.8,
+  "c": 76.2,
+  "d": 92.9
  },
  "rows": [
   {
@@ -92,8 +102,8 @@
    "reveal_rank": 6.0,
    "rank_0430": 6.0,
    "climbed_after_reveal": true,
-   "final_votes": 279.0,
-   "displaced_final_votes": 175.0,
+   "final_votes": 282.0,
+   "displaced_final_votes": 176.0,
    "displaced_hidden_0345": 3.0,
    "displaced_rank_0005": 11.0
   },
@@ -113,7 +123,7 @@
    "rank_0430": 2.0,
    "climbed_after_reveal": false,
    "final_votes": 256.0,
-   "displaced_final_votes": 155.0,
+   "displaced_final_votes": 156.0,
    "displaced_hidden_0345": 2.0,
    "displaced_rank_0005": 5.0
   },
@@ -132,7 +142,7 @@
    "reveal_rank": 9.0,
    "rank_0430": 9.0,
    "climbed_after_reveal": true,
-   "final_votes": 170.0,
+   "final_votes": 172.0,
    "displaced_final_votes": 75.0,
    "displaced_hidden_0345": 3.0,
    "displaced_rank_0005": 45.0
@@ -152,7 +162,7 @@
    "reveal_rank": 4.0,
    "rank_0430": 4.0,
    "climbed_after_reveal": true,
-   "final_votes": 258.0,
+   "final_votes": 260.0,
    "displaced_final_votes": 206.0,
    "displaced_hidden_0345": 1.0,
    "displaced_rank_0005": 4.0
@@ -192,7 +202,7 @@
    "reveal_rank": 5.0,
    "rank_0430": 5.0,
    "climbed_after_reveal": true,
-   "final_votes": 220.0,
+   "final_votes": 219.0,
    "displaced_final_votes": 167.0,
    "displaced_hidden_0345": 2.0,
    "displaced_rank_0005": 8.0
@@ -212,8 +222,8 @@
    "reveal_rank": 4.0,
    "rank_0430": 4.0,
    "climbed_after_reveal": true,
-   "final_votes": 442.0,
-   "displaced_final_votes": 240.0,
+   "final_votes": 444.0,
+   "displaced_final_votes": 242.0,
    "displaced_hidden_0345": 3.0,
    "displaced_rank_0005": 4.0
   },
@@ -232,8 +242,8 @@
    "reveal_rank": 50.0,
    "rank_0430": 50.0,
    "climbed_after_reveal": true,
-   "final_votes": 290.0,
-   "displaced_final_votes": 246.0,
+   "final_votes": 297.0,
+   "displaced_final_votes": 248.0,
    "displaced_hidden_0345": 3.0,
    "displaced_rank_0005": 4.0
   },
@@ -272,10 +282,30 @@
    "reveal_rank": 3.0,
    "rank_0430": 3.0,
    "climbed_after_reveal": false,
-   "final_votes": 276.0,
-   "displaced_final_votes": 172.0,
+   "final_votes": 299.0,
+   "displaced_final_votes": 182.0,
    "displaced_hidden_0345": 3.0,
    "displaced_rank_0005": 1.0
+  },
+  {
+   "day": "2026-11-14",
+   "missed": "1315068",
+   "displaced_by": "1314882",
+   "bucket": "d",
+   "final_rank": 2,
+   "hidden_01:00": 12.0,
+   "hidden_02:00": 7.0,
+   "hidden_03:00": 4.0,
+   "hidden_03:45": 4.0,
+   "rank_0005": 10.0,
+   "comments_0345": 5.0,
+   "reveal_rank": 4.0,
+   "rank_0430": 4.0,
+   "climbed_after_reveal": true,
+   "final_votes": 220.0,
+   "displaced_final_votes": 133.0,
+   "displaced_hidden_0345": 3.0,
+   "displaced_rank_0005": 5.0
   }
  ]
 }
