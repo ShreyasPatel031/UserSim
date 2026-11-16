@@ -2330,3 +2330,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - Open: weekly close read (Nov 15 23:45 PT) unconfirmed, no output found; daily_launch_teams not started; history backfills unacknowledged; GCP Nov 15 $57.57 (over soft cap two days).
 - Shreyas only: DataImpulse proxy 407 (since Nov 12); site 15-min snapshot scheduler; Grok Bot X rollout re-approval (5,600/8,953).
 - Dashboard WV14WeCEQQmV1PB8psDfit: 7 datasets re-uploaded from tools/coverage_dashboard.py; added vote_coverage and freshness_open from dashboard/latest.json (Nov 15 11:02Z). DATA_SPEC current/gap columns and the collection status table updated to Nov 16.
+- Nov 16 11:36 UTC hourly check + mailbox checked. Leaderboard live. Fleet climbing after the 10:55Z wake: complete_ppm 1.9 → 8.8 (7–8 active, 9 stale, 2 CF wall); fleet reports 'upvote_write_gate_fixed' (11:10Z). Weekly close proof and backfill start dates not yet answered; re-wake next hour if still open.
