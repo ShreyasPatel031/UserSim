@@ -21,8 +21,13 @@ VM_GCS="${PACE_GCS_VM_ROOT:-gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population
 TS="$(date +%s)"
 FLEET_SKIP_STALE_UNHANG=0
 STALE_UNHANG_MIN="${FLEET_STALE_UNHANG_MIN_COMPLETE_PPM:-6}"
+if [[ "${FLEET_HOLD_UNHANG:-0}" == 1 ]]; then
+  FLEET_SKIP_STALE_UNHANG=1
+  MAX=0
+  echo "stale_unhang_paused FLEET_HOLD_UNHANG=1 (orchestrator: no unhang/wakeup thrash)"
+fi
 _cur_ppm="$(python3 -c "import json; print(json.load(open('$ART/fleet_measure.json')).get('complete_ppm',0))" 2>/dev/null || echo 0)"
-if python3 -c "exit(0 if float('${_cur_ppm}') < float('$STALE_UNHANG_MIN') else 1)" 2>/dev/null; then
+if [[ "${FLEET_SKIP_STALE_UNHANG}" != 1 ]] && python3 -c "exit(0 if float('${_cur_ppm}') < float('$STALE_UNHANG_MIN') else 1)" 2>/dev/null; then
   FLEET_SKIP_STALE_UNHANG=1
   echo "stale_unhang_paused complete_ppm=${_cur_ppm} min=${STALE_UNHANG_MIN}"
 fi
