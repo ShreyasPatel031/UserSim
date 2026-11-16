@@ -1,0 +1,436 @@
+{
+ "day": "2026-11-14",
+ "products": [
+  {
+   "id": "1301510",
+   "rank": 1,
+   "name": "HiringNow",
+   "votes": 298,
+   "n_candidates": 30,
+   "n_direct": 3,
+   "competitors": [
+    {
+     "id": "1273690",
+     "name": "Retriever AI",
+     "tagline": "Free AI browser agent: find leads, reach out, apply to jobs",
+     "day": "2026-10-14",
+     "votes": 237,
+     "daily_rank": 3,
+     "same_job": "Automate job search and applications",
+     "tracked_backers": 176,
+     "share_closer_to_you": 0.46,
+     "backers_closer_to_them": 95,
+     "real_comments_held": 14
+    },
+    {
+     "id": "1302591",
+     "name": "Hira",
+     "tagline": "Your free personal agent for job search",
+     "day": "2026-11-04",
+     "votes": 83,
+     "daily_rank": 16,
+     "same_job": "Automate job search and applications",
+     "tracked_backers": 47,
+     "share_closer_to_you": 0.7,
+     "backers_closer_to_them": 14,
+     "real_comments_held": 0
+    },
+    {
+     "id": "1292687",
+     "name": "Jobmate AI",
+     "tagline": "The humanized AI Copilot for your entire Job search",
+     "day": "2026-10-26",
+     "votes": 83,
+     "daily_rank": 21,
+     "same_job": "Automate job search and applications",
+     "tracked_backers": 42,
+     "share_closer_to_you": 0.79,
+     "backers_closer_to_them": 9,
+     "real_comments_held": 0
+    }
+   ],
+   "lines": [
+    {
+     "competitor": "Retriever AI",
+     "thing_valued": "sending outreach",
+     "evidence": "it can send outreach on its own, great!",
+     "evidence_source": "comment",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "95 people who backed Retriever AI lean away from you: they valued sending outreach there, and your page doesn't mention it. Consider adding outreach capabilities."
+    },
+    {
+     "competitor": "Hira",
+     "thing_valued": "texting to apply",
+     "evidence": "You can text it, connect it to Muse, or go through our website.",
+     "evidence_source": "description",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "14 people who backed Hira lean away from you: they valued texting to apply there, and your page doesn't mention it. Explore offering application via text."
+    },
+    {
+     "competitor": "Jobmate AI",
+     "thing_valued": "autofilling application forms",
+     "evidence": "autofills any application form from your profile",
+     "evidence_source": "description",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "9 people who backed Jobmate AI lean away from you: they valued autofilling application forms there, and your page doesn't mention it. Implement auto-form filling for applications."
+    }
+   ],
+   "keep_line": "People come for finding and applying to jobs before anyone else."
+  },
+  {
+   "id": "1315068",
+   "rank": 2,
+   "name": "Businesses in ChatGPT",
+   "votes": 218,
+   "n_candidates": 30,
+   "n_direct": 7,
+   "competitors": [
+    {
+     "id": "1178153",
+     "name": "Bluerails Discovery ",
+     "tagline": "The rails AI agents use to find and pay you",
+     "day": "2026-06-23",
+     "votes": 575,
+     "daily_rank": 1,
+     "same_job": "make business discoverable to AI agents",
+     "tracked_backers": 275,
+     "share_closer_to_you": 0.42,
+     "backers_closer_to_them": 159,
+     "real_comments_held": 14
+    },
+    {
+     "id": "1245921",
+     "name": "ReSO AI",
+     "tagline": "Get discovered & recommended when customers ask AI",
+     "day": "2026-10-10",
+     "votes": 500,
+     "daily_rank": 2,
+     "same_job": "get discovered in AI search results",
+     "tracked_backers": 481,
+     "share_closer_to_you": 0.5,
+     "backers_closer_to_them": 239,
+     "real_comments_held": 14
+    },
+    {
+     "id": "1295250",
+     "name": "Dedica",
+     "tagline": "Check if AI agents can use your website",
+     "day": "2026-10-28",
+     "votes": 322,
+     "daily_rank": 1,
+     "same_job": "ensure website usable by AI agents",
+     "tracked_backers": 294,
+     "share_closer_to_you": 0.48,
+     "backers_closer_to_them": 153,
+     "real_comments_held": 0
+    }
+   ],
+   "lines": [
+    {
+     "competitor": "Bluerails Discovery",
+     "thing_valued": "agent-ready checkout and global settlement",
+     "evidence": "Agent-ready checkout + global settlement",
+     "evidence_source": "description",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "159 people who backed Bluerails Discovery lean away from you: they valued agent-ready checkout and global settlement there, and your page doesn't mention it. Consider adding payment processing for AI agents."
+    },
+    {
+     "competitor": "ReSO AI",
+     "thing_valued": "priority actions to improve AI recommendations",
+     "evidence": "it analyzes intent, competitors, content gaps, and technical issues, then turns them into priority actions to improve AI recommendations.",
+     "evidence_source": "description",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "239 people who backed ReSO AI lean away from you: they valued priority actions to improve AI recommendations there, and your page doesn't mention it. Detail how your product provides actionable steps."
+    },
+    {
+     "competitor": "Dedica",
+     "thing_valued": "fixes for every issue to hand to your coding agent",
+     "evidence": "gives your team a fix for every place they fail. ... gives you a fix for every issue to hand to your coding agent.",
+     "evidence_source": "description",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "153 people who backed Dedica lean away from you: they valued fixes for every issue to hand to your coding agent there, and your page doesn't mention it. Offer specific, actionable fixes for issues."
+    }
+   ],
+   "keep_line": "People come for business profiles, discovery insights, and Business Agents."
+  },
+  {
+   "id": "1313358",
+   "rank": 3,
+   "name": "Dex Semantics",
+   "votes": 207,
+   "n_candidates": 30,
+   "n_direct": 0,
+   "competitors": [],
+   "line": null,
+   "note": "no true competitor among the 30 most similar past launches"
+  },
+  {
+   "id": "1314543",
+   "rank": 4,
+   "name": "Gemini Robotics 2.5",
+   "votes": 165,
+   "n_candidates": 30,
+   "n_direct": 1,
+   "competitors": [
+    {
+     "id": "1210871",
+     "name": "Gemini Robotics 2",
+     "tagline": "Google's AI brain for the next generation of robots",
+     "day": "2026-07-31",
+     "votes": 121,
+     "daily_rank": 10,
+     "same_job": "control robot hand and arm",
+     "tracked_backers": 38,
+     "share_closer_to_you": 0.45,
+     "backers_closer_to_them": 21,
+     "real_comments_held": 1
+    }
+   ],
+   "lines": [
+    {
+     "competitor": "Gemini Robotics 2",
+     "thing_valued": "concrete details on how it changes things",
+     "evidence": "what would actually change my mind about this one specifically is something concre",
+     "evidence_source": "comment",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "21 people who backed Gemini Robotics 2 lean away from you: they valued concrete details on how it changes things, and your page doesn't mention it. Add a section on specific changes."
+    }
+   ],
+   "keep_line": "People come for the 30-100% higher success rate and 20-30% faster task completion."
+  },
+  {
+   "id": "1314882",
+   "rank": 5,
+   "name": "Blender 5.3",
+   "votes": 133,
+   "n_candidates": 30,
+   "n_direct": 0,
+   "competitors": [],
+   "line": null,
+   "note": "no true competitor among the 30 most similar past launches"
+  },
+  {
+   "id": "1281561",
+   "rank": 6,
+   "name": "CaptureFlow",
+   "votes": 105,
+   "n_candidates": 30,
+   "n_direct": 13,
+   "competitors": [
+    {
+     "id": "1212015",
+     "name": "Capptivo",
+     "tagline": "Free open-source screen recorder & demo editor",
+     "day": "2026-08-02",
+     "votes": 323,
+     "daily_rank": 2,
+     "same_job": "Record screen, share polished demo",
+     "tracked_backers": 163,
+     "share_closer_to_you": 0.44,
+     "backers_closer_to_them": 91,
+     "real_comments_held": 14
+    },
+    {
+     "id": "1268802",
+     "name": "Smooth Recorder",
+     "tagline": "  Mac screen recordings that look edited when you hit stop",
+     "day": "2026-10-04",
+     "votes": 260,
+     "daily_rank": 3,
+     "same_job": "Record screen, share polished demo",
+     "tracked_backers": 128,
+     "share_closer_to_you": 0.36,
+     "backers_closer_to_them": 82,
+     "real_comments_held": 11
+    },
+    {
+     "id": "1235626",
+     "name": "Prequel",
+     "tagline": "Create cinematic screen recordings on your Mac",
+     "day": "2026-08-30",
+     "votes": 215,
+     "daily_rank": 4,
+     "same_job": "Record screen, share polished demo",
+     "tracked_backers": 97,
+     "share_closer_to_you": 0.29,
+     "backers_closer_to_them": 69,
+     "real_comments_held": 11
+    }
+   ],
+   "lines": [
+    {
+     "competitor": "Capptivo",
+     "thing_valued": "local recording and export without account or subscription",
+     "evidence": "everything runs locally with no account or subscription is a huge plus",
+     "evidence_source": "comment",
+     "product_has_it": "partly",
+     "product_evidence": "Self-host it with Docker on any machine, or on your own Cloudflare account (Workers, D1 and R2). Recordings stay on your storage, behind your auth, with your retention rules.",
+     "line": "91 people who backed Capptivo lean away from you: they valued local recording and export without account or subscription, and your page doesn't mention it. State that self-hosting means local recording and export."
+    },
+    {
+     "competitor": "Smooth Recorder",
+     "thing_valued": "automatic blurring of sensitive details",
+     "evidence": "I love the auto detection and blurring of sensitive details feature.",
+     "evidence_source": "comment",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "82 people who backed Smooth Recorder lean away from you: they valued automatic blurring of sensitive details, and your page doesn't mention it. Consider adding automatic sensitive data redaction."
+    },
+    {
+     "competitor": "Prequel",
+     "thing_valued": "one-time payment or lifetime license",
+     "evidence": "Would be great to have manual control over the auto-generated zooms after recording too. I would 100% purchase this as a lifetime / one-time payment.",
+     "evidence_source": "comment",
+     "product_has_it": "no",
+     "product_evidence": "free for your first 25 recordings, then Light at $5 or Pro at $12 per member a month",
+     "line": "69 people who backed Prequel lean away from you: they valued a one-time payment or lifetime license, and your page doesn't mention it. Consider offering a one-time payment option for self-hosted versions."
+    }
+   ],
+   "keep_line": "People come for AI agent recording and self-hosting on Cloudflare, protect that."
+  },
+  {
+   "id": "1300330",
+   "rank": 7,
+   "name": "Kokonut UI",
+   "votes": 101,
+   "n_candidates": 30,
+   "n_direct": 0,
+   "competitors": [],
+   "line": null,
+   "note": "no true competitor among the 30 most similar past launches"
+  },
+  {
+   "id": "1310337",
+   "rank": 8,
+   "name": "Uber Parking",
+   "votes": 97,
+   "n_candidates": 30,
+   "n_direct": 0,
+   "competitors": [],
+   "line": null,
+   "note": "no true competitor among the 30 most similar past launches"
+  },
+  {
+   "id": "1310969",
+   "rank": 9,
+   "name": "Antelog",
+   "votes": 94,
+   "n_candidates": 30,
+   "n_direct": 1,
+   "competitors": [
+    {
+     "id": "1277759",
+     "name": "shim-cli",
+     "tagline": "See what your coding agent sends. Mask what you can.",
+     "day": "2026-10-18",
+     "votes": 201,
+     "daily_rank": 3,
+     "same_job": "prevent AI agent data leaks",
+     "tracked_backers": 158,
+     "share_closer_to_you": 0.3,
+     "backers_closer_to_them": 110,
+     "real_comments_held": 14
+    }
+   ],
+   "lines": [
+    {
+     "competitor": "shim-cli",
+     "thing_valued": "masking secrets in tool results before the model reads them",
+     "evidence": "Masking secrets in tool results before the model ever sees them solves the thing that always made me nervous about letting Claude Code run loose",
+     "evidence_source": "comment",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "110 people who backed shim-cli lean away from you: they valued masking secrets in tool results, and your page doesn't mention it. Add masking of tool results."
+    }
+   ],
+   "keep_line": "People come for blocking AI disasters and seeing every AI action, free."
+  },
+  {
+   "id": "1306959",
+   "rank": 10,
+   "name": "Replay",
+   "votes": 92,
+   "n_candidates": 30,
+   "n_direct": 7,
+   "competitors": [
+    {
+     "id": "1215949",
+     "name": "HyNote for Mac",
+     "tagline": "Free local transcription that is 100% Private",
+     "day": "2026-08-20",
+     "votes": 328,
+     "daily_rank": 1,
+     "same_job": "record meetings, get summary, no bot",
+     "tracked_backers": 251,
+     "share_closer_to_you": 0.51,
+     "backers_closer_to_them": 122,
+     "real_comments_held": 14
+    },
+    {
+     "id": "1190533",
+     "name": "yapyap",
+     "tagline": "Own your voice again. Local-first voice & meeting recorder.",
+     "day": "2026-08-03",
+     "votes": 151,
+     "daily_rank": 8,
+     "same_job": "record meetings, get summary, no bot",
+     "tracked_backers": 58,
+     "share_closer_to_you": 0.5,
+     "backers_closer_to_them": 29,
+     "real_comments_held": 4
+    },
+    {
+     "id": "1176050",
+     "name": "RecordMeeting",
+     "tagline": "Record and transcribe any calls without announcement",
+     "day": "2026-07-15",
+     "votes": 150,
+     "daily_rank": 9,
+     "same_job": "record meetings, get summary, no bot",
+     "tracked_backers": 80,
+     "share_closer_to_you": 0.28,
+     "backers_closer_to_them": 58,
+     "real_comments_held": 14
+    }
+   ],
+   "lines": [
+    {
+     "competitor": "HyNote for Mac",
+     "thing_valued": "cross-device sync",
+     "evidence": "The cross-device sync makes me curious though: what actually leaves the Mac when it syncs?",
+     "evidence_source": "comment",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "122 people who backed HyNote for Mac lean away from you: they valued cross-device sync there, and your page doesn't mention it. Consider offering cross-device sync."
+    },
+    {
+     "competitor": "yapyap",
+     "thing_valued": "optional cloud connection",
+     "evidence": "Prefer the cloud? Optionally connect any major provider: OpenAI, Anthropic, Groq.",
+     "evidence_source": "description",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "29 people who backed yapyap lean away from you: they valued optional cloud connection there, and your page doesn't mention it. Offer optional cloud integration for AI."
+    },
+    {
+     "competitor": "RecordMeeting",
+     "thing_valued": "multi-language support",
+     "evidence": "I have French and English meetings; does it works with both ?",
+     "evidence_source": "comment",
+     "product_has_it": "no",
+     "product_evidence": "not mentioned",
+     "line": "58 people who backed RecordMeeting lean away from you: they valued multi-language support there, and your page doesn't mention it. State supported languages for transcription."
+    }
+   ],
+   "keep_line": "People come for the no-bot, local-first, pay-once recording."
+  }
+ ],
+ "usd": 0.042
+}
