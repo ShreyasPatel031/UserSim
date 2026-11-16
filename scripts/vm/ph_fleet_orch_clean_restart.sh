@@ -12,6 +12,8 @@ QUEUE="${FLEET_COMPLETION_QUEUE:-usersim_sim/raw/_cursor/completion_queue_202611
 export FLEET_HOLD_UNHANG=1
 export FLEET_WAKEUP_MAX=0
 export PH_FLEET_STRATEGY_ENV="${PH_FLEET_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
+# Seeded pdeep_list is only used when RR_ONLY is off.
+export PH_FLEET_COMPLETION_DRAIN="${PH_FLEET_COMPLETION_DRAIN:-1}"
 echo "=== orch_clean_restart run=$RUN_ID utc=$(date -u +%FT%TZ)"
 echo "=== seed pdeep_list queue=$QUEUE"
 bash "$ROOT/scripts/vm/ph_fleet_seed_completion_queue.sh" "$QUEUE" || {

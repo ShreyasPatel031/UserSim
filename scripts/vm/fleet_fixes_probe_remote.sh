@@ -32,7 +32,9 @@ part = "PDEEP_PARTITION_PATCH" in (pd.read_text() if pd.exists() else "")
 cff = "CF_FAST_FAIL_PATCH" in (pp.read_text() if pp.exists() else "")
 pdeep_go = go.startswith("pdeep:")
 full = "PDEEP_MODE=full" in strat and (
-    "PH_FLEET_RR_ONLY=1" in strat or "PH_BLOCK_NEW_PORT=1" in strat
+    "PH_REQUIRE_FULL_SAVE=1" in strat
+    or "PH_FLEET_RR_ONLY=1" in strat
+    or "PH_BLOCK_NEW_PORT=1" in strat
 )
 ok = batch and part and cff and pdeep_go and full and sup
 why = []
