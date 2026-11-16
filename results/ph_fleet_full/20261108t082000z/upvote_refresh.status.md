@@ -1,7 +1,7 @@
 # upvote_refresh.status (fleet-cursor)
 
 **Run:** `20261108t082000z`  
-**Updated (UTC):** `2026-11-16T08:54Z`  
+**Updated (UTC):** `2026-11-16T09:19Z`  
 **LIVE_PRIORITY_HOLD:** no historical fleet scale-up  
 
 ## Root cause (08:50Z orchestrator / Population audit)
@@ -31,11 +31,13 @@ When `repullupvotes` runs via `ph_batch.py`, saves historically went to **`peopl
 | **Logs** | `{vm}/logs/{handle}.log` under `people_live/vm` |
 | **Status** | `{vm}/status/{vm}.jsonl` events with `mode=repullupvotes` |
 
-## Progress (08:54Z)
+## Progress (09:19Z)
 
 | Metric | Value |
 |--------|--------|
-| People refreshed (staging uploads w/ stamp) | **0** (workers just relaunched; first SB merges pending) |
+| **GO clobber RCA** | Keeper `nudge_go` wrote `pdeep:fleet-…-rN` to slots **9/27/38** again (~09:14Z). Fixed: keeper skips upvote slots; autoscale uses `upvote_go.token`; recover already skipped. |
+| **Relaunch** | `repullupvotes:fleet-upvote-20261108t082000z-20261116T0918Z` on 9/27/38 (ROLL_OK) |
+| People refreshed (staging uploads w/ stamp) | pending (first SB merges after relaunch) |
 | Pages read (mean / p95) | pending |
 | New upvotes appended | pending |
 | Dedicated slots | **9, 27, 38** — **ph_batch `--mode repullupvotes`** confirmed running |

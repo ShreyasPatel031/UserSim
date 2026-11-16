@@ -38,6 +38,10 @@ RUN_ID="${PACE_FLEET_RUN_ID:-${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}}"
 RUN_ID="${RUN_ID,,}"
 ART="${ROOT}/results/ph_fleet_full/${RUN_ID}"
 GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
+UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+UPVOTE_GO=""
+[[ -f "$ART/upvote_go.token" ]] && UPVOTE_GO="$(tr -d '\n' <"$ART/upvote_go.token")"
+[[ -z "$UPVOTE_GO" ]] && UPVOTE_GO="repullupvotes:fleet-upvote-${RUN_ID}"
 
 upload_overlays() {
   local d="$ROOT/scripts/vm/reuse_overlays"
@@ -127,7 +131,14 @@ create_vm() {
 
 write_go() {
   local slot=$1 token=$2
+  if [[ " ${UPVOTE_SLOTS} " == *" $slot "* ]]; then
+    token="$UPVOTE_GO"
+  fi
   echo "$token" | "${GC[@]}" storage cp - "${VM_GCS}/GO.$(vm_name "$slot")"
+}
+
+is_upvote_slot() {
+  [[ " ${UPVOTE_SLOTS} " == *" $1 "* ]]
 }
 
 cmd_up() {
@@ -353,6 +364,9 @@ keeper_one_pass() {
   now=$(date +%s)
   while IFS=$'\t' read -r slot port; do
     [[ -z "$slot" ]] && continue
+    if is_upvote_slot "$slot"; then
+      continue
+    fi
     name="$(vm_name "$slot")"
     st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --project="$PROJECT" --format='value(status)' 2>/dev/null || echo MISSING)"
     if [[ "$st" != RUNNING ]]; then

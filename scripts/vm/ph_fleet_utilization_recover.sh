@@ -10,6 +10,8 @@ ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 [[ -f "$ART/fleet_measure.json" ]] || exit 0
 MAX="${FLEET_WAKEUP_MAX:-10}"
 STALE_AGE="${FLEET_STALE_AGE_SEC:-2400}"
+UNHANG_COOLDOWN="${FLEET_UNHANG_COOLDOWN_SEC:-600}"
+COOLDOWN_FILE="$ART/unhang_cooldown.json"
 # Dedicated repullupvotes slots: do not phsuper-restart (would kill upvote_refresh).
 FLEET_UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
@@ -102,6 +104,17 @@ for s in m.get('slots',[]):
 raise SystemExit(1)
 " 2>/dev/null && use_stale=1
   if [[ "$use_stale" == 1 ]]; then
+  if python3 -c "
+import json, time, sys
+from pathlib import Path
+p = Path('''$COOLDOWN_FILE''')
+d = json.loads(p.read_text()) if p.exists() else {}
+last = int(d.get('$slot') or 0)
+sys.exit(0 if last and time.time() - last < int('$UNHANG_COOLDOWN') else 1)
+" 2>/dev/null; then
+    echo "stale_unhang_cooldown slot=$slot"
+    continue
+  fi
   skip=0
   "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
     --ssh-flag=-oConnectTimeout=12 </dev/null --command='pgrep -f "[p]deep.py|[p]h_batch.py" >/dev/null || exit 1
@@ -118,6 +131,15 @@ exit 1' 2>/dev/null | grep -q STALE_SKIP_ACTIVE_PULL && skip=1
     "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
       --ssh-flag=-oConnectTimeout=12 </dev/null --command="$REMOTE_STALE" 2>/dev/null && {
       echo "stale_unhang slot=$slot token=$tok"
+      python3 -c "
+import json, time
+from pathlib import Path
+p = Path('''$COOLDOWN_FILE''')
+d = json.loads(p.read_text()) if p.exists() else {}
+d['$slot'] = int(time.time())
+p.parent.mkdir(parents=True, exist_ok=True)
+p.write_text(json.dumps(d))
+" 2>/dev/null || true
       nu=$((nu + 1))
     } &
   else

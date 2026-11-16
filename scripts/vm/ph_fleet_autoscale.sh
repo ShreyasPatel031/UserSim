@@ -171,7 +171,16 @@ create_one() {
   fi
   printf '%s fleet-%s\n' "$name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" |
     "${GC[@]}" storage cp - "${PORT_PREFIX}/port.${port}"
-  echo "${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}" | "${GC[@]}" storage cp - "${VM_GCS}/GO.$name"
+  local go="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
+  local up_slots="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+  if [[ " ${up_slots} " == *" $slot "* ]]; then
+    if [[ -f "$ART/upvote_go.token" ]]; then
+      go="$(tr -d '\n' <"$ART/upvote_go.token")"
+    else
+      go="repullupvotes:fleet-upvote-${RUN_ID}"
+    fi
+  fi
+  echo "$go" | "${GC[@]}" storage cp - "${VM_GCS}/GO.$name"
 }
 
 delete_one() {
