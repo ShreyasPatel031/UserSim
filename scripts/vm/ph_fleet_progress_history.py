@@ -179,7 +179,10 @@ def main() -> int:
 
     drivers = []
     for i in range(1, len(series)):
-        ev = log_events_between(log, series[i - 1]["utc"], series[i]["utc"])
+        t0, t1 = series[i - 1].get("utc"), series[i].get("utc")
+        if not t0 or not t1:
+            continue
+        ev = log_events_between(log, t0, t1)
         drivers.append(explain_step(series[i - 1], series[i], ev))
     drivers.sort(key=lambda x: abs(x["delta_ppm"]), reverse=True)
 
