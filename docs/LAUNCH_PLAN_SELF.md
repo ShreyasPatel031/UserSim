@@ -44,8 +44,8 @@ in the appendix.
 
 | Going into | Earlier top-5 finishes | Saturday P(top 5) | Tue–Thu P(top 5) |
 |---|---|---|---|
-| Launch 2 | 0 of 1 (83% likely) | 16–27 by how close launch 1 came | 7–19 |
-| Launch 2 | 1 of 1 | 53–68 | 30–62 |
+| Launch 2 | 0 of 1 (82% likely) | 16–27 by how close launch 1 came | 10.6 expected over all branches (any day: 7–19) |
+| Launch 2 | 1 of 1 | 53–68 | any day: 30–62 |
 | Launch 3 | 0 of 2 | 20.9 (range 15.7–26.8) | 4.5 |
 | Launch 3 | 1 of 2 | 43.5 (38.2–54.2) | 18.8 |
 | Launch 3 | 2 of 2 | 62.7 (53.3–68.3) | 40.0 |
