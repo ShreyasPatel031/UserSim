@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Merge refresh_priority_<day>.txt (in order) then activity-ordered refresh_upvotes_*.txt tail (deduped).
+# Merge refresh_priority_<day>.txt (in order) then each REFRESH_TAIL_GCS object in order (deduped; REFRESH_SKIP_FILE handles dropped).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 source "${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t082000z/pace.env}"
@@ -11,7 +11,7 @@ OUT_OBJ="usersim_sim/raw/_cursor/refresh_upvotes_${TAG}_priority_merged.txt"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 export MERGE_TMP="$TMP" MERGE_BUCKET="$MVP_GCS_BUCKET" MERGE_DAYS="$PRIORITY_DAYS" \
-  MERGE_TAIL="$TAIL_GCS" MERGE_OUT="$OUT_OBJ"
+  MERGE_TAIL="$TAIL_GCS" MERGE_OUT="$OUT_OBJ" MERGE_SKIP="${REFRESH_SKIP_FILE:-}"
 python3 <<'PY'
 import json, os, subprocess
 from pathlib import Path
@@ -19,11 +19,15 @@ from pathlib import Path
 tmp = Path(os.environ["MERGE_TMP"])
 bucket = os.environ["MERGE_BUCKET"]
 days = [d for d in os.environ.get("MERGE_DAYS", "").split() if d.strip()]
-tail = os.environ["MERGE_TAIL"]
+tails = os.environ["MERGE_TAIL"].split()
 out = os.environ["MERGE_OUT"]
 sections = []
 seen: set[str] = set()
 lines: list[str] = []
+skip_path = os.environ.get("MERGE_SKIP") or ""
+if skip_path and Path(skip_path).is_file():
+    seen |= {ln.strip().lower().lstrip("@") for ln in Path(skip_path).read_text().splitlines() if ln.strip()}
+n_skip = len(seen)
 
 
 def load_gcs(obj: str, dest: Path) -> None:
@@ -56,10 +60,10 @@ for day in days:
     cnt = add_handles(dest, f"refresh_priority_{day}.txt")
     sections.append({"day": day, "gcs": obj, "handles": cnt})
 
-tail_path = tmp / "tail.txt"
-load_gcs(tail, tail_path)
-tail_n = add_handles(tail_path, tail)
-sections.append({"tail": tail, "handles": tail_n})
+for i, tail in enumerate(tails):
+    tail_path = tmp / f"tail_{i}.txt"
+    load_gcs(tail, tail_path)
+    sections.append({"tail": tail, "handles": add_handles(tail_path, tail)})
 merged = tmp / "merged.txt"
 merged.write_text("\n".join(lines) + "\n")
 subprocess.run(
@@ -70,7 +74,8 @@ subprocess.run(
 meta = {
     "out_gcs": f"gs://{bucket}/{out}",
     "out_basename": Path(out).name,
-    "total_handles": len(seen),
+    "total_handles": len(seen) - n_skip,
+    "skipped_already_reread": n_skip,
     "sections": sections,
 }
 print(json.dumps(meta))
