@@ -1,0 +1,272 @@
+[
+ {
+  "match": 1,
+  "product": "Plow Latch",
+  "kind": "complaints",
+  "pred": "Security implications of giving AI agents \"real control\" over a Mac.",
+  "real": "Giving AI more control over devices makes trust and privacy even more important",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Kane CLI",
+  "kind": "questions",
+  "pred": "What are the limitations of the free plan?",
+  "real": "Is this free to try?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Toplify",
+  "kind": "questions",
+  "pred": "Do you support Android or other app stores?",
+  "real": "Will Android support be added?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Tadata",
+  "kind": "questions",
+  "pred": "What makes Tadata better than other Slack AI integrations?",
+  "real": "How else are you planning to differentiate Tadata from peers?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Hubble",
+  "kind": "questions",
+  "pred": "How exactly does Hubble retrieve medical records?",
+  "real": "How are records retrieved and why can't other APIs do it?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Dograh",
+  "kind": "questions",
+  "pred": "Can you elaborate on the 'advanced QA & monitoring' features?",
+  "real": "How to catch an agent that gives a bad response and what does the debugging experience look like?",
+  "reader_agrees": false,
+  "note": "judge matched; reader: QA features vs debugging a bad response, too loose"
+ },
+ {
+  "match": 1,
+  "product": "Kai",
+  "kind": "questions",
+  "pred": "Is there a mobile app for both iOS and Android?",
+  "real": "Can I use Kai on my phone as well as on my laptop?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Articos",
+  "kind": "questions",
+  "pred": "Is there a live demo or playground available?",
+  "real": "Do you have a demo or sample report?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Plow Latch",
+  "kind": "complaints",
+  "pred": "Concerns about data privacy with AI agents on a Mac.",
+  "real": "Giving AI more control over devices makes trust and privacy even more important",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Tether",
+  "kind": "questions",
+  "pred": "How does it impact battery life?",
+  "real": "Does the physics loop impact battery when idle?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Tadata",
+  "kind": "questions",
+  "pred": "How does Tadata learn company preferences and context?",
+  "real": "Does Tadata maintain a memory? If yes how does it know which learnings to capture?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "AI Observability by OpenObserve",
+  "kind": "questions",
+  "pred": "How can I try the product's features before committing?",
+  "real": "Is there a test package for proof of concept?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Hubble",
+  "kind": "questions",
+  "pred": "What are the limitations of your record retrieval?",
+  "real": "How are records retrieved and why can't other APIs do it?",
+  "reader_agrees": false,
+  "note": "judge matched; reader: limits vs how records are retrieved, too loose"
+ },
+ {
+  "match": 1,
+  "product": "Sider Omni Sidebar",
+  "kind": "questions",
+  "pred": "How does Sider Omni Sidebar ensure my data privacy and security?",
+  "real": "Is it safe to use?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Bleetz Network",
+  "kind": "questions",
+  "pred": "What is the pricing model after the beta?",
+  "real": "What is the cost of the service?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Knockin'",
+  "kind": "questions",
+  "pred": "Do I need a credit card to start a trial?",
+  "real": "Ability to control what Knockin' can use and set restrictions for its answer || What kind of insights have stunned you most from the questions vacationers ask? || Do you also offer a printing service along with that? || Does the reply from Knocking still sound like you when someone asks something off-script? || Do you end up babysitting the card the way every 'AI business card' demo does once the ",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Mycel",
+  "kind": "questions",
+  "pred": "Is the website currently operational?",
+  "real": "How well does Mycel pick up on modifications over time? || What kind of deliverables can it produce? Is it necessarily a file or can it be publishing? || Does Mycel run ads? || How does the CMS work? Is it connectors or an API? || How much of the drafted content is usually right first time? || When will Mycel be able to fully run all of the user's work? || Is it possible to integrate with MCP? || ",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "HarnessRouter Community Edition",
+  "kind": "complaints",
+  "pred": "Product doesn't seem to offer an easy 'try it now' option.",
+  "real": "Harness-specific capabilities not mapping 1:1 or requiring escape hatches || Model constraints written as instructions are advisory and unreliable || Abstraction leaks when running complex, non-coding agent workflows || Handling concurrency, isolation, and recovery for long-running jobs",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Lenz",
+  "kind": "complaints",
+  "pred": "Unclear what platforms, OS, or browsers are supported.",
+  "real": "Couldn't extract claims from a YouTube video",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Harness by Autonomous",
+  "kind": "complaints",
+  "pred": "The 'Workshop Notes' section doesn't clarify product functionality.",
+  "real": "Confusion during initial onboarding/setup without the harness || Organization blocks official remote tools for cloud code || Multi-machine setups break when one machine is asleep || Agents sitting idle waiting for input causes time loss || Unclear how CAD, circuits, and robots harnesses with live viewer work",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Quiver GTM",
+  "kind": "questions",
+  "pred": "Can you clarify what this product does?",
+  "real": "How does the human-approved feedback loop work in practice? || How does Quiver generate context update proposals from research/performance? || How do you review/compare/restore versions? || How do you avoid agents learning the wrong thing from one-off results? || Is there a walkthrough or example recommended to get started? || Where do you draw the line for agent authority in Quiver? || Is it thro",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "NudgeForMe",
+  "kind": "questions",
+  "pred": "How much does NudgeForMe cost, and is there a free plan or trial?",
+  "real": "How does the AI handle the relational side and sound like a person? || How does it avoid suggesting follow-ups for intentionally quiet conversations? || How does reply detection perform in real-world conversations? || Does it look for signals like questions or explicit requests, or is it purely time-based? || What happens to the actual email content once it's scanned? || How accurate are the follo",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Nitro 4.0",
+  "kind": "questions",
+  "pred": "Which platforms or programming languages are supported?",
+  "real": "How does the translation get back to an agent without an account? || How do you ensure quality when an AI agent places the order? || How do I connect my agent to Nitro and how does it order a translation? || What kind of texts is this service good for? || How does the agent know when a translation needs more context? || Are you worried AI will make your service obsolete?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Pexo",
+  "kind": "questions",
+  "pred": "Is there a demo or playground to test features before signing up?",
+  "real": "Can it scan appearance for narration? || How to claim 500 bonus credits? || Can Pexo remember a brand's style? || Does revising a draft cost credits? || Was the launch video made by Pexo? || Does it support any language? || Can it turn a product page into a video? || Can I give it a scrappy screen recording?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Nitro 4.0",
+  "kind": "questions",
+  "pred": "Where can I find a live demo or playground?",
+  "real": "How does the translation get back to an agent without an account? || How do you ensure quality when an AI agent places the order? || How do I connect my agent to Nitro and how does it order a translation? || What kind of texts is this service good for? || How does the agent know when a translation needs more context? || Are you worried AI will make your service obsolete?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "ngram 2.0",
+  "kind": "questions",
+  "pred": "Who is the team behind ngram?",
+  "real": "Can ngram keep video in sync when product UI changes? || How does ngram ensure narration/visuals are accurate to original research papers? || What is the product's main framing/positioning (product updates vs. general explainer)? || Does ngram have the ability to link videos to QR codes for physical products? || Which format do people create most: explainers or screencasts? || How does ngram integ",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Soloop",
+  "kind": "complaints",
+  "pred": "Pricing is unclear; what's free, what are the limits?",
+  "real": "Approval queue becomes a bottleneck, slowing down the process || System asking for approval too frequently is a slower version of doing it myself || Unclear what happens after choosing an AI role and discussing an idea || The app asked to request to sign up, preventing immediate access || There seems to be a problem with the product",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Tadata",
+  "kind": "questions",
+  "pred": "Can users control what Tadata has access to in Slack?",
+  "real": "How can I be sure that the information shared with the tool is safe? || How does this differ from Claude tags? || Does Tadata require me to tag it or will it be able to decide when to jump in? || What are you using Hunter for? || How else are you planning to differentiate Tadata from peers? || Can we control how verbose it is? || Does Tadata maintain a memory? If yes how does it know which learnin",
+  "reader_agrees": false,
+  "note": "judge did not match; reader: access control vs data safety, same worry"
+ },
+ {
+  "match": 0,
+  "product": "Articos MCP",
+  "kind": "questions",
+  "pred": "Who is Articos MCP designed for?",
+  "real": "Are you planning any Slack integrations? || How does Articos measure its 86% human accuracy? || Which use case is most popular so far with MCP users? || How does the MCP integration help with market research? || Would the validation hold for non-Western markets like Indian D2C store owners? || Are you looking to get on ChatGPT / Claude plugins stores? || Can Articos help compare different versions",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Pomerado",
+  "kind": "questions",
+  "pred": "Can you clarify exactly what 'turning any website into an API' means?",
+  "real": "What happens if a site throws a hard captcha mid-search? || How does Pomerado adapt to website layout changes? || How often do you rebuild integrations when sites change? || Does Pomerado provide a read-only check for 'outcome_unknown' writes? || Can a second team reuse an integration with different answers to questions?",
+  "reader_agrees": true,
+  "note": ""
+ }
+]
