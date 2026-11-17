@@ -2413,3 +2413,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-17 17:32Z Capture gaps root cause (Data Feeder 1719Z): box VM pauses host-side 10-25 min (~15 today) + one reboot without boot trigger; watchdog live 17:14Z shortens recovery only. DECISION: fleet slot becomes primary 15-min capture writer (AGENTS.md: fleet owns live capture), box stays standby, dedupe by slot.
 - 2026-11-17 17:36Z hourly; mailbox checked 17:36Z (from_cursor files read directly).
 - 2026-11-17 18:35Z hourly: 4th posts-capture gap from 18:00Z; fleet asked again (17:32Z, 18:32Z) to take primary capture. Mailbox checked 18:35Z.
+- 2026-11-17 19:15Z Shreyas checked a sample profile signed in and out: Upvotes ends at the same item. DECISION (AGENTS.md rewritten): Product Hunt's hasNextPage=false is the tab's end; people reclassified Nov 17 only for that are complete again; other stops stay incomplete. No sweep, no signed-in pass.

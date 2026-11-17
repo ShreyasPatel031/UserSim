@@ -109,16 +109,16 @@ Shreyas, verbatim: "The PH agent may deploy any rehearsed fix without asking me.
   rule they are deployed **without waiting for Shreyas** (Shreyas, Nov 17: "Why the fuck do you keep waiting for me to
   publish obviously better models?"). The orchestrator decides, the PH agent deploys, the old model stays as the shadow line.
 
-## Rule for every agent: there is no signed-in pass; the "signed-out upvote end" was a scroll bug (Shreyas, Nov 17 2026)
+## Rule for every agent: the Upvotes tab ends where Product Hunt ends it (Shreyas, Nov 17 2026)
 
-Shreyas: "the signed in approach isn't real. You just have to scroll. That was a bug we should have fixed."
-
-- A person's Upvotes tab is read to Product Hunt's own end by scrolling. No login, no account, no signed-in session.
-- "Whole at the signed-out upvote end" is not a real stop. It was a scroll bug. People saved under it are **incomplete**:
-  they are kept (never purged), marked incomplete, and finished by the completion pass, which re-reads the Upvotes tab by
-  scrolling to Product Hunt's end. They count as complete only after that pass passes the output check.
-- No agent asks Shreyas for an account, cookies or a "signed-in session" for Product Hunt pulls, and no agent proposes a
-  signed-in pass, whatever it is called.
+Shreyas checked one of our people himself, signed in and signed out: the Upvotes list ends at the same item either way
+("please stop making this a problem, it's not"). The profile header count is larger than the visible list; that is how
+Product Hunt shows it, not a gap in our pull.
+- A person's Upvotes tab is read by scrolling until Product Hunt says there are no more items (hasNextPage=false). That is
+  Product Hunt's own end, recorded as such in the paging record, and the tab is then complete, whatever the header count.
+- People held back as incomplete on Nov 17 only because their Upvotes list stopped at Product Hunt's own end are complete
+  again. A tab that stopped for any other reason (page stopped loading, error, block) is still incomplete and re-read.
+- No signed-in pass, no account, no search sweep is used for Upvotes, and no agent raises this question again.
 
 ## Rule for every agent: storage paths are not Shreyas's decision (Shreyas, Nov 17 2026)
 
