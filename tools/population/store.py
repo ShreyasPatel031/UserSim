@@ -402,7 +402,7 @@ def _records_part(args):
     ids = Ids(salt)
     schema = pa.schema([("person_id", pa.string()), ("complete", pa.bool_()), ("pull_finished_utc", pa.string()),
                         ("record_sha256", pa.string()), ("record_json", pa.large_string())])
-    rows, prof, bad = [], [], 0
+    rows, prof, bad, notp = [], [], 0, 0
     dj = lambda x: json.dumps(x, sort_keys=True, default=str) if x is not None else None
     for h, p in items:
         raw = open(p, "rb").read()
@@ -411,6 +411,9 @@ def _records_part(args):
             txt = raw.decode("utf-8")
         except Exception:
             bad += 1
+            continue
+        if not isinstance(d, dict) or not any(k in d for k in PERSON_KEYS):
+            notp += 1  # 00:5xZ Nov 17: a fleet dashboard JSON in people_live/vm/ was carried as a person on Nov 16
             continue
         sha = hashlib.sha256(raw).hexdigest()
         if hashlib.sha256(txt.encode("utf-8")).hexdigest() != sha:  # carried byte-for-byte or the build fails
@@ -430,7 +433,10 @@ def _records_part(args):
                      "signed_in_upvotes_json": dj(sio.get(h))})
     if rows:
         pq.write_table(pa.Table.from_pylist(rows, schema=schema), f"{out_dir}/records/part-{k:04d}.parquet", compression="zstd")
-    return prof, len(rows), bad
+    return prof, len(rows), bad, notp
+
+
+PERSON_KEYS = ("run", "header", "ph_user_id", "about", "upvotes", "followers", "following")
 
 
 def build_records(data_dir, out_dir, salt, complete=None, workers=4):
@@ -448,18 +454,20 @@ def build_records(data_dir, out_dir, salt, complete=None, workers=4):
             pass
     chunks = [(i // 2000, files[i:i + 2000], out_dir, salt, complete, {h: sio[h] for h, _ in files[i:i + 2000] if h in sio})
               for i in range(0, len(files), 2000)]
-    prof, n, bad = [], 0, 0
+    prof, n, bad, notp = [], 0, 0, 0
     with mp.get_context("fork").Pool(workers) as pool:
-        for pr, k, b in pool.imap_unordered(_records_part, chunks):
+        for pr, k, b, np_ in pool.imap_unordered(_records_part, chunks):
             prof += pr
             n += k
             bad += b
-    if n != len(files) - bad:
-        raise RuntimeError(f"records: {n} written for {len(files) - bad} readable person files")
+            notp += np_
+    if n != len(files) - bad - notp:
+        raise RuntimeError(f"records: {n} written for {len(files) - bad - notp} readable person files")
     pr = pd.DataFrame(prof)
     pr["joined"] = pd.to_datetime(pr["joined"], utc=True, errors="coerce", format="mixed")
     pr.to_parquet(f"{out_dir}/person_profile.parquet", index=False)
-    rep = {"person_files": len(files), "records_written": n, "unreadable_files": bad, "fields_not_carried": 0,
+    rep = {"person_files": len(files) - notp, "records_written": n, "unreadable_files": bad, "not_person_files_skipped": notp,
+           "fields_not_carried": 0,
            "joined_present": int(pr.joined.notna().sum()), "ph_user_id_present": int(pr.ph_user_id.notna().sum())}
     json.dump(rep, open(f"{out_dir}/records_report.json", "w"))
     return pr, rep

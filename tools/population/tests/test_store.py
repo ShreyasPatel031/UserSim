@@ -186,3 +186,18 @@ def test_light_pull_recognised(tmp_path):
     tabs, ev = full_pull.load_full(str(p), IDS)
     assert list(tabs.tab) == ["upvotes"] and tabs.pull_type.iloc[0] == "light" and bool(tabs.complete.iloc[0])
     assert set(ev.target_id) == {"5", "6"} and (ev.person_id == IDS("carol")).all()
+
+
+def test_records_skip_non_person_json(tmp_path):
+    # Nov 17: a fleet dashboard JSON written into people_live/vm/ was carried into store_v3 as a person
+    vm = tmp_path / "data" / "people_live" / "vm"
+    vm.mkdir(parents=True)
+    (vm / "alice.json").write_text(json.dumps({"run": {"finished_utc": "2026-11-16T00:00:00Z"}, "ph_user_id": 1,
+                                               "about": {"joined": "2020-01-01"}, "upvotes": {"items": []}}))
+    (vm / "board.json").write_text(json.dumps({"active_vms": 3, "complete_ppm": 2.0, "slots": []}))
+    salt = tmp_path / "salt"
+    salt.write_text("s")
+    out = tmp_path / "out"
+    pr, rep = store.build_records(str(tmp_path / "data"), str(out), "s", complete={"alice"}, workers=1)
+    assert rep["records_written"] == 1 and rep["not_person_files_skipped"] == 1 and rep["person_files"] == 1
+    assert len(pr) == 1
