@@ -170,6 +170,7 @@ while true; do
       mark geoip_ensure_end
     fi
     # shellcheck disable=SC2086
+    _launch_t=$(date +%s)
     PYTHONUNBUFFERED=1 $PY -u ph_batch.py --mode "$mode" --token "$tok" $extra >"$L" 2>&1 &
     pid=$!
     hb "$tok"
@@ -202,6 +203,8 @@ while true; do
     done
     wait "$pid"
     rc=$?
+    # A run that pulled for a while before its block starts the CF backoff over (n counts consecutive short runs).
+    (( $(date +%s) - _launch_t >= ${PH_CF_RESET_AFTER_SEC:-900} )) && rm -f /opt/ph/reuse/cf_backoff_n
     gsutil -q cp "$L" "$B/logs/$VM.reuse.$L" || true
     [[ $rc -eq 7 ]] && echo "halted by autorecover; waiting for NEW GO token" >> supervisor.log
     echo "{\"vm\":\"$VM\",\"event\":\"supervisor_run_end\",\"token\":\"$tok\",\"pkg_md5\":\"$PKG_MD5\",\"rc\":$rc,\"utc\":\"$(date -u +%FT%TZ)\",\"strat\":\"${PH_STRATEGY:-}\",\"extra\":\"$extra\"}" >> "status_$VM.jsonl"
