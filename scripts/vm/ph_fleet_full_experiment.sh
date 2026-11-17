@@ -364,7 +364,7 @@ keeper_one_pass() {
   now=$(date +%s)
   while IFS=$'\t' read -r slot port; do
     [[ -z "$slot" ]] && continue
-    if is_upvote_slot "$slot"; then
+    if is_upvote_slot "$slot" || [[ " ${FLEET_LIVE_SLOTS:-39} " == *" $slot "* ]]; then
       continue
     fi
     name="$(vm_name "$slot")"
