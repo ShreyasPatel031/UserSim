@@ -7,10 +7,13 @@ export PACE_FLEET_RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
 # shellcheck source=/dev/null
 source "$PACE_ENV_FILE"
 unset PACE_SERVICE_ACCOUNT
-# Orchestrator crisis: no stale_unhang / wakeup loops while clean supervisor restart runs.
-export FLEET_HOLD_UNHANG="${FLEET_HOLD_UNHANG:-1}"
+# Hung slots recover one at a time (cooldown + per-tick cap in recover), never as a fleet-wide restart.
+export FLEET_HOLD_UNHANG="${FLEET_HOLD_UNHANG:-0}"
+export FLEET_STALE_UNHANG_MIN_COMPLETE_PPM="${FLEET_STALE_UNHANG_MIN_COMPLETE_PPM:-0}"
+export FLEET_STALE_UNHANG_MAX="${FLEET_STALE_UNHANG_MAX:-3}"
 export FLEET_WAKEUP_MAX="${FLEET_WAKEUP_MAX:-12}"
 python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
+python3 "$ROOT/scripts/vm/ph_fleet_refill_lists.py" || true
 bash "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" >/dev/null 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh"
 chmod +x "$ROOT/scripts/vm/ph_fleet_cursor_mailbox_status.sh" 2>/dev/null || true

@@ -20,7 +20,7 @@ ZONE="${PACE_ZONE:?}"
 VM_GCS="${PACE_GCS_VM_ROOT:-gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 TS="$(date +%s)"
 FLEET_SKIP_STALE_UNHANG=0
-STALE_UNHANG_MIN="${FLEET_STALE_UNHANG_MIN_COMPLETE_PPM:-6}"
+STALE_UNHANG_MIN="${FLEET_STALE_UNHANG_MIN_COMPLETE_PPM:-0}"
 if [[ "${FLEET_HOLD_UNHANG:-0}" == 1 ]]; then
   FLEET_SKIP_STALE_UNHANG=1
   echo "stale_unhang_paused FLEET_HOLD_UNHANG=1 (no stale_unhang loops; dead/cf wakeup still allowed)"
@@ -90,6 +90,8 @@ exit 0'
 
 n=0
 nu=0
+nu_started=0
+STALE_UNHANG_MAX="${FLEET_STALE_UNHANG_MAX:-3}"
 for slot in "${targets[@]}"; do
   [[ -z "$slot" ]] && continue
   if [[ " ${FLEET_UPVOTE_SLOTS} " == *" $slot "* ]]; then
@@ -115,7 +117,7 @@ for s in m.get('slots',[]):
 raise SystemExit(1)
 " 2>/dev/null && use_stale=1
   if [[ "$use_stale" == 1 ]]; then
-  if [[ "$FLEET_SKIP_STALE_UNHANG" == 1 ]]; then
+  if [[ "$FLEET_SKIP_STALE_UNHANG" == 1 ]] || ((nu_started >= STALE_UNHANG_MAX)); then
     continue
   fi
   if python3 -c "
@@ -140,6 +142,7 @@ exit 1' 2>/dev/null | grep -q STALE_SKIP_ACTIVE_PULL && skip=1
     echo "stale_skip_active_pull slot=$slot"
     continue
   fi
+    nu_started=$((nu_started + 1))
     tok="pdeep:fleet-${RUN_ID}-recover-${TS}-${slot}"
     echo "$tok" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
     "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
