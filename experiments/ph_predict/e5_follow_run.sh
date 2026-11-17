@@ -8,6 +8,12 @@ D="$1"; W="$2"; B=gs://usersim-bakeoff-347838016394/usersim_sim
 OUT="$B/tmp/e5/follow_shadow/shadow_$D.jsonl"
 # also runs E5's team_shadow (e5_team_run.sh) at the end when its worktree exists (scratchpad/e5wt at aed7f324)
 team() { WT="$(dirname "$W")/e5wt"; [ -d "$WT" ] && bash "$(dirname "$0")/e5_team_run.sh" "$D" "$W" "$WT" || echo "team_shadow: no worktree $WT"; }
+# hunter reach at 00:05 (orchestrator 08:15Z Nov 17; SHADOW file only, no model reads it): raw/daily/<D>/hunter_reach_0005.json, written once
+hunter() { HR="$B/raw/daily/$D/hunter_reach_0005.json"; gsutil -q stat "$HR" && { echo "hunter_reach exists"; return 0; }
+  local ST="${E5_STORE:-$B/raw/population/store_v3}"; local G; G=$(gsutil stat "$ST/events.parquet" | awk '/Generation:/{print $2}'); local SDH="$W/store_$(basename "$ST")_$G"; mkdir -p "$SDH" "$W/s"
+  gsutil -q -m cp -n "$ST/events.parquet" "$ST/persons.parquet" "$SDH/"; [ -s "$W/s/salt" ] || gsutil -q cp "$B/raw/population/_salt" "$W/s/salt"
+  python3 "$(dirname "$0")/hunter_reach.py" "$B/raw/daily/$D/today_0005.json" "$D" "$SDH" "$W/s" "$W/hunter_reach_$D.json" && gsutil -q cp "$W/hunter_reach_$D.json" "$HR" && echo "wrote $HR"; }
+gsutil -q stat "$B/raw/daily/$D/today_0005.json" && { hunter || echo "hunter_reach failed (shadow; does not block)"; }
 if gsutil -q stat "$OUT"; then echo "exists $OUT"; team; exit 0; fi
 gsutil -q stat "$B/raw/daily/$D/today_0005.json" || { echo "no 00:05 read for $D"; exit 1; }
 mkdir -p "$W/store" "$W/s"

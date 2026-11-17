@@ -5,10 +5,14 @@
 A page goes to the next route only when the cheaper one is blocked (403 / 429 / Cloudflare challenge). Apify is never
 used here. Every page reports its route and bytes; cost() turns bytes into dollars for the spend log.
 Browser scrolling (rare, see incremental.py) runs separately through ph_predict/vm_scroll_lean.py on route 3."""
-import json, os, threading, time
+import json, os, re, threading, time
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
 from curl_cffi import requests as R
+
+
+def _err(e):   # error text without credentials: proxy URLs carry user:password@ (Nov 17 audit)
+    return re.sub(r"(?i)([a-z][a-z0-9+.-]*://)[^/@\s]+@", r"\1<redacted>@", f"{type(e).__name__}: {e}")[:200]
 
 KEYS = "/var/lib/usersim/discovery_keys.json"
 USD_PER_GB = {"direct": 0.0, "dataimpulse": 1.0, "dataimpulse_camoufox": 1.0}
@@ -39,7 +43,7 @@ def get(url, start_route=0):
             try:
                 r = R.get(url, impersonate="chrome", proxies={"https": proxy, "http": proxy} if proxy else None, timeout=60)
             except Exception as e:  # noqa: BLE001
-                rec.update(status=-1, route=name, body=str(e)[:200]); continue
+                rec.update(status=-1, route=name, body=_err(e)); continue
             rec["bytes"] += len(r.content); rec.update(status=r.status_code, route=name)
             if not blocked(r):
                 rec["body"] = r.text if r.status_code == 200 else ""
@@ -88,7 +92,7 @@ def browser_get(url, wait_s=30):
     try:
         return _browser_page(url, rec, proxy, wait_s, Camoufox)
     except Exception as e:  # noqa: BLE001 - a browser that fails to start or crashes: record it, never stop the batch
-        rec.update(status=-2, body=str(e)[:200])
+        rec.update(status=-2, body=_err(e))
         return rec
 
 
@@ -108,7 +112,7 @@ def _browser_page(url, rec, proxy, wait_s, Camoufox):
                 page.wait_for_timeout(1500)
             rec.update(status=status, final_url=page.url, body=page.content())
         except Exception as e:  # noqa: BLE001
-            rec.update(status=-1, body=str(e)[:200])
+            rec.update(status=-1, body=_err(e))
         for req in done:
             try:
                 z = req.sizes(); rec["bytes"] += sum(max(0, z.get(k, 0)) for k in ("requestHeadersSize", "requestBodySize", "responseHeadersSize", "responseBodySize"))
@@ -164,7 +168,7 @@ class BrowserSession:
                     page.wait_for_timeout(1500)
                 rec.update(status=status, final_url=page.url, body=page.content())
             except Exception as e:  # noqa: BLE001
-                rec.update(status=-1, body=str(e)[:200])
+                rec.update(status=-1, body=_err(e))
             for req in done:
                 try:
                     z = req.sizes(); rec["bytes"] += sum(max(0, z.get(k, 0)) for k in ("requestHeadersSize", "requestBodySize", "responseHeadersSize", "responseBodySize"))
@@ -175,5 +179,5 @@ class BrowserSession:
             except Exception:  # noqa: BLE001
                 pass
         except Exception as e:  # noqa: BLE001 - browser crashed or failed to start: record, restart next time
-            rec.update(status=-2, body=str(e)[:200]); self.close()
+            rec.update(status=-2, body=_err(e)); self.close()
         return rec
