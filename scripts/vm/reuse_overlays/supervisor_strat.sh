@@ -118,6 +118,11 @@ while true; do
   gsutil -q cp "$B/_code/reuse.tgz" . && tar xzf reuse.tgz
   apply_overlays
   load_strategy
+  # Same-IP CF backoff at its cap: run with half the workers until a clean exit clears cf_backoff_n.
+  _cfn=$(tr -cd 0-9 </opt/ph/reuse/cf_backoff_n 2>/dev/null || true)
+  if [[ -n "$_cfn" && "$_cfn" -ge "${PH_CF_HALVE_AT_N:-5}" ]]; then
+    export PDEEP_K=$(( ${PDEEP_K:-4} / 2 > 0 ? ${PDEEP_K:-4} / 2 : 1 ))
+  fi
   apply_proxy_port
   export PKG_MD5=$(python3 -c 'import hashlib,base64;print(base64.b64encode(hashlib.md5(open("reuse.tgz","rb").read()).digest()).decode())' 2>/dev/null)
   tok=$(gsutil cat "$B/GO.$VM" 2>/dev/null | head -1 | tr -cd 'A-Za-z0-9:_.-' || true)
@@ -226,12 +231,9 @@ while true; do
       base=${PH_CF_FLEET_REST_SEC:-600}
       n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n | tr -cd 0-9)))
       n=$((n + 1)); echo "$n" > /opt/ph/reuse/cf_backoff_n
-      mult=1
-      (( n > 1 )) && mult=2
-      (( n > 2 )) && mult=4
-      (( n > 3 )) && mult=8
-      wait=$(( base * mult ))
-      max_cf=${PH_CF_COOLDOWN_MAX_SEC:-3600}
+      e=$(( n > 1 ? n - 1 : 0 )); (( e > 10 )) && e=10
+      wait=$(( base << e ))
+      max_cf=${PH_CF_COOLDOWN_MAX_SEC:-7200}
       (( wait > max_cf )) && wait=$max_cf
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/cf_cooldown_until
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
@@ -243,12 +245,9 @@ while true; do
     else
       base=${PH_CF_FLEET_REST_SEC:-600}
       n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n 2>/dev/null | tr -cd 0-9)))
-      mult=1
-      (( n > 1 )) && mult=2
-      (( n > 2 )) && mult=4
-      (( n > 3 )) && mult=8
-      wait=$(( base * mult ))
-      max_cf=${PH_CF_COOLDOWN_MAX_SEC:-3600}
+      e=$(( n > 1 ? n - 1 : 0 )); (( e > 10 )) && e=10
+      wait=$(( base << e ))
+      max_cf=${PH_CF_COOLDOWN_MAX_SEC:-7200}
       (( wait > max_cf )) && wait=$max_cf
       echo $(( $(date +%s) + wait )) > /opt/ph/reuse/same_tok_retry_at
     fi
