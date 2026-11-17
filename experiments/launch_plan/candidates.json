@@ -1,0 +1,42 @@
+{
+ "A": {"product": "PH Daily Forecast", "page": "usersim.vercel.app/ph", "default_topics": ["Artificial Intelligence", "Analytics", "Marketing"],
+  "variants": [
+   {"name": "PH Daily Forecast", "tagline": "Tomorrow's Product Hunt top 5, predicted at 12:05am",
+    "description": "A free public board that predicts each day's Product Hunt leaderboard five minutes after launches go live. Back-tested on 184 days: on average 3.3 of our top-5 picks finished in the real top 5. Every prediction is scored in public the next day."},
+   {"name": "PH Daily Forecast", "tagline": "A public scoreboard for Product Hunt predictions",
+    "description": "We forecast every Product Hunt launch day before votes are visible, then publish how we did. Free, no login. See today's predicted ranking, each launch's chance of a top-5 finish, and our full track record, misses included."},
+   {"name": "PH Daily Forecast", "tagline": "See where today's launches will land, free",
+    "description": "Launching soon or just curious? This free board ranks today's Product Hunt launches by predicted finish, using only what is public at 12:05am PT. It updates again at 3:45am, and yesterday's forecast is graded against the real result."}]},
+ "B": {"product": "Launch Simulator", "page": "usersim.vercel.app/try", "default_topics": ["Artificial Intelligence", "Marketing", "SaaS"],
+  "variants": [
+   {"name": "UserSim Launch Simulator", "tagline": "Paste your URL, see how your launch would land",
+    "description": "Paste a product URL before you launch. You get the questions and concerns Product Hunt users are most likely to raise, simulated reactions, and an expected rank band. Built on 81,000 real Product Hunt voter profiles. Free to try, no signup."},
+   {"name": "UserSim Launch Simulator", "tagline": "Rehearse your Product Hunt launch before launch day",
+    "description": "A dry run for your launch. Paste your page and see what real voter groups would ask, what would put them off, and roughly where you would finish. Fix the page first, launch second. Our predicted questions are checked daily against real launch comments."},
+   {"name": "UserSim Launch Simulator", "tagline": "Know the questions your launch will get, in advance",
+    "description": "Most launch-day comments are predictable. Paste a URL and get the top concerns and questions your page will draw from Product Hunt users, plus an expected rank band. In our live test the predicted questions beat a fixed list of common questions."}]},
+ "C": {"product": "Synthetic launch audience", "page": "usersim.vercel.app/ph", "default_topics": ["Artificial Intelligence", "Marketing", "Analytics"],
+  "variants": [
+   {"name": "UserSim Audience Panel", "tagline": "A panel of 24 Product Hunt voter personas for your launch",
+    "description": "Each persona stands for 20 or more real Product Hunt voters with similar tastes. Show them your launch and read each group's reaction, concern and question. In a back-test on 276 past launches the panel predicted 63% of the themes real commenters raised."},
+   {"name": "UserSim Audience Panel", "tagline": "Hear from your launch audience before they exist",
+    "description": "We grouped 81,000 real Product Hunt voters by what they upvote, then built a panel that answers as those groups would. See who is drawn to your product, who is not, and what each group would say about it. Simulated, and labelled as such."},
+   {"name": "UserSim Audience Panel", "tagline": "Which Product Hunt voters will back you, and why",
+    "description": "See your launch through 24 voter groups built from real Product Hunt voting history. For each group: how strongly your kind of product pulls them, what they would ask, and what would put them off. Groups only; no individual users are shown."}]},
+ "D": {"product": "Launch Pack", "page": "usersim.vercel.app", "default_topics": ["Marketing", "SaaS", "Artificial Intelligence"],
+  "variants": [
+   {"name": "UserSim Launch Pack", "tagline": "Pre-launch audit, launch-day read and post-mortem",
+    "description": "A paid package for founders launching on Product Hunt. Before: an audit of your page against the questions voters will ask. On the day: a forecast of where you will land, updated before votes show. After: a post-mortem against the real result."},
+   {"name": "UserSim Launch Pack", "tagline": "Everything we know about your launch, before and after",
+    "description": "For one launch you get three reports: what to fix on your page before launch, a launch-day forecast with our published accuracy, and an honest post-mortem of what happened and why. Built on real Product Hunt voting data, with every number sourced."},
+   {"name": "UserSim Launch Pack", "tagline": "Launch on Product Hunt with the data on your side",
+    "description": "A founder package built on 81,000 real voter profiles and a forecast we grade in public every day. You get a pre-launch page audit, a launch-day rank forecast and a post-mortem. No vote-getting, no growth tricks: insight only."}]},
+ "E": {"product": "API", "page": "usersim.vercel.app", "default_topics": ["Artificial Intelligence", "Developer Tools", "API"],
+  "variants": [
+   {"name": "UserSim API", "tagline": "Launch forecasts and voter-group reactions, as an API",
+    "description": "Send a product URL or description and get back predicted questions and concerns, voter-group reactions and an expected rank band as JSON. The same models that power our public Product Hunt forecast, for agents and tools that help founders launch."},
+   {"name": "UserSim API", "tagline": "Give your agent a simulated launch audience",
+    "description": "An API for agents that build or market products. Ask how a launch page would land with real Product Hunt voter groups and get structured answers: likely questions, concerns and an expected rank band. Simulated output, labelled with measured accuracy."},
+   {"name": "UserSim API", "tagline": "Product Hunt audience simulation for developers",
+    "description": "One endpoint, JSON out. Predicted launch-day questions, concerns by voter group and an expected rank band for any product page. Built on 81,000 real Product Hunt voter profiles and a daily forecast we score in public."}]}
+}

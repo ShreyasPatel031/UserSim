@@ -1,0 +1,257 @@
+{
+ "window": [
+  "2026-09-18",
+  "2026-11-12"
+ ],
+ "measured": {
+  "Launch Simulator (/try)": 86.4,
+  "Forecast board": 87.9,
+  "Persona panel": 75.2,
+  "Launch Pack": 80.0
+ },
+ "res": {
+  "base case, pitch 40": {
+   "med_rank": 25.5,
+   "p3": 0.9,
+   "p5": 2.8,
+   "p10": 13.3,
+   "p5_lo": 1.9,
+   "p5_hi": 3.8
+  },
+  "base case, pitch 55": {
+   "med_rank": 26.5,
+   "p3": 0.8,
+   "p5": 2.7,
+   "p10": 12.5,
+   "p5_lo": 1.8,
+   "p5_hi": 3.9
+  },
+  "base case, pitch 75": {
+   "med_rank": 17.5,
+   "p3": 1.4,
+   "p5": 6.2,
+   "p10": 21.5,
+   "p5_lo": 4.2,
+   "p5_hi": 8.4
+  },
+  "base case, pitch 85": {
+   "med_rank": 17.0,
+   "p3": 1.8,
+   "p5": 6.4,
+   "p10": 22.7,
+   "p5_lo": 4.5,
+   "p5_hi": 8.7
+  },
+  "base case, Launch Simulator (/try) measured pitch 86.4": {
+   "med_rank": 17.0,
+   "p3": 1.8,
+   "p5": 6.4,
+   "p10": 22.7,
+   "p5_lo": 4.5,
+   "p5_hi": 8.8
+  },
+  "base case, Forecast board measured pitch 87.9": {
+   "med_rank": 17.0,
+   "p3": 1.9,
+   "p5": 6.5,
+   "p10": 23.1,
+   "p5_lo": 4.6,
+   "p5_hi": 8.8
+  },
+  "base case, Persona panel measured pitch 75.2": {
+   "med_rank": 17.5,
+   "p3": 1.4,
+   "p5": 6.2,
+   "p10": 21.5,
+   "p5_lo": 4.3,
+   "p5_hi": 8.5
+  },
+  "base case, Launch Pack measured pitch 80.0": {
+   "med_rank": 17.0,
+   "p3": 1.7,
+   "p5": 6.4,
+   "p10": 21.9,
+   "p5_lo": 4.4,
+   "p5_hi": 8.7
+  },
+  "first launch, everything you control, Launch Simulator (/try) measured pitch 86.4": {
+   "med_rank": 7.0,
+   "p3": 18.2,
+   "p5": 33.6,
+   "p10": 67.0,
+   "p5_lo": 28.2,
+   "p5_hi": 39.1
+  },
+  "first launch, everything you control, Forecast board measured pitch 87.9": {
+   "med_rank": 7.0,
+   "p3": 18.7,
+   "p5": 34.1,
+   "p10": 67.6,
+   "p5_lo": 28.6,
+   "p5_hi": 39.6
+  },
+  "first launch, everything you control, Persona panel measured pitch 75.2": {
+   "med_rank": 7.0,
+   "p3": 16.3,
+   "p5": 32.3,
+   "p10": 65.9,
+   "p5_lo": 27.6,
+   "p5_hi": 37.7
+  },
+  "first launch, everything you control, Launch Pack measured pitch 80.0": {
+   "med_rank": 7.0,
+   "p3": 18.3,
+   "p5": 33.6,
+   "p10": 66.3,
+   "p5_lo": 28.2,
+   "p5_hi": 39.1
+  },
+  "first launch, everything + top-10% hunter, Launch Simulator (/try) measured pitch 86.4": {
+   "med_rank": 3.0,
+   "p3": 50.2,
+   "p5": 67.4,
+   "p10": 89.4,
+   "p5_lo": 64.4,
+   "p5_hi": 70.1
+  },
+  "first launch, everything + top-10% hunter, Forecast board measured pitch 87.9": {
+   "med_rank": 3.0,
+   "p3": 50.4,
+   "p5": 67.3,
+   "p10": 89.3,
+   "p5_lo": 64.5,
+   "p5_hi": 70.0
+  },
+  "first launch, everything + top-10% hunter, Persona panel measured pitch 75.2": {
+   "med_rank": 2.5,
+   "p3": 51.9,
+   "p5": 68.1,
+   "p10": 90.0,
+   "p5_lo": 65.2,
+   "p5_hi": 70.6
+  },
+  "first launch, everything + top-10% hunter, Launch Pack measured pitch 80.0": {
+   "med_rank": 3.0,
+   "p3": 48.9,
+   "p5": 66.5,
+   "p10": 88.8,
+   "p5_lo": 63.6,
+   "p5_hi": 69.3
+  },
+  "assumed 75: LAUNCH 1 (pitch 75)": {
+   "med_rank": 7.0,
+   "p3": 16.3,
+   "p5": 32.3,
+   "p10": 65.9,
+   "p5_lo": 27.2,
+   "p5_hi": 37.5
+  },
+  "assumed 75: LAUNCH 2 (pitch 75)": {
+   "med_rank": 4.0,
+   "p3": 38.7,
+   "p5": 57.8,
+   "p10": 83.4,
+   "p5_lo": 53.1,
+   "p5_hi": 62.1
+  },
+  "assumed 75: LAUNCH 3 (pitch 75)": {
+   "med_rank": 2.0,
+   "p3": 53.7,
+   "p5": 69.5,
+   "p10": 90.5,
+   "p5_lo": 67.2,
+   "p5_hi": 71.8
+  },
+  "assumed 75: LAUNCH 4 (pitch 75)": {
+   "med_rank": 2.0,
+   "p3": 58.3,
+   "p5": 72.6,
+   "p10": 91.9,
+   "p5_lo": 70.7,
+   "p5_hi": 74.2
+  },
+  "measured: LAUNCH 1 (pitch 86.4)": {
+   "med_rank": 7.0,
+   "p3": 18.2,
+   "p5": 33.6,
+   "p10": 67.0,
+   "p5_lo": 28.4,
+   "p5_hi": 39.0
+  },
+  "measured: LAUNCH 2 (pitch 87.9)": {
+   "med_rank": 4.0,
+   "p3": 39.9,
+   "p5": 58.8,
+   "p10": 84.6,
+   "p5_lo": 54.7,
+   "p5_hi": 63.0
+  },
+  "measured: LAUNCH 3 (pitch 75.2)": {
+   "med_rank": 2.0,
+   "p3": 53.7,
+   "p5": 69.5,
+   "p10": 90.5,
+   "p5_lo": 66.7,
+   "p5_hi": 71.7
+  },
+  "measured: LAUNCH 4 (pitch 80.0)": {
+   "med_rank": 2.0,
+   "p3": 57.0,
+   "p5": 71.5,
+   "p10": 91.8,
+   "p5_lo": 69.7,
+   "p5_hi": 73.2
+  }
+ },
+ "weekday_step1": {
+  "0": {
+   "days": 8,
+   "med_rank": 7.0,
+   "p5": 0.285,
+   "p10": 0.671,
+   "n": 23.25
+  },
+  "1": {
+   "days": 8,
+   "med_rank": 8.0,
+   "p5": 0.216,
+   "p10": 0.596,
+   "n": 35.5
+  },
+  "2": {
+   "days": 8,
+   "med_rank": 8.0,
+   "p5": 0.197,
+   "p10": 0.618,
+   "n": 33.875
+  },
+  "3": {
+   "days": 8,
+   "med_rank": 9.5,
+   "p5": 0.157,
+   "p10": 0.456,
+   "n": 33.625
+  },
+  "4": {
+   "days": 8,
+   "med_rank": 7.0,
+   "p5": 0.369,
+   "p10": 0.691,
+   "n": 45.0
+  },
+  "5": {
+   "days": 8,
+   "med_rank": 4.0,
+   "p5": 0.594,
+   "p10": 0.85,
+   "n": 20.625
+  },
+  "6": {
+   "days": 8,
+   "med_rank": 5.0,
+   "p5": 0.533,
+   "p10": 0.81,
+   "n": 18.875
+  }
+ }
+}
