@@ -106,3 +106,14 @@ Shreyas, verbatim: "The PH agent may deploy any rehearsed fix without asking me.
 - A fix on the deploy list (experiments/pipeline_patches/DEPLOY_ORDER_*.md) that has passed its VM rehearsal (check mode, import gates, rollback tested) is deployed by the PH agent without waiting for Shreyas, in the listed order, outside 23:30-01:00 PT.
 - Each deploy is logged in docs/RESEARCH_LOG.md with its commit, check result and rollback command. A failed post-deploy check is rolled back at once.
 - Model swaps (for example publishing arm 3) are not fixes; they follow the "how models are chosen" rule.
+
+## Rule for every agent: there is no signed-in pass; the "signed-out upvote end" was a scroll bug (Shreyas, Nov 17 2026)
+
+Shreyas: "the signed in approach isn't real. You just have to scroll. That was a bug we should have fixed."
+
+- A person's Upvotes tab is read to Product Hunt's own end by scrolling. No login, no account, no signed-in session.
+- "Whole at the signed-out upvote end" is not a real stop. It was a scroll bug. People saved under it are **incomplete**:
+  they are kept (never purged), marked incomplete, and finished by the completion pass, which re-reads the Upvotes tab by
+  scrolling to Product Hunt's end. They count as complete only after that pass passes the output check.
+- No agent asks Shreyas for an account, cookies or a "signed-in session" for Product Hunt pulls, and no agent proposes a
+  signed-in pass, whatever it is called.
