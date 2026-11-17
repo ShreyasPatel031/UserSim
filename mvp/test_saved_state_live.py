@@ -20,11 +20,14 @@ from mvp.test_sim_mcp_seed_live import _chrome  # noqa: E402
 
 class App(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802
-        signed_in = "sid=good" in (self.headers.get("Cookie") or "")
+        cookie = self.headers.get("Cookie") or ""
         if self.path.startswith("/login"):
             body = b"<title>Log in</title><input type=password>"
-        elif signed_in:
-            body = b"<title>Workspace</title><h1>Your projects</h1>"
+        elif "sid=good" in cookie:
+            body = (b"<title>Workspace</title><button aria-label='Account menu'><img alt='avatar'></button>"
+                    b"<h1>Your projects</h1><a href='/logout' hidden>Log out</a>")
+        elif "sid=plain" in cookie:  # not a login page, but nothing that says signed in (a landing page)
+            body = b"<title>Welcome</title><h1>The best way to plan projects</h1><a>Get started</a>"
         else:
             self.send_response(302)
             self.send_header("Location", "/login?next=/")
@@ -71,12 +74,14 @@ class CheckSavedStatesLive(unittest.TestCase):
                 try:
                     live = await C.check_one(b, "example.test", _entry("good"))
                     dead = await C.check_one(b, "example.test", _entry("expired"))
+                    unsure = await C.check_one(b, "example.test", _entry("plain"))
                     none = await C.check_one(b, "example.test", {"storage_state": {"cookies": [], "origins": []}})
                 finally:
                     await b.close()
-                return live, dead, none
+                return live, dead, none, unsure
 
-        live, dead, none = asyncio.run(run())
+        live, dead, none, unsure = asyncio.run(run())
+        self.assertEqual(unsure["verdict"], "UNSURE", unsure)
         self.assertEqual(live["verdict"], "LIVE", live)
         self.assertEqual(dead["verdict"], "DEAD", dead)
         self.assertIn("/login", dead["landed"])

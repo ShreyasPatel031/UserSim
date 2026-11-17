@@ -1039,7 +1039,12 @@ async def _check_saved_session(sim: SimSession) -> None:
     url = sim.page.url or ""
     info = sim.row["saved_account"]
     if not site_states.looks_signed_out(url, pw_box):
-        info["signed_in"] = True
+        try:
+            info["signals"] = await sim.page.evaluate(site_states.SIGNED_IN_JS)
+        except Exception:  # noqa: BLE001
+            info["signals"] = {}
+        # no signed-out evidence: keep the state; signed_in records whether the page also showed an account control
+        info["signed_in"] = site_states.signed_in_signals(info["signals"])
         return
     info.update(signed_in=False, dead=True, landed=url[:200])
     await asyncio.to_thread(site_states.mark_dead, site_states.domain_of(sim.product_url), f"opened {url[:150]}")
