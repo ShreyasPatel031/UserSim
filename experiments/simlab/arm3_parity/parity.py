@@ -22,14 +22,19 @@ ID = {"ph_n_makers_new", "ph_maker_has_headline", "x_any_verified", "ph_self_hun
 P_ = dict(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=20, subsample=0.8, subsample_freq=1, colsample_bytree=0.5, reg_lambda=1.0)
 SEEDS = 5
 
-def live_frame():
-    root = os.path.expanduser(os.environ["H25_DATA"]); src_dir = os.path.expanduser(os.environ["H25_SRC"])
-    real = F.D; os.makedirs(f"{root}/days", exist_ok=True)
+def live_frame(d):
+    """The VM's view at 00:05 of d: finished day files through d-2 (store.latest_day) + the 2025 lists, and ONLY d's 00:05 line-up
+    file in today/ (no other night's line-up, no later day file of d or d-1)."""
+    cut = (pd.Timestamp(d) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    root = os.path.expanduser(os.environ["H25_DATA"]) + f"_{d}"; src_dir = os.path.expanduser(os.environ["H25_SRC"])
+    real = F.D; os.makedirs(f"{root}/days", exist_ok=True); os.makedirs(f"{root}/today", exist_ok=True)
     for e in os.listdir(real):
-        if e != "days" and not e.startswith("build_cache") and not os.path.exists(f"{root}/{e}"): os.symlink(f"{real}/{e}", f"{root}/{e}")
-    for fn in glob.glob(f"{real}/days/*.json") + glob.glob(f"{src_dir}/*.json"):
+        if e not in ("days", "today") and not e.startswith("build_cache") and not os.path.exists(f"{root}/{e}"): os.symlink(f"{real}/{e}", f"{root}/{e}")
+    for fn in [f for f in glob.glob(f"{real}/days/*.json") if os.path.basename(f)[:10] < cut] + glob.glob(f"{src_dir}/*.json"):
         dst = f"{root}/days/{os.path.basename(fn)}"
         if not os.path.exists(dst): os.symlink(os.path.abspath(fn), dst)
+    t = f"{root}/today/{d}.json"
+    if not os.path.exists(t): os.symlink(os.path.abspath(f"{real}/today/{d}.json"), t)
     F.D = root
     try: df = RN.load_llm(F.build(include_today=True))
     finally: F.D = real
@@ -84,7 +89,6 @@ def bt_abc(df, E, days_needed):
 
 def bt_text(df): return (df.name.astype(str) + ". " + df.tagline.astype(str) + ". " + df.description.astype(str).str[:400] + ". " + df.topics.map(lambda t: ", ".join(t))).tolist()
 
-LIVE = live_frame()
 BTD, _ = HR.build(os.environ["H25_SRC"]); BTD = BTD.reset_index(drop=True); BTD["id"] = BTD.id.astype(str)
 emb_cache = {}
 def embed(texts, tag):
@@ -95,6 +99,7 @@ for d in DAYS:
     R = {"day": d}
     # ---- live replay (arm 3 and arm 2)
     cut = (pd.Timestamp(d) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")   # live store holds finished days through d-2 at 00:05 (forecast_inputs store.latest_day)
+    LIVE = live_frame(d)
     df = LIVE[(~LIVE.known & (LIVE.day < cut) & ~LIVE.is_today) | (LIVE.is_today & (LIVE.day == d))].reset_index(drop=True)   # deployed r5 rule
     df.loc[(df.is_today & df.known.astype(bool)).values, [c for c in df.columns if c.startswith("llm_")]] = np.nan   # known launches tonight: llm_* blank (live)
     tod = (df.is_today & (df.day == d)).values
