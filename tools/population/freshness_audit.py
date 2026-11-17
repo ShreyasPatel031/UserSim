@@ -3,7 +3,9 @@
 
 Feeds and their maximum allowed gap (orchestrator 20:54Z Nov 13, for Shreyas):
   live_capture_heartbeat   mailbox/from_grokbot/ph_live_capture.status.md "updated:" (and from_cursor/ when it takes over)  20 min
-  posts_ts                 raw/ph_at_launch/<PT day>/live/posts_ts.jsonl snapshot_ts series                                20 min
+  posts_ts                 raw/ph_at_launch/<PT day>/live/posts_ts.jsonl snapshot_ts series                                30 min
+                           (15-min slots + 15-min upload grace, 20:5xZ Nov 17: rows land up to ~8 min after their slot
+                           time, so a 20-min limit on snapshot_ts alerted on late writes with no slot missing)
   comments_ts              raw/ph_at_launch/<PT day>/api_comments/<tag>PT.jsonl reads, 00:00-02:00 PT 20 min, then         60 min
   day_close_read           a snapshots/<day+1>T2345..2359PT read of day D, present by 00:05 PT                           once/day
   first_comment_read       an api_comments read at 00:07 PT (00:00-00:15 PT window) present by 00:20 PT                  once/day
@@ -69,6 +71,7 @@ def comment_limit(t):
     return 20 if p.hour < 2 else 60
 
 
+POSTS_LIMIT = 30  # one 15-min slot + 15-min upload grace (see header)
 LAST_ANY_POSTS = None  # newest posts_ts row of any source (incl. stopgap rows): the public leaderboard's freshness
 
 
@@ -118,7 +121,7 @@ def backfill(d0, d1):
         if end <= start:
             day += dt.timedelta(days=1)
             continue
-        for feed, series, lim in (("posts_ts", posts, lambda t: 20), ("comments_ts", cms, comment_limit)):
+        for feed, series, lim in (("posts_ts", posts, lambda t: POSTS_LIMIT), ("comments_ts", cms, comment_limit)):
             inday = [t for t in series if start <= t <= end]
             g = gaps([start] + inday + [end], lim, feed, d)
             rows += g
@@ -152,7 +155,7 @@ def check():
     # gap is measured from the true last capture (a fresh, empty day folder must never read as "no data" or as fresh)
     yp, yc, _ = day_series((now.astimezone(PT).date() - dt.timedelta(days=1)).isoformat())
     posts, cms = posts + yp, cms + yc
-    for feed, series, lim in (("posts_ts", posts, 20), ("comments_ts", cms, comment_limit(now))):
+    for feed, series, lim in (("posts_ts", posts, POSTS_LIMIT), ("comments_ts", cms, comment_limit(now))):
         last = max(series) if series else None
         if not last or (now - last).total_seconds() / 60 > lim:
             row = {"feed": feed, "day_pt": day, "last_good": last.isoformat() if last else None,
@@ -410,9 +413,24 @@ def run(W):
         # gap_start = the feed's last good write; gap_end = the first tick that saw it recovered (upper bound).
         st = state[f]
         g0 = ts(st["last_good"]) if st.get("last_good") else ts(st["open_since"])
+        g1, upper = now, True
+        if f == "posts_ts" and g0:  # 20:5xZ Nov 17: the gap ends at the first capture slot after last_good, not at the tick
+            try:
+                d_ = now.astimezone(PT).date()
+                ser = sorted(set(day_series(d_.isoformat())[0] + day_series((d_ - dt.timedelta(days=1)).isoformat())[0]))
+                nxt = [t for t in ser if t > g0]
+                if nxt:
+                    g1, upper = nxt[0], False
+                    if (g1 - g0).total_seconds() / 60 <= 16:  # the next 15-min slot exists: a late write, no slot missing
+                        rows.append({"checked_utc": now.isoformat(), "status": "late_write_no_missing_slot", "feed": f,
+                                     "last_good": g0.isoformat(), "next_slot": g1.isoformat()})
+                        del state[f]
+                        continue
+            except Exception:
+                pass
         ledger_rows.append({"feed": f, "day_pt": st.get("day_pt"), "gap_start": g0.isoformat() if g0 else st["open_since"],
-                            "gap_end": now.isoformat(), "gap_end_is_upper_bound": True,
-                            "minutes": round((now - g0).total_seconds() / 60, 1) if g0 else None,
+                            "gap_end": g1.isoformat(), "gap_end_is_upper_bound": upper,
+                            "minutes": round((g1 - g0).total_seconds() / 60, 1) if g0 else None,
                             "limit_min": st.get("limit_min"), "detected_utc": st["open_since"],
                             "status": "aged_out_missed" if aged else "closed", "cause": None, "source": "freshness_audit run"})
         del state[f]
