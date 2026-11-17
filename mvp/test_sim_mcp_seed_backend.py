@@ -71,6 +71,12 @@ class SlotTests(unittest.TestCase):
         self.env.start()
         self.addCleanup(self.env.stop)
 
+    def test_unhealthy_marker_forces_reprobe(self):
+        seed_backend._HEALTH["http://127.0.0.1:19220"] = (9e18, "ws://cached")
+        seed_backend.mark_unhealthy("http://127.0.0.1:19220")
+        with mock.patch.object(seed_backend, "probe_ws", side_effect=OSError("wedged")):
+            self.assertEqual(seed_backend._healthy("http://127.0.0.1:19220"), "")
+
     def test_spreads_then_busy_then_frees(self):
         with mock.patch.object(seed_backend, "_healthy", side_effect=lambda e: e.replace("http", "ws") + "/x"):
             slots = [seed_backend.acquire() for _ in range(4)]
@@ -125,6 +131,39 @@ class StartSessionTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(S.SessionError) as ctx:
                 await S.start_session(product_url="https://example.com", task="t", persona="p")
             self.assertIn("busy", str(ctx.exception))
+
+
+class ReviveTests(unittest.IsolatedAsyncioTestCase):
+    def _sim(self, connected: bool):
+        sim = S.SimSession(id="x" * 32, study=mock.MagicMock(), product_url="https://example.com", task="t", persona="p")
+        sim.bb = seed_backend.SeedSlot(endpoint="http://127.0.0.1:19220", ws_url="ws://127.0.0.1:19220/d")
+        sim.browser = mock.MagicMock()
+        sim.browser.is_connected.return_value = connected
+        sim.page = mock.MagicMock()
+        sim.page.is_closed.return_value = False
+        return sim
+
+    async def test_no_op_when_connected(self):
+        self.assertFalse(await S.revive(self._sim(True)))
+
+    async def test_gives_up_after_max(self):
+        sim = self._sim(False)
+        sim.reconnects = S.MAX_RECONNECTS
+        with self.assertRaises(S.SessionError):
+            await S.revive(sim)
+
+    async def test_unreachable_seed_is_session_error(self):
+        sim = self._sim(False)
+        with mock.patch.object(seed_backend, "probe_ws", side_effect=OSError("refused")):
+            with self.assertRaises(S.SessionError) as ctx:
+                await S.revive(sim)
+        self.assertIn("dropped", str(ctx.exception))
+        self.assertEqual(sim.reconnects, 1)
+
+    def test_browserbase_never_revives(self):
+        sim = self._sim(False)
+        sim.bb = mock.MagicMock(backend="")
+        self.assertFalse(S._browser_dropped(sim))
 
 
 class LimitsRouteTests(unittest.TestCase):

@@ -936,6 +936,7 @@ async def usersim_open_verification_link(ctx: Context, session_id: str, url: str
         opened.append(url)
         async with sim.lock:
             S._check_open(sim)
+            await S.revive(sim)
             err = ""
             chain = [url]
             try:
@@ -1069,6 +1070,7 @@ async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | st
 
         async with sim.lock:
             S._check_open(sim)
+            await S.revive(sim)
             calls = sim.row.setdefault("captcha_calls", {})
             calls[sim.page.url] = int(calls.get(sim.page.url) or 0) + 1
             if calls[sim.page.url] > L_get("captcha_max_calls_per_page"):

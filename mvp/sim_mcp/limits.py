@@ -67,7 +67,7 @@ DEFAULTS: dict[str, Any] = {
     # "browserbase" (kept as a fallback path only). See mvp/sim_mcp/seed_backend.py.
     "browser_backend": "seed_vm",
     # CDP endpoints of the seeds as seen from the MCP server (local ends of the IAP tunnels).
-    "seed_cdp_endpoints": ["http://127.0.0.1:19220"],
+    "seed_cdp_endpoints": ["http://127.0.0.1:19220#3", "http://127.0.0.1:19221", "http://127.0.0.1:19222"],
     "seed_sessions_per_seed": 4,
     "seed_wait_s": 45,
 }
