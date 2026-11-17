@@ -392,19 +392,33 @@ def run(W):
     rows, due = [], []
     now_feeds = {b["feed"] for b in br}
     for b in br:
-        st = state.setdefault(b["feed"], {"open_since": now.isoformat(), "last_alert": None})
+        st = state.setdefault(b["feed"], {"open_since": now.isoformat(), "last_alert": None, "last_good": b.get("last_good"),
+                                          "limit_min": b.get("limit_min"), "day_pt": b.get("day_pt")})
         la = ts(st["last_alert"]) if st.get("last_alert") else None
         alert = la is None or (now - la).total_seconds() / 60 >= REALERT_MIN - 3  # 3 min slack: ticks drift, so a 30-min tick still re-alerts
         if alert:
             st["last_alert"] = now.isoformat()
             due.append(b)
         rows.append({"checked_utc": now.isoformat(), "status": "open", "open_since": st["open_since"], "alerted": alert, **b})
+    ledger_rows = []
     for f in [f for f in state if f not in now_feeds]:
         aged = f in ("day_close_read", "first_comment_read") and now.astimezone(PT).hour >= 12
         rows.append({"checked_utc": now.isoformat(), "status": "aged_out_missed" if aged else "closed", "feed": f,
                      "open_since": state[f]["open_since"],
                      "minutes_open": round((now - ts(state[f]["open_since"])).total_seconds() / 60, 1)})
+        # 10:5xZ Nov 17: a recovered gap also goes into raw/_audit/downtime_ledger.jsonl (before, only backfill wrote it).
+        # gap_start = the feed's last good write; gap_end = the first tick that saw it recovered (upper bound).
+        st = state[f]
+        g0 = ts(st["last_good"]) if st.get("last_good") else ts(st["open_since"])
+        ledger_rows.append({"feed": f, "day_pt": st.get("day_pt"), "gap_start": g0.isoformat() if g0 else st["open_since"],
+                            "gap_end": now.isoformat(), "gap_end_is_upper_bound": True,
+                            "minutes": round((now - g0).total_seconds() / 60, 1) if g0 else None,
+                            "limit_min": st.get("limit_min"), "detected_utc": st["open_since"],
+                            "status": "aged_out_missed" if aged else "closed", "cause": None, "source": "freshness_audit run"})
         del state[f]
+    if ledger_rows:
+        old = sh("gsutil", "cat", f"{G}/raw/_audit/downtime_ledger.jsonl")
+        put(old + "".join(json.dumps(r) + "\n" for r in ledger_rows), f"{G}/raw/_audit/downtime_ledger.jsonl")
     if rows:  # one object per tick: no read-modify-write race between runners
         put("".join(json.dumps(r) + "\n" for r in rows), f"{G}/raw/_audit/checks/{stamp}.jsonl")
     if due:
