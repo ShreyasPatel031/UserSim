@@ -3,6 +3,126 @@
 Run Nov 17 03:10–03:25Z on the pipeline VM, read-only. Code: `experiments/launch_plan/counterfactual_arm2.py`. Raw output:
 `counterfactual_arm2.out`.
 
+## Revised plan after review (Nov 17, 04:10Z). Read this first; it replaces the stacked-row and trajectory numbers below.
+
+Reruns: `experiments/launch_plan/counterfactual_arm2_review.py` and `.out`. Same model and the same 56 days as before.
+
+### What changed
+1. **The first launch is a 1-in-6 shot at the top 5, not 1-in-3.** The old "everything you control" row counted organic
+   coverage, a team of 3 and a company X account as settings. Splitting them out (pitch 86 is the measured /try score):
+
+   | First launch | All days: P(top 5) [95%] | Saturday: P(top 5) | Saturday: P(top 10) | Tue–Thu: P(top 5) |
+   |---|---|---|---|---|
+   | **A. Settings you can set**: self-hunt, 1 maker, 9 media + video, pitch 86, founder posts | 7.7 [5.7, 10.3] | **17.6 [10.7, 24.4]** | 50.5 [40.7, 61.6] | 3.0 [2.5, 3.6] |
+   | B. A + organic coverage lands (1 press, 1 HN, 1 Reddit) | 12.2 [9.4, 15.2] | 25.0 [16.8, 34.8] | 59.6 | 4.6 |
+   | C. A + 3 makers who bring real reach | 19.6 [15.8, 23.5] | 30.2 [19.9, 41.3] | 63.5 | 11.8 |
+   | D. Everything goes right (old stacked row) | 32.0 [26.9, 37.3] | 52.5 [45.3, 59.4] | 79.9 | 18.5 |
+
+   **Plan on row A.** Rows B to D are upside, not settings.
+
+2. **The second launch, with every branch of the first.** Launch 1 is row A on a Saturday. Launch 2 is row A again, with the
+   real record of launch 1 fed in.
+
+   | Launch 1 finished | Chance of that | Launch 2 on a Saturday: P(top 5) | Launch 2 on any day |
+   |---|---|---|---|
+   | Rank 1–3 | 6% | 68.3 [63.4, 71.4] | 61.8 |
+   | Rank 4–5 | 11% | 52.9 [40.4, 61.6] | 30.1 |
+   | Rank 6–10 | 33% | 26.8 [18.8, 36.2] | 19.1 |
+   | Rank 11–20 | 35% | 17.6 [10.6, 25.4] | 8.3 |
+   | Rank 21+ | 15% | 15.7 [8.4, 23.6] | 7.1 |
+   | **Expected (weighted)** | | **27.5** | 17.4 |
+
+   The number to plan around for launch 2 is **27.5%**, not 58.8%. A launch 1 outside the top 5 does not hurt launch 2
+   compared with having no record (17.6% either way on a Saturday); a top-5 finish roughly triples it.
+
+3. **Real hunters with 1–3 prior launches (2026, real outcomes, not the model).**
+
+   | Hunter's record going in | n | Actual top 5 | Actual top 10 |
+   |---|---|---|---|
+   | 0 prior launches | 3,805 | 8.4% | 26.0% |
+   | 1 prior | 642 | 16.0% | 36.8% |
+   | 2–3 prior | 316 | 18.4% | 41.5% |
+   | 51+ prior | 1,949 | 50.0% | 73.4% |
+   | 1–3 prior, **all in the top 5** | 184 | 42.9% | 65.8% |
+   | 1–3 prior, none in the top 5 | 684 | 9.9% | 29.7% |
+   | 1–3 prior, all top 5, account 2 years old or less | 36 | 38.9% | 63.9% |
+   | 1–3 prior, none top 5, account 2 years old or less | 307 | 6.5% | 24.4% |
+
+   - The data is not thin (958 launches by hunters with 1–3 prior), so steps 2–4 are not pure extrapolation.
+   - The effect is real but smaller than the old table said: about **40%** top 5 after an all-top-5 record, not 60–75%.
+   - On the 56 test days the model says 32.9% for the all-top-5 group against 29.3% actual (n 41), so it is roughly
+     calibrated there.
+   - "After 2 launches you are at the level of an active hunter" was wrong. An active hunter (51+ launches) is at 50%.
+   - History starts in Jan 2025, so some "1 prior" hunters are older accounts with unseen earlier launches; the
+     2-year-old-account rows remove most of them.
+
+4. **Real launches that look like the plan (2026, hunter with 0 record).**
+
+   | Profile | n | Actual top 5 | Actual top 10 |
+   |---|---|---|---|
+   | All 0-record launches | 3,142 | 6.9% | 22.8% |
+   | 0-record, on a weekend | 423 | 19.9% | — |
+   | Pitch 75+ | 251 | 16.7% | 42.2% |
+   | Pitch 75+, weekend | 51 | 29.4% | — |
+   | Pitch 75+, 1 maker, founder posts, no coverage (row A) | 12 | 8.3% | 41.7% |
+   | Pitch 75+, founder posts, coverage 3+ (row B) | 36 | 25.0% | 44.4% |
+   | Pitch 75+, 3+ makers, founder posts, coverage 3+ (row D) | 7 | 71.4% | 100% |
+
+   - Row A's exact profile is rare (12 launches); its model number of 7.7% matches the 8.3% seen.
+   - Row D has 7 real cases. It is out of the usual range and should not be planned on.
+   - Calibration on all real 0-record launches in the test days: model 4.9%, actual 3.7% (n 945). The model is slightly
+     kind to newcomers.
+
+5. **Why weekends win. It is not the number of launches.** Monday has 23 launches like Saturday, and checks out (18–27 on
+   the 8 Mondays), yet row A gets 5.7% [3.8, 8.4] on Monday and 17.6% on Saturday.
+
+   | Day | Launches | Row A: P(top 5) [95%] | Launches with 3+ makers | Strong hunters (50%+ top 5) | Votes at rank 5 | All votes that day |
+   |---|---|---|---|---|---|---|
+   | Mon | 23 | 5.7 [3.8, 8.4] | 6.4 | 5.9 | 188 | 3,314 |
+   | Tue | 36 | 3.1 [2.4, 4.2] | 7.6 | 6.4 | 207 | 4,204 |
+   | Wed | 34 | 3.1 [2.1, 4.2] | 8.9 | 7.0 | 190 | 4,031 |
+   | Thu | 34 | 2.8 [2.1, 3.8] | 8.9 | 7.8 | 199 | 3,991 |
+   | Fri | 36 | 3.8 [2.8, 4.5] | 5.1 | 5.9 | 168 | 3,855 |
+   | **Sat** | 22 | **17.6 [10.7, 24.4]** | 2.8 | 4.5 | 150 | 2,620 |
+   | **Sun** | 19 | **18.1 [14.1, 21.8]** | 3.5 | 5.6 | 155 | 2,472 |
+
+   - Weekends have a **weaker line-up**: a third as many team launches and fewer strong hunters. Monday is small but as
+     strong as a weekday.
+   - It is not the model's weekday input: forcing that input to each value on the same line-ups moves row A only between
+     6.5% and 10.9%, and Saturday's value is among the lowest.
+   - Real data agrees: 0-record launches reach the top 5 19.9% of the time on weekends against 6.9% overall.
+   - **The cost:** a Saturday has about 62% of a Tuesday's votes (2,620 against 4,204), and rank 5 gets 150 votes against 207.
+
+6. **Product Hunt's own rule breaks the 14-week trajectory.** Its help centre asks makers to wait **at least six months
+   between posts for the same product or from the same company**, and requires a significant update; earlier posts get extra
+   scrutiny and may not be featured. Four launches from one company in 14 weeks is not available. Whether a clearly distinct
+   product from the same company can go sooner is not stated; the team can be asked before launch.
+   Sources: https://help.producthunt.com/en/articles/484934-can-i-relaunch-my-product and
+   https://www.producthunt.com/p/producthunt/how-often-should-you-launch-on-product-hunt
+
+### The revised plan
+- **One launch now, built to count: /try**, with the daily board and the persona panel shown inside it as features, not held
+  back as later launches.
+- **Goal of launch 1: rank and record, plus /try users.** Launch on a **Saturday**. Planned odds (row A): top 5 17.6%,
+  top 10 50.5%. A Tuesday gives 60% more votes on the day but a 3% chance of the top 5.
+- **The two things worth working on before the date**, because they are the largest real levers:
+  - **A hunter with a record.** One-change effect: 2.3% to 17.6–21.7% on all days. How: ask hunters who have posted
+    launch-analytics or maker tools, show them /try run on a launch they hunted, and ask only whether they would post it.
+    If none agrees within two weeks, self-hunt on the planned Saturday.
+  - **Makers with real reach on the page** (row C): people who actually worked on it and will post about it themselves.
+- **Launch 2 is about six months later** (or sooner only with Product Hunt's written yes): the Launch Pack, as the paid
+  product, on a **weekday** for traffic. Expected top 5 with a self-hunted record: 27.5% on a Saturday, 17.4% on any day.
+- **If launch 1 finishes outside the top 10** (about 50% likely on row A): nothing is lost for launch 2 in the model (same
+  odds as no record). Keep the date for launch 2, and fix the page from the comments it drew.
+- **Pre-launch checklist (owner: Shreyas):** "Free to try, no signup" is true on the day; the accuracy number and its day
+  count are on the page and current; the page fixes below are done.
+
+### What in the older sections is now superseded
+- "Stacking the levers" (31.2% / 71.4%), its day table, and the 4-step trajectory (34 / 59 / 70 / 72%).
+- "After 2 launches your own record puts you at about the level of an active hunter."
+- "Weekends carry about 20 launches against about 35" as the reason weekends win.
+- The base case's median rank is 25.5 (the text said 25).
+
 ## Method
 - **Model.** The published midnight model (arm 2, LightGBM, 5 seeds), trained on all days before Sep 21 2026.
 - **Test days.** Each test launch is dropped into every real line-up from Sep 21 to Nov 15 2026 (56 days, 8 of each weekday).
@@ -26,8 +146,8 @@ Self-hunted, account 60 days old, 1 maker, 6 images plus video, a median pitch, 
 | Posted by a top-10% hunter (508 launches, 77% top 5) | 9 | 8.3 | 21.7 [18.2, 25.5] | 53.0 |
 | Team of 5 makers on the page | 12 | 3.7 | 10.3 [7.6, 12.9] | 33.5 |
 | Team of 3 | 16 | 1.9 | 5.3 [3.7, 7.4] | 21.8 |
-| Pitch score 85 (Gemini read of the tagline and description) | 15.5 | 2.1 | 6.0 [4.3, 8.0] | 23.6 |
-| Pitch score 75 | 16 | 1.9 | 5.4 [3.8, 7.3] | 21.3 |
+| Pitch score 85 (Gemini read of the tagline and description; VM model) | 15.5 | 2.1 | 6.0 [4.3, 8.0] | 23.6 |
+| Pitch score 75 (VM model) | 16 | 1.9 | 5.4 [3.8, 7.3] | 21.3 |
 | Founder posts plus organic coverage (1 press, 1 HN, 1 Reddit) | 16 | 2.0 | 5.6 [3.9, 7.4] | 22.1 |
 | Founder posts only (3 posts on launch day) | 20 | 0.9 | 3.2 [2.3, 4.4] | 15.1 |
 | Your own account 3 years old instead of 60 days | 21 | 0.8 | 3.0 [2.0, 4.2] | 13.9 |
@@ -82,7 +202,7 @@ That is optimistic: it assumes each launch lands where the model says. A launch 
 
 The table now uses the measured Gemini pitch score of each product's best version (section "Pitch versions" below) in place of the assumed 75. It was rerun with `experiments/launch_plan/cf_arm2_measured.py` on E5's rebuild of the same model, because the pipeline VM could not be reached from E5's container. The rebuild trains on days before Sep 18 and tests on Sep 18 – Nov 12 2026 (56 days, 8 of each weekday); the tables above this one are from the VM run (Sep 21 – Nov 15) and are unchanged. The two runs agree: with the assumed score of 75 the rebuild gives P(top 5) 32.3 / 57.8 / 69.5 / 72.6 for steps 1–4, against 31.2 / 60.4 / 71.5 / 75.0 on the VM.
 
-**The measured scores change almost nothing.** All four products score 75 or more, and the model's response to pitch is flat above about 75: in the base case, P(top 5) is 2.7% at a score of 55, 6.2% at 75 and 6.4% at 85. So the pitch lever is "do not have a weak pitch"; polishing a good one further buys nothing in this model.
+**The measured scores change almost nothing.** All four products score 75 or more, and the model's response to pitch is flat above about 75: in the base case on E5's rebuild (trained before Sep 18, tested Sep 18 – Nov 12), P(top 5) is 2.7% at a score of 55, 6.2% at 75 and 6.4% at 85. The VM model in the one-change table above (trained before Sep 21, tested Sep 21 – Nov 15) gives 2.3% at 55, 5.4% at 75 and 6.0% at 85. The two runs differ by under 1 point at each score and agree on the shape: a step up between 55 and 75, then flat. Step 4 reads 71.5 with the measured score of 80, against 72.6 with the assumed 75. That 1.1-point gap is inside the interval [69.7, 73.2]; it comes from the slightly different record fed in from steps 1–3 and from the model not being strictly increasing in pitch above 75. It is noise, not an effect. So the pitch lever is "do not have a weak pitch"; polishing a good one further buys nothing in this model.
 
 **Fastest path:** the "everything you control" launch on a Saturday, and a second launch 3–4 weeks later. After 2 launches
 your own record puts you at about the level of an active hunter. Getting a top-10% hunter to post launch 1 starts you near
@@ -112,7 +232,7 @@ together with the time to ship a real v1 of the next product.
 
 Three tagline and description versions were written for each product. Every claim in them is a number we have already published; "free, no signup" in /try version 1 must be true on launch day or be cut.
 
-Each version was scored with the deployed pitch prompt (Gemini 2.5 Flash, the same listwise prompt that produces the model's `llm_pitch` input). The version was placed in the real line-up of 14 days (2 of each weekday, Sep 18 – Nov 12) and scored alongside that day's real launches. The interval is a bootstrap over the 14 days. 208 of 210 calls returned; cost $0.73. As a check, the real launches in the same calls averaged 55.5, against 55.4 for their stored scores.
+Each version was scored with the deployed pitch prompt (Gemini 2.5 Flash, the same listwise prompt that produces the model's `llm_pitch` input). The version was placed in the real line-up of 14 days (2 of each weekday, Sep 18 – Nov 12) and scored alongside that day's real launches. The interval is a bootstrap over the 14 days. The run made 210 calls: 15 versions × 14 days. The 15 are the 12 versions shown here plus 3 versions of the API pitch, which was scored in the same run and is not in this plan. 208 of the 210 returned; the 12 versions shown account for 168 of the calls. Cost for all 210: $0.73. As a check, the real launches in the same calls averaged 55.5, against 55.4 for their stored scores.
 
 | Product | Version | Tagline | Pitch score [95%] | Share of that day's real launches it outscores |
 |---|---|---|---|---|
@@ -140,11 +260,31 @@ What the scores say:
 - **/try and the Forecast board score 80–88 in every version.** The wording matters little for them.
 - **The persona panel scores lowest (72–75).** The judge finds "a panel of personas" less concrete than "paste your URL" or "today's predicted ranking".
 - **The Launch Pack swings the most: 35 to 80.** Version 1 leads with "a paid package" and a list of three reports, and scores 35. Version 2 leads with what the founder gets and scores 80. Do not open with the price or the word "package".
+- **One accuracy definition.** Panel version 1 quotes "63% of the themes on 276 past launches". That is theme recall from an earlier back-test. The current figure, used everywhere else in this document, is 61% recall and 52% precision on 167 launches. Whichever pitch is used on launch day must quote the figure shown on the site that day.
 - **Caution.** The judge is a language model scoring products about Product Hunt for a Product Hunt audience. It may favour them. Scores at the 96th–100th percentile of real line-ups are probably too kind. Because the rank model is flat above 75, this does not change the trajectory.
+
+### Does the pitch judge favour Product Hunt tools? (real launches)
+
+Stored scores from the same prompt, for the 14 third-party launch or Product Hunt tools in our 2026 data, against where they really finished:
+
+| Group | n | Mean pitch score | Reached top 5 |
+|---|---|---|---|
+| Third-party launch / Product Hunt tools | 14 | 57 (range 25–80) | 7 of 14 |
+| All 2026 launches | 6,890 | 56 | — |
+| Our four best versions | 4 | 82 (75–88) | not launched |
+
+- **The judge does not favour the category.** Real launch tools average 57, the same as all launches.
+- **Within the category the score tracks the finish.** Rank correlation between score and day rank is −0.75 across the 14 (higher score, better rank). The three that scored 80 finished 3rd, 4th and 4th. The three that scored 25–35 finished 9th, 15th and 19th.
+- **The closest real match to our Forecast board scored 30 and finished 15th of 18**: a Product Hunt analytics extension, hunted by an account with 1 prior launch. A Product Hunt prediction benchmark scored 80 and finished 3rd of 41, posted by a hunter with 279 prior launches.
+- **Our own scores (75–88) are above every real third-party tool in the category (maximum 80).** We wrote those pitches knowing what the judge rewards, so treat them as "at least 75", not as 86–88. The model is flat above 75, so the trajectory does not depend on the difference.
+
+- **A second check disagrees on how well the score tracks the finish.** When 22 competitors with a real launch were re-scored on the same 14 line-ups as ours, the score had no relation to their real day rank (rank correlation −0.13, p = 0.55), and some tools scored far above their stored score (one from 30 to 73). A score given outside the product's own launch day is noisy by about ±15 points. So the judge is not biased towards the category, but our 75–88 should not be read as a forecast.
+
+Per-competitor scores, on the same 14 line-ups as ours, are in `docs/LAUNCH_PLAN_COMPETITORS.md`.
 
 ## Persona panel and /try band on each best version (E5)
 
-**Persona panel.** The live panel prompt, with 24 personas per product. A new maker has no team history, so the personas were built from the people who backed same-topic launches in the 30 days before Nov 12 (5,726 people for the first three products). Each persona stands for at least 20 people; no individual is shown. One Gemini call per product; cost $0.04.
+**Persona panel.** The live panel prompt, with 24 personas per product. A new maker has no team history, so the personas were built from the people who backed same-topic launches in the 30 days before Nov 12 (5,726 people for /try, the board and the panel, whose topics include Artificial Intelligence; 2,495 people for the Launch Pack, whose topics are Marketing, SaaS and Artificial Intelligence in that order and matched a narrower set of launches; its personas therefore stand for about 100 people each, not about 230). Each persona stands for at least 20 people; no individual is shown. One Gemini call per product; cost $0.04.
 
 **/try band.** The deployed /try code, with the pitch text pasted in. /try knows nothing about the hunter, team or day, so it assumes the population median for each. Its band is therefore not comparable to the table above, which sets those inputs explicitly.
 
@@ -155,9 +295,9 @@ What the scores say:
 | Persona panel | 64 | 2–34 (12) | 17% / 45% | 21 / 3 |
 | Launch Pack | 27 | 4–43 (17) | 7% / 27% | 23 / 1 |
 
-The /try bands are wide (roughly rank 3 to 40) and differ little between products. From the text alone, /try places the panel and board pitches a little above the /try and Launch Pack pitches, which is the reverse of the Gemini pitch scores. Neither signal separates the four products reliably.
+The /try bands are wide (roughly rank 3 to 40) and differ little between products. From the text alone, /try places the panel and board pitches a little above the /try and Launch Pack pitches, which is the reverse of the Gemini pitch scores. Neither signal separates the four products reliably, and **neither drives the launch order**. The order (/try, board, panel, Launch Pack) is a product judgment: which is easiest to try on the spot, and which needs the others' track record first. On both signals the four products are within noise of each other.
 
-The panel rates nearly every persona "high" interest for all four products. That is not informative: the panel is known to be agreeable, and it has measured value for *which themes come up* (about 50% precision, 60–75% recall on real launches), not for how much people like something. Read the concerns and questions below, not the interest levels.
+The panel rates nearly every persona "high" interest for all four products. That is not informative: the panel is known to be agreeable, and it has measured value for *which themes come up* (theme recall 61% and theme precision 52% on 167 held-out launches; recall is the share of themes real commenters raised that the panel predicted, precision is the share of predicted themes that real commenters raised), not for how much people like something. Read the concerns and questions below, not the interest levels.
 
 ### Main concerns and questions by voter group
 
@@ -177,7 +317,7 @@ Across all four products and all four groups, the first question is **"how accur
 1. **Put the measured accuracy next to every claim, with its limits.**
    - Forecast board: the 184-day record (3.3 of 5 top-5 picks correct) and yesterday's graded result, visible without scrolling. State the typical miss in ranks.
    - /try: say plainly that the rank band is wide and is based on the page text only; show the checked share of predicted themes that real commenters raised.
-   - Panel: show the 63% theme figure and say what it is not (it does not predict individual votes or how much people will like the product).
+   - Panel: show theme recall and precision (61% and 52% on 167 launches) and say what they are not (it does not predict individual votes or how much people will like the product).
 2. **Say what the model does not see.** Three of four groups ask about the hunter, the maker's network, late surges and images or video. Add one short "what this uses and what it ignores" block to each page. For /try, say that it reads text only, and that the hunter and team are assumed typical.
 3. **Answer the "gaming" and "self-fulfilling" worry on the Forecast board.** State that the forecast is published after launches are live, uses only public inputs, and that we do not help anyone collect votes.
 4. **Answer the privacy question on the panel page.** State that personas are groups of 20 or more people built from public voting history, and that no individual is shown or sold.
@@ -186,6 +326,6 @@ Across all four products and all four groups, the first question is **"how accur
 7. **State the price and the free tier on every page.** Cost and "is there a free tier" came up for the panel, and for the API in a separate run.
 8. **Plain-language summary for non-launchers.** The curious-observer group (about 12% of the panel) asks whether they can understand it at all. One sentence at the top of the board and of /try results is enough.
 
-These are model-predicted concerns, not real feedback. On real launches the panel's predicted themes are right about half the time and cover 60–75% of what commenters raise, so treat the list as a checklist of likely questions, not a ranking of what matters most.
+These are model-predicted concerns, not real feedback. On real launches the panel's predicted themes are right about half the time (precision 52%) and cover about 61% of what commenters raise (recall), so treat the list as a checklist of likely questions, not a ranking of what matters most.
 
 Files: `experiments/launch_plan/candidates.json` (all versions), `pitch_score.py`, `panel_try.py`, `cf_arm2_measured.py`, `cf_arm2_measured.json`.
