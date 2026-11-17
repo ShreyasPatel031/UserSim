@@ -2423,3 +2423,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-17 20:45Z Shreyas: one signup per site per study, the rest start from its saved login (engine session building it); 'always run camfoux' -> engine browser becomes Camoufox on all seeds (AGENTS.md updated; engine session building it, chromium kept as rollback).
 - 2026-11-17 20:50Z PR #186 merged; saved-state liveness (strict) on seed 0 with --mark-dead: LIVE 4 (airtable, digitalocean, notion, wordpress), UNSURE 6, DEAD 21 (flagged), NO_APP_URL 30. Old seed-disk logins are mostly expired; fresh logins come from the one-signup flow.
 - 2026-11-17 20:42Z PR #187 merged (one signup per site, rest start signed in). Camoufox blocked by classifier in engine session (Undermining Oversight); with Shreyas. Tally/fillout/typeform study queued on Chromium to start after deploy.
+- 2026-11-17 20:36Z hourly: tally study 38eb4d03 running; capture gap 5 open/fleet asked 4x. Mailbox checked 20:36Z.
