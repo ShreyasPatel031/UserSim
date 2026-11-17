@@ -1,0 +1,498 @@
+{
+ "source": "UserSim's store of Product Hunt users who were read in full (public profiles). Aggregates only: every group has 20 or more people; no names, ids or profile text.",
+ "snapshot": "2026-11-17",
+ "accuracy": "Measured, not assumed: these groups describe WHO people are; at group level they do not predict which launches people vote for better than the population average (Nov 2026, 135 launches). Reactions written from them are a structured guess about how such people behave, to compare against a plain tester. Treat divergences as hypotheses to check, not as forecasts.",
+ "groups": [
+  {
+   "name": "Product Evaluators",
+   "people": 29085,
+   "who": "These users have been on Product Hunt for a long time, have many followers, and are highly engaged with products, often providing detailed feedback and suggestions.",
+   "says": [
+    "They provide detailed feedback on product functionality, user experience, and potential improvements.",
+    "They often compare new products to existing solutions or express concerns about pricing and trials.",
+    "They share personal anecdotes about how products impact their lives or work."
+   ],
+   "votes_for": "They upvote products related to Software Engineering, iOS, Sales, SaaS, and No-Code, often focusing on tools that enhance productivity and design.",
+   "over_represented_roles": [],
+   "topics": [
+    "User Experience",
+    "Software Engineering",
+    "No-Code",
+    "SaaS",
+    "iOS",
+    "Sales"
+   ],
+   "share_commenting": 0.232,
+   "share_made_or_hunted_a_launch": 0.183,
+   "account_years_median": 10.4,
+   "votes_for_held_out_of_sample": false,
+   "id": "0",
+   "subgroups": []
+  },
+  {
+   "name": "Product Makers",
+   "people": 6500,
+   "who": "These are highly active users who frequently comment and have launched multiple products, often identifying as founders, developers, or investors.",
+   "says": [
+    "They introduce themselves as makers or founders, sharing their personal journey and inspiration behind their products.",
+    "They ask detailed questions about product functionality, ROI, and integration, often from a builder's perspective.",
+    "They express enthusiasm for privacy-focused tools and solutions that address common pain points in development or business."
+   ],
+   "votes_for": "They upvote products related to sales, SaaS, marketing, video, and open source, often with a focus on developer tools and APIs.",
+   "over_represented_roles": [
+    "founder",
+    "developer",
+    "investor"
+   ],
+   "topics": [
+    "Sales",
+    "SaaS",
+    "Marketing",
+    "Video",
+    "Open Source",
+    "Tech"
+   ],
+   "share_commenting": 0.955,
+   "share_made_or_hunted_a_launch": 0.924,
+   "account_years_median": 3.7,
+   "votes_for_held_out_of_sample": false,
+   "id": "1",
+   "subgroups": [
+    {
+     "name": "Developer Marketers",
+     "people": 1388,
+     "who": "Highly engaged users with strong developer and marketer roles, high lifetime upvotes, and a significant number of followers, often linking to X and LinkedIn.",
+     "says": [
+      "They introduce themselves as co-founders or engineers, offering technical insights and asking detailed questions about implementation.",
+      "They frequently congratulate teams on launches and express enthusiasm for new products.",
+      "They inquire about specific features, integrations, and technical specifications, often from a developer's perspective."
+     ],
+     "votes_for": "They show a strong interest in developer tools, APIs, open source projects, and products related to Mac, video, sales, and marketing.",
+     "over_represented_roles": [
+      "marketer",
+      "investor",
+      "developer"
+     ],
+     "topics": [
+      "Mac",
+      "Open Source",
+      "Video",
+      "GitHub",
+      "Developer Tools",
+      "API"
+     ],
+     "share_commenting": 0.966,
+     "share_made_or_hunted_a_launch": 0.926,
+     "account_years_median": 4.2,
+     "votes_for_held_out_of_sample": false,
+     "id": "1.0"
+    },
+    {
+     "name": "Design-Focused Founders",
+     "people": 1825,
+     "who": "Active users with prominent founder, product, designer, and marketer roles, moderate lifetime upvotes, and a good number of followers, often linking to LinkedIn.",
+     "says": [
+      "They appreciate creativity and clever product positioning, often sharing personal anecdotes related to the product's problem space.",
+      "They express excitement for new features and improvements, sometimes from the perspective of a long-term user.",
+      "They ask practical questions about product functionality and potential use cases, especially for non-developers."
+     ],
+     "votes_for": "They are drawn to products in design tools, no-code solutions, Chrome extensions, sales, SaaS, education, and marketing.",
+     "over_represented_roles": [
+      "marketer",
+      "product",
+      "investor"
+     ],
+     "topics": [
+      "Chrome Extensions",
+      "No-Code",
+      "Design Tools",
+      "Sales",
+      "SaaS",
+      "Education"
+     ],
+     "share_commenting": 0.944,
+     "share_made_or_hunted_a_launch": 0.888,
+     "account_years_median": 3.7,
+     "votes_for_held_out_of_sample": false,
+     "id": "1.1"
+    },
+    {
+     "name": "Emerging Dev Founders",
+     "people": 1603,
+     "who": "Newer users with strong developer and founder roles, lower lifetime upvotes, and fewer followers, often linking to LinkedIn.",
+     "says": [
+      "They introduce themselves as solo developers or co-founders, sharing the personal inspiration and challenges behind their product.",
+      "They often describe their product as solving a specific personal pain point or a common industry problem.",
+      "They frequently use the 'Hey Product Hunt \ud83d\udc4b I'm [Name], and I built [Product]' format, emphasizing their direct involvement."
+     ],
+     "votes_for": "They are interested in tech, sales, social media, APIs, SaaS, developer tools, GitHub, and open source projects.",
+     "over_represented_roles": [
+      "founder",
+      "developer",
+      "student"
+     ],
+     "topics": [
+      "Tech",
+      "Sales",
+      "Social Media",
+      "API",
+      "SaaS",
+      "Developer Tools"
+     ],
+     "share_commenting": 0.988,
+     "share_made_or_hunted_a_launch": 0.974,
+     "account_years_median": 1.5,
+     "votes_for_held_out_of_sample": true,
+     "id": "1.2"
+    },
+    {
+     "name": "Open Source Developers",
+     "people": 572,
+     "who": "Highly technical users with strong developer and student roles, moderate lifetime upvotes, and a significant number of products launched, often linking to X, LinkedIn, and GitHub.",
+     "says": [
+      "They provide detailed technical feedback and suggestions, often from a developer's perspective.",
+      "They share their own experiences building products, particularly those involving AI and developer tools.",
+      "They express enthusiasm for open-source projects and tools that simplify development workflows."
+     ],
+     "votes_for": "They prioritize open source, development, GitHub, developer tools, software engineering, APIs, Mac, and general tech products.",
+     "over_represented_roles": [
+      "developer",
+      "student",
+      "founder"
+     ],
+     "topics": [
+      "Open Source",
+      "Development",
+      "GitHub",
+      "Developer Tools",
+      "Software Engineering",
+      "API"
+     ],
+     "share_commenting": 0.953,
+     "share_made_or_hunted_a_launch": 0.93,
+     "account_years_median": 3.3,
+     "votes_for_held_out_of_sample": true,
+     "id": "1.3"
+    },
+    {
+     "name": "Experienced SaaS Founders",
+     "people": 1112,
+     "who": "Very experienced users with high lifetime upvotes, many followers, and numerous products launched, often linking to X.",
+     "says": [
+      "They share insights into the business and market aspects of products, including pricing strategies and scalability.",
+      "They often recount personal struggles or inefficiencies that a product aims to solve, particularly in sales, marketing, and data management.",
+      "They congratulate teams and express appreciation for well-executed products, sometimes highlighting specific team members."
+     ],
+     "votes_for": "They are interested in SaaS, marketing, social media, design tools, open source, no-code, video, and sales-related products.",
+     "over_represented_roles": [
+      "investor",
+      "founder",
+      "developer"
+     ],
+     "topics": [
+      "SaaS",
+      "Marketing",
+      "Social Media",
+      "Design Tools",
+      "Open Source",
+      "No-Code"
+     ],
+     "share_commenting": 0.916,
+     "share_made_or_hunted_a_launch": 0.904,
+     "account_years_median": 6.7,
+     "votes_for_held_out_of_sample": false,
+     "id": "1.4"
+    }
+   ]
+  },
+  {
+   "name": "Curious Observers",
+   "people": 33248,
+   "who": "This large group of users is relatively new to Product Hunt, has few upvotes or followers, and often lacks complete profile information, suggesting a more passive engagement.",
+   "says": [
+    "They express curiosity about how products work and their core functionalities.",
+    "They often ask about specific features, platform compatibility (e.g., iOS release), or open-source availability.",
+    "They share initial impressions, often positive, and express interest in trying out new tools."
+   ],
+   "votes_for": "They upvote products across various categories including Vibe coding, Development, Social Media, Design Tools, and Productivity, showing a broad interest in new software.",
+   "over_represented_roles": [],
+   "topics": [
+    "Development",
+    "Vibe coding",
+    "Social Media",
+    "Design Tools",
+    "Marketing",
+    "Productivity"
+   ],
+   "share_commenting": 0.416,
+   "share_made_or_hunted_a_launch": 0.207,
+   "account_years_median": 1.2,
+   "votes_for_held_out_of_sample": false,
+   "id": "2",
+   "subgroups": []
+  },
+  {
+   "name": "Tech Innovators",
+   "people": 12814,
+   "who": "These users are highly engaged with a high number of upvotes, followers, and products launched, often identifying as developers, marketers, or product managers, and are keen on cutting-edge tech.",
+   "says": [
+    "They discuss technical aspects of products, such as API usage, infrastructure, and integration capabilities.",
+    "They often inquire about pricing models, scalability, and how products differentiate from competitors.",
+    "They share personal experiences and use cases, often from a professional or technical standpoint."
+   ],
+   "votes_for": "They upvote products related to Mac, Developer Tools, GitHub, Tech, and Open Source, with a strong interest in innovative solutions and infrastructure.",
+   "over_represented_roles": [
+    "student",
+    "marketer",
+    "developer"
+   ],
+   "topics": [
+    "Mac",
+    "Developer Tools",
+    "Productivity",
+    "GitHub",
+    "Artificial Intelligence",
+    "Software Engineering"
+   ],
+   "share_commenting": 0.576,
+   "share_made_or_hunted_a_launch": 0.314,
+   "account_years_median": 1.2,
+   "votes_for_held_out_of_sample": false,
+   "id": "4",
+   "subgroups": [
+    {
+     "name": "Product & Dev Launchers",
+     "people": 5169,
+     "who": "These users are highly active in launching products, often identifying as developers or product managers, and show strong engagement with developer tools and SaaS.",
+     "says": [
+      "They frequently introduce their own products, explaining the problem they solve and their development journey.",
+      "They ask detailed technical questions about integrations, features, and underlying technologies.",
+      "They appreciate simplicity and lightweight solutions, often comparing new tools to existing ones."
+     ],
+     "votes_for": "They upvote products in Sales, SaaS, Social Media, Marketing, Video, and API categories, with a particular interest in Developer Tools.",
+     "over_represented_roles": [
+      "product"
+     ],
+     "topics": [
+      "Chrome Extensions",
+      "No-Code",
+      "Design Tools",
+      "Education",
+      "Social Media",
+      "SaaS"
+     ],
+     "share_commenting": 0.476,
+     "share_made_or_hunted_a_launch": 0.244,
+     "account_years_median": 1.6,
+     "votes_for_held_out_of_sample": false,
+     "id": "4.0"
+    },
+    {
+     "name": "Connected Product Makers",
+     "people": 3595,
+     "who": "This segment consists of highly connected individuals, often founders, marketers, or developers, who are very active in commenting and launching products, with a strong online presence.",
+     "says": [
+      "They frequently share their personal experiences and motivations behind building their products.",
+      "They engage in discussions about product design, user experience, and the practical application of new technologies.",
+      "They offer encouragement and congratulations to other makers, often highlighting specific features they appreciate."
+     ],
+     "votes_for": "They support launches in SaaS, No-Code, Design Tools, Education, Sales, and Marketing, showing a preference for products that enhance productivity and creativity.",
+     "over_represented_roles": [
+      "student",
+      "marketer",
+      "developer"
+     ],
+     "topics": [
+      "Tech",
+      "Design Tools",
+      "SaaS",
+      "No-Code",
+      "Productivity",
+      "Social Media"
+     ],
+     "share_commenting": 0.612,
+     "share_made_or_hunted_a_launch": 0.418,
+     "account_years_median": 1.0,
+     "votes_for_held_out_of_sample": false,
+     "id": "4.1"
+    },
+    {
+     "name": "Tool Evaluators",
+     "people": 1546,
+     "who": "These users are relatively new to the platform, primarily upvoting rather than launching, and are interested in practical applications of new tools, often as product managers or marketers.",
+     "says": [
+      "They frequently inquire about pricing, value proposition, and specific use cases to determine if a product is 'worth paying for'.",
+      "They ask about integrations and compatibility with existing workflows and platforms.",
+      "They express interest in how tools can simplify complex tasks and automate processes."
+     ],
+     "votes_for": "They favor products in Chrome Extensions, Design Tools, No-Code, Education, Social Media, and Productivity, focusing on tools that offer immediate utility.",
+     "over_represented_roles": [
+      "student",
+      "developer",
+      "investor"
+     ],
+     "topics": [
+      "GitHub",
+      "Analytics",
+      "API",
+      "Mac",
+      "Developer Tools",
+      "Tech"
+     ],
+     "share_commenting": 1.0,
+     "share_made_or_hunted_a_launch": 0.368,
+     "account_years_median": 0.6,
+     "votes_for_held_out_of_sample": false,
+     "id": "4.2"
+    },
+    {
+     "name": "Mac & Dev Enthusiasts",
+     "people": 2504,
+     "who": "This segment is characterized by recent high activity, particularly in upvoting, and a strong interest in developer tools, open source, and Mac-specific applications, often identifying as developers or marketers.",
+     "says": [
+      "They ask detailed questions about technical implementation, collaboration features, and scalability.",
+      "They share practical tips and creative uses for the products, often relating to personal productivity or workflow improvements.",
+      "They express a desire for Mac alternatives or specific platform support for new tools."
+     ],
+     "votes_for": "They are keen on products related to Mac, Developer Tools, GitHub, Open Source, and APIs, with a notable interest in software engineering solutions.",
+     "over_represented_roles": [
+      "marketer",
+      "developer",
+      "student"
+     ],
+     "topics": [
+      "Mac",
+      "Developer Tools",
+      "GitHub",
+      "Open Source",
+      "API",
+      "Video"
+     ],
+     "share_commenting": 0.469,
+     "share_made_or_hunted_a_launch": 0.276,
+     "account_years_median": 0.7,
+     "votes_for_held_out_of_sample": true,
+     "id": "4.3"
+    }
+   ]
+  },
+  {
+   "name": "Experienced Curators",
+   "people": 12978,
+   "who": "These are long-term, highly engaged users with significant lifetime upvotes and followers, who frequently comment and have launched products themselves.",
+   "says": [
+    "They congratulate makers on launches and offer supportive feedback, often referencing prior knowledge of the product's development.",
+    "They share their own experiences and use cases for the products, highlighting practical benefits and suggesting improvements.",
+    "They discuss technical aspects like SDKs, APIs, and specific features, demonstrating a deep understanding of product development."
+   ],
+   "votes_for": "They support launches in iOS, software engineering, SaaS, sales, no-code, and design tools, showing interest in both technical and business-oriented solutions.",
+   "over_represented_roles": [
+    "founder",
+    "investor",
+    "designer"
+   ],
+   "topics": [
+    "iOS",
+    "Software Engineering",
+    "SaaS",
+    "Sales",
+    "No-Code",
+    "Design Tools"
+   ],
+   "share_commenting": 0.864,
+   "share_made_or_hunted_a_launch": 0.88,
+   "account_years_median": 7.8,
+   "votes_for_held_out_of_sample": false,
+   "id": "6",
+   "subgroups": [
+    {
+     "name": "Developer Founders",
+     "people": 5707,
+     "who": "These users are highly active founders and developers, often with design and marketing roles, who have launched multiple products and maintain a strong online presence.",
+     "says": [
+      "They introduce their own products, detailing the problem they solved and the development journey.",
+      "They offer congratulations and specific feedback or questions about product features and functionality.",
+      "They share updates and express gratitude for support after their own product launches."
+     ],
+     "votes_for": "They upvote products in iOS, Sales, SaaS, No-Code, and Marketing, with a particular interest in Design Tools and general Tech.",
+     "over_represented_roles": [
+      "founder",
+      "developer",
+      "marketer"
+     ],
+     "topics": [
+      "iOS",
+      "Sales",
+      "SaaS",
+      "No-Code",
+      "Marketing",
+      "Social Media"
+     ],
+     "share_commenting": 0.906,
+     "share_made_or_hunted_a_launch": 0.892,
+     "account_years_median": 3.8,
+     "votes_for_held_out_of_sample": false,
+     "id": "6.0"
+    },
+    {
+     "name": "Mac & iOS Innovators",
+     "people": 2425,
+     "who": "This segment consists of long-term investors and founders with a significant number of followers and products launched, showing high engagement in commenting.",
+     "says": [
+      "They introduce their own innovative products, often emphasizing local processing, open-source, or unique problem-solving.",
+      "They express enthusiasm and offer constructive feedback or questions about the technical aspects and potential of new tools.",
+      "They discuss the broader implications of new technologies, such as AI workflows and data privacy."
+     ],
+     "votes_for": "They show strong interest in iOS, Mac, Design Tools, Video, and SaaS, also engaging with Software Engineering, Marketing, and No-Code solutions.",
+     "over_represented_roles": [
+      "investor",
+      "founder",
+      "designer"
+     ],
+     "topics": [
+      "iOS",
+      "Mac",
+      "Design Tools",
+      "Video",
+      "SaaS",
+      "Software Engineering"
+     ],
+     "share_commenting": 0.794,
+     "share_made_or_hunted_a_launch": 0.802,
+     "account_years_median": 11.4,
+     "votes_for_held_out_of_sample": false,
+     "id": "6.1"
+    },
+    {
+     "name": "Software Engineering Founders",
+     "people": 4846,
+     "who": "These are experienced founders and product managers with a long history on the platform, high follower counts, and a strong tendency to launch products.",
+     "says": [
+      "They introduce their own products, often focusing on solving specific workflow inefficiencies or creating bespoke software solutions.",
+      "They ask detailed questions about product functionality, integration, and performance, often comparing to existing solutions.",
+      "They provide positive feedback on design, onboarding, and the overall concept of new launches."
+     ],
+     "votes_for": "They are particularly interested in Software Engineering, SaaS, No-Code, and Sales, also showing engagement with Design Tools, Video, and Developer Tools.",
+     "over_represented_roles": [
+      "investor",
+      "founder",
+      "product"
+     ],
+     "topics": [
+      "Software Engineering",
+      "SaaS",
+      "No-Code",
+      "Sales",
+      "Design Tools",
+      "Video"
+     ],
+     "share_commenting": 0.85,
+     "share_made_or_hunted_a_launch": 0.905,
+     "account_years_median": 11.1,
+     "votes_for_held_out_of_sample": false,
+     "id": "6.2"
+    }
+   ]
+  }
+ ]
+}

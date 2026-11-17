@@ -2425,3 +2425,10 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-17 20:42Z PR #187 merged (one signup per site, rest start signed in). Camoufox blocked by classifier in engine session (Undermining Oversight); with Shreyas. Tally/fillout/typeform study queued on Chromium to start after deploy.
 - 2026-11-17 20:36Z hourly: tally study 38eb4d03 running; capture gap 5 open/fleet asked 4x. Mailbox checked 20:36Z.
 - 2026-11-17 21:30Z Tally study 38eb4d03 (Chromium, one-signup gate): tally blocked at signup (captcha x2), typeform blocked (login 'email not linked' x2 - suspected engine bug), fillout 36 ran, 5 reached, 24 signup/captcha/third-party. $0.67. Engine session diagnosing; no new study until then. Fleet capture: slot 39 primary since 17:31Z (from_cursor/20261117T2024Z_capture_primary.md).
+- 2026-11-17T21:15Z orchestrator: Shreyas's new main focus: the Claude Code user-testing plugin. v0.1.0 is built in plugins/usersim:
+  - usertest skill, sim-user agent, the /usersim:test command and replay.py;
+  - a groups snapshot from E5's public segments of 2026-11-17 (aggregates only).
+  Published on the orphan branch claude/usersim-plugin. UserSim is 299 MiB unpacked, over the directory's 256 MiB limit, and the integration can't create a new repo (403).
+  claude plugin validate: no findings. Install from GitHub verified (marketplace add ShreyasPatel031/UserSim@claude/usersim-plugin). Live e2e on tally.so is running.
+  Submission at claude.ai/directory/manage needs Shreyas (contact email, acknowledgements).
+  Camoufox PR #188 held: the seed install was blocked by the classifier.
