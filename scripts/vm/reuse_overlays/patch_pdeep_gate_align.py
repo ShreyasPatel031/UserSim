@@ -9,7 +9,13 @@
 from __future__ import annotations
 
 import pathlib
+import subprocess
 import sys
+
+# Supervisors started before patch_upvotes_search_sweep.py joined their patch list still run this file every loop.
+_sweep = pathlib.Path(__file__).with_name("patch_upvotes_search_sweep.py")
+if _sweep.is_file() and len(sys.argv) < 2:
+    subprocess.run([sys.executable, str(_sweep)], check=False)
 
 MARK = "PDEEP_GATE_ALIGN_PATCH"
 p = pathlib.Path("/opt/ph/reuse/pdeep.py") if len(sys.argv) < 2 else pathlib.Path(sys.argv[1])
