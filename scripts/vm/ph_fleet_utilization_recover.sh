@@ -14,6 +14,9 @@ UNHANG_COOLDOWN="${FLEET_UNHANG_COOLDOWN_SEC:-1800}"
 COOLDOWN_FILE="$ART/unhang_cooldown.json"
 # Dedicated repullupvotes slots: do not phsuper-restart (would kill upvote_refresh).
 FLEET_UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+# Live-capture slots run ph_fleet_live_capture.sh instead of pdeep; restarting phsuper there would steal the slot back.
+FLEET_LIVE_SLOTS="${FLEET_LIVE_SLOTS:-39}"
+FLEET_UPVOTE_SLOTS="$FLEET_UPVOTE_SLOTS $FLEET_LIVE_SLOTS"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
 GC=(gcloud --account="$SA")
 ZONE="${PACE_ZONE:?}"

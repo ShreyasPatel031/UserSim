@@ -27,6 +27,7 @@ BKT = os.environ["MVP_GCS_BUCKET"]
 G = f"gs://{BKT}/usersim_sim/raw"
 LIVE = f"{G}/ph_population/people_live"
 UPVOTE = set((os.environ.get("FLEET_UPVOTE_SLOTS") or os.environ.get("UPVOTE_SLOTS") or "9 27 38").split())
+UPVOTE |= set((os.environ.get("FLEET_LIVE_SLOTS") or "39").split())
 STATE = ART / "refill_state.json"
 SIGNEDIN_NEEDED = f"{G}/_cursor/signedin_needed.txt"
 SIGNEDIN_Q = f"{G}/_pacetest/shared/_signedin_upvotes"
