@@ -516,6 +516,24 @@ def build(data_dir, out_dir, salt, complete=None):
 
     def _fold_events(chunk):
         return pd.concat(chunk, ignore_index=True).sort_values("first_seen_at").drop_duplicates(KEY, keep="first")
+    # 09:1xZ Nov 17: the API comment ids are known before the full-pull loop, so in complete mode each folded chunk is
+    # filtered and spooled to a part file instead of held: full-pull sources (people_live:vm*) are disjoint from every
+    # other piece and one file per person means no duplicate spans chunks, so the rows are the same as the held concat
+    # (the 92k-person build ran past 16 GB holding ~12M rows plus their arrow copy).
+    api_cids = set()
+    for e0 in ev:
+        if len(e0) and "source" in e0:
+            a0 = e0[e0.source.astype(str).str.startswith("ph_api_v2")]
+            api_cids |= {json.loads(x).get("comment_id") for x in a0.extra}
+    spool = []
+
+    def _spool(chunk):
+        e = _fold_events(chunk)
+        cid = e.extra.map(lambda x: json.loads(x).get("comment_id") if isinstance(x, str) else None)
+        e = e[~((e.kind == "comment") & cid.isin(api_cids - {None}))]
+        f = f"{out_dir}/_ev_part_{len(spool):04d}.parquet"
+        e.to_parquet(f, index=False)
+        spool.append(f)
     filled = json.load(open(f"{data_dir}/people_live/f1_filled.json")) if os.path.exists(f"{data_dir}/people_live/f1_filled.json") else {}
     vm = sorted(glob.glob(f"{data_dir}/people_live/vm/*.json")) + sorted(glob.glob(f"{data_dir}/people_live/light/**/*.json", recursive=True)) \
         + sorted(glob.glob(f"{data_dir}/people_live/vm_pgql/_run_*/*.json"))
@@ -541,26 +559,17 @@ def build(data_dir, out_dir, salt, complete=None):
         if len(e_):
             fp_events.append(e_)
         if complete is not None and len(fp_events) >= 2000:
-            ev_done.append(_fold_events(fp_events))
+            _spool(fp_events)
             fp_events = []
         if len(tab_rows) >= 2000:
             tab_rows = [pd.concat(tab_rows, ignore_index=True)]
     if complete is not None and fp_events:
-        ev_done.append(_fold_events(fp_events))
+        _spool(fp_events)
         fp_events = []
-    if fp_events or ev_done:
-        if complete is not None:
-            e_ = pd.concat(ev_done, ignore_index=True) if len(ev_done) > 1 else ev_done[0]
-            del ev_done
-        else:
-            e_ = pd.concat(fp_events, ignore_index=True)
-            # re-pulls of the same person: one row per (person, kind, target, time), earliest first_seen kept
-            e_ = e_.sort_values("first_seen_at").drop_duplicates(KEY, keep="first")
-        api_cids = set()
-        for e0 in ev:
-            if len(e0) and "source" in e0:
-                a = e0[e0.source.astype(str).str.startswith("ph_api_v2")]
-                api_cids |= {json.loads(x).get("comment_id") for x in a.extra}
+    if fp_events:  # non-complete mode (complete mode spooled every chunk above)
+        e_ = pd.concat(fp_events, ignore_index=True)
+        # re-pulls of the same person: one row per (person, kind, target, time), earliest first_seen kept
+        e_ = e_.sort_values("first_seen_at").drop_duplicates(KEY, keep="first")
         cid = e_.extra.map(lambda x: json.loads(x).get("comment_id") if isinstance(x, str) else None)
         ev.append(e_[~((e_.kind == "comment") & cid.isin(api_cids - {None}))])
         del e_, cid  # 10:1xZ Nov 16: the unfiltered frame stayed alive through the writer loop (92k-person build OOM)
@@ -600,6 +609,22 @@ def build(data_dir, out_dir, salt, complete=None):
         stats.add(e)
         # written in 1M-row slices: one arrow copy of the largest piece (~all full-pull events) ran past 15 GB (Nov 16)
         if writer is None:  # schema from the whole frame, so an all-null column in the first slice cannot type it as null
+            schema = pa.Schema.from_pandas(e, preserve_index=False)
+            writer = pq.ParquetWriter(f"{out_dir}/events.parquet", schema)
+        for i in range(0, len(e), 1_000_000):
+            t = pa.Table.from_pandas(e.iloc[i:i + 1_000_000], preserve_index=False)
+            writer.write_table(t.select(schema.names).cast(schema))
+            del t
+        del e
+    for f in spool:  # complete-mode full-pull chunks, already de-duplicated and comment-filtered
+        e = pd.read_parquet(f)
+        os.remove(f)
+        if not len(e):
+            continue
+        for c in ["ts_lo", "ts_hi", "first_seen_at", "fetched_at"]:
+            e[c] = pd.to_datetime(e[c], utc=True)
+        stats.add(e)
+        if writer is None:
             schema = pa.Schema.from_pandas(e, preserve_index=False)
             writer = pq.ParquetWriter(f"{out_dir}/events.parquet", schema)
         for i in range(0, len(e), 1_000_000):
