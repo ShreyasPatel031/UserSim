@@ -48,7 +48,11 @@ Each row has a `value` (read at **use time** so hot reload applies without resta
 | `captcha_max_calls_per_page` | `6` | `usersim_solve_captcha` calls per URL before it refuses (was fixed at 3). |
 | `captcha_stuck_steps` | `12` | Steps with an image grid still open before the agent is told to finish `blocked`; refused at twice this. `0` = off. |
 | `probe_sites` | `true` | TLS/DNS check before opening a product URL. `false` = faster, may waste browsers. |
-| `bb_proxies` | `true` | Browserbase residential proxies (better signups, higher cost). |
+| `browser_backend` | `seed_vm` | Where browsers run: `seed_vm` (our signup seed VMs over IAP tunnels, see OPERATIONS.md) or `browserbase` (fallback; free plan is out of minutes). |
+| `seed_cdp_endpoints` | `["http://127.0.0.1:19220"]` | Local ends of the seed tunnels on the MCP host; seed N = port 19220+N. One line per running seed. |
+| `seed_sessions_per_seed` | `4` | Simulated users (isolated contexts) per seed at once. Total concurrency = this × healthy seeds. |
+| `seed_wait_s` | `45` | Seconds `usersim_start_session` waits for a free seed slot before answering "busy, retry" (cell stays queued). |
+| `bb_proxies` | `true` | Browserbase only: residential proxies (better signups, higher cost). Ignored on `seed_vm`. |
 | `anon_daily_usd_per_ip` | `6.0` | Estimated $ budget per IP per day (no token). |
 | `anon_daily_usd_global` | `20.0` | Estimated $ budget for all anonymous callers per day. |
 | `est_usd_per_session` | `0.10` | Budget units charged at session start (estimate, not metered). |

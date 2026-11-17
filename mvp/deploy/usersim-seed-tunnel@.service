@@ -1,0 +1,15 @@
+# IAP SSH tunnel from the MCP server host to seed N's Chromium CDP (seed 127.0.0.1:9222 -> local 127.0.0.1:1922N).
+# Installed by mvp/deploy/install_seed_tunnels.sh. Instance name = seed index (usersim-seed-tunnel@0 = seed 0).
+[Unit]
+Description=IAP tunnel to usersim-signup-seed-%i CDP
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/usersim/seed-tunnel.env
+ExecStart=/bin/bash -c 'exec gcloud --quiet --project="${USERSIM_GCP_PROJECT:-project-amer-scs-sandbox}" compute ssh "usersim-signup-seed-%i" --zone="${SEED_ZONE:-us-central1-a}" --tunnel-through-iap --ssh-key-expire-after=0 -- -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=20 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -L 127.0.0.1:1922%i:127.0.0.1:9222'
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

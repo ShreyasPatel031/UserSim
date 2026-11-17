@@ -1,4 +1,4 @@
-"""One simulated user on one product, in one Browserbase browser.
+"""One simulated user on one product, in one browser on our seed VMs (or Browserbase, see browser_backend).
 
 The MCP client decides each action; this module opens the browser, runs the
 action on the real page, and records every step into a normal StudyState so
@@ -707,6 +707,20 @@ def cells_of(study: Any) -> list[dict[str, Any]]:
     return out
 
 
+def browser_backend() -> str:
+    """limits.json browser_backend: "seed_vm" (default) or "browserbase" (fallback only)."""
+    from mvp.sim_mcp import limits
+
+    val = str(limits.get("browser_backend") or "seed_vm").strip().lower()
+    return "browserbase" if val == "browserbase" else "seed_vm"
+
+
+def _create_seed(study_id: str) -> Any:
+    from mvp.sim_mcp import seed_backend
+
+    return seed_backend.acquire()
+
+
 def _create_bb(study_id: str) -> Any:
     from capability.browserbase_client import create_session, study_session_owner
 
@@ -800,12 +814,28 @@ async def start_session(
         study.live_sessions[AGENT_ID]["mcp_owner"] = owner
         sim = SimSession(id=uuid.uuid4().hex, study=study, product_url=url, task=task, persona=persona, client=client,
                          owner=owner)
+    if browser_backend() == "seed_vm" and seed_forbidden_host(urlsplit(url).hostname or ""):
+        if sim.matrix:
+            sim.row.update(status="queued")
+        raise SessionError(f"{urlsplit(url).hostname} cannot be opened from UserSim's browsers")
     SESSIONS[sim.id] = sim
     try:
         await _open_browser(sim)
         await _wait_rendered(sim.page)
         await record_step(sim, kind="open", action_text=f"Opened {url}", args={"url": url}, thought="")
     except Exception as exc:
+        from mvp.sim_mcp.seed_backend import SeedsBusy
+
+        if isinstance(exc, SeedsBusy):
+            # Not a failure of the cell: every seed slot is taken. Free nothing-yet-opened state and queue it again.
+            if sim.matrix:
+                await close(sim, reason="All seed browsers busy")
+                sim.row.update(status="queued", live_active=False, trace=[], num_steps=0, error="")
+            else:
+                await close(sim, reason="All seed browsers busy", status="error")
+            raise SessionError(f"all UserSim browsers are busy ({exc}). "
+                               + ("The cell is still queued: " if sim.matrix else "")
+                               + "call usersim_start_session again in ~30 s") from exc
         if sim.matrix:
             row = sim.row
             fails = int(row.get("start_failures") or 0) + 1
@@ -853,19 +883,28 @@ async def _open_browser(sim: SimSession) -> None:
     from mvp.a11y_agent import apply_gate_fields
 
     t0 = time.time()
-    sim.bb = await asyncio.to_thread(_create_bb, sim.study.id)
+    seed = browser_backend() == "seed_vm"
+    sim.bb = await asyncio.to_thread(_create_seed if seed else _create_bb, sim.study.id)
     ready = time.time()
     pw = await _playwright()
     try:
-        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url)
+        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url, timeout=30000)
     except Exception as exc:  # noqa: BLE001
         if not _driver_dead(exc):
             raise
         print(f"[mcp {sim.id[:8]}] playwright driver is dead ({exc!r}); restarting it", flush=True)
         await _reset_playwright()
         pw = await _playwright()
-        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url)
-    sim.context = sim.browser.contexts[0] if sim.browser.contexts else await sim.browser.new_context()
+        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url, timeout=30000)
+    if seed:
+        # One seed Chromium hosts several simulated users: each gets its own isolated context (own cookies and
+        # storage), closed with the session. The seed's static egress IP is the network identity.
+        sim.context = await sim.browser.new_context(viewport=dict(VIEWPORT), locale="en-US")
+        await _block_forbidden_hosts(sim.context)
+        sim.row["browser_backend"] = "seed_vm"
+        sim.row["seed"] = sim.bb.seed_label
+    else:
+        sim.context = sim.browser.contexts[0] if sim.browser.contexts else await sim.browser.new_context()
     sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()
     sim.context.on("page", lambda p: setattr(sim, "new_page", p))
     _watch_page(sim, sim.page)
@@ -901,7 +940,37 @@ async def _open_browser(sim: SimSession) -> None:
     sim.study.phase = matrix_phase(sim.study) if sim.matrix else "Simulated user is working"
 
 
+def seed_forbidden_host(host: str) -> bool:
+    """Hosts a seed browser must not reach: the never-load list (producthunt.com), and anything inside our own
+    network (the seed sits in our VPC: metadata server, private / link-local IPs, *.internal), which Browserbase
+    never could reach."""
+    from mvp.sim_mcp.seed_backend import blocked_host
+
+    host = (host or "").lower().rstrip(".").strip("[]")
+    if not host or blocked_host(host):
+        return bool(host)
+    if host == "localhost" or host.endswith((".internal", ".local", ".localhost")) or host.startswith("metadata."):
+        return True
+    try:
+        return _non_public_ip(ipaddress.ip_address(host))
+    except ValueError:
+        return False
+
+
+async def _block_forbidden_hosts(context: Any) -> None:
+    async def handle(route: Any) -> None:
+        url = route.request.url
+        if url.startswith(("http:", "https:", "ws:", "wss:")) and seed_forbidden_host(urlsplit(url).hostname or ""):
+            await route.abort("blockedbyclient")
+        else:
+            await route.fallback()
+
+    await context.route("**/*", handle)
+
+
 async def _publish_live_view(sim: SimSession) -> None:
+    if getattr(sim.bb, "backend", "") == "seed_vm":
+        return  # no hosted live view on seeds; the live page shows the recorded screenshots
     from capability.browserbase_client import session_live_view_url
 
     sid = str(getattr(sim.bb, "id", "") or "")
@@ -2500,12 +2569,22 @@ async def close(sim: SimSession, *, reason: str, status: str = "") -> None:
         sim.study.phase = reason[:200]
         if status == "error":
             sim.study.error = reason[:500]
+    seed = getattr(sim.bb, "backend", "") == "seed_vm"
+    if seed and sim.context is not None:
+        try:  # close only this user's context; the seed's Chromium stays up for the next one
+            await asyncio.wait_for(sim.context.close(), timeout=15)
+        except Exception:  # noqa: BLE001
+            pass
     try:
         if sim.browser is not None:
             await sim.browser.close()
     except Exception:  # noqa: BLE001
         pass
-    sid = str(getattr(sim.bb, "id", "") or "")
+    if seed:
+        from mvp.sim_mcp import seed_backend
+
+        seed_backend.release(sim.bb)
+    sid = "" if seed else str(getattr(sim.bb, "id", "") or "")
     if sid:
         from capability.browserbase_client import close_session
 
