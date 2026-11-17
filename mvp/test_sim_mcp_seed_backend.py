@@ -176,5 +176,37 @@ class LimitsRouteTests(unittest.TestCase):
         self.assertEqual(body["browsers"]["seeds"][0]["healthy"], False)
 
 
+
+class SeedProofTests(unittest.TestCase):
+    """Study ab3c9656 (Nov 17, first seed study): proof failed on all 108 cells because live_view_offered wanted a
+    Browserbase live view URL, which seeds never have."""
+
+    def _row(self, backend="seed_vm", live=""):
+        trace = [{"step": i, "action": a, "url": u, "screenshot_url": f"/x/step_{i}.png"}
+                 for i, (a, u) in enumerate([("Opened https://tally.so", "https://tally.so/"),
+                                              ("click — (10, 20)", "https://tally.so/create")])]
+        return {"agent_id": "a1", "site_url": "https://tally.so", "page_url": "https://tally.so/", "trace": trace,
+                "browser_backend": backend, "live_view_url": live, "task_prompt": "make a form", "last_action": "click"}
+
+    def _proof(self, row, shots_ok=True):
+        from mvp.sim_mcp import report as R
+
+        study = {"id": "s1", "driver": S.DRIVER, "test_mode": False}
+        with mock.patch.object(R, "_shot_ok", return_value=shots_ok):
+            return {c["name"]: c for c in R.proof_checks(study, row, "ok")["checks"]}
+
+    def test_seed_run_with_real_frames_is_watchable(self):
+        c = self._proof(self._row())["live_view_offered"]
+        self.assertTrue(c["pass"], c)
+        self.assertIn("seed_vm", c["detail"])
+
+    def test_seed_run_without_frames_is_not(self):
+        self.assertFalse(self._proof(self._row(), shots_ok=False)["live_view_offered"]["pass"])
+
+    def test_browserbase_still_needs_its_live_view(self):
+        self.assertFalse(self._proof(self._row(backend=""))["live_view_offered"]["pass"])
+        self.assertTrue(self._proof(self._row(backend="", live="https://www.browserbase.com/x"))["live_view_offered"]["pass"])
+
+
 if __name__ == "__main__":
     unittest.main()

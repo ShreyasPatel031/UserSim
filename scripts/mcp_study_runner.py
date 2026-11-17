@@ -6,8 +6,12 @@ pipelines) gets the server's usersim_simulate_user prompt and the observe / act 
 screenshot each turn and must answer with exactly one tool call. Append-only history, spend caps, a 3-cell pilot per
 study, and bounded retries.
 
-    PYTHONPATH=src:. python scripts/mcp_study_runner.py https://www.clockify.me https://kanbanflow.com https://dynalist.io \\
-        --parallel 12 --max-usd 20 --max-cell-usd 0.5 --max-turns 40
+    PYTHONPATH=src:. python scripts/mcp_study_runner.py https://tally.so --competitors https://fillout.com,https://typeform.com \\
+        --parallel 11 --max-usd 20 --max-cell-usd 0.5 --max-turns 40
+
+EACH positional product URL starts its OWN full 108-cell study (target = that URL; competitors from --competitors, or
+picked by the server when omitted). Three URLs = three studies = 324 cells. For one study of a target against two
+rivals, pass the target alone and the rivals with --competitors.
 
 Cost (gemini-2.5-flash Vertex list: $0.30/M input, $2.50/M output incl. thinking): roughly $0.002–0.004 per model turn
 (one screenshot + history in, one call out, thinking budget RUNNER_THINKING_BUDGET=1024), so a few dollars to ~$10 for a
@@ -25,7 +29,10 @@ Flags:
   --max-cell-usd (0.5)     Stop a single cell when its spend reaches this
   --max-retries (50)       Total model+tool retries across the run, then stop
   --no-pilot               Skip the 3-cell pilot and fan out immediately
-  --resume STUDY_ID        Continue cells without a saved JSON
+  --competitors A,B        Rival URLs for usersim_start_study (empty: the server picks 2)
+  --resume STUDY_ID        Run every cell that never got a server session (crash, cap, overloaded server).
+                           Cells that ran (<cell>.json with a session_id) are kept; never-started ones are saved as
+                           <cell>.notrun.json and run again.
   --smoke PERSONA TASK     One session on the first product URL
 """
 
@@ -141,6 +148,33 @@ def _result_brief(txt: str, rejected: bool) -> dict:
     return out
 
 
+def _save_cell(out: Path, cell: dict, log: dict) -> None:
+    """A cell counts as run only once a server session existed for it. A cell the runner never started (spend cap,
+    retry budget, crash) is saved as <cell>.notrun.json, so --resume runs it (Nov 17: an overloaded server made the
+    runner write 43 never-started cells as done, and --resume skipped them)."""
+    if log.get("session_id"):
+        (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
+        (out / f"{cell['cell_id']}.notrun.json").unlink(missing_ok=True)
+    else:
+        log["not_run"] = True
+        (out / f"{cell['cell_id']}.notrun.json").write_text(json.dumps(log, indent=1))
+
+
+def cell_done(out: Path, cell_id: str) -> bool:
+    """Did this cell run (a server session existed)? Logs from older runners without a session_id are not done."""
+    p = out / f"{cell_id}.json"
+    if not p.exists():
+        return False
+    try:
+        return bool(json.loads(p.read_text()).get("session_id"))
+    except (ValueError, OSError):
+        return False
+
+
+def _stop_note(gate: SpendGate) -> str:
+    return f"stopped: {gate.stop_reason}" if gate.stop_reason else STOP_NOTE
+
+
 def stall_summary(steps: list[dict]) -> dict:
     """Longest run of identical actions with no page change (a stuck cell), and how many steps saw a captcha."""
     best = cur = 0
@@ -208,17 +242,16 @@ async def run_cell(
     m: dict = {}
     for attempt in range(60):
         if gate.over_cap():
-            log["error"] = STOP_NOTE
-            log["finish"] = STOP_NOTE
-            (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
+            log["error"] = log["finish"] = _stop_note(gate)
+            _save_cell(out, cell, log)
             return log
         try:
             meta = _text(await tool("usersim_start_session", start, gate))
         except RuntimeError as exc:
             if STOP_NOTE in str(exc) or gate.stop_reason:
                 log["error"] = gate.stop_reason or str(exc)
-                log["finish"] = STOP_NOTE
-                (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
+                log["finish"] = _stop_note(gate)
+                _save_cell(out, cell, log)
                 return log
             raise
         try:
@@ -231,9 +264,11 @@ async def run_cell(
             await asyncio.sleep(30)
             continue
         log["error"] = meta[:600]
+        _save_cell(out, cell, log)
         return log
     else:
         log["error"] = "no free session slot after 30 min"
+        _save_cell(out, cell, log)
         return log
     sid = m["session_id"]
     log["session_id"] = sid
@@ -367,7 +402,7 @@ async def run_cell(
     log["seconds"] = round(time.time() - log["started"])
     log["stall"] = stall_summary(log["steps"])
     log["total_runner_usd"] = round(gate.total_usd, 6)
-    (out / f"{cell['cell_id']}.json").write_text(json.dumps(log, indent=1))
+    _save_cell(out, cell, log)
     return log
 
 
@@ -387,14 +422,16 @@ async def run_study(
     gate: SpendGate,
     resume: str = "",
     no_pilot: bool = False,
+    competitors: list[str] | None = None,
 ) -> dict:
     if resume:
         out = root / resume
         study = json.loads((out / "study.json").read_text())
-        todo = [c for c in study["cells"] if not (out / f"{c['cell_id']}.json").exists()]
+        todo = [c for c in study["cells"] if not cell_done(out, c["cell_id"])]
         print(f"[{product_url}] resuming study {resume}: {len(todo)} of {len(study['cells'])} cells left", flush=True)
     else:
-        st = await tool("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [], "competitors": []}, gate)
+        st = await tool("usersim_start_study", {"product_url": product_url, "personas": [], "tasks": [],
+                                                 "competitors": list(competitors or [])}, gate)
         txt = _text(st)
         try:
             study = json.loads(txt)
@@ -451,19 +488,21 @@ async def run_study(
         await asyncio.sleep(30)
     (out / "report.md").write_text(report)
     _save_server_study(out, study)
-    cell_files = list(out.glob("*.json"))
-    finished = sum(1 for p in cell_files if p.name not in ("study.json", "summary.json") and "error" not in p.name)
+    finished = sum(1 for c in study["cells"] if cell_done(out, c["cell_id"]))
     summary = {
         "product_url": product_url,
         "study_id": study["study_id"],
         "report_url": study.get("report_url"),
         "cells": len(study["cells"]),
         "finished": finished,
+        "not_run": len(study["cells"]) - finished,
         "runner_total_usd": round(gate.total_usd, 6),
         "errors": [],
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     print(f"[{product_url}] done  runner spend ${gate.total_usd:.4f}  report {study.get('report_url')}", flush=True)
+    if finished < len(study["cells"]):
+        print(f"[{product_url}] {len(study['cells']) - finished} cells never ran: --resume {study['study_id']}", flush=True)
     return summary
 
 
@@ -499,13 +538,13 @@ async def _run_cells_parallel(
 
     async def one(cell: dict) -> dict:
         if gate.over_cap():
-            res = {"cell": cell, "error": gate.stop_reason or STOP_NOTE, "finish": STOP_NOTE}
-            (out / f"{cell['cell_id']}.json").write_text(json.dumps(res, indent=1))
+            res = {"cell": cell, "error": gate.stop_reason or STOP_NOTE, "finish": _stop_note(gate)}
+            _save_cell(out, cell, res)
             return res
         async with sem:
             if gate.over_cap():
-                res = {"cell": cell, "error": STOP_NOTE, "finish": STOP_NOTE}
-                (out / f"{cell['cell_id']}.json").write_text(json.dumps(res, indent=1))
+                res = {"cell": cell, "error": gate.stop_reason or STOP_NOTE, "finish": _stop_note(gate)}
+                _save_cell(out, cell, res)
                 return res
             try:
                 return await run_cell(study["study_id"], cell, max_turns, max_cell_usd, out, llm, gate)
@@ -539,7 +578,8 @@ async def _run_cells_parallel(
 
 async def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("products", nargs="+")
+    ap.add_argument("products", nargs="+", help="target product URL(s); EACH one starts its own 108-cell study")
+    ap.add_argument("--competitors", default="", help="comma-separated rival URLs for usersim_start_study")
     ap.add_argument("--parallel", type=int, default=12, help="cells at once per study")
     ap.add_argument("--max-turns", type=int, default=40)
     ap.add_argument("--max-usd", type=float, default=20.0, help="stop the whole run at this model spend")
@@ -561,6 +601,10 @@ async def main() -> None:
         raise SystemExit("RUNNER_MODEL must be a Gemini model (no Claude in pipelines)")
     llm = GeminiDriver(vertex_client(os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"),
                                      os.environ.get("RUNNER_LOCATION", "global")))
+    competitors = [u.strip() for u in a.competitors.split(",") if u.strip()]
+    if len(a.products) > 1 and not a.resume:
+        print(f"NOTE: {len(a.products)} product URLs = {len(a.products)} separate studies "
+              f"({108 * len(a.products)} cells). For one study with rivals use --competitors.", flush=True)
     root = Path(a.out)
     root.mkdir(parents=True, exist_ok=True)
     gate = SpendGate(max_usd=a.max_usd, max_retries=a.max_retries)
@@ -589,6 +633,7 @@ async def main() -> None:
                     gate,
                     a.resume or "",
                     a.no_pilot,
+                    competitors,
                 )
                 for p in a.products
             )
