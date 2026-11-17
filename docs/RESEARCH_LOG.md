@@ -2438,3 +2438,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - 9 variations proposed; replay.html renders.
   Merged #189 (E4: saved state only on a real signed-in end, app domain, fresh alias on the gate retry). Tally rests on seeds 0 and 2 for 24 h (E4).
 - 2026-11-17T21:34Z hourly: site board live (as_of 21:33Z, 43 launches). Fleet 4 active / 5 dead / 7 stale / 2 cf_wall, cppm 1.33: wake sent. Capture heartbeat 21:32Z ok. Plugin v0.1.1 published; #189 merged. Mailbox checked 2026-11-17T21:34Z.
+- 2026-11-17T22:23Z: PH agent reports a 2nd live-capture gap today: 13:45 PT (21:45Z) snapshot missing; capture resumed 14:00 PT (43/43). Fleet asked for the cause (it may be a late write; 4 of the 5 earlier alerts were). Public board unaffected (website reads the PH API directly).
