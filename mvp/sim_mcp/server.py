@@ -645,6 +645,12 @@ def _study_account_for(sim: S.SimSession, owner: str) -> str | None:
     if not getattr(sim, "matrix", False) or not L.get("study_shared_accounts"):
         return None
     key = (sim.study.id, registrable_domain(_host(sim)))
+    if sim.row.get("gate") == "signup":
+        # The one-signup gate already made this cell the site's only signup, and on a retry the previous attempt
+        # failed. Its address can be stuck half-registered (Typeform, study 38eb4d03: 'already registered' on signup,
+        # 'not linked to an account' on login), so the retry signs up with a fresh alias and owns the account.
+        _STUDY_ACCOUNTS.pop(key, None)
+        return None
     entry = _STUDY_ACCOUNTS.get(key)
     if not entry or entry["sid"] == sim.id:
         return None

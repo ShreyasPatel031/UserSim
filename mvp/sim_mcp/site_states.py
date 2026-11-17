@@ -80,9 +80,15 @@ def live_cookies(state: dict[str, Any], domain: str, now: float | None = None) -
     return out
 
 
+def app_domain_of(entry: dict[str, Any] | None, domain: str) -> str:
+    """Where the signed-in app lives: fillout.com's app is app.zite.com (study 38eb4d03), so its cookies are zite.com's."""
+    return str((entry or {}).get("app_domain") or domain)
+
+
 def usable(entry: dict[str, Any] | None, domain: str) -> bool:
     state = (entry or {}).get("storage_state")
-    return isinstance(state, dict) and not (entry or {}).get("dead") and bool(live_cookies(state, domain))
+    return (isinstance(state, dict) and not (entry or {}).get("dead")
+            and bool(live_cookies(state, app_domain_of(entry, domain))))
 
 
 def load(domain: str) -> dict[str, Any] | None:
@@ -106,12 +112,17 @@ def load(domain: str) -> dict[str, Any] | None:
 
 
 def save(domain: str, storage_state: dict[str, Any], *, seed: str, study_id: str = "", address: str = "",
-         source: str = "study") -> bool:
-    """Store a signed-in state for this site (newest wins). False when there is nothing worth saving or GCS fails."""
-    if not isinstance(storage_state, dict) or not live_cookies(storage_state, domain):
+         source: str = "study", app_url: str = "") -> bool:
+    """Store a signed-in state for this site (newest wins). app_url: the signed-in page the run ended on; its domain
+    may differ from the product's (fillout.com -> app.zite.com). False when nothing is worth saving or GCS fails."""
+    parts = urlsplit(app_url or "")
+    app_domain = domain_of(parts.hostname or "") if parts.hostname else domain
+    if not isinstance(storage_state, dict) or not live_cookies(storage_state, app_domain):
         return False
     entry = {"domain": domain, "storage_state": storage_state, "seed": seed, "saved_at": time.time(),
              "study_id": study_id, "address": address, "source": source}
+    if parts.hostname:
+        entry.update(app_url=f"{parts.scheme or 'https'}://{parts.hostname}/", app_domain=app_domain)
     try:
         from mvp.gcs_store import gcs_upload_json
 
@@ -184,6 +195,8 @@ def app_url_for(entry_or_state: dict[str, Any], domain: str) -> str:
     if domain in APP_URLS:
         return APP_URLS[domain]
     entry = entry_or_state if isinstance(entry_or_state, dict) else {}
+    if entry.get("app_url"):
+        return str(entry["app_url"])  # where a signed-in run actually ended (may be another domain: app.zite.com)
     state = entry.get("storage_state", entry)
     score: dict[str, int] = {}
     # export_seed_states names its sources site_states/<host>.json / profiles/<host>: the host the seed signed in on

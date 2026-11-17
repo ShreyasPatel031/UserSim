@@ -490,13 +490,17 @@ async def save_signed_in_state(sim: SimSession, verdict: dict[str, Any] | None) 
     if getattr(sim.bb, "backend", "") != "seed_vm" or not sim.saved_state or not site_states.enabled():
         return False
     row = sim.row
-    if not ((verdict or {}).get("signed_in_app_page") or signup_verified(row)):
+    final_url = str(row.get("final_url") or getattr(getattr(sim, "page", None), "url", "") or "")
+    # Only a run that ENDS on a signed-in app page. A verified-looking signup is not enough: study 38eb4d03's fillout
+    # signup cell typed its code but stayed on the verify screen, its marketing-cookie state was saved, and 35 cells
+    # were told they were signed in.
+    if not (verdict or {}).get("signed_in_app_page") or site_states.looks_signed_out(final_url):
         return False
     domain = site_states.domain_of(sim.product_url)
     seed = str(getattr(sim.bb, "seed_label", "") or "")
     address = sim.inbox.address if getattr(sim, "inbox", None) is not None else ""
     ok = await asyncio.to_thread(site_states.save, domain, sim.saved_state, seed=seed, study_id=sim.study.id,
-                                 address=address, source="study")
+                                 address=address, source="study", app_url=final_url)
     if ok:
         row["saved_account_written"] = {"domain": domain, "seed": seed}
     return ok
