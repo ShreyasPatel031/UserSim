@@ -127,3 +127,12 @@ Shreyas: "Who the fuck cares what the save position is for data feeder? Just sav
   docs/DATA_SPEC.md. Nobody waits for Shreyas on it.
 - The one condition stays: a writer of incomplete or unstamped person files saves outside the complete-people store, so it
   can never be counted as complete.
+
+## Rule for every agent: no Browserbase; browsers run on our own VMs (Shreyas, Nov 17 2026)
+
+Shreyas: "browser base is out of the picture. Use some of the IPs with the old VMs that we had. We solved all of those
+problems, sign up, etc."
+- Every simulated-user browser (the public MCP engine, e2e studies, E5's tests) runs on our own seed VMs with their static
+  egress IPs and the signup path built for them (scripts/vm/*seed*, mvp/gcp_fleet.py). No agent proposes upgrading or
+  paying for Browserbase.
+- The 20 Product Hunt puller VMs are not used for this.
