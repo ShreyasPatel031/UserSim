@@ -958,6 +958,27 @@ n = 223 launches for complaints, 273 for questions; intervals are bootstraps ove
 - **Launch 1 is affected too.** /try's "the questions your launch will get" must be scored on this strict rule before it
   is claimed; today's comparable figure is 10.4% of real questions in the top 10.
 
+### Backward browser test (E5, Nov 17; interim, not the forward test; `experiments/simlab/browser_forward/backward/`)
+
+**A no-account visit to a launched product's live site finds almost none of what real commenters raised, and makes the
+plain prompt worse when merged in.** 154 launches (Aug 1 – Nov 10 2026, 8+ real non-team comments each) visited on Nov 17
+by Gemini 2.5 Flash in a real Chromium, six no-account tasks each, no typing or sign-up, producthunt.com never loaded;
+120 scored. Same strict same-issue rule and judge as above; hand check 27 of 30 agree.
+
+| Arm (same launches) | Complaint recall, top 10 | Question recall, top 10 |
+|---|---|---|
+| Browser findings | 3.7% [1.0, 7.2] | 1.3% [0.6, 2.1] |
+| Plain prompt on the pitch | 18.3% [12.6, 24.7] | 13.0% [10.1, 15.8] |
+| Browser + plain prompt, merged | 9.3% [5.1, 13.9] | 8.7% [6.5, 11.2] |
+
+n = 94 launches for complaints, 119 for questions. Browser minus prompt: −14.5 [−21.3, −8.0] and −11.7 [−14.5, −8.9].
+- **Why:** the visitor finds site problems (dead links, pages that do not load, missing information, getting stuck);
+  commenters raise product problems, which need an account to reach.
+- **Operations:** 0.8 min wall time per launch, about $0.06 Gemini; 35% of tasks hit the step cap and 10% were lost to
+  browser failures, so the 9-of-10 gate fails; "try it without an account" completed 8% of the time.
+- **What it changes [JUDGMENT]:** the forward test with signups on the seed-VM engine stays as launch 3's gate, budgeted as
+  a small check (30 launches) with a stop rule, not as the foundation of the claim.
+
 ### Feedback on product 3 (this feeds the next product)
 
 **Real comments on competitors' launches (real outcome):** 93 commenters on 8 held launches.
