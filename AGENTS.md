@@ -136,3 +136,5 @@ problems, sign up, etc."
   egress IPs and the signup path built for them (scripts/vm/*seed*, mvp/gcp_fleet.py). No agent proposes upgrading or
   paying for Browserbase.
 - The 20 Product Hunt puller VMs are not used for this.
+- The simulated-user browser is Camoufox, always (Shreyas, Nov 17: "always run camfoux"). producthunt.com and our own
+  network stay blocked in every context; seeds keep their static IPs; no IP rotation.
