@@ -120,9 +120,30 @@ class SaveBackTests(Base):
         self.assertFalse(asyncio.run(R.save_signed_in_state(self._sim(), {"signed_in_app_page": False})))
         self.assertEqual(self.gcs.store, {})
 
-    def test_verified_signup_saves_even_if_the_judge_missed_the_app_page(self):
+    def test_verified_signup_alone_does_not_save(self):
+        # study 38eb4d03: fillout's signup cell typed its code but stayed on the verify screen; its state was saved
+        # and 35 cells were told they were signed in
         with mock.patch.object(R, "signup_verified", return_value=True):
-            self.assertTrue(asyncio.run(R.save_signed_in_state(self._sim(verified=True), {})))
+            self.assertFalse(asyncio.run(R.save_signed_in_state(self._sim(verified=True), {})))
+
+    def test_signed_out_final_page_does_not_save(self):
+        sim = self._sim()
+        sim.row["final_url"] = "https://app.clickup.com/login"
+        self.assertFalse(asyncio.run(R.save_signed_in_state(sim, {"signed_in_app_page": True})))
+
+    def test_app_on_another_domain_is_remembered(self):
+        sim = self._sim()
+        sim.product_url = "https://fillout.com"
+        sim.saved_state = _state("zite.com")
+        sim.row["final_url"] = "https://app.zite.com/home/forms"
+        self.assertTrue(asyncio.run(R.save_signed_in_state(sim, {"signed_in_app_page": True})))
+        saved = self.gcs.store["gs://b/seed_states/fillout.com.json"]
+        self.assertEqual((saved["app_url"], saved["app_domain"]), ("https://app.zite.com/", "zite.com"))
+        SS._CACHE.clear()
+        self.assertTrue(SS.usable(SS.load("fillout.com"), "fillout.com"))
+        self.assertEqual(SS.app_url_for(saved, "fillout.com"), "https://app.zite.com/")
+        # marketing-only cookies for fillout.com are not a fillout login once the app is known to be zite
+        self.assertFalse(SS.usable({**saved, "storage_state": _state("fillout.com")}, "fillout.com"))
 
     def test_browserbase_never_saves(self):
         sim = self._sim()
@@ -196,10 +217,21 @@ class StartUrlTests(unittest.TestCase):
         self.assertFalse(SS.usable({"storage_state": _state(), "dead": True}, "asana.com"))
 
 
+class UnconfirmedSignInTests(unittest.TestCase):
+    def test_no_claim_without_a_confirmed_signed_in_page(self):
+        sim = SimpleNamespace(row={"saved_account": {"domain": "fillout.com"}})
+        self.assertFalse(S.saved_session_active(sim))  # not checked yet
+        sim.row["saved_account"]["signed_in"] = False   # opened, no account / avatar / log-out on the page
+        self.assertFalse(S.saved_session_active(sim))
+        sim.row["saved_account"]["signed_in"] = True
+        self.assertTrue(S.saved_session_active(sim))
+
+
 class ModelSeesSignedInTests(unittest.TestCase):
     def _sim(self, dead=False):
         study = mock.MagicMock(live_sessions={S.AGENT_ID: {"saved_account": {"domain": "asana.com", "dead": dead,
-                                                                              "start_url": "https://app.asana.com/"}}})
+                                                                              "start_url": "https://app.asana.com/",
+                                                                              "signed_in": True}}})
         return S.SimSession(id="s" * 32, study=study, product_url="https://asana.com", task="t", persona="p")
 
     def test_prompt_and_observation_carry_the_note(self):

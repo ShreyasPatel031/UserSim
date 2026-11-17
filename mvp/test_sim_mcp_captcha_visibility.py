@@ -231,3 +231,23 @@ def test_registry_account_replaces_an_already_issued_plus_identity(tmp_path, mon
     out = json.loads(srv._host_registry_account(sim))
     assert out["email"] == "users.ims.ignup.s@gmail.com" and sim.inbox.address == "users.ims.ignup.s@gmail.com"
     assert "signup_email" not in sim.row  # report.py treats login_email without signup_email as a login run
+
+
+def test_gate_signup_retry_gets_a_fresh_alias_not_the_failed_address(monkeypatch):
+    """Study 38eb4d03 Typeform: the gate's retry took over the failed attempt's address, which Typeform held
+    half-registered ('already registered' on signup, 'not linked' on login)."""
+    from mvp.sim_mcp import sessions as S
+
+    srv._STUDY_ACCOUNTS.clear()
+    a = _cell("sa5", "t1__p1__competitor_2", inbox=SimpleNamespace(address="u.s.er+tf1@gmail.com"))
+    a.closed = True
+    monkeypatch.setitem(S.SESSIONS, "sa5", a)
+    monkeypatch.setattr("mvp.sim_mcp.report.signup_verified", lambda row: False)
+    srv._register_study_account(a)
+    b = _cell("sb5", "t1__p2__competitor_2")
+    b.row["gate"] = "signup"
+    assert srv._study_account_for(b, "o") is None  # signs up fresh
+    assert ("st1", "smartsheet.com") not in srv._STUDY_ACCOUNTS
+    srv._register_study_account(SimpleNamespace(**{**b.__dict__, "inbox": SimpleNamespace(address="x+tf2@gmail.com")}))
+    assert srv._STUDY_ACCOUNTS[("st1", "smartsheet.com")]["sid"] == "sb5"  # and owns the site's account
+

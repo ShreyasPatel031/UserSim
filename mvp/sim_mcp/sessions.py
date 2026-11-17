@@ -1059,7 +1059,12 @@ async def _check_saved_session(sim: SimSession) -> None:
             info["signals"] = {}
         # no signed-out evidence: keep the state; signed_in records whether the page also showed an account control
         info["signed_in"] = site_states.signed_in_signals(info["signals"])
-        return
+        host = (urlsplit(url).hostname or "").lower()
+        domain = site_states.domain_of(sim.product_url)
+        if info["signed_in"] or host not in (domain, "www." + domain):
+            return
+        # Landed on the bare marketing site with no sign of an account: the state does not sign in (38eb4d03 fillout).
+        info["landed"] = url[:200]
     info.update(signed_in=False, dead=True, landed=url[:200])
     await asyncio.to_thread(site_states.mark_dead, site_states.domain_of(sim.product_url), f"opened {url[:150]}")
     if sim.matrix:
@@ -1081,8 +1086,10 @@ async def _check_saved_session(sim: SimSession) -> None:
 
 
 def saved_session_active(sim: Any) -> bool:
+    """Only a CONFIRMED signed-in start (account / avatar / workspace / log-out on the page) is announced to the model.
+    Study 38eb4d03: a state that only held marketing cookies was announced as signed in to 35 fillout cells."""
     info = (getattr(sim, "row", None) or {}).get("saved_account") or {}
-    return bool(info) and not info.get("dead")
+    return bool(info) and not info.get("dead") and info.get("signed_in") is True
 
 
 async def _new_seed_context(sim: SimSession, storage_state: Any = None) -> None:
