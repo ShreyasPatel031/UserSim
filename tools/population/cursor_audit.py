@@ -49,9 +49,10 @@ def main():
     prov = {}
     stamp = time.strftime("%Y%m%dT%H%MZ", time.gmtime())
     done = {l.split("\t")[0] for l in lines(f"{CUR}/audited.tsv")}
-    if "--reaudit-held" in sys.argv or "--reaudit-already-incomplete" in sys.argv:
+    rr = sys.argv[sys.argv.index("--reaudit-fail-reason") + 1] if "--reaudit-fail-reason" in sys.argv else None
+    if "--reaudit-held" in sys.argv or "--reaudit-already-incomplete" in sys.argv or rr:
         # --reaudit-held: re-score people whose latest audit result was held_gate (whole, blocked only by a gate)
-        last = {}
+        last, last_why = {}, {}
         # 04:5xZ Nov 13: one bulk copy, not one gsutil cat per audit file (105 files)
         AC = f"{W}/cursor_audit_cache/audits"
         os.makedirs(AC, exist_ok=True)
@@ -59,7 +60,17 @@ def main():
         for u in sorted(glob.glob(f"{AC}/audit_*.tsv")):
             for l in [x for x in open(u).read().splitlines() if x.strip() and not x.startswith("#")]:
                 f = l.split("\t")
-                if len(f) >= 3: last[f"{f[0]}@{f[1]}"] = f[2]
+                if len(f) >= 3:
+                    last[f"{f[0]}@{f[1]}"] = f[2]
+                    last_why[f"{f[0]}@{f[1]}"] = f[5] if len(f) > 5 else ""
+        if rr:  # 19:1xZ Nov 17 (Shreyas rule change): re-score fails whose ONLY gate reason was a reverted rule
+            again_ = set()
+            for k, v in last.items():
+                ws = [w for w in re.split(r"[;, |]+", last_why.get(k, "")) if w and not w.startswith("vm_")]
+                if v == "fail" and ws and all(w in rr.split(",") for w in ws):  # rr: comma-separated reasons
+                    again_.add(k)
+            print(f"REAUDIT_FAIL_REASON={len(again_)} ({rr})")
+            done -= again_
         if "--reaudit-held" in sys.argv:
             held = {k for k, v in last.items() if v == "held_gate"}
             print(f"REAUDIT_HELD={len(held)}")
