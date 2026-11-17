@@ -1,0 +1,568 @@
+{
+ "stage": "1",
+ "ours": {
+  "topics": [
+   "Artificial Intelligence",
+   "Marketing",
+   "SaaS"
+  ],
+  "variants": [
+   {
+    "name": "UserSim Launch Simulator",
+    "tagline": "Paste your URL, see how your launch would land",
+    "description": "Paste a product URL before you launch. You get the questions and concerns Product Hunt users are most likely to raise, simulated reactions, and an expected rank band. Built on 81,000 real Product Hunt voter profiles. Free to try, no signup.",
+    "pitch": {
+     "score": 86.4,
+     "lo": 83,
+     "hi": 89,
+     "pct": 99,
+     "calls": 14
+    }
+   }
+  ],
+  "best": 0,
+  "panel": {
+   "source_people": 5726,
+   "n_lines": 24
+  },
+  "forced_choice": {
+   "picked_top3": 0.0,
+   "placed_top_third": 24.8,
+   "mean_place_pct": 47,
+   "n": 24,
+   "share_all": 0.0,
+   "by_group": {
+    "Tech Innovators": {
+     "picked_top3": 0.0,
+     "placed_top_third": 25.0,
+     "mean_place_pct": 52,
+     "n": 12
+    },
+    "Curious Observers": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 46,
+     "n": 3
+    },
+    "Launch Veterans": {
+     "picked_top3": 0.0,
+     "placed_top_third": 33.3,
+     "mean_place_pct": 42,
+     "n": 6
+    },
+    "Product Launchers": {
+     "picked_top3": 0.0,
+     "placed_top_third": 33.3,
+     "mean_place_pct": 37,
+     "n": 3
+    }
+   },
+   "chance": 8.5,
+   "days": [
+    "2026-10-05",
+    "2026-10-06",
+    "2026-11-03"
+   ]
+  },
+  "panel_themes": [
+   {
+    "kind": "doubt",
+    "theme": "Simulated reactions may not fully capture nuanced real-world user feedback",
+    "lines": 8,
+    "groups": [
+     "Tech Innovators",
+     "Curious Observers",
+     "Launch Veterans",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Simulated results may not reflect real-world launch outcomes",
+    "lines": 8,
+    "groups": [
+     "Tech Innovators",
+     "Curious Observers",
+     "Launch Veterans",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Not a tool for building or launching products directly",
+    "lines": 5,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Accuracy of rank prediction for unique or competitive products",
+    "lines": 4,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Simulator's ability to capture nuanced feedback or community 'vibe'",
+    "lines": 4,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Depth of technical questions for specialized products",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Simulator's ability to handle niche or unusual products",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators",
+     "Curious Observers"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Simulator's ability to predict impact of community or external factors",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can the simulator suggest improvements to product messaging or value proposition?",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "Simulator may encourage overly generic messaging or miss emerging trends",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   }
+  ]
+ },
+ "competitors": [
+  {
+   "name": "Articos",
+   "fc": true,
+   "tagline": "Launch with confidence, not gut instinct",
+   "description": "Articos helps SaaS teams, agencies, and founders test messaging, positioning, and landing pages against simulated personas matched to your ICP. Real audience signal in under 30 minutes. Peer-reviewed at 86% human accuracy vs Baymard and Nielsen Norman.",
+   "topics": [
+    "Marketing",
+    "SaaS",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-09-02",
+    "rank": 3,
+    "launches_that_day": 21,
+    "votes": 385,
+    "hunter_prior_hunts": 479
+   },
+   "pitch": {
+    "score": 55.6,
+    "lo": 49.4,
+    "hi": 60.9,
+    "pct": 50,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How does Articos handle niche ICPs?",
+     "How does Articos prevent bias in its simulated personas?",
+     "What are the limitations of the simulated personas?"
+    ],
+    "raw": "- [Tech Innovators] concern: How does Articos handle niche ICPs where persona data might be scarce? | question: Are there any CLI or API integrations planned for automating tests within CI/CD pipelines?\n- [Tech Innovators] concern: How does the simulation account for emotional responses or subtle nuances in messaging that only real humans might pick up? | question: Can we import our own custom persona data or ICP profiles, or are we limited to predefined ones?\n- [Tech Innovators] concern: What's the underlying methodology for generating these simulated personas, and how transparent is it? | question: Is there a way to A/B test different versions of a landing page directly within Articos?\n- [Tech Innovators] concern: How does Articos prevent bias in its simulated personas, especially if the training data is not diverse enough? | question: Are there any plans for a Mac desktop app or deeper integration with common design tools like Figma?\n- [Tech Innovators] concern: What happens if our ICP is very specific and not well-represented in the general AI training data? | question: Can we integrate Articos with our existing analytics platforms to cross-reference simulated results with live data?\n- [Tech Innovators] concern: How does Articos handle complex user journeys or multi-step funnels in its testing? | question: Is there a way to export the detailed feedback from the simulated personas for further analysis?\n- [Tech Innovators] concern: What are the limitations of the simulated personas compared to actual user interviews or usability tests? | question: Can Articos provide insights into *why* certain messaging resonates or fails with specific persona types?\n- [Tech Innovators] concern: How does Articos ensure the simulated personas evolve with market trends and user behavior changes? | question: Are there any collaboration features for teams to review and comment on test results together?\n- [Tech Innovators] concern: What's the process for defining and refining the ICPs within Articos to ensure accurate persona matching? | question: Does Articos offer any integrations with popular CRM or marketing automation platforms?\n- [Tech Innovators] concern: How does Articos handle testing for products in highly regulated industries where nuance is critical? | question: Can we set up recurring tests to monitor how our messaging performs over time with evolving personas?\n- [Tech Innovators] concern: What kind of data is used to train the AI for persona simulation, and how frequently is it updated? | question: Is there a sandbox environment or a free tier to test out the persona matching capabilities before committing?\n- [Tech Innovators] concern: How does Articos differentiate between different levels of user sophistication within a persona? | question: Can we get detailed reports on the simulated persona's thought process or reasoning behind their feedback?\n- [Tech Innovators] concern: How does Articos ensure the simulated personas don't just give generic positive feedback, but critical insights? | question: Are there any plans to support testing other marketing assets beyond messaging and landing pages, like ad copy?\n- [Tech Innovators] concern: What are the limitations on the complexity of landing pages or messaging that Articos can effectively test? | question: Does Articos provide recommendations for improving messaging based on the test results?\n- [Tech Innovators] concern: How does Articos handle testing for products that require a very specific technical understanding from the audience? | question: Can we customize the demographic or psychographic attributes of the simulated personas beyond just ICP matching?\n- [Tech Innovators] concern: What's the pricing model like, especially for agencies or teams with high testing volumes? | question: Are there any case studies available showing how Articos has helped improve conversion rates for real products?\n- [Launch Veterans] concern: How does Articos handle testing for completely novel products where no existing ICP data might be available? | question: What kind of reporting and analytics does Articos provide after a test run?\n- [Launch Veterans] concern: How does Articos ensure the simulated personas don't just reflect common biases found in large language models? | question: Can we integrate Articos into our existing product development workflow, perhaps via webhooks or Zapier?\n- [Tech Innovators] concern: How does Articos compare to traditional user testing platforms, and what are its specific limitations? | question: What's the underlying AI model used for persona simulation, and is there any transparency around its workings?\n- [Tech Innovators] concern: How does Articos handle testing for products that require a visual or interactive component beyond just text and layout? | question: Are there any plans for a self-hosting option or on-premise deployment for larger enterprises?\n- [Tech Innovators] concern: How does Articos ensure the simulated personas accurately reflect the emotional and psychological drivers of real users? | question: Can we share test results and insights easily with our team and stakeholders within the platform?\n- [Curious Observers] concern: Is Articos easy to use for someone who isn't a marketing expert? | question: Can Articos help me figure out the best way to describe my side project to potential users?\n- [Tech Innovators] concern: What's the cost per test or the overall pricing structure, and is it scalable for frequent use? | question: Does Articos integrate with popular website builders or CMS platforms for direct landing page testing?\n- [Product Launchers] concern: How does Articos ensure the simulated personas provide actionable feedback rather than just general opinions? | question: Can Articos help identify which specific elements of a landing page (e.g., headline, CTA) are performing best or worst?"
+   },
+   "forced_choice": {
+    "picked_top3": 3.1,
+    "placed_top_third": 22.9,
+    "mean_place_pct": 48,
+    "n": 21,
+    "share_all": 3.1,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 19.2,
+      "mean_place_pct": 51,
+      "n": 12
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 33.3,
+      "mean_place_pct": 50,
+      "n": 3
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 47,
+      "n": 3
+     },
+     "Product Launchers": {
+      "picked_top3": 33.3,
+      "placed_top_third": 66.7,
+      "mean_place_pct": 27,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Firstpass",
+   "fc": true,
+   "tagline": "Actionable input so you nail every launch",
+   "description": "If you've ever shipped a launch and watched your copy get truncated, ignored, or misread \u2014 Firstpass shows you every surface a stranger meets your product on (the Product Hunt page, the leaderboard row, the Glaze Store grid) and pins handwritten crit notes to what breaks in each one, before you publish. The same tagline lives or dies differently depending on where it lands: PH gives you 60 characters, the Glaze Store caps at 40, the browse grid cuts near 33. Nobody checks \u2014 until it's live.",
+   "topics": [
+    "Design Tools",
+    "UX Design"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-07-28",
+    "rank": 9,
+    "launches_that_day": 29,
+    "votes": 144,
+    "hunter_prior_hunts": 454
+   },
+   "pitch": {
+    "score": 67.4,
+    "lo": 60.6,
+    "hi": 73.8,
+    "pct": 72,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 1669,
+    "top": [
+     "Potential to add complexity to the launch process.",
+     "The cost for small teams or individual makers.",
+     "Accuracy of 'crit notes' and truncation simulation."
+    ],
+    "raw": "- [Tech Innovators] concern: Ensuring it integrates smoothly with existing CI/CD pipelines for automated checks. | question: Will there be a Mac desktop app for this, or is it purely web-based?\n- [Tech Innovators] concern: The scalability of checking a large number of surfaces and variations. | question: What's the underlying tech stack for the analysis engine?\n- [Tech Innovators] concern: The accuracy of the 'handwritten crit notes' and if they are customizable. | question: Is there a way to define custom surfaces or character limits beyond the pre-set ones?\n- [Tech Innovators] concern: The potential for false positives or irrelevant 'crit notes'. | question: Are there plans for a VS Code extension to integrate this into the development workflow?\n- [Tech Innovators] concern: The learning curve for setting up and using the tool effectively. | question: What kind of reporting or analytics does Firstpass provide after a review?\n- [Tech Innovators] concern: The cost structure for teams with many products or frequent launches. | question: Is there a public roadmap for future features or integrations?\n- [Tech Innovators] concern: The potential for it to slow down the launch process if not integrated seamlessly. | question: Does Firstpass offer any collaboration features for teams to review and resolve notes?\n- [Tech Innovators] concern: The accuracy of the 'crit notes' for highly visual or complex layouts. | question: Is there a free tier or trial available to test its capabilities?\n- [Tech Innovators] concern: The manual effort required to input all the different launch surfaces. | question: Are there any plans for an open-source version or community contributions?\n- [Tech Innovators] concern: The privacy and security of the content being analyzed. | question: How frequently are new platforms or surfaces added to the checking capabilities?\n- [Tech Innovators] concern: The potential for it to become another tool in an already crowded workflow. | question: What kind of integrations are planned with popular marketing automation platforms?\n- [Tech Innovators] concern: The time it takes to get feedback, especially for rapid iterations. | question: How does Firstpass differentiate itself from general content review tools?\n- [Tech Innovators] concern: The accuracy of the truncation simulation for less common platforms. | question: Can I upload mockups or designs to be analyzed, or does it need live content?\n- [Tech Innovators] concern: The cost for small teams or individual makers. | question: Are there any plans to integrate with AI writing assistants to help optimize copy for different lengths?\n- [Tech Innovators] concern: The potential for it to become a bottleneck if the review process is slow. | question: How does Firstpass handle updates to platform character limits or display rules?\n- [Tech Innovators] concern: The complexity of setting up all the different surfaces for a new product. | question: What kind of support is available if I encounter issues or have questions?\n- [Launch Veterans] concern: Ensuring the 'crit notes' are clear and actionable for non-designers. | question: What's the typical turnaround time for the 'handwritten crit notes'?\n- [Launch Veterans] concern: The accuracy of the simulation for very niche or custom platforms. | question: Can I define my own custom 'surfaces' with specific character limits?\n- [Tech Innovators] concern: The potential for it to add another layer of complexity to an already busy launch process. | question: Is there an API for integrating this into our existing deployment pipeline?\n- [Tech Innovators] concern: The cost for small teams or individual makers. | question: How does Firstpass compare to just manually checking each platform?\n- [Tech Innovators] concern: The potential for the tool to become a bottleneck in a fast-paced launch. | question: What was the biggest challenge in building the multi-surface simulation?\n- [Curious Observers] concern: If it's too expensive for students or personal use. | question: Can it check my Instagram captions too?\n- [Tech Innovators] concern: The time investment required to set up and maintain all the different surfaces. | question: Does it integrate with popular CMS platforms or marketing automation tools?\n- [Product Launchers] concern: The potential for it to add complexity to the launch process if not streamlined. | question: What's the typical workflow for a team using Firstpass from start to finish?"
+   },
+   "forced_choice": {
+    "picked_top3": 45.6,
+    "placed_top_third": 45.6,
+    "mean_place_pct": 39,
+    "n": 21,
+    "share_all": 45.6,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 38.9,
+      "placed_top_third": 38.9,
+      "mean_place_pct": 44,
+      "n": 12
+     },
+     "Launch Veterans": {
+      "picked_top3": 100.0,
+      "placed_top_third": 100.0,
+      "mean_place_pct": 3,
+      "n": 3
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 69,
+      "n": 3
+     },
+     "Product Launchers": {
+      "picked_top3": 100.0,
+      "placed_top_third": 100.0,
+      "mean_place_pct": 3,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "HuntOMeter",
+   "fc": true,
+   "tagline": "Predict your Product Hunt upvotes from your tagline",
+   "description": "Type a tagline and get an estimated upvote count. HuntOMeter compares it against more than 19,500 past Product Hunt products.",
+   "topics": [
+    "Artificial Intelligence",
+    "Marketing",
+    "Product Hunt"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 78.2,
+    "lo": 71.1,
+    "hi": 83.9,
+    "pct": 89,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 5726,
+    "top": [
+     "Accuracy of predictions is a concern",
+     "Tool might not account for external factors",
+     "Tool might encourage generic taglines"
+    ],
+    "raw": "- [Tech Innovators] concern: The accuracy of the prediction might be limited by the dataset's diversity or the model's ability to understand context. | question: Can you elaborate on the methodology used to compare taglines and predict upvotes? Is it purely keyword-based or does it analyze sentiment/structure?\n- [Tech Innovators] concern: I'm worried about potential biases in the historical data influencing the predictions. | question: How frequently is the 19,500+ product dataset updated, and does it account for recent trends in PH upvoting?\n- [Tech Innovators] concern: The tool might encourage a focus on 'gaming' the system rather than genuine value proposition. | question: Are there any plans to expand this to analyze other launch elements, like product descriptions or images?\n- [Tech Innovators] concern: The prediction might not account for external factors like launch day competition or community engagement. | question: Does the model consider the 'topic' tags of past products when making predictions, or is it solely based on the tagline text?\n- [Tech Innovators] concern: The tool might oversimplify the complex factors that contribute to a successful Product Hunt launch. | question: How does HuntOMeter handle taglines for products in niche categories with fewer historical data points?\n- [Tech Innovators] concern: The accuracy of the prediction could be a major limitation if it's not consistently reliable. | question: What's the typical margin of error for the upvote predictions, and how is that communicated to users?\n- [Tech Innovators] concern: The tool might not be able to differentiate between genuinely good taglines and those that are just 'clickbaity'. | question: Is there any feedback mechanism within HuntOMeter to help users understand *why* a tagline might perform better or worse?\n- [Tech Innovators] concern: The predictions might not be actionable enough without specific suggestions for improvement. | question: Does HuntOMeter offer any suggestions or insights on how to improve a tagline to get a higher predicted upvote count?\n- [Tech Innovators] concern: The tool might not be able to adapt quickly to new trends or changes in the Product Hunt algorithm. | question: How does the AI model account for the ever-evolving nature of Product Hunt's community preferences and trends?\n- [Tech Innovators] concern: The tool might create a false sense of security or over-reliance on a single metric for launch success. | question: Beyond the upvote count, does HuntOMeter provide any other metrics or insights related to tagline performance?\n- [Tech Innovators] concern: The model's accuracy might be limited if it doesn't consider the product's actual functionality or target audience. | question: How does HuntOMeter handle taglines for completely novel products that don't have direct historical comparisons?\n- [Tech Innovators] concern: The tool might encourage generic or 'safe' taglines rather than innovative or unique ones. | question: Can we see examples of taglines that performed well and poorly according to HuntOMeter's analysis?\n- [Tech Innovators] concern: The prediction might not be reliable for products in very niche or emerging categories. | question: Is there a way to input different versions of a tagline and compare their predicted upvote counts side-by-side?\n- [Curious Observers] concern: I'm not sure how accurate the predictions can really be for something as subjective as a tagline. | question: Does it give any tips on how to make a tagline better if the predicted upvotes are low?\n- [Curious Observers] concern: The tool might not be free, and as a student, I'm looking for free resources. | question: Is there a free tier or a trial available to test it out?\n- [Curious Observers] concern: I'm not sure if I would understand the results or how to use them to improve my tagline. | question: Is the interface easy to use for someone who isn't a marketing expert?\n- [Tech Innovators] concern: The tool might not fully capture the 'virality' or community buzz that often drives high upvote counts. | question: How does HuntOMeter account for the impact of a strong launch team or influencer support on upvotes?\n- [Tech Innovators] concern: The predictions might not be accurate enough to rely on solely for a launch strategy. | question: What kind of confidence interval or accuracy metric is provided with the upvote prediction?\n- [Launch Veterans] concern: The tool might not be able to predict the impact of a truly innovative or disruptive product. | question: Does the model consider the 'newness' or uniqueness of a product when predicting upvotes?\n- [Launch Veterans] concern: The tool might not be able to account for the quality of the product itself, only the tagline. | question: How does HuntOMeter differentiate between a well-written tagline for a mediocre product and a good product with a mediocre tagline?\n- [Product Launchers] concern: The predictions might not translate directly into actual upvotes if the product itself doesn't deliver. | question: Does the tool provide any insights into how to craft taglines that not only get upvotes but also drive user acquisition?\n- [Product Launchers] concern: The tool might not be able to capture the full context of a product's value proposition from just a tagline. | question: Are there plans to integrate this with other launch elements, like product images or videos, for a more comprehensive prediction?\n- [Launch Veterans] concern: The tool might create a 'race to the bottom' where everyone uses similar, optimized taglines. | question: How does HuntOMeter encourage creativity and uniqueness in taglines, rather than just optimizing for a number?\n- [Tech Innovators] concern: I'd be worried about the accuracy of the predictions and if it's worth paying for if it's not highly reliable. | question: What's the pricing model for HuntOMeter, and is there a free trial to test its effectiveness?"
+   },
+   "forced_choice": {
+    "picked_top3": 0.0,
+    "placed_top_third": 0.0,
+    "mean_place_pct": 83,
+    "n": 24,
+    "share_all": 0.0,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 86,
+      "n": 12
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 67,
+      "n": 3
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 88,
+      "n": 6
+     },
+     "Product Launchers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 80,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "ProductHunt Chaos Simulator",
+   "tagline": "See what might happen on your Product Hunt launch day",
+   "description": "Simulate your Product Hunt launch with xAI\u2019s Grok. Predict upvotes, comments, maker mistakes, and even plot twists. It\u2019s free, fun, and part of AnotherWrapper\u2014a starter kit with 11 AI apps ready to customize.",
+   "topics": [
+    "Funny",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-02-02",
+    "rank": 4,
+    "launches_that_day": 6,
+    "votes": 330,
+    "hunter_prior_hunts": 0
+   },
+   "pitch": {
+    "score": 76.1,
+    "lo": 70.4,
+    "hi": 80.7,
+    "pct": 90,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "How accurate are the predictions?",
+     "How does it handle subjective human elements?",
+     "Will the simulation be too generic?"
+    ]
+   }
+  },
+  {
+   "name": "Roast My Landing Page AI",
+   "tagline": "Simulated target users roast your landing page",
+   "description": "Paste a landing page and simulated target users react to it. Roast mode gives fast first impressions; Professional mode gives structured diagnostics. Uses 50+ personas built from interviews, surveys and secondary research.",
+   "topics": [
+    "Marketing",
+    "Artificial Intelligence",
+    "User Experience"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 75.4,
+    "lo": 71.1,
+    "hi": 79.9,
+    "pct": 91,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How does the AI ensure feedback is unbiased?",
+     "How does the AI handle specific target audiences?",
+     "How does the AI provide actionable feedback?"
+    ],
+    "raw": "- [Tech Innovators] concern: How does the AI handle nuanced cultural or regional differences in user perception? | question: Can we integrate this with existing A/B testing platforms or design tools for a more seamless workflow?\n- [Tech Innovators] concern: Is there a risk of the AI personas generating overly generic or contradictory feedback? | question: How frequently are the 50+ personas updated or refined based on new market research?\n- [Tech Innovators] concern: Could the 'roast mode' be too harsh or demotivating without proper context or actionable suggestions? | question: What's the underlying methodology for building and validating the 50+ personas?\n- [Tech Innovators] concern: How does the AI ensure the feedback is truly representative of diverse user segments, not just a generalized 'average'? | question: Are there plans for a Mac-native application or a more integrated desktop experience?\n- [Tech Innovators] concern: What measures are in place to prevent the AI from generating biased or unhelpful feedback? | question: Can we upload multiple landing page variations and compare their 'roasts' side-by-side?\n- [Tech Innovators] concern: How does the system handle landing pages with complex interactive elements or dynamic content? | question: Is there an API available for developers to integrate this roasting functionality into their own tools or CI/CD pipelines?\n- [Tech Innovators] concern: Will the AI be able to understand the context of a very niche or technical landing page? | question: Are there any plans to offer collaboration features, so a team can review and discuss the AI's feedback together?\n- [Tech Innovators] concern: How does the AI differentiate between genuine user confusion and a user simply not understanding the product's value proposition? | question: Can we customize or add our own personas to the system for highly specific target audiences?\n- [Tech Innovators] concern: What if the AI's feedback contradicts actual user testing results? How do we reconcile that? | question: Is there a way to 'train' the AI on our specific brand voice or target audience nuances?\n- [Tech Innovators] concern: How does the AI account for visual design elements and their impact on user perception, beyond just text? | question: What kind of data or metrics does the 'Professional mode' provide in its structured diagnostics?\n- [Tech Innovators] concern: Could the AI's feedback become repetitive or predictable over time if using the same personas? | question: Are there any plans for a desktop app, perhaps for Mac, to make the process even smoother?\n- [Tech Innovators] concern: How does the AI handle different languages or non-English landing pages? | question: Can we specify the demographic or psychographic profile of the simulated users for more targeted feedback?\n- [Tech Innovators] concern: Is there a limit to the length or complexity of the landing page that can be analyzed? | question: How does the AI ensure the 'roast' feedback is constructive and not just critical?\n- [Tech Innovators] concern: How does the AI handle A/B testing scenarios where small changes can have a big impact? | question: Can we get a breakdown of the feedback by persona type in the 'Professional mode'?\n- [Tech Innovators] concern: What if the AI's feedback is too generic and doesn't provide specific enough recommendations for improvement? | question: Are there any plans to integrate with popular website builders or CMS platforms?\n- [Tech Innovators] concern: How does the AI account for the overall brand experience and not just the landing page in isolation? | question: Can we export the feedback and diagnostics in different formats for reporting?\n- [Launch Veterans] concern: How does the AI ensure the simulated users' reactions are truly unbiased and not influenced by common AI patterns? | question: What's the typical turnaround time for getting feedback in 'Professional mode'?\n- [Launch Veterans] concern: Could the AI's feedback lead to over-optimization for simulated users, potentially missing real-world nuances? | question: Are there any case studies or examples of how this tool has significantly improved conversion rates for other products?\n- [Tech Innovators] concern: How does the AI handle very technical landing pages aimed at developers, ensuring accurate feedback? | question: Can we integrate this into our development workflow to automatically 'roast' new landing page iterations?\n- [Tech Innovators] concern: What if the AI personas don't accurately reflect our very specific target audience? | question: How does the 'Professional mode' provide actionable recommendations beyond just identifying issues?\n- [Tech Innovators] concern: How does the AI handle the emotional impact of a landing page, which can be subjective? | question: Can we share the 'roast' results directly with our team or clients for discussion?\n- [Curious Observers] concern: Is it easy to understand the feedback, especially for someone who isn't a marketing expert? | question: Can this help me figure out if my landing page is clear enough for people who are new to my topic?\n- [Tech Innovators] concern: How does the pricing model work, and is it cost-effective for frequent use? | question: Can the tool provide insights into specific calls to action and their effectiveness for different personas?\n- [Product Launchers] concern: How does the AI ensure the feedback is truly actionable and not just a list of observations? | question: Can we track improvements over time by re-roasting the same landing page after making changes?"
+   }
+  }
+ ],
+ "comments": {
+  "products": [
+   "Articos",
+   "Articos MCP",
+   "Firstpass",
+   "Product Hunt Visual Launch Editor"
+  ],
+  "n_commenters": 67,
+  "themes": [
+   {
+    "kind": "praised",
+    "theme": "Fast feedback/turnaround time",
+    "n": 5,
+    "products": [
+     "Articos",
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Seeing launch as you build it",
+    "n": 5,
+    "products": [
+     "Product Hunt Visual Launch Editor"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How is accuracy/effectiveness measured?",
+    "n": 4,
+    "products": [
+     "Articos",
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Does it work for non-English languages?",
+    "n": 2,
+    "products": [
+     "Articos MCP",
+     "Firstpass"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does it compare to real user testing?",
+    "n": 2,
+    "products": [
+     "Articos"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "Confusing categories/tags/company info in editor",
+    "n": 2,
+    "products": [
+     "Product Hunt Visual Launch Editor"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "Lack of transparency on investment questions",
+    "n": 2,
+    "products": [
+     "Product Hunt Visual Launch Editor"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it generate personas from public data?",
+    "n": 1,
+    "products": [
+     "Articos"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it help with pricing strategies?",
+    "n": 1,
+    "products": [
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it identify customer objections?",
+    "n": 1,
+    "products": [
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it 'look' at graphic illustrations?",
+    "n": 1,
+    "products": [
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it refine buyer profiles over time?",
+    "n": 1,
+    "products": [
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does it stay updated with new LLMs?",
+    "n": 1,
+    "products": [
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can co-makers leave notes on drafts?",
+    "n": 1,
+    "products": [
+     "Product Hunt Visual Launch Editor"
+    ]
+   }
+  ]
+ },
+ "usd": 0.049,
+ "pitch_days": [
+  "2026-10-05",
+  "2026-11-02",
+  "2026-10-06",
+  "2026-11-03",
+  "2026-10-07",
+  "2026-11-04",
+  "2026-10-08",
+  "2026-11-05",
+  "2026-10-02",
+  "2026-10-30",
+  "2026-10-03",
+  "2026-10-31",
+  "2026-10-04",
+  "2026-11-01"
+ ]
+}

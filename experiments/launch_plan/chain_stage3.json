@@ -1,0 +1,739 @@
+{
+ "stage": "3",
+ "ours": {
+  "topics": [
+   "User Experience",
+   "Artificial Intelligence",
+   "SaaS"
+  ],
+  "variants": [
+   {
+    "name": "UserSim User Testing",
+    "tagline": "Simulated users do real tasks on your product and your rivals'",
+    "description": "Give us your URL and two competitors. Six simulated users, built from real voter groups, each try six real tasks on all three products in a real browser. You get a side-by-side report: where each user got stuck, which product they would choose and why, and the named fixes that would change the result.",
+    "pitch": {
+     "score": 69.3,
+     "lo": 64.6,
+     "hi": 73.6,
+     "pct": 83,
+     "calls": 14
+    }
+   },
+   {
+    "name": "UserSim User Testing",
+    "tagline": "A user test of you against your competitors, done overnight",
+    "description": "Not opinions about your page: actual task runs. Simulated users sign up, search, compare and try to finish the job on your product and on two rivals. The report shows completion, time and sticking points per task, per user type, with screenshots, and tells you what to change first. Every run is logged so you can check it.",
+    "pitch": {
+     "score": 63.9,
+     "lo": 59.1,
+     "hi": 69.0,
+     "pct": 71,
+     "calls": 14
+    }
+   },
+   {
+    "name": "UserSim User Testing",
+    "tagline": "Find where users pick your competitor, and what would change it",
+    "description": "We run the same six tasks with the same six simulated users on your product and two competitors. You see, task by task, where they chose the other product and the specific reason. Compare two versions of your own product the same way. Built on 89,000 real Product Hunt voter profiles; results are shown by group.",
+    "pitch": {
+     "score": 67.7,
+     "lo": 62.8,
+     "hi": 72.3,
+     "pct": 76,
+     "calls": 13
+    }
+   }
+  ],
+  "best": 0,
+  "panel": {
+   "source_people": 767,
+   "n_lines": 24
+  },
+  "forced_choice": {
+   "picked_top3": 0.0,
+   "placed_top_third": 15.7,
+   "mean_place_pct": 56,
+   "n": 15,
+   "share_all": 0.0,
+   "by_group": {
+    "Tech Innovators": {
+     "picked_top3": 0.0,
+     "placed_top_third": 13.6,
+     "mean_place_pct": 56,
+     "n": 9
+    },
+    "Launch Veterans": {
+     "picked_top3": 0.0,
+     "placed_top_third": 33.3,
+     "mean_place_pct": 56,
+     "n": 3
+    },
+    "Curious Observers": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 52,
+     "n": 3
+    }
+   },
+   "chance": 8.5,
+   "days": [
+    "2026-10-05",
+    "2026-10-06",
+    "2026-11-03"
+   ]
+  },
+  "panel_themes": [
+   {
+    "kind": "doubt",
+    "theme": "simulated users cannot provide real-world, nuanced feedback",
+    "lines": 5,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans",
+     "Curious Observers"
+    ]
+   },
+   {
+    "kind": "doubt",
+    "theme": "simulated users may not accurately reflect real user behavior",
+    "lines": 4,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans",
+     "Curious Observers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "how to ensure simulated users reflect nuanced human behavior",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "how to handle complex user flows or dynamic content",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "how to prevent simulated users from getting stuck or errors",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "how to ensure simulated users explore beyond predefined scripts",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "integration with existing tools or CI/CD pipelines",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "pricing, free trial, or demo availability",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "customization of user personas or demographics",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "underlying tech stack for simulation",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   }
+  ]
+ },
+ "competitors": [
+  {
+   "name": "TheySaid 4.0",
+   "fc": true,
+   "tagline": "See how users will react, right where you build.",
+   "description": "Put what you\u2019re building in front of real customers or synthetic users trained on them when you need an answer in minutes without leaving Claude, Cursor, or Jira. Nothing ships on a guess.",
+   "topics": [
+    "User Experience",
+    "Artificial Intelligence",
+    "UX Design"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-10-27",
+    "rank": 1,
+    "launches_that_day": 20,
+    "votes": 393,
+    "hunter_prior_hunts": 286
+   },
+   "pitch": {
+    "score": 64.7,
+    "lo": 60.9,
+    "hi": 68.6,
+    "pct": 69,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "How does this handle complex, multi-step user flows?",
+     "What are the limitations of synthetic users?",
+     "How does this ensure synthetic users reflect target audience?"
+    ],
+    "raw": "- [Tech Innovators] concern: How does this handle complex, multi-step user flows for testing? | question: Can you elaborate on the technical implementation of the 'synthetic users trained on them' feature?\n- [Tech Innovators] concern: What's the scalability like if I need to test with hundreds or thousands of synthetic users? | question: Are there any plans for a native Mac app or deeper integration with Mac-specific dev tools beyond Cursor?\n- [Tech Innovators] concern: How does the system ensure the synthetic users accurately reflect my target audience's nuances? | question: What kind of reporting and analytics are available for the user reactions?\n- [Tech Innovators] concern: What are the limitations of the 'synthetic users' compared to real user testing? | question: Can we customize the demographics or behaviors of the synthetic users for specific testing scenarios?\n- [Tech Innovators] concern: How does TheySaid handle privacy and data security when using real customer data for training synthetic users? | question: Is there an API available for custom integrations with other internal tools?\n- [Tech Innovators] concern: What's the learning curve like for setting up effective tests with synthetic users? | question: Are there any plans to support other IDEs or development environments?\n- [Tech Innovators] concern: How does TheySaid prevent bias in the synthetic user feedback? | question: Can I export the raw feedback data for further analysis in external tools?\n- [Tech Innovators] concern: What's the cost structure for using both real customers and synthetic users? | question: How does TheySaid ensure the feedback is actionable and not just generic comments?\n- [Tech Innovators] concern: How does the system handle testing for accessibility or specific user needs? | question: Are there any collaboration features for sharing test results with team members?\n- [Tech Innovators] concern: What kind of support is available if I run into issues with the integrations? | question: Can I define specific tasks or scenarios for the synthetic users to complete?\n- [Tech Innovators] concern: How does TheySaid ensure the synthetic users' reactions are consistent and reliable over time? | question: Are there any templates or best practices for setting up effective tests?\n- [Tech Innovators] concern: What are the security measures in place to protect our product designs and user data? | question: Can I integrate TheySaid with other project management tools besides Jira?\n- [Tech Innovators] concern: How does TheySaid differentiate between feedback from real users and synthetic users in the reporting? | question: What's the process for recruiting and managing real customers for testing?\n- [Tech Innovators] concern: How does TheySaid handle testing for different device types or screen sizes? | question: Can I set up A/B tests with different versions of my product using TheySaid?\n- [Tech Innovators] concern: What's the accuracy rate of the synthetic users in predicting real user behavior? | question: Are there any options for qualitative feedback from the synthetic users, beyond just reactions?\n- [Tech Innovators] concern: How does TheySaid ensure the synthetic users don't just give generic positive feedback? | question: Can I track user journeys or specific interactions within my product using TheySaid?\n- [Tech Innovators] concern: What's the process for updating the synthetic user models to reflect new trends or user behaviors? | question: Are there any plans for a free tier or trial period to test it out?\n- [Tech Innovators] concern: How does TheySaid handle testing for products with very niche or specialized user bases? | question: Can I integrate TheySaid with our existing CI/CD pipeline for automated testing?\n- [Tech Innovators] concern: What are the limitations of the types of products or interfaces that can be tested with TheySaid? | question: Are there any case studies or examples of how other companies are using TheySaid?\n- [Launch Veterans] concern: How does this compare to traditional user testing platforms in terms of depth of insights? | question: What was the biggest challenge you faced in developing the synthetic user technology?\n- [Launch Veterans] concern: How do you ensure the synthetic users provide truly unbiased and diverse feedback? | question: What's your roadmap for future integrations and features?\n- [Tech Innovators] concern: How does the cost of TheySaid compare to hiring real user testers for similar insights? | question: Can you provide more details on the different pricing tiers and what features are included in each?\n- [Tech Innovators] concern: How does TheySaid handle testing for complex enterprise software with specific user roles and permissions? | question: What's the underlying technology behind the 'synthetic users trained on them' feature?\n- [Curious Observers] concern: Is it easy to understand the feedback if I'm not a developer? | question: Can I use this to test a website I'm building for a school project?"
+   },
+   "forced_choice": {
+    "picked_top3": 33.1,
+    "placed_top_third": 100.0,
+    "mean_place_pct": 7,
+    "n": 15,
+    "share_all": 33.1,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 22.6,
+      "placed_top_third": 100.0,
+      "mean_place_pct": 8,
+      "n": 9
+     },
+     "Launch Veterans": {
+      "picked_top3": 66.7,
+      "placed_top_third": 100.0,
+      "mean_place_pct": 4,
+      "n": 3
+     },
+     "Curious Observers": {
+      "picked_top3": 33.3,
+      "placed_top_third": 100.0,
+      "mean_place_pct": 9,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Jango",
+   "fc": true,
+   "tagline": "Test multi-user apps with AI agents that act like real users",
+   "description": "Jango lets you test the parts of your app that need more than one person. It gives your app a group of AI users, each with its own browser, account, goals and memory. Point Jango at your dev URL and watch them sign in and interact with each other in real time. Direct them, join in as yourself, or take control of any user's screen. At the end you get a report with actions, errors and screenshots. Use your own AI key or Jango's managed AI. Available on Mac.",
+   "topics": [
+    "Developer Tools",
+    "Artificial Intelligence",
+    "Vercel Day"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-09-25",
+    "rank": 12,
+    "launches_that_day": 67,
+    "votes": 75,
+    "hunter_prior_hunts": 1
+   },
+   "pitch": {
+    "score": 77.9,
+    "lo": 75.4,
+    "hi": 80.3,
+    "pct": 96,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "How does Jango handle complex user flows?",
+     "What is the learning curve for complex scenarios?",
+     "How does Jango handle data privacy?"
+    ]
+   },
+   "forced_choice": {
+    "picked_top3": 0.0,
+    "placed_top_third": 38.7,
+    "mean_place_pct": 40,
+    "n": 24,
+    "share_all": 0.0,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 45.8,
+      "mean_place_pct": 38,
+      "n": 12
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 61,
+      "n": 3
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 33.3,
+      "mean_place_pct": 34,
+      "n": 6
+     },
+     "Product Launchers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 66.7,
+      "mean_place_pct": 33,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Synthetic Users (syntheticusers.com)",
+   "fc": true,
+   "tagline": "User research without the users",
+   "description": "An AI research platform that runs interviews and surveys with synthetic personas built on large language models, for early product and concept testing.",
+   "topics": [
+    "User Experience",
+    "Artificial Intelligence",
+    "SaaS"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 69.8,
+    "lo": 65.8,
+    "hi": 72.9,
+    "pct": 80,
+    "calls": 13
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "How reliable is the feedback from synthetic users?",
+     "How to prevent generic or biased feedback?",
+     "How to ensure diverse user behaviors and biases?"
+    ],
+    "raw": "- [Tech Innovators] concern: How do you ensure the synthetic personas accurately reflect diverse user behaviors and biases, especially for niche markets? | question: Are there any plans for a local-first or Mac-native app for running these simulations, or is it purely web-based?\n- [Tech Innovators] concern: What mechanisms are in place to prevent the AI from generating overly positive or generic feedback that might not be truly representative? | question: Can we integrate our own custom persona data or demographic profiles to fine-tune the synthetic users?\n- [Tech Innovators] concern: How does the platform handle complex, multi-step user flows or interactions that might require more nuanced decision-making from a persona? | question: Is there an API available for developers to integrate synthetic user feedback directly into their CI/CD pipelines?\n- [Tech Innovators] concern: How do you address the potential for 'hallucinations' or nonsensical responses from the AI personas during interviews? | question: Are there any features planned for collaborative analysis of the synthetic user feedback within a team?\n- [Tech Innovators] concern: What's the underlying methodology for building these personas? Is it based on real user data or more generalized archetypes? | question: Can we export the raw interview transcripts and survey data for further analysis in other tools?\n- [Tech Innovators] concern: How do you ensure the synthetic users don't just parrot back what they think the product *should* do, rather than giving genuine reactions? | question: Are there different 'levels' of persona sophistication, or can we define specific technical proficiencies for them?\n- [Tech Innovators] concern: How does the platform account for emotional responses or non-verbal cues that are crucial in real user interviews? | question: Is there a way to simulate different market segments or user demographics with varying levels of tech savviness?\n- [Tech Innovators] concern: What's the process for validating the accuracy and reliability of the insights generated by the synthetic users? | question: Can we define specific tasks or scenarios for the synthetic users to complete and then observe their 'behavior'?\n- [Tech Innovators] concern: How do you prevent the synthetic users from converging on similar feedback, leading to a lack of diverse perspectives? | question: Are there any integrations with design tools like Figma or Miro to directly test prototypes with synthetic users?\n- [Tech Innovators] concern: What are the limitations of the LLMs used in terms of understanding complex product features or niche industry jargon? | question: Is there a sandbox environment or a free tier to experiment with creating and interviewing synthetic users?\n- [Tech Innovators] concern: How do you ensure the synthetic users don't just confirm existing biases of the product team? | question: Can we customize the interview scripts or survey questions to be very specific to our product's unique features?\n- [Tech Innovators] concern: What happens if the synthetic users misinterpret a question or a product concept? Is there a way to correct or guide them? | question: Are there any plans for integrating with project management tools to automatically create tasks based on synthetic user feedback?\n- [Tech Innovators] concern: How do you handle situations where a synthetic user might give contradictory feedback, mimicking real-world user confusion? | question: Is there a way to compare feedback from different synthetic user groups side-by-side for A/B testing concepts?\n- [Tech Innovators] concern: How do you ensure the synthetic users don't just provide generic feedback that lacks actionable depth? | question: Can we define specific pain points or goals for the synthetic users to evaluate our product against?\n- [Tech Innovators] concern: What's the ethical consideration around using synthetic users versus real human feedback, especially for critical product decisions? | question: Are there any case studies or examples of how companies have successfully used Synthetic Users to validate their products?\n- [Tech Innovators] concern: How do you prevent the AI personas from generating overly positive or negative feedback that doesn't reflect a balanced view? | question: Can we create 'negative' personas or 'edge case' personas to stress-test our product's usability?\n- [Tech Innovators] concern: What's the cost structure like for running multiple interviews and surveys with synthetic users? | question: Is there a way to simulate a user's journey through a prototype and get feedback at each step?\n- [Tech Innovators] concern: How do you ensure the synthetic users provide constructive criticism rather than just vague complaints? | question: Are there any plans to incorporate visual feedback or screen recording simulations from the synthetic users?\n- [Tech Innovators] concern: What are the limitations of the AI in understanding complex emotional states or subtle user frustrations? | question: Can we define specific 'jobs to be done' for the synthetic users to evaluate our product against?\n- [Launch Veterans] concern: How do you ensure the synthetic feedback doesn't lead to a false sense of security about product-market fit? | question: What's the typical turnaround time for getting results from a synthetic user interview or survey?\n- [Launch Veterans] concern: How do you balance the speed of synthetic research with the depth and nuance of real human interaction? | question: Can we share the synthetic user feedback reports easily with our team and stakeholders?\n- [Tech Innovators] concern: What's the pricing model for Synthetic Users, and is it scalable for different team sizes and research needs? | question: How does this integrate with existing product management tools or survey platforms we might already be using?\n- [Tech Innovators] concern: How do you prevent the AI from generating generic feedback that doesn't provide actionable insights for specific features? | question: Can we define very specific technical backgrounds or skill sets for the synthetic personas to get more targeted feedback?\n- [Curious Observers] concern: How reliable is the feedback from synthetic users compared to real people, especially for understanding complex problems? | question: Can this help me get feedback on my app ideas for school projects, and is it easy to use for someone new to research?"
+   },
+   "forced_choice": {
+    "picked_top3": 0.0,
+    "placed_top_third": 0.0,
+    "mean_place_pct": 52,
+    "n": 15,
+    "share_all": 0.0,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 52,
+      "n": 9
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 59,
+      "n": 3
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 43,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Snap",
+   "day": "2025-10-16",
+   "tagline": "Instant usability testing with AI personas",
+   "description": "Snap lets you run instant usability tests with AI personas. Drop in a prototype or website, and your custom AI personas will test them like real users. Get results in minutes with transcripts, recordings, and actionable recommendations.",
+   "topics": [
+    "Design Tools",
+    "User Experience",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-10-16",
+    "rank": 8,
+    "launches_that_day": 10,
+    "votes": 203,
+    "hunter_prior_hunts": 168
+   },
+   "pitch": {
+    "score": 71.8,
+    "lo": 67.1,
+    "hi": 76.1,
+    "pct": 87,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 1669,
+    "top": [
+     "AI personas missing nuanced human behavior.",
+     "Accuracy and depth of AI-generated recommendations.",
+     "Potential for AI personas to provide superficial feedback."
+    ],
+    "raw": "- [Tech Innovators] concern: Potential for AI personas to miss nuanced human behavior. | question: Are there any plans for a native Mac app or deeper integration with design tools like Figma?\n- [Tech Innovators] concern: Accuracy and depth of AI-generated recommendations. | question: What's the underlying AI model used for persona simulation, and can we customize its parameters?\n- [Tech Innovators] concern: Over-reliance on AI might lead to overlooking critical edge cases. | question: How does Snap ensure the AI personas accurately reflect diverse user demographics and behaviors?\n- [Tech Innovators] concern: The quality of AI persona feedback compared to real user feedback. | question: Can we import our own user research data to train or refine the AI personas?\n- [Tech Innovators] concern: The ability to scale testing for very large and complex applications. | question: Is there an API available for integrating Snap's testing capabilities into custom workflows?\n- [Tech Innovators] concern: The potential for AI personas to generate generic feedback. | question: What kind of reporting and analytics are available beyond transcripts and recordings?\n- [Tech Innovators] concern: The cost-effectiveness for small teams or individual developers. | question: Does Snap offer any collaboration features for teams to review test results together?\n- [Tech Innovators] concern: The ethical implications of replacing human testers with AI. | question: Can we define specific tasks or scenarios for the AI personas to follow during testing?\n- [Tech Innovators] concern: The potential for bias in the AI persona's testing approach. | question: Are there any plans for a desktop application, especially for Mac users, to integrate more deeply with local files?\n- [Tech Innovators] concern: The ability of AI to truly empathize with user frustrations. | question: What kind of security measures are in place for prototypes and websites uploaded to Snap?\n- [Tech Innovators] concern: The learning curve for setting up effective AI persona tests. | question: Can Snap integrate with project management tools like Jira or Trello for issue tracking?\n- [Tech Innovators] concern: The depth of insights compared to moderated user testing. | question: How does Snap differentiate its AI personas from traditional user personas in terms of testing capabilities?\n- [Tech Innovators] concern: The potential for AI to misinterpret complex UI elements. | question: Are there any options for A/B testing different versions of a prototype with the AI personas?\n- [Tech Innovators] concern: The generalizability of AI persona feedback to real-world users. | question: What kind of support is offered for different languages and cultural contexts in the AI personas?\n- [Tech Innovators] concern: The ability of AI to detect subtle usability issues that humans might catch. | question: Can we export the test results and recommendations in different formats for reporting?\n- [Tech Innovators] concern: The potential for AI personas to get stuck or confused in complex user flows. | question: Is there a free tier or trial available to test out the AI persona capabilities?\n- [Launch Veterans] concern: The reliability of AI personas to replicate genuine user struggles. | question: How do you ensure the AI personas provide diverse perspectives rather than a homogenized view?\n- [Launch Veterans] concern: The potential for AI personas to overlook critical accessibility issues. | question: What's the roadmap for integrating with more design and prototyping tools?\n- [Tech Innovators] concern: The depth of technical feedback from AI personas on complex features. | question: How does Snap compare to traditional unmoderated testing platforms in terms of insight quality?\n- [Tech Innovators] concern: The potential for AI personas to provide superficial feedback. | question: Can we integrate Snap's results directly into our bug tracking system?\n- [Tech Innovators] concern: The ability of AI personas to truly simulate emotional responses of users. | question: How do you ensure the AI personas are kept up-to-date with current user behaviors and trends?\n- [Curious Observers] concern: Understanding how to create effective custom AI personas. | question: Can Snap help me test if my website is easy to use for someone who isn't very tech-savvy?\n- [Tech Innovators] concern: The cost-benefit ratio compared to traditional user testing methods. | question: What are the different pricing tiers, and what features are included in each?\n- [Product Launchers] concern: The potential for AI personas to miss critical feedback that only a human would provide. | question: How does Snap help improve conversion rates by identifying usability bottlenecks?"
+   }
+  },
+  {
+   "name": "Uxia",
+   "tagline": "Validate your User flows UX & UI in seconds with AI",
+   "description": "Uxia makes user testing accessible for design and product teams of all sizes. Traditional tools are slow, costly, and often inaccurate. Uxia uses AI and synthetic users to deliver fast, reliable insights, enabling more agile and efficient product development.",
+   "topics": [
+    "Design Tools",
+    "User Experience",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-09-07",
+    "rank": 1,
+    "launches_that_day": 5,
+    "votes": 535,
+    "hunter_prior_hunts": 25
+   },
+   "pitch": {
+    "score": 60.4,
+    "lo": 57.1,
+    "hi": 63.6,
+    "pct": 65,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 1669,
+    "top": [
+     "How does Uxia handle complex user flows?",
+     "How accurate are synthetic users compared to real users?",
+     "How customizable are the synthetic user personas?"
+    ],
+    "raw": "- [Tech Innovators] concern: How does Uxia handle complex, multi-step user flows with conditional logic? | question: Are there any plans for a native Mac app or a robust desktop client?\n- [Tech Innovators] concern: What's the accuracy rate of the synthetic users compared to real-world user feedback? | question: Can Uxia integrate with popular design tools like Figma or Sketch for direct import of flows?\n- [Tech Innovators] concern: How customizable are the synthetic user personas to match specific target demographics? | question: Is there an API available for integrating Uxia's insights into our internal dashboards?\n- [Tech Innovators] concern: What measures are in place to prevent AI bias in the user flow validation process? | question: Can we export the validation reports in a format compatible with project management tools?\n- [Tech Innovators] concern: How does Uxia ensure the synthetic users accurately reflect diverse user behaviors and cognitive biases? | question: Are there any collaboration features for design and product teams to review and comment on the validation results?\n- [Tech Innovators] concern: What's the learning curve like for new users to set up and interpret the AI-driven validations? | question: Will Uxia support testing for accessibility standards and inclusive design principles?\n- [Tech Innovators] concern: How does Uxia handle edge cases or highly specific user interactions that might be hard for AI to simulate? | question: Is there a way to compare different versions of a user flow to track improvements over time?\n- [Tech Innovators] concern: What kind of data does Uxia collect and how is user privacy handled with the AI models? | question: Can Uxia provide insights into emotional responses or user sentiment during the flow validation?\n- [Tech Innovators] concern: How does Uxia differentiate between minor UI glitches and fundamental UX problems in its analysis? | question: Are there plans for a public roadmap or community forum to suggest new features?\n- [Tech Innovators] concern: What are the limitations of the synthetic users in replicating nuanced human decision-making? | question: Does Uxia offer any integrations with version control systems for design assets?\n- [Tech Innovators] concern: How does Uxia ensure the synthetic users' behavior remains consistent and reliable across different tests? | question: Can Uxia generate recommendations for improving user flows based on its AI analysis?\n- [Tech Innovators] concern: What kind of reporting and visualization features does Uxia offer for the validation results? | question: Is there a free trial or a freemium tier to test out the core functionalities?\n- [Tech Innovators] concern: How does Uxia handle validating flows for highly specialized or niche user groups? | question: Can Uxia simulate different device types and screen sizes during the validation process?\n- [Tech Innovators] concern: What's the maximum complexity of a user flow that Uxia can effectively validate? | question: Does Uxia provide any benchmarks or industry comparisons for the validated flows?\n- [Tech Innovators] concern: How does Uxia handle validating flows that involve external integrations or third-party services? | question: Are there any plans to expand beyond UX/UI validation to other areas of product testing?\n- [Tech Innovators] concern: What kind of support is available if we encounter issues or need help interpreting results? | question: Can Uxia be used for A/B testing different user flow variations?\n- [Launch Veterans] concern: How does Uxia ensure the synthetic users accurately reflect the nuances of human behavior and decision-making? | question: What's the underlying technology stack for the AI and synthetic user generation?\n- [Launch Veterans] concern: How does Uxia handle validating flows for highly complex enterprise applications? | question: Can Uxia integrate with existing analytics platforms to cross-reference real user data?\n- [Tech Innovators] concern: How does Uxia compare to traditional user testing platforms in terms of cost-effectiveness for small teams? | question: What are the key metrics Uxia provides to evaluate the effectiveness of a user flow?\n- [Tech Innovators] concern: What's the minimum input required to get meaningful validation results from Uxia? | question: Can Uxia help identify specific points of friction or confusion within a user flow?\n- [Tech Innovators] concern: How does Uxia handle the ethical considerations of using synthetic users for validation? | question: What's the story behind building Uxia and what challenges did you overcome?\n- [Curious Observers] concern: Is Uxia easy to use for someone who isn't a professional designer or developer? | question: Can Uxia help me validate flows for mobile apps specifically?\n- [Tech Innovators] concern: What's the pricing model for Uxia, and is it scalable for growing teams? | question: Can Uxia integrate with our existing project management and communication tools?\n- [Product Launchers] concern: How does Uxia ensure the AI-generated insights are actionable and easy to implement? | question: What's the typical time saving a team can expect when using Uxia compared to traditional methods?"
+   }
+  },
+  {
+   "name": "Userology AI",
+   "tagline": "The AI user research agent for busy product teams",
+   "description": "Userology is your AI user researcher on autopilot. Drop in a Figma prototype or live product, set your target persona, and our AI recruits users, moderates sessions, and turns messy transcripts into bite-sized insight reports with clips, quotes, and clear next steps.",
+   "topics": [
+    "User Experience",
+    "Artificial Intelligence",
+    "UX Design"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-12-19",
+    "rank": 2,
+    "launches_that_day": 11,
+    "votes": 347,
+    "hunter_prior_hunts": 89
+   },
+   "pitch": {
+    "score": 74.4,
+    "lo": 71.3,
+    "hi": 77.8,
+    "pct": 88,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "How does AI ensure quality of recruited users?",
+     "How does AI handle nuanced feedback?",
+     "How does AI handle edge cases?"
+    ],
+    "raw": "- [Tech Innovators] concern: How does Userology AI handle edge cases or unexpected user behavior during moderated sessions? | question: Can we integrate this with our existing project management tools like Jira or Asana for tracking insights?\n- [Tech Innovators] concern: What's the accuracy and bias mitigation strategy for the AI in interpreting user feedback? | question: Are there any plans for a native Mac app or a more robust desktop client for local prototype testing?\n- [Tech Innovators] concern: How customizable are the moderation scripts and the persona targeting to ensure we get relevant feedback? | question: What kind of API access is available for integrating Userology AI with custom internal tools or data pipelines?\n- [Tech Innovators] concern: How does the AI ensure the recruited users truly match the specified target persona? | question: Can we export the raw session data and transcripts for further analysis in our own tools?\n- [Tech Innovators] concern: What are the limitations on the number of users that can be recruited or sessions that can be moderated concurrently? | question: Is there a way to bring our own pool of users for recruitment, or is it solely handled by your AI?\n- [Tech Innovators] concern: How does Userology AI handle different languages and cultural nuances in user feedback? | question: What kind of reporting and analytics features are available for tracking research progress and findings over time?\n- [Tech Innovators] concern: How does the AI handle sensitive or confidential information shared by users during sessions? | question: Are there any plans to support other design tools beyond Figma, like Sketch or Adobe XD?\n- [Tech Innovators] concern: What measures are in place to ensure data privacy and security for both our prototypes and user data? | question: Can multiple team members collaborate on research projects within Userology AI, sharing insights and notes?\n- [Tech Innovators] concern: How does the AI adapt to different types of products or industries when moderating and generating insights? | question: Is there a public roadmap for upcoming features, especially around integrations with developer tools?\n- [Tech Innovators] concern: What's the typical turnaround time from dropping in a prototype to receiving the final insight report? | question: Can we customize the format or template of the insight reports to match our internal documentation standards?\n- [Tech Innovators] concern: How does the AI handle qualitative data that might be subjective or require deeper human interpretation? | question: Are there any options for A/B testing different prototype versions with user feedback through the platform?\n- [Tech Innovators] concern: What kind of control do we have over the AI's moderation style and the questions it asks during sessions? | question: Does Userology AI offer any SDKs or webhooks for deeper custom integrations with our development environment?\n- [Tech Innovators] concern: How does Userology AI ensure the quality and reliability of the recruited users for research sessions? | question: Can we provide specific tasks or scenarios for the AI to guide users through during the moderated sessions?\n- [Tech Innovators] concern: What happens if a user has technical difficulties during a session; how does the AI or system handle that? | question: Are there any plans for a mobile app or better mobile browser support for managing research on the go?\n- [Tech Innovators] concern: How does the AI handle situations where users might be confused or need more clarification during a task? | question: What kind of analytics are provided on the user recruitment process itself, like demographics of participants?\n- [Tech Innovators] concern: How does Userology AI prevent 'research fatigue' if we're constantly running automated sessions? | question: Can we set specific criteria for user recruitment, like industry experience or specific software usage?\n- [Tech Innovators] concern: What's the process for reviewing and validating the AI-generated insights before acting on them? | question: Are there any options for conducting unmoderated tests in addition to the AI-moderated sessions?\n- [Tech Innovators] concern: How does the AI ensure consistency in moderation across different user sessions? | question: Can we upload our own existing user interview transcripts for the AI to analyze and generate insights?\n- [Tech Innovators] concern: What kind of support is available if we encounter issues or have questions about the AI's output? | question: Are there any features for tracking user sentiment or emotional responses during the research sessions?\n- [Launch Veterans] concern: How does Userology AI ensure the quality of the recruited users, and what's the process for screening them? | question: What's the underlying technology or AI model used for transcript analysis and insight generation?\n- [Launch Veterans] concern: How does the AI handle nuanced feedback that might require a human to interpret context or subtext? | question: Can you share more about the scalability of the platform for teams needing to run many concurrent research projects?\n- [Tech Innovators] concern: How does Userology AI integrate with existing product analytics tools we might already be using? | question: What are the typical use cases for Userology AI, and how does it compare to traditional user testing platforms?\n- [Tech Innovators] concern: How does Userology AI ensure the ethical recruitment and treatment of research participants? | question: What are the technical requirements for integrating a live product, and what kind of data does it collect?\n- [Curious Observers] concern: How easy is it to set up a research study if I'm not very technical? | question: Can Userology AI help with research for school projects or personal app ideas?"
+   }
+  },
+  {
+   "name": "Velozity",
+   "day": "2025-05-03",
+   "tagline": "AI-Powered instant user research tool",
+   "description": "Velozity is an AI-powered user research tool for marketing, product, and UX teams to get speedy and reliable insights. Build your users into AI personas, run focus group discussions, and usability tests with them. Fine-tune AI personas to keep them evolving.",
+   "topics": [
+    "User Experience",
+    "Marketing",
+    "SaaS"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-05-03",
+    "rank": 2,
+    "launches_that_day": 8,
+    "votes": 284,
+    "hunter_prior_hunts": 0
+   },
+   "pitch": {
+    "score": 59.4,
+    "lo": 52.5,
+    "hi": 65.1,
+    "pct": 56,
+    "calls": 13
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "Accuracy and bias of AI-generated insights.",
+     "Depth and realism of AI responses.",
+     "Data privacy and security."
+    ],
+    "raw": "- [Tech Innovators] concern: Scalability for very large user bases and complex persona evolutions. | question: Are there any plans for a native Mac app or a robust desktop client?\n- [Tech Innovators] concern: The accuracy and bias of AI-generated insights without human oversight. | question: What kind of APIs or integrations are available for connecting with existing dev workflows?\n- [Tech Innovators] concern: The potential for generic or superficial insights from AI-driven focus groups. | question: Can we integrate this with our existing project management tools like Jira or Trello?\n- [Tech Innovators] concern: The ability to customize AI personas beyond initial setup. | question: Is there a command-line interface or a developer-friendly way to interact with Velozity?\n- [Tech Innovators] concern: Ensuring data privacy and security when dealing with user research data. | question: How does Velozity handle multi-language support for user research?\n- [Tech Innovators] concern: The depth and realism of the AI's responses in focus groups. | question: What's the roadmap for integrating with other popular developer tools?\n- [Tech Innovators] concern: The potential for AI personas to become outdated or misaligned with real users. | question: Are there any plans for a Mac-specific application or enhanced browser integration?\n- [Tech Innovators] concern: The transparency of the AI's decision-making process in generating insights. | question: How does Velozity ensure the ethical use of AI in user research?\n- [Tech Innovators] concern: The ability to validate AI-generated insights against real-world user data. | question: Can we export the AI persona data in a structured format for external analysis?\n- [Tech Innovators] concern: The cost implications of extensive AI-powered research. | question: What kind of customization options are available for the AI personas?\n- [Tech Innovators] concern: The potential for AI to miss subtle human cues or emotions in feedback. | question: Is there a sandbox environment or a free tier to test out the AI capabilities?\n- [Tech Innovators] concern: The learning curve for fine-tuning AI personas effectively. | question: What kind of security measures are in place to protect sensitive research data?\n- [Tech Innovators] concern: The reliability of AI-generated usability feedback compared to human testers. | question: Are there any open-source components or APIs we can leverage?\n- [Tech Innovators] concern: The potential for AI to perpetuate biases present in its training data. | question: What's the process for updating and improving the AI models over time?\n- [Tech Innovators] concern: The accuracy of AI personas representing niche or specialized user groups. | question: Does Velozity offer any desktop client support, especially for Mac users?\n- [Tech Innovators] concern: The ability to integrate with existing internal data sources for persona enrichment. | question: What kind of reporting and analytics features are available for the research results?\n- [Tech Innovators] concern: The level of detail and actionable insights provided by AI-driven usability tests. | question: Are there any plans for a Mac-specific version or enhanced browser integration?\n- [Tech Innovators] concern: The potential for AI to oversimplify complex user behaviors. | question: How does Velozity handle data privacy and compliance with regulations like GDPR?\n- [Tech Innovators] concern: The transparency of the AI's learning process and how it impacts persona evolution. | question: Can we integrate Velozity with our existing CRM or customer data platforms?\n- [Launch Veterans] concern: Ensuring the AI personas accurately reflect diverse user segments without bias. | question: What was the biggest technical challenge you faced in developing the AI persona fine-tuning?\n- [Launch Veterans] concern: The reliability of AI-generated insights compared to traditional human-led research. | question: How do you plan to scale the AI's capabilities as user research needs become more complex?\n- [Tech Innovators] concern: The cost-effectiveness for smaller teams or individual researchers. | question: Does Velozity integrate with popular survey tools or analytics platforms we already use?\n- [Tech Innovators] concern: The potential for AI to miss subtle nuances in user feedback that a human might catch. | question: What's the core technology behind the AI persona evolution feature?\n- [Curious Observers] concern: Whether the AI can truly capture the complexity of human behavior. | question: Is there a free version or a student discount available to try Velozity?"
+   }
+  },
+  {
+   "name": "Testifly",
+   "tagline": "Autonomous AI QA. Zero prompting. Zero maintenance. ",
+   "description": "CTOs and founders with small teams and no time or resources to test and maintain. Connect your web app and Testifly does the rest. Discovers flows, writes tests, self-heals, explains failures with video. Zero prompting. Zero maintenance. 30-day free trial.",
+   "topics": [
+    "Software Engineering",
+    "Development"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-11-03",
+    "rank": 3,
+    "launches_that_day": 38,
+    "votes": 266,
+    "hunter_prior_hunts": 447
+   },
+   "pitch": {
+    "score": 72.7,
+    "lo": 67.7,
+    "hi": 77.5,
+    "pct": 88,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "AI might miss critical user paths or edge cases",
+     "Potential for false positives or missed edge cases",
+     "Difficulty integrating with less common web frameworks"
+    ]
+   }
+  },
+  {
+   "name": "Articos",
+   "tagline": "Launch with confidence, not gut instinct",
+   "description": "Articos helps SaaS teams, agencies, and founders test messaging, positioning, and landing pages against simulated personas matched to your ICP. Real audience signal in under 30 minutes. Peer-reviewed at 86% human accuracy vs Baymard and Nielsen Norman.",
+   "topics": [
+    "Marketing",
+    "SaaS",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-09-02",
+    "rank": 3,
+    "launches_that_day": 21,
+    "votes": 385,
+    "hunter_prior_hunts": 479
+   },
+   "pitch": {
+    "score": 55.6,
+    "lo": 49.4,
+    "hi": 60.9,
+    "pct": 50,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How does Articos handle niche ICPs?",
+     "How does Articos prevent bias in its simulated personas?",
+     "What are the limitations of the simulated personas?"
+    ],
+    "raw": "- [Tech Innovators] concern: How does Articos handle niche ICPs where persona data might be scarce? | question: Are there any CLI or API integrations planned for automating tests within CI/CD pipelines?\n- [Tech Innovators] concern: How does the simulation account for emotional responses or subtle nuances in messaging that only real humans might pick up? | question: Can we import our own custom persona data or ICP profiles, or are we limited to predefined ones?\n- [Tech Innovators] concern: What's the underlying methodology for generating these simulated personas, and how transparent is it? | question: Is there a way to A/B test different versions of a landing page directly within Articos?\n- [Tech Innovators] concern: How does Articos prevent bias in its simulated personas, especially if the training data is not diverse enough? | question: Are there any plans for a Mac desktop app or deeper integration with common design tools like Figma?\n- [Tech Innovators] concern: What happens if our ICP is very specific and not well-represented in the general AI training data? | question: Can we integrate Articos with our existing analytics platforms to cross-reference simulated results with live data?\n- [Tech Innovators] concern: How does Articos handle complex user journeys or multi-step funnels in its testing? | question: Is there a way to export the detailed feedback from the simulated personas for further analysis?\n- [Tech Innovators] concern: What are the limitations of the simulated personas compared to actual user interviews or usability tests? | question: Can Articos provide insights into *why* certain messaging resonates or fails with specific persona types?\n- [Tech Innovators] concern: How does Articos ensure the simulated personas evolve with market trends and user behavior changes? | question: Are there any collaboration features for teams to review and comment on test results together?\n- [Tech Innovators] concern: What's the process for defining and refining the ICPs within Articos to ensure accurate persona matching? | question: Does Articos offer any integrations with popular CRM or marketing automation platforms?\n- [Tech Innovators] concern: How does Articos handle testing for products in highly regulated industries where nuance is critical? | question: Can we set up recurring tests to monitor how our messaging performs over time with evolving personas?\n- [Tech Innovators] concern: What kind of data is used to train the AI for persona simulation, and how frequently is it updated? | question: Is there a sandbox environment or a free tier to test out the persona matching capabilities before committing?\n- [Tech Innovators] concern: How does Articos differentiate between different levels of user sophistication within a persona? | question: Can we get detailed reports on the simulated persona's thought process or reasoning behind their feedback?\n- [Tech Innovators] concern: How does Articos ensure the simulated personas don't just give generic positive feedback, but critical insights? | question: Are there any plans to support testing other marketing assets beyond messaging and landing pages, like ad copy?\n- [Tech Innovators] concern: What are the limitations on the complexity of landing pages or messaging that Articos can effectively test? | question: Does Articos provide recommendations for improving messaging based on the test results?\n- [Tech Innovators] concern: How does Articos handle testing for products that require a very specific technical understanding from the audience? | question: Can we customize the demographic or psychographic attributes of the simulated personas beyond just ICP matching?\n- [Tech Innovators] concern: What's the pricing model like, especially for agencies or teams with high testing volumes? | question: Are there any case studies available showing how Articos has helped improve conversion rates for real products?\n- [Launch Veterans] concern: How does Articos handle testing for completely novel products where no existing ICP data might be available? | question: What kind of reporting and analytics does Articos provide after a test run?\n- [Launch Veterans] concern: How does Articos ensure the simulated personas don't just reflect common biases found in large language models? | question: Can we integrate Articos into our existing product development workflow, perhaps via webhooks or Zapier?\n- [Tech Innovators] concern: How does Articos compare to traditional user testing platforms, and what are its specific limitations? | question: What's the underlying AI model used for persona simulation, and is there any transparency around its workings?\n- [Tech Innovators] concern: How does Articos handle testing for products that require a visual or interactive component beyond just text and layout? | question: Are there any plans for a self-hosting option or on-premise deployment for larger enterprises?\n- [Tech Innovators] concern: How does Articos ensure the simulated personas accurately reflect the emotional and psychological drivers of real users? | question: Can we share test results and insights easily with our team and stakeholders within the platform?\n- [Curious Observers] concern: Is Articos easy to use for someone who isn't a marketing expert? | question: Can Articos help me figure out the best way to describe my side project to potential users?\n- [Tech Innovators] concern: What's the cost per test or the overall pricing structure, and is it scalable for frequent use? | question: Does Articos integrate with popular website builders or CMS platforms for direct landing page testing?\n- [Product Launchers] concern: How does Articos ensure the simulated personas provide actionable feedback rather than just general opinions? | question: Can Articos help identify which specific elements of a landing page (e.g., headline, CTA) are performing best or worst?"
+   }
+  }
+ ],
+ "comments": {
+  "products": [
+   "Articos",
+   "Articos MCP",
+   "Jango",
+   "QA Crow",
+   "Replay QA for Teams",
+   "Testifly",
+   "TheySaid 4.0",
+   "Visual Usability Checker"
+  ],
+  "n_commenters": 93,
+  "themes": [
+   {
+    "kind": "asked",
+    "theme": "How does the product compare to competitors?",
+    "n": 13,
+    "products": [
+     "Articos",
+     "Articos MCP",
+     "QA Crow",
+     "TheySaid 4.0"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can the product test specific elements or scenarios?",
+    "n": 13,
+    "products": [
+     "Articos",
+     "Articos MCP",
+     "Testifly",
+     "TheySaid 4.0",
+     "Visual Usability Checker"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "The product helps with fast feedback loops and iteration.",
+    "n": 11,
+    "products": [
+     "Articos",
+     "Articos MCP",
+     "Testifly",
+     "TheySaid 4.0"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "The product helps with testing before shipping/launching.",
+    "n": 9,
+    "products": [
+     "Articos",
+     "Articos MCP",
+     "QA Crow",
+     "TheySaid 4.0"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "The product provides detailed and useful insights/output.",
+    "n": 9,
+    "products": [
+     "Articos",
+     "Articos MCP",
+     "Testifly",
+     "TheySaid 4.0"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does the product work technically?",
+    "n": 7,
+    "products": [
+     "Articos",
+     "Testifly",
+     "TheySaid 4.0",
+     "Visual Usability Checker"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Are there plans for integrations or scheduling features?",
+    "n": 5,
+    "products": [
+     "Articos MCP",
+     "QA Crow",
+     "Testifly"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does the product handle test failures or changes?",
+    "n": 4,
+    "products": [
+     "Testifly"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does the product handle complex user flows or permissions?",
+    "n": 3,
+    "products": [
+     "Replay QA for Teams",
+     "Testifly"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can the product generate or refine personas?",
+    "n": 3,
+    "products": [
+     "Articos",
+     "Articos MCP"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "Concerns about the accuracy of synthetic feedback/data.",
+    "n": 2,
+    "products": [
+     "Articos",
+     "Jango"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How to set up tests without existing written tests?",
+    "n": 1,
+    "products": [
+     "QA Crow"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How long does a synthetic test take?",
+    "n": 1,
+    "products": [
+     "TheySaid 4.0"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "What happens if test descriptions are underspecified?",
+    "n": 1,
+    "products": [
+     "QA Crow"
+    ]
+   }
+  ]
+ },
+ "usd": 0.301,
+ "pitch_days": [
+  "2026-10-05",
+  "2026-11-02",
+  "2026-10-06",
+  "2026-11-03",
+  "2026-10-07",
+  "2026-11-04",
+  "2026-10-08",
+  "2026-11-05",
+  "2026-10-02",
+  "2026-10-30",
+  "2026-10-03",
+  "2026-10-31",
+  "2026-10-04",
+  "2026-11-01"
+ ]
+}
