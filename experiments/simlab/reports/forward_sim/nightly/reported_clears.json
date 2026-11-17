@@ -18,5 +18,14 @@
    15
   ],
   "reported": "2026-11-16T09:40Z"
+ },
+ "questions ph|dep - const p@3": {
+  "first_reported": "2026-11-17",
+  "value": [
+   16.2,
+   4.0,
+   29.3
+  ],
+  "n": 33
  }
 }
