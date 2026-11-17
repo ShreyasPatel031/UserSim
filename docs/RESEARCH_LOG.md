@@ -2432,3 +2432,8 @@ Model switches, direction reviews and agenda changes, newest last.
   claude plugin validate: no findings. Install from GitHub verified (marketplace add ShreyasPatel031/UserSim@claude/usersim-plugin). Live e2e on tally.so is running.
   Submission at claude.ai/directory/manage needs Shreyas (contact email, acknowledgements).
   Camoufox PR #188 held: the seed install was blocked by the classifier.
+- 2026-11-17T21:21Z orchestrator: plugin live e2e passed on tally.so (headless Claude Code, 2 cells in parallel):
+  - plain tester: 20 steps; Design-Focused Founders group (1,825 people): 28 steps. Both were blocked at the Publish signup by Turnstile.
+  - 6 divergences, all with step evidence (template path +8 steps; 'No signup required' vs publish gate; missing support address in the error).
+  - 9 variations proposed; replay.html renders.
+  Merged #189 (E4: saved state only on a real signed-in end, app domain, fresh alias on the gate retry). Tally rests on seeds 0 and 2 for 24 h (E4).
