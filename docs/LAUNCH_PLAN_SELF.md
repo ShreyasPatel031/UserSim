@@ -100,12 +100,15 @@ persona panel on our own page [MODEL]. **On Dec 6 the real comments on launch 1 
 - **Launch 1's real comments become the first Radar report** and replace stage 1 of the chain.
 
 ### Warnings from the run
-1. **Our own panel never picks our products.** With the panel fixed to a forced choice (each segment picks 3 from a real
-   line-up), none of our four products was picked by any segment (chance is about 8%). Mean place, 0 = first and 100 =
-   last: /try 47, User Testing 56, Radar 61, Market Simulator 73 [MODEL]. The measure agrees with real finishes only in
-   part, and competitors range from 0% to 46%, so it is a warning, not a verdict. The reasons given are the useful part.
-2. **The moonshot has conflicting signals.** The Market Simulator has the best pitch score (82) and the lowest panel
-   placement; the top reason not to use it is "too niche, complex or abstract" (24 lines, all four groups). Its core
+1. **Withdrawn: "our own panel never picks our products" carries no information.** The forced choice was then scored on
+   889 real launches over 30 days [REAL]: its ordering has no relation to real rank (0.03 [−0.02, 0.09] for mean place;
+   0.17 for pick share, against 0.62 for the forecast model), it adds nothing to the forecast model, and it does not find
+   a group's real backers better than chance (7.9% against 8.4% random). A launch is picked by 14% of its panel on
+   average, so "never picked" is the normal case. The forced choice does not go into User Testing as a score. The panel's
+   measured value stays what it was: which themes come up (recall 61%, precision 52%). For a pre-launch number, use the
+   forecast model.
+2. **The moonshot's main objection.** The Market Simulator has the best pitch score (82); the panel's top reason not to
+   use it is "too niche, complex or abstract" (24 lines, all four groups). Its core
    input, testing a specific scenario, has the best real support in the chain (13 commenters).
 3. **War Game mode has no real-comment support.** The 13 commenters who asked about competitors meant the tool against
    its alternatives. It stays out of June's scope unless product 3's real comments ask for it.
