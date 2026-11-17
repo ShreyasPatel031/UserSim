@@ -1,0 +1,56 @@
+{
+ "days": 195,
+ "window": [
+  "2026-04-01",
+  "2026-11-12"
+ ],
+ "lines": {
+  "top3": {
+   "arm 3": "57.4 [54.4, 60.7]",
+   "arm 3 + hunter history": "56.4 [53.2, 59.7]"
+  },
+  "top5": {
+   "arm 3": "65.1 [62.6, 67.7]",
+   "arm 3 + hunter history": "65.7 [63.2, 68.2]"
+  },
+  "top10": {
+   "arm 3": "77.7 [75.9, 79.4]",
+   "arm 3 + hunter history": "77.6 [75.9, 79.2]"
+  }
+ },
+ "paired": {
+  "top3": "-1.0 [-2.6, +0.5]",
+  "top5": "+0.6 [-0.4, +1.6]",
+  "top10": "-0.1 [-0.7, +0.5]"
+ },
+ "newcomer_top10_recall": {
+  "days": 185,
+  "arm 3": "43.6 [38.7, 48.2]",
+  "with hunter history": "43.6 [38.7, 48.5]",
+  "paired": "-0.0 [-1.5, +1.6]"
+ },
+ "adopt_by_prereg": false,
+ "newcomer_launches": 2786,
+ "newcomer_hunter_in_store": 0.797,
+ "newcomer_with_any_dated_prior_hunt_or_launch": 0.175,
+ "newcomer_top10_rate_by_prior_history": {
+  "has earlier hunt or launch": {
+   "n": 487,
+   "top10_%": 23.8
+  },
+  "none": {
+   "n": 2299,
+   "top10_%": 19.7
+  }
+ },
+ "newcomer_top10_rate_by_in_store": {
+  "0.0": {
+   "n": 566,
+   "top10_%": 18.7
+  },
+  "1.0": {
+   "n": 2220,
+   "top10_%": 20.9
+  }
+ }
+}
