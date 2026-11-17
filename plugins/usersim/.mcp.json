@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "usersim": {
+      "type": "http",
+      "url": "https://35-202-98-224.sslip.io/mcp"
+    }
+  }
+}
