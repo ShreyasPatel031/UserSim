@@ -130,5 +130,85 @@ class SaveBackTests(Base):
         self.assertFalse(asyncio.run(R.save_signed_in_state(sim, {"signed_in_app_page": True})))
 
 
+
+class StartUrlTests(unittest.TestCase):
+    """Check studies Nov 17 (02fc3bfc monday, fe089c16 asana, c5f80384 clickup): saved states loaded but cells opened
+    the marketing homepage and the model signed up."""
+
+    def test_app_url_from_state(self):
+        st = {"cookies": [{"name": "t", "domain": ".asana.com", "expires": FUTURE},
+                          {"name": "a", "domain": "app.asana.com", "expires": FUTURE}],
+              "origins": [{"origin": "https://asana.com", "localStorage": [{"name": "x"}] * 5},
+                          {"origin": "https://app.asana.com", "localStorage": []}]}
+        self.assertEqual(SS.app_url_for(st, "asana.com"), "https://app.asana.com/")
+
+    def test_workspace_subdomain_and_auth_hosts_skipped(self):
+        st = {"cookies": [{"name": "s", "domain": "auth.monday.com", "expires": FUTURE},
+                          {"name": "w", "domain": "usersimteam.monday.com", "expires": FUTURE}],
+              "origins": [{"origin": "https://auth.monday.com", "localStorage": [{"name": "x"}] * 9}]}
+        self.assertEqual(SS.app_url_for({"storage_state": st}, "monday.com"), "https://usersimteam.monday.com/")
+
+    def test_marketing_only_state_has_no_app_url(self):
+        st = {"cookies": [{"name": "t", "domain": ".clickup.com", "expires": FUTURE},
+                          {"name": "w", "domain": "www.clickup.com", "expires": FUTURE}], "origins": []}
+        self.assertEqual(SS.app_url_for(st, "clickup.com"), "")
+
+    def test_signed_out_pages(self):
+        for u in ("https://app.asana.com/-/login", "https://auth.monday.com/users/sign_up_new",
+                  "https://app.clickup.com/signup", "https://app.clickup.com/login?x=1",
+                  "https://app.asana.com/-/login?forced_logout=true", "https://launchpad.37signals.com/signin"):
+            self.assertTrue(SS.looks_signed_out(u), u)
+        self.assertFalse(SS.looks_signed_out("https://app.asana.com/0/home/123"))
+        self.assertTrue(SS.looks_signed_out("https://app.asana.com/0/home", password_field=True))
+
+    def test_dead_entry_is_not_usable(self):
+        self.assertTrue(SS.usable({"storage_state": _state()}, "asana.com"))
+        self.assertFalse(SS.usable({"storage_state": _state(), "dead": True}, "asana.com"))
+
+
+class ModelSeesSignedInTests(unittest.TestCase):
+    def _sim(self, dead=False):
+        study = mock.MagicMock(live_sessions={S.AGENT_ID: {"saved_account": {"domain": "asana.com", "dead": dead,
+                                                                              "start_url": "https://app.asana.com/"}}})
+        return S.SimSession(id="s" * 32, study=study, product_url="https://asana.com", task="t", persona="p")
+
+    def test_prompt_and_observation_carry_the_note(self):
+        from mvp.sim_mcp import server as srv
+
+        sim = self._sim()
+        with mock.patch.dict(S.SESSIONS, {sim.id: sim}):
+            text = srv.usersim_simulate_user(sim.id, "p", "t")
+        self.assertTrue(text.startswith("IMPORTANT: You are ALREADY SIGNED IN"))
+        self.assertIn("https://app.asana.com/", text)
+        obs = {"step": 1, "url": "https://app.asana.com/", "title": "Home", "steps_left": 5, "seconds_left": 9,
+               "png": _png(), "text": ""}
+        meta = srv._obs_content(sim, obs)
+        self.assertIn("ALREADY SIGNED IN", json_text(meta))
+
+    def test_dead_state_has_no_note(self):
+        from mvp.sim_mcp import server as srv
+
+        sim = self._sim(dead=True)
+        with mock.patch.dict(S.SESSIONS, {sim.id: sim}):
+            self.assertFalse(srv.usersim_simulate_user(sim.id, "p", "t").startswith("IMPORTANT"))
+
+
+def _png() -> bytes:
+    import io
+
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", (1280, 800), (255, 255, 255)).save(buf, "PNG")
+    return buf.getvalue()
+
+
+def json_text(content) -> str:
+    out = []
+    for c in content if isinstance(content, list) else [content]:
+        out.append(getattr(c, "text", None) or str(c))
+    return " ".join(out)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -77,7 +77,7 @@ def live_cookies(state: dict[str, Any], domain: str, now: float | None = None) -
 
 def usable(entry: dict[str, Any] | None, domain: str) -> bool:
     state = (entry or {}).get("storage_state")
-    return isinstance(state, dict) and bool(live_cookies(state, domain))
+    return isinstance(state, dict) and not (entry or {}).get("dead") and bool(live_cookies(state, domain))
 
 
 def load(domain: str) -> dict[str, Any] | None:
@@ -129,3 +129,59 @@ def seed_endpoint(seed: str, endpoints: list[str]) -> str:
         if urlsplit(e.split("#", 1)[0]).port == port:
             return e.split("#", 1)[0].rstrip("/")
     return ""
+
+
+# ---- where a signed-in user starts, and whether the state still signs in -----------------------------------------
+
+_AUTH_LABELS = {"auth", "login", "signin", "signup", "accounts", "account", "id", "sso", "identity", "oauth", "secure",
+                "www", "api", "cdn", "static", "assets", "help", "support", "blog", "docs", "status"}
+_SIGNED_OUT_RE = re.compile(r"log-?in|sign[-_]?in|sign[-_]?up|/auth|^auth\.|register|create-account|/users/sign|forced_logout",
+                            re.I)
+
+
+def app_url_for(entry_or_state: dict[str, Any], domain: str) -> str:
+    """The in-app URL a signed-in user would open, from the hosts the saved state touched: app.<domain> first, then a
+    workspace subdomain (monday.com: <team>.monday.com), never the marketing root or an auth host. '' = none known.
+    Check study 02fc3bfc (Nov 17): a signed-in state opened on monday.com's homepage, the user clicked 'Get started'
+    and hit signup's reCAPTCHA."""
+    state = entry_or_state.get("storage_state", entry_or_state) if isinstance(entry_or_state, dict) else {}
+    score: dict[str, int] = {}
+    for o in state.get("origins") or []:
+        host = urlsplit(str(o.get("origin") or "")).hostname or ""
+        score[host] = score.get(host, 0) + 2 + len(o.get("localStorage") or [])
+    for c in live_cookies(state, domain):
+        host = str(c.get("domain") or "").lstrip(".").lower()
+        score[host] = score.get(host, 0) + 1
+    best, best_rank = "", (-1, -1)
+    for host, n in score.items():
+        host = host.lower()
+        if not host.endswith("." + domain):
+            continue  # the bare domain is the marketing site
+        label = host[: -len(domain) - 1].split(".")[-1]
+        if label in _AUTH_LABELS:
+            continue
+        rank = (1 if label == "app" else 0, n)
+        if rank > best_rank:
+            best, best_rank = host, rank
+    return f"https://{best}/" if best else ""
+
+
+def looks_signed_out(url: str, password_field: bool = False) -> bool:
+    """A page a signed-in user would not be on: a login / signup / auth URL, or a visible password box."""
+    parts = urlsplit(url or "")
+    return password_field or bool(_SIGNED_OUT_RE.search(parts.netloc + parts.path + "?" + parts.query))
+
+
+def mark_dead(domain: str, reason: str) -> None:
+    """The saved state no longer signs in: flag it in the bucket so no cell starts from it until a fresh one is saved."""
+    entry = None
+    try:
+        from mvp.gcs_store import gcs_download_json, gcs_upload_json
+
+        entry = gcs_download_json(uri(domain))
+        if isinstance(entry, dict) and not entry.get("dead"):
+            gcs_upload_json(uri(domain), {**entry, "dead": True, "dead_at": time.time(), "dead_reason": reason[:200]})
+    except Exception as exc:  # noqa: BLE001
+        print(f"[site_states] mark_dead {domain} failed: {exc!r}"[:200], flush=True)
+    with _LOCK:
+        _CACHE[domain] = (time.time(), None)

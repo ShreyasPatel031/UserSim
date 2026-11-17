@@ -171,6 +171,8 @@ def _obs_content(sim: S.SimSession, obs: dict[str, Any], extra: dict[str, Any] |
         meta["hidden_fields"] = obs["hidden_fields"]  # not clickable: invisible, covered, off-screen or a bot trap
     if obs.get("page_errors"):
         meta["page_errors"] = obs["page_errors"]
+    if S.saved_session_active(sim):
+        meta["signed_in"] = SAVED_ACCOUNT_NOTE
     if obs.get("note"):
         meta["note"] = obs["note"]  # e.g. a click that only jumped to an in-page #anchor (Oct 11 OpenReplay)
     if obs.get("alias_rejected"):
@@ -293,9 +295,10 @@ async def usersim_finish_study(ctx: Context, study_id: str) -> str:
 
 
 SAVED_ACCOUNT_NOTE = (
-    "This user starts SIGNED IN to an existing account on this site (saved by an earlier run). Do not sign up or log "
-    "in: go straight to the task. Only if the site still shows a sign-in page has the saved session expired; then "
-    "sign up as usual with usersim_signup_identity.")
+    "You are ALREADY SIGNED IN to an existing account on this site and the browser is inside the app. Do not sign up, "
+    "do not log in, do not click 'Get started' / 'Sign up' / 'Try free' on the marketing site, and do not call "
+    "usersim_signup_identity: do the task in the app. If you end up on the marketing site, go back into the app "
+    "(e.g. 'Log in' / 'Go to app' / the app URL); you will already be signed in.")
 
 
 @mcp.tool(structured_output=False)
@@ -354,7 +357,7 @@ async def usersim_start_session(
             "rules": sim.rules(),
             "engine_version": sim.study.engine_version,
             "next": "Open watch_url for the human, then run the simulated user (usersim_simulate_user prompt) with usersim_act.",
-            **({"signed_in": SAVED_ACCOUNT_NOTE} if sim.row.get("saved_account") else {}),
+            **({"signed_in": SAVED_ACCOUNT_NOTE} if S.saved_session_active(sim) else {}),
         },
     )
 
@@ -760,6 +763,13 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
         sim = S.get_session(session_id, owner)
         if same_account_as:
             return _reuse_account(sim, same_account_as, owner)
+        if S.saved_session_active(sim) and not sim.row.get("signup_while_signed_in"):
+            # The cell started signed in from a saved state. A second call means the session really did expire.
+            sim.row["signup_while_signed_in"] = 1
+            return json.dumps({"error": "You are already signed in (saved account). " + SAVED_ACCOUNT_NOTE,
+                               "next": "Only if the site shows a login page on every app URL, call this again to sign up."})
+        if S.saved_session_active(sim):
+            sim.row["saved_account"].update(dead=True, expired_mid_run=True)
         if sim.inbox is None:
             shared = _study_account_for(sim, owner)
             if shared:
@@ -1600,7 +1610,14 @@ def L_get(key: str) -> int:
 @mcp.prompt()
 def usersim_simulate_user(session_id: str, persona: str, task: str) -> str:
     """Instructions for the subagent that plays the simulated user."""
-    return SIMULATE_USER_PROMPT.format(
+    sim = S.SESSIONS.get(session_id or "")
+    head = ""
+    if sim is not None and S.saved_session_active(sim):
+        # Check studies Nov 17: the 'signed_in' note only reached start_session's caller; the model it spawned followed
+        # this prompt's signup rules on the marketing homepage and hit reCAPTCHA.
+        start = (sim.row.get("saved_account") or {}).get("start_url") or sim.product_url
+        head = f"IMPORTANT: {SAVED_ACCOUNT_NOTE} The app starts at {start}.\n\n"
+    return head + SIMULATE_USER_PROMPT.format(
         session_id=session_id,
         persona=persona,
         task=task,

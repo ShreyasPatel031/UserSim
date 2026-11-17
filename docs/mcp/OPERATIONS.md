@@ -77,7 +77,12 @@ Since Nov 17 the engine's browsers run on our own GCP signup seeds, not Browserb
   it when free; the start_session reply carries `signed_in`. A cell that ends on a signed-in page (judge) or with a
   verified signup writes its state back. Fill the bucket from a seed's identity disk (site_states/ + profiles/):
   `gcloud compute ssh ubuntu@usersim-signup-seed-N --zone=us-central1-a --tunnel-through-iap --command='~/usersim/.venv/bin/python ~/usersim/scripts/vm/export_seed_states.py --upload'`
-  (dry run without `--upload`; `--force` overwrites domains already in the bucket). These are shared test accounts:
+  (dry run without `--upload`; `--force` overwrites domains already in the bucket).
+  A signed-in cell opens the app URL the state implies (`app.<domain>` or a workspace subdomain), not the marketing
+  homepage, and the simulate-user prompt and every observation say it is already signed in. If that page is a
+  login/signup page the state is dead: it is flagged `dead` in the bucket, its cookies are cleared and the cell starts
+  normally. Which states still sign in (run on a seed, same egress IP):
+  `~/usersim/.venv/bin/python ~/usersim/scripts/check_saved_states.py [--only a.com,b.com] [--mark-dead]`. These are shared test accounts:
   anyone running a study on that site acts inside them.
 - **Capacity:** each seed carries `seed_sessions_per_seed` users, or N for an endpoint written `url#N` (seed 0 is
   e2-standard-2: `#3`). Callers past that wait `seed_wait_s`, then get "busy, retry in ~30 s" and the cell stays
