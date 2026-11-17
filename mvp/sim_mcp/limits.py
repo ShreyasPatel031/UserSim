@@ -63,6 +63,13 @@ DEFAULTS: dict[str, Any] = {
     ],
     "anon_allow_paid_captcha": True,
     "anon_allow_shared_aliases": True,
+    # Where simulated users' browsers run: "seed_vm" (our own seed VMs, reached over an IAP SSH tunnel) or
+    # "browserbase" (kept as a fallback path only). See mvp/sim_mcp/seed_backend.py.
+    "browser_backend": "seed_vm",
+    # CDP endpoints of the seeds as seen from the MCP server (local ends of the IAP tunnels).
+    "seed_cdp_endpoints": ["http://127.0.0.1:19220"],
+    "seed_sessions_per_seed": 4,
+    "seed_wait_s": 45,
 }
 
 _LOCK = threading.Lock()
@@ -84,6 +91,9 @@ def parse(text: str) -> dict[str, Any]:
         if isinstance(want, list):
             if isinstance(val, list) and all(isinstance(v, str) for v in val):
                 out[key] = [v.strip().lower() for v in val if v.strip()]
+        elif isinstance(want, str):
+            if isinstance(val, str) and val.strip():
+                out[key] = val.strip().lower()
         elif isinstance(want, bool):
             if isinstance(val, bool):
                 out[key] = val
@@ -168,6 +178,8 @@ def get(key: str) -> Any:
         try:
             if isinstance(want, list):
                 return [v.strip().lower() for v in env.split(",") if v.strip()]
+            if isinstance(want, str):
+                return env.strip().lower()
             if isinstance(want, bool):
                 return env.strip().lower() in {"1", "true", "yes", "on"}
             return type(want)(float(env)) if isinstance(want, int) else float(env)

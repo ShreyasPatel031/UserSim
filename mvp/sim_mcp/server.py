@@ -1643,7 +1643,17 @@ def mount(app: Any) -> None:
     async def _limits(request: Any) -> Any:
         from mvp.secrets_store import snapshot as secrets_snapshot
 
-        return JSONResponse({**L.snapshot(), "secrets": secrets_snapshot()})
+        import asyncio
+
+        from mvp.sim_mcp import seed_backend
+        from mvp.sim_mcp.sessions import browser_backend
+
+        try:
+            seeds = await asyncio.wait_for(asyncio.to_thread(seed_backend.status, True), timeout=15)
+        except Exception as exc:  # noqa: BLE001
+            seeds = {"error": repr(exc)[:200]}
+        return JSONResponse({**L.snapshot(), "secrets": secrets_snapshot(),
+                             "browsers": {"backend": browser_backend(), **seeds}})
 
     app.router.routes.insert(0, Route("/api/mcp/limits", endpoint=_limits, methods=["GET"]))
     L.load_bundled()

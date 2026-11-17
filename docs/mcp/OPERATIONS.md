@@ -42,6 +42,29 @@ curl -fsSL https://raw.githubusercontent.com/ShreyasPatel031/UserSim/main/mvp/de
 
 This installs `/opt/usersim/bin/vm_pull_deploy.sh`, enables the timer, and **migrates** secret values from `/etc/usersim/env` into Secret Manager (`usersim-<VAR>`).
 
+## Browsers: seed VMs (`browser_backend = seed_vm`)
+
+Since Nov 17 the engine's browsers run on our own GCP signup seeds, not Browserbase (`browser_backend` in
+`limits.json`; `browserbase` is kept only as a fallback path).
+
+- **Seeds:** `usersim-signup-seed-N` (us-central1-a, e2-standard-8, standard provisioning, VPC `usersim-seed-network`,
+  static egress IP on the NIC, durable identity disk). Create / start: `scripts/vm/create_signup_seed.sh`
+  (`SEED_INDEX=N`, `SKIP_PROVISION=1` to only start). ~$0.27/h per seed running (+ ~$0.005/h per static IP).
+- **Seed Chromium:** `usersim-seed-cdp.service` (headed under Xvfb, CDP bound to the seed's **127.0.0.1:9222** only).
+  Install: `gcloud compute ssh usersim-signup-seed-N --zone=us-central1-a --tunnel-through-iap --command='bash ~/usersim/scripts/vm/install_seed_cdp.sh'`.
+  Each simulated user is one isolated browser context; `producthunt.com`, the metadata server and private IPs are
+  blocked inside every context.
+- **Reaching CDP:** on `usersim-grokbot-web`, `usersim-seed-tunnel@N.service` holds an IAP SSH tunnel
+  (`-L 127.0.0.1:1922N:127.0.0.1:9222`). Install: `sudo SEEDS="0 1" bash mvp/deploy/install_seed_tunnels.sh`.
+  The VM's service account needs `roles/iap.tunnelResourceAccessor` and SSH to the seeds. No firewall rule opens
+  9222: the seed VPC only admits `35.235.240.0/20 -> tcp:22` (IAP).
+- **Capacity:** `seed_sessions_per_seed` × healthy seeds; callers past that wait `seed_wait_s`, then get "busy, retry
+  in ~30 s" and the cell stays queued (not counted as a start failure).
+- **Check:** `curl -s https://35-202-98-224.sslip.io/api/mcp/limits | jq .browsers` → backend + each seed's
+  `healthy` / `in_use`.
+- **Add a seed:** create it, install its CDP service, add its tunnel (`SEEDS="… N"`), then add
+  `http://127.0.0.1:1922N` to `seed_cdp_endpoints` by PR.
+
 ## Settings (`limits.json`)
 
 All non-secret runtime knobs live in **[`mvp/sim_mcp/limits.json`](../../mvp/sim_mcp/limits.json)**. See **[CONFIG.md](CONFIG.md)** for the full list.
