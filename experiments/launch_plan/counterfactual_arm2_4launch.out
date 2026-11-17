@@ -1,0 +1,28 @@
+WEEKDAY CODING {(0, 0): 8, (1, 1): 8, (2, 2): 8, (3, 3): 8, (4, 4): 8, (5, 5): 8, (6, 6): 8}
+launches per day by dow {0: {'mean': 23.2, 'min': 18, 'max': 27}, 1: {'mean': 35.5, 'min': 20, 'max': 50}, 2: {'mean': 33.9, 'min': 16, 'max': 47}, 3: {'mean': 33.6, 'min': 21, 'max': 45}, 4: {'mean': 36.5, 'min': 20, 'max': 67}, 5: {'mean': 22.5, 'min': 11, 'max': 37}, 6: {'mean': 19.1, 'min': 8, 'max': 37}}
+rel by actual-rank bucket {(1, 3): 1.037, (4, 5): 0.553, (6, 10): 0.116, (11, 20): -0.195, (21, 999): -0.319}
+real hist_hunter_rel quantiles among hunters with history {0.1: -0.369, 0.5: 0.326, 0.9: 0.554}
+states 56
+== ROW A carried through 4 launches (launches 1-3 on Saturdays), RAW
+ launch 1: P(top5) Saturday 17.6 [10.7, 24.3] | Tue-Thu 3.0 [2.5, 3.6] | cumulative >=1 top5 if this one is Saturday 17.6 [10.7, 24.3] | if this one is Tue-Thu 3.0 [2.5, 3.6]
+ launch 2: P(top5) Saturday 27.5 [19.0, 35.7] | Tue-Thu 10.6 [8.0, 13.5] | cumulative >=1 top5 if this one is Saturday 34.8 [23.8, 45.5] | if this one is Tue-Thu 22.6 [16.0, 29.2]
+ launch 3: P(top5) Saturday 31.6 [21.7, 40.8] | Tue-Thu 11.8 [9.0, 15.1] | cumulative >=1 top5 if this one is Saturday 49.3 [35.4, 62.1] | if this one is Tue-Thu 37.9 [27.2, 48.0]
+ launch 4: P(top5) Saturday 34.2 [23.6, 44.6] | Tue-Thu 13.8 [10.4, 17.6] | cumulative >=1 top5 if this one is Saturday 60.5 [45.2, 73.2] | if this one is Tue-Thu 51.4 [37.8, 63.8]
+== ROW A carried through 4 launches (launches 1-3 on Saturdays), SCALED by 3.7/4.9 for newcomer over-prediction
+ launch 1: P(top5) Saturday 13.3 [8.9, 18.4] | Tue-Thu 2.3 [1.9, 2.7] | cumulative >=1 top5 if this one is Saturday 13.3 [8.9, 18.4] | if this one is Tue-Thu 2.3 [1.9, 2.7]
+ launch 2: P(top5) Saturday 19.5 [13.7, 25.9] | Tue-Thu 7.2 [5.4, 9.5] | cumulative >=1 top5 if this one is Saturday 27.0 [18.9, 36.9] | if this one is Tue-Thu 17.3 [12.6, 22.9]
+ launch 3: P(top5) Saturday 22.0 [15.7, 28.8] | Tue-Thu 7.4 [5.7, 9.6] | cumulative >=1 top5 if this one is Saturday 39.2 [28.3, 51.3] | if this one is Tue-Thu 29.6 [21.6, 39.5]
+ launch 4: P(top5) Saturday 23.3 [16.9, 30.8] | Tue-Thu 8.3 [6.3, 10.8] | cumulative >=1 top5 if this one is Saturday 49.4 [37.1, 62.0] | if this one is Tue-Thu 41.2 [30.5, 53.1]
+== launch 3 and 4 by earlier results (Saturday / Tue-Thu P(top5))
+ launch 3, 0 of 2 earlier in top 5: Saturday 20.9, Tue-Thu 4.5 (unweighted over 6 histories; range Sat 15.7-26.8)
+ launch 3, 1 of 2 earlier in top 5: Saturday 43.5, Tue-Thu 18.8 (unweighted over 6 histories; range Sat 38.2-54.2)
+ launch 3, 2 of 2 earlier in top 5: Saturday 62.7, Tue-Thu 40.0 (unweighted over 3 histories; range Sat 53.3-68.3)
+ launch 4, 0 of 3 earlier in top 5: Saturday 21.3, Tue-Thu 4.2 (unweighted over 10 histories; range Sat 17.6-26.8)
+ launch 4, 1 of 3 earlier in top 5: Saturday 36.5, Tue-Thu 15.9 (unweighted over 12 histories; range Sat 24.5-54.2)
+ launch 4, 2 of 3 earlier in top 5: Saturday 55.9, Tue-Thu 25.6 (unweighted over 9 histories; range Sat 44.0-62.7)
+ launch 4, 3 of 3 earlier in top 5: Saturday 61.5, Tue-Thu 41.6 (unweighted over 4 histories; range Sat 53.3-68.3)
+== every launch posted by an active hunter (median record), row A otherwise
+ Saturday: P(top5) 56.9, top10 83.5; cumulative over 4 launches 57 / 81 / 92 / 97
+ Tue-Thu: P(top5) 24.2, top10 59.1; cumulative over 4 launches 24 / 42 / 56 / 67
+ all days: P(top5) 36.2, top10 68.9; cumulative over 4 launches 36 / 59 / 74 / 83
+ row C (3 makers with reach) Saturday top5 30.2, Tue-Thu 11.8
