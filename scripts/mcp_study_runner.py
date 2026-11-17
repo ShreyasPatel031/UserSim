@@ -1,19 +1,22 @@
 """Full e2e studies through the UserSim MCP (docs/E2E_TEST.md): target + 2 competitors, 6 personas, 6 tasks = 108 cells.
 
 Starts each study with usersim_start_study (empty personas/tasks/competitors are filled by the server's planner), then
-runs every cell as its own simulated user: Claude Haiku 4.5 on Vertex gets the server's usersim_simulate_user prompt and
-the observe / act / finish tools. Uses Anthropic prompt caching (system + tools + rolling last message), append-only
-history, spend caps, a 3-cell pilot per study, and bounded retries.
+runs every cell as its own simulated user: Gemini 2.5 Flash on Vertex (scripts/mcp_runner_gemini.py; no Claude in
+pipelines) gets the server's usersim_simulate_user prompt and the observe / act / finish tools, sees the newest
+screenshot each turn and must answer with exactly one tool call. Append-only history, spend caps, a 3-cell pilot per
+study, and bounded retries.
 
     PYTHONPATH=src:. python scripts/mcp_study_runner.py https://www.clockify.me https://kanbanflow.com https://dynalist.io \\
         --parallel 12 --max-usd 20 --max-cell-usd 0.5 --max-turns 40
 
-Cost (Haiku 4.5 list, with cache hits): about $0.002–0.005 per model turn and roughly $10–15 for a full 108-cell study
-when caps and caching behave as intended. Pilot mode (default) runs one cell per site first and aborts if the projected
+Cost (gemini-2.5-flash Vertex list: $0.30/M input, $2.50/M output incl. thinking): roughly $0.002–0.004 per model turn
+(one screenshot + history in, one call out, thinking budget RUNNER_THINKING_BUDGET=1024), so a few dollars to ~$10 for a
+full 108-cell study. Pilot mode (default) runs one cell per site first and aborts if the projected
 total would exceed --max-usd.
 
 MCP_CLIENT_TOKEN (optional) is sent as a bearer token; without it the anonymous caps in mvp/sim_mcp/limits.json apply
-(anon_max_cells_per_study must be >= 108 for a full study). Needs Vertex credentials for the Haiku driver.
+(anon_max_cells_per_study must be >= 108 for a full study). Needs Vertex credentials (src/auth.py) for Gemini.
+RUNNER_MODEL overrides the model (default gemini-2.5-flash), RUNNER_LOCATION the Vertex location (default global).
 
 Flags:
   --parallel (12)          Max concurrent cells per study
@@ -63,7 +66,7 @@ from mcp_study_runner_lib import (
 )
 
 URL = os.environ.get("USERSIM_MCP_URL", "https://35-202-98-224.sslip.io/mcp")
-MODEL = os.environ.get("RUNNER_MODEL", "claude-haiku-4-5@20251001")
+MODEL = os.environ.get("RUNNER_MODEL", "gemini-2.5-flash")
 SUB_TOOLS = {
     "usersim_observe",
     "usersim_act",
@@ -552,14 +555,12 @@ async def main() -> None:
         help="one session (no study) on the first product",
     )
     a = ap.parse_args()
-    from anthropic import AnthropicVertex
-    from auth import vertex_credentials
+    from mcp_runner_gemini import GeminiDriver, vertex_client
 
-    llm = AnthropicVertex(
-        project_id=os.environ.get("GOOGLE_CLOUD_PROJECT", "[REDACTED]"),
-        region="global",
-        credentials=vertex_credentials(),
-    )
+    if "claude" in MODEL.lower():
+        raise SystemExit("RUNNER_MODEL must be a Gemini model (no Claude in pipelines)")
+    llm = GeminiDriver(vertex_client(os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"),
+                                     os.environ.get("RUNNER_LOCATION", "global")))
     root = Path(a.out)
     root.mkdir(parents=True, exist_ok=True)
     gate = SpendGate(max_usd=a.max_usd, max_retries=a.max_retries)
