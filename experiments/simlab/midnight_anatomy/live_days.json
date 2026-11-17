@@ -1,0 +1,370 @@
+{
+ "per_day": [
+  {
+   "day": "2026-10-29",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    66.66666666666666,
+    60.0,
+    60.0
+   ],
+   "arm2_rebuild": [
+    66.66666666666666,
+    60.0,
+    80.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    40.0,
+    80.0
+   ]
+  },
+  {
+   "day": "2026-10-30",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    66.66666666666666,
+    100.0,
+    90.0
+   ],
+   "arm2_rebuild": [
+    66.66666666666666,
+    100.0,
+    80.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    100.0,
+    80.0
+   ]
+  },
+  {
+   "day": "2026-10-31",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    66.66666666666666,
+    80.0,
+    70.0
+   ],
+   "arm2_rebuild": [
+    66.66666666666666,
+    100.0,
+    60.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    100.0,
+    70.0
+   ]
+  },
+  {
+   "day": "2026-11-01",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    66.66666666666666,
+    60.0,
+    80.0
+   ],
+   "arm2_rebuild": [
+    100.0,
+    60.0,
+    80.0
+   ],
+   "arm3_rebuild": [
+    100.0,
+    60.0,
+    70.0
+   ]
+  },
+  {
+   "day": "2026-11-02",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    33.33333333333333,
+    80.0,
+    90.0
+   ],
+   "arm2_rebuild": [
+    33.33333333333333,
+    80.0,
+    90.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    80.0,
+    90.0
+   ],
+   "before_reveal": [
+    100.0,
+    80.0,
+    90.0
+   ]
+  },
+  {
+   "day": "2026-11-03",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    33.33333333333333,
+    60.0,
+    80.0
+   ],
+   "arm2_rebuild": [
+    66.66666666666666,
+    80.0,
+    80.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    80.0,
+    80.0
+   ],
+   "before_reveal": [
+    100.0,
+    80.0,
+    90.0
+   ]
+  },
+  {
+   "day": "2026-11-04",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    33.33333333333333,
+    40.0,
+    80.0
+   ],
+   "arm2_rebuild": [
+    66.66666666666666,
+    60.0,
+    70.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    60.0,
+    70.0
+   ],
+   "before_reveal": [
+    66.66666666666666,
+    80.0,
+    90.0
+   ]
+  },
+  {
+   "day": "2026-11-08",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    66.66666666666666,
+    60.0,
+    80.0
+   ],
+   "arm2_rebuild": [
+    66.66666666666666,
+    60.0,
+    70.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    60.0,
+    80.0
+   ],
+   "before_reveal": [
+    33.33333333333333,
+    80.0,
+    80.0
+   ]
+  },
+  {
+   "day": "2026-11-09",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    33.33333333333333,
+    40.0,
+    70.0
+   ],
+   "arm2_rebuild": [
+    33.33333333333333,
+    60.0,
+    80.0
+   ],
+   "arm3_rebuild": [
+    33.33333333333333,
+    60.0,
+    80.0
+   ],
+   "before_reveal": [
+    66.66666666666666,
+    80.0,
+    90.0
+   ]
+  },
+  {
+   "day": "2026-11-10",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    33.33333333333333,
+    80.0,
+    60.0
+   ],
+   "arm2_rebuild": [
+    66.66666666666666,
+    80.0,
+    70.0
+   ],
+   "arm3_rebuild": [
+    66.66666666666666,
+    80.0,
+    70.0
+   ],
+   "before_reveal": [
+    66.66666666666666,
+    60.0,
+    80.0
+   ]
+  },
+  {
+   "day": "2026-11-11",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    100.0,
+    60.0,
+    80.0
+   ],
+   "arm2_rebuild": [
+    100.0,
+    80.0,
+    80.0
+   ],
+   "arm3_rebuild": [
+    100.0,
+    80.0,
+    80.0
+   ],
+   "before_reveal": [
+    100.0,
+    80.0,
+    90.0
+   ]
+  },
+  {
+   "day": "2026-11-12",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    33.33333333333333,
+    20.0,
+    60.0
+   ],
+   "arm2_rebuild": [
+    33.33333333333333,
+    40.0,
+    40.0
+   ],
+   "arm3_rebuild": [
+    33.33333333333333,
+    40.0,
+    40.0
+   ],
+   "before_reveal": [
+    66.66666666666666,
+    80.0,
+    50.0
+   ]
+  },
+  {
+   "day": "2026-11-13",
+   "published_model": "earlier 00:05 model (clean_nosite)",
+   "published": [
+    66.66666666666666,
+    80.0,
+    80.0
+   ],
+   "before_reveal": [
+    66.66666666666666,
+    100.0,
+    80.0
+   ]
+  },
+  {
+   "day": "2026-11-14",
+   "published_model": "arm 2",
+   "published": [
+    66.66666666666666,
+    80.0,
+    60.0
+   ],
+   "before_reveal": [
+    66.66666666666666,
+    80.0,
+    80.0
+   ]
+  },
+  {
+   "day": "2026-11-15",
+   "published_model": "arm 2",
+   "published": [
+    66.66666666666666,
+    40.0,
+    80.0
+   ],
+   "before_reveal": [
+    100.0,
+    100.0,
+    90.0
+   ]
+  }
+ ],
+ "published, all live days": {
+  "days": 15,
+  "top3": 55.6,
+  "top5": 62.7,
+  "top10": 74.7
+ },
+ "published arm 2 days (Nov 14-15)": {
+  "days": 2,
+  "top3": 66.7,
+  "top5": 60.0,
+  "top10": 70.0
+ },
+ "arm 2 rebuild, live days to Nov 12": {
+  "days": 12,
+  "top3": 63.9,
+  "top5": 71.7,
+  "top10": 73.3
+ },
+ "arm 3 rebuild, live days to Nov 12": {
+  "days": 12,
+  "top3": 66.7,
+  "top5": 70.0,
+  "top10": 74.2
+ },
+ "before-reveal replay, Nov 2-15": {
+  "days": 11,
+  "top3": 75.8,
+  "top5": 81.8,
+  "top10": 82.7
+ },
+ "same days (Nov 2-12, rebuild and replay)": {
+  "published": {
+   "days": 8,
+   "top3": 45.8,
+   "top5": 55.0,
+   "top10": 75.0
+  },
+  "arm2_rebuild": {
+   "days": 8,
+   "top3": 58.3,
+   "top5": 67.5,
+   "top10": 72.5
+  },
+  "arm3_rebuild": {
+   "days": 8,
+   "top3": 62.5,
+   "top5": 67.5,
+   "top10": 73.8
+  },
+  "before_reveal": {
+   "days": 8,
+   "top3": 75.0,
+   "top5": 77.5,
+   "top10": 82.5
+  }
+ }
+}
