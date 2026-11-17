@@ -56,7 +56,9 @@ one(
         (
             "    if getattr(R, \"upv_capped\", False) and _uh > len(ups):  # 1955Z: only when the server endCursor chain itself ended short (no 190 heuristic)\n"
             "        res[\"upvotes\"].update(upvotes_capped=True, cap=len(ups), complete_not_visible=True, status=\"complete_not_visible\", limit_owner=\"PH\")",
-            "    _uv = ((res.get(\"run\") or {}).get(\"timing\") or {}).get(\"upvotes\", {}).get(\"paging\") or getattr(R, \"last_paging\", None) or {})\n"
+            "    _run = res.get(\"run\") or {}\n"
+            "    _tm = _run.get(\"timing\") or {}\n"
+            "    _uv = (_tm.get(\"upvotes\") or {}).get(\"paging\") or getattr(R, \"last_paging\", None) or {}\n"
             "    _ph_end = _uv.get(\"ended\") in (\"server_end\", \"hasNextPage_false\") or trail_has_next_false(_uv)\n"
             "    if getattr(R, \"upv_capped\", False) and _uh > len(ups) and not _ph_end:  # UPVOTES_PH_END_PATCH\n"
             "        res[\"upvotes\"].update(upvotes_capped=True, cap=len(ups), complete_not_visible=True, status=\"complete_not_visible\", limit_owner=\"PH\")",

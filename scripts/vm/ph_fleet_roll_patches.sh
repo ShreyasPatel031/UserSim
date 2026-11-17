@@ -17,6 +17,7 @@ D="$ROOT/scripts/vm/reuse_overlays"
 # Never inherit PH_GO_MODE from upvote_refresh in the parent shell (that pushed repullupvotes GO fleet-wide).
 GO_TOKEN="pdeep:fleet-${RUN_ID}"
 UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+FLEET_LIVE_SLOTS="${FLEET_LIVE_SLOTS:-39}"
 UPVOTE_GO=""
 UPVOTE_STRATEGY="${PH_UPVOTE_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_upvote_refresh.env}"
 [[ -f "$ART/upvote_go.token" ]] && UPVOTE_GO="$(tr -d '\n' <"$ART/upvote_go.token")"
@@ -37,6 +38,12 @@ sudo cp -f "$TMP"/*.py /opt/ph/overlays/ 2>/dev/null || true
 [[ -s "$TMP/ensure_geoip.sh" ]] && sudo install -m 755 "$TMP/ensure_geoip.sh" /opt/ph/overlays/ensure_geoip.sh
 [[ -s "$TMP/proxy_geo_sync.sh" ]] && sudo install -m 755 "$TMP/proxy_geo_sync.sh" /opt/ph/overlays/proxy_geo_sync.sh
 [[ -x /opt/ph/overlays/proxy_geo_sync.sh ]] && { B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-); PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/proxy_geo_sync.sh >>/opt/ph/reuse/supervisor.log 2>&1 || true; }
+if [[ -x /opt/venv/bin/python ]]; then
+  for _p in patch_upvotes_ph_end.py patch_fix_ph_batch_syntax.py; do
+    [[ -f /opt/ph/overlays/$_p ]] && sudo /opt/venv/bin/python /opt/ph/overlays/$_p /opt/ph/reuse >>/opt/ph/reuse/supervisor.log 2>&1 || true
+  done
+  sudo /opt/venv/bin/python -m py_compile /opt/ph/reuse/ph_batch.py 2>>/opt/ph/reuse/supervisor.log || true
+fi
 sudo cp -f "$TMP/fleet_optimize.env" /opt/ph/strategy.env 2>/dev/null || true
 sudo rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/same_tok_retry_at /opt/ph/reuse/cf_backoff_n 2>/dev/null || true
 if [[ "${PRESERVE_QUEUE_CACHE:-0}" != 1 ]]; then
@@ -54,6 +61,10 @@ echo ROLL_OK'
 while IFS=$'\t' read -r slot _port; do
   [[ -z "$slot" || "$slot" == \#* ]] && continue
   if [[ -n "${ONLY_SLOTS:-}" && " ${ONLY_SLOTS} " != *" $slot "* ]]; then continue; fi
+  if [[ " ${FLEET_LIVE_SLOTS} " == *" $slot "* ]]; then
+    echo "==> skip live slot $slot"
+    continue
+  fi
   name="feeder-fleet-${RUN_ID}-${slot}"
   st="$("${GC[@]}" compute instances describe "$name" --zone="$PACE_ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
   [[ "$st" == RUNNING ]] || continue
