@@ -2351,3 +2351,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - Nov 16 21:36 UTC hourly check + mailbox checked. Leaderboard live; fleet above.
 - Nov 16 22:36 UTC hourly check + mailbox checked. Leaderboard live; fleet above.
 - Nov 16 23:37 UTC hourly check + mailbox checked. Leaderboard live. Fleet collapsed again (0.6/min, 9 stale, 2 dead); no reply to 22:36Z; upvote_refresh 0 stamped after 23 h. Wake sent; escalated to Shreyas.
+- Nov 17 00:37 UTC hourly check + mailbox checked. Leaderboard live. Fleet 4.1/min, 7 stale, silent since 15:2xZ; re-woken (tonight's close reads first). Store 88,950 complete after the merge-gap drain; store_v3 rebuild started 00:04Z, publish ~01:00Z.
