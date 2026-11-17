@@ -1,0 +1,621 @@
+{
+ "day": "2026-11-17",
+ "order": [
+  "1304738",
+  "1310455",
+  "1318920",
+  "1310525",
+  "1257199",
+  "1303191",
+  "1316291",
+  "1304887",
+  "1317811",
+  "1319349"
+ ],
+ "cards": {
+  "1304738": {
+   "name": "EkLine",
+   "tagline": "Get your API discovered, recommended, and used by AI agents",
+   "people_scored": 300,
+   "no_profile_text": 26,
+   "silhouette": 0.039,
+   "groups": [
+    {
+     "name": "Marketing Leads",
+     "who": "They lead marketing campaigns and drive business growth for brands.",
+     "share": 0.47,
+     "n_people": 130,
+     "evidence": {
+      "headline_words": [
+       "brands",
+       "results",
+       "high",
+       "strategic",
+       "creating",
+       "financial"
+      ],
+      "topics": [
+       "Software Engineering"
+      ]
+     }
+    },
+    {
+     "name": "Open Source Founders",
+     "who": "They build open source projects and AI tools, often as founders.",
+     "share": 0.53,
+     "n_people": 144,
+     "evidence": {
+      "headline_words": [
+       "source",
+       "open",
+       "open source",
+       "ai tools",
+       "founder",
+       "tech"
+      ],
+      "topics": [
+       "Open Source",
+       "GitHub"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "SearchSeal",
+    "Chatway MCP",
+    "Draft"
+   ],
+   "like": "Love that it audits docs and GitHub to fix what AI misunderstands.",
+   "dislike": "Shame it doesn't mention how it handles AI's inconsistent responses."
+  },
+  "1310455": {
+   "name": "Creatify Max",
+   "tagline": "Your ad teammate, from strategy to creation to launch",
+   "people_scored": 300,
+   "no_profile_text": 60,
+   "silhouette": 0.054,
+   "groups": [
+    {
+     "name": "Small Business Owners",
+     "who": "They build and run their own businesses, often handling many roles themselves.",
+     "share": 0.66,
+     "n_people": 159,
+     "evidence": {
+      "headline_words": [
+       "business",
+       "dev",
+       "technology",
+       "systems",
+       "build",
+       "focused"
+      ],
+      "topics": [
+       "GitHub",
+       "Open Source"
+      ]
+     }
+    },
+    {
+     "name": "AI crowd",
+     "who": "These are independent developers and co-founders creating new AI applications and platforms.",
+     "share": 0.34,
+     "n_people": 81,
+     "evidence": {
+      "headline_words": [
+       "product designer",
+       "ai product",
+       "turn",
+       "care",
+       "product",
+       "exploring ai"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "AI Media Buyer By Creatify",
+    "Wisry",
+    "Sami"
+   ],
+   "like": "Love that it handles video ad creation and campaign setup on Meta/TikTok, not just monitoring.",
+   "dislike": "Shame it only supports Meta and TikTok, unlike some competitors with broader platform reach."
+  },
+  "1318920": {
+   "name": "VINC",
+   "tagline": "Bring your filmmaking vision to life.",
+   "people_scored": 300,
+   "no_profile_text": 60,
+   "silhouette": 0.069,
+   "groups": [
+    {
+     "name": "AI Founders",
+     "who": "They build AI apps and care about customer satisfaction and structured data.",
+     "share": 0.26,
+     "n_people": 62,
+     "evidence": {
+      "headline_words": [
+       "care",
+       "product designer",
+       "exploring ai",
+       "data",
+       "turn",
+       "app"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Marketing Leads",
+     "who": "They focus on growth, content, and GTM strategy for tech products.",
+     "share": 0.74,
+     "n_people": 178,
+     "evidence": {
+      "headline_words": [
+       "hi",
+       "business",
+       "focused",
+       "tech",
+       "manager",
+       "technology"
+      ],
+      "topics": [
+       "GitHub",
+       "Open Source"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "OpenArt Director",
+    "Narrative",
+    "Visla AI Director Mode"
+   ],
+   "like": "Love that it handles SFX and BGM, unlike other director tools.",
+   "dislike": "Shame it doesn't mention importing user footage or integrating with other editors."
+  },
+  "1310525": {
+   "name": "Link.bio",
+   "tagline": "Paste your link, we build your page. Your AI runs it.",
+   "people_scored": 300,
+   "no_profile_text": 48,
+   "silhouette": 0.041,
+   "groups": [
+    {
+     "name": "Indie Hackers",
+     "who": "They build web apps and SaaS, often using AI, and share growth strategies.",
+     "share": 0.39,
+     "n_people": 99,
+     "evidence": {
+      "headline_words": [
+       "software engineer",
+       "engineering",
+       "engineer",
+       "software",
+       "founder",
+       "stack"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    },
+    {
+     "name": "Growth Marketers",
+     "who": "They focus on digital marketing, social media campaigns, and client acquisition systems.",
+     "share": 0.61,
+     "n_people": 153,
+     "evidence": {
+      "headline_words": [
+       "marketing",
+       "passionate",
+       "helping",
+       "experience",
+       "driven",
+       "growth"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "YourSitee",
+    "Wowable",
+    "Repaint Socials"
+   ],
+   "like": "Love that AI writes the bio, buttons, and theme in seconds from just a link.",
+   "dislike": "It's less about building from scattered content than Wowable or Repaint Socials."
+  },
+  "1257199": {
+   "name": "TheBold",
+   "tagline": "Turn execution into meetings with investors",
+   "people_scored": 300,
+   "no_profile_text": 72,
+   "silhouette": 0.084,
+   "groups": [
+    {
+     "name": "Startup Founders",
+     "who": "They are founders, CEOs, and entrepreneurs building and scaling their ventures.",
+     "share": 0.12,
+     "n_people": 28,
+     "evidence": {
+      "headline_words": [
+       "ai hey",
+       "acquired",
+       "founder",
+       "founder ceo",
+       "ceo",
+       "entrepreneur"
+      ],
+      "topics": [
+       "Social Media"
+      ]
+     }
+    },
+    {
+     "name": "Software Developers",
+     "who": "They are developers, engineers, and designers building software and exploring new ideas.",
+     "share": 0.88,
+     "n_people": 200,
+     "evidence": {
+      "headline_words": [
+       "years",
+       "real",
+       "software",
+       "design",
+       "developer",
+       "ideas"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Interactpitch",
+    "Ayven",
+    "Pitchfire for Startups"
+   ],
+   "like": "Love that it connects execution directly to investor meetings, unlike others.",
+   "dislike": "Shame it doesn't mention how many investors are on the platform."
+  },
+  "1303191": {
+   "name": "Trellus",
+   "tagline": "Power and parallel dial from the list already in your CRM",
+   "people_scored": 300,
+   "no_profile_text": 34,
+   "silhouette": -0.007,
+   "groups": [
+    {
+     "name": "AI Founders",
+     "who": "They are founders and CEOs building AI businesses.",
+     "share": 0.13,
+     "n_people": 35,
+     "evidence": {
+      "headline_words": [
+       "ai founder",
+       "founder",
+       "founder ceo",
+       "ceo",
+       "ex",
+       "helping"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Sales Growth Leads",
+     "who": "They are working on fun projects, often in sales or growth.",
+     "share": 0.1,
+     "n_people": 26,
+     "evidence": {
+      "headline_words": [
+       "fun",
+       "stuff",
+       "builder working",
+       "000",
+       "working",
+       "training"
+      ],
+      "topics": [
+       "Sales"
+      ]
+     }
+    },
+    {
+     "name": "Operations Managers",
+     "who": "They manage operations, HR, or marketing for various businesses.",
+     "share": 0.25,
+     "n_people": 66,
+     "evidence": {
+      "headline_words": [
+       "strategic",
+       "services",
+       "specializing",
+       "group",
+       "driving",
+       "managing"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Indie App Developers",
+     "who": "They are shipping apps and tools, often as solo entrepreneurs.",
+     "share": 0.52,
+     "n_people": 139,
+     "evidence": {
+      "headline_words": [
+       "maker",
+       "indie",
+       "shipping",
+       "app",
+       "tools",
+       "builder"
+      ],
+      "topics": [
+       "Open Source",
+       "GitHub"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "PollyReach",
+    "The Agentic Sales Engine by Crono",
+    "SaleSmartly"
+   ],
+   "like": "Love that it dials from many CRMs and logs calls back to the record.",
+   "dislike": "Shame it doesn't mention safeguards against misuse like PollyReach users asked."
+  },
+  "1316291": {
+   "name": "RankSpot",
+   "tagline": "Pay-as-you-go SEO and AI Search execution layer for agents",
+   "people_scored": 300,
+   "no_profile_text": 67,
+   "silhouette": 0.056,
+   "groups": [
+    {
+     "name": "AI Founders",
+     "who": "They build AI products and seek automation for their marketing efforts.",
+     "share": 0.28,
+     "n_people": 65,
+     "evidence": {
+      "headline_words": [
+       "founder",
+       "ml",
+       "ai",
+       "com",
+       "intersection",
+       "ready"
+      ],
+      "topics": [
+       "SaaS"
+      ]
+     }
+    },
+    {
+     "name": "SEO Strategists",
+     "who": "They optimize websites for search engines and manage content creation.",
+     "share": 0.72,
+     "n_people": 168,
+     "evidence": {
+      "headline_words": [
+       "experience",
+       "digital",
+       "software",
+       "developer",
+       "tools",
+       "software engineer"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "RankAI",
+    "RankControl",
+    "Rankfender"
+   ],
+   "like": "Pay-as-you-go model avoids subscriptions, only paying for what's used.",
+   "dislike": "No free audit like Free AI SEO Auditor, just a free article."
+  },
+  "1304887": {
+   "name": "Versine",
+   "tagline": "Let your AI agent send and receive money",
+   "people_scored": 300,
+   "no_profile_text": 33,
+   "silhouette": -0.001,
+   "groups": [
+    {
+     "name": "Indie SaaS founders",
+     "who": "They build and ship software products, often as solopreneurs or small teams.",
+     "share": 0.52,
+     "n_people": 139,
+     "evidence": {
+      "headline_words": [
+       "maker",
+       "indie",
+       "tools",
+       "make",
+       "self",
+       "builder"
+      ],
+      "topics": [
+       "Open Source",
+       "GitHub"
+      ]
+     }
+    },
+    {
+     "name": "Operations Directors",
+     "who": "They manage and optimize business operations, focusing on efficiency and strategic initiatives.",
+     "share": 0.24,
+     "n_people": 65,
+     "evidence": {
+      "headline_words": [
+       "strategic",
+       "services",
+       "director",
+       "operations",
+       "management",
+       "group"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Startup Founders",
+     "who": "They lead AI companies, often with a background in engineering or product development.",
+     "share": 0.24,
+     "n_people": 63,
+     "evidence": {
+      "headline_words": [
+       "ai founder",
+       "founder ceo",
+       "founder",
+       "ex",
+       "ceo",
+       "agentic"
+      ],
+      "topics": [
+       "Video"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Agentcard",
+    "Agentcard for companies",
+    "PieterPost MCP"
+   ],
+   "like": "Love that recipients don't need an account, cashing out straight to their bank.",
+   "dislike": "Still need to approve transfers with a passkey, not fully autonomous for new contacts."
+  },
+  "1317811": {
+   "name": "superlog",
+   "tagline": "Finds the production bugs your monitoring never sees",
+   "people_scored": 300,
+   "no_profile_text": 33,
+   "silhouette": -0.01,
+   "groups": [
+    {
+     "name": "Open Source Leads",
+     "who": "They lead development, often in open source, and build new things.",
+     "share": 0.1,
+     "n_people": 27,
+     "evidence": {
+      "headline_words": [
+       "lead",
+       "talk",
+       "happy talk",
+       "firm",
+       "builder",
+       "cto"
+      ],
+      "topics": [
+       "Open Source",
+       "Development",
+       "GitHub",
+       "API"
+      ]
+     }
+    },
+    {
+     "name": "Software Engineers",
+     "who": "They build and ship software, often using AI and developer tools.",
+     "share": 0.64,
+     "n_people": 171,
+     "evidence": {
+      "headline_words": [
+       "engineer",
+       "software",
+       "ai",
+       "shipping",
+       "tools",
+       "app"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Marketing Managers",
+     "who": "They manage operations, marketing, and drive business results.",
+     "share": 0.26,
+     "n_people": 69,
+     "evidence": {
+      "headline_words": [
+       "operations",
+       "management",
+       "expert",
+       "experience",
+       "specialist",
+       "strong"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Superlog Responder",
+    "Human Behavior",
+    "BugShot"
+   ],
+   "like": "Love that it finds bugs monitoring misses and hands you a fix.",
+   "dislike": "Still need to know how it prevents incorrect or non-compliant fixes."
+  },
+  "1319349": {
+   "name": "Clamor",
+   "tagline": "Turns social signals into actionable insights",
+   "people_scored": 300,
+   "no_profile_text": 77,
+   "silhouette": 0.076,
+   "groups": [
+    {
+     "name": "Marketing Founders",
+     "who": "They are founders and CEOs building and growing marketing-focused businesses.",
+     "share": 0.23,
+     "n_people": 52,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "university",
+       "founder",
+       "builder",
+       "entrepreneur"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Software Engineers",
+     "who": "They are engineers and developers building and shipping software solutions.",
+     "share": 0.77,
+     "n_people": 171,
+     "evidence": {
+      "headline_words": [
+       "software",
+       "build",
+       "real",
+       "tools",
+       "digital",
+       "growth"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Scaloom AI",
+    "Syncly Social",
+    "Human Behavior"
+   ],
+   "like": "Analyzing public social accounts without a login is a smart move.",
+   "dislike": "No free tier mentioned, unlike DodoForm's generous offering."
+  }
+ },
+ "usd": 0.0185,
+ "method": "groups clustered inside each launch's top-300 likely backers (headline/bio words + upvote topics), named by Gemini; competitors = most similar earlier launches; like/dislike lines written by Gemini from competitors' real comment themes"
+}
