@@ -981,14 +981,22 @@ async def _open_browser(sim: SimSession) -> None:
         sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()
         await _wire_context(sim)
     await _publish_live_view(sim)
+    start_url = sim.product_url
+    if sim.row.get("saved_account"):
+        from mvp.sim_mcp import site_states
+
+        start_url = site_states.app_url_for(saved, site_states.domain_of(sim.product_url)) or sim.product_url
+        sim.row["saved_account"]["start_url"] = start_url
     try:
-        await sim.page.goto(sim.product_url, wait_until="domcontentloaded", timeout=25000)
+        await sim.page.goto(start_url, wait_until="domcontentloaded", timeout=25000)
     except Exception as exc:  # noqa: BLE001
         # A slow page that committed is still usable; nothing at all is not.
         if not (sim.page.url or "").startswith("http"):
             raise
         print(f"[mcp {sim.id[:8]}] goto slow: {exc!r}", flush=True)
     await _settle(sim.page)
+    if sim.row.get("saved_account"):
+        await _check_saved_session(sim)
     opened = time.time()
     row = sim.row
     row["status"] = "running"
@@ -1015,6 +1023,43 @@ async def _wire_context(sim: SimSession) -> None:
         pass
     await ensure_viewport(sim.page)
     sim.page.set_default_timeout(10000)
+
+
+async def _check_saved_session(sim: SimSession) -> None:
+    """The cell started from a saved signed-in state on the app URL. If the site still shows a login / signup page the
+    state is dead: flag it in the bucket, drop its cookies and start this cell like any other (marketing homepage,
+    sign up). Check studies Nov 17: Sep-Oct states were loaded but never tested."""
+    from mvp.sim_mcp import site_states
+
+    await asyncio.sleep(1.5)  # app shells redirect to /login a moment after domcontentloaded
+    try:
+        pw_box = await sim.page.locator("input[type=password]:visible").count() > 0
+    except Exception:  # noqa: BLE001
+        pw_box = False
+    url = sim.page.url or ""
+    info = sim.row["saved_account"]
+    if not site_states.looks_signed_out(url, pw_box):
+        info["signed_in"] = True
+        return
+    info.update(signed_in=False, dead=True, landed=url[:200])
+    await asyncio.to_thread(site_states.mark_dead, site_states.domain_of(sim.product_url), f"opened {url[:150]}")
+    sim.saved_state = None
+    try:
+        await sim.context.clear_cookies()
+        await sim.page.evaluate("try { localStorage.clear(); sessionStorage.clear(); } catch (e) {}")
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        await sim.page.goto(sim.product_url, wait_until="domcontentloaded", timeout=25000)
+    except Exception:  # noqa: BLE001
+        if not (sim.page.url or "").startswith("http"):
+            raise
+    await _settle(sim.page)
+
+
+def saved_session_active(sim: Any) -> bool:
+    info = (getattr(sim, "row", None) or {}).get("saved_account") or {}
+    return bool(info) and not info.get("dead")
 
 
 async def _new_seed_context(sim: SimSession, storage_state: Any = None) -> None:
