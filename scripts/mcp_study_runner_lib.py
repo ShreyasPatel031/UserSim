@@ -29,7 +29,10 @@ def usd_per_mtok(key: str) -> float:
 
 
 def usage_to_usd(usage: Any) -> float:
-    """Anthropic usage: bill cache write/read separately from remaining input."""
+    """USD for one model call. Drivers that price their own usage (mcp_runner_gemini.Usage) carry it as .usd;
+    otherwise Anthropic-style usage: bill cache write/read separately from remaining input."""
+    if isinstance(getattr(usage, "usd", None), (int, float)):
+        return float(usage.usd)
     inp = int(getattr(usage, "input_tokens", 0) or 0)
     out = int(getattr(usage, "output_tokens", 0) or 0)
     cache_write = int(getattr(usage, "cache_creation_input_tokens", 0) or 0)
