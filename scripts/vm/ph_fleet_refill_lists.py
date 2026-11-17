@@ -5,7 +5,8 @@ VMs must never discover "already done" people one gsutil call at a time. When ha
 raw/_cursor/fleet_work_queue.txt (population rewrites it after every merge cycle) changes, or FORCE=1, this:
   1. writes people_live/have_complete.txt (handles with complete=true) for the pdeep in-memory skip;
   2. builds the work list: the work queue in file order, minus complete, deduped (need_list too only when
-     FLEET_REFILL_NEED_LIST=1);
+     FLEET_REFILL_NEED_LIST=1), minus raw/_cursor/signedin_needed.txt: those people only lack a signed-in upvotes
+     queue entry, so they get that entry (_pacetest/shared/_signedin_upvotes/<h>.json) instead of a whole re-pull;
   3. partitions it round-robin over the non-upvote slots in slots.tsv and uploads pdeep_list.<vm>.txt.
 Prints one JSON summary line.
 """
@@ -26,6 +27,8 @@ G = f"gs://{BKT}/usersim_sim/raw"
 LIVE = f"{G}/ph_population/people_live"
 UPVOTE = set((os.environ.get("FLEET_UPVOTE_SLOTS") or os.environ.get("UPVOTE_SLOTS") or "9 27 38").split())
 STATE = ART / "refill_state.json"
+SIGNEDIN_NEEDED = f"{G}/_cursor/signedin_needed.txt"
+SIGNEDIN_Q = f"{G}/_pacetest/shared/_signedin_upvotes"
 
 
 def gs(*a: str, check: bool = True) -> str:
@@ -51,6 +54,7 @@ def main() -> int:
     sig = {
         "have_index": generation(f"{LIVE}/have_index.jsonl"),
         "need_list": generation(f"{LIVE}/need_list.jsonl"),
+        "signedin_needed": generation(SIGNEDIN_NEEDED),
         "queue": queue,
         "queue_gen": generation(queue) if queue else "",
         "slots": sorted(
@@ -66,11 +70,15 @@ def main() -> int:
         t = Path(td)
         gs("cp", f"{LIVE}/have_index.jsonl", str(t / "have_index.jsonl"))
         complete: set[str] = set()
+        upv: dict[str, dict] = {}
         for ln in (t / "have_index.jsonl").open():
             try:
                 j = json.loads(ln)
             except Exception:
                 continue
+            hh = (j.get("handle") or "").lower().lstrip("@")
+            if hh:
+                upv[hh] = ((j.get("tabs") or {}).get("upvotes") or {})
             if j.get("complete"):
                 h = (j.get("handle") or "").lower().lstrip("@")
                 if h:
@@ -101,7 +109,23 @@ def main() -> int:
         tier = {"likely": 0, "active_rest": 1, "other": 2}
         rows.sort(key=lambda x: (tier.get(x.get("tier"), 3), x.get("rank") or 1e9))
         work += [(x.get("handle") or "").lower().lstrip("@") for x in rows]
-        work = [h for h in dict.fromkeys(work) if h and h not in complete]
+        signedin: list[str] = []
+        gs("cp", SIGNEDIN_NEEDED, str(t / "signedin_needed.txt"), check=False)
+        if (t / "signedin_needed.txt").is_file():
+            signedin = [h for h in (handle(ln) for ln in (t / "signedin_needed.txt").read_text().splitlines()
+                                    if not ln.lstrip().startswith("#")) if h]
+        queued = {u.rsplit("/", 1)[-1][:-5].lower() for u in gs("ls", f"{SIGNEDIN_Q}/", check=False).split() if u.endswith(".json")}
+        to_queue = [h for h in dict.fromkeys(signedin) if h not in queued]
+        if to_queue:
+            sq = t / "sq"
+            sq.mkdir()
+            now = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            for h in to_queue:
+                u = upv.get(h) or {}
+                (sq / f"{h}.json").write_text(json.dumps({"header": u.get("header"), "got": u.get("n"), "utc": now, "vm": "fleet-refill"}))
+            gs("cp", *[str(p) for p in sorted(sq.iterdir())], f"{SIGNEDIN_Q}/")
+        skip = complete | set(signedin)
+        work = [h for h in dict.fromkeys(work) if h and h not in skip]
 
         slots = [s for s in sorted(sig["slots"], key=int) if s not in UPVOTE]
         parts = {s: work[i :: len(slots)] for i, s in enumerate(slots)} if slots else {}
@@ -124,6 +148,8 @@ def main() -> int:
         "queue_handles": n_queue,
         "need_rows": len(rows),
         "work": len(work),
+        "signedin_needed": len(set(signedin)),
+        "signedin_queued_now": len(to_queue),
         "slots": len(parts),
         "per_slot": round(len(work) / max(1, len(parts)), 1),
     }
