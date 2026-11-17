@@ -3,8 +3,9 @@
 
 VMs must never discover "already done" people one gsutil call at a time. When have_index.jsonl or
 raw/_cursor/fleet_work_queue.txt (population rewrites it after every merge cycle) changes, or FORCE=1, this:
-  1. writes people_live/have_complete.txt (handles with complete=true) for the pdeep in-memory skip;
-  2. builds the work list: the work queue in file order, minus complete, deduped (need_list too only when
+  1. writes people_live/have_complete.txt (handles with complete=true, minus anyone in the work queue) for the pdeep
+     in-memory skip;
+  2. builds the work list: the work queue in file order (complete people kept: population queues them for re-reads), deduped (need_list too only when
      FLEET_REFILL_NEED_LIST=1), minus raw/_cursor/signedin_needed.txt: those people only lack a signed-in upvotes
      queue entry, so they get that entry (_pacetest/shared/_signedin_upvotes/<h>.json) instead of a whole re-pull;
   3. partitions it round-robin over the non-upvote slots in slots.tsv and uploads pdeep_list.<vm>.txt.
@@ -83,9 +84,6 @@ def main() -> int:
                 h = (j.get("handle") or "").lower().lstrip("@")
                 if h:
                     complete.add(h)
-        (t / "have_complete.txt").write_text("\n".join(sorted(complete)) + "\n")
-        gs("cp", str(t / "have_complete.txt"), f"{LIVE}/have_complete.txt")
-
         work: list[str] = []
         n_queue = 0
         if queue:
@@ -97,6 +95,11 @@ def main() -> int:
                 if h:
                     work.append(h)
             n_queue = len(work)
+        # Population puts complete people in the queue on purpose (refresh_priority re-reads); pdeep skips anyone in
+        # have_complete.txt, so queued people are left out of it.
+        requeued = complete & set(work) if os.environ.get("FLEET_REFILL_SKIP_COMPLETE_QUEUED") != "1" else set()
+        (t / "have_complete.txt").write_text("\n".join(sorted(complete - requeued)) + "\n")
+        gs("cp", str(t / "have_complete.txt"), f"{LIVE}/have_complete.txt")
         rows = []
         if os.environ.get("FLEET_REFILL_NEED_LIST") == "1":
             gs("cp", f"{LIVE}/need_list.jsonl", str(t / "need_list.jsonl"), check=False)
@@ -124,7 +127,7 @@ def main() -> int:
                 u = upv.get(h) or {}
                 (sq / f"{h}.json").write_text(json.dumps({"header": u.get("header"), "got": u.get("n"), "utc": now, "vm": "fleet-refill"}))
             gs("cp", *[str(p) for p in sorted(sq.iterdir())], f"{SIGNEDIN_Q}/")
-        skip = complete | set(signedin)
+        skip = (complete - requeued) | set(signedin)
         work = [h for h in dict.fromkeys(work) if h and h not in skip]
 
         slots = [s for s in sorted(sig["slots"], key=int) if s not in UPVOTE]
@@ -146,6 +149,7 @@ def main() -> int:
         "complete": len(complete),
         "queue": queue.rsplit("/", 1)[-1],
         "queue_handles": n_queue,
+        "complete_requeued": len(requeued),
         "need_rows": len(rows),
         "work": len(work),
         "signedin_needed": len(set(signedin)),
