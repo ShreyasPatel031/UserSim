@@ -726,10 +726,26 @@ def browser_backend() -> str:
     return "browserbase" if val == "browserbase" else "seed_vm"
 
 
-def _create_seed(study_id: str) -> Any:
+def _create_seed(study_id: str, prefer: str = "") -> Any:
     from mvp.sim_mcp import seed_backend
 
-    return seed_backend.acquire()
+    return seed_backend.acquire(prefer=prefer)
+
+
+def _saved_account_for(sim: SimSession) -> tuple[dict[str, Any] | None, str]:
+    """(saved signed-in entry for this cell's site, preferred seed endpoint). None when the feature is off, the task is
+    the signup itself, or there is no live saved state. Blocking (GCS): call in a thread."""
+    from mvp.sim_mcp import site_states
+
+    if not site_states.enabled() or not site_states.eligible(sim.task):
+        return None, ""
+    domain = site_states.domain_of(sim.product_url)
+    entry = site_states.load(domain)
+    if not entry:
+        return None, ""
+    from mvp.sim_mcp import limits
+
+    return entry, site_states.seed_endpoint(str(entry.get("seed") or ""), list(limits.get("seed_cdp_endpoints") or []))
 
 
 def _create_bb(study_id: str) -> Any:
@@ -934,7 +950,11 @@ async def _open_browser(sim: SimSession) -> None:
 
     t0 = time.time()
     seed = browser_backend() == "seed_vm"
-    sim.bb = await asyncio.to_thread(_create_seed if seed else _create_bb, sim.study.id)
+    saved, prefer = (await asyncio.to_thread(_saved_account_for, sim)) if seed else (None, "")
+    if seed:
+        sim.bb = await asyncio.to_thread(_create_seed, sim.study.id, prefer)
+    else:
+        sim.bb = await asyncio.to_thread(_create_bb, sim.study.id)
     ready = time.time()
     pw = await _playwright()
     try:
@@ -947,9 +967,15 @@ async def _open_browser(sim: SimSession) -> None:
         pw = await _playwright()
         sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url, timeout=30000)
     if seed:
-        await _new_seed_context(sim)
+        state = (saved or {}).get("storage_state")
+        await _new_seed_context(sim, storage_state=state)
         sim.row["browser_backend"] = "seed_vm"
         sim.row["seed"] = sim.bb.seed_label
+        if state:
+            sim.saved_state = state  # a dropped connection restores the signed-in state too
+            sim.row["saved_account"] = {"domain": saved.get("domain"), "seed": saved.get("seed"),
+                                        "saved_at": saved.get("saved_at"), "source": saved.get("source"),
+                                        "on_saving_seed": bool(prefer) and sim.bb.endpoint == prefer}
     else:
         sim.context = sim.browser.contexts[0] if sim.browser.contexts else await sim.browser.new_context()
         sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()

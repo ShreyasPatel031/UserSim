@@ -467,6 +467,29 @@ def _first_screen_check(row: dict[str, Any], site: Any) -> tuple[str, bool, str,
 # ---------------------------------------------------------------- finalize
 
 
+async def save_signed_in_state(sim: SimSession, verdict: dict[str, Any] | None) -> bool:
+    """seed_vm: the run ended signed in (the judge saw a signed-in app page, or the signup was verified), so keep the
+    browser's last state for this site: the next cell and the next study start signed in (mvp/sim_mcp/site_states.py).
+    Uses the state saved after the last good step (the context is already closed)."""
+    import asyncio
+
+    from mvp.sim_mcp import site_states
+
+    if getattr(sim.bb, "backend", "") != "seed_vm" or not sim.saved_state or not site_states.enabled():
+        return False
+    row = sim.row
+    if not ((verdict or {}).get("signed_in_app_page") or signup_verified(row)):
+        return False
+    domain = site_states.domain_of(sim.product_url)
+    seed = str(getattr(sim.bb, "seed_label", "") or "")
+    address = sim.inbox.address if getattr(sim, "inbox", None) is not None else ""
+    ok = await asyncio.to_thread(site_states.save, domain, sim.saved_state, seed=seed, study_id=sim.study.id,
+                                 address=address, source="study")
+    if ok:
+        row["saved_account_written"] = {"domain": domain, "seed": seed}
+    return ok
+
+
 async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, Any]:
     """Close the browser, judge, run proof, write the study as complete. Caller holds sim.lock."""
     from mvp.study import finish_clocks, log_activity, persist_study, study_to_dict
@@ -491,6 +514,7 @@ async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, An
     row["driver_notes"] = scrub(sim, (notes or "").strip())[:4000]
     verdict, judge_status = await judge_run(study.id, row)
     row["page_verdict"] = verdict
+    await save_signed_in_state(sim, verdict)
     result = {
         k: row.get(k)
         for k in (

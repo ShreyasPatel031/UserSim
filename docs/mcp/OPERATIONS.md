@@ -71,6 +71,14 @@ Since Nov 17 the engine's browsers run on our own GCP signup seeds, not Browserb
   page cannot be reattached. The engine saves cookies + localStorage + URL after every step and, on the next tool
   call, reconnects to the same seed, rebuilds the context from that state and reloads the URL (up to 3 times per
   session; the step says so, and unsaved form input is lost).
+- **Saved accounts** (`seed_saved_accounts`, `mvp/sim_mcp/site_states.py`): seeds are datacenter IPs without
+  Browserbase's residential egress or captcha solver, so signup walls stop many cells. A cell whose task is not itself
+  a signup starts signed in from `gs://usersim-bakeoff-347838016394/seed_states/<domain>.json`, on the seed that saved
+  it when free; the start_session reply carries `signed_in`. A cell that ends on a signed-in page (judge) or with a
+  verified signup writes its state back. Fill the bucket from a seed's identity disk (site_states/ + profiles/):
+  `gcloud compute ssh ubuntu@usersim-signup-seed-N --zone=us-central1-a --tunnel-through-iap --command='~/usersim/.venv/bin/python ~/usersim/scripts/vm/export_seed_states.py --upload'`
+  (dry run without `--upload`; `--force` overwrites domains already in the bucket). These are shared test accounts:
+  anyone running a study on that site acts inside them.
 - **Capacity:** each seed carries `seed_sessions_per_seed` users, or N for an endpoint written `url#N` (seed 0 is
   e2-standard-2: `#3`). Callers past that wait `seed_wait_s`, then get "busy, retry in ~30 s" and the cell stays
   queued (not counted as a start failure).

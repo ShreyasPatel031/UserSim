@@ -118,8 +118,10 @@ def mark_unhealthy(endpoint: str) -> None:
     _HEALTH.pop(endpoint, None)
 
 
-def acquire(wait_s: float | None = None) -> SeedSlot:
-    """Reserve a slot on the least-loaded healthy seed, waiting up to wait_s for one to free up."""
+def acquire(wait_s: float | None = None, prefer: str = "") -> SeedSlot:
+    """Reserve a slot on the least-loaded healthy seed, waiting up to wait_s for one to free up. prefer: the endpoint
+    of the seed that saved this site's signed-in state (same egress IP the site knows); used when it has a free slot,
+    otherwise any seed (the cookies travel with the state)."""
     eps, cap, default_wait = _limits()
     if not eps:
         raise NoSeeds("no seed_cdp_endpoints configured")
@@ -129,7 +131,8 @@ def acquire(wait_s: float | None = None) -> SeedSlot:
         with _LOCK:
             free = [(e, ws) for e, ws in healthy if _IN_USE.get(e, 0) < cap_of(e, cap)]
             if free:
-                e, ws = min(free, key=lambda x: _IN_USE.get(x[0], 0) / cap_of(x[0], cap))
+                mine = [x for x in free if prefer and x[0] == prefer.rstrip("/")]
+                e, ws = mine[0] if mine else min(free, key=lambda x: _IN_USE.get(x[0], 0) / cap_of(x[0], cap))
                 _IN_USE[e] = _IN_USE.get(e, 0) + 1
                 return SeedSlot(endpoint=e, ws_url=ws)
             left = deadline - time.time()

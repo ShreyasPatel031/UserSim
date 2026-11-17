@@ -52,6 +52,7 @@ Each row has a `value` (read at **use time** so hot reload applies without resta
 | `seed_cdp_endpoints` | seeds 0–2 | Local ends of the seed tunnels on the MCP host; seed N = port 19220+N. `url#N` caps that seed at N users. Down or wedged seeds fail the deep probe and are skipped. |
 | `seed_sessions_per_seed` | `4` | Simulated users (isolated contexts) per seed at once, unless the endpoint has `#N`. |
 | `seed_wait_s` | `45` | Seconds `usersim_start_session` waits for a free seed slot before answering "busy, retry" (cell stays queued). |
+| `seed_saved_accounts` | `true` | seed_vm: non-signup cells start signed in from the site's saved state (bucket `seed_states/`); signed-in cells save it back. `false` = empty contexts. |
 | `bb_proxies` | `true` | Browserbase only: residential proxies (better signups, higher cost). Ignored on `seed_vm`. |
 | `anon_daily_usd_per_ip` | `6.0` | Estimated $ budget per IP per day (no token). |
 | `anon_daily_usd_global` | `20.0` | Estimated $ budget for all anonymous callers per day. |

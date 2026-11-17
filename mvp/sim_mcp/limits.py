@@ -70,6 +70,8 @@ DEFAULTS: dict[str, Any] = {
     "seed_cdp_endpoints": ["http://127.0.0.1:19220#3", "http://127.0.0.1:19221", "http://127.0.0.1:19222"],
     "seed_sessions_per_seed": 4,
     "seed_wait_s": 45,
+    # Start non-signup cells signed in from the site's saved storage state (mvp/sim_mcp/site_states.py).
+    "seed_saved_accounts": True,
 }
 
 _LOCK = threading.Lock()
