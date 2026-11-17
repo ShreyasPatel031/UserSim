@@ -13,6 +13,7 @@ RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 N_DAYS="${REFRESH_PRIORITY_N_DAYS:-4}"
 ALL_COMPLETE_OBJ="usersim_sim/raw/_cursor/upvotes_refresh_complete_oldest_first.txt"
+# Shreyas 2026-11-17: scroll re-read list holds only people who did not reach PH hasNextPage=false (filter script).
 TAILS="${REFRESH_ORDER_TAILS:-usersim_sim/raw/_cursor/upvotes_scroll_reread.txt $ALL_COMPLETE_OBJ}"
 UPVOTE_SLOTS="${UPVOTE_SLOTS:-9 27 38}"
 RUN_AT_PT="${RUN_AT_PT:-0010}"
