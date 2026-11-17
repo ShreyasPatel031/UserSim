@@ -1,0 +1,75 @@
+{
+ "2026-10-31": "no pre-reveal read",
+ "2026-11-01": "no pre-reveal read",
+ "2026-11-02": {
+  "launches": 18,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "arm-2 month-forward stand-in"
+ },
+ "2026-11-03": {
+  "launches": 38,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-04": {
+  "launches": 34,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-05": {
+  "launches": 35,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "arm-2 month-forward stand-in"
+ },
+ "2026-11-06": {
+  "launches": 55,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "arm-2 month-forward stand-in"
+ },
+ "2026-11-07": {
+  "launches": 24,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "arm-2 month-forward stand-in"
+ },
+ "2026-11-08": {
+  "launches": 17,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-09": {
+  "launches": 25,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-10": {
+  "launches": 50,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-11": {
+  "launches": 26,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-12": {
+  "launches": 37,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-13": {
+  "launches": 21,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-14": {
+  "launches": 28,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-15": {
+  "launches": 16,
+  "read": "03:00 read (no 03:45 read)",
+  "prior": "00:05 forecast parquet"
+ },
+ "2026-11-16": "no final board yet"
+}

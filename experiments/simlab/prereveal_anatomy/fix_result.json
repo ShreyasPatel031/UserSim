@@ -1,0 +1,113 @@
+{
+ "days": 14,
+ "lines": {
+  "published: hidden top 5 pinned, ridge 6+": {
+   "top3": "73.8 [64.3, 83.3]",
+   "top5": "78.6 [70.0, 85.7]",
+   "top10": "77.9 [67.9, 85.7]"
+  },
+  "FIX: hidden top 3 pinned, ridge 4+": {
+   "top3": "73.8 [64.3, 83.3]",
+   "top5": "77.1 [70.0, 82.9]",
+   "top10": "77.9 [68.6, 85.7]"
+  },
+  "ridge for all slots (reference, not pre-registered)": {
+   "top3": "71.4 [61.9, 81.0]",
+   "top5": "77.1 [70.0, 82.9]",
+   "top10": "77.9 [67.9, 86.4]"
+  },
+  "hidden order alone (reference)": {
+   "top3": "73.8 [64.3, 83.3]",
+   "top5": "78.6 [70.0, 85.7]",
+   "top10": "74.3 [65.0, 82.1]"
+  }
+ },
+ "paired_vs_published": {
+  "FIX minus published": {
+   "top3": "+0.0 [+0.0, +0.0]",
+   "top5": "-1.4 [-5.7, +2.9]",
+   "top10": "+0.0 [+0.0, +0.0]"
+  },
+  "ridge-all minus published": {
+   "top3": "-2.4 [-11.9, +4.8]",
+   "top5": "-1.4 [-5.7, +2.9]",
+   "top10": "+0.0 [+0.0, +0.0]"
+  },
+  "hidden alone minus published": {
+   "top3": "+0.0 [+0.0, +0.0]",
+   "top5": "+0.0 [+0.0, +0.0]",
+   "top10": "-3.6 [-7.9, +0.0]"
+  }
+ },
+ "per_day_top10": {
+  "2026-11-02": {
+   "published": 90.0,
+   "fix": 90.0
+  },
+  "2026-11-03": {
+   "published": 90.0,
+   "fix": 90.0
+  },
+  "2026-11-04": {
+   "published": 90.0,
+   "fix": 90.0
+  },
+  "2026-11-05": {
+   "published": 90.0,
+   "fix": 90.0
+  },
+  "2026-11-06": {
+   "published": 30.0,
+   "fix": 30.0
+  },
+  "2026-11-07": {
+   "published": 60.0,
+   "fix": 60.0
+  },
+  "2026-11-08": {
+   "published": 80.0,
+   "fix": 80.0
+  },
+  "2026-11-09": {
+   "published": 90.0,
+   "fix": 90.0
+  },
+  "2026-11-10": {
+   "published": 80.0,
+   "fix": 80.0
+  },
+  "2026-11-11": {
+   "published": 90.0,
+   "fix": 90.0
+  },
+  "2026-11-12": {
+   "published": 50.0,
+   "fix": 50.0
+  },
+  "2026-11-13": {
+   "published": 80.0,
+   "fix": 80.0
+  },
+  "2026-11-14": {
+   "published": 80.0,
+   "fix": 80.0
+  },
+  "2026-11-15": {
+   "published": 90.0,
+   "fix": 90.0
+  }
+ },
+ "days_fix_better_same_worse_top10": [
+  0,
+  14,
+  0
+ ],
+ "adopt": false,
+ "ridge_weights_all_days": {
+  "z_lpos": -0.6299,
+  "z_move": -0.0148,
+  "z_nc_rec": 0.0958,
+  "z_clean": 0.2033
+ },
+ "ridge_intercept": -0.0
+}
