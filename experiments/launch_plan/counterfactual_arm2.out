@@ -1,0 +1,29 @@
+model on these days: top3 hit 60.7 days 56
+calibration {"3": {"1": 0.66, "2": 0.61, "3": 0.55, "4": 0.29, "5": 0.32, "6": 0.14, "7": 0.14, "8": 0.04, "9": 0.07, "10": 0.05, "11": 0.02, "16": 0.0, "26": 0.0}, "5": {"1": 0.82, "2": 0.73, "3": 0.7, "4": 0.52, "5": 0.59, "6": 0.32, "7": 0.32, "8": 0.14, "9": 0.18, "10": 0.24, "11": 0.05, "16": 0.02, "26": 0.01}, "10": {"1": 0.95, "2": 0.89, "3": 0.93, "4": 0.79, "5": 0.82, "6": 0.71, "7": 0.75, "8": 0.48, "9": 0.49, "10": 0.56, "11": 0.28, "16": 0.11, "26": 0.06}}
+hunter profiles {"self, new account (0 launches)": {"hist_hunter_n": 0, "hist_hunter_rel": NaN, "hist_hunter_top5": NaN, "ph_hunter_age_d": 60}, "self, 3-yr-old account (0 launches)": {"hist_hunter_n": 0, "hist_hunter_rel": NaN, "hist_hunter_top5": NaN, "ph_hunter_age_d": 1100}, "active hunter, median record": {"hist_hunter_n": 66.0, "hist_hunter_rel": 0.326, "hist_hunter_top5": 0.473, "ph_hunter_age_d": 3287.0}, "active hunter, top-10% record": {"hist_hunter_n": 508.0, "hist_hunter_rel": 0.554, "hist_hunter_top5": 0.771, "ph_hunter_age_d": 4620.1}}
+BASE: self-hunted new maker, team 1, 6 media+video, median pitch, no posts, AI topic {"med_rank": 25.5, "p3": 0.6, "p5": 2.3, "p10": 11.6, "p5_lo": 1.6, "p5_hi": 3.3, "share_pred_top5": 0.0}
+hunter: self, new account (0 launches) {"med_rank": 25.5, "p3": 0.6, "p5": 2.3, "p10": 11.6, "p5_lo": 1.5, "p5_hi": 3.3, "share_pred_top5": 0.0}
+hunter: self, 3-yr-old account (0 launches) {"med_rank": 21.0, "p3": 0.8, "p5": 3.0, "p10": 13.9, "p5_lo": 2.0, "p5_hi": 4.2, "share_pred_top5": 0.0}
+hunter: active hunter, median record {"med_rank": 10.0, "p3": 6.9, "p5": 17.6, "p10": 47.1, "p5_lo": 14.1, "p5_hi": 21.2, "share_pred_top5": 5.4}
+hunter: active hunter, top-10% record {"med_rank": 9.0, "p3": 8.3, "p5": 21.7, "p10": 53.0, "p5_lo": 18.2, "p5_hi": 25.5, "share_pred_top5": 7.1}
+team 3 {"med_rank": 16.0, "p3": 1.9, "p5": 5.3, "p10": 21.8, "p5_lo": 3.7, "p5_hi": 7.4, "share_pred_top5": 0.0}
+team 5 {"med_rank": 12.0, "p3": 3.7, "p5": 10.3, "p10": 33.5, "p5_lo": 7.6, "p5_hi": 12.9, "share_pred_top5": 1.8}
+media 3, video 0 {"med_rank": 27.0, "p3": 0.4, "p5": 2.2, "p10": 10.7, "p5_lo": 1.4, "p5_hi": 3.5, "share_pred_top5": 0.0}
+media 6, video 0 {"med_rank": 25.5, "p3": 0.6, "p5": 2.3, "p10": 11.6, "p5_lo": 1.6, "p5_hi": 3.2, "share_pred_top5": 0.0}
+media 9, video 1 {"med_rank": 24.5, "p3": 0.6, "p5": 2.4, "p10": 12.0, "p5_lo": 1.6, "p5_hi": 3.2, "share_pred_top5": 0.0}
+pitch score 40 {"med_rank": 23.0, "p3": 0.8, "p5": 2.9, "p10": 13.3, "p5_lo": 1.9, "p5_hi": 4.0, "share_pred_top5": 0.0}
+pitch score 75 {"med_rank": 16.0, "p3": 1.9, "p5": 5.4, "p10": 21.3, "p5_lo": 3.8, "p5_hi": 7.3, "share_pred_top5": 0.0}
+pitch score 85 {"med_rank": 15.5, "p3": 2.1, "p5": 6.0, "p10": 23.6, "p5_lo": 4.3, "p5_hi": 8.0, "share_pred_top5": 0.0}
+txt model 90th pct {"med_rank": 23.0, "p3": 0.7, "p5": 2.6, "p10": 12.8, "p5_lo": 1.8, "p5_hi": 3.4, "share_pred_top5": 0.0}
+company X account {"med_rank": 23.0, "p3": 0.7, "p5": 2.5, "p10": 12.7, "p5_lo": 1.8, "p5_hi": 3.5, "share_pred_top5": 0.0}
+founder posts launch day (3 posts, X) {"med_rank": 20.0, "p3": 0.9, "p5": 3.2, "p10": 15.1, "p5_lo": 2.3, "p5_hi": 4.4, "share_pred_top5": 0.0}
+founder posts + organic coverage (press 1, HN 1, reddit 1) {"med_rank": 16.0, "p3": 2.0, "p5": 5.6, "p10": 22.1, "p5_lo": 3.9, "p5_hi": 7.4, "share_pred_top5": 0.0}
+topic AI+dev {"med_rank": 26.5, "p3": 0.5, "p5": 2.2, "p10": 10.9, "p5_lo": 1.4, "p5_hi": 3.2, "share_pred_top5": 0.0}
+topic non-AI {"med_rank": 23.5, "p3": 0.6, "p5": 2.4, "p10": 12.0, "p5_lo": 1.7, "p5_hi": 3.4, "share_pred_top5": 0.0}
+FIRST LAUNCH, best self-controlled (self-hunt, team 3, 9 media+video, pitch 75, company X, founder posts+coverage) {"med_rank": 7.0, "p3": 15.8, "p5": 31.2, "p10": 63.0, "p5_lo": 26.5, "p5_hi": 35.7, "share_pred_top5": 26.8}
+FIRST LAUNCH, best + top-10% hunter {"med_rank": 2.0, "p3": 55.8, "p5": 71.4, "p10": 90.3, "p5_lo": 68.8, "p5_hi": 74.0, "share_pred_top5": 100.0}
+LAUNCH 1: self-hunted, record of 0 prior launches {"med_rank": 7.0, "p3": 15.8, "p5": 31.2, "p10": 63.0, "p5_lo": 26.1, "p5_hi": 35.6, "share_pred_top5": 26.8}
+LAUNCH 2: self-hunted, record of 1 prior launches {"med_rank": 3.5, "p3": 42.1, "p5": 60.4, "p10": 84.4, "p5_lo": 56.1, "p5_hi": 64.4, "share_pred_top5": 85.7}
+LAUNCH 3: self-hunted, record of 2 prior launches {"med_rank": 2.0, "p3": 55.9, "p5": 71.5, "p10": 90.4, "p5_lo": 69.4, "p5_hi": 73.8, "share_pred_top5": 100.0}
+LAUNCH 4: self-hunted, record of 3 prior launches {"med_rank": 2.0, "p3": 60.3, "p5": 75.0, "p10": 92.3, "p5_lo": 73.5, "p5_hi": 76.4, "share_pred_top5": 100.0}
+WEEKDAY {"base": {"0": {"days": 8, "med_rank": 22.5, "p5": 0.021, "p10": 0.109, "n": 23.25}, "1": {"days": 8, "med_rank": 32.5, "p5": 0.01, "p10": 0.065, "n": 35.5}, "2": {"days": 8, "med_rank": 33.0, "p5": 0.015, "p10": 0.092, "n": 33.875}, "3": {"days": 8, "med_rank": 29.5, "p5": 0.01, "p10": 0.065, "n": 33.625}, "4": {"days": 8, "med_rank": 33.0, "p5": 0.016, "p10": 0.099, "n": 36.5}, "5": {"days": 8, "med_rank": 20.5, "p5": 0.045, "p10": 0.187, "n": 22.5}, "6": {"days": 8, "med_rank": 16.5, "p5": 0.046, "p10": 0.193, "n": 19.125}}, "best_first": {"0": {"days": 8, "med_rank": 7.0, "p5": 0.286, "p10": 0.636, "n": 23.25}, "1": {"days": 8, "med_rank": 8.0, "p5": 0.186, "p10": 0.528, "n": 35.5}, "2": {"days": 8, "med_rank": 8.0, "p5": 0.209, "p10": 0.561, "n": 33.875}, "3": {"days": 8, "med_rank": 9.0, "p5": 0.149, "p10": 0.445, "n": 33.625}, "4": {"days": 8, "med_rank": 6.5, "p5": 0.351, "p10": 0.669, "n": 36.5}, "5": {"days": 8, "med_rank": 4.0, "p5": 0.525, "p10": 0.804, "n": 22.5}, "6": {"days": 8, "med_rank": 5.5, "p5": 0.476, "p10": 0.771, "n": 19.125}}}
