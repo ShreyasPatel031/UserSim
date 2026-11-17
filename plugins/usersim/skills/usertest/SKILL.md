@@ -24,7 +24,7 @@ the user to approve or edit them (AskUserQuestion when available). Do not start 
   knowledge. They shape what each persona expects ("in Typeform I'd expect a template gallery first").
 - **Who tests.** Always a **plain tester** (the usual methodical end-to-end check: tries to finish every task, notes
   anything broken). Plus **2–3 user groups** chosen from `references/groups.json`:
-  - read the file; pick the groups and subgroups whose `topics`, `votes_for` and `over_represented_roles` best fit
+  - read the file; start from the 3 `main_groups` (each has a `persona_brief`) and pick the groups or subgroups whose `topics`, `votes_for` and `over_represented_roles` best fit
     the product's audience; prefer subgroups when one fits well;
   - turn each into a persona of 2–3 sentences: who they are (from `who`, roles, account age), how they talk and judge
     products (from `says`), and the competitors they use today with what they expect from them;
