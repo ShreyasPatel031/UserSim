@@ -53,7 +53,8 @@ for ln in rows:
     walls+=1
 batch=subprocess.call(['pgrep','-f','[p]h_batch.py|[p]deep.py'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)==0
 age=int(now-last_person) if last_person else -1
-if not batch: state='dead'
+if last_person and now-last_person<=300: state='active'
+elif not batch: state='dead'
 elif last_person and now-last_person<=600: state='active'
 elif walls: state='cf_wall'
 elif last_person: state='stale'
