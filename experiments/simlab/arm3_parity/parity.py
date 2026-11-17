@@ -117,6 +117,8 @@ for d in DAYS:
     trb = bd[bd.day < cut].drop(columns=[c for c in bd.columns if c[:2] in ("A_", "B_", "C_")]).merge(T.drop(columns=["day"]), on="id", how="left")
     for c in ["C_days_since", "C_prev", "C_prev_best_rank", "C_prev_logv", "C_prev_n"]: trb[c] = trb[c + "__strong"]
     teb = bd[bd.day == d].copy()
+    for X_ in (trb, teb):
+        for c in ("name", "tagline", "description"): X_[c] = X_[c].astype(object)   # pandas 3 arrow-str + object concat
     trb, teb, cols = TW.prep(trb, teb); bbase = [c for c in cols if c not in TW.ID_COLS and c not in ("llm_site", "ph_month")]
     NEWB = [c for c in NEW]; cc3b = bbase + NEWB
     _, b3 = fit_pred(trb, teb, cc3b); _, b2 = fit_pred(trb, teb, bbase)
