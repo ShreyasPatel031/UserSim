@@ -95,8 +95,11 @@ export PATH="$HOME/.local/bin:$PATH"
 if [[ ! -x .venv/bin/python ]]; then
   uv venv .venv --python 3.12
 fi
+# playwright pinned to the engine's version (requirements.txt): firefox.connect to the seed's Camoufox server refuses a
+# client/server Playwright version mismatch.
+PW_PIN="$(grep -oP '^playwright==\K[0-9.]+' "$REPO/requirements.txt" 2>/dev/null || echo 1.62.0)"
 uv pip install -q 'fastapi>=0.115' 'uvicorn[standard]>=0.32' 'httpx>=0.28' 'pyotp>=2.9' \
-  playwright 'browser-use==0.13.8' 'browserbase>=1.0' pydantic
+  "playwright==${PW_PIN}" 'browser-use==0.13.8' 'browserbase>=1.0' pydantic
 
 echo "==> playwright chromium"
 # Playwright's node driver needs libatomic.so.1; the apt step above only warns on partial failure.

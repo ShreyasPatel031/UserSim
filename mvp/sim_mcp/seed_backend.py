@@ -5,6 +5,13 @@ with CDP bound to the seed's own 127.0.0.1:9222 (scripts/vm/usersim-seed-cdp.ser
 on a public port: the MCP server reaches each seed through an IAP SSH tunnel (mvp/deploy/usersim-seed-tunnel@.service,
 local port 19220+N). The seeds' traffic leaves from their reserved static egress IP.
 
+Two engines (limits.json browser_engine, default "camoufox", Shreyas Nov 17: "always run camoufox"):
+  camoufox  a Camoufox (Firefox) Playwright server on the seed's 127.0.0.1:9333 (scripts/vm/seed_camoufox_server.py,
+            one fixed fingerprint per seed), tunnel port 19320+N, endpoint ws://127.0.0.1:1932N/usersim,
+            connected with playwright.firefox.connect. Client and server Playwright versions must match (1.62).
+  chromium  the seed Chromium over CDP (127.0.0.1:9222, tunnel 19220+N, http://127.0.0.1:1922N), connect_over_cdp.
+The endpoint's scheme says which: ws:// = Camoufox, http:// = Chromium CDP.
+
 One simulated user = one isolated browser context on a seed. A seed carries ``seed_sessions_per_seed`` contexts; the
 rest of the callers wait up to ``seed_wait_s`` for a slot and are then told to retry (the cell stays queued).
 """
@@ -44,9 +51,35 @@ class SeedSlot:
         self.connect_url = self.ws_url
 
     @property
+    def engine(self) -> str:
+        return engine_of(self.endpoint)
+
+    @property
     def seed_label(self) -> str:
-        port = urlsplit(self.endpoint).port or 0
-        return f"seed-{port - 19220}" if 19220 <= port < 19300 else self.endpoint
+        n = seed_index(self.endpoint)
+        return f"seed-{n}" if n >= 0 else self.endpoint
+
+
+PORT_BASES = {"chromium": 19220, "camoufox": 19320}
+
+
+def engine_of(endpoint: str) -> str:
+    return "camoufox" if urlsplit(endpoint).scheme in ("ws", "wss") else "chromium"
+
+
+def seed_index(endpoint: str) -> int:
+    """Seed N from the tunnel port (19220+N for Chromium, 19320+N for Camoufox), or -1."""
+    port = urlsplit(endpoint).port or 0
+    for base in PORT_BASES.values():
+        if base <= port < base + 80:
+            return port - base
+    return -1
+
+
+def browser_engine() -> str:
+    from mvp.sim_mcp import limits
+
+    return "chromium" if str(limits.get("browser_engine") or "").strip().lower() == "chromium" else "camoufox"
 
 
 _LOCK = threading.Condition()
@@ -64,11 +97,12 @@ _CAPS: dict[str, int] = {}  # endpoint -> its own cap from a "url#N" entry
 
 
 def _limits() -> tuple[list[str], int, float]:
-    """Endpoints, default per-seed cap, wait. An entry "http://127.0.0.1:19220#3" caps that seed at 3 (a smaller VM)."""
+    """Endpoints of the active engine, default per-seed cap, wait. An entry "...:19220#3" caps that seed at 3."""
     from mvp.sim_mcp import limits
 
+    key = "seed_camoufox_endpoints" if browser_engine() == "camoufox" else "seed_cdp_endpoints"
     eps: list[str] = []
-    for raw in limits.get("seed_cdp_endpoints") or []:
+    for raw in limits.get(key) or []:
         url, _, n = raw.strip().partition("#")
         url = url.rstrip("/")
         if not url:
@@ -79,6 +113,11 @@ def _limits() -> tuple[list[str], int, float]:
         else:
             _CAPS.pop(url, None)
     return eps, max(1, int(limits.get("seed_sessions_per_seed"))), float(limits.get("seed_wait_s"))
+
+
+def endpoints() -> list[str]:
+    """The active engine's configured endpoints (without '#N')."""
+    return _limits()[0]
 
 
 def cap_of(endpoint: str, default: int) -> int:
@@ -124,7 +163,7 @@ def acquire(wait_s: float | None = None, prefer: str = "") -> SeedSlot:
     otherwise any seed (the cookies travel with the state)."""
     eps, cap, default_wait = _limits()
     if not eps:
-        raise NoSeeds("no seed_cdp_endpoints configured")
+        raise NoSeeds(f"no {browser_engine()} seed endpoints configured")
     deadline = time.time() + (default_wait if wait_s is None else wait_s)
     while True:
         healthy = [(e, ws) for e in eps if (ws := _healthy(e))]

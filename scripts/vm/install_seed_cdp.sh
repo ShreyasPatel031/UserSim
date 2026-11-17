@@ -9,8 +9,9 @@
 #   2. sshd keepalive (ClientAliveInterval 15 / CountMax 2): a dropped IAP tunnel otherwise leaves a half-open CDP
 #      client attached, and Chromium then holds every new page waiting for that dead debugger (Nov 17, seed 0).
 #   3. usersim-seed-cdp.service: headed Chromium, CDP on 127.0.0.1:9222 only.
-#   4. usersim-seed-cdp-watchdog.timer: every minute, as root, opens a fresh context and loads a data: URL through
-#      local CDP (mvp/sim_mcp/seed_probe.py); two failures in a row restart usersim-seed-cdp.
+#   4. usersim-seed-cdp-watchdog.timer: every minute, as root, opens a fresh context and loads a data: URL on each
+#      engine (mvp/sim_mcp/seed_probe.py: CDP :9222, Camoufox ws :9333); two failures in a row restart that service.
+#   5. scripts/vm/install_seed_camoufox.sh: the Camoufox Playwright server (usersim-seed-camoufox.service).
 set -euo pipefail
 export PATH="$HOME/.local/bin:$PATH"
 U="$(id -un)"
@@ -75,24 +76,25 @@ UNIT
 # ---- 4. watchdog: local deep probe every minute, restart on 2 failures --------
 sudo tee /usr/local/bin/usersim-seed-cdp-watchdog >/dev/null <<WD
 #!/usr/bin/env bash
-# Restart usersim-seed-cdp when Chromium is up but wedged (pages never load). Installed by install_seed_cdp.sh.
+# Restart a seed browser service that is up but wedged (pages never load). Installed by install_seed_cdp.sh.
+# Probes both engines: usersim-seed-cdp (Chromium, CDP :9222) and usersim-seed-camoufox (Playwright server :9333).
 set -u
-STATE=/run/usersim-seed-cdp-watchdog.fails
-systemctl is-active --quiet usersim-seed-cdp || exit 0   # systemd already restarts a dead service
-out=\$(timeout 25 "${PY}" "${REPO}/mvp/sim_mcp/seed_probe.py" http://127.0.0.1:9222 2>&1); rc=\$?
-if (( rc == 0 )); then
-  rm -f "\$STATE"; exit 0
-fi
-if (( rc == 2 )); then  # misconfigured (e.g. extension service workers): a restart would not help, so do not loop
-  logger -t usersim-seed-cdp-watchdog "seed misconfigured, not restarting: \$out"
-  rm -f "\$STATE"; exit 0
-fi
-n=\$(( \$(cat "\$STATE" 2>/dev/null || echo 0) + 1 )); echo "\$n" > "\$STATE"
-logger -t usersim-seed-cdp-watchdog "probe failed (\$n): \$out"
-if (( n >= 2 )); then
-  logger -t usersim-seed-cdp-watchdog "restarting usersim-seed-cdp"
-  rm -f "\$STATE"; systemctl restart usersim-seed-cdp
-fi
+check() {  # service endpoint timeout
+  local svc="\$1" ep="\$2" t="\$3" state="/run/\$1-watchdog.fails" out rc n
+  systemctl is-active --quiet "\$svc" || return 0   # not installed or dead: systemd restarts a dead service
+  out=\$(timeout 40 "${PY}" "${REPO}/mvp/sim_mcp/seed_probe.py" "\$ep" "\$t" 2>&1); rc=\$?
+  if (( rc == 0 )); then rm -f "\$state"; return 0; fi
+  if (( rc == 2 )); then  # misconfigured (e.g. extension service workers): a restart would not help, so do not loop
+    logger -t usersim-seed-cdp-watchdog "\$svc misconfigured, not restarting: \$out"; rm -f "\$state"; return 0
+  fi
+  n=\$(( \$(cat "\$state" 2>/dev/null || echo 0) + 1 )); echo "\$n" > "\$state"
+  logger -t usersim-seed-cdp-watchdog "\$svc probe failed (\$n): \$out"
+  if (( n >= 2 )); then
+    logger -t usersim-seed-cdp-watchdog "restarting \$svc"; rm -f "\$state"; systemctl restart "\$svc"
+  fi
+}
+check usersim-seed-cdp http://127.0.0.1:9222 5
+check usersim-seed-camoufox ws://127.0.0.1:9333/usersim 15
 WD
 sudo chmod 0755 /usr/local/bin/usersim-seed-cdp-watchdog
 sudo tee /etc/systemd/system/usersim-seed-cdp-watchdog.service >/dev/null <<'UNIT'
@@ -125,7 +127,8 @@ for _ in $(seq 1 30); do
   if "$PY" "$REPO/mvp/sim_mcp/seed_probe.py" http://127.0.0.1:9222 >/dev/null 2>&1; then
     echo "SEED_CDP_OK $(curl -sf http://127.0.0.1:9222/json/version | python3 -c 'import json,sys;print(json.load(sys.stdin)["Browser"])')"
     ss -ltn 'sport = :9222'
-    exit 0
+    # 5. Camoufox (limits.json browser_engine, default camoufox): its own service, same watchdog
+    exec bash "$REPO/scripts/vm/install_seed_camoufox.sh"
   fi
   sleep 1
 done

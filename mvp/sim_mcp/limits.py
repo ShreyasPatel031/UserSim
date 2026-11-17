@@ -69,6 +69,10 @@ DEFAULTS: dict[str, Any] = {
     # CDP endpoints of the seeds as seen from the MCP server (local ends of the IAP tunnels).
     "seed_cdp_endpoints": ["http://127.0.0.1:19220#3", "http://127.0.0.1:19221", "http://127.0.0.1:19222"],
     "seed_sessions_per_seed": 4,
+    # Browser on the seeds: "camoufox" (Firefox, Playwright server, one fixed fingerprint per seed) or "chromium" (CDP).
+    "browser_engine": "camoufox",
+    "seed_camoufox_endpoints": ["ws://127.0.0.1:19320/usersim#3", "ws://127.0.0.1:19321/usersim",
+                                "ws://127.0.0.1:19322/usersim"],
     "seed_wait_s": 45,
     # Start non-signup cells signed in from the site's saved storage state (mvp/sim_mcp/site_states.py).
     "seed_saved_accounts": True,

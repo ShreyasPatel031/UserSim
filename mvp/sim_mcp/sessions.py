@@ -746,7 +746,9 @@ def _saved_account_for(sim: SimSession) -> tuple[dict[str, Any] | None, str]:
         return None, ""
     from mvp.sim_mcp import limits
 
-    return entry, site_states.seed_endpoint(str(entry.get("seed") or ""), list(limits.get("seed_cdp_endpoints") or []))
+    from mvp.sim_mcp import seed_backend
+
+    return entry, site_states.seed_endpoint(str(entry.get("seed") or ""), seed_backend.endpoints())
 
 
 def _create_bb(study_id: str) -> Any:
@@ -900,6 +902,22 @@ async def start_session(
     return sim
 
 
+async def _connect(pw: Any, slot: Any, url: str = "") -> Any:
+    """Connect to the slot's browser: Camoufox seeds are Playwright servers (firefox.connect over ws://; the client
+    and server Playwright versions must match), Chromium seeds and Browserbase speak CDP."""
+    url = url or slot.connect_url
+    if getattr(slot, "engine", "chromium") == "camoufox":
+        return await pw.firefox.connect(url, timeout=30000)
+    return await pw.chromium.connect_over_cdp(url, timeout=30000)
+
+
+def _is_chromium(page: Any) -> bool:
+    try:
+        return page.context.browser.browser_type.name == "chromium"
+    except Exception:  # noqa: BLE001
+        return False
+
+
 async def _discard_browser(sim: SimSession) -> None:
     """Drop a half-opened browser (and its seed slot) without touching the cell's state, so the open can be retried."""
     for obj in (sim.context, sim.browser):
@@ -972,19 +990,20 @@ async def _open_browser(sim: SimSession) -> None:
     ready = time.time()
     pw = await _playwright()
     try:
-        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url, timeout=30000)
+        sim.browser = await _connect(pw, sim.bb)
     except Exception as exc:  # noqa: BLE001
         if not _driver_dead(exc):
             raise
         print(f"[mcp {sim.id[:8]}] playwright driver is dead ({exc!r}); restarting it", flush=True)
         await _reset_playwright(keep_fresh=True)
         pw = await _playwright()
-        sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url, timeout=30000)
+        sim.browser = await _connect(pw, sim.bb)
     if seed:
         state = (saved or {}).get("storage_state")
         await _new_seed_context(sim, storage_state=state)
         sim.row["browser_backend"] = "seed_vm"
         sim.row["seed"] = sim.bb.seed_label
+        sim.row["browser_engine"] = sim.bb.engine
         if state:
             sim.saved_state = state  # a dropped connection restores the signed-in state too
             sim.row["saved_account"] = {"domain": saved.get("domain"), "seed": saved.get("seed"),
@@ -1145,13 +1164,13 @@ async def revive(sim: SimSession) -> bool:
         ws = await asyncio.to_thread(seed_backend.probe_ws, sim.bb.endpoint)
         pw = await _playwright()
         try:
-            sim.browser = await pw.chromium.connect_over_cdp(ws, timeout=30000)
+            sim.browser = await _connect(pw, sim.bb, ws)
         except Exception as exc:  # noqa: BLE001
             if not _driver_dead(exc):
                 raise
             await _reset_playwright(keep_fresh=True)  # the shared driver died (drops every session at once): new one
             pw = await _playwright()
-            sim.browser = await pw.chromium.connect_over_cdp(ws, timeout=30000)
+            sim.browser = await _connect(pw, sim.bb, ws)
         await _new_seed_context(sim, storage_state=sim.saved_state)
         try:
             await sim.page.goto(url, wait_until="domcontentloaded", timeout=25000)
@@ -1273,8 +1292,8 @@ async def ensure_viewport(page: Any) -> None:
         size = await asyncio.wait_for(page.evaluate("() => [innerWidth, innerHeight]"), timeout=3)
     except Exception:  # noqa: BLE001
         pass
-    if size != [VIEWPORT["width"], VIEWPORT["height"]]:
-        try:  # the CDP override wins over whatever the remote browser window imposes
+    if size != [VIEWPORT["width"], VIEWPORT["height"]] and _is_chromium(page):
+        try:  # the CDP override wins over whatever the remote browser window imposes (Chromium only)
             cdp = await page.context.new_cdp_session(page)
             await cdp.send("Emulation.setDeviceMetricsOverride", {"width": VIEWPORT["width"], "height": VIEWPORT["height"],
                                                                    "deviceScaleFactor": 1, "mobile": False})
@@ -2270,6 +2289,10 @@ async def _screenshot(page: Any, *, timeout_ms: int) -> bytes:
     try:
         return await page.screenshot(type="png", timeout=timeout_ms)
     except Exception as exc:  # noqa: BLE001
+        if not _is_chromium(page):
+            # Firefox (Camoufox) has no CDP capture: one more try without waiting on animations, then give up.
+            print(f"[mcp] screenshot slow on firefox, retrying: {exc!r}"[:200], flush=True)
+            return await page.screenshot(type="png", timeout=timeout_ms, animations="disabled", caret="initial")
         print(f"[mcp] screenshot slow, using CDP capture: {exc!r}"[:200], flush=True)
     import base64
 

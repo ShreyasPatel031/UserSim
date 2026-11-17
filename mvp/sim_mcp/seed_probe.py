@@ -78,9 +78,42 @@ class _Cdp:
                 return
 
 
+def probe_playwright_server(endpoint: str, timeout: float = 5.0) -> str:
+    """Camoufox (a Playwright server, ws://...): connect, fresh context, data: URL, JS eval. Raises ProbeFailed.
+    No CDP here: the Firefox side speaks Juggler, so the CDP wedge and service-worker checks do not apply."""
+    from playwright.sync_api import sync_playwright
+
+    t0 = time.time()
+    with sync_playwright() as pw:
+        try:
+            browser = pw.firefox.connect(endpoint, timeout=timeout * 1000)
+        except Exception as exc:  # noqa: BLE001
+            raise ProbeFailed(f"connect: {str(exc).splitlines()[0][:160]}") from None
+        try:
+            ctx = browser.new_context()
+            try:
+                page = ctx.new_page()
+                left = max(1.0, timeout - (time.time() - t0))
+                page.goto(PROBE_HTML, timeout=left * 1000)
+                if page.evaluate("document.title") != "usersim-ok":
+                    raise ProbeFailed("page did not render")
+            finally:
+                ctx.close()
+        except ProbeFailed:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            raise ProbeFailed(str(exc).splitlines()[0][:160]) from None
+        finally:
+            browser.close()
+    return endpoint
+
+
 def probe(endpoint: str, timeout: float = 5.0) -> str:
     """Raise ProbeFailed (or an OSError) unless a fresh context can load a page within `timeout` seconds.
-    Returns the browser websocket URL (rewritten to the endpoint's host:port)."""
+    Returns the URL to connect to: the browser websocket URL for CDP (rewritten to the endpoint's host:port), the
+    endpoint itself for a Playwright server (ws://, Camoufox)."""
+    if endpoint.startswith(("ws://", "wss://")):
+        return probe_playwright_server(endpoint, timeout=max(timeout, 10.0))
     from websockets.sync.client import connect
 
     ws_url = ws_url_for(endpoint, timeout=min(timeout, 4.0))
