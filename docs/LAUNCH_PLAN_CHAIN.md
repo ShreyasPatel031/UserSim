@@ -351,6 +351,86 @@ Best: *Propose a change, see who adopts, who switches and who you lose.* Test a 
 - **War Game mode has no direct real-comment support**, and the Market Simulator is the product our own panel places lowest. Its pitch scores highest. These signals conflict; product 3's real comments in April are the first real test of whether to build it.
 - **Where real comments and the panel disagree, the real comments are thin.** Most real themes rest on 1–5 people. On Dec 6, product 1's own comments replace stage 1, and the chain should be rerun from there.
 
+## Is the forced choice a real signal?
+
+**No.** On 30 real days it does not order launches, it adds nothing to the ranking model, and it does not find a group's real backers better than chance. It should not shape product decisions or become the panel in User Testing in this form.
+
+**What was run (E5, Nov 17).** Every featured launch in our held table on 30 days between Sep 18 and Nov 5 2026 (4–5 of each weekday): 913 launches, 889 scored (24 had too few same-topic backers for a panel). For each launch, the forced choice exactly as used above: one persona per distinct segment (median 7), the real line-up of that day, pick 3, place the launch in the ordering. 889 Gemini calls plus 167 for the rerun; cost $2.42. Intervals are bootstraps over days. Code and per-row results: `experiments/simlab/forced_choice_validation/`.
+
+Two ways of reading the panel were scored:
+- **Mean place**: where the launch's own panel put it (0 = first, 100 = last). This is the number reported for our four products.
+- **Pick share**: how often the launch was among the 3 picks, counted over every panel call made for that day (each call sees the whole line-up).
+
+### 1. Does it order launches like the real ranking?
+
+| Signal | Daily rank correlation with the real rank [95%] |
+|---|---|
+| Mean place | 0.034 [-0.024, 0.088] |
+| Share of the launch's own panel that picked it | 0.020 [-0.037, 0.077] |
+| Pick share over all calls that day | 0.170 [0.112, 0.227] |
+| Ranking model (arm 2), same days | 0.619 [0.543, 0.676] |
+
+Mean place has no relation to the real rank. Pick share has a weak one. The ranking model is far stronger.
+
+### 2. Top 3 / 5 / 10 hit of the panel's own ordering (%, paired with the ranking model on the same days)
+
+| | Ranking model | Panel, by mean place | Panel, by pick share | Chance | Panel (pick share) minus model |
+|---|---|---|---|---|---|
+| Top 3 | 59 [52, 66] | 18 [12, 23] | 21 [13, 30] | 12 [10, 14] | -37.8 [-48.9, -26.7] |
+| Top 5 | 64 [57, 70] | 28 [22, 35] | 28 [22, 34] | 20 [17, 23] | -36.0 [-44.7, -26.7] |
+| Top 10 | 78 [75, 81] | 41 [35, 48] | 46 [40, 52] | 40 [34, 46] | -32.0 [-38.3, -25.3] |
+
+The panel is a little above chance on the top 3 and top 5 and 32–41 points below the ranking model.
+
+### 3. Does it add to the ranking model?
+
+The model's prediction plus the panel's place (and pick share) as extra inputs, fitted on earlier months and tested on later ones (22 test days in October and November).
+
+| | Model alone | + place | + place and pick share | Difference [95%] |
+|---|---|---|---|---|
+| Top 3 | 58 [50, 65] | 59 [52, 67] | 59 [52, 67] | +1.5 [+0.0, +4.5] |
+| Top 5 | 67 [60, 74] | 68 [61, 76] | 68 [61, 76] | +0.9 [+0.0, +2.7] |
+| Top 10 | 77 [74, 81] | 77 [74, 81] | 77 [74, 81] | +0.0 [+0.0, +0.0] |
+
+No interval clears zero. The fitted weight on place is about zero. A leave-one-day-out version (not forward, 30 days) gives the same answer: top 3 +1.1 [-2.2, +4.4].
+
+### 4. By voter group: does a group's pick predict that group's real backers?
+
+Real backers are held people with a segment who voted on these days (8,678 people; 4,938 segment-launch pairs where the segment had 20 or more voters that day).
+
+| Voter group | Segment-launch pairs | Real backing rate when the group's persona picked the launch [95%] | When it did not |
+|---|---|---|---|
+| Curious Observers | 757 | 6.3% [4.6, 8.2] | 4.2% [3.5, 5.0] |
+| Launch Veterans | 942 | 9.8% [7.7, 12.0] | 7.9% [6.8, 9.3] |
+| Tech Innovators | 3,239 | 8.8% [6.9, 10.8] | 7.1% [6.1, 8.1] |
+
+- **A small real effect.** In every group, launches the persona picked were backed by a slightly larger share of that group's real voters (overall 7.5% against 5.6%). The intervals overlap in each group.
+- **It is not group-specific.** Within one launch, the order of segments by place barely tracks which segments really backed it more than average: rank correlation 0.033 [-0.001, 0.069].
+- **Recall at N is at chance.** Ranking that day's voters by their segment's place for the launch finds 8 [7, 9]% of the real backers, against 8 [7, 10]% at random. Even a perfect ordering of segments would reach only 11 [10, 12]%, because backers are spread across segments. The E5 backer line (25–29%) uses person-level scores over all held people, so it is not the same pool, but the conclusion does not depend on that: the panel does not beat random.
+
+### 5. Stability: 5 days run twice (the second time with the line-up in a different order)
+
+| | Mean place | Pick share |
+|---|---|---|
+| Top-3 overlap between the two runs | 27% | 87% |
+| Rank correlation between the two runs | 0.50 | 0.84 |
+
+Mean place is unstable: the same launch gets a different place on a rerun. Pick share is stable, but section 1 shows it is only weakly related to real results. A launch's "picked / not picked by anyone" verdict repeats 72% of the time.
+
+### Leak checks
+
+- **Line-up text:** name, tagline and the first 160 characters of the maker's own description. No votes, ranks or comments.
+- **Persona pool and card history:** upvotes on launch days strictly before the test day. Of 114,926 product mentions in persona cards, 5 share a name with a launch of the same test day; these are earlier launches of the same product name (version updates), not the test-day launch, since card history stops the day before.
+- **Known limitation:** the segment definitions and the one-paragraph segment profiles were fitted on Nov 16 2026 from all held data, so they postdate the test days. That could only help the panel, and it still shows no signal.
+- **The language model's own knowledge** ends well before these launches.
+
+### What this means for the plan
+
+- **The placements reported above for our four products (47, 61, 56, 73) carry no information.** Mean place does not track real results and does not repeat on a rerun. "None of our products was picked" is also expected: on average a launch is picked by 14% of its panel, and most launches are picked by none.
+- **The forced choice fixed the "everything is high interest" problem only in appearance.** The answers now vary, but the variation is noise.
+- **Do not put it in User Testing as a ranking or a score.** What the panel has measured value for is unchanged: which themes come up (theme recall 61%, precision 52%). The "reason not to use" lines are of that kind and can stay, marked as model output.
+- **If a pre-launch number is wanted, use the ranking model**, which hits 59% of the top 3 on these same days.
+
 ## Known problems in this run
 
 - Held comments exist only for 2026 launches, so 2025 competitors contribute a finish but no comments.

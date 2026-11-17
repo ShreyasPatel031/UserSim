@@ -1,0 +1,166 @@
+{
+ "n_days": 30,
+ "n_launches_scored": 889,
+ "n_launches_on_days": 913,
+ "segments_per_launch_median": 7.0,
+ "share_picked_mean": 0.138,
+ "chance_pick": 0.101,
+ "1_daily_spearman_vs_real_rank": {
+  "mean place": "0.034 [-0.024, 0.088]",
+  "share picked (own call)": "0.020 [-0.037, 0.077]",
+  "share picked (all calls that day)": "0.170 [0.112, 0.227]",
+  "arm 2 prediction": "0.619 [0.543, 0.676]"
+ },
+ "2_topk_hit": {
+  "top3": {
+   "arm 2": "0.589 [0.522, 0.656]",
+   "panel by mean place": "0.178 [0.122, 0.233]",
+   "panel by pick share": "0.211 [0.133, 0.300]",
+   "chance": "0.120 [0.104, 0.138]",
+   "panel(place) minus arm 2": "-0.411 [-0.500, -0.322]",
+   "panel(picks) minus arm 2": "-0.378 [-0.489, -0.267]"
+  },
+  "top5": {
+   "arm 2": "0.640 [0.573, 0.700]",
+   "panel by mean place": "0.280 [0.220, 0.347]",
+   "panel by pick share": "0.280 [0.220, 0.340]",
+   "chance": "0.201 [0.173, 0.230]",
+   "panel(place) minus arm 2": "-0.360 [-0.447, -0.267]",
+   "panel(picks) minus arm 2": "-0.360 [-0.447, -0.267]"
+  },
+  "top10": {
+   "arm 2": "0.783 [0.753, 0.813]",
+   "panel by mean place": "0.413 [0.347, 0.480]",
+   "panel by pick share": "0.463 [0.403, 0.523]",
+   "chance": "0.401 [0.345, 0.459]",
+   "panel(place) minus arm 2": "-0.370 [-0.440, -0.303]",
+   "panel(picks) minus arm 2": "-0.320 [-0.383, -0.253]"
+  }
+ },
+ "3_stack_month_forward": {
+  "test_days": 22,
+  "coef_last_fold_arm2+place": {
+   "pred_c": 1.034,
+   "place_c": -0.005
+  },
+  "coef_last_fold_arm2+place+picks": {
+   "pred_c": 1.029,
+   "place_c": 0.015,
+   "share_allcalls_c": 0.09
+  },
+  "top3": {
+   "arm 2 alone": "0.576 [0.500, 0.652]",
+   "+ place": "0.591 [0.515, 0.667]",
+   "+ place + picks": "0.591 [0.515, 0.667]",
+   "(+place) minus arm 2": "0.015 [0.000, 0.045]",
+   "(+place+picks) minus arm 2": "0.015 [0.000, 0.045]"
+  },
+  "top5": {
+   "arm 2 alone": "0.673 [0.600, 0.745]",
+   "+ place": "0.682 [0.609, 0.755]",
+   "+ place + picks": "0.682 [0.609, 0.755]",
+   "(+place) minus arm 2": "0.009 [0.000, 0.027]",
+   "(+place+picks) minus arm 2": "0.009 [0.000, 0.027]"
+  },
+  "top10": {
+   "arm 2 alone": "0.773 [0.736, 0.809]",
+   "+ place": "0.773 [0.736, 0.809]",
+   "+ place + picks": "0.773 [0.736, 0.809]",
+   "(+place) minus arm 2": "0.000 [0.000, 0.000]",
+   "(+place+picks) minus arm 2": "0.000 [0.000, 0.000]"
+  }
+ },
+ "3b_stack_leave_one_day_out (not forward)": {
+  "test_days": 30,
+  "coef_last_fold_arm2+place": {
+   "pred_c": 1.029,
+   "place_c": -0.019
+  },
+  "coef_last_fold_arm2+place+picks": {
+   "pred_c": 1.019,
+   "place_c": 0.024,
+   "share_allcalls_c": 0.19
+  },
+  "top3": {
+   "arm 2 alone": "0.589 [0.522, 0.656]",
+   "+ place": "0.589 [0.522, 0.656]",
+   "+ place + picks": "0.600 [0.533, 0.667]",
+   "(+place) minus arm 2": "0.000 [0.000, 0.000]",
+   "(+place+picks) minus arm 2": "0.011 [-0.022, 0.044]"
+  },
+  "top5": {
+   "arm 2 alone": "0.640 [0.573, 0.700]",
+   "+ place": "0.647 [0.580, 0.707]",
+   "+ place + picks": "0.640 [0.573, 0.707]",
+   "(+place) minus arm 2": "0.007 [0.000, 0.020]",
+   "(+place+picks) minus arm 2": "0.000 [-0.020, 0.020]"
+  },
+  "top10": {
+   "arm 2 alone": "0.783 [0.750, 0.817]",
+   "+ place": "0.783 [0.750, 0.817]",
+   "+ place + picks": "0.787 [0.753, 0.820]",
+   "(+place) minus arm 2": "0.000 [0.000, 0.000]",
+   "(+place+picks) minus arm 2": "0.003 [0.000, 0.010]"
+  }
+ },
+ "4_people": {
+  "held people with a segment who voted on these days": 8678,
+  "segment-launch pairs (segment had >= 20 voters that day)": 4938,
+  "real backing rate when picked %": 7.47,
+  "real backing rate when not picked %": 5.59,
+  "share of pairs picked %": 13.9
+ },
+ "4_segment_spearman": {
+  "place vs the segment's own backing rate, across launches (per segment-day)": "0.038 [-0.011, 0.085]",
+  "place vs the segment's lift over all voters, across launches": "0.029 [0.007, 0.052]",
+  "across segments within one launch: place vs lift": "0.033 [-0.001, 0.069]"
+ },
+ "4_by_voter_group": {
+  "Curious Observers": {
+   "backing rate when picked %": "6.293 [4.578, 8.247]",
+   "when not picked %": "4.223 [3.518, 4.964]",
+   "n_pairs": 757
+  },
+  "Launch Veterans": {
+   "backing rate when picked %": "9.833 [7.740, 11.983]",
+   "when not picked %": "7.939 [6.763, 9.316]",
+   "n_pairs": 942
+  },
+  "Tech Innovators": {
+   "backing rate when picked %": "8.773 [6.901, 10.820]",
+   "when not picked %": "7.056 [6.120, 8.064]",
+   "n_pairs": 3239
+  }
+ },
+ "4_recall_at_N": {
+  "panel (segments ordered by place)": "0.079 [0.068, 0.090]",
+  "random": "0.084 [0.072, 0.096]",
+  "ceiling (segments ordered by their real rate)": "0.110 [0.097, 0.123]",
+  "launches": 854,
+  "note": "pool = held people in the panel's segments who voted on any launch that day; the E5 backer line (25-29% recall at N) uses all held people and person-level scores, so it is not directly comparable"
+ },
+ "5_stability_rerun": {
+  "top-3 overlap, ordering by place": 0.267,
+  "top-3 overlap, ordering by pick share": 0.867,
+  "Spearman of mean place": 0.501,
+  "Spearman of pick share": 0.843,
+  "same picked/not-picked verdict per launch": 0.722,
+  "days": 5,
+  "per_day_top3_overlap_place": [
+   0.33,
+   0.33,
+   0.0,
+   0.0,
+   0.67
+  ],
+  "launches": 167,
+  "note": "second pass uses a different line-up order"
+ },
+ "leak_checks": {
+  "persona-card product mentions": 114926,
+  "of which share a name with a launch of the same test day": 5,
+  "line-up text": "name, tagline and the first 160 characters of the maker's own description; no votes, ranks or comments",
+  "persona pool and card history": "upvotes on launch days strictly before the test day",
+  "known limitation": "segment definitions and the one-paragraph segment profiles were fitted on Nov 16 2026 from all held data, so they postdate the test days"
+ }
+}
