@@ -94,7 +94,7 @@ def main():
             else:
                 tabs[t]["newest_item_ts"] = v["newest"]
         is_c = h.lower() in comp
-        why = [] if is_c else (list(i.get("why") or []) or (["upvotes:short_needs_scroll_reread"] if i.get("so") else ["unknown"]))
+        why = [] if is_c else (list(i.get("why") or []) or ["unknown"])
         need_tabs = sorted({tab_of(w) for w in why})
         row = {"person_id": p, "ph_user_id": i.get("ph_user_id"), "handle": h, "tier": tier.get(p) or "non-pool",
                "tabs": tabs, "tabs_with_items": sorted(t for t, v in tabs.items() if v["n"]),

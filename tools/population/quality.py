@@ -178,7 +178,8 @@ for p_ in glob.glob(f"{D}/signedin_upvotes/*.json"):  # babysitter queue raw/_ba
 
 def signed_out_end(d):
     """Upvotes stopped at PH's signed-out ~200 end: tagged upvotes_capped (or 190-210 items short of the header) AND the
-    paging record shows that end. Since Nov 17 (Shreyas) this is a scroll bug, not a PH stop: the person is INCOMPLETE."""
+    paging record shows that end. Shreyas, 19:06Z Nov 17 (AGENTS.md "the Upvotes tab ends where Product Hunt ends it"):
+    signed in and signed out end at the same item, so this is PH's own end and the tab is COMPLETE. Kept as a count only."""
     t = d.get("upvotes") or {}
     if not isinstance(t, dict):
         return False
@@ -207,11 +208,9 @@ def upvotes_sweep(d):
 
 def person_complete(d, h=None):
     why = []
-    # Shreyas, Nov 17 (AGENTS.md): there is no signed-in pass; the "signed-out upvote end" was a scroll bug. An Upvotes list
-    # stopped there is INCOMPLETE until the completion pass re-reads it by scrolling to PH's end (a signed-in queue entry
-    # no longer makes it whole).
-    if signed_out_end(d):
-        why.append("upvotes:short_needs_scroll_reread")
+    # Shreyas, 19:06Z Nov 17 (AGENTS.md): Upvotes ends where Product Hunt ends it. A list short of the header passes when its
+    # paging record shows PH's end (tab_state ph_limit; signed_out_end is a count only). A stop for any other reason is
+    # FAIL_short in tab_state and stays incomplete. (The morning's short_needs_scroll_reread reason is reverted.)
     if upvotes_sweep(d):  # orchestrator 07:06Z Nov 17: the search sweep is off; its Upvotes never make a person complete
         why.append("upvotes:search_sweep_not_accepted")
     for t in ALL_TABS:
@@ -436,7 +435,7 @@ for p, src in files:
 
 
 def _pc(h, i):  # person_complete from the cached per-file result plus the signed-in queue (other files)
-    why = (["upvotes:short_needs_scroll_reread"] if i["so"] else []) + list(i["why"])  # Nov 17: no signed-in pass; short Upvotes = incomplete
+    why = list(i["why"])  # 19:06Z Nov 17 (Shreyas): Upvotes at PH's own end is complete whatever the header count
     return not why, why
 
 
@@ -448,14 +447,14 @@ for h, i in latest.items():
     o = "pgql_lists_only" if "pgql" in i["meth"] and not i["deep"] else ("deep" if i["deep"] else "full")
     pc[(o, ok)] += 1; origin[o] += 1
     if i["so"]:
-        so[o] += 1  # short Upvotes (old "signed-out end"): counted INCOMPLETE since Nov 17
+        so[o] += 1  # Upvotes short of the header but at PH's own end: complete (Shreyas 19:06Z Nov 17); a count only
     for w in why:
         reasons[(o, w.split(":")[0] + ":" + w.split(":")[1].split(",")[0] if ":" in w else w)] += 1
 inc = sum(v for (o, ok), v in pc.items() if not ok)
 out = ["", "## PERSON-LEVEL OUTPUT CHECK (every saved person vs the full definition)", "",
        f"Saved people (latest vm/<h>.json): {len(latest):,}; COMPLETE {len(latest) - inc:,}; **INCOMPLETE {inc:,}** "
-       f"(of which Upvotes short of the header, needing the scroll-to-end re-read: {sum(so.values()):,})", "",
-       "| Origin | saved | complete | INCOMPLETE | of which Upvotes short (scroll re-read) |", "|---|---|---|---|---|"]
+       f"(Upvotes short of the header but at PH's own end, counted complete: {sum(so.values()):,})", "",
+       "| Origin | saved | complete | INCOMPLETE | Upvotes at PH end, short of header |", "|---|---|---|---|---|"]
 for o in ("full", "deep", "pgql_lists_only"):
     out.append(f"| {o} | {origin[o]:,} | {pc[(o, True)]:,} | {pc[(o, False)]:,} | {so[o]:,} |")
 out += ["", "Top reasons (origin, reason): " + "; ".join(f"{o} {w} x{n:,}" for (o, w), n in reasons.most_common(20))]
