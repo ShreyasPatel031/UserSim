@@ -66,7 +66,7 @@ ordered = dead + sorted(stale, key=lambda x: -next(
     (ss.get("age") or 0 for ss in m.get("slots", []) if int(ss.get("slot") or 0) == x), 0
 )) + sorted(stale_warm, key=lambda x: -next(
     (ss.get("age") or 0 for ss in m.get("slots", []) if int(ss.get("slot") or 0) == x), 0
-)) + cf
+)) + (cf if "${FLEET_CF_WAKE:-0}" == "1" else [])
 _skip = {int(x) for x in """$FLEET_UPVOTE_SLOTS""".split() if x.strip().isdigit()}
 _filt = [x for x in ordered if int(x) not in _skip]
 print("\\n".join(str(x) for x in _filt[: int("$MAX")]))
