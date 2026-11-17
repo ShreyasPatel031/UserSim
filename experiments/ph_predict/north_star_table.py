@@ -29,7 +29,11 @@ def row(point, model, method, H, days, src, rule="final daily rank <= k, >= 10 r
     H = np.array([h for h in H if h is not None])
     return {"point": point, "model": model, "method": method, "top3": round(float(H[:, 0].mean()), 1) if len(H) else None,
             "top5": round(float(H[:, 1].mean()), 1) if len(H) else None, "top10": round(float(H[:, 2].mean()), 1) if len(H) else None,
-            "n_days": int(len(H)), "first_day": min(days) if days else None, "last_day": max(days) if days else None, "rule": rule, "source": src}
+            "n_days": int(len(H)), "first_day": min(days) if days else None, "last_day": max(days) if days else None, "rule": rule, "source": src,
+            **({"ci95": _ci(H)} if len(H) >= 5 else {})}
+def _ci(H):   # absolute rows: day bootstrap 95% interval of the mean, 10,000 draws, seed 0 (added Nov 17 for the published-model label)
+    rng = np.random.default_rng(0); n = len(H); B = np.array([H[rng.integers(0, n, n)].mean(0) for _ in range(10000)])
+    return {k: [round(float(H[:, j].mean()), 1), round(float(np.percentile(B[:, j], 2.5)), 1), round(float(np.percentile(B[:, j], 97.5)), 1)] for j, k in enumerate(("top3", "top5", "top10"))}
 rows = []
 # 00:05 backtests
 A = pd.read_parquet(R("history_retrain_decomp_preds_arm2.parquet")); A["id"] = A.id.astype(str)
