@@ -10,7 +10,40 @@
   "1316291",
   "1304887",
   "1317811",
-  "1319349"
+  "1319349",
+  "1309861",
+  "1316663",
+  "1319374",
+  "1319369",
+  "1319271",
+  "1308419",
+  "1316705",
+  "1297244",
+  "1319771",
+  "1319276",
+  "1319570",
+  "1308114",
+  "1304366",
+  "1318477",
+  "1318923",
+  "1306142",
+  "1316484",
+  "1319139",
+  "1319091",
+  "1318689",
+  "1319438",
+  "1307529",
+  "1258422",
+  "1318607",
+  "1315446",
+  "1310967",
+  "1319262",
+  "1319539",
+  "1319132",
+  "1311672",
+  "1319690",
+  "1304843",
+  "1316848"
  ],
  "cards": {
   "1304738": {
@@ -18,44 +51,65 @@
    "tagline": "Get your API discovered, recommended, and used by AI agents",
    "people_scored": 300,
    "no_profile_text": 26,
-   "silhouette": 0.039,
+   "silhouette": 0.033,
    "groups": [
     {
-     "name": "Marketing Leads",
-     "who": "They lead marketing campaigns and drive business growth for brands.",
-     "share": 0.47,
-     "n_people": 130,
+     "name": "AI SEO marketers",
+     "who": "They craft content strategies and optimize for AI search visibility and brand citations.",
+     "share": 0.21,
+     "n_people": 57,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 1.31,
      "evidence": {
       "headline_words": [
-       "brands",
-       "results",
-       "high",
-       "strategic",
-       "creating",
-       "financial"
+       "seo",
+       "marketer",
+       "content",
+       "marketing",
+       "content strategy",
+       "media"
       ],
-      "topics": [
-       "Software Engineering"
-      ]
+      "topics": []
      }
     },
     {
-     "name": "Open Source Founders",
-     "who": "They build open source projects and AI tools, often as founders.",
-     "share": 0.53,
-     "n_people": 144,
+     "name": "Agentic AI founders",
+     "who": "They build and ship AI products, often focusing on agentic systems and LLM safeguards.",
+     "share": 0.12,
+     "n_people": 33,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.84,
      "evidence": {
       "headline_words": [
-       "source",
-       "open",
-       "open source",
-       "ai tools",
+       "cofounder",
+       "founder ceo",
+       "ceo",
        "founder",
-       "tech"
+       "fellow",
+       "ships"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "API-first engineers",
+     "who": "They build scalable software, open-source projects, and integrate LLMs into applications.",
+     "share": 0.14,
+     "n_people": 39,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.75,
+     "evidence": {
+      "headline_words": [
+       "developer tools",
+       "engineer",
+       "developer",
+       "software",
+       "scalable",
+       "software development"
       ],
       "topics": [
-       "Open Source",
-       "GitHub"
+       "GitHub",
+       "Open Source"
       ]
      }
     }
@@ -63,53 +117,85 @@
    "competitors": [
     "SearchSeal",
     "Chatway MCP",
-    "Draft"
+    "Krater"
    ],
-   "like": "Love that it audits docs and GitHub to fix what AI misunderstands.",
-   "dislike": "Shame it doesn't mention how it handles AI's inconsistent responses."
+   "like": "This directly audits content for AI understanding, then writes code-grounded fixes as pull requests.",
+   "dislike": "Some may question how it ensures consistent results given AI's non-deterministic nature.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.033,
+    "silhouette_neutral_space": 0.032,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.025
+   }
   },
   "1310455": {
    "name": "Creatify Max",
    "tagline": "Your ad teammate, from strategy to creation to launch",
    "people_scored": 300,
    "no_profile_text": 60,
-   "silhouette": 0.054,
+   "silhouette": 0.038,
    "groups": [
     {
-     "name": "Small Business Owners",
-     "who": "They build and run their own businesses, often handling many roles themselves.",
-     "share": 0.66,
-     "n_people": 159,
+     "name": "UX/UI Designers",
+     "who": "They craft user experiences and interfaces, often for new software or web applications.",
+     "share": 0.1,
+     "n_people": 23,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.07,
      "evidence": {
       "headline_words": [
-       "business",
-       "dev",
-       "technology",
-       "systems",
-       "build",
-       "focused"
+       "designer",
+       "product designer",
+       "design",
+       "ux",
+       "ux designer",
+       "product design"
       ],
       "topics": [
-       "GitHub",
-       "Open Source"
+       "Design Tools"
       ]
      }
     },
     {
-     "name": "AI crowd",
-     "who": "These are independent developers and co-founders creating new AI applications and platforms.",
-     "share": 0.34,
-     "n_people": 81,
+     "name": "Growth Marketers",
+     "who": "They focus on campaigns and strategies to expand a product's reach and user base.",
+     "share": 0.17,
+     "n_people": 40,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 1.05,
      "evidence": {
       "headline_words": [
-       "product designer",
-       "ai product",
-       "turn",
-       "care",
-       "product",
-       "exploring ai"
+       "content",
+       "marketing",
+       "campaigns",
+       "launches",
+       "want",
+       "social"
       ],
       "topics": []
+     }
+    },
+    {
+     "name": "Indie Devs",
+     "who": "They build and launch their own software projects, often experimenting with AI.",
+     "share": 0.2,
+     "n_people": 47,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.03,
+     "evidence": {
+      "headline_words": [
+       "software engineer",
+       "software",
+       "dev",
+       "engineer",
+       "projects",
+       "developer"
+      ],
+      "topics": [
+       "GitHub"
+      ]
      }
     }
    ],
@@ -118,50 +204,82 @@
     "Wisry",
     "Sami"
    ],
-   "like": "Love that it handles video ad creation and campaign setup on Meta/TikTok, not just monitoring.",
-   "dislike": "Shame it only supports Meta and TikTok, unlike some competitors with broader platform reach."
+   "like": "Approval before ads go live gives control over AI-generated campaigns.",
+   "dislike": "Supporting Meta and TikTok exclusively limits ad platform options for some advertisers.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.038,
+    "silhouette_neutral_space": 0.037,
+    "share_in_shown_groups": 0.46,
+    "other_feats_silhouette_neutral_space": 0.067
+   }
   },
   "1318920": {
    "name": "VINC",
    "tagline": "Bring your filmmaking vision to life.",
    "people_scored": 300,
    "no_profile_text": 60,
-   "silhouette": 0.069,
+   "silhouette": 0.043,
    "groups": [
     {
-     "name": "AI Founders",
-     "who": "They build AI apps and care about customer satisfaction and structured data.",
-     "share": 0.26,
-     "n_people": 62,
+     "name": "Filmmaking UI Designers",
+     "who": "They design user interfaces for creative tools, often building their own SaaS products.",
+     "share": 0.1,
+     "n_people": 23,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.07,
      "evidence": {
       "headline_words": [
-       "care",
+       "designer",
        "product designer",
-       "exploring ai",
-       "data",
-       "turn",
-       "app"
+       "design",
+       "ux",
+       "way",
+       "ux designer"
+      ],
+      "topics": [
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "Content Marketing Strategists",
+     "who": "They focus on GTM, brand strategy, and creating engaging content for product launches.",
+     "share": 0.17,
+     "n_people": 40,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 1.05,
+     "evidence": {
+      "headline_words": [
+       "content",
+       "marketing",
+       "campaigns",
+       "social",
+       "launches",
+       "want"
       ],
       "topics": []
      }
     },
     {
-     "name": "Marketing Leads",
-     "who": "They focus on growth, content, and GTM strategy for tech products.",
-     "share": 0.74,
-     "n_people": 178,
+     "name": "AI Software Engineers",
+     "who": "They build AI-powered applications and SaaS products, often as founders or CTOs.",
+     "share": 0.19,
+     "n_people": 45,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.99,
      "evidence": {
       "headline_words": [
-       "hi",
-       "business",
-       "focused",
-       "tech",
-       "manager",
-       "technology"
+       "software engineer",
+       "software",
+       "dev",
+       "developer",
+       "engineer",
+       "projects"
       ],
       "topics": [
-       "GitHub",
-       "Open Source"
+       "GitHub"
       ]
      }
     }
@@ -171,48 +289,79 @@
     "Narrative",
     "Visla AI Director Mode"
    ],
-   "like": "Love that it handles SFX and BGM, unlike other director tools.",
-   "dislike": "Shame it doesn't mention importing user footage or integrating with other editors."
+   "like": "The built-in editor with SFX and BGM takes care of post-production easily.",
+   "dislike": "VINC's visual consistency across longer film projects remains unclear.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.043,
+    "silhouette_neutral_space": 0.039,
+    "share_in_shown_groups": 0.45,
+    "other_feats_silhouette_neutral_space": null
+   }
   },
   "1310525": {
    "name": "Link.bio",
    "tagline": "Paste your link, we build your page. Your AI runs it.",
    "people_scored": 300,
    "no_profile_text": 48,
-   "silhouette": 0.041,
+   "silhouette": 0.04,
    "groups": [
     {
-     "name": "Indie Hackers",
-     "who": "They build web apps and SaaS, often using AI, and share growth strategies.",
-     "share": 0.39,
-     "n_people": 99,
+     "name": "AI Marketing Strategists",
+     "who": "They lead growth functions and build AI-powered applications for digital marketing.",
+     "share": 0.18,
+     "n_people": 45,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 1.12,
      "evidence": {
       "headline_words": [
-       "software engineer",
-       "engineering",
-       "engineer",
-       "software",
-       "founder",
-       "stack"
+       "content",
+       "strategy",
+       "growth",
+       "seo",
+       "reach",
+       "audience"
       ],
       "topics": [
-       "Open Source"
+       "API"
       ]
      }
     },
     {
-     "name": "Growth Marketers",
-     "who": "They focus on digital marketing, social media campaigns, and client acquisition systems.",
-     "share": 0.61,
-     "n_people": 153,
+     "name": "Solo AI Devs",
+     "who": "They are full stack developers and indie hackers building AI agents and apps.",
+     "share": 0.18,
+     "n_people": 45,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.94,
      "evidence": {
       "headline_words": [
-       "marketing",
-       "passionate",
-       "helping",
-       "experience",
-       "driven",
-       "growth"
+       "software",
+       "backend",
+       "engineer",
+       "software developer",
+       "developer",
+       "software engineer"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "B2B SaaS Designers",
+     "who": "They design B2B SaaS products and create playful AI experiences.",
+     "share": 0.08,
+     "n_people": 20,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 0.88,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "ux",
+       "designer",
+       "product designer",
+       "ui",
+       "10 years"
       ],
       "topics": []
      }
@@ -220,51 +369,80 @@
    ],
    "competitors": [
     "YourSitee",
-    "Wowable",
+    "PostNitro for Agents",
     "Repaint Socials"
    ],
-   "like": "Love that AI writes the bio, buttons, and theme in seconds from just a link.",
-   "dislike": "It's less about building from scattered content than Wowable or Repaint Socials."
+   "like": "AI writes bio, buttons, and theme in seconds from a single link.",
+   "dislike": "Editing capabilities after AI generation are not clearly explained.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.04,
+    "silhouette_neutral_space": 0.03,
+    "share_in_shown_groups": 0.44,
+    "other_feats_silhouette_neutral_space": null
+   }
   },
   "1257199": {
    "name": "TheBold",
    "tagline": "Turn execution into meetings with investors",
    "people_scored": 300,
    "no_profile_text": 72,
-   "silhouette": 0.084,
+   "silhouette": 0.055,
    "groups": [
     {
-     "name": "Startup Founders",
-     "who": "They are founders, CEOs, and entrepreneurs building and scaling their ventures.",
-     "share": 0.12,
-     "n_people": 28,
+     "name": "AI Startup Founders",
+     "who": "These founders are building AI companies and seeking investor connections.",
+     "share": 0.18,
+     "n_people": 42,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.29,
      "evidence": {
       "headline_words": [
-       "ai hey",
-       "acquired",
-       "founder",
-       "founder ceo",
+       "ai building",
        "ceo",
-       "entrepreneur"
+       "founder ceo",
+       "founder",
+       "worked",
+       "long"
       ],
-      "topics": [
-       "Social Media"
-      ]
+      "topics": []
      }
     },
     {
-     "name": "Software Developers",
-     "who": "They are developers, engineers, and designers building software and exploring new ideas.",
-     "share": 0.88,
-     "n_people": 200,
+     "name": "SaaS UI Designers",
+     "who": "These designers focus on user experience for SaaS and digital products.",
+     "share": 0.1,
+     "n_people": 23,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.12,
      "evidence": {
       "headline_words": [
-       "years",
-       "real",
-       "software",
+       "designer",
        "design",
+       "product designer",
+       "product design",
+       "ux",
+       "design engineer"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Open Source Devs",
+     "who": "These developers build software, often open source, and are interested in new tech.",
+     "share": 0.17,
+     "n_people": 39,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.9,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "dev",
+       "software",
        "developer",
-       "ideas"
+       "ai engineer",
+       "engineer building"
       ],
       "topics": [
        "Open Source"
@@ -277,137 +455,164 @@
     "Ayven",
     "Pitchfire for Startups"
    ],
-   "like": "Love that it connects execution directly to investor meetings, unlike others.",
-   "dislike": "Shame it doesn't mention how many investors are on the platform."
+   "like": "Direct meeting access after an AI interview is a clear path to funding.",
+   "dislike": "Customers will question how investor matching quality is ensured and verified.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.055,
+    "silhouette_neutral_space": 0.046,
+    "share_in_shown_groups": 0.46,
+    "other_feats_silhouette_neutral_space": 0.031
+   }
   },
   "1303191": {
    "name": "Trellus",
    "tagline": "Power and parallel dial from the list already in your CRM",
    "people_scored": 300,
    "no_profile_text": 34,
-   "silhouette": -0.007,
+   "silhouette": 0.036,
    "groups": [
     {
-     "name": "AI Founders",
-     "who": "They are founders and CEOs building AI businesses.",
-     "share": 0.13,
-     "n_people": 35,
+     "name": "AI SaaS Founders",
+     "who": "They build and launch AI-powered SaaS products, often from Y Combinator.",
+     "share": 0.16,
+     "n_people": 42,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.11,
      "evidence": {
       "headline_words": [
-       "ai founder",
-       "founder",
        "founder ceo",
        "ceo",
-       "ex",
-       "helping"
+       "founder",
+       "cofounder",
+       "ai founder",
+       "yc"
       ],
       "topics": []
      }
     },
     {
-     "name": "Sales Growth Leads",
-     "who": "They are working on fun projects, often in sales or growth.",
-     "share": 0.1,
-     "n_people": 26,
+     "name": "Growth Marketers",
+     "who": "They focus on content, brand, and digital marketing strategies for product launches.",
+     "share": 0.15,
+     "n_people": 41,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 0.97,
      "evidence": {
       "headline_words": [
-       "fun",
-       "stuff",
-       "builder working",
-       "000",
-       "working",
-       "training"
+       "content",
+       "growth",
+       "marketer",
+       "marketing",
+       "brand new",
+       "launches"
       ],
       "topics": [
-       "Sales"
+       "Video"
       ]
      }
     },
     {
-     "name": "Operations Managers",
-     "who": "They manage operations, HR, or marketing for various businesses.",
-     "share": 0.25,
-     "n_people": 66,
+     "name": "UX Designers",
+     "who": "They create user-centric designs for websites, apps, and software products.",
+     "share": 0.08,
+     "n_people": 21,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 0.88,
      "evidence": {
       "headline_words": [
-       "strategic",
-       "services",
-       "specializing",
-       "group",
-       "driving",
-       "managing"
-      ],
-      "topics": []
-     }
-    },
-    {
-     "name": "Indie App Developers",
-     "who": "They are shipping apps and tools, often as solo entrepreneurs.",
-     "share": 0.52,
-     "n_people": 139,
-     "evidence": {
-      "headline_words": [
-       "maker",
-       "indie",
-       "shipping",
-       "app",
-       "tools",
-       "builder"
+       "design",
+       "designer",
+       "tool",
+       "ux",
+       "intent",
+       "including"
       ],
       "topics": [
-       "Open Source",
-       "GitHub"
+       "Design Tools"
       ]
      }
     }
    ],
    "competitors": [
     "PollyReach",
-    "The Agentic Sales Engine by Crono",
-    "SaleSmartly"
+    "SaleSmartly",
+    "The Agentic Sales Engine by Crono"
    ],
-   "like": "Love that it dials from many CRMs and logs calls back to the record.",
-   "dislike": "Shame it doesn't mention safeguards against misuse like PollyReach users asked."
+   "like": "Dials directly from many CRMs and Google Sheets, logging calls automatically.",
+   "dislike": "No international dialing or integrations beyond listed CRMs are mentioned.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.036,
+    "silhouette_neutral_space": 0.017,
+    "share_in_shown_groups": 0.39,
+    "other_feats_silhouette_neutral_space": 0.029
+   }
   },
   "1316291": {
    "name": "RankSpot",
    "tagline": "Pay-as-you-go SEO and AI Search execution layer for agents",
    "people_scored": 300,
    "no_profile_text": 67,
-   "silhouette": 0.056,
+   "silhouette": 0.06,
    "groups": [
     {
-     "name": "AI Founders",
-     "who": "They build AI products and seek automation for their marketing efforts.",
-     "share": 0.28,
-     "n_people": 65,
+     "name": "Open-source Devs",
+     "who": "They build software systems and open-source platforms, often exploring AI and indie product development.",
+     "share": 0.21,
+     "n_people": 50,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.13,
      "evidence": {
       "headline_words": [
-       "founder",
-       "ml",
-       "ai",
-       "com",
-       "intersection",
-       "ready"
+       "stack",
+       "dev",
+       "software engineer",
+       "software",
+       "developer",
+       "engineer"
       ],
       "topics": [
-       "SaaS"
+       "Open Source"
       ]
      }
     },
     {
-     "name": "SEO Strategists",
-     "who": "They optimize websites for search engines and manage content creation.",
-     "share": 0.72,
-     "n_people": 168,
+     "name": "SaaS Founders",
+     "who": "They lead startups, building products at the intersection of tech and creativity, solving real-world challenges.",
+     "share": 0.16,
+     "n_people": 37,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.11,
      "evidence": {
       "headline_words": [
-       "experience",
-       "digital",
-       "software",
-       "developer",
-       "tools",
-       "software engineer"
+       "ceo",
+       "founder ceo",
+       "worked",
+       "founder",
+       "intersection",
+       "long"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX Designers",
+     "who": "They craft meaningful experiences, building apps and exploring AI, often as serial makers.",
+     "share": 0.09,
+     "n_people": 22,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.05,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "design engineer",
+       "product design",
+       "websites"
       ],
       "topics": []
      }
@@ -418,140 +623,162 @@
     "RankControl",
     "Rankfender"
    ],
-   "like": "Pay-as-you-go model avoids subscriptions, only paying for what's used.",
-   "dislike": "No free audit like Free AI SEO Auditor, just a free article."
+   "like": "Pay-as-you-go model means no subscription, only paying for what agents actually do.",
+   "dislike": "Unclear how it ensures AI article quality and originality, given Google's spam policies.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.06,
+    "silhouette_neutral_space": 0.041,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.025
+   }
   },
   "1304887": {
    "name": "Versine",
    "tagline": "Let your AI agent send and receive money",
    "people_scored": 300,
    "no_profile_text": 33,
-   "silhouette": -0.001,
+   "silhouette": 0.043,
    "groups": [
     {
-     "name": "Indie SaaS founders",
-     "who": "They build and ship software products, often as solopreneurs or small teams.",
-     "share": 0.52,
-     "n_people": 139,
+     "name": "AI Founders",
+     "who": "They build AI agent platforms and B2B SaaS products, often from YC.",
+     "share": 0.16,
+     "n_people": 42,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.1,
      "evidence": {
       "headline_words": [
-       "maker",
-       "indie",
-       "tools",
-       "make",
-       "self",
-       "builder"
-      ],
-      "topics": [
-       "Open Source",
-       "GitHub"
-      ]
-     }
-    },
-    {
-     "name": "Operations Directors",
-     "who": "They manage and optimize business operations, focusing on efficiency and strategic initiatives.",
-     "share": 0.24,
-     "n_people": 65,
-     "evidence": {
-      "headline_words": [
-       "strategic",
-       "services",
-       "director",
-       "operations",
-       "management",
-       "group"
+       "founder ceo",
+       "founder",
+       "ceo",
+       "platform",
+       "cofounder",
+       "ceo founder"
       ],
       "topics": []
      }
     },
     {
-     "name": "AI Startup Founders",
-     "who": "They lead AI companies, often with a background in engineering or product development.",
-     "share": 0.24,
-     "n_people": 63,
+     "name": "Growth Marketers",
+     "who": "They focus on business growth, brand strategy, and digital marketing for launches.",
+     "share": 0.17,
+     "n_people": 45,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 1.06,
      "evidence": {
       "headline_words": [
-       "ai founder",
-       "founder ceo",
-       "founder",
-       "ex",
-       "ceo",
-       "agentic"
+       "marketer",
+       "growth",
+       "content",
+       "marketing",
+       "brand new",
+       "business growth"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Indie AI Devs",
+     "who": "They are software developers and indie hackers building with AI for fun.",
+     "share": 0.15,
+     "n_people": 39,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.77,
+     "evidence": {
+      "headline_words": [
+       "developer",
+       "engineer",
+       "use",
+       "software developer",
+       "indie hacker",
+       "clean"
       ],
       "topics": [
-       "Video"
+       "Mac"
       ]
      }
     }
    ],
    "competitors": [
     "Agentcard",
-    "Agentcard for companies",
+    "Robinhood Agentic Trading",
     "PieterPost MCP"
    ],
-   "like": "Love that recipients don't need an account, cashing out straight to their bank.",
-   "dislike": "Still need to approve transfers with a passkey, not fully autonomous for new contacts."
+   "like": "Recipients cash out directly to their bank, no Versine account needed.",
+   "dislike": "Autonomous sending to trusted contacts raises questions about control and risk limits.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.043,
+    "silhouette_neutral_space": 0.033,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.029
+   }
   },
   "1317811": {
    "name": "superlog",
    "tagline": "Finds the production bugs your monitoring never sees",
    "people_scored": 300,
    "no_profile_text": 33,
-   "silhouette": -0.01,
+   "silhouette": 0.032,
    "groups": [
     {
-     "name": "Open Source Leads",
-     "who": "They lead development, often in open source, and build new things.",
-     "share": 0.1,
-     "n_people": 27,
+     "name": "Platform founders",
+     "who": "They lead startups, often from Y Combinator, building new platforms and services.",
+     "share": 0.18,
+     "n_people": 48,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.26,
      "evidence": {
       "headline_words": [
-       "lead",
-       "talk",
-       "happy talk",
-       "firm",
-       "builder",
-       "cto"
-      ],
-      "topics": [
-       "Open Source",
-       "Development",
-       "GitHub",
-       "API"
-      ]
-     }
-    },
-    {
-     "name": "Software Engineers",
-     "who": "They build and ship software, often using AI and developer tools.",
-     "share": 0.64,
-     "n_people": 171,
-     "evidence": {
-      "headline_words": [
-       "engineer",
-       "software",
-       "ai",
-       "shipping",
-       "tools",
-       "app"
+       "founder ceo",
+       "founder",
+       "ceo",
+       "cofounder",
+       "platform",
+       "yc"
       ],
       "topics": []
      }
     },
     {
-     "name": "Marketing Managers",
-     "who": "They manage operations, marketing, and drive business results.",
-     "share": 0.26,
-     "n_people": 69,
+     "name": "Content marketers",
+     "who": "They focus on brand strategy, content, and SEO to drive business growth.",
+     "share": 0.16,
+     "n_people": 42,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 0.99,
      "evidence": {
       "headline_words": [
-       "operations",
-       "management",
-       "expert",
-       "experience",
-       "specialist",
-       "strong"
+       "marketer",
+       "content",
+       "growth",
+       "marketing",
+       "brand new",
+       "strategies"
+      ],
+      "topics": [
+       "Video"
+      ]
+     }
+    },
+    {
+     "name": "UX designers",
+     "who": "They bridge design and functionality, creating user-centric experiences and solving business problems.",
+     "share": 0.07,
+     "n_people": 20,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 0.83,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "social media",
+       "tool",
+       "including",
+       "ios"
       ],
       "topics": []
      }
@@ -562,48 +789,83 @@
     "Human Behavior",
     "BugShot"
    ],
-   "like": "Love that it finds bugs monitoring misses and hands you a fix.",
-   "dislike": "Still need to know how it prevents incorrect or non-compliant fixes."
+   "like": "Getting a fix for unseen production bugs 24/7, not just alerts, is a huge relief.",
+   "dislike": "The AI suggesting fixes might raise concerns about accuracy and preventing incorrect solutions.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.032,
+    "silhouette_neutral_space": 0.009,
+    "share_in_shown_groups": 0.41,
+    "other_feats_silhouette_neutral_space": 0.023
+   }
   },
   "1319349": {
    "name": "Clamor",
    "tagline": "Turns social signals into actionable insights",
    "people_scored": 300,
    "no_profile_text": 77,
-   "silhouette": 0.076,
+   "silhouette": 0.056,
    "groups": [
     {
-     "name": "Marketing Founders",
-     "who": "They are founders and CEOs building and growing marketing-focused businesses.",
-     "share": 0.23,
-     "n_people": 52,
+     "name": "Marketing SaaS founders",
+     "who": "These founders build AI-powered tools and platforms, often in the marketing and advertising space.",
+     "share": 0.17,
+     "n_people": 39,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.23,
      "evidence": {
       "headline_words": [
-       "founder ceo",
        "ceo",
-       "university",
+       "founder ceo",
+       "worked",
+       "acquired",
        "founder",
-       "builder",
-       "entrepreneur"
+       "ai building"
+      ],
+      "topics": [
+       "Marketing"
+      ]
+     }
+    },
+    {
+     "name": "UX/UI designers",
+     "who": "These designers create web and mobile experiences, often for SaaS and AI applications.",
+     "share": 0.09,
+     "n_people": 21,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.05,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "product design",
+       "design engineer",
+       "ux"
       ],
       "topics": []
      }
     },
     {
-     "name": "Software Engineers",
-     "who": "They are engineers and developers building and shipping software solutions.",
-     "share": 0.77,
-     "n_people": 171,
+     "name": "Fullstack software engineers",
+     "who": "These developers build diverse applications, from open-source to AI-driven solutions.",
+     "share": 0.2,
+     "n_people": 44,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.04,
      "evidence": {
       "headline_words": [
-       "software",
-       "build",
-       "real",
-       "tools",
-       "digital",
-       "growth"
+       "stack",
+       "developer building",
+       "developer",
+       "dev",
+       "engineer building",
+       "challenges"
       ],
-      "topics": []
+      "topics": [
+       "Open Source"
+      ]
      }
     }
    ],
@@ -612,10 +874,2775 @@
     "Syncly Social",
     "Human Behavior"
    ],
-   "like": "Analyzing public social accounts without a login is a smart move.",
-   "dislike": "No free tier mentioned, unlike DodoForm's generous offering."
+   "like": "Analyzing public social accounts without a login is a huge time-saver for marketers.",
+   "dislike": "Integrating insights via API might be less intuitive than direct dashboard actions.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.056,
+    "silhouette_neutral_space": 0.044,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.024
+   }
+  },
+  "1309861": {
+   "name": "Appxiom",
+   "tagline": "Context layer for AI coding agents to detect & fix bugs",
+   "people_scored": 300,
+   "no_profile_text": 88,
+   "silhouette": 0.042,
+   "groups": [
+    {
+     "name": "UX Design Leads",
+     "who": "They create visually stunning designs and build genuine relationships with users.",
+     "share": 0.11,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.26,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "product design",
+       "ux",
+       "live"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Full-Stack Engineers",
+     "who": "They build web and mobile products end to end, writing code professionally since 2005.",
+     "share": 0.24,
+     "n_people": 50,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.24,
+     "evidence": {
+      "headline_words": [
+       "engineer",
+       "stack",
+       "stack engineer",
+       "founder cto",
+       "software",
+       "software developer"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    },
+    {
+     "name": "Solo SaaS Founders",
+     "who": "They make apps to help themselves, then tweak them to help others too.",
+     "share": 0.17,
+     "n_people": 35,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.16,
+     "evidence": {
+      "headline_words": [
+       "ai building",
+       "long",
+       "ceo",
+       "founder",
+       "agents",
+       "solo founder"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Context Engine",
+    "Context.dev",
+    "ContextPool"
+   ],
+   "like": "Appxiom detects and prioritizes bugs by goal friction impact across many platforms.",
+   "dislike": "Appxiom's agent action accuracy without human verification is unclear.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.042,
+    "silhouette_neutral_space": 0.04,
+    "share_in_shown_groups": 0.51,
+    "other_feats_silhouette_neutral_space": 0.017
+   }
+  },
+  "1316663": {
+   "name": "Inbox Hero",
+   "tagline": "Your replies drafted in your voice, scams quarantined",
+   "people_scored": 300,
+   "no_profile_text": 59,
+   "silhouette": 0.045,
+   "groups": [
+    {
+     "name": "AI-building developers",
+     "who": "They are software engineers and CTOs building new AI applications and systems.",
+     "share": 0.23,
+     "n_people": 56,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.23,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "ai engineer",
+       "dev",
+       "developer",
+       "software engineer",
+       "developer building"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX-focused designers",
+     "who": "These are product and UX designers who build apps and focus on user experience.",
+     "share": 0.1,
+     "n_people": 23,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.06,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "mobile",
+       "impact"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Solo SaaS founders",
+     "who": "They are founders and CEOs building their own products, often in the AI space.",
+     "share": 0.13,
+     "n_people": 31,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.9,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "solo founder",
+       "founder",
+       "brands",
+       "organizations"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "AI Emaily",
+    "Atomic Mail Agentic",
+    "Hello Inbox"
+   ],
+   "like": "Drafts replies in your voice and waits for approval, avoiding autopilot sending risks.",
+   "dislike": "Outlook integration is missing; only Gmail, Yahoo, iCloud, and AOL are supported.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.045,
+    "silhouette_neutral_space": 0.033,
+    "share_in_shown_groups": 0.46,
+    "other_feats_silhouette_neutral_space": 0.037
+   }
+  },
+  "1319374": {
+   "name": "AWS Emulator",
+   "tagline": "Build and test AWS applications locally without deploying",
+   "people_scored": 300,
+   "no_profile_text": 72,
+   "silhouette": 0.045,
+   "groups": [
+    {
+     "name": "AI Software Engineers",
+     "who": "They build AI-powered products and developer tools, often as solo founders or CTOs.",
+     "share": 0.22,
+     "n_people": 51,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.18,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "software",
+       "software engineer",
+       "engineer",
+       "developer",
+       "ai engineer"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    },
+    {
+     "name": "UX Designers",
+     "who": "They design digital products and user experiences, often with an eye for AI applications.",
+     "share": 0.1,
+     "n_people": 23,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.12,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "live",
+       "ux",
+       "creating"
+      ],
+      "topics": [
+       "Menu Bar Apps",
+       "iOS",
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "Solo App Founders",
+     "who": "They create and launch their own apps, often leveraging AI and building tools for themselves.",
+     "share": 0.15,
+     "n_people": 35,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.08,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "entrepreneur",
+       "founder",
+       "ve",
+       "solo founder",
+       "app"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Bitrise Remote Dev Environments",
+    "Hoplite",
+    "Retool"
+   ],
+   "like": "Building and testing AWS apps locally without cloud deployment or an AWS account is a huge win.",
+   "dislike": "The accuracy of local emulation for complex AWS networking or IAM policies is unclear.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.045,
+    "silhouette_neutral_space": 0.038,
+    "share_in_shown_groups": 0.48,
+    "other_feats_silhouette_neutral_space": 0.036
+   }
+  },
+  "1319369": {
+   "name": "Ballet",
+   "tagline": "Deterministic AI workflow automation for Ops teams",
+   "people_scored": 300,
+   "no_profile_text": 64,
+   "silhouette": 0.056,
+   "groups": [
+    {
+     "name": "AI workflow devs",
+     "who": "They are developers building with AI and open source.",
+     "share": 0.24,
+     "n_people": 56,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.25,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "ai engineer",
+       "dev",
+       "developer",
+       "software",
+       "dev building"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    },
+    {
+     "name": "UX AI designers",
+     "who": "They are designers focused on user experience and AI.",
+     "share": 0.1,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.13,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "intelligence",
+       "coffee"
+      ],
+      "topics": [
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "Solo AI founders",
+     "who": "They are founders building and acquiring AI companies.",
+     "share": 0.14,
+     "n_people": 32,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.95,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "solo founder",
+       "founder",
+       "long",
+       "intersection"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Flowtask",
+    "The Agentic Sales Engine by Crono",
+    "Toone"
+   ],
+   "like": "Ballet builds workflows as reviewable code, unlike competitors with less transparency.",
+   "dislike": "Reliability and debugging of AI-generated code might be a concern for complex logic.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.056,
+    "silhouette_neutral_space": 0.039,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.028
+   }
+  },
+  "1319271": {
+   "name": "ExtraDock 5",
+   "tagline": "Your Mac Dock, on every screen",
+   "people_scored": 300,
+   "no_profile_text": 60,
+   "silhouette": 0.051,
+   "groups": [
+    {
+     "name": "Mac Software Engineers",
+     "who": "They are developers and founders building software, often with an AI or open-source focus.",
+     "share": 0.22,
+     "n_people": 53,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.16,
+     "evidence": {
+      "headline_words": [
+       "dev",
+       "stack",
+       "software engineer",
+       "founder cto",
+       "ai engineer",
+       "software"
+      ],
+      "topics": [
+       "Open Source",
+       "GitHub"
+      ]
+     }
+    },
+    {
+     "name": "Mac UX Designers",
+     "who": "They are designers and indie makers focused on user experience and interface creation.",
+     "share": 0.1,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.11,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "design engineer",
+       "turn"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Mac SaaS Founders",
+     "who": "They are entrepreneurs and CEOs building tech solutions, often at the intersection of new tech.",
+     "share": 0.15,
+     "n_people": 35,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.02,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "worked",
+       "founder",
+       "long",
+       "intersection"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Pocket Screen",
+    "Expand Board for macOS",
+    "CoolDock"
+   ],
+   "like": "Each screen getting its own customizable Dock with unique apps and styling is a big win.",
+   "dislike": "Adding Docks to every screen might raise concerns about battery and CPU usage on MacBooks.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.051,
+    "silhouette_neutral_space": 0.043,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.025
+   }
+  },
+  "1308419": {
+   "name": "DearInside",
+   "tagline": "Your body has a social network. You're the only human.",
+   "people_scored": 300,
+   "no_profile_text": 68,
+   "silhouette": 0.06,
+   "groups": [
+    {
+     "name": "AI-building Developers",
+     "who": "They are software engineers and developers building with AI, often for client projects.",
+     "share": 0.28,
+     "n_people": 64,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.46,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "engineer",
+       "developer",
+       "code",
+       "developer building",
+       "dev"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Intuitive App Designers",
+     "who": "These designers focus on creating intuitive user experiences for apps, often with AI.",
+     "share": 0.1,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.15,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "led",
+       "strategy"
+      ],
+      "topics": [
+       "Design Tools",
+       "Menu Bar Apps"
+      ]
+     }
+    },
+    {
+     "name": "Indie App Founders",
+     "who": "They are founders and entrepreneurs who build and launch their own apps from scratch.",
+     "share": 0.12,
+     "n_people": 29,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.88,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "entrepreneur",
+       "founder",
+       "solo founder",
+       "businesses"
+      ],
+      "topics": [
+       "Video"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "folk",
+    "Agent Commune",
+    "Flux"
+   ],
+   "like": "The body's residents posting their own social feeds feels more personal than generic AI agents.",
+   "dislike": "The 'social network' of body parts might feel too abstract compared to concrete meeting notes.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.06,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.5,
+    "other_feats_silhouette_neutral_space": 0.059
+   }
+  },
+  "1316705": {
+   "name": "Ridian",
+   "tagline": "The AI-first scheduling suite for everything around meetings",
+   "people_scored": 300,
+   "no_profile_text": 66,
+   "silhouette": 0.048,
+   "groups": [
+    {
+     "name": "AI-stack Developers",
+     "who": "These developers build with AI and seek useful tools for their projects.",
+     "share": 0.26,
+     "n_people": 62,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.4,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "developer",
+       "developer building",
+       "founder cto",
+       "software",
+       "software engineer"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Indie SaaS Founders",
+     "who": "These founders build and launch their own software products, often solo.",
+     "share": 0.12,
+     "n_people": 28,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.84,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "brands",
+       "founder",
+       "hey",
+       "acquired"
+      ],
+      "topics": [
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "Growth Marketers",
+     "who": "These marketers focus on brand building and driving growth for companies.",
+     "share": 0.1,
+     "n_people": 24,
+     "role": "marketer",
+     "role_lift_vs_todays_backers": 0.65,
+     "evidence": {
+      "headline_words": [
+       "brand",
+       "growth",
+       "growth marketer",
+       "seo",
+       "digital marketing",
+       "marketer"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Agent Mode by Receiptor AI",
+    "Meet-Ting",
+    "Callum"
+   ],
+   "like": "AI-first approach handles payments, waitlists, and CRM, going beyond basic scheduling.",
+   "dislike": "Voice interaction feels less efficient for complex scheduling compared to text input.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.048,
+    "silhouette_neutral_space": 0.04,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": 0.054
+   }
+  },
+  "1297244": {
+   "name": "AI Visibility by TruLata",
+   "tagline": "Find out if ChatGPT names your business when buyers ask",
+   "people_scored": 300,
+   "no_profile_text": 75,
+   "silhouette": 0.049,
+   "groups": [
+    {
+     "name": "AI-stack developers",
+     "who": "They build with AI models and integrate them into their software projects.",
+     "share": 0.26,
+     "n_people": 58,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.36,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "ai engineer",
+       "engineer",
+       "engineer building",
+       "stack engineer",
+       "backend"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI-curious designers",
+     "who": "They design products and are interested in how AI impacts user experience and visibility.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.24,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "creating",
+       "product design",
+       "ux"
+      ],
+      "topics": [
+       "iOS",
+       "Menu Bar Apps",
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "AI-building founders",
+     "who": "They are entrepreneurs creating new businesses, often with AI at their core.",
+     "share": 0.15,
+     "n_people": 33,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.03,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "ai building",
+       "entrepreneur",
+       "founder",
+       "serial"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Howseen AI",
+    "Free AI SEO Auditor",
+    "Cuey"
+   ],
+   "like": "See if AI names your business in ten seconds, with fixes spelled out and no email.",
+   "dislike": "How often the weekly check across nine engines updates results isn't clear.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.049,
+    "silhouette_neutral_space": 0.04,
+    "share_in_shown_groups": 0.52,
+    "other_feats_silhouette_neutral_space": 0.025
+   }
+  },
+  "1319771": {
+   "name": "Retriever",
+   "tagline": "Search your phone's photos, documents and videos privately",
+   "people_scored": 300,
+   "no_profile_text": 70,
+   "silhouette": 0.051,
+   "groups": [
+    {
+     "name": "UX Designers",
+     "who": "They turn ideas into products, focusing on user experience and practical problem-solving.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.21,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "product design",
+       "ux",
+       "turn"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Founders",
+     "who": "These entrepreneurs build companies, often with AI, solving problems and creating new products.",
+     "share": 0.17,
+     "n_people": 39,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.19,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "founder",
+       "worked",
+       "acquired",
+       "long"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Open-Source Developers",
+     "who": "They build software solutions, often open-source, with a focus on innovation and community.",
+     "share": 0.19,
+     "n_people": 43,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.99,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "dev",
+       "developer",
+       "ai engineer",
+       "software",
+       "engineer"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Clipto",
+    "Memoria",
+    "BiBimba"
+   ],
+   "like": "On-device processing for all media types keeps everything private, no account or server needed.",
+   "dislike": "Searching cloud photos or desktop versions isn't mentioned, unlike other tools.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.051,
+    "silhouette_neutral_space": 0.038,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.022
+   }
+  },
+  "1319276": {
+   "name": "Lampa Camera",
+   "tagline": "iPhone camera with natural processing and an analog feel",
+   "people_scored": 300,
+   "no_profile_text": 77,
+   "silhouette": 0.051,
+   "groups": [
+    {
+     "name": "UX Design Leads",
+     "who": "They lead design teams and build digital products across various platforms.",
+     "share": 0.11,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.2,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "product design",
+       "ux",
+       "design engineer"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Startup Founders",
+     "who": "They build and lead companies, often focusing on AI and emerging technologies.",
+     "share": 0.17,
+     "n_people": 37,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.16,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ai building",
+       "ceo",
+       "founder",
+       "long",
+       "worked"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Fullstack Devs",
+     "who": "They are software engineers building across the entire tech stack.",
+     "share": 0.18,
+     "n_people": 41,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.97,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "dev",
+       "developer building",
+       "developer",
+       "stack engineer",
+       "challenges"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Capso",
+    "Lightmeter: Pocket Film Camera",
+    "Shotwell"
+   ],
+   "like": "Natural tones and film-inspired color profiles for photos and videos are a strong draw.",
+   "dislike": "Users will question the pricing model and if it offers enough over native camera apps.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.051,
+    "silhouette_neutral_space": 0.044,
+    "share_in_shown_groups": 0.46,
+    "other_feats_silhouette_neutral_space": 0.027
+   }
+  },
+  "1319570": {
+   "name": "Agents API by Recall.ai",
+   "tagline": "Send your agent to meetings",
+   "people_scored": 300,
+   "no_profile_text": 82,
+   "silhouette": 0.057,
+   "groups": [
+    {
+     "name": "AI-focused Designers",
+     "who": "They design user experiences and interfaces, often with a focus on AI applications.",
+     "share": 0.12,
+     "n_people": 27,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.38,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "creating",
+       "ui"
+      ],
+      "topics": [
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "AI Startup Founders",
+     "who": "These founders are building new companies, often with a focus on AI technologies.",
+     "share": 0.18,
+     "n_people": 40,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.29,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "founder",
+       "ai building",
+       "entrepreneur",
+       "solo founder"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "API-first Developers",
+     "who": "They are software engineers who build applications, often using APIs and backend systems.",
+     "share": 0.2,
+     "n_people": 44,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.06,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "software",
+       "engineer",
+       "developer",
+       "software engineer",
+       "software developer"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "MeetStream AI",
+    "CoAgentor",
+    "muno"
+   ],
+   "like": "One API call sends your agent into Zoom, Google Meet, Teams, and Webex calls.",
+   "dislike": "Voice interaction could be less efficient for reviewing complex changes than text.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.057,
+    "silhouette_neutral_space": 0.049,
+    "share_in_shown_groups": 0.51,
+    "other_feats_silhouette_neutral_space": null
+   }
+  },
+  "1308114": {
+   "name": "Lasso",
+   "tagline": "Draw on your Mac screen, then let AI agents see it",
+   "people_scored": 300,
+   "no_profile_text": 77,
+   "silhouette": 0.057,
+   "groups": [
+    {
+     "name": "Fintech Founders",
+     "who": "They lead startups, often in fintech, and solve complex problems.",
+     "share": 0.16,
+     "n_people": 35,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.1,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "worked",
+       "intersection",
+       "long",
+       "founder"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX Designers",
+     "who": "They craft meaningful digital experiences and build their own apps.",
+     "share": 0.1,
+     "n_people": 22,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.1,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "turn",
+       "impact"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Engineers",
+     "who": "They build AI software and create tools for solo creators.",
+     "share": 0.19,
+     "n_people": 42,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.99,
+     "evidence": {
+      "headline_words": [
+       "dev",
+       "stack",
+       "engineer",
+       "founder cto",
+       "software",
+       "developer"
+      ],
+      "topics": [
+       "Analytics"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "flock",
+    "AgentValley",
+    "AgentQuartz"
+   ],
+   "like": "Lasso's one-time purchase and local AI server are great for privacy and cost.",
+   "dislike": "A Windows or Linux version is absent, limiting its reach.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.057,
+    "silhouette_neutral_space": 0.044,
+    "share_in_shown_groups": 0.44,
+    "other_feats_silhouette_neutral_space": 0.035
+   }
+  },
+  "1304366": {
+   "name": "ROOTKey Platform",
+   "tagline": "See what changed in your data. Restore what you can prove.",
+   "people_scored": 300,
+   "no_profile_text": 79,
+   "silhouette": 0.054,
+   "groups": [
+    {
+     "name": "UX Design Leads",
+     "who": "They lead design teams, focusing on impactful user experiences and turning ideas into products.",
+     "share": 0.11,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.21,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "product design",
+       "ux",
+       "creating"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Startup Founders",
+     "who": "These entrepreneurs are building and leading new companies, often at the intersection of AI and other fields.",
+     "share": 0.16,
+     "n_people": 36,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.14,
+     "evidence": {
+      "headline_words": [
+       "ai building",
+       "long",
+       "founder",
+       "ceo",
+       "intersection",
+       "consultant"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Open-Source Developers",
+     "who": "They are software engineers and CTOs building open-source products and enterprise software.",
+     "share": 0.19,
+     "n_people": 43,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.03,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "dev",
+       "engineer",
+       "founder cto",
+       "developer building",
+       "stack engineer"
+      ],
+      "topics": [
+       "Mac",
+       "Open Source"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Cloudback for Linear",
+    "Rewisp",
+    "Folderly Lens"
+   ],
+   "like": "Shows exact data changes like a digit or pixel, not just that something changed.",
+   "dislike": "Setting up connectors for all data sources could be complex compared to simpler backups.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.054,
+    "silhouette_neutral_space": 0.043,
+    "share_in_shown_groups": 0.47,
+    "other_feats_silhouette_neutral_space": 0.014
+   }
+  },
+  "1318477": {
+   "name": "Superhands",
+   "tagline": "Design the system, not every output.",
+   "people_scored": 300,
+   "no_profile_text": 80,
+   "silhouette": 0.052,
+   "groups": [
+    {
+     "name": "AI-curious Designers",
+     "who": "They are designers exploring how AI can integrate into their creative workflows.",
+     "share": 0.12,
+     "n_people": 26,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.32,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "producer",
+       "ui"
+      ],
+      "topics": [
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "AI-first Founders",
+     "who": "These founders are building businesses with AI at their core.",
+     "share": 0.17,
+     "n_people": 37,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.18,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder",
+       "entrepreneur",
+       "founder ceo",
+       "solo founder",
+       "businesses"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI-focused Developers",
+     "who": "They are engineers building software and exploring AI applications.",
+     "share": 0.2,
+     "n_people": 45,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.08,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "software",
+       "software engineer",
+       "engineer",
+       "engineer building",
+       "developer"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Magic Patterns Agent 2.0",
+    "Deep Work Plan",
+    "Figma for Agents"
+   ],
+   "like": "Fixing the design system once instead of chasing every AI output is a clear win.",
+   "dislike": "Managing system integrity across many AI tools might get complex without clear version control.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.052,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": 0.038
+   }
+  },
+  "1318923": {
+   "name": "BASE Studio",
+   "tagline": "Turn product photos into 3D and AR, automatically",
+   "people_scored": 300,
+   "no_profile_text": 68,
+   "silhouette": 0.06,
+   "groups": [
+    {
+     "name": "Frontend devs",
+     "who": "They build web apps and are interested in new tech.",
+     "share": 0.28,
+     "n_people": 64,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.46,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "engineer",
+       "developer",
+       "code",
+       "developer building",
+       "dev"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX designers",
+     "who": "They create intuitive product experiences and build apps.",
+     "share": 0.1,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.15,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "led",
+       "strategy"
+      ],
+      "topics": [
+       "Design Tools",
+       "Menu Bar Apps"
+      ]
+     }
+    },
+    {
+     "name": "SaaS founders",
+     "who": "They launch and grow businesses, often building their own tools.",
+     "share": 0.12,
+     "n_people": 29,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.88,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "entrepreneur",
+       "founder",
+       "solo founder",
+       "businesses"
+      ],
+      "topics": [
+       "Video"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Google Pomelli",
+    "Voxelo 3.0",
+    "ReactVision Studio"
+   ],
+   "like": "AI creates 3D models from photos or text, fine-tuning materials and lighting.",
+   "dislike": "Direct e-commerce platform integrations like Shopify are not mentioned.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.06,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.5,
+    "other_feats_silhouette_neutral_space": 0.059
+   }
+  },
+  "1306142": {
+   "name": "Continuo",
+   "tagline": "One keyboard and mouse across Macs, no Apple Account",
+   "people_scored": 300,
+   "no_profile_text": 67,
+   "silhouette": 0.056,
+   "groups": [
+    {
+     "name": "UX Design engineers",
+     "who": "They create information architecture, UX design, and interfaces for products.",
+     "share": 0.1,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.15,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "design engineer",
+       "turn"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Open-source developers",
+     "who": "They build secure, innovative, and community-driven software solutions.",
+     "share": 0.21,
+     "n_people": 50,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.13,
+     "evidence": {
+      "headline_words": [
+       "dev",
+       "stack",
+       "software engineer",
+       "founder cto",
+       "dev building",
+       "ai engineer"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    },
+    {
+     "name": "Fintech founders",
+     "who": "They solve complex problems and manage teams in fintech and tech startups.",
+     "share": 0.15,
+     "n_people": 34,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.02,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "worked",
+       "founder",
+       "long",
+       "intersection"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Maccess",
+    "Pocket Screen",
+    "Macuse"
+   ],
+   "like": "No Apple account or cloud relay makes setup and privacy much simpler.",
+   "dislike": "Windows or iOS compatibility is missing; it only works with Macs.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.056,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.46,
+    "other_feats_silhouette_neutral_space": 0.029
+   }
+  },
+  "1316484": {
+   "name": "seshka",
+   "tagline": "Kill what Claude Code left behind",
+   "people_scored": 300,
+   "no_profile_text": 72,
+   "silhouette": 0.043,
+   "groups": [
+    {
+     "name": "Startup Founders",
+     "who": "They lead businesses and have experience with various tech and fintech startups.",
+     "share": 0.19,
+     "n_people": 44,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.35,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "acquired",
+       "worked",
+       "founder",
+       "long"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX/UI Designers",
+     "who": "They craft meaningful experiences and turn ideas into working applications.",
+     "share": 0.11,
+     "n_people": 26,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.27,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "product design",
+       "ui"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Full-Stack Engineers",
+     "who": "They build software for a living, often focusing on AI and open-source projects.",
+     "share": 0.18,
+     "n_people": 41,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.95,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "developer",
+       "ai engineer",
+       "engineer building",
+       "engineer",
+       "software"
+      ],
+      "topics": [
+       "Analytics"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "claude-devtools",
+    "CCgather",
+    "Claudebin"
+   ],
+   "like": "seshka shows memory and ports for each session, which competitors don't.",
+   "dislike": "seshka is Mac-only, unlike some competitors that might imply broader platform support.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.043,
+    "silhouette_neutral_space": 0.033,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": 0.009
+   }
+  },
+  "1319139": {
+   "name": "Liquid d1.2",
+   "tagline": "Decision models that return calibrated probabilities",
+   "people_scored": 300,
+   "no_profile_text": 65,
+   "silhouette": 0.053,
+   "groups": [
+    {
+     "name": "AI backend devs",
+     "who": "They build software and backend systems, often using AI and modern stacks.",
+     "share": 0.28,
+     "n_people": 66,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.48,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "engineer",
+       "developer building",
+       "engineer building",
+       "backend",
+       "code"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX AI researchers",
+     "who": "They design intelligent dialogue flows and adapt large language models for specific tasks.",
+     "share": 0.1,
+     "n_people": 23,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.09,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "grow",
+       "producer"
+      ],
+      "topics": [
+       "Menu Bar Apps",
+       "iOS",
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "AI startup founders",
+     "who": "They lead companies building AI-powered solutions, from healthcare apps to longevity coaches.",
+     "share": 0.14,
+     "n_people": 33,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.98,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "entrepreneur",
+       "founder",
+       "founder builder",
+       "brands"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Milliseconds.ai",
+    "Claude Code /ultrareview",
+    "Universal-3.5 Pro"
+   ],
+   "like": "Audio input and new tasks like object location make it more versatile than other models.",
+   "dislike": "Relying on AI for critical decisions, even with calibrated probabilities, still feels risky.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.053,
+    "silhouette_neutral_space": 0.041,
+    "share_in_shown_groups": 0.52,
+    "other_feats_silhouette_neutral_space": 0.057
+   }
+  },
+  "1319091": {
+   "name": "Skiss",
+   "tagline": "Save websites with their fonts, colours and real CSS",
+   "people_scored": 300,
+   "no_profile_text": 73,
+   "silhouette": 0.051,
+   "groups": [
+    {
+     "name": "Web UI Designers",
+     "who": "They craft user interfaces for web and mobile, focusing on visual experiences.",
+     "share": 0.11,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.18,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "product design",
+       "turn",
+       "stand"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Startup Founders",
+     "who": "These entrepreneurs build and lead new companies, often seeking efficient solutions.",
+     "share": 0.17,
+     "n_people": 38,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.17,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "founder",
+       "worked",
+       "intersection",
+       "solo founder"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Full-Stack Engineers",
+     "who": "They develop software across the entire stack, from front-end to back-end.",
+     "share": 0.19,
+     "n_people": 42,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.98,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "software",
+       "engineer",
+       "founder cto",
+       "software engineer",
+       "cto"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "SKI",
+    "Siteprint",
+    "MiroMiro v2"
+   ],
+   "like": "Saving full-page screenshots with fonts, colors, and CSS is more complete than just visuals.",
+   "dislike": "Live editing or visual tweaking isn't mentioned, which competitors offer for design iteration.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.051,
+    "silhouette_neutral_space": 0.046,
+    "share_in_shown_groups": 0.46,
+    "other_feats_silhouette_neutral_space": 0.023
+   }
+  },
+  "1318689": {
+   "name": "Pinecall",
+   "tagline": "The open-source platform for voice AI agents",
+   "people_scored": 300,
+   "no_profile_text": 73,
+   "silhouette": 0.051,
+   "groups": [
+    {
+     "name": "AI UX Designers",
+     "who": "They craft user experiences for AI products, focusing on visual and impactful design.",
+     "share": 0.11,
+     "n_people": 26,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.28,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "ux",
+       "product designer",
+       "product design",
+       "creating"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Startup Founders",
+     "who": "They build and lead tech businesses, often with a focus on AI solutions.",
+     "share": 0.18,
+     "n_people": 40,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.23,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "founder",
+       "entrepreneur",
+       "businesses",
+       "tech"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Open-Source AI Devs",
+     "who": "They are software engineers building and contributing to open-source AI projects.",
+     "share": 0.19,
+     "n_people": 43,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.0,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "developer",
+       "ai engineer",
+       "software developer",
+       "software",
+       "engineer building"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Dograh",
+    "OpenMolt",
+    "Parrot Speech-to-text API"
+   ],
+   "like": "An open-source platform for voice AI agents with testing and logging is a strong point.",
+   "dislike": "Multilingual support or latency handling for diverse scenarios is not mentioned.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.051,
+    "silhouette_neutral_space": 0.041,
+    "share_in_shown_groups": 0.48,
+    "other_feats_silhouette_neutral_space": 0.077
+   }
+  },
+  "1319438": {
+   "name": "Bezzle",
+   "tagline": "A whole design studio, free, on your Mac and PC",
+   "people_scored": 300,
+   "no_profile_text": 73,
+   "silhouette": 0.048,
+   "groups": [
+    {
+     "name": "AI Founders",
+     "who": "They are founders and CEOs building in AI, often with a technical background.",
+     "share": 0.16,
+     "n_people": 37,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.14,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "ai building",
+       "worked",
+       "founder",
+       "long"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Open-Source Devs",
+     "who": "These developers build software, often open-source, and value efficient workflows.",
+     "share": 0.2,
+     "n_people": 45,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.05,
+     "evidence": {
+      "headline_words": [
+       "dev",
+       "stack",
+       "founder cto",
+       "developer building",
+       "developer",
+       "engineer"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    },
+    {
+     "name": "UX Designers",
+     "who": "They are designers focused on user experience, turning ideas into functional products.",
+     "share": 0.09,
+     "n_people": 21,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.03,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "product design",
+       "turn",
+       "idea"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Feather",
+    "Highlight Studio",
+    "Muse"
+   ],
+   "like": "Opening Figma, Sketch, Adobe XD, and Photoshop files in one free app is a huge win.",
+   "dislike": "No subscription or account might raise questions about long-term sustainability and support.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.048,
+    "silhouette_neutral_space": 0.038,
+    "share_in_shown_groups": 0.45,
+    "other_feats_silhouette_neutral_space": 0.037
+   }
+  },
+  "1307529": {
+   "name": "3BCAD",
+   "tagline": "Open-source parametric CAD with built-in 3D print prep",
+   "people_scored": 300,
+   "no_profile_text": 68,
+   "silhouette": 0.042,
+   "groups": [
+    {
+     "name": "UX/UI Designers",
+     "who": "They turn ideas into products, focusing on user experience and visual interfaces.",
+     "share": 0.12,
+     "n_people": 27,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.3,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "product design",
+       "ui"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Startup Founders",
+     "who": "These entrepreneurs build and launch companies, often with a tech or AI focus.",
+     "share": 0.18,
+     "n_people": 42,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.27,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "acquired",
+       "founder",
+       "actually",
+       "hey"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Software Engineers",
+     "who": "They build software solutions, from fullstack web apps to AI-driven platforms.",
+     "share": 0.19,
+     "n_people": 44,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.0,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "developer",
+       "ai engineer",
+       "dev",
+       "software",
+       "software developer"
+      ],
+      "topics": [
+       "Sales"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "FreeCAD 1.1",
+    "zCAD AI",
+    "PixyCAD"
+   ],
+   "like": "Open-source and Rust-based CAD with built-in 3D print prep is a strong combination.",
+   "dislike": "This might lack the polished UI or AI generation of newer CAD tools like zCAD AI.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.042,
+    "silhouette_neutral_space": 0.029,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": 0.017
+   }
+  },
+  "1258422": {
+   "name": "Trading Agents",
+   "tagline": "An equity research desk that argues with itself",
+   "people_scored": 300,
+   "no_profile_text": 71,
+   "silhouette": 0.054,
+   "groups": [
+    {
+     "name": "AI-stack Developers",
+     "who": "Developers building with AI, often working on backend systems or custom SaaS.",
+     "share": 0.27,
+     "n_people": 61,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.41,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "code",
+       "developer building",
+       "engineer",
+       "developer",
+       "engineer building"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI-focused Designers",
+     "who": "Designers who work on AI products, focusing on UX, UI, and intelligent flows.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.22,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "strategy",
+       "producer"
+      ],
+      "topics": [
+       "Menu Bar Apps",
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "Investing Founders",
+     "who": "Founders building tools for investing, often using AI to solve market analysis problems.",
+     "share": 0.15,
+     "n_people": 34,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.04,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "founder",
+       "entrepreneur",
+       "serial",
+       "businesses"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "OpenMarket",
+    "HeyTraders",
+    "Robinhood Agentic Trading"
+   ],
+   "like": "The argumentative agent system for stock calls is a fresh take on research.",
+   "dislike": "No clear mention of how agent performance or recommendation safety is tracked.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.054,
+    "silhouette_neutral_space": 0.041,
+    "share_in_shown_groups": 0.52,
+    "other_feats_silhouette_neutral_space": 0.054
+   }
+  },
+  "1318607": {
+   "name": "GlissTouch",
+   "tagline": "Custom Trackpad Gestures for Mac",
+   "people_scored": 300,
+   "no_profile_text": 64,
+   "silhouette": 0.055,
+   "groups": [
+    {
+     "name": "Open Source Devs",
+     "who": "They are software engineers and founders building open-source projects and companies.",
+     "share": 0.22,
+     "n_people": 51,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.14,
+     "evidence": {
+      "headline_words": [
+       "dev",
+       "stack",
+       "software engineer",
+       "founder cto",
+       "ai engineer",
+       "developer"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    },
+    {
+     "name": "UX Design Engineers",
+     "who": "They are designers and engineers focused on user experience and interface creation.",
+     "share": 0.1,
+     "n_people": 24,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.13,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "design engineer",
+       "turn"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Startup Founders",
+     "who": "They are entrepreneurs and CEOs building and scaling new tech ventures.",
+     "share": 0.14,
+     "n_people": 34,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.01,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "worked",
+       "founder",
+       "intersection",
+       "long"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Pawvis",
+    "FeelMyMac",
+    "Breva"
+   ],
+   "like": "Custom gestures and 95+ actions offer more control than other trackpad apps.",
+   "dislike": "Battery impact and long-term macOS compatibility are common concerns for these apps.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.055,
+    "silhouette_neutral_space": 0.044,
+    "share_in_shown_groups": 0.46,
+    "other_feats_silhouette_neutral_space": 0.025
+   }
+  },
+  "1315446": {
+   "name": "Dialect",
+   "tagline": "Give the physical world an API",
+   "people_scored": 300,
+   "no_profile_text": 79,
+   "silhouette": 0.052,
+   "groups": [
+    {
+     "name": "API-first Engineers",
+     "who": "These developers build software and systems, often focusing on backend and AI integrations.",
+     "share": 0.24,
+     "n_people": 54,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.29,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "engineer",
+       "software",
+       "developer",
+       "engineer building",
+       "ai engineer"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX-focused Designers",
+     "who": "These designers create intuitive digital experiences and explore AI's role in design.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.26,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "creating",
+       "ui"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Startup Founders",
+     "who": "These entrepreneurs build and launch new companies, especially in the AI space.",
+     "share": 0.16,
+     "n_people": 35,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.11,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "entrepreneur",
+       "founder",
+       "ve",
+       "solo founder",
+       "solo"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Reason",
+    "Heard",
+    "Wordwand"
+   ],
+   "like": "Watching physical objects with a camera and getting a typed API endpoint is a novel approach.",
+   "dislike": "The $99 monthly cost for one 'thing' might feel steep compared to open-source options.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.052,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.52,
+    "other_feats_silhouette_neutral_space": 0.02
+   }
+  },
+  "1310967": {
+   "name": "OnlineCompiler.io",
+   "tagline": "Run and grade code in 46 languages, by API or embed",
+   "people_scored": 300,
+   "no_profile_text": 76,
+   "silhouette": 0.05,
+   "groups": [
+    {
+     "name": "UX-minded designers",
+     "who": "They create meaningful experiences and turn ideas into useful products.",
+     "share": 0.12,
+     "n_people": 27,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.34,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "ui",
+       "turn"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "SaaS founders",
+     "who": "They build and lead companies, solving problems with software and AI.",
+     "share": 0.18,
+     "n_people": 40,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.25,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "founder",
+       "worked",
+       "problem",
+       "ai building"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Full-stack software engineers",
+     "who": "They build software for a living, often creating open-source or AI products.",
+     "share": 0.19,
+     "n_people": 43,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.01,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "software",
+       "engineer",
+       "software engineer",
+       "dev",
+       "ai engineer"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Replicas",
+    "Epho",
+    "Tabstack Dev Tools"
+   ],
+   "like": "Running code in 46 languages with test cases and project grading is a big plus.",
+   "dislike": "Dependency management for complex projects in sandboxes needs more detail.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.05,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": null
+   }
+  },
+  "1319262": {
+   "name": "infaiw",
+   "tagline": "Delegate work to sidecar agents that pass an approval script",
+   "people_scored": 300,
+   "no_profile_text": 66,
+   "silhouette": 0.051,
+   "groups": [
+    {
+     "name": "Open-source AI engineers",
+     "who": "They build software and AI, often as founders or CTOs, and value open source.",
+     "share": 0.24,
+     "n_people": 56,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.26,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "developer",
+       "software",
+       "ai engineer",
+       "dev",
+       "software engineer"
+      ],
+      "topics": [
+       "Open Source"
+      ]
+     }
+    },
+    {
+     "name": "UX strategy designers",
+     "who": "They focus on UX strategy and design, often building their own apps or products.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.19,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "senior product",
+       "grow"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Solo AI founders",
+     "who": "They are founders, often solo, who build products and are interested in AI.",
+     "share": 0.14,
+     "n_people": 33,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.99,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "worked",
+       "founder",
+       "gaming",
+       "organizations"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Invoke",
+    "Interactive Sessions by Revolte",
+    "Deep Work Plan"
+   ],
+   "like": "Approval scripts give control over agent actions, not just model decisions.",
+   "dislike": "Setting up a daemon-first harness might be complex for non-technical users.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.051,
+    "silhouette_neutral_space": 0.037,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": 0.038
+   }
+  },
+  "1319539": {
+   "name": "pushr",
+   "tagline": "iPhone push alerts from any script, server or AI agent",
+   "people_scored": 300,
+   "no_profile_text": 72,
+   "silhouette": 0.045,
+   "groups": [
+    {
+     "name": "Startup Founders",
+     "who": "They lead companies and upvote tools that help them manage their business.",
+     "share": 0.2,
+     "n_people": 45,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.38,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "long",
+       "worked",
+       "acquired",
+       "founder"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX Designers",
+     "who": "They craft user experiences and upvote apps with good interfaces.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.22,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "product design",
+       "ui"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Software Engineers",
+     "who": "They build software and upvote developer tools and open-source projects.",
+     "share": 0.18,
+     "n_people": 41,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.95,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "developer",
+       "founder cto",
+       "software",
+       "engineer",
+       "software engineer"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Pushary",
+    "CodeMote",
+    "Kilo Code for iOS and Android"
+   ],
+   "like": "The open-source backend and self-hosting options give full control over data and privacy.",
+   "dislike": "Sending sensitive data via HTTP requests raises questions about security for critical alerts.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.045,
+    "silhouette_neutral_space": 0.035,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": null
+   }
+  },
+  "1319132": {
+   "name": "WispOS",
+   "tagline": "Free AI game maker with an app store that wants your games",
+   "people_scored": 300,
+   "no_profile_text": 69,
+   "silhouette": 0.051,
+   "groups": [
+    {
+     "name": "AI-focused Devs",
+     "who": "They build with AI and want to integrate it into their projects.",
+     "share": 0.26,
+     "n_people": 60,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.37,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "developer building",
+       "engineer",
+       "developer",
+       "dev",
+       "stack engineer"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Solo AI Founders",
+     "who": "They are entrepreneurs building new AI-powered businesses and tools.",
+     "share": 0.15,
+     "n_people": 35,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.06,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "entrepreneur",
+       "founder",
+       "solo founder",
+       "serial"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI-minded Designers",
+     "who": "They design products and experiences, often with an AI focus.",
+     "share": 0.1,
+     "n_people": 22,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.06,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "ux",
+       "senior product",
+       "web mobile"
+      ],
+      "topics": [
+       "Menu Bar Apps",
+       "Design Tools"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "AppWizzy",
+    "myPip",
+    "guilds.run"
+   ],
+   "like": "Your files stay on your computer, keeping your data private and local.",
+   "dislike": "It's free to use, but AI model costs or premium features are unclear.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.051,
+    "silhouette_neutral_space": 0.035,
+    "share_in_shown_groups": 0.51,
+    "other_feats_silhouette_neutral_space": 0.035
+   }
+  },
+  "1311672": {
+   "name": "Glass Page",
+   "tagline": "A place for people to review an agent's work",
+   "people_scored": 300,
+   "no_profile_text": 74,
+   "silhouette": 0.058,
+   "groups": [
+    {
+     "name": "Startup Founders",
+     "who": "They lead tech companies, often building solutions at the intersection of AI and 3D.",
+     "share": 0.16,
+     "n_people": 37,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.15,
+     "evidence": {
+      "headline_words": [
+       "intersection",
+       "founder ceo",
+       "worked",
+       "ceo",
+       "founder",
+       "acquired"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX/UI Designers",
+     "who": "These designers create meaningful digital experiences and build their own products.",
+     "share": 0.09,
+     "n_people": 21,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.03,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "turn",
+       "stand"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI Software Engineers",
+     "who": "They build enterprise software and explore AI, turning ideas into real products.",
+     "share": 0.18,
+     "n_people": 41,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 0.96,
+     "evidence": {
+      "headline_words": [
+       "dev",
+       "stack",
+       "engineer",
+       "software",
+       "software engineer",
+       "android"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "daily.dev for agents",
+    "Cursor Glass",
+    "WeWeb MCP"
+   ],
+   "like": "This offers precise commenting on agent-generated content, with versioning and a single latest link.",
+   "dislike": "Users will question how it integrates with existing version control or manages access without sign-ups.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.058,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.44,
+    "other_feats_silhouette_neutral_space": 0.043
+   }
+  },
+  "1319690": {
+   "name": "GatherHQ Agent Research",
+   "tagline": "Let your agent take surveys for you",
+   "people_scored": 300,
+   "no_profile_text": 75,
+   "silhouette": 0.049,
+   "groups": [
+    {
+     "name": "AI-stack Developers",
+     "who": "These developers build with AI and focus on backend and full-stack solutions.",
+     "share": 0.26,
+     "n_people": 58,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.36,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "ai engineer",
+       "engineer",
+       "engineer building",
+       "stack engineer",
+       "backend"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "UX-focused Designers",
+     "who": "These designers create apps and websites, often with an indie or AI focus.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.24,
+     "evidence": {
+      "headline_words": [
+       "design",
+       "designer",
+       "product designer",
+       "creating",
+       "product design",
+       "ux"
+      ],
+      "topics": [
+       "iOS",
+       "Menu Bar Apps",
+       "Design Tools"
+      ]
+     }
+    },
+    {
+     "name": "AI-building Founders",
+     "who": "These founders lead companies and build tools, often with an AI focus.",
+     "share": 0.15,
+     "n_people": 33,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.03,
+     "evidence": {
+      "headline_words": [
+       "founder ceo",
+       "ceo",
+       "ai building",
+       "entrepreneur",
+       "founder",
+       "serial"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "Flocker Agent Profiles",
+    "Glimpse",
+    "Poth Labs"
+   ],
+   "like": "Answers distinguish evidence, inference, and unknowns, offering more clarity.",
+   "dislike": "Current beta studies are unpaid, and earnings are not guaranteed.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.049,
+    "silhouette_neutral_space": 0.04,
+    "share_in_shown_groups": 0.52,
+    "other_feats_silhouette_neutral_space": 0.035
+   }
+  },
+  "1304843": {
+   "name": "Hako",
+   "tagline": "Every coding agent on every Mac, in your pocket",
+   "people_scored": 300,
+   "no_profile_text": 84,
+   "silhouette": 0.054,
+   "groups": [
+    {
+     "name": "AI-focused Designers",
+     "who": "They design user experiences for AI applications and intelligent systems.",
+     "share": 0.12,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.29,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "experiences",
+       "ui"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "AI-building Founders",
+     "who": "They are entrepreneurs creating new AI-powered applications and services.",
+     "share": 0.18,
+     "n_people": 39,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 1.26,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "long",
+       "founder ceo",
+       "ai building",
+       "founder",
+       "entrepreneur"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Mac Software Engineers",
+     "who": "They develop software, often for macOS and iOS platforms.",
+     "share": 0.22,
+     "n_people": 48,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.17,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "engineer",
+       "software",
+       "software engineer",
+       "developer",
+       "dev"
+      ],
+      "topics": [
+       "Mac"
+      ]
+     }
+    }
+   ],
+   "competitors": [
+    "Port22",
+    "buddylist",
+    "HeyZoku"
+   ],
+   "like": "This brings all agents to one place, letting you manage them from your phone or watch.",
+   "dislike": "Some will wonder about security for sensitive code on a mobile device.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.054,
+    "silhouette_neutral_space": 0.045,
+    "share_in_shown_groups": 0.52,
+    "other_feats_silhouette_neutral_space": 0.033
+   }
+  },
+  "1316848": {
+   "name": "polyroom",
+   "tagline": "Where AI agents work together and your team decides",
+   "people_scored": 300,
+   "no_profile_text": 74,
+   "silhouette": 0.052,
+   "groups": [
+    {
+     "name": "API-first Developers",
+     "who": "They build software and often work with APIs and developer tools.",
+     "share": 0.23,
+     "n_people": 53,
+     "role": "developer",
+     "role_lift_vs_todays_backers": 1.24,
+     "evidence": {
+      "headline_words": [
+       "stack",
+       "software",
+       "dev",
+       "engineer",
+       "software engineer",
+       "founder cto"
+      ],
+      "topics": [
+       "API"
+      ]
+     }
+    },
+    {
+     "name": "AI-focused Designers",
+     "who": "They create digital products and experiences, often incorporating AI into their work.",
+     "share": 0.11,
+     "n_people": 25,
+     "role": "designer",
+     "role_lift_vs_todays_backers": 1.23,
+     "evidence": {
+      "headline_words": [
+       "designer",
+       "design",
+       "product designer",
+       "ux",
+       "senior product",
+       "grow"
+      ],
+      "topics": []
+     }
+    },
+    {
+     "name": "Agentic eCommerce Founders",
+     "who": "They lead startups, often building solutions for eCommerce with AI agents.",
+     "share": 0.14,
+     "n_people": 32,
+     "role": "founder",
+     "role_lift_vs_todays_backers": 0.99,
+     "evidence": {
+      "headline_words": [
+       "ceo",
+       "founder ceo",
+       "intersection",
+       "worked",
+       "founder",
+       "long"
+      ],
+      "topics": []
+     }
+    }
+   ],
+   "competitors": [
+    "SquadRoom",
+    "Vibespace",
+    "Buddy AI Access (MCP)"
+   ],
+   "like": "Agents work together in one shared room, with human team decisions.",
+   "dislike": "A clear security model for agent access to client code or databases is missing.",
+   "separation": {
+    "feats": "roles",
+    "k": 4,
+    "silhouette_own_space": 0.052,
+    "silhouette_neutral_space": 0.039,
+    "share_in_shown_groups": 0.49,
+    "other_feats_silhouette_neutral_space": 0.027
+   }
   }
  },
- "usd": 0.0185,
+ "usd": 0.1031,
  "method": "groups clustered inside each launch's top-300 likely backers (headline/bio words + upvote topics), named by Gemini; competitors = most similar earlier launches; like/dislike lines written by Gemini from competitors' real comment themes"
 }

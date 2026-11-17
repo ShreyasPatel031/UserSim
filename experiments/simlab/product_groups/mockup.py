@@ -36,7 +36,7 @@ for pos, lid in enumerate(J["order"], 1):
     card = (f'<div class="hc" role="tooltip"><section><div class="label">Who will back it</div>{groups}</section>'
             f'<section><div class="label">Up against</div><div class="vs">{comps}</div></section>'
             f'<section class="lines"><p><em>Like</em>{e(c.get("like") or "")}</p><p><em>Push back</em>{e(c.get("dislike") or "")}</p>'
-            f'<div class="fine">Groups of this launch\'s likely backers ({c["people_scored"] - c.get("no_profile_text", 0)} people with a profile). Lines are a model\'s read of similar launches\' comments, not real comments.</div></section></div>')
+            f'<div class="fine">% = share of this launch\'s {c["people_scored"] - c.get("no_profile_text", 0)} likely backers with a profile; the rest have other roles. Lines are a model\'s read of similar launches\' comments, not real comments.</div></section></div>')
     rows.append(f'<li class="row" tabindex="0"><div class="pos">{pos}</div><div class="icon"><span>{e((c["name"] or "?")[0])}</span></div>'
                 f'<div class="prod"><h3><a>{e(c["name"])}</a></h3><p>{e(p.get("tagline") or c.get("tagline") or "")}</p>'
                 f'<div class="chips">{"".join(f"<span class=t>{e(t)}</span>" for t in topics)}</div></div>'
