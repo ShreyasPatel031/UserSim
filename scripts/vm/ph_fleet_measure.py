@@ -196,7 +196,7 @@ def main() -> int:
         pass
     bucket = os.environ.get("MVP_GCS_BUCKET", "")
     if bucket:
-        gcs_key = "usersim_sim/raw/ph_population/people_live/vm/dashboard_live.json"
+        gcs_key = "usersim_sim/ops/fleet/dashboard_live.json"
         gcs_uri = f"gs://{bucket}/{gcs_key}"
         try:
             subprocess.run(
