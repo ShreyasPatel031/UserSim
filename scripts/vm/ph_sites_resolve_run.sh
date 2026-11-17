@@ -16,7 +16,7 @@ GC=(gcloud --account="$SA")
 RAW="gs://${MVP_GCS_BUCKET}/usersim_sim/raw"
 LOG="$ROOT/results/ph_fleet_full/${RUN_ID}/sites_resolve.log"
 
-"${GC[@]}" compute scp "$ROOT/scripts/vm/$JOB" "$VM:/tmp/$JOB" --zone="$PACE_ZONE" --tunnel-through-iap --quiet >/dev/null 2>&1
+"${GC[@]}" compute scp "$ROOT/scripts/vm/$JOB" "$ROOT/scripts/vm/ph_maker_headers.py" "$VM:/tmp/" --zone="$PACE_ZONE" --tunnel-through-iap --quiet >/dev/null 2>&1
 # The proxy env is read from the slot's own running process into a root-only file on the VM and removed after.
 "${GC[@]}" compute ssh "$VM" --zone="$PACE_ZONE" --tunnel-through-iap --quiet --command="set -e
 pid=\$(pgrep -f '[p]deep.py|[p]h_batch.py' | head -1 || true)
