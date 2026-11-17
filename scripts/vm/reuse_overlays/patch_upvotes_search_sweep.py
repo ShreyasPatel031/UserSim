@@ -75,7 +75,7 @@ BATCH_SWEEP = '''    _sw = None
         _sw = await _upv_sweep(R, lambda c_, q_: R.gql(p0, "ProfileUpvotesQuery", cursor=c_, query=q_), lambda dd: (dd.get("profile") or {}).get("votedPosts") or {}, _sw_add, hdr, P.cur, 20, lambda: len(seen), lambda: over_budget(R))
         pg += _sw.get("pages", 0)
         if R.stop: raise Blocked(R.blocks[-1]["what"] if R.blocks else "stopped")
-        ended = "budget" if _sw["ended"] == "budget" else "search_sweep_" + _sw["ended"]
+        ended = {"budget": "budget", "header_reached": "server_end", "all_terms": "server_end"}.get(_sw["ended"], "search_sweep_" + _sw["ended"])
 '''
 
 
@@ -93,6 +93,8 @@ def patch(path: pathlib.Path, edits: list[tuple[str, str]]) -> None:
 patch(root / "paging_v2.py", [
     ("class _Stop(Exception):", HELPER.lstrip("\n") + "\n\nclass _Stop(Exception):"),
     (PAGED_ANCHOR, PAGED_SWEEP + PAGED_ANCHOR),
+    ('if op == "ProfileUpvotesQuery" and ended in ("server_end", "server_end_offset") and total and len(items) < total:',
+     'if op == "ProfileUpvotesQuery" and ended in ("server_end", "server_end_offset") and total and len(items) < total and not sweep:'),
     ('"trail_tail": trail[-3:], "next_cursor": nxt,', '"trail_tail": trail[-3:], "upvotes_sweep": sweep, "next_cursor": nxt,'),
 ])
 patch(root / "ph_batch.py", [
@@ -100,7 +102,5 @@ patch(root / "ph_batch.py", [
     ('"paging": {"method": "endCursor_sequential", "pages": pg, "ended": ended, "trail_tail": trail[-3:]}}',
      '"paging": {"method": "endCursor_sequential" + ("+search_sweep" if _sw else ""), "pages": pg, "ended": ended, "trail_tail": trail[-3:], "upvotes_sweep": _sw}}'),
     ('ended in ("empty_page", "hasNextPage_false", "no_endCursor"):\n        res["upvotes"].update(upvotes_capped=True',
-     'ended in ("empty_page", "hasNextPage_false", "no_endCursor", "search_sweep_all_terms"):\n        res["upvotes"].update(upvotes_capped=True'),
-    ('"PH (signed-out upvotes list ends ~200; PH\'s own limit, kept)"',
-     '"PH (every search term read to its end; still short of header)"'),
+     'ended in ("empty_page", "hasNextPage_false", "no_endCursor") and not _sw:\n        res["upvotes"].update(upvotes_capped=True'),
 ])
