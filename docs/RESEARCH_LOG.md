@@ -2414,3 +2414,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-17 17:36Z hourly; mailbox checked 17:36Z (from_cursor files read directly).
 - 2026-11-17 18:35Z hourly: 4th posts-capture gap from 18:00Z; fleet asked again (17:32Z, 18:32Z) to take primary capture. Mailbox checked 18:35Z.
 - 2026-11-17 19:15Z Shreyas checked a sample profile signed in and out: Upvotes ends at the same item. DECISION (AGENTS.md rewritten): Product Hunt's hasNextPage=false is the tab's end; people reclassified Nov 17 only for that are complete again; other stops stay incomplete. No sweep, no signed-in pass.
+- 2026-11-17 19:22Z Shreyas: killed stalled vm_li_browser.py on grokbot-web (14 GB freed). Asana study started: 42a925dd (asana.com vs clickup.com, basecamp.com; 11 seed slots; Gemini; cap $20). E5 scores it against 100 held reviews per product when done.
