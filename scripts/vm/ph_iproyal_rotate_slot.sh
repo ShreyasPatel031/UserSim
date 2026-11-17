@@ -25,8 +25,7 @@ name="feeder-fleet-${RUN_ID}-${SLOT}"
 st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
 [[ "$st" == RUNNING ]] || { echo "skip $name status=$st"; exit 0; }
 
-STRAT="${PH_FLEET_STRATEGY_ENV:-$ROOT/results/ph_iproyal_limit/strategy_L3_mid.env}"
-[[ -f "$STRAT" ]] || STRAT="$ROOT/results/ph_iproyal_limit/strategy_L3_mid.env"
+STRAT="${PH_FLEET_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 "${GC[@]}" compute instances add-metadata "$name" --zone="$ZONE" \
   --metadata-from-file="proxy-url=$purl,ph-strategy-env=$STRAT" >/dev/null
 echo "iproyal_rotate slot=$SLOT bound $(python3 -c "import urllib.parse as u; print(u.urlparse(open('$purl').read().strip()).hostname)") reason=$REASON"
