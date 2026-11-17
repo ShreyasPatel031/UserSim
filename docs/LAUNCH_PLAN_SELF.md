@@ -79,6 +79,46 @@ launches all in the top 5 reach the top 5 42.9% of the time (n 184); with none i
 **Challenge to the starting sequence:** none on the order. The data backs /try first (pitch 86, the easiest to try) and
 the board second (pitch 88, and it needs the record). The one change is launch 4's day, decided by whether a hunter posts it.
 
+## How feedback on product 1 defines products 2, 3 and 4
+
+**State today.** Product 1 has no real users yet, so there is no real feedback. What exists is the persona panel's
+feedback on the /try page [MODEL]: 24 personas from four voter groups (about 5,500 real people behind them). The table
+below builds each later product from that. **On Dec 6 the real comments from launch 1 replace the "asked by" column**, and
+the rules under the table decide what changes.
+
+| What people asked of product 1 (/try) | Asked by [MODEL today, REAL after Dec 5] | Goes into | As |
+|---|---|---|---|
+| "How accurate is this, and how do you know?" Show the historical record, the margin of error | All four groups; first question in each | **Product 2, Daily Forecast** | The full scored archive: every forecast, hit and miss, since Nov 2026 |
+| Which inputs carry the most weight? Does it count the hunter, the day, how many launches there are? | Tech innovators, launch veterans, product launchers | **Product 2** | The reason behind each forecast, launch by launch |
+| What about launches that surge late in the day? | Tech innovators | **Product 2** | The before-votes-show forecast beside the midnight one, each scored |
+| Can I compare two versions of my description? | Tech innovators, launch veterans; the most requested feature | **Product 3, Persona Panel** | Version comparison, side by side |
+| Can I see reactions split by audience segment? Define my own segments? | Launch veterans, tech innovators | **Product 3** | Per-segment view and custom segments |
+| Can I test headlines and calls to action? Are answers specific to my product? | Product launchers | **Product 3** | Follow-up questions on any page, not only a launch page |
+| Does it look at screenshots and video, or only text? | Product launchers | **Product 3** | The panel reads the page's images |
+| Will it suggest improvements? Are the fixes specific enough to act on today? | Product launchers, launch veterans | **Product 4, Launch Pack** | The pre-launch audit: named fixes, each with its expected effect |
+| Does it account for my own network and community? | Launch veterans, product launchers | **Product 4** | The audit takes the maker's own reach and hunter as inputs |
+| How is it validated after a launch? | Tech innovators | **Product 4** | The post-mortem: what we predicted against what happened |
+| Is there an API? Can I export? | Tech innovators | Product 5, later | API |
+| Is it understandable if I am not technical? Does it work for an unpolished product? | Curious observers | **Product 1, now** | Plain-language summary; a note on what it needs to work |
+| How fresh are the profiles? What does it ignore? | Tech innovators | **Product 1, now** | The "what this uses and what it ignores" block |
+
+**Rules once real feedback exists (applied in week 1 of each cycle).**
+1. Every real comment, question and complaint from the launch and from /try users is tagged to a theme. Themes are ranked
+   by how many different people raised them, not by how loud one person was.
+2. The next product's scope is the top themes that fit its job. A theme that fits no planned product is added to the one
+   it is closest to, or dropped with a written reason.
+3. **The order can change.** If version comparison or segments is the top real theme after launch 1, by a clear margin
+   over accuracy and reasons, product 2 becomes the Persona Panel and the Daily Forecast moves to April. The board loses
+   nothing by waiting: it gains two more months of public record.
+4. The panel's predictions for product 1 are scored against the real comments (theme recall and precision). That score is
+   published, and it is product 3's proof.
+5. Panel feedback is used only where real feedback is silent, and is marked as such.
+
+**Competitors.** Each product is also defined against its 5–8 closest competitors: their pitch score, their real Product
+Hunt finish, what real users said on their launches, what they do better and what we do better. That run is with E5
+(`docs/LAUNCH_PLAN_COMPETITORS.md`, due about 07:00Z Nov 17); it is not in this document yet, and the world-class claims
+below stay candidates until it is.
+
 ## Launch 1. Launch Simulator (/try). Saturday Dec 5 2026
 
 - **Job and user.** A maker pastes a URL and sees where the launch would land, before posting.
