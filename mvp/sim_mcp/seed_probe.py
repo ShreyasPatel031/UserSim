@@ -26,7 +26,8 @@ class ProbeFailed(RuntimeError):
 
 
 class SeedMisconfigured(ProbeFailed):
-    """The browser works but would crash the engine's Playwright driver (restarting Chromium does not fix it)."""
+    """Chromium runs chrome-extension:// service workers, which crash the engine's Playwright driver (restarting
+    Chromium does not fix it; its flags do)."""
 
 
 def ws_url_for(endpoint: str, timeout: float = 4.0) -> str:
@@ -86,11 +87,13 @@ def probe(endpoint: str, timeout: float = 5.0) -> str:
     deadline = time.time() + timeout
     with connect(ws_url, open_timeout=timeout, close_timeout=2, max_size=8 * 2**20) as ws:
         cdp = _Cdp(ws, deadline)
-        # A service_worker target (Chrome 159's own chrome-extension workers) crashes Playwright's driver in
+        # Chrome 159's own chrome-extension:// service workers crash Playwright's driver in
         # _CRBrowser._onAttachedToTarget on connect_over_cdp (Asana study 42a925dd, Nov 17). Chromium must run with
         # --disable-extensions --disable-component-extensions-with-background-pages (seed_cdp_chromium.sh).
+        # Only extension workers count: product sites (Asana, ClickUp, ...) register their own service workers inside
+        # users' contexts, and those must not mark a busy seed unhealthy mid-study.
         workers = [t.get("url", "") for t in cdp.call("Target.getTargets").get("targetInfos", [])
-                   if t.get("type") == "service_worker"]
+                   if t.get("type") == "service_worker" and str(t.get("url", "")).startswith("chrome-extension://")]
         if workers:
             raise SeedMisconfigured(f"{len(workers)} service_worker target(s) ({workers[0][:80]}); start Chromium with "
                                     "--disable-extensions --disable-component-extensions-with-background-pages")
