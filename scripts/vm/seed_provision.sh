@@ -255,4 +255,8 @@ health.write_text(json.dumps(cur, indent=2) + "\n")
 print(json.dumps(cur, indent=2))
 PY
 
+# MCP engine browser: AppArmor userns profile, sshd keepalive, usersim-seed-cdp + wedge watchdog.
+echo "==> engine Chromium (CDP 127.0.0.1:9222) + watchdog"
+bash "$REPO/scripts/vm/install_seed_cdp.sh"
+
 echo "==> seed provisioned"

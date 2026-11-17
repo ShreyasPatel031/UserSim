@@ -47,7 +47,7 @@ This installs `/opt/usersim/bin/vm_pull_deploy.sh`, enables the timer, and **mig
 Since Nov 17 the engine's browsers run on our own GCP signup seeds, not Browserbase (`browser_backend` in
 `limits.json`; `browserbase` is kept only as a fallback path).
 
-- **Seeds:** `usersim-signup-seed-N` (us-central1-a, e2-standard-8, standard provisioning, VPC `usersim-seed-network`,
+- **Seeds:** `usersim-signup-seed-N` (us-central1-a, e2-standard-8 (seed 0: e2-standard-2 until resized), standard provisioning, VPC `usersim-seed-network`,
   static egress IP on the NIC, durable identity disk). Create / start: `scripts/vm/create_signup_seed.sh`
   (`SEED_INDEX=N`, `SKIP_PROVISION=1` to only start). ~$0.27/h per seed running (+ ~$0.005/h per static IP).
 - **Seed Chromium:** `usersim-seed-cdp.service` (headed under Xvfb, CDP bound to the seed's **127.0.0.1:9222** only).
@@ -58,8 +58,22 @@ Since Nov 17 the engine's browsers run on our own GCP signup seeds, not Browserb
   (`-L 127.0.0.1:1922N:127.0.0.1:9222`). Install: `sudo SEEDS="0 1" bash mvp/deploy/install_seed_tunnels.sh`.
   The VM's service account needs `roles/iap.tunnelResourceAccessor` and SSH to the seeds. No firewall rule opens
   9222: the seed VPC only admits `35.235.240.0/20 -> tcp:22` (IAP).
-- **Capacity:** `seed_sessions_per_seed` × healthy seeds; callers past that wait `seed_wait_s`, then get "busy, retry
-  in ~30 s" and the cell stays queued (not counted as a start failure).
+- **Seed hardening** (all in `install_seed_cdp.sh`, also run at the end of `seed_provision.sh`):
+  - AppArmor profile `usersim-seed-chrome` grants `userns` to Playwright's Chromium (Ubuntu 24.04 otherwise kills it
+    with "No usable sandbox"); the sandbox stays on.
+  - sshd `ClientAliveInterval 15` / `ClientAliveCountMax 2`: a dropped IAP tunnel leaves no half-open CDP client.
+    Such a client holds auto-attach with `waitForDebuggerOnStart`, and then every new page on the seed hangs.
+  - `usersim-seed-cdp-watchdog.timer` (root, every minute) runs `mvp/sim_mcp/seed_probe.py` locally: fresh context,
+    `data:` URL load, JS eval, 5 s. Two failures in a row restart `usersim-seed-cdp`.
+- **Engine health:** before handing out a slot the engine runs the same deep probe through the tunnel (cached 20 s;
+  re-probed at once after a failed open), so users are never sent into a wedged browser.
+- **Dropped connection mid-session:** Chromium disposes a context when the CDP connection that made it drops, so the
+  page cannot be reattached. The engine saves cookies + localStorage + URL after every step and, on the next tool
+  call, reconnects to the same seed, rebuilds the context from that state and reloads the URL (up to 3 times per
+  session; the step says so, and unsaved form input is lost).
+- **Capacity:** each seed carries `seed_sessions_per_seed` users, or N for an endpoint written `url#N` (seed 0 is
+  e2-standard-2: `#3`). Callers past that wait `seed_wait_s`, then get "busy, retry in ~30 s" and the cell stays
+  queued (not counted as a start failure).
 - **Check:** `curl -s https://35-202-98-224.sslip.io/api/mcp/limits | jq .browsers` → backend + each seed's
   `healthy` / `in_use`.
 - **Add a seed:** create it, install its CDP service, add its tunnel (`SEEDS="… N"`), then add

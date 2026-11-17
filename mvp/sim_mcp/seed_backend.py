@@ -11,14 +11,12 @@ rest of the callers wait up to ``seed_wait_s`` for a slot and are then told to r
 
 from __future__ import annotations
 
-import json
 import threading
 import time
-import urllib.request
 import uuid
 from dataclasses import dataclass, field
 from typing import Any
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlsplit
 
 # Sites these browsers must never load (the seeds' IPs are shared with nothing that may touch them).
 BLOCKED_HOSTS = ("producthunt.com",)
@@ -62,20 +60,43 @@ def blocked_host(host: str) -> bool:
     return any(host == b or host.endswith("." + b) for b in BLOCKED_HOSTS)
 
 
+_CAPS: dict[str, int] = {}  # endpoint -> its own cap from a "url#N" entry
+
+
 def _limits() -> tuple[list[str], int, float]:
+    """Endpoints, default per-seed cap, wait. An entry "http://127.0.0.1:19220#3" caps that seed at 3 (a smaller VM)."""
     from mvp.sim_mcp import limits
 
-    eps = [e.rstrip("/") for e in (limits.get("seed_cdp_endpoints") or []) if e.strip()]
+    eps: list[str] = []
+    for raw in limits.get("seed_cdp_endpoints") or []:
+        url, _, n = raw.strip().partition("#")
+        url = url.rstrip("/")
+        if not url:
+            continue
+        eps.append(url)
+        if n.strip().isdigit() and int(n) > 0:
+            _CAPS[url] = int(n)
+        else:
+            _CAPS.pop(url, None)
     return eps, max(1, int(limits.get("seed_sessions_per_seed"))), float(limits.get("seed_wait_s"))
 
 
+def cap_of(endpoint: str, default: int) -> int:
+    return _CAPS.get(endpoint, default)
+
+
 def ws_url_for(endpoint: str, timeout: float = 4.0) -> str:
-    """Browser websocket URL for a CDP http endpoint, with host:port rewritten to the endpoint's (Chromium reports
-    its own 127.0.0.1:9222, which is the far end of the tunnel)."""
-    with urllib.request.urlopen(endpoint + "/json/version", timeout=timeout) as resp:  # noqa: S310 (config URL)
-        ws = json.loads(resp.read(20000).decode("utf-8"))["webSocketDebuggerUrl"]
-    ep, w = urlsplit(endpoint), urlsplit(ws)
-    return urlunsplit(("wss" if ep.scheme == "https" else "ws", ep.netloc, w.path, w.query, ""))
+    from mvp.sim_mcp.seed_probe import ws_url_for as _ws
+
+    return _ws(endpoint, timeout=timeout)
+
+
+def probe_ws(endpoint: str, timeout: float = 5.0) -> str:
+    """Deep probe (fresh context loads a page) and the browser websocket URL. Raises if the seed is down or wedged:
+    /json/version alone answers even when every new page hangs (Nov 17, seed 0)."""
+    from mvp.sim_mcp.seed_probe import probe
+
+    return probe(endpoint, timeout=timeout)
 
 
 def _healthy(endpoint: str) -> str:
@@ -84,12 +105,17 @@ def _healthy(endpoint: str) -> str:
     if now - at < HEALTH_TTL_S:
         return ws
     try:
-        ws = ws_url_for(endpoint)
+        ws = probe_ws(endpoint)
     except Exception as exc:  # noqa: BLE001
         print(f"[seed] {endpoint} unhealthy: {exc!r}"[:200], flush=True)
         ws = ""
     _HEALTH[endpoint] = (now, ws)
     return ws
+
+
+def mark_unhealthy(endpoint: str) -> None:
+    """A session just failed to open on this seed: probe it again before the next user goes there."""
+    _HEALTH.pop(endpoint, None)
 
 
 def acquire(wait_s: float | None = None) -> SeedSlot:
@@ -101,16 +127,16 @@ def acquire(wait_s: float | None = None) -> SeedSlot:
     while True:
         healthy = [(e, ws) for e in eps if (ws := _healthy(e))]
         with _LOCK:
-            free = [(e, ws) for e, ws in healthy if _IN_USE.get(e, 0) < cap]
+            free = [(e, ws) for e, ws in healthy if _IN_USE.get(e, 0) < cap_of(e, cap)]
             if free:
-                e, ws = min(free, key=lambda x: _IN_USE.get(x[0], 0))
+                e, ws = min(free, key=lambda x: _IN_USE.get(x[0], 0) / cap_of(x[0], cap))
                 _IN_USE[e] = _IN_USE.get(e, 0) + 1
                 return SeedSlot(endpoint=e, ws_url=ws)
             left = deadline - time.time()
             if left <= 0:
                 if not healthy:
                     raise NoSeeds(f"no seed browser answered on CDP ({len(eps)} configured)")
-                raise SeedsBusy(f"all {len(healthy)} seed(s) are at {cap} simulated users")
+                raise SeedsBusy(f"all {len(healthy)} seed(s) are full")
             _LOCK.wait(timeout=min(left, 3.0))
 
 
@@ -131,6 +157,7 @@ def status(probe: bool = False) -> dict[str, Any]:
     with _LOCK:
         used = dict(_IN_USE)
     return {
-        "seeds": [{"endpoint": e, "healthy": bool(_HEALTH.get(e, (0, ""))[1]), "in_use": used.get(e, 0)} for e in eps],
+        "seeds": [{"endpoint": e, "healthy": bool(_HEALTH.get(e, (0, ""))[1]), "in_use": used.get(e, 0),
+                   "cap": cap_of(e, cap)} for e in eps],
         "per_seed": cap,
     }

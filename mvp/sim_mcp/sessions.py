@@ -272,6 +272,10 @@ class SimSession:
     verify_nudged: bool = False  # usersim_finish already asked once to open the verification mail
     page_errors: list = field(default_factory=list)  # uncaught JS errors / console errors, newest last
     watched_pages: set = field(default_factory=set)
+    # seed_vm: last good cookies/localStorage + URL, restored if the CDP connection to the seed drops mid-session.
+    saved_state: Any = None
+    last_url: str = ""
+    reconnects: int = 0
 
     @property
     def agent_id(self) -> str:
@@ -823,6 +827,7 @@ async def start_session(
         await _open_browser(sim)
         await _wait_rendered(sim.page)
         await record_step(sim, kind="open", action_text=f"Opened {url}", args={"url": url}, thought="")
+        await save_seed_state(sim)
     except Exception as exc:
         from mvp.sim_mcp.seed_backend import SeedsBusy
 
@@ -836,6 +841,10 @@ async def start_session(
             raise SessionError(f"all UserSim browsers are busy ({exc}). "
                                + ("The cell is still queued: " if sim.matrix else "")
                                + "call usersim_start_session again in ~30 s") from exc
+        if getattr(sim.bb, "backend", "") == "seed_vm":
+            from mvp.sim_mcp.seed_backend import mark_unhealthy
+
+            mark_unhealthy(sim.bb.endpoint)  # re-probe this seed before the next user is sent there
         if sim.matrix:
             row = sim.row
             fails = int(row.get("start_failures") or 0) + 1
@@ -897,23 +906,13 @@ async def _open_browser(sim: SimSession) -> None:
         pw = await _playwright()
         sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url, timeout=30000)
     if seed:
-        # One seed Chromium hosts several simulated users: each gets its own isolated context (own cookies and
-        # storage), closed with the session. The seed's static egress IP is the network identity.
-        sim.context = await sim.browser.new_context(viewport=dict(VIEWPORT), locale="en-US")
-        await _block_forbidden_hosts(sim.context)
+        await _new_seed_context(sim)
         sim.row["browser_backend"] = "seed_vm"
         sim.row["seed"] = sim.bb.seed_label
     else:
         sim.context = sim.browser.contexts[0] if sim.browser.contexts else await sim.browser.new_context()
-    sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()
-    sim.context.on("page", lambda p: setattr(sim, "new_page", p))
-    _watch_page(sim, sim.page)
-    try:  # record the action a reCAPTCHA v3 site passes to grecaptcha.execute (its inline script is gone afterwards)
-        await sim.context.add_init_script(V3_ACTION_HOOK)
-    except Exception:  # noqa: BLE001
-        pass
-    await ensure_viewport(sim.page)
-    sim.page.set_default_timeout(10000)
+        sim.page = sim.context.pages[0] if sim.context.pages else await sim.context.new_page()
+        await _wire_context(sim)
     await _publish_live_view(sim)
     try:
         await sim.page.goto(sim.product_url, wait_until="domcontentloaded", timeout=25000)
@@ -938,6 +937,99 @@ async def _open_browser(sim: SimSession) -> None:
         phase_ms={"session_ready": int((ready - t0) * 1000), "page_open": int((opened - t0) * 1000)},
     )
     sim.study.phase = matrix_phase(sim.study) if sim.matrix else "Simulated user is working"
+
+
+async def _wire_context(sim: SimSession) -> None:
+    sim.context.on("page", lambda p: setattr(sim, "new_page", p))
+    _watch_page(sim, sim.page)
+    try:  # record the action a reCAPTCHA v3 site passes to grecaptcha.execute (its inline script is gone afterwards)
+        await sim.context.add_init_script(V3_ACTION_HOOK)
+    except Exception:  # noqa: BLE001
+        pass
+    await ensure_viewport(sim.page)
+    sim.page.set_default_timeout(10000)
+
+
+async def _new_seed_context(sim: SimSession, storage_state: Any = None) -> None:
+    """One seed Chromium hosts several simulated users: each gets its own isolated context (own cookies and storage),
+    closed with the session. The seed's static egress IP is the network identity."""
+    kwargs: dict[str, Any] = {"viewport": dict(VIEWPORT), "locale": "en-US"}
+    if storage_state:
+        kwargs["storage_state"] = storage_state
+    sim.context = await sim.browser.new_context(**kwargs)
+    await _block_forbidden_hosts(sim.context)
+    sim.page = await sim.context.new_page()
+    sim.new_page = None
+    await _wire_context(sim)
+
+
+MAX_RECONNECTS = 3
+
+
+def _browser_dropped(sim: SimSession) -> bool:
+    if getattr(sim.bb, "backend", "") != "seed_vm" or sim.browser is None:
+        return False
+    try:
+        if not sim.browser.is_connected():
+            return True
+        return sim.page is None or sim.page.is_closed()
+    except Exception:  # noqa: BLE001
+        return True
+
+
+async def save_seed_state(sim: SimSession) -> None:
+    """Remember cookies/localStorage and the URL after a good step, so a dropped seed connection can resume here."""
+    if getattr(sim.bb, "backend", "") != "seed_vm" or sim.context is None or _browser_dropped(sim):
+        return
+    try:
+        sim.saved_state = await asyncio.wait_for(sim.context.storage_state(), timeout=5)
+        sim.last_url = sim.page.url or sim.last_url
+    except Exception as exc:  # noqa: BLE001
+        print(f"[mcp {sim.id[:8]}] storage_state failed: {exc!r}"[:200], flush=True)
+
+
+async def revive(sim: SimSession) -> bool:
+    """seed_vm: if the CDP connection to the seed dropped (IAP tunnel blip), reconnect to the same seed, rebuild the
+    user's context from the last saved cookies/localStorage and reload the last URL. Chromium disposes a context when
+    the connection that made it drops, so the old page cannot be reattached; unsaved form input is lost. Returns True
+    if it reconnected. Call under sim.lock."""
+    if sim.closed or not _browser_dropped(sim):
+        return False
+    from mvp.sim_mcp import seed_backend
+
+    if sim.reconnects >= MAX_RECONNECTS:
+        raise SessionError(f"the browser connection dropped {sim.reconnects} times; call usersim_finish")
+    sim.reconnects += 1
+    old = sim.browser
+    try:
+        await asyncio.wait_for(old.close(), timeout=5)
+    except Exception:  # noqa: BLE001
+        pass
+    url = sim.last_url or sim.product_url
+    try:
+        ws = await asyncio.to_thread(seed_backend.probe_ws, sim.bb.endpoint)
+        pw = await _playwright()
+        sim.browser = await pw.chromium.connect_over_cdp(ws, timeout=30000)
+        await _new_seed_context(sim, storage_state=sim.saved_state)
+        try:
+            await sim.page.goto(url, wait_until="domcontentloaded", timeout=25000)
+        except Exception:  # noqa: BLE001
+            if not (sim.page.url or "").startswith("http"):
+                raise
+        await _settle(sim.page)
+    except Exception as exc:  # noqa: BLE001
+        raise SessionError(f"the browser connection dropped and could not be restored ({str(exc).splitlines()[0][:120]}); "
+                           "call usersim_finish") from exc
+    row = sim.row
+    row["reconnects"] = sim.reconnects
+    row.setdefault("live_thoughts", []).append(
+        {"at": _now(), "text": f"Browser connection dropped; reconnected and reloaded {redact_url(url)}", "kind": "status"})
+    print(f"[mcp {sim.id[:8]}] seed connection dropped; reconnected ({sim.reconnects}) at {url[:80]}", flush=True)
+    return True
+
+
+RECONNECTED_NOTE = ("The browser connection dropped and was restored: same account cookies, reloaded the last page. "
+                    "Anything typed into a form since the last step may be gone; check the screenshot.")
 
 
 def seed_forbidden_host(host: str) -> bool:
@@ -1896,6 +1988,7 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
         action = validate_action(dict(action or {}), sim.product_url)
         sim.last_used = time.time()
         error = ""
+        revived = await revive(sim)
         url_before = sim.page.url
         nav_started: list = []
 
@@ -1925,6 +2018,11 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             # The page refused the action (element gone, navigation failed).
             # Record it: a failed click is part of what the user experienced.
             error = str(exc).splitlines()[0][:200]
+            if await revive(sim):
+                revived = True
+                url_before = sim.page.url
+                watched = None
+                error = "The browser connection dropped during this action; reconnected and reloaded the last page"
         if not error:
             note_code_typed(sim, action)
         _follow_new_tab(sim)
@@ -1964,6 +2062,9 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
             thought=thought,
             error=error,
         )
+        await save_seed_state(sim)
+        if revived:
+            obs["note"] = RECONNECTED_NOTE
         if action["type"] == "click" and not error and _in_page_jump(url_before, sim.page.url):
             # Oct 11 OpenReplay: 'Start 7-day trial' on the pricing page only jumped to #dedicated; the model clicked it
             # again and again until the driver gave up. Say so, and where signups usually start.
@@ -1990,12 +2091,16 @@ async def observe(sim: SimSession) -> dict[str, Any]:
         if sim.closed:
             raise SessionError(f"session is closed ({sim.close_reason or 'finished'})")
         sim.last_used = time.time()
+        revived = await revive(sim)
         if sim.new_page is not None:  # a tab opened after the last action returned
             _follow_new_tab(sim)
             await _settle(sim.page)
         await ensure_viewport(sim.page)
         png = fit_frame(await _screenshot(sim.page, timeout_ms=10000))
-        return await _observation(sim, png)
+        obs = await _observation(sim, png)
+        if revived:
+            obs["note"] = RECONNECTED_NOTE
+        return obs
 
 
 async def _wait_rendered(page: Any, *, budget_s: float = 10.0) -> None:

@@ -173,13 +173,15 @@
     },
     "seed_cdp_endpoints": {
       "value": [
-        "http://127.0.0.1:19220"
+        "http://127.0.0.1:19220#3",
+        "http://127.0.0.1:19221",
+        "http://127.0.0.1:19222"
       ],
-      "about": "CDP endpoints of the seed VMs as the MCP server sees them: the local ends of usersim-seed-tunnel@N (IAP SSH -L 1922N -> seed 127.0.0.1:9222). Seed N = port 19220+N. Add a line per running seed."
+      "about": "CDP endpoints of the seed VMs as the MCP server sees them: the local ends of usersim-seed-tunnel@N (IAP SSH -L 1922N -> seed 127.0.0.1:9222). Seed N = port 19220+N. A '#N' suffix caps that seed at N users (seed 0 is e2-standard-2 until resized). A seed that is down or wedged fails the deep probe and is skipped."
     },
     "seed_sessions_per_seed": {
-      "value": 3,
-      "about": "Simulated users (isolated browser contexts) open at once on one seed. e2-standard-8 carries ~4 headed contexts. Total concurrency = this x healthy seeds; the rest wait (seed_wait_s) or are told to retry."
+      "value": 4,
+      "about": "Simulated users (isolated browser contexts) open at once on one seed, unless its endpoint has a '#N' suffix. An e2-standard-8 seed carries ~4 headed contexts. Total concurrency = sum over healthy seeds; the rest wait (seed_wait_s) or are told to retry."
     },
     "seed_wait_s": {
       "value": 45,

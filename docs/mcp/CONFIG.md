@@ -49,8 +49,8 @@ Each row has a `value` (read at **use time** so hot reload applies without resta
 | `captcha_stuck_steps` | `12` | Steps with an image grid still open before the agent is told to finish `blocked`; refused at twice this. `0` = off. |
 | `probe_sites` | `true` | TLS/DNS check before opening a product URL. `false` = faster, may waste browsers. |
 | `browser_backend` | `seed_vm` | Where browsers run: `seed_vm` (our signup seed VMs over IAP tunnels, see OPERATIONS.md) or `browserbase` (fallback; free plan is out of minutes). |
-| `seed_cdp_endpoints` | `["http://127.0.0.1:19220"]` | Local ends of the seed tunnels on the MCP host; seed N = port 19220+N. One line per running seed. |
-| `seed_sessions_per_seed` | `4` | Simulated users (isolated contexts) per seed at once. Total concurrency = this × healthy seeds. |
+| `seed_cdp_endpoints` | seeds 0–2 | Local ends of the seed tunnels on the MCP host; seed N = port 19220+N. `url#N` caps that seed at N users. Down or wedged seeds fail the deep probe and are skipped. |
+| `seed_sessions_per_seed` | `4` | Simulated users (isolated contexts) per seed at once, unless the endpoint has `#N`. |
 | `seed_wait_s` | `45` | Seconds `usersim_start_session` waits for a free seed slot before answering "busy, retry" (cell stays queued). |
 | `bb_proxies` | `true` | Browserbase only: residential proxies (better signups, higher cost). Ignored on `seed_vm`. |
 | `anon_daily_usd_per_ip` | `6.0` | Estimated $ budget per IP per day (no token). |
