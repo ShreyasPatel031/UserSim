@@ -292,6 +292,12 @@ async def usersim_finish_study(ctx: Context, study_id: str) -> str:
     return json.dumps({"study_id": study_id, "started": started, "status": study.status, "phase": study.phase, "next": "Call usersim_get_report in ~30 s."})
 
 
+SAVED_ACCOUNT_NOTE = (
+    "This user starts SIGNED IN to an existing account on this site (saved by an earlier run). Do not sign up or log "
+    "in: go straight to the task. Only if the site still shows a sign-in page has the saved session expired; then "
+    "sign up as usual with usersim_signup_identity.")
+
+
 @mcp.tool(structured_output=False)
 async def usersim_start_session(
     ctx: Context,
@@ -348,6 +354,7 @@ async def usersim_start_session(
             "rules": sim.rules(),
             "engine_version": sim.study.engine_version,
             "next": "Open watch_url for the human, then run the simulated user (usersim_simulate_user prompt) with usersim_act.",
+            **({"signed_in": SAVED_ACCOUNT_NOTE} if sim.row.get("saved_account") else {}),
         },
     )
 

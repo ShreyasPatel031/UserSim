@@ -186,6 +186,10 @@
     "seed_wait_s": {
       "value": 45,
       "about": "Seconds usersim_start_session waits for a free seed slot before answering 'all seeds busy, retry'. The cell stays queued."
+    },
+    "seed_saved_accounts": {
+      "value": true,
+      "about": "seed_vm only: a cell whose task is not itself a signup starts signed in from the site's saved storage state (bucket seed_states/<domain>.json, from the seeds' identity disks and earlier verified study signups), on the seed that saved it when free. Cells that reach a signed-in page save the state back. false = every cell starts in an empty context."
     }
   }
 }
