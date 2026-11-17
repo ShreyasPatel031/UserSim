@@ -114,23 +114,32 @@ the rules under the table decide what changes.
    published, and it is product 3's proof.
 5. Panel feedback is used only where real feedback is silent, and is marked as such.
 
-**Competitors.** Each product is also defined against its 5–8 closest competitors: their pitch score, their real Product
-Hunt finish, what real users said on their launches, what they do better and what we do better. That run is with E5
-(`docs/LAUNCH_PLAN_COMPETITORS.md`, due about 07:00Z Nov 17); it is not in this document yet, and the world-class claims
-below stay candidates until it is.
+**Competitors.** 30 competitors, 7–8 per product, are in `docs/LAUNCH_PLAN_COMPETITORS.md`: pitch score, real Product Hunt
+finish from held data, /try range, the panel's concerns, what they do better and what we do better. Across all four:
+none shows a daily accuracy score; several have custom segments, follow-up questions, version comparison and an instant
+single number, which we lack today. The three that finished #1 were posted by hunters with 25, 33 and 286 prior launches.
+Still to come: themes from the real comments on the competitors' own launches.
+
+**Pitch scores are not forecasts.** Re-scored outside its own launch day, a product's score moves by about ±15 points and
+shows no relation to real rank (−0.13, n 22). Read our 75–88 as "at least 75"; the model is flat above 75 anyway.
 
 ## Launch 1. Launch Simulator (/try). Saturday Dec 5 2026
 
 - **Job and user.** A maker pastes a URL and sees where the launch would land, before posting.
-- **World-class claim (candidate).** "The only launch predictor that publishes its own score: the range it gives covers
-  80% of real results." **Test before launch day:** the 10–90% range's coverage on the latest 60 days of real launches is
-  between 76% and 84%, and that number with its day count is on the page. Today: 80% [REAL, backtest]. E5's competitor
-  run will confirm or replace this claim.
+- **World-class claim (after the competitor run).** "The only launch rehearsal checked against real launches every day."
+  **Test before launch day:** nightly forward score of the predicted reactions (theme recall and precision against a
+  fixed question list) over 30 or more days, shown on the page. The rank range stays on the page with its 80% coverage
+  [REAL, backtest] but is not the claim. No competitor shows a daily accuracy score [REAL, 30 competitors checked].
 - **In.** One URL in; a rank range; the three most likely reactions; the measured accuracy with its limits above the fold;
   a "what this uses and what it ignores" block; a plain sentence for people who have never launched.
 - **Held back.** Per-segment reactions, version comparison, custom segments, follow-up questions (launch 3). The reason
   behind a forecast, weekly and monthly views, email (launch 2). Reports, a pre-launch audit, post-mortem (launch 4).
-- **Competitors and the three things to beat.** Pending E5's run (`docs/LAUNCH_PLAN_COMPETITORS.md`).
+- **Competitors** (`docs/LAUNCH_PLAN_COMPETITORS.md`): HuntOMeter, Roast My Landing Page AI, MockUsers, Wynter's free
+  grader, and three Product Hunt launches. Closest real finishes: a simulated-persona message tester #3 of 21 (hunter
+  with 479 prior launches); a launch-critique tool #9 of 29 [REAL].
+- **Three things to beat [JUDGMENT from the run].** An instant single number (HuntOMeter gives one; ours must be as fast
+  and come with a range and a score). Proof of accuracy, which none of them shows. Reactions that are specific to the
+  page, not generic.
 - **Feedback that shaped it.** Real users: none yet, there has been no launch; 5–10 real makers test it in week 7 below.
   Panel [MODEL]: every voter group first asks "how accurate is this, and how do you know?"; then what the model does not
   see; the most requested feature is version comparison.
@@ -155,8 +164,10 @@ below stay candidates until it is.
 - **Job and user.** Anyone who follows Product Hunt sees which launches will finish on top today, before votes are visible,
   with the reason for each.
 - **World-class claim (candidate).** "Names the day's top 3 before any votes show, and has published every hit and miss
-  since November 2026." **Test:** live top-3 hit over at least 75 scored live days, shown beside a named simple baseline
-  (the hunter's record alone). Today: 73.8% over 14 live days at the before-votes point [REAL, forward]; backtest 72.2%
+  since November 2026." **Test:** live top-3 hit over at least 75 scored live days, shown beside two named simple baselines.
+  Closest competitor: hunted.space, the incumbent for live launch stats, which already has a predictor; ours is published
+  before votes are visible and graded in public every day [JUDGMENT]. Real finishes: a Product Hunt analytics extension
+  #15 of 18; a prediction benchmark #3 of 41 with a hunter with 279 prior launches [REAL]. Today: 73.8% over 14 live days at the before-votes point [REAL, forward]; backtest 72.2%
   over 12 days. Small n today; that is why this launch waits.
 - **In.** The reason behind each forecast; weekly and monthly forecasts; the full scored archive; a daily email.
 - **Held back.** Anything about the user's own page (that is /try) and segments (launch 3).
@@ -175,10 +186,14 @@ below stay candidates until it is.
 
 - **Job and user.** A product or marketing team puts any page in front of audience segments built from real voting
   behaviour, compares versions, and defines its own segments.
-- **World-class claim (candidate).** "Predicts what real people will say: it names about 6 in 10 of the themes real
-  commenters raise, and we publish the score." **Test:** theme recall and precision against the real comments on our own
-  launches 1 and 2 and on at least 100 other launches. One definition everywhere: **theme recall 61–63%, precision about
-  50%** [REAL, backtest]; it beats pulling real comments from similar past launches (F1 0.52 against 0.43).
+- **World-class claim (after the competitor run).** "The only synthetic audience with a published score against what
+  real people said." **Test:** theme precision against the real comments on our own launches 1 and 2 and on 100 or more
+  other launches. One definition everywhere: **theme recall 61%, precision 52%, on 167 launches** [REAL, backtest].
+  Precision beats pulling real comments from similar past launches (52% against 36%); recall does not (61% against 65%),
+  so the claim is about precision and the published score, not recall.
+- **Competitors.** Synthetic Users, Wynter (real people), and six Product Hunt launches. Real finishes: synthetic users
+  inside dev tools #1 of 20 (hunter with 286 prior launches); synthetic-population research #25 of 26 (first-time hunter)
+  [REAL]. They have custom segments, follow-up questions and version comparison; we must match those and add the score.
 - **In.** Per-segment reactions; version comparison; custom segments; follow-up questions; export.
 - **Held back.** Done-for-you reports and human review (launch 4); programmatic access (API, later).
 - **Feedback that shaped it.** The email list from /try's "version comparison is coming"; the real comments from launches 1
@@ -198,8 +213,11 @@ below stay candidates until it is.
 
 - **Job and user.** A founder pays for a full service across one launch: a pre-launch audit, the launch-day read, and a
   post-mortem.
-- **World-class claim (candidate).** "Every report is scored afterwards against what happened, and the scores are public."
-  **Test:** at least 20 pilot launches with the audit's predicted themes and rank range scored against the real result.
+- **World-class claim (after the competitor run).** "Tells you your odds before, and shows how right it was after."
+  **Test:** the share of real finishes that fall inside the stated range, over 50 or more launches (20 of them pilots).
+- **Competitors.** Launch toolkits, launch-kit generators and communities on Product Hunt, and one seller of upvotes.
+  Real finishes: a social-posting agent #1 of 11; a launch toolkit #5 of 49; a launch-kit generator #13 of 21 [REAL].
+  The page states that we never supply or solicit votes.
 - **In.** The three reports; a real redacted sample; the price and the free tier. The tagline leads with what the founder
   gets (pitch score 80), never with "a paid package" (35) [MODEL].
 - **Held back.** The API.
@@ -254,10 +272,7 @@ Dec 1, odds rerun and go or no-go on Dec 2.
   panel's recall against our own launches' real comments is under 50%, launch 3's claim is rewritten before it is built.
 
 ## Still open
-- Competitor tables, the three things to beat per launch, and a check of whether the pitch scorer favours Product Hunt
-  tools: E5, due about 07:00Z Nov 17.
-- In E5's sections below: the 168 against 210 scoring calls, and labelling the pitch 75 against 85 figures by run
-  (5.4 / 6.0 is the server model; 6.2 / 6.4 is E5's rebuild).
+- Themes from real comments on the competitors' own launches (E5).
 - Page fixes need Shreyas's word to the website agent.
 
 ---
@@ -290,8 +305,8 @@ Self-hunted, account 60 days old, 1 maker, 6 images plus video, a median pitch, 
 | Posted by a top-10% hunter (508 launches, 77% top 5) | 9 | 8.3 | 21.7 [18.2, 25.5] | 53.0 |
 | Team of 5 makers on the page | 12 | 3.7 | 10.3 [7.6, 12.9] | 33.5 |
 | Team of 3 | 16 | 1.9 | 5.3 [3.7, 7.4] | 21.8 |
-| Pitch score 85 (Gemini read of the tagline and description) | 15.5 | 2.1 | 6.0 [4.3, 8.0] | 23.6 |
-| Pitch score 75 | 16 | 1.9 | 5.4 [3.8, 7.3] | 21.3 |
+| Pitch score 85 (Gemini read of the tagline and description; VM model) | 15.5 | 2.1 | 6.0 [4.3, 8.0] | 23.6 |
+| Pitch score 75 (VM model) | 16 | 1.9 | 5.4 [3.8, 7.3] | 21.3 |
 | Founder posts plus organic coverage (1 press, 1 HN, 1 Reddit) | 16 | 2.0 | 5.6 [3.9, 7.4] | 22.1 |
 | Founder posts only (3 posts on launch day) | 20 | 0.9 | 3.2 [2.3, 4.4] | 15.1 |
 | Your own account 3 years old instead of 60 days | 21 | 0.8 | 3.0 [2.0, 4.2] | 13.9 |
@@ -306,7 +321,6 @@ Self-hunted, account 60 days old, 1 maker, 6 images plus video, a median pitch, 
 4. Launch-day reach (founder posts plus organic coverage).
 
 Media count, topic and having a company X account barely matter.
-
 
 ## Review reruns (Nov 17, 04:10Z): settable-only row, launch-2 branches, real small-record hunters, weekday causes
 
@@ -403,7 +417,7 @@ Reruns: `experiments/launch_plan/counterfactual_arm2_review.py` and `.out`. Same
 
 Three tagline and description versions were written for each product. Every claim in them is a number we have already published; "free, no signup" in /try version 1 must be true on launch day or be cut.
 
-Each version was scored with the deployed pitch prompt (Gemini 2.5 Flash, the same listwise prompt that produces the model's `llm_pitch` input). The version was placed in the real line-up of 14 days (2 of each weekday, Sep 18 – Nov 12) and scored alongside that day's real launches. The interval is a bootstrap over the 14 days. 208 of 210 calls returned; cost $0.73. As a check, the real launches in the same calls averaged 55.5, against 55.4 for their stored scores.
+Each version was scored with the deployed pitch prompt (Gemini 2.5 Flash, the same listwise prompt that produces the model's `llm_pitch` input). The version was placed in the real line-up of 14 days (2 of each weekday, Sep 18 – Nov 12) and scored alongside that day's real launches. The interval is a bootstrap over the 14 days. The run made 210 calls: 15 versions × 14 days. The 15 are the 12 versions shown here plus 3 versions of the API pitch, which was scored in the same run and is not in this plan. 208 of the 210 returned; the 12 versions shown account for 168 of the calls. Cost for all 210: $0.73. As a check, the real launches in the same calls averaged 55.5, against 55.4 for their stored scores.
 
 | Product | Version | Tagline | Pitch score [95%] | Share of that day's real launches it outscores |
 |---|---|---|---|---|
@@ -431,11 +445,31 @@ What the scores say:
 - **/try and the Forecast board score 80–88 in every version.** The wording matters little for them.
 - **The persona panel scores lowest (72–75).** The judge finds "a panel of personas" less concrete than "paste your URL" or "today's predicted ranking".
 - **The Launch Pack swings the most: 35 to 80.** Version 1 leads with "a paid package" and a list of three reports, and scores 35. Version 2 leads with what the founder gets and scores 80. Do not open with the price or the word "package".
+- **One accuracy definition.** Panel version 1 quotes "63% of the themes on 276 past launches". That is theme recall from an earlier back-test. The current figure, used everywhere else in this document, is 61% recall and 52% precision on 167 launches. Whichever pitch is used on launch day must quote the figure shown on the site that day.
 - **Caution.** The judge is a language model scoring products about Product Hunt for a Product Hunt audience. It may favour them. Scores at the 96th–100th percentile of real line-ups are probably too kind. Because the rank model is flat above 75, this does not change the trajectory.
+
+### Does the pitch judge favour Product Hunt tools? (real launches)
+
+Stored scores from the same prompt, for the 14 third-party launch or Product Hunt tools in our 2026 data, against where they really finished:
+
+| Group | n | Mean pitch score | Reached top 5 |
+|---|---|---|---|
+| Third-party launch / Product Hunt tools | 14 | 57 (range 25–80) | 7 of 14 |
+| All 2026 launches | 6,890 | 56 | — |
+| Our four best versions | 4 | 82 (75–88) | not launched |
+
+- **The judge does not favour the category.** Real launch tools average 57, the same as all launches.
+- **Within the category the score tracks the finish.** Rank correlation between score and day rank is −0.75 across the 14 (higher score, better rank). The three that scored 80 finished 3rd, 4th and 4th. The three that scored 25–35 finished 9th, 15th and 19th.
+- **The closest real match to our Forecast board scored 30 and finished 15th of 18**: a Product Hunt analytics extension, hunted by an account with 1 prior launch. A Product Hunt prediction benchmark scored 80 and finished 3rd of 41, posted by a hunter with 279 prior launches.
+- **Our own scores (75–88) are above every real third-party tool in the category (maximum 80).** We wrote those pitches knowing what the judge rewards, so treat them as "at least 75", not as 86–88. The model is flat above 75, so the trajectory does not depend on the difference.
+
+- **A second check disagrees on how well the score tracks the finish.** When 22 competitors with a real launch were re-scored on the same 14 line-ups as ours, the score had no relation to their real day rank (rank correlation −0.13, p = 0.55), and some tools scored far above their stored score (one from 30 to 73). A score given outside the product's own launch day is noisy by about ±15 points. So the judge is not biased towards the category, but our 75–88 should not be read as a forecast.
+
+Per-competitor scores, on the same 14 line-ups as ours, are in `docs/LAUNCH_PLAN_COMPETITORS.md`.
 
 ## Persona panel and /try band on each best version (E5)
 
-**Persona panel.** The live panel prompt, with 24 personas per product. A new maker has no team history, so the personas were built from the people who backed same-topic launches in the 30 days before Nov 12 (5,726 people for the first three products). Each persona stands for at least 20 people; no individual is shown. One Gemini call per product; cost $0.04.
+**Persona panel.** The live panel prompt, with 24 personas per product. A new maker has no team history, so the personas were built from the people who backed same-topic launches in the 30 days before Nov 12 (5,726 people for /try, the board and the panel, whose topics include Artificial Intelligence; 2,495 people for the Launch Pack, whose topics are Marketing, SaaS and Artificial Intelligence in that order and matched a narrower set of launches; its personas therefore stand for about 100 people each, not about 230). Each persona stands for at least 20 people; no individual is shown. One Gemini call per product; cost $0.04.
 
 **/try band.** The deployed /try code, with the pitch text pasted in. /try knows nothing about the hunter, team or day, so it assumes the population median for each. Its band is therefore not comparable to the table above, which sets those inputs explicitly.
 
@@ -446,9 +480,9 @@ What the scores say:
 | Persona panel | 64 | 2–34 (12) | 17% / 45% | 21 / 3 |
 | Launch Pack | 27 | 4–43 (17) | 7% / 27% | 23 / 1 |
 
-The /try bands are wide (roughly rank 3 to 40) and differ little between products. From the text alone, /try places the panel and board pitches a little above the /try and Launch Pack pitches, which is the reverse of the Gemini pitch scores. Neither signal separates the four products reliably.
+The /try bands are wide (roughly rank 3 to 40) and differ little between products. From the text alone, /try places the panel and board pitches a little above the /try and Launch Pack pitches, which is the reverse of the Gemini pitch scores. Neither signal separates the four products reliably, and **neither drives the launch order**. The order (/try, board, panel, Launch Pack) is a product judgment: which is easiest to try on the spot, and which needs the others' track record first. On both signals the four products are within noise of each other.
 
-The panel rates nearly every persona "high" interest for all four products. That is not informative: the panel is known to be agreeable, and it has measured value for *which themes come up* (about 50% precision, 60–75% recall on real launches), not for how much people like something. Read the concerns and questions below, not the interest levels.
+The panel rates nearly every persona "high" interest for all four products. That is not informative: the panel is known to be agreeable, and it has measured value for *which themes come up* (theme recall 61% and theme precision 52% on 167 held-out launches; recall is the share of themes real commenters raised that the panel predicted, precision is the share of predicted themes that real commenters raised), not for how much people like something. Read the concerns and questions below, not the interest levels.
 
 ### Main concerns and questions by voter group
 
@@ -468,7 +502,7 @@ Across all four products and all four groups, the first question is **"how accur
 1. **Put the measured accuracy next to every claim, with its limits.**
    - Forecast board: the 184-day record (3.3 of 5 top-5 picks correct) and yesterday's graded result, visible without scrolling. State the typical miss in ranks.
    - /try: say plainly that the rank band is wide and is based on the page text only; show the checked share of predicted themes that real commenters raised.
-   - Panel: show the 63% theme figure and say what it is not (it does not predict individual votes or how much people will like the product).
+   - Panel: show theme recall and precision (61% and 52% on 167 launches) and say what they are not (it does not predict individual votes or how much people will like the product).
 2. **Say what the model does not see.** Three of four groups ask about the hunter, the maker's network, late surges and images or video. Add one short "what this uses and what it ignores" block to each page. For /try, say that it reads text only, and that the hunter and team are assumed typical.
 3. **Answer the "gaming" and "self-fulfilling" worry on the Forecast board.** State that the forecast is published after launches are live, uses only public inputs, and that we do not help anyone collect votes.
 4. **Answer the privacy question on the panel page.** State that personas are groups of 20 or more people built from public voting history, and that no individual is shown or sold.
@@ -477,10 +511,9 @@ Across all four products and all four groups, the first question is **"how accur
 7. **State the price and the free tier on every page.** Cost and "is there a free tier" came up for the panel, and for the API in a separate run.
 8. **Plain-language summary for non-launchers.** The curious-observer group (about 12% of the panel) asks whether they can understand it at all. One sentence at the top of the board and of /try results is enough.
 
-These are model-predicted concerns, not real feedback. On real launches the panel's predicted themes are right about half the time and cover 60–75% of what commenters raise, so treat the list as a checklist of likely questions, not a ranking of what matters most.
+These are model-predicted concerns, not real feedback. On real launches the panel's predicted themes are right about half the time (precision 52%) and cover about 61% of what commenters raise (recall), so treat the list as a checklist of likely questions, not a ranking of what matters most.
 
 Files: `experiments/launch_plan/candidates.json` (all versions), `pitch_score.py`, `panel_try.py`, `cf_arm2_measured.py`, `cf_arm2_measured.json`.
-
 
 ---
 

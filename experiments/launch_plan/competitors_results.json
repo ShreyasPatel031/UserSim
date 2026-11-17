@@ -1,0 +1,1377 @@
+{
+ "competitors": [
+  {
+   "job": "try",
+   "name": "ProductHunt Chaos Simulator",
+   "tagline": "See what might happen on your Product Hunt launch day",
+   "description": "Simulate your Product Hunt launch with xAI\u2019s Grok. Predict upvotes, comments, maker mistakes, and even plot twists. It\u2019s free, fun, and part of AnotherWrapper\u2014a starter kit with 11 AI apps ready to customize.",
+   "topics": [
+    "Funny",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-02-02",
+    "rank": 4,
+    "launches_that_day": 6,
+    "votes": 330,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 76.1,
+    "lo": 70.4,
+    "hi": 80.7,
+    "pct": 90,
+    "calls": 14
+   },
+   "panel": null,
+   "try": {
+    "percentile": 98,
+    "likely": [
+     1,
+     25
+    ],
+    "median": 7,
+    "top3": 0.275,
+    "top10": 0.642,
+    "concern": null,
+    "question": "How accurate are the predictions from Grok? What kind of data is it trained on for these simulations?"
+   }
+  },
+  {
+   "job": "try",
+   "name": "Firstpass",
+   "tagline": "Actionable input so you nail every launch",
+   "description": "If you've ever shipped a launch and watched your copy get truncated, ignored, or misread \u2014 Firstpass shows you every surface a stranger meets your product on (the Product Hunt page, the leaderboard row, the Glaze Store grid) and pins handwritten crit notes to what breaks in each one, before you publish. The same tagline lives or dies differently depending on where it lands: PH gives you 60 characters, the Glaze Store caps at 40, the browse grid cuts near 33. Nobody checks \u2014 until it's live.",
+   "topics": [
+    "Design Tools",
+    "UX Design"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-07-28",
+    "rank": 9,
+    "launches_that_day": 29,
+    "votes": 144,
+    "hunter_prior_hunts": 454,
+    "stored_pitch": 62.0
+   },
+   "pitch": {
+    "score": 67.4,
+    "lo": 60.6,
+    "hi": 73.8,
+    "pct": 72,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 1669,
+    "top": [
+     "Potential to add complexity to the launch process.",
+     "The cost for small teams or individual makers.",
+     "Accuracy of 'crit notes' and truncation simulation."
+    ]
+   },
+   "try": {
+    "percentile": 67,
+    "likely": [
+     2,
+     34
+    ],
+    "median": 12,
+    "top3": 0.169,
+    "top10": 0.452,
+    "concern": null,
+    "question": "How does Firstpass identify all the different surfaces and their character limits, especially for platforms beyond Product Hunt and Glaze Store?"
+   }
+  },
+  {
+   "job": "try",
+   "name": "Articos",
+   "tagline": "Launch with confidence, not gut instinct",
+   "description": "Articos helps SaaS teams, agencies, and founders test messaging, positioning, and landing pages against simulated personas matched to your ICP. Real audience signal in under 30 minutes. Peer-reviewed at 86% human accuracy vs Baymard and Nielsen Norman.",
+   "topics": [
+    "Marketing",
+    "SaaS",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-09-02",
+    "rank": 3,
+    "launches_that_day": 21,
+    "votes": 385,
+    "hunter_prior_hunts": 479,
+    "stored_pitch": 60.0
+   },
+   "pitch": {
+    "score": 55.6,
+    "lo": 49.4,
+    "hi": 60.9,
+    "pct": 50,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How does Articos handle niche ICPs?",
+     "How does Articos prevent bias in its simulated personas?",
+     "What are the limitations of the simulated personas?"
+    ]
+   },
+   "try": {
+    "percentile": 79,
+    "likely": [
+     2,
+     33
+    ],
+    "median": 10,
+    "top3": 0.194,
+    "top10": 0.532,
+    "concern": null,
+    "question": "What kind of feedback or 'audience signal' do we receive in under 30 minutes? Is it qualitative, quantitative, or both?"
+   }
+  },
+  {
+   "job": "try",
+   "name": "HuntOMeter",
+   "tagline": "Predict your Product Hunt upvotes from your tagline",
+   "description": "Type a tagline and get an estimated upvote count. HuntOMeter compares it against more than 19,500 past Product Hunt products.",
+   "topics": [
+    "Artificial Intelligence",
+    "Marketing",
+    "Product Hunt"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 78.2,
+    "lo": 71.1,
+    "hi": 83.9,
+    "pct": 89,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 5726,
+    "top": [
+     "Accuracy of predictions is a concern",
+     "Tool might not account for external factors",
+     "Tool might encourage generic taglines"
+    ]
+   },
+   "try": {
+    "percentile": 93,
+    "likely": [
+     1,
+     25
+    ],
+    "median": 7,
+    "top3": 0.275,
+    "top10": 0.642,
+    "concern": null,
+    "question": "How accurate are the predictions? What's the margin of error?"
+   }
+  },
+  {
+   "job": "try",
+   "name": "Roast My Landing Page AI",
+   "tagline": "Simulated target users roast your landing page",
+   "description": "Paste a landing page and simulated target users react to it. Roast mode gives fast first impressions; Professional mode gives structured diagnostics. Uses 50+ personas built from interviews, surveys and secondary research.",
+   "topics": [
+    "Marketing",
+    "Artificial Intelligence",
+    "User Experience"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 75.4,
+    "lo": 71.1,
+    "hi": 79.9,
+    "pct": 91,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How does the AI ensure feedback is unbiased?",
+     "How does the AI handle specific target audiences?",
+     "How does the AI provide actionable feedback?"
+    ]
+   },
+   "try": {
+    "percentile": 65,
+    "likely": [
+     2,
+     34
+    ],
+    "median": 12,
+    "top3": 0.169,
+    "top10": 0.452,
+    "concern": null,
+    "question": "How do you simulate the target users? Is it based on AI models like GPT-3, or something else?"
+   }
+  },
+  {
+   "job": "try",
+   "name": "MockUsers",
+   "tagline": "AI personas browse your site and tell you why they would bounce",
+   "description": "A free tool that generates AI personas from your page content. They browse the site and report what is confusing, what they think you are selling, and why they would leave.",
+   "topics": [
+    "Marketing",
+    "Artificial Intelligence",
+    "User Experience"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 68.3,
+    "lo": 63.3,
+    "hi": 72.5,
+    "pct": 77,
+    "calls": 12
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "AI accuracy limited without real user data input.",
+     "AI feedback might be too generic for niche products.",
+     "AI might miss nuanced human emotional responses."
+    ]
+   },
+   "try": {
+    "percentile": 42,
+    "likely": [
+     4,
+     37
+    ],
+    "median": 14,
+    "top3": 0.081,
+    "top10": 0.378,
+    "concern": null,
+    "question": "How do you ensure the AI personas accurately reflect real user behavior and diverse perspectives?"
+   }
+  },
+  {
+   "job": "try",
+   "name": "Wynter Message Test grader",
+   "tagline": "Grade your B2B homepage with 15 simulated buyers",
+   "description": "A free AI grader from Wynter. About 15 behaviourally diverse simulated personas read your page and are scored on whether they can tell what problem you solve and who it is for. Directional, not a replacement for a real panel.",
+   "topics": [
+    "Marketing",
+    "SaaS",
+    "Artificial Intelligence"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 57.9,
+    "lo": 53.8,
+    "hi": 62.1,
+    "pct": 51,
+    "calls": 12
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How does AI handle nuances in B2B industries?",
+     "Can simulated buyers truly replicate real B2B decision-making?",
+     "How does AI prevent bias in its grading?"
+    ]
+   },
+   "try": {
+    "percentile": 31,
+    "likely": [
+     4,
+     41
+    ],
+    "median": 15,
+    "top3": 0.07,
+    "top10": 0.329,
+    "concern": null,
+    "question": "What specific metrics or criteria does the AI use to score the homepage, beyond just problem and audience identification?"
+   }
+  },
+  {
+   "job": "board",
+   "name": "NODUS PH Radar for Product Hunt",
+   "tagline": "Product Hunt analytics beyond the daily leaderboard",
+   "description": "NODUS PH Radar helps makers analyze Product Hunt launches beyond the daily rankings. Explore launch velocity, race dynamics, watch rules, community spotlight opportunities, historical patterns, and upcoming scheduled launches. Gain context before launch day and understand what drives visibility and engagement.",
+   "topics": [
+    "Browser Extensions",
+    "Chrome Extensions",
+    "Productivity"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-06-12",
+    "rank": 15,
+    "launches_that_day": 18,
+    "votes": 97,
+    "hunter_prior_hunts": 1,
+    "stored_pitch": 30.0
+   },
+   "pitch": {
+    "score": 72.7,
+    "lo": 61.8,
+    "hi": 82.7,
+    "pct": 76,
+    "calls": 11
+   },
+   "panel": null,
+   "try": {
+    "percentile": 69,
+    "likely": [
+     2,
+     34
+    ],
+    "median": 12,
+    "top3": 0.169,
+    "top10": 0.452,
+    "concern": null,
+    "question": "What kind of 'watch rules' can I set up, and what insights do they provide?"
+   }
+  },
+  {
+   "job": "board",
+   "name": "PHBench",
+   "tagline": "Predict the next Series A from a ProductHunt launch",
+   "description": "PHBench: the first public benchmark predicting Series A funding from Product Hunt launch signals. We analyzed 67,292 featured launches over 7 years, linked to 528 verified Series A rounds via Crunchbase. Champion model: 4.7x lift over random. Team size \u00d7 community engagement is the strongest signal; B2B (API, Payments, Fintech) converts at 3x baseline; Rank #1 raises at 2.2x unranked. Dataset, code, and baselines open. Submit at phbench.com and subscribe for weekly high-probability launches.",
+   "topics": [
+    "Venture Capital",
+    "Artificial Intelligence",
+    "GitHub"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-05-15",
+    "rank": 3,
+    "launches_that_day": 41,
+    "votes": 386,
+    "hunter_prior_hunts": 279,
+    "stored_pitch": 80.0
+   },
+   "pitch": {
+    "score": 78.8,
+    "lo": 71.2,
+    "hi": 85.4,
+    "pct": 93,
+    "calls": 13
+   },
+   "panel": null,
+   "try": {
+    "percentile": 73,
+    "likely": [
+     2,
+     33
+    ],
+    "median": 10,
+    "top3": 0.194,
+    "top10": 0.532,
+    "concern": null,
+    "question": "What specific 'community engagement' metrics did you find most impactful in your model?"
+   }
+  },
+  {
+   "job": "board",
+   "name": "Product Huntr",
+   "tagline": "Data analysis platform for Product hunt",
+   "description": "Discover your next big opportunity with Product Huntr. Analyze 12K+ Product Hunt launches to find validated ideas, market gaps, and untapped opportunities. AI-powered insights for builders and makers.",
+   "topics": [
+    "Analytics",
+    "Marketing",
+    "Product Hunt"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-11-28",
+    "rank": 6,
+    "launches_that_day": 9,
+    "votes": 151,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 75.0,
+    "lo": 68.6,
+    "hi": 80.4,
+    "pct": 92,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 782,
+    "top": [
+     "How accurate are the AI insights?",
+     "How is data kept up-to-date?",
+     "What is the pricing model?"
+    ]
+   },
+   "try": {
+    "percentile": 80,
+    "likely": [
+     2,
+     26
+    ],
+    "median": 9,
+    "top3": 0.199,
+    "top10": 0.554,
+    "concern": null,
+    "question": "Is there a way to see the historical performance of products in a specific category, like upvotes over time or comments?"
+   }
+  },
+  {
+   "job": "board",
+   "name": "Product Hunt Topics by xTopics",
+   "tagline": "Discover the topics that dominate Product Hunt",
+   "description": "Product Hunt Topics brings you all the top topics covered in Product Hunt launches. Analyze what is trending, what is saturated and what niches dominate the Product Hunt leaderboard.",
+   "topics": [
+    "Analytics",
+    "Marketing",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-06-25",
+    "rank": 19,
+    "launches_that_day": 32,
+    "votes": 127,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 39.6,
+    "lo": 32.9,
+    "hi": 46.4,
+    "pct": 15,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 782,
+    "top": [
+     "How frequently is the data refreshed and updated?",
+     "How does it handle topic categorization?",
+     "Can I track the historical performance of topics?"
+    ]
+   },
+   "try": {
+    "percentile": 87,
+    "likely": [
+     2,
+     26
+    ],
+    "median": 9,
+    "top3": 0.199,
+    "top10": 0.554,
+    "concern": null,
+    "question": "What's the methodology behind identifying 'saturated' topics? How do you define and measure saturation?"
+   }
+  },
+  {
+   "job": "board",
+   "name": "Product Hunt for Raycast",
+   "tagline": "View the leaderboard directly in Raycast",
+   "description": "This major update integrates Raycast AI and presents a more complete leaderboard. Now you can see upvotes, comments, and details of each launch \u2014 right from within Raycast!",
+   "topics": [
+    "Productivity",
+    "GitHub",
+    "Product Hunt"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-05-01",
+    "rank": 6,
+    "launches_that_day": 21,
+    "votes": 212,
+    "hunter_prior_hunts": 98,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 75.9,
+    "lo": 70.6,
+    "hi": 80.2,
+    "pct": 92,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 4223,
+    "top": [
+     "How does this handle Product Hunt API rate limiting?",
+     "What are the privacy implications of integrating Product Hunt data?",
+     "Is this free to use, or are there subscription costs?"
+    ]
+   },
+   "try": {
+    "percentile": 48,
+    "likely": [
+     4,
+     37
+    ],
+    "median": 14,
+    "top3": 0.081,
+    "top10": 0.378,
+    "concern": null,
+    "question": "Is the product for developers or general users?"
+   }
+  },
+  {
+   "job": "board",
+   "name": "VisualPH",
+   "tagline": "A more visual way to experience Product Hunt",
+   "description": "View landing page designs and gallery images/videos of the top products. Get website/launch inspiration.",
+   "topics": [
+    "Design Tools",
+    "Product Hunt",
+    "Design resources"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-07-09",
+    "rank": 3,
+    "launches_that_day": 17,
+    "votes": 403,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 43.5,
+    "lo": 37.7,
+    "hi": 50.0,
+    "pct": 15,
+    "calls": 13
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 1669,
+    "top": [
+     "How to ensure images are up-to-date?",
+     "How to handle dynamic/interactive landing pages?",
+     "How to ensure quality and relevance of images?"
+    ]
+   },
+   "try": {
+    "percentile": 93,
+    "likely": [
+     1,
+     25
+    ],
+    "median": 7,
+    "top3": 0.275,
+    "top10": 0.642,
+    "concern": null,
+    "question": "Can users submit their own product visuals or suggest products to be featured?"
+   }
+  },
+  {
+   "job": "board",
+   "name": "hunted.space",
+   "tagline": "Real-time Product Hunt launch stats",
+   "description": "Track upvotes, comments and rank of every Product Hunt launch hour by hour through launch day, compare launches, and use an AI predictor that models how evidence changes the odds of a launch.",
+   "topics": [
+    "Analytics",
+    "Product Hunt",
+    "Marketing"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 85.3,
+    "lo": 81.7,
+    "hi": 88.6,
+    "pct": 98,
+    "calls": 11
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 782,
+    "top": [
+     "AI predictor accuracy and validation.",
+     "AI predictor handling of niche products/limited data.",
+     "Pricing model and free trial availability."
+    ]
+   },
+   "try": {
+    "percentile": 49,
+    "likely": [
+     4,
+     37
+    ],
+    "median": 14,
+    "top3": 0.081,
+    "top10": 0.378,
+    "concern": null,
+    "question": "What data sources does the AI predictor use to model the odds?"
+   }
+  },
+  {
+   "job": "panel",
+   "name": "Sapien",
+   "tagline": "AI market research with synthetic populations",
+   "description": "Use simulated audiences to compare product concepts, marketing, prices and market strategies. Sapien builds the audience, runs the study and delivers interactive findings with segment comparisons. Bring a business question, explore likely responses and ask follow-up questions with the same population.",
+   "topics": [
+    "Analytics",
+    "Marketing",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-10-03",
+    "rank": 25,
+    "launches_that_day": 26,
+    "votes": 65,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": 65.0
+   },
+   "pitch": {
+    "score": 61.8,
+    "lo": 59.3,
+    "hi": 64.3,
+    "pct": 63,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 782,
+    "top": [
+     "How to ensure synthetic populations accurately reflect real-world nuances?",
+     "How to handle biases in synthetic population generation?",
+     "How to validate the accuracy of synthetic audience responses?"
+    ]
+   },
+   "try": {
+    "percentile": 22,
+    "likely": [
+     4,
+     43
+    ],
+    "median": 17,
+    "top3": 0.066,
+    "top10": 0.269,
+    "concern": null,
+    "question": "How does Sapien handle complex or open-ended questions that might require nuanced responses from a real human?"
+   }
+  },
+  {
+   "job": "panel",
+   "name": "TheySaid 4.0",
+   "tagline": "See how users will react, right where you build.",
+   "description": "Put what you\u2019re building in front of real customers or synthetic users trained on them when you need an answer in minutes without leaving Claude, Cursor, or Jira. Nothing ships on a guess.",
+   "topics": [
+    "User Experience",
+    "Artificial Intelligence",
+    "UX Design"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-10-27",
+    "rank": 1,
+    "launches_that_day": 20,
+    "votes": 393,
+    "hunter_prior_hunts": 286,
+    "stored_pitch": 65.0
+   },
+   "pitch": {
+    "score": 64.7,
+    "lo": 60.9,
+    "hi": 68.6,
+    "pct": 69,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "How does this handle complex, multi-step user flows?",
+     "What are the limitations of synthetic users?",
+     "How does this ensure synthetic users reflect target audience?"
+    ]
+   },
+   "try": {
+    "percentile": 92,
+    "likely": [
+     1,
+     25
+    ],
+    "median": 7,
+    "top3": 0.275,
+    "top10": 0.642,
+    "concern": null,
+    "question": "What kind of 'answers' can we expect to get in minutes? Is it qualitative feedback, quantitative data, or both? Can you give an example of a typical output?"
+   }
+  },
+  {
+   "job": "panel",
+   "name": "Snap",
+   "tagline": "Instant usability testing with AI personas",
+   "description": "Snap lets you run instant usability tests with AI personas. Drop in a prototype or website, and your custom AI personas will test them like real users. Get results in minutes with transcripts, recordings, and actionable recommendations.",
+   "topics": [
+    "Design Tools",
+    "User Experience",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-10-16",
+    "rank": 8,
+    "launches_that_day": 10,
+    "votes": 203,
+    "hunter_prior_hunts": 168,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 71.8,
+    "lo": 67.1,
+    "hi": 76.1,
+    "pct": 87,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 1669,
+    "top": [
+     "AI personas missing nuanced human behavior.",
+     "Accuracy and depth of AI-generated recommendations.",
+     "Potential for AI personas to provide superficial feedback."
+    ]
+   },
+   "try": {
+    "percentile": 20,
+    "likely": [
+     4,
+     43
+    ],
+    "median": 17,
+    "top3": 0.066,
+    "top10": 0.269,
+    "concern": null,
+    "question": "What's the pricing model for Snap, especially considering the 'instant' and AI-driven nature of the tests?"
+   }
+  },
+  {
+   "job": "panel",
+   "name": "Uxia",
+   "tagline": "Validate your User flows UX & UI in seconds with AI",
+   "description": "Uxia makes user testing accessible for design and product teams of all sizes. Traditional tools are slow, costly, and often inaccurate. Uxia uses AI and synthetic users to deliver fast, reliable insights, enabling more agile and efficient product development.",
+   "topics": [
+    "Design Tools",
+    "User Experience",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-09-07",
+    "rank": 1,
+    "launches_that_day": 5,
+    "votes": 535,
+    "hunter_prior_hunts": 25,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 60.4,
+    "lo": 57.1,
+    "hi": 63.6,
+    "pct": 65,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 1669,
+    "top": [
+     "How does Uxia handle complex user flows?",
+     "How accurate are synthetic users compared to real users?",
+     "How customizable are the synthetic user personas?"
+    ]
+   },
+   "try": {
+    "percentile": 66,
+    "likely": [
+     2,
+     34
+    ],
+    "median": 12,
+    "top3": 0.169,
+    "top10": 0.452,
+    "concern": null,
+    "question": "Can you elaborate on the 'seconds' claim? What kind of user flow complexity can be validated in such a short timeframe?"
+   }
+  },
+  {
+   "job": "panel",
+   "name": "Userology AI",
+   "tagline": "The AI user research agent for busy product teams",
+   "description": "Userology is your AI user researcher on autopilot. Drop in a Figma prototype or live product, set your target persona, and our AI recruits users, moderates sessions, and turns messy transcripts into bite-sized insight reports with clips, quotes, and clear next steps.",
+   "topics": [
+    "User Experience",
+    "Artificial Intelligence",
+    "UX Design"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-12-19",
+    "rank": 2,
+    "launches_that_day": 11,
+    "votes": 347,
+    "hunter_prior_hunts": 89,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 74.4,
+    "lo": 71.3,
+    "hi": 77.8,
+    "pct": 88,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "How does AI ensure quality of recruited users?",
+     "How does AI handle nuanced feedback?",
+     "How does AI handle edge cases?"
+    ]
+   },
+   "try": {
+    "percentile": 32,
+    "likely": [
+     4,
+     41
+    ],
+    "median": 15,
+    "top3": 0.07,
+    "top10": 0.329,
+    "concern": null,
+    "question": "How does Userology AI ensure the quality and relevance of the recruited users to the target persona?"
+   }
+  },
+  {
+   "job": "panel",
+   "name": "Velozity",
+   "tagline": "AI-Powered instant user research tool",
+   "description": "Velozity is an AI-powered user research tool for marketing, product, and UX teams to get speedy and reliable insights. Build your users into AI personas, run focus group discussions, and usability tests with them. Fine-tune AI personas to keep them evolving.",
+   "topics": [
+    "User Experience",
+    "Marketing",
+    "SaaS"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-05-03",
+    "rank": 2,
+    "launches_that_day": 8,
+    "votes": 284,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 59.4,
+    "lo": 52.5,
+    "hi": 65.1,
+    "pct": 56,
+    "calls": 13
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "Accuracy and bias of AI-generated insights.",
+     "Depth and realism of AI responses.",
+     "Data privacy and security."
+    ]
+   },
+   "try": {
+    "percentile": 28,
+    "likely": [
+     4,
+     43
+    ],
+    "median": 17,
+    "top3": 0.066,
+    "top10": 0.269,
+    "concern": null,
+    "question": "How does the 'fine-tuning AI personas to keep them evolving' feature work? Does it learn from new data or user interactions?"
+   }
+  },
+  {
+   "job": "panel",
+   "name": "Synthetic Users (syntheticusers.com)",
+   "tagline": "User research without the users",
+   "description": "An AI research platform that runs interviews and surveys with synthetic personas built on large language models, for early product and concept testing.",
+   "topics": [
+    "User Experience",
+    "Artificial Intelligence",
+    "SaaS"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 69.8,
+    "lo": 65.8,
+    "hi": 72.9,
+    "pct": 80,
+    "calls": 13
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 767,
+    "top": [
+     "How reliable is the feedback from synthetic users?",
+     "How to prevent generic or biased feedback?",
+     "How to ensure diverse user behaviors and biases?"
+    ]
+   },
+   "try": {
+    "percentile": 29,
+    "likely": [
+     4,
+     43
+    ],
+    "median": 17,
+    "top3": 0.066,
+    "top10": 0.269,
+    "concern": null,
+    "question": "Users are curious about how the tool avoids over-fitting and distinguishes genuine design signatures from noise."
+   }
+  },
+  {
+   "job": "panel",
+   "name": "Wynter",
+   "tagline": "On-demand messaging and market research",
+   "description": "Test B2B messaging with a panel of real, verified people from your target audience and get results in under 48 hours. Message tests, preference tests and surveys.",
+   "topics": [
+    "Marketing",
+    "SaaS",
+    "Analytics"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 50.0,
+    "lo": 38.8,
+    "hi": 61.2,
+    "pct": 33,
+    "calls": 12
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How is the panel verified and kept unbiased?",
+     "How is data privacy and security handled?",
+     "How is the quality of feedback ensured?"
+    ]
+   },
+   "try": {
+    "percentile": 40,
+    "likely": [
+     4,
+     37
+    ],
+    "median": 14,
+    "top3": 0.081,
+    "top10": 0.378,
+    "concern": null,
+    "question": "Can you give an example of the types of insights or actionable feedback I can expect to receive from a message test?"
+   }
+  },
+  {
+   "job": "pack",
+   "name": "Submit.DIY",
+   "tagline": "All-in-one AI launch platform for makers",
+   "description": "Your all-in-one toolkit to plan, execute, and track product launches. Powered by an AI Sidekick that generates ready-to-publish copy for every channel in one click. No more scattered info across docs, to-do-lists etc. Multiple features that's required to plan a product launch is under one platform.",
+   "topics": [
+    "Marketing",
+    "Growth Hacking",
+    "Vercel Day"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-04-17",
+    "rank": 5,
+    "launches_that_day": 49,
+    "votes": 225,
+    "hunter_prior_hunts": 14,
+    "stored_pitch": 55.0
+   },
+   "pitch": {
+    "score": 73.6,
+    "lo": 69.6,
+    "hi": 77.2,
+    "pct": 87,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "AI copy customization and brand voice",
+     "AI copy quality and originality",
+     "Collaboration and feedback loops"
+    ]
+   },
+   "try": {
+    "percentile": 94,
+    "likely": [
+     1,
+     25
+    ],
+    "median": 7,
+    "top3": 0.275,
+    "top10": 0.642,
+    "concern": null,
+    "question": "How does the AI Sidekick generate 'ready-to-publish copy for every channel'? Can you give examples of the types of channels it supports and the kind of copy it produces for each?"
+   }
+  },
+  {
+   "job": "pack",
+   "name": "LaunchForge",
+   "tagline": "AI launches your product: page, posts, PH draft all in one",
+   "description": "LaunchForge empowers indie makers and solopreneurs to ship products faster. Our AI instantly generates a compelling landing page, a full social media launch kit, and even a Product Hunt draft. Stop wasting time on launch prep; focus on building.",
+   "topics": [
+    "Marketing",
+    "Developer Tools",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-10-29",
+    "rank": 13,
+    "launches_that_day": 21,
+    "votes": 94,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 74.3,
+    "lo": 70.0,
+    "hi": 79.1,
+    "pct": 92,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "How much control over AI output?",
+     "How does it handle custom branding?",
+     "Will the generated content be unique?"
+    ]
+   },
+   "try": {
+    "percentile": 97,
+    "likely": [
+     1,
+     25
+    ],
+    "median": 7,
+    "top3": 0.275,
+    "top10": 0.642,
+    "concern": null,
+    "question": "Users are inquiring about the technical requirements and suitability for non-technical users."
+   }
+  },
+  {
+   "job": "pack",
+   "name": "Spira for Product Hunt Makers",
+   "tagline": "Social media growth agents that build your momentum ",
+   "description": "Drop your Product Hunt link and unlock your brand agent, persona clones of your founding team and AI Influencers that autonomously plan, create, and publish across TikTok, IG, X and Linkedin. It's your biggest launch day, don't let it slide away!",
+   "topics": [
+    "Social Media",
+    "Marketing",
+    "Artificial Intelligence"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-06-29",
+    "rank": 1,
+    "launches_that_day": 11,
+    "votes": 415,
+    "hunter_prior_hunts": 33,
+    "stored_pitch": 65.0
+   },
+   "pitch": {
+    "score": 80.8,
+    "lo": 78.1,
+    "hi": 83.4,
+    "pct": 98,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 802,
+    "top": [
+     "Ensuring AI content is authentic, not generic or automated.",
+     "Control over AI content, tone, style, and brand voice.",
+     "Data privacy and security for social media accounts."
+    ]
+   },
+   "try": {
+    "percentile": 98,
+    "likely": [
+     1,
+     25
+    ],
+    "median": 7,
+    "top3": 0.275,
+    "top10": 0.642,
+    "concern": null,
+    "question": "What level of user control is there before publishing content?"
+   }
+  },
+  {
+   "job": "pack",
+   "name": "FirstUser.app",
+   "tagline": "Guaranteed feedback on your product launch",
+   "description": "90% of launches get little to no feedback. FirstUser connects you with other builders so you always get thoughtful, actionable reviews - before or after your Product Hunt launch. Give feedback to earn it back.",
+   "topics": [
+    "Social Network",
+    "Marketing",
+    "Product Hunt"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-08-14",
+    "rank": 8,
+    "launches_that_day": 22,
+    "votes": 178,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 67.5,
+    "lo": 58.2,
+    "hi": 75.7,
+    "pct": 68,
+    "calls": 14
+   },
+   "panel": {
+    "n": 5,
+    "source_people": 388,
+    "top": [
+     "Quality control for feedback",
+     "Value proposition vs. free alternatives",
+     "Applicability for non-commercial projects"
+    ]
+   },
+   "try": {
+    "percentile": 82,
+    "likely": [
+     2,
+     26
+    ],
+    "median": 9,
+    "top3": 0.199,
+    "top10": 0.554,
+    "concern": null,
+    "question": "How do you ensure the quality and thoughtfulness of the feedback?"
+   }
+  },
+  {
+   "job": "pack",
+   "name": "IndieCrush - The Pre-Launch Playground",
+   "tagline": "Get Feedback, First Users & Testimonials in Under 24h",
+   "description": "IndieCru.sh connects indie makers with real beta testers. Get feedback, first users, and testimonials before you launch. Powered by $indie, the token that rewards testers and boosts app visibility. Build smarter, not later.",
+   "topics": [
+    "Productivity",
+    "User Experience",
+    "Developer Tools"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-05-28",
+    "rank": 8,
+    "launches_that_day": 29,
+    "votes": 237,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 56.2,
+    "lo": 50.3,
+    "hi": 62.3,
+    "pct": 42,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 4223,
+    "top": [
+     "Reliance on $indie token might be a barrier.",
+     "Maintaining quality and authenticity of feedback.",
+     "Lack of clarity on team collaboration features."
+    ]
+   },
+   "try": {
+    "percentile": 68,
+    "likely": [
+     2,
+     34
+    ],
+    "median": 12,
+    "top3": 0.169,
+    "top10": 0.452,
+    "concern": null,
+    "question": "What kind of feedback can I expect to receive from testers, and in what format?"
+   }
+  },
+  {
+   "job": "pack",
+   "name": "shippedit.me",
+   "tagline": "Launch Platform with SEO, AEO & Growth Insights",
+   "description": "Weekly launch battles + a permanent page that keeps working: dofollow backlink, AEO & CRO audits, competitor monitoring, real analytics, and AI fix cards.",
+   "topics": [
+    "Analytics",
+    "Marketing",
+    "SEO"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2026-10-11",
+    "rank": 19,
+    "launches_that_day": 27,
+    "votes": 73,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": 35.0
+   },
+   "pitch": {
+    "score": 44.5,
+    "lo": 37.5,
+    "hi": 52.0,
+    "pct": 27,
+    "calls": 10
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 782,
+    "top": [
+     "AI fix card accuracy and customization",
+     "Competitor monitoring data and sources",
+     "Dofollow backlink quality and relevance"
+    ]
+   },
+   "try": {
+    "percentile": 22,
+    "likely": [
+     4,
+     43
+    ],
+    "median": 17,
+    "top3": 0.066,
+    "top10": 0.269,
+    "concern": null,
+    "question": "What is the pricing model for shippedit.me, especially considering the permanent page and ongoing monitoring features?"
+   }
+  },
+  {
+   "job": "pack",
+   "name": "Uneed Community",
+   "tagline": "Launch, get seen, & grow alongside other makers",
+   "description": "The new version of Uneed is finally here, and is called \"Uneed Community\" \u2728 There are A LOT of changes in this release, and we won't be able to go through all of them. But the two most important ones are: \ud83d\udc85\ud83c\udffb A complete redesign of the website \ud83d\udcf0 An X-like feed The idea is to slowly pivot Uneed from a simple launch platform to what we'll call a social launchpad. You'll be able to market your product every day, to give/ask for feedback, and more.",
+   "topics": [
+    "Marketing"
+   ],
+   "source": "Product Hunt launch in our held data",
+   "finish": {
+    "day": "2025-11-04",
+    "rank": 2,
+    "launches_that_day": 16,
+    "votes": 629,
+    "hunter_prior_hunts": 0,
+    "stored_pitch": null
+   },
+   "pitch": {
+    "score": 37.3,
+    "lo": 33.1,
+    "hi": 41.5,
+    "pct": 10,
+    "calls": 13
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "Risk of the feed becoming noisy with too many daily marketing posts.",
+     "Potential for the platform to become too focused on marketing.",
+     "Potential for makers to feel pressured to constantly post updates."
+    ]
+   },
+   "try": {
+    "percentile": 73,
+    "likely": [
+     2,
+     33
+    ],
+    "median": 10,
+    "top3": 0.194,
+    "top10": 0.532,
+    "concern": null,
+    "question": "How is this different from Product Hunt?"
+   }
+  },
+  {
+   "job": "pack",
+   "name": "Uprows Hub",
+   "tagline": "Product Hunt upvotes and engagement packages",
+   "description": "Packages priced by the number of Product Hunt upvotes and the engagement required for a launch, from a free trial to custom packages for larger launches.",
+   "topics": [
+    "Marketing",
+    "Growth Hacking",
+    "Product Hunt"
+   ],
+   "source": "web search summary; wording is ours",
+   "finish": null,
+   "pitch": {
+    "score": 3.2,
+    "lo": 1.1,
+    "hi": 5.4,
+    "pct": 0,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 2495,
+    "top": [
+     "Ethical implications of buying upvotes/engagement.",
+     "Risk of Product Hunt cracking down or penalizing products.",
+     "Potential for an uneven playing field/pay-to-win environment."
+    ]
+   },
+   "try": {
+    "percentile": 87,
+    "likely": [
+     2,
+     26
+    ],
+    "median": 9,
+    "top3": 0.199,
+    "top10": 0.554,
+    "concern": null,
+    "question": "How does the 'free trial' work, and what does it include?"
+   }
+  }
+ ],
+ "days": [
+  "2026-10-05",
+  "2026-11-02",
+  "2026-10-06",
+  "2026-11-03",
+  "2026-10-07",
+  "2026-11-04",
+  "2026-10-08",
+  "2026-11-05",
+  "2026-10-02",
+  "2026-10-30",
+  "2026-10-03",
+  "2026-10-31",
+  "2026-10-04",
+  "2026-11-01"
+ ],
+ "usd_pitch_panel": 1.674
+}
