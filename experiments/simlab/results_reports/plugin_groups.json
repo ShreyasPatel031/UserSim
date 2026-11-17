@@ -1,0 +1,116 @@
+{
+ "written_at": "2026-11-17",
+ "requested_by": "orchestrator 21:10Z Nov 17 (plugin user-testing personas)",
+ "1_segments_file": {
+  "path": "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/segments/latest.json",
+  "dated_copy": "gs://usersim-bakeoff-347838016394/usersim_sim/results/web/segments/<YYYY-MM-DD>.json",
+  "current_cut": "2026-11-17",
+  "last_written_utc": "2026-11-17T09:54Z",
+  "refresh": "nightly, step 0 of the E5 nightly job (scheduled task trig_01FEkfbXRmqSiqf3rdZb1mqb, 09:47Z daily; population_segments.py --cut D). Group ids and names are kept across nights by member overlap (0.93 with the previous run on Nov 17); renames only when overlap drops.",
+  "content": "aggregates only: 5 groups (ids 0, 1, 2, 4, 6 - not contiguous) and 12 subgroups, every unit >= 20 people; no person ids, names or handles"
+ },
+ "2_main_clusters": [
+  {
+   "id": 1,
+   "name": "Product Makers",
+   "n_people": 6500,
+   "share_commenting": 0.955,
+   "share_made_or_hunted_a_launch": 0.924,
+   "median_upvotes_in_window": 16.0,
+   "role_lift_vs_population": {
+    "investor": 1.66,
+    "designer": 1.4,
+    "developer": 1.74,
+    "marketer": 1.61,
+    "product": 1.37,
+    "founder": 1.82,
+    "student": 1.1
+   },
+   "topics_by_lift": [
+    "Sales",
+    "SaaS",
+    "Marketing",
+    "Video",
+    "Open Source",
+    "Tech"
+   ],
+   "subgroups": [
+    "Developer Marketers",
+    "Design-Focused Founders",
+    "Emerging Dev Founders",
+    "Open Source Developers",
+    "Experienced SaaS Founders"
+   ],
+   "persona_brief": "Founders and makers who ship their own launches: almost all have made or hunted a launch (92%) and nearly all comment (96%); founders, developers, investors and marketers are all over-represented (role lift 1.6-1.8x). They judge a product the way they judge their own: they read it as a builder, ask about ROI, integrations and how it works under the hood, and readily compare it to the SaaS, sales, marketing, video and open-source products they already use or have built. They respond well to privacy-minded tools that remove a common dev or business pain. They lose interest when the value or ROI is not clear quickly, when integration with their existing stack is unclear, or when it looks like a thin wrapper they could build themselves (inferred from their comment themes, not measured exits)."
+  },
+  {
+   "id": 4,
+   "name": "Tech Innovators",
+   "n_people": 12814,
+   "share_commenting": 0.576,
+   "share_made_or_hunted_a_launch": 0.314,
+   "median_upvotes_in_window": 20.0,
+   "role_lift_vs_population": {
+    "investor": 1.05,
+    "designer": 1.0,
+    "developer": 1.38,
+    "marketer": 1.47,
+    "product": 1.29,
+    "founder": 1.02,
+    "student": 1.88
+   },
+   "topics_by_lift": [
+    "Mac",
+    "Developer Tools",
+    "Productivity",
+    "GitHub",
+    "Artificial Intelligence",
+    "Software Engineering"
+   ],
+   "subgroups": [
+    "Product & Dev Launchers",
+    "Connected Product Makers",
+    "Tool Evaluators",
+    "Mac & Dev Enthusiasts"
+   ],
+   "persona_brief": "The most active voters (median 20 upvotes in the window): developers, marketers and product managers (role lift 1.3-1.5x), leaning to Mac apps, developer tools, GitHub, APIs and infrastructure. They go straight to the technical details - API usage, infrastructure, integrations - and ask about pricing models, scalability and how the product differs from competitors they know. They relate it to their own work use case. They leave when pricing or scaling limits are vague, when it does not integrate with the tools they already run (Mac, GitHub, APIs), or when it looks like a me-too with no clear difference from an existing product (inferred from comment themes)."
+  },
+  {
+   "id": 2,
+   "name": "Curious Observers",
+   "n_people": 33248,
+   "share_commenting": 0.416,
+   "share_made_or_hunted_a_launch": 0.207,
+   "median_upvotes_in_window": 1.0,
+   "role_lift_vs_population": {
+    "investor": 0.6,
+    "designer": 0.68,
+    "developer": 0.86,
+    "marketer": 0.81,
+    "product": 0.75,
+    "founder": 0.68,
+    "student": 0.95
+   },
+   "topics_by_lift": [
+    "Development",
+    "Vibe coding",
+    "Social Media",
+    "Design Tools",
+    "Marketing",
+    "Productivity"
+   ],
+   "subgroups": [],
+   "persona_brief": "The largest group and the least invested: newer accounts with few upvotes or followers (median 1 upvote in the window), often no profile text; fewer founders and designers than average, relatively more students. Broad, casual interest across vibe coding, development, social media, design and productivity. They ask how the product works at a basic level, which features exist, platform availability (is there an iOS version?) and whether it is open source; first impressions are usually positive and they want to try it. They drop off when they cannot see what it does from the first screen, when sign-up or a paywall comes before any value, or when it is not on their platform (inferred from comment themes)."
+  }
+ ],
+ "2_why_these_three": "They are the three most different kinds of user in the data (builders who comment and launch; heavy technical voters; casual newcomers) and together cover 52,562 of 94,625 held people. Left out: 'Experienced Curators' (id 6) behaves like Product Makers (88% have launched), and 'Product Evaluators' (id 0) is mostly inactive now (median 0 upvotes in the window).",
+ "3_accuracy_label": {
+  "show": "Group reactions are simulated. On 276 past launches they covered 65% [62, 67] of the broad points real commenters raised, but only about 9% of the exact issues - below a plain prompt with no personas (13.5%). Personas added nothing over real past comments (Nov 15, 19 launches), and group-specific behaviour inside a browser has not been validated.",
+  "corrections_to_draft": [
+   "'theme recall 61% / precision 52%' was an earlier broad-theme figure for the plain /try simulator; the current group (persona) panel figure is recall 64.8% [62.2, 67.3] of points raised, 276 launches, precision +5.6 [+1.6, +9.7] over the previous panel.",
+   "Under the strict same-issue rule the panel is worse than a plain prompt: complaints 9.0% vs 13.5%, questions 4.9% vs 10.4% (10 predictions per launch, complaint_recall study).",
+   "Nov 15 result is right in substance but narrower: on 19 launches, persona interviews 9.5% [3.5, 17.0] recall vs real-comments-only 10.4% [3.9, 18.1] (paired +0.9 [-7.4, +9.8]); adding real comments to personas made it worse (-6.0 [-13.3, -0.5]).",
+   "For the plugin specifically: no test exists of whether these groups behave differently in a product. The only browser test (30 past launches, local Chromium) recalled 3.7% of complaints vs 18.3% for a plain prompt, and at group level the segments do not predict which launches people vote for (calibration in latest.json)."
+  ]
+ }
+}
