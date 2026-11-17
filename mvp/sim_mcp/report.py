@@ -422,8 +422,7 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
         ("screenshots_real", bool(steps) and not bad_shots, f"{len(steps)} steps, every screenshot shows a rendered page",
          f"{len(steps)} steps; blank, spinner-only or missing screenshots at steps {bad_shots or 'all (no steps)'}"),
         _first_screen_check(row, site),
-        ("live_view_offered", bool(row.get("live_view_url")), "Browserbase live view was available to watch",
-         "no Browserbase live view URL was recorded"),
+        _watchable_check(row, steps, bad_shots),
         ("judge_ran", judge_status == "ok", "independent judge ran: ok", f"independent judge did not run cleanly: {judge_status}"),
         ("not_degraded", not study.get("test_mode") and study.get("driver") == DRIVER, "real browser run, not snapshot / test mode",
          f"degraded run (test_mode={bool(study.get('test_mode'))}, driver={study.get('driver')!r})"),
@@ -436,6 +435,21 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
     out = [{"name": n, "pass": bool(ok), "detail": dp if ok else df} for n, ok, dp, df in checks]
     failed = [f"{c['name']}: {c['detail']}" for c in out if not c["pass"]]
     return {"pass": not failed, "checks": out, "reason": "; ".join(failed) if failed else "all proof checks passed"}
+
+
+def _watchable_check(row: dict[str, Any], steps: list[dict[str, Any]], bad_shots: list[int]) -> tuple[str, bool, str, str]:
+    """Could a person watch the run? Browserbase: its live view URL. seed_vm (our own seed VMs, Nov 17): there is no
+    hosted live view; the watch page streams every step's recorded frame as it happens, so the run is watchable when
+    every step has a real rendered screenshot. Requiring a Browserbase URL failed proof on all 108 cells of study
+    ab3c9656, the first seed study. The name stays live_view_offered for stored studies and report readers."""
+    if row.get("live_view_url"):
+        return ("live_view_offered", True, "Browserbase live view was available to watch", "")
+    if row.get("browser_backend") == "seed_vm":
+        ok = bool(steps) and not bad_shots
+        return ("live_view_offered", ok,
+                f"seed_vm: all {len(steps)} steps streamed to the watch page as recorded frames (no hosted live view on seeds)",
+                f"seed_vm: the watch page had no recorded frame for steps {bad_shots or 'all (no steps)'}")
+    return ("live_view_offered", False, "", "no Browserbase live view URL was recorded")
 
 
 def _first_screen_check(row: dict[str, Any], site: Any) -> tuple[str, bool, str, str]:

@@ -107,7 +107,47 @@ def test_failed_owner_hands_the_account_over(monkeypatch):
     monkeypatch.setattr("mvp.sim_mcp.report.signup_verified", lambda row: False)
     srv._register_study_account(a)
     b = _cell("sb2", "t2__p2__product")
+    monkeypatch.setitem(S.SESSIONS, "sb2", b)
+    monkeypatch.setattr(S, "save_host_account", lambda sim: None)
+    out = json.loads(srv._study_account_for(b, "o"))
+    # Nov 17 (Typeform, ab3c9656): the takeover keeps the SAME address and finishes that signup; a fresh alias of
+    # the same inbox is 'already registered' on sites that normalise Gmail addresses.
+    assert b.inbox.address == "u.s.er@gmail.com" and "never ask for a new address" in out["next"]
+    assert "reused_account" not in out
+    assert b.row["signup_email"] == "u.s.er@gmail.com" and "login_email" not in b.row
+    assert b.row["signup_takeover_from"] == "t1__p1__product"
+    entry = srv._STUDY_ACCOUNTS[("st1", "smartsheet.com")]
+    assert entry["sid"] == "sb2" and entry["takeovers"] == 1
+    # the next cell, while the new owner is alive, is told to log in to the same account
+    c = _cell("sc2", "t3__p3__product")
+    out = json.loads(srv._study_account_for(c, "o"))
+    assert c.inbox.address == "u.s.er@gmail.com" and "right now" in out["next"]
+
+
+def test_takeover_without_an_identity_on_record_signs_up_fresh(monkeypatch):
+    from mvp.sim_mcp import sessions as S
+
+    srv._STUDY_ACCOUNTS.clear()
+    a = _cell("sa3", "t1__p1__product", inbox=SimpleNamespace(address="u.s.er@gmail.com"))
+    a.closed, a.identity = True, {}
+    monkeypatch.setitem(S.SESSIONS, "sa3", a)
+    monkeypatch.setattr("mvp.sim_mcp.report.signup_verified", lambda row: False)
+    monkeypatch.setattr(S, "load_account", lambda sid, owner: None)
+    srv._register_study_account(a)
+    b = _cell("sb3", "t2__p2__product")
     assert srv._study_account_for(b, "o") is None and ("st1", "smartsheet.com") not in srv._STUDY_ACCOUNTS
+
+
+def test_shared_account_cell_cannot_swap_to_a_new_address(monkeypatch):
+    from mvp.sim_mcp import sessions as S
+
+    b = _cell("sb4", "t2__p2__product", inbox=SimpleNamespace(address="u.s.er+x@gmail.com"))
+    b.row["shared_study_account"] = {"owner_cell": "t1__p1__product", "verified": False}
+    monkeypatch.setitem(S.SESSIONS, "sb4", b)
+    monkeypatch.setattr(S, "get_session", lambda sid, owner=None: b)
+    monkeypatch.setattr(srv, "_owner", lambda ctx: "o")
+    out = asyncio.run(srv.usersim_signup_identity(None, "sb4", no_plus=True))
+    assert "one account for this site" in out and b.inbox.address == "u.s.er+x@gmail.com"
 
 
 def test_mail_diagnostics_show_unmatched_mail(monkeypatch):

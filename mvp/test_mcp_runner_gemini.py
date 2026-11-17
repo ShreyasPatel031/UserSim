@@ -216,3 +216,69 @@ class NoClaudeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ResumeTests(unittest.TestCase):
+    """Nov 17: an overloaded MCP server (httpx ConnectError) used up the retry budget; 43 never-started cells were
+    written as 'stopped: runner spend cap' <cell>.json and --resume skipped them as done."""
+
+    def test_crash_before_a_session_is_not_saved_as_done(self):
+        gate = lib.SpendGate(max_usd=5.0, max_retries=0)
+
+        async def down(name, args, gate_, retries=3):
+            gate_.record_retry()  # budget 0: the gate stops, as after a burst of ConnectErrors
+            raise RuntimeError(f"{name}: ConnectError: All connection attempts failed")
+
+        cell = {"cell_id": "t1__p1__product", "site": "https://example.com", "persona": "p", "task": "t"}
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(R, "tool", down):
+            log = asyncio.run(R.run_cell("s1", cell, 5, 0.5, Path(d), None, gate))
+            self.assertFalse((Path(d) / "t1__p1__product.json").exists())
+            self.assertTrue(json.loads((Path(d) / "t1__p1__product.notrun.json").read_text())["not_run"])
+            self.assertFalse(R.cell_done(Path(d), "t1__p1__product"))
+            self.assertIn("retry budget", log["finish"])  # says why, not 'spend cap'
+
+    def test_resume_runs_never_started_cells_only(self):
+        cells = [{"cell_id": c, "site": "https://example.com", "persona": "p", "task": "t"} for c in ("a", "b", "c", "d")]
+        with tempfile.TemporaryDirectory() as d:
+            out = Path(d) / "s1"
+            out.mkdir()
+            (out / "study.json").write_text(json.dumps({"study_id": "s1", "cells": cells}))
+            (out / "a.json").write_text(json.dumps({"session_id": "x", "finish": "ok"}))  # ran
+            (out / "b.json").write_text(json.dumps({"finish": R.STOP_NOTE, "error": R.STOP_NOTE}))  # old runner, never ran
+            (out / "c.notrun.json").write_text(json.dumps({"not_run": True}))
+            ran = []
+
+            async def fake_cell(study_id, cell, *a, **k):
+                ran.append(cell["cell_id"])
+                log = {"session_id": "new", "cell": cell}
+                R._save_cell(a[2], cell, log)
+                return log
+
+            async def fake_tool(name, args, gate_, retries=3):
+                return SimpleNamespace(content=[SimpleNamespace(type="text", text="report")])
+
+            gate = lib.SpendGate(max_usd=5.0, max_retries=5)
+            with mock.patch.object(R, "run_cell", fake_cell), mock.patch.object(R, "tool", fake_tool), \
+                    mock.patch.object(R, "_save_server_study", lambda *a: None):
+                summary = asyncio.run(R.run_study("https://example.com", 4, 5, 0.5, Path(d), None, gate, resume="s1"))
+            self.assertEqual(sorted(ran), ["b", "c", "d"])
+            self.assertEqual((summary["finished"], summary["not_run"]), (4, 0))
+            self.assertFalse((out / "c.notrun.json").exists())
+
+
+class CompetitorTests(unittest.TestCase):
+    def test_competitors_go_to_start_study(self):
+        seen = {}
+
+        async def fake_tool(name, args, gate_, retries=3):
+            if name == "usersim_start_study":
+                seen.update(args)
+                return SimpleNamespace(content=[SimpleNamespace(type="text", text=json.dumps({"error": "stop here"}))])
+            raise AssertionError(name)
+
+        gate = lib.SpendGate(max_usd=5.0, max_retries=5)
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(R, "tool", fake_tool):
+            asyncio.run(R.run_study("https://tally.so", 4, 5, 0.5, Path(d), None, gate,
+                                    competitors=["https://fillout.com", "https://typeform.com"]))
+        self.assertEqual(seen["product_url"], "https://tally.so")
+        self.assertEqual(seen["competitors"], ["https://fillout.com", "https://typeform.com"])

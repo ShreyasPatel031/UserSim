@@ -645,8 +645,7 @@ def _study_account_for(sim: S.SimSession, owner: str) -> str | None:
     except S.SessionError:
         alive = False
     if not entry["verified"] and not alive:
-        _STUDY_ACCOUNTS.pop(key, None)  # the owner never got an account: this cell signs up (and owns it) instead
-        return None
+        return _take_over_study_account(sim, entry, owner, key)
     out = json.loads(_reuse_account(sim, entry["sid"], owner))
     if entry["verified"]:
         out["next"] = ("A verified account for this site already exists in this study: log in with this email and "
@@ -657,6 +656,39 @@ def _study_account_for(sim: S.SimSession, owner: str) -> str | None:
                        "Try logging in with this email and password; if the site says there is no such account, wait about "
                        "a minute (usersim_act wait) and try again. Do not sign up again.")
     sim.row["shared_study_account"] = {"owner_cell": entry.get("cell"), "verified": bool(entry["verified"])}
+    return json.dumps(out)
+
+
+TAKEOVER_NEXT = (
+    "You now own this site's one account for the study: an earlier simulated user started signing up with this email but "
+    "never finished verifying it. Use THIS email and password only; never ask for a new address (sites such as Typeform "
+    "treat every variant of this inbox as the same address and answer 'already registered'). First try to log in. If the "
+    "site says there is no such account, sign up with this same email. If it says the address is already registered or "
+    "unverified, use its 'resend verification' / 'forgot password' option, then read the mail with "
+    "usersim_wait_for_verification_link / _code.")
+
+
+def _take_over_study_account(sim: S.SimSession, entry: dict[str, Any], owner: str, key: tuple[str, str]) -> str | None:
+    """The site's account owner ended without a verified signup: this cell becomes the owner of the SAME account and
+    finishes that signup. It used to drop the account and sign up with a fresh alias. Typeform (study ab3c9656, Nov 17)
+    treats every dot/+ variant of the inbox as one address, so each new alias was 'already registered': 13 owners, 13
+    aliases, no verified Typeform account in 36 cells. Returns None (this cell signs up fresh) only when the old account
+    cannot be loaded."""
+    prev_sid, prev_cell = entry["sid"], entry.get("cell")
+    try:
+        out = json.loads(_reuse_account(sim, prev_sid, owner))
+    except Exception:  # noqa: BLE001 (no identity on record: nothing to continue)
+        _STUDY_ACCOUNTS.pop(key, None)
+        return None
+    # Not a login to someone else's verified account: this cell completes the signup, so the signup proof applies.
+    sim.row.pop("login_email", None)
+    sim.row.pop("reused_account_from", None)
+    sim.row["signup_email"] = sim.inbox.address
+    sim.row["signup_takeover_from"] = prev_cell
+    sim.row["shared_study_account"] = {"owner_cell": sim.agent_id, "verified": False, "took_over_from": prev_cell}
+    entry.update(sid=sim.id, cell=sim.agent_id, takeovers=int(entry.get("takeovers") or 0) + 1)
+    out.pop("reused_account", None)
+    out["next"] = TAKEOVER_NEXT
     return json.dumps(out)
 
 
@@ -726,6 +758,12 @@ async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool =
             if shared:
                 return shared
         shared_ok = not S.is_anon(owner) or bool(L.get("anon_allow_shared_aliases"))
+        if no_plus and sim.row.get("shared_study_account") and sim.inbox is not None:
+            # A cell on the study's shared account asked for a new address after the site said 'already registered':
+            # that is the account itself, not a rejected alias (Typeform, study ab3c9656).
+            raise S.SessionError(f"this session uses the study's one account for this site ({sim.inbox.address}); a new "
+                                 "address would collide with it. Log in with it, or use the site's resend-verification / "
+                                 "forgot-password option and read the mail with usersim_wait_for_verification_link / _code")
         if no_plus and not shared_ok:
             # A dot-variant (or plain) address can be issued again to another session, which could then read this
             # session's mail. Callers without a token only get unique +tag aliases.
