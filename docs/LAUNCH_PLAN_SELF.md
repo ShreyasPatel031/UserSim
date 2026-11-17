@@ -3,6 +3,126 @@
 Run Nov 17 03:10–03:25Z on the pipeline VM, read-only. Code: `experiments/launch_plan/counterfactual_arm2.py`. Raw output:
 `counterfactual_arm2.out`.
 
+## Revised plan after review (Nov 17, 04:10Z). Read this first; it replaces the stacked-row and trajectory numbers below.
+
+Reruns: `experiments/launch_plan/counterfactual_arm2_review.py` and `.out`. Same model and the same 56 days as before.
+
+### What changed
+1. **The first launch is a 1-in-6 shot at the top 5, not 1-in-3.** The old "everything you control" row counted organic
+   coverage, a team of 3 and a company X account as settings. Splitting them out (pitch 86 is the measured /try score):
+
+   | First launch | All days: P(top 5) [95%] | Saturday: P(top 5) | Saturday: P(top 10) | Tue–Thu: P(top 5) |
+   |---|---|---|---|---|
+   | **A. Settings you can set**: self-hunt, 1 maker, 9 media + video, pitch 86, founder posts | 7.7 [5.7, 10.3] | **17.6 [10.7, 24.4]** | 50.5 [40.7, 61.6] | 3.0 [2.5, 3.6] |
+   | B. A + organic coverage lands (1 press, 1 HN, 1 Reddit) | 12.2 [9.4, 15.2] | 25.0 [16.8, 34.8] | 59.6 | 4.6 |
+   | C. A + 3 makers who bring real reach | 19.6 [15.8, 23.5] | 30.2 [19.9, 41.3] | 63.5 | 11.8 |
+   | D. Everything goes right (old stacked row) | 32.0 [26.9, 37.3] | 52.5 [45.3, 59.4] | 79.9 | 18.5 |
+
+   **Plan on row A.** Rows B to D are upside, not settings.
+
+2. **The second launch, with every branch of the first.** Launch 1 is row A on a Saturday. Launch 2 is row A again, with the
+   real record of launch 1 fed in.
+
+   | Launch 1 finished | Chance of that | Launch 2 on a Saturday: P(top 5) | Launch 2 on any day |
+   |---|---|---|---|
+   | Rank 1–3 | 6% | 68.3 [63.4, 71.4] | 61.8 |
+   | Rank 4–5 | 11% | 52.9 [40.4, 61.6] | 30.1 |
+   | Rank 6–10 | 33% | 26.8 [18.8, 36.2] | 19.1 |
+   | Rank 11–20 | 35% | 17.6 [10.6, 25.4] | 8.3 |
+   | Rank 21+ | 15% | 15.7 [8.4, 23.6] | 7.1 |
+   | **Expected (weighted)** | | **27.5** | 17.4 |
+
+   The number to plan around for launch 2 is **27.5%**, not 58.8%. A launch 1 outside the top 5 does not hurt launch 2
+   compared with having no record (17.6% either way on a Saturday); a top-5 finish roughly triples it.
+
+3. **Real hunters with 1–3 prior launches (2026, real outcomes, not the model).**
+
+   | Hunter's record going in | n | Actual top 5 | Actual top 10 |
+   |---|---|---|---|
+   | 0 prior launches | 3,805 | 8.4% | 26.0% |
+   | 1 prior | 642 | 16.0% | 36.8% |
+   | 2–3 prior | 316 | 18.4% | 41.5% |
+   | 51+ prior | 1,949 | 50.0% | 73.4% |
+   | 1–3 prior, **all in the top 5** | 184 | 42.9% | 65.8% |
+   | 1–3 prior, none in the top 5 | 684 | 9.9% | 29.7% |
+   | 1–3 prior, all top 5, account 2 years old or less | 36 | 38.9% | 63.9% |
+   | 1–3 prior, none top 5, account 2 years old or less | 307 | 6.5% | 24.4% |
+
+   - The data is not thin (958 launches by hunters with 1–3 prior), so steps 2–4 are not pure extrapolation.
+   - The effect is real but smaller than the old table said: about **40%** top 5 after an all-top-5 record, not 60–75%.
+   - On the 56 test days the model says 32.9% for the all-top-5 group against 29.3% actual (n 41), so it is roughly
+     calibrated there.
+   - "After 2 launches you are at the level of an active hunter" was wrong. An active hunter (51+ launches) is at 50%.
+   - History starts in Jan 2025, so some "1 prior" hunters are older accounts with unseen earlier launches; the
+     2-year-old-account rows remove most of them.
+
+4. **Real launches that look like the plan (2026, hunter with 0 record).**
+
+   | Profile | n | Actual top 5 | Actual top 10 |
+   |---|---|---|---|
+   | All 0-record launches | 3,142 | 6.9% | 22.8% |
+   | 0-record, on a weekend | 423 | 19.9% | — |
+   | Pitch 75+ | 251 | 16.7% | 42.2% |
+   | Pitch 75+, weekend | 51 | 29.4% | — |
+   | Pitch 75+, 1 maker, founder posts, no coverage (row A) | 12 | 8.3% | 41.7% |
+   | Pitch 75+, founder posts, coverage 3+ (row B) | 36 | 25.0% | 44.4% |
+   | Pitch 75+, 3+ makers, founder posts, coverage 3+ (row D) | 7 | 71.4% | 100% |
+
+   - Row A's exact profile is rare (12 launches); its model number of 7.7% matches the 8.3% seen.
+   - Row D has 7 real cases. It is out of the usual range and should not be planned on.
+   - Calibration on all real 0-record launches in the test days: model 4.9%, actual 3.7% (n 945). The model is slightly
+     kind to newcomers.
+
+5. **Why weekends win. It is not the number of launches.** Monday has 23 launches like Saturday, and checks out (18–27 on
+   the 8 Mondays), yet row A gets 5.7% [3.8, 8.4] on Monday and 17.6% on Saturday.
+
+   | Day | Launches | Row A: P(top 5) [95%] | Launches with 3+ makers | Strong hunters (50%+ top 5) | Votes at rank 5 | All votes that day |
+   |---|---|---|---|---|---|---|
+   | Mon | 23 | 5.7 [3.8, 8.4] | 6.4 | 5.9 | 188 | 3,314 |
+   | Tue | 36 | 3.1 [2.4, 4.2] | 7.6 | 6.4 | 207 | 4,204 |
+   | Wed | 34 | 3.1 [2.1, 4.2] | 8.9 | 7.0 | 190 | 4,031 |
+   | Thu | 34 | 2.8 [2.1, 3.8] | 8.9 | 7.8 | 199 | 3,991 |
+   | Fri | 36 | 3.8 [2.8, 4.5] | 5.1 | 5.9 | 168 | 3,855 |
+   | **Sat** | 22 | **17.6 [10.7, 24.4]** | 2.8 | 4.5 | 150 | 2,620 |
+   | **Sun** | 19 | **18.1 [14.1, 21.8]** | 3.5 | 5.6 | 155 | 2,472 |
+
+   - Weekends have a **weaker line-up**: a third as many team launches and fewer strong hunters. Monday is small but as
+     strong as a weekday.
+   - It is not the model's weekday input: forcing that input to each value on the same line-ups moves row A only between
+     6.5% and 10.9%, and Saturday's value is among the lowest.
+   - Real data agrees: 0-record launches reach the top 5 19.9% of the time on weekends against 6.9% overall.
+   - **The cost:** a Saturday has about 62% of a Tuesday's votes (2,620 against 4,204), and rank 5 gets 150 votes against 207.
+
+6. **Product Hunt's own rule breaks the 14-week trajectory.** Its help centre asks makers to wait **at least six months
+   between posts for the same product or from the same company**, and requires a significant update; earlier posts get extra
+   scrutiny and may not be featured. Four launches from one company in 14 weeks is not available. Whether a clearly distinct
+   product from the same company can go sooner is not stated; the team can be asked before launch.
+   Sources: https://help.producthunt.com/en/articles/484934-can-i-relaunch-my-product and
+   https://www.producthunt.com/p/producthunt/how-often-should-you-launch-on-product-hunt
+
+### The revised plan
+- **One launch now, built to count: /try**, with the daily board and the persona panel shown inside it as features, not held
+  back as later launches.
+- **Goal of launch 1: rank and record, plus /try users.** Launch on a **Saturday**. Planned odds (row A): top 5 17.6%,
+  top 10 50.5%. A Tuesday gives 60% more votes on the day but a 3% chance of the top 5.
+- **The two things worth working on before the date**, because they are the largest real levers:
+  - **A hunter with a record.** One-change effect: 2.3% to 17.6–21.7% on all days. How: ask hunters who have posted
+    launch-analytics or maker tools, show them /try run on a launch they hunted, and ask only whether they would post it.
+    If none agrees within two weeks, self-hunt on the planned Saturday.
+  - **Makers with real reach on the page** (row C): people who actually worked on it and will post about it themselves.
+- **Launch 2 is about six months later** (or sooner only with Product Hunt's written yes): the Launch Pack, as the paid
+  product, on a **weekday** for traffic. Expected top 5 with a self-hunted record: 27.5% on a Saturday, 17.4% on any day.
+- **If launch 1 finishes outside the top 10** (about 50% likely on row A): nothing is lost for launch 2 in the model (same
+  odds as no record). Keep the date for launch 2, and fix the page from the comments it drew.
+- **Pre-launch checklist (owner: Shreyas):** "Free to try, no signup" is true on the day; the accuracy number and its day
+  count are on the page and current; the page fixes below are done.
+
+### What in the older sections is now superseded
+- "Stacking the levers" (31.2% / 71.4%), its day table, and the 4-step trajectory (34 / 59 / 70 / 72%).
+- "After 2 launches your own record puts you at about the level of an active hunter."
+- "Weekends carry about 20 launches against about 35" as the reason weekends win.
+- The base case's median rank is 25.5 (the text said 25).
+
 ## Method
 - **Model.** The published midnight model (arm 2, LightGBM, 5 seeds), trained on all days before Sep 21 2026.
 - **Test days.** Each test launch is dropped into every real line-up from Sep 21 to Nov 15 2026 (56 days, 8 of each weekday).

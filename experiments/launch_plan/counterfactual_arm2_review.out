@@ -1,0 +1,83 @@
+WEEKDAY CODING {(0, 0): 8, (1, 1): 8, (2, 2): 8, (3, 3): 8, (4, 4): 8, (5, 5): 8, (6, 6): 8}
+launches per day by dow {0: {'mean': 23.2, 'min': 18, 'max': 27}, 1: {'mean': 35.5, 'min': 20, 'max': 50}, 2: {'mean': 33.9, 'min': 16, 'max': 47}, 3: {'mean': 33.6, 'min': 21, 'max': 45}, 4: {'mean': 36.5, 'min': 20, 'max': 67}, 5: {'mean': 22.5, 'min': 11, 'max': 37}, 6: {'mean': 19.1, 'min': 8, 'max': 37}}
+rel by actual-rank bucket {(1, 3): 1.037, (4, 5): 0.553, (6, 10): 0.116, (11, 20): -0.195, (21, 999): -0.319}
+real hist_hunter_rel quantiles among hunters with history {0.1: -0.369, 0.5: 0.326, 0.9: 0.554}
+== 1.3 split of the stacked row (all days) and Saturday only
+A settable only (self-hunt, 1 maker, 9 media+video, pitch 86, founder posts) | med rank 13.0 | top5 7.7 [5.7, 10.3] | top10 28.5 [24.4, 33.0] | top3 2.6
+   Saturday only | med rank 8.0 | top5 17.6 [10.7, 24.4] | top10 50.5 [40.7, 61.6] | top3 6.2
+   Tue-Thu only | med rank 16.5 | top5 3.0 [2.5, 3.6] | top10 16.6 [13.7, 20.2] | top3 0.9
+B = A + organic coverage | med rank 11.0 | top5 12.2 [9.4, 15.2] | top10 37.4 [32.7, 42.5] | top3 4.4
+   Saturday only | med rank 7.5 | top5 25.0 [16.8, 34.8] | top10 59.6 [46.6, 70.2] | top3 11.0
+   Tue-Thu only | med rank 14.0 | top5 4.6 [3.4, 6.6] | top10 22.8 [18.0, 27.3] | top3 1.6
+C = A + team of 3 | med rank 10.0 | top5 19.6 [15.8, 23.5] | top10 49.5 [44.6, 54.1] | top3 7.9
+   Saturday only | med rank 7.5 | top5 30.2 [19.9, 41.3] | top10 63.5 [53.5, 73.0] | top3 13.2
+   Tue-Thu only | med rank 11.0 | top5 11.8 [8.9, 15.4] | top10 38.4 [32.9, 44.9] | top3 4.2
+D = A + coverage + team 3 + company X (old stacked row) | med rank 7.0 | top5 32.0 [26.9, 37.3] | top10 63.9 [59.1, 68.4] | top3 16.2
+   Saturday only | med rank 4.0 | top5 52.5 [45.3, 59.4] | top10 79.9 [76.3, 84.4] | top3 30.6
+   Tue-Thu only | med rank 8.0 | top5 18.5 [14.9, 22.7] | top10 51.8 [46.0, 56.8] | top3 7.0
+== 1.4 day of week, settable-only launch (A), with intervals (8 days each)
+dow 0 (0=Mon) n_launches 23 | med rank 14.0 | top5 5.7 [3.8, 8.4] | top10 28.5 [21.6, 35.6] | top3 2.2
+dow 1 (0=Mon) n_launches 36 | med rank 16.0 | top5 3.1 [2.4, 4.2] | top10 17.3 [13.0, 23.8] | top3 1.0
+dow 2 (0=Mon) n_launches 34 | med rank 16.0 | top5 3.1 [2.1, 4.2] | top10 17.3 [13.0, 21.6] | top3 1.0
+dow 3 (0=Mon) n_launches 34 | med rank 18.0 | top5 2.8 [2.1, 3.8] | top10 15.2 [10.9, 19.5] | top3 0.7
+dow 4 (0=Mon) n_launches 36 | med rank 13.0 | top5 3.8 [2.8, 4.5] | top10 21.6 [17.3, 25.9] | top3 1.5
+dow 5 (0=Mon) n_launches 22 | med rank 8.0 | top5 17.6 [10.7, 24.4] | top10 50.5 [39.2, 60.7] | top3 6.2
+dow 6 (0=Mon) n_launches 19 | med rank 9.5 | top5 18.1 [14.1, 21.8] | top10 49.1 [42.0, 54.4] | top3 5.5
+same line-ups, weekday input forced (isolates the model weekday input):
+  forced ph_weekday=0 | med rank 13.0 | top5 10.9 [8.2, 13.6] | top10 34.2 [28.9, 39.7] | top3 3.9
+  forced ph_weekday=1 | med rank 13.0 | top5 9.7 [7.3, 12.3] | top10 31.5 [26.5, 36.3] | top3 3.1
+  forced ph_weekday=2 | med rank 13.0 | top5 9.7 [7.5, 12.5] | top10 31.5 [26.6, 36.1] | top3 3.1
+  forced ph_weekday=3 | med rank 13.0 | top5 8.3 [6.1, 10.8] | top10 29.0 [24.6, 33.1] | top3 2.6
+  forced ph_weekday=4 | med rank 14.0 | top5 6.5 [4.7, 8.3] | top10 25.5 [21.2, 29.8] | top3 2.2
+  forced ph_weekday=5 | med rank 13.0 | top5 6.9 [5.0, 9.0] | top10 26.6 [22.5, 30.9] | top3 2.3
+  forced ph_weekday=6 | med rank 13.0 | top5 10.1 [7.8, 12.6] | top10 33.0 [28.5, 37.5] | top3 3.3
+line-up by dow:
+         n  strong_hunters  pred5  pitch75  team3  votes_rank5  votes_rank1  votes_all
+dow                                                                                   
+0    23.25            5.88   5.27     2.88   6.38       187.88       437.38    3313.50
+1    35.50            6.38   5.33     4.25   7.62       206.62       457.62    4203.62
+2    33.88            7.00   5.36     3.88   8.88       190.25       424.38    4031.12
+3    33.62            7.75   5.33     2.88   8.88       198.62       397.37    3991.00
+4    36.50            5.88   5.13     3.00   5.12       167.50       371.50    3855.25
+5    22.50            4.50   5.05     3.75   2.75       150.25       300.00    2620.00
+6    19.12            5.62   5.19     2.38   3.50       155.12       332.88    2471.62
+== 1.1 branches for launch 2 (settable-only A, launch 1 on a Saturday; launch 2 scored on Saturday and on all days)
+launch 1 (Saturday) actual-rank distribution {'(1, 3)': 0.062, '(4, 5)': 0.114, '(6, 10)': 0.329, '(11, 20)': 0.348, '(21, 999)': 0.148}
+  launch 1 finished (1, 3) (prob 6%): launch 2 Saturday top5 68.3 [63.4, 71.4], any day top5 61.8 [58.4, 64.5], med rank sat 3.0
+  launch 1 finished (4, 5) (prob 11%): launch 2 Saturday top5 52.9 [40.4, 61.6], any day top5 30.1 [25.5, 34.7], med rank sat 5.0
+  launch 1 finished (6, 10) (prob 33%): launch 2 Saturday top5 26.8 [18.8, 36.2], any day top5 19.1 [15.5, 22.8], med rank sat 7.5
+  launch 1 finished (11, 20) (prob 35%): launch 2 Saturday top5 17.6 [10.6, 25.4], any day top5 8.3 [5.9, 10.9], med rank sat 8.0
+  launch 1 finished (21, 999) (prob 15%): launch 2 Saturday top5 15.7 [8.4, 23.6], any day top5 7.1 [5.3, 9.1], med rank sat 8.5
+  EXPECTED launch 2 P(top 5): Saturday 27.5, any day 17.4
+== 1.2 real hunters with 1-3 prior hunts (2026 rows, full data; left-censored: history starts Jan 2025)
+          n   top5  top10
+nb                       
+0      3805  0.084  0.260
+1       642  0.160  0.368
+2-3     316  0.184  0.415
+4-10    171  0.298  0.626
+11-50   205  0.415  0.629
+51+    1949  0.500  0.734
+                  n   top5  top10  age_med
+prior                                     
+all prior top5  184  0.429  0.658   2041.0
+mixed            90  0.156  0.478   2212.0
+no prior top5   684  0.099  0.297   1075.0
+same, hunter account <= 2 yrs old (likely true newcomers):
+                  n   top5  top10
+prior                            
+all prior top5   36  0.389  0.639
+mixed            16  0.062  0.125
+no prior top5   307  0.065  0.244
+test days, model vs actual for 1-3 prior hunts:
+                    n  actual_top5  model_top5
+prior                                         
+all prior top5   41.0        0.293       0.329
+other           210.0        0.081       0.082
+== 3 real launches that look like the plan (2026 rows with promo data)
+  0-record hunter, all: n 3142, actual top5 6.9%, top10 22.8%, weekend n 423 top5 19.9%
+  + pitch>=75: n 251, actual top5 16.7%, top10 42.2%, weekend n 51 top5 29.4%
+  + pitch>=75, 1 maker, founder posts>=1, no coverage: n 12, actual top5 8.3%, top10 41.7%, weekend n 4 top5 25.0%
+  + pitch>=75, founder posts>=1, coverage>=3: n 36, actual top5 25.0%, top10 44.4%, weekend n 5 top5 40.0%
+  + pitch>=75, makers>=3, founder posts>=1, coverage>=3: n 7, actual top5 71.4%, top10 100.0%, weekend n 0 top5 nan%
+  calibration on real 0-record launches, test days: n 945 actual top5 3.7% model 4.9%
