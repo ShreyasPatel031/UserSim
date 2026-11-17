@@ -27,6 +27,10 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Daily page capture proxy (Nov 15) | DataImpulse 407 since Nov 12 (credential expired) | blocked; renewal is Shreyas's |
 | PH API v2 (Nov 16) | same 6,250 / 15 min | no: 60% left at 10:31Z (hourly api_full gated at ≥ 40%) |
 | Cursor fleet, person pulls (Nov 16 10:43Z) | 2.07 complete/min, 4.67 attempts/min over 15 min (9–14/min 06:00–10:00Z); Cloudflare wall on 2 of 18 slots, 9 stale, 1 dead, 6 active | at it on 2 slots; not at it on 16 (stale slots are a fleet fault, not a PH limit) |
+| PH API v2 (Nov 17) | same 6,250 / 15 min | no: 88.8% left at 10:35Z |
+| Cursor fleet, person pulls (Nov 17 10:21Z) | 14.3 complete/min over 15 min (18.5 attempts/min); 5.89/min over 24 h audited (8,478 whole saves, 1,683 FAIL); Cloudflare wall on 2 of 20 slots, 1 dead, 17 active | at it on 2 slots; not at it on 18 (24 h rate is a third of the 15-min rate: collapses, not PH) |
+| Maker headers, Data Feeder (Nov 17) | stops at first Cloudflare block (31 of 57) | yes; no retry by rule; fleet takes the nightly read on its own IPs |
+| Product sites, fleet own IPs (Nov 17) | 43 of 43 resolved (sites_0005.json) | no |
 
 ## Status Nov 13 (10:50 UTC) — daily review
 - **Complete PH people (store, latest_complete 10:33Z): 65,385** = 52,919 whole + 12,466 whole at the signed-out upvote end. Was 39,848 at 15:51Z Nov 12; the flagged merge added 19,899 new + 2,715 replaced (06:25Z: 62,379). 11,087 incomplete kept for a completion pass; 192 merged-incomplete.
@@ -65,30 +69,30 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 - Down since ~06:30Z: compute default SA disabled in Shreyas's cleanup → daily pipeline (no Nov 5 forecast/Nov 4 score), live/at-launch capture (stale since 02:45Z), exp-1. Needs Shreyas.
 
 ## Product Hunt: who votes on launch day (north star 1)
-| Question | Ideal measurement | Current (Nov 16, 10:50 UTC) | Gap: limit / at it? / cheapest next step / owner / date |
+| Question | Ideal measurement | Current (Nov 17, 10:50 UTC) | Gap: limit / at it? / cheapest next step / owner / date |
 |---|---|---|---|
-| Vote total per launch over the day | every launch, every 15 min, 00:01–23:59 PT, incl. hidden-period internal score | 15-min API v2 feed every slot since Nov 15; 02:30 PT Nov 16: 39 launches, 39 fetched, 1 failure, 78 s late; Nov 15 tail 16/18 | API 60% left at 10:31Z, not at limit; hidden score not exposed (closed with reason); site 15-min snapshot job never triggered (needs a scheduler) / Shreyas / open |
-| Exposure (board position) | homepage + daily leaderboard order every 15 min, logged-out | API ranking order per snapshot (board_ts) + pre-cut ranks; no logged-out page order (route 4 under STOP) | page order closed for now: API order used; reopen only if route 4 gate clears; Data Feeder |
-| Who votes, when (pool) | every pool member's new upvotes with first-seen ≤ 1 h on launch day; all pool people | 83,260 complete people (store_v3 10:26Z Nov 16, first rebuild since Nov 13; now daily ~08:50Z); by tier (have_index Nov 15 11:00Z): likely 1,304/1,646, active 1,037/2,642, other 80,320/90,484; vote coverage Oct 1–24 52.5% all / 83.1% top 3 (39.6/66.2 without seeded), Nov 9–15 16.3 / 22.0 | Cloudflare wall on 2 of 18 slots (at it); 9 stale + 1 dead (not at it): 2.07 complete/min at 10:43Z after 9–14/min → restart stale slots on their own IPs (back-off rule), fill 20 approved IPs / Cursor fleet / Nov 17 |
-| Daily upvote refresh of complete people | Upvotes tab diff for every complete person, daily | started 00:35Z Nov 16 on slots 9/27/38 over all 82,661; wrong save path until 08:53Z; 0 deltas in the store; median 4.82 days since the last Upvotes read; at 10:43Z slots 9 and 38 stale, 27 at 0.07/min | not at any PH limit; 3 slots cannot cover 83k/day → restart stale slots, give the refresh more slots once live feeds are safe / Cursor fleet / Nov 17 |
-| Early votes inside the hidden window | tier-1 panel re-read 02:30–03:30 PT nightly (~400–500 early votes/night expected) | panel of 2,000 written Nov 13 09:50Z; no re-read reported | not started; Cursor fleet; E5 scores it / Nov 16 02:30 PT |
-| Complete the incomplete | every saved person finished to PH's end | need list 12,111 (Nov 15 11:00Z; tabs missing: reviews 9,840, stacks 9,802, hunted 9,763, collections 9,736, about 9,722) | 15 of 18 slots are batch, 9 of them stale → restart / Cursor fleet / Nov 17; have_index/need_list rebuilt daily ~11:00Z / population agent |
-| Who votes (outside the pool) | not exposed by PH | Nov 9–15 coverage 16.3% all / 22.0% top 3 vs Oct 1–24 52.5 / 83.1: new voters are not in the pool; seeded share inflates old weeks (39.6 / 66.2 without seeds) | discovery of last-week voters ranked first in the queue; fleet throughput is the binding stop / population agent + Cursor fleet / Nov 17 |
-| Comments per launch, dated | every new comment per snapshot with commenter id and created_at | API new comments every 15 min (live feed); daily page capture of comment text failing since Nov 12 (DataImpulse proxy 407, expired) | proxy renewal only / Shreyas / open since Nov 12 |
-| Historical comment timestamps | 2025 comment created_at per launch day | Data Feeder 2025 pull failed (missing input file); 1 file in comments_2025/ | fleet backfill of comment bodies filed, unacknowledged; Data Feeder input file to be regenerated / Cursor fleet / Nov 17 |
-| Launch topics backfill (new) | topics for every historical launch | not held for history | filed with the fleet, unacknowledged; API not at limit / Cursor fleet / Nov 17 |
-| Historical daily lists | every featured launch 2023–2026 with ranks/votes | 2026 and 2025 complete; 2024: 8 files; 2023: 0 | API not at limit; pull 2024 then 2023 / Cursor fleet / Nov 17 |
-| Week/month close re-read | full re-read at 23:45 PT, done before 00:00 PT | first weekly was due Sun Nov 15 23:45 PT; no output or confirmation found | filed, unacknowledged / Cursor fleet / Nov 17 (ask for proof of the Nov 15 run) |
-| Team's pre-launch activity | team comments + dated upvotes on others' launches, 30 d before | comments exact-time; upvotes dated to launch, leaky unless the member was pulled before the day | daily_launch_teams not started (needs a new batch mode in ph_batch.py) / Cursor fleet / Nov 18 |
-| Who follows the team, when | daily follow diffs, active pool | full follow lists on complete people; team followers/following counts on the 00:07 read | follow-list order is not dated (E5); use 00:07 counts; none |
-| Team audience at launch | maker/hunter profiles at ≤ featured + 20 min | API teams on the 00:07 read; maker headers stop at the first Cloudflare block | headers at limit by rule; API counts replace them; closed with reason |
-| Page content at launch | first-snapshot content + raw HTML | api_detail from ~00:07 PT; sites step 0 of 29 (Nov 14); no HTML | proxy 407 since Nov 12 → renewal / Shreyas; resolved URL field at 00:05 / Cursor fleet / open |
+| Vote total per launch over the day | every launch, every 15 min, 00:01–23:59 PT, incl. hidden-period internal score | 15-min API v2 feed; 02:30 PT Nov 17 43/43, 0 failures, 212 s late; one gap Nov 17 01:30–02:00 PT (01:45 snapshot missing, 30 min > 20 min max) | API 88.8% left at 10:35Z, not at limit; cause of the 01:45 miss and a ledger row asked / Cursor fleet + population agent / Nov 18; hidden score not exposed (closed with reason) |
+| Exposure (board position) | homepage + daily leaderboard order every 15 min, logged-out | API ranking order per snapshot + pre-cut ranks; public board live from the official API; site 15-min snapshot job 0 slots since Nov 15 09:21Z | page order closed for now (API order used); site snapshot job needs a scheduler / website agent, Shreyas / open |
+| Who votes, when (pool) | every pool member's new upvotes with first-seen ≤ 1 h on launch day; all pool people | 74,253 complete people (store_v3 full rebuild 09:29Z, Nov 17 rule: 17,957 reclassified incomplete); by tier (have_index 09:07Z): likely 974/1,649, active 2,059/2,642, other pool 14,026/16,736, new 666/1,165, non-pool 56,528/72,683; coverage (complete only) Oct 1–24 23.5% all / 44.3% top 3, Oct 29–Nov 4 29.9 / 48.8, Nov 10–16 6.9 / 11.1; all tracked 81.7% | Cloudflare wall on 2 of 20 slots (at it), 1 dead; 14.3/min at 10:21Z but 5.89/min over 24 h → keep slots fed from fleet_work_queue (refresh_priority, then 18,397 incomplete, then 1,211 unsaved) / Cursor fleet / Nov 18 |
+| Daily upvote refresh of complete people | Upvotes tab diff for every complete person, daily | 44 people with a refresh delta in the store; median 5.74 days since the last Upvotes read (4.82 Nov 16: getting older) | not at any PH limit; slots went to completion and repairs → refresh_priority ids after each close, then the rest daily / Cursor fleet / Nov 18 |
+| Early votes inside the hidden window | tier-1 panel re-read 02:30–03:30 PT nightly | panel of 2,000 written Nov 13; no re-read reported | not started / Cursor fleet; E5 scores it / Nov 18 02:30 PT |
+| Complete the incomplete | every saved person finished to PH's end | need list 20,622 (have_index 09:07Z); tabs missing: upvotes 19,222 (scroll re-read), followers 2,388, reviews 1,694, stacks 1,687, collections 1,685 | search-sweep workaround off (e28e6c68); scroll reader to PH's end is the only path / Cursor fleet / Nov 18; index rebuilt after each store build / population agent |
+| Who votes (outside the pool) | not exposed by PH | Nov 10–16 6.9% / 11.1% vs Oct 29–Nov 4 29.9 / 48.8: newest voters are the reclassified heavy upvoters and new people | completing the 19,222 short Upvotes tabs is the largest single gain; discovery next / population agent + Cursor fleet / Nov 18 |
+| Comments per launch, dated | every new comment per snapshot with commenter id and created_at | API new comments every 15 min (25 new at 02:30 PT Nov 17); DataImpulse dropped (down since Nov 11) | API path covers ids and timestamps; page text of comments only if the model needs it, on fleet own IPs / PH agent to say / Nov 18 |
+| Historical comment timestamps | 2025 comment created_at per launch day | Data Feeder probe ok, continuing every 2025 day (official API) | not at API limit / Data Feeder (one-off) / report when done |
+| Launch topics backfill | topics for every historical launch | not held for history | filed with the fleet, unacknowledged / Cursor fleet / Nov 18 |
+| Historical daily lists | every featured launch 2023–2026 with ranks/votes | 2026 and 2025 complete; 2024: 8 files; 2023: 0 | API not at limit; pull 2024 then 2023 / Cursor fleet / Nov 18 |
+| Week/month close re-read | full re-read at 23:45 PT, done before 00:00 PT | no weekly close read captured Nov 15 or 16; weekly truth taken from API weekly_rank | run Sun Nov 22 23:45 PT and month end Nov 30 23:45 PT with proof file / Cursor fleet / Nov 22 |
+| Team's pre-launch activity | team comments + dated upvotes on others' launches, 30 d before | comments exact-time; upvotes dated to launch, leaky unless the member was pulled before the day | daily_launch_teams not started / Cursor fleet / Nov 18 |
+| Who follows the team, when | daily follow diffs, active pool | full follow lists on complete people; team counts on the 00:07 read; frozen in-store follower counts per hunter at 00:05 (shadow, assigned Nov 17) | follow-list order is not dated (E5); PH agent / Nov 18 |
+| Team audience at launch | maker/hunter profiles at ≤ featured + 20 min | API teams on the 00:07 read; maker headers: Data Feeder 31/57 before a block; fleet takes the nightly read on own IPs | fleet nightly maker headers from Nov 18 / Cursor fleet / Nov 18 |
+| Page content at launch | first-snapshot content + resolved site | api_detail from ~00:07 PT; product sites resolved by fleet own IPs (Nov 17 43/43); Nov 11–16 backfill asked | closed for Nov 17 on; backfill Nov 11–16 / Cursor fleet / Nov 18 |
 | Product followers at launch | per launch at first snapshot | not in API | low model value (PH agent); closed with reason |
-| Maker X followers | per maker at launch | X population 5,600 / 8,953 (62.5%), unchanged since Nov 13 | stuck: approval card expired in Grok Bot's own environment; re-approval is Shreyas's / open |
-| X buzz before launch | per launch, X posts/accounts in 48 h ending 00:00 PT, frozen | 00:10 and 02:00 PT counts; no new report since Nov 13 | strictly pre-launch count asked; Grok Bot / Nov 16 |
-| Daily pipeline (forecast inputs) | all steps on time | forecast step ok; comments/sites/people steps fail on the expired proxy (407) | proxy renewal / Shreyas; or API-only route / PH agent / open |
+| Maker X followers | per maker at launch | Grok Bot X rollout 6,387 / 8,953 (71.3%; was 5,600); page cap removed from drop 20261117_h | drops before 20261117_h capped at 1 page → re-read those people / Grok Bot / Nov 19 |
+| X buzz before launch | per launch, X posts/accounts in 48 h ending 00:00 PT, frozen | 00:10 and 02:00 PT counts; E5 scoring it as an arm-3 input next | Grok Bot / E5 / Nov 18 |
+| Daily pipeline (forecast inputs) | all steps on time | arm 3 published 00:05 from Nov 17; 03:45 before-reveal live; sites now from fleet | none |
 | Late featuring / un-featuring | state per snapshot | absent_from_source flagged per snapshot | none |
-| GCP spend (new) | ≤ $50/day soft cap | Nov 15 $57.57 (Nov 14 $74) | over the $50 soft cap two days running, under $100 hard; find the top line item for Nov 16 / orchestrator / Nov 17 |
+| GCP spend | ≤ $50/day soft cap | Nov 16 $85.03 (infra $49.26, Vertex $35.77, of which Gemini 2.5 Flash global $28.78 on 57M input tokens); Nov 15 $57.57 | over soft cap three days running, under $100 hard; name the job behind the 57M Flash tokens / orchestrator / Nov 18 |
 ## Hacker News: Caught per post at 15 min (north star 2)
 | Question | Ideal measurement | Current (Nov 4) | Gap / owner / date |
 |---|---|---|---|
@@ -133,26 +137,26 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 - **Gaps unchanged:** X timelines partial (pass 1 at 4,300 of 8,902); no per-vote timestamps (PH only); `[REDACTED]` maker fix not yet in the deployed pipeline.
 
 
-## Collection status, Nov 16 2026 (daily review; replaces the Nov 15 table)
+## Collection status, Nov 17 2026 (daily review; replaces the Nov 16 table)
 
-| Feed | Ideal | Have (Nov 16, 10:50 UTC) | Limit / at it? | Gap and cheapest step | Owner, date |
+| Feed | Ideal | Have (Nov 17, 10:50 UTC) | Limit / at it? | Gap and cheapest step | Owner, date |
 |---|---|---|---|---|---|
-| 15-minute launch-day capture (posts, comments, ranks) | every 15 min, all day, every day | every slot since Nov 15; 02:30 PT Nov 16 39/39 (1 failure, 78 s late) | API 6,250 pts/15 min; 60% left, not at it | site snapshot job never scheduled: needs Vercel cron or Cloud Scheduler | Data Feeder (live); Shreyas (scheduler), open |
-| Day-close votes (23:45–23:59 PT) | every day | Nov 15 tail read 16/18 at 02:30 PT Nov 16; site 23:50 PT slot not running | API, not at it | site 23:50 PT slot needs the scheduler | Shreyas, open |
-| First comment reads (00:03 and 00:27 PT) | every night | Nov 16 00:05 ran with all inputs (pipeline fixes deployed Nov 16) | API, not at it | confirm nightly for a week | PH agent, Nov 22 |
-| VM hourly recorder (rank, votes, comments) | hourly 00:06–23:00 PT + 03:45 PT | rehearsed fixes (03:45 read, loader fix) deployed Nov 16 | none | confirm the Nov 4–7 rows reached the warehouse | PH agent, Nov 17 |
-| Daily page capture (comment text, sites) | every night | failing since Nov 12: DataImpulse proxy 407 (expired) | proxy auth, not a PH limit | renew the proxy | Shreyas, open |
-| People, complete (every tab) | everyone on the need list | 83,260 complete (store_v3 10:26Z Nov 16); +599 vs 82,661 in the Nov 15 index | Cloudflare wall on 2 of 18 slots; 9 stale, 1 dead; 2.07/min at 10:43Z (9–14/min earlier today) | restart stale slots on their own IPs; fill 20 approved IPs | Cursor fleet, Nov 17 |
-| Upvote refresh of complete people | daily diff | running since 00:35Z on 3 slots; saves fixed 08:53Z; 0 deltas in the store; median 4.82 days stale | none reached | restart slots 9/38 (stale); more slots when live feeds allow | Cursor fleet, Nov 17 |
-| daily_launch_teams | every launch's team, daily | not started (needs a new batch mode) | none reached | build the batch mode | Cursor fleet, Nov 18 |
-| History: day lists / topics / comment bodies | 2023–2026 | lists 2025–2026 complete, 2024 8 files, 2023 0; topics and comment bodies not held | API not at it | backfill filed with the fleet, unacknowledged | Cursor fleet, Nov 17 |
-| Weekly / monthly close reads | every Sunday and month end | first weekly (Nov 15 23:45 PT) not confirmed; no output found | API, not at it | fleet to show the run or run it | Cursor fleet, Nov 17 |
-| Store index (have_index / need_list) | rebuilt with every merge | Nov 15 11:00Z (82,661 complete, 12,111 needed); store_v3 now daily ~08:50Z | none | rebuild after each store build so the dashboard matches 83,260 | population agent, Nov 16 11:00Z |
-| Population scorecard + dashboard/latest.json | daily | Nov 15 11:02Z; next due ~11:00Z Nov 16 | none | keep daily; add fleet ppm and refresh deltas | population agent, Nov 16 |
-| Fleet status.json | every 15 min | rewritten 10:43Z and 10:45Z Nov 16 (was silent since 09:21Z) | none | closed | Cursor fleet, closed Nov 16 |
-| Downtime audit | every 15 min, alerts within 1 min | inside an agent session; standalone script ready | none | a host for the cron + webhook file | Shreyas, Cursor fleet, open |
-| Maker X followers (Grok Bot rollout) | all 8,953 | 5,600 (62.5%), unchanged since Nov 13 | X 1,000 reads/day; not the binding stop now | re-approve the expired card in Grok Bot's environment | Shreyas, open |
-| GCP spend | ≤ $50/day | $57.57 on Nov 15 ($74 Nov 14) | over soft cap; under $100 hard cap | name the top line item | orchestrator, Nov 17 |
+| 15-minute launch-day capture | every 15 min, all day | every slot except 01:45 PT Nov 17 (gap 01:30–02:00 PT); 02:30 PT 43/43 | API 88.8% left, not at it | cause of the miss into the ledger | Cursor fleet + population agent, Nov 18 |
+| Day-close votes (23:45–23:59 PT) | every day | API tail read at 02:30 PT; site 23:50 PT slot not running | API, not at it | site slot needs the scheduler | website agent / Shreyas, open |
+| Weekly / monthly close reads | every Sunday and month end | none captured Nov 15/16; weekly truth from API weekly_rank | API, not at it | run Nov 22 and Nov 30 23:45 PT with a proof file | Cursor fleet, Nov 22 |
+| People, complete (every tab) | everyone on the need list | 74,253 complete of 94,875 held (Nov 17 rule) | 2 of 20 slots at Cloudflare; 14.3/min 15 min, 5.89/min 24 h | keep all 20 slots fed from fleet_work_queue; revive the dead slot on its own IP | Cursor fleet, Nov 18 |
+| Completion pass (scroll Upvotes to PH's end) | all 20,622 on the need list | 19,222 need the Upvotes re-read | as above | refresh_priority first, then 18,397 incomplete, then 1,211 unsaved | Cursor fleet, Nov 18 |
+| Upvote refresh of complete people | daily diff | 44 deltas; median 5.74 days stale | none reached | refresh_priority ids after each close, then all | Cursor fleet, Nov 18 |
+| Product sites at 00:05 | every launch, nightly by 08:15Z | Nov 17 43/43 on fleet own IPs | none | backfill Nov 11–16 | Cursor fleet, Nov 18 |
+| Maker headers | every launch's team, nightly | Data Feeder 31/57 then block; fleet takes it | Cloudflare, at it (Data Feeder) | fleet nightly on own IPs | Cursor fleet, Nov 18 |
+| daily_launch_teams | every launch's team, daily | not started | none | build the batch mode | Cursor fleet, Nov 18 |
+| History: day lists / topics | 2023–2026 | lists 2025–2026 complete, 2024 8 files, 2023 0; topics not held | API not at it | backfill, acknowledged by date | Cursor fleet, Nov 18 |
+| 2025 comment timestamps | every 2025 day | probe ok, running (official API) | API, not at it | finish and report once | Data Feeder (one-off), on finish |
+| Store index + scorecard + dashboard JSON | after every store build | have_index/need_list 09:07Z, scorecard and latest.json 10:32Z Nov 17 | none | closed (daily) | population agent |
+| Site 15-min snapshot job | every 15 min | 0 slots since Nov 15 09:21Z | none | a scheduler (Vercel cron or Cloud Scheduler) | website agent / Shreyas, open |
+| Downtime audit | every 15 min, alerts within 1 min | inside an agent session; standalone script ready | none | a host for the cron + webhook | Cursor fleet / Shreyas, open |
+| Maker X followers (Grok Bot) | all 8,953 | 6,387 (71.3%), uncapped from drop 20261117_h | X 1,000 reads/day | re-read people in earlier capped drops | Grok Bot, Nov 19 |
+| GCP spend | ≤ $50/day | Nov 16 $85.03 ($49.26 infra, $35.77 Vertex) | over soft, under hard | name the 57M-token Gemini Flash job; keep pulls, trim experiment tokens | orchestrator, Nov 18 |
 
 ## Save locations (Nov 17)
 - Data Feeder people writers without a full-pull stamp: raw/feeder_people_unstamped/ (outside the people store; never counted).
