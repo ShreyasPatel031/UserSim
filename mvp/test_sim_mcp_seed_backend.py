@@ -208,5 +208,64 @@ class SeedProofTests(unittest.TestCase):
         self.assertTrue(self._proof(self._row(backend="", live="https://www.browserbase.com/x"))["live_view_offered"]["pass"])
 
 
+
+class DeadDriverTests(unittest.IsolatedAsyncioTestCase):
+    """Nov 17 Asana study 42a925dd: the shared Playwright driver died ('Connection closed while reading from the
+    driver') and 104 cells failed to open instead of restarting it."""
+
+    def _sim(self):
+        study = mock.MagicMock(live_sessions={S.AGENT_ID: {}})
+        return S.SimSession(id="d" * 32, study=study, product_url="https://example.com", task="t", persona="p")
+
+    async def test_open_retries_once_after_restarting_the_driver(self):
+        sim = self._sim()
+        calls = []
+
+        async def flaky(s):
+            calls.append(1)
+            if len(calls) == 1:
+                raise Exception("Connection closed while reading from the driver")
+
+        with mock.patch.object(S, "_open_browser", flaky), \
+                mock.patch.object(S, "_reset_playwright", mock.AsyncMock()) as reset:
+            await S._open_browser_retrying_dead_driver(sim)
+        self.assertEqual(len(calls), 2)
+        reset.assert_awaited_once_with(keep_fresh=True)
+        self.assertEqual(sim.row["driver_restarts"], 1)
+
+    async def test_other_errors_are_not_retried(self):
+        sim = self._sim()
+        with mock.patch.object(S, "_open_browser", mock.AsyncMock(side_effect=Exception("net::ERR_NAME_NOT_RESOLVED"))), \
+                mock.patch.object(S, "_reset_playwright", mock.AsyncMock()) as reset:
+            with self.assertRaises(Exception):
+                await S._open_browser_retrying_dead_driver(sim)
+        reset.assert_not_awaited()
+
+    async def test_second_driver_death_fails_the_open(self):
+        sim = self._sim()
+        dead = mock.AsyncMock(side_effect=Exception("Connection closed while reading from the driver"))
+        with mock.patch.object(S, "_open_browser", dead), mock.patch.object(S, "_reset_playwright", mock.AsyncMock()):
+            with self.assertRaises(Exception):
+                await S._open_browser_retrying_dead_driver(sim)
+        self.assertEqual(dead.await_count, 2)
+
+    async def test_reset_keeps_a_driver_another_session_just_started(self):
+        class PW:
+            stopped = False
+
+            async def stop(self):
+                PW.stopped = True
+
+        old_pw, old_t = S._PW, S._PW_STARTED
+        self.addCleanup(lambda: (setattr(S, "_PW", old_pw), setattr(S, "_PW_STARTED", old_t)))
+        S._PW, S._PW_STARTED = PW(), __import__("time").time()
+        await S._reset_playwright(keep_fresh=True)
+        self.assertIsNotNone(S._PW)
+        S._PW_STARTED -= S.PW_FRESH_S + 1
+        await S._reset_playwright(keep_fresh=True)
+        self.assertIsNone(S._PW)
+        self.assertTrue(PW.stopped)
+
+
 if __name__ == "__main__":
     unittest.main()

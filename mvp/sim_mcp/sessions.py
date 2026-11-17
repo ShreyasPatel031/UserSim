@@ -307,25 +307,32 @@ class SimSession:
 
 SESSIONS: dict[str, SimSession] = {}
 _PW: Any = None
+_PW_STARTED = 0.0
 _PW_LOCK = asyncio.Lock()
+# A dead driver fails every open session at once; each of them asks for a reset. One that started less than this many
+# seconds ago is the replacement another session just made: keep it.
+PW_FRESH_S = 10.0
 
 
 async def _playwright() -> Any:
-    global _PW
+    global _PW, _PW_STARTED
     async with _PW_LOCK:
         if _PW is None:
             from playwright.async_api import async_playwright
 
             _PW = await async_playwright().start()
+            _PW_STARTED = time.time()
         return _PW
 
 
-async def _reset_playwright() -> None:
+async def _reset_playwright(*, keep_fresh: bool = False) -> None:
     """Drop the cached Playwright driver. If its node process dies, every connect_over_cdp fails with "the handler is
     closed" until the server restarts (Oct 23: all new sessions failed after a deploy). The next _playwright() starts a
-    fresh driver."""
+    fresh driver. keep_fresh: leave a driver started in the last PW_FRESH_S seconds alone (another session's restart)."""
     global _PW
     async with _PW_LOCK:
+        if keep_fresh and _PW is not None and time.time() - _PW_STARTED < PW_FRESH_S:
+            return
         old, _PW = _PW, None
     if old is not None:
         try:
@@ -824,7 +831,7 @@ async def start_session(
         raise SessionError(f"{urlsplit(url).hostname} cannot be opened from UserSim's browsers")
     SESSIONS[sim.id] = sim
     try:
-        await _open_browser(sim)
+        await _open_browser_retrying_dead_driver(sim)
         await _wait_rendered(sim.page)
         await record_step(sim, kind="open", action_text=f"Opened {url}", args={"url": url}, thought="")
         await save_seed_state(sim)
@@ -861,6 +868,40 @@ async def start_session(
         raise
     asyncio.get_running_loop().create_task(_reaper(sim))
     return sim
+
+
+async def _discard_browser(sim: SimSession) -> None:
+    """Drop a half-opened browser (and its seed slot) without touching the cell's state, so the open can be retried."""
+    for obj in (sim.context, sim.browser):
+        try:
+            if obj is not None:
+                await asyncio.wait_for(obj.close(), timeout=5)
+        except Exception:  # noqa: BLE001
+            pass
+    if getattr(sim.bb, "backend", "") == "seed_vm":
+        from mvp.sim_mcp import seed_backend
+
+        seed_backend.release(sim.bb)
+    sim.bb = sim.browser = sim.context = sim.page = sim.new_page = None
+    sim.watched_pages = set()
+
+
+async def _open_browser_retrying_dead_driver(sim: SimSession) -> None:
+    """The Playwright driver is one node process shared by every session. When it dies ("Connection closed while
+    reading from the driver"; Nov 17 Asana study 42a925dd: an assertion in _CRBrowser._onAttachedToTarget on a Chrome
+    extension service_worker) every open fails until it is restarted. Restart it and retry the open once instead of
+    failing the cell."""
+    try:
+        await _open_browser(sim)
+    except Exception as exc:  # noqa: BLE001
+        if not _driver_dead(exc):
+            raise
+        print(f"[mcp {sim.id[:8]}] playwright driver died while opening ({exc!r}"[:200] + "); restarting it and retrying",
+              flush=True)
+        await _discard_browser(sim)
+        await _reset_playwright(keep_fresh=True)
+        sim.row["driver_restarts"] = int(sim.row.get("driver_restarts") or 0) + 1
+        await _open_browser(sim)
 
 
 V3_ACTION_HOOK = """(() => {
@@ -902,7 +943,7 @@ async def _open_browser(sim: SimSession) -> None:
         if not _driver_dead(exc):
             raise
         print(f"[mcp {sim.id[:8]}] playwright driver is dead ({exc!r}); restarting it", flush=True)
-        await _reset_playwright()
+        await _reset_playwright(keep_fresh=True)
         pw = await _playwright()
         sim.browser = await pw.chromium.connect_over_cdp(sim.bb.connect_url, timeout=30000)
     if seed:
@@ -1009,7 +1050,14 @@ async def revive(sim: SimSession) -> bool:
     try:
         ws = await asyncio.to_thread(seed_backend.probe_ws, sim.bb.endpoint)
         pw = await _playwright()
-        sim.browser = await pw.chromium.connect_over_cdp(ws, timeout=30000)
+        try:
+            sim.browser = await pw.chromium.connect_over_cdp(ws, timeout=30000)
+        except Exception as exc:  # noqa: BLE001
+            if not _driver_dead(exc):
+                raise
+            await _reset_playwright(keep_fresh=True)  # the shared driver died (drops every session at once): new one
+            pw = await _playwright()
+            sim.browser = await pw.chromium.connect_over_cdp(ws, timeout=30000)
         await _new_seed_context(sim, storage_state=sim.saved_state)
         try:
             await sim.page.goto(url, wait_until="domcontentloaded", timeout=25000)

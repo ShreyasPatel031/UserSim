@@ -38,7 +38,9 @@ class SeedProbeLiveTests(unittest.TestCase):
         cls.port = _free_port()
         cls.proc = subprocess.Popen(
             [_chrome(), "--headless=new", "--no-sandbox", f"--remote-debugging-port={cls.port}",
-             "--remote-debugging-address=127.0.0.1", f"--user-data-dir={cls.tmp}", "about:blank"],
+             "--remote-debugging-address=127.0.0.1", f"--user-data-dir={cls.tmp}",
+             # same as scripts/vm/seed_cdp_chromium.sh: no extension service workers (they crash Playwright's driver)
+             "--disable-extensions", "--disable-component-extensions-with-background-pages", "about:blank"],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         cls.ep = f"http://127.0.0.1:{cls.port}"
         for _ in range(100):
@@ -70,6 +72,56 @@ class SeedProbeLiveTests(unittest.TestCase):
             with self.assertRaises(seed_probe.ProbeFailed):
                 seed_probe.probe(self.ep, timeout=3)
         seed_probe.probe(self.ep)  # client gone -> healthy again
+
+
+    def test_service_worker_target_fails_the_probe(self):
+        # Nov 17 (Asana 42a925dd): a service_worker target crashed the engine's Playwright driver. A page in the
+        # default context registers one here; the probe must report the seed as misconfigured.
+        import threading
+        from http.server import BaseHTTPRequestHandler, HTTPServer
+
+        from websockets.sync.client import connect
+
+        class H(BaseHTTPRequestHandler):
+            def do_GET(self):  # noqa: N802
+                body, ctype = ((b"self.addEventListener('fetch', () => {});", "text/javascript") if self.path == "/sw.js"
+                               else (b"<script>navigator.serviceWorker.register('/sw.js')</script>", "text/html"))
+                self.send_response(200)
+                self.send_header("Content-Type", ctype)
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, *a):
+                pass
+
+        srv = HTTPServer(("127.0.0.1", 0), H)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        self.addCleanup(srv.shutdown)
+        def call(ws, n, method, params=None):
+            ws.send(json.dumps({"id": n, "method": method, "params": params or {}}))
+            while True:
+                msg = json.loads(ws.recv(timeout=10))
+                if msg.get("id") == n:
+                    return msg.get("result") or {}
+
+        with connect(seed_probe.ws_url_for(self.ep)) as ws:
+            # its own context, disposed at the end, so the worker does not outlive this test
+            ctx = call(ws, 10, "Target.createBrowserContext")["browserContextId"]
+            self.addCleanup(lambda: seed_probe.probe(self.ep))  # healthy again afterwards
+            call(ws, 1, "Target.createTarget", {"url": f"http://127.0.0.1:{srv.server_address[1]}/", "browserContextId": ctx})
+            try:
+                for i in range(50):
+                    infos = call(ws, 100 + i, "Target.getTargets")["targetInfos"]
+                    if any(t["type"] == "service_worker" for t in infos):
+                        break
+                    time.sleep(0.1)
+                else:
+                    self.skipTest("this Chromium did not start a service worker")
+                with self.assertRaises(seed_probe.SeedMisconfigured):
+                    seed_probe.probe(self.ep)
+                self.assertEqual(seed_probe.main(["x", self.ep]), 2)
+            finally:
+                call(ws, 3, "Target.disposeBrowserContext", {"browserContextId": ctx})
 
 
 if __name__ == "__main__":

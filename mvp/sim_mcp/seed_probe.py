@@ -25,6 +25,10 @@ class ProbeFailed(RuntimeError):
     pass
 
 
+class SeedMisconfigured(ProbeFailed):
+    """The browser works but would crash the engine's Playwright driver (restarting Chromium does not fix it)."""
+
+
 def ws_url_for(endpoint: str, timeout: float = 4.0) -> str:
     """Browser websocket URL for a CDP http endpoint, with host:port rewritten to the endpoint's (Chromium may report
     its own 127.0.0.1:9222, which is the far end of a tunnel)."""
@@ -82,6 +86,14 @@ def probe(endpoint: str, timeout: float = 5.0) -> str:
     deadline = time.time() + timeout
     with connect(ws_url, open_timeout=timeout, close_timeout=2, max_size=8 * 2**20) as ws:
         cdp = _Cdp(ws, deadline)
+        # A service_worker target (Chrome 159's own chrome-extension workers) crashes Playwright's driver in
+        # _CRBrowser._onAttachedToTarget on connect_over_cdp (Asana study 42a925dd, Nov 17). Chromium must run with
+        # --disable-extensions --disable-component-extensions-with-background-pages (seed_cdp_chromium.sh).
+        workers = [t.get("url", "") for t in cdp.call("Target.getTargets").get("targetInfos", [])
+                   if t.get("type") == "service_worker"]
+        if workers:
+            raise SeedMisconfigured(f"{len(workers)} service_worker target(s) ({workers[0][:80]}); start Chromium with "
+                                    "--disable-extensions --disable-component-extensions-with-background-pages")
         ctx = cdp.call("Target.createBrowserContext", {"disposeOnDetach": True})["browserContextId"]
         try:
             target = cdp.call("Target.createTarget", {"url": "about:blank", "browserContextId": ctx})["targetId"]
@@ -109,6 +121,9 @@ def main(argv: list[str]) -> int:
     t0 = time.time()
     try:
         probe(endpoint, timeout=float(argv[2]) if len(argv) > 2 else 5.0)
+    except SeedMisconfigured as exc:
+        print(f"MISCONFIGURED {endpoint}: {exc}"[:300])
+        return 2  # the watchdog must not restart-loop on this
     except Exception as exc:  # noqa: BLE001
         print(f"UNHEALTHY {endpoint}: {exc!r}"[:300])
         return 1

@@ -26,6 +26,9 @@ if [[ -z "$CHROME" || ! -x "$CHROME" ]]; then
 fi
 
 rm -f "$PROFILE_DIR"/Singleton{Lock,Cookie,Socket}
+# --disable-extensions / --disable-component-extensions-with-background-pages: Chrome 159 starts a chrome-extension
+# service_worker target on its own, and Playwright's driver asserts in _CRBrowser._onAttachedToTarget on it and dies,
+# taking every MCP session with it (Asana study 42a925dd lost 104 cells, Nov 17). seed_probe.py fails such a seed.
 exec "$CHROME" \
   --remote-debugging-address=127.0.0.1 \
   --remote-debugging-port="$CDP_PORT" \
@@ -33,5 +36,6 @@ exec "$CHROME" \
   --no-first-run --no-default-browser-check \
   --disable-dev-shm-usage --disable-gpu \
   --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows \
+  --disable-extensions --disable-component-extensions-with-background-pages \
   --window-size=1440,900 \
   about:blank

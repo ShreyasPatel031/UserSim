@@ -79,7 +79,12 @@ sudo tee /usr/local/bin/usersim-seed-cdp-watchdog >/dev/null <<WD
 set -u
 STATE=/run/usersim-seed-cdp-watchdog.fails
 systemctl is-active --quiet usersim-seed-cdp || exit 0   # systemd already restarts a dead service
-if out=\$(timeout 25 "${PY}" "${REPO}/mvp/sim_mcp/seed_probe.py" http://127.0.0.1:9222 2>&1); then
+out=\$(timeout 25 "${PY}" "${REPO}/mvp/sim_mcp/seed_probe.py" http://127.0.0.1:9222 2>&1); rc=\$?
+if (( rc == 0 )); then
+  rm -f "\$STATE"; exit 0
+fi
+if (( rc == 2 )); then  # misconfigured (e.g. extension service workers): a restart would not help, so do not loop
+  logger -t usersim-seed-cdp-watchdog "seed misconfigured, not restarting: \$out"
   rm -f "\$STATE"; exit 0
 fi
 n=\$(( \$(cat "\$STATE" 2>/dev/null || echo 0) + 1 )); echo "\$n" > "\$STATE"
