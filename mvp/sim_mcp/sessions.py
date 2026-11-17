@@ -737,7 +737,8 @@ def _saved_account_for(sim: SimSession) -> tuple[dict[str, Any] | None, str]:
     the signup itself, or there is no live saved state. Blocking (GCS): call in a thread."""
     from mvp.sim_mcp import site_states
 
-    if not site_states.enabled() or not site_states.eligible(sim.task):
+    from_gate = (getattr(sim, "row", None) or {}).get("gate") == "signed_in" if getattr(sim, "matrix", False) else False
+    if not site_states.enabled() or not (from_gate or site_states.eligible(sim.task)):
         return None, ""
     domain = site_states.domain_of(sim.product_url)
     entry = site_states.load(domain)
@@ -793,10 +794,23 @@ def _cell_session(study_id: str, cell_id: str, client: str, owner: str = "") -> 
     row = study.live_sessions.get(cell_id or "")
     if row is None:
         raise SessionError(f"unknown cell_id {cell_id!r} for this study")
+    if row.get("blocked_at_signup"):
+        raise SessionError(f"not run: {row['blocked_at_signup']}. This is a finding about the site, recorded in the "
+                           "report; do not retry this cell")
     if row.get("status") != "queued":
         raise SessionError(f"cell {cell_id} was already run (status {row.get('status')})")
     if study.status != "running":
         raise SessionError(f"study is {study.status}")
+    from mvp.sim_mcp import signup_gate
+
+    try:
+        signup_gate.admit(study, row)
+    except signup_gate.Held as exc:
+        # 'busy' + 'retry': clients (scripts/mcp_study_runner.py) wait and call again; the cell stays queued.
+        raise SessionError(f"busy: {exc}. The cell is still queued: call usersim_start_session again in "
+                           f"~{signup_gate.HOLD_RETRY_S} s") from None
+    except signup_gate.Blocked as exc:
+        raise SessionError(f"not run: {exc}. This is a finding about the site, recorded in the report") from None
     _check_capacity(client, owner)
     row["status"] = "starting"
     row["live_thoughts"] = [{"at": _now(), "text": f"Opening {row['site_label']}…", "kind": "status"}]
@@ -1048,6 +1062,10 @@ async def _check_saved_session(sim: SimSession) -> None:
         return
     info.update(signed_in=False, dead=True, landed=url[:200])
     await asyncio.to_thread(site_states.mark_dead, site_states.domain_of(sim.product_url), f"opened {url[:150]}")
+    if sim.matrix:
+        from mvp.sim_mcp import signup_gate
+
+        signup_gate.state_died(sim.study, sim.product_url)  # the site needs its signup run again
     sim.saved_state = None
     try:
         await sim.context.clear_cookies()
@@ -2826,8 +2844,11 @@ async def close(sim: SimSession, *, reason: str, status: str = "") -> None:
         finish_clocks(sim.study)
         await asyncio.to_thread(persist_study, sim.study)
     elif status:
+        from mvp.sim_mcp import signup_gate
         from mvp.sim_mcp.report import maybe_finish_study
 
+        if status == "error":
+            signup_gate.cell_ended(sim.study, sim.row, signed_in_saved=False)
         await maybe_finish_study(sim.study)
 
 

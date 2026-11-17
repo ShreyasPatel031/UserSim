@@ -84,11 +84,22 @@ class SpendGate:
         return self.stopped or self.total_usd >= self.max_usd
 
 
+_SIGNUP_TASK_RE = re.compile(
+    r"sign ?up|create (?:a |an |your |a new )?(?:new )?account|register|registration|verify your email", re.I)
+
+
+def signup_first(cells: list[dict]) -> list[dict]:
+    """Signup-task cells first (stable). The server runs ONE signup cell per site and holds the site's other cells
+    until it finishes (mvp/sim_mcp/signup_gate.py), so starting signup cells first avoids slots spent waiting."""
+    return sorted(cells, key=lambda c: 0 if _SIGNUP_TASK_RE.search(str(c.get("task") or "")) else 1)
+
+
 def pilot_cells_for_study(cells: list[dict]) -> list[dict]:
-    """One cell per distinct site (target + competitors → typically 3)."""
+    """One cell per distinct site (target + competitors → typically 3): its signup-task cell when there is one, which is
+    the cell the server lets run first on that site."""
     seen: set[str] = set()
     out: list[dict] = []
-    for c in cells:
+    for c in signup_first(cells):
         site = (c.get("site") or "").strip()
         if site and site not in seen:
             seen.add(site)
