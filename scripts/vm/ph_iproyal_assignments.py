@@ -96,6 +96,11 @@ def get_purl_abs(slot: int | str) -> str:
     sl = st["slots"].get(slot)
     if sl and Path(sl["purl"]).is_file():
         return sl["purl"]
+    if slot in live_slots():
+        rebalance()
+        sl = load_state()["slots"].get(slot)
+        if sl and Path(sl["purl"]).is_file():
+            return sl["purl"]
     lines = pool_lines(root, pool_path())
     idx = int(slot) - 1
     if 0 <= idx < len(lines):
@@ -108,15 +113,24 @@ def _fi_purls(root: Path, lines: list[str]) -> list[str]:
     return [p for p in lines if Path(p).resolve() != Path(spain).resolve() and "iproyal_fi_" in p]
 
 
+def live_slots() -> set[str]:
+    """Slots in slots.tsv (VMs that exist). Deleted slots must not hold IPs."""
+    p = art_dir() / "slots.tsv"
+    if not p.is_file():
+        return set()
+    return {ln.split("\t", 1)[0] for ln in p.read_text().splitlines() if ln[:1].isdigit()}
+
+
 def pick_next_purl(slot: str, current: str, lines: list[str]) -> str | None:
     fi = _fi_purls(_root(), lines)
     if not fi:
         return None
     st = load_state()
+    live = live_slots()
     used = {
         (st["slots"].get(s) or {}).get("host", "")
         for s in st["slots"]
-        if s != slot
+        if s != slot and (not live or s in live)
     }
     used.discard("")
     ordered = fi
@@ -131,11 +145,55 @@ def pick_next_purl(slot: str, current: str, lines: list[str]) -> str | None:
         h = purl_host(Path(p))
         if h and h not in used:
             return p
-    # All hosts taken — advance cyclically anyway.
-    for p in candidates:
-        if p != current:
-            return p
+    # Never put two VMs on one IP: they trip Cloudflare together and both stall.
     return None
+
+
+def rebalance() -> dict:
+    """Give every live slot its own IP: keep the current one when unique, else move to a free one."""
+    root = _root()
+    lines = pool_lines(root, pool_path())
+    fi = _fi_purls(root, lines)
+    st = init_from_pool()
+    live = sorted(live_slots(), key=int)
+    for s in list(st["slots"]):
+        if s not in live:
+            del st["slots"][s]
+    taken: dict[str, str] = {}
+    moved = []
+    need = []
+    for s in live:
+        sl = st["slots"].get(s) or {}
+        h = sl.get("host", "")
+        if h and h not in taken and Path(sl.get("purl", "")).is_file():
+            taken[h] = s
+        else:
+            need.append(s)
+    free = [p for p in fi if purl_host(Path(p)) not in taken]
+    from datetime import datetime, timezone
+
+    for s in need:
+        if not free:
+            break
+        p = free.pop(0)
+        h = purl_host(Path(p))
+        old = (st["slots"].get(s) or {}).get("host", "")
+        st["slots"][s] = {
+            "purl": p,
+            "host": h,
+            "gen": int((st["slots"].get(s) or {}).get("gen") or 0) + 1,
+            "last_reason": "rebalance_unique",
+            "last_rotate_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        }
+        taken[h] = s
+        moved.append({"slot": s, "from_host": old, "to_host": h})
+    save_state(st)
+    return {
+        "live": len(live),
+        "unique_hosts": len(taken),
+        "moved": moved,
+        "free_ips": [purl_host(Path(p)) for p in free],
+    }
 
 
 def rotate_cooldown_ok(slot: str, sec: float = 1200.0) -> bool:
@@ -203,6 +261,9 @@ if __name__ == "__main__":
     op = sys.argv[1]
     if op == "init":
         print(json.dumps(init_from_pool(), indent=2))
+        raise SystemExit(0)
+    if op == "rebalance":
+        print(json.dumps(rebalance()))
         raise SystemExit(0)
     if len(sys.argv) < 3:
         print("usage: ph_iproyal_assignments.py get|rotate SLOT [reason]", file=sys.stderr)

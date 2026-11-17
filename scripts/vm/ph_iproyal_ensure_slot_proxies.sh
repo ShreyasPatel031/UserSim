@@ -17,7 +17,7 @@ ZONE="${PACE_ZONE:-$("${GC[@]}" compute instances list --project="$GCP_PROJECT" 
 _purl_abs() { local p=$1; [[ "$p" = /* ]] && echo "$p" || echo "$ROOT/$p"; }
 
 export PACE_REPO_ROOT="$ROOT" PACE_FLEET_RUN_ID="$RUN_ID" FLEET_ART="$ART"
-python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" init >/dev/null 2>&1 || true
+python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" rebalance || true
 while IFS=$'\t' read -r slot _port; do
   [[ -z "$slot" || "$slot" == \#* ]] && continue
   want="$(python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" get "$slot" 2>/dev/null || true)"
