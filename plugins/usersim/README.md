@@ -39,9 +39,10 @@ The groups are built from aggregates only: kind of user, roles, topics, how they
 at least 20 people, and the plugin carries no names, ids or profile text. The snapshot ships in
 `skills/usertest/references/groups.json`.
 
-**How far to trust them:** the groups describe who these people are. At group level they do **not** predict which
-launches people vote for better than the population average (measured on 135 launches, November 2026). A group's run
-is a structured hypothesis about how such users behave. Check the divergences it finds; don't treat them as forecasts.
+**How far to trust them:** group reactions are simulated. On 276 past Product Hunt launches, group panels covered 65% of the
+broad points real commenters raised, but only about 9% of the exact issues, below a plain prompt with no personas
+(13.5%). How these groups behave inside a product has not been validated yet. Treat each divergence as a hypothesis
+with a step you can watch, not as a forecast.
 
 ## What this plugin runs, sends and stores
 
