@@ -118,7 +118,23 @@ the rules under the table decide what changes.
 finish from held data, /try range, the panel's concerns, what they do better and what we do better. Across all four:
 none shows a daily accuracy score; several have custom segments, follow-up questions, version comparison and an instant
 single number, which we lack today. The three that finished #1 were posted by hunters with 25, 33 and 286 prior launches.
-Still to come: themes from the real comments on the competitors' own launches.
+
+**Real comments on the competitors' own launches [REAL, thin].** We hold comments for 12 launches from 2026 (9 of the 22
+competitors plus 3 close relatives): 67 commenters on the /try job, 23 on the board job, 64 on the panel job, 57 on the
+Launch Pack job. Most themes have 1–3 people, so they are leads, not findings. Details: `docs/LAUNCH_PLAN_COMPETITORS.md`.
+- **Best-supported theme in the whole plan:** "how accurate is synthetic feedback compared with real users?" (6
+  commenters across three panel-job launches, 5 on the /try job). The published accuracy record answers it.
+- **Launch Pack has no real demand evidence yet.** Launch-tool users asked about brand voice and control over generated
+  content (7, 4 and 3 commenters) and a free trial (3). Nobody asked for a forecast, an audit or a post-mortem.
+- **Board job:** 4 commenters praised a competitor for helping pick a launch date; 2 asked what the product predicts for
+  its own launch.
+- **Planned features with no real comment behind them:** the before-votes-show forecast for late surges, follow-up
+  questions on any page, the plain-language summary, the pre-launch audit with named fixes. Version comparison has 2.
+- **Three things real comments raise that the plan lacked, now added:**
+  1. A confidence score on each predicted theme (launches 1 and 3). One commenter called half of a competitor's themes noise.
+  2. Our own forecast for our own launch, published in advance and scored afterwards (every launch, starting Dec 5).
+  3. A fix for synthetic users that always agree. Our panel rated nearly every persona "high interest" for all four of our
+     products, so this is a ship gate for launch 3.
 
 **Pitch scores are not forecasts.** Re-scored outside its own launch day, a product's score moves by about ±15 points and
 shows no relation to real rank (−0.13, n 22). Read our 75–88 as "at least 75"; the model is flat above 75 anyway.
@@ -274,7 +290,9 @@ Dec 1, odds rerun and go or no-go on Dec 2.
   panel's recall against our own launches' real comments is under 50%, launch 3's claim is rewritten before it is built.
 
 ## Still open
-- Themes from real comments on the competitors' own launches (E5).
+- Launch 2's content: the daily board is already public with reasons, accuracy and a 20-day archive. Proposed: launch 2
+  is the weekly and monthly forecast with the daily board as proof. Waiting on Shreyas.
+- Launch 4 (Launch Pack) has no real demand evidence yet; the 20 pilots are the test.
 - Page fixes need Shreyas's word to the website agent.
 
 ---

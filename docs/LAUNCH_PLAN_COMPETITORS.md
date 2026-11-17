@@ -125,6 +125,101 @@ This is the bias check asked for in the plan review.
 
 **How it would be measured before launch day:** Measured on the Pack's own customers and, before there are any, on public launches: for every forecast issued, publish the forecast band and the real finish; report the share of launches that finished inside the stated band, against the band's stated coverage, over at least 50 launches. The pre-launch report is measured by the gap detector's hit rate: of the questions it said the page leaves open, the share real commenters asked.
 
+## What real users said on competitors' launches
+
+Product 1 has no users yet, so the nearest real feedback is what real people wrote on competitors' Product Hunt launches.
+
+- **Source (real outcome).** Our held comment captures. No new Product Hunt requests were made, so only launches whose comments we already hold are covered: 12 launches, all from 2026. That is 9 of the 22 competitors in the tables above, plus 3 closely related launches found in the held comments (a second launch of the persona message-testing product, Product Hunt's own launch editor, and one more launch directory). The 13 competitors that launched in 2025 have no held comments and are not covered.
+- **Who is counted.** Comments by the hunter and the makers are dropped. Each remaining commenter counts once per theme. No names or usernames are kept; only theme counts are saved.
+- **Tagging (model output).** One Gemini call per launch job grouped the comments into themes of three kinds: asked for, complained or doubted, praised. Comments that only congratulate were ignored. Cost $0.03.
+- **Size.** The counts are small. A theme raised by one or two people is a lead, not a finding.
+
+| Launch | Competitor launches with held comments | Commenters (not team) |
+|---|---|---|
+| 1. /try | Firstpass, Articos, Articos MCP, Product Hunt Visual Launch Editor | 67 |
+| 2. Forecast board | NODUS PH Radar for Product Hunt, PHBench | 23 |
+| 3. Persona panel | Sapien, TheySaid 4.0, Articos, Articos MCP | 64 |
+| 4. Launch Pack | Spira for Product Hunt Makers, Submit.DIY, shippedit.me, Scroll Launch | 57 |
+
+The simulated-persona message-testing product and its second launch sit in both the /try and the panel tables, because they do both jobs.
+
+### Top themes by number of distinct commenters (real comments, tagged by model)
+
+| Launch | Asked for | Complained about or doubted | Praised |
+|---|---|---|---|
+| 1. /try | How is accuracy quantified and measured (3)<br>How does it handle non-english languages (2)<br>How different are results compared to actual users (2)<br>More transparency about investment questions (2)<br>Does it explain the principle behind the feedback (1)<br>Which surface kills the most taglines (1) | Confusing categories and tags (2)<br>Concerns about hidden costs of character limits (1)<br>Videos feel secondary (1)<br>Company info is confusing (1) | Fast turnaround time and improved messaging (7)<br>Editable on mobile, improved mobile experience (4)<br>Helped shape icp and positioning (3)<br>See your launch as you build it, reduces fear (3) |
+| 2. Forecast board | Can it compare trajectory to similar past launches by category/follower size (2)<br>What is the product's own prediction for its success (2)<br>Does it surface comment velocity as a signal (1)<br>Does it include post-launch traction like follows and comments (1)<br>What signals does it use (upvote velocity, comment quality, founder background) (1)<br>Does it backtest against past launches (1) | Model might penalize solo founders or first-time founders (1)<br>High engagement vs. series a might be correlation, not causality (1)<br>No analysis on hunter impact (1)<br>Publishing the model might corrupt the signal over time (1) | Useful for understanding launch dynamics and picking launch dates (4)<br>Helps find hidden gems beyond popular ai tools (1) |
+| 3. Persona panel | How accurate is synthetic feedback compared to real users (6)<br>How long does a synthetic test take (1)<br>Can it be tuned for specific customer audiences (1)<br>Can it help small teams with user research (1)<br>How are synthetic users created (1)<br>How are questions from synthetic users surfaced (1) | Pricing is unclear or inconsistent (1)<br>Scoring system is unclear and needs more detail (1)<br>Half of themes are noise, is there a confidence score (1) | Fast turnaround time for feedback (5)<br>Integrating feedback into existing workflows is good (3)<br>Helps shape icp and positioning (3)<br>Synthetic users going through the product is useful (2) |
+| 4. Launch Pack | How to maintain brand voice and avoid generic ai content (7)<br>How does the ai learn a founder's voice (4)<br>How much control do makers have over content (3)<br>Is there a free trial or promo code (3)<br>Can it turn content ideas into posts (2)<br>How does it handle brand 'taste' and trends (2) | Bug/inconsistency with connecting social accounts (1)<br>Auto-scheduled posts felt template-y (1)<br>Paywall is scaring me away (1)<br>Website is not reachable (1) | Solves the problem of launch momentum dying (5)<br>Persona clone idea is smart (2)<br>Two-minute persona setup from url is slick (1)<br>Something people actually need (1) |
+
+The full theme list is in `experiments/launch_plan/competitors_comment_themes.json`.
+
+### What real users of competitors asked for, and which planned feature answers it
+
+The request was for two columns on each competitor table. Real comments exist for only 12 launches and themes cut across competitors, so the two columns are given here per launch, by theme. "Not answered" is a judgment from the competitor's own pitch and the makers' absence of a feature in it; we did not test the competitors' products.
+
+**Launch 1, /try**
+
+| What real users asked for that the competitors' pitches do not answer (commenters) | Which of our planned features answers it |
+|---|---|
+| How is accuracy measured, and how different are results from real users? (3 + 2) | The accuracy block above the fold on /try, then the scored archive in product 2. This is the best-supported item in the plan. |
+| A confidence score per theme; "half of the themes are noise" (1 + 1) | **Not planned. Add it.** We already measure theme precision (52%); showing a confidence next to each predicted question is cheap. |
+| A demo or sample report before signing up (1) | Planned for the Launch Pack only (page fix 6). Move a sample result onto the /try page too. |
+| Does it work on drafts, before anything is public? (1) | /try already works from pasted text. Say so on the page. |
+| Does it work for other platforms (X, Hacker News) and for non-English pages? (1 + 2) | **Not planned.** We have a Show HN comparison in hand; state the scope plainly: Product Hunt, English. |
+
+**Launch 2, Forecast board**
+
+| What real users asked for (commenters) | Which planned feature answers it |
+|---|---|
+| Which signals are used, how are they weighted, and is the hunter's effect analysed? (1 + 1 + 1) | "The reason behind each forecast, launch by launch". Supported, thinly. |
+| Is it back-tested, and what is the false-positive rate? (1 + 1) | The full scored archive. Supported. |
+| What does the product predict for its own launch? (2) | **Not planned. Add it.** Publish our own forecast for each of our four launches before the day, and score it. It costs nothing and is the most direct proof. |
+| Compare a launch's path with similar past launches by category and size (2) | Partly: /try's "similar launches" count exists. A side-by-side with look-alike launches is not planned. |
+| Praised: useful for picking a launch date (4) | **Not planned as a feature.** We have the weekday result (weekends have weaker line-ups); a "best day for your launch" view would use it. |
+| Does it penalise solo or first-time founders? (1) | The reasons view will show it does: the hunter's record is the largest input. Say it openly. |
+
+**Launch 3, Persona panel**
+
+| What real users asked for (commenters) | Which planned feature answers it |
+|---|---|
+| How accurate is synthetic feedback compared with real users? (6, across three launches) | The published recall and precision against real comments, and rule 4 in the plan (score the panel's product-1 predictions against product 1's real comments). The single best-supported feature in the whole plan. |
+| How do you stop synthetic users from always agreeing? What happens when real and synthetic disagree? (1 + 1) | **Not planned, and it is our known weakness**: the panel rated nearly every persona "high interest" for all four of our products. Remove the interest rating or calibrate it before launch 3. |
+| Can it be tuned to my audience, refined over time, and does feedback differ across personas? (1 + 1 + 1) | Per-segment view and custom segments. Supported, thinly. |
+| Compare versions of a value proposition; A/B testing without running an A/B test (1 + 1) | Version comparison. Supported by 2 real commenters; our own panel called it the most requested feature, which is model output. |
+| Can it look at images? (1) | "The panel reads the page's images". Supported by 1. |
+| Does it hold for non-western audiences? (1) | **Not planned.** Our voters are Product Hunt voters; state that. |
+| Praised: fast turnaround (5); fits into existing tools (3) | Speed is already there. Integration is the API, planned last; real praise suggests it matters earlier. |
+
+**Launch 4, Launch Pack**
+
+| What real users asked for (commenters) | Which planned feature answers it |
+|---|---|
+| How does generated content keep my brand voice, and how much control do I have? (7 + 4 + 3) | Nothing, by design: the Pack writes reports, not content. But it shows what buyers of launch tools care about most: control over what goes out under their name. Our reports should recommend, never auto-apply. |
+| Is there a free trial or promo code? (3, on three different products) | **Not planned.** The Pack is paid with no trial. /try is the free trial; say so on the Pack page. |
+| Which platforms first, and in what order? (2) | Not planned. The audit could include a channel order from our launch-day reach inputs, but the model shows founder posts alone move little; do not promise it. |
+| Complaint: paywall before any value (1); site unreachable (1); onboarding stuck (1) | The ship gate already covers run limits. Show a sample report before payment. |
+| Praised: solves launch momentum dying after day one (5) | Nothing in the Pack. The post-mortem is the only after-launch piece. |
+
+### Planned features that no real competitor comment supports
+
+Checked against the feature-to-product map in `docs/LAUNCH_PLAN_SELF.md` ("How feedback on product 1 defines products 2, 3 and 4"). That map is built from the persona panel, which is model output.
+
+| Planned feature | Goes into | Real competitor comments that support it |
+|---|---|---|
+| The before-votes-show forecast beside the midnight one (late surges) | Product 2 | **None.** Nearest: 1 commenter asked whether comment velocity is used as a signal. |
+| Follow-up questions on any page, not only a launch page | Product 3 | **None.** Nearest: 1 asked about testing pricing, 1 about finding objections. |
+| Plain-language summary for non-launchers | Product 1 | **None.** |
+| The pre-launch audit with named fixes and expected effect | Product 4 | **None among launch-tool users.** 1 commenter on a persona tool asked for a sample report. Users of launch tools asked about control and brand voice, not about audits. |
+| The audit takes the maker's own reach and hunter as inputs | Product 4 | Thin: 1 complaint that a predictor ignores the hunter, 1 that it may penalise first-time founders. |
+| "What this uses and what it ignores" block | Product 1 | Thin: 1 asked which signals are used, 1 how it keeps up with new models. |
+
+Supported by real comments: the accuracy record (the strongest, 6 commenters on the panel job and 5 on the /try job), reasons behind a forecast, version comparison, segments, images, and integration. Every one of these is supported by 1 to 6 people, so none is settled.
+
+**Three things real comments raise that the plan does not have:** a confidence score per predicted theme; our own forecast for our own launch, published in advance; and a fix for synthetic users that always agree.
+
+**The Launch Pack is the least supported product.** No real commenter on a launch tool asked for a forecast, an audit or a post-mortem. They asked for content in their own voice, control over it, and a free trial. That does not show the Pack is wrong, since nobody asks for a thing they have not seen, but it has no real demand evidence yet. Product 1's real comments on Dec 5 are the first test.
+
 ## What the four tables say together
 
 - **Every competitor that simulates people draws the same first concern from the panel: how accurate is it, and how is bias handled.** That is the same concern the panel raised about our own four pages. A published, daily accuracy score is the one thing none of these competitors shows, and it is the thing we already produce.
@@ -132,4 +227,4 @@ This is the bias check asked for in the plan review.
 - **The features competitors have and we lack:** custom segments and follow-up questions (panel), version comparison (/try and panel), and an instant single number (/try). Version comparison was also the most requested feature in our own panel run.
 - **The line we should draw in public:** one competitor sells upvotes. The pitch judge scored it 3 out of 100, and the panel's first concern was the ethics. Saying plainly that we never supply or solicit votes costs nothing and separates us from the worst of the category.
 
-Files: `experiments/launch_plan/competitors_build.py`, `competitors_run.py`, `competitors_results.json`.
+Files: `experiments/launch_plan/competitors_build.py`, `competitors_run.py`, `competitors_results.json`, `competitors_comments.py`, `competitors_comment_themes.json`.
