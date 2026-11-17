@@ -32,3 +32,4 @@
 {"t": "nov14_panel_rebuilds_2", "provider": "gcp", "usd": 0.41, "note": "Nov 14 persona_say reruns (24-persona top-up, token cap, validated prompt)"}
 {"t": "persona_say_2026-11-15", "provider": "gcp", "usd": 0.1102, "note": "15 Gemini 2.5 Flash calls, tokens in 67285 out 36002"}
 {"t": "persona_say_2026-11-16", "provider": "gcp", "usd": 0.2807, "note": "38 Gemini 2.5 Flash calls, tokens in 169747 out 91896"}
+{"t": "persona_say_2026-11-17", "provider": "gcp", "usd": 0.3034, "note": "43 Gemini 2.5 Flash calls, tokens in 185057 out 99166"}

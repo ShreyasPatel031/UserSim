@@ -1,0 +1,1568 @@
+{
+ "written_at": "2026-11-17T10:15:30.792023+00:00",
+ "periods": {
+  "week:2026-11-09": {
+   "period": [
+    "2026-11-09",
+    "2026-11-15"
+   ],
+   "close_utc": "2026-11-16T08:00:00+00:00",
+   "truth": {
+    "end": "2026-11-15",
+    "status": "ok",
+    "source_part": "20261116T081800-34bf3c.parquet",
+    "read_time_utc": "2026-11-16T08:18:00+00:00",
+    "n_ranked": 203,
+    "flags": []
+   },
+   "rows": [
+    {
+     "line": "sum_published",
+     "call": "2026-11-10 00:05 PT",
+     "days_missing_pred": [],
+     "n": 73,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-10 00:05 PT",
+     "days_missing_pred": [],
+     "n": 75,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-10 00:05 PT",
+     "days_missing_pred": [],
+     "n": 75,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-10 ~01:20 PT",
+     "board_read": "2026-11-10T08:19:00Z",
+     "days_missing": [],
+     "n": 25,
+     "top3": 1,
+     "top5": 2,
+     "top10": 3,
+     "ceiling_top3": 1,
+     "ceiling_top5": 2,
+     "ceiling_top10": 3
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-11 00:05 PT",
+     "days_missing_pred": [],
+     "n": 89,
+     "top3": 0,
+     "top5": 1,
+     "top10": 2,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-11 00:05 PT",
+     "days_missing_pred": [],
+     "n": 101,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-11 00:05 PT",
+     "days_missing_pred": [],
+     "n": 101,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-11 ~01:20 PT",
+     "board_read": "2026-11-11T08:17:37Z",
+     "days_missing": [],
+     "n": 75,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-12 00:05 PT",
+     "days_missing_pred": [],
+     "n": 126,
+     "top3": 0,
+     "top5": 1,
+     "top10": 2,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-12 00:05 PT",
+     "days_missing_pred": [],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-12 00:05 PT",
+     "days_missing_pred": [],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-12 ~01:20 PT",
+     "board_read": "2026-11-12T08:19:17Z",
+     "days_missing": [],
+     "n": 101,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-13 00:05 PT",
+     "days_missing_pred": [],
+     "n": 146,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-13 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-13"
+     ],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-13 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-13"
+     ],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "live",
+     "call": "2026-11-13 ~01:20 PT",
+     "written_at": "2026-11-14T01:36:20.153298+00:00",
+     "n": 138,
+     "top3": 3,
+     "top5": 4,
+     "top10": 7,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-14 00:05 PT",
+     "days_missing_pred": [],
+     "n": 174,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-14 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-13",
+      "2026-11-14"
+     ],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-14 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-13",
+      "2026-11-14"
+     ],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "live",
+     "call": "2026-11-14 ~01:20 PT",
+     "written_at": "2026-11-14T12:45:30.733485+00:00",
+     "n": 159,
+     "top3": 3,
+     "top5": 5,
+     "top10": 8,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-15 00:05 PT",
+     "days_missing_pred": [],
+     "n": 189,
+     "top3": 0,
+     "top5": 0,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-15 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-13",
+      "2026-11-14",
+      "2026-11-15"
+     ],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-15 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-13",
+      "2026-11-14",
+      "2026-11-15"
+     ],
+     "n": 138,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "board_with_entrants",
+     "flag": "live",
+     "call": "2026-11-15 ~01:20 PT",
+     "written_at": "2026-11-15T09:26:59.627226+00:00",
+     "n": 202,
+     "top3": 3,
+     "top5": 5,
+     "top10": 9,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "live",
+     "call": "2026-11-15 ~01:20 PT",
+     "written_at": "2026-11-15T09:26:59.627226+00:00",
+     "n": 187,
+     "top3": 3,
+     "top5": 5,
+     "top10": 9,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:dayend",
+     "flag": "live",
+     "day": "2026-11-09",
+     "written_at": "2026-11-12T09:29:29.338502+00:00",
+     "n": 25,
+     "top3": 1,
+     "top5": 2,
+     "top10": 3,
+     "ceiling_top3": 1,
+     "ceiling_top5": 2,
+     "ceiling_top10": 3
+    },
+    {
+     "line": "weekly_live:dayend",
+     "flag": "live",
+     "day": "2026-11-10",
+     "written_at": "2026-11-11T21:23:20.963445+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "weekly_live:R4",
+     "flag": "live",
+     "day": "2026-11-11",
+     "written_at": "2026-11-12T09:29:55.177732+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "weekly_live:dayend",
+     "flag": "live",
+     "day": "2026-11-11",
+     "written_at": "2026-11-12T09:29:42.372460+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "weekly_live:est",
+     "flag": "live",
+     "day": "2026-11-11",
+     "written_at": "2026-11-12T09:30:15.778288+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "weekly_live:reread",
+     "flag": "live",
+     "day": "2026-11-11",
+     "written_at": "2026-11-12T16:25:51.279369+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "weekly_live:running",
+     "flag": "live",
+     "day": "2026-11-11",
+     "written_at": "2026-11-12T09:47:48.248977+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "weekly_live:running_g",
+     "flag": "live",
+     "day": "2026-11-11",
+     "written_at": "2026-11-12T09:47:52.491378+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "weekly_live:dayend",
+     "flag": "live",
+     "day": "2026-11-12",
+     "written_at": "2026-11-13T08:19:33.204203+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 7,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "weekly_live:est",
+     "flag": "live",
+     "day": "2026-11-12",
+     "written_at": "2026-11-12T16:22:52.406025+00:00",
+     "n": 30,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "weekly_live:reread",
+     "flag": "live",
+     "day": "2026-11-12",
+     "written_at": "2026-11-13T08:36:54.313215+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 7,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "weekly_live:running",
+     "flag": "live",
+     "day": "2026-11-12",
+     "written_at": "2026-11-13T10:26:26.008362+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 7,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "weekly_live:running_g",
+     "flag": "live",
+     "day": "2026-11-12",
+     "written_at": "2026-11-13T10:26:32.152548+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 7,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "weekly_live:dayend",
+     "flag": "live",
+     "day": "2026-11-13",
+     "written_at": "2026-11-14T14:31:13.960821+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 8,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:est",
+     "flag": "live",
+     "day": "2026-11-13",
+     "written_at": "2026-11-13T12:23:39.558254+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 7,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:running",
+     "flag": "live",
+     "day": "2026-11-13",
+     "written_at": "2026-11-14T14:31:34.001884+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 5,
+     "top10": 8,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:running_g",
+     "flag": "live",
+     "day": "2026-11-13",
+     "written_at": "2026-11-14T14:31:40.797941+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 5,
+     "top10": 8,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:running",
+     "flag": "live",
+     "day": "2026-11-14",
+     "written_at": "2026-11-15T12:33:01.621840+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 5,
+     "top10": 9,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:running_g",
+     "flag": "live",
+     "day": "2026-11-14",
+     "written_at": "2026-11-15T12:33:08.417519+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 5,
+     "top10": 9,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:R4",
+     "flag": "live",
+     "day": "2026-11-15",
+     "written_at": "2026-11-15T16:20:17.412506+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 9,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "weekly_live:dayend",
+     "flag": "live",
+     "day": "2026-11-15",
+     "written_at": "2026-11-16T09:10:20.979995+00:00",
+     "n": 30,
+     "status": "written after the close: not a forecast"
+    },
+    {
+     "line": "weekly_live:est",
+     "flag": "live",
+     "day": "2026-11-15",
+     "written_at": "2026-11-15T12:34:02.793592+00:00",
+     "n": 30,
+     "top3": 3,
+     "top5": 4,
+     "top10": 8,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "weekly_live:reread",
+     "flag": "live",
+     "day": "2026-11-15",
+     "written_at": "2026-11-16T13:16:12.435832+00:00",
+     "n": 30,
+     "status": "written after the close: not a forecast"
+    },
+    {
+     "line": "weekly_live:running",
+     "flag": "live",
+     "day": "2026-11-15",
+     "written_at": "2026-11-16T09:10:36.873665+00:00",
+     "n": 30,
+     "status": "written after the close: not a forecast"
+    },
+    {
+     "line": "weekly_live:running_g",
+     "flag": "live",
+     "day": "2026-11-15",
+     "written_at": "2026-11-16T09:10:42.152175+00:00",
+     "n": 30,
+     "status": "written after the close: not a forecast"
+    }
+   ]
+  },
+  "week:2026-11-02": {
+   "period": [
+    "2026-11-02",
+    "2026-11-08"
+   ],
+   "close_utc": "2026-11-09T08:00:00+00:00",
+   "truth": {
+    "end": "2026-11-08",
+    "status": "ok",
+    "source_part": "20261109T081821-616e7f.parquet",
+    "read_time_utc": "2026-11-09T08:18:21+00:00",
+    "n_ranked": 221,
+    "flags": []
+   },
+   "rows": [
+    {
+     "line": "sum_published",
+     "call": "2026-11-03 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-02"
+     ],
+     "n": 36,
+     "top3": 0,
+     "top5": 2,
+     "top10": 2,
+     "ceiling_top3": 1,
+     "ceiling_top5": 2,
+     "ceiling_top10": 2
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-03 00:05 PT",
+     "days_missing_pred": [],
+     "n": 56,
+     "top3": 0,
+     "top5": 1,
+     "top10": 4,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-03 00:05 PT",
+     "days_missing_pred": [],
+     "n": 56,
+     "top3": 0,
+     "top5": 1,
+     "top10": 4,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-03 ~01:20 PT",
+     "board_read": "2026-11-03T08:18:22Z",
+     "days_missing": [],
+     "n": 18,
+     "top3": 1,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 1,
+     "ceiling_top5": 1,
+     "ceiling_top10": 3
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-04 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-02"
+     ],
+     "n": 71,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 4
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-04 00:05 PT",
+     "days_missing_pred": [],
+     "n": 90,
+     "top3": 0,
+     "top5": 1,
+     "top10": 4,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-04 00:05 PT",
+     "days_missing_pred": [],
+     "n": 90,
+     "top3": 0,
+     "top5": 1,
+     "top10": 5,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-04 ~01:20 PT",
+     "board_read": "2026-11-04T08:21:04Z",
+     "days_missing": [],
+     "n": 56,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-05 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-02",
+      "2026-11-05"
+     ],
+     "n": 71,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 4
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-05 00:05 PT",
+     "days_missing_pred": [],
+     "n": 125,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 8
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-05 00:05 PT",
+     "days_missing_pred": [],
+     "n": 125,
+     "top3": 0,
+     "top5": 1,
+     "top10": 5,
+     "ceiling_top3": 3,
+     "ceiling_top5": 4,
+     "ceiling_top10": 8
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-05 ~01:20 PT",
+     "board_read": "2026-11-04T08:21:04Z",
+     "days_missing": [
+      "2026-11-04"
+     ],
+     "n": 56,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-06 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-02",
+      "2026-11-05",
+      "2026-11-06"
+     ],
+     "n": 71,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 4
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-06 00:05 PT",
+     "days_missing_pred": [],
+     "n": 179,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-06 00:05 PT",
+     "days_missing_pred": [],
+     "n": 179,
+     "top3": 0,
+     "top5": 1,
+     "top10": 5,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-06 ~01:20 PT",
+     "board_read": "2026-11-04T08:21:04Z",
+     "days_missing": [
+      "2026-11-04",
+      "2026-11-05"
+     ],
+     "n": 56,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-07 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-02",
+      "2026-11-05",
+      "2026-11-06",
+      "2026-11-07"
+     ],
+     "n": 71,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 4
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-07 00:05 PT",
+     "days_missing_pred": [],
+     "n": 203,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-07 00:05 PT",
+     "days_missing_pred": [],
+     "n": 203,
+     "top3": 0,
+     "top5": 1,
+     "top10": 4,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-07 ~01:20 PT",
+     "board_read": "2026-11-04T08:21:04Z",
+     "days_missing": [
+      "2026-11-04",
+      "2026-11-05",
+      "2026-11-06"
+     ],
+     "n": 56,
+     "top3": 2,
+     "top5": 3,
+     "top10": 5,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-11-08 00:05 PT",
+     "days_missing_pred": [
+      "2026-11-02",
+      "2026-11-05",
+      "2026-11-06",
+      "2026-11-07"
+     ],
+     "n": 88,
+     "top3": 0,
+     "top5": 1,
+     "top10": 2,
+     "ceiling_top3": 2,
+     "ceiling_top5": 3,
+     "ceiling_top10": 4
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-11-08 00:05 PT",
+     "days_missing_pred": [],
+     "n": 220,
+     "top3": 0,
+     "top5": 1,
+     "top10": 3,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-11-08 00:05 PT",
+     "days_missing_pred": [],
+     "n": 220,
+     "top3": 0,
+     "top5": 1,
+     "top10": 4,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-11-08 ~01:20 PT",
+     "board_read": "2026-11-08T08:17:26Z",
+     "days_missing": [],
+     "n": 204,
+     "top3": 3,
+     "top5": 4,
+     "top10": 9,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    }
+   ]
+  },
+  "month:2026-10-01": {
+   "period": [
+    "2026-10-01",
+    "2026-10-31"
+   ],
+   "close_utc": "2026-11-01T07:00:00+00:00",
+   "truth": {
+    "end": "2026-10-31",
+    "status": "ok",
+    "source_part": "20261101T141331-2009fd.parquet",
+    "read_time_utc": "2026-11-01T14:13:31+00:00",
+    "n_ranked": 908,
+    "flags": []
+   },
+   "rows": [
+    {
+     "line": "sum_published",
+     "call": "2026-10-08 00:05 PT",
+     "days_missing_pred": [
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-03",
+      "2026-10-04",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08"
+     ],
+     "n": 0,
+     "top3": 0,
+     "top5": 0,
+     "top10": 0,
+     "ceiling_top3": 0,
+     "ceiling_top5": 0,
+     "ceiling_top10": 0
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-10-08 00:05 PT",
+     "days_missing_pred": [],
+     "n": 288,
+     "top3": 1,
+     "top5": 1,
+     "top10": 1,
+     "ceiling_top3": 1,
+     "ceiling_top5": 2,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-10-08 00:05 PT",
+     "days_missing_pred": [],
+     "n": 288,
+     "top3": 1,
+     "top5": 1,
+     "top10": 1,
+     "ceiling_top3": 1,
+     "ceiling_top5": 2,
+     "ceiling_top10": 5
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-10-08",
+     "status": "no board (no held read before the call)"
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-10-15 00:05 PT",
+     "days_missing_pred": [
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-03",
+      "2026-10-04",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+      "2026-10-11",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15"
+     ],
+     "n": 0,
+     "top3": 0,
+     "top5": 0,
+     "top10": 0,
+     "ceiling_top3": 0,
+     "ceiling_top5": 0,
+     "ceiling_top10": 0
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-10-15 00:05 PT",
+     "days_missing_pred": [],
+     "n": 516,
+     "top3": 1,
+     "top5": 1,
+     "top10": 2,
+     "ceiling_top3": 2,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-10-15 00:05 PT",
+     "days_missing_pred": [],
+     "n": 516,
+     "top3": 1,
+     "top5": 2,
+     "top10": 2,
+     "ceiling_top3": 2,
+     "ceiling_top5": 4,
+     "ceiling_top10": 7
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-10-15",
+     "status": "no board (no held read before the call)"
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-10-22 00:05 PT",
+     "days_missing_pred": [
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-03",
+      "2026-10-04",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+      "2026-10-11",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-17",
+      "2026-10-18",
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22"
+     ],
+     "n": 0,
+     "top3": 0,
+     "top5": 0,
+     "top10": 0,
+     "ceiling_top3": 0,
+     "ceiling_top5": 0,
+     "ceiling_top10": 0
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-10-22 00:05 PT",
+     "days_missing_pred": [],
+     "n": 710,
+     "top3": 1,
+     "top5": 1,
+     "top10": 1,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 8
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-10-22 00:05 PT",
+     "days_missing_pred": [],
+     "n": 710,
+     "top3": 1,
+     "top5": 2,
+     "top10": 2,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 8
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-10-22",
+     "status": "no board (no held read before the call)"
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-10-29 00:05 PT",
+     "days_missing_pred": [
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-03",
+      "2026-10-04",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+      "2026-10-11",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-17",
+      "2026-10-18",
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-24",
+      "2026-10-25",
+      "2026-10-26",
+      "2026-10-27",
+      "2026-10-28",
+      "2026-10-29"
+     ],
+     "n": 0,
+     "top3": 0,
+     "top5": 0,
+     "top10": 0,
+     "ceiling_top3": 0,
+     "ceiling_top5": 0,
+     "ceiling_top10": 0
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-10-29 00:05 PT",
+     "days_missing_pred": [],
+     "n": 865,
+     "top3": 1,
+     "top5": 1,
+     "top10": 1,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-10-29 00:05 PT",
+     "days_missing_pred": [],
+     "n": 865,
+     "top3": 1,
+     "top5": 2,
+     "top10": 2,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-10-29 ~01:20 PT",
+     "board_read": "2026-10-29T07:25:42Z",
+     "days_missing": [],
+     "n": 836,
+     "top3": 3,
+     "top5": 5,
+     "top10": 9,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 9
+    },
+    {
+     "line": "sum_published",
+     "call": "2026-10-31 00:05 PT",
+     "days_missing_pred": [
+      "2026-10-01",
+      "2026-10-02",
+      "2026-10-03",
+      "2026-10-04",
+      "2026-10-05",
+      "2026-10-06",
+      "2026-10-07",
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+      "2026-10-11",
+      "2026-10-12",
+      "2026-10-13",
+      "2026-10-14",
+      "2026-10-15",
+      "2026-10-16",
+      "2026-10-17",
+      "2026-10-18",
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-24",
+      "2026-10-25",
+      "2026-10-26",
+      "2026-10-27",
+      "2026-10-28",
+      "2026-10-29",
+      "2026-10-30",
+      "2026-10-31"
+     ],
+     "n": 0,
+     "top3": 0,
+     "top5": 0,
+     "top10": 0,
+     "ceiling_top3": 0,
+     "ceiling_top5": 0,
+     "ceiling_top10": 0
+    },
+    {
+     "line": "sum_arm2_rebuild",
+     "call": "2026-10-31 00:05 PT",
+     "days_missing_pred": [],
+     "n": 907,
+     "top3": 1,
+     "top5": 1,
+     "top10": 1,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "sum_arm3_rebuild",
+     "call": "2026-10-31 00:05 PT",
+     "days_missing_pred": [],
+     "n": 907,
+     "top3": 1,
+     "top5": 1,
+     "top10": 2,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    },
+    {
+     "line": "board_votes_only",
+     "flag": "replay",
+     "call": "2026-10-31 ~01:20 PT",
+     "board_read": "2026-10-31T07:13:37Z",
+     "days_missing": [],
+     "n": 886,
+     "top3": 3,
+     "top5": 5,
+     "top10": 10,
+     "ceiling_top3": 3,
+     "ceiling_top5": 5,
+     "ceiling_top10": 10
+    }
+   ]
+  }
+ },
+ "backtest_ex_ante": {
+  "week": {
+   "periods": 28,
+   "last day | sum_arm2_rebuild": {
+    "top3": [
+     17.9,
+     10.7,
+     26.2
+    ],
+    "top5": [
+     26.4,
+     20.0,
+     33.6
+    ],
+    "top10": [
+     40.4,
+     36.1,
+     44.6
+    ]
+   },
+   "last day | sum_arm3_rebuild": {
+    "top3": [
+     15.5,
+     8.3,
+     22.6
+    ],
+    "top5": [
+     27.1,
+     19.3,
+     35.7
+    ],
+    "top10": [
+     39.3,
+     35.0,
+     43.9
+    ]
+   },
+   "mid | sum_arm2_rebuild": {
+    "top3": [
+     21.4,
+     14.3,
+     28.6
+    ],
+    "top5": [
+     32.1,
+     25.0,
+     39.3
+    ],
+    "top10": [
+     39.3,
+     34.6,
+     43.9
+    ]
+   },
+   "mid | sum_arm3_rebuild": {
+    "top3": [
+     20.2,
+     14.3,
+     26.2
+    ],
+    "top5": [
+     32.9,
+     25.7,
+     40.0
+    ],
+    "top10": [
+     39.3,
+     34.3,
+     43.9
+    ]
+   },
+   "last day | arm3 minus arm2 (paired)": {
+    "top3": [
+     -2.4,
+     -6.0,
+     0.0
+    ],
+    "top5": [
+     0.7,
+     -2.9,
+     4.3
+    ],
+    "top10": [
+     -1.1,
+     -3.6,
+     1.4
+    ]
+   },
+   "mid | arm3 minus arm2 (paired)": {
+    "top3": [
+     -1.2,
+     -6.0,
+     2.4
+    ],
+    "top5": [
+     0.7,
+     -3.6,
+     5.0
+    ],
+    "top10": [
+     0.0,
+     -2.1,
+     2.1
+    ]
+   }
+  },
+  "month": {
+   "periods": 6,
+   "last day | sum_arm2_rebuild": {
+    "top3": [
+     5.6,
+     0.0,
+     16.7
+    ],
+    "top5": [
+     6.7,
+     0.0,
+     13.3
+    ],
+    "top10": [
+     15.0,
+     8.3,
+     21.7
+    ]
+   },
+   "last day | sum_arm3_rebuild": {
+    "top3": [
+     11.1,
+     0.0,
+     22.2
+    ],
+    "top5": [
+     6.7,
+     0.0,
+     13.3
+    ],
+    "top10": [
+     16.7,
+     10.0,
+     20.0
+    ]
+   },
+   "mid | sum_arm2_rebuild": {
+    "top3": [
+     5.6,
+     0.0,
+     16.7
+    ],
+    "top5": [
+     10.0,
+     3.3,
+     16.7
+    ],
+    "top10": [
+     15.0,
+     11.7,
+     18.3
+    ]
+   },
+   "mid | sum_arm3_rebuild": {
+    "top3": [
+     5.6,
+     0.0,
+     16.7
+    ],
+    "top5": [
+     10.0,
+     0.0,
+     23.3
+    ],
+    "top10": [
+     16.7,
+     10.0,
+     23.3
+    ]
+   },
+   "last day | arm3 minus arm2 (paired)": {
+    "top3": [
+     5.6,
+     0.0,
+     16.7
+    ],
+    "top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10": [
+     1.7,
+     -3.3,
+     6.7
+    ]
+   },
+   "mid | arm3 minus arm2 (paired)": {
+    "top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5": [
+     0.0,
+     -10.0,
+     10.0
+    ],
+    "top10": [
+     1.7,
+     -3.3,
+     6.7
+    ]
+   }
+  },
+  "note": "hits / k x 100, mean over periods, period-bootstrap 95%; rebuild predictions are month-forward OOS, inputs dated before 00:05 of each launch day"
+ }
+}
