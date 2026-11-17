@@ -178,7 +178,7 @@ for p_ in glob.glob(f"{D}/signedin_upvotes/*.json"):  # babysitter queue raw/_ba
 
 def signed_out_end(d):
     """Upvotes stopped at PH's signed-out ~200 end: tagged upvotes_capped (or 190-210 items short of the header) AND the
-    paging record shows PH's end. Orchestrator 03:36Z: whole for the signed-out pass only if also queued for signed-in."""
+    paging record shows that end. Since Nov 17 (Shreyas) this is a scroll bug, not a PH stop: the person is INCOMPLETE."""
     t = d.get("upvotes") or {}
     if not isinstance(t, dict):
         return False
@@ -195,8 +195,11 @@ def signed_out_end(d):
 
 def person_complete(d, h=None):
     why = []
-    if signed_out_end(d) and (h or "").lower() not in signed_in_q:
-        why.append("upvotes:signed_out_end_not_queued_signed_in")
+    # Shreyas, Nov 17 (AGENTS.md): there is no signed-in pass; the "signed-out upvote end" was a scroll bug. An Upvotes list
+    # stopped there is INCOMPLETE until the completion pass re-reads it by scrolling to PH's end (a signed-in queue entry
+    # no longer makes it whole).
+    if signed_out_end(d):
+        why.append("upvotes:short_needs_scroll_reread")
     for t in ALL_TABS:
         if not isinstance(d.get(t), dict):
             why.append(f"missing_tab:{t}")
@@ -260,7 +263,7 @@ def _info(ps):
     so_ = signed_out_end(d)
     ok_, why_ = person_complete(d, "\x00") if src == "vm" else (None, None)
     if why_:
-        why_ = [w for w in why_ if w != "upvotes:signed_out_end_not_queued_signed_in"]
+        why_ = [w for w in why_ if w != "upvotes:short_needs_scroll_reread"]
     return p, {"h": h, "fin": run.get("finished_utc") or d.get("fetched_at") or "", "fin_run": str(run.get("finished_utc") or ""),
                "meth": str(d.get("method") or "").lower(), "deep": bool(run.get("deep_passes")),
                "req_missing": [f for f in ("ph_user_id", "header", "run") if not d.get(f)],
@@ -419,7 +422,7 @@ for p, src in files:
 
 
 def _pc(h, i):  # person_complete from the cached per-file result plus the signed-in queue (other files)
-    why = (["upvotes:signed_out_end_not_queued_signed_in"] if i["so"] and (h or "").lower() not in signed_in_q else []) + list(i["why"])
+    why = (["upvotes:short_needs_scroll_reread"] if i["so"] else []) + list(i["why"])  # Nov 17: no signed-in pass; short Upvotes = incomplete
     return not why, why
 
 
@@ -427,20 +430,20 @@ pc = Counter(); reasons = Counter(); origin = Counter(); so = Counter(); complet
 for h, i in latest.items():
     ok, why = _pc(h, i)
     if ok:
-        complete_rows.append((h.lower(), "whole_signed_out" if i["so"] else "whole"))
+        complete_rows.append((h.lower(), "whole"))
     o = "pgql_lists_only" if "pgql" in i["meth"] and not i["deep"] else ("deep" if i["deep"] else "full")
     pc[(o, ok)] += 1; origin[o] += 1
-    if ok and i["so"]:
-        so[o] += 1
+    if i["so"]:
+        so[o] += 1  # short Upvotes (old "signed-out end"): counted INCOMPLETE since Nov 17
     for w in why:
         reasons[(o, w.split(":")[0] + ":" + w.split(":")[1].split(",")[0] if ":" in w else w)] += 1
 inc = sum(v for (o, ok), v in pc.items() if not ok)
 out = ["", "## PERSON-LEVEL OUTPUT CHECK (every saved person vs the full definition)", "",
-       f"Saved people (latest vm/<h>.json): {len(latest):,}; COMPLETE {len(latest) - inc:,} (whole {len(latest) - inc - sum(so.values()):,}; "
-       f"whole, signed-out {sum(so.values()):,} = upvotes at PH's signed-out end, queued for the signed-in pass); **INCOMPLETE {inc:,}**", "",
-       "| Origin | saved | whole | whole, signed-out | INCOMPLETE |", "|---|---|---|---|---|"]
+       f"Saved people (latest vm/<h>.json): {len(latest):,}; COMPLETE {len(latest) - inc:,}; **INCOMPLETE {inc:,}** "
+       f"(of which Upvotes short of the header, needing the scroll-to-end re-read: {sum(so.values()):,})", "",
+       "| Origin | saved | complete | INCOMPLETE | of which Upvotes short (scroll re-read) |", "|---|---|---|---|---|"]
 for o in ("full", "deep", "pgql_lists_only"):
-    out.append(f"| {o} | {origin[o]:,} | {pc[(o, True)] - so[o]:,} | {so[o]:,} | {pc[(o, False)]:,} |")
+    out.append(f"| {o} | {origin[o]:,} | {pc[(o, True)]:,} | {pc[(o, False)]:,} | {so[o]:,} |")
 out += ["", "Top reasons (origin, reason): " + "; ".join(f"{o} {w} x{n:,}" for (o, w), n in reasons.most_common(20))]
 # merged pace-test people (raw/_pacetest/merged_ledger.txt): any later FAIL goes to Shreyas as GROKBOT URGENT
 mled = set()
@@ -451,7 +454,7 @@ m_bad = Counter(w.split(":")[0] + ":" + w.split(":")[1] if ":" in w else w for h
 m_inc = sum(1 for h, i in m_in.items() if not _pc(h, i)[0])
 out += ["", f"Merged pace-test people: ledger {len(mled):,}; in vm/ {len(m_in):,}; **MERGED_INCOMPLETE {m_inc:,}**" + (f" (reasons: {dict(m_bad.most_common(6))})" if m_inc else "")]
 open(OUT_MD, "a").write("\n".join(out) + "\n")
-# PH agent 22:37Z Nov 7: the COMPLETE set, one "handle<TAB>whole|whole_signed_out" per line, next to the rows file
+# PH agent 22:37Z Nov 7: the COMPLETE set, one "handle<TAB>whole" per line (whole_signed_out retired Nov 17), next to the rows file
 # (the run script copies it to GCS raw/_babysitter/quality/<stamp>_complete.txt; bucket only, never committed)
 if OUT_ROWS != "/dev/null":
     open(OUT_ROWS.rsplit(".", 1)[0] + "_complete.txt", "w").write("".join(f"{h}\t{k}\n" for h, k in sorted(complete_rows)))

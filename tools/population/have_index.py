@@ -7,7 +7,7 @@ header or PH's own end.
 
 Inputs (local):
   RAW/.quality_cache.jsonl        per-file summaries written by quality.py (tab states, per-tab counts, reasons)
-  COMPLETE                        quality_<UTC>_complete.txt from the same quality run (handle<TAB>whole|whole_signed_out)
+  COMPLETE                        quality_<UTC>_complete.txt from the same quality run (handle<TAB>whole; whole_signed_out retired Nov 17)
   MASTER                          Data Feeder raw/population_data/master/profiles.jsonl.gz (pool person_ids and tiers)
   SALT                            raw/population/_salt (person_id rule shared with the master)
 Outputs (local, in OUT):
@@ -94,7 +94,7 @@ def main():
             else:
                 tabs[t]["newest_item_ts"] = v["newest"]
         is_c = h.lower() in comp
-        why = [] if is_c else (list(i.get("why") or []) or (["upvotes:signed_out_end_not_queued_signed_in"] if i.get("so") else ["unknown"]))
+        why = [] if is_c else (list(i.get("why") or []) or (["upvotes:short_needs_scroll_reread"] if i.get("so") else ["unknown"]))
         need_tabs = sorted({tab_of(w) for w in why})
         row = {"person_id": p, "ph_user_id": i.get("ph_user_id"), "handle": h, "tier": tier.get(p) or "non-pool",
                "tabs": tabs, "tabs_with_items": sorted(t for t, v in tabs.items() if v["n"]),

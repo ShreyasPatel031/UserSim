@@ -3,7 +3,7 @@
 Usage: cursor_audit.py WORK [--dry-run]
 
 For each staged <name>.json written after START and not yet in raw/_cursor/audited.tsv:
-  1. strict whole-person check (quality.person_complete; whole_signed_out needs a signed-in queue entry)
+  1. strict whole-person check (quality.person_complete; short Upvotes are incomplete since Nov 17, no signed-in pass)
   2. build gate: run.pkg_md5 must be in AUDITED_BUILDS (full18d is added only after its first-run audit passes)
   3. VM gate: the producing VM's status logs must show no IP/port rotation, recreate or byte-stop bypass events
 Pass -> copied into people_live/vm/ (an existing vm/ file is replaced only for a rerun_whole request with a newer

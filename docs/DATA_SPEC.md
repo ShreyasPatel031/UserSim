@@ -28,3 +28,14 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Front-page exposure | /front and /news order per minute | hn_minute has rank for front page; /new page position? | confirm with HN agent; Nov 4 |
 | Second-chance pool | /pool reads with timestamps | live since ~Nov 1 | 2 weeks of labels by ~Nov 15 |
 | Dead/flagged | showdead | checked: 0 of 278 false flags dead; closed | none |
+
+## Completeness rule for PH people (population agent, Nov 17 2026; Shreyas via orchestrator, AGENTS.md)
+- A person is **complete** only when every tab passes `quality.person_complete` with Upvotes read to Product Hunt's own end
+  by scrolling. There is **no signed-in pass** and no "whole, signed-out" category.
+- The old "whole at the signed-out upvote end" (Upvotes stopped at ~200 items with an end recorded) was a scroll bug, not a
+  PH stop. Those people are **INCOMPLETE** (reason `upvotes:short_needs_scroll_reread`): kept, never purged, queued for the
+  completion pass, and counted complete only after that re-read passes the output check.
+- No count, report, scorecard or coverage figure uses "whole signed-out" (or `whole_signed_out`) again. Complete counts,
+  `quality_*_complete.txt`, have_index, need_list, the completion queue, `fleet_work_queue.txt`, vote coverage and the
+  scorecard all use this rule from 05:0xZ Nov 17.
+- Re-read list for the fleet: `raw/_cursor/upvotes_scroll_reread.txt`; whole work queue: `raw/_cursor/fleet_work_queue.txt`.
