@@ -129,7 +129,8 @@ shows no relation to real rank (−0.13, n 22). Read our 75–88 as "at least 75
 - **World-class claim (after the competitor run).** "The only launch rehearsal checked against real launches every day."
   **Test before launch day:** nightly forward score of the predicted reactions (theme recall and precision against a
   fixed question list) over 30 or more days, shown on the page. The rank range stays on the page with its 80% coverage
-  [REAL, backtest] but is not the claim. No competitor shows a daily accuracy score [REAL, 30 competitors checked].
+  [REAL, backtest] but is not the claim. No competitor publishes a daily accuracy score [30 competitors checked].
+  Today's forward figures rest on 11 launches only, so the 30 days matter.
 - **In.** One URL in; a rank range; the three most likely reactions; the measured accuracy with its limits above the fold;
   a "what this uses and what it ignores" block; a plain sentence for people who have never launched.
 - **Held back.** Per-segment reactions, version comparison, custom segments, follow-up questions (launch 3). The reason
@@ -137,9 +138,10 @@ shows no relation to real rank (−0.13, n 22). Read our 75–88 as "at least 75
 - **Competitors** (`docs/LAUNCH_PLAN_COMPETITORS.md`): HuntOMeter, Roast My Landing Page AI, MockUsers, Wynter's free
   grader, and three Product Hunt launches. Closest real finishes: a simulated-persona message tester #3 of 21 (hunter
   with 479 prior launches); a launch-critique tool #9 of 29 [REAL].
-- **Three things to beat [JUDGMENT from the run].** An instant single number (HuntOMeter gives one; ours must be as fast
-  and come with a range and a score). Proof of accuracy, which none of them shows. Reactions that are specific to the
-  page, not generic.
+- **Three things to beat [JUDGMENT from the run].** (1) A one-input, instant answer (HuntOMeter, Chaos Simulator): ours
+  must answer in seconds from a URL alone. (2) A headline accuracy number: Articos claims 86% and ours has none above
+  the fold; none publishes a score every day. (3) Output worth sharing: a founder shares a roast; nobody shares a rank
+  range of 4 to 41.
 - **Feedback that shaped it.** Real users: none yet, there has been no launch; 5–10 real makers test it in week 7 below.
   Panel [MODEL]: every voter group first asks "how accurate is this, and how do you know?"; then what the model does not
   see; the most requested feature is version comparison.
