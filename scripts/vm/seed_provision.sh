@@ -71,7 +71,7 @@ timeout 420 sudo apt-get -o Acquire::http::Timeout=30 -o Acquire::Retries=3 inst
   xvfb x11-utils python3.12-venv python3-dev wget gnupg curl \
   libgtk-3-0 libx11-xcb1 libasound2t64 fonts-liberation libnss3 \
   libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
-  libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libxshmfence1 libcups2 \
+  libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libxshmfence1 libcups2 libatomic1 \
   >/tmp/apt_install.log 2>&1 || {
     echo "WARN: apt install partial; tail:"; tail -30 /tmp/apt_install.log || true
   }
@@ -91,11 +91,18 @@ if ! command -v uv >/dev/null 2>&1; then
   curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
 export PATH="$HOME/.local/bin:$PATH"
-uv venv .venv --python 3.12
+# Idempotent: a rerun keeps the existing venv (uv venv refuses an existing directory).
+if [[ ! -x .venv/bin/python ]]; then
+  uv venv .venv --python 3.12
+fi
 uv pip install -q 'fastapi>=0.115' 'uvicorn[standard]>=0.32' 'httpx>=0.28' 'pyotp>=2.9' \
   playwright 'browser-use==0.13.8' 'browserbase>=1.0' pydantic
 
 echo "==> playwright chromium"
+# Playwright's node driver needs libatomic.so.1; the apt step above only warns on partial failure.
+if ! ldconfig -p | grep -q 'libatomic\.so\.1'; then
+  sudo apt-get install -y -qq libatomic1
+fi
 .venv/bin/playwright install chromium
 
 # ---- Durable state lives on the identity disk, not the checkout -------------

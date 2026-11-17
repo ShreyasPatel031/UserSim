@@ -32,6 +32,7 @@
 #   DISK_SIZE=30
 #   NEW_EGRESS=1            allocate + attach a dedicated NAT egress IP
 #   SKIP_PROVISION=0        create infra only
+#   SEED_SSH_USER=ubuntu    login user for SSH/SCP (the seeds refuse root)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -65,7 +66,10 @@ else
 fi
 
 G=(gcloud --quiet "--project=$PROJECT")
-SSH=("${G[@]}" compute ssh "$NAME" "--zone=$ZONE" --tunnel-through-iap)
+# The seeds refuse root over SSH: log in as a regular user (its home holds ~/usersim and the engine Chromium).
+SEED_SSH_USER="${SEED_SSH_USER:-ubuntu}"
+if [[ "$SEED_SSH_USER" == "root" ]]; then echo "FATAL: SEED_SSH_USER=root is refused by the seeds" >&2; exit 1; fi
+SSH=("${G[@]}" compute ssh "${SEED_SSH_USER}@${NAME}" "--zone=$ZONE" --tunnel-through-iap)
 SCP=("${G[@]}" compute scp "--zone=$ZONE" --tunnel-through-iap)
 
 echo "==> seed ${NAME} (${MACHINE}, ${ZONE}) on ${NETWORK}"
@@ -168,7 +172,7 @@ tar -czf "$TAR" \
   $([[ -f secrets/identities.json ]] && echo secrets/identities.json)
 
 "${SSH[@]}" --command='rm -rf ~/usersim && mkdir -p ~/usersim'
-"${SCP[@]}" "$TAR" "$NAME:~/usersim/payload.tgz"
+"${SCP[@]}" "$TAR" "${SEED_SSH_USER}@${NAME}:~/usersim/payload.tgz"
 rm -f "$TAR"
 "${SSH[@]}" --command='cd ~/usersim && tar xzf payload.tgz && rm -f payload.tgz'
 
@@ -182,7 +186,7 @@ echo "==> seed health"
 cat <<EOF
 
 Seed ready: ${NAME}
-  ssh:      gcloud compute ssh ${NAME} --zone=${ZONE} --tunnel-through-iap --project=${PROJECT}
+  ssh:      gcloud compute ssh ${SEED_SSH_USER}@${NAME} --zone=${ZONE} --tunnel-through-iap --project=${PROJECT}
   identity: /var/lib/usersim-seed/${NAME}   (disk ${DISK}, survives VM deletion)
   replicate: SEED_INDEX=$((SEED_INDEX + 1)) scripts/vm/create_signup_seed.sh
 EOF
