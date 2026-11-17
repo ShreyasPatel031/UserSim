@@ -1,0 +1,666 @@
+{
+ "stage": "4",
+ "ours": {
+  "topics": [
+   "Artificial Intelligence",
+   "Analytics",
+   "Marketing"
+  ],
+  "variants": [
+   {
+    "name": "UserSim Market Simulator",
+    "tagline": "Propose a change, see who adopts, who switches and who you lose",
+    "description": "Test a feature, a price, a positioning or a launch against a modelled market before you ship it. Built on 89,027 real Product Hunt voters and every product they backed. See which voter groups move toward you, which stay with a competitor, and why. Product Hunt market only, answers by group, and every prediction is scored in public afterwards.",
+    "pitch": {
+     "score": 81.8,
+     "lo": 77.9,
+     "hi": 85.7,
+     "pct": 96,
+     "calls": 14
+    }
+   },
+   {
+    "name": "UserSim Market Simulator",
+    "tagline": "A war game for your next launch: you move, competitors respond",
+    "description": "Propose a change. The simulator runs it against a market of 89,027 modelled voters and your real competitors, then lets the competitors respond over three rounds. You see who you win, who you lose and the reason, by voter group. We publish how often it is right: today it puts the real winner in its top 3 on 57% of days.",
+    "pitch": {
+     "score": 74.5,
+     "lo": 70.0,
+     "hi": 78.6,
+     "pct": 91,
+     "calls": 14
+    }
+   },
+   {
+    "name": "UserSim Market Simulator",
+    "tagline": "The market simulator that publishes its own score",
+    "description": "Most simulations cannot tell you how often they are right. Ours can: each forecast of who backs what is checked against what real people did, and the score is public. Try a feature, price or positioning change on a modelled Product Hunt market and see adoption and switching by voter group. Honest limits: one market, groups not individuals.",
+    "pitch": {
+     "score": 54.3,
+     "lo": 45.4,
+     "hi": 63.6,
+     "pct": 45,
+     "calls": 14
+    }
+   }
+  ],
+  "best": 0,
+  "panel": {
+   "source_people": 5726,
+   "n_lines": 24
+  },
+  "forced_choice": {
+   "picked_top3": 0.0,
+   "placed_top_third": 0.0,
+   "mean_place_pct": 73,
+   "n": 24,
+   "share_all": 0.0,
+   "by_group": {
+    "Tech Innovators": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 72,
+     "n": 12
+    },
+    "Curious Observers": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 69,
+     "n": 3
+    },
+    "Launch Veterans": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 76,
+     "n": 6
+    },
+    "Product Launchers": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 74,
+     "n": 3
+    }
+   },
+   "chance": 8.5,
+   "days": [
+    "2026-10-05",
+    "2026-10-06",
+    "2026-11-03"
+   ]
+  },
+  "panel_themes": [
+   {
+    "kind": "doubt",
+    "theme": "Product's market simulation focus is too niche/complex/abstract",
+    "lines": 24,
+    "groups": [
+     "Tech Innovators",
+     "Curious Observers",
+     "Launch Veterans",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does the model account for Product Hunt community dynamics?",
+    "lines": 10,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can we simulate different launch strategies and their impact?",
+    "lines": 8,
+    "groups": [
+     "Tech Innovators",
+     "Curious Observers",
+     "Launch Veterans",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "What are the data export and integration options?",
+    "lines": 6,
+    "groups": [
+     "Tech Innovators",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does the model handle novel or niche products?",
+    "lines": 4,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "What is the pricing model and availability of a free tier?",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators",
+     "Curious Observers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "What are the limitations of the 'Product Hunt only' scope?",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can we get a detailed breakdown of the model's methodology?",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can we define custom audience segments or personas?",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Are there any examples or case studies of its effectiveness?",
+    "lines": 1,
+    "groups": [
+     "Tech Innovators"
+    ]
+   }
+  ]
+ },
+ "competitors": [
+  {
+   "name": "Sapien",
+   "fc": true,
+   "tagline": "AI market research with synthetic populations",
+   "description": "Use simulated audiences to compare product concepts, marketing, prices and market strategies. Sapien builds the audience, runs the study and delivers interactive findings with segment comparisons. Bring a business question, explore likely responses and ask follow-up questions with the same population.",
+   "topics": [
+    "Analytics",
+    "Marketing",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-10-03",
+    "rank": 25,
+    "launches_that_day": 26,
+    "votes": 65,
+    "hunter_prior_hunts": 0
+   },
+   "pitch": {
+    "score": 61.8,
+    "lo": 59.3,
+    "hi": 64.3,
+    "pct": 63,
+    "calls": 14
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 782,
+    "top": [
+     "How to ensure synthetic populations accurately reflect real-world nuances?",
+     "How to handle biases in synthetic population generation?",
+     "How to validate the accuracy of synthetic audience responses?"
+    ],
+    "raw": "- [Tech Innovators] concern: How do you ensure the synthetic populations accurately reflect real-world demographic and behavioral nuances? | question: Are there any APIs or SDKs planned for integrating Sapien's simulation capabilities into custom workflows or internal tools?\n- [Tech Innovators] concern: What's the transparency around the data sources and biases that might be present in the synthetic audience generation? | question: Is there a way to import custom data sets or personas to influence the synthetic population generation?\n- [Tech Innovators] concern: How does Sapien handle niche markets or highly specialized user segments that might be difficult to synthesize accurately? | question: Can we export the raw data or detailed profiles of the synthetic populations for further analysis in other tools?\n- [Tech Innovators] concern: What are the limitations on the complexity or number of variables we can test within a single simulation? | question: Do you have any plans for a desktop app, especially for Mac, to manage studies and analyze results offline?\n- [Tech Innovators] concern: How do you prevent the synthetic populations from becoming too generic and losing the specific nuances of real users? | question: Are there any integrations with popular analytics platforms or CRM systems planned to enrich the synthetic data?\n- [Tech Innovators] concern: What mechanisms are in place to validate the accuracy and predictive power of the synthetic audience responses against real-world data? | question: Can multiple team members collaborate on a single study within Sapien, sharing insights and follow-up questions?\n- [Tech Innovators] concern: How does Sapien handle the ethical considerations of simulating human behavior and potential biases in the AI models? | question: Is there a way to customize the demographic and psychographic attributes of the synthetic populations beyond predefined segments?\n- [Tech Innovators] concern: What's the computational cost or time involved in generating and running studies with very large synthetic populations? | question: Are there any plans for an open-source component or a community forum to share best practices for using synthetic populations?\n- [Tech Innovators] concern: How do you ensure the synthetic populations evolve and stay current with changing market trends and consumer behaviors? | question: Can we integrate Sapien with our existing A/B testing tools to compare synthetic results with live experiments?\n- [Tech Innovators] concern: What kind of guardrails are in place to prevent the AI from generating unrealistic or nonsensical responses from the synthetic population? | question: Is there a sandbox or free tier available to experiment with Sapien's capabilities before committing to a plan?\n- [Tech Innovators] concern: How does Sapien address the 'black box' problem of AI, allowing users to understand why a synthetic population responded a certain way? | question: Are there any plans for a local-first or offline mode for running simulations, especially for sensitive data?\n- [Tech Innovators] concern: What's the learning curve like for new users to effectively set up and interpret studies with synthetic populations? | question: Can we define custom attributes or psychographic profiles for the synthetic populations to match very specific target audiences?\n- [Tech Innovators] concern: How do you handle potential biases in the training data that might inadvertently be reflected in the synthetic populations? | question: Is there a way to benchmark the performance of Sapien's synthetic populations against traditional market research methods?\n- [Tech Innovators] concern: What are the data privacy and security measures in place for the information we input to define our business questions? | question: Are there any case studies or examples of how Sapien has accurately predicted market outcomes for real products?\n- [Tech Innovators] concern: How does Sapien differentiate itself from other AI-powered market research tools that might use different methodologies? | question: Can we integrate Sapien with our existing project management tools to track research insights and actions?\n- [Tech Innovators] concern: What happens if the synthetic population consistently gives unexpected or counter-intuitive results; how do we debug that? | question: Is there a version of Sapien that can be self-hosted or run on-premise for companies with strict data governance policies?\n- [Tech Innovators] concern: How does Sapien account for the emotional and irrational aspects of human decision-making that might be hard to simulate? | question: Are there any plans to offer a free trial or a limited-feature version for individual developers or small startups?\n- [Tech Innovators] concern: What's the process for updating the underlying AI models and data to ensure the synthetic populations remain relevant? | question: Can we create and save custom synthetic audience templates for repeated use across different studies?\n- [Launch Veterans] concern: How do you ensure the synthetic populations don't just reflect existing biases in the training data, but can also predict emerging trends? | question: What's the typical turnaround time from defining a business question to getting interactive findings?\n- [Launch Veterans] concern: How does Sapien handle situations where the market is highly fragmented or has very specific cultural nuances? | question: Are there any success stories or testimonials you can share about how Sapien has helped other founders validate their ideas?\n- [Launch Veterans] concern: What are the limitations of using synthetic populations compared to real user feedback, especially for qualitative insights? | question: Can we share the interactive findings and segment comparisons easily with stakeholders who don't have a Sapien account?\n- [Tech Innovators] concern: How reliable are the insights from synthetic populations for making critical business decisions, especially for large investments? | question: Does Sapien offer different pricing tiers based on the number of studies or the complexity of the synthetic populations?\n- [Tech Innovators] concern: How do you ensure the synthetic populations are diverse enough to represent a broad market, not just a narrow segment? | question: Can we integrate Sapien with our existing product analytics tools to cross-reference synthetic insights with real user behavior?\n- [Tech Innovators] concern: What's the process for validating the accuracy of the synthetic population's responses against real-world market data? | question: Are there any community features or ways to share insights and learn from other users' experiences with Sapien?"
+   },
+   "forced_choice": {
+    "picked_top3": 0.0,
+    "placed_top_third": 0.0,
+    "mean_place_pct": 61,
+    "n": 15,
+    "share_all": 0.0,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 60,
+      "n": 12
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 69,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Plurai Simulation",
+   "fc": true,
+   "tagline": "A simulated world that makes your agent improve on every run",
+   "description": "Find your agent\u2019s worst bugs before your users do. One command in Claude Code, Codex or GitHub Copilot builds a digital twin of your agent\u2019s world: synthetic personas and documents, plus mocked tools, APIs and databases, in sandboxes that never touch production.",
+   "topics": [
+    "API",
+    "Developer Tools",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-11-12",
+    "rank": 1,
+    "launches_that_day": 37,
+    "votes": 382,
+    "hunter_prior_hunts": 410
+   },
+   "pitch": {
+    "score": 64.9,
+    "lo": 60.3,
+    "hi": 70.2,
+    "pct": 68,
+    "calls": 13
+   },
+   "panel": {
+    "top": [
+     "overhead of running simulations",
+     "how to handle complexity of mocking APIs",
+     "how to ensure diverse synthetic data"
+    ]
+   },
+   "forced_choice": {
+    "picked_top3": 0.0,
+    "placed_top_third": 46.1,
+    "mean_place_pct": 40,
+    "n": 21,
+    "share_all": 0.0,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 49.6,
+      "mean_place_pct": 37,
+      "n": 12
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 66.7,
+      "mean_place_pct": 28,
+      "n": 3
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 69,
+      "n": 3
+     },
+     "Product Launchers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 66.7,
+      "mean_place_pct": 33,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Aaru",
+   "fc": true,
+   "tagline": "Simulate populations to predict how they will respond",
+   "description": "Runs simulations with thousands of AI agents that stand for a population, and estimates how responses change across that population under stated conditions. Known for election prediction; sells to large enterprises.",
+   "topics": [
+    "Artificial Intelligence",
+    "Analytics",
+    "Marketing"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 65.0,
+    "lo": 60.4,
+    "hi": 68.8,
+    "pct": 73,
+    "calls": 13
+   },
+   "panel": {
+    "top": [
+     "Potential for AI bias or misuse",
+     "Cost and accessibility for smaller businesses",
+     "Complexity and learning curve for users"
+    ]
+   },
+   "forced_choice": {
+    "picked_top3": 0.0,
+    "placed_top_third": 11.9,
+    "mean_place_pct": 55,
+    "n": 24,
+    "share_all": 0.0,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 22.9,
+      "mean_place_pct": 51,
+      "n": 12
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 63,
+      "n": 3
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 56,
+      "n": 6
+     },
+     "Product Launchers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 61,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Artificial Societies",
+   "tagline": "Simulate your audience as a society of AI personas",
+   "description": "Describe a target audience in plain language and it builds a network of 200 to 3,500 interconnected AI personas grounded in real-world observations, then simulates how they react to your content, product or message. Answers within 24 hours.",
+   "topics": [
+    "Artificial Intelligence",
+    "Marketing",
+    "Analytics"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 62.8,
+    "lo": 57.4,
+    "hi": 67.6,
+    "pct": 64,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "accuracy of the simulation",
+     "transparency of AI decision-making",
+     "scalability and resources required"
+    ]
+   }
+  },
+  {
+   "name": "Simile",
+   "tagline": "A foundation model for human behaviour",
+   "description": "A Stanford spinout from the generative-agents research. Companies define a question; Simile builds a simulation populated by agents that represent a target population, trained on interviews with real people, and returns the answer.",
+   "topics": [
+    "Artificial Intelligence",
+    "Analytics",
+    "SaaS"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 69.3,
+    "lo": 66.1,
+    "hi": 72.5,
+    "pct": 83,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "Accuracy and bias of 'trained on interviews' data.",
+     "Potential for oversimplification of human interactions.",
+     "Ethical implications of simulating human behavior."
+    ]
+   }
+  },
+  {
+   "name": "AI Creative Insights by Decode",
+   "tagline": "Predict which ad wins before you spend on media",
+   "description": "Upload any ad, banner, OOH, or video creative and AI Creative Insights predicts how people will respond before your media budget goes live. Get attention heatmaps showing where eyes land first, second-by-second emotion curves, and prescriptive suggestions on what to change and why. Benchmark against category norms, compare variants side by side, and use Synthetic Audience to see predictions persona by persona. Built by Entropik, the team behind Decode.",
+   "topics": [
+    "Marketing",
+    "Advertising",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-09-21",
+    "rank": 9,
+    "launches_that_day": 27,
+    "votes": 110,
+    "hunter_prior_hunts": 1
+   },
+   "pitch": {
+    "score": 72.6,
+    "lo": 69.1,
+    "hi": 75.9,
+    "pct": 82,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "How does the AI handle different ad contexts?",
+     "How accurate is the AI for diverse audiences?",
+     "What are the limitations of the AI?"
+    ]
+   }
+  },
+  {
+   "name": "Foresight by Lightning Rod",
+   "tagline": "Predict anything with AI",
+   "description": "Foresight by Lightning Rod is an OpenAI-compatible forecasting API for developers building agents, prediction-market bots, and decision tools. Ask a question about a future event and get a scored, calibrated forecast back. Unlike general-purpose LLMs, Foresight is trained and evaluated on real-world outcomes, with benchmark-verified accuracy, cheaper inference, and a drop-in API for forecasting workflows.",
+   "topics": [
+    "API",
+    "Developer Tools",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-06-30",
+    "rank": 3,
+    "launches_that_day": 19,
+    "votes": 227,
+    "hunter_prior_hunts": 212
+   },
+   "pitch": {
+    "score": 65.2,
+    "lo": 60.4,
+    "hi": 70.1,
+    "pct": 72,
+    "calls": 13
+   },
+   "panel": {
+    "top": [
+     "How does the API handle biases in historical data?",
+     "What's the pricing model for the API?",
+     "How does the API handle ethical implications of forecasting?"
+    ]
+   }
+  }
+ ],
+ "comments": {
+  "products": [
+   "AI Creative Insights by Decode",
+   "Foresight by Lightning Rod",
+   "Sapien"
+  ],
+  "n_commenters": 19,
+  "themes": [
+   {
+    "kind": "praised",
+    "theme": "Forecasting as a dedicated capability, not just an LLM feature",
+    "n": 5,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "OpenAI-compatible API for easy integration",
+    "n": 4,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Faster creative testing for small teams, shows attention loss",
+    "n": 3,
+    "products": [
+     "AI Creative Insights by Decode"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Focus on calibration, which other tools skip",
+    "n": 2,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Does it return a calibration band or just a point probability?",
+    "n": 2,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Does the API expose confidence intervals or just point predictions?",
+    "n": 2,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How to validate calibration before full migration",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "Correlated predictions if many agents use the same model",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Use cases for cybersecurity risk prioritization",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does calibration hold up under regime shifts?",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How is calibration drift handled and validated?",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Trained on real-world outcomes, not just text patterns",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Open-ended framing, not boxed into one niche",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Which real-world domains perform well, and where are frontier models better?",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How much better than prompting Claude, any benchmarks?",
+    "n": 1,
+    "products": [
+     "Foresight by Lightning Rod"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How close are calculations to real campaign results?",
+    "n": 1,
+    "products": [
+     "AI Creative Insights by Decode"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "What data does the tool base its ad evaluation on?",
+    "n": 1,
+    "products": [
+     "AI Creative Insights by Decode"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "Inconsistent pricing for the same video across models",
+    "n": 1,
+    "products": [
+     "Sapien"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Does it ever return no clear signal, or always produce something?",
+    "n": 1,
+    "products": [
+     "Sapien"
+    ]
+   }
+  ]
+ },
+ "usd": 0.529,
+ "pitch_days": [
+  "2026-10-05",
+  "2026-11-02",
+  "2026-10-06",
+  "2026-11-03",
+  "2026-10-07",
+  "2026-11-04",
+  "2026-10-08",
+  "2026-11-05",
+  "2026-10-02",
+  "2026-10-30",
+  "2026-10-03",
+  "2026-10-31",
+  "2026-10-04",
+  "2026-11-01"
+ ]
+}

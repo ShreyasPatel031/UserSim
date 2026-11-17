@@ -1,0 +1,800 @@
+{
+ "stage": "2",
+ "ours": {
+  "topics": [
+   "Marketing",
+   "Analytics",
+   "Artificial Intelligence"
+  ],
+  "variants": [
+   {
+    "name": "UserSim Competitor Radar",
+    "tagline": "What launched in your space, and what real users said about it",
+    "description": "A standing watch on your market, built from real launches, not simulations. Each day and week: what launched in your space, where it finished, what real commenters asked for and complained about, and which products your own backers are moving toward. Groups only, never individuals.",
+    "pitch": {
+     "score": 68.3,
+     "lo": 61.9,
+     "hi": 74.3,
+     "pct": 79,
+     "calls": 13
+    }
+   },
+   {
+    "name": "UserSim Competitor Radar",
+    "tagline": "Your competitors' launch day, read for you every morning",
+    "description": "Name your product and your rivals. Radar tracks every Product Hunt launch in your space, how it landed against its forecast, and the questions and complaints real users left on it, ranked by how many different people raised them. A weekly digest shows what your market asked for that nobody shipped.",
+    "pitch": {
+     "score": 75.0,
+     "lo": 71.1,
+     "hi": 78.9,
+     "pct": 87,
+     "calls": 14
+    }
+   },
+   {
+    "name": "UserSim Competitor Radar",
+    "tagline": "See what users ask your competitors for, before you build it",
+    "description": "Real comments on real launches are the cheapest user research there is. Radar reads them for every launch in your space, groups them into what users asked for, complained about and praised, counts distinct people, and shows which voter groups backed each rival. Updated daily. No simulated answers.",
+    "pitch": {
+     "score": 75.4,
+     "lo": 71.1,
+     "hi": 79.3,
+     "pct": 94,
+     "calls": 14
+    }
+   }
+  ],
+  "best": 2,
+  "panel": {
+   "source_people": 2495,
+   "n_lines": 24
+  },
+  "forced_choice": {
+   "picked_top3": 0.0,
+   "placed_top_third": 0.0,
+   "mean_place_pct": 61,
+   "n": 21,
+   "share_all": 0.0,
+   "by_group": {
+    "Tech Innovators": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 63,
+     "n": 12
+    },
+    "Launch Veterans": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 55,
+     "n": 3
+    },
+    "Curious Observers": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 59,
+     "n": 3
+    },
+    "Product Launchers": {
+     "picked_top3": 0.0,
+     "placed_top_third": 0.0,
+     "mean_place_pct": 62,
+     "n": 3
+    }
+   },
+   "chance": 8.5,
+   "days": [
+    "2026-10-05",
+    "2026-10-06",
+    "2026-11-03"
+   ]
+  },
+  "panel_themes": [
+   {
+    "kind": "doubt",
+    "theme": "Not a direct tool for building, launching, or personal use",
+    "lines": 21,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans",
+     "Curious Observers",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Accuracy and bias of AI in comment interpretation and grouping",
+    "lines": 5,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Data sources, filtering, and ethical implications of comment analysis",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Scalability, latency, and update frequency for competitor tracking",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators",
+     "Launch Veterans"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Integration capabilities with existing product management tools",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators",
+     "Product Launchers"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Granularity and detail of 'voter groups' analysis",
+    "lines": 3,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Pricing model, cost-effectiveness, and free trial availability",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Coverage and historical data retention of Product Hunt launches",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Handling of comment manipulation, spam, and unique user identification",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Dashboard, reporting, and ease of setup for tracking multiple competitors",
+    "lines": 2,
+    "groups": [
+     "Tech Innovators"
+    ]
+   }
+  ]
+ },
+ "competitors": [
+  {
+   "name": "HeadsUp",
+   "fc": true,
+   "tagline": "The first AI competitor monitoring agent",
+   "description": "Are you falling behind your competitors? HeadsUp is the first AI agent that alerts you to competitor moves and helps you respond. Get instant insights then real-time alerts. Setup in 60 secs and HeadsUp runs on autopilot.",
+   "topics": [
+    "Productivity",
+    "Analytics",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-08-17",
+    "rank": 1,
+    "launches_that_day": 8,
+    "votes": 598,
+    "hunter_prior_hunts": 2
+   },
+   "pitch": {
+    "score": 66.7,
+    "lo": 62.8,
+    "hi": 70.3,
+    "pct": 76,
+    "calls": 13
+   },
+   "panel": {
+    "top": [
+     "How does HeadsUp ensure data accuracy?",
+     "How does HeadsUp handle data privacy and security?",
+     "How does HeadsUp differentiate minor updates from strategic moves?"
+    ]
+   },
+   "forced_choice": {
+    "picked_top3": 7.9,
+    "placed_top_third": 35.1,
+    "mean_place_pct": 40,
+    "n": 24,
+    "share_all": 7.9,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 16.7,
+      "placed_top_third": 48.9,
+      "mean_place_pct": 33,
+      "n": 12
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 33.3,
+      "mean_place_pct": 52,
+      "n": 3
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 33.3,
+      "mean_place_pct": 43,
+      "n": 6
+     },
+     "Product Launchers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 42,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Glimpse",
+   "fc": true,
+   "tagline": "The competitive intelligence agent",
+   "description": "Your competitors move every day. Glimpse is the AI agent that keeps up. It tracks every competitor across ads, pricing, hiring, content, reviews and AI search, then turns each move into your next one: always-current battle cards, your real win rate, and the demand you lose in AI answers before a deal exists. Delivered to Slack and your inbox. It runs the whole competitive program for you, so a team of one moves like a team of ten. Start free in minutes.",
+   "topics": [
+    "Analytics",
+    "Marketing",
+    "Business Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-07-09",
+    "rank": 14,
+    "launches_that_day": 15,
+    "votes": 106,
+    "hunter_prior_hunts": 0
+   },
+   "pitch": {
+    "score": 70.9,
+    "lo": 67.7,
+    "hi": 74.1,
+    "pct": 87,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "How does Glimpse ensure data accuracy?",
+     "How does Glimpse handle data privacy and security?",
+     "How does Glimpse differentiate genuine moves from noise?"
+    ]
+   },
+   "forced_choice": {
+    "picked_top3": 0.0,
+    "placed_top_third": 0.0,
+    "mean_place_pct": 57,
+    "n": 15,
+    "share_all": 0.0,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 57,
+      "n": 12
+     },
+     "Launch Veterans": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 57,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "NODUS PH Radar for Product Hunt",
+   "fc": true,
+   "tagline": "Product Hunt analytics beyond the daily leaderboard",
+   "description": "NODUS PH Radar helps makers analyze Product Hunt launches beyond the daily rankings. Explore launch velocity, race dynamics, watch rules, community spotlight opportunities, historical patterns, and upcoming scheduled launches. Gain context before launch day and understand what drives visibility and engagement.",
+   "topics": [
+    "Browser Extensions",
+    "Chrome Extensions",
+    "Productivity"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-06-12",
+    "rank": 15,
+    "launches_that_day": 18,
+    "votes": 97,
+    "hunter_prior_hunts": 1
+   },
+   "pitch": {
+    "score": 72.7,
+    "lo": 61.8,
+    "hi": 82.7,
+    "pct": 76,
+    "calls": 11
+   },
+   "panel": {
+    "top": [
+     "Browser support beyond Chrome?",
+     "How accurate are launch predictions?",
+     "How does it compare to other tools?"
+    ]
+   },
+   "forced_choice": {
+    "picked_top3": 15.2,
+    "placed_top_third": 73.8,
+    "mean_place_pct": 22,
+    "n": 21,
+    "share_all": 15.2,
+    "by_group": {
+     "Tech Innovators": {
+      "picked_top3": 11.6,
+      "placed_top_third": 80.9,
+      "mean_place_pct": 19,
+      "n": 12
+     },
+     "Launch Veterans": {
+      "picked_top3": 33.3,
+      "placed_top_third": 100.0,
+      "mean_place_pct": 8,
+      "n": 3
+     },
+     "Curious Observers": {
+      "picked_top3": 0.0,
+      "placed_top_third": 0.0,
+      "mean_place_pct": 56,
+      "n": 3
+     },
+     "Product Launchers": {
+      "picked_top3": 33.3,
+      "placed_top_third": 100.0,
+      "mean_place_pct": 7,
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "name": "Competely AI Agent",
+   "tagline": "Instantly find, analyze, and track your competitors with AI",
+   "description": "Competely AI agent saves you days of manual competitor research. Instantly find competitors, get detailed competitive analysis in minutes, and automatically track their moves with AI-powered email updates. Outsmarting your competitors has never been easier.",
+   "topics": [
+    "Marketing",
+    "Artificial Intelligence",
+    "Business Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-04-28",
+    "rank": 5,
+    "launches_that_day": 16,
+    "votes": 327,
+    "hunter_prior_hunts": 33
+   },
+   "pitch": {
+    "score": 68.2,
+    "lo": 64.6,
+    "hi": 71.6,
+    "pct": 76,
+    "calls": 14
+   },
+   "panel": {
+    "top": [
+     "How does the AI handle niche markets or specific competitor types?",
+     "How does the tool ensure the accuracy and recency of competitive data?",
+     "Are there any plans for a native Mac app or desktop client?"
+    ]
+   }
+  },
+  {
+   "name": "Fruitful",
+   "tagline": "Track competitors instantly. Juicy insights every day.",
+   "description": "Track competitor websites and capture every change. Get clear weekly reports and Slack alerts on what matters. Spot hiring signals, pricing moves, and product launches in near real time.",
+   "topics": [
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2025-10-06",
+    "rank": 2,
+    "launches_that_day": 8,
+    "votes": 417,
+    "hunter_prior_hunts": 253
+   },
+   "pitch": {
+    "score": 51.4,
+    "lo": 47.2,
+    "hi": 56.5,
+    "pct": 37,
+    "calls": 13
+   },
+   "panel": {
+    "top": [
+     "accuracy of change detection",
+     "scalability for tracking competitors",
+     "potential for false positives"
+    ]
+   }
+  },
+  {
+   "name": "Parano.ai",
+   "tagline": "Never miss a competitor's move",
+   "description": "AI-assisted competitive intelligence for teams that play to win. Parano.ai tracks everything your competitors do, then tells you what it means and what to do about it, saving you hours of research every week while educating your whole team on your market.",
+   "topics": [
+    "Marketing",
+    "SaaS",
+    "Artificial Intelligence"
+   ],
+   "source": "held",
+   "finish": {
+    "day": "2026-06-17",
+    "rank": 33,
+    "launches_that_day": 39,
+    "votes": 78,
+    "hunter_prior_hunts": 0
+   },
+   "pitch": {
+    "score": 67.8,
+    "lo": 62.5,
+    "hi": 72.9,
+    "pct": 76,
+    "calls": 13
+   },
+   "panel": {
+    "top": [
+     "How does it ensure data accuracy and reliability?",
+     "How does it handle false positives or irrelevant activities?",
+     "How does it ensure insights are relevant and actionable?"
+    ]
+   }
+  },
+  {
+   "name": "hunted.space",
+   "tagline": "Real-time Product Hunt launch stats",
+   "description": "Track upvotes, comments and rank of every Product Hunt launch hour by hour through launch day, compare launches, and use an AI predictor that models how evidence changes the odds of a launch.",
+   "topics": [
+    "Analytics",
+    "Product Hunt",
+    "Marketing"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 85.3,
+    "lo": 81.7,
+    "hi": 88.6,
+    "pct": 98,
+    "calls": 11
+   },
+   "panel": {
+    "n": 24,
+    "source_people": 782,
+    "top": [
+     "AI predictor accuracy and validation.",
+     "AI predictor handling of niche products/limited data.",
+     "Pricing model and free trial availability."
+    ],
+    "raw": "- [Tech Innovators] concern: How does the AI model handle unexpected virality or negative sentiment spikes? | question: Are there any plans for a native Mac app or a more integrated desktop experience?\n- [Tech Innovators] concern: What's the refresh rate for the data, and is there any potential for API rate limits affecting accuracy? | question: Can we export the historical launch data for our own analysis, perhaps in CSV or JSON format?\n- [Tech Innovators] concern: Is there a way to track specific keywords in comments or sentiment analysis for qualitative insights? | question: How does the AI predictor account for the 'hunter' effect or early community support?\n- [Tech Innovators] concern: How robust is the AI predictor against manipulation attempts or bot activity on Product Hunt? | question: Will there be an API available for developers to integrate this data into their own dashboards?\n- [Tech Innovators] concern: What kind of historical data is the AI predictor trained on, and how frequently is it updated? | question: Can we set up custom alerts for specific rank changes or comment thresholds?\n- [Tech Innovators] concern: How does the tool ensure data accuracy, especially during peak traffic times on Product Hunt? | question: Are there any plans to integrate with other marketing analytics platforms for a more holistic view?\n- [Tech Innovators] concern: What measures are in place to prevent data discrepancies if Product Hunt's API has intermittent issues? | question: Can we track multiple launches simultaneously and view them on a single dashboard?\n- [Tech Innovators] concern: How does the AI predictor handle launches in niche categories with less historical data? | question: Is there a way to segment upvotes by user activity or influence score within the platform?\n- [Tech Innovators] concern: What's the latency between an event on Product Hunt and it appearing in hunted.space? | question: Can we get insights into the geographic distribution of upvotes or comments?\n- [Tech Innovators] concern: How transparent is the AI model's prediction logic? Can we see the factors influencing its odds? | question: Will there be a feature to track competitor launches automatically once they go live?\n- [Tech Innovators] concern: What happens if Product Hunt changes its API or data structure? How quickly can hunted.space adapt? | question: Is there a free tier or trial available to test the full capabilities of the AI predictor?\n- [Tech Innovators] concern: How does the AI predictor account for the 'Product of the Day' announcement's impact? | question: Can we integrate this data with Slack or other communication tools for real-time notifications?\n- [Tech Innovators] concern: What's the pricing model for this tool, especially for teams managing multiple launches? | question: Are there any plans to offer a Chrome extension for quick access to stats while browsing Product Hunt?\n- [Tech Innovators] concern: How does the AI model handle the initial hours of a launch when data is sparse? | question: Can we get a breakdown of upvotes by time zone to optimize our outreach efforts?\n- [Tech Innovators] concern: Is there any risk of Product Hunt disliking or blocking tools that scrape their data? | question: Can we track the performance of specific comments or replies on our launch page?\n- [Tech Innovators] concern: How does the AI predictor differentiate between genuine engagement and potential bot activity? | question: Will there be a feature to analyze the impact of different hunter choices on launch success?\n- [Tech Innovators] concern: What's the accuracy rate of the AI predictor, and how is it validated? | question: Can we compare our launch performance against a benchmark of successful products in our category?\n- [Tech Innovators] concern: How does the AI predictor account for the 'weekend effect' or holiday launches? | question: Are there any plans to offer a 'post-mortem' analysis feature to learn from past launches?\n- [Launch Veterans] concern: How does the AI predictor handle the variability of Product Hunt's algorithm changes? | question: Can we track the engagement of specific users who upvoted our product?\n- [Launch Veterans] concern: What's the data retention policy for historical launch data? | question: Will there be a feature to simulate different launch strategies and see predicted outcomes?\n- [Launch Veterans] concern: How does the AI predictor account for external marketing efforts driving traffic to Product Hunt? | question: Can we get a breakdown of comments by sentiment (positive, neutral, negative)?\n- [Tech Innovators] concern: What's the pricing structure like, and is there a free trial to see if it's worth the investment? | question: Does it integrate with any other marketing analytics tools I might already be using?\n- [Tech Innovators] concern: How does the AI predictor handle products in very niche categories with limited historical data? | question: Can we get more granular data on the types of users who are upvoting our product?\n- [Tech Innovators] concern: What's the underlying technology for the real-time data collection, and how scalable is it? | question: Will there be community features to share launch insights or best practices based on the data?"
+   }
+  },
+  {
+   "name": "Visualping",
+   "tagline": "Website change monitoring with AI summaries",
+   "description": "Monitor any competitor web page for visual and text changes. AI filters out noise and summarises what actually changed, with alerts by email or Slack. Free plan; paid plans from about $14 a month.",
+   "topics": [
+    "Marketing",
+    "Analytics",
+    "SaaS"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 59.8,
+    "lo": 53.8,
+    "hi": 66.2,
+    "pct": 57,
+    "calls": 12
+   },
+   "panel": {
+    "top": [
+     "How does AI handle complex or JavaScript-heavy pages?",
+     "How does AI differentiate between minor and significant changes?",
+     "How does it handle pages behind a login?"
+    ]
+   }
+  },
+  {
+   "name": "Crayon",
+   "tagline": "Competitive intelligence platform for go-to-market teams",
+   "description": "An established enterprise platform that tracks competitor and market changes across the web and turns them into battlecards for sales teams. Quote-only pricing.",
+   "topics": [
+    "Marketing",
+    "SaaS",
+    "Sales"
+   ],
+   "finish": null,
+   "source": "web",
+   "pitch": {
+    "score": 30.8,
+    "lo": 26.2,
+    "hi": 35.0,
+    "pct": 4,
+    "calls": 13
+   },
+   "panel": {
+    "top": [
+     "Data accuracy and filtering irrelevant information.",
+     "Seamless integration into existing sales processes.",
+     "Usability and actionability of battlecards for sales reps."
+    ]
+   }
+  }
+ ],
+ "comments": {
+  "products": [
+   "GapHunt",
+   "Glimpse",
+   "MarketRecon",
+   "NODUS HN Radar",
+   "NODUS PH Radar for Product Hunt",
+   "PHBench",
+   "Parano.ai",
+   "Upvotics"
+  ],
+  "n_commenters": 56,
+  "themes": [
+   {
+    "kind": "praised",
+    "theme": "Smart angle/idea to mine low-star reviews for product ideas.",
+    "n": 4,
+    "products": [
+     "GapHunt"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Does it support all app store categories or other platforms?",
+    "n": 3,
+    "products": [
+     "GapHunt"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "What signals does it use for predictions and how are they weighted?",
+    "n": 3,
+    "products": [
+     "PHBench"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does it measure lost demand in AI answers?",
+    "n": 3,
+    "products": [
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it group similar complaints or cluster recurring themes?",
+    "n": 2,
+    "products": [
+     "GapHunt"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does it handle data ingestion and real-time updates?",
+    "n": 2,
+    "products": [
+     "GapHunt",
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does it identify trending posts early?",
+    "n": 2,
+    "products": [
+     "NODUS HN Radar"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Does it track comment velocity as a signal?",
+    "n": 2,
+    "products": [
+     "NODUS HN Radar",
+     "NODUS PH Radar for Product Hunt"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it compare current trajectory to past launches by category?",
+    "n": 2,
+    "products": [
+     "NODUS PH Radar for Product Hunt"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "Can it generate content briefs or suggest actions based on findings?",
+    "n": 2,
+    "products": [
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "Worry about signal-to-noise ratio and filtering important changes.",
+    "n": 2,
+    "products": [
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Useful for problem identification and starting a startup.",
+    "n": 2,
+    "products": [
+     "GapHunt"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Upcoming launches and momentum view is genuinely useful.",
+    "n": 2,
+    "products": [
+     "NODUS PH Radar for Product Hunt"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Genuinely useful tool for competitive intelligence.",
+    "n": 2,
+    "products": [
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "What are the differences from similar products?",
+    "n": 1,
+    "products": [
+     "GapHunt"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does it track competitor pricing, especially hidden ones?",
+    "n": 1,
+    "products": [
+     "Upvotics"
+    ]
+   },
+   {
+    "kind": "asked",
+    "theme": "How does it validate information for accuracy?",
+    "n": 1,
+    "products": [
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "complained",
+    "theme": "Worry about optimizing for signals corrupting the model.",
+    "n": 1,
+    "products": [
+     "PHBench"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "The AI analysis layer is a nice touch.",
+    "n": 1,
+    "products": [
+     "GapHunt"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Automatically surfacing pricing and messaging shifts is needed.",
+    "n": 1,
+    "products": [
+     "Upvotics"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Finding about team size and engagement being stronger signal is interesting.",
+    "n": 1,
+    "products": [
+     "PHBench"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Benchmarking before launch is useful and often skipped.",
+    "n": 1,
+    "products": [
+     "PHBench"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "The value is in the threshold function, not just a stream.",
+    "n": 1,
+    "products": [
+     "NODUS HN Radar"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Great way to find hidden gems beyond popular AI tools.",
+    "n": 1,
+    "products": [
+     "NODUS PH Radar for Product Hunt"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "PH analytics beyond the daily leaderboard is something every founder needs.",
+    "n": 1,
+    "products": [
+     "NODUS PH Radar for Product Hunt"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "The AI search part is especially interesting.",
+    "n": 1,
+    "products": [
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "Positioning as an agent makes workflow easier to picture.",
+    "n": 1,
+    "products": [
+     "Glimpse"
+    ]
+   },
+   {
+    "kind": "praised",
+    "theme": "The AI-answer-visibility signal is the freshest part.",
+    "n": 1,
+    "products": [
+     "Glimpse"
+    ]
+   }
+  ]
+ },
+ "usd": 0.594,
+ "pitch_days": [
+  "2026-10-05",
+  "2026-11-02",
+  "2026-10-06",
+  "2026-11-03",
+  "2026-10-07",
+  "2026-11-04",
+  "2026-10-08",
+  "2026-11-05",
+  "2026-10-02",
+  "2026-10-30",
+  "2026-10-03",
+  "2026-10-31",
+  "2026-10-04",
+  "2026-11-01"
+ ]
+}

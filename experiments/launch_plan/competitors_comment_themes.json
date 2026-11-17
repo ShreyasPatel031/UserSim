@@ -1,0 +1,1294 @@
+{
+ "coverage": {
+  "Articos MCP": {
+   "comments_held": 46,
+   "non_team_comments": 19,
+   "distinct_non_team_commenters": 19
+  },
+  "Scroll Launch": {
+   "comments_held": 9,
+   "non_team_comments": 5,
+   "distinct_non_team_commenters": 5
+  },
+  "Product Hunt Visual Launch Editor": {
+   "comments_held": 21,
+   "non_team_comments": 15,
+   "distinct_non_team_commenters": 15
+  },
+  "NODUS PH Radar for Product Hunt": {
+   "comments_held": 18,
+   "non_team_comments": 9,
+   "distinct_non_team_commenters": 8
+  },
+  "TheySaid 4.0": {
+   "comments_held": 83,
+   "non_team_comments": 20,
+   "distinct_non_team_commenters": 20
+  },
+  "Spira for Product Hunt Makers": {
+   "comments_held": 83,
+   "non_team_comments": 42,
+   "distinct_non_team_commenters": 42
+  },
+  "Articos": {
+   "comments_held": 43,
+   "non_team_comments": 24,
+   "distinct_non_team_commenters": 24
+  },
+  "Submit.DIY": {
+   "comments_held": 15,
+   "non_team_comments": 8,
+   "distinct_non_team_commenters": 8
+  },
+  "Firstpass": {
+   "comments_held": 20,
+   "non_team_comments": 11,
+   "distinct_non_team_commenters": 10
+  },
+  "Sapien": {
+   "comments_held": 2,
+   "non_team_comments": 1,
+   "distinct_non_team_commenters": 1
+  },
+  "shippedit.me": {
+   "comments_held": 6,
+   "non_team_comments": 2,
+   "distinct_non_team_commenters": 2
+  },
+  "PHBench": {
+   "comments_held": 38,
+   "non_team_comments": 15,
+   "distinct_non_team_commenters": 15
+  }
+ },
+ "jobs": {
+  "try": {
+   "products": [
+    "Firstpass",
+    "Articos",
+    "Articos MCP",
+    "Product Hunt Visual Launch Editor"
+   ],
+   "n_commenters": 67,
+   "n_comments": 69,
+   "themes": [
+    {
+     "kind": "praised",
+     "theme": "Fast turnaround time and improved messaging",
+     "n_commenters": 7,
+     "products": [
+      "Articos",
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Editable on mobile, improved mobile experience",
+     "n_commenters": 4,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How is accuracy quantified and measured?",
+     "n_commenters": 3,
+     "products": [
+      "Articos",
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Helped shape ICP and positioning",
+     "n_commenters": 3,
+     "products": [
+      "Articos",
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "See your launch as you build it, reduces fear",
+     "n_commenters": 3,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How does it handle non-English languages?",
+     "n_commenters": 2,
+     "products": [
+      "Articos MCP",
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How different are results compared to actual users?",
+     "n_commenters": 2,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "Confusing categories and tags",
+     "n_commenters": 2,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "More transparency about investment questions",
+     "n_commenters": 2,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Checklist jumping to fields is clutch/useful",
+     "n_commenters": 2,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Does it explain the principle behind the feedback?",
+     "n_commenters": 1,
+     "products": [
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Which surface kills the most taglines?",
+     "n_commenters": 1,
+     "products": [
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Does it work on pre-launch drafts?",
+     "n_commenters": 1,
+     "products": [
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Is it optimized for other platforms like X or HN?",
+     "n_commenters": 1,
+     "products": [
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "Concerns about hidden costs of character limits",
+     "n_commenters": 1,
+     "products": [
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Love the name",
+     "n_commenters": 1,
+     "products": [
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Feels like a first-class Mac citizen",
+     "n_commenters": 1,
+     "products": [
+      "Firstpass"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can I see a demo or sample report?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Clean UI",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Fast onboarding and detailed insights",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it generate personas from public discussions?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Is there a confidence score per theme?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Useful for a reality check on positioning",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "White label reporting is huge for agencies",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Used to test landing pages and unmet needs",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Traces findings back to specific persona reasoning",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How different is feedback across personas?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it predict curator features?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Useful for CRO and pre-validation",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Are you planning Slack integrations?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Integrates testing into the creation workflow",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Which use case is most popular?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it do A/B testing without actual A/B testing?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How does MCP integration help with market research?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Are you looking to get on ChatGPT / Claude plugins stores?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it compare different versions of value propositions?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How do you keep the engine up to date with new models?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Helps with paid marketing experimentation",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it 'look' at graphic illustrations?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Is it possible to refine buyer profiles over time?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it help test pricing strategies?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How does it generate buyer perspectives for niche markets?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it identify potential customer objections?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Makes explaining maker comment and tagline limits easier",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Sleek and helpful design",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "Videos feel secondary",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "Company info is confusing",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "Cannot save and come back to finish launch without image",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Great improvement over confusing editing dashboard",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Editing right on the page preview is nicer",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can co-makers leave notes on a draft?",
+     "n_commenters": 1,
+     "products": [
+      "Product Hunt Visual Launch Editor"
+     ]
+    }
+   ]
+  },
+  "board": {
+   "products": [
+    "NODUS PH Radar for Product Hunt",
+    "PHBench"
+   ],
+   "n_commenters": 23,
+   "n_comments": 24,
+   "themes": [
+    {
+     "kind": "praised",
+     "theme": "Useful for understanding launch dynamics and picking launch dates",
+     "n_commenters": 4,
+     "products": [
+      "NODUS PH Radar for Product Hunt",
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Can it compare trajectory to similar past launches by category/follower size?",
+     "n_commenters": 2,
+     "products": [
+      "NODUS PH Radar for Product Hunt"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "What is the product's own prediction for its success?",
+     "n_commenters": 2,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Helps find hidden gems beyond popular AI tools",
+     "n_commenters": 1,
+     "products": [
+      "NODUS PH Radar for Product Hunt"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Does it surface comment velocity as a signal?",
+     "n_commenters": 1,
+     "products": [
+      "NODUS PH Radar for Product Hunt"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Does it include post-launch traction like follows and comments?",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "Model might penalize solo founders or first-time founders",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "High engagement vs. Series A might be correlation, not causality",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "No analysis on hunter impact",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "Publishing the model might corrupt the signal over time",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "What signals does it use (upvote velocity, comment quality, founder background)?",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "Does it backtest against past launches?",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How should users operationalize the score given performance decay?",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How does relationship mapping work; public data or CRM connection?",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "PH traction is not a proxy for business durability",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "How is PH traction weighted versus founder signals?",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "What is the false positive rate (failed launches with high votes)?",
+     "n_commenters": 1,
+     "products": [
+      "PHBench"
+     ]
+    }
+   ]
+  },
+  "panel": {
+   "products": [
+    "Sapien",
+    "TheySaid 4.0",
+    "Articos",
+    "Articos MCP"
+   ],
+   "n_commenters": 64,
+   "n_comments": 64,
+   "themes": [
+    {
+     "kind": "asked",
+     "theme": "how accurate is synthetic feedback compared to real users?",
+     "n_commenters": 6,
+     "products": [
+      "Articos",
+      "Articos MCP",
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "fast turnaround time for feedback",
+     "n_commenters": 5,
+     "products": [
+      "Articos",
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "integrating feedback into existing workflows is good",
+     "n_commenters": 3,
+     "products": [
+      "Articos MCP",
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "helps shape ICP and positioning",
+     "n_commenters": 3,
+     "products": [
+      "Articos",
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "synthetic users going through the product is useful",
+     "n_commenters": 2,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "validation debt is a relatable concept",
+     "n_commenters": 2,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "helps improve content and messaging",
+     "n_commenters": 2,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "pricing is unclear or inconsistent",
+     "n_commenters": 1,
+     "products": [
+      "Sapien"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how long does a synthetic test take?",
+     "n_commenters": 1,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it be tuned for specific customer audiences?",
+     "n_commenters": 1,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it help small teams with user research?",
+     "n_commenters": 1,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how are synthetic users created?",
+     "n_commenters": 1,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how are questions from synthetic users surfaced?",
+     "n_commenters": 1,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how to prevent synthetic users from always agreeing?",
+     "n_commenters": 1,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "what happens when real and synthetic testers disagree?",
+     "n_commenters": 1,
+     "products": [
+      "TheySaid 4.0"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how is accuracy quantified?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can I see a demo or sample report?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "scoring system is unclear and needs more detail",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "clean UI",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "onboarding is fast and detailed insights",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it generate personas from public discussions?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "half of themes are noise, is there a confidence score?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "useful for reality checking positioning",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "white label reporting is useful for agencies",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "traces findings back to specific persona reasoning",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how different is feedback across different personas?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it predict product launch success?",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "useful for CRO and pre-validation",
+     "n_commenters": 1,
+     "products": [
+      "Articos"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "are there plans for Slack integrations?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "which use case is most popular?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it do A/B testing without actual A/B testing?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does MCP integration help with market research?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "does it hold for non-western audiences?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "are you looking to get on ChatGPT/Claude plugin stores?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it compare different versions of value propositions?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does it stay updated with new LLM models?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it look at graphic illustrations?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "is it possible to refine buyer profiles over time?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it help test pricing strategies?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does it generate different buyer perspectives for niches?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it identify potential customer objections?",
+     "n_commenters": 1,
+     "products": [
+      "Articos MCP"
+     ]
+    }
+   ]
+  },
+  "pack": {
+   "products": [
+    "Spira for Product Hunt Makers",
+    "Submit.DIY",
+    "shippedit.me",
+    "Scroll Launch"
+   ],
+   "n_commenters": 57,
+   "n_comments": 57,
+   "themes": [
+    {
+     "kind": "asked",
+     "theme": "how to maintain brand voice and avoid generic AI content",
+     "n_commenters": 7,
+     "products": [
+      "Spira for Product Hunt Makers",
+      "Submit.DIY"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "solves the problem of launch momentum dying",
+     "n_commenters": 5,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does the AI learn a founder's voice",
+     "n_commenters": 4,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how much control do makers have over content",
+     "n_commenters": 3,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "is there a free trial or promo code",
+     "n_commenters": 3,
+     "products": [
+      "Spira for Product Hunt Makers",
+      "Submit.DIY",
+      "shippedit.me"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it turn content ideas into posts",
+     "n_commenters": 2,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does it handle brand 'taste' and trends",
+     "n_commenters": 2,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "do agents auto-post",
+     "n_commenters": 2,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "does it post on existing social media or new accounts",
+     "n_commenters": 2,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "does it help with sequencing and prioritizing platforms",
+     "n_commenters": 2,
+     "products": [
+      "Submit.DIY"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "persona clone idea is smart",
+     "n_commenters": 2,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "what do the 'growth agents' actually do",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does pricing work",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does it adapt to product pivots or messaging changes",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "does it showcase physical products",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "what differentiates it from other tools",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how does it handle AI influencer transparency",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "can it be used for forums like Reddit",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "does it publish autonomously or queue for approval",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "does it accept video demos",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "asked",
+     "theme": "how to time Scroll Launch with a Product Hunt launch",
+     "n_commenters": 1,
+     "products": [
+      "Scroll Launch"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "bug/inconsistency with connecting social accounts",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "auto-scheduled posts felt template-y",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "paywall is scaring me away",
+     "n_commenters": 1,
+     "products": [
+      "Submit.DIY"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "website is not reachable",
+     "n_commenters": 1,
+     "products": [
+      "shippedit.me"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "long backlog for product submission",
+     "n_commenters": 1,
+     "products": [
+      "Scroll Launch"
+     ]
+    },
+    {
+     "kind": "complained",
+     "theme": "onboarding is stuck and lacking freedom",
+     "n_commenters": 1,
+     "products": [
+      "Scroll Launch"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "two-minute persona setup from URL is slick",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "something people actually need",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "good catch with the Product Hunt theme",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "building brand DNA automatically is a time saver",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Social Studio with drafts waiting is good UX",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "branded AI influencer setup was impressive",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "Brand DNA from a single link is clever",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "confidence threshold for manager check is the hard problem",
+     "n_commenters": 1,
+     "products": [
+      "Spira for Product Hunt Makers"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "must-have for frequent launchers",
+     "n_commenters": 1,
+     "products": [
+      "Submit.DIY"
+     ]
+    },
+    {
+     "kind": "praised",
+     "theme": "practical idea, launching is chaotic",
+     "n_commenters": 1,
+     "products": [
+      "Submit.DIY"
+     ]
+    }
+   ]
+  }
+ },
+ "usd": 0.028
+}

@@ -11,10 +11,14 @@ in the appendix.
 | # | Date | Product | Job and user | Different under Product Hunt's rule because | Day and reason | P(top 5) this launch [MODEL, row A] | At least one top 5 by now: raw / scaled |
 |---|---|---|---|---|---|---|---|
 | 1 | **Sat Dec 5 2026** | Launch Simulator (/try) | A maker sees how one page will land before posting | First launch | Saturday: rank and record | 17.6 [10.7, 24.3] | 18 / 13 |
-| 2 | **Sat Feb 6 2027** | Daily Forecast | Anyone watching Product Hunt sees today's ranking before votes show | Different user (watchers, not only makers) and a different job (today's ranking, not my page) | Saturday: rank and record | 27.5 [19.0, 35.7] | 35 / 27 |
-| 3 | **Sat Apr 10 2027** | Persona Panel | A product or marketing team hears from audience segments, compares versions, defines its own segments | Different user (teams doing user research, on any page) and a new app surface | Saturday: rank | 31.6 [21.7, 40.8] | 49 / 39 |
-| 4 | **Tue Jun 15 2027** if a hunter with a record posts it, else **Sat Jun 12** | Launch Pack (paid) | A founder buys a full service across one launch, with scored reports | Different job (a paid service with reports), different buyer | Weekday for traffic only with a hunter; Saturday otherwise | Sat 34.2 [23.6, 44.6]; Tue–Thu 13.8 [10.4, 17.6] | Sat 60 / 49; Tue–Thu 51 / 41 |
+| 2 | **Sat Feb 6 2027** | Competitor Radar | A founder with named competitors gets a standing daily and weekly watch: what launched, how it landed, what real users asked and complained about, where their own backers are moving | A different use case and moment: /try is used once before a launch on your own page; Radar is used every week after it, on competitors' products | Saturday: rank and record | 27.5 [19.0, 35.7] | 35 / 27 |
+| 3 | **Sat Apr 10 2027** | User Testing, end to end | A product team has simulated users do real tasks on its product and on two competitors, and gets a side-by-side report ending in named fixes | A different use case and user: it operates the product itself in a browser, for product teams after launch | Saturday, or Tuesday if a hunter with a record posts it | 31.6 [21.7, 40.8] | 49 / 39 |
+| 4 | **Tue Jun 15 2027** if a hunter with a record posts it, else **Sat Jun 12** | Market Simulator (moonshot) | A founder proposes a change (feature, price, positioning, launch) and sees who adopts, who switches and who is lost, by group | A different use case: products 1–3 describe what is; this one answers "what if" | Weekday for traffic only with a hunter; Saturday otherwise | Sat 34.2 [23.6, 44.6]; Tue–Thu 13.8 [10.4, 17.6] | Sat 60 / 49; Tue–Thu 51 / 41 |
 
+- **The products changed on Nov 17 (Shreyas): Radar, User Testing and the Market Simulator replace the Daily Forecast,
+  the Persona Panel and the Launch Pack.** The odds did not: they depend on hunter, team, day and record, not on which
+  product it is, and the model is flat above a pitch score of about 75 (Radar 75, User Testing 69, Simulator 82 [MODEL]).
+  User Testing's 69 is below that line; its pitch needs work before April.
 - **Row A** is the launch you can set yourself: you post it, 1 maker, 9 images plus video, pitch score 86 (measured for
   /try), founder posts on the day. No press, no team reach, no hunter. Its exact profile has only **12 real launches**
   in 2026 (1 of 12 in the top 5, 5 of 12 in the top 10), so the 17.6% rests on the model, checked against a thin real sample.
@@ -57,198 +61,57 @@ in the appendix.
 A launch outside the top 5 never lowers the next one below the no-record level. [REAL] check: hunters with 1–3 prior
 launches all in the top 5 reach the top 5 42.9% of the time (n 184); with none in the top 5, 9.9% (n 684).
 
-## Answers to the four sequence questions [JUDGMENT]
+## The chain: each product is built from the feedback on the one before
 
-1. **The line between launch 1 (/try) and launch 3 (Panel).** /try answers "where will this page land?": one URL, one
-   fixed Product Hunt audience, one rank range, and the three most common reactions as a short summary. The Panel answers
-   "what does each kind of person think, and which version is better?": reactions split by segment, two or more versions
-   side by side, segments the user defines, follow-up questions, any page and not only a launch page. Held back from
-   launch 1 until launch 3: the per-segment view, version comparison, custom segments, follow-up questions, export.
-   /try's wording changes from "simulated reactions" to "the three reactions you are most likely to get", so launch 3 is
-   not read as a feature of launch 1.
-2. **Version comparison goes to launch 3.** It is the Panel's core job and its strongest reason to exist. It was the most
-   requested feature, so /try says plainly that it is coming and collects emails for it. That list is launch 3's first
-   audience. If the build for launch 1 has slack, it is not spent on this.
-3. **The board runs publicly from day one, unlaunched.** It is already live and its public daily score is the proof
-   launch 2 needs; taking it down would throw away two months of record. This bends principle 1 only for the bare board.
-   What is held back for launch 2 is everything that makes it a product: the reason behind each forecast, the weekly
-   and monthly forecasts, the before-votes-show forecast as a public feature, the full scored archive, and a daily email.
-4. **The API is a fifth launch, not part of launch 4.** It has a different user (developers and agencies) and would dilute
-   the Launch Pack's one job. Earliest date: August 2027. It is the first thing cut from this plan's scope.
+Full tables, competitors and pitch versions: **`docs/LAUNCH_PLAN_CHAIN.md`** (E5, Nov 17; Gemini $1.52). This is the summary.
 
-**Challenge to the starting sequence:** none on the order. The data backs /try first (pitch 86, the easiest to try) and
-the board second (pitch 88, and it needs the record). The one change is launch 4's day, decided by whether a hunter posts it.
+**What "feedback" is today.** None of our products has launched, so there is no real feedback on them. The chain uses,
+in this order: real comments on competitors doing the same job [REAL, thin: most themes rest on 1–5 people], then the
+persona panel on our own page [MODEL]. **On Dec 6 the real comments on launch 1 replace stage 1 and the chain is rerun.**
 
-## How feedback on product 1 defines products 2, 3 and 4
-
-**State today.** Product 1 has no real users yet, so there is no real feedback. What exists is the persona panel's
-feedback on the /try page [MODEL]: 24 personas from four voter groups (about 5,500 real people behind them). The table
-below builds each later product from that. **On Dec 6 the real comments from launch 1 replace the "asked by" column**, and
-the rules under the table decide what changes.
-
-| What people asked of product 1 (/try) | Asked by [MODEL today, REAL after Dec 5] | Goes into | As |
+| Product | Built from the feedback on | The three themes that shaped it | Real commenters / panel |
 |---|---|---|---|
-| "How accurate is this, and how do you know?" Show the historical record, the margin of error | All four groups; first question in each | **Product 2, Daily Forecast** | The full scored archive: every forecast, hit and miss, since Nov 2026 |
-| Which inputs carry the most weight? Does it count the hunter, the day, how many launches there are? | Tech innovators, launch veterans, product launchers | **Product 2** | The reason behind each forecast, launch by launch |
-| What about launches that surge late in the day? | Tech innovators | **Product 2** | The before-votes-show forecast beside the midnight one, each scored |
-| Can I compare two versions of my description? | Tech innovators, launch veterans; the most requested feature | **Product 3, Persona Panel** | Version comparison, side by side |
-| Can I see reactions split by audience segment? Define my own segments? | Launch veterans, tech innovators | **Product 3** | Per-segment view and custom segments |
-| Can I test headlines and calls to action? Are answers specific to my product? | Product launchers | **Product 3** | Follow-up questions on any page, not only a launch page |
-| Does it look at screenshots and video, or only text? | Product launchers | **Product 3** | The panel reads the page's images |
-| Will it suggest improvements? Are the fixes specific enough to act on today? | Product launchers, launch veterans | **Product 4, Launch Pack** | The pre-launch audit: named fixes, each with its expected effect |
-| Does it account for my own network and community? | Launch veterans, product launchers | **Product 4** | The audit takes the maker's own reach and hunter as inputs |
-| How is it validated after a launch? | Tech innovators | **Product 4** | The post-mortem: what we predicted against what happened |
-| Is there an API? Can I export? | Tech innovators | Product 5, later | API |
-| Is it understandable if I am not technical? Does it work for an unpolished product? | Curious observers | **Product 1, now** | Plain-language summary; a note on what it needs to work |
-| How fresh are the profiles? What does it ignore? | Tech innovators | **Product 1, now** | The "what this uses and what it ignores" block |
+| 1. Launch Simulator (/try) | Its competitors (67 real commenters on 4 launches) and the panel | How is accuracy quantified? How does it compare with real user testing? Is the rank right for unusual or crowded products? | 4 real, all four groups / 2 real / panel only |
+| 2. Competitor Radar | Product 1 | "Simulated reactions may not reflect real feedback", so Radar uses real comments only. "How is accuracy quantified?", so Radar shows each rival's finish against its forecast. "Can it identify customer objections?", so Radar lists what users complained about on rivals | 2 real + all four groups (16 lines) / 4 real / 1 real |
+| 3. User Testing, end to end | Product 2 (56 real commenters on 8 launches, and the panel) | "It does nothing for my own product", so it runs tasks on your product. "Can it suggest actions?", so the report ends in named fixes. Signal-to-noise, so every finding links to its log | 0 real, all four groups (21 lines) / 2 real / 2 real |
+| 4. Market Simulator | Product 3 (93 real commenters on 8 launches, and the panel) | "Can it test a specific element or scenario?", so you propose a specific change. "Simulated users may not reflect real behaviour", so every prediction is scored in public. "Can it refine personas?", so custom segments | **13 real, the best-supported theme in the chain** / 2 real + three groups / 3 real |
 
-**Rules once real feedback exists (applied in week 1 of each cycle).**
-1. Every real comment, question and complaint from the launch and from /try users is tagged to a theme. Themes are ranked
-   by how many different people raised them, not by how loud one person was.
-2. The next product's scope is the top themes that fit its job. A theme that fits no planned product is added to the one
-   it is closest to, or dropped with a written reason.
-3. **The order can change.** If version comparison or segments is the top real theme after launch 1, by a clear margin
-   over accuracy and reasons, product 2 becomes the Persona Panel and the Daily Forecast moves to April. The board loses
-   nothing by waiting: it gains two more months of public record.
-4. The panel's predictions for product 1 are scored against the real comments (theme recall and precision). That score is
-   published, and it is product 3's proof.
-5. Panel feedback is used only where real feedback is silent, and is marked as such.
+### What each launch claims, and what must be true to ship [JUDGMENT, with the measured state]
 
-**Competitors.** 30 competitors, 7–8 per product, are in `docs/LAUNCH_PLAN_COMPETITORS.md`: pitch score, real Product Hunt
-finish from held data, /try range, the panel's concerns, what they do better and what we do better. Across all four:
-none shows a daily accuracy score; several have custom segments, follow-up questions, version comparison and an instant
-single number, which we lack today. The three that finished #1 were posted by hunters with 25, 33 and 286 prior launches.
+| Launch | World-class claim | Test before launch day | State today | Held back for later |
+|---|---|---|---|---|
+| 1 /try, Dec 5 | The only launch rehearsal checked against real launches every day | Nightly score of its predicted questions against real comments, 30+ days, on the page | Forward figures from 11 launches only | Real competitor comments (2); task runs and version comparison (3); "what if" (4) |
+| 2 Radar, Feb 6 | The only competitor watch built from what real users said, counted by distinct people, with its tagging scored in public | Agreement of the automatic theme tags with 300 hand-labelled comments; every featured launch in a tracked space in the digest within 24 hours, 14 days running | **Neither number exists yet** | Named fixes and task runs (3); "what if we changed X" (4); other platforms |
+| 3 User Testing, Apr 10 | The only user test that runs the same tasks on you and your competitors, and shows how often its findings match what real users later said | Share of real complaint themes its runs find, on 30+ products, published whatever it is; a run completes on 9 of 10 arbitrary sites | **Weak: 24% [9, 38] on 11 launches [REAL].** The claim cannot be made yet | Price, positioning, competitor responses (4); API |
+| 4 Market Simulator, Jun 12/15 | The only market simulator whose every prediction is scored in public afterwards | One scored claim: predicted share of backers by voter group against the real share, 30 days of public record | 89,027 complete people; a person's real pick is in our top 3 about 57% of the time; 25–29% of backers named in advance | Markets beyond Product Hunt; answers about individuals |
 
-**Real comments on the competitors' own launches [REAL, thin].** We hold comments for 12 launches from 2026 (9 of the 22
-competitors plus 3 close relatives): 67 commenters on the /try job, 23 on the board job, 64 on the panel job, 57 on the
-Launch Pack job. Most themes have 1–3 people, so they are leads, not findings. Details: `docs/LAUNCH_PLAN_COMPETITORS.md`.
-- **Best-supported theme in the whole plan:** "how accurate is synthetic feedback compared with real users?" (6
-  commenters across three panel-job launches, 5 on the /try job). The published accuracy record answers it.
-- **Launch Pack has no real demand evidence yet.** Launch-tool users asked about brand voice and control over generated
-  content (7, 4 and 3 commenters) and a free trial (3). Nobody asked for a forecast, an audit or a post-mortem.
-- **Board job:** 4 commenters praised a competitor for helping pick a launch date; 2 asked what the product predicts for
-  its own launch.
-- **Planned features with no real comment behind them:** the before-votes-show forecast for late surges, follow-up
-  questions on any page, the plain-language summary, the pre-launch audit with named fixes. Version comparison has 2.
-- **Three things real comments raise that the plan lacked, now added:**
-  1. A confidence score on each predicted theme (launches 1 and 3). One commenter called half of a competitor's themes noise.
-  2. Our own forecast for our own launch, published in advance and scored afterwards (every launch, starting Dec 5).
-  3. A fix for synthetic users that always agree. Our panel rated nearly every persona "high interest" for all four of our
-     products, so this is a ship gate for launch 3.
-
-**Pitch scores are not forecasts.** Re-scored outside its own launch day, a product's score moves by about ±15 points and
-shows no relation to real rank (−0.13, n 22). Read our 75–88 as "at least 75"; the model is flat above 75 anyway.
-
-## Launch 1. Launch Simulator (/try). Saturday Dec 5 2026
-
-- **Job and user.** A maker pastes a URL and sees where the launch would land, before posting.
-- **World-class claim (after the competitor run).** "The only launch rehearsal checked against real launches every day."
-  **Test before launch day:** nightly forward score of the predicted reactions (theme recall and precision against a
-  fixed question list) over 30 or more days, shown on the page. The rank range stays on the page with its 80% coverage
-  [REAL, backtest] but is not the claim. No competitor publishes a daily accuracy score [30 competitors checked].
-  Today's forward figures rest on 11 launches only, so the 30 days matter.
-- **In.** One URL in; a rank range; the three most likely reactions; the measured accuracy with its limits above the fold;
-  a "what this uses and what it ignores" block; a plain sentence for people who have never launched.
-- **Held back.** Per-segment reactions, version comparison, custom segments, follow-up questions (launch 3). The reason
-  behind a forecast, weekly and monthly views, email (launch 2). Reports, a pre-launch audit, post-mortem (launch 4).
-- **Competitors** (`docs/LAUNCH_PLAN_COMPETITORS.md`): HuntOMeter, Roast My Landing Page AI, MockUsers, Wynter's free
-  grader, and three Product Hunt launches. Closest real finishes: a simulated-persona message tester #3 of 21 (hunter
-  with 479 prior launches); a launch-critique tool #9 of 29 [REAL].
-- **Three things to beat [JUDGMENT from the run].** (1) A one-input, instant answer (HuntOMeter, Chaos Simulator): ours
-  must answer in seconds from a URL alone. (2) A headline accuracy number: Articos claims 86% and ours has none above
-  the fold; none publishes a score every day. (3) Output worth sharing: a founder shares a roast; nobody shares a rank
-  range of 4 to 41.
-- **Feedback that shaped it.** Real users: none yet, there has been no launch; 5–10 real makers test it in week 7 below.
-  Panel [MODEL]: every voter group first asks "how accurate is this, and how do you know?"; then what the model does not
-  see; the most requested feature is version comparison.
-- **Significant-update case.** First post; none needed.
-- **Day.** Saturday. Row A: 17.6% top 5 and 50.5% top 10 on a Saturday against 3.0% top 5 on Tue–Thu [MODEL]. Real
-  zero-record launches: 19.9% top 5 on weekends against 6.9% overall (n 423 and 3,142) [REAL]. Cost: a Saturday has about
-  62% of a Tuesday's votes [REAL].
-- **Odds.** Top 5: 17.6 [10.7, 24.3] raw, 13.3 [8.9, 18.4] scaled. With an active hunter: 56.9. With 3 makers with reach: 30.2.
-- **Ship gate (all true on Dec 2, go or no-go).**
-  - "Free to try, no signup" is true, and the run limits are raised for launch day. Today /try allows 150 runs a day in
-    total and 3 an hour per address; a launch day would hit that by mid-morning.
-  - The accuracy number on the page is current and shows its day count.
-  - Page fixes 1, 2, 5 (as "coming") and 8 from the fix list are live.
-  - 5–10 real makers have used it and their unanswered questions are answered on the page.
-- **Cut-line if the build runs late.** First to go: the plain-language summary, then visual polish of the result. Never
-  cut: the accuracy block and the raised run limits. The date moves to Dec 12 only if the coverage test fails.
+### Launch 1 specifics (Dec 5)
+- **Three things to beat [JUDGMENT from the competitor run].** A one-input, instant answer (HuntOMeter, Chaos Simulator).
+  A headline accuracy number (Articos claims 86%; ours has none above the fold). Output worth sharing: nobody shares a
+  rank range of 4 to 41.
+- **Added from real comments:** a confidence score on each predicted theme; our own forecast for our own launch, published
+  in advance and scored afterwards.
+- **Ship gate (go or no-go Dec 2).** "Free to try, no signup" is true, and the run limits are raised for launch day (today
+  150 runs a day in total, 3 an hour per address). The accuracy number is current, with its day count. The "what this
+  uses and what it ignores" block and the plain-language sentence are live. 5–10 real makers have used it.
+- **Cut-line.** First to go: visual polish, then the plain-language summary. Never cut: the accuracy block and the run limits.
 - **Fallback.** Outside the top 10 (about 50% likely): launch 2 keeps its date; the model gives it the same odds as no
-  record. Not featured: treat the day as a soft launch, collect the comments, and file a relaunch request with the fixes.
+  record. Not featured: collect the comments and file a relaunch request with the fixes.
+- **Launch 1's real comments become the first Radar report** and replace stage 1 of the chain.
 
-## Launch 2. Daily Forecast. Saturday Feb 6 2027
-
-- **Job and user.** Anyone who follows Product Hunt sees which launches will finish on top today, before votes are visible,
-  with the reason for each.
-- **World-class claim (candidate).** "Names the day's top 3 before any votes show, and has published every hit and miss
-  since November 2026." **Test:** live top-3 hit over at least 75 scored live days, shown beside two named simple baselines.
-  Closest competitor: hunted.space, the incumbent for live launch stats, which already has a predictor; ours is published
-  before votes are visible and graded in public every day [JUDGMENT]. Real finishes: a Product Hunt analytics extension
-  #15 of 18; a prediction benchmark #3 of 41 with a hunter with 279 prior launches [REAL]. Today: 73.8% over 14 live days at the before-votes point [REAL, forward]; backtest 72.2%
-  over 12 days. Small n today; that is why this launch waits.
-- **In.** The reason behind each forecast; weekly and monthly forecasts; the full scored archive; a daily email.
-- **Held back.** Anything about the user's own page (that is /try) and segments (launch 3).
-- **Feedback that shaped it.** Week 1 of this cycle collects every real comment from launch 1 and scores what the panel
-  predicted against it. Panel today [MODEL]: worry that forecasts can be gamed or become self-fulfilling; the page states
-  that forecasts use only public inputs and that we never help anyone collect votes.
-- **Significant-update case.** A different user (watchers and investors, not makers testing a page) and a different job
-  (today's ranking), delivered as a separate app surface.
-- **Day.** Saturday, for rank. A watcher product also suits a calm day.
-- **Odds.** Row A: 27.5 [19.0, 35.7] expected. By launch 1's finish: rank 1–3 68%, 4–5 53%, 6–10 27%, 11+ about 17%.
-- **Ship gate.** 75+ scored live days on the page; every published number matches the store; the email works.
-- **Cut-line.** First to go: monthly forecast, then the email. Never cut: the scored archive and the reasons.
-- **Fallback.** If launch 1 missed the top 10, nothing changes here. If not featured, same as launch 1.
-
-## Launch 3. Persona Panel. Saturday Apr 10 2027
-
-- **Job and user.** A product or marketing team puts any page in front of audience segments built from real voting
-  behaviour, compares versions, and defines its own segments.
-- **World-class claim (after the competitor run).** "The only synthetic audience with a published score against what
-  real people said." **Test:** theme precision against the real comments on our own launches 1 and 2 and on 100 or more
-  other launches. One definition everywhere: **theme recall 61%, precision 52%, on 167 launches** [REAL, backtest].
-  Precision beats pulling real comments from similar past launches (52% against 36%); recall does not (61% against 65%),
-  so the claim is about precision and the published score, not recall.
-- **Competitors.** Synthetic Users, Wynter (real people), and six Product Hunt launches. Real finishes: synthetic users
-  inside dev tools #1 of 20 (hunter with 286 prior launches); synthetic-population research #25 of 26 (first-time hunter)
-  [REAL]. They have custom segments, follow-up questions and version comparison; we must match those and add the score.
-- **In.** Per-segment reactions; version comparison; custom segments; follow-up questions; export.
-- **Held back.** Done-for-you reports and human review (launch 4); programmatic access (API, later).
-- **Feedback that shaped it.** The email list from /try's "version comparison is coming"; the real comments from launches 1
-  and 2 against the panel's predictions, published as the product's proof. Panel today [MODEL]: privacy of the people behind
-  the personas; the page states that personas are groups of 20 or more built from public voting history.
-- **Significant-update case.** A different user (teams doing user research on any page, not makers forecasting a launch)
-  and new functionality that the earlier posts did not have.
-- **Day.** Saturday, unless a hunter with a record posts it; then Tuesday for traffic, because buyers of research tools
-  are at work.
-- **Odds.** Row A: 31.6 [21.7, 40.8] expected; 20.9 / 43.5 / 62.7 after 0 / 1 / 2 earlier top-5 finishes.
-- **Ship gate.** The recall and precision figures are current and on the page; version comparison gives the same answer
-  when the two versions are swapped; the privacy statement is true of the data shown.
-- **Cut-line.** First to go: export, then follow-up questions. Never cut: version comparison and the published score.
-- **Fallback.** If launches 1 and 2 both missed the top 10, apply the stop rule below before building.
-
-## Launch 4. Launch Pack (paid). Tuesday Jun 15 2027 with a hunter, else Saturday Jun 12
-
-- **Job and user.** A founder pays for a full service across one launch: a pre-launch audit, the launch-day read, and a
-  post-mortem.
-- **World-class claim (after the competitor run).** "Tells you your odds before, and shows how right it was after."
-  **Test:** the share of real finishes that fall inside the stated range, over 50 or more launches (20 of them pilots).
-- **Competitors.** Launch toolkits, launch-kit generators and communities on Product Hunt, and one seller of upvotes.
-  Real finishes: a social-posting agent #1 of 11; a launch toolkit #5 of 49; a launch-kit generator #13 of 21 [REAL].
-  The page states that we never supply or solicit votes.
-- **In.** The three reports; a real redacted sample; the price and the free tier. The tagline leads with what the founder
-  gets (pitch score 80), never with "a paid package" (35) [MODEL].
-- **Held back.** The API.
-- **Feedback that shaped it.** The pilots' own results, and the questions real users asked on launches 1–3. Panel today
-  [MODEL]: how specific is the "what to fix" advice.
-- **Significant-update case.** A different job (a paid service with reports) for a different buyer.
-- **Day.** The goal is traffic and buyers, so a weekday, but only if a hunter with a record posts it (24.2% top 5 on
-  Tue–Thu with one, 13.8% without). Without one, Saturday (34.2%).
-- **Odds.** Saturday 34.2 [23.6, 44.6]; Tue–Thu 13.8 [10.4, 17.6]; by record 21 / 37 / 56 / 62 on a Saturday after
-  0 / 1 / 2 / 3 earlier top-5 finishes.
-- **Ship gate.** 20 scored pilots; the sample report is real; every claim on the page has its number and day count.
-- **Cut-line.** First to go: the post-mortem's automation (done by hand for the first customers). Never cut: the scoring.
-- **Fallback.** If it is not featured, it still sells from launches 1–3's audience; the launch is not the only channel.
+### Warnings from the run
+1. **Our own panel never picks our products.** With the panel fixed to a forced choice (each segment picks 3 from a real
+   line-up), none of our four products was picked by any segment (chance is about 8%). Mean place, 0 = first and 100 =
+   last: /try 47, User Testing 56, Radar 61, Market Simulator 73 [MODEL]. The measure agrees with real finishes only in
+   part, and competitors range from 0% to 46%, so it is a warning, not a verdict. The reasons given are the useful part.
+2. **The moonshot has conflicting signals.** The Market Simulator has the best pitch score (82) and the lowest panel
+   placement; the top reason not to use it is "too niche, complex or abstract" (24 lines, all four groups). Its core
+   input, testing a specific scenario, has the best real support in the chain (13 commenters).
+3. **War Game mode has no real-comment support.** The 13 commenters who asked about competitors meant the tool against
+   its alternatives. It stays out of June's scope unless product 3's real comments ask for it.
+4. **Product 3 cannot make its claim today** (24% of real complaints found). Its build starts with that number, not with
+   features; if it is still under 40% at the week-4 check, launch 3 ships as a narrower product or moves a week at a time.
+5. **Radar's "does nothing for my product" objection comes from the panel only**; no real commenter said it.
 
 ## The loop for each two-month cycle
 
@@ -279,20 +142,18 @@ Dec 1, odds rerun and go or no-go on Dec 2.
 
   | Launch | Users in the first 7 days | Emails | Paid prospects |
   |---|---|---|---|
-  | 1 /try | 500 runs | 100 for version comparison | 10 Launch Pack pilot conversations |
-  | 2 Forecast | 1,000 visitors on launch week | 200 daily-email subscribers | 10 more pilots |
-  | 3 Panel | 150 teams running a comparison | 300 | 20 pilots completed in total |
-  | 4 Launch Pack | — | — | 10 paid at full price in 30 days |
+  | 1 /try | 500 runs | 100 for the Radar waitlist | 10 conversations with makers who ran it |
+  | 2 Radar | 200 tracked spaces set up | 300 digest subscribers | 20 teams on a paid trial |
+  | 3 User Testing | 100 completed test runs | 300 | 20 paying teams |
+  | 4 Market Simulator | 200 scenarios run | 500 | 10 design partners |
 
 - **Stop rule after launch 2.** Change the sequence or the product if, after Feb 6, both launches finished outside the top
-  10 **and** /try has under 50 runs a week. Then launch 3 becomes whichever product real users asked for most, and the
-  Panel waits. If rank missed but usage met its targets, keep the sequence and put the effort into the hunter. If the
+  10 **and** /try has under 50 runs a week. Then launch 3 becomes whichever product real users asked for most. If rank missed but usage met its targets, keep the sequence and put the effort into the hunter. If the
   panel's recall against our own launches' real comments is under 50%, launch 3's claim is rewritten before it is built.
 
 ## Still open
-- Launch 2's content: the daily board is already public with reasons, accuracy and a 20-day archive. Proposed: launch 2
-  is the weekly and monthly forecast with the daily board as proof. Waiting on Shreyas.
-- Launch 4 (Launch Pack) has no real demand evidence yet; the 20 pilots are the test.
+- The two Radar tests and User Testing's complaint figure have to be built and measured; see the claims table.
+- Rerun the chain on Dec 6 with launch 1's real comments.
 - Page fixes need Shreyas's word to the website agent.
 
 ---
@@ -606,4 +467,201 @@ together with the time to ship a real v1 of the next product.
   - Share what the product does and invite people to try it. Never ask for upvotes; Product Hunt penalizes that, and it is
     against the rules.
 - **A Product Hunt account that is older and active:** comment usefully on other launches in the weeks before.
+
+## (superseded) Product definitions before Nov 17: Daily Forecast, Persona Panel, Launch Pack
+
+Replaced by Competitor Radar, User Testing and the Market Simulator. Kept for the record.
+
+### Answers to the four sequence questions [JUDGMENT]
+
+1. **The line between launch 1 (/try) and launch 3 (Panel).** /try answers "where will this page land?": one URL, one
+   fixed Product Hunt audience, one rank range, and the three most common reactions as a short summary. The Panel answers
+   "what does each kind of person think, and which version is better?": reactions split by segment, two or more versions
+   side by side, segments the user defines, follow-up questions, any page and not only a launch page. Held back from
+   launch 1 until launch 3: the per-segment view, version comparison, custom segments, follow-up questions, export.
+   /try's wording changes from "simulated reactions" to "the three reactions you are most likely to get", so launch 3 is
+   not read as a feature of launch 1.
+2. **Version comparison goes to launch 3.** It is the Panel's core job and its strongest reason to exist. It was the most
+   requested feature, so /try says plainly that it is coming and collects emails for it. That list is launch 3's first
+   audience. If the build for launch 1 has slack, it is not spent on this.
+3. **The board runs publicly from day one, unlaunched.** It is already live and its public daily score is the proof
+   launch 2 needs; taking it down would throw away two months of record. This bends principle 1 only for the bare board.
+   What is held back for launch 2 is everything that makes it a product: the reason behind each forecast, the weekly
+   and monthly forecasts, the before-votes-show forecast as a public feature, the full scored archive, and a daily email.
+4. **The API is a fifth launch, not part of launch 4.** It has a different user (developers and agencies) and would dilute
+   the Launch Pack's one job. Earliest date: August 2027. It is the first thing cut from this plan's scope.
+
+**Challenge to the starting sequence:** none on the order. The data backs /try first (pitch 86, the easiest to try) and
+the board second (pitch 88, and it needs the record). The one change is launch 4's day, decided by whether a hunter posts it.
+
+### How feedback on product 1 defines products 2, 3 and 4
+
+**State today.** Product 1 has no real users yet, so there is no real feedback. What exists is the persona panel's
+feedback on the /try page [MODEL]: 24 personas from four voter groups (about 5,500 real people behind them). The table
+below builds each later product from that. **On Dec 6 the real comments from launch 1 replace the "asked by" column**, and
+the rules under the table decide what changes.
+
+| What people asked of product 1 (/try) | Asked by [MODEL today, REAL after Dec 5] | Goes into | As |
+|---|---|---|---|
+| "How accurate is this, and how do you know?" Show the historical record, the margin of error | All four groups; first question in each | **Product 2, Daily Forecast** | The full scored archive: every forecast, hit and miss, since Nov 2026 |
+| Which inputs carry the most weight? Does it count the hunter, the day, how many launches there are? | Tech innovators, launch veterans, product launchers | **Product 2** | The reason behind each forecast, launch by launch |
+| What about launches that surge late in the day? | Tech innovators | **Product 2** | The before-votes-show forecast beside the midnight one, each scored |
+| Can I compare two versions of my description? | Tech innovators, launch veterans; the most requested feature | **Product 3, Persona Panel** | Version comparison, side by side |
+| Can I see reactions split by audience segment? Define my own segments? | Launch veterans, tech innovators | **Product 3** | Per-segment view and custom segments |
+| Can I test headlines and calls to action? Are answers specific to my product? | Product launchers | **Product 3** | Follow-up questions on any page, not only a launch page |
+| Does it look at screenshots and video, or only text? | Product launchers | **Product 3** | The panel reads the page's images |
+| Will it suggest improvements? Are the fixes specific enough to act on today? | Product launchers, launch veterans | **Product 4, Launch Pack** | The pre-launch audit: named fixes, each with its expected effect |
+| Does it account for my own network and community? | Launch veterans, product launchers | **Product 4** | The audit takes the maker's own reach and hunter as inputs |
+| How is it validated after a launch? | Tech innovators | **Product 4** | The post-mortem: what we predicted against what happened |
+| Is there an API? Can I export? | Tech innovators | Product 5, later | API |
+| Is it understandable if I am not technical? Does it work for an unpolished product? | Curious observers | **Product 1, now** | Plain-language summary; a note on what it needs to work |
+| How fresh are the profiles? What does it ignore? | Tech innovators | **Product 1, now** | The "what this uses and what it ignores" block |
+
+**Rules once real feedback exists (applied in week 1 of each cycle).**
+1. Every real comment, question and complaint from the launch and from /try users is tagged to a theme. Themes are ranked
+   by how many different people raised them, not by how loud one person was.
+2. The next product's scope is the top themes that fit its job. A theme that fits no planned product is added to the one
+   it is closest to, or dropped with a written reason.
+3. **The order can change.** If version comparison or segments is the top real theme after launch 1, by a clear margin
+   over accuracy and reasons, product 2 becomes the Persona Panel and the Daily Forecast moves to April. The board loses
+   nothing by waiting: it gains two more months of public record.
+4. The panel's predictions for product 1 are scored against the real comments (theme recall and precision). That score is
+   published, and it is product 3's proof.
+5. Panel feedback is used only where real feedback is silent, and is marked as such.
+
+**Competitors.** 30 competitors, 7–8 per product, are in `docs/LAUNCH_PLAN_COMPETITORS.md`: pitch score, real Product Hunt
+finish from held data, /try range, the panel's concerns, what they do better and what we do better. Across all four:
+none shows a daily accuracy score; several have custom segments, follow-up questions, version comparison and an instant
+single number, which we lack today. The three that finished #1 were posted by hunters with 25, 33 and 286 prior launches.
+
+**Real comments on the competitors' own launches [REAL, thin].** We hold comments for 12 launches from 2026 (9 of the 22
+competitors plus 3 close relatives): 67 commenters on the /try job, 23 on the board job, 64 on the panel job, 57 on the
+Launch Pack job. Most themes have 1–3 people, so they are leads, not findings. Details: `docs/LAUNCH_PLAN_COMPETITORS.md`.
+- **Best-supported theme in the whole plan:** "how accurate is synthetic feedback compared with real users?" (6
+  commenters across three panel-job launches, 5 on the /try job). The published accuracy record answers it.
+- **Launch Pack has no real demand evidence yet.** Launch-tool users asked about brand voice and control over generated
+  content (7, 4 and 3 commenters) and a free trial (3). Nobody asked for a forecast, an audit or a post-mortem.
+- **Board job:** 4 commenters praised a competitor for helping pick a launch date; 2 asked what the product predicts for
+  its own launch.
+- **Planned features with no real comment behind them:** the before-votes-show forecast for late surges, follow-up
+  questions on any page, the plain-language summary, the pre-launch audit with named fixes. Version comparison has 2.
+- **Three things real comments raise that the plan lacked, now added:**
+  1. A confidence score on each predicted theme (launches 1 and 3). One commenter called half of a competitor's themes noise.
+  2. Our own forecast for our own launch, published in advance and scored afterwards (every launch, starting Dec 5).
+  3. A fix for synthetic users that always agree. Our panel rated nearly every persona "high interest" for all four of our
+     products, so this is a ship gate for launch 3.
+
+**Pitch scores are not forecasts.** Re-scored outside its own launch day, a product's score moves by about ±15 points and
+shows no relation to real rank (−0.13, n 22). Read our 75–88 as "at least 75"; the model is flat above 75 anyway.
+
+### Launch 1. Launch Simulator (/try). Saturday Dec 5 2026
+
+- **Job and user.** A maker pastes a URL and sees where the launch would land, before posting.
+- **World-class claim (after the competitor run).** "The only launch rehearsal checked against real launches every day."
+  **Test before launch day:** nightly forward score of the predicted reactions (theme recall and precision against a
+  fixed question list) over 30 or more days, shown on the page. The rank range stays on the page with its 80% coverage
+  [REAL, backtest] but is not the claim. No competitor publishes a daily accuracy score [30 competitors checked].
+  Today's forward figures rest on 11 launches only, so the 30 days matter.
+- **In.** One URL in; a rank range; the three most likely reactions; the measured accuracy with its limits above the fold;
+  a "what this uses and what it ignores" block; a plain sentence for people who have never launched.
+- **Held back.** Per-segment reactions, version comparison, custom segments, follow-up questions (launch 3). The reason
+  behind a forecast, weekly and monthly views, email (launch 2). Reports, a pre-launch audit, post-mortem (launch 4).
+- **Competitors** (`docs/LAUNCH_PLAN_COMPETITORS.md`): HuntOMeter, Roast My Landing Page AI, MockUsers, Wynter's free
+  grader, and three Product Hunt launches. Closest real finishes: a simulated-persona message tester #3 of 21 (hunter
+  with 479 prior launches); a launch-critique tool #9 of 29 [REAL].
+- **Three things to beat [JUDGMENT from the run].** (1) A one-input, instant answer (HuntOMeter, Chaos Simulator): ours
+  must answer in seconds from a URL alone. (2) A headline accuracy number: Articos claims 86% and ours has none above
+  the fold; none publishes a score every day. (3) Output worth sharing: a founder shares a roast; nobody shares a rank
+  range of 4 to 41.
+- **Feedback that shaped it.** Real users: none yet, there has been no launch; 5–10 real makers test it in week 7 below.
+  Panel [MODEL]: every voter group first asks "how accurate is this, and how do you know?"; then what the model does not
+  see; the most requested feature is version comparison.
+- **Significant-update case.** First post; none needed.
+- **Day.** Saturday. Row A: 17.6% top 5 and 50.5% top 10 on a Saturday against 3.0% top 5 on Tue–Thu [MODEL]. Real
+  zero-record launches: 19.9% top 5 on weekends against 6.9% overall (n 423 and 3,142) [REAL]. Cost: a Saturday has about
+  62% of a Tuesday's votes [REAL].
+- **Odds.** Top 5: 17.6 [10.7, 24.3] raw, 13.3 [8.9, 18.4] scaled. With an active hunter: 56.9. With 3 makers with reach: 30.2.
+- **Ship gate (all true on Dec 2, go or no-go).**
+  - "Free to try, no signup" is true, and the run limits are raised for launch day. Today /try allows 150 runs a day in
+    total and 3 an hour per address; a launch day would hit that by mid-morning.
+  - The accuracy number on the page is current and shows its day count.
+  - Page fixes 1, 2, 5 (as "coming") and 8 from the fix list are live.
+  - 5–10 real makers have used it and their unanswered questions are answered on the page.
+- **Cut-line if the build runs late.** First to go: the plain-language summary, then visual polish of the result. Never
+  cut: the accuracy block and the raised run limits. The date moves to Dec 12 only if the coverage test fails.
+- **Fallback.** Outside the top 10 (about 50% likely): launch 2 keeps its date; the model gives it the same odds as no
+  record. Not featured: treat the day as a soft launch, collect the comments, and file a relaunch request with the fixes.
+
+### Launch 2. Daily Forecast. Saturday Feb 6 2027
+
+- **Job and user.** Anyone who follows Product Hunt sees which launches will finish on top today, before votes are visible,
+  with the reason for each.
+- **World-class claim (candidate).** "Names the day's top 3 before any votes show, and has published every hit and miss
+  since November 2026." **Test:** live top-3 hit over at least 75 scored live days, shown beside two named simple baselines.
+  Closest competitor: hunted.space, the incumbent for live launch stats, which already has a predictor; ours is published
+  before votes are visible and graded in public every day [JUDGMENT]. Real finishes: a Product Hunt analytics extension
+  #15 of 18; a prediction benchmark #3 of 41 with a hunter with 279 prior launches [REAL]. Today: 73.8% over 14 live days at the before-votes point [REAL, forward]; backtest 72.2%
+  over 12 days. Small n today; that is why this launch waits.
+- **In.** The reason behind each forecast; weekly and monthly forecasts; the full scored archive; a daily email.
+- **Held back.** Anything about the user's own page (that is /try) and segments (launch 3).
+- **Feedback that shaped it.** Week 1 of this cycle collects every real comment from launch 1 and scores what the panel
+  predicted against it. Panel today [MODEL]: worry that forecasts can be gamed or become self-fulfilling; the page states
+  that forecasts use only public inputs and that we never help anyone collect votes.
+- **Significant-update case.** A different user (watchers and investors, not makers testing a page) and a different job
+  (today's ranking), delivered as a separate app surface.
+- **Day.** Saturday, for rank. A watcher product also suits a calm day.
+- **Odds.** Row A: 27.5 [19.0, 35.7] expected. By launch 1's finish: rank 1–3 68%, 4–5 53%, 6–10 27%, 11+ about 17%.
+- **Ship gate.** 75+ scored live days on the page; every published number matches the store; the email works.
+- **Cut-line.** First to go: monthly forecast, then the email. Never cut: the scored archive and the reasons.
+- **Fallback.** If launch 1 missed the top 10, nothing changes here. If not featured, same as launch 1.
+
+### Launch 3. Persona Panel. Saturday Apr 10 2027
+
+- **Job and user.** A product or marketing team puts any page in front of audience segments built from real voting
+  behaviour, compares versions, and defines its own segments.
+- **World-class claim (after the competitor run).** "The only synthetic audience with a published score against what
+  real people said." **Test:** theme precision against the real comments on our own launches 1 and 2 and on 100 or more
+  other launches. One definition everywhere: **theme recall 61%, precision 52%, on 167 launches** [REAL, backtest].
+  Precision beats pulling real comments from similar past launches (52% against 36%); recall does not (61% against 65%),
+  so the claim is about precision and the published score, not recall.
+- **Competitors.** Synthetic Users, Wynter (real people), and six Product Hunt launches. Real finishes: synthetic users
+  inside dev tools #1 of 20 (hunter with 286 prior launches); synthetic-population research #25 of 26 (first-time hunter)
+  [REAL]. They have custom segments, follow-up questions and version comparison; we must match those and add the score.
+- **In.** Per-segment reactions; version comparison; custom segments; follow-up questions; export.
+- **Held back.** Done-for-you reports and human review (launch 4); programmatic access (API, later).
+- **Feedback that shaped it.** The email list from /try's "version comparison is coming"; the real comments from launches 1
+  and 2 against the panel's predictions, published as the product's proof. Panel today [MODEL]: privacy of the people behind
+  the personas; the page states that personas are groups of 20 or more built from public voting history.
+- **Significant-update case.** A different user (teams doing user research on any page, not makers forecasting a launch)
+  and new functionality that the earlier posts did not have.
+- **Day.** Saturday, unless a hunter with a record posts it; then Tuesday for traffic, because buyers of research tools
+  are at work.
+- **Odds.** Row A: 31.6 [21.7, 40.8] expected; 20.9 / 43.5 / 62.7 after 0 / 1 / 2 earlier top-5 finishes.
+- **Ship gate.** The recall and precision figures are current and on the page; version comparison gives the same answer
+  when the two versions are swapped; the privacy statement is true of the data shown.
+- **Cut-line.** First to go: export, then follow-up questions. Never cut: version comparison and the published score.
+- **Fallback.** If launches 1 and 2 both missed the top 10, apply the stop rule below before building.
+
+### Launch 4. Launch Pack (paid). Tuesday Jun 15 2027 with a hunter, else Saturday Jun 12
+
+- **Job and user.** A founder pays for a full service across one launch: a pre-launch audit, the launch-day read, and a
+  post-mortem.
+- **World-class claim (after the competitor run).** "Tells you your odds before, and shows how right it was after."
+  **Test:** the share of real finishes that fall inside the stated range, over 50 or more launches (20 of them pilots).
+- **Competitors.** Launch toolkits, launch-kit generators and communities on Product Hunt, and one seller of upvotes.
+  Real finishes: a social-posting agent #1 of 11; a launch toolkit #5 of 49; a launch-kit generator #13 of 21 [REAL].
+  The page states that we never supply or solicit votes.
+- **In.** The three reports; a real redacted sample; the price and the free tier. The tagline leads with what the founder
+  gets (pitch score 80), never with "a paid package" (35) [MODEL].
+- **Held back.** The API.
+- **Feedback that shaped it.** The pilots' own results, and the questions real users asked on launches 1–3. Panel today
+  [MODEL]: how specific is the "what to fix" advice.
+- **Significant-update case.** A different job (a paid service with reports) for a different buyer.
+- **Day.** The goal is traffic and buyers, so a weekday, but only if a hunter with a record posts it (24.2% top 5 on
+  Tue–Thu with one, 13.8% without). Without one, Saturday (34.2%).
+- **Odds.** Saturday 34.2 [23.6, 44.6]; Tue–Thu 13.8 [10.4, 17.6]; by record 21 / 37 / 56 / 62 on a Saturday after
+  0 / 1 / 2 / 3 earlier top-5 finishes.
+- **Ship gate.** 20 scored pilots; the sample report is real; every claim on the page has its number and day count.
+- **Cut-line.** First to go: the post-mortem's automation (done by hand for the first customers). Never cut: the scoring.
+- **Fallback.** If it is not featured, it still sells from launches 1–3's audience; the launch is not the only channel.
 
