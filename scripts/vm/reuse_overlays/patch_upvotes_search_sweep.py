@@ -11,8 +11,14 @@ Patches /opt/ph/reuse/paging_v2.py (whole pulls) and /opt/ph/reuse/ph_batch.py (
 """
 from __future__ import annotations
 
+import os
 import pathlib
 import sys
+
+# Off by default (orchestrator 07:06Z Nov 17): a sweep union is not the tab read to its end, so it can't make anyone complete.
+if os.environ.get("PH_UPVOTES_SEARCH_SWEEP", "0") != "1":
+    print("upvotes_search_sweep disabled (PH_UPVOTES_SEARCH_SWEEP != 1)")
+    sys.exit(0)
 
 MARK = "UPVOTES_SEARCH_SWEEP_PATCH"
 root = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else pathlib.Path("/opt/ph/reuse")
