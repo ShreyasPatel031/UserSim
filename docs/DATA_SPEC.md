@@ -153,3 +153,7 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Downtime audit | every 15 min, alerts within 1 min | inside an agent session; standalone script ready | none | a host for the cron + webhook file | Shreyas, Cursor fleet, open |
 | Maker X followers (Grok Bot rollout) | all 8,953 | 5,600 (62.5%), unchanged since Nov 13 | X 1,000 reads/day; not the binding stop now | re-approve the expired card in Grok Bot's environment | Shreyas, open |
 | GCP spend | ≤ $50/day | $57.57 on Nov 15 ($74 Nov 14) | over soft cap; under $100 hard cap | name the top line item | orchestrator, Nov 17 |
+
+## Save locations (Nov 17)
+- Data Feeder people writers without a full-pull stamp: raw/feeder_people_unstamped/ (outside the people store; never counted).
+- Grok Bot X rollout: raw/x_rollout/.
