@@ -2,7 +2,9 @@
 
 For each domain: load its storage_state into a fresh browser context, open the in-app URL the state implies
 (site_states.app_url_for: app.<domain> or a workspace subdomain), wait for redirects, and call it
-  LIVE        still in the app (no login/signup/auth URL, no visible password box)
+  LIVE        a signed-in app page: not a login/signup URL, no password box, AND an account / avatar / workspace
+              control or a log-out item in the DOM
+  UNSURE      not a login page, but no signed-in sign either (a marketing or landing page): not counted as live
   DEAD        sent to a login / signup page
   NO_APP_URL  the state never touched an in-app host (only the marketing site)
   ERROR       the page did not load
@@ -97,9 +99,17 @@ async def check_one(browser, domain: str, entry: dict) -> dict:
                 return out
         await asyncio.sleep(4)  # SPA shells redirect to /login after load
         pw_box = await page.locator("input[type=password]:visible").count() > 0
+        try:
+            signals = await page.evaluate(SS.SIGNED_IN_JS)
+        except Exception:  # noqa: BLE001
+            signals = {}
         out["landed"] = (page.url or "")[:160]
         out["title"] = (await page.title())[:60]
-        out["verdict"] = "DEAD" if SS.looks_signed_out(page.url, pw_box) else "LIVE"
+        out["signals"] = signals
+        if SS.looks_signed_out(page.url, pw_box):
+            out["verdict"] = "DEAD"
+        else:
+            out["verdict"] = "LIVE" if SS.signed_in_signals(signals) else "UNSURE"
         return out
     finally:
         await ctx.close()
@@ -146,7 +156,7 @@ async def main() -> int:
         print(f"{r['verdict']:10} {r['domain']:28} {str(r.get('app_url') or ''):42} -> {r.get('landed') or r.get('detail') or ''}")
         if a.mark_dead and r["verdict"] == "DEAD" and not r.get("was_dead"):
             mark_dead(prefix, r["domain"], f"check_saved_states: {r.get('landed', '')}")
-    counts = {v: sum(1 for r in results if r["verdict"] == v) for v in ("LIVE", "DEAD", "NO_APP_URL", "ERROR")}
+    counts = {v: sum(1 for r in results if r["verdict"] == v) for v in ("LIVE", "UNSURE", "DEAD", "NO_APP_URL", "ERROR")}
     print(f"\n{len(results)} domains: " + ", ".join(f"{k} {v}" for k, v in counts.items()) + f"  ({time.strftime('%Y-%m-%d %H:%M')})")
     if a.json:
         Path(a.json).write_text(json.dumps(results, indent=1))

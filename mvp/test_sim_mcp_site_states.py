@@ -140,7 +140,7 @@ class StartUrlTests(unittest.TestCase):
                           {"name": "a", "domain": "app.asana.com", "expires": FUTURE}],
               "origins": [{"origin": "https://asana.com", "localStorage": [{"name": "x"}] * 5},
                           {"origin": "https://app.asana.com", "localStorage": []}]}
-        self.assertEqual(SS.app_url_for(st, "asana.com"), "https://app.asana.com/")
+        self.assertEqual(SS.app_url_for(st, "asana.com"), "https://app.asana.com/0/home")  # table
 
     def test_workspace_subdomain_and_auth_hosts_skipped(self):
         st = {"cookies": [{"name": "s", "domain": "auth.monday.com", "expires": FUTURE},
@@ -149,9 +149,39 @@ class StartUrlTests(unittest.TestCase):
         self.assertEqual(SS.app_url_for({"storage_state": st}, "monday.com"), "https://usersimteam.monday.com/")
 
     def test_marketing_only_state_has_no_app_url(self):
-        st = {"cookies": [{"name": "t", "domain": ".clickup.com", "expires": FUTURE},
-                          {"name": "w", "domain": "www.clickup.com", "expires": FUTURE}], "origins": []}
-        self.assertEqual(SS.app_url_for(st, "clickup.com"), "")
+        st = {"cookies": [{"name": "t", "domain": ".example.io", "expires": FUTURE},
+                          {"name": "w", "domain": "www.example.io", "expires": FUTURE}], "origins": []}
+        self.assertEqual(SS.app_url_for(st, "example.io"), "")
+
+    def test_source_file_names_give_the_app_host(self):
+        # check_saved_states Nov 17: states whose only app hint was the exported file name came out NO_APP_URL
+        entry = {"source": "seed_disk:site_states/app.example.io.json,site_states/example.io.json",
+                 "storage_state": {"cookies": [{"name": "t", "domain": ".example.io", "expires": FUTURE}], "origins": []}}
+        self.assertEqual(SS.app_url_for(entry, "example.io"), "https://app.example.io/")
+        entry["source"] = "seed_disk:profiles/admin.example.io"
+        self.assertEqual(SS.app_url_for(entry, "example.io"), "https://admin.example.io/")
+
+    def test_marketing_telemetry_api_hosts_are_never_the_app(self):
+        for sub in ("marketing", "go", "us.telemetry", "xapi", "api2", "cdn", "events", "track", "links"):
+            st = {"cookies": [{"name": "t", "domain": f"{sub}.example.io", "expires": FUTURE}], "origins": []}
+            self.assertEqual(SS.app_url_for(st, "example.io"), "", sub)
+        st = {"cookies": [{"name": "t", "domain": "marketing.example.io", "expires": FUTURE},
+                          {"name": "u", "domain": "team42.example.io", "expires": FUTURE}], "origins": []}
+        self.assertEqual(SS.app_url_for(st, "example.io"), "https://team42.example.io/")
+
+    def test_prefix_without_gcs_store(self):
+        import builtins
+
+        real = builtins.__import__
+
+        def no_gcs(name, *a, **k):
+            if name == "mvp.gcs_store":
+                raise ImportError("no google-cloud-storage")
+            return real(name, *a, **k)
+
+        with mock.patch.dict("os.environ", {"MVP_SEED_STATES_PREFIX": "", "MVP_GCS_PREFIX": ""}), \
+                mock.patch("builtins.__import__", no_gcs):
+            self.assertEqual(SS.prefix(), "gs://usersim-bakeoff-347838016394/seed_states")
 
     def test_signed_out_pages(self):
         for u in ("https://app.asana.com/-/login", "https://auth.monday.com/users/sign_up_new",

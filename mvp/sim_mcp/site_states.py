@@ -45,9 +45,14 @@ def domain_of(url_or_host: str) -> str:
     return registrable_domain(host or "")
 
 
-def prefix() -> str:
-    from mvp.gcs_store import DEFAULT_GCS
+DEFAULT_BUCKET = "gs://usersim-bakeoff-347838016394"
 
+
+def prefix() -> str:
+    try:
+        from mvp.gcs_store import DEFAULT_GCS
+    except Exception:  # noqa: BLE001 (a seed checkout without mvp.gcs_store / google-cloud-storage)
+        DEFAULT_GCS = os.environ.get("MVP_GCS_PREFIX") or DEFAULT_BUCKET
     return (os.environ.get("MVP_SEED_STATES_PREFIX") or f"{DEFAULT_GCS}/seed_states").rstrip("/")
 
 
@@ -133,8 +138,40 @@ def seed_endpoint(seed: str, endpoints: list[str]) -> str:
 
 # ---- where a signed-in user starts, and whether the state still signs in -----------------------------------------
 
-_AUTH_LABELS = {"auth", "login", "signin", "signup", "accounts", "account", "id", "sso", "identity", "oauth", "secure",
-                "www", "api", "cdn", "static", "assets", "help", "support", "blog", "docs", "status"}
+# Where a signed-in user of these sites lands when the state's hosts do not say (or say it badly).
+APP_URLS: dict[str, str] = {
+    "asana.com": "https://app.asana.com/0/home",
+    "trello.com": "https://trello.com/u/me/boards",
+    "clickup.com": "https://app.clickup.com/",
+    "notion.so": "https://www.notion.so/",
+    "hubspot.com": "https://app.hubspot.com/",
+    "typeform.com": "https://admin.typeform.com/",
+    "slack.com": "https://app.slack.com/client",
+    "figma.com": "https://www.figma.com/files/recents-and-sharing",
+    "dropbox.com": "https://www.dropbox.com/home",
+    "grammarly.com": "https://app.grammarly.com/",
+    "zoom.us": "https://zoom.us/profile",
+    "ticktick.com": "https://ticktick.com/webapp",
+    "airtable.com": "https://airtable.com/",
+    "miro.com": "https://miro.com/app/dashboard/",
+    "canva.com": "https://www.canva.com/",
+    "linear.app": "https://linear.app/",
+    "todoist.com": "https://app.todoist.com/app/today",
+    "calendly.com": "https://calendly.com/event_types/user/me",
+    "mailchimp.com": "https://admin.mailchimp.com/",
+    "zapier.com": "https://zapier.com/app/home",
+    "basecamp.com": "https://launchpad.37signals.com/",
+    "smartsheet.com": "https://app.smartsheet.com/",
+    "wrike.com": "https://www.wrike.com/workspace.htm",
+    "tally.so": "https://tally.so/dashboard",
+}
+# Subdomain labels that are never the app: auth, marketing, telemetry, API, content (check_saved_states Nov 17 called
+# marketing.dropbox.com, marketing.figma.com, go.grammarly.com, us.telemetry.zoom.us and xapi.ticktick.com LIVE).
+_NOT_APP_RE = re.compile(
+    r"(?:^|[.-])(?:auth|login|signin|signup|accounts?|id|sso|identity|oauth|secure|www|x?api\d*|cdn\d*|static|assets?|"
+    r"img|images|media|help|support|docs?|blog|status|marketing|go|telemetry|track(?:ing)?|analytics|metrics|events?|ads?|"
+    r"pixel|log|logs|collect|email|mail|links?|click|lp|landing|pages|info|community|forum|learn|academy|developers?|"
+    r"partners?|store|shop|careers|press|news|cms|content)(?:$|[.-])", re.I)
 _SIGNED_OUT_RE = re.compile(r"log-?in|sign[-_]?in|sign[-_]?up|/auth|^auth\.|register|create-account|/users/sign|forced_logout",
                             re.I)
 
@@ -144,8 +181,14 @@ def app_url_for(entry_or_state: dict[str, Any], domain: str) -> str:
     workspace subdomain (monday.com: <team>.monday.com), never the marketing root or an auth host. '' = none known.
     Check study 02fc3bfc (Nov 17): a signed-in state opened on monday.com's homepage, the user clicked 'Get started'
     and hit signup's reCAPTCHA."""
-    state = entry_or_state.get("storage_state", entry_or_state) if isinstance(entry_or_state, dict) else {}
+    if domain in APP_URLS:
+        return APP_URLS[domain]
+    entry = entry_or_state if isinstance(entry_or_state, dict) else {}
+    state = entry.get("storage_state", entry)
     score: dict[str, int] = {}
+    # export_seed_states names its sources site_states/<host>.json / profiles/<host>: the host the seed signed in on
+    for src in re.findall(r"(?:site_states|profiles)/([a-z0-9.-]+?)(?:\.json)?(?=,|$)", str(entry.get("source") or ""), re.I):
+        score[src.lower()] = score.get(src.lower(), 0) + 3
     for o in state.get("origins") or []:
         host = urlsplit(str(o.get("origin") or "")).hostname or ""
         score[host] = score.get(host, 0) + 2 + len(o.get("localStorage") or [])
@@ -157,13 +200,29 @@ def app_url_for(entry_or_state: dict[str, Any], domain: str) -> str:
         host = host.lower()
         if not host.endswith("." + domain):
             continue  # the bare domain is the marketing site
-        label = host[: -len(domain) - 1].split(".")[-1]
-        if label in _AUTH_LABELS:
+        sub = host[: -len(domain) - 1]
+        if _NOT_APP_RE.search(sub):
             continue
-        rank = (1 if label == "app" else 0, n)
+        rank = (1 if sub.split(".")[-1] in ("app", "admin", "dashboard", "my", "console") else 0, n)
         if rank > best_rank:
             best, best_rank = host, rank
     return f"https://{best}/" if best else ""
+
+
+# Signs of a signed-in app page in the DOM: an account / profile / avatar control, a log-out item, a workspace switcher.
+SIGNED_IN_JS = r"""() => {
+  const q = (s) => { try { return document.querySelector(s) !== null; } catch (e) { return false; } };
+  const account = q('[aria-label*="account" i],[aria-label*="profile" i],[aria-label*="avatar" i],[aria-label*="user menu" i],'
+    + '[data-testid*="avatar" i],[data-testid*="account" i],[data-testid*="user-menu" i],[class*="avatar" i],'
+    + 'img[alt*="avatar" i],img[alt*="profile" i],[aria-label*="workspace" i],[data-testid*="workspace" i]');
+  const html = (document.body && document.body.innerHTML || '').slice(0, 2000000);
+  const logout = /log ?out|sign ?out|logout|signout/i.test(html);
+  return {account: account, logout: logout};
+}"""
+
+
+def signed_in_signals(signals: dict[str, Any] | None) -> bool:
+    return bool(signals) and bool(signals.get("account") or signals.get("logout"))
 
 
 def looks_signed_out(url: str, password_field: bool = False) -> bool:
