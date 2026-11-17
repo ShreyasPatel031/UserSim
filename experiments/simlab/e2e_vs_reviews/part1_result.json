@@ -1,0 +1,239 @@
+{
+ "truth_label": "WEAK truth: themes from public comparison pages, review snippets and community posts via web search (no raw reviews; G2/Capterra/TrustRadius pages refuse automated reads; no Reddit/HN threads surfaced)",
+ "products": {
+  "Tally": {
+   "study": {
+    "complaints": [
+     "Difficulty setting up conditional logic for questions",
+     "Inability to export form submissions to CSV",
+     "Challenges collecting payments for event registrations",
+     "Lack of clear visual design customization options",
+     "Inconsistent experience creating simple contact forms"
+    ],
+    "praise": [
+     "Easy to find pre-built form templates",
+     "Simple to create basic contact forms",
+     "Good for initiating visually engaging surveys"
+    ]
+   },
+   "baseline": {
+    "complaints": [
+     "Advanced features might require a learning curve for some users.",
+     "Fair usage guidelines for free tier could be a limitation for heavy users.",
+     "Limited direct integrations compared to some competitors.",
+     "Custom CSS requires technical knowledge.",
+     "No mention of advanced analytics or reporting features.",
+     "Potential for feature bloat as more options are added.",
+     "Reliance on AI for form building might not suit all preferences.",
+     "Specific limitations of the free tier are not fully detailed."
+    ],
+    "praise": [
+     "Completely free with unlimited forms and submissions.",
+     "Intuitive, Notion-like interface for easy form creation.",
+     "Strong focus on data privacy and GDPR compliance.",
+     "Versatile with many input blocks and smart features.",
+     "Highly customizable design to match branding."
+    ]
+   },
+   "homepage_chars": 5000,
+   "study_complaints_matches": [
+    null,
+    null,
+    null,
+    2,
+    null
+   ],
+   "study_praise_matches": [
+    null,
+    1,
+    null
+   ],
+   "baseline_complaints_matches": [
+    null,
+    null,
+    1,
+    2,
+    1,
+    null,
+    null,
+    null
+   ],
+   "baseline_praise_matches": [
+    0,
+    1,
+    null,
+    null,
+    null
+   ]
+  },
+  "Typeform": {
+   "study": {
+    "complaints": [
+     "Signup/login process is a major barrier to using the product.",
+     "Difficulty in finding and accessing core features after signup.",
+     "Lack of clear navigation to specific functionalities like exporting data.",
+     "Users get stuck on signup pages instead of reaching the product.",
+     "Conditional logic setup is not intuitive or easily discoverable.",
+     "Payment collection setup is unclear and not directly actionable.",
+     "Form creation process is not straightforward for simple tasks.",
+     "Design features for surveys are not easily found or engaged with."
+    ],
+    "praise": [
+     "Availability of pre-built form templates is a strong point.",
+     "Templates are categorized by use case, aiding discoverability."
+    ]
+   },
+   "baseline": {
+    "complaints": [
+     "Pricing for advanced features can be high.",
+     "Steep learning curve for complex automations.",
+     "Limited customization options for advanced users.",
+     "Integration issues with some niche tools.",
+     "Potential for over-reliance on AI, losing human touch.",
+     "Data privacy concerns with AI processing.",
+     "Performance issues with very large forms.",
+     "Lack of offline functionality."
+    ],
+    "praise": [
+     "Beautiful and engaging form design.",
+     "High completion rates due to conversational logic.",
+     "Powerful AI for form building and insights.",
+     "Automated workflows for lead generation and customer engagement.",
+     "Efficient AI-moderated research studies."
+    ]
+   },
+   "homepage_chars": 5000,
+   "study_complaints_matches": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    3
+   ],
+   "study_praise_matches": [
+    null,
+    null
+   ],
+   "baseline_complaints_matches": [
+    0,
+    null,
+    3,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "baseline_praise_matches": [
+    0,
+    0,
+    null,
+    null,
+    null
+   ]
+  },
+  "Fillout": {
+   "study": {
+    "complaints": [
+     "Difficulty in completing core tasks like creating forms or setting up logic.",
+     "Frequent blocking by CAPTCHAs or sign-up/login screens.",
+     "Usage limits preventing task completion and form creation.",
+     "Lack of clear export functionality for form submissions.",
+     "Unclear progress or confirmation for created forms/surveys.",
+     "Difficulty in designing visually engaging surveys.",
+     "Struggling to set up conditional logic for questions.",
+     "Inability to collect payments due to technical issues."
+    ],
+    "praise": [
+     "Availability of pre-built form templates."
+    ]
+   },
+   "baseline": {
+    "complaints": [
+     "Pricing might be a concern for some users.",
+     "Learning curve for advanced features and custom CSS.",
+     "Potential for feature overload for simple use cases.",
+     "Limited direct integrations compared to some competitors.",
+     "Reliance on AI might not suit all users' preferences.",
+     "Specific niche features might be missing for some industries.",
+     "Performance issues with very complex forms or high traffic.",
+     "Customer support response times could be an issue."
+    ],
+    "praise": [
+     "AI form builder is fast and efficient.",
+     "Highly customizable branding and design options.",
+     "Robust integrations with other applications.",
+     "Secure data intake and editable responses.",
+     "Versatile for various form types (surveys, payments, etc.)."
+    ]
+   },
+   "homepage_chars": 4294,
+   "study_complaints_matches": [
+    null,
+    null,
+    6,
+    null,
+    null,
+    3,
+    null,
+    null
+   ],
+   "study_praise_matches": [
+    null
+   ],
+   "baseline_complaints_matches": [
+    null,
+    null,
+    null,
+    2,
+    null,
+    null,
+    null,
+    0
+   ],
+   "baseline_praise_matches": [
+    null,
+    null,
+    1,
+    null,
+    null
+   ]
+  }
+ },
+ "scores": {
+  "study complaints": {
+   "recall": "25% [6, 50] (n 16)",
+   "precision": "19% [5, 38] (n 21)"
+  },
+  "study praise": {
+   "recall": "10% [0, 30] (n 10)",
+   "precision": "17% [0, 50] (n 6)"
+  },
+  "baseline complaints": {
+   "recall": "38% [19, 62] (n 16)",
+   "precision": "29% [12, 50] (n 24)"
+  },
+  "baseline praise": {
+   "recall": "40% [10, 70] (n 10)",
+   "precision": "33% [13, 60] (n 15)"
+  }
+ },
+ "study_cells": {
+  "Tally": {
+   "runs": 36,
+   "goal_reached": 13
+  },
+  "Typeform": {
+   "runs": 36,
+   "goal_reached": 5
+  },
+  "Fillout": {
+   "runs": 36,
+   "goal_reached": 4
+  }
+ },
+ "usd": 0.007
+}
