@@ -1,0 +1,452 @@
+[
+ {
+  "match": 1,
+  "product": "Typewise Nova",
+  "kind": "questions",
+  "pred": "What is the pricing model for Typewise Nova?",
+  "real": "How do you define 'resolved' vs 'unresolved' for pricing, especially if the customer is unsatisfied?",
+  "reader_agrees": false,
+  "note": "judge matched; reader: only the broad topic (pricing) is shared"
+ },
+ {
+  "match": 1,
+  "product": "ReSO AI",
+  "kind": "complaints",
+  "pred": "Turning AI visibility into measurable actions is hard; most tools stop at dashboards.",
+  "real": "Reporting tool only, doesn't 'do' any work or magically improve ranking",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Articos",
+  "kind": "questions",
+  "pred": "Is there a free trial or demo available?",
+  "real": "Do you have a demo or sample report?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Eclatira",
+  "kind": "questions",
+  "pred": "What are the typical use cases for Eclatira?",
+  "real": "Are there other interesting use cases beyond customer support?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "MOVO AI",
+  "kind": "questions",
+  "pred": "What is the maximum video length MOVO AI can generate?",
+  "real": "Is there a limitation on the movie's time/length?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Doneas",
+  "kind": "complaints",
+  "pred": "Handling time zone differences for global groups",
+  "real": "Difficulty maintaining the same circle through travel/time zone changes",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "shim-cli",
+  "kind": "complaints",
+  "pred": "Will this slow down my coding assistant a lot?",
+  "real": "Concern about performance impact/latency due to routing",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Widgo",
+  "kind": "questions",
+  "pred": "How does it identify company information?",
+  "real": "Does it use reverse IP lookup to identify companies from anonymous sessions?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "DailyHelm",
+  "kind": "questions",
+  "pred": "What kind of reporting shows the impact of implemented fixes?",
+  "real": "Can it tell if a fix actually helped and learn from implemented fixes?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Toplify",
+  "kind": "complaints",
+  "pred": "Too many notifications could be annoying.",
+  "real": "Worry about too many alerts from small stores",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Onepin",
+  "kind": "questions",
+  "pred": "How does Onepin handle new or custom terminology not in the 4M-word dictionary?",
+  "real": "What happens to words not in the four-million-word dictionary?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Would you pay?",
+  "kind": "complaints",
+  "pred": "Swipes don't equal actual purchases.",
+  "real": "Gap between a 'yes I'd pay' swipe and actual payment",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Yomi",
+  "kind": "questions",
+  "pred": "Will more languages be added soon?",
+  "real": "Will German be added as a supported language?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Hemory",
+  "kind": "questions",
+  "pred": "What are the exact privacy implications of 'always-on'?",
+  "real": "How does it handle moments someone doesn't want recorded?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Talanoa",
+  "kind": "questions",
+  "pred": "Is there a mobile app planned?",
+  "real": "Is there a mobile app?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Meridian",
+  "kind": "complaints",
+  "pred": "Privacy concerns with local AI processing, even without cloud.",
+  "real": "Privacy concerns with required permissions and LLM egress",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "ToneBird",
+  "kind": "questions",
+  "pred": "How does it learn my voice/tone?",
+  "real": "How does the product learn the user's voice?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Coddy",
+  "kind": "questions",
+  "pred": "How does Coddy differentiate itself, especially with its AI tutor?",
+  "real": "What is the biggest difference between Cody and traditional coding platforms?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Hemory",
+  "kind": "questions",
+  "pred": "How accurate is the speaker identification feature?",
+  "real": "How well does it distinguish between multiple voices?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Gauth Unlimited Digital Canvas ",
+  "kind": "questions",
+  "pred": "How does it actually build context and learn over time?",
+  "real": "Does it remember context as things are added?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Chit",
+  "kind": "questions",
+  "pred": "Is there a Windows version planned for the future?",
+  "real": "Is it only for Mac, or also for Windows?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Quiver GTM",
+  "kind": "complaints",
+  "pred": "Learning curve and setup time",
+  "real": "Difficulty understanding how to get started and integrate into workflow",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Loqua",
+  "kind": "complaints",
+  "pred": "Accuracy of transcription and understanding natural speech will be a major issue.",
+  "real": "Voice AI tools often don't work well",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "Hey Noah",
+  "kind": "questions",
+  "pred": "How does Noah decide when to proactively engage with my network?",
+  "real": "How does Noah act proactively without being prompted?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 1,
+  "product": "LLMagnet",
+  "kind": "questions",
+  "pred": "How does 'AI visibility' differ from traditional SEO?",
+  "real": "What is the difference between LLMagnet and Google Analytics?",
+  "reader_agrees": false,
+  "note": "judge matched; reader: different comparison"
+ },
+ {
+  "match": 0,
+  "product": "Harness by Autonomous",
+  "kind": "complaints",
+  "pred": "Constraints written as instructions are advisory and unreliable.",
+  "real": "Confusion during initial onboarding/setup without the harness || Organization blocks official remote tools for cloud code || Multi-machine setups break when one machine is asleep || Agents sitting idle waiting for input causes time loss || Unclear how CAD, circuits, and robots harnesses with live viewer work",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Vois 2.0",
+  "kind": "complaints",
+  "pred": "The $10/month for life sounds like a temporary offer, will it increase?",
+  "real": "Support email address bounces || Trial version kept crashing",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Oats",
+  "kind": "complaints",
+  "pred": "Integration with existing meeting platforms (Zoom, Teams) is missing.",
+  "real": "Local AI notetakers often fall behind cloud ones in diarization/speaker recognition",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "MosMos",
+  "kind": "questions",
+  "pred": "What's the pricing model, especially for teams with varying usage needs?",
+  "real": "How many speakers can it handle before mixing them up? || How are potential partnerships and B2B handled? || What other languages will be added? || What content is sent to external services for summaries and text polishing? || Can users choose between verbatim transcription and polished writing? || How does speaker separation handle interruptions or simultaneous speech?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Web Search Agents by Nimble",
+  "kind": "questions",
+  "pred": "How to ensure data quality and veracity?",
+  "real": "Plans for direct integration to Google Sheets or Airtable? || How does the learning process work in practice? || What is the latency per query? || How do you handle sites that block bots?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "cmmnts",
+  "kind": "questions",
+  "pred": "What is your pricing model?",
+  "real": "Do mentions work for everyone or only registered users? || What moderation controls are available beyond simple approval/rejection? || Is system fingerprinting for anonymous comments disclosed to the user?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "HyNote for Mac",
+  "kind": "questions",
+  "pred": "What macOS capabilities are you utilizing?",
+  "real": "How is transcription accuracy maintained across different Mac hardware? || What data leaves the Mac during cross-device sync and does it pass through servers? || What has been independently assessed or audited regarding security/compliance? || Will the product be available for iOS? || Does data go online, regarding the privacy policy? || Does the macOS recording indicator show up during a meeting?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Ari by Ariso",
+  "kind": "questions",
+  "pred": "Integrates with existing project management tools?",
+  "real": "Can Ari handle teams with consistently changing priorities? || How does Ari handle incomplete discussions? || Does Ari give coaching based on actual work patterns and follow through? || How do you balance AI-driven quality control with human review? || Can Ari be a singular product-focused assistant or an umbrella across an entire org? || Who are the main users for Ari? || What type/size of team i",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Origin by Cursor",
+  "kind": "questions",
+  "pred": "What is the target audience?",
+  "real": "How does the stacked feature compare to GitHub's stacked PRs?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Termexo",
+  "kind": "questions",
+  "pred": "What kind of notifications does it provide?",
+  "real": "Does the agent run inside WSL, native Windows, or can it be picked? || Does session resume survive Windows update/crash, or just restore pane arrangement? || Does each model profile get its own isolated API key?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Vorker",
+  "kind": "complaints",
+  "pred": "Another AI tool promising to do everything?",
+  "real": "Lack of desktop app for local file/app integration",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Annotate",
+  "kind": "questions",
+  "pred": "What AI models does it currently support?",
+  "real": "Does the transcript stay tied to the frames in order on a multi-step flow? || Are there plans to support Windows or Linux in the future? || Are there any plans for Android in the future?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "AdAnt AI",
+  "kind": "complaints",
+  "pred": "Will the AI handle complex product features or niche audiences effectively?",
+  "real": "No free trial or free video creation to test the product || Bug: Voice previews play simultaneously and don't stop",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Nuphos",
+  "kind": "complaints",
+  "pred": "What are the security implications of AI agents having production access?",
+  "real": "Trusting agents in production is a challenge || Agents might make wrong decisions in new scenarios",
+  "reader_agrees": false,
+  "note": "judge did not match; reader: same issue (trusting agents in production)"
+ },
+ {
+  "match": 0,
+  "product": "ngram 2.0",
+  "kind": "questions",
+  "pred": "What's the typical processing time for a video?",
+  "real": "Can ngram keep video in sync when product UI changes? || How does ngram ensure narration/visuals are accurate to original research papers? || What is the product's main framing/positioning (product updates vs. general explainer)? || Does ngram have the ability to link videos to QR codes for physical products? || Which format do people create most: explainers or screencasts? || How does ngram integ",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "AdAnt 2.0",
+  "kind": "complaints",
+  "pred": "AI-generated content can sound generic or clich\u00e9d.",
+  "real": "Difficulty distinguishing relevant trends from viral ones || Content tools optimize creation, but bottleneck is deciding what to say and where || Distribution is still incredibly hard for founders || Making scroll-stopping ads for TikTok, Instagram and YouTube is a real pain for small teams",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Toplify",
+  "kind": "questions",
+  "pred": "What kind of support is offered to users?",
+  "real": "Will Android support be added? || How is reliable data obtained across 175 countries without official access? || Will Play Store or Chrome web store support be added? || Will Google Play apps tracking be available in the future? || Why was it distributed as a mobile app instead of a web service? || How does the app decide what counts as a significant jump for alerts? || Can users set their own thr",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Octri.dev",
+  "kind": "questions",
+  "pred": "Is there a way to integrate Octri with CI/CD pipelines?",
+  "real": "Will there be options to customize doc themes? || How hard is it to add custom CSS to generated docs? || How does Octri handle API changes over time? || Can Octri detect breaking changes in OpenAPI spec? || Can Octri flag impacted SDKs/integrations before new version ships? || What happens to customizations when spec changes and SDK regenerates? || Do customizations survive SDK regeneration?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Jotform AI Data Assistant",
+  "kind": "questions",
+  "pred": "What kind of support is available for users?",
+  "real": "How well does it handle messy open-ended answers?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "DeepSeek-V4-Flash-0731",
+  "kind": "complaints",
+  "pred": "Concerns about data privacy with a new frontier model.",
+  "real": "Cost per completed task is more important than cost per million tokens || Skepticism about the significant performance jump between preview and current model || Asymmetry in performance gains suggests harness-shaped improvements, not new capabilities",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "ChatCut Desktop",
+  "kind": "questions",
+  "pred": "Does it work well in a noisy room?",
+  "real": "How long does the setup process take? || Does the product offer transcription services? || How well does it pick the right moments in longer, messier raw footage? || How does it work for heavy edits like 'cut every silence and add captions' on a long file? || Does the agent send the whole timeline/transcript context to Claude Code or Codex, or is cutting/rendering done locally?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Prequel",
+  "kind": "complaints",
+  "pred": "Robustness of background removal/replacement; green screen required?",
+  "real": "Lack of manual control over auto-generated zooms after recording || No lifetime subscription or annual license option || Subscription fatigue || Zooms following cursor instead of relevant on-screen changes",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "HEVN U.S.",
+  "kind": "questions",
+  "pred": "How does the self-custodial wallet work?",
+  "real": "How do you handle payment status visibility when a transfer is delayed? || What is the typical onboarding timeline?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Skriptr",
+  "kind": "questions",
+  "pred": "Can it help with different writing styles (e.g., essays, reports)?",
+  "real": "Could you share any recent successes you've had?",
+  "reader_agrees": true,
+  "note": ""
+ },
+ {
+  "match": 0,
+  "product": "Omni by xpander",
+  "kind": "complaints",
+  "pred": "What mechanisms are in place to prevent 'configuration drift' in cloud agents?",
+  "real": "Previous claims of 'fixes itself' have been disappointing || Cost of tokens on scheduled runs can be expensive || Agents working locally is easy, but reliably in the cloud is annoying",
+  "reader_agrees": true,
+  "note": ""
+ }
+]

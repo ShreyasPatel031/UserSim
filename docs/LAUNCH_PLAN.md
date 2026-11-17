@@ -82,9 +82,9 @@ persona panel on our own page [MODEL]. **On Dec 6 the real comments on launch 1 
 
 | Launch | World-class claim | Test before launch day | State today | Held back for later |
 |---|---|---|---|---|
-| 1 /try, Dec 5 | The only launch rehearsal checked against real launches every day | Nightly score of its predicted questions against real comments, 30+ days, on the page | Forward figures from 11 launches only | Real competitor comments (2); task runs and version comparison (3); "what if" (4) |
+| 1 /try, Dec 5 | The only launch rehearsal checked against real launches every day | Nightly score of its predicted questions against real comments, 30+ days, on the page | Forward figures from 11 launches only, on a loose rule. **On a strict rule (same specific issue), the best pre-launch method names 10.4% of real questions in its top 10 (300 launches) [REAL]**; the claim must publish that number or change | Real competitor comments (2); task runs and version comparison (3); "what if" (4) |
 | 2 Radar, Feb 6 | The only competitor watch built from what real users said, counted by distinct people, with its tagging scored in public | Agreement of the automatic theme tags with 300 hand-labelled comments; every featured launch in a tracked space in the digest within 24 hours, 14 days running | **Neither number exists yet** | Named fixes and task runs (3); "what if we changed X" (4); other platforms |
-| 3 User Testing, Apr 10 | The only user test that runs the same tasks on you and your competitors, and shows how often its findings match what real users later said | Share of real complaint themes its runs find, on 30+ products, published whatever it is; a run completes on 9 of 10 arbitrary sites | **Weak: 24% [9, 38] on 11 launches [REAL].** The claim cannot be made yet | Price, positioning, competitor responses (4); API |
+| 3 User Testing, Apr 10 | The only user test that runs the same tasks on you and your competitors, and shows how often its findings match what real users later said | Share of real complaint themes its runs find, on 30+ products, published whatever it is; a run completes on 9 of 10 arbitrary sites | **No: the best pre-launch method names 13.5% [10.4, 16.9] of real complaints (300 launches, strict rule) [REAL]; 40% is out of reach for every method tested.** Only real browser task runs on the live product are untested; they are the gate | Price, positioning, competitor responses (4); API |
 | 4 Market Simulator, Jun 12/15 | The only market simulator whose every prediction is scored in public afterwards | One scored claim: predicted share of backers by voter group against the real share, 30 days of public record | 89,027 complete people; a person's real pick is in our top 3 about 57% of the time; 25–29% of backers named in advance | Markets beyond Product Hunt; answers about individuals |
 
 ### Launch 1 specifics (Dec 5)
@@ -114,8 +114,8 @@ persona panel on our own page [MODEL]. **On Dec 6 the real comments on launch 1 
    input, testing a specific scenario, has the best real support in the chain (13 commenters).
 3. **War Game mode has no real-comment support.** The 13 commenters who asked about competitors meant the tool against
    its alternatives. It stays out of June's scope unless product 3's real comments ask for it.
-4. **Product 3 cannot make its claim today** (24% of real complaints found). Its build starts with that number, not with
-   features; if it is still under 40% at the week-4 check, launch 3 ships as a narrower product or moves a week at a time.
+4. **Product 3 cannot make its claim today.** On 300 launches the best pre-launch method names 13.5% of real complaints;
+   40% is out of reach. Its gate is a forward browser test of real products at launch time (see "Can the claim be made?").
 5. **Radar's "does nothing for my product" objection comes from the panel only**; no real commenter said it.
 
 ## The loop for each two-month cycle
@@ -917,6 +917,46 @@ Best: *Simulated users do real tasks on your product and your rivals'.* Give us 
 1. Real finishes: three products in this job finished #1, #1 and #2 (synthetic users inside dev tools; AI UX validation; an AI research agent with real users).
 2. Autonomous QA: a zero-prompt AI tester finished #3 of 38. Users asked it about test failures and complex flows (4 and 3 commenters); ours must not get stuck.
 3. Real humans: products that recruit real users set the standard. Ours is faster and cheaper, not equivalent.
+
+### Can the claim be made? (E5, Nov 17; results in `experiments/simlab/complaint_recall/`)
+
+**No, not today.** The claim was that the user test shows how often its findings match what real users later said. Measured
+on 300 real launches, no pre-launch method names more than about 1 in 7 of the complaints real users went on to raise.
+
+**What was measured [REAL outcomes, tagged and matched by model].** 300 held launches from Aug 1 to Nov 10 2026, each with
+at least 8 real comments from non-team users (median 13 commenters). Real comments were tagged into complaint and question
+themes, counted by distinct commenters: about 2 complaint themes and 7 question themes per launch; 62 launches had no
+complaint. Each method made 10 ranked predictions of each kind from pre-launch inputs only. A prediction counts only if it
+names the same specific issue, not merely the same topic. A hand check of 50 pairs agreed with the automatic matching on 47.
+
+| Method | Complaint recall, top 5 | Complaint recall, top 10 | Question recall, top 10 | Question precision, top 10 |
+|---|---|---|---|---|
+| Persona panel as deployed | 7.1% [4.6, 9.9] | 9.0% [6.4, 12.0] | 4.9% [4.0, 6.0] | 3.9% [3.1, 4.6] |
+| Persona-free prompt on the pitch | 8.6% [6.1, 11.2] | **13.5% [10.4, 16.9]** | **10.4% [8.7, 12.1]** | 7.3% [6.2, 8.4] |
+| Retrieval: comments on 5 similar earlier launches | 2.9% [1.4, 4.8] | 5.0% [3.0, 7.3] | 3.3% [2.3, 4.3] | 2.3% [1.7, 3.0] |
+| Panel + retrieval | 7.0% [4.5, 9.8] | 9.2% [6.4, 12.1] | 5.6% [4.6, 6.7] | 4.4% [3.6, 5.2] |
+| Persona-free + retrieval | 9.1% [6.6, 12.0] | 13.6% [10.3, 17.1] | 9.8% [8.2, 11.6] | 6.8% [5.6, 7.9] |
+
+n = 223 launches for complaints, 273 for questions; intervals are bootstraps over launches.
+
+- **Best method: the plain prompt with no personas.** The persona panel is worse by 4.5 points on complaints [−7.3, −2.0]
+  and 5.4 on questions [−6.9, −3.9].
+- **Retrieval does not help**, alone or added (+0.1 [−3.3, +3.7]).
+- **A text-only task run does not help** (154 launches with a held site capture: 7.8% against 9.4% for the plain prompt on
+  the same text). It had no browser and no real task execution, so it does not test the real product.
+- **40% is out of reach**: all five methods pooled, 50 predictions per launch, reach 25.1% [20.7, 29.9] of complaints.
+- **Why so low:** real complaints are few and mostly about what happened on the day: a bounced support address, a crash in
+  the trial, a missing platform. A pitch or site text does not contain them.
+- **Why lower than earlier figures:** "theme recall 61%" matched broad themes such as "pricing"; this test requires the same
+  specific issue. "24% on 11 launches" used a looser rule, and its interval contains 13.5%.
+
+**What this changes [JUDGMENT].**
+- **Launch 3's gate is now a forward test of the real product:** simulated users operating each day's new launches in a
+  browser at launch time, before comments arrive, scored with this same rule on 30 or more products. If it does not clearly
+  beat 13.5%, the "matches what real users said" claim is dropped and launch 3 is sold on side-by-side task results alone.
+- **The persona panel is not the engine of launch 3.** It loses to a plain prompt on specific issues.
+- **Launch 1 is affected too.** /try's "the questions your launch will get" must be scored on this strict rule before it
+  is claimed; today's comparable figure is 10.4% of real questions in the top 10.
 
 ### Feedback on product 3 (this feeds the next product)
 
