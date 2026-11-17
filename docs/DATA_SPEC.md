@@ -39,3 +39,6 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
   `quality_*_complete.txt`, have_index, need_list, the completion queue, `fleet_work_queue.txt`, vote coverage and the
   scorecard all use this rule from 05:0xZ Nov 17.
 - Re-read list for the fleet: `raw/_cursor/upvotes_scroll_reread.txt`; whole work queue: `raw/_cursor/fleet_work_queue.txt`.
+- The fleet's Upvotes search sweep (single-character search terms) is **off** since 07:06Z Nov 17 (orchestrator). A save
+  whose Upvotes paging carries a non-null `upvotes_sweep` is not complete for Upvotes (`upvotes:search_sweep_not_accepted`);
+  its rows are kept as extras through the lossless union.

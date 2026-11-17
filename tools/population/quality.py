@@ -193,6 +193,18 @@ def signed_out_end(d):
     return tagged and ended in SERVER_END  # full18f: a recorded PH end is required (complete_not_visible alone is not)
 
 
+def upvotes_sweep(d):
+    """True when the Upvotes read used the fleet's search sweep (upvotes.paging.upvotes_sweep or
+    run.timing.upvotes.paging.upvotes_sweep non-null). Off since 07:06Z Nov 17 (orchestrator): such Upvotes rows are kept as
+    extras but the tab is not complete."""
+    t = d.get("upvotes") if isinstance(d.get("upvotes"), dict) else {}
+    run = d.get("run") or {}
+    a = (t.get("paging") or {}).get("upvotes_sweep")
+    b = (((run.get("timing") or {}).get("upvotes") or {}).get("paging") or {}).get("upvotes_sweep")
+    c = ((run.get("paging") or {}).get("upvotes") or {}).get("upvotes_sweep")
+    return any(x not in (None, "", {}, []) for x in (a, b, c))
+
+
 def person_complete(d, h=None):
     why = []
     # Shreyas, Nov 17 (AGENTS.md): there is no signed-in pass; the "signed-out upvote end" was a scroll bug. An Upvotes list
@@ -200,6 +212,8 @@ def person_complete(d, h=None):
     # no longer makes it whole).
     if signed_out_end(d):
         why.append("upvotes:short_needs_scroll_reread")
+    if upvotes_sweep(d):  # orchestrator 07:06Z Nov 17: the search sweep is off; its Upvotes never make a person complete
+        why.append("upvotes:search_sweep_not_accepted")
     for t in ALL_TABS:
         if not isinstance(d.get(t), dict):
             why.append(f"missing_tab:{t}")
