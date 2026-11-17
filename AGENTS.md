@@ -105,7 +105,9 @@ Shreyas, verbatim: "The PH agent may deploy any rehearsed fix without asking me.
 
 - A fix on the deploy list (experiments/pipeline_patches/DEPLOY_ORDER_*.md) that has passed its VM rehearsal (check mode, import gates, rollback tested) is deployed by the PH agent without waiting for Shreyas, in the listed order, outside 23:30-01:00 PT.
 - Each deploy is logged in docs/RESEARCH_LOG.md with its commit, check result and rollback command. A failed post-deploy check is rolled back at once.
-- Model swaps (for example publishing arm 3) are not fixes; they follow the "how models are chosen" rule.
+- Model swaps (for example publishing arm 3) are not fixes; they follow the "how models are chosen" rule, and under that
+  rule they are deployed **without waiting for Shreyas** (Shreyas, Nov 17: "Why the fuck do you keep waiting for me to
+  publish obviously better models?"). The orchestrator decides, the PH agent deploys, the old model stays as the shadow line.
 
 ## Rule for every agent: there is no signed-in pass; the "signed-out upvote end" was a scroll bug (Shreyas, Nov 17 2026)
 
@@ -117,3 +119,11 @@ Shreyas: "the signed in approach isn't real. You just have to scroll. That was a
   scrolling to Product Hunt's end. They count as complete only after that pass passes the output check.
 - No agent asks Shreyas for an account, cookies or a "signed-in session" for Product Hunt pulls, and no agent proposes a
   signed-in pass, whatever it is called.
+
+## Rule for every agent: storage paths are not Shreyas's decision (Shreyas, Nov 17 2026)
+
+Shreyas: "Who the fuck cares what the save position is for data feeder? Just save it any fucking where."
+- Where a writer saves its files (a folder or a bucket prefix) is picked by the agent doing the work and recorded in
+  docs/DATA_SPEC.md. Nobody waits for Shreyas on it.
+- The one condition stays: a writer of incomplete or unstamped person files saves outside the complete-people store, so it
+  can never be counted as complete.
