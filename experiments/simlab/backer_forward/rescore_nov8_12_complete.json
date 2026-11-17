@@ -1,0 +1,361 @@
+{
+ "metric": "BACKER PREDICTION, strict: recall at N (N = observed backers), pooled; DAY-bootstrap 95% intervals",
+ "how": "Score the three backer-prediction arms (CF-only, A7, raw most-active) under one metric (orchestrator 22:34Z Nov 14).\nPer launch: o = observed backers = people held before the freeze (a read before 00:00 PT of D) AND re-read after the day closed whose own upvote\nlist contains the launch; N = |o|; each arm's list is ranked within the re-read people; hits = |top N \u2229 o|.\nPooled recall per arm = sum(hits) / sum(N) over all scored launches; 95% interval and paired differences = DAY bootstrap (2000; launches of one day resampled together).\nThe raw arm = held people ranked by upvotes on launches of the 30 days before D, from reads fetched before 00:00 PT of D.\n  python backer_arms_score.py <store dir> <scratchpad> <day> [<day> ...] [--no-upload]\nWrites results/web/backer_prediction_arms.json (accumulating rows per (day, store read)) and results/web/north_star_rows_e5.json (best arm).",
+ "written_at": "2026-11-17T09:23:46.793271+00:00",
+ "summary": {
+  "2026-11-08": {
+   "launches": 16,
+   "observed_backers": 133,
+   "CF-only": [
+    3.8,
+    null,
+    null
+   ],
+   "A7": [
+    6.0,
+    null,
+    null
+   ],
+   "CF+back": [
+    3.0,
+    null,
+    null
+   ],
+   "CF+intensity": [
+    6.8,
+    null,
+    null
+   ],
+   "raw most-active": [
+    6.0,
+    null,
+    null
+   ],
+   "CF+back minus CF-only (paired)": [
+    -0.8,
+    null,
+    null
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    3.0,
+    null,
+    null
+   ],
+   "CF-only minus raw (paired)": [
+    -2.3,
+    null,
+    null
+   ],
+   "A7 minus raw (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+back minus raw (paired)": [
+    -3.0,
+    null,
+    null
+   ],
+   "CF+intensity minus raw (paired)": [
+    0.8,
+    null,
+    null
+   ]
+  },
+  "2026-11-09": {
+   "launches": 22,
+   "observed_backers": 216,
+   "CF-only": [
+    11.1,
+    null,
+    null
+   ],
+   "A7": [
+    14.4,
+    null,
+    null
+   ],
+   "CF+back": [
+    12.5,
+    null,
+    null
+   ],
+   "CF+intensity": [
+    14.4,
+    null,
+    null
+   ],
+   "raw most-active": [
+    9.3,
+    null,
+    null
+   ],
+   "CF+back minus CF-only (paired)": [
+    1.4,
+    null,
+    null
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    3.2,
+    null,
+    null
+   ],
+   "CF-only minus raw (paired)": [
+    1.9,
+    null,
+    null
+   ],
+   "A7 minus raw (paired)": [
+    5.1,
+    null,
+    null
+   ],
+   "CF+back minus raw (paired)": [
+    3.2,
+    null,
+    null
+   ],
+   "CF+intensity minus raw (paired)": [
+    5.1,
+    null,
+    null
+   ]
+  },
+  "2026-11-10": {
+   "launches": 19,
+   "observed_backers": 133,
+   "CF-only": [
+    0.8,
+    null,
+    null
+   ],
+   "A7": [
+    2.3,
+    null,
+    null
+   ],
+   "CF+back": [
+    0.8,
+    null,
+    null
+   ],
+   "CF+intensity": [
+    0.8,
+    null,
+    null
+   ],
+   "raw most-active": [
+    0.8,
+    null,
+    null
+   ],
+   "CF+back minus CF-only (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF-only minus raw (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "A7 minus raw (paired)": [
+    1.5,
+    null,
+    null
+   ],
+   "CF+back minus raw (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+intensity minus raw (paired)": [
+    0.0,
+    null,
+    null
+   ]
+  },
+  "2026-11-11": {
+   "launches": 13,
+   "observed_backers": 52,
+   "CF-only": [
+    0.0,
+    null,
+    null
+   ],
+   "A7": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+back": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+intensity": [
+    0.0,
+    null,
+    null
+   ],
+   "raw most-active": [
+    1.9,
+    null,
+    null
+   ],
+   "CF+back minus CF-only (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF-only minus raw (paired)": [
+    -1.9,
+    null,
+    null
+   ],
+   "A7 minus raw (paired)": [
+    -1.9,
+    null,
+    null
+   ],
+   "CF+back minus raw (paired)": [
+    -1.9,
+    null,
+    null
+   ],
+   "CF+intensity minus raw (paired)": [
+    -1.9,
+    null,
+    null
+   ]
+  },
+  "2026-11-12": {
+   "launches": 24,
+   "observed_backers": 97,
+   "CF-only": [
+    1.0,
+    null,
+    null
+   ],
+   "A7": [
+    3.1,
+    null,
+    null
+   ],
+   "CF+back": [
+    3.1,
+    null,
+    null
+   ],
+   "CF+intensity": [
+    3.1,
+    null,
+    null
+   ],
+   "raw most-active": [
+    3.1,
+    null,
+    null
+   ],
+   "CF+back minus CF-only (paired)": [
+    2.1,
+    null,
+    null
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    2.1,
+    null,
+    null
+   ],
+   "CF-only minus raw (paired)": [
+    -2.1,
+    null,
+    null
+   ],
+   "A7 minus raw (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+back minus raw (paired)": [
+    0.0,
+    null,
+    null
+   ],
+   "CF+intensity minus raw (paired)": [
+    0.0,
+    null,
+    null
+   ]
+  },
+  "ALL": {
+   "launches": 94,
+   "observed_backers": 631,
+   "CF-only": [
+    4.9,
+    0.6,
+    8.9
+   ],
+   "A7": [
+    7.1,
+    1.9,
+    11.9
+   ],
+   "CF+back": [
+    5.5,
+    1.1,
+    9.8
+   ],
+   "CF+intensity": [
+    7.0,
+    1.1,
+    12.0
+   ],
+   "raw most-active": [
+    5.2,
+    1.5,
+    8.1
+   ],
+   "CF+back minus CF-only (paired)": [
+    0.6,
+    -0.4,
+    1.5
+   ],
+   "CF+intensity minus CF-only (paired)": [
+    2.1,
+    0.4,
+    3.0
+   ],
+   "CF-only minus raw (paired)": [
+    -0.3,
+    -2.1,
+    1.1
+   ],
+   "A7 minus raw (paired)": [
+    1.9,
+    -0.5,
+    4.0
+   ],
+   "CF+back minus raw (paired)": [
+    0.3,
+    -2.1,
+    2.4
+   ],
+   "CF+intensity minus raw (paired)": [
+    1.7,
+    -0.5,
+    4.0
+   ]
+  }
+ }
+}

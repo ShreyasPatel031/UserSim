@@ -1,0 +1,44 @@
+{
+ "day": "2026-11-13",
+ "written_at": "2026-11-17T09:19:46Z",
+ "store_upvotes_read_until": "2026-11-16 22:37",
+ "complete_rule": "no_signed_in_pass_2026-11-17",
+ "complete_people": 74047,
+ "metric": "recall at N: of held people who voted for a launch (held before the freeze, re-read after the day closed), the share named in advance; N = observed backers; pooled; day bootstrap when pooled",
+ "frozen_list_found": true,
+ "listed_people_CF": 2256,
+ "listed_people_reread_after_close": 0,
+ "held_people_reread_after_close": 14989,
+ "scores": {
+  "all held people": {
+   "status": "scored",
+   "launches": 18,
+   "observed_backers": 64,
+   "CF-only": "not scorable: none of the listed people was re-read after the close",
+   "A7": "not scorable: none of the listed people was re-read after the close",
+   "CF+back": "not scorable: none of the listed people was re-read after the close",
+   "CF+intensity": "not scorable: none of the listed people was re-read after the close",
+   "raw most-active": [
+    1.6,
+    null,
+    null
+   ]
+  },
+  "complete held people": {
+   "status": "scored",
+   "launches": 7,
+   "observed_backers": 20,
+   "CF-only": "not scorable: none of the listed people was re-read after the close",
+   "A7": "not scorable: none of the listed people was re-read after the close",
+   "CF+back": "not scorable: none of the listed people was re-read after the close",
+   "CF+intensity": "not scorable: none of the listed people was re-read after the close",
+   "raw most-active": [
+    0.0,
+    null,
+    null
+   ]
+  }
+ },
+ "scorable_CF": false,
+ "why_not_scorable": "none of the people on the frozen CF list was re-read after the day closed; only the raw most-active arm can be scored"
+}
