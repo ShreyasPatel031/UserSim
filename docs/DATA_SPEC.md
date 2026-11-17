@@ -30,15 +30,16 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Dead/flagged | showdead | checked: 0 of 278 false flags dead; closed | none |
 
 ## Completeness rule for PH people (population agent, Nov 17 2026; Shreyas via orchestrator, AGENTS.md)
-- A person is **complete** only when every tab passes `quality.person_complete` with Upvotes read to Product Hunt's own end
-  by scrolling. There is **no signed-in pass** and no "whole, signed-out" category.
-- The old "whole at the signed-out upvote end" (Upvotes stopped at ~200 items with an end recorded) was a scroll bug, not a
-  PH stop. Those people are **INCOMPLETE** (reason `upvotes:short_needs_scroll_reread`): kept, never purged, queued for the
-  completion pass, and counted complete only after that re-read passes the output check.
-- No count, report, scorecard or coverage figure uses "whole signed-out" (or `whole_signed_out`) again. Complete counts,
-  `quality_*_complete.txt`, have_index, need_list, the completion queue, `fleet_work_queue.txt`, vote coverage and the
-  scorecard all use this rule from 05:0xZ Nov 17.
-- Re-read list for the fleet: `raw/_cursor/upvotes_scroll_reread.txt`; whole work queue: `raw/_cursor/fleet_work_queue.txt`.
+- A person is **complete** only when every tab passes `quality.person_complete`.
+- **Upvotes ends where Product Hunt ends it** (Shreyas, 19:06Z Nov 17, replacing the 05:0xZ rule below). Shreyas checked a
+  profile signed in and signed out: the list ends at the same item. A list short of the header count passes when its paging
+  record shows PH's own end (`hasNextPage=false` or another recorded server end; tab state `ph_limit`). A stop for any other
+  reason (page stopped loading, error, block, no recorded end) is `upvotes:FAIL_short` / `FAIL_partial` and stays incomplete.
+- Superseded (05:0xZ-19:06Z Nov 17): the people whose Upvotes stopped at PH's end short of the header were briefly counted
+  INCOMPLETE (`upvotes:short_needs_scroll_reread`). That reason is gone; the count of such people is kept in the quality
+  report as information only ("Upvotes short of the header but at PH's own end, counted complete").
+- No signed-in pass, no account and no search sweep is used for Upvotes.
+- Re-read list for the fleet: `raw/_cursor/upvotes_scroll_reread.txt` (since 19:19Z Nov 17 only Upvotes that did not reach PH's end); whole work queue: `raw/_cursor/fleet_work_queue.txt`.
 - The fleet's Upvotes search sweep (single-character search terms) is **off** since 07:06Z Nov 17 (orchestrator). A save
   whose Upvotes paging carries a non-null `upvotes_sweep` is not complete for Upvotes (`upvotes:search_sweep_not_accepted`);
   its rows are kept as extras through the lossless union.
