@@ -6,7 +6,9 @@ B="${PH_GCS_ROOT:-gs://${MVP_GCS_BUCKET:?}/usersim_sim}"
 T="$B/raw/ph_at_launch/live/tools"
 W=/workspace; L=$W/phlaunch/live; HBG="$B/raw/ph_at_launch/live/state/fleet_capture.hb"
 STANDBY_SEC="${FLEET_CAPTURE_STANDBY_SEC:-0}"
-mkdir -p $L $W/secrets $W/phlaunch/live_ts; : > $W/gcp-auth.sh; chmod 700 $W/secrets
+mkdir -p $L $W/secrets $W/phlaunch/live_ts $W/phlaunch/live
+chmod 777 "$W/phlaunch/live_ts" "$W/phlaunch/live" 2>/dev/null || true
+: > $W/gcp-auth.sh; chmod 700 $W/secrets
 log() { echo "$(date -u +%FT%TZ) $*"; }
 gsutil -q cp "$T/api_loop/*.py" $L/ || { log "api_loop code fetch failed"; exit 1; }
 gsutil -q cp "$T/live_ts_writer.py" $W/phlaunch/ || { log "live_ts_writer fetch failed"; exit 1; }
