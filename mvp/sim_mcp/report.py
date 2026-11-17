@@ -218,6 +218,18 @@ async def _goal_votes(png: bytes, row: dict[str, Any], task: str, n: int) -> tup
     return out, votes
 
 
+POST_SIGNUP_JUDGE = (
+    "This user started already signed in to an account another simulated user created for this study, so the "
+    "signup step is done. Judge only what comes after signup in this task: first-run onboarding or setup inside the "
+    "app, or the first thing the product asks a new user to do. Ending on a signed-in app page with that done or "
+    "clearly underway counts. Task: {task}")
+
+
+def judge_task(row: dict[str, Any]) -> str:
+    task = str(row.get("task_prompt") or "")
+    return POST_SIGNUP_JUDGE.format(task=task) if row.get("post_signup_only") else task
+
+
 async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any], str]:
     """(verdict, status). status is 'ok', 'no_screenshot', or 'error: …' — never a silent pass."""
     from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot, judge_signed_in
@@ -234,7 +246,7 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
                 asyncio.to_thread(
                     judge_goal_screenshot,
                     path.read_bytes(),
-                    task=str(row.get("task_prompt") or ""),
+                    task=judge_task(row),
                     start_url=str(row.get("site_url") or ""),
                     final_url=str(row.get("final_url") or ""),
                     dom=str(row.get("final_dom") or ""), dom_limit=FINAL_DOM_CHARS,
@@ -427,7 +439,7 @@ def proof_checks(study: dict[str, Any], row: dict[str, Any], judge_status: str) 
         ("not_degraded", not study.get("test_mode") and study.get("driver") == DRIVER, "real browser run, not snapshot / test mode",
          f"degraded run (test_mode={bool(study.get('test_mode'))}, driver={study.get('driver')!r})"),
     ]
-    if is_signup_goal(row) and not is_research_task(row):
+    if is_signup_goal(row) and not is_research_task(row) and not row.get("post_signup_only"):
         # Oct 14 (74b7210f): a research cell must not need signup proof just because the client asked for an alias.
         checks.append(("signup_verified", signup_verified(row),
                        "server saw the verification email for the fresh alias and its verify link/code was used",
@@ -515,6 +527,12 @@ async def finalize(sim: SimSession, *, outcome: str, notes: str) -> dict[str, An
     verdict, judge_status = await judge_run(study.id, row)
     row["page_verdict"] = verdict
     await save_signed_in_state(sim, verdict)
+    if sim.matrix:
+        from mvp.sim_mcp import signup_gate
+
+        blocked = signup_gate.cell_ended(study, row, signed_in_saved=bool(row.get("saved_account_written")))
+        if blocked:
+            log_activity(study, "agents", f"{row.get('site_label')}: blocked at signup; {len(blocked)} runs not started")
     result = {
         k: row.get(k)
         for k in (
@@ -717,10 +735,17 @@ def skipped_result(row: dict[str, Any]) -> dict[str, Any]:
             "site_key", "site_url", "site_label")
     out = {k: row.get(k) for k in keep if row.get(k) is not None}
     reason = "Cell never started (skipped)."
-    out.update({"mode": "mcp", "driver": DRIVER, "status": "skipped", "driver_outcome": "skipped", "completed": False,
+    blocked = row.get("blocked_at_signup")
+    if blocked:
+        reason = f"Not run: {blocked}. A finding about this site (its signup could not be completed), not a run failure."
+    out.update({"mode": "mcp", "driver": DRIVER, "status": "skipped",
+                "driver_outcome": "blocked_at_signup" if blocked else "skipped", "completed": False,
                 "skipped": True, "num_steps": 0, "trace": [], "feedback": reason,
-                "page_verdict": {"goal_reached": False, "skipped": True, "reason": reason},
+                "page_verdict": {"goal_reached": False, "skipped": True, "reason": reason,
+                                 **({"blocked_at_signup": True} if blocked else {})},
                 "mcp_proof": {"pass": False, "skipped": True, "checks": [], "reason": "skipped: the cell never started"}})
+    if blocked:
+        out["blocked_at_signup"] = blocked
     return out
 
 
@@ -774,8 +799,14 @@ def build_study_report(study: dict[str, Any]) -> dict[str, Any]:
                 "proof_pass": (res.get("mcp_proof") or {}).get("pass"),
                 "steps": row.get("num_steps") or 0,
                 "driver_outcome": res.get("driver_outcome"),
+                **({"blocked_at_signup": True} if row.get("blocked_at_signup") else {}),
+                **({"post_signup_only": True} if row.get("post_signup_only") else {}),
             }
         )
+    blocked_sites: dict[str, str] = {}
+    for row in rows:
+        if row.get("blocked_at_signup"):
+            blocked_sites.setdefault(str(row.get("site_label") or row.get("site_url")), str(row["blocked_at_signup"]))
     return {
         "study_id": sid,
         "status": study.get("status"),
@@ -786,6 +817,8 @@ def build_study_report(study: dict[str, Any]) -> dict[str, Any]:
         "summary": {k: summary.get(k) for k in ("headline", "verdict_summary", "recommendations", "strengths", "weaknesses") if summary.get(k)},
         "proof": summary.get("mcp_proof") or {},
         "cells": cells,
+        "blocked_at_signup": blocked_sites,
+        "signed_in_from_one_signup": sum(1 for c in cells if c.get("post_signup_only")),
         "links": {"watch": watch_url(sid), "report": report_url(sid)},
         "engine_version": study.get("engine_version"),
         "config_hash": study.get("config_hash"),
@@ -796,6 +829,12 @@ def study_report_markdown(rep: dict[str, Any]) -> str:
     lines = [f"# UserSim study — {rep.get('product_url')}", "", f"**{rep.get('headline')}**", ""]
     if rep["status"] != "complete":
         lines += [f"Status: {rep['status']} — {rep.get('phase')}", ""]
+    for site, why in (rep.get("blocked_at_signup") or {}).items():
+        lines += [f"**{site}: blocked at signup.** {why}. Its remaining runs were not started; this is a finding about "
+                  f"{site}'s signup, not a failed run.", ""]
+    if rep.get("signed_in_from_one_signup"):
+        lines += [f"{rep['signed_in_from_one_signup']} signup-task runs started signed in from their site's one signup "
+                  "run and were judged on the post-signup part (first-run onboarding).", ""]
     proof = rep.get("proof") or {}
     if proof:
         lines.append(f"Proof: {proof.get('passed')}/{proof.get('runs')} runs passed")

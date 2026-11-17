@@ -25,6 +25,23 @@ An e2e test is a **full UserSim comparison study**:
 | **Signup** | Account creation and email verification is **one of the six tasks**, or signup + verification is completed as a **prerequisite** on each product before other tasks that need an account. |
 | **Output** | The **website comparison report**: where you win, where you lose, head-to-head vs each competitor. |
 
+## One signup per site (seed browsers)
+
+On UserSim's own seed browsers (`browser_backend = seed_vm`, `seed_saved_accounts` on), the server runs **one** signup
+per site per study and starts every other cell signed in from it (`mvp/sim_mcp/signup_gate.py`):
+
+1. If the site already has a live saved signed-in state, every cell on it starts signed in, on the app URL.
+2. Otherwise exactly **one** signup cell runs first: the study's signup task, first persona. Every other cell on that
+   site is held (`usersim_start_session` answers "busy … call again"; the cell stays queued) until it ends.
+3. When it ends signed in (or with a verified signup), its state is saved and the held cells start signed in from it.
+4. If it fails, the next persona's signup cell tries once more. If that fails too, the site's remaining cells end as
+   **blocked at signup**: a finding about that site in the report, not a failed run, and no more cells are spent on it.
+5. The signup task's other persona cells do **not** sign up again: they start signed in and are judged on the part
+   after signup (first-run onboarding / setup). The report counts them as such.
+
+The signup requirement above is met by that one signup run per site. Clients should start signup-task cells first
+(`scripts/mcp_study_runner.py` does).
+
 ## What is **not** an e2e test
 
 - A single-product run (target only, no competitors).

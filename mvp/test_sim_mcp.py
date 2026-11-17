@@ -190,6 +190,12 @@ if __name__ == "__main__":
 class MatrixStudyTests(unittest.TestCase):
     """A study built over MCP has the same shape the website report reads."""
 
+    def setUp(self):
+        # cell bookkeeping only; the one-signup-per-site gate has its own tests (test_sim_mcp_signup_gate.py)
+        p = mock.patch("mvp.sim_mcp.signup_gate.active", return_value=False)
+        p.start()
+        self.addCleanup(p.stop)
+
     def _study(self):
         personas = [
             {"name": "Maya", "bio": "Freelance writer", "favors": "notion"},

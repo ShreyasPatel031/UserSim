@@ -65,6 +65,7 @@ from mcp_study_runner_lib import (
     is_retryable_error,
     mcp_content_to_blocks,
     pilot_cells_for_study,
+    signup_first,
     pilot_should_abort,
     prepare_system,
     prepare_tools,
@@ -87,6 +88,7 @@ SUB_TOOLS = {
     "usersim_wait_for_sms_code",
 }
 BUSY = ("limit", "at capacity", "too many", "busy", "try again")
+START_WAIT_S = int(os.environ.get("RUNNER_START_WAIT_S", str(90 * 60)))
 STOP_NOTE = "stopped: runner spend cap"
 
 
@@ -240,7 +242,9 @@ async def run_cell(
         else {"product_url": cell["site"], "persona": cell["persona"], "task": cell["task"]}
     )
     m: dict = {}
-    for attempt in range(60):
+    # A held cell waits for its site's one signup run (server signup_gate), which can take a whole session budget.
+    wait_until = time.time() + START_WAIT_S
+    while time.time() < wait_until:
         if gate.over_cap():
             log["error"] = log["finish"] = _stop_note(gate)
             _save_cell(out, cell, log)
@@ -261,13 +265,14 @@ async def run_cell(
         if m.get("session_id"):
             break
         if any(b in meta.lower() for b in BUSY):
+            log["held_s"] = round(START_WAIT_S - (wait_until - time.time()))
             await asyncio.sleep(30)
             continue
         log["error"] = meta[:600]
         _save_cell(out, cell, log)
         return log
     else:
-        log["error"] = "no free session slot after 30 min"
+        log["error"] = f"no free session slot after {START_WAIT_S // 60} min"
         _save_cell(out, cell, log)
         return log
     sid = m["session_id"]
@@ -476,7 +481,8 @@ async def run_study(
         todo = [c for c in todo if c["cell_id"] not in pilot_done]
 
     if todo and not gate.over_cap():
-        await _run_cells_parallel(study, todo, max_turns, max_cell_usd, out, llm, gate, parallel, product_url)
+        await _run_cells_parallel(study, signup_first(todo), max_turns, max_cell_usd, out, llm, gate, parallel,
+                                  product_url)
 
     report = ""
     for _ in range(20):

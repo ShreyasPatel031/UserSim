@@ -1617,6 +1617,10 @@ def usersim_simulate_user(session_id: str, persona: str, task: str) -> str:
         # this prompt's signup rules on the marketing homepage and hit reCAPTCHA.
         start = (sim.row.get("saved_account") or {}).get("start_url") or sim.product_url
         head = f"IMPORTANT: {SAVED_ACCOUNT_NOTE} The app starts at {start}.\n\n"
+        if sim.row.get("post_signup_only"):
+            from mvp.sim_mcp.signup_gate import POST_SIGNUP_NOTE
+
+            head += f"{POST_SIGNUP_NOTE}\n\n"
     return head + SIMULATE_USER_PROMPT.format(
         session_id=session_id,
         persona=persona,
