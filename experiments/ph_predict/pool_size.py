@@ -344,7 +344,7 @@ def hourly_once(L, E0, sl, base_ids):
     complete_block = {**capped_block, **ratio_block, **lastweek_block, "complete_people": int(len(complete)), "complete_voters_in_window": int(Uc.pid.nunique()),
                       "coverage_complete_all": round(float(Dc.P.sum() / Dc.V.sum()), 4), "coverage_complete_top3": round(float(Dc.P3.sum() / Dc.V3.sum()), 4),
                       "coverage_complete_heldout": round(float(Dc.Ph.sum() / Dc.Vh.sum()), 4),
-                      "complete_source": COMPLETE_SRC[0], "note": "headline = complete people only (whole-person rule); coverage_all etc. also count lists-only and page-1 pool upvotes"}
+                      "complete_source": COMPLETE_SRC[0], "complete_rule": (sorted(map(str, V["persons"].complete_rule.dropna().unique())) if "complete_rule" in V["persons"] else None), "note": "headline = complete people only (whole-person rule); coverage_all etc. also count lists-only and page-1 pool upvotes"}
     pulled = set(up.person_id) | set(V["tabs"][V["tabs"].tab == "upvotes"].person_id)
     voters = set(U.pid)
     return {**complete_block, "at": pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%MZ"), "window": list(TEST), "method": "warehouse pool upvotes U store_v3 dated upvotes, dedup salted id x launch",
