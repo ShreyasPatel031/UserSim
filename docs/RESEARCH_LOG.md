@@ -2453,3 +2453,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - Merged #192 (Claude Haiku driver, opt-in; zite hand-off) and #193 (judge checks earlier frames).
 - 2026-11-18T02:34Z hourly: site board live (02:34Z, 43/43). Capture OK (18:30 PT 43/43). Fleet partly back: 3 active / 5 dead / 9 stale / 2 cf_wall, 0.2 cppm; no written reply; 4th wake sent. Mailbox checked 2026-11-18T02:34Z.
 - 2026-11-18T03:34Z hourly: site board live (03:34Z, 43/43). Box capture heartbeat lists 19:15 PT as last at 03:33Z (19:30 possibly late; left to the population audit). Fleet 3 active / 10 dead / 6 stale, 0.27 cppm; still no written reply; 5th wake sent (rollback). Mailbox checked 2026-11-18T03:34Z.
+- 2026-11-18T04:34Z hourly: site board live (04:33Z, 43/43). Fleet 3 active / 5 dead / 11 stale, 1.0 cppm (rising from 0.27); no written reply; 6th wake. Mailbox checked 2026-11-18T04:34Z.
