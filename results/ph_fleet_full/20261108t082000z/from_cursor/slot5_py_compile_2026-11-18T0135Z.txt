@@ -1,0 +1,7 @@
+# slot 5 — py_compile (orchestrator 01:35Z)
+# VM: feeder-fleet-20261108t082000z-5
+# Command: sudo /opt/venv/bin/python -m py_compile /opt/ph/reuse/ph_batch.py
+
+(stdout empty — compile success)
+
+exit_code=0
