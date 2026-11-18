@@ -29,7 +29,7 @@ while true; do
   read -r F HH MM < <(TZ=America/Los_Angeles date '+%F %H %M')
   M=$((10#$MM)); SM=$((M / 15 * 15)); slot_min=$((M - SM))
   [ "$HH$SM" = "0000" ] && SM=01
-  PS=${F//-/}T$(printf %02d "$HH")$(printf %02d "$SM")
+  PS=${F//-/}T$(printf %02d $((10#$HH)))$(printf %02d "$SM")
   Y=$(TZ=America/Los_Angeles date -d "$F -1 day" +%F)
   if [ "$STANDBY_SEC" -gt 0 ]; then
     need_min=$((STANDBY_SEC / 60))
