@@ -6,7 +6,9 @@ source "${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t082000z/pace.env}"
 RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
-SLOT="${PH_WEEKLY_CLOSE_SLOT:-26}"
+PRIMARY="${PH_WEEKLY_CLOSE_SLOT:-26}"
+FALLBACK="${PH_WEEKLY_CLOSE_FALLBACK_SLOT:-30}"
+SLOT="$PRIMARY"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
 GC=(gcloud --account="$SA")
 NAME="feeder-fleet-${RUN_ID}-${SLOT}"
@@ -30,6 +32,7 @@ print(json.dumps({
     "cron_pt": "2345",
     "path": "ph_weekly_close_fleet.sh",
     "slot": $SLOT,
+    "slot_fallback": $FALLBACK,
     "vm_status": "$st",
     "agent_camoufox": bool($local_camoufox),
     "fleet_camoufox_slot": bool($fleet_camoufox),

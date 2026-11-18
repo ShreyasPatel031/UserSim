@@ -143,7 +143,12 @@ export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
 # Below target, never mass-kick (port-swap on supervisor handles CF; kicks were killing long whole pulls).
 python3 -c "import sys; sys.exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null && export FLEET_CF_RECOVER_MAX_KICKS=0
 "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
-KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
+export FLEET_KEEPER_NUDGE_GO="${FLEET_KEEPER_NUDGE_GO:-0}" FLEET_KEEPER_BLOCK_LEGACY_GO="${FLEET_KEEPER_BLOCK_LEGACY_GO:-1}"
+if [[ "${PH_FLEET_LIVE_STALE_WARNING:-0}" == 1 ]]; then
+  echo "$(date -u +%FT%TZ) LIVE_PRIORITY skip keeper (live feeds stale)" >>"$LOG"
+else
+  KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
+fi
 # Below target: never shed VMs — wake pullers instead (orchestrator: restore throughput first).
 FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
 export FLEET_AUTOSCALE_NO_SHED=1

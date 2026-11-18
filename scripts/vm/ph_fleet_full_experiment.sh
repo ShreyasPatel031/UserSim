@@ -131,6 +131,11 @@ create_vm() {
 
 write_go() {
   local slot=$1 token=$2
+  # Legacy keeper experiment tokens (pdeep:fleet-*-rN) trip same_tok_retry → 0-byte pulls.
+  if [[ "${FLEET_KEEPER_BLOCK_LEGACY_GO:-1}" == 1 ]] && [[ "$token" =~ -r[0-9]+$ ]]; then
+    echo "KEEPER blocked legacy GO slot=$slot token=$token" | tee -a "${ART:-/dev/null}/keeper.log" 2>/dev/null || true
+    return 0
+  fi
   if [[ " ${UPVOTE_SLOTS} " == *" $slot "* ]]; then
     token="$UPVOTE_GO"
   fi
@@ -209,7 +214,11 @@ recreate_slot() {
     bash "$ROOT/scripts/vm/ph_iproyal_refresh_slot.sh" "$slot" "recreate" >/dev/null 2>&1 || true
   fi
   gen=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('gen',0)+1)")
-  token="${GO_TOKEN}-r${gen}"
+  if [[ "${FLEET_KEEPER_NUDGE_GO:-0}" == 1 ]]; then
+    token="${GO_TOKEN}-r${gen}"
+  else
+    token="pdeep:fleet-${RUN_ID}-keeper-recreate-$(date +%s)-${slot}"
+  fi
   python3 - <<PY
 import json
 from pathlib import Path
@@ -300,7 +309,7 @@ PY
 }
 
 nudge_go() {
-  # New GO token so supervisor relaunches without deleting the VM (minutes, not hours).
+  # Nudge hung slots: default is in-place phsuper restart (orch-restart GO), not legacy -rN GCS tokens.
   local slot=$1 reason=$2
   local gen token
   gen=$(python3 -c "import json;print(json.load(open('$ART/keeper_state.json'))['slots'].get('$slot',{}).get('gen',0)+1)")
@@ -315,12 +324,19 @@ sl=st.setdefault("slots",{}).setdefault("$slot",{})
 sl["gen"]=$gen
 sl["last_nudge"]=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 sl["nudge_reason"]="$reason"
+sl["nudge_mode"]="${FLEET_KEEPER_NUDGE_GO:-0}"
 sl["token"]="$token"
 sl.pop("block_since", None); sl.pop("dead_since", None); sl.pop("stall_since", None)
 p.write_text(json.dumps(st, indent=2))
 PY
-  echo "KEEPER nudge slot=$slot gen=$gen reason=$reason token=$token" | tee -a "$ART/keeper.log"
-  write_go "$slot" "$token"
+  if [[ "${FLEET_KEEPER_NUDGE_GO:-0}" != 1 ]]; then
+    echo "KEEPER nudge slot=$slot gen=$gen reason=$reason mode=inplace (FLEET_KEEPER_NUDGE_GO=0)" | tee -a "$ART/keeper.log"
+    chmod +x "$ROOT/scripts/vm/ph_fleet_inplace_restart_slots.sh" 2>/dev/null || true
+    PACE_FLEET_RUN_ID="$RUN_ID" bash "$ROOT/scripts/vm/ph_fleet_inplace_restart_slots.sh" "$slot" >>"$ART/keeper.log" 2>&1 || true
+  else
+    echo "KEEPER nudge slot=$slot gen=$gen reason=$reason token=$token" | tee -a "$ART/keeper.log"
+    write_go "$slot" "$token"
+  fi
   # Push strategy + overlays so next launch has soft-block + dynamic paging + high mem.
   "${GC[@]}" compute instances add-metadata "$(vm_name "$slot")" --zone="$ZONE" --project="$PROJECT" \
     --metadata-from-file="ph-strategy-env=$STRATEGY_ENV" >/dev/null 2>&1 || true
