@@ -18,19 +18,23 @@ slots=[]
 for s in m.get("slots") or []:
     if s.get("state") == "probe_fail":
         continue
-    slots.append({
+    row = {
         "slot": s.get("slot"),
         "state": s.get("state"),
         "ppm_complete": s.get("ppm_complete"),
         "port": s.get("port"),
         "batch": s.get("batch"),
-    })
+    }
+    if s.get("refresh_ppm") is not None:
+        row["refresh_ppm"] = s.get("refresh_ppm")
+    slots.append(row)
 out={
     "utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "agent": "fleet-cursor",
     "run_id": run,
     "vms": m.get("vms"),
     "complete_ppm_15m": m.get("complete_ppm"),
+    "upvote_refresh_ppm_15m": m.get("upvote_refresh_ppm_15m"),
     "attempt_ppm_15m": m.get("attempt_ppm"),
     "pkg_md5": "uYYdW17hoPBJjpMGoR7lKw==",
     "staging": "raw/_pacetest/shared",

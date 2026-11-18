@@ -52,6 +52,27 @@ for ln in rows:
   elif (ev in BLOCKEV or (ev=='supervisor_run_end' and rc==3)) and t and now-t<=W:
     walls+=1
 batch=subprocess.call(['pgrep','-f','[p]h_batch.py|[p]deep.py'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)==0
+refresh_win=0
+if batch:
+  try:
+    import glob,re
+    from datetime import datetime as _dt
+    logs=sorted(glob.glob('/opt/ph/reuse/run_*.log'))
+    if logs:
+      lf=logs[-1]
+      bm=re.match(r'run_(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})Z', lf.rsplit('/',1)[-1])
+      base=_dt(int(bm.group(1)),int(bm.group(2)),int(bm.group(3)),int(bm.group(4)),int(bm.group(5)),tzinfo=timezone.utc) if bm else None
+      for ln in open(lf, errors='ignore'):
+        if 'upvotes endCursor' not in ln: continue
+        ps=ln.split()
+        if len(ps)<2 or ':' not in ps[0]: continue
+        if not base: refresh_win+=1; continue
+        h,mn,s=map(int,ps[0].split(':'))
+        t=base.replace(hour=h,minute=mn,second=s)
+        if now-t.timestamp()<=W: refresh_win+=1
+  except Exception: pass
+m=W/60.0
+refresh_ppm=round(refresh_win/m,4) if refresh_win else 0.0
 age=int(now-last_person) if last_person else -1
 if last_person and now-last_person<=300: state='active'
 elif not batch: state='dead'
@@ -59,8 +80,7 @@ elif last_person and now-last_person<=600: state='active'
 elif walls: state='cf_wall'
 elif last_person: state='stale'
 else: state='cold'
-m=W/60.0
-print(json.dumps({'n':nc_all+nr_all,'n_complete':nc_all,'n_rerun':nr_all,'win_complete':nc,'win_rerun':nr,'walls':walls,'age':age,'ppm':round(nc/m,4),'ppm_complete':round(nc/m,4),'ppm_attempt':round((nc+nr)/m,4),'ppm_rerun':round(nr/m,4),'state':state,'batch':batch,'port':port}))
+print(json.dumps({'n':nc_all+nr_all,'n_complete':nc_all,'n_rerun':nr_all,'win_complete':nc,'win_rerun':nr,'walls':walls,'age':age,'ppm':round(nc/m,4),'ppm_complete':round(nc/m,4),'ppm_attempt':round((nc+nr)/m,4),'ppm_rerun':round(nr/m,4),'refresh_ppm':refresh_ppm,'refresh_win':refresh_win,'state':state,'batch':batch,'port':port}))
 "'''.replace("__WINDOW__", str(WINDOW_MIN))
 
 
@@ -107,11 +127,23 @@ def main() -> int:
     with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
         rows = list(ex.map(probe_slot, slots))
 
+    upvote_slots = set(
+        (os.environ.get("FLEET_UPVOTE_SLOTS") or os.environ.get("UPVOTE_SLOTS") or "9 27 38").split()
+    )
+    refresh_ppm_total = 0.0
+    for r in rows:
+        slot = str(r.get("slot"))
+        rp = float(r.get("refresh_ppm") or 0)
+        if slot in upvote_slots:
+            refresh_ppm_total += rp
+            if rp >= 0.15 and r.get("batch") and r.get("state") in ("dead", "stale", "cold"):
+                r["state"] = "active_upvote"
+
     now = datetime.now(timezone.utc)
     realized = sum((r.get("ppm_complete") or 0) for r in rows)
     attempt_ppm = sum((r.get("ppm_attempt") or 0) for r in rows)
     rerun_ppm = sum((r.get("ppm_rerun") or 0) for r in rows)
-    active = [r for r in rows if r.get("state") == "active"]
+    active = [r for r in rows if r.get("state") in ("active", "active_upvote")]
     stale = [r for r in rows if r.get("state") == "stale"]
     cold = [r for r in rows if r.get("state") in ("cold", "cf_wall", "dead")]
     productive = active + [r for r in stale if (r.get("ppm") or 0) >= 0.15]
@@ -125,6 +157,7 @@ def main() -> int:
         "attempt_ppm": round(attempt_ppm, 3),
         "rerun_ppm": round(rerun_ppm, 3),
         "metric_note": f"complete_ppm=complete saved people in last {WINDOW_MIN:g} min / {WINDOW_MIN:g}; incomplete pulls count as rerun only",
+        "upvote_refresh_ppm_15m": round(refresh_ppm_total, 3),
         "active_vms": len(active),
         "stale_vms": len(stale),
         "cold_vms": len(cold),
