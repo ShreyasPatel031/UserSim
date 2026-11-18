@@ -230,6 +230,51 @@ def judge_task(row: dict[str, Any]) -> str:
     return POST_SIGNUP_JUDGE.format(task=task) if row.get("post_signup_only") else task
 
 
+def earlier_frame_steps(study_id: str, row: dict[str, Any], k: int) -> list[dict[str, Any]]:
+    """Up to k step screenshots before the final one, most recent first, frames right after a click / type / key
+    first: the moments a goal can become visible and then scroll away."""
+    aid = str(row.get("agent_id") or AGENT_ID)
+    steps = [s for s in row.get("trace") or [] if isinstance(s, dict) and isinstance(s.get("step"), int)
+             and s.get("screenshot_url") and _shot_ok(study_id, aid, s)]
+    if len(steps) <= 1:
+        return []
+    steps = steps[:-1]  # the last step's frame is (about) the final one, already judged
+    acted = [s for s in reversed(steps) if str(s.get("action_kind") or "") in {"click", "type", "key", "select"}]
+    rest = [s for s in reversed(steps) if s not in acted]
+    return (acted + rest)[:k]
+
+
+async def _goal_in_earlier_frames(study_id: str, row: dict[str, Any]) -> dict[str, Any] | None:
+    """The final frame missed the goal. Did an earlier step show it reached? Nov 18 (studies 7da0e18c, 32f5d74d): on a
+    report page the user approved changes (green 'Approved', 'N approved' bar at steps 16-26), then kept scrolling;
+    the judge saw only the last frame and said 'did not interact with any of the approve buttons'. Judges up to
+    MVP_JUDGE_EARLIER_FRAMES (default 5, 0 = off) earlier frames; the most recent one showing the goal wins."""
+    from mvp.e2e2_gates import judge_goal_screenshot
+
+    k = max(0, int(os.environ.get("MVP_JUDGE_EARLIER_FRAMES", "5") or 0))
+    frames = earlier_frame_steps(study_id, row, k) if k else []
+    if not frames:
+        return None
+    aid = str(row.get("agent_id") or AGENT_ID)
+    timeout = float(os.environ.get("MVP_PAGE_VERDICT_TIMEOUT_S", "45"))
+
+    async def one(step: dict[str, Any]) -> dict[str, Any] | None:
+        name = str(step["screenshot_url"]).rsplit("/", 1)[-1]
+        png = (MVP_RUNS_DIR / study_id / aid / "screenshots" / name).read_bytes()
+        try:
+            raw = await asyncio.wait_for(asyncio.to_thread(
+                judge_goal_screenshot, png, task=judge_task(row), start_url=str(row.get("site_url") or ""),
+                final_url=str(step.get("url") or ""), dom="", evidence=signup_evidence(row)), timeout=timeout)
+        except Exception:  # noqa: BLE001
+            return None
+        if isinstance(raw, dict) and raw.get("goal_reached"):
+            return {"step": step["step"], "reason": str(raw.get("reason") or "")[:400]}
+        return None
+
+    found = [r for r in await asyncio.gather(*(one(s) for s in frames)) if r]
+    return max(found, key=lambda r: r["step"]) if found else None
+
+
 async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any], str]:
     """(verdict, status). status is 'ok', 'no_screenshot', or 'error: …' — never a silent pass."""
     from mvp.e2e2_gates import coerce_verdict, judge_goal_screenshot, judge_signed_in
@@ -275,6 +320,11 @@ async def judge_run(study_id: str, row: dict[str, Any]) -> tuple[dict[str, Any],
         raw = dict(raw, signed_in_app_page=bool(second.get("signed_in")))
         raw["signed_in_check"] = second
     verdict = apply_hard_rules(row, coerce_verdict(raw), raw, png)
+    if not verdict.get("goal_reached"):
+        earlier = await _goal_in_earlier_frames(study_id, row)
+        if earlier:
+            verdict.update(goal_reached=True, reached_at_step=earlier["step"], final_frame_reason=verdict.get("reason"),
+                           reason=f"Reached at step {earlier['step']}: {earlier['reason']}"[:600])
     if isinstance(raw, dict) and raw.get("signed_in_check"):
         verdict["signed_in_check"] = raw["signed_in_check"]
     if votes:
