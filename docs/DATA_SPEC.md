@@ -31,6 +31,8 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Cursor fleet, person pulls (Nov 17 10:21Z) | 14.3 complete/min over 15 min (18.5 attempts/min); 5.89/min over 24 h audited (8,478 whole saves, 1,683 FAIL); Cloudflare wall on 2 of 20 slots, 1 dead, 17 active | at it on 2 slots; not at it on 18 (24 h rate is a third of the 15-min rate: collapses, not PH) |
 | Maker headers, Data Feeder (Nov 17) | stops at first Cloudflare block (31 of 57) | yes; no retry by rule; fleet takes the nightly read on its own IPs |
 | Product sites, fleet own IPs (Nov 17) | 43 of 43 resolved (sites_0005.json) | no |
+| PH API v2 (Nov 18) | same 6,250 / 15 min | no: 61.6% left at 21:32Z Nov 17 |
+| Cursor fleet, person pulls (Nov 18 10:33Z) | 0.93 complete/min over 15 min (5.78/min over 24 h audited, 8,329 whole saves, 2,833 FAIL); 3 active / 13 dead / 3 stale of 19 after the Nov 17 22:30Z ph_batch patch outage and stale GO tokens | far below: a fleet fault, not a source limit |
 
 ## Status Nov 13 (10:50 UTC) — daily review
 - **Complete PH people (store, latest_complete 10:33Z): 65,385** = 52,919 whole + 12,466 whole at the signed-out upvote end. Was 39,848 at 15:51Z Nov 12; the flagged merge added 19,899 new + 2,715 replaced (06:25Z: 62,379). 11,087 incomplete kept for a completion pass; 192 merged-incomplete.
@@ -89,6 +91,15 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Page content at launch | first-snapshot content + resolved site | api_detail from ~00:07 PT; product sites resolved by fleet own IPs (Nov 17 43/43); Nov 11–16 backfill asked | closed for Nov 17 on; backfill Nov 11–16 / Cursor fleet / Nov 18 |
 | Product followers at launch | per launch at first snapshot | not in API | low model value (PH agent); closed with reason |
 | Maker X followers | per maker at launch | Grok Bot X rollout 6,387 / 8,953 (71.3%; was 5,600); page cap removed from drop 20261117_h | drops before 20261117_h capped at 1 page → re-read those people / Grok Bot / Nov 19 |
+
+**Nov 18 review (10:55 UTC).** Current vs Nov 17:
+- Complete people 93,325 of 94,894 (store_v3 09:00Z; Nov 17 rule: the Upvotes tab is complete at PH's own end), up from 74,253. Need list 1,569 (was 20,622). Tabs missing: followers 1,315, forums 592, collections 542, stacks 535, hunted 525, reviews 524, about 475, activity 361, following 335, upvotes 199.
+- Vote coverage on complete people: Oct 29–Nov 4 73.1 / 92.4; Nov 10–16 46.0 / 64.1 (was 36.5 / 49.6); Nov 17 15.9 / 19.6 (refresh lag).
+- Daily upvote refresh: 566 people with a delta, median 6.58 days since the Upvotes read (was 5.74: getting older). The fleet split the queue at 06:40Z (2,298 refresh-only on slots 9/27/38); its status counts only full saves, so those slots read as dead (asked for a refresh-rate metric).
+- Site live record (exposure row): there was never a scheduler (no Vercel cron ever); one manual slot Nov 14. Owner: website agent, which is asking Shreyas to add a 15-min cron.
+- Week close Nov 22 23:45 PT: the fleet's weekly-close job skipped on Nov 17 (no_camoufox on its agent VM). Owner: Cursor fleet, by Nov 21.
+- Fleet throughput: an outage since 22:30Z Nov 17. Owner: Cursor fleet (root causes: patch SyntaxError, then legacy GO tokens). Asked hourly.
+
 | X buzz before launch | per launch, X posts/accounts in 48 h ending 00:00 PT, frozen | 00:10 and 02:00 PT counts; E5 scoring it as an arm-3 input next | Grok Bot / E5 / Nov 18 |
 | Daily pipeline (forecast inputs) | all steps on time | arm 3 published 00:05 from Nov 17; 03:45 before-reveal live; sites now from fleet | none |
 | Late featuring / un-featuring | state per snapshot | absent_from_source flagged per snapshot | none |
