@@ -93,6 +93,25 @@ class SeedServerConfigTests(unittest.TestCase):
             self.assertEqual(kw["fingerprint_preset"], {"id": 1})
 
 
+
+class PlaywrightPinTests(unittest.TestCase):
+    """Nov 18: production had drifted to Playwright 1.63 (requirements-vercel.txt said >=1.62) while the seeds' Camoufox
+    servers run 1.62; firefox.connect answered 428 version mismatch on every seed. All pins must be the same version."""
+
+    def test_every_pin_is_the_same_exact_version(self):
+        import re
+        from pathlib import Path
+
+        root = Path(__file__).resolve().parents[1]
+        pins = {}
+        for name in ("requirements.txt", "requirements-vercel.txt", "pyproject.toml"):
+            m = re.search(r"playwright\s*==\s*([0-9.]+)", (root / name).read_text())
+            self.assertIsNotNone(m, f"{name} must pin playwright==<version>")
+            pins[name] = m.group(1)
+        self.assertEqual(len(set(pins.values())), 1, pins)
+        seed = (root / "scripts/vm/install_seed_camoufox.sh").read_text()
+        self.assertIn("requirements.txt", seed)  # the seeds take the same pin
+
 @unittest.skipUnless(os.environ.get("USERSIM_TEST_CAMOUFOX_WS"), "no Camoufox server (USERSIM_TEST_CAMOUFOX_WS)")
 class CamoufoxLiveTests(unittest.TestCase):
     def test_probe_and_context(self):
