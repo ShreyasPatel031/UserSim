@@ -207,12 +207,22 @@ class TranslationTests(unittest.TestCase):
         self.assertEqual(lib.usage_to_usd(G.Usage(usd=0.42)), 0.42)
 
 
-class NoClaudeTests(unittest.TestCase):
-    def test_runner_default_model_is_gemini_and_imports_no_anthropic(self):
-        src = (Path(R.__file__)).read_text()
-        self.assertTrue(R.MODEL.startswith("gemini") or "RUNNER_MODEL" in __import__("os").environ)
-        self.assertNotIn("anthropic", src.lower().replace("anthropic-style", ""))
+class DriverChoiceTests(unittest.TestCase):
+    def test_default_driver_is_gemini_and_claude_is_opt_in(self):
+        import importlib
+        import os
 
+        with mock.patch.dict(os.environ, {"RUNNER_DRIVER": "", "RUNNER_MODEL": ""}):
+            r = importlib.reload(R)
+            self.assertEqual((r.DRIVER, r.MODEL), ("gemini", "gemini-2.5-flash"))
+        with mock.patch.dict(os.environ, {"RUNNER_DRIVER": "claude", "RUNNER_MODEL": ""}):
+            r = importlib.reload(R)
+            self.assertEqual((r.DRIVER, r.MODEL, r.MAX_TOKENS), ("claude", "claude-haiku-5-5", 4096))
+        with mock.patch.dict(os.environ, {"RUNNER_DRIVER": "gemini", "RUNNER_MODEL": "claude-haiku-5-5"}):
+            r = importlib.reload(R)
+            with self.assertRaises(SystemExit):
+                r.make_llm()
+        importlib.reload(R)
 
 if __name__ == "__main__":
     unittest.main()

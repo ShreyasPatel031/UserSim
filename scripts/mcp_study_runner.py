@@ -21,6 +21,8 @@ total would exceed --max-usd.
 MCP_CLIENT_TOKEN (optional) is sent as a bearer token; without it the anonymous caps in mvp/sim_mcp/limits.json apply
 (anon_max_cells_per_study must be >= 108 for a full study). Needs Vertex credentials (src/auth.py) for Gemini.
 RUNNER_MODEL overrides the model (default gemini-2.5-flash), RUNNER_LOCATION the Vertex location (default global).
+RUNNER_DRIVER=claude drives cells with Claude on Vertex instead (default model claude-haiku-5-5), the way a Claude MCP
+client / connector uses the server; a service-account key in GOOGLE_APPLICATION_CREDENTIALS is used when present.
 
 Flags:
   --parallel (12)          Max concurrent cells per study
@@ -74,7 +76,11 @@ from mcp_study_runner_lib import (
 )
 
 URL = os.environ.get("USERSIM_MCP_URL", "https://35-202-98-224.sslip.io/mcp")
-MODEL = os.environ.get("RUNNER_MODEL", "gemini-2.5-flash")
+# RUNNER_DRIVER: "gemini" (default, pipelines) or "claude" (Claude on Vertex, e.g. to check the MCP server the way a
+# Claude client drives it). RUNNER_MODEL defaults per driver.
+DRIVER = (os.environ.get("RUNNER_DRIVER") or "gemini").strip().lower()
+MODEL = os.environ.get("RUNNER_MODEL") or ("claude-haiku-5-5" if DRIVER == "claude" else "gemini-2.5-flash")
+MAX_TOKENS = int(os.environ.get("RUNNER_MAX_TOKENS", "4096" if DRIVER == "claude" else "1024"))
 SUB_TOOLS = {
     "usersim_observe",
     "usersim_act",
@@ -206,7 +212,7 @@ async def ask_model(llm, gate: SpendGate, system: list, atools: list, state: Tra
             resp = await asyncio.to_thread(
                 llm.messages.create,
                 model=MODEL,
-                max_tokens=1024,
+                max_tokens=MAX_TOKENS,
                 system=system,
                 tools=atools,
                 messages=api_msgs,
@@ -582,6 +588,41 @@ async def _run_cells_parallel(
     return []
 
 
+def gcp_credentials():
+    """A service-account key in GOOGLE_APPLICATION_CREDENTIALS, else the repo's Vertex credentials (src/auth.py)."""
+    path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "")
+    if path and os.path.isfile(path):
+        try:
+            info = json.loads(Path(path).read_text())
+        except ValueError:
+            info = {}
+        if info.get("type") == "service_account":
+            from google.oauth2 import service_account
+
+            return service_account.Credentials.from_service_account_info(
+                info, scopes=["https://www.googleapis.com/auth/cloud-platform"])
+    from auth import vertex_credentials
+
+    return vertex_credentials()
+
+
+def make_llm():
+    project = os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox")
+    location = os.environ.get("RUNNER_LOCATION", "global")
+    if DRIVER == "claude":
+        if "claude" not in MODEL.lower():
+            raise SystemExit(f"RUNNER_DRIVER=claude needs a Claude RUNNER_MODEL, got {MODEL!r}")
+        from anthropic import AnthropicVertex
+
+        return AnthropicVertex(project_id=project, region=location, credentials=gcp_credentials())
+    if "claude" in MODEL.lower():
+        raise SystemExit("RUNNER_MODEL is a Claude model: set RUNNER_DRIVER=claude")
+    from google import genai
+    from mcp_runner_gemini import GeminiDriver
+
+    return GeminiDriver(genai.Client(vertexai=True, project=project, location=location, credentials=gcp_credentials()))
+
+
 async def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("products", nargs="+", help="target product URL(s); EACH one starts its own 108-cell study")
@@ -601,12 +642,8 @@ async def main() -> None:
         help="one session (no study) on the first product",
     )
     a = ap.parse_args()
-    from mcp_runner_gemini import GeminiDriver, vertex_client
+    llm = make_llm()
 
-    if "claude" in MODEL.lower():
-        raise SystemExit("RUNNER_MODEL must be a Gemini model (no Claude in pipelines)")
-    llm = GeminiDriver(vertex_client(os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"),
-                                     os.environ.get("RUNNER_LOCATION", "global")))
     competitors = [u.strip() for u in a.competitors.split(",") if u.strip()]
     if len(a.products) > 1 and not a.resume:
         print(f"NOTE: {len(a.products)} product URLs = {len(a.products)} separate studies "
