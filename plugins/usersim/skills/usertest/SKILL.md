@@ -41,68 +41,81 @@ Cells = testers × tasks. Keep it at most 12 cells (for example 4 testers × 3 t
  "groups_snapshot": "<snapshot field of groups.json>", "accuracy": "<accuracy field of groups.json>"}
 ```
 
-## 2. Run every cell in parallel
+## 2. Run every cell in parallel, on the product and a competitor
 
-Start one `sim-user` agent (from this plugin) per tester × task, all in the same message so they run in parallel. Give
-each one: `product_url`, `task`, `persona`, `label`, and `out_file` = `.usersim/<run>/runs/<label>__task<k>.json`.
-Tell the user the run has started and how many browsers are running. Each agent returns a `watch_url`; pass these on
-to the user as they arrive, so the user can watch live.
+Start one `sim-user` agent (from this plugin) per tester × task × product, all in the same message so they run in
+parallel. Run every tester on the user's product (`out_file` = `.usersim/<run>/runs/<label>__task<k>.json`) and on the
+main competitor (`.usersim/<run>/runs/<label>__comp<k>.json`), with the same task. Seeing the same person on both is
+what makes the comparison believable. Give each agent `product_url`, `task`, `persona`, `label` and `out_file`.
+Tell the user how many browsers are running, and pass on each `watch_url` as it arrives.
 
-If the server says capacity is full or a cap is hit, run the remaining cells in a second wave after the first finishes.
-If a cell fails to start twice, record it as `not run` with the reason. Never fake a run.
+If the server says capacity is full, run the rest in a second wave. If a cell fails to start twice, record it as
+`not run` with the reason. Never fake a run.
 
-## 3. Compare: where do the groups diverge?
+## 3. Read every step, then analyse
 
-Read all `runs/*.json`. For each task, use the plain tester's run as the baseline path, and compare each group run:
+Read every step of every run file (action, thought, outcome, notes, friction). Use the plain tester's run on the
+user's product as the baseline. Find:
 
-- **Outcome divergence:** the plain tester completed but a group gave up or got blocked (or the reverse).
-- **Path divergence:** the first step where a group went somewhere the plain tester did not (another page, another
-  button, the docs, the pricing page) and why, in their own `thought`.
-- **Expectation divergence:** a group expected something from a competitor they use (a template, an import, a free
-  tier, a keyboard shortcut) and the product didn't have it or hid it.
-- **Effort divergence:** many more steps, backtracks or repeated actions than the baseline.
-- **Shared problems:** friction every run hit, including the plain tester's (these are plain bugs or UX problems).
+- **Outcome splits:** someone completed on one product and not the other, or a group failed where the plain tester didn't.
+- **Path splits:** the first step where a group went somewhere the plain tester didn't, and why, in their own thought.
+- **Expectation splits:** a group expected something from a tool they use and didn't find it.
+- **Effort splits:** many more steps, backtracks or repeats.
+- **Shared friction:** what most testers hit.
 
-Each divergence needs evidence: run label, step number, the persona's thought (quoted), and the screenshot link from
-the report. Do not invent divergences without a step to point at.
+Every claim needs a step to point at, and the quotes you show must support the claim. Re-read the quotes under each
+claim before you keep it. If a tester's words contradict the claim, change the claim.
 
-## 4. Variations to approve
+## 4. Write session.json
 
-For each divergence (most severe first, at most 8), propose 1–2 **variations**: concrete changes to this repository
-that would remove it. For example, change the CTA copy in `app/page.tsx`, show the price on the landing page, or add a
-"start from template" step. For each, give the files and a short description of the edit, and which groups it is for.
-Do not edit anything yet.
+Write `.usersim/<run>/session.json`. `${CLAUDE_SKILL_DIR}/references/example_session.json` is a complete real example.
+Copy its shape exactly. The fields:
 
-Save the divergences and variations as `divergences.json`:
+- `date`, `headline`, `lede`, `race_title`, `disclosure`, `method` (list of sentences): the verdict first, in plain words,
+  with the real step counts. `race_title` states the step gap.
+- `products`: `{"task1": {"name","url"}, "comp1": {"name","url"}}`. The keys are the run-file suffixes.
+- `testers`: `label`, `name`, `short`, `slot` (0 to 3, for colour), `people` (group size, omitted for the plain tester), `who`.
+- `stage_order`: one ordered list of the screens or stages a run passes through (for example Blank canvas, Drawing,
+  Labelling, Connecting, Share dead end, Sign-in & captcha, Share dialog, Link copied), keyed by product key, with the
+  same list for both. `stages`: for every run, `{step: stage}` for every step.
+- `friction_steps`: `{run: {step: "short friction note"}}`.
+- `voices`: per tester, `summary`, 3 `quotes` (`run`, `step`, `kind` delight | friction | competitor, `text` verbatim from
+  the thought), and `expects` (short tags for what they expected from other tools).
+- `highlights`: 5 to 8 moments in story order (`run`, `step`, `caption` of 12 words at most), covering delight, the main
+  hesitation, and the competitor's wall.
+- `divergences`: `id`, `title`, `summary`, `groups`, `kind`, `moments` (`run`, `step`) and `variations` (ids).
+- `variations`, ranked: `id`, `rank`, `title`, `change`, `for` (labels), `evidence` (for example "4 of 4 testers
+  hesitated"), `effort` (for example "S · copy" or "M · behaviour"), `risk` ("none" or one short line), `lever` (what it moves: activation speed, findability, upgrade…), `conflicts` (ids
+  of variations that use the same UI slot), `divergence` (id), `before` (`run`, `step`: the step whose thought is about
+  the screen being changed), and `overlays`: boxes in 1280x800 screenshot coordinates (`x`, `y`, `w`, `h`, `label`,
+  optional `bg` and `fg` CSS colours) that draw the change on the real screen. Rank by testers affected × severity
+  (blocked > hesitated > slower > cosmetic), then effort.
 
-```json
-{"divergences": [{"id": "d1", "task": 1, "kind": "outcome|path|expectation|effort|shared",
-  "groups": ["group-1"], "summary": "…",
-  "evidence": [{"run": "group-1__task1", "step": 7, "thought": "…", "screenshot": "…"}],
-  "variations": [{"id": "v1", "title": "…", "files": ["…"], "change": "…", "status": "proposed"}]}]}
-```
+The screen shown with a step's thought is the one before that step's action, so pick `before.step` and highlight steps
+by the thought, not by what the action opened. To place overlays, open the screenshot URL of the step before and read
+the positions off it. Do not guess.
 
-## 5. Replay
-
-Build the replay page:
+## 5. Build and open the page
 
 ```bash
 python3 "${CLAUDE_SKILL_DIR}/scripts/replay.py" .usersim/<run>
 ```
 
-It writes `.usersim/<run>/replay.html`: one lane per tester for each task, step by step with screenshots and thoughts,
-divergences marked where they happen, and the variations listed below. Open it for the user (on macOS `open`, on Linux
-`xdg-open`, otherwise give the path). In the chat, give a short summary:
-- outcomes per tester and task;
-- the top divergences, one line each;
-- the accuracy note from `groups.json`, worded honestly.
+It writes `.usersim/<run>/replay.html`, an interactive page with:
+- the verdict and the simulated-tester disclosure;
+- the race chart (each tester's steps on both products, coloured by stage);
+- the ranked decision list, with evidence, before/after sliders, Approve and a "why" note;
+- a highlight reel, full replays, and a side by side that shows the competitor's detours;
+- voices, method and raw data.
 
-## 6. Approve and apply
+Approved items can be copied for Claude Code or as Markdown. Open the page for the user (macOS `open`, Linux `xdg-open`,
+otherwise give the path). In chat give 3 lines: the verdict, the top 3 ranked changes, and the honesty note.
 
-Ask the user which variations to apply (AskUserQuestion, multi-select, one option per variation). Apply only the
-approved ones, on a new git branch if the project uses git. Set their `status` to `applied` (others `declined`) in
-`divergences.json`, and rebuild the replay. Offer to re-run only the affected testers and tasks once the change is
-deployed to a preview URL, so the user can see whether the divergence closed.
+## 6. Apply what the user approved
+
+The user approves on the page and pastes the "Copy for Claude Code" text back, or names the changes in chat. Apply only
+those, on a new git branch if the project uses git. Offer to re-run only the affected testers once the change is on a
+preview URL, so the user can see whether the split closed.
 
 ## Honesty rules
 

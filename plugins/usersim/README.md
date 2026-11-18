@@ -48,7 +48,9 @@ with a step you can watch, not as a forecast.
 
 - **Runs locally:** the skill instructions, a `sim-user` agent per test cell, and
   `skills/usertest/scripts/replay.py`. That script uses the Python standard library only, reads the run folder and
-  writes `replay.html`. It makes no network calls.
+  writes `replay.html` from `skills/usertest/assets/report.html`. It makes no network calls. When you open
+  `replay.html` in a browser, the page loads its fonts from Google Fonts and its screenshots from UserSim's report
+  links. Approvals and notes are kept in that browser's local storage.
 - **Connects to:** the UserSim MCP server at `https://35-202-98-224.sslip.io/mcp`. It runs on Google Cloud in the US
   and has no other declared connectors.
 - **Sends to the UserSim server:**

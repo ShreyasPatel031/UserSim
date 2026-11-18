@@ -2443,3 +2443,11 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-17T23:34Z hourly: site board live (23:34Z, 43/43). Fleet root cause (ACK 22:34Z): patch_upvotes_ph_end.py broke ph_batch.py (SyntaxError); fix rolling; slot 39 live primary restored. Still 4 active / 8 dead / 7 stale, 0.4 cppm: wake sent to finish the roll. Mailbox checked 2026-11-17T23:34Z.
 - 2026-11-18T00:34Z hourly: site board live (00:34Z, 43/43). Capture OK (16:30 PT 43/43). FLEET STOPPED: 0 active / 10 dead / 8 stale, 0 cppm after the 23:34Z syntax-fix roll; slot-5 run logs are empty every minute (ph_batch dies at start). My SSH to the fleet VMs is refused (no key; not worked around). Wake sent with the evidence; weekly-close SKIPPED (no_camoufox) flagged. Mailbox checked 2026-11-18T00:34Z.
 - 2026-11-18T01:35Z hourly: site board live (01:34Z, 43/43). Capture OK (17:30 PT 43/43). Fleet still 0 cppm (10 dead / 9 stale), with no reply to the 00:34Z wake; 3rd wake sent asking for py_compile output or a rollback of ph_batch.py. Camoufox live (#188, #190, #191 merged; host venv pinned). Results page v3 built from sim-founder dogfood + critic; plugin v0.2.0 staged. Mailbox checked 2026-11-18T01:35Z.
+- 2026-11-18T01:51Z orchestrator: results page dogfood loop.
+  - Simulated founders (Design-Focused Founders, Experienced SaaS Founders, Developer Marketers subgroups) used each version in real Camoufox browsers, alongside an Opus critic.
+  - v1: no scores (text feedback only).
+  - v3: enjoyment 8 / 7 / 7; would pay $49–99, $200–400 and $50–150 a month.
+  - v4: 7 / 8 / 7, a plateau.
+  - All three named quote-to-moment as the best feature and approved #1 and #3.
+  - Plugin v0.2.0 ships the page.
+  - Merged #192 (Claude Haiku driver, opt-in; zite hand-off) and #193 (judge checks earlier frames).
