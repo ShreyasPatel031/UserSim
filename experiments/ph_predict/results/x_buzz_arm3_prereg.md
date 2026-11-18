@@ -37,3 +37,21 @@ Question: does Grok Bot's pre-launch X post count, frozen before 00:00 PT D, imp
   - If the primary interval's lower bound is > 0 on top 3 or top 5, it is written up as a deploy candidate under the model rule.
   - Otherwise it becomes a scored forward shadow line, with the n days needed for an interval clear of 0 (from the observed mean and sd).
 - **Primary days:** Nov 10 to the last day with truth at run time, excluding days without arm 3 or X.
+
+## Amendment 1 (22:05Z Nov 18, before any result was computed)
+The arm-3 replay for past days is not leak-free, and no result has been computed from it.
+- On the VM, a past day D exists only as a finished day file, `days/D.json`, which carries values read after the fact. `arm3_live` reads the line-up from that file, not from the frozen 00:05 file.
+- The shared feature files (cm/aud/... features) were built after D.
+- The DRY replay therefore refused every past day: "no 00:05 line-up rows". Patching around that would mix in later data.
+
+Revised baseline: **the published 00:05 score as written that night** (`raw/daily/D/forecast_D.parquet`).
+- `pred_arm3` where present (Nov 17 on).
+- Otherwise `pred_arm2` (Nov 14–16).
+- Otherwise `pred`, the published model of the night (Nov 10–13).
+- Source per day is recorded.
+
+Analyses:
+- PRIMARY = all primary days on this as-of-night baseline.
+- SECONDARY = the arm-3 days only (live arm 3: `shadow_arm3` Nov 16, published from Nov 17), reported with its n.
+
+Everything else is unchanged.
