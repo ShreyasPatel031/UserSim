@@ -1,1 +1,1 @@
-{"rule": "no day with a recorder read within 10 min before 3.75 h", "point": ["P3"], "days": {}}
+{"rule": "recorder read within 10 min before 3.75 h", "point": ["P3"], "days": {}, "waiting": {"days_with_read": ["2026-11-16", "2026-11-17"], "need": 3}}

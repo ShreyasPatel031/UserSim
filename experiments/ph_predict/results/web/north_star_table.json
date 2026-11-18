@@ -1,5 +1,5 @@
 {
- "computed_at": "2026-11-18T21:28:37.660698+00:00",
+ "computed_at": "2026-11-18T21:34:24.812116+00:00",
  "e5_rows": "merged 1 rows (computed_at 2026-11-18T10:23:01.437787+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [

@@ -33,7 +33,7 @@ def main():
     R = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
     TWn = pd.read_parquet(f"{HERE}/results/tw_nosite.parquet"); TWn["id"] = TWn.id.astype(str); twc = dict(zip(TWn.id, TWn.clean_v3_nosite))
     rows = []; src = {}
-    for d in pd.date_range("2026-11-02", "2026-11-13").strftime("%Y-%m-%d"):
+    for d in pd.date_range("2026-11-02", os.environ.get("END_DAY", "2026-11-13")).strftime("%Y-%m-%d"):   # END_DAY (orchestrator 21:29Z Nov 18): the live _ku_0345 run extends to yesterday; default keeps the backtest rows
         V = pd.DataFrame([json.loads(l) for l in gcat(f"{B}/raw/vote_snapshots/{d}.jsonl").stdout.splitlines() if l.strip()])
         V["launch_id"] = V.launch_id.astype(str); V["a"] = pd.to_datetime(V["at"], utc=True); V = V.drop_duplicates(["launch_id", "at"]).dropna(subset=["rank_now"])
         t0 = pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC"); truth = R[R.day == d].sort_values("daily_rank")
@@ -70,6 +70,10 @@ def main():
         X["z_" + c] = X.groupby("day")[c].transform(zf)
     X["y"] = X.groupby("day").final.transform(lambda s: zf(-np.log(s)))
     dd = sorted(X.day.unique()); G = {d: X[X.day == d] for d in dd}; AL = [0.3, 1.0, 3.0, 10.0, 30.0]
+    if len(dd) < 3:   # leave-one-day-out with inner day CV needs 2 other days to fit on: record the day(s) found and wait (Nov 18)
+        json.dump({"rule": f"recorder read within {TOL:g} min before {PTS['P3']} h", "point": list(PTS), "days": {},
+                   "waiting": {"days_with_read": dd, "need": 3}}, open(f"{HERE}/results/hybrid_lodo{TAG}_orders.json", "w"))
+        print(f"{len(dd)} day(s) with a read at the point; need 3 for leave-one-day-out"); return
     def hyb(te, sc):
         oh = te.sort_values(["pos", "id"]).id.tolist(); ol = te.assign(s=sc).sort_values(["s", "id"], ascending=[False, True]).id.tolist()
         return oh[:5] + [i for i in ol if i not in set(oh[:5])]
