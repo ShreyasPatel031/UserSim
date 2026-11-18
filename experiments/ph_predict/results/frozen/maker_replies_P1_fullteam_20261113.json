@@ -1,0 +1,20 @@
+{
+ "frozen_at": "2026-11-13T02:59:32.999865+00:00",
+ "days": "214 Apr-Oct",
+ "team_fit": "full team (hunter + warehouse makers)",
+ "team_live": "hunter + makers named (non-redacted id) in raw/daily/<d>/today_0005.json",
+ "features": "z within day: clean_nosite, th_n_pre, log1p distinct non-hunter commenters <= 01:00, log1p total comments <= 01:00, log1p team replies <= 01:00",
+ "points": {
+  "P1": {
+   "coef": {
+    "z_clean": 0.5407790873984196,
+    "z_npre": 0.06818231297816411,
+    "z_nu": 0.13388986218040713,
+    "z_nc": 0.07530548926173668,
+    "z_mrep": 0.11655565407754709
+   },
+   "intercept": 3.452754545307912e-17,
+   "cut_minutes": 60
+  }
+ }
+}

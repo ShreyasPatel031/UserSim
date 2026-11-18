@@ -1,0 +1,81 @@
+--- pipeline/daily.py	2026-11-03 09:12:22.619043234 +0000
++++ pipeline_patches/20261113_people_launches_full/daily.py	2026-11-13 14:46:18.710152031 +0000
+@@ -56,13 +56,42 @@
+         "poster": (p.get("user") or {}).get("username"), "makers": json.dumps([m["username"] for m in p.get("makers") or []]),
+         "daily_rank": p.get("dailyRank"), "weekly_rank": p.get("weeklyRank"), "monthly_rank": p.get("monthlyRank"),
+         "votes": p.get("votesCount"),
+-        "outcome_final": d < (dt.date.fromisoformat(pacific_today()) - dt.timedelta(days=31)).isoformat()} for p in nodes])
++        "outcome_final": d < (dt.date.fromisoformat(pacific_today()) - dt.timedelta(days=31)).isoformat(),
++        **launch_extra(p)} for p in nodes])
++
++
++# Bundle 10 (Nov 13): every captured field of the daily list read, not 15 columns. New columns only (existing names and types
++# unchanged). Handles stay where the table already had them (poster, makers); twitter usernames and display names are not
++# added as columns (has_twitter flags instead); everything else of the read is kept verbatim in extra_json.
++HANDLE_KEYS = {"username", "twitterUsername", "name"}
++MAPPED = {"id", "slug", "name", "tagline", "description", "topics", "user", "makers", "dailyRank", "weeklyRank", "monthlyRank",
++          "votesCount", "commentsCount", "createdAt", "featuredAt", "website", "media", "reviewsCount", "reviewsRating"}
++
++
++def _person(x):
++    x = x or {}
++    return {"id": x.get("id"), "createdAt": x.get("createdAt"), "followersCount": x.get("followersCount"), "headline": x.get("headline"),
++            "websiteUrl": x.get("websiteUrl"), "has_twitter": bool(x.get("twitterUsername")),
++            **{k: v for k, v in x.items() if k not in HANDLE_KEYS | {"id", "createdAt", "followersCount", "headline", "websiteUrl"}}}
++
++
++def launch_extra(p):
++    h = p.get("user") or {}; mk = p.get("makers") or []
++    return {"comments_count": p.get("commentsCount"), "created_at": p.get("createdAt"), "featured_at": p.get("featuredAt"),
++            "website": p.get("website"), "media_types": json.dumps([m.get("type") for m in p.get("media") or []]),
++            "reviews_count": p.get("reviewsCount"), "reviews_rating": p.get("reviewsRating"),
++            "hunter_id": None if h.get("id") is None else str(h.get("id")), "hunter_created_at": h.get("createdAt"),
++            "hunter_followers": h.get("followersCount"), "hunter_headline": h.get("headline"), "hunter_website": h.get("websiteUrl"),
++            "hunter_has_twitter": bool(h.get("twitterUsername")),
++            "maker_ids": json.dumps([None if m.get("id") is None else str(m.get("id")) for m in mk]),
++            "makers_detail": json.dumps([_person(m) for m in mk]),
++            "extra_json": json.dumps({k: v for k, v in p.items() if k not in MAPPED}) if any(k not in MAPPED for k in p) else None}
+ 
+ 
+ @step("launches")
+ def s_launches(d, con, dry):
+     subprocess.run(["python3", "today.py", d], cwd=PH, check=True)
+-    L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes"]] = None   # not final: never stored as outcomes
++    L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes", "comments_count", "reviews_count", "reviews_rating"]] = None   # not final: never stored as outcomes
+     if not dry:
+         W.write("launches", L)
+     if not dry and len(L):   # the trigger Data Feeder's at-launch capture watches (~00:06 PT; <d>.json itself lands ~00:30)
+@@ -100,7 +129,7 @@
+     from . import list_check as LC
+     out = LC.step(d)
+     if out.get("added") and not dry:
+-        L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes"]] = None
++        L = day_rows(d); L[["daily_rank", "weekly_rank", "monthly_rank", "votes", "comments_count", "reviews_count", "reviews_rating"]] = None
+         W.write("launches", L)
+     print(json.dumps({"list_check": out}), flush=True)
+     return {"items": out.get("missing", 0), "status": out["status"]}
+@@ -346,6 +375,15 @@
+     return out
+ 
+ 
++@step("people_full")
++def s_people_full(d, con, dry):
++    """Bundle 10: refresh the people rows whose store pull is new or changed (population store_v3; every field). Runs after
++    the people step; writes nothing on a dry run."""
++    from . import people_full as PF
++    st = PF.main(["--records", "--changed"] + ([] if dry else ["--write"]))
++    return {"items": st.get("rows_written", 0), **({} if st.get("matched") else {"status": "failed: no store persons matched"})}
++
++
+ @step("ph_upvotes")
+ def s_ph_upvotes(d, con, dry):
+     """Upvote pages fetched by Grok Bot's team (raw/ph_upvotes/), merged into events like the people step's own pages."""
+@@ -513,7 +551,7 @@
+     return {"items": len(files)}
+ 
+ 
+-STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_ph_upvotes, s_personas, s_score, s_poolscore, s_earlyshock, s_raw]
++STEPS = [s_launches, s_at_launch, s_list_check, s_snap, s_forecast, s_simforecast, s_shadow, s_ranks, s_comments, s_people, s_people_full, s_ph_upvotes, s_personas, s_score, s_poolscore, s_earlyshock, s_raw]
+ 
+ 
+ def main(argv):

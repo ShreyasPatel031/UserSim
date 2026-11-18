@@ -1,0 +1,92 @@
+{
+ "label": "PROVISIONAL (4 days)",
+ "read_minutes_after_pt_midnight": {
+  "2026-10-25": 377.5,
+  "2026-10-26": 1053.0,
+  "2026-10-27": 17.7,
+  "2026-10-28": 1228.1,
+  "2026-10-29": 16.7,
+  "2026-10-30": 883.5,
+  "2026-10-31": 367.2,
+  "2026-11-01": 497.5,
+  "2026-11-02": 10.7,
+  "2026-11-03": 6.8,
+  "2026-11-04": 7.0
+ },
+ "read_max_min": 20.0,
+ "qualifying_read_days": [
+  "2026-10-27",
+  "2026-10-29",
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04"
+ ],
+ "scored_days": [
+  "2026-10-27",
+  "2026-10-29",
+  "2026-11-02",
+  "2026-11-03"
+ ],
+ "launches_scored": 98,
+ "excluded": {
+  "late_reads": [
+   "2026-10-25",
+   "2026-10-26",
+   "2026-10-28",
+   "2026-10-30",
+   "2026-10-31",
+   "2026-11-01"
+  ],
+  "outage": [
+   "2026-11-05",
+   "2026-11-06",
+   "2026-11-07"
+  ],
+  "no_final_ranks": [
+   "2026-11-04"
+  ]
+ },
+ "x_followers": "missing everywhere (no 00:05 PT X read exists)",
+ "reference": "live launch_model forecast rank (honest live set)",
+ "test": "reference + LODO ridge on within-day z of ph_maker_max, ph_maker_sum, ph_hunter, has_hunter",
+ "boards": {
+  "day top3": {
+   "reference": 50.0,
+   "with followers": 50.0,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    4
+   ]
+  },
+  "day top5": {
+   "reference": 65.0,
+   "with followers": 65.0,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    4
+   ]
+  },
+  "day top10": {
+   "reference": 86.7,
+   "with followers": 83.3,
+   "delta": [
+    -3.3,
+    [
+     -10.0,
+     0.0
+    ],
+    3
+   ]
+  }
+ },
+ "weekly": "no full week qualifies (week of Nov 2: Nov 5-7 outage; earlier weeks lack 00:05 reads)",
+ "verdict": "no gain (does not clear +3.5 on top 3 with an interval above 0)"
+}

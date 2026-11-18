@@ -26,6 +26,9 @@ PROMO_DROP = {"promo_reactions", "promo_founder_li", "promo_company_li", "promo_
               "promo_n_sources"}   # read at fetch time, undated; promo_posts* / promo_cov* are dated before launch and kept
 
 
+OUT = os.environ.get("HONEST_OUT", "honest")   # output name: results/<OUT>.json, results/<OUT>_preds.parquet
+
+
 def honest_cols(cols):
     """The honest pre-launch input set: no follower counts, no follow-list inputs (fol_, seg_), no undated promo_."""
     return [c for c in cols if not (STEPS[0][1](c) or STEPS[1][1](c) or c in PROMO_DROP)]
@@ -42,6 +45,14 @@ def variants(cols):
         V["honest - web-derived"] = [c for c in V["honest"] if c not in web]
         V["honest - all page"] = [c for c in V["honest"] if not c.startswith(("pf_", "ps_", "vs_", "llm_"))]
         V["honest - live set"] = [c for c in V["honest"] if c.split("_")[0] in M.LIVE_SOURCES and c != "llm_full"]
+        # the deployed forecast until the llm_full filter ships: the live set with llm_full (its prompt carries follower counts)
+        V["honest - live set + llm_full"] = V["honest - live set"] + [c for c in V["honest"] if c == "llm_full"]
+    only = [v for v in os.environ.get("VARIANTS", "").split("|") if v]   # e.g. VARIANTS="honest - live set|honest - live set + llm_full"
+    if only:
+        miss = [v for v in only if v not in V]
+        if miss:
+            raise SystemExit(f"VARIANTS: unknown {miss}; have {list(V)}")
+        V = {k: V[k] for k in only}
     return V
 
 
@@ -74,8 +85,23 @@ def main():
     A = P.groupby("id")[V].mean().reset_index().merge(df[["id", "day", "dailyRank", "weeklyRank", "monthlyRank", "logv"]], on="id")
     A["week"] = pd.to_datetime(A.day).dt.strftime("%G-W%V"); A["mon"] = A.day.str[:7]
     A = A[A.dailyRank.notna()]
-    A.to_parquet("results/honest_preds.parquet")
+    A.to_parquet(f"results/{OUT}_preds.parquet")
     rng = np.random.default_rng(0); res = {"launches": len(A), "days": int(A.day.nunique()), "dropped_columns": dropped}
+    if os.environ.get("VARIANTS"):   # filtered run: each variant vs the first one, paired by list, daily / weekly / monthly
+        for win, lo in (("May-Oct", "2026-05"), ("Jul-Oct", "2026-07")):
+            U = A[A.day >= lo]; r = {"base": V[0]}
+            for key in ("day", "week", "mon"):
+                for k in (3, 5, 10):
+                    base = per_day(U, V[0], k, key); line = {V[0]: round(100 * float(base.mean()), 1), "lists": int(len(base))}
+                    for v in V[1:]:
+                        cur = per_day(U, v, k, key); d = (cur - base).dropna().values
+                        bs = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(10000)] if len(d) > 1 else [0]
+                        line[v] = [round(100 * float(cur.mean()), 1), round(100 * float(d.mean()), 1), [round(100 * float(x), 1) for x in np.percentile(bs, [2.5, 97.5])]]
+                    r[f"{key} top{k}"] = line
+            res[win] = r
+        json.dump(res, open(f"results/{OUT}.json", "w"), indent=1)
+        print(json.dumps({k: v for k, v in res.items() if k != "dropped_columns"}, indent=1))
+        return
     for win, lo in (("May-Oct", "2026-05"), ("Jul-Oct", "2026-07"), ("all months", "0")):
         U = A[A.day >= lo]; r = {}
         for k in (3, 5, 10):
@@ -97,7 +123,7 @@ def main():
                 r[f"{key} top{k}"] = {"all": round(100 * float(base.mean()), 1), "honest": round(100 * float(cur.mean()), 1), "delta": round(100 * float(d.mean()), 1),
                                       "ci95": [round(100 * float(x), 1) for x in np.percentile(bs, [2.5, 97.5])], "lists": int(len(d))}
         res[win] = r
-    json.dump(res, open("results/honest.json", "w"), indent=1)
+    json.dump(res, open(f"results/{OUT}.json", "w"), indent=1)
     print(json.dumps({k: v for k, v in res.items() if k != "dropped_columns"}, indent=1))
     print(json.dumps({k: len(v) for k, v in dropped.items()}))
 

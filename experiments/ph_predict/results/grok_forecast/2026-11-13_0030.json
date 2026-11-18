@@ -1,0 +1,95 @@
+{
+  "day": "2026-11-13",
+  "point": "0030",
+  "written_at": "2026-11-13T08:19:53Z",
+  "window_start": "2026-11-11T08:05:00Z",
+  "window_end": "2026-11-13T08:17:27Z",
+  "inputs": {
+    "lineup": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/daily/2026-11-13/today_0005.json",
+    "lineup_fields_used": [
+      "name",
+      "tagline",
+      "slug",
+      "website",
+      "makers.twitterUsername",
+      "user.twitterUsername"
+    ],
+    "x_buzz": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_at_launch/2026-11-13/x_buzz_0010.jsonl",
+    "x_search_window": {
+      "start": "2026-11-11T08:05:00Z",
+      "end": "2026-11-13T08:17:27Z"
+    },
+    "excluded": [
+      "dailyRank",
+      "weeklyRank",
+      "monthlyRank",
+      "votesCount",
+      "commentsCount",
+      "any other Product Hunt rank or vote field",
+      "Product Hunt web pages"
+    ],
+    "note": "Website fields in the lineup were Product Hunt API redirect URLs, not product domains. X url: queries cannot include '/'; searches used product names, slugs, and listed maker/hunter handles. No Product Hunt pages were loaded."
+  },
+  "forecast": [
+    {
+      "rank": 1,
+      "name": "Gemini 4 Hydrogen",
+      "slug": "gemini-4-hydrogen",
+      "reason": "By far the heaviest X conversation of the day (14,290 in-window posts, still 171 in the first minutes after 00:05 PT) about a new Google model for fast everyday/agentic coding, matching the tagline."
+    },
+    {
+      "rank": 2,
+      "name": "Claude Meetings",
+      "slug": "claude-meetings",
+      "reason": "5,213 in-window posts and an official announcement with 3,580 visible reposts, plus immediate multilingual and news coverage (including a 73k-follower account) as the product is introduced around 00:05 PT."
+    },
+    {
+      "rank": 3,
+      "name": "Expo Simulators",
+      "slug": "expo-simulators",
+      "reason": "648 posts, an official intro with 138 visible reposts, replies from a 9.4M-follower account, and a cluster of mid-size posts about agents testing mobile builds in the cloud — strong developer-community buzz aligned with the tagline."
+    },
+    {
+      "rank": 4,
+      "name": "Google Pixel Tag",
+      "slug": "google-pixel-tag",
+      "reason": "295 posts of hardware unboxing, review, and availability chatter, including a 527k-follower gadget account (137 likes, 47 reposts) and a 217k-follower Android site; real consumer buzz, but narrower than the two model/feature launches above."
+    },
+    {
+      "rank": 5,
+      "name": "WHOOP Humans",
+      "slug": "whoop-humans",
+      "reason": "35 posts of genuine launch coverage from tech and fitness accounts (largest sampled poster 55k followers) over the prior day, clearly about the new health-data social network, though engagement stays modest."
+    },
+    {
+      "rank": 6,
+      "name": "Paxper",
+      "slug": "paxper",
+      "reason": "The only remaining launch with on-topic X posts: a small product-account note that it went live Nov 8 (5 likes, 1 repost). Thin signal, but it is actual buzz, unlike the zero-hit field."
+    },
+    {
+      "rank": 7,
+      "name": "Replicate",
+      "slug": "replicate-3",
+      "reason": "No on-topic X posts in the window, but the lineup text is a sharp, free Webflow/Framer-to-Claude/Codex hook and lists a widely followed hunter handle; ranking rests on that text, not observed buzz."
+    },
+    {
+      "rank": 8,
+      "name": "Burnstate",
+      "slug": "burnstate",
+      "reason": "No on-topic X posts; the tagline (pacing Claude Code, Codex, and Cursor limits in the menu bar) is unusually timely, which is the only reason it sits above other silent launches."
+    },
+    {
+      "rank": 9,
+      "name": "Trainn MCP",
+      "slug": "trainn-mcp",
+      "reason": "No X posts found; ranked on lineup text alone — an MCP that turns any AI chat into product videos and courses, which is a clear, current-tooling hook."
+    },
+    {
+      "rank": 10,
+      "name": "Pocket Studio for Supabase",
+      "slug": "pocket-studio-for-supabase",
+      "reason": "No X posts found; the tagline is a concrete Android Supabase dashboard and SQL editor, a specific gap that is easier to picture than the other silent, more generic tools."
+    }
+  ]
+}

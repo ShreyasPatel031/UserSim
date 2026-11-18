@@ -1,0 +1,155 @@
+{
+ "day": "2026-11-12",
+ "written_at": "2026-11-12T15:19:12.468172+00:00",
+ "run_updated_at": "2026-11-12T08:15:23Z",
+ "forecast": [
+  {
+   "id": "1303480",
+   "predicted_rank": 1
+  },
+  {
+   "id": "1310169",
+   "predicted_rank": 2
+  },
+  {
+   "id": "1305854",
+   "predicted_rank": 3
+  },
+  {
+   "id": "1303448",
+   "predicted_rank": 4
+  },
+  {
+   "id": "1304141",
+   "predicted_rank": 5
+  },
+  {
+   "id": "1313259",
+   "predicted_rank": 6
+  },
+  {
+   "id": "1311866",
+   "predicted_rank": 7
+  },
+  {
+   "id": "1312557",
+   "predicted_rank": 8
+  },
+  {
+   "id": "1298575",
+   "predicted_rank": 9
+  },
+  {
+   "id": "1312481",
+   "predicted_rank": 10
+  },
+  {
+   "id": "1308353",
+   "predicted_rank": 11
+  },
+  {
+   "id": "1267000",
+   "predicted_rank": 12
+  },
+  {
+   "id": "1313265",
+   "predicted_rank": 13
+  },
+  {
+   "id": "1311740",
+   "predicted_rank": 14
+  },
+  {
+   "id": "1310674",
+   "predicted_rank": 15
+  },
+  {
+   "id": "1313482",
+   "predicted_rank": 16
+  },
+  {
+   "id": "1303858",
+   "predicted_rank": 17
+  },
+  {
+   "id": "1313683",
+   "predicted_rank": 18
+  },
+  {
+   "id": "1311420",
+   "predicted_rank": 19
+  },
+  {
+   "id": "1311999",
+   "predicted_rank": 20
+  },
+  {
+   "id": "1312833",
+   "predicted_rank": 21
+  },
+  {
+   "id": "1309979",
+   "predicted_rank": 22
+  },
+  {
+   "id": "1313305",
+   "predicted_rank": 23
+  },
+  {
+   "id": "1313154",
+   "predicted_rank": 24
+  },
+  {
+   "id": "1313327",
+   "predicted_rank": 25
+  },
+  {
+   "id": "1311783",
+   "predicted_rank": 26
+  },
+  {
+   "id": "1313530",
+   "predicted_rank": 27
+  },
+  {
+   "id": "1313541",
+   "predicted_rank": 28
+  },
+  {
+   "id": "1313377",
+   "predicted_rank": 29
+  },
+  {
+   "id": "1309902",
+   "predicted_rank": 30
+  },
+  {
+   "id": "1313559",
+   "predicted_rank": 31
+  },
+  {
+   "id": "1313761",
+   "predicted_rank": 32
+  },
+  {
+   "id": "1313278",
+   "predicted_rank": 33
+  },
+  {
+   "id": "1313146",
+   "predicted_rank": 34
+  },
+  {
+   "id": "1313486",
+   "predicted_rank": 35
+  },
+  {
+   "id": "1313277",
+   "predicted_rank": 36
+  },
+  {
+   "id": "1313340",
+   "predicted_rank": 37
+  }
+ ]
+}

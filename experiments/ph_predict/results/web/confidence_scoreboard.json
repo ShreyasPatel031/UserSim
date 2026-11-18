@@ -1,0 +1,55 @@
+{
+ "source": "clean shadow model, confidence_v2 label (clear_leader / open_field), live days scored forward",
+ "applies_to": "clean shadow model",
+ "n_days": 4,
+ "by_label": {
+  "clear_leader": {
+   "days": 1,
+   "p1_top3": 1.0,
+   "p1_top3_count": "1 of 1",
+   "top3_hits": 2.0,
+   "top5_hits": 4.0
+  },
+  "open_field": {
+   "days": 3,
+   "p1_top3": 0.667,
+   "p1_top3_count": "2 of 3",
+   "top3_hits": 1.67,
+   "top5_hits": 2.33
+  }
+ },
+ "days": [
+  {
+   "day": "2026-11-12",
+   "label": "open_field",
+   "h3": 1,
+   "h5": 1,
+   "h10": 5,
+   "p1t3": 0.0
+  },
+  {
+   "day": "2026-11-13",
+   "label": "open_field",
+   "h3": 2,
+   "h5": 4,
+   "h10": 8,
+   "p1t3": 1.0
+  },
+  {
+   "day": "2026-11-14",
+   "label": "clear_leader",
+   "h3": 2,
+   "h5": 4,
+   "h10": 5,
+   "p1t3": 1.0
+  },
+  {
+   "day": "2026-11-15",
+   "label": "open_field",
+   "h3": 2,
+   "h5": 2,
+   "h10": 7,
+   "p1t3": 1.0
+  }
+ ]
+}

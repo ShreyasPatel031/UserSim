@@ -1,0 +1,46 @@
+[
+ {
+  "day": "2026-11-04",
+  "earlier_source": "dayend",
+  "earlier_launches": 56,
+  "launches": 35,
+  "pre_snapshot": "2026-11-04 11:45:00+00:00",
+  "spearman": 0.936,
+  "median_abs_log_err": 0.09,
+  "share_in_bracket": 0.257,
+  "top3_overlap": 100.0
+ },
+ {
+  "day": "2026-11-08",
+  "earlier_source": "dayend",
+  "earlier_launches": 170,
+  "launches": 17,
+  "pre_snapshot": "2026-11-08 11:45:00+00:00",
+  "spearman": 0.923,
+  "median_abs_log_err": 0.14,
+  "share_in_bracket": 0.0,
+  "top3_overlap": 66.66666666666666
+ },
+ {
+  "day": "2026-11-10",
+  "earlier_source": "dayend",
+  "earlier_launches": 25,
+  "launches": 50,
+  "pre_snapshot": "2026-11-10 11:45:00+00:00",
+  "spearman": 0.687,
+  "median_abs_log_err": 0.489,
+  "share_in_bracket": 0.9,
+  "top3_overlap": 100.0
+ },
+ {
+  "day": "2026-11-11",
+  "earlier_source": "dayend",
+  "earlier_launches": 75,
+  "launches": 26,
+  "pre_snapshot": "2026-11-11 11:45:00+00:00",
+  "spearman": 0.965,
+  "median_abs_log_err": 0.063,
+  "share_in_bracket": 0.038,
+  "top3_overlap": 100.0
+ }
+]

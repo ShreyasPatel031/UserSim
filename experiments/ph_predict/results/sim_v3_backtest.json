@@ -1,0 +1,66 @@
+{
+ "days": [
+  "2026-11-01",
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-05",
+  "2026-11-06",
+  "2026-11-07",
+  "2026-11-08",
+  "2026-11-09"
+ ],
+ "metric": "pnx_ev (psn_ev) rank vs final rank",
+ "day top3": {
+  "warehouse": 48.1,
+  "store_v3": 51.9,
+  "delta": [
+   3.7,
+   [
+    -7.4,
+    14.8
+   ],
+   9
+  ]
+ },
+ "day top5": {
+  "warehouse": 64.4,
+  "store_v3": 62.2,
+  "delta": [
+   -2.2,
+   [
+    -8.9,
+    4.4
+   ],
+   9
+  ]
+ },
+ "day top10": {
+  "warehouse": 75.6,
+  "store_v3": 72.2,
+  "delta": [
+   -3.3,
+   [
+    -7.8,
+    1.1
+   ],
+   9
+  ]
+ },
+ "weekly": {
+  "2026-W45 top3": {
+   "warehouse": 0.0,
+   "store_v3": 0.0
+  },
+  "2026-W45 top5": {
+   "warehouse": 20.0,
+   "store_v3": 20.0
+  },
+  "2026-W45 top10": {
+   "warehouse": 50.0,
+   "store_v3": 30.0
+  }
+ },
+ "monthly": "not enough November days for a monthly list",
+ "label": "PROVISIONAL (9 days)"
+}

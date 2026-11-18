@@ -1,0 +1,305 @@
+{
+ "method": "Audit of the site's confidence flag \"#1 / #2 / #3 picks finish top 3 90.3% / 57.0% / 41.1%\" (measured Nov 11 on the old full\nmodel; orchestrator 23:06Z Nov 14). Recomputed per published model on the single truth source.\n\nTruth: results/web/truth_daily.json (E5: first warehouse part after the PT close); a day counts if >= 10 ranked; a pick that is\nunranked counts as a miss. Rate = share of days on which our pick #i finished with final daily rank <= 3 (also <= 5, <= 10).\nOrders: arm 2 = month-forward backtest Apr-Oct 2026 (history_retrain_decomp_preds_arm2.parquet 'both', 5 seeds, as published);\narm 3 and arm 2 (20 seeds) = pre-registered harness (arm3_vs_arm2_preds.parquet), 2026 and 2025; old full model = published 00:05\nlive rows (scoreboard_orders.json, days <= Nov 12). Ties broken by id. Intervals: day bootstrap 95% (4000).\nusage: python conf_flag_audit.py -> results/conf_flag_audit.{json,md}",
+ "results": {
+  "arm2 (published), backtest Apr-Oct 2026, 5 seeds": {
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "pick1_top3": [
+    70.7,
+    64.1,
+    77.2
+   ],
+   "pick1_top5": [
+    87.0,
+    82.1,
+    91.8
+   ],
+   "pick1_top10": [
+    93.5,
+    89.7,
+    96.7
+   ],
+   "pick2_top3": [
+    57.6,
+    50.5,
+    64.7
+   ],
+   "pick2_top5": [
+    75.0,
+    68.5,
+    81.0
+   ],
+   "pick2_top10": [
+    94.6,
+    91.3,
+    97.8
+   ],
+   "pick3_top3": [
+    45.7,
+    38.0,
+    52.7
+   ],
+   "pick3_top5": [
+    64.7,
+    57.6,
+    71.7
+   ],
+   "pick3_top10": [
+    92.4,
+    88.6,
+    96.2
+   ]
+  },
+  "arm3, pre-registered harness 2026, 20 seeds": {
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "pick1_top3": [
+    75.0,
+    69.0,
+    81.0
+   ],
+   "pick1_top5": [
+    88.0,
+    83.2,
+    92.4
+   ],
+   "pick1_top10": [
+    96.2,
+    93.5,
+    98.9
+   ],
+   "pick2_top3": [
+    56.0,
+    48.9,
+    63.0
+   ],
+   "pick2_top5": [
+    71.7,
+    64.7,
+    78.3
+   ],
+   "pick2_top10": [
+    92.4,
+    88.6,
+    96.2
+   ],
+   "pick3_top3": [
+    38.0,
+    31.0,
+    45.1
+   ],
+   "pick3_top5": [
+    63.0,
+    56.0,
+    70.1
+   ],
+   "pick3_top10": [
+    91.3,
+    87.0,
+    95.1
+   ]
+  },
+  "arm2, pre-registered harness 2026, 20 seeds": {
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "pick1_top3": [
+    72.3,
+    65.8,
+    78.8
+   ],
+   "pick1_top5": [
+    86.4,
+    81.5,
+    91.3
+   ],
+   "pick1_top10": [
+    93.5,
+    89.7,
+    96.7
+   ],
+   "pick2_top3": [
+    56.0,
+    48.9,
+    63.0
+   ],
+   "pick2_top5": [
+    75.5,
+    69.0,
+    81.5
+   ],
+   "pick2_top10": [
+    94.6,
+    91.3,
+    97.8
+   ],
+   "pick3_top3": [
+    44.0,
+    36.4,
+    51.1
+   ],
+   "pick3_top5": [
+    64.7,
+    57.6,
+    71.2
+   ],
+   "pick3_top10": [
+    90.8,
+    86.4,
+    94.6
+   ]
+  },
+  "arm3, pre-registered harness 2025, 20 seeds (truth: stored dailyRank, not truth_daily.json)": {
+   "n_days": 204,
+   "first_day": "2025-03-01",
+   "last_day": "2025-12-05",
+   "pick1_top3": [
+    57.4,
+    50.5,
+    64.2
+   ],
+   "pick1_top5": [
+    77.0,
+    71.1,
+    82.8
+   ],
+   "pick1_top10": [
+    95.6,
+    92.6,
+    98.0
+   ],
+   "pick2_top3": [
+    50.5,
+    43.6,
+    57.4
+   ],
+   "pick2_top5": [
+    67.6,
+    61.3,
+    74.0
+   ],
+   "pick2_top10": [
+    93.6,
+    90.2,
+    96.6
+   ],
+   "pick3_top3": [
+    53.4,
+    47.1,
+    60.3
+   ],
+   "pick3_top5": [
+    68.1,
+    61.8,
+    74.5
+   ],
+   "pick3_top10": [
+    91.2,
+    87.3,
+    94.6
+   ]
+  },
+  "arm2, pre-registered harness 2025, 20 seeds (truth: stored dailyRank, not truth_daily.json)": {
+   "n_days": 204,
+   "first_day": "2025-03-01",
+   "last_day": "2025-12-05",
+   "pick1_top3": [
+    60.3,
+    53.4,
+    66.7
+   ],
+   "pick1_top5": [
+    79.9,
+    74.5,
+    85.3
+   ],
+   "pick1_top10": [
+    96.6,
+    94.1,
+    99.0
+   ],
+   "pick2_top3": [
+    47.5,
+    40.7,
+    54.4
+   ],
+   "pick2_top5": [
+    63.7,
+    57.4,
+    70.1
+   ],
+   "pick2_top10": [
+    90.7,
+    86.8,
+    94.1
+   ],
+   "pick3_top3": [
+    47.5,
+    40.7,
+    54.4
+   ],
+   "pick3_top5": [
+    65.2,
+    58.8,
+    71.6
+   ],
+   "pick3_top10": [
+    90.2,
+    86.3,
+    94.1
+   ]
+  },
+  "old full model, published 00:05 live rows": {
+   "n_days": 16,
+   "first_day": "2026-10-25",
+   "last_day": "2026-11-12",
+   "pick1_top3": [
+    56.2,
+    31.2,
+    81.2
+   ],
+   "pick1_top5": [
+    68.8,
+    43.8,
+    87.5
+   ],
+   "pick1_top10": [
+    93.8,
+    81.2,
+    100.0
+   ],
+   "pick2_top3": [
+    68.8,
+    43.8,
+    87.5
+   ],
+   "pick2_top5": [
+    75.0,
+    50.0,
+    93.8
+   ],
+   "pick2_top10": [
+    87.5,
+    68.8,
+    100.0
+   ],
+   "pick3_top3": [
+    37.5,
+    12.5,
+    62.5
+   ],
+   "pick3_top5": [
+    50.0,
+    25.0,
+    75.0
+   ],
+   "pick3_top10": [
+    87.5,
+    68.8,
+    100.0
+   ]
+  }
+ }
+}

@@ -1,0 +1,102 @@
+{
+ "day": "2026-10-25",
+ "source": "warehouse launches (final)",
+ "launches": [
+  {
+   "id": "1278600",
+   "slug": "moli-by-lexmount",
+   "name": "Moli by Lexmount",
+   "tagline": "The fastest headless browser for agents and harnesses",
+   "daily_rank": 1,
+   "votes": 307
+  },
+  {
+   "id": "1273641",
+   "slug": "badgey",
+   "name": "Badgey",
+   "tagline": "Your iPhone becomes a name badge that faces the room",
+   "daily_rank": 2,
+   "votes": 234
+  },
+  {
+   "id": "1291942",
+   "slug": "agentgrid-io",
+   "name": "AgentGrid.io",
+   "tagline": "Shared workspace for humans and agents",
+   "daily_rank": 3,
+   "votes": 213
+  },
+  {
+   "id": "1283538",
+   "slug": "openstatus-incident-management",
+   "name": "Openstatus Incident Management",
+   "tagline": "Incident management for small teams",
+   "daily_rank": 4,
+   "votes": 185
+  },
+  {
+   "id": "1285452",
+   "slug": "git-flow-next",
+   "name": "git-flow-next",
+   "tagline": "Your favorite Git workflow. Reimagined.",
+   "daily_rank": 5,
+   "votes": 139
+  },
+  {
+   "id": "1290875",
+   "slug": "llama-windows",
+   "name": "Llama Windows",
+   "tagline": "One local AI server for all your Windows apps",
+   "daily_rank": 6,
+   "votes": 126
+  },
+  {
+   "id": "1291620",
+   "slug": "papermark-data-rooms",
+   "name": "Papermark Data Rooms",
+   "tagline": "Secure data rooms your AI agents can run. Live in < 60 sec.",
+   "daily_rank": 7,
+   "votes": 120
+  },
+  {
+   "id": "1287264",
+   "slug": "pawl",
+   "name": "pawl",
+   "tagline": "a tiny mac focus timer you start by pulling a paw",
+   "daily_rank": 8,
+   "votes": 105
+  },
+  {
+   "id": "1289061",
+   "slug": "mrraudit",
+   "name": "MRRaudit",
+   "tagline": "Understand why your MRR differs and get a number you trust",
+   "daily_rank": 9,
+   "votes": 115
+  },
+  {
+   "id": "1283600",
+   "slug": "clips-by-plastic",
+   "name": "Clips by Plastic",
+   "tagline": "Lyric video ads for every part of your song, on the beat",
+   "daily_rank": 10,
+   "votes": 94
+  },
+  {
+   "id": "1291438",
+   "slug": "yourcast-2-0",
+   "name": "Yourcast 2.0",
+   "tagline": "AI summaries with tap-to-jump timestamps, right in Telegram",
+   "daily_rank": 11,
+   "votes": 90
+  },
+  {
+   "id": "1286064",
+   "slug": "how-it-spread",
+   "name": "How It Spread",
+   "tagline": "See how anything went viral, from the first post",
+   "daily_rank": 12,
+   "votes": 90
+  }
+ ]
+}

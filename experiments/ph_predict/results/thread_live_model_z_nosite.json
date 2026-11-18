@@ -1,0 +1,36 @@
+{
+ "score": "sum(coef[f] * z_f), z_f = (x - mean_day(x)) / std_day(x) over the line-up (0 if std 0); rank by score desc",
+ "days": 238,
+ "models": {
+  "clean_thread_z": {
+   "feats": [
+    "honest",
+    "th_has_first",
+    "th_hunter_first",
+    "th_n_pre"
+   ],
+   "coef": {
+    "honest": 0.5796289369481928,
+    "th_has_first": 0.00795820761857403,
+    "th_hunter_first": 0.03788779371335212,
+    "th_n_pre": 0.2250491574893432
+   }
+  },
+  "clean_stack": {
+   "feats": [
+    "honest",
+    "th_has_first",
+    "th_hunter_first",
+    "th_n_pre",
+    "slug_num_l"
+   ],
+   "coef": {
+    "honest": 0.5801807738475491,
+    "th_has_first": 0.007704242708013825,
+    "th_hunter_first": 0.038192021265753474,
+    "th_n_pre": 0.22530636809635865,
+    "slug_num_l": 0.009799947040750863
+   }
+  }
+ }
+}

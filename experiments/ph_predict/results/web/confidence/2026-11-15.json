@@ -1,0 +1,107 @@
+{
+ "day": "2026-11-15",
+ "applies_to": "clean shadow model",
+ "stable": true,
+ "rule": "conf_v2",
+ "launches": 15,
+ "source": "from the clean shadow model (clean_v3, 00:05 inputs; results/shadow_makerfix pred_clean); never the published ranking",
+ "label": "open_field",
+ "p_clear_leader": 0.74,
+ "cutoff": 0.7787,
+ "features": {
+  "g12z": 0.63,
+  "z1": 2.132,
+  "t3z": 1.965,
+  "ln": 2.708
+ },
+ "text": "Open field today: on past days like this our #1 finished in the final top 3 about 68% of the time (85 of 125 days).",
+ "validated_rates": {
+  "days": 125,
+  "p1_top3": 0.68,
+  "p1_ci": [
+   0.6,
+   0.76
+  ],
+  "p1_count": "85 of 125",
+  "top3_hits": 1.656,
+  "top3_hits_ci": [
+   1.536,
+   1.776
+  ]
+ },
+ "eval": "month-forward, May 1 - Nov 10 2026, 194 days; label fixed on training months; CIs day bootstrap",
+ "picks_rule": "confidence_v1 pick_models (clean), unchanged",
+ "picks": [
+  {
+   "pick": 1,
+   "id": "1307742",
+   "p_top3": 0.772,
+   "p_top5": 0.906,
+   "p_top10": 0.977
+  },
+  {
+   "pick": 2,
+   "id": "1310949",
+   "p_top3": 0.617,
+   "p_top5": 0.796,
+   "p_top10": 0.956
+  },
+  {
+   "pick": 3,
+   "id": "1317198",
+   "p_top3": 0.397,
+   "p_top5": 0.668,
+   "p_top10": 0.92
+  },
+  {
+   "pick": 4,
+   "id": "1317137",
+   "p_top3": 0.402,
+   "p_top5": 0.697,
+   "p_top10": 0.92
+  },
+  {
+   "pick": 5,
+   "id": "1313220",
+   "p_top3": 0.269,
+   "p_top5": 0.545,
+   "p_top10": 0.818
+  },
+  {
+   "pick": 6,
+   "id": "1316064",
+   "p_top3": 0.219,
+   "p_top5": 0.468,
+   "p_top10": 0.831
+  },
+  {
+   "pick": 7,
+   "id": "1313926",
+   "p_top3": 0.208,
+   "p_top5": 0.486,
+   "p_top10": 0.857
+  },
+  {
+   "pick": 8,
+   "id": "1315641",
+   "p_top3": 0.092,
+   "p_top5": 0.209,
+   "p_top10": 0.606
+  },
+  {
+   "pick": 9,
+   "id": "1315819",
+   "p_top3": 0.056,
+   "p_top5": 0.197,
+   "p_top10": 0.651
+  },
+  {
+   "pick": 10,
+   "id": "1308240",
+   "p_top3": 0.039,
+   "p_top5": 0.096,
+   "p_top10": 0.463
+  }
+ ],
+ "written_at": "2026-11-15T12:25:14.684247+00:00"
+}

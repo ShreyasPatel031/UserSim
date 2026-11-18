@@ -1,0 +1,154 @@
+{
+ "day": "2026-11-15",
+ "point": "V05",
+ "method": "velocity (ii): votes_h x M(h) x (1 + b x relative 1 h velocity)",
+ "frozen": "velocity_20261113.json",
+ "params": {
+  "hour_pt": 5,
+  "M": 1.2012,
+  "b": 0.1,
+  "fit_days": 8
+ },
+ "data_up_to": "2026-11-15T05:00:00-08:00",
+ "written_at": "2026-11-15T14:21:28.832985+00:00",
+ "label": "dailyRank",
+ "provisional": "5-9 backtest days",
+ "forecast": [
+  {
+   "id": "1315641",
+   "votes": 122,
+   "g1": 26,
+   "relv": 3.7143,
+   "score": 186.3233,
+   "pred_rank": 1
+  },
+  {
+   "id": "1307742",
+   "votes": 113,
+   "g1": 17,
+   "relv": 2.4286,
+   "score": 155.1264,
+   "pred_rank": 2
+  },
+  {
+   "id": "1310949",
+   "votes": 110,
+   "g1": 16,
+   "relv": 2.2857,
+   "score": 149.1204,
+   "pred_rank": 3
+  },
+  {
+   "id": "1317198",
+   "votes": 92,
+   "g1": 11,
+   "relv": 1.5714,
+   "score": 116.8253,
+   "pred_rank": 4
+  },
+  {
+   "id": "1313926",
+   "votes": 92,
+   "g1": 8,
+   "relv": 1.1429,
+   "score": 112.0891,
+   "pred_rank": 5
+  },
+  {
+   "id": "1316659",
+   "votes": 88,
+   "g1": 6,
+   "relv": 0.8571,
+   "score": 104.1955,
+   "pred_rank": 6
+  },
+  {
+   "id": "1313220",
+   "votes": 79,
+   "g1": 4,
+   "relv": 0.5714,
+   "score": 90.8279,
+   "pred_rank": 7
+  },
+  {
+   "id": "1307385",
+   "votes": 81,
+   "g1": 2,
+   "relv": 0.2857,
+   "score": 90.3474,
+   "pred_rank": 8
+  },
+  {
+   "id": "1315819",
+   "votes": 78,
+   "g1": 4,
+   "relv": 0.5714,
+   "score": 89.6782,
+   "pred_rank": 9
+  },
+  {
+   "id": "1316064",
+   "votes": 76,
+   "g1": 4,
+   "relv": 0.5714,
+   "score": 87.3787,
+   "pred_rank": 10
+  },
+  {
+   "id": "1314673",
+   "votes": 70,
+   "g1": 6,
+   "relv": 0.8571,
+   "score": 82.8828,
+   "pred_rank": 11
+  },
+  {
+   "id": "1307607",
+   "votes": 73,
+   "g1": 3,
+   "relv": 0.4286,
+   "score": 82.6769,
+   "pred_rank": 12
+  },
+  {
+   "id": "1317137",
+   "votes": 73,
+   "g1": 3,
+   "relv": 0.4286,
+   "score": 82.6769,
+   "pred_rank": 13
+  },
+  {
+   "id": "1316260",
+   "votes": 71,
+   "g1": 3,
+   "relv": 0.4286,
+   "score": 80.4118,
+   "pred_rank": 14
+  },
+  {
+   "id": "1314362",
+   "votes": 70,
+   "g1": 3,
+   "relv": 0.4286,
+   "score": 79.2792,
+   "pred_rank": 15
+  },
+  {
+   "id": "1316664",
+   "votes": 69,
+   "g1": 2,
+   "relv": 0.2857,
+   "score": 76.9626,
+   "pred_rank": 16
+  },
+  {
+   "id": "1308240",
+   "votes": 66,
+   "g1": 1,
+   "relv": 0.1429,
+   "score": 72.4838,
+   "pred_rank": 17
+  }
+ ]
+}

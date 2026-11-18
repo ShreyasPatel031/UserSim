@@ -1,0 +1,35 @@
+{
+ "day": "2026-11-14",
+ "applies_to": "published 00:05 order (FALLBACK: arm 2 missing, clean_nosite score)",
+ "base": "pred",
+ "launches": 28,
+ "expected_right": 1.71,
+ "tier": "open",
+ "tier_accuracy_backtest": {
+  "open": 53.8,
+  "normal": 62.8,
+  "sure": 67.8
+ },
+ "note": "shadow; per-pick probability that the pick finishes top 3, calibrated month-forward on 184 backtest days (May-Oct); not on the website until ~30 live days",
+ "picks": [
+  {
+   "pick": 1,
+   "id": "1301510",
+   "p_top3": 0.677,
+   "about_n_in_10": 7
+  },
+  {
+   "pick": 2,
+   "id": "1314543",
+   "p_top3": 0.567,
+   "about_n_in_10": 6
+  },
+  {
+   "pick": 3,
+   "id": "1313358",
+   "p_top3": 0.462,
+   "about_n_in_10": 5
+  }
+ ],
+ "written_at": "2026-11-14T14:30:51.662592+00:00"
+}

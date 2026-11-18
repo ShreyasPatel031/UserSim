@@ -1,0 +1,190 @@
+{
+ "method": "Lift hidden #4/#5 into the top 3 when the published 00:05 forecast backs it (orchestrator 10:33Z Nov 16). PRE-REGISTERED:\ncommitted before any number was computed.\n\nCurrent line: the 03:45 hybrid = hidden daily order (recorder rank_now) for the top 5, ridge for 6+; its top 3 is the hidden top 3.\nRule family R(k, m), applied per day to the hidden order at read time T:\n  c  = whichever of hidden #4 / #5 has the better (lower) PUBLISHED 00:05 rank (warehouse forecasts, model launch_model)\n  if r0005(c) <= k and r0005(hidden #3) > m: swap hidden #3 and c (c enters the top 3; #3 drops to c's slot)\n  Grid: k in 1..5, m in 1..10 with m >= k, plus \"never\" (= the current hybrid). A launch absent from the published forecast\n  has r0005 = 999 (never lifted; always \"> m\").\n  The rule only permutes positions 3-5, so the top-5 and top-10 sets are identical to the current line by construction;\n  they are reported as such (difference 0) and only top 3 can change.\nChoice of (k, m): leave-one-day-out. For each held-out day, pick the grid point (or \"never\") with the most top-3 hits on the other\n  days; ties go to fewer swaps on those days, then smaller k, then larger m. Apply it to the held-out day.\nReads: PRIMARY T = 03:45 PT (latest recorder read <= T + 90 s within 65 min, as miss_anatomy_0345 / the published writer);\n  SECONDARY T = 03:00 PT. Every read used is before 04:00 PT (asserted).\nPrior: the published 00:05 forecast as written that night (forecasts.updated_at before 00:30 PT of the day, asserted), never refit.\nTruth: truth_daily.json final daily ranks; unranked = miss. Days: Nov 2 - Nov 16 with a read at T, a published forecast and truth.\nMetric: top-3 hits per day (share of the 3 slots); PRIMARY = LODO rule minus current, paired by day, day bootstrap 95% (10,000), n.\nAdoption: deploy only if the PRIMARY interval's lower bound is > 0. Otherwise the rule (all-days choice of (k, m)) becomes a scored\n  forward shadow line from the next night. Also reported (not decisive): the all-days in-sample best (k, m), swaps per day.\nusage: python lift45.py -> results/lift45.{json,md}",
+ "primary_0345": {
+  "read": "03:45",
+  "n_days": 12,
+  "days": [
+   "2026-11-02",
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12",
+   "2026-11-13",
+   "2026-11-14",
+   "2026-11-15",
+   "2026-11-16"
+  ],
+  "skipped": {
+   "2026-11-05": "no published 00:05 forecast",
+   "2026-11-06": "no published 00:05 forecast",
+   "2026-11-07": "no published 00:05 forecast"
+  },
+  "top3_current": 75.0,
+  "top3_lodo_rule": 80.6,
+  "lodo_minus_current_top3": [
+   5.6,
+   0.0,
+   13.9
+  ],
+  "top5_top10_difference": "0 by construction (the rule permutes positions 3-5 only)",
+  "lodo_choice_per_day": {
+   "2026-11-02": [
+    4,
+    10
+   ],
+   "2026-11-03": [
+    4,
+    10
+   ],
+   "2026-11-04": [
+    4,
+    10
+   ],
+   "2026-11-08": [
+    4,
+    10
+   ],
+   "2026-11-09": [
+    4,
+    10
+   ],
+   "2026-11-10": [
+    4,
+    10
+   ],
+   "2026-11-11": [
+    4,
+    10
+   ],
+   "2026-11-12": [
+    4,
+    10
+   ],
+   "2026-11-13": [
+    4,
+    10
+   ],
+   "2026-11-14": [
+    4,
+    10
+   ],
+   "2026-11-15": [
+    4,
+    10
+   ],
+   "2026-11-16": [
+    4,
+    10
+   ]
+  },
+  "lodo_swaps": 2,
+  "lodo_changed_days": {
+   "2026-11-04": 33.3,
+   "2026-11-08": 33.3
+  },
+  "all_days_best": [
+   4,
+   10
+  ],
+  "all_days_best_top3": 80.6,
+  "all_days_best_swaps": 2,
+  "read_at_max_utc": "2026-11-16 11:45:02+00:00"
+ },
+ "secondary_0300": {
+  "read": "03:00",
+  "n_days": 12,
+  "days": [
+   "2026-11-02",
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12",
+   "2026-11-13",
+   "2026-11-14",
+   "2026-11-15",
+   "2026-11-16"
+  ],
+  "skipped": {
+   "2026-11-05": "no published 00:05 forecast",
+   "2026-11-06": "no published 00:05 forecast",
+   "2026-11-07": "no published 00:05 forecast"
+  },
+  "top3_current": 75.0,
+  "top3_lodo_rule": 80.6,
+  "lodo_minus_current_top3": [
+   5.6,
+   0.0,
+   13.9
+  ],
+  "top5_top10_difference": "0 by construction (the rule permutes positions 3-5 only)",
+  "lodo_choice_per_day": {
+   "2026-11-02": [
+    4,
+    10
+   ],
+   "2026-11-03": [
+    4,
+    10
+   ],
+   "2026-11-04": [
+    4,
+    10
+   ],
+   "2026-11-08": [
+    4,
+    10
+   ],
+   "2026-11-09": [
+    4,
+    10
+   ],
+   "2026-11-10": [
+    4,
+    10
+   ],
+   "2026-11-11": [
+    4,
+    10
+   ],
+   "2026-11-12": [
+    4,
+    10
+   ],
+   "2026-11-13": [
+    4,
+    10
+   ],
+   "2026-11-14": [
+    4,
+    10
+   ],
+   "2026-11-15": [
+    4,
+    10
+   ],
+   "2026-11-16": [
+    4,
+    10
+   ]
+  },
+  "lodo_swaps": 2,
+  "lodo_changed_days": {
+   "2026-11-04": 33.3,
+   "2026-11-08": 33.3
+  },
+  "all_days_best": [
+   4,
+   10
+  ],
+  "all_days_best_top3": 80.6,
+  "all_days_best_swaps": 2,
+  "read_at_max_utc": "2026-11-16 11:00:00+00:00"
+ },
+ "decision": "NOT ADOPTED: forward shadow line with the all-days (k, m)"
+}

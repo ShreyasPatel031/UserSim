@@ -1,0 +1,186 @@
+{
+ "day": "2026-11-13",
+ "point": "V08",
+ "method": "velocity (ii): votes_h x M(h) x (1 + b x relative 1 h velocity)",
+ "frozen": "velocity_20261113.json",
+ "params": {
+  "hour_pt": 8,
+  "M": 1.1354,
+  "b": 0.1,
+  "fit_days": 12
+ },
+ "data_up_to": "2026-11-13T08:00:00-08:00",
+ "written_at": "2026-11-13T18:58:52.364130+00:00",
+ "label": "dailyRank",
+ "provisional": "5-9 backtest days",
+ "forecast": [
+  {
+   "id": "1293281",
+   "votes": 284,
+   "g1": 18,
+   "relv": 4.0213,
+   "score": 419.8758,
+   "pred_rank": 1
+  },
+  {
+   "id": "1314781",
+   "votes": 184,
+   "g1": 23,
+   "relv": 5.1383,
+   "score": 295.3683,
+   "pred_rank": 2
+  },
+  {
+   "id": "1282575",
+   "votes": 193,
+   "g1": 8,
+   "relv": 1.7872,
+   "score": 236.383,
+   "pred_rank": 3
+  },
+  {
+   "id": "1314761",
+   "votes": 150,
+   "g1": 11,
+   "relv": 2.4574,
+   "score": 195.1318,
+   "pred_rank": 4
+  },
+  {
+   "id": "1313622",
+   "votes": 138,
+   "g1": 5,
+   "relv": 1.117,
+   "score": 158.5188,
+   "pred_rank": 5
+  },
+  {
+   "id": "1312991",
+   "votes": 97,
+   "g1": 3,
+   "relv": 0.6702,
+   "score": 106.5017,
+   "pred_rank": 6
+  },
+  {
+   "id": "1314458",
+   "votes": 103,
+   "g1": 0,
+   "relv": 0.0,
+   "score": 105.2516,
+   "pred_rank": 7
+  },
+  {
+   "id": "1314471",
+   "votes": 92,
+   "g1": 4,
+   "relv": 0.8936,
+   "score": 103.3456,
+   "pred_rank": 8
+  },
+  {
+   "id": "1284660",
+   "votes": 92,
+   "g1": 3,
+   "relv": 0.6702,
+   "score": 101.0119,
+   "pred_rank": 9
+  },
+  {
+   "id": "1314743",
+   "votes": 86,
+   "g1": 6,
+   "relv": 1.3404,
+   "score": 100.9685,
+   "pred_rank": 10
+  },
+  {
+   "id": "1312154",
+   "votes": 93,
+   "g1": 0,
+   "relv": 0.0,
+   "score": 95.033,
+   "pred_rank": 11
+  },
+  {
+   "id": "1311191",
+   "votes": 84,
+   "g1": 4,
+   "relv": 0.8936,
+   "score": 94.359,
+   "pred_rank": 12
+  },
+  {
+   "id": "1313374",
+   "votes": 86,
+   "g1": 2,
+   "relv": 0.4468,
+   "score": 92.2428,
+   "pred_rank": 13
+  },
+  {
+   "id": "1314567",
+   "votes": 88,
+   "g1": 1,
+   "relv": 0.2234,
+   "score": 92.1558,
+   "pred_rank": 14
+  },
+  {
+   "id": "1314943",
+   "votes": 77,
+   "g1": 1,
+   "relv": 0.2234,
+   "score": 80.6363,
+   "pred_rank": 15
+  },
+  {
+   "id": "1311043",
+   "votes": 75,
+   "g1": 1,
+   "relv": 0.2234,
+   "score": 78.5419,
+   "pred_rank": 16
+  },
+  {
+   "id": "1307926",
+   "votes": 69,
+   "g1": 3,
+   "relv": 0.6702,
+   "score": 75.759,
+   "pred_rank": 17
+  },
+  {
+   "id": "1314942",
+   "votes": 68,
+   "g1": 1,
+   "relv": 0.2234,
+   "score": 71.2113,
+   "pred_rank": 18
+  },
+  {
+   "id": "1314493",
+   "votes": 69,
+   "g1": 0,
+   "relv": 0.0,
+   "score": 70.5083,
+   "pred_rank": 19
+  },
+  {
+   "id": "1314746",
+   "votes": 67,
+   "g1": 0,
+   "relv": 0.0,
+   "score": 68.4646,
+   "pred_rank": 20
+  },
+  {
+   "id": "1314456",
+   "votes": 66,
+   "g1": 0,
+   "relv": 0.0,
+   "score": 67.4428,
+   "pred_rank": 21
+  }
+ ]
+}

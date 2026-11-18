@@ -1,0 +1,394 @@
+{
+ "K": 20,
+ "rows": 228949,
+ "person_days": 8381,
+ "votes": 20281,
+ "share_votes_with_segment": 0.364,
+ "lr_coefs_note": "LODO logistic on lp,segf,has_seg,segf_lp",
+ "table": {
+  "voters | with_segment | all votes": {
+   "it9b": {
+    "hit1": 0.079,
+    "hit3": 0.214,
+    "auc": 0.649,
+    "votes": 7377
+   },
+   "seg": {
+    "hit1": 0.054,
+    "hit3": 0.156,
+    "auc": 0.595,
+    "votes": 7377
+   },
+   "it9b+seg": {
+    "hit1": 0.082,
+    "hit3": 0.215,
+    "auc": 0.65,
+    "votes": 7377
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.001,
+     -0.001,
+     0.004
+    ],
+    "hit1": [
+     0.003,
+     -0.001,
+     0.008
+    ]
+   }
+  },
+  "voters | with_segment | cold votes": {
+   "it9b": {
+    "hit1": 0.035,
+    "hit3": 0.098,
+    "auc": 0.483,
+    "votes": 877
+   },
+   "seg": {
+    "hit1": 0.079,
+    "hit3": 0.173,
+    "auc": 0.552,
+    "votes": 877
+   },
+   "it9b+seg": {
+    "hit1": 0.047,
+    "hit3": 0.125,
+    "auc": 0.519,
+    "votes": 877
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.036,
+     0.025,
+     0.047
+    ],
+    "hit1": [
+     0.011,
+     -0.001,
+     0.025
+    ]
+   }
+  },
+  "voters | with_segment | warm votes": {
+   "it9b": {
+    "hit1": 0.084,
+    "hit3": 0.229,
+    "auc": 0.671,
+    "votes": 6500
+   },
+   "seg": {
+    "hit1": 0.051,
+    "hit3": 0.154,
+    "auc": 0.601,
+    "votes": 6500
+   },
+   "it9b+seg": {
+    "hit1": 0.086,
+    "hit3": 0.227,
+    "auc": 0.668,
+    "votes": 6500
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.003,
+     -0.006,
+     -0.001
+    ],
+    "hit1": [
+     0.002,
+     -0.003,
+     0.007
+    ]
+   }
+  },
+  "voters | all_people | all votes": {
+   "it9b": {
+    "hit1": 0.066,
+    "hit3": 0.181,
+    "auc": 0.606,
+    "votes": 20281
+   },
+   "seg": {
+    "hit1": 0.043,
+    "hit3": 0.13,
+    "auc": 0.531,
+    "votes": 20281
+   },
+   "it9b+seg": {
+    "hit1": 0.067,
+    "hit3": 0.182,
+    "auc": 0.606,
+    "votes": 20281
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.0,
+     -0.001,
+     0.001
+    ],
+    "hit1": [
+     0.001,
+     -0.001,
+     0.003
+    ]
+   }
+  },
+  "voters | all_people | cold votes": {
+   "it9b": {
+    "hit1": 0.024,
+    "hit3": 0.089,
+    "auc": 0.473,
+    "votes": 4204
+   },
+   "seg": {
+    "hit1": 0.047,
+    "hit3": 0.126,
+    "auc": 0.501,
+    "votes": 4204
+   },
+   "it9b+seg": {
+    "hit1": 0.026,
+    "hit3": 0.094,
+    "auc": 0.481,
+    "votes": 4204
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.008,
+     0.005,
+     0.01
+    ],
+    "hit1": [
+     0.002,
+     0.0,
+     0.005
+    ]
+   }
+  },
+  "voters | all_people | warm votes": {
+   "it9b": {
+    "hit1": 0.077,
+    "hit3": 0.206,
+    "auc": 0.64,
+    "votes": 16077
+   },
+   "seg": {
+    "hit1": 0.042,
+    "hit3": 0.131,
+    "auc": 0.538,
+    "votes": 16077
+   },
+   "it9b+seg": {
+    "hit1": 0.077,
+    "hit3": 0.205,
+    "auc": 0.638,
+    "votes": 16077
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.001,
+     -0.003,
+     -0.0
+    ],
+    "hit1": [
+     0.001,
+     -0.001,
+     0.003
+    ]
+   }
+  },
+  "browsers | with_segment | all votes": {
+   "it9b": {
+    "hit1": 0.058,
+    "hit3": 0.168,
+    "auc": 0.608,
+    "votes": 2103
+   },
+   "seg": {
+    "hit1": 0.05,
+    "hit3": 0.14,
+    "auc": 0.584,
+    "votes": 2103
+   },
+   "it9b+seg": {
+    "hit1": 0.058,
+    "hit3": 0.165,
+    "auc": 0.614,
+    "votes": 2103
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.006,
+     0.002,
+     0.011
+    ],
+    "hit1": [
+     -0.0,
+     -0.006,
+     0.005
+    ]
+   }
+  },
+  "browsers | with_segment | cold votes": {
+   "it9b": {
+    "hit1": 0.024,
+    "hit3": 0.07,
+    "auc": 0.475,
+    "votes": 412
+   },
+   "seg": {
+    "hit1": 0.066,
+    "hit3": 0.121,
+    "auc": 0.557,
+    "votes": 412
+   },
+   "it9b+seg": {
+    "hit1": 0.032,
+    "hit3": 0.08,
+    "auc": 0.505,
+    "votes": 412
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.03,
+     0.014,
+     0.047
+    ],
+    "hit1": [
+     0.007,
+     -0.007,
+     0.021
+    ]
+   }
+  },
+  "browsers | with_segment | warm votes": {
+   "it9b": {
+    "hit1": 0.067,
+    "hit3": 0.192,
+    "auc": 0.64,
+    "votes": 1691
+   },
+   "seg": {
+    "hit1": 0.047,
+    "hit3": 0.145,
+    "auc": 0.59,
+    "votes": 1691
+   },
+   "it9b+seg": {
+    "hit1": 0.064,
+    "hit3": 0.186,
+    "auc": 0.64,
+    "votes": 1691
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.001,
+     -0.004,
+     0.005
+    ],
+    "hit1": [
+     -0.002,
+     -0.008,
+     0.004
+    ]
+   }
+  },
+  "browsers | all_people | all votes": {
+   "it9b": {
+    "hit1": 0.058,
+    "hit3": 0.165,
+    "auc": 0.584,
+    "votes": 9327
+   },
+   "seg": {
+    "hit1": 0.038,
+    "hit3": 0.12,
+    "auc": 0.516,
+    "votes": 9327
+   },
+   "it9b+seg": {
+    "hit1": 0.058,
+    "hit3": 0.165,
+    "auc": 0.585,
+    "votes": 9327
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.001,
+     0.0,
+     0.003
+    ],
+    "hit1": [
+     -0.0,
+     -0.001,
+     0.001
+    ]
+   }
+  },
+  "browsers | all_people | cold votes": {
+   "it9b": {
+    "hit1": 0.024,
+    "hit3": 0.086,
+    "auc": 0.475,
+    "votes": 2445
+   },
+   "seg": {
+    "hit1": 0.037,
+    "hit3": 0.112,
+    "auc": 0.497,
+    "votes": 2445
+   },
+   "it9b+seg": {
+    "hit1": 0.025,
+    "hit3": 0.088,
+    "auc": 0.48,
+    "votes": 2445
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.005,
+     0.002,
+     0.008
+    ],
+    "hit1": [
+     0.001,
+     -0.001,
+     0.004
+    ]
+   }
+  },
+  "browsers | all_people | warm votes": {
+   "it9b": {
+    "hit1": 0.07,
+    "hit3": 0.194,
+    "auc": 0.622,
+    "votes": 6882
+   },
+   "seg": {
+    "hit1": 0.039,
+    "hit3": 0.123,
+    "auc": 0.522,
+    "votes": 6882
+   },
+   "it9b+seg": {
+    "hit1": 0.069,
+    "hit3": 0.192,
+    "auc": 0.622,
+    "votes": 6882
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.0,
+     -0.001,
+     0.001
+    ],
+    "hit1": [
+     -0.001,
+     -0.002,
+     0.001
+    ]
+   }
+  }
+ }
+}

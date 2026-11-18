@@ -1,0 +1,246 @@
+{
+ "n": 1096,
+ "top10_rate": 0.171,
+ "auc_top10_within_cold": {
+  "dailyRank": [
+   0.0,
+   "00:05"
+  ],
+  "weeklyRank": [
+   0.032,
+   "00:05"
+  ],
+  "votes": [
+   0.967,
+   "00:05"
+  ],
+  "logv": [
+   0.967,
+   "00:05"
+  ],
+  "monthlyRank": [
+   0.099,
+   "00:05"
+  ],
+  "comments": [
+   0.82,
+   "00:05"
+  ],
+  "ph_hunter_followers": [
+   0.793,
+   "late"
+  ],
+  "ph_day_n_launches": [
+   0.221,
+   "00:05"
+  ],
+  "ph_maker_sum_followers": [
+   0.763,
+   "late"
+  ],
+  "ph_maker_max_followers": [
+   0.762,
+   "late"
+  ],
+  "sim_rank": [
+   0.246,
+   "00:05"
+  ],
+  "sim_share": [
+   0.741,
+   "00:05"
+  ],
+  "sc_share": [
+   0.741,
+   "late"
+  ],
+  "scd_share": [
+   0.741,
+   "00:05"
+  ],
+  "sc_aud_seg_n": [
+   0.712,
+   "late"
+  ],
+  "sc_aud_follow_hunter": [
+   0.711,
+   "late"
+  ],
+  "sc_aud_follow": [
+   0.71,
+   "late"
+  ],
+  "fol_hunter": [
+   0.709,
+   "late"
+  ],
+  "seg_n": [
+   0.709,
+   "late"
+  ],
+  "fol_any": [
+   0.708,
+   "late"
+  ],
+  "sc_ev_follow": [
+   0.705,
+   "late"
+  ],
+  "sc_reach_follow": [
+   0.703,
+   "late"
+  ],
+  "seg_company_type_own_startup": [
+   0.684,
+   "late"
+  ],
+  "sc_aud_seg_company_type_own_startup": [
+   0.679,
+   "late"
+  ],
+  "seg_tech_level_builds_software": [
+   0.672,
+   "late"
+  ],
+  "fol_active30": [
+   0.667,
+   "late"
+  ],
+  "sc_aud_seg_tech_level_builds_software": [
+   0.666,
+   "late"
+  ],
+  "sc_aud_follow_active30": [
+   0.665,
+   "late"
+  ],
+  "seg_buyer_type_developer_adopter": [
+   0.661,
+   "late"
+  ],
+  "seg_role_founder_exec": [
+   0.659,
+   "late"
+  ],
+  "sc_aud_seg_role_founder_exec": [
+   0.656,
+   "late"
+  ],
+  "sc_share_seg_role_founder_exec": [
+   0.656,
+   "late"
+  ],
+  "sc_aud_seg_buyer_type_developer_adopter": [
+   0.656,
+   "late"
+  ],
+  "sc_share_seg_buyer_type_developer_adopter": [
+   0.652,
+   "late"
+  ],
+  "seg_seniority_founder_c_level": [
+   0.647,
+   "late"
+  ],
+  "aud_active_pool": [
+   0.646,
+   "00:05"
+  ],
+  "aud2_active_pool": [
+   0.646,
+   "00:05"
+  ],
+  "seg_buyer_type_individual_prosumer": [
+   0.645,
+   "late"
+  ],
+  "sc_aud_seg_seniority_founder_c_level": [
+   0.645,
+   "late"
+  ],
+  "sc_share_seg_buyer_type_individual_prosumer": [
+   0.645,
+   "late"
+  ],
+  "sc_share_seg_company_type_own_startup": [
+   0.644,
+   "late"
+  ],
+  "psn_pmax": [
+   0.643,
+   "00:05"
+  ],
+  "sc_share_seg_seniority_founder_c_level": [
+   0.641,
+   "late"
+  ],
+  "sc_share_seg_tech_level_non_technical": [
+   0.64,
+   "late"
+  ],
+  "sc_share_seg_seniority_senior_lead": [
+   0.639,
+   "late"
+  ],
+  "ptr_n": [
+   0.361,
+   "00:05"
+  ],
+  "sc_share_seg_role_creator": [
+   0.638,
+   "late"
+  ],
+  "sc_aud_seg_buyer_type_individual_prosumer": [
+   0.638,
+   "late"
+  ],
+  "sc_share_seg_us": [
+   0.638,
+   "late"
+  ],
+  "sc_share_seg_buyer_type_team_lead_buyer": [
+   0.637,
+   "late"
+  ],
+  "sc_share_seg_role_marketing_growth": [
+   0.636,
+   "late"
+  ],
+  "sc_share_seg_tech_level_builds_software": [
+   0.636,
+   "late"
+  ],
+  "seg_role_founder_exec_share": [
+   0.629,
+   "late"
+  ],
+  "sc_share_seg_role_engineer": [
+   0.627,
+   "late"
+  ],
+  "sim_votes": [
+   0.627,
+   "00:05"
+  ],
+  "sc_votes": [
+   0.627,
+   "late"
+  ],
+  "scd_votes": [
+   0.627,
+   "00:05"
+  ],
+  "sc_share_seg_role_designer": [
+   0.62,
+   "late"
+  ],
+  "sc_share_seg_company_type_big_tech": [
+   0.62,
+   "late"
+  ],
+  "aud_max": [
+   0.381,
+   "00:05"
+  ]
+ }
+}

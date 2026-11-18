@@ -1,0 +1,585 @@
+{
+ "computed_at": "2026-11-17T21:28:09.470434+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-17T10:07:55.928410+00:00)",
+ "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
+ "rows": [
+  {
+   "point": "0005",
+   "model": "arm2",
+   "method": "backtest, month-forward Apr-Oct 2026, 5 seeds (as published)",
+   "top3": 58.0,
+   "top5": 65.2,
+   "top10": 76.5,
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/history_retrain_decomp_preds_arm2.parquet",
+   "ci95": {
+    "top3": [
+     58.0,
+     54.9,
+     61.1
+    ],
+    "top5": [
+     65.2,
+     62.6,
+     67.8
+    ],
+    "top10": [
+     76.5,
+     74.7,
+     78.3
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "clean_nosite",
+   "method": "backtest, month-forward Apr-Oct 2026, 5 seeds (as published)",
+   "top3": 54.3,
+   "top5": 64.7,
+   "top10": 75.7,
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/history_retrain_decomp_preds_arm2.parquet",
+   "ci95": {
+    "top3": [
+     54.3,
+     51.3,
+     57.4
+    ],
+    "top5": [
+     64.7,
+     62.1,
+     67.4
+    ],
+    "top10": [
+     75.7,
+     73.9,
+     77.6
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm3",
+   "method": "backtest, month-forward Apr-Oct 2026, 20 seeds, pre-registered harness",
+   "top3": 56.3,
+   "top5": 66.5,
+   "top10": 77.3,
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "ci95": {
+    "top3": [
+     56.3,
+     52.9,
+     60.0
+    ],
+    "top5": [
+     66.5,
+     63.8,
+     69.1
+    ],
+    "top10": [
+     77.3,
+     75.5,
+     79.1
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm2 (20 seeds, arm-3 harness)",
+   "method": "backtest, month-forward Apr-Oct 2026, 20 seeds, pre-registered harness",
+   "top3": 57.4,
+   "top5": 65.0,
+   "top10": 76.4,
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "ci95": {
+    "top3": [
+     57.4,
+     54.2,
+     60.7
+    ],
+    "top5": [
+     65.0,
+     62.4,
+     67.6
+    ],
+    "top10": [
+     76.4,
+     74.7,
+     78.2
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm3 - arm2 (paired)",
+   "method": "pre-registered: primary top 5, secondary top 10; 2026 month-forward, 20 seeds",
+   "top3": -1.1,
+   "top5": 1.5,
+   "top10": 0.9,
+   "ci95": {
+    "top3": [
+     -1.1,
+     -2.9,
+     0.7
+    ],
+    "top5": [
+     1.5,
+     0.2,
+     2.8
+    ],
+    "top10": [
+     0.9,
+     0.1,
+     1.8
+    ]
+   },
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "rule": "difference in points, paired day bootstrap 10,000",
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm3 - arm2 (paired)",
+   "method": "pre-registered: primary top 5, secondary top 10; 2025 month-forward, 20 seeds",
+   "top3": 2.0,
+   "top5": 1.8,
+   "top10": 1.0,
+   "ci95": {
+    "top3": [
+     2.0,
+     -0.5,
+     4.4
+    ],
+    "top5": [
+     1.8,
+     0.4,
+     3.1
+    ],
+    "top10": [
+     1.0,
+     0.1,
+     1.9
+    ]
+   },
+   "n_days": 204,
+   "first_day": "2025-03-01",
+   "last_day": "2025-12-05",
+   "rule": "difference in points, paired day bootstrap 10,000; truth = the 2025 lists' dailyRank (not in the truth file)",
+   "source": "results/arm3_vs_arm2_preds.parquet",
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "readable_v2",
+   "method": "explanation model backtest (readable v2 stumps, no th_n_pre), month-forward",
+   "top3": 51.6,
+   "top5": 63.7,
+   "top10": 75.3,
+   "n_days": 184,
+   "first_day": "2026-04-01",
+   "last_day": "2026-10-31",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/readable_preds_v2.parquet",
+   "ci95": {
+    "top3": [
+     51.6,
+     48.4,
+     55.1
+    ],
+    "top5": [
+     63.7,
+     61.0,
+     66.4
+    ],
+    "top10": [
+     75.3,
+     73.6,
+     77.1
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "old full model",
+   "method": "published 00:05 rows (live + late writes)",
+   "top3": 54.2,
+   "top5": 62.5,
+   "top10": 76.9,
+   "n_days": 16,
+   "first_day": "2026-10-25",
+   "last_day": "2026-11-12",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "ci95": {
+    "top3": [
+     54.2,
+     41.7,
+     66.7
+    ],
+    "top5": [
+     62.5,
+     52.5,
+     72.5
+    ],
+    "top10": [
+     76.9,
+     71.9,
+     81.9
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "old full model",
+   "method": "published 00:05 rows (live writes only)",
+   "top3": 50.0,
+   "top5": 58.0,
+   "top10": 73.0,
+   "n_days": 10,
+   "first_day": "2026-10-29",
+   "last_day": "2026-11-12",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "ci95": {
+    "top3": [
+     50.0,
+     36.7,
+     63.3
+    ],
+    "top5": [
+     58.0,
+     46.0,
+     68.0
+    ],
+    "top10": [
+     73.0,
+     67.0,
+     79.0
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "clean_nosite",
+   "method": "published 00:05 rows (live + late writes)",
+   "top3": 66.7,
+   "top5": 80.0,
+   "top10": 70.0,
+   "n_days": 2,
+   "first_day": "2026-11-13",
+   "last_day": "2026-11-14",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "clean_nosite",
+   "method": "published 00:05 rows (live writes only)",
+   "top3": 66.7,
+   "top5": 80.0,
+   "top10": 70.0,
+   "n_days": 2,
+   "first_day": "2026-11-13",
+   "last_day": "2026-11-14",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm2",
+   "method": "published 00:05 rows (live + late writes)",
+   "top3": 66.7,
+   "top5": 40.0,
+   "top10": 80.0,
+   "n_days": 1,
+   "first_day": "2026-11-15",
+   "last_day": "2026-11-15",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "arm2",
+   "method": "published 00:05 rows (live writes only)",
+   "top3": 66.7,
+   "top5": 40.0,
+   "top10": 80.0,
+   "n_days": 1,
+   "first_day": "2026-11-15",
+   "last_day": "2026-11-15",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/web/scoreboard_orders.json",
+   "producer": "PH"
+  },
+  {
+   "point": "prereveal",
+   "model": "hybrid_vm (live prior)",
+   "method": "leave-one-day-out replay, 03:00 recorder read, unranked launches kept in the order",
+   "top3": 72.2,
+   "top5": 75.0,
+   "top10": 77.5,
+   "n_days": 12,
+   "first_day": "2026-11-02",
+   "last_day": "2026-11-13",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/hybrid_lodo_ku_orders.json",
+   "ci95": {
+    "top3": [
+     72.2,
+     61.1,
+     83.3
+    ],
+    "top5": [
+     75.0,
+     66.7,
+     83.3
+    ],
+    "top10": [
+     77.5,
+     67.5,
+     86.7
+    ]
+   },
+   "edge_vs_hidden": {
+    "top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10": [
+     5.8,
+     0.8,
+     10.8
+    ],
+    "n_days": 12
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "prereveal",
+   "model": "hybrid_vm (fixed prior)",
+   "method": "leave-one-day-out replay, 03:00 recorder read, unranked launches kept in the order",
+   "top3": 72.2,
+   "top5": 75.0,
+   "top10": 78.3,
+   "n_days": 12,
+   "first_day": "2026-11-02",
+   "last_day": "2026-11-13",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/hybrid_lodo_ku_fixedprior_orders.json",
+   "ci95": {
+    "top3": [
+     72.2,
+     61.1,
+     83.3
+    ],
+    "top5": [
+     75.0,
+     66.7,
+     83.3
+    ],
+    "top10": [
+     78.3,
+     67.5,
+     87.5
+    ]
+   },
+   "edge_vs_hidden": {
+    "top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10": [
+     6.7,
+     1.7,
+     11.7
+    ],
+    "n_days": 12
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "prereveal",
+   "model": "hidden_rank_only",
+   "method": "leave-one-day-out replay, 03:00 recorder read, unranked launches kept in the order",
+   "top3": 72.2,
+   "top5": 75.0,
+   "top10": 71.7,
+   "n_days": 12,
+   "first_day": "2026-11-02",
+   "last_day": "2026-11-13",
+   "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
+   "source": "results/hybrid_lodo_ku_orders.json",
+   "ci95": {
+    "top3": [
+     72.2,
+     61.1,
+     83.3
+    ],
+    "top5": [
+     75.0,
+     66.7,
+     83.3
+    ],
+    "top10": [
+     71.7,
+     61.7,
+     80.0
+    ]
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "weekly",
+   "model": "board (b) + predicted entrants",
+   "method": "held data, 29 weeks, every board day",
+   "top3": 52.4,
+   "top5": 59.6,
+   "top10": 58.6,
+   "n_days": 203,
+   "first_day": "2026-04-06",
+   "last_day": "2026-10-25",
+   "rule": "share of the board's top k in the official weekly top k",
+   "source": "results/weekly_board_pred_days.csv",
+   "gain_vs_current_board": {
+    "top3": 2.6,
+    "top5": 5.1,
+    "top10": 7.1,
+    "n_weeks": 28,
+    "n_board_days": 196,
+    "text": "+2.6 / +5.1 / +7.1 (28 weeks, leak-free calibration)",
+    "intervals": "+2.6 [+1.7, +3.4] / +5.1 [+4.2, +6.0] / +7.1 [+6.2, +8.0] (week bootstrap 95%)",
+    "without_mondays": "without Mondays: +1.2 / +3.1 / +5.5",
+    "note": "most of the gain is Mon-Tue",
+    "source": "results/weekly_board_audit.json (V2_strict_calibration)"
+   },
+   "producer": "PH"
+  },
+  {
+   "point": "monthly",
+   "model": "board",
+   "method": "not yet scored (first score Dec 1)",
+   "top3": null,
+   "top5": null,
+   "top10": null,
+   "n_days": 0,
+   "first_day": null,
+   "last_day": null,
+   "rule": "official monthly_rank",
+   "source": null,
+   "producer": "PH"
+  },
+  {
+   "point": "0005",
+   "model": "backer prediction: CF-only",
+   "method": "forward-style strict replay/nightly freeze (reads before 00:00 PT; SVD on upvotes dated before the day; no follows)",
+   "metric": "recall at N (N = observed held backers per launch), pooled",
+   "value": 19.1,
+   "interval": [
+    5.5,
+    25.7
+   ],
+   "arms": {
+    "CF-only": [
+     19.1,
+     5.5,
+     25.7
+    ],
+    "A7": [
+     16.7,
+     5.1,
+     22.5
+    ],
+    "CF+back": [
+     18.5,
+     4.7,
+     25.0
+    ],
+    "CF+intensity": [
+     18.1,
+     5.2,
+     24.3
+    ],
+    "raw most-active": [
+     17.3,
+     8.9,
+     21.3
+    ]
+   },
+   "paired_vs_raw": {
+    "CF-only": [
+     1.8,
+     -4.5,
+     4.6
+    ],
+    "A7": [
+     -0.6,
+     -5.0,
+     1.5
+    ],
+    "CF+back": [
+     1.2,
+     -5.1,
+     3.9
+    ],
+    "CF+intensity": [
+     0.8,
+     -4.6,
+     3.4
+    ]
+   },
+   "n_launches": 196,
+   "n_backers": 2665,
+   "first_day": "2026-11-08",
+   "last_day": "2026-11-15",
+   "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
+   "label": "CF 19.1% vs most-active 17.3% (+1.8; day-resampled interval -4.5 to 4.6 (only 8 days, so this interval is unstable; an independent re-score on an earlier store snapshot gave -0.8 to +4.8); 196 launches, 83% of backers on Nov 8-9; within-day launch intervals clear of 0 on Nov 9 only; tied on Nov 10-12; the gain exists only among held people re-read after the day (without that filter the arms tie))",
+   "source": "results/web/backer_prediction_arms.json",
+   "top3": null,
+   "top5": null,
+   "top10": null,
+   "n_days": null,
+   "producer": "E5",
+   "merged_from": "results/web/north_star_rows_e5.json",
+   "merged_computed_at": "2026-11-17T10:07:55.928410+00:00"
+  }
+ ]
+}

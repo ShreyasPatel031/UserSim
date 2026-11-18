@@ -1,0 +1,228 @@
+{
+ "week_monday": "2026-11-09",
+ "day": "2026-11-13",
+ "point": "running",
+ "written_at": "2026-11-14T14:31:34.001884+00:00",
+ "launches": 159,
+ "days_covered": [
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12",
+  "2026-11-13"
+ ],
+ "source": "warehouse launches.weekly_rank after the 2026-11-14 ranks step (est = -weekly_rank)",
+ "dropped_not_featured": 0,
+ "forecast": [
+  {
+   "id": "1288148",
+   "day": "2026-11-10",
+   "pred_rank": 1,
+   "est": -1.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1307104",
+   "day": "2026-11-09",
+   "pred_rank": 2,
+   "est": -2.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1305854",
+   "day": "2026-11-12",
+   "pred_rank": 3,
+   "est": -3.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1302788",
+   "day": "2026-11-09",
+   "pred_rank": 4,
+   "est": -4.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1293281",
+   "day": "2026-11-13",
+   "pred_rank": 5,
+   "est": -5.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1308353",
+   "day": "2026-11-12",
+   "pred_rank": 6,
+   "est": -6.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1290845",
+   "day": "2026-11-10",
+   "pred_rank": 7,
+   "est": -7.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1293370",
+   "day": "2026-11-09",
+   "pred_rank": 8,
+   "est": -8.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1285122",
+   "day": "2026-11-11",
+   "pred_rank": 9,
+   "est": -9.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1311491",
+   "day": "2026-11-11",
+   "pred_rank": 10,
+   "est": -10.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1282575",
+   "day": "2026-11-13",
+   "pred_rank": 11,
+   "est": -11.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1298575",
+   "day": "2026-11-12",
+   "pred_rank": 12,
+   "est": -12.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1305545",
+   "day": "2026-11-10",
+   "pred_rank": 13,
+   "est": -13.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1312557",
+   "day": "2026-11-12",
+   "pred_rank": 14,
+   "est": -14.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1314781",
+   "day": "2026-11-13",
+   "pred_rank": 15,
+   "est": -15.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1310787",
+   "day": "2026-11-10",
+   "pred_rank": 16,
+   "est": -16.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1296277",
+   "day": "2026-11-11",
+   "pred_rank": 17,
+   "est": -17.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1296366",
+   "day": "2026-11-10",
+   "pred_rank": 18,
+   "est": -18.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1308411",
+   "day": "2026-11-10",
+   "pred_rank": 19,
+   "est": -19.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1306799",
+   "day": "2026-11-09",
+   "pred_rank": 20,
+   "est": -20.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1314761",
+   "day": "2026-11-13",
+   "pred_rank": 21,
+   "est": -21.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1310674",
+   "day": "2026-11-12",
+   "pred_rank": 22,
+   "est": -22.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1266350",
+   "day": "2026-11-09",
+   "pred_rank": 23,
+   "est": -23.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1311828",
+   "day": "2026-11-11",
+   "pred_rank": 24,
+   "est": -24.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1313622",
+   "day": "2026-11-13",
+   "pred_rank": 25,
+   "est": -25.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1296250",
+   "day": "2026-11-09",
+   "pred_rank": 26,
+   "est": -26.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1306167",
+   "day": "2026-11-11",
+   "pred_rank": 27,
+   "est": -27.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1311866",
+   "day": "2026-11-12",
+   "pred_rank": 28,
+   "est": -28.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1306678",
+   "day": "2026-11-09",
+   "pred_rank": 29,
+   "est": -29.0,
+   "src": "weekly_rank_running"
+  },
+  {
+   "id": "1309685",
+   "day": "2026-11-10",
+   "pred_rank": 30,
+   "est": -30.0,
+   "src": "weekly_rank_running"
+  }
+ ]
+}

@@ -1,0 +1,323 @@
+--- ../../pipeline/daily.py	2026-11-03 09:12:22.619043234 +0000
++++ daily.py	2026-11-13 17:48:48.841137297 +0000
+@@ -20,7 +20,36 @@
+ PH = os.path.join(EXP, "ph_predict"); RAW = os.path.join(PH, "data")
+ sys.path.insert(0, PH)
+ PERSONA_CAP = int(os.environ.get("PERSONA_CAP", "6000"))      # person-days rated per day (cost cap: ~$0.80)
+-PERSON_CAP = int(os.environ.get("PERSON_CAP", "8000"))        # pages per day for people (cost cap: ~$2.40)
++# No-caps rule (AGENTS.md, Nov 13; bundle 11): PERSON_CAP no longer truncates. PERSON_BUDGET (pages per run) is a budget guard
++# only: people beyond it are persisted to the bucket queue and read FIRST by the next run (never dropped).
++PERSON_BUDGET = int(os.environ.get("PERSON_BUDGET", os.environ.get("PERSON_CAP", "8000")))
++REQ = "gs://usersim-bakeoff-347838016394/usersim_sim/raw/requests/pipeline"   # durable queues (handles live in the bucket only)
++
++
++def _gcat_lines(path):
++    r = subprocess.run(["gsutil", "-q", "cat", path], capture_output=True, text=True)
++    return [l.strip() for l in r.stdout.splitlines() if l.strip()] if r.returncode == 0 else []
++
++
++def _gput_lines(path, lines, dry):
++    """Write a queue file to the bucket (temp object, then move: a reader never sees a half-written queue)."""
++    if dry:
++        return
++    tmp = path + ".tmp"
++    subprocess.run(["gsutil", "-q", "cp", "-", tmp], input="\n".join(lines) + ("\n" if lines else ""), text=True, check=True)
++    subprocess.run(["gsutil", "-q", "mv", tmp, path], check=True)
++
++
++def queue_read(name):
++    """Every pending entry of a durable queue (raw/requests/pipeline/<name>/pending.txt)."""
++    return _gcat_lines(f"{REQ}/{name}/pending.txt")
++
++
++def queue_write(name, entries, dry):
++    """Replace the pending list (deduplicated, order kept) and keep a dated copy for audit."""
++    seen = set(); entries = [e for e in entries if not (e in seen or seen.add(e))]
++    _gput_lines(f"{REQ}/{name}/pending.txt", entries, dry)
++    return len(entries)
+ RUNS = []
+ VM_USD_PER_HOUR = 0.134      # e2-standard-4 on demand, us-central1 (the pipeline machine)
+ BOOT_SECONDS = 180           # boot, wait, upload and shutdown around the steps
+@@ -214,15 +243,37 @@
+ def s_ranks(d, con, dry):
+     import collect_ph as C
+     end = dt.date.fromisoformat(d) - dt.timedelta(days=1); start = end - dt.timedelta(days=30)
+-    for k in range((end - start).days + 1):               # re-read: weekly / monthly ranks are still settling
+-        f = C.OUT / f"{start + dt.timedelta(days=k)}.json"
+-        if f.exists():
+-            f.unlink()
+-    C.main(start, end)
++    # re-read (weekly / monthly ranks are still settling) into a fresh folder, verify every file, THEN replace the old one;
++    # the old file is never deleted first (bundle 11: a failed re-pull used to leave the day missing)
++    import pathlib, tempfile
++    final = C.OUT; tmpd = pathlib.Path(tempfile.mkdtemp(prefix="ranks_", dir=str(final.parent)))
++    C.OUT = tmpd
++    try:
++        C.main(start, end)
++    finally:
++        C.OUT = final
++    replaced, kept = 0, []
++    for k in range((end - start).days + 1):
++        day = (start + dt.timedelta(days=k)).isoformat(); new, old = tmpd / f"{day}.json", final / f"{day}.json"
++        try:
++            rows = json.loads(new.read_text())
++            ok = isinstance(rows, list) and (len(rows) > 0 or not old.exists() or not json.loads(old.read_text()))
++            ok = ok and (not old.exists() or len(rows) >= 0.9 * len(json.loads(old.read_text())))   # a re-read never shrinks a day by >10%
++        except Exception:  # noqa: BLE001
++            ok = False
++        if ok and not dry:
++            os.replace(new, old); replaced += 1
++        elif not ok:
++            kept.append(day)
++    import shutil
++    shutil.rmtree(tmpd, ignore_errors=True)
+     L = pd.concat([day_rows((start + dt.timedelta(days=k)).isoformat()) for k in range((end - start).days + 1)])
+     if not dry:
+         W.write("launches", L)
+-    return {"items": len(L)}
++    out = {"items": len(L), "replaced": replaced}
++    if kept:
++        out["status"] = f"partial: {len(kept)} re-read day files failed verification and the previous files were kept ({', '.join(kept[:5])})"
++    return out
+ 
+ 
+ @step("comments")
+@@ -231,7 +282,7 @@
+     plan = INC.plan(con, d); slugs = plan["comments"]
+     recs = F.get_many([PC.url(s) for s in slugs], threads=8)
+     sid = dict(con.execute("SELECT slug, id FROM launches").fetchall())
+-    rows, st, bad = [], [], 0
++    rows, st, bad, extra_pages = [], [], 0, 0
+     with gzip.open(f"{RAW}/comments/page_daily_{d}.jsonl.gz", "wt") as f:
+         for s, r in zip(slugs, recs):
+             f.write(json.dumps({"url": r["url"], "status": r["status"], "route": r["route"], "html": r["body"]}) + "\n")
+@@ -240,19 +291,34 @@
+             except Exception:  # noqa: BLE001
+                 bad += 1
+                 continue
+-            rows += [dict(c, slug=s) for c in cr]; st.append({"launch_id": sid.get(s), "slug": s, "source": "comments", "last_fetched": d, "items": len(cr)})
++            # bundle 11: page 1 holds 50 threads; read every further page until the source says there is none
++            page = 1
++            while info.get("has_next") and page < 200:
++                page += 1; rp = F.get_many([PC.url(s, page=page)], threads=1)[0]
++                f.write(json.dumps({"url": rp["url"], "status": rp["status"], "route": rp["route"], "html": rp["body"], "page": page}) + "\n")
++                try:
++                    info, more = PC.parse(json.loads(rp["body"]))
++                except Exception:  # noqa: BLE001
++                    break
++                if not more:
++                    break
++                cr += more; extra_pages += 1
++            rows += [dict(c, slug=s) for c in cr]; st.append({"launch_id": sid.get(s), "slug": s, "source": "comments", "last_fetched": d, "items": len(cr),
++                                                              "complete": not info.get("has_next")})
+     team = {r[0]: set(json.loads(r[1])) | {r[2]} for r in con.execute("SELECT slug, makers, poster FROM launches WHERE day = ?", [INC.days_before(d, 1)]).fetchall()}
+     C = pd.DataFrame([{"person": c["username"], "launch_id": sid.get(c["slug"]), "slug": c["slug"], "date": (c["created"] or "")[:10],
+                        "text": None} for c in rows if c.get("username") and c["username"] not in team.get(c["slug"], set())])
+     newp = INC.new_people_from_comments(rows, plan["known"])
+     json.dump(newp, open(f"/tmp/new_people_{d}.json", "w"))
++    # bundle 11: new commenters also go to a durable pull queue (they used to be counted, then pulled only if a later step ran)
++    queue_write("new_commenters", queue_read("new_commenters") + list(newp), dry)
+     usd, nbytes = F.cost(recs)
+     if not dry and len(C):
+         W.write("comments", C)
+         W.write("events", C.assign(kind="comment", date_quality="exact")[["person", "launch_id", "date", "kind", "date_quality"]])
+         W.write("launch_state", pd.DataFrame(st))
+     log_spend(d, "comments", usd, dry)
+-    out = {"items": len(C), "bytes": nbytes, "usd": sum(usd.values())}
++    out = {"items": len(C), "bytes": nbytes, "usd": sum(usd.values()), "extra_thread_pages": extra_pages}
+     if slugs and bad / len(slugs) > 0.5:   # blocked or unparseable pages: never "ok"
+         out["status"] = f"failed: {bad} of {len(slugs)} comment pages blocked or unparseable"
+     return out
+@@ -294,11 +360,152 @@
+     return None, [], []
+ 
+ 
++STORE_V3 = os.environ.get("PEOPLE_STORE", "gs://usersim-bakeoff-347838016394/usersim_sim/raw/population/store_v3")
++SALT_GS = "gs://usersim-bakeoff-347838016394/usersim_sim/raw/population/_salt"
++
++
++def _hid(sl, u):
++    """store_v3's person key: "p_" + sha256(salt + "producthunt:" + lower(username))[:16] (pool_size.hid, people_full.hid)."""
++    import hashlib
++    return "p_" + hashlib.sha256((sl + "producthunt:" + str(u).lower()).encode()).hexdigest()[:16]
++
++
++def people_from_store(con, d, dry, local=None):
++    """Bundle 11 (orchestrator 15:26Z / 15:4xZ Nov 13): the people step reads the population store (raw/population/store_v3:
++    events, tabs; full depth, every pull merged losslessly) instead of the page-1 delivery folders (raw/ph_people_daily/,
++    last delivered Nov 2-3). Nothing in the store's upvotes or follows is dropped: every (person, target) pair goes either to
++    the existing tables (same columns as before) or to a new unmatched table keyed on the store's own salted ids:
++      events            upvotes of a person the warehouse knows by handle, on a launch in the launches table:
++                        (person, launch_id, date = launch day, kind "upvote", date_quality "launch_day"), the warehouse convention
++                        for every upvote (PH shows no upvote time)
++      events_unmatched  every other store upvote: (person_id, target_id, kind, date, date_quality, reason) with the store's own
++                        date (PT day of ts_lo if set, else of ts_hi) and quality (ts_quality: snapshot / bounded / ...), reason
++                        person_no_handle or launch_not_in_warehouse
++      follows           follows where both sides have a warehouse handle: (person, followee, observed_on = PT day the store
++                        first saw it, new_since_last = True)
++      follows_unmatched every other store follow: (person_id, followee_id, first_seen, reason), salted ids, reason
++                        person_no_handle or followee_no_handle
++      fetch_state       one row per person and source ("store_v3_upvotes", "store_v3_follows") when the store's tab pull is newer
++                        than the last row written for it
++      people            new commenters (the comments step's list), first_seen = d, as before
++    Handles: store ids are matched to the usernames the warehouse already holds by hashing those usernames with the salt
++    (never printed); no handle is ever read from the store or written to the unmatched tables. Dedup is incremental: a pair
++    already in its table is not written again. Check (per kind): distinct store pairs == pairs in the matched table +
++    pairs in the unmatched table after this run, else the step fails. Fails loudly when the store or salt cannot be read.
++    local: a directory holding events/tabs parquet (dry tests)."""
++    import pyarrow.parquet as pq, tempfile, shutil
++    tmp = None
++    try:
++        if local:
++            src = local
++        else:
++            tmp = src = tempfile.mkdtemp(prefix="ppl_store_")
++            for f in ("events.parquet", "tabs.parquet"):
++                if subprocess.run(["gsutil", "-q", "cp", f"{STORE_V3}/{f}", f"{src}/{f}"]).returncode:
++                    return None, {"items": 0, "status": f"failed: cannot read {STORE_V3}/{f}"}
++        sl_p = subprocess.run(["gsutil", "-q", "cat", SALT_GS], capture_output=True, text=True) if not os.environ.get("PEOPLE_SALT_FILE") \
++            else None
++        sl = (open(os.environ["PEOPLE_SALT_FILE"]).read() if sl_p is None else sl_p.stdout).strip()
++        if not sl:
++            return None, {"items": 0, "status": "failed: salt unreadable"}
++        E = pq.read_table(f"{src}/events.parquet", columns=["person_id", "kind", "target_id", "ts_lo", "ts_hi", "ts_quality", "first_seen_at"],
++                          filters=[("kind", "in", ["upvote", "follows"])]).to_pandas()
++        T = pq.read_table(f"{src}/tabs.parquet", columns=["person_id", "tab", "count", "complete", "fetched_at"],
++                          filters=[("tab", "in", ["upvotes", "following"])]).to_pandas()
++        if E.empty or T.empty:
++            return None, {"items": 0, "status": f"failed: store_v3 events/tabs empty ({len(E)} / {len(T)} rows)"}
++    finally:
++        if tmp:
++            shutil.rmtree(tmp, ignore_errors=True)   # everything needed is in memory by now
++    def rows(q):
++        try:
++            return con.execute(q).fetchall()
++        except Exception:   # table not created yet (first run)
++            return []
++    names = set()
++    for q in ("SELECT DISTINCT person FROM people", "SELECT DISTINCT person FROM events", "SELECT DISTINCT person FROM comments",
++              "SELECT DISTINCT person FROM follows", "SELECT DISTINCT followee FROM follows"):
++        names |= {r[0] for r in rows(q) if r[0]}
++    newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
++    names |= set(newp)
++    u_of = {_hid(sl, u): u for u in names}
++    pt = lambda s: s.dt.tz_convert("America/Los_Angeles").dt.strftime("%Y-%m-%d")
++    E["person"] = E.person_id.map(u_of)
++    stats = {"store_people": int(E.person_id.nunique()), "store_people_mapped": int(E.loc[E.person.notna(), "person_id"].nunique())}
++    check, out_t = {}, {}
++    # ---- upvotes
++    day = dict(rows("SELECT id, day FROM launches"))
++    U = E[E.kind == "upvote"].sort_values("first_seen_at").drop_duplicates(["person_id", "target_id"])
++    ok = U.person.notna() & U.target_id.isin(day.keys())
++    have = set(map(tuple, rows("SELECT person, launch_id FROM events WHERE kind = 'upvote'")))
++    M = U[ok]; Mn = M[[(p, t) not in have for p, t in zip(M.person, M.target_id)]]
++    out_t["events"] = pd.DataFrame({"person": Mn.person.values, "launch_id": Mn.target_id.values, "date": Mn.target_id.map(day).values,
++                                    "kind": "upvote", "date_quality": "launch_day"})
++    have_u = set(map(tuple, rows("SELECT person_id, target_id FROM events_unmatched WHERE kind = 'upvote'")))
++    X = U[~ok]; Xn = X[[(p, t) not in have_u for p, t in zip(X.person_id, X.target_id)]]
++    out_t["events_unmatched"] = pd.DataFrame({
++        "person_id": Xn.person_id.values, "target_id": Xn.target_id.values, "kind": "upvote",
++        "date": pt(Xn.ts_lo.fillna(Xn.ts_hi)).values, "date_quality": Xn.ts_quality.fillna("unknown").values,
++        "reason": pd.Series(Xn.person.isna().values).map({True: "person_no_handle", False: "launch_not_in_warehouse"}).values})
++    in_m = sum((p, t) in have for p, t in zip(M.person, M.target_id)) + len(Mn)
++    in_x = sum((p, t) in have_u for p, t in zip(X.person_id, X.target_id)) + len(Xn)
++    check["upvote"] = {"store_pairs": len(U), "in_events": int(in_m), "in_events_unmatched": int(in_x),
++                       "written_events": len(Mn), "written_unmatched": len(Xn),
++                       "unmatched_by_reason": out_t["events_unmatched"].reason.value_counts().to_dict() if len(Xn) else {}}
++    # ---- follows (followee is a salted id in the store)
++    Fo = E[E.kind == "follows"].sort_values("first_seen_at").drop_duplicates(["person_id", "target_id"]).copy()
++    Fo["followee"] = Fo.target_id.map(u_of)
++    ok = Fo.person.notna() & Fo.followee.notna()
++    havef = set(map(tuple, rows("SELECT person, followee FROM follows")))
++    M = Fo[ok]; Mn = M[[(p, f) not in havef for p, f in zip(M.person, M.followee)]]
++    out_t["follows"] = pd.DataFrame({"person": Mn.person.values, "followee": Mn.followee.values, "observed_on": pt(Mn.first_seen_at).values,
++                                     "new_since_last": True})
++    havefu = set(map(tuple, rows("SELECT person_id, followee_id FROM follows_unmatched")))
++    X = Fo[~ok]; Xn = X[[(p, f) not in havefu for p, f in zip(X.person_id, X.target_id)]]
++    out_t["follows_unmatched"] = pd.DataFrame({
++        "person_id": Xn.person_id.values, "followee_id": Xn.target_id.values, "first_seen": pt(Xn.first_seen_at).values,
++        "reason": pd.Series(Xn.person.isna().values).map({True: "person_no_handle", False: "followee_no_handle"}).values})
++    in_m = sum((p, f) in havef for p, f in zip(M.person, M.followee)) + len(Mn)
++    in_x = sum((p, f) in havefu for p, f in zip(X.person_id, X.target_id)) + len(Xn)
++    check["follows"] = {"store_pairs": len(Fo), "in_follows": int(in_m), "in_follows_unmatched": int(in_x),
++                        "written_follows": len(Mn), "written_unmatched": len(Xn),
++                        "unmatched_by_reason": out_t["follows_unmatched"].reason.value_counts().to_dict() if len(Xn) else {}}
++    # ---- fetch_state
++    T["person"] = T.person_id.map(u_of)
++    last = dict(((p, s), v) for p, s, v in rows(
++        "SELECT person, source, max(last_fetched) FROM fetch_state WHERE source IN ('store_v3_upvotes','store_v3_follows') GROUP BY 1, 2"))
++    T = T[T.person.notna()].copy(); T["source"] = T.tab.map({"upvotes": "store_v3_upvotes", "following": "store_v3_follows"})
++    T["last_fetched"] = pt(T.fetched_at)
++    T = T[[str(l) > str(last.get((p, s)) or "") for p, s, l in zip(T.person, T.source, T.last_fetched)]]
++    out_t["fetch_state"] = pd.DataFrame({"person": T.person.values, "source": T.source.values, "last_fetched": T.last_fetched.values,
++                                         "status": 200, "items": pd.to_numeric(T["count"], errors="coerce").values,
++                                         "complete": T.complete.astype(bool).values})
++    bad = [k for k, c in check.items() if c["store_pairs"] != list(c.values())[1] + list(c.values())[2]]
++    res = {"items": sum(len(v) for v in out_t.values()), "source": "store_v3", **{k: len(v) for k, v in out_t.items()},
++           "new_people": len(newp), **stats, "check": check}
++    if bad:   # never write a partial picture
++        res["status"] = f"failed: store pairs != matched + unmatched for {bad}"
++        return out_t, res
++    if not dry:
++        for t in ("events", "events_unmatched", "follows", "follows_unmatched", "fetch_state"):
++            if len(out_t[t]):
++                W.write(t, out_t[t])
++        if newp:
++            W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
++    return out_t, res
++
++
+ @step("people")
+ def s_people(d, con, dry):
+-    """New commenters' and stale people's upvote and following pages. Default (PEOPLE_SRC=delivery): read Data Feeder's
+-    daily refresh; fails loudly when no folder is there or most of its fetches failed. PEOPLE_SRC=fetch: fetch here."""
+-    if os.environ.get("PEOPLE_SRC", "delivery") == "delivery":
++    """New commenters' and stale people's upvotes and follows. Default (PEOPLE_SRC=store_v3, bundle 11): read the population
++    store (people_from_store; fails loudly when the store is unreadable). PEOPLE_SRC=delivery: Data Feeder's page-1 folders
++    (fails loudly when none is there). PEOPLE_SRC=fetch: fetch here."""
++    # bundle 11 (orchestrator 15:26Z Nov 13): default source is the population store (full depth). PEOPLE_SRC=delivery
++    # reads the old page-1 folders; PEOPLE_SRC=fetch fetches here
++    if os.environ.get("PEOPLE_SRC", "store_v3") == "store_v3":
++        _, out = people_from_store(con, d, dry)
++        return out
++    if os.environ.get("PEOPLE_SRC") == "delivery":
+         day, U, Fo = people_delivery(d)
+         if day is None:
+             return {"items": 0, "status": f"failed: no Data Feeder people delivery for {d} or the day before ({PEOPLE_BUCKET})"}
+@@ -312,6 +519,9 @@
+             if newp:
+                 W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
+         json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))
++        # bundle 11: people whose page 1 did not reach their newest known item go to the durable scroll-deeper queue (the
++        # population fleet's full pulls read it); before, the list sat in /tmp and nothing read it
++        queue_write("scroll_deeper", queue_read("scroll_deeper") + list(deeper), dry)
+         recs = U + Fo; bad = sum(r["status"] != 200 for r in recs)
+         out = {"items": len(ev) + len(fo), "delivery_day": day, "people": len(recs)}
+         if not recs or bad / len(recs) > 0.5:
+@@ -320,8 +530,13 @@
+     import importlib.util
+     plan = INC.plan(con, d)
+     newp = json.load(open(f"/tmp/new_people_{d}.json")) if os.path.exists(f"/tmp/new_people_{d}.json") else []
+-    upv = (newp + plan["refresh_upvotes"])[:PERSON_CAP]
+-    fol = (newp + plan["follows"])[: max(0, PERSON_CAP - len(upv))]
++    # bundle 11: no truncation. The queues left by earlier runs are read FIRST; anything past the per-run budget is written
++    # back to the queue for the next run (never dropped)
++    prev_deeper = queue_read("scroll_deeper"); carry_u = queue_read("people_upvotes"); carry_f = queue_read("people_follows")
++    want_u = list(dict.fromkeys(carry_u + prev_deeper + newp + plan["refresh_upvotes"]))
++    want_f = list(dict.fromkeys(carry_f + newp + plan["follows"]))
++    upv = want_u[:PERSON_BUDGET]; fol = want_f[: max(0, PERSON_BUDGET - len(upv))]
++    queue_write("people_upvotes", want_u[len(upv):], dry); queue_write("people_follows", want_f[len(fol):], dry)
+     recs_u = F.get_many([f"https://www.producthunt.com/@{u}/upvotes" for u in upv], threads=12, start_route=1)
+     recs_f = F.get_many([f"https://www.producthunt.com/@{u}/following" for u in fol], threads=12, start_route=1)
+     parse = lambda script, recs: [json.loads(l) for l in subprocess.run(
+@@ -336,7 +551,9 @@
+             W.write(t, df)
+         if newp:
+             W.write("people", pd.DataFrame({"person": newp, "first_seen": d}))
+-    json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))   # scrolled later, stop-at-known (rare)
++    json.dump(deeper, open(f"/tmp/deeper_{d}.json", "w"))
++    # bundle 11: the scroll-deeper list is durable; this run consumed the previous queue (want_u above), so it is replaced
++    queue_write("scroll_deeper", list(deeper), dry)
+     usd, nbytes = F.cost(recs_u + recs_f); log_spend(d, "people", usd, dry)
+     out = {"items": len(ev) + len(fo), "bytes": nbytes, "usd": sum(usd.values())}
+     # a blocked fetch must not pass as "ok" (Oct 30 - Nov 1: every upvote page was 403 and the step still said ok)

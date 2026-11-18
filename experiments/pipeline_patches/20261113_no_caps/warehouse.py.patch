@@ -1,0 +1,10 @@
+--- ../../pipeline/warehouse.py	2026-11-01 18:21:00.644339330 +0000
++++ warehouse.py	2026-11-13 17:48:55.651480873 +0000
+@@ -15,6 +15,7 @@
+ LOCAL = os.environ.get("USERSIM_CACHE", os.path.join(os.path.expanduser("~"), ".usersim_sim"))
+ KEYS = {   # snapshot tables: newest row per key wins (column `updated_at`)
+     "people": ["person"], "launches": ["id"], "fetch_state": ["person", "source"], "launch_state": ["launch_id", "source"],
++    "events_unmatched": ["person_id", "target_id", "kind"], "follows_unmatched": ["person_id", "followee_id"],   # bundle 11: store_v3 pairs with no warehouse handle / launch (salted ids)
+ }
+ 
+ 

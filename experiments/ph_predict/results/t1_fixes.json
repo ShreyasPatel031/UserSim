@@ -1,0 +1,288 @@
+{
+ "days_clean": [
+  "2026-10-20",
+  "2026-10-21",
+  "2026-10-22",
+  "2026-10-23",
+  "2026-10-24",
+  "2026-10-25",
+  "2026-10-26",
+  "2026-10-27",
+  "2026-10-28",
+  "2026-11-05",
+  "2026-11-06",
+  "2026-11-07",
+  "2026-11-08"
+ ],
+ "days_selected": [
+  "2026-10-29",
+  "2026-10-30",
+  "2026-10-31",
+  "2026-11-01",
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04"
+ ],
+ "fix1_dorm_hits_with_days_since_gt30_in_rows": 0,
+ "fix1_absent_dormant_votes_share": {
+  "false": 0.067,
+  "true": 0.098
+ },
+ "fix2": {
+  "per_day": [
+   {
+    "day": "2026-10-20",
+    "selected": false,
+    "elig20_n": 23,
+    "top3_in_elig20": 2,
+    "top5_in_elig20": 3,
+    "elig20_median_rank": 21.0,
+    "sp_top10_browser_rate_votes": 0.328
+   },
+   {
+    "day": "2026-10-21",
+    "selected": false,
+    "elig20_n": 17,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 1,
+    "elig20_median_rank": 19.0,
+    "sp_top10_browser_rate_votes": 0.082
+   },
+   {
+    "day": "2026-10-22",
+    "selected": false,
+    "elig20_n": 12,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 2,
+    "elig20_median_rank": 17.5,
+    "sp_top10_browser_rate_votes": 0.372
+   },
+   {
+    "day": "2026-10-23",
+    "selected": false,
+    "elig20_n": 15,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 2,
+    "elig20_median_rank": 17.0,
+    "sp_top10_browser_rate_votes": 0.212
+   },
+   {
+    "day": "2026-10-24",
+    "selected": false,
+    "elig20_n": 10,
+    "top3_in_elig20": 2,
+    "top5_in_elig20": 3,
+    "elig20_median_rank": 8.5,
+    "sp_top10_browser_rate_votes": 0.374
+   },
+   {
+    "day": "2026-10-25",
+    "selected": false,
+    "elig20_n": 8,
+    "top3_in_elig20": 2,
+    "top5_in_elig20": 4,
+    "elig20_median_rank": 6.5,
+    "sp_top10_browser_rate_votes": 0.519
+   },
+   {
+    "day": "2026-10-26",
+    "selected": false,
+    "elig20_n": 20,
+    "top3_in_elig20": 2,
+    "top5_in_elig20": 3,
+    "elig20_median_rank": 14.5,
+    "sp_top10_browser_rate_votes": 0.119
+   },
+   {
+    "day": "2026-10-27",
+    "selected": false,
+    "elig20_n": 11,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 1,
+    "elig20_median_rank": 12.0,
+    "sp_top10_browser_rate_votes": -0.232
+   },
+   {
+    "day": "2026-10-28",
+    "selected": false,
+    "elig20_n": 20,
+    "top3_in_elig20": 2,
+    "top5_in_elig20": 2,
+    "elig20_median_rank": 18.5,
+    "sp_top10_browser_rate_votes": 0.213
+   },
+   {
+    "day": "2026-10-29",
+    "selected": true,
+    "elig20_n": 21,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 3,
+    "elig20_median_rank": 19.0,
+    "sp_top10_browser_rate_votes": 0.187
+   },
+   {
+    "day": "2026-10-30",
+    "selected": true,
+    "elig20_n": 14,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 2,
+    "elig20_median_rank": 13.5,
+    "sp_top10_browser_rate_votes": 0.229
+   },
+   {
+    "day": "2026-10-31",
+    "selected": true,
+    "elig20_n": 16,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 1,
+    "elig20_median_rank": 13.5,
+    "sp_top10_browser_rate_votes": -0.078
+   },
+   {
+    "day": "2026-11-01",
+    "selected": true,
+    "elig20_n": 14,
+    "top3_in_elig20": 2,
+    "top5_in_elig20": 4,
+    "elig20_median_rank": 10.0,
+    "sp_top10_browser_rate_votes": 0.431
+   },
+   {
+    "day": "2026-11-02",
+    "selected": true,
+    "elig20_n": 7,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 1,
+    "elig20_median_rank": 13.0,
+    "sp_top10_browser_rate_votes": 0.078
+   },
+   {
+    "day": "2026-11-03",
+    "selected": true,
+    "elig20_n": 28,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 3,
+    "elig20_median_rank": 22.5,
+    "sp_top10_browser_rate_votes": 0.389
+   },
+   {
+    "day": "2026-11-04",
+    "selected": true,
+    "elig20_n": 23,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 1,
+    "elig20_median_rank": 23.0,
+    "sp_top10_browser_rate_votes": -0.022
+   },
+   {
+    "day": "2026-11-05",
+    "selected": false,
+    "elig20_n": 20,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 2,
+    "elig20_median_rank": 21.5,
+    "sp_top10_browser_rate_votes": 0.291
+   },
+   {
+    "day": "2026-11-06",
+    "selected": false,
+    "elig20_n": 43,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 3,
+    "elig20_median_rank": 30.0,
+    "sp_top10_browser_rate_votes": 0.238
+   },
+   {
+    "day": "2026-11-07",
+    "selected": false,
+    "elig20_n": 19,
+    "top3_in_elig20": 1,
+    "top5_in_elig20": 3,
+    "elig20_median_rank": 12.0,
+    "sp_top10_browser_rate_votes": 0.122
+   },
+   {
+    "day": "2026-11-08",
+    "selected": false,
+    "elig20_n": 0,
+    "top3_in_elig20": 0,
+    "top5_in_elig20": 0,
+    "elig20_median_rank": NaN,
+    "sp_top10_browser_rate_votes": -0.09
+   }
+  ],
+  "top3_survival_rate": 0.417,
+  "top5_survival_rate": 0.44,
+  "sp_top10_mean_clean": 0.196,
+  "sp_top10_mean_selected": 0.174
+ },
+ "fix3": {
+  "top3": {
+   "launches": 60,
+   "non_exclusive": {
+    "one": 0.337,
+    "dorm": 0.207,
+    "tied": 0.955
+   },
+   "overlap_one_and_tied": 0.142,
+   "forward_order": {
+    "one": 0.337,
+    "dorm": 0.156,
+    "tied": 0.372
+   },
+   "reverse_order": {
+    "one": 0.004,
+    "dorm": 0.033,
+    "tied": 0.955
+   },
+   "regular_untied_forward": 0.013,
+   "regular_untied_reverse": 0.013,
+   "absent_dormant_share_of_votes_plus": 0.069
+  },
+  "rank4_5": {
+   "launches": 40,
+   "non_exclusive": {
+    "one": 0.17,
+    "dorm": 0.254,
+    "tied": 0.242
+   },
+   "overlap_one_and_tied": 0.0,
+   "forward_order": {
+    "one": 0.17,
+    "dorm": 0.226,
+    "tied": 0.174
+   },
+   "reverse_order": {
+    "one": 0.016,
+    "dorm": 0.052,
+    "tied": 0.242
+   },
+   "regular_untied_forward": 0.45,
+   "regular_untied_reverse": 0.45,
+   "absent_dormant_share_of_votes_plus": 0.061
+  },
+  "rest": {
+   "launches": 431,
+   "non_exclusive": {
+    "one": 0.062,
+    "dorm": 0.371,
+    "tied": 0.0
+   },
+   "overlap_one_and_tied": 0.0,
+   "forward_order": {
+    "one": 0.062,
+    "dorm": 0.333,
+    "tied": 0.0
+   },
+   "reverse_order": {
+    "one": 0.0,
+    "dorm": 0.292,
+    "tied": 0.0
+   },
+   "regular_untied_forward": 0.5,
+   "regular_untied_reverse": 0.5,
+   "absent_dormant_share_of_votes_plus": 0.061
+  }
+ },
+ "fix4": "browser-choice (b) ranks a browser's options by OTHER people's same-day votes: non-personal, uses outcomes, not a forecast"
+}

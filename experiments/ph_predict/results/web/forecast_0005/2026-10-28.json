@@ -1,0 +1,131 @@
+{
+ "day": "2026-10-28",
+ "written_at": "2026-11-11T22:41:58.726545+00:00",
+ "run_updated_at": "2026-10-28T13:45:05Z",
+ "forecast": [
+  {
+   "id": "1295513",
+   "predicted_rank": 1
+  },
+  {
+   "id": "1290434",
+   "predicted_rank": 2
+  },
+  {
+   "id": "1282332",
+   "predicted_rank": 3
+  },
+  {
+   "id": "1281746",
+   "predicted_rank": 4
+  },
+  {
+   "id": "1276545",
+   "predicted_rank": 5
+  },
+  {
+   "id": "1200683",
+   "predicted_rank": 6
+  },
+  {
+   "id": "1294823",
+   "predicted_rank": 7
+  },
+  {
+   "id": "1294903",
+   "predicted_rank": 8
+  },
+  {
+   "id": "1293747",
+   "predicted_rank": 9
+  },
+  {
+   "id": "1295250",
+   "predicted_rank": 10
+  },
+  {
+   "id": "1287824",
+   "predicted_rank": 11
+  },
+  {
+   "id": "1294826",
+   "predicted_rank": 12
+  },
+  {
+   "id": "1293579",
+   "predicted_rank": 13
+  },
+  {
+   "id": "1269166",
+   "predicted_rank": 14
+  },
+  {
+   "id": "1269164",
+   "predicted_rank": 15
+  },
+  {
+   "id": "1293426",
+   "predicted_rank": 16
+  },
+  {
+   "id": "1295295",
+   "predicted_rank": 17
+  },
+  {
+   "id": "1295138",
+   "predicted_rank": 18
+  },
+  {
+   "id": "1292176",
+   "predicted_rank": 19
+  },
+  {
+   "id": "1295097",
+   "predicted_rank": 20
+  },
+  {
+   "id": "1290642",
+   "predicted_rank": 21
+  },
+  {
+   "id": "1293543",
+   "predicted_rank": 22
+  },
+  {
+   "id": "1290653",
+   "predicted_rank": 23
+  },
+  {
+   "id": "1294779",
+   "predicted_rank": 24
+  },
+  {
+   "id": "1294808",
+   "predicted_rank": 25
+  },
+  {
+   "id": "1294326",
+   "predicted_rank": 26
+  },
+  {
+   "id": "1291493",
+   "predicted_rank": 27
+  },
+  {
+   "id": "1294984",
+   "predicted_rank": 28
+  },
+  {
+   "id": "1294817",
+   "predicted_rank": 29
+  },
+  {
+   "id": "1278209",
+   "predicted_rank": 30
+  },
+  {
+   "id": "1295475",
+   "predicted_rank": 31
+  }
+ ]
+}

@@ -1,0 +1,391 @@
+[
+ {
+  "day": "2026-04-09",
+  "missing": [
+   18
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 62
+ },
+ {
+  "day": "2026-04-11",
+  "missing": [
+   16
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 20
+ },
+ {
+  "day": "2026-04-20",
+  "missing": [
+   31
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 59
+ },
+ {
+  "day": "2026-04-22",
+  "missing": [
+   12,
+   40
+  ],
+  "missing_top10": [],
+  "dup_ranks": 1,
+  "launches": 43
+ },
+ {
+  "day": "2026-04-23",
+  "missing": [
+   20
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 39
+ },
+ {
+  "day": "2026-04-28",
+  "missing": [
+   37,
+   43,
+   72
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 73
+ },
+ {
+  "day": "2026-05-05",
+  "missing": [
+   32,
+   49,
+   70
+  ],
+  "missing_top10": [],
+  "dup_ranks": 3,
+  "launches": 76
+ },
+ {
+  "day": "2026-05-07",
+  "missing": [
+   52,
+   58,
+   59,
+   61
+  ],
+  "missing_top10": [],
+  "dup_ranks": 4,
+  "launches": 65
+ },
+ {
+  "day": "2026-05-11",
+  "missing": [
+   29,
+   57,
+   58
+  ],
+  "missing_top10": [],
+  "dup_ranks": 3,
+  "launches": 61
+ },
+ {
+  "day": "2026-05-12",
+  "missing": [
+   26,
+   29,
+   30
+  ],
+  "missing_top10": [],
+  "dup_ranks": 2,
+  "launches": 37
+ },
+ {
+  "day": "2026-05-14",
+  "missing": [
+   32,
+   53,
+   55,
+   68,
+   75,
+   80,
+   81
+  ],
+  "missing_top10": [],
+  "dup_ranks": 3,
+  "launches": 78
+ },
+ {
+  "day": "2026-05-15",
+  "missing": [
+   22
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 41
+ },
+ {
+  "day": "2026-05-20",
+  "missing": [
+   18
+  ],
+  "missing_top10": [],
+  "dup_ranks": 1,
+  "launches": 23
+ },
+ {
+  "day": "2026-06-16",
+  "missing": [
+   35,
+   68,
+   77
+  ],
+  "missing_top10": [],
+  "dup_ranks": 1,
+  "launches": 82
+ },
+ {
+  "day": "2026-06-17",
+  "missing": [
+   37
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 39
+ },
+ {
+  "day": "2026-06-22",
+  "missing": [
+   8
+  ],
+  "missing_top10": [
+   8
+  ],
+  "dup_ranks": 0,
+  "launches": 15
+ },
+ {
+  "day": "2026-06-23",
+  "missing": [
+   19
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 24
+ },
+ {
+  "day": "2026-06-25",
+  "missing": [
+   3
+  ],
+  "missing_top10": [
+   3
+  ],
+  "dup_ranks": 0,
+  "launches": 25
+ },
+ {
+  "day": "2026-06-26",
+  "missing": [
+   14
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 14
+ },
+ {
+  "day": "2026-07-01",
+  "missing": [
+   15
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 29
+ },
+ {
+  "day": "2026-07-17",
+  "missing": [
+   9
+  ],
+  "missing_top10": [
+   9
+  ],
+  "dup_ranks": 1,
+  "launches": 10
+ },
+ {
+  "day": "2026-07-23",
+  "missing": [
+   29
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 56
+ },
+ {
+  "day": "2026-07-27",
+  "missing": [
+   19
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 23
+ },
+ {
+  "day": "2026-08-04",
+  "missing": [
+   17
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 26
+ },
+ {
+  "day": "2026-08-05",
+  "missing": [
+   2
+  ],
+  "missing_top10": [
+   2
+  ],
+  "dup_ranks": 1,
+  "launches": 16
+ },
+ {
+  "day": "2026-08-15",
+  "missing": [
+   10
+  ],
+  "missing_top10": [
+   10
+  ],
+  "dup_ranks": 0,
+  "launches": 10
+ },
+ {
+  "day": "2026-08-18",
+  "missing": [
+   23
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 24
+ },
+ {
+  "day": "2026-08-22",
+  "missing": [
+   8
+  ],
+  "missing_top10": [
+   8
+  ],
+  "dup_ranks": 0,
+  "launches": 11
+ },
+ {
+  "day": "2026-09-02",
+  "missing": [
+   19
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 21
+ },
+ {
+  "day": "2026-09-15",
+  "missing": [
+   18
+  ],
+  "missing_top10": [],
+  "dup_ranks": 1,
+  "launches": 29
+ },
+ {
+  "day": "2026-09-18",
+  "missing": [
+   29,
+   53,
+   62,
+   80,
+   81,
+   88,
+   90
+  ],
+  "missing_top10": [],
+  "dup_ranks": 5,
+  "launches": 89
+ },
+ {
+  "day": "2026-09-25",
+  "missing": [
+   38
+  ],
+  "missing_top10": [],
+  "dup_ranks": 1,
+  "launches": 67
+ },
+ {
+  "day": "2026-09-27",
+  "missing": [
+   8,
+   9,
+   10,
+   11
+  ],
+  "missing_top10": [
+   8,
+   9,
+   10
+  ],
+  "dup_ranks": 0,
+  "launches": 8
+ },
+ {
+  "day": "2026-10-08",
+  "missing": [
+   18
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 45
+ },
+ {
+  "day": "2026-10-10",
+  "missing": [
+   36
+  ],
+  "missing_top10": [],
+  "dup_ranks": 1,
+  "launches": 37
+ },
+ {
+  "day": "2026-10-14",
+  "missing": [
+   10
+  ],
+  "missing_top10": [
+   10
+  ],
+  "dup_ranks": 0,
+  "launches": 47
+ },
+ {
+  "day": "2026-10-15",
+  "missing": [
+   17
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 34
+ },
+ {
+  "day": "2026-10-19",
+  "missing": [
+   16
+  ],
+  "missing_top10": [],
+  "dup_ranks": 0,
+  "launches": 26
+ }
+]

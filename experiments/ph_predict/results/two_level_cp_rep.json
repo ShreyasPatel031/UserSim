@@ -1,0 +1,283 @@
+{
+ "tag": "cp",
+ "weights": "rep",
+ "days": [
+  "2026-10-20",
+  "2026-10-21",
+  "2026-10-22",
+  "2026-10-23",
+  "2026-10-24",
+  "2026-10-25",
+  "2026-10-26",
+  "2026-10-27",
+  "2026-10-28",
+  "2026-10-29",
+  "2026-10-30",
+  "2026-10-31",
+  "2026-11-01",
+  "2026-11-02",
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-05",
+  "2026-11-06",
+  "2026-11-07",
+  "2026-11-08",
+  "2026-11-09"
+ ],
+ "person": {
+  "auc": [
+   0.712,
+   [
+    0.69,
+    0.733
+   ],
+   21
+  ],
+  "logloss": [
+   0.123,
+   [
+    0.11,
+    0.137
+   ],
+   21
+  ],
+  "hit3": [
+   0.636,
+   [
+    0.59,
+    0.677
+   ],
+   21
+  ],
+  "voter_recall": [
+   0.088,
+   [
+    0.079,
+    0.099
+   ],
+   21
+  ]
+ },
+ "population_all_days": {
+  "day top3": {
+   "two_level": 50.8,
+   "deployed_sim": 50.8,
+   "delta_vs_deployed": [
+    -0.0,
+    [
+     -7.937,
+     7.937
+    ],
+    21
+   ],
+   "launch_model": 57.1,
+   "delta_vs_launch_model": [
+    -9.524,
+    [
+     -23.81,
+     9.524
+    ],
+    7
+   ]
+  },
+  "day top5": {
+   "two_level": 61.0,
+   "deployed_sim": 64.8,
+   "delta_vs_deployed": [
+    -3.81,
+    [
+     -8.571,
+     0.952
+    ],
+    21
+   ],
+   "launch_model": 68.6,
+   "delta_vs_launch_model": [
+    -5.714,
+    [
+     -14.286,
+     5.714
+    ],
+    7
+   ]
+  },
+  "day top10": {
+   "two_level": 69.5,
+   "deployed_sim": 71.0,
+   "delta_vs_deployed": [
+    -1.429,
+    [
+     -4.286,
+     1.429
+    ],
+    21
+   ],
+   "launch_model": 81.4,
+   "delta_vs_launch_model": [
+    -10.0,
+    [
+     -14.286,
+     -5.714
+    ],
+    7
+   ]
+  },
+  "spearman_ev_votes": [
+   0.536,
+   [
+    0.479,
+    0.586
+   ],
+   21
+  ],
+  "spearman_deployed_votes": [
+   0.552,
+   [
+    0.484,
+    0.616
+   ],
+   21
+  ]
+ },
+ "population_clean_days": {
+  "day top3": {
+   "two_level": 52.4,
+   "deployed_sim": 54.8,
+   "delta_vs_deployed": [
+    -2.381,
+    [
+     -9.524,
+     4.762
+    ],
+    14
+   ],
+   "launch_model": 58.3,
+   "delta_vs_launch_model": [
+    -16.667,
+    [
+     -33.333,
+     16.667
+    ],
+    4
+   ]
+  },
+  "day top5": {
+   "two_level": 55.7,
+   "deployed_sim": 61.4,
+   "delta_vs_deployed": [
+    -5.714,
+    [
+     -11.429,
+     0.0
+    ],
+    14
+   ],
+   "launch_model": 65.0,
+   "delta_vs_launch_model": [
+    -5.0,
+    [
+     -15.0,
+     0.0
+    ],
+    4
+   ]
+  },
+  "day top10": {
+   "two_level": 67.1,
+   "deployed_sim": 70.7,
+   "delta_vs_deployed": [
+    -3.571,
+    [
+     -6.429,
+     -0.714
+    ],
+    14
+   ],
+   "launch_model": 80.0,
+   "delta_vs_launch_model": [
+    -12.5,
+    [
+     -17.5,
+     -10.0
+    ],
+    4
+   ]
+  },
+  "spearman_ev_votes": [
+   0.516,
+   [
+    0.443,
+    0.579
+   ],
+   14
+  ],
+  "spearman_deployed_votes": [
+   0.551,
+   [
+    0.452,
+    0.641
+   ],
+   14
+  ]
+ },
+ "clean_days": [
+  "2026-10-20",
+  "2026-10-21",
+  "2026-10-22",
+  "2026-10-23",
+  "2026-10-24",
+  "2026-10-25",
+  "2026-10-26",
+  "2026-10-27",
+  "2026-10-28",
+  "2026-11-05",
+  "2026-11-06",
+  "2026-11-07",
+  "2026-11-08",
+  "2026-11-09"
+ ],
+ "weights_diag": {
+  "n_eff_median": 1095.9,
+  "people_median": 2842,
+  "max_w_share_max": 0.0025,
+  "top1pct_share_median": 0.067,
+  "spearman_weighted_real_vs_votes_median": 0.858
+ },
+ "n_both_levels": {
+  "person_days": 116946,
+  "rows": 3359286,
+  "days": 21,
+  "note": "person metrics and launch EV use the same rows (complete people active in the 30 days before d x the line-up)"
+ },
+ "model_max_event_date": {
+  "model_2026-10.pkl": "2026-09-30",
+  "model_2026-11.pkl": "2026-10-31"
+ },
+ "follow_edges": "none (people get follows='[]'; no follow features enter)",
+ "weekly": {
+  "2026-W44 top3": {
+   "two_level": 0.0,
+   "deployed_sim": 0.0
+  },
+  "2026-W44 top5": {
+   "two_level": 0.0,
+   "deployed_sim": 0.0
+  },
+  "2026-W44 top10": {
+   "two_level": 20.0,
+   "deployed_sim": 10.0
+  },
+  "2026-W45 top3": {
+   "two_level": 0.0,
+   "deployed_sim": 0.0
+  },
+  "2026-W45 top5": {
+   "two_level": 40.0,
+   "deployed_sim": 40.0
+  },
+  "2026-W45 top10": {
+   "two_level": 40.0,
+   "deployed_sim": 40.0
+  }
+ }
+}

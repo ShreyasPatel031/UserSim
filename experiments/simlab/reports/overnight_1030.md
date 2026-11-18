@@ -1526,3 +1526,237 @@ Nov 3 is day 0 (late capture, 0 rows): 0 of 1,144 rows pre-launch (strict) and 0
 Rerun on the X-filled version (10:40 UTC): 0 of 1,215 rows (71 X rows added), strict and relaxed.
 Rule confirmed by the orchestrator (10:05 UTC): all three conditions kept; relaxed variant stays labelled; bar 00:20 PT. Synthetic checks
 (5 cases, incl. a 104-min capture the old rule passed) all behave. From Nov 4 the capture is due by ~00:20 PT.
+
+## Wayback profiles: v1 plumbing dry run (2026-11-03 ~16:30 UTC; partial file, not a result)
+v1 partial: 2,806 rows, 513 launches, nearly all May (coverage 59% of May, <3% other months). Four variants ran end to
+end (both roles, both within 30 d, hunter-only, maker-only; SEEDS=1). As expected on this coverage: nothing passes the
+Holm gate and the daily boards don't move (62.7 / 70.4 / 76.6 vs honest live set). No conclusion until v2.
+Fixes found: (1) the file's as_of_date is the capture's UTC date; we date by capture_ts in Pacific time (204 v1 rows are
+captured the evening before launch PT but on launch day UTC: kept, as the 00:00 PT rule says); (2) capture_ts is
+Wayback's 14-digit form, parsed explicitly; (3) one capture gives all metrics of a person, so ages repeated 3x: now one
+age input per role (followers, filled from another metric), 6 -> 2 inputs for Holm.
+
+## Bundle 9 prepared, not deployed: llm_full leaves the headline forecast (needs Shreyas)
+model.py one line (1dc0f8a): honest_drop() adds llm_full (its prompt carries follower counts). Deployed model.py is
+the pre-change version (md5 3f816494); b9 is 379ff10a. Verified on usersim-pipeline (read-only, /tmp copies): with the
+real feature columns + LLM scores, live inputs 46 -> 45, only llm_full removed (filled for 99.3% of launches); imports
+and step order ok in a /tmp copy. pipeline/vm/deploy_b9.sh refuses inside 00:05-01:00 PT, checks both md5s, backs up.
+Reference backtest: honest.py now has "honest - live set + llm_full" (= the deployed forecast) next to "honest - live
+set" (62.7 / 70.4 / 76.6, = after b9), and VARIANTS / HONEST_OUT to run just those two without overwriting
+results/honest.*. To run on exp-1 when it is next started.
+
+## Standing instruction from Shreyas (PH ops session, 2026-11-03 ~17:30 UTC)
+"Next time don't ask and defer to the prediction agent for all actions": PH ops acts on the orchestrator's decisions
+without asking Shreyas first. Fixed safety rules still apply (no credentials, no usernames in commits, nothing in
+00:05-01:00 PT, the session's own permission checks). Same message approved resizing exp-1 to e2-standard-8 (done
+17:24 UTC) and bundle 9; staging bundle 9 was blocked by the session's permission check (production deploy) and is
+handed to the orchestrator / Grok Bot to stage from the repo.
+
+## Day strength (weekly-board magnitude, day level) — 2026-11-03 17:30 UTC, exp-1 (e2-standard-8, 5 seeds)
+Reference: honest live set with the day-calibrated control (userbase_eval), May–Oct, 178 days. Leak check passed.
+- Gate (day level, out of sample): Spearman of predicted vs actual day strength 0.583 (0.47, 0.68) vs the control's
+  implied level 0.261 (0.11, 0.40); difference +0.32 (+0.21, +0.44). MAE 0.088 vs 0.109. Passes clearly.
+- Weekly boards vs control (50.7 / 54.4 / 55.2): strength −2.7 (−9.3, +4.0) / −0.8 (−4.0, +1.6) / −0.4 (−1.7, +0.9);
+  blend 0.0 (−5.3, +5.3) / +1.6 (0.0, +4.0) / −0.4. Raw (no day level) −5.3 (−10.7, −1.3) on top 3.
+  Monthly (5–6 lists, too few): strength +6.7 / 0.0 / 0.0. Daily unchanged by construction.
+- Reading: a much better day level does not move the weekly top-k; the weekly board turns on launch-level magnitude
+  within days (E5's hourly position-feedback curve). Per-day s_pred (day, fold, s_pred; 178 days) uploaded to
+  tmp/e5/day_strength_pred.parquet for the combined arm.
+
+## llm_full reference backtest (bundle 9) — honest live set with vs without llm_full, 5 seeds
+May–Oct daily top 3/5/10: 62.7 / 70.4 / 76.6 both ways; Δ 0.0 (−1.9, +1.7) / 0.0 (−1.0, +1.0) / 0.0 (−0.6, +0.6).
+Jul–Oct daily: with 63.5 / 69.7 / 77.0, without 64.4 / 69.6 / 77.1; Δ top 3 +0.9 (−1.4, +3.1).
+Weekly (no day calibration): Δ top 3 +2.7 (0.0, +6.7), top 5 −1.6 (−4.0, 0.0), top 10 −0.4 (−2.6, +1.7).
+Removing llm_full costs nothing measurable; the reference 62.7 / 70.4 / 76.6 stands for the post-b9 forecast.
+Procedure (orchestrator, 18:00 UTC, relaying Shreyas): when a permission or safety check blocks an action, don't work
+around it or wait in this session; file mailbox/to_grokbot/<UTC>_SECURITY_ph-agent_<topic>.md (what was blocked, the
+check's category, why it's needed, the exact unblock step for Shreyas), tell the orchestrator in one line, carry on.
+The bundle 9 block is already filed by the orchestrator (20261103T1800_SECURITY_ALERTS_to_grokbot.md).
+Bundle 9 deploy request filed with Grok Bot by the orchestrator (to_grokbot/20261103T1810_ph_bundle9_llm_full.md), to
+deploy before 00:05 PT Nov 4. At the Nov 4 01:07 PT check: confirm ph_predict/model.py md5 379ff10a on the VM, a
+from_grokbot reply, and that the forecast step used 45 live inputs (no llm_full).
+**Bundle 9 deployed by Grok Bot (17:59 UTC) and verified by PH ops (~18:05 UTC):** ph_predict/model.py 379ff10a on the
+VM (backup ~/w/backup_b9/before.tar holds 3f816494); daily.py 27f0578d and run_daily.sh a94dea22 unchanged; with the
+deployed model, real feature columns + LLM scores give 45 live inputs, no llm_full. First forecast without it: Nov 4.
+Headline reference from now: honest live set 62.7 / 70.4 / 76.6 (the with/without backtest shows no difference).
+
+## Wayback profiles, v1 final (api makers only) — 2026-11-03 ~18:55 UTC, exp-1 e2-standard-8, 5 seeds
+Reference: honest live set 62.7 / 70.4 / 76.6 daily (weekly control 50.7 / 54.4 / 55.2). Pre-launch = captured before
+00:00 PT of the launch day (6 launch-day rows dropped). Inputs per launch: max over makers and the hunter of followers,
+followings, points at the latest pre-launch capture, plus one age per role.
+Coverage (all launches / May–Oct by month): both roles 42.3% (May 70%, Jun–Oct 53–62%); within 30 d 26.5%;
+hunter 41.5%; maker 25.7% (34–38% each month).
+Gate (Holm): passes only for followings — hunter within-day ρ 0.072 (0.025, 0.119), maker 0.064 (0.008, 0.120);
+hunter capture age −0.065 (hunter-only run). Follower counts and points fail. Within 30 d: nothing passes.
+Boards vs reference (Δ, 95% CI):
+| variant | daily top 3 | top 5 | top 10 | weekly top 3 | top 5 | top 10 |
+|---|---|---|---|---|---|---|
+| both roles | −0.8 (−2.1, +0.6) | −0.8 (−1.7, 0.0) | 0.0 | 0.0 (−4.0, +4.0) | −0.8 | +0.4 |
+| both, ≤30 d | −0.8 (−2.1, +0.6) | −0.1 | +0.1 | +1.3 (−4.0, +8.0) | +0.8 | 0.0 |
+| hunter only | −1.3 (−2.8, 0.0) | −0.7 | +0.2 | +2.7 (0.0, +6.7) | +0.8 | +0.9 |
+| maker only | +0.4 (−0.9, +1.7) | −0.6 | +0.1 | −2.7 (−6.7, 0.0) | +0.8 | +0.9 (0.0, +2.2) |
+Monthly: 5–6 lists, too few. Verdict on v1: a small real signal in followings, but no board gain; dated pre-launch
+follower counts add nothing beyond the honest model. v2 (resolved makers) to be run with the same config and
+reported side by side with the maker_source split.
+
+## A3 (reciprocity) step 1: coverage of dated pre-launch upvote histories (2026-11-03 ~19:00 UTC, counts only)
+May–Oct 4,134 launches (makers 4,049 people / 4,488 pairs; hunters 2,584 / 4,134); 98% have a member in the pool.
+- Strict (fetch reaching d−30): 100 launches (2.4%, Oct only). No complete upvotes_scroll; all 886 scrolls stop at
+  back_to 2026-09-01.
+- Observed (any team upvote dated in the 30 d before, other launches): 1,885 (45.6%); hunters 1,746, makers 1,002;
+  39–53% per month; median 7 upvotes.
+- Not honest as is: upvotes are dated to the upvoted launch's day (date_quality launch_day), the A2 upvote leak; and
+  without complete history a zero means "not seen". Needs cast-time dates: the daily refresh's first-seen dates (since
+  Oct 28; usable for launches from ~Nov 27) or a scroll pilot only if the page shows cast times. The comment half
+  (exact times) can run now.
+
+## A3 (reciprocity), comment half — 2026-11-03 ~19:00 UTC, exp-1 e2-standard-8, 5 seeds
+Exact-time team comments on other launches before the launch's Pacific day; upvotes excluded (launch-day dated).
+Team comments in 30 d: 1,610 of 6,574 launches (24%); with commented-on makers 1,580. Reference: honest live set.
+- Gate (Holm): 5 of 6 pass, within-day ρ 0.054–0.065 (a3_makers_active30 0.065 (0.027, 0.104)); the active share
+  fails. Same size as A2 (0.056); the inputs overlap A2 (same comments).
+- A3 alone: daily top 3 +0.4 (−1.3, +2.1), linear +0.9 (−0.6, +2.4); top 5 −0.1; top 10 +0.1; weekly top 3 −2.7
+  (−9.3, +4.0); all noise.
+- Increment over A2 (A2's five inputs + A3's three "on whom" inputs): daily top 3 A2 +1.3 (−0.2, +3.0) ->
+  A2+A3 +1.5 (−0.2, +3.2); weekly top 3 −4.0 -> −5.3 (−12.0, 0.0). A3 adds nothing beyond A2.
+- Verdict: "on whom" the team comments carries no information beyond "how much" it comments. The upvote half needs
+  cast-time dates (daily refresh first-seen dates from Oct 28, or a scroll pilot if cast times exist).
+
+## Dated follows: Nov 2 page-1 read vs the Oct 26 baseline (orchestrator ask, 2026-11-03 ~19:25 UTC; counts only)
+- Nov 2 read: 3,900 people; 3,690 have a baseline read (observed_on 2026-10-26, the undated full read); 2,566 of those
+  had a complete baseline (raw fetch_state parts, follows, complete=True, fetched ≤ Oct 28).
+- New follows (on Nov 2 page 1, absent from the baseline; warehouse new_since_last): 472 people, 1,809 events.
+  Reliable subset (complete baseline): 171 people, 431 events. Dated to (Oct 26, Nov 2], about 7–8 days' resolution.
+- Pointing at makers of Oct 27–Nov 3 launches: 319 events / 80 launches (all); 93 / 42 (reliable).
+- Final daily ranks, Oct 27–Nov 2 (160 ranked launches):
+  all — with a new follow (79): median rank 13, top-5 share 17.7%, median votes 91; without (81): 10, 25.9%, 111;
+  Mann–Whitney p 0.11. Reliable — with (42): 16.5, 19.0%, 86; without (118): 11, 22.9%, 106; p 0.06.
+- Reading: no sign that new follows of a maker in the week mark a stronger launch (if anything weaker, not
+  significant). Caveats: page 1 is newest-first, so absence on Oct 26 counts only for people with a complete baseline
+  (the reliable rows); the window overlaps the launches, so many follows can come after the launch (not pre-launch).
+Process (orchestrator, 19:45 UTC): urgent asks for Grok Bot go to the orchestrator by send_message with subject
+"GROKBOT URGENT: <topic>" (it posts them to Grok Bot's webhook); non-urgent ones to mailbox/to_grokbot/. New peer: the
+data babysitter (session_01WkCrUQbiTbMDT5gLXh6qjb, branch claude/data-babysitter) verifies Data Feeder feeds and may
+ask about feed quality; answer it like the orchestrator. live_capture_check.py stays PH ops'.
+
+## Is the shock inside our pool? (orchestrator priority test, 2026-11-03 ~19:45 UTC; data held, no fetch)
+Jul–Oct, honest live set, 2,552 launches / 117 days. Shock = within-day (log real − honest). Pool votes = distinct
+store people with a (launch-day-dated) upvote on the launch, a lower bound; pool share = pool votes / real votes.
+Pool share overall: mean 26.1%, median 23.1%.
+1. Shock vs pool share: within-day Spearman +0.41 (0.37, 0.45); pooled +0.45 (0.41, 0.49). High-shock launches have a
+   HIGHER pool share.
+2. Shock vs pool turnout (log1p pool votes): within-day +0.49 (0.46, 0.53); pooled +0.53 (0.50, 0.56); within-day R²
+   of shock on pool turnout 0.29 (0.26, 0.33).
+3. Pool share by final rank: 1–3 48.4% (46.9, 49.8; n 351; median pool votes 152 of 325); 4–10 31.1% (30.3, 31.9;
+   n 777); 11+ 18.0% (17.6, 18.4; n 1,424). By month: Jul 24.9%, Aug 26.4%, Sep 25.0%, Oct 27.9% (n 531–762).
+Reading: in the recorded data the shock is inside the pool. Caveats: (a) exposure: pool members are heavy daily users,
+so they may vote for launches because those launches sit high on the board (rank feedback), making pool share an
+effect of rising, not a cause; only vote timing separates them (the 15-min capture and 4-hour first-seen pilot give
+that); (b) selection: pool people were found through comments on these launches; (c) pool votes are a lower bound.
+
+## Wayback profiles v2 (with 1,300 resolved makers) vs v1 — 2026-11-03 ~20:20 UTC, same config, 5 seeds
+Reference: honest live set (62.7 / 70.4 / 76.6 daily; weekly 50.7 / 54.4 / 55.2). Dates from our launch table (v2's
+launch_day is a day early on 572 rows, a fixed −8 h offset in daylight time, and 6 days late on 12 rows: reported).
+| variant | coverage v1 → v2 | gate passes (v2) | Δ daily top 3 v1 → v2 | Δ weekly top 3 v1 → v2 |
+|---|---|---|---|---|
+| both roles | 42.3% → 42.7% | followings (hunter 0.072, maker 0.065), hunter age −0.065 | −0.8 → −0.4 (−1.9, +1.1) | 0.0 → 0.0 (−4.0, +4.0) |
+| both, ≤30 d | 26.5% → 26.7% | none | −0.8 → −0.9 (−2.4, +0.4) | +1.3 → −1.3 |
+| hunter only | 41.5% → 41.5% | followings, age | −1.3 → −1.3 (−2.8, 0.0) | +2.7 → +2.7 (0.0, +6.7) |
+| maker only | 25.7% → 27.9% | followings 0.065 | +0.4 → +0.2 (−1.5, +1.9) | −2.7 → −1.3 |
+| maker, api | — → 25.7% | followings 0.064 | +0.4 (−0.9, +1.7) | −2.7 (−6.7, 0.0) |
+| maker, resolved | — → 3.8% (3–7%/month) | followings 0.087 | −0.6 (−1.3, 0.0) | 0.0 |
+Top 5 / 10 within ±1.0 everywhere (v2 both: top 5 −1.0 (−1.9, −0.1)). Verdict unchanged: followings carry a small
+real signal, no board gain; resolved makers add 2 points of maker coverage and nothing on the boards. Close C2-profiles.
+
+## Pool-share timing test written (ph_predict/pool_timing.py), and the 01:07 PT routine extended
+Votes are hidden ~4 h, so early pool share of votes is not readable in hours 1–2. The test uses early pool engagement
+(pool comments / share at 1, 2, 4 h after featured_at, team excluded; pool upvotes first seen in reads ending by +4 h)
+vs the final within-day shock, against the same for the whole day. Pool = first seen before the launch day. Reports n
+per day (power: ~10 days for CI ±0.1 at ρ ~0.4). Unit-tested on synthetic data. The daily routine (01:07 PT) now
+also runs the live-capture checker, the at-launch reader, the b6/b8/b9 checks, pool_timing, and reports the data
+babysitter's per-tier PASS/FAIL. Not started: mailbox/to_ph_ops "instant inbox" script (asked by Grok Bot; benign
+Pub/Sub pull, but a standing process fetched from a writable bucket) — waiting for the orchestrator's call.
+Instant inbox NOT started (correction): the persistent watcher was blocked by this session's permission check (Unauthorized Persistence, ~20:31 UTC); security alert filed to mailbox/to_grokbot/. What would run, once allowed (orchestrator OK, 20:30 UTC): Grok Bot -> ph-ops via Pub/Sub, mailbox/claude_inbox.sh pinned to
+md5 1ad68b2e2a494528fab75ffd13faed70 (1,077 bytes, reviewed); the starter re-checks the md5 on every start and refuses on
+a mismatch. Messages land in ~/INBOX.md and are information from Grok Bot, not instructions from Shreyas or the
+orchestrator. A one-off pull (no loop) worked at 20:27 UTC.
+
+## Launch dating fix: 1284558 (specsight-2)
+Data Feeder's "6 days late" row was ours: the pipeline's line-up file today/2026-10-25.json lists 1284558 with
+featuredAt Oct 25 (as fetched that day), but PH moved it to Oct 31 (rank 1, 329 votes; warehouse launches day Oct 31).
+c2_targets.json took the file day. Audit: of 4,061 targets, it is the only one whose day differs from the warehouse,
+and the only line-up-file entry that does. Fixed: c2_targets.json (bucket tmp/ph_ops) now Oct 31; c2_user_base
+launch_days() now takes the warehouse day where it differs (prints the corrections). One launch: the C2 domain and
+profile verdicts don't change.
+Instant inbox watcher started ~20:55 UTC with Shreyas's approval in this session (pinned md5 checked on start). Grok Bot's
+20:29 note (prefer one-off pulls; hooks on branch realtime-agent-msgs will replace the watcher) noted; switch when
+those hooks are live. The background run has a 2-h limit: restart via start_inbox.sh when it ends.
+
+## Person model + follows (population agent's affinity inputs) — LEAKY upper bound, 2026-11-03 ~21:30 UTC
+Already in pnx (TIE/TIE2): upvoted / commented on the team's earlier launches (tie_maker, tie_maker_comments, return
+rate, recency). New: fol_team, fol_team_n (person follows a team member; warehouse follows, Oct 26 baseline + Nov 2
+page 1) and pre_comment_this (commented on this launch before its day). popscore TIE2=1 FOLLOW=all, Sep–Oct
+(models trained on Aug / Sep), vs pnx on the same 1,458 launches / 54 days. Leaky: the follow reads postdate these
+launches, so follows can come after the vote. An honest backtest is impossible (scored days end Oct 24; the first
+follow read is Oct 26).
+- Pool check (within-day Spearman with real pool turnout): ev 0.501 -> 0.514, Δ +0.013 (+0.003, +0.023); fans 0.518 ->
+  0.546, Δ +0.028 (+0.012, +0.047); pool top-3 hit unchanged (45.1 / 47.5).
+- Boards vs honest live set + day-calibrated control (person-model sums as inputs, Sep–Oct covered): pnx Δ daily top 3
+  −0.4 (−0.9, 0.0); pfa +0.6 (−0.4, +1.5); top 5 +0.3 (0.0, +0.8); top 10 0.0; weekly top 3 0.0.
+- Reading: even the leaky upper bound is small (+1.3 to +2.8 points of pool Spearman, nothing on the boards). The
+  honest live shadow (follows seen before d−1) is worth running for the record but is not urgent.
+
+## A2 / A3 under the date-only comment defect (orchestrator, Nov 3 23:55 UTC)
+The store's ~51k "exact-time" comments carry a date only (likely UTC; ts_quality=day), so `date < launch day` can let in
+a comment written just after 00:00 PT on launch day. Safe bound CUT_DAYS=1: only comments dated <= launch day − 2.
+Reference: honest live set (62.7 / 70.4 / 76.6), day-calibrated control, 5 seeds.
+- Inputs changed: 279 of 6,574 launches (act7/act14/days_since 279, launches14 272, active_members14 61); launches with
+  team comments in 14 d 1,322 -> 1,273.
+- A2 gate survives: 4 of 5 pass, ρ 0.043–0.059 (act7 0.059); a2_days_since now fails (Holm p 0.054).
+- A2 boards: daily top 3 +1.3 (−0.2, +3.0) -> +0.6 (−0.9, +2.1); top 5 −0.1; top 10 +0.2; weekly top 3 −4.0 both.
+  The +1.3 does not survive: withdrawn as a board signal.
+- A3 (safe bound): gate 5 of 6 pass (ρ 0.052–0.065); daily top 3 +0.8 (−0.8, +2.3), linear +0.6; weekly −2.7. Noise.
+- Withdrawn: any finer-than-a-day timing claim on pre-November store comments. Exact reruns wait for the API backfill
+  (raw/population_data/ph_comments/<day>/events_v2.jsonl, extended back to May).
+- Live shadow_honest_a2 (bundle 6) uses warehouse comments with `date < day`: apply the same day − 2 bound (or exact
+  times) in the next shadow update.
+
+## Honest recency in the person model (orchestrator priority, Nov 4) — no gain
+Turnout reweighting of the live person model (pnx, TIE2): per person, activity in the last 1 / 7 days (upvotes,
+comments), active days in 7, days since last, from raw/population/store_v2; logistic turnout model fitted leave-one-day-
+out; per launch ev = Σ w_rec·p vs pnx's Σ w·p. Retraining the person model itself is impossible (honest dated activity
+starts Oct 28; its training months predate it).
+Data caveats: store_v2's first-seen starts Nov 1, so "known before d" leaves only Nov 2–3; Nov 3 has no labels yet and
+Nov 2 thin ones (79 people acting). Reported as-if-live (the event happened before d, as a daily read would show).
+- Per-launch pool-turnout Spearman, recency − pnx (people bootstrap): Oct 29 +0.007 (−0.015, +0.013); Oct 30 −0.002
+  (−0.027, +0.009); Oct 31 +0.008 (−0.007, +0.009); Nov 1 0.000 (0.000, +0.016); mean +0.003. Nov 2 (thin) 0.000.
+- Person-level turnout AUC: +0.006 to +0.009 (e.g. 0.839 -> 0.848); Nov 2 +0.028 on 79 people.
+- Person top-3 hit unchanged by construction (0.48–0.74): recency reweights people, not their choice of launch.
+- Verdict: recency does not improve per-launch pool turnout over pnx's 30-day activity weight; not the lever. Revisit
+  with strict known-before-d data after ~2 weeks of daily first-seen reads.
+
+## Nov 4 daily check (01:07 PT, 09:10-09:40 UTC)
+- Pipeline: usersim-pipeline RUNNING since 00:05 PT; daily_20261104T0806.log has 16 steps, all ok, no Traceback/407/403. Spend $0.63 (Nov 3 $0.65).
+- b9: model.py md5 379ff10a (45 inputs, no llm_full). b8: today_0005.json at 00:07 PT. b6: 35 shadow_honest_a2 rows today (first score tomorrow).
+- Nov 3 forecast vs final daily ranks, top 3/5/10 hits: launch_model 1/3/8 (33/60/80), simulation 1/4/8, shadow_daycal 1/3/8.
+  late_featured 2, late_in_top_k 0, dropped 0. list_check: 0 items (no Grok Bot leaderboard read).
+- Dashboard refreshed (7 datasets). 5 old blobs deleted; the permission check refused deleting 2 (unreferenced, left).
+- Live capture: Nov 4 FAIL (14 start-up rows > 5 min late; 138 launch-snapshots with no board position: only the 00:01 PT
+  box_browser snapshot has page views, route 4 is under STOP). Nov 3 FAIL as before (114 late rows, 20:15-20:45Z gap, no page views).
+  Babysitter per-tier P0-P6: no verdict posted for Nov 4 yet.
+- At-launch capture (posts/products/makers/external) for Nov 4: NOT landed by 01:30 PT (due ~00:20 PT); only API snapshots.
+- pool_timing (Nov 3 only; Nov 1-2 lack API comments / posts_ts): 36 launches, 24/25/30 with a pool comment by 1/2/4 h;
+  pool comments vs shock rho 0.28 / 0.33 / 0.31 at 1/2/4 h vs 0.42 whole day (one day, no CI).
+- Intraday tool test on Nov 3: top 3 100% vs 33% pre-launch from h4 (tool, not north star). Nov 4 live loop running on exp-1.
+
+## Pool size for 80-90% vote coverage (Shreyas via orchestrator, Nov 4 20:02 UTC) — ph_predict/pool_size.py, results/pool_size.json
+Window Oct 1-24 (750 launches, 85,744 real votes); warehouse page-1 lists are 98.6% complete there (CI 96.1-100, 155 full-pulled pool people).
+- Coverage by month (recorded): Jan 13% ... Jul 32%, Aug 33%, Sep 34%, Oct 35.2% all / 53.3% top 3 (older months lose heavy voters' history).
+- Within-pool curve (ranked by Aug-Sep activity, out of sample), share of Oct votes all / top 3: 1k 21.0% / 34.7%; 2k 25.1 / 41.1;
+  5k 28.4 / 45.9; 10k 31.0 / 49.4; 15k 33.2 / 51.9; all 20,958 35.5% (33.8-37.4) / 54.8% (53.1-56.9). Turnout-weight ranking: same within 1.5 pts.
+- Recapture: maker followers 13.3% in pool (n 976); launch commenters 81.9% (n 188). Pool-like accounts 157k (followers) vs 26k (commenters).
+- Votes method (non-pool sample, 103 pulled, 17 voters; calibrated x2.28 for page-1 roll-off): ~12.1k non-pool voters (7.9-18.7k),
+  ~16.0k distinct voters in 24 days (11.8-22.6k); pool voters 3,849 (7.9 votes each) vs non-pool ~4.6.
+- N: 80% needs ~5.0k more voters found most-active first (2.4-13.0k); 90% ~8.6k (4.2-16.2k). At the discovery route's 16.5% voting
+  rate that is ~30k / ~52k people to add.
+- Missed votes: pool votes are 88% from 4+-vote people; the non-pool sample's are 41% (29% from one-vote people), so light voters dominate.

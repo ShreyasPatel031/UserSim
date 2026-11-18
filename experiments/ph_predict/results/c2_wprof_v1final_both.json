@@ -1,0 +1,447 @@
+{
+ "name": "c2",
+ "launches": 5564,
+ "coverage": 0.423,
+ "coverage_by_month": {
+  "2026-03": 0.0,
+  "2026-04": 0.0,
+  "2026-05": 0.695,
+  "2026-06": 0.564,
+  "2026-07": 0.565,
+  "2026-08": 0.617,
+  "2026-09": 0.549,
+  "2026-10": 0.535
+ },
+ "gate": {
+  "c2_wayback_profile_followers_hunter": {
+   "within_day_spearman": 0.0182,
+   "within_day_ci95": [
+    -0.0327,
+    0.0673
+   ],
+   "days": 168,
+   "pooled_spearman": 0.0116,
+   "pooled_ci95": [
+    -0.0275,
+    0.0509
+   ],
+   "covered_launches": 2308,
+   "coverage": 0.415,
+   "p_boot": 0.544,
+   "p_holm": 1.0,
+   "passes": false
+  },
+  "c2_wayback_profile_followers_maker": {
+   "within_day_spearman": 0.065,
+   "within_day_ci95": [
+    -0.0016,
+    0.1329
+   ],
+   "days": 134,
+   "pooled_spearman": 0.0587,
+   "pooled_ci95": [
+    0.0045,
+    0.1132
+   ],
+   "covered_launches": 1427,
+   "coverage": 0.256,
+   "p_boot": 0.032,
+   "p_holm": 0.16,
+   "passes": false
+  },
+  "c2_wayback_profile_followings_hunter": {
+   "within_day_spearman": 0.0724,
+   "within_day_ci95": [
+    0.025,
+    0.1194
+   ],
+   "days": 168,
+   "pooled_spearman": 0.0595,
+   "pooled_ci95": [
+    0.0237,
+    0.0979
+   ],
+   "covered_launches": 2310,
+   "coverage": 0.415,
+   "p_boot": 0.001,
+   "p_holm": 0.008,
+   "passes": true
+  },
+  "c2_wayback_profile_followings_maker": {
+   "within_day_spearman": 0.064,
+   "within_day_ci95": [
+    0.0083,
+    0.1202
+   ],
+   "days": 134,
+   "pooled_spearman": 0.0702,
+   "pooled_ci95": [
+    0.026,
+    0.1149
+   ],
+   "covered_launches": 1430,
+   "coverage": 0.257,
+   "p_boot": 0.002,
+   "p_holm": 0.014,
+   "passes": true
+  },
+  "c2_wayback_profile_points_hunter": {
+   "within_day_spearman": 0.0106,
+   "within_day_ci95": [
+    -0.0426,
+    0.0638
+   ],
+   "days": 167,
+   "pooled_spearman": 0.0249,
+   "pooled_ci95": [
+    -0.0173,
+    0.0657
+   ],
+   "covered_launches": 2219,
+   "coverage": 0.399,
+   "p_boot": 0.222,
+   "p_holm": 0.888,
+   "passes": false
+  },
+  "c2_wayback_profile_points_maker": {
+   "within_day_spearman": -0.0114,
+   "within_day_ci95": [
+    -0.0768,
+    0.0547
+   ],
+   "days": 127,
+   "pooled_spearman": 0.0092,
+   "pooled_ci95": [
+    -0.048,
+    0.0649
+   ],
+   "covered_launches": 1285,
+   "coverage": 0.231,
+   "p_boot": 0.754,
+   "p_holm": 1.0,
+   "passes": false
+  },
+  "c2_wayback_profile_followers_hunter_age_d": {
+   "within_day_spearman": -0.0647,
+   "within_day_ci95": [
+    -0.114,
+    -0.0148
+   ],
+   "days": 168,
+   "pooled_spearman": -0.0468,
+   "pooled_ci95": [
+    -0.0824,
+    -0.011
+   ],
+   "covered_launches": 2310,
+   "coverage": 0.415,
+   "p_boot": 0.012,
+   "p_holm": 0.072,
+   "passes": false
+  },
+  "c2_wayback_profile_followers_maker_age_d": {
+   "within_day_spearman": -0.0403,
+   "within_day_ci95": [
+    -0.1046,
+    0.0233
+   ],
+   "days": 134,
+   "pooled_spearman": -0.0287,
+   "pooled_ci95": [
+    -0.0804,
+    0.0217
+   ],
+   "covered_launches": 1430,
+   "coverage": 0.257,
+   "p_boot": 0.274,
+   "p_holm": 0.888,
+   "passes": false
+  }
+ },
+ "months_tested": [
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10"
+ ],
+ "boards": {
+  "day top3": {
+   "control": 62.7,
+   "with inputs": 62.0,
+   "delta": [
+    -0.7533,
+    [
+     -2.0716,
+     0.565
+    ],
+    177
+   ],
+   "linear": 63.1,
+   "delta linear": [
+    0.3766,
+    [
+     -1.3183,
+     2.0716
+    ],
+    177
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": -0.0,
+    "2026-07": 0.0,
+    "2026-08": -2.2,
+    "2026-09": 0.0,
+    "2026-10": -2.7
+   }
+  },
+  "day top5": {
+   "control": 70.4,
+   "with inputs": 69.6,
+   "delta": [
+    -0.791,
+    [
+     -1.6949,
+     0.0
+    ],
+    177
+   ],
+   "linear": 69.3,
+   "delta linear": [
+    -1.1299,
+    [
+     -2.2599,
+     -0.113
+    ],
+    177
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": -2.1,
+    "2026-07": -0.6,
+    "2026-08": -1.9,
+    "2026-09": -1.3,
+    "2026-10": 1.6
+   }
+  },
+  "day top10": {
+   "control": 76.6,
+   "with inputs": 76.6,
+   "delta": [
+    -0.0,
+    [
+     -0.6207,
+     0.6207
+    ],
+    145
+   ],
+   "linear": 76.6,
+   "delta linear": [
+    0.069,
+    [
+     -0.5517,
+     0.6207
+    ],
+    145
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": 1.5,
+    "2026-07": 0.0,
+    "2026-08": 0.4,
+    "2026-09": -0.7,
+    "2026-10": -0.8
+   }
+  },
+  "week top3": {
+   "control": 50.7,
+   "with inputs": 50.7,
+   "delta": [
+    0.0,
+    [
+     -4.0,
+     4.0
+    ],
+    25
+   ],
+   "linear": 48.0,
+   "delta linear": [
+    -2.6667,
+    [
+     -8.0,
+     2.6667
+    ],
+    25
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": -6.7,
+    "2026-07": 0.0,
+    "2026-08": 6.7,
+    "2026-09": 0.0,
+    "2026-10": 0.0
+   }
+  },
+  "week top5": {
+   "control": 54.4,
+   "with inputs": 53.6,
+   "delta": [
+    -0.8,
+    [
+     -3.2,
+     1.6
+    ],
+    25
+   ],
+   "linear": 54.4,
+   "delta linear": [
+    -0.0,
+    [
+     -3.2,
+     3.2
+    ],
+    25
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": 4.0,
+    "2026-07": -5.0,
+    "2026-08": -4.0,
+    "2026-09": 0.0,
+    "2026-10": 0.0
+   }
+  },
+  "week top10": {
+   "control": 55.2,
+   "with inputs": 55.7,
+   "delta": [
+    0.4348,
+    [
+     -0.8696,
+     1.7391
+    ],
+    23
+   ],
+   "linear": 55.7,
+   "delta linear": [
+    0.4348,
+    [
+     -1.7391,
+     3.0435
+    ],
+    23
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": -2.5,
+    "2026-07": 0.0,
+    "2026-08": 2.0,
+    "2026-09": 0.0,
+    "2026-10": 3.3
+   }
+  },
+  "mon top3": {
+   "control": 13.3,
+   "with inputs": 13.3,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    5
+   ],
+   "linear": 20.0,
+   "delta linear": [
+    6.6667,
+    [
+     0.0,
+     20.0
+    ],
+    5
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": 0.0,
+    "2026-07": 0.0,
+    "2026-09": 0.0,
+    "2026-10": 0.0
+   }
+  },
+  "mon top5": {
+   "control": 26.7,
+   "with inputs": 26.7,
+   "delta": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    6
+   ],
+   "linear": 26.7,
+   "delta linear": [
+    0.0,
+    [
+     0.0,
+     0.0
+    ],
+    6
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": 0.0,
+    "2026-07": 0.0,
+    "2026-08": 0.0,
+    "2026-09": 0.0,
+    "2026-10": 0.0
+   }
+  },
+  "mon top10": {
+   "control": 33.3,
+   "with inputs": 35.0,
+   "delta": [
+    1.6667,
+    [
+     0.0,
+     5.0
+    ],
+    6
+   ],
+   "linear": 35.0,
+   "delta linear": [
+    1.6667,
+    [
+     0.0,
+     5.0
+    ],
+    6
+   ],
+   "by month": {
+    "2026-05": 0.0,
+    "2026-06": 10.0,
+    "2026-07": 0.0,
+    "2026-08": 0.0,
+    "2026-09": 0.0,
+    "2026-10": 0.0
+   }
+  }
+ },
+ "rows_dropped": {
+  "unknown_launch": 0,
+  "on_or_after_launch_day": 6,
+  "age_inputs": "6 -> 2"
+ },
+ "covered_launches_by_source": {
+  "c2_wayback_profile_followers_hunter": 2329,
+  "c2_wayback_profile_followers_maker": 1443,
+  "c2_wayback_profile_followings_hunter": 2331,
+  "c2_wayback_profile_followings_maker": 1446,
+  "c2_wayback_profile_points_hunter": 2239,
+  "c2_wayback_profile_points_maker": 1299,
+  "c2_wayback_profile_followers_hunter_age_d": 2331,
+  "c2_wayback_profile_followers_maker_age_d": 1446
+ },
+ "reference": "honest - live set"
+}

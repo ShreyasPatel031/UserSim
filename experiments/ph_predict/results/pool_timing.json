@@ -1,0 +1,165 @@
+{
+ "days": [
+  "2026-11-03",
+  "2026-11-04",
+  "2026-11-08",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12",
+  "2026-11-13"
+ ],
+ "n_per_day": {
+  "2026-11-03": {
+   "launches": 36,
+   "with_comment_1h": 35,
+   "with_comment_2h": 35,
+   "with_comment_4h": 36,
+   "with_pool_comment_1h": 24,
+   "with_pool_comment_2h": 25,
+   "with_pool_comment_4h": 30,
+   "upvote_first_seen": false,
+   "pool_size": 20890
+  },
+  "2026-11-04": {
+   "launches": 34,
+   "with_comment_1h": 33,
+   "with_comment_2h": 33,
+   "with_comment_4h": 33,
+   "with_pool_comment_1h": 23,
+   "with_pool_comment_2h": 24,
+   "with_pool_comment_4h": 30,
+   "upvote_first_seen": false,
+   "pool_size": 20939
+  },
+  "2026-11-08": {
+   "launches": 17,
+   "with_comment_1h": 7,
+   "with_comment_2h": 8,
+   "with_comment_4h": 11,
+   "with_pool_comment_1h": 6,
+   "with_pool_comment_2h": 7,
+   "with_pool_comment_4h": 9,
+   "upvote_first_seen": false,
+   "pool_size": 21004
+  },
+  "2026-11-10": {
+   "launches": 50,
+   "with_comment_1h": 48,
+   "with_comment_2h": 48,
+   "with_comment_4h": 48,
+   "with_pool_comment_1h": 22,
+   "with_pool_comment_2h": 24,
+   "with_pool_comment_4h": 29,
+   "upvote_first_seen": false,
+   "pool_size": 21004
+  },
+  "2026-11-11": {
+   "launches": 16,
+   "with_comment_1h": 16,
+   "with_comment_2h": 16,
+   "with_comment_4h": 16,
+   "with_pool_comment_1h": 11,
+   "with_pool_comment_2h": 12,
+   "with_pool_comment_4h": 14,
+   "upvote_first_seen": false,
+   "pool_size": 21004
+  },
+  "2026-11-12": {
+   "launches": 37,
+   "with_comment_1h": 37,
+   "with_comment_2h": 37,
+   "with_comment_4h": 37,
+   "with_pool_comment_1h": 24,
+   "with_pool_comment_2h": 24,
+   "with_pool_comment_4h": 28,
+   "upvote_first_seen": false,
+   "pool_size": 21004
+  },
+  "2026-11-13": {
+   "launches": 20,
+   "with_comment_1h": 19,
+   "with_comment_2h": 19,
+   "with_comment_4h": 19,
+   "with_pool_comment_1h": 15,
+   "with_pool_comment_2h": 15,
+   "with_pool_comment_4h": 18,
+   "upvote_first_seen": false,
+   "pool_size": 21004
+  }
+ },
+ "tests": {
+  "pool_c_1": {
+   "rho": 0.292,
+   "ci95": [
+    0.214,
+    0.362
+   ],
+   "days": 7,
+   "launches": 210
+  },
+  "pool_c_share_1": {
+   "rho": 0.077,
+   "ci95": [
+    -0.002,
+    0.156
+   ],
+   "days": 7,
+   "launches": 195
+  },
+  "pool_c_2": {
+   "rho": 0.343,
+   "ci95": [
+    0.261,
+    0.426
+   ],
+   "days": 7,
+   "launches": 210
+  },
+  "pool_c_share_2": {
+   "rho": 0.011,
+   "ci95": [
+    -0.027,
+    0.049
+   ],
+   "days": 7,
+   "launches": 196
+  },
+  "pool_c_4": {
+   "rho": 0.38,
+   "ci95": [
+    0.295,
+    0.47
+   ],
+   "days": 7,
+   "launches": 210
+  },
+  "pool_c_share_4": {
+   "rho": 0.017,
+   "ci95": [
+    -0.073,
+    0.086
+   ],
+   "days": 7,
+   "launches": 200
+  },
+  "pool_c_day": {
+   "rho": 0.528,
+   "ci95": [
+    0.463,
+    0.592
+   ],
+   "days": 7,
+   "launches": 210
+  },
+  "pool_c_share_day": {
+   "rho": -0.016,
+   "ci95": [
+    -0.099,
+    0.08
+   ],
+   "days": 7,
+   "launches": 210
+  }
+ },
+ "reading": "pool leads if early (1-4 h) pool engagement predicts the shock about as well as the whole-day measure; pool follows exposure if only the whole-day measure does"
+}

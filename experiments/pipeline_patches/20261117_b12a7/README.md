@@ -1,0 +1,2 @@
+# b12a7 (Nov 17)
+12a.6 (b12a6) with arm3_backtest_label.txt a111b90d: the arm-3 backtest row from north_star_table.json with 95% day-bootstrap intervals and the paired arm 3 - arm 2 intervals (2026 and 2025), replacing the 12a.5-era label (66.3 / 77.6 on 183 days, no intervals). deploy_b12a.sh WANT updated. two_predictions.py d5b4318c: table_label prints the row's ci95 intervals and appends the paired '<model> - ...' rows. Everything else identical to b12a6 (was two_predictions 06ad5350, weights b8a59cdd = pin).

@@ -1,0 +1,77 @@
+--- ../../ph_predict/vm_leaderboard.py	2026-11-01 18:21:00.642633122 +0000
++++ vm_leaderboard.py	2026-11-13 15:20:03.999965827 +0000
+@@ -33,22 +33,64 @@
+     return list(out.values())
+ 
+ 
+-def day(d):
+-    f = f"{OUT}/{d}.json"
+-    if os.path.exists(f):
+-        return
++def posts_json(html):
++    """Bundle 11: parse each embedded Post object as JSON (balanced decode) instead of a fixed 6,000-character regex window,
++    which missed posts whose dailyRank sat further into the object. Falls back to posts_from() for anything not decodable."""
++    h = html.replace('\\"', '"'); dec = json.JSONDecoder(); out = {}
++    for m in re.finditer(r'\{"__typename":"Post","id":"(\d+)"', h):
++        try:
++            obj, _ = dec.raw_decode(h[m.start():])
++        except ValueError:
++            continue
++        if obj.get("dailyRank") is None:
++            continue
++        rp = obj.get("redirectToProduct") or {}
++        out[str(obj["id"])] = {"id": str(obj["id"]), "name": obj.get("name"), "slug": obj.get("slug"), "tagline": obj.get("tagline"),
++                               "product_id": rp.get("id"), "product_slug": rp.get("slug"), "featuredAt": obj.get("featuredAt"),
++                               "shortenedUrl": obj.get("shortenedUrl"), "dailyRank": obj.get("dailyRank"), "weeklyRank": obj.get("weeklyRank"),
++                               "monthlyRank": obj.get("monthlyRank"), "commentsCount": obj.get("commentsCount"),
++                               "topics": [((e or {}).get("node") or e or {}).get("name") for e in ((obj.get("topics") or {}).get("edges") or [])]}
++    for p in posts_from(html):
++        out.setdefault(p["id"], p)
++    return list(out.values())
++
++
++def fetch(url):
+     for i in range(4):
+         px = P if i == 0 else RESI
+         try:
+-            x = R.get(f"https://www.producthunt.com/leaderboard/daily/{d.year}/{d.month}/{d.day}/all",
+-                      impersonate="chrome", proxies={"https": px}, timeout=60)
++            x = R.get(url, impersonate="chrome", proxies={"https": px}, timeout=60)
+             if x.status_code == 200:
+-                ps = posts_from(x.text)
+-                json.dump(ps, open(f, "w")); print(d, len(ps), flush=True); return
+-            print(d, "status", x.status_code, "resi" if px == RESI else "dc", flush=True)
++                return x.text
++            print(url[-40:], "status", x.status_code, "resi" if px == RESI else "dc", flush=True)
+         except Exception as e:  # noqa: BLE001
+-            print(d, "err", str(e)[:120], flush=True)
++            print(url[-40:], "err", str(e)[:120], flush=True)
+         time.sleep(3 * (i + 1))
++    return None
++
++
++def day(d):
++    """Every page of the day's /all leaderboard (was page 1 only): ?page=2, 3, ... until a page adds no new post; written to a
++    temp file and moved into place, with complete=false recorded when a page failed."""
++    f = f"{OUT}/{d}.json"
++    if os.path.exists(f) and not os.environ.get("LB_REREAD"):
++        return
++    base = f"https://www.producthunt.com/leaderboard/daily/{d.year}/{d.month}/{d.day}/all"
++    got, complete = {}, True
++    for page in range(1, 51):
++        html = fetch(base if page == 1 else f"{base}?page={page}")
++        if html is None:
++            complete = False; break
++        new = [p for p in posts_json(html) if p["id"] not in got]
++        if not new:
++            break
++        got.update({p["id"]: p for p in new})
++    if not got:
++        print(d, "no posts read", flush=True); return
++    json.dump(list(got.values()), open(f + ".tmp", "w")); os.replace(f + ".tmp", f)
++    if not complete:
++        open(f + ".incomplete", "w").write("a page failed; re-run with LB_REREAD=1\n")
++    print(d, len(got), "complete" if complete else "INCOMPLETE", flush=True)
+ 
+ 
+ if __name__ == "__main__":

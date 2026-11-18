@@ -1,0 +1,120 @@
+{
+ "days": 20,
+ "launches": 532,
+ "definitions": {
+  "browser": "n_up>=3, active >=5 of prior 30 days, not tied to L",
+  "arrival": "n_up==1 or tied to L or dormant (>30 d) / new (<30 d tenure)"
+ },
+ "vote_mix": {
+  "arrival_share_of_sample_votes": [
+   0.823,
+   [
+    0.795,
+    0.851
+   ],
+   20
+  ],
+  "browser_share_of_sample_votes": [
+   0.174,
+   [
+    0.148,
+    0.2
+   ],
+   20
+  ]
+ },
+ "a_within_day_spearman_vs_final_votes": {
+  "sample_votes": [
+   0.885,
+   [
+    0.859,
+    0.909
+   ],
+   20
+  ],
+  "arrival_votes": [
+   0.824,
+   [
+    0.787,
+    0.858
+   ],
+   20
+  ],
+  "browser_votes": [
+   -0.234,
+   [
+    -0.322,
+    -0.145
+   ],
+   20
+  ],
+  "browser_rate": [
+   -0.078,
+   [
+    -0.167,
+    0.016
+   ],
+   20
+  ]
+ },
+ "b_browser_choice": {
+  "browser_person_days": 1255,
+  "random": {
+   "hit1": [
+    0.209,
+    [
+     0.177,
+     0.244
+    ],
+    20
+   ],
+   "hit3": [
+    0.474,
+    [
+     0.413,
+     0.537
+    ],
+    20
+   ]
+  },
+  "loo": {
+   "hit1": [
+    0.425,
+    [
+     0.331,
+     0.527
+    ],
+    20
+   ],
+   "hit3": [
+    0.668,
+    [
+     0.59,
+     0.746
+    ],
+    20
+   ]
+  },
+  "oracle": {
+   "hit1": [
+    0.455,
+    [
+     0.373,
+     0.546
+    ],
+    20
+   ],
+   "hit3": [
+    0.678,
+    [
+     0.615,
+     0.744
+    ],
+    20
+   ]
+  }
+ },
+ "note": "loo = browser pick rate of the other browsers that day (non-personal, uses outcomes of others); oracle = final votes",
+ "top5_launches_arrival_share_median": 0.988,
+ "other_launches_arrival_share_median": 0.538
+}

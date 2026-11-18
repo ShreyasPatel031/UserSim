@@ -1,0 +1,185 @@
+{
+ "method": "Why arm 2's #1 pick misses the final top 3, and a leak-free day-level \"#1 is shaky\" flag (orchestrator 23:09Z Nov 14).\n\nPRE-REGISTERED (written before any 2026 test number was computed)\n  Data   arm-2 orders: 2025 = pre-registered harness (arm3_vs_arm2_preds.parquet, arm2, 20 seeds, month-forward Mar-Dec 2025);\n         2026 = published arm 2 (history_retrain_decomp_preds_arm2.parquet 'both', 5 seeds, Apr-Oct 2026, 184 days).\n         Truth: 2026 truth_daily.json; 2025 the harness's stored dailyRank (truth_daily.json has no 2025). >= 10 ranked; unranked = miss.\n         Features: pre-launch fields from history_retrain.build on the VM (shaky_feats.parquet), all dated before the launch day.\n  Day features (pick #1 = p1, pick #2 = p2)\n         margin    p1 score - p2 score;  margin_z = margin / sd of the day's scores\n         ln        log number of launches that day\n         hunter    p1 hunter's earlier launches (log1p hist_hunter_n), earlier top-5 share (hist_hunter_top5), p1 self-hunted\n         first     p1 maker(s) have no earlier launches (hist_maker_n == 0)\n         crowd     number of same-day launches sharing >= 1 topic with p1, and with p2\n         weekday   weekend indicator\n  Flag   logistic regression (standardised on 2025, C = 1) fitted on 2025 DISCORDANT days only (exactly one of p1, p2 finishes top 3),\n         target = p2 finishes top 3 and p1 does not. Flag = predicted probability > 0.5. No threshold tuning.\n  Action on flagged days: pick #2 becomes pick #1 (swap 1 <-> 2).\n  Primary metric (one test on 2026): share of days the shown #1 finishes top 3, swap rule vs arm 2, paired, day bootstrap 95% (4000).\n  Note: a 1 <-> 2 swap leaves the top-3/5/10 sets unchanged, so top-3 hits are identical by construction. Secondary (reported,\n  not the decision): demote p1 to position 4 on flagged days (pick #4 enters the top 3), top-3 hits vs arm 2.\nusage: python shaky1.py FEATS.parquet -> results/shaky1.{json,md}",
+ "descriptive": {
+  "2025": {
+   "n_days": 204,
+   "p1_top3_rate": 60.3,
+   "miss_vs_hit_means": {
+    "margin": [
+     0.168,
+     0.189
+    ],
+    "margin_z": [
+     0.481,
+     0.537
+    ],
+    "ln": [
+     2.847,
+     2.827
+    ],
+    "h_n": [
+     2.727,
+     3.356
+    ],
+    "h_top5": [
+     0.57,
+     0.599
+    ],
+    "self_hunted": [
+     0.012,
+     0.057
+    ],
+    "first": [
+     0.012,
+     0.39
+    ],
+    "crowd1": [
+     9.481,
+     8.553
+    ],
+    "crowd2": [
+     8.099,
+     8.228
+    ],
+    "weekend": [
+     0.074,
+     0.106
+    ]
+   }
+  },
+  "2026": {
+   "n_days": 184,
+   "p1_top3_rate": 70.7,
+   "miss_vs_hit_means": {
+    "margin": [
+     0.152,
+     0.188
+    ],
+    "margin_z": [
+     0.431,
+     0.533
+    ],
+    "ln": [
+     3.115,
+     3.157
+    ],
+    "h_n": [
+     4.79,
+     4.974
+    ],
+    "h_top5": [
+     0.614,
+     0.641
+    ],
+    "self_hunted": [
+     0.0,
+     0.023
+    ],
+    "first": [
+     0.111,
+     0.331
+    ],
+    "crowd1": [
+     12.556,
+     15.015
+    ],
+    "crowd2": [
+     13.907,
+     14.0
+    ],
+    "weekend": [
+     0.204,
+     0.177
+    ]
+   }
+  }
+ },
+ "flag": {
+  "fit_days_2025_discordant": 118,
+  "coef_standardised": {
+   "margin": -0.609,
+   "margin_z": 0.185,
+   "ln": -0.257,
+   "h_n": -0.365,
+   "h_top5": -0.253,
+   "self_hunted": -0.265,
+   "first": -1.156,
+   "crowd1": 0.155,
+   "crowd2": 0.274,
+   "weekend": 0.19
+  },
+  "intercept": -0.692
+ },
+ "2025 (in-sample, fitted here)": {
+  "n_days": 204,
+  "flagged_days": 73,
+  "flagged_p1_hit": 43.8,
+  "flagged_p2_hit": 52.1,
+  "p1_top3_arm2": [
+   60.3,
+   53.4,
+   66.7
+  ],
+  "p1_top3_swap": [
+   63.2,
+   56.4,
+   69.6
+  ],
+  "swap_minus_arm2": [
+   2.9,
+   -3.4,
+   9.3
+  ],
+  "top3_hits_arm2": [
+   51.8,
+   48.5,
+   55.1
+  ],
+  "top3_hits_demote_secondary": [
+   51.5,
+   48.4,
+   54.7
+  ],
+  "demote_minus_arm2": [
+   -0.3,
+   -2.5,
+   1.8
+  ]
+ },
+ "2026 TEST": {
+  "n_days": 184,
+  "flagged_days": 58,
+  "flagged_p1_hit": 56.9,
+  "flagged_p2_hit": 62.1,
+  "p1_top3_arm2": [
+   70.7,
+   64.1,
+   77.2
+  ],
+  "p1_top3_swap": [
+   72.3,
+   65.8,
+   78.8
+  ],
+  "swap_minus_arm2": [
+   1.6,
+   -4.3,
+   7.6
+  ],
+  "top3_hits_arm2": [
+   58.0,
+   54.9,
+   61.1
+  ],
+  "top3_hits_demote_secondary": [
+   55.4,
+   52.4,
+   58.5
+  ],
+  "demote_minus_arm2": [
+   -2.5,
+   -4.3,
+   -0.5
+  ]
+ }
+}

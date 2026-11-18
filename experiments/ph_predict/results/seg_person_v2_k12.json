@@ -1,0 +1,592 @@
+{
+ "K": 12,
+ "rows": 166346,
+ "person_days": 6065,
+ "votes": 16430,
+ "share_votes_with_segment": 0.839,
+ "votes_by_source": {
+  "nearest": 10253,
+  "B": 3526,
+  "none": 2651
+ },
+ "A_people_excluded": 3324,
+ "lr_coefs_note": "LODO logistic on lp,segf,has_seg,segf_lp,segf_cold",
+ "table": {
+  "voters | B_pre_sep_segment | all votes": {
+   "it9b": {
+    "hit1": 0.08,
+    "hit3": 0.212,
+    "auc": 0.648,
+    "votes": 3526
+   },
+   "seg": {
+    "hit1": 0.039,
+    "hit3": 0.121,
+    "auc": 0.564,
+    "votes": 3526
+   },
+   "it9b+seg": {
+    "hit1": 0.077,
+    "hit3": 0.202,
+    "auc": 0.644,
+    "votes": 3526
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.004,
+     -0.006,
+     -0.002
+    ],
+    "hit1": [
+     -0.003,
+     -0.007,
+     0.001
+    ]
+   }
+  },
+  "voters | B_pre_sep_segment | cold votes": {
+   "it9b": {
+    "hit1": 0.032,
+    "hit3": 0.08,
+    "auc": 0.434,
+    "votes": 373
+   },
+   "seg": {
+    "hit1": 0.035,
+    "hit3": 0.142,
+    "auc": 0.578,
+    "votes": 373
+   },
+   "it9b+seg": {
+    "hit1": 0.032,
+    "hit3": 0.075,
+    "auc": 0.442,
+    "votes": 373
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.007,
+     -0.0,
+     0.016
+    ],
+    "hit1": [
+     0.0,
+     -0.011,
+     0.01
+    ]
+   }
+  },
+  "voters | B_pre_sep_segment | warm votes": {
+   "it9b": {
+    "hit1": 0.085,
+    "hit3": 0.228,
+    "auc": 0.673,
+    "votes": 3153
+   },
+   "seg": {
+    "hit1": 0.04,
+    "hit3": 0.119,
+    "auc": 0.563,
+    "votes": 3153
+   },
+   "it9b+seg": {
+    "hit1": 0.082,
+    "hit3": 0.217,
+    "auc": 0.668,
+    "votes": 3153
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.006,
+     -0.007,
+     -0.004
+    ],
+    "hit1": [
+     -0.003,
+     -0.008,
+     0.001
+    ]
+   }
+  },
+  "voters | nearest_centroid | all votes": {
+   "it9b": {
+    "hit1": 0.059,
+    "hit3": 0.167,
+    "auc": 0.587,
+    "votes": 10253
+   },
+   "seg": {
+    "hit1": 0.039,
+    "hit3": 0.118,
+    "auc": 0.493,
+    "votes": 10253
+   },
+   "it9b+seg": {
+    "hit1": 0.06,
+    "hit3": 0.168,
+    "auc": 0.589,
+    "votes": 10253
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.002,
+     -0.0,
+     0.004
+    ],
+    "hit1": [
+     0.001,
+     -0.001,
+     0.003
+    ]
+   }
+  },
+  "voters | nearest_centroid | cold votes": {
+   "it9b": {
+    "hit1": 0.022,
+    "hit3": 0.093,
+    "auc": 0.468,
+    "votes": 2315
+   },
+   "seg": {
+    "hit1": 0.071,
+    "hit3": 0.192,
+    "auc": 0.592,
+    "votes": 2315
+   },
+   "it9b+seg": {
+    "hit1": 0.021,
+    "hit3": 0.079,
+    "auc": 0.459,
+    "votes": 2315
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.009,
+     -0.012,
+     -0.005
+    ],
+    "hit1": [
+     -0.002,
+     -0.005,
+     0.002
+    ]
+   }
+  },
+  "voters | nearest_centroid | warm votes": {
+   "it9b": {
+    "hit1": 0.07,
+    "hit3": 0.189,
+    "auc": 0.621,
+    "votes": 7938
+   },
+   "seg": {
+    "hit1": 0.029,
+    "hit3": 0.096,
+    "auc": 0.464,
+    "votes": 7938
+   },
+   "it9b+seg": {
+    "hit1": 0.072,
+    "hit3": 0.193,
+    "auc": 0.626,
+    "votes": 7938
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.005,
+     0.002,
+     0.007
+    ],
+    "hit1": [
+     0.002,
+     -0.001,
+     0.004
+    ]
+   }
+  },
+  "voters | all_people | all votes": {
+   "it9b": {
+    "hit1": 0.063,
+    "hit3": 0.174,
+    "auc": 0.595,
+    "votes": 16430
+   },
+   "seg": {
+    "hit1": 0.039,
+    "hit3": 0.116,
+    "auc": 0.508,
+    "votes": 16430
+   },
+   "it9b+seg": {
+    "hit1": 0.063,
+    "hit3": 0.172,
+    "auc": 0.596,
+    "votes": 16430
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.0,
+     -0.001,
+     0.002
+    ],
+    "hit1": [
+     0.0,
+     -0.002,
+     0.001
+    ]
+   }
+  },
+  "voters | all_people | cold votes": {
+   "it9b": {
+    "hit1": 0.022,
+    "hit3": 0.088,
+    "auc": 0.461,
+    "votes": 3472
+   },
+   "seg": {
+    "hit1": 0.058,
+    "hit3": 0.162,
+    "auc": 0.569,
+    "votes": 3472
+   },
+   "it9b+seg": {
+    "hit1": 0.021,
+    "hit3": 0.078,
+    "auc": 0.456,
+    "votes": 3472
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.006,
+     -0.008,
+     -0.003
+    ],
+    "hit1": [
+     -0.001,
+     -0.004,
+     0.001
+    ]
+   }
+  },
+  "voters | all_people | warm votes": {
+   "it9b": {
+    "hit1": 0.074,
+    "hit3": 0.196,
+    "auc": 0.631,
+    "votes": 12958
+   },
+   "seg": {
+    "hit1": 0.034,
+    "hit3": 0.104,
+    "auc": 0.492,
+    "votes": 12958
+   },
+   "it9b+seg": {
+    "hit1": 0.074,
+    "hit3": 0.197,
+    "auc": 0.632,
+    "votes": 12958
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.002,
+     0.0,
+     0.003
+    ],
+    "hit1": [
+     0.0,
+     -0.002,
+     0.002
+    ]
+   }
+  },
+  "browsers | B_pre_sep_segment | all votes": {
+   "it9b": {
+    "hit1": 0.057,
+    "hit3": 0.16,
+    "auc": 0.6,
+    "votes": 889
+   },
+   "seg": {
+    "hit1": 0.037,
+    "hit3": 0.111,
+    "auc": 0.542,
+    "votes": 889
+   },
+   "it9b+seg": {
+    "hit1": 0.056,
+    "hit3": 0.159,
+    "auc": 0.595,
+    "votes": 889
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.005,
+     -0.009,
+     -0.002
+    ],
+    "hit1": [
+     -0.001,
+     -0.009,
+     0.007
+    ]
+   }
+  },
+  "browsers | B_pre_sep_segment | cold votes": {
+   "it9b": {
+    "hit1": 0.013,
+    "hit3": 0.052,
+    "auc": 0.423,
+    "votes": 154
+   },
+   "seg": {
+    "hit1": 0.026,
+    "hit3": 0.11,
+    "auc": 0.559,
+    "votes": 154
+   },
+   "it9b+seg": {
+    "hit1": 0.013,
+    "hit3": 0.045,
+    "auc": 0.428,
+    "votes": 154
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.005,
+     -0.004,
+     0.012
+    ],
+    "hit1": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "browsers | B_pre_sep_segment | warm votes": {
+   "it9b": {
+    "hit1": 0.067,
+    "hit3": 0.182,
+    "auc": 0.638,
+    "votes": 735
+   },
+   "seg": {
+    "hit1": 0.039,
+    "hit3": 0.112,
+    "auc": 0.538,
+    "votes": 735
+   },
+   "it9b+seg": {
+    "hit1": 0.065,
+    "hit3": 0.182,
+    "auc": 0.63,
+    "votes": 735
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.007,
+     -0.011,
+     -0.004
+    ],
+    "hit1": [
+     -0.001,
+     -0.011,
+     0.008
+    ]
+   }
+  },
+  "browsers | nearest_centroid | all votes": {
+   "it9b": {
+    "hit1": 0.058,
+    "hit3": 0.166,
+    "auc": 0.58,
+    "votes": 6577
+   },
+   "seg": {
+    "hit1": 0.038,
+    "hit3": 0.122,
+    "auc": 0.488,
+    "votes": 6577
+   },
+   "it9b+seg": {
+    "hit1": 0.06,
+    "hit3": 0.168,
+    "auc": 0.583,
+    "votes": 6577
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.003,
+     0.0,
+     0.006
+    ],
+    "hit1": [
+     0.002,
+     -0.001,
+     0.005
+    ]
+   }
+  },
+  "browsers | nearest_centroid | cold votes": {
+   "it9b": {
+    "hit1": 0.025,
+    "hit3": 0.095,
+    "auc": 0.47,
+    "votes": 1673
+   },
+   "seg": {
+    "hit1": 0.078,
+    "hit3": 0.201,
+    "auc": 0.602,
+    "votes": 1673
+   },
+   "it9b+seg": {
+    "hit1": 0.021,
+    "hit3": 0.078,
+    "auc": 0.459,
+    "votes": 1673
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.011,
+     -0.016,
+     -0.007
+    ],
+    "hit1": [
+     -0.004,
+     -0.009,
+     0.001
+    ]
+   }
+  },
+  "browsers | nearest_centroid | warm votes": {
+   "it9b": {
+    "hit1": 0.069,
+    "hit3": 0.19,
+    "auc": 0.617,
+    "votes": 4904
+   },
+   "seg": {
+    "hit1": 0.025,
+    "hit3": 0.094,
+    "auc": 0.448,
+    "votes": 4904
+   },
+   "it9b+seg": {
+    "hit1": 0.073,
+    "hit3": 0.199,
+    "auc": 0.626,
+    "votes": 4904
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.008,
+     0.005,
+     0.012
+    ],
+    "hit1": [
+     0.004,
+     0.001,
+     0.008
+    ]
+   }
+  },
+  "browsers | all_people | all votes": {
+   "it9b": {
+    "hit1": 0.058,
+    "hit3": 0.164,
+    "auc": 0.579,
+    "votes": 8113
+   },
+   "seg": {
+    "hit1": 0.039,
+    "hit3": 0.118,
+    "auc": 0.493,
+    "votes": 8113
+   },
+   "it9b+seg": {
+    "hit1": 0.059,
+    "hit3": 0.166,
+    "auc": 0.581,
+    "votes": 8113
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.002,
+     -0.0,
+     0.005
+    ],
+    "hit1": [
+     0.001,
+     -0.001,
+     0.004
+    ]
+   }
+  },
+  "browsers | all_people | cold votes": {
+   "it9b": {
+    "hit1": 0.024,
+    "hit3": 0.089,
+    "auc": 0.466,
+    "votes": 2052
+   },
+   "seg": {
+    "hit1": 0.068,
+    "hit3": 0.18,
+    "auc": 0.586,
+    "votes": 2052
+   },
+   "it9b+seg": {
+    "hit1": 0.021,
+    "hit3": 0.074,
+    "auc": 0.456,
+    "votes": 2052
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     -0.009,
+     -0.013,
+     -0.006
+    ],
+    "hit1": [
+     -0.003,
+     -0.007,
+     0.0
+    ]
+   }
+  },
+  "browsers | all_people | warm votes": {
+   "it9b": {
+    "hit1": 0.069,
+    "hit3": 0.19,
+    "auc": 0.618,
+    "votes": 6061
+   },
+   "seg": {
+    "hit1": 0.029,
+    "hit3": 0.097,
+    "auc": 0.461,
+    "votes": 6061
+   },
+   "it9b+seg": {
+    "hit1": 0.072,
+    "hit3": 0.197,
+    "auc": 0.624,
+    "votes": 6061
+   },
+   "it9b+seg - it9b": {
+    "auc": [
+     0.006,
+     0.003,
+     0.009
+    ],
+    "hit1": [
+     0.003,
+     0.0,
+     0.006
+    ]
+   }
+  }
+ }
+}

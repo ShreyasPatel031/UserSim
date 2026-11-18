@@ -1,0 +1,193 @@
+{
+ "definition": "same as two_level_per_day: launches present in the it8 rows (rows_tl_cp_choice2/<d>.parquet) with a final daily rank; deployed score = psn_ev from scores_retrain/wh_*.parquet (sim_v3_backtest wh, retrained); topk = overlap of the score's top k with the real top k among those launches; a day is null if any launch lacks a deployed score",
+ "per_day": {
+  "2026-10-20": [
+   33.3,
+   40.0,
+   60.0
+  ],
+  "2026-10-21": [
+   66.7,
+   60.0,
+   50.0
+  ],
+  "2026-10-22": [
+   33.3,
+   40.0,
+   70.0
+  ],
+  "2026-10-23": [
+   33.3,
+   80.0,
+   80.0
+  ],
+  "2026-10-24": [
+   66.7,
+   60.0,
+   80.0
+  ],
+  "2026-10-25": [
+   33.3,
+   80.0,
+   90.0
+  ],
+  "2026-10-26": [
+   66.7,
+   80.0,
+   70.0
+  ],
+  "2026-10-27": [
+   100.0,
+   80.0,
+   80.0
+  ],
+  "2026-10-28": [
+   0.0,
+   40.0,
+   60.0
+  ],
+  "2026-10-29": [
+   66.7,
+   40.0,
+   60.0
+  ],
+  "2026-10-30": [
+   33.3,
+   80.0,
+   80.0
+  ],
+  "2026-10-31": [
+   33.3,
+   100.0,
+   70.0
+  ],
+  "2026-11-01": [
+   33.3,
+   60.0,
+   70.0
+  ],
+  "2026-11-02": [
+   66.7,
+   80.0,
+   70.0
+  ],
+  "2026-11-03": [
+   33.3,
+   80.0,
+   80.0
+  ],
+  "2026-11-04": [
+   33.3,
+   60.0,
+   70.0
+  ],
+  "2026-11-05": [
+   66.7,
+   80.0,
+   80.0
+  ],
+  "2026-11-06": [
+   66.7,
+   40.0,
+   40.0
+  ],
+  "2026-11-07": [
+   66.7,
+   60.0,
+   70.0
+  ],
+  "2026-11-08": [
+   66.7,
+   60.0,
+   70.0
+  ]
+ },
+ "per_day_meta": {
+  "2026-10-20": {
+   "launches": 33,
+   "dep_missing": 0
+  },
+  "2026-10-21": {
+   "launches": 33,
+   "dep_missing": 0
+  },
+  "2026-10-22": {
+   "launches": 28,
+   "dep_missing": 0
+  },
+  "2026-10-23": {
+   "launches": 24,
+   "dep_missing": 0
+  },
+  "2026-10-24": {
+   "launches": 14,
+   "dep_missing": 0
+  },
+  "2026-10-25": {
+   "launches": 12,
+   "dep_missing": 0
+  },
+  "2026-10-26": {
+   "launches": 24,
+   "dep_missing": 0
+  },
+  "2026-10-27": {
+   "launches": 20,
+   "dep_missing": 0
+  },
+  "2026-10-28": {
+   "launches": 31,
+   "dep_missing": 0
+  },
+  "2026-10-29": {
+   "launches": 30,
+   "dep_missing": 0
+  },
+  "2026-10-30": {
+   "launches": 20,
+   "dep_missing": 0
+  },
+  "2026-10-31": {
+   "launches": 22,
+   "dep_missing": 0
+  },
+  "2026-11-01": {
+   "launches": 19,
+   "dep_missing": 0
+  },
+  "2026-11-02": {
+   "launches": 18,
+   "dep_missing": 0
+  },
+  "2026-11-03": {
+   "launches": 38,
+   "dep_missing": 0
+  },
+  "2026-11-04": {
+   "launches": 34,
+   "dep_missing": 0
+  },
+  "2026-11-05": {
+   "launches": 35,
+   "dep_missing": 0
+  },
+  "2026-11-06": {
+   "launches": 55,
+   "dep_missing": 0
+  },
+  "2026-11-07": {
+   "launches": 24,
+   "dep_missing": 0
+  },
+  "2026-11-08": {
+   "launches": 17,
+   "dep_missing": 0
+  }
+ },
+ "mean_over_scored_days": [
+  50.0,
+  65.0,
+  70.0
+ ],
+ "scored_days": 20
+}

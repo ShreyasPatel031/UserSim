@@ -53,7 +53,7 @@ def build():
         day = os.path.basename(fn)[:10]
         for p in json.load(open(fn)):
             posts.append({"id": p["id"], "slug": p["slug"], "day": day,
-                          "people": {p["user"].get("id")} | {m["id"] for m in p.get("makers") or []},
+                          "people": ({p["user"].get("id")} | {m["id"] for m in p.get("makers") or []}) - {"0", "", None},   # redacted makers share id "0"
                           "text": f"{p['name']}. {p['tagline']}. {p.get('description') or ''} "
                                   + " ".join(e["node"]["name"] for e in p["topics"]["edges"])})
     df = pd.DataFrame(posts).sort_values("day").reset_index(drop=True)

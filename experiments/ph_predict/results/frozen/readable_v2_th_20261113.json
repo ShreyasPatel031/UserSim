@@ -1,0 +1,10 @@
+{
+ "frozen_at": "2026-11-13T18:47:48.941000+00:00",
+ "days": 214,
+ "coef": {
+  "z_readable": 0.5568225837530018,
+  "z_npre": 0.2287850568288001
+ },
+ "inputs": "z within day: shadow_readable pred_readable_v2 (00:05 rows), th_n_pre (night's first comment read)",
+ "backtest": "readable_model_v2.md: (b)+th vs clean+th top 3 -1.2 [-3.4, +0.9] all 214 days, -1.2 [-4.4, +1.6] last 107"
+}

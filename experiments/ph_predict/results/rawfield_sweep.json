@@ -1,0 +1,451 @@
+{
+ "method": "Systematic sweep of unscored raw fields (orchestrator 23:37Z Nov 14). PRE-REGISTERED (committed before any residual number was computed).\n\nInput: rawfield_extract.py output (every field of the raw PH day records, mechanically numeric; stored = after-close record; t0005 =\nthe 00:05 snapshot for Oct 25 - Nov 13). The warehouse launches table carries no field beyond the raw record (poster/makers names, ranks,\nvotes); raw/ph_at_launch starts Oct 4 / Nov 3 (too short for the 184-day score) and is listed, not scored.\nStep 1 exclusions (not \"unscored\"): fields that are arm-2 inputs or the same quantity (media:n = ph_n_media, topics.edges:n = ph_n_topics,\n  makers:n = ph_n_makers, description:len = ph_desc_len, tagline:len = ph_tagline_len, name:len = ph_name_len, drv.hunter_age_d_at_create\n  ~ ph_hunter_age_d); fields barred by the clean policy (every makers[].* sub-field: needs named makers); identifiers with no content\n  (id:*, user.id:*, createdAt/featuredAt :len/:nonempty).\nStep 2 knowability (Oct 25 - Nov 13, same launch in both reads): KNOWABLE if present at 00:05 for >= 80% of launches that have it stored\n  AND (Spearman(00:05, stored) >= 0.90, or exact agreement >= 90% when a field has < 3 distinct values). Outcome fields (votesCount,\n  commentsCount, reviewsCount, reviewsRating, *Rank*) are leaky by definition. Everything else failing the test is LEAKY and excluded.\nStep 3 score (knowable fields): residual = log1p(final votes) - arm 2's prediction ('both', 184 backtest days Apr-Oct 2026 with truth);\n  per day Spearman(field, residual) over launches with the field present (>= 8 launches and >= 2 distinct values), mean over days;\n  day bootstrap 95% (4000); coverage = share of launches with the field present.\nStep 4 pick: the 3 fields with the largest |mean rho| whose interval excludes 0 go to rawfield_arm2.py (2025 first, then 2026 once).\nusage: python rawfield_sweep.py rawfields.parquet L.parquet -> results/rawfield_sweep.{json,md}",
+ "excluded": {
+  "id:len": "identifier / timestamp text",
+  "id:nonempty": "identifier / timestamp text",
+  "name:len": "arm-2 input (ph_name_len)",
+  "tagline:len": "arm-2 input (ph_tagline_len)",
+  "createdAt:len": "identifier / timestamp text",
+  "createdAt:nonempty": "identifier / timestamp text",
+  "featuredAt:len": "identifier / timestamp text",
+  "featuredAt:nonempty": "identifier / timestamp text",
+  "description:len": "arm-2 input (ph_desc_len)",
+  "topics.edges:n": "arm-2 input (ph_n_topics)",
+  "topics.edges[].node:nonempty": "arm-2 input (ph_n_topics)",
+  "topics.edges[].node.name:nonempty": "arm-2 input (ph_n_topics)",
+  "media:n": "arm-2 input (ph_n_media)",
+  "makers:n": "arm-2 input (ph_n_makers)",
+  "makers[].twitterUsername:nonempty": "clean policy: needs named makers",
+  "makers[].headline:nonempty": "clean policy: needs named makers",
+  "makers[].username:nonempty": "clean policy: needs named makers",
+  "makers[].name:nonempty": "clean policy: needs named makers",
+  "makers[].createdAt:nonempty": "clean policy: needs named makers",
+  "makers[].websiteUrl:nonempty": "clean policy: needs named makers",
+  "makers[].followersCount:nonempty": "clean policy: needs named makers",
+  "makers[].followersCount:mean": "clean policy: needs named makers",
+  "makers[].followersCount:max": "clean policy: needs named makers",
+  "makers[].id:nonempty": "clean policy: needs named makers",
+  "user.id:len": "identifier / timestamp text",
+  "user.id:nonempty": "identifier / timestamp text",
+  "user.createdAt:len": "identifier / timestamp text",
+  "user.createdAt:nonempty": "identifier / timestamp text",
+  "drv.hunter_age_d_at_create": "arm-2 input (ph_hunter_age_d)"
+ },
+ "knowability": {
+  "name:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "tagline:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "slug:len": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.988,
+   "n": 421
+  },
+  "slug:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "website:len": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "website:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "website:words": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "votesCount": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "commentsCount": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "dailyRank": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "weeklyRank": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "monthlyRank": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "description:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "description:words": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.995,
+   "n": 421
+  },
+  "reviewsCount": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "reviewsRating": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "media[].type:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.977,
+   "n": 421
+  },
+  "user.username:len": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.999,
+   "n": 421
+  },
+  "user.username:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "user.name:len": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.991,
+   "n": 421
+  },
+  "user.name:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "user.headline:len": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.986,
+   "n": 377
+  },
+  "user.headline:nonempty": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 0.997,
+   "n": 377
+  },
+  "user.followersCount": {
+   "status": "leaky",
+   "present_0005": 1.0,
+   "spearman": 0.949,
+   "n": 421,
+   "why": "stored value includes outcome-dependent post-launch follower growth (log stored/00:05: others +0.89, top 3 +0.06)"
+  },
+  "user.twitterUsername:len": {
+   "status": "knowable",
+   "present_0005": 0.961,
+   "spearman": 0.999,
+   "n": 232
+  },
+  "user.twitterUsername:nonempty": {
+   "status": "knowable",
+   "present_0005": 0.961,
+   "exact_agree": 1.0,
+   "n": 232
+  },
+  "drv.created_min_pt": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "drv.featured_minus_created_h": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "drv.slug_suffix_n": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.985,
+   "n": 421
+  },
+  "drv.name_has_digit": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 421
+  },
+  "drv.hunter_has_twitter": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 0.976,
+   "n": 421
+  },
+  "drv.hunter_headline_len": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "spearman": 0.989,
+   "n": 421
+  },
+  "tagline:words": {
+   "status": "knowable",
+   "present_0005": 0.991,
+   "spearman": 0.968,
+   "n": 339
+  },
+  "user.twitterUsername:null": {
+   "status": "knowable",
+   "present_0005": 0.995,
+   "exact_agree": 1.0,
+   "n": 189
+  },
+  "user.headline:null": {
+   "status": "knowable",
+   "present_0005": 1.0,
+   "exact_agree": 1.0,
+   "n": 44
+  },
+  "slug:words": {
+   "status": "leaky",
+   "why": "stored on only 9 launches in the window"
+  },
+  "dailyRank:null": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "weeklyRank:null": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "monthlyRank:null": {
+   "status": "leaky",
+   "why": "outcome field"
+  },
+  "name:words": {
+   "status": "leaky",
+   "why": "stored on only 0 launches in the window"
+  }
+ },
+ "score": {
+  "name:nonempty": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "tagline:nonempty": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "slug:len": {
+   "rho": -0.0343,
+   "ci": [
+    -0.0662,
+    -0.0024
+   ],
+   "n_days": 184,
+   "coverage": 1.0
+  },
+  "slug:nonempty": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "website:len": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "website:nonempty": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "website:words": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "description:nonempty": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "description:words": {
+   "rho": 0.0196,
+   "ci": [
+    -0.014,
+    0.0547
+   ],
+   "n_days": 184,
+   "coverage": 0.999
+  },
+  "media[].type:nonempty": {
+   "rho": 0.021,
+   "ci": [
+    -0.0106,
+    0.0532
+   ],
+   "n_days": 184,
+   "coverage": 1.0
+  },
+  "user.username:len": {
+   "rho": 0.0082,
+   "ci": [
+    -0.0216,
+    0.0385
+   ],
+   "n_days": 184,
+   "coverage": 1.0
+  },
+  "user.username:nonempty": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "user.name:len": {
+   "rho": -0.011,
+   "ci": [
+    -0.0406,
+    0.0179
+   ],
+   "n_days": 184,
+   "coverage": 1.0
+  },
+  "user.name:nonempty": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "user.headline:len": {
+   "rho": 0.0261,
+   "ci": [
+    -0.0077,
+    0.0595
+   ],
+   "n_days": 184,
+   "coverage": 0.943
+  },
+  "user.headline:nonempty": {
+   "rho": 0.0456,
+   "ci": [
+    -0.0105,
+    0.1
+   ],
+   "n_days": 56,
+   "coverage": 0.943
+  },
+  "user.followersCount": {
+   "rho": 0.0805,
+   "ci": [
+    0.046,
+    0.1148
+   ],
+   "n_days": 184,
+   "coverage": 1.0
+  },
+  "user.twitterUsername:len": {
+   "rho": -0.0057,
+   "ci": [
+    -0.0485,
+    0.0389
+   ],
+   "n_days": 161,
+   "coverage": 0.558
+  },
+  "user.twitterUsername:nonempty": {
+   "rho": -0.0069,
+   "ci": [
+    -0.0594,
+    0.0432
+   ],
+   "n_days": 144,
+   "coverage": 0.558
+  },
+  "drv.created_min_pt": {
+   "n_days": 8,
+   "note": "too few days"
+  },
+  "drv.featured_minus_created_h": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "drv.slug_suffix_n": {
+   "rho": 0.046,
+   "ci": [
+    0.0092,
+    0.0826
+   ],
+   "n_days": 183,
+   "coverage": 1.0
+  },
+  "drv.name_has_digit": {
+   "rho": 0.0003,
+   "ci": [
+    -0.0347,
+    0.0354
+   ],
+   "n_days": 154,
+   "coverage": 1.0
+  },
+  "drv.hunter_has_twitter": {
+   "rho": 0.0023,
+   "ci": [
+    -0.0323,
+    0.0378
+   ],
+   "n_days": 184,
+   "coverage": 1.0
+  },
+  "drv.hunter_headline_len": {
+   "rho": 0.0268,
+   "ci": [
+    -0.0058,
+    0.0585
+   ],
+   "n_days": 184,
+   "coverage": 1.0
+  },
+  "tagline:words": {
+   "rho": -0.0232,
+   "ci": [
+    -0.0559,
+    0.0102
+   ],
+   "n_days": 177,
+   "coverage": 0.78
+  },
+  "user.twitterUsername:null": {
+   "n_days": 0,
+   "note": "too few days"
+  },
+  "user.headline:null": {
+   "n_days": 0,
+   "note": "too few days"
+  }
+ },
+ "clear_of_zero": [
+  "drv.slug_suffix_n",
+  "slug:len"
+ ],
+ "picked": [
+  "drv.slug_suffix_n",
+  "slug:len"
+ ],
+ "ph_at_launch": "raw/ph_at_launch/<day>/ (posts, makers, products, external, followers, api_*): Oct 4 / Nov 3 onwards; listed, too short to score on 184 days"
+}

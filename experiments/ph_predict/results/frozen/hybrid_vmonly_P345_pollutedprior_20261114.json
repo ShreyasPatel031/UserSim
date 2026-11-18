@@ -1,0 +1,20 @@
+{
+ "frozen_at": "2026-11-14T17:29:17.699629+00:00",
+ "days": "2026-11-02..2026-11-12 (11)",
+ "alpha": 3.0,
+ "features": [
+  "z_lpos",
+  "z_move",
+  "z_nc_rec",
+  "z_clean"
+ ],
+ "coef": {
+  "z_lpos": -0.5952741244689451,
+  "z_move": -0.01315589100353288,
+  "z_nc_rec": 0.10623274043794786,
+  "z_clean": 0.2238608576473876
+ },
+ "intercept": 1.6274801113699099e-16,
+ "clean_prior": "results/today_replay_polluted.parquet:clean_nosite",
+ "note": "UNDEPLOYED (today-rows refit). z within day; lpos = log hidden-rank position (recorder rank_now), move = log pos at 01:00 - log pos at T, nc_rec = log1p recorder commentsCount at T, clean = as-of-night clean_nosite from the today-rows replay; target z(-log final rank); slots 6+ only"
+}

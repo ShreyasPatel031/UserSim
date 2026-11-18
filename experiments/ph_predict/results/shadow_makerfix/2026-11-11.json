@@ -1,0 +1,164 @@
+{
+ "day": "2026-11-11",
+ "written_at": "2026-11-11T21:56:53.799171+00:00",
+ "inputs": "data/today/<d>.json (00:05 snapshot) only",
+ "launches": 16,
+ "placeholder_launches": 12,
+ "maker_cols": [
+  "ph_n_makers",
+  "ph_maker_max_age_d",
+  "ph_maker_min_age_d",
+  "ph_n_makers_new",
+  "ph_maker_has_headline",
+  "x_n_makers_with_x",
+  "hist_maker_n",
+  "hist_maker_rel_max",
+  "hist_maker_top5",
+  "ph_dayrank_ph_n_makers",
+  "hist_dayrank_hist_maker_rel_max"
+ ],
+ "sources": [
+  "ph",
+  "hist",
+  "txt",
+  "x",
+  "comp",
+  "topic",
+  "llm",
+  "fol",
+  "seg",
+  "promo",
+  "busy"
+ ],
+ "dropped": {},
+ "forecast": [
+  {
+   "id": "1285122",
+   "pred_unfixed": 5.4123,
+   "pred_makerfix": 5.307,
+   "placeholder": true,
+   "rank_unfixed": 2,
+   "rank_makerfix": 1
+  },
+  {
+   "id": "1311491",
+   "pred_unfixed": 5.3711,
+   "pred_makerfix": 5.2152,
+   "placeholder": true,
+   "rank_unfixed": 3,
+   "rank_makerfix": 2
+  },
+  {
+   "id": "1296277",
+   "pred_unfixed": 5.5682,
+   "pred_makerfix": 5.1488,
+   "placeholder": true,
+   "rank_unfixed": 1,
+   "rank_makerfix": 3
+  },
+  {
+   "id": "1311715",
+   "pred_unfixed": 5.1389,
+   "pred_makerfix": 5.1342,
+   "placeholder": true,
+   "rank_unfixed": 5,
+   "rank_makerfix": 4
+  },
+  {
+   "id": "1303622",
+   "pred_unfixed": 5.3531,
+   "pred_makerfix": 5.0789,
+   "placeholder": true,
+   "rank_unfixed": 4,
+   "rank_makerfix": 5
+  },
+  {
+   "id": "1310655",
+   "pred_unfixed": 5.0409,
+   "pred_makerfix": 5.0399,
+   "placeholder": true,
+   "rank_unfixed": 7,
+   "rank_makerfix": 6
+  },
+  {
+   "id": "1312356",
+   "pred_unfixed": 4.9633,
+   "pred_makerfix": 4.967,
+   "placeholder": true,
+   "rank_unfixed": 8,
+   "rank_makerfix": 7
+  },
+  {
+   "id": "1311828",
+   "pred_unfixed": 5.0623,
+   "pred_makerfix": 4.9119,
+   "placeholder": true,
+   "rank_unfixed": 6,
+   "rank_makerfix": 8
+  },
+  {
+   "id": "1310088",
+   "pred_unfixed": 4.9064,
+   "pred_makerfix": 4.9031,
+   "placeholder": true,
+   "rank_unfixed": 9,
+   "rank_makerfix": 9
+  },
+  {
+   "id": "1311330",
+   "pred_unfixed": 4.738,
+   "pred_makerfix": 4.738,
+   "placeholder": false,
+   "rank_unfixed": 12,
+   "rank_makerfix": 10
+  },
+  {
+   "id": "1308685",
+   "pred_unfixed": 4.7344,
+   "pred_makerfix": 4.7344,
+   "placeholder": false,
+   "rank_unfixed": 13,
+   "rank_makerfix": 11
+  },
+  {
+   "id": "1307690",
+   "pred_unfixed": 4.6857,
+   "pred_makerfix": 4.6857,
+   "placeholder": false,
+   "rank_unfixed": 14,
+   "rank_makerfix": 12
+  },
+  {
+   "id": "1311454",
+   "pred_unfixed": 4.6436,
+   "pred_makerfix": 4.6436,
+   "placeholder": false,
+   "rank_unfixed": 15,
+   "rank_makerfix": 13
+  },
+  {
+   "id": "1312054",
+   "pred_unfixed": 4.8556,
+   "pred_makerfix": 4.6174,
+   "placeholder": true,
+   "rank_unfixed": 11,
+   "rank_makerfix": 14
+  },
+  {
+   "id": "1311269",
+   "pred_unfixed": 4.8588,
+   "pred_makerfix": 4.608,
+   "placeholder": true,
+   "rank_unfixed": 10,
+   "rank_makerfix": 15
+  },
+  {
+   "id": "1311460",
+   "pred_unfixed": 4.6396,
+   "pred_makerfix": 4.584,
+   "placeholder": true,
+   "rank_unfixed": 16,
+   "rank_makerfix": 16
+  }
+ ]
+}

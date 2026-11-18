@@ -1,0 +1,555 @@
+{
+ "launches": 5564,
+ "days": 239,
+ "dropped_columns": {
+  "honest - live set + llm_full": [
+   "fol_active30",
+   "fol_any",
+   "fol_hunter",
+   "fol_loyal",
+   "fol_team",
+   "fol_team_max",
+   "pf_agent",
+   "pf_ai_in_tagline",
+   "pf_api_or_sdk",
+   "pf_asks_for_feedback",
+   "pf_asks_for_upvotes",
+   "pf_audience_consumers",
+   "pf_audience_creators",
+   "pf_audience_designers",
+   "pf_audience_developers",
+   "pf_audience_founders",
+   "pf_audience_marketers",
+   "pf_audience_other",
+   "pf_audience_sales",
+   "pf_audience_students",
+   "pf_audience_teams",
+   "pf_b2b_product",
+   "pf_browser_extension",
+   "pf_claims_privacy",
+   "pf_claims_speed",
+   "pf_consumer_product",
+   "pf_developer_tool",
+   "pf_emoji_in_first_comment",
+   "pf_features_listed",
+   "pf_first_comment_words",
+   "pf_founder_story",
+   "pf_free_plan",
+   "pf_free_trial",
+   "pf_games_or_fun",
+   "pf_hardware",
+   "pf_how_it_works_steps",
+   "pf_integrations_listed",
+   "pf_launch_discount",
+   "pf_mac_app",
+   "pf_mentions_competitor",
+   "pf_mobile_app",
+   "pf_no_signup_needed",
+   "pf_number_in_tagline",
+   "pf_open_source",
+   "pf_paid_only",
+   "pf_price_point_10_to_50",
+   "pf_price_point_free",
+   "pf_price_point_not_stated",
+   "pf_price_point_over_50",
+   "pf_price_point_under_10",
+   "pf_problem_stated",
+   "pf_relaunch_or_new_version",
+   "pf_social_proof",
+   "pf_tagline_style_benefit",
+   "pf_tagline_style_category",
+   "pf_tagline_style_clever",
+   "pf_tagline_style_feature",
+   "pf_tagline_style_other",
+   "pf_tagline_style_question",
+   "pf_tagline_words",
+   "pf_waitlist_or_beta",
+   "pf_who_its_for_stated",
+   "ph_dayrank_ph_hunter_followers",
+   "ph_hunter_followers",
+   "promo_company_age",
+   "promo_company_li",
+   "promo_founder_li",
+   "promo_founder_x",
+   "promo_funding",
+   "promo_n_sources",
+   "promo_reactions",
+   "ps_audience_breadth",
+   "ps_category_fit",
+   "ps_clarity",
+   "ps_credibility",
+   "ps_description",
+   "ps_first_comment",
+   "ps_gallery",
+   "ps_has_first_comment",
+   "ps_links",
+   "ps_logo",
+   "ps_mix_bug",
+   "ps_mix_comparison",
+   "ps_mix_confusion",
+   "ps_mix_other",
+   "ps_mix_praise",
+   "ps_mix_pricing",
+   "ps_mix_privacy",
+   "ps_mix_question",
+   "ps_n_images",
+   "ps_name",
+   "ps_novelty",
+   "ps_problem_urgency",
+   "ps_tagline",
+   "ps_top5_chance",
+   "ps_usefulness",
+   "ps_video",
+   "ps_visual_polish",
+   "ps_website",
+   "ps_wow",
+   "seg_buyer_type_developer_adopter",
+   "seg_buyer_type_developer_adopter_share",
+   "seg_buyer_type_enterprise_buyer",
+   "seg_buyer_type_enterprise_buyer_share",
+   "seg_buyer_type_individual_prosumer",
+   "seg_buyer_type_individual_prosumer_share",
+   "seg_buyer_type_team_lead_buyer",
+   "seg_buyer_type_team_lead_buyer_share",
+   "seg_company_type_agency_consulting",
+   "seg_company_type_agency_consulting_share",
+   "seg_company_type_big_tech",
+   "seg_company_type_big_tech_share",
+   "seg_company_type_enterprise",
+   "seg_company_type_enterprise_share",
+   "seg_company_type_own_startup",
+   "seg_company_type_own_startup_share",
+   "seg_n",
+   "seg_role_creator",
+   "seg_role_creator_share",
+   "seg_role_designer",
+   "seg_role_designer_share",
+   "seg_role_engineer",
+   "seg_role_engineer_share",
+   "seg_role_founder_exec",
+   "seg_role_founder_exec_share",
+   "seg_role_investor",
+   "seg_role_investor_share",
+   "seg_role_marketing_growth",
+   "seg_role_marketing_growth_share",
+   "seg_role_product",
+   "seg_role_product_share",
+   "seg_seniority_founder_c_level",
+   "seg_seniority_founder_c_level_share",
+   "seg_seniority_senior_lead",
+   "seg_seniority_senior_lead_share",
+   "seg_tech_level_builds_software",
+   "seg_tech_level_builds_software_share",
+   "seg_tech_level_non_technical",
+   "seg_tech_level_non_technical_share",
+   "seg_us_share",
+   "vs_call_to_action",
+   "vs_clarity",
+   "vs_founder_on_camera",
+   "vs_hook",
+   "vs_length_fit",
+   "vs_length_seconds",
+   "vs_pacing",
+   "vs_problem_shown",
+   "vs_product_working",
+   "vs_production",
+   "vs_shows_real_ui",
+   "vs_unwatchable",
+   "vs_voice_or_captions",
+   "vs_wow",
+   "x_company_followers",
+   "x_dayrank_x_company_followers",
+   "x_dayrank_x_hunter_followers",
+   "x_dayrank_x_maker_max_followers",
+   "x_hunter_followers",
+   "x_maker_max_followers",
+   "x_maker_sum_followers"
+  ],
+  "honest - live set": [
+   "fol_active30",
+   "fol_any",
+   "fol_hunter",
+   "fol_loyal",
+   "fol_team",
+   "fol_team_max",
+   "llm_full",
+   "pf_agent",
+   "pf_ai_in_tagline",
+   "pf_api_or_sdk",
+   "pf_asks_for_feedback",
+   "pf_asks_for_upvotes",
+   "pf_audience_consumers",
+   "pf_audience_creators",
+   "pf_audience_designers",
+   "pf_audience_developers",
+   "pf_audience_founders",
+   "pf_audience_marketers",
+   "pf_audience_other",
+   "pf_audience_sales",
+   "pf_audience_students",
+   "pf_audience_teams",
+   "pf_b2b_product",
+   "pf_browser_extension",
+   "pf_claims_privacy",
+   "pf_claims_speed",
+   "pf_consumer_product",
+   "pf_developer_tool",
+   "pf_emoji_in_first_comment",
+   "pf_features_listed",
+   "pf_first_comment_words",
+   "pf_founder_story",
+   "pf_free_plan",
+   "pf_free_trial",
+   "pf_games_or_fun",
+   "pf_hardware",
+   "pf_how_it_works_steps",
+   "pf_integrations_listed",
+   "pf_launch_discount",
+   "pf_mac_app",
+   "pf_mentions_competitor",
+   "pf_mobile_app",
+   "pf_no_signup_needed",
+   "pf_number_in_tagline",
+   "pf_open_source",
+   "pf_paid_only",
+   "pf_price_point_10_to_50",
+   "pf_price_point_free",
+   "pf_price_point_not_stated",
+   "pf_price_point_over_50",
+   "pf_price_point_under_10",
+   "pf_problem_stated",
+   "pf_relaunch_or_new_version",
+   "pf_social_proof",
+   "pf_tagline_style_benefit",
+   "pf_tagline_style_category",
+   "pf_tagline_style_clever",
+   "pf_tagline_style_feature",
+   "pf_tagline_style_other",
+   "pf_tagline_style_question",
+   "pf_tagline_words",
+   "pf_waitlist_or_beta",
+   "pf_who_its_for_stated",
+   "ph_dayrank_ph_hunter_followers",
+   "ph_hunter_followers",
+   "promo_company_age",
+   "promo_company_li",
+   "promo_founder_li",
+   "promo_founder_x",
+   "promo_funding",
+   "promo_n_sources",
+   "promo_reactions",
+   "ps_audience_breadth",
+   "ps_category_fit",
+   "ps_clarity",
+   "ps_credibility",
+   "ps_description",
+   "ps_first_comment",
+   "ps_gallery",
+   "ps_has_first_comment",
+   "ps_links",
+   "ps_logo",
+   "ps_mix_bug",
+   "ps_mix_comparison",
+   "ps_mix_confusion",
+   "ps_mix_other",
+   "ps_mix_praise",
+   "ps_mix_pricing",
+   "ps_mix_privacy",
+   "ps_mix_question",
+   "ps_n_images",
+   "ps_name",
+   "ps_novelty",
+   "ps_problem_urgency",
+   "ps_tagline",
+   "ps_top5_chance",
+   "ps_usefulness",
+   "ps_video",
+   "ps_visual_polish",
+   "ps_website",
+   "ps_wow",
+   "seg_buyer_type_developer_adopter",
+   "seg_buyer_type_developer_adopter_share",
+   "seg_buyer_type_enterprise_buyer",
+   "seg_buyer_type_enterprise_buyer_share",
+   "seg_buyer_type_individual_prosumer",
+   "seg_buyer_type_individual_prosumer_share",
+   "seg_buyer_type_team_lead_buyer",
+   "seg_buyer_type_team_lead_buyer_share",
+   "seg_company_type_agency_consulting",
+   "seg_company_type_agency_consulting_share",
+   "seg_company_type_big_tech",
+   "seg_company_type_big_tech_share",
+   "seg_company_type_enterprise",
+   "seg_company_type_enterprise_share",
+   "seg_company_type_own_startup",
+   "seg_company_type_own_startup_share",
+   "seg_n",
+   "seg_role_creator",
+   "seg_role_creator_share",
+   "seg_role_designer",
+   "seg_role_designer_share",
+   "seg_role_engineer",
+   "seg_role_engineer_share",
+   "seg_role_founder_exec",
+   "seg_role_founder_exec_share",
+   "seg_role_investor",
+   "seg_role_investor_share",
+   "seg_role_marketing_growth",
+   "seg_role_marketing_growth_share",
+   "seg_role_product",
+   "seg_role_product_share",
+   "seg_seniority_founder_c_level",
+   "seg_seniority_founder_c_level_share",
+   "seg_seniority_senior_lead",
+   "seg_seniority_senior_lead_share",
+   "seg_tech_level_builds_software",
+   "seg_tech_level_builds_software_share",
+   "seg_tech_level_non_technical",
+   "seg_tech_level_non_technical_share",
+   "seg_us_share",
+   "vs_call_to_action",
+   "vs_clarity",
+   "vs_founder_on_camera",
+   "vs_hook",
+   "vs_length_fit",
+   "vs_length_seconds",
+   "vs_pacing",
+   "vs_problem_shown",
+   "vs_product_working",
+   "vs_production",
+   "vs_shows_real_ui",
+   "vs_unwatchable",
+   "vs_voice_or_captions",
+   "vs_wow",
+   "x_company_followers",
+   "x_dayrank_x_company_followers",
+   "x_dayrank_x_hunter_followers",
+   "x_dayrank_x_maker_max_followers",
+   "x_hunter_followers",
+   "x_maker_max_followers",
+   "x_maker_sum_followers"
+  ]
+ },
+ "May-Oct": {
+  "base": "honest - live set + llm_full",
+  "day top3": {
+   "honest - live set + llm_full": 62.7,
+   "lists": 177,
+   "honest - live set": [
+    62.7,
+    0.0,
+    [
+     -1.9,
+     1.7
+    ]
+   ]
+  },
+  "day top5": {
+   "honest - live set + llm_full": 70.4,
+   "lists": 177,
+   "honest - live set": [
+    70.4,
+    0.0,
+    [
+     -1.0,
+     1.0
+    ]
+   ]
+  },
+  "day top10": {
+   "honest - live set + llm_full": 76.6,
+   "lists": 145,
+   "honest - live set": [
+    76.6,
+    0.0,
+    [
+     -0.6,
+     0.6
+    ]
+   ]
+  },
+  "week top3": {
+   "honest - live set + llm_full": 42.7,
+   "lists": 25,
+   "honest - live set": [
+    45.3,
+    2.7,
+    [
+     0.0,
+     6.7
+    ]
+   ]
+  },
+  "week top5": {
+   "honest - live set + llm_full": 56.0,
+   "lists": 25,
+   "honest - live set": [
+    54.4,
+    -1.6,
+    [
+     -4.0,
+     0.0
+    ]
+   ]
+  },
+  "week top10": {
+   "honest - live set + llm_full": 55.2,
+   "lists": 23,
+   "honest - live set": [
+    54.8,
+    -0.4,
+    [
+     -2.6,
+     1.7
+    ]
+   ]
+  },
+  "mon top3": {
+   "honest - live set + llm_full": 20.0,
+   "lists": 5,
+   "honest - live set": [
+    26.7,
+    6.7,
+    [
+     0.0,
+     20.0
+    ]
+   ]
+  },
+  "mon top5": {
+   "honest - live set + llm_full": 30.0,
+   "lists": 6,
+   "honest - live set": [
+    30.0,
+    0.0,
+    [
+     -10.0,
+     10.0
+    ]
+   ]
+  },
+  "mon top10": {
+   "honest - live set + llm_full": 36.7,
+   "lists": 6,
+   "honest - live set": [
+    36.7,
+    0.0,
+    [
+     0.0,
+     0.0
+    ]
+   ]
+  }
+ },
+ "Jul-Oct": {
+  "base": "honest - live set + llm_full",
+  "day top3": {
+   "honest - live set + llm_full": 63.5,
+   "lists": 117,
+   "honest - live set": [
+    64.4,
+    0.9,
+    [
+     -1.4,
+     3.1
+    ]
+   ]
+  },
+  "day top5": {
+   "honest - live set + llm_full": 69.7,
+   "lists": 117,
+   "honest - live set": [
+    69.6,
+    -0.2,
+    [
+     -1.4,
+     1.0
+    ]
+   ]
+  },
+  "day top10": {
+   "honest - live set + llm_full": 77.0,
+   "lists": 102,
+   "honest - live set": [
+    77.1,
+    0.1,
+    [
+     -0.6,
+     0.8
+    ]
+   ]
+  },
+  "week top3": {
+   "honest - live set + llm_full": 45.1,
+   "lists": 17,
+   "honest - live set": [
+    49.0,
+    3.9,
+    [
+     0.0,
+     9.8
+    ]
+   ]
+  },
+  "week top5": {
+   "honest - live set + llm_full": 55.0,
+   "lists": 16,
+   "honest - live set": [
+    53.8,
+    -1.2,
+    [
+     -3.7,
+     0.0
+    ]
+   ]
+  },
+  "week top10": {
+   "honest - live set + llm_full": 56.0,
+   "lists": 15,
+   "honest - live set": [
+    55.3,
+    -0.7,
+    [
+     -2.7,
+     1.3
+    ]
+   ]
+  },
+  "mon top3": {
+   "honest - live set + llm_full": 33.3,
+   "lists": 3,
+   "honest - live set": [
+    33.3,
+    0.0,
+    [
+     0.0,
+     0.0
+    ]
+   ]
+  },
+  "mon top5": {
+   "honest - live set + llm_full": 35.0,
+   "lists": 4,
+   "honest - live set": [
+    30.0,
+    -5.0,
+    [
+     -15.0,
+     0.0
+    ]
+   ]
+  },
+  "mon top10": {
+   "honest - live set + llm_full": 37.5,
+   "lists": 4,
+   "honest - live set": [
+    37.5,
+    0.0,
+    [
+     0.0,
+     0.0
+    ]
+   ]
+  }
+ }
+}

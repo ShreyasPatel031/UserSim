@@ -1,0 +1,40 @@
+{
+ "frozen_at": "2026-11-13T05:06:10.229767+00:00",
+ "days": 214,
+ "label": "top-10 candidate",
+ "coef": {
+  "z_clean": 0.5262397146542357,
+  "z_npre": 0.18836465903445618,
+  "z_hf": 0.0864800370732119
+ },
+ "live_inputs": "clean_nosite (shadow pred_clean_nosite), th_n_pre (00:07 read only), log1p hunter followersCount from raw/daily/<d>/today_0005.json only",
+ "lodo": {
+  "base": [
+   60.1,
+   68.7,
+   75.3
+  ],
+  "with_hf": [
+   59.0,
+   68.8,
+   75.6
+  ],
+  "diff_ci": [
+   [
+    -1.1,
+    -2.3,
+    0.0
+   ],
+   [
+    0.1,
+    -0.7,
+    0.8
+   ],
+   [
+    0.3,
+    -0.1,
+    0.7
+   ]
+  ]
+ }
+}

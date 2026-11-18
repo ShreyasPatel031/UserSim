@@ -1,0 +1,378 @@
+{
+ "version": "conf_v2",
+ "built": "2026-11-12",
+ "applies_to": "clean shadow line (clean per-launch scores at 00:05). Published/deployed line: per-position constants only (see published_line).",
+ "statement": {
+  "text_clear_leader": "Clear leader today: on past days like this our #1 finished in the final top 3 about 85% of the time (59 of 69 days).",
+  "text_open_field": "Open field today: on past days like this our #1 finished in the final top 3 about 68% of the time (85 of 125 days).",
+  "validated_month_forward": {
+   "clear_leader": {
+    "days": 69,
+    "p1_top3": 0.855,
+    "p1_ci": [
+     0.768,
+     0.928
+    ],
+    "p1_count": "59 of 69",
+    "top3_hits": 1.971,
+    "top3_hits_ci": [
+     1.826,
+     2.13
+    ]
+   },
+   "open_field": {
+    "days": 125,
+    "p1_top3": 0.68,
+    "p1_ci": [
+     0.6,
+     0.76
+    ],
+    "p1_count": "85 of 125",
+    "top3_hits": 1.656,
+    "top3_hits_ci": [
+     1.536,
+     1.776
+    ]
+   }
+  },
+  "eval": "month-forward, May 1 - Nov 10 2026, 194 days; label fixed on training months; CIs day bootstrap",
+  "easy_minus_open": {
+   "p1": 0.175,
+   "p1_ci": [
+    0.059,
+    0.288
+   ],
+   "top3_hits": 0.315,
+   "top3_hits_ci": [
+    0.127,
+    0.505
+   ]
+  },
+  "stability": {
+   "noise_sd": 0.0928,
+   "noise_note": "sd of within-day clean-vs-deployed residual on 14 live days (about 1/4 of the within-day score sd 0.365)",
+   "share_days_label_kept": 0.893,
+   "kept_range_200_draws": [
+    0.845,
+    0.928
+   ],
+   "p1_spread_under_noise_mean": 0.172,
+   "p1_spread_under_noise_range": [
+    0.105,
+    0.234
+   ],
+   "lgb_vs_ridge_label_agreement": 0.886
+  }
+ },
+ "rule": {
+  "model": "logistic on standardized features; clear_leader if p >= cutoff",
+  "features": {
+   "g12z": "(score #1 - score #2)/day score sd",
+   "z1": "(score #1 - day mean)/day score sd",
+   "t3z": "(mean of top-3 scores - mean of the rest)/day score sd",
+   "ln": "log(number of launches)"
+  },
+  "standardize_mean": {
+   "g12z": 0.531518,
+   "z1": 2.268549,
+   "t3z": 2.14722,
+   "ln": 2.983139
+  },
+  "standardize_sd": {
+   "g12z": 0.499243,
+   "z1": 0.584471,
+   "t3z": 0.429653,
+   "ln": 0.61294
+  },
+  "coef": {
+   "g12z": 0.03228,
+   "z1": 0.53316,
+   "t3z": 0.45251,
+   "ln": -0.94419
+  },
+  "intercept": 0.93476,
+  "cutoff": 0.7787,
+  "cutoff_definition": "67th percentile of fitted p over the 255 training days",
+  "fit_days": 255
+ },
+ "alternatives_tested": {
+  "core3": {
+   "days": 194,
+   "n_easy": 61,
+   "n_hard": 61,
+   "easy_h3": 1.951,
+   "hard_h3": 1.525,
+   "d_h3": 0.426,
+   "d_h3_ci": [
+    0.167,
+    0.682
+   ],
+   "easy_p1": 0.852,
+   "hard_p1": 0.656,
+   "d_p1": 0.197,
+   "d_p1_ci": [
+    0.043,
+    0.346
+   ],
+   "noise": {
+    "sigma": 0.0928,
+    "keep_bin_mean": 0.712,
+    "keep_bin_range": [
+     0.655,
+     0.768
+    ],
+    "d_h3_mean": 0.397,
+    "d_h3_range": [
+     0.263,
+     0.539
+    ],
+    "d_p1_mean": 0.167,
+    "d_p1_range": [
+     0.091,
+     0.257
+    ]
+   },
+   "two_models": {
+    "days": 184,
+    "agree_lgb_ridge": 0.663,
+    "agree_lgb_clean": 0.56,
+    "agree_ridge_clean": 0.592,
+    "d_h3_by_lgb": 0.545,
+    "d_p1_by_lgb": 0.273,
+    "d_h3_by_ridge": 0.412,
+    "d_p1_by_ridge": 0.164,
+    "d_h3_by_clean_same_days": 0.448,
+    "d_p1_by_clean_same_days": 0.22
+   }
+  },
+  "sdscaled3": {
+   "days": 194,
+   "n_easy": 81,
+   "n_hard": 41,
+   "easy_h3": 1.938,
+   "hard_h3": 1.512,
+   "d_h3": 0.426,
+   "d_h3_ci": [
+    0.149,
+    0.697
+   ],
+   "easy_p1": 0.827,
+   "hard_p1": 0.585,
+   "d_p1": 0.242,
+   "d_p1_ci": [
+    0.068,
+    0.426
+   ],
+   "noise": {
+    "sigma": 0.0928,
+    "keep_bin_mean": 0.777,
+    "keep_bin_range": [
+     0.722,
+     0.83
+    ],
+    "d_h3_mean": 0.415,
+    "d_h3_range": [
+     0.295,
+     0.535
+    ],
+    "d_p1_mean": 0.222,
+    "d_p1_range": [
+     0.148,
+     0.3
+    ]
+   },
+   "two_models": {
+    "days": 184,
+    "agree_lgb_ridge": 0.739,
+    "agree_lgb_clean": 0.679,
+    "agree_ridge_clean": 0.712,
+    "d_h3_by_lgb": 0.528,
+    "d_p1_by_lgb": 0.257,
+    "d_h3_by_ridge": 0.476,
+    "d_p1_by_ridge": 0.229,
+    "d_h3_by_clean_same_days": 0.436,
+    "d_p1_by_clean_same_days": 0.257
+   }
+  },
+  "leader2": {
+   "days": 194,
+   "n_easy": 65,
+   "n_hard": 129,
+   "easy_h3": 1.862,
+   "hard_h3": 1.721,
+   "d_h3": 0.141,
+   "d_h3_ci": [
+    -0.055,
+    0.334
+   ],
+   "easy_p1": 0.846,
+   "hard_p1": 0.69,
+   "d_p1": 0.156,
+   "d_p1_ci": [
+    0.041,
+    0.272
+   ],
+   "noise": {
+    "sigma": 0.0928,
+    "keep_bin_mean": 0.857,
+    "keep_bin_range": [
+     0.814,
+     0.902
+    ],
+    "d_h3_mean": 0.174,
+    "d_h3_range": [
+     0.03,
+     0.303
+    ],
+    "d_p1_mean": 0.143,
+    "d_p1_range": [
+     0.068,
+     0.22
+    ]
+   },
+   "two_models": {
+    "days": 184,
+    "agree_lgb_ridge": 0.75,
+    "agree_lgb_clean": 0.685,
+    "agree_ridge_clean": 0.707,
+    "d_h3_by_lgb": 0.23,
+    "d_p1_by_lgb": 0.222,
+    "d_h3_by_ridge": 0.082,
+    "d_p1_by_ridge": 0.119,
+    "d_h3_by_clean_same_days": 0.125,
+    "d_p1_by_clean_same_days": 0.158
+   }
+  },
+  "leader2_sd": {
+   "days": 194,
+   "n_easy": 69,
+   "n_hard": 125,
+   "easy_h3": 1.971,
+   "hard_h3": 1.656,
+   "d_h3": 0.315,
+   "d_h3_ci": [
+    0.127,
+    0.505
+   ],
+   "easy_p1": 0.855,
+   "hard_p1": 0.68,
+   "d_p1": 0.175,
+   "d_p1_ci": [
+    0.059,
+    0.288
+   ],
+   "noise": {
+    "sigma": 0.0928,
+    "keep_bin_mean": 0.893,
+    "keep_bin_range": [
+     0.845,
+     0.928
+    ],
+    "d_h3_mean": 0.262,
+    "d_h3_range": [
+     0.149,
+     0.36
+    ],
+    "d_p1_mean": 0.172,
+    "d_p1_range": [
+     0.105,
+     0.234
+    ]
+   },
+   "two_models": {
+    "days": 184,
+    "agree_lgb_ridge": 0.886,
+    "agree_lgb_clean": 0.761,
+    "agree_ridge_clean": 0.755,
+    "d_h3_by_lgb": 0.242,
+    "d_p1_by_lgb": 0.192,
+    "d_h3_by_ridge": 0.143,
+    "d_p1_by_ridge": 0.179,
+    "d_h3_by_clean_same_days": 0.312,
+    "d_p1_by_clean_same_days": 0.184
+   }
+  }
+ },
+ "published_line": {
+  "what_runs": "per-position constants only. The published 00:05 file carries ranks only; a rank-only day label (day size, weekend, strong-hunter count, strong hunters among our top 3/10) does NOT separate days out of sample, so no easy/hard label is shown for the published line.",
+  "show": "per-position rates, with the live record and the clean backtest as two lines",
+  "published_live_record_14_days": {
+   "p1_top3": {
+    "hits": 7,
+    "days": 14,
+    "rate": 0.5,
+    "ci": [
+     0.214,
+     0.786
+    ]
+   },
+   "p2_top3": {
+    "hits": 10,
+    "days": 14,
+    "rate": 0.714,
+    "ci": [
+     0.5,
+     0.929
+    ]
+   },
+   "p3_top3": {
+    "hits": 5,
+    "days": 14,
+    "rate": 0.357,
+    "ci": [
+     0.143,
+     0.571
+    ]
+   },
+   "exact1": {
+    "hits": 3,
+    "days": 14,
+    "rate": 0.214,
+    "ci": [
+     0.0,
+     0.429
+    ]
+   },
+   "mean_top3_pct": 52.4,
+   "mean_top10_pct": 77.9
+  },
+  "clean_backtest_per_position_top3": {
+   "#1": 0.702,
+   "#2": 0.584,
+   "#3": 0.396,
+   "#4": 0.353,
+   "#5": 0.286,
+   "#6": 0.178,
+   "#7": 0.133,
+   "#8": 0.132,
+   "#9": 0.062,
+   "#10": 0.054
+  },
+  "clean_backtest_per_position_top5": {
+   "#1": 0.843,
+   "#2": 0.741,
+   "#3": 0.635,
+   "#4": 0.616,
+   "#5": 0.541,
+   "#6": 0.381,
+   "#7": 0.312,
+   "#8": 0.252,
+   "#9": 0.19,
+   "#10": 0.113
+  },
+  "clean_backtest_per_position_top10": {
+   "#1": 0.945,
+   "#2": 0.922,
+   "#3": 0.881,
+   "#4": 0.862,
+   "#5": 0.78,
+   "#6": 0.739,
+   "#7": 0.697,
+   "#8": 0.615,
+   "#9": 0.592,
+   "#10": 0.468
+  },
+  "suggested_text": "Our #1 pick finishes in the final top 3 on about 7 in 10 days (clean backtest, 255 days); on the 14 published days so far it was 7 in 14."
+ },
+ "pick_probabilities": "per-pick probabilities: confidence_v1.json pick_models (clean) - unchanged"
+}

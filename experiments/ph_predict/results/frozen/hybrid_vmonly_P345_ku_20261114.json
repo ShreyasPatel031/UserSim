@@ -1,0 +1,20 @@
+{
+ "frozen_at": "2026-11-14T20:46:15.598882+00:00",
+ "days": "2026-11-02..2026-11-12 (11)",
+ "alpha": 3.0,
+ "features": [
+  "z_lpos",
+  "z_move",
+  "z_nc_rec",
+  "z_clean"
+ ],
+ "coef": {
+  "z_lpos": -0.598072261267845,
+  "z_move": -0.016733985185188354,
+  "z_nc_rec": 0.11348277424908747,
+  "z_clean": 0.2186504568486407
+ },
+ "intercept": 0.003899830843263887,
+ "clean_prior": null,
+ "note": "UNDEPLOYED (today-rows refit). z within day; lpos = log hidden-rank position (recorder rank_now), move = log pos at 01:00 - log pos at T, nc_rec = log1p recorder commentsCount at T, clean = as-of-night clean_nosite from the today-rows replay; target z(-log final rank); slots 6+ only"
+}

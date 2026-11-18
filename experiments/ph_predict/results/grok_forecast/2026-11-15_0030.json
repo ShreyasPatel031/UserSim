@@ -1,0 +1,101 @@
+{
+  "day": "2026-11-15",
+  "point": "0030",
+  "written_at": "2026-11-15T08:24:47Z",
+  "window_start": "2026-11-13T08:00:00Z",
+  "window_end": "2026-11-15T08:21:07Z",
+  "inputs": {
+    "lineup": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/daily/2026-11-15/today_0005.json",
+    "lineup_fields_used": [
+      "name",
+      "tagline",
+      "slug",
+      "website",
+      "makers.twitterUsername",
+      "user.twitterUsername"
+    ],
+    "x_buzz": "gs://usersim-bakeoff-347838016394/usersim_sim/raw/ph_at_launch/2026-11-15/x_buzz_0010.jsonl",
+    "x_search_windows": {
+      "pre_launch": {
+        "start": "2026-11-13T08:00:00Z",
+        "end": "2026-11-15T08:00:00Z"
+      },
+      "launch_day": {
+        "start": "2026-11-15T08:00:00Z",
+        "end": "2026-11-15T08:21:07Z"
+      }
+    },
+    "excluded": [
+      "dailyRank",
+      "weeklyRank",
+      "monthlyRank",
+      "votesCount",
+      "commentsCount",
+      "any other Product Hunt rank or vote field",
+      "Product Hunt web pages"
+    ],
+    "note": "Website fields in the lineup were Product Hunt API redirect URLs, not product domains. X url: queries cannot include '/'; searches used product names, slugs, and listed maker/hunter handles. No Product Hunt pages were loaded. Each launch has two count rows (pre_launch: 48 hours ending 00:00 PT, and launch_day: 00:00 PT to 00:21 PT)."
+  },
+  "forecast": [
+    {
+      "rank": 1,
+      "name": "ByteAsk Cloud Agents",
+      "slug": "byteask-cloud-agents",
+      "reason": "By far the heaviest X conversation (149 pre-launch posts) about an AI coding agent that finds fixes in large/C++ codebases, including a 69,515-follower account in the sample and an Introducing thread with 54 visible reposts; no launch-morning posts yet."
+    },
+    {
+      "rank": 2,
+      "name": "Rakazo",
+      "slug": "rakazo-2",
+      "reason": "Clear product conversation over the prior 48 hours (44 posts), with a 70-like maker post and a 53,149-follower account amplifying an open-source Grok Bot alternative, plus one launch-morning reply offering to invest."
+    },
+    {
+      "rank": 3,
+      "name": "Tulvo",
+      "slug": "tulvo",
+      "reason": "The only launch with a sustained Product Hunt pre-announce: nine countdown posts from two small accounts (largest 127 followers) ahead of the 15 November debut. Reach is modest, but the intent signal is explicit."
+    },
+    {
+      "rank": 4,
+      "name": "Remindly",
+      "slug": "remindly-6",
+      "reason": "No meaningful pre-launch buzz, but the maker posted an official Product Hunt launch announcement shortly after 00:00 PT (2 likes). That is the only launch-day announcement in the first 21 minutes."
+    },
+    {
+      "rank": 5,
+      "name": "Talyn",
+      "slug": "talyn-2",
+      "reason": "No on-topic X posts in either window, but the lineup text is a sharp, timely hook -- run Claude Code and Codex in parallel cloud sandboxes -- so the ranking rests on that text, not observed buzz."
+    },
+    {
+      "rank": 6,
+      "name": "Perit Marketplace",
+      "slug": "perit-marketplace",
+      "reason": "No on-topic X posts; ranked on lineup text alone -- a marketplace to sell data and RL tasks to frontier AI labs, which is a clear and unusual hook."
+    },
+    {
+      "rank": 7,
+      "name": "Polylane for Security",
+      "slug": "polylane-for-security",
+      "reason": "No X posts found; the tagline (catch exploitable vulnerabilities before they ship) is a concrete, current-tooling hook that is easier to picture than the other silent, more generic tools."
+    },
+    {
+      "rank": 8,
+      "name": "Spiik",
+      "slug": "spiik",
+      "reason": "No on-topic X posts; ranked on lineup text -- an AI note taker for meetings and lectures that does not put a bot on the call, a specific differentiator."
+    },
+    {
+      "rank": 9,
+      "name": "Pixel Office",
+      "slug": "pixel-office-3",
+      "reason": "No on-topic X posts; the tagline (run a team of AI agents from a pixel-art office) is distinctive and memorable, which is why it sits above the remaining silent launches."
+    },
+    {
+      "rank": 10,
+      "name": "Canvas by AgentGrid.io",
+      "slug": "canvas-by-agentgrid-io",
+      "reason": "No posts about the Canvas launch itself (only broader AgentGrid chatter, which was excluded). Ranked on the lineup text: an Agentic Design Canvas for visual collaboration with AI."
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+ "frozen_at": "2026-11-13T21:03:35.118779+00:00",
+ "base": "arm 2 00:05 score (pred_arm2)",
+ "features": [
+  "pos2",
+  "pos3",
+  "m_k4",
+  "m_34",
+  "m_12",
+  "lnn"
+ ],
+ "note": "per pick k (sorted by score): pos2/pos3 one-hot, m_k4 = score_k - score_4, m_34, m_12, lnn = log launches that day",
+ "coef": {
+  "pos2": -0.18986921813986157,
+  "pos3": -0.5322157304026197,
+  "m_k4": 1.784161931337722,
+  "m_34": 0.04871583039140494,
+  "m_12": -0.22120853785665215,
+  "lnn": -0.24005895630550117
+ },
+ "intercept": 0.9930730805513104,
+ "days": 214
+}

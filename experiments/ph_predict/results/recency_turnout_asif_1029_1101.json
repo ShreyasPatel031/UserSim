@@ -1,0 +1,71 @@
+{
+ "days": [
+  "2026-10-29",
+  "2026-10-30",
+  "2026-10-31",
+  "2026-11-01"
+ ],
+ "mode": "asif",
+ "per_day": {
+  "2026-10-29": {
+   "launch_rho_pnx": 0.603,
+   "launch_rho_recency": 0.61,
+   "diff": 0.007,
+   "diff_ci95_people_boot": [
+    -0.015,
+    0.013
+   ],
+   "person_auc_pnx_w": 0.839,
+   "person_auc_recency": 0.848,
+   "person_top3_hit": 0.485,
+   "launches": 30,
+   "people_acting": 565
+  },
+  "2026-10-30": {
+   "launch_rho_pnx": 0.805,
+   "launch_rho_recency": 0.804,
+   "diff": -0.002,
+   "diff_ci95_people_boot": [
+    -0.027,
+    0.009
+   ],
+   "person_auc_pnx_w": 0.853,
+   "person_auc_recency": 0.86,
+   "person_top3_hit": 0.74,
+   "launches": 20,
+   "people_acting": 561
+  },
+  "2026-10-31": {
+   "launch_rho_pnx": 0.489,
+   "launch_rho_recency": 0.497,
+   "diff": 0.008,
+   "diff_ci95_people_boot": [
+    -0.007,
+    0.009
+   ],
+   "person_auc_pnx_w": 0.889,
+   "person_auc_recency": 0.895,
+   "person_top3_hit": 0.668,
+   "launches": 22,
+   "people_acting": 374
+  },
+  "2026-11-01": {
+   "launch_rho_pnx": 0.593,
+   "launch_rho_recency": 0.593,
+   "diff": 0.0,
+   "diff_ci95_people_boot": [
+    0.0,
+    0.016
+   ],
+   "person_auc_pnx_w": 0.854,
+   "person_auc_recency": 0.863,
+   "person_top3_hit": 0.483,
+   "launches": 19,
+   "people_acting": 323
+  }
+ },
+ "reference": "pnx (live person model, TIE2) on the same days",
+ "mean_diff": 0.003,
+ "days_recency_better": 2,
+ "note": "person top-3 hit is identical for both arms: recency reweights people, not their choice of launch"
+}

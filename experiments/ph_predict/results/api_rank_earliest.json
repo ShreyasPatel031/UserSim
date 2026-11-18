@@ -1,0 +1,158 @@
+[
+ {
+  "day": "2026-11-04",
+  "first_read": "08:15",
+  "LM_top3": 33.33333333333333,
+  "earliest_min_api_beats_LM_top3_stably": 50,
+  "rho_first_rank_vs_LM": 0.35,
+  "rho_first_rank_vs_launch_id": 0.14,
+  "rho_first_rank_vs_final": 0.41,
+  "top3_by_minute": [
+   [
+    20,
+    67
+   ],
+   [
+    30,
+    67
+   ],
+   [
+    45,
+    33
+   ],
+   [
+    60,
+    67
+   ],
+   [
+    75,
+    67
+   ],
+   [
+    90,
+    67
+   ],
+   [
+    120,
+    67
+   ]
+  ]
+ },
+ {
+  "day": "2026-11-08",
+  "first_read": "08:01",
+  "LM_top3": 66.66666666666666,
+  "earliest_min_api_beats_LM_top3_stably": null,
+  "rho_first_rank_vs_LM": 0.48,
+  "rho_first_rank_vs_launch_id": -0.49,
+  "rho_first_rank_vs_final": 0.46,
+  "top3_by_minute": [
+   [
+    20,
+    33
+   ],
+   [
+    30,
+    33
+   ],
+   [
+    45,
+    33
+   ],
+   [
+    60,
+    33
+   ],
+   [
+    75,
+    33
+   ],
+   [
+    90,
+    33
+   ],
+   [
+    120,
+    33
+   ]
+  ]
+ },
+ {
+  "day": "2026-11-09",
+  "first_read": "08:01",
+  "LM_top3": 33.33333333333333,
+  "earliest_min_api_beats_LM_top3_stably": 35,
+  "rho_first_rank_vs_LM": 0.33,
+  "rho_first_rank_vs_launch_id": 0.05,
+  "rho_first_rank_vs_final": 0.59,
+  "top3_by_minute": [
+   [
+    20,
+    33
+   ],
+   [
+    30,
+    33
+   ],
+   [
+    45,
+    67
+   ],
+   [
+    60,
+    67
+   ],
+   [
+    75,
+    100
+   ],
+   [
+    90,
+    100
+   ],
+   [
+    120,
+    100
+   ]
+  ]
+ },
+ {
+  "day": "2026-11-10",
+  "first_read": "08:01",
+  "LM_top3": 33.33333333333333,
+  "earliest_min_api_beats_LM_top3_stably": 65,
+  "rho_first_rank_vs_LM": 0.26,
+  "rho_first_rank_vs_launch_id": -0.27,
+  "rho_first_rank_vs_final": 0.34,
+  "top3_by_minute": [
+   [
+    20,
+    0
+   ],
+   [
+    30,
+    0
+   ],
+   [
+    45,
+    0
+   ],
+   [
+    60,
+    0
+   ],
+   [
+    75,
+    67
+   ],
+   [
+    90,
+    67
+   ],
+   [
+    120,
+    67
+   ]
+  ]
+ }
+]

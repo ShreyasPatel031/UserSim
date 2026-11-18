@@ -1,0 +1,1802 @@
+[
+ {
+  "day": "2026-10-20",
+  "rank": 2.0,
+  "active_tied": 0.8571,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9746,
+  "voters": 197,
+  "lift": 1.1371
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 3.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 78,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 10.0,
+  "active_tied": 0.8571,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9583,
+  "voters": 24,
+  "lift": 1.1181
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 130,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 7.0,
+  "active_tied": 0.8571,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.931,
+  "voters": 29,
+  "lift": 1.0862
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 38,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 6.0,
+  "active_tied": 0.8571,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9118,
+  "voters": 34,
+  "lift": 1.0637
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 4.0,
+  "active_tied": 0.8571,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9452,
+  "voters": 73,
+  "lift": 1.1027
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 62,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-20",
+  "rank": 8.0,
+  "active_tied": 0.8571,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9429,
+  "voters": 35,
+  "lift": 1.1
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 5.0,
+  "active_tied": 0.8559,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9535,
+  "voters": 43,
+  "lift": 1.114
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 4.0,
+  "active_tied": 0.8559,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9681,
+  "voters": 94,
+  "lift": 1.1311
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 8.0,
+  "active_tied": 0.8559,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.8846,
+  "voters": 26,
+  "lift": 1.0336
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 3.0,
+  "active_tied": 0.8559,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9444,
+  "voters": 108,
+  "lift": 1.1035
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 2.0,
+  "active_tied": 0.8559,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9914,
+  "voters": 233,
+  "lift": 1.1584
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 256,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 29,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 6.0,
+  "active_tied": 0.8559,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9697,
+  "voters": 33,
+  "lift": 1.133
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 10.0,
+  "active_tied": 0.8559,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9706,
+  "voters": 34,
+  "lift": 1.134
+ },
+ {
+  "day": "2026-10-21",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 53,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 4.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9933,
+  "voters": 150,
+  "lift": 1.1591
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 3.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9681,
+  "voters": 94,
+  "lift": 1.1296
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 7.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 1.0,
+  "voters": 21,
+  "lift": 1.1669
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 8.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 1.0,
+  "voters": 52,
+  "lift": 1.1669
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 6.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.981,
+  "voters": 105,
+  "lift": 1.1446
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 9.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 1.0,
+  "voters": 68,
+  "lift": 1.1669
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 180,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 58,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 2.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9362,
+  "voters": 94,
+  "lift": 1.0924
+ },
+ {
+  "day": "2026-10-22",
+  "rank": 10.0,
+  "active_tied": 0.857,
+  "regular_tied": 0.9975,
+  "voters_tied": 1.0,
+  "voters": 30,
+  "lift": 1.1669
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 2.0,
+  "active_tied": 0.8605,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9766,
+  "voters": 171,
+  "lift": 1.135
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 4.0,
+  "active_tied": 0.8605,
+  "regular_tied": 0.9975,
+  "voters_tied": 1.0,
+  "voters": 93,
+  "lift": 1.1622
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 9.0,
+  "active_tied": 0.8605,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9667,
+  "voters": 30,
+  "lift": 1.1234
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 34,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 10.0,
+  "active_tied": 0.8605,
+  "regular_tied": 0.9975,
+  "voters_tied": 1.0,
+  "voters": 20,
+  "lift": 1.1622
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 57,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 45,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 3.0,
+  "active_tied": 0.8605,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9906,
+  "voters": 106,
+  "lift": 1.1512
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 1.0,
+  "active_tied": 0.0239,
+  "regular_tied": 0.038,
+  "voters_tied": 0.0758,
+  "voters": 132,
+  "lift": 3.1682
+ },
+ {
+  "day": "2026-10-23",
+  "rank": 6.0,
+  "active_tied": 0.8605,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9867,
+  "voters": 75,
+  "lift": 1.1467
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 34,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 6.0,
+  "active_tied": 0.8619,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9667,
+  "voters": 30,
+  "lift": 1.1216
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 1.0,
+  "active_tied": 0.0079,
+  "regular_tied": 0.0137,
+  "voters_tied": 0.0326,
+  "voters": 184,
+  "lift": 4.1206
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 2.0,
+  "active_tied": 0.8619,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.982,
+  "voters": 111,
+  "lift": 1.1394
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 4.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 59,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 18,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 23,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 3.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 87,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 5.0,
+  "active_tied": 0.8619,
+  "regular_tied": 0.9975,
+  "voters_tied": 0.9744,
+  "voters": 39,
+  "lift": 1.1305
+ },
+ {
+  "day": "2026-10-24",
+  "rank": 10.0,
+  "active_tied": 0.0248,
+  "regular_tied": 0.0535,
+  "voters_tied": 0.1875,
+  "voters": 16,
+  "lift": 7.5543
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 2.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 73,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 182,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 4.0,
+  "active_tied": 0.0183,
+  "regular_tied": 0.0342,
+  "voters_tied": 0.0833,
+  "voters": 60,
+  "lift": 4.5617
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 10.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 17,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 5.0,
+  "active_tied": 0.0212,
+  "regular_tied": 0.0595,
+  "voters_tied": 0.3333,
+  "voters": 48,
+  "lift": 15.7299
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 8.0,
+  "active_tied": 0.0066,
+  "regular_tied": 0.0165,
+  "voters_tied": 0.0278,
+  "voters": 36,
+  "lift": 4.2238
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 9.0,
+  "active_tied": 0.859,
+  "regular_tied": 0.9962,
+  "voters_tied": 0.975,
+  "voters": 40,
+  "lift": 1.1351
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 6.0,
+  "active_tied": 0.859,
+  "regular_tied": 0.9962,
+  "voters_tied": 0.9273,
+  "voters": 55,
+  "lift": 1.0795
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 7.0,
+  "active_tied": 0.859,
+  "regular_tied": 0.9962,
+  "voters_tied": 1.0,
+  "voters": 34,
+  "lift": 1.1642
+ },
+ {
+  "day": "2026-10-25",
+  "rank": 3.0,
+  "active_tied": 0.859,
+  "regular_tied": 0.9962,
+  "voters_tied": 0.9565,
+  "voters": 69,
+  "lift": 1.1136
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 4.0,
+  "active_tied": 0.8615,
+  "regular_tied": 0.9962,
+  "voters_tied": 0.9898,
+  "voters": 98,
+  "lift": 1.149
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 29,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 173,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 2.0,
+  "active_tied": 0.8615,
+  "regular_tied": 0.9962,
+  "voters_tied": 0.9887,
+  "voters": 266,
+  "lift": 1.1477
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 8.0,
+  "active_tied": 0.8615,
+  "regular_tied": 0.9962,
+  "voters_tied": 1.0,
+  "voters": 33,
+  "lift": 1.1608
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 3.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 76,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 6.0,
+  "active_tied": 0.8615,
+  "regular_tied": 0.9962,
+  "voters_tied": 0.9787,
+  "voters": 47,
+  "lift": 1.1361
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 41,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 36,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-26",
+  "rank": 10.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 26,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 5.0,
+  "active_tied": 0.8618,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.9811,
+  "voters": 106,
+  "lift": 1.1385
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 2.0,
+  "active_tied": 0.8625,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.9802,
+  "voters": 202,
+  "lift": 1.1364
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 4.0,
+  "active_tied": 0.8618,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.9577,
+  "voters": 71,
+  "lift": 1.1113
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 232,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 3.0,
+  "active_tied": 0.8622,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.9861,
+  "voters": 144,
+  "lift": 1.1438
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 6.0,
+  "active_tied": 0.8618,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.8913,
+  "voters": 46,
+  "lift": 1.0342
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 10.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 23,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 22,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 7.0,
+  "active_tied": 0.8618,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.9592,
+  "voters": 49,
+  "lift": 1.113
+ },
+ {
+  "day": "2026-10-27",
+  "rank": 8.0,
+  "active_tied": 0.003,
+  "regular_tied": 0.0062,
+  "voters_tied": 0.0256,
+  "voters": 39,
+  "lift": 8.6731
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 5.0,
+  "active_tied": 0.8621,
+  "regular_tied": 0.9952,
+  "voters_tied": 0.9508,
+  "voters": 61,
+  "lift": 1.1029
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 27,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 10.0,
+  "active_tied": 0.8621,
+  "regular_tied": 0.9952,
+  "voters_tied": 1.0,
+  "voters": 26,
+  "lift": 1.1599
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 3.0,
+  "active_tied": 0.8621,
+  "regular_tied": 0.9952,
+  "voters_tied": 0.9651,
+  "voters": 229,
+  "lift": 1.1194
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 6.0,
+  "active_tied": 0.8621,
+  "regular_tied": 0.9952,
+  "voters_tied": 1.0,
+  "voters": 38,
+  "lift": 1.1599
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 2.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 88,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 4.0,
+  "active_tied": 0.8621,
+  "regular_tied": 0.9952,
+  "voters_tied": 0.9926,
+  "voters": 135,
+  "lift": 1.1514
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 30,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 43,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-28",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 137,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 7.0,
+  "active_tied": 0.8599,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9524,
+  "voters": 21,
+  "lift": 1.1076
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 31,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 2.0,
+  "active_tied": 0.8599,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9688,
+  "voters": 128,
+  "lift": 1.1266
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 126,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 177,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 8.0,
+  "active_tied": 0.8599,
+  "regular_tied": 0.9951,
+  "voters_tied": 1.0,
+  "voters": 39,
+  "lift": 1.1629
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 4.0,
+  "active_tied": 0.0076,
+  "regular_tied": 0.0159,
+  "voters_tied": 0.0323,
+  "voters": 62,
+  "lift": 4.2212
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 6.0,
+  "active_tied": 0.075,
+  "regular_tied": 0.1176,
+  "voters_tied": 0.2439,
+  "voters": 41,
+  "lift": 3.2536
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 10.0,
+  "active_tied": 0.8599,
+  "regular_tied": 0.9951,
+  "voters_tied": 1.0,
+  "voters": 24,
+  "lift": 1.1629
+ },
+ {
+  "day": "2026-10-29",
+  "rank": 3.0,
+  "active_tied": 0.8599,
+  "regular_tied": 0.9951,
+  "voters_tied": 1.0,
+  "voters": 72,
+  "lift": 1.1629
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 5.0,
+  "active_tied": 0.8694,
+  "regular_tied": 0.9938,
+  "voters_tied": 0.9437,
+  "voters": 71,
+  "lift": 1.0854
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 2.0,
+  "active_tied": 0.8694,
+  "regular_tied": 0.9938,
+  "voters_tied": 0.939,
+  "voters": 246,
+  "lift": 1.08
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 8.0,
+  "active_tied": 0.8694,
+  "regular_tied": 0.9938,
+  "voters_tied": 0.9535,
+  "voters": 43,
+  "lift": 1.0967
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 196,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 6.0,
+  "active_tied": 0.8694,
+  "regular_tied": 0.9938,
+  "voters_tied": 0.9298,
+  "voters": 57,
+  "lift": 1.0695
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 29,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 7.0,
+  "active_tied": 0.0011,
+  "regular_tied": 0.0012,
+  "voters_tied": 0.0,
+  "voters": 32,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 3.0,
+  "active_tied": 0.8694,
+  "regular_tied": 0.9938,
+  "voters_tied": 0.9532,
+  "voters": 171,
+  "lift": 1.0964
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 10.0,
+  "active_tied": 0.8694,
+  "regular_tied": 0.9938,
+  "voters_tied": 0.9487,
+  "voters": 39,
+  "lift": 1.0912
+ },
+ {
+  "day": "2026-10-30",
+  "rank": 4.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 57,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 5.0,
+  "active_tied": 0.8735,
+  "regular_tied": 0.9939,
+  "voters_tied": 0.9643,
+  "voters": 84,
+  "lift": 1.1039
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 140,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 6.0,
+  "active_tied": 0.0004,
+  "regular_tied": 0.0012,
+  "voters_tied": 0.0,
+  "voters": 35,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 26,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 3.0,
+  "active_tied": 0.8735,
+  "regular_tied": 0.9939,
+  "voters_tied": 0.9589,
+  "voters": 73,
+  "lift": 1.0977
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 20,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 10.0,
+  "active_tied": 0.8735,
+  "regular_tied": 0.9939,
+  "voters_tied": 1.0,
+  "voters": 29,
+  "lift": 1.1448
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 4.0,
+  "active_tied": 0.8735,
+  "regular_tied": 0.9939,
+  "voters_tied": 0.9851,
+  "voters": 67,
+  "lift": 1.1277
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 2.0,
+  "active_tied": 0.8735,
+  "regular_tied": 0.9939,
+  "voters_tied": 0.9717,
+  "voters": 106,
+  "lift": 1.1124
+ },
+ {
+  "day": "2026-10-31",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 27,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 7.0,
+  "active_tied": 0.0029,
+  "regular_tied": 0.0061,
+  "voters_tied": 0.0,
+  "voters": 49,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 2.0,
+  "active_tied": 0.8746,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.9852,
+  "voters": 135,
+  "lift": 1.1264
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 3.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 81,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 39,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 10.0,
+  "active_tied": 0.8746,
+  "regular_tied": 0.9963,
+  "voters_tied": 0.973,
+  "voters": 37,
+  "lift": 1.1125
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 41,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 52,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 4.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 83,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 89,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-01",
+  "rank": 6.0,
+  "active_tied": 0.8746,
+  "regular_tied": 0.9963,
+  "voters_tied": 1.0,
+  "voters": 58,
+  "lift": 1.1434
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 2.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9755,
+  "voters": 204,
+  "lift": 1.2098
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 7.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 1.0,
+  "voters": 54,
+  "lift": 1.2402
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 6.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9444,
+  "voters": 54,
+  "lift": 1.1713
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 226,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 4.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9716,
+  "voters": 141,
+  "lift": 1.205
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 5.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9722,
+  "voters": 72,
+  "lift": 1.2057
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 8.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9388,
+  "voters": 49,
+  "lift": 1.1642
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 10.0,
+  "active_tied": 0.0011,
+  "regular_tied": 0.0074,
+  "voters_tied": 0.0,
+  "voters": 36,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 9.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 1.0,
+  "voters": 44,
+  "lift": 1.2402
+ },
+ {
+  "day": "2026-11-02",
+  "rank": 3.0,
+  "active_tied": 0.8063,
+  "regular_tied": 0.9951,
+  "voters_tied": 0.9926,
+  "voters": 272,
+  "lift": 1.231
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 2.0,
+  "active_tied": 0.8107,
+  "regular_tied": 0.9952,
+  "voters_tied": 0.9896,
+  "voters": 383,
+  "lift": 1.2206
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 148,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 4.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 168,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 73,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 3.0,
+  "active_tied": 0.8107,
+  "regular_tied": 0.9952,
+  "voters_tied": 0.9938,
+  "voters": 161,
+  "lift": 1.2258
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 9.0,
+  "active_tied": 0.8107,
+  "regular_tied": 0.9952,
+  "voters_tied": 0.9333,
+  "voters": 45,
+  "lift": 1.1512
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 33,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 7.0,
+  "active_tied": 0.8114,
+  "regular_tied": 0.9952,
+  "voters_tied": 1.0,
+  "voters": 21,
+  "lift": 1.2325
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 10.0,
+  "active_tied": 0.8139,
+  "regular_tied": 0.9952,
+  "voters_tied": 1.0,
+  "voters": 20,
+  "lift": 1.2286
+ },
+ {
+  "day": "2026-11-03",
+  "rank": 6.0,
+  "active_tied": 0.0022,
+  "regular_tied": 0.0012,
+  "voters_tied": 0.0833,
+  "voters": 36,
+  "lift": 37.2341
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 6.0,
+  "active_tied": 0.8165,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9688,
+  "voters": 64,
+  "lift": 1.1865
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 5.0,
+  "active_tied": 0.8165,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9474,
+  "voters": 76,
+  "lift": 1.1603
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 4.0,
+  "active_tied": 0.8165,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9912,
+  "voters": 114,
+  "lift": 1.214
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 9.0,
+  "active_tied": 0.8165,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9615,
+  "voters": 26,
+  "lift": 1.1776
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 8.0,
+  "active_tied": 0.8165,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9683,
+  "voters": 63,
+  "lift": 1.1858
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 232,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 3.0,
+  "active_tied": 0.8165,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9871,
+  "voters": 155,
+  "lift": 1.2089
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 10.0,
+  "active_tied": 0.0047,
+  "regular_tied": 0.0047,
+  "voters_tied": 0.0405,
+  "voters": 74,
+  "lift": 8.6005
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 36,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-04",
+  "rank": 2.0,
+  "active_tied": 0.8165,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9912,
+  "voters": 114,
+  "lift": 1.214
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 9.0,
+  "active_tied": 0.8177,
+  "regular_tied": 0.9953,
+  "voters_tied": 1.0,
+  "voters": 35,
+  "lift": 1.2229
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 7.0,
+  "active_tied": 0.8176,
+  "regular_tied": 0.9953,
+  "voters_tied": 1.0,
+  "voters": 51,
+  "lift": 1.2231
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 4.0,
+  "active_tied": 0.0167,
+  "regular_tied": 0.0756,
+  "voters_tied": 0.1508,
+  "voters": 126,
+  "lift": 9.0258
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 5.0,
+  "active_tied": 0.8176,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.989,
+  "voters": 91,
+  "lift": 1.2096
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 6.0,
+  "active_tied": 0.8176,
+  "regular_tied": 0.9953,
+  "voters_tied": 0.9242,
+  "voters": 66,
+  "lift": 1.1304
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 2.0,
+  "active_tied": 0.8176,
+  "regular_tied": 0.9953,
+  "voters_tied": 1.0,
+  "voters": 143,
+  "lift": 1.2231
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 1.0,
+  "active_tied": 0.0256,
+  "regular_tied": 0.1674,
+  "voters_tied": 0.198,
+  "voters": 202,
+  "lift": 7.7415
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 35,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 10.0,
+  "active_tied": 0.8176,
+  "regular_tied": 0.9953,
+  "voters_tied": 1.0,
+  "voters": 27,
+  "lift": 1.2231
+ },
+ {
+  "day": "2026-11-05",
+  "rank": 3.0,
+  "active_tied": 0.8176,
+  "regular_tied": 0.9953,
+  "voters_tied": 1.0,
+  "voters": 103,
+  "lift": 1.2231
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 2.0,
+  "active_tied": 0.8188,
+  "regular_tied": 0.9954,
+  "voters_tied": 1.0,
+  "voters": 75,
+  "lift": 1.2214
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 1.0,
+  "active_tied": 0.0154,
+  "regular_tied": 0.015,
+  "voters_tied": 0.144,
+  "voters": 125,
+  "lift": 9.336
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 31,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 4.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 26,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 10.0,
+  "active_tied": 0.8188,
+  "regular_tied": 0.9954,
+  "voters_tied": 1.0,
+  "voters": 23,
+  "lift": 1.2214
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 29,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 8.0,
+  "active_tied": 0.8188,
+  "regular_tied": 0.9954,
+  "voters_tied": 1.0,
+  "voters": 27,
+  "lift": 1.2214
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 3.0,
+  "active_tied": 0.8188,
+  "regular_tied": 0.9954,
+  "voters_tied": 1.0,
+  "voters": 57,
+  "lift": 1.2214
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 9.0,
+  "active_tied": 0.0021,
+  "regular_tied": 0.0046,
+  "voters_tied": 0.0909,
+  "voters": 11,
+  "lift": 43.2222
+ },
+ {
+  "day": "2026-11-06",
+  "rank": 6.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 13,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 3.0,
+  "active_tied": 0.7948,
+  "regular_tied": 0.9934,
+  "voters_tied": 1.0,
+  "voters": 121,
+  "lift": 1.2582
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 2.0,
+  "active_tied": 0.7948,
+  "regular_tied": 0.9934,
+  "voters_tied": 0.9818,
+  "voters": 55,
+  "lift": 1.2353
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 14,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 4.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 45,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 1.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 68,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 6.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 19,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 5.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 25,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 9.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 13,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 10.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 12,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-07",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 13,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 5.0,
+  "active_tied": 0.0027,
+  "regular_tied": 0.0238,
+  "voters_tied": 0.0,
+  "voters": 4,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 1.0,
+  "active_tied": 0.8989,
+  "regular_tied": 1.0,
+  "voters_tied": 1.0,
+  "voters": 8,
+  "lift": 1.1124
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 7.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 2,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 2.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 5,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 4.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 3,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 9.0,
+  "active_tied": 0.8989,
+  "regular_tied": 1.0,
+  "voters_tied": 1.0,
+  "voters": 3,
+  "lift": 1.1124
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 6.0,
+  "active_tied": 0.8989,
+  "regular_tied": 1.0,
+  "voters_tied": 1.0,
+  "voters": 4,
+  "lift": 1.1124
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 3.0,
+  "active_tied": 0.8989,
+  "regular_tied": 1.0,
+  "voters_tied": 1.0,
+  "voters": 5,
+  "lift": 1.1124
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 8.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 1,
+  "lift": 0.0
+ },
+ {
+  "day": "2026-11-08",
+  "rank": 10.0,
+  "active_tied": 0.0,
+  "regular_tied": 0.0,
+  "voters_tied": 0.0,
+  "voters": 2,
+  "lift": 0.0
+ }
+]

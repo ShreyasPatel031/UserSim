@@ -1,0 +1,17 @@
+diff --git a/experiments/ph_predict/forecast.py b/experiments/ph_predict/forecast.py
+index 3915d025..aaaf21f4 100644
+--- a/experiments/ph_predict/forecast.py
++++ b/experiments/ph_predict/forecast.py
+@@ -15,6 +15,12 @@ df = df[~df.known]
+ tr, te = df[~df.is_today], df[df.is_today & (df.day == day)]
+ tr, te = M.add_fold_feats(tr, te)
+ te = te.copy()
++# placeholder maker ids at 00:05 ("0" / empty): maker-derived inputs joined on them are wrong; mark them missing
++# (shadow makerfix_shadow.py, parity_live.md Nov 11). Only today's rows; training rows are untouched.
++_ph = te.maker_ids.apply(lambda m: (not m) or any(str(x) in ("0", "", "None") for x in m))
++_mc = [c for c in te.columns if c.startswith(("hist_maker", "hist_dayrank_hist_maker", "ph_maker", "ph_n_makers", "ph_dayrank_ph_n_makers", "x_n_makers"))]
++te.loc[_ph.values, _mc] = np.nan
++print("placeholder-maker launches:", int(_ph.sum()), "of", len(te), flush=True)
+ src, dropped = M.live_sources(tr, te, M.LIVE_SOURCES)
+ print("sources", src, "dropped (empty today, filled in training):", dropped, flush=True)
+ # the configuration the backtest scores (liveexp.py / pipeline.backtest), averaged over 5 seeds (+0.6 daily top 3)

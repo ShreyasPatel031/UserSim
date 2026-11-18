@@ -1,0 +1,194 @@
+{
+ "steps": {
+  "forecast_0005": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 08:05:00+00:00",
+   "written_at": "2026-11-15T12:34:35.872461+00:00",
+   "status": "late",
+   "late_min": 269.6
+  },
+  "weekly est": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15T11:45:00+00:00",
+   "written_at": "2026-11-15T12:34:05.382721+00:00",
+   "status": "ok",
+   "late_min": 49.1
+  },
+  "scoreboard": {
+   "day": null,
+   "data_cut": null,
+   "written_at": "2026-11-15T16:22:21.656730+00:00",
+   "status": "ok",
+   "late_min": null
+  },
+  "monthly dayend": {
+   "day": "2026-11-15",
+   "data_cut": null,
+   "written_at": "2026-11-16T10:19:13.397863+00:00",
+   "status": "missing read",
+   "late_min": null
+  },
+  "early_forecast C12": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 20:00:00+00:00",
+   "written_at": "2026-11-15T20:19:59.340246+00:00",
+   "status": "ok",
+   "late_min": 20.0
+  },
+  "early_forecast C16": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-16 00:00:00+00:00",
+   "written_at": "2026-11-16T00:20:11.914799+00:00",
+   "status": "ok",
+   "late_min": 20.2
+  },
+  "weekly dayend": {
+   "day": "2026-11-13",
+   "data_cut": null,
+   "written_at": "2026-11-14T14:31:16.229602+00:00",
+   "status": "ok",
+   "late_min": null
+  },
+  "confidence": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 08:05:00+00:00",
+   "written_at": "2026-11-15T12:25:19.588382+00:00",
+   "status": "late",
+   "late_min": 260.3
+  },
+  "pre_reveal P0": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 08:45:00+00:00",
+   "written_at": "2026-11-15T12:26:34.341539+00:00",
+   "status": "late",
+   "late_min": 221.6
+  },
+  "pre_reveal P1": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 09:00:00+00:00",
+   "written_at": "2026-11-15T12:27:51.216046+00:00",
+   "status": "late",
+   "late_min": 207.9
+  },
+  "pre_reveal P030": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 08:30:00+00:00",
+   "written_at": "2026-11-15T11:38:26.402835+00:00",
+   "status": "late",
+   "late_min": 188.4
+  },
+  "pre_reveal P2": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 10:00:00+00:00",
+   "written_at": "2026-11-15T12:29:01.165386+00:00",
+   "status": "late",
+   "late_min": 149.0
+  },
+  "weekly running": {
+   "day": "2026-11-14",
+   "data_cut": null,
+   "written_at": "2026-11-15T12:33:04.016726+00:00",
+   "status": "ok",
+   "late_min": null
+  },
+  "weekly running_g": {
+   "day": "2026-11-14",
+   "data_cut": null,
+   "written_at": "2026-11-15T12:33:10.674524+00:00",
+   "status": "ok",
+   "late_min": null
+  },
+  "monthly running": {
+   "day": "2026-11-14",
+   "data_cut": null,
+   "written_at": "2026-11-15T12:33:21.855824+00:00",
+   "status": "ok",
+   "late_min": null
+  },
+  "pre_reveal P3": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 11:00:00+00:00",
+   "written_at": "2026-11-15T12:30:08.562879+00:00",
+   "status": "late",
+   "late_min": 90.1
+  },
+  "pre_reveal P345": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 11:45:00+00:00",
+   "written_at": "2026-11-15T12:31:17.876643+00:00",
+   "status": "ok",
+   "late_min": 46.3
+  },
+  "pre_reveal P4": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 12:00:00+00:00",
+   "written_at": "2026-11-15T12:32:28.575751+00:00",
+   "status": "ok",
+   "late_min": 32.5
+  },
+  "early_forecast R0": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 12:00:00+00:00",
+   "written_at": "2026-11-15T12:34:17.168198+00:00",
+   "status": "ok",
+   "late_min": 34.3
+  },
+  "early_forecast R0q": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 12:15:00+00:00",
+   "written_at": "2026-11-15T12:34:28.328694+00:00",
+   "status": "ok",
+   "late_min": 19.5
+  },
+  "early_forecast R0h": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 12:30:00+00:00",
+   "written_at": "2026-11-15T14:20:31.509997+00:00",
+   "status": "late",
+   "late_min": 110.5
+  },
+  "early_forecast R1": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 13:00:00+00:00",
+   "written_at": "2026-11-15T14:20:43.812670+00:00",
+   "status": "ok",
+   "late_min": 80.7
+  },
+  "early_forecast C05": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 13:00:00+00:00",
+   "written_at": "2026-11-15T14:21:07.657846+00:00",
+   "status": "ok",
+   "late_min": 81.1
+  },
+  "early_forecast R2": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 14:00:00+00:00",
+   "written_at": "2026-11-15T14:20:55.805347+00:00",
+   "status": "ok",
+   "late_min": 20.9
+  },
+  "early_forecast C06": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 14:00:00+00:00",
+   "written_at": "2026-11-15T14:21:16.944699+00:00",
+   "status": "ok",
+   "late_min": 21.3
+  },
+  "early_forecast R4": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15 16:00:00+00:00",
+   "written_at": "2026-11-15T16:19:43.785887+00:00",
+   "status": "ok",
+   "late_min": 19.7
+  },
+  "weekly R4": {
+   "day": "2026-11-15",
+   "data_cut": "2026-11-15T16:00:00+00:00",
+   "written_at": "2026-11-15T16:20:19.577302+00:00",
+   "status": "ok",
+   "late_min": 20.3
+  }
+ },
+ "updated_at": "2026-11-16T10:19:13.397863+00:00"
+}
