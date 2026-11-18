@@ -179,7 +179,10 @@ def check():
         lr = (h.get("checks") or {}).get("live_record") or {}
         pn3 = now.astimezone(PT)
         site_from = dt.datetime(2026, 11, 14, 21, 20, tzinfo=UTC)  # the new build went live ~20:18Z; give its cron an hour
-        if not lr.get("slots_today") and now >= site_from and (pn3.hour, pn3.minute) >= (1, 0):  # the site's 15-min snapshot job not triggered
+        # 09:2xZ Nov 18: the 00:00-01:00 PT grace (no slot yet in a new day) applies only when the job has appended before;
+        # with no append ever (last_ts_append_at null) the breach stays open, so the grace hour no longer reads as a recovery
+        grace = (pn3.hour, pn3.minute) < (1, 0) and lr.get("last_ts_append_at")
+        if not lr.get("slots_today") and now >= site_from and not grace:  # the site's 15-min snapshot job not triggered
             out.append({"feed": "site_live_record", "slots_today": lr.get("slots_today"), "rows_today": lr.get("rows_today"),
                         "last_ts_append_at": lr.get("last_ts_append_at"), "note": "15-min snapshot job not triggered"})
     except Exception as e:
