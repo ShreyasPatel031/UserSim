@@ -75,8 +75,12 @@ def main():
         g = subprocess.run(["grep", "-rlE", "--include=*.json", '"upvotes_refreshed_at"|"refresh"[^,]{0,40}read_utc', sys.argv[4]],
                            capture_output=True, text=True).stdout
         ref_n = len({os.path.basename(x)[:-5].replace("_f1fix", "").lower() for x in g.split()})
-    wk = next((v for k, v in vc.items() if k.endswith("2026-11-14") and k.startswith("2026-11-08")), {}) or \
-        next((v for k, v in vc.items() if ".." in k and k.startswith("2026-11-0")), {})
+    # 08:5xZ Nov 18: "last week" = the newest 7-day window in the ledger row (was hard-coded to Nov 8-14)
+    import datetime as _dt
+    _w7 = sorted((k for k in vc if ".." in k and (_dt.date.fromisoformat(k[12:]) - _dt.date.fromisoformat(k[:10])).days == 6),
+                 key=lambda k: k[12:])
+    wk_key = _w7[-1] if _w7 else None
+    wk = vc.get(wk_key, {}) if wk_key else {}
     octw = vc.get("2026-10-01..2026-10-24", {})
     open_feeds = [c for c in chk if c.get("status") == "open"]
     data = {
@@ -107,7 +111,7 @@ Copy: raw/_babysitter/{day}/scorecard.md; dataset: raw/_babysitter/dashboard/lat
 
 ## Headline
 - People held: {total:,}; complete (whole-person rule): {sum(comp.values()):,} ({', '.join(f'{k} {v:,}' for k, v in kinds.items())}); still needing a pull: {need_n:,}.
-- Vote coverage (capped, complete people; all / top-3): Oct 1-24 {pct(octw.get('share_all'))} / {pct(octw.get('share_top3'))}; last week {pct(wk.get('share_all'))} / {pct(wk.get('share_top3'))}.
+- Vote coverage (capped, complete people; all / top-3): Oct 1-24 {pct(octw.get('share_all'))} / {pct(octw.get('share_top3'))}; last week ({wk_key or 'n/a'}) {pct(wk.get('share_all'))} / {pct(wk.get('share_top3'))}.
   Without seeded people: Oct {pct(octw.get('share_all_without_seeded'))} / {pct(octw.get('share_top3_without_seeded'))}; without E5-flagged: Oct {pct(octw.get('share_all_without_flagged'))} / {pct(octw.get('share_top3_without_flagged'))}.
 - Feeds over their limit now: {', '.join(c.get('feed') for c in open_feeds) or 'none'}.
 
