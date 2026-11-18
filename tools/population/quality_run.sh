@@ -29,6 +29,8 @@ gsutil -q cp $W/quality_$TS.jsonl $B/raw/_babysitter/quality/$TS.jsonl
 [ -f $W/quality_${TS}_complete.txt ] && gsutil -q cp $W/quality_${TS}_complete.txt $B/raw/_babysitter/quality/${TS}_complete.txt && gsutil -q cp $W/quality_${TS}_complete.txt $B/raw/_babysitter/quality/latest_complete.txt
 # follow-list status per person (hashed ids, no handles) for the Data Feeder master (merge_daily.py reads follows_whole/latest.jsonl)
 gsutil -q cp $B/raw/population/_salt $W/_salt_fs && python3 -I "$REPO/tools/population/follows_summary.py" $W/_salt_fs $W/quality_$TS.jsonl $R/people_live/vm $W/follows_whole_$TS.jsonl \
-  && gsutil -q cp $W/follows_whole_$TS.jsonl $B/raw/population/follows_whole/latest.jsonl; rm -f $W/_salt_fs
+  && gsutil -q cp $W/follows_whole_$TS.jsonl $B/raw/population/follows_whole/latest.jsonl \
+  && gzip -c $W/follows_whole_$TS.jsonl | gsutil -q cp - $B/raw/population/follows_whole/_hist/follows_whole_$TS.jsonl.gz; rm -f $W/_salt_fs
+# 07:5xZ Nov 18: every run's snapshot is kept in GCS (_hist/, gzip); the local copies are pruned to the newest 6 by the caller
 gsutil -q cp $W/quality_$TS.md $B/raw/_babysitter/quality/$TS.md  # per-cycle report goes to the bucket, not git (Nov 15: no commit per cycle)
 cat $W/quality_$TS.out | tail -20
