@@ -311,3 +311,23 @@ class RunIssueTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_product_hand_off_to_its_app_domain_is_not_a_run_issue():
+    """Nov 18 study 301f22e8 (Haiku via the public MCP): fillout.com's 'Get started' opens app.zite.com, where its app
+    lives. A verified signup there was filed as 'Agent ended on app.zite.com instead of fillout.com'."""
+    from mvp.competitor_urls import classify_run_issue
+
+    trace = [{"step": 0, "url": "https://www.fillout.com/", "action_kind": "open"},
+             {"step": 1, "url": "https://www.fillout.com/", "action_kind": "click"},
+             {"step": 2, "url": "https://app.zite.com/fillout/signup", "action_kind": "click"},
+             {"step": 3, "url": "https://app.zite.com/new/blank", "action_kind": "click"}]
+    run = {"site_url": "https://fillout.com", "final_url": "https://app.zite.com/new/blank", "trace": trace}
+    assert classify_run_issue(run) is None
+    # the agent itself navigating to another site is still a navigation issue
+    wandered = {**run, "trace": trace[:2] + [{"step": 2, "url": "https://app.zite.com/x", "action_kind": "navigate"}]}
+    assert classify_run_issue(wandered)["kind"] == "navigation"
+    # and so is a run with no trace showing how it got there
+    assert classify_run_issue({**run, "trace": []})["kind"] == "navigation"
+    # the site's own first-load redirect counts as the product
+    assert classify_run_issue({**run, "trace": [], "opening_redirect": "https://app.zite.com/"}) is None
