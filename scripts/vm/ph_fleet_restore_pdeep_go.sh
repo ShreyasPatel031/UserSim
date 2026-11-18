@@ -9,6 +9,7 @@ unset PACE_SERVICE_ACCOUNT
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 VM_GCS="${PACE_GCS_VM_ROOT:-gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-9 27 38}"
+LIVE_SLOTS="${FLEET_LIVE_SLOTS:-39}"
 TS="$(date -u +%Y%m%dT%H%MZ)"
 GO="pdeep:fleet-${RUN_ID}-restore-${TS}"
 UPVOTE_GO=""
@@ -17,5 +18,6 @@ UPVOTE_GO=""
 bash "$ROOT/scripts/vm/ph_fleet_inplace_restart_slots.sh" $(awk '{print $1}' "$ART/slots.tsv" | while read -r s; do
   [[ -z "$s" || "$s" == \#* ]] && continue
   [[ " $UPVOTE_SLOTS " == *" $s "* ]] && continue
+  [[ " $LIVE_SLOTS " == *" $s "* ]] && continue
   echo -n "$s "
 done)

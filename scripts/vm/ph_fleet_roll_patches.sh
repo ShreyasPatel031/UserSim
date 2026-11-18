@@ -15,7 +15,8 @@ OVERLAY_GCS="${VM_GCS}/_code/overlays"
 STRATEGY="${PH_FLEET_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_optimize.env}"
 D="$ROOT/scripts/vm/reuse_overlays"
 # Never inherit PH_GO_MODE from upvote_refresh in the parent shell (that pushed repullupvotes GO fleet-wide).
-GO_TOKEN="pdeep:fleet-${RUN_ID}"
+# Per-slot GO tokens only (bare pdeep:fleet-{run_id} and legacy -rN experiment tokens break instant-exit loops).
+GO_TOKEN_PREFIX="pdeep:fleet-${RUN_ID}-orch-roll"
 UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
 FLEET_LIVE_SLOTS="${FLEET_LIVE_SLOTS:-39}"
 UPVOTE_GO=""
@@ -69,7 +70,7 @@ while IFS=$'\t' read -r slot _port; do
   st="$("${GC[@]}" compute instances describe "$name" --zone="$PACE_ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
   [[ "$st" == RUNNING ]] || continue
   (
-    slot_go="$GO_TOKEN"
+    slot_go="${GO_TOKEN_PREFIX}-$(date +%s)-${slot}"
     slot_strat="$STRATEGY"
     if [[ " ${UPVOTE_SLOTS} " == *" $slot "* ]]; then
       slot_go="$UPVOTE_GO"
