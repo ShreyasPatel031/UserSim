@@ -2478,3 +2478,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-18T19:34Z hourly: site board live (19:34Z, 47/46). Fleet 6 active / 12 dead / 1 stale / 1 cf_wall, 1.6 cppm (up) + 0.93 refresh/min; hold-clearance on file at 19:0xZ; no written reply. Mailbox checked 2026-11-18T19:34Z.
 - 2026-11-18T20:34Z hourly: site board live (20:34Z, 47/46). Fleet 5 active / 8 dead / 5 stale / 2 cf_wall, 1.0 cppm + 1.0 refresh/min; no reply since 10:48Z; wake re-sent. Mailbox checked 2026-11-18T20:34Z.
 - 21:29Z DECISIONS (PH ops): approved END_DAY env var for the hybrid_lodo.py _ku_0345 run (default Nov 13 keeps the backtest; the 03:45 line can then get days). Closed frozen n_makers as not adopted (21 days: −3.2 / −1.0 / 0.0, not clear, direction against).
+- 2026-11-18T21:33Z hourly: site board live (21:33Z, 47/46). Fleet 3 active / 7 dead / 9 stale / 1 cf_wall, 0.93 cppm + 1.0 refresh/min; no reply since 10:48Z; wake re-sent. Mailbox checked 2026-11-18T21:33Z.
