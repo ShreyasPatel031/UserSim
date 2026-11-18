@@ -425,6 +425,25 @@ def explicit_task_targets(result: dict[str, Any]) -> list[str]:
     return [m.group(1).strip().rstrip(".,") for m in _EXPLICIT_TARGET_RE.finditer(text)]
 
 
+def product_handed_off(result: dict[str, Any], final: str, target: str) -> bool:
+    """Did the product itself send the run to the final domain? True when the first step on that domain came from a
+    click / key / type on a page of the target site, or the site redirected the very first load there. Fillout's 'Get
+    started' opens app.zite.com, where its app lives: a verified signup there was filed as 'Agent ended on
+    app.zite.com instead of fillout.com' and the report said it failed inside UserSim (Nov 18, study 301f22e8)."""
+    if same_site(str(result.get("opening_redirect") or ""), final):
+        return True
+    steps = [s for s in result.get("trace") or [] if isinstance(s, dict)]
+    prev_url = ""
+    for step in steps:
+        url = str(step.get("url") or "")
+        if url and same_site(url, final):
+            kind = str(step.get("action_kind") or "").lower()
+            return bool(prev_url) and same_site(prev_url, target) and kind in {"click", "key", "type", "select"}
+        if url:
+            prev_url = url
+    return False
+
+
 def classify_run_issue(result: dict[str, Any]) -> dict[str, str] | None:
     """Flag harness failures. Product opinions on the right site are left alone."""
     if not isinstance(result, dict):
@@ -471,7 +490,7 @@ def classify_run_issue(result: dict[str, Any]) -> dict[str, str] | None:
         }
     failed = result.get("failed_step") if isinstance(result.get("failed_step"), dict) else {}
     walled = str(result.get("stop_reason") or "") == "needs_account" or str(failed.get("phase") or "") == "needs_account"
-    if not same_site(final, target) and not walled:
+    if not same_site(final, target) and not walled and not product_handed_off(result, final, target):
         # A sign-up wall on the product's own identity host (id.atlassian.com
         # for Trello) is where the product sent the agent: a product fact,
         # not a harness failure.
