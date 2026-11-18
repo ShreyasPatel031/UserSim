@@ -6,6 +6,8 @@ export PACE_ENV_FILE="${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t0820
 export PACE_FLEET_RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
 # shellcheck source=/dev/null
 source "$PACE_ENV_FILE"
+POSTURE="${PACE_ENV_FILE%.env}/fleet_posture.env"
+[[ -f "$POSTURE" ]] && source "$POSTURE"
 unset PACE_SERVICE_ACCOUNT
 # Hung slots recover one at a time (cooldown + per-tick cap in recover), never as a fleet-wide restart.
 export FLEET_HOLD_UNHANG="${FLEET_HOLD_UNHANG:-0}"

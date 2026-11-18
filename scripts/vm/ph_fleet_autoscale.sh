@@ -223,7 +223,7 @@ cmd_scale_to() {
   have=$(n_slots)
   echo "scale-to $want (have $have)"
   while [[ $(n_slots) -lt $want ]]; do
-    next=$(awk -F'\t' 'NF>=2 && $1+0==$1 {m=$1} END{print m+1}' "$ART/slots.tsv")
+    next=$(awk -F'\t' 'NF>=2 && $1+0==$1 {s=$1+0; if(s>m)m=s} END{print m+1}' "$ART/slots.tsv")
     port="$(next_port)"
     echo -e "${next}\t${port}" >>"$ART/slots.tsv"
     create_one "$next" "$port"
