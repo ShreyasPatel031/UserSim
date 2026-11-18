@@ -22,7 +22,7 @@ def boot(x, n=10000):
 
 def run(P, feat, year):
     P = P[P.year == year].copy(); P["mon"] = P.day.str[:7]
-    days = [d for d, g in P.groupby("day") if (g.dailyRank <= 10).sum() >= 10]
+    days = [d for d, g in P.groupby("day") if g.dailyRank.notna().sum() >= 10]   # restated rule: >= 10 ranked launches (183 / 204 days)
     P = P[P.day.isin(days)]
     if P[feat].isna().all(): return {"n_days": len(days), "note": f"{feat} is all-null in {year}"}
     P["f"] = P.groupby("day")[feat].transform(lambda s: s.fillna(s.median() if s.notna().any() else 0.0))
