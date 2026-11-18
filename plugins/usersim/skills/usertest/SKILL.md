@@ -63,6 +63,8 @@ user's product as the baseline. Find:
 - **Effort splits:** many more steps, backtracks or repeats.
 - **Shared friction:** what most testers hit.
 
+The cloud browsers are 1280×800. Before you rank a layout finding (a hidden label, a collapsed menu), check whether the product changes that element at wider widths: open the page yourself at 1440 or 1920 if you can, or say in the finding that it was seen at 1280px only. Put the browser size in `method`.
+
 Every claim needs a step to point at, and the quotes you show must support the claim. Re-read the quotes under each
 claim before you keep it. If a tester's words contradict the claim, change the claim.
 
