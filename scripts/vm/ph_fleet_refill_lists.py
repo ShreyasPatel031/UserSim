@@ -87,7 +87,58 @@ def main() -> int:
                     complete.add(h)
         work: list[str] = []
         n_queue = 0
-        if queue:
+        job_split = os.environ.get("FLEET_REFILL_JOB_SPLIT") == "1"
+        refresh_excl: set[str] = set()
+        n_incomplete = 0
+        n_new = 0
+        if job_split:
+            rp = os.environ.get("FLEET_REFRESH_PRIORITY_QUEUE", f"{G}/_cursor/refresh_priority_latest.txt")
+            if not rp.startswith("gs://"):
+                rp = f"gs://{BKT}/{rp.lstrip('/')}"
+            gs("cp", rp, str(t / "refresh_priority.txt"), check=False)
+            if (t / "refresh_priority.txt").is_file():
+                for ln in (t / "refresh_priority.txt").read_text().splitlines():
+                    h = handle(ln)
+                    if h:
+                        refresh_excl.add(h)
+            cq = os.environ.get("FLEET_COMPLETION_QUEUE", "")
+            if cq and not cq.startswith("gs://"):
+                cq = f"gs://{BKT}/{cq.lstrip('/')}"
+            if not cq:
+                listed = gs("ls", f"{G}/_cursor/completion_queue_*.txt", check=False).strip().split()
+                cq = listed[-1] if listed else ""
+            if cq:
+                gs("cp", cq, str(t / "completion_queue.txt"))
+                inc_order: list[str] = []
+                for ln in (t / "completion_queue.txt").read_text().splitlines():
+                    if ln.lstrip().startswith("#"):
+                        continue
+                    h = handle(ln)
+                    if h and h not in complete and h not in refresh_excl:
+                        inc_order.append(h)
+                n_incomplete = len(inc_order)
+                work = inc_order
+            if queue:
+                gs("cp", queue, str(t / "queue.txt"))
+                fleet_order: list[str] = []
+                inc_set = set(work)
+                for ln in (t / "queue.txt").read_text().splitlines():
+                    if ln.lstrip().startswith("#"):
+                        continue
+                    h = handle(ln)
+                    if h:
+                        fleet_order.append(h)
+                n_queue = len(fleet_order)
+                new_part = [
+                    h for h in fleet_order
+                    if h not in complete and h not in inc_set and h not in refresh_excl
+                ]
+                n_new = len(new_part)
+                work = work + new_part
+            sig["completion_queue"] = cq
+            sig["completion_queue_gen"] = generation(cq) if cq else ""
+            sig["refresh_priority"] = rp
+        elif queue:
             gs("cp", queue, str(t / "queue.txt"))
             for ln in (t / "queue.txt").read_text().splitlines():
                 if ln.lstrip().startswith("#"):
@@ -96,13 +147,17 @@ def main() -> int:
                 if h:
                     work.append(h)
             n_queue = len(work)
-        # Population puts complete people in the queue on purpose (refresh_priority re-reads); pdeep skips anyone in
-        # have_complete.txt, so queued people are left out of it.
-        requeued = complete & set(work) if os.environ.get("FLEET_REFILL_SKIP_COMPLETE_QUEUED") != "1" else set()
+        # Population puts complete people in the queue on purpose (refresh_priority re-reads); route those to
+        # upvote slots only when FLEET_REFILL_JOB_SPLIT=1. Otherwise pdeep may skip anyone in have_complete.txt
+        # unless they are requeued.
+        skip_complete_queued = (
+            os.environ.get("FLEET_REFILL_SKIP_COMPLETE_QUEUED") == "1" or job_split
+        )
+        requeued = complete & set(work) if not skip_complete_queued else set()
         (t / "have_complete.txt").write_text("\n".join(sorted(complete - requeued)) + "\n")
         gs("cp", str(t / "have_complete.txt"), f"{LIVE}/have_complete.txt")
         rows = []
-        if os.environ.get("FLEET_REFILL_NEED_LIST") == "1":
+        if not job_split and os.environ.get("FLEET_REFILL_NEED_LIST") == "1":
             gs("cp", f"{LIVE}/need_list.jsonl", str(t / "need_list.jsonl"), check=False)
         if (t / "need_list.jsonl").is_file():
             for ln in (t / "need_list.jsonl").open():
@@ -112,7 +167,8 @@ def main() -> int:
                     pass
         tier = {"likely": 0, "active_rest": 1, "other": 2}
         rows.sort(key=lambda x: (tier.get(x.get("tier"), 3), x.get("rank") or 1e9))
-        work += [(x.get("handle") or "").lower().lstrip("@") for x in rows]
+        if not job_split:
+            work += [(x.get("handle") or "").lower().lstrip("@") for x in rows]
         signedin: list[str] = []
         gs("cp", SIGNEDIN_NEEDED, str(t / "signedin_needed.txt"), check=False)
         if (t / "signedin_needed.txt").is_file():
@@ -128,8 +184,14 @@ def main() -> int:
                 u = upv.get(h) or {}
                 (sq / f"{h}.json").write_text(json.dumps({"header": u.get("header"), "got": u.get("n"), "utc": now, "vm": "fleet-refill"}))
             gs("cp", *[str(p) for p in sorted(sq.iterdir())], f"{SIGNEDIN_Q}/")
-        skip = (complete - requeued) | set(signedin)
-        work = [h for h in dict.fromkeys(work) if h and h not in skip]
+        if job_split:
+            work = [
+                h for h in dict.fromkeys(work)
+                if h and h not in refresh_excl and h not in complete and h not in signedin
+            ]
+        else:
+            skip = (complete - requeued) | set(signedin)
+            work = [h for h in dict.fromkeys(work) if h and h not in skip]
 
         slots = [s for s in sorted(sig["slots"], key=int) if s not in UPVOTE]
         parts = {s: work[i :: len(slots)] for i, s in enumerate(slots)} if slots else {}
@@ -157,6 +219,10 @@ def main() -> int:
         "signedin_queued_now": len(to_queue),
         "slots": len(parts),
         "per_slot": round(len(work) / max(1, len(parts)), 1),
+        "job_split": job_split,
+        "pdeep_incomplete": n_incomplete,
+        "pdeep_new": n_new,
+        "refresh_priority_excluded": len(refresh_excl) if job_split else 0,
     }
     STATE.write_text(json.dumps({**summary, "sig": sig}, indent=1))
     print(json.dumps({"refill": "built", **summary}))

@@ -12,6 +12,9 @@ export FLEET_HOLD_UNHANG="${FLEET_HOLD_UNHANG:-0}"
 export FLEET_STALE_UNHANG_MIN_COMPLETE_PPM="${FLEET_STALE_UNHANG_MIN_COMPLETE_PPM:-0}"
 export FLEET_STALE_UNHANG_MAX="${FLEET_STALE_UNHANG_MAX:-3}"
 export FLEET_WAKEUP_MAX="${FLEET_WAKEUP_MAX:-12}"
+export FLEET_REFILL_JOB_SPLIT="${FLEET_REFILL_JOB_SPLIT:-1}"
+export FLEET_REFILL_SKIP_COMPLETE_QUEUED="${FLEET_REFILL_SKIP_COMPLETE_QUEUED:-1}"
+export FLEET_STALE_UNHANG_WRITE_GO="${FLEET_STALE_UNHANG_WRITE_GO:-0}"
 python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
 python3 "$ROOT/scripts/vm/ph_fleet_refill_lists.py" || true
 bash "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" >/dev/null 2>&1 || true

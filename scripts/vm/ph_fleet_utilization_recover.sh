@@ -148,7 +148,9 @@ exit 1' 2>/dev/null | grep -q STALE_SKIP_ACTIVE_PULL && skip=1
   fi
     nu_started=$((nu_started + 1))
     tok="pdeep:fleet-${RUN_ID}-recover-${TS}-${slot}"
-    echo "$tok" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
+    if [[ "${FLEET_STALE_UNHANG_WRITE_GO:-0}" == 1 ]]; then
+      echo "$tok" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
+    fi
     "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
       --ssh-flag=-oConnectTimeout=12 </dev/null --command="$REMOTE_STALE" 2>/dev/null && {
       echo "stale_unhang slot=$slot token=$tok"

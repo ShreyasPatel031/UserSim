@@ -1,0 +1,7 @@
+{
+  "utc": "2026-11-18T06:36:50Z",
+  "queue": "usersim_sim/raw/_cursor/completion_queue_20261117T1919Z.txt",
+  "fix_rr_file": "fix_completion_queue_20261118T0636Z.txt",
+  "job_split": true,
+  "refresh_priority": "usersim_sim/raw/_cursor/refresh_priority_latest.txt"
+}
