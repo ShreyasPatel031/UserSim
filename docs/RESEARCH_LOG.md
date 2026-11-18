@@ -2451,3 +2451,4 @@ Model switches, direction reviews and agenda changes, newest last.
   - All three named quote-to-moment as the best feature and approved #1 and #3.
   - Plugin v0.2.0 ships the page.
   - Merged #192 (Claude Haiku driver, opt-in; zite hand-off) and #193 (judge checks earlier frames).
+- 2026-11-18T02:34Z hourly: site board live (02:34Z, 43/43). Capture OK (18:30 PT 43/43). Fleet partly back: 3 active / 5 dead / 9 stale / 2 cf_wall, 0.2 cppm; no written reply; 4th wake sent. Mailbox checked 2026-11-18T02:34Z.
