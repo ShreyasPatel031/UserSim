@@ -121,7 +121,8 @@ while true; do
   apply_overlays
   load_strategy
   # Same-IP CF backoff at its cap: run with half the workers until a clean exit clears cf_backoff_n.
-  _cfn=$(tr -cd 0-9 </opt/ph/reuse/cf_backoff_n 2>/dev/null || true)
+  _cfn=""
+  [[ -f /opt/ph/reuse/cf_backoff_n ]] && _cfn=$(tr -cd 0-9 </opt/ph/reuse/cf_backoff_n)
   if [[ -n "$_cfn" && "$_cfn" -ge "${PH_CF_HALVE_AT_N:-5}" ]]; then
     export PDEEP_K=$(( ${PDEEP_K:-4} / 2 > 0 ? ${PDEEP_K:-4} / 2 : 1 ))
   fi

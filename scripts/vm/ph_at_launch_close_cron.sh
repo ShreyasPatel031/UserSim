@@ -9,8 +9,12 @@ export MVP_GCS_BUCKET
 H=$(TZ=America/Los_Angeles date +%H%M)
 case "$H" in
   2345)
-    echo "$(date -u +%FT%TZ) weekly_close: invoke route-4 homepage Last week (see ph_weekly_close.sh)"
+  echo "$(date -u +%FT%TZ) weekly_close: route-4 via fleet VM (ph_weekly_close_fleet.sh; local ph_weekly_close.sh if Camoufox present)"
+  if python3 -c "from camoufox.sync_api import Camoufox" 2>/dev/null; then
     exec bash "$ROOT/scripts/vm/ph_weekly_close.sh" || true
+  else
+    exec bash "$ROOT/scripts/vm/ph_weekly_close_fleet.sh" || true
+  fi
     ;;
   2350)
     export PH_MONTHLY_REREAD_MODE="${PH_MONTHLY_REREAD_MODE:-live}"
