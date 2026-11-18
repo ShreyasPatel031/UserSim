@@ -47,7 +47,7 @@ def main(feat):
     t = tempfile.mkdtemp() + "/f.parquet"
     subprocess.run(["gsutil", "-q", "cp", "gs://usersim-bakeoff-347838016394/usersim_sim/tmp/ph_ops/bt_feats.parquet", t], check=True)
     Fb = pd.read_parquet(t); Fb["id"] = Fb.id.astype(str); P = P.merge(Fb[["id", feat]], on="id", how="left")
-    res = {"feature": feat, "rule": "z(arm3) + w z(feature) within day, w leave-one-month-out", "2026": run(P, feat, 2026), "2025": run(P, feat, 2025)}
+    res = {"feature": feat, "rule": "z(arm3) + w z(feature) within day, w leave-one-month-out", "2026": run(P, feat, "2026"), "2025": run(P, feat, "2025")}
     a = res["2026"]; ok = "diff_top3" in a and (a["diff_top3"][1] > 0 or a["diff_top5"][1] > 0)
     res["decision"] = "DEPLOY CANDIDATE (2026 top-3 or top-5 interval clear of 0)" if ok else "NOT CLEAR: scored shadow line"
     json.dump(res, open(R(f"miss_rule_backtest_{feat}.json"), "w"), indent=1); print(json.dumps(res, indent=1))
