@@ -14,6 +14,7 @@ GC=(gcloud --account="$SA")
 ZONE="${PACE_ZONE:?}"
 BUCKET="${MVP_GCS_BUCKET:?}"
 TOOLS="gs://${BUCKET}/usersim_sim/raw/ph_at_launch/live/tools/boxbrowser"
+CODE_LIVE="gs://${BUCKET}/usersim_sim/raw/ph_at_launch/code/live"
 
 pick_weekly_slot() {
   local s state
@@ -61,9 +62,11 @@ CMD=$(cat <<EOS
 set -e
 TMP=/tmp/ph_weekly_close_\$\$
 mkdir -p "\$TMP"
-gcloud storage cp -q "${TOOLS}/bb_capture.py" "${TOOLS}/bb_load.py" "\$TMP/"
+mkdir -p "\$TMP/boxbrowser" "\$TMP/live"
+gcloud storage cp -q "${TOOLS}/bb_capture.py" "${TOOLS}/bb_load.py" "\$TMP/boxbrowser/"
+gcloud storage cp -q "${CODE_LIVE}/phparse.py" "${CODE_LIVE}/v2parse.py" "\$TMP/live/"
 /opt/venv/bin/python -c "from camoufox.sync_api import Camoufox"
-/opt/venv/bin/python "\$TMP/bb_capture.py" --day "${DAY}" --gap 15 --max-posts 0
+/opt/venv/bin/python "\$TMP/boxbrowser/bb_capture.py" --day "${DAY}" --gap 15 --max-posts 0
 echo weekly_close_fleet_vm ok day=${DAY}
 EOS
 )
