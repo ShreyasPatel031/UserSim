@@ -5,7 +5,8 @@
 #     00:05 read for every launch, page path where read) -> predictions frozen to gs://.../tmp/e5/forward_sim/<day>/predictions_frozen.json.
 # Gemini only; no Product Hunt requests (pages only through the site's safe_fetch). VERCEL is unset so safe_fetch uses the proxy.
 #    bash forward_nightly.sh <scratchpad> <ph-website worktree>
-set -u; SP=$1; WT=$2; cd "$(dirname "$0")"; OUT=reports/forward_sim/nightly; mkdir -p $OUT $SP/forward
+set -u; export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1   # Nov 18: the predict step failed trying to reach the HF hub (ConnectError); models are cached
+SP=$1; WT=$2; cd "$(dirname "$0")"; OUT=reports/forward_sim/nightly; mkdir -p $OUT $SP/forward
 BA=gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/forward_assets
 for f in frozen_run1.pkl frozen_run2.pkl; do [ -f $SP/forward/$f ] || gsutil -q cp $BA/$f $SP/forward/; done
 [ -f $SP/clean_nosite.parquet ] || gsutil -q cp $BA/clean_nosite.parquet $SP/
