@@ -68,17 +68,20 @@ out = {"metric": "BACKER PREDICTION, strict: recall at N (N = observed backers),
 os.makedirs(f"{SP}/backer", exist_ok=True); p = f"{SP}/backer/backer_arms_score.json"; json.dump(out, open(p, "w"), indent=1, default=float)
 ns = []
 if "ALL" in summary:
-    s = summary["ALL"]; best = max([a for a in ARMS if a in s], key=lambda a: s[a][0])
+    # PUBLISHED LINE = raw most-active (orchestrator decision 10:18Z Nov 18, model rule: CF-only below raw on all 3 scorable forward days on
+    # complete people, Nov 14 11.3 vs 14.1, Nov 15 8.2 vs 12.0, Nov 16 8.5 vs 13.1). The CF arms stay as scored shadow lines; revisit if CF
+    # beats raw on a paired 7-day window.
+    s = summary["ALL"]; best = "raw most-active"; shadow = max([a for a in FIT if a in s], key=lambda a: s[a][0])
     ns = [{"point": "0005", "model": f"backer prediction: {best}", "method": "forward-style strict replay/nightly freeze (reads before 00:00 PT; SVD on upvotes dated before the day; no follows)",
            "metric": "recall at N (N = observed held backers per launch), pooled", "value": s[best][0], "interval": s[best][1:],
            "arms": {a: s[a] for a in ARMS if a in s}, "paired_vs_raw": {a: s[f"{a} minus raw (paired)"] for a in FIT if f"{a} minus raw (paired)" in s},
            "n_launches": s["launches"], "n_backers": s["observed_backers"], "first_day": min(P.day), "last_day": max(P.day),
            "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
-           "label": (f"CF {s[best][0]}% vs most-active {s['raw most-active'][0]}% (+{s.get(f'{best} minus raw (paired)', [None])[0]}; "
-                     f"day-resampled interval {s.get(f'{best} minus raw (paired)', [None, None, None])[1]} to {s.get(f'{best} minus raw (paired)', [None, None, None])[2]} "
-                     f"(only {len(set(P.day))} days, so this interval is unstable; an independent re-score on an earlier store snapshot gave -0.8 to +4.8); "
-                     f"{s['launches']} launches, 83% of backers on Nov 8-9; within-day launch intervals clear of 0 on Nov 9 only; tied on Nov 10-12; "
-                     f"the gain exists only among held people re-read after the day (without that filter the arms tie))"),
+           "published_line": "raw most-active (the N most active held people; orchestrator decision Nov 18)", "shadow_lines": FIT,
+           "label": (f"Most-active list {s[best][0]}% (day-resampled {s[best][1]} to {s[best][2]}, {len(set(P.day))} days, {s['launches']} launches). "
+                     f"Shadow: best CF arm ({shadow}) {s[shadow][0]}%, paired vs most-active {s.get(f'{shadow} minus raw (paired)', [None])[0]} "
+                     f"[{s.get(f'{shadow} minus raw (paired)', [None, None, None])[1]}, {s.get(f'{shadow} minus raw (paired)', [None, None, None])[2]}] on this re-read-only view; "
+                     f"on the forward complete-people line CF was below most-active on all 3 scorable days (Nov 14-16), so the published line is the most-active list"),
            "source": "results/web/backer_prediction_arms.json", "top3": None, "top5": None, "top10": None}]
 json.dump({"computed_at": out["written_at"], "rows": ns}, open(f"{SP}/backer/north_star_rows_e5.json", "w"), indent=1)
 if UP:
