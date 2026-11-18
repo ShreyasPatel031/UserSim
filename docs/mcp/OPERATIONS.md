@@ -58,6 +58,17 @@ Since Nov 17 the engine's browsers run on our own GCP signup seeds, not Browserb
   (`-L 127.0.0.1:1922N:127.0.0.1:9222`). Install: `sudo SEEDS="0 1" bash mvp/deploy/install_seed_tunnels.sh`.
   The VM's service account needs `roles/iap.tunnelResourceAccessor` and SSH to the seeds. No firewall rule opens
   9222: the seed VPC only admits `35.235.240.0/20 -> tcp:22` (IAP).
+- **Camoufox** (`browser_engine`, default `camoufox`; Shreyas, Nov 17: "always run camoufox"): every seed also runs
+  `usersim-seed-camoufox.service` (`scripts/vm/seed_camoufox_server.py`), a Camoufox (Firefox) Playwright server on
+  the seed's **127.0.0.1:9333** (path `/usersim`), with one fingerprint preset chosen once and kept on the identity
+  disk (`camoufox_preset.json`); nothing is randomized per run. The tunnel forwards it to the MCP host's 1932N. The
+  engine connects with `playwright.firefox.connect`; client and server Playwright must be the same version
+  (requirements.txt pin, also pinned by `seed_provision.sh` / `install_seed_camoufox.sh`). Install / restart on a seed:
+  `bash ~/usersim/scripts/vm/install_seed_camoufox.sh` (also run by `install_seed_cdp.sh`). Roll back: set
+  `browser_engine` to `chromium` in limits.json (both services stay up). Lost on Camoufox (Chromium-only CDP):
+  the device-metrics viewport fallback and the raw `Page.captureScreenshot` fallback for pages whose screenshot stalls
+  on web fonts (a second Playwright screenshot without animations is tried instead); the probe's wedge and
+  extension-service-worker checks are CDP checks and do not apply.
 - **Seed hardening** (all in `install_seed_cdp.sh`, also run at the end of `seed_provision.sh`):
   - AppArmor profile `usersim-seed-chrome` grants `userns` to Playwright's Chromium (Ubuntu 24.04 otherwise kills it
     with "No usable sandbox"); the sandbox stays on.

@@ -190,6 +190,18 @@
     "seed_saved_accounts": {
       "value": true,
       "about": "seed_vm only: a cell whose task is not itself a signup starts signed in from the site's saved storage state (bucket seed_states/<domain>.json, from the seeds' identity disks and earlier verified study signups), on the seed that saved it when free. Cells that reach a signed-in page save the state back. false = every cell starts in an empty context."
+    },
+    "browser_engine": {
+      "value": "camoufox",
+      "about": "Browser the seeds run for simulated users. camoufox = Camoufox (Firefox) Playwright server on each seed (scripts/vm/seed_camoufox_server.py; one fixed fingerprint per seed, never randomized per run), reached at seed_camoufox_endpoints. chromium = the seed Chromium over CDP at seed_cdp_endpoints (rollback). Both services run on every seed, so switching takes effect on the next session."
+    },
+    "seed_camoufox_endpoints": {
+      "value": [
+        "ws://127.0.0.1:19320/usersim#3",
+        "ws://127.0.0.1:19321/usersim",
+        "ws://127.0.0.1:19322/usersim"
+      ],
+      "about": "browser_engine=camoufox: the seeds' Camoufox servers as the MCP server sees them (usersim-seed-tunnel@N also forwards 1932N -> seed 127.0.0.1:9333). '#N' caps that seed at N users."
     }
   }
 }

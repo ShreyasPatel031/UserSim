@@ -64,6 +64,7 @@ class SlotTests(unittest.TestCase):
     def setUp(self):
         _reset()
         self.env = mock.patch.dict("os.environ", {
+            "MVP_MCP_BROWSER_ENGINE": "chromium",  # slot logic; the Camoufox endpoints have their own tests
             "MVP_MCP_SEED_CDP_ENDPOINTS": "http://127.0.0.1:19220,http://127.0.0.1:19221",
             "MVP_MCP_SEED_SESSIONS_PER_SEED": "2",
             "MVP_MCP_SEED_WAIT_S": "0",

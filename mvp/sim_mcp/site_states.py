@@ -136,14 +136,17 @@ def save(domain: str, storage_state: dict[str, Any], *, seed: str, study_id: str
 
 
 def seed_endpoint(seed: str, endpoints: list[str]) -> str:
-    """The configured CDP endpoint of a seed named 'usersim-signup-seed-N' or 'seed-N' (port 19220+N), or ''."""
+    """The configured endpoint of a seed named 'usersim-signup-seed-N' or 'seed-N' (tunnel port 19220+N for Chromium,
+    19320+N for Camoufox), or ''."""
+    from mvp.sim_mcp.seed_backend import seed_index
+
     m = re.search(r"(?:^|-)(\d+)$", seed or "")
     if not m:
         return ""
-    port = 19220 + int(m.group(1))
     for e in endpoints:
-        if urlsplit(e.split("#", 1)[0]).port == port:
-            return e.split("#", 1)[0].rstrip("/")
+        url = e.split("#", 1)[0].rstrip("/")
+        if seed_index(url) == int(m.group(1)):
+            return url
     return ""
 
 

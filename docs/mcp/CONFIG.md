@@ -49,6 +49,8 @@ Each row has a `value` (read at **use time** so hot reload applies without resta
 | `captcha_stuck_steps` | `12` | Steps with an image grid still open before the agent is told to finish `blocked`; refused at twice this. `0` = off. |
 | `probe_sites` | `true` | TLS/DNS check before opening a product URL. `false` = faster, may waste browsers. |
 | `browser_backend` | `seed_vm` | Where browsers run: `seed_vm` (our signup seed VMs over IAP tunnels, see OPERATIONS.md) or `browserbase` (fallback; free plan is out of minutes). |
+| `browser_engine` | `camoufox` | Browser on the seeds: `camoufox` (Firefox Playwright server, one fixed fingerprint per seed) or `chromium` (CDP; rollback). Both run on every seed. |
+| `seed_camoufox_endpoints` | seeds 0–2 | `ws://127.0.0.1:1932N/usersim` (tunnel to the seed's 127.0.0.1:9333). `#N` caps a seed. |
 | `seed_cdp_endpoints` | seeds 0–2 | Local ends of the seed tunnels on the MCP host; seed N = port 19220+N. `url#N` caps that seed at N users. Down or wedged seeds fail the deep probe and are skipped. |
 | `seed_sessions_per_seed` | `4` | Simulated users (isolated contexts) per seed at once, unless the endpoint has `#N`. |
 | `seed_wait_s` | `45` | Seconds `usersim_start_session` waits for a free seed slot before answering "busy, retry" (cell stays queued). |

@@ -41,6 +41,7 @@ class Base(unittest.TestCase):
                   mock.patch("mvp.gcs_store.gcs_upload_json", self.gcs.upload),
                   mock.patch.dict("os.environ", {"MVP_SEED_STATES_PREFIX": "gs://b/seed_states",
                                                  "MVP_MCP_SEED_SAVED_ACCOUNTS": "true",
+                                                 "MVP_MCP_BROWSER_ENGINE": "chromium",
                                                  "MVP_MCP_SEED_CDP_ENDPOINTS": "http://127.0.0.1:19220#3,http://127.0.0.1:19221"})):
             p.start()
             self.addCleanup(p.stop)
