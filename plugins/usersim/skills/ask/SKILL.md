@@ -39,7 +39,7 @@ Not a signup-only task unless asked.
 
 Load the `usersim_*` tools if needed, then call `usersim_start_session` **twice in one message** (each with
 `product_url`, `task`, `persona`). Do not let the agents start sessions: you start them so the user can watch at
-once. Then post exactly this, nothing more:
+once. Then post exactly this, with both real `watch_url`s filled in (never "running now" without the links):
 
 > Running 2 simulated users on <site> (~3 min): a plain tester and a <Group> user (persona from <N> real Product
 > Hunt users). Task: "<task>".
@@ -52,7 +52,8 @@ a run.
 
 In one message, start one `sim-user` agent per session. Give each: `session_id`, `study_id`, `watch_url`,
 `product_url`, `task`, `persona`, `label` (`plain-tester` or `group`), `max_actions: 20`, and
-`out_file: .usersim/quick-<YYYYMMDD-HHMM>/<label>.json`. Wait for both. Say nothing while they run.
+`out_file: .usersim/quick-<YYYYMMDD-HHMM>/<label>.json`, written exactly like that, relative to the current
+folder (don't expand it to an absolute path). Wait for both. Say nothing while they run.
 
 ## Step 4 - Answer, in this shape, under 220 words
 
