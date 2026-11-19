@@ -41,18 +41,15 @@ PY
 PILOT_GO="pdeep:fleet-${RUN_ID}-pilot-$(date -u +%Y%m%dT%H%M%SZ)"
 echo "$PILOT_GO" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${NAME}"
 
-REMOTE=$(cat <<EOS
+read -r -d '' REMOTE <<'EOS' || true
 set -e
-B=\$(grep PACE_GCS_VM_ROOT /opt/ph/pace.env | cut -d= -f2-)
-VM=\$(hostname)
-sudo gcloud storage cp -q "\$B/pdeep_list.\${VM}.txt" /opt/ph/reuse/
+B=$(grep PACE_GCS_VM_ROOT /opt/ph/pace.env | cut -d= -f2-)
+VM=$(hostname)
+sudo gcloud storage cp -q "$B/pdeep_list.${VM}.txt" /opt/ph/reuse/
 sudo rm -f /opt/ph/reuse/pdeep_tried.json /opt/ph/reuse/last_token /opt/ph/reuse/same_tok_retry_at
 sudo systemctl stop phsuper 2>/dev/null || true
 sudo pkill -TERM -f '[p]deep.py|[p]h_batch.py' 2>/dev/null || true
 sleep 2
-EOS
-)
-REMOTE="$REMOTE$(cat <<'EOS'
 EA=""; [[ -f /opt/ph/pace.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/pace.env"
 [[ -f /opt/ph/strategy.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/strategy.env"
 sudo systemd-run --unit=phsuper --collect -p WorkingDirectory=/opt/ph/reuse $EA \
@@ -60,7 +57,6 @@ sudo systemd-run --unit=phsuper --collect -p WorkingDirectory=/opt/ph/reuse $EA 
 sleep 55
 grep '"event": "pdeep_test_list"' /opt/ph/reuse/status_${VM}.jsonl 2>/dev/null | tail -1 || true
 EOS
-)
 "${GC[@]}" compute ssh "$NAME" --zone="$ZONE" --tunnel-through-iap --quiet \
   --ssh-flag=-oConnectTimeout=20 </dev/null --command="$REMOTE"
 echo "pilot28_care done slot=$SLOT"

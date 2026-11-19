@@ -31,9 +31,10 @@ for s in m.get("slots") or []:
     if s.get("slot") != 28:
         continue
     st = s.get("state") or ""
-    if st == "dead" and not s.get("batch"):
+    age = s.get("age") or 0
+    if st == "dead":
         print("care")
-    elif st in ("dead", "stale") and (s.get("ppm_complete") or 0) < 0.05 and not s.get("batch"):
+    elif st == "stale" and age > 1800 and (s.get("ppm_complete") or 0) < 0.05:
         print("care")
     break
 else:
