@@ -6,6 +6,7 @@ source "${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t082000z/pace.env}"
 RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
+export ART
 PRIMARY="${PH_WEEKLY_CLOSE_SLOT:-9}"
 FALLBACK="${PH_WEEKLY_CLOSE_FALLBACK_SLOT:-27}"
 MAX_POSTS="${PH_WEEKLY_CLOSE_MAX_POSTS:-0}"
@@ -70,10 +71,45 @@ mkdir -p "\$TMP/boxbrowser" "\$TMP/live"
 gcloud storage cp -q "${TOOLS}/bb_capture.py" "${TOOLS}/bb_load.py" "\$TMP/boxbrowser/"
 gcloud storage cp -q "${CODE_LIVE}/phparse.py" "${CODE_LIVE}/v2parse.py" "\$TMP/live/"
 /opt/venv/bin/python -c "from camoufox.sync_api import Camoufox"
-/opt/venv/bin/python "\$TMP/boxbrowser/bb_capture.py" --day "${DAY}" --gap 15 --max-posts ${MAX_POSTS}
+/opt/venv/bin/python "\$TMP/boxbrowser/bb_capture.py" --day "${DAY}" --gap 15 --max-posts ${MAX_POSTS} --no-load
 echo weekly_close_fleet_vm ok day=${DAY}
 EOS
 )
-"${GC[@]}" compute ssh "$NAME" --zone="$ZONE" --tunnel-through-iap --quiet \
-  --ssh-flag=-oConnectTimeout=30 </dev/null --command="$CMD"
-echo "weekly_close fleet slot=$SLOT (primary=$PRIMARY fallback=$FALLBACK) day=$DAY"
+set +e
+OUT="$("${GC[@]}" compute ssh "$NAME" --zone="$ZONE" --tunnel-through-iap --quiet \
+  --ssh-flag=-oConnectTimeout=30 </dev/null --command="$CMD" 2>&1)"
+RC=$?
+set -e
+printf '%s\n' "$OUT"
+CLOSE_SOURCE="route4_boxbrowser"
+if grep -qE "Cloudflare check did not clear|BLOCK challenge|PermissionError.*workspace" <<<"$OUT"; then
+  echo "$(date -u +%FT%TZ) weekly_close route4_blocked slot=$SLOT -> api_weekly_ranks" >&2
+  bash "$ROOT/scripts/vm/ph_weekly_close_api.sh" "$DAY"
+  CLOSE_SOURCE="official_api_weekly_ranks"
+elif [[ "$RC" -eq 0 ]]; then
+  LOCAL_OUT="/tmp/ph_bb_loaded_${DAY}"
+  mkdir -p "$LOCAL_OUT"
+  TMP_BB="$(mktemp -d)"
+  gcloud storage cp -q "${TOOLS}/bb_load.py" "${TOOLS}/bb_capture.py" "$TMP_BB/" 2>/dev/null || true
+  if [[ -f "$TMP_BB/bb_load.py" ]]; then
+  PY="${ROOT}/.venv/bin/python"
+  [[ -x "$PY" ]] || PY="$(command -v python3)"
+  "$PY" "$TMP_BB/bb_load.py" --autoload --local-out "$LOCAL_OUT" 2>/dev/null || true
+  fi
+  rm -rf "$TMP_BB"
+fi
+NOTE_JSON="$ART/weekly_close_source.json"
+python3 - "$NOTE_JSON" "$DAY" "$SLOT" "$CLOSE_SOURCE" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+path, day, slot, src = sys.argv[1:5]
+doc = {
+    "read_date_PT": day,
+    "close_source": src,
+    "fleet_slot": int(slot),
+    "recorded_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+}
+open(path, "w").write(json.dumps(doc, indent=2) + "\n")
+print(path)
+PY
+echo "weekly_close fleet slot=$SLOT (primary=$PRIMARY fallback=$FALLBACK) day=$DAY close_source=$CLOSE_SOURCE rc=$RC"

@@ -15,6 +15,13 @@ FLEET="$ROOT/scripts/vm/ph_fleet_full_experiment.sh"
 RUN_ID="${PACE_FLEET_RUN_ID:-$(cat "$ROOT/results/ph_fleet_full/latest_run.txt" 2>/dev/null || true)}"
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
+export FLEET_ART="$ART"
+if [[ -f "$ART/fleet_posture.env" ]]; then
+  # shellcheck source=/dev/null
+  source "$ART/fleet_posture.env"
+fi
+# shellcheck source=/dev/null
+source "$ROOT/scripts/vm/ph_fleet_frozen_guard.sh"
 TARGET_LO="${FLEET_TARGET_LO:-20}"
 TARGET_HI="${FLEET_TARGET_HI:-30}"
 TARGET_MID="${FLEET_TARGET_MID:-25}"   # scale-down aim: stay in [LO,HI] at minimum VM cost
@@ -134,6 +141,9 @@ sample_fleet_ppm() {
 
 create_one() {
   local slot=$1 port=$2
+  if fleet_frozen_guard_or_skip "$slot" create; then
+    return 0
+  fi
   local name meta proxy_file
   name="$(vm_name "$slot")"
   proxy_file="$(proxy_for_slot "$slot")"

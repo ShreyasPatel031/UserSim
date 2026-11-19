@@ -8,6 +8,12 @@ RUN_ID="${PACE_FLEET_RUN_ID:-$(cat "$ROOT/results/ph_fleet_full/latest_run.txt")
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 export FLEET_ART="$ART" PACE_FLEET_RUN_ID="$RUN_ID" PACE_REPO_ROOT="$ROOT"
+if [[ -f "$ART/fleet_posture.env" ]]; then
+  # shellcheck source=/dev/null
+  source "$ART/fleet_posture.env"
+fi
+# shellcheck source=/dev/null
+source "$ROOT/scripts/vm/ph_fleet_frozen_guard.sh"
 export AGENT_MSGS_PROJECT="${AGENT_MSGS_PROJECT:-${GCP_PROJECT:-}}"
 [[ -n "${AGENT_MSGS_PROJECT}" ]] || { echo "set AGENT_MSGS_PROJECT or GCP_PROJECT for Pub/Sub relay" >&2; exit 1; }
 INBOX="$ART/agent_inbox.jsonl"
@@ -135,7 +141,11 @@ fi
 
 chmod +x "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" "$ROOT/scripts/vm/ph_iproyal_refresh_slot.sh" 2>/dev/null || true
 chmod +x "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" "$ROOT/scripts/vm/ph_iproyal_rotate_slot.sh" 2>/dev/null || true
-bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
+if [[ "${FLEET_HISTORICAL_PULL_PAUSE:-0}" != 1 ]]; then
+  bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
+else
+  echo "$(date -u +%FT%TZ) UTIL_RECOVER_SKIP FLEET_HISTORICAL_PULL_PAUSE=1" >>"$LOG"
+fi
 bash "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" >>"$LOG" 2>&1 || true
 chmod +x "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" 2>/dev/null || true
 # Hung batches: limited kicks; CF block exit is port-swap via PH_BLOCK_NEW_PORT on supervisor.
@@ -155,7 +165,7 @@ fi
 FLEET_TARGET_LO="${FLEET_TARGET_LO:-20}"
 export FLEET_AUTOSCALE_NO_SHED=1
 _apm="$(echo "$measure" | python3 -c "import json,sys; print(json.load(sys.stdin).get('attempt_ppm',0))" 2>/dev/null || echo 0)"
-if python3 -c "exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO}') or float('${_apm}' or 0) < float('${FLEET_TARGET_LO}') else 1)" 2>/dev/null; then
+if [[ "${FLEET_HISTORICAL_PULL_PAUSE:-0}" != 1 ]] && python3 -c "exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO}') or float('${_apm}' or 0) < float('${FLEET_TARGET_LO}') else 1)" 2>/dev/null; then
   export FLEET_WAKEUP_MAX="${FLEET_WAKEUP_MAX:-18}"
   bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
 fi

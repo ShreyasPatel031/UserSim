@@ -7,6 +7,9 @@ source "${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t082000z/pace.env}"
 RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
+export FLEET_ART="$ART"
+# shellcheck source=/dev/null
+source "$ROOT/scripts/vm/ph_fleet_frozen_guard.sh"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
 GC=(gcloud --account="$SA")
 ZONE="${PACE_ZONE:?}"
@@ -28,6 +31,10 @@ sleep 1
 pgrep -f "[p]deep.py" >/dev/null && echo INPLACE_RESTART_OK || echo INPLACE_RESTART_STARTING
 exit 0'
 for slot in "$@"; do
+  if fleet_slot_is_frozen "$slot"; then
+    echo "skip slot=$slot frozen"
+    continue
+  fi
   name="feeder-fleet-${RUN_ID}-${slot}"
   st="$("${GC[@]}" compute instances describe "$name" --zone="$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
   [[ "$st" == RUNNING ]] || { echo "skip slot=$slot status=$st"; continue; }

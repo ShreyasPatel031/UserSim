@@ -85,10 +85,9 @@ def in_quiet_window() -> bool:
 
 
 def api_token() -> str:
-    t = os.environ.get("PH_API_TOKEN") or os.environ.get("PH_API_DEV_TOKEN") or ""
-    if not t.strip():
-        raise SystemExit("PH_API_TOKEN or PH_API_DEV_TOKEN required for live API mode")
-    return t.strip()
+    from ph_api_token import api_token as _tok
+
+    return _tok()
 
 
 def graphql(query: str, variables: dict | None = None) -> dict:

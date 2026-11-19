@@ -11,6 +11,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+# shellcheck source=/dev/null
+source "$ROOT/scripts/vm/ph_fleet_frozen_guard.sh"
 PROJECT="${GCP_PROJECT:-${GOOGLE_CLOUD_PROJECT:-}}"
 ZONE="${PACE_ZONE:?export PACE_ZONE}"
 [[ -n "$PROJECT" ]] || { echo "set GCP_PROJECT" >&2; exit 1; }
@@ -182,6 +184,11 @@ load_art() {
     RUN_ID="$(cat "${ROOT}/results/ph_fleet_full/latest_run.txt")"
   fi
   ART="${ROOT}/results/ph_fleet_full/${RUN_ID}"
+  export FLEET_ART="$ART"
+  if [[ -f "$ART/fleet_posture.env" ]]; then
+    # shellcheck source=/dev/null
+    source "$ART/fleet_posture.env"
+  fi
   GO_TOKEN="${PH_GO_MODE:-pdeep}:fleet-${RUN_ID}"
 }
 
@@ -206,6 +213,10 @@ echo PATCH_OK
 
 recreate_slot() {
   local slot=$1 reason=$2
+  if fleet_frozen_guard_or_skip "$slot" recreate; then
+    echo "KEEPER skip recreate slot=$slot (frozen)" | tee -a "$ART/keeper.log"
+    return 0
+  fi
   local port name token gen
   port="$(slot_field "$slot" 2)"
   name="$(vm_name "$slot")"
@@ -384,6 +395,10 @@ keeper_one_pass() {
   now=$(date +%s)
   while IFS=$'\t' read -r slot port; do
     [[ -z "$slot" ]] && continue
+    if fleet_slot_is_frozen "$slot"; then
+      echo "KEEPER skip slot=$slot (frozen)" | tee -a "$ART/keeper.log"
+      continue
+    fi
     if is_upvote_slot "$slot" || [[ " ${FLEET_LIVE_SLOTS:-39} " == *" $slot "* ]]; then
       continue
     fi
