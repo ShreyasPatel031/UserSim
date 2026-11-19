@@ -52,7 +52,7 @@ EA=""; [[ -f /opt/ph/pace.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/pace.env"
 [[ -f /opt/ph/strategy.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/strategy.env"
 sudo systemd-run --unit=phsuper --collect -p WorkingDirectory=/opt/ph/reuse $EA \
   /bin/bash -c "bash /opt/ph/overlays/supervisor_strat.sh >> /opt/ph/reuse/supervisor.log 2>&1"
-sleep 20
+sleep 55
 grep '"event": "pdeep_test_list"' /opt/ph/reuse/status_${VM}.jsonl 2>/dev/null | tail -1 || true
 EOS
 )
