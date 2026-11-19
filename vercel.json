@@ -20,16 +20,6 @@
       "excludeFiles": "{public/**,experiments/**,reports/**,**/googleapiclient/discovery_cache/documents/**}"
     }
   },
-  "crons": [
-    {
-      "path": "/api/ph/cron/snapshot",
-      "schedule": "*/15 * * * *"
-    },
-    {
-      "path": "/api/ph/cron/snapshot",
-      "schedule": "50 7 * * *"
-    }
-  ],
   "env": {
     "VERCEL": "1",
     "MVP_MAX_STEPS": "8",
