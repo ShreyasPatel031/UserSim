@@ -1,6 +1,7 @@
 ---
 name: ask
 description: Quick answer to "how would a user use this, and what would they say about it?" for any website, web app, page or product. Use by default whenever the user points at a site, URL or product and asks how users would use it, react to it, get stuck on it, or what they would think or say about it, or asks to try, check or dogfood it as a user. Runs a plain tester and one simulated user group in real cloud browsers in parallel (about 3 minutes) and answers in chat. No plan to approve. For a full multi-group comparison against competitors, with a results page, use the usertest skill instead, and only when the user asks for that.
+argument-hint: "<URL or product> [question, optional]"
 ---
 
 # UserSim quick answer
