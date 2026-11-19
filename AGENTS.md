@@ -147,3 +147,8 @@ what information you need and dont, and the fleet will decide how to scale or wi
 - No agent tells the fleet which machines to run, pause, stop, recreate or keep, which slots to use, or what it may or may not
   access. How to scale up or wind down to deliver the information is the fleet's decision.
 - Reporting a fleet fact (a dead slot, a stale feed) is fine; it is framed as "this information is missing / late", not as an order.
+- **Never bring the fleet down; always fix it** (Shreyas, Nov 19). No agent other than the fleet itself stops, pauses, freezes,
+  deletes or "re-stops" a fleet VM or slot, by gcloud, metadata, posture file or message. A broken slot is fixed in place on its
+  own IP. (Nov 19: the orchestrator stopped 16 VMs at 05:44Z after the -rN fix was already confirmed, and re-stopped 15 at 08:35Z,
+  idling the fleet for ~15 hours. That was the orchestrator's error, not Shreyas's instruction.)
+- The fleet takes its operating instructions from Shreyas in its own chat. Other agents do not quote "Shreyas said" to the fleet.
