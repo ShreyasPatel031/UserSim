@@ -272,6 +272,10 @@ PY
 }
 
 cmd_autoscale_once() {
+  if [[ "${FLEET_AUTOSCALE_FROZEN:-0}" == 1 || "${FLEET_HISTORICAL_PULL_PAUSE:-0}" == 1 ]]; then
+    echo "autoscale frozen FLEET_AUTOSCALE_FROZEN=${FLEET_AUTOSCALE_FROZEN:-0} FLEET_HISTORICAL_PULL_PAUSE=${FLEET_HISTORICAL_PULL_PAUSE:-0}"
+    return 0
+  fi
   local alive json ppm warm_n avg n realized need desired
   export FLEET_ART="$ART" PACE_FLEET_RUN_ID="$RUN_ID"
   if [[ -f "$ROOT/scripts/vm/ph_fleet_measure.py" ]]; then

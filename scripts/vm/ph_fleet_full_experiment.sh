@@ -359,6 +359,10 @@ PY
 keeper_one_pass() {
   load_art
   [[ -f "$ART/slots.tsv" ]] || { echo "no fleet run" >&2; exit 1; }
+  if [[ "${FLEET_KEEPER_DISABLED:-0}" == 1 ]]; then
+    echo "KEEPER disabled FLEET_KEEPER_DISABLED=1" | tee -a "$ART/keeper.log"
+    return 0
+  fi
   local now slot name st remote json_n batch_alive dead_for stall_for nudge_age block_pause
   block_pause=0
   grep -qE '^PH_FLEET_BLOCK_PAUSE=1' "$STRATEGY_ENV" 2>/dev/null && block_pause=1

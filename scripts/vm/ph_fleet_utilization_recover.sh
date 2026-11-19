@@ -8,6 +8,10 @@ RUN_ID="${PACE_FLEET_RUN_ID:-$(cat "$ROOT/results/ph_fleet_full/latest_run.txt" 
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 [[ -f "$ART/fleet_measure.json" ]] || exit 0
+if [[ "${FLEET_HISTORICAL_PULL_PAUSE:-0}" == 1 ]]; then
+  echo "historical_pull_paused FLEET_HISTORICAL_PULL_PAUSE=1"
+  exit 0
+fi
 MAX="${FLEET_WAKEUP_MAX:-10}"
 STALE_AGE="${FLEET_STALE_AGE_SEC:-2400}"
 UNHANG_COOLDOWN="${FLEET_UNHANG_COOLDOWN_SEC:-1800}"

@@ -144,7 +144,9 @@ export FLEET_CF_RECOVER_MAX_KICKS="${FLEET_CF_RECOVER_MAX_KICKS:-1}"
 python3 -c "import sys; sys.exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO:-20}') else 1)" 2>/dev/null && export FLEET_CF_RECOVER_MAX_KICKS=0
 "$ROOT/scripts/vm/ph_fleet_cf_wall_recover.sh" >>"$LOG" 2>&1 || true
 export FLEET_KEEPER_NUDGE_GO="${FLEET_KEEPER_NUDGE_GO:-0}" FLEET_KEEPER_BLOCK_LEGACY_GO="${FLEET_KEEPER_BLOCK_LEGACY_GO:-1}"
-if [[ "${PH_FLEET_LIVE_STALE_WARNING:-0}" == 1 ]]; then
+if [[ "${FLEET_KEEPER_DISABLED:-0}" == 1 ]]; then
+  echo "$(date -u +%FT%TZ) KEEPER_DISABLED (FLEET_KEEPER_DISABLED=1)" >>"$LOG"
+elif [[ "${PH_FLEET_LIVE_STALE_WARNING:-0}" == 1 ]]; then
   echo "$(date -u +%FT%TZ) LIVE_PRIORITY skip keeper (live feeds stale)" >>"$LOG"
 else
   KEEPER_NUDGE_BUDGET="${KEEPER_NUDGE_BUDGET:-12}" bash "$ROOT/scripts/vm/ph_fleet_full_experiment.sh" keeper >>"$LOG" 2>&1 || true
@@ -158,7 +160,11 @@ if python3 -c "exit(0 if float('${ppm}' or 0) < float('${FLEET_TARGET_LO}') or f
   bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh" >>"$LOG" 2>&1 || true
 fi
 export FLEET_TARGET_HI="${FLEET_TARGET_HI:-30}" FLEET_TARGET_MID="${FLEET_TARGET_MID:-25}"
-"$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
+if [[ "${FLEET_HISTORICAL_PULL_PAUSE:-0}" == 1 || "${FLEET_AUTOSCALE_FROZEN:-0}" == 1 ]]; then
+  echo "$(date -u +%FT%TZ) AUTOSCALE_SKIP frozen_or_historical_pause" >>"$LOG"
+else
+  "$ROOT/scripts/vm/ph_fleet_autoscale.sh" once >>"$LOG" 2>&1 || true
+fi
 
 rerun_pct="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(100*float('$rerun_ppm' or 0)/a,1))")"
 eff_pop="$(python3 -c "a=float('$attempt_ppm' or 0) or 1; print(round(float('$ppm' or 0)/a,4))")"  # complete per attempt = Population-aligned efficiency
