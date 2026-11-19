@@ -71,8 +71,8 @@ for slot in "${slots[@]}"; do
     go="$(tr -d '\n' <"$ART/upvote_go.token")"
   fi
   echo "$go" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
-  "${GC[@]}" compute instances add-metadata "$name" --zone="$ZONE" --metadata \
-    "ph-strategy-env=$STRATEGY" --quiet 2>/dev/null || true
+  "${GC[@]}" compute instances add-metadata "$name" --zone="$ZONE" \
+    --metadata-from-file "ph-strategy-env=$STRATEGY" --quiet 2>/dev/null || true
   "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \
     --ssh-flag=-oConnectTimeout=25 </dev/null --command="$REMOTE_BOOT" 2>/dev/null | sed "s/^/slot=$slot /" &
   if ((started % 4 == 0)); then wait || true; fi
