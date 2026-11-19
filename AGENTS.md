@@ -138,3 +138,12 @@ problems, sign up, etc."
 - The 20 Product Hunt puller VMs are not used for this.
 - The simulated-user browser is Camoufox, always (Shreyas, Nov 17: "always run camfoux"). producthunt.com and our own
   network stay blocked in every context; seeds keep their static IPs; no IP rotation.
+
+## Rule for every agent: ask the fleet for information, never tell it what it may do (Shreyas, Nov 19 2026)
+
+Shreyas: "never give fleet instruction on what it is and isnt allowed to access anymore ... you are only authorized to ask,
+what information you need and dont, and the fleet will decide how to scale or wind down to get that to you."
+- Messages to the Cursor fleet say only what information is needed (which data, how fresh, by when) and what is no longer needed.
+- No agent tells the fleet which machines to run, pause, stop, recreate or keep, which slots to use, or what it may or may not
+  access. How to scale up or wind down to deliver the information is the fleet's decision.
+- Reporting a fleet fact (a dead slot, a stale feed) is fine; it is framed as "this information is missing / late", not as an order.
