@@ -50,8 +50,9 @@ a run.
 
 ## Step 3 - Let them play
 
-In one message, start one `sim-user` agent per session. Give each: `session_id`, `study_id`, `watch_url`,
-`product_url`, `task`, `persona`, `label` (`plain-tester` or `group`), `max_actions: 20`, and
+In one message, first write the Step 2 text with both watch links (text before the tool calls), then start one
+`sim-user` agent per session in that same message. Give each: `session_id`, `study_id`, `watch_url`,
+`product_url`, `task`, `persona`, `label` (`plain-tester` or `group`), `max_actions: 25`, and
 `out_file: .usersim/quick-<YYYYMMDD-HHMM>/<label>.json`, written exactly like that, relative to the current
 folder (don't expand it to an absolute path). Wait for both. Say nothing while they run.
 
