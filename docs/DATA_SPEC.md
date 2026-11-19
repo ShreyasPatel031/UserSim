@@ -92,6 +92,14 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Product followers at launch | per launch at first snapshot | not in API | low model value (PH agent); closed with reason |
 | Maker X followers | per maker at launch | Grok Bot X rollout 6,387 / 8,953 (71.3%; was 5,600); page cap removed from drop 20261117_h | drops before 20261117_h capped at 1 page → re-read those people / Grok Bot / Nov 19 |
 
+**Nov 19 review (11:05 UTC).** Current vs Nov 18:
+- Complete people 93,392 of 94,894 (store_v3), up 67 in a day (was 93,325). Need list 1,502 (was 1,569). Tabs missing: followers 1,277, forums 543, stacks 510, collections 506, reviews 496, hunted 491, about 453, following 327, activity 325, upvotes 194. By tier: non-pool 98.9%, other 98.0%, active_rest 96.9%, likely 92.7%, new 87.0%.
+- Vote coverage on complete people: Nov 10–16 47.0 / 65.3; Nov 12–18 36.6 / 52.2; Nov 18 alone 9.9 / 16.7 (refresh lag: new votes land only after the daily Upvotes refresh reaches the voter).
+- Daily upvote refresh: 1,067 people with a delta (was 566), but median 7.57 days since the Upvotes read (was 6.58: still aging). Owner: Cursor fleet refresh slots 9/27/38 (dead 09:33Z, active again 10:34Z).
+- Fleet: 20 slots, 2 active, 6 dead, 10 stale, 2 at a Cloudflare wall (08:34Z); 24 h audited 1.02 complete/min, 15-min 0.07. Historical pull paused by Shreyas's order; pilot slot 28 stale after the block-pause fix; live slot 39 dead since 07:27Z (box capture carries the feed); the fleet SA recreated the paused VMs 06:43–07:08Z against the pause (re-stopped, evidence sent). Owner: Cursor fleet; no reply since 07:34Z.
+- Site live record: never scheduled; Vercel Hobby blocks a 15-min cron. Needs Shreyas: Vercel Pro, or approve a Cloud Scheduler job.
+- Week close Nov 22: fleet to confirm by Nov 21 (Cloudflare fallback to API weekly ranks, PH_API_TOKEN for monthly live mode, bb_load PermissionError).
+
 **Nov 18 review (10:55 UTC).** Current vs Nov 17:
 - Complete people 93,325 of 94,894 (store_v3 09:00Z; Nov 17 rule: the Upvotes tab is complete at PH's own end), up from 74,253. Need list 1,569 (was 20,622). Tabs missing: followers 1,315, forums 592, collections 542, stacks 535, hunted 525, reviews 524, about 475, activity 361, following 335, upvotes 199.
 - Vote coverage on complete people: Oct 29–Nov 4 73.1 / 92.4; Nov 10–16 46.0 / 64.1 (was 36.5 / 49.6); Nov 17 15.9 / 19.6 (refresh lag).
