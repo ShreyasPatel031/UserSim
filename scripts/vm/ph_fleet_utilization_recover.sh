@@ -81,11 +81,11 @@ PY
 )
 
 REMOTE_KICK='u=$(tr -cd 0-9 </opt/ph/reuse/cf_cooldown_until 2>/dev/null); [ -n "$u" ] && [ "$u" -gt "$(date +%s)" ] && { echo CF_COOLDOWN; exit 0; }
-sudo rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at /opt/ph/reuse/iproyal_rotate_request /opt/ph/reuse/last_token /opt/ph/reuse/KICK /opt/ph/reuse/port_override 2>/dev/null
+sudo rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at /opt/ph/reuse/iproyal_rotate_request /opt/ph/reuse/last_token /opt/ph/reuse/pdeep_tried.json /opt/ph/reuse/KICK /opt/ph/reuse/port_override 2>/dev/null
 pgrep -f "[p]h_batch.py|[p]deep.py" >/dev/null || sudo systemctl restart phsuper'
 
 REMOTE_STALE='set -e
-sudo rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at /opt/ph/reuse/iproyal_rotate_request /opt/ph/reuse/last_token /opt/ph/reuse/KICK /opt/ph/reuse/port_override 2>/dev/null || true
+sudo rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at /opt/ph/reuse/iproyal_rotate_request /opt/ph/reuse/last_token /opt/ph/reuse/pdeep_tried.json /opt/ph/reuse/KICK /opt/ph/reuse/port_override 2>/dev/null || true
 sudo systemctl stop phsuper 2>/dev/null || true
 sudo pkill -TERM -f "[p]deep.py|[p]h_batch.py" 2>/dev/null || true
 sudo pkill -TERM -f "[c]amoufox" 2>/dev/null || true
