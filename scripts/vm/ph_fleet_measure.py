@@ -5,10 +5,37 @@ from __future__ import annotations
 import concurrent.futures
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+
+def fleet_live_hb_age_sec() -> int | None:
+    bucket = os.environ.get("MVP_GCS_BUCKET")
+    if not bucket:
+        return None
+    try:
+        r = subprocess.run(
+            [
+                "gcloud",
+                "storage",
+                "cat",
+                f"gs://{bucket}/usersim_sim/raw/ph_at_launch/live/state/fleet_capture.hb",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=45,
+        )
+        line = (r.stdout or "").strip().splitlines()[-1] if r.stdout else ""
+        m = re.search(r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)", line)
+        if not m:
+            return None
+        t = datetime.fromisoformat(m.group(1).replace("Z", "+00:00"))
+        return int((datetime.now(timezone.utc) - t).total_seconds())
+    except Exception:
+        return None
 
 ZONE = os.environ["PACE_ZONE"]
 PROJ = os.environ["GCP_PROJECT"]
@@ -135,6 +162,9 @@ def main() -> int:
     upvote_slots = set(
         (os.environ.get("FLEET_UPVOTE_SLOTS") or os.environ.get("UPVOTE_SLOTS") or "9 27 38").split()
     )
+    live_slots = set((os.environ.get("FLEET_LIVE_SLOTS") or "39").split())
+    live_hb_max = int(os.environ.get("FLEET_LIVE_HB_MAX_SEC", "1200"))
+    live_hb_age = fleet_live_hb_age_sec()
     refresh_ppm_total = 0.0
     for r in rows:
         slot = str(r.get("slot"))
@@ -143,12 +173,17 @@ def main() -> int:
             refresh_ppm_total += rp
             if rp >= 0.15 and r.get("batch") and r.get("state") in ("dead", "stale", "cold"):
                 r["state"] = "active_upvote"
+        if slot in live_slots and live_hb_age is not None and live_hb_age <= live_hb_max:
+            r["state"] = "active_live"
+            r["batch"] = True
+            r["age"] = live_hb_age
+            r["live_capture_primary"] = True
 
     now = datetime.now(timezone.utc)
     realized = sum((r.get("ppm_complete") or 0) for r in rows)
     attempt_ppm = sum((r.get("ppm_attempt") or 0) for r in rows)
     rerun_ppm = sum((r.get("ppm_rerun") or 0) for r in rows)
-    active = [r for r in rows if r.get("state") in ("active", "active_upvote")]
+    active = [r for r in rows if r.get("state") in ("active", "active_upvote", "active_live")]
     stale = [r for r in rows if r.get("state") == "stale"]
     cold = [r for r in rows if r.get("state") in ("cold", "cf_wall", "dead")]
     productive = active + [r for r in stale if (r.get("ppm") or 0) >= 0.15]
