@@ -1,0 +1,1 @@
+# Shreyas 2026-11-19: always fix, never park — no frozen slots (orchestrator stops were not operator intent).
