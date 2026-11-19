@@ -56,7 +56,7 @@ refresh_win=0
 if batch:
   try:
     import glob,re
-    from datetime import datetime as _dt
+    from datetime import datetime as _dt, timedelta as _td
     logs=sorted(glob.glob('/opt/ph/reuse/run_*.log'))
     if logs:
       lf=logs[-1]
@@ -68,8 +68,13 @@ if batch:
         if len(ps)<2 or ':' not in ps[0]: continue
         if not base: refresh_win+=1; continue
         h,mn,s=map(int,ps[0].split(':'))
-        t=base.replace(hour=h,minute=mn,second=s)
-        if now-t.timestamp()<=W: refresh_win+=1
+        nd=_dt.now(timezone.utc)
+        t=nd.replace(hour=h,minute=mn,second=s,microsecond=0).timestamp()
+        age=now-t
+        if age<0 or age>W:
+          t=(nd-_td(days=1)).replace(hour=h,minute=mn,second=s,microsecond=0).timestamp()
+          age=now-t
+        if 0<=age<=W: refresh_win+=1
   except Exception: pass
 m=W/60.0
 refresh_ppm=round(refresh_win/m,4) if refresh_win else 0.0
