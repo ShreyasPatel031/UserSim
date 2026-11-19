@@ -130,7 +130,8 @@ def main():
           f"Permutation (slots-6+ labels shuffled within day, LODO refit, 200 draws): observed gain {obs:+.2f}, permutation mean {np.mean(perm):+.2f}, "
           f"95th pct {np.percentile(perm, 95):+.2f}, one-sided p = {pval:.3f}.", f"Alphas chosen per fold: {sorted(set(alphas.values()))} ({list(alphas.values())}).",
           "Per day (hidden / LODO / L2O / prior): " + "; ".join(f"{d[5:]} {H[d]:.0f}/{L1[d]:.0f}/{L2[d]:.0f}/{P6[d]:.0f}" for d in dd)]
-    if TAG:   # all-day fit on the frozen file's days (Nov 2-12, alpha 3), same format as frozen/hybrid_vmonly_P345_20261114.json
+    if TAG and any(d <= "2026-11-12" for d in dd):   # live END_DAY runs (Nov 16+) have none of these days: never write a frozen file then (Nov 19)
+        # all-day fit on the frozen file's days (Nov 2-12, alpha 3), same format as frozen/hybrid_vmonly_P345_20261114.json
         tr = pd.concat([G[d] for d in dd if d <= "2026-11-12"]).dropna(subset=["y"]); m = Ridge(alpha=3.0).fit(tr[ZF], tr.y)
         json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": f"2026-11-02..2026-11-12 ({sum(d <= '2026-11-12' for d in dd)})", "alpha": 3.0,
                    "features": ZF, "coef": dict(zip(ZF, map(float, m.coef_))), "intercept": float(m.intercept_), "clean_prior": os.environ.get("CLEAN_PRIOR"),
