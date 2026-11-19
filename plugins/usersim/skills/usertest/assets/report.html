@@ -311,7 +311,7 @@ function go(dl){if(state.mode==="reel"){state.reel=Math.max(0,Math.min(D.highlig
 function togglePlay(){if(state.playing){stopPlay();return}$("#play").textContent="❚❚";
   state.playing=setInterval(()=>{if(state.mode==="reel"){if(state.reel>=D.highlights.length-1){stopPlay();return}go(1)}else{const r=R(state.tester,state.mode==="side"?PK()[1]:state.prod);if(state.step>=r.steps.length-1){stopPlay();return}go(1)}},state.mode==="reel"?3200:1500)}
 function stopPlay(){if(state.playing){clearInterval(state.playing);state.playing=null}const b=$("#play");if(b)b.textContent="▶"}
-function screenFor(rk,i,rip,cap){const r=D.runs[rk];const s=r.steps[i];
+function screenFor(rk,i,rip,cap){const r=D.runs[rk];i=Math.max(0,Math.min(i,r.steps.length-1));const s=r.steps[i];
   const box=el("div",{class:"screen"},el("div",{class:"shot",style:shotStyle(r,Math.max(0,i-1)),role:"img","aria-label":`What the tester saw before step ${s.step}`}));
   const a=s.action||{};if(a.x!=null&&a.y!=null)box.append(el("div",{class:"ripple"+(rip?" anim":""),style:`left:${a.x/12.8}%;top:${a.y/8}%`}));
   if(a.type==="type"&&a.text)box.append(el("div",{class:"typed"},`types “${String(a.text).slice(0,60)}”`));
@@ -333,7 +333,7 @@ function drawTheatre(rip){
     $("#stepn").textContent=`${state.reel+1} of ${D.highlights.length}`;sideFor(h.run,i);
     side.append(el("button",{class:"btn",onclick:()=>jump(h.run,h.step)},"Open the full run here ▸"));return}
   if(jumpFrom){side.prepend(el("button",{class:"btn backlink",onclick:()=>{const t=jumpFrom;jumpFrom=null;document.getElementById(t)?.scrollIntoView();drawTheatre(false)}},"← Back to the decision"))}
-  const prod=state.mode==="side"?PK()[1]:state.prod;const rk=runKey(state.tester,prod);const r=D.runs[rk];
+  const prod=state.mode==="side"?PK()[1]:state.prod;const rk=runKey(state.tester,prod);const r=D.runs[rk];state.step=Math.max(0,Math.min(state.step,r.steps.length-1));
   if(state.mode==="side"){const ra=runKey(state.tester,PK()[0]);const RA=D.runs[ra];const ib=state.step;const RB=r;
     const stB=stageOf(rk,RB.steps[ib].step);const order=D.stage_order[PK()[0]];
     const lastA=stageOf(ra,RA.steps[RA.steps.length-1].step);

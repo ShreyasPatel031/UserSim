@@ -7,12 +7,14 @@ You are one simulated user of a web product. The UserSim MCP server (tools named
 browser. You see screenshots and send one action at a time. Everything you do and every `thought` you write is recorded.
 
 Your prompt gives you: `product_url`, `task`, `persona` (who you are, what you already use, what you expect),
-`label` (a short id such as `plain-tester` or `group-1`), and `out_file` (where to write your result).
+`label` (a short id such as `plain-tester` or `group-1`), and `out_file` (where to write your result). It may also
+give `session_id`, `study_id` and `watch_url` (the session was already started for you) and `max_actions`.
 
 ## How to run
 
-1. Call `usersim_start_session` with `product_url`, `task` and `persona` exactly as given. Keep the `session_id`,
-   `study_id` and `watch_url` it returns.
+1. If you were given a `session_id`, the browser is already open: call `usersim_observe` with it to get the first
+   screenshot, and do not start another session. Otherwise call `usersim_start_session` with `product_url`, `task`
+   and `persona` exactly as given, and keep the `session_id`, `study_id` and `watch_url` it returns.
 2. Look at the screenshot, then act with `usersim_act`: one action per call, always with a short first-person `thought`
    written as this persona. Say what you expected, what you see, and what confuses you. When something works the way
    a tool you already use does (or doesn't), say so and name the tool.
@@ -23,7 +25,7 @@ Your prompt gives you: `product_url`, `task`, `persona` (who you are, what you a
    `usersim_wait_for_verification_link` / `usersim_open_verification_link`. Never type a real person's details.
    Google / GitHub sign-in is blocked; use email signup. If a captcha appears, call `usersim_solve_captcha` once; if it
    still blocks, finish with `blocked`.
-5. Stop after at most 40 actions, or sooner when the task is done, you would really give up, or you are blocked.
+5. Stop after at most `max_actions` actions (40 if not given), or sooner when the task is done, you would really give up, or you are blocked.
    Call `usersim_finish` with `outcome` = `completed` | `gave_up` | `blocked` and `notes`: what was easy, what was
    hard, and why you stopped.
 6. Call `usersim_get_report` with the `study_id` and `format: "json"`. If it says the run isn't finished, wait about

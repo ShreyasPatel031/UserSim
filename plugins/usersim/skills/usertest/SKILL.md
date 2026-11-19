@@ -1,6 +1,6 @@
 ---
 name: usertest
-description: User-test a web product (site or web app) with simulated users in real cloud browsers. Use when the user asks to user-test, usability-test, dogfood or QA their product or a page with real-looking users, asks how their users or customers will use it, or wants to compare their onboarding with competitors. Runs a plain tester plus 2-3 user groups from UserSim's bank of real Product Hunt users in parallel, replays the runs, finds where groups diverge, and proposes changes to approve.
+description: Full user test of a web product with simulated users in real cloud browsers - a plain tester plus 2-3 user groups from UserSim's bank of real Product Hunt users, on the product AND a competitor, in parallel, with a replay page, divergences and ranked changes to approve. Use only when the user asks for a full or thorough user test, a comparison with competitors, or runs /usersim:test. For a quick "how would a user use this / what would they say" question, use the ask skill instead.
 ---
 
 # UserSim user test

@@ -67,6 +67,15 @@ def build(run_dir: Path) -> Path:
                 s["friction"] = fr[str(s["step"])]
         runs[f.stem] = {"outcome": r.get("outcome") or "not_run", "notes": r.get("notes") or "", "steps": steps,
                         "watch": r.get("watch_url") or ""}
+    # Every tester x product the page can show must exist with at least one step, or the page breaks.
+    labels = [t.get("label") for t in (sess.get("testers") or plan.get("testers") or []) if t.get("label")]
+    for lab in labels:
+        for pk in (sess.get("products") or {}):
+            runs.setdefault(f"{lab}__{pk}", {"outcome": "not_run", "notes": "This run did not happen.", "steps": [],
+                                             "watch": ""})
+    for r in runs.values():
+        if not r["steps"]:
+            r["steps"] = [{"step": 0, "action": {}, "thought": r["notes"] or "No steps were recorded.", "shot": ""}]
     data = {k: v for k, v in sess.items() if k != "friction_steps"}
     data.setdefault("testers", plan.get("testers") or [])
     for i, t in enumerate(data["testers"]):

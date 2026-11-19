@@ -22,15 +22,33 @@ No account, API key or token is needed.
 
 ## Use
 
+Point at anything and ask:
+
+```
+/usersim:ask https://excalidraw.com
+```
+
+or just say "how would a user use cal.com, and what would they say about it?" Claude starts two simulated users in
+real cloud browsers at once, a plain tester and the user group that fits the product, and posts links so you can
+watch them live. In about 3 minutes it answers in chat: what each did, where they got stuck, what they said in their
+own words, and what to try. There is no plan to approve.
+
+For the full study, ask for it or run:
+
 ```
 /usersim:test https://your-preview-url.example.com
 ```
 
-Or just ask: "user-test the signup flow on our staging site against Typeform".
+Claude proposes 1–3 tasks, a competitor and 2–3 user groups, and waits for your approval. It then runs every tester
+on your product and the competitor in parallel, builds `replay.html` (race chart, ranked changes with before/after,
+highlights, side by side) and applies only the changes you approve. This takes 10–20 minutes.
 
-Claude proposes the product URL, 1–3 tasks, 1–2 competitors and the testers, and waits for your approval before any
-browser starts. A run of 4 testers × 3 tasks usually takes 5–15 minutes. Results go to `.usersim/<run>/` in your
-project, and `replay.html` there is the replay.
+Results go to `.usersim/<run>/` in your project. Localhost is not reachable; use a preview or staging URL.
+
+### From Claude chat (claude.ai or the desktop app)
+
+Plugins run in Claude Code. In Claude chat, add the server as a custom connector (Settings → Connectors → Add
+custom connector, URL `https://35-202-98-224.sslip.io/mcp`, no sign-in) and ask the same question.
 
 ## Who the simulated users are
 
@@ -68,13 +86,15 @@ with a step you can watch, not as a forecast.
 - **Stored:** run reports, screenshots and steps are kept by UserSim (Google Cloud Storage). Anyone who has a run's
   watch or report link can open it, so don't test pages that show private data. To have a run deleted, open an issue
   in this repository with its study id.
-- **In your project:** `.usersim/<run>/`, holding plan.json, one JSON per run, divergences.json and replay.html.
+- **In your project:** `.usersim/<run>/`, holding one JSON per run; for a full study also plan.json, session.json
+  and replay.html.
   Code changes are made only after you approve them, on a new git branch when the project uses git.
 
 ## Limits
 
 - Public URLs only; Google and GitHub sign-in are blocked (email signup is used); no payments are entered.
-- Up to 12 test cells per run. Capacity is shared, so a busy server queues the second wave.
+- A quick answer uses 2 browsers. A full study uses up to 24 (4 testers × 3 tasks × 2 products). Capacity is
+  shared, so a busy server queues the rest.
 
 ## License
 

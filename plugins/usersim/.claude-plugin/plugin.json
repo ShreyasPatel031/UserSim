@@ -1,8 +1,8 @@
 {
   "name": "usersim",
   "displayName": "UserSim user testing",
-  "version": "0.2.0",
-  "description": "Test your web product with simulated users in real cloud browsers, from a Claude Code session. A plain tester and 2-3 user groups drawn from UserSim's bank of real Product Hunt users each try your key tasks in parallel. You get a step-by-step replay, the points where each group diverges from the plain run, and proposed changes to approve.",
+  "version": "0.3.0",
+  "description": "Ask how a user would use any website and what they'd say about it: two simulated users in real cloud browsers answer in chat in about 3 minutes. Or run a full study: a plain tester and 2-3 user groups drawn from UserSim's bank of real Product Hunt users, on your product and a competitor, with a replay page and ranked changes to approve.",
   "author": {
     "name": "UserSim",
     "url": "https://github.com/ShreyasPatel031/UserSim/tree/claude/usersim-plugin"
