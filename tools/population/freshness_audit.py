@@ -186,7 +186,9 @@ def check():
             out.append({"feed": "site_live_record", "slots_today": lr.get("slots_today"), "rows_today": lr.get("rows_today"),
                         "last_ts_append_at": lr.get("last_ts_append_at"), "note": "15-min snapshot job not triggered"})
     except Exception as e:
-        out.append({"feed": "public_leaderboard", "note": f"health endpoint unreadable: {type(e).__name__}"})
+        # 02:0xZ Nov 19: one failed read of the health endpoint is not a leaderboard outage, and it must not close the
+        # site_live_record breach either (both are read from this endpoint); run() keeps their previous state
+        out.append({"feed": "health_endpoint_unreadable", "note": f"health endpoint unreadable: {type(e).__name__}"})
     try:
         fs = json.loads(sh("gsutil", "cat", f"{G}/mailbox/from_cursor/status.json"))
         fu = ts(fs.get("utc"))
@@ -397,6 +399,8 @@ def run(W):
         br = [{"feed": "freshness_audit_itself", "note": f"check failed: {type(e).__name__}"}]
     rows, due = [], []
     now_feeds = {b["feed"] for b in br}
+    if "health_endpoint_unreadable" in now_feeds:  # feeds read from the health endpoint keep their state this tick
+        now_feeds |= {f for f in ("public_leaderboard", "site_live_record") if f in state}
     for b in br:
         st = state.setdefault(b["feed"], {"open_since": now.isoformat(), "last_alert": None, "last_good": b.get("last_good"),
                                           "limit_min": b.get("limit_min"), "day_pt": b.get("day_pt")})
