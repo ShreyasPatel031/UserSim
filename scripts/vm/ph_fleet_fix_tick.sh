@@ -22,6 +22,27 @@ export FLEET_REFILL_JOB_SPLIT="${FLEET_REFILL_JOB_SPLIT:-1}"
 export FLEET_REFILL_SKIP_COMPLETE_QUEUED="${FLEET_REFILL_SKIP_COMPLETE_QUEUED:-1}"
 export FLEET_STALE_UNHANG_WRITE_GO="${FLEET_STALE_UNHANG_WRITE_GO:-0}"
 python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
+ART="$ROOT/results/ph_fleet_full/${PACE_FLEET_RUN_ID,,}"
+if [[ "${FLEET_HISTORICAL_PULL_PAUSE:-0}" == 1 && -x "$ROOT/scripts/vm/ph_fleet_pilot28_care.sh" ]]; then
+  _p28="$(python3 - "$ART/fleet_measure.json" <<'PY' 2>/dev/null || echo skip
+import json, sys
+m = json.load(open(sys.argv[1]))
+for s in m.get("slots") or []:
+    if s.get("slot") != 28:
+        continue
+    st = s.get("state") or ""
+    if st in ("dead", "stale") and (s.get("ppm_complete") or 0) < 0.05:
+        print("care")
+    break
+else:
+    print("skip")
+PY
+)"
+  if [[ "$_p28" == care ]]; then
+    bash "$ROOT/scripts/vm/ph_fleet_pilot28_care.sh" || true
+    python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
+  fi
+fi
 python3 "$ROOT/scripts/vm/ph_fleet_refill_lists.py" || true
 bash "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" >/dev/null 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh"
