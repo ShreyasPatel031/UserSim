@@ -57,3 +57,45 @@ experiments/simlab and the plan files. Grok Bot's own account was requested at t
    - If it does not beat all three by at least 5 top-3 points with intervals clear of zero, there is no story.
    - If it does, start a hashed, pre-registered public forecast record (one model, one metric, no target changes, 90+ days).
 4. Reopen simulation only if a simulation line adds an interval clear of zero over arm 3 on that same paired set.
+
+## Part 2: the GPU fine-tuning period (Sep 25 – Oct 6), from Grok Bot's account
+Source: from_grokbot/20261119T2350Z_grokbot_to_orchestrator_sim_training_postmortem.md.
+Training Lead owned these runs; Grok Bot relayed them and metered spend.
+
+**Runs.** All were Qwen3-14B QLoRA on L4 VMs:
+- SFT, DPO and distillation (the distillation run crashed with OOM and saved no checkpoint);
+- soft-label QLoRA (the first eval was broken because <|im_end|> was missing from the targets);
+- the SimBench and Socrates evals.
+
+**Benchmarks.**
+- SimBench: the SOTA bar is 40.8. Stock Sonnet 5 scored 44.2 through our setup; no trained model beat 40.8.
+- Socrates unseen-40 (3,195 cells, log-prob decoder):
+
+| Model | Accuracy | W (lower is better) |
+|---|---|---|
+| Base Qwen3-14B | 0.705 | 0.273 |
+| Soft-label checkpoints 50–400 | 0.656–0.686 | 0.186–0.195 |
+
+The trained checkpoints never beat base on accuracy, but every one improved distribution fit (W) by about 0.08, about 30% lower.
+- **Never scored or unusable:** the DPO model, the Sep 30 soft-label model, the crashed distillation run, and the Oct 5 retrain.
+
+**Cost.** Training itself was cheap: ~$3 per 400-step run. The biggest waste was about $52/day of idle disks on ~40 stopped VMs, removed Oct 29.
+
+**Why it didn't pay off, per Grok Bot:**
+- The decoder, scorer and baseline changed mid-way (base read as 67.0, 70.5 and 66.5), so runs were not comparable.
+- Format bugs ate runs.
+- Runs were preempted, crashed or killed.
+- Soft labels trade accuracy for distribution fit.
+- No fixed target was agreed in advance.
+- Stock frontier models already beat the SimBench bar, so a 14B model had no headroom there.
+
+**Grok Bot's pick for a beatable benchmark: Socrates distribution fit (W).**
+- Freeze one decoder, one scorer and one baseline.
+- Train once on the full data.
+- Publish W vs base and vs the paper's SFT.
+
+Its second idea, a SimBench base-rate prompt, scored 45.4 on a 497-item pilot. It was never run on the full set, and it is prompting, not training.
+
+**Orchestrator note.** The W gain is the only result in either period that beat its own base on unseen data. It still needs:
+- a check against the published W numbers for this benchmark;
+- one clean, frozen re-run, before anyone calls it a result.
