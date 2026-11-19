@@ -6,8 +6,9 @@ source "${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t082000z/pace.env}"
 RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
 RUN_ID="${RUN_ID,,}"
 ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
-PRIMARY="${PH_WEEKLY_CLOSE_SLOT:-26}"
-FALLBACK="${PH_WEEKLY_CLOSE_FALLBACK_SLOT:-30}"
+PRIMARY="${PH_WEEKLY_CLOSE_SLOT:-9}"
+FALLBACK="${PH_WEEKLY_CLOSE_FALLBACK_SLOT:-27}"
+MAX_POSTS="${PH_WEEKLY_CLOSE_MAX_POSTS:-0}"
 DAY="${1:-$(TZ=America/Los_Angeles date +%F)}"
 SA="${PACE_SERVICE_ACCOUNT:-usersim-cloud-agent@${GCP_PROJECT}.iam.gserviceaccount.com}"
 GC=(gcloud --account="$SA")
@@ -60,13 +61,16 @@ SLOT="$(pick_weekly_slot)"
 NAME="feeder-fleet-${RUN_ID}-${SLOT}"
 CMD=$(cat <<EOS
 set -e
+if [[ -d /home/ubuntu/.cache ]]; then
+  sudo chown -R ubuntu:ubuntu /home/ubuntu/.cache 2>/dev/null || true
+fi
 TMP=/tmp/ph_weekly_close_\$\$
 mkdir -p "\$TMP"
 mkdir -p "\$TMP/boxbrowser" "\$TMP/live"
 gcloud storage cp -q "${TOOLS}/bb_capture.py" "${TOOLS}/bb_load.py" "\$TMP/boxbrowser/"
 gcloud storage cp -q "${CODE_LIVE}/phparse.py" "${CODE_LIVE}/v2parse.py" "\$TMP/live/"
 /opt/venv/bin/python -c "from camoufox.sync_api import Camoufox"
-/opt/venv/bin/python "\$TMP/boxbrowser/bb_capture.py" --day "${DAY}" --gap 15 --max-posts 0
+/opt/venv/bin/python "\$TMP/boxbrowser/bb_capture.py" --day "${DAY}" --gap 15 --max-posts ${MAX_POSTS}
 echo weekly_close_fleet_vm ok day=${DAY}
 EOS
 )
