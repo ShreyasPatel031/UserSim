@@ -15,6 +15,7 @@ GC=(gcloud --account="$SA")
 ZONE="${PACE_ZONE:?}"
 VM_GCS="${PACE_GCS_VM_ROOT:-gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
 UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-9 27 38}"
+LIVE_SLOTS="${FLEET_LIVE_SLOTS:-39}"
 UPVOTE_GO=""
 [[ -f "$ART/upvote_go.token" ]] && UPVOTE_GO="$(tr -d '\n' <"$ART/upvote_go.token")"
 [[ -z "$UPVOTE_GO" ]] && UPVOTE_GO="repullupvotes:fleet-upvote-${RUN_ID}"
@@ -41,6 +42,9 @@ for slot in "$@"; do
   go="pdeep:fleet-${RUN_ID}-orch-restart-${TS}-${slot}"
   if [[ " ${UPVOTE_SLOTS} " == *" $slot "* ]]; then
     go="$UPVOTE_GO"
+  elif [[ " ${LIVE_SLOTS} " == *" $slot "* ]]; then
+    echo "skip slot=$slot live_primary"
+    continue
   fi
   echo "$go" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}" >/dev/null 2>&1 || true
   "${GC[@]}" compute ssh "$name" --zone="$ZONE" --tunnel-through-iap --quiet \

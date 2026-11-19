@@ -74,6 +74,7 @@ done
 
 "${GC[@]}" storage cp "$ROOT/scripts/vm/ph_fleet_live_capture.sh" \
   "${VM_GCS}/_code/ph_fleet_live_capture.sh" >/dev/null
+echo "live:fleet-${RUN_ID}-capture" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${name}"
 
 LIVE_REMOTE='set -e
 sudo systemctl stop phsuper 2>/dev/null || true
