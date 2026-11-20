@@ -74,9 +74,13 @@ apply_overlays() {
     "$B/_code/overlays/patch_pdeep_gate_align.py" \
     "$B/_code/overlays/patch_upvotes_search_sweep.py" \
     "$B/_code/overlays/patch_repallow_upvotes_write.py" \
-    "$B/_code/overlays/patch_repullupvotes_person_interval.py" "$OVERLAYS/" 2>/dev/null || true
+    "$B/_code/overlays/patch_repullupvotes_person_interval.py" \
+    "$B/_code/overlays/patch_exit_ip_audit.py" \
+    "$B/_code/overlays/exit_ip_util.py" \
+    "$B/_code/overlays/exit_ip_heartbeat.sh" "$OVERLAYS/" 2>/dev/null || true
+  chmod +x "$OVERLAYS/exit_ip_heartbeat.sh" 2>/dev/null || true
   # patch_upvotes_ph_end.py held fleet-wide (orchestrator 2026-11-18): re-apply after recovery
-  for _patch in patch_week_bytes.py patch_week_start.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_same_ip_only.py patch_lazy_tabs.py patch_lazy_tabs_sync.py patch_require_full_save.py patch_pdeep_partition.py patch_pdeep_rr_only.py patch_pdeep_coverage_queue.py patch_cf_fast_fail.py patch_person_tab_budget.py patch_ph_batch_tab_progress.py patch_pdeep_tab_watchdog.py patch_repull_upvotes_pervm.py patch_ph_batch_save_sb.py patch_repull_upvotes_staging.py patch_repull_upvotes_lazy_bak.py patch_repallow_upvotes_write.py patch_repullupvotes_person_interval.py patch_pdeep_have_set.py patch_pdeep_gate_align.py patch_upvotes_search_sweep.py; do
+  for _patch in patch_week_bytes.py patch_week_start.py patch_stop_first_block.py patch_dynamic_paged.py patch_soft_block_rotate.py patch_soft_open_rotate.py patch_same_port_retry.py patch_same_ip_only.py patch_lazy_tabs.py patch_lazy_tabs_sync.py patch_require_full_save.py patch_pdeep_partition.py patch_pdeep_rr_only.py patch_pdeep_coverage_queue.py patch_cf_fast_fail.py patch_person_tab_budget.py patch_ph_batch_tab_progress.py patch_pdeep_tab_watchdog.py patch_repull_upvotes_pervm.py patch_ph_batch_save_sb.py patch_repull_upvotes_staging.py patch_repull_upvotes_lazy_bak.py patch_repallow_upvotes_write.py patch_repullupvotes_person_interval.py patch_exit_ip_audit.py patch_pdeep_have_set.py patch_pdeep_gate_align.py patch_upvotes_search_sweep.py; do
     if [[ -f "$OVERLAYS/$_patch" && -x $PY ]]; then
       $PY "$OVERLAYS/$_patch" >>supervisor.log 2>&1 || true
     fi
@@ -85,6 +89,10 @@ apply_overlays() {
 
 mkdir -p /opt/ph/reuse/out && cd /opt/ph/reuse
 PY=/opt/venv/bin/python
+export VM
+if [[ -f "$OVERLAYS/exit_ip_heartbeat.sh" ]]; then
+  pgrep -f '[e]xit_ip_heartbeat.sh' >/dev/null 2>&1 || setsid bash "$OVERLAYS/exit_ip_heartbeat.sh" >>supervisor.log 2>&1 &
+fi
 last=$(cat last_token 2>/dev/null || true)
 crashes=0
 HB="${B%/vm}/heartbeat"
@@ -166,6 +174,7 @@ while true; do
     # same_tok_retry reuses GO; clear tried filter so pdeep does not see empty list (skipped_done=all).
     [[ "$launch_reason" == "same_tok_retry" ]] && rm -f /opt/ph/reuse/pdeep_tried.json
     mark batch_launch "token=$tok extra=$extra"
+    [[ -f "$OVERLAYS/exit_ip_util.py" ]] && $PY "$OVERLAYS/exit_ip_util.py" log exit_ip_resume "launch=$tok" >>supervisor.log 2>&1 || true
     if [[ -x /opt/ph/overlays/proxy_geo_sync.sh ]]; then
       PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/proxy_geo_sync.sh >>supervisor.log 2>&1 || true
     fi
@@ -213,6 +222,7 @@ while true; do
     (( $(date +%s) - _launch_t >= ${PH_CF_RESET_AFTER_SEC:-900} )) && rm -f /opt/ph/reuse/cf_backoff_n
     gsutil -q cp "$L" "$B/logs/$VM.reuse.$L" || true
     [[ $rc -eq 7 ]] && echo "halted by autorecover; waiting for NEW GO token" >> supervisor.log
+    [[ -f "$OVERLAYS/exit_ip_util.py" ]] && $PY "$OVERLAYS/exit_ip_util.py" log exit_ip_on_block "rc=$rc token=$tok" >>supervisor.log 2>&1 || true
     echo "{\"vm\":\"$VM\",\"event\":\"supervisor_run_end\",\"token\":\"$tok\",\"pkg_md5\":\"$PKG_MD5\",\"rc\":$rc,\"utc\":\"$(date -u +%FT%TZ)\",\"strat\":\"${PH_STRATEGY:-}\",\"extra\":\"$extra\"}" >> "status_$VM.jsonl"
     gsutil -q cp "status_$VM.jsonl" "$B/status/$VM.supervisor.jsonl" || true
     kicked=0; [[ -f /opt/ph/reuse/KICK ]] && { kicked=1; rm -f /opt/ph/reuse/KICK; }

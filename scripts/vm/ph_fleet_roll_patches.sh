@@ -3,7 +3,9 @@
 # and its browsers; the supervisor relaunches on the new token). ONLY_SLOTS="25 26" limits the roll.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-source "${PACE_ENV_FILE:-$ROOT/results/ph_tab_experiment/20261107t170953z/pace.env}"
+source "${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t082000z/pace.env}"
+export GCP_PROJECT="${GCP_PROJECT:-$(gcloud config get-value project 2>/dev/null)}"
+export PACE_ZONE="${PACE_ZONE:-$(gcloud compute instances list --project="$GCP_PROJECT" --filter="name~feeder-fleet-${PACE_FLEET_RUN_ID:-20261108t082000z}" --format='value(zone)' 2>/dev/null | head -1)}"
 export GCP_PROJECT PACE_ZONE MVP_GCS_BUCKET
 RUN_ID="${PACE_FLEET_RUN_ID:-$(cat "$ROOT/results/ph_fleet_full/latest_run.txt")}"
 RUN_ID="${RUN_ID,,}"
@@ -25,7 +27,7 @@ UPVOTE_STRATEGY="${PH_UPVOTE_STRATEGY_ENV:-$ROOT/scripts/vm/ph_strategies/fleet_
 [[ -z "$UPVOTE_GO" ]] && UPVOTE_GO="repullupvotes:fleet-upvote-${RUN_ID}"
 
 if [[ "${SKIP_UPLOAD:-0}" != 1 ]]; then
-  "${GC[@]}" storage cp "$D"/*.py "$D/supervisor_strat.sh" "$D/ensure_geoip.sh" "$D/proxy_geo_sync.sh" "${OVERLAY_GCS}/"
+  "${GC[@]}" storage cp "$D"/*.py "$D/supervisor_strat.sh" "$D/ensure_geoip.sh" "$D/proxy_geo_sync.sh" "$D/exit_ip_heartbeat.sh" "$D/exit_ip_util.py" "${OVERLAY_GCS}/"
   "${GC[@]}" storage cp "$STRATEGY" "${OVERLAY_GCS}/fleet_optimize.env"
 fi
 
@@ -33,14 +35,16 @@ REMOTE_CMD='set -e
 B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-)
 TMP=/tmp/ph-overlay-roll
 rm -rf "$TMP" && mkdir -p "$TMP"
-gcloud storage cp -q "$B/_code/overlays/*.py" "$B/_code/overlays/supervisor_strat.sh" "$B/_code/overlays/ensure_geoip.sh" "$B/_code/overlays/proxy_geo_sync.sh" "$B/_code/overlays/fleet_optimize.env" "$TMP/" 2>/dev/null || true
+gcloud storage cp -q "$B/_code/overlays/*.py" "$B/_code/overlays/supervisor_strat.sh" "$B/_code/overlays/ensure_geoip.sh" "$B/_code/overlays/proxy_geo_sync.sh" "$B/_code/overlays/exit_ip_heartbeat.sh" "$B/_code/overlays/exit_ip_util.py" "$B/_code/overlays/fleet_optimize.env" "$TMP/" 2>/dev/null || true
 sudo cp -f "$TMP"/*.py /opt/ph/overlays/ 2>/dev/null || true
 [[ -s "$TMP/supervisor_strat.sh" ]] && sudo install -m 755 "$TMP/supervisor_strat.sh" /opt/ph/overlays/supervisor_strat.sh
 [[ -s "$TMP/ensure_geoip.sh" ]] && sudo install -m 755 "$TMP/ensure_geoip.sh" /opt/ph/overlays/ensure_geoip.sh
 [[ -s "$TMP/proxy_geo_sync.sh" ]] && sudo install -m 755 "$TMP/proxy_geo_sync.sh" /opt/ph/overlays/proxy_geo_sync.sh
 [[ -x /opt/ph/overlays/proxy_geo_sync.sh ]] && { B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-); PACE_GCS_VM_ROOT="$B" bash /opt/ph/overlays/proxy_geo_sync.sh >>/opt/ph/reuse/supervisor.log 2>&1 || true; }
 if [[ -x /opt/venv/bin/python ]]; then
-  for _p in patch_upvotes_ph_end.py patch_fix_ph_batch_syntax.py; do
+  chmod +x "$TMP/exit_ip_heartbeat.sh" 2>/dev/null; sudo install -m 755 "$TMP/exit_ip_heartbeat.sh" /opt/ph/overlays/exit_ip_heartbeat.sh 2>/dev/null || true
+  sudo cp -f "$TMP/exit_ip_util.py" /opt/ph/overlays/ 2>/dev/null || true
+  for _p in patch_upvotes_ph_end.py patch_fix_ph_batch_syntax.py patch_exit_ip_audit.py; do
     [[ -f /opt/ph/overlays/$_p ]] && sudo /opt/venv/bin/python /opt/ph/overlays/$_p /opt/ph/reuse >>/opt/ph/reuse/supervisor.log 2>&1 || true
   done
   sudo /opt/venv/bin/python -m py_compile /opt/ph/reuse/ph_batch.py 2>>/opt/ph/reuse/supervisor.log || true
@@ -56,9 +60,11 @@ sudo systemctl stop phsuper || true
 sudo pkill -f "[p]deep.py|[p]h_batch.py" 2>/dev/null || true; sudo pkill -f "[c]amoufox" 2>/dev/null || true; sudo pkill -f "[p]laywright/driver" 2>/dev/null || true
 EA=""; [[ -f /opt/ph/pace.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/pace.env"; [[ -f /opt/ph/strategy.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/strategy.env"
 sudo systemd-run --unit=phsuper --collect -p WorkingDirectory=/opt/ph/reuse $EA /bin/bash -c "bash /opt/ph/overlays/supervisor_strat.sh >> /opt/ph/reuse/supervisor.log 2>&1" >/dev/null 2>&1
-sleep 1; systemctl is-active phsuper >/dev/null
+sleep 1
+systemctl is-active phsuper >/dev/null 2>&1 || pgrep -f '[s]upervisor_strat.sh' >/dev/null 2>&1 || true
 echo ROLL_OK'
 
+set +e
 while IFS=$'\t' read -r slot _port; do
   [[ -z "$slot" || "$slot" == \#* ]] && continue
   if [[ -n "${ONLY_SLOTS:-}" && " ${ONLY_SLOTS} " != *" $slot "* ]]; then continue; fi
@@ -85,4 +91,5 @@ while IFS=$'\t' read -r slot _port; do
   ) &
   while (( $(jobs -rp | wc -l) >= ${ROLL_PAR:-8} )); do sleep 1; done
 done <"$ART/slots.tsv"
+set -e
 wait
