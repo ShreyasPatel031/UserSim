@@ -229,7 +229,7 @@ def main():
 
     c, reasons, builds, vms = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
     rows, merge, replace, requeue = [], [], [], []
-    pb60_c, pb60_vms = collections.Counter(), collections.Counter()
+    pb60_c, pb60_vms, reupload_c = collections.Counter(), collections.Counter(), collections.Counter()
     for n in todo:
         d = json.load(open(f"{D}/people_live/vm/{n}.json"))
         md5 = (d.get("run") or {}).get("pkg_md5")
@@ -245,7 +245,12 @@ def main():
             gate.append("vm_evasion_or_unknown")
         elif clean(vm)[1] and st[n] >= clean(vm)[1]:
             gate.append("vm_after_block_new_vm_or_ip")
-        pb60 = post_block_ip_change_60m(vm, st[n])
+        # 21:3xZ Nov 20: test the pull's own finish time; the staged time is the upload time, and re-uploaded old saves
+        # (128 at 21:21Z, finished Nov 8-17) would otherwise be tested against today's logs
+        fin = str((d.get("run") or {}).get("finished_utc") or "")
+        pb60 = post_block_ip_change_60m(vm, fin or st[n])
+        if fin and fin[:10] < st[n][:10]:
+            reupload_c[vm] += 1
         pb60_c[str(pb60)] += 1
         if pb60:
             pb60_vms[vm] += 1
@@ -280,6 +285,8 @@ def main():
               f"rotation={sum(1 for n in merge + replace if n in prov and prov[n]['vm_rotation_evidence'])} exit_ip_known={sum(1 for n in merge + replace if n in prov and prov[n]['exit_ip_at_save'])}")
     print(f"POST_BLOCK_IP_CHANGE_60M {stamp}: true={pb60_c['True']} false={pb60_c['False']} unknown={pb60_c['None']} "
           f"vms={','.join(f'{v}:{k}' for v, k in sorted(pb60_vms.items()))}", flush=True)
+    print(f"REUPLOADED_OLD_SAVES {stamp}: {sum(reupload_c.values())} of {len(todo)} (pull finished on an earlier day than staged) "
+          f"vms={len(reupload_c)}", flush=True)
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
     if dry:
         return
