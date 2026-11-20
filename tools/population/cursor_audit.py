@@ -152,9 +152,33 @@ def main():
             vm_clean[vm] = (not any(EVASION.search(_strip_person(l)) for l in lines), _block_evasion(lines))
             vm_ips[vm] = sorted((str(d.get("utc") or ""), d.get("exit_ip")) for d in map(_js, lines)
                                 if isinstance(d, dict) and d.get("event") == "exit_ip" and d.get("exit_ip"))
+            vm_blocks[vm] = sorted(str(d.get("utc") or d.get("ts") or "") for d in map(_js, lines)
+                                   if isinstance(d, dict) and d.get("event") == "stopped_on_block")
         return vm_clean[vm]
 
     vm_ips = {}
+    vm_blocks = {}
+
+    def post_block_ip_change_60m(vm, t):
+        """orchestrator 19:50Z Nov 20: save-local test, kept apart from the history-wide flags. True when the same VM logged
+        a stopped_on_block within 60 min before the save (staged time) AND its exit IP at the save differs from its exit IP
+        just before that block. None when the VM is unknown or the IPs are not logged; False otherwise."""
+        if vm == "unknown" or not t:
+            return None
+        clean(vm)
+        import datetime
+        try:
+            t0 = (datetime.datetime.strptime(t[:19], "%Y-%m-%dT%H:%M:%S") - datetime.timedelta(minutes=60)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        except ValueError:
+            return None
+        near = [b for b in vm_blocks.get(vm, []) if t0 <= b <= t]
+        if not near:
+            return False
+        before = [ip for u, ip in vm_ips.get(vm, []) if u < near[-1]]
+        at = ip_at(vm, t)
+        if not before or not at:
+            return None
+        return at != before[-1]
 
     def _js(l):
         try:
@@ -205,6 +229,7 @@ def main():
 
     c, reasons, builds, vms = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
     rows, merge, replace, requeue = [], [], [], []
+    pb60_c, pb60_vms = collections.Counter(), collections.Counter()
     for n in todo:
         d = json.load(open(f"{D}/people_live/vm/{n}.json"))
         md5 = (d.get("run") or {}).get("pkg_md5")
@@ -220,13 +245,18 @@ def main():
             gate.append("vm_evasion_or_unknown")
         elif clean(vm)[1] and st[n] >= clean(vm)[1]:
             gate.append("vm_after_block_new_vm_or_ip")
+        pb60 = post_block_ip_change_60m(vm, st[n])
+        pb60_c[str(pb60)] += 1
+        if pb60:
+            pb60_vms[vm] += 1
         vm_only = bool(gate) and all(x.startswith("vm_") for x in gate)
         if ok and vm_only and MERGE_VM_HELD and vm != "unknown":
             # 23:1xZ Nov 12 (Shreyas via orchestrator): a whole person held only by the VM/IP gate is good data; merge it
             # with a provenance flag so these saves stay distinguishable. The gate still governs fleet behaviour.
             prov[n] = {"vm": vm, "exit_ip_at_save": ip_at(vm, st[n]), "gate_reasons": gate,
                        "saved_after_post_block_ip_change": "vm_after_block_new_vm_or_ip" in gate,
-                       "vm_rotation_evidence": "vm_evasion_or_unknown" in gate, "merged_by": f"cursor_audit {stamp} --merge-vm-held"}
+                       "vm_rotation_evidence": "vm_evasion_or_unknown" in gate, "post_block_ip_change_60m": pb60,
+                       "merged_by": f"cursor_audit {stamp} --merge-vm-held"}
             gate = []
         if ok and not gate:
             stored_incomplete = store_complete is not None and n.lower() not in store_complete
@@ -248,6 +278,8 @@ def main():
     if prov:
         print(f"VM_HELD_FLAGGED={sum(1 for n in merge + replace if n in prov)} post_block_ip={sum(1 for n in merge + replace if n in prov and prov[n]['saved_after_post_block_ip_change'])} "
               f"rotation={sum(1 for n in merge + replace if n in prov and prov[n]['vm_rotation_evidence'])} exit_ip_known={sum(1 for n in merge + replace if n in prov and prov[n]['exit_ip_at_save'])}")
+    print(f"POST_BLOCK_IP_CHANGE_60M {stamp}: true={pb60_c['True']} false={pb60_c['False']} unknown={pb60_c['None']} "
+          f"vms={','.join(f'{v}:{k}' for v, k in sorted(pb60_vms.items()))}", flush=True)
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
     if dry:
         return
