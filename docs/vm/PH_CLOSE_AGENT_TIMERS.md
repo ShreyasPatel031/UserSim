@@ -7,7 +7,8 @@
 | Local (PT) | UTC cron | Timer name |
 |------------|----------|------------|
 | 23:45 daily | `45 7 * * *` | `ph-weekly-close-2345pt` |
-| 23:50 daily | `50 7 * * *` | `ph-monthly-reread-2350pt` |
+| 23:50 daily | `50 7 * * *` | `ph-monthly-reread-2350pt` (pre-close; not day-end) |
+| 01:45 daily | `45 9 * * *` | `ph-post-close-month-0145pt` (day-end: yesterday `_official_reread`) |
 
 During **PDT** (UTC−7), use `45 6` / `50 6` or re-subscribe after DST.
 

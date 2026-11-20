@@ -102,11 +102,24 @@ def graphql(query: str, variables: dict | None = None) -> dict:
         },
         method="POST",
     )
-    try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            data = json.loads(resp.read().decode())
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"GraphQL HTTP {e.code}: {e.read().decode()[:500]}") from e
+    for attempt in range(8):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                data = json.loads(resp.read().decode())
+            break
+        except urllib.error.HTTPError as e:
+            body = e.read().decode()
+            if e.code == 429 and attempt < 7:
+                wait_s = 60
+                try:
+                    err = json.loads(body)
+                    details = (err.get("errors") or [{}])[0].get("details") or {}
+                    wait_s = max(30, int(details.get("reset_in", wait_s)) + 5)
+                except (json.JSONDecodeError, TypeError, ValueError):
+                    pass
+                time.sleep(wait_s)
+                continue
+            raise RuntimeError(f"GraphQL HTTP {e.code}: {body[:500]}") from e
     if data.get("errors"):
         raise RuntimeError(json.dumps(data["errors"][:3]))
     return data
@@ -234,11 +247,14 @@ def write_jsonl(
     source: str,
     missing: list[str],
     out_path: str,
+    post_close: bool = False,
 ) -> str:
     fetched_start = now_iso()
     hdr = {
         "_header": True,
         "read_date_PT": read_date,
+        "closes_launch_day_PT": read_date,
+        "post_close": bool(post_close),
         "fetched_at": fetched_start,
         "source": source,
         "rows": len(rows),
@@ -256,7 +272,8 @@ def write_jsonl(
         f.write(json.dumps(hdr, ensure_ascii=False) + "\n")
         for r in rows_sorted:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
-    dest = f"{PREFIX}/{month}/{read_date}.jsonl"
+    leaf = f"{read_date}_official_reread.jsonl" if post_close else f"{read_date}.jsonl"
+    dest = out_path or f"{PREFIX}/{month}/{leaf}"
     gcs_cp_local(local, dest)
     return dest
 
@@ -266,6 +283,12 @@ def main() -> int:
     ap.add_argument("--read-date", help="PT calendar date YYYY-MM-DD (default today PT)")
     ap.add_argument("--month", help="YYYY-MM (default month of read-date)")
     ap.add_argument("--backfill-from-snapshots", action="store_true")
+    ap.add_argument(
+        "--post-close",
+        action="store_true",
+        help="Day-end artifact: month-wide official API after launch day closed; "
+        "writes monthly_reread/<month>/<read-date>_official_reread.jsonl",
+    )
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     read_date = args.read_date or pt_date()
@@ -282,7 +305,7 @@ def main() -> int:
     if args.dry_run:
         print(json.dumps({"read_date": read_date, "month": month, "rows": len(rows)}, indent=2))
         return 0
-    dest = write_jsonl(read_date, month, rows, dup, source, missing, "")
+    dest = write_jsonl(read_date, month, rows, dup, source, missing, "", post_close=args.post_close)
     print(dest)
     return 0
 
