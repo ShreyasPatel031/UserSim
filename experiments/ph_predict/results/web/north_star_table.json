@@ -1,6 +1,6 @@
 {
- "computed_at": "2026-11-19T21:30:37.513037+00:00",
- "e5_rows": "merged 1 rows (computed_at 2026-11-19T10:07:35.945365+00:00)",
+ "computed_at": "2026-11-20T21:27:11.897625+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-20T10:12:18.116818+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [
   {
@@ -471,12 +471,12 @@
    "point": "prereveal",
    "model": "hybrid_vm (03:45 read)",
    "method": "leave-one-day-out replay, 03:45 recorder read, unranked launches kept in the order",
-   "top3": 88.9,
-   "top5": 80.0,
-   "top10": 83.3,
-   "n_days": 3,
+   "top3": 83.3,
+   "top5": 75.0,
+   "top10": 82.5,
+   "n_days": 4,
    "first_day": "2026-11-16",
-   "last_day": "2026-11-18",
+   "last_day": "2026-11-19",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
    "source": "results/hybrid_lodo_ku_0345_orders.json",
    "edge_vs_hidden": {
@@ -491,11 +491,11 @@
      0.0
     ],
     "top10": [
-     -3.3,
+     -5.0,
      -10.0,
      0.0
     ],
-    "n_days": 3
+    "n_days": 4
    },
    "producer": "PH"
   },
@@ -562,13 +562,13 @@
     ],
     "CF+back": [
      16.6,
-     7.4,
+     7.3,
      22.8
     ],
     "CF+intensity": [
      16.5,
      8.2,
-     22.3
+     22.4
     ],
     "raw most-active": [
      14.7,
@@ -595,13 +595,13 @@
     "CF+intensity": [
      1.8,
      -1.4,
-     4.3
+     4.4
     ]
    },
    "n_launches": 232,
-   "n_backers": 3657,
+   "n_backers": 3662,
    "first_day": "2026-11-08",
-   "last_day": "2026-11-17",
+   "last_day": "2026-11-18",
    "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
    "published_line": "raw most-active (the N most active held people; orchestrator decision Nov 18)",
    "shadow_lines": [
@@ -610,7 +610,7 @@
     "CF+back",
     "CF+intensity"
    ],
-   "label": "Most-active list 14.7% (day-resampled 9.1 to 18.5, 10 days, 232 launches). Shadow: best CF arm (CF+back) 16.6%, paired vs most-active 1.9 [-2.5, 4.6] on this re-read-only view; on the forward complete-people line CF was below most-active on all 3 scorable days (Nov 14-16), so the published line is the most-active list",
+   "label": "Most-active list 14.7% (day-resampled 9.1 to 18.5, 11 days, 232 launches). Shadow: best CF arm (CF+back) 16.6%, paired vs most-active 1.9 [-2.5, 4.6] on this re-read-only view; on the forward complete-people line CF was below most-active on all 3 scorable days (Nov 14-16), so the published line is the most-active list",
    "source": "results/web/backer_prediction_arms.json",
    "top3": null,
    "top5": null,
@@ -618,7 +618,7 @@
    "n_days": null,
    "producer": "E5",
    "merged_from": "results/web/north_star_rows_e5.json",
-   "merged_computed_at": "2026-11-19T10:07:35.945365+00:00"
+   "merged_computed_at": "2026-11-20T10:12:18.116818+00:00"
   }
  ]
 }
