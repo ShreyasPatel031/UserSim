@@ -92,6 +92,16 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Product followers at launch | per launch at first snapshot | not in API | low model value (PH agent); closed with reason |
 | Maker X followers | per maker at launch | Grok Bot X rollout 6,387 / 8,953 (71.3%; was 5,600); page cap removed from drop 20261117_h | drops before 20261117_h capped at 1 page → re-read those people / Grok Bot / Nov 19 |
 
+**Nov 20 review (10:55 UTC).** Current vs Nov 19:
+- Complete people 93,404 in the dashboard build (93,409 at the 09:09Z store republish), up 12–17 in a day (Nov 19: 93,392). Need list 1,490 (was 1,502). Tabs missing: followers 1,267, forums 532, stacks 500, collections 496, reviews 489, hunted 483, about 443, following 321, activity 317, upvotes 190. By tier: other 98.6%, active 96.9%, likely 92.7%.
+- Fleet: all 20 VMs running since the historical resume at 20:12Z Nov 19 (the fleet's call). Need-list completes are only 3 (02:21Z), because a start-token retry loop is stopping the pull slots; a supervisor fix is rolling out. Fleet ETA for at least 5/min: 11:00–16:00Z Nov 20. Owner: Cursor fleet.
+- Upvote refresh: 1.0/min. It was down ~07:45–08:40Z because the 23:45 PT weekly-close job left the refresh supervisors inactive; now fixed. Median read age 7.57 d as of Nov 19, still aging. Owner: Cursor fleet.
+- Vote coverage on complete people: Oct 29–Nov 4 72.9 / 92.4 (PH ops re-run, vote totals moved); Nov 12–18 36.6 / 52.2.
+- Week close for the week ending Nov 19 was delivered through official API weekly ranks (the Camoufox route was stopped at Cloudflare's check).
+- Monthly day-end: the post-close MONTH-WIDE read is missing for Nov 14, 15 and 19. The 23:50 PT read is pre-close; the per-day r2 snapshot covers only that day. Asked of the fleet at 10:39Z; owner Cursor fleet, with the Data Feeder box rollup.
+- Site live record: still never scheduled (Vercel Hobby). Needs Shreyas.
+- X buzz: Grok Bot freezes at 00:10 and 02:00 PT daily; history back to ~Nov 2. As a forecast input it was closed twice (E5 Nov 17, PH ops 8 days); the data is kept, not used.
+
 **Nov 19 review (11:05 UTC).** Current vs Nov 18:
 - Complete people 93,392 of 94,894 (store_v3), up 67 in a day (was 93,325). Need list 1,502 (was 1,569). Tabs missing: followers 1,277, forums 543, stacks 510, collections 506, reviews 496, hunted 491, about 453, following 327, activity 325, upvotes 194. By tier: non-pool 98.9%, other 98.0%, active_rest 96.9%, likely 92.7%, new 87.0%.
 - Vote coverage on complete people: Nov 10–16 47.0 / 65.3; Nov 12–18 36.6 / 52.2; Nov 18 alone 9.9 / 16.7 (refresh lag: new votes land only after the daily Upvotes refresh reaches the voter).
