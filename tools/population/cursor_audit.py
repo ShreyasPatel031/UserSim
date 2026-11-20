@@ -87,7 +87,10 @@ def main():
             # 22:4xZ Nov 20: one-time backfill. Upvote refreshes of complete people were scored already_in_vm and never
             # merged (the refresh keeps the old run.finished_utc; the new read is upvotes_refreshed_at). Re-score every
             # already_in_vm row audited before the fix; once re-scored its newest stamp is past the fix and it drops out.
-            again = {k for k, v in last.items() if v == "already_in_vm" and last_stamp.get(k, "") < REFRESH_FIX_STAMP}
+            # staged since Nov 18 only: older already_in_vm rows predate the refresh overlay (sampled: no
+            # upvotes_refreshed_at) and re-scoring them oldest-first would starve new saves under the per-run cap
+            again = {k for k, v in last.items() if v == "already_in_vm" and last_stamp.get(k, "") < REFRESH_FIX_STAMP
+                     and k.rsplit("@", 1)[-1] >= "2026-11-18"}
             print(f"REAUDIT_ALREADY_REFRESH={len(again)}")
             done -= again
     st = lsl(f"{STAGE}/*.json")
