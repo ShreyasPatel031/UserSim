@@ -36,8 +36,12 @@ if old_bak not in src:
 src = src.replace(old_bak, new_bak, 1)
 
 stamp = """    res["upvotes_refreshed_at"] = now()  # REPULL_UPVOTES_STAGING_PATCH
-    res.setdefault("upvotes", {})["refresh"] = {"read_utc": now(), "delta": {"items_before": len(old), "items_after": len(ups), "items_added": max(0, len(ups) - len(old))}}
-    res["run"]["finished_utc"] = res.get("run", {}).get("finished_utc") or now()"""
+    _items_added = max(0, len(ups) - len(old))
+    res.setdefault("upvotes", {})["refresh"] = {"read_utc": now(), "delta": {"items_before": len(old), "items_after": len(ups), "items_added": _items_added}}
+    _prior_fin = (res.get("run") or {}).get("finished_utc")
+    res.setdefault("run", {})["finished_utc"] = now()
+    if _prior_fin and _prior_fin != res["run"]["finished_utc"]:
+        res["run"]["finished_utc_prior_pull"] = _prior_fin"""
 needle = '    res.setdefault("run", {})["timing"] = timing; res["run"]["upvotes_repulled"] = {"utc": now(), "requests": R.reqs, "ended": ended}'
 if needle not in src:
     print("upvotes_repulled line not found", file=sys.stderr)

@@ -58,7 +58,7 @@ host=socket.gethostname()
 def ts(u):
   try: return datetime.fromisoformat(u.replace('Z','+00:00')).timestamp()
   except Exception: return None
-nc=nr=nc_all=nr_all=0; last_person=None; walls=0; port=None
+nc=nr=nc_all=nr_all=0; refresh_upload=0; refresh_fresh=0; last_person=None; walls=0; port=None
 BLOCKEV=('browser_open_failed','stopped_on_block','block_port_rotate','block_soft_retry','block_new_port')
 try: rows=open('/opt/ph/reuse/status_'+host+'.jsonl').read().splitlines()
 except Exception: rows=[]
@@ -69,11 +69,22 @@ for ln in rows:
   if j.get('port'): port=j.get('port')
   ev=j.get('event'); rc=j.get('rc')
   if j.get('handle') and (rc is not None or ev=='incomplete_skip_upload'):
-    ok = rc==0 and ev!='incomplete_skip_upload' and (str(j.get('method') or '').startswith('pfull') or float(j.get('header_pct') or 0)>=98)
-    if ok: nc_all+=1
+    meth=str(j.get('method') or '')
+    ok_pdeep = rc==0 and ev!='incomplete_skip_upload' and meth.startswith('pfull') and float(j.get('header_pct') or 0)>=98
+    ok_refresh = rc==0 and ev!='incomplete_skip_upload' and meth=='reuse_browser_v1'
+    ok = ok_pdeep
+    if ok_pdeep: nc_all+=1
+    elif ok_refresh: pass
     else: nr_all+=1
     if t and now-t<=W:
-      if ok: nc+=1
+      if ok_pdeep: nc+=1
+      elif ok_refresh:
+        refresh_upload+=1
+        ia=j.get('upvotes_items_added')
+        if ia is None:
+          ia=(j.get('coverage') or {}).get('upvotes',{}).get('got')
+          ia=-1
+        if int(ia or 0)>0: refresh_fresh+=1
       else: nr+=1
     if t: last_person=max(last_person or 0,t)
   elif (ev in BLOCKEV or (ev=='supervisor_run_end' and rc==3)) and t and now-t<=W:
@@ -112,7 +123,7 @@ elif last_person and now-last_person<=600: state='active'
 elif walls: state='cf_wall'
 elif last_person: state='stale'
 else: state='cold'
-print(json.dumps({'n':nc_all+nr_all,'n_complete':nc_all,'n_rerun':nr_all,'win_complete':nc,'win_rerun':nr,'walls':walls,'age':age,'ppm':round(nc/m,4),'ppm_complete':round(nc/m,4),'ppm_attempt':round((nc+nr)/m,4),'ppm_rerun':round(nr/m,4),'refresh_ppm':refresh_ppm,'refresh_win':refresh_win,'state':state,'batch':batch,'port':port}))
+print(json.dumps({'n':nc_all+nr_all,'n_complete':nc_all,'n_rerun':nr_all,'win_complete':nc,'win_rerun':nr,'walls':walls,'age':age,'ppm':round(nc/m,4),'ppm_complete':round(nc/m,4),'ppm_attempt':round((nc+nr)/m,4),'ppm_rerun':round(nr/m,4),'refresh_ppm':round(refresh_upload/m,4),'refresh_fresh_ppm':round(refresh_fresh/m,4),'refresh_win':refresh_upload,'refresh_fresh_win':refresh_fresh,'refresh_log_win':refresh_win,'state':state,'batch':batch,'port':port}))
 "'''.replace("__WINDOW__", str(WINDOW_MIN))
 
 
@@ -166,11 +177,14 @@ def main() -> int:
     live_hb_max = int(os.environ.get("FLEET_LIVE_HB_MAX_SEC", "1200"))
     live_hb_age = fleet_live_hb_age_sec()
     refresh_ppm_total = 0.0
+    refresh_fresh_ppm_total = 0.0
     for r in rows:
         slot = str(r.get("slot"))
         rp = float(r.get("refresh_ppm") or 0)
+        rfp = float(r.get("refresh_fresh_ppm") or 0)
         if slot in upvote_slots:
             refresh_ppm_total += rp
+            refresh_fresh_ppm_total += rfp
             if rp >= 0.15 and r.get("batch") and r.get("state") in ("dead", "stale", "cold"):
                 r["state"] = "active_upvote"
         if slot in live_slots and live_hb_age is not None and live_hb_age <= live_hb_max:
@@ -196,8 +210,9 @@ def main() -> int:
         "complete_ppm": round(realized, 3),
         "attempt_ppm": round(attempt_ppm, 3),
         "rerun_ppm": round(rerun_ppm, 3),
-        "metric_note": f"complete_ppm=complete saved people in last {WINDOW_MIN:g} min / {WINDOW_MIN:g}; incomplete pulls count as rerun only",
         "upvote_refresh_ppm_15m": round(refresh_ppm_total, 3),
+        "upvote_refresh_fresh_ppm_15m": round(refresh_fresh_ppm_total, 3),
+        "metric_note": f"complete_ppm=pdeep pfull saves / {WINDOW_MIN:g}m; upvote_refresh_ppm=repull uploads; upvote_refresh_fresh_ppm=refresh rows w/ new upvotes (heuristic); refresh_log_win=GraphQL endCursor lines",
         "active_vms": len(active),
         "stale_vms": len(stale),
         "cold_vms": len(cold),
