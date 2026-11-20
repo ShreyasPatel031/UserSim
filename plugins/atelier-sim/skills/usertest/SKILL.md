@@ -1,14 +1,14 @@
 ---
 name: usertest
-description: Full user test of a web product with simulated users in real cloud browsers - a plain tester plus 2-3 user groups from UserSim's bank of real Product Hunt users, on the product AND a competitor, in parallel, with a replay page, divergences and ranked changes to approve. Use only when the user asks for a full or thorough user test, a comparison with competitors, or runs /usersim:test. For a quick "how would a user use this / what would they say" question, use the ask skill instead.
+description: Full user test of a web product with simulated users in real cloud browsers - a plain tester plus 2-3 user groups from Atelier Sim's bank of real Product Hunt users, on the product AND a competitor, in parallel, with a replay page, divergences and ranked changes to approve. Use only when the user asks for a full or thorough user test, a comparison with competitors, or runs /atelier-sim:test. For a quick "how would a user use this / what would they say" question, use the ask skill instead.
 ---
 
-# UserSim user test
+# Atelier Sim user test
 
 Goal: show the user how their real users will use their product, given what those users already know from
 competitors, and turn every place they diverge from a plain test run into a change the user can approve.
 
-Work in a run folder `.usersim/<YYYYMMDD-HHMM>/` in the user's project (add `.usersim/` to `.gitignore` if the
+Work in a run folder `.atelier-sim/<YYYYMMDD-HHMM>/` in the user's project (add `.atelier-sim/` to `.gitignore` if the
 project has one and it isn't there). Everything below is written there.
 
 ## 1. Plan (one confirmation from the user)
@@ -44,8 +44,8 @@ Cells = testers × tasks. Keep it at most 12 cells (for example 4 testers × 3 t
 ## 2. Run every cell in parallel, on the product and a competitor
 
 Start one `sim-user` agent (from this plugin) per tester × task × product, all in the same message so they run in
-parallel. Run every tester on the user's product (`out_file` = `.usersim/<run>/runs/<label>__task<k>.json`) and on the
-main competitor (`.usersim/<run>/runs/<label>__comp<k>.json`), with the same task. Seeing the same person on both is
+parallel. Run every tester on the user's product (`out_file` = `.atelier-sim/<run>/runs/<label>__task<k>.json`) and on the
+main competitor (`.atelier-sim/<run>/runs/<label>__comp<k>.json`), with the same task. Seeing the same person on both is
 what makes the comparison believable. Give each agent `product_url`, `task`, `persona`, `label` and `out_file`.
 Tell the user how many browsers are running, and pass on each `watch_url` as it arrives.
 
@@ -70,7 +70,7 @@ claim before you keep it. If a tester's words contradict the claim, change the c
 
 ## 4. Write session.json
 
-Write `.usersim/<run>/session.json`. `${CLAUDE_SKILL_DIR}/references/example_session.json` is a complete real example.
+Write `.atelier-sim/<run>/session.json`. `${CLAUDE_SKILL_DIR}/references/example_session.json` is a complete real example.
 Copy its shape exactly. The fields:
 
 - `date`, `headline`, `lede`, `race_title`, `disclosure`, `method` (list of sentences): the verdict first, in plain words,
@@ -100,10 +100,10 @@ the positions off it. Do not guess.
 ## 5. Build and open the page
 
 ```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/replay.py" .usersim/<run>
+python3 "${CLAUDE_SKILL_DIR}/scripts/replay.py" .atelier-sim/<run>
 ```
 
-It writes `.usersim/<run>/replay.html`, an interactive page with:
+It writes `.atelier-sim/<run>/replay.html`, an interactive page with:
 - the verdict and the simulated-tester disclosure;
 - the race chart (each tester's steps on both products, coloured by stage);
 - the ranked decision list, with evidence, before/after sliders, Approve and a "why" note;

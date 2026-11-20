@@ -1,10 +1,10 @@
 {
-  "name": "usersim",
-  "displayName": "UserSim user testing",
-  "version": "0.3.0",
-  "description": "Ask how a user would use any website and what they'd say about it: two simulated users in real cloud browsers answer in chat in about 3 minutes. Or run a full study: a plain tester and 2-3 user groups drawn from UserSim's bank of real Product Hunt users, on your product and a competitor, with a replay page and ranked changes to approve.",
+  "name": "atelier-sim",
+  "displayName": "Atelier Sim",
+  "version": "0.4.0",
+  "description": "Simulated users for any web page or app, right in Claude Code: whenever you test or ship something with a URL, 5 simulated users try it in real cloud browsers and you get who finished, who left and where, in about 3 minutes. Or run a full study against a competitor with a replay page and ranked changes.",
   "author": {
-    "name": "UserSim",
+    "name": "Atelier Sim",
     "url": "https://github.com/ShreyasPatel031/UserSim/tree/claude/usersim-plugin"
   },
   "homepage": "https://github.com/ShreyasPatel031/UserSim/tree/claude/usersim-plugin",

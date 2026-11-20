@@ -266,7 +266,7 @@ async function saveDecision(vid){
 }
 function shipText(kind){
   const ap=D.variations.filter(v=>state.decisions[v.id]==="approved");const prod=D.products[PK()[0]].name;
-  if(kind==="claude")return `Apply these approved UserSim variations from the ${prod} user test (${D.date}) on a new branch, then re-run only the testers they affect:\n`+ap.map((v,i)=>`${i+1}. ${v.title}: ${v.change}${state.notes[v.id]?` (why: ${state.notes[v.id]})`:""}`).join("\n");
+  if(kind==="claude")return `Apply these approved Atelier Sim variations from the ${prod} user test (${D.date}) on a new branch, then re-run only the testers they affect:\n`+ap.map((v,i)=>`${i+1}. ${v.title}: ${v.change}${state.notes[v.id]?` (why: ${state.notes[v.id]})`:""}`).join("\n");
   const nn=D.variations.filter(v=>state.decisions[v.id]==="rejected");
   return `## Ship list: ${prod} user test, ${D.date}\n`+ap.map(v=>`- [ ] **${v.title}** (${v.evidence}; effort ${v.effort})\n  ${v.change}${state.notes[v.id]?`\n  Why: ${state.notes[v.id]}`:""}`).join("\n")+(nn.length?`\n\n### Not now\n`+nn.map(v=>`- ${v.title}${state.notes[v.id]?` (why: ${state.notes[v.id]})`:(v.risk&&v.risk!=="none"?` (risk: ${v.risk})`:"")}`).join("\n"):"")+`\n\n_Simulated testers, one run each: a first pass to pick what to test for real._`;
 }

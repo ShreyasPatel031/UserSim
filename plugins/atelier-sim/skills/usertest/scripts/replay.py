@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the interactive results page for a UserSim user-test run folder.
+"""Build the interactive results page for a Atelier Sim user-test run folder.
 
 Usage: python3 replay.py <run_dir>
 
@@ -9,7 +9,7 @@ Reads, from <run_dir>:
   session.json   Claude's analysis: headline, lede, products, stages, voices, highlights,
                  divergences and ranked variations (see SKILL.md, step 4)
 Writes <run_dir>/replay.html: a self-contained page (data inlined) built from
-../assets/report.html. Screenshots are linked from the UserSim report URLs, not copied.
+../assets/report.html. Screenshots are linked from the Atelier Sim report URLs, not copied.
 Standard library only. Makes no network calls.
 """
 from __future__ import annotations

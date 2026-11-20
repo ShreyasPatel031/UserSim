@@ -1,7 +1,7 @@
-# UserSim user testing for Claude Code
+# Atelier Sim user testing for Claude Code
 
-Test your web product with simulated users, without leaving your Claude Code session. UserSim opens real cloud
-browsers on your site. A **plain tester** (the usual end-to-end check) and **2–3 user groups** drawn from UserSim's
+Test your web product with simulated users, without leaving your Claude Code session. Atelier Sim opens real cloud
+browsers on your site. A **plain tester** (the usual end-to-end check) and **2–3 user groups** drawn from Atelier Sim's
 bank of real Product Hunt users each try your key tasks, in parallel. Claude then:
 
 - **replays** every run step by step, with screenshots and each simulated user's thoughts;
@@ -15,7 +15,7 @@ It works for public websites and web apps, including preview and staging deploys
 
 ```
 /plugin marketplace add ShreyasPatel031/UserSim@claude/usersim-plugin
-/plugin install usersim@usersim
+/plugin install atelier-sim@atelier-sim
 ```
 
 No account, API key or token is needed.
@@ -25,7 +25,7 @@ No account, API key or token is needed.
 Point at anything and ask:
 
 ```
-/usersim:ask https://excalidraw.com
+/atelier-sim:ask https://excalidraw.com
 ```
 
 or just say "how would a user use cal.com, and what would they say about it?" Claude starts two simulated users in
@@ -36,14 +36,14 @@ own words, and what to try. There is no plan to approve.
 For the full study, ask for it or run:
 
 ```
-/usersim:test https://your-preview-url.example.com
+/atelier-sim:test https://your-preview-url.example.com
 ```
 
 Claude proposes 1–3 tasks, a competitor and 2–3 user groups, and waits for your approval. It then runs every tester
 on your product and the competitor in parallel, builds `replay.html` (race chart, ranked changes with before/after,
 highlights, side by side) and applies only the changes you approve. This takes 10–20 minutes.
 
-Results go to `.usersim/<run>/` in your project. Localhost is not reachable; use a preview or staging URL.
+Results go to `.atelier-sim/<run>/` in your project. Localhost is not reachable; use a preview or staging URL.
 
 ### From Claude chat (claude.ai or the desktop app)
 
@@ -52,7 +52,7 @@ custom connector, URL `https://35-202-98-224.sslip.io/mcp`, no sign-in) and ask 
 
 ## Who the simulated users are
 
-The user groups come from UserSim's store of about 95,000 Product Hunt users whose public profiles were read in full.
+The user groups come from Atelier Sim's store of about 95,000 Product Hunt users whose public profiles were read in full.
 The groups are built from aggregates only: kind of user, roles, topics, how they comment, account age. Every group has
 at least 20 people, and the plugin carries no names, ids or profile text. The snapshot ships in
 `skills/usertest/references/groups.json`.
@@ -67,26 +67,26 @@ with a step you can watch, not as a forecast.
 - **Runs locally:** the skill instructions, a `sim-user` agent per test cell, and
   `skills/usertest/scripts/replay.py`. That script uses the Python standard library only, reads the run folder and
   writes `replay.html` from `skills/usertest/assets/report.html`. It makes no network calls. When you open
-  `replay.html` in a browser, the page loads its fonts from Google Fonts and its screenshots from UserSim's report
+  `replay.html` in a browser, the page loads its fonts from Google Fonts and its screenshots from Atelier Sim's report
   links. Approvals and notes are kept in that browser's local storage.
-- **Connects to:** the UserSim MCP server at `https://35-202-98-224.sslip.io/mcp`. It runs on Google Cloud in the US
+- **Connects to:** the Atelier Sim MCP server at `https://35-202-98-224.sslip.io/mcp`. It runs on Google Cloud in the US
   and has no other declared connectors.
-- **Sends to the UserSim server:**
+- **Sends to the Atelier Sim server:**
   - the product URL, the task text and persona text you approved;
   - each browser action and the simulated user's short "thought" for it.
 
   Your source code is **not** sent. Claude reads your repository locally to choose tasks and to propose and apply
   changes.
 - **What the server does:**
-  - opens the product URL in a browser on UserSim's own machines, and records screenshots, steps and thoughts;
+  - opens the product URL in a browser on Atelier Sim's own machines, and records screenshots, steps and thoughts;
   - runs an independent judge (Gemini) over the run;
-  - for signups, uses UserSim-owned email aliases and a UserSim phone number. No personal details of yours are typed
+  - for signups, uses Atelier Sim-owned email aliases and a Atelier Sim phone number. No personal details of yours are typed
     into your product.
   - If a captcha blocks a run, the server may send that page's captcha to a captcha-solving service.
-- **Stored:** run reports, screenshots and steps are kept by UserSim (Google Cloud Storage). Anyone who has a run's
+- **Stored:** run reports, screenshots and steps are kept by Atelier Sim (Google Cloud Storage). Anyone who has a run's
   watch or report link can open it, so don't test pages that show private data. To have a run deleted, open an issue
   in this repository with its study id.
-- **In your project:** `.usersim/<run>/`, holding one JSON per run; for a full study also plan.json, session.json
+- **In your project:** `.atelier-sim/<run>/`, holding one JSON per run; for a full study also plan.json, session.json
   and replay.html.
   Code changes are made only after you approve them, on a new git branch when the project uses git.
 

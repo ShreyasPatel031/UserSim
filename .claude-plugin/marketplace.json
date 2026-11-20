@@ -1,12 +1,17 @@
 {
-  "name": "usersim",
-  "owner": { "name": "UserSim", "url": "https://github.com/ShreyasPatel031/UserSim/tree/claude/usersim-plugin" },
-  "metadata": { "description": "UserSim plugins for Claude Code" },
+  "name": "atelier-sim",
+  "owner": {
+    "name": "Atelier Sim",
+    "url": "https://github.com/ShreyasPatel031/UserSim/tree/claude/usersim-plugin"
+  },
+  "metadata": {
+    "description": "Atelier Sim plugins for Claude Code"
+  },
   "plugins": [
     {
-      "name": "usersim",
-      "source": "./plugins/usersim",
-      "description": "User-test your web product with a plain tester and simulated user groups in real cloud browsers; replay, divergences and fixes to approve."
+      "name": "atelier-sim",
+      "source": "./plugins/atelier-sim",
+      "description": "Simulated users for any web page or app: who finishes, who leaves, and where."
     }
   ]
 }
