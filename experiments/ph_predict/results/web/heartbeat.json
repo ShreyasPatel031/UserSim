@@ -23,10 +23,10 @@
   },
   "monthly dayend": {
    "day": "2026-11-19",
-   "data_cut": null,
-   "written_at": "2026-11-20T10:26:51.852712+00:00",
-   "status": "missing read",
-   "late_min": null
+   "data_cut": "2026-11-20T10:35:44Z",
+   "written_at": "2026-11-20T11:36:52.969018+00:00",
+   "status": "ok",
+   "late_min": 61.1
   },
   "early_forecast C12": {
    "day": "2026-11-15",
@@ -190,5 +190,5 @@
    "late_min": 20.3
   }
  },
- "updated_at": "2026-11-20T10:26:51.852712+00:00"
+ "updated_at": "2026-11-20T11:36:52.969018+00:00"
 }
