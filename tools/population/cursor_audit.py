@@ -229,7 +229,7 @@ def main():
 
     c, reasons, builds, vms = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
     rows, merge, replace, requeue = [], [], [], []
-    pb60_c, pb60_vms, reupload_c = collections.Counter(), collections.Counter(), collections.Counter()
+    pb60_c, pb60_vms, reupload_c, pb60_recent = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
     for n in todo:
         d = json.load(open(f"{D}/people_live/vm/{n}.json"))
         md5 = (d.get("run") or {}).get("pkg_md5")
@@ -254,6 +254,9 @@ def main():
         pb60_c[str(pb60)] += 1
         if pb60:
             pb60_vms[vm] += 1
+            # orchestrator 22:00Z Nov 20: alert only when the pull itself finished within the last 24 h
+            if (fin or st[n]) >= time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400)):
+                pb60_recent[vm] += 1
         vm_only = bool(gate) and all(x.startswith("vm_") for x in gate)
         if ok and vm_only and MERGE_VM_HELD and vm != "unknown":
             # 23:1xZ Nov 12 (Shreyas via orchestrator): a whole person held only by the VM/IP gate is good data; merge it
@@ -285,6 +288,8 @@ def main():
               f"rotation={sum(1 for n in merge + replace if n in prov and prov[n]['vm_rotation_evidence'])} exit_ip_known={sum(1 for n in merge + replace if n in prov and prov[n]['exit_ip_at_save'])}")
     print(f"POST_BLOCK_IP_CHANGE_60M {stamp}: true={pb60_c['True']} false={pb60_c['False']} unknown={pb60_c['None']} "
           f"vms={','.join(f'{v}:{k}' for v, k in sorted(pb60_vms.items()))}", flush=True)
+    print(f"POST_BLOCK_IP_CHANGE_60M_RECENT24H {stamp}: true={sum(pb60_recent.values())} "
+          f"vms={','.join(f'{v}:{k}' for v, k in sorted(pb60_recent.items()))}", flush=True)
     print(f"REUPLOADED_OLD_SAVES {stamp}: {sum(reupload_c.values())} of {len(todo)} (pull finished on an earlier day than staged) "
           f"vms={len(reupload_c)}", flush=True)
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
