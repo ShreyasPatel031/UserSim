@@ -24,6 +24,7 @@ FULL18F = "uYYdW17hoPBJjpMGoR7lKw=="  # full18e + paging_v2.py:210 fix (no 98% /
 AUDITED_BUILDS = {FULL18D, FULL18F}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
 MERGE_VM_HELD = False
+REFRESH_FIX_STAMP = "20261120T2245Z"  # audits from here on merge newer upvote refreshes (see the already_in_vm rule)
 BLOCK_SINCE = os.environ.get("CURSOR_BLOCK_SINCE", "2026-11-10T09:15:00Z")  # fleet-wide PH block start (status logs)
 FOLLOW_ONLY = re.compile(r"^(followers|following):FAIL_(repeat|no_offset_end)$")
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
@@ -50,9 +51,9 @@ def main():
     stamp = time.strftime("%Y%m%dT%H%MZ", time.gmtime())
     done = {l.split("\t")[0] for l in lines(f"{CUR}/audited.tsv")}
     rr = sys.argv[sys.argv.index("--reaudit-fail-reason") + 1] if "--reaudit-fail-reason" in sys.argv else None
-    if "--reaudit-held" in sys.argv or "--reaudit-already-incomplete" in sys.argv or rr:
+    if "--reaudit-held" in sys.argv or "--reaudit-already-incomplete" in sys.argv or "--reaudit-already-refresh" in sys.argv or rr:
         # --reaudit-held: re-score people whose latest audit result was held_gate (whole, blocked only by a gate)
-        last, last_why = {}, {}
+        last, last_why, last_stamp = {}, {}, {}
         # 04:5xZ Nov 13: one bulk copy, not one gsutil cat per audit file (105 files)
         AC = f"{W}/cursor_audit_cache/audits"
         os.makedirs(AC, exist_ok=True)
@@ -63,6 +64,7 @@ def main():
                 if len(f) >= 3:
                     last[f"{f[0]}@{f[1]}"] = f[2]
                     last_why[f"{f[0]}@{f[1]}"] = f[5] if len(f) > 5 else ""
+                    last_stamp[f"{f[0]}@{f[1]}"] = os.path.basename(u)[6:-4]
         if rr:  # 19:1xZ Nov 17 (Shreyas rule change): re-score fails whose ONLY gate reason was a reverted rule
             again_ = set()
             for k, v in last.items():
@@ -80,6 +82,13 @@ def main():
             comp_ = {l.split("\t")[0].strip().lower() for l in open(cf_[-1]) if l.strip()}
             again = {k for k, v in last.items() if v == "already_in_vm" and k.rsplit("@", 1)[0].lower() not in comp_}
             print(f"REAUDIT_ALREADY_INCOMPLETE={len(again)}")
+            done -= again
+        if "--reaudit-already-refresh" in sys.argv:
+            # 22:4xZ Nov 20: one-time backfill. Upvote refreshes of complete people were scored already_in_vm and never
+            # merged (the refresh keeps the old run.finished_utc; the new read is upvotes_refreshed_at). Re-score every
+            # already_in_vm row audited before the fix; once re-scored its newest stamp is past the fix and it drops out.
+            again = {k for k, v in last.items() if v == "already_in_vm" and last_stamp.get(k, "") < REFRESH_FIX_STAMP}
+            print(f"REAUDIT_ALREADY_REFRESH={len(again)}")
             done -= again
     st = lsl(f"{STAGE}/*.json")
     todo = sorted(n for n, t in st.items() if t >= START and f"{n}@{t}" not in done)
@@ -230,6 +239,7 @@ def main():
     c, reasons, builds, vms = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
     rows, merge, replace, requeue = [], [], [], []
     pb60_c, pb60_vms, reupload_c, pb60_recent = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
+    refresh_c = collections.Counter()
     for n in todo:
         d = json.load(open(f"{D}/people_live/vm/{n}.json"))
         md5 = (d.get("run") or {}).get("pkg_md5")
@@ -248,6 +258,13 @@ def main():
         # 21:3xZ Nov 20: test the pull's own finish time; the staged time is the upload time, and re-uploaded old saves
         # (128 at 21:21Z, finished Nov 8-17) would otherwise be tested against today's logs
         fin = str((d.get("run") or {}).get("finished_utc") or "")
+        # 22:4xZ Nov 20 (orchestrator, fleet RCA): a refresh save keeps the old finished_utc; its read time (and the IP
+        # it used) is upvotes_refreshed_at
+        fin = max(fin, str(d.get("upvotes_refreshed_at") or ""))
+        if d.get("upvotes_refreshed_at"):
+            refresh_c["fresh24h" if fin >= time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400)) else "older"] += 1
+            ia = (((d.get("upvotes") or {}).get("refresh") or {}).get("delta") or {}).get("items_added")
+            refresh_c["items_added>0" if (ia or 0) > 0 else "items_added=0"] += 1
         pb60 = post_block_ip_change_60m(vm, fin or st[n])
         if fin and fin[:10] < st[n][:10]:
             reupload_c[vm] += 1
@@ -268,7 +285,11 @@ def main():
             gate = []
         if ok and not gate:
             stored_incomplete = store_complete is not None and n.lower() not in store_complete
-            if n in vm_t and not stored_incomplete and not (n.lower() in rerun and st[n] > vm_t[n]):
+            # 22:4xZ Nov 20: an upvote refresh read after the store copy was written is new data, not a duplicate:
+            # merge it (the union is lossless). The refresh overlay keeps the old run.finished_utc, so test
+            # upvotes_refreshed_at against the store object's write time.
+            newer_refresh = n in vm_t and str(d.get("upvotes_refreshed_at") or "") > vm_t[n]
+            if n in vm_t and not stored_incomplete and not newer_refresh and not (n.lower() in rerun and st[n] > vm_t[n]):
                 res = "already_in_vm"
             else:
                 res = "replace" if n in vm_t else "merge"
@@ -290,6 +311,8 @@ def main():
           f"vms={','.join(f'{v}:{k}' for v, k in sorted(pb60_vms.items()))}", flush=True)
     print(f"POST_BLOCK_IP_CHANGE_60M_RECENT24H {stamp}: true={sum(pb60_recent.values())} "
           f"vms={','.join(f'{v}:{k}' for v, k in sorted(pb60_recent.items()))}", flush=True)
+    print(f"UPVOTE_REFRESHES {stamp}: fresh24h={refresh_c['fresh24h']} older={refresh_c['older']} "
+          f"items_added>0={refresh_c['items_added>0']} items_added=0={refresh_c['items_added=0']}", flush=True)
     print(f"REUPLOADED_OLD_SAVES {stamp}: {sum(reupload_c.values())} of {len(todo)} (pull finished on an earlier day than staged) "
           f"vms={len(reupload_c)}", flush=True)
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
