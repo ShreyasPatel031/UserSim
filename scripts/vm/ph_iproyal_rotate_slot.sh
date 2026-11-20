@@ -41,3 +41,5 @@ FORCE_GEOIP_REFRESH=1 PACE_GCS_VM_ROOT="'"$(grep PACE_GCS_VM_ROOT "$ROOT/results
 sudo systemctl restart phsuper' 2>/dev/null || echo "ssh rotate follow-up skipped $name"
 LOG="$ROOT/results/ph_fleet_full/${RUN_ID}/iproyal_rotate.log"
 echo "$(date -u +%FT%TZ) $res" >>"$LOG"
+export MVP_GCS_BUCKET="${MVP_GCS_BUCKET:-}"
+PACE_FLEET_RUN_ID="$RUN_ID" FLEET_ART="$ART" python3 "$ROOT/scripts/vm/ph_iproyal_rotate_audit.py" append-json "$res" "$(date -u +%FT%TZ)" 2>/dev/null || true

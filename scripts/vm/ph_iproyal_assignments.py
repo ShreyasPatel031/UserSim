@@ -186,8 +186,28 @@ def rebalance() -> dict:
             "last_rotate_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
         taken[h] = s
-        moved.append({"slot": s, "from_host": old, "to_host": h})
+        moved.append(
+            {
+                "slot": s,
+                "from_host": old,
+                "to_host": h,
+                "reason": "rebalance_unique",
+                "gen": st["slots"][s]["gen"],
+                "utc": st["slots"][s]["last_rotate_utc"],
+            }
+        )
     save_state(st)
+    if moved:
+        try:
+            from ph_iproyal_rotate_audit import append_row, row_from_rebalance_move
+
+            for m in moved:
+                append_row(row_from_rebalance_move(m), flush_gcs=False)
+            from ph_iproyal_rotate_audit import flush_mirror_to_gcs
+
+            flush_mirror_to_gcs()
+        except Exception:
+            pass
     return {
         "live": len(live),
         "unique_hosts": len(taken),
@@ -234,7 +254,7 @@ def rotate(slot: int | str, reason: str = "block") -> dict:
         "last_rotate_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
     save_state(st)
-    return {
+    out = {
         "ok": True,
         "slot": slot,
         "from": cur,
@@ -243,7 +263,15 @@ def rotate(slot: int | str, reason: str = "block") -> dict:
         "to_host": st["slots"][slot]["host"],
         "gen": gen,
         "reason": reason,
+        "utc": st["slots"][slot]["last_rotate_utc"],
     }
+    try:
+        from ph_iproyal_rotate_audit import record_rotate_result
+
+        record_rotate_result(out)
+    except Exception:
+        pass
+    return out
 
 
 def cmd_print(slot: str) -> None:
