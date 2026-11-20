@@ -47,3 +47,4 @@
 {"t": "product_groups_2026-11-17", "provider": "gcp", "usd": 0.1031, "note": "43 Gemini 2.5 Flash calls"}
 {"t": "persona_say_2026-11-18", "provider": "gcp", "usd": 0.3224, "note": "44 Gemini 2.5 Flash calls, tokens in 198063 out 105189"}
 {"t": "persona_say_2026-11-19", "provider": "gcp", "usd": 0.2453, "note": "33 Gemini 2.5 Flash calls, tokens in 150555 out 80053"}
+{"t": "persona_say_2026-11-20", "provider": "gcp", "usd": 0.4125, "note": "56 Gemini 2.5 Flash calls, tokens in 249355 out 135088"}
