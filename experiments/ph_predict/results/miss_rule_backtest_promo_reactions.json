@@ -1,0 +1,47 @@
+{
+ "feature": "promo_reactions",
+ "rule": "z(arm3) + w z(feature) within day, w leave-one-month-out",
+ "2026": {
+  "n_days": 183,
+  "arm3_3_5_10": [
+   56.3,
+   66.3,
+   77.6
+  ],
+  "rule_3_5_10": [
+   56.1,
+   66.3,
+   77.3
+  ],
+  "diff_top3": [
+   -0.2,
+   -1.6,
+   1.3
+  ],
+  "diff_top5": [
+   -0.0,
+   -0.8,
+   0.8
+  ],
+  "diff_top10": [
+   -0.3,
+   -0.8,
+   0.1
+  ],
+  "w_by_held_out_month": {
+   "2026-04": 0.1,
+   "2026-05": 0.1,
+   "2026-06": 0.1,
+   "2026-07": 0.1,
+   "2026-08": 0.2,
+   "2026-09": 0.1,
+   "2026-10": 0.1
+  },
+  "feature_null_rate": 0.013
+ },
+ "2025": {
+  "n_days": 204,
+  "note": "promo_reactions is all-null in 2025"
+ },
+ "decision": "NOT CLEAR: scored shadow line"
+}
