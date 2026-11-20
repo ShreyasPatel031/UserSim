@@ -52,3 +52,9 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-18: frozen ph_n_makers forward line CLOSED, NOT ADOPTED (orchestrator 21:29Z Nov 18). After 21 scored days (Oct 25 – Nov 17) frozen minus stored = −3.2 / −1.0 / 0.0 (top 3 / 5 / 10), and no 95% interval clears 0. The direction is against it. results/nmakers_frozen.json is the final file. The nightly run stops.
 - 2026-11-18: 03:45 before-reveal replay line fixed. hybrid_lodo.py looped only over Nov 2–13, so the _ku_0345 run could never find a 03:45 read. It now takes END_DAY from env (default 2026-11-13, so backtest rows are unchanged). It waits, writing "waiting" in the orders file, until there are 3 days with a read, which leave-one-day-out with inner day CV needs. On Nov 18 it found 2 days (Nov 16, 17). The nightly run passes END_DAY=<yesterday>. Report at 5 scored days with paired intervals vs the 00:05 arm 3.
 - 2026-11-18: X pre-launch buzz vs the published 00:05 line CLOSED, no signal (orchestrator 21:59Z). Prereg 8e729093 + amendment 86e2f8ff; result 050fb3dd (8 days, top 3/5 diff 0.0 [0.0, 0.0]). Raw fields (log1p pre-launch posts, pre-announce) are now logged nightly by x_buzz_log.py to results/x_buzz_daily.jsonl, with no shadow line. Re-test at ~30 days.
+- 2026-11-20: arm-3 miss anatomy closed (prereg 3776ca5d, result 6260cc5a; orchestrator 10:29Z).
+  - 9 misses over Nov 16–19: (a) 8, (b) 1, (c) 0.
+  - The chosen rule, promo_reactions re-weight, is CLOSED: flat on 183 days.
+  - promo_posts at w = 0.1 is a FROZEN forward shadow, logged as POST-HOC (second look, no 2025 replication). Frozen file: results/frozen/promo_posts_w01_20261120.json. Script: promo_posts_shadow.py.
+  - It is scored nightly against published arm 3 from Nov 20, with the decision at 25 scored days.
+  - No new model-tweak experiment until one forward line reaches its decision point.
