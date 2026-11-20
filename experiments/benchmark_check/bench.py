@@ -172,7 +172,8 @@ def main():
     for d in days:
         g = P[P.day == d]; ids = g.id.tolist(); h = hits(order_by(ids, g.arm3), d)
         if h is None: continue
-        r = dict(day=d, arm3=h, B2=hits(track(ids, d), d), B2c=hits(track(ids, d, "count"), d), B2_leaky=hits(track(ids, d, leaky=True), d))
+        n = len(ids); rnd = [min(k, n) / n * 100 for k in K]   # expected hit rate of a random order on this line-up
+        r = dict(day=d, arm3=h, random=rnd, B2=hits(track(ids, d), d), B2c=hits(track(ids, d, "count"), d), B2_leaky=hits(track(ids, d, leaky=True), d))
         fn = f"{HERE}/llm_cache/{d}.json"
         if os.path.exists(fn):
             G = json.load(open(fn)); r["B4"] = hits(order_by(ids, [G.get(i, {}).get("score", np.nan) for i in ids]), d)
@@ -200,11 +201,13 @@ def main():
         o1, s1 = ph_order(d, "00:05"); o2, s2 = ph_order(d, "03:45", tol_min=15)
         if o1 and o2 and hits(o1, d) is not None: h345.append(dict(day=d, B1=hits(o1, d), h0345=hits(o2, d), s1=s1, s2=s2))
     out = dict(
-        backtest={b: table(rows, "arm3", b) for b in ("B2", "B2c", "B2_leaky", "B4", "B1")},
+        backtest={b: table(rows, "arm3", b) for b in ("random", "B2", "B2c", "B2_leaky", "B4", "B1")},
         backtest_levels={k: (np.mean([r[k] for r in rows if r.get(k)], 0).round(1).tolist() if any(r.get(k) for r in rows) else None)
-                         for k in ("arm3", "B2", "B2c", "B2_leaky", "B4", "B1")},
+                         for k in ("arm3", "random", "B2", "B2c", "B2_leaky", "B4", "B1")},
         backtest_days=len(rows), llm_known_share=float(np.mean([r["known"] for r in rows if "known" in r])) if any("known" in r for r in rows) else None,
         live={f"{a}-{b}": table(live, a, b) for a in ("arm3", "pub") for b in ("B1", "B1r", "B2", "B3", "B4")},
+        live_levels={k: np.mean([r[k] for r in live if r.get(k)], 0).round(1).tolist() for k in ("pub", "arm3", "B1", "B1r", "B2", "B3", "B4", "h0345")},
+        h0345_levels={k: np.mean([r[k] for r in h345], 0).round(1).tolist() for k in ("B1", "h0345")},
         live_days=[r["day"] for r in live], live_b1_src=sorted({r["B1_src"] for r in live if r.get("B1_src")}),
         h0345_vs_B1=table(h345, "h0345", "B1"), h0345_days=[r["day"] for r in h345], h0345_src=sorted({r["s2"] for r in h345}),
         gemini_tokens=USE)
