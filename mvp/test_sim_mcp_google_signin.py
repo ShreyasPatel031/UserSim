@@ -33,6 +33,7 @@ def test_allowed_only_for_token_callers(monkeypatch):
     with mock.patch("mvp.sim_mcp.limits.get", lambda k: False):
         assert not google_signin.allowed_for("a1b2c3d4e5f60718")
     monkeypatch.delenv("MVP_GOOGLE_STATE_URI")
+    monkeypatch.setenv("MVP_GOOGLE_VAULT_URI", "off")
     with mock.patch("mvp.sim_mcp.limits.get", lambda k: True):
         assert not google_signin.allowed_for("a1b2c3d4e5f60718")
 
