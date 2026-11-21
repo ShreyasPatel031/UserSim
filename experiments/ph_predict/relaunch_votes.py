@@ -1,5 +1,6 @@
-import pickle, numpy as np, pandas as pd
-df = pickle.load(open("data/build_cache.pkl", "rb"))
+import numpy as np, pandas as pd
+from buildcache import build_cached
+df = build_cached()
 P = pd.read_parquet("results/ctrl_preds.parquet")
 df = df[["id", "domain"]].merge(P, on="id")
 SKIP = {"", "github.com", "apps.apple.com", "chromewebstore.google.com", "chrome.google.com", "play.google.com", "producthunt.com", "x.com", "notion.site", "vercel.app"}
