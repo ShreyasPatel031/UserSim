@@ -42,7 +42,7 @@ mapfile -t targets < <(python3 - <<PY
 import json
 from pathlib import Path
 m=json.loads(Path("$ART/fleet_measure.json").read_text())
-dead, cf, stale, stale_warm = [], [], [], []
+dead, cf, stale, stale_warm, cold = [], [], [], [], []
 age_min = int("${STALE_AGE}")
 for s in m.get("slots", []):
     slot=int(s.get("slot") or 0)
@@ -51,6 +51,8 @@ for s in m.get("slots", []):
     wc=int(s.get("win_complete") or 0)
     if st == "dead":
         dead.append(slot)
+    elif st == "cold" and int(s.get("n") or 0) <= 2:
+        cold.append(slot)
     elif st == "cf_wall" and s.get("batch"):
         cf.append(slot)
     elif (
@@ -68,8 +70,8 @@ for s in m.get("slots", []):
         and age < age_min
     ):
         stale_warm.append(slot)
-# dead, then hung stale (batch alive, no person row in 10m), then cf_wall
-ordered = dead + sorted(stale, key=lambda x: -next(
+# dead, cold (phsuper idle), then hung stale (batch alive, no person row in 10m), then cf_wall
+ordered = dead + sorted(cold) + sorted(stale, key=lambda x: -next(
     (ss.get("age") or 0 for ss in m.get("slots", []) if int(ss.get("slot") or 0) == x), 0
 )) + sorted(stale_warm, key=lambda x: -next(
     (ss.get("age") or 0 for ss in m.get("slots", []) if int(ss.get("slot") or 0) == x), 0

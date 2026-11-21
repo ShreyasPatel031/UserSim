@@ -6,6 +6,9 @@ export PACE_ENV_FILE="${PACE_ENV_FILE:-$ROOT/results/ph_fleet_full/20261108t0820
 export PACE_FLEET_RUN_ID="${PACE_FLEET_RUN_ID:-20261108t082000z}"
 # shellcheck source=/dev/null
 source "$PACE_ENV_FILE"
+if [[ -z "${PACE_ZONE:-}" ]]; then
+  export PACE_ZONE="$(gcloud compute instances list --filter="name~'^feeder-fleet-${PACE_FLEET_RUN_ID}-' AND status=RUNNING" --format='value(zone)' 2>/dev/null | head -1)"
+fi
 POSTURE="${PACE_ENV_FILE%.env}/fleet_posture.env"
 [[ -f "$POSTURE" ]] && source "$POSTURE"
 export FLEET_KEEPER_DISABLED="${FLEET_KEEPER_DISABLED:-0}"
@@ -20,7 +23,7 @@ export FLEET_STALE_UNHANG_MAX="${FLEET_STALE_UNHANG_MAX:-3}"
 export FLEET_WAKEUP_MAX="${FLEET_WAKEUP_MAX:-12}"
 export FLEET_REFILL_JOB_SPLIT="${FLEET_REFILL_JOB_SPLIT:-1}"
 export FLEET_REFILL_SKIP_COMPLETE_QUEUED="${FLEET_REFILL_SKIP_COMPLETE_QUEUED:-1}"
-export FLEET_STALE_UNHANG_WRITE_GO="${FLEET_STALE_UNHANG_WRITE_GO:-0}"
+export FLEET_STALE_UNHANG_WRITE_GO="${FLEET_STALE_UNHANG_WRITE_GO:-1}"
 python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
 ART="$ROOT/results/ph_fleet_full/${PACE_FLEET_RUN_ID,,}"
 if [[ "${FLEET_HISTORICAL_PULL_PAUSE:-0}" == 1 && -x "$ROOT/scripts/vm/ph_fleet_pilot28_care.sh" ]]; then

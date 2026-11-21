@@ -15,6 +15,15 @@ import json, subprocess, sys, datetime
 m=json.load(open(sys.argv[1]))
 run=sys.argv[2]
 proj, sa = sys.argv[3], sys.argv[4]
+from pathlib import Path
+art = Path(sys.argv[1]).resolve().parent
+refill = {}
+rp = art / "refill_state.json"
+if rp.is_file():
+    try:
+        refill = json.load(open(rp))
+    except Exception:
+        refill = {}
 gce_running = gce_terminated = None
 if proj:
     gc = ["gcloud", "--format=value(status)"]
@@ -69,5 +78,30 @@ out={
     "slots_summary": slots,
     "mailbox": "usersim_sim/mailbox/from_cursor/",
 }
+inc = int(refill.get("pdeep_incomplete") or 0)
+new = int(refill.get("pdeep_new") or 0)
+need_left = inc + new
+ppm_c = float(m.get("complete_ppm") or 0)
+# Planning rate when recovering hung pdeep slots (orchestrator need-list ETA).
+plan_ppm = ppm_c if ppm_c >= 0.15 else 2.0
+eta = {
+    "need_list_incomplete_store": inc,
+    "need_list_new_in_queue": new,
+    "need_list_work_remaining": need_left,
+    "complete_ppm_15m_observed": ppm_c,
+    "complete_ppm_planning_assumption": plan_ppm,
+}
+if plan_ppm > 0 and need_left > 0:
+    mins = need_left / plan_ppm
+    eta["eta_minutes_at_plan_ppm"] = round(mins, 1)
+    eta["eta_utc_at_plan_ppm"] = (
+        datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=mins)
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
+deadline = datetime.datetime(2026, 11, 21, 18, 0, tzinfo=datetime.timezone.utc)
+eta["orchestrator_deadline_utc"] = deadline.strftime("%Y-%m-%dT%H:%M:%SZ")
+if plan_ppm > 0:
+    eta["minutes_to_deadline"] = round((deadline - datetime.datetime.now(datetime.timezone.utc)).total_seconds() / 60, 1)
+    eta["complete_ppm_required_for_deadline"] = round(need_left / max(1, eta["minutes_to_deadline"]), 2)
+out["need_list_eta"] = eta
 print(json.dumps(out, indent=2))
 PY
