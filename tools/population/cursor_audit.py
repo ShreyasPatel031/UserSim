@@ -179,7 +179,7 @@ def main():
             continue
     print(f"ROTATE_LOG rotations={sum(len(v) for v in vm_rot.values())} vms={len(vm_rot)}", flush=True)
 
-    def post_block_ip_change_60m(vm, t):
+    def post_block_ip_change_60m(vm, t, ip_override=None):
         """orchestrator 19:50Z Nov 20: save-local test, kept apart from the history-wide flags. True when the same VM logged
         a stopped_on_block within 60 min before the save (staged time) AND its exit IP at the save differs from its exit IP
         just before that block. None when the VM is unknown or the IPs are not logged; False otherwise."""
@@ -199,7 +199,7 @@ def main():
         if not near:
             return False
         before = [ip for u, ip in vm_ips.get(vm, []) if u < near[-1]]
-        at = ip_at(vm, t)
+        at = ip_override or ip_at(vm, t)
         if not before or not at:
             return None
         return at != before[-1]
@@ -280,15 +280,18 @@ def main():
             refresh_c["fresh24h" if fin >= time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400)) else "older"] += 1
             ia = (((d.get("upvotes") or {}).get("refresh") or {}).get("delta") or {}).get("items_added")
             refresh_c["items_added>0" if (ia or 0) > 0 else "items_added=0"] += 1
-        pb60 = post_block_ip_change_60m(vm, fin or st[n])
+        # 01:3xZ Nov 21: refresh saves now name the refreshing VM and its exit IP (fleet 58fb544c); test that VM, not
+        # the original pull's VM label the overlay keeps
+        tvm = str(d.get("upvotes_refreshed_by") or "") or vm
+        pb60 = post_block_ip_change_60m(tvm, fin or st[n], d.get("upvotes_refreshed_exit_ip"))
         if fin and fin[:10] < st[n][:10]:
             reupload_c[vm] += 1
         pb60_c[str(pb60)] += 1
         if pb60:
-            pb60_vms[vm] += 1
+            pb60_vms[tvm] += 1
             # orchestrator 22:00Z Nov 20: alert only when the pull itself finished within the last 24 h
             if (fin or st[n]) >= time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400)):
-                pb60_recent[vm] += 1
+                pb60_recent[tvm] += 1
         vm_only = bool(gate) and all(x.startswith("vm_") for x in gate)
         if ok and vm_only and MERGE_VM_HELD and vm != "unknown":
             # 23:1xZ Nov 12 (Shreyas via orchestrator): a whole person held only by the VM/IP gate is good data; merge it
