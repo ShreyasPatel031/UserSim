@@ -78,9 +78,11 @@ def main():
         u = d.get("upvotes") or {}
         last = str((d.get("run") or {}).get("finished_utc") or "")
         rt = str(d.get("upvotes_refreshed_at") or u.get("refreshed_at") or "")  # fleet 08:53Z Nov 16: whole-person refresh resave
-        if rt > last:
-            last = rt
+        # 09:2xZ Nov 21: the fleet's finished_utc fix-up now stamps refresh saves with the refresh time, so rt is no
+        # longer later than finished_utc; any upvotes_refreshed_at marks a refreshed person
+        if rt:
             refreshed.add(key)
+            last = max(last, rt)
         for kk, vv in u.items():  # upvote_refresh deltas (fleet job from Nov 14)
             if "refresh" in kk or "delta" in kk:
                 for e in (vv if isinstance(vv, list) else [vv]):
