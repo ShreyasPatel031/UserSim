@@ -103,5 +103,40 @@ if plan_ppm > 0:
     eta["minutes_to_deadline"] = round((deadline - datetime.datetime.now(datetime.timezone.utc)).total_seconds() / 60, 1)
     eta["complete_ppm_required_for_deadline"] = round(need_left / max(1, eta["minutes_to_deadline"]), 2)
 out["need_list_eta"] = eta
+rerun = float(m.get("rerun_ppm") or 0)
+attempt = float(m.get("attempt_ppm") or 0)
+stale_n = sum(1 for s in m.get("slots") or [] if s.get("state") in ("stale", "dead") and int(s.get("age") or 0) > 1800)
+cold_n = sum(1 for s in m.get("slots") or [] if s.get("state") in ("cold", "cf_wall"))
+walls = int(sum(int(s.get("walls") or 0) for s in m.get("slots") or []))
+win_c = sum(int(s.get("win_complete") or 0) for s in m.get("slots") or [])
+win_r = sum(int(s.get("win_rerun") or 0) for s in m.get("slots") or [])
+out["need_list_diagnosis"] = {
+    "why_not_need_list_new_completes": (
+        "PH_FLEET_RR_ONLY=1 skips need_list.jsonl; pdeep pulls PH_RR_FILES "
+        "(completion_queue fix list) only — re-pulls incomplete rows, not need_list first-time completes."
+    ),
+    "strategy": {
+        "ph_fleet_rr_only": True,
+        "ph_rr_files": "fix_completion_queue_20261118T0636Z.txt (completion_queue drain policy)",
+        "refill_pdeep_new_queued": new,
+        "refill_pdeep_incomplete_queued": inc,
+    },
+    "fleet_15m_window": {
+        "win_complete_persons": win_c,
+        "win_rerun_persons": win_r,
+        "rerun_fraction_of_attempts": round(rerun / attempt, 3) if attempt > 0 else None,
+        "stale_or_dead_slots_gt_30m": stale_n,
+        "cold_or_cf_slots": cold_n,
+        "cf_wall_events_15m": walls,
+    },
+    "tab_failures_observed": (
+        "Primary blocker on active pulls: ProfileStacksPage gql PersistedQueryNotFound "
+        "(stacks 0); Forums/Activity/Hunted paginate. Slot34 high cf_wall count."
+    ),
+    "deadline_note_18z_today": (
+        f"At measured complete_ppm={ppm_c:.3f} need_list ETA misses 18:00Z; "
+        f"need ~{eta.get('complete_ppm_required_for_deadline', '?')} complete/min."
+    ),
+}
 print(json.dumps(out, indent=2))
 PY
