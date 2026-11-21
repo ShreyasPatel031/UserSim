@@ -165,3 +165,9 @@ hunt prediction is a real life calibrator to improve our actual product real use
   comment texts without usernames, comment themes).
 - Scoring is fixed before results: problem/theme recall against real comments, and rank correlation. Each test version keeps
   its scorecard, so progress across days is visible.
+- Who the simulated users are is calibrated too (Shreyas, Nov 21: "we need to see if we are even choosing the correct
+  representative users and what they would say ... that is also the product, it's who the users are and what they would do").
+  - Each day, compare the personas or segments chosen for a launch, before results, with the real cohort that voted and
+    commented: held people, by segment, in groups of 20+ only, no usernames.
+  - Also compare what the simulated users said with what that real cohort said.
+  - E5 owns the cohort scorecard (results/calibration/<day>/cohort_scorecard.json).
