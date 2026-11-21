@@ -67,8 +67,8 @@ for D in DAYS:
             CM.setdefault(pid, set()).add(uid)
     for lid in ids:
         tb = T[T.target_id == lid].person_id.unique(); g_real = [G[p] for p in tb if p in G]
-        r = {"day": D, "launch_id": lid, "cut": cut, "flag": flag, "real_backers": len(tb), "real_backers_grouped": len(g_real), "ph_votes": VOTES.get(lid),
-             "coverage_backers": round(len(tb) / VOTES[lid], 3) if VOTES.get(lid) else None, "rank": RANK.get(lid), "family": family(TOPS.get(lid, [])),
+        r = {"day": D, "launch_id": lid, "cut": cut, "flag": flag, "real_backers": len(tb), "real_backers_grouped": len(g_real), "ph_votes": (float(VOTES[lid]) if pd.notna(VOTES.get(lid)) else None),
+             "coverage_backers": round(len(tb) / VOTES[lid], 3) if pd.notna(VOTES.get(lid)) and VOTES.get(lid) else None, "rank": (float(RANK[lid]) if pd.notna(RANK.get(lid)) else None), "family": family(TOPS.get(lid, [])),
              "new_share": round(float(np.mean([(close - first_read[p]).days <= 30 for p in tb])), 3) if len(tb) else None}
         if len(g_real) >= 20:
             real = mix(g_real); r["jsd_base"] = jsd(base, real)
