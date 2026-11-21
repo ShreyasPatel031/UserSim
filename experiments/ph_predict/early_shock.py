@@ -24,7 +24,9 @@ are paired over the days both arms cover, bootstrap over days.
 
 Clean day: on or after EARLY_FROM (first honest live prior), ranks final for >= 95% of the line-up, prior and popscore
 for >= 90%, and a snapshot within (H - 0.85, H + 0.25] covering >= 95% of the line-up for every H up to READY_H
-(hour 5 is scored where present but does not decide this).
+(hour 5 is scored where present but does not decide this). Launches dropped from the featured list during the day
+(unranked and missing from the day's last snapshot) don't count against "ranks final"; they stay in the line-up as
+never-top-k.
 Waits (prints the status, exits 0) until MIN_DAYS clean days exist.
 Inputs are read locally (pipeline VM) or from the bucket (raw/daily/<d>/, uploaded by pipeline.daily s_raw).
 
@@ -45,6 +47,7 @@ READY_SKIP = {5}                                            # extra cutoffs that
 KS = (3, 5, 10)
 LATE, EARLY = 0.25, 0.85                                    # snapshot for cutoff H: hours_since_start in (H - EARLY, H + LATE]
 COVER, INPUT_COVER, RANK_COVER = 0.95, 0.90, 0.95
+DROPPED_RANK = 999.0                                        # rank given to launches dropped from the featured list
 VISIBLE = 0.5                                               # votes count as visible at H if >= this share of launches > 0
 POP = ["tie_share", "log_reach", "pmax"]
 ARMS = {   # model -> (signal column prefix, uses popscore); "prior" and "votes alone" are scored directly
@@ -113,27 +116,40 @@ def snap_at(S_d, h):
                         index=last.launch_id.astype(str))
 
 
+def dropped(L_d, S_d):
+    """Unranked launches that left the featured list during the day: missing from the day's last snapshot. Product Hunt
+    never ranks these (pipeline: dropped_from_featured), so they never count against "ranks final"."""
+    if not len(S_d):
+        return set()
+    last = set(S_d[S_d["at"] == S_d["at"].max()].launch_id.astype(str))
+    return set(L_d.id[L_d.daily_rank.isna() & ~L_d.id.isin(last)])
+
+
 def day_frame(d, L_d, S_d, P, X):
-    """One row per ranked launch of day d with p, final votes, rank, popscore inputs, m_H per usable cutoff and e_H
-    where votes are visible, or (None, reason)."""
+    """One row per launch of day d's line-up with p, final votes, rank, popscore inputs, m_H per usable cutoff and e_H
+    where votes are visible, or (None, reason). Launches dropped from the featured list stay in the line-up with rank
+    DROPPED_RANK (never in the real top k), so a model that ranked them high is still penalised."""
     if len(L_d) < 5:
         return None, "fewer than 5 launches"
+    gone = dropped(L_d, S_d)
     ranked = L_d[L_d.daily_rank.notna()]
-    if len(ranked) < RANK_COVER * len(L_d):
-        return None, f"ranks not final ({len(ranked)} of {len(L_d)})"
-    if P is None or P.reindex(ranked.id).notna().mean() < INPUT_COVER:
+    if len(ranked) < RANK_COVER * (len(L_d) - len(gone)):
+        return None, f"ranks not final ({len(ranked)} of {len(L_d) - len(gone)}; {len(gone)} dropped)"
+    line = L_d[L_d.daily_rank.notna() | L_d.id.isin(gone)]
+    if P is None or P.reindex(line.id).notna().mean() < INPUT_COVER:
         return None, "no honest prior" if P is None else "honest prior covers < 90%"
-    if X is None or X.reindex(ranked.id).notna().any(axis=1).mean() < INPUT_COVER:
+    if X is None or X.reindex(line.id).notna().any(axis=1).mean() < INPUT_COVER:
         return None, "no popscore" if X is None else "popscore covers < 90%"
-    D = pd.DataFrame({"id": ranked.id.values, "day": d, "rank": ranked.daily_rank.astype(float).values,
-                      "y": np.log1p(ranked.votes.astype(float).values)})
+    D = pd.DataFrame({"id": line.id.values, "day": d,
+                      "rank": line.daily_rank.astype(float).fillna(DROPPED_RANK).values,
+                      "y": np.log1p(line.votes.astype(float).values)})   # NaN for dropped: never used to fit c
     D["p"] = P.reindex(D.id).values
     D = D[D.p.notna()].reset_index(drop=True)
     D = D.join(X.reindex(D.id).reset_index(drop=True))
     usable = []
     for h in CUTOFFS:
         v = snap_at(S_d, h)
-        if v is None or v.votes.reindex(D.id).notna().mean() < COVER:
+        if v is None or v.votes.reindex(D.id[D["rank"] != DROPPED_RANK]).notna().mean() < COVER:   # dropped launches leave
             continue
         v = v.reindex(D.id)
         D[f"m{h}"] = np.log1p(v.comments.values)

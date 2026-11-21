@@ -58,3 +58,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - promo_posts at w = 0.1 is a FROZEN forward shadow, logged as POST-HOC (second look, no 2025 replication). Frozen file: results/frozen/promo_posts_w01_20261120.json. Script: promo_posts_shadow.py.
   - It is scored nightly against published arm 3 from Nov 20, with the decision at 25 scored days.
   - No new model-tweak experiment until one forward line reaches its decision point.
+- 2026-11-21 ~09:20 UTC (01:20 PT): early_shock drop-out fix DEPLOYED (popscore commit e5240e4a, deployed under the rehearsed-fix rule). Bundle experiments/pipeline_patches/20261121_early_shock: early_shock.py 28866c64 over 240ddc43.
+  - Change: a launch that is unranked and missing from the day's last vote snapshot (dropped from the featured list) no longer counts against "ranks final" or snapshot coverage. It stays in the line-up at rank 999 with no outcome, so it never fits the shock weight.
+  - Rehearsal: end-to-end DRY on the VM from a scratch copy, real data read-only, --force, no --write. 13 clean days (Nov 19 and 20 now count; 11 before). Comment shock minus prior, top 3: +12.8 [+2.6, +25.6].
+  - Deploy: base-md5 gated; old file backed up to ~/w/backup_early_shock/early_shock.py.240ddc43; parse check passed; post-deploy status run ok (ready false, 13/14 clean days).
+  - Rollback: `bash ~/w/stage/20261121_early_shock/deploy_early_shock.sh rollback`.
