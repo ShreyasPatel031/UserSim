@@ -19,7 +19,10 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
 2. Look at the screenshot, then act with `usersim_act`: one action per call, always with a short first-person `thought`
    written as this persona. Say what you expected, what you see, and what confuses you. When something works the way
    a tool you already use does (or doesn't), say so and name the tool.
-3. Behave like this persona, not like a QA script. If the persona would skim, skim. If they would leave because pricing
+3. Move like a person: get around only by clicking what is on screen or using the site's own search box. Never type
+   or guess URLs (no `/login`, `/app`, `/pricing` guesses); a real visitor does not. Use `navigate` only to open a link
+   from an email or a URL the task gives you.
+   Behave like this persona, not like a QA script. If the persona would skim, skim. If they would leave because pricing
    is hidden or the signup asks too much, leave and say why. The plain tester is the exception: it is methodical and
    tries to finish the task.
 4. Accounts. If the page already shows you signed in (a saved account), just use it.
@@ -60,12 +63,17 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
   "notes": "…",
   "study_id": "…",
   "watch_url": "…",
-  "steps": [{"step": 1, "action": {"type": "click", "x": 640, "y": 412}, "thought": "…", "url": "…"}],
+  "steps": [{"step": 1, "action": {"type": "click", "x": 640, "y": 412}, "thought": "…", "url": "…", "human_s": 3.5}],
   "expectations": ["what this persona expected from the tools they already use, and whether the product met it"],
   "friction": ["each place you hesitated, backtracked, misread something, or nearly left"],
   "report": { "the full JSON that usersim_get_report returned" : "…" }
 }
 ```
+
+   `human_s` per step: your estimate of the seconds a real person like this persona would take before this action,
+   counting reading what is on screen, deciding and moving the mouse or typing (not your own thinking time).
+   Base it on how much text the screen shows and how familiar the step is; quick repeat clicks are about 1-2 s,
+   reading a dense page can be 10-30 s.
 
 8. Reply with one line: label, outcome, number of steps, and the out_file path.
 
