@@ -39,7 +39,9 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
    - **With `account_from`:** when you reach sign-up or log-in, call `usersim_signup_identity` with
      `same_account_as: <account_from>` and LOG IN with the email and password it returns (never sign up again).
      If it says that session has no identity yet, the account is still being created: wait about 30 s (a `wait` action)
-     and call again, up to 6 times. Login codes or links go to the same inbox: use the wait tools in your session.
+     and call again, up to 6 times. If it still has no identity, or that account's login fails, the first user could
+     not sign up: create your own account instead (call `usersim_signup_identity` without `same_account_as`).
+     Login codes or links go to the same inbox: use the wait tools in your session.
      If the site logs in only with an emailed code or link (no password) and your code is rejected or expired, other
      users are logging in to the same account at the same time: stop sharing it and create your own account instead
      (call `usersim_signup_identity` without `same_account_as`, in a new session if it refuses).
