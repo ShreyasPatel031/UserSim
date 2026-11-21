@@ -49,3 +49,4 @@
 {"t": "persona_say_2026-11-19", "provider": "gcp", "usd": 0.2453, "note": "33 Gemini 2.5 Flash calls, tokens in 150555 out 80053"}
 {"t": "persona_say_2026-11-20", "provider": "gcp", "usd": 0.4125, "note": "56 Gemini 2.5 Flash calls, tokens in 249355 out 135088"}
 {"t": "cohort_sentiment_backtest", "provider": "gcp", "usd": 0.0825, "note": "105 launches x 2 Gemini 2.5 Flash calls"}
+{"t": "persona_say_2026-11-21", "provider": "gcp", "usd": 0.1041, "note": "14 Gemini 2.5 Flash calls, tokens in 61828 out 34231"}
