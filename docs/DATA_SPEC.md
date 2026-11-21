@@ -92,6 +92,15 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Product followers at launch | per launch at first snapshot | not in API | low model value (PH agent); closed with reason |
 | Maker X followers | per maker at launch | Grok Bot X rollout 6,387 / 8,953 (71.3%; was 5,600); page cap removed from drop 20261117_h | drops before 20261117_h capped at 1 page → re-read those people / Grok Bot / Nov 19 |
 
+**Nov 21 review (10:55 UTC).** Current vs Nov 20:
+- Complete people 93,409–93,412 (+3 to +5; the need list moved again from 09:0xZ after ~23 h stalled). Need list 1,485. Tabs missing: followers 1,262, forums 527, stacks 497, collections 491, reviews 486, hunted 478. By tier: other 98.6%, active 97.0%, likely 92.7%.
+- Upvote refresh FIXED: two bugs found Nov 20. (1) A 180 s wait between people: `person_interval or 180` ignored 0. (2) Refreshes of complete people were judged by finished_utc and never merged. Now ~7/min, with recent voters first; 2,678 people refreshed (2.9%); median read age 9.55 d. It stopped again ~07:45–08:40Z after the weekly-close job, the second night running. Owner: Cursor fleet.
+- Vote coverage on complete people (ledger 20261121T0853Z), all / top3: Nov 20 alone 30.6 / 50.1 (Nov 19 was 12.4 / 16.4); Nov 14–20 46.9 / 68.1 (Nov 13–19 was 34.1 / 47.6); Nov 10–16 57.7 / 79.1. The rise came entirely from ~3,300 merged refreshes.
+- Fleet: 17 VMs (slots 36, 41 and 43 were removed Nov 20 by autoscale). Block-triggered IP rotation is still on (419 rotations Nov 12–20; today slots 5 ×3 and 27 ×1). Shreyas's keep decision was relayed by Grok Bot; his confirmation here is pending. The rotate log is at raw/_cursor/iproyal_rotate/rotate.jsonl and feeds post_block_ip_change_60m.
+- Monthly day-end: backfilled for Nov 14, 15 and 19, and a nightly 01:45 PT post-close month-wide read was added (fleet).
+- Calibration (new north star, docs/NORTH_STAR_CALIBRATION.md): backtest set results/calibration/backtest_v1/ (884 launches, 8,755 comments, cohort mix); day-1 line-up results/calibration/2026-11-21/. 0 of 7 calibrated days so far.
+- Site live record: still never scheduled (needs Shreyas).
+
 **Nov 20 review (10:55 UTC).** Current vs Nov 19:
 - Complete people 93,404 in the dashboard build (93,409 at the 09:09Z store republish), up 12–17 in a day (Nov 19: 93,392). Need list 1,490 (was 1,502). Tabs missing: followers 1,267, forums 532, stacks 500, collections 496, reviews 489, hunted 483, about 443, following 321, activity 317, upvotes 190. By tier: other 98.6%, active 96.9%, likely 92.7%.
 - Fleet: all 20 VMs running since the historical resume at 20:12Z Nov 19 (the fleet's call). Need-list completes are only 3 (02:21Z), because a start-token retry loop is stopping the pull slots; a supervisor fix is rolling out. Fleet ETA for at least 5/min: 11:00–16:00Z Nov 20. Owner: Cursor fleet.
