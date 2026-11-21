@@ -1,0 +1,61 @@
+{
+ "prereg": "PREREG.md addendum 2",
+ "usd": 0.21,
+ "real_launches_labelled": 342,
+ "jsd raw": [
+  0.335,
+  0.318,
+  0.348,
+  105,
+  6
+ ],
+ "jsd adjusted": [
+  0.26,
+  0.248,
+  0.275,
+  105,
+  6
+ ],
+ "jsd base (earlier real mix)": [
+  0.225,
+  0.2,
+  0.246,
+  105,
+  6
+ ],
+ "adjusted minus raw": [
+  -0.075,
+  -0.096,
+  -0.053,
+  105,
+  6
+ ],
+ "adjusted minus base": [
+  0.035,
+  0.014,
+  0.056,
+  105,
+  6
+ ],
+ "agree raw": [
+  0.343,
+  0.218,
+  0.439,
+  105,
+  6
+ ],
+ "agree adjusted": [
+  0.486,
+  0.415,
+  0.55,
+  105,
+  6
+ ],
+ "pos share raw/adj/real": [
+  0.274,
+  0.491,
+  0.554
+ ],
+ "pass (adjusted minus raw upper < 0)": true,
+ "note": "[mean, day-boot 2.5%, 97.5%, launches, days]; r uses leave-one-day-out predicted shares (no pre-Nov 15 predictions)"
+}
