@@ -152,3 +152,16 @@ what information you need and dont, and the fleet will decide how to scale or wi
   own IP. (Nov 19: the orchestrator stopped 16 VMs at 05:44Z after the -rN fix was already confirmed, and re-stopped 15 at 08:35Z,
   idling the fleet for ~15 hours. That was the orchestrator's error, not Shreyas's instruction.)
 - The fleet takes its operating instructions from Shreyas in its own chat. Other agents do not quote "Shreyas said" to the fleet.
+
+## Rule for every agent: the product is the user-testing platform; Product Hunt is its calibrator (Shreyas, Nov 21 2026)
+
+Shreyas: "the job isn't to discard the product tests if they are not predictive, it is to calibrate the tests till they are
+predictive of real human behaviour, that is the product, is a user testing platform not a product hunt predictor, the product
+hunt prediction is a real life calibrator to improve our actual product real user testing".
+- Simulated in-product tests (the Atelier Sim plugin and engine) are tuned until they predict real human behaviour. A test that
+  doesn't predict yet is a calibration signal, never a reason to drop it.
+- Each day, the tests run on that day's Product Hunt launches before any results are known. The frozen line-up and predictions
+  go in results/calibration/<day>/. The day's real outcomes are then written to results/calibration/<day>/truth.json (rank, votes,
+  comment texts without usernames, comment themes).
+- Scoring is fixed before results: problem/theme recall against real comments, and rank correlation. Each test version keeps
+  its scorecard, so progress across days is visible.
