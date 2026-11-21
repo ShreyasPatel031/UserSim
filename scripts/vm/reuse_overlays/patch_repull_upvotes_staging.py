@@ -36,6 +36,15 @@ if old_bak not in src:
 src = src.replace(old_bak, new_bak, 1)
 
 stamp = """    res["upvotes_refreshed_at"] = now()  # REPULL_UPVOTES_STAGING_PATCH
+    res["upvotes_refreshed_by"] = VM  # UPVOTES_REFRESH_ATTRIBUTION_PATCH
+    try:
+        import importlib.util as _ilu
+        _sp = _ilu.spec_from_file_location("_eiu", "/opt/ph/overlays/exit_ip_util.py")
+        _mod = _ilu.module_from_spec(_sp)
+        _sp.loader.exec_module(_mod)
+        res["upvotes_refreshed_exit_ip"] = (_mod.exit_info() or {}).get("exit_ip")
+    except Exception:
+        res["upvotes_refreshed_exit_ip"] = None
     _items_added = max(0, len(ups) - len(old))
     res.setdefault("upvotes", {})["refresh"] = {"read_utc": now(), "delta": {"items_before": len(old), "items_after": len(ups), "items_added": _items_added}}
     _prior_fin = (res.get("run") or {}).get("finished_utc")

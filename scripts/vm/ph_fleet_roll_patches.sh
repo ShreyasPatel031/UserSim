@@ -44,7 +44,7 @@ sudo cp -f "$TMP"/*.py /opt/ph/overlays/ 2>/dev/null || true
 if [[ -x /opt/venv/bin/python ]]; then
   chmod +x "$TMP/exit_ip_heartbeat.sh" 2>/dev/null; sudo install -m 755 "$TMP/exit_ip_heartbeat.sh" /opt/ph/overlays/exit_ip_heartbeat.sh 2>/dev/null || true
   sudo cp -f "$TMP/exit_ip_util.py" /opt/ph/overlays/ 2>/dev/null || true
-  for _p in patch_upvotes_ph_end.py patch_fix_ph_batch_syntax.py patch_exit_ip_audit.py; do
+  for _p in patch_upvotes_ph_end.py patch_fix_ph_batch_syntax.py patch_upvotes_refresh_attribution.py patch_exit_ip_audit.py; do
     [[ -f /opt/ph/overlays/$_p ]] && sudo /opt/venv/bin/python /opt/ph/overlays/$_p /opt/ph/reuse >>/opt/ph/reuse/supervisor.log 2>&1 || true
   done
   sudo /opt/venv/bin/python -m py_compile /opt/ph/reuse/ph_batch.py 2>>/opt/ph/reuse/supervisor.log || true
