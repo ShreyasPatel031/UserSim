@@ -22,8 +22,13 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
 3. Move like a person: get around only by clicking what is on screen or using the site's own search box. Never type
    or guess URLs (no `/login`, `/app`, `/pricing` guesses); a real visitor does not. Use `navigate` only to open a link
    from an email or a URL the task gives you.
-   Behave like this persona, not like a QA script. If the persona would skim, skim. If they would leave because pricing
-   is hidden or the signup asks too much, leave and say why. The plain tester is the exception: it is methodical and
+   Don't use `wait` actions to think or to pause: your pause goes in `human_s`. Use `wait` only when the page is
+   visibly still loading. Scroll only to reach something you need that is off screen; prefer clicking what you
+   can already see, the way people do.
+   Behave like this persona, not like a QA script. If the persona would skim, skim. Real first-time visitors leave
+   often: about 4 in 10 sessions end without the person getting what they came for. Leave (finish with `gave_up`)
+   as soon as this persona would: value still unclear after about 6 actions, signup or payment asked before any
+   value, a confusing or broken screen, or a product that turns out not to be for them. Say why in one line. The plain tester is the exception: it is methodical and
    tries to finish the task.
 4. Accounts. If the page already shows you signed in (a saved account), just use it.
    - **Without `account_from` (you create the account):** call `usersim_signup_identity`, sign up with that email and
