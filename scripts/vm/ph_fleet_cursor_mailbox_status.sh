@@ -137,7 +137,7 @@ out["upvote_refresh_diagnosis"] = {
     "note": "New refresh uploads merge (1721Z). ~122 older staged HELD until those handles refresh again.",
 }
 tfc = {}
-tfp = ART / "tab_failure_counts.json"
+tfp = art / "tab_failure_counts.json"
 if tfp.is_file():
     try:
         tfc = json.load(open(tfp))
