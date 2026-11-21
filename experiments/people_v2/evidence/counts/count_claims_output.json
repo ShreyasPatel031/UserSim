@@ -1,0 +1,52 @@
+{
+ "per_file": {
+  "ph_profiles.jsonl.gz": {
+   "records": 4143,
+   "poisoned": 3493
+  },
+  "ph_profiles2.jsonl.gz": {
+   "records": 4143,
+   "poisoned": 0
+  },
+  "ph_profiles_rest.jsonl.gz": {
+   "records": 16528,
+   "poisoned": 13501
+  }
+ },
+ "merged_people": 20671,
+ "claim1_name_Wispr_Flow": 13286,
+ "claim1_name_Lovable": 215,
+ "claim1_user_id_606339": 12951,
+ "claim2_li_searches": 7013,
+ "claim2_ph_name_Wispr_Flow": 4208,
+ "claim2_found_with_poisoned_name": 1891,
+ "claim3_v1_people_with_li": 2989,
+ "claim3_from_poisoned_query": 1674,
+ "claim3_li_company_top": {
+  "Wispr Flow": 879,
+  "Google": 302,
+  "": 114,
+  "Microsoft": 95,
+  "Amazon": 49
+ },
+ "claim4_twitter_field_and_link": 5132,
+ "claim4_mismatch": 329,
+ "claim5_people_with_links": 13615,
+ "claim5_by_kind": {
+  "twitter": 7673,
+  "linkedin": 7160,
+  "website": 5529,
+  "github": 713,
+  "instagram": 326,
+  "youtube": 195,
+  "facebook": 97,
+  "app_store": 76,
+  "tiktok": 49,
+  "reddit": 40,
+  "play_store": 22,
+  "dribbble": 20,
+  "behance": 19,
+  "angellist": 1,
+  "vimeo": 1
+ }
+}
