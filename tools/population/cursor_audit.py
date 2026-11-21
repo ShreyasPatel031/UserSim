@@ -98,6 +98,12 @@ def main():
             done -= again
     st = lsl(f"{STAGE}/*.json")
     todo = sorted(n for n, t in st.items() if t >= START and f"{n}@{t}" not in done)
+    if os.environ.get("CURSOR_AUDIT_ONLY"):
+        # 20:0xZ Nov 21: one-off re-score of a named list (e.g. already_in_vm saves read after the store copy),
+        # run between scheduled cycles so the backlog does not take the per-run cap from new saves
+        only = {l.strip() for l in open(os.environ["CURSOR_AUDIT_ONLY"]) if l.strip()}
+        todo = sorted(n for n in only if n in st and st[n] >= START)
+        print(f"AUDIT_ONLY={len(todo)} of {len(only)}", flush=True)
     print(f"STAGED_NEW={len(todo)}")
     # 07:5xZ Nov 15: cap one run's batch (oldest saves first) so the cycle finishes inside its time limit at 18 VMs; the
     # rest stay un-audited and are taken by the next run (nothing is dropped)
