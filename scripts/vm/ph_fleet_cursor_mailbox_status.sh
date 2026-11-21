@@ -125,15 +125,41 @@ cold_n = sum(1 for s in m.get("slots") or [] if s.get("state") in ("cold", "cf_w
 walls = int(sum(int(s.get("walls") or 0) for s in m.get("slots") or []))
 win_c = sum(int(s.get("win_complete") or 0) for s in m.get("slots") or [])
 win_r = sum(int(s.get("win_rerun") or 0) for s in m.get("slots") or [])
+_refresh_ppm = float(m.get("upvote_refresh_ppm_15m") or 0)
+_refresh_active = [
+    int(s["slot"])
+    for s in m.get("slots") or []
+    if float(s.get("refresh_ppm") or 0) > 0.05
+]
+_refresh_dead = [
+    int(s["slot"])
+    for s in m.get("slots") or []
+    if s.get("slot") in (9, 27, 38) and s.get("state") in ("dead", "cf_wall", "stale")
+    and float(s.get("refresh_ppm") or 0) < 0.05
+]
+_excl = int(refill.get("refresh_priority_excluded") or 0)
 out["upvote_refresh_diagnosis"] = {
     "refresh_slots": [9, 27, 38],
+    "refresh_slots_active_ppm_gt_0": _refresh_active,
+    "refresh_slots_down_15m": _refresh_dead,
     "pkg_md5_patch": "REPULL_REFRESH_PKG_MD5 on ph_batch repullupvotes (run.pkg_md5 from PKG_MD5)",
     "pkg_md5_patch_deployed_utc": "2026-11-21T16:32:00Z",
     "population_1721Z_pkg_md5_confirmed": True,
     "population_1721Z_staged_all_audited": 210,
     "held_legacy_pre_patch_approx": 122,
     "population_audit_1622Z_held_no_pkg_md5": 93,
-    "upvote_refresh_ppm_15m": m.get("upvote_refresh_ppm_15m"),
+    "upvote_refresh_ppm_15m": _refresh_ppm,
+    "refresh_rate_drop_3h": {
+        "approx_ppm_3h_ago": 8.1,
+        "ppm_now": round(_refresh_ppm, 2),
+        "why": [
+            "slot38 dead ~since 21:15Z (was ~1–2 refresh/min)",
+            "only slots 9+27 actively repullupvotes now (~half fleet refresh capacity)",
+            f"{_excl} handles in refresh_priority_excluded (need-list-first queue steals pdeep slots)",
+            f"dead/cf/stale historical slots: {dead_n} dead, {cold_n} cold/cf_wall (no pdeep completes either)",
+            "population 2221Z: many refresh FAIL_partial from upvotes paging budget on 9/27 (staged but items_added=0)",
+        ],
+    },
     "note": "New refresh uploads merge (1721Z). ~122 older staged HELD until those handles refresh again.",
 }
 tfc = {}
