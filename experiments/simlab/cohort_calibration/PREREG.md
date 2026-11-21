@@ -62,3 +62,39 @@ Reported as means with intervals. Descriptive only, no pass bar.
 - Predictions are only files frozen before the launch day (explain, `backer_pred`), or computed from data dated before D (BASE).
 - Real cohorts use reads after the day closed.
 - The segment labelling for days before Nov 15 is flagged as above.
+
+## Addendum, 09:19Z Nov 21 (orchestrator: "calibrated user traces are our core IP")
+
+Written before either new metric is scored.
+
+### LIKELIHOOD TO VOTE
+**Prediction:** the per-person vote probability `p` from the frozen backer list (`tmp/e5/private/backer_pred/<D>.parquet`, top 2000 held people per launch, reads before 00:00 PT). It is scored two ways:
+- (a) as written;
+- (b) after an isotonic recalibration fit only on earlier scored days, as in `expected_voters.py`.
+
+**Truth:** the person voted for the launch.
+
+**Who counts:** only held complete people on the list who were re-read after the day closed, since only they can show the vote.
+
+**Report**, overall and per group of the day's cut (groups with ≥ 20 scored people and ≥ 20 votes):
+- a reliability curve (10 equal-count bins of predicted p: mean predicted vs observed rate, with counts);
+- Brier score and log loss (p clipped to [1e-4, 1 − 1e-4]);
+- the same two scores for a constant-rate baseline (the earlier days' observed rate);
+- backer recall@N alongside.
+
+**Pass:** (b) beats the constant baseline on both Brier and log loss, day-bootstrap upper bound of the paired difference < 0, and the reliability-curve slope is in [0.8, 1.2].
+
+### SENTIMENT
+**Labels:** each predicted say item and each real non-maker comment is labelled positive, neutral or negative. Gemini 2.5 Flash, temperature 0, one call per launch per side, blinded to which side is which. Predicted items cover the explain say reactions, concerns and questions, the persona panel items, and the plugin personas' feedback when received.
+
+**Report:**
+- per launch with ≥ 5 real comments, the Jensen–Shannon distance between the predicted and real sentiment distributions;
+- agreement: the share of launches where the majority sentiment matches;
+- per group, where held commenters of that group number ≥ 20 pooled.
+
+**Baseline:** the real sentiment distribution of all earlier days' comments, as a constant prediction.
+
+**Pass:** the predicted distance is below the baseline distance (paired, day-bootstrap upper bound < 0).
+
+### Versions
+Every scorecard version is kept as `cohort_scorecard.v<k>.json` plus `history.jsonl`. Metrics are only added or tuned, never dropped.
