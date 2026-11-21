@@ -190,3 +190,4 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 ## Save locations (Nov 17)
 - Data Feeder people writers without a full-pull stamp: raw/feeder_people_unstamped/ (outside the people store; never counted).
 - Grok Bot X rollout: raw/x_rollout/.
+- Backtest calibration set v1 (held data only, aggregates by segment, no usernames): results/calibration/backtest_v1/ (README there; builder experiments/calibration/build_backtest_v1.py).

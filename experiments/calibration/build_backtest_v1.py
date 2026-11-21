@@ -434,7 +434,9 @@ def build(D, OUT, start, end):
         exs = ex.get("say") if isinstance(ex.get("say"), dict) else None
         exp = None
         if exw or exs or exc:
-            exp = {"source": f"results/web/explain/{day}.json", "written_at": explain[day].get("written_at"), "segments_cut": ec,
+            wa = explain[day].get("written_at") or ""
+            exp = {"source": f"results/web/explain/{day}.json", "written_at": wa, "segments_cut": ec,
+                   "written_before_reveal": wa[:16] < f"{day}T12:00", "segments_cut_after_day": bool(ec and ec > day),
                    "who": None if not exw else {
                        "expected_held_votes": exw.get("expected_held_votes"),
                        "segments": exw.get("segments"),
