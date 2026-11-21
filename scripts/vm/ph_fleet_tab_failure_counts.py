@@ -88,18 +88,30 @@ def main() -> int:
                     held_build += 1
                     if pkg in ("", "None"):
                         held_no_pkg += 1
-    tab_people["pdeep_stacks_PersistedQueryNotFound_blocks_whole_est"] = inc
     need_list_tab_counts = {k: v for k, v in sorted(tab_people.items(), key=lambda x: -x[1])}
+    stacks_hour = {}
+    shp = ART / "stacks_pull_hour.json"
+    if shp.is_file():
+        try:
+            stacks_hour = json.loads(shp.read_text()).get("need_list_stacks_fail_measured_60m") or {}
+        except Exception:
+            stacks_hour = {}
     report = {
         "utc": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "audits_scanned": audits_used,
         "need_list_incomplete_store": inc,
         "need_list_tab_failure_people_counts": need_list_tab_counts,
+        "stacks_store_assumption": {
+            "label": "NOT an audit count",
+            "need_list_incomplete_store": inc,
+            "hypothesis": "if every incomplete need-list person fails on Stacks GQL, up to this many wholes blocked",
+        },
+        "need_list_stacks_fail_measured_60m": stacks_hour,
         "refresh_held_legacy_no_pkg_md5_approx": held_no_pkg,
         "refresh_held_build_not_audited_in_audits": held_build,
         "orchestrator_deadline_22z_tab_counts_utc": "2026-11-21T22:00:00Z",
         "forecast_deadline_00_05_pt_utc": "2026-11-22T08:05:00Z",
-        "note": "Counts are people rows in recent Population audits (fail/held), plus store-scale stacks blocker for need_list.",
+        "note": "Tab counts from Population audit TSV fails only; stacks measured_60m from fleet VM status+log.",
     }
     OUT.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report))

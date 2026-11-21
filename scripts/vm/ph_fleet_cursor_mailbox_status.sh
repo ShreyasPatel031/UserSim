@@ -170,17 +170,15 @@ if tfp.is_file():
     except Exception:
         tfc = {}
 out["need_list_tab_failure_counts"] = tfc.get("need_list_tab_failure_people_counts") or {}
+out["need_list_stacks_fail_measured_60m"] = tfc.get("need_list_stacks_fail_measured_60m") or {}
+out["stacks_store_assumption"] = tfc.get("stacks_store_assumption") or {}
+out["need_list_attempt_ppm_15m"] = m.get("attempt_ppm")
 out["need_list_tab_failure_meta"] = {k: tfc.get(k) for k in (
     "utc", "audits_scanned", "need_list_incomplete_store", "orchestrator_deadline_22z_tab_counts_utc",
     "forecast_deadline_00_05_pt_utc", "note",
 ) if k in tfc}
 forecast_dl = datetime.datetime(2026, 11, 22, 8, 5, tzinfo=datetime.timezone.utc)
-_stacks_est = int(
-    (tfc.get("need_list_tab_failure_people_counts") or {}).get(
-        "pdeep_stacks_PersistedQueryNotFound_blocks_whole_est"
-    )
-    or inc
-)
+_stacks_est = int((tfc.get("stacks_store_assumption") or {}).get("need_list_incomplete_store") or inc)
 _reads_ok = ppm_c >= 0.05 and win_c > 0
 out["stacks_tab_reads_ok"] = _reads_ok
 out["stacks_tab_status"] = {
