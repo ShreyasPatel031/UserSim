@@ -732,9 +732,15 @@ def browser_backend() -> str:
     return "browserbase" if val == "browserbase" else "seed_vm"
 
 
-def _create_seed(study_id: str, prefer: str = "") -> Any:
+def _create_seed(study_id: str, prefer: str = "", engine: str = "") -> Any:
     from mvp.sim_mcp import seed_backend
 
+    if engine:
+        try:
+            return seed_backend.acquire(prefer=prefer, engine=engine, wait_s=20)
+        except (seed_backend.NoSeeds, seed_backend.SeedsBusy) as exc:
+            print(f"[seed] {engine} unavailable for this session ({exc}); using the default engine", flush=True)
+            prefer = ""
     return seed_backend.acquire(prefer=prefer)
 
 
@@ -1002,12 +1008,18 @@ async def _open_browser(sim: SimSession) -> None:
 
     google_allowed = seed and _gs.allowed_for(getattr(sim, "owner", ""))
     google = (await asyncio.to_thread(_google_state_for, sim)) if google_allowed and _gs.state_uri() else None
-    if google and not prefer:
-        from mvp.sim_mcp import seed_backend, site_states
+    engine = ""
+    if google_allowed:
+        from mvp.sim_mcp import limits as _L, seed_backend, site_states
 
-        prefer = site_states.seed_endpoint(str(google.get("seed") or ""), seed_backend.endpoints())
+        # Google challenges Camoufox (Firefox) on datacenter IPs with a reCAPTCHA it won't accept; real Chrome signs in.
+        engine = str(_L.get("google_signin_engine") or "").strip().lower()
+        if engine not in ("chromium", "camoufox") or engine == seed_backend.browser_engine():
+            engine = ""
+        if google and not prefer:
+            prefer = site_states.seed_endpoint(str(google.get("seed") or ""), seed_backend.endpoints(engine))
     if seed:
-        sim.bb = await asyncio.to_thread(_create_seed, sim.study.id, prefer)
+        sim.bb = await asyncio.to_thread(_create_seed, sim.study.id, prefer, engine)
     else:
         sim.bb = await asyncio.to_thread(_create_bb, sim.study.id)
     ready = time.time()
