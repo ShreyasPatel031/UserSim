@@ -129,10 +129,12 @@ out["upvote_refresh_diagnosis"] = {
     "refresh_slots": [9, 27, 38],
     "pkg_md5_patch": "REPULL_REFRESH_PKG_MD5 on ph_batch repullupvotes (run.pkg_md5 from PKG_MD5)",
     "pkg_md5_patch_deployed_utc": "2026-11-21T16:32:00Z",
+    "population_1721Z_pkg_md5_confirmed": True,
+    "population_1721Z_staged_all_audited": 210,
+    "held_legacy_pre_patch_approx": 122,
     "population_audit_1622Z_held_no_pkg_md5": 93,
-    "population_audit_1622Z_fail_partial": 13,
     "upvote_refresh_ppm_15m": m.get("upvote_refresh_ppm_15m"),
-    "note": "Held 15:52-16:22Z should clear on new staged saves after patch; prior staged need re-upload or wait for next refresh pass.",
+    "note": "New refresh uploads merge (1721Z). ~122 older staged HELD until those handles refresh again.",
 }
 out["need_list_diagnosis"] = {
     "why_not_need_list_new_completes": (
