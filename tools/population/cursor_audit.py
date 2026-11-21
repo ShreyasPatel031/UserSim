@@ -25,6 +25,7 @@ AUDITED_BUILDS = {FULL18D, FULL18F}  # orchestrator 20:46Z Nov 8: the person-lev
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
 MERGE_VM_HELD = False
 REFRESH_FIX_STAMP = "20261120T2245Z"  # audits from here on merge newer upvote refreshes (see the already_in_vm rule)
+REFRESH_FIX2_STAMP = "20261121T1850Z"  # audits from here on compare refreshes to the store copy's read time, not write time
 BLOCK_SINCE = os.environ.get("CURSOR_BLOCK_SINCE", "2026-11-10T09:15:00Z")  # fleet-wide PH block start (status logs)
 FOLLOW_ONLY = re.compile(r"^(followers|following):FAIL_(repeat|no_offset_end)$")
 sh = lambda *a: subprocess.run(a, capture_output=True, text=True)
@@ -89,7 +90,9 @@ def main():
             # already_in_vm row audited before the fix; once re-scored its newest stamp is past the fix and it drops out.
             # staged since Nov 18 only: older already_in_vm rows predate the refresh overlay (sampled: no
             # upvotes_refreshed_at) and re-scoring them oldest-first would starve new saves under the per-run cap
-            again = {k for k, v in last.items() if v == "already_in_vm" and last_stamp.get(k, "") < REFRESH_FIX_STAMP
+            # 18:3xZ Nov 21: widened to rows audited before REFRESH_FIX2_STAMP: between the two fixes a refresh read
+            # before the store's last write (but after the store copy's own read) was still scored already_in_vm.
+            again = {k for k, v in last.items() if v == "already_in_vm" and last_stamp.get(k, "") < REFRESH_FIX2_STAMP
                      and k.rsplit("@", 1)[-1] >= "2026-11-18"}
             print(f"REAUDIT_ALREADY_REFRESH={len(again)}")
             done -= again
@@ -138,6 +141,15 @@ def main():
     with contextlib.redirect_stdout(io.StringIO()):
         g = runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "quality.py"))
     vm_t = lsl(f"{VM}/*.json")
+
+    def store_read_t(n, fallback):
+        for f in (f"{W}/cursor_audit_cache/store_current/{n}.json", f"{W}/raw/people_live/vm/{n}.json"):
+            try:
+                sd = json.load(open(f))
+            except Exception:
+                continue
+            return max(str(sd.get("upvotes_refreshed_at") or ""), str((sd.get("run") or {}).get("finished_utc") or ""))
+        return fallback
     rerun = set()
     for u in sh("gsutil", "ls", f"{R}/population/requests/rerun_whole_*.txt").stdout.split():
         rerun |= {l.split()[0].lstrip("@").lower() for l in lines(u)}
@@ -306,7 +318,16 @@ def main():
             # 22:4xZ Nov 20: an upvote refresh read after the store copy was written is new data, not a duplicate:
             # merge it (the union is lossless). The refresh overlay keeps the old run.finished_utc, so test
             # upvotes_refreshed_at against the store object's write time.
-            newer_refresh = n in vm_t and str(d.get("upvotes_refreshed_at") or "") > vm_t[n]
+            # 18:3xZ Nov 21: the store write time is the wrong reference. The :50 merge writes the store minutes
+            # after the refresh was read, so a second refresh read in between (e.g. read 17:53, store written 17:58
+            # from a 17:40 refresh) was judged older and dropped as already_in_vm (7 at 18:21Z). Compare against
+            # the store copy's own read time (max of upvotes_refreshed_at and run.finished_utc) from the local
+            # mirror; fall back to the write time only when no local copy can be read.
+            # 18:4xZ Nov 21: any newer READ, not only an upvote refresh: a whole re-pull of a complete person read after
+            # the store copy carries newer data too (18 Nov 18 re-pulls were still already_in_vm at 18:31Z). The union
+            # is lossless (older items go to items_earlier), so merging a newer read never loses anything.
+            rt = max(str(d.get("upvotes_refreshed_at") or ""), str((d.get("run") or {}).get("finished_utc") or ""))
+            newer_refresh = bool(rt) and n in vm_t and rt > store_read_t(n, vm_t[n])
             if n in vm_t and not stored_incomplete and not newer_refresh and not (n.lower() in rerun and st[n] > vm_t[n]):
                 res = "already_in_vm"
             else:
