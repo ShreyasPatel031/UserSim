@@ -1680,6 +1680,8 @@ def _require_bearer(endpoint: Any, token: str | None) -> Any:
         if scope.get("type") == "http":
             headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers") or []}
             got = headers.get("authorization", "").strip()
+            if got.lower() in ("bearer", "bearer:"):
+                got = ""  # a client template with an unset token variable sends "Bearer ": treat as no token
             if not got:
                 if not L.get("allow_anonymous"):
                     await JSONResponse({"error": "this UserSim server needs a bearer token right now (limits.json "

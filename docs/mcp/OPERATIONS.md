@@ -195,3 +195,16 @@ reason: `host_not_paid`, `solve_attempt_cap`, `per_site_cap`, `total_cap`), and 
 steps spent with an image grid open. The raw ledger is `results/captcha_spend/ledger.jsonl` on the server unless
 `CAPTCHA_SPEND_LEDGER` points elsewhere; it is not in git and is lost when the disk is replaced, so set
 `CAPTCHA_SPEND_LEDGER=/var/lib/usersim/captcha_ledger.jsonl` (next to `mcp_accounts`) to keep it across deploys.
+
+## Google sign-in for token callers (`google_signin_token_callers`, off by default)
+
+Products that only let new accounts in through "Continue with Google" stop every simulated user at signup, because
+Google's sign-in pages are blocked. `mvp/sim_mcp/google_signin.py` lets sessions of callers **with a valid bearer token**
+start with the UserSim signups Google session; anonymous callers never get it and stay blocked.
+- State: a Playwright storage_state of the signed-in signups Google account, in a **private** object (never under
+  `seed_states/`), `{"storage_state", "seed", "saved_at", "account"}`. The server VM reads it from env
+  `MVP_GOOGLE_STATE_URI`.
+- The session runs on the seed named in `seed` (the IP Google has seen) when it is free.
+- On: set `MVP_GOOGLE_STATE_URI` on the server, then `google_signin_token_callers: true` in limits.json.
+- A token client whose token variable is unset sends `Authorization: Bearer ` (empty): the server treats that as no
+  token, so a plugin can carry an optional token header.

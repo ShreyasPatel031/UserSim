@@ -96,8 +96,14 @@ class SessionError(Exception):
 BLOCKED_SIGNIN_HOSTS = ("accounts.google.com", "github.com")
 
 
-def blocked_signin(url: str) -> bool:
+def blocked_signin(url: str, google_ok: bool = False) -> bool:
+    """google_ok: this session may use the signups Google account (token callers only, see google_signin.py)."""
     host = (urlsplit(url or "").hostname or "").lower()
+    if google_ok:
+        from mvp.sim_mcp.google_signin import is_google_signin
+
+        if is_google_signin(host):
+            return False
     return any(host == h or host.endswith("." + h) for h in BLOCKED_SIGNIN_HOSTS)
 
 
@@ -751,6 +757,15 @@ def _saved_account_for(sim: SimSession) -> tuple[dict[str, Any] | None, str]:
     return entry, site_states.seed_endpoint(str(entry.get("seed") or ""), seed_backend.endpoints())
 
 
+def _google_state_for(sim: SimSession) -> dict[str, Any] | None:
+    """The signups Google session for this cell, or None (anonymous caller, feature off, no state). Blocking (GCS)."""
+    from mvp.sim_mcp import google_signin
+
+    if not google_signin.allowed_for(getattr(sim, "owner", "")):
+        return None
+    return google_signin.load()
+
+
 def _create_bb(study_id: str) -> Any:
     from capability.browserbase_client import create_session, study_session_owner
 
@@ -983,6 +998,11 @@ async def _open_browser(sim: SimSession) -> None:
     t0 = time.time()
     seed = browser_backend() == "seed_vm"
     saved, prefer = (await asyncio.to_thread(_saved_account_for, sim)) if seed else (None, "")
+    google = (await asyncio.to_thread(_google_state_for, sim)) if seed else None
+    if google and not prefer:
+        from mvp.sim_mcp import seed_backend, site_states
+
+        prefer = site_states.seed_endpoint(str(google.get("seed") or ""), seed_backend.endpoints())
     if seed:
         sim.bb = await asyncio.to_thread(_create_seed, sim.study.id, prefer)
     else:
@@ -1000,6 +1020,12 @@ async def _open_browser(sim: SimSession) -> None:
         sim.browser = await _connect(pw, sim.bb)
     if seed:
         state = (saved or {}).get("storage_state")
+        if google:
+            from mvp.sim_mcp.google_signin import merge
+
+            state = merge(state, google["storage_state"])
+            sim.row["google_signin"] = {"seed": google.get("seed"), "saved_at": google.get("saved_at"),
+                                        "on_its_seed": bool(prefer) and sim.bb.endpoint == prefer}
         await _new_seed_context(sim, storage_state=state)
         sim.row["browser_backend"] = "seed_vm"
         sim.row["seed"] = sim.bb.seed_label
@@ -1418,7 +1444,7 @@ def _normalize_action(action: dict[str, Any]) -> dict[str, Any]:
     return a
 
 
-def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
+def validate_action(action: dict[str, Any], product_url: str, google_ok: bool = False) -> dict[str, Any]:
     if not isinstance(action, dict):
         raise SessionError("action must be an object with a 'type'")
     action = _normalize_action(action)
@@ -1482,7 +1508,7 @@ def validate_action(action: dict[str, Any], product_url: str) -> dict[str, Any]:
                 raise SessionError("drag needs x, y, to_x, to_y") from None
     elif kind == "navigate":
         target = str(action.get("url") or "")
-        if blocked_signin(target):
+        if blocked_signin(target, google_ok=bool(google_ok)):
             raise SessionError("Google/GitHub sign-in is not allowed; use the email signup")
         if not target.startswith(("http://", "https://")) or not same_site(target, product_url):
             raise SessionError("navigate is limited to the product's own site (and sign-in providers)")
@@ -2153,7 +2179,7 @@ def _check_open(sim: SimSession) -> None:
 async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str, Any]:
     async with sim.lock:
         _check_open(sim)
-        action = validate_action(dict(action or {}), sim.product_url)
+        action = validate_action(dict(action or {}), sim.product_url, google_ok=bool(sim.row.get("google_signin")))
         sim.last_used = time.time()
         error = ""
         revived = await revive(sim)
@@ -2204,7 +2230,7 @@ async def act(sim: SimSession, action: dict[str, Any], thought: str) -> dict[str
                 watched.remove_listener("request", _on_request)
             except Exception:  # noqa: BLE001
                 pass
-        if blocked_signin(sim.page.url):
+        if blocked_signin(sim.page.url, google_ok=bool(sim.row.get("google_signin"))):
             error = "Google/GitHub sign-in is not allowed; use the email signup (went back)"
             try:
                 await sim.page.go_back(timeout=10000)
