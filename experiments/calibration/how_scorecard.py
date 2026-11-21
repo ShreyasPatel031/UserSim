@@ -67,8 +67,10 @@ def sim_traces(dirs):
                     r = json.load(open(f))
                 except ValueError:
                     continue
-                acts = []
+                acts, hs = [], []
                 for s in r.get("steps") or []:
+                    if isinstance(s.get("human_s"), (int, float)) and 0 <= s["human_s"] < 600:
+                        hs.append(float(s["human_s"]))
                     a = s.get("action")
                     if isinstance(a, str) and a.startswith("{"):
                         try:
@@ -85,7 +87,10 @@ def sim_traces(dirs):
                     dt = best[a] - best[b]
                     if 0 <= dt < 600:
                         dts.append(float(dt))
-                out.append({"src": "sim", "id": f, "acts": acts, "dts": dts,
+                timing_src = "wallclock"
+                if len(hs) >= max(2, len(acts) // 2):
+                    dts, timing_src = hs[1:], "human_s"
+                out.append({"src": "sim", "id": f, "acts": acts, "dts": dts, "timing_src": timing_src,
                             "outcome": r.get("outcome"), "task": (r.get("task") or "")[:80]})
     return out
 
@@ -126,6 +131,23 @@ def videocua_traces(root):
     return out
 
 
+def opera_traces(root):
+    import pandas as pd
+    files = glob.glob(os.path.join(root, "*.parquet"))
+    d = pd.concat([pd.read_parquet(f, columns=["session_id", "timestamp", "action_type", "click_type"]) for f in files])
+    d["t"] = pd.to_datetime(d["timestamp"], utc=True, errors="coerce")
+    out = []
+    for sid, g in d.sort_values("t").groupby("session_id"):
+        kinds = g["action_type"].tolist()
+        acts = [norm({"input": "type"}.get(k, k)) for k in kinds if k != "terminate"]
+        ts = [x.timestamp() for x, k in zip(g["t"], kinds) if k != "terminate" and x == x]
+        dts = [b - a for a, b in zip(ts, ts[1:]) if 0 <= b - a < 600]
+        bought = bool((g["click_type"] == "purchase").any())
+        if acts:
+            out.append({"src": "opera", "id": sid, "acts": acts, "dts": dts, "gave_up": not bought})
+    return out
+
+
 # ---------------- metrics ----------------
 def mix(traces):
     c = Counter(a for t in traces for a in t["acts"])
@@ -158,77 +180,74 @@ def feats(t):
     return [np.log1p(n), rep] + [m[k] / n for k in VOCAB]
 
 
-def main():
-    sim_dirs, an_path, vc_root, out_path = sys.argv[1].split(","), sys.argv[2], sys.argv[3], sys.argv[4]
-    sim = sim_traces(sim_dirs)
-    an = agentnet_traces(an_path)
-    vc = videocua_traces(vc_root)
-    human = an + vc
-    res = {"version": "how_scorecard_v1", "n": {"sim": len(sim), "agentnet": len(an), "videocua": len(vc)}}
-
-    # 1. action mix (vs pooled human; also per source)
+def score(sim, an, vc, op):
+    human = an + vc + op
+    res = {"n": {"sim": len(sim), "agentnet": len(an), "videocua": len(vc), "opera": len(op)}}
     res["action_mix"] = {
         "sim": dict(zip(VOCAB, np.round(mix(sim), 3).tolist())),
         "human_pooled": dict(zip(VOCAB, np.round(mix(human), 3).tolist())),
         "js_vs_pooled": round(js_distance(mix(sim), mix(human)), 4),
-        "js_vs_pooled_ci95": boot(lambda a, b: js_distance(mix(a), mix(b)), sim, human, 500),
+        "js_vs_pooled_ci95": boot(lambda a, b: js_distance(mix(a), mix(b)), sim, human, 400),
+        "js_vs_opera_web": round(js_distance(mix(sim), mix(op)), 4),
+        "js_vs_opera_web_ci95": boot(lambda a, b: js_distance(mix(a), mix(b)), sim, op, 400),
         "js_vs_agentnet": round(js_distance(mix(sim), mix(an)), 4),
-        "js_vs_videocua": round(js_distance(mix(sim), mix(vc)), 4),
-        "target": 0.10,
-    }
-    # 2. step timing
+        "js_vs_videocua": round(js_distance(mix(sim), mix(vc)), 4), "target": 0.10}
+    th = vc + op
     sd = [x for t in sim for x in t["dts"]]
-    hd = [x for t in vc for x in t["dts"]]
-    if sd and hd:
-        st = [t for t in sim if t["dts"]]
-        res["step_timing"] = {
-            "ks": round(float(ks_2samp(sd, hd).statistic), 4),
-            "ks_ci95": boot(lambda a, b: ks_2samp([x for t in a for x in t["dts"]], [x for t in b for x in t["dts"]]).statistic, st, vc, 300),
-            "sim_median_s": round(float(np.median(sd)), 2), "human_median_s": round(float(np.median(hd)), 2),
-            "sim_p90_s": round(float(np.percentile(sd, 90)), 2), "human_p90_s": round(float(np.percentile(hd, 90)), 2),
-            "n_sim_gaps": len(sd), "n_human_gaps": len(hd), "target": 0.15,
-            "note": "sim gaps are wall-clock between actions (model latency included); no human pacing model yet",
-        }
-    else:
-        res["step_timing"] = {"ks": None, "note": "no sim per-step timing recovered"}
-    # 3. give-up
+    hd = [x for t in th for x in t["dts"]]
+    st = [t for t in sim if t["dts"]]
+    res["step_timing"] = {
+        "ks": round(float(ks_2samp(sd, hd).statistic), 4) if sd else None,
+        "ks_ci95": boot(lambda a, b: ks_2samp([x for t in a for x in t["dts"]], [x for t in b for x in t["dts"]]).statistic, st, th, 300) if sd else None,
+        "ks_vs_opera_web": round(float(ks_2samp(sd, [x for t in op for x in t["dts"]]).statistic), 4) if sd else None,
+        "sim_median_s": round(float(np.median(sd)), 2) if sd else None, "human_median_s": round(float(np.median(hd)), 2),
+        "sim_timing_source": dict(Counter(t.get("timing_src") for t in sim)), "target": 0.15}
     s_ok = [t for t in sim if t["outcome"] in ("completed", "gave_up")]
     s_rate = sum(t["outcome"] == "gave_up" for t in s_ok) / max(1, len(s_ok))
-    feas = [t for t in an if t.get("domain") != "infeasible"]
-    h_rate = sum(not t["completed"] for t in feas) / max(1, len(feas))
+    h_rate = sum(t["gave_up"] for t in op) / max(1, len(op))
     res["giveup"] = {
         "sim_rate": round(s_rate, 3), "sim_n": len(s_ok), "sim_blocked_excluded": sum(t["outcome"] == "blocked" for t in sim),
-        "human_proxy_rate": round(h_rate, 3), "human_proxy_n": len(feas),
-        "gap_pts": round(100 * (s_rate - h_rate), 1),
+        "human_rate_opera": round(h_rate, 3), "human_n": len(op), "gap_pts": round(100 * (s_rate - h_rate), 1),
         "gap_ci95_pts": boot(lambda a, b: 100 * (sum(t["outcome"] == "gave_up" for t in a) / max(1, len(a))
-                                                - sum(not t["completed"] for t in b) / max(1, len(b))), s_ok, feas, 1000),
+                                                - sum(t["gave_up"] for t in b) / max(1, len(b))), s_ok, op, 1000),
         "target_abs_pts": 5,
-        "caveat": "human proxy = AgentNet feasible tasks not completed by paid annotators (not natural abandonment); "
-                  "needs OPeRA/OTTO natural give-up for a real comparison",
-    }
-    # 4. classifier
+        "caveat": "human = OPeRA real shopper sessions ending without a purchase (natural abandonment, shopping intent); "
+                  "sim blocked runs (test limits) excluded"}
     X = np.array([feats(t) for t in sim + human])
     y = np.array([1] * len(sim) + [0] * len(human))
-    clf = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000, class_weight="balanced"))
+    clf = make_pipeline(StandardScaler(), LogisticRegression(max_iter=3000, class_weight="balanced"))
     p = cross_val_predict(clf, X, y, cv=StratifiedKFold(5, shuffle=True, random_state=7), method="predict_proba")[:, 1]
-    auc = roc_auc_score(y, p)
     aucs = []
     for _ in range(500):
         idx = RNG.integers(0, len(y), len(y))
         if len(set(y[idx])) == 2:
             aucs.append(roc_auc_score(y[idx], p[idx]))
-    res["classifier"] = {"auc": round(float(auc), 4), "auc_ci95": [round(float(np.percentile(aucs, 2.5)), 4), round(float(np.percentile(aucs, 97.5)), 4)],
-                         "features": ["log_steps", "repeat_rate"] + ["share_" + k for k in VOCAB],
-                         "split": "one row per trace, stratified 5-fold; no task shared between human and sim sets",
-                         "target": 0.65}
-    res["pass"] = {
-        "action_mix": res["action_mix"]["js_vs_pooled"] <= 0.10,
-        "step_timing": (res["step_timing"].get("ks") or 1) <= 0.15,
-        "giveup": abs(res["giveup"]["gap_pts"]) <= 5,
-        "classifier": res["classifier"]["auc"] <= 0.65,
-    }
-    json.dump(res, open(out_path, "w"), indent=1)
-    print(json.dumps(res, indent=1))
+    res["classifier"] = {"auc": round(float(roc_auc_score(y, p)), 4),
+                         "auc_ci95": [round(float(np.percentile(aucs, 2.5)), 4), round(float(np.percentile(aucs, 97.5)), 4)],
+                         "split": "one row per trace, stratified 5-fold, no task shared between sets", "target": 0.65}
+    res["pass"] = {"action_mix": res["action_mix"]["js_vs_pooled"] <= 0.10,
+                   "step_timing": (res["step_timing"]["ks"] or 1) <= 0.15,
+                   "giveup": abs(res["giveup"]["gap_pts"]) <= 5, "classifier": res["classifier"]["auc"] <= 0.65}
+    return res
+
+
+def main():
+    # usage: how_scorecard.py name=dir1[,dir2] [name=dir ...] --agentnet F --videocua D --opera D --out F
+    args = sys.argv[1:]
+    kv = dict(zip(args[args.index("--agentnet")::2], args[args.index("--agentnet") + 1::2]))
+    sets = [a for a in args[:args.index("--agentnet")]]
+    an, vc, op = agentnet_traces(kv["--agentnet"]), videocua_traces(kv["--videocua"]), opera_traces(kv["--opera"])
+    res = {"version": "how_scorecard_v2", "human_sets": {"agentnet": "ubuntu 5k, first 1500 (MIT)",
+           "videocua": "140 tasks, 8 smallest apps (MIT)", "opera": "527 real web shopper sessions (CC BY 4.0)"}, "sim": {}}
+    for spec in sets:
+        name, dirs = spec.split("=", 1)
+        res["sim"][name] = score(sim_traces(dirs.split(",")), an, vc, op)
+    json.dump(res, open(kv["--out"], "w"), indent=1)
+    for name, r in res["sim"].items():
+        print(name, json.dumps({"n": r["n"]["sim"], "js": [r["action_mix"]["js_vs_pooled"], r["action_mix"]["js_vs_pooled_ci95"]],
+              "js_web": r["action_mix"]["js_vs_opera_web"], "ks": [r["step_timing"]["ks"], r["step_timing"]["ks_ci95"]],
+              "giveup_gap": [r["giveup"]["gap_pts"], r["giveup"]["gap_ci95_pts"]], "auc": [r["classifier"]["auc"], r["classifier"]["auc_ci95"]],
+              "timing_src": r["step_timing"]["sim_timing_source"]}))
 
 
 if __name__ == "__main__":

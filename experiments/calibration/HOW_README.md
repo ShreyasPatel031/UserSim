@@ -21,3 +21,29 @@ Do simulated users' traces behave like real people's? Thresholds are in `docs/NO
 - **Classifier:** per-trace features are step count, repeat rate and action-type shares. Each trace is one row, and no task is shared between the human and sim sets.
 
 v1 is the baseline. Tuning targets, in order: human pacing per step, no URL guessing, scroll and wait rates matched to web humans, give-up thresholds.
+
+## v2 (plugin 0.5.0), paired with v1 on the same 10 Nov 21 launches
+
+Changes in v2:
+- No URL guessing.
+- A per-step `human_s` estimate of human time.
+
+Human reference for both v1 and v2: AgentNet, VideoCUA, and OPeRA (527 real web shopper sessions, CC BY 4.0).
+
+| Metric | v1 (wall-clock timing) | v2 (human_s) | Target |
+|---|---|---|---|
+| Action-mix JS | 0.408 (0.380–0.449) | 0.373 (0.348–0.404) | ≤ 0.10 |
+| Step-timing KS | 0.440 (0.397–0.478) | 0.322 (0.286–0.371) | ≤ 0.15 |
+| Give-up gap vs OPeRA (points) | −9.5 (−28.7 to +10.8) | −18.6 (−34.4 to −1.6) | within 5 |
+| Classifier AUC | 0.963 (0.919–0.995) | 0.988 (0.982–0.994) | ≤ 0.65 |
+
+What changed:
+- **Better:** timing (median 7.0 s → 6.0 s; human median 4.6 s); URL typing down (7.4% → 4.0%); action mix closer.
+- **Worse:** give-up. The sim leaves less often (21% vs 40% for humans). The classifier separates the sets more easily, because the wait share rose (11% → 14%).
+
+n = 50 traces each. Target for the next report is ≥ 100.
+
+Next (v3):
+- scroll and wait rates matched to web humans;
+- give-up thresholds;
+- remaining `navigate` reserved for email links.

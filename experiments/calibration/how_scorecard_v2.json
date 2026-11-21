@@ -1,0 +1,182 @@
+{
+ "version": "how_scorecard_v2",
+ "human_sets": {
+  "agentnet": "ubuntu 5k, first 1500 (MIT)",
+  "videocua": "140 tasks, 8 smallest apps (MIT)",
+  "opera": "527 real web shopper sessions (CC BY 4.0)"
+ },
+ "sim": {
+  "v1": {
+   "n": {
+    "sim": 50,
+    "agentnet": 1500,
+    "videocua": 140,
+    "opera": 527
+   },
+   "action_mix": {
+    "sim": {
+     "click": 0.498,
+     "type": 0.126,
+     "key": 0.005,
+     "scroll": 0.107,
+     "drag": 0.026,
+     "wait": 0.113,
+     "navigate": 0.074,
+     "other": 0.052
+    },
+    "human_pooled": {
+     "click": 0.794,
+     "type": 0.096,
+     "key": 0.048,
+     "scroll": 0.019,
+     "drag": 0.035,
+     "wait": 0.005,
+     "navigate": 0.0,
+     "other": 0.003
+    },
+    "js_vs_pooled": 0.408,
+    "js_vs_pooled_ci95": [
+     0.3796,
+     0.4488
+    ],
+    "js_vs_opera_web": 0.4799,
+    "js_vs_opera_web_ci95": [
+     0.4464,
+     0.5157
+    ],
+    "js_vs_agentnet": 0.4115,
+    "js_vs_videocua": 0.4489,
+    "target": 0.1
+   },
+   "step_timing": {
+    "ks": 0.4396,
+    "ks_ci95": [
+     0.3971,
+     0.4782
+    ],
+    "ks_vs_opera_web": 0.4137,
+    "sim_median_s": 7.0,
+    "human_median_s": 4.58,
+    "sim_timing_source": {
+     "wallclock": 50
+    },
+    "target": 0.15
+   },
+   "giveup": {
+    "sim_rate": 0.3,
+    "sim_n": 20,
+    "sim_blocked_excluded": 30,
+    "human_rate_opera": 0.395,
+    "human_n": 527,
+    "gap_pts": -9.5,
+    "gap_ci95_pts": [
+     -28.7128,
+     10.7953
+    ],
+    "target_abs_pts": 5,
+    "caveat": "human = OPeRA real shopper sessions ending without a purchase (natural abandonment, shopping intent); sim blocked runs (test limits) excluded"
+   },
+   "classifier": {
+    "auc": 0.9633,
+    "auc_ci95": [
+     0.9188,
+     0.9954
+    ],
+    "split": "one row per trace, stratified 5-fold, no task shared between sets",
+    "target": 0.65
+   },
+   "pass": {
+    "action_mix": false,
+    "step_timing": false,
+    "giveup": false,
+    "classifier": false
+   }
+  },
+  "v2": {
+   "n": {
+    "sim": 50,
+    "agentnet": 1500,
+    "videocua": 140,
+    "opera": 527
+   },
+   "action_mix": {
+    "sim": {
+     "click": 0.558,
+     "type": 0.081,
+     "key": 0.005,
+     "scroll": 0.096,
+     "drag": 0.044,
+     "wait": 0.144,
+     "navigate": 0.04,
+     "other": 0.032
+    },
+    "human_pooled": {
+     "click": 0.794,
+     "type": 0.096,
+     "key": 0.048,
+     "scroll": 0.019,
+     "drag": 0.035,
+     "wait": 0.005,
+     "navigate": 0.0,
+     "other": 0.003
+    },
+    "js_vs_pooled": 0.3726,
+    "js_vs_pooled_ci95": [
+     0.3476,
+     0.4036
+    ],
+    "js_vs_opera_web": 0.4582,
+    "js_vs_opera_web_ci95": [
+     0.4256,
+     0.4922
+    ],
+    "js_vs_agentnet": 0.3742,
+    "js_vs_videocua": 0.4252,
+    "target": 0.1
+   },
+   "step_timing": {
+    "ks": 0.3224,
+    "ks_ci95": [
+     0.2862,
+     0.3713
+    ],
+    "ks_vs_opera_web": 0.3022,
+    "sim_median_s": 6.0,
+    "human_median_s": 4.58,
+    "sim_timing_source": {
+     "human_s": 50
+    },
+    "target": 0.15
+   },
+   "giveup": {
+    "sim_rate": 0.208,
+    "sim_n": 24,
+    "sim_blocked_excluded": 26,
+    "human_rate_opera": 0.395,
+    "human_n": 527,
+    "gap_pts": -18.6,
+    "gap_ci95_pts": [
+     -34.3657,
+     -1.5767
+    ],
+    "target_abs_pts": 5,
+    "caveat": "human = OPeRA real shopper sessions ending without a purchase (natural abandonment, shopping intent); sim blocked runs (test limits) excluded"
+   },
+   "classifier": {
+    "auc": 0.9882,
+    "auc_ci95": [
+     0.9823,
+     0.9938
+    ],
+    "split": "one row per trace, stratified 5-fold, no task shared between sets",
+    "target": 0.65
+   },
+   "pass": {
+    "action_mix": false,
+    "step_timing": false,
+    "giveup": false,
+    "classifier": false
+   }
+  }
+ }
+}
