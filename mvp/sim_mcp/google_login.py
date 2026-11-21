@@ -31,8 +31,13 @@ MAX_ROUNDS = 30
 STOP = {"need_totp_secret", "need_sms_manual", "sms_timeout", "need_app_password", "email_code_timeout"}
 
 
+DEFAULT_VAULT = "gs://usersim-bakeoff-347838016394/private/google_vault.json"
+
+
 def vault_uri() -> str:
-    return (os.environ.get("MVP_GOOGLE_VAULT_URI") or "").strip()
+    """MVP_GOOGLE_VAULT_URI, else the private default object (so no server env change is needed). "off" disables."""
+    v = (os.environ.get("MVP_GOOGLE_VAULT_URI") or "").strip()
+    return "" if v.lower() == "off" else (v or DEFAULT_VAULT)
 
 
 def _read_vault() -> dict[str, Any] | None:
