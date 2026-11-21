@@ -32,8 +32,10 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
      `same_account_as: <account_from>` and LOG IN with the email and password it returns (never sign up again).
      If it says that session has no identity yet, the account is still being created: wait about 30 s (a `wait` action)
      and call again, up to 6 times. Login codes or links go to the same inbox: use the wait tools in your session.
-   - Google / GitHub / other provider sign-in is blocked; only email works. If the product offers no email signup for
-     new accounts, finish with `blocked` and say "provider-only signup" in the notes.
+   - Prefer email. If the product offers no email signup for new accounts, try "Continue with Google" once: sessions
+     with an Atelier Sim token start signed in to the Atelier signups Google account, so pick that account if Google
+     asks. If the server refuses Google ("sign-in is not allowed"), finish with `blocked` and say "provider-only
+     signup" in the notes. GitHub sign-in is always blocked.
    - Never type a real person's details. If a captcha appears, call `usersim_solve_captcha` once; if it still blocks,
      finish with `blocked`.
 5. Stop after at most `max_actions` actions (40 if not given), or sooner when the task is done, you would really give up, or you are blocked.
