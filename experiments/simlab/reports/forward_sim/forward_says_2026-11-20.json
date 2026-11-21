@@ -1,0 +1,470 @@
+{
+ "day": "2026-11-20",
+ "source": "official PH API v2 live capture (api_comments + live/comments_ts), no fetch",
+ "launches_in_explain": 56,
+ "comments_unique": 306,
+ "non_team_comments": 215,
+ "launches_scored (>= 5 non-team comments)": 6,
+ "not_scored": {
+  "fewer than 5 non-team comments": 50
+ },
+ "recall [95% launch bootstrap]": [
+  60.0,
+  43.3,
+  76.7
+ ],
+ "recall_w": [
+  66.3,
+  46.4,
+  86.1
+ ],
+ "precision": [
+  51.8,
+  20.0,
+  84.1
+ ],
+ "complaint_recall": [
+  13.9,
+  2.8,
+  25.0
+ ],
+ "launches_with_complaints": 6,
+ "plain_recall": [
+  49.7,
+  29.7,
+  69.2
+ ],
+ "plain_precision": [
+  26.9,
+  14.3,
+  41.2
+ ],
+ "plain_complaint_recall": [
+  8.3,
+  0.0,
+  19.4
+ ],
+ "harness reference (276 past launches, 24-persona panel)": {
+  "recall": 62.8,
+  "recall_w": 73.3,
+  "precision": 54.2,
+  "complaint_recall": 24.8
+ },
+ "usd": 0.038,
+ "per_launch": [
+  {
+   "id": "1321962",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323414",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323758",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1312059",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1313803",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323083",
+   "n_comments": 13,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.375,
+   "recall_w": 0.3333333333333333,
+   "precision": 0.047619047619047616,
+   "n_themes": 8,
+   "complaint_recall": 0.0,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.75,
+   "plain_recall_w": 0.8333333333333334,
+   "plain_precision": 0.19047619047619047,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1322506",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1314856",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1321782",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322672",
+   "n_comments": 34,
+   "n_personas": 24,
+   "scored": true,
+   "recall": 0.875,
+   "recall_w": 0.9655172413793104,
+   "precision": 0.9166666666666666,
+   "n_themes": 8,
+   "complaint_recall": 0.3333333333333333,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.875,
+   "plain_recall_w": 0.9655172413793104,
+   "plain_precision": 0.375,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.3333333333333333,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1312415",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322508",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320740",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323490",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323277",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1315726",
+   "n_comments": 5,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.6,
+   "recall_w": 0.7142857142857143,
+   "precision": 1.0,
+   "n_themes": 5,
+   "complaint_recall": 0.0,
+   "n_complaints": 3,
+   "plain_scored": true,
+   "plain_recall": 0.4,
+   "plain_recall_w": 0.5714285714285714,
+   "plain_precision": 0.5714285714285714,
+   "plain_n_themes": 5,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 3
+  },
+  {
+   "id": "1314593",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322985",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323762",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1315337",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322498",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323379",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1296743",
+   "n_comments": 6,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.5,
+   "recall_w": 0.5714285714285714,
+   "precision": 0.047619047619047616,
+   "n_themes": 6,
+   "complaint_recall": 0.0,
+   "n_complaints": 3,
+   "plain_scored": true,
+   "plain_recall": 0.3333333333333333,
+   "plain_recall_w": 0.42857142857142855,
+   "plain_precision": 0.09523809523809523,
+   "plain_n_themes": 6,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 3
+  },
+  {
+   "id": "1321140",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322697",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322700",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320343",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322292",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1310478",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322979",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323665",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318700",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320776",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323740",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323494",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322934",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323668",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1321585",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322959",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319569",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1311824",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323157",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1317549",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1187496",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1285220",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1321985",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323362",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1313232",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322788",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1317709",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318366",
+   "n_comments": 40,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.875,
+   "recall_w": 0.975,
+   "precision": 1.0,
+   "n_themes": 8,
+   "complaint_recall": 0.3333333333333333,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.5,
+   "plain_recall_w": 0.75,
+   "plain_precision": 0.2857142857142857,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1323470",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323572",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1315370",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322641",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320093",
+   "n_comments": 10,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.375,
+   "recall_w": 0.4166666666666667,
+   "precision": 0.09523809523809523,
+   "n_themes": 8,
+   "complaint_recall": 0.16666666666666666,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.125,
+   "plain_recall_w": 0.16666666666666666,
+   "plain_precision": 0.09523809523809523,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 6
+  }
+ ]
+}

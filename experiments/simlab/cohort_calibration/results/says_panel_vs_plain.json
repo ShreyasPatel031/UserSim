@@ -1,0 +1,99 @@
+{
+ "prereg": "PREREG.md addendum 3",
+ "days": [
+  "2026-11-15",
+  "2026-11-16",
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20"
+ ],
+ "panel": {
+  "recall": [
+   68.9,
+   65.1,
+   72.3,
+   85,
+   6
+  ],
+  "recall_w": [
+   75.4,
+   71.5,
+   78.4,
+   85,
+   6
+  ],
+  "precision": [
+   47.9,
+   39.6,
+   53.4,
+   85,
+   6
+  ],
+  "complaint_recall": [
+   22.4,
+   15.6,
+   27.1,
+   85,
+   6
+  ]
+ },
+ "plain prompt": {
+  "recall": [
+   52.8,
+   49.1,
+   55.7,
+   85,
+   6
+  ],
+  "recall_w": [
+   60.4,
+   55.8,
+   64.2,
+   85,
+   6
+  ],
+  "precision": [
+   27.4,
+   22.5,
+   31.2,
+   85,
+   6
+  ],
+  "complaint_recall": [
+   10.4,
+   7.5,
+   12.6,
+   85,
+   6
+  ]
+ },
+ "panel minus plain (paired)": {
+  "recall": [
+   16.1,
+   12.7,
+   19.2,
+   85,
+   6
+  ],
+  "precision": [
+   20.6,
+   16.9,
+   23.1,
+   85,
+   6
+  ],
+  "complaint_recall": [
+   12.0,
+   6.9,
+   16.4,
+   85,
+   6
+  ]
+ },
+ "note": "[mean %, day-bootstrap 2.5%, 97.5%, launches, days]",
+ "north_star": {
+  "broad themes recall>=70 & precision>=50": "recall 68.9 (lower 65.1), precision 47.9 (lower 39.6)",
+  "specific issues above plain prompt, interval clear": true
+ }
+}

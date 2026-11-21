@@ -107,3 +107,9 @@ Caveat: the 00:05 forecast files before Nov 17 were written after the fact by th
 **Sentiment re-weight.** Fit on real comment labels from days before Nov 15 (backtest_v1 days with labels): per-launch predicted label shares are
 mapped by s' = normalise(s · r), r = (real mean share / predicted mean share) where the predicted side for the fit comes from the Nov 15 prompt outputs only if earlier ones are absent (then r fit by leave-one-day-out on Nov 15–20 and flagged).
 Pass = JSD paired vs unadjusted predicted, upper bound < 0, on Nov 15–20 out of sample. Prompt changes follow the same bar.
+
+## Addendum 3 (2026-11-21): broad-theme precision and the plain-prompt baseline (WHAT)
+forward_says.py (same TRUTH/JUDGE/CT/CJ prompts as the harness) on Nov 15-20 frozen persona panels vs real non-team comments (>= 5).
+Plain arm: one Gemini 2.5 Flash call per launch with only name, tagline and description: "write N short comments Product Hunt users would leave"
+(N = panel size), judged with the same prompts. Pooled over days, day bootstrap. Thresholds: broad-theme recall >= 70 with precision >= 50 (panel);
+specific issues = complaint recall, panel minus plain, pass = lower bound > 0.

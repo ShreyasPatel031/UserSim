@@ -28,13 +28,13 @@ EX = json.loads(gcat(f"{B}/results/web/explain/{D}.json"))["launches"]
 def g(p, mt):
     try: return json.loads(llm.gemini_call(p, mt))
     except Exception: return None
-def one(lid):
-    cm = NT[NT.post == lid].sort_values("created").text.tolist(); pan = ((EX.get(lid) or {}).get("say") or {}).get("persona_panel") or {}
-    cand = [f"{x.get('reaction', '')} Concern: {x.get('concern', '')} Question: {x.get('question', '')}" for x in pan.get("items", [])]
-    if len(cm) < 5 or not cand: return {"id": lid, "n_comments": len(cm), "scored": False, "why": "fewer than 5 non-team comments" if len(cm) < 5 else "no panel"}
-    c = "\n".join(f"- {t[:400]}" for t in cm[:40]); th = [{"theme": str(t.get("theme", "")), "n": max(1, int(t.get("n_comments", 1) or 1))} for t in ((g(TRUTH.format(c=c), 2000) or {}).get("themes") or []) if isinstance(t, dict) and t.get("theme")][:8]
-    ct = [str(t) for t in ((g(CT.format(c=c), 1200) or {}).get("themes") or [])][:6]
-    Bt = "\n".join(f"{i + 1}. {t}" for i, t in enumerate(cand)); r = {"id": lid, "n_comments": len(cm), "n_personas": len(cand), "scored": False}
+PLAIN = """Here is a product launching on Product Hunt today.
+Name: {n}
+Tagline: {t}
+Description: {d}
+Write {k} short comments that Product Hunt users would leave on this launch. JSON only: {{"comments": ["...", ...]}}"""
+def judge(th, ct, cand):
+    Bt = "\n".join(f"{i + 1}. {t}" for i, t in enumerate(cand)); r = {}
     j = g(JUDGE.format(a="\n".join(f"{i + 1}. {t['theme']}" for i, t in enumerate(th)), b=Bt), 900) if th else None
     if j and len(j.get("a_covered", [])) == len(th):
         ac = np.array([bool(v) for v in j["a_covered"]]); w = np.array([t["n"] for t in th], float)
@@ -42,6 +42,17 @@ def one(lid):
     if ct:
         j2 = g(CJ.format(a="\n".join(f"{i + 1}. {t}" for i, t in enumerate(ct)), b=Bt), 1200)
         if j2 and len(j2.get("a_covered", [])) == len(ct): r["complaint_recall"] = float(np.mean([bool(v) for v in j2["a_covered"]])); r["n_complaints"] = len(ct)
+    return r
+def one(lid):
+    cm = NT[NT.post == lid].sort_values("created").text.tolist(); pan = ((EX.get(lid) or {}).get("say") or {}).get("persona_panel") or {}
+    cand = [f"{x.get('reaction', '')} Concern: {x.get('concern', '')} Question: {x.get('question', '')}" for x in pan.get("items", [])]
+    if len(cm) < 5 or not cand: return {"id": lid, "n_comments": len(cm), "scored": False, "why": "fewer than 5 non-team comments" if len(cm) < 5 else "no panel"}
+    c = "\n".join(f"- {t[:400]}" for t in cm[:40]); th = [{"theme": str(t.get("theme", "")), "n": max(1, int(t.get("n_comments", 1) or 1))} for t in ((g(TRUTH.format(c=c), 2000) or {}).get("themes") or []) if isinstance(t, dict) and t.get("theme")][:8]
+    ct = [str(t) for t in ((g(CT.format(c=c), 1200) or {}).get("themes") or [])][:6]
+    r = {"id": lid, "n_comments": len(cm), "n_personas": len(cand), "scored": False}; r.update(judge(th, ct, cand))
+    t0 = T0.get(lid) or {}; pl = (g(PLAIN.format(n=t0.get("name", ""), t=t0.get("tagline", ""), d=str(t0.get("description") or "")[:800], k=len(cand)), 3000) or {}).get("comments") or []
+    pl = [str(x) for x in pl if x][:len(cand)]
+    if pl: r.update({"plain_" + k: v for k, v in judge(th, ct, pl).items()})
     return r
 ids = [i for i in EX if i in T0]
 with cf.ThreadPoolExecutor(6) as ex: R = list(ex.map(one, ids))
@@ -54,6 +65,8 @@ out = {"day": D, "source": "official PH API v2 live capture (api_comments + live
        "launches_scored (>= 5 non-team comments)": int(len(S)), "not_scored": {k: int(v) for k, v in pd.Series([r.get("why") for r in R if not r.get("scored")]).fillna("judge reply unusable").value_counts().items()},
        "recall [95% launch bootstrap]": ci(S.recall) if len(S) else None, "recall_w": ci(S.recall_w) if len(S) else None, "precision": ci(S.precision) if len(S) else None,
        "complaint_recall": ci(S.complaint_recall.dropna()) if len(S) and "complaint_recall" in S else None, "launches_with_complaints": int(S.complaint_recall.notna().sum()) if len(S) and "complaint_recall" in S else 0,
+       "plain_recall": ci(S.plain_recall.dropna()) if "plain_recall" in S else None, "plain_precision": ci(S.plain_precision.dropna()) if "plain_precision" in S else None,
+       "plain_complaint_recall": ci(S.plain_complaint_recall.dropna()) if "plain_complaint_recall" in S else None,
        "harness reference (276 past launches, 24-persona panel)": {"recall": 62.8, "recall_w": 73.3, "precision": 54.2, "complaint_recall": 24.8},
        "usd": round(llm.USAGE["in"] / 1e6 * .3 + llm.USAGE["out"] / 1e6 * 2.5, 3), "per_launch": [{k: v for k, v in r.items()} for r in R]}
 os.makedirs(os.path.join(HERE, "reports", "forward_sim"), exist_ok=True); json.dump(out, open(os.path.join(HERE, "reports", "forward_sim", f"forward_says_{D}.json"), "w"), indent=1)

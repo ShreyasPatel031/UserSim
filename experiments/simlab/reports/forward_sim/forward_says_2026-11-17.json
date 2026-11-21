@@ -1,0 +1,548 @@
+{
+ "day": "2026-11-17",
+ "source": "official PH API v2 live capture (api_comments + live/comments_ts), no fetch",
+ "launches_in_explain": 43,
+ "comments_unique": 691,
+ "non_team_comments": 475,
+ "launches_scored (>= 5 non-team comments)": 18,
+ "not_scored": {
+  "fewer than 5 non-team comments": 25
+ },
+ "recall [95% launch bootstrap]": [
+  68.8,
+  59.8,
+  77.1
+ ],
+ "recall_w": [
+  77.6,
+  69.4,
+  85.2
+ ],
+ "precision": [
+  56.3,
+  40.9,
+  72.5
+ ],
+ "complaint_recall": [
+  26.6,
+  16.7,
+  37.0
+ ],
+ "launches_with_complaints": 18,
+ "plain_recall": [
+  57.5,
+  48.4,
+  65.5
+ ],
+ "plain_precision": [
+  33.3,
+  25.5,
+  41.9
+ ],
+ "plain_complaint_recall": [
+  14.8,
+  6.5,
+  24.1
+ ],
+ "harness reference (276 past launches, 24-persona panel)": {
+  "recall": 62.8,
+  "recall_w": 73.3,
+  "precision": 54.2,
+  "complaint_recall": 24.8
+ },
+ "usd": 0.111,
+ "per_launch": [
+  {
+   "id": "1310967",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319276",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1306142",
+   "n_comments": 6,
+   "n_personas": 20,
+   "scored": true,
+   "recall": 0.8571428571428571,
+   "recall_w": 0.9090909090909091,
+   "precision": 1.0,
+   "n_themes": 7,
+   "complaint_recall": 0.5,
+   "n_complaints": 2,
+   "plain_scored": true,
+   "plain_recall": 0.7142857142857143,
+   "plain_recall_w": 0.8181818181818182,
+   "plain_precision": 0.35,
+   "plain_n_themes": 7,
+   "plain_complaint_recall": 0.5,
+   "plain_n_complaints": 2
+  },
+  {
+   "id": "1310525",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1297244",
+   "n_comments": 7,
+   "n_personas": 20,
+   "scored": true,
+   "recall": 0.875,
+   "recall_w": 0.9230769230769231,
+   "precision": 0.95,
+   "n_themes": 8,
+   "complaint_recall": 0.2,
+   "n_complaints": 5,
+   "plain_scored": true,
+   "plain_recall": 0.75,
+   "plain_recall_w": 0.8461538461538461,
+   "plain_precision": 0.75,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 5
+  },
+  {
+   "id": "1319570",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1304738",
+   "n_comments": 81,
+   "n_personas": 24,
+   "scored": true,
+   "recall": 0.5,
+   "recall_w": 0.7391304347826086,
+   "precision": 0.2916666666666667,
+   "n_themes": 8,
+   "complaint_recall": 0.16666666666666666,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.5,
+   "plain_recall_w": 0.5652173913043478,
+   "plain_precision": 0.20833333333333334,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1304887",
+   "n_comments": 36,
+   "n_personas": 24,
+   "scored": true,
+   "recall": 0.75,
+   "recall_w": 0.7857142857142857,
+   "precision": 0.9166666666666666,
+   "n_themes": 8,
+   "complaint_recall": 0.0,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.75,
+   "plain_recall_w": 0.7857142857142857,
+   "plain_precision": 0.25,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1318477",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1304366",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319271",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1303191",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1257199",
+   "n_comments": 41,
+   "n_personas": 20,
+   "scored": true,
+   "recall": 0.875,
+   "recall_w": 0.9393939393939394,
+   "precision": 0.3,
+   "n_themes": 8,
+   "complaint_recall": 0.3333333333333333,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.5,
+   "plain_recall_w": 0.7878787878787878,
+   "plain_precision": 0.35,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.3333333333333333,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1258422",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1307529",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319262",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318607",
+   "n_comments": 6,
+   "n_personas": 20,
+   "scored": true,
+   "recall": 0.375,
+   "recall_w": 0.375,
+   "precision": 0.2,
+   "n_themes": 8,
+   "complaint_recall": 0.25,
+   "n_complaints": 4,
+   "plain_scored": true,
+   "plain_recall": 0.125,
+   "plain_recall_w": 0.125,
+   "plain_precision": 0.05,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 4
+  },
+  {
+   "id": "1316291",
+   "n_comments": 32,
+   "n_personas": 20,
+   "scored": true,
+   "recall": 0.875,
+   "recall_w": 0.9411764705882353,
+   "precision": 0.55,
+   "n_themes": 8,
+   "complaint_recall": 0.3333333333333333,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.625,
+   "plain_recall_w": 0.5294117647058824,
+   "plain_precision": 0.5,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1308419",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319771",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1316663",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1311672",
+   "n_comments": 6,
+   "n_personas": 20,
+   "scored": true,
+   "recall": 0.8571428571428571,
+   "recall_w": 0.7692307692307693,
+   "precision": 0.85,
+   "n_themes": 7,
+   "complaint_recall": 0.0,
+   "n_complaints": 3,
+   "plain_scored": true,
+   "plain_recall": 0.2857142857142857,
+   "plain_recall_w": 0.23076923076923078,
+   "plain_precision": 0.2,
+   "plain_n_themes": 7,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 3
+  },
+  {
+   "id": "1310455",
+   "n_comments": 95,
+   "n_personas": 24,
+   "scored": true,
+   "recall": 0.75,
+   "recall_w": 0.9428571428571428,
+   "precision": 0.7916666666666666,
+   "n_themes": 8,
+   "complaint_recall": 0.5,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.75,
+   "plain_recall_w": 0.9428571428571428,
+   "plain_precision": 0.375,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1319132",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319369",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319690",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318923",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319349",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319374",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319139",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318920",
+   "n_comments": 10,
+   "n_personas": 24,
+   "scored": true,
+   "recall": 0.5,
+   "recall_w": 0.6666666666666666,
+   "precision": 0.16666666666666666,
+   "n_themes": 6,
+   "complaint_recall": 0.0,
+   "n_complaints": 3,
+   "plain_scored": true,
+   "plain_recall": 0.5,
+   "plain_recall_w": 0.6666666666666666,
+   "plain_precision": 0.08333333333333333,
+   "plain_n_themes": 6,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 3
+  },
+  {
+   "id": "1308114",
+   "n_comments": 10,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.375,
+   "recall_w": 0.6666666666666666,
+   "precision": 1.0,
+   "n_themes": 8,
+   "complaint_recall": 0.16666666666666666,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.625,
+   "plain_recall_w": 0.8,
+   "plain_precision": 0.23809523809523808,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1304843",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318689",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1317811",
+   "n_comments": 28,
+   "n_personas": 24,
+   "scored": true,
+   "recall": 0.5,
+   "recall_w": 0.5294117647058824,
+   "precision": 0.20833333333333334,
+   "n_themes": 8,
+   "complaint_recall": 0.6666666666666666,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.625,
+   "plain_recall_w": 0.5882352941176471,
+   "plain_precision": 0.20833333333333334,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1319438",
+   "n_comments": 5,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.5,
+   "recall_w": 0.5,
+   "precision": 0.2857142857142857,
+   "n_themes": 8,
+   "complaint_recall": 0.16666666666666666,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.375,
+   "plain_recall_w": 0.375,
+   "plain_precision": 0.23809523809523808,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.3333333333333333,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1319091",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1316848",
+   "n_comments": 5,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 1.0,
+   "recall_w": 1.0,
+   "precision": 0.23809523809523808,
+   "n_themes": 7,
+   "complaint_recall": 0.0,
+   "n_complaints": 3,
+   "plain_scored": true,
+   "plain_recall": 0.7142857142857143,
+   "plain_recall_w": 0.75,
+   "plain_precision": 0.6190476190476191,
+   "plain_n_themes": 7,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 3
+  },
+  {
+   "id": "1316705",
+   "n_comments": 10,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.5714285714285714,
+   "recall_w": 0.7272727272727273,
+   "precision": 1.0,
+   "n_themes": 7,
+   "complaint_recall": 0.5,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.5714285714285714,
+   "plain_recall_w": 0.6363636363636364,
+   "plain_precision": 0.2857142857142857,
+   "plain_n_themes": 7,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1319539",
+   "n_comments": 5,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.7142857142857143,
+   "recall_w": 0.8,
+   "precision": 0.2857142857142857,
+   "n_themes": 7,
+   "complaint_recall": 0.6666666666666666,
+   "n_complaints": 3,
+   "plain_scored": true,
+   "plain_recall": 0.5714285714285714,
+   "plain_recall_w": 0.7,
+   "plain_precision": 0.23809523809523808,
+   "plain_n_themes": 7,
+   "plain_complaint_recall": 0.6666666666666666,
+   "plain_n_complaints": 3
+  },
+  {
+   "id": "1315446",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1309861",
+   "n_comments": 15,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.75,
+   "recall_w": 0.8695652173913043,
+   "precision": 0.23809523809523808,
+   "n_themes": 8,
+   "complaint_recall": 0.3333333333333333,
+   "n_complaints": 6,
+   "plain_scored": true,
+   "plain_recall": 0.5,
+   "plain_recall_w": 0.6086956521739131,
+   "plain_precision": 0.47619047619047616,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_n_complaints": 6
+  },
+  {
+   "id": "1316484",
+   "n_comments": 12,
+   "n_personas": 21,
+   "scored": true,
+   "recall": 0.75,
+   "recall_w": 0.8823529411764706,
+   "precision": 0.8571428571428571,
+   "n_themes": 8,
+   "complaint_recall": 0.0,
+   "n_complaints": 4,
+   "plain_scored": true,
+   "plain_recall": 0.875,
+   "plain_recall_w": 0.9411764705882353,
+   "plain_precision": 0.5714285714285714,
+   "plain_n_themes": 8,
+   "plain_complaint_recall": 0.0,
+   "plain_n_complaints": 4
+  }
+ ]
+}
