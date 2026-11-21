@@ -82,42 +82,57 @@ inc = int(refill.get("pdeep_incomplete") or 0)
 new = int(refill.get("pdeep_new") or 0)
 need_left = inc + new
 ppm_c = float(m.get("complete_ppm") or 0)
-# Planning rate when recovering hung pdeep slots (orchestrator need-list ETA).
-plan_ppm = ppm_c if ppm_c >= 0.15 else 2.0
+attempt_c = float(m.get("attempt_ppm") or 0)
+# ETA only from observed complete_ppm (orchestrator: do not assume 2/min while 0 observed).
 eta = {
     "need_list_incomplete_store": inc,
     "need_list_new_in_queue": new,
     "need_list_work_remaining": need_left,
     "complete_ppm_15m_observed": ppm_c,
-    "complete_ppm_planning_assumption": plan_ppm,
+    "attempt_ppm_15m_observed": attempt_c,
 }
-if plan_ppm > 0 and need_left > 0:
-    mins = need_left / plan_ppm
-    eta["eta_minutes_at_plan_ppm"] = round(mins, 1)
-    eta["eta_utc_at_plan_ppm"] = (
+if ppm_c >= 0.05 and need_left > 0:
+    mins = need_left / ppm_c
+    eta["eta_minutes_at_observed_ppm"] = round(mins, 1)
+    eta["eta_utc_at_observed_ppm"] = (
         datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=mins)
     ).strftime("%Y-%m-%dT%H:%M:%SZ")
+    eta["eta_status"] = "from_observed"
+else:
+    eta["eta_status"] = "stalled_at_zero_complete_ppm"
+    eta["eta_utc_at_observed_ppm"] = None
+    eta["eta_note"] = (
+        f"No ETA at 0 complete/min; backlog {need_left} until stacks/tab gate passes or slots recover."
+    )
 deadline = datetime.datetime(2026, 11, 21, 18, 0, tzinfo=datetime.timezone.utc)
 eta["orchestrator_deadline_utc"] = deadline.strftime("%Y-%m-%dT%H:%M:%SZ")
-if plan_ppm > 0:
-    eta["minutes_to_deadline"] = round((deadline - datetime.datetime.now(datetime.timezone.utc)).total_seconds() / 60, 1)
-    eta["complete_ppm_required_for_deadline"] = round(need_left / max(1, eta["minutes_to_deadline"]), 2)
+mins_dl = (deadline - datetime.datetime.now(datetime.timezone.utc)).total_seconds() / 60
+eta["minutes_to_deadline"] = round(mins_dl, 1)
+if mins_dl > 0:
+    eta["complete_ppm_required_for_deadline"] = round(need_left / mins_dl, 2)
 out["need_list_eta"] = eta
 rerun = float(m.get("rerun_ppm") or 0)
-attempt = float(m.get("attempt_ppm") or 0)
+attempt = attempt_c
+rr_files = "fix_need_list_20261121T1335Z.txt"
+strat_path = (art.parent.parent.parent / "scripts/vm/ph_strategies/fleet_optimize.env").resolve()
+if strat_path.is_file():
+    for ln in strat_path.read_text().splitlines():
+        if ln.startswith("PH_RR_FILES="):
+            rr_files = ln.split("=", 1)[1].strip()
 stale_n = sum(1 for s in m.get("slots") or [] if s.get("state") in ("stale", "dead") and int(s.get("age") or 0) > 1800)
+dead_n = sum(1 for s in m.get("slots") or [] if s.get("state") == "dead")
 cold_n = sum(1 for s in m.get("slots") or [] if s.get("state") in ("cold", "cf_wall"))
 walls = int(sum(int(s.get("walls") or 0) for s in m.get("slots") or []))
 win_c = sum(int(s.get("win_complete") or 0) for s in m.get("slots") or [])
 win_r = sum(int(s.get("win_rerun") or 0) for s in m.get("slots") or [])
 out["need_list_diagnosis"] = {
     "why_not_need_list_new_completes": (
-        "PH_FLEET_RR_ONLY=1 skips need_list.jsonl; pdeep pulls PH_RR_FILES "
-        "(completion_queue fix list) only — re-pulls incomplete rows, not need_list first-time completes."
+        "need_list.jsonl still skipped under PH_FLEET_RR_ONLY; queue is PH_RR_FILES. "
+        "Repointed to need-list-first file but dead/stale slots + stacks tab failure => 0 complete/min."
     ),
     "strategy": {
         "ph_fleet_rr_only": True,
-        "ph_rr_files": "fix_completion_queue_20261118T0636Z.txt (completion_queue drain policy)",
+        "ph_rr_files": rr_files,
         "refill_pdeep_new_queued": new,
         "refill_pdeep_incomplete_queued": inc,
     },
@@ -126,13 +141,17 @@ out["need_list_diagnosis"] = {
         "win_rerun_persons": win_r,
         "rerun_fraction_of_attempts": round(rerun / attempt, 3) if attempt > 0 else None,
         "stale_or_dead_slots_gt_30m": stale_n,
+        "dead_slots": dead_n,
         "cold_or_cf_slots": cold_n,
         "cf_wall_events_15m": walls,
     },
-    "tab_failures_observed": (
-        "Primary blocker on active pulls: ProfileStacksPage gql PersistedQueryNotFound "
-        "(stacks 0); Forums/Activity/Hunted paginate. Slot34 high cf_wall count."
-    ),
+    "tab_failures_observed": {
+        "ProfileStacksPage": "gql PersistedQueryNotFound → stacks 0 (blocks whole() / header_pct)",
+        "ProfileForumsPage": "paginates OK",
+        "ProfileActivityPage": "paginates OK",
+        "ProfileHuntedPage": "paginates OK",
+        "cf_wall_slots_15m": [s.get("slot") for s in m.get("slots") or [] if int(s.get("walls") or 0) > 0],
+    },
     "deadline_note_18z_today": (
         f"At measured complete_ppm={ppm_c:.3f} need_list ETA misses 18:00Z; "
         f"need ~{eta.get('complete_ppm_required_for_deadline', '?')} complete/min."
