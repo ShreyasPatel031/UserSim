@@ -1,0 +1,321 @@
+{
+ "day": "2026-11-21",
+ "source": "Atelier Sim plugin session message 09:19Z Nov 21, test version plugin-0.4.0/ask-5users, tested 09:30Z",
+ "persona_groups": {
+  "PM": "Product Makers (id 1, cut Nov 17 names)",
+  "TI": "Tech Innovators (id 4)",
+  "CO": "Curious Observers (id 2)",
+  "plain": "plain tester"
+ },
+ "note": "u5 of Alter Contacts (freelance designer) and AnyProfile (freelance marketer) are not stated by group; assigned TI by the plugin's own rule (developer/PM/marketer) for marketer, TI for designer is a guess - flagged",
+ "test_limits": [
+  "Exa Websets: bot protection, no users ran",
+  "Codemany: GitHub-only sign-in",
+  "Glassmail, AnyProfile, OpenVorld: desktop apps",
+  "Publicit u2-u5: shared-account code collision",
+  "Prompt Puncher: WebGL crash",
+  "Hollr, Beat Watcher, Doddle: not tested (iOS/Watch)"
+ ],
+ "launches": [
+  {
+   "name": "Alter Contacts",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "gave_up"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "gave_up"
+    },
+    {
+     "u": "u4",
+     "group": "CO",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u5",
+     "group": "TI",
+     "outcome": "blocked"
+    }
+   ]
+  },
+  {
+   "name": "Codemany",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u4",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u5",
+     "group": "CO",
+     "outcome": "blocked"
+    }
+   ]
+  },
+  {
+   "name": "AI Context Flow MCP",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "completed"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "completed"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u4",
+     "group": "TI",
+     "outcome": "completed"
+    },
+    {
+     "u": "u5",
+     "group": "CO",
+     "outcome": "blocked"
+    }
+   ]
+  },
+  {
+   "name": "Prompt Puncher",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u4",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u5",
+     "group": "CO",
+     "outcome": "blocked"
+    }
+   ]
+  },
+  {
+   "name": "Backspin",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "completed"
+    },
+    {
+     "u": "u2",
+     "group": "CO",
+     "outcome": "completed"
+    },
+    {
+     "u": "u3",
+     "group": "CO",
+     "outcome": "completed"
+    },
+    {
+     "u": "u4",
+     "group": "TI",
+     "outcome": "completed"
+    },
+    {
+     "u": "u5",
+     "group": "PM",
+     "outcome": "completed"
+    }
+   ]
+  },
+  {
+   "name": "Publicit",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "completed"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u4",
+     "group": "CO",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u5",
+     "group": "TI",
+     "outcome": "blocked"
+    }
+   ]
+  },
+  {
+   "name": "Glassmail",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u4",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u5",
+     "group": "CO",
+     "outcome": "blocked"
+    }
+   ]
+  },
+  {
+   "name": "OpenVorld",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "completed"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "completed"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "completed"
+    },
+    {
+     "u": "u4",
+     "group": "TI",
+     "outcome": "completed"
+    },
+    {
+     "u": "u5",
+     "group": "CO",
+     "outcome": "completed"
+    }
+   ]
+  },
+  {
+   "name": "AnyProfile",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "gave_up"
+    },
+    {
+     "u": "u4",
+     "group": "CO",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u5",
+     "group": "TI",
+     "outcome": "gave_up"
+    }
+   ]
+  },
+  {
+   "name": "Shipyard",
+   "users": [
+    {
+     "u": "u1",
+     "group": "plain",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u2",
+     "group": "PM",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u3",
+     "group": "TI",
+     "outcome": "blocked"
+    },
+    {
+     "u": "u4",
+     "group": "TI",
+     "outcome": "gave_up"
+    },
+    {
+     "u": "u5",
+     "group": "CO",
+     "outcome": "blocked"
+    }
+   ]
+  }
+ ]
+}
