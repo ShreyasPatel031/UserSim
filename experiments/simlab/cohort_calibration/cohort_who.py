@@ -51,14 +51,16 @@ for D in DAYS:
     ex = ex if isinstance(ex, dict) else {str(r.get("id")): r for r in ex}
     # P2: frozen CF list p summed by group
     bp = gcat(f"{B}/tmp/e5/private/backer_pred/{D}.parquet"); BP = pd.read_parquet(io.BytesIO(bp)) if bp else None
-    if BP is not None: BP["launch_id"] = BP.launch_id.astype(str); BP["g"] = BP.person_id.map(G)
+    if BP is not None:
+        BP["launch_id"] = BP.launch_id.astype(str); BP["g"] = BP.person_id.map(G)
+        BP["lp"] = np.log(BP.p.clip(lower=1e-9)); BP["spec"] = BP.lp - BP.groupby("person_id").lp.transform("mean")
     # commenters
     teams = {}
     for ln in gcat(f"{B}/raw/ph_at_launch/{D}/api_teams.jsonl").decode(errors="ignore").splitlines():
         try: r = json.loads(ln); teams.setdefault(str(r.get("post_id")), set()).add(str(r.get("maker_id")))
         except Exception: pass
     CM = {}
-    lst = subprocess.run(["gsutil", "ls", f"{B}/raw/ph_at_launch/{D}/api_comments/"], capture_output=True, text=True).stdout.split()
+    lst = [] if os.environ.get("SKIP_COMMENTS") else subprocess.run(["gsutil", "ls", f"{B}/raw/ph_at_launch/{D}/api_comments/"], capture_output=True, text=True).stdout.split()
     for f in lst:
         for ln in gcat(f).decode(errors="ignore").splitlines():
             try: r = json.loads(ln)
@@ -80,6 +82,13 @@ for D in DAYS:
             if BP is not None:
                 q = BP[(BP.launch_id == lid) & BP.g.notna()]
                 if len(q): r["jsd_p2"] = jsd((q.groupby("g").p.sum() / q.p.sum()).to_dict(), real)
+                # P4 (orchestrator 10:11Z: WHO block not launch-specific): launch-specific top 200 = people ranked high for THIS launch relative
+                # to their mean rank over the day's launches (spec = log p - mean log p), within the launch's top 1500; head-count mix by group
+                q4 = BP[(BP.launch_id == lid) & (BP["rank"] <= 1500)].sort_values("spec", ascending=False).head(200)
+                q4 = q4[q4.g.notna()]
+                if len(q4) >= 20: r["jsd_p4"] = jsd(q4.g.value_counts(normalize=True).to_dict(), real)
+                q5 = BP[(BP.launch_id == lid) & (BP["rank"] <= 200) & BP.g.notna()]
+                if len(q5) >= 20: r["jsd_p5_top200_headcount"] = jsd(q5.g.value_counts(normalize=True).to_dict(), real)
             r["real_top_group_share"] = round(max(real.values()), 3)
         rows.append(r)
         cu = CM.get(lid, set()); matched = [BYUID[u] for u in cu if u in BYUID]
@@ -95,7 +104,7 @@ def boot_days(df, col):
         s = rng.choice(d, len(d)); bs.append(pd.concat([df[df.day == x] for x in s])[col].mean())
     return [round(float(df[col].mean()), 3), round(float(np.percentile(bs, 2.5)), 3), round(float(np.percentile(bs, 97.5)), 3), int(len(df)), len(d)]
 S = R.dropna(subset=["jsd_base"]).copy()
-for c in ("p1", "p2"):
+for c in ("p1", "p2", "p4", "p5_top200_headcount"):
     if f"jsd_{c}" in S: S[f"d_{c}"] = S[f"jsd_{c}"] - S.jsd_base
 out = {"written_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": DAYS, "prereg": "experiments/simlab/cohort_calibration/PREREG.md (commit c69406d6)",
        "backers": {"launches_scored (>= 20 real grouped backers)": int(len(S)), "launches_total": int(len(R)),
@@ -103,6 +112,10 @@ out = {"written_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": DAYS, "prer
                    "JSD base mix": boot_days(S, "jsd_base"), "JSD P1 explain groups_expected": boot_days(S, "jsd_p1") if "jsd_p1" in S else None,
                    "JSD P2 frozen CF list": boot_days(S, "jsd_p2") if "jsd_p2" in S else None,
                    "P1 minus base (paired)": boot_days(S, "d_p1") if "d_p1" in S else None, "P2 minus base (paired)": boot_days(S, "d_p2") if "d_p2" in S else None,
+                   "JSD P4 launch-specific top 200 (exploratory, not pre-registered)": boot_days(S, "jsd_p4") if "jsd_p4" in S else None,
+                   "P4 minus base (paired)": boot_days(S, "d_p4") if "d_p4" in S else None,
+                   "JSD P5 plain top 200 head-count (what segments_by_lift shows)": boot_days(S, "jsd_p5_top200_headcount") if "jsd_p5_top200_headcount" in S else None,
+                   "P5 minus base (paired)": boot_days(S, "d_p5_top200_headcount") if "d_p5_top200_headcount" in S else None,
                    "note": "[mean, day-bootstrap 2.5%, 97.5%, launches, days]; pass = paired upper bound < 0"}}
 # per day series
 ser = []
