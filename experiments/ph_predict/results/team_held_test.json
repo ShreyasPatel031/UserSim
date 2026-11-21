@@ -1,0 +1,89 @@
+{
+ "prereg": "results/team_held_prereg.md",
+ "team_shadow_commit": "4e4dd4e9 (the nightly worktree; the prereg's fcbcd617 was a slip)",
+ "days": {
+  "2026-11-14": {
+   "published": "arm2",
+   "launches": 28,
+   "ranked": 28,
+   "store_copy": "11-13T19:58Z",
+   "mean_held": 0.143,
+   "top3_hits": 2
+  },
+  "2026-11-15": {
+   "published": "arm2",
+   "launches": 15,
+   "ranked": 15,
+   "store_copy": "11-13T19:58Z",
+   "mean_held": 0.08,
+   "top3_hits": 2
+  },
+  "2026-11-16": {
+   "published": "arm2",
+   "launches": 38,
+   "ranked": 38,
+   "store_copy": "11-13T19:58Z",
+   "mean_held": 0.197,
+   "top3_hits": 1
+  },
+  "2026-11-17": {
+   "published": "arm3",
+   "launches": 43,
+   "ranked": 43,
+   "store_copy": "11-13T19:58Z",
+   "mean_held": 0.163,
+   "top3_hits": 1
+  },
+  "2026-11-18": {
+   "published": "arm3",
+   "launches": 44,
+   "ranked": 43,
+   "store_copy": "11-17T09:29Z",
+   "mean_held": 0.195,
+   "top3_hits": 1
+  },
+  "2026-11-19": {
+   "published": "arm3",
+   "launches": 33,
+   "ranked": 30,
+   "store_copy": "11-18T09:00Z",
+   "mean_held": 0.364,
+   "top3_hits": 1
+  },
+  "2026-11-20": {
+   "published": "arm3",
+   "launches": 56,
+   "ranked": 53,
+   "store_copy": "11-19T08:54Z",
+   "mean_held": 0.143,
+   "top3_hits": 3
+  },
+  "2026-11-21": "no final ranks yet"
+ },
+ "n_days_scored": 7,
+ "launches_with_team": 250,
+ "true_top3_launches": 21,
+ "median_held_top3": 0.0,
+ "top3_hit_high": 42.9,
+ "top3_hit_low": 57.1,
+ "n_high": 7,
+ "n_low": 14,
+ "primary_diff_high_minus_low_pts": [
+  -14.3,
+  -50.0,
+  19.4
+ ],
+ "upper_bound_gain_top3_pts": [
+  -9.5,
+  -40.5,
+  12.7
+ ],
+ "spearman_held_vs_log_rank_error": [
+  0.013,
+  -0.042,
+  0.086
+ ],
+ "per_day_spearman_mean_held_vs_top3_hits": -0.814,
+ "days_needed_at_observed_effect": 43,
+ "decision": "NOT SHOWN (primary CI covers 0)"
+}

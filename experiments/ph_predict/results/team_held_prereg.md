@@ -31,3 +31,8 @@ Does the share of a launch's team (makers and hunter) held complete in the popul
 - Report once.
 - "Matters" only if the primary CI excludes 0.
 - With 7–9 days the test is expected to be underpowered. If the CI covers 0, the report gives the days needed at the observed effect.
+
+## Amendment 1 (Nov 21 ~21:55Z, before any outcome number was seen)
+- **Problem:** the median held share among true-top-3 launches is 0. On 7 scored days, 14 of 21 true-top-3 launches have no team member held at 00:05. A ">= median" split therefore puts every launch in "high" and leaves "low" empty.
+- **New split:** high = held share > 0 (at least one team member held complete at 00:05); low = held share = 0.
+- **Unchanged:** all other tests and the upper-bound formula.
