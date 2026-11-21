@@ -189,3 +189,12 @@ IP and we don't drop this off."
 - Never in the public repo or behind public links. Access is limited to Shreyas's accounts and the pipelines' service accounts.
   The store is backed up, and every new dataset version and its scorecard are logged.
 - A calibration that is not yet good is tuned, never dropped.
+
+## Rule for every agent: the north star is calibrated simulated users (Shreyas, Nov 21 2026)
+
+- Three axes, defined with thresholds in docs/NORTH_STAR_CALIBRATION.md: WHO (right representative people), WHAT (what they
+  say, sentiment, likelihood to vote or use), and HOW (traces behave like a human). "Calibrated" means all three hold for 7
+  consecutive scored days. Then the trace store is frozen as training dataset v1.
+- Guard: the website's published forecast score must not fall sharply. If the 7-day value is more than 5 points below the 30-day
+  value, the PH agent alerts the same day with a diagnosis.
+- Simulated-user run budget: $50–100 per day, iterated daily (Shreyas, Nov 21).
