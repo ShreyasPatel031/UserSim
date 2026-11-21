@@ -2630,3 +2630,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-21T14:01Z PB60 14:00Z relayed: 18 block rotations, 483 flagged saves (new: slot13 2). Complete 93,415. Mailbox checked 14:01Z
 - 2026-11-21T14:30Z PB60 14:30Z relayed: 19 rotations, 546 flagged saves. Mailbox checked 14:30Z
 - 2026-11-21T14:34Z hourly: site board live (14:33Z, 21/21, top 166). Fleet completes 0/15m, ETA slips 1 h per hour (02:24Z Nov 22); repeated information-only wake. X rollout paused (twitterapi.io balance, Grok Bot 14:23Z merge note). No PH/E5 results. 19 block rotations, 546 flagged. Mailbox checked 2026-11-21T14:34Z
+- 2026-11-21T15:33Z PB60 15:31Z relayed: 23 rotations (slot38 ~hourly since 10:30Z), 650 flagged. Fleet wrote fix_need_list_20261121T1335Z (1,426 handles, matches need list). Mailbox checked 15:33Z
