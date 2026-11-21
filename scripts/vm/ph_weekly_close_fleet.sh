@@ -81,6 +81,23 @@ OUT="$("${GC[@]}" compute ssh "$NAME" --zone="$ZONE" --tunnel-through-iap --quie
 RC=$?
 set -e
 printf '%s\n' "$OUT"
+# Weekly capture runs on the same VM as repullupvotes (slot 9); restore phsuper after SSH job.
+UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+if [[ " $UPVOTE_SLOTS " == *" $SLOT "* ]]; then
+  GO_FILE="$ART/upvote_go.token"
+  if [[ -s "$GO_FILE" ]]; then
+    GO="$(tr -d '\n' <"$GO_FILE")"
+    VM_GCS="${PACE_VM_GCS:-gs://${BUCKET}/usersim_sim/raw/ph_population/people_live/vm}"
+    STRAT="$ROOT/scripts/vm/ph_strategies/fleet_upvote_refresh.env"
+    echo "$GO" | "${GC[@]}" storage cp - "${VM_GCS}/GO.${NAME}" >/dev/null 2>&1 || true
+    "${GC[@]}" compute instances add-metadata "$NAME" --zone="$ZONE" \
+      --metadata-from-file="ph-strategy-env=$STRAT" >/dev/null 2>&1 || true
+    RECOVER='sudo cp -f /opt/ph/strategy.env /opt/ph/strategy.env.bak_weekly 2>/dev/null; B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-); gcloud storage cp -q "$B/_code/overlays/fleet_upvote_refresh.env" /tmp/fleet_upvote_refresh.env 2>/dev/null; sudo cp -f /tmp/fleet_upvote_refresh.env /opt/ph/strategy.env 2>/dev/null; sudo systemctl stop phsuper 2>/dev/null; sudo pkill -f "[p]h_batch.py" 2>/dev/null || true; EA=""; [[ -f /opt/ph/pace.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/pace.env"; [[ -f /opt/ph/strategy.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/strategy.env"; sudo systemd-run --unit=phsuper --collect -p WorkingDirectory=/opt/ph/reuse $EA /bin/bash -c "bash /opt/ph/overlays/supervisor_strat.sh >>/opt/ph/reuse/supervisor.log 2>&1"; sleep 2; pgrep -af ph_batch | head -1 || echo weekly_close_refresh_recover_no_batch'
+    "${GC[@]}" compute ssh "$NAME" --zone="$ZONE" --tunnel-through-iap --quiet \
+      --ssh-flag=-oConnectTimeout=20 </dev/null --command="$RECOVER" 2>/dev/null | tail -2 || true
+    echo "$(date -u +%FT%TZ) weekly_close refresh supervisor recover slot=$SLOT" >&2
+  fi
+fi
 CLOSE_SOURCE="route4_boxbrowser"
 if grep -qE "Cloudflare check did not clear|BLOCK challenge|PermissionError.*workspace" <<<"$OUT"; then
   echo "$(date -u +%FT%TZ) weekly_close route4_blocked slot=$SLOT -> api_weekly_ranks" >&2
