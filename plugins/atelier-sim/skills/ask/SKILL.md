@@ -24,7 +24,9 @@ Run it, then answer in chat. No plan to approve. Keep everything short.
 
 ## 2. Start all 5 browsers yourself, in one message
 
-Call `usersim_start_session` 5 times in one message (`product_url`, `task`, `persona`). Then, in one message, write
+Call `usersim_start_session` 5 times in one message (`product_url`, `task`, `persona`). If the task includes
+signing up, u1 gets it as written and u2-u5 get it with the signup part replaced by "log in" (for example "Log in and
+add your first task, due tomorrow"), so the judge does not expect a fresh signup from them. Then, in one message, write
 
 > Testing <site> with 5 simulated users (~3 min). Task: "<task>". Watch: <url u1> · <url u2> · … · <url u5>
 
