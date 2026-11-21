@@ -37,8 +37,10 @@ def allowed_for(owner: str) -> bool:
     from mvp.sim_mcp import limits
     from mvp.sim_mcp.sessions import is_anon
 
+    from mvp.sim_mcp import google_login
+
     on = bool(limits.get("google_signin_token_callers"))
-    return on and bool(state_uri()) and bool(owner) and not is_anon(owner)
+    return on and bool(state_uri() or google_login.configured()) and bool(owner) and not is_anon(owner)
 
 
 def load() -> dict[str, Any] | None:

@@ -208,3 +208,14 @@ start with the UserSim signups Google session; anonymous callers never get it an
 - On: set `MVP_GOOGLE_STATE_URI` on the server, then `google_signin_token_callers: true` in limits.json.
 - A token client whose token variable is unset sends `Authorization: Bearer ` (empty): the server treats that as no
   token, so a plugin can carry an optional token header.
+
+### Google login by the server (`usersim_google_signin`)
+
+A copied Google session is refused on a new browser and IP, so the server signs in itself. It uses the steps of
+`mvp/auto_signin.py`: account chooser, email, password, a TOTP from `totp_secret`, a code emailed to the account
+(`app_password`), and phone confirmation.
+- Vault: same shape as `secrets/credentials.json`, the Google entry for the UserSim signups account. The server reads
+  it from `MVP_GOOGLE_VAULT_URI`, either `gs://.../private/...json` or `sm://projects/<p>/secrets/<name>` (Secret Manager,
+  via gcloud). Keep `totp_secret` set so no phone is needed.
+- A token session that clicks a product's Google button calls `usersim_google_signin`. The model never sees the
+  credentials. Anonymous callers get an error.
