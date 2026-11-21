@@ -1,0 +1,59 @@
+person_id,field_handle,link_handle,display_name,ph_headline,ph_bio,label_link_field_both_neither_unsure,link_label,link_confidence,link_note,link_x_exists,link_x_name,field_label,field_confidence,field_note,field_x_exists,field_x_name,builder_rule_fires
+ph:druchtie,druchtie,dannyruchtie,Danny Ruchtie,Designer & Tinkerer,"Head of Design Safeguard Global. Former design @codesandbox, @ibm and @catawiki",both,match,high,,True,Danny Ruchtie,match,med,sparse_alt,True,R.J.D. Ruchtie,False
+ph:cmdop,metaunreal,cmdopai,Mark,Ai Solutions," Developer and founder of CMDOP. I was tired of SSH + VPN to check ML training jobs from my phone. So I built an infrastructure
+  platform that lets you control any server through NAT — from Telegram,",link,match,med,company_own_product,True,CMDOP,unsure,low,not_found,False,,False
+ph:flo_velyr,velyr_io,flo_rappold,Flo,Founder of Clixad,Founder from Munich. Scaling clixad - free ai coding.,link,match,high,,True,Flo,mismatch,high,company,True,Velyr,False
+ph:candyrorae,candyrorae,flexclipapp,Candy Rora,Growth Marketer @PearlMountain,"Hi, I'm Candy, Growth Marketer at PearlMountain. We're building the future of AI-powered video creation with tools like FlexClip, CutBay, and more. My passion is bridging the gap between groundbreakin",field,mismatch,high,company_employer,True,FlexClip,match,med,,True,Candy,False
+ph:paultseluyko,pashatseluyko,paultseluyko,Paul Tseluyko,Building thecapable.io ⚒️,"Working on thecapable.io (Capable) - the ultimate prompt tool for B2B: Prompt chains, Prompt templates, Prompt library. Try it for free. ⚒️
+
+My UX agency Merge.rocks 🧑‍💻 
+
+To reach out: pavel@thecapab",neither,unsure,low,not_found,False,,unsure,low,not_found,False,,False
+ph:alisarae,rae122602,raealisa_,Alisa Rae,Founder @ Lucent (YC W26),,neither,unsure,low,not_found,False,,unsure,low,not_found,False,,False
+ph:lucaszhao,lucaszhao154378,lucaszhao09,Lucas Zhao,building the voice era of software,16 y/o in high school building cool startups and projects,link,match,high,,True,Lucas Zhao,unsure,low,not_found,False,,False
+ph:oliver_gaspar1,oliver171808,0l1,Oliver Gašpar,I love building software,,link,match,med,,True,Oliver Gaspar,unsure,low,sparse,True,Oliver,False
+ph:charlie_clark,charliie,clarkcharlie03,Charlie Clark,Bootstrapping www.liinks.co,"Founder, Software Engineer & Creative Coder based in Brooklyn. 14+ years professional experience working on modern products and cutting edge interactive experiences.",field,unsure,low,not_found,False,,match,high,,True,Charlie Clark,True
+ph:seandotexe,seandotexe,seanprynn,Sean,"AI-native Builder | Founder, Spronta.com","London based engineer/designer/product person hacking away on endless ideas.
+
+Building Spronta - spronta.com - SEO your agents can run
+
+Previously co-founded Whirr, a no-code platform to build persona",link,match,high,,True,Sean,unsure,low,not_found,False,,False
+ph:rakibulism,wowrakibul,rakibulism,Rakibul Islam,AI Design Engineer,"Co-Founder & CAO at Panze Studio.
+
+UX Psychologist. Designing future-forward digital experiences driven by human behavior.
+
+Writing Creative & Productivity driven by ",link,match,high,,True,Rakibul,unsure,low,not_found,False,,False
+ph:mahfuzulnabil,webuidesigns,mahfuzulnabil,Mahfuzul Islam Nabil,Lead Designer at Yscale Studio,Product Designer,link,match,high,,True,Nabil | Product & Web Designer,unsure,low,not_found,False,,False
+ph:george_yacoub,0x_gyoz,geo_yacoub,George Yacoub,,,link,match,med,,True,Geo Yacoub,unsure,low,not_found,False,,False
+ph:_cprecioso,futuroviudo,_cprecioso,Carlos Precioso,,,link,match,high,,True,Carlos Precioso,mismatch,high,wrong,True,futuro viudo,False
+ph:borjasolerr,editbyapp,borjasolerme,Borja Soler,"Passionate in Product, Growth & UX / UI.",,neither,unsure,low,not_found,False,,unsure,low,not_found,False,,False
+ph:zhangchen,neverrainmyself,chenzhangreal,Chen Zhang,Confused sometime,"I spent 15 years as a back-end engineer cleaning up other people’s bad code, then suddenly realised I might like ideas and art even more than clean architecture. So I joined MediaMonks, stepped into t",unsure,match,med,,True,Chen,match,med,,True,Chen Zhang,False
+ph:kbaqeri,kbaqerifam,kbaqeri,Kasra Baqeri,Founder @ Ovandor.com | CSO | CPO,"Building companies around problems that shouldn't exist. 
+Currently Co-Founder and CSO at Ovandor, creating Personal Intelligence; The missing layer between memory and decision-making. 
+
+
+
+",field,mismatch,high,wrong,True,Khalic Baqeri,match,high,,True,Kasra Baqeri,False
+ph:okendoken,flatlogic,okendokenn,Philip Daineka,CEO at Flatlogic,"CEO at Flatlogic, MSc in Economics, Computer Science professional.
+Building Flatlogic to help software engineers and product managers to generate full-stack web apps in minutes.",link,match,high,,True,Philip Daineka,mismatch,high,company,True,Flatlogic,False
+ph:ame_ame2,saycraftai,ameame2333,Ame ame,Founder of SayCraft. Build by talking,,link,match,high,,True,Ame ame,mismatch,high,company_own_product,True,SayCraft,False
+ph:ahmetsulek,k__soon,pandadotnetwork,Ahmet Sülek,Founder @ usepanda.com,,neither,unsure,low,not_found,False,,mismatch,med,wrong,True,K. Soon,True
+ph:priyatiagi,lazyapoorv,priahtyagi,Priya Tyagi,Growth Marketer.,,link,match,high,,True,Priya Tyagi,unsure,low,not_found,False,,False
+ph:subhh,that_webdev_guy,subhadipdev,Subhadip Saha,Building cool stuff,"I'm Subh, a full-stack developer and indie maker passionate about building innovative products. I love creating tools that solve real problems—like Codenearby, a platform to help developers connect an",link,match,med,,True,Subhadip,unsure,low,no_name_match,True,That Webdev Guy,False
+ph:tribaling,eliamorling,tribaling,Elia Morling,CEO/Founder of Svava,,field,unsure,low,not_found,False,,match,high,,True,Elia Morling,True
+ph:amanj203,amanjain_ios,amanj203,it0sh,iOS Engineers,,field,unsure,low,suspended,False,,match,high,,True,Aman Jain,True
+ph:mrrabbar,savvaskonst,mrrabbar,Savvas Konsta,Helping creators to monetize content,"Busy Dad of two | Life Gamer 😉 | Entrepreneur | Engineer | ΑΙ | Designer | Marketing | Motivation
+Helping creators to monetize content with phlinks.com
+
+",link,match,med,,True,Mr Rabbar,unsure,low,not_found,False,,False
+ph:lucasjpols,lucasjpols,1752vc,Lucas Pols,GP of 1752vc,"Lucas Pols is the General Partner of 1752vc, where he leads investments at the intersection of AI enablement and go-to-market execution. His focus centers on around the middleware and application laye",field,mismatch,high,company,True,1752vc,match,high,,True,Lucas J. Pols,False
+ph:ivory_xuxuxu,ivoryxu575,ivoryxuxux,ivory xu,PM at Tencent. Building Knocket.,"Hey 👋 I'm Ivory.
+
+I'm mostly here to learn. By day I'm a PM at Tencent working on real-time comms; by night I'm building Knocket, a tiny live chat widget for indie devs.
+
+Still early on this journey. ",both,match,med,,True,ivory xu,match,med,sparse_alt,True,ivory xu,False
+ph:blueeon,gapier_com,blueeony,Kane,Working on launching 👉 linkly.ai,"Started learning programming and developing apps since middle school, studied mathematics in college. 
+Managed a 500-person R&D center in a multinational company. 
+Now embarking on an entrepreneurial ",link,match,high,,True,Kane,mismatch,high,company_own_product,True,gapier,False
+ph:imran_shah5,hii_imran,imshah10140,Imran Shah,Building Tweet Analyzer & TweetBrain,"Self-taught engineer who got tired of waiting for permission to build things. I’ve worked on full-stack and DevOps at US startups, and now I make my own SaaS. Currently shipping Tweet Analyzer and Twe",field,unsure,low,not_found,False,,match,high,,True,Imran Shah,True
+ph:its_me_imad,99_tco,its_me_imad,Imad ,onepromptman.ai,,neither,unsure,low,not_found,False,,mismatch,high,wrong,True,tco_99,True

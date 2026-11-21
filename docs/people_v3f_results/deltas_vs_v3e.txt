@@ -1,0 +1,9 @@
+metric,v3e,v3f,delta
+rows.events,309661,310200,539
+rows.handles,46998,46998,0
+rows.persons,20947,20947,0
+rows.profiles,26384,26401,17
+   platform    kind    v3e    v3f  delta
+producthunt comment  51353  51353      0
+producthunt  upvote 234066 234066      0
+          x    post  24242  24781    539

@@ -1,0 +1,27 @@
+rows.persons: 20947 -> 20947 (+0)
+rows.handles: 46998 -> 46998 (+0)
+rows.profiles: 26401 -> 26401 (+0)
+rows.events: 310200 -> 310200 (+0)
+persons added: 0, removed: 0
+stats.extra_self_link_demoted: 52 -> 52
+stats.shared_x_handle_rows_demoted: 40 -> 40
+stats.x_field_conflict: 263 -> 263
+stats.x_field_only_below_threshold: 1294 -> 1294
+stats.x_field_promoted_dead_link: 53 -> 53
+events by platform/kind:
+                       prev     new  delta
+platform    kind                          
+producthunt comment   51353   51353      0
+            upvote   234066  234066      0
+x           post      24781   24781      0
+handle rows that changed by platform/source/confidence:
+  none
+profile date quality:
+                                  prev    new
+platform    observed_on_quality              
+linkedin    unknown               2986   2986
+            upper_bound            655    655
+producthunt fetched              16794  16794
+            upper_bound           4143   4143
+x           fetched                 29     29
+            upper_bound           1794   1794
