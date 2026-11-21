@@ -32,6 +32,9 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
      `same_account_as: <account_from>` and LOG IN with the email and password it returns (never sign up again).
      If it says that session has no identity yet, the account is still being created: wait about 30 s (a `wait` action)
      and call again, up to 6 times. Login codes or links go to the same inbox: use the wait tools in your session.
+     If the site logs in only with an emailed code or link (no password) and your code is rejected or expired, other
+     users are logging in to the same account at the same time: stop sharing it and create your own account instead
+     (call `usersim_signup_identity` without `same_account_as`, in a new session if it refuses).
    - Prefer email. If the product offers no email signup for new accounts, click its Google button ("Continue with
      Google" / "Sign in with Google"). When the page is on accounts.google.com, call `usersim_google_signin` with your
      `session_id`: the server signs in with the Atelier signups Google account (you never type it). If it returns
