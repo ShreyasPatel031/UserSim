@@ -50,6 +50,7 @@ PY
   fi
 fi
 python3 "$ROOT/scripts/vm/ph_fleet_refill_lists.py" || true
+python3 "$ROOT/scripts/vm/ph_fleet_tab_failure_counts.py" >/dev/null 2>&1 || true
 bash "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" >/dev/null 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh"
 chmod +x "$ROOT/scripts/vm/ph_fleet_cursor_mailbox_status.sh" 2>/dev/null || true

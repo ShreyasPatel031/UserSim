@@ -136,6 +136,18 @@ out["upvote_refresh_diagnosis"] = {
     "upvote_refresh_ppm_15m": m.get("upvote_refresh_ppm_15m"),
     "note": "New refresh uploads merge (1721Z). ~122 older staged HELD until those handles refresh again.",
 }
+tfc = {}
+tfp = ART / "tab_failure_counts.json"
+if tfp.is_file():
+    try:
+        tfc = json.load(open(tfp))
+    except Exception:
+        tfc = {}
+out["need_list_tab_failure_counts"] = tfc.get("need_list_tab_failure_people_counts") or {}
+out["need_list_tab_failure_meta"] = {k: tfc.get(k) for k in (
+    "utc", "audits_scanned", "need_list_incomplete_store", "orchestrator_deadline_22z_tab_counts_utc",
+    "forecast_deadline_00_05_pt_utc", "note",
+) if k in tfc}
 out["need_list_diagnosis"] = {
     "why_not_need_list_new_completes": (
         "need_list.jsonl still skipped under PH_FLEET_RR_ONLY; queue is PH_RR_FILES. "
