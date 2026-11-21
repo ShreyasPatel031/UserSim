@@ -29,8 +29,13 @@ Call `usersim_start_session` 5 times in one message (`product_url`, `task`, `per
 > Testing <site> with 5 simulated users (~3 min). Task: "<task>". Watch: <url u1> · <url u2> · … · <url u5>
 
 followed by 5 `sim-user` agents (one per session) with `session_id`, `study_id`, `watch_url`, `product_url`,
-`task`, `persona`, `label`, `max_actions: 20`, `out_file: .atelier-sim/<YYYYMMDD-HHMM>/<label>.json` (relative path, as
-written). A start that fails on capacity is retried once when another finishes. Never fake a run.
+`task`, `persona`, `label`, `max_actions: 25`, `out_file: .atelier-sim/<YYYYMMDD-HHMM>/<label>.json` (relative path, as
+written), and for u2-u5 `account_from: <u1's session_id>`. Only u1 signs up; the others log in with u1's account when
+they reach sign-up (one account per site per test). A start that fails on capacity is retried once when another
+finishes. Never fake a run.
+
+If u1 ends `blocked` with "provider-only signup" (the product only allows Google/GitHub for new accounts), lead the
+answer with that as a limit of the test, not as users dropping off, and report only what users saw before sign-up.
 
 ## 3. Answer, under 180 words
 
