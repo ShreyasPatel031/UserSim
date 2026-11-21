@@ -1,6 +1,6 @@
 {
- "computed_at": "2026-11-20T21:27:11.897625+00:00",
- "e5_rows": "merged 1 rows (computed_at 2026-11-20T10:12:18.116818+00:00)",
+ "computed_at": "2026-11-21T21:26:50.516354+00:00",
+ "e5_rows": "merged 1 rows (computed_at 2026-11-21T10:07:18.795201+00:00)",
  "truth": "results/web/truth_daily.json (E5: first warehouse part after the PT close); rank <= k; >= 10 ranked; unranked picks are misses",
  "rows": [
   {
@@ -471,14 +471,31 @@
    "point": "prereveal",
    "model": "hybrid_vm (03:45 read)",
    "method": "leave-one-day-out replay, 03:45 recorder read, unranked launches kept in the order",
-   "top3": 83.3,
-   "top5": 75.0,
-   "top10": 82.5,
-   "n_days": 4,
+   "top3": 86.7,
+   "top5": 76.0,
+   "top10": 84.0,
+   "n_days": 5,
    "first_day": "2026-11-16",
-   "last_day": "2026-11-19",
+   "last_day": "2026-11-20",
    "rule": "final daily rank <= k, >= 10 ranked, unranked picks = misses",
    "source": "results/hybrid_lodo_ku_0345_orders.json",
+   "ci95": {
+    "top3": [
+     86.7,
+     73.3,
+     100.0
+    ],
+    "top5": [
+     76.0,
+     68.0,
+     80.0
+    ],
+    "top10": [
+     84.0,
+     80.0,
+     88.0
+    ]
+   },
    "edge_vs_hidden": {
     "top3": [
      0.0,
@@ -491,11 +508,11 @@
      0.0
     ],
     "top10": [
-     -5.0,
-     -10.0,
+     -6.0,
+     -14.0,
      0.0
     ],
-    "n_days": 4
+    "n_days": 5
    },
    "producer": "PH"
   },
@@ -544,64 +561,64 @@
    "model": "backer prediction: raw most-active",
    "method": "forward-style strict replay/nightly freeze (reads before 00:00 PT; SVD on upvotes dated before the day; no follows)",
    "metric": "recall at N (N = observed held backers per launch), pooled",
-   "value": 14.7,
+   "value": 21.9,
    "interval": [
-    9.1,
-    18.5
+    20.9,
+    23.1
    ],
    "arms": {
     "CF-only": [
-     16.5,
-     6.9,
-     23.1
+     17.8,
+     11.9,
+     23.6
     ],
     "A7": [
-     15.5,
-     7.8,
-     20.7
+     17.5,
+     11.6,
+     23.3
     ],
     "CF+back": [
-     16.6,
-     7.3,
-     22.8
+     17.9,
+     11.8,
+     23.6
     ],
     "CF+intensity": [
-     16.5,
-     8.2,
-     22.4
+     19.2,
+     12.9,
+     25.4
     ],
     "raw most-active": [
-     14.7,
-     9.1,
-     18.5
+     21.9,
+     20.9,
+     23.1
     ]
    },
    "paired_vs_raw": {
     "CF-only": [
-     1.8,
-     -3.1,
-     4.6
+     -4.2,
+     -10.1,
+     1.5
     ],
     "A7": [
-     0.8,
-     -2.0,
-     2.9
+     -4.4,
+     -10.2,
+     1.6
     ],
     "CF+back": [
-     1.9,
-     -2.5,
-     4.6
+     -4.0,
+     -9.8,
+     2.1
     ],
     "CF+intensity": [
-     1.8,
-     -1.4,
-     4.4
+     -2.7,
+     -9.0,
+     3.6
     ]
    },
-   "n_launches": 232,
-   "n_backers": 3662,
+   "n_launches": 370,
+   "n_backers": 11669,
    "first_day": "2026-11-08",
-   "last_day": "2026-11-18",
+   "last_day": "2026-11-20",
    "rule": "observed backers = people held before the freeze AND re-read after the day closed whose own upvote list contains the launch; every arm ranked within those re-read people",
    "published_line": "raw most-active (the N most active held people; orchestrator decision Nov 18)",
    "shadow_lines": [
@@ -610,7 +627,7 @@
     "CF+back",
     "CF+intensity"
    ],
-   "label": "Most-active list 14.7% (day-resampled 9.1 to 18.5, 11 days, 232 launches). Shadow: best CF arm (CF+back) 16.6%, paired vs most-active 1.9 [-2.5, 4.6] on this re-read-only view; on the forward complete-people line CF was below most-active on all 3 scorable days (Nov 14-16), so the published line is the most-active list",
+   "label": "Most-active list 21.9% (day-resampled 20.9 to 23.1, 13 days, 370 launches). Shadow: best CF arm (CF+intensity) 19.2%, paired vs most-active -2.7 [-9.0, 3.6] on this re-read-only view; on the forward complete-people line CF was below most-active on all 3 scorable days (Nov 14-16), so the published line is the most-active list",
    "source": "results/web/backer_prediction_arms.json",
    "top3": null,
    "top5": null,
@@ -618,7 +635,7 @@
    "n_days": null,
    "producer": "E5",
    "merged_from": "results/web/north_star_rows_e5.json",
-   "merged_computed_at": "2026-11-20T10:12:18.116818+00:00"
+   "merged_computed_at": "2026-11-21T10:07:18.795201+00:00"
   }
  ]
 }
