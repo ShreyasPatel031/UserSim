@@ -34,7 +34,9 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
      and call again, up to 6 times. Login codes or links go to the same inbox: use the wait tools in your session.
    - Prefer email. If the product offers no email signup for new accounts, click its Google button ("Continue with
      Google" / "Sign in with Google"). When the page is on accounts.google.com, call `usersim_google_signin` with your
-     `session_id`: the server signs in with the Atelier signups Google account (you never type it). If it says Google
+     `session_id`: the server signs in with the Atelier signups Google account (you never type it). If it returns
+     `stuck` on a "verify you're not a robot" page, call `usersim_solve_captcha` once, then `usersim_google_signin`
+     again. A product may still refuse a personal Gmail ("use a work email"): that is a finding about the product. If it says Google
      sign-in is not available (no token), finish with `blocked` and say "provider-only signup" in the notes. GitHub
      sign-in is always blocked.
    - Never type a real person's details. If a captcha appears, call `usersim_solve_captcha` once; if it still blocks,
