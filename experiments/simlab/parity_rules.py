@@ -4,6 +4,9 @@
 KNOWN_EDIT_FLOOR = {"ph_n_makers": 0.78, "ph_n_media": 0.80, "ph_desc_len": 0.775, "ph_tagline_len": 0.752, "ph_has_video": 0.82,
                     "ph_n_topics": 0.838, "ph_name_len": 0.844, "ph_hunter_age_d": 0.88}
 KNOWN_LINEUP_PREFIX = ("ph_dayrank_",)   # within-day ranks: differ whenever the two line-ups differ (seen down to 0.0 equal)
+# Post-launch topic edits (orchestrator 09:30Z Nov 21, from E5's alert 5cef3659): Product Hunt removed a topic from launches after
+# 00:05, so the final read no longer shows it. Known for that night only, on topic-derived columns; live inputs are not changed.
+KNOWN_TOPIC_EDITS = {"2026-11-20": "PH removed the 'Google Cloud Run' topic from 17 of 53 launches after launch"}
 SET_CHANGE_MAX = [1, 1, 2]               # most top 3/5/10 members changed by all live columns on any of the 16 nights; above +1 alerts
 
 
@@ -14,6 +17,7 @@ def classify(res, ALERT=0.0):
         if v.get("expected") or v["share_equal"] >= 1 - ALERT: continue
         if c.startswith(KNOWN_LINEUP_PREFIX): known[c] = "line-up difference (known)"
         elif c in KNOWN_EDIT_FLOOR and v["share_equal"] >= KNOWN_EDIT_FLOOR[c]: known[c] = f"post-launch edit (known; floor {KNOWN_EDIT_FLOOR[c]})"
+        elif "topic" in c and res.get("day") in KNOWN_TOPIC_EDITS: known[c] = f"post-launch topic edit (known): {KNOWN_TOPIC_EDITS[res['day']]}"
     unexp = {c: v for c, v in res["columns"].items() if not v.get("expected") and v["share_equal"] < 1 - ALERT and c not in known}
     big = [k for k, x, mx in zip((3, 5, 10), res["set change, all live columns together"], SET_CHANGE_MAX) if x > mx + 1]
     if big: unexp["ranking effect"] = {"set change top3/5/10": res["set change, all live columns together"], "above known max +1 at top": big}

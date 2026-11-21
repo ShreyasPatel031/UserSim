@@ -11,4 +11,7 @@ assert alerts(lambda r: r["columns"].__setitem__("ph_desc_len", col(0.70)))     
 assert alerts(lambda r: r.__setitem__("set change, all live columns together", [0, 0, 4]))   # bigger ranking effect than ever seen
 assert not alerts(lambda r: r["columns"].__setitem__("ph_dayrank_ph_n_media", col(0.0)))     # line-up difference: known
 assert not alerts(lambda r: r["columns"].__setitem__("ph_n_makers", col(0.85)))              # within the known range
-print("parity_rules: 16 measured nights no alert; 3 new-kind cases alert; 2 known cases pass")
+def on(day, m): r = copy.deepcopy(base); r["day"] = day; m(r); return bool(R.classify(r))
+assert not on("2026-11-20", lambda r: r["columns"].__setitem__("ph_n_topics", col(0.68)))      # Nov 20 post-launch topic edit: known
+assert on("2026-11-21", lambda r: r["columns"].__setitem__("ph_n_topics", col(0.68)))          # the same drop on another night alerts
+print("parity_rules: 16 measured nights no alert; 4 new-kind cases alert; 3 known cases pass")
