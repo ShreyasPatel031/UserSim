@@ -1109,6 +1109,41 @@ async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: in
 
 
 @mcp.tool(structured_output=False)
+async def usersim_google_signin(ctx: Context, session_id: str) -> list[Any] | str:
+    """Finish a "Continue with Google" / "Sign in with Google" step with the Atelier signups Google account.
+
+    Call it when the page is on accounts.google.com after the product's Google button. The server types the account's
+    email, password and second factor itself (you never see them) and returns when Google hands back to the product.
+    Only for callers with a bearer token; others get an error and must use the email signup.
+    """
+    from mvp.sim_mcp import google_login, google_signin
+    from mvp.sim_mcp import limits as L
+
+    try:
+        owner = _owner(ctx)
+        sim = S.get_session(session_id, owner)
+        if not google_signin.allowed_for(owner):
+            raise S.SessionError("Google sign-in is only available to callers with a token on this server; "
+                                 "use the email signup (usersim_signup_identity)")
+        try:
+            _spend(owner, "one step")
+        except L.CapExceeded as exc:
+            return _cap_fail(exc)
+        async with sim.lock:
+            S._check_open(sim)
+            await S.revive(sim)
+            result = await google_login.sign_in(sim)
+            sim.row.setdefault("google_login", []).append({k: v for k, v in result.items() if k != "url"})
+            obs = await S.record_step(sim, kind="google_signin", action_text="sign in with Google (server)",
+                                      args={}, thought="I sign in with my Google account.",
+                                      error="" if result.get("ok") else f"Google sign-in: {result.get('reason')}")
+        return _obs_content(sim, obs, {"google_signin": {"ok": result.get("ok"), "reason": result.get("reason"),
+                                                        "steps": result.get("actions")}})
+    except Exception as exc:  # noqa: BLE001
+        return _fail(exc)
+
+
+@mcp.tool(structured_output=False)
 async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | str:
     """Try to get past a captcha on the current page (the same solver path the website driver uses).
 

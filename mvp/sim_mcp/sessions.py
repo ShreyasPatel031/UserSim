@@ -998,7 +998,10 @@ async def _open_browser(sim: SimSession) -> None:
     t0 = time.time()
     seed = browser_backend() == "seed_vm"
     saved, prefer = (await asyncio.to_thread(_saved_account_for, sim)) if seed else (None, "")
-    google = (await asyncio.to_thread(_google_state_for, sim)) if seed else None
+    from mvp.sim_mcp import google_signin as _gs
+
+    google_allowed = seed and _gs.allowed_for(getattr(sim, "owner", ""))
+    google = (await asyncio.to_thread(_google_state_for, sim)) if google_allowed and _gs.state_uri() else None
     if google and not prefer:
         from mvp.sim_mcp import seed_backend, site_states
 
@@ -1020,12 +1023,11 @@ async def _open_browser(sim: SimSession) -> None:
         sim.browser = await _connect(pw, sim.bb)
     if seed:
         state = (saved or {}).get("storage_state")
+        if google_allowed:
+            sim.row["google_signin"] = {"seed": (google or {}).get("seed"), "saved_at": (google or {}).get("saved_at"),
+                                        "state": bool(google), "on_its_seed": bool(prefer) and sim.bb.endpoint == prefer}
         if google:
-            from mvp.sim_mcp.google_signin import merge
-
-            state = merge(state, google["storage_state"])
-            sim.row["google_signin"] = {"seed": google.get("seed"), "saved_at": google.get("saved_at"),
-                                        "on_its_seed": bool(prefer) and sim.bb.endpoint == prefer}
+            state = _gs.merge(state, google["storage_state"])
         await _new_seed_context(sim, storage_state=state)
         sim.row["browser_backend"] = "seed_vm"
         sim.row["seed"] = sim.bb.seed_label

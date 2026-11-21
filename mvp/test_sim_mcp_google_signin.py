@@ -1,4 +1,5 @@
 """Google sign-in for token callers only (mvp/sim_mcp/google_signin.py)."""
+import json
 from unittest import mock
 
 from mvp.sim_mcp import google_signin, sessions
@@ -52,3 +53,32 @@ def test_open_browser_google_only_does_not_touch_site_account():
 
     src = inspect.getsource(sessions._open_browser)
     assert "if saved:\n            sim.row[\"saved_account\"]" in src
+
+
+def test_vault_entry_picked_and_allowed_without_state(monkeypatch):
+    from mvp.sim_mcp import google_login
+
+    vault = {"sites": [{"match": ["example.com"], "username": "x", "password": "y"},
+                       {"match": ["google.com", "gmail.com"], "username": "a@gmail.com", "password": "p", "totp_secret": "JBSWY3DPEHPK3PXP"}]}
+    monkeypatch.setenv("MVP_GOOGLE_VAULT_URI", "gs://bucket/private/google_vault.json")
+    monkeypatch.delenv("MVP_GOOGLE_STATE_URI", raising=False)
+    google_login._CACHE[0] = 0.0
+    with mock.patch.object(google_login, "_read_vault", lambda: vault):
+        assert google_login.google_creds()["username"] == "a@gmail.com"
+    with mock.patch("mvp.sim_mcp.limits.get", lambda k: True if k == "google_signin_token_callers" else None):
+        assert google_signin.allowed_for("a1b2c3d4e5f60718")
+        assert not google_signin.allowed_for("anon:deadbeef")
+
+
+def test_sign_in_refuses_off_google():
+    import asyncio
+    from types import SimpleNamespace
+
+    from mvp.sim_mcp import google_login
+
+    page = SimpleNamespace(url="https://weaveos.com/", is_closed=lambda: False)
+    sim = SimpleNamespace(page=page, context=None)
+    with mock.patch.object(google_login, "google_creds", lambda: {"username": "a", "password": "b"}):
+        out = asyncio.run(google_login.sign_in(sim))
+    assert out["ok"] is False and out["reason"] == "not_on_google_signin"
+    assert "b" not in json.dumps(out)
