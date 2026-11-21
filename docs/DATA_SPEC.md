@@ -92,6 +92,18 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Product followers at launch | per launch at first snapshot | not in API | low model value (PH agent); closed with reason |
 | Maker X followers | per maker at launch | Grok Bot X rollout 6,387 / 8,953 (71.3%; was 5,600); page cap removed from drop 20261117_h | drops before 20261117_h capped at 1 page → re-read those people / Grok Bot / Nov 19 |
 
+**Private trace store (Nov 21, 21:25Z).**
+- Bucket: gs://usersim-trace-store-347838016394, in project-amer-scs-sandbox.
+- Location: NAM4 dual-region (us-central1 + us-east1).
+- Access: uniform bucket-level access; public access prevention enforced.
+- Versioning on; 90-day soft delete; no retention lock yet (irreversible, Shreyas's call).
+- Writer: screenpipe-reader@atelier-64415 with objectCreator + objectViewer on this bucket only, no delete.
+- Layout (plugin agent):
+  - runs/<date>/<launch>/<plugin_version>/<user>.json
+  - scorecards/how_<version>.json
+  - index.jsonl per dataset version
+- Approved by Shreyas in the plugin chat (21:20Z, "I approve").
+
 **Nov 21 review (10:55 UTC).** Current vs Nov 20:
 - Complete people 93,409–93,412 (+3 to +5; the need list moved again from 09:0xZ after ~23 h stalled). Need list 1,485. Tabs missing: followers 1,262, forums 527, stacks 497, collections 491, reviews 486, hunted 478. By tier: other 98.6%, active 97.0%, likely 92.7%.
 - Upvote refresh FIXED: two bugs found Nov 20. (1) A 180 s wait between people: `person_interval or 180` ignored 0. (2) Refreshes of complete people were judged by finished_utc and never merged. Now ~7/min, with recent voters first; 2,678 people refreshed (2.9%); median read age 9.55 d. It stopped again ~07:45–08:40Z after the weekly-close job, the second night running. Owner: Cursor fleet.
