@@ -98,3 +98,12 @@ Written before either new metric is scored.
 
 ### Versions
 Every scorecard version is kept as `cohort_scorecard.v<k>.json` plus `history.jsonl`. Metrics are only added or tuned, never dropped.
+
+## Addendum 2 (2026-11-21): size-weighted topic blend (WHO) and sentiment re-weight (WHAT)
+**Blend.** P6 = w·P3 + (1−w)·BASE, w = f(expected rank band) with bands from the then-published 00:05 forecast predicted rank (1-5, 6-10, 11+, none).
+w per band chosen on a 0..1 grid (step 0.1) minimising mean JSD on Oct 22–Nov 10; tested once on Nov 11–20. Priors use only cohorts of days < D.
+Pass = P6 minus BASE and P6 minus P3 both have day-bootstrap upper bound < 0 on the test days. Report overall and by final rank band.
+Caveat: the 00:05 forecast files before Nov 17 were written after the fact by the then-published model (frozen_before_reveal false).
+**Sentiment re-weight.** Fit on real comment labels from days before Nov 15 (backtest_v1 days with labels): per-launch predicted label shares are
+mapped by s' = normalise(s · r), r = (real mean share / predicted mean share) where the predicted side for the fit comes from the Nov 15 prompt outputs only if earlier ones are absent (then r fit by leave-one-day-out on Nov 15–20 and flagged).
+Pass = JSD paired vs unadjusted predicted, upper bound < 0, on Nov 15–20 out of sample. Prompt changes follow the same bar.
