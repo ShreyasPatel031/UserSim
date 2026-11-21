@@ -125,6 +125,15 @@ cold_n = sum(1 for s in m.get("slots") or [] if s.get("state") in ("cold", "cf_w
 walls = int(sum(int(s.get("walls") or 0) for s in m.get("slots") or []))
 win_c = sum(int(s.get("win_complete") or 0) for s in m.get("slots") or [])
 win_r = sum(int(s.get("win_rerun") or 0) for s in m.get("slots") or [])
+out["upvote_refresh_diagnosis"] = {
+    "refresh_slots": [9, 27, 38],
+    "pkg_md5_patch": "REPULL_REFRESH_PKG_MD5 on ph_batch repullupvotes (run.pkg_md5 from PKG_MD5)",
+    "pkg_md5_patch_deployed_utc": "2026-11-21T16:32:00Z",
+    "population_audit_1622Z_held_no_pkg_md5": 93,
+    "population_audit_1622Z_fail_partial": 13,
+    "upvote_refresh_ppm_15m": m.get("upvote_refresh_ppm_15m"),
+    "note": "Held 15:52-16:22Z should clear on new staged saves after patch; prior staged need re-upload or wait for next refresh pass.",
+}
 out["need_list_diagnosis"] = {
     "why_not_need_list_new_completes": (
         "need_list.jsonl still skipped under PH_FLEET_RR_ONLY; queue is PH_RR_FILES. "
@@ -144,6 +153,13 @@ out["need_list_diagnosis"] = {
         "dead_slots": dead_n,
         "cold_or_cf_slots": cold_n,
         "cf_wall_events_15m": walls,
+    },
+    "failing_tab_counts_15m_window": {
+        "ProfileStacksPage_persisted_query_not_found": "observed on pdeep pulls (blocks whole())",
+        "population_fail_partial_1622Z": {
+            "not_filled_comment_times": 10,
+            "stacks_hunted_forums_following_followers_collections_activity": 3,
+        },
     },
     "tab_failures_observed": {
         "ProfileStacksPage": "gql PersistedQueryNotFound → stacks 0 (blocks whole() / header_pct)",
