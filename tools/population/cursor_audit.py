@@ -170,6 +170,14 @@ def main():
 
     vm_ips = {}
     vm_blocks = {}
+    vm_rot = collections.defaultdict(list)
+    for l in sh("gsutil", "cat", f"{CUR}/iproyal_rotate/rotate.jsonl").stdout.splitlines():
+        try:
+            x = json.loads(l)
+            vm_rot[x["vm"]].append((str(x["utc"]), str(x.get("reason"))))
+        except Exception:
+            continue
+    print(f"ROTATE_LOG rotations={sum(len(v) for v in vm_rot.values())} vms={len(vm_rot)}", flush=True)
 
     def post_block_ip_change_60m(vm, t):
         """orchestrator 19:50Z Nov 20: save-local test, kept apart from the history-wide flags. True when the same VM logged
@@ -183,6 +191,10 @@ def main():
             t0 = (datetime.datetime.strptime(t[:19], "%Y-%m-%dT%H:%M:%S") - datetime.timedelta(minutes=60)).strftime("%Y-%m-%dT%H:%M:%SZ")
         except ValueError:
             return None
+        # 00:0xZ Nov 21 (orchestrator): proxy-side rotations are not in the VM status logs; a block-triggered rotation
+        # in raw/_cursor/iproyal_rotate/rotate.jsonl within the window is a post-block IP change by itself
+        if any(t0 <= u <= t and r in ("sustained_block", "vm_block_request") for u, r in vm_rot.get(vm, [])):
+            return True
         near = [b for b in vm_blocks.get(vm, []) if t0 <= b <= t]
         if not near:
             return False
