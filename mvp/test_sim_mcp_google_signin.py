@@ -43,3 +43,12 @@ def test_merge_keeps_both_and_dedupes():
     out = google_signin.merge(site, goog)
     assert [c["name"] for c in out["cookies"]] == ["s", "SID"]
     assert out["origins"] == [{"origin": "https://app.x.com"}]
+
+
+def test_open_browser_google_only_does_not_touch_site_account():
+    """Regression: a token session with the Google state but no saved site account crashed with
+    "'NoneType' object has no attribute 'get'" (weaveos.com, Nov 21)."""
+    import inspect
+
+    src = inspect.getsource(sessions._open_browser)
+    assert "if saved:\n            sim.row[\"saved_account\"]" in src

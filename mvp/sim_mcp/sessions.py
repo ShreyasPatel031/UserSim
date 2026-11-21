@@ -1032,6 +1032,7 @@ async def _open_browser(sim: SimSession) -> None:
         sim.row["browser_engine"] = sim.bb.engine
         if state:
             sim.saved_state = state  # a dropped connection restores the signed-in state too
+        if saved:
             sim.row["saved_account"] = {"domain": saved.get("domain"), "seed": saved.get("seed"),
                                         "saved_at": saved.get("saved_at"), "source": saved.get("source"),
                                         "on_saving_seed": bool(prefer) and sim.bb.endpoint == prefer}
