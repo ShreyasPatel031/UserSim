@@ -43,19 +43,33 @@ def judge(th, ct, cand):
         j2 = g(CJ.format(a="\n".join(f"{i + 1}. {t}" for i, t in enumerate(ct)), b=Bt), 1200)
         if j2 and len(j2.get("a_covered", [])) == len(ct): r["complaint_recall"] = float(np.mean([bool(v) for v in j2["a_covered"]])); r["n_complaints"] = len(ct)
     return r
+NRUNS = int(os.environ.get("JUDGE_RUNS", "3")); M = ("recall", "recall_w", "precision", "complaint_recall")
+PL_CACHE = os.path.join(SP, f"fs_plain_{D}.json"); PLC = json.load(open(PL_CACHE)) if os.path.exists(PL_CACHE) else {}
 def one(lid):
+    # orchestrator 10:35Z Nov 21: judge at temperature 0 (llm.gemini_call default), NRUNS independent runs of the whole truth+judge chain per launch,
+    # metrics averaged over runs, run-to-run spread kept; plain-arm comments generated once per launch (cached) so arms differ only by judging.
     cm = NT[NT.post == lid].sort_values("created").text.tolist(); pan = ((EX.get(lid) or {}).get("say") or {}).get("persona_panel") or {}
     cand = [f"{x.get('reaction', '')} Concern: {x.get('concern', '')} Question: {x.get('question', '')}" for x in pan.get("items", [])]
     if len(cm) < 5 or not cand: return {"id": lid, "n_comments": len(cm), "scored": False, "why": "fewer than 5 non-team comments" if len(cm) < 5 else "no panel"}
-    c = "\n".join(f"- {t[:400]}" for t in cm[:40]); th = [{"theme": str(t.get("theme", "")), "n": max(1, int(t.get("n_comments", 1) or 1))} for t in ((g(TRUTH.format(c=c), 2000) or {}).get("themes") or []) if isinstance(t, dict) and t.get("theme")][:8]
-    ct = [str(t) for t in ((g(CT.format(c=c), 1200) or {}).get("themes") or [])][:6]
-    r = {"id": lid, "n_comments": len(cm), "n_personas": len(cand), "scored": False}; r.update(judge(th, ct, cand))
-    t0 = T0.get(lid) or {}; pl = (g(PLAIN.format(n=t0.get("name", ""), t=t0.get("tagline", ""), d=str(t0.get("description") or "")[:800], k=len(cand)), 3000) or {}).get("comments") or []
-    pl = [str(x) for x in pl if x][:len(cand)]
-    if pl: r.update({"plain_" + k: v for k, v in judge(th, ct, pl).items()})
+    c = "\n".join(f"- {t[:400]}" for t in cm[:40]); t0 = T0.get(lid) or {}
+    if lid not in PLC:
+        pl = (g(PLAIN.format(n=t0.get("name", ""), t=t0.get("tagline", ""), d=str(t0.get("description") or "")[:800], k=len(cand)), 3000) or {}).get("comments") or []
+        PLC[lid] = [str(x) for x in pl if x][:len(cand)]
+    pl = PLC[lid]; runs = []
+    for _ in range(NRUNS):
+        th = [{"theme": str(t.get("theme", "")), "n": max(1, int(t.get("n_comments", 1) or 1))} for t in ((g(TRUTH.format(c=c), 2000) or {}).get("themes") or []) if isinstance(t, dict) and t.get("theme")][:8]
+        ct = [str(t) for t in ((g(CT.format(c=c), 1200) or {}).get("themes") or [])][:6]
+        x = judge(th, ct, cand)
+        if pl: x.update({"plain_" + k: v for k, v in judge(th, ct, pl).items()})
+        x["truth_themes"] = [t["theme"] for t in th]; x["truth_complaints"] = ct; runs.append(x)
+    r = {"id": lid, "n_comments": len(cm), "n_personas": len(cand), "scored": any(x.get("scored") for x in runs), "runs": runs}
+    for k in [m for m in M] + ["plain_" + m for m in M]:
+        v = [x[k] for x in runs if k in x]
+        if v: r[k] = float(np.mean(v)); r[k + "_spread"] = float(np.max(v) - np.min(v)); r[k + "_nruns"] = len(v)
     return r
 ids = [i for i in EX if i in T0]
 with cf.ThreadPoolExecutor(6) as ex: R = list(ex.map(one, ids))
+json.dump(PLC, open(PL_CACHE, "w"))
 S = pd.DataFrame([r for r in R if r.get("scored")])
 def ci(v):
     v = np.asarray(v, float); v = v[~np.isnan(v)]
@@ -69,5 +83,9 @@ out = {"day": D, "source": "official PH API v2 live capture (api_comments + live
        "plain_complaint_recall": ci(S.plain_complaint_recall.dropna()) if "plain_complaint_recall" in S else None,
        "harness reference (276 past launches, 24-persona panel)": {"recall": 62.8, "recall_w": 73.3, "precision": 54.2, "complaint_recall": 24.8},
        "usd": round(llm.USAGE["in"] / 1e6 * .3 + llm.USAGE["out"] / 1e6 * 2.5, 3), "per_launch": [{k: v for k, v in r.items()} for r in R]}
-os.makedirs(os.path.join(HERE, "reports", "forward_sim"), exist_ok=True); json.dump(out, open(os.path.join(HERE, "reports", "forward_sim", f"forward_says_{D}.json"), "w"), indent=1)
+os.makedirs(os.path.join(HERE, "reports", "forward_sim"), exist_ok=True); 
+out["judge"] = {"runs_per_launch": NRUNS, "temperature": 0, "mean run-to-run spread (max-min, points)": {k: round(100 * float(S[k + "_spread"].mean()), 1) for k in [m for m in M] + ["plain_" + m for m in M] if k + "_spread" in S}}
+_v = 1
+while os.path.exists(os.path.join(HERE, "reports", "forward_sim", f"forward_says_{D}.v{_v}.json")): _v += 1   # never overwrite: every judge output is versioned
+out["version"] = _v; json.dump(out, open(os.path.join(HERE, "reports", "forward_sim", f"forward_says_{D}.v{_v}.json"), "w"), indent=1)
 print(json.dumps({k: v for k, v in out.items() if k != "per_launch"}, indent=1))

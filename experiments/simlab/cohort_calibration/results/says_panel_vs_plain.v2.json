@@ -1,0 +1,124 @@
+{
+ "prereg": "PREREG.md addendum 3",
+ "days": [
+  "2026-11-15",
+  "2026-11-16",
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20"
+ ],
+ "files": {
+  "2026-11-15": "forward_says_2026-11-15.v1.json",
+  "2026-11-16": "forward_says_2026-11-16.v1.json",
+  "2026-11-17": "forward_says_2026-11-17.v1.json",
+  "2026-11-18": "forward_says_2026-11-18.v1.json",
+  "2026-11-19": "forward_says_2026-11-19.v1.json",
+  "2026-11-20": "forward_says_2026-11-20.v1.json"
+ },
+ "judge run-to-run spread, mean max-min points": {
+  "recall": 17.2,
+  "recall_w": 16.2,
+  "precision": 26.0,
+  "complaint_recall": 17.6,
+  "plain_recall": 21.7,
+  "plain_recall_w": 20.9,
+  "plain_precision": 15.5,
+  "plain_complaint_recall": 11.1
+ },
+ "panel": {
+  "recall": [
+   68.5,
+   65.0,
+   70.9,
+   85,
+   6
+  ],
+  "recall_w": [
+   75.8,
+   70.7,
+   78.2,
+   85,
+   6
+  ],
+  "precision": [
+   49.3,
+   46.3,
+   52.2,
+   85,
+   6
+  ],
+  "complaint_recall": [
+   24.9,
+   20.0,
+   28.6,
+   85,
+   6
+  ]
+ },
+ "plain prompt": {
+  "recall": [
+   52.3,
+   47.3,
+   56.4,
+   85,
+   6
+  ],
+  "recall_w": [
+   61.1,
+   54.8,
+   66.0,
+   85,
+   6
+  ],
+  "precision": [
+   28.2,
+   24.8,
+   30.8,
+   85,
+   6
+  ],
+  "complaint_recall": [
+   7.9,
+   6.8,
+   8.8,
+   85,
+   6
+  ]
+ },
+ "panel minus plain (paired)": {
+  "recall": [
+   16.3,
+   12.8,
+   19.9,
+   85,
+   6
+  ],
+  "precision": [
+   21.1,
+   17.8,
+   23.7,
+   85,
+   6
+  ],
+  "complaint_recall": [
+   17.0,
+   12.8,
+   19.7,
+   85,
+   6
+  ]
+ },
+ "note": "[mean %, day-bootstrap 2.5%, 97.5%, launches, days]",
+ "north_star": {
+  "broad themes recall>=70 & precision>=50 (pre-registered, unweighted)": "recall 68.5 (lower 65.0), precision 49.3 (lower 46.3)",
+  "count-weighted recall (reported beside, not the threshold)": [
+   75.8,
+   70.7,
+   78.2,
+   85,
+   6
+  ],
+  "specific issues above plain prompt, interval clear": true
+ }
+}

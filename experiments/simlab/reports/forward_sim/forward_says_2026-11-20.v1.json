@@ -1,0 +1,1136 @@
+{
+ "day": "2026-11-20",
+ "source": "official PH API v2 live capture (api_comments + live/comments_ts), no fetch",
+ "launches_in_explain": 56,
+ "comments_unique": 306,
+ "non_team_comments": 215,
+ "launches_scored (>= 5 non-team comments)": 6,
+ "not_scored": {
+  "fewer than 5 non-team comments": 50
+ },
+ "recall [95% launch bootstrap]": [
+  54.6,
+  30.5,
+  78.5
+ ],
+ "recall_w": [
+  56.5,
+  28.8,
+  83.5
+ ],
+ "precision": [
+  50.4,
+  20.4,
+  81.6
+ ],
+ "complaint_recall": [
+  15.7,
+  3.7,
+  27.8
+ ],
+ "launches_with_complaints": 6,
+ "plain_recall": [
+  46.6,
+  27.8,
+  67.4
+ ],
+ "plain_precision": [
+  26.0,
+  9.5,
+  49.5
+ ],
+ "plain_complaint_recall": [
+  5.6,
+  0.0,
+  11.1
+ ],
+ "harness reference (276 past launches, 24-persona panel)": {
+  "recall": 62.8,
+  "recall_w": 73.3,
+  "precision": 54.2,
+  "complaint_recall": 24.8
+ },
+ "usd": 0.1,
+ "per_launch": [
+  {
+   "id": "1321962",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323414",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323758",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1312059",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1313803",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323083",
+   "n_comments": 13,
+   "n_personas": 21,
+   "scored": true,
+   "runs": [
+    {
+     "scored": true,
+     "recall": 0.25,
+     "recall_w": 0.25,
+     "precision": 0.047619047619047616,
+     "n_themes": 8,
+     "complaint_recall": 0.0,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.25,
+     "plain_recall_w": 0.25,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "The ability to see if a test failed before the current change (test history) is a highly valued feature.",
+      "Users appreciate the efficiency of the product, specifically the reduced API calls and token usage compared to raw traces.",
+      "Users are concerned about how the agent handles situations where the test itself is out of date or flaky.",
+      "Users are asking about the agent's behavior when encountering failures, specifically if it retries or fixes issues.",
+      "Users are interested in features that go beyond observability to help clean up tests, such as identifying useless, duplicated, or flaky tests.",
+      "Users want to know how the product handles monorepos with multiple projects reporting into the same run.",
+      "Users are asking if the product can provide a summary of which failures the agent fixed and which it left for the user.",
+      "Users are asking about specific failure scenarios, such as how a job that times out with every test passing is reported."
+     ],
+     "truth_complaints": [
+      "Any plans to go beyond observability and use the run data to actually help clean up the tests? Like telling us which ones are useless, duplicated, or just flaky noise.",
+      "Curious how it handles a monorepo where several Playwright projects report into the same run, does the agent get the failures grouped per project or all mixed together?",
+      "is something like this there?",
+      "when the agent reads the failure does it ever just retry until green instead of fixing anything",
+      "what does it do when the test itself is out of date?",
+      "a job that times out with every test passing... does that show up as a failure?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.25,
+     "recall_w": 0.42857142857142855,
+     "precision": 0.09523809523809523,
+     "n_themes": 8,
+     "complaint_recall": 0.0,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.125,
+     "plain_recall_w": 0.35714285714285715,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "Users appreciate the product's ability to show if a test failed before the current change, as it helps distinguish real regressions from flaky tests.",
+      "Users generally congratulate the makers on the product launch.",
+      "Users are curious about how the agent handles retries or fixes when a test fails.",
+      "Users are interested in features that go beyond observability to help clean up tests, such as identifying useless, duplicated, or flaky tests.",
+      "Users want to know how the product handles situations where the test itself is out of date.",
+      "The efficiency of token usage (4 calls and ~1,600 tokens vs 20k for raw trace) is a significant selling point for users.",
+      "Users have questions about how the product handles monorepos with multiple projects reporting into the same run.",
+      "Users would like a summary after a run indicating which failures the agent fixed and which it left for them."
+     ],
+     "truth_complaints": [
+      "Any plans to go beyond observability and use the run data to actually help clean up the tests? Like telling us which ones are useless, duplicated, or just flaky noise.",
+      "Curious how it handles a monorepo where several Playwright projects report into the same run, does the agent get the failures grouped per project or all mixed together?",
+      "is something like this there?",
+      "when the agent reads the failure does it ever just retry until green instead of fixing anything",
+      "what does it do when the test itself is out of date?",
+      "a job that times out with every test passing... does that show up as a failure?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.375,
+     "recall_w": 0.3333333333333333,
+     "precision": 0.047619047619047616,
+     "n_themes": 8,
+     "complaint_recall": 0.0,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.125,
+     "plain_recall_w": 0.16666666666666666,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "The ability to see if a test failed before the current change (test history) is a highly valued feature.",
+      "Users appreciate the efficiency of the product, specifically the reduced API calls and token usage compared to raw traces.",
+      "Users are concerned about how the agent handles situations where the test itself is out of date or flaky.",
+      "Users are asking about the agent's behavior when encountering failures, specifically if it retries or fixes issues.",
+      "Users are interested in features that go beyond observability to help clean up tests, such as identifying useless, duplicated, or flaky tests.",
+      "Users want to know how the product handles monorepos with multiple projects reporting into the same run.",
+      "Users are asking if the product can provide a summary of which failures the agent fixed and which it left for the user.",
+      "Users are asking about specific failure scenarios, such as how a job that times out with every test passing is reported."
+     ],
+     "truth_complaints": [
+      "Any plans to go beyond observability and use the run data to actually help clean up the tests? Like telling us which ones are useless, duplicated, or just flaky noise.",
+      "Curious how it handles a monorepo where several Playwright projects report into the same run, does the agent get the failures grouped per project or all mixed together?",
+      "is something like this there?",
+      "when the agent reads the failure does it ever just retry until green instead of fixing anything",
+      "what does it do when the test itself is out of date?",
+      "a job that times out with every test passing... does that show up as a failure?"
+     ]
+    }
+   ],
+   "recall": 0.2916666666666667,
+   "recall_spread": 0.125,
+   "recall_nruns": 3,
+   "recall_w": 0.33730158730158727,
+   "recall_w_spread": 0.17857142857142855,
+   "recall_w_nruns": 3,
+   "precision": 0.06349206349206349,
+   "precision_spread": 0.047619047619047616,
+   "precision_nruns": 3,
+   "complaint_recall": 0.0,
+   "complaint_recall_spread": 0.0,
+   "complaint_recall_nruns": 3,
+   "plain_recall": 0.16666666666666666,
+   "plain_recall_spread": 0.125,
+   "plain_recall_nruns": 3,
+   "plain_recall_w": 0.25793650793650796,
+   "plain_recall_w_spread": 0.1904761904761905,
+   "plain_recall_w_nruns": 3,
+   "plain_precision": 0.047619047619047616,
+   "plain_precision_spread": 0.0,
+   "plain_precision_nruns": 3,
+   "plain_complaint_recall": 0.0,
+   "plain_complaint_recall_spread": 0.0,
+   "plain_complaint_recall_nruns": 3
+  },
+  {
+   "id": "1322506",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1314856",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1321782",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322672",
+   "n_comments": 34,
+   "n_personas": 24,
+   "scored": true,
+   "runs": [
+    {
+     "scored": true,
+     "recall": 0.625,
+     "recall_w": 0.7741935483870968,
+     "precision": 0.9166666666666666,
+     "n_themes": 8,
+     "complaint_recall": 0.3333333333333333,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.75,
+     "plain_recall_w": 0.8387096774193549,
+     "plain_precision": 0.2916666666666667,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.16666666666666666,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "Users appreciate the focus on showing the real total price including shipping and tax, as this addresses a common pain point in online shopping.",
+      "Users are asking about the product's functionality, specifically whether it suggests alternatives or only checks the exact item.",
+      "Users are asking about the product's availability and plans for international expansion beyond the US.",
+      "Users are requesting support for additional browsers like Firefox or Safari.",
+      "Users are concerned about the trustworthiness and accuracy of pricing, especially with frequently changing promo codes and cashback rates.",
+      "Users are requesting features like splitting bulk orders, watching items for price drops, and a 'free shipping only' toggle.",
+      "Users are asking how the product compares to existing shopping tools like Muse or cashback programs like Rakuten.",
+      "Users generally express congratulations and positive sentiment for the launch."
+     ],
+     "truth_complaints": [
+      "How do you handle promo codes or card offers that stop working at checkout?",
+      "Does Saparo catch it if a price drops again after you've already bought something?",
+      "Any plans for Firefox or Safari?",
+      "Is this for figuring out what to buy, or getting a better deal once I've picked something?",
+      "Is it checking the exact item, or will it suggest alternatives too?",
+      "Do you have plans to roll it out beyond the US?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.875,
+     "recall_w": 0.9655172413793104,
+     "precision": 0.9166666666666666,
+     "n_themes": 8,
+     "complaint_recall": 0.3333333333333333,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.875,
+     "plain_recall_w": 0.9655172413793104,
+     "plain_precision": 0.375,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.16666666666666666,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "Users appreciate the focus on showing the real total cost, including shipping and taxes, as it addresses a common pain point in online shopping.",
+      "Many users expressed general congratulations and positive sentiment for the product launch.",
+      "Users are interested in the product's availability and functionality in regions outside the US, such as Australia, New Zealand, and India.",
+      "Users want to know if the product can track price drops after a purchase or watch items for future price changes.",
+      "Users are curious about how the product handles dynamic elements like promo codes, card offers, and cashback, and whether it verifies final prices.",
+      "Users are interested in features related to personalized recommendations, learning shopping preferences, and integrating personalized discounts.",
+      "Users want to know if the product suggests alternative items or only checks the exact item.",
+      "A user asked for a comparison to 'Muse for shopping'."
+     ],
+     "truth_complaints": [
+      "How do you handle promo codes or card offers that stop working at checkout?",
+      "Does Saparo catch it if a price drops again after you've already bought something?",
+      "Is this for figuring out what to buy, or getting a better deal once I've picked something?",
+      "Is it checking the exact item, or will it suggest alternatives too?",
+      "Any plans for Firefox or Safari?",
+      "Do you have plans to roll it out beyond the US?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.875,
+     "recall_w": 0.6551724137931034,
+     "precision": 1.0,
+     "n_themes": 8,
+     "complaint_recall": 0.5,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.875,
+     "plain_recall_w": 0.9310344827586207,
+     "plain_precision": 0.2916666666666667,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.16666666666666666,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "Users appreciate the product's focus on showing the real total price, including shipping and tax, which solves a common online shopping problem.",
+      "Users are asking about the product's availability and plans for international markets (outside the US).",
+      "Many users offered generic congratulations and positive remarks on the launch.",
+      "Users are asking about the product's ability to track price drops or suggest alternatives.",
+      "Users are asking about the product's accuracy and trustworthiness, especially regarding dynamic promo codes and cashback.",
+      "Users are requesting features like personalized discount integration and a 'free shipping only' toggle.",
+      "Users are asking about the product's core functionality: whether it helps find what to buy or just better deals, and if it suggests alternatives.",
+      "Users are asking how the product compares to named alternatives like Muse or other cashback programs like Rakuten."
+     ],
+     "truth_complaints": [
+      "How do you handle promo codes or card offers that stop working at checkout? Does Saparo re-rank on the spot, or does it flag the change to the user first?",
+      "Any plans for Firefox or Safari?",
+      "Is this for figuring out what to buy, or getting a better deal once I've picked something?",
+      "Is it checking the exact item, or will it suggest alternatives too?",
+      "Does Saparo catch it if a price drops again after you've already bought something?",
+      "Will this support stores outside the US later?"
+     ]
+    }
+   ],
+   "recall": 0.7916666666666666,
+   "recall_spread": 0.25,
+   "recall_nruns": 3,
+   "recall_w": 0.7982944011865035,
+   "recall_w_spread": 0.31034482758620696,
+   "recall_w_nruns": 3,
+   "precision": 0.9444444444444443,
+   "precision_spread": 0.08333333333333337,
+   "precision_nruns": 3,
+   "complaint_recall": 0.38888888888888884,
+   "complaint_recall_spread": 0.16666666666666669,
+   "complaint_recall_nruns": 3,
+   "plain_recall": 0.8333333333333334,
+   "plain_recall_spread": 0.125,
+   "plain_recall_nruns": 3,
+   "plain_recall_w": 0.9117538005190954,
+   "plain_recall_w_spread": 0.12680756395995552,
+   "plain_recall_w_nruns": 3,
+   "plain_precision": 0.3194444444444445,
+   "plain_precision_spread": 0.08333333333333331,
+   "plain_precision_nruns": 3,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_complaint_recall_spread": 0.0,
+   "plain_complaint_recall_nruns": 3
+  },
+  {
+   "id": "1312415",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322508",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320740",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323490",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323277",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1315726",
+   "n_comments": 5,
+   "n_personas": 21,
+   "scored": true,
+   "runs": [
+    {
+     "scored": true,
+     "recall": 1.0,
+     "recall_w": 1.0,
+     "precision": 1.0,
+     "n_themes": 4,
+     "complaint_recall": 0.0,
+     "n_complaints": 2,
+     "plain_scored": true,
+     "plain_recall": 0.75,
+     "plain_recall_w": 0.8333333333333334,
+     "plain_precision": 0.19047619047619047,
+     "plain_n_themes": 4,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 2,
+     "truth_themes": [
+      "The product is a good idea and useful, especially for vulnerable and less tech-inclined elderly people.",
+      "Does it work in different languages?",
+      "Can the family add a second neighbor as a contact?",
+      "The 7-day deletion of recordings is a good call for privacy."
+     ],
+     "truth_complaints": [
+      "Does it work in different languages?",
+      "Can the family add a second neighbour, in case the first one's away that day?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 1.0,
+     "recall_w": 1.0,
+     "precision": 0.47619047619047616,
+     "n_themes": 4,
+     "complaint_recall": 0.0,
+     "n_complaints": 2,
+     "plain_scored": true,
+     "plain_recall": 0.75,
+     "plain_recall_w": 0.8333333333333334,
+     "plain_precision": 0.19047619047619047,
+     "plain_n_themes": 4,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 2,
+     "truth_themes": [
+      "The product is a good idea and useful, especially for vulnerable and less tech-inclined elderly people.",
+      "Does it work in different languages?",
+      "Can the family add a second neighbor as a contact?",
+      "The 7-day deletion of recordings is a good call for privacy."
+     ],
+     "truth_complaints": [
+      "Does it work in different languages?",
+      "Can the family add a second neighbour, in case the first one's away that day?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.75,
+     "recall_w": 0.8333333333333334,
+     "precision": 0.9047619047619048,
+     "n_themes": 4,
+     "complaint_recall": 0.0,
+     "n_complaints": 2,
+     "plain_scored": true,
+     "plain_recall": 0.5,
+     "plain_recall_w": 0.6666666666666666,
+     "plain_precision": 0.5714285714285714,
+     "plain_n_themes": 4,
+     "plain_complaint_recall": 0.5,
+     "plain_n_complaints": 2,
+     "truth_themes": [
+      "Users praise the product's usefulness and its potential to help vulnerable and less tech-inclined individuals, especially the elderly.",
+      "Users are asking if the product supports different languages.",
+      "Users are requesting the ability for family members to add a second neighbor as a contact.",
+      "Users appreciate the design philosophy that prioritizes safety and the 7-day deletion policy for recordings."
+     ],
+     "truth_complaints": [
+      "Does it work in different languages??",
+      "Can the family add a second neighbour, in case the first one's away that day?"
+     ]
+    }
+   ],
+   "recall": 0.9166666666666666,
+   "recall_spread": 0.25,
+   "recall_nruns": 3,
+   "recall_w": 0.9444444444444445,
+   "recall_w_spread": 0.16666666666666663,
+   "recall_w_nruns": 3,
+   "precision": 0.7936507936507936,
+   "precision_spread": 0.5238095238095238,
+   "precision_nruns": 3,
+   "complaint_recall": 0.0,
+   "complaint_recall_spread": 0.0,
+   "complaint_recall_nruns": 3,
+   "plain_recall": 0.6666666666666666,
+   "plain_recall_spread": 0.25,
+   "plain_recall_nruns": 3,
+   "plain_recall_w": 0.7777777777777778,
+   "plain_recall_w_spread": 0.16666666666666674,
+   "plain_recall_w_nruns": 3,
+   "plain_precision": 0.31746031746031744,
+   "plain_precision_spread": 0.38095238095238093,
+   "plain_precision_nruns": 3,
+   "plain_complaint_recall": 0.16666666666666666,
+   "plain_complaint_recall_spread": 0.5,
+   "plain_complaint_recall_nruns": 3
+  },
+  {
+   "id": "1314593",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322985",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323762",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1315337",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322498",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323379",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1296743",
+   "n_comments": 6,
+   "n_personas": 21,
+   "scored": true,
+   "runs": [
+    {
+     "scored": true,
+     "recall": 0.14285714285714285,
+     "recall_w": 0.125,
+     "precision": 0.19047619047619047,
+     "n_themes": 7,
+     "complaint_recall": 0.3333333333333333,
+     "n_complaints": 3,
+     "plain_scored": true,
+     "plain_recall": 0.14285714285714285,
+     "plain_recall_w": 0.25,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 7,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 3,
+     "truth_themes": [
+      "The interview practice feature is a valuable tool for consistent preparation.",
+      "Compass OS helps manage and organize job applications, preventing duplicate submissions.",
+      "The product serves as a much-needed career coach for young adults.",
+      "How does the system differentiate between information that can be backed up and information that was never written down?",
+      "Users want to see every changed line next to their original with an explanation, and the ability to reject individual bullets without redoing everything.",
+      "The 'never auto submit' feature is very important and should be highlighted more prominently.",
+      "Generic congratulations and well wishes for the launch."
+     ],
+     "truth_complaints": [
+      "how does it know what i can actually back up vs stuff i just never wrote down anywhere",
+      "for me trust comes from seeing every changed line next to my original one, with a short why. if i can reject one bullet without redoing everything, i would use it.",
+      "also the never auto submit part is a big deal, i would put it much higher on the page"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.14285714285714285,
+     "recall_w": 0.125,
+     "precision": 0.19047619047619047,
+     "n_themes": 7,
+     "complaint_recall": 0.0,
+     "n_complaints": 2,
+     "plain_scored": true,
+     "plain_recall": 0.2857142857142857,
+     "plain_recall_w": 0.375,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 7,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 2,
+     "truth_themes": [
+      "The interview practice feature is a valuable tool for consistent preparation.",
+      "Compass OS helps manage and organize job applications, preventing duplicate submissions.",
+      "The product serves as a much-needed career coach for young adults.",
+      "How does the system differentiate between information that can be backed up and information that was never written down?",
+      "Users want to see every changed line next to their original with an explanation, and the ability to reject individual bullets without redoing everything.",
+      "The 'never auto submit' feature is very important and should be highlighted more prominently.",
+      "Generic congratulations and well wishes for the launch."
+     ],
+     "truth_complaints": [
+      "how does it know what i can actually back up vs stuff i just never wrote down anywhere",
+      "if i can reject one bullet without redoing everything, i would use it."
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.16666666666666666,
+     "recall_w": 0.14285714285714285,
+     "precision": 0.047619047619047616,
+     "n_themes": 6,
+     "complaint_recall": 0.0,
+     "n_complaints": 2,
+     "plain_scored": true,
+     "plain_recall": 0.3333333333333333,
+     "plain_recall_w": 0.42857142857142855,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 6,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 2,
+     "truth_themes": [
+      "The interview practice feature is a valuable tool for consistent preparation.",
+      "Compass OS helps manage and organize job applications, preventing duplicate submissions.",
+      "The product serves as a much-needed career coach for young professionals.",
+      "How does the system differentiate between information that can be backed up and information that was never recorded?",
+      "Users desire the ability to see every changed line next to their original with an explanation, and to reject individual bullet points without redoing everything.",
+      "The 'never auto submit' feature is very important and should be highlighted more prominently."
+     ],
+     "truth_complaints": [
+      "how does it know what i can actually back up vs stuff i just never wrote down anywhere",
+      "if i can reject one bullet without redoing everything, i would use it."
+     ]
+    }
+   ],
+   "recall": 0.15079365079365079,
+   "recall_spread": 0.023809523809523808,
+   "recall_nruns": 3,
+   "recall_w": 0.13095238095238096,
+   "recall_w_spread": 0.01785714285714285,
+   "recall_w_nruns": 3,
+   "precision": 0.14285714285714285,
+   "precision_spread": 0.14285714285714285,
+   "precision_nruns": 3,
+   "complaint_recall": 0.1111111111111111,
+   "complaint_recall_spread": 0.3333333333333333,
+   "complaint_recall_nruns": 3,
+   "plain_recall": 0.25396825396825395,
+   "plain_recall_spread": 0.19047619047619047,
+   "plain_recall_nruns": 3,
+   "plain_recall_w": 0.3511904761904762,
+   "plain_recall_w_spread": 0.17857142857142855,
+   "plain_recall_w_nruns": 3,
+   "plain_precision": 0.047619047619047616,
+   "plain_precision_spread": 0.0,
+   "plain_precision_nruns": 3,
+   "plain_complaint_recall": 0.0,
+   "plain_complaint_recall_spread": 0.0,
+   "plain_complaint_recall_nruns": 3
+  },
+  {
+   "id": "1321140",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322697",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322700",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320343",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322292",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1310478",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322979",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323665",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318700",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320776",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323740",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323494",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322934",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323668",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1321585",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322959",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1319569",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1311824",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323157",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1317549",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1187496",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1285220",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1321985",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323362",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1313232",
+   "n_comments": 4,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322788",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1317709",
+   "n_comments": 0,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1318366",
+   "n_comments": 40,
+   "n_personas": 21,
+   "scored": true,
+   "runs": [
+    {
+     "scored": true,
+     "recall": 0.875,
+     "recall_w": 0.9761904761904762,
+     "precision": 1.0,
+     "n_themes": 8,
+     "complaint_recall": 0.16666666666666666,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.625,
+     "plain_recall_w": 0.7857142857142857,
+     "plain_precision": 0.7619047619047619,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "Users appreciate the automatic booking import from Gmail, which accurately extracts trip details like flights, dates, costs, and documents.",
+      "Users are concerned about how the system handles duplicate bookings, updates, and conflicting information from multiple sources or changes.",
+      "Users have questions about the technical implementation of features, such as how data is reconciled, how AI generates plans, and how updates are handled.",
+      "Users praise the app for centralizing travel information, making group trips less stressful, and saving time by automating organization.",
+      "Users report issues with AI responses, including generic chatbot behavior, lack of context, repetitive answers, and potential hallucinations.",
+      "Users found specific bugs or inaccuracies in data extraction, such as incorrect traveler names, unattached receipts, or illogical itinerary suggestions.",
+      "Users suggest features like a translator, group nudges for updates, and the ability to vote on links within the app.",
+      "One user explicitly states that Tripmojo performs better than top-tier apps like Wanderlog."
+     ],
+     "truth_complaints": [
+      "How do you handle updates and duplicates on the backend, especially with multiple emails for the same booking or shared bookings among group members?",
+      "How does the system identify and update existing bookings without creating duplicates when changes occur?",
+      "How do you guard against Mojo hallucinating details like timings or entry requirements, and is there a way to verify the source of information?",
+      "Mojo answers like a generic chatbot instead of acting like a travel agent, and has issues with voice chat, context, and repetitive answers.",
+      "How does the app decide which city a day belongs to when a trip goes overnight, or when a booking spans multiple days?",
+      "Are the curated estimates and live search results separate data sources, and how are they reconciled when asking for cheaper options?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.875,
+     "recall_w": 0.9767441860465116,
+     "precision": 1.0,
+     "n_themes": 8,
+     "complaint_recall": 0.16666666666666666,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.625,
+     "plain_recall_w": 0.7906976744186046,
+     "plain_precision": 0.7619047619047619,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "Users appreciate the automatic booking import from Gmail, which accurately extracts trip details like flights, dates, costs, and documents.",
+      "Users are concerned about how the system handles duplicate bookings, updates, and conflicting information from multiple sources or changes.",
+      "Users have questions about the technical implementation of features, such as how data is reconciled, how AI generates plans, and how updates are managed.",
+      "Users praise the app for centralizing travel information, making group trips less stressful, and saving time by automating organization.",
+      "Users report issues with AI responses, including generic chatbot behavior, lack of context, repetitive answers, and potential hallucinations.",
+      "Users found specific bugs or inaccuracies in data extraction, such as incorrect traveler names, unattached receipts, or illogical itinerary suggestions.",
+      "Users suggest features like group chat nudges for changes, a translator, voting on links, and improved search functionality for airports.",
+      "One user explicitly states that Tripmojo performs better than top-tier apps like Wanderlog."
+     ],
+     "truth_complaints": [
+      "How do you handle updates and duplicates on the backend, especially with multiple emails for the same booking or shared bookings among group members?",
+      "How does the system identify and update existing bookings without creating duplicates when changes occur?",
+      "How do you guard against Mojo hallucinating details like timings or entry requirements, and is there a way to verify the source of information?",
+      "Mojo answers like a generic chatbot instead of acting like a travel agent, and has issues with voice chat, context, and repetitive answers.",
+      "How does the app decide which city a day belongs to when a trip goes overnight, or when a booking spans multiple days?",
+      "Are the curated estimates and live search results separate data sources, and how are they reconciled when asking for cheaper options?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.875,
+     "recall_w": 0.9767441860465116,
+     "precision": 1.0,
+     "n_themes": 8,
+     "complaint_recall": 0.6666666666666666,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.625,
+     "plain_recall_w": 0.7906976744186046,
+     "plain_precision": 0.7619047619047619,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "Users appreciate the automatic booking import from Gmail, which accurately extracts trip details like flights, dates, costs, and documents.",
+      "Users are concerned about how the system handles duplicate bookings, updates, and conflicting information from multiple sources or changes.",
+      "Users have questions about the technical implementation of features, such as how data is reconciled, how AI generates plans, and how updates are managed.",
+      "Users praise the app for centralizing travel information, making group trips less stressful, and saving time by automating organization.",
+      "Users report issues with AI responses, including generic chatbot behavior, lack of context, repetitive answers, and potential hallucinations.",
+      "Users found specific bugs or inaccuracies in data extraction, such as incorrect traveler names, unattached receipts, or illogical itinerary suggestions.",
+      "Users suggest features like group chat nudges for changes, a translator, voting on links, and improved search functionality for airports.",
+      "One user explicitly states that Tripmojo performs better than top-tier apps like Wanderlog."
+     ],
+     "truth_complaints": [
+      "How do you handle updates and duplicates on the backend, especially with multiple emails for the same booking or shared bookings among group members?",
+      "How does the system identify and update existing bookings without creating duplicates when there are changes or multiple confirmations?",
+      "How do you guard against Mojo hallucinating details like timings or entry requirements, and is there a way to see the source of AI-generated answers?",
+      "Mojo answers like a generic chatbot instead of acting like a travel agent, and has issues with voice chat, missing context, and repetitive answers.",
+      "How does the app decide which city a day belongs to when a trip goes overnight, and how does it handle time zones and automatic day increments?",
+      "How does Mojo handle AI-generated trip planning with multiple constraints, and how do you validate the reliability of recommendations and booking information?"
+     ]
+    }
+   ],
+   "recall": 0.875,
+   "recall_spread": 0.0,
+   "recall_nruns": 3,
+   "recall_w": 0.9765596160944998,
+   "recall_w_spread": 0.0005537098560354226,
+   "recall_w_nruns": 3,
+   "precision": 1.0,
+   "precision_spread": 0.0,
+   "precision_nruns": 3,
+   "complaint_recall": 0.3333333333333333,
+   "complaint_recall_spread": 0.5,
+   "complaint_recall_nruns": 3,
+   "plain_recall": 0.625,
+   "plain_recall_spread": 0.0,
+   "plain_recall_nruns": 3,
+   "plain_recall_w": 0.7890365448504983,
+   "plain_recall_w_spread": 0.004983388704318914,
+   "plain_recall_w_nruns": 3,
+   "plain_precision": 0.7619047619047619,
+   "plain_precision_spread": 0.0,
+   "plain_precision_nruns": 3,
+   "plain_complaint_recall": 0.0,
+   "plain_complaint_recall_spread": 0.0,
+   "plain_complaint_recall_nruns": 3
+  },
+  {
+   "id": "1323470",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1323572",
+   "n_comments": 3,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1315370",
+   "n_comments": 2,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1322641",
+   "n_comments": 1,
+   "scored": false,
+   "why": "fewer than 5 non-team comments"
+  },
+  {
+   "id": "1320093",
+   "n_comments": 10,
+   "n_personas": 21,
+   "scored": true,
+   "runs": [
+    {
+     "scored": true,
+     "recall": 0.25,
+     "recall_w": 0.2,
+     "precision": 0.09523809523809523,
+     "n_themes": 8,
+     "complaint_recall": 0.16666666666666666,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.125,
+     "plain_recall_w": 0.1,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "The product's use case is unclear, as users can leverage existing AI subscriptions or e-reader apps for similar tracking and recommendations.",
+      "The product should remain a tracker and avoid becoming a reader to prevent competition with established platforms like Kindle and Apple Books.",
+      "Can users export notes and quotes to other applications like Notion?",
+      "How does the product handle discrepancies in book titles across different national libraries within its 28-language catalog?",
+      "Users would like an electronic label or bookmark feature to track their reading progress (page number) and easily resume reading.",
+      "When lending a book, can a due-back reminder be sent directly to the friend who has the book?",
+      "The ability to scan a whole shelf of barcodes at once is a great and effective onboarding feature.",
+      "Users are interested in understanding the key differences between this product and Readwise's new books app."
+     ],
+     "truth_complaints": [
+      "Can I export the notes and quotes to Notion, or do they stay in the app?",
+      "What do you think are the key things you do that differ from that experience?",
+      "When I lend a book, can the due back reminder go to the friend who has it?",
+      "I\u2019m not quite following the use case here, because you can use your own Claude or ChatGPT subscription and have it keep track for you By reviewing the subscriptions.",
+      "When the national libraries disagree on the same title do you merge them or show both?",
+      "Can a user have something like an electronic label? So the user will know where he stopped reading."
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.25,
+     "recall_w": 0.2,
+     "precision": 0.09523809523809523,
+     "n_themes": 8,
+     "complaint_recall": 0.0,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.125,
+     "plain_recall_w": 0.1,
+     "plain_precision": 0.047619047619047616,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "The product's use case is unclear, as users can leverage existing AI subscriptions or e-reader apps for similar tracking and recommendations.",
+      "The product should remain a tracker and avoid becoming a reader to prevent competition with established platforms like Kindle and Apple Books.",
+      "Can users export notes and quotes to other applications like Notion?",
+      "How does the product handle discrepancies in book titles across different national libraries within its 28-language catalog?",
+      "Users would like an electronic label or bookmark feature to track their reading progress (page number) and easily resume reading.",
+      "When lending a book, can a due-back reminder be sent directly to the friend who has the book?",
+      "The ability to scan a whole shelf of barcodes at once is a great and effective onboarding feature.",
+      "Users are interested in understanding the key differences between this product and Readwise's new books app."
+     ],
+     "truth_complaints": [
+      "Can a user have something like an electronic label, so the user will know where he stopped reading and where to continue (page) the next day?",
+      "Can I export the notes and quotes to Notion, or do they stay in the app?",
+      "What do you think are the key things you do that differ from the Readwise books app experience?",
+      "When I lend a book, can the due back reminder go to the friend who has it?",
+      "I\u2019m not quite following the use case here, because you can use your own Claude or ChatGPT subscription and have it keep track for you by reviewing the subscriptions.",
+      "When the national libraries disagree on the same title, do you merge them or show both?"
+     ]
+    },
+    {
+     "scored": true,
+     "recall": 0.25,
+     "recall_w": 0.2,
+     "precision": 0.047619047619047616,
+     "n_themes": 8,
+     "complaint_recall": 0.16666666666666666,
+     "n_complaints": 6,
+     "plain_scored": true,
+     "plain_recall": 0.5,
+     "plain_recall_w": 0.4,
+     "plain_precision": 0.09523809523809523,
+     "plain_n_themes": 8,
+     "plain_complaint_recall": 0.0,
+     "plain_n_complaints": 6,
+     "truth_themes": [
+      "The product should remain a tracker and not try to become a reader, as it would compete with established platforms like Kindle and Apple Books.",
+      "Can a user have an electronic label to mark where they stopped reading and where to continue?",
+      "Can notes and quotes be exported to Notion, or do they stay within the app?",
+      "The onboarding flow is well-designed and appreciated.",
+      "How does this product differ from Readwise's new books app?",
+      "Scanning a whole shelf of barcodes at once is a great onboarding trick that helps users overcome initial hurdles.",
+      "Can a due back reminder for a lent book be sent to the friend who has it?",
+      "The use case is unclear, as existing AI subscriptions or e-reader apps can already track reading and recommend books."
+     ],
+     "truth_complaints": [
+      "Can I export the notes and quotes to Notion, or do they stay in the app?",
+      "What do you think are the key things you do that differ from that experience?",
+      "When I lend a book, can the due back reminder go to the friend who has it?",
+      "I\u2019m not quite following the use case here, because you can use your own Claude or ChatGPT subscription and have it keep track for you By reviewing the subscriptions.",
+      "When the national libraries disagree on the same title do you merge them or show both?",
+      "Can a user have something like an electronic label? So the user will know where he stopped reading."
+     ]
+    }
+   ],
+   "recall": 0.25,
+   "recall_spread": 0.0,
+   "recall_nruns": 3,
+   "recall_w": 0.20000000000000004,
+   "recall_w_spread": 0.0,
+   "recall_w_nruns": 3,
+   "precision": 0.07936507936507936,
+   "precision_spread": 0.047619047619047616,
+   "precision_nruns": 3,
+   "complaint_recall": 0.1111111111111111,
+   "complaint_recall_spread": 0.16666666666666666,
+   "complaint_recall_nruns": 3,
+   "plain_recall": 0.25,
+   "plain_recall_spread": 0.375,
+   "plain_recall_nruns": 3,
+   "plain_recall_w": 0.20000000000000004,
+   "plain_recall_w_spread": 0.30000000000000004,
+   "plain_recall_w_nruns": 3,
+   "plain_precision": 0.06349206349206349,
+   "plain_precision_spread": 0.047619047619047616,
+   "plain_precision_nruns": 3,
+   "plain_complaint_recall": 0.0,
+   "plain_complaint_recall_spread": 0.0,
+   "plain_complaint_recall_nruns": 3
+  }
+ ],
+ "judge": {
+  "runs_per_launch": 3,
+  "temperature": 0,
+  "mean run-to-run spread (max-min, points)": {
+   "recall": 10.8,
+   "recall_w": 11.2,
+   "precision": 14.1,
+   "complaint_recall": 19.4,
+   "plain_recall": 17.8,
+   "plain_recall_w": 16.1,
+   "plain_precision": 8.5,
+   "plain_complaint_recall": 8.3
+  }
+ },
+ "version": 1
+}
