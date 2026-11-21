@@ -148,6 +148,22 @@ out["need_list_tab_failure_meta"] = {k: tfc.get(k) for k in (
     "utc", "audits_scanned", "need_list_incomplete_store", "orchestrator_deadline_22z_tab_counts_utc",
     "forecast_deadline_00_05_pt_utc", "note",
 ) if k in tfc}
+forecast_dl = datetime.datetime(2026, 11, 22, 8, 5, tzinfo=datetime.timezone.utc)
+_stacks_est = int(
+    (tfc.get("need_list_tab_failure_people_counts") or {}).get(
+        "pdeep_stacks_PersistedQueryNotFound_blocks_whole_est"
+    )
+    or inc
+)
+_reads_ok = ppm_c >= 0.05 and win_c > 0
+out["stacks_tab_reads_ok"] = _reads_ok
+out["stacks_tab_status"] = {
+    "reads_ok": _reads_ok,
+    "blocker": None if _reads_ok else "ProfileStacksPage GQL PersistedQueryNotFound",
+    "need_list_incomplete_blocked_est": 0 if _reads_ok else _stacks_est,
+    "forecast_deadline_00_05_pt_utc": forecast_dl.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "note": "Orchestrator 21:08Z: reads_ok true when need-list whole() saves resume (complete_ppm>0, win_complete>0).",
+}
 out["need_list_diagnosis"] = {
     "why_not_need_list_new_completes": (
         "need_list.jsonl still skipped under PH_FLEET_RR_ONLY; queue is PH_RR_FILES. "
