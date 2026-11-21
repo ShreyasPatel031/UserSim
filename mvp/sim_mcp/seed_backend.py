@@ -96,11 +96,12 @@ def blocked_host(host: str) -> bool:
 _CAPS: dict[str, int] = {}  # endpoint -> its own cap from a "url#N" entry
 
 
-def _limits() -> tuple[list[str], int, float]:
-    """Endpoints of the active engine, default per-seed cap, wait. An entry "...:19220#3" caps that seed at 3."""
+def _limits(engine: str = "") -> tuple[list[str], int, float]:
+    """Endpoints of the active engine (or of `engine`), default per-seed cap, wait. An entry "...:19220#3" caps that
+    seed at 3."""
     from mvp.sim_mcp import limits
 
-    key = "seed_camoufox_endpoints" if browser_engine() == "camoufox" else "seed_cdp_endpoints"
+    key = "seed_camoufox_endpoints" if (engine or browser_engine()) == "camoufox" else "seed_cdp_endpoints"
     eps: list[str] = []
     for raw in limits.get(key) or []:
         url, _, n = raw.strip().partition("#")
@@ -115,9 +116,9 @@ def _limits() -> tuple[list[str], int, float]:
     return eps, max(1, int(limits.get("seed_sessions_per_seed"))), float(limits.get("seed_wait_s"))
 
 
-def endpoints() -> list[str]:
-    """The active engine's configured endpoints (without '#N')."""
-    return _limits()[0]
+def endpoints(engine: str = "") -> list[str]:
+    """The active engine's (or `engine`'s) configured endpoints (without '#N')."""
+    return _limits(engine)[0]
 
 
 def cap_of(endpoint: str, default: int) -> int:
@@ -157,13 +158,13 @@ def mark_unhealthy(endpoint: str) -> None:
     _HEALTH.pop(endpoint, None)
 
 
-def acquire(wait_s: float | None = None, prefer: str = "") -> SeedSlot:
+def acquire(wait_s: float | None = None, prefer: str = "", engine: str = "") -> SeedSlot:
     """Reserve a slot on the least-loaded healthy seed, waiting up to wait_s for one to free up. prefer: the endpoint
     of the seed that saved this site's signed-in state (same egress IP the site knows); used when it has a free slot,
     otherwise any seed (the cookies travel with the state)."""
-    eps, cap, default_wait = _limits()
+    eps, cap, default_wait = _limits(engine)
     if not eps:
-        raise NoSeeds(f"no {browser_engine()} seed endpoints configured")
+        raise NoSeeds(f"no {engine or browser_engine()} seed endpoints configured")
     deadline = time.time() + (default_wait if wait_s is None else wait_s)
     while True:
         healthy = [(e, ws) for e in eps if (ws := _healthy(e))]

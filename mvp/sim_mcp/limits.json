@@ -206,6 +206,10 @@
     "google_signin_token_callers": {
       "value": true,
       "about": "true = sessions whose caller sent a valid bearer token start with the UserSim signups Google session (private object MVP_GOOGLE_STATE_URI, see mvp/sim_mcp/google_signin.py) on its seed, and may use Google's sign-in pages ('Continue with Google'). Anonymous callers never get it and stay blocked from Google. false = Google sign-in blocked for everyone."
+    },
+    "google_signin_engine": {
+      "value": "chromium",
+      "about": "Browser engine for sessions that may use Google sign-in (token callers). chromium = the seeds' real Chrome over CDP (seed_cdp_endpoints): Google rejects Camoufox on datacenter IPs with a reCAPTCHA. Falls back to browser_engine when no Chromium seed is free or healthy. camoufox = same as everyone else."
     }
   }
 }
