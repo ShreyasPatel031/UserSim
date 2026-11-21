@@ -2627,3 +2627,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-21T13:03Z population 6h summary: complete 93,412 (+3), incomplete 1,313, queue 4,007; refresh 2,406/24h, 11.6% add items; 15 block rotations today, 391 flagged saves; 92 held_gate incl. new unaudited writer feeder-pace32-6; merges 405-475 s defer quality_run. Relayed rotation counts to Grok Bot. Mailbox checked 13:03Z
 - 2026-11-21T13:31Z PB60 13:30Z relayed: 17 block rotations today, 457 flagged saves (slot38 295). Mailbox checked 13:31Z
 - 2026-11-21T13:33Z hourly: site board live (13:33Z, 21/21 votes, top 143). Fleet: refresh 6.1/min, completes 0.13/min, ETA slipped to 01:25Z Nov 22; repeated information-only wake (completes or a reason by 18:00Z). No PH/E5 results. 17 block rotations today, relayed. Mailbox checked 2026-11-21T13:33Z
+- 2026-11-21T14:01Z PB60 14:00Z relayed: 18 block rotations, 483 flagged saves (new: slot13 2). Complete 93,415. Mailbox checked 14:01Z
