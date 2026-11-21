@@ -1,0 +1,1687 @@
+{
+ "day": "2026-11-17",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1306142": {
+   "themes": [
+    {
+     "theme": "Local pairing for security and privacy",
+     "n": 3
+    },
+    {
+     "theme": "Sharing mouse, keyboard, and files between Macs with different Apple accounts",
+     "n": 3
+    },
+    {
+     "theme": "Addresses limitations of Apple's Universal Control",
+     "n": 2
+    },
+    {
+     "theme": "Inclusion of real gestures like pinch and swipe",
+     "n": 1
+    },
+    {
+     "theme": "Publishing pairing and encryption code",
+     "n": 1
+    },
+    {
+     "theme": "Compatibility with macOS 27",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "macOS compatibility",
+    "Apple ID dependency"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability to share mouse, keyboard, and files between Macs, especially without being tied to a single Apple Account.",
+      "The local pairing mechanism with three matching words, no account, and no cloud relay is highly valued for security and privacy.",
+      "The inclusion of real gestures like pinch and swipe is a significant detail that enhances the user experience.",
+      "Publishing the pairing and encryption code is seen as a thoughtful and transparent choice.",
+      "Users are asking about compatibility with macOS 27.",
+      "The product is compared favorably to Apple's Universal Control, specifically addressing its limitations regarding Apple Accounts."
+     ],
+     [
+      "Users appreciate the local pairing with three matching words, no account, and no cloud relay for security and privacy.",
+      "Users are looking for a solution to share mouse and keyboard between Macs, especially when using different Apple accounts.",
+      "The product is seen as filling a gap left by Apple's Universal Control, particularly for users with multiple Apple accounts.",
+      "The inclusion of real gestures like pinch and swipe is a significant detail that enhances the user experience.",
+      "Continuo is mentioned as an existing alternative for sharing mouse, keyboard, and files between Macs.",
+      "Users are asking about compatibility with macOS 27.",
+      "Publishing the pairing and encryption code is a thoughtful choice."
+     ],
+     [
+      "The three-word local pairing is a strong selling point, especially for security and privacy concerns.",
+      "Universal Control requires Macs to be tied to one Apple Account, which is a problem for users with multiple accounts.",
+      "The app is exactly what users have been looking for to share keyboard and mouse between Macs.",
+      "Publishing the pairing and encryption code is a thoughtful choice for security.",
+      "Continuo is recommended over Universal Control for sharing mouse, keyboard, and files between Macs.",
+      "Has Continuo been tested on macOS 27 yet?",
+      "Pinch and swipe arriving as real gestures, not just pointer movement, is a significant detail."
+     ]
+    ],
+    "complaints": [
+     [
+      "Has Continuo been tested on macOS 27 yet?",
+      "I don't want my Macs tied to one Apple Account just to share a keyboard."
+     ],
+     [
+      "Has Continuo been tested on macOS 27 yet?",
+      "I don't want my Macs tied to one Apple Account just to share a keyboard."
+     ],
+     [
+      "Has Continuo been tested on macOS 27 yet?",
+      "I don't want my Macs tied to one Apple Account just to share a keyboard."
+     ]
+    ]
+   }
+  },
+  "1318607": {
+   "themes": [
+    {
+     "theme": "Separate snap layouts for each display",
+     "n": 1
+    },
+    {
+     "theme": "Chorded gestures are appealing and innovative",
+     "n": 1
+    },
+    {
+     "theme": "General appreciation and congratulations",
+     "n": 2
+    },
+    {
+     "theme": "Comparison to BetterTouchTool",
+     "n": 1
+    },
+    {
+     "theme": "Inquiry about technical implementation (kernel extension)",
+     "n": 1
+    },
+    {
+     "theme": "Curiosity about developer's gesture usage/sharing setups",
+     "n": 1
+    },
+    {
+     "theme": "Handling conflicts with macOS built-in gestures",
+     "n": 1
+    },
+    {
+     "theme": "Suggestion for a donation option",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Kernel extension compatibility",
+    "Sharing custom gesture setups",
+    "Donation option",
+    "Conflict handling with macOS gestures"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the thoughtful detail of separate snap layouts for each display.",
+      "Users find the chorded gestures to be a particularly appealing and innovative feature.",
+      "Users express general appreciation and congratulations for the app and its concept.",
+      "Users compare the app to BetterTouchTool, highlighting its advantage for specific gesture needs.",
+      "Users inquire about the app's technical implementation, specifically if it works as a kernel extension.",
+      "Users are curious about the developer's personal gesture usage and plans for sharing custom gesture setups.",
+      "Users ask how the app handles conflicts with macOS's built-in multi-finger gestures.",
+      "Users suggest including a donation option for the app."
+     ],
+     [
+      "Users appreciate the thoughtful detail of separate snap layouts for each display.",
+      "Users find the chorded gestures to be a particularly appealing and innovative feature.",
+      "Users express general appreciation and congratulations for the app and its concept.",
+      "Users compare the app to BetterTouchTool, highlighting its advantage for specific gesture needs.",
+      "Users inquire about the app's technical implementation, specifically if it works as a kernel extension.",
+      "Users are curious about the developer's personal gesture usage and plans for sharing custom gesture setups.",
+      "Users ask how the app handles conflicts with macOS's built-in multi-finger gestures.",
+      "Users suggest including a donation option for the app."
+     ],
+     [
+      "Users appreciate the thoughtful detail of separate snap layouts for each display.",
+      "Users find the chorded gestures to be a particularly appealing and innovative feature.",
+      "Users express general appreciation and congratulations for the app and its concept.",
+      "Users compare the app to BetterTouchTool, highlighting its advantage for specific gesture needs.",
+      "Users inquire about the app's technical implementation, specifically if it works as a kernel extension.",
+      "Users are curious about the developer's personal gesture usage and plans for sharing custom gesture setups.",
+      "Users ask how the app handles conflicts with macOS's built-in multi-finger gestures.",
+      "Users suggest including a donation option for the app."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does this work as a kernel extension?",
+      "Curious whether you plan to add sharing for custom gesture setups?",
+      "Could you include like a donation point?",
+      "Curious how it handles conflicts with macOS's built-in three and four finger swipes \u2014 do you have to turn those off in System Settings first, or does GlissTou"
+     ],
+     [
+      "Does this work as a kernel extension?",
+      "Curious how it handles conflicts with macOS's built-in three and four finger swipes \u2014 do you have to turn those off in System Settings first, or does GlissTou",
+      "Could you include like a donation point?",
+      "Curious which gesture you use the most yourself, and whether you plan to add sharing for custom gesture setups?"
+     ],
+     [
+      "Curious how it handles conflicts with macOS's built-in three and four finger swipes \u2014 do you have to turn those off in System Settings first, or does GlissTou",
+      "Does this work as a kernel extension?",
+      "Curious which gesture you use the most yourself, and whether you plan to add sharing for custom gesture setups?",
+      "Could you include like a donation point?"
+     ]
+    ]
+   }
+  },
+  "1297244": {
+   "themes": [
+    {
+     "theme": "Product useful for understanding how AI platforms perceive their website",
+     "n": 3
+    },
+    {
+     "theme": "Curiosity about the rule regarding blank answers as measurement errors",
+     "n": 2
+    },
+    {
+     "theme": "Inquiry about Bing indexing in the ten-second scan",
+     "n": 1
+    },
+    {
+     "theme": "Desire to see changes since the last weekly run",
+     "n": 1
+    },
+    {
+     "theme": "Appreciation for the fix list",
+     "n": 1
+    },
+    {
+     "theme": "Inquiry about six buyer questions working in other languages",
+     "n": 1
+    },
+    {
+     "theme": "Desire for weekly report to show sources each engine leaned on",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Bing indexing in 10-second scan",
+    "Weekly report showing changes or fresh score",
+    "Six buyer questions in other languages",
+    "Weekly report showing sources each engine leaned on"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users find the product useful for understanding how AI platforms perceive their website.",
+      "Users are curious about the rule regarding blank answers as measurement errors.",
+      "Users want to know if the ten-second scan looks at Bing indexing.",
+      "Users want to see what changed since the last weekly run.",
+      "Users appreciate the fix list that shows what was seen and what to do about it, ranked by points.",
+      "Users want to know if the six buyer questions work in other languages.",
+      "Users want the weekly report to show which sources each engine leaned on.",
+      "Users compare ChatGPT, Perplexity, and Gemini's ability to name their business and cite sources."
+     ],
+     [
+      "Users find the product useful for understanding how AI platforms perceive their website.",
+      "Users are curious about the rule regarding blank answers as measurement errors.",
+      "Users want to know if the ten-second scan looks at Bing indexing.",
+      "Users want to see what changed since the last weekly run.",
+      "Users appreciate the fix list that shows what was seen and what to do about it, ranked by points.",
+      "Users want to know if the six buyer questions work in other languages.",
+      "Users want the weekly report to show which sources each engine leaned on.",
+      "Users compare ChatGPT, Perplexity, and Gemini's ability to name their business and cite sources."
+     ],
+     [
+      "Users find the product useful for understanding how AI platforms perceive their website.",
+      "Users are asking if the tool checks Bing indexing.",
+      "Users want to know if weekly runs show changes from the previous week.",
+      "Users appreciate the fix list that shows what was seen and what to do about it.",
+      "Users are asking if the six buyer questions work in other languages.",
+      "Users want the weekly report to show which sources each engine leaned on.",
+      "Users find the rule of counting a blank answer as a measurement error and not a miss to be unusual.",
+      "Users note that ChatGPT sends most site visits while Bing barely recognizes their existence."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the ten second scan look at bing indexing at all?",
+      "Do the weekly runs show what changed since last week, or just a fresh score?",
+      "Do the six buyer questions work in other languages?",
+      "Would the weekly report show which sources each engine leaned on?",
+      "Counting a blank answer as a measurement error and not a miss is the rule I'd have gotten wrong."
+     ],
+     [
+      "Do the six buyer questions work in other languages?",
+      "Would the weekly report show which sources each engine leaned on?",
+      "Does the ten second scan look at Bing indexing at all?",
+      "Do the weekly runs show what changed since last week, or just a fresh score?"
+     ],
+     [
+      "Do the six buyer questions work in other languages?",
+      "Would the weekly report show which sources each engine leaned on?",
+      "Does the ten second scan look at bing indexing at all?",
+      "Do the weekly runs show what changed since last week, or just a fresh score?",
+      "Counting a blank answer as a measurement error and not a miss is the rule I'd have gotten wrong."
+     ]
+    ]
+   }
+  },
+  "1304887": {
+   "themes": [
+    {
+     "theme": "How do recipients get the money if they don't have an account?",
+     "n": 2
+    },
+    {
+     "theme": "How does Versine compare to existing payment apps like Venmo or Cash App?",
+     "n": 2
+    },
+    {
+     "theme": "How does Versine prevent an AI agent from making unauthorized or incorrect payments?",
+     "n": 2
+    },
+    {
+     "theme": "Can users set limits on how much money an AI agent can send?",
+     "n": 2
+    },
+    {
+     "theme": "The ability for recipients to claim money without creating an account is a valuable feature.",
+     "n": 2
+    },
+    {
+     "theme": "The passkey approval mechanism for payments is a smart and important security feature.",
+     "n": 2
+    },
+    {
+     "theme": "Are there any fees for recipients to cash out money to their bank?",
+     "n": 1
+    },
+    {
+     "theme": "Can an AI agent receive money for tasks, not just send it?",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does Versine prevent an agent from paying the wrong person or being tricked into initiating a payment, and what does the user see before approving it?",
+    "Is there a way to limit how much money agent can send?",
+    "How does Versine compare to just using Venmo or Cash App?",
+    "How does Versine handle mistakes?",
+    "What is the guarantee that the bank account is safe after connecting, given many AI frauds are going on?",
+    "Do you support receiving money too?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How do recipients get the money if they don't have an account?",
+      "How does Versine compare to existing payment apps like Venmo or Cash App?",
+      "How does Versine prevent an AI agent from making unauthorized or incorrect payments?",
+      "Can users set limits on how much money an AI agent can send?",
+      "The ability for recipients to claim money without creating an account is a valuable feature.",
+      "The passkey approval mechanism for payments is a smart and important security feature.",
+      "Are there any fees for recipients to cash out money to their bank?",
+      "Can an AI agent receive money for tasks, not just send it?"
+     ],
+     [
+      "How do recipients get the money if they don't have an account?",
+      "How does Versine compare to existing payment apps like Venmo or Cash App?",
+      "How does Versine prevent an AI agent from making unauthorized or incorrect payments?",
+      "Can users set limits on how much money an AI agent can send?",
+      "The ability for recipients to claim money without creating an account is a valuable feature.",
+      "The passkey approval mechanism for payments is a smart and important security feature.",
+      "Are there any fees for recipients to cash out money to their bank?",
+      "Can an AI agent receive money for tasks, not just send it?"
+     ],
+     [
+      "How do recipients get the money if they don't have an account?",
+      "How does Versine compare to existing payment apps like Venmo or Cash App?",
+      "How does Versine prevent an AI agent from making unauthorized or incorrect payments?",
+      "Can users set limits on how much money an AI agent can send?",
+      "The ability for recipients to claim money without creating an account is a valuable feature.",
+      "The passkey approval mechanism for payments is a smart and important security feature.",
+      "Are there any fees for recipients to cash out money to their bank?",
+      "Can an AI agent receive money for tasks, not just send it?"
+     ]
+    ],
+    "complaints": [
+     [
+      "How does Versine prevent an agent from paying the wrong person or being tricked into initiating a payment, and what does the user see before approving it?",
+      "Is there a way to limit how much money agent can send?",
+      "How does Versine compare to just using Venmo or Cash App?",
+      "How does Versine handle mistakes, for instance if I have two contacts named Jane, how does it differentiate which I want to send to, and if it sends to the wrong one, how does that get fixed?",
+      "Are there any fees when the recipient cashes out to their bank or is that free too?",
+      "What is the guarantee that the bank account is safe after connecting, given many AI frauds are going on?"
+     ],
+     [
+      "How does Versine prevent an agent from paying the wrong person or being tricked into initiating a payment, and what does the user see before approving it?",
+      "Is there a way to limit how much money agent can send?",
+      "How does Versine compare to just using Venmo or Cash App?",
+      "How does Versine handle mistakes? For instance if I have two contacts named Jane, how does it differentiate which I want to send to, and if it sends to the wrong one, how does that get fixed?",
+      "As many AI frauds are going on then if anyone connect their account then what is the guarantee that the back account is safe after connecting?",
+      "Do you support receiving money too? like can my agent get paid for doing tasks for other people?"
+     ],
+     [
+      "How does Versine prevent an agent from paying the wrong person or being tricked into initiating a payment, and what does the user see before approving it?",
+      "Is there a way to limit how much money agent can send?",
+      "How does Versine compare to just using Venmo or Cash App?",
+      "How does Versine handle mistakes? For instance if I have two contacts named Jane, how does it differentiate which I want to send to, and if it sends to the wrong one, how does that get fixed?",
+      "As many AI frauds are going on then if anyone connect their account then what is the guarantee that the back account is safe after connecting?",
+      "Do you support receiving money too? like can my agent get paid for doing tasks for other people?"
+     ]
+    ]
+   }
+  },
+  "1257199": {
+   "themes": [
+    {
+     "theme": "Praise for execution-focused concept",
+     "n": 15
+    },
+    {
+     "theme": "Details of 'verified execution record'",
+     "n": 6
+    },
+    {
+     "theme": "Strength and composition of investor network",
+     "n": 4
+    },
+    {
+     "theme": "Concerns about gaming AI screening",
+     "n": 3
+    },
+    {
+     "theme": "Interest in platform usage for planning/reflection outside fundraising",
+     "n": 2
+    },
+    {
+     "theme": "Number of startups using the platform",
+     "n": 3
+    }
+   ],
+   "complaints": [
+    "Distinguishing real execution from a busy changelog",
+    "Impact of AI gate/LLM screening on founder authenticity",
+    "Nature of verified execution records and evidence for traction checks",
+    "Strength and composition of the investor network (including angels)",
+    "Platform use for planning/reflection without immediate fundraising",
+    "Criteria for unlocking investor meetings"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users generally praise the product concept, especially its focus on execution over pitching and solving fundraising pain points.",
+      "Users frequently ask about the specifics of the 'verified execution record' and what investors actually see.",
+      "Users inquire about the current strength and composition of the investor network, including the presence of angels.",
+      "Concerns are raised about the potential for founders to game the AI screening process, leading to a disconnect between passing the simulation and actual investor readiness.",
+      "Users ask about the number of startups that have shown interest or are currently using the platform.",
+      "Users are interested in using the product's planning and reflection features even when not actively fundraising, or for idea validation.",
+      "Users ask about the duration and nature of the regular syncs/check-ins.",
+      "A user expresses concern about finding time to use the platform as a busy founder."
+     ],
+     [
+      "Users generally congratulate the makers on the launch and express positive sentiment about the product.",
+      "Users are asking about the specifics of how 'verified execution' or 'traction' is assessed and presented to investors.",
+      "Users are curious about the current state and strength of the investor network on the platform.",
+      "There are concerns that AI-driven screening or simulations could lead to founders optimizing for passing the AI rather than genuine readiness.",
+      "Users are asking about the types of investors available on the platform, specifically angels.",
+      "Users are asking about the practicalities of using the platform, such as whether a registered company is needed or if it can be used without the fundraising aspect.",
+      "Users appreciate the timing of the launch, noting the current difficulty in securing pre-seed funding and the value of showing execution over just a pitch deck.",
+      "Users are interested in the possibility of integrating with other AI tools or transferring context from them."
+     ],
+     [
+      "Users generally praise the product concept, especially its focus on execution over pitching and solving fundraising pain points.",
+      "Users frequently ask about the specifics of the 'verified execution record' and what investors actually see.",
+      "Users inquire about the size and nature of the investor network, including the presence of angels.",
+      "Concerns are raised about the potential for founders to game the AI screening process, leading to a disconnect between passing the simulation and actual investor readiness.",
+      "Users ask about the number of startups that have shown interest or are currently using the platform.",
+      "Users are interested in using the platform for planning and reflection even when not actively fundraising, or for practicing pitches.",
+      "Users ask about the criteria and process for determining when a founder is ready for an investor meeting.",
+      "A user expresses concern about finding time to use the platform as a busy founder."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you tell real execution from a busy changelog, and do investors see the raw data or your summary of it?",
+      "The AI gate and screening interview graded by an LLM could lead to founders rehearsing to pass, potentially drifting from actual investor readiness.",
+      "What does a verified execution record look like in practice, and what evidence do founders share for traction checks?",
+      "How strong is the investor network currently, and are angels on the platform too?",
+      "Can the product be used for planning and reflection without immediately engaging the fundraising side, or for founders still validating an idea?",
+      "How does the platform decide when a founder is ready enough to unlock a meeting with an investor?"
+     ],
+     [
+      "How do you tell real execution from a busy changelog, and do investors see the raw data or your summary of it?",
+      "The AI gate and screening interview graded by an LLM could lead to founders rehearsing to pass, potentially drifting from actual investor readiness.",
+      "What does a verified execution record look like in practice, and what evidence do founders share for traction checks?",
+      "How strong is the investor network currently, and are angels on the platform too?",
+      "Can the product be used for planning and reflection without immediately engaging the fundraising side, or for founders still validating an idea?",
+      "How does the platform decide when a founder is ready enough to unlock a meeting with an investor?"
+     ],
+     [
+      "How do you tell real execution from a busy changelog, and do investors see raw data or a summary?",
+      "What kind of startups or stages are getting the best matches, and how strong is the investor network?",
+      "What does a verified execution record look like in practice, and what do investors actually see from the verification step?",
+      "How does the AI gate work, and how does it prevent founders from just learning to pass the simulation?",
+      "Are there angels on the platform, and does the matching account for smaller checks?",
+      "Can the product be used for planning and reflection without immediately engaging in fundraising, and does it support founders still validating an idea?"
+     ]
+    ]
+   }
+  },
+  "1304738": {
+   "themes": [
+    {
+     "theme": "Provides actual fixes as pull requests, not just dashboards",
+     "n": 6
+    },
+    {
+     "theme": "Bridges gap between product and documentation, especially in AI era",
+     "n": 5
+    },
+    {
+     "theme": "General congratulations and positive sentiment for the launch",
+     "n": 4
+    },
+    {
+     "theme": "Problem of 'nobody owning the answer AI gives your buyer' is accurate",
+     "n": 4
+    },
+    {
+     "theme": "How EkLine handles incorrect information from external sources",
+     "n": 2
+    },
+    {
+     "theme": "How EkLine determines if a documentation fix genuinely improved AI's response",
+     "n": 2
+    },
+    {
+     "theme": "Interest in flagging outdated code samples in documentation",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How to address incorrect information from external sources",
+    "How to verify if a documentation fix improved AI responses",
+    "Flagging outdated code samples",
+    "Team ownership of AI-generated content and documentation",
+    "Common AI issues: incorrect information vs. omissions",
+    "Using AI to generate/update documentation"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate that EkLine provides actual fixes as pull requests, rather than just dashboards, which is seen as a significant differentiator.",
+      "Users recognize the critical importance of documentation, especially in the AI era, and praise EkLine for bridging the gap between product and documentation.",
+      "Users express general congratulations and positive sentiment for the launch and the product.",
+      "Users highlight the problem of 'nobody owning the answer AI gives your buyer' as a painfully accurate and significant issue.",
+      "Users ask about how EkLine handles situations where AI provides incorrect information from external sources not owned by the user.",
+      "Users inquire about how EkLine determines whether a documentation fix genuinely improved AI's response versus a random variation.",
+      "Users are interested in the ability to flag outdated code samples in documentation.",
+      "Users ask about the common scenario of AI either providing wrong information or not mentioning a product at all."
+     ],
+     [
+      "Users appreciate that EkLine provides actual fixes as pull requests, rather than just dashboards, which is seen as a significant differentiator.",
+      "Users highlight the value of EkLine in bridging the gap between product and documentation, especially in the AI era, and keeping documentation updated.",
+      "Users praise the product for its focus on impact over organizational roles and for being different from generic SEO/AEO/GEO products.",
+      "Users ask about how EkLine handles situations where incorrect information comes from external pages or how it determines if a docs fix actually changed AI's response.",
+      "Users inquire about who typically owns the responsibility for the issues EkLine addresses within a company (Marketing, DevRel, docs).",
+      "Users note that AI either not mentioning a product at all or describing it incorrectly (e.g., old pricing, wrong features) are common and problematic scenarios.",
+      "Users express interest in flagging outdated code samples in documentation.",
+      "Generic thanks and congratulations for the launch."
+     ],
+     [
+      "Users appreciate that EkLine provides actual fixes as pull requests, rather than just dashboards, which is seen as a significant differentiator.",
+      "Users praise EkLine for addressing the critical and often overlooked problem of keeping documentation updated, especially in the AI era.",
+      "Users find the core problem statement, 'nobody owns the answer AI gives your buyer,' to be painfully accurate and a key insight.",
+      "Users express general congratulations and thanks for the launch.",
+      "Users ask about how EkLine handles situations where incorrect information comes from external pages not owned by the user.",
+      "Users inquire about how EkLine differentiates between a genuine fix and a random model response when retesting documentation.",
+      "Users request the ability to flag code samples that use old SDK versions.",
+      "Users ask who typically owns the responsibility for documentation and AI-driven content within a company."
+     ]
+    ],
+    "complaints": [
+     [
+      "When the wrong answer comes from a page you don\u2019t own (an old \u201cbest OCR APIs\u201d list, a Reddit thread), how do you decide what to fix on your side?",
+      "How do you tell whether a docs fix actually changed the answer or the model just gave a different response this time?",
+      "Can I flag a code sample that uses an old version of the SDK?",
+      "Who usually owns this inside a company? Marketing, DevRel, docs? seems to fall between all 3 !",
+      "Which is a more common scenario: AI saying something wrong about a product, or not mentioning it at all?",
+      "I'm curious - in generating the documentation / proposing updates, presumably, you are also using AI for that?"
+     ],
+     [
+      "When the wrong answer comes from a page you don\u2019t own (an old \u201cbest OCR APIs\u201d list, a Reddit thread), how do you decide what to fix on your side?",
+      "Do you retest on several models, or just one?",
+      "Which is a more common scenario: AI saying something wrong about a product, or not mentioning it at all?",
+      "How do you tell whether a docs fix actually changed the answer or the model just gave a different response this time?",
+      "Can I flag a code sample that uses an old version of the SDK?",
+      "Who usually owns this inside a company? Marketing, DevRel, docs?"
+     ],
+     [
+      "When the wrong answer comes from a page you don\u2019t own (an old \u201cbest OCR APIs\u201d list, a Reddit thread), how do you decide what to fix on your side?",
+      "How do you tell whether a docs fix actually changed the answer or the model just gave a different response this time?",
+      "Can I flag a code sample that uses an old version of the SDK?",
+      "Who usually owns this inside a company? Marketing, DevRel, docs? seems to fall between all 3 !",
+      "Which is a more common scenario: AI saying something wrong about a product, or not mentioning it at all?",
+      "I'm curious - in generating the documentation / proposing updates, presumably, you are also using AI for that?"
+     ]
+    ]
+   }
+  },
+  "1311672": {
+   "themes": [
+    {
+     "theme": "Comments getting separated from content",
+     "n": 3
+    },
+    {
+     "theme": "Ability to pin comments to specific elements/spots",
+     "n": 2
+    },
+    {
+     "theme": "Visual diff feature for versions",
+     "n": 2
+    },
+    {
+     "theme": "Latest link always shows current version",
+     "n": 2
+    },
+    {
+     "theme": "Product makes sharing AI-generated work and getting feedback easier",
+     "n": 1
+    },
+    {
+     "theme": "Interaction between comments and versions",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Pin comments to specific elements",
+    "Visual diff between versions",
+    "Handling comments across different versions"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Comments getting separated from the content they refer to is a significant problem.",
+      "The ability to pin comments to specific elements or exact spots within a document is highly desired.",
+      "Users are asking about how comments and versions interact, especially when multiple versions or reviewers are involved.",
+      "A visual diff feature to see changes between versions is a missing piece for users.",
+      "The 'latest link always showing the current version' is a thoughtful and appreciated feature.",
+      "The product makes sharing AI-generated work and getting feedback easier by consolidating workflows."
+     ],
+     [
+      "Comments getting separated from the content they refer to is a significant problem.",
+      "Users want to pin comments to specific elements or sections within a document.",
+      "Users want to see a visual diff between different versions of a document.",
+      "The 'latest link' always showing the current version is a thoughtful feature.",
+      "Does the agent know which version a comment was left on?",
+      "The product makes it easier to share AI-generated work and get feedback without switching apps."
+     ],
+     [
+      "Comments getting separated from the relevant content in chat, especially when agent docs are pasted into threads.",
+      "Ability to pin comments to specific elements or exact spots within a document or canvas.",
+      "The 'latest link' always showing the current version is a thoughtful and useful feature.",
+      "Reviewers need to see what changed between different versions of a document.",
+      "The product makes it easier to share AI-generated work and get feedback without switching apps.",
+      "Does the agent know which version a comment was left on, especially if different people review different versions?",
+      "Can a reviewer pin a comment to one element on a Canvas page, or is it per section?"
+     ]
+    ],
+    "complaints": [
+     [
+      "Can a reviewer pin a comment to one element on a Canvas page, like a single button, or is it per section?",
+      "When the agent replies with a new version, can reviewers see what changed from the last one?",
+      "Does it know which Version the comment was left on??? if two pepole review different Versions that feels like where it gets messy",
+      "The missing piece for me is a visual diff between versions \u2014 if the agent regenerates the whole doc"
+     ],
+     [
+      "Can a reviewer pin a comment to one element on a Canvas page, like a single button, or is it per section?",
+      "When the agent replies with a new version, can reviewers see what changed from the last one?",
+      "If two people review different versions, that feels like where it gets messy.",
+      "The missing piece for me is a visual diff between versions \u2014 if the agent regenerates the whole doc."
+     ],
+     [
+      "Can a reviewer pin a comment to one element on a Canvas page, like a single button, or is it per section?",
+      "When the agent replies with a new version, can reviewers see what changed from the last one?",
+      "If two people review different versions, that feels like where it gets messy.",
+      "The missing piece for me is a visual diff between versions \u2014 if the agent regenerates the whole doc."
+     ]
+    ]
+   }
+  },
+  "1316291": {
+   "themes": [
+    {
+     "theme": "Congratulations and good luck wishes for the launch",
+     "n": 13
+    },
+    {
+     "theme": "Compatibility with various platforms, CMS, or other AI tools",
+     "n": 6
+    },
+    {
+     "theme": "Pricing model, costs, and pay-as-you-go option",
+     "n": 4
+    },
+    {
+     "theme": "AI's capabilities regarding content quality, tone consistency, and fact-checking",
+     "n": 3
+    },
+    {
+     "theme": "Tool's functionality for agencies, managing multiple projects or clients",
+     "n": 3
+    },
+    {
+     "theme": "Tool's memory and context retention capabilities",
+     "n": 2
+    },
+    {
+     "theme": "Requested features like GTM Demand Gen or social media presence",
+     "n": 2
+    },
+    {
+     "theme": "How the tool differs from established SEO tools like Semrush or Ahrefs",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Does it support skills/reusable prompts?",
+    "How do you handle fact-checking and sources?",
+    "How is this different from tools like Semrush or Ahrefs?",
+    "How does RankSpot decide which sites to pitch?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Many users offered congratulations and good luck wishes for the launch.",
+      "Users frequently asked about the tool's compatibility with various platforms, CMS, or other AI tools.",
+      "Users inquired about the pricing model, particularly the pay-as-you-go option, and potential costs.",
+      "Users asked about the tool's ability to handle specific aspects of content creation, such as AI-sounding articles, fact-checking, or tone consistency.",
+      "Users asked about the tool's functionality for agencies, including managing multiple projects or clients.",
+      "Users inquired about the tool's memory and context retention capabilities, especially for multiple clients or sessions.",
+      "Users requested features like GTM Demand Gen on the roadmap or social media presence capabilities.",
+      "Users asked how the tool differs from established SEO tools like Semrush or Ahrefs."
+     ],
+     [
+      "Generic congratulations and well wishes for the launch.",
+      "Users are asking about the compatibility of the tool with various platforms, CMS, and AI models.",
+      "Users are asking about the pricing model, costs, and how it applies to different use cases.",
+      "Users are asking about the AI's capabilities regarding content quality, tone consistency, and fact-checking.",
+      "Users are asking about how the tool handles context and memory, especially for multiple clients or projects.",
+      "Users are requesting features related to broader marketing strategies like GTM Demand Gen and social media presence.",
+      "Users are asking about the specifics of the backlink outreach process.",
+      "Users are asking how RankSpot differentiates itself from existing SEO tools like Semrush or Ahrefs."
+     ],
+     [
+      "Users are generally congratulating the makers on the launch.",
+      "Users are asking about the compatibility of the tool with various platforms, CMS, or other AI tools.",
+      "Users are asking about how the tool handles specific aspects of content creation like fact-checking, writing tone, or AI-sounding articles.",
+      "Users appreciate the 'pay-as-you-go' or per-article pricing model.",
+      "Users are asking about the tool's functionality for agencies or managing multiple clients/projects.",
+      "Users are asking about the tool's ability to retain context or 'memory' across sessions or clients.",
+      "Users are requesting features related to GTM Demand Gen or social media presence.",
+      "Users are asking how the tool differs from existing SEO tools like Semrush or Ahrefs."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it support some sort of skills/reusable prompts?",
+      "How do you handle fact-checking and sources in AI-generated articles?",
+      "If I already have my own AI workflow for content creation, can I use RankSpot just for SEO research to identify promising topics and keywords? How would pricing work in that case?",
+      "How does RankSpot decide which sites to pitch? Is it just DR, or something else?",
+      "Will it work for agencies? I mean can I have 1 MCP connection for multiple projects that I manage",
+      "How is this different from tools like Semrush or Ahrefs?"
+     ],
+     [
+      "Does it support some sort of skills/reusable prompts?",
+      "How do you handle fact-checking and sources in AI-generated articles?",
+      "How is this different from tools like Semrush or Ahrefs?",
+      "Will it work for agencies? I mean can I have 1 MCP connection for multiple projects that I manage",
+      "Which CMS can it publish to? I\u2019m on WordPress.",
+      "How does RankSpot decide which sites to pitch?"
+     ],
+     [
+      "Does it support some sort of skills/reusable prompts?",
+      "How do you handle fact-checking and sources in AI-generated articles?",
+      "How does RankSpot decide which sites to pitch?",
+      "How do you keep the writing tone consistent across different languages?",
+      "How is this different from tools like Semrush or Ahrefs?",
+      "How well does RankSpot keep context when you\u2019re managing SEO for multiple sites or clients from the same chat?"
+     ]
+    ]
+   }
+  },
+  "1318920": {
+   "themes": [
+    {
+     "theme": "Consolidation of tools into one platform is appealing and useful",
+     "n": 3
+    },
+    {
+     "theme": "3D blocking and planning feature is a significant advantage",
+     "n": 2
+    },
+    {
+     "theme": "Users want to know if VINC recommends specific models based on the shot",
+     "n": 1
+    },
+    {
+     "theme": "Users are curious about the ability to collaborate on scripts and lock dialogue before generation",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking if VINC is more for AI-generated content or a storyboard helper for live productions",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the product launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Does VINC recommend a model based on the shot?",
+    "Can I give the writer a rough scene and work on it back and forth before generating anything?",
+    "I\u2019d want to get the dialogue right first.",
+    "Also curious whether I can lock certain lines so they don\u2019t change later.",
+    "Do you see this as more of a video creation studio, for producing AI generated content or is a story board helper for live film productions?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The consolidation of tools into one platform is highly appealing and useful for filmmakers.",
+      "The 3D blocking and planning feature is a significant advantage for control and serious filmmaking.",
+      "Users want to know if VINC recommends specific models based on the shot.",
+      "Users are curious about the ability to collaborate on scripts and lock dialogue before generation.",
+      "Users are asking if VINC is more for AI-generated content or a storyboard helper for live productions.",
+      "Generic congratulations on the product launch."
+     ],
+     [
+      "The consolidation of tools into one platform is appealing and useful.",
+      "The 3D blocking and planning feature is a significant advantage for filmmakers.",
+      "Users want to know if VINC recommends specific models for generating shots.",
+      "Users are asking about the ability to refine dialogue and lock lines before generation.",
+      "Users are asking if VINC is more for AI-generated content or a storyboard helper for live film productions.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The consolidation of tools into one platform is appealing and useful.",
+      "The 3D blocking and planning feature is a significant advantage for control and serious filmmakers.",
+      "Users want to know if VINC recommends specific models based on the shot.",
+      "Users want to know if they can refine dialogue with the writer before generation and lock certain lines.",
+      "Users are asking about the primary use case of VINC, whether it's for AI-generated content or a storyboard helper for live productions.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does VINC recommend a model based on the shot?",
+      "Can I give the writer a rough scene and work on it back and forth before generating anything?",
+      "I\u2019d want to get the dialogue right first.",
+      "Also curious whether I can lock certain lines so they don\u2019t change later.",
+      "Do you see this as more of a video creation studio, for producing AI generated content or is a story board helper for live film productions?"
+     ],
+     [
+      "Does VINC recommend a model based on the shot?",
+      "Can I give the writer a rough scene and work on it back and forth before generating anything?",
+      "I\u2019d want to get the dialogue right first.",
+      "Also curious whether I can lock certain lines so they don\u2019t change later.",
+      "Do you see this as more of a video creation studio, for producing AI generated content or is a story board helper for live film productions?"
+     ],
+     [
+      "Does VINC recommend a model based on the shot?",
+      "Can I give the writer a rough scene and work on it back and forth before generating anything?",
+      "I\u2019d want to get the dialogue right first.",
+      "Also curious whether I can lock certain lines so they don\u2019t change later.",
+      "Do you see this as more of a video creation studio, for producing AI generated content or is a story board helper for live film productions?"
+     ]
+    ]
+   }
+  },
+  "1310455": {
+   "themes": [
+    {
+     "theme": "General excitement and congratulations for the launch",
+     "n": 18
+    },
+    {
+     "theme": "Ability to edit ads before launch",
+     "n": 2
+    },
+    {
+     "theme": "Ability to flag creative fatigue",
+     "n": 2
+    },
+    {
+     "theme": "Ability to resize ads for different platforms/formats",
+     "n": 1
+    },
+    {
+     "theme": "Support for Google Ads",
+     "n": 1
+    },
+    {
+     "theme": "Ability to compare Meta and TikTok results in one view",
+     "n": 1
+    },
+    {
+     "theme": "Product is a game-changer/impressed by video ad generation from product link",
+     "n": 5
+    }
+   ],
+   "complaints": [
+    "How much can we edit before launch?",
+    "Can Max flag creative fatigue?",
+    "Can I compare Meta and TikTok results in one view?",
+    "How do you differentiate yourselves from existing platforms?",
+    "Is Google Ads already supported?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users express general excitement and congratulations for the launch of Creatify Max.",
+      "Users are asking about the ability to resize ads for different platforms like Stories and feed ads.",
+      "Users are asking about the level of editing possible before an ad campaign launches.",
+      "Users are asking if Google Ads is currently supported by Creatify Max.",
+      "Users are asking if they can compare Meta and TikTok results within one view.",
+      "Users are asking about the ability to have different naming setups and separate playbooks for different clients/brands.",
+      "Users are asking if Max can flag creative fatigue.",
+      "Users are asking if they can use their own footage and brand assets within the tool."
+     ],
+     [
+      "Users express general excitement and congratulations for the launch of Creatify Max.",
+      "Users are impressed by the ability to generate ready-to-use video ads from a product link and its potential to be a game-changer.",
+      "Users are asking about the editing capabilities before an ad campaign goes live.",
+      "Users are asking if Max can flag creative fatigue.",
+      "Users are asking about specific platform integrations and data comparison capabilities (e.g., Google Ads, Meta, TikTok).",
+      "Users are asking about the ability to resize ad ideas for different formats like Stories and feed ads.",
+      "A user asks how Creatify differentiates itself from existing video-making platforms like HeyGen.",
+      "Users are asking about the tool's utility for specific user types (e.g., solo marketers) and its ability to handle UGC ads."
+     ],
+     [
+      "Users express general excitement and congratulations for the product launch.",
+      "Users praise the product as a 'game-changer' for its ability to streamline ad creation and management.",
+      "Users ask about the ability to edit ads before launch.",
+      "Users inquire if Max can flag creative fatigue.",
+      "Users ask about the ability to resize ad ideas for different platforms like Stories and feed ads.",
+      "Users ask about the product's differentiation from existing platforms like HeyGen and its ability to generate videos for digital products.",
+      "Users inquire about support for Google Ads.",
+      "Users ask if they can compare Meta and TikTok results in one view."
+     ]
+    ],
+    "complaints": [
+     [
+      "how much can we edit before launch?",
+      "can Max flag creative fatigue?",
+      "Can I compare Meta and TikTok results in one view?",
+      "How do you differentiate yourselves from existing platforms?",
+      "is Google ads already supported?",
+      "is Max useful for a solo marketer?"
+     ],
+     [
+      "how much can we edit before launch?",
+      "can Max flag creative fatigue?",
+      "How do you differentiate yourselves from existing platforms?",
+      "is Google ads already supported?",
+      "Can I compare Meta and TikTok results in one view?",
+      "Can I keep separate playbooks for different brands?"
+     ],
+     [
+      "Can Max resize one idea for Stories and feed ads?",
+      "How do you differentiate yourselves from existing platforms like HeyGen, and can it generate videos for digital products?",
+      "Is Google Ads already supported?",
+      "How much can we edit before launch?",
+      "Can I compare Meta and TikTok results in one view?",
+      "Can Max flag creative fatigue?"
+     ]
+    ]
+   }
+  },
+  "1308114": {
+   "themes": [
+    {
+     "theme": "Intuitive circling/drawing for AI context",
+     "n": 5
+    },
+    {
+     "theme": "Local MCP server is a significant positive",
+     "n": 3
+    },
+    {
+     "theme": "Interest in a Windows version",
+     "n": 1
+    },
+    {
+     "theme": "How AI distinguishes multiple instances of the same label",
+     "n": 1
+    },
+    {
+     "theme": "Blurred parts remain blurred in shared links",
+     "n": 1
+    },
+    {
+     "theme": "Ability to drag the toolbar anywhere",
+     "n": 1
+    },
+    {
+     "theme": "Increase click target size for color palette",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Windows version",
+    "Handling duplicate labels",
+    "Blurred areas in shared content",
+    "Movable toolbar",
+    "Increase color click target size",
+    "Cursor visibility when app not in front"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users love the concept of circling/drawing on the screen to provide context to AI, finding it intuitive and efficient.",
+      "Users appreciate the local MCP server aspect of the tool.",
+      "Users are asking about the availability of the tool on Windows.",
+      "Users are asking how the AI distinguishes between multiple instances of the same label on screen.",
+      "Users are asking if blurred parts remain blurred in shared links.",
+      "Users would like to be able to drag the toolbar anywhere on the screen.",
+      "Users suggest increasing the click target size for individual colors in the palette.",
+      "Users are asking if the cursor can see the circle if Lasso is not the front application."
+     ],
+     [
+      "Users appreciate the ability to circle/draw on the screen to explain things to AI, finding it more natural and efficient than verbal descriptions.",
+      "The local MCP server is a significant selling point and makes the concept more interesting.",
+      "Users are excited about the product and congratulate the maker on the launch.",
+      "Users are interested in a Windows version of the product.",
+      "Users want to know how the AI distinguishes between multiple instances of the same label on screen.",
+      "Users are curious if blurred parts of shared links remain blurred after 24 hours.",
+      "Users would like to be able to drag the toolbar anywhere on the screen and have larger color palette click targets.",
+      "Users want to know if the cursor can see the circle if Lasso is not the front application."
+     ],
+     [
+      "Users love the concept of circling something on screen and letting AI understand it, finding it intuitive and efficient for explaining things.",
+      "The local MCP (Multi-modal Context Processor) server is a significant positive, making the tool more interesting and feeling like a missing piece.",
+      "Users appreciate the ability to blur passwords and draw arrows directly on the screen.",
+      "Users are asking about the availability of the product on Windows.",
+      "Users are curious about how the system handles multiple instances of the same label on screen.",
+      "Users want to know if blurred parts remain blurred in shared links.",
+      "Users would like to be able to click and drag the toolbar anywhere on the screen.",
+      "Users suggest increasing the click target size for individual colors in the color palette."
+     ]
+    ],
+    "complaints": [
+     [
+      "Any plans to bring this to Windows too?",
+      "how does it know which one i mean if the same label shows up twice on screen ?",
+      "do the blurred bits stay blurred in the shared",
+      "I'd love to be able to click and drag the toolbar anywhere around my screen",
+      "Increase individual color click target size \u2014 they felt small relative to my pointer cursor",
+      "can cursor see the circle if lasso is not the front app?"
+     ],
+     [
+      "Any plans to bring this to Windows too?",
+      "how does it know which one i mean if the same label shows up twice on screen ?",
+      "do the blurred bits stay blurred in the shared?",
+      "I'd love to be able to click and drag the toolbar anywhere around my screen",
+      "Increase individual color click target size \u2014 they felt small relative to my pointer cursor",
+      "can cursor see the circle if lasso is not the front app?"
+     ],
+     [
+      "Any plans to bring this to Windows too?",
+      "how does it know which one i mean if the same label shows up twice on screen ?",
+      "do the blurred bits stay blurred in the shared",
+      "I'd love to be able to click and drag the toolbar anywhere around my screen",
+      "Increase individual color click target size",
+      "can cursor see the circle if lasso is not the front app?"
+     ]
+    ]
+   }
+  },
+  "1317811": {
+   "themes": [
+    {
+     "theme": "Concerns about noise, false positives, and differentiating real issues",
+     "n": 4
+    },
+    {
+     "theme": "Comparison to existing monitoring solutions (Datadog, Sentry, Grafana)",
+     "n": 4
+    },
+    {
+     "theme": "Appreciation for finding critical bugs and providing context for fixes",
+     "n": 2
+    },
+    {
+     "theme": "Need for human review and automated PRs for fixes",
+     "n": 2
+    },
+    {
+     "theme": "Questions about specific integrations (Vercel, Axiom)",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How to prevent PRs for minor issues",
+    "How it identifies production issues and compares to existing tools",
+    "Data handling and security concerns",
+    "Level of human review needed for proposed fixes",
+    "Automated PR creation vs. manual approval"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How does the system differentiate between real production issues and one-off blips, and what is the process for opening PRs for fixes?",
+      "How does the product integrate with existing monitoring stacks like Datadog, Sentry, and Grafana, and how does it handle log data?",
+      "The product is praised for its ability to find critical bugs that existing monitoring systems miss and for providing context for fixes.",
+      "Users are concerned about the accuracy of findings, the need for human review of proposed fixes, and potential noise from automated solutions.",
+      "Users are asking how the product compares to Datadog, Sentry, Grafana, Claude, and Codex Loop.",
+      "Users are asking about specific integrations (Vercel, Axiom) and how the system handles log message changes after deploys.",
+      "Generic congratulations and good luck messages for the launch.",
+      "Users are interested in features like server shutdown for 0-day vulnerabilities and how suggestions for new logs/metrics are delivered."
+     ],
+     [
+      "Users are concerned about the potential for noise and false positives, asking how the system differentiates real issues from one-off blips or minor changes.",
+      "Users frequently ask how the product compares to existing monitoring solutions like Datadog, Sentry, and Grafana.",
+      "Users are curious about how the product handles data ingestion, specifically whether logs are read in place or shipped to the service, and the implications for security and functionality.",
+      "Users want to know how much human review is needed for proposed fixes and whether the system automatically opens pull requests or requires approval.",
+      "Users appreciate the idea of the product identifying critical bugs that existing monitoring might miss and providing context for fixes.",
+      "Users are interested in the accuracy and quality of the findings, and how many bugs the system can realistically identify per month.",
+      "Users inquire about the product's compatibility with specific platforms and services like Vercel and Axiom.",
+      "Users ask about the pricing model, specifically how it benchmarks against other AI models and potential limits on log volume."
+     ],
+     [
+      "Users are concerned about the potential for noise and false positives, asking how the system differentiates real issues from one-off blips or minor changes.",
+      "Users frequently ask how the product compares to existing monitoring solutions like Datadog, Sentry, and Grafana.",
+      "Users are curious about how the product handles data ingestion, specifically whether logs are read in place or shipped to the service, and the implications for security and functionality.",
+      "Users want to know how much human review is needed for proposed fixes and whether the system automatically opens pull requests or requires approval.",
+      "Users appreciate the idea of the product identifying critical bugs that existing monitoring might miss and providing context for fixes.",
+      "Users are interested in the accuracy and quality of the findings, and how many bugs the system can realistically identify per month.",
+      "Users inquire about the product's compatibility with specific platforms and services like Vercel and Axiom.",
+      "Users ask about the pricing model, specifically how it benchmarks against other AI models and potential limits on log volume."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you keep it from opening a PR for every one-off blip??? is there a threshold or does it wait to see the pattern a few times first???",
+      "How do you folks understand what's a production issue? How's it better than Datadog/Sentry/Grafana?",
+      "does it read logs in place thru the datadog/grafana apis or do they get shipped over to your side? thats gonna be the first q from our security guy before we can even try it",
+      "I'd be curious about is how much human review is needed before merging a proposed fix. I wouldn't want an automated solution introducing another issue while fixing the first one.",
+      "Does it open the pull request itself, or wait for me to approve the diff first?",
+      "Does it work with Vercel and Axiom?"
+     ],
+     [
+      "How do you keep it from opening a PR for every one-off blip??? is there a threshold or does it wait to see the pattern a few times first???",
+      "How do you folks understand what's a production issue? How's it better than Datadog/Sentry/Grafana?",
+      "Does it read logs in place thru the Datadog/Grafana APIs or do they get shipped over to your side? That's gonna be the first q from our security guy before we can even try it.",
+      "I'd be curious about is how much human review is needed before merging a proposed fix. I wouldn't want an automated solution introducing another issue while fixing the first one.",
+      "Does it open the pull request itself, or wait for me to approve the diff first?",
+      "Does it need a full observability stack to plug into, or can it work off plain server logs?"
+     ],
+     [
+      "How do you keep it from opening a PR for every one-off blip??? is there a threshold or does it wait to see the pattern a few times first???",
+      "How do you folks understand what's a production issue? How's it better than Datadog/Sentry/Grafana?",
+      "does it read logs in place thru the datadog/grafana apis or do they get shipped over to your side? thats gonna be the first q from our security guy before we can even try it",
+      "I'd be curious about is how much human review is needed before merging a proposed fix. I wouldn't want an automated solution introducing another issue while fixing the first one.",
+      "Does it open the pull request itself, or wait for me to approve the diff first?",
+      "Does it work with Vercel and Axiom?"
+     ]
+    ]
+   }
+  },
+  "1319438": {
+   "themes": [
+    {
+     "theme": "Ability to open XD files properly",
+     "n": 1
+    },
+    {
+     "theme": "Export at exact pixel sizes and SVG import/export",
+     "n": 1
+    },
+    {
+     "theme": "Long-term free plan",
+     "n": 1
+    },
+    {
+     "theme": "Figma components with variants and auto layout handling",
+     "n": 1
+    },
+    {
+     "theme": "Reasons to switch from Figma",
+     "n": 1
+    },
+    {
+     "theme": "Inspect mode's SwiftUI handoff capabilities",
+     "n": 1
+    },
+    {
+     "theme": "Dark mode performance with image-heavy files",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Figma compatibility (components, variants, auto layout)",
+    "Export capabilities (exact pixel sizes, SVG)",
+    "Long-term free model",
+    "Fidelity of generated SwiftUI code",
+    "Dark mode performance with image-heavy files",
+    "Value proposition compared to Figma"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are asking about the tool's ability to export at exact pixel sizes and handle SVG import/export.",
+      "Users are asking about the tool's long-term free plan.",
+      "Users appreciate the ability to open XD files properly.",
+      "Users are asking how Figma components with variants and auto layout are handled upon import.",
+      "Users are asking for reasons to switch from Figma to this tool.",
+      "Users appreciate the ability to open old Figma files directly without prior export.",
+      "Users are asking about dark mode performance with image-heavy files.",
+      "Users are interested in the Inspect mode's SwiftUI handoff capabilities."
+     ],
+     [
+      "The ability to open XD files properly is a significant advantage.",
+      "The Inspect mode handing off SwiftUI is a highly appealing feature.",
+      "The tool being free and available on Mac is a good combination.",
+      "Users want to know if the tool can export at exact pixel sizes for specific use cases like App Store screenshots.",
+      "Users are interested in SVG import and export capabilities.",
+      "Users are curious about the long-term plan for the product to remain free.",
+      "Users want to understand how Figma components with variants and auto layout are handled upon import.",
+      "Users are asking for a compelling reason to switch from Figma."
+     ],
+     [
+      "Can it export at exact pixel sizes, like App Store screenshots, and does it handle SVG import and export?",
+      "What's the plan to keep it free long term?",
+      "How do Figma components with variants and auto layout come through? Do they stay editable as components, or get flattened?",
+      "Could you explain why would I switch from Figma to your tool?",
+      "Does dark mode hold up on a file with a lot of images, or is it just recoloring the frames?",
+      "How faithful is the SwiftUI it generates for things like auto-layout stacks and text styles \u2014 a starting point to clean up, or does it hold?",
+      "Free and on the Mac is a nice combo.",
+      "Opening XD files properly is a big deal after Adobe let it go."
+     ]
+    ],
+    "complaints": [
+     [
+      "Questions about compatibility and fidelity with Figma features, especially components, variants, and auto layout.",
+      "Questions about export capabilities, specifically exact pixel sizes and SVG import/export.",
+      "Questions about the long-term free model.",
+      "Questions about the fidelity and usefulness of generated SwiftUI code.",
+      "Questions about dark mode performance with image-heavy files.",
+      "Questions about the value proposition compared to existing tools like Figma."
+     ],
+     [
+      "Can it export at exact pixel sizes, like App Store screenshots, and does it handle SVG import and export?",
+      "How do Figma components with variants and auto layout come through? Do they stay editable as components, or get flattened?",
+      "Could you explain why would I switch from Figma to your tool?",
+      "What's the plan to keep it free long term?",
+      "Does dark mode hold up on a file with a lot of images, or is it just recoloring the frames?",
+      "How faithful is the SwiftUI it generates for things like auto-layout stacks and text styles \u2014 a starting point to clean up, or does it hold up?"
+     ],
+     [
+      "Users are concerned about the long-term free availability of the product.",
+      "Users are asking about the fidelity and editability of imported Figma components, especially with variants and auto layout.",
+      "Users want to know if the tool can export at exact pixel sizes and handle SVG import/export.",
+      "Users are questioning the benefits of switching from established tools like Figma.",
+      "Users are asking about the performance of dark mode with image-heavy files.",
+      "Users are asking about the faithfulness and usability of generated SwiftUI code, particularly for auto-layout and text styles."
+     ]
+    ]
+   }
+  },
+  "1316848": {
+   "themes": [
+    {
+     "theme": "Users are excited about the launch and congratulate the makers.",
+     "n": 1
+    },
+    {
+     "theme": "Users struggle with coordinating multiple agents and knowing who claimed what.",
+     "n": 2
+    },
+    {
+     "theme": "Users want to know who approves decisions in a room, anyone or someone by role.",
+     "n": 1
+    },
+    {
+     "theme": "Users suggest recording decisions beside cards to provide a shared workspace for agents.",
+     "n": 1
+    },
+    {
+     "theme": "Users appreciate the 'claim-cards' idea and bringing decisions to a person instead of burying them in a chat log.",
+     "n": 1
+    },
+    {
+     "theme": "Users keep anything that writes into a real system for a person to approve.",
+     "n": 1
+    },
+    {
+     "theme": "Users find it difficult to know when something genuinely needs a human call instead of just another agent guessing.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Who approves in a room, anyone or someone by role?",
+    "How do you coordinate more than one agent?",
+    "How to know who claimed what, and when something genuinely needs a human call instead of just another agent guessing."
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are excited about the launch and congratulate the makers.",
+      "Users struggle with coordinating multiple agents, especially regarding who claimed what and when human intervention is needed.",
+      "Users suggest recording decisions alongside cards to provide a shared workspace for agents on separate machines.",
+      "Users are curious about who approves actions within the system, whether it's anyone or someone by role.",
+      "Users appreciate the idea of claim-cards and bringing decisions to a person instead of burying them in chat logs."
+     ],
+     [
+      "Users are excited about the launch and congratulate the makers.",
+      "Users struggle with coordinating multiple agents and knowing who claimed what.",
+      "Users want to know who approves decisions in a room, anyone or someone by role.",
+      "Users suggest recording decisions beside cards to provide a shared workspace for agents.",
+      "Users appreciate the 'claim-cards' idea and bringing decisions to a person instead of burying them in a chat log.",
+      "Users keep anything that writes into a real system for a person to approve.",
+      "Users find it difficult to know when something genuinely needs a human call instead of just another agent guessing."
+     ],
+     [
+      "Users are excited about the launch and congratulate the makers.",
+      "Users struggle with coordinating multiple agents and knowing who claimed what.",
+      "Users want to know who approves decisions in a room, anyone or someone by role.",
+      "Users suggest recording decisions beside cards to provide a shared workspace for agents.",
+      "Users appreciate the 'claim-cards' idea and bringing decisions to a person instead of burying them in a chat log.",
+      "Users keep anything that writes into a real system for a person to approve.",
+      "Users find it difficult to know when something genuinely needs a human call instead of just another agent guessing."
+     ]
+    ],
+    "complaints": [
+     [
+      "Who approves in a room, anyone or someone by role?",
+      "How do you coordinate more than one agent?",
+      "How to know who claimed what, and when something genuinely needs a human call instead of just another agent guessing."
+     ],
+     [
+      "How do you coordinate more than one agent?",
+      "Who approves in a room, anyone or someone by role?",
+      "The hard part is knowing who claimed what, and when something genuinely needs a human call instead of just another agent guessing."
+     ],
+     [
+      "Who approves in a room, anyone or someone by role?",
+      "How do you coordinate more than one agent?",
+      "How to know who claimed what, and when something genuinely needs a human call instead of just another agent guessing."
+     ]
+    ]
+   }
+  },
+  "1316705": {
+   "themes": [
+    {
+     "theme": "AI-driven lead qualification and simplified booking",
+     "n": 2
+    },
+    {
+     "theme": "Team management and admin features",
+     "n": 1
+    },
+    {
+     "theme": "Calendar synchronization with multiple accounts",
+     "n": 2
+    },
+    {
+     "theme": "Zoom integration",
+     "n": 1
+    },
+    {
+     "theme": "Approval for agent actions (messages/bookings)",
+     "n": 1
+    },
+    {
+     "theme": "Generic thanks and congratulations",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Calendar sync with multiple accounts",
+    "Booking checks multiple calendars",
+    "Approval for agent actions",
+    "Zoom integration",
+    "Claude integration",
+    "Admin features for team rollout"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the AI-driven lead qualification and simplified booking process.",
+      "Users are asking about team management and admin features.",
+      "Users are asking about calendar synchronization behavior with multiple accounts.",
+      "Users are asking about the availability of Zoom integration.",
+      "Users are asking if approval is required before agents send messages or change bookings.",
+      "Users are asking if the setup can be done via Claude.",
+      "Users are giving generic thanks and congratulations for the launch."
+     ],
+     [
+      "Users are asking about calendar synchronization capabilities, specifically if it checks multiple calendars before showing availability and if it supports syncing multiple Google and Outlook accounts.",
+      "Users appreciate the concept of AI being built-in rather than bolted on, and the ability to qualify leads before booking.",
+      "Users are asking about the availability of admin features for team management.",
+      "Users are interested in routing high-intent leads directly to a booking page and others to a form or waitlist.",
+      "Users are asking if they can require approval before an agent sends a message or changes a booking.",
+      "Users are asking about the upcoming integration of Zoom.",
+      "Users are expressing general thanks and congratulations for the launch."
+     ],
+     [
+      "Users are asking about calendar synchronization capabilities, specifically if it checks multiple calendars before showing availability and if it supports syncing multiple Google and Outlook accounts.",
+      "Users appreciate the concept of AI being built-in rather than bolted on, and the ability to qualify leads before booking.",
+      "Users are asking about the availability of admin features for team management.",
+      "Users are interested in routing high-intent leads directly to a booking page and others to a form or waitlist.",
+      "Users are asking if they can require approval before an agent sends a message or changes a booking.",
+      "Users are asking about the upcoming integration of Zoom.",
+      "Users are expressing general thanks and congratulations for the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the calendar sync keep multiple Google accounts and an Outlook account in step, or is it one-way per calendar?",
+      "Does a booking check both connected calendars before it shows a time?",
+      "Can users require approval before an agent sends a message or changes a booking?",
+      "Is Zoom integration coming soon?",
+      "Can I set it up via Claude?",
+      "Do you also have admin features so I could roll it out for my team?"
+     ],
+     [
+      "Does the calendar sync keep two Google accounts and an Outlook one in step, or is it one-way per calendar?",
+      "Does a booking check both calendars before it shows a time?",
+      "Can I set it up via Claude?",
+      "Do you also have admin features so I could roll it out for my team, for example?",
+      "With Ridian's calendar and email agents, can users require approval before an agent sends a message or changes a booking?",
+      "Is Zoom coming soon?"
+     ],
+     [
+      "Can I set it up via Claude?",
+      "Do you also have admin features so I could roll it out for my team, for example?",
+      "With Ridian's calendar and email agents, can users require approval before an agent sends a message or changes a booking?",
+      "Is Zoom coming soon?",
+      "Does a booking check both calendars before it shows a time?",
+      "Does the calendar sync keep two google accounts and an outlook one in step, or is it one-way per calendar?"
+     ]
+    ]
+   }
+  },
+  "1319539": {
+   "themes": [
+    {
+     "theme": "The alarm that rings until acknowledged is a clever and useful feature.",
+     "n": 2
+    },
+    {
+     "theme": "Live Activities for long jobs and pings when an agent needs attention are exactly what users have been missing.",
+     "n": 2
+    },
+    {
+     "theme": "Lock screen replies and the ability to answer an AI agent from the phone are very useful.",
+     "n": 1
+    },
+    {
+     "theme": "The product is seen as similar to Novu, but more minimal and focused.",
+     "n": 1
+    },
+    {
+     "theme": "Users would wire up their CI pipeline to use Live Activity for long mobile pipeline runs.",
+     "n": 1
+    },
+    {
+     "theme": "Is the phone deliberately the whole point, or do you see other applications?",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the launch.",
+     "n": 3
+    }
+   ],
+   "complaints": [
+    "Is the phone deliberately the whole point, or do you see a",
+    "Monitoring long-running processes"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The alarm that rings until acknowledged is a clever and useful feature.",
+      "Live Activity for long jobs and pings when an agent needs attention are exactly what's been missing.",
+      "The ability to answer an AI agent from the phone's lock screen and let it continue working is very useful.",
+      "The product is seen as similar to Novu, but more minimal and focused.",
+      "Is the phone deliberately the whole point, or do you see other applications?",
+      "Users would wire up their CI pipeline to use Live Activity for long mobile pipeline runs.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The alarm that rings until acknowledged is a clever and useful feature.",
+      "Live Activities for long jobs and pings when an agent needs attention are exactly what users have been missing.",
+      "Lock screen replies and the ability to answer an AI agent from the phone are very useful.",
+      "The product is seen as similar to Novu, but more minimal and focused.",
+      "The product name caught attention due to a recent song release.",
+      "Users would wire up their CI to the product for monitoring mobile pipeline runs.",
+      "Is the phone deliberately the whole point of the product, or are other platforms envisioned?"
+     ],
+     [
+      "Users appreciate the persistent alarms that ring until acknowledged for important notifications.",
+      "Users find the Live Activity feature for long-running jobs particularly useful.",
+      "Users are interested in the ability to reply to AI agents directly from the lock screen.",
+      "The product is seen as similar to Novu but more minimal and focused.",
+      "Users would like to integrate the product with their CI pipelines for mobile builds.",
+      "A user asks if the phone is the sole focus of the product.",
+      "Users generally offer congratulations on the product launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is the phone deliberately the whole point, or do you see a",
+      "I run long Claude Code sessions and the loop of checking back to see if it's done, stuck, or waiting on me is the worst part of it.",
+      "first thing I'd wire up is our CI. the mobile pipeline runs 12+ min and right now we just keep checking back on it, a live activity for that is kinda perfect"
+     ],
+     [
+      "Is the phone deliberately the whole point, or do you see a"
+     ],
+     [
+      "Is the phone deliberately the whole point, or do you see a",
+      "I run long Claude Code sessions and the loop of checking back to see if it's done, stuck, or waiting on me is the worst part of it.",
+      "first thing I'd wire up is our CI. the mobile pipeline runs 12+ min and right now we just keep checking back on it, a live activity for that is kinda perfect"
+     ]
+    ]
+   }
+  },
+  "1309861": {
+   "themes": [
+    {
+     "theme": "Provides crucial production context for debugging and fixing.",
+     "n": 6
+    },
+    {
+     "theme": "Connecting bugs to user journeys and their impact (e.g., conversion cost) is valuable.",
+     "n": 4
+    },
+    {
+     "theme": "Providing context without dictating the fix is the right approach.",
+     "n": 2
+    },
+    {
+     "theme": "Concerns about PII masking and data usage (deployment, model training).",
+     "n": 1
+    },
+    {
+     "theme": "Ability to see which app version an issue started in.",
+     "n": 1
+    },
+    {
+     "theme": "Automatic detection of goals (e.g., Shopify checkout) and correlation of backend API errors.",
+     "n": 1
+    },
+    {
+     "theme": "How the system prioritizes production issues for coding agents.",
+     "n": 1
+    },
+    {
+     "theme": "Improvement over Sentry, particularly in reproducing errors, with 'Device Data' and 'Device Runtime State' highlighted.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "PII masking and data privacy",
+    "App version visibility for issues",
+    "Correlation of frontend and backend errors",
+    "Prioritization of production issues",
+    "Automatic goal tracking vs. manual marking",
+    "Reproducing failures vs. explaining them"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The product provides crucial production context that coding agents are currently missing, improving debugging and fixing what breaks.",
+      "Connecting bugs to user journeys (like signup/checkout interruptions) and their impact (like conversion cost) is a valuable and neat angle.",
+      "The decision to provide context without dictating the fix is the right approach, allowing coding agents to take control.",
+      "Users are concerned about PII masking when user journey data is pulled and want to know about data deployment and model training.",
+      "Users want to know if the agent can see which app version an issue started in.",
+      "Users are asking about the automatic detection of goals like Shopify checkout and the correlation of backend API errors across services.",
+      "Users want to know how the system prioritizes which production issues are important enough to send to the coding agent.",
+      "The product is seen as an improvement over Sentry, particularly in reproducing errors, with 'Device Data' and 'Device Runtime State' being highlighted as favorite parts."
+     ],
+     [
+      "The product provides crucial production context that coding agents are currently missing, improving debugging and fixing what breaks.",
+      "Connecting bugs to user journeys (like failed signups/checkouts) and their impact (like conversion drops) is a valuable and novel approach.",
+      "The decision to provide context without dictating the fix, allowing coding agents to take control, is appreciated.",
+      "Users are concerned about PII masking when user journey data is pulled and where context data is stored/used for model training.",
+      "Users want to know if the agent can see which app version an issue started in.",
+      "Users are asking about the automatic detection of goals like Shopify checkout and how the system prioritizes production issues for coding agents.",
+      "Users want the system to correlate failed user journeys with exact backend API errors across multiple services, not just frontend symptoms.",
+      "The product's ability to provide 'Device Data' and 'Device Runtime State' is praised as it addresses a pain point experienced with Sentry regarding error reproduction."
+     ],
+     [
+      "Users appreciate the product's ability to provide production context and user journey information to coding agents, which is seen as a missing piece in current debugging workflows.",
+      "Many users offered generic congratulations on the product launch.",
+      "The feature of connecting bugs to business metrics like failed signups, checkouts, or conversion drop-offs (GFI) is highlighted as a valuable and neat angle.",
+      "Users agree with the decision to focus on providing context rather than attempting to provide the actual fix, leaving that to coding agents.",
+      "Users are concerned about PII masking when user journey data is pulled and sent to LLM contexts, and want to know about data deployment and model training.",
+      "Users are asking about the product's ability to correlate backend API errors across multiple services with frontend symptoms.",
+      "Users want to know how the product prioritizes which production issues are important enough to send to coding agents.",
+      "One user compared the product to Sentry, noting that reproducing errors in Sentry takes a long time and highlighting 'Device Data' and 'Device Runtime State' as favorite parts of the demo."
+     ]
+    ],
+    "complaints": [
+     [
+      "When the agent pulls raw user journey data over MCP, is any PII masked before it reaches the agent?",
+      "Can the agent see which app version an issue started in?",
+      "How does it decide which production issue is important enough to send to the coding agent first?",
+      "Can Appxiom correlate a failed user journey with the exact backend API error across multiple services, rather than only showing the frontend symptoms?",
+      "When Shopify support arrives, will checkout show up as a goal automatically, or will you still mark it yourself?",
+      "The real test is whether it can reproduce the failure after the patch, not just explain it."
+     ],
+     [
+      "Can the agent see which app version an issue started in?",
+      "When the agent pulls raw user journey data over MCP, is any PII masked before it reaches the agent? My guess is a lot of teams wont want user emails or IDs going into an LLM context. Also where does the context data live, in short where is it deployed and what data is used for model training?",
+      "Can Appxiom correlate a failed user journey with the exact backend API error across multiple services, rather than only showing the frontend symptoms?",
+      "How does it decide which production issue is important enough to send to the coding agent first?",
+      "When Shopify support arrives, will checkout show up as a goal automatically, or will you still mark it yourself?",
+      "The real test is whether it can reproduce the failure after the patch, not just explain it. How do you keep a noisy crash from turning into a very confident but wrong fi"
+     ],
+     [
+      "Can the agent see which app version an issue started in?",
+      "When the agent pulls raw user journey data over MCP, is any PII masked before it reaches the agent? My guess is a lot of teams wont want user emails or IDs going into an LLM context. Also where does the context data live, in short where is it deployed and what data is used for model training?",
+      "Can Appxiom correlate a failed user journey with the exact backend API error across multiple services, rather than only showing the frontend symptoms?",
+      "How does it decide which production issue is important enough to send to the coding agent first?",
+      "When Shopify support arrives, will checkout show up as a goal automatically, or will you still mark it yourself?",
+      "The real test is whether it can reproduce the failure after the patch, not just explain it. How do you keep a noisy crash from turning into a very confident but wrong fi"
+     ]
+    ]
+   }
+  },
+  "1316484": {
+   "themes": [
+    {
+     "theme": "Users are excited to try the product and congratulate the makers on the launch.",
+     "n": 6
+    },
+    {
+     "theme": "Users frequently encounter issues with leftover development servers and orphaned processes holding onto ports and consuming resources.",
+     "n": 2
+    },
+    {
+     "theme": "Users are requesting versions for Windows and Linux.",
+     "n": 2
+    },
+    {
+     "theme": "Users are asking how the product groups processes and maps them back to sessions, especially after folders are deleted or processes are reparented.",
+     "n": 2
+    },
+    {
+     "theme": "The ability to group leftover processes by session with memory and ports is highly valued.",
+     "n": 2
+    },
+    {
+     "theme": "The product is seen as a great example of 'Do one thing and do it well'.",
+     "n": 1
+    },
+    {
+     "theme": "A fresh machine for each run leaves nothing behind but loses saved files and fast restarts.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does it group a process, and does that hold up after the folder is gone?",
+    "How do you map a process back to its session once it's double-forked and reparented to launchd?",
+    "Is there a Windows version?",
+    "Is there a Linux version?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are excited to try the product and congratulate the makers on the launch.",
+      "Users frequently encounter issues with leftover development servers and orphaned processes holding onto ports and consuming resources.",
+      "Users are requesting versions for Windows and Linux.",
+      "Users are asking how the product groups processes and maps them back to sessions, especially after folders are deleted or processes are reparented.",
+      "The ability to group leftover processes by session with memory and ports is highly valued.",
+      "The product is seen as a great example of 'Do one thing and do it well'.",
+      "Users would turn on auto-end for idle sessions first.",
+      "A fresh machine for each run leaves nothing behind but loses saved files and fast restarts."
+     ],
+     [
+      "Users are excited to try the product and find it useful for managing orphaned development servers and ports.",
+      "Users experience issues with orphaned processes, particularly `flutter_tester` processes, leading to high CPU load.",
+      "Users are asking how the product groups processes and maps them back to their sessions, especially after processes have been re-parented.",
+      "Users are requesting versions of the product for Windows and Linux.",
+      "The ability to group leftovers by session with memory and ports, and the auto-end for idle sessions, are highly valued features.",
+      "The product is praised for its focused functionality, embodying the 'Do one thing and do it well' principle.",
+      "A user encountered a 404 error due to a dev server running on a port from an already deleted worktree.",
+      "A user mentions that a fresh machine for each run leaves nothing behind but loses saved files and fast restarts."
+     ],
+     [
+      "Users are excited to try the product and find it useful for managing orphaned development servers and ports.",
+      "Users experience issues with orphaned processes, particularly `flutter_tester` processes, leading to high CPU load.",
+      "Users are asking how the product groups processes and maps them back to their sessions, especially after processes have been re-parented.",
+      "Users are requesting versions of the product for Windows and Linux.",
+      "The ability to group leftovers by session with memory and ports, and the auto-end for idle sessions, are highly valued features.",
+      "The product is praised for its focused functionality, embodying the 'Do one thing and do it well' principle.",
+      "A user encountered a 404 error due to a dev server running on a port from an already deleted worktree.",
+      "A user mentions that a fresh machine for each run leaves nothing behind but loses saved files and fast restarts."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does it group a process, and does that hold up after the folder is gone?",
+      "How do you map a process back to its session once it's double-forked and reparented to launchd?",
+      "Is there a Windows version?",
+      "Is there a Linux version?"
+     ],
+     [
+      "How does the app group a process, and does that hold up after the folder is gone?",
+      "How do you map a process back to its session once it's double-forked and reparented to launchd?",
+      "Is there any chance of a Windows version?",
+      "Is there any chance of a Linux version?"
+     ],
+     [
+      "What does it group a process by, and does that hold up after the folder is gone?",
+      "How do you map a process back to its session once it's double-forked and reparented to launchd?",
+      "Any chance of a Windows version?",
+      "Wish I could try it out on Linux though."
+     ]
+    ]
+   }
+  }
+ }
+}

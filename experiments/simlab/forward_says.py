@@ -45,6 +45,23 @@ def judge(th, ct, cand):
     return r
 NRUNS = int(os.environ.get("JUDGE_RUNS", "3")); M = ("recall", "recall_w", "precision", "complaint_recall")
 PL_CACHE = os.path.join(SP, f"fs_plain_{D}.json"); PLC = json.load(open(PL_CACHE)) if os.path.exists(PL_CACHE) else {}
+# canonical truth (orchestrator 10:38Z Nov 21): TRUTH and CT extracted 3 times; a Gemini merge keeps only themes present in >= 2 of 3 extractions
+# (paraphrases merged); the consensus set is frozen per day (versioned, never overwritten) and every arm and judge run scores against it.
+CONS = """Below are {k} independent extractions of themes from the same set of Product Hunt comments. Return only the themes that appear in at least 2 of the
+{k} extractions (treat paraphrases of the same point as the same theme). For each, give one short wording{nfield}. JSON only: {{"themes": [{shape}, ...]}}
+{lists}"""
+TDIR = os.path.join(HERE, "reports", "forward_sim", "truth"); os.makedirs(TDIR, exist_ok=True)
+_tv = sorted(int(re.search(r"\.v(\d+)\.json$", p).group(1)) for p in glob.glob(os.path.join(TDIR, f"truth_{D}.v*.json")))
+TRUTHS = json.load(open(os.path.join(TDIR, f"truth_{D}.v{_tv[-1]}.json")))["launches"] if _tv else {}; NEW_TRUTH = not _tv
+def truth_for(lid, c):
+    if lid in TRUTHS: return TRUTHS[lid]
+    ex_t = [[{"theme": str(t.get("theme", "")), "n": max(1, int(t.get("n_comments", 1) or 1))} for t in ((g(TRUTH.format(c=c), 2000) or {}).get("themes") or []) if isinstance(t, dict) and t.get("theme")][:8] for _ in range(3)]
+    ex_c = [[str(t) for t in ((g(CT.format(c=c), 1200) or {}).get("themes") or [])][:6] for _ in range(3)]
+    lt = "\n".join(f"Extraction {i + 1}:\n" + "\n".join(f"- {t['theme']} (comments: {t['n']})" for t in e) for i, e in enumerate(ex_t))
+    th = [{"theme": str(t.get("theme")), "n": max(1, int(t.get("n_comments", 1) or 1))} for t in ((g(CONS.format(k=3, nfield=" and the median number of comments across the extractions that list it", shape='{"theme": "...", "n_comments": N}', lists=lt), 1500) or {}).get("themes") or []) if isinstance(t, dict) and t.get("theme")][:8]
+    lc = "\n".join(f"Extraction {i + 1}:\n" + "\n".join(f"- {t}" for t in e) for i, e in enumerate(ex_c))
+    ct = [str(t.get("theme") if isinstance(t, dict) else t) for t in ((g(CONS.format(k=3, nfield="", shape='{"theme": "..."}', lists=lc), 1200) or {}).get("themes") or [])][:6] if any(ex_c) else []
+    TRUTHS[lid] = {"themes": th, "complaints": ct, "extractions": {"themes": [[t["theme"] for t in e] for e in ex_t], "complaints": ex_c}}; return TRUTHS[lid]
 def one(lid):
     # orchestrator 10:35Z Nov 21: judge at temperature 0 (llm.gemini_call default), NRUNS independent runs of the whole truth+judge chain per launch,
     # metrics averaged over runs, run-to-run spread kept; plain-arm comments generated once per launch (cached) so arms differ only by judging.
@@ -55,13 +72,12 @@ def one(lid):
     if lid not in PLC:
         pl = (g(PLAIN.format(n=t0.get("name", ""), t=t0.get("tagline", ""), d=str(t0.get("description") or "")[:800], k=len(cand)), 3000) or {}).get("comments") or []
         PLC[lid] = [str(x) for x in pl if x][:len(cand)]
-    pl = PLC[lid]; runs = []
+    pl = PLC[lid]; runs = []; tr = truth_for(lid, c)
+    th, ct = tr["themes"], tr["complaints"]
     for _ in range(NRUNS):
-        th = [{"theme": str(t.get("theme", "")), "n": max(1, int(t.get("n_comments", 1) or 1))} for t in ((g(TRUTH.format(c=c), 2000) or {}).get("themes") or []) if isinstance(t, dict) and t.get("theme")][:8]
-        ct = [str(t) for t in ((g(CT.format(c=c), 1200) or {}).get("themes") or [])][:6]
         x = judge(th, ct, cand)
         if pl: x.update({"plain_" + k: v for k, v in judge(th, ct, pl).items()})
-        x["truth_themes"] = [t["theme"] for t in th]; x["truth_complaints"] = ct; runs.append(x)
+        runs.append(x)
     r = {"id": lid, "n_comments": len(cm), "n_personas": len(cand), "scored": any(x.get("scored") for x in runs), "runs": runs}
     for k in [m for m in M] + ["plain_" + m for m in M]:
         v = [x[k] for x in runs if k in x]
@@ -70,6 +86,9 @@ def one(lid):
 ids = [i for i in EX if i in T0]
 with cf.ThreadPoolExecutor(6) as ex: R = list(ex.map(one, ids))
 json.dump(PLC, open(PL_CACHE, "w"))
+if NEW_TRUTH or any(l not in (json.load(open(os.path.join(TDIR, f"truth_{D}.v{_tv[-1]}.json")))["launches"]) for l in TRUTHS):
+    _k = (_tv[-1] + 1) if _tv else 1
+    json.dump({"day": D, "version": _k, "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)", "launches": TRUTHS}, open(os.path.join(TDIR, f"truth_{D}.v{_k}.json"), "w"), indent=1)
 S = pd.DataFrame([r for r in R if r.get("scored")])
 def ci(v):
     v = np.asarray(v, float); v = v[~np.isnan(v)]
@@ -84,7 +103,7 @@ out = {"day": D, "source": "official PH API v2 live capture (api_comments + live
        "harness reference (276 past launches, 24-persona panel)": {"recall": 62.8, "recall_w": 73.3, "precision": 54.2, "complaint_recall": 24.8},
        "usd": round(llm.USAGE["in"] / 1e6 * .3 + llm.USAGE["out"] / 1e6 * 2.5, 3), "per_launch": [{k: v for k, v in r.items()} for r in R]}
 os.makedirs(os.path.join(HERE, "reports", "forward_sim"), exist_ok=True); 
-out["judge"] = {"runs_per_launch": NRUNS, "temperature": 0, "mean run-to-run spread (max-min, points)": {k: round(100 * float(S[k + "_spread"].mean()), 1) for k in [m for m in M] + ["plain_" + m for m in M] if k + "_spread" in S}}
+out["judge"] = {"truth": "canonical consensus truth (reports/forward_sim/truth/)", "runs_per_launch": NRUNS, "temperature": 0, "mean run-to-run spread (max-min, points)": {k: round(100 * float(S[k + "_spread"].mean()), 1) for k in [m for m in M] + ["plain_" + m for m in M] if k + "_spread" in S}}
 _v = 1
 while os.path.exists(os.path.join(HERE, "reports", "forward_sim", f"forward_says_{D}.v{_v}.json")): _v += 1   # never overwrite: every judge output is versioned
 out["version"] = _v; json.dump(out, open(os.path.join(HERE, "reports", "forward_sim", f"forward_says_{D}.v{_v}.json"), "w"), indent=1)

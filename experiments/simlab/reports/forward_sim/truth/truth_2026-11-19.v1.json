@@ -1,0 +1,1371 @@
+{
+ "day": "2026-11-19",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1322260": {
+   "themes": [
+    {
+     "theme": "Ability for the person on camera to see themselves and adjust framing/looks using the second screen.",
+     "n": 3
+    },
+    {
+     "theme": "The interface adapting to different fold states (folded, propped, closed) is a significant and appreciated detail.",
+     "n": 1
+    },
+    {
+     "theme": "The feature of always saving the original footage alongside graded versions is well-received.",
+     "n": 2
+    },
+    {
+     "theme": "Users are curious if the clean original is always saved or only when requested.",
+     "n": 1
+    },
+    {
+     "theme": "The product's camera quality is compared favorably to the iPhone Duo.",
+     "n": 1
+    },
+    {
+     "theme": "Generic positive feedback on the launch.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Does the clean original always get saved next to the graded one, or only when I ask?",
+    "Do people end up posing more once they can see themselves while you film?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability for the person on camera to see themselves and adjust framing/looks using the second screen.",
+      "The interface adapting to different fold states (folded, propped, closed) is a significant and appreciated detail.",
+      "The feature of always saving the original footage alongside graded versions is well-received.",
+      "Users are curious if the clean original is always saved or only when requested.",
+      "Users wonder if people pose more when they can see themselves while being filmed.",
+      "The product's camera quality is compared favorably to the iPhone Duo.",
+      "Generic positive feedback on the launch."
+     ],
+     [
+      "Users appreciate the ability for the person on camera to see themselves and adjust framing/looks using the second screen.",
+      "The interface adapting to different fold states (folded, propped, closed) is a significant and appreciated detail.",
+      "The feature of always saving the original footage alongside graded versions is well-received.",
+      "Users are curious if the clean original is always saved or only when requested.",
+      "Users wonder if people pose more when they can see themselves while being filmed.",
+      "The product's camera quality is compared favorably to the iPhone Duo.",
+      "Generic positive feedback on the launch."
+     ],
+     [
+      "The ability for the subject to see themselves and frame the shot using the second screen is a highly praised feature.",
+      "The preservation of the original footage alongside graded versions is a positive aspect.",
+      "The adaptive interface for different folding states is a well-received design choice.",
+      "Users are curious if the clean original is always saved or only upon request.",
+      "The product's camera quality is being compared to the iPhone Duo.",
+      "Generic positive feedback on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the clean original always get saved next to the graded one, or only when I ask?",
+      "do ppl end up posing more once they can see themselves while u film"
+     ],
+     [
+      "Does the clean original always get saved next to the graded one, or only when I ask?",
+      "do ppl end up posing more once they can see themselves while u film"
+     ],
+     [
+      "Does the clean original always get saved next to the graded one, or only when I ask?",
+      "do ppl end up posing more once they can see themselves while u film"
+     ]
+    ]
+   }
+  },
+  "1311952": {
+   "themes": [
+    {
+     "theme": "Long-running processes without function timeouts",
+     "n": 2
+    },
+    {
+     "theme": "How scale-to-zero works with long-running servers and in-memory state",
+     "n": 2
+    },
+    {
+     "theme": "Each deploy preview having its own backend",
+     "n": 1
+    },
+    {
+     "theme": "Using frameworks like Express/Hono directly without refactoring for functions",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Scale-to-zero with long-running agents",
+    "State persistence when scaling down",
+    "Instance consistency for users in the same room"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to have long-running processes without worrying about function timeouts is a significant improvement.",
+      "Users appreciate the ease of use and seamless integration of Netlify for building and deploying applications.",
+      "The concept of each deploy preview having its own backend is a useful and practical detail.",
+      "The new logo, color, and website rebrand are well-received.",
+      "Users are asking how the scale-to-zero feature works with long-running servers and in-memory state.",
+      "The ability to use frameworks like Express/Hono directly without refactoring for functions is a major benefit.",
+      "Generic thanks and congratulations for the launch.",
+      "Users are asking about the consistency of instance routing for multiple clients in a single room."
+     ],
+     [
+      "The ability to do whatever you need for as long as you need and not worrying about lambda timeouts is amazing.",
+      "The long-running agent part is what caught me \u2014 I've had too many agent runs bump into function timeouts, so a server that just stays alive with state in memory is a big shift.",
+      "How does the scale-to-zero side work with a server that stays alive with state in memory \u2014 does active work keep a server alive, or can it spin down mid-task?",
+      "Giving each deploy preview its own backend is a useful detail.",
+      "Built a quick real-time help board with Netlify Server earlier and it was surprisingly smooth.",
+      "The fact that it scales to zero and deploys like the rest of the project makes it really practical.",
+      "Excited to play around with Netlify Server, as setting up SSE or WebSockets was such a pain before.",
+      "Being able to bring Express/Hono directly instead of refactoring for functions is huge - removes a whole category of onboarding friction."
+     ],
+     [
+      "The ability to do whatever you need for as long as you need and not worrying about lambda timeouts is amazing.",
+      "The long-running agent part is what caught me \u2014 I've had too many agent runs bump into function timeouts, so a server that just stays alive with state in memory is a big shift.",
+      "How does the scale-to-zero side work with a server that stays alive with state in memory \u2014 does active work keep a server alive, or can it spin down mid-task?",
+      "Giving each deploy preview its own backend is a useful detail.",
+      "Built a quick real-time help board with Netlify Server earlier and it was surprisingly smooth.",
+      "The fact that it scales to zero and deploys like the rest of the project makes it really practical.",
+      "Excited to play around with Netlify Server, as setting up SSE or WebSockets was such a pain before.",
+      "Being able to bring Express/Hono directly instead of refactoring for functions is huge - removes a whole category of onboarding friction."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does the scale-to-zero side work with long-running agents, does active work keep a server alive, or can it spin down mid-task?",
+      "When a server scales down to zero, what happens to a room that's mid-game and holding its state in memory?",
+      "Is every phone in one room guaranteed to reach the same instance?"
+     ],
+     [
+      "How does the scale-to-zero side work with that \u2014 does active work keep a server alive, or can it spin down mid-task?",
+      "When a server scales down to zero, what happens to a room that's mid-game and holding its state in memory?",
+      "Is every phone in one room guaranteed to reach the same instance?"
+     ],
+     [
+      "How does the scale-to-zero side work with that \u2014 does active work keep a server alive, or can it spin down mid-task?",
+      "When a server scales down to zero, what happens to a room that's mid-game and holding its state in memory?",
+      "Is every phone in one room guaranteed to reach the same instance?"
+     ]
+    ]
+   }
+  },
+  "1318828": {
+   "themes": [
+    {
+     "theme": "Cross-device sync / unified history",
+     "n": 3
+    },
+    {
+     "theme": "No-bot approach",
+     "n": 3
+    },
+    {
+     "theme": "Connect local models",
+     "n": 2
+    },
+    {
+     "theme": "Compatibility with other platforms (e.g., Slack huddles)",
+     "n": 2
+    },
+    {
+     "theme": "Real speaker names in transcripts",
+     "n": 1
+    },
+    {
+     "theme": "Reasons to switch from alternatives",
+     "n": 1
+    },
+    {
+     "theme": "General congratulations/positive feedback",
+     "n": 6
+    }
+   ],
+   "complaints": [
+    "Local model connection",
+    "Slack huddle recording",
+    "Real speaker names in transcripts",
+    "Browser vs. desktop app call capture",
+    "Real-time vs. post-meeting feedback",
+    "Comparison to competitors (Granola/Fathom)"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the cross-device synchronization of meeting notes and recordings, making it feel like an extension of existing products.",
+      "Users are happy about the no-bot approach, as some people get uncomfortable with robots joining calls.",
+      "Users express general congratulations and well wishes for the product launch.",
+      "Users are asking if they can connect local models to the software.",
+      "Users want to know if the software records meetings from platforms other than the listed four, specifically Slack huddles.",
+      "Users want real speaker names on Google Meet transcripts instead of generic 'speaker one' and 'speaker two'.",
+      "Users are asking if the software provides live feedback during speaking or only at the end of meetings.",
+      "Users are asking about the main reasons to switch from alternative products like Granola or Fathom."
+     ],
+     [
+      "Users appreciate the unified history across devices, making it feel like an extension of the product they already use.",
+      "Users appreciate the 'no bot' approach, as some people get uncomfortable with robots joining calls.",
+      "Users are asking about the ability to connect local models to the software.",
+      "Users are asking about the compatibility with various meeting platforms beyond the listed ones, such as Slack huddles.",
+      "Users are asking about the functionality of real speaker names in transcripts.",
+      "Users are asking if the software can provide live feedback during a call, or only at the end.",
+      "Users are asking for reasons to switch from named alternatives like Granola or Fathom.",
+      "Users are asking about the invisibility of the recording to other participants."
+     ],
+     [
+      "Users appreciate the unified history across devices, allowing them to access notes from various platforms in one place.",
+      "Users appreciate the 'no bot' approach, as some participants get uncomfortable with recording bots in meetings.",
+      "Generic congratulations and positive feedback on the launch.",
+      "Users are asking about the ability to connect local models to the software.",
+      "Users are asking about the recording capabilities for specific platforms like Slack huddles and how it handles calls that run over.",
+      "Users are asking about the visibility of the recording to other participants and if it works on other browsers like Arc or Brave.",
+      "Users want real speaker names on transcripts for better usability.",
+      "Users are asking for reasons to switch from named alternatives like Granola or Fathom."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can I connect local model to your software?",
+      "Would Slack huddles get recorded too, or only the four platforms listed?",
+      "Real speaker names on a Google Meet transcript is the small thing that would make this actually usable later, since a wall of speaker one and speaker two is why I stopped reading my old notes.",
+      "Does the browser version catch a call that starts from the desktop app, or only ones opened in Chrome?",
+      "Can it give feedback when I'm speaking, or only at the end of the meetings?",
+      "What's the main reason to switch from Granola or Fathom?"
+     ],
+     [
+      "Can I connect local model to your software?",
+      "Would Slack huddles get recorded too, or only the four platforms listed?",
+      "Real speaker names on a Google Meet transcript is the small thing that would make this actually usable later, since a wall of speaker one and speaker two is why I stopped reading my old notes.",
+      "Does the browser version catch a call that starts from the desktop app, or only ones opened in Chrome?",
+      "Can it give feedback when I'm speaking, or only at the end of the meetings?",
+      "What's the main reason to switch from Granola or Fathom?"
+     ],
+     [
+      "Can I connect local model to your software?",
+      "Would Slack huddles get recorded too, or only the four platforms listed?",
+      "Real speaker names on a Google Meet transcript is the small thing that would make this actually usable later, since a wall of speaker one and speaker two is why I stopped reading my old notes.",
+      "Does the browser version catch a call that starts from the desktop app, or only ones opened in Chrome?",
+      "Can it give feedback when I'm speaking, or only at the end of the meetings?",
+      "What's the main reason to switch from Granola or Fathom?"
+     ]
+    ]
+   }
+  },
+  "1321708": {
+   "themes": [
+    {
+     "theme": "Ability to pick up coding sessions from a phone, including diff and CI state",
+     "n": 3
+    },
+    {
+     "theme": "Clarification on how local sessions behave when a laptop is closed or goes to sleep",
+     "n": 2
+    },
+    {
+     "theme": "Performance and compatibility with specific development environments like Xcode/Swift projects",
+     "n": 1
+    },
+    {
+     "theme": "Question about the product utilizing Claude's built-in browser in the cloud",
+     "n": 1
+    },
+    {
+     "theme": "Comparison between Fieldwork Code and Amp",
+     "n": 1
+    },
+    {
+     "theme": "Excitement to try Gemini Neon with the product",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Handling long-running tasks when laptop sleeps",
+    "Performance with Xcode/Swift projects",
+    "Local session pausing/cloud plan for mobile continuation",
+    "Reviewing diff/CI state before pushing",
+    "Use of Claude's built-in browser in the cloud",
+    "Comparison to Amp"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to pick up coding sessions from a phone, including diff and CI state, is a key use case and would improve remote handoffs.",
+      "Users are asking for clarification on how local sessions behave when a laptop is closed or goes to sleep, specifically regarding pausing and continuing from a phone.",
+      "The ability to steer coding sessions from a phone aligns with modern team workflows and is seen as a useful feature.",
+      "There is a question about the performance and compatibility with specific development environments like Xcode/Swift projects.",
+      "A user is asking if the product utilizes Claude's built-in browser in the cloud.",
+      "A user is asking for a comparison between Fieldwork Code and Amp.",
+      "A user is excited to try Gemini Neon with the product."
+     ],
+     [
+      "The ability to continue coding from a phone, especially after closing a laptop, is a key use case.",
+      "How does the system handle long-running tasks when the laptop goes to sleep?",
+      "Users want to review diff and CI state before pushing code, especially when handing off remotely.",
+      "Excited to try Gemini Neon with this product.",
+      "Does the product use Claude's built-in browser in the cloud?",
+      "How does the product perform with Xcode/Swift projects, given their different build and test cycles?",
+      "Users want to understand how Fieldwork Code compares to Amp."
+     ],
+     [
+      "Users want to pick up coding sessions from their phone, including diff and CI state, to review before pushing.",
+      "Users are asking about how sessions behave when a laptop is closed or goes to sleep, specifically regarding local vs. cloud plans.",
+      "Users are asking about the handling of long-running tasks when the laptop goes to sleep.",
+      "Users are asking about compatibility and performance with specific development environments like Xcode/Swift projects.",
+      "Users are asking if the product uses Claude's built-in browser in the cloud.",
+      "Users are asking for a comparison to a named alternative, Amp.",
+      "Users are excited to try the product with Gemini Neon.",
+      "Users find the ability to steer coding sessions from a phone relevant to modern team workflows."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does it handle long-running tasks when the laptop goes to sleep?",
+      "How does it hold up with Xcode/Swift projects, where the build and test cycle is a bit different from a web app?",
+      "If I start a local session and close the laptop, does it just pause, or do I need the cloud plan for the keep coding from my phone thing?",
+      "Being able to review diff and CI state before asking the agent to push would make remote handoffs much less awkward.",
+      "Does it use Claude's built-in browser in the cloud?",
+      "Can you help me better understand how Fieldwork Code compares to Amp?"
+     ],
+     [
+      "Does a local session pause when the laptop closes, or is a cloud plan needed for mobile continuation?",
+      "How are long-running tasks handled when the laptop goes to sleep?",
+      "How does it hold up with Xcode/Swift projects, where the build and test cycle is different?",
+      "Does it use Claude's built-in browser in the cloud?",
+      "Being able to review diff and CI state before pushing would make remote handoffs less awkward.",
+      "How does Fieldwork Code compare to Amp?"
+     ],
+     [
+      "How does it handle long-running tasks when the laptop goes to sleep?",
+      "Does a local session pause when the laptop closes, or is a cloud plan needed for mobile continuation?",
+      "Do the diff and CI state transfer when picking up a session from a phone, allowing review before pushing?",
+      "How does it perform with Xcode/Swift projects, given their different build and test cycles?",
+      "Does it use Claude's built-in browser in the cloud?",
+      "How does Fieldwork Code compare to Amp?"
+     ]
+    ]
+   }
+  },
+  "1312482": {
+   "themes": [
+    {
+     "theme": "General congratulations and appreciation",
+     "n": 12
+    },
+    {
+     "theme": "Widget compatibility and fallback behavior across email clients",
+     "n": 5
+    },
+    {
+     "theme": "Ability to create interactive elements directly within emails",
+     "n": 5
+    },
+    {
+     "theme": "Requests for new features",
+     "n": 2
+    },
+    {
+     "theme": "Inquiries about new widget development process",
+     "n": 1
+    },
+    {
+     "theme": "Comparison with Mailmodo",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Widget customization options",
+    "Widget compatibility with existing email templates",
+    "Widget compatibility with automated emails",
+    "Widget design consistency across interactive and fallback versions",
+    "Widget behavior in Outlook",
+    "Widget roadmap and prioritization"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users express general congratulations and appreciation for the launch.",
+      "Users are concerned about widget compatibility and fallback behavior across different email clients, especially Outlook.",
+      "Users appreciate the ability to create interactive elements directly within emails, especially for surveys and games, reducing clicks and improving engagement.",
+      "Users value the automatic handling of different email client versions (AMP, HTML, static) without manual coding.",
+      "Users ask about the functionality and applicability of widgets in various scenarios, such as existing templates, automated emails, and mobile readers.",
+      "Users request new features, such as AI-generated emails, reusable widgets, and specific integrations.",
+      "Users inquire about the decision-making process for new widget development.",
+      "Users ask how Stripo compares to Mailmodo regarding AMP sender registration and domain whitelisting."
+     ],
+     [
+      "Users express general congratulations and appreciation for the launch.",
+      "Users appreciate the automatic fallback to static versions for email clients that don't support interactive elements, ensuring a consistent experience.",
+      "Users inquire about the compatibility and behavior of widgets across various email clients, especially Outlook and mobile readers.",
+      "Users value the ability to collect survey responses directly within the email, reducing friction and increasing engagement.",
+      "Users ask about the process for deciding on new widget development.",
+      "Users are curious if emails with games are more likely to land in the promotions tab.",
+      "Users request integration with other tools, specifically a Stripo MCP for Claude workflows.",
+      "Users ask how Stripo compares to Mailmodo regarding Google sender registration and AMP preview links."
+     ],
+     [
+      "Users appreciate the ability to create interactive emails without coding and the time-saving aspect of the new features.",
+      "Users are asking about the compatibility and functionality of widgets across different email clients, especially Outlook and mobile readers.",
+      "The fallback mechanism for non-interactive email clients is highly valued, ensuring a consistent and non-broken experience.",
+      "There are questions regarding the impact of interactive elements on email deliverability, specifically if they end up in promotions folders.",
+      "Users are requesting new features, such as AI-powered email creation and integration with other platforms like Claude.",
+      "Users are curious about the process of deciding which new widgets are developed.",
+      "A user is concerned about the appropriateness of gamified widgets in B2B emails.",
+      "A user asks how Stripo compares to Mailmodo for handling Google sender registration and domain whitelisting for AMP emails."
+     ]
+    ],
+    "complaints": [
+     [
+      "Will I be able to tweak the generated widget with the editor controls, or just via the chat?",
+      "Do widgets work in templates I already have, or only in new emails?",
+      "How do you decide what becomes the next widget? User requests, usage data, or someone on the team just really wanting a Magic Ball?",
+      "Can widgets go into automated emails too, like a welcome series, or just campaigns?",
+      "Does the same widget keep one design across the interactive and fallback versions?",
+      "How does it behave in Outlook? Half of our B2B list still reads email there?"
+     ],
+     [
+      "Will I be able to tweak the generated widget with the editor controls, or just via the chat?",
+      "Do widgets work in templates I already have, or only in new emails?",
+      "How do you decide what becomes the next widget? User requests, usage data, or someone on the team just really wanting a Magic Ball?",
+      "Can widgets go into automated emails too, like a welcome series, or just campaigns?",
+      "Does the same widget keep one design across the interactive and fallback versions?",
+      "How does it behave in Outlook? Half of our B2B list still reads email there?"
+     ],
+     [
+      "Does the same widget keep one design across the interactive and fallback versions?",
+      "Do emails with a game in them end up in promotions more often?",
+      "Will I be able to tweak the generated widget with the editor controls, or just via the chat?",
+      "Do widgets work in templates I already have, or only in new emails?",
+      "What about mobile email reader? Would this polls, quiz, etc. work correctly? And what about GDPR and contest for user, etc. How handle you this cases?",
+      "Can widgets go into automated emails too, like a welcome series, or just campaigns?"
+     ]
+    ]
+   }
+  },
+  "1320414": {
+   "themes": [
+    {
+     "theme": "Ability to share massive 3D models via browser link without downloads",
+     "n": 20
+    },
+    {
+     "theme": "Solves the problem of sharing heavy 3D files",
+     "n": 10
+    },
+    {
+     "theme": "Performance of streaming large 3D scenes in a browser",
+     "n": 6
+    },
+    {
+     "theme": "Curiosity about technical details (e.g., re-uploads, data transfer)",
+     "n": 2
+    },
+    {
+     "theme": "Questions about specific integrations and functionalities (e.g., ad spend, MCP)",
+     "n": 2
+    },
+    {
+     "theme": "Interest in using the platform for personal projects/use cases",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and excitement for the launch",
+     "n": 5
+    }
+   ],
+   "complaints": [
+    "Incremental updates/uploads",
+    "Modifying 3D scenes via code/agents",
+    "Minimum ad spend requirement",
+    "Performance with large 3D models in browsers"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to share and experience massive 3D models via a simple browser link, without downloads or installs, is a significant achievement and a game-changer.",
+      "Users appreciate that Verse Engine solves the long-standing problem of sharing heavy 3D files, which previously required cumbersome downloads or resulted in low-quality videos/screenshots.",
+      "The performance of streaming 10 billion triangle scenes in a browser with fast load times and low cost is seen as incredible and a major breakthrough.",
+      "Users are curious about the technical details of how such large scenes are handled, specifically regarding re-uploads and the amount of data transferred.",
+      "Users are asking about specific integrations and functionalities, such as minimum ad spend requirements or the capabilities of MCP integration for modifying scenes.",
+      "Users are interested in using the platform for personal projects like sharing 3D printing ideas with friends on their phones.",
+      "Generic congratulations and expressions of excitement for the launch and the team's work."
+     ],
+     [
+      "Users praise the ability to share and experience massive 3D models easily via a link in a browser, eliminating the need for downloads or powerful hardware.",
+      "Users express congratulations and excitement for the team and the product launch.",
+      "Users express skepticism about the ability to load extremely large 3D scenes (e.g., 10 billion triangles) smoothly in a browser, given past experiences with other tools.",
+      "Users ask about the pricing model, specifically if there's a minimum daily ad spend required.",
+      "Users inquire about the publishing process from Blender, specifically if it re-uploads the entire scene or only changed pieces.",
+      "Users ask if the MCP integration allows for modifying existing 3D scenes via coding agents, or if it's limited to publishing.",
+      "Users express interest in using the platform for sharing 3D printing ideas with friends on their phones."
+     ],
+     [
+      "The ability to share and experience massive 3D models via a simple browser link, without downloads or installs, is a significant achievement and a game-changer.",
+      "Users appreciate that Verse Engine solves the long-standing problem of sharing heavy 3D files, which previously required cumbersome downloads or resulted in low-quality videos/screenshots.",
+      "The performance of streaming 10 billion triangle scenes in a browser with fast load times and low cost is seen as incredible and a major breakthrough.",
+      "Users are curious about the technical details of how such large scenes are handled, specifically regarding re-uploads and the amount of data transferred.",
+      "Users inquire about specific integrations and functionalities, such as minimum ad spend requirements or the capabilities of MCP integration for modifying scenes.",
+      "Users express interest in using the platform for specific personal or professional use cases, like sharing 3D printing ideas or architectural visualizations.",
+      "The use of Rust and Web Assembly for the engine is noted as a positive technical choice that contributes to its performance.",
+      "The product is seen as making 3D experiences more accessible and effortless for both creators and viewers."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does publishing from Blender re upload the whole scene each time, or only the pieces that changed?",
+      "Can the MCP integration also modify existing 3D scenes through Claude Code or any coding agent, or is it limited to just publishing them?",
+      "Do you have a minimum daily ad spend on Meta or TikTok to use this?",
+      "A ten billion triangle city opening from a link on a laptop is the kind of thing I have to see to believe, since every other browser viewer dies around a few million and I go back to sending screenshots."
+     ],
+     [
+      "Does publishing from Blender re upload the whole scene each time, or only the pieces that changed?",
+      "Can the MCP integration also modify existing 3D scenes through Claude Code or any coding agent, or is it limited to just publishing them?",
+      "Do you have a minimum daily ad spend on Meta or TikTok to use this?",
+      "A ten billion triangle city opening from a link on a laptop is the kind of thing I have to see to believe, since every other browser viewer dies around a few million and I go back to sending screenshots.",
+      "I wonder if I could use this to show my 3D printing ideas to friends on their phones without them needing a big computer."
+     ],
+     [
+      "Does publishing from Blender re upload the whole scene each time, or only the pieces that changed?",
+      "Can the MCP integration also modify existing 3D scenes through Claude Code or any coding agent, or is it limited to just publishing them?",
+      "Do you have a minimum daily ad spend on Meta or TikTok to use this?",
+      "A ten billion triangle city opening from a link on a laptop is the kind of thing I have to see to believe, since every other browser viewer dies around a few million and I go back to sending screenshots."
+     ]
+    ]
+   }
+  },
+  "1226465": {
+   "themes": [
+    {
+     "theme": "Paste messy text threads and map places",
+     "n": 1
+    },
+    {
+     "theme": "Group collaboration on itineraries (add/vote)",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Collaborative itinerary building"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to paste messy text threads and have places mapped sounds very handy.",
+      "Can everyone in the group easily add places and vote on them to build one shared itinerary?"
+     ],
+     [
+      "The ability to paste messy text threads and have places mapped sounds very handy.",
+      "Can everyone in the group easily add places and vote on them to build one shared itinerary?"
+     ],
+     [
+      "The ability to paste messy text threads and have places mapped sounds very handy.",
+      "Can everyone in the group easily add places and vote on them to build one shared itinerary?"
+     ]
+    ],
+    "complaints": [
+     [
+      "Can everyone in the group easily add places and vote on them to build one shared itinerary"
+     ],
+     [
+      "Can everyone in the group easily add places and vote on them to build one shared itinerary"
+     ],
+     [
+      "Can everyone in the group easily add places and vote on them to build one shared itinerary"
+     ]
+    ]
+   }
+  },
+  "1305473": {
+   "themes": [
+    {
+     "theme": "Adjust search results without developer involvement",
+     "n": 4
+    },
+    {
+     "theme": "Compare results with and without a rule before applying",
+     "n": 2
+    },
+    {
+     "theme": "How rules work with overlapping conditions and priorities",
+     "n": 1
+    },
+    {
+     "theme": "Marketing burying relevant search results",
+     "n": 1
+    },
+    {
+     "theme": "Pinned results interaction with normal ranking factors",
+     "n": 1
+    },
+    {
+     "theme": "Generic thanks and congratulations on the launch",
+     "n": 1
+    },
+    {
+     "theme": "Automatically pushing out-of-stock products down in search results",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Rule prioritization with overlapping conditions",
+    "A/B testing or previewing rule changes",
+    "Impact of marketing on search relevance",
+    "Behavior of pinned results in search ranking"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Being able to adjust search results without involving developers is a really useful feature.",
+      "Comparing the results with and without a rule is the part I'd want before changing a live search.",
+      "Curious how the rules work when multiple conditions overlap. Is there a way to set priorities between them?",
+      "do marketing ppl ever end up burying the stuff customers actually search for",
+      "when you pin a result for a specific query, does the pin win outright, or does it still sit inside the normal ranking, so typo tolerance and hybrid relevance can move it around?",
+      "This is a great and very useful tool for so many use cases; congrats on that launch! \ud83d\ude80"
+     ],
+     [
+      "The ability to adjust search results without developer involvement is a highly useful and requested feature.",
+      "Users want to compare results with and without a rule before applying changes to a live search.",
+      "Users are curious about how rules work when multiple conditions overlap and if there's a way to set priorities.",
+      "Automatically pushing out-of-stock products down in search results is a desired feature.",
+      "Users question if marketing personnel might inadvertently bury relevant search results.",
+      "Users want to know if a pinned result for a specific query wins outright or if it still interacts with normal ranking factors like typo tolerance.",
+      "Generic thanks and congratulations on the launch."
+     ],
+     [
+      "The ability to adjust search results without developer involvement is a highly useful and requested feature.",
+      "Users want to compare results with and without a rule before applying changes to a live search.",
+      "Users are curious about how rules work when multiple conditions overlap and if there's a way to set priorities.",
+      "Automatically pushing out-of-stock products down in search results is a desired feature.",
+      "Users question if marketing personnel might inadvertently bury relevant search results.",
+      "Users want to know if a pinned result for a specific query wins outright or if it still interacts with normal ranking factors like typo tolerance.",
+      "Generic thanks and congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is there a way to set priorities between rules when multiple conditions overlap?",
+      "I'd want to compare the results with and without a rule before changing a live search.",
+      "Do marketing people ever end up burying the stuff customers actually search for?",
+      "When you pin a result for a specific query, does the pin win outright, or does it still sit inside the normal ranking, so typo tolerance and hybrid relevance can move it around?"
+     ],
+     [
+      "Is there a way to set priorities between rules when multiple conditions overlap?",
+      "I'd want to compare the results with and without a rule before changing a live search.",
+      "Do marketing people ever end up burying the stuff customers actually search for?",
+      "When you pin a result for a specific query, does the pin win outright, or does it still sit inside the normal ranking?"
+     ],
+     [
+      "Is there a way to set priorities between rules when multiple conditions overlap?",
+      "I'd want to compare the results with and without a rule before changing a live search.",
+      "Do marketing people ever end up burying the stuff customers actually search for?",
+      "When you pin a result for a specific query, does the pin win outright, or does it still sit inside the normal ranking?"
+     ]
+    ]
+   }
+  },
+  "1310284": {
+   "themes": [
+    {
+     "theme": "No-backend-changes approach",
+     "n": 2
+    },
+    {
+     "theme": "Configurability and UI customization",
+     "n": 2
+    },
+    {
+     "theme": "'Ask' feature implementation and user confirmation",
+     "n": 1
+    },
+    {
+     "theme": "API calls and session expiration with delayed approvals",
+     "n": 1
+    },
+    {
+     "theme": "Integration with existing applications",
+     "n": 1
+    },
+    {
+     "theme": "Tool views rendering custom components",
+     "n": 1
+    },
+    {
+     "theme": "Self-improving copilot / replaying conversations for regressions",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does Ask work in practice, does the end user confirm each action or does an admin decide once for everyone???",
+    "How does the configurability look?",
+    "What level of customization do you allow people on the UI components?",
+    "How can I add this one to my existing product?",
+    "If that session is gone when the user finally approves, what makes the call?",
+    "when you replay old conversations on a cheaper model, what counts as a pass???"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The no-backend-changes approach is highly appealing for integrating with existing products.",
+      "Users are asking about the level of configurability and customization available, especially for UI components.",
+      "There are questions about how the 'Ask' feature works in practice, specifically regarding user confirmation and admin control.",
+      "Users are curious about the mechanism for API calls when the user's session might expire before approval.",
+      "The concept of tool views rendering custom components within the chat is seen as clever.",
+      "The idea of a self-improving copilot that can replay conversations to catch regressions is a valuable detail.",
+      "Users are asking how to integrate the product into their existing applications.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The approach of API calls going through the user's own browser session is a smart and clever bit.",
+      "Users are asking about the practical implementation of Ask, specifically regarding user confirmation for actions versus admin decisions.",
+      "The 'no-backend-changes' aspect is highly appealing and a strong selling point for trying the product on shipped products.",
+      "The product seems very beneficial for legacy products.",
+      "Users are inquiring about the level of configurability and customization allowed, especially for UI components.",
+      "There is a question about how to integrate the product into an existing product.",
+      "A concern is raised regarding session expiration and how it interacts with delayed approvals, specifically what makes the call if the session is gone.",
+      "There is a question about what counts as a 'pass' when replaying old conversations on a cheaper model."
+     ],
+     [
+      "The no-backend-changes approach and using the user's own browser session for API calls are highly praised as smart and practical.",
+      "Users are asking about the configurability and customization options, especially for UI components and control over API keys.",
+      "There are questions about how the 'Ask' feature works in practice, specifically regarding user confirmation for actions versus admin decisions.",
+      "A question was raised about how 'passes' are counted when replaying old conversations on a cheaper model.",
+      "The idea of tool views rendering custom components inside the chat is seen as clever.",
+      "The self-improving aspect of replaying real conversations to catch regressions is highlighted as an important detail.",
+      "Users are asking how to integrate the product into their existing products.",
+      "A concern was raised about the longevity of ID tokens and user sessions impacting delayed approvals for actions."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does Ask work in practice, does the end user confirm each action or does an admin decide once for everyone???",
+      "How does the configurability look?",
+      "What level of customization do you allow people on the UI components?",
+      "How can I add this one to my existing product?",
+      "If that session is gone when the user finally approves, what makes the call?",
+      "when you replay old conversations on a cheaper model, what counts as a pass???"
+     ],
+     [
+      "How does Ask work in practice, does the end user confirm each action or does an admin decide once for everyone???",
+      "How does the configurability look?",
+      "What level of customization do you allow people on the UI components?",
+      "How can I add this one to my existing product?",
+      "If that session is gone when the user finally approves, what makes the call?",
+      "when you replay old conversations on a cheaper model, what counts as a pass???"
+     ],
+     [
+      "How does Ask work in practice, does the end user confirm each action or does an admin decide once for everyone???",
+      "How does the configurability look? After all, it's inevitable that I can control more things if I build using my own API key, right?",
+      "What level of customization do you allow people on the UI components?",
+      "If that session is gone when the user finally approves, what makes the call?",
+      "How can I add this one to my existing product?",
+      "when you replay old conversations on a cheaper model, what counts as a pass???"
+     ]
+    ]
+   }
+  },
+  "1319464": {
+   "themes": [
+    {
+     "theme": "Data privacy and local browser sessions",
+     "n": 3
+    },
+    {
+     "theme": "Handling pages behind cookie walls or paywalls",
+     "n": 1
+    },
+    {
+     "theme": "Handling partial failures and resuming multi-step tasks",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to Firecrawl",
+     "n": 1
+    },
+    {
+     "theme": "Agent pausing for user approval",
+     "n": 1
+    },
+    {
+     "theme": "Handling sites requiring login and session persistence",
+     "n": 1
+    },
+    {
+     "theme": "Request history off by default",
+     "n": 1
+    },
+    {
+     "theme": "Synthesis of cited findings over just links",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Handling pages behind cookie walls or paywalls",
+    "Handling partial failures in multi-step tasks",
+    "Comparison with Firecrawl",
+    "Agent pausing for user approval",
+    "Handling sites that require login",
+    "Credit usage for multi-step tasks"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate Tabstack's focus on data privacy and local browser sessions.",
+      "Users are asking about how Tabstack handles pages behind cookie walls or paywalls.",
+      "Users want to know how Tabstack handles partial failures in multi-step browser tasks and resuming from the last successful step.",
+      "Users are asking for a comparison between Tabstack and Firecrawl.",
+      "Users are asking if an agent can pause for user approval before submitting forms or making changes on a website.",
+      "Users are curious about how Tabstack handles sites that require a login and if the session stays in the user's browser.",
+      "Users are asking if request history is off by default on a new account.",
+      "Users appreciate the practical approach of synthesizing cited findings rather than just dumping links."
+     ],
+     [
+      "Users appreciate the focus on data privacy and local browser sessions.",
+      "Users are asking about how Tabstack handles pages behind cookie walls or paywalls.",
+      "Users are asking about how Tabstack handles partial failures in multi-step browser tasks and resuming from the last successful step.",
+      "Users are asking for a comparison to Firecrawl.",
+      "Users are asking if an agent can pause and ask for user approval before submitting forms or making changes.",
+      "Users are curious about how Tabstack handles sites that require a login and if the session stays in the user's browser.",
+      "Users are asking if request history is off by default on a new account.",
+      "Users appreciate the direct synthesis of cited findings rather than just a list of links."
+     ],
+     [
+      "Users appreciate Tabstack's focus on data privacy and local browser sessions.",
+      "Users are asking about how Tabstack handles pages behind cookie walls or paywalls.",
+      "Users want to know how Tabstack handles partial failures in multi-step browser tasks and resuming from the last successful step.",
+      "Users are asking for a comparison between Tabstack and Firecrawl.",
+      "Users are asking if an agent can pause for user approval before submitting forms or making changes on a website.",
+      "Users are curious about how Tabstack handles sites that require a login and if the session stays in the user's browser.",
+      "Users are asking if request history is off by default on a new account.",
+      "Users appreciate the practical approach of synthesizing cited findings rather than just dumping links."
+     ]
+    ],
+    "complaints": [
+     [
+      "what happens with pages behind cookie walls or paywalls, does the cited answer just skip them or tell you it couldnt read them?",
+      "How does Tabstack handle partial failures in multi-step browser tasks, and can developers resume from the last successful step without repeating earlier actions?",
+      "What would you say are the advantages of this vs Firecrawl?",
+      "Can an agent pause and ask the user for approval before submitting a form or changing something on a website?",
+      "Curious how you handle sites that need a login \u2014 does the session stay in the user's browser the whole time?",
+      "How many credits does a multi-step browser task use out of the 10,000 free credits?"
+     ],
+     [
+      "what happens with pages behind cookie walls or paywalls, does the cited answer just skip them or tell you it couldnt read them?",
+      "How does Tabstack handle partial failures in multi-step browser tasks, and can developers resume from the last successful step without repeating earlier actions?",
+      "What would you say are the advantages of this vs Firecrawl?",
+      "Can an agent pause and ask the user for approval before submitting a form or changing something on a website?",
+      "Curious how you handle sites that need a login \u2014 does the session stay in the user's browser the whole time?",
+      "How many credits does a multi-step browser task use out of the 10,000 free credits?"
+     ],
+     [
+      "How does Tabstack handle partial failures in multi-step browser tasks, and can developers resume from the last successful step without repeating earlier actions?",
+      "Can an agent pause and ask the user for approval before submitting a form or changing something on a website?",
+      "What happens with pages behind cookie walls or paywalls, does the cited answer just skip them or tell you it couldnt read them?",
+      "What would you say are the advantages of this vs Firecrawl?",
+      "Curious how you handle sites that need a login \u2014 does the session stay in the user's browser the whole time?",
+      "How many credits does a multi-step browser task use out of the 10,000 free credits?"
+     ]
+    ]
+   }
+  },
+  "1310799": {
+   "themes": [
+    {
+     "theme": "Congratulations on the launch",
+     "n": 10
+    },
+    {
+     "theme": "Makes MCP development easier and more approachable",
+     "n": 3
+    },
+    {
+     "theme": "Cross-client testing and readiness checks",
+     "n": 5
+    },
+    {
+     "theme": "How authentication works",
+     "n": 1
+    },
+    {
+     "theme": "Can use existing MCP server and hosting",
+     "n": 1
+    },
+    {
+     "theme": "Supports other frameworks like FastMCP",
+     "n": 1
+    },
+    {
+     "theme": "Difficulty of debugging/ensuring MCPs work across different clients",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does authentication work for tool access?",
+    "Can I use my existing server with Manufact?",
+    "Will this work with a FastMCP server?",
+    "Does the judge explain why a task failed?",
+    "Is the readiness score per marketplace?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are congratulating the team on the launch.",
+      "Users praise the tool for making MCP development and deployment easier and more approachable.",
+      "Users appreciate the cross-client testing and readiness checks for different marketplaces.",
+      "Users find the MCP-first analytics and evaluations across real clients to be a valuable combination.",
+      "Users are asking about how authentication works, especially when tools need access to user accounts or third-party services.",
+      "Users want to know if they can use Manufact while keeping their existing MCP server on their current hosting.",
+      "Users are asking if the tool supports existing servers built with other frameworks like FastMCP.",
+      "Users highlight the difficulty of debugging when an MCP works in one client (e.g., Claude) but fails in another (e.g., ChatGPT)."
+     ],
+     [
+      "Users are praising the product as the best or cleanest MCP infrastructure/management tool.",
+      "Users appreciate the ability to test across different clients and marketplaces to ensure readiness and identify specific problems.",
+      "Users are asking about how authentication works, especially when tools need access to user accounts or third-party services.",
+      "Users are asking if they can use their existing MCP server and hosting with Manufact.",
+      "Users find the product makes building MCP integrations more approachable and solves the pain point of marketplace readiness.",
+      "Users express frustration with the difficulty of ensuring MCPs work across different clients and marketplaces after local testing.",
+      "Users are asking if the product supports other frameworks like FastMCP.",
+      "Users appreciate the session traces that show how agents use tools."
+     ],
+     [
+      "Users express general congratulations and praise for the launch.",
+      "Users praise the ability to test and evaluate MCPs across different clients and marketplaces.",
+      "Users appreciate the MCP-first analytics and the insights provided into task failures.",
+      "Users find the tool makes building MCP integrations more approachable and solves existing pain points.",
+      "Users ask about how authentication works, especially for tools needing access to user accounts.",
+      "Users inquire if they can keep their existing MCP server on current hosting while using Manufact.",
+      "Users ask if the platform supports existing servers built with other frameworks like FastMCP.",
+      "A user highlights the challenge of client differences causing an MCP to work in one client but fail in another."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does auth work if my tools need access to someone\u2019s account?",
+      "Can I keep my existing server on my current hosting and still use Manufact?",
+      "Will this work with a FastMCP server I\u2019ve already built?",
+      "Does the judge tell you why a task failed or just that it failed?",
+      "Is the readiness score per marketplace?"
+     ],
+     [
+      "When something works in Claude but fails in ChatGPT, does the judge tell you why or just that the task failed???",
+      "Is the readiness score per marketplace???",
+      "How does auth work if my tools need access to someone\u2019s account?",
+      "Can I keep my existing server on my current hosting and still use Manufact?",
+      "Would this work with a FastMCP server I\u2019ve already built?"
+     ],
+     [
+      "How does auth work if my tools need access to someone\u2019s account?",
+      "Can I keep my existing server on my current hosting and still use Manufact?",
+      "Will this work with a FastMCP server I\u2019ve already built?",
+      "Does the judge tell you why a task failed or just that it failed?",
+      "Is the readiness score per marketplace?"
+     ]
+    ]
+   }
+  },
+  "1322288": {
+   "themes": [
+    {
+     "theme": "General praise and congratulations for the product launch",
+     "n": 10
+    },
+    {
+     "theme": "Differentiation and comparison to existing alternatives or traditional ad agencies",
+     "n": 4
+    },
+    {
+     "theme": "Role and integration of human oversight and approval in the agent-driven process",
+     "n": 4
+    },
+    {
+     "theme": "Ability to manage and optimize ads on smaller or specific platforms like Reddit, Snapchat, or for call-based leads",
+     "n": 3
+    },
+    {
+     "theme": "Ability to maintain brand voice and ensure ad quality while generating creatives at scale",
+     "n": 2
+    },
+    {
+     "theme": "Ability to set and adhere to hard spend caps",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How is Adside's philosophy different from alternatives?",
+    "Does budget shifting require human approval?",
+    "How does Adside maintain brand voice in new creatives?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users express general praise and congratulations for the product launch.",
+      "Users inquire about the product's differentiation and comparison to existing alternatives or traditional ad agencies.",
+      "Users ask about the role and integration of human oversight and approval in the agent-driven process.",
+      "Users ask about the product's ability to manage and optimize ads on smaller or specific platforms like Reddit, Snapchat, or for call-based leads.",
+      "Users ask about the product's ability to maintain brand voice and ensure ad quality while generating creatives at scale.",
+      "Users ask about the product's ability to set and adhere to hard spend caps.",
+      "Users ask for case studies or proof of better results compared to traditional agencies, especially for specific business types.",
+      "Users express skepticism about the current capabilities of AI agents, viewing them as more like 'interns' than fully autonomous employees."
+     ],
+     [
+      "Users express general praise and congratulations for the product launch.",
+      "Users inquire about the differentiation and competitive advantages of Adside compared to alternatives or traditional agencies.",
+      "Users ask about the approval process for creatives and budget shifts, especially regarding human oversight.",
+      "Users ask about the possibility of adding support for smaller ad platforms like Reddit and Snapchat.",
+      "Users are curious about how Adside maintains brand voice and compliance for creatives at scale.",
+      "Users ask about Adside's ability to optimize for specific conversion types like phone calls.",
+      "Users inquire about the role of the human layer in the product, specifically if it's a temporary bridge or a long-term feature.",
+      "Users ask about the ability to set hard spend caps for agents."
+     ],
+     [
+      "Users express general praise and congratulations for the product launch.",
+      "Users inquire about the product's differentiation and comparison to existing alternatives or traditional ad agencies.",
+      "Users ask about the role and integration of human oversight and approval in the agent-driven process.",
+      "Users ask about the product's ability to manage and optimize ads on smaller or specific platforms like Reddit, Snapchat, or for call-based leads.",
+      "Users ask about the product's ability to maintain brand voice and ensure ad quality while generating creatives at scale.",
+      "Users ask about the product's ability to set and adhere to hard spend caps.",
+      "Users ask for case studies or proof of better results compared to traditional agencies, especially for specific business types.",
+      "Users express skepticism about the current capabilities of AI agents, viewing them as more like 'interns' than fully autonomous employees."
+     ]
+    ],
+    "complaints": [
+     [
+      "At the core, how is its philosophy different from any alternatives?",
+      "Do you see the human layer as a bridge until the agents earn full trust, or as the long-term product?",
+      "Do budget shifts between Google, Meta and LinkedIn also wait in that queue for a human to okay them?",
+      "How do you handle a client who wants to approve every creative before it goes live?",
+      "Can you point to any case studies of Adside helping B2B AI SaaS companies?",
+      "How does Adside keep new creatives inside each client's brand voice and claims (what they can and can't say) while it's testing?"
+     ],
+     [
+      "At the core, how is its philosophy different from any alternatives?",
+      "Do you see the human layer as a bridge until the agents earn full trust, or as the long-term product?",
+      "Do budget shifts between Google, Meta and LinkedIn also wait in that queue for a human to okay them?",
+      "How do you handle a client who wants to approve every creative before it goes live?",
+      "Can you point to any case studies of Adside helping B2B AI SaaS companies?",
+      "How does Adside keep new creatives inside each client's brand voice and claims (what they can and can't say) while it's testing?"
+     ],
+     [
+      "How is Adside's philosophy different from alternatives, and are there any direct competitors?",
+      "Do budget shifts between platforms also require human approval, similar to agent notifications for creatives?",
+      "How does Adside ensure new creatives stay within a client's brand voice and claims while testing at scale?",
+      "Can Adside optimize for calls, especially when half of leads phone in and ad platforms only track form fills?",
+      "Is there a way to set a hard spend cap that the agents cannot exceed?",
+      "When a campaign performs poorly at 2 AM, does the agent automatically pause it, or does it wait for human approval?"
+     ]
+    ]
+   }
+  },
+  "1316668": {
+   "themes": [
+    {
+     "theme": "How does the agent decide if something is an estimate or inferred?",
+     "n": 1
+    },
+    {
+     "theme": "How do you handle small/private companies with very little public data?",
+     "n": 1
+    },
+    {
+     "theme": "Does it report where the data comes from?",
+     "n": 1
+    },
+    {
+     "theme": "Are you able to make EverySignal do comparisons between companies?",
+     "n": 1
+    },
+    {
+     "theme": "The evidence labels are a liked detail.",
+     "n": 1
+    },
+    {
+     "theme": "Sourcing every number in a diligence report is what will make investors trust it.",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the launch.",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Ability to compare companies",
+    "Handling of estimates/inferred data",
+    "Handling of small/private companies",
+    "Data source attribution"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How does the agent decide if something is an estimate or inferred?",
+      "How do you handle small/private companies with very little public data?",
+      "Does it report where the data comes from?",
+      "Are you able to make EverySignal do comparisons between companies?",
+      "The evidence labels are the detail I like.",
+      "Sourcing every number in a diligence report is what will make investors trust it.",
+      "When we research a prospect before a pitch half the numbers we find are guesses dressed up as facts.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "How does the agent decide if something is an estimate or inferred?",
+      "How do you handle small/private companies with very little public data?",
+      "Does it report where the data comes from?",
+      "Are you able to make EverySignal do comparisons between companies?",
+      "The evidence labels are the detail I like.",
+      "Sourcing every number in a diligence report is what will make investors trust it.",
+      "Generic thanks/congratulations with no content."
+     ],
+     [
+      "How does the agent decide if something is an estimate or inferred?",
+      "How do you handle small/private companies with very little public data?",
+      "Does it report where the data comes from?",
+      "Are you able to make EverySignal do comparisons between companies?",
+      "The evidence labels are a liked detail, allowing users to decide what to check next without treating inferred numbers as fact.",
+      "Half the numbers found when researching a prospect are guesses dressed up as facts.",
+      "Sourcing every number in a diligence report will make investors trust it.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Are you able to make EverySignal do comparisons between companies?",
+      "how does the agent decide if something is an estimate or inferred",
+      "How do you handle small/private companies with very little public data?",
+      "Does it report where the data comes from?"
+     ],
+     [
+      "How does the agent decide if something is an estimate or inferred?",
+      "How do you handle small/private companies with very little public data?",
+      "Does it report where the data comes from?",
+      "Are you able to make EverySignal do comparisons between companies?"
+     ],
+     [
+      "How does the agent decide if something is an estimate or inferred?",
+      "How do you handle small/private companies with very little public data?",
+      "Does it report where the data comes from?",
+      "Are you able to make EverySignal do comparisons between companies?"
+     ]
+    ]
+   }
+  },
+  "1221588": {
+   "themes": [
+    {
+     "theme": "Template approach preferred over starting from scratch/AI video",
+     "n": 2
+    },
+    {
+     "theme": "Handling of portrait phone screens/different aspect ratios",
+     "n": 1
+    },
+    {
+     "theme": "Template pacing with long text vs. agent rewriting copy",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Handles portrait phone screens",
+    "Template adjusts to text length"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The template approach is preferred over starting from scratch, especially given the current state of AI video.",
+      "Making launch videos is a difficult and often postponed task for solo developers due to the learning curve of tools like After Effects and budget constraints for agencies.",
+      "How well does the tool handle portrait phone screens for launch clips?",
+      "Does a template stretch its pacing when the text runs long, or does the agent rewrite the copy to fit?",
+      "Support for generating videos in a variety of aspect ratios from one project, with agents defensively coding for different screen sizes."
+     ],
+     [
+      "The template approach is praised as a good middle ground for solo developers who find launch videos challenging.",
+      "Users are curious about how the templates handle different screen aspect ratios, specifically portrait phone screens.",
+      "A user asks if the template adjusts pacing for longer text or if the agent rewrites copy to fit.",
+      "The 'video as code' concept is highlighted as a significant and interesting feature.",
+      "A user expresses that AI video is still inconsistent, making templates a safer option."
+     ],
+     [
+      "The template approach is preferred over starting from scratch or relying solely on AI video.",
+      "After Effects has a steep learning curve and agencies are too expensive for solo developers.",
+      "How well does it handle portrait phone screens for vertical launch clips?",
+      "Does a template stretch its pacing when the text runs long, or does the agent rewrite the copy to fit?",
+      "Support for agents to write videos that can generate multiple aspect ratios from one project."
+     ]
+    ],
+    "complaints": [
+     [
+      "I'm curious how well it handles portrait phone screens, since most of my launch clips end up vertical.",
+      "Does a template stretch its pacing when the text runs long, or does the agent rewrite the copy to fit?"
+     ],
+     [
+      "Curious how well it handles portrait phone screens, since most of my launch clips end up vertical.",
+      "Does a template stretch its pacing when the text runs long, or does the agent rewrite the copy to fit?"
+     ],
+     [
+      "Curious how well it handles portrait phone screens, since most of my launch clips end up vertical.",
+      "Does a template stretch its pacing when the text runs long, or does the agent rewrite the copy to fit?"
+     ]
+    ]
+   }
+  },
+  "1314645": {
+   "themes": [
+    {
+     "theme": "Addresses AI coding agent issues and verification needs",
+     "n": 7
+    },
+    {
+     "theme": "Handles edge cases and specific technical scenarios",
+     "n": 4
+    },
+    {
+     "theme": "Human approval for test expectation changes",
+     "n": 3
+    },
+    {
+     "theme": "Product scope and capabilities",
+     "n": 2
+    },
+    {
+     "theme": "Internal Server error",
+     "n": 2
+    },
+    {
+     "theme": "Comparison to existing tools or previous versions",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How to prevent agents from interfering with each other's test data",
+    "Handling edge cases like flaky internet or server timeouts",
+    "Security and access control for test account credentials",
+    "Differentiation from AI code generation tools for tests",
+    "Compatibility with various application frameworks",
+    "Autonomous test execution, failure analysis, and re-running by coding agents"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The product addresses the common problem of AI coding agents fixing one thing and breaking another, and the need for robust verification.",
+      "Users are asking about the product's ability to handle various edge cases and specific technical scenarios, such as flaky internet, server timeouts, and different app types.",
+      "Users appreciate that the product requires human approval for changes to test expectations, ensuring trust and preventing quiet regressions.",
+      "Users are asking about the product's scope and capabilities, such as whether it covers backend APIs, specific frameworks, or local development environments.",
+      "Some users are experiencing 'Internal Server error' when trying to use the product.",
+      "Users are asking about the differences between the current version (4.0) and previous versions, or how it compares to existing tools.",
+      "The product is praised for integrating well into existing workflows and tools, making it an easy sell for teams.",
+      "Users are asking about how the product handles test data when multiple agents are running simultaneously."
+     ],
+     [
+      "The product addresses the common problem of AI coding agents fixing one thing and breaking another, and the need for robust verification.",
+      "Users are asking about the product's ability to handle various edge cases and specific technical scenarios, such as flaky internet, server timeouts, and different app types.",
+      "Users appreciate that the product requires human approval for changes to test expectations, ensuring trust and preventing quiet regressions.",
+      "Users are asking about the product's scope and capabilities, such as whether it covers backend APIs, specific frameworks, or local development environments.",
+      "Some users are experiencing 'Internal Server error' when trying to use the product.",
+      "Users are asking about the differences between the current version (4.0) and previous versions, or how it compares to existing tools.",
+      "The product is praised for integrating well into existing workflows and tools, making it an easy sell for teams.",
+      "Users are asking about how the product handles test data when multiple agents are running simultaneously."
+     ],
+     [
+      "Users appreciate that the tool helps verify AI-written code, addressing the common problem of AI fixing one thing and breaking another.",
+      "Users praise the concept of human approval for changes to test expectations, ensuring tests reflect deliberate changes rather than quiet regressions.",
+      "Users appreciate the detailed failure reports, including expected vs. actual results and recordings, over simple red X's and stack traces.",
+      "Users are curious about the tool's ability to handle edge cases like flaky internet, server timeouts, or specific application types (e.g., native iOS, Lovable, Bolt, Replit).",
+      "Users have questions about the tool's scope, such as whether it covers backend APIs, data, or only UI testing.",
+      "Some users reported encountering an 'Internal Server error' when trying to use the product.",
+      "Users inquire about the storage and accessibility of test account credentials.",
+      "Users ask how the product differs from existing AI code generation tools like Claude Code or Cursor for writing Playwright tests."
+     ]
+    ],
+    "complaints": [
+     [
+      "If dozens of agents are clicking through the same app at once, how do you keep them from stepping on each other's test data?",
+      "I wonder if it can handle crazy edge cases like flaky internet or server timeouts?",
+      "Where are test account credentials stored, and who on the team can see them?",
+      "How is this different from just asking Claude Code or Cursor to write Playwright tests for me?",
+      "Does it work on apps built with Lovable, Bolt or Replit?",
+      "Can my coding agent call TestSprite through the CLI or MCP, read the failure, fix the code and rerun on its own? Or does a person need to stay in the loop?"
+     ],
+     [
+      "If dozens of agents are clicking through the same app at once, how do you keep them from stepping on each other's test data?",
+      "I wonder if it can handle crazy edge cases like flaky internet or server timeouts?",
+      "Where are test account credentials stored, and who on the team can see them?",
+      "How is this different from just asking Claude Code or Cursor to write Playwright tests for me?",
+      "Does it work on apps built with Lovable, Bolt or Replit?",
+      "Can my coding agent call TestSprite through the CLI or MCP, read the failure, fix the code and rerun on its own?"
+     ],
+     [
+      "If dozens of agents are clicking through the same app at once, how do you keep them from stepping on each other's test data?",
+      "I wonder if it can handle crazy edge cases like flaky internet or server timeouts?",
+      "Where are test account credentials stored, and who on the team can see them?",
+      "How is this different from just asking Claude Code or Cursor to write Playwright tests for me?",
+      "Does it work on apps built with Lovable, Bolt or Replit?",
+      "Can my coding agent call TestSprite through the CLI or MCP, read the failure, fix the code and rerun on its own?"
+     ]
+    ]
+   }
+  },
+  "1321899": {
+   "themes": [
+    {
+     "theme": "Ability to continue in-person notes on phone",
+     "n": 2
+    },
+    {
+     "theme": "Concern about dictation behavior on iOS (app switching)",
+     "n": 1
+    },
+    {
+     "theme": "Concern about battery drain and recording with screen locked",
+     "n": 1
+    },
+    {
+     "theme": "Intro video was fun and well done",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "App switching before dictation",
+    "Recording with locked phone and battery impact"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability to continue in-person notes on their phone.",
+      "Users are concerned about the dictation behavior on iOS, specifically the app switching.",
+      "Users are asking if the phone keeps recording with the screen locked and the impact on battery life.",
+      "Users found the intro video super fun and well done."
+     ],
+     [
+      "Users appreciate the ability to continue in-person notes on their phone.",
+      "Users are concerned about the battery drain when recording for extended periods with the phone locked.",
+      "Users are asking about the behavior of Wispr dictation on iOS, specifically the app switching when starting dictation.",
+      "Users are asking if the recording continues with the phone locked for an hour.",
+      "Users found the intro video super fun and well done."
+     ],
+     [
+      "The ability to continue in-person notes on a phone is really useful and works well.",
+      "There is a concern about battery drain and continuous recording with the phone locked during long in-person meetings.",
+      "Users are asking about the behavior of Wispr dictation on iOS, specifically the app switching when starting dictation.",
+      "Users are asking if the app keeps recording with the phone locked and the impact on battery life.",
+      "The intro video was super fun and well done."
+     ]
+    ],
+    "complaints": [
+     [
+      "Why does Wispr dictation on iOS switch apps automatically before starting dictation?",
+      "Does the recording continue with the phone locked, and what is the battery impact?"
+     ],
+     [
+      "Why does Wispr dictation on iOS switch apps automatically before starting dictation?",
+      "Does the recording continue with the phone locked, and what is the battery impact?"
+     ],
+     [
+      "Why does Wispr dictation on iOS switch apps automatically before starting dictation?",
+      "Does the recording continue with the phone locked, and what is the battery impact?"
+     ]
+    ]
+   }
+  }
+ }
+}

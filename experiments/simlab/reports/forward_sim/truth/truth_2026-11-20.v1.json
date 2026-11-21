@@ -1,0 +1,555 @@
+{
+ "day": "2026-11-20",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1315726": {
+   "themes": [
+    {
+     "theme": "Product's usefulness for vulnerable populations",
+     "n": 3
+    },
+    {
+     "theme": "Support for multiple languages",
+     "n": 1
+    },
+    {
+     "theme": "Ability for family to add multiple neighbors",
+     "n": 1
+    },
+    {
+     "theme": "Design philosophy and 7-day deletion policy",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Multi-language support",
+    "Ability to add a second neighbor"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the product's usefulness and positive impact on vulnerable populations, especially the elderly.",
+      "Users are asking if the product supports multiple languages.",
+      "Users are requesting the ability for family members to add multiple neighbors.",
+      "Users appreciate the design philosophy of treating any doubt as a problem.",
+      "Users commend the 7-day deletion policy for recordings."
+     ],
+     [
+      "Users praise the product's usefulness and its ability to support vulnerable populations, especially the elderly and less tech-inclined individuals.",
+      "Users are asking if the product works in different languages.",
+      "Users are asking if the family can add a second neighbor as a contact.",
+      "Users appreciate the design philosophy that any doubt counts as a problem and the 7-day deletion of recordings."
+     ],
+     [
+      "Users praise the product's usefulness and its potential to help vulnerable and less tech-inclined individuals, especially the elderly and lonely.",
+      "Users are asking if the product supports different languages.",
+      "Users are requesting the ability for family members to add a second neighbor as a contact.",
+      "Users appreciate the design philosophy that any doubt counts as a problem and the 7-day deletion policy for recordings."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it work in different languages?",
+      "Can the family add a second neighbour, in case the first one's away that day?"
+     ],
+     [
+      "Does it work in different languages?",
+      "Can the family add a second neighbour, in case the first one's away that day?"
+     ],
+     [
+      "Does it work in different languages?",
+      "Can the family add a second neighbour, in case the first one's away that day?"
+     ]
+    ]
+   }
+  },
+  "1296743": {
+   "themes": [
+    {
+     "theme": "Interview practice feature is valuable for consistent preparation",
+     "n": 2
+    },
+    {
+     "theme": "Compass OS helps manage and organize job applications, preventing duplicate submissions",
+     "n": 1
+    },
+    {
+     "theme": "Product serves as a much-needed career coach for young adults/professionals",
+     "n": 1
+    },
+    {
+     "theme": "How the system differentiates between verifiable and unwritten information",
+     "n": 1
+    },
+    {
+     "theme": "Users want to see and reject individual bullet point changes without redoing everything",
+     "n": 1
+    },
+    {
+     "theme": "The 'never auto submit' feature is important and should be highlighted more prominently",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and well wishes for the launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does it know what to back up?",
+    "Ability to reject individual suggestions"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The interview practice feature is a valuable tool for consistent preparation.",
+      "Compass OS helps manage and organize job applications, preventing duplicate submissions.",
+      "The product serves as a much-needed career coach for young adults.",
+      "How does the system differentiate between information that can be backed up and information that was never written down?",
+      "Users want to see every changed line next to their original with an explanation, and the ability to reject individual bullets without redoing everything.",
+      "The 'never auto submit' feature is very important and should be highlighted more prominently.",
+      "Generic congratulations and well wishes for the launch."
+     ],
+     [
+      "The interview practice feature is a valuable tool for consistent preparation.",
+      "Compass OS helps manage and organize job applications, preventing duplicate submissions.",
+      "The product serves as a much-needed career coach for young adults.",
+      "How does the system differentiate between information that can be backed up and information that was never written down?",
+      "Users want to see every changed line next to their original with an explanation, and the ability to reject individual bullets without redoing everything.",
+      "The 'never auto submit' feature is very important and should be highlighted more prominently.",
+      "Generic congratulations and well wishes for the launch."
+     ],
+     [
+      "The interview practice feature is a valuable tool for consistent preparation.",
+      "Compass OS helps manage and organize job applications, preventing duplicate submissions.",
+      "The product serves as a much-needed career coach for young professionals.",
+      "Users are curious about how the system distinguishes between verifiable experience and unwritten information.",
+      "Users desire the ability to see and reject individual bullet point changes without redoing the entire document.",
+      "The 'never auto submit' feature is highly valued and should be more prominent.",
+      "Generic congratulations and well wishes for the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "how does it know what i can actually back up vs stuff i just never wrote down anywhere",
+      "if i can reject one bullet without redoing everything, i would use it."
+     ],
+     [
+      "how does it know what i can actually back up vs stuff i just never wrote down anywhere",
+      "if i can reject one bullet without redoing everything, i would use it."
+     ],
+     [
+      "how does it know what i can actually back up vs stuff i just never wrote down anywhere",
+      "for me trust comes from seeing every changed line next to my original one, with a short why. if i can reject one bullet without redoing everything, i would use it.",
+      "also the never auto submit part is a big deal, i would put it much higher on the page"
+     ]
+    ]
+   }
+  },
+  "1322672": {
+   "themes": [
+    {
+     "theme": "Real total cost (shipping/taxes)",
+     "n": 10
+    },
+    {
+     "theme": "International availability/expansion",
+     "n": 4
+    },
+    {
+     "theme": "General congratulations/positive sentiment",
+     "n": 6
+    },
+    {
+     "theme": "Handling dynamic pricing/promo codes/cashback",
+     "n": 4
+    },
+    {
+     "theme": "Price tracking/watching for future changes",
+     "n": 2
+    },
+    {
+     "theme": "Suggesting alternative items vs. exact item",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to other shopping tools (e.g., Muse)",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Promo codes/card offers not working",
+    "Price drop after purchase",
+    "Discovery vs. deal optimization",
+    "Exact item vs. alternatives",
+    "Browser compatibility (Firefox/Safari)",
+    "International availability"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the focus on showing the real total cost, including shipping and taxes, as it addresses a common pain point in online shopping.",
+      "Many users expressed general congratulations and positive sentiment for the product launch.",
+      "Users are interested in the product's availability and functionality in regions outside the US, such as Australia, New Zealand, and India.",
+      "Users want to know if the product can track price drops after a purchase or watch items for future price changes.",
+      "Users are curious about how the product handles dynamic elements like promo codes, card offers, and cashback, and whether it verifies final prices.",
+      "Users are interested in features related to personalized recommendations, learning shopping preferences, and integrating personalized discounts.",
+      "Users want to know if the product suggests alternative items or only checks the exact item.",
+      "A user asked for a comparison to 'Muse for shopping'."
+     ],
+     [
+      "Users appreciate the focus on showing the real total price including shipping and tax, as this solves a common problem.",
+      "Users are asking about the product's functionality, such as whether it suggests alternatives or only checks exact items, and how it handles dynamic pricing like promo codes.",
+      "Users are asking about international availability and plans for expansion beyond the US.",
+      "Users are requesting features like support for specific browsers (Firefox, Safari), the ability to split bulk orders, and personalized discount integration.",
+      "Users generally congratulate the team on the launch and express excitement for the product.",
+      "Users are asking about the product's ability to track price drops after purchase or watch items for future price changes.",
+      "Users are asking how the product compares to existing shopping tools like Muse or cashback programs like Rakuten.",
+      "Users are requesting a 'free shipping only' toggle for small orders."
+     ],
+     [
+      "Users appreciate the focus on showing the real total price including shipping and tax, as this addresses a common pain point in online shopping.",
+      "Users are asking about the product's availability and plans for international expansion beyond the US.",
+      "Many users expressed general congratulations and positive sentiment for the launch.",
+      "Users are curious about how the product handles dynamic pricing, promo codes, cashback, and price changes.",
+      "Users are requesting features such as price tracking, personalized recommendations, and specific filtering options.",
+      "Users want to know if the product suggests alternative items or only checks the exact item.",
+      "A user asked how the product compares to Muse for shopping.",
+      "Users are asking about browser support beyond the initial launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you handle promo codes or card offers that stop working at checkout?",
+      "Does Saparo catch it if a price drops again after you've already bought something?",
+      "Is this for figuring out what to buy, or getting a better deal once I've picked something?",
+      "Is it checking the exact item, or will it suggest alternatives too?",
+      "Any plans for Firefox or Safari?",
+      "Do you have plans to roll it out beyond the US?"
+     ],
+     [
+      "How do you handle promo codes or card offers that stop working at checkout?",
+      "Does Saparo catch it if a price drops again after you've already bought something?",
+      "Is this for figuring out what to buy, or getting a better deal once I've picked something?",
+      "Is it checking the exact item, or will it suggest alternatives too?",
+      "Any plans for Firefox or Safari?",
+      "Do you have plans to roll it out beyond the US?"
+     ],
+     [
+      "How do you handle promo codes or card offers that stop working at checkout?",
+      "Is this for figuring out what to buy, or getting a better deal once I've picked something?",
+      "Any plans for Firefox or Safari?",
+      "Does Saparo catch it if a price drops again after you've already bought something?",
+      "Will this support stores outside the US later?",
+      "Is it checking the exact item, or will it suggest alternatives too?"
+     ]
+    ]
+   }
+  },
+  "1320093": {
+   "themes": [
+    {
+     "theme": "Users appreciate the onboarding flow, especially the ability to scan a whole shelf of barcodes at once.",
+     "n": 2
+    },
+    {
+     "theme": "Users want a way to mark where they stopped reading in a book.",
+     "n": 1
+    },
+    {
+     "theme": "Users want to know if notes and quotes can be exported to other apps like Notion.",
+     "n": 1
+    },
+    {
+     "theme": "Users are comparing the product to Readwise and its new books app, asking about key differentiators.",
+     "n": 1
+    },
+    {
+     "theme": "Users want a due back reminder for lent books to go to the friend who has it.",
+     "n": 1
+    },
+    {
+     "theme": "Users question the core use case, suggesting existing tools like AI subscriptions or e-readers already offer similar tracking and recommendation features.",
+     "n": 1
+    },
+    {
+     "theme": "Users advise the product to remain a tracker and not try to become a reader, to avoid competing with established platforms like Kindle and Apple Books.",
+     "n": 3
+    }
+   ],
+   "complaints": [
+    "Export notes and quotes",
+    "Clarify use case/differentiation from existing tools",
+    "Lending/borrowing features",
+    "Reading progress tracking",
+    "Handling conflicting library data"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the onboarding flow, especially the ability to scan a whole shelf of barcodes at once.",
+      "Users want a way to mark where they stopped reading in a book.",
+      "Users want to know if notes and quotes can be exported to other apps like Notion.",
+      "Users are comparing the product to Readwise and its new books app, asking about key differentiators.",
+      "Users want a due back reminder for lent books to go to the friend who has it.",
+      "Users question the core use case, suggesting existing tools like AI subscriptions or e-readers already offer similar tracking and recommendation features.",
+      "Users advise the product to remain a tracker and not try to become a reader, to avoid competing with established platforms like Kindle and Apple Books.",
+      "Users are curious about how the product handles discrepancies in titles across national libraries in its 28-language catalog."
+     ],
+     [
+      "Users appreciate the onboarding flow, especially the ability to scan a whole shelf of barcodes at once.",
+      "Users want a way to mark where they stopped reading in a book.",
+      "Users want to know if notes and quotes can be exported to other apps like Notion.",
+      "Users are comparing the product to Readwise and its new books app, asking about key differentiators.",
+      "Users want a feature to send due-back reminders to friends who have borrowed books.",
+      "Some users question the core use case, suggesting existing AI tools or e-readers already cover similar functionalities.",
+      "Users advise the product to remain a tracker and not try to become a reader, to avoid competing with established platforms like Kindle.",
+      "Users are curious about how the product handles discrepancies in titles across different national libraries within its 28-language catalog."
+     ],
+     [
+      "The product should remain a tracker and not try to become a reader, as it would compete with established platforms like Kindle and Apple Books.",
+      "Can a user have an electronic label to mark where they stopped reading and where to continue?",
+      "Can notes and quotes be exported to Notion, or do they stay within the app?",
+      "The onboarding flow is well-designed and appreciated.",
+      "How does this product differ from Readwise's new books app?",
+      "Scanning a whole shelf of barcodes at once is a great onboarding trick that helps users overcome initial hurdles.",
+      "Can a due back reminder for a lent book be sent to the friend who has it?",
+      "The use case is unclear, as existing AI subscriptions or e-reader apps can already track reading and recommend books."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can I export the notes and quotes to Notion, or do they stay in the app?",
+      "I\u2019m not quite following the use case here, because you can use your own Claude or ChatGPT subscription and have it keep track for you By reviewing the subscriptions.",
+      "When I lend a book, can the due back reminder go to the friend who has it?",
+      "Can a user have something like an electronic label? So the user will know where he stopped reading.",
+      "What do you think are the key things you do that differ from that experience?",
+      "When the national libraries disagree on the same title do you merge them or show both?"
+     ],
+     [
+      "Can a user have something like an electronic label, so the user will know where he stopped reading and where to continue (page) the next day?",
+      "Can I export the notes and quotes to Notion, or do they stay in the app?",
+      "What do you think are the key things you do that differ from the Readwise books app experience?",
+      "When I lend a book, can the due back reminder go to the friend who has it?",
+      "I\u2019m not quite following the use case here, because you can use your own Claude or ChatGPT subscription and have it keep track for you by reviewing the subscriptions.",
+      "When the national libraries disagree on the same title, do you merge them or show both?"
+     ],
+     [
+      "Can a user have something like an electronic label, so the user will know where he stopped reading and where to continue (page) the next day?",
+      "Can I export the notes and quotes to Notion, or do they stay in the app?",
+      "What do you think are the key things you do that differ from the Readwise books app experience?",
+      "When I lend a book, can the due back reminder go to the friend who has it?",
+      "I\u2019m not quite following the use case here, because you can use your own Claude or ChatGPT subscription and have it keep track for you by reviewing the subscriptions.",
+      "When national libraries disagree on the same title, do you merge them or show both?"
+     ]
+    ]
+   }
+  },
+  "1323083": {
+   "themes": [
+    {
+     "theme": "Ability to see if a test failed before the current change (test history)",
+     "n": 3
+    },
+    {
+     "theme": "Congratulate makers on product launch",
+     "n": 5
+    },
+    {
+     "theme": "Curiosity about how the agent handles retries or fixes when a test fails",
+     "n": 1
+    },
+    {
+     "theme": "Interest in features beyond observability to help clean up tests (e.g., identifying useless, duplicated, or flaky tests)",
+     "n": 1
+    },
+    {
+     "theme": "How the product handles situations where the test itself is out of date",
+     "n": 1
+    },
+    {
+     "theme": "Impressed by the efficiency of the product (API calls and token usage)",
+     "n": 1
+    },
+    {
+     "theme": "Questions about how the product handles monorepos with multiple projects",
+     "n": 1
+    },
+    {
+     "theme": "Desire for a summary of which failures the agent fixed and which it left",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Can the agent use run data to help clean up tests, identifying useless, duplicated, or flaky tests?",
+    "How does the agent handle a monorepo where several projects report into the same run, specifically regarding grouping failures?",
+    "Does the agent retry until green instead of fixing anything when it reads a failure?",
+    "What does the agent do when the test itself is out of date?",
+    "Does a job that times out with every test passing show up as a failure?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the product's ability to show if a test failed before the current change, as it helps distinguish real regressions from flaky tests.",
+      "Users generally congratulate the makers on the product launch.",
+      "Users are curious about how the agent handles retries or fixes when a test fails.",
+      "Users are interested in features that go beyond observability to help clean up tests, such as identifying useless, duplicated, or flaky tests.",
+      "Users want to know how the product handles situations where the test itself is out of date.",
+      "Users are impressed by the efficiency of the product in terms of API calls and token usage compared to other tools.",
+      "Users have questions about how the product handles monorepos with multiple projects reporting into the same run.",
+      "Users would like a summary of which failures the agent fixed and which it left for them after a run."
+     ],
+     [
+      "The ability to see if a test failed before the current change (test history) is a highly valued feature.",
+      "Users appreciate the efficiency of the product, specifically the reduced API calls and token usage compared to raw traces.",
+      "Users are concerned about how the agent handles situations where the test itself is out of date or flaky.",
+      "Users are asking about the agent's behavior when encountering failures, specifically if it retries or fixes issues.",
+      "Users are interested in features that go beyond observability to help clean up tests, such as identifying useless, duplicated, or flaky tests.",
+      "Users want to know how the product handles monorepos with multiple projects reporting into the same run.",
+      "Users are asking if the product can provide a summary of which failures the agent fixed and which it left for the user.",
+      "Users are asking about specific failure scenarios, such as how a job that times out with every test passing is reported."
+     ],
+     [
+      "Users appreciate the product's ability to show if a test failed before the current change, as it helps distinguish real regressions from flaky tests.",
+      "Users generally congratulate the makers on the product launch.",
+      "Users are curious about how the agent handles retries or fixes when a test fails.",
+      "Users are interested in features that go beyond observability to help clean up tests, such as identifying useless, duplicated, or flaky tests.",
+      "Users want to know how the product handles situations where the test itself is out of date.",
+      "Users are impressed by the efficiency of the product in terms of API calls and token usage compared to other tools.",
+      "Users have questions about how the product handles monorepos with multiple projects reporting into the same run.",
+      "Users would like a summary of which failures the agent fixed and which it left for them after a run."
+     ]
+    ],
+    "complaints": [
+     [
+      "Any plans to go beyond observability and use the run data to actually help clean up the tests? Like telling us which ones are useless, duplicated, or just flaky noise.",
+      "Curious how it handles a monorepo where several Playwright projects report into the same run, does the agent get the failures grouped per project or all mixed together?",
+      "is something like this there?",
+      "when the agent reads the failure does it ever just retry until green instead of fixing anything",
+      "what does it do when the test itself is out of date?",
+      "a job that times out with every test passing... does that show up as a failure?"
+     ],
+     [
+      "Any plans to go beyond observability and use the run data to actually help clean up the tests? Like telling us which ones are useless, duplicated, or just flaky noise.",
+      "Curious how it handles a monorepo where several Playwright projects report into the same run, does the agent get the failures grouped per project or all mixed together?",
+      "is something like this there?",
+      "when the agent reads the failure does it ever just retry until green instead of fixing anything",
+      "what does it do when the test itself is out of date?",
+      "a job that times out with every test passing... does that show up as a failure?"
+     ],
+     [
+      "Can the agent use run data to help clean up tests, identifying useless, duplicated, or flaky tests?",
+      "How does the agent handle a monorepo where several projects report into the same run, specifically regarding grouping failures?",
+      "Does the agent retry until green instead of fixing anything when it reads a failure?",
+      "What does the agent do when the test itself is out of date?",
+      "Does a job that times out with every test passing show up as a failure?",
+      "Can agents file issues to Linear over MCP?"
+     ]
+    ]
+   }
+  },
+  "1318366": {
+   "themes": [
+    {
+     "theme": "Automatic booking import from Gmail",
+     "n": 10
+    },
+    {
+     "theme": "Concerns about handling duplicate bookings and updates",
+     "n": 8
+    },
+    {
+     "theme": "Questions about technical implementation of features",
+     "n": 7
+    },
+    {
+     "theme": "Praise for centralizing travel information and simplifying group planning",
+     "n": 6
+    },
+    {
+     "theme": "Issues with AI responses and accuracy",
+     "n": 4
+    },
+    {
+     "theme": "Suggested features like translator and group notifications",
+     "n": 3
+    },
+    {
+     "theme": "Specific bugs or inconsistencies",
+     "n": 3
+    },
+    {
+     "theme": "Comparison to other top-tier apps like Wanderlog",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Handling duplicate booking confirmations or changes",
+    "AI-generated trip planning with constraints and reliability",
+    "Mojo acts like a generic chatbot, not a travel agent",
+    "Determining city for overnight or multi-day trips",
+    "Privacy concerns with sensitive information in shared trips"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the automatic booking import from Gmail, which accurately extracts trip details like flights, dates, costs, and documents.",
+      "Users are concerned about how the system handles duplicate bookings, updates, and conflicting information from multiple sources or changes.",
+      "Users have questions about the technical implementation of features, such as how data is reconciled, how AI generates plans, and how updates are managed.",
+      "Users praise the app for centralizing travel information, making group trip planning less stressful, and providing a smooth UI.",
+      "Users report issues with AI responses, including generic chatbot behavior, lack of context, repetitive answers, and potential hallucinations.",
+      "Users suggest features like group notifications for changes, a translator, and the ability to vote on links within the app.",
+      "Users found specific bugs or inconsistencies, such as incorrect flight schedule lookups, receipts not attaching, and airport search issues.",
+      "One user explicitly states that Tripmojo performs better than top-tier apps like Wanderlog."
+     ],
+     [
+      "Users appreciate the automatic booking import and trip creation from emails, finding it convenient and time-saving.",
+      "Users are concerned about how the system handles duplicate bookings, updates, and conflicting information from multiple sources.",
+      "Users have questions about the technical implementation of features, such as how data is matched, updated, and validated.",
+      "Users generally express congratulations and positive sentiment about the launch and the app's potential.",
+      "Users report issues with AI accuracy, context understanding, and hallucination in trip planning and chatbot interactions.",
+      "Users suggest features like group notifications for changes, translator functionality, and improved search relevance for airports.",
+      "Users raise privacy concerns regarding the handling and display of sensitive personal information from booking emails.",
+      "One user explicitly states that Tripmojo performs better than Wanderlog."
+     ],
+     [
+      "Users appreciate the automatic booking import from Gmail, which accurately extracts trip details like flights, dates, costs, and documents.",
+      "Users are concerned about how the system handles duplicate bookings, updates, and conflicting information from multiple sources or changes.",
+      "Users have questions about the technical implementation of features, such as how data is reconciled, how AI generates plans, and how updates are handled.",
+      "Users praise the app for centralizing travel information, making group trips less stressful, and saving time by automating organization.",
+      "Users report issues with AI responses, including generic chatbot behavior, lack of context, repetitive answers, and potential hallucinations.",
+      "Users suggest features like a translator, group nudges for updates, and the ability to vote on links within group chats.",
+      "Users found specific bugs or inconsistencies, such as incorrect flight schedule lookups, receipts not attaching, and issues with airport search results.",
+      "One user explicitly states that Tripmojo performs better than top-tier apps like Wanderlog."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does the system handle duplicate booking confirmations or booking changes, especially when multiple emails or conflicting versions exist?",
+      "How does Mojo handle AI-generated trip planning with multiple constraints and ensure the reliability and validation of recommendations?",
+      "Mojo answers like a generic chatbot instead of acting like a travel agent, and voice chat has issues with replies, context, and transcript display.",
+      "How does the app decide which city a day belongs to when a trip goes overnight, or when a booking spans multiple days?",
+      "There are concerns about privacy regarding sensitive information (PAN, passport number) from original emails being accessible in shared trips.",
+      "The search functionality for airports in the Profile section returns irrelevant results for partial matches."
+     ],
+     [
+      "How do you handle updates and duplicates on the backend, especially with multiple emails for the same booking or conflicting versions?",
+      "How does Mojo handle AI-generated trip planning with multiple constraints and validate recommendations, and how does it guard against hallucinating details?",
+      "Mojo answers like a generic chatbot instead of acting like a travel agent, and voice chat has issues with replies, context, and no transcript.",
+      "How does the app decide which city a day belongs to when a trip goes overnight, and how does it update if train timings or ticket status change?",
+      "The app picked a hotel in Canggu while all stops were in Ubud, and set a tour 30 minutes after hotel check-in; does the code check cover full-day logistics like travel time?",
+      "In the Profile > Airports section, partial match search results are not always relevant; what kind of search is performed and can relevance be improved?"
+     ],
+     [
+      "How does the system handle duplicate booking confirmations or booking changes, especially when there are conflicting versions or multiple updates?",
+      "How does Mojo handle AI-generated trip planning with multiple constraints and ensure the reliability of recommendations and booking information?",
+      "How does the app decide which city a day belongs to when a trip goes overnight or when a booking spans multiple days?",
+      "How does the app handle privacy, specifically regarding sensitive information in original emails being accessible in shared trips?",
+      "How does the app handle updates to flight schedules or ticket statuses after a booking has been added?",
+      "Are the curated estimates and live search results separate data sources, and how are they reconciled?"
+     ]
+    ]
+   }
+  }
+ }
+}

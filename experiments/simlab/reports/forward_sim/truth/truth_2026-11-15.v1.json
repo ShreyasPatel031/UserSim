@@ -1,0 +1,1085 @@
+{
+ "day": "2026-11-15",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1307742": {
+   "themes": [
+    {
+     "theme": "Can the AI change the setup later, or do I have to start over when the business shifts?",
+     "n": 1
+    },
+    {
+     "theme": "How is it different from other platforms like Replit or Lovable?",
+     "n": 1
+    },
+    {
+     "theme": "How hard is it to get stuff back out if a team outgrows it later?",
+     "n": 1
+    },
+    {
+     "theme": "What happens when the AI makes a change to an existing database? Is there a way to review or undo structural changes?",
+     "n": 1
+    },
+    {
+     "theme": "Can I ask Tulvo to turn my meeting notes into tasks for the team?",
+     "n": 2
+    },
+    {
+     "theme": "The MCP connection stands out, allowing updates from Claude or Cursor on a single connected dataset, avoiding siloed apps.",
+     "n": 1
+    },
+    {
+     "theme": "When Tulvo AI sets up boards from a business description, can you check and tweak the fields it picked before it builds everything out?",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "AI's ability to change setup later and review/undo structural changes",
+    "Ability to review/tweak AI-generated setup before application",
+    "Differentiation from existing platforms",
+    "Data exportability/portability"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Can the AI change the setup later, or do I have to start over when the business shifts?",
+      "How is it different from many different platforms, that vibe code web apps like replit, lovable?",
+      "How hard is it to get stuff back out if a team outgrows it later?",
+      "What happens when the AI makes a change to an existing database? Is there a way to review or undo structural changes?",
+      "Can I ask Tulvo to turn my meeting notes into tasks for the team?",
+      "Describing the business in one sentence and getting working boards and a customer table out of it is the bit that would save a small team the first empty weekend.",
+      "The MCP connection is the part that stands out to me \u2014 being able to update the workspace from Claude or Cursor, on top of one connected dataset, instead of keeping yet another siloed app in sync by hand.",
+      "When Tulvo AI sets up the boards from a business description, can you check and tweak the fields it picked before it builds everything out?"
+     ],
+     [
+      "Generic congratulations on the launch.",
+      "Can the AI change the setup later, or do I have to start over when the business shifts?",
+      "How is it different from other platforms like Replit or Lovable?",
+      "How hard is it to get stuff back out if a team outgrows it later?",
+      "What happens when the AI makes a change to an existing database? Is there a way to review or undo structural changes?",
+      "Can I ask Tulvo to turn my meeting notes into tasks for the team?",
+      "The MCP connection stands out, allowing updates from Claude or Cursor on a single connected dataset, avoiding siloed apps.",
+      "When Tulvo AI sets up boards from a business description, can you check and tweak the fields it picked before it builds everything out?"
+     ],
+     [
+      "The ability to describe a business in one sentence and get working boards and a customer table is a significant time-saver for small teams.",
+      "Can the AI change the setup later, or do users have to start over when the business shifts?",
+      "How is Tulvo different from other platforms that vibe code web apps like Replit or Lovable, and what is its selling point?",
+      "How difficult is it to export data if a team outgrows Tulvo later?",
+      "What happens when the AI makes a change to an existing database, and is there a way to review or undo structural changes?",
+      "Users want to be able to ask Tulvo to turn meeting notes into tasks for the team.",
+      "The MCP connection, allowing workspace updates from Claude or Cursor on a single connected dataset, stands out as a valuable feature.",
+      "When the AI changes the setup later, can users see what it changed before it applies?"
+     ]
+    ],
+    "complaints": [
+     [
+      "Can the AI change the setup later, or do I have to start over when the business shifts?",
+      "What happens when the AI makes a change to an existing database? Is there a way to review or undo structural changes?",
+      "when the AI changes the setup later, can i see what it changed before it applies?",
+      "when tulvo ai sets up the boards from a business description, can you check and tweak the fields it picked before it builds everything out?",
+      "how hard is it to get stuff back out if a team outgrows it later",
+      "Just curious how is it different from many different platforms, that vibe code web apps like replit, lovable? What's your selling point?"
+     ],
+     [
+      "Can the AI change the setup later, or do I have to start over when the business shifts?",
+      "What happens when the AI makes a change to an existing database? Is there a way to review or undo structural changes?",
+      "when the AI changes the setup later, can i see what it changed before it applies?",
+      "when tulvo ai sets up the boards from a business description, can you check and tweak the fields it picked before it builds everything out?",
+      "Just curious how is it different from many different platforms, that vibe code web apps like replit, lovable? What's your selling point?",
+      "how hard is it to get stuff back out if a team outgrows it later"
+     ],
+     [
+      "Can the AI change the setup later, or do I have to start over when the business shifts?",
+      "What happens when the AI makes a change to an existing database? Is there a way to review or undo structural changes?",
+      "when the AI changes the setup later, can i see what it changed before it applies?",
+      "when tulvo ai sets up the boards from a business description, can you check and tweak the fields it picked before it builds everything out?",
+      "Just curious how is it different from many different platforms, that vibe code web apps like replit, lovable? What's your selling point?",
+      "how hard is it to get stuff back out if a team outgrows it later"
+     ]
+    ]
+   }
+  },
+  "1310949": {
+   "themes": [
+    {
+     "theme": "Multiplayer idea and sharing AI agents/workflows",
+     "n": 7
+    },
+    {
+     "theme": "Ability to copy and tweak teammates' agents",
+     "n": 2
+    },
+    {
+     "theme": "Ease of sharing custom skills and management",
+     "n": 2
+    },
+    {
+     "theme": "Native integrations with SaaS apps and BYOK",
+     "n": 1
+    },
+    {
+     "theme": "Concerns about account access and sharing access to connected tools",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Can I make my own copy of a teammate's agent and tweak it?",
+    "Finding customers is a pretty broad promise. Is there an example of the actual output somewhere?",
+    "How easy is it to share custom skills?",
+    "Do you guys support native integrations with other SaaS apps? Also, BYOK possible?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the multiplayer idea and the ability to share AI agents and workflows within a team.",
+      "Users ask about the ability to make copies of teammates' agents and tweak them for different jobs.",
+      "Users inquire about the ease of sharing custom skills and how they are managed within a team.",
+      "Users ask about native integrations with other SaaS apps and the possibility of Bring Your Own Key (BYOK).",
+      "Users are concerned about account access and whether sharing an agent also shares access to connected tools.",
+      "Users express concerns about handoff issues, review processes, and tracking changes when multiple people and agents are involved.",
+      "Users request the ability to set one owner per agent task for output approval.",
+      "Users compare Frevana to other platforms like Claude agents and GitHub repos for sharing skills."
+     ],
+     [
+      "Users praise the multiplayer idea and the ability to share AI agents and workflows within a team.",
+      "Users ask about the ability to make copies of teammates' agents and tweak them for different jobs.",
+      "Users inquire about the ease of sharing custom skills and how they are managed within a team.",
+      "Users ask about native integrations with other SaaS apps and the possibility of Bring Your Own Key (BYOK).",
+      "Users are concerned about account access and whether sharing an agent also shares access to connected tools.",
+      "Users express concerns about handoff issues, review processes, and tracking changes when multiple people and agents are involved.",
+      "Users request the ability to set one owner per agent task for output approval.",
+      "Users compare Frevana to other platforms like Claude agents and GitHub repos for sharing skills."
+     ],
+     [
+      "Users want to be able to copy and tweak a teammate's agent for their own specific needs, especially for content creation.",
+      "Users are asking for examples of the actual output for broad promises like 'finding customers'.",
+      "Users appreciate the multiplayer idea and the ability to share AI agents and workflows within a team.",
+      "Users want to know how easy it is to share custom skills.",
+      "Users are interested in seeing demo videos, particularly related to video content creation for Meta & Google Ad networks.",
+      "Users are curious about the design for agent-human interaction and how humans can intervene.",
+      "Users are asking about native integrations with other SaaS apps and the possibility of Bring Your Own Key (BYOK).",
+      "Users are unclear about account access when sharing an agent, specifically if access to connected tools is also shared."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can I make my own copy of a teammate's agent and tweak it?",
+      "Finding customers is a pretty broad promise. Is there an example of the actual output somewhere?",
+      "How easy is it to share custom skills?",
+      "Interesting, would like to see demo videos, specifically related to video content creation for Meta & Google Ad networks.",
+      "How are you designing for agent x human interaction?",
+      "Do you guys support native integrations with other SaaS apps? Also, BYOK possible?"
+     ],
+     [
+      "Can I make my own copy of a teammate's agent and tweak it?",
+      "Finding customers is a pretty broad promise. Is there an example of the actual output somewhere?",
+      "How easy is it to share custom skills?",
+      "Interesting, would like to see demo videos, specifically related to video content creation for Meta & Google Ad networks.",
+      "How are you designing for agent x human interaction?",
+      "Do you guys support native integrations with other SaaS apps? Also, BYOK possible?"
+     ],
+     [
+      "Can I make my own copy of a teammate's agent and tweak it?",
+      "Finding customers is a pretty broad promise. Is there an example of the actual output somewhere?",
+      "Can everyone edit the same workflows?",
+      "How easy is it to share custom skills?",
+      "Do you guys support native integrations with other SaaS apps? Also, BYOK possible?",
+      "If I share an agent, am I also sharing access to the tools I've connected?"
+     ]
+    ]
+   }
+  },
+  "1307385": {
+   "themes": [
+    {
+     "theme": "AI-powered vehicle inspection for accurate quotes",
+     "n": 1
+    },
+    {
+     "theme": "User acquisition strategy",
+     "n": 1
+    },
+    {
+     "theme": "Difficulty of user acquisition for mobile detailers",
+     "n": 1
+    },
+    {
+     "theme": "Onboarding for non-technical users",
+     "n": 1
+    },
+    {
+     "theme": "Booking features for weather/travel fees",
+     "n": 1
+    },
+    {
+     "theme": "Niche focus and understanding of detailers' needs",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Bulk rescheduling of appointments",
+    "Travel fees/service area limitations",
+    "AI-powered vehicle inspection",
+    "Onboarding new users",
+    "Marketing to mobile detailers",
+    "Applicability to other industries (e.g., bicycles)"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The product is praised for its niche focus and understanding of detailers' specific needs.",
+      "Users are requesting features related to managing bookings due to weather and travel fees.",
+      "There is a suggestion for AI-powered vehicle inspection to improve quoting accuracy.",
+      "Users are asking about the user acquisition strategy for the product.",
+      "A concern is raised about the difficulty of user acquisition for mobile detailers.",
+      "There's a question about the onboarding process for non-technical users.",
+      "A user suggests applying a similar system to the bicycle enthusiast market."
+     ],
+     [
+      "AI-powered vehicle inspection to analyze photos for stains, pet hair, scratches, and cleaning requirements to generate more accurate quotes.",
+      "How do you find your first users, local Facebook groups or Google Maps?",
+      "The product is built for one specific kind of solo operator instead of 'any small business'.",
+      "How does a detailer who has never used booking software get to their first booking with you?",
+      "Deposits built in from day one is a smart call, as chasing payments is the worst part for small service businesses.",
+      "User acquisition will be the most difficult part, as mobile detailers most likely don't research the web for solutions.",
+      "Ability to move a whole day's visits at once and let each customer pick a new slot, instead of rescheduling them one by one.",
+      "The booking page should add a travel fee by distance, or limit bookings to a service area."
+     ],
+     [
+      "AI-powered vehicle inspection to analyze photos for stains, pet hair, scratches, and cleaning requirements to generate more accurate quotes.",
+      "How do you find your first users, local Facebook groups or Google Maps?",
+      "The product is built for one specific kind of solo operator instead of 'any small business'.",
+      "How does a detailer who has never used booking software get to their first booking with you?",
+      "Deposits built in from day one is a smart call, as chasing payments is the worst part for small service businesses.",
+      "User acquisition will be the most difficult part, as mobile detailers most likely don't research the web for solutions.",
+      "Ability to move a whole day's visits at once and let each customer pick a new slot, instead of rescheduling them one by one.",
+      "The booking page should add a travel fee by distance, or limit bookings to a service area."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is there a way to move a whole day's visits at once and let each customer pick a new slot, instead of rescheduling them one by one?",
+      "And can the booking page add a travel fee by distance, or limit bookings to a service area?",
+      "One feature that could add even more value is AI-powered vehicle inspection.",
+      "How does a detailer who has never used booking software get to their first booking with you?",
+      "Mobile detailers most likely don't research the web for solutions, it'll all be about proactively catching their attention to build momentum.",
+      "A similar system could be applied to bicycles."
+     ],
+     [
+      "Is there a way to move a whole day's visits at once and let each customer pick a new slot, instead of rescheduling them one by one?",
+      "Can the booking page add a travel fee by distance, or limit bookings to a service area?",
+      "AI-powered vehicle inspection could help detailers generate more accurate quotes with less manual effort; have you considered exploring something like this?",
+      "How does a detailer who has never used booking software get to their first booking with you?",
+      "Mobile detailers most likely don't research the web for solutions, it'll all be about proactively catching their attention to build momentum."
+     ],
+     [
+      "Is there a way to move a whole day's visits at once and let each customer pick a new slot, instead of rescheduling them one by one?",
+      "And can the booking page add a travel fee by distance, or limit bookings to a service area?",
+      "One feature that could add even more value is AI-powered vehicle inspection.",
+      "How does a detailer who has never used booking software get to their first booking with you?",
+      "Mobile detailers most likely don't research the web for solutions, it'll all be about proactively catching their attention to build momentum.",
+      "A similar system could be applied to bicycles."
+     ]
+    ]
+   }
+  },
+  "1315641": {
+   "themes": [
+    {
+     "theme": "Congratulations on the launch",
+     "n": 10
+    },
+    {
+     "theme": "Bring your own AI model subscriptions",
+     "n": 5
+    },
+    {
+     "theme": "Rakazo is a strong alternative to Grok Bot",
+     "n": 4
+    },
+    {
+     "theme": "Approval steps for bot actions",
+     "n": 2
+    },
+    {
+     "theme": "Pre-built business automation templates/CRM workflows",
+     "n": 1
+    },
+    {
+     "theme": "Integration with marketplaces",
+     "n": 1
+    },
+    {
+     "theme": "Per-bot spend cap for LLM usage",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Pre-built business automation templates",
+    "Marketplace integration",
+    "Per-bot spend cap",
+    "Approval step for sandbox outputs",
+    "Daily report per agent"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are generally congratulating the maker on the launch and expressing positive sentiment.",
+      "Users want to bring their own AI model subscriptions (e.g., Claude, OpenAI, ChatGPT) to Rakazo.",
+      "Users are comparing Rakazo to Grok Bot, often positioning it as a superior open-source alternative.",
+      "Users are interested in approval steps and audit logs for bot actions to prevent unintended operations.",
+      "Users are asking about the ability to integrate with marketplaces or specific platforms.",
+      "Users are requesting more ready-to-use CRM workflows and pre-built business automation templates.",
+      "Users are asking about the possibility of setting a per-bot spend cap for LLM usage.",
+      "Users are asking about server specification requirements for self-hosting."
+     ],
+     [
+      "Generic congratulations on the launch.",
+      "Rakazo is a strong alternative to Grok Bot.",
+      "Users want to bring their own AI model subscriptions (e.g., Claude, OpenAI, ChatGPT).",
+      "The self-hosting option being free is a significant benefit.",
+      "Users want an approval step for actions leaving the sandbox (e.g., sending emails, posting to Slack).",
+      "Users are interested in pre-built business automation templates, especially for CRM workflows.",
+      "Users are asking about integration with marketplaces.",
+      "Users would like short daily reports per agent detailing actions and skipped tasks."
+     ],
+     [
+      "Users are generally congratulating the maker on the launch and expressing positive sentiment.",
+      "Users want to bring their own AI model subscriptions (e.g., Claude, OpenAI, ChatGPT) to Rakazo.",
+      "Users are comparing Rakazo to Grok Bot, often positioning it as a superior open-source alternative.",
+      "Users are interested in pre-built business automation templates and CRM workflows.",
+      "Users are asking about the possibility of integrating with a marketplace.",
+      "Users are concerned about the cost of LLM usage and are asking for per-bot spend caps.",
+      "Users are requesting an approval step for actions taken by bots before they leave the sandbox.",
+      "Users want short daily reports per agent detailing actions taken, skipped, and reasons."
+     ]
+    ],
+    "complaints": [
+     [
+      "Are you planning to introduce pre-built business automation templates?",
+      "Is it possible to add integration to marketplace?",
+      "Can I use my ChatGPT subscription?",
+      "Is there a per-bot spend cap?",
+      "Feature request: an approval step for anything that leaves the sandbox.",
+      "What I would want next is a short daily report per agent, what it did, what it skipped and why."
+     ],
+     [
+      "Are you planning to introduce pre-built business automation templates?",
+      "Is it possible to add integration to marketplace?",
+      "is there a per-bot spend cap?",
+      "Feature request: an approval step for anything that leaves the sandbox.",
+      "what i would want next is a short daily report per agent, what it did, what it skipped and why. is something like that on the roadmap?",
+      "Do routines check in while long-running work is going, or do they just run until an approval stops them?"
+     ],
+     [
+      "Are you planning to introduce pre-built business automation templates?",
+      "Is it possible to add integration to marketplace?",
+      "is there a per-bot spend cap?",
+      "Feature request: an approval step for anything that leaves the sandbox.",
+      "what i would want next is a short daily report per agent, what it did, what it skipped and why. is something like that on the roadmap?",
+      "Do routines check in while long-running work is going, or do they just run until an approval stops them?"
+     ]
+    ]
+   }
+  },
+  "1316260": {
+   "themes": [
+    {
+     "theme": "Vendor detection mechanism and information provided",
+     "n": 2
+    },
+    {
+     "theme": "Automatic policy updates and confirmation process",
+     "n": 1
+    },
+    {
+     "theme": "Daily vendor watch feature for policy updates",
+     "n": 1
+    },
+    {
+     "theme": "Scope of country data protection laws covered",
+     "n": 1
+    },
+    {
+     "theme": "Responsibility for incomplete or inaccurate policies",
+     "n": 1
+    },
+    {
+     "theme": "Handling multiple small sites under one account",
+     "n": 1
+    },
+    {
+     "theme": "Functionality of Claude/Cursor integrations",
+     "n": 1
+    },
+    {
+     "theme": "Ability to review and confirm findings before policy generation",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Why a vendor was detected",
+    "Automatic policy updates",
+    "Detection of backend processors",
+    "Coverage of specific data protection laws",
+    "Liability for policy omissions",
+    "Handling multiple small sites"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How does Privacyboard detect vendors, especially backend processors, and what is the mechanism for showing detected vendors?",
+      "Users want to see why a vendor was detected (e.g., which script or form) before confirmation.",
+      "Does the policy update automatically when a tool is dropped, or does it require manual confirmation?",
+      "Are UAE and Saudi data protection laws included in the 15+ supported countries?",
+      "Who is responsible if the drafted policy misses something?",
+      "The daily vendor watch feature is highly valued for keeping privacy policies up-to-date, especially for solo developers.",
+      "How does the system handle multiple small sites under one account and how do Claude/Cursor integrations work?",
+      "The ability to review findings before policy generation and confirm before going live is appreciated."
+     ],
+     [
+      "How does Privacyboard detect vendors, especially backend processors, and what is the mechanism for showing detected vendors?",
+      "Users want to see why a vendor was detected (e.g., which script or form) before confirmation.",
+      "Does the policy update automatically when a tool is dropped, or does it require manual confirmation?",
+      "Are UAE and Saudi data protection laws included in the 15+ countries supported?",
+      "Who is responsible if the drafted policy misses something?",
+      "The daily vendor watch feature is highly valued for keeping privacy policies up-to-date, especially for solo developers.",
+      "How does the system handle multiple small sites under one account and how do Claude/Cursor integrations work?",
+      "The ability to review findings before policy generation and confirm before going live is appreciated."
+     ],
+     [
+      "How does Privacyboard detect vendors, especially backend processors, and what information is provided about detected vendors?",
+      "How does Privacyboard handle policy updates when tools are dropped, and what is the process for confirming drafted policies?",
+      "The daily vendor watch feature is highly valued for keeping privacy policies up-to-date.",
+      "What is the scope of country data protection laws covered by Privacyboard?",
+      "Who is responsible if a drafted policy is incomplete or inaccurate?",
+      "How does Privacyboard manage multiple small sites under one account?",
+      "How do the Claude/Cursor integrations function in practice?",
+      "The ability to review findings before policy generation and confirm policies before going live is appreciated."
+     ]
+    ],
+    "complaints": [
+     [
+      "I'd want to see why it detected a vendor (which script or form on the site) before I confirm.",
+      "When a tool gets dropped, does the policy update by itself or wait for me?",
+      "How does Privacyboard find backend processors like the email provider, host, or LLM API?",
+      "Are UAE and Saudi data protection laws among the 15+ countries?",
+      "Who's on the hook if the drafted policy misses something?",
+      "How does it handle multiple small sites under one account, and how does the Claude/Cursor integration work in practice?"
+     ],
+     [
+      "How does Privacyboard find backend processors like email providers, hosts, or LLM APIs?",
+      "I'd want to see why it detected a vendor (which script or form on the site) before I confirm.",
+      "When a tool gets dropped, does the policy update by itself or wait for me?",
+      "Are UAE and Saudi data protection laws among the 15+ countries?",
+      "Who's on the hook if the drafted policy misses something?",
+      "How does it handle multiple small sites under one account?"
+     ],
+     [
+      "I'd want to see why it detected a vendor (which script or form on the site) before I confirm.",
+      "When a tool gets dropped, does the policy update by itself or wait for me?",
+      "How does Privacyboard find backend processors like the email provider, host, or LLM API?",
+      "Are UAE and Saudi data protection laws among the 15+ countries?",
+      "Who's on the hook if the drafted policy misses something?",
+      "How does it handle multiple small sites under one account, and how does the Claude/Cursor integration work in practice?"
+     ]
+    ]
+   }
+  },
+  "1317198": {
+   "themes": [
+    {
+     "theme": "Direct manipulation on canvas",
+     "n": 3
+    },
+    {
+     "theme": "Handling of manual edits by AI",
+     "n": 3
+    },
+    {
+     "theme": "Handoff process and source of truth",
+     "n": 2
+    },
+    {
+     "theme": "Simultaneous user/agent changes",
+     "n": 1
+    },
+    {
+     "theme": "Security and access permissions",
+     "n": 1
+    },
+    {
+     "theme": "Loading existing Tailwind configurations",
+     "n": 1
+    },
+    {
+     "theme": "Core functionality and ease of use",
+     "n": 1
+    },
+    {
+     "theme": "General positive sentiment",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Handling of manual edits and conflicts",
+    "Integration with existing design systems/configurations",
+    "Handoff to codebase and source of truth",
+    "External agent sign-in and permissions",
+    "Locality of files with cloud AI connection"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability to directly manipulate elements on a canvas, which is seen as a significant improvement over prompt-based adjustments.",
+      "Users are concerned about how manual edits are handled by the AI agent and if they can be overwritten.",
+      "Users are curious about the handoff process between the Canvas and their own codebase, and whether the Canvas remains the source of truth.",
+      "Users want to know what happens when both a user and the agent try to change the same element simultaneously.",
+      "Users are asking about the security and access permissions for outside agents.",
+      "Users want to know if they can load existing Tailwind configurations.",
+      "Users appreciate the core functionality and ease of use for building projects.",
+      "Users express general positive sentiment and intent to try the product."
+     ],
+     [
+      "Users appreciate the ability to directly manipulate elements on a canvas, which is seen as a significant improvement over prompt-based adjustments.",
+      "Users are concerned about how manual edits are handled by the AI agent and if they can be overwritten.",
+      "Users are curious about the handoff process between the Canvas and their own codebase, and whether the Canvas remains the source of truth.",
+      "Users want to know what happens when both a user and the agent try to change the same element simultaneously.",
+      "Users are asking about the security and access permissions for outside agents.",
+      "Users want to know if they can load existing Tailwind configurations.",
+      "Users appreciate the core functionality and ease of use for building projects.",
+      "Users express general positive sentiment and intent to try the product."
+     ],
+     [
+      "Users appreciate the ability to directly manipulate elements on a canvas, which is seen as a significant improvement over prompt-based adjustments.",
+      "Users are concerned about how manual edits are handled by the AI agent and if they can be overwritten.",
+      "Users are curious about the handoff process between the Canvas and their own codebase, and whether the Canvas remains the source of truth.",
+      "Users want to know what happens when both a user and the agent try to change the same element simultaneously.",
+      "Users are asking about the security and access permissions for outside agents.",
+      "Users want to know if they can load existing Tailwind configurations.",
+      "Users appreciate the core functionality and ease of use for building projects.",
+      "Users express general positive sentiment and intent to try the product."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does the agent handle manual edits, especially when there's a conflict or when the user makes a change while the agent is working?",
+      "What is the process for integrating existing design systems or configurations, like Tailwind CSS?",
+      "What is the nature of the handoff from the canvas to a personal codebase, and can the output be further edited manually or does the canvas remain the source of truth?",
+      "How does an external agent sign in, and what are its editing and access permissions?",
+      "Do the files remain local even when the AI is connected over a cloud platform?"
+     ],
+     [
+      "How does the agent handle manual edits, especially when there's a conflict or when the user makes a change while the agent is working?",
+      "What is the process for integrating existing design systems or configurations, like Tailwind CSS?",
+      "What is the nature of the handoff from the canvas to a personal codebase, and can the output be further edited manually or does the canvas remain the source of truth?",
+      "How does an external agent sign in, and what are its editing and access permissions?",
+      "Do the files remain local even when the AI is connected over a cloud platform?"
+     ],
+     [
+      "What happens when me and the agent change the same element at the same time, who wins?",
+      "When I take a design from Canvas into my own codebase, is the output something I can keep editing by hand, or does the canvas stay the source of truth?",
+      "When you drag an element or adjust a layer, does the agent see that change immediately as it continues?",
+      "Can I load our existing tailwind config so it sticks to our spacing scale?",
+      "Do the files stay local even when Claude is connected over MCP?",
+      "How does an outside agent sign in and what can it edit or access?"
+     ]
+    ]
+   }
+  },
+  "1307607": {
+   "themes": [
+    {
+     "theme": "Ask questions across multiple recordings",
+     "n": 1
+    },
+    {
+     "theme": "Concerns about bot joining university seminars",
+     "n": 1
+    },
+    {
+     "theme": "Speaker labeling accuracy in noisy environments",
+     "n": 1
+    },
+    {
+     "theme": "On-device vs. server-side transcription (Mac)",
+     "n": 1
+    },
+    {
+     "theme": "How 'no bot' recording works on Mac (separate audio tracks)",
+     "n": 1
+    },
+    {
+     "theme": "Flashcard generation from long audio without editing",
+     "n": 1
+    },
+    {
+     "theme": "Ability to tap line to hear audio again",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Speaker labeling with a single mic in multi-person environments",
+    "On-device vs. server-side transcription",
+    "Generating flashcards from long audio without editing",
+    "Querying across multiple recordings",
+    "Transcript uncertainty in noisy environments with overlapping voices",
+    "No-bot recording functionality on Mac"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users want to be able to ask questions across multiple recordings.",
+      "Users are concerned about the accuracy of transcription for non-English languages, specifically Vietnamese tone marks.",
+      "Users are concerned about the practicality and acceptance of a bot joining a university seminar.",
+      "Users are concerned about speaker labeling accuracy in noisy environments with multiple people using a single laptop mic.",
+      "Users want to know if transcription happens on-device or if audio is sent to a server, especially for Mac users.",
+      "Users want to know how the 'no bot' recording feature works on Mac, specifically regarding system audio and mic as separate tracks.",
+      "Users want to know if flashcards can be generated from a full hour of audio without prior transcript editing.",
+      "Users appreciate the ability to tap any line to hear it again, especially for checking audio against transcripts."
+     ],
+     [
+      "Users want to be able to ask questions across multiple recordings.",
+      "Users are concerned about the accuracy of transcription for non-English languages, specifically Vietnamese tone marks.",
+      "Users are concerned about the practicality and acceptance of a bot joining a university seminar.",
+      "Users are concerned about speaker labeling accuracy in noisy environments with multiple people using a single laptop mic.",
+      "Users want to know if transcription happens on-device or if audio is sent to a server, especially for Mac users.",
+      "Users want to know how the 'no bot' recording feature works on Mac, specifically regarding system audio and mic as separate tracks.",
+      "Users want to know if flashcards can be generated from a full hour of audio without prior transcript editing.",
+      "Users appreciate the ability to tap any line to hear it again, especially for checking audio against transcripts."
+     ],
+     [
+      "Being able to ask questions across multiple recordings at once.",
+      "Concerns about a bot joining a university seminar.",
+      "How does the no-bot feature work on Mac, specifically regarding separate audio tracks and speaker labeling with multiple people.",
+      "Does transcription happen on-device or on a server, especially for Mac users who prefer local recordings.",
+      "Do flashcards work from a full hour of audio without prior editing of the transcript.",
+      "How does the transcript signal uncertainty for misattributed lines in noisy environments with overlapping voices.",
+      "The ability to tap any line to hear it again is a useful feature, especially for languages with tone marks.",
+      "Turning a recording into notes with speaker labels, quizzes, and flashcards is a nice spread for lectures."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does the no-bot recording work on Mac, specifically regarding audio capture and speaker labeling in multi-person environments?",
+      "Does the transcription happen on-device or does the audio go to a server, especially for Mac users concerned about local processing?",
+      "Can flashcards be generated from a full hour of audio without prior transcript editing?",
+      "Can questions be asked across several recordings at once, such as client conversations over multiple calls?",
+      "How does the transcript signal uncertainty in noisy rooms with overlapping voices to help identify misattributed lines?",
+      "Vietnamese auto-transcripts still have issues with tone marks, making the ability to re-listen to audio crucial."
+     ],
+     [
+      "How does speaker labeling work with a single laptop mic in a room with multiple people?",
+      "Does the transcription happen on-device, or does the audio go to a server?",
+      "Can you ask questions across several recordings at once?",
+      "Do the flashcards work from a full hour of audio without editing the transcript first?",
+      "How does the transcript signal uncertainty in noisy rooms with overlapping voices?",
+      "Auto transcripts in Vietnamese still slip on tone marks."
+     ],
+     [
+      "How does speaker labeling hold up when it's one laptop mic in a room with like 5 ppl?",
+      "Does the transcription happen on-device, or does the audio go to a server?",
+      "Can you ask across several recordings at once, like what a client said over the last three calls?",
+      "Do the flashcards work from a full hour of audio without me editing the transcript first?",
+      "How does the no bot thing work on mac, is it grabbing system audio and mic as seperate tracks?",
+      "In a noisy room with overlapping voices, how does the transcript signal uncertainty so it is easy to spot a misattributed line?"
+     ]
+    ]
+   }
+  },
+  "1316064": {
+   "themes": [
+    {
+     "theme": "Monorepo handling and testing",
+     "n": 1
+    },
+    {
+     "theme": "Relatable 'wrong overload' example",
+     "n": 2
+    },
+    {
+     "theme": "Index rebuild frequency",
+     "n": 2
+    },
+    {
+     "theme": "Index updates on push/uncommitted changes",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to Codex/Claude Code (cheaper fixes)",
+     "n": 1
+    },
+    {
+     "theme": "Swift language support",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Index rebuild behavior",
+    "Test execution scope",
+    "Swift language support"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Concerns about how the tool handles monorepos with shared packages, specifically if it runs tests for all affected packages before a pull request.",
+      "The 'agent greps around and lands in the wrong overload' example resonates with users' real-world experiences.",
+      "Questions about when the index rebuilds (every commit or only when build config changes).",
+      "The ability for the index to update on push and pick up uncommitted changes would build user trust.",
+      "The tool is compared to Codex, noting it's cheaper for similar fixes.",
+      "Users compare their experience with Claude Code, noting its tendency to pick the wrong file.",
+      "Inquiring about support for Swift, given the benchmarks and examples are C/C++.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The index rebuilding process on every commit or only when the build config changes is a concern for large repositories.",
+      "There is a concern about monorepos with shared packages, where an agent might fix one app and break another.",
+      "Does the agent run tests for all affected packages before a pull request, or only the one it touched?",
+      "The example of an agent picking the wrong overload is a relatable daily problem.",
+      "The ability for the index to update on push and pick up uncommitted changes would build trust.",
+      "How does the product handle Swift, given that benchmarks and examples are all C/C++?",
+      "The 'validate(order)' example is painfully real and the approach of posting same fixes as Codex, just cheaper, is appreciated.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "Users appreciate the realistic example of the agent picking the correct function among multiple with the same name.",
+      "Users are concerned about how the index rebuilds on every commit or only when the build config changes, especially for large repositories.",
+      "Users are concerned about potential issues in monorepos where an agent fix in one app might quietly break another app using the same shared package.",
+      "Users want to know if the agent runs tests for all affected packages before a PR, or only for the one it touched.",
+      "Users compare the product to Claude Code, noting that it offers similar fixes but is cheaper.",
+      "Users would trust the product more if the index updates on push and picks up uncommitted changes.",
+      "Users are curious about how the product handles Swift, given that benchmarks and examples are all C/C++.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the index rebuild on every commit or only when the build config changes?",
+      "Does it run tests for all affected packages before the PR, or only the one it touched, especially in monorepos with shared packages?",
+      "How does it handle Swift, given the benchmarks and examples are all C/C++?"
+     ],
+     [
+      "Does the index rebuild on every commit or only when the build config changes?",
+      "Does it run tests for all affected packages before the PR, or only the one it touched?",
+      "Curious how it handles Swift, though \u2014 the benchmarks and examples are all C/C++."
+     ],
+     [
+      "Does the index rebuild on every commit or only when the build config changes?",
+      "Does it run tests for all affected packages before the PR, or only the one it touched?",
+      "Curious how it handles Swift, though \u2014 the benchmarks and examples are all C/C++."
+     ]
+    ]
+   }
+  },
+  "1315819": {
+   "themes": [
+    {
+     "theme": "Attaching reminders directly to notes is a significant improvement over separate reminder apps, addressing a common problem of forgetting notes.",
+     "n": 4
+    },
+    {
+     "theme": "Users are asking about the functionality and compatibility of location-based reminders across different Apple devices (iPad, Apple Watch) and in various scenarios (no signal).",
+     "n": 3
+    },
+    {
+     "theme": "There are questions regarding the import of existing reminders from Evernote into Remindly.",
+     "n": 2
+    },
+    {
+     "theme": "The 'when you arrive somewhere' location reminder feature is highlighted as a nice and useful touch.",
+     "n": 2
+    },
+    {
+     "theme": "A user is asking if repeating reminders still function without a phone signal.",
+     "n": 1
+    },
+    {
+     "theme": "A user is asking about the process of attaching a reminder when capturing something by voice.",
+     "n": 1
+    },
+    {
+     "theme": "The concept of Remindly is seen as a neat idea.",
+     "n": 1
+    },
+    {
+     "theme": "Congratulations are extended to the solo developer for shipping the product.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Evernote import of reminders",
+    "Offline functionality of repeating reminders",
+    "Location-based reminders on iPad",
+    "Location-based reminders on Apple Watch",
+    "Setting reminders during voice capture"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Attaching reminders directly to notes is a significant improvement over separate reminder apps, addressing a common problem of forgetting notes.",
+      "Users are asking about the functionality and compatibility of location-based reminders across different Apple devices (iPad, Apple Watch) and in various scenarios (no signal).",
+      "There are questions regarding the import of existing reminders from Evernote into Remindly.",
+      "The 'when you arrive somewhere' location reminder feature is highlighted as a nice and useful touch.",
+      "A user is asking if repeating reminders still function without a phone signal.",
+      "A user is asking about the process of attaching a reminder when capturing something by voice.",
+      "The concept of Remindly is seen as a neat idea.",
+      "Congratulations are extended to the solo developer for shipping the product."
+     ],
+     [
+      "Attaching reminders directly to notes is a significant improvement over separate reminder apps, addressing a common problem of forgetting notes.",
+      "Users are asking about the functionality and compatibility of location-based reminders across different Apple devices (iPad, Apple Watch) and in various scenarios (no signal).",
+      "There are questions regarding the import of existing reminders from Evernote into Remindly.",
+      "The 'when you arrive somewhere' location reminder feature is highlighted as a nice and useful touch.",
+      "A user is asking if repeating reminders still function without a phone signal.",
+      "A user is asking about the process of attaching a reminder when capturing something by voice.",
+      "The concept of Remindly is seen as a neat idea.",
+      "Congratulations are extended to the solo developer for shipping the product."
+     ],
+     [
+      "Attaching reminders directly to notes is a significant improvement over separate reminder apps, addressing a common problem of forgetting notes.",
+      "Users are asking about the functionality and compatibility of location-based reminders across different Apple devices (iPad, Apple Watch) and in various scenarios (no signal).",
+      "There are questions regarding the import of existing reminders from Evernote into Remindly.",
+      "The 'when you arrive somewhere' location reminder feature is highlighted as a nice and useful touch.",
+      "A user is asking if repeating reminders still function without a phone signal.",
+      "A user is asking about the process of attaching a reminder when capturing something by voice.",
+      "The concept of Remindly is seen as a neat idea.",
+      "Congratulations are extended to the solo developer for shipping the product."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the Evernote import bring over the reminders already set on notes or only text and tags?",
+      "Do the repeating reminders still go off if the phone has no signal?",
+      "Does the arrive somewhere reminder work on iPad too or is that iPhone only?",
+      "Does that location reminder show up on Apple Watch too?",
+      "When you capture something by voice, can you attach its reminder in one step, or do you set that afterward?"
+     ],
+     [
+      "Does the Evernote import bring over the reminders already set on notes or only text and tags?",
+      "Do the repeating reminders still go off if the phone has no signal?",
+      "Does the arrive somewhere reminder work on iPad too or is that iPhone only?",
+      "Does that location reminder show up on Apple Watch too?",
+      "When you capture something by voice, can you attach its reminder in one step, or do you set that afterward?"
+     ],
+     [
+      "Does the Evernote import bring over the reminders already set on notes or only text and tags?",
+      "Do the repeating reminders still go off if the phone has no signal?",
+      "Does the arrive somewhere reminder work on iPad too or is that iPhone only?",
+      "Does that location reminder show up on Apple Watch too?",
+      "When you capture something by voice, can you attach its reminder in one step, or do you set that afterward?"
+     ]
+    ]
+   }
+  },
+  "1313926": {
+   "themes": [
+    {
+     "theme": "Handling of secrets in the sandbox",
+     "n": 2
+    },
+    {
+     "theme": "Reviewing changes before push",
+     "n": 2
+    },
+    {
+     "theme": "Cost and efficiency of parallel sandboxes",
+     "n": 2
+    },
+    {
+     "theme": "Sandbox capabilities (Xcode, Docker Compose)",
+     "n": 2
+    },
+    {
+     "theme": "Handling of API/usage limits",
+     "n": 2
+    },
+    {
+     "theme": "Automating CI checks and green PRs",
+     "n": 4
+    },
+    {
+     "theme": "GitLab support",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How are secrets handled in the sandbox?",
+    "Does it run out of GitHub API budget?",
+    "Can Talyn enforce a maximum number of repair attempts?",
+    "Do I see the diff before it pushes?",
+    "Do parallel sandboxes share repo context?",
+    "How does Talyn handle tasks hitting usage limits?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are concerned about how Talyn handles secrets in the sandbox, such as database URLs needed for tests.",
+      "Users want to know if they see the diff before Talyn pushes changes or if it pushes directly.",
+      "Users are asking about the behavior when multiple parallel processes touch the same file.",
+      "Users are asking about the cost and efficiency of parallel sandboxes, specifically regarding sharing repo context and re-reading the repository.",
+      "Users are asking about the ability of sandboxes to run Xcode builds and simulator tests, or if it's Linux-only.",
+      "Users are asking about Talyn's behavior when a task hits a Claude usage limit halfway through.",
+      "Users are asking if a sandbox can run Docker Compose for tests requiring services like Postgres or Redis.",
+      "Users appreciate the detail that tokens stay outside the sandbox and are only added on the way out."
+     ],
+     [
+      "The ability to come back to a green PR or have failing checks fixed automatically is highly valued.",
+      "Users have questions about how Talyn handles secrets within the sandbox.",
+      "Users are concerned about the cost and efficiency of parallel sandboxes, specifically regarding repo context sharing and re-reading.",
+      "Users are asking about the visibility and control over the changes made by the agent before they are pushed.",
+      "There are concerns about hitting GitHub API budget limits.",
+      "Users are asking for GitLab support.",
+      "Users want to know if sandboxes can run specific environments like Xcode builds, simulator tests, or Docker Compose.",
+      "Users are concerned about Claude plan usage limits and how Talyn manages tasks when limits are hit."
+     ],
+     [
+      "Users are concerned about how secrets are handled within the sandbox environment.",
+      "Users want to know if they can review changes before they are pushed or if the system automatically pushes.",
+      "Users are asking about the handling of parallel sandboxes, specifically regarding shared context and conflict resolution.",
+      "Users are asking about the system's interaction with API limits and how it manages usage.",
+      "Users appreciate the ability to automate the 'babysitting' of CI checks and return to green PRs.",
+      "Users are asking about support for platforms other than GitHub, specifically GitLab.",
+      "Users are asking about the capabilities of the sandbox, such as running Xcode builds, simulator tests, or Docker Compose.",
+      "Users are interested in features for managing repair attempts and notifications for persistent failures."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does it handle secrets in the sandbox, like a DB URL the tests need?",
+      "Does it ever run out of GitHub API budget?",
+      "Does it keep the box warm between runs so the next one does not pay for setup again?",
+      "Can a sandbox run an Xcode build and simulator tests, or is it Linux-only for now?",
+      "Can Talyn enforce a maximum number of repair attempts and notify developers when a PR keeps failing instead of repeatedly consuming compute?",
+      "When a task runs into a usage limit halfway, does Talyn pause and pick it up after the reset, or does the box keep using box-hours while it waits?"
+     ],
+     [
+      "do i see the diff before it pushes??? or does it just push and let the next CI run decide???",
+      "does it ever run out of github api budget?",
+      "how do you handle secrets in the sandbox, like a DB URL the tests need?",
+      "when you spin up parallel sandboxes, do they share any repo context, or does each agent re-read the whole repo from scratch?",
+      "Can Talyn enforce a maximum number of repair attempts and notify developers when a PR keeps failing instead of repeatedly consuming compute?",
+      "github only is the one thing stopping me tbh, we're on gitlab. is that on the list or way later?"
+     ],
+     [
+      "do i see the diff before it pushes??? or does it just push and let the next CI run decide???",
+      "does it ever run out of github api budget?",
+      "how do you handle secrets in the sandbox, like a DB URL the tests need?",
+      "when you spin up parallel sandboxes, do they share any repo context, or does each agent re-read the whole repo from scratch?",
+      "Can Talyn enforce a maximum number of repair attempts and notify developers when a PR keeps failing instead of repeatedly consuming compute?",
+      "When a task runs into it halfway, does Talyn pause and pick it up after the reset, or does the box keep using box-hours while it waits?"
+     ]
+    ]
+   }
+  },
+  "1317137": {
+   "themes": [
+    {
+     "theme": "Non-annualized revenue and marketplace angle are smart",
+     "n": 1
+    },
+    {
+     "theme": "Perit makes it easier to find and buy high-quality, expert-verified data at scale",
+     "n": 1
+    },
+    {
+     "theme": "The seven quality gates, especially 'Do Nothing' and the 10\u201360% pass band, are valuable",
+     "n": 3
+    },
+    {
+     "theme": "How does Perit facilitate connections between independent data contributors and AI labs?",
+     "n": 1
+    },
+    {
+     "theme": "Can smaller AI startups use Perit for affordable, high-quality training data?",
+     "n": 1
+    },
+    {
+     "theme": "How is sensitive or private information protected during data sharing?",
+     "n": 1
+    },
+    {
+     "theme": "Is the platform suitable for contributing domain expertise beyond raw datasets?",
+     "n": 1
+    },
+    {
+     "theme": "Are there plans to expand the marketplace with more categories of specialized training data?",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Data privacy and security",
+    "Task retirement and expert compensation",
+    "Affordable, high-quality training data for startups",
+    "Platform for domain expertise contribution",
+    "Marketplace expansion and data categories",
+    "Contributor pricing control"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The emphasis on 'non-annualized revenue' and the marketplace angle are smart.",
+      "Perit makes it easier to find and buy high-quality, expert-verified data at scale for training frontier models.",
+      "The seven quality gates, especially 'Do Nothing' and the 10\u201360% pass band, are a valuable and unique aspect.",
+      "How does Perit facilitate connections between independent data contributors and AI labs?",
+      "Can smaller AI startups use Perit for affordable, high-quality training data?",
+      "How is sensitive or private information protected during data sharing?",
+      "Is the platform suitable for contributing domain expertise beyond raw datasets?",
+      "Are there plans to expand the marketplace with more categories of specialized training data?"
+     ],
+     [
+      "The emphasis on 'non-annualized revenue' and the marketplace angle are smart, as many founders stretch reality with reported revenue.",
+      "Perit Marketplace makes it easier to find and buy high-quality, expert-verified data at scale, which is the hardest part of training frontier models.",
+      "The seven quality gates, especially 'Do Nothing' and the 10\u201360% pass band, are a valuable filter for tasks that teach models nothing.",
+      "How does Perit facilitate connections between independent data contributors and AI labs?",
+      "Can smaller AI startups access affordable, high-quality training data through Perit?",
+      "How is sensitive or private information protected during the data sharing process?",
+      "Is the platform suitable for contributing domain expertise rather than just raw datasets?",
+      "Are there plans to expand the marketplace with more categories of specialized training data?"
+     ],
+     [
+      "Users are excited about Perit bridging the gap between real-world expertise and frontier AI labs.",
+      "Users are asking about how Perit ensures data privacy and protection.",
+      "Users are asking about the process for independent data contributors to connect with AI labs.",
+      "Users are asking if smaller AI startups can use Perit for affordable, high-quality training data.",
+      "Users are asking if the platform is suitable for contributing domain expertise rather than just raw datasets.",
+      "Users are asking about plans to expand the marketplace with more categories of specialized training data.",
+      "Users are concerned about how the 10-60% pass band for task difficulty will be managed as models improve and if experts are still paid for retired tasks.",
+      "Users are asking if contributors can decide their own pricing for datasets."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you make sure sensitive or private information is protected throughout the data sharing process?",
+      "When a new model starts passing a task 90 percent of the time, does the task get retired, and does the expert who built it still get paid for past use?",
+      "Can smaller AI startups use Perit to find affordable, high quality training data for their projects?",
+      "is the platform also suitable for people who want to contribute domain expertise rather than just raw datasets?",
+      "Are you planning to expand the marketplace with more categories of specialized training data?",
+      "can contributors decide their own pricing when listing datasets on the marketplace?"
+     ],
+     [
+      "How do you make sure sensitive or private information is protected throughout the data sharing process?",
+      "When a new model starts passing a task 90 percent of the time, does the task get retired, and does the expert who built it still get paid for past use?",
+      "Can smaller AI startups use Perit to find affordable, high quality training data for their projects?",
+      "is the platform also suitable for people who want to contribute domain expertise rather than just raw datasets?",
+      "Are you planning to expand the marketplace with more categories of specialized training data?",
+      "can contributors decide their own pricing when listing datasets on the marketplace?"
+     ],
+     [
+      "How do you make sure sensitive or private information is protected throughout the data sharing process?",
+      "When a new model starts passing a task 90 percent of the time, does the task get retired, and does the expert who built it still get paid for past use?",
+      "Can smaller AI startups use Perit to find affordable, high quality training data for their projects?",
+      "is the platform also suitable for people who want to contribute domain expertise rather than just raw datasets?",
+      "Are you planning to expand the marketplace with more categories of specialized training data?",
+      "can contributors decide their own pricing when listing datasets on the marketplace?"
+     ]
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,1688 @@
+{
+ "day": "2026-11-18",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1306111": {
+   "themes": [
+    {
+     "theme": "Addresses a gap in animation testing",
+     "n": 6
+    },
+    {
+     "theme": "Existing tools only diff static frames, missing animation regressions",
+     "n": 1
+    },
+    {
+     "theme": "Ability to capture frames at exact moments for consistent testing",
+     "n": 1
+    },
+    {
+     "theme": "Helps maintain a high quality bar for work",
+     "n": 1
+    },
+    {
+     "theme": "Helpful and missing from existing test suites",
+     "n": 1
+    },
+    {
+     "theme": "Interesting for animation testing, given commonality of animations",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Catching animation regressions is a real gap, most visual tools only diff static frames",
+    "Animations have always been the blind spot in my own testing too \u2014 a static screenshot catches the end state but misses a janky easing curve or a transition that finishes a beat too late."
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the product for addressing a gap in animation testing.",
+      "Existing visual tools only diff static frames, missing animation regressions.",
+      "The ability to capture frames at exact moments for consistent animation testing is a key benefit.",
+      "The product helps maintain a high quality bar for work.",
+      "The product is seen as helpful and something missing from existing test suites.",
+      "The product is interesting for animation testing, especially given the commonality of animations on websites.",
+      "The product gives confidence in adding new animations due to internal dogfooding."
+     ],
+     [
+      "Users appreciate the product for addressing a gap in animation testing.",
+      "Existing visual tools only diff static frames, missing animation regressions.",
+      "The ability to capture frames at exact moments for consistent animation testing is a key benefit.",
+      "The product helps maintain a high quality bar for work.",
+      "The product is seen as helpful and something missing from existing test suites.",
+      "The product is interesting for animation testing, especially given the commonality of animations on websites.",
+      "The product gives confidence in adding new animations due to internal dogfooding."
+     ],
+     [
+      "Catching animation regressions is a real gap, most visual tools only diff static frames.",
+      "Animations have always been the blind spot in my own testing too \u2014 a static screenshot catches the end state but misses a janky easing curve or a transition that finishes a beat too late.",
+      "I love this! Really helpful and clearly something I've been missing in my test suite!",
+      "waht a interesting product for animation test, i like it, i will try it, animatios in website is very common, but few people pay attentions to animation testing...",
+      "Love the team, because I know I can rely on their tooling to keep my work's quality bar high.",
+      "Finally I animation testing can take care of my animations too.",
+      "Capturing frames at exact moments so the same animation gives the same frames every run is the detail that makes this believable to me.",
+      "Most of my animations are small \u2014 screen transitions, loading states, onboar"
+     ]
+    ],
+    "complaints": [
+     [
+      "Catching animation regressions is a real gap, most visual tools only diff static frames",
+      "Animations have always been the blind spot in my own testing too \u2014 a static screenshot catches the end state but misses a janky easing curve or a transition that finishes a beat too late."
+     ],
+     [
+      "Catching animation regressions is a real gap, most visual tools only diff static frames",
+      "Animations have always been the blind spot in my own testing too \u2014 a static screenshot catches the end state but misses a janky easing curve or a transition that finishes a beat too late."
+     ],
+     [
+      "Catching animation regressions is a real gap, most visual tools only diff static frames",
+      "Animations have always been the blind spot in my own testing too \u2014 a static screenshot catches the end state but misses a janky easing curve or a transition that finishes a beat too late."
+     ]
+    ]
+   }
+  },
+  "1319456": {
+   "themes": [
+    {
+     "theme": "Questions about CI/headless/terminal app compatibility.",
+     "n": 1
+    },
+    {
+     "theme": "Questions about pricing and credit usage.",
+     "n": 1
+    },
+    {
+     "theme": "Praise for the 'rerun-the-original-failure-against-the-PR' step.",
+     "n": 1
+    },
+    {
+     "theme": "Questions about web-only vs. native mobile app support.",
+     "n": 1
+    },
+    {
+     "theme": "Questions about session capture across authenticated flows vs. public pages.",
+     "n": 1
+    },
+    {
+     "theme": "Generic praise/congratulations.",
+     "n": 2
+    },
+    {
+     "theme": "Questions about how the product handles multiple users encountering the same bug.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "CI/headless app support",
+    "Native mobile app support",
+    "Authenticated flow session capture",
+    "Duplicate bug report handling",
+    "Pricing model/credit explanation"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Questions about how the product handles multiple users encountering the same bug.",
+      "Questions about CI/headless/terminal app compatibility.",
+      "Questions about pricing and credit usage.",
+      "Praise for the 'rerun-the-original-failure-against-the-PR' step and the strong signal from internal usage.",
+      "Questions about web-only vs. native mobile app support.",
+      "Appreciation for the 'needs real traffic' note.",
+      "Questions about session capture across authenticated flows vs. public pages.",
+      "Generic praise/congratulations."
+     ],
+     [
+      "Does this work in CI or for headless/terminal apps?",
+      "How does the pricing work and what does one credit get you?",
+      "The rerun-the-original-failure-against-the-PR step and the 80 of 152 PRs merged are strong signals.",
+      "Is this web-only or is there a path for native mobile apps?",
+      "Does session capture work across authenticated flows or mainly public pages?",
+      "What happens if multiple users run into the exact same bug, does it create multiple reports or just one?",
+      "Generic congratulations and positive feedback."
+     ],
+     [
+      "Users are asking about the functionality and scope of session capture, specifically regarding authenticated flows and web-only limitations.",
+      "Users are asking about the pricing model and what constitutes a 'credit'.",
+      "Users are asking about how duplicate bug reports are handled.",
+      "Users are asking about CI integration and support for headless/terminal-based applications.",
+      "Users appreciate the feature of re-running the original failure against the PR as it proves the fix.",
+      "Users find the 'needs real traffic' note helpful for understanding when to use the tool.",
+      "Users are generally positive and congratulatory about the product."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does this work in CI, or for headless/terminal-based apps?",
+      "Is this web-only, or is there a path for native mobile apps?",
+      "Does the session capture work across authenticated flows or mainly public pages?",
+      "What happens if multiple users run into the exact same bug; does it create multiple reports or just one?",
+      "How does the pricing work, specifically what does one credit get you?"
+     ],
+     [
+      "Does this work in CI?",
+      "Is this web-only for now given the session capture, or is there any path for native mobile apps?",
+      "Does the session capture work across authenticated flows or mainly public pages?",
+      "What happens if multiple users run into the exact same bug? Does it create multiple reports or just one?",
+      "How does the pricing work? You pay for credits, but what does 1 credit get you?",
+      "Or, can this work for apps that are headless or terminal based?"
+     ],
+     [
+      "Does this work in CI, or for headless/terminal-based apps?",
+      "Is this web-only, or is there a path for native mobile apps?",
+      "Does the session capture work across authenticated flows or mainly public pages?",
+      "What happens if multiple users run into the exact same bug; does it create multiple reports or just one?",
+      "How does the pricing work, specifically what does one credit get you?"
+     ]
+    ]
+   }
+  },
+  "1313286": {
+   "themes": [
+    {
+     "theme": "Human approval step in workflow",
+     "n": 4
+    },
+    {
+     "theme": "Rerunning from a failed step",
+     "n": 3
+    },
+    {
+     "theme": "Diagram as executable workflow with versioning",
+     "n": 2
+    },
+    {
+     "theme": "Simplifies recurring data work",
+     "n": 2
+    },
+    {
+     "theme": "Visual editing and code integration for AI workflows",
+     "n": 1
+    },
+    {
+     "theme": "Benefits against alternatives like n8n",
+     "n": 1
+    },
+    {
+     "theme": "Testing recaps with real data without posting",
+     "n": 1
+    },
+    {
+     "theme": "Timings for triggered workflows",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Rerunning from a failed step",
+    "Manual approval steps in workflows",
+    "Comparison to existing workflow tools (e.g., n8n)",
+    "Timing of triggered workflows",
+    "Testing workflows with real data without publishing"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Can a step wait for a person to approve before the workflow continues?",
+      "Can you rerun just from a failed step or does it start over from the top?",
+      "The diagram is the actual executable workflow, not just a picture of it, allowing for versioning with code.",
+      "Mermaid Flow simplifies recurring data-related work by pulling KPIs, checking dashboards, and flagging changes.",
+      "What are the key benefits of Mermaid Flow against alternatives like n8n?",
+      "Can a weekly recap be tested using real data without posting it to Slack?",
+      "Are there any rough timings for triggered workflows, such as starting a run when a PR merges?",
+      "Mermaid Flow brings together visual editing and code, allowing users to build and run AI workflows naturally."
+     ],
+     [
+      "Can you rerun a workflow from a failed step or a specific point, or does it always restart from the beginning?",
+      "Is it possible to add a step where a human approves something before the workflow continues?",
+      "The concept of the diagram being the executable workflow that versions with code is highly valued.",
+      "Users appreciate the visual editing and code integration for building and running AI workflows.",
+      "The product simplifies recurring data-related work and provides visibility into the workflow logic.",
+      "What are the key benefits of Mermaid Flow compared to alternatives like n8n?",
+      "Can a weekly recap be tested with real data without posting it to Slack?",
+      "What is the rough timing for triggered workflows, such as starting a run when a PR merges?"
+     ],
+     [
+      "Can a step wait for a person to approve before the workflow continues?",
+      "Can you rerun just from a failed step or does it start over from the top?",
+      "The diagram is the actual executable workflow, not just a picture of it, allowing for versioning with code.",
+      "Mermaid Flow simplifies recurring data-related work by pulling KPIs, checking dashboards, and flagging changes.",
+      "What are the key benefits of Mermaid Flow against alternatives like n8n?",
+      "Can a weekly recap be tested using real data without posting it to Slack?",
+      "Are there any rough timings for triggered workflows, such as starting a run when a PR merges?",
+      "Mermaid Flow brings together visual editing and code, allowing users to build and run AI workflows naturally."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can you rerun just from the failed step or does it start over from the top?",
+      "Is it possible to add a step where I approve something before the workflow continues?",
+      "What would be the key benefits of your solution against something like n8n where you can already create workflows and integrate AI agents on certain steps?",
+      "Any rough timing on triggered workflows, like starting a run when a PR merges?",
+      "Can you test a weekly recap using real data without posting it to Slack?"
+     ],
+     [
+      "Can you rerun just from the failed step or does it start over from the top?",
+      "Is it possible to add a step where I approve something before the workflow continues?",
+      "What would be the key benefits of your solution against something like n8n where you can already create workflows and integrate AI agents on certain steps?",
+      "Any rough timing on triggered workflows, like starting a run when a PR merges?",
+      "Can you test a weekly recap using real data without posting it to Slack?"
+     ],
+     [
+      "Is it possible to add a step where I approve something before the workflow continues?",
+      "When a step produces a bad output mid-run, can you rerun just that step, or does the whole workflow restart?",
+      "What would be the key benefits of your solution against something like n8n where you can already create workflows and integrate AI agents on certain steps?",
+      "Can you test a weekly recap using real data without posting it to Slack?",
+      "Any rough timing on triggered workflows, like starting a run when a PR merges?"
+     ]
+    ]
+   }
+  },
+  "1314372": {
+   "themes": [
+    {
+     "theme": "Praise for the app",
+     "n": 3
+    },
+    {
+     "theme": "Appreciation for 'result diff view'",
+     "n": 3
+    },
+    {
+     "theme": "Questioning the need for the product",
+     "n": 1
+    },
+    {
+     "theme": "Request for multi-organization dashboard",
+     "n": 1
+    },
+    {
+     "theme": "Query about syncing reviewed status to GitHub",
+     "n": 1
+    },
+    {
+     "theme": "Request for GitLab integration",
+     "n": 1
+    },
+    {
+     "theme": "Query about persistence of local viewed status",
+     "n": 1
+    },
+    {
+     "theme": "Favorable comparison to GitHub's review UI",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Can Review Box show PRs from several organizations in one dashboard?",
+    "Does the progress of dragging files into a reviewed pile sync back to the GitHub review, or does it stay in the app?",
+    "Does the local viewed status carry over if you reopen the app a week later?",
+    "Will you add a GitLab integration?",
+    "Why would I use it when I could spin my own agent and it would tell me directly on my phone?",
+    "Curious how it holds up on stacked PRs or really large diffs."
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the app as great, epic, and brilliant problem-solving.",
+      "Users appreciate the 'result diff view' feature for its utility in reviewing large diffs and agent-written code.",
+      "Users question the need for the product when an agent could provide direct notifications.",
+      "Users ask if the app can show PRs from multiple organizations in one dashboard.",
+      "Users ask if dragging files into a reviewed pile syncs back to GitHub review.",
+      "Users ask if the local viewed status carries over when reopening the app later.",
+      "Users request a GitLab integration.",
+      "Users compare the product favorably to GitHub's review UI, especially for large diffs."
+     ],
+     [
+      "Users praise the app as epic, great, and recommend it.",
+      "Users appreciate the result diff view, especially for large or agent-written PRs.",
+      "Users question the need for the product when agents can provide direct notifications.",
+      "Users ask if the app can show PRs from multiple organizations in one dashboard.",
+      "Users ask if the 'reviewed' status of files syncs back to GitHub.",
+      "Users request a GitLab integration.",
+      "Users ask if the local viewed status persists when reopening the app.",
+      "Users compare the product to GitHub's review UI, noting its shortcomings for large diffs."
+     ],
+     [
+      "Users praise the app as epic, great, and recommend it.",
+      "Users appreciate the result diff view, especially for large or agent-written PRs.",
+      "Users question the need for the product when agents can provide direct notifications.",
+      "Users ask if the app can show PRs from multiple organizations in one dashboard.",
+      "Users ask if the 'reviewed' status of files syncs back to GitHub.",
+      "Users request a GitLab integration.",
+      "Users ask if the local viewed status persists when reopening the app.",
+      "Users compare the product to GitHub's review UI, noting its shortcomings for large diffs."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can Review Box show PRs from several organizations in one dashboard?",
+      "Does the progress of dragging files into a reviewed pile sync back to the GitHub review, or does it stay in the app?",
+      "Does the local viewed status carry over if you reopen the app a week later?",
+      "Will you add a GitLab integration?",
+      "Why would I use it when I could spin my own agent and it would tell me directly on my phone?",
+      "Curious how it holds up on stacked PRs or really large diffs."
+     ],
+     [
+      "Does the local viewed status carry over if you reopen the app a week later?",
+      "Does dragging files into a reviewed pile sync back to the GitHub review, or does it stay in the app?",
+      "Can Review Box show PRs from several organizations in one dashboard?",
+      "Will you add a GitLab integration?",
+      "Why would I use it if I could spin my agent and it would tell me directly on my phone?",
+      "Curious how it holds up on stacked PRs or really large diffs."
+     ],
+     [
+      "can review box show prs from several orgs in one dashboard",
+      "does that progress sync back to the github review, or does it stay in the app?",
+      "does the local viewed status carry over if you reopen the app a week later?",
+      "will you add a gitlab integration?",
+      "why would i use it??",
+      "Curious how it holds up on stacked PRs or really larg"
+     ]
+    ]
+   }
+  },
+  "1317562": {
+   "themes": [
+    {
+     "theme": "Addresses pain of re-explaining context/copy-pasting between AI tools",
+     "n": 10
+    },
+    {
+     "theme": "Ability to bring existing AI agents into S.Space",
+     "n": 3
+    },
+    {
+     "theme": "Pricing model",
+     "n": 1
+    },
+    {
+     "theme": "First-day experience and ease of setup",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to existing tools and key differences",
+     "n": 4
+    },
+    {
+     "theme": "Approval process for agent interactions/changes",
+     "n": 4
+    },
+    {
+     "theme": "How agents handle changing requirements or disagreements",
+     "n": 2
+    },
+    {
+     "theme": "Visibility of agent handoffs and shared memory",
+     "n": 3
+    }
+   ],
+   "complaints": [
+    "Pricing model",
+    "Comparison to Claude Co-Work",
+    "Conflict resolution between agents",
+    "Approval process for agent actions",
+    "Handling requirement changes",
+    "Permissions and notifications for agent actions"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The product addresses the pain point of re-explaining context and copying/pasting between different AI agents and tools.",
+      "Users want to know if they can bring their existing AI agents into S.Space.",
+      "Users are curious about the pricing model.",
+      "Users want to understand the typical first-day experience and ease of setup.",
+      "Users compare S.Space to existing tools like Claude Co-Work or Picnic and ask for key differences.",
+      "Users ask about how approvals work when agents interact or make changes.",
+      "Users want to know how agents handle changes in requirements or disagreements.",
+      "Users are interested in the visibility of agent handoffs and shared memory."
+     ],
+     [
+      "The product addresses the pain point of re-explaining context and copying/pasting between different AI agents and tools.",
+      "Users want to know if they can bring their existing AI agents into S.Space.",
+      "Users are curious about the pricing model.",
+      "Users want to understand the typical first-day experience and ease of setup.",
+      "Users compare S.Space to existing tools like Claude Co-Work or Picnic and ask for key differences.",
+      "Users ask about how approvals work when agents interact or make changes.",
+      "Users want to know how agents handle changes in requirements or disagreements.",
+      "Users are interested in the visibility of agent handoffs and shared memory."
+     ],
+     [
+      "The product addresses the pain point of re-explaining context and copying/pasting between different AI agents and tools.",
+      "Users want to know if they can bring their existing AI agents into S.Space.",
+      "Users are curious about the pricing model.",
+      "Users want to understand the typical first-day experience and ease of setup.",
+      "Users compare S.Space to existing tools like Claude Co-Work or Picnic and ask for key differences.",
+      "Users ask about how approvals work when agents interact or make changes.",
+      "Users want to know how agents handle changes in requirements or disagreements.",
+      "Users are interested in the visibility of agent handoffs and shared memory."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does pricing work?",
+      "Is it something like Claude Co-Work, and what are the key differences?",
+      "When two agents disagree on a handoff, who settles it, or does one agent take the lead?",
+      "If my agent asks a teammate\u2019s agent to do something that needs approval, who gets the prompt?",
+      "What if a teammate changes a requirement halfway through; how do the agents already working on it pick up the change?",
+      "How do permissions work when multiple agents start handing tasks off to each other, and do you get a ping before an agent makes a big change?"
+     ],
+     [
+      "How does pricing work?",
+      "Is it something like Claude Co-Work, and what are the key differences?",
+      "When two agents disagree on a handoff, who settles it, or does one agent take the lead?",
+      "If my agent asks a teammate\u2019s agent to do something that needs approval, who gets the prompt?",
+      "What if a teammate changes a requirement halfway through; how do the agents already working on it pick up the change?",
+      "How do permissions work when multiple agents start handing tasks off to each other, and do you get a ping before an agent makes a big change?"
+     ],
+     [
+      "How does pricing work?",
+      "Is it something like Claude Co-Work, and what are the key differences?",
+      "When two agents disagree on a handoff, who settles it, or does one agent take the lead?",
+      "If my agent asks a teammate\u2019s agent to do something that needs approval, who gets the prompt?",
+      "What if a teammate changes a requirement halfway through; how do the agents already working on it pick up the change?",
+      "How do permissions work when multiple agents start handing tasks off to each other, and do you get a ping before an agent makes a big change?"
+     ]
+    ]
+   }
+  },
+  "1312359": {
+   "themes": [
+    {
+     "theme": "Easy creation of polished, production-level videos without design skills",
+     "n": 5
+    },
+    {
+     "theme": "Code-driven editing built on Remotion offers flexibility and control",
+     "n": 2
+    },
+    {
+     "theme": "Interoperability with Remotion projects and handling of manual edits by AI agents",
+     "n": 1
+    },
+    {
+     "theme": "'URL-for-everything' concept for directing AI agents",
+     "n": 1
+    },
+    {
+     "theme": "Dislike of lack of control and quota consumption for tiny edits in other tools",
+     "n": 1
+    },
+    {
+     "theme": "Curiosity about performance on longer edits with extensive footage",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Interoperability with existing Remotion projects",
+    "Agent's handling of manual edits",
+    "Performance on longer edits with extensive footage"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the product's ability to create polished, production-level videos easily, especially for those without design skills.",
+      "The idea of building the editor on Remotion and making edits code-driven is seen as smart, offering flexibility and control.",
+      "Users are asking about the interoperability with existing Remotion projects and how manual edits are handled by AI agents.",
+      "The 'URL-for-everything' concept, allowing links to specific frames or timeline items, is highlighted as a thoughtful and effective way to direct AI agents.",
+      "A user dislikes the lack of control and quota consumption for tiny edits in other tools.",
+      "A user is curious about the product's performance on longer edits with lots of footage."
+     ],
+     [
+      "Users praise the product for empowering them to create polished, production-level videos easily, even without design skills.",
+      "The code-driven editing built on Remotion is seen as a smart idea, offering flexibility for AI agents and manual control.",
+      "Users are interested in the ability to import and export Remotion projects and understand how manual edits interact with AI agents.",
+      "A user dislikes the lack of control and quota usage for tiny edits in other tools, looking forward to trying this product.",
+      "The 'URL-for-everything' idea, allowing links to specific frames or timeline items, is highlighted as a thoughtful and effective way to direct AI agents.",
+      "A user is curious about the product's performance on longer edits with extensive footage.",
+      "Generic congratulations and appreciation for the product's impact on team storytelling."
+     ],
+     [
+      "Users praise the product's ability to create polished, production-level videos easily, especially for those without design skills.",
+      "The code-driven editing built on Remotion is seen as a smart idea, offering flexibility for AI agents and manual control.",
+      "Users are asking about the interoperability with existing Remotion projects and how manual edits are handled by AI agents.",
+      "The 'URL-for-everything' idea for directing AI agents and direct media import is highlighted as a thoughtful and effective feature.",
+      "A user dislikes the lack of control and quota usage for tiny edits in other tools, looking to this product as a solution.",
+      "A user is curious about the product's performance on longer edits with extensive footage."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can I bring in an existing Remotion project (compositions, props, fonts) and later take the code back out to render on my own setup, or does the project live only in Kino?",
+      "When someone drags a clip by hand, does the agent see that as a code diff on its next turn, so it doesn't undo the change?",
+      "Curious how it holds up on a longer edit with lots of footage."
+     ],
+     [
+      "Can I bring in an existing Remotion project and later take the code back out to render on my own setup, or does the project live only in Kino?",
+      "When someone drags a clip by hand, does the agent see that as a code diff on its next turn, so it doesn't undo the change?",
+      "Curious how it holds up on a longer edit with lots of footage."
+     ],
+     [
+      "Can I bring in an existing Remotion project (compositions, props, fonts) and later take the code back out to render on my own setup, or does the project live only in Kino?",
+      "And when someone drags a clip by hand, does the agent see that as a code diff on its next turn, so it doesn't undo the change?",
+      "Curious how it holds up on a longer edit with lots of footage."
+     ]
+    ]
+   }
+  },
+  "1316478": {
+   "themes": [
+    {
+     "theme": "Automatic transcription and summarization",
+     "n": 10
+    },
+    {
+     "theme": "Inbound call recording capabilities",
+     "n": 4
+    },
+    {
+     "theme": "Privacy, data security, and consent for recording",
+     "n": 4
+    },
+    {
+     "theme": "Functionality with normal phone dialer",
+     "n": 5
+    },
+    {
+     "theme": "Support for specific countries and languages",
+     "n": 2
+    },
+    {
+     "theme": "Comparison to alternative products",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Initiating calls from the normal phone dialer",
+    "Inbound call recording",
+    "Consent disclosure and notification of recording",
+    "Transcription quality with overlapping speech",
+    "Sharing call summaries outside the workspace",
+    "Privacy and security of call data"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the product's ability to provide call notes and action items while keeping their own caller ID, and the convenience of automatic transcription and summarization.",
+      "Users are asking about the functionality of Bluedot with the normal phone dialer and the ability to handle inbound calls.",
+      "Users have questions regarding privacy, data security, and consent for recording calls.",
+      "Users are requesting the ability to share specific call summaries with external parties and integration with Gmail for draft summaries.",
+      "Users are asking about the availability of specific countries for call recording and transcription, such as France and South Korea.",
+      "Users are comparing Bluedot to alternative products like Plaud and Granola.",
+      "Users are asking about the product's performance in specific scenarios, such as handling calls where both people talk over each other or long, rambling calls.",
+      "Users are requesting that call notes sit in the same search as meeting notes for a unified view of a person's interactions."
+     ],
+     [
+      "Users express general congratulations and positive sentiment for the launch and product evolution.",
+      "Users frequently request inbound call recording capabilities.",
+      "Users inquire about the handling of consent and disclosure for call recording.",
+      "Users raise concerns about data privacy and security of the recorded calls and notes.",
+      "Users ask about the integration and functionality with the normal phone dialer.",
+      "Users appreciate the ability to record calls and generate summaries without a visible bot.",
+      "Users request specific countries and languages for transcription support.",
+      "Users compare Bluedot to existing tools like Plaud and Granola."
+     ],
+     [
+      "Users appreciate the convenience of automatic transcription and summaries for phone calls.",
+      "Users are asking about the functionality and integration with their existing phone dialer and other apps.",
+      "Users are requesting inbound call recording capabilities.",
+      "Users have concerns about privacy, data security, and consent disclosure when recording calls.",
+      "Users are requesting support for specific countries and languages.",
+      "Users value the 'no-bot' approach for a more natural conversation experience.",
+      "Users are comparing Bluedot to alternative products like Plaud and Granola.",
+      "Users are asking about the quality of AI summary for complex or long conversations."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is inbound call recording planned, and how would it work?",
+      "How does it handle consent disclosure and notifying others about recording?",
+      "What is the transcription quality like for calls with overlapping speech or in specific languages?",
+      "What are the privacy and security measures for call data?",
+      "Can call summaries be shared outside the workspace or integrated with other tools?",
+      "Can Bluedot be initiated from the normal phone dialer, or does it require opening the app first?"
+     ],
+     [
+      "Do you need to open bluedot before evey call, or can it work from the normal phone dialer too?",
+      "Is inbound call recording something you're planning soon?",
+      "How do you know if someone is recording your call with Bluedot?",
+      "How well does it handle calls where both people talk over each other?",
+      "Can I share just one call summary with someone outside my workspace?",
+      "How safe is it? Is the data stored in a ZeroKnowledge DB or Indexed externally? Or is it powered and trained through APIs?"
+     ],
+     [
+      "Do you need to open bluedot before evey call, or can it work from the normal phone dialer too?",
+      "Is inbound call recording something you're planning soon?",
+      "How do you know if someone is recording your call with Bluedot?",
+      "How well does it handle calls where both people talk over each other?",
+      "Can I share just one call summary with someone outside my workspace?",
+      "How safe is it? Is the data stored in a ZeroKnowledge DB or Indexed externally? Or is it powered and trained through APIs?"
+     ]
+    ]
+   }
+  },
+  "1305594": {
+   "themes": [
+    {
+     "theme": "How well does Waldo perform and scale with large datasets?",
+     "n": 5
+    },
+    {
+     "theme": "Can Waldo integrate with existing data engineering workflows and custom business data?",
+     "n": 3
+    },
+    {
+     "theme": "Waldo makes spatial data accessible without heavy coding and saves time.",
+     "n": 4
+    },
+    {
+     "theme": "Waldo's transparency in showing its work builds trust.",
+     "n": 2
+    },
+    {
+     "theme": "Is Waldo suitable for teams just getting started with spatial AI?",
+     "n": 2
+    },
+    {
+     "theme": "Can the pipelines built by Waldo be taken out, run, or edited independently?",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Scalability with large datasets",
+    "Integration with existing workflows",
+    "Suitability for new spatial AI teams",
+    "Portability of generated pipelines",
+    "Time-saving for geospatial projects"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How well does Waldo perform and scale with large datasets?",
+      "How much time can Waldo save when working on geospatial projects?",
+      "Users appreciate Waldo's ability to make spatial data accessible without heavy coding and turn location data into useful answers.",
+      "Can Waldo integrate with existing data engineering workflows and custom business data?",
+      "Users value Waldo's transparency in showing its work (code, runtime, rows read) for traceability and trust.",
+      "Is Waldo suitable for teams just getting started with spatial AI?",
+      "Can the pipelines built by Waldo in SpatialSQL/Python be taken out, run, or edited independently?",
+      "Users should be mindful of potential costs when processing massive datasets, as Waldo will spin up large compute runtimes."
+     ],
+     [
+      "How well does Waldo perform and scale with large datasets?",
+      "How much time can Waldo save when working on geospatial projects?",
+      "Waldo makes spatial data accessible without heavy coding, which is a significant advantage.",
+      "Can Waldo integrate with existing data engineering workflows and custom business data?",
+      "Waldo's ability to show its work (code, runtime, rows read) provides transparency and builds trust.",
+      "Is Waldo suitable for teams just starting with spatial AI?",
+      "Can the pipelines built by Waldo be taken out and run or edited independently?",
+      "Users should be mindful of costs when processing massive datasets, as Waldo will spin up large compute runtimes."
+     ],
+     [
+      "How well does Waldo perform and scale with large datasets?",
+      "Can Waldo integrate with existing data engineering workflows and custom business data?",
+      "Waldo makes spatial data accessible and saves a significant amount of time by reducing the need for complex coding and setup.",
+      "How easy is it to get started with Waldo and is it suitable for teams new to spatial AI?",
+      "Can Waldo help businesses make better decisions by finding useful patterns in their location-based data?",
+      "Users appreciate Waldo's transparency in showing its work (code, runtime, steps) which builds trust.",
+      "Can the pipelines built by Waldo in SpatialSQL/Python be exported, run, or edited independently?",
+      "Is Waldo based on Overture Maps data?"
+     ]
+    ],
+    "complaints": [
+     [
+      "How well does it perform when datasets become really large?",
+      "Is it possible to explore large datasets without writing complex SQL?",
+      "How does Waldo fit into an existing data engineering workflow?",
+      "Would you recommend Waldo for teams just getting started with spatial AI?",
+      "Can it also work with custom business data?",
+      "Once Waldo builds a pipeline in SpatialSQL/Python, can I take that pipeline out and run or edit it on my own?"
+     ],
+     [
+      "How well does it perform when datasets become really large?",
+      "Is it possible to explore large datasets without writing complex SQL?",
+      "How much time can Waldo save when working on geospatial projects?",
+      "How does Waldo fit into an existing data engineering workflow?",
+      "Would you recommend Waldo for teams just getting started with spatial AI?",
+      "Once Waldo builds a pipeline in SpatialSQL/Python, can I take that pipeline out and run or edit it on my own?"
+     ],
+     [
+      "How well does it perform when datasets become really large?",
+      "Can Waldo help businesses make better decisions by finding useful patterns in their location based data?",
+      "How much time can Waldo save when working on geospatial projects?",
+      "How does Waldo fit into an existing data engineering workflow?",
+      "Would you recommend Waldo for teams just getting started with spatial AI?",
+      "Once Waldo builds a pipeline in SpatialSQL/Python, can I take that pipeline out and run or edit it on my own?"
+     ]
+    ]
+   }
+  },
+  "1319346": {
+   "themes": [
+    {
+     "theme": "Ability to find breaking commit and open fix PR is a time saver",
+     "n": 2
+    },
+    {
+     "theme": "Keeps working on the same branch when its own fix fails CI",
+     "n": 1
+    },
+    {
+     "theme": "Does it stay quiet on flaky tests or keep opening PRs for the same broken job?",
+     "n": 1
+    },
+    {
+     "theme": "Does the fix PR include failing log context and traced commit for quick review?",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to custom agents for dev and code review",
+     "n": 1
+    },
+    {
+     "theme": "Fix-PR-before-review flow is appealing, especially not merging by default and running tests first",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the launch",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Handles flaky tests without repeated PRs",
+    "Fix PRs include context for quick review",
+    "Replaces existing custom solutions"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to find the commit that broke the build and open a fix PR is a huge time saver.",
+      "The detail that it keeps working on the same branch when its own fix fails CI is a selling point.",
+      "Does it stay quiet on flaky tests, or does it keep opening PRs for the same broken job?",
+      "Does the fix PR include the failing log context and the commit it traced it to, so the review is quick?",
+      "Would this be a replacement for a custom agent built for dev and code review?",
+      "The fix-PR-before-review flow is appealing, especially for solo developers.",
+      "The product does not merge by default and runs the fix through build and tests first, which builds trust.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The ability to find the commit that broke the build and open a fix PR is a huge time saver.",
+      "The detail that Polylane keeps working on the same branch when its own fix fails CI is a selling point.",
+      "Does Polylane stay quiet on flaky tests, or does it keep opening PRs for the same broken job?",
+      "Does the fix PR include the failing log context and the commit it traced it to, to facilitate quick review?",
+      "Users are comparing Polylane to their own custom agents for dev and code review.",
+      "Some users have a 'no broken windows' rule and prefer to do a correct fix rather than just rerun tests, citing concerns about agents learning to rerun instead of fix.",
+      "The fix-PR-before-review flow is appealing, especially the fact that it doesn't merge by default and runs the fix through build and tests first.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The ability to find the commit that broke the build and open a fix PR is a huge time saver.",
+      "Does it stay quiet on flaky tests, or does it keep opening PRs for the same broken job?",
+      "The detail that it keeps working on the same branch when its own fix fails CI is a selling point.",
+      "Does the fix PR include the failing log context and the commit it traced it to, so the review is quick?",
+      "This sounds like it could be a replacement for our own custom agent for dev and code review.",
+      "The fix-PR-before-review flow caught my eye, especially that it doesn't merge by default and runs the fix through build and tests first.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it stay quiet on flaky tests, or does it keep opening PRs for the same broken job?",
+      "Does the fix PR include the failing log context and the commit it traced it to, so the review is quick?",
+      "Sounds like this would be a replacement for that work?"
+     ],
+     [
+      "Does it stay quiet on flaky tests, or does it keep opening PRs for the same broken job?",
+      "Does the fix PR include the failing log context and the commit it traced it to, so the review is quick?",
+      "Sounds like this would be a replacement for that work?"
+     ],
+     [
+      "Does it stay quiet on flaky tests, or does it keep opening PRs for the same broken job?",
+      "Does the fix PR include the failing log context and the commit it traced it to, so the review is quick?",
+      "We have a no broken windows rule. Every time a test fails, we go down the fault tree and do a correct fix, never just rerun it.",
+      "We have built our own custom agent for dev and code review -- sounds like this would be a replacement for that work?"
+     ]
+    ]
+   }
+  },
+  "1319952": {
+   "themes": [
+    {
+     "theme": "Consolidated testing, localization, and accessibility",
+     "n": 3
+    },
+    {
+     "theme": "Text overflow and truncation issues in localization",
+     "n": 2
+    },
+    {
+     "theme": "Evidence, not just pass/fail results",
+     "n": 2
+    },
+    {
+     "theme": "Addresses the 'why now' problem of release readiness",
+     "n": 2
+    },
+    {
+     "theme": "Plural-form issues in localization",
+     "n": 1
+    },
+    {
+     "theme": "Localization checked in the real build",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Plural-form issues vs. layout/truncation",
+    "Reproducibility of failing journeys"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The product consolidates testing, localization, and accessibility into one tool, reducing the need to juggle separate platforms.",
+      "Users are concerned about text overflow and truncation issues, especially with long strings in different languages like German or Japanese.",
+      "The 'evidence, not just pass/fail' feature, including traces, is highly valued for making release decisions defensible.",
+      "The product addresses the 'why now' problem of shipping faster but not knowing if you're ready.",
+      "Does KaDeep catch plural-form issues in localization, or mainly layout overflow and truncation?",
+      "Users want to be able to reproduce failing journeys themselves from the evidence quickly, rather than just seeing a pass/fail.",
+      "The ability to check localization in the real build, not just string files, is a significant benefit.",
+      "Generic thanks and congratulations for the product launch."
+     ],
+     [
+      "Users appreciate the consolidation of testing, localization, and accessibility into one tool, reducing the need to juggle separate platforms.",
+      "Users are interested in whether the tool catches plural-form issues in localization, beyond layout overflow and truncation.",
+      "The ability to check text overflow and truncation, especially for different languages, is a significant benefit.",
+      "The provision of evidence, not just pass/fail results, is highly valued for making defensible release decisions and reproducing issues.",
+      "The product effectively addresses the challenge of ensuring release readiness in a world of faster shipping but unchanged readiness knowledge.",
+      "The focus on localization checked in the real build is a key feature for solo developers.",
+      "The product helps teams move from fragmented, manual testing toward more connected workflows.",
+      "The product helps ensure everything works as expected when it reaches real users, especially with increasing release validation complexity."
+     ],
+     [
+      "Users appreciate having testing, localization, and accessibility covered in one tool, reducing the need to juggle separate platforms.",
+      "The ability to check localization in the real build, specifically for layout overflow and truncation, is highly valued.",
+      "The provision of 'evidence, not just pass/fail' with traces, screenshots, and logs is seen as crucial for defensible release decisions and reproducing issues.",
+      "The product addresses the core problem that shipping software has become faster, but knowing if it's ready hasn't.",
+      "Users want to know if KaDeep catches plural-form issues in localization, beyond layout overflow and truncation.",
+      "The challenge of ensuring software works as expected for real users, especially with increasing complexity and faster shipping, is a significant concern.",
+      "Generic thanks and congratulations for the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does KaDeep catch plural-form issues like that, or mainly layout overflow and truncation?",
+      "What would make me trust a verdict like this is being able to reproduce the failing journey myself from the evidence in a minute, not just seeing a pass/fail."
+     ],
+     [
+      "Does KaDeep catch plural-form issues like that, or mainly layout overflow and truncation?",
+      "What would make me trust a verdict like this is being able to reproduce the failing journey myself from the evidence in a minute, not just seeing a pass/fail."
+     ],
+     [
+      "Does KaDeep catch plural-form issues like that, or mainly layout overflow and truncation?",
+      "What would make me trust a verdict like this is being able to reproduce the failing journey myself from the evidence in a minute, not just seeing a pass/fail."
+     ]
+    ]
+   }
+  },
+  "1320378": {
+   "themes": [
+    {
+     "theme": "Praise for design and usefulness",
+     "n": 3
+    },
+    {
+     "theme": "Differentiation from competitors",
+     "n": 2
+    },
+    {
+     "theme": "RPM build for Fedora Linux",
+     "n": 1
+    },
+    {
+     "theme": "Phone app availability",
+     "n": 1
+    },
+    {
+     "theme": "Appreciation for existing plans and memory management",
+     "n": 1
+    },
+    {
+     "theme": "Concern about code plagiarism",
+     "n": 1
+    },
+    {
+     "theme": "Long-term performance of scheduled routines",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Comparison to competitors",
+    "Linux package availability",
+    "Long-term performance/memory",
+    "Mobile app availability",
+    "Attribution/originality of code"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are praising the product's design, aesthetics, and overall quality.",
+      "Users are asking about the product's differentiation from competitors like GrokBot, Hermes, and Openclaw.",
+      "A user requested an RPM build for Fedora Linux.",
+      "A user is asking if a phone app is available.",
+      "Users appreciate the ability to use existing plans and the bot's memory management and safety features.",
+      "A user alleges the product is a copy of Github Forking and MausBot code.",
+      "A user is curious about the long-term performance of scheduled routines with accumulating memory.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "Users are praising the product, its design, and its usefulness.",
+      "Users are asking about the product's differentiation from competitors and specific features.",
+      "Users are comparing the product to GrokBot, Hermes, and Openclaw.",
+      "A user requested adding RPM build for Fedora Linux users.",
+      "A user asked if a phone app is available.",
+      "Users appreciate the ability to use existing plans and the bot's independent memory and cautious approach.",
+      "A user raised a concern about potential code plagiarism from Github Forking and MausBot.",
+      "A user is curious about the long-term performance of scheduled routines with accumulating memory."
+     ],
+     [
+      "Users are praising the product, its design, and its usefulness.",
+      "Users are asking about the product's differentiation from competitors and specific features.",
+      "Users are comparing the product to GrokBot, Hermes, and Openclaw.",
+      "A user requested adding RPM build for Fedora Linux users.",
+      "A user asked if a phone app is available.",
+      "Users appreciate the ability to use existing plans and the bot's independent memory and cautious approach.",
+      "A user raised a concern about potential code plagiarism from Github Forking and MausBot.",
+      "A user is curious about the long-term performance of scheduled routines with accumulating memory."
+     ]
+    ],
+    "complaints": [
+     [
+      "What makes it different compared to GrokBot?",
+      "From your point of view, what's the advantage over hermes (any maybe openclaw)?",
+      "please also add rpm build for fedora linux users too",
+      "Curious how the scheduled routines hold up over a few weeks once the memory starts accumulating",
+      "Is the phone app out yet?",
+      "Brought to you by Github Forking and MausBot code and pretend you did it all..."
+     ],
+     [
+      "What makes it different compared to GrokBot?",
+      "From your point of view, what's the advantage over hermes (any maybe openclaw)?",
+      "please also add rpm build for fedora linux users too",
+      "Is the phone app out yet?",
+      "Curious how the scheduled routines hold up over a few weeks once the memory starts accumulating",
+      "Brought to you by Github Forking and MausBot code and pretend you did it all..."
+     ],
+     [
+      "What makes it different compared to GrokBot?",
+      "From your point of view, what's the advantage over hermes (any maybe openclaw)?",
+      "please also add rpm build for fedora linux users too",
+      "Is the phone app out yet?",
+      "Curious how the scheduled routines hold up over a few weeks once the memory starts accumulating",
+      "Brought to you by Github Forking and MausBot code and pretend you did it all..."
+     ]
+    ]
+   }
+  },
+  "1320759": {
+   "themes": [
+    {
+     "theme": "CRM integration and interaction",
+     "n": 7
+    },
+    {
+     "theme": "Partner visibility of referral progress without sensitive sales notes",
+     "n": 4
+    },
+    {
+     "theme": "Ability for past clients/individuals to be referrers without formal partner signup",
+     "n": 3
+    },
+    {
+     "theme": "Importing historical referral data from spreadsheets",
+     "n": 2
+    },
+    {
+     "theme": "Handling attribution when multiple partners claim the same intro",
+     "n": 2
+    },
+    {
+     "theme": "Trialing Introzy with a few referrals before full partner adoption",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Target user (individual vs. team)",
+    "Importing historical data",
+    "CRM integration",
+    "Partner visibility into deal progress",
+    "Handling recurring commissions",
+    "Conflict resolution for duplicate intros"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Does Introzy work for one person paying a referral fee to a peer, or is it built for teams with a partner program?",
+      "Can a happy past client be a referrer without signing up as a partner?",
+      "Can you bring in older referrals from a spreadsheet and keep the original intro dates?",
+      "Does Introzy replace our CRM or sit on top of it?",
+      "Can a partner see that their intro moved forward without seeing the private sales notes?",
+      "Can a small firm try Introzy with a few referrals before asking its partners to change how they work?",
+      "Do you integrate with CRM systems such as Salesforce?",
+      "What happens when two partners claim the same intro?"
+     ],
+     [
+      "Does Introzy integrate with CRM systems like HubSpot and Salesforce, and how does it interact with existing CRM data?",
+      "Can partners see the progress of their referrals without viewing private sales notes, and how does Introzy handle communication regarding referral status?",
+      "Can past clients or individuals act as referrers without formally signing up as partners, and how are these referrals tracked?",
+      "How does Introzy handle the import of historical referral data, including original intro dates, from spreadsheets?",
+      "How does Introzy address attribution issues when multiple partners claim the same intro or when a partner introduces a deal already in progress?",
+      "Does Introzy support tracking recurring commissions for self-serve subscriptions over time, including adjustments for failed payments or refunds?",
+      "Can a small firm try Introzy with a few referrals to demonstrate its value before asking partners to change their workflow?",
+      "Users appreciate that Introzy is built for the person making the intro and helps track unpaid commissions, addressing a common pain point."
+     ],
+     [
+      "Does Introzy integrate with CRM systems like HubSpot and Salesforce, and how does it interact with existing CRM data?",
+      "Can partners see the progress of their referrals without viewing private sales notes, and how does Introzy handle communication regarding referral status?",
+      "Can past clients or individuals act as referrers without formally signing up as partners, and how are these referrals tracked?",
+      "How does Introzy handle the import of historical referral data, including original intro dates, from spreadsheets?",
+      "How does Introzy address attribution issues when multiple partners claim the same intro or when a partner introduces a deal already in progress?",
+      "Does Introzy support tracking recurring commissions for self-serve subscriptions over time, including adjustments for failed payments or refunds?",
+      "Can a small firm try Introzy with a few referrals to demonstrate its value before asking partners to change their workflow?",
+      "Users appreciate that Introzy is built for the person making the intro and helps track unpaid commissions, addressing a common pain point."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does Introzy work for one person paying a referral fee to a peer, or is it built for teams with a partner program?",
+      "Can you bring in older referrals from a spreadsheet and keep the original intro dates?",
+      "Does this replace our CRM or sit on top of it? Not keen on entering deals twice",
+      "Can a partner see that their intro moved forward without seeing the private sales notes?",
+      "Does it handle recurring commissions on self-serve subscriptions too, not just one closed deal?",
+      "What happens when two partners claim the same intro?"
+     ],
+     [
+      "Does Introzy work for one person paying a referral fee to a peer, or is it built for teams with a partner program?",
+      "Can you bring in older referrals from a spreadsheet and keep the original intro dates?",
+      "Does this replace our CRM or sit on top of it? Not keen on entering deals twice",
+      "Can a partner see that their intro moved forward without seeing the private sales notes?",
+      "Does it handle recurring commissions on self-serve subscriptions too, not just one closed deal?",
+      "What happens when two partners claim the same intro?"
+     ],
+     [
+      "Does it handle recurring commissions on self-serve subscriptions too, not just one closed deal?",
+      "Can you bring in older referrals from a spreadsheet and keep the original intro dates?",
+      "We live in HubSpot. Does this replace our CRM or sit on top of it?",
+      "Can a partner see that their intro moved forward without seeing the private sales notes?",
+      "what happens when two partners claim the same intro?",
+      "if a partner makes an intro after there\u2019s already an open deal in HubSpot, can you credit them for helping move it forward without changing who originally sourced it?"
+     ]
+    ]
+   }
+  },
+  "1314354": {
+   "themes": [
+    {
+     "theme": "Users are excited about the product and congratulate the team on the launch.",
+     "n": 3
+    },
+    {
+     "theme": "The timing problem with voice agents (jumping in too early or waiting too long) is a significant and relatable issue.",
+     "n": 2
+    },
+    {
+     "theme": "Users are curious about how the decision model works at a high level.",
+     "n": 1
+    },
+    {
+     "theme": "Users want to know if the product works well with different accents and languages.",
+     "n": 1
+    },
+    {
+     "theme": "Users are curious about which turn-taking case breaks most often in practice.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Accent and language support",
+    "High-level functionality",
+    "Turn-taking challenges"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are excited about the product and congratulate the team on the launch.",
+      "The timing problem with voice agents (jumping in too early or waiting too long) is a significant and relatable issue.",
+      "Users are curious about how the decision model works at a high level.",
+      "Users want to know if the product works well with different accents and languages.",
+      "Users are curious about which turn-taking case breaks most often in practice (interruptions or long thoughtful pauses)."
+     ],
+     [
+      "Users are excited about the product and congratulate the team on the launch.",
+      "The timing problem with voice agents (jumping in too early or waiting too long) is a significant and relatable issue.",
+      "Users are curious about how the decision model works at a high level.",
+      "Users want to know if the product works well with different accents and languages.",
+      "Users are curious about which turn-taking case breaks most often in practice (interruptions or long thoughtful pauses)."
+     ],
+     [
+      "Users appreciate the solution to the common voice agent timing problem where agents interrupt or wait too long.",
+      "Users are curious about how the decision model works at a high level.",
+      "Users want to know if the product works well with different accents and languages.",
+      "Users express general congratulations and appreciation for the launch.",
+      "Users find the concept of a decision model for continuous perception mind-bending and exciting.",
+      "Users are curious about which turn-taking cases break most often in practice."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it work well with different accents and languages too?",
+      "How does it work at a high-level?",
+      "I'm curious which turn-taking case breaks most often in practice \u2014 interruptions, or the long thoughtful pause?"
+     ],
+     [
+      "Does it work well with different accents and languages too?",
+      "How does it work at a high-level?",
+      "I'm curious which turn-taking case breaks most often in practice \u2014 interruptions, or the long thoughtful pause?"
+     ],
+     [
+      "Does it work well with different accents and languages too?",
+      "How does it work at a high-level?",
+      "I'm curious which turn-taking case breaks most often in practice \u2014 interruptions, or the long thoughtful pause?"
+     ]
+    ]
+   }
+  },
+  "1288961": {
+   "themes": [
+    {
+     "theme": "Interactive training and avatar Q&A",
+     "n": 5
+    },
+    {
+     "theme": "Concerns about AI HR being impersonal",
+     "n": 2
+    },
+    {
+     "theme": "Multi-language support and translation",
+     "n": 2
+    },
+    {
+     "theme": "LMS and HR system integrations",
+     "n": 2
+    },
+    {
+     "theme": "Avatar response latency",
+     "n": 2
+    },
+    {
+     "theme": "Updating onboarding workflows",
+     "n": 1
+    },
+    {
+     "theme": "Iframe embedding functionality",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "AI HR processes being impersonal",
+    "Latency in responses",
+    "Avatar's ability to answer unscripted questions",
+    "Multilingual course support",
+    "Updating onboarding workflows",
+    "HR system integrations"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the interactive nature of the training and the ability for avatars to answer questions, making training more engaging than traditional videos.",
+      "Users are concerned about the potential for AI HR processes to be perceived as disrespectful or lacking personalization.",
+      "Users are interested in the ability of the avatars to handle multiple languages and translate content for international teams.",
+      "Users want to know about the integration capabilities with existing Learning Management Systems (LMS) and other HR systems like BambooHR.",
+      "Users are asking about the latency in responses from the avatars.",
+      "Users want to know how to update an onboarding workflow when HR processes change.",
+      "Users are asking if the tool works correctly when embedded in an iframe.",
+      "Users are asking if the HR Suite is suitable for small companies with no dedicated L&D team."
+     ],
+     [
+      "Users appreciate the interactive nature of the training and the ability for avatars to answer questions, making it more engaging than traditional videos.",
+      "Users generally congratulate the team on the launch and express positive sentiment about the product idea and concept.",
+      "Users are concerned about the latency in avatar responses and ask about current performance and future improvements.",
+      "Users inquire about the ability to run courses in multiple languages and the process for content translation and localization.",
+      "Users ask about the integration capabilities with existing Learning Management Systems (LMS) and specific HR systems like BambooHR.",
+      "Users raise concerns about AI HR processes potentially being perceived as disrespectful or lacking personalization.",
+      "Users ask about the process for updating onboarding workflows when HR processes change.",
+      "Users want to know if the tool works correctly when embedded within an iframe."
+     ],
+     [
+      "Users appreciate the interactive nature of the training and the ability for avatars to answer questions.",
+      "Users are concerned about the potential for AI HR processes to be perceived as disrespectful or impersonal.",
+      "Users are asking about the latency in avatar responses.",
+      "Users are asking about the ability to run courses in multiple languages and translate content.",
+      "Users are asking about the process for updating onboarding workflows when HR processes change.",
+      "Users are asking about integrations with specific HR systems like BambooHR.",
+      "Users are asking if the tool works correctly when embedded in an iframe.",
+      "Users generally express congratulations and positive sentiment on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you see the phenomenon that some people find AI HR processes disrespectful and kind of not personalised?",
+      "How do you work with the latency in responses?",
+      "Can the avatars also answer questions that aren't directly covered in the training materials?",
+      "Can you run the same course in another language without re-recording everything?",
+      "What is the proces like for updating an onboarding workflow if your HR processes are updated?",
+      "Which HR systems does it connect to so far, anything like BambooHR?"
+     ],
+     [
+      "How do you see the phenomenon that some people find AI HR processes disrespectful and kind of not personalised?",
+      "How do you work with the latency in responses?",
+      "Can the avatars also answer questions that aren't directly covered in the training materials?",
+      "Can you run the same course in another language without re-recording everything?",
+      "What is the proces like for updating an onboarding workflow if your HR processes are updated?",
+      "Which HR systems does it connect to so far, anything like BambooHR?"
+     ],
+     [
+      "How do you see the phenomenon that some people find AI HR processes disrespectful and kind of not personalised?",
+      "How do you work with the latency in responses?",
+      "Can the avatars also answer questions that aren't directly covered in the training materials?",
+      "Can you run the same course in another language without re-recording everything?",
+      "What is the proces like for updating an onboarding workflow if your HR processes are updated?",
+      "Which HR systems does it connect to so far, anything like BambooHR?"
+     ]
+    ]
+   }
+  },
+  "1259097": {
+   "themes": [
+    {
+     "theme": "Ability to pause and resume routines mid-run",
+     "n": 4
+    },
+    {
+     "theme": "Sharing and discovering routines from others",
+     "n": 3
+    },
+    {
+     "theme": "Questions about AI model integration (bring your own key vs. provided)",
+     "n": 3
+    },
+    {
+     "theme": "Availability and pricing of Lifetime option, especially in the UK",
+     "n": 1
+    },
+    {
+     "theme": "Ability for user confirmation/rejection of steps within a routine",
+     "n": 1
+    },
+    {
+     "theme": "Ability to publish routines anonymously",
+     "n": 1
+    },
+    {
+     "theme": "Functionality of the iPhone app (starting routines)",
+     "n": 1
+    },
+    {
+     "theme": "Clarification on product application to specific industries",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Availability in the UK and lifetime deal",
+    "User involvement in confirmation/rejection process",
+    "Handling deterministic outcomes",
+    "Use cases for specific industries",
+    "Anonymous publishing of routines"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability to pause and resume routines mid-run, especially for long or failing automations.",
+      "Users are excited about the concept of sharing and 'stealing' routines from experts to optimize their own workflows and get fresh ideas.",
+      "Users are asking about the ability to use custom AI model API keys or if Toone provides the AI model itself.",
+      "Users want to know if they can start routines from the iPhone app or if it's only for monitoring.",
+      "Users are hesitant to share their own routines, either due to perceived lack of quality or desire for anonymity.",
+      "Users are asking about the availability of the Lifetime option and general access in the UK.",
+      "Users are asking about the ability for a user to be part of the confirmation process for steps within a routine.",
+      "Users are asking for clarification on how the product can be applied to specific industries, such as book publishing."
+     ],
+     [
+      "Users appreciate the ability to pause and resume routines mid-run, as it addresses a common pain point with other automation tools.",
+      "Users are asking about the availability and pricing of the Lifetime option in different regions, specifically the UK.",
+      "Users are asking about the ability to customize or reject steps within a routine, such as reviewing and rejecting Figma designs.",
+      "Users like the concept of sharing and discovering routines from others to get fresh ideas and optimize their own workflows.",
+      "Users are asking about how the product handles deterministic outcomes and ensures reliability.",
+      "Users are asking for clarification on how the product can be applied to specific industries, such as book publishing.",
+      "Users are asking if routines can be published anonymously.",
+      "Users are asking about the integration with AI models, specifically whether the product provides the model or if users need to bring their own API keys."
+     ],
+     [
+      "Users appreciate the concept of sharing and discovering routines from others to optimize workflows and get fresh ideas.",
+      "Users have questions about the availability and pricing of the Lifetime option in different regions, specifically the UK.",
+      "Users want to be part of the confirmation process for steps within a routine, allowing them to review and reject outputs.",
+      "Users are asking about the ability to publish routines anonymously.",
+      "Users are curious about the integration of AI models, specifically whether Toone provides them or if users bring their own API keys, and if custom models are supported.",
+      "Users are asking about the functionality of the iPhone app, specifically if routines can be started from it.",
+      "Users highly value the 'pause and resume mid-run' feature, especially for long or failing automations.",
+      "Users are asking about how Toone handles deterministic outcomes and decides between AI and regular automation steps."
+     ]
+    ],
+    "complaints": [
+     [
+      "I'm in the UK, and was unable to sign-up for the Lifetime option, when will you be opening up to the UK and will the Toone Pro Lifetime is 80% off be available?",
+      "Can the user be a part of the confirmation process? (E.g., if the Figma designs aren't ideal, can he reject them?)",
+      "How do you make sure Grokbot can handle deterministic outcomes?",
+      "I'm having trouble picturing how someone in my industry (book publishing) might use it. A quick explanation would be appreciated.",
+      "Can I publish routines as anonymous?",
+      "Does Toone provide the AI model, or is this a bring-your-own-key arrangement? Does it have history, and where is the history stored?"
+     ],
+     [
+      "I'm in the UK, and was unable to sign-up for the Lifetime option, when will you be opening up to the UK and will the Toone Pro Lifetime is 80% off be available?",
+      "Can the user be a part of the confirmation process? (E.g., if the Figma designs aren't ideal, can he reject them?)",
+      "How do you make sure Grokbot can handle deterministic outcomes?",
+      "I'm having trouble picturing how someone in my industry (book publishing) might use it. A quick explanation would be appreciated.",
+      "Does it work with routines that pull from Calendar too?",
+      "Can I publish routines as anonymous?"
+     ],
+     [
+      "I'm in the UK, and was unable to sign-up for the Lifetime option, when will you be opening up to the UK and will the Toone Pro Lifetime is 80% off be available?",
+      "Can the user be a part of the confirmation process? (E.g., if the Figma designs aren't ideal, can he reject them?)",
+      "How do you make sure Grokbot can handle deterministic outcomes?",
+      "I'm having trouble picturing how someone in my industry (book publishing) might use it. A quick explanation would be appreciated.",
+      "Does it work with routines that pull from Calendar too?",
+      "Can I publish routines as anonymous?"
+     ]
+    ]
+   }
+  },
+  "1317264": {
+   "themes": [
+    {
+     "theme": "Solves data reporting pain with live dashboards",
+     "n": 6
+    },
+    {
+     "theme": "Security and data access controls for enterprise",
+     "n": 3
+    },
+    {
+     "theme": "Specific data source integrations and automations",
+     "n": 3
+    },
+    {
+     "theme": "Appreciation for product design and 'Reveal your prompt'",
+     "n": 3
+    },
+    {
+     "theme": "Concern about rules layer preventing data access widening",
+     "n": 2
+    },
+    {
+     "theme": "Competitors and differentiators",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Snowflake connection without password/MFA",
+    "How automations work and their safeguards",
+    "Competitors and differentiators",
+    "Data security and access control for enterprises",
+    "Preventing unauthorized data access expansion via rules"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the product for solving the pain of manual data reporting and providing live, usable dashboards.",
+      "Users ask about security measures for enterprise use and data access controls.",
+      "Users inquire about specific data source integrations like HubSpot and Snowflake.",
+      "Users appreciate the product's design, including the landing page, animations, and 'Reveal your prompt' functionality.",
+      "Users express concern about how the rules layer prevents agents from widening user data access.",
+      "Users ask about the product's competitors and its differentiating factors.",
+      "Users ask for an explanation of how automations work and if there are guardrails.",
+      "Users appreciate the product's positioning around data access and federated queries."
+     ],
+     [
+      "Users praise the product for solving the pain of data access and creating live, usable dashboards from various sources.",
+      "Users are asking about security measures for enterprise use, especially regarding data access and zero-knowledge/indexed databases.",
+      "Users are asking about specific technical functionalities like connecting Snowflake with key-value pairs and how automations work.",
+      "Users express concern about the 'rules layer' and how to prevent agents from quietly widening user data access.",
+      "Users are asking if HubSpot is supported as a data source.",
+      "A user mentions using Claude to build artifacts and highlights Dippr's advantage of live dashboards.",
+      "A user asks about direct competitors and Dippr's differentiators.",
+      "Users appreciate the design choices, such as the 'Reveal your prompt' functionality and the human/agent toggle bar."
+     ],
+     [
+      "Users praise the product for solving the pain point of data access and creating live dashboards.",
+      "Users appreciate the landing page design and specific features like 'Reveal your prompt' and animations.",
+      "Users have questions about security measures for enterprise use and data access controls.",
+      "Users are asking about connecting specific data sources and how automations work.",
+      "Users express general congratulations and well wishes for the product launch.",
+      "Users compare Dippr to existing solutions like Claude for building artifacts and mention Certified Metric.",
+      "Users inquire about direct competitors and Dippr's differentiators.",
+      "Users are interested in connecting Snowflake accounts with key-value pairs without passwords or MFA."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is there any option to connect snowflake account with key-value pair if I don't have account password or MFA?",
+      "Please can you explain how exactly automations work? Is there any gaudrail there?",
+      "Who are your direct competitors, and what do you do differently from them?",
+      "My only question is on how safe is it to use when dealing with a bigger enterprise! Are the databases and stuff zeroknowledge or Indexed? What kind of measures have been taken?",
+      "My worry would be the rules layer. When an agent builds an internal tool on top of this, how do you stop it from quietly widening what a given user can see?",
+      "Is HubSpot on the way as a source?"
+     ],
+     [
+      "How do you ensure data security and prevent unauthorized access, especially in enterprise environments?",
+      "What are the direct competitors, and what differentiates this product from them?",
+      "How does the automation feature work, and are there any safeguards in place?",
+      "Is there an option to connect Snowflake with key-value pairs if an account password or MFA is unavailable?",
+      "How do you handle a query that joins data from multiple sources, ensuring consistent definitions and access controls?",
+      "How do you prevent an agent from quietly widening what a given user can see through the rules layer?"
+     ],
+     [
+      "Is there any option to connect snowflake account with key-value pair if I don't have account password or MFA?",
+      "Please can you explain how exactly automations work? Is there any gaudrail there?",
+      "Who are your direct competitors, and what do you do differently from them?",
+      "My only question is on how safe is it to use when dealing with a bigger enterprise! Are the databases and stuff zeroknowledge or Indexed? What kind of measures have been taken?",
+      "My worry would be the rules layer. When an agent builds an internal tool on top of this, how do you stop it from quietly widening what a given user can see?",
+      "Is HubSpot on the way as a source?"
+     ]
+    ]
+   }
+  },
+  "1320668": {
+   "themes": [
+    {
+     "theme": "How is Arcade different or better than Claude?",
+     "n": 4
+    },
+    {
+     "theme": "Arcade's potential to help solo devs and small teams create launch videos",
+     "n": 3
+    },
+    {
+     "theme": "How Arcade creates launch videos to capture ideal customers",
+     "n": 1
+    },
+    {
+     "theme": "Does Arcade pull screenshots from Notion pages?",
+     "n": 1
+    },
+    {
+     "theme": "How Arcade handles or improves sound and music",
+     "n": 1
+    },
+    {
+     "theme": "How Arcade handles revisions (e.g., reordering segments)",
+     "n": 1
+    },
+    {
+     "theme": "Interest in programmatic access to create videos",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Comparison to Claude",
+    "Effectiveness of launch video for customer capture",
+    "Notion integration: text vs. screenshots",
+    "Sound and music handling/improvement",
+    "Video revision process",
+    "Programmatic access"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are curious how Arcade is different or better than Claude.",
+      "Users appreciate Arcade's potential to solve the problem of creating effective launch videos, especially for solo devs and small teams.",
+      "Users want to know how Arcade creates launch videos to capture ideal customers and its underlying building blocks.",
+      "Users are asking if Arcade pulls screenshots in addition to text when starting from a Notion page.",
+      "Users are curious about how Arcade handles or improves sound and music.",
+      "Users want to know how Arcade handles revisions, specifically reordering video segments.",
+      "Users are interested in programmatic access to create videos.",
+      "Users offer generic congratulations on the launch."
+     ],
+     [
+      "Users are curious how Arcade is different or better than Claude.",
+      "Users appreciate Arcade's potential to solve the problem of creating effective launch videos, especially for solo devs and small teams.",
+      "Users want to know how Arcade creates launch videos to capture ideal customers and its underlying building blocks.",
+      "Users are asking if Arcade pulls screenshots in addition to text when starting from a Notion page.",
+      "Users are curious about how Arcade handles or improves sound and music.",
+      "Users want to know how Arcade handles revisions, specifically reordering video segments.",
+      "Users are interested in programmatic access to create videos.",
+      "Users offer generic congratulations on the launch."
+     ],
+     [
+      "How is this different or better than Claude?",
+      "This looks like a huge help for solo devs and small teams who don't have a dedicated video person.",
+      "If I start from a Notion page, does it pull the screenshots in it too, or just the text?",
+      "My concern is how does it really create a launch video to make sure it actually capture ideal customers.",
+      "How does it help handle / improve sound and music?",
+      "Curious how the video harness handles revisions.",
+      "Would love to learn about what programatic access we could use for create these.",
+      "Congrats on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How is this different or better than Claude?",
+      "How does it really create a launch video to make sure it actually capture ideal customers?",
+      "If I start from a Notion page, does it pull the screenshots in it too, or just the text?",
+      "How does it help handle / improve sound and music?",
+      "How the video harness handles revisions?",
+      "What programatic access we could use for create these?"
+     ],
+     [
+      "How is this different or better than Claude?",
+      "How does it really create a launch video to make sure it actually captures ideal customers?",
+      "If I start from a Notion page, does it pull the screenshots in it too, or just the text?",
+      "How does it help handle / improve sound and music?",
+      "How does the video harness handle revisions?",
+      "What programmatic access could we use for creating these?"
+     ],
+     [
+      "How is this different or better than Claude?",
+      "How does it really create a launch video to make sure it actually capture ideal customers?",
+      "If I start from a Notion page, does it pull the screenshots in it too, or just the text?",
+      "How does it help handle / improve sound and music?",
+      "Curious how the video harness handles revisions.",
+      "Would love to learn about what programatic access we could use for create these."
+     ]
+    ]
+   }
+  },
+  "1320860": {
+   "themes": [
+    {
+     "theme": "Product is helpful for catching visual regressions and ensuring UI quality in agent-driven development.",
+     "n": 7
+    },
+    {
+     "theme": "Concern about how the tool handles intentional UI diffs and updates baselines.",
+     "n": 3
+    },
+    {
+     "theme": "Questions about the tool's ability to detect functional flow issues, not just visual ones.",
+     "n": 1
+    },
+    {
+     "theme": "Inquiries about the duration of a full run on large Storybook projects.",
+     "n": 1
+    },
+    {
+     "theme": "Questions about how the tool determines which screens are 'touched' by a change.",
+     "n": 1
+    },
+    {
+     "theme": "Interest in support for Flutter builds and mobile applications.",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Does it catch when the screen looks fine but the flow is wrong, like a button that goes to the wrong step?",
+    "How do you handle changes that are on purpose? Does the agent update the baseline itself or does a human approve it first?",
+    "How long does a full run take on a big storybook?",
+    "How do you decide which screens count as \"touched\" by a change?",
+    "Does the iOS side work with Flutter builds, or is it native only for now?",
+    "Is there an SDK to support mobile apps or do you emulate devices to check renders?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the product for catching visual regressions and preventing bugs, especially in agent-driven development.",
+      "Users are concerned about how the tool handles intentional UI diffs and updates baselines.",
+      "Users ask about the tool's ability to detect functional flow issues, not just visual ones.",
+      "Users inquire about the duration of a full run on large Storybook projects.",
+      "Users ask how the tool determines which screens are 'touched' by a change.",
+      "Users are interested in support for Flutter builds and mobile applications."
+     ],
+     [
+      "Users find the product super helpful and a must-have, especially for catching visual regressions and ensuring UI quality in agentic engineering workflows.",
+      "Users are asking how the tool handles intentional UI changes and baseline updates.",
+      "Users are curious about how the tool determines which screens are 'touched' by a change.",
+      "Users are asking about mobile app support, specifically for Flutter and native iOS builds, and how it works with mobile SDKs or device emulation.",
+      "A concern is raised about the tool catching functional flow issues (e.g., a button going to the wrong step) rather than just pixel differences.",
+      "A user asks about the duration of a full run on a large Storybook.",
+      "Users appreciate that the tool helps agents clean up their own visual messes before PRs, reducing review time for visual bugs.",
+      "Users praise the product for providing a standardized, CI-friendly solution for UI validation, which was previously handled ad hoc."
+     ],
+     [
+      "The product is super helpful and provides a significant edge in development flow, especially for UI validation in the age of agentic engineering.",
+      "Concerns about how the system handles intentional UI diffs and updates baselines, especially when agents might break things on screens nobody opened.",
+      "Questions about how the agent handles changes that are on purpose and whether it updates the baseline itself or requires human approval.",
+      "Inquiries about whether the tool catches issues where the screen looks fine but the flow is wrong, like a button going to the wrong step.",
+      "Questions regarding the duration of a full run on a large Storybook.",
+      "Curiosity about how the tool decides which screens count as 'touched' by a change.",
+      "Inquiries about iOS support for Flutter builds and whether there's an SDK for mobile apps or if it emulates devices for render checks.",
+      "The 'before/after loop' is a key selling point, as it addresses the problem of agents being blind to visual breaks."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it catch when the screen looks fine but the flow is wrong, like a button that goes to the wrong step?",
+      "How do you handle changes that are on purpose? Does the agent update the baseline itself or does a human approve it first?",
+      "How long does a full run take on a big storybook?",
+      "How do you decide which screens count as \"touched\" by a change? Is it based on the import graph, or do you just snapshot everything and diff?",
+      "Does the iOS side work with Flutter builds, or is it native only for now?",
+      "Is there an SDK to support mobile apps or do you emulate devices to check renders?"
+     ],
+     [
+      "How does the agent handle intentional changes to the UI baseline, and does a human approve them first?",
+      "Does it catch when the screen looks fine but the flow is wrong, like a button that goes to the wrong step?",
+      "How long does a full run take on a big storybook?",
+      "How do you decide which screens count as \"touched\" by a change?",
+      "Does the iOS side work with Flutter builds, or is it native only for now?",
+      "Is there an SDK to support mobile apps or do you emulate devices to check renders?"
+     ],
+     [
+      "Does it catch when the screen looks fine but the flow is wrong, like a button that goes to the wrong step?",
+      "How do you handle changes that are on purpose? Does the agent update the baseline itself or does a human approve it first?",
+      "How long does a full run take on a big storybook?",
+      "How do you decide which screens count as \"touched\" by a change? Is it based on the import graph, or do you just snapshot everything and diff?",
+      "Does the iOS side work with Flutter builds, or is it native only for now?",
+      "Is there an SDK to support mobile apps or do you emulate devices to check renders?"
+     ]
+    ]
+   }
+  }
+ }
+}

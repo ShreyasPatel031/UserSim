@@ -1,0 +1,1472 @@
+{
+ "day": "2026-11-16",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1310302": {
+   "themes": [
+    {
+     "theme": "Transparency of publishing test results",
+     "n": 3
+    },
+    {
+     "theme": "Safari extension request",
+     "n": 2
+    },
+    {
+     "theme": "Handling of late-loading banners",
+     "n": 2
+    },
+    {
+     "theme": "Ability to handle tricky consent banners",
+     "n": 2
+    },
+    {
+     "theme": "How the product keeps up with banner redesigns",
+     "n": 1
+    },
+    {
+     "theme": "List of consent tools handled and 'legitimate interest' switches",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Safari extension",
+    "Handling late-loading banners",
+    "Keeping up with banner redesigns",
+    "List of supported consent tools",
+    "Turning off legitimate interest switches"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the transparency of publishing test results, including both successful and missed banner rejections.",
+      "Users are requesting a Safari extension.",
+      "Users are asking how the product handles banners that load late on a page.",
+      "Users appreciate the product's ability to handle complex or 'tricky' consent banners, including those with hidden reject buttons or multiple layers of settings.",
+      "Users express general positive sentiment and excitement to try the product.",
+      "Users appreciate the product's ability to remove cookie messages, improving their browsing experience.",
+      "A user is asking how the product keeps up with sites redesigning their banners.",
+      "A site owner is asking if there is a list of consent tools the product handles and whether it turns off 'legitimate interest' switches."
+     ],
+     [
+      "Users appreciate the transparency of publishing test results, including both successful and missed banner rejections.",
+      "Users are requesting a Safari extension for the product.",
+      "Users are asking how the product handles banners that load late on a page.",
+      "Users appreciate the product's ability to handle tricky consent banners and those with hidden reject buttons.",
+      "Users express general enthusiasm and intent to try the product.",
+      "Users are asking how the product keeps up with sites redesigning their banners.",
+      "A user is asking if there's a list of consent tools the product handles for site owners.",
+      "A user is curious if the product turns off 'legitimate interest' switches even with a one-click 'Reject all' option."
+     ],
+     [
+      "Users appreciate the effectiveness of the tool in blocking cookie banners and handling tricky consent mechanisms.",
+      "The transparency of publishing test results, including missed banners, builds user trust.",
+      "Users are requesting a Safari extension.",
+      "Users are asking how the tool handles banners that load late.",
+      "Users appreciate the thoughtful boundary of leaving pay-or-accept walls for the user to decide.",
+      "A user is asking how the tool keeps up with sites redesigning their banners.",
+      "A site owner is asking if there is a list of consent tools the product handles.",
+      "A user is curious whether the tool turns off 'legitimate interest' switches even when a site has a one-click 'Reject all'."
+     ]
+    ],
+    "complaints": [
+     [
+      "Do you plan also Safari extension?",
+      "what happens on a site where the banner loads late, does it still catch it or does it only check once on page load?",
+      "How do you keep up when sites keep redesigning their banners?",
+      "From the site-owner side, is there a list of the consent tools it knows how to handle, so I can check our own banner's reject path works with it before a visitor finds out it doesn't?",
+      "Also curious whether it turns off the \"legitimate interest\" switches even when a site has a one-click \"Reject all\", since a lot of ban"
+     ],
+     [
+      "How does it handle banners that load late?",
+      "Do you plan also Safari extension?",
+      "How do you keep up when sites keep redesigning their banners?",
+      "Is there a list of the consent tools it knows how to handle, so I can check our own banner's reject path works with it before a visitor finds out it doesn't?",
+      "I am curious whether it turns off the \"legitimate interest\" switches even when a site has a one-click \"Reject all\"."
+     ],
+     [
+      "Do you plan also Safari extension?",
+      "what happens on a site where the banner loads late, does it still catch it or does it only check once on page load?",
+      "How do you keep up when sites keep redesigning their banners?",
+      "From the site-owner side, is there a list of the consent tools it knows how to handle, so I can check our own banner's reject path works with it before a visitor finds out it doesn't?",
+      "Also curious whether it turns off the \"legitimate interest\" switches even when a site has a one-click \"Reject all\", since a lot of ban"
+     ]
+    ]
+   }
+  },
+  "1317965": {
+   "themes": [
+    {
+     "theme": "Users are concerned about giving agents full access to their inboxes and desire approval mechanisms.",
+     "n": 3
+    },
+    {
+     "theme": "Users are asking about the limitations of the project.",
+     "n": 1
+    },
+    {
+     "theme": "Users want to be able to approve replies before they are sent, with granular control over sending.",
+     "n": 1
+    },
+    {
+     "theme": "Users want an approval queue that shows sender, recipient, and channel.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking if an agent can check their availability without seeing calendar details.",
+     "n": 2
+    },
+    {
+     "theme": "Users appreciate the concept of per-agent identity and agents sending as themselves.",
+     "n": 1
+    },
+    {
+     "theme": "Users appreciate giving agents their own email and letting them join team chats.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking if agents are notified when prompt injection attempts are held.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Ability to approve replies before sending",
+    "Concerns about project limitations (access/functionality)",
+    "Agent checking availability without full calendar access",
+    "Granular control over agent sending permissions (e.g., by domain)",
+    "Approval queue showing sender, recipient, and channel",
+    "Agent notification when a message is held (e.g., due to prompt injection)"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are concerned about giving agents full access to their inboxes and desire approval mechanisms.",
+      "Users are asking about the limitations of the project.",
+      "Users want to be able to approve replies before they are sent, with granular control over sending.",
+      "Users want an approval queue that shows sender, recipient, and channel.",
+      "Users are asking if an agent can check their availability without seeing calendar details.",
+      "Users appreciate the concept of per-agent identity and agents sending as themselves.",
+      "Users appreciate giving agents their own email and letting them join team chats.",
+      "Users are asking if agents are notified when prompt injection attempts are held."
+     ],
+     [
+      "Users are concerned about giving agents full access to their inboxes and desire approval mechanisms.",
+      "Users are asking about the limitations of the project.",
+      "Users want to be able to approve replies before they are sent, with granular control over sending.",
+      "Users want an approval queue that shows sender, recipient, and channel.",
+      "Users are asking if an agent can check their availability without seeing calendar details.",
+      "Users appreciate the concept of per-agent identity and agents sending as themselves.",
+      "Users appreciate giving agents their own email and letting them join team chats.",
+      "Users are asking if agents are notified when prompt injection attempts are held."
+     ],
+     [
+      "Users are concerned about giving agents full access to their inboxes and desire approval mechanisms.",
+      "Users are asking about the limitations of the project.",
+      "Users want to be able to approve replies before they are sent, with granular control over sending.",
+      "Users want an approval queue that shows sender, recipient, and channel.",
+      "Users are asking if an agent can check their availability without seeing calendar details.",
+      "Users appreciate the concept of per-agent identity and agents sending as themselves.",
+      "Users appreciate giving agents their own email and letting them join team chats.",
+      "Users are asking if agents are notified when prompt injection attempts are held."
+     ]
+    ],
+    "complaints": [
+     [
+      "The ability to approve replies before they are sent is a critical feature for user comfort and trust.",
+      "Users are concerned about the limitations of the project regarding access or general functionality.",
+      "Users want to know if an agent can check their availability without full calendar access.",
+      "Users are interested in granular control over agent sending permissions, such as allowing free sending to some domains while holding others.",
+      "Users desire an approval queue that clearly shows the sender, recipient, and channel.",
+      "Users want to know if an agent is notified when a potential prompt injection is held."
+     ],
+     [
+      "The ability to approve replies before they are sent is a critical feature for user comfort and trust.",
+      "Users are concerned about the limitations of the project regarding access or general functionality.",
+      "Users want to know if an agent can check their availability without full calendar access.",
+      "Users are interested in granular control over agent sending permissions, such as allowing free sending to some domains while holding others.",
+      "Users desire an approval queue that clearly shows the sender, recipient, and channel.",
+      "Users want to know if an agent is notified when a potential prompt injection is held."
+     ],
+     [
+      "Approving each reply before it leaves is the setting that would make me comfortable handing an agent a real address.",
+      "Can an agent check when I\u2019m free without seeing what is on my calendar?",
+      "What are the limitation so far in term of access or generally speaking?",
+      "Can I let it send freely to some domains and hold everything else?",
+      "I'd want an approval queue that shows the sender, recipient and channel together.",
+      "Does the agent get a note that something was held, or does it just never see it?"
+     ]
+    ]
+   }
+  },
+  "1302625": {
+   "themes": [
+    {
+     "theme": "General congratulations and praise",
+     "n": 10
+    },
+    {
+     "theme": "Agent learning mechanism (feedback/memory)",
+     "n": 2
+    },
+    {
+     "theme": "Customizability of agent roles (tools, instructions, boundaries)",
+     "n": 2
+    },
+    {
+     "theme": "Multi-agent collaboration",
+     "n": 2
+    },
+    {
+     "theme": "Analytics and dashboards (performance, tasks, costs)",
+     "n": 2
+    },
+    {
+     "theme": "Private deployment/self-hosting",
+     "n": 2
+    },
+    {
+     "theme": "Using existing LLM credits (Claude/OpenAI)",
+     "n": 2
+    },
+    {
+     "theme": "Review and approval of agent actions",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Review and approve agent actions",
+    "Private deployment for enterprises",
+    "Analytics dashboard for agent performance",
+    "Automatic fallback to another model",
+    "Data security with custom LLMs",
+    "Pricing after lifetime credits"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users express general congratulations and praise for the product launch and the team's efforts.",
+      "Users are asking about the learning mechanism of agents, specifically if they remember feedback or require manual updates.",
+      "Users are asking about the customizability of agent roles, including tools, instructions, and decision-making boundaries.",
+      "Users are asking about the ability of multiple agents to collaborate on complex tasks without human intervention.",
+      "Users are asking about the availability of analytics and dashboards to track agent performance, task completion, and costs.",
+      "Users are asking about the possibility of private deployment or self-hosting for enterprise clients with sensitive data.",
+      "Users are asking if they can use their existing credits or subscriptions for LLMs like Claude and OpenAI.",
+      "Users are asking about the ability to review and approve agent actions before they are performed."
+     ],
+     [
+      "Users express general congratulations and praise for the product launch and the team's efforts.",
+      "Users are asking about the learning mechanism of agents, specifically if they remember feedback or require manual updates.",
+      "Users are asking about the customizability of agent roles, including tools, instructions, and decision-making boundaries.",
+      "Users are asking about the ability of multiple agents to collaborate on complex tasks without human intervention.",
+      "Users are asking about the availability of analytics and dashboards to track agent performance, task completion, and costs.",
+      "Users are asking about the possibility of private deployment or self-hosting for enterprise clients with sensitive data.",
+      "Users are asking if they can use their existing credits or subscriptions for LLMs like Claude and OpenAI.",
+      "Users are asking about the ability to review and approve agent actions before they are performed."
+     ],
+     [
+      "Users are congratulating the team on the launch and expressing general positive sentiment.",
+      "Users are asking about how agents learn and remember feedback.",
+      "Users are asking about the customizability of agent roles, tools, instructions, and decision-making boundaries.",
+      "Users are asking about the ability for multiple agents to collaborate on complex tasks without human intervention.",
+      "Users are asking about analytics capabilities, such as task completion rates, execution time, cost, and outcomes per agent.",
+      "Users are asking about the possibility of private deployment or self-hosting for companies with sensitive data.",
+      "Users are asking if they can use their existing Claude and OpenAI credits.",
+      "Users are requesting a way to review and approve agent actions before they are performed."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is there a way that we can review and approve agent's actions before it actually performs it?",
+      "Just curious, from the enterprise perspective, does the product allow private deployment of agents for companies that are sensitive to giving their business data to external infrastructure?",
+      "Is there a possibility of knowing what was the task completion rate, the execution time, the cost, and the outcomes per agent? Is there an analytics dashboard within the product?",
+      "If we hit the rate limits or there is a model failure, can the agent automatically switch to another model as a fallback?",
+      "Where we specify our own LLM, how is security handled, to ensure our data does not leave the system?",
+      "What happens when the lifetime credits are exhausted? Do you offer a separate pro model then?"
+     ],
+     [
+      "Is there a way that we can review and approve agent's actions before it actually performs it?",
+      "Just curious, from the enterprise perspective, does the product allow private deployment of agents for companies that are sensitive to giving their business data to external infrastructure?",
+      "Is there a possibility of knowing what was the task completion rate, the execution time, the cost, and the outcomes per agent? Is there an analytics dashboard within the product?",
+      "If we hit the rate limits or there is a model failure, can the agent automatically switch to another model as a fallback?",
+      "Where we specify our own LLM, how is security handled, to ensure our data does not leave the system?",
+      "What happens when the lifetime credits are exhausted? Do you offer a separate pro model then?"
+     ],
+     [
+      "Is there a way that we can review and approve agent's actions before it actually performs it?",
+      "Just curious, from the enterprise perspective, does the product allow private deployment of agents for companies that are sensitive to giving their business data to external infrastructure?",
+      "Is there a possibility of knowing what was the task completion rate, the execution time, the cost, and the outcomes per agent? Is there an analytics dashboard within the product?",
+      "If we hit the rate limits or there is a model failure, can the agent automatically switch to another model as a fallback?",
+      "Where we specify our own LLM, how is security handled, to ensure our data does not leave the system?",
+      "What happens when the lifetime credits are exhausted? Do you offer a separate pro model then?"
+     ]
+    ]
+   }
+  },
+  "1312517": {
+   "themes": [
+    {
+     "theme": "Human approval and transparency",
+     "n": 2
+    },
+    {
+     "theme": "Mobile approval capability",
+     "n": 1
+    },
+    {
+     "theme": "Approval context (source/changes)",
+     "n": 1
+    },
+    {
+     "theme": "Data access and permissions in shared AI workspace",
+     "n": 1
+    },
+    {
+     "theme": "Motivation, challenges, and EU focus",
+     "n": 1
+    },
+    {
+     "theme": "Integration with existing tools (Gmail/MS365)",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Mobile approval management",
+    "Approval context and source tracking",
+    "Granular access control for AI workspaces",
+    "Integration with existing tools"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The product's focus on human approval for critical steps and transparency is appreciated.",
+      "Users want to know if approvals can be handled from a phone.",
+      "Users want approvals to show the source and related changes for easier decision checking.",
+      "Users are concerned about how data access and permissions are managed when an AI workspace is shared across a company.",
+      "Users are curious about the motivation behind building the product, the challenges faced, and the decision to build and host in the EU.",
+      "Users want to know if the product integrates with existing tools like Gmail or Microsoft 365.",
+      "The product aims to be a trusted EU alternative to MS365/Google Workspace."
+     ],
+     [
+      "Users appreciate the focus on human control and transparency, especially regarding critical steps and decision-making.",
+      "Users are asking about the ability to handle approvals from a mobile device.",
+      "Users want approvals to show the related source and change for easier decision checking.",
+      "Users are concerned about how access permissions are managed when an entire company shares one AI workspace.",
+      "Users are curious about the motivation behind building the product, the challenges faced, and the choice of location and hosting.",
+      "Users want to know if the product integrates with existing tools like Gmail or Microsoft 365.",
+      "Users appreciate the concept of bringing tasks, knowledge, communication, and AI agents together in one workspace for efficiency.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "Users appreciate the focus on human control and transparency, especially regarding critical steps and decision-making.",
+      "Users are asking about the ability to handle approvals from a mobile device.",
+      "Users want approvals to show the related source and change for easier decision checking.",
+      "Users are concerned about how access permissions are managed when an entire company shares one AI workspace.",
+      "Users are curious about the motivation behind building the product, the challenges faced, and the choice of location and hosting.",
+      "Users want to know if the product integrates with existing tools like Gmail or Microsoft 365.",
+      "Users appreciate the concept of bringing tasks, knowledge, communication, and AI agents together in one workspace for efficiency.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can those approvals be handled from a phone when someone is away from their desk?",
+      "I'd want an approval to show which source and change it relates to, so a person can check the decision without opening every tool again.",
+      "When the whole company shares one AI workspace, how do you decide what each person's AI is allowed to see?",
+      "Can it work with the tools we already use, like Gmail or Microsoft 365?"
+     ],
+     [
+      "Can those approvals be handled from a phone when someone is away from their desk?",
+      "I'd want an approval to show which source and change it relates to, so a person can check the decision without opening every tool again.",
+      "When the whole company shares one AI workspace, how do you decide what each person's AI is allowed to see?",
+      "Can it work with the tools we already use, like Gmail or Microsoft 365?"
+     ],
+     [
+      "Can those approvals be handled from a phone when someone is away from their desk?",
+      "I'd want an approval to show which source and change it relates to, so a person can check the decision without opening every tool again.",
+      "When the whole company shares one AI workspace, how do you decide what each person's AI is allowed to see?",
+      "Can it work with the tools we already use, like Gmail or Microsoft 365?"
+     ]
+    ]
+   }
+  },
+  "1317996": {
+   "themes": [
+    {
+     "theme": "Appreciation for testing agents on clones instead of live deals/production",
+     "n": 2
+    },
+    {
+     "theme": "Concern about how cloned applications keep up with changes in real applications",
+     "n": 2
+    },
+    {
+     "theme": "Inquiry about how close clones are to real APIs (rate limits, permission errors)",
+     "n": 1
+    },
+    {
+     "theme": "Inquiry about the mechanism for grading test runs",
+     "n": 1
+    },
+    {
+     "theme": "Concern about agents sending messages as a real person and lack of send logs for failed outreach",
+     "n": 1
+    },
+    {
+     "theme": "Interest in an auto-update mechanism for copies of real apps if the real API changes often",
+     "n": 1
+    },
+    {
+     "theme": "Concern about agents touching real accounts and potential for unintended actions",
+     "n": 1
+    },
+    {
+     "theme": "Comparison of the product to Salesforce and Gmail, highlighting specific pain points",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "How do the copies keep up when the real apps change something?",
+    "How close are the clones to the real APIs, for example rate limits and permission errors?",
+    "Can the fault injection do a write that times out but actually went thru?",
+    "Who writes the checks a run gets graded on?",
+    "Do you have an auto update mechanism for the copies of real apps?",
+    "Can your twins provide a send log for outreach campaigns?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the concept of testing agents on clones instead of live deals/production.",
+      "Users are concerned about how the cloned applications keep up with changes in the real applications.",
+      "Users want to know how close the clones are to real APIs, specifically regarding rate limits and permission errors.",
+      "Users are asking about the mechanism for grading test runs.",
+      "Users are concerned about agents sending messages as a real person and the lack of send logs for failed outreach.",
+      "Users are interested in an auto-update mechanism for copies of real apps if the real API changes often.",
+      "Users are concerned about agents touching real accounts and the potential for unintended actions like sending or archiving.",
+      "Users compare the product to Salesforce and Gmail, highlighting specific pain points with these platforms."
+     ],
+     [
+      "Users appreciate the concept of testing agents on clones instead of live deals/production.",
+      "Users are concerned about how the cloned applications keep up with changes in the real applications.",
+      "Users want to know how close the clones are to real APIs, specifically regarding rate limits and permission errors.",
+      "Users are asking about the mechanism for grading test runs.",
+      "Users are concerned about agents sending messages as a real person and the lack of send logs for failed outreach.",
+      "Users are interested in an auto-update mechanism for copies of real apps if the real API changes often.",
+      "Users are concerned about agents touching real accounts and the potential for unintended actions like sending or archiving.",
+      "Users compare the product to Salesforce and Gmail, highlighting specific pain points with these platforms."
+     ],
+     [
+      "Users appreciate the concept of testing agents on clones instead of live deals/production.",
+      "Users are concerned about how the cloned applications keep up with changes in the real applications.",
+      "Users want to know how close the clones are to real APIs, specifically regarding rate limits and permission errors.",
+      "Users are asking about the mechanism for grading test runs.",
+      "Users are concerned about agents sending messages as a real person and the lack of send logs for failed outreach.",
+      "Users are interested in an auto-update mechanism for copies of real apps if the real API changes often.",
+      "Users are concerned about agents touching real accounts and the potential for unintended actions like sending or archiving.",
+      "Users compare the product to Salesforce and Gmail, highlighting specific pain points with these platforms."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do the copies keep up when the real apps change something?",
+      "How close are the clones to the real APIs, for example rate limits and permission errors?",
+      "Can the fault injection do a write that times out but actually went thru?",
+      "Who writes the checks a run gets graded on?",
+      "Do you have an auto update mechanism for the copies of real apps?",
+      "Can your twins provide a send log for outreach campaigns?"
+     ],
+     [
+      "How do the copies keep up when the real apps change something?",
+      "How close are the clones to the real APIs, for example rate limits and permission errors?",
+      "Can the fault injection do a write that times out but actually went thru?",
+      "Who writes the checks a run gets graded on?",
+      "Do you have an auto update mechanism for the copies of real apps?",
+      "Can your twins provide a send log for outreach campaigns?"
+     ],
+     [
+      "How do the copies keep up when the real apps change something?",
+      "How close are the clones to the real APIs, for example rate limits and permission errors?",
+      "Can the fault injection do a write that times out but actually went thru?",
+      "Who writes the checks a run gets graded on?",
+      "Do you have an auto update mechanism for the copies of real apps?",
+      "Can your twins provide a send log for outreach campaigns?"
+     ]
+    ]
+   }
+  },
+  "1306136": {
+   "themes": [
+    {
+     "theme": "Ability to turn meeting content into editable slides",
+     "n": 6
+    },
+    {
+     "theme": "AI context awareness (customer info, meetings, documents)",
+     "n": 2
+    },
+    {
+     "theme": "Editability and flexibility of PowerPoint exports",
+     "n": 2
+    },
+    {
+     "theme": "Ease of use for new users",
+     "n": 1
+    },
+    {
+     "theme": "Voice presentation feature for narrated videos",
+     "n": 2
+    },
+    {
+     "theme": "Integration with other tools/project management",
+     "n": 2
+    },
+    {
+     "theme": "AI quality compared to other tools",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Outline customization before generation",
+    "Integration with project management tools",
+    "PowerPoint export editability",
+    "AI context awareness (customer info, meetings, docs)"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability to turn meeting content into editable slides, saving time and effort in post-meeting tasks.",
+      "Users want the in-Slides AI to have the same context awareness as ZoomMate, including customer info, meetings, and documents.",
+      "Users are asking about the ease of use for new users without technical knowledge.",
+      "Users are asking about the editability and flexibility of PowerPoint exports.",
+      "Users are asking about the ability to edit the outline before the deck is generated.",
+      "The voice presentation feature is highly valued for creating narrated videos and sharing context asynchronously.",
+      "Users find the AI in Zoom Slides to be better than Google Slides and their Claude to Google workflow.",
+      "Users are asking about seamless integration with popular project management tools."
+     ],
+     [
+      "Users appreciate the ability to turn meeting content into editable slides, saving time and effort in post-meeting tasks.",
+      "Users want the in-Slides AI to have the same context awareness as ZoomMate, including customer info, meetings, and documents.",
+      "Users are asking about the editability and flexibility of the PowerPoint export.",
+      "Users are asking about Zoom's integration capabilities with project management tools.",
+      "The voice presentation feature is highly valued for turning decks into narrated videos for async updates.",
+      "Users are asking about the ease of use for new users without technical knowledge.",
+      "Users find Zoom Slides' AI to be better than Google Slides and their Claude to Google workflow.",
+      "Users are asking about Zoom's ability to maintain audio and video quality with slower internet connections."
+     ],
+     [
+      "Users appreciate the ability to turn meeting notes and transcripts into action items and decks, saving significant preparation time.",
+      "Users are asking about the editability and flexibility of the generated slides and exported PowerPoint files.",
+      "Users are asking about Zoom's integration capabilities with other tools and platforms.",
+      "The voice presentation feature that turns decks into narrated videos is highly valued for async updates and sharing context.",
+      "Users want the in-Slides AI to have the same context awareness as ZoomMate, including customer info, meetings, and documents.",
+      "Users find the AI in Zoom Slides to be better than what they've used in Google Slides and their Claude to Google workflow.",
+      "Users are curious about how Zoom maintains audio and video quality with slower internet connections.",
+      "Users are asking about the ease of use for new users without technical knowledge."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can users choose the outline before the deck is generated, or only edit it afterwards?",
+      "Does Zoom offer seamless integration with popular project management tools?",
+      "How editable is the PowerPoint export?",
+      "Would love the in-Slides AI to have the same context awareness as ZoomMate \u2014 my customer info, my meetings, my docs.",
+      "Can Zoom Slides also pull out the action items, or is it focused on the slides themselves?",
+      "How easy is it to swap an image without everything else moving around?"
+     ],
+     [
+      "Can users choose the outline before the deck is generated, or only edit it afterwards?",
+      "Would love the in-Slides AI to have the same context awareness as ZoomMate \u2014 my customer info, my meetings, my docs.",
+      "How editable is the PowerPoint export?",
+      "Does Zoom offer seamless integration with popular project management tools?",
+      "Can Zoom Slides also pull out the action items, or is it focused on the slides themselves?",
+      "How easy is it to swap an image without everything else moving around?"
+     ],
+     [
+      "Can users choose the outline before the deck is generated, or only edit it afterwards?",
+      "Does Zoom offer seamless integration with popular project management tools?",
+      "Would love the in-Slides AI to have the same context awareness as ZoomMate \u2014 my customer info, my meetings, my docs.",
+      "how editable is the PowerPoint export?",
+      "Can i keep a slide, i like and try a few different versions of it?",
+      "can a teammate edit the wording while I'm working on the layout?"
+     ]
+    ]
+   }
+  },
+  "1309589": {
+   "themes": [
+    {
+     "theme": "Core functionality of handling follow-ups without losing control over what is sent.",
+     "n": 4
+    },
+    {
+     "theme": "Curiosity about how the system determines when to nudge again if a reply is vague or delayed.",
+     "n": 3
+    },
+    {
+     "theme": "Ability to detect replies from different email addresses or other communication channels like SMS.",
+     "n": 2
+    },
+    {
+     "theme": "Ability to send voice notes and delegate actual work.",
+     "n": 2
+    },
+    {
+     "theme": "Concern about where context data is stored and its security.",
+     "n": 2
+    },
+    {
+     "theme": "Handling of multiple email accounts from different providers.",
+     "n": 1
+    },
+    {
+     "theme": "General congratulations and support for the product launch.",
+     "n": 3
+    },
+    {
+     "theme": "Appreciation that email is the interface for the product.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does it decide when to nudge again if the other person never replies or replies vaguely?",
+    "What happens if they reply from a different address or just text me instead, does it still know it's done?",
+    "How to deal with mails from different channels/multiple email accounts?",
+    "Where does all the (context) data live?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the product's core functionality of handling follow-ups without losing control over what is sent.",
+      "Users are curious about how the system determines when to nudge again if a reply is vague or delayed.",
+      "Users want to know if the system can detect replies from different email addresses or other communication channels like SMS.",
+      "Users express general congratulations and support for the product launch.",
+      "Users inquire about the handling of multiple email accounts from different providers.",
+      "Users like the ability to send voice notes and delegate actual work.",
+      "Users are concerned about where the context data is stored and its security."
+     ],
+     [
+      "Users appreciate the product's core functionality of handling follow-ups without losing control over what is sent.",
+      "Users are curious about how the system determines when to nudge again if a reply is vague or delayed.",
+      "Users want to know if the system can detect replies from different email addresses or via other communication channels like SMS.",
+      "Users like the ability to send voice notes and delegate actual work.",
+      "Users are concerned about where their context data is stored and its security.",
+      "Users want to know how the product handles emails from multiple different email accounts.",
+      "Users find the idea interesting and believe an AI assistant for everyday tasks makes life easier.",
+      "Users appreciate that email is the interface for the product, as it's where follow-ups already reside."
+     ],
+     [
+      "How does it decide when to nudge again if the other person never replies?",
+      "The ability to send voice notes and delegate actual work instead of just getting suggestions is a great feature.",
+      "The 'nothing goes out without your OK' rule makes users comfortable with the product.",
+      "What happens if the recipient replies from a different address or via text message?",
+      "How does it handle multiple email accounts from different providers?",
+      "Where is the context data stored and how is it secured?",
+      "Generic congratulations and positive feedback on the launch.",
+      "Email is the right interface for this tool as it's where follow-ups already live."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does it decide when to nudge again if the other person never replies or replies vaguely?",
+      "What happens if they reply from a different address or just text me instead, does it still know it's done?",
+      "How to deal with mails from different channels/multiple email accounts?",
+      "Where does all the (context) data live?"
+     ],
+     [
+      "How does it decide when to nudge again if the other person never replies or replies vaguely?",
+      "What happens if they reply from a different address or just text me instead, does it still know it's done?",
+      "How to deal with mails from different channels/multiple email accounts?",
+      "Where does all the (context) data live?"
+     ],
+     [
+      "How does it decide when to nudge again if the other person never replies or replies vaguely?",
+      "What happens if they reply from a different address or just text me instead, does it still know it's done?",
+      "How to deal with mails from different channels/multiple email accounts?",
+      "Where does all the (context) data live?"
+     ]
+    ]
+   }
+  },
+  "1313301": {
+   "themes": [
+    {
+     "theme": "Consolidation of file sharing, feedback, and approvals into one tool",
+     "n": 3
+    },
+    {
+     "theme": "Reviewers can approve copy and visuals as one item",
+     "n": 1
+    },
+    {
+     "theme": "Clients can comment on specific timestamps in video files",
+     "n": 1
+    },
+    {
+     "theme": "Approved files can automatically go into a portfolio",
+     "n": 1
+    },
+    {
+     "theme": "Solution to patching together Drive, email, and Slack",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Review and approval of copy and visuals",
+    "Timestamped comments on media",
+    "Integration of approved files into a portfolio"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the consolidation of file sharing, client feedback, and approvals into one practical tool for creative teams.",
+      "Users are asking if reviewers can approve copy and visuals as one item, or if it's focused on files.",
+      "Users are asking if clients can comment on a specific timestamp in a video, or only on the file as a whole.",
+      "Users are asking if approved files can go straight into a portfolio, or if that is a separate step.",
+      "Users find the per-file 'needs review' status particularly useful.",
+      "Users are excited about the product and have been looking for something similar.",
+      "Users appreciate the ability to have everything from client feedback to portfolios in one place.",
+      "The product is seen as a solution to the patching together of Drive, email threads, and Slack for per-file approvals on branded client pages."
+     ],
+     [
+      "Users appreciate the consolidation of file sharing, client feedback, and approvals into one practical tool for creative teams.",
+      "Users are asking if reviewers can approve copy and visuals as one item, or if it's focused on files.",
+      "Users are asking if clients can comment on a specific timestamp in a video, or only on the file as a whole.",
+      "Users are asking if approved files can go straight into a portfolio, or if that is a separate step.",
+      "Users find the per-file 'needs review' status particularly useful.",
+      "Users are excited about the product and have been looking for something similar.",
+      "Users appreciate the ability to have everything from client feedback to portfolios in one place.",
+      "The product is seen as a solution to the patching together of Drive, email threads, and Slack for per-file approvals on branded client pages."
+     ],
+     [
+      "Users appreciate the consolidation of file sharing, feedback, and approvals in one place.",
+      "Users express general excitement and positive sentiment about the product.",
+      "Users are asking if reviewers can approve copy and visuals as one item.",
+      "Users are asking if clients can comment on specific timestamps in video files.",
+      "Users are asking if approved files can automatically go into a portfolio.",
+      "The product is seen as a solution to issues encountered when patching together tools like Drive, email, and Slack."
+     ]
+    ],
+    "complaints": [
+     [
+      "Are you planning to let reviewers approve copy and visuals as one item, or is it focused on files?",
+      "Can clients comment on a timestamp in a film, or only on the file as a whole?",
+      "Once a client approves a set, can those approved files go straight into the portfolio, or is that a separate step?"
+     ],
+     [
+      "Are you planning to let reviewers approve copy and visuals as one item, or is it focused on files?",
+      "Can clients comment on a timestamp in a film, or only on the file as a whole?",
+      "Once a client approves a set, can those approved files go straight into the portfolio, or is that a separate step?"
+     ],
+     [
+      "Are you planning to let reviewers approve copy and visuals as one item, or is it focused on files?",
+      "Can clients comment on a timestamp in a film, or only on the file as a whole?",
+      "And once a client approves a set, can those approved files go straight into the portfolio, or is that a separate step?"
+     ]
+    ]
+   }
+  },
+  "1304602": {
+   "themes": [
+    {
+     "theme": "Agent handling routine IT tasks",
+     "n": 3
+    },
+    {
+     "theme": "Patching for offline laptops",
+     "n": 1
+    },
+    {
+     "theme": "Comparing latest version against previous feedback",
+     "n": 1
+    },
+    {
+     "theme": "Approval fatigue and pre-approvals",
+     "n": 1
+    },
+    {
+     "theme": "Approval system at scale",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Offline device patching",
+    "Pre-approval of change classes",
+    "Comparing versions and implemented changes",
+    "Risk assessment and admin tuning",
+    "Scalability and batching of approvals"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are concerned about 'approval fatigue' when dealing with numerous updates and patches, and how the system handles this at scale.",
+      "Users are asking how patching works for offline laptops and if updates wait for a maintenance window.",
+      "Users appreciate the concept of an agent handling routine IT tasks to free up small teams.",
+      "Users want to know if clients can easily compare the latest version against previous feedback to see implemented changes.",
+      "Users are congratulating the team on the launch."
+     ],
+     [
+      "Users appreciate the concept of an agent handling laptop updates and everyday IT requests to alleviate the burden on small teams.",
+      "Users are curious about how patching works for laptops that are offline.",
+      "Users want to know if clients can easily compare the latest version against previous feedback to see implemented changes.",
+      "Users suggest allowing admins to pre-approve classes of changes (e.g., security patches from known vendors) while keeping config changes on manual approval to combat approval fatigue.",
+      "Users are interested in how Mingo decides what is risky enough to wait for approval and if an admin can tune that line per action.",
+      "Users commend the approval design, specifically the four verdicts with reasons shown, as a way to make approvals quick to scan and build trust.",
+      "Users are curious about how the approval system holds up at scale when Mingo wants to patch the same thing across a fleet of devices."
+     ],
+     [
+      "Users appreciate the concept of an agent handling laptop updates and everyday IT requests to alleviate the burden on small teams.",
+      "Users are curious about how patching works for laptops that are offline.",
+      "Users want to know if clients can easily compare the latest version against previous feedback to see implemented changes.",
+      "Users suggest allowing admins to pre-approve classes of changes (e.g., security patches from known vendors) while keeping config changes on manual approval to combat approval fatigue.",
+      "Users are interested in how Mingo decides what is risky enough to wait for approval and if an admin can tune that line per action.",
+      "Users commend the approval design, specifically the four verdicts with reasons shown, as a way to make approvals quick to scan and build trust.",
+      "Users are curious about how the approval system holds up at scale when Mingo wants to patch the same thing across a fleet of devices."
+     ]
+    ],
+    "complaints": [
+     [
+      "Do you plan to let admins pre-approve classes of changes, like security patches from a known vendor, while keeping config changes on manual approval?",
+      "How does patching work for laptops that are offline?",
+      "Can clients easily compare the latest version against previous feedback to see which changes have actually been implemented?",
+      "How does mingo decide what's risky enough to wait, and can an admin tune that line per action?",
+      "Curious how it holds up at scale in practice: when Mingo wants to patch the same thing across a fleet of 100 laptops, does that show up as 100 items in the queue, or one item that applies to 100 devices?"
+     ],
+     [
+      "Do you plan to let admins pre-approve classes of changes, like security patches from a known vendor, while keeping config changes on manual approval?",
+      "How does patching work for laptops that are offline?",
+      "Can clients easily compare the latest version against previous feedback to see which changes have actually been implemented?",
+      "How does mingo decide what's risky enough to wait, and can an admin tune that line per action?",
+      "Curious how it holds up at scale in practice: when Mingo wants to patch the same thing across a fleet of 1000 laptops, does that come through as one batched review, or 1000 separate approvals?",
+      "Can an admin tune that line per action?"
+     ],
+     [
+      "How does patching work for laptops that are offline?",
+      "Can clients easily compare the latest version against previous feedback to see which changes have actually been implemented?",
+      "Do you plan to let admins pre-approve classes of changes, like security patches from a known vendor, while keeping config changes on manual approval?",
+      "How does Mingo decide what's risky enough to wait, and can an admin tune that line per action?",
+      "Curious how it holds up at scale in practice: when Mingo wants to patch the same thing across a fleet of 1000 laptops, does that come through as 1000 separate approvals or one batched review?"
+     ]
+    ]
+   }
+  },
+  "1232008": {
+   "themes": [
+    {
+     "theme": "General praise and excitement for the product launch",
+     "n": 5
+    },
+    {
+     "theme": "Compatibility with existing AI subscriptions (Claude/ChatGPT)",
+     "n": 3
+    },
+    {
+     "theme": "AI agent handling tasks outside its knowledge base and human escalation",
+     "n": 3
+    },
+    {
+     "theme": "Ability to bring own models, run on own machines, and avoid vendor lock-in",
+     "n": 3
+    },
+    {
+     "theme": "Comparison to Grok Bot, highlighting OpenBot's advantages",
+     "n": 2
+    },
+    {
+     "theme": "Request for a mobile app",
+     "n": 2
+    },
+    {
+     "theme": "Installation issues with OrbStack (requiring Docker Desktop or Podman)",
+     "n": 1
+    },
+    {
+     "theme": "Inquiries about usage limits compared to other AI services",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "AI model compatibility",
+    "AI agent's handling of unknown tasks/human escalation",
+    "Installer dependencies (Docker Desktop/Podman)",
+    "Usage limits and quotas",
+    "Mobile app availability"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users express general praise and excitement for the product launch.",
+      "Users ask about compatibility with existing AI subscriptions like Claude/ChatGPT.",
+      "Users are concerned about how the AI agent handles tasks outside its knowledge base and escalates to a human.",
+      "Users appreciate the ability to bring their own models, run on their own machines, and avoid vendor lock-in.",
+      "Users compare OpenBot to Grok Bot, highlighting OpenBot's advantages in addressing issues like outages and control.",
+      "Users request a mobile app for OpenBot.",
+      "Users encounter installation issues with OrbStack, requiring Docker Desktop or Podman.",
+      "Users inquire about usage limits and how they compare to other AI services."
+     ],
+     [
+      "Users express general praise and excitement for the product launch.",
+      "Users ask about compatibility with existing AI subscriptions like Claude/ChatGPT.",
+      "Users are concerned about how the AI agent handles tasks outside its knowledge base and escalates to a human.",
+      "Users appreciate the ability to bring their own models, run on their own machines, and avoid vendor lock-in.",
+      "Users compare OpenBot to Grok Bot, highlighting OpenBot's advantages in addressing issues like outages and control.",
+      "Users request a mobile app for OpenBot.",
+      "Users encounter installation issues with OrbStack, requiring Docker Desktop or Podman.",
+      "Users inquire about usage limits and how they compare to other AI services."
+     ],
+     [
+      "Users express general praise and excitement for the product launch.",
+      "Users ask about compatibility with existing AI subscriptions like Claude/ChatGPT.",
+      "Users are concerned about how the AI agent handles tasks outside its knowledge base and escalates to a human.",
+      "Users appreciate the ability to bring their own models, run on their own machines, and avoid vendor lock-in.",
+      "Users compare OpenBot to Grok Bot, highlighting OpenBot's advantages in addressing issues like outages and control.",
+      "Users request a mobile app for OpenBot.",
+      "Users encounter installation issues with OrbStack, requiring Docker Desktop or Podman.",
+      "Users inquire about usage limits and how they compare to other AI services."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it work on Claude/ChatGPT subscription?",
+      "what happens when an AI agent encounters a task outside it\u2019s knowledge base ? Can it intelligently escalate to a human ?",
+      "I use Orbstack, but looks like the installer requires Docker Desktop or Podman?",
+      "What are the limits/usage you have and how quickly do they get hit?",
+      "can't wait for the mobile app!"
+     ],
+     [
+      "Does it work on Claude/ChatGPT subscription?",
+      "what happens when an AI agent encounters a task outside it\u2019s knowledge base ? Can it intelligently escalate to a human ?",
+      "I use Orbstack, but looks like the installer requires Docker Desktop or Podman?",
+      "What are the limits/usage you have and how quickly do they get hit?",
+      "can't wait for the mobile app!"
+     ],
+     [
+      "Does it work on Claude/ChatGPT subscription?",
+      "what happens when an AI agent encounters a task outside it\u2019s knowledge base ? Can it intelligently escalate to a human ?",
+      "I use Orbstack, but looks like the installer requires Docker Desktop or Podman?",
+      "What are the limits/usage you have and how quickly do they get hit?",
+      "can't wait for the mobile app!"
+     ]
+    ]
+   }
+  },
+  "1318221": {
+   "themes": [
+    {
+     "theme": "Users are asking about the length and content of the spoken summaries.",
+     "n": 4
+    },
+    {
+     "theme": "Users are congratulating the makers on the launch.",
+     "n": 3
+    },
+    {
+     "theme": "Users are concerned about potential noise or information overload with multiple agents speaking.",
+     "n": 2
+    },
+    {
+     "theme": "Users are asking how the system differentiates between agents waiting on the user versus being stuck.",
+     "n": 2
+    },
+    {
+     "theme": "Users find the product useful and addresses a real pain point.",
+     "n": 2
+    },
+    {
+     "theme": "Users are curious about how latency is handled to make conversations feel real.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Summary length and generation method",
+    "Distinguishing agent status",
+    "Identifying specific agents when multiple are running",
+    "Managing noise with many agents",
+    "Handling latency for natural conversation"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are asking about the length and content of the spoken summaries.",
+      "Users are congratulating the makers on the launch.",
+      "Users are concerned about potential noise or information overload with multiple agents speaking.",
+      "Users find the product useful and addresses a real pain point.",
+      "Users are asking how the system differentiates between agents waiting on the user versus being stuck.",
+      "Users are curious about how latency is handled to make conversations feel real.",
+      "Users are interested in a summary step rather than reading the full agent reply.",
+      "Users are comparing the experience to Claude Code agents."
+     ],
+     [
+      "Users are asking about the length and content of the spoken summaries.",
+      "Users are congratulating the makers on the launch and expressing interest in the product.",
+      "Users are concerned about potential noise or information overload with multiple agents speaking.",
+      "Users are asking how the system differentiates between an agent waiting for input and one that is stuck.",
+      "Users appreciate that the product addresses a real pain point in their workflow.",
+      "Users are curious about how latency is handled to make conversations feel real.",
+      "Users are interested in a summary step rather than reading the full agent reply."
+     ],
+     [
+      "Users are concerned about the length and potential noise of spoken summaries, especially with multiple agents.",
+      "Users are asking how the system differentiates between an agent waiting on the user versus being stuck due to other issues.",
+      "Users appreciate the product addressing the pain point of agents waiting or getting stuck.",
+      "Users are curious about how the system handles latency for a natural conversational feel.",
+      "Users want to know if the system generates its own short summary or reads the agent's last message verbatim.",
+      "Users express general congratulations and interest in the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How long are the summaries it reads out?",
+      "Does it tell you which agent it's reporting on when several are running at once?",
+      "Does ByteVoice write its own short summary of the reply, or read the agent's last message as is?",
+      "How does it tell apart the agent between \"waiting on you\" or \"stuck (mainly due to claude outage)\"?",
+      "With 10\u201320 agents running, would it turn into a noisy standup meeting?",
+      "How do you handle latency so the back-and-forth feels like a real conversation?"
+     ],
+     [
+      "How long are the summaries it reads out, and does it write its own short summary or read the agent's last message as is?",
+      "How does it tell apart the agent between \"waiting on you\" or \"stuck (mainly due to claude outage)\"?",
+      "Does it tell you which agent it's reporting on when several are running at once?",
+      "With 10-20 agents running, would it turn into a noisy standup meeting?",
+      "How do you handle latency so the back-and-forth feels like a real conversation?"
+     ],
+     [
+      "How long are the summaries it reads out?",
+      "Does ByteVoice write its own short summary of the reply, or read the agent's last message as is?",
+      "Does it tell you which agent it's reporting on when several are running at once?",
+      "How does it tell apart the agent between \"waiting on you\" or \"stuck (mainly due to claude outage)\"?",
+      "With 10\u201320 agents running, would it turn into a noisy standup meeting?",
+      "How do you handle latency so the back-and-forth feels like a real conversation?"
+     ]
+    ]
+   }
+  },
+  "1310845": {
+   "themes": [
+    {
+     "theme": "Ability to compare multiple designs for a single slide saves time",
+     "n": 2
+    },
+    {
+     "theme": "Outline review step prevents extensive restructuring",
+     "n": 1
+    },
+    {
+     "theme": "Advantages over existing AI design tools like Claude",
+     "n": 1
+    },
+    {
+     "theme": "Ability to paste client call notes to generate a presentation deck",
+     "n": 1
+    },
+    {
+     "theme": "Editable text in HTML export from free plan",
+     "n": 1
+    },
+    {
+     "theme": "Ability to fine-tune layout in editor instead of regenerating the whole deck",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Advantage over Claude",
+    "Generate deck from client notes",
+    "Editable text in free plan's HTML export"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability to compare multiple designs for a single slide, as it saves time.",
+      "The outline review step is a highly valued feature, preventing the need for extensive restructuring after generation.",
+      "Users are excited about the potential to create beautiful presentations and assist with content creation.",
+      "Users are asking about the advantages of Flamigo over existing advanced AI design tools like Claude.",
+      "Users are interested in the ability to paste client call notes to generate a presentation deck.",
+      "Users want to know if text exported to HTML on the free plan remains editable.",
+      "The ability to fine-tune the layout in the editor instead of regenerating the whole deck is appreciated."
+     ],
+     [
+      "Users appreciate the time-saving aspect of comparing multiple designs for a slide.",
+      "The outline review step is a significant selling point as it prevents restructuring well-designed but poorly organized decks.",
+      "Users are excited about creating beautiful presentations and see potential for content creation beyond just decks.",
+      "Users are asking about the advantages of Flamigo over Claude, especially regarding design skills.",
+      "Users want to know if they can paste client call notes to generate a sendable deck.",
+      "Users are asking if the HTML export from the free plan keeps the text editable.",
+      "Users like the ability to fine-tune the layout in the editor instead of regenerating the entire deck."
+     ],
+     [
+      "Users appreciate the time-saving aspect of comparing multiple designs for one slide.",
+      "The outline review step is a significant selling point as it prevents restructuring well-designed but poorly organized decks.",
+      "The ability to fine-tune layout in the editor instead of regenerating the whole deck is a positive feature.",
+      "Users are asking about the advantages of Flamigo over Claude, especially regarding design skills.",
+      "Users want to know if they can paste client call notes to generate a sendable deck.",
+      "The tool could be helpful for content creation beyond just presentations, such as carousels.",
+      "Users are asking if HTML exports from the free plan keep the text editable."
+     ]
+    ],
+    "complaints": [
+     [
+      "Could you explain to me what the advantage of Flamigo over Claude will be, given that Claude now has a very advanced design skills?",
+      "Can I paste notes from a client call and get a deck I can send them after?",
+      "The free plan exports to HTML \u2014 does that keep the text editable, or is editable"
+     ],
+     [
+      "What is the advantage of Flamigo over Claude, given Claude's advanced design skills?",
+      "Can I paste notes from a client call and get a deck I can send them after?",
+      "Does the free plan's HTML export keep the text editable?"
+     ],
+     [
+      "Could you explain to me what the advantage of Flamigo over Claude will be, given that Claude now has a very advanced design skills?",
+      "Can I paste notes from a client call and get a deck I can send them after?",
+      "The free plan exports to HTML \u2014 does that keep the text editable, or is editable"
+     ]
+    ]
+   }
+  },
+  "1317349": {
+   "themes": [
+    {
+     "theme": "Ability to only change edited cells and provide a clear diff",
+     "n": 5
+    },
+    {
+     "theme": "Excel's silent reformatting of data and encoding issues are pain points",
+     "n": 2
+    },
+    {
+     "theme": "Concerns about performance with large files",
+     "n": 2
+    },
+    {
+     "theme": "Tool being free, in-browser, and keeping files local",
+     "n": 1
+    },
+    {
+     "theme": "Users asking about automatic detection of encoding and delimiters",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and well wishes",
+     "n": 2
+    },
+    {
+     "theme": "Concept of treating CSV editing like code with undo and diff",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Large file handling",
+    "Diff view for large files",
+    "Automatic encoding and delimiter detection"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to only change edited cells and provide a clear diff is highly valued, especially compared to Excel.",
+      "The undo-per-step and diff showing only changes builds trust in the tool for data files.",
+      "Users are asking about the tool's performance with large files (e.g., 500k+ rows).",
+      "The concept of treating CSV editing like code with undo and diff is appealing.",
+      "The features of being free, in-browser, and keeping files local make it an easy tool to try.",
+      "Excel's silent reformatting of data, including encoding issues, is a significant pain point for users.",
+      "Users are asking if the tool automatically detects encoding and delimiters.",
+      "Generic congratulations and well wishes for the launch."
+     ],
+     [
+      "The ability to only change selected cells and provide a diff of actual changes is highly valued, especially compared to Excel's behavior.",
+      "Excel's silent reformatting of data and issues with encoding (e.g., UTF-8, Vietnamese characters) are significant pain points.",
+      "Users are concerned about how the tool handles large files (e.g., 500k+ rows) and whether the diff view works for them.",
+      "Users want to know if the tool automatically detects encoding and delimiters (e.g., semicolon CSVs).",
+      "The concept of treating CSV editing like code, with undo and diff, is appealing.",
+      "The features of being free, in the browser, and keeping files local are attractive.",
+      "Generic thanks and congratulations to the maker."
+     ],
+     [
+      "The feature where only changed cells are modified, unlike Excel, is highly praised.",
+      "The saved diff that only shows deliberate edits is a significant and trusted feature.",
+      "Users are asking about the tool's performance with large files (e.g., 500k+ rows) and the diff view for them.",
+      "Excel's silent reformatting of data, especially encoding issues, is a common pain point.",
+      "The undo-per-step functionality is a nice touch that builds trust.",
+      "Users want to know if the tool automatically detects encoding and delimiters.",
+      "The tool being free, in-browser, and keeping files local makes it an easy choice to try.",
+      "Generic congratulations and well wishes for the maker."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does it handle big files, say 500k+ rows?",
+      "Does the diff view work for large files?",
+      "Does it detect encoding and delimiters automatically (semicolon CSVs are common here in France)?"
+     ],
+     [
+      "How does it handle big files, say 500k+ rows?",
+      "Does the diff view work for large files?",
+      "Does it detect encoding and delimiters automatically (semicolon CSVs are common here in France)?"
+     ],
+     [
+      "How does it handle big files, say 500k+ rows?",
+      "Does the diff view work for large files?",
+      "Does it detect encoding and delimiters automatically (semicolon CSVs are common here in France)?"
+     ]
+    ]
+   }
+  },
+  "1315749": {
+   "themes": [
+    {
+     "theme": "Strong positive sentiment and helpful tool for managers",
+     "n": 4
+    },
+    {
+     "theme": "Ability to track and recall past commitments/follow-ups for 1:1 prep",
+     "n": 1
+    },
+    {
+     "theme": "Provides support and guidance, especially for new or struggling managers",
+     "n": 2
+    },
+    {
+     "theme": "Beneficial for preparing for difficult 1:1s and making conversations less generic",
+     "n": 2
+    },
+    {
+     "theme": "Valued as a 'grounded, motivating mentor'",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Blomma can remind me of past commitments"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users express strong positive sentiment and find Blomma to be an amazing and helpful tool for managers.",
+      "Users are interested in Blomma's ability to track and recall past commitments or follow-ups for 1:1 prep.",
+      "Users appreciate Blomma's ability to provide support and guidance, especially for new or struggling managers.",
+      "Users find Blomma beneficial for preparing for difficult 1:1s and making conversations less generic.",
+      "Users value Blomma as a 'grounded, motivating mentor' that allows for free expression and consistent self-measurement.",
+      "Users appreciate the concept of an AI HR partner grounded in company context.",
+      "Users offer a tip to dictate inputs for thoroughness when using Blomma."
+     ],
+     [
+      "Users express strong positive sentiment and find Blomma to be an amazing and helpful tool for managers.",
+      "Users are interested in Blomma's ability to track and recall past commitments or follow-ups for 1:1 prep.",
+      "Users appreciate Blomma's ability to provide support and guidance, especially for new or struggling managers.",
+      "Users find Blomma beneficial for preparing for difficult 1:1s and making conversations less generic.",
+      "Users value Blomma as a 'grounded, motivating mentor' that allows for free expression and consistent self-measurement.",
+      "Users appreciate the concept of an AI HR partner grounded in company context.",
+      "Users offer a tip to dictate inputs for thoroughness when using Blomma."
+     ],
+     [
+      "Users praise Blomma as a valuable tool for managers, especially new or struggling ones, providing support and guidance.",
+      "Users find Blomma amazing and highly recommend it for improving leadership and navigating difficult situations.",
+      "Users appreciate Blomma as a grounded, motivating mentor that offers comfort and consistency for self-reflection and progress tracking.",
+      "Users are interested in Blomma's ability to track follow-through on previous commitments for 1:1 prep.",
+      "Users see Blomma as a concrete and effective tool for preparing for difficult 1:1s by incorporating goals and company expectations.",
+      "Users express general congratulations and excitement for the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can Blomma bring up something I said I\u2019d follow through on last time?"
+     ],
+     [
+      "Can Blomma bring up something I said I\u2019d follow through on last time?"
+     ],
+     [
+      "Can Blomma bring up something I said I\u2019d follow through on last time?"
+     ]
+    ]
+   }
+  },
+  "1317334": {
+   "themes": [
+    {
+     "theme": "Appreciation for concept and agent skill",
+     "n": 2
+    },
+    {
+     "theme": "Curiosity about handling messy handwriting and style consistency",
+     "n": 2
+    },
+    {
+     "theme": "Inquiry about variable fonts vs. static weights",
+     "n": 1
+    },
+    {
+     "theme": "Skepticism about professional quality of generated fonts",
+     "n": 1
+    },
+    {
+     "theme": "Curiosity about spacing and kerning consistency",
+     "n": 2
+    },
+    {
+     "theme": "Inquiry about handling complex characters and diacritics",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Variable vs. static font weights",
+    "Consistency of spacing and kerning",
+    "Effectiveness for creating custom fonts",
+    "Handwriting tidiness and personal style retention",
+    "Handling of special characters/accents"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the concept and the use of an agent skill for font generation.",
+      "Users are curious about how well the tool handles messy handwriting and maintains the original style.",
+      "Users want to know if the generated fonts include variable versions or only static weights.",
+      "Users are skeptical about the quality of custom fonts for professional use based on the examples provided.",
+      "Users are curious about the consistency of spacing and kerning across different weights in the generated fonts.",
+      "Users want to know how the tool handles complex characters and diacritics, specifically Vietnamese characters.",
+      "Users appreciate the inclusion of 155 QA checks per font family.",
+      "Users are curious if the tool can steer towards an existing style when given a brief."
+     ],
+     [
+      "Users are asking about the quality and consistency of the generated fonts, especially regarding handwriting tidiness, spacing, and kerning.",
+      "There is skepticism about whether the generated fonts can match the quality of professional type foundries for custom app/website use.",
+      "Users appreciate the concept of generating a font family from handwriting or a sentence.",
+      "The integration as an agent skill rather than a web app is a positive aspect for users.",
+      "Users are curious about the handling of specific language characters, such as Vietnamese diacritics.",
+      "Users are asking if the generated fonts include variable versions or only static weights."
+     ],
+     [
+      "Users appreciate the concept and the use of an agent skill for font generation.",
+      "Users are curious about how well the tool handles messy handwriting and maintains the original style.",
+      "Users want to know if the generated fonts include variable versions or only static weights.",
+      "Users are skeptical about the quality of custom fonts for professional use based on the examples provided.",
+      "Users are curious about the consistency of spacing and kerning across different weights in the generated fonts.",
+      "Users want to know how the tool handles complex characters and diacritics, specifically Vietnamese characters.",
+      "Users appreciate the inclusion of 155 QA checks per font family.",
+      "Users are curious if the tool can steer towards an existing style when given a brief."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it give me the variable version too, or only the static weights?",
+      "Curious how well it keeps spacing and kerning consistent across weights.",
+      "I am not sold on whether it would actually work for creating custom fonts.",
+      "how much does it tidy up messy handwriting, like does mine still look like mine after",
+      "does the sheet have spots for those or does it build them from the base letter?",
+      "Curious how it handles a brief that names an existing style"
+     ],
+     [
+      "Does it give me the variable version too, or only the static weights?",
+      "Curious how well it keeps spacing and kerning consistent across weights.",
+      "I am not sold on whether it would actually work for creating custom fonts.",
+      "how much does it tidy up messy handwriting, like does mine still look like mine after",
+      "does the sheet have spots for those or does it build them from the base letter?",
+      "Curious how it handles a brief that names an existing style"
+     ],
+     [
+      "Does it give me the variable version too, or only the static weights?",
+      "Curious how well it keeps spacing and kerning consistent across weights.",
+      "how much does it tidy up messy handwriting, like does mine still look like mine after",
+      "I am not sold on whether it would actually work for creating custom fonts.",
+      "does the sheet have spots for those or does it build them from the base letter?"
+     ]
+    ]
+   }
+  },
+  "1317659": {
+   "themes": [
+    {
+     "theme": "General appreciation for product updates",
+     "n": 5
+    },
+    {
+     "theme": "Interest in AI assistant's booking and scheduling rules",
+     "n": 3
+    },
+    {
+     "theme": "Guest ability to join persistent room without account",
+     "n": 3
+    },
+    {
+     "theme": "Questions about AI assistant handling conflicting invites/rebooking",
+     "n": 2
+    },
+    {
+     "theme": "Concern about product becoming too heavy/losing simplicity",
+     "n": 1
+    },
+    {
+     "theme": "Interest in 'Discover' feature and guest list visibility",
+     "n": 1
+    },
+    {
+     "theme": "AI notes carrying over to subsequent bookings",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Concern about feature bloat",
+    "Handling conflicting invites",
+    "Interoperability with other AI assistants",
+    "Persistence of AI notes across meetings",
+    "Attendee control over visibility",
+    "Setting hard rules for booking agent"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the new products and updates, finding them next level, refreshing, and amazing.",
+      "Users are interested in the AI assistant's capabilities, particularly regarding booking and scheduling rules.",
+      "The ability for guests to join a persistent room or in the browser without creating an account is highly valued.",
+      "Users have questions about how the AI assistant handles conflicting invites or rebooking meetings.",
+      "There is a concern that the product might become too heavy, losing its initial appeal of simple booking.",
+      "Users are interested in the 'Discover' feature for finding events and people, and how attendees control their visibility on guest lists.",
+      "A user asks if AI notes from cal.video carry over to subsequent bookings with the same person.",
+      "Generic thanks and congratulations for the launch."
+     ],
+     [
+      "Users appreciate the new products and updates, finding them next level, refreshing, and amazing.",
+      "Users are interested in the AI assistant's capabilities, particularly regarding booking and scheduling rules.",
+      "The ability for guests to join a persistent room or in the browser without creating an account is highly valued.",
+      "Users have questions about how the AI assistant handles conflicting invites or rebooking meetings.",
+      "There is a concern that the product might become too heavy, losing its initial appeal of simple booking.",
+      "Users are interested in the 'Discover' feature for finding events and people, and how attendees control their visibility on guest lists.",
+      "A user asks if AI notes from cal.video carry over to subsequent bookings with the same person.",
+      "Generic thanks and congratulations for the launch."
+     ],
+     [
+      "Users express general appreciation and love for the product and its continuous improvement.",
+      "The ability for guests to join a persistent room without creating an account is highly valued for its practicality and ease of use.",
+      "Users are interested in the AI assistant's ability to handle booking from other AI assistants and adhere to hard rules for scheduling.",
+      "Users have questions about how the AI assistant handles conflicting invites and rescheduling mid-thread.",
+      "There is a concern that the product might become too heavy, losing its original appeal of being solely for booking.",
+      "Users want to know if AI notes from video calls carry over to subsequent bookings with the same person.",
+      "Users want control over their appearance on guest lists for events, suggesting a per-event opt-in.",
+      "The 'Discover' feature is seen as a significant shift, transforming the product from a booking link to a tool for finding events and people."
+     ]
+    ],
+    "complaints": [
+     [
+      "kinda worried it gets heavy, half the appeal was that it only did booking",
+      "when two invites land on the same slot, does the new assistant ask which one you want or just pick one?",
+      "can Cal.ai take a booking from someone's AI assistant, not just the person?",
+      "Do the AI notes from cal.video carry over to the next booking with the same person, so you see what you talked about last time before the call?",
+      "How do attendees control whether they appear on that list? A per-event opt-in would make me comfortable turning it on.",
+      "when an agent books for me, can i set hard rules it can't override, like no meetings before 10 or max 3 a day?"
+     ],
+     [
+      "kinda worried it gets heavy, half the appeal was that it only did booking",
+      "when two invites land on the same slot, does the new assistant ask which one you want or just pick one?",
+      "can Cal.ai take a booking from someone's AI assistant, not just the person?",
+      "Do the AI notes from cal.video carry over to the next booking with the same person, so you see what you talked about last time before the call?",
+      "How do attendees control whether they appear on that list? A per-event opt-in would make me comfortable turning it on.",
+      "when an agent books for me, can i set hard rules it can't override, like no meetings before 10 or max 3 a day?"
+     ],
+     [
+      "kinda worried it gets heavy, half the appeal was that it only did booking",
+      "when two invites land on the same slot, does the new assistant ask which one you want or just pick one?",
+      "can Cal.ai take a booking from someone's AI assistant, not just the person?",
+      "Do the AI notes from cal.video carry over to the next booking with the same person, so you see what you talked about last time before the call?",
+      "How do attendees control whether they appear on that list? A per-event opt-in would make me comfortable turning it on.",
+      "when an agent books for me, can i set hard rules it can't override, like no meetings before 10 or max 3 a day?"
+     ]
+    ]
+   }
+  }
+ }
+}
