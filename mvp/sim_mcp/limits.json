@@ -202,6 +202,10 @@
         "ws://127.0.0.1:19322/usersim"
       ],
       "about": "browser_engine=camoufox: the seeds' Camoufox servers as the MCP server sees them (usersim-seed-tunnel@N also forwards 1932N -> seed 127.0.0.1:9333). '#N' caps that seed at N users."
+    },
+    "google_signin_token_callers": {
+      "value": false,
+      "about": "true = sessions whose caller sent a valid bearer token start with the UserSim signups Google session (private object MVP_GOOGLE_STATE_URI, see mvp/sim_mcp/google_signin.py) on its seed, and may use Google's sign-in pages ('Continue with Google'). Anonymous callers never get it and stay blocked from Google. false = Google sign-in blocked for everyone."
     }
   }
 }

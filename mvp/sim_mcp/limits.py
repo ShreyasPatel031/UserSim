@@ -76,6 +76,7 @@ DEFAULTS: dict[str, Any] = {
     "seed_wait_s": 45,
     # Start non-signup cells signed in from the site's saved storage state (mvp/sim_mcp/site_states.py).
     "seed_saved_accounts": True,
+    "google_signin_token_callers": False,
 }
 
 _LOCK = threading.Lock()
