@@ -171,3 +171,21 @@ hunt prediction is a real life calibrator to improve our actual product real use
     commented: held people, by segment, in groups of 20+ only, no usernames.
   - Also compare what the simulated users said with what that real cohort said.
   - E5 owns the cohort scorecard (results/calibration/<day>/cohort_scorecard.json).
+
+## Rule for every agent: calibrated user traces are our core IP (Shreyas, Nov 21 2026)
+
+Shreyas: "this data of representative users by highest likelihood to use, highest explanation of variance, and most calibrated
+to behave like a human on a product will be the single most valuable data source available on Earth ... treat it like it's our
+IP and we don't drop this off."
+- Two calibrations, both required for every simulated test:
+  1. WHO and WHAT: the personas match the real cohort (who backs, votes and comments) and what they say (sentiment, problems,
+     likelihood to vote or use). E5 keeps the cohort scorecard.
+  2. HOW: the traces behave like real humans on the product. Action mix, timing, dwell, scrolling, backtracks, hesitation,
+     errors and give-up points are compared with real human traces: Online-Mind2Web / Mind2Web human trajectories (check their
+     licence) and Shreyas's own Screenpipe traces. The plugin agent keeps the trace-realism scorecard.
+- Every simulated run is kept PERMANENTLY in a private, versioned trace store: persona, task, product, every step (screenshot
+  reference, action, timing, thought), outcome, and its calibration labels and scores. Nothing is deleted, and storage is never
+  "cleaned up". Real traces (Screenpipe) stay in Shreyas's private bucket; only derived features join the store.
+- Never in the public repo or behind public links. Access is limited to Shreyas's accounts and the pipelines' service accounts.
+  The store is backed up, and every new dataset version and its scorecard are logged.
+- A calibration that is not yet good is tuned, never dropped.
