@@ -149,6 +149,27 @@ for lid, v in out.items():
         ppl = (POOLS.get(lid) or {}).get(k) or []
         gm[f"{k}_past_voters (people)"] = mix_rows(pd.Series([GRP.get(p_) for p_ in ppl]).dropna().astype(int).value_counts().to_dict()) if len(ppl) >= 20 else {"note": f"{len(ppl)} held people; fewer than 20, not shown"}
     v["group_mix"] = gm
+# who.group_mix_prior (orchestrator 10:24Z Nov 21, cohort scorecard v1 decision): the published WHO prior is P3, the topic-neighbour mix.
+# For each launch on D: group mix of held upvoters (read before the day's start) of launches in the 30 days before D, weighted by topic overlap;
+# backtest Nov 11-20 vs the 30-day base mix: -0.043 [-0.055, -0.027] JSD (cohort_calibration/results/who_blend_p6.json). Base stays as the shadow line.
+import json as _j
+TOP = {str(i): set(_j.loads(t) if isinstance(t, str) and t.startswith("[") else []) for i, t in zip(W.id, W.topics)}
+_d30 = (pd.Timestamp(D) - pd.Timedelta(days=30)).strftime("%Y-%m-%d"); _st = PP.close_utc(D) - pd.Timedelta(days=1)
+_past = U[(U.lday < D) & (U.lday >= _d30) & (U.ft < _st)].assign(g=lambda x: x.person_id.map(GRP)).dropna(subset=["g"])
+PMIX = {l: x.g.astype(int).value_counts(normalize=True).to_dict() for l, x in _past.groupby("target_id") if len(x) >= 5}
+P3_LABEL = ("WHO prior (published line): group mix of held backers of launches from the 30 days before this day that share this launch's topics, "
+            "weighted by the number of shared topics; falls back to the 30-day base mix when no earlier launch shares a topic. Backtest on Nov 11-20 "
+            "(81 launches, held-out days): Jensen-Shannon distance to the real backer mix 0.321 vs 0.364 for the base mix, paired -0.043 "
+            "[-0.055, -0.027]; still far from the 0.10 target, and real backer coverage is partial. The expected-voters table above is the shadow line.")
+def p3_prior(lid):
+    tp = TOP.get(str(lid), set()); acc, ws = {}, 0.0
+    for l, m in PMIX.items():
+        w_ = len(tp & TOP.get(l, set()))
+        if w_:
+            ws += w_
+            for g, sh in m.items(): acc[g] = acc.get(g, 0) + w_ * sh
+    return {"method": "topic-neighbour (P3)" if ws else "base mix (no topic neighbours)", "neighbour_launches": int(sum(1 for l in PMIX if tp & TOP.get(l, set()))),
+            "groups": mix_rows({g: a / ws for g, a in acc.items()} if ws else {int(g): float(b) for g, b in bs.items()}), "accuracy_label": P3_LABEL}
 # leaf units (every subgroup + groups without subgroups) for the spectrum panel (spectrum_say.py): same recalibrated probabilities, summed by unit
 bsu = base_share(D, SUBU); TS = group_table(FD, iso, c, k_cov, bsu, SUBU)
 json.dump({"day": D, "k_cov": k_cov, "base_share": {k: float(v) for k, v in bsu.items()}, "launches": {l: t for l, t in TS.items()},
@@ -162,6 +183,7 @@ if J.get("launches"):
             w["group_mix"] = {**v["group_mix"], "accuracy_label": ("Mix of expected voters (launch) or of the hunter's / makers' earlier voters (pools) over the "
                               "top-level data-driven groups; base_share = the group's share of held upvotes in the 30 days before the day; lift = expected_share / "
                               "base_share; votes_for_holds = whether the group's 'votes for' description held out of sample last week. " + LABEL)}
+    for lid in J["launches"]: J["launches"][lid].setdefault("who", {})["group_mix_prior"] = p3_prior(lid)   # every launch, CF list or not
     os.makedirs(os.path.dirname(p), exist_ok=True); json.dump(J, open(p, "w"), indent=1)
     if UP: subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/explain/{D}.json"], check=True)
 print(json.dumps({"day": D, "launches": len(out), "tail_factor": round(c, 2), "k_cov": round(k_cov, 2), "history_days": list(H)}))
