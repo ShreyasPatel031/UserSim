@@ -1,0 +1,655 @@
+{
+ "scorecard": "cohort",
+ "version": "v1",
+ "written_at": "2026-11-21",
+ "prereg": [
+  "PREREG.md c69406d6",
+  "addendum 141daf5d"
+ ],
+ "note": "values are [mean, day-bootstrap 2.5%, 97.5%, launches, days]; coverage beside each block",
+ "WHO": {
+  "frozen_backers_nov8_20": {
+   "coverage_backers_median": 0.053,
+   "launches_scored": 77,
+   "days_scored": 9,
+   "jsd_base": [
+    0.162,
+    0.153,
+    0.177,
+    77,
+    9
+   ],
+   "jsd_P1_explain": [
+    0.181,
+    0.145,
+    0.234,
+    10,
+    3
+   ],
+   "jsd_P2_cf_list": [
+    0.227,
+    0.198,
+    0.255,
+    75,
+    9
+   ],
+   "P1_minus_base": [
+    0.001,
+    -0.052,
+    0.071,
+    10,
+    3
+   ],
+   "P2_minus_base": [
+    0.068,
+    0.037,
+    0.095,
+    75,
+    9
+   ],
+   "P4_P5": {
+    "JSD P4 launch-specific top 200 (exploratory, not pre-registered)": [
+     0.27,
+     0.211,
+     0.328,
+     75,
+     9
+    ],
+    "P4 minus base (paired)": [
+     0.11,
+     0.042,
+     0.17,
+     75,
+     9
+    ],
+    "JSD P5 plain top 200 head-count (what segments_by_lift shows)": [
+     0.251,
+     0.225,
+     0.285,
+     75,
+     9
+    ],
+    "P5 minus base (paired)": [
+     0.091,
+     0.066,
+     0.115,
+     75,
+     9
+    ]
+   },
+   "caveat": "P1 covers Nov 14-16 only (Nov 14 explain written after the reveal); truth restricted to people re-read after day close, so coverage is ~5%"
+  },
+  "topic_neighbour_backtest_v1": {
+   "launches_scored (>= 20 held backers)": 353,
+   "days": 27,
+   "coverage_median": 0.6213,
+   "JSD base": [
+    0.337,
+    0.321,
+    0.353,
+    353,
+    27
+   ],
+   "JSD P3 topic-neighbour": [
+    0.303,
+    0.288,
+    0.32,
+    353,
+    27
+   ],
+   "P3 minus base (paired)": [
+    -0.034,
+    -0.044,
+    -0.026,
+    353,
+    27
+   ]
+  },
+  "commenters_per_day": [
+   {
+    "day": "2026-11-08",
+    "nonteam_commenters": 122,
+    "matched_held": 106,
+    "coverage": 0.869,
+    "grouped": 92,
+    "jsd_base": 0.289,
+    "commenter_mix": {
+     "4": 0.587,
+     "3": 0.272,
+     "1": 0.087,
+     "2": 0.054
+    }
+   },
+   {
+    "day": "2026-11-09",
+    "nonteam_commenters": 0,
+    "matched_held": 0,
+    "coverage": null,
+    "grouped": 0
+   },
+   {
+    "day": "2026-11-10",
+    "nonteam_commenters": 304,
+    "matched_held": 232,
+    "coverage": 0.763,
+    "grouped": 194,
+    "jsd_base": 0.272,
+    "commenter_mix": {
+     "4": 0.598,
+     "3": 0.242,
+     "2": 0.093,
+     "1": 0.067
+    }
+   },
+   {
+    "day": "2026-11-11",
+    "nonteam_commenters": 236,
+    "matched_held": 166,
+    "coverage": 0.703,
+    "grouped": 145,
+    "jsd_base": 0.292,
+    "commenter_mix": {
+     "4": 0.586,
+     "3": 0.276,
+     "1": 0.09,
+     "2": 0.048
+    }
+   },
+   {
+    "day": "2026-11-12",
+    "nonteam_commenters": 245,
+    "matched_held": 196,
+    "coverage": 0.8,
+    "grouped": 185,
+    "jsd_base": 0.231,
+    "commenter_mix": {
+     "4": 0.724,
+     "3": 0.243,
+     "2": 0.016,
+     "1": 0.016
+    }
+   },
+   {
+    "day": "2026-11-13",
+    "nonteam_commenters": 204,
+    "matched_held": 154,
+    "coverage": 0.755,
+    "grouped": 143,
+    "jsd_base": 0.233,
+    "commenter_mix": {
+     "4": 0.748,
+     "3": 0.231,
+     "1": 0.014,
+     "2": 0.007
+    }
+   },
+   {
+    "day": "2026-11-14",
+    "nonteam_commenters": 114,
+    "matched_held": 97,
+    "coverage": 0.851,
+    "grouped": 87,
+    "jsd_base": 0.341,
+    "commenter_mix": {
+     "4": 0.598,
+     "3": 0.333,
+     "1": 0.069
+    }
+   },
+   {
+    "day": "2026-11-15",
+    "nonteam_commenters": 132,
+    "matched_held": 107,
+    "coverage": 0.811,
+    "grouped": 98,
+    "jsd_base": 0.28,
+    "commenter_mix": {
+     "4": 0.653,
+     "3": 0.296,
+     "1": 0.041,
+     "2": 0.01
+    }
+   },
+   {
+    "day": "2026-11-16",
+    "nonteam_commenters": 254,
+    "matched_held": 190,
+    "coverage": 0.748,
+    "grouped": 181,
+    "jsd_base": 0.265,
+    "commenter_mix": {
+     "4": 0.575,
+     "3": 0.376,
+     "5": 0.028,
+     "2": 0.022
+    }
+   },
+   {
+    "day": "2026-11-17",
+    "nonteam_commenters": 401,
+    "matched_held": 243,
+    "coverage": 0.606,
+    "grouped": 243,
+    "jsd_base": 0.338,
+    "commenter_mix": {
+     "1": 0.667,
+     "4": 0.222,
+     "2": 0.07,
+     "0": 0.025,
+     "6": 0.016
+    }
+   },
+   {
+    "day": "2026-11-18",
+    "nonteam_commenters": 291,
+    "matched_held": 169,
+    "coverage": 0.581,
+    "grouped": 169,
+    "jsd_base": 0.286,
+    "commenter_mix": {
+     "4": 0.621,
+     "6": 0.355,
+     "2": 0.018,
+     "0": 0.006
+    }
+   },
+   {
+    "day": "2026-11-19",
+    "nonteam_commenters": 319,
+    "matched_held": 239,
+    "coverage": 0.749,
+    "grouped": 239,
+    "jsd_base": 0.329,
+    "commenter_mix": {
+     "4": 0.523,
+     "6": 0.322,
+     "1": 0.1,
+     "2": 0.054
+    }
+   },
+   {
+    "day": "2026-11-20",
+    "nonteam_commenters": 218,
+    "matched_held": 140,
+    "coverage": 0.642,
+    "grouped": 140,
+    "jsd_base": 0.259,
+    "commenter_mix": {
+     "6": 0.664,
+     "3": 0.171,
+     "5": 0.15,
+     "2": 0.014
+    }
+   }
+  ],
+  "where_wrong_P2": {
+   "metric": "jsd_p2",
+   "by_family": {
+    "AI/other": {
+     "mean_jsd": 0.227,
+     "launches": 3
+    },
+    "design/creative": {
+     "mean_jsd": 0.25,
+     "launches": 20
+    },
+    "developer": {
+     "mean_jsd": 0.218,
+     "launches": 35
+    },
+    "marketing/sales": {
+     "mean_jsd": 0.189,
+     "launches": 11
+    },
+    "productivity/business": {
+     "mean_jsd": 0.279,
+     "launches": 6
+    }
+   },
+   "by_final_rank": {
+    "1-5": {
+     "mean_jsd": 0.213,
+     "launches": 36
+    },
+    "6-10": {
+     "mean_jsd": 0.223,
+     "launches": 20
+    },
+    "11+": {
+     "mean_jsd": 0.258,
+     "launches": 19
+    }
+   },
+   "by_ph_votes": {
+    "<100": {
+     "mean_jsd": 0.259,
+     "launches": 18
+    },
+    "100-250": {
+     "mean_jsd": 0.224,
+     "launches": 34
+    },
+    ">250": {
+     "mean_jsd": 0.207,
+     "launches": 23
+    }
+   },
+   "by_new_backer_share": {
+    ">30%": {
+     "mean_jsd": 0.227,
+     "launches": 75
+    }
+   },
+   "real_top_group_share_mean": 0.837
+  },
+  "where_wrong_P3": {
+   "by_rank_band": {
+    "1-5": {
+     "n": 131,
+     "jsd_p3": 0.244,
+     "jsd_base": 0.226,
+     "p3_minus_base": 0.019
+    },
+    "6-10": {
+     "n": 116,
+     "jsd_p3": 0.288,
+     "jsd_base": 0.356,
+     "p3_minus_base": -0.067
+    },
+    "11+": {
+     "n": 106,
+     "jsd_p3": 0.392,
+     "jsd_base": 0.455,
+     "p3_minus_base": -0.063
+    }
+   },
+   "by_vote_band": {
+    "<100": {
+     "n": 94,
+     "jsd_p3": 0.422,
+     "jsd_base": 0.479,
+     "p3_minus_base": -0.057
+    },
+    "100-250": {
+     "n": 184,
+     "jsd_p3": 0.265,
+     "jsd_base": 0.321,
+     "p3_minus_base": -0.056
+    },
+    ">250": {
+     "n": 75,
+     "jsd_p3": 0.248,
+     "jsd_base": 0.199,
+     "p3_minus_base": 0.049
+    }
+   },
+   "by_topic": {
+    "Artificial Intelligence": {
+     "n": 182,
+     "jsd_p3": 0.295,
+     "jsd_base": 0.322,
+     "p3_minus_base": -0.027
+    },
+    "Developer Tools": {
+     "n": 34,
+     "jsd_p3": 0.28,
+     "jsd_base": 0.348,
+     "p3_minus_base": -0.068
+    }
+   }
+  },
+  "persona_origin": "pending: first plugin-run day is Nov 21, scored when truth lands Nov 22",
+  "recall_at_N_7day_nov14_19": {
+   "cf_minus_raw_pp": [
+    -3.8,
+    -9.9,
+    1.5
+   ],
+   "vs_2x_most_active": "not met by either line"
+  }
+ },
+ "WHAT": {
+  "vote_likelihood": {
+   "rows_scored": 152884,
+   "votes": 2369,
+   "raw_p": {
+    "brier": 0.015356532367274143,
+    "logloss": 0.0989199273973545,
+    "bins": [
+     {
+      "mean_p": 0.0,
+      "observed": 0.0033,
+      "n": 15289
+     },
+     {
+      "mean_p": 0.0002,
+      "observed": 0.0061,
+      "n": 15289
+     },
+     {
+      "mean_p": 0.0004,
+      "observed": 0.0175,
+      "n": 15289
+     },
+     {
+      "mean_p": 0.0006,
+      "observed": 0.0126,
+      "n": 15289
+     },
+     {
+      "mean_p": 0.0008,
+      "observed": 0.0067,
+      "n": 15288
+     },
+     {
+      "mean_p": 0.001,
+      "observed": 0.0073,
+      "n": 15288
+     },
+     {
+      "mean_p": 0.0013,
+      "observed": 0.0131,
+      "n": 15288
+     },
+     {
+      "mean_p": 0.0019,
+      "observed": 0.0152,
+      "n": 15288
+     },
+     {
+      "mean_p": 0.0029,
+      "observed": 0.0366,
+      "n": 15288
+     },
+     {
+      "mean_p": 0.012,
+      "observed": 0.0364,
+      "n": 15288
+     }
+    ],
+    "slope_observed_on_predicted": 2.519
+   },
+   "oos": {
+    "isotonic": {
+     "brier": 0.018376437118579912,
+     "logloss": 0.09906247277108698,
+     "bins": [
+      {
+       "mean_p": 0.011,
+       "observed": 0.0057,
+       "n": 12360
+      },
+      {
+       "mean_p": 0.0124,
+       "observed": 0.0049,
+       "n": 12360
+      },
+      {
+       "mean_p": 0.0148,
+       "observed": 0.0055,
+       "n": 12360
+      },
+      {
+       "mean_p": 0.0172,
+       "observed": 0.0058,
+       "n": 12360
+      },
+      {
+       "mean_p": 0.0216,
+       "observed": 0.0053,
+       "n": 12359
+      },
+      {
+       "mean_p": 0.0291,
+       "observed": 0.0178,
+       "n": 12359
+      },
+      {
+       "mean_p": 0.0387,
+       "observed": 0.0083,
+       "n": 12359
+      },
+      {
+       "mean_p": 0.0476,
+       "observed": 0.0154,
+       "n": 12359
+      },
+      {
+       "mean_p": 0.0902,
+       "observed": 0.0159,
+       "n": 12359
+      },
+      {
+       "mean_p": 0.1767,
+       "observed": 0.0573,
+       "n": 12359
+      }
+     ],
+     "slope_observed_on_predicted": 0.291
+    },
+    "constant": {
+     "brier": 0.014046383427901432,
+     "logloss": 0.07566524835043849
+    },
+    "raw_p_same_rows": {
+     "brier": 0.014035865458929287,
+     "logloss": 0.08467727180999125
+    },
+    "isotonic minus constant (paired, day bootstrap)": {
+     "brier": [
+      0.00433,
+      4e-05,
+      0.00857
+     ],
+     "logloss": [
+      0.0234,
+      -0.00094,
+      0.05824
+     ]
+    }
+   }
+  },
+  "sentiment": {
+   "prereg": "PREREG.md addendum (commit 141daf5d)",
+   "launches": 105,
+   "days": [
+    "2026-11-15",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20"
+   ],
+   "usd": 0.0825,
+   "jsd predicted vs real": [
+    0.351,
+    0.323,
+    0.375,
+    105,
+    6
+   ],
+   "majority agreement predicted": [
+    0.324,
+    0.219,
+    0.439,
+    105,
+    6
+   ],
+   "with baseline (launches whose earlier days hold >= 50 labelled comments)": {
+    "jsd predicted": [
+     0.347,
+     0.317,
+     0.373,
+     93,
+     5
+    ],
+    "jsd base": [
+     0.227,
+     0.184,
+     0.259,
+     93,
+     5
+    ],
+    "predicted minus base (paired)": [
+     0.12,
+     0.082,
+     0.161,
+     93,
+     5
+    ],
+    "agreement predicted": [
+     0.323,
+     0.2,
+     0.471,
+     93,
+     5
+    ],
+    "agreement base": [
+     0.71,
+     0.586,
+     0.835,
+     93,
+     5
+    ]
+   },
+   "mean shares": {
+    "real pos/neg": [
+     0.557,
+     0.063
+    ],
+    "predicted pos/neg": [
+     0.266,
+     0.063
+    ]
+   },
+   "per_segment": "not scored in v1: comments.jsonl carries no commenter-to-person link (by design, no usernames); needs the matched-commenter join on the private side"
+  },
+  "say_themes_forward_nov14_20_b20_p@3_minus_const": {
+   "concerns": [
+    23.7,
+    16.9,
+    30.5
+   ],
+   "questions": [
+    21.8,
+    14.9,
+    28.7
+   ],
+   "deployed_questions": [
+    18.9,
+    10.4,
+    28.1
+   ]
+  }
+ },
+ "north_star": {
+  "who_segment_mix_jsd_median<=0.10": "NOT MET (best: P3 0.303 on backtest_v1; frozen lines 0.18-0.27; base 0.162)",
+  "who_recall@N>=2x_most_active": "NOT MET",
+  "what_broad_theme_recall>=70_precision>=50": "NOT SCORED in this form (panel recall 64.8% earlier; precision not measured)",
+  "what_specific_issue_recall>plain_prompt": "proxy MET vs constant baseline (p@3 +18.9..+23.7pp, intervals clear); plain-prompt baseline not yet run",
+  "what_sentiment_distance<=0.10": "NOT MET (0.347; base 0.227)",
+  "what_vote_ece<=0.05": "nominally MET on raw p (ECE 0.0134) only because base rate is ~1.5%; slope 2.52, isotonic loses to constant",
+  "calibrated_7_consecutive_days": "0 of 7"
+ },
+ "segments_by_lift": "mostly the day's active mix: top-200 CF lists overlap 86% across launches (Nov 21). Launch-specific re-rank (P4) cuts overlap to 26% but scores worse vs real backers (+0.110 vs base)."
+}

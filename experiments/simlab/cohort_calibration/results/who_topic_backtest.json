@@ -1,0 +1,273 @@
+{
+ "set": "results/calibration/backtest_v1 (Nov 20 cut)",
+ "launches_scored (>= 20 held backers)": 353,
+ "days": 27,
+ "coverage_median": 0.6213,
+ "JSD base": [
+  0.337,
+  0.321,
+  0.353,
+  353,
+  27
+ ],
+ "JSD P3 topic-neighbour": [
+  0.303,
+  0.288,
+  0.32,
+  353,
+  27
+ ],
+ "P3 minus base (paired)": [
+  -0.034,
+  -0.044,
+  -0.026,
+  353,
+  27
+ ],
+ "note": "[mean, day-bootstrap 2.5%, 97.5%, launches, days]",
+ "per_day": [
+  {
+   "day": "2026-10-24",
+   "launches": 14,
+   "jsd_base": 0.37,
+   "jsd_p3": 0.336,
+   "coverage": 0.653
+  },
+  {
+   "day": "2026-10-25",
+   "launches": 12,
+   "jsd_base": 0.258,
+   "jsd_p3": 0.242,
+   "coverage": 0.814
+  },
+  {
+   "day": "2026-10-26",
+   "launches": 20,
+   "jsd_base": 0.325,
+   "jsd_p3": 0.306,
+   "coverage": 0.641
+  },
+  {
+   "day": "2026-10-27",
+   "launches": 18,
+   "jsd_base": 0.299,
+   "jsd_p3": 0.285,
+   "coverage": 0.731
+  },
+  {
+   "day": "2026-10-28",
+   "launches": 17,
+   "jsd_base": 0.326,
+   "jsd_p3": 0.317,
+   "coverage": 0.657
+  },
+  {
+   "day": "2026-10-29",
+   "launches": 17,
+   "jsd_base": 0.319,
+   "jsd_p3": 0.284,
+   "coverage": 0.638
+  },
+  {
+   "day": "2026-10-30",
+   "launches": 16,
+   "jsd_base": 0.345,
+   "jsd_p3": 0.314,
+   "coverage": 0.693
+  },
+  {
+   "day": "2026-10-31",
+   "launches": 12,
+   "jsd_base": 0.297,
+   "jsd_p3": 0.267,
+   "coverage": 0.666
+  },
+  {
+   "day": "2026-11-01",
+   "launches": 17,
+   "jsd_base": 0.349,
+   "jsd_p3": 0.309,
+   "coverage": 0.669
+  },
+  {
+   "day": "2026-11-02",
+   "launches": 18,
+   "jsd_base": 0.268,
+   "jsd_p3": 0.23,
+   "coverage": 0.721
+  },
+  {
+   "day": "2026-11-03",
+   "launches": 18,
+   "jsd_base": 0.359,
+   "jsd_p3": 0.354,
+   "coverage": 0.623
+  },
+  {
+   "day": "2026-11-04",
+   "launches": 16,
+   "jsd_base": 0.299,
+   "jsd_p3": 0.283,
+   "coverage": 0.803
+  },
+  {
+   "day": "2026-11-05",
+   "launches": 15,
+   "jsd_base": 0.356,
+   "jsd_p3": 0.333,
+   "coverage": 0.667
+  },
+  {
+   "day": "2026-11-06",
+   "launches": 10,
+   "jsd_base": 0.363,
+   "jsd_p3": 0.349,
+   "coverage": 0.659
+  },
+  {
+   "day": "2026-11-07",
+   "launches": 11,
+   "jsd_base": 0.29,
+   "jsd_p3": 0.233,
+   "coverage": 0.62
+  },
+  {
+   "day": "2026-11-08",
+   "launches": 16,
+   "jsd_base": 0.381,
+   "jsd_p3": 0.292,
+   "coverage": 0.615
+  },
+  {
+   "day": "2026-11-09",
+   "launches": 14,
+   "jsd_base": 0.341,
+   "jsd_p3": 0.275,
+   "coverage": 0.506
+  },
+  {
+   "day": "2026-11-10",
+   "launches": 11,
+   "jsd_base": 0.395,
+   "jsd_p3": 0.352,
+   "coverage": 0.498
+  },
+  {
+   "day": "2026-11-11",
+   "launches": 14,
+   "jsd_base": 0.425,
+   "jsd_p3": 0.381,
+   "coverage": 0.476
+  },
+  {
+   "day": "2026-11-12",
+   "launches": 11,
+   "jsd_base": 0.377,
+   "jsd_p3": 0.338,
+   "coverage": 0.575
+  },
+  {
+   "day": "2026-11-13",
+   "launches": 12,
+   "jsd_base": 0.291,
+   "jsd_p3": 0.222,
+   "coverage": 0.5
+  },
+  {
+   "day": "2026-11-14",
+   "launches": 9,
+   "jsd_base": 0.403,
+   "jsd_p3": 0.341,
+   "coverage": 0.524
+  },
+  {
+   "day": "2026-11-15",
+   "launches": 11,
+   "jsd_base": 0.351,
+   "jsd_p3": 0.291,
+   "coverage": 0.472
+  },
+  {
+   "day": "2026-11-16",
+   "launches": 8,
+   "jsd_base": 0.362,
+   "jsd_p3": 0.365,
+   "coverage": 0.541
+  },
+  {
+   "day": "2026-11-17",
+   "launches": 8,
+   "jsd_base": 0.267,
+   "jsd_p3": 0.251,
+   "coverage": 0.373
+  },
+  {
+   "day": "2026-11-18",
+   "launches": 7,
+   "jsd_base": 0.39,
+   "jsd_p3": 0.362,
+   "coverage": 0.343
+  },
+  {
+   "day": "2026-11-19",
+   "launches": 1,
+   "jsd_base": 0.587,
+   "jsd_p3": 0.526,
+   "coverage": 0.218
+  }
+ ],
+ "by_rank_band": {
+  "1-5": {
+   "n": 131,
+   "jsd_p3": 0.244,
+   "jsd_base": 0.226,
+   "p3_minus_base": 0.019
+  },
+  "6-10": {
+   "n": 116,
+   "jsd_p3": 0.288,
+   "jsd_base": 0.356,
+   "p3_minus_base": -0.067
+  },
+  "11+": {
+   "n": 106,
+   "jsd_p3": 0.392,
+   "jsd_base": 0.455,
+   "p3_minus_base": -0.063
+  }
+ },
+ "by_vote_band": {
+  "<100": {
+   "n": 94,
+   "jsd_p3": 0.422,
+   "jsd_base": 0.479,
+   "p3_minus_base": -0.057
+  },
+  "100-250": {
+   "n": 184,
+   "jsd_p3": 0.265,
+   "jsd_base": 0.321,
+   "p3_minus_base": -0.056
+  },
+  ">250": {
+   "n": 75,
+   "jsd_p3": 0.248,
+   "jsd_base": 0.199,
+   "p3_minus_base": 0.049
+  }
+ },
+ "by_topic": {
+  "Artificial Intelligence": {
+   "n": 182,
+   "jsd_p3": 0.295,
+   "jsd_base": 0.322,
+   "p3_minus_base": -0.027
+  },
+  "Developer Tools": {
+   "n": 34,
+   "jsd_p3": 0.28,
+   "jsd_base": 0.348,
+   "p3_minus_base": -0.068
+  }
+ }
+}

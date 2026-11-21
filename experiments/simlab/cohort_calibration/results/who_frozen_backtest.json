@@ -1,0 +1,545 @@
+{
+ "written_at": "2026-11-21T10:12:24.000860+00:00",
+ "days": [
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12",
+  "2026-11-13",
+  "2026-11-14",
+  "2026-11-15",
+  "2026-11-16",
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20"
+ ],
+ "prereg": "experiments/simlab/cohort_calibration/PREREG.md (commit c69406d6)",
+ "backers": {
+  "launches_scored (>= 20 real grouped backers)": 77,
+  "launches_total": 443,
+  "coverage_backers_median": 0.053,
+  "JSD base mix": [
+   0.162,
+   0.153,
+   0.177,
+   77,
+   9
+  ],
+  "JSD P1 explain groups_expected": [
+   0.181,
+   0.145,
+   0.234,
+   10,
+   3
+  ],
+  "JSD P2 frozen CF list": [
+   0.227,
+   0.198,
+   0.255,
+   75,
+   9
+  ],
+  "P1 minus base (paired)": [
+   0.001,
+   -0.052,
+   0.071,
+   10,
+   3
+  ],
+  "P2 minus base (paired)": [
+   0.068,
+   0.037,
+   0.095,
+   75,
+   9
+  ],
+  "note": "[mean, day-bootstrap 2.5%, 97.5%, launches, days]; pass = paired upper bound < 0"
+ },
+ "per_day": [
+  {
+   "day": "2026-11-08",
+   "cut": "2026-11-15",
+   "flag": "groups fit after the day",
+   "launches": 17,
+   "base_mix": {
+    "4.0": 0.85,
+    "3.0": 0.066,
+    "2.0": 0.039,
+    "1.0": 0.031,
+    "0.0": 0.013
+   },
+   "launches_scored": 17,
+   "coverage_backers_median": 0.522,
+   "real_backers_total": 1306,
+   "jsd_base": 0.149,
+   "jsd_p1": null,
+   "jsd_p2": 0.268
+  },
+  {
+   "day": "2026-11-09",
+   "cut": "2026-11-15",
+   "flag": "groups fit after the day",
+   "launches": 25,
+   "base_mix": {
+    "4.0": 0.851,
+    "3.0": 0.066,
+    "2.0": 0.039,
+    "1.0": 0.031,
+    "0.0": 0.013
+   },
+   "launches_scored": 23,
+   "coverage_backers_median": 0.383,
+   "real_backers_total": 1689,
+   "jsd_base": 0.154,
+   "jsd_p1": null,
+   "jsd_p2": 0.206
+  },
+  {
+   "day": "2026-11-10",
+   "cut": "2026-11-15",
+   "flag": "groups fit after the day",
+   "launches": 50,
+   "base_mix": {
+    "4.0": 0.851,
+    "3.0": 0.066,
+    "2.0": 0.039,
+    "1.0": 0.031,
+    "0.0": 0.013
+   },
+   "launches_scored": 9,
+   "coverage_backers_median": 0.166,
+   "real_backers_total": 1150,
+   "jsd_base": 0.187,
+   "jsd_p1": null,
+   "jsd_p2": 0.268
+  },
+  {
+   "day": "2026-11-11",
+   "cut": "2026-11-15",
+   "flag": "groups fit after the day",
+   "launches": 26,
+   "base_mix": {
+    "4.0": 0.85,
+    "3.0": 0.066,
+    "2.0": 0.039,
+    "1.0": 0.031,
+    "0.0": 0.013
+   },
+   "launches_scored": 6,
+   "coverage_backers_median": 0.1705,
+   "real_backers_total": 708,
+   "jsd_base": 0.177,
+   "jsd_p1": null,
+   "jsd_p2": 0.199
+  },
+  {
+   "day": "2026-11-12",
+   "cut": "2026-11-15",
+   "flag": "groups fit after the day",
+   "launches": 37,
+   "base_mix": {
+    "4.0": 0.85,
+    "3.0": 0.067,
+    "2.0": 0.038,
+    "1.0": 0.031,
+    "0.0": 0.013
+   },
+   "launches_scored": 7,
+   "coverage_backers_median": 0.151,
+   "real_backers_total": 908,
+   "jsd_base": 0.136,
+   "jsd_p1": null,
+   "jsd_p2": 0.17
+  },
+  {
+   "day": "2026-11-13",
+   "cut": "2026-11-15",
+   "flag": "groups fit after the day",
+   "launches": 21,
+   "base_mix": {
+    "4.0": 0.851,
+    "3.0": 0.067,
+    "2.0": 0.038,
+    "1.0": 0.03,
+    "0.0": 0.014
+   },
+   "launches_scored": 5,
+   "coverage_backers_median": 0.1,
+   "real_backers_total": 368,
+   "jsd_base": 0.181,
+   "jsd_p1": null,
+   "jsd_p2": 0.289
+  },
+  {
+   "day": "2026-11-14",
+   "cut": "2026-11-15",
+   "flag": "groups fit after the day",
+   "launches": 28,
+   "base_mix": {
+    "4.0": 0.852,
+    "3.0": 0.068,
+    "2.0": 0.037,
+    "1.0": 0.03,
+    "0.0": 0.014
+   },
+   "launches_scored": 3,
+   "coverage_backers_median": 0.108,
+   "real_backers_total": 363,
+   "jsd_base": 0.162,
+   "jsd_p1": 0.234,
+   "jsd_p2": 0.247
+  },
+  {
+   "day": "2026-11-15",
+   "cut": "2026-11-15",
+   "flag": "ok",
+   "launches": 16,
+   "base_mix": {
+    "4.0": 0.852,
+    "3.0": 0.068,
+    "2.0": 0.036,
+    "1.0": 0.03,
+    "0.0": 0.014
+   },
+   "launches_scored": 4,
+   "coverage_backers_median": 0.067,
+   "real_backers_total": 266,
+   "jsd_base": 0.182,
+   "jsd_p1": 0.169,
+   "jsd_p2": 0.171
+  },
+  {
+   "day": "2026-11-16",
+   "cut": "2026-11-16",
+   "flag": "ok",
+   "launches": 38,
+   "base_mix": {
+    "4.0": 0.821,
+    "3.0": 0.117,
+    "5.0": 0.03,
+    "2.0": 0.026,
+    "0.0": 0.006
+   },
+   "launches_scored": 3,
+   "coverage_backers_median": 0.028,
+   "real_backers_total": 281,
+   "jsd_base": 0.197,
+   "jsd_p1": 0.145,
+   "jsd_p2": 0.156
+  },
+  {
+   "day": "2026-11-17",
+   "cut": "2026-11-17",
+   "flag": "ok",
+   "launches": 43,
+   "base_mix": {
+    "4.0": 0.6,
+    "1.0": 0.359,
+    "2.0": 0.028,
+    "6.0": 0.012,
+    "0.0": 0.002
+   },
+   "launches_scored": 0,
+   "coverage_backers_median": 0.0,
+   "real_backers_total": 7,
+   "jsd_base": null,
+   "jsd_p1": null,
+   "jsd_p2": null
+  },
+  {
+   "day": "2026-11-18",
+   "cut": "2026-11-18",
+   "flag": "ok",
+   "launches": 47,
+   "base_mix": {
+    "4": 0.882,
+    "6": 0.087,
+    "2": 0.03,
+    "0": 0.001
+   },
+   "launches_scored": 0,
+   "coverage_backers_median": 0.0,
+   "real_backers_total": 7,
+   "jsd_base": null,
+   "jsd_p1": null,
+   "jsd_p2": null
+  },
+  {
+   "day": "2026-11-19",
+   "cut": "2026-11-19",
+   "flag": "ok",
+   "launches": 36,
+   "base_mix": {
+    "4": 0.869,
+    "6": 0.082,
+    "1": 0.029,
+    "2": 0.019,
+    "0": 0.001
+   },
+   "launches_scored": 0,
+   "coverage_backers_median": 0.0,
+   "real_backers_total": 0,
+   "jsd_base": null,
+   "jsd_p1": null,
+   "jsd_p2": null
+  },
+  {
+   "day": "2026-11-20",
+   "cut": "2026-11-20",
+   "flag": "ok",
+   "launches": 59,
+   "base_mix": {
+    "6": 0.434,
+    "5": 0.356,
+    "3": 0.134,
+    "2": 0.075,
+    "0": 0.001
+   },
+   "launches_scored": 0,
+   "coverage_backers_median": 0.0,
+   "real_backers_total": 0,
+   "jsd_base": null,
+   "jsd_p1": null,
+   "jsd_p2": null
+  }
+ ],
+ "where_wrong": {
+  "metric": "jsd_p2",
+  "by_family": {
+   "AI/other": {
+    "mean_jsd": 0.227,
+    "launches": 3
+   },
+   "design/creative": {
+    "mean_jsd": 0.25,
+    "launches": 20
+   },
+   "developer": {
+    "mean_jsd": 0.218,
+    "launches": 35
+   },
+   "marketing/sales": {
+    "mean_jsd": 0.189,
+    "launches": 11
+   },
+   "productivity/business": {
+    "mean_jsd": 0.279,
+    "launches": 6
+   }
+  },
+  "by_final_rank": {
+   "1-5": {
+    "mean_jsd": 0.213,
+    "launches": 36
+   },
+   "6-10": {
+    "mean_jsd": 0.223,
+    "launches": 20
+   },
+   "11+": {
+    "mean_jsd": 0.258,
+    "launches": 19
+   }
+  },
+  "by_ph_votes": {
+   "<100": {
+    "mean_jsd": 0.259,
+    "launches": 18
+   },
+   "100-250": {
+    "mean_jsd": 0.224,
+    "launches": 34
+   },
+   ">250": {
+    "mean_jsd": 0.207,
+    "launches": 23
+   }
+  },
+  "by_new_backer_share": {
+   ">30%": {
+    "mean_jsd": 0.227,
+    "launches": 75
+   }
+  },
+  "real_top_group_share_mean": 0.837
+ },
+ "commenters_per_day": [
+  {
+   "day": "2026-11-08",
+   "nonteam_commenters": 122,
+   "matched_held": 106,
+   "coverage": 0.869,
+   "grouped": 92,
+   "jsd_base": 0.289,
+   "commenter_mix": {
+    "4": 0.587,
+    "3": 0.272,
+    "1": 0.087,
+    "2": 0.054
+   }
+  },
+  {
+   "day": "2026-11-09",
+   "nonteam_commenters": 0,
+   "matched_held": 0,
+   "coverage": null,
+   "grouped": 0
+  },
+  {
+   "day": "2026-11-10",
+   "nonteam_commenters": 304,
+   "matched_held": 232,
+   "coverage": 0.763,
+   "grouped": 194,
+   "jsd_base": 0.272,
+   "commenter_mix": {
+    "4": 0.598,
+    "3": 0.242,
+    "2": 0.093,
+    "1": 0.067
+   }
+  },
+  {
+   "day": "2026-11-11",
+   "nonteam_commenters": 236,
+   "matched_held": 166,
+   "coverage": 0.703,
+   "grouped": 145,
+   "jsd_base": 0.292,
+   "commenter_mix": {
+    "4": 0.586,
+    "3": 0.276,
+    "1": 0.09,
+    "2": 0.048
+   }
+  },
+  {
+   "day": "2026-11-12",
+   "nonteam_commenters": 245,
+   "matched_held": 196,
+   "coverage": 0.8,
+   "grouped": 185,
+   "jsd_base": 0.231,
+   "commenter_mix": {
+    "4": 0.724,
+    "3": 0.243,
+    "2": 0.016,
+    "1": 0.016
+   }
+  },
+  {
+   "day": "2026-11-13",
+   "nonteam_commenters": 204,
+   "matched_held": 154,
+   "coverage": 0.755,
+   "grouped": 143,
+   "jsd_base": 0.233,
+   "commenter_mix": {
+    "4": 0.748,
+    "3": 0.231,
+    "1": 0.014,
+    "2": 0.007
+   }
+  },
+  {
+   "day": "2026-11-14",
+   "nonteam_commenters": 114,
+   "matched_held": 97,
+   "coverage": 0.851,
+   "grouped": 87,
+   "jsd_base": 0.341,
+   "commenter_mix": {
+    "4": 0.598,
+    "3": 0.333,
+    "1": 0.069
+   }
+  },
+  {
+   "day": "2026-11-15",
+   "nonteam_commenters": 132,
+   "matched_held": 107,
+   "coverage": 0.811,
+   "grouped": 98,
+   "jsd_base": 0.28,
+   "commenter_mix": {
+    "4": 0.653,
+    "3": 0.296,
+    "1": 0.041,
+    "2": 0.01
+   }
+  },
+  {
+   "day": "2026-11-16",
+   "nonteam_commenters": 254,
+   "matched_held": 190,
+   "coverage": 0.748,
+   "grouped": 181,
+   "jsd_base": 0.265,
+   "commenter_mix": {
+    "4": 0.575,
+    "3": 0.376,
+    "5": 0.028,
+    "2": 0.022
+   }
+  },
+  {
+   "day": "2026-11-17",
+   "nonteam_commenters": 401,
+   "matched_held": 243,
+   "coverage": 0.606,
+   "grouped": 243,
+   "jsd_base": 0.338,
+   "commenter_mix": {
+    "1": 0.667,
+    "4": 0.222,
+    "2": 0.07,
+    "0": 0.025,
+    "6": 0.016
+   }
+  },
+  {
+   "day": "2026-11-18",
+   "nonteam_commenters": 291,
+   "matched_held": 169,
+   "coverage": 0.581,
+   "grouped": 169,
+   "jsd_base": 0.286,
+   "commenter_mix": {
+    "4": 0.621,
+    "6": 0.355,
+    "2": 0.018,
+    "0": 0.006
+   }
+  },
+  {
+   "day": "2026-11-19",
+   "nonteam_commenters": 319,
+   "matched_held": 239,
+   "coverage": 0.749,
+   "grouped": 239,
+   "jsd_base": 0.329,
+   "commenter_mix": {
+    "4": 0.523,
+    "6": 0.322,
+    "1": 0.1,
+    "2": 0.054
+   }
+  },
+  {
+   "day": "2026-11-20",
+   "nonteam_commenters": 218,
+   "matched_held": 140,
+   "coverage": 0.642,
+   "grouped": 140,
+   "jsd_base": 0.259,
+   "commenter_mix": {
+    "6": 0.664,
+    "3": 0.171,
+    "5": 0.15,
+    "2": 0.014
+   }
+  }
+ ]
+}
