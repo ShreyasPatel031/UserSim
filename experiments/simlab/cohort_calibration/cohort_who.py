@@ -23,6 +23,7 @@ def seg(D):
     if c not in _cut: _cut[c] = pd.read_parquet(io.BytesIO(gcat(f"{B}/tmp/e5/private/segments/{c}.parquet"))).set_index("person_id").group.to_dict()
     return c, _cut[c]
 def jsd(p, q):
+    p = {str(int(float(k))) if str(k).replace(".", "").isdigit() else str(k): v for k, v in p.items()}; q = {str(int(float(k))) if str(k).replace(".", "").isdigit() else str(k): v for k, v in q.items()}
     keys = sorted(set(p) | set(q)); a = np.array([p.get(k, 0.0) for k in keys], float); b = np.array([q.get(k, 0.0) for k in keys], float)
     a, b = a / a.sum(), b / b.sum(); m = (a + b) / 2
     kl = lambda x, y: np.sum(np.where(x > 0, x * np.log2(np.where(x > 0, x, 1) / np.where(y > 0, y, 1)), 0))
@@ -128,7 +129,7 @@ for D in DAYS:
     c = C[C.day == D]; gl = [g for x in c.groups for g in x]; n_nt = int(c.nonteam_commenters.sum()); n_m = int(c.matched.sum())
     r_ = {"day": D, "nonteam_commenters": n_nt, "matched_held": n_m, "coverage": round(n_m / n_nt, 3) if n_nt else None, "grouped": len(gl)}
     if len(gl) >= 20:
-        real = mix(gl); r_["jsd_base"] = round(jsd({int(k) if str(k).isdigit() else k: v for k, v in day_cov[D]["base_mix"].items()}, real), 3)
+        real = mix(gl); r_["jsd_base"] = round(jsd(day_cov[D]["base_mix"], real), 3)
         # predicted: launch-weighted P2 mix of the day (weights = matched commenters per launch)
         if 'BP' in dir(): pass
         r_["commenter_mix"] = {str(k): round(v, 3) for k, v in real.items()}
