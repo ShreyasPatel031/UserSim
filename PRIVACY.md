@@ -16,7 +16,8 @@ your repository locally.
 ## What we do with it
 - Open the product URL in a browser on Atelier Sim's own machines and record screenshots, steps and thoughts.
 - Judge each run with an AI model (Google Gemini on Google Cloud).
-- Sign up to your product, when the task needs it, with Atelier Sim-owned email aliases and a Atelier Sim phone number.
+- Sign up to your product, when the task needs it, with Atelier Sim-owned email aliases, an Atelier Sim phone number
+  or an Atelier Sim-owned Google account. Its password and codes are typed by the server and never returned to you.
 - If a captcha blocks a run, the page's captcha may be sent to a captcha-solving service.
 - Verification emails and texts sent to Atelier Sim's addresses and number are read only to finish the signup they
   belong to. A run only receives codes sent after it started, and texts from banks, Apple, Google and other

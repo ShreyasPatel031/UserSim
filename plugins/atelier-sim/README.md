@@ -80,8 +80,9 @@ with a step you can watch, not as a forecast.
 - **What the server does:**
   - opens the product URL in a browser on Atelier Sim's own machines, and records screenshots, steps and thoughts;
   - runs an independent judge (Gemini) over the run;
-  - for signups, uses Atelier Sim-owned email aliases and a Atelier Sim phone number. No personal details of yours are typed
-    into your product.
+  - for signups, uses Atelier Sim-owned email aliases, an Atelier Sim phone number and an Atelier Sim-owned Google
+    account (the server types its password and codes; they are never sent to Claude). No personal details of yours
+    are typed into your product.
   - If a captcha blocks a run, the server may send that page's captcha to a captcha-solving service.
 - **Stored:** run reports, screenshots and steps are kept by Atelier Sim (Google Cloud Storage). Anyone who has a run's
   watch or report link can open it, so don't test pages that show private data. To have a run deleted, open an issue
@@ -92,8 +93,9 @@ with a step you can watch, not as a forecast.
 
 ## Limits
 
-- Public URLs only. Signup uses Atelier Sim email aliases and, when a product asks for one, an Atelier Sim phone
-  number. Google and GitHub sign-in are not available on the public server; no payments are entered.
+- Public URLs only. Signup uses Atelier Sim email aliases, an Atelier Sim phone number when a product asks for one,
+  or "Continue with Google" with an Atelier Sim-owned Google account. GitHub sign-in is not available; no payments
+  are entered.
 - Free use is capped per network address: about $5 of server time a day (roughly 8 quick answers) and 5 browsers at
   once. A quick answer uses 5 browsers. A full study uses up to 24 (4 testers × 3 tasks × 2 products), so without a
   token the rest wait their turn. A shared daily ceiling also applies; when it is reached, runs are refused until the
