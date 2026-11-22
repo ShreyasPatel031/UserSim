@@ -14,7 +14,7 @@ It works for public websites and web apps, including preview and staging deploys
 ## Install
 
 ```
-/plugin marketplace add ShreyasPatel031/UserSim@claude/usersim-plugin
+/plugin marketplace add ShreyasPatel031/UserSim@atelier-sim-release
 /plugin install atelier-sim@atelier-sim
 ```
 
@@ -28,9 +28,9 @@ Point at anything and ask:
 /atelier-sim:ask https://excalidraw.com
 ```
 
-or just say "how would a user use cal.com, and what would they say about it?" Claude starts two simulated users in
-real cloud browsers at once, a plain tester and the user group that fits the product, and posts links so you can
-watch them live. In about 3 minutes it answers in chat: what each did, where they got stuck, what they said in their
+or just say "how would a user use cal.com, and what would they say about it?" It also starts on its own whenever you
+ask Claude to test something that has a URL. Claude starts five simulated users in real cloud browsers at once, a
+plain tester and four people from the user groups that fit the product, and posts links so you can watch them live. In about 3 minutes it answers in chat: what each did, where they got stuck, what they said in their
 own words, and what to try. There is no plan to approve.
 
 For the full study, ask for it or run:
@@ -48,7 +48,7 @@ Results go to `.atelier-sim/<run>/` in your project. Localhost is not reachable;
 ### From Claude chat (claude.ai or the desktop app)
 
 Plugins run in Claude Code. In Claude chat, add the server as a custom connector (Settings → Connectors → Add
-custom connector, URL `https://35-202-98-224.sslip.io/mcp`, no sign-in) and ask the same question.
+custom connector, URL `https://atelier-sim.com/mcp`, no sign-in) and ask the same question.
 
 ## Who the simulated users are
 
@@ -69,7 +69,7 @@ with a step you can watch, not as a forecast.
   writes `replay.html` from `skills/usertest/assets/report.html`. It makes no network calls. When you open
   `replay.html` in a browser, the page loads its fonts from Google Fonts and its screenshots from Atelier Sim's report
   links. Approvals and notes are kept in that browser's local storage.
-- **Connects to:** the Atelier Sim MCP server at `https://35-202-98-224.sslip.io/mcp`. It runs on Google Cloud in the US
+- **Connects to:** the Atelier Sim MCP server at `https://atelier-sim.com/mcp`. It runs on Google Cloud in the US
   and has no other declared connectors.
 - **Sends to the Atelier Sim server:**
   - the product URL, the task text and persona text you approved;
@@ -92,9 +92,14 @@ with a step you can watch, not as a forecast.
 
 ## Limits
 
-- Public URLs only; Google and GitHub sign-in are blocked (email signup is used); no payments are entered.
-- A quick answer uses 2 browsers. A full study uses up to 24 (4 testers × 3 tasks × 2 products). Capacity is
-  shared, so a busy server queues the rest.
+- Public URLs only. Signup uses Atelier Sim email aliases and, when a product asks for one, an Atelier Sim phone
+  number. Google and GitHub sign-in are not available on the public server; no payments are entered.
+- Free use is capped per network address: about $5 of server time a day (roughly 8 quick answers) and 5 browsers at
+  once. A quick answer uses 5 browsers. A full study uses up to 24 (4 testers × 3 tasks × 2 products), so without a
+  token the rest wait their turn. A shared daily ceiling also applies; when it is reached, runs are refused until the
+  next day (Pacific time).
+- Some sites block automated browsers or crash in a cloud browser; the answer reports those as test limits, not as
+  product findings.
 
 ## License
 

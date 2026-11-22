@@ -2,7 +2,7 @@
   "mcpServers": {
     "atelier-sim": {
       "type": "http",
-      "url": "https://35-202-98-224.sslip.io/mcp",
+      "url": "https://atelier-sim.com/mcp",
       "headers": {
         "Authorization": "Bearer ${ATELIER_SIM_TOKEN:-}"
       }

@@ -1,14 +1,14 @@
 # Atelier Sim plugin privacy policy
 
-Last updated: November 17, 2026.
+Last updated: November 22, 2026.
 
 This policy covers the Atelier Sim plugin for Claude Code and the Atelier Sim MCP server it connects to
-(`https://35-202-98-224.sslip.io/mcp`).
+(`https://atelier-sim.com/mcp`).
 
 ## What we receive
 - The product URL you test, and the task and persona text you approved in Claude Code.
 - Each browser action the simulated user takes and the short "thought" it writes for that action.
-- Your client IP address, used only for rate limits and abuse prevention.
+- Your client IP address, used only for daily usage limits and abuse prevention.
 
 We do **not** receive your source code, your files, your Claude conversation, or any credentials of yours. Claude reads
 your repository locally.
@@ -18,6 +18,9 @@ your repository locally.
 - Judge each run with an AI model (Google Gemini on Google Cloud).
 - Sign up to your product, when the task needs it, with Atelier Sim-owned email aliases and a Atelier Sim phone number.
 - If a captcha blocks a run, the page's captcha may be sent to a captcha-solving service.
+- Verification emails and texts sent to Atelier Sim's addresses and number are read only to finish the signup they
+  belong to. A run only receives codes sent after it started, and texts from banks, Apple, Google and other
+  personal-account senders are never returned to any run.
 - We do not sell the data and do not use it to advertise.
 
 ## Who can see it

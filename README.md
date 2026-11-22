@@ -6,7 +6,7 @@ This branch holds only the Atelier Sim Claude Code plugin and its marketplace fi
 Install:
 
 ```
-/plugin marketplace add ShreyasPatel031/UserSim@claude/usersim-plugin
+/plugin marketplace add ShreyasPatel031/UserSim@atelier-sim-release
 /plugin install atelier-sim@atelier-sim
 ```
 
