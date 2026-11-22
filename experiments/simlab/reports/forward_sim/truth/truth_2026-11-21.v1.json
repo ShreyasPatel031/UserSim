@@ -1,0 +1,751 @@
+{
+ "day": "2026-11-21",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1322372": {
+   "themes": [
+    {
+     "theme": "The 'Show me' button and watch-then-try loop with concrete error cues is an effective learning method.",
+     "n": 2
+    },
+    {
+     "theme": "Does it feel okay to use with just a trackpad, or is a controller needed?",
+     "n": 1
+    },
+    {
+     "theme": "Will progress be remembered without an account when returning later?",
+     "n": 1
+    },
+    {
+     "theme": "Are there plans to add more practice songs beyond the initial six?",
+     "n": 1
+    },
+    {
+     "theme": "General positive feedback and congratulations on the launch.",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Input method/controller support",
+    "Progress saving without an account",
+    "More practice songs/content"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The 'Show me' button and watch-then-try loop with concrete error cues is an effective learning method.",
+      "Does it feel okay to use with just a trackpad, or is a controller needed?",
+      "Will progress be remembered without an account when returning later?",
+      "Are there plans to add more practice songs beyond the initial six?",
+      "General positive feedback and congratulations on the launch."
+     ],
+     [
+      "The watch-then-try loop with concrete error cues is an effective learning method.",
+      "Users are concerned about whether progress is saved without an account.",
+      "Users are asking if a controller is needed or if a trackpad is sufficient.",
+      "Users are requesting more practice songs.",
+      "Generic praise and congratulations for the launch."
+     ],
+     [
+      "The 'Show me' button and watch-then-try loop with concrete error cues is an effective learning method.",
+      "Does it feel okay to use with just a trackpad, or is a controller needed?",
+      "Will progress be remembered without an account when returning later?",
+      "Are there plans to add more practice songs beyond the initial six?",
+      "General positive feedback and congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it feel ok with just a trackpad or do you kinda need a controller to get the hang of it?",
+      "With no account, does it remember where I'm at when I come back tomorrow?",
+      "Any plans to add more than the six practice songs?"
+     ],
+     [
+      "does it feel ok with just a trackpad or do u kinda need a controller to get the hang of it",
+      "with no account, does it remember where I'm at when I come back tomorrow?",
+      "Any plans to add more than the six practice songs?"
+     ],
+     [
+      "Does it feel ok with just a trackpad or do you kinda need a controller to get the hang of it?",
+      "With no account, does it remember where I'm at when I come back tomorrow?",
+      "Any plans to add more than the six practice songs?"
+     ]
+    ]
+   }
+  },
+  "1316562": {
+   "themes": [
+    {
+     "theme": "AI's ability to learn and differentiate writing styles/contexts",
+     "n": 2
+    },
+    {
+     "theme": "Performance and resource usage of on-device AI",
+     "n": 2
+    },
+    {
+     "theme": "Appreciation for local-only AI for privacy",
+     "n": 2
+    },
+    {
+     "theme": "Limiting AI to specific workspaces",
+     "n": 1
+    },
+    {
+     "theme": "AI's ability to prioritize important emails",
+     "n": 1
+    },
+    {
+     "theme": "Highlighting the one-time price more prominently",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Can a connected AI app be limited to one workspace, so a work request can\u2019t search personal mail?",
+    "Does it learn my voice per account tho? I write totally different in Swedish to clients than in English to friends, would be weird if it mixed them.",
+    "How big is the on-device model, and how does search hold up on a mailbox with 100k+ messages?",
+    "Curious about the RAM hit on an 8GB Mac.",
+    "Mine shows newsletters and real client mails with the same weight, so the important one gets lost.",
+    "Does the on device AI sort what needs a reply first?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are asking about the AI's ability to learn and differentiate between different writing styles or contexts.",
+      "Users are concerned about the performance and resource usage of the on-device AI, especially with large mailboxes or limited RAM.",
+      "Users appreciate the local-only AI approach for privacy and data handling.",
+      "Users are asking about the scope of AI access and permissions, particularly regarding personal data and actions like sending or deleting emails.",
+      "Users are asking if the AI can be limited to specific workspaces to prevent searching personal mail.",
+      "Users are concerned about the AI's ability to prioritize important emails over newsletters.",
+      "Users suggest highlighting the one-time price more prominently on the product page.",
+      "Users are asking if the iPhone app will be covered by the same license."
+     ],
+     [
+      "Can the AI app be limited to one workspace to prevent searching personal mail?",
+      "Does the AI learn voice/writing style per account, considering different languages and contexts?",
+      "How large is the on-device model and how does search perform on a large mailbox (100k+ messages)?",
+      "What is the RAM impact on an 8GB Mac for the local-only AI?",
+      "Newsletters and client emails have the same weight, causing important emails to get lost.",
+      "The one-time price is a strong selling point and should be more prominent.",
+      "Does the on-device AI sort what needs a reply first?",
+      "Local-only AI for personal data is a strong and preferred approach."
+     ],
+     [
+      "Users are asking about the AI's ability to learn and differentiate between different writing styles or contexts.",
+      "Users are concerned about the performance and resource usage of the on-device AI, especially with large mailboxes or limited RAM.",
+      "Users appreciate the local-only AI approach for privacy and data handling.",
+      "Users are asking about the scope of AI access and permissions, particularly regarding personal data and actions like sending or deleting emails.",
+      "Users are asking if the AI can be limited to specific workspaces to prevent searching personal mail.",
+      "Users are concerned about the AI's ability to prioritize important emails over newsletters.",
+      "Users suggest highlighting the one-time price more prominently on the product page.",
+      "Users are asking if the iPhone app will be covered by the same license."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can a connected AI app be limited to one workspace, so a work request can\u2019t search personal mail?",
+      "Does it learn my voice per account tho? I write totally different in Swedish to clients than in English to friends, would be weird if it mixed them.",
+      "How big is the on-device model, and how does search hold up on a mailbox with 100k+ messages?",
+      "Curious about the RAM hit on an 8GB Mac.",
+      "Mine shows newsletters and real client mails with the same weight, so the important one gets lost.",
+      "Does the on device AI sort what needs a reply first?"
+     ],
+     [
+      "Can a connected AI app be limited to one workspace, so a work request can\u2019t search personal mail?",
+      "Does it learn my voice per account tho? I write totally different in Swedish to clients than in English to friends, would be weird if it mixed them.",
+      "How big is the on-device model, and how does search hold up on a mailbox with 100k+ messages? Curious about the RAM hit on an 8GB Mac.",
+      "Mine shows newsletters and real client mails with the same weight, so the important one gets lost.",
+      "Does the on device AI sort what needs a reply first?",
+      "Will the iPhone app be covered by the same licence?"
+     ],
+     [
+      "Can a connected AI app be limited to one workspace, so a work request can\u2019t search personal mail?",
+      "does it learn my voice per account tho? i write totally different in swedish to clients than in english to friends, would be weird if it mixed them",
+      "How big is the on-device model, and how does search hold up on a mailbox with 100k+ messages?",
+      "Curious about the RAM hit on an 8GB Mac.",
+      "mine shows newsletters and real client mails with the same weight, so the important one gets lost.",
+      "does the on device ai sort what needs a reply first?"
+     ]
+    ]
+   }
+  },
+  "1321956": {
+   "themes": [
+    {
+     "theme": "Ability to see sources and reasons for matches for each row, aiding in auditing and trust",
+     "n": 2
+    },
+    {
+     "theme": "Users want to know if the reasoning and sources remain attached when data is exported",
+     "n": 1
+    },
+    {
+     "theme": "Users are interested in filtering data by specific time windows",
+     "n": 1
+    },
+    {
+     "theme": "Users want to know if date filters can be combined with other criteria",
+     "n": 1
+    },
+    {
+     "theme": "The shift to usage-based pricing from a monthly subscription is seen as a positive change",
+     "n": 1
+    },
+    {
+     "theme": "Users are curious about how the tool handles conflicting sources and what is displayed in the reasoning column in such cases",
+     "n": 1
+    },
+    {
+     "theme": "There is concern about the reasoning's effectiveness with messy queries where entities are very similar",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the product launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Reasoning exportability",
+    "Reasoning for complex/messy queries",
+    "Handling conflicting sources",
+    "Data freshness",
+    "Combining filters"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to see sources and reasons for matches for each row is highly valued, as it aids in auditing and trust.",
+      "Users want to know if the reasoning and sources remain attached when data is exported.",
+      "Users are interested in filtering data by specific time windows, such as the last week.",
+      "Users want to know if date filters can be combined with other criteria like role or location.",
+      "The shift to usage-based pricing from a monthly subscription is seen as a positive change.",
+      "Users are curious about how the tool handles conflicting sources and what is displayed in the reasoning column in such cases.",
+      "There is concern about the reasoning's effectiveness with messy queries where entities are very similar.",
+      "Generic congratulations on the product launch."
+     ],
+     [
+      "The ability to see sources and reasons for matches for each row is highly valued, as it aids in auditing and trust.",
+      "Users want to know if the reasoning and sources remain attached when data is exported.",
+      "Users are interested in filtering data by specific time windows, such as the last week.",
+      "Users want to know if date filters can be combined with other criteria like role or location.",
+      "The shift to usage-based pricing from a monthly subscription is seen as a positive change.",
+      "Users are curious about how the tool handles conflicting sources and what is displayed in the reasoning column in such cases.",
+      "There is concern about the reasoning's effectiveness with messy queries where entities are very similar.",
+      "Generic congratulations on the product launch."
+     ],
+     [
+      "Users want to filter by recency, such as posts from the last week.",
+      "Users appreciate the inclusion of sources and reasons for matches with each row, as it aids in auditing and trust.",
+      "Users are asking if the reasoning for matches remains attached when exporting data.",
+      "Users are asking if date filters can be combined with other criteria like role or location.",
+      "Users are curious about how the reasoning holds up for messy queries where companies might appear similar.",
+      "Users appreciate the shift from monthly subscriptions to usage-based pricing.",
+      "Users are asking how the tool handles disagreements between sources and what the reasoning column displays in such cases.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the reasoning stay attached when I export, or is it only visible inside the tool?",
+      "Curious how the reasoning holds up on the messier queries \u2014 the ones where two companies look nearly identical on paper.",
+      "how fresh can a webset get, like could i ask for people who posted about needing a mobile dev in the last week",
+      "Can date filters be combined with role or location criteria?",
+      "How do you handle rows where sources disagree, does the reasoning column show both or just the pick?"
+     ],
+     [
+      "Does the reasoning stay attached when I export, or is it only visible inside the tool?",
+      "Curious how the reasoning holds up on the messier queries \u2014 the ones where two companies look nearly identical on paper.",
+      "How do you handle rows where sources disagree, does the reasoning column show both or just the pick?",
+      "how fresh can a webset get, like could i ask for people who posted about needing a mobile dev in the last week",
+      "Can date filters be combined with role or location criteria?"
+     ],
+     [
+      "How does the reasoning behind a match hold up for complex or messy queries, especially when companies are nearly identical?",
+      "Does the reasoning for a match stay attached when data is exported, or is it only visible within the tool?",
+      "How does the system handle rows where sources disagree, and what does the reasoning column show in such cases?",
+      "Can date filters be combined with other criteria like role or location?",
+      "How fresh can the data be, for example, can I filter for posts within the last week?"
+     ]
+    ]
+   }
+  },
+  "1320128": {
+   "themes": [
+    {
+     "theme": "Users want Android and desktop versions.",
+     "n": 3
+    },
+    {
+     "theme": "Users appreciate the clean UI/product design and sleek presentation.",
+     "n": 5
+    },
+    {
+     "theme": "Users want to know if they can import clients from spreadsheets or existing CRMs.",
+     "n": 2
+    },
+    {
+     "theme": "Users are curious about how the 'morning list' decides which clients need attention.",
+     "n": 2
+    },
+    {
+     "theme": "Users want to know if the product can pull information directly from WhatsApp chats.",
+     "n": 2
+    },
+    {
+     "theme": "Users are concerned about the handling of long meetings and potential recording length limits.",
+     "n": 2
+    },
+    {
+     "theme": "Users want to understand how the product differentiates itself from other AI assistants.",
+     "n": 2
+    },
+    {
+     "theme": "Users appreciate the ability to update information by talking after meetings, especially the voice-first approach.",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Android and desktop versions",
+    "Import clients from spreadsheets/CRM",
+    "Morning list client prioritization",
+    "Long meeting recording limits",
+    "WhatsApp chat integration",
+    "Scalability for small vs. large client bases"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users want Android and desktop versions of the product.",
+      "Users appreciate the clean UI/product design and sleek presentation.",
+      "Users want to know if they can import clients from spreadsheets or existing CRMs.",
+      "Users are curious about how the 'morning list' decides which clients need attention.",
+      "Users want to know if the product can pull information directly from WhatsApp chats.",
+      "Users are concerned about the handling of long meetings and potential recording length limits.",
+      "Users want to understand how the product differentiates itself from other AI assistants like Grok bot, GPT dot, Muse, Instinct, and Town.",
+      "Users appreciate the ability to update information by talking after meetings, especially the voice-first approach."
+     ],
+     [
+      "Users appreciate the clean UI, product design, and sleek presentation of the application.",
+      "Users are interested in Android and desktop versions of the application.",
+      "Users want to know if they can import clients from spreadsheets or existing CRMs.",
+      "Users are curious about how the 'morning list' decides which clients need attention.",
+      "Users want to know if the application can pull information directly from WhatsApp chats.",
+      "Users are concerned about the handling of long meetings and potential recording length limits.",
+      "Users ask how the product differentiates from other virtual assistants like Grok bot or GPT dot.",
+      "Users appreciate the ability to update information by talking after a meeting, highlighting it as a simple and powerful idea."
+     ],
+     [
+      "Users appreciate the clean UI, sleek presentation, and good product design.",
+      "Users are asking about the availability of Android and desktop versions.",
+      "Users want to know if they can import clients from spreadsheets or existing CRMs.",
+      "Users are curious about how Alter decides which clients need attention and what criteria it uses.",
+      "Users are asking about the handling of long meetings and recording length limits.",
+      "Users are interested in direct integration with WhatsApp chats.",
+      "Users are asking how Alter differentiates itself from other AI assistants like Grok bot, GPT dot, Muse, Instinct, and Town.",
+      "Users appreciate the ability to update information by talking after a meeting, highlighting it as a simple and powerful idea."
+     ]
+    ],
+    "complaints": [
+     [
+      "Do you plan to launch Android and desktop versions?",
+      "Can I import clients from a spreadsheet or my old CRM?",
+      "What does the morning list look at to decide who needs attention?",
+      "What happens with long meetings? Is there a limit on recording length?",
+      "Can Alter pull from WhatsApp chats directly?",
+      "Does it work if I only have a handful of clients, or is it built for big books?"
+     ],
+     [
+      "Do you plan to launch Android and desktop versions?",
+      "Can I import clients from a spreadsheet or my old CRM?",
+      "What does the morning list look at to decide who needs attention?",
+      "What happens with long meetings? Is there a limit on recording length?",
+      "Can Alter pull from WhatsApp chats directly?",
+      "Does it work if I only have a handful of clients, or is it built for big books?"
+     ],
+     [
+      "Do you plan to launch Android and desktop versions?",
+      "Can I import clients from a spreadsheet or my old CRM?",
+      "What does the morning list look at to decide who needs attention?",
+      "What happens with long meetings? Is there a limit on recording length?",
+      "Can Alter pull from WhatsApp chats directly?",
+      "Does it work if I only have a handful of clients, or is it built for big books?"
+     ]
+    ]
+   }
+  },
+  "1319324": {
+   "themes": [
+    {
+     "theme": "Does the system remember permissions for agents across sessions or tasks?",
+     "n": 3
+    },
+    {
+     "theme": "Users want to customize the visual appearance of the 'village' or agents.",
+     "n": 2
+    },
+    {
+     "theme": "The need for repeated approvals for the same actions in new sessions is a concern.",
+     "n": 2
+    },
+    {
+     "theme": "The per-agent permission system is a significant and trusted feature.",
+     "n": 1
+    },
+    {
+     "theme": "Users want a plain list view of agent activities and pending approvals.",
+     "n": 1
+    },
+    {
+     "theme": "Can multiple agents work concurrently in the same folder?",
+     "n": 1
+    },
+    {
+     "theme": "Users would use the product for mundane but important tasks like dependency bumps or checking broken links.",
+     "n": 2
+    },
+    {
+     "theme": "Users would use the product to organize user research findings.",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Agent permissions persistence and visibility",
+    "Concurrent agent access to folders",
+    "Alternative views to the village interface",
+    "Customization of agent appearance",
+    "Customization of background"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Does the system remember permissions for agents across sessions or tasks?",
+      "Users want to customize the visual appearance of the 'village' or agents.",
+      "The need for repeated approvals for the same actions in new sessions is a concern.",
+      "The per-agent permission system is a significant and trusted feature.",
+      "Users want a plain list view of agent activities and pending approvals.",
+      "Can multiple agents work concurrently in the same folder?",
+      "Users would use the product for mundane but important tasks like dependency bumps or checking broken links.",
+      "Users would use the product to organize user research findings."
+     ],
+     [
+      "Does the system remember permissions for agents across sessions or tasks?",
+      "Users want to customize the visual appearance of the 'village' or agents.",
+      "The need for repeated approvals for the same actions in new sessions is a concern.",
+      "The per-agent permission system is a significant and trusted feature.",
+      "Users want a plain list view of agent activities and pending approvals.",
+      "Can multiple agents work concurrently in the same folder?",
+      "Users would use the product for mundane but important tasks like dependency bumps or checking broken links.",
+      "Users would use the product to organize user research findings."
+     ],
+     [
+      "The approval process for permissions can become tedious over time, especially if approvals are not remembered across sessions.",
+      "Users want agents to remember permissions granted in previous sessions.",
+      "Users want a plain list view of agent activities and pending approvals, in addition to the 'village' view.",
+      "Users want to customize the pixel art for their crew and the background.",
+      "Can multiple agents work in the same folder simultaneously?",
+      "The per-agent permissions are a significant and positive feature, addressing trust issues with coding agents.",
+      "Users would use the product for tasks like dependency bumps, fixing broken links, and organizing user research findings.",
+      "How does the system handle permissions during a mid-task scenario?"
+     ]
+    ],
+    "complaints": [
+     [
+      "Does a villager keep what it was allowed last time, and can you see in the village which permissions it is still carrying?",
+      "can two agents work in the same folder at once or does one wait for the other?",
+      "the village view is fun, but after a week i think i would want just a plain list, what each agent did and what waits for my ok. is there a view like this?",
+      "Can I use my own pixel art for the crew?",
+      "Can i have a different background like pixel-art Software office for instance?"
+     ],
+     [
+      "Does a villager keep what it was allowed last time, and can you see in the village which permissions it is still carrying?",
+      "can two agents work in the same folder at once or does one wait for the other?",
+      "the village view is fun, but after a week i think i would want just a plain list, what each agent did and what waits for my ok. is there a view like this?",
+      "Can I use my own pixel art for the crew?",
+      "Can i have a different background like pixel-art Software office for instance?"
+     ],
+     [
+      "Does a villager keep what it was allowed last time, and can you see in the village which permissions it is still carrying?",
+      "can two agents work in the same folder at once or does one wait for the other?",
+      "the village view is fun, but after a week i think i would want just a plain list, what each agent did and what waits for my ok. is there a view like this?",
+      "Can I use my own pixel art for the crew?",
+      "Can i have a different background like pixel-art Software office for instance? That would be nice update"
+     ]
+    ]
+   }
+  },
+  "1310144": {
+   "themes": [
+    {
+     "theme": "Maintain and share context across AI tools",
+     "n": 10
+    },
+    {
+     "theme": "Version control and rollback features",
+     "n": 7
+    },
+    {
+     "theme": "Real-time sync and processing speed",
+     "n": 4
+    },
+    {
+     "theme": "Export and local sync options",
+     "n": 2
+    },
+    {
+     "theme": "Security and access control",
+     "n": 2
+    },
+    {
+     "theme": "Firefox version availability",
+     "n": 1
+    },
+    {
+     "theme": "Preventing incorrect AI memory propagation",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "AI agent memory and context management",
+    "Live context updating",
+    "Access settings for agents",
+    "Export bucket as markdown",
+    "Firefox version"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the ability to maintain and share context across different AI tools and workflows, solving the problem of re-explaining project briefs and scattered memories.",
+      "The version control and rollback features are highly valued for ensuring reliability, visibility into changes, and preventing agents from silently overwriting important information.",
+      "Users are asking about the real-time synchronization of context updates, processing speed, and how the system handles parallel agent operations with updated context.",
+      "Users are curious about specific daily tasks and use cases for which others are using the product.",
+      "Users are asking about the security and access control features, specifically regarding agent permissions and token management.",
+      "Users are interested in the ability to export buckets as plain markdown files and local sync options.",
+      "Users are asking about the availability of a Firefox version of the product.",
+      "A user raised a concern about how to prevent one AI agent's incorrect memory from affecting every other tool connected to the same bucket."
+     ],
+     [
+      "Users appreciate the ability to maintain and share consistent context across different AI tools and workflows, solving a common pain point of repeating information.",
+      "The version control and rollback features, including visibility into who changed what and when, are highly valued for ensuring reliability and preventing errors in AI workflows.",
+      "Users are curious about how the system handles real-time synchronization of context updates across multiple AI agents and the potential for conflicts or latency.",
+      "Users want to know about the processing speed and performance of the system, specifically if it causes slowdowns in connected AI tools.",
+      "Users are asking about the specific daily tasks and use cases for which others are finding the product helpful.",
+      "Users are interested in the ability to export buckets as plain markdown files and local synchronization options.",
+      "Users are asking about the current and future capabilities for access restrictions and permissions for agents and team members on buckets.",
+      "Users are asking if a Firefox browser extension version is planned or in development."
+     ],
+     [
+      "Users appreciate the ability to maintain organized and shared context across different AI tools and workflows, solving a common pain point of re-explaining project briefs and dealing with scattered memories.",
+      "Users are interested in version control with rollback capabilities, especially to prevent incorrect memory propagation and to track changes made by different agents or teammates.",
+      "Users inquire about the real-time synchronization and latency of context updates across multiple AI agents running in parallel.",
+      "Users ask about the processing speed of the MCP and how it affects the performance of connected AI tools.",
+      "Users want to know if there are options to export buckets as plain markdown files or for local syncing.",
+      "Users express concern about how to prevent one AI agent's incorrect memory from affecting other connected tools and the implications of context updates on already completed tasks.",
+      "Users ask about the availability of a Firefox version of the product.",
+      "Users are interested in bucket-level access restrictions and read/write/contribute permissions for agents and team members."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you prevent one AI agent's incorrect memory from affecting every other tool connected to the same bucket????",
+      "How do you handle this scenario where I have updated some context in one app say Claude, but GPT and Claude both running in parallel on the same task?",
+      "does your MCP keep on auto updating the context live?",
+      "do the access settings on each bucket apply to the agents too, or only to the people on the team?",
+      "any way to export a bucket as a plain markdown file?",
+      "Is a Firefox version on the way?"
+     ],
+     [
+      "How do you prevent one AI agent's incorrect memory from affecting every other tool connected to the same bucket????",
+      "How do you handle this scenario where I have updated some context in one app say Claude, but GPT and Claude both running in parallel on the same task?",
+      "does your MCP keep on auto updating the context live?",
+      "do the access settings on each bucket apply to the agents too, or only to the people on the team?",
+      "any way to export a bucket as a plain markdown file?",
+      "Is a Firefox version on the way?"
+     ],
+     [
+      "How do you prevent one AI agent's incorrect memory from affecting every other tool connected to the same bucket????",
+      "How do you handle this scenario where I have updated some context in one app say Claude, but GPT and Claude both running in parallel on the same task?",
+      "does your MCP keep on auto updating the context live?",
+      "do the access settings on each bucket apply to the agents too, or only to the people on the team?",
+      "any way to export a bucket as a plain markdown file?",
+      "Is a Firefox version on the way?"
+     ]
+    ]
+   }
+  },
+  "1316806": {
+   "themes": [
+    {
+     "theme": "Caching between isolated job environments",
+     "n": 2
+    },
+    {
+     "theme": "Job behavior during sleep/Wi-Fi drops or with multiple concurrent jobs",
+     "n": 2
+    },
+    {
+     "theme": "Realism of performance claims and specific scenarios (e.g., caching, Docker pulls)",
+     "n": 1
+    },
+    {
+     "theme": "Cost reduction and fresh VM per job for isolation",
+     "n": 1
+    },
+    {
+     "theme": "Support for Windows machines",
+     "n": 1
+    },
+    {
+     "theme": "Automatic runner selection for cost optimization",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Caching between jobs",
+    "Handling interruptions during a job (sleep, wifi drop)",
+    "Security concerns with shared tool cache",
+    "Job queuing and spillover with limited machines",
+    "Realism of 3x speedup across different types of repositories"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are concerned about the implications of a fresh VM per job, specifically regarding caching between jobs and potential tampering of tool caches.",
+      "Users are asking about the behavior of jobs when a Mac goes to sleep or Wi-Fi drops, and how jobs are handled when multiple land at once on a limited number of machines.",
+      "Users are impressed by the significant cost reduction and the fresh VM per job for isolation.",
+      "Users are asking for automatic runner selection to optimize costs and support for Windows machines.",
+      "Users are questioning the realism of a 3x speed improvement for all repositories, especially for cache-heavy or Docker-pull-heavy CI, and are seeking specific performance numbers."
+     ],
+     [
+      "Users are asking about how caching is handled between isolated job environments.",
+      "Users are asking about the behavior of jobs when the Mac goes to sleep or Wi-Fi drops, or when multiple jobs land at once.",
+      "Users are asking about the realism of performance claims and specific scenarios like cache restore and Docker pulls.",
+      "Users are impressed by the significant cost reduction and the fresh VM per job approach for isolation.",
+      "Users are asking about plans for Windows machine support.",
+      "Users are asking if the system can automatically choose the best runner for each workflow to keep costs low."
+     ],
+     [
+      "Users are asking about how caching is handled between isolated job environments.",
+      "Users are asking about the behavior of jobs when the Mac goes to sleep or Wi-Fi drops, or when multiple jobs land at once.",
+      "Users are impressed by the significant cost reduction and the fresh VM per job approach for isolation.",
+      "Users are asking if there are plans for Windows machines.",
+      "Users are questioning the realism of 3x speed improvement for all repos, especially concerning cache restore and Docker pulls.",
+      "Users are asking if the system can automatically choose the best runner for each workflow to keep costs low."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you handle caching between jobs without carrying state across those isolated environments?",
+      "What happens if my mac goes to sleep or the wifi drops halfway through a job?",
+      "Can it automatically choose the best runner for each workflow to keep costs low?",
+      "Can a job in one repo overwrite stuff in ~/.codemany/toolcache, so the next repo's setup-node picks up a tampered node?",
+      "With the $20 plan covering 2 machines, what happens when a few jobs land at once \u2014 do they queue on those machines, or is there a way to spill over temporarily?",
+      "Is 3x realistic for every repo? A lot of CI time is cache restore and docker pulls, not CPU."
+     ],
+     [
+      "How do you handle caching between jobs without carrying state across those isolated environments?",
+      "What happens if my mac goes to sleep or the wifi drops halfway through a job?",
+      "Can it automatically choose the best runner for each workflow to keep costs low?",
+      "Can a job in one repo overwrite stuff in ~/.codemany/toolcache, so the next repo's setup-node picks up a tampered node?",
+      "With the $20 plan covering 2 machines, what happens when a few jobs land at once \u2014 do they queue on those machines, or is there a way to spill over temporarily?",
+      "Is 3x realistic for every repo? A lot of CI time is cache restore and docker pulls, not CPU. Any numbers on a pipeline like that, or is the gain mostly compile-heavy jobs?"
+     ],
+     [
+      "How do you handle caching between jobs without carrying state across isolated environments?",
+      "What happens if my mac goes to sleep or the wifi drops halfway through a job?",
+      "Can a job in one repo overwrite stuff in ~/.codemany/toolcache, so the next repo's setup-node picks up a tampered node?",
+      "When a few jobs land at once, do they queue on those machines, or is there a way to spill over temporarily?",
+      "Are there any plans for Windows machines?",
+      "Is 3x realistic for every repo, or is the gain mostly for compile-heavy jobs?"
+     ]
+    ]
+   }
+  },
+  "1320677": {
+   "themes": [
+    {
+     "theme": "Game is fun and enjoyable",
+     "n": 2
+    },
+    {
+     "theme": "Fighters' movesets (different or same?)",
+     "n": 1
+    },
+    {
+     "theme": "Prompt's effect on CEO fighting style",
+     "n": 1
+    },
+    {
+     "theme": "Requested mode: prompt sets fighting style",
+     "n": 1
+    },
+    {
+     "theme": "Blocking stamina bar appreciated",
+     "n": 1
+    },
+    {
+     "theme": "'FINISH HIM' ending?",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Fighter move sets",
+    "Prompt influencing CEO fighting style",
+    "Prompt-based fighting style mode",
+    "FINISH HIM ending"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users found the game fun and enjoyable.",
+      "Users asked if fighters have different moves or if it's one moveset with different models.",
+      "Users asked if the 'prompt' part changes how the CEO fights or if it's mostly flavor.",
+      "Users requested a mode where their prompt sets a fighting style.",
+      "Users appreciated the blocking stamina bar as a way to prevent stalemates.",
+      "Users asked if there is a 'FINISH HIM' ending.",
+      "Users appreciated the 'kids-built' angle."
+     ],
+     [
+      "Do the fighters have different moves, or is it one move set with different models on top?",
+      "A mode where your prompt sets a fighting style would be hilarious.",
+      "Does the \"prompt\" part actually change how the CEO fights, or is it mostly flavor?",
+      "A fighting game with no signup is exactly the kind of link I send to a group chat at midnight, and playing as the people whose models we argue about at work makes it land.",
+      "Fun idea, and the kids-built angle is great.",
+      "the blocking stamina bar is a funny way to stop a match turning into two ceos refusing to engage",
+      "do we have \"FINISH HIM\" ending?",
+      "I had a lot of fun playing this game, Upvoted!!"
+     ],
+     [
+      "Users found the game fun and enjoyable.",
+      "Users asked if fighters have different moves or if it's one moveset with different models.",
+      "Users asked if the 'prompt' part changes how the CEO fights or if it's mostly flavor.",
+      "Users requested a mode where their prompt sets a fighting style.",
+      "Users appreciated the 'no signup' aspect of the game.",
+      "Users found the blocking stamina bar a funny and effective mechanic.",
+      "Users asked if there is a 'FINISH HIM' ending."
+     ]
+    ],
+    "complaints": [
+     [
+      "Do the fighters have different moves, or is it one move set with different models on top?",
+      "Does the \"prompt\" part actually change how the CEO fights, or is it mostly flavor?",
+      "A mode where your prompt sets a fighting style would be hilarious.",
+      "do we have \"FINISH HIM\" ending?"
+     ],
+     [
+      "Do the fighters have different moves, or is it one move set with different models on top?",
+      "Does the \"prompt\" part actually change how the CEO fights, or is it mostly flavor?",
+      "A mode where your prompt sets a fighting style would be hilarious.",
+      "do we have \"FINISH HIM\" ending?"
+     ],
+     [
+      "Do the fighters have different moves, or is it one move set with different models on top?",
+      "Does the \"prompt\" part actually change how the CEO fights, or is it mostly flavor?",
+      "A mode where your prompt sets a fighting style would be hilarious.",
+      "do we have \"FINISH HIM\" ending?"
+     ]
+    ]
+   }
+  }
+ }
+}

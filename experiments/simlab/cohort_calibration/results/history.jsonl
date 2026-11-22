@@ -1,1 +1,2 @@
 {"version": "v1", "day": "backtest", "written_at": "2026-11-21", "file": "cohort_scorecard.v1.json"}
+{"version": "v1", "day": "2026-11-21", "written_at": "2026-11-22", "file": "2026-11-21/cohort_scorecard.v1.json", "who": "not scorable (no re-reads)", "themes_recall": 63.5, "themes_precision": 52.7, "complaint_recall": 29.2, "plain_complaint_recall": 7.8, "sentiment_jsd_base": 0.213}

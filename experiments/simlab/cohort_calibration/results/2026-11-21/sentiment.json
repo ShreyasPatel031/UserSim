@@ -1,0 +1,29 @@
+{
+ "day": "2026-11-21",
+ "launches": 8,
+ "base mix (earlier real labels)": [
+  0.522,
+  0.409,
+  0.069
+ ],
+ "jsd reactions": 0.292,
+ "jsd base (published line)": 0.213,
+ "reactions minus base [mean, launch-boot 95%]": [
+  0.079,
+  0.016,
+  0.146
+ ],
+ "agree reactions / base": [
+  0.375,
+  0.375
+ ],
+ "pos share reactions / real": [
+  0.667,
+  0.427
+ ],
+ "sources not scorable today": {
+  "(a) ~20 P3-persona reactions": "not generated in the nightly yet",
+  "(b) plugin in-product feedback": "plugin_runs/2026-11-21_personas.json holds outcomes only (gave_up/blocked/...), no feedback text"
+ },
+ "usd": 0.0049
+}
