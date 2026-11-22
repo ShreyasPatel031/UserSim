@@ -197,6 +197,23 @@ out["stacks_tab_status"] = {
     "forecast_deadline_00_05_pt_utc": forecast_dl.strftime("%Y-%m-%dT%H:%M:%SZ"),
     "note": "Orchestrator 21:08Z: reads_ok true when need-list whole() saves resume (complete_ppm>0, win_complete>0).",
 }
+out["standing_information_needs"] = {
+    "launch_day_social_graph": {
+        "orc_request_utc": "2026-11-22T04:25:00Z",
+        "lineup_at_pt": "00:01",
+        "deadline_pt": "02:00 same PT day",
+        "scope_per_launch": "all makers + hunter",
+        "whole_person_tabs": ["followers", "following", "upvotes"],
+        "stamp": "read time on each pull (standard run timing)",
+        "priority": "ahead of need-list backlog",
+        "need_list": "still wanted",
+        "fleet_note": (
+            "Acknowledged. Today: maker_header SSR (ph_maker_headers) only; "
+            "full people queue from daily lineup not yet in refill. Same Stacks PQNF blocks wholes until uYYdW17 hash fixed."
+        ),
+        "nov22_pt_deadline_utc": "2026-11-22T10:00:00Z",
+    },
+}
 out["need_list_diagnosis"] = {
     "why_not_need_list_new_completes": (
         "need_list.jsonl still skipped under PH_FLEET_RR_ONLY; queue is PH_RR_FILES. "
