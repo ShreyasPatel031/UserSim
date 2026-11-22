@@ -129,11 +129,12 @@ def main() -> int:
         "per_slot": rows,
         "upvote_refresh_end_measured_60m": {
             "log_ended_modes_sum_slots": dict(log_all),
+            "refresh_ended_budget_without_held_sum_slots": int(log_all.get("budget", 0)),
             "log_budget_ended_sum_slots": int(log_all.get("budget", 0)),
             "log_budget_pages_distribution": dict(sorted(budget_pages.items())),
             "log_first_held_upvote_sum_slots": int(log_all.get("first_held_upvote", 0)),
             "log_hasNextPage_false_sum_slots": int(log_all.get("hasNextPage_false", 0)),
-            "note": "Log tail is last 2 run logs per slot (not strict 60m). Post-patch expect budget→0 and first_held_upvote↑.",
+            "note": "budget_without_held = ended=budget (page/time cap before first_held_upvote). Post-patch held-keys expect 0.",
         },
     }
     art.mkdir(parents=True, exist_ok=True)
