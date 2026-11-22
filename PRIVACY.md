@@ -2,15 +2,15 @@
 
 Last updated: November 22, 2026.
 
-This policy covers the Atelier Sim plugin for Claude Code and the Atelier Sim MCP server it connects to
+This policy covers the Atelier Sim plugins for Claude and ChatGPT and the Atelier Sim MCP server they connect to
 (`https://atelier-sim.com/mcp`).
 
 ## What we receive
-- The product URL you test, and the task and persona text you approved in Claude Code.
+- The product URL you test, and the task and persona text you approved in Claude or ChatGPT.
 - Each browser action the simulated user takes and the short "thought" it writes for that action.
 - Your client IP address, used only for daily usage limits and abuse prevention.
 
-We do **not** receive your source code, your files, your Claude conversation, or any credentials of yours. Claude reads
+We do **not** receive your source code, your files, your Claude or ChatGPT conversation, or any credentials of yours. Claude or ChatGPT reads
 your repository locally.
 
 ## What we do with it

@@ -1,0 +1,6 @@
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "atelier-sim"
+      transport: "streamable-http"
+      url: "https://atelier-sim.com/mcp"

@@ -1,0 +1,127 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "atelier-sim",
+  "version": "0.5.1",
+  "description": "Simulated users for any web page or app: simulated users try it in real cloud browsers, sign up when needed, and you learn who finished, who left, and where.",
+  "author": {
+    "name": "Atelier Sim",
+    "url": "https://atelier-sim.com"
+  },
+  "homepage": "https://atelier-sim.com",
+  "repository": "https://github.com/ShreyasPatel031/UserSim/tree/atelier-sim-release",
+  "license": "MIT",
+  "keywords": [
+    "user-testing",
+    "usability",
+    "qa",
+    "personas",
+    "browser"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Atelier Sim",
+        "shortDescription": "Simulated users test any web page and tell you where they leave.",
+        "longDescription": "Point Atelier Sim at any public web page or app and ask how users would use it. Three simulated users (a plain tester and two personas drawn from groups of real Product Hunt users) try it in real cloud browsers. They sign up when the product needs it, with Atelier Sim's own email, phone and Google accounts, never yours. You get live watch links and, in chat, who finished, who left and where, in their own words, with replays of every step.",
+        "developerName": "Atelier Sim",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Interactive"
+        ],
+        "websiteURL": "https://atelier-sim.com",
+        "supportURL": "https://github.com/ShreyasPatel031/UserSim/issues",
+        "privacyPolicyURL": "https://github.com/ShreyasPatel031/UserSim/blob/atelier-sim-release/PRIVACY.md",
+        "termsOfServiceURL": "https://github.com/ShreyasPatel031/UserSim/blob/atelier-sim-release/TERMS.md",
+        "defaultPrompt": "How would a new user sign up and get started on ",
+        "brandColor": "#1F1F1F",
+        "composerIcon": "./assets/logo.png",
+        "logo": "./assets/logo.png"
+      },
+      "onboardingSkill": "./skills/ask/SKILL.md",
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Quick test of a public todo app's signup",
+              "prompt": "How would a new user sign up for todoist.com and add their first task?",
+              "tools_triggered": [
+                "usersim_start_session",
+                "usersim_observe",
+                "usersim_act",
+                "usersim_signup_identity",
+                "usersim_wait_for_verification_code",
+                "usersim_finish"
+              ],
+              "expected_behavior": "Starts 3 cloud browsers, posts watch links, u1 signs up with an Atelier Sim email and verifies it, the others log in, and the answer gives finished/left/blocked counts with verbatim quotes."
+            },
+            {
+              "description": "Landing page first impression",
+              "prompt": "Test the landing page at https://excalidraw.com - what would a first-time visitor do and say?",
+              "tools_triggered": [
+                "usersim_start_session",
+                "usersim_observe",
+                "usersim_act",
+                "usersim_finish"
+              ],
+              "expected_behavior": "Three simulated users explore the page without signing up; the answer names where they hesitated and quotes their thoughts."
+            },
+            {
+              "description": "Google sign-in product",
+              "prompt": "Can a new user get to a booking link on cal.com? Use Continue with Google if that's the only option.",
+              "tools_triggered": [
+                "usersim_start_session",
+                "usersim_act",
+                "usersim_google_signin",
+                "usersim_finish"
+              ],
+              "expected_behavior": "u1 clicks the Google button and the server signs in with Atelier Sim's own Google account; the answer reports whether users reached a booking link."
+            },
+            {
+              "description": "Where users drop off",
+              "prompt": "Where would people drop off trying out https://linear.app?",
+              "tools_triggered": [
+                "usersim_start_session",
+                "usersim_observe",
+                "usersim_act",
+                "usersim_finish"
+              ],
+              "expected_behavior": "Personas leave when value is unclear or signup comes first; the answer lists the screens where users left, with quotes."
+            },
+            {
+              "description": "Pricing clarity check",
+              "prompt": "Can a visitor to https://www.notion.com work out what the team plan costs?",
+              "tools_triggered": [
+                "usersim_start_session",
+                "usersim_observe",
+                "usersim_act",
+                "usersim_finish"
+              ],
+              "expected_behavior": "Users look for pricing by clicking only on-screen links; the answer says how many found the price and what confused them."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Localhost cannot be reached",
+              "prompt": "Test my app at http://localhost:3000"
+            },
+            {
+              "description": "Not a product-testing request",
+              "prompt": "Write me a poem about autumn."
+            },
+            {
+              "description": "Asks to enter payment details",
+              "prompt": "Buy the cheapest plan on https://www.notion.com with my credit card."
+            }
+          ]
+        },
+        "commerce": false
+      },
+      "publication": {
+        "countries": [
+          "US"
+        ],
+        "release_notes": "First release: quick tests with 3 simulated users, email, SMS and Google signup."
+      }
+    }
+  }
+}
