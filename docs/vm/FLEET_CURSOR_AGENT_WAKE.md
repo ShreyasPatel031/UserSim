@@ -46,6 +46,10 @@ scripts/vm/ph_fleet_agent_relay.sh fleet-cursor population "your message"
 
 **Non-urgent:** read `gs://BUCKET/usersim_sim/mailbox/from_cursor/status.json` (15m).
 
+## Stall wake (agent judgment, not auto-recover)
+
+After each `ph_fleet_measure.py` in `ph_fleet_fix_tick.sh`, `ph_fleet_agent_stall_wake.sh` may publish **one** urgent line to `fleet-cursor` when throughput is flat (`complete_ppm` / `attempt_ppm` low, few productive VMs). It **does not** restart slots or change posture — only **steers** this agent to investigate and act. Cooldown default 30m (`FLEET_AGENT_STALL_WAKE_COOLDOWN_SEC`). Thresholds are intentionally minimal; recovery logic stays on the agent turn, not in bash.
+
 ## Grok Bot note
 
 `grokbot-inbox` on the same topic is still **pull** on the orchestrator VM; Grok's *webhook* path is separate (HTTP → its runtime). fleet-cursor's equivalent is **Pub/Sub push → Cursor API steer**, not another 5m Cursor timer.

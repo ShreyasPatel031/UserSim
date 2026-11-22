@@ -25,6 +25,7 @@ export FLEET_REFILL_JOB_SPLIT="${FLEET_REFILL_JOB_SPLIT:-1}"
 export FLEET_REFILL_SKIP_COMPLETE_QUEUED="${FLEET_REFILL_SKIP_COMPLETE_QUEUED:-1}"
 export FLEET_STALE_UNHANG_WRITE_GO="${FLEET_STALE_UNHANG_WRITE_GO:-1}"
 python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
+bash "$ROOT/scripts/vm/ph_fleet_agent_stall_wake.sh" || true
 ART="$ROOT/results/ph_fleet_full/${PACE_FLEET_RUN_ID,,}"
 if [[ "${FLEET_HISTORICAL_PULL_PAUSE:-0}" == 1 && -x "$ROOT/scripts/vm/ph_fleet_pilot28_care.sh" ]]; then
   _p28="$(python3 - "$ART/fleet_measure.json" <<'PY' 2>/dev/null || echo skip

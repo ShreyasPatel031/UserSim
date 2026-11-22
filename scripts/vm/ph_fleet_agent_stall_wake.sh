@@ -53,6 +53,5 @@ print(
 PY
 )" || exit 0
 
-chmod +x "$ROOT/scripts/vm/ph_fleet_agent_stall_wake.sh"
 bash "$ROOT/scripts/vm/ph_fleet_agent_relay.sh" fleet-cursor fleet-stall-wake "$msg"
 echo "agent_stall_wake sent"
