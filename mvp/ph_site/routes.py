@@ -96,12 +96,19 @@ async def _ph_today(day: str | None):
         print(f"[ph] day view failed: {exc!r}", flush=True)
         view = await asyncio.to_thread(live.board_only_view, d)
     view["days"] = days
+    # Public pages show the 00:05 PT forecast only (Shreyas, Nov 22): every later read sees Product Hunt's own
+    # hidden-vote order, so its score measures PH's order, not our model.
+    view["points"] = [p for p in view.get("points") or [] if p.get("key") == "0005"]
+    view["why"] = {k: v for k, v in (view.get("why") or {}).items() if k in ("0005", "after")}
+    if view.get("lead_point") != "0005":
+        view["lead_point"] = "0005" if view["points"] else None
     try:
         view["accuracy"] = await asyncio.to_thread(live.accuracy)
         agg = await asyncio.to_thread(live.live_aggregate, view)
         for tab, row in agg.items():   # the live row = every live day so far, today included while it runs
             rows = [r for r in view["accuracy"].get(tab, []) if r.get("flag") != "live"]
             view["accuracy"][tab] = [row] + rows
+        view["accuracy"].pop("pre", None)   # 00:05 PT track record only (see above)
     except Exception:  # noqa: BLE001 - the accuracy line is optional
         view["accuracy"] = {}
     try:

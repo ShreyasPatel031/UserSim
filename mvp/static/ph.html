@@ -38,7 +38,6 @@
         <div><p class="label">Our call<span class="wide"> · user simulations</span></p><h2 id="pred-h">Predicted votes</h2></div>
         <div class="tabs" role="tablist" aria-label="Forecast">
           <button type="button" role="tab" id="tab-mid" data-v="mid">Product only</button>
-          <button type="button" role="tab" id="tab-pre" data-v="pre">Product + comments</button>
         </div>
       </header>
       <ol class="board" id="pred" aria-live="polite"><li class="skeleton">Loading…</li></ol>
@@ -341,8 +340,8 @@ function pointFor(v){
 }
 function tabs(){
   const has = {mid: !!pointFor("mid"), pre: !!pointFor("pre")};
-  if(!TAB) TAB = has.pre ? "pre" : "mid";      // a tab the visitor picks stays picked, even if its file is missing
-  ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
+  TAB = "mid";                                  // public pages show the 00:05 PT forecast only      // a tab the visitor picks stays picked, even if its file is missing
+  ["mid"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
     const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Expected " + EXPECT[v];
     b.onclick = ()=>{ TAB = v; renderPred(); metric(); renderLive(); drawLinks(); }; });
 }
@@ -392,7 +391,7 @@ function accLine(){
   $("#acc").textContent = `${name}${made}${fb}${acc ? " — " + acc : ""}${flag}`;
 }
 function metric(){
-  const rows = ((VIEW.accuracy||{})[TAB === "mid" ? "mid" : "pre"]) || [];
+  const rows = ((VIEW.accuracy||{}).mid) || [];
   const cur = rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
   const r = cur || prev;
   if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(r.top10).toFixed(1)}%</b></span> of each day's top 10 before public votes.`
