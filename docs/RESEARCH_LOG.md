@@ -2711,3 +2711,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 17:32Z PB60 1721Z: 5 flagged saves (new: slot42); relayed. Need-list completes today: 20.
 - 2026-11-22T17:32Z hourly: board live (17:32Z, 24/24, top 211). Fleet 17:32Z: need-list attempts 4.5/min, completes 0.47/min (20 merged today, 93,431+); refresh recovered to 6.8/min. Mailbox checked 2026-11-22T17:32Z
 - 2026-11-22T17:33Z hourly (second pass): no new mailbox messages since 17:32Z; board live, fleet unchanged (need-list 4.5 attempts/min, refresh 6.8/min). Mailbox checked 2026-11-22T17:33Z
+- 18:00Z PB60 1751Z: 12 flagged saves (new: slot26); relayed. 4 more BOuI full pulls with paging merged (need-list completes today ~24).
