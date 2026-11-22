@@ -63,3 +63,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Rehearsal: end-to-end DRY on the VM from a scratch copy, real data read-only, --force, no --write. 13 clean days (Nov 19 and 20 now count; 11 before). Comment shock minus prior, top 3: +12.8 [+2.6, +25.6].
   - Deploy: base-md5 gated; old file backed up to ~/w/backup_early_shock/early_shock.py.240ddc43; parse check passed; post-deploy status run ok (ready false, 13/14 clean days).
   - Rollback: `bash ~/w/stage/20261121_early_shock/deploy_early_shock.sh rollback`.
+- 2026-11-22 ~04:22 UTC (20:22 PT Nov 21): published 03:45 forecast REMOVED (Shreyas "remove it", via orchestrator 03:55Z Nov 22). Bundle experiments/pipeline_patches/20261122_remove_prereveal.
+  - Change: on the VM, ~/w/tw12a/sched12a.txt goes 4cec4d5e → be17d0bd, dropping the 03:47 and 03:52 prereveal runs.
+  - Kept: the 03:45 recorder read ("rec": PH's hidden order, as raw data, baseline and truth); the midnight and lineup runs are unchanged.
+  - Rehearsal: the tick schedule was replayed for every minute in a scratch copy on the VM; only the prereveal entries were removed.
+  - Rollback: `cp -p ~/w/backup_tw12a/sched12a.txt.4cec4d5e ~/w/tw12a/sched12a.txt`.
