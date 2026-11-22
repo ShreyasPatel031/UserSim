@@ -19,6 +19,11 @@ Shreyas wants models trained on this data as soon as it is calibrated, so data q
 ## Guard
 - The website's published forecast score must not fall sharply. If its rolling 7-day value is more than 5 points below its
   30-day value, the PH agent alerts the same day with a diagnosis of which input or calibration changed.
+- Correction (Nov 22): the 03:45 PT line is not a measure of our model. By 03:45 Product Hunt's homepage is already
+  ordered by the hidden incoming votes; our 03:45 line equals that order on top 3/5 on every scored day and is 6 points
+  worse on top 10 (Nov 16-20, f5397af6). The 03:45 score (85.7/80.0/84.3) is a baseline of what PH's early order
+  already tells you. The score that measures our model is the 00:05 PT line (54.2/67.5/67.5, 8 days) and any gain
+  over the hidden-order baseline. The guard applies to the 00:05 line.
 
 ## Budget
 - Simulated-user runs: $50–100 per day in total. Daily Product Hunt launches come first; backtest launches fill the rest. The
