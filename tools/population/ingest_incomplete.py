@@ -31,9 +31,18 @@ def bulk(urls, dst):
 
 
 def main():
+    global SRC, MAN
     W = sys.argv[1]
     mx = int(sys.argv[sys.argv.index("--max") + 1]) if "--max" in sys.argv else 10 ** 9
     T = f"{W}/ingest_incomplete"
+    # 01:0xZ Nov 22: --failed NAMES_FILE ingests staged saves that FAILED the audit (raw/_pacetest/shared/<h>.json) the
+    # same lossless way. A failed upvote refresh can carry new items (7 at 00:51Z: +146 upvotes) that were in no store
+    # record, because a fail was only requeued. Store record stays the base; the save's extra items go to items_earlier.
+    names = None
+    tag = "INGEST_INCOMPLETE"
+    if "--failed" in sys.argv:
+        names = {l.split()[0] for l in open(sys.argv[sys.argv.index("--failed") + 1]) if l.strip()}
+        SRC, MAN, T, tag = f"{R}/_pacetest/shared", f"{R}/_cursor/ingested_failed.tsv", f"{W}/ingest_failed", "INGEST_FAILED"
     for sub in ("src", "cur", "out"):
         d = f"{T}/{sub}"
         os.makedirs(d, exist_ok=True)
@@ -43,14 +52,16 @@ def main():
     for l in sh("gcloud", "storage", "objects", "list", f"{SRC}/*.json", "--format=value(name,generation)").stdout.splitlines():
         p = l.split("\t")
         if len(p) == 2:
-            gen[p[0].rsplit("/", 1)[-1][:-5]] = p[1]
+            k = p[0].rsplit("/", 1)[-1][:-5]
+            if names is None or k in names:
+                gen[k] = p[1]
     done = {}
     for l in sh("gsutil", "cat", MAN).stdout.splitlines():
         p = l.split("\t")
         if len(p) == 2:
             done[p[0]] = p[1]
     todo = [n for n, g in sorted(gen.items()) if done.get(n) != g][:mx]
-    print(f"INGEST_INCOMPLETE files={len(gen)} already={len(gen) - len([n for n in gen if done.get(n) != gen[n]])} todo={len(todo)}", flush=True)
+    print(f"{tag} files={len(gen)} already={len(gen) - len([n for n in gen if done.get(n) != gen[n]])} todo={len(todo)}", flush=True)
     if not todo:
         return
     bulk([f"{SRC}/{n}.json" for n in todo], f"{T}/src")
@@ -79,19 +90,19 @@ def main():
             c["unioned_into_store_record"] += 1
         else:
             m = inc
-            m.setdefault("provenance_incomplete", {"source": "_pacetest/shared/_incomplete", "note": "failed whole-person check; kept so nothing is lost"})
+            m.setdefault("provenance_incomplete", {"source": SRC.split("/raw/", 1)[-1], "note": "failed whole-person check; kept so nothing is lost"})
             c["new_record"] += 1
         json.dump(m, open(f"{T}/out/{n}.json", "w"))
         up.append(n)
         ok.append(n)
     if up:
-        sh("gcloud", "storage", "cp", "-I", f"{VM}/_bak_cursor/ingest_incomplete/", input="".join(f"{VM}/{n}.json\n" for n in up if n in in_store))
+        sh("gcloud", "storage", "cp", "-I", f"{VM}/_bak_cursor/{os.path.basename(T)}/", input="".join(f"{VM}/{n}.json\n" for n in up if n in in_store))
         for i in range(0, len(up), 2000):
             sh("gcloud", "storage", "cp", "-I", f"{VM}/", input="".join(f"{T}/out/{n}.json\n" for n in up[i:i + 2000]))
     old = sh("gsutil", "cat", MAN).stdout
     open(f"{T}/man.tsv", "w").write(old + "".join(f"{n}\t{gen[n]}\n" for n in ok))
     sh("gsutil", "-q", "cp", f"{T}/man.tsv", MAN)
-    print(f"INGEST_INCOMPLETE {c}", flush=True)
+    print(f"{tag} {c}", flush=True)
 
 
 if __name__ == "__main__":
