@@ -76,6 +76,15 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
     f_quality = "estimated" if (d.get("run") or {}).get("finished_utc_estimated") else "file"
     if pd.isna(f):
         f, f_quality = _ts(upload_time), "upload_time_upper_bound"
+    # 10:4xZ Nov 22 (orchestrator/PH ops: 97 complete people's Nov 4-5 pgql tab rows showed Nov 21-22 fetch times): an
+    # upvote refresh re-reads ONLY the upvotes tab, but the fleet stamps run.finished_utc with the refresh time. Every other
+    # tab keeps the prior pull's time (run.finished_utc_prior_pull); the upvotes tab gets upvotes_refreshed_at.
+    up_rt = None
+    prior = (d.get("run") or {}).get("finished_utc_prior_pull")
+    if d.get("upvotes_refreshed_at"):
+        up_rt = _ts(d["upvotes_refreshed_at"])
+        if prior and not pd.isna(_ts(prior)):
+            f, f_quality = _ts(prior), "file"
     source = source or "people_live:" + path.split("people_live/")[-1].split("/")[0]
     # light pull (48 h coverage plan): profile header + upvotes list only. Recognised by mode/method or by shape.
     others = [t for t in TABS if t not in ("upvotes", "about") and isinstance(d.get(t), dict)]
@@ -98,6 +107,8 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
             continue
         items = v.get("items") or []
         ft = _ts(v.get("fetched_at")) if v.get("fetched_at") else f   # per-tab fetch time when the pull records it
+        if t == "upvotes" and up_rt is not None and not pd.isna(up_rt):
+            ft = up_rt
         fq = "estimated" if v.get("fetched_at_estimated") else (f_quality if not v.get("fetched_at") else "file")
         n = v.get("count", len(items)) if t != "about" else 1
         h = v.get("header", hdr.get(t))
