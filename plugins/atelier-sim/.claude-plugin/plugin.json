@@ -2,7 +2,7 @@
   "name": "atelier-sim",
   "displayName": "Atelier Sim",
   "version": "0.5.1",
-  "description": "Simulated users for any web page or app, right in Claude Code: whenever you test or ship something with a URL, 5 simulated users try it in real cloud browsers and you get who finished, who left and where, in about 3 minutes. Or run a full study against a competitor with a replay page and ranked changes.",
+  "description": "Simulated users for any web page or app, right in Claude Code: whenever you test or ship something with a URL, 5 simulated users try it in real cloud browsers and you get who finished, who left and where, in about 3 minutes. Or run a full study against a competitor with replay links and ranked changes.",
   "author": {
     "name": "Atelier Sim",
     "url": "https://github.com/ShreyasPatel031/UserSim/tree/atelier-sim-release"

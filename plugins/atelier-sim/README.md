@@ -40,8 +40,8 @@ For the full study, ask for it or run:
 ```
 
 Claude proposes 1–3 tasks, a competitor and 2–3 user groups, and waits for your approval. It then runs every tester
-on your product and the competitor in parallel, builds `replay.html` (race chart, ranked changes with before/after,
-highlights, side by side) and applies only the changes you approve. This takes 10–20 minutes.
+on your product and the competitor in parallel, writes `report.md` (results with a replay link per run, where groups
+diverged, ranked changes with evidence) and applies only the changes you approve. This takes 10–20 minutes.
 
 Results go to `.atelier-sim/<run>/` in your project. Localhost is not reachable; use a preview or staging URL.
 
@@ -64,11 +64,8 @@ with a step you can watch, not as a forecast.
 
 ## What this plugin runs, sends and stores
 
-- **Runs locally:** the skill instructions, a `sim-user` agent per test cell, and
-  `skills/usertest/scripts/replay.py`. That script uses the Python standard library only, reads the run folder and
-  writes `replay.html` from `skills/usertest/assets/report.html`. It makes no network calls. When you open
-  `replay.html` in a browser, the page loads its fonts from Google Fonts and its screenshots from Atelier Sim's report
-  links. Approvals and notes are kept in that browser's local storage.
+- **Runs locally:** the skill instructions and a `sim-user` agent per simulated user. The plugin contains no scripts
+  or programs; replays are hosted on Atelier Sim's report pages.
 - **Connects to:** the Atelier Sim MCP server at `https://atelier-sim.com/mcp`. It runs on Google Cloud in the US
   and has no other declared connectors.
 - **Sends to the Atelier Sim server:**
@@ -87,8 +84,8 @@ with a step you can watch, not as a forecast.
 - **Stored:** run reports, screenshots and steps are kept by Atelier Sim (Google Cloud Storage). Anyone who has a run's
   watch or report link can open it, so don't test pages that show private data. To have a run deleted, open an issue
   in this repository with its study id.
-- **In your project:** `.atelier-sim/<run>/`, holding one JSON per run; for a full study also plan.json, session.json
-  and replay.html.
+- **In your project:** `.atelier-sim/<run>/`, holding one JSON per run; for a full study also plan.json and
+  report.md.
   Code changes are made only after you approve them, on a new git branch when the project uses git.
 
 ## Limits

@@ -1,6 +1,6 @@
 ---
 name: usertest
-description: Full user test of a web product with simulated users in real cloud browsers - a plain tester plus 2-3 user groups from Atelier Sim's bank of real Product Hunt users, on the product AND a competitor, in parallel, with a replay page, divergences and ranked changes to approve. Use only when the user asks for a full or thorough user test, a comparison with competitors, or runs /atelier-sim:test. For a quick "how would a user use this / what would they say" question, use the ask skill instead.
+description: Full user test of a web product with simulated users in real cloud browsers - a plain tester plus 2-3 user groups from Atelier Sim's bank of real Product Hunt users, on the product AND a competitor, in parallel, with report links, divergences and ranked changes to approve. Use only when the user asks for a full or thorough user test, a comparison with competitors, or runs /atelier-sim:test. For a quick "how would a user use this / what would they say" question, use the ask skill instead.
 ---
 
 # Atelier Sim user test
@@ -68,54 +68,34 @@ The cloud browsers are 1280×800. Before you rank a layout finding (a hidden lab
 Every claim needs a step to point at, and the quotes you show must support the claim. Re-read the quotes under each
 claim before you keep it. If a tester's words contradict the claim, change the claim.
 
-## 4. Write session.json
+## 4. Write the report
 
-Write `.atelier-sim/<run>/session.json`. `${CLAUDE_SKILL_DIR}/references/example_session.json` is a complete real example.
-Copy its shape exactly. The fields:
+Write `.atelier-sim/<run>/report.md`, in this order:
 
-- `date`, `headline`, `lede`, `race_title`, `disclosure`, `method` (list of sentences): the verdict first, in plain words,
-  with the real step counts. `race_title` states the step gap.
-- `products`: `{"task1": {"name","url"}, "comp1": {"name","url"}}`. The keys are the run-file suffixes.
-- `testers`: `label`, `name`, `short`, `slot` (0 to 3, for colour), `people` (group size, omitted for the plain tester), `who`.
-- `stage_order`: one ordered list of the screens or stages a run passes through (for example Blank canvas, Drawing,
-  Labelling, Connecting, Share dead end, Sign-in & captcha, Share dialog, Link copied), keyed by product key, with the
-  same list for both. `stages`: for every run, `{step: stage}` for every step.
-- `friction_steps`: `{run: {step: "short friction note"}}`.
-- `voices`: per tester, `summary`, 3 `quotes` (`run`, `step`, `kind` delight | friction | competitor, `text` verbatim from
-  the thought), and `expects` (short tags for what they expected from other tools).
-- `highlights`: 5 to 8 moments in story order (`run`, `step`, `caption` of 12 words at most), covering delight, the main
-  hesitation, and the competitor's wall.
-- `divergences`: `id`, `title`, `summary`, `groups`, `kind`, `moments` (`run`, `step`) and `variations` (ids).
-- `variations`, ranked: `id`, `rank`, `title`, `change`, `for` (labels), `evidence` (for example "4 of 4 testers
-  hesitated"), `effort` (for example "S · copy" or "M · behaviour"), `risk` ("none" or one short line), `lever` (what it moves: activation speed, findability, upgrade…), `conflicts` (ids
-  of variations that use the same UI slot), `divergence` (id), `before` (`run`, `step`: the step whose thought is about
-  the screen being changed), and `overlays`: boxes in 1280x800 screenshot coordinates (`x`, `y`, `w`, `h`, `label`,
-  optional `bg` and `fg` CSS colours) that draw the change on the real screen. Rank by testers affected × severity
-  (blocked > hesitated > slower > cosmetic), then effort.
+- **Verdict:** 2 sentences in plain words, with the real step counts on both products (the step gap) and the
+  simulated-tester disclosure.
+- **Who:** each tester (plain tester and groups, with group size) in one line.
+- **Results table:** tester × task × product: finished / left / blocked, steps, and the run's report link
+  (`report_url` or `watch_url` from the run file).
+- **Divergences:** for each, a title, which groups, what happened, and the moments as "u2 task1 step 7" with the
+  report link.
+- **Ranked changes:** numbered. Each has the change, who it helps, evidence (for example "4 of 4 testers hesitated"),
+  effort (S · copy, M · behaviour…), risk, and the step whose thought is about the screen being changed. Rank by
+  testers affected × severity (blocked > hesitated > slower > cosmetic), then effort.
+- **Voices:** per tester, a one-line summary and up to 3 verbatim quotes with run and step.
+- **Method:** browser size (1280×800), number of runs, what blocked the test, and the `accuracy` note for groups.
 
-The screen shown with a step's thought is the one before that step's action, so pick `before.step` and highlight steps
-by the thought, not by what the action opened. To place overlays, open the screenshot URL of the step before and read
-the positions off it. Do not guess.
+The screen shown with a step's thought is the one before that step's action, so cite steps by the thought, not by what
+the action opened.
 
-## 5. Build and open the page
+## 5. Answer in chat
 
-```bash
-python3 "${CLAUDE_SKILL_DIR}/scripts/replay.py" .atelier-sim/<run>
-```
-
-It writes `.atelier-sim/<run>/replay.html`, an interactive page with:
-- the verdict and the simulated-tester disclosure;
-- the race chart (each tester's steps on both products, coloured by stage);
-- the ranked decision list, with evidence, before/after sliders, Approve and a "why" note;
-- a highlight reel, full replays, and a side by side that shows the competitor's detours;
-- voices, method and raw data.
-
-Approved items can be copied for Claude Code or as Markdown. Open the page for the user (macOS `open`, Linux `xdg-open`,
-otherwise give the path). In chat give 3 lines: the verdict, the top 3 ranked changes, and the honesty note.
+Give 3 lines: the verdict, the top 3 ranked changes, and the honesty note, then the path to `report.md` and the report
+links. Ask which changes to apply.
 
 ## 6. Apply what the user approved
 
-The user approves on the page and pastes the "Copy for Claude Code" text back, or names the changes in chat. Apply only
+The user names the changes to apply in chat (by number or title). Apply only
 those, on a new git branch if the project uses git. Offer to re-run only the affected testers once the change is on a
 preview URL, so the user can see whether the split closed.
 
