@@ -170,6 +170,15 @@ if tfp.is_file():
     except Exception:
         tfc = {}
 out["need_list_tab_failure_counts"] = tfc.get("need_list_tab_failure_people_counts") or {}
+_rer = {}
+_rerp = art / "refresh_end_reasons.json"
+if _rerp.is_file():
+    try:
+        _rer = json.load(open(_rerp))
+    except Exception:
+        _rer = {}
+out["upvote_refresh_end_measured_60m"] = (_rer.get("upvote_refresh_end_measured_60m") or _rer.get("need_list_refresh_end_measured_60m") or {})
+out["upvote_refresh_end_per_slot"] = _rer.get("per_slot") or []
 out["need_list_stacks_fail_measured_60m"] = tfc.get("need_list_stacks_fail_measured_60m") or {}
 out["stacks_store_assumption"] = tfc.get("stacks_store_assumption") or {}
 out["need_list_attempt_ppm_15m"] = m.get("attempt_ppm")
