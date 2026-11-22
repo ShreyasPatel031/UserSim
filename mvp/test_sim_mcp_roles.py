@@ -248,6 +248,29 @@ class LaunchCardTests(unittest.TestCase):
         self.assertIn("usersim_ph_quick_run", miss["error"])
 
 
+class HotReloadTests(unittest.TestCase):
+    def test_tokens_follow_the_environment_without_a_restart(self):
+        import os
+
+        _configure("")  # nothing at startup
+        with mock.patch.dict(os.environ, {"MVP_MCP_TOKEN": "admin=NEW-A reader=NEW-R"}, clear=False):
+            self.assertEqual(SV._role(_ctx("NEW-A")), "admin")
+            self.assertEqual(SV._role(_ctx("NEW-R")), "reader")
+            self.assertEqual(SV._role(_ctx("OTHER")), "anon")
+        with mock.patch.dict(os.environ, {"MVP_MCP_TOKEN": "reader=NEW-R"}, clear=False):  # NEW-A removed
+            self.assertEqual(SV._role(_ctx("NEW-A")), "anon")
+            self.assertEqual(SV._role(_ctx("NEW-R")), "reader")
+
+    def test_startup_tokens_are_used_when_nothing_is_configured_now(self):
+        import os
+
+        _configure("admin=START-A")
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("MVP_MCP_TOKEN", None)
+            os.environ.pop("MVP_MCP_TOKEN_FILE", None)
+            self.assertEqual(SV._role(_ctx("START-A")), "admin")
+
+
 def SV_call_report(tok: str) -> str:
     return asyncio.run(SV.usersim_get_report(_ctx(tok), "s9"))
 

@@ -117,6 +117,31 @@ def parse_tokens(raw: str) -> list[tuple[str, str]]:
     return out
 
 
+_TOKEN_CACHE: tuple[str, list[tuple[str, str]]] = ("", [])
+
+
+def _configured_now() -> list[tuple[str, str]]:
+    """Tokens in MVP_MCP_TOKEN / MVP_MCP_TOKEN_FILE right now; [] when none is set."""
+    global _TOKEN_CACHE
+    try:
+        raw = _client_token()
+    except RuntimeError:
+        raw = ""
+    if not raw:
+        return []
+    if raw != _TOKEN_CACHE[0]:
+        _TOKEN_CACHE = (raw, parse_tokens(raw))
+    return _TOKEN_CACHE[1]
+
+
+def current_tokens() -> list[tuple[str, str]]:
+    """The token list as configured right now, as [(token, role)]. Re-read on every request from MVP_MCP_TOKEN (or the
+    file at MVP_MCP_TOKEN_FILE). The secrets store refreshes that variable from Secret Manager about every 5 minutes, so
+    adding or removing a token takes effect within about 5 minutes and needs no restart. When nothing is configured right
+    now, the list read at startup (mount) is used."""
+    return _configured_now() or [(t, _ROLES.get(t, "user")) for t in _TOKENS]
+
+
 def _headers(ctx: Context | None) -> tuple[dict[str, str], str]:
     try:
         req = ctx.request_context.request  # type: ignore[union-attr]
@@ -142,7 +167,7 @@ def _owner(ctx: Context | None) -> str:
     headers, peer = _headers(ctx)
     got = headers.get("authorization") or ""
     tok = got[7:].strip() if got.startswith("Bearer ") else ""
-    if tok and any(hmac.compare_digest(tok, t) for t in _TOKENS):
+    if tok and any(hmac.compare_digest(tok, t) for t, _r in current_tokens()):
         return hashlib.sha256(tok.encode()).hexdigest()[:16]
     return "anon:" + hashlib.sha256(L.client_ip(headers, peer).encode()).hexdigest()[:16]
 
@@ -158,9 +183,9 @@ def _role(ctx: Context | None) -> str:
     tok = got[7:].strip() if got.startswith("Bearer ") else ""
     if not tok:
         return "anon"
-    for t in _TOKENS:
+    for t, role in current_tokens():
         if hmac.compare_digest(tok, t):
-            return _ROLES.get(t, "user")
+            return role
     return "anon"
 
 
@@ -950,8 +975,7 @@ async def usersim_admin_overview(ctx: Context) -> str:
     from mvp.sim_mcp import limits as L
 
     counts: dict[str, int] = {}
-    for t in _TOKENS:
-        r = _ROLES.get(t, "user")
+    for _t, r in current_tokens():
         counts[r] = counts.get(r, 0) + 1
     return json.dumps({"limits": L.snapshot(), "tokens_by_role": counts,
                        "open_sessions": len(S._active())}, indent=1, default=str)
@@ -2169,7 +2193,8 @@ def _require_bearer(endpoint: Any, token: str | None) -> Any:
                     return
             else:
                 sent = got[7:].strip() if got.startswith("Bearer ") else ""
-                if not (sent and any(hmac.compare_digest(sent, t) for t in tokens)):
+                active = _configured_now() or [(t, "user") for t in tokens]  # live list wins; else the one passed in
+                if not (sent and any(hmac.compare_digest(sent, t) for t, _r in active)):
                     await JSONResponse({"error": "wrong bearer token (or remove the Authorization header: "
                                                  "no token is needed)"}, status_code=401,
                                        headers={"WWW-Authenticate": "Bearer"})(scope, receive, send)
