@@ -1,5 +1,7 @@
 # UserSim MCP server: guide for agents
 
+**New here?** [GETTING_STARTED.md](GETTING_STARTED.md) is the short guide for people using the server.
+
 **Settings:** [CONFIG.md](CONFIG.md) (`limits.json`). **Deploy / secrets / ops:** [OPERATIONS.md](OPERATIONS.md). No Grok Bot approval required.
 
 ## For client agents
