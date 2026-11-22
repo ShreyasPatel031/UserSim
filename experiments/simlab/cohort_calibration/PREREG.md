@@ -113,3 +113,12 @@ forward_says.py (same TRUTH/JUDGE/CT/CJ prompts as the harness) on Nov 15-20 fro
 Plain arm: one Gemini 2.5 Flash call per launch with only name, tagline and description: "write N short comments Product Hunt users would leave"
 (N = panel size), judged with the same prompts. Pooled over days, day bootstrap. Thresholds: broad-theme recall >= 70 with precision >= 50 (panel);
 specific issues = complaint recall, panel minus plain, pass = lower bound > 0.
+
+## Addendum 4 (2026-11-22, Shreyas): LLM vote simulation for active users vs real votes
+Days Nov 14-16 (the latest days with people re-read after close). Per day: 60 active people sampled at random (seed 0) among complete people
+held before the day, re-read after the day's close, with >= 20 upvotes on launches in the 30 days before. Each person: one Gemini 2.5 Flash call
+(Gemini API key given by Shreyas Nov 22), given their 40 most recent upvoted launches before the day (name + tagline + topics) and the day's
+line-up (name + tagline + topics), returns a 0-100 likelihood per launch. Truth: the person's upvotes on that day's launches.
+Baselines on the same person x launch cells: (CF) frozen CF list p (0 if not listed); (POP) the frozen 03:45 pre-reveal rank (Nov 14+);
+(TOPIC) share of the person's history sharing a topic with the launch. Metrics: pooled AUC, mean per-person AUC, recall@5, day bootstrap.
+Pass: LLM minus best baseline AUC lower bound > 0. Also report LLM+CF rank average.
