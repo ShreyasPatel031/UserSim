@@ -313,6 +313,8 @@ Without a token anyone can use the open tools, within the daily caps. A token ad
 | `reader` | `reader=TOKEN` | everything `user` can do, plus `usersim_ph_page` (the information on the website's Product Hunt page), `usersim_launch_card` (the website's full card for a launch), `usersim_ph_quick_run` (the Product Hunt simulation for any product), `usersim_list_studies`, and `usersim_get_report` for **any** saved study |
 | `admin` | `admin=TOKEN` | everything `reader` can do, plus `usersim_admin_overview` (limits in force, anonymous spend today, open sessions, token counts by role) |
 
+**Clients that can't send headers** (a claude.ai custom connector, and artifact pages that call the server through one) may put the token in the URL: `https://35-202-98-224.sslip.io/mcp?token=<token>`. The server moves it into the `Authorization` header before any check and strips it from the query string, so it is not written to access logs. A header, when sent, wins. Treat that URL like the token itself.
+
 Several tokens can be configured at once, for example `MVP_MCP_TOKEN="admin=<a> reader=<b> reader=<c>"`. A wrong token still gets 401.
 
 - **`usersim_ph_page(day="")`**: the day's launches with live ranks and votes, the published midnight forecast (ranks, expected votes, when it was written, what it saw), the accuracy record and feed freshness. `day` is `YYYY-MM-DD` Pacific time. It reads the website's own public data, trimmed to named fields: product names and numbers, no people and no usernames.

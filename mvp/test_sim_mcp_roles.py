@@ -277,3 +277,19 @@ def SV_call_report(tok: str) -> str:
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_token_in_query_becomes_header():
+    from mvp.sim_mcp.server import _token_from_query
+
+    scope = {"type": "http", "query_string": b"token=abc123&x=1", "headers": [(b"host", b"h")]}
+    _token_from_query(scope)
+    assert (b"authorization", b"Bearer abc123") in scope["headers"]
+    assert b"token" not in scope["query_string"] and scope["query_string"] == b"x=1"
+    # a header, when sent, wins; the query token is still stripped from the logs
+    scope2 = {"type": "http", "query_string": b"token=zzz", "headers": [(b"authorization", b"Bearer real")]}
+    _token_from_query(scope2)
+    assert scope2["headers"] == [(b"authorization", b"Bearer real")] and scope2["query_string"] == b""
+    scope3 = {"type": "http", "query_string": b"a=b", "headers": []}
+    _token_from_query(scope3)
+    assert scope3["headers"] == [] and scope3["query_string"] == b"a=b"
