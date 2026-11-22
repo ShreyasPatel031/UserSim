@@ -2706,3 +2706,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-22T15:33Z hourly: board live (15:33Z, 24/24, top 184). Fleet 15:32Z: need-list attempts 8.1/min, completes 0.93/min (BOuI; held for paging records), refresh 7.2/min. Mailbox checked 2026-11-22T15:33Z
 - 16:01Z PB60 1551Z: 15 flagged saves (slot34 7, slot30 6, slot13 1, slot40 1) after 14:57-15:08Z rotations; inflow 117 vs ~250. Relayed to Grok Bot.
 - 2026-11-22T16:33Z hourly: board live (16:33Z, 24/24, top 195). Fleet 16:32Z: refresh 0/min (was 7.2), need-list attempts 8.5/min completes 0.87/min (held, no paging records); wake sent. Mailbox checked 2026-11-22T16:33Z
+- 2026-11-22T16:39Z FIRST NEED-LIST COMPLETES SINCE NOV 20: 9 BOuI full pulls with per-tab paging passed the gate; complete 93,415 -> 93,424, incomplete 1,310 -> 1,301. 101 held without paging (10/26 newest miss only Stacks). Fleet told Stacks paging is the remaining gap.
