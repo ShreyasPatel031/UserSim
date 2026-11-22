@@ -171,6 +171,12 @@ while true; do
     if [[ "$mode" = "legacy" ]]; then mode=run; echo "legacy->$tok as run" >> supervisor.log; fi
     extra=$($PY strategy_args.py 2>>supervisor.log || true)
     echo "launch $tok reason=$launch_reason mode=$mode extra=[$extra] $(date -u +%FT%TZ)" >> supervisor.log
+    # Refill publishes lists to GCS only; fetch before each pdeep launch (empty local list => instant rc=0).
+    if [[ "$mode" == "pdeep" ]]; then
+      gcloud storage cp -q "$B/pdeep_list.${VM}.txt" . 2>>supervisor.log \
+        || gsutil -q cp "$B/pdeep_list.${VM}.txt" . 2>>supervisor.log || true
+      gcloud storage cp -q "${B%/vm}/have_complete.txt" ./have_complete.txt 2>>supervisor.log || true
+    fi
     # same_tok_retry reuses GO; clear tried filter so pdeep does not see empty list (skipped_done=all).
     [[ "$launch_reason" == "same_tok_retry" ]] && rm -f /opt/ph/reuse/pdeep_tried.json
     mark batch_launch "token=$tok extra=$extra"
@@ -263,7 +269,7 @@ while true; do
       rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n /opt/ph/reuse/same_tok_retry_at
       # Fast no-op run (e.g. FINGERPRINT_REUSED-only log): do not carry tried poison into same-tok retry.
       _ll=$(wc -c <"$L" 2>/dev/null | tr -cd 0-9); _ll=${_ll:-999}
-      (( _ll < 128 )) && rm -f /opt/ph/reuse/pdeep_tried.json
+      (( _ll < 128 )) && rm -f /opt/ph/reuse/pdeep_tried.json /opt/ph/reuse/last_token
     else
       base=${PH_CF_FLEET_REST_SEC:-600}
       n=0; [[ -f /opt/ph/reuse/cf_backoff_n ]] && n=$(($(cat /opt/ph/reuse/cf_backoff_n 2>/dev/null | tr -cd 0-9)))
