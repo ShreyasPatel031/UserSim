@@ -146,7 +146,7 @@ Cursor:
 
 **What to ask your assistant (reader or admin):**
 - "Use usersim_launch_card for Webless Agents (or a product URL). Show the card: overview, talking points for the founder, who votes, what they'll say and the competitors." It works for products on today's Product Hunt line-up (or a day you name). Not on Product Hunt yet? Use the next one.
-- "Use usersim_ph_quick_run on https://example.com (or give a name, tagline and description). Show who it resembles on Product Hunt, where it may land, the simulated reactions and the questions people will ask." It takes about 15 seconds. Limits: 3 runs an hour and 10 a day, shared by everyone using the server, so wait if it says the caps are used up.
+- "Use usersim_ph_quick_run on https://example.com (or give a name, tagline and description). Show who it resembles on Product Hunt, where it may land, the simulated reactions and the questions people will ask." It takes about 15 seconds. Limits: 20 runs an hour and 100 a day, shared by everyone using the server, so wait if it says the caps are used up.
 - "Use usersim_ph_page to show today's Product Hunt launches, the midnight forecast and how accurate it has been." Add a day, such as 2026-11-21, for a past day.
 - "Use usersim_list_studies to show the latest studies."
 - "Get the UserSim report for study `<study_id>`." With a reader token this works for any study, not only your own.

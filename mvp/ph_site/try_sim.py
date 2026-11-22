@@ -3,7 +3,7 @@ show progress:  page (fetch + Gemini read)  ->  people (no LLM)  |  reactions (G
 
 The page step stores the analysis server-side (site/try_runs/<day>/<run id>.json) and returns a signed run id; later
 steps accept only that id and each LLM step can be spent once, so tokens cannot be replayed or forged into extra calls. Caps (stated on the page):
-  per IP: 3 runs / hour, 10 / day;  everyone: 150 runs / day;  per run: 2 Gemini calls (flash-lite page read and
+  per IP: 20 runs / hour, 100 / day;  everyone: 150 runs / day;  per run: 2 Gemini calls (flash-lite page read and
   2.5-flash reactions, output capped at 1.5k + 3k tokens) and 2 embedding calls. Each LLM step can run once per run (enforced server-side by run id).
 Person data comes only from site/person_index_v1 (no identifiers). Labels "User A".. are assigned per response.
 """
@@ -24,8 +24,8 @@ import numpy as np
 from mvp.ph_site import gcs
 
 PT = ZoneInfo("America/Los_Angeles")
-CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "3")),
-        "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "10")),
+CAPS = {"per_ip_hour": int(os.environ.get("TRY_PER_IP_HOUR", "20")),
+        "per_ip_day": int(os.environ.get("TRY_PER_IP_DAY", "100")),
         "global_day": int(os.environ.get("TRY_GLOBAL_DAY", "150")),
         "gemini_calls_per_run": 5, "gemini_calls_max_per_run": 8, "embedding_calls_per_run": 5, "max_output_tokens_per_run": 8800}
 MODEL = os.environ.get("TRY_GEMINI_MODEL", "gemini-2.5-flash-lite")
