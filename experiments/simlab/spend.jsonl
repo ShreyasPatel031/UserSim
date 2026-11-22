@@ -55,3 +55,4 @@
 {"t": "cohort_sentiment_reactions", "provider": "gcp", "usd": 0.0438}
 {"t": "llm_vote_sim", "provider": "gemini_api", "usd": 0.0944}
 {"t": "llm_vote_sim", "provider": "gemini_api", "usd": 0.098}
+{"t": "persona_say_2026-11-22", "provider": "gcp", "usd": 0.1258, "note": "17 Gemini 2.5 Flash calls, tokens in 73800 out 41454"}
