@@ -1,0 +1,27 @@
+{
+ "title": "Gemini Decisions API (gemini-decision-1): can it name which held Product Hunt people upvote which launches?",
+ "written": "2026-11-22, after the API answers were collected and before any scoring code was run",
+ "days": ["2026-11-17", "2026-11-18", "2026-11-19"],
+ "store": "raw/population/store_v3 published 2026-11-21 09:03Z",
+ "people": "Eligible for day D (E5 backer-prediction rule): complete person, first upvote read before 00:00 PT of D, an upvote read after D closed. Per day 150 random eligible backers (upvoted >= 1 of D's launches) + 150 random eligible active non-backers (no vote on D's launches, >= 1 upvote on a launch dated in the 30 days before D). Seed 20261122. 900 person-days.",
+ "lineup": "Every launch in the warehouse launches table dated D: name, tagline, topics, hunter's earlier launches (count, median final votes, launches dated before D only).",
+ "labels": "Launch post id is on the person's own Upvotes tab (raw record).",
+ "input": "Join month; upvote counts on launches from the 7 and 30 days before D; 60 most recent upvotes before D (launch date, name, tagline, topics where held); up to 8 comments written before D (200 chars, @mentions masked); the day's line-up. Same input for API and baseline.",
+ "leak_checks": [
+  "history items: launch date < D, asserted",
+  "history items sit below the oldest Upvotes-tab item whose launch date >= D (tab is newest first), so upvotes cast after the person's first vote on a launch dated >= D are dropped",
+  "comments: exact time before 00:00 PT of D, asserted",
+  "hunter track record: launches dated before D only",
+  "baseline weights fitted on Nov 12-16 only"
+ ],
+ "api": "One call per person-day, one noul question per launch: 'Would this person upvote \"<name>\" (<tagline>) on Product Hunt today?'. P = answers.<key>.noul. One prompt, one pass, no tuning.",
+ "baseline": "Logistic regression on log1p(upvotes 7d), log1p(upvotes 30d), topic overlap, log1p(hunter earlier launches), log1p(hunter median votes), line-up size; fitted on Nov 12-16 with the same sampling (200 backers + 200 active non-backers per day).",
+ "metrics": {
+  "ci": "bootstrap over people (2000 draws; a person's person-days resampled together); API minus baseline paired on the same draws",
+  "primary": "AUC of P(upvote) over all person-launch pairs, pooled over 3 days",
+  "brier": "Brier score + decile calibration table (50/50 backer sampling sets base rate, same for both arms)",
+  "recall_at_N": "per launch, within day: rank the 300 sampled people by P, top N = that launch's sampled backers; pooled hits / sum N. E5's ~29% is on all held people, context only.",
+  "secondary": ["within-person AUC for backers (does P order the launches they picked above the rest)", "API after leave-one-day-out Platt scaling (fitted on the other two test days)"]
+ },
+ "verdict_rule": "Worth running daily only if the API beats the baseline on AUC and on recall at N with the paired interval clear of 0, at a cost the daily budget absorbs."
+}
