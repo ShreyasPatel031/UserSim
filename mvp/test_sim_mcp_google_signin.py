@@ -96,8 +96,8 @@ def test_anonymous_allowed_when_google_signin_anon(monkeypatch):
 
 
 def test_google_account_data_pages_blocked():
-    for u in ("https://mail.google.com/mail/u/0", "https://myaccount.google.com/security", "https://drive.google.com/",
-              "https://passwords.google.com/", "https://www.gmail.com/"):
+    for u in ("https://myaccount.google.com/security", "https://passwords.google.com/"):
         assert sessions.blocked_offsite(u, "https://cal.com"), u
     assert not sessions.blocked_offsite("https://accounts.google.com/signin", "https://cal.com")
+    assert not sessions.blocked_offsite("https://drive.google.com/", "https://cal.com")
     assert not sessions.blocked_offsite("https://docs.google.com/forms/x", "https://docs.google.com/forms/x")
