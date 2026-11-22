@@ -2709,3 +2709,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-22T16:39Z FIRST NEED-LIST COMPLETES SINCE NOV 20: 9 BOuI full pulls with per-tab paging passed the gate; complete 93,415 -> 93,424, incomplete 1,310 -> 1,301. 101 held without paging (10/26 newest miss only Stacks). Fleet told Stacks paging is the remaining gap.
 - 17:02Z PB60 1651Z: block wave since 15:08Z, 13 rotations on 10 slots, 19 flagged saves; relayed. Need-list completes via BOuI: +7 (93,431; 16 today).
 - 17:32Z PB60 1721Z: 5 flagged saves (new: slot42); relayed. Need-list completes today: 20.
+- 2026-11-22T17:32Z hourly: board live (17:32Z, 24/24, top 211). Fleet 17:32Z: need-list attempts 4.5/min, completes 0.47/min (20 merged today, 93,431+); refresh recovered to 6.8/min. Mailbox checked 2026-11-22T17:32Z
