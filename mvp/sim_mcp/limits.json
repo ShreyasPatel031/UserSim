@@ -18,7 +18,7 @@
       "about": "Browser sessions open at once per client IP for callers that send a bearer token (a study client runs cells in parallel)."
     },
     "anon_max_concurrent_sessions_per_ip": {
-      "value": 60,
+      "value": 5,
       "about": "Browser sessions open at once per client IP for callers without a token."
     },
     "max_steps": {
@@ -74,20 +74,20 @@
       "about": "Only when browser_backend is browserbase: residential proxies (higher success on signup flows; higher Browserbase cost). Ignored on seed_vm (seeds use their own static egress IP)."
     },
     "anon_daily_usd_per_ip": {
-      "value": 10000.0,
-      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call. 15 \u2248 one 108-cell study per IP per day (docs/E2E_TEST.md needs 108 cells per study; a typical study \u2248 13.5 units)."
+      "value": 5.0,
+      "about": "Estimated spend allowed per client IP per day (America/Los_Angeles day) for callers without a token. Estimated with the est_usd_* rates below; real cost is not metered per call. 5 (Nov 22, for the public plugin listing) is about 40 simulated users of ~15 steps, i.e. 8 quick-mode runs of 5 users per IP per day."
     },
     "anon_daily_usd_global": {
-      "value": 10000.0,
-      "about": "Estimated spend allowed per day across ALL callers without a token, together."
+      "value": 100.0,
+      "about": "Estimated spend allowed per day across ALL callers without a token, together. 100 (Nov 22) = the owner's daily ceiling for public use; token callers are not counted."
     },
     "est_usd_per_session": {
       "value": 0.05,
-      "about": "Budget units charged when a browser session starts. Calibrated Oct 18 from the four 108-cell studies of Oct 13: server-side Vertex (judge + planner) was about $0.72 for ~394 cells (\u2248 $0.002/cell); the rest of this value covers Browserbase time. The driver model is the caller's, not ours."
+      "about": "Budget units charged when a browser session starts. Calibrated Oct 18 from the four 108-cell studies of Oct 13: server-side Vertex (judge + planner) was about $0.72 for ~394 cells (≈ $0.002/cell); the rest of this value covers Browserbase time. The driver model is the caller's, not ours."
     },
     "est_usd_per_step": {
       "value": 0.005,
-      "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). Oct 13 full studies averaged ~15 steps per cell, so a typical cell = 0.05 + 15 x 0.005 \u2248 0.125 and a 108-cell study \u2248 13.5."
+      "about": "Budget units charged per browser step (usersim_act, usersim_open_verification_link, usersim_solve_captcha). Oct 13 full studies averaged ~15 steps per cell, so a typical cell = 0.05 + 15 x 0.005 ≈ 0.125 and a 108-cell study ≈ 13.5."
     },
     "est_usd_per_prediction": {
       "value": 0.6,
@@ -106,7 +106,7 @@
       "about": "Seconds one session holds the phone number after usersim_signup_phone (or until that session closes). Another session asking meanwhile gets 'number busy, retry in N s'. Applies to every caller, token or not."
     },
     "anon_daily_sms_leases_per_ip": {
-      "value": 1000,
+      "value": 5,
       "about": "SMS-number leases per client IP per day (America/Los_Angeles) for callers without a token."
     },
     "sms_sender_denylist": {
@@ -164,7 +164,7 @@
       "about": "When paid_captcha is true: let callers WITHOUT a bearer token trigger CapSolver (~$0.002-0.01 per solve, metered). false = only token callers may use paid solving. Free Browserbase/audio/v3 refresh paths are unaffected."
     },
     "anon_allow_shared_aliases": {
-      "value": true,
+      "value": false,
       "about": "Let callers without a token use no_plus (Gmail dot-variant) or plain shared signup addresses. Those addresses can repeat across sessions, so another anonymous caller could read the same inbox and steal verification codes. false = anonymous callers only get unique usersim.signups+<tag>@gmail.com aliases (safe default)."
     },
     "browser_backend": {

@@ -49,12 +49,13 @@ class LimitsFileTests(unittest.TestCase):
         self.assertEqual(L.get("max_steps"), 200)
         self.assertEqual(L.get("budget_s"), 1800)
         self.assertIs(L.get("paid_captcha"), True)
-        self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 60)
-        self.assertEqual(L.get("anon_daily_usd_per_ip"), 10000.0)
-        self.assertEqual(L.get("anon_daily_usd_global"), 10000.0)
+        self.assertEqual(L.get("anon_max_concurrent_sessions_per_ip"), 5)
+        self.assertEqual(L.get("anon_daily_usd_per_ip"), 5.0)
+        self.assertEqual(L.get("anon_daily_usd_global"), 100.0)
         self.assertIs(L.get("anon_allow_sms"), True)
         self.assertEqual(L.get("sms_lease_s"), 600)
-        self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 1000)
+        self.assertEqual(L.get("anon_daily_sms_leases_per_ip"), 5)
+        self.assertIs(L.get("anon_allow_shared_aliases"), False)
         self.assertIn("apple", L.get("sms_sender_denylist"))
 
     def test_env_override_and_bad_values_ignored(self):
@@ -182,6 +183,7 @@ class ServerCapTests(unittest.TestCase):
         SV._spend(SV._owner(_ctx(auth="Bearer tok-1")), "one step")
         self.assertEqual(L.spend_summary()["total_usd"], 0)
 
+    @mock.patch.dict(os.environ, {"MVP_MCP_ANON_ALLOW_SHARED_ALIASES": "1"})
     def test_no_plus_allowed_without_token_when_limits_allow(self):
         sim = self._sim(SV._owner(_ctx()))
         with mock.patch("mvp.signup_tools.new_signup", return_value=(SimpleNamespace(address="usersim.signups@gmail.com"),
@@ -189,6 +191,7 @@ class ServerCapTests(unittest.TestCase):
             out = json.loads(asyncio.run(SV.usersim_signup_identity(_ctx(), sim.id, no_plus=True)))
         self.assertNotIn("error", out)
 
+    @mock.patch.dict(os.environ, {"MVP_MCP_ANON_ALLOW_SHARED_ALIASES": "1"})
     def test_plain_shared_address_allowed_without_token_when_limits_allow(self):
         sim = self._sim(SV._owner(_ctx()))
         sim.product_url = "https://chatwoot.com"
