@@ -213,7 +213,7 @@
     },
     "google_signin_anon": {
       "value": true,
-      "about": "Let callers WITHOUT a token use Google sign-in (Nov 22, owner's decision for the public plugin). They stay under anon_daily_usd_per_ip. The model never sees the password or codes, and Gmail, Drive, Docs and Google Account pages are blocked for every session (BLOCKED_OFFSITE_HOSTS). false = token callers only."
+      "about": "Let callers WITHOUT a token use Google sign-in (Nov 22, owner's decision for the public plugin). They stay under anon_daily_usd_per_ip. The model never sees the password or codes, and Google Account settings pages (password, security) are blocked for every session (BLOCKED_OFFSITE_HOSTS). false = token callers only."
     }
   }
 }
