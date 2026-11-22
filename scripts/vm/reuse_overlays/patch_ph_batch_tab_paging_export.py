@@ -30,8 +30,20 @@ repl = f'''    # {MARK}: Population expects res[tab].paging.ended (not only run.
             res["reviews"]["paging"] = {{"ended": "hasNextPage_false", "method": "ssr_detailed_reviews"}}
         elif res["header"].get("reviews") == 0:
             res["reviews"]["paging"] = {{"ended": "header_0", "method": "ssr_detailed_reviews"}}
-    if isinstance(res.get("stacks"), dict) and not res["stacks"].get("paging") and getattr(R, "stacks_paging", None):
-        res["stacks"]["paging"] = R.stacks_paging
+    if isinstance(res.get("stacks"), dict) and not res["stacks"].get("paging"):
+        if getattr(R, "stacks_paging", None):
+            res["stacks"]["paging"] = R.stacks_paging
+        else:
+            _ex = getattr(R, "exh", {}) or {}
+            if _ex.get("stacks"):
+                res["stacks"]["paging"] = {"ended": "hasNextPage_false", "method": "stacks_exhausted"}
+    if isinstance(res.get("collections"), dict) and not res["collections"].get("paging"):
+        _ch = res["header"].get("collections") or 0
+        _got = len((res["collections"].get("items") or []))
+        if _ch == 0:
+            res["collections"]["paging"] = {"ended": "header_0", "method": "collections"}
+        elif _got >= 0.98 * _ch:
+            res["collections"]["paging"] = {"ended": "server_end", "method": "collections"}
     res["run"] = {{"wall_seconds": round(time.time() - R.t0, 1), "requests": R.reqs, "gql_calls": getattr(R, 'gql_calls', 0), "html_fetches": getattr(R, 'html_fetches', 0), "thread_navs": getattr(R, 'navs', 0), "clicks": getattr(R, 'clicks', 0),
                   "blocks": R.blocks, "timing": timing, "finished_utc": now()}}
     return res
