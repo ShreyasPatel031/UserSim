@@ -2703,3 +2703,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 15:01Z PB60: 1 slot35 save after its 13:32Z rotation (first since Nov 21 19:51Z); slot13 rotated 14:57Z. Relayed to Grok Bot.
 - 2026-11-22T15:04Z BOuI need-list pulls arrived: 33 (31 need-list + 2 new), pass the store's person check but carry no paging.ended on 8 tabs (Stacks in 20/33). DECISION: hold (AGENTS.md requires the paging record to PH's end); asked fleet to write per-tab paging records; merge on re-score once present.
 - 15:31Z PB60 slot34 (1 save) relayed. BOuI need-list pulls held: 73 (71 need-list + 2 new), all pass the person check, none carry paging.ended (fleet says stock pull_deep should write it). Held per decision (b).
+- 2026-11-22T15:33Z hourly: board live (15:33Z, 24/24, top 184). Fleet 15:32Z: need-list attempts 8.1/min, completes 0.93/min (BOuI; held for paging records), refresh 7.2/min. Mailbox checked 2026-11-22T15:33Z
