@@ -343,7 +343,8 @@ def main():
         refresh_only_ok = (md5 == BOUI and overlaid and bool(d.get("upvotes_refreshed_at")) and n in vm_t
                            and store_complete is not None and n.lower() in store_complete)
         if md5 not in AUDITED_BUILDS and not refresh_only_ok:
-            gate.append("build_not_audited" if md5 != BOUI else "build_boui_full_pull_unaudited")
+            gate.append("build_not_audited" if md5 != BOUI else
+                        ("build_boui_refresh_not_rebuilt" if d.get("upvotes_refreshed_at") else "build_boui_full_pull_unaudited"))
         if vm == "unknown" or not clean(vm)[0]:
             gate.append("vm_evasion_or_unknown")
         elif clean(vm)[1] and st[n] >= clean(vm)[1]:
