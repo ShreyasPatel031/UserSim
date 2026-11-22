@@ -621,6 +621,46 @@ def _post_site_json(path: str, body: dict[str, Any], timeout: float = 60.0) -> t
             return exc.code, {"error": f"HTTP {exc.code}"}
 
 
+def quick_run_card(analysis: dict[str, Any], name: str, people: dict[str, Any], launch: dict[str, Any],
+                   reactions: dict[str, Any], asks: dict[str, Any]) -> str:
+    """The pre-launch card for a product that is not on the line-up: the same layout as the launch card, built from the
+    quick run. No team network and no competitor finishes (those need a real launch), and it says so."""
+    title = (analysis.get("name") if isinstance(analysis, dict) else None) or name or "This product"
+    tagline = (analysis.get("tagline") if isinstance(analysis, dict) else "") or ""
+    concerns = [c for c in (asks.get("concerns") or []) if isinstance(c, str)]
+    worry = concerns[0] if concerns else None
+    question = asks.get("question") if isinstance(asks.get("question"), str) else None
+    rb, vb = launch.get("rank_band") or {}, launch.get("votes_band") or {}
+    segs = [x for x in (people.get("segments") or []) if isinstance(x, dict)][:3]
+    md = [f"# {title}", tagline, "", "## Overview"]
+    if worry:
+        md.append(f"- Top worry: {worry}")
+    if rb.get("likely"):
+        md.append(f"- Where it may land: likely rank {rb['likely'][0]}–{rb['likely'][1]} (median {rb.get('median')}), "
+                  f"likely votes {vb.get('likely', ['?', '?'])[0]}–{vb.get('likely', ['?', '?'])[1]}"
+                  + (f" ({launch.get('percentile')}th percentile of past launches)" if launch.get("percentile") is not None else ""))
+    if people.get("likely_share") is not None:
+        md.append(f"- Members it resembles: {people.get('likely_count'):,} of {people.get('people_scored'):,} people we hold "
+                  f"({people['likely_share']:.0%})")
+    md += ["", "## Who votes"] + [f"- {x.get('name')}: {x.get('likely')} of {x.get('size')} resemble it "
+                                  f"({x.get('lift', 0):.1f}× their usual share)" for x in segs]
+    heads = reactions.get("headline")
+    if heads:
+        md += ["", "## What they'll say", f"- {heads}"]
+    pts = ["We can't see your team's Product Hunt network until you launch, so most early votes will come from people who "
+           "don't know you yet. The pitch and the first comment carry the launch."]
+    if worry:
+        pts.append(f"Answer this worry in the first comment, before anyone asks: “{worry}”")
+    if question:
+        pts.append(f"Put this answer on the page: “{question}”")
+    if rb.get("likely"):
+        pts.append("Treat the rank band as a wide guide: pre-launch rank prediction from a page alone is weak. "
+                   "A real launch adds the hunter, the team and the competitors' finishes.")
+    md += ["", "## Talking points for the founder"] + [f"{i}. {t}" for i, t in enumerate(pts, 1)]
+    md += ["", "Simulated, not real comments or votes. Not on Product Hunt yet: no team network or competitor finishes."]
+    return "\n".join(md)
+
+
 @mcp.tool(structured_output=False)
 async def usersim_ph_quick_run(ctx: Context, product_url: str = "", name: str = "", tagline: str = "",
                                description: str = "") -> str:
@@ -665,7 +705,9 @@ async def usersim_ph_quick_run(ctx: Context, product_url: str = "", name: str = 
     people, launch = await asyncio.gather(step("people"), step("launch"))
     reactions = await step("reactions")
     asks = await step("asks")
+    card = quick_run_card(first.get("analysis") or {}, name, people, launch, reactions, asks)
     return json.dumps({
+        "card_markdown": card,
         "analysis": first.get("analysis"),
         "who_it_resembles": people,
         "where_it_may_land": launch,

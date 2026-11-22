@@ -167,6 +167,8 @@ class QuickRunTests(unittest.TestCase):
         self.assertEqual(out["where_it_may_land"], {"step": "launch"})
         self.assertNotIn("RUNTOKEN", json.dumps(out))
         self.assertIn("Simulated", out["reading_note"])
+        self.assertIn("Talking points for the founder", out["card_markdown"])
+        self.assertIn("can't see your team's Product Hunt network", out["card_markdown"])
 
     def test_text_route_when_no_url(self):
         calls: list = []
