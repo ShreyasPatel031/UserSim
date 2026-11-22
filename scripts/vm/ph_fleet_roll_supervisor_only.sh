@@ -13,6 +13,9 @@ ZONE="${PACE_ZONE:?}"
 UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-9 27 38}"
 LIVE_SLOTS="${FLEET_LIVE_SLOTS:-39}"
 "${GC[@]}" storage cp "$ROOT/scripts/vm/reuse_overlays/supervisor_strat.sh" "${VM_GCS}/_code/overlays/supervisor_strat.sh"
+"${GC[@]}" storage cp "$ROOT/scripts/vm/reuse_overlays/patch_ph_batch_tab_paging_export.py" \
+  "$ROOT/scripts/vm/reuse_overlays/patch_stacks_paging_ensure.py" \
+  "${VM_GCS}/_code/overlays/"
 REMOTE='set -e
 B=$(grep -E "^PACE_GCS_VM_ROOT=" /opt/ph/pace.env | cut -d= -f2-)
 TMP=/tmp/ph-overlay-roll
