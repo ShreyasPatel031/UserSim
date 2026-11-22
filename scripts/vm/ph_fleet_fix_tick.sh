@@ -51,6 +51,7 @@ PY
   fi
 fi
 python3 "$ROOT/scripts/vm/ph_fleet_refill_lists.py" || true
+python3 "$ROOT/scripts/vm/ph_fleet_release_queue_claims.py" 2>/dev/null | tail -1 || true
 python3 "$ROOT/scripts/vm/ph_fleet_stacks_pull_hour.py" >/dev/null 2>&1 || true
 python3 "$ROOT/scripts/vm/ph_fleet_refresh_end_reasons.py" >/dev/null 2>&1 || true
 python3 "$ROOT/scripts/vm/ph_fleet_tab_failure_counts.py" >/dev/null 2>&1 || true
