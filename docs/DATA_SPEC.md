@@ -92,6 +92,17 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Product followers at launch | per launch at first snapshot | not in API | low model value (PH agent); closed with reason |
 | Maker X followers | per maker at launch | Grok Bot X rollout 6,387 / 8,953 (71.3%; was 5,600); page cap removed from drop 20261117_h | drops before 20261117_h capped at 1 page → re-read those people / Grok Bot / Nov 19 |
 
+**Nov 22 review (10:50 UTC).** Current vs Nov 21:
+- Complete people 93,415 (+6 since 09:04Z Nov 21; none from the need list since 10:21Z Nov 20). Need list 1,479. By tier: other 89,323, active 2,563, likely 1,529.
+- Need-list blocker: pdeep whole() fails on the stale ProfileStacksPage persisted-query hash (cc019c23... -> PersistedQueryNotFound). New hash bfdb9f43... was verified by the Data Feeder at 10:17Z. The reader rebuild (pgql/reuse, babysitter build) is the gap; routed via Grok Bot. Owner: babysitter build + fleet. Date: today.
+- Upvote refresh ~7/min, but the to-held patch (~01:15Z) finds new upvotes in only 7 of 2,298 refreshes (11.6-18% before). No held person was re-read after close for Nov 17-21, so the WHO calibration is unscorable. Owner: fleet. Asked for a Nov 21 post-close re-read by 18:00Z.
+- Recency: 7d 16,480 (was 25,006), 24h 2,747; median read age 10.4 d. Falling until the refresh captures new upvotes.
+- Coverage (ledger 20261122T0859Z), all/top3: Nov 15-21 48.5/69.5 (was 46.9/68.1); Nov 21 alone 35.5/46.9.
+- Feeds: comments_ts gap 08:30-09:22Z (closed); live capture stall 01:15-01:30 PT (closed); refresh dipped to 2.2/min after the weekly close (3rd night; recovered 09:20Z).
+- Store label bug: an upvote refresh restamped every tab's fetched_at, so 97 Nov 4-5 pgql people looked newly pulled. Fixed 84fce74e; not a breach.
+- Spend: GCP ~$67 on Nov 21 (over the $50 soft cap), ~$51 of it the fleet's 17 VMs.
+- Trace store gs://usersim-trace-store-347838016394 is live (see the Nov 21 entry).
+
 **Private trace store (Nov 21, 21:25Z).**
 - Bucket: gs://usersim-trace-store-347838016394, in project-amer-scs-sandbox.
 - Location: NAM4 dual-region (us-central1 + us-east1).
