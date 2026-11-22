@@ -711,7 +711,7 @@ async def usersim_ph_quick_run(ctx: Context, product_url: str = "", name: str = 
     rank and vote bands, with the tested accuracy of that estimate), simulated reactions by type of member, and the
     questions and concerns launch-day visitors are likely to raise. Give a public product_url, or name + tagline +
     description if the page needs JavaScript or a login. Simulated, not real comments; people are anonymous types.
-    The website's caps apply (3 runs an hour and 10 a day per client address, 150 a day in total); every caller of
+    The website's caps apply (20 runs an hour and 100 a day per client address, 150 a day in total); every caller of
     this server shares one address, so expect to wait if others have just used it."""
     import asyncio
 
@@ -729,7 +729,7 @@ async def usersim_ph_quick_run(ctx: Context, product_url: str = "", name: str = 
     if status != 200 or not token:
         hint = ""
         if status == 429:
-            hint = " The website's quick-run caps are used up for now (3 an hour, 10 a day, 150 in total); try later."
+            hint = " The website's quick-run caps are used up for now (20 an hour, 100 a day, 150 in total); try later."
         elif status == 422 and product_url:
             hint = " Try name + tagline + description instead of the URL."
         return _fail(S.SessionError(f"{first.get('error') or 'the quick run could not start'}.{hint}".replace("..", ".")))
