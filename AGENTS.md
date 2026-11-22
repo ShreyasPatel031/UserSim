@@ -75,9 +75,11 @@ header counts are stored. Anything less is not written, not counted, not reporte
 - **The live leaderboard on the website is always live and comes straight from Product Hunt's official API**, fetched by the
   website's own server-side code (cached, last good snapshot served on any upstream error). It depends on no agent session,
   no Data Feeder, no fleet machine and not on the pipeline VM.
-- **Exactly two predictions are published:** the midnight forecast (00:05 PT) and one before-reveal forecast (03:45 PT, the
-  last point before votes appear at 04:00 PT). Both are written by code on the VM, never by an agent session, each with its
-  write time, the inputs present or missing, and the fallback used. Every other forecast point is an internal shadow line.
+- **One prediction is published: the midnight forecast (00:05 PT)** (Shreyas, Nov 22: the 03:45 before-reveal forecast is
+  removed; by 03:45 Product Hunt's homepage is already ordered by the hidden votes, so it measured PH's order, not our model).
+  It is written by code on the VM, never by an agent session, with its write time, the inputs present or missing, and the
+  fallback used. The 03:45 read of PH's order is kept as raw data and a baseline only. Every other forecast point is an
+  internal shadow line.
 
 ## Rule for every agent: token use (Shreyas, Nov 14 2026)
 
