@@ -2162,6 +2162,26 @@ def _client_token() -> str:
     return tok
 
 
+def _token_from_query(scope: dict[str, Any]) -> None:
+    """Clients that can't send headers (a claude.ai custom connector, a published artifact page through it) may put the
+    token in the URL instead: https://<host>/mcp?token=<token>. When there is no Authorization header, the token is moved
+    into one (so every role check sees it the same way) and removed from the query string, so it is not written to
+    access logs. A header, when sent, always wins."""
+    from urllib.parse import parse_qsl, urlencode
+
+    raw = scope.get("query_string") or b""
+    if b"token=" not in raw:
+        return
+    pairs = parse_qsl(raw.decode("latin-1"), keep_blank_values=True)
+    tok = next((v for k, v in pairs if k == "token"), "").strip()
+    scope["query_string"] = urlencode([(k, v) for k, v in pairs if k != "token"]).encode("latin-1")
+    hdrs = list(scope.get("headers") or [])
+    if not tok or any(k.lower() == b"authorization" for k, _v in hdrs):
+        return
+    hdrs.append((b"authorization", f"Bearer {tok}".encode("latin-1")))
+    scope["headers"] = hdrs
+
+
 def _require_bearer(endpoint: Any, token: str | None) -> Any:
     """ASGI wrapper. No Authorization header: allowed when limits.json allow_anonymous is true (the caller is then
     'anon' and capped), else 401. A bearer token that is sent must match one of the tokens (constant-time), else
@@ -2181,6 +2201,7 @@ def _require_bearer(endpoint: Any, token: str | None) -> Any:
 
     async def guarded(scope: Any, receive: Any, send: Any) -> None:
         if scope.get("type") == "http":
+            _token_from_query(scope)
             headers = {k.decode().lower(): v.decode() for k, v in scope.get("headers") or []}
             got = headers.get("authorization", "").strip()
             if got.lower() in ("bearer", "bearer:"):
