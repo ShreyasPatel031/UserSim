@@ -95,6 +95,25 @@ mcp = FastMCP(
 
 
 _TOKENS: list[str] = []  # bearer tokens configured at mount(); a valid one makes the caller a token owner
+_ROLES: dict[str, str] = {}  # token value -> role: "user" (default), "reader" or "admin"
+ROLE_RANK = {"anon": 0, "user": 1, "reader": 2, "admin": 3}
+PH_SITE_BASE_DEFAULT = "https://usersim.vercel.app"
+
+
+def parse_tokens(raw: str) -> list[tuple[str, str]]:
+    """Token list -> [(token, role)]. Entries are comma/whitespace separated. 'admin=TOKEN' and 'reader=TOKEN' give a
+    role; a bare TOKEN is role 'user' (what every token was before roles: skips the anonymous caps, sees only its own
+    studies). Roles: reader = user + can pull the website's information and every saved study report; admin = reader +
+    server overview. A token's role is never taken from the request, only from this configuration."""
+    import re
+
+    out: list[tuple[str, str]] = []
+    for part in re.split(r"[\s,]+", raw or ""):
+        if not part:
+            continue
+        m = re.match(r"^(admin|reader|user)=(.+)$", part)
+        out.append((m.group(2), m.group(1)) if m else (part, "user"))
+    return out
 
 
 def _headers(ctx: Context | None) -> tuple[dict[str, str], str]:
@@ -125,6 +144,32 @@ def _owner(ctx: Context | None) -> str:
     if tok and any(hmac.compare_digest(tok, t) for t in _TOKENS):
         return hashlib.sha256(tok.encode()).hexdigest()[:16]
     return "anon:" + hashlib.sha256(L.client_ip(headers, peer).encode()).hexdigest()[:16]
+
+
+def _role(ctx: Context | None) -> str:
+    """'anon' (no valid token), or the role of the token the caller sent: user, reader or admin."""
+    import hmac
+
+    if ctx is None:
+        return "anon"
+    headers, _peer = _headers(ctx)
+    got = headers.get("authorization") or ""
+    tok = got[7:].strip() if got.startswith("Bearer ") else ""
+    if not tok:
+        return "anon"
+    for t in _TOKENS:
+        if hmac.compare_digest(tok, t):
+            return _ROLES.get(t, "user")
+    return "anon"
+
+
+def _needs(ctx: Context | None, minimum: str) -> str | None:
+    """None when the caller's role is at least `minimum`; otherwise the JSON error to return."""
+    have = _role(ctx)
+    if ROLE_RANK[have] >= ROLE_RANK[minimum]:
+        return None
+    return json.dumps({"error": f"this tool needs a {minimum} token (you are: {have}). Ask the UserSim owner for one "
+                                "and send it as 'Authorization: Bearer <token>'."})
 
 
 def _client_id(ctx: Context | None) -> str:
@@ -490,7 +535,7 @@ async def usersim_get_report(ctx: Context, study_id: str, format: str = "markdow
 
     live = STUDIES.get(study_id)
     data = study_to_dict(live) if live is not None else (load_local_study(study_id) or load_study_from_gcs(study_id))
-    if not data or not S.owns_study(data, _owner(ctx)):
+    if not data or not (ROLE_RANK[_role(ctx)] >= ROLE_RANK["reader"] or S.owns_study(data, _owner(ctx))):
         return _fail(S.SessionError(f"unknown study_id {study_id!r}"))
     if is_matrix(data):
         srep = build_study_report(data)
@@ -501,6 +546,93 @@ async def usersim_get_report(ctx: Context, study_id: str, format: str = "markdow
     if data.get("status") != "complete":
         rep["note"] = "Study is not finished yet; call usersim_finish first."
     return json.dumps(rep, indent=1) if format == "json" else report_markdown(rep)
+
+
+# ---------------------------------------------------------------- reader / admin tools (token roles)
+
+_PH_LAUNCH_KEYS = ("id", "name", "tagline", "slug", "topics", "actual_rank", "current_rank", "votes", "board_rank",
+                   "board_votes")
+_PH_POINT_KEYS = ("key", "label", "time_pt", "data_cut_pt", "made_at", "data_up_to", "method", "sees", "ranks",
+                  "exp_votes", "vote_err", "backtest_line", "fallback", "late")
+
+
+def _fetch_site_json(url: str) -> dict[str, Any]:
+    import urllib.request
+
+    req = urllib.request.Request(url, headers={"User-Agent": "usersim-mcp/1"})
+    with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310 (fixed https base, validated day)
+        return json.loads(resp.read().decode())
+
+
+def ph_page_view(raw: dict[str, Any]) -> dict[str, Any]:
+    """What the website's Product Hunt page shows, trimmed to named fields: product names and ranks, the published
+    midnight forecast, the accuracy record and how fresh each feed is. No people, no usernames."""
+    return {
+        "day": raw.get("day"),
+        "status": raw.get("status"),
+        "board": raw.get("board"),
+        "launches": [{k: x.get(k) for k in _PH_LAUNCH_KEYS} for x in raw.get("launches") or []],
+        "forecast_points": [{k: x.get(k) for k in _PH_POINT_KEYS} for x in raw.get("points") or []],
+        "accuracy": raw.get("accuracy"),
+        "freshness": raw.get("freshness"),
+        "why": raw.get("why"),
+        "days_available": raw.get("days"),
+    }
+
+
+@mcp.tool(structured_output=False)
+async def usersim_ph_page(ctx: Context, day: str = "") -> str:
+    """READER or ADMIN token. The information on the website's Product Hunt page: the day's launches with live ranks
+    and votes, the published midnight forecast (ranks and expected votes, when it was written and what it saw), the
+    accuracy record and feed freshness. day: YYYY-MM-DD (Pacific time) for a past day, empty for today. Names and
+    numbers only; no people."""
+    import asyncio
+    import re
+
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    if day and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+        return _fail(S.SessionError("day must look like 2026-11-22"))
+    base = (os.environ.get("MVP_PH_SITE_BASE") or PH_SITE_BASE_DEFAULT).rstrip("/")
+    url = f"{base}/api/ph/today" + (f"?day={day}" if day else "")
+    try:
+        raw = await asyncio.to_thread(_fetch_site_json, url)
+    except Exception as exc:  # noqa: BLE001
+        return _fail(S.SessionError(f"could not read the website's page data: {exc}"))
+    return json.dumps(ph_page_view(raw), indent=1)
+
+
+@mcp.tool(structured_output=False)
+async def usersim_list_studies(ctx: Context, limit: int = 30) -> str:
+    """READER or ADMIN token. The saved studies, newest first: id, product URL, status, phase, last update. Pass an id
+    to usersim_get_report to read its full report. A reader or admin can read every study, not just their own."""
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    from mvp.server import list_studies
+
+    out = await list_studies(limit=max(1, min(int(limit), 100)))
+    rows = [{k: r.get(k) for k in ("id", "url", "status", "phase", "updated_at", "agents", "persona_count",
+                                   "task_count")} for r in out.get("studies", [])]
+    return json.dumps({"studies": rows}, indent=1)
+
+
+@mcp.tool(structured_output=False)
+async def usersim_admin_overview(ctx: Context) -> str:
+    """ADMIN token only. The server's current state: engine version, the limits in force and where they came from,
+    how much anonymous spend has been used today, and how many tokens of each role are configured."""
+    denied = _needs(ctx, "admin")
+    if denied:
+        return denied
+    from mvp.sim_mcp import limits as L
+
+    counts: dict[str, int] = {}
+    for t in _TOKENS:
+        r = _ROLES.get(t, "user")
+        counts[r] = counts.get(r, 0) + 1
+    return json.dumps({"limits": L.snapshot(), "tokens_by_role": counts,
+                       "open_sessions": len(S._active())}, indent=1, default=str)
 
 
 # ---------------------------------------------------------------- agent mode (review data only, no browser)
@@ -1596,7 +1728,7 @@ def _require_bearer(endpoint: Any, token: str | None) -> Any:
 
     from mvp.sim_mcp import limits as L
 
-    tokens = [t for t in re.split(r"[\s,]+", token or "") if t]
+    tokens = [t for t, _r in parse_tokens(token or "")]
 
     class Guarded:  # a class instance, so Starlette's Route treats it as a raw ASGI app
         async def __call__(self, scope: Any, receive: Any, send: Any) -> None:
@@ -1636,7 +1768,10 @@ def mount(app: Any) -> None:
     inner = mcp.streamable_http_app()
     route = next(r for r in inner.routes if getattr(r, "path", "") == "/mcp")
     token = _client_token()
-    _TOKENS[:] = [t for t in re.split(r"[\s,]+", token or "") if t]
+    parsed = parse_tokens(token)
+    _TOKENS[:] = [t for t, _r in parsed]
+    _ROLES.clear()
+    _ROLES.update({t: r for t, r in parsed})
     endpoint = _require_bearer(route.endpoint, token)
     app.router.routes.insert(0, Route("/mcp", endpoint=endpoint, methods=["GET", "POST", "DELETE"]))
 

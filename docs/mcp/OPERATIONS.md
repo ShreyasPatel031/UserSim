@@ -88,7 +88,7 @@ The VM service account needs **Secret Manager Secret Accessor** on these secrets
 | `MVP_NTFY_SMS_TOPIC` | ntfy topic where the phone forwards SMS (sensitive) |
 | `MVP_NTFY_TOKEN` | Bearer token for private ntfy |
 | `MVP_SMS_API_KEY` | TextVerified (or other) SMS API key |
-| `MVP_MCP_TOKEN` | Optional bearer token(s) that skip anonymous caps |
+| `MVP_MCP_TOKEN` | Optional bearer token(s) that skip anonymous caps. Roles: `admin=TOKEN`, `reader=TOKEN` or a bare `TOKEN` (role `user`), comma or space separated. See [Access levels](README.md#access-levels-token-roles) |
 | `MVP_TEXTVERIFIED_API_KEY` | Legacy TextVerified key name |
 
 Non-secret config (URLs, project ids, feature toggles that are not credentials) may remain in `/etc/usersim/env` or move to `limits.json` when appropriate.

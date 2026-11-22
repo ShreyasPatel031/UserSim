@@ -302,6 +302,25 @@ Rules:
 ### Prompt: `usersim_simulate_user`
 Arguments: `session_id`, `persona`, `task`. This returns the instructions for the subagent that plays the user: stay in persona, one action per call, give an honest `thought`, don't guess URLs, follow the signup and captcha rules above, stop when done, stuck, or when a real person would give up, and finish with `usersim_finish`. Step and time limits are filled in from the server config.
 
+## Access levels (token roles)
+
+Without a token anyone can use the open tools, within the daily caps. A token adds a role. The role comes only from the server's token list (`MVP_MCP_TOKEN` or the file at `MVP_MCP_TOKEN_FILE`), never from anything the caller sends.
+
+| Role | How it is configured | What it can do |
+|---|---|---|
+| anonymous | no token | the open tools, with the daily caps; sees only its own sessions and studies |
+| `user` | a bare `TOKEN` | the same tools without the daily caps; sees only its own sessions and studies |
+| `reader` | `reader=TOKEN` | everything `user` can do, plus `usersim_ph_page` (the information on the website's Product Hunt page), `usersim_list_studies`, and `usersim_get_report` for **any** saved study |
+| `admin` | `admin=TOKEN` | everything `reader` can do, plus `usersim_admin_overview` (limits in force, anonymous spend today, open sessions, token counts by role) |
+
+Several tokens can be configured at once, for example `MVP_MCP_TOKEN="admin=<a> reader=<b> reader=<c>"`. A wrong token still gets 401.
+
+- **`usersim_ph_page(day="")`**: the day's launches with live ranks and votes, the published midnight forecast (ranks, expected votes, when it was written, what it saw), the accuracy record and feed freshness. `day` is `YYYY-MM-DD` Pacific time. It reads the website's own public data, trimmed to named fields: product names and numbers, no people and no usernames.
+- **`usersim_list_studies(limit=30)`**: saved studies, newest first (id, URL, status, phase, last update).
+- **`usersim_admin_overview()`**: never echoes a token.
+
+**Issuing a token** (operator): make a random value with `python3 -c "import secrets; print(secrets.token_urlsafe(32))"`, add it to the token list on the server as `reader=<value>` or `admin=<value>`, and restart the server (tokens are read at startup). Give each person their own token so one can be removed without affecting the others. Send it to them privately, never in a repo, a chat channel or a document. The person adds the header `Authorization: Bearer <token>` in their MCP client.
+
 ## Workflows
 
 ### A. One simulated user on one product

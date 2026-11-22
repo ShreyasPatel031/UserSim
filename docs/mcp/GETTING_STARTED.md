@@ -2,7 +2,7 @@
 
 UserSim lets an AI assistant (Claude, Cursor, or your own script) look at a real, public web product the way its users would, and bring back what it learned. You connect once, then ask your assistant in plain language.
 
-No account, token or setup is needed. This guide is for people using the server. The full reference for agents and operators is [README.md](README.md).
+No account, token or setup is needed for the basics. Some people also get a personal token for more access (section 6). This guide is for people using the server. The full reference for agents and operators is [README.md](README.md).
 
 ## 1. Connect
 
@@ -106,7 +106,53 @@ The limits change from time to time. The server reports its current limits at `h
 - **Be considerate of the product you test.** Use your own product, or a product whose team would be fine with it, and don't run it many times in a row.
 - **Treat the results as evidence, not as a verdict.** The predictions are based on reviews, and simulated users are not real people. Use them to find what to check with real users.
 
-## 6. If something goes wrong
+## 6. More access: reader and admin tokens
+
+Some people get a personal token from the UserSim owner. A token never changes the address. It adds the extra tools below, and your tokenless setup keeps working without it.
+
+| Access | What you can pull |
+|---|---|
+| No token | The tools above, within the daily limits. You see only your own runs |
+| Reader token | Everything above without the daily limits, plus: the information on the website's Product Hunt page, the list of every saved study, and the full report of any saved study |
+| Admin token | Everything a reader can do, plus a status overview of the server |
+
+**Using a token.** Add it to your client as an `Authorization` header with the value `Bearer <your token>`.
+
+Claude Code:
+```bash
+claude mcp add --transport http usersim https://35-202-98-224.sslip.io/mcp --header "Authorization: Bearer <your token>"
+```
+
+Claude Desktop (`mcp-remote` bridge):
+```json
+{
+  "mcpServers": {
+    "usersim": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://35-202-98-224.sslip.io/mcp", "--header", "Authorization: Bearer <your token>"]
+    }
+  }
+}
+```
+
+Cursor:
+```json
+{
+  "mcpServers": {
+    "usersim": { "url": "https://35-202-98-224.sslip.io/mcp", "headers": { "Authorization": "Bearer <your token>" } }
+  }
+}
+```
+
+**What to ask your assistant (reader or admin):**
+- "Use usersim_ph_page to show today's Product Hunt launches, the midnight forecast and how accurate it has been." Add a day, such as 2026-11-21, for a past day.
+- "Use usersim_list_studies to show the latest studies."
+- "Get the UserSim report for study `<study_id>`." With a reader token this works for any study, not only your own.
+- "Use usersim_admin_overview" (admin only).
+
+Keep your token private. It is yours: if it leaks, tell the owner and they will replace it. If a tool says "this tool needs a reader token", your token doesn't have that access.
+
+## 7. If something goes wrong
 
 | What you see | What to do |
 |---|---|
@@ -114,7 +160,7 @@ The limits change from time to time. The server reports its current limits at `h
 | A limit message (`anon_daily_usd_per_ip` and similar) | Daily budget used up. Try after midnight Pacific |
 | `UserSim is at its simulated-user limit right now` | Too many runs are open. Retry in a few minutes |
 | `unknown session_id` / `unknown study_id` | Wrong id, or the server restarted and dropped a running session |
-| HTTP 401 | Remove any `Authorization` header from your client. No token is needed |
+| HTTP 401 | You sent a wrong or old token. Remove the `Authorization` header (no token is needed for the open tools) or ask the owner for a current one |
 | Calls time out | Raise your client's timeout. Starting a run takes up to 20 seconds |
 
 The full list of errors and tools is in [README.md](README.md).
