@@ -68,3 +68,8 @@ Model switches, direction reviews and agenda changes, newest last.
   - Kept: the 03:45 recorder read ("rec": PH's hidden order, as raw data, baseline and truth); the midnight and lineup runs are unchanged.
   - Rehearsal: the tick schedule was replayed for every minute in a scratch copy on the VM; only the prereveal entries were removed.
   - Rollback: `cp -p ~/w/backup_tw12a/sched12a.txt.4cec4d5e ~/w/tw12a/sched12a.txt`.
+- 2026-11-22 ~18:36 UTC (10:36 PT): gemini_decisions_shadow INSTALLED on the pipeline VM (orchestrator 05:50Z Nov 22; recording only). Bundle experiments/pipeline_patches/20261122_gemini_decisions.
+  - Change: tw12a run.sh 5cd8b9e5 → 208a1587 (job cases gdsw and gdss); sched12a.txt be17d0bd → 5dca79f9 (01:10 gdsw write, 09:30 gdss score); script c9bbb774.
+  - Rehearsal on the VM: write gives "key missing" with rc 0; DRY rehearse of Nov 21 gives 2,190 people at about $0.24/day; a scratch run.sh gdsw run gives rc 0.
+  - The secret gemini-decisions-key does not exist yet (NOT_FOUND), so the job skips cleanly until it does.
+  - Rollback: restore ~/w/backup_tw12a/run.sh.5cd8b9e5 and sched12a.txt.be17d0bd into ~/w/tw12a/, and remove ~/w/experiments/ph_predict/gemini_decisions_shadow.py.
