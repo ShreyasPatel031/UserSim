@@ -83,3 +83,21 @@ def test_sign_in_refuses_off_google():
         out = asyncio.run(google_login.sign_in(sim))
     assert out["ok"] is False and out["reason"] == "not_on_google_signin"
     assert "b" not in json.dumps(out)
+
+
+def test_anonymous_allowed_when_google_signin_anon(monkeypatch):
+    monkeypatch.setenv("MVP_GOOGLE_STATE_URI", "gs://bucket/private/google_state/signups.json")
+    on = {"google_signin_token_callers": True, "google_signin_anon": True}
+    with mock.patch("mvp.sim_mcp.limits.get", lambda k: on.get(k)):
+        assert google_signin.allowed_for("anon:deadbeef")
+        assert not google_signin.allowed_for("")
+    with mock.patch("mvp.sim_mcp.limits.get", lambda k: {**on, "google_signin_token_callers": False}.get(k)):
+        assert not google_signin.allowed_for("anon:deadbeef")
+
+
+def test_google_account_data_pages_blocked():
+    for u in ("https://mail.google.com/mail/u/0", "https://myaccount.google.com/security", "https://drive.google.com/",
+              "https://passwords.google.com/", "https://www.gmail.com/"):
+        assert sessions.blocked_offsite(u, "https://cal.com"), u
+    assert not sessions.blocked_offsite("https://accounts.google.com/signin", "https://cal.com")
+    assert not sessions.blocked_offsite("https://docs.google.com/forms/x", "https://docs.google.com/forms/x")

@@ -205,11 +205,15 @@
     },
     "google_signin_token_callers": {
       "value": true,
-      "about": "true = sessions whose caller sent a valid bearer token start with the UserSim signups Google session (private object MVP_GOOGLE_STATE_URI, see mvp/sim_mcp/google_signin.py) on its seed, and may use Google's sign-in pages ('Continue with Google'). Anonymous callers never get it and stay blocked from Google. false = Google sign-in blocked for everyone."
+      "about": "true = Google sign-in ('Continue with Google') is on: sessions start with the UserSim signups Google session and the server signs in with usersim_google_signin. Token callers always get it; callers without a token only when google_signin_anon is true. false = Google sign-in blocked for everyone."
     },
     "google_signin_engine": {
       "value": "chromium",
       "about": "Browser engine for sessions that may use Google sign-in (token callers). chromium = the seeds' real Chrome over CDP (seed_cdp_endpoints): Google rejects Camoufox on datacenter IPs with a reCAPTCHA. Falls back to browser_engine when no Chromium seed is free or healthy. camoufox = same as everyone else."
+    },
+    "google_signin_anon": {
+      "value": true,
+      "about": "Let callers WITHOUT a token use Google sign-in (Nov 22, owner's decision for the public plugin). They stay under anon_daily_usd_per_ip. The model never sees the password or codes, and Gmail, Drive, Docs and Google Account pages are blocked for every session (BLOCKED_OFFSITE_HOSTS). false = token callers only."
     }
   }
 }

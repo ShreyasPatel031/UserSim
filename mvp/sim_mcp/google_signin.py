@@ -33,14 +33,16 @@ def state_uri() -> str:
 
 
 def allowed_for(owner: str) -> bool:
-    """True when this caller may use the Google session: feature on, a state configured, and a token caller."""
+    """True when this caller may use the Google session: feature on, a state or vault configured, and a token caller
+    (or any caller when google_signin_anon is on; anonymous callers stay under their daily $ cap)."""
     from mvp.sim_mcp import limits
     from mvp.sim_mcp.sessions import is_anon
 
     from mvp.sim_mcp import google_login
 
     on = bool(limits.get("google_signin_token_callers"))
-    return on and bool(state_uri() or google_login.configured()) and bool(owner) and not is_anon(owner)
+    who = bool(owner) and (not is_anon(owner) or bool(limits.get("google_signin_anon")))
+    return on and bool(state_uri() or google_login.configured()) and who
 
 
 def load() -> dict[str, Any] | None:

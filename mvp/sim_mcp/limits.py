@@ -63,6 +63,7 @@ DEFAULTS: dict[str, Any] = {
     ],
     "anon_allow_paid_captcha": True,
     "anon_allow_shared_aliases": False,
+    "google_signin_anon": True,
     # Where simulated users' browsers run: "seed_vm" (our own seed VMs, reached over an IAP SSH tunnel) or
     # "browserbase" (kept as a fallback path only). See mvp/sim_mcp/seed_backend.py.
     "browser_backend": "seed_vm",

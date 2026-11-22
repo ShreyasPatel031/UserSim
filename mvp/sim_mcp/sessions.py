@@ -116,6 +116,11 @@ BLOCKED_OFFSITE_HOSTS = (
     "login.live.com", "outlook.office.com", "outlook.office365.com", "mail.proton.me",
     "account.proton.me", "icloud.com", "mail.aol.com", "login.aol.com", "mail.zoho.com",
     "facebook.com", "twitter.com", "x.com", "linkedin.com",
+    # The signups Google account's own data: a session signed in with it must never open its mail, files or
+    # settings (another caller's verification codes, account takeover). Sign-in itself is accounts.google.com.
+    "gmail.com", "myaccount.google.com", "security.google.com", "passwords.google.com", "drive.google.com",
+    "docs.google.com", "photos.google.com", "contacts.google.com", "calendar.google.com", "takeout.google.com",
+    "payments.google.com", "pay.google.com", "admin.google.com", "console.cloud.google.com",
 )
 
 
