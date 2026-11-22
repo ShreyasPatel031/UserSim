@@ -53,3 +53,4 @@
 {"t": "cohort_sentiment_tune", "provider": "gcp", "usd": 0.21}
 {"t": "cohort_sentiment_reactions", "provider": "gcp", "usd": 0.0434}
 {"t": "cohort_sentiment_reactions", "provider": "gcp", "usd": 0.0438}
+{"t": "llm_vote_sim", "provider": "gemini_api", "usd": 0.0944}
