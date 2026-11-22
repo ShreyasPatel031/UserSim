@@ -1,0 +1,438 @@
+{
+ "test": "Gemini Decisions API (gemini-decision-1) vs no-LLM baseline: which held people upvote which launches",
+ "preregistration": "preregistration.json (committed before scoring)",
+ "days": [
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19"
+ ],
+ "person_days": 900,
+ "people": 669,
+ "person_launch_pairs": 37800,
+ "positive_pairs": 1194,
+ "base_rate": 0.0316,
+ "summary": {
+  "auc": {
+   "api": {
+    "value": 0.5987,
+    "ci95": [
+     0.5651,
+     0.6312
+    ]
+   },
+   "base": {
+    "value": 0.7413,
+    "ci95": [
+     0.7029,
+     0.7791
+    ]
+   },
+   "api_platt": {
+    "value": 0.5802,
+    "ci95": [
+     0.5408,
+     0.6183
+    ]
+   },
+   "api_minus_baseline": {
+    "value": -0.1426,
+    "ci95": [
+     -0.1686,
+     -0.1156
+    ]
+   }
+  },
+  "brier": {
+   "api": {
+    "value": 0.2294,
+    "ci95": [
+     0.2222,
+     0.2364
+    ]
+   },
+   "base": {
+    "value": 0.0293,
+    "ci95": [
+     0.0255,
+     0.0337
+    ]
+   },
+   "api_platt": {
+    "value": 0.0305,
+    "ci95": [
+     0.0264,
+     0.0351
+    ]
+   },
+   "api_minus_baseline": {
+    "value": 0.2,
+    "ci95": [
+     0.1926,
+     0.2072
+    ]
+   }
+  },
+  "recall_at_N": {
+   "api": {
+    "value": 0.1884,
+    "ci95": [
+     0.1669,
+     0.219
+    ]
+   },
+   "base": {
+    "value": 0.2571,
+    "ci95": [
+     0.2074,
+     0.3086
+    ]
+   },
+   "api_platt": {
+    "value": 0.1884,
+    "ci95": [
+     0.1669,
+     0.219
+    ]
+   },
+   "api_minus_baseline": {
+    "value": -0.0687,
+    "ci95": [
+     -0.1141,
+     -0.019
+    ]
+   }
+  },
+  "within_person_auc_backers": {
+   "api": {
+    "value": 0.6026,
+    "ci95": [
+     0.5822,
+     0.6235
+    ]
+   },
+   "base": {
+    "value": 0.6689,
+    "ci95": [
+     0.6464,
+     0.6913
+    ]
+   },
+   "api_platt": {
+    "value": 0.6026,
+    "ci95": [
+     0.5822,
+     0.6235
+    ]
+   },
+   "api_minus_baseline": {
+    "value": -0.0663,
+    "ci95": [
+     -0.0943,
+     -0.0388
+    ]
+   }
+  }
+ },
+ "per_day": {
+  "2026-11-17": {
+   "auc": {
+    "api": 0.5926,
+    "base": 0.7235,
+    "api_platt": 0.5926
+   },
+   "brier": {
+    "api": 0.2151,
+    "base": 0.0277,
+    "api_platt": 0.0285
+   },
+   "recall_at_N": {
+    "api": 0.1662,
+    "base": 0.1847,
+    "api_platt": 0.1662
+   },
+   "within_person_auc_backers": {
+    "api": 0.5687,
+    "base": 0.6724,
+    "api_platt": 0.5687
+   }
+  },
+  "2026-11-18": {
+   "auc": {
+    "api": 0.6469,
+    "base": 0.7621,
+    "api_platt": 0.6469
+   },
+   "brier": {
+    "api": 0.2328,
+    "base": 0.0254,
+    "api_platt": 0.0261
+   },
+   "recall_at_N": {
+    "api": 0.2111,
+    "base": 0.2559,
+    "api_platt": 0.2111
+   },
+   "within_person_auc_backers": {
+    "api": 0.6277,
+    "base": 0.657,
+    "api_platt": 0.6277
+   }
+  },
+  "2026-11-19": {
+   "auc": {
+    "api": 0.5739,
+    "base": 0.7318,
+    "api_platt": 0.5739
+   },
+   "brier": {
+    "api": 0.242,
+    "base": 0.0365,
+    "api_platt": 0.0388
+   },
+   "recall_at_N": {
+    "api": 0.1881,
+    "base": 0.3211,
+    "api_platt": 0.1881
+   },
+   "within_person_auc_backers": {
+    "api": 0.6115,
+    "base": 0.6775,
+    "api_platt": 0.6115
+   }
+  }
+ },
+ "calibration_deciles": {
+  "api": [
+   {
+    "mean_p": 0.0808,
+    "observed": 0.0082,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.1334,
+    "observed": 0.0278,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.1838,
+    "observed": 0.027,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.2469,
+    "observed": 0.0262,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.3277,
+    "observed": 0.0331,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.4278,
+    "observed": 0.0304,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.5399,
+    "observed": 0.0325,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.6421,
+    "observed": 0.0307,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.7251,
+    "observed": 0.0434,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.8016,
+    "observed": 0.0566,
+    "pairs": 3780
+   }
+  ],
+  "base": [
+   {
+    "mean_p": 0.0049,
+    "observed": 0.0026,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0072,
+    "observed": 0.0151,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0096,
+    "observed": 0.0198,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.013,
+    "observed": 0.009,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0172,
+    "observed": 0.0175,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.023,
+    "observed": 0.0156,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0309,
+    "observed": 0.031,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0429,
+    "observed": 0.0362,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.065,
+    "observed": 0.0497,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.148,
+    "observed": 0.1193,
+    "pairs": 3780
+   }
+  ],
+  "api_platt": [
+   {
+    "mean_p": 0.0149,
+    "observed": 0.032,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0201,
+    "observed": 0.022,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0231,
+    "observed": 0.0209,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0259,
+    "observed": 0.0198,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0289,
+    "observed": 0.0254,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0326,
+    "observed": 0.0323,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0369,
+    "observed": 0.0275,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0412,
+    "observed": 0.0384,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0455,
+    "observed": 0.0421,
+    "pairs": 3780
+   },
+   {
+    "mean_p": 0.0516,
+    "observed": 0.0556,
+    "pairs": 3780
+   }
+  ]
+ },
+ "auc_by_person_activity_tertile_30d": {
+  "low": {
+   "api": 0.4796,
+   "base": 0.665,
+   "pairs": 12600,
+   "positives": 241
+  },
+  "mid": {
+   "api": 0.5931,
+   "base": 0.6826,
+   "pairs": 12600,
+   "positives": 230
+  },
+  "high": {
+   "api": 0.5759,
+   "base": 0.7225,
+   "pairs": 12600,
+   "positives": 723
+  }
+ },
+ "exploratory_not_preregistered": {
+  "auc_rank_average_api_and_baseline": 0.7116,
+  "auc_api_within_day": {
+   "2026-11-17": 0.5926,
+   "2026-11-18": 0.6469,
+   "2026-11-19": 0.5739
+  }
+ },
+ "person_only_auc_log_upvotes_30d": 0.6682,
+ "baseline_coefficients": {
+  "l7": 0.9655,
+  "l30": -0.1977,
+  "overlap": -1.1145,
+  "lhn": 0.2925,
+  "lhmed": -0.0326,
+  "lline": -0.4369
+ },
+ "baseline_fit": {
+  "days": [
+   "2026-11-12",
+   "2026-11-13",
+   "2026-11-14",
+   "2026-11-15",
+   "2026-11-16"
+  ],
+  "pairs": 56000,
+  "positives": 2446
+ },
+ "api_p_range": [
+  0.0185,
+  0.9554
+ ],
+ "bootstrap": "2000 draws over people; person-days of a person resampled together; paired",
+ "spend": {
+  "api_calls": 900,
+  "input_tokens": 6140976,
+  "usd": 0.614,
+  "usd_per_1000_person_days": 0.68,
+  "tokens_per_person_day_mean": 6823,
+  "price": "$0.10 per 1M input tokens, no output charge",
+  "cap": "$5 hard stop in run_api.py (not reached)",
+  "rate_limits_hit": "none (6 workers, 900 calls in about 70 s)"
+ },
+ "leak_checks_done": [
+  "history item launch date < test day, asserted per person-day",
+  "history items must sit below the oldest Upvotes-tab item dated on/after the test day (drops upvotes cast after the person's first vote on a launch dated >= D)",
+  "comments: exact time before 00:00 PT of the test day, asserted",
+  "hunter track record from launches dated before the test day only",
+  "baseline fitted on Nov 12-16 only, asserted (fit days < test days)",
+  "residual leak not removable with held data: an upvote on an OLD launch cast on day D before the person's first vote on a D launch (the Upvotes tab carries no vote time)"
+ ],
+ "verdict": "Not worth running daily in this form. On the same inputs the API ranks person-launch pairs clearly worse than a 6-feature logistic baseline (AUC 0.60 vs 0.74), names fewer backers (recall at N 18.8% vs 25.7%), orders a backer's own picks worse (0.60 vs 0.67), and its raw P is uncalibrated (mean 0.43 vs a 3% base rate; Brier 0.229 vs 0.029). Averaging its rank with the baseline lowers AUC (0.71). Cheap ($0.68 per 1,000 person-days), so a re-test with a different framing is affordable, but not as a daily line.",
+ "notes": [
+  "Population is E5's re-read rule (complete, held before D, re-read after D closed) with a 50/50 backer/active-non-backer sample: recall at N here is not comparable 1:1 to E5's ~29% on all held people.",
+  "REPORT.md could not be written by this agent (the harness refused a .md report file); the pre-registration is preregistration.json (committed before scoring, commit 1465c16e) and the report is in this file and the commit message."
+ ]
+}
