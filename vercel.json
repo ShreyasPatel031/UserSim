@@ -2,6 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/mcp",
+      "destination": "https://35-202-98-224.sslip.io/mcp"
+    },
+    {
+      "source": "/mcp/(.*)",
+      "destination": "https://35-202-98-224.sslip.io/mcp/$1"
+    },
+    {
       "source": "/atelier/(.*)",
       "destination": "/atelier/$1"
     },
