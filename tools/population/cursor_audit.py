@@ -342,6 +342,14 @@ def main():
         # until 30+ pass the full whole-person audit.
         refresh_only_ok = (md5 == BOUI and overlaid and bool(d.get("upvotes_refreshed_at")) and n in vm_t
                            and store_complete is not None and n.lower() in store_complete)
+        # 16:3xZ Nov 22 (orchestrator 15:05Z, AGENTS.md): a BOuI full pull passes the build gate only when EVERY tab is
+        # recorded as read to PH's own end in its paging record (a PH end, or header 0 = nothing to page) and the
+        # person passes the whole-person check. Without per-tab paging it stays held.
+        if md5 == BOUI and not refresh_only_ok and ok and not d.get("upvotes_refreshed_at"):
+            ends = [str(((d.get(t) or {}).get("paging") or {}).get("ended") or "") for t in
+                    ("upvotes", "followers", "following", "hunted", "collections", "stacks", "reviews", "forums", "activity")]
+            refresh_only_ok = all(e in g.get("SERVER_END", set()) or e in ("header 0", "header_0") for e in ends)
+            refresh_c["boui_full_paging_pass" if refresh_only_ok else "boui_full_paging_missing"] += 1
         if md5 not in AUDITED_BUILDS and not refresh_only_ok:
             gate.append("build_not_audited" if md5 != BOUI else
                         ("build_boui_refresh_not_rebuilt" if d.get("upvotes_refreshed_at") else "build_boui_full_pull_unaudited"))
@@ -420,6 +428,7 @@ def main():
     print(f"UPVOTE_REFRESHES {stamp}: fresh24h={refresh_c['fresh24h']} older={refresh_c['older']} "
           f"items_added>0={refresh_c['items_added>0']} items_added=0={refresh_c['items_added=0']} "
           f"overlay_to_held={refresh_c['overlay_to_held']}", flush=True)
+    print(f"BOUI_FULL {stamp}: paging_pass={refresh_c['boui_full_paging_pass']} paging_missing={refresh_c['boui_full_paging_missing']}", flush=True)
     print(f"REUPLOADED_OLD_SAVES {stamp}: {sum(reupload_c.values())} of {len(todo)} (pull finished on an earlier day than staged) "
           f"vms={len(reupload_c)}", flush=True)
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
