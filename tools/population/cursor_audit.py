@@ -292,7 +292,12 @@ def main():
             return False
         sd = store_doc(n)
         su = (sd or {}).get("upvotes")
-        if not isinstance(su, dict) or str((su.get("paging") or {}).get("ended")) not in g.get("SERVER_END", set()):
+        if not isinstance(su, dict):
+            return False
+        # 07:0xZ Nov 22: older store records carry no paging.ended (11 of 16 FAIL_short at 06:51Z); a store copy that the
+        # newest quality run counts complete reached PH's end by the quality rules, so it is a valid base too
+        at_end = str((su.get("paging") or {}).get("ended")) in g.get("SERVER_END", set())
+        if not at_end and not (store_complete is not None and n.lower() in store_complete):
             return False
         key = lambda i: str(i.get("post_id") or i.get("url") or "")
         new_items = list(u.get("items") or [])
