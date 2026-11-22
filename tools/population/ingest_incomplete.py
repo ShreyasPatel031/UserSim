@@ -88,6 +88,13 @@ def main():
             after = sum(len((m.get(t) or {}).get("items_earlier") or []) for t in U.TABS if isinstance(m.get(t), dict))
             c["items_earlier_added"] += after - before
             c["unioned_into_store_record"] += 1
+        elif names is not None:
+            # orchestrator 01:05Z Nov 22 (TARGET_SCHEMA: a person less than whole is not written): a failed save of a
+            # person with no store record stays staged; it goes to people_live/incomplete_failed/, outside the store
+            sh("gcloud", "storage", "cp", f"{SRC}/{n}.json", f"{VM.rsplit('/', 1)[0]}/incomplete_failed/{n}.json")
+            c["kept_outside_store"] = c.get("kept_outside_store", 0) + 1
+            ok.append(n)
+            continue
         else:
             m = inc
             m.setdefault("provenance_incomplete", {"source": SRC.split("/raw/", 1)[-1], "note": "failed whole-person check; kept so nothing is lost"})
