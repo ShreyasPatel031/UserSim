@@ -73,6 +73,8 @@ give `session_id`, `study_id` and `watch_url` (the session was already started f
   "steps": [{"step": 1, "action": {"type": "click", "x": 640, "y": 412}, "thought": "…", "url": "…", "human_s": 3.5}],
   "expectations": ["what this persona expected from the tools they already use, and whether the product met it"],
   "friction": ["each place you hesitated, backtracked, misread something, or nearly left"],
+  "would_say": "2-4 sentences in this persona's own voice: what you would tell a friend or post as a comment about the product",
+  "top_problems": ["up to 3 problems or objections, most important first, in your own words"],
   "report": { "the full JSON that usersim_get_report returned" : "…" }
 }
 ```
