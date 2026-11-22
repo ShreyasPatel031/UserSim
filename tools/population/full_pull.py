@@ -81,6 +81,14 @@ def load_full(path, ids, upload_time=None, source=None, filled=None):
     # tab keeps the prior pull's time (run.finished_utc_prior_pull); the upvotes tab gets upvotes_refreshed_at.
     up_rt = None
     prior = (d.get("run") or {}).get("finished_utc_prior_pull")
+    # 11:0xZ Nov 22: refreshes chain (a second refresh's prior_pull is the first refresh's stamped finish time; 63 people
+    # at 11:00Z). Follow earlier_records back to the pull that was not a refresh.
+    chain = {str((e.get("run") or {}).get("finished_utc")): (e.get("run") or {}).get("finished_utc_prior_pull")
+             for e in (d.get("earlier_records") or []) if isinstance(e, dict)}
+    seen = set()
+    while prior and chain.get(str(prior)) and str(prior) not in seen:
+        seen.add(str(prior))
+        prior = chain[str(prior)]
     if d.get("upvotes_refreshed_at"):
         up_rt = _ts(d["upvotes_refreshed_at"])
         if prior and not pd.isna(_ts(prior)):
