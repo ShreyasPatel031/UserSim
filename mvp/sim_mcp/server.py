@@ -15,6 +15,7 @@ from typing import Any
 from mcp.server.fastmcp import Context, FastMCP, Image
 from pydantic import BaseModel, ConfigDict, Field
 from mcp.server.transport_security import TransportSecuritySettings
+from mcp.types import ToolAnnotations
 
 from mvp.sim_mcp import sessions as S
 from mvp.sim_mcp.report import (
@@ -226,7 +227,13 @@ class StudyTask(BaseModel):
     favors: str | None = Field(default=None, description="Optional: the site URL or name this task is aimed at.")
 
 
-@mcp.tool(structured_output=False)
+def _ann(read_only: bool, open_world: bool) -> ToolAnnotations:
+    """Tool hints for clients (ChatGPT requires all three as explicit booleans). Nothing here deletes or overwrites
+    the caller's data: browser actions run in a throwaway cloud browser with Atelier Sim's own accounts."""
+    return ToolAnnotations(readOnlyHint=read_only, destructiveHint=False, openWorldHint=open_world)
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_start_study(
     ctx: Context,
     product_url: str = Field(description="Public URL of the target product (https://...)."),
@@ -276,7 +283,7 @@ async def usersim_start_study(
     )
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=False))
 async def usersim_finish_study(ctx: Context, study_id: str) -> str:
     """Write the study report now from the cells that ran; cells never started are marked skipped.
 
@@ -301,7 +308,7 @@ SAVED_ACCOUNT_NOTE = (
     "(e.g. 'Log in' / 'Go to app' / the app URL); you will already be signed in.")
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_start_session(
     ctx: Context,
     product_url: str = "",
@@ -362,7 +369,7 @@ async def usersim_start_session(
     )
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=True))
 async def usersim_observe(ctx: Context, session_id: str) -> list[Any] | str:
     """Current screenshot, URL and title of the simulated user's browser, without acting."""
     try:
@@ -372,7 +379,7 @@ async def usersim_observe(ctx: Context, session_id: str) -> list[Any] | str:
         return _fail(exc)
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any] | str, thought: str,
                       x: int | str | None = None, y: int | str | None = None, text: str | None = None,
                       keys: str | None = None, dy: int | str | None = None, url: str | None = None) -> list[Any] | str:
@@ -436,7 +443,7 @@ async def usersim_act(ctx: Context, session_id: str, action: dict[str, Any] | st
         return _fail(exc)
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=False))
 async def usersim_finish(ctx: Context, session_id: str, outcome: str, notes: str) -> str:
     """End the simulated user's session. outcome: completed | gave_up | blocked.
 
@@ -490,7 +497,7 @@ async def usersim_finish(ctx: Context, session_id: str, outcome: str, notes: str
     )
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
 async def usersim_get_report(ctx: Context, study_id: str, format: str = "markdown") -> str:
     """The study report: independent judge verdict, proof checks, friction, every step with screenshot links.
 
@@ -527,7 +534,7 @@ class AgentPersona(BaseModel):
     bio: str | None = Field(default=None, description="Optional one-line description.")
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=True))
 async def usersim_predict_experience(
     ctx: Context,
     product: str = Field(description='Product name as review sites list it, e.g. "Basecamp". The scrapers search by this name.'),
@@ -566,7 +573,7 @@ async def usersim_predict_experience(
 # ---------------------------------------------------------------- human mode on top of agent mode
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
 async def usersim_plan_human_run(
     ctx: Context,
     product: str = Field(description='Product name as review sites list it, e.g. "Basecamp".'),
@@ -585,7 +592,7 @@ async def usersim_plan_human_run(
     return json.dumps(out, indent=1, default=str)
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=False))
 async def usersim_combine_human_run(
     ctx: Context,
     product: str = Field(description='Product name as review sites list it, e.g. "Basecamp".'),
@@ -745,7 +752,7 @@ def _host_registry_account(sim: S.SimSession) -> str | None:
                                "are read with usersim_wait_for_verification_code / _link."})
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_signup_identity(ctx: Context, session_id: str, no_plus: bool = False, same_account_as: str = "") -> str:
     """Fresh, never-used email alias (a real inbox UserSim reads) plus password, name and username for signing up.
 
@@ -930,7 +937,7 @@ def wait_next_hint(code: Any, links: list[str]) -> str:
     return "this mail has no code and no link: check the page for what it expects, or call this tool again for a newer mail"
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
 async def usersim_wait_for_verification_code(ctx: Context, session_id: str, timeout_s: int = 45) -> str:
     """Wait for the signup email for this session's alias and return the verification code in it.
 
@@ -939,7 +946,7 @@ async def usersim_wait_for_verification_code(ctx: Context, session_id: str, time
     return await _wait(ctx, session_id, timeout_s, "code")
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
 async def usersim_wait_for_verification_link(ctx: Context, session_id: str, timeout_s: int = 45) -> str:
     """Wait for the signup email for this session's alias and return its verification links (best first).
 
@@ -973,7 +980,7 @@ def resolve_mail_link(links: list[str], url: str, number: int) -> str:
                          "Pass link_number=1 (the first link) instead of copying the URL")
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_open_verification_link(ctx: Context, session_id: str, url: str = "", thought: str = "I click the link in the email.",
                                         link_number: int = 0) -> list[Any] | str:
     """Open a link from the verification email in the browser (like clicking it in the email).
@@ -1032,7 +1039,7 @@ def _sms_allowed(owner: str) -> None:
                              "'blocked' and say the site requires a phone number")
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_signup_phone(ctx: Context, session_id: str) -> str:
     """Phone number for an SMS step (only if the site insists on one). Then call usersim_wait_for_sms_code.
 
@@ -1069,7 +1076,7 @@ async def usersim_signup_phone(ctx: Context, session_id: str) -> str:
         return _fail(RuntimeError(f"no SMS number available: {exc}"))
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
 async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: int = 45) -> str:
     """Wait for the SMS verification code sent to the number from usersim_signup_phone.
 
@@ -1108,7 +1115,7 @@ async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: in
         return _fail(exc)
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_google_signin(ctx: Context, session_id: str) -> list[Any] | str:
     """Finish a "Continue with Google" / "Sign in with Google" step with the Atelier signups Google account.
 
@@ -1143,7 +1150,7 @@ async def usersim_google_signin(ctx: Context, session_id: str) -> list[Any] | st
         return _fail(exc)
 
 
-@mcp.tool(structured_output=False)
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_solve_captcha(ctx: Context, session_id: str) -> list[Any] | str:
     """Try to get past a captcha on the current page (the same solver path the website driver uses).
 
