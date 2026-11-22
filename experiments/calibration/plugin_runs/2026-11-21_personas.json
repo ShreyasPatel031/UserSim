@@ -1,0 +1,1563 @@
+{
+ "day": "2026-11-21",
+ "caveats": [
+  "simulated users (Claude), one run each",
+  "product may have changed since launch; the model may know it"
+ ],
+ "launches": [
+  {
+   "key": "c01_close",
+   "name": "Close",
+   "url": "https://www.close.com",
+   "role": "competitor",
+   "of": "p01_alter_contacts",
+   "users": [
+    {
+     "label": "u1",
+     "persona": "Plain tester: methodical, tries to finish every step, and notes anything broken, confusing or slow.",
+     "outcome": "blocked",
+     "n_steps": 13,
+     "drop_off": {
+      "step": 13,
+      "url": "https://accounts.google.com/v3/signin/challenge/selection"
+     },
+     "would_say": "Blocked at signup, never reached the app. Easy part: the homepage hero has an email field and a Google button, and the email carries over to a clean password step (12-char minimum, strength meter). Broken part: pressing Continue showed 'We couldn't verify this signup. Try a different browser or email support@close.com'. It gives no reason and no way to fix it in place. A second try showed a different error ('There was an error loading reCAPTCHA, please refresh and try again'). Refreshing as told wiped the password, and the retry gave the same 'couldn't verify' error. Going Back, the error banner stayed stuck on step 1 too. Google signup was the fallback, but the test Google account hit Google's 2-step verification with the authenticator locked ('too many attempts'). That is a test-account limit, not Close's fault. Minor: the 'Email saved' line shows a broken square icon. Could not add a lead or log an activity.",
+     "top_problems": [
+      "Step 4: Continue on the password step returned 'We couldn't verify this signup. Try a different browser or email support@close.com'. It is vague and can't be fixed in place.",
+      "Step 5: a second Continue gave a different error ('error loading reCAPTCHA, please refresh'). The two messages disagree with each other.",
+      "Step 6-7: refreshing as instructed cleared the password field, so I had to retype it."
+     ],
+     "praise_and_expectations": [
+      "Expected a HubSpot/Pipedrive-style email signup (email, password, verify inbox, land in the app). Close starts the same way but then rejected the signup with a generic 'couldn't verify' bot-check error. Not met.",
+      "Expected an error message to say what was wrong and how to fix it. Close said only 'try a different browser or email support'. Not met.",
+      "Expected Google signup as a one-click fallback. Close offers it on both the homepage and the signup modal (met), but the test Google account was stopped by Google's own 2-step check."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Founder of a 4-person B2B SaaS startup doing founder-led sales out of spreadsheets. Judges whether Close pays for itself fast and leaves if the value isn't clear within minutes.",
+     "outcome": "blocked",
+     "n_steps": 9,
+     "drop_off": {
+      "step": 9,
+      "url": "https://app.close.com/login/?referrer=close.com%2F"
+     },
+     "would_say": "Could not log in with the shared account from session 078121584a6940508f0846be67c9b8e0. Every submit over about 3 minutes returned 'The email address or password was incorrect.' (5 submits, with waits between). The account most likely was never created in the account-owner session. This is a test-setup problem, not clear evidence about Close. The login page itself was easy: Log in is top-right, and the password field appears after the email. Never got inside the app.",
+     "top_problems": [
+      "Every login attempt returned 'The email address or password was incorrect.' The shared account appears not to exist (test setup).",
+      "The error is the same for an unknown email and a wrong password, so I could not tell whether the account existed at all."
+     ],
+     "praise_and_expectations": [
+      "Expected a standard top-right Log in like HubSpot/Pipedrive: met.",
+      "Expected email + password login without friction: the form was standard (email first, then password), but the credentials never worked.",
+      "Expected to reach the lead list and add a lead within a couple of minutes: not reached, because login was blocked."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Sales-ops PM at a 30-person company evaluating a HubSpot replacement. Goes straight to pricing, integrations and API details, and leaves on vague pricing or a me-too feature set.",
+     "outcome": "blocked",
+     "n_steps": 10,
+     "drop_off": {
+      "step": 10,
+      "url": "https://app.close.com/login/?referrer=close.com%2Fpricing"
+     },
+     "would_say": "Pre-login evaluation went well for this persona. The pricing page was one click away and showed public per-seat prices (Solo $9, Essentials $35, Growth $99, Scale $139 per user/mo on annual billing) and a clear feature-per-tier list. It stated that Essentials has no API quota and no per-request fees, that MCP is included, that calling, email and SMS are built in, that the trial is 14 days with no card, and that free migration help is offered. Then I was blocked at login. The shared account credentials (account_from 078121584a6940508f0846be67c9b8e0) were rejected with 'The email address or password was incorrect' twice, and in between the site rate-limited me with 'Please try again in a few minutes' (HTTP 429). The shared account was probably never fully created, or other users of it caused the rate limit. I never reached the app, so no lead or activity was logged.",
+     "top_problems": [
+      "Login rejected the shared account credentials with 'The email address or password was incorrect' (the account may never have been created by the signup session).",
+      "After 2 attempts the site returned HTTP 429, 'Please try again in a few minutes', with no countdown or unlock time; the next attempt after a wait again gave 'incorrect' rather than any guidance about verification status.",
+      "Pricing page does not link directly to API docs, which this persona wanted to check."
+     ],
+     "praise_and_expectations": [
+      "Expected public per-seat pricing, unlike HubSpot's sales-call gating and seat add-ons: met. All tiers are priced on the page and the annual/monthly toggle is clear.",
+      "Expected API limits and integration details to be visible before talking to sales: mostly met. 'No daily API request quota or per-request fees' and MCP connectivity are listed on the tiers, but there was no direct link to API docs from pricing.",
+      "Expected calling to be included rather than a paid add-on (as with HubSpot or Aircall): met. Built-in calling, email and SMS are on every tier.",
+      "Expected a standard email+password login like HubSpot or Pipedrive: login has two steps (email first, then password). Not a problem in itself, but the credentials failed and the error states gave no useful guidance."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Freelance web designer who has heard 'CRM' but never used one, juggling clients in email. Wants to see what it actually does and leaves if signup or a paywall comes before anything useful.",
+     "outcome": "blocked",
+     "n_steps": 7,
+     "drop_off": {
+      "step": 7,
+      "url": "https://app.close.com/login/?referrer=close.com%2F"
+     },
+     "would_say": "Could not log in with the shared account from session 078121584a6940508f0846be67c9b8e0. The two-step email-then-password login was easy to follow, but the first attempt returned 'The email address or password was incorrect' (HTTP 400). Retries then returned 'Please try again in a few minutes' (HTTP 429), probably a rate limit set off by other simulated users logging in to the same account at the same time. The account may not have been fully created yet, or it may have no password set. I never reached the app, so no lead was added and no activity was logged.",
+     "top_problems": [
+      "The credentials I was given came back as 'incorrect' on the first try.",
+      "After only two tries I was locked out with 'Please try again in a few minutes' (429), and it gave no sign of how long to wait.",
+      "The login page's left side is all sales-team and AI-caller marketing, which says little to a solo freelancer about what the product does for them."
+     ],
+     "praise_and_expectations": [
+      "Expected a familiar email-then-password login like Google's; Close's two-step login met that.",
+      "Expected logging in to lead straight into an app where I could add a client; I never got past the login screen."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Growth marketer at an agency who sets up tools for clients and cares about calling, sequences and integrations. Skims quickly and bails on anything that feels like a generic CRM clone.",
+     "outcome": "blocked",
+     "n_steps": 6,
+     "drop_off": {
+      "step": 6,
+      "url": "https://app.close.com/login/?referrer=close.com%2F"
+     },
+     "would_say": "Could not log in, so I never reached the app. The home page sold the right story (calling, email, SMS and automation built in), and the Log in link and email-first login were quick, much like HubSpot. But the shared account's email and password were rejected twice with 'The email address or password was incorrect.' A third try about 10s later hit a rate limit (HTTP 429, 'Please try again in a few minutes'). The account from the creator session (078121584a6940508f0846be67c9b8e0) probably wasn't finished yet, or several sims were logging in to it at once. I stopped because the login was blocked, so I never added a lead or logged a call, email or note.",
+     "top_problems": [
+      "The shared credentials were rejected as incorrect twice. The account was probably not finished yet, or other sims were logging in to it at the same time.",
+      "The rate limit (HTTP 429) kicked in after only 3 login attempts, and 'Please try again in a few minutes' does not say how long to wait."
+     ],
+     "praise_and_expectations": [
+      "Expected an email-first login like HubSpot or Apollo: met. Email, then the password field, then Log in, with no friction.",
+      "Expected to land in the app with an obvious 'add lead' and dialer: not reached, because the login was blocked."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "c09_inbox_zero",
+   "name": "Inbox Zero",
+   "url": "https://www.getinboxzero.com",
+   "role": "competitor",
+   "of": "p09_glassmail",
+   "users": [
+    {
+     "label": "u1",
+     "persona": "Plain tester: methodical, tries to finish the task end to end, and notes anything broken or confusing along the way.",
+     "outcome": "blocked",
+     "n_steps": 8,
+     "drop_off": {
+      "step": 8,
+      "url": "https://accounts.google.com/v3/signin/challenge/selection"
+     },
+     "would_say": "Landing page was clear (AI email assistant for Gmail/Outlook) and 'Get started free' went straight to auth. Signup is provider-only: Google, Microsoft, Apple or SSO. 'Email code' is labeled '(existing accounts)', so new users can't sign up with email. That's reasonable because the product needs mailbox access, but 'Get started free' leads to a page titled 'Sign In', which is a small mismatch. I picked Google. The OAuth request asks for gmail.modify, gmail.settings.basic and contacts scopes. Google sign-in for the test account got stuck: first a reCAPTCHA (cleared), then the password, then 2-Step Verification with the Authenticator option 'unavailable because of too many attempts'. The signin helper timed out twice. This was a test-account and Google 2FA problem, not an Inbox Zero bug. I never got into the app, so I couldn't test the cleanup or organize features. Blocked at Google 2-Step Verification.",
+     "top_problems": [
+      "'Get started free' lands on a page headed 'Sign In', not 'Sign up' - briefly made me think I was in the wrong place.",
+      "Email-code login is restricted to '(existing accounts)', hidden under 'Other options'; there is no email signup for new users.",
+      "OAuth asks for broad scopes (gmail.modify, gmail.settings.basic, contacts) - a privacy-conscious user might hesitate."
+     ],
+     "praise_and_expectations": [
+      "Expected an email/password signup option like most SaaS tools; Inbox Zero only offers OAuth providers (Google, Microsoft, Apple, SSO) for new accounts. Partially met: understandable for a mailbox-connected tool, like Superhuman or SaneBox's Google-connect flow.",
+      "Expected 'Get started free' to lead to a sign-up page; it leads to a page titled 'Sign In'. Minor mismatch.",
+      "Expected to reach the app and run an inbox cleanup; not reached due to Google 2FA on the test account."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo SaaS founder drowning in 200+ emails a day from investors, customers and vendors. Judges tools on time saved per dollar and bails if the value isn't clear within a minute.",
+     "outcome": "blocked",
+     "n_steps": 8,
+     "drop_off": {
+      "step": 8,
+      "url": "https://www.getinboxzero.com/login/options?next=%2Fwelcome-redirect"
+     },
+     "would_say": "Blocked at login. The account_from session had no email identity, so the shared account was the Google one. Google sign-in got past reCAPTCHA (solver) and the password, then hit 2-Step Verification with 'Too many failed attempts - try again in a few hours'. That lockout is on the test Google account, not Inbox Zero. Inbox Zero's sign-in offers only Google/Microsoft, with Apple, 'Email code (existing accounts)' and SSO under 'Other options'. There is no email or password signup for new accounts, so I had no other way in (provider-only signup). Easy: the landing page explains the value within seconds, and Log in is easy to find. Hard: no email fallback for new users, and 'Other options' only says 'existing accounts' once you click it. I never reached the app, so I never saw any cleanup.",
+     "top_problems": [
+      "Google sign-in hit reCAPTCHA, then the 2-Step Verification 'Too many failed attempts' lockout (test-account issue in Google's flow, not product friction).",
+      "Inbox Zero sign-up works only through a provider (Google, Microsoft, Apple or SSO). 'Other options' email code is limited to existing accounts, so there's no fallback when a provider login fails.",
+      "The 'existing accounts' limit on email code is only shown after clicking 'Other options'."
+     ],
+     "praise_and_expectations": [
+      "Expected one-click Google login like Superhuman or SaneBox: offered, but the run was blocked by a 2FA lockout on Google's side (not Inbox Zero's fault).",
+      "Expected to see the value (inbox triage) within a minute: the landing page states it clearly, but I never reached the app to see it work.",
+      "Expected an email or password fallback: only 'Email code (existing accounts)', so there was no way to sign up without an OAuth provider."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Backend developer who cares about what an AI email tool can read and where data goes. Checks privacy, open-source status and pricing before granting Gmail access.",
+     "outcome": "blocked",
+     "n_steps": 15,
+     "drop_off": {
+      "step": 15,
+      "url": "https://accounts.google.com/v3/signin/challenge/totp"
+     },
+     "would_say": "Blocked at Google sign-in. The shared Atelier signups Google account hit '2-Step Verification: Too many failed attempts, try again in a few hours', so this is an infrastructure block, not the product's fault. The account_from session (d9d7b9f0db154b52b7174b30b79e7601) never created an identity, and Inbox Zero's 'Email code' login only works for existing accounts, so new users must use Google, Microsoft or Apple. Pre-login due diligence went well. Pricing is clear: $20/$28/$40 per user per month billed annually ($25/$35/$50 monthly), a 7-day trial and a 14-day refund. The header 'Get started free' CTA reads as slightly misleading for what is a trial. The footer links GitHub (open source), SOC2 Compliant and Privacy. Privacy section 5 clearly says subject, body, sender/recipient and labels go to third-party AI providers, with no training and near-zero retention, but it does not name the providers. The privacy page has no site header or nav, so I had to use browser back. The OAuth request asks for gmail.modify, gmail.settings.basic and contacts; contacts is broader than expected. I never reached the app, so I could not test inbox cleanup.",
+     "top_problems": [
+      "Header CTA says 'Get started free', but pricing shows only a 7-day trial with no free tier.",
+      "Privacy/SOC2/GitHub signals are only in the footer, not near the pricing cards or the signup.",
+      "Privacy page has no site header or nav; I had to use browser back to return."
+     ],
+     "praise_and_expectations": [
+      "Expected pricing to be public before connecting Gmail. Met: clear three-tier pricing, monthly/annual toggle, and a refund FAQ.",
+      "Expected an open-source / self-host signal. Partly met: GitHub is linked in the footer, but pricing does not mention self-hosting (only enterprise 'on-premise deployment' via sales).",
+      "Expected a plain statement of what the AI reads and whether it trains on mail. Met: privacy section 5 lists data types, no training and zero retention. Not met: it does not name the LLM providers, unlike subprocessor lists some tools (e.g. Superhuman/Shortwave) publish.",
+      "Expected minimal OAuth scopes. Partly met: gmail.modify is expected for archiving and labelling, but the contacts scope is broader than a cleanup tool needs.",
+      "Expected an email-first login like most dev tools. Not met for new users: email code only works for existing accounts."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Growth marketer who subscribes to dozens of newsletters and wants a bulk unsubscriber and auto-labeling. Compares against tools they've tried and leaves on vague pricing.",
+     "outcome": "blocked",
+     "n_steps": 8,
+     "drop_off": {
+      "step": 8,
+      "url": "https://accounts.google.com/v3/signin/challenge/selection"
+     },
+     "would_say": "Pricing was easy to find and clear: Starter $20/user/mo annual, Plus $28, Professional $40, 7-day free trial. That passes the vague-pricing test, though there is no free tier for just bulk unsubscribe, and Clean Email and Unroll.me are cheaper or free. Login offers only Google, Microsoft, Apple and SSO; 'Email code' is for existing accounts only, so it is effectively provider-only signup. The account_from session had no email identity, so I used Sign in with Google. Google showed a reCAPTCHA (solved), then a password step, then 2-Step Verification, where the Authenticator option was 'Unavailable because of too many attempts', probably because parallel simulated users were signing in to the shared Google account. I never reached the Inbox Zero app. This was a block in the test harness, not a product failure.",
+     "top_problems": [
+      "Login screen shows only Google/Microsoft; plain email is hidden under 'Other options' and is limited to existing accounts.",
+      "No obvious free tier for bulk unsubscribe on the pricing page; the persona compares this with free Unroll.me.",
+      "Google sign-in hit reCAPTCHA and then 2-Step Verification with Authenticator 'unavailable because of too many attempts'. This came from the harness's shared account, not the product."
+     ],
+     "praise_and_expectations": [
+      "Expected transparent pricing like Clean Email or Unroll.me: met. Prices, per-account add-ons and the trial are all visible on the Pricing page.",
+      "Expected a free tier or cheap plan for just bulk unsubscribe (Unroll.me is free): not visible. The cheapest plan is $20/mo billed annually, which feels steep next to single-purpose unsubscribers.",
+      "Expected Gmail OAuth sign-in like other inbox cleaners: met, but there is no plain email signup for new accounts.",
+      "Expected to reach bulk unsubscribe and auto-labeling quickly after login: not tested, because Google 2FA blocked the login."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Teacher with a cluttered personal Gmail who saw this mentioned online. Not technical; wants to see what it does before handing over their email and gets nervous at permission screens.",
+     "outcome": "blocked",
+     "n_steps": 11,
+     "drop_off": {
+      "step": 11,
+      "url": "https://accounts.google.com/v3/signin/challenge/selection"
+     },
+     "would_say": "Landing page explained the value well; the Before/After label illustration showed what it does without signup. No plain-language privacy / 'what we access' section found while skimming; 'Try it free for 7 days' signals a trial. Login is Google/Microsoft only; 'Other options' = Apple, SSO, 'Email code (existing accounts)', so a Gmail user must use Google OAuth. The upstream account (account_from d9d7b9f0...) had no email identity (provider-only signup), so Sign in with Google was used. Google showed reCAPTCHA (cleared), then 2-Step Verification with Authenticator 'Unavailable because of too many attempts' (shared test Google account, likely parallel sign-ins). Never reached Inbox Zero's consent screen or app. OAuth URL requests gmail.modify, gmail.settings.basic and contacts scopes, which this nervous persona would likely balk at. Provider-only signup; blocked by test-harness Google 2FA, not by the product.",
+     "top_problems": [
+      "No visible plain-language privacy / data-access explanation on the landing page while skimming (step 3).",
+      "Login page offers only Google/Microsoft; 'Other options' hides Apple/SSO and an email code limited to existing accounts, so there's no low-commitment path for a nervous Gmail user (steps 6-7).",
+      "OAuth request includes gmail.modify, gmail.settings.basic and contacts scopes - broad permissions a nervous persona would likely refuse (step 8; consent screen not reached)."
+     ],
+     "praise_and_expectations": [
+      "Expected to see what it does before connecting Gmail: met reasonably well by the Before/After label illustration on the landing page.",
+      "Expected a plain email/password option like most apps: not met; login is Google/Microsoft OAuth only (email code only for existing accounts).",
+      "Expected reassurance about what it reads/changes in my Gmail before the Google screen: not found while skimming; only footer links to Privacy Policy and Google API Limited Use text on the login page.",
+      "Expected it to be free (heard about it online): landing page says 'Try it free for 7 days', implying paid after trial."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "c14_weweb",
+   "name": "WeWeb",
+   "url": "https://www.weweb.io",
+   "role": "competitor",
+   "of": "p14_shipyard",
+   "users": [
+    {
+     "label": "u1",
+     "persona": "Plain tester: methodical, tries to finish the task end to end, and notes anything broken or confusing along the way.",
+     "outcome": "gave_up",
+     "n_steps": 25,
+     "drop_off": {
+      "step": 25,
+      "url": "https://a20dca1f-fb8d-4392-a13f-616d2a477f0f-editor.weweb.io/?onboarding=true"
+     },
+     "would_say": "Reached the 25-action budget before any page was built. Email signup failed: 'Create account' returned 'Unknown error, please contact support@weweb.io. This can be caused by a VPN or an enterprise network.' every time (3 tries, with a + alias and with a plain gmail). The console showed a CORS block on POST api.weweb.io/v1/users, probably a network or WAF rejection shown as a generic error. Changing the email also wiped the name and password fields. Google signup worked after a reCAPTCHA. Onboarding: a Light/Dark theme choice, then a 6-step role questionnaire (skippable). Skip went straight to an AI prompt, 'What would you like to build?'. A bakery landing-page prompt with the default 'Fullstack Application' mode asked for a hosting region, then started a 7-step provisioning (DB, auth, storage, server, auth pages, sample users) that sat at 'Creating server...' (4 of 7) for the rest of the run. Note: the wait actions were clamped to 5 s each, so the run only watched about 30 s of the stated 1-5 minute provisioning. The stall may be normal provisioning time and not a bug. The judge counted the goal as reached (signed up and in project setup), but no page was built. Google URLs in report.steps are shortened with '...' in this file.",
+     "top_problems": [
+      "Email signup failed 3 times with 'Unknown error, please contact support@weweb.io. This can be caused by a VPN or an enterprise network.' (console: CORS block on POST api.weweb.io/v1/users). The message did not help me fix it.",
+      "Clicking 'Change' to edit the email wiped the already-entered name and password.",
+      "Google sign-in raised a reCAPTCHA 'Verify it's you' challenge (Google side)."
+     ],
+     "praise_and_expectations": [
+      "Expected email signup to work like Webflow or Framer (email, password, verify). It did not: a generic 'Unknown error' blamed my VPN or network and gave no way to recover except Google.",
+      "Expected a live password-rules checklist like modern SaaS signups. Met: the rules ticked green as I typed.",
+      "Expected to land in an editor or template picker soon after signup, like Webflow or Framer. Partly met: Skip led straight to an AI prompt, but a simple landing page then needed a 'Fullstack Application' build with a hosting region and a multi-minute backend setup.",
+      "Expected an AI builder like Lovable or Bolt to start generating within seconds. Not met: the AI waits for database, auth, storage and server provisioning first."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo SaaS founder who ships an MVP with Supabase and wants a frontend without hiring. Judges fast whether the tool fits their stack and is worth the money.",
+     "outcome": "blocked",
+     "n_steps": 15,
+     "drop_off": {
+      "step": 15,
+      "url": "https://accounts.google.com/v3/signin/challenge/totp"
+     },
+     "would_say": "Never reached the editor. (1) Shared account credentials (account_from) were rejected with 'Incorrect email or password', most likely because the account was never created (the creator likely hit the same signup error). (2) My own email signup with a fresh alias: a clean 2-step form (email, then name and password with a live checklist), but Create account failed twice with 'Unknown error, please contact support@weweb.io. This can be caused by a VPN or an enterprise network.' The console showed a CORS block on POST https://api.weweb.io/v1/users. The error gives no way to fix it. (3) Fallback Continue with Google: after the reCAPTCHA, Google 2-Step Verification was locked with 'Too many failed attempts'. That is on the test account, not WeWeb. As this persona, an opaque signup error would send me to a competitor.",
+     "top_problems": [
+      "Step 3-5: 'Incorrect email or password' with no hint whether the email exists or needs verification.",
+      "Step 9-10: signup failed with 'Unknown error, please contact support@weweb.io. This can be caused by a VPN or an enterprise network.' The message doesn't say what to do, and the cause (CORS-blocked POST to api.weweb.io/v1/users) isn't visible to users. A founder evaluating quickly would leave here.",
+      "Step 13-15: Google sign-in fallback was stuck on reCAPTCHA and then a 2FA lockout (test-infrastructure issue, not product)."
+     ],
+     "praise_and_expectations": [
+      "Expected a normal email/password login like Supabase's dashboard: the form looked familiar, but the shared credentials were rejected with a generic error.",
+      "Expected free signup to take under a minute: the form was short and clear (live password checklist), but submitting failed with an opaque 'Unknown error / VPN' message (CORS block on api.weweb.io/v1/users).",
+      "Expected Google sign-in as a reliable fallback, as on most dev tools. Blocked by Google's own 2FA lockout on the test account (not a WeWeb issue).",
+      "Never reached the editor, so I couldn't judge whether it fits Supabase or is worth the money."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Frontend developer at a mid-size company evaluating low-code tools for internal dashboards. Checks code export, data connections and pricing before committing time.",
+     "outcome": "blocked",
+     "n_steps": 17,
+     "drop_off": {
+      "step": 17,
+      "url": "https://accounts.google.com/v3/signin/challenge/selection"
+     },
+     "would_say": "Never reached the builder. Pricing was easy to find in the top nav, and code export plus GitHub sync is on the Essential tier, which is a plus. But the price amounts on the plan cards were blank, and the console showed 404/401 errors. Logging in with the shared account (account_from) failed with 'Incorrect email or password'. Signup then accepted the same email, so that account had never been created. Email signup then failed twice with 'Unknown error, please contact support@weweb.io. This can be caused by a VPN or an enterprise network.' The console shows a CORS block on POST api.weweb.io/v1/users, so the cloud browser's network is the likely cause. The Google fallback went through reCAPTCHA and the password step, then stopped at 2-Step Verification: the Authenticator option said it was 'unavailable because of too many attempts'. Blocked at authentication, so I couldn't evaluate the editor, data connections or export.",
+     "top_problems": [
+      "Pricing cards showed 'per month' with no number; the console showed 404/401 errors.",
+      "Login with the shared credentials returned 'Incorrect email or password' even though no account existed; nothing pointed me to sign up instead.",
+      "Create account failed twice with 'Unknown error, please contact support@weweb.io. This can be caused by a VPN or an enterprise network.' (CORS block on POST api.weweb.io/v1/users). This is likely the cloud browser's network, but a user on a corporate network would hit the same dead end."
+     ],
+     "praise_and_expectations": [
+      "Expected the pricing page to show the plan prices before I sign up, like Retool's: the tiers and features were there but the amounts were blank. Partly met.",
+      "Expected code export to be available below enterprise tier: Essential lists 'Export your code, sync it with GitHub, host it anywhere'. Met.",
+      "Expected plain email/password signup that just works, like Retool or Appsmith: the form itself was clean, with a live password checklist, but submitting failed with an 'Unknown error' (CORS on api.weweb.io). Not met in this environment.",
+      "Expected a login error to say clearly when no account exists: it only said 'Incorrect email or password'. Not met.",
+      "Expected to reach the editor and test data connections: never got there."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Product manager who has used Bubble and Webflow and wants to prototype a customer portal quickly. Leaves if pricing is vague or the tool feels like a copy of what they know.",
+     "outcome": "blocked",
+     "n_steps": 17,
+     "drop_off": {
+      "step": 17,
+      "url": "https://accounts.google.com/v3/signin/identifier"
+     },
+     "would_say": "Pricing passed this persona's bar: $0 / $20 / $50 per dev plus Partner from $79. A worked hosting example ('Essential $20 + Launch+ $20 = $40/month') is clearer than Bubble's workload units. One snag: on first paint the price numbers were blank ('per month' with no number) for about 2 s, which briefly looked like hidden pricing. Login was blocked. The shared account's (account_from) email and password were rejected 3 times with 'Incorrect email or password', even after waiting, and the page never said whether the account existed or was unverified. I then tried Continue with Google. The Atelier Google account hit a reCAPTCHA, a password step, and then a Google 2-Step lockout ('Too many failed attempts'). Problems with the product: the generic login error and a short flash of empty prices. Problems with the test harness: the shared account seemed missing, and the Google account was rate-limited. At 17 of 25 actions there wasn't enough budget to sign up, verify and build, so I never reached the editor.",
+     "top_problems": [
+      "Pricing page first rendered with blank price numbers ('per month' with no figure) for about 2 s, which briefly read as hidden pricing. That is exactly what this persona leaves over.",
+      "Pricing splits a workspace plan from per-app hosting. This needed a second look ('See hosting options') before it was clear, though the worked example resolved it.",
+      "The sign-in form rejected the shared account's credentials 3 times with a generic error and gave no hint about an unverified or missing account."
+     ],
+     "praise_and_expectations": [
+      "Expected transparent pricing, without Bubble-style workload-unit surprises: met. Plan prices are clear, and the hosting section has a worked monthly example ($20 + $20 = $40).",
+      "Expected to sign in to a shared team account and land in an editor like Webflow's Designer or Bubble's editor: not met, because the credentials were rejected and Google sign-in was locked out, so I never saw the editor.",
+      "Expected a login error to say whether the account exists or needs verification: not met. It only shows the generic 'Incorrect email or password.'"
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Small bakery owner who saw a no-code video and wants a simple ordering page, with no coding background. Gives up if the first screens are full of jargon or it isn't clear what to click.",
+     "outcome": "blocked",
+     "n_steps": 12,
+     "drop_off": {
+      "step": 12,
+      "url": "https://accounts.google.com/v3/signin/challenge/totp"
+     },
+     "would_say": "Could not log in, so I never reached the builder. Easy part: the homepage is simple, with a big 'Build with AI, edit with no-code' headline and a single prompt box, and the Sign in page is a standard email/password form plus Google. Blocker 1: the shared account's email and password (account_from 7ee7d734a994497f85e0efd686331146) got 'Incorrect email or password.' four times over about a minute, including after retyping the password and waiting. The account from the creator session seems to be unverified or was never created. Blocker 2: the 'Continue with Google' fallback passed a reCAPTCHA and the password step, then stopped at Google 2-Step Verification with 'Too many failed attempts. Try again in a few hours'. That is a limit on the test Google account, not on WeWeb. This was a harness/account issue, not product friction. Stopped after 12 actions.",
+     "top_problems": [
+      "Sign-in rejected the shared credentials with a generic 'Incorrect email or password.' and gave no hint whether the email exists or is unverified (steps 3-8).",
+      "Google sign-in fallback hit reCAPTCHA, then Google 2-Step Verification locked with 'Too many failed attempts' (steps 10-12). This is a test-account harness limit, not WeWeb friction."
+     ],
+     "praise_and_expectations": [
+      "Expected a normal email/password sign-in like Shopify or Squarespace: the WeWeb sign-in page met that, as it was clean and familiar.",
+      "Expected the homepage to make it obvious where to start: met, with a single 'describe what you want' box and a clear 'Start building' button, with little jargon on the first screen.",
+      "Expected my saved login to just work: not met, but because the shared test account was rejected, not because of WeWeb's design."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p01_alter_contacts",
+   "name": "Alter Contacts",
+   "url": "https://altercontacts.ai",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "A methodical tester who reads each screen, tries to finish the task end to end, and notes anything broken or confusing.",
+     "outcome": "gave_up",
+     "n_steps": 25,
+     "drop_off": {
+      "step": 25,
+      "url": "https://app.altercontacts.ai/clients"
+     },
+     "would_say": "Signed up with an emailed code and added one client as a free-text note, but within 25 actions I never saw what Alter did with it. EASY: the email code arrived within seconds. The onboarding (mascot intro, example sticky notes) explains the value well, and the workspace-email connect step can be skipped with 'Later'. The 'Let's start with one client > add them manually' guide is a clear first step, and adding a client from a free-text note is quick. HARD/BROKEN: (1) The marketing site has no web sign-up or log-in. Every CTA, including 'Start free' on Pricing, goes to the App Store ('Only for iPhone'). Sign-in was reachable only through 'Already subscribed? Your plan', which led to a billing page. The web app (app.altercontacts.ai) was reachable only from a link in the sign-in email, and the site never mentions it. (2) The landing hero image is broken (its alt text shows). (3) After I submitted the client note, the record stayed a grey skeleton with a spinner for 30+ seconds with no status text. Clients still said 'No clients yet' and Tasks said 'Nothing due in the next 7 days', although the note asked for a follow-up next week. (4) The 'Let's start with one client' banner stayed after I added one. (5) The sidebar collapsed to icons only, with no labels. (6) Reloading /clients gave a blank main pane and a 401 console error, the same 401 seen at the first app load. I stopped at the 25-action budget.",
+     "top_problems": [
+      "Step 4-5: 'Start free' on Pricing goes to the App Store ('Only for iPhone'), so a desktop visitor has no visible way to sign up.",
+      "Step 6: Sign-up is hidden behind 'Already subscribed? Your plan', which is mislabeled for new users, and after sign-in it lands on a billing page with no link to the web app.",
+      "Step 12: The web app at app.altercontacts.ai is reachable only from a link in the sign-in email."
+     ],
+     "praise_and_expectations": [
+      "Expected a 'Sign up' / 'Start free' that opens a web sign-up, as in HubSpot or most SaaS. Not met: every CTA goes to the iPhone App Store, and the web app exists but is never linked from the site.",
+      "Expected passwordless email sign-in to be quick. Met: the 6-digit code arrived in seconds.",
+      "Expected onboarding to show the value and let me skip integrations. Met: the sticky-note demo is clear and 'Later' skips the inbox connect.",
+      "Expected that after adding a client from a free-text note I'd see a structured profile (name, birthday, follow-up task) within seconds, the way Clay or HubSpot show a new record right away. Not met: no client and no task appeared within about 30 s, and the record stayed a skeleton."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo founder of a seed-stage B2B startup who juggles investor and customer contacts across Gmail, LinkedIn and a spreadsheet. Wants to know within a minute whether this saves real time and fits their Google stack, or leaves.",
+     "outcome": "gave_up",
+     "n_steps": 16,
+     "drop_off": {
+      "step": 16,
+      "url": "https://altercontacts.ai/"
+     },
+     "would_say": "Already signed in (shared account). Sidebar 'Import' opens only a free-text 'Add contact manually' box, with no Google Contacts, Gmail, LinkedIn or CSV import. A free-text description of an investor became a note ('Follow-up deck for Northbeam Ventures') and a task, after about 30 s of grey placeholder. The task ignored 'by Friday' (No due date), and I had to confirm 'Create client' by hand. Clients page stayed empty until then. Every word is about 'clients' and advisors (retirement plans, weddings), so nothing fits a B2B founder. The Google Workspace connection is only in Settings. It sends you to a Google consent screen for 'Composio' (not Alter), asking for full Gmail (mail.google.com) and Calendar access, and the page in between says 'Google Super'. Browser Back cannot leave that flow and there is no cancel link. Public homepage says 'for advisors' and its main button is 'Download for iPhone'. One contact got in, but the persona leaves: no bulk import, the wrong audience, and a Google connection through a third party nobody explained.",
+     "top_problems": [
+      "Sidebar 'Import' button opens 'Add contact manually' - label and behavior mismatch, no bulk import.",
+      "Free-text submission sat as a grey placeholder note for ~30 s with no progress indicator; Clients list stayed empty meanwhile.",
+      "Adding a contact produces a note first; the contact only exists after a separate 'Create client' confirmation buried in the note."
+     ],
+     "praise_and_expectations": [
+      "Expected an Import button to offer Google Contacts / Gmail / CSV / LinkedIn import like HubSpot, Folk or Clay do; it only opened a free-text single-contact box. Not met.",
+      "Expected AI parsing of a free-text note into a contact plus dated follow-up task (like Folk or Attio's AI notes); partly met - note and task created, but 'by Friday' was dropped and client creation needed a manual confirm.",
+      "Expected connecting Google to be a first-party 'Sign in with Google' consent for Alter, like Superhuman or Clay; instead consent was for 'Composio' with full Gmail scope. Not met.",
+      "Expected product language to fit founders managing investors and customers; everything says 'clients' and targets advisors. Not met."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Growth marketer at a 40-person SaaS company who has tried Clay, Folk and HubSpot. Checks how the AI works, what data it touches, and what it costs before trusting it with a contact list.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "Already logged in (shared account). Added one contact by free text through the sidebar 'Import' (+), which only opens an 'Add contact manually' box: no CSV import or sync there. The AI turned the text into a note, summarized it accurately, flagged the missing email and phone, and asked me to confirm with Create client, a good human-in-the-loop step. The client profile header filled in title, company and size, and a structured report followed (Overview, Timeline, Signals), though it labeled a co-marketing webinar as 'Buying Interest' (sales-CRM framing). Friction: 'Import' is misleading, and the real integrations (HubSpot, Salesforce, Google, Microsoft, Notion, Zoho) sit in Settings. The sidebar has unlabeled icons, and the client avatars reorder while background AI updates land, so I opened the wrong contact twice. The clients list also reflows. No duplicate warning for a second 'Dana Whitfield'. My data-sources and third-party sharing question to the in-app AI was still 'reading privacy policy' after more than 45 s. Pricing is clear in credits mapped to conversations ($0/$15/$49/$99/$199 a month), but it is per-advisor with no team plan. Credits went from 9% to 18% used within minutes. The plan page has no way back into the app, and browser back did nothing. The privacy section gives the right high-level claims (no training, nothing sent without approval, encryption) but doesn't name the enrichment sources. Stopped at the action limit. The independent judge marked goal_reached=false because the run ended on the marketing privacy page, even though the contact had been added and enriched earlier.",
+     "top_problems": [
+      "Step 1-2: 'Import' button is actually 'Add contact manually' with free text only; no bulk import.",
+      "Step 4-6: the contact took more than 10 s to process and first appeared as a note, not in Clients; the Clients list said 'No clients yet' until I confirmed.",
+      "Step 5: sidebar icons have no labels."
+     ],
+     "praise_and_expectations": [
+      "Expected 'Import' to offer CSV upload or a CRM/Google sync like Folk or HubSpot: not met. It opens a single free-text 'Add contact manually' box. The integrations exist but sit in Settings.",
+      "Expected the AI to parse unstructured input into fields (like Clay enrichment): met. Title, company and size went into the header, with an accurate summary and a report.",
+      "Expected a confirm step before the AI writes records: met and better than Clay. 'Add this person to your clients?' with Create client or Merge with existing.",
+      "Expected duplicate detection as in HubSpot: not met. Two 'Dana Whitfield' records coexist without a warning.",
+      "Expected clear disclosure of enrichment data sources: not met in-app. The AI took more than 45 s fetching the privacy policy, and the marketing privacy section has high-level claims (no training, nothing sent without approval, encryption) but no named sources.",
+      "Expected transparent pricing: mostly met. The tiers are public ($0-$199 a month) and credits are mapped to conversations, which is clearer than Clay. There is no team plan, and credits drained fast."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Freelance photographer who saw Alter Contacts mentioned online and is curious if it can tidy up a messy phone address book. Not technical; gives up if it asks for a lot before showing anything.",
+     "outcome": "gave_up",
+     "n_steps": 25,
+     "drop_off": {
+      "step": 25,
+      "url": "https://app.altercontacts.ai/clients"
+     },
+     "would_say": "Already signed in (shared account). Got one contact in: the sidebar 'Import' button only opens 'Add contact manually' (free text). A messy phone-style entry was turned into a good note (where we met, open items, duplicate check by phone). But clicking the tick did not create a contact: the Clients list stayed 'No clients yet' (a refresh showed a blank page and a 401 console error) until I opened the note in My Notes and clicked 'Create client'. The app speaks in 'clients' and the shared account showed retirement-plan/401(k) chat history and contacts I never added. Sidebar icons have no labels. I asked Alter how to import hundreds of iPhone contacts. It took about a minute and pointed to Clients > Add clients > Import from contacts, but on the web Add only opens the same manual box (Photos/Files attach). Settings has only business integrations (Google Workspace without Contacts, Microsoft, Notion, Salesforce, HubSpot, Zoho). There is no phone, iCloud or vCard import on the web. I gave up because bulk tidying of a phone address book isn't possible here.",
+     "top_problems": [
+      "Sidebar 'Import' opens 'Add contact manually', a mismatched label with no bulk import.",
+      "After the tick, the Clients list said 'No clients yet'. A refresh gave a blank page with a 401 console error. The contact needed a second 'Create client' confirmation hidden in the My Notes panel.",
+      "Sidebar icons have no text labels, so I had to guess which one is contacts."
+     ],
+     "praise_and_expectations": [
+      "Expected an 'Import' button to offer connecting iPhone/iCloud or Google Contacts, or uploading a vCard/CSV, the way apps like Cardhop or Google Contacts do. Not met: it only opens a manual free-text box.",
+      "Expected saving a contact to put it in the contacts list right away, as in the iPhone Contacts app. Not met: it became a note first and needed a second 'Create client' click.",
+      "Expected the app to clean up messy entries (split name, phone, context). Met: Alter parsed the messy text well, checked for duplicates by phone and wrote a useful summary.",
+      "Expected the assistant's help to match the UI. Not met: Alter described 'Clients > Add clients > Import from contacts', which does not exist on the web app.",
+      "Expected language for anyone with contacts. Not met: everything says 'clients', and the examples are about retirement plans and B2B decks."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Retired teacher who browses Product Hunt for fun and likes trying new apps. Wants to see plainly what the app does and is wary of granting access to personal accounts.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "I added a first contact by typing a plain sentence about an old colleague, and I never had to connect Gmail or any other account, which was a relief for someone wary of granting access. Alter turned the note into a tidy profile (subtitle plus Overview, Background and Preferences). From the contact's chat I set up an annual birthday-card reminder and got a gift idea. Friction: (1) the sidebar icons have no labels or tooltips; (2) the app says 'clients' and 'client record' everywhere, which feels off for personal contacts; (3) after I saved, it sent me to 'My Notes' instead of the contact, with 4 loading placeholders and other people's items I didn't recognise (Maria Wedding, Northbeam webinar, Dana Whitfield), which was unsettling; (4) my note first appeared as 'Untitled record' and needed a separate 'Create client' confirmation; (5) it auto-titled the note 'Remembering Margaret Ellis', which sounds like a memorial; (6) the reminder took about 1.5 to 2 minutes of 'Thinking...' status lines; (7) after I confirmed, the reminder still didn't appear in the contact's Tasks box ('This client has no tasks yet'). Stopped at the 25-action limit.",
+     "top_problems": [
+      "Sidebar icons have no labels or tooltips; I had to guess which one was contacts.",
+      "Everything says 'clients' and 'client record', which doesn't fit someone using it for friends and family.",
+      "A pre-existing task about 'Priya Nair' and records I never made (Maria Wedding, Northbeam webinar, Dana Whitfield) showed up, which made me wonder whose data I was seeing."
+     ],
+     "praise_and_expectations": [
+      "Expected labelled navigation and a 'Contacts' list like Google Contacts or the iPhone Contacts app; got unlabelled icons and the word 'clients'. Partly met.",
+      "Expected to add a contact without granting access to Gmail or my phone's contacts; met: 'add them manually' with free text worked.",
+      "Expected to land on the new contact after saving, like Google Contacts does; instead it went to My Notes with an 'Untitled record' and a separate confirm step. Not met.",
+      "Expected a reminder to be as fast as the phone's Reminders app; it took about 1.5 to 2 minutes of AI 'thinking'. Not met.",
+      "Expected a confirmed reminder to show up on the contact's Tasks list; it did not ('This client has no tasks yet'). Not met.",
+      "Expected to see plainly what the app does with my info; the structured profile report and gift suggestion did show this well. Met."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p02_codemany",
+   "name": "Codemany",
+   "url": "https://codemany.com",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "A methodical QA tester trying the product for the first time. Tries to finish every step and notes anything broken, confusing or slow.",
+     "outcome": "blocked",
+     "n_steps": 7,
+     "drop_off": {
+      "step": 7,
+      "url": "https://codemany.com/"
+     },
+     "would_say": "Provider-only signup: no email, phone or Google signup exists. The product is a desktop or server app (.deb or macOS) connected to GitHub after install, and the only web sign-in is 'Sign in with GitHub' on /calculator, which is blocked for this run. 'Start free trial' on /pricing just goes to /download, so no trial account is created. Useful result without an account: the home page 'What it means for you' estimator (Linux, 53 builds/day: 31 hours less waiting a month, $2/month saved; Linux pays for itself only from 48 builds/day; Mac at 20 builds/day: $538/month saved). Minor issues: broken Product Hunt badge image, console error for a blocked resource, 1-machine and 2-machine prices are both $20.",
+     "top_problems": [
+      "No Sign up or Log in in the header; only Download.",
+      "'Start free trial' on /pricing goes to /download with no account step, which is confusing.",
+      "/calculator is gated behind 'Sign in with GitHub' with no other option, while a similar estimator on the home page needs no sign-in."
+     ],
+     "praise_and_expectations": [
+      "Expected a web signup with email (like most SaaS dev tools, e.g. CircleCI or Buildkite also offer email or GitHub). Not met: GitHub is the only sign-in, and the account is set up inside the installed app.",
+      "Expected 'Start free trial' to create a trial account. Not met: it routes to the download page.",
+      "Expected pricing to be easy to find and clear. Met: $20/month for 2 machines, 14 days free, no card.",
+      "Expected a cost estimate before committing. Met: the home page estimator works without an account and is candid about the Linux break-even point."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "A solo SaaS founder who evaluates new tools by asking \"will this save me hours this week?\". Has little patience for landing pages that don't show the product working quickly.",
+     "outcome": "blocked",
+     "n_steps": 7,
+     "drop_off": {
+      "step": 7,
+      "url": "https://console.codemany.com/sign-in?next=/"
+     },
+     "would_say": "Blocked by provider-only signup: the only web login (Codemany Console, linked only from the footer) is 'Sign in with GitHub', which is blocked in this sim; no email login exists, so the shared account from session 0d0efe7185724129a7d460512f9b23b1 could not be used. The core product is a desktop/server app (install, connect GitHub, pick repo, change runs-on), not runnable in a browser. Easy: one-line value prop, interactive and honest savings calculator (Linux, 20 builds/day: GitHub $8/mo vs Codemany $20, ~12 hours less waiting/month, pays off from 48 builds/day), clear pricing ($20/mo for 2 machines, 14-day trial, no card), clear 4-step setup. Hard: no Log in in the header; 'Start free trial' loops back to Download; Console link only in the footer.",
+     "top_problems": [
+      "No Log in / Console entry in the header; had to scroll to the footer of the Download page to find 'Console'.",
+      "'Start free trial' on Pricing just redirects to Download, with no account step, which was unexpected.",
+      "Console sign-in is GitHub-only; no email option, so the shared account could not be used (blocked)."
+     ],
+     "praise_and_expectations": [
+      "Expected a 'Log in' link top-right like Vercel/Netlify/most SaaS: not met, the Console link is only in the footer.",
+      "Expected to see quickly whether it saves time: met, the calculator gives an honest hours/dollars answer in two clicks and even admits Linux CI at low volume costs more than GitHub.",
+      "Expected visible pricing and a no-card trial: met ($20/mo for 2 machines, 14 days, no card).",
+      "Expected email or Google login as an option: not met, Console is GitHub-only (reasonable for a GitHub Actions tool, but it blocked this run)."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "A senior full-stack developer who checks docs, integrations and pricing before committing to any tool. Leaves quickly if it feels like a me-too wrapper or pricing is vague.",
+     "outcome": "blocked",
+     "n_steps": 8,
+     "drop_off": {
+      "step": 8,
+      "url": "https://console.codemany.com/sign-in?next=%2F"
+     },
+     "would_say": "Provider-only signup: the Codemany Console (console.codemany.com) and the desktop app only offer 'Sign in with GitHub'. There is no email or password option, and this simulation cannot sign in with GitHub, so I could not log in or use the main feature (self-hosted runners, which also need the native Mac/Linux app installed on my own machine). Before that, the persona's checks went well. Pricing is concrete ($20/month for 2 machines, $10 per extra machine, 14 days free, no card). The benchmarks name real repos and link to the method. The docs are solid (five-step Get started, a runs-on YAML snippet, a device-code GitHub login, a security page). The product does not look like a me-too wrapper. Friction: the top nav has no Docs, Pricing or Log in links (footer only), and 'Console' is not an obvious name for the login. The site gives no web-only way to try the product.",
+     "top_problems": [
+      "No Log in, Docs or Pricing in the header nav; had to scroll to the footer to find them.",
+      "The login is labeled 'Console' in the footer, which is not obvious as a sign-in entry point.",
+      "Sign-in is GitHub-only (Console and app) with no email option, which blocked this run (provider-only signup)."
+     ],
+     "praise_and_expectations": [
+      "Expected a Docs and Pricing link in the top nav like most dev tools (Vercel, Depot, BuildJet); they exist but only in the footer. Partly met.",
+      "Expected transparent pricing with no per-minute surprises; met, with a clear per-machine table and stated trial terms.",
+      "Expected evidence that it's not a me-too wrapper; met, with named-repo benchmarks, a methodology link, and a founder story.",
+      "Expected a GitHub App or device-flow integration like the gh CLI; met, and the docs explain the device code flow and where the token is stored.",
+      "Expected a web login to try the product; the Console exists but is GitHub-only, and the main feature needs a native app on my own machine."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "A curious marketing coordinator who found Codemany on Product Hunt and doesn't code much. Wants to see what it does before handing over details, and bails at confusing jargon.",
+     "outcome": "blocked",
+     "n_steps": 5,
+     "drop_off": {
+      "step": 5,
+      "url": "https://codemany.com/calculator"
+     },
+     "would_say": "Provider-only login. There is no email account or web login. The only ways in are installing the desktop app (.dmg/.deb, then Connect GitHub through sign-in, the GitHub CLI or a token) or Sign in with GitHub on the Calculator page. GitHub sign-in is blocked in the sim, and this persona has no GitHub repos anyway. Easy part: a clean landing page, with the $20/month price and the 14-day trial with no card shown right away. The founder's story explained the purpose best. Hard part: dense developer jargon (self-hosted runners, runs-on, CI, .deb, x86_64/ARM64, curl, apt, systemd, glibc). Even the Calculator shows nothing without GitHub sign-in. This persona would have given up anyway: the product is for engineers. account_from was never used because there is no email login to share.",
+     "top_problems": [
+      "Hero: 'self-hosted runners' and 'runs-on: [self-hosted, codemany]' mean nothing to a non-developer; no login link in the header.",
+      "Benchmarks section names developer projects (Hugo, SwiftLint, ripgrep) and 'builds a day' with no context.",
+      "Download page: .deb, x86_64/ARM64, curl, apt, systemd and glibc look like a wall of terms; the Linux tab is the default even though the persona is on a Mac-like workflow."
+     ],
+     "praise_and_expectations": [
+      "Expected a Log in / Sign up button in the header like Canva, Notion or most Product Hunt SaaS launches: not met, the header only has Benchmarks, Calculator and Download.",
+      "Expected to try the product in the browser before giving any details: not met, every path needs a desktop install or GitHub sign-in.",
+      "Expected plain-English copy explaining what it does: partly met, the founder's story ('my GitHub bill kept growing') is clear, but the hero and download page are full of jargon.",
+      "Expected visible pricing: met, $20/month for 2 machines and a 14-day trial with no card are shown up front."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "A computer-science student browsing new tools on a lunch break. Will try anything free, but gives up if the first screen doesn't make clear what to do.",
+     "outcome": "blocked",
+     "n_steps": 6,
+     "drop_off": {
+      "step": 6,
+      "url": "https://codemany.com/benchmarks"
+     },
+     "would_say": "No web login exists on codemany.com: header has only Benchmarks, Calculator, Download. The main feature (self-hosted GitHub Actions runners) needs a desktop app (.deb/.dmg) installed on your own machine, and GitHub is connected inside that app, so 'log in and use it' cannot be done from a browser. The shared account from session 0d0efe7185724129a7d460512f9b23b1 was never needed because there is no login form. What I could use: the inline cost calculator (Mac/Linux toggle, builds-a-day slider) and the benchmarks page (Private/Public). They gave a useful, honest answer: at 1-20 Linux builds/day GitHub costs $0-$8/month and Codemany only pays for itself from 48 builds/day, so for a student it is about speed (2x faster on public code), not money. First screen was clear about what the product is. Small issues: '1 builds a day' grammar; broken Product Hunt badge image on the hero; no student/free tier beyond the 14-day trial.",
+     "top_problems": [
+      "Step 1: looked for a log-in link in the header and found none; had to work out that the product is a desktop app.",
+      "Step 4-5: 'Connect GitHub' is step 02 of setup but happens inside the installed app, so the task's 'log in' had no place on the website.",
+      "Step 3: calculator reads 'GitHub costs $0 a month at 1 builds a day' (grammar)."
+     ],
+     "praise_and_expectations": [
+      "Expected a 'Log in' / 'Sign in with GitHub' button in the header like most dev SaaS (Vercel, Netlify, GitHub Actions itself) - not met: there is no web account, the product is a desktop app.",
+      "Expected to try the main thing for free without a card - partly met: 14 days free, no card, but it requires installing on my own machine, not something I can do in a browser on a lunch break.",
+      "Expected the first screen to make clear what the product is and what to do - met: headline, one Download button and a clear 4-step setup on the download page.",
+      "Expected honest numbers - met: the calculator openly shows GitHub costs $0 at low volume and Codemany only pays for itself from 48 builds/day."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p04_ai_context_flow",
+   "name": "AI Context Flow MCP",
+   "url": "https://plurality.network/ai-context-flow",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "A methodical QA tester trying the product for the first time. Follows the flow step by step, tries to finish, and notes anything broken, confusing or missing.",
+     "outcome": "completed",
+     "n_steps": 21,
+     "drop_off": null,
+     "would_say": "Completed in 21 steps. Signed in with Google; email OTP was blocked. I created a bucket 'U1 QA Profile', added a text memory (project Kestrel, React Native/Postgres, Playwright, March 2027 release, answer in bullets), then asked the built-in Pluto chat (Gemini 3.5 Flash-Lite) for a test plan without naming the project. The answer used all of it: Kestrel, Playwright, March 2027, bullet points. Hard or broken: email OTP returned a 409 'An account already exists for a variation of this email' for both the plus-alias and the dot-variant (Gmail normalization), and the error does not offer to log in. The Google account was a shared test account that already had buckets. The landing page has three entry points (Add to Chrome / Open Memory Studio / Go to WebApp). 'Create Memory' opens a 'Create New Bucket' dialog. Onboarding popups stacked on top of the work. The Activity panel stayed 'No activity yet'. The answer added a few unrequested details. I did not test using the memory inside ChatGPT or Claude, because that needs the Chrome extension. The proof check signup_verified failed only because Google sign-in sends no verification email.",
+     "top_problems": [
+      "Landing page: three CTAs (Add to Chrome, Open Memory Studio, Go to WebApp) with no hint which is the web app.",
+      "Email OTP: 409 error 'An account already exists for a variation of this email' for a new address; the message says to check the inbox for an earlier code rather than offering login.",
+      "Google sign-in needed a reCAPTCHA step (Google-side)."
+     ],
+     "praise_and_expectations": [
+      "Expected email signup to work like Notion/Slack magic codes: it did not; a 409 'variation of this email' error blocked the plus and dot variants of Gmail without offering a login path.",
+      "Expected Google sign-in as a fallback: met; it landed straight in the app with a 7-day Pro trial.",
+      "Expected a clear entry to the web app from the marketing page: partly met; 'Open Memory Studio' worked, but 'Go to WebApp' next to it made the choice ambiguous.",
+      "Expected saved context to be used in a chat without restating it (like ChatGPT custom instructions or memory): met; the answer used the project name, framework, release date and bullet-point format.",
+      "Expected the activity feed to record my actions: not met; it stayed 'No activity yet'."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo SaaS founder who juggles ChatGPT, Claude and Cursor daily and is tired of re-explaining the product to each one. Judges tools fast on ROI and leaves if the value isn't clear in a minute.",
+     "outcome": "completed",
+     "n_steps": 15,
+     "drop_off": null,
+     "would_say": "Already signed in to the shared account. Create Memory (named \"bucket\") > Add Text > paste product blurb > Add Memory took about a minute. The app auto-titled and summarized the memory. The side chat (Gemini 3.5 Flash-Lite) recalled the product name, pricing and priority exactly when asked directly. Weak spot: an \"on-brand reminder email\" prompt gave a generic template ([Your Name/Company Name]) that did not use the saved context on its own, which undercuts the value at first try. Minor friction: after creating a bucket you land back on the list instead of inside it; a privacy popup interrupted the first reply; the shared account shows other users' buckets. The Connect via MCP modal (one URL, OAuth, works with Cursor, Claude Code/Desktop, ChatGPT) is the real ROI for this persona. PAT access for headless agents is paywalled. Stopped after seeing the value.",
+     "top_problems": [
+      "'Create Memory' actually creates a 'bucket' (a container), which is a vocabulary mismatch.",
+      "After creating a bucket the app returns to the list instead of opening the new bucket, so it takes an extra click.",
+      "A 'Your Chats Stay Private' popup covered the first AI reply."
+     ],
+     "praise_and_expectations": [
+      "Expected saving context to feel like adding knowledge to a Claude Project: met. Add Text in a bucket was fast and it auto-summarized the memory.",
+      "Expected a prompt like 'keep it on-brand' to pick up saved tone and product without being told, as ChatGPT custom instructions do: not met. The email was a generic template with placeholders.",
+      "Expected the saved context to be recallable on request: met. It gave the exact name, pricing and priority.",
+      "Expected a way to bring the context into Cursor, Claude and ChatGPT: met on paper by the Connect via MCP modal (one URL plus OAuth, lists Cursor, Claude Code/Desktop and ChatGPT). Not tested end-to-end in the browser."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Backend developer who already runs a few MCP servers in Claude Desktop. Wants to see the MCP setup details, what data is stored where, and the pricing before trusting it.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "Already signed in on the shared account. Created bucket 'Ingest API backend' and added a text memory with my Go/pgx/Postgres conventions and answer-style preference. The in-app chat (Gemini 3.5 Flash-Lite) returned code-first Go using pgx/v5, an events table and fmt.Errorf without my restating them, so the core value works in about 10 actions. The MCP modal (remote URL + OAuth) and the Claude Desktop docs page (mcpServers JSON via npx mcp-remote) were exactly what this persona wanted. Pricing is one click from Upgrade: Free/$10/$20 a month, MCP on all tiers. Friction: the Personal Access Token is paywalled but appears under no plan; the banner says 'Pro trial' while pricing marks Free as 'Current Plan'; credits are never explained; pricing icons render as broken boxes; where data is stored is vague (no provider, region, keys or retention); docs search for data storage landed on the unrelated Smart Profiles SDK page; the MCP modal doesn't link to 'What's exposed' or 'Permissions and security'. Stopped at the 25-action limit. The independent judge marked goal_reached=false only because the final page was the docs, but the save-and-use loop was done in-app at steps 4-13.",
+     "top_problems": [
+      "MCP modal: the Personal Access Token is labeled UPGRADE and disabled, yet no pricing tier lists PATs.",
+      "Banner says 'Pro trial, 7 days left' while the pricing page marks Free as 'Current Plan'.",
+      "'Credits per day' are never explained (cost per chat message or MCP call)."
+     ],
+     "praise_and_expectations": [
+      "Expected a remote MCP URL or a stdio config snippet like other Claude Desktop servers: met. The modal gives the URL and OAuth steps, and the docs give a ready mcpServers JSON with npx mcp-remote.",
+      "Expected a tool list and auth/scope details for the MCP server: partly met. They exist in the docs ('What's exposed', per-bucket/per-agent permissions, instant revocation), but the in-app modal doesn't link to them.",
+      "Expected clear statements on data location (provider, region, encryption keys, retention, training): not met. Only 'encrypted, user-owned' marketing language, and in-app chat sends memory to Gemini.",
+      "Expected visible pricing before committing: met. Free/$10/$20 a month, MCP on all tiers, but credits are undefined and PAT availability isn't listed.",
+      "Expected saved context to shape AI answers like a CLAUDE.md does: met. The chat followed my stack and conventions unprompted."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Marketing manager who uses ChatGPT for copy and keeps pasting the same brand guidelines in. Not technical; doesn't know what MCP means.",
+     "outcome": "completed",
+     "n_steps": 14,
+     "drop_off": null,
+     "would_say": "I was already signed in. Create Memory, then naming a 'bucket', then Add Text, then pasting my brand guidelines and saving took about 6 clicks. The app gave the memory a title and summary on its own. In the side chat I asked for Instagram captions without pasting the guidelines. The first answer was on-tone but generic: no brand name, no tagline, and an exclamation mark. Nothing showed whether my memory had been used. When I asked it to 'end with our tagline', it correctly wrote 'Grow something good.', so the memory is really used. Friction: 'bucket' is unfamiliar wording. After creating a bucket I was not taken into it. There is no 'used memory X' indicator. A privacy popup covered the answer. 'Chats saved locally / deleted when browser data is cleared' made me worry I'd lose my work. 'Connect via MCP' means nothing to me. Using this inside ChatGPT, where I actually write copy, is not explained anywhere I looked. I stopped because the core loop worked inside the app.",
+     "top_problems": [
+      "'Bucket' wording on Create Memory is unfamiliar. I'd expect 'folder' or 'project'.",
+      "After creating a bucket, the app stays on the list instead of opening the new empty bucket to add content.",
+      "No title field when adding text. It auto-titled well, but I hesitated before saving."
+     ],
+     "praise_and_expectations": [
+      "I expected to save my brand guidelines once and have AI copy follow them, the way ChatGPT custom instructions or a Custom GPT work. Met inside the app's own chat: when I asked for 'our tagline' it returned 'Grow something good.' correctly.",
+      "I expected the first answer to apply my guidelines without being reminded, the way a Custom GPT does. Only partly met: the tone was on-brand, but the first captions had no brand name, no tagline and used an exclamation mark.",
+      "I expected some sign of which saved context was used, like ChatGPT's 'Memory updated' / referenced-sources hints. Not met: no indicator.",
+      "I expected to use this inside ChatGPT, where I write copy. Not met: the only route seemed to be 'Connect via MCP', a term I don't understand."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Grad student who saw this on Product Hunt and is curious what \"AI memory\" means. Uses free ChatGPT and will leave if a paywall or long setup shows up before seeing it work.",
+     "outcome": "completed",
+     "n_steps": 12,
+     "drop_off": null,
+     "would_say": "Already signed in on a Pro trial; no paywall before seeing value. Create Memory -> name bucket -> open bucket -> Add Text -> Add Memory took about 6 actions; the app auto-titled and summarized the note. The bucket page has a built-in 'Chat with your AI Memory' panel (Gemini 3.5 Flash-Lite). A vague question ('help me plan the next step of my analysis') got an answer about Phoenix canopy cover vs. surface temperature with R/terra code, so the memory clearly worked. Friction: after creating a bucket I was left on the list rather than taken into it; 'bucket' vs 'memory' naming is a bit confusing; a 'Your Chats Stay Private' popup covered the first answer; the answer auto-scrolled to the bottom so I had to scroll up to read it. Did not try using memory inside ChatGPT itself (extension/MCP), which is what I originally expected 'AI memory' to mean.",
+     "top_problems": [
+      "After creating a bucket, the app stayed on the bucket list instead of opening the new bucket to add content.",
+      "Naming: 'Create Memory' opens a 'Create New Bucket' dialog, so memory vs bucket was briefly confusing.",
+      "A 'Your Chats Stay Private' tooltip popped over the first AI answer and needed dismissing."
+     ],
+     "praise_and_expectations": [
+      "Expected no paywall before seeing it work (free ChatGPT habit): met, account was on a 7-day Pro trial, though the persistent Upgrade banner was noticeable.",
+      "Expected setup to feel like ChatGPT custom instructions/Projects (paste text once): met, Add Text is a plain text box and the app auto-titled and summarized it.",
+      "Expected 'AI memory' to mean ChatGPT itself would remember me: only partly met, the memory was used in Plurality's own side chat (Gemini model), not inside ChatGPT; I didn't find or try the extension/MCP path."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p06_prompt_puncher",
+   "name": "Prompt Puncher",
+   "url": "https://promptpuncher.com",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "A methodical QA tester new to Prompt Puncher. Tries to finish the task step by step and notes anything broken, confusing or slow.",
+     "outcome": "blocked",
+     "n_steps": 13,
+     "drop_off": {
+      "step": 13,
+      "url": "https://www.promptpuncher.com/"
+     },
+     "would_say": "Blocked by a crash that happens on every visit. promptpuncher.com is a 3D (three.js) fighting game. In this browser WebGL is not available, and the THREE.WebGLRenderer 'Error creating WebGL context' exception is never caught. It takes the whole app down to a generic 'This page couldn't load' screen with Reload/Back. The home menu (Play/Connect, Find Opponent, Play a Friend, Fight a Bot, character picker, How to Play) showed after about half of the reloads. But every click tried crashed the page the same way: CONNECT twice, Fight a Bot twice, How to Play once. The page also crashed by itself on some loads before any click. No sign-up or log-in screen was ever reached, and the home page has no visible Sign up or Log in. Expectation mismatch: the name suggests a prompt-improvement tool, but it is a CEO fighting game. Suggested fix: catch the WebGL init failure, fall back to 2D or show a 'needs WebGL/hardware acceleration' message, and keep the menus and auth usable without the 3D scene.",
+     "top_problems": [
+      "First load showed 'This page couldn't load'; took 3 tries before the home menu appeared.",
+      "Uncaught THREE.WebGLRenderer 'Error creating WebGL context' crashes the entire app whenever the 3D scene starts, with no fallback or explanation.",
+      "Every menu click (CONNECT, Fight a Bot, How to Play) crashed the page to the error screen."
+     ],
+     "praise_and_expectations": [
+      "Expected a prompt-improvement tool with a Sign up button in the header, like most AI SaaS tools (e.g. PromptPerfect). Not met: it is a CEO fighting game with no visible sign-up or log-in.",
+      "Expected a site that fails to render 3D to still show its menus or a 'WebGL required' message, as most browser games do. Not met: the whole app crashes to a generic error page."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo SaaS founder who writes a lot of prompts for their product's AI features. Judges tools on ROI within a minute and leaves if the value isn't obvious.",
+     "outcome": "blocked",
+     "n_steps": 6,
+     "drop_off": {
+      "step": 6,
+      "url": "https://www.promptpuncher.com/"
+     },
+     "would_say": "The site kept crashing to \"This page couldn't load\". The console showed THREE.WebGLRenderer failing to create a WebGL context, and there was no fallback for a browser without WebGL. The lobby rendered only after I typed the address again (twice). Both clicks (How to Play, Fight a Bot) crashed the page again, and Reload never helped. The lobby showed the product is 'The AI CEO Fighting Game', not a prompt-improvement tool. There was no login and no prompt box. The persona would have left anyway on value mismatch.",
+     "top_problems": [
+      "First load showed 'This page couldn't load'. Reload did not help, and only typing the URL again rendered the lobby.",
+      "Every click in the lobby (How to Play, Fight a Bot) crashed the page with a THREE.WebGLRenderer context error.",
+      "Value mismatch: the name suggests a prompt tool, but the landing page is a game, with no explanation of prompt value for builders."
+     ],
+     "praise_and_expectations": [
+      "Expected a prompt optimizer or playground like PromptLayer or the OpenAI Playground, with a login and a prompt box. Not met: the product is a CEO fighting game with no visible prompt-improvement value.",
+      "Expected the site to load in a standard browser. Not met: without WebGL the page crashes to an error screen, with no fallback."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Backend developer who already uses ChatGPT and Claude daily. Looks for what's technically different here and checks pricing before investing time.",
+     "outcome": "blocked",
+     "n_steps": 8,
+     "drop_off": {
+      "step": 8,
+      "url": "https://www.promptpuncher.com/"
+     },
+     "would_say": "Blocked. The site needs WebGL (three.js) and crashes to \"This page couldn't load\" whenever WebGL can't start; there's no fallback. The menu showed only twice, after I reopened the URL directly. Each time, the first click ('How to play', then 'Fight a bot') crashed the page. Reload and Back always landed on the error page. I never reached a login, a prompt box, or pricing. What I saw: Prompt Puncher is a fighting game (caricatures of AI CEOs; Find opponent / Play a friend / Fight a bot), not a prompt-improvement tool, so the task framing does not match the product. No login or pricing was visible on the landing screen. The sim browser has WebGL disabled, so part of the blocker is the environment, but the missing fallback is a real product gap.",
+     "top_problems": [
+      "First load showed 'This page couldn't load'; Reload did not help (THREE.WebGLRenderer: Error creating WebGL context).",
+      "The menu rendered only after reopening the URL, and the first click (How to Play) crashed it again.",
+      "Back and Reload both returned to the error page."
+     ],
+     "praise_and_expectations": [
+      "Expected a prompt tool like ChatGPT/Claude with a text box to write or improve a prompt: not met; the product is a browser fighting game themed on AI CEOs.",
+      "Expected visible login and pricing up front (as on ChatGPT/Claude): not met; the landing screen had neither.",
+      "Expected the page to load in a normal browser: not met; it crashes to an error page whenever WebGL is unavailable, with no fallback."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Content marketer who uses AI for blog drafts and social posts but isn't technical. Wants better outputs without learning prompt engineering jargon.",
+     "outcome": "blocked",
+     "n_steps": 9,
+     "drop_off": {
+      "step": 9,
+      "url": "https://www.promptpuncher.com/"
+     },
+     "would_say": "The site would not stay up. The home page mostly showed \"This page couldn't load\". The game menu (Find Opponent / Play a Friend / Fight a Bot, with tech-CEO fighters) showed briefly after a wait and reload, but clicking anything (How to Play, Fight a Bot) crashed the page back to the error screen. The console showed an uncaught THREE.WebGLRenderer 'Error creating WebGL context', so the app has no fallback when WebGL is missing. I never reached a login or a prompt box. The product also looks like a fighting game, not a prompt-improvement tool, which a content marketer would not expect from the name.",
+     "top_problems": [
+      "Initial load showed a generic 'This page couldn't load' error; it took a wait and a reload to see anything.",
+      "Clicking 'How to Play' crashed the page back to the error screen.",
+      "Clicking 'Fight a Bot' crashed the page back to the error screen."
+     ],
+     "praise_and_expectations": [
+      "Expected a simple ChatGPT-like box where I paste a blog or social prompt and get a better version back. Not met: the landing is a fighting-game menu with tech-CEO characters.",
+      "Expected a clear Log in / Sign up entry like most SaaS tools. Not met: no login was visible on the menu, and the page crashed before I could find one.",
+      "Expected the site to load in a normal browser. Not met: it repeatedly showed 'This page couldn't load' and crashed on every click (uncaught WebGL context error, no fallback)."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Curious student who saw Prompt Puncher in a newsletter. Wants to see what it does right away and will leave if a paywall or signup comes before anything useful.",
+     "outcome": "blocked",
+     "n_steps": 4,
+     "drop_off": {
+      "step": 4,
+      "url": "https://www.promptpuncher.com/"
+     },
+     "would_say": "The homepage never loaded. Every try (Reload button, opening the URL again, waiting 5 s, browser reload) showed only \"This page couldn't load\". The console shows an uncaught THREE.WebGLRenderer error ('Error creating WebGL context') each time. The landing page seems to need WebGL to render, and the whole page crashes when WebGL isn't available instead of falling back. I never saw the product, a login or a prompt box, and never used the shared account (account_from 8f6f698d8874438d950be578a310fd90).",
+     "top_problems": [
+      "Step 0-4: the homepage shows only 'This page couldn't load' on every load. The console shows an uncaught THREE.WebGLRenderer error: the page crashes when no WebGL context is available, with no fallback. A real visitor on a browser or device without WebGL, or with hardware acceleration off, would leave right away."
+     ],
+     "praise_and_expectations": [
+      "Expected a newsletter link to open a landing page with an instant demo or a prompt box (like trying ChatGPT or PromptPerfect right away). Not met: the page never rendered."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p07_backspin",
+   "name": "Backspin",
+   "url": "https://backspin-dj.web.app",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "Plain tester: methodical, tries to finish the task end to end, and notes anything broken, confusing or slow along the way.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "Signup does not apply: Backspin has no accounts at all (no sign-up or log-in in the header or footer, and data 'stays on this device'). Main feature, Lesson 1 'Your first mix', went from 1/12 to 9/12 and mixed A into B. Loading the practice songs, play, SYNC, play B and the crossfader to the middle and then to B all worked, with clear outlined hints and 'Not quite' feedback. Broken: step 7 'Swap the basslines'. Dragging the BASS knob only ever turned it about 30 degrees whatever the drag length, later drags did not add to it, and it snapped back to 12 o'clock. The wheel and keys (End) scroll the page instead of turning the knob. 'Show me' did not help, so I had to Skip. That step took about 2 minutes, so both 2-minute practice songs ended before the AUTO MIX step, and AUTO MIX then restarted deck A from 0:00. Smaller issues: the analytics banner covers the deck controls, the play/pause icons render as empty squares, and the lesson card covers deck info it refers to and jumps to the bottom after scrolling. Stopped at the 25-action limit. The independent judge said the goal was not reached, and the signup_verified proof check failed because there is no signup.",
+     "top_problems": [
+      "No sign-up or log-in exists anywhere. I scanned the header and scrolled to the footer before concluding the signup part of the task was not applicable.",
+      "The analytics consent banner covers the deck transport controls on first load.",
+      "Play/pause icons render as small empty squares (a missing icon font?), so the play button is not recognisable without the lesson highlight."
+     ],
+     "praise_and_expectations": [
+      "Expected a sign-up/log-in for a product the task says to sign up for. There is none: Backspin is account-free with local storage. That is good for low friction, but progress (Lessons 0/21) only lives on this device.",
+      "Expected mixer knobs to turn with a vertical drag, the mouse wheel or arrow keys, as in rekordbox, djay or Serato. Only a short drag registered (a fixed small turn), and the wheel and keys scrolled the page. Not met.",
+      "Expected a guided first mix to finish in the promised 'about 4 minutes'. The steps before the knob were quick, but the broken knob step made the 2-minute practice songs end mid-lesson. Partly met.",
+      "Expected SYNC and the crossfader to behave like any DJ app. They did, with clear feedback ('Beats locked'). Met."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Curious Observer: a 24-year-old who plays music at house parties from Spotify playlists and clicked a link a friend shared. Not technical; wants to see quickly what this does and leaves if it asks for too much before showing anything.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "I never had to log in. There's no sign-up or log-in anywhere, and the decks work straight away, which suits this persona. Lesson 1 ('Your first mix', 12 steps) took about 3 minutes. Easy parts: auto-loading the practice songs, SYNC, play, the crossfader, the scratch, the tonearm, and the 'Not quite' feedback plus 'Show me' demos. Friction: (1) the BASS knob only turned a small, fixed amount however far I dragged (3 tries), so I had to Skip step 7. The mouse wheel scrolled the page instead of turning the knob. (2) The play/pause icons render as empty boxes, so play looks like stop. (3) AUTO MIX blends back to deck A when it has about 6 s left. A ran out, B stopped, and the lesson ended in silence. (4) Step 3 has no Next button. (5) Deck A's BPM was hidden behind the lesson card. Stopped at the 'Lesson 1 done' screen when I ran out of actions. The independent judge said goal not reached, because a guided lesson isn't 'on your own'.",
+     "top_problems": [
+      "Step 6: the play button icon renders as an empty square (missing glyph), so it looks like stop.",
+      "Step 7: lesson step 3 has no Next button, so it was unclear whether to wait or act.",
+      "Steps 11-17: the deck A BASS knob turned only a small, fixed amount per drag. Three drags plus 'Show me' still gave 'Not quite'. The mouse wheel scrolled the page instead. I had to Skip."
+     ],
+     "praise_and_expectations": [
+      "Expected a sign-up or log-in wall before seeing anything, like most apps. There was none: the decks and lesson are usable right away. Met and beat expectations.",
+      "Expected it to work with music I already have on Spotify. The built-in practice songs meant I didn't need any. 'Import playlist' was visible but not tried.",
+      "Expected on-screen knobs to turn with a drag or the mouse wheel, like in music apps. The BASS knob barely moved and the wheel scrolled the page. Not met.",
+      "Expected standard play/pause icons, like Spotify's triangle and bars. They showed as empty boxes. Not met."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Curious Observer: a retired teacher who just got into vinyl and DJ videos on YouTube, browsing on a laptop. Reads every label carefully and gets uneasy when buttons or steps aren't explained.",
+     "outcome": "gave_up",
+     "n_steps": 24,
+     "drop_off": {
+      "step": 24,
+      "url": "https://backspin-dj.web.app/"
+     },
+     "would_say": "No login exists (no sign-in or account anywhere), so I used the main feature, Lesson 1 'Your first mix', without an account. Steps 1-6 of 12 were easy and well explained: load practice songs, play A, count the beat, SYNC B, play B, crossfader to the middle. Step 7, 'Swap the basslines', blocked me. Dragging deck A's BASS knob down only ever turned it a sliver. 'Show me' reset the knob to the middle. The mouse wheel over the knob scrolled the page and turned the bass UP. Clicking the knob turned it up further. The feedback said 'That turned the bass up' after I had dragged down. Home only scrolled the page. Meanwhile deck A's song ran out. I skipped step 7. Step 8 passed, but by step 9 (AUTO MIX back to deck A) both songs had ended. AUTO MIX restarted A as 'A -> B', and the lesson stayed on 9/12. I ran out of my action budget on 9/12.",
+     "top_problems": [
+      "Task said log in, but there is no login anywhere, and I hesitated looking for one.",
+      "Play buttons show a tiny square instead of a play triangle, so I relied on the lesson highlight to know which button to press.",
+      "The 'Count the beat' step advanced by itself with no Next button, before I'd finished counting."
+     ],
+     "praise_and_expectations": [
+      "Expected a 'Log in' button as the task said. There is none, which surprised me at first but turned out to be a relief: no account is needed.",
+      "Expected a patient, step-by-step lesson like a good teacher or a YouTube tutorial. The written explanations, step counter, 'Show me' and 'Not quite' feedback met this well.",
+      "Expected a play button to show a play triangle, as on YouTube or any media player. It shows a small square glyph, which I read as 'stop'. Not met.",
+      "Expected a knob to turn the way the lesson described and the 'Show me' demo showed. Dragging down barely moved it, while wheel and click turned it up. Not met.",
+      "Expected the lesson to wait for me, like pausing a YouTube video. The songs kept playing out while I was stuck, so later steps had no music. Not met."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Tech Innovator: a frontend developer and hobby bedroom DJ who uses rekordbox. Checks what tech it runs on, what it does differently from existing DJ tools, and whether anything costs money.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "There was nothing to log in to: Backspin has no account system and opens straight onto two decks and a mixer, so account_from was not needed. On my own I loaded both practice songs, played A, hit SYNC on B (B went from 126 to 124 BPM at -1.6%), played B and got 'Beats locked'. I partly turned down A's bass and slid the crossfader to B. That was a full first transition in about 8 actions, and it felt familiar from rekordbox (Camelot keys, BPM, beatgrid waveform, quantized play). Pro mode is a free layout toggle with gain, headphone cue, 8 hot cues, key lock and key match, FX, quantize, a sampler, MIDI and 'Split into stems'. The only cost is an optional pay-what-you-want Stripe donation. Friction: the Support link leaves the app in the same tab, so Back did not return me and the decks reset. EQ knobs are very insensitive to drag, so I could not fully kill the bass in lesson 1 step 7. The crossfader sits below the fold in Pro layout during the lesson. The lesson copy says B drops in 'exactly on the beat' while the meter first showed 'B is 127 ms early'. I stopped at the 25-action cap on lesson step 7/12. The independent judge marked goal_reached=false, apparently because it weighted the Stripe detour and lesson progress, not the manual mix I did in steps 2-8.",
+     "top_problems": [
+      "Task said 'log in', but there is no login anywhere; at first I was not sure whether I was missing something.",
+      "The Support link leaves the app in the same tab for a Stripe card form; Back did not return me, and coming back reset both loaded decks mid-mix.",
+      "The EQ BASS knob drag is very insensitive (about 130px only reached about 10 o'clock) and a second drag did not move it further, so I could not pass lesson 1 step 7 by hand."
+     ],
+     "praise_and_expectations": [
+      "Expected a login or account wall like most web apps; there is none. Everything works anonymously, which this persona sees as a plus.",
+      "Expected rekordbox-style deck info (BPM, Camelot key, beatgrid waveform, SYNC, quantize): met, and the labels match rekordbox conventions.",
+      "Expected SYNC on the incoming deck to match tempo and phase: met (126 to 124 BPM, 'Beats locked').",
+      "Expected 'Pro' to be a paid tier: it is a free layout toggle with advanced controls (key lock, FX, stems, MIDI, sampler), which beats expectations.",
+      "Expected to find costs: only an optional pay-what-you-want donation via Stripe; nothing is paywalled.",
+      "Expected on-screen EQ knobs to turn fully with one vertical drag, as in rekordbox: not met. Knobs barely move and a repeat drag did nothing.",
+      "Expected what is different from rekordbox: the guided lesson with live corrective feedback ('Not quite... keep turning') is the clear difference."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Product Maker: a founder of a small events-booking startup scouting tools for their venues' DJs. Gives it a couple of minutes to show clear value and leaves if the point isn't obvious.",
+     "outcome": "completed",
+     "n_steps": 16,
+     "drop_off": null,
+     "would_say": "No login or signup exists; the app opens straight onto the DJ decks, so the shared account (account_from) was never needed. Finished guided Lesson 1 (Your first mix, 12 steps) in about 2 minutes: one-click practice songs, a highlighted control at each step, AUTO MIX. Friction: the play button shows a square icon; the card says 'Beats locked' while the meter read 'B is 67 ms early'; no celebration after the user's own first mix; the tonearm drag gave unclear feedback (NEEDLE UP badge while the deck still looked like it was playing). Persona verdict: the value is clear fast, but it is a beginner learning tool, not a performance tool for working venue DJs. The independent judge marked goal_reached=false because it read a guided tutorial as not 'on your own'.",
+     "top_problems": [
+      "The task said to log in, but there is no login or signup, so it was unclear whether progress is saved anywhere.",
+      "The play button shows a small square icon, not a play triangle.",
+      "The 'Slide the crossfader' card promised 'Beats locked', but the meter read 'B is 67 ms early' right after SYNC."
+     ],
+     "praise_and_expectations": [
+      "Expected a login/account step (the task says to log in): there is none, the app opens straight away. That is less friction, but there's also nowhere to manage DJs or venues.",
+      "Expected BPM/key info like rekordbox: met, both decks show key (8A) and BPM.",
+      "Expected SYNC to behave like Serato's: met, one click matched the tempos.",
+      "Expected something useful to a venue, like an auto-DJ or crossfade (Serato AutoPlay, Spotify crossfade): AUTO MIX exists and works, but it is framed as a learning shortcut.",
+      "Expected clear value within a couple of minutes: met for the 'learn to DJ' promise (first mix in about 2 minutes), not met for a tool for working venue DJs."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p08_publicit",
+   "name": "Publicit",
+   "url": "https://www.publicit.com/",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "A methodical QA tester on their first visit. Tries to finish every step, reads labels carefully, and notes anything broken, confusing or slow.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "Signed up with Google, finished onboarding, and created a first CTV campaign (objective, schedule, location), which reached the Spaces and Creatives stages. Publicit is self-serve ad buying for Connected TV, street screens and mobile. Stopped at the 25-action limit on the optional Creatives step, before Launch. No payment was entered. The judge says the goal was reached. The proof check signup_verified failed only because a Google signup sends no verification email. Friction: (1) The homepage Get started form requires a phone number ('so we can call you'), which reads like a sales callback; the real self-serve signup is hidden behind Sign in > Create account. (2) Every signup path asks for a mobile number but never verifies it. (3) The locale defaults to Spain (+34, EUR, 'Run across all of Spain') although the site detected a US location. (4) Country flags render as empty boxes. (5) The Continue button briefly rendered blank. (6) 'Step 1 of 3' sits next to a 4-stage tracker. (7) An odd slide-up transition after 'Create my first campaign'. (8) WebGL and 404/401 console errors.",
+     "top_problems": [
+      "Homepage signup form requires a phone number 'so we can call you'; I had to find Sign in > Create account for self-serve.",
+      "Mobile required on every signup path (email, Google onboarding) but never verified.",
+      "Country code defaults to Spain +34 and prices in EUR while location detection says Council Bluffs, US; 'Run across all of Spain' shown as fallback."
+     ],
+     "praise_and_expectations": [
+      "Expected email-only self-serve signup like Notion or Typeform; instead every path requires a mobile number - not met.",
+      "Expected the homepage 'Get started' CTA to lead to account creation; it reads as a sales-callback lead form - not met.",
+      "Expected Google sign-in to skip extra profile fields; it still required phone and business info - partially met.",
+      "Expected a searchable phone country picker like Stripe's - met (but flags render as empty boxes).",
+      "Expected a guided campaign builder with sensible defaults like Meta Ads Manager's quick create - met, and simpler.",
+      "Expected the locale to follow the detected location - not met (Spain/EUR defaults with a US location)."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "A bootstrapped SaaS founder (Product Makers) looking for cheap ways to get their product in front of people. Judges ROI fast and leaves if the value isn't clear within a minute.",
+     "outcome": "blocked",
+     "n_steps": 20,
+     "drop_off": {
+      "step": 20,
+      "url": "https://www.dashboard.publicit.com/dashboard/campaigns/aah9wrxjc_2slkvpl7"
+     },
+     "would_say": "Already logged in (shared account). Value became clear in about 4 clicks: self-serve connected-TV ads on Samsung TV Plus, Pluto, Prime Video, LG, etc. I used the main feature: I edited the draft campaign (objective changed to Website visits / QR code, budget lowered to the €50/day minimum) and saved it. It reached 'Ready to launch'. Launching needs payment: €665.50 charged today (€500 minimum top-up + 10% platform fee + 21% VAT), with auto top-up turned ON by default. I stopped at the card form. Judge: goal not reached (no launch).",
+     "top_problems": [
+      "Two back-to-back product tours (3 steps on the sidebar, then 3 more on Campaigns); I skipped the second.",
+      "A call-booking modal ('Want a hand with your first campaign?') opened under my click on 'Upload your ad', and the Monday 10:30 slot showed 'Booking…'. It looked like an accidental sales-call booking, with no confirmation or undo.",
+      "A 'Create your password' modal chained right after the booking modal."
+     ],
+     "praise_and_expectations": [
+      "Expected the price of a test up front, as Meta/Reddit ads show (a $5/day minimum). Partly met: the €50/day minimum and €500 first top-up are shown clearly, but only on step 4 of the wizard, not in the tour or dashboard.",
+      "Expected to grasp the value within a minute. Met: the Spaces tab with Samsung TV Plus, Pluto, Prime Video and LG logos made 'self-serve CTV ads' clear within about 4 clicks.",
+      "Expected a campaign wizard like Meta Ads Manager's objective picker. Met: a clean 5-step objective/schedule/where/budget/confirm flow.",
+      "Expected trustworthy reach/CPM forecasts. Not met: the impression estimate contradicted the budget and CPM (6.8K/day at €50 and €22 CPM) before silently correcting to 2.3K.",
+      "Expected cheap experimentation. Not met: €665.50 charged on day one (incl. 10% fee and VAT), with auto top-up on by default."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "A growth marketer at a mid-size startup (Tech Innovators) who evaluates ad and promotion tools weekly. Goes straight for pricing, targeting details and integrations, and distrusts vague claims.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "Already signed in. Understood the product: self-serve connected-TV (CTV) ads in Spain. Created a campaign 'Tech Innovators · Website visits test' (objective Website visits = on-screen QR code, always-on, Madrid, ages 18-44, interest Information technology). It was saved after 'Create campaign'. Then went through Spaces (8 of 34 recommended: Samsung TV Plus, 3Cat, Atresplayer, OrangeTV; Netflix premium min €5,000) and Creatives (reuse from Meta/YouTube, AI generation, Studio; skipped upload) and reached the daily budget screen: €50-€50,000/day, default €150 ≈ €4,500/month ≈ 206,213 estimated impressions/month (about €22 CPM implied), optional max CPM bid. Stopped at the 25-action cap before 'See summary'/launch, and without paying. Friction: two back-to-back tours, a first New Campaign click that did nothing, a name prefilled from another draft, a location box inside a small scroll panel with late autocomplete, a Council Bluffs geo suggestion although only Spain is supported, space info icons that show nothing, and pricing that appears only at the last step.",
+     "top_problems": [
+      "Two onboarding tours back to back (platform tour, then campaigns tour) before I could act.",
+      "First click on 'New Campaign' appeared to do nothing; needed a wait and a second click.",
+      "The new campaign's name was prefilled with the existing draft's name ('Rivera Labs · November')."
+     ],
+     "praise_and_expectations": [
+      "Expected pricing up front like Meta/Google Ads self-serve: only partly met. A Netflix minimum (€5,000) shows in Spaces, but daily budget, impressions estimate and CPM bid appear only on the final Launch step.",
+      "Expected Meta-style targeting (geo, demo, interests, custom audiences): met. City/postcode, age, gender, a Meta-like interest taxonomy and pixel-based retargeting audiences are all available. No audience-size estimate, unlike Meta and LinkedIn.",
+      "Expected integrations with existing ad stack: met for creatives (reuse from Meta and YouTube, AI generation). A website pixel is offered for retargeting.",
+      "Expected honest attribution claims: met. 'Website visits' is explained plainly as an on-screen QR code, not vague cross-device magic.",
+      "Expected per-channel CPM/reach details when inspecting inventory: not met. The space (i) icons showed nothing."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "A small-business owner who runs a local shop (Curious Observers) and clicked a link a friend shared. Not very technical; wants to see what it does before committing to anything.",
+     "outcome": "completed",
+     "n_steps": 25,
+     "drop_off": null,
+     "would_say": "Already signed in. Learned what Publicit does (connected-TV ads for small businesses on Samsung TV Plus, Pluto, Bloomberg, Xiaomi, LG, Amazon) and used the main feature once: created a draft campaign 'Curious Observers - Holiday', fixed dates Nov 21 to Dec 18, 8 spaces, EUR 500 total (~22.5K impressions, about EUR 18/day), saved without paying. Easy: a short wizard with plain wording, ad upload is optional, a clear budget-to-impressions estimate, and 'Nothing is charged until you press Pay' was reassuring. Hard or confusing: two guided tours back to back; the first New Campaign click did nothing; the name field was pre-filled with someone else's campaign ('Rivera Labs · November'); the location step mixed an auto-detected US city (Council Bluffs) with 'Run across all of Spain'; the promo video said 'London' and had a typo ('availbale'); no price appeared until the very last step (minimum EUR 500, Netflix minimum EUR 5,000), and '+ fee and VAT' never says what the fee is; the AI ad button (unlabelled sparkle icon) needs a separate paid VEED account. Stopped at the saved draft because a cautious shop owner would not pay EUR 500+ on a first look. The independent judge marked goal_reached=false because the campaign was not launched (launching requires payment).",
+     "top_problems": [
+      "Two guided tours ran back to back (platform tour, then campaigns tour) before I could do anything.",
+      "Account already had a draft 'Rivera Labs · November' at EUR 150/day, which was alarming and not my business.",
+      "First click on 'New Campaign' did nothing; needed a second click."
+     ],
+     "praise_and_expectations": [
+      "Expected to understand what the product is quickly, the way a Facebook boost-post screen tells you upfront: the tour line 'Turn your website visits into a TV audience' and the spaces list (Samsung TV Plus, Pluto, Bloomberg) made it clear. Met, but only after a few steps.",
+      "Expected a goal picker like Facebook's boost-post objectives: met ('Get known', 'Sales', etc. with plain descriptions).",
+      "Expected to see the cost early, like Facebook ads showing daily budget on the first screen: not met. Price only appeared at the final Launch step, with a EUR 500 minimum and an unspecified fee.",
+      "Expected a budget slider with a reach estimate like Facebook ads: met (EUR 500 = ~22,500 impressions, ~EUR 18/day).",
+      "Expected an AI 'make my ad' button to work inside the product, like Canva's Magic tools: not met; it needs a separate VEED account and its own credits.",
+      "Expected to be able to save without paying: met ('Go to my campaign - It's saved', 'Nothing is charged until you press Pay')."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "A college student browsing new apps on their phone (Curious Observers). Curious but impatient; bails if a signup wall or paywall appears before they see anything useful.",
+     "outcome": "completed",
+     "n_steps": 22,
+     "drop_off": null,
+     "would_say": "Already signed in. Publicit puts ads on connected TV / streaming apps in Spain (Samsung TV Plus, Atresplayer, OrangeTV, Pluto, 3Cat...). Used the main feature once: created a draft campaign 'Campus Pop-up Test' (Get known, always on, Madrid, 8 recommended spaces, EUR 50/day, no ad yet) and reached its page with a forecast (2.4K impressions/day, EUR 20.51 CPM). Did not pay. Good: short 3-step wizard, city autocomplete, spaces list with real channel logos is the wow moment, 'Nothing is charged until you press Pay' reassures, ad upload optional. Friction: two back-to-back tours; first New Campaign click did nothing; name prefilled with existing draft's name; 'Step 1 of 3' vs 4 bottom tabs; location hint said Council Bluffs while offering 'all of Spain'; unlabeled creative-source icons; 'Generate with AI' needs a separate paid VEED account; minimum EUR 50/day (EUR 1,500/mo) and first top-up >= EUR 500, far beyond a student; impressions counter appeared to show fewer impressions at EUR 150 than at EUR 50 (likely mid-animation).",
+     "top_problems": [
+      "Two onboarding tours in a row (platform 1-3, then campaigns 1-3) before seeing anything.",
+      "First click on New Campaign did nothing; needed a second click.",
+      "New campaign name prefilled with the existing draft's name (Rivera Labs - November)."
+     ],
+     "praise_and_expectations": [
+      "Expected to understand the app within a few seconds like a TikTok/Instagram app: partly met - two back-to-back tours, but by the campaigns page it was clear it's TV ads.",
+      "Expected creating something to be as quick as boosting a post on Instagram/Meta Ads: met - 3-step wizard, sensible defaults, ad upload optional.",
+      "Expected built-in AI to generate content for free like Canva: not met - Generate with AI requires a separate VEED account with paid credits.",
+      "Expected a cheap try-out tier: not met - minimum EUR 50/day and first top-up at least EUR 500, though nothing is charged until Pay."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p09_glassmail",
+   "name": "Glassmail",
+   "url": "https://glassmail.app",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "A methodical QA tester trying a new product for the first time. Tries to finish every step and notes anything broken or confusing.",
+     "outcome": "blocked",
+     "n_steps": 6,
+     "drop_off": {
+      "step": 6,
+      "url": "https://glassmail.app/#faq"
+     },
+     "would_say": "Glassmail is a native macOS email app distributed as a .dmg. There is no web signup (no email, phone or Google account creation). The 14-day trial runs inside the desktop app on your own mail accounts and asks for a licence key afterward. Easy parts: the value proposition is clear, Download opens a clear 3-step install modal with a retry link and an install guide link, and the FAQ answers 'try before buy' directly. Friction: clicking FAQ in the nav first showed a fully blank viewport for about a second before the content faded in. Opening one accordion item pushes the items below it down, so my next click landed on 'Can I get a refund?' instead of the free-trial card question. Stopped because the core value (a unified inbox in the Mac app) can't be reached from a cloud browser.",
+     "top_problems": [
+      "No web account or signup exists, so the core value cannot be reached from a browser. A tester on a non-Mac device hits a dead end with no web demo or preview.",
+      "The FAQ nav link first jumped to a fully blank viewport (fade-in content) for about a second, which looks broken.",
+      "Opening one FAQ accordion item pushes the items below it down, so my next click opened 'Can I get a refund?' instead of 'Do I need a card for the free trial?'."
+     ],
+     "praise_and_expectations": [
+      "Expected a Sign up / Get started flow on the web as with most SaaS tools. Glassmail has none: it is a downloadable Mac app (like Spark, Mimestream or Airmail), so 'signup' happens on the user's Mac by adding mail accounts.",
+      "Expected a free trial without a card. Met: the site states 14 days free, no card needed, every feature.",
+      "Expected clear post-download guidance like other Mac apps. Met: the 3-step install modal with retry and install-guide links is clearer than most."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo SaaS founder drowning in inbox noise, evaluating tools for ROI and fit with Gmail. Leaves fast if the value isn't clear in the first minute.",
+     "outcome": "blocked",
+     "n_steps": 12,
+     "drop_off": {
+      "step": 12,
+      "url": "https://glassmail.app/#faq"
+     },
+     "would_say": "There is nothing to log in to. Glassmail is a native Mac app with 'no account to make', so the core value (on-device AI triage: 'What needs me today?' sorted into Needs you / Worth a look / Updates, with Archive all) can only be used after installing the .dmg, which a browser session can't do. On the website: the price is very clear ($29 once vs Superhuman's ~$30/mo, a 14-day trial with no card), the download modal has clear 3-step install instructions, and the FAQ is easy to scan. Problems: the hero sells account unification, not noise reduction. The triage Assistant sits about 4 screens down. The three feature cards are generic. Jumping to #pricing briefly showed a blank page. Gmail connects with an app password rather than Google OAuth. Stopped after the download had started. account_from was not needed because the product has no web account.",
+     "top_problems": [
+      "The task said log in, but there is no login or web app; the core value is only in the downloaded Mac app.",
+      "The hero headline addresses multi-account unification, not inbox noise; the triage Assistant is about 4 screens down.",
+      "The three feature cards (native, private, pay once) say nothing about handling noise."
+     ],
+     "praise_and_expectations": [
+      "Expected a web login and web app like Superhuman or Shortwave; there is none, because it is a native Mac app with no account. Not met for the task as written, but the site says 'no account to make' clearly.",
+      "Expected AI triage of noisy mail to be the lead message (like Superhuman or HEY); met by the product, but the site leads with 'every inbox in one place' and buries the Assistant.",
+      "Expected transparent ROI pricing; met: $29 once, 14-day trial, no card, a vs Superhuman page.",
+      "Expected Gmail to connect via Google OAuth like Mimestream or Spark; not met: it uses an app password."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Backend developer who cares about privacy and how email data is handled. Checks permissions, technical details and pricing before trusting anything with their inbox.",
+     "outcome": "blocked",
+     "n_steps": 17,
+     "drop_off": {
+      "step": 17,
+      "url": "https://glassmail.app/guides/gmail"
+     },
+     "would_say": "There is no web login. Glassmail is a native macOS app ('no subscription, no account'), so the core value (a unified inbox with on-device AI) needs the DMG installed on a Mac, which the cloud browser can't do. The shared account (account_from) was never needed. The privacy review went very well: the policy lists every outbound host, names the Gmail scopes, the local storage path and Keychain token storage, and includes a Limited Use statement. The app is notarised and the AI runs locally. Pricing is clear: $29 once, 1.x updates, 3 Macs, 14-day trial with no card. Main trust problem: the privacy policy describes 'Continue with Google' OAuth, but the FAQ and the Gmail setup guide say Gmail needs an app password.",
+     "top_problems": [
+      "Clicking the Privacy or Pricing nav anchors left the sticky nav floating mid-screen over blank or faded content until the animations finished.",
+      "The privacy policy describes 'Continue with Google' OAuth, but the FAQ and the Gmail setup guide say Gmail needs an app password.",
+      "Remote images load by default in an app marketed as private."
+     ],
+     "praise_and_expectations": [
+      "Expected a full list of network connections the way Little Snitch would show them. Met: the privacy policy lists every host and why.",
+      "Expected the AI to run locally or with my own model. Met: Apple Intelligence, Hugging Face downloads, and Ollama/LM Studio on localhost.",
+      "Expected the app to be signed and notarized, with ideally a checksum. Partly met: it is notarised, but no checksum is published.",
+      "Expected OAuth for Gmail, as Mimestream and Apple Mail use. Unclear: the policy says OAuth, but the guides say app password.",
+      "Expected transparent one-time pricing. Met: $29 once, 1.x updates, 3 Macs, 14-day trial with no card.",
+      "Expected to be able to log in on the web. Not applicable: it is a Mac app with no account, and the core value can't be reached from a browser."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Growth marketer who has tried several email clients and is wary of me-too products. Wants to see what's different and what it costs, quickly.",
+     "outcome": "blocked",
+     "n_steps": 13,
+     "drop_off": {
+      "step": 13,
+      "url": "https://glassmail.app/#faq"
+     },
+     "would_say": "I could not log in because Glassmail has no web account at all (\"no subscription, no account, no seats\"). The product is a native macOS app delivered as a .dmg, so I can't use it inside a browser, and there's no web demo. As a quick evaluator, though, I got both of my answers fast. What's different: AI runs on the Mac (Apple Intelligence, or Gemma/Qwen on older Macs), works offline and needs no API key. What it costs: $29 once, covers all 1.x updates on up to 3 Macs, with a 14-day trial and no card. The dated comparison table (Superhuman from $900 over 3 years, Mimestream $149.97) worked well. The download has no email gate and shows clear install steps. Friction: the hero product shot looks interactive but is a static image. Anchor jumps sometimes landed mid-scroll on a blank band, or the layout shifted while I clicked (I opened the wrong FAQ item once). The comparison table includes the unknown 'bytemail', while Spark is only a side link. I stopped because the next step is installing a Mac app, which I can't do in a browser. The account_from login was never needed because the site has no login.",
+     "top_problems": [
+      "No login or web demo: the core value cannot be experienced without installing a macOS app.",
+      "Hero app screenshot looks interactive (Summarize button) but is static.",
+      "Pricing anchor jump first barely moved, then showed a half-rendered blank band with the sticky header near the bottom."
+     ],
+     "praise_and_expectations": [
+      "Expected a 'Log in' or web app like Superhuman/Spark web; product is a native Mac app with no account by design, so no web login exists (not met for the task, but deliberate).",
+      "Expected pricing to be buried or subscription-based; instead $29 once is in the hero and a dated competitor price table is on the page (exceeded).",
+      "Expected 'AI' to mean sending mail to OpenAI like Spark/Superhuman; it's on-device and the FAQ explains requirements plainly (met, and the main differentiator).",
+      "Expected a signup/email gate before download like Spark/Superhuman; download starts immediately (exceeded).",
+      "Expected the hero product mockup to be an interactive demo; it's a static image (not met)."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Casual user who saw Glassmail mentioned online and is curious what it does. Not technical; loses interest if the first screen doesn't show it or asks for signup before showing value.",
+     "outcome": "blocked",
+     "n_steps": 11,
+     "drop_off": {
+      "step": 11,
+      "url": "https://glassmail.app/#faq"
+     },
+     "would_say": "Glassmail is a native Mac email app. There is no web login or account at all, so the shared account could not be used: the trial runs on your own mail accounts and asks for a licence key after 14 days. As a casual visitor I understood it right away without signing up: the hero ('Every inbox, in one calm place'), a large app screenshot and a 38-second film (natural-language search, AI writes the reply) show what it does. The Download button started a .dmg and opened a clear 3-step install popup, but the app itself can't be run in a browser, so I could not get its real value here. Friction: the screenshot looks interactive ('Summarize' button) but it's static. Clicking FAQ briefly showed a broken, mostly blank page with the nav bar floating in the middle. 'Log in' doesn't exist, which confused me at first. The FAQ answer to 'Can I try it before I buy?' cleared that up. Note: UserSim's independent judge marked goal_reached=true at step 2, but that is wrong because it took the static marketing screenshot for a logged-in inbox.",
+     "top_problems": [
+      "No 'Log in' anywhere. I hesitated because the task said to log in. Only the FAQ explained there is no account.",
+      "The hero app screenshot has a 'Summarize' button that looks clickable but does nothing (static image).",
+      "The video player started partly below the fold, so I had to scroll to see it."
+     ],
+     "praise_and_expectations": [
+      "Expected the first screen to say what it is without signing up: met. The headline and subtitle made it clear within seconds.",
+      "Expected a 'Log in' or web version like Gmail or Outlook.com: not met, because it's a Mac-only download with no account. That's fine for privacy but confusing given the task.",
+      "Expected the big app screenshot to be a live demo I could click, like some sites do: not met, it's static.",
+      "Expected a short video to show the value: met. The 38-second film clearly shows search and AI reply.",
+      "Expected no signup or card before trying: met. It's a 14-day free trial with no card and no account."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p10_openvorld",
+   "name": "OpenVorld",
+   "url": "https://openvorld.com",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "A methodical tester trying the product for the first time. Tries to finish every step and notes anything broken or confusing.",
+     "outcome": "completed",
+     "n_steps": 18,
+     "drop_off": null,
+     "would_say": "OpenVorld has no web signup at all (no email, phone or Google). It is a local-first, open-source desktop app (Download / GitHub), so the only usable thing on the site was the browser demo, which I used end to end. Easy: one click into the demo; the scripted story (Mira plans, Sage browses and writes a poem, Jules asks for file-write permission like Claude Code's approval prompts) is clear; the generated invitation.html opens in a preview. Problems: emoji/icons render as empty boxes everywhere; the welcome modal is semi-transparent and hard to read; the end-of-demo modal pops up over my own message's reply; '@Jules' was answered by Mira with a canned line (free input does nothing after the script); the persistent 'Surprise!/Download/Play again' toast covers the Cancel/Add to crew footer of the New agent modal and can't be scrolled away; the New agent form says 'This is a demo vorld' only on submit, after all fields are filled; jargon ('writ', 'vorld', 'bench') is unexplained. The judge marked goal_reached=false and signup_verified failed because no signup exists on the site.",
+     "top_problems": [
+      "No signup/login anywhere on the site; I had to infer that the browser demo is the only usable path.",
+      "Welcome modal in the demo is semi-transparent over the map, so its text is hard to read.",
+      "Emoji/icons render as empty boxes in chat, toasts, the crew title and the generated invitation."
+     ],
+     "praise_and_expectations": [
+      "Expected a Sign up / Log in on a SaaS-style site; OpenVorld offers none (desktop app + GitHub only). Not met, but the homepage makes the local-first model clear.",
+      "Expected agent permission prompts like Claude Code / Cursor (allow once / session / always / refuse); met well, with a risk label and folder path.",
+      "Expected to chat freely with agents like ChatGPT after the guided story; not met: the demo is scripted and @mentions are ignored once the script ends.",
+      "Expected a disabled control or an upfront notice for demo-only features; not met: the New agent form only says 'demo vorld' after you fill it in and submit."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "A curious casual user who clicked a link from a friend's post. Wants to see what this actually does before committing any time.",
+     "outcome": "completed",
+     "n_steps": 16,
+     "drop_off": null,
+     "would_say": "There is no login on the website: OpenVorld is a desktop app you download. The site offers 'Play the demo in your browser', which is the right thing for a curious visitor, so I never needed the shared account. In the demo, 'Plan the surprise' runs a scripted multi-agent job: Mira plans, Sage reads notes, browses and writes a poem, and Jules asks permission to write files and then builds invitation.html. I clicked Allow once, the plan reached 4/4, and I opened the invitation preview. In about 3 minutes I understood what the product does. Friction: the welcome modal appeared late, after I had already clicked the map; the chat auto-scrolled as I clicked 'Open the invitation', so my first click missed it; emoji render as empty boxes (tofu) everywhere; my typed message got a canned reply, and the page says the demo is scripted only in the end modal. I stopped because the real product needs a desktop download.",
+     "top_problems": [
+      "Task said 'log in' but there is no login on the site; the only paths are Get the app or Play the demo.",
+      "The welcome modal on /play appeared a moment late, after I had already clicked on the map.",
+      "The chat auto-scrolled as new messages streamed in, so my first click on 'Open the invitation' missed and the second seemed to do nothing until the chat stopped moving."
+     ],
+     "praise_and_expectations": [
+      "Expected a web app with a Log in button (like most SaaS from a shared link); instead it is a downloadable desktop app with no web login. The in-browser demo covered the 'see what it does first' need well.",
+      "Expected to try it without signing up: met, the demo needs no account.",
+      "Expected a game-like world to feel like Stardew Valley: met, the pixel-art town, XP and deeds feel like a game.",
+      "Expected a permission prompt to work like a phone app asking for camera access: met, the Allow once / Allow for this session / Always allow / Refuse options were clear.",
+      "Expected the chat to respond to my own message like ChatGPT: not met, the demo is scripted and gave a canned reply."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "A newer internet user browsing new apps on their phone during a break. Leaves quickly if the first screen doesn't make the point or asks for signup before showing anything.",
+     "outcome": "completed",
+     "n_steps": 13,
+     "drop_off": null,
+     "would_say": "No login exists on the site; the only options are Download the app (desktop, useless on a phone) and Play the demo in your browser, which needs no signup. Used the demo end to end: crew planned Buzz's surprise, I granted Allow once, opened the generated invitation. Friction: cookie banner over the first screen, welcome modal appeared late, emojis/icons render as empty squares, technical jargon (file paths, npx html-validate), and a free-form question got a canned reply revealing the demo is scripted. Stopped because the next step is a desktop download.",
+     "top_problems": [
+      "Cookie consent banner covered the bottom of the first screen, including part of the CTA area.",
+      "Task said log in, but there is no login; had to guess that the browser demo was the way in.",
+      "On entering /play the welcome modal appeared with a delay; first saw only the map with no guidance."
+     ],
+     "praise_and_expectations": [
+      "Expected app stores / mobile apps to let me try without signup: met, since the browser demo needs no account at all.",
+      "Expected a 'Log in' button like most apps: not met, there is no login anywhere; only a desktop download and a demo.",
+      "Expected a game-like first screen to explain itself quickly: mostly met, the pixel village and live preview were inviting, though 'harness for AI agents' is jargon.",
+      "Expected chatting with the characters to work like a chatbot (e.g. ChatGPT): not met, the demo is scripted and free-form questions get a canned reply.",
+      "Expected something I could keep using on my phone: not met, the real product is a desktop download (macOS/Windows/Linux)."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "A product manager at a startup who scouts new tools weekly. Looks for technical details and pricing and drops anything that feels like a me-too.",
+     "outcome": "completed",
+     "n_steps": 23,
+     "drop_off": null,
+     "would_say": "There is no login to do: the site says 'No OpenVorld account or hosted backend'. OpenVorld is an MIT-licensed, local-first desktop app where you bring your own AI, so it is free and you pay your model provider. I used the in-browser demo, the only part you can use on the site. Easy: a specific technical section listing Claude Code, Codex, Antigravity, OpenCode and OpenAI-compatible APIs (OpenRouter, Ollama, LM Studio), with a different provider per agent; a clear permission model (each agent has its own workbench, can only read the project folder, and needs a writ for anything else; there is also a Vault and an editable Memory); installers for macOS, Windows and Linux plus build-from-source commands; in the demo, tool calls show with timings (Read, browser_open, Write, html-validate), the permission prompt has allow once / this session / always / refuse with a risk level and logs the grant in the chat, and the output file opens in a preview with a Download button. Hard: the demo is scripted, so I could not send my own prompt and the Brain dropdown only offers 'No brain yet'; my typing went to the game's shortcuts when the end-of-demo modal appeared (it opened panels and selected all page text); the chat link moved while the reply was coming in, so my first click missed; 'Details' on the writ only repeats the request and shows no diff; XP toasts cover the preview; emoji show as empty boxes; 'What's new' reads like commit messages; the project is pre-1.0 (v0.19.5). Verdict: not a me-too; worth a local install trial.",
+     "top_problems": [
+      "No login exists despite the task: had to read deep into the landing page to learn there is no account.",
+      "Landing page leads with whimsy; the concrete provider list and permission model are only about 4 screens down.",
+      "'What's new' shows raw commit-style notes, not user-facing changes."
+     ],
+     "praise_and_expectations": [
+      "Expected a login/signup like most SaaS agent tools; there is none, and the site says so explicitly (local-first, no account). Met in a better way for this persona.",
+      "Expected a pricing page; there is none, but 'MIT licensed' plus 'bring your own AI' answers it (free, pay your model provider). Met, though a one-line 'Free, you pay your provider' would be faster.",
+      "Expected a concrete list of supported models/providers; met: Claude Code, Codex, Antigravity, OpenCode, OpenAI-compatible (OpenRouter, OpenAI, Ollama, LM Studio).",
+      "Expected permission prompts like Claude Code's (once/session/always); met, with a risk label and a logged grant, but no diff preview like Claude Code or Cursor show.",
+      "Expected a try-it-yourself demo where I can type my own prompt; not met: the demo is scripted and the Brain selector is empty.",
+      "Expected something beyond a me-too multi-agent dashboard (CrewAI, LangGraph Studio); met: the spatial world, writs and per-agent workbenches set it apart."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "A solo founder hunting for tools that save time or bring users. Judges fast on ROI and leaves if the value isn't clear within a minute.",
+     "outcome": "gave_up",
+     "n_steps": 15,
+     "drop_off": {
+      "step": 15,
+      "url": "https://github.com/DigitalDreams-Lab/OpenVorld/releases/tag/v0.19.5"
+     },
+     "would_say": "There is nothing to log in to. OpenVorld is a downloadable desktop app, and the homepage has no account, login or signup, only Download and 'Play the demo in your browser'. I used the browser demo. The scripted 'Surprise for Buzz' run takes about 40 s and shows how it works clearly: a leader agent hands off to a writer and a builder through @mentions, you see tool traces, and a scoped permission prompt works like Claude Code's. When I sent my own job (3 launch tweets), it was ignored and I got a canned 'play the demo again'. 'This demo is scripted' appears only in small print on the end modal. The end modal popped up just as I pressed Send and swallowed my first message. The 'crew is planning' toast stayed up after the job was done. Download goes straight to a GitHub release page with 170 MB binaries. Nothing says which model it uses, whether I need my own API key, or what it costs. The ROI wasn't clear within a minute, so I left without installing. The judge marked the goal reached because the demo was used.",
+     "top_problems": [
+      "Homepage: no login or account, only Download or Demo; unclear whether it's a hosted product or local.",
+      "Demo welcome modal faded in late, so the first screen looked like a bare game map.",
+      "Birthday scenario is unrelated to work, so the business value isn't obvious; XP/deeds pop-ups feel like noise to an ROI-focused user."
+     ],
+     "praise_and_expectations": [
+      "Expected a SaaS with a login or signup (like most AI tools I try). It is a desktop download with no account at all, which the task wording and the site don't prepare you for. Not met.",
+      "Expected to try the tool on my own job in the browser, the way ChatGPT or a hosted agent tool lets you. The browser demo is fully scripted and ignores real prompts. Not met.",
+      "Expected agent traces and permissions to look like Claude Code or Cursor. They do: tool calls, file writes and allow once / session / always are familiar and clear. Met.",
+      "Expected pricing, or at least the model / API-key requirements, before downloading. Neither the demo end screen nor Download shows them. Not met."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p13_anyprofile",
+   "name": "AnyProfile",
+   "url": "https://anytools.world/en/anyprofile",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "Plain tester: methodical, tries every step to finish the task, and notes anything broken or confusing along the way.",
+     "outcome": "blocked",
+     "n_steps": 9,
+     "drop_off": {
+      "step": 9,
+      "url": "https://anytools.world/en/anyprofile#ap-install"
+     },
+     "would_say": "AnyProfile is a desktop app (Mac/Windows downloads) and the page itself says 'There is no account, no server'. So there is nothing to sign up for. The only account entry point is the header 'Sign in', and it leads to a page titled 'Sign in to AnyLearn' (a different product) with only Google and GitHub buttons and no email option. I tried Google sign-in, but Google locked the test account on 2-Step Verification ('Too many failed attempts'). GitHub is not available. The product's real value needs the desktop app installed, which a cloud browser can't do. Clicking 'Download for Windows' gave no visible feedback. What was easy: a clear hero, and well-documented install steps. What was hard: the header Sign in suggests an account exists and sends you to another product.",
+     "top_problems": [
+      "Step 2: the header 'Sign in' on the AnyProfile page opens 'Sign in to AnyLearn', a different product, which made me unsure the account applies to AnyProfile.",
+      "Step 2: no email signup, only Google or GitHub.",
+      "Steps 3-5: Google sign-in hit reCAPTCHA and then a 2-Step Verification lockout ('Too many failed attempts'), which blocked the signup (a test-account issue, not the product's fault)."
+     ],
+     "praise_and_expectations": [
+      "Expected a 'Sign in' on a product page to lead to that product's account (as with most SaaS like Notion or Linear); instead it led to 'Sign in to AnyLearn', a different product. Not met.",
+      "Expected an email signup option alongside Google; only Google and GitHub were offered. Not met.",
+      "Expected clicking a download button to show a download prompt or a 'thanks for downloading' confirmation (as GitHub releases or most app sites do); nothing visible happened. Not met.",
+      "Expected clear install instructions for an unsigned desktop app; the install section explains the macOS/Windows warnings well. Met."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo founder of a small SaaS who juggles a dozen online profiles. Wants to know within a minute whether this saves real time, and leaves if the value isn't clear fast.",
+     "outcome": "blocked",
+     "n_steps": 8,
+     "drop_off": {
+      "step": 8,
+      "url": "https://anytools.world/en/anyprofile"
+     },
+     "would_say": "Value prop is clear in one line (one browser per account, own cookies/proxy/fingerprint per profile) and fits the dozen-profiles problem. But logging in does nothing for AnyProfile: 'Sign in' on the AnyProfile page goes to 'Sign in to AnyLearn' (a study/quiz app), Google/GitHub only, no email. After Google sign-in (via Google reCAPTCHA + password + TOTP) I landed on the AnyLearn dashboard with no mention of AnyProfile; back on the AnyProfile page nothing changed except the header button now reads 'AnyLearn'. AnyProfile is a desktop-only download (Mac Apple Silicon / Windows), so nothing can be used in the browser. Blocked: the promised value requires installing a desktop app, and the web account is unrelated to it. Note: account_from session had no identity, so I signed in with Google directly (the site's only option besides GitHub).",
+     "top_problems": [
+      "Step 2: 'Sign in' on the AnyProfile page lands on 'Sign in to AnyLearn' with a book-and-key illustration; product mismatch made me doubt I was in the right place.",
+      "Step 2: no email login, only Google/GitHub.",
+      "Step 5: after login, AnyLearn dashboard (quizzes, workouts, connect AI key) with no link or mention of AnyProfile."
+     ],
+     "praise_and_expectations": [
+      "Expected 'Sign in' on a product page to log into that product (like Multilogin/GoLogin web dashboards where profiles live in your account). Not met: it signs into AnyLearn, an unrelated study app.",
+      "Expected to see within a minute whether it saves time. Partly met: the tagline and 'What it does' explain it clearly, and a 98-second video with chapters exists, but no way to try it without installing a desktop app.",
+      "Expected email signup as an option. Not met: Google or GitHub only."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Frontend developer who checks how a tool works, what data it touches and what it costs. Drops tools with vague pricing or that look like a me-too.",
+     "outcome": "blocked",
+     "n_steps": 7,
+     "drop_off": {
+      "step": 7,
+      "url": "https://accounts.google.com/v3/signin/challenge/totp"
+     },
+     "would_say": "Blocked at login. The site offers only Google or GitHub sign-in, with no email option. The shared Google account got stuck on Google's 2-Step Verification with 'Too many failed attempts, try again in a few hours', and GitHub sign-in is off-limits. Provider-only signup. The landing page was very clear: free, AGPL-3.0, local SQLite with an AES-GCM keychain, and a comparison table against Multilogin, AdsPower, GoLogin and HideMyAcc. But 'Sign in' on the AnyProfile page leads to 'Sign in to AnyLearn', a document-learning AI product whose consent line says it stores my documents and connected AI accounts. Nothing explains why a local-first desktop app needs a web account.",
+     "top_problems": [
+      "The Sign in button on the AnyProfile page lands on an 'AnyLearn' login page, a different product, with no mention of AnyProfile.",
+      "The consent text talks about storing documents and connected AI accounts, which doesn't fit a privacy-focused antidetect browser.",
+      "There is no email signup, only Google or GitHub OAuth."
+     ],
+     "praise_and_expectations": [
+      "Expected clear pricing vs Multilogin/GoLogin/AdsPower: met. It says 100% free, AGPL-3.0, unlimited local profiles.",
+      "Expected to know what data it touches: the landing page met this (local SQLite, OS keychain, a 127.0.0.1 proxy relay). The sign-in page contradicted it by asking me to agree that AnyLearn stores my documents and AI accounts.",
+      "Expected email/password or no account at all for a local-first desktop app, like most open-source desktop tools (e.g. Firefox profiles): not met. Only Google or GitHub OAuth is offered, under a different product's brand."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "College student who clicked a link a friend shared and is curious what this does. Not technical; loses interest if the first screen doesn't show it or asks for signup before showing anything.",
+     "outcome": "blocked",
+     "n_steps": 6,
+     "drop_off": {
+      "step": 6,
+      "url": "https://accounts.google.com/v3/signin/challenge/totp"
+     },
+     "would_say": "Provider-only login: the site offers only Google or GitHub, with no email option. Google sign-in with the shared test account passed the reCAPTCHA and the password, then stopped at Google 2-Step Verification with 'Too many failed attempts. Try again in a few hours.' (a lockout on the test account, not a bug in the product). The run never reached the logged-in area. Product findings: (1) AnyProfile is a desktop app for Mac or Windows, and nothing can be used in the browser; (2) the 'Sign in' button on the AnyProfile page opens a page titled 'Sign in to AnyLearn', a different (study) product, which confuses users; (3) the hero and video are technical (proxies, fingerprints, KVM, Android VM, MCP) and aimed at people with many accounts, not a casual student.",
+     "top_problems": [
+      "Hero is understandable but aimed at multi-account sellers; a student with one TikTok doesn't see why they need it.",
+      "Walkthrough video is full of jargon (Android 15 VM, Apple Hypervisor KVM, proxies, MCP).",
+      "The main call to action is a desktop download; there is nothing to try in the browser before installing."
+     ],
+     "praise_and_expectations": [
+      "Expected something I could try right in the browser, like most links friends send (a web app such as Canva or Notion). Not met: AnyProfile is a Mac or Windows download.",
+      "Expected the Sign in button on AnyProfile to sign me in to AnyProfile. Not met: it opened 'Sign in to AnyLearn', a different study product.",
+      "Expected 'Continue with Google' to be quick, as on most sites. The product does offer it, but there is no email fallback, so when Google blocks the sign-in there is no other way in."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Freelance designer who browses new tools on weekends for fun. Casual, mobile-minded, and wants a nice result quickly without reading instructions.",
+     "outcome": "blocked",
+     "n_steps": 5,
+     "drop_off": {
+      "step": 5,
+      "url": "https://accounts.google.com/v3/signin/challenge/totp"
+     },
+     "would_say": "Landing page was clear: AnyProfile is a free desktop antidetect browser (Mac/Windows download), so its main promise happens in a desktop app, not on the website. Clicking 'Sign in' on the AnyProfile page sent me to a login page branded 'AnyLearn' ('Learn from your own documents'), which made me unsure I was in the right place. The only ways to sign in were Google or GitHub, with no email option. Google sign-in with the shared test account got through reCAPTCHA and the password, then stopped at 2-Step Verification: 'Too many failed attempts, try again in a few hours'. I could not log in. This is a limit of the test account, not a product bug, but because sign-in is provider-only there was no other way in. Nothing past login was reachable. The account_from session never got an email identity because the site has no email signup.",
+     "top_problems": [
+      "Sign-in page is branded AnyLearn with a study-tool pitch, which made me doubt I was in the right product.",
+      "No email signup, only Google or GitHub, so there was no fallback when Google sign-in failed.",
+      "Google 2-Step Verification locked the shared test account ('Too many failed attempts'). This comes from the test setup, not the product."
+     ],
+     "praise_and_expectations": [
+      "Expected 'Sign in' on the AnyProfile page to land on an AnyProfile-branded login; it went to an 'AnyLearn' page instead (not met).",
+      "Expected an email or magic-link option like most design tools (Figma, Framer); only Google or GitHub were offered (partly met: Google is quick when it works).",
+      "Expected to try the product in the browser quickly; AnyProfile is a Mac/Windows desktop download, so a casual mobile-minded user gets nothing on the web (not met)."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  },
+  {
+   "key": "p14_shipyard",
+   "name": "Shipyard",
+   "url": "https://www.shipyardmcp.com",
+   "role": "product",
+   "of": null,
+   "users": [
+    {
+     "label": "u1",
+     "persona": "Plain tester: methodical, tries to finish the task end to end, and notes anything broken, confusing or slow along the way.",
+     "outcome": "blocked",
+     "n_steps": 11,
+     "drop_off": {
+      "step": 11,
+      "url": "https://shipyardmcp.com/account"
+     },
+     "would_say": "Signup was fast and worked: an email and password form, a confirmation email that arrived within seconds, and a one-click confirm link. The confirm link drops you on Pricing, and every path to the product needs a payment. The plans are $50 for one launch, $299/month with a 7-day trial that still needs a card, and $2,500 for lifetime. The account page says 'Your two lines are ready. They appear here as soon as you have a licence', so the install command for the CLI/MCP server is hidden until you pay. I stopped at the Stripe checkout without entering a card. Friction: the trial popup appears twice; the Stripe checkout names the merchant 'Sound Ventures', not Shipyard; the Account button in the header left me on Pricing; there is no free tier, demo or sandbox.",
+     "top_problems": [
+      "The trial popup appears as soon as you land on the homepage, before you know what the product does.",
+      "The same trial popup appeared again on Pricing after signup, triggered by scrolling.",
+      "After confirming my email I landed on Pricing with no welcome or onboarding."
+     ],
+     "praise_and_expectations": [
+      "Expected a standard email/password signup with email verification (like most SaaS tools): met, and quick, with the email arriving within seconds.",
+      "Expected to be able to try the core promise (set up and launch a product) before paying, through a free tier or a no-card trial as many dev tools offer: not met. Even the 7-day trial needs a card through Stripe, and the install command is hidden until you have a licence.",
+      "Expected checkout to be branded as the product I signed up for: not met. Stripe showed the merchant as 'Sound Ventures'."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u2",
+     "persona": "Solo SaaS founder who ships with Claude Code and Cursor daily. Wants to know within a minute whether this saves real time or is another MCP wrapper, and leaves if the ROI isn't obvious.",
+     "outcome": "blocked",
+     "n_steps": 14,
+     "drop_off": {
+      "step": 14,
+      "url": "https://shipyardmcp.com/pricing"
+     },
+     "would_say": "Blocked at payment: the core product (install CLI/MCP server, connect stack, practice run, launch) is fully gated behind a paid licence; even the 7-day trial requires a card (Stripe checkout, $299/mo after). Easy: value prop clear in one line; account page is a good onboarding with a sensible pre-picked stack and a clear 3-step path. Friction: $299/mo trial modal before the hero; logging into the existing account forced email confirmation, and the link dropped me on the login page (www -> apex) with no success message, so I logged in twice; post-login landed on pricing not account; first Account click did nothing; Stripe checkout branded 'Sound Ventures' not Shipyard; '98 of 100 left' signals few customers. No free tier or demo practice run to judge ROI before paying.",
+     "top_problems": [
+      "Trial modal with $299/mo and card requirement shown on landing before reading the hero.",
+      "Login to existing account forced email confirmation.",
+      "Confirmation link (apex domain) dropped me on the login page with no success message; had to log in again."
+     ],
+     "praise_and_expectations": [
+      "Expected a free tier or open-source CLI to try locally like most MCP servers / dev tools (Vercel, Supabase CLI): not met, even the install command is behind a licence.",
+      "Expected login to an existing account to go straight to a dashboard like Vercel/Railway: not met, forced email confirmation, then a second login, then landed on pricing.",
+      "Expected a trial without a card like Cursor's: not met, the trial needs a card and rolls into $299/mo.",
+      "Expected the value proposition within a minute: met, the hero line and pre-picked stack made the time savings clear."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u3",
+     "persona": "Backend developer at a 40-person startup who evaluates dev tools for the team. Goes straight to docs, setup steps and pricing, and drops tools with vague pricing or me-too features.",
+     "outcome": "blocked",
+     "n_steps": 14,
+     "drop_off": {
+      "step": 14,
+      "url": "https://checkout.stripe.com/..."
+     },
+     "would_say": "Blocked at payment. Logged in with the shared account without trouble (email + password). The docs were concrete and good: a local CLI/MCP, your own provider keys, a 16-step dry run against fake providers. Pricing is clear ($50 per launch, $299/mo with a 7-day trial, $2,500 lifetime). But the install command, the only way to run anything, even the token-free dry run, only shows once you have a licence: the account page says 'They appear here as soon as you have a licence' and the stack page masks the 'shipyard stack use' command behind 'Get a licence to copy it'. The trial needs a card at Stripe checkout. Friction: after login it sent me to /pricing, not the account page. A popup asked for a card before I had read anything. Stripe checkout shows the merchant as 'Sound Ventures', not Shipyard. Hosting choice is narrow (Railway/Vercel only, no AWS). Picking the stack worked well and saved on its own. Stopped at the card form, per the rules.",
+     "top_problems": [
+      "A modal asking for a card on the homepage before I had read anything.",
+      "After login it sent me to /pricing, not /account.",
+      "The docs advertise a token-free dry run, but you can't get the install command without paying, so even the dry run is paywalled."
+     ],
+     "praise_and_expectations": [
+      "Expected clear, public pricing: met ($50 one launch, $299/mo with a 7-day trial, $2,500 lifetime, provider costs separate).",
+      "Expected concrete setup docs with real commands: met. Getting started shows install, a dry run (like terraform plan) and the 5 real steps.",
+      "Expected to try the CLI for free, like npm-installing a dev tool or running a free Terraform/Pulumi tier: not met. The install command is only shown with a licence, and the trial needs a card.",
+      "Expected logging in to land on my account/dashboard, as in Vercel or Railway: not met. It sends you to pricing.",
+      "Expected flexible providers for a team (AWS, Fly, Render): partly met. Only Railway or Vercel for hosting; others are 'coming soon'."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u4",
+     "persona": "Product manager who has heard of MCP but never configured one. Wants a clear walkthrough and gets stuck when steps assume terminal knowledge.",
+     "outcome": "blocked",
+     "n_steps": 11,
+     "drop_off": {
+      "step": 11,
+      "url": "https://checkout.stripe.com/"
+     },
+     "would_say": "Blocked at payment. The install and launch commands (the CLI/MCP server) only appear on the Account page once you have a licence, and every licence, including the 7-day free trial, needs a card. I stopped at Stripe checkout. What was easy: the login worked first time. The Account page and the beginner guide are very good for someone who has never used a terminal (how to open PowerShell or Terminal, how to paste, checking Node with node -v). What got in the way: a trial popup asking for a card before I had seen the product; landing on Pricing after login; 'Your two lines are ready' shown on the Account page but hidden behind a licence; the beginner guide asking for a card plus 7 provider accounts up front; the Stripe checkout showing the merchant as 'Sound Ventures' instead of Shipyard; $299/month after the trial.",
+     "top_problems": [
+      "A trial popup asking for a card appears on the homepage before I had seen the product",
+      "Login lands on Pricing instead of my account or onboarding",
+      "The Account page says 'Your two lines are ready' but hides them behind a licence"
+     ],
+     "praise_and_expectations": [
+      "Expected a free tier or a sandbox to try the MCP server, like most dev tools (for example the Vercel or Supabase free tiers). Not met: even the trial needs a card.",
+      "Expected to land on a dashboard or a setup walkthrough after login, as in Notion or Linear onboarding. Not met: login went to Pricing.",
+      "Expected a step-by-step guide that does not assume terminal knowledge. Met: the Account page and the beginner guide explain the terminal, pasting and the Node check clearly.",
+      "Expected the checkout to show the product's own brand. Not met: Stripe shows 'Sound Ventures'."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    },
+    {
+     "label": "u5",
+     "persona": "Curious hobbyist who clicked a Product Hunt link and wants to see what this does. Leaves if the first screen doesn't show it or if it asks for signup before showing anything useful.",
+     "outcome": "blocked",
+     "n_steps": 14,
+     "drop_off": {
+      "step": 14,
+      "url": "https://checkout.stripe.com/..."
+     },
+     "would_say": "Stopped at the Stripe payment form. The install and launch commands only appear after you buy a licence, and every plan needs a card: $50 for one launch, a free week that needs a card and then costs $299/month, or $2,500 lifetime. There is no free tier and no way to try it locally without paying. What went well: the 'See demo' walkthrough clearly showed what the product does (pick a stack, npm install, describe the product, launch). Login with email and password was quick. The Account page gives a friendly 3-step guide (open a terminal, install, open Shipyard). What was hard: a 'Try free for a week, $299/mo, card needed' modal appeared before the homepage was even visible. After login I landed on Pricing, not my account. On Account, 'Your two lines are ready' turned out to mean 'they appear once you have a licence'. The homepage demo already shows 'npm install -g shipyard', so locking it is confusing. You also need to connect 9 provider accounts. The checkout page is branded 'Sound Ventures', not Shipyard, which made me uneasy. As a curious hobbyist I would leave here.",
+     "top_problems": [
+      "A paywall modal ($299/mo, card needed) appeared on the very first screen, before any content.",
+      "After login, redirect went to Pricing instead of Account.",
+      "'Your two lines are ready' banner is misleading: the lines only appear after you buy a licence."
+     ],
+     "praise_and_expectations": [
+      "Expected a Product Hunt launch to let me try something for free (like Vercel, Supabase or Railway free tiers): not met. Every path needs a card.",
+      "Expected the first screen to show what it does: partly met. The headline and demo explain it well, but a $299/mo trial modal covers the page first.",
+      "Expected login to land on a dashboard or my account (like most SaaS tools): not met. It landed on Pricing.",
+      "Expected a CLI to be installable from npm like any other tool: the demo shows 'npm install -g shipyard', but the account page hides the commands until you have a licence."
+     ],
+     "feedback_source": "fallback:notes+friction"
+    }
+   ]
+  }
+ ]
+}
