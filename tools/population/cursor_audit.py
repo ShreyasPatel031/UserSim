@@ -273,8 +273,51 @@ def main():
     rows, merge, replace, requeue = [], [], [], []
     pb60_c, pb60_vms, reupload_c, pb60_recent = collections.Counter(), collections.Counter(), collections.Counter(), collections.Counter()
     refresh_c = collections.Counter()
+    def store_doc(n):
+        for f in (f"{W}/cursor_audit_cache/store_current/{n}.json", f"{W}/raw/people_live/vm/{n}.json"):
+            try:
+                return json.load(open(f))
+            except Exception:
+                continue
+        return None
+
+    def overlay_to_held(n, d):
+        """02:3xZ Nov 22: the fleet's patch_repull_upvotes_to_held (slots 9/27, ~01:15Z) re-reads upvotes only down to the
+        first upvote the store already holds (paging.ended=first_held_upvote, usually 1 item), so every refresh failed
+        upvotes:FAIL_short (96 at 01:51Z, 192 at 02:21Z). Rebuild the full list: the refresh's items on top (their
+        votes/comments are newer), then every store item not re-read. The list end is the store read's PH end. Only when
+        the refresh actually reached a held item and the store read ended at a PH end; otherwise left as is."""
+        u = d.get("upvotes")
+        if not isinstance(u, dict) or not u.get("refresh_to_held"):
+            return False
+        sd = store_doc(n)
+        su = (sd or {}).get("upvotes")
+        if not isinstance(su, dict) or str((su.get("paging") or {}).get("ended")) not in g.get("SERVER_END", set()):
+            return False
+        key = lambda i: str(i.get("post_id") or i.get("url") or "")
+        new_items = list(u.get("items") or [])
+        new_keys = {key(i) for i in new_items}
+        held = {key(i) for i in su.get("items") or []}
+        if not new_keys & held:
+            return False  # never reached a held item: not a to-held read
+        items = new_items + [i for i in su.get("items") or [] if key(i) not in new_keys]
+        u["refresh_read"] = {"paging": u.get("paging"), "count": u.get("count"), "status": u.get("status")}
+        u["items"], u["count"] = items, len(items)
+        u["paging"] = dict(su.get("paging") or {}, refreshed_to_held=True)
+        u["ph_list_end"] = (su.get("paging") or {}).get("ended")
+        u.pop("status", None)
+        if su.get("status"):
+            u["status"] = su["status"]
+        for k in ("upvotes_capped", "cap", "complete_not_visible", "limit_owner"):
+            if k in su and k not in u:
+                u[k] = su[k]
+        json.dump(d, open(f"{D}/people_live/vm/{n}.json", "w"))
+        return True
+
     for n in todo:
         d = json.load(open(f"{D}/people_live/vm/{n}.json"))
+        if overlay_to_held(n, d):
+            refresh_c["overlay_to_held"] += 1
         md5 = (d.get("run") or {}).get("pkg_md5")
         m = re.search(r"\((feeder-[^)]+)\)", str(d.get("method", "")))
         vm = m.group(1) if m else "unknown"
@@ -362,7 +405,8 @@ def main():
     print(f"POST_BLOCK_IP_CHANGE_60M_RECENT24H {stamp}: true={sum(pb60_recent.values())} "
           f"vms={','.join(f'{v}:{k}' for v, k in sorted(pb60_recent.items()))}", flush=True)
     print(f"UPVOTE_REFRESHES {stamp}: fresh24h={refresh_c['fresh24h']} older={refresh_c['older']} "
-          f"items_added>0={refresh_c['items_added>0']} items_added=0={refresh_c['items_added=0']}", flush=True)
+          f"items_added>0={refresh_c['items_added>0']} items_added=0={refresh_c['items_added=0']} "
+          f"overlay_to_held={refresh_c['overlay_to_held']}", flush=True)
     print(f"REUPLOADED_OLD_SAVES {stamp}: {sum(reupload_c.values())} of {len(todo)} (pull finished on an earlier day than staged) "
           f"vms={len(reupload_c)}", flush=True)
     print(f"AUDIT {stamp}: {dict(c)} builds={dict(builds)} vms={len(vms)} reasons={dict(reasons.most_common(8))}")
