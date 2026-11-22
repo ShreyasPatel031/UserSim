@@ -278,6 +278,11 @@ def main():
         md5 = (d.get("run") or {}).get("pkg_md5")
         m = re.search(r"\((feeder-[^)]+)\)", str(d.get("method", "")))
         vm = m.group(1) if m else "unknown"
+        # 00:0xZ Nov 22: an upvote refresh of a person first pulled by an unowned writer keeps that writer's method string
+        # (no VM), so the VM gate saw "unknown" and held it (13 slot27 refreshes at 23:51Z). The refreshing fleet VM
+        # (upvotes_refreshed_by) wrote this save; judge that VM. The rest of the record is already in the store.
+        if vm == "unknown" and str(d.get("upvotes_refreshed_by") or "").startswith("feeder-fleet"):
+            vm = str(d["upvotes_refreshed_by"])
         builds[md5 or "none"] += 1
         vms[vm] += 1
         ok, why = g["person_complete"](d, g["handle_of"](d, f"{n}.json"))
