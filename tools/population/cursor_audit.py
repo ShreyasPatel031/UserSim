@@ -21,6 +21,7 @@ CUR = f"{R}/_cursor"
 START = os.environ.get("CURSOR_AUDIT_START", "2026-11-08T18:20:00Z")  # protocol start; older staged files belong to the pace test (merge_list.py)
 FULL18D = "T3OI+xr3iAvoMDMZrdryhA=="
 FULL18F = "uYYdW17hoPBJjpMGoR7lKw=="  # full18e + paging_v2.py:210 fix (no 98% / header-2 complete label); population agent 03:5xZ Nov 10
+BOUI = "BOuIiphYirbc8UWqZghfqg=="  # orchestrator 11:35Z Nov 22: accepted ONLY for to-held upvote refreshes (see refresh_only_ok)
 AUDITED_BUILDS = {FULL18D, FULL18F}  # orchestrator 20:46Z Nov 8: the person-level check (full18e rule) is the gate; full18d first-run audit FAILED on >1k lists (98% shortcut), and those people fail person_complete and stay held
 EVASION = re.compile(r"rotat|portscreen|soft_open|soft_block|recreat|week_bytes|byte_stop_bypass|keeper", re.I)
 MERGE_VM_HELD = False
@@ -321,7 +322,8 @@ def main():
 
     for n in todo:
         d = json.load(open(f"{D}/people_live/vm/{n}.json"))
-        if overlay_to_held(n, d):
+        overlaid = overlay_to_held(n, d)
+        if overlaid:
             refresh_c["overlay_to_held"] += 1
         md5 = (d.get("run") or {}).get("pkg_md5")
         m = re.search(r"\((feeder-[^)]+)\)", str(d.get("method", "")))
@@ -335,8 +337,13 @@ def main():
         vms[vm] += 1
         ok, why = g["person_complete"](d, g["handle_of"](d, f"{n}.json"))
         gate = []
-        if md5 not in AUDITED_BUILDS:
-            gate.append("build_not_audited")
+        # 11:4xZ Nov 22 (orchestrator): BOuI passes the build gate only for a to-held upvote refresh, rebuilt over a store
+        # record of a person the store counts complete; only the upvotes tab changes. Its full/need-list pulls stay held
+        # until 30+ pass the full whole-person audit.
+        refresh_only_ok = (md5 == BOUI and overlaid and bool(d.get("upvotes_refreshed_at")) and n in vm_t
+                           and store_complete is not None and n.lower() in store_complete)
+        if md5 not in AUDITED_BUILDS and not refresh_only_ok:
+            gate.append("build_not_audited" if md5 != BOUI else "build_boui_full_pull_unaudited")
         if vm == "unknown" or not clean(vm)[0]:
             gate.append("vm_evasion_or_unknown")
         elif clean(vm)[1] and st[n] >= clean(vm)[1]:
