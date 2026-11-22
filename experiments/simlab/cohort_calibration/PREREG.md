@@ -122,3 +122,6 @@ line-up (name + tagline + topics), returns a 0-100 likelihood per launch. Truth:
 Baselines on the same person x launch cells: (CF) frozen CF list p (0 if not listed); (POP) the frozen 03:45 pre-reveal rank (Nov 14+);
 (TOPIC) share of the person's history sharing a topic with the launch. Metrics: pooled AUC, mean per-person AUC, recall@5, day bootstrap.
 Pass: LLM minus best baseline AUC lower bound > 0. Also report LLM+CF rank average.
+Addendum 4b (2026-11-22, Shreyas: "give it the signals that already work"): same people, days and cells; the prompt also gets each launch's frozen
+03:45 predicted rank, the share of the person's history sharing a topic with it, and the person's average upvotes per active day (asked to make
+likelihoods sum to about that). Pass: LLM-v2 minus POP pooled AUC lower bound > 0; also report rank-average(LLM-v2, POP).

@@ -35,7 +35,7 @@ PROMPT = """You are simulating one specific Product Hunt user. Below are the lau
 Today's launches:
 {today}
 
-For EACH of today's launches, estimate the likelihood (0-100) that this person upvotes it today. Most people upvote only a few launches per day.
+{extra}For EACH of today's launches, estimate the likelihood (0-100) that this person upvotes it today. Most people upvote only a few launches per day.
 JSON only: {{"likelihood": [{{"n": <launch number>, "p": <0-100>}}, ...]}}"""
 rng = np.random.default_rng(0); rows = []
 for D in DAYS:
@@ -53,7 +53,13 @@ for D in DAYS:
     def one(p):
         h = U[(U.person_id == p) & (U.lday < D) & (U.ft < start)].sort_values("lday", ascending=False).target_id.drop_duplicates().head(40)
         hl = [line(i) for i in h if line(i)]; ht = [topics(i) for i in h]
-        j = gem(PROMPT.format(hist="\n".join(f"- {x}" for x in hl), today="\n".join(f"{k + 1}. {line(i)}" for k, i in enumerate(ids))))
+        V2 = os.environ.get("PROMPT_V") == "2"; ph = past[past.person_id == p]; rate = len(ph) / max(1, ph.lday.nunique())
+        tm = {i: float(np.mean([len(topics(i) & t) > 0 for t in ht])) if ht else 0.0 for i in ids}
+        lab = (lambda k, i: f"{k + 1}. {line(i)} | forecast rank today: {'#' + str(pop[i]) if pop[i] else 'unranked'} of {len(ids)} | topic match with this person's history: {round(100 * tm[i])}%") if V2 else (lambda k, i: f"{k + 1}. {line(i)}")
+        extra = (f"On days this person votes, they upvote about {rate:.1f} launches on average. The forecast rank is a model's prediction of how popular each launch "
+                 f"will be today (popular launches get far more votes); topic match is how much of this person's history shares a topic with the launch. "
+                 f"Make the likelihoods realistic: they should add up to roughly {100 * rate:.0f} in total.\n") if V2 else ""
+        j = gem(PROMPT.format(hist="\n".join(f"- {x}" for x in hl), today="\n".join(lab(k, i) for k, i in enumerate(ids)), extra=extra))
         lk = {int(x["n"]) - 1: float(x["p"]) for x in ((j or {}).get("likelihood") or []) if isinstance(x, dict) and "n" in x and "p" in x}
         out = []
         for k, i in enumerate(ids):
@@ -65,7 +71,7 @@ for D in DAYS:
         for o in ex.map(one, pick): rows += o
     print(D, len(ids), "launches", len(pick), "people", flush=True)
 R = pd.DataFrame(rows).dropna(subset=["llm"]); R["key"] = R.day + "_" + R.pi.astype(str)
-R["ens"] = R.groupby("key").llm.rank(pct=True) + R.groupby("key").cf.rank(pct=True)
+R["ens"] = R.groupby("key").llm.rank(pct=True) + R.groupby("key")["pop"].rank(pct=True)
 ARMS = ["llm", "cf", "pop", "topic", "ens"]; rng = np.random.default_rng(1)
 def per_person(df, a):
     v = [roc_auc_score(g.y, g[a]) for _, g in df.groupby("key") if 0 < g.y.sum() < len(g)]; return float(np.mean(v)) if v else np.nan
@@ -74,12 +80,13 @@ def rec5(df, a):
 def boot(f):
     d = sorted(R.day.unique()); bs = [f(pd.concat([R[R.day == z] for z in rng.choice(d, len(d))])) for _ in range(500)]
     return [round(f(R), 3), round(float(np.nanpercentile(bs, 2.5)), 3), round(float(np.nanpercentile(bs, 97.5)), 3)]
-out = {"prereg": "PREREG.md addendum 4", "days": DAYS, "people": int(R.key.nunique()), "cells": int(len(R)), "votes": int(R.y.sum()),
+out = {"prereg": "PREREG.md addendum 4" + ("b" if os.environ.get("PROMPT_V") == "2" else ""), "ens": "rank average of LLM and POP per person", "days": DAYS, "people": int(R.key.nunique()), "cells": int(len(R)), "votes": int(R.y.sum()),
        "people with >= 1 vote": int((R.groupby("key").y.sum() > 0).sum()), "base rate": round(float(R.y.mean()), 4),
        "pooled AUC": {a: boot(lambda x, a=a: roc_auc_score(x.y, x[a])) for a in ARMS},
        "mean per-person AUC": {a: boot(lambda x, a=a: per_person(x, a)) for a in ARMS},
        "recall@5 (people with a vote)": {a: boot(lambda x, a=a: rec5(x, a)) for a in ARMS},
        "LLM minus CF pooled AUC": boot(lambda x: roc_auc_score(x.y, x.llm) - roc_auc_score(x.y, x.cf)),
+       "ENS (rank avg LLM+POP) minus POP pooled AUC": boot(lambda x: roc_auc_score(x.y, x.ens) - roc_auc_score(x.y, x["pop"])),
        "LLM minus best baseline (POP) pooled AUC": boot(lambda x: roc_auc_score(x.y, x.llm) - roc_auc_score(x.y, x["pop"])),
        "count: predicted sum(p)/100 vs real votes per person": [round(float(R.llm.sum() / 100 / R.key.nunique()), 2), round(float(R.y.sum() / R.key.nunique()), 2)],
        "usd": round(USE["in"] / 1e6 * 0.30 + USE["out"] / 1e6 * 2.50, 4), "note": "[value, day-bootstrap 2.5%, 97.5%]; 3 days so intervals are wide"}
