@@ -51,7 +51,10 @@ PY
   fi
 fi
 python3 "$ROOT/scripts/vm/ph_fleet_refill_lists.py" || true
-python3 "$ROOT/scripts/vm/ph_fleet_release_queue_claims.py" 2>/dev/null | tail -1 || true
+_attempt="$(python3 -c "import json; print(json.load(open('$ART/fleet_measure.json')).get('attempt_ppm',0))" 2>/dev/null || echo 0)"
+if python3 -c "exit(0 if float('${_attempt}') < 1.0 else 1)" 2>/dev/null; then
+  python3 "$ROOT/scripts/vm/ph_fleet_release_queue_claims.py" 2>/dev/null | tail -1 || true
+fi
 python3 "$ROOT/scripts/vm/ph_fleet_stacks_pull_hour.py" >/dev/null 2>&1 || true
 python3 "$ROOT/scripts/vm/ph_fleet_refresh_end_reasons.py" >/dev/null 2>&1 || true
 python3 "$ROOT/scripts/vm/ph_fleet_tab_failure_counts.py" >/dev/null 2>&1 || true
