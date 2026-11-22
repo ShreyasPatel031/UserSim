@@ -70,24 +70,37 @@ def model_diag(line, rows, days7):
 def main():
     t = json.loads(cat(f"{B}/tmp/e5/website/track_record_v1.json") or "{}")
     res = {"checked_at": pd.Timestamp.now(tz="UTC").isoformat(timespec="seconds"), "track_record_written_at": t.get("written_at"),
-           "rule": f"ALERT if 7-day mean < 30-day mean - {DROP} on any of top 3/5/10, per published line (live rows only)", "lines": {}}
+           "rule": f"ALERT if the 00:05 line's 7-day mean < 30-day mean - {DROP} on any of top 3/5/10 (live rows only). The 03:45 line is PH's "
+                   "hidden order (a baseline, orchestrator 03:50Z Nov 22): logged, never alerted; the 00:05 line's gain over it is reported separately",
+           "lines": {}}
     alert = []
     for line in ("03:45 PT", "00:05 PT"):
         rows = [r for r in t.get("days", []) if r.get("prediction") == line and r.get("flag") == "live" and r.get("status") == "scored"]
         if not rows: res["lines"][line] = "no live rows"; continue
         L, w = windows(rows)
         v = {f"top{k}": {"7d": a, "n7": b, "30d": c, "n30": d, "gap": (round(a - c, 1) if a is not None and c is not None else None)} for k, (a, b, c, d) in w.items()}
-        bad = [k for k in v if v[k]["gap"] is not None and v[k]["gap"] < -DROP]
+        bad = [k for k in v if v[k]["gap"] is not None and v[k]["gap"] < -DROP] if line == "00:05 PT" else []
         res["lines"][line] = {"last_scored_day": L, "windows": v, "breach": bad}
         if bad:
             Ld = pd.Timestamp(L); days7 = [(Ld - pd.Timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
             prior = sorted({r["day"] for r in rows if r["day"] not in days7})
             res["lines"][line]["diagnosis"] = {"models": model_diag(line, rows, days7), "inputs_0005": inputs_diag(days7, prior)}
             alert.append(f"{line} {','.join(bad)}")
+    # 00:05 line's gain over PH's 03:45 hidden order, on days both lines scored (live rows; top k hits %)
+    L5 = {r["day"]: r for r in t.get("days", []) if r.get("prediction") == "00:05 PT" and r.get("flag") == "live" and r.get("status") == "scored"}
+    L3 = {r["day"]: r for r in t.get("days", []) if r.get("prediction") == "03:45 PT" and r.get("flag") == "live" and r.get("status") == "scored"}
+    both = sorted(set(L5) & set(L3))
+    if both:
+        last = pd.Timestamp(both[-1]); g = {}
+        for name, span in (("7d", 7), ("30d", 30)):
+            ds = [d for d in both if pd.Timestamp(d) > last - pd.Timedelta(days=span)]
+            g[name] = {f"top{k}": round(float(np.mean([100 * (L5[d][f"hits_top{k}"] - L3[d][f"hits_top{k}"]) / k for d in ds])), 1) for k in KS}
+            g[name]["n_days"] = len(ds)
+        res["gain_0005_over_hidden_order"] = g
     res["status"] = ("ALERT: " + "; ".join(alert)) if alert else "ok"
     open(OUT, "a").write(json.dumps(res, default=str) + "\n")
     print(json.dumps({"status": res["status"], **{ln: (v if isinstance(v, str) else {k: [x["7d"], x["30d"], x["n7"], x["n30"]] for k, x in v["windows"].items()})
-                                                    for ln, v in res["lines"].items()}}))
+                                                    for ln, v in res["lines"].items()}, "gain_0005_over_hidden_order": res.get("gain_0005_over_hidden_order")}))
 
 
 if __name__ == "__main__":
