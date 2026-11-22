@@ -181,6 +181,71 @@ class QuickRunTests(unittest.TestCase):
         self.assertIn("caps are used up", out["error"])
 
 
+LAUNCH = {"id": "1", "name": "Webless Agents", "tagline": "Agents you want to put in front of customers",
+          "slug": "webless-agents"}
+EXPLAIN = {
+    "audience": {"follow_ties": {"value": 21686.0, "rank": 1, "of": 7},
+                 "power_users": {"share": 0.112, "usual": 0.035, "day_median": 0.173}},
+    "who": {"network": {"follow_ties": 21686},
+            "team_past_backers": {"n_held_people": 495, "segments_by_lift": [
+                {"segment": "Developer-Marketers", "lift": 3.0, "n": 120}]}},
+    "say": {"persona_panel": {"items": [{"interest": "high", "concern": "How does it handle content updates?"}]},
+            "top_concerns": ["How does it handle content updates?"],
+            "top_questions": ["How quickly do agents update when the source content changes?"]},
+    "competitors": {"items": [
+        {"name": "Agent Builder by Thesys", "final_daily_rank": 2, "final_votes": 421},
+        {"name": "Superflow AI", "final_daily_rank": 3, "commenters_complained": ["The install was unclear."]}]},
+    "why": {"all_inputs": [{"input": "team size", "points": 0.2476}, {"input": "pre-launch promotion", "points": -0.0279}]},
+    "raw": {"team size": 3},
+}
+
+
+class LaunchCardTests(unittest.TestCase):
+    def setUp(self):
+        _configure("admin=ADMIN-T reader=READER-T USER-T")
+
+    def test_card_matches_the_page(self):
+        card = SV.launch_card(LAUNCH, EXPLAIN)
+        md = card["card_markdown"]
+        self.assertIn("Top worry: How does it handle content updates?", md)
+        self.assertIn("Biggest boost: team size (+28% votes)", md)
+        self.assertIn("Closest past launch: Agent Builder by Thesys, finished #2", md)
+        self.assertIn("Heavy upvoters in its audience: 11% (typical launch today: 17%)", md)
+        tp = card["talking_points"]
+        self.assertIn("21,686 people we hold follow the hunter or makers (#1 of the 7", tp[0])
+        self.assertIn("Developer-Marketers (3.0×", tp[1])
+        self.assertTrue(any("Answer this worry in the first comment" in x for x in tp))
+        self.assertTrue(any("Put this answer on the page" in x for x in tp))
+        self.assertTrue(any("Superflow AI" in x and "install was unclear" in x for x in tp))
+        self.assertIn("producthunt.com/posts/webless-agents", md)
+
+    def test_no_network_says_so(self):
+        d = {**EXPLAIN, "audience": {}}
+        self.assertIn("can't see your team's Product Hunt network", SV.launch_card(LAUNCH, d)["talking_points"][0])
+
+    def test_find_launch(self):
+        ls = [{"id": "1", "name": "Webless Agents", "slug": "webless-agents"}, {"id": "2", "name": "Yoroll", "slug": "yoroll-2"}]
+        self.assertEqual(SV.find_launch(ls, "", "webless agents")["id"], "1")
+        self.assertEqual(SV.find_launch(ls, "https://www.yoroll.com/pricing", "")["id"], "2")
+        self.assertIsNone(SV.find_launch(ls, "https://nope.io", "Nope"))
+
+    def test_tool_gate_and_flow(self):
+        for tok in (None, "USER-T"):
+            self.assertIn("error", _run(SV.usersim_launch_card(_ctx(tok), name="Webless Agents")))
+
+        def fake(url):
+            if "/api/ph/today" in url:
+                return {"launches": [LAUNCH]}
+            return {"launches": {"1": EXPLAIN}, "labels": {"who": "how reliable"}}
+
+        with mock.patch.object(SV, "_fetch_site_json", side_effect=fake):
+            out = _run(SV.usersim_launch_card(_ctx("READER-T"), name="Webless Agents", day="2026-11-22"))
+            self.assertEqual(out["launch"]["name"], "Webless Agents")
+            self.assertEqual(out["how_reliable"], {"who": "how reliable"})
+            miss = _run(SV.usersim_launch_card(_ctx("READER-T"), name="Unknown", day="2026-11-22"))
+        self.assertIn("usersim_ph_quick_run", miss["error"])
+
+
 def SV_call_report(tok: str) -> str:
     return asyncio.run(SV.usersim_get_report(_ctx(tok), "s9"))
 

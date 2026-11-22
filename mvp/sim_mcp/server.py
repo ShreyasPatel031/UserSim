@@ -678,6 +678,194 @@ async def usersim_ph_quick_run(ctx: Context, product_url: str = "", name: str = 
     }, indent=1)
 
 
+# ---- launch card: the website's per-launch Product Hunt card (overview, who votes, what they'll say, competitors, why)
+
+def _words(t: str) -> set[str]:
+    import re
+
+    return set(re.findall(r"[a-z0-9]{3,}", (t or "").lower()))
+
+
+def _overlap(a: str, b: str) -> float:
+    x, y = _words(a), _words(b)
+    return len(x & y) / max(1, min(len(x), len(y)))
+
+
+def _norm_name(t: str) -> str:
+    import re
+
+    return re.sub(r"[^a-z0-9]", "", (t or "").lower())
+
+
+def _host_stem(url: str) -> str:
+    from urllib.parse import urlparse
+
+    host = urlparse(url if "//" in (url or "") else "https://" + (url or "")).netloc.lower()
+    host = host.removeprefix("www.")
+    return _norm_name(host.split(".")[0]) if host else ""
+
+
+def find_launch(launches: list[dict[str, Any]], product_url: str, name: str) -> dict[str, Any] | None:
+    """The line-up launch this product is: exact name, or its slug / host name matching."""
+    want = [w for w in (_norm_name(name), _host_stem(product_url)) if w]
+    for x in launches:
+        names = {_norm_name(x.get("name") or ""), _norm_name(x.get("slug") or "").removesuffix("2")}
+        if any(w in names for w in want):
+            return x
+    for x in launches:
+        n = _norm_name(x.get("name") or "")
+        if any(len(w) >= 5 and (w in n or n in w) for w in want if n):
+            return x
+    return None
+
+
+def _votes_pct(points: float) -> str:
+    import math
+
+    v = (math.exp(points) - 1) * 100
+    return f"{'+' if v >= 0 else '−'}{abs(round(v))}% votes"
+
+
+def launch_card(launch: dict[str, Any], d: dict[str, Any]) -> dict[str, Any]:
+    """The card the website's Product Hunt page shows for one launch: tiles and the founder's talking points, built
+    from the same per-launch data (mirrors exOverview in mvp/static/ph.html), plus a summary of each tab."""
+    import math
+
+    who, say, why, aud = d.get("who") or {}, d.get("say") or {}, d.get("why") or {}, d.get("audience") or {}
+    items = (say.get("persona_panel") or {}).get("items") or []
+    worry = next((x["concern"] for x in items if x.get("interest") == "high" and x.get("concern")), None) \
+        or next((x["concern"] for x in items if x.get("concern")), None) or (say.get("top_concerns") or [None])[0]
+    ask = next((q for q in say.get("top_questions") or [] if _overlap(q, worry or "") < 0.5), None)
+    comps = (d.get("competitors") or {}).get("items") or []
+    own = next((c for c in comps if _norm_name(c.get("name")) == _norm_name(launch.get("name"))), None)
+    others = [c for c in comps if c is not own]
+    best = sorted(others, key=lambda c: c.get("final_daily_rank") or 99)[0] if others else None
+    gap = next((c for c in others if (c.get("commenters_complained") or [None])[0]), None)
+    inputs = why.get("all_inputs") or why.get("top_drivers") or []
+    up = max(inputs, key=lambda r: r.get("points", 0), default=None)
+    down = min((r for r in inputs if r.get("points", 0) < 0), key=lambda r: r["points"], default=None)
+
+    def strong(r: dict[str, Any] | None) -> bool:
+        return bool(r) and abs(math.exp(r["points"]) - 1) >= 0.05
+
+    f, pu = aud.get("follow_ties"), aud.get("power_users") or {}
+    if not f:
+        net = ("We can't see your team's Product Hunt network (your profiles aren't among the people we hold), so most "
+               "early votes will come from people who don't know you yet. The pitch and the first comment carry the launch.")
+    else:
+        third = math.ceil(f["of"] / 3)
+        tier = "top" if f["rank"] <= third else "bottom" if f["rank"] > math.floor(f["of"] * 2 / 3) else "middle"
+        n = f"{round(f['value']):,}"
+        net = {"top": f"You have one of today's biggest networks: {n} people we hold follow the hunter or makers "
+                      f"(#{f['rank']} of the {f['of']} launches whose network we can see). Make sure they know it's live.",
+               "middle": f"Your network is mid-sized for today: {n} followers we hold (#{f['rank']} of {f['of']}). "
+                         "Votes beyond it depend on the pitch.",
+               "bottom": f"Your network is one of today's smallest we can see ({n} followers we hold, #{f['rank']} of "
+                         f"{f['of']}). Reach beyond it: the first comment and the gallery have to win strangers."}[tier]
+    tp = next((p for p in (who.get("maker_past_backers"), who.get("hunter_past_backers"), who.get("team_past_backers"))
+               if p and (p.get("n_held_people") or 0) >= 20), None)
+    lean = next((x for x in (tp or {}).get("segments_by_lift") or [] if x.get("lift", 0) >= 1.3 and x.get("n", 0) >= 20), None)
+    tlean = next((x for x in (tp or {}).get("topics_by_lift") or [] if x.get("lift", 0) >= 1.3), None)
+    pts = [net]
+    if lean:
+        more = f" and upvote {tlean['topic']} launches more than most" if tlean else ""
+        pts.append(f"People who voted for your earlier launches lean towards {lean['segment']} ({lean['lift']:.1f}× their "
+                   f"usual share){more}. Speak to them first.")
+    if pu.get("day_median") and pu.get("share", 0) / pu["day_median"] >= 1.5:
+        pts.append(f"Your audience has more heavy upvoters than most launches today ({pu['share']:.0%} vs a typical "
+                   f"{pu['day_median']:.0%}). They vote in the first hours, so be in the comments early.")
+    if own:
+        pts.append(f"Your earlier launch {own['name']} finished #{own.get('final_daily_rank')} with "
+                   f"{round(own.get('final_votes') or 0)} votes.")
+    if worry:
+        pts.append(f"Answer this worry in the first comment, before anyone asks: “{worry}”")
+    if ask:
+        pts.append(f"Put this answer on the page: “{ask}”")
+    if gap:
+        pts.append(f"People disliked this in a similar product ({gap['name']}): “{gap['commenters_complained'][0]}” "
+                   "Show how this one avoids it.")
+    raw = d.get("raw") or {}
+    if strong(down) and down["input"] == "team size" and raw.get("team size") is not None and raw["team size"] <= 2:
+        k = raw["team size"]
+        pts.append(f"{'No makers are' if k == 0 else 'Only 1 maker is' if k == 1 else 'Only 2 makers are'} listed on the "
+                   f"launch. Launches that list the whole team do better in our model ({_votes_pct(down['points'])} "
+                   "here): add the team as makers.")
+    elif strong(down):
+        pts.append(f"Weakest factor in our model: {down['input']} ({_votes_pct(down['points'])}).")
+    tiles = {"top_worry": worry,
+             "biggest_boost": ({"factor": up["input"], "effect": _votes_pct(up["points"])} if strong(up) else "No strong boost"),
+             "closest_past_launch": ({"name": best["name"], "finished": best.get("final_daily_rank")} if best else None),
+             "heavy_upvoters": ({"share": pu.get("share"), "typical_today": pu.get("day_median")} if pu.get("day_median") else None)}
+    ph_url = f"https://www.producthunt.com/posts/{launch.get('slug')}" if launch.get("slug") else None
+    md = [f"# {launch.get('name')}", launch.get("tagline") or "", "", "## Overview"]
+    if worry:
+        md.append(f"- Top worry: {worry}")
+    md.append("- Biggest boost: " + (f"{up['input']} ({_votes_pct(up['points'])})" if strong(up) else "No strong boost"))
+    if best:
+        md.append(f"- {'Your earlier launch' if own else 'Closest past launch'}: "
+                  f"{(own or best)['name']}" + (f", finished #{(own or best).get('final_daily_rank')}" if (own or best).get("final_daily_rank") else ""))
+    if tiles["heavy_upvoters"]:
+        md.append(f"- Heavy upvoters in its audience: {pu['share']:.0%} (typical launch today: {pu['day_median']:.0%})")
+    md += ["", "## Talking points for the founder"] + [f"{i}. {t}" for i, t in enumerate(pts, 1)]
+    md += ["", "Built only from the tabs here; each tab says how reliable it is."]
+    if ph_url:
+        md.append(f"[View on Product Hunt]({ph_url})")
+    return {"launch": {"id": launch.get("id"), "name": launch.get("name"), "tagline": launch.get("tagline"),
+                       "product_hunt_url": ph_url},
+            "overview": tiles, "talking_points": pts,
+            "who_votes": {"network": who.get("network"), "segments_by_lift": who.get("segments_by_lift"),
+                          "group_mix": who.get("group_mix"), "expected_held_votes": who.get("expected_held_votes")},
+            "what_theyll_say": {"persona_panel": items, "top_concerns": say.get("top_concerns"),
+                                "top_questions": say.get("top_questions"), "reactions": say.get("reactions")},
+            "competitors": comps, "why": {"top_drivers": why.get("top_drivers"), "all_inputs": inputs},
+            "card_markdown": "\n".join(md)}
+
+
+@mcp.tool(structured_output=False)
+async def usersim_launch_card(ctx: Context, product_url: str = "", name: str = "", day: str = "") -> str:
+    """READER or ADMIN token. The website's Product Hunt card for a product, as on the /ph page: overview (top worry,
+    biggest boost, closest past launch, heavy upvoters vs a typical launch), who votes, what they'll say, competitors
+    (closest past launches and how they finished), why, and talking points for the founder. Give the product's URL
+    and/or name. If the product is one of the day's launches (day = YYYY-MM-DD Pacific, default today, then the last
+    two days), you get its full card. If it is not on Product Hunt yet, use usersim_ph_quick_run for the pre-launch
+    version (no team network or competitor finishes, because those need a real launch)."""
+    import asyncio
+    import re
+    from datetime import datetime, timedelta
+    from zoneinfo import ZoneInfo
+
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    if not (product_url or name):
+        return _fail(S.SessionError("give a product_url and/or a name"))
+    if day and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+        return _fail(S.SessionError("day must look like 2026-11-22"))
+    base = (os.environ.get("MVP_PH_SITE_BASE") or PH_SITE_BASE_DEFAULT).rstrip("/")
+    today = datetime.now(ZoneInfo("America/Los_Angeles")).date()
+    days = [day] if day else [str(today - timedelta(days=k)) for k in range(3)]
+    try:
+        for dd in days:
+            page = await asyncio.to_thread(_fetch_site_json, f"{base}/api/ph/today?day={dd}")
+            hit = find_launch(page.get("launches") or [], product_url, name)
+            if not hit:
+                continue
+            ex = await asyncio.to_thread(_fetch_site_json, f"{base}/api/ph/explain?day={dd}")
+            d = (ex.get("launches") or {}).get(str(hit["id"]))
+            if not d:
+                continue
+            card = launch_card(hit, d)
+            card["day"] = dd
+            card["how_reliable"] = ex.get("labels")
+            return json.dumps(card, indent=1)
+    except Exception as exc:  # noqa: BLE001
+        return _fail(S.SessionError(f"could not read the website's launch data: {exc}"))
+    return _fail(S.SessionError(
+        "that product is not among the launches on " + ", ".join(days) + ". The full card exists only for products on "
+        "Product Hunt's line-up. For a product that has not launched, use usersim_ph_quick_run (the pre-launch version), "
+        "or pass an earlier day."))
+
+
 @mcp.tool(structured_output=False)
 async def usersim_list_studies(ctx: Context, limit: int = 30) -> str:
     """READER or ADMIN token. The saved studies, newest first: id, product URL, status, phase, last update. Pass an id
