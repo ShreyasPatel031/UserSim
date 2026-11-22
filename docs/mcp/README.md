@@ -310,12 +310,13 @@ Without a token anyone can use the open tools, within the daily caps. A token ad
 |---|---|---|
 | anonymous | no token | the open tools, with the daily caps; sees only its own sessions and studies |
 | `user` | a bare `TOKEN` | the same tools without the daily caps; sees only its own sessions and studies |
-| `reader` | `reader=TOKEN` | everything `user` can do, plus `usersim_ph_page` (the information on the website's Product Hunt page), `usersim_list_studies`, and `usersim_get_report` for **any** saved study |
+| `reader` | `reader=TOKEN` | everything `user` can do, plus `usersim_ph_page` (the information on the website's Product Hunt page), `usersim_ph_quick_run` (the Product Hunt simulation for any product), `usersim_list_studies`, and `usersim_get_report` for **any** saved study |
 | `admin` | `admin=TOKEN` | everything `reader` can do, plus `usersim_admin_overview` (limits in force, anonymous spend today, open sessions, token counts by role) |
 
 Several tokens can be configured at once, for example `MVP_MCP_TOKEN="admin=<a> reader=<b> reader=<c>"`. A wrong token still gets 401.
 
 - **`usersim_ph_page(day="")`**: the day's launches with live ranks and votes, the published midnight forecast (ranks, expected votes, when it was written, what it saw), the accuracy record and feed freshness. `day` is `YYYY-MM-DD` Pacific time. It reads the website's own public data, trimmed to named fields: product names and numbers, no people and no usernames.
+- **`usersim_ph_quick_run(product_url | name + tagline + description)`**: the website's "try a product" simulation in one call, about 15 seconds. It returns who on Product Hunt the product resembles (segments, sizes, activity tiers; anonymous types), where it may land (percentile, likely rank and vote bands, with the tested accuracy of that estimate and an honesty note), simulated reactions by type of member, and the questions and concerns launch-day visitors are likely to raise. It calls the website's own `/api/try/*` steps, so the website's caps apply: 3 runs an hour and 10 a day per client address, 150 a day in total, and all callers of this server share one address. Use name + tagline + description when a page needs JavaScript or a login.
 - **`usersim_list_studies(limit=30)`**: saved studies, newest first (id, URL, status, phase, last update).
 - **`usersim_admin_overview()`**: never echoes a token.
 

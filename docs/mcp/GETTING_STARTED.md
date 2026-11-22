@@ -113,7 +113,7 @@ Some people get a personal token from the UserSim owner. A token never changes t
 | Access | What you can pull |
 |---|---|
 | No token | The tools above, within the daily limits. You see only your own runs |
-| Reader token | Everything above without the daily limits, plus: the information on the website's Product Hunt page, the list of every saved study, and the full report of any saved study |
+| Reader token | Everything above without the daily limits, plus: a quick Product Hunt simulation for any product, the information on the website's Product Hunt page, the list of every saved study, and the full report of any saved study |
 | Admin token | Everything a reader can do, plus a status overview of the server |
 
 **Using a token.** Add it to your client as an `Authorization` header with the value `Bearer <your token>`.
@@ -145,6 +145,7 @@ Cursor:
 ```
 
 **What to ask your assistant (reader or admin):**
+- "Use usersim_ph_quick_run on https://example.com (or give a name, tagline and description). Show who it resembles on Product Hunt, where it may land, the simulated reactions and the questions people will ask." It takes about 15 seconds. Limits: 3 runs an hour and 10 a day, shared by everyone using the server, so wait if it says the caps are used up.
 - "Use usersim_ph_page to show today's Product Hunt launches, the midnight forecast and how accurate it has been." Add a day, such as 2026-11-21, for a past day.
 - "Use usersim_list_studies to show the latest studies."
 - "Get the UserSim report for study `<study_id>`." With a reader token this works for any study, not only your own.

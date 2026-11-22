@@ -133,6 +133,54 @@ class ToolGateTests(unittest.TestCase):
             self.assertEqual(SV_call_report("READER-T"), "REPORT")
 
 
+class QuickRunTests(unittest.TestCase):
+    def setUp(self):
+        _configure("admin=ADMIN-T reader=READER-T USER-T")
+
+    def _site(self, calls, page_status=200):
+        def fake(path, body, timeout=60.0):
+            calls.append((path, body))
+            if path in ("/api/try/page", "/api/try/text"):
+                if page_status != 200:
+                    return page_status, {"error": "boom"}
+                return 200, {"analysis": {"name": "X"}, "token": "RUNTOKEN", "caps": {"per_ip_hour": 3}, "used_today": 4}
+            return 200, {"step": path.rsplit("/", 1)[1]}
+        return fake
+
+    def test_gate(self):
+        for tok in (None, "USER-T"):
+            self.assertIn("error", _run(SV.usersim_ph_quick_run(_ctx(tok), product_url="https://e.com")))
+
+    def test_needs_an_input(self):
+        self.assertIn("product_url", _run(SV.usersim_ph_quick_run(_ctx("READER-T")))["error"])
+
+    def test_runs_all_steps_with_the_run_token_and_hides_it(self):
+        calls: list = []
+        with mock.patch.object(SV, "_post_site_json", self._site(calls)):
+            out = _run(SV.usersim_ph_quick_run(_ctx("READER-T"), product_url="https://e.com"))
+        paths = [c[0] for c in calls]
+        self.assertEqual(paths[0], "/api/try/page")
+        self.assertEqual(sorted(paths[1:]), ["/api/try/asks", "/api/try/launch", "/api/try/people",
+                                              "/api/try/reactions"])
+        self.assertTrue(all(c[1] == {"token": "RUNTOKEN"} for c in calls[1:]))
+        self.assertEqual(out["who_it_resembles"], {"step": "people"})
+        self.assertEqual(out["where_it_may_land"], {"step": "launch"})
+        self.assertNotIn("RUNTOKEN", json.dumps(out))
+        self.assertIn("Simulated", out["reading_note"])
+
+    def test_text_route_when_no_url(self):
+        calls: list = []
+        with mock.patch.object(SV, "_post_site_json", self._site(calls)):
+            _run(SV.usersim_ph_quick_run(_ctx("ADMIN-T"), name="Acme", tagline="t", description="d"))
+        self.assertEqual(calls[0][0], "/api/try/text")
+        self.assertEqual(calls[0][1]["name"], "Acme")
+
+    def test_caps_message(self):
+        with mock.patch.object(SV, "_post_site_json", self._site([], page_status=429)):
+            out = _run(SV.usersim_ph_quick_run(_ctx("READER-T"), product_url="https://e.com"))
+        self.assertIn("caps are used up", out["error"])
+
+
 def SV_call_report(tok: str) -> str:
     return asyncio.run(SV.usersim_get_report(_ctx(tok), "s9"))
 

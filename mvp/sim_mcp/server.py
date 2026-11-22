@@ -603,6 +603,81 @@ async def usersim_ph_page(ctx: Context, day: str = "") -> str:
     return json.dumps(ph_page_view(raw), indent=1)
 
 
+def _post_site_json(path: str, body: dict[str, Any], timeout: float = 60.0) -> tuple[int, dict[str, Any]]:
+    """POST JSON to the website's own /api/try/* steps. Returns (status, json). Network errors raise."""
+    import urllib.error
+    import urllib.request
+
+    base = (os.environ.get("MVP_PH_SITE_BASE") or PH_SITE_BASE_DEFAULT).rstrip("/")
+    req = urllib.request.Request(base + path, data=json.dumps(body).encode(),
+                                 headers={"Content-Type": "application/json", "User-Agent": "usersim-mcp/1"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # noqa: S310 (fixed https base)
+            return resp.status, json.loads(resp.read().decode() or "{}")
+    except urllib.error.HTTPError as exc:
+        try:
+            return exc.code, json.loads(exc.read().decode() or "{}")
+        except Exception:  # noqa: BLE001
+            return exc.code, {"error": f"HTTP {exc.code}"}
+
+
+@mcp.tool(structured_output=False)
+async def usersim_ph_quick_run(ctx: Context, product_url: str = "", name: str = "", tagline: str = "",
+                               description: str = "") -> str:
+    """READER or ADMIN token. The website's Product Hunt "try a product" simulation as one call (about 15 seconds):
+    who on Product Hunt the product resembles (segments, sizes, activity tiers), where it may land (percentile, likely
+    rank and vote bands, with the tested accuracy of that estimate), simulated reactions by type of member, and the
+    questions and concerns launch-day visitors are likely to raise. Give a public product_url, or name + tagline +
+    description if the page needs JavaScript or a login. Simulated, not real comments; people are anonymous types.
+    The website's caps apply (3 runs an hour and 10 a day per client address, 150 a day in total); every caller of
+    this server shares one address, so expect to wait if others have just used it."""
+    import asyncio
+
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    if product_url:
+        status, first = await asyncio.to_thread(_post_site_json, "/api/try/page", {"url": product_url[:2000]})
+    elif name and description:
+        status, first = await asyncio.to_thread(_post_site_json, "/api/try/text", {
+            "name": name[:200], "tagline": tagline[:300], "description": description[:4000]})
+    else:
+        return _fail(S.SessionError("give a product_url, or name + description (tagline optional)"))
+    token = first.get("token")
+    if status != 200 or not token:
+        hint = ""
+        if status == 429:
+            hint = " The website's quick-run caps are used up for now (3 an hour, 10 a day, 150 in total); try later."
+        elif status == 422 and product_url:
+            hint = " Try name + tagline + description instead of the URL."
+        return _fail(S.SessionError(f"{first.get('error') or 'the quick run could not start'}.{hint}".replace("..", ".")))
+
+    async def step(name_: str) -> dict[str, Any]:
+        try:
+            st, out = await asyncio.to_thread(_post_site_json, f"/api/try/{name_}", {"token": token}, 75.0)
+        except Exception as exc:  # noqa: BLE001
+            return {"error": f"{name_} failed: {exc}"}
+        return out if st == 200 else {"error": out.get("error") or f"{name_} returned HTTP {st}"}
+
+    # people and launch use no model and are safe together. The two model steps share one run record on the website
+    # ("each LLM step can be spent once"), and run at the same moment one of them reported an expired run, so they go
+    # one after the other.
+    people, launch = await asyncio.gather(step("people"), step("launch"))
+    reactions = await step("reactions")
+    asks = await step("asks")
+    return json.dumps({
+        "analysis": first.get("analysis"),
+        "who_it_resembles": people,
+        "where_it_may_land": launch,
+        "simulated_reactions": reactions,
+        "likely_questions": asks,
+        "caps": first.get("caps"),
+        "runs_used_today": first.get("used_today"),
+        "reading_note": "Simulated, not real comments or votes. Pre-launch rank prediction is weak: read the accuracy "
+                        "and honesty fields before relying on any number.",
+    }, indent=1)
+
+
 @mcp.tool(structured_output=False)
 async def usersim_list_studies(ctx: Context, limit: int = 30) -> str:
     """READER or ADMIN token. The saved studies, newest first: id, product URL, status, phase, last update. Pass an id
