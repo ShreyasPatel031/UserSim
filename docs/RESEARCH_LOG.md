@@ -2769,3 +2769,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-23 18:35Z hourly; board live (18:34Z, 31/31); fleet stacks false, complete 0, refresh 5.5/min; hourly wake. Mailbox checked 18:35Z.
 - 2026-11-23 19:03Z population 6h 13-19Z: complete +7 (93,594); fleet rerun 95-100%, LIVE_PRIORITY_HOLD, no scale-up; PB60 266 (slot9 161, slot38 101) forwarded to Grok Bot; 221 block rotations today; disk 1.4 GB (fails <1 GB); signed-in pass corrected by fleet to plain re-pull.
 - 2026-11-23 19:35Z hourly; board live (19:33Z, 31/31); fleet stacks false, complete 0, refresh 5.1/min; hourly wake. Mailbox checked 19:35Z.
+- 2026-11-23 20:35Z hourly; board live (20:34Z, 31/31); fleet stacks true, complete 0.07/min, refresh 6.0/min; hourly wake. Mailbox checked 20:35Z.
