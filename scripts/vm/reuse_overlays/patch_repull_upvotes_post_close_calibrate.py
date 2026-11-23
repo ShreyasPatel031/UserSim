@@ -11,8 +11,8 @@ src = p.read_text()
 if MARK in src:
     print("post_close_calibrate already patched")
     sys.exit(0)
-if "REPULL_UPVOTES_TO_HELD_PATCH" not in src:
-    print("repull_upvotes_to_held required first", file=sys.stderr)
+if "first_held_upvote" not in src:
+    print("first_held_upvote refresh path missing", file=sys.stderr)
     sys.exit(1)
 
 held_anchor = """    _refresh_no_budget = a.mode == "repullupvotes"
@@ -52,19 +52,22 @@ if old_loop_break not in src:
     sys.exit(1)
 src = src.replace(old_loop_break, new_loop_break, 1)
 
-end_anchor = """    if ended == "first_held_upvote":  # REPULL_UPVOTES_TO_HELD_PATCH
-        res.setdefault("upvotes", {}).update(status="complete", refresh_to_held=True, ph_list_end="first_held_upvote")"""
-
-end_repl = """    if ended == "first_held_upvote":  # REPULL_UPVOTES_TO_HELD_PATCH
-        res.setdefault("upvotes", {}).update(status="complete", refresh_to_held=True, ph_list_end="first_held_upvote")
+for end_anchor in (
+    """    if ended == "first_held_upvote":  # REPULL_UPVOTES_TO_HELD_PATCH
+        res.setdefault("upvotes", {}).update(status="complete", refresh_to_held=True, ph_list_end="first_held_upvote")""",
+    """    if ended == "first_held_upvote":  # {MARK}
+        res.setdefault("upvotes", {}).update(status="complete", refresh_to_held=True, ph_list_end="first_held_upvote")""",
+):
+    if end_anchor in src:
+        end_repl = end_anchor + """
     elif a.mode == "repullupvotes" and getattr(R, "_refresh_past_held", False) and not ended:  # POST_CLOSE_CALIBRATE_PATCH
         ended = "watermark_passed"
         res.setdefault("upvotes", {}).update(status="complete", refresh_past_held=True, ph_list_end="watermark_passed")"""
-
-if end_anchor not in src:
+        src = src.replace(end_anchor, end_repl, 1)
+        break
+else:
     print("first_held tail not found", file=sys.stderr)
     sys.exit(1)
-src = src.replace(end_anchor, end_repl, 1)
 
 p.write_text(src)
 print("patched post_close_calibrate")
