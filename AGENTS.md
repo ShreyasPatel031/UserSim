@@ -200,3 +200,33 @@ IP and we don't drop this off."
 - Guard: the website's published forecast score must not fall sharply. If the 7-day value is more than 5 points below the 30-day
   value, the PH agent alerts the same day with a diagnosis.
 - Simulated-user run budget: $50–100 per day, iterated daily (Shreyas, Nov 21).
+
+## Rule for every agent: two models, and where the time goes (Shreyas, Nov 23 2026)
+
+Shreyas: "any social simulation we run will have these mechanics, the launch, networks, promotions etc, and people will
+have already done this for their specific domains, we don't want to be spending so much time optimizing and tweaking their
+domains, instead we want to have such an amazing calibrated social simulation (LLMs, models, finetuning infrastructure)
+that we can come into any use case ... plug in our data and start getting quick iterative improvements" and "let's
+distinguish the launch model and the social simulation model from now".
+
+- **Two models, never mixed up again.**
+  - **Structural model** = the domain's own mechanics (for Product Hunt: hunter, network, promotion, competition; today the
+    LightGBM launch model, arm 3). It is the baseline and the shortlist maker. It is frozen except bug fixes and
+    live-vs-backtest parity. No agent spends experiments on its features or parameters beyond the forward shadows already
+    running. In a new domain: about three days to reach its plateau, then freeze.
+  - **Social simulation model** = the product. Simulated people built from real people's histories, calibrated on WHO acts,
+    WHAT they say and HOW they behave. It is judged by (a) its lift over the structural model on the shortlist (re-rank
+    the structural top 10 / 15 / 20; does it capture more of the real top 3 / 5 / 10, paired on the same days), and (b) the
+    WHO / WHAT / HOW scorecards. Language models have read about past launches: their rank tests are scored forward, or on
+    launches after the model's training cutoff, never on old days.
+- **Time split: 20 / 60 / 20** (structural / social simulation / go-to-market and dogfooding). Shreyas: "lets do 20/60/20".
+- **Go-to-market belongs to Grok Bot** (daily maker list, launch read on their product, drafted messages for Shreyas to send,
+  reply tracking). The orchestrator spends its time on coding and model optimization only (Shreyas: "give this to grok bot,
+  spend time only on what youre good at coding and model optimizatino").
+- **Experiment budget: $50 a day** (Shreyas: "do 50 a day for experimentation"): model calls and GPU fine-tuning together,
+  logged daily in docs/RESEARCH_LOG.md. This replaces the $50–100 simulated-user run budget above.
+- **Any model family may be tested** (Gemini, Claude, OpenAI, open models fine-tuned on our data). "Gemini only" now applies
+  only to the deployed nightly pipeline until another model wins on the leaderboard.
+- **The harness is open-source code; the data, the calibrated traces and the trained weights stay private** (the core-IP rule
+  above is unchanged).
+- The plan, the benchmark definition and the leaderboard live in docs/SOCIAL_SIM_PLAN.md.
