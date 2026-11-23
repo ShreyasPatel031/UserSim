@@ -58,32 +58,47 @@
    "mean_held": 0.143,
    "top3_hits": 3
   },
-  "2026-11-21": "no final ranks yet"
+  "2026-11-21": {
+   "published": "arm3",
+   "launches": 14,
+   "ranked": 14,
+   "store_copy": "11-20T09:09Z",
+   "mean_held": 0.214,
+   "top3_hits": 2
+  },
+  "2026-11-22": {
+   "published": "arm3",
+   "launches": 17,
+   "ranked": 17,
+   "store_copy": "11-21T09:03Z",
+   "mean_held": 0.029,
+   "top3_hits": 1
+  }
  },
- "n_days_scored": 7,
- "launches_with_team": 250,
- "true_top3_launches": 21,
+ "n_days_scored": 9,
+ "launches_with_team": 281,
+ "true_top3_launches": 27,
  "median_held_top3": 0.0,
- "top3_hit_high": 42.9,
- "top3_hit_low": 57.1,
- "n_high": 7,
- "n_low": 14,
+ "top3_hit_high": 40.0,
+ "top3_hit_low": 58.8,
+ "n_high": 10,
+ "n_low": 17,
  "primary_diff_high_minus_low_pts": [
-  -14.3,
-  -50.0,
-  19.4
+  -18.8,
+  -46.4,
+  8.0
  ],
  "upper_bound_gain_top3_pts": [
-  -9.5,
-  -40.5,
-  12.7
+  -11.9,
+  -33.3,
+  5.3
  ],
  "spearman_held_vs_log_rank_error": [
-  0.013,
-  -0.042,
-  0.086
+  0.032,
+  -0.03,
+  0.126
  ],
- "per_day_spearman_mean_held_vs_top3_hits": -0.814,
- "days_needed_at_observed_effect": 43,
+ "per_day_spearman_mean_held_vs_top3_hits": -0.281,
+ "days_needed_at_observed_effect": 19,
  "decision": "NOT SHOWN (primary CI covers 0)"
 }
