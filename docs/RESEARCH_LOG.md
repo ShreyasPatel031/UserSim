@@ -123,3 +123,9 @@ Model switches, direction reviews and agenda changes, newest last.
   | (2b) monotone refit + the 4 dropped inputs | 56.7 / 67.5 / 77.9 | +1.0 [−0.6, +2.5] | +1.5 [+0.6, +2.4] | +0.2 [−0.5, +0.9] | +1.5 [0.0, +2.9] | 34 / 27 | no (same leak; 2025 does not clear 0) |
   - Live, honest frozen values, Nov 10–22: blend kNN-5 moves 0 of MISS1's 11 rank-4–6 misses into the top 3 and drops 2 hits; top 3 goes from 53.8 to 48.7.
   - MISS1's (d) label therefore means "inputs arm 3 excludes as post-launch reads", not under-weighting. Their honest value can only be measured forward on frozen 00:05 values.
+- 2026-11-23 ~10:25 UTC: four-inputs FROZEN forward shadow STARTED (orchestrator 10:13Z Nov 23; the PH ops session's one running line). Rule frozen a priori in experiments/ph_predict/results/frozen/four_inputs_w01_20261123.json; script four_inputs_shadow.py.
+  - Rule: s = z(arm3) + 0.1 · z(mean within-day z of log1p) over hunter followers, maker X followers, company X followers and promo reactions. Values are as frozen in the published 00:05 parquet; nothing was fitted.
+  - Rows written after 03:45 PT are flagged late and never scored.
+  - Decision at 25 scored days, paired vs arm 3 (day bootstrap 95%).
+  - Note: company X is empty on about 75% of launches at 00:05 (median fill), so the input mostly carries the other three.
+  - First row: Nov 23, written 02:20 PT, on time.
