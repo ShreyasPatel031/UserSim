@@ -703,6 +703,44 @@ def quick_run_card(analysis: dict[str, Any], name: str, people: dict[str, Any], 
     return "\n".join(md)
 
 
+async def _start_quick(product_url: str = "", name: str = "", tagline: str = "", description: str = "") -> tuple[int, dict[str, Any]]:
+    """Start a quick run on the website. When the product's page can't be read (blocked, needs JavaScript, a login
+    wall), the product is looked up on the web instead (Gemini with Google Search) and the run starts from that
+    description, so any product works. Product Hunt's own pages stay refused (we never fetch Product Hunt)."""
+    import asyncio
+    from urllib.parse import urlparse
+
+    if product_url:
+        st, first = await asyncio.to_thread(_post_site_json, "/api/try/page", {"url": product_url[:2000]})
+        host = (urlparse(product_url if "://" in product_url else "https://" + product_url).hostname or "").lower()
+        if (st == 200 and first.get("token")) or st == 429 or host.endswith("producthunt.com"):
+            return st, first
+        try:
+            from mvp import discovery as D
+
+            raw = await D.grounded_answer(
+                f"Use Google Search. Describe the product at {product_url} for someone who has never seen it. Return JSON "
+                'only: {"name": "...", "tagline": "one line", "description": "4-6 sentences: what it does, for whom, key '
+                'features, pricing if known"}')
+            d = D._json(raw)
+        except Exception:  # noqa: BLE001
+            d = {}
+        if not (d.get("name") and d.get("description")):
+            return st, first
+        st2, out = await asyncio.to_thread(_post_site_json, "/api/try/text", {
+            "name": str(d["name"])[:200], "tagline": str(d.get("tagline") or "")[:300],
+            "description": str(d["description"])[:4000]})
+        if st2 == 200 and out.get("token"):
+            if isinstance(out.get("analysis"), dict):
+                out["analysis"].setdefault("url", product_url)
+                out["analysis"]["url"] = out["analysis"].get("url") or product_url
+                out["analysis"]["source"] = "web_search"
+            return st2, out
+        return st, first
+    return await asyncio.to_thread(_post_site_json, "/api/try/text", {
+        "name": name[:200], "tagline": tagline[:300], "description": description[:4000]})
+
+
 _QUICK_STEPS = ("people", "launch", "reactions", "asks")
 
 
@@ -719,13 +757,9 @@ async def usersim_ph_quick_start(ctx: Context, product_url: str = "", name: str 
     denied = _needs(ctx, "reader")
     if denied:
         return denied
-    if product_url:
-        status, first = await asyncio.to_thread(_post_site_json, "/api/try/page", {"url": product_url[:2000]})
-    elif name and description:
-        status, first = await asyncio.to_thread(_post_site_json, "/api/try/text", {
-            "name": name[:200], "tagline": tagline[:300], "description": description[:4000]})
-    else:
+    if not (product_url or (name and description)):
         return _fail(S.SessionError("give a product_url, or name + description (tagline optional)"))
+    status, first = await _start_quick(product_url, name, tagline, description)
     token = first.get("token")
     if status != 200 or not token:
         hint = ""
@@ -2452,6 +2486,81 @@ def mount(app: Any) -> None:
             await _STACK.aclose()
 
 
+def _plan_brief(run: dict[str, Any]) -> str:
+    """The run's evidence, trimmed to what a plan needs (no people, no usernames: the run holds none)."""
+    a = run.get("analysis") or {}
+    w = run.get("people") or run.get("who_it_resembles") or {}
+    L = run.get("launch") or run.get("where_it_may_land") or {}
+    R = run.get("reactions") or run.get("simulated_reactions") or {}
+    Q = run.get("asks") or run.get("likely_questions") or {}
+    C = run.get("competitors") or []
+    segs = sorted((w.get("segments") or []), key=lambda x: -(x.get("likely") or 0))[:3]
+    lines = [f"Product: {a.get('name', '')} - {a.get('tagline', '')}", f"Summary: {a.get('summary', '')}",
+             f"Audience: {a.get('audience', '')}. Pricing: {a.get('pricing', '')}. Page clarity (1-5): {a.get('clarity', '')}",
+             "Strengths seen on the page: " + "; ".join(a.get("strengths") or []),
+             "Doubts: " + "; ".join(a.get("doubts") or []),
+             "Product Hunt groups most likely to vote: " + "; ".join(
+                 f"{x.get('name')} ({x.get('lift', 0):.1f}x their usual share, interests {', '.join((x.get('top_topics') or [])[:3])})" for x in segs),
+             f"Likely rank band: {((L.get('rank_band') or {}).get('likely'))}, percentile {L.get('percentile')}",
+             "Top worry: " + ((Q.get("concerns") or [""])[0] or Q.get("question", "")),
+             "Other questions: " + "; ".join((Q.get("concerns") or [])[1:4] + ([Q["question"]] if Q.get("question") else [])),
+             "Simulated visitor comments:"] + [f"- ({r.get('sentiment')}) {r.get('comment')} [why: {r.get('why', '')}]"
+                                               for r in (R.get("reactions") or [])[:6]]
+    if C:
+        lines.append("Competitors:")
+        lines += [f"- {c.get('name')}: people would pick it for: {'; '.join(c.get('prefer_theirs') or [])}; "
+                  f"they'd pick this product for: {'; '.join(c.get('prefer_yours') or [])}" for c in C[:3]]
+    return "\n".join(lines)[:9000]
+
+
+async def make_launch_plan(run: dict[str, Any]) -> dict[str, Any]:
+    """A three-part launch plan written by Gemini from one quick run's own results: this week (the page and the
+    message), weeks 2-3 (proof and positioning against the competitors), week 4 to launch day (audience and the day
+    itself). Each step names the evidence it comes from."""
+    from mvp import discovery as D
+
+    prompt = f"""You advise a founder preparing a Product Hunt launch about four weeks from now. Below is a simulation of
+how Product Hunt members are likely to react to the product. Write the plan this specific product needs, from this evidence
+only. Be concrete: name the product's features, the exact worry, the voter group, the competitor. Never give generic advice
+that would fit any product.
+
+{_plan_brief(run)}
+
+Return JSON only:
+{{"short": {{"action": "...", "because": "..."}}, "medium": {{"action": "...", "because": "..."}}, "long": {{"action": "...", "because": "..."}}}}
+short = this week: a change to the page or the message. medium = weeks 2-3: proof, demo or positioning against a competitor.
+long = week 4 to launch day: who to rally and what to do on the day. "action" at most 22 words, imperative. "because" at most
+20 words and must cite the evidence (a simulated comment, the top worry, a voter group, a competitor's advantage)."""
+    out = D._json(await D._default_llm([{"role": "system", "content": "You output valid JSON only."},
+                                        {"role": "user", "content": prompt}]))
+    plan = {}
+    for k in ("short", "medium", "long"):
+        v = out.get(k) or {}
+        if isinstance(v, dict) and v.get("action"):
+            plan[k] = {"action": str(v["action"])[:300], "because": str(v.get("because") or "")[:300]}
+    return {"plan": plan, "method": "Written by Gemini from this run's results (audience, simulated comments, top worry, "
+                                    "rank band, competitors). Simulated evidence, not real comments."}
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
+async def usersim_launch_plan(ctx: Context, run_json: str) -> str:
+    """READER or ADMIN token. A three-part launch plan (this week / weeks 2-3 / week 4 to launch day) written from one quick
+    run's own results. run_json: a JSON object with any of analysis, people, launch, reactions, asks (the outputs of
+    usersim_ph_quick_start and usersim_ph_quick_step) and competitors (the list from usersim_competitors). A few seconds."""
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    try:
+        run = json.loads(run_json or "{}")
+        assert isinstance(run, dict)
+    except Exception:  # noqa: BLE001
+        return _fail(S.SessionError("run_json must be a JSON object"))
+    try:
+        return json.dumps(await make_launch_plan(run))
+    except Exception as exc:  # noqa: BLE001
+        return _fail(S.SessionError(f"could not write the plan: {exc!r}"[:300]))
+
+
 _LAUNCH_HITS: dict[str, list[float]] = {}
 _LAUNCH_COMP_PER_HOUR = 20
 
@@ -2487,7 +2596,7 @@ def _mount_launch_page(app: Any) -> None:
         url = str(b.get("url") or "").strip()[:2000]
         if not url:
             return JSONResponse({"error": "give a product link"}, status_code=400)
-        st, out = await asyncio.to_thread(_post_site_json, "/api/try/page", {"url": url})
+        st, out = await _start_quick(url)
         if st != 200 or not out.get("token"):
             err = out.get("error") or "the page could not be read"
             if st == 429:
@@ -2529,6 +2638,21 @@ def _mount_launch_page(app: Any) -> None:
             _COMP_CACHE[key] = (time.time(), out)
         return JSONResponse(out)
 
+    async def _plan(request: Any) -> Any:
+        b = await _body(request)
+        headers = {k.lower(): v for k, v in request.headers.items()}
+        ip = "plan:" + L.client_ip(headers, getattr(request.client, "host", "") or "")
+        now = time.time()
+        recent = [t for t in _LAUNCH_HITS.get(ip, []) if now - t < 3600]
+        if len(recent) >= 40:
+            return JSONResponse({"error": "plans are limited to 40 an hour; try later"}, status_code=200)
+        _LAUNCH_HITS[ip] = recent + [now]
+        try:
+            return JSONResponse(await make_launch_plan(b))
+        except Exception as exc:  # noqa: BLE001
+            return JSONResponse({"error": f"could not write the plan: {exc!r}"[:300]}, status_code=200)
+
     for path, ep, methods in (("/launch", _page, ["GET"]), ("/api/launch/start", _start, ["POST"]),
+                              ("/api/launch/plan", _plan, ["POST"]),
                               ("/api/launch/step", _step, ["POST"]), ("/api/launch/competitors", _competitors, ["POST"])):
         app.router.routes.insert(0, Route(path, endpoint=ep, methods=methods))

@@ -202,7 +202,9 @@ def index() -> dict:
 # ---------- step 1: page ----------
 
 READ_PROMPT = """You read a product's own web page and describe it for a Product Hunt launch simulation.
-Use ONLY the page content below. If the page is empty, a login wall, or not a product, say so in "problem".
+Use ONLY the page content below. Any product, app, service or website counts, however big or well known (YouTube, Notion
+and Stripe are fine): describe it as if it were launching. Use "problem" ONLY when the page has no readable content
+(empty, a login wall, an error page).
 
 URL: {url}
 TITLE: {title}
@@ -257,7 +259,7 @@ async def _analyze(page: dict, ip: str, source: str, fetch=None, fallback=None) 
                 raw = await gemini_chat([{"role": "user", "content": prompt}], model=MODEL, temperature=0.0,
                                         max_retries=3, max_output_tokens=1500)
                 a = extract_json(raw)
-        if a.get("problem"):
+        if a.get("problem") and not (a.get("name") and a.get("summary")):   # a described product is judged anyway
             raise ValueError("Couldn't judge this page: " + str(a["problem"])[:200])
         a["topics"] = [t for t in (a.get("topics") or []) if t in vocab][:4] or ["Productivity"]
         a = {k: a.get(k) for k in ("name", "tagline", "summary", "topics", "audience", "pricing", "strengths", "doubts", "clarity")}
