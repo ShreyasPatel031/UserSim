@@ -125,3 +125,12 @@ Pass: LLM minus best baseline AUC lower bound > 0. Also report LLM+CF rank avera
 Addendum 4b (2026-11-22, Shreyas: "give it the signals that already work"): same people, days and cells; the prompt also gets each launch's frozen
 03:45 predicted rank, the share of the person's history sharing a topic with it, and the person's average upvotes per active day (asked to make
 likelihoods sum to about that). Pass: LLM-v2 minus POP pooled AUC lower bound > 0; also report rank-average(LLM-v2, POP).
+
+## Addendum 5 (2026-11-23): BACKER-v2 — beat "N most active" at naming backers
+Test days Nov 8-21; truth = upvotes on D's launches by complete people held before D's start and re-read after D's close (same subset for every
+candidate). Per launch N = number of such backers; recall@N, launch mean weighted by N (vote-weighted), all launches and final top-3.
+Candidates: (1) most active (upvotes on launches in the 30 days before D, read before D's start); (2) frozen CF list p (tmp/e5/private/backer_pred,
+unlisted people ranked after listed, by (1)); (3) logistic P(vote) on [ln(1+recency-weighted upvote count, 7-day half-life), topic match, follows
+hunter/maker (follow edges read before D's start), ln(1+rw) x topic match], fit walk-forward on days from Oct 25 to D-1 only (negatives subsampled
+5%, seed 0); (4) = (3) with people active in the last 7 days ranked first. Paired difference vs (1), day bootstrap 95%.
+Pass: lower bound > 0 -> published backer list (rule 5), old list kept as shadow.

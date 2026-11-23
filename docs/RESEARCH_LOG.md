@@ -1672,3 +1672,16 @@ experiments/simlab/cohort_calibration/split_votes.py → results/split_v1.json (
 - The topic-neighbour prior (P3), published in who.group_mix_prior from Nov 21, was worse than the 30-day base mix on all 5 scored live days (Nov 17–21): +0.022 [+0.018, +0.028] JSD, 54 launches with ≥ 20 held re-read backers (cohort_calibration/results/who_daily_nov17_22.json). Backtest had it at −0.043.
 - Orchestrator decision 10:39Z Nov 23: publish base, keep P3 as a scored shadow (who.group_mix_prior_shadow_p3). Applied in expected_voters.py and republished results/web/explain/2026-11-23.json (27/27 launches on base).
 - Caveat: live truth is the re-read subset (567–1.9k people, mostly 2 groups); re-test when broader re-reads land.
+
+### 2026-11-23 E5 — BACKER-v2: a walk-forward logistic beats "N most active" at naming backers (Nov 8–21, 14 days, 462 launches)
+cohort_calibration/backer_v2.py (PREREG addendum 5) → results/backer_v2.json. recall@N, N = held re-read backers, weighted by N, [mean, day-boot 95%]:
+
+| | most active | frozen CF list | (3) logistic | (4) (3) active-7d first | (3) − most active |
+|---|---|---|---|---|---|
+| All launches | 20.9 [20.1, 21.6] | 24.6 [19.7, 28.9] | 27.6 [26.2, 29.0] | 26.6 [25.2, 28.1] | +6.8 [+5.7, +7.9] |
+| Top-3 (42) | 28.8 [27.2, 30.1] | 32.9 [27.3, 37.9] | 37.1 [35.4, 39.0] | 36.2 [34.4, 38.2] | +8.3 [+6.8, +10.1] |
+
+- (3) = logistic on ln(1+recency-weighted upvotes, 7-day half-life), topic match, follows hunter/maker, and their interaction; fit walk-forward from Oct 25 on earlier days only. Frozen CF list minus most active: +3.7 [−1.1, +8.2].
+- The CF list is best on 9 of the 14 days (Nov 11–21 except Nov 16–17), but it collapses on Nov 8–10 and Nov 17, so its interval doesn't clear; (3) is steady (22–33%).
+- Nov 17 outlier: the frozen list's top 100 had a median of 0 upvotes visible in the 30 days before the day (20 on Nov 16 and 18), and only 51% of them voted that day (85% on the neighbours). The list ranked people with no recent visible history at the top: an input/store fault that night, not a ranking inversion.
+- Decision (rule 5): (3) becomes the published backer list; the CF list stays as a shadow. Caveat: truth is the re-read subset (558–16k people per day, mostly active).
