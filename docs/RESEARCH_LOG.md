@@ -129,3 +129,23 @@ Model switches, direction reviews and agenda changes, newest last.
   - Decision at 25 scored days, paired vs arm 3 (day bootstrap 95%).
   - Note: company X is empty on about 75% of launches at 00:05 (median fill), so the input mostly carries the other three.
   - First row: Nov 23, written 02:20 PT, on time.
+- 2026-11-23 ~23:13 UTC (15:13 PT): tw-tree TODAY-ROWS fix DEPLOYED (orchestrator 22:42Z Nov 23; rehearsed-fix rule). Bundle experiments/pipeline_patches/20261123_tw_today_rows.
+  - Cause of the live hist_hunter_rel nulls:
+    - The tw tree (~/w/tw/experiments/ph_predict, cwd of every tw job) still ran features.py 981c5ded. That copy reads every data/today/*.json, so stale unlabelled rows enter add_history and leave hist_hunter_rel NaN for hunters with history.
+    - The deployed pipeline has had the fix since Nov 15 (033d7bd7); the tw copy never got it.
+    - arm2_shap.py (tw, 01:05 PT) refits arm 2 with that copy. Its h25_live.predict call re-uploaded raw/daily/<d>/arm2_input_nulls_<d>.json at ~09:15Z, overwriting the 00:05 forecast's own sidecar. That overwritten file is what the audit read.
+    - The published 00:05 arm 2 and arm 3 runs use the deployed features.py and are not affected:
+      - arm3_inputs show 0% null given history on every day;
+      - a full scratch rerun of the installed forecast.py for Nov 23 gives 0%;
+      - arm2_shap's own check shows its refit differs from the published pred_arm2 by up to 0.36 a day.
+  - Change:
+    - tw features.py 981c5ded → 033d7bd7. The diff is the TODAY-ROWS fix only.
+    - tw arm2_shap.py 71dbc3c5 → 91f2fb15. Its refit's null sidecar now goes to a local results/shadow_arm2_shap/<d>_input_nulls.json, never the bucket.
+    - From Nov 24 the other tw jobs that build features (makerfix / clean shadows, readable shadow and the like) also get correct hunter history: a change point for those shadow lines.
+  - Check, rollback and rehearsal:
+    - check: md5 gates passed.
+    - selftest: deploy → rollback round-trip on scratch copies passed.
+    - Rehearsal: end to end on Nov 23 from scratch copies, data read-only, uploads stubbed, sidecars captured.
+      - Old code: 14 of 18 launches with history null (77.8%), refit vs published 0.210, exactly the live job's numbers.
+      - New code: 0.0% null, refit vs published 0.070.
+  - Rollback: `bash ~/w/stage/20261123_tw_today_rows/deploy_tw_today_rows.sh rollback`.
