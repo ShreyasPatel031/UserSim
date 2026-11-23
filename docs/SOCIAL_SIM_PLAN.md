@@ -52,8 +52,23 @@ The harness provides:
 | persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22) | | 2 | |
 | structural order (arm 3) | | | | baseline: 50.0 / 70.0 / 66.7 | 6 | |
 
+### Ceiling of the structural shortlist (PH agent, STRUCT-SHORTLIST, b9613465, Nov 23)
+Share of the real top k that sits inside the structural top m (arm 3, backtest 2026, 183 days, month-forward):
+
+| Real | in top 10 | in top 15 | in top 20 | structural order alone captures |
+|---|---|---|---|---|
+| top 3 | 95.4 [93.6, 97.1] | 98.5 | 99.5 | about 60 |
+| top 5 | 91.8 | 97.5 | 99.3 | about 68 |
+| top 10 | 77.6 [75.9, 79.3] | 92.1 | 97.2 [96.2, 98.0] | about 76 |
+
+The room for the simulation is the ordering inside the shortlist: from about 60% to a 95-99% ceiling on the top 3. Live
+(6-8 frozen days) the ceilings are lower (top 3 in top 20: 94.4; top 10 in top 20: 85.0) because launches featured after
+00:05 PT are in no shortlist (7 each on Nov 21 and 22). Files: results/structural/backtest/<day>.json (191 days) and
+results/structural/<day>/shortlist.json nightly at 02:21 PT.
+
 ## 5. Open items (keep at least three beyond those running)
-1. Ceiling of the structural shortlist (PH agent, STRUCT-SHORTLIST).
+1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
+1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
 2. Re-rank with BACKER-v2 expected voters, then with history-built LLM agents (E5, SIM-RERANK-1).
 3. Benchmark v0 builder, adapters and the first zero-shot leaderboard across model families (orchestrator).
 4. Fine-tune an open model on Task V + Task C training rows; compare with zero-shot frontier models (orchestrator).
