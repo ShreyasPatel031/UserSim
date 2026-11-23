@@ -149,3 +149,19 @@ Model switches, direction reviews and agenda changes, newest last.
       - Old code: 14 of 18 launches with history null (77.8%), refit vs published 0.210, exactly the live job's numbers.
       - New code: 0.0% null, refit vs published 0.070.
   - Rollback: `bash ~/w/stage/20261123_tw_today_rows/deploy_tw_today_rows.sh rollback`.
+- 2026-11-23 ~23:20 UTC: STRUCT-SHORTLIST (orchestrator 23:02Z Nov 23; AGENTS.md "two models"; SOCIAL_SIM_PLAN Task R ceiling). Script experiments/ph_predict/structural_shortlist.py (derived outside the VM pipeline); output results/structural/ceiling_v1.json.
+  - Day files: results/structural/backtest/<day>.json, 191 days (183 backtest + 8 live). Each holds every launch with id, name and structural score / rank (arm 3, with arm 2 alongside); truth (final rank, votes) is in a separate truth block. Also in the bucket under results/structural/.
+  - Live: results/structural/<day>/shortlist.json from tonight, written at 02:21 PT by trig_01SFirgpcjTRDMAA19zRmp3h.
+  - Share of the real top k inside the structural top m, with a 95% day bootstrap (10,000 draws). Backtest = stored 2026 month-forward (leak-free); live = frozen 00:05 parquets, where launches featured after 00:05 are in no shortlist.
+
+  | set | arm | days | real top 3 in top 10 / 15 / 20 | real top 5 in top 10 / 15 / 20 | real top 10 in top 10 / 15 / 20 |
+  |---|---|---|---|---|---|
+  | backtest 2026 | arm 3 | 183 | 95.4 / 98.5 / 99.5 | 91.8 / 97.5 / 99.3 | 77.6 / 92.1 / 97.2 |
+  | backtest 2026 | arm 2 | 183 | 94.5 / 98.4 / 99.1 | 91.0 / 96.6 / 98.7 | 76.6 / 90.7 / 95.3 |
+  | backtest 2026 | arm 3 − arm 2 (paired) | 183 | +0.9 [−0.2, +2.2] / +0.2 / +0.4 [0.0, +0.9] | +0.8 / +0.9 [+0.2, +1.6] / +0.7 [+0.2, +1.2] | +1.0 [+0.1, +1.9] / +1.4 [+0.6, +2.3] / +1.9 [+1.1, +2.6] |
+  | live Nov 17–22 | arm 3 | 6 | 94.4 / 94.4 / 94.4 | 90.0 / 93.3 / 93.3 | 66.7 / 83.3 / 85.0 |
+  | live Nov 15–22 | arm 2 | 8 | 91.7 / 95.8 / 95.8 | 82.5 / 90.0 / 92.5 | 68.8 / 83.8 / 88.8 |
+  - Reading:
+    - The structural top 20 holds nearly the whole real top 3 / 5 (99%+ in backtest). The re-rank's room is ordering inside the shortlist, not recall.
+    - Live, the cap is late-featured launches: Nov 21 and 22 added 7 each after 00:05.
+    - Arm 3's shortlist is slightly wider-capturing than arm 2's on top 10 in backtest (+1.9 [+1.1, +2.6] inside the top 20).

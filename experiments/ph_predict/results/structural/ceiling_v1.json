@@ -1,0 +1,313 @@
+{
+ "experiment": "STRUCT-SHORTLIST",
+ "asked": "orchestrator 23:02Z Nov 23",
+ "files_written": 191,
+ "written_at": "2026-11-23T23:16:54+00:00",
+ "sets": {
+  "backtest_2026": {
+   "arm3": {
+    "days": 183,
+    "first": "2026-04-01",
+    "last": "2026-10-31",
+    "top3_in_top10": [
+     95.4,
+     93.6,
+     97.1
+    ],
+    "top3_in_top15": [
+     98.5,
+     97.3,
+     99.5
+    ],
+    "top3_in_top20": [
+     99.5,
+     98.7,
+     100.0
+    ],
+    "top5_in_top10": [
+     91.8,
+     89.8,
+     93.7
+    ],
+    "top5_in_top15": [
+     97.5,
+     96.3,
+     98.6
+    ],
+    "top5_in_top20": [
+     99.3,
+     98.8,
+     99.8
+    ],
+    "top10_in_top10": [
+     77.6,
+     75.9,
+     79.3
+    ],
+    "top10_in_top15": [
+     92.1,
+     90.7,
+     93.6
+    ],
+    "top10_in_top20": [
+     97.2,
+     96.2,
+     98.0
+    ]
+   },
+   "arm2": {
+    "days": 183,
+    "first": "2026-04-01",
+    "last": "2026-10-31",
+    "top3_in_top10": [
+     94.5,
+     92.3,
+     96.4
+    ],
+    "top3_in_top15": [
+     98.4,
+     97.1,
+     99.5
+    ],
+    "top3_in_top20": [
+     99.1,
+     98.2,
+     99.8
+    ],
+    "top5_in_top10": [
+     91.0,
+     89.0,
+     93.0
+    ],
+    "top5_in_top15": [
+     96.6,
+     95.3,
+     97.8
+    ],
+    "top5_in_top20": [
+     98.7,
+     97.9,
+     99.3
+    ],
+    "top10_in_top10": [
+     76.6,
+     74.9,
+     78.3
+    ],
+    "top10_in_top15": [
+     90.7,
+     89.2,
+     92.2
+    ],
+    "top10_in_top20": [
+     95.3,
+     94.2,
+     96.4
+    ]
+   },
+   "arm3_minus_arm2_paired": {
+    "days": 183,
+    "top3_in_top10": [
+     0.9,
+     -0.2,
+     2.2
+    ],
+    "top3_in_top15": [
+     0.2,
+     -0.5,
+     0.9
+    ],
+    "top3_in_top20": [
+     0.4,
+     0.0,
+     0.9
+    ],
+    "top5_in_top10": [
+     0.8,
+     -0.4,
+     2.0
+    ],
+    "top5_in_top15": [
+     0.9,
+     0.2,
+     1.6
+    ],
+    "top5_in_top20": [
+     0.7,
+     0.2,
+     1.2
+    ],
+    "top10_in_top10": [
+     1.0,
+     0.1,
+     1.9
+    ],
+    "top10_in_top15": [
+     1.4,
+     0.6,
+     2.3
+    ],
+    "top10_in_top20": [
+     1.9,
+     1.1,
+     2.6
+    ]
+   }
+  },
+  "live": {
+   "arm3": {
+    "days": 6,
+    "first": "2026-11-17",
+    "last": "2026-11-22",
+    "top3_in_top10": [
+     94.4,
+     83.3,
+     100.0
+    ],
+    "top3_in_top15": [
+     94.4,
+     83.3,
+     100.0
+    ],
+    "top3_in_top20": [
+     94.4,
+     83.3,
+     100.0
+    ],
+    "top5_in_top10": [
+     90.0,
+     83.3,
+     96.7
+    ],
+    "top5_in_top15": [
+     93.3,
+     86.7,
+     100.0
+    ],
+    "top5_in_top20": [
+     93.3,
+     86.7,
+     100.0
+    ],
+    "top10_in_top10": [
+     66.7,
+     58.3,
+     73.3
+    ],
+    "top10_in_top15": [
+     83.3,
+     71.7,
+     95.0
+    ],
+    "top10_in_top20": [
+     85.0,
+     75.0,
+     95.0
+    ]
+   },
+   "arm2": {
+    "days": 8,
+    "first": "2026-11-15",
+    "last": "2026-11-22",
+    "top3_in_top10": [
+     91.7,
+     79.2,
+     100.0
+    ],
+    "top3_in_top15": [
+     95.8,
+     87.5,
+     100.0
+    ],
+    "top3_in_top20": [
+     95.8,
+     87.5,
+     100.0
+    ],
+    "top5_in_top10": [
+     82.5,
+     75.0,
+     90.0
+    ],
+    "top5_in_top15": [
+     90.0,
+     80.0,
+     97.5
+    ],
+    "top5_in_top20": [
+     92.5,
+     85.0,
+     97.5
+    ],
+    "top10_in_top10": [
+     68.8,
+     65.0,
+     72.5
+    ],
+    "top10_in_top15": [
+     83.8,
+     75.0,
+     92.5
+    ],
+    "top10_in_top20": [
+     88.8,
+     81.2,
+     96.2
+    ]
+   },
+   "arm3_minus_arm2_paired": {
+    "days": 6,
+    "top3_in_top10": [
+     5.6,
+     0.0,
+     16.7
+    ],
+    "top3_in_top15": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top3_in_top20": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top5_in_top10": [
+     10.0,
+     3.3,
+     16.7
+    ],
+    "top5_in_top15": [
+     3.3,
+     0.0,
+     10.0
+    ],
+    "top5_in_top20": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "top10_in_top10": [
+     0.0,
+     -5.0,
+     5.0
+    ],
+    "top10_in_top15": [
+     -1.7,
+     -5.0,
+     0.0
+    ],
+    "top10_in_top20": [
+     -1.7,
+     -5.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "leak_checks": "backtest scores are month-forward (trained on months before the day's month; leak-free by the arm-3 decision's rules); live scores are the frozen 00:05 parquets (written ~00:18 PT, before 03:45 PT); truth (final rank, votes) sits only in each file's truth block",
+ "notes": [
+  "live: launches featured after the 00:05 forecast are in the truth but in no shortlist (as live); backtest: every featured launch is in the line-up",
+  "live arm 3 exists from Nov 17; arm 2 from Nov 15 (Nov 14 arm 2 empty); days before have neither and are skipped"
+ ]
+}

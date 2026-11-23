@@ -1,0 +1,337 @@
+{
+ "day": "2026-11-23",
+ "source": "live frozen 00:05 forecast parquet",
+ "structural_model": "arm3",
+ "n_launches": 27,
+ "launches": [
+  {
+   "id": "1324692",
+   "name": "Polylane Swarms",
+   "structural_score": 5.34816,
+   "structural_rank": 1,
+   "score_arm3": 5.34816,
+   "rank_arm3": 1,
+   "score_arm2": 5.39736,
+   "rank_arm2": 2
+  },
+  {
+   "id": "1316202",
+   "name": "Motionflare",
+   "structural_score": 5.34696,
+   "structural_rank": 2,
+   "score_arm3": 5.34696,
+   "rank_arm3": 2,
+   "score_arm2": 5.32264,
+   "rank_arm2": 3
+  },
+  {
+   "id": "1225286",
+   "name": "Modem",
+   "structural_score": 5.32743,
+   "structural_rank": 3,
+   "score_arm3": 5.32743,
+   "rank_arm3": 3,
+   "score_arm2": 5.41283,
+   "rank_arm2": 1
+  },
+  {
+   "id": "1305567",
+   "name": "Dog Translator SuperTranslator",
+   "structural_score": 5.24083,
+   "structural_rank": 4,
+   "score_arm3": 5.24083,
+   "rank_arm3": 4,
+   "score_arm2": 5.20317,
+   "rank_arm2": 4
+  },
+  {
+   "id": "1326030",
+   "name": "Letter Visitors",
+   "structural_score": 5.20822,
+   "structural_rank": 5,
+   "score_arm3": 5.20822,
+   "rank_arm3": 5,
+   "score_arm2": 5.17765,
+   "rank_arm2": 5
+  },
+  {
+   "id": "1319334",
+   "name": "Journalistic Tech",
+   "structural_score": 5.17544,
+   "structural_rank": 6,
+   "score_arm3": 5.17544,
+   "rank_arm3": 6,
+   "score_arm2": 5.17198,
+   "rank_arm2": 6
+  },
+  {
+   "id": "1324531",
+   "name": "Gauth Personal Study Agent",
+   "structural_score": 5.15442,
+   "structural_rank": 7,
+   "score_arm3": 5.15442,
+   "rank_arm3": 7,
+   "score_arm2": 5.14632,
+   "rank_arm2": 7
+  },
+  {
+   "id": "1327037",
+   "name": "Inkling 2 Mini",
+   "structural_score": 5.09916,
+   "structural_rank": 8,
+   "score_arm3": 5.09916,
+   "rank_arm3": 8,
+   "score_arm2": 5.06276,
+   "rank_arm2": 8
+  },
+  {
+   "id": "1325852",
+   "name": "Tesla Self-Driving V15",
+   "structural_score": 4.9711,
+   "structural_rank": 9,
+   "score_arm3": 4.9711,
+   "rank_arm3": 9,
+   "score_arm2": 4.9325,
+   "rank_arm2": 9
+  },
+  {
+   "id": "1326572",
+   "name": "Replit Missions",
+   "structural_score": 4.76969,
+   "structural_rank": 10,
+   "score_arm3": 4.76969,
+   "rank_arm3": 10,
+   "score_arm2": 4.93116,
+   "rank_arm2": 10
+  },
+  {
+   "id": "1326090",
+   "name": "Omi Work",
+   "structural_score": 4.67679,
+   "structural_rank": 11,
+   "score_arm3": 4.67679,
+   "rank_arm3": 11,
+   "score_arm2": 4.64314,
+   "rank_arm2": 13
+  },
+  {
+   "id": "1326826",
+   "name": "Strict",
+   "structural_score": 4.65146,
+   "structural_rank": 12,
+   "score_arm3": 4.65146,
+   "rank_arm3": 12,
+   "score_arm2": 4.6006,
+   "rank_arm2": 16
+  },
+  {
+   "id": "1316662",
+   "name": "Orpheus",
+   "structural_score": 4.61989,
+   "structural_rank": 13,
+   "score_arm3": 4.61989,
+   "rank_arm3": 13,
+   "score_arm2": 4.67713,
+   "rank_arm2": 12
+  },
+  {
+   "id": "1325145",
+   "name": "Spikely",
+   "structural_score": 4.60236,
+   "structural_rank": 14,
+   "score_arm3": 4.60236,
+   "rank_arm3": 14,
+   "score_arm2": 4.55872,
+   "rank_arm2": 19
+  },
+  {
+   "id": "1323264",
+   "name": "freddy",
+   "structural_score": 4.59398,
+   "structural_rank": 15,
+   "score_arm3": 4.59398,
+   "rank_arm3": 15,
+   "score_arm2": 4.62729,
+   "rank_arm2": 15
+  },
+  {
+   "id": "1326568",
+   "name": "Plango",
+   "structural_score": 4.58559,
+   "structural_rank": 16,
+   "score_arm3": 4.58559,
+   "rank_arm3": 16,
+   "score_arm2": 4.56284,
+   "rank_arm2": 18
+  },
+  {
+   "id": "1096678",
+   "name": "Hydrilla",
+   "structural_score": 4.57848,
+   "structural_rank": 17,
+   "score_arm3": 4.57848,
+   "rank_arm3": 17,
+   "score_arm2": 4.75008,
+   "rank_arm2": 11
+  },
+  {
+   "id": "1324163",
+   "name": "ExtraBar",
+   "structural_score": 4.56612,
+   "structural_rank": 18,
+   "score_arm3": 4.56612,
+   "rank_arm3": 18,
+   "score_arm2": 4.51673,
+   "rank_arm2": 23
+  },
+  {
+   "id": "1326816",
+   "name": "Open Source Solana Wallet",
+   "structural_score": 4.55816,
+   "structural_rank": 19,
+   "score_arm3": 4.55816,
+   "rank_arm3": 19,
+   "score_arm2": 4.49547,
+   "rank_arm2": 26
+  },
+  {
+   "id": "1325243",
+   "name": "Othor AI",
+   "structural_score": 4.53318,
+   "structural_rank": 20,
+   "score_arm3": 4.53318,
+   "rank_arm3": 20,
+   "score_arm2": 4.56651,
+   "rank_arm2": 17
+  },
+  {
+   "id": "1322413",
+   "name": "naturefunding.org",
+   "structural_score": 4.52673,
+   "structural_rank": 21,
+   "score_arm3": 4.52673,
+   "rank_arm3": 21,
+   "score_arm2": 4.51966,
+   "rank_arm2": 22
+  },
+  {
+   "id": "1325114",
+   "name": "Jot",
+   "structural_score": 4.52116,
+   "structural_rank": 22,
+   "score_arm3": 4.52116,
+   "rank_arm3": 22,
+   "score_arm2": 4.48797,
+   "rank_arm2": 27
+  },
+  {
+   "id": "1321014",
+   "name": "Snowly",
+   "structural_score": 4.49133,
+   "structural_rank": 23,
+   "score_arm3": 4.49133,
+   "rank_arm3": 23,
+   "score_arm2": 4.55133,
+   "rank_arm2": 20
+  },
+  {
+   "id": "1325086",
+   "name": "Chat with Work",
+   "structural_score": 4.44848,
+   "structural_rank": 24,
+   "score_arm3": 4.44848,
+   "rank_arm3": 24,
+   "score_arm2": 4.6362,
+   "rank_arm2": 14
+  },
+  {
+   "id": "1326513",
+   "name": "Mobile Agent Testers",
+   "structural_score": 4.44271,
+   "structural_rank": 25,
+   "score_arm3": 4.44271,
+   "rank_arm3": 25,
+   "score_arm2": 4.5315,
+   "rank_arm2": 21
+  },
+  {
+   "id": "1326269",
+   "name": "LeanTake",
+   "structural_score": 4.41774,
+   "structural_rank": 26,
+   "score_arm3": 4.41774,
+   "rank_arm3": 26,
+   "score_arm2": 4.4972,
+   "rank_arm2": 25
+  },
+  {
+   "id": "1326727",
+   "name": "Ashwa",
+   "structural_score": 4.40282,
+   "structural_rank": 27,
+   "score_arm3": 4.40282,
+   "rank_arm3": 27,
+   "score_arm2": 4.49914,
+   "rank_arm2": 24
+  }
+ ],
+ "truth": {
+  "note": "not available: the day is not over; truth for scoring comes from results/web/truth_daily.json after the close"
+ },
+ "published_model": "arm3",
+ "shortlists": {
+  "top10": [
+   "1324692",
+   "1316202",
+   "1225286",
+   "1305567",
+   "1326030",
+   "1319334",
+   "1324531",
+   "1327037",
+   "1325852",
+   "1326572"
+  ],
+  "top15": [
+   "1324692",
+   "1316202",
+   "1225286",
+   "1305567",
+   "1326030",
+   "1319334",
+   "1324531",
+   "1327037",
+   "1325852",
+   "1326572",
+   "1326090",
+   "1326826",
+   "1316662",
+   "1325145",
+   "1323264"
+  ],
+  "top20": [
+   "1324692",
+   "1316202",
+   "1225286",
+   "1305567",
+   "1326030",
+   "1319334",
+   "1324531",
+   "1327037",
+   "1325852",
+   "1326572",
+   "1326090",
+   "1326826",
+   "1316662",
+   "1325145",
+   "1323264",
+   "1326568",
+   "1096678",
+   "1324163",
+   "1326816",
+   "1325243"
+  ]
+ },
+ "written_at": "2026-11-23T23:17:14+00:00",
+ "on_time": false
+}
