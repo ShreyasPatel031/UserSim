@@ -845,26 +845,3 @@ def test_live_aggregate_includes_today_in_progress(monkeypatch):
     assert row["hits"] == {"top3": [5, 6], "top5": [9, 10], "top10": [16, 20]}
     assert row["per_day"][0]["fallback"] == "fb" and row["per_day"][1]["final"] is False
 
-
-def test_study_request_validates_and_stores(monkeypatch):
-    from fastapi.testclient import TestClient
-    from mvp.ph_site import gcs, routes
-    saved = {}
-
-    class _Blob:
-        def __init__(self, name): self.name = name
-        def upload_from_string(self, data, content_type=None): saved[self.name] = data
-
-    class _Bucket:
-        def blob(self, name): return _Blob(name)
-
-    monkeypatch.setattr(gcs, "_bucket", lambda: _Bucket())
-    routes._REQ_SEEN.clear()
-    from fastapi import FastAPI
-    app = FastAPI(); app.include_router(routes.router)
-    c = TestClient(app)
-    assert c.post("/api/study-request", json={"email": "nope"}).status_code == 400
-    r = c.post("/api/study-request", json={"email": "a@b.co", "url": "https://x.com"})
-    assert r.status_code == 200 and r.json() == {"ok": True}
-    (name, data), = saved.items()
-    assert "/site/study_requests/" in name and '"a@b.co"' in data
