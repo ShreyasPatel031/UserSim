@@ -2436,6 +2436,7 @@ def mount(app: Any) -> None:
                              "browsers": {"backend": browser_backend(), **seeds}})
 
     app.router.routes.insert(0, Route("/api/mcp/limits", endpoint=_limits, methods=["GET"]))
+    _mount_launch_page(app)
     L.load_bundled()
 
     @app.on_event("startup")
@@ -2449,3 +2450,85 @@ def mount(app: Any) -> None:
     async def _stop_mcp() -> None:
         if _STACK is not None:
             await _STACK.aclose()
+
+
+_LAUNCH_HITS: dict[str, list[float]] = {}
+_LAUNCH_COMP_PER_HOUR = 20
+
+
+def _mount_launch_page(app: Any) -> None:
+    """The public launch-read page at /launch and the three small JSON routes it calls (same origin, no token): start
+    (read the page), step (one quick-run step) and competitors. Start and step pass through to the website's /api/try
+    steps, so the website's caps apply. Competitors are limited to 20 new look-ups an hour per client IP and cached for 6
+    hours per URL."""
+    import asyncio
+    import time
+    from pathlib import Path
+
+    from starlette.responses import FileResponse, JSONResponse
+    from starlette.routing import Route
+
+    from mvp.sim_mcp import limits as L
+
+    page = Path(__file__).resolve().parent.parent / "static" / "launch.html"
+
+    async def _page(request: Any) -> Any:
+        return FileResponse(page, media_type="text/html", headers={"Cache-Control": "no-cache"})
+
+    async def _body(request: Any) -> dict[str, Any]:
+        try:
+            b = await request.json()
+            return b if isinstance(b, dict) else {}
+        except Exception:  # noqa: BLE001
+            return {}
+
+    async def _start(request: Any) -> Any:
+        b = await _body(request)
+        url = str(b.get("url") or "").strip()[:2000]
+        if not url:
+            return JSONResponse({"error": "give a product link"}, status_code=400)
+        st, out = await asyncio.to_thread(_post_site_json, "/api/try/page", {"url": url})
+        if st != 200 or not out.get("token"):
+            err = out.get("error") or "the page could not be read"
+            if st == 429:
+                err += " (the quick-run caps are used up for now; try later)"
+            return JSONResponse({"error": err}, status_code=200)
+        return JSONResponse({"analysis": out.get("analysis"), "run_token": out.get("token")})
+
+    async def _step(request: Any) -> Any:
+        b = await _body(request)
+        step, tok = str(b.get("step") or ""), str(b.get("run_token") or "")
+        if step not in _QUICK_STEPS or not tok or len(tok) > 4000:
+            return JSONResponse({"error": "bad step or run_token"}, status_code=400)
+        st, out = await asyncio.to_thread(_post_site_json, f"/api/try/{step}", {"token": tok}, 75.0)
+        if st != 200:
+            return JSONResponse({"error": out.get("error") or f"{step} returned HTTP {st}"}, status_code=200)
+        return JSONResponse(out)
+
+    async def _competitors(request: Any) -> Any:
+        b = await _body(request)
+        url = str(b.get("url") or "").strip()[:2000]
+        if not url:
+            return JSONResponse({"error": "give a product link"}, status_code=400)
+        key = f"{url.lower().rstrip('/')}|3"
+        hit = _COMP_CACHE.get(key)
+        if hit and time.time() - hit[0] < _COMP_TTL_S:
+            return JSONResponse(hit[1] | {"cached": True})
+        headers = {k.lower(): v for k, v in request.headers.items()}
+        ip = L.client_ip(headers, getattr(request.client, "host", "") or "")
+        now = time.time()
+        recent = [t for t in _LAUNCH_HITS.get(ip, []) if now - t < 3600]
+        if len(recent) >= _LAUNCH_COMP_PER_HOUR:
+            return JSONResponse({"error": "competitor look-ups are limited to 20 an hour; try later"}, status_code=200)
+        _LAUNCH_HITS[ip] = recent + [now]
+        try:
+            out = await find_competitors(url, 3)
+        except Exception as exc:  # noqa: BLE001
+            return JSONResponse({"error": f"could not find competitors: {exc!r}"[:300]}, status_code=200)
+        if out.get("competitors"):
+            _COMP_CACHE[key] = (time.time(), out)
+        return JSONResponse(out)
+
+    for path, ep, methods in (("/launch", _page, ["GET"]), ("/api/launch/start", _start, ["POST"]),
+                              ("/api/launch/step", _step, ["POST"]), ("/api/launch/competitors", _competitors, ["POST"])):
+        app.router.routes.insert(0, Route(path, endpoint=ep, methods=methods))
