@@ -26,7 +26,9 @@ Clean day: on or after EARLY_FROM (first honest live prior), ranks final for >= 
 for >= 90%, and a snapshot within (H - 0.85, H + 0.25] covering >= 95% of the line-up for every H up to READY_H
 (hour 5 is scored where present but does not decide this). Launches dropped from the featured list during the day
 (unranked and missing from the day's last snapshot) don't count against "ranks final"; they stay in the line-up as
-never-top-k.
+never-top-k. Launches featured after the morning forecast (no prior, first seen in a later snapshot) don't count
+against prior coverage; they stay in the line-up with the day's 10th-percentile prior, are scored like the rest, and
+are never used to fit.
 Waits (prints the status, exits 0) until MIN_DAYS clean days exist.
 Inputs are read locally (pipeline VM) or from the bucket (raw/daily/<d>/, uploaded by pipeline.daily s_raw).
 
@@ -47,7 +49,8 @@ READY_SKIP = {5}                                            # extra cutoffs that
 KS = (3, 5, 10)
 LATE, EARLY = 0.25, 0.85                                    # snapshot for cutoff H: hours_since_start in (H - EARLY, H + LATE]
 COVER, INPUT_COVER, RANK_COVER = 0.95, 0.90, 0.95
-DROPPED_RANK = 999.0                                        # rank given to launches dropped from the featured list
+DROPPED_RANK = 999.0
+LATE_PRIOR_Q = 0.10                                         # late-featured launches get this quantile of the day's priors                                        # rank given to launches dropped from the featured list
 VISIBLE = 0.5                                               # votes count as visible at H if >= this share of launches > 0
 POP = ["tie_share", "log_reach", "pmax"]
 ARMS = {   # model -> (signal column prefix, uses popscore); "prior" and "votes alone" are scored directly
@@ -125,6 +128,17 @@ def dropped(L_d, S_d):
     return set(L_d.id[L_d.daily_rank.isna() & ~L_d.id.isin(last)])
 
 
+def late_featured(line, S_d, P):
+    """Launches with no honest prior that first appear in the vote snapshots after the day's first snapshot: featured
+    after the morning forecast ran (pipeline: late_featured). They stay in the line-up with a fallback prior."""
+    if not len(S_d):
+        return set()
+    first = S_d.groupby(S_d.launch_id.astype(str)).hours_since_start.min()
+    t0 = S_d.hours_since_start.min()
+    noprior = line.id[~line.id.isin(P.index)]
+    return {i for i in noprior if i in first.index and first[i] > t0 + 0.5}
+
+
 def day_frame(d, L_d, S_d, P, X):
     """One row per launch of day d's line-up with p, final votes, rank, popscore inputs, m_H per usable cutoff and e_H
     where votes are visible, or (None, reason). Launches dropped from the featured list stay in the line-up with rank
@@ -136,20 +150,27 @@ def day_frame(d, L_d, S_d, P, X):
     if len(ranked) < RANK_COVER * (len(L_d) - len(gone)):
         return None, f"ranks not final ({len(ranked)} of {len(L_d) - len(gone)}; {len(gone)} dropped)"
     line = L_d[L_d.daily_rank.notna() | L_d.id.isin(gone)]
-    if P is None or P.reindex(line.id).notna().mean() < INPUT_COVER:
-        return None, "no honest prior" if P is None else "honest prior covers < 90%"
-    if X is None or X.reindex(line.id).notna().any(axis=1).mean() < INPUT_COVER:
+    if P is None:
+        return None, "no honest prior"
+    late = late_featured(line, S_d, P)
+    known = line[~line.id.isin(late)]                            # the line-up the morning forecast could have seen
+    if P.reindex(known.id).notna().mean() < INPUT_COVER:
+        return None, f"honest prior covers < 90% of the forecast-time line-up ({int(P.reindex(known.id).notna().sum())} of {len(known)})"
+    if X is None or X.reindex(known.id).notna().any(axis=1).mean() < INPUT_COVER:
         return None, "no popscore" if X is None else "popscore covers < 90%"
     D = pd.DataFrame({"id": line.id.values, "day": d,
                       "rank": line.daily_rank.astype(float).fillna(DROPPED_RANK).values,
                       "y": np.log1p(line.votes.astype(float).values)})   # NaN for dropped: never used to fit c
+    D["late"] = D.id.isin(late).astype(int)
     D["p"] = P.reindex(D.id).values
+    D.loc[D.late == 1, "p"] = np.nanquantile(P.reindex(known.id).values, LATE_PRIOR_Q)   # unknown to the forecast: low prior
     D = D[D.p.notna()].reset_index(drop=True)
     D = D.join(X.reindex(D.id).reset_index(drop=True))
     usable = []
     for h in CUTOFFS:
         v = snap_at(S_d, h)
-        if v is None or v.votes.reindex(D.id[D["rank"] != DROPPED_RANK]).notna().mean() < COVER:   # dropped launches leave
+        steady = D.id[(D["rank"] != DROPPED_RANK) & (D.late == 0)]   # dropped launches leave, late ones arrive later
+        if v is None or v.votes.reindex(steady).notna().mean() < COVER:
             continue
         v = v.reindex(D.id)
         D[f"m{h}"] = np.log1p(v.comments.values)
@@ -178,7 +199,9 @@ def _pop_matrix(T, cols, fill):
 
 
 def scores(train, test, e, use_pop):
-    """Leave-one-day-out shock model on signal column `e` (votes or comments at a cutoff): fit on `train`, score `test`."""
+    """Leave-one-day-out shock model on signal column `e` (votes or comments at a cutoff): fit on `train`, score `test`.
+    Late-featured launches (fallback prior) are scored but never used to fit."""
+    train = train[train.late == 0]
     cols = ["p"] + (POP if use_pop else [])
     fill = train[POP].astype(float).median() if use_pop else None
     Xtr = train[["p"]].values if not use_pop else np.column_stack([train[["p"]].values, _pop_matrix(train, POP, fill)])
