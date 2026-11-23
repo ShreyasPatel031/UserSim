@@ -703,6 +703,65 @@ def quick_run_card(analysis: dict[str, Any], name: str, people: dict[str, Any], 
     return "\n".join(md)
 
 
+_QUICK_STEPS = ("people", "launch", "reactions", "asks")
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
+async def usersim_ph_quick_start(ctx: Context, product_url: str = "", name: str = "", tagline: str = "",
+                                 description: str = "") -> str:
+    """READER or ADMIN token. Step 1 of the quick run, for clients that show results as they arrive: reads the product's
+    page (about 5 seconds) and returns what it understood (name, tagline, summary, topics, audience, pricing, strengths,
+    doubts, clarity) plus a run_token. Then call usersim_ph_quick_step with that run_token for each of: people and
+    launch (no model, can run together), then reactions, then asks (one after the other). The run_token lasts 15
+    minutes and each step can be fetched once. usersim_ph_quick_run does all of this in one call. Same caps."""
+    import asyncio
+
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    if product_url:
+        status, first = await asyncio.to_thread(_post_site_json, "/api/try/page", {"url": product_url[:2000]})
+    elif name and description:
+        status, first = await asyncio.to_thread(_post_site_json, "/api/try/text", {
+            "name": name[:200], "tagline": tagline[:300], "description": description[:4000]})
+    else:
+        return _fail(S.SessionError("give a product_url, or name + description (tagline optional)"))
+    token = first.get("token")
+    if status != 200 or not token:
+        hint = ""
+        if status == 429:
+            hint = " The website's quick-run caps are used up for now (20 an hour, 100 a day, 150 in total); try later."
+        elif status == 422 and product_url:
+            hint = " Try name + tagline + description instead of the URL."
+        return _fail(S.SessionError(f"{first.get('error') or 'the quick run could not start'}.{hint}".replace("..", ".")))
+    return json.dumps({"analysis": first.get("analysis"), "run_token": token, "steps": list(_QUICK_STEPS),
+                       "caps": first.get("caps"), "runs_used_today": first.get("used_today")})
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
+async def usersim_ph_quick_step(ctx: Context, run_token: str, step: str) -> str:
+    """READER or ADMIN token. One step of a quick run started with usersim_ph_quick_start. step is one of: people (who on
+    Product Hunt it resembles), launch (where it may land: percentile, rank and vote bands, tested accuracy),
+    reactions (simulated comments by type of member), asks (likely questions and concerns). people and launch take a
+    second or two; reactions and asks call a model (several seconds each) and must not run at the same time."""
+    import asyncio
+
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    if step not in _QUICK_STEPS:
+        return _fail(S.SessionError(f"step must be one of {', '.join(_QUICK_STEPS)}"))
+    if not run_token or len(run_token) > 4000:
+        return _fail(S.SessionError("give the run_token from usersim_ph_quick_start"))
+    try:
+        st, out = await asyncio.to_thread(_post_site_json, f"/api/try/{step}", {"token": run_token}, 75.0)
+    except Exception as exc:  # noqa: BLE001
+        return _fail(S.SessionError(f"{step} failed: {exc}"))
+    if st != 200:
+        return _fail(S.SessionError(out.get("error") or f"{step} returned HTTP {st}"))
+    return json.dumps(out)
+
+
 @mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
 async def usersim_ph_quick_run(ctx: Context, product_url: str = "", name: str = "", tagline: str = "",
                                description: str = "") -> str:
