@@ -1128,7 +1128,7 @@ args = ["-y", "mcp-remote", "https://atelier-sim.com/mcp"]</code></pre><button t
 <script>
 
 document.getElementById("sim").addEventListener("submit", e=>{ e.preventDefault();
-  location.href = "/app?url=" + encodeURIComponent(e.target.querySelector("input").value.trim()); });
+  location.href = "/launch?url=" + encodeURIComponent(e.target.querySelector("input").value.trim()); });
 </script><script>
 // Copy buttons for the connect snippets.
 document.querySelectorAll(".copy-btn").forEach(b=>b.addEventListener("click", async ()=>{

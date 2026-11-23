@@ -283,7 +283,8 @@ async function runQuick(url){
   }catch(e){ if(live()){ clearInterval(tk); showError(e); } }
   finally{ clearInterval(tk); clearTimeout(dog); }
 }
-try{const L=JSON.parse($("last").textContent);$("url").value=L.label;render(L.payload);$("status").textContent="Example: "+L.label;}catch(e){}
+const AUTO=new URLSearchParams(location.search).get("url");
+if(!AUTO){ try{const L=JSON.parse($("last").textContent);$("url").value=L.label;render(L.payload);$("status").textContent="Example: "+L.label;}catch(e){} }
 $("f").onsubmit=async ev=>{ev.preventDefault();
   if(!HTTP&&!mcp){$("status").textContent="Connecting…";mcp=await mcpReady;}
   if(!HTTP&&!mcp){$("status").textContent="";setupMsg("Open this page in claude.ai to run it. "+addHelp);return;}
@@ -307,6 +308,8 @@ $("f").onsubmit=async ev=>{ev.preventDefault();
       const p=await call("usersim_launch_card",isUrl?{product_url:v}:{name:v}); if(p?.error){$("status").textContent=p.error;} else {render(p);$("status").textContent=`Done in ${Math.round((Date.now()-t0)/1000)} s`;} }
   }catch(e){showError(e);}finally{$("run").disabled=false;}
 };
+// Arriving from the homepage with ?url=…: start straight away.
+if(AUTO){ $("url").value=AUTO; setTimeout(()=>$("f").requestSubmit(),0); }
 </script>
 
 </html>
