@@ -1,0 +1,353 @@
+{
+ "experiment": "E5-SPLIT v1",
+ "days": [
+  "2026-11-08",
+  "2026-11-09",
+  "2026-11-10",
+  "2026-11-11",
+  "2026-11-12",
+  "2026-11-13",
+  "2026-11-14",
+  "2026-11-15",
+  "2026-11-16",
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20"
+ ],
+ "note": "[value, day-bootstrap 2.5%, 97.5%, launches, days]; shares are vote-weighted means of per-launch shares of displayed PH votes; recall@N weighted by N",
+ "definitions": [
+  "Per launch: displayed PH votes split into (a) held people the frozen backer list named (top N within the observed held population, N = observed held backers),",
+  "(b) held people it did not name, (c) votes not observed among held people (not held, or held but not re-read after the close).",
+  "Observed held population = complete people held before the day's start AND re-read after the day's close (only they show whether they voted).",
+  "Baseline on the same N and population: the N most active (upvotes on launches in the 30 days before D, read before the day's start)."
+ ],
+ "all launches": {
+  "launches": 413,
+  "days": 13,
+  "observed held population median": 3295,
+  "(a) held, named by the frozen list": [
+   0.0634,
+   0.0486,
+   0.0791,
+   413,
+   13
+  ],
+  "(b) held, not named": [
+   0.1962,
+   0.1699,
+   0.2215,
+   413,
+   13
+  ],
+  "(c) not observed among held (not held, or held and not re-read)": [
+   0.7404,
+   0.7084,
+   0.7738,
+   413,
+   13
+  ],
+  "recall@N model (vote-weighted)": [
+   0.2441,
+   0.1934,
+   0.2908,
+   413,
+   13
+  ],
+  "recall@N most-active baseline (vote-weighted)": [
+   0.2122,
+   0.2036,
+   0.2208,
+   413,
+   13
+  ],
+  "model minus baseline (paired by day)": [
+   0.0319,
+   -0.0145,
+   0.0786,
+   413,
+   13
+  ]
+ },
+ "top-3 launches": {
+  "launches": 39,
+  "days": 13,
+  "observed held population median": 9533,
+  "(a) held, named by the frozen list": [
+   0.128,
+   0.0995,
+   0.1575,
+   39,
+   13
+  ],
+  "(b) held, not named": [
+   0.2655,
+   0.2334,
+   0.2977,
+   39,
+   13
+  ],
+  "(c) not observed among held (not held, or held and not re-read)": [
+   0.6065,
+   0.565,
+   0.6502,
+   39,
+   13
+  ],
+  "recall@N model (vote-weighted)": [
+   0.3252,
+   0.2655,
+   0.3778,
+   39,
+   13
+  ],
+  "recall@N most-active baseline (vote-weighted)": [
+   0.291,
+   0.2773,
+   0.304,
+   39,
+   13
+  ],
+  "model minus baseline (paired by day)": [
+   0.0342,
+   -0.0187,
+   0.0852,
+   39,
+   13
+  ]
+ },
+ "frozen-on-the-day days only (Nov 14+)": {
+  "all": {
+   "launches": 250,
+   "days": 7,
+   "observed held population median": 1900,
+   "(a) held, named by the frozen list": [
+    0.0617,
+    0.0408,
+    0.0848,
+    250,
+    7
+   ],
+   "(b) held, not named": [
+    0.1721,
+    0.1388,
+    0.2033,
+    250,
+    7
+   ],
+   "(c) not observed among held (not held, or held and not re-read)": [
+    0.7661,
+    0.7213,
+    0.8083,
+    250,
+    7
+   ],
+   "recall@N model (vote-weighted)": [
+    0.264,
+    0.1908,
+    0.3119,
+    250,
+    7
+   ],
+   "recall@N most-active baseline (vote-weighted)": [
+    0.2131,
+    0.1993,
+    0.2255,
+    250,
+    7
+   ],
+   "model minus baseline (paired by day)": [
+    0.0509,
+    -0.0241,
+    0.1043,
+    250,
+    7
+   ]
+  },
+  "top-3": {
+   "launches": 21,
+   "days": 7,
+   "observed held population median": 1942,
+   "(a) held, named by the frozen list": [
+    0.1282,
+    0.0853,
+    0.1694,
+    21,
+    7
+   ],
+   "(b) held, not named": [
+    0.2386,
+    0.1995,
+    0.2752,
+    21,
+    7
+   ],
+   "(c) not observed among held (not held, or held and not re-read)": [
+    0.6332,
+    0.5677,
+    0.6904,
+    21,
+    7
+   ],
+   "recall@N model (vote-weighted)": [
+    0.3496,
+    0.2615,
+    0.4048,
+    21,
+    7
+   ],
+   "recall@N most-active baseline (vote-weighted)": [
+    0.2949,
+    0.2704,
+    0.3156,
+    21,
+    7
+   ],
+   "model minus baseline (paired by day)": [
+    0.0547,
+    -0.0288,
+    0.1112,
+    21,
+    7
+   ]
+  }
+ },
+ "per_day": {
+  "2026-11-08": {
+   "launches": 17,
+   "observed_held_pop": 16836,
+   "held_backers": 724,
+   "displayed_votes": 2269,
+   "a": 0.0414,
+   "recall_model": 0.13,
+   "recall_baseline": 0.189,
+   "frozen": false
+  },
+  "2026-11-09": {
+   "launches": 23,
+   "observed_held_pop": 12878,
+   "held_backers": 1151,
+   "displayed_votes": 3431,
+   "a": 0.0665,
+   "recall_model": 0.198,
+   "recall_baseline": 0.229,
+   "frozen": false
+  },
+  "2026-11-10": {
+   "launches": 50,
+   "observed_held_pop": 12373,
+   "held_backers": 1318,
+   "displayed_votes": 5241,
+   "a": 0.0294,
+   "recall_model": 0.117,
+   "recall_baseline": 0.204,
+   "frozen": false
+  },
+  "2026-11-11": {
+   "launches": 16,
+   "observed_held_pop": 12362,
+   "held_backers": 809,
+   "displayed_votes": 2336,
+   "a": 0.1156,
+   "recall_model": 0.334,
+   "recall_baseline": 0.235,
+   "frozen": false
+  },
+  "2026-11-12": {
+   "launches": 37,
+   "observed_held_pop": 12362,
+   "held_backers": 1291,
+   "displayed_votes": 4558,
+   "a": 0.0805,
+   "recall_model": 0.284,
+   "recall_baseline": 0.203,
+   "frozen": false
+  },
+  "2026-11-13": {
+   "launches": 20,
+   "observed_held_pop": 9533,
+   "held_backers": 843,
+   "displayed_votes": 2956,
+   "a": 0.0849,
+   "recall_model": 0.298,
+   "recall_baseline": 0.206,
+   "frozen": false
+  },
+  "2026-11-14": {
+   "launches": 28,
+   "observed_held_pop": 9533,
+   "held_backers": 774,
+   "displayed_votes": 2993,
+   "a": 0.0722,
+   "recall_model": 0.279,
+   "recall_baseline": 0.194,
+   "frozen": true
+  },
+  "2026-11-15": {
+   "launches": 15,
+   "observed_held_pop": 8551,
+   "held_backers": 752,
+   "displayed_votes": 2212,
+   "a": 0.113,
+   "recall_model": 0.332,
+   "recall_baseline": 0.221,
+   "frozen": true
+  },
+  "2026-11-16": {
+   "launches": 38,
+   "observed_held_pop": 3295,
+   "held_backers": 1239,
+   "displayed_votes": 4190,
+   "a": 0.0857,
+   "recall_model": 0.29,
+   "recall_baseline": 0.237,
+   "frozen": true
+  },
+  "2026-11-17": {
+   "launches": 43,
+   "observed_held_pop": 1942,
+   "held_backers": 1203,
+   "displayed_votes": 5368,
+   "a": 0.0194,
+   "recall_model": 0.086,
+   "recall_baseline": 0.222,
+   "frozen": true
+  },
+  "2026-11-18": {
+   "launches": 43,
+   "observed_held_pop": 1900,
+   "held_backers": 1048,
+   "displayed_votes": 4890,
+   "a": 0.065,
+   "recall_model": 0.303,
+   "recall_baseline": 0.194,
+   "frozen": true
+  },
+  "2026-11-19": {
+   "launches": 30,
+   "observed_held_pop": 1887,
+   "held_backers": 1064,
+   "displayed_votes": 4200,
+   "a": 0.0814,
+   "recall_model": 0.321,
+   "recall_baseline": 0.22,
+   "frozen": true
+  },
+  "2026-11-20": {
+   "launches": 53,
+   "observed_held_pop": 1497,
+   "held_backers": 639,
+   "displayed_votes": 4877,
+   "a": 0.0379,
+   "recall_model": 0.29,
+   "recall_baseline": 0.185,
+   "frozen": true
+  }
+ },
+ "leak checks": {
+  "predictions": "tmp/e5/private/backer_pred/<D>.parquet only (inputs cut at 00:00 PT of D; Nov 8-13 are as-of replays written Nov 14, Nov 14+ written on the day)",
+  "held": "complete in the store with a read before the day's start",
+  "truth": "upvotes on D's launches by people re-read after D's close; displayed votes from the warehouse (final)",
+  "baseline": "upvotes on launches in the 30 days before D, read before the day's start"
+ }
+}

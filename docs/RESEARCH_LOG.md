@@ -1652,3 +1652,18 @@ reports/page_path/README.md.
 - Ceiling (real split-half): 32 / 35.
 - Statement: paste the launch description for concerns and questions; a URL gives the rank band and topic-level reactions only.
 - Adjudicator levels depend on pool size; compare within a run.
+
+### 2026-11-23 E5 — E5-SPLIT v1: where each launch's votes come from (Nov 8–20, 13 days, 413 launches)
+experiments/simlab/cohort_calibration/split_votes.py → results/split_v1.json (bucket: results/calibration/split_v1.json).
+- Shares of displayed PH votes, vote-weighted, [mean, day-bootstrap 95%]:
+
+| | (a) held, named by frozen list | (b) held, not named | (c) not observed among held | recall@N model | recall@N most-active | model − baseline |
+|---|---|---|---|---|---|---|
+| All launches, Nov 14–20 (7 days frozen on the day, 250) | 6.2 [4.1, 8.5] | 17.2 [13.9, 20.3] | 76.6 [72.1, 80.8] | 26.4 [19.1, 31.2] | 21.3 [19.9, 22.6] | +5.1 [−2.4, +10.4] |
+| Top-3, Nov 14–20 (21) | 12.8 [8.5, 16.9] | 23.9 [20.0, 27.5] | 63.3 [56.8, 69.0] | 35.0 [26.2, 40.5] | 29.5 [27.0, 31.6] | +5.5 [−2.9, +11.1] |
+| All launches, Nov 8–20 (13 days, 413) | 6.3 [4.9, 7.9] | 19.6 [17.0, 22.2] | 74.0 [70.8, 77.4] | 24.4 [19.3, 29.1] | 21.2 [20.4, 22.1] | +3.2 [−1.5, +7.9] |
+| Top-3, Nov 8–20 (39) | 12.8 [10.0, 15.8] | 26.6 [23.3, 29.8] | 60.7 [56.5, 65.0] | 32.5 [26.6, 37.8] | 29.1 [27.7, 30.4] | +3.4 [−1.9, +8.5] |
+
+- (c) mixes "not held" with "held but not re-read after the close"; the observed held population shrinks from ~12k (Nov 9–13) to ~1.5–1.9k (Nov 17–20).
+- The frozen list does not clearly beat "N most active" (paired intervals span 0). Nov 17 is an outlier (model 8.6% vs 22.2%); the other frozen days favour the model by +6 to +11 points.
+- Leak: lists from tmp/e5/private/backer_pred (inputs cut 00:00 PT; Nov 8–13 are as-of replays written Nov 14); held = complete with a read before the day's start; truth = re-read after close.
