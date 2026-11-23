@@ -223,3 +223,16 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 - Data Feeder people writers without a full-pull stamp: raw/feeder_people_unstamped/ (outside the people store; never counted).
 - Grok Bot X rollout: raw/x_rollout/.
 - Backtest calibration set v1 (held data only, aggregates by segment, no usernames): results/calibration/backtest_v1/ (README there; builder experiments/calibration/build_backtest_v1.py).
+
+## Collection status, Nov 23 2026 (daily review, 10:50Z)
+| Feed / row | Ideal | Now | Gap, owner, by when |
+|---|---|---|---|
+| Complete people (all tabs to PH end) | everyone who votes, daily | 93,578 complete of 94,894 indexed (likely 1,536/1,649, active 2,568/2,642, rest 89,474/90,603); +163 net in 24 h; need-list 1,316 | need-list completions ~0.1-2/min; fleet spent the night re-pulling complete people. Fleet (asked hourly since 04:58Z) |
+| Upvote refresh (new votes of held people) | every held person daily | 3,615 refreshed/24 h, median 11.1 days since last read; new upvotes reaching the store again since 06:21Z (gate 5aa3fea0) | cadence ~25x short of daily for 93.6k people. Fleet |
+| Post-close re-reads (who voted) | broad, every day after close | Nov 17-21 567-1,900 people/day (was ~12k Nov 9-13); Nov 22 0 | WHO scoring blocked/selected. Fleet, asked for Nov 21-22 by 10:00Z (missed) |
+| Day-close comment threads | full threads with replies, daily | blocked since Nov 20 (24/24 pages); Nov 22 truth 128 comments, 2 replies | WHAT ground truth degrading. Fleet, asked 09:33Z |
+| 15-min live capture | every slot, fetched_at within 5 min | Nov 22-23 FAIL (fetched_at skew); public board itself live | PH agent / fleet |
+| store_v3 daily build | daily | Nov 23 skipped (disk 2.4 GB < 2.8 GB needed); Nov 22 build in use | Shreyas: allow clearing the local vm_pgql mirror, or bigger disk |
+| Quick-run person index (site/person_index_v1) | full store, daily | 13,581 people (Nov 11 build); rebuild of 27,466 ready, publish denied by auto mode | Shreyas: "publish the index" |
+| Browserbase | none (AGENTS.md Nov 17) | website switched off (PR #222); key secrets still enabled (disable denied) | Shreyas: disable/revoke key |
+Spend: GCP $64.88 Nov 22 (soft cap $50), month-to-date $1,211.65; paid data $0.
