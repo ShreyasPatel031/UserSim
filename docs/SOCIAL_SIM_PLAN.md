@@ -52,6 +52,27 @@ The harness provides:
 | persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22) | | 2 | |
 | structural order (arm 3) | | | | baseline: 50.0 / 70.0 / 66.7 | 6 | |
 
+### Benchmark v0, Task V, first results (simharness, Nov 23; private data in the bucket under simharness/bench_v0/)
+Built from the store: train 244 days / 5,703 launches / 392,763 real votes; validation 10 days / 316 launches; test
+Nov 11-22, 12 days / 394 launches / 25,050 votes. Task C: 53,631 real comment texts joined to launches (485 in test).
+Upvotes are dated to their launch day; follow edges are undated and left out. These pools differ from E5's re-read truth
+set, so the levels below are not comparable with E5's 20.9 / 27.6; the gaps are.
+
+| Model | Test: recall@N (full pool) | Test: AUC | Small sample AUC (20 launches, 15 voters + 15 random non-voters each) | Cost |
+|---|---|---|---|---|
+| most-active | 32.0 [30.4, 33.9] | 0.918 | 0.897 | 0 |
+| logistic: recency-weighted upvotes + topic match | 38.5 [36.6, 40.5] | 0.938 | 0.923 | 0 |
+| Gemini 2.5 Flash-Lite, zero-shot from the person's history text | | | 0.646 | $0.07 |
+| Gemini 2.5 Flash, zero-shot from the person's history text | | | 0.614 | $0.23 |
+
+Reading: a prompt-only language model reading a person's history is far worse than a two-feature logistic at "will this
+person vote" (same finding as the Gemini Decisions test, 0.60 vs 0.74). Caveat: the prompt did not state the person's
+activity rate, and random non-voters are mostly low-activity people, which is the signal "most-active" uses. Round 1
+adds activity-matched non-voters, activity stats in the prompt, more model families, stacking and a first fine-tune.
+
+Callable today on our GCP project: Gemini (and tuned Gemini endpoints), Claude Haiku 4.5 / Sonnet 4.5 / Sonnet 4.6,
+gpt-oss-120b, Llama 4 Maverick. Not enabled: Claude Opus, Qwen, DeepSeek. No OpenAI API key is stored.
+
 ### Ceiling of the structural shortlist (PH agent, STRUCT-SHORTLIST, b9613465, Nov 23)
 Share of the real top k that sits inside the structural top m (arm 3, backtest 2026, 183 days, month-forward):
 

@@ -92,13 +92,14 @@ class GeminiBackend(Backend):
 
 class ClaudeBackend(Backend):
     """STUB: Claude via Vertex Model Garden (publisher `anthropic`) or the Anthropic API.
-    Needs the model enabled in Model Garden for this project (terms accepted by an owner) or an API key.
+    Checked 2026-11-23: claude-haiku-4-5, claude-sonnet-4-5 and claude-sonnet-4-6 answer on Vertex for this project
+    (us-east5 and global); Opus models are not enabled.
     Implement: POST {region}-aiplatform.googleapis.com/v1/projects/P/locations/L/publishers/anthropic/models/M:rawPredict
     with an Anthropic Messages body, and track usage.input_tokens / output_tokens for cost."""
     name = "claude:stub"
 
     def call(self, prompt: str) -> str:
-        raise NotImplementedError("ClaudeBackend is a stub: enable Claude in Vertex Model Garden first")
+        raise NotImplementedError("ClaudeBackend is a stub: implement the Vertex rawPredict call above")
 
 
 class OpenAIBackend(Backend):
@@ -111,7 +112,10 @@ class OpenAIBackend(Backend):
 
 class LocalOpenModelBackend(Backend):
     """STUB: a local or self-hosted open model (e.g. an OpenAI-compatible vLLM server on our own GPU VM, or a
-    Vertex Model Garden open-model endpoint). Fine-tuned weights stay private."""
+    Vertex Model Garden open-model endpoint, OpenAI-compatible at
+    {region}-aiplatform.googleapis.com/v1/projects/P/locations/L/endpoints/openapi/chat/completions;
+    checked 2026-11-23: openai/gpt-oss-120b-maas (us-central1) and meta/llama-4-maverick-17b-128e-instruct-maas
+    (us-east5) answer). Fine-tuned weights stay private."""
     name = "open:stub"
 
     def __init__(self, base_url: str | None = None, model: str | None = None):
