@@ -277,3 +277,44 @@ async def try_step(step: str, request: Request):
     except Exception as exc:  # noqa: BLE001
         return _err(exc)
     raise HTTPException(404, "unknown step")
+
+
+# ---------- homepage "Run the full study" requests ----------
+_EMAIL_RE = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,24}$")
+_REQ_SEEN: dict[str, list[float]] = {}
+
+
+@router.post("/api/study-request")
+async def study_request(request: Request):
+    """Store one request for a full study (email + product URL) in the private bucket. Nothing is public;
+    a person picks the requests up from site/study_requests/<day>/ and runs the study."""
+    import json
+    import secrets
+    import time
+    from datetime import datetime, timezone
+
+    from mvp.ph_site import gcs
+
+    try:
+        body = await request.json()
+    except Exception:  # noqa: BLE001
+        return JSONResponse({"error": "Send JSON with an email."}, status_code=400)
+    email = str((body or {}).get("email") or "").strip()[:254]
+    url = str((body or {}).get("url") or "").strip()[:500]
+    if not _EMAIL_RE.match(email):
+        return JSONResponse({"error": "Please enter a valid email address."}, status_code=400)
+    ip = (request.headers.get("x-forwarded-for") or (request.client.host if request.client else "") or "?").split(",")[0].strip()
+    now = time.time()
+    recent = [t for t in _REQ_SEEN.get(ip, []) if now - t < 3600]
+    if len(recent) >= 5:
+        return JSONResponse({"error": "Too many requests from here; please try again later."}, status_code=429)
+    _REQ_SEEN[ip] = recent + [now]
+    at = datetime.now(timezone.utc)
+    rec = {"email": email, "url": url, "requested_at": at.isoformat(), "source": "homepage"}
+    path = f"{gcs.ROOT}/site/study_requests/{at:%Y-%m-%d}/{at:%H%M%S}-{secrets.token_hex(4)}.json"
+    try:
+        await asyncio.to_thread(lambda: gcs._bucket().blob(path).upload_from_string(json.dumps(rec), content_type="application/json"))
+    except Exception as exc:  # noqa: BLE001
+        print(f"[site] study request not saved: {type(exc).__name__}", flush=True)
+        return JSONResponse({"error": "That didn't go through. Please try again."}, status_code=503)
+    return JSONResponse({"ok": True}, headers={"Cache-Control": "no-store"})

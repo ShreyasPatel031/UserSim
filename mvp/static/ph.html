@@ -449,7 +449,7 @@ function drawLinks(){
 window.addEventListener("resize", ()=>{ if(VIEW) drawLinks(); });
 
 function showWhy(id, key){
-  const html = whyBlock(id, key), x = VIEW.launches.find(l=>l.id===id), el = $("#whyp");
+  const html = typeof whyBlock === "function" ? whyBlock(id, key) : "", x = VIEW.launches.find(l=>l.id===id), el = $("#whyp");
   if(!html){ el.hidden = true; return; }
   el.hidden = false; el.innerHTML = `<h3>Why: ${esc(x ? x.name : "")}</h3>` + html;
   el.querySelector("details") && (el.querySelector("details").open = true);
