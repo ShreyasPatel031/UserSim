@@ -134,3 +134,14 @@ unlisted people ranked after listed, by (1)); (3) logistic P(vote) on [ln(1+rece
 hunter/maker (follow edges read before D's start), ln(1+rw) x topic match], fit walk-forward on days from Oct 25 to D-1 only (negatives subsampled
 5%, seed 0); (4) = (3) with people active in the last 7 days ranked first. Paired difference vs (1), day bootstrap 95%.
 Pass: lower bound > 0 -> published backer list (rule 5), old list kept as shadow.
+
+## Addendum 6 (2026-11-23): SIM-RERANK-1 Stage A (no language model)
+Structural order = the then-published 00:05 forecast (results/web/forecast_0005/<D>.json, run ~00:15 PT); shortlist = its top 20.
+Features from the BACKER-v2 list for D (tmp/e5/private/backer_pred_v2/<D>.parquet, top 2000 per launch): F1 expected held voters = sum p;
+F2 propensity-weighted = sum p x (share of the 30 days before D with >= 1 upvote, reads before D's start); F3 sum p over people in top-3-prone
+groups (segment cut in force on D; groups whose share of held backers of final top-3 launches in the 30 days before D is >= 1.1x their share of all
+held backers then). Blend score = z(-structural rank) + w x z(ln(1+F)) within the day; w from {0, 0.1, 0.25, 0.5, 1, 2, 4} maximising the mean of
+top-3/5/10 capture on earlier test days only (w = 0 until 3 earlier days). Metric: |re-ranked top k ∩ real top k| / k for k = 3, 5, 10, paired vs the
+structural order, day bootstrap 95%; near-miss recovery (structural rank 4-6 that finished top 3 and moved into the re-ranked top 3) and cost
+(real top 3 in the structural top 3 pushed out). Days: Nov 8-22 (v2 lists frozen as walk-forward replays) plus Oct 27-Nov 4 (labelled: v2 lists
+built later as replays from upvote/follow history read before each day). Pass: a candidate's top-3 or top-5 capture minus structural lower bound > 0.

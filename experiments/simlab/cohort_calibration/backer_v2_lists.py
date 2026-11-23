@@ -20,6 +20,7 @@ for D in TARGETS:
             pos = np.where(x["y"] == 1)[0]; neg = np.where(x["y"] == 0)[0]
             neg = rng.choice(neg, max(1, int(0.05 * len(neg))), replace=False) if len(neg) else neg
             Xs.append(x["X"][np.r_[pos, neg]]); ys.append(np.r_[np.ones(len(pos)), np.zeros(len(neg))])
+    if not Xs or sum(len(y) for y in ys) < 1000: print(D, "skipped: no walk-forward training rows yet", flush=True); continue
     m = LogisticRegression(max_iter=1000).fit(np.vstack(Xs), np.concatenate(ys))
     T = day_table(D, score_all=True)
     close = G["PP"].close_utc(D); start = close - pd.Timedelta(days=1)

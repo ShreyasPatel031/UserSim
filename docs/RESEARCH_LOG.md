@@ -1686,3 +1686,12 @@ cohort_calibration/backer_v2.py (PREREG addendum 5) → results/backer_v2.json. 
 - Nov 17 outlier: the frozen list's top 100 had a median of 0 upvotes visible in the 30 days before the day (20 on Nov 16 and 18), and only 51% of them voted that day (85% on the neighbours). The list ranked people with no recent visible history at the top: an input/store fault that night, not a ranking inversion.
 - Decision (rule 5): (3) becomes the published backer list; the CF list stays as a shadow. Caveat: truth is the re-read subset (558–16k people per day, mostly active).
 - Deployed Nov 23 (rule 5): cohort_calibration/backer_v2_lists.py writes tmp/e5/private/backer_pred_v2/<D>.parquet nightly (step 1c; backfilled Nov 8–22 as walk-forward replays); expected_voters.py reads it (BACKER_LIST=cf forces the old CF-only list, kept as shadow). Nov 23 explain republished; leave-one-day-out check on the v2 list: observed/predicted 0.985, count slope 0.85, correlation 0.56; subgroup mix vs base −0.110 [−0.117, −0.102] (was −0.097 with the CF list).
+
+### 2026-11-23 E5 — SIM-RERANK-1 Stage A (no language model): BACKER-v2 features do not improve the structural top 20 (17 days)
+cohort_calibration/rerank_a.py (PREREG addendum 6) → results/rerank_a.json. Days Nov 3–4, 8–22; structural order = then-published 00:05 forecast.
+- Ceiling: the structural top 20 holds 98.0% / 95.3% / 91.8% of the real top 3 / 5 / 10.
+- Structural capture: top 3 51.0 [41.2, 62.7], top 5 62.4, top 10 70.6.
+- Re-ranked minus structural (paired, walk-forward weight): F1 expected held voters −2.0 [−5.9, 0.0] / 0.0 / +0.6; F2 propensity-weighted 0.0 [−5.9, +5.9] / 0.0 / +0.6; F3 top-3-prone groups 0.0 (no group met the 1.1x top-3 share rule, so F3 = 0: degenerate).
+- Near misses: 17 launches at structural rank 4–6 finished top 3; F2 recovered 1 and pushed 1 real top 3 out.
+- Fixed-weight curve (exploratory, not a test): any weight above 0.25 hurts (F1 at w = 1: −7.8 top 3).
+- Why: the features sum p over each launch's top-2000 list, and those lists overlap ~85%, so F1 is nearly flat across launches (~185–215 on Nov 15). Next: sum over the whole held pool rather than the truncated list; then Stage B (agents).
