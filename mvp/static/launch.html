@@ -88,7 +88,7 @@ ol.next{margin:0;padding-left:20px}ol.next li{padding:var(--s1) 0;font-size:13px
 .hz{border:1px solid var(--rule);padding:6px var(--s3)}
 .hzh{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s2);margin-bottom:var(--s1)}
 .hzh b{font:400 15px/1.2 var(--serif)}
-.hz p{margin:0;font-size:13px}.hz p.bc{color:var(--soft);font-size:12px;margin-top:2px}
+.hz p{margin:0;font-size:13px}.hz p.bc{color:var(--soft);font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 </style>
 <div class="app">
@@ -186,7 +186,7 @@ function whySec(){
   const pending=!(P.people&&P.reactions&&P.asks);
   const row=f=>`<details class="fx"><summary><span class="fl">${FICON[f.n]||""}<span>${esc(f.n)}</span><span class="info" tabindex="0" role="note" aria-label="${esc(FDEF[f.n]||"")}" data-tip="${esc(FDEF[f.n]||"")}" onclick="event.preventDefault();event.stopPropagation()">i</span></span><span class="dt">${f.d==="q"?`<i class="unk"></i>`:`<i class="${f.d==="up"?"pos":"neg"}" style="width:${f.s===2?44:22}%;${f.d==="up"?"left:50%":"right:50%"}"></i>`}</span><span class="bv ${f.d==="up"?"pos":f.d==="dn"?"neg":"qv"}">${f.d==="q"?"?":f.s===2?"strong":"some"}</span></summary><p>${esc(f.w)}</p></details>`;
   const PL=P.plan, T={short:["Short term","This week"],medium:["Medium term","Weeks 2–3"],long:["Long term","Week 4 to launch day"]};
-  const boxes = PL&&PL.plan ? Object.keys(T).map(k=>`<div class="hz"><div class="hzh"><span class="label">${T[k][0]}</span><b>${T[k][1]}</b></div><p>${esc(PL.plan[k]?.action||"—")}</p>${PL.plan[k]?.because?`<p class="bc">Because ${esc((b=>b.charAt(0).toLowerCase()+b.slice(1))(PL.plan[k].because.replace(/^because\s+/i,"")))}</p>`:""}</div>`).join("")
+  const boxes = PL&&PL.plan ? Object.keys(T).map(k=>`<div class="hz"><div class="hzh"><span class="label">${T[k][0]}</span><b>${T[k][1]}</b></div><p>${esc(PL.plan[k]?.action||"—")}</p>${PL.plan[k]?.because?`<p class="bc" title="${esc(PL.plan[k].because)}">Because ${esc((b=>b.charAt(0).toLowerCase()+b.slice(1))(PL.plan[k].because.replace(/^because\s+/i,"")))}</p>`:""}</div>`).join("")
     : PL&&PL.error ? `<div class="wait">Couldn't write the plan: ${esc(PL.error)}</div>`
     : `<div class="wait">${P.asks?"Writing your plan from these results…":"The plan is written once the results are in."}</div>${SK}`;
   return `<h2>Why</h2><div class="legend label"><span><i style="background:var(--ok)"></i>helps</span><span><i style="background:var(--neg)"></i>holds it back</span><span>? unknown</span></div>`+
