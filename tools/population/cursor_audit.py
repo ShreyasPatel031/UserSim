@@ -340,7 +340,23 @@ def main():
         # 11:4xZ Nov 22 (orchestrator): BOuI passes the build gate only for a to-held upvote refresh, rebuilt over a store
         # record of a person the store counts complete; only the upvotes tab changes. Its full/need-list pulls stay held
         # until 30+ pass the full whole-person audit.
-        refresh_only_ok = (md5 == BOUI and overlaid and bool(d.get("upvotes_refreshed_at")) and n in vm_t
+        # 06:0xZ Nov 23: the fleet's refreshes now often read the WHOLE upvote list to PH's end (hasNextPage_false, not a
+        # to-held stop): 56 of 84 at 0551Z were held as build_boui_refresh_not_rebuilt. A refresh whose upvotes tab was read
+        # to a PH end, for a person the store counts complete and who passes the whole-person check, changes only the
+        # upvotes tab (older items go to items_earlier through the lossless union), so it passes like a rebuilt one.
+        up_end = str((((d.get("upvotes") or {}).get("paging") or {}).get("ended")) or "")
+        full_read_refresh = (bool(d.get("upvotes_refreshed_at")) and up_end in g.get("SERVER_END", set()) and ok
+                             and not (d.get("upvotes") or {}).get("refresh_to_held"))
+        if full_read_refresh:
+            # guard: PH's list moves by a few items between reads (an un-upvote), not by half. A read with far fewer items
+            # than the store copy (e.g. an empty first page labelled empty_page: 0 vs 55) is a bad read, not a PH end.
+            _sd = store_doc(n)
+            _sn = len(((_sd or {}).get("upvotes") or {}).get("items") or [])
+            _nn = len((d.get("upvotes") or {}).get("items") or [])
+            if _sd is not None and _nn < max(0.9 * _sn, _sn - 5):
+                full_read_refresh = False
+                refresh_c["boui_full_refresh_short_vs_store"] += 1
+        refresh_only_ok = (md5 == BOUI and (overlaid or full_read_refresh) and bool(d.get("upvotes_refreshed_at")) and n in vm_t
                            and store_complete is not None and n.lower() in store_complete)
         # 16:3xZ Nov 22 (orchestrator 15:05Z, AGENTS.md): a BOuI full pull passes the build gate only when EVERY tab is
         # recorded as read to PH's own end in its paging record (a PH end, or header 0 = nothing to page) and the
