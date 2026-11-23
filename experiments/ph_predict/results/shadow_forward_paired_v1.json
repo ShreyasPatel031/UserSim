@@ -1,0 +1,891 @@
+{
+ "experiment": "PH-FWD12",
+ "asked": "orchestrator 09:45Z Nov 23",
+ "written_at": "2026-11-23T09:50:47+00:00",
+ "truth": "results/web/truth_daily.json (first warehouse part after the PT day's close; daily_rank)",
+ "write_cut": "03:45 PT of the day (literal 00:05 PT would drop the published arm3 itself, written ~00:18 PT)",
+ "bootstrap": "day-clustered, 10000 draws, seed 0",
+ "lines": {
+  "arm3": {
+   "n_days": 6,
+   "days": [
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+   ],
+   "top3": 50.0,
+   "top5": 70.0,
+   "top10": 66.7,
+   "spearman": 0.622
+  },
+  "arm2": {
+   "n_days": 7,
+   "days": [
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+   ],
+   "top3": 57.1,
+   "top5": 68.6,
+   "top10": 67.1,
+   "spearman": 0.592,
+   "paired_days": 6,
+   "vs_arm3": {
+    "top3": {
+     "n": 6,
+     "diff": 11.1,
+     "ci95": [
+      0.0,
+      22.2
+     ],
+     "days_needed_to_clear_zero": 8,
+     "more_days_needed": 2
+    },
+    "top5": {
+     "n": 6,
+     "diff": -3.3,
+     "ci95": [
+      -10.0,
+      0.0
+     ],
+     "days_needed_to_clear_zero": 19,
+     "more_days_needed": 13
+    },
+    "top10": {
+     "n": 6,
+     "diff": 0.0,
+     "ci95": [
+      -5.0,
+      5.0
+     ],
+     "days_needed_to_clear_zero": null,
+     "more_days_needed": null
+    },
+    "spearman": {
+     "n": 6,
+     "diff": -0.037,
+     "ci95": [
+      -0.096,
+      0.007
+     ],
+     "days_needed_to_clear_zero": 13,
+     "more_days_needed": 7
+    }
+   },
+   "decision": "KEEP RUNNING (interval covers 0)"
+  },
+  "LM": {
+   "n_days": 12,
+   "days": [
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-14",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+   ],
+   "top3": 55.6,
+   "top5": 66.7,
+   "top10": 65.0,
+   "spearman": 0.642,
+   "paired_days": 6,
+   "vs_arm3": {
+    "top3": {
+     "n": 6,
+     "diff": 5.6,
+     "ci95": [
+      0.0,
+      16.7
+     ],
+     "days_needed_to_clear_zero": 20,
+     "more_days_needed": 14
+    },
+    "top5": {
+     "n": 6,
+     "diff": -3.3,
+     "ci95": [
+      -10.0,
+      0.0
+     ],
+     "days_needed_to_clear_zero": 19,
+     "more_days_needed": 13
+    },
+    "top10": {
+     "n": 6,
+     "diff": -5.0,
+     "ci95": [
+      -8.3,
+      -1.7
+     ],
+     "days_needed_to_clear_zero": 4,
+     "more_days_needed": 0
+    },
+    "spearman": {
+     "n": 6,
+     "diff": -0.028,
+     "ci95": [
+      -0.059,
+      -0.0
+     ],
+     "days_needed_to_clear_zero": 7,
+     "more_days_needed": 1
+    }
+   },
+   "decision": "DROP from nightly shadow (worse on top 10)"
+  },
+  "it8": {
+   "n_days": 10,
+   "days": [
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+   ],
+   "top3": 33.3,
+   "top5": 50.0,
+   "top10": 57.0,
+   "spearman": 0.454,
+   "paired_days": 6,
+   "vs_arm3": {
+    "top3": {
+     "n": 6,
+     "diff": -16.7,
+     "ci95": [
+      -33.3,
+      5.6
+     ],
+     "days_needed_to_clear_zero": 9,
+     "more_days_needed": 3
+    },
+    "top5": {
+     "n": 6,
+     "diff": -23.3,
+     "ci95": [
+      -40.0,
+      -10.0
+     ],
+     "days_needed_to_clear_zero": 3,
+     "more_days_needed": 0
+    },
+    "top10": {
+     "n": 6,
+     "diff": -16.7,
+     "ci95": [
+      -28.3,
+      -6.7
+     ],
+     "days_needed_to_clear_zero": 3,
+     "more_days_needed": 0
+    },
+    "spearman": {
+     "n": 6,
+     "diff": -0.239,
+     "ci95": [
+      -0.375,
+      -0.135
+     ],
+     "days_needed_to_clear_zero": 2,
+     "more_days_needed": 0
+    }
+   },
+   "decision": "DROP from nightly shadow (worse on top 5,10)"
+  },
+  "arrivals": {
+   "n_days": 10,
+   "days": [
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+   ],
+   "top3": 50.0,
+   "top5": 50.0,
+   "top10": 61.0,
+   "spearman": 0.388,
+   "paired_days": 6,
+   "vs_arm3": {
+    "top3": {
+     "n": 6,
+     "diff": 5.6,
+     "ci95": [
+      -22.2,
+      33.3
+     ],
+     "days_needed_to_clear_zero": 158,
+     "more_days_needed": 152
+    },
+    "top5": {
+     "n": 6,
+     "diff": -23.3,
+     "ci95": [
+      -40.0,
+      -6.7
+     ],
+     "days_needed_to_clear_zero": 4,
+     "more_days_needed": 0
+    },
+    "top10": {
+     "n": 6,
+     "diff": -13.3,
+     "ci95": [
+      -16.7,
+      -10.0
+     ],
+     "days_needed_to_clear_zero": 1,
+     "more_days_needed": 0
+    },
+    "spearman": {
+     "n": 6,
+     "diff": -0.187,
+     "ci95": [
+      -0.384,
+      -0.0
+     ],
+     "days_needed_to_clear_zero": 7,
+     "more_days_needed": 1
+    }
+   },
+   "decision": "DROP from nightly shadow (worse on top 5,10)"
+  },
+  "promo_posts": {
+   "n_days": 1,
+   "days": [
+    "2026-11-20"
+   ],
+   "top3": 100.0,
+   "top5": 60.0,
+   "top10": 50.0,
+   "spearman": 0.322,
+   "paired_days": 1,
+   "vs_arm3": {
+    "top3": null,
+    "top5": null,
+    "top10": null,
+    "spearman": null
+   },
+   "decision": "KEEP RUNNING (interval covers 0)"
+  },
+  "grok_xbuzz": {
+   "n_days": 8,
+   "days": [
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+   ],
+   "top3": 20.8,
+   "top5": 30.0,
+   "top10": 51.2,
+   "spearman": null,
+   "paired_days": 6,
+   "vs_arm3": {
+    "top3": {
+     "n": 6,
+     "diff": -27.8,
+     "ci95": [
+      -55.6,
+      0.0
+     ],
+     "days_needed_to_clear_zero": 7,
+     "more_days_needed": 1
+    },
+    "top5": {
+     "n": 6,
+     "diff": -36.7,
+     "ci95": [
+      -46.7,
+      -26.7
+     ],
+     "days_needed_to_clear_zero": 1,
+     "more_days_needed": 0
+    },
+    "top10": {
+     "n": 6,
+     "diff": -15.0,
+     "ci95": [
+      -28.3,
+      -1.7
+     ],
+     "days_needed_to_clear_zero": 6,
+     "more_days_needed": 0
+    },
+    "spearman": null
+   },
+   "decision": "DROP from nightly shadow (worse on top 5,10)"
+  }
+ },
+ "dropped_late_files": [
+  {
+   "day": "2026-11-10",
+   "line": "it8",
+   "written": "2026-11-11 02:16:32+00:00",
+   "cut": "2026-11-10 11:45:00+00:00"
+  },
+  {
+   "day": "2026-11-14",
+   "line": "it8",
+   "written": "2026-11-14 13:34:20+00:00",
+   "cut": "2026-11-14 11:45:00+00:00"
+  },
+  {
+   "day": "2026-11-14",
+   "line": "arrivals",
+   "written": "2026-11-14 13:34:54+00:00",
+   "cut": "2026-11-14 11:45:00+00:00"
+  },
+  {
+   "day": "2026-11-21",
+   "line": "promo_posts",
+   "written": "2026-11-21 21:26:55+00:00",
+   "cut": "2026-11-21 11:45:00+00:00"
+  },
+  {
+   "day": "2026-11-22",
+   "line": "promo_posts",
+   "written": "2026-11-22 21:27:29+00:00",
+   "cut": "2026-11-22 11:45:00+00:00"
+  }
+ ],
+ "missing": [
+  [
+   "2026-11-10",
+   "arm3",
+   "no file"
+  ],
+  [
+   "2026-11-10",
+   "arm2",
+   "no file"
+  ],
+  [
+   "2026-11-10",
+   "arrivals",
+   "no file"
+  ],
+  [
+   "2026-11-10",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-10",
+   "grok_xbuzz",
+   "no file"
+  ],
+  [
+   "2026-11-11",
+   "arm3",
+   "no file"
+  ],
+  [
+   "2026-11-11",
+   "arm2",
+   "no file"
+  ],
+  [
+   "2026-11-11",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-11",
+   "grok_xbuzz",
+   "no file"
+  ],
+  [
+   "2026-11-12",
+   "arm3",
+   "no file"
+  ],
+  [
+   "2026-11-12",
+   "arm2",
+   "no file"
+  ],
+  [
+   "2026-11-12",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-12",
+   "grok_xbuzz",
+   "no file"
+  ],
+  [
+   "2026-11-13",
+   "arm3",
+   "no file"
+  ],
+  [
+   "2026-11-13",
+   "arm2",
+   "no file"
+  ],
+  [
+   "2026-11-13",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-14",
+   "arm3",
+   "no file"
+  ],
+  [
+   "2026-11-14",
+   "arm2",
+   "no file"
+  ],
+  [
+   "2026-11-14",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-14",
+   "grok_xbuzz",
+   "no file"
+  ],
+  [
+   "2026-11-16",
+   "arm3",
+   "no file"
+  ],
+  [
+   "2026-11-16",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-17",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-18",
+   "promo_posts",
+   "no file"
+  ],
+  [
+   "2026-11-19",
+   "promo_posts",
+   "no file"
+  ]
+ ],
+ "per_day": {
+  "2026-11-10": {
+   "ranked": 50,
+   "lines": {
+    "LM": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 60.0,
+     "spearman": 0.46304921968787516
+    }
+   }
+  },
+  "2026-11-11": {
+   "ranked": 26,
+   "lines": {
+    "LM": {
+     "top3": 100.0,
+     "top5": 60.0,
+     "top10": 80.0,
+     "spearman": 0.8558823529411764
+    },
+    "it8": {
+     "top3": 33.333333333333336,
+     "top5": 60.0,
+     "top10": 70.0,
+     "spearman": 0.5617647058823529
+    },
+    "arrivals": {
+     "top3": 33.333333333333336,
+     "top5": 20.0,
+     "top10": 90.0,
+     "spearman": -0.19999999999999998
+    }
+   }
+  },
+  "2026-11-12": {
+   "ranked": 37,
+   "lines": {
+    "LM": {
+     "top3": 33.333333333333336,
+     "top5": 20.0,
+     "top10": 60.0,
+     "spearman": 0.676623992413466
+    },
+    "it8": {
+     "top3": 33.333333333333336,
+     "top5": 40.0,
+     "top10": 60.0,
+     "spearman": 0.6431958274063536
+    },
+    "arrivals": {
+     "top3": 0.0,
+     "top5": 20.0,
+     "top10": 60.0,
+     "spearman": 0.3382269904009035
+    }
+   }
+  },
+  "2026-11-13": {
+   "ranked": 21,
+   "lines": {
+    "LM": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 80.0,
+     "spearman": 0.8285714285714285
+    },
+    "it8": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 80.0,
+     "spearman": 0.7834586466165413
+    },
+    "arrivals": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 80.0,
+     "spearman": 0.6166666666666666
+    },
+    "grok_xbuzz": {
+     "top3": 33.333333333333336,
+     "top5": 20.0,
+     "top10": 60.0,
+     "spearman": null
+    }
+   }
+  },
+  "2026-11-14": {
+   "ranked": 28,
+   "lines": {
+    "LM": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 60.0,
+     "spearman": 0.6852764094143404
+    }
+   }
+  },
+  "2026-11-16": {
+   "ranked": 38,
+   "lines": {
+    "arm2": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.6379951887621916
+    },
+    "LM": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.6333989970078157
+    },
+    "it8": {
+     "top3": 33.333333333333336,
+     "top5": 40.0,
+     "top10": 60.0,
+     "spearman": 0.25968483412224375
+    },
+    "arrivals": {
+     "top3": 66.66666666666667,
+     "top5": 100.0,
+     "top10": 60.0,
+     "spearman": 0.5155844155844156
+    },
+    "grok_xbuzz": {
+     "top3": 0.0,
+     "top5": 20.0,
+     "top10": 40.0,
+     "spearman": null
+    }
+   }
+  },
+  "2026-11-17": {
+   "ranked": 43,
+   "lines": {
+    "arm3": {
+     "top3": 33.333333333333336,
+     "top5": 60.0,
+     "top10": 70.0,
+     "spearman": 0.5613107822410148
+    },
+    "arm2": {
+     "top3": 66.66666666666667,
+     "top5": 60.0,
+     "top10": 70.0,
+     "spearman": 0.4765931742675929
+    },
+    "LM": {
+     "top3": 33.333333333333336,
+     "top5": 40.0,
+     "top10": 60.0,
+     "spearman": 0.4756871035940804
+    },
+    "it8": {
+     "top3": 0.0,
+     "top5": 40.0,
+     "top10": 60.0,
+     "spearman": 0.5063424947145878
+    },
+    "arrivals": {
+     "top3": 33.333333333333336,
+     "top5": 40.0,
+     "top10": 60.0,
+     "spearman": 0.313382269904009
+    },
+    "grok_xbuzz": {
+     "top3": 33.333333333333336,
+     "top5": 20.0,
+     "top10": 50.0,
+     "spearman": null
+    }
+   }
+  },
+  "2026-11-18": {
+   "ranked": 46,
+   "lines": {
+    "arm3": {
+     "top3": 33.333333333333336,
+     "top5": 60.0,
+     "top10": 60.0,
+     "spearman": 0.6726064633041378
+    },
+    "arm2": {
+     "top3": 33.333333333333336,
+     "top5": 60.0,
+     "top10": 60.0,
+     "spearman": 0.6713983690727876
+    },
+    "LM": {
+     "top3": 33.333333333333336,
+     "top5": 60.0,
+     "top10": 60.0,
+     "spearman": 0.6567502265176683
+    },
+    "it8": {
+     "top3": 0.0,
+     "top5": 40.0,
+     "top10": 30.0,
+     "spearman": 0.4765931742675929
+    },
+    "arrivals": {
+     "top3": 0.0,
+     "top5": 0.0,
+     "top10": 40.0,
+     "spearman": 0.13043478260869568
+    },
+    "grok_xbuzz": {
+     "top3": 0.0,
+     "top5": 0.0,
+     "top10": 20.0,
+     "spearman": null
+    }
+   }
+  },
+  "2026-11-19": {
+   "ranked": 33,
+   "lines": {
+    "arm3": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.8051167964404894
+    },
+    "arm2": {
+     "top3": 33.333333333333336,
+     "top5": 60.0,
+     "top10": 70.0,
+     "spearman": 0.825139043381535
+    },
+    "LM": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 60.0,
+     "spearman": 0.8157953281423804
+    },
+    "it8": {
+     "top3": 33.333333333333336,
+     "top5": 20.0,
+     "top10": 30.0,
+     "spearman": 0.2671857619577308
+    },
+    "arrivals": {
+     "top3": 66.66666666666667,
+     "top5": 40.0,
+     "top10": 60.0,
+     "spearman": 0.3685770750988142
+    },
+    "grok_xbuzz": {
+     "top3": 0.0,
+     "top5": 40.0,
+     "top10": 40.0,
+     "spearman": null
+    }
+   }
+  },
+  "2026-11-20": {
+   "ranked": 56,
+   "lines": {
+    "arm3": {
+     "top3": 100.0,
+     "top5": 60.0,
+     "top10": 50.0,
+     "spearman": 0.32834075842742794
+    },
+    "arm2": {
+     "top3": 100.0,
+     "top5": 60.0,
+     "top10": 60.0,
+     "spearman": 0.32467192136739653
+    },
+    "LM": {
+     "top3": 100.0,
+     "top5": 60.0,
+     "top10": 50.0,
+     "spearman": 0.31701171212117707
+    },
+    "it8": {
+     "top3": 66.66666666666667,
+     "top5": 40.0,
+     "top10": 40.0,
+     "spearman": 0.15888886652289952
+    },
+    "arrivals": {
+     "top3": 66.66666666666667,
+     "top5": 40.0,
+     "top10": 30.0,
+     "spearman": 0.41958041958041964
+    },
+    "promo_posts": {
+     "top3": 100.0,
+     "top5": 60.0,
+     "top10": 50.0,
+     "spearman": 0.32209164035814364
+    },
+    "grok_xbuzz": {
+     "top3": 33.333333333333336,
+     "top5": 40.0,
+     "top10": 60.0,
+     "spearman": null
+    }
+   }
+  },
+  "2026-11-21": {
+   "ranked": 21,
+   "lines": {
+    "arm3": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.5780219780219781
+    },
+    "arm2": {
+     "top3": 100.0,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.5868131868131868
+    },
+    "LM": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.5824175824175825
+    },
+    "it8": {
+     "top3": 33.333333333333336,
+     "top5": 60.0,
+     "top10": 70.0,
+     "spearman": 0.27912087912087913
+    },
+    "arrivals": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 60.0,
+     "spearman": 0.5476190476190477
+    },
+    "grok_xbuzz": {
+     "top3": 0.0,
+     "top5": 40.0,
+     "top10": 70.0,
+     "spearman": null
+    }
+   }
+  },
+  "2026-11-22": {
+   "ranked": 24,
+   "lines": {
+    "arm3": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 80.0,
+     "spearman": 0.786764705882353
+    },
+    "arm2": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.6225490196078433
+    },
+    "LM": {
+     "top3": 33.333333333333336,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.7156862745098039
+    },
+    "it8": {
+     "top3": 66.66666666666667,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.607843137254902
+    },
+    "arrivals": {
+     "top3": 100.0,
+     "top5": 80.0,
+     "top10": 70.0,
+     "spearman": 0.8333333333333335
+    },
+    "grok_xbuzz": {
+     "top3": 66.66666666666667,
+     "top5": 60.0,
+     "top10": 70.0,
+     "spearman": null
+    }
+   }
+  }
+ }
+}

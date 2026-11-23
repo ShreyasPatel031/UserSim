@@ -79,3 +79,19 @@ Model switches, direction reviews and agenda changes, newest last.
   - Rehearsal: end-to-end DRY on the VM from a scratch copy, real data read-only, --force, no --write: ready true, 16 clean days (Nov 3–22). Comment shock minus prior, top 3: +10.4 [−0.0, +22.9] (vote arms n/a in the forced run).
   - Deploy: base-md5 gated; old file backed up to ~/w/backup_early_shock/early_shock.py.28866c64; parse check passed. Expected first ready run Nov 24 ~08:05 UTC (backtests run_file early_shock_2026-11-24).
   - Rollback: `bash ~/w/stage/20261123_early_shock_late/deploy_early_shock.sh rollback`.
+- 2026-11-23 ~10:10 UTC: PH-FWD12, paired forward scoring of every shadow line against published arm3 (orchestrator 09:45Z Nov 23). Script experiments/ph_predict/shadow_forward_paired.py; output results/shadow_forward_paired_v1.json.
+  - Truth: truth_daily (first warehouse part after the PT day's close). Bootstrap: day-clustered, 10,000 draws, seed 0. Arm3 has a frozen 00:05 parquet on 6 days only (Nov 17–22), so every paired comparison has at most 6 days.
+  - Write-time cut: 03:45 PT of the day, not 00:05 PT. The published arm3 parquet itself lands ~00:18 PT, so a literal 00:05 cut would drop the baseline.
+  - Dropped as written after the cut: it8 Nov 10 (written Nov 11 02:16Z) and Nov 14 (13:34Z); arrivals Nov 14 (13:34Z); promo_posts Nov 21 and Nov 22 (21:26Z / 21:27Z, computed after the day from the frozen 00:05 parquet, dropped by rule).
+  - No line reads the 03:45 hidden-order read. Grok's 00:30 file searches X up to ~00:18 PT (13 min after 00:05) and is written ~00:20 PT.
+
+  | line | days | top 3 / 5 / 10 | Spearman | Δ top 3 vs arm3 [95% CI] | Δ top 5 | Δ top 10 | Δ Spearman | rule outcome |
+  |---|---|---|---|---|---|---|---|---|
+  | arm3 (published) | 6 | 50.0 / 70.0 / 66.7 | 0.622 | – | – | – | – | baseline |
+  | arm2 | 7 (6 paired) | 57.1 / 68.6 / 67.1 | 0.592 | +11.1 [+0.0, +22.2] | −3.3 [−10.0, +0.0] | +0.0 [−5.0, +5.0] | −0.037 [−0.096, +0.007] | keep |
+  | LM (pred) | 12 (6) | 55.6 / 66.7 / 65.0 | 0.642 | +5.6 [+0.0, +16.7] | −3.3 [−10.0, +0.0] | −5.0 [−8.3, −1.7] | −0.028 [−0.059, −0.0] | worse on top 10 (no compute to save: in the forecast parquet) |
+  | it8 | 10 (6) | 33.3 / 50.0 / 57.0 | 0.454 | −16.7 [−33.3, +5.6] | −23.3 [−40.0, −10.0] | −16.7 [−28.3, −6.7] | −0.239 [−0.375, −0.135] | drop |
+  | arrivals | 10 (6) | 50.0 / 50.0 / 61.0 | 0.388 | +5.6 [−22.2, +33.3] | −23.3 [−40.0, −6.7] | −13.3 [−16.7, −10.0] | −0.187 [−0.384, −0.0] | drop |
+  | promo_posts | 1 (1) | 100 / 60 / 50 | 0.322 | – | – | – | – | keep (1 day; decision stays at 25) |
+  | Grok X-buzz top 10 | 8 (6) | 20.8 / 30.0 / 51.2 | – | −27.8 [−55.6, +0.0] | −36.7 [−46.7, −26.7] | −15.0 [−28.3, −1.7] | – | drop |
+  - No line is better than arm3 with its interval clear of zero. Days to clear zero at the observed effect: arm2 top 3 needs 8 days (6 so far); LM top 3 needs 20.
