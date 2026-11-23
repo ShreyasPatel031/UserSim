@@ -3,7 +3,7 @@
  "asked": "orchestrator 09:45Z Nov 23",
  "written_at": "2026-11-23T09:50:47+00:00",
  "truth": "results/web/truth_daily.json (first warehouse part after the PT day's close; daily_rank)",
- "write_cut": "03:45 PT of the day (literal 00:05 PT would drop the published arm3 itself, written ~00:18 PT)",
+ "write_cut": "03:45 PT of the day (literal 00:05 PT would drop the published arm3 itself, written ~00:18 PT); ACCEPTED by the orchestrator 09:51Z Nov 23",
  "bootstrap": "day-clustered, 10000 draws, seed 0",
  "lines": {
   "arm3": {
@@ -887,5 +887,18 @@
     }
    }
   }
+ },
+ "orchestrator_decision": {
+  "at": "2026-11-23T09:51Z",
+  "stop": [
+   "it8",
+   "arrivals"
+  ],
+  "keep": [
+   "arm2",
+   "LM",
+   "promo_posts"
+  ],
+  "grok_xbuzz": "orchestrator tells Grok Bot"
  }
 }
