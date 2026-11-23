@@ -905,6 +905,123 @@ def launch_card(launch: dict[str, Any], d: dict[str, Any]) -> dict[str, Any]:
             "card_markdown": "\n".join(md)}
 
 
+_COMP_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
+_COMP_TTL_S = 6 * 3600
+
+
+def _favicon_data_uri(domain: str) -> str:
+    """The competitor's logo as the website's app shows it (Google's favicon service for its domain), inlined as a data
+    URI so pages that can't load outside images still show it. '' when it can't be fetched."""
+    import base64
+
+    import httpx
+
+    if not domain:
+        return ""
+    try:
+        r = httpx.get("https://www.google.com/s2/favicons", params={"domain": domain, "sz": "128"}, timeout=8.0,
+                      follow_redirects=True)
+        ct = r.headers.get("content-type", "image/png").split(";")[0]
+        if r.status_code == 200 and ct.startswith("image/") and 0 < len(r.content) < 200_000:
+            return f"data:{ct};base64," + base64.b64encode(r.content).decode()
+    except Exception:  # noqa: BLE001
+        pass
+    return ""
+
+
+async def find_competitors(product_url: str, max_competitors: int = 3, context: str = "") -> dict[str, Any]:
+    """Competitors for any product URL, found the way the website's app finds them (mvp.discovery): read the site,
+    profile it, search '<name> alternatives / competitors', ask Gemini with Google Search which products buyers most
+    often compare it with, pick the closest, and keep only those whose homepage Google confirms and that are live.
+    Then one Gemini call compares the product with each competitor: why people would pick it over the competitor, and
+    why they'd pick the competitor instead. `context` (optional) is extra evidence, e.g. simulated visitor comments."""
+    import asyncio
+    import time
+    from urllib.parse import urlparse
+
+    from mvp import discovery as D
+
+    run = D.new_run(product_url, max_competitors=max(1, min(5, max_competitors)), scrape_reviews=False)
+    ag = D.DiscoveryAgent(run)
+    site = await ag.read_site()
+    prof = await ag.profile(site, [])
+    name = prof.get("name") or D.registrable_host(run.url)
+    queries = [f"{name} alternatives", f"{name} competitors"] + [f"best {t}" for t in (prof.get("search_terms") or [])[:2]]
+    found, compared = await asyncio.gather(ag._search_many(queries), ag.compared_products(prof))
+    web = [r for q in queries for r in found.get(q) or []]
+    cands = await ag.pick(prof, web, [], compared)
+    comps, _rest = await ag.keep_live(cands, str(prof.get("category") or ""), compared)
+    rows = []
+    for c in comps:
+        host = (urlparse(c.get("url") or "").hostname or "").removeprefix("www.")
+        rows.append({"name": c.get("name"), "url": c.get("url"), "domain": host, "why_compared": c.get("why", ""),
+                     "overlap": c.get("overlap", ""), "source": c.get("source", "")})
+    if rows:
+        listing = "\n".join(f"- {r['name']} ({r['url']}): {r['why_compared']}" for r in rows)
+        prompt = f"""The product: {name} ({run.url}) — {prof.get('one_liner', '')}
+What it does: {prof.get('what_they_do', '')}
+For: {', '.join(prof.get('target_users') or [])}. Key features: {', '.join(prof.get('key_features') or [])}. Pricing: {prof.get('pricing', '')}
+{('Extra evidence (simulated launch-day visitors):' + chr(10) + context[:4000]) if context else ''}
+
+Its competitors (found by web research; homepages confirmed live):
+{listing}
+
+For each competitor, from what buyers say on comparison and review pages and what each product offers, give:
+"what": one short line on what the competitor is;
+"prefer_yours": 2-3 short reasons people would pick {name} over it;
+"prefer_theirs": 2-3 short reasons people would pick the competitor instead (e.g. maturity, trust, price, simplicity, features).
+Be specific and fair. Return JSON only: {{"compare": [{{"name": "...", "what": "...", "prefer_yours": ["..."], "prefer_theirs": ["..."]}}]}}"""
+        try:
+            out = await ag._ask("Compare with competitors", "You output valid JSON only.", prompt)
+            by = {str(x.get("name", "")).lower(): x for x in out.get("compare") or []}
+            for r in rows:
+                x = by.get(str(r["name"]).lower()) or next((v for k, v in by.items() if k and (k in str(r["name"]).lower() or str(r["name"]).lower() in k)), {})
+                r.update({"what": x.get("what", ""), "prefer_yours": x.get("prefer_yours") or [],
+                          "prefer_theirs": x.get("prefer_theirs") or []})
+        except Exception as exc:  # noqa: BLE001
+            for r in rows:
+                r["compare_error"] = repr(exc)[:200]
+    logos = await asyncio.gather(*(asyncio.to_thread(_favicon_data_uri, r["domain"]) for r in rows))
+    for r, lg in zip(rows, logos):
+        r["logo"] = lg
+    return {"product": {"name": name, "url": run.url, "one_liner": prof.get("one_liner", ""),
+                        "category": prof.get("category", "")},
+            "competitors": rows,
+            "method": ("Found the way the website's app finds competitors: the product's own pages, web searches for "
+                       "alternatives and competitors, and Gemini with Google Search for the products buyers most often "
+                       "compare it with; only competitors whose homepage Google confirms and that are live are kept. "
+                       "The why-pick lines are written by Gemini from that research, not from counted reviews. Logos come "
+                       "from each competitor's own site (Google's favicon service)."),
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=True))
+async def usersim_competitors(ctx: Context, product_url: str, max_competitors: int = 3, context: str = "") -> str:
+    """READER or ADMIN token. The competitors of any product, found live the way the website's app finds them (web
+    search + Gemini with Google Search for the most-compared products, homepages confirmed and checked live), each with
+    its logo, what it is, why people would pick your product over it and why they'd pick it instead. About 20-60
+    seconds; results are cached for 6 hours per URL. context: optional extra evidence (e.g. simulated comments)."""
+    import time
+
+    denied = _needs(ctx, "reader")
+    if denied:
+        return denied
+    url = (product_url or "").strip()
+    if not url:
+        return _fail(S.SessionError("give a product_url"))
+    key = f"{url.lower().rstrip('/')}|{max(1, min(5, max_competitors))}"
+    hit = _COMP_CACHE.get(key)
+    if hit and time.time() - hit[0] < _COMP_TTL_S:
+        return json.dumps(hit[1] | {"cached": True})
+    try:
+        out = await find_competitors(url, max_competitors, context)
+    except Exception as exc:  # noqa: BLE001
+        return _fail(S.SessionError(f"could not find competitors: {exc!r}"[:300]))
+    if out.get("competitors"):
+        _COMP_CACHE[key] = (time.time(), out)
+    return json.dumps(out)
+
+
 @mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=False))
 async def usersim_launch_card(ctx: Context, product_url: str = "", name: str = "", day: str = "") -> str:
     """READER or ADMIN token. The website's Product Hunt card for a product, as on the /ph page: overview (top worry,
