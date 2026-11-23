@@ -1,0 +1,503 @@
+{
+ "day": "2026-11-22",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1323002": {
+   "themes": [
+    {
+     "theme": "Concerns about Reddit accounts getting banned/shadowbanned",
+     "n": 5
+    },
+    {
+     "theme": "Positive sentiment and product usefulness",
+     "n": 3
+    },
+    {
+     "theme": "Questions about the 'warmup' feature",
+     "n": 2
+    },
+    {
+     "theme": "Questions about Reddit's policy/API changes",
+     "n": 1
+    },
+    {
+     "theme": "Concerns about 'AI slop' from autoreplies",
+     "n": 1
+    },
+    {
+     "theme": "Request for a 30-day trial",
+     "n": 1
+    },
+    {
+     "theme": "Concerns about targeting niche subreddits/top commenters",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Account safety and ban prevention",
+    "Preventing AI 'slop' or low-quality content",
+    "Availability of a 30-day trial"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Concerns about Reddit accounts getting banned or shadowbanned due to automation or linking.",
+      "General positive sentiment and excitement for the product's usefulness and problem-solving capabilities.",
+      "Questions about the 'warmup' feature for new Reddit accounts.",
+      "Questions about the impact of Reddit's policy changes on authenticated accounts.",
+      "Questions about the percentage of drafted replies users approve without editing.",
+      "Request for a 30-day trial period.",
+      "Concerns about the autoreply feature contributing to 'AI slop' and non-human written replies on Reddit.",
+      "Concerns about targeting niche subreddits or dealing with top commenters."
+     ],
+     [
+      "Users are concerned about Reddit accounts getting banned or shadowbanned due to automation or self-promotion.",
+      "Users express that the product solves a significant problem and will be very useful.",
+      "Users are asking about the duration and effectiveness of the account warm-up feature.",
+      "Users are asking about the impact of Reddit's API changes and authentication requirements.",
+      "There is a concern that the autoreply feature will contribute to an increase in AI-generated 'slop' on Reddit.",
+      "Users are asking about the effectiveness of the tool in niche or highly active subreddits.",
+      "A user is asking for a 30-day trial period.",
+      "A user likes the analytics interface."
+     ],
+     [
+      "Concerns about Reddit accounts getting banned or shadowbanned due to automation or linking.",
+      "General positive sentiment and excitement for the product's usefulness and problem-solving capabilities.",
+      "Questions about the 'warmup' feature for new Reddit accounts.",
+      "Questions about the impact of Reddit's policy changes on authenticated accounts.",
+      "Questions about the percentage of drafted replies users approve without editing.",
+      "Request for a 30-day trial period.",
+      "Concerns about the autoreply feature contributing to 'AI slop' and non-human written replies on Reddit.",
+      "Concerns about targeting niche subreddits or dealing with top commenters."
+     ]
+    ],
+    "complaints": [
+     [
+      "How safe is it? Is there a possibility of my account getting banned?",
+      "How does the warmup feature ensure new accounts don't get shadowbanned when they start dropping links?",
+      "What stops a subreddit from banning the account after the 3rd helpful-looking reply that links back to the product?",
+      "How will something like the autoreply feature does not multiply the AI slop within the reddit community already?",
+      "roughly how many of the drafted replies do users approve without editing",
+      "Is a 30 day trial possible?"
+     ],
+     [
+      "How does the warmup feature ensure new accounts don't get shadowbanned when they start dropping links?",
+      "What stops a subreddit from banning the account after the 3rd helpful-looking reply that links back to the product?",
+      "How safe is it? Is there a possibility of my account getting banned?",
+      "How will something like the autoreply feature does not multiply the AI slop within the reddit community already?",
+      "Is a 30 day trial possible?",
+      "Does it tell you which subreddits are even worth targeting before you pay the $99?"
+     ],
+     [
+      "How does the product prevent Reddit accounts from getting banned or shadowbanned, especially with automation or link dropping?",
+      "How long does the warm-up process take before replies are sent out?",
+      "Is a 30-day trial possible?",
+      "How does the autoreply feature avoid contributing to AI-generated 'slop' on Reddit?",
+      "What if the target subreddit has low activity or high competition from top commenters?",
+      "Will the product be affected by Reddit's requirement for all access to come from authenticated accounts?"
+     ]
+    ]
+   }
+  },
+  "1307253": {
+   "themes": [
+    {
+     "theme": "Users are nervous about AI agents promising prices and want to cap price ranges.",
+     "n": 2
+    },
+    {
+     "theme": "Users want to know if agents can handle multi-language sites and reply in the visitor's language.",
+     "n": 1
+    },
+    {
+     "theme": "The 'approve-before-it-goes-live' step is a key selling point for users concerned about bots going rogue.",
+     "n": 1
+    },
+    {
+     "theme": "Users want to know if the agent automatically updates when a page on their site changes.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking whether most teams start with quotes or meeting booking for their first agent.",
+     "n": 1
+    },
+    {
+     "theme": "Existing users are happy with Webless and glad to see it on Product Hunt.",
+     "n": 1
+    },
+    {
+     "theme": "Users are concerned about how to catch AI filling in gaps not explicitly stated on the site, especially regarding pricing edge cases.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Price capping for agent quotes",
+    "Handling of multilingual sites",
+    "Identifying source of information and handling gaps",
+    "Automatic updates for site content changes"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are nervous about AI agents promising prices and want to cap price ranges.",
+      "Users want to know if agents can handle multi-language sites and reply in the visitor's language.",
+      "Users are concerned about how to catch AI filling in gaps not explicitly stated on the site, especially regarding pricing edge cases.",
+      "The 'approve-before-it-goes-live' step is a key selling point for users concerned about bots going rogue.",
+      "Users want to know if the agent automatically updates when a page on their site changes.",
+      "Users are asking whether most teams start with quotes or meeting booking for their first agent.",
+      "Existing users are happy with Webless and glad to see it on Product Hunt."
+     ],
+     [
+      "Users are nervous about AI promising prices and want to cap price ranges the agent is allowed to quote.",
+      "Users want to know how the agent handles sites published in multiple languages and if it can reply in the visitor's language.",
+      "Users are asking if the agent automatically picks up changes on a website page.",
+      "Users are asking if most teams start with quotes or meeting booking for their first agent.",
+      "Users are concerned about catching gaps or edge cases in pricing when reviewing instructions, and want to know if they can see the source page for each instruction.",
+      "Users appreciate the 'approve-before-it-goes-live' step as it helps prevent bots from going rogue on pricing pages.",
+      "Users are happy with Webless and glad to see it on Product Hunt."
+     ],
+     [
+      "Users are nervous about AI agents promising prices and want to cap price ranges.",
+      "Users want to know how to review and trust AI-generated instructions, especially regarding pricing edge cases and source attribution.",
+      "The 'approve-before-it-goes-live' step is a key selling point for users concerned about AI bots going rogue.",
+      "Users are asking about common starting points for agent deployment, such as quotes or meeting bookings.",
+      "Users want to know if the agent can handle multilingual sites and respond in the visitor's language.",
+      "Existing users are happy with the product and glad to see it on Product Hunt.",
+      "Users are asking if the agent automatically updates when website content changes."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can you cap the price ranges the agent is allowed to quote?",
+      "If Webless writes the instructions from my site content, how do I catch the places where it fills in a gap my site doesn't actually spell out?",
+      "Is there a way to see which source page each instruction came from, or do I have to read every line to trust it?",
+      "Since the agent answers only from your published content, how does it handle sites published in both Arabic and English?",
+      "Can it reply in the visitor's language while grounding answers in the matching-language pages?",
+      "When a page on our site changes, does the agent pick it up on its own?"
+     ],
+     [
+      "Can you cap the price ranges the agent is allowed to quote?",
+      "How does it handle sites published in both Arabic and English? Can it reply in the visitor's language while grounding answers in the matching-language pages?",
+      "If Webless writes the instructions from my site content, how do I catch the places where it fills in a gap my site doesn't actually spell out \u2014 a pricing edge case, say? Is there a way to see which source page each instruction came from, or do I have to read every line to trust it?",
+      "When a page on our site changes, does the agent pick it up on its own?"
+     ],
+     [
+      "Can you cap the price ranges the agent is allowed to quote?",
+      "How does it handle sites published in both Arabic and English? Can it reply in the visitor's language while grounding answers in the matching-language pages?",
+      "If Webless writes the instructions from my site content, how do I catch the places where it fills in a gap my site doesn't actually spell out \u2014 a pricing edge case, say? Is there a way to see which source page each instruction came from, or do I have to read every line to trust it?",
+      "When a page on our site changes, does the agent pick it up on its own?"
+     ]
+    ]
+   }
+  },
+  "1306148": {
+   "themes": [
+    {
+     "theme": "Creating playable stories without a game engine",
+     "n": 5
+    },
+    {
+     "theme": "Reviewing and editing alternate dialogue/scenes",
+     "n": 2
+    },
+    {
+     "theme": "Replaying specific decisions or parts of a story",
+     "n": 2
+    },
+    {
+     "theme": "Positive sentiment and congratulations",
+     "n": 3
+    },
+    {
+     "theme": "Time commitment for new users to create a story",
+     "n": 1
+    },
+    {
+     "theme": "Maintaining storyline coherence in branching narratives",
+     "n": 1
+    },
+    {
+     "theme": "Using own voice clips for characters",
+     "n": 1
+    },
+    {
+     "theme": "Company's plans for investment",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Storyline coherence with branching choices",
+    "Reviewing alternate dialogue before video generation",
+    "Replaying decisions or chapters",
+    "Testing specific branches/scenes",
+    "Using custom voice clips",
+    "Hand-tuning/tweaking generated content"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the idea of creating playable stories and interactive experiences without needing a game engine.",
+      "Users are asking about the ability to review and edit alternate dialogue or scenes before final generation.",
+      "Users are asking about the ability to replay specific decisions or parts of a story.",
+      "Users generally express positive sentiment, congratulations, and excitement for the product.",
+      "Users are asking about the time commitment for new users to create a story.",
+      "Users are concerned about maintaining storyline coherence in branching narratives.",
+      "Users are interested in the ability to use their own voice clips for characters.",
+      "Users are asking about the company's plans for investment."
+     ],
+     [
+      "Users appreciate the idea of creating playable stories and interactive experiences without needing a game engine.",
+      "Users have questions about specific functionalities related to reviewing and replaying content.",
+      "Users are interested in customizing character voices with their own audio clips.",
+      "Users are concerned about maintaining storyline coherence in branching narratives.",
+      "Users generally express positive sentiment and congratulations on the launch.",
+      "Users are curious about the time commitment for new users to create a story.",
+      "Users are asking about the company's plans for investment.",
+      "Users are concerned about the potential size or complexity of the generated content."
+     ],
+     [
+      "The product allows for playable stories without needing a game engine, which is a nice idea.",
+      "The idea of turning stories into something people can actually play, rather than just watch, is really liked, especially the branching storylines.",
+      "The product makes the overall experience easier and more seamless without adding additional complexity.",
+      "The ability to preview an alternate scene on its own and then watch it again in the player to see if the cut feels right is liked.",
+      "The product is amazing and handy for testing new game ideas before making the real thing.",
+      "Can a viewer replay one decision from a chapter, or do they need to start the whole chapter over?",
+      "How long does a first story usually take for someone who has never touched a game before?",
+      "Can alternate dialogue be reviewed before generating the video to check if it still sounds like the character?"
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you keep a storyline coherent once a player's choices fork it 4 or 5 times?",
+      "Can I review the alternate dialogue before generating the video?",
+      "Can a viewer replay one decision from a chapter, or do they rheed to start the whole chapter over?",
+      "I want to know if I can run through a branch from a specific point on the canvas when I\u2019m checking one scene.",
+      "I wonder if I can put my own voice clips in the game for the characters to talk with.",
+      "How much hand-tuning you get once the agent builds a moment \u2014 can you tweak something lik"
+     ],
+     [
+      "How do you keep a storyline coherent once a player's choices fork it 4 or 5 times?",
+      "Can I review the alternate dialogue before generating the video?",
+      "Can a viewer replay one decision from a chapter, or do they need to start the whole chapter over?",
+      "I want to know if I can run through a branch from a specific point on the canvas when I\u2019m checking one scene.",
+      "I wonder if I can put my own voice clips in the game for the characters to talk with.",
+      "How much hand-tuning you get once the agent builds a moment \u2014 can you tweak something like this?"
+     ],
+     [
+      "Can I review the alternate dialogue before generating the video?",
+      "Can a viewer replay one decision from a chapter, or do they need to start the whole chapter over?",
+      "How do you keep a storyline coherent once a player's choices fork it 4 or 5 times?",
+      "I wonder if I can put my own voice clips in the game for the characters to talk with.",
+      "I want to know if I can run through a branch from a specific point on the canvas when I\u2019m checking one scene.",
+      "How much hand-tuning do you get once the agent builds a moment \u2014 can you tweak something?"
+     ]
+    ]
+   }
+  },
+  "1325452": {
+   "themes": [
+    {
+     "theme": "AI context without copy-pasting",
+     "n": 2
+    },
+    {
+     "theme": "Concern about old saves if page is gone",
+     "n": 1
+    },
+    {
+     "theme": "Request for Windows version",
+     "n": 1
+    },
+    {
+     "theme": "Appreciation for Mac commitment (native Swift, local semantic search)",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to existing tools and differentiation",
+     "n": 1
+    },
+    {
+     "theme": "Deduplication handling as library grows",
+     "n": 1
+    },
+    {
+     "theme": "Value of semantic search",
+     "n": 1
+    },
+    {
+     "theme": "PDF compatibility and semantic search",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Value proposition / switching incentive",
+    "Deduplication strategy",
+    "PDF compatibility",
+    "Handling of broken links / offline content",
+    "Windows version availability"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to provide context to AI (MCP) without copy-pasting is a significant improvement.",
+      "Users are concerned about the fate of old saves if the page is gone.",
+      "Users are asking for a Windows version of the product.",
+      "The Electron to native Swift rebuild and local semantic search/Similar Vibe are appreciated commitments to the Mac.",
+      "Users are comparing the product to existing tools like Obsidian and Raindrop and asking for differentiation.",
+      "Users are curious about how deduplication is handled as the library grows.",
+      "Semantic search is seen as a perfect solution for finding items by remembered content.",
+      "Users are curious about how well the product works with PDFs."
+     ],
+     [
+      "The ability to provide context to AI (MCP) without copy-pasting is a significant improvement.",
+      "Users are concerned about the fate of old saves if the page is gone.",
+      "Users are asking for a Windows version of the product.",
+      "The Electron to native Swift rebuild and local semantic search/Similar Vibe are appreciated commitments to the Mac.",
+      "Users are comparing the product to existing tools like Obsidian and Raindrop and asking for differentiation.",
+      "Users are curious about how deduplication is handled as the library grows.",
+      "Semantic search is seen as a perfect solution for finding items by remembered content.",
+      "Users are curious about how well the product works with PDFs."
+     ],
+     [
+      "Users are interested in a Windows version of the application.",
+      "The ability to provide context to AI chats (MCP) without constant copy-pasting is highly valued.",
+      "Users are concerned about the handling of old saves if a page is no longer available.",
+      "The commitment to Mac with a native Swift rebuild and local semantic search/Similar Vibe is appreciated.",
+      "Users are comparing the product to existing tools like Obsidian and Raindrop and questioning its unique value proposition.",
+      "Users are curious about how the tool handles deduplication as the personal context library grows.",
+      "Semantic search is seen as a valuable feature for finding saved items, especially for academic papers.",
+      "Users want to know how well the semantic search works with PDF documents."
+     ]
+    ],
+    "complaints": [
+     [
+      "What does Resurf do that makes someone switch instead of just adding another place to save things?",
+      "Curious about how you're handling deduplication as the library grows - that's usually where these tools hit friction.",
+      "Curious how well it works with PDFs, since most of my reading is PDFs and not plain notes.",
+      "What happens with old saves once the page is gone, does it keep a copy or just the link?",
+      "Any plans for Windows at some point? Would love to try it but I'm not on a Mac."
+     ],
+     [
+      "What happens with old saves once the page is gone, does it keep a copy or just the link?",
+      "Are there any plans for Windows at some point?",
+      "What does Resurf do that makes someone switch instead of just adding another place to save things?",
+      "How are you handling deduplication as the library grows?",
+      "How well does it work with PDFs?"
+     ],
+     [
+      "What does Resurf do that makes someone switch instead of just adding another place to save things?",
+      "Curious about how you're handling deduplication as the library grows - that's usually where these tools hit friction.",
+      "Curious how well it works with PDFs, since most of my reading is PDFs and not plain notes.",
+      "What happens with old saves once the page is gone, does it keep a copy or just the link?",
+      "Any plans for Windows at some point? Would love to try it but I'm not on a Mac."
+     ]
+    ]
+   }
+  },
+  "1325665": {
+   "themes": [
+    {
+     "theme": "Visibility into AI process and action approval",
+     "n": 4
+    },
+    {
+     "theme": "User-friendly and polished interface",
+     "n": 1
+    },
+    {
+     "theme": "Separation of concerns with specialist bots",
+     "n": 2
+    },
+    {
+     "theme": "Concern about cost of operations with own API key",
+     "n": 1
+    },
+    {
+     "theme": "How routines function offline/local-first",
+     "n": 1
+    },
+    {
+     "theme": "Approval process for Telegram actions",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to alternatives",
+     "n": 2
+    },
+    {
+     "theme": "Connectivity to local MCP servers on macOS",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Cost visibility and approval for actions, especially with own API key",
+    "How routines run when the computer is off (local-first approach)",
+    "Telegram integration requiring approval before action",
+    "Connectivity to local MCP servers on macOS vs. built-in connectors",
+    "Draft revision process after critic rejection",
+    "Need to see researcher's sources/active work for trust"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the visibility into the AI's process and the ability to approve actions before they are executed.",
+      "Users find the interface user-friendly, polished, and feature-rich.",
+      "Users like the separation of concerns among specialist bots, mirroring human team workflows.",
+      "Users are concerned about the cost of operations when using their own API key.",
+      "Users want to know how routines function when the computer is offline, especially with local-first operation.",
+      "Users are asking about the approval process for actions initiated via Telegram.",
+      "Users are comparing the product to alternatives like Buzz, OpenBot, and Nod.",
+      "Users are asking about connectivity to local MCP servers on macOS."
+     ],
+     [
+      "Users appreciate the visibility into the workflow of individual bots and the ability to approve actions before they are executed.",
+      "The separation of concerns with specialist bots handling different parts of the workflow is excellent.",
+      "The interface is user-friendly, polished, and has expected features.",
+      "Users appreciate the local-first approach where chats, files, and keys stay on the computer.",
+      "Users are concerned about the lack of cost information before approving actions.",
+      "Users want to know how the Telegram integration and routines work, especially regarding local-first operation and approval prompts.",
+      "Users are asking about connectivity to local MCP servers on macOS.",
+      "Users are comparing the product to alternatives like Buzz from Block, OpenBot, and Nod."
+     ],
+     [
+      "Users appreciate the visibility into the AI's process and the ability to approve actions before they are executed.",
+      "The user interface is described as user-friendly and polished, with easily accessible options.",
+      "The separation of concerns among specialist bots (researcher, writer, critic) is seen as an excellent approach.",
+      "Users are concerned about the cost of operations when using their own API key.",
+      "Users want to know how routines function when the computer is offline, especially with local-first processing.",
+      "Users are asking about the approval process for actions initiated via Telegram.",
+      "Users are comparing the product to alternatives like Buzz from Block, OpenBot, and Nod.",
+      "Users are asking about connectivity to local MCP servers on macOS."
+     ]
+    ],
+    "complaints": [
+     [
+      "I need to see the cost before I approve an action, especially when using my own API key.",
+      "How do routines continue to run if the computer is off, given the local-first approach?",
+      "Does the Telegram integration also require approval before any action is taken?",
+      "Can this connect to local MCP servers on macOS, or is it limited to built-in connectors?",
+      "When the critic rejects a draft, does the writer revise it, or does it come back to me?",
+      "How does this product compare to Buzz from Block?"
+     ],
+     [
+      "I need to know the cost before I approve an action, especially when using my own API key.",
+      "How do routines continue to run if the computer is off, given the local-first approach?",
+      "Does the Telegram integration also require approval before any action is taken?",
+      "Can this connect to local MCP servers on macOS, or is it limited to built-in connectors?",
+      "When the critic rejects a draft, does the writer revise it, or does it come back to me for revision?",
+      "I need to see the researcher actively working with its sources to trust the results."
+     ],
+     [
+      "I need to see the cost before I approve an action, especially when using my own API key.",
+      "How do routines continue to run if the computer is off, given the local-first approach?",
+      "Does the Telegram integration also require approval before any action is taken?",
+      "Can this connect to local MCP servers on macOS, or is it limited to built-in connectors?",
+      "When the critic rejects a draft, does the writer revise it, or does it return to me for revision?",
+      "I need to see the researcher's sources to trust the results, as I currently have to take the answers on faith."
+     ]
+    ]
+   }
+  }
+ }
+}

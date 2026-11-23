@@ -1,0 +1,103 @@
+{
+ "days": [
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20",
+  "2026-11-21",
+  "2026-11-22"
+ ],
+ "min_held_backers_per_launch": 20,
+ "coverage": {
+  "2026-11-17": {
+   "observed_held_people": 2127,
+   "held_backer_rows": 1211,
+   "cut": "2026-11-17"
+  },
+  "2026-11-18": {
+   "observed_held_people": 2083,
+   "held_backer_rows": 1079,
+   "cut": "2026-11-18"
+  },
+  "2026-11-19": {
+   "observed_held_people": 2068,
+   "held_backer_rows": 1100,
+   "cut": "2026-11-19"
+  },
+  "2026-11-20": {
+   "observed_held_people": 1774,
+   "held_backer_rows": 826,
+   "cut": "2026-11-20"
+  },
+  "2026-11-21": {
+   "observed_held_people": 567,
+   "held_backer_rows": 368,
+   "cut": "2026-11-21"
+  },
+  "2026-11-22": {
+   "observed_held_people": 0,
+   "held_backer_rows": 0,
+   "cut": "2026-11-22"
+  }
+ },
+ "launches_scored": 54,
+ "JSD base (shadow)": [
+  0.262,
+  0.239,
+  0.306,
+  54,
+  5
+ ],
+ "JSD P3 (published)": [
+  0.284,
+  0.259,
+  0.325,
+  54,
+  5
+ ],
+ "P3 minus base (paired)": [
+  0.022,
+  0.018,
+  0.028,
+  54,
+  5
+ ],
+ "per_day": [
+  {
+   "day": "2026-11-17",
+   "launches": 12,
+   "backers": 876,
+   "jsd_base": 0.248,
+   "jsd_p3": 0.278
+  },
+  {
+   "day": "2026-11-18",
+   "launches": 13,
+   "backers": 738,
+   "jsd_base": 0.223,
+   "jsd_p3": 0.243
+  },
+  {
+   "day": "2026-11-19",
+   "launches": 14,
+   "backers": 836,
+   "jsd_base": 0.251,
+   "jsd_p3": 0.267
+  },
+  {
+   "day": "2026-11-20",
+   "launches": 10,
+   "backers": 455,
+   "jsd_base": 0.293,
+   "jsd_p3": 0.312
+  },
+  {
+   "day": "2026-11-21",
+   "launches": 5,
+   "backers": 205,
+   "jsd_base": 0.365,
+   "jsd_p3": 0.399
+  }
+ ],
+ "note": "[mean, day-bootstrap 2.5%, 97.5%, launches, days]; real mix = held complete backers re-read after close; target JSD <= 0.10"
+}

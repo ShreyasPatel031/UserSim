@@ -1,0 +1,215 @@
+{
+ "scorecard": "cohort",
+ "day": "2026-11-22",
+ "version": "v1",
+ "written_at": "2026-11-23",
+ "WHO": {
+  "status": "NOT SCORABLE YET (0 held people re-read after the Nov 22 close)",
+  "pooled_Nov17_21": {
+   "P3 (published) vs base (shadow), Nov 17-21 pooled": {
+    "launches (>= 20 held re-read backers)": 54,
+    "JSD base": [
+     0.262,
+     0.239,
+     0.306,
+     54,
+     5
+    ],
+    "JSD P3": [
+     0.284,
+     0.259,
+     0.325,
+     54,
+     5
+    ],
+    "P3 minus base (paired)": [
+     0.022,
+     0.018,
+     0.028,
+     54,
+     5
+    ]
+   },
+   "coverage": {
+    "2026-11-17": {
+     "observed_held_people": 2127,
+     "held_backer_rows": 1211,
+     "cut": "2026-11-17"
+    },
+    "2026-11-18": {
+     "observed_held_people": 2083,
+     "held_backer_rows": 1079,
+     "cut": "2026-11-18"
+    },
+    "2026-11-19": {
+     "observed_held_people": 2068,
+     "held_backer_rows": 1100,
+     "cut": "2026-11-19"
+    },
+    "2026-11-20": {
+     "observed_held_people": 1774,
+     "held_backer_rows": 826,
+     "cut": "2026-11-20"
+    },
+    "2026-11-21": {
+     "observed_held_people": 567,
+     "held_backer_rows": 368,
+     "cut": "2026-11-21"
+    },
+    "2026-11-22": {
+     "observed_held_people": 0,
+     "held_backer_rows": 0,
+     "cut": "2026-11-22"
+    }
+   },
+   "per_day": [
+    {
+     "day": "2026-11-17",
+     "launches": 12,
+     "backers": 876,
+     "jsd_base": 0.248,
+     "jsd_p3": 0.278
+    },
+    {
+     "day": "2026-11-18",
+     "launches": 13,
+     "backers": 738,
+     "jsd_base": 0.223,
+     "jsd_p3": 0.243
+    },
+    {
+     "day": "2026-11-19",
+     "launches": 14,
+     "backers": 836,
+     "jsd_base": 0.251,
+     "jsd_p3": 0.267
+    },
+    {
+     "day": "2026-11-20",
+     "launches": 10,
+     "backers": 455,
+     "jsd_base": 0.293,
+     "jsd_p3": 0.312
+    },
+    {
+     "day": "2026-11-21",
+     "launches": 5,
+     "backers": 205,
+     "jsd_base": 0.365,
+     "jsd_p3": 0.399
+    }
+   ],
+   "vote likelihood Nov 8-21": {
+    "rows": 764112,
+    "votes": 19773,
+    "raw_p": {
+     "brier": 0.024354289763158808,
+     "logloss": 0.12079467013228537,
+     "slope_observed_on_predicted": 1.335
+    },
+    "isotonic_oos": {
+     "brier": 0.02529790425825544,
+     "logloss": 0.11168618936295385,
+     "slope_observed_on_predicted": 0.66
+    },
+    "constant_oos": {
+     "brier": 0.02549330093456905,
+     "logloss": 0.1216194615556972
+    },
+    "isotonic minus constant": {
+     "brier": [
+      -0.0002,
+      -0.00153,
+      0.0019
+     ],
+     "logloss": [
+      -0.00993,
+      -0.01762,
+      -0.00058
+     ]
+    }
+   },
+   "caveat": "real mix comes from the held people re-read after each close (567-1.9k people), a selected, mostly active subset; held backers on these days fall in 2 groups almost only"
+  }
+ },
+ "WHAT": {
+  "themes (frozen consensus truth, 3 judge runs)": {
+   "launches": 5,
+   "panel recall": [
+    66.2,
+    60.0,
+    76.3
+   ],
+   "panel recall_w (beside)": [
+    72.0,
+    62.5,
+    83.3
+   ],
+   "panel precision": [
+    40.0,
+    30.0,
+    56.7
+   ],
+   "panel complaint recall": [
+    21.2,
+    2.2,
+    49.0
+   ],
+   "plain recall": [
+    62.9,
+    50.5,
+    80.5
+   ],
+   "plain precision": [
+    36.2,
+    24.4,
+    50.1
+   ],
+   "plain complaint recall": [
+    21.2,
+    6.1,
+    39.4
+   ],
+   "judge spread": {
+    "recall": 7.9,
+    "recall_w": 9.4,
+    "precision": 12.8,
+    "complaint_recall": 3.3,
+    "plain_recall": 8.2,
+    "plain_recall_w": 10.9,
+    "plain_precision": 5.0,
+    "plain_complaint_recall": 23.3
+   }
+  },
+  "sentiment (reactions only)": {
+   "day": "2026-11-22",
+   "launches": 5,
+   "base mix (earlier real labels)": [
+    0.522,
+    0.409,
+    0.069
+   ],
+   "jsd reactions": 0.171,
+   "jsd base (published line)": 0.228,
+   "reactions minus base [mean, launch-boot 95%]": [
+    -0.057,
+    -0.128,
+    -0.009
+   ],
+   "agree reactions / base": [
+    0.4,
+    0.8
+   ],
+   "pos share reactions / real": [
+    0.467,
+    0.509
+   ],
+   "sources not scorable today": {
+    "(a) ~20 P3-persona reactions": "not generated in the nightly yet",
+    "(b) plugin in-product feedback": "plugin_runs/2026-11-21_personas.json holds outcomes only (gave_up/blocked/...), no feedback text"
+   },
+   "usd": 0.0027
+  }
+ },
+ "note": "[mean, 95% launch bootstrap] within one day (5 launches: wide)"
+}
