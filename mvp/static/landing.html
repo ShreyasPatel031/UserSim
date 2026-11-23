@@ -706,9 +706,9 @@ function getExpl(day){
   if(!EXPLS.has(day)) EXPLS.set(day, getJSON("/api/ph/explain?day=" + encodeURIComponent(day)).catch(()=>{ EXPLS.delete(day); return {launches: {}}; }));
   return EXPLS.get(day);
 }
-function prefetchAround(){   // the arrows' neighbours, so a click shows instantly
+function prefetchAround(){   // the next days an arrow can reach (3 back, 1 forward), so a click shows instantly
   const d = VIEW.days || [], i = d.indexOf(VIEW.day);
-  [d[i+1], d[i-1]].filter(Boolean).forEach(x=>{ getDay(x).catch(()=>{}); getExpl(x); });
+  [d[i+1], d[i-1], d[i+2], d[i+3]].filter(Boolean).forEach((x, k)=>setTimeout(()=>{ getDay(x).catch(()=>{}); getExpl(x); }, k * 150));
 }
 async function load(day){
   let v;
@@ -728,7 +728,7 @@ async function load(day){
   $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
   renderPred(); metric(); renderLive(); drawLinks();
   loadExplain(VIEW.day);
-  setTimeout(prefetchAround, 300);
+  prefetchAround();
 }
 
 // Click a launch -> who votes / what they will say / competitors / why (E5 explain file; blocks may be missing).

@@ -48,7 +48,10 @@ def _json(data, max_age: int = 60, cdn: int | None = None) -> JSONResponse:
     cc = f"public, max-age={max_age}"
     if cdn:   # let Vercel's edge keep it too, and serve the old copy while it refreshes
         cc += f", s-maxage={cdn}, stale-while-revalidate={cdn * 24}"
-    return JSONResponse(data, headers={"Cache-Control": cc})
+    headers = {"Cache-Control": cc}
+    if cdn:   # Vercel's edge reads this one first
+        headers["Vercel-CDN-Cache-Control"] = f"max-age={cdn}, stale-while-revalidate={cdn * 24}"
+    return JSONResponse(data, headers=headers)
 
 
 def _past_day(d: str) -> bool:
