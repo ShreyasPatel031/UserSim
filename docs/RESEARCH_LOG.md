@@ -2764,3 +2764,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-23 13:35Z hourly; board live (13:34Z, 31/31); fleet complete 0/min, stacks_tab_reads_ok false, refresh 6.2/min; only automated check-ins; hourly wake repeated. Mailbox checked 13:35Z.
 - 2026-11-23 14:35Z hourly; board live (14:33Z, 31/31); fleet stacks_tab_reads_ok TRUE again (14:32Z), complete 0.07/min starting, refresh 4.8/min; store_v3 27 h old (disk, waits on Shreyas). Mailbox checked 14:35Z.
 - 2026-11-23 15:35Z hourly; board live (15:34Z, 31/31); fleet 15:32Z: stacks false again, complete 0, upvote refresh 0/min (new); wake sent. Mailbox checked 15:35Z.
+- 2026-11-23 16:36Z hourly; board live (16:34Z, 31/31); fleet 16:33Z stacks true again, refresh 2.2/min (back from 0), complete 0.07/min; hourly wake (re-reads, comments, need-list). Mailbox checked 16:36Z.
