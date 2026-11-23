@@ -95,3 +95,18 @@ Model switches, direction reviews and agenda changes, newest last.
   | promo_posts | 1 (1) | 100 / 60 / 50 | 0.322 | – | – | – | – | keep (1 day; decision stays at 25) |
   | Grok X-buzz top 10 | 8 (6) | 20.8 / 30.0 / 51.2 | – | −27.8 [−55.6, +0.0] | −36.7 [−46.7, −26.7] | −15.0 [−28.3, −1.7] | – | drop |
   - No line is better than arm3 with its interval clear of zero. Days to clear zero at the observed effect: arm2 top 3 needs 8 days (6 so far); LM top 3 needs 20.
+- 2026-11-23 ~10:45 UTC: PH-MISS1, anatomy of the 00:05 top-3 misses, Nov 10–22 (orchestrator 09:51Z Nov 23). Script experiments/ph_predict/miss_anatomy_fwd.py; output results/miss_anatomy_v1.json. (The older miss_anatomy.py, 239-day backtest, is unchanged.)
+  - Forecast: frozen 00:05 parquets. Arm3 Nov 17–22, arm2 Nov 15–16, launch model `pred` Nov 10–14 (arm2 not yet filled). Truth: truth_daily.
+  - 13 days, 39 true-top-3 slots: 21 hits (53.8%), 18 misses. 11 of the 18 misses sat at model rank 4–6.
+  - Each miss gets the first cause that matches, in the orchestrator's order. Shares use a 95% day bootstrap (10,000 draws). Oracle = fixing every miss of that cause.
+
+  | cause | misses | share of misses [95% CI] | oracle top-3 pts [95% CI] | data |
+  |---|---|---|---|---|
+  | (a) featured after the forecast | 0 | 0.0 | 0.0 | all 13 days |
+  | (b) team network unseen (no complete team member and no complete follower) | 0 | 0.0 | 0.0 | Nov 14–22 (leak-free store copies; none before Nov 13 14:35Z) |
+  | (c) votes from people we don't hold (E5 who_backs split: bottom third of the day's held-voter share) | 0 | 0.0 | 0.0 | Nov 10–21 (Nov 22 voters not yet in the store) |
+  | (d) inputs right, model under-weighted (leave-day-out 15-NN on the 5 inputs frozen in the parquet puts it in the day's top 3) | 7 | 38.9 [12.5, 65.0] | 17.9 [5.1, 33.3] | all 13 days |
+  | (e) unexplained | 11 | 61.1 [35.0, 87.5] | 28.2 [15.4, 43.6] | – |
+  - Context: 7 of the 13 misses with store data had no complete team member, but all had held followers (52 to 16,293). The team-held test found no effect.
+  - (d) uses only the 5 inputs frozen in the parquet; arm3 uses 40. It is a lower bound on under-weighting.
+  - Leak checks: forecasts, line-ups and team/follower inputs are frozen pre-00:05 files written before 03:45 PT. The newest store and truth label causes only.
