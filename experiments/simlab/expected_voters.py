@@ -28,6 +28,13 @@ W["votes"] = pd.to_numeric(W.votes, errors="coerce"); U["lday"] = U.target_id.ma
 
 
 def arms(day):
+    # published backer list (BACKER-v2 passed rule 5, Nov 23): the walk-forward logistic list tmp/e5/private/backer_pred_v2/<day>.parquet;
+    # the CF-only arm is the shadow and the fallback for days without a v2 list. BACKER_LIST=cf forces the old list.
+    if os.environ.get("BACKER_LIST", "v2") == "v2":
+        raw = gcat(f"{B}/tmp/e5/private/backer_pred_v2/{day}.parquet", True)
+        if raw:
+            lp = os.path.join(SP, "bp", f"_v2_{day}.parquet"); open(lp, "wb").write(raw)
+            return pd.read_parquet(lp)[["launch_id", "person_id", "p"]].assign(launch_id=lambda x: x.launch_id.astype(str))
     lp = os.path.join(SP, "bp", f"backer_arms_{day}.parquet")
     if not os.path.exists(lp):
         raw = gcat(f"{B}/tmp/e5/private/backer_arms/{day}.parquet", True)
@@ -117,7 +124,7 @@ print(json.dumps(VAL), flush=True)
 iso, c, k_cov = fit(list(H)); bs = base_share(D); FD = arms(D)
 if FD is None: sys.exit(f"no frozen CF list for {D}")
 FD = FD[FD.person_id.isin(held)]; T = group_table(FD, iso, c, k_cov, bs)
-LABEL = (f"Expected voters by group: the CF-only voter model's per-person probabilities (people we track; reads before 00:00 PT), recalibrated "
+LABEL = (f"Expected voters by group: the published backer list's per-person probabilities (from Nov 23: BACKER-v2 walk-forward logistic on recency-weighted activity, topic match and follows of the team; it beat 'N most active' at naming real backers, +6.8 [+5.7, +7.9] points recall@N over 14 days; the CF-only list is the shadow) (people we track; reads before 00:00 PT), recalibrated "
          f"on {len(H)} earlier scored days (isotonic reliability curve; tail factor {c:.2f} for voters outside each 2,000-person list), summed by "
          f"data-driven group (segments cut {SEGCUT}). 'Expected votes on PH' multiplies by {k_cov:.1f} displayed votes per tracked voter (history median; approximate). "
          f"Leave-one-day-out check: observed/predicted {VAL['observed / predicted total']}, group-count correlation {VAL['count correlation']}; "

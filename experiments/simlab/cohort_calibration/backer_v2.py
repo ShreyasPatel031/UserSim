@@ -18,9 +18,9 @@ W["rank"] = pd.to_numeric(W.daily_rank, errors="coerce"); LD = dict(zip(W.id, W.
 TOP = {i: (json.loads(t) if isinstance(t, str) and t.startswith("[") else []) for i, t in zip(W.id, W.topics)}
 U["lday"] = U.target_id.map(LD); U = U.dropna(subset=["lday"]); first = U.groupby("person_id").ft.min(); last = U.groupby("person_id").ft.max()
 TIX = {t: k for k, t in enumerate(sorted({t for v in TOP.values() for t in v}))}
-def day_table(D):
+def day_table(D, score_all=False):
     close = PP.close_utc(D); start = close - pd.Timedelta(days=1); Dt = pd.Timestamp(D)
-    pop = sorted(p for p in COMPLETE if first.get(p, close) < start and last.get(p, start) > close)
+    pop = sorted(p for p in COMPLETE if first.get(p, close) < start and (score_all or last.get(p, start) > close))
     if not pop: return None
     pix = {p: k for k, p in enumerate(pop)}; n = len(pop)
     H = U[(U.ft < start) & (U.lday < D) & U.person_id.isin(pix)]
@@ -49,6 +49,7 @@ def day_table(D):
             if p in pix: cf[pix[p]] = v
         out.append({"lid": l, "y": y, "X": np.column_stack([np.log1p(rw), tm, f, np.log1p(rw) * tm]), "n30": n30, "n7": n7, "cf": cf})
     return {"D": D, "n": n, "launches": out, "has_cf": bool(CF)}
+if os.environ.get("BV2_LIB"): raise SystemExit
 days = [str(d.date()) for d in pd.date_range(TR0, T1)]; tests = [d for d in days if d >= T0]
 TAB = {}
 for D in days:
