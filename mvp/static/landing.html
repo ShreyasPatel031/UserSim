@@ -691,9 +691,28 @@ function failed(sel, what, e){
   $(sel).innerHTML = `<li class="skeleton">Couldn't load ${esc(what)} (${esc(e.message)}). <a href="#" onclick="location.reload();return false">Retry</a></li>`;
 }
 
+// Days already fetched, kept in this tab: past days don't change, today is refetched after a minute.
+const DAYS = new Map(), EXPLS = new Map();
+const dayURL = (day)=>"/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "");
+function getDay(day){
+  const k = day || "", hit = DAYS.get(k);
+  if(hit && (hit.past || Date.now() - hit.t < 60000)) return hit.p;
+  const p = getJSON(dayURL(day)).then(v=>{ const e = {p: Promise.resolve(v), t: Date.now(), past: !!(v.today && v.day < v.today)};
+    DAYS.set(k, e); if(v.day && v.day !== k) DAYS.set(v.day, e); return v; }).catch(err=>{ DAYS.delete(k); throw err; });
+  DAYS.set(k, {p, t: Date.now(), past: false});
+  return p;
+}
+function getExpl(day){
+  if(!EXPLS.has(day)) EXPLS.set(day, getJSON("/api/ph/explain?day=" + encodeURIComponent(day)).catch(()=>{ EXPLS.delete(day); return {launches: {}}; }));
+  return EXPLS.get(day);
+}
+function prefetchAround(){   // the arrows' neighbours, so a click shows instantly
+  const d = VIEW.days || [], i = d.indexOf(VIEW.day);
+  [d[i+1], d[i-1]].filter(Boolean).forEach(x=>{ getDay(x).catch(()=>{}); getExpl(x); });
+}
 async function load(day){
   let v;
-  try { v = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
+  try { v = await getDay(day); }
   catch(e){
     if(VIEW && (!day || day === VIEW.day)){        // keep the last rendered board; say how old it is
       const at = VIEW.board && VIEW.board.as_of;
@@ -709,13 +728,14 @@ async function load(day){
   $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
   renderPred(); metric(); renderLive(); drawLinks();
   loadExplain(VIEW.day);
+  setTimeout(prefetchAround, 300);
 }
 
 // Click a launch -> who votes / what they will say / competitors / why (E5 explain file; blocks may be missing).
 let EXPL = {launches: {}}, EXPL_DAY = null, EXPL_ID = null;
 async function loadExplain(day){
   if(EXPL_DAY === day && day === VIEW.day && Object.keys(EXPL.launches).length) { markExplain(); return; }
-  try { EXPL = await getJSON("/api/ph/explain?day=" + encodeURIComponent(day)); EXPL_DAY = day; } catch(e){ EXPL = {launches: {}}; }
+  EXPL = await getExpl(day); EXPL_DAY = day;
   if(day !== VIEW.day) return;
   markExplain();
 }
@@ -1088,7 +1108,11 @@ document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeGrid(); 
 function goDay(step){
   const d = VIEW.days, i = d.indexOf(VIEW.day), j = i + step;
   if(j < 0 || j >= d.length) return;
-  $("#whyp").hidden = true; TAB = null; load(d[j]);
+  $("#whyp").hidden = true; TAB = null;
+  // move the label at once; the board follows (instantly when the day is already fetched)
+  const fmt = new Date(d[j] + "T12:00:00").toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"});
+  $("#day-label").textContent = d[j] === VIEW.today ? `Today · ${fmt}` : fmt;
+  load(d[j]);
 }
 $("#day-prev").onclick = ()=>goDay(1);
 $("#day-next").onclick = ()=>goDay(-1);

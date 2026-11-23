@@ -44,8 +44,23 @@ async def _body(request: Request) -> dict:
     return j
 
 
-def _json(data, max_age: int = 60) -> JSONResponse:
-    return JSONResponse(data, headers={"Cache-Control": f"public, max-age={max_age}"})
+def _json(data, max_age: int = 60, cdn: int | None = None) -> JSONResponse:
+    cc = f"public, max-age={max_age}"
+    if cdn:   # let Vercel's edge keep it too, and serve the old copy while it refreshes
+        cc += f", s-maxage={cdn}, stale-while-revalidate={cdn * 24}"
+    return JSONResponse(data, headers={"Cache-Control": cc})
+
+
+def _past_day(d: str) -> bool:
+    """A Pacific day before yesterday: its board, forecast and explanations no longer change."""
+    from datetime import date, timedelta
+
+    from mvp.ph_site import live
+
+    try:
+        return date.fromisoformat(d) < date.fromisoformat(live.today_pt()) - timedelta(days=1)
+    except Exception:  # noqa: BLE001
+        return False
 
 
 @router.get("/ph")
@@ -115,7 +130,9 @@ async def _ph_today(day: str | None):
         view["input_flag"] = await asyncio.to_thread(live.input_flag, d)
     except Exception:  # noqa: BLE001 - the input warning is optional
         view["input_flag"] = None
-    return _json(view, 60)
+    if _past_day(d):
+        return _json(view, 600, 3600)
+    return _json(view, 30, 30)
 
 
 @router.api_route("/api/ph/cron/snapshot", methods=["GET", "POST"])
@@ -190,7 +207,8 @@ async def ph_explain(day: str = ""):
     try:
         lu = await asyncio.to_thread(live._lineup, d)
         ids = {str(k) for k in lu}
-        return _json(await asyncio.to_thread(live.explain, d, ids) or {"launches": {}}, 120)
+        out = await asyncio.to_thread(live.explain, d, ids) or {"launches": {}}
+        return _json(out, 600, 3600) if _past_day(d) else _json(out, 120, 120)
     except Exception as exc:  # noqa: BLE001 - optional panel, never a blank page
         print(f"[ph] explain failed: {exc!r}", flush=True)
         return _json({"launches": {}}, 30)
