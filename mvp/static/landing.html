@@ -56,6 +56,11 @@ body > .wrap > .note { padding-block: 18px; display: flex; justify-content: spac
   .menu a:not(:last-child) { display: none; }
 }
 
+.proof { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; color: var(--ink); text-decoration: none; align-self: flex-start; padding: 8px 12px 8px 8px; border: 1px solid var(--rule); border-radius: 999px; }
+.proof:hover { border-color: var(--ink); }
+.proof .phlogo { flex: none; display: block; }
+.proof b { font-weight: 600; }
+.proof .arrow { color: var(--soft); }
 .hero .copy { justify-content: center; }
 .board { border-bottom: 1px solid var(--rule); scroll-margin-top: 0; }
 
@@ -70,95 +75,17 @@ html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 @media (max-width: 860px) { .cards { grid-template-columns: minmax(0, 1fr); } .board iframe { height: 90vh; } }
 
+.proof .live { display: inline-flex; align-items: center; gap: 7px; margin: 0 2px; vertical-align: 1px; }
+.proof .live b { font: 600 20px/1.35 var(--sans); color: #1f6b38; font-variant-numeric: tabular-nums; animation: blink 1.6s ease-in-out infinite; }
+.proof .dot { width: 9px; height: 9px; border-radius: 50%; background: #2f8f4e; animation: livepulse 1.8s ease-out infinite; }
 @keyframes livepulse { 0% { box-shadow: 0 0 0 0 rgba(47,143,78,.55); } 80%, 100% { box-shadow: 0 0 0 9px rgba(47,143,78,0); } }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .proof .dot, .proof .live b { animation: none; } }
 .card h3 { display: flex; align-items: center; gap: 8px; }
 .card .logo { flex: none; }
 .card .how { margin: 0; font-size: 13px; color: var(--soft); }
 .connect .hero .lede, .connect .lede { display: flex; align-items: center; gap: 10px; }
 .atel { border-radius: 5px; flex: none; }
-#result { --yes:#1f6b38; --yesbg:color-mix(in srgb,#2f8f4e 14%,var(--paper)); --no:#9a2f1f; --nobg:color-mix(in srgb,#c2412d 10%,var(--paper)); padding-top: 8px; border-bottom: 1px solid var(--rule); scroll-margin-top: 0; }
-#result .pname { font:400 clamp(30px,4vw,48px)/1.1 var(--serif); margin:0; }
-#result .close { display:block; margin:16px 0 0 auto; border:1px solid var(--ink); background:transparent; font:600 13px var(--sans); padding:6px 12px; cursor:pointer; color:var(--ink); }
-#result a{ color:inherit; }
-#result .wrap{ max-width:1120px; margin:0 auto; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); }
-#result .label{ font:400 11px/1.4 var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--soft); }
-#result nav{ display:flex; align-items:center; justify-content:space-between; padding-block:18px; border-bottom:1px solid var(--rule); }
-#result .mark{ display:inline-flex; align-items:center; gap:10px; text-decoration:none; font:400 21px/1 var(--serif); }
-#result .mark img{ width:30px; height:30px; }
-#result .menu{ display:flex; gap:24px; }
-#result .menu a{ text-decoration:none; }
-#result .demo{ margin:16px 0 0; padding:10px 14px; border:1px dashed var(--rule); font-size:14px; color:var(--soft); }
-#result .urlbar{ display:flex; margin-top:28px; border:1px solid var(--ink); max-width:40rem; }
-#result .urlbar input{ flex:1; min-width:0; border:0; background:transparent; font:400 15px var(--sans); padding:12px 14px; color:var(--ink); }
-#result .urlbar span{ background:var(--ink); color:var(--paper); font:600 14px var(--sans); padding:12px 18px; }
-#result .prod{ display:flex; gap:18px; align-items:center; padding-block:28px 8px; }
-#result .prod img{ width:64px; height:64px; border:1px solid var(--rule); }
-#result h1{ font:400 clamp(30px,4vw,48px)/1.1 var(--serif); margin:0; }
-#result .tag{ margin:4px 0 0; color:var(--soft); font-size:17px; }
-#result .outcome{ display:flex; gap:24px; flex-wrap:wrap; padding:14px 0 28px; border-bottom:1px solid var(--rule); font-size:15px; }
-#result .outcome b{ font:600 22px/1.2 var(--sans); display:block; }
-#result section{ padding-block:36px; border-bottom:1px solid var(--rule); }
-#result h2{ font:400 clamp(24px,2.6vw,34px)/1.15 var(--serif); margin:0 0 6px; text-wrap:balance; }
-#result .lede{ margin:0 0 20px; color:var(--soft); max-width:46rem; }
-#result .gb{ display:grid; grid-template-columns:minmax(0,11rem) minmax(0,1fr) 3.2rem 3.6rem; gap:12px; align-items:center; padding:7px 0; }
-#result .gn{ font-weight:600; font-size:15px; }
-#result .track{ position:relative; height:14px; background:color-mix(in srgb,var(--ink) 6%,var(--paper)); }
-#result .fill{ position:absolute; left:0; top:0; bottom:0; background:#b8a98a; }
-#result .fill.hi{ background:#2f8f4e; }
-#result .fill.lo{ background:#c2412d; }
-#result .tick{ position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--ink); }
-#result .gv{ text-align:right; font-variant-numeric:tabular-nums; }
-#result .lift{ text-align:right; font-variant-numeric:tabular-nums; color:var(--soft); }
-#result .lift.hi{ color:var(--yes); font-weight:700; }
-#result .lift.lo{ color:var(--no); font-weight:700; }
-#result .key{ display:flex; gap:18px; flex-wrap:wrap; font-size:13px; color:var(--soft); margin-top:10px; }
-#result .key i{ display:inline-block; width:12px; height:12px; vertical-align:-1px; margin-right:6px; background:#2f8f4e; }
-#result .key i.t{ width:2px; background:var(--ink); }
-#result .two{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
-#result .col h3{ font:600 13px/1.3 var(--sans); letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px; }
-#result .col.yes h3{ color:var(--yes); }
-#result .col.no h3{ color:var(--no); }
-#result .wc{ padding:14px 16px; margin-bottom:12px; border-left:4px solid; }
-#result .wc.yes{ background:var(--yesbg); border-color:#2f8f4e; }
-#result .wc.no{ background:var(--nobg); border-color:#c2412d; }
-#result .wh{ display:flex; flex-direction:column; gap:2px; }
-#result .wh span{ font-size:13px; color:var(--soft); }
-#result .subs{ margin:6px 0 0; font-size:13px; color:var(--soft); }
-#result blockquote{ margin:10px 0 0; font:400 15px/1.5 var(--sans); }
-#result .muted{ margin:10px 0 0; font-size:14px; color:var(--soft); }
-#result .voices{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr)); gap:14px; }
-#result .vc{ border:1px solid var(--rule); padding:14px; display:flex; flex-direction:column; gap:8px; min-width:0; }
-#result .vh{ display:flex; flex-wrap:wrap; gap:4px 8px; align-items:baseline; }
-#result .vh span{ font-size:13px; color:var(--soft); }
-#result .int{ margin-left:auto; font:600 11px/1 var(--sans); text-transform:uppercase; letter-spacing:.06em; font-style:normal; padding:4px 7px; background:var(--yesbg); color:var(--yes); }
-#result .int.medium{ background:color-mix(in srgb,#c99a0b 15%,var(--paper)); color:#8a6a06; }
-#result .int.low{ background:var(--nobg); color:var(--no); }
-#result .vr{ margin:0; }
-#result .vq{ margin:0; font-size:14px; color:var(--soft); }
-#result .vq b{ color:var(--no); font-weight:600; margin-right:4px; }
-#result .comps{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr)); gap:14px; }
-#result .cc{ border:1px solid var(--rule); padding:14px; min-width:0; }
-#result .ch{ display:flex; justify-content:space-between; gap:8px; }
-#result .rk{ font:600 14px var(--sans); }
-#result .meta{ margin:2px 0 8px; font-size:13px; color:var(--soft); }
-#result .cc ul{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:5px; font-size:14px; }
-#result .cc li::before{ font-weight:700; margin-right:6px; }
-#result .cc li.up::before{ content:"+"; color:var(--yes); }
-#result .cc li.dn::before{ content:"–"; color:var(--no); }
-#result .cta{ background:var(--ink); color:var(--paper); padding:clamp(24px,4vw,44px); margin-block:36px; }
-#result .cta h2{ color:var(--paper); }
-#result .cta .lede{ color:color-mix(in srgb,var(--paper) 75%,var(--ink)); }
-#result .cta form{ display:flex; max-width:34rem; border:1px solid var(--paper); }
-#result .cta input{ flex:1; min-width:0; border:0; background:transparent; color:var(--paper); font:400 15px var(--sans); padding:13px 14px; }
-#result .cta input::placeholder{ color:color-mix(in srgb,var(--paper) 60%,var(--ink)); }
-#result .cta button{ border:0; background:var(--paper); color:var(--ink); font:600 14px var(--sans); padding:0 20px; cursor:pointer; }
-#result .cta .done{ margin:12px 0 0; font-size:15px; }
-#result .addto{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
-#result .addto a{ display:inline-flex; align-items:center; gap:8px; border:1px solid color-mix(in srgb,var(--paper) 50%,var(--ink)); color:var(--paper); text-decoration:none; padding:10px 14px; font:600 14px var(--sans); }
-#result .addto a:hover{ border-color:var(--paper); }
-#result footer{ padding-block:20px 40px; font-size:13px; color:var(--soft); }
-#result :focus-visible{ outline:2px solid currentColor; outline-offset:2px; }
 @media (max-width:760px) {#result .two{ grid-template-columns:minmax(0,1fr); }#result .gb{ grid-template-columns:minmax(0,7.5rem) minmax(0,1fr) 2.6rem 3.2rem; gap:8px; }#result .menu a:not(:last-child){ display:none; }}
 
 
@@ -672,8 +599,9 @@ html { scroll-behavior: smooth; }
     <div class="copy">
       <h1>Test your product on simulated users</h1>
       <p class="lede sub">Calibrated daily against real launches</p>
+      <a class="proof" href="#leaderboard"><svg class="phlogo" width="26" height="26" fill="#DA552F" aria-hidden="true" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.801 0-.993-.805-1.799-1.801-1.799zM12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm1.604 14.4h-3.405V18H7.801V6h5.804c2.319 0 4.2 1.88 4.2 4.199 0 2.321-1.881 4.201-4.201 4.201z"/></svg><span>Predicts <span class="live"><span class="dot" aria-hidden="true"></span><b id="pct">70.5%</b></span> of Product Hunt's top 10 launches</span><span class="arrow" aria-hidden="true">&darr;</span></a>
       <form id="sim" action="#" method="get">
-        <input name="url" type="text" placeholder="https://yourproduct.com" aria-label="Product URL" autocomplete="url">
+        <input name="url" type="url" required placeholder="https://yourproduct.com" aria-label="Product URL" autocomplete="url">
         <button type="submit">Simulate</button>
       </form>
     </div>
@@ -685,45 +613,6 @@ html { scroll-behavior: smooth; }
     </div>
   </main>
 
-  <section id="result" hidden aria-label="Simulation result">
-    <button type="button" class="close" id="closeres">Close example</button>
-
-<p class="demo">Example result. This is what someone sees after entering a product URL, built from our real data on a product we already ran: Exa Websets V2, which launched on Product Hunt on Nov 21.</p>
-<div class="urlbar" aria-hidden="true"><input value="https://exa.ai" readonly tabindex="-1"><span>Simulated</span></div>
-<div class="prod"><img src="data:image/jpeg;base64,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" alt=""><div><h2 class="pname">Exa Websets V2</h2><p class="tag">Build custom datasets from the live web, 4x faster</p></div></div>
-<div class="outcome"><div><span class="label">Simulated users</span><b>12,939 people · 5 groups</b></div><div><span class="label">Competitors found</span><b>5</b></div><div><span class="label">Real result</span><b>#5 on Product Hunt, 126 votes</b></div></div>
-
-<section id="r-users"><h2>Likely users</h2>
-<p class="lede">Who is most likely to use it, from real Product Hunt people who backed this team's earlier launches, grouped by what they upvote. The tick is each group's usual share.</p>
-<div class="gb"><span class="gn">Developer-Marketers</span><span class="track"><i class="fill hi" style="width:100.0%"></i><i class="tick" style="left:76.6%"></i></span><span class="gv">58%</span><span class="lift hi">1.31×</span></div><div class="gb"><span class="gn">Product Leaders</span><span class="track"><i class="fill hi" style="width:4.9%"></i><i class="tick" style="left:3.8%"></i></span><span class="gv">3%</span><span class="lift hi">1.26×</span></div><div class="gb"><span class="gn">Curious Observers</span><span class="track"><i class="fill " style="width:41.9%"></i><i class="tick" style="left:49.4%"></i></span><span class="gv">24%</span><span class="lift ">0.85×</span></div><div class="gb"><span class="gn">Experienced Curators</span><span class="track"><i class="fill lo" style="width:24.6%"></i><i class="tick" style="left:32.8%"></i></span><span class="gv">14%</span><span class="lift lo">0.75×</span></div><div class="gb"><span class="gn">Product Evaluators</span><span class="track"><i class="fill lo" style="width:1.9%"></i><i class="tick" style="left:10.7%"></i></span><span class="gv">1%</span><span class="lift lo">0.18×</span></div>
-<div class="key"><span><i></i>share of likely users</span><span><i class="t"></i>usual share</span><span>× = how much more or less than usual</span></div>
-</section>
-
-<section id="r-fit"><h2>Who would use it, and who wouldn't</h2>
-<p class="lede">Each group speaks through a simulated user grounded in its members' real comments.</p>
-<div class="two"><div class="col yes"><h3>Would use it</h3><div class="wc yes"><div class="wh"><b>Developer-Marketers</b><span>1.3× their usual share among this hunter's past voters</span></div><p class="subs">Student Dev-Marketers, Engaged Dev-Marketers, No-Code Marketers</p><blockquote>“The performance gains (4x faster, 2x cheaper, 20% more matches) are truly impressive for web data extraction. Open API access on the usage plan is a smart move for…”</blockquote></div><div class="wc yes"><div class="wh"><b>Product Leaders</b><span>1.3× their usual share among this hunter's past voters</span></div><p class="muted">Too few of them in the panel to give them a voice.</p></div></div>
-<div class="col no"><h3>Less likely, and why</h3><div class="wc no"><div class="wh"><b>Curious Observers</b><span>only 0.85× their usual share</span></div><blockquote>“I&#x27;m not sure how easy it will be to get the exact data I need with just plain language descriptions.”</blockquote></div><div class="wc no"><div class="wh"><b>Experienced Curators</b><span>only 0.75× their usual share</span></div><blockquote>“I&#x27;m interested in the technical details behind the &#x27;reasoning for each match&#x27; and how it&#x27;s generated.”</blockquote></div><div class="wc no"><div class="wh"><b>Product Evaluators</b><span>only 0.18× their usual share</span></div><p class="muted">Too few of them in the panel to give them a voice.</p></div></div></div>
-</section>
-
-<section id="r-panel"><h2>The panel</h2>
-<p class="lede">One simulated user per group, reacting to the product page.</p>
-<div class="voices"><div class="vc"><div class="vh"><b>Curious Observers</b><em class="int high">high interest</em></div><p class="vr">“This sounds really interesting! Building custom datasets from the web 4x faster and 2x cheaper is a huge improvement. I&#x27;m curious to see how the plain language description works.”</p><p class="vq"><b>Worry</b> I&#x27;m not sure how easy it will be to get the exact data I need with just plain language descriptions.</p></div><div class="vc"><div class="vh"><b>Developer-Marketers</b><span>Student Dev-Marketers</span><em class="int high">high interest</em></div><p class="vr">“The performance gains (4x faster, 2x cheaper, 20% more matches) are truly impressive for web data extraction. Open API access on the usage plan is a smart move for developers.”</p><p class="vq"><b>Worry</b> I&#x27;m interested in the underlying technology that allows for such significant speed improvements.</p></div><div class="vc"><div class="vh"><b>Developer-Marketers</b><span>Engaged Dev-Marketers</span><em class="int high">high interest</em></div><p class="vr">“This V2 update is exactly what we need for faster and more cost-effective data acquisition for our marketing campaigns. The plain language input is a huge UX win.”</p><p class="vq"><b>Worry</b> I&#x27;m curious about how well it handles data from social media platforms or other sites with complex structures.</p></div><div class="vc"><div class="vh"><b>Developer-Marketers</b><span>No-Code Marketers</span><em class="int high">high interest</em></div><p class="vr">“This is a really exciting update for Exa Websets! The plain language input for building datasets is a huge plus for marketers like me, making data collection much more accessible.”</p><p class="vq"><b>Worry</b> I&#x27;m curious about the accuracy of the data extracted, especially for nuanced marketing insights.</p></div><div class="vc"><div class="vh"><b>Experienced Curators</b><em class="int high">high interest</em></div><p class="vr">“Congrats on the V2 launch, Exa team! The performance gains (4x faster, 2x cheaper, 20% more matches) are truly impressive and show a strong commitment to improvement. The open API is a great move.”</p><p class="vq"><b>Worry</b> I&#x27;m interested in the technical details behind the &#x27;reasoning for each match&#x27; and how it&#x27;s generated.</p></div></div>
-</section>
-
-<section id="r-competitors"><h2>Competitors</h2>
-<p class="lede">The closest earlier launches, how they did, and what their real commenters liked and disliked.</p>
-<div class="comps"><div class="cc"><div class="ch"><b>CatchAll by NewsCatcher</b><span class="rk">#12</span></div><p class="meta">112 votes · 2026-05-21 · 71% similar</p><ul><li class="up">Beautiful website and impressive product</li><li class="up">Great use-case and workflow examples</li><li class="up">Positive post-launch engagement and personalized communication</li></ul></div><div class="cc"><div class="ch"><b>Zoer.ai</b><span class="rk">#2</span></div><p class="meta">453 votes · 2026-03-23 · 69% similar</p><ul><li class="up">Users are impressed with the product&#x27;s approach of generating from the database schema upwards, seeing it as a more robust method.</li></ul></div><div class="cc"><div class="ch"><b>BrowserAct Cloud</b><span class="rk">#2</span></div><p class="meta">281 votes · 2026-08-14 · 68% similar</p><ul><li class="up">Users are impressed with the tool&#x27;s practicality and effectiveness for web data extraction.</li><li class="up">The focus on structured data over simple summaries was highly appreciated.</li><li class="dn">Concerns were raised about potential IP blocking and the reliability of scraping after extensive use.</li></ul></div><div class="cc"><div class="ch"><b>RecipeBook by Shofo</b><span class="rk">#19</span></div><p class="meta">101 votes · 2026-07-28 · 68% similar</p><ul><li class="up">Impressive data processing volume</li><li class="up">Clever search-then-buy workflow</li><li class="up">Effective search re-ranking and transparent pricing</li><li class="dn">Legal rights and data usage concerns</li></ul></div><div class="cc"><div class="ch"><b>Lightning Rod</b><span class="rk">#2</span></div><p class="meta">335 votes · 2026-03-17 · 68% similar</p><ul><li class="up">Users expressed excitement and congratulated the team on the launch.</li><li class="up">The core problem addressed (training data bottleneck) was recognized as highly relevant and valuable.</li></ul></div></div>
-</section>
-
-<div class="cta" id="runbox"><h2>Run the full study on your product</h2>
-<p class="lede">Simulated users sign up and use your real product in recorded browsers, side by side with 2 competitors. We email you the report.</p>
-<form id="runform"><input id="email" type="email" required placeholder="you@company.com" aria-label="Email" autocomplete="email"><button type="submit">Run full study</button></form>
-<p class="done" id="done" hidden role="status"></p>
-<div class="addto"><a href="#connect"><svg width="18" height="18" fill="#D97757" aria-hidden="true" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg>Add to Claude</a><a href="#connect"><svg width="18" height="18" fill="currentColor" aria-hidden="true" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></svg>Add to Codex</a></div>
-</div>
-<footer>Simulated users, not real comments. Forecasts by Atelier · not affiliated with Product Hunt.</footer>
-
-  </section>
 
   <section id="leaderboard" class="board">
 
@@ -1237,23 +1126,9 @@ args = ["-y", "mcp-remote", "https://atelier-sim.com/mcp"]</code></pre><button t
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) { const v = document.getElementById('film'); v.removeAttribute('autoplay'); v.pause(); }
 </script>
 <script>
-// Copy: Simulate shows the example result on this page (no navigation, so phones stay in the artifact).
-function showResult(){ const r = document.getElementById("result"); r.hidden = false; r.scrollIntoView({behavior: "smooth", block: "start"}); }
-document.getElementById("closeres").addEventListener("click", ()=>{ document.getElementById("result").hidden = true; document.getElementById("top").scrollIntoView(); });
-document.getElementById("runform").addEventListener("submit", async e=>{ e.preventDefault();
-  const done = document.getElementById("done"), btn = e.target.querySelector("button");
-  const url = (document.querySelector("#sim input") || {}).value || "";
-  btn.disabled = true;
-  try {
-    const r = await fetch("/api/study-request", {method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({email: document.getElementById("email").value, url})});
-    const j = await r.json().catch(()=>({}));
-    done.textContent = r.ok ? "Thanks. We'll email you when your study is ready." : (j.error || "That didn't go through. Please try again.");
-  } catch(_) { done.textContent = "That didn't go through. Please try again."; }
-  done.hidden = false; btn.disabled = false;
-});
+
 document.getElementById("sim").addEventListener("submit", e=>{ e.preventDefault();
-  showResult(); });   // copy: every URL shows the example result (Exa Websets V2) on this page
+  location.href = "/app?url=" + encodeURIComponent(e.target.querySelector("input").value.trim()); });
 </script><script>
 // Copy buttons for the connect snippets.
 document.querySelectorAll(".copy-btn").forEach(b=>b.addEventListener("click", async ()=>{
@@ -1262,6 +1137,9 @@ document.querySelectorAll(".copy-btn").forEach(b=>b.addEventListener("click", as
   catch(e){ const r = document.createRange(); r.selectNodeContents(b.parentNode.querySelector("code")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Selected"; }
   setTimeout(()=>b.textContent = "Copy", 1600);
 }));
+// Headline number: the same live figure the leaderboard below shows.
+(function(){ const t = setInterval(()=>{ const v = window.VIEW; if(!v) return; clearInterval(t);
+  const r = ((v.accuracy || {}).mid || []).find(x=>x.flag === "live"); if(r) document.getElementById("pct").textContent = Number(r.top10).toFixed(1) + "%"; }, 300); })();
 </script>
 </body>
 </html>
