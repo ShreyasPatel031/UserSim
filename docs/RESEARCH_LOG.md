@@ -73,3 +73,9 @@ Model switches, direction reviews and agenda changes, newest last.
   - Rehearsal on the VM: write gives "key missing" with rc 0; DRY rehearse of Nov 21 gives 2,190 people at about $0.24/day; a scratch run.sh gdsw run gives rc 0.
   - The secret gemini-decisions-key does not exist yet (NOT_FOUND), so the job skips cleanly until it does.
   - Rollback: restore ~/w/backup_tw12a/run.sh.5cd8b9e5 and sched12a.txt.be17d0bd into ~/w/tw12a/, and remove ~/w/experiments/ph_predict/gemini_decisions_shadow.py.
+- 2026-11-23 ~09:52 UTC (01:52 PT): early_shock late-featured fix DEPLOYED (popscore commit 1e6cb510, under the rehearsed-fix rule). Bundle experiments/pipeline_patches/20261123_early_shock_late: early_shock.py af8f0b4b over 28866c64.
+  - Change: a launch with no honest prior whose first vote snapshot is more than 0.5 h after the day's first (featured after the morning forecast) no longer counts against prior/popscore coverage, which is now checked on the forecast-time line-up only. It stays in the line-up with the day's 10th-percentile prior, is scored like the rest, and is never used to fit. Snapshot coverage counts only launches featured all day. Status line, outputs and backtests schema unchanged.
+  - Why: the deployed step was stuck at 13 clean days (Nov 22 and 23 both items=13); Nov 11, 21 and 22 were excluded by late launches (10 of 26, 7 of 21, 7 of 24), some finishing high.
+  - Rehearsal: end-to-end DRY on the VM from a scratch copy, real data read-only, --force, no --write: ready true, 16 clean days (Nov 3–22). Comment shock minus prior, top 3: +10.4 [−0.0, +22.9] (vote arms n/a in the forced run).
+  - Deploy: base-md5 gated; old file backed up to ~/w/backup_early_shock/early_shock.py.28866c64; parse check passed. Expected first ready run Nov 24 ~08:05 UTC (backtests run_file early_shock_2026-11-24).
+  - Rollback: `bash ~/w/stage/20261123_early_shock_late/deploy_early_shock.sh rollback`.
