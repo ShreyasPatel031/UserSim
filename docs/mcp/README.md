@@ -310,7 +310,7 @@ Without a token anyone can use the open tools, within the daily caps. A token ad
 |---|---|---|
 | anonymous | no token | the open tools, with the daily caps; sees only its own sessions and studies |
 | `user` | a bare `TOKEN` | the same tools without the daily caps; sees only its own sessions and studies |
-| `reader` | `reader=TOKEN` | everything `user` can do, plus `usersim_ph_page` (the information on the website's Product Hunt page), `usersim_launch_card` (the website's full card for a launch), `usersim_ph_quick_run` (the Product Hunt simulation for any product), `usersim_list_studies`, and `usersim_get_report` for **any** saved study |
+| `reader` | `reader=TOKEN` | everything `user` can do, plus `usersim_ph_page` (the information on the website's Product Hunt page), `usersim_launch_card` (the website's full card for a launch), `usersim_ph_quick_run` (the Product Hunt simulation for any product), `usersim_competitors` (live competitors for any product, found the way the website app finds them, with logos and why-pick lists), `usersim_list_studies`, and `usersim_get_report` for **any** saved study |
 | `admin` | `admin=TOKEN` | everything `reader` can do, plus `usersim_admin_overview` (limits in force, anonymous spend today, open sessions, token counts by role) |
 
 **Clients that can't send headers** (a claude.ai custom connector, and artifact pages that call the server through one) may put the token in the URL: `https://35-202-98-224.sslip.io/mcp?token=<token>`. The server moves it into the `Authorization` header before any check and strips it from the query string, so it is not written to access logs. A header, when sent, wins. Treat that URL like the token itself.
