@@ -110,3 +110,16 @@ Model switches, direction reviews and agenda changes, newest last.
   - Context: 7 of the 13 misses with store data had no complete team member, but all had held followers (52 to 16,293). The team-held test found no effect.
   - (d) uses only the 5 inputs frozen in the parquet; arm3 uses 40. It is a lower bound on under-weighting.
   - Leak checks: forecasts, line-ups and team/follower inputs are frozen pre-00:05 files written before 03:45 PT. The newest store and truth label causes only.
+- 2026-11-23 ~10:20 UTC: PH-KNN1, does reweighting the inputs arm 3 already has beat arm 3? (orchestrator 10:01Z Nov 23). Scripts experiments/ph_predict/knn1_vm.py (VM, month-forward replica of live arm 3 plus monotone refits, on scratch copies) and knn1_score.py; output results/knn_reweight_v1.json. **Verdict: nothing to deploy.**
+  - Replica: same frame, 62 inputs, params and 5 seeds as arm3_live.predict, refit month-forward (train < month). Spearman 0.995 against the stored arm-3 backtest. Truth: final daily rank, days with >= 10 ranked. Paired day bootstrap 10,000 against the replica.
+  - Finding: of the five MISS1 inputs, only promo_posts is an arm-3 input. The other four are dropped by model.py HONEST, because for past launches they were read after launch day.
+
+  | candidate (walk-forward) | 2026, 280 days: top 3 / 5 / 10 | Δ top 3 [95% CI] | Δ top 5 | Δ top 10 | 2025 replication, 151 days: Δ top 5 | near-miss (2026): moved in / hits dropped | admissible? |
+  |---|---|---|---|---|---|---|---|
+  | arm 3 replica | 55.7 / 66.0 / 77.7 | – | – | – | – | – | baseline |
+  | (1) blend kNN on the 5 inputs, w = 0.3 | 55.7 / 65.5 / 78.1 | 0.0 [−1.2, +1.2] | −0.5 [−1.4, +0.4] | +0.4 [−0.2, +1.1] | +0.4 [−0.5, +1.5] | 20 / 20 | no (4 inputs post-launch reads in history) |
+  | (1) blend kNN on all 62 inputs | = arm 3 | 0 | 0 | 0 | 0 | 0 / 0 | yes; walk-forward w = 0 every month |
+  | (2a) monotone refit (promo_posts +1) | 55.7 / 65.6 / 77.6 | 0.0 [−0.6, +0.6] | −0.4 [−0.9, +0.1] | −0.1 [−0.3, +0.2] | −0.3 [−0.7, 0.0] | 6 / 6 | yes |
+  | (2b) monotone refit + the 4 dropped inputs | 56.7 / 67.5 / 77.9 | +1.0 [−0.6, +2.5] | +1.5 [+0.6, +2.4] | +0.2 [−0.5, +0.9] | +1.5 [0.0, +2.9] | 34 / 27 | no (same leak; 2025 does not clear 0) |
+  - Live, honest frozen values, Nov 10–22: blend kNN-5 moves 0 of MISS1's 11 rank-4–6 misses into the top 3 and drops 2 hits; top 3 goes from 53.8 to 48.7.
+  - MISS1's (d) label therefore means "inputs arm 3 excludes as post-launch reads", not under-weighting. Their honest value can only be measured forward on frozen 00:05 values.
