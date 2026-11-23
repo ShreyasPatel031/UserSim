@@ -1667,3 +1667,8 @@ experiments/simlab/cohort_calibration/split_votes.py → results/split_v1.json (
 - (c) mixes "not held" with "held but not re-read after the close"; the observed held population shrinks from ~12k (Nov 9–13) to ~1.5–1.9k (Nov 17–20).
 - The frozen list does not clearly beat "N most active" (paired intervals span 0). Nov 17 is an outlier (model 8.6% vs 22.2%); the other frozen days favour the model by +6 to +11 points.
 - Leak: lists from tmp/e5/private/backer_pred (inputs cut 00:00 PT; Nov 8–13 are as-of replays written Nov 14); held = complete with a read before the day's start; truth = re-read after close.
+
+### 2026-11-23 E5 — WHO prior reverted to base (AGENTS.md rule 5)
+- The topic-neighbour prior (P3), published in who.group_mix_prior from Nov 21, was worse than the 30-day base mix on all 5 scored live days (Nov 17–21): +0.022 [+0.018, +0.028] JSD, 54 launches with ≥ 20 held re-read backers (cohort_calibration/results/who_daily_nov17_22.json). Backtest had it at −0.043.
+- Orchestrator decision 10:39Z Nov 23: publish base, keep P3 as a scored shadow (who.group_mix_prior_shadow_p3). Applied in expected_voters.py and republished results/web/explain/2026-11-23.json (27/27 launches on base).
+- Caveat: live truth is the re-read subset (567–1.9k people, mostly 2 groups); re-test when broader re-reads land.
