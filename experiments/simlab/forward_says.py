@@ -5,7 +5,10 @@ non-team comments. Launch bootstrap. No usernames read or written (ids only).
     python forward_says.py <day> <scratchpad>"""
 import glob, html, json, os, re, subprocess, sys, numpy as np, pandas as pd, concurrent.futures as cf
 D, SP = sys.argv[1:3]; HERE = os.path.dirname(os.path.abspath(__file__)); B = "gs://usersim-bakeoff-347838016394/usersim_sim"; W = os.path.join(SP, f"fs_{D}"); os.makedirs(W + "/api", exist_ok=True)
-sys.path.insert(0, os.path.join(SP, "phops", "experiments", "ph_predict")); import llm
+sys.path.insert(0, os.path.join(SP, "phops", "experiments", "ph_predict"))
+try: import llm
+except ImportError:   # fresh scheduled session (no PH ops checkout): same Vertex Gemini call, self-contained
+    sys.path.insert(0, os.path.join(HERE, "cohort_calibration")); import sim_model as llm
 rng = np.random.default_rng(0); gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
 subprocess.run(f"gsutil -q -m cp '{B}/raw/ph_at_launch/{D}/api_comments/*.jsonl' {W}/api/; gsutil -q cp {B}/raw/ph_at_launch/{D}/live/comments_ts.jsonl {W}/", shell=True)
 RE = open(os.path.join(HERE, "reactions_eval.py")).read(); CE = open(os.path.join(HERE, "complaints_eval.py")).read()

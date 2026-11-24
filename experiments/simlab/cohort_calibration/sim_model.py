@@ -29,3 +29,5 @@ def call(prompt, max_tokens=400, temperature=0.0):
     raise NotImplementedError(f"no adapter for {MODEL}")
 def usd():
     return round(USAGE["in"] / 1e6 * 0.30 + USAGE["out"] / 1e6 * 2.50, 4)
+def gemini_call(prompt, max_tokens):   # alias with PH ops' llm.gemini_call signature (temperature 0)
+    return _gemini(prompt, max_tokens, "gemini-2.5-flash", 0.0)

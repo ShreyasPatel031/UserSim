@@ -9,7 +9,7 @@ import concurrent.futures as cf, hashlib, json, os, re, subprocess, sys, tempfil
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); import sim_model  # noqa: E402
 D, SP = sys.argv[1:3]; REH = "--rehearsal" in sys.argv; UP = "--no-upload" not in sys.argv
-B = "gs://usersim-bakeoff-347838016394/usersim_sim"; CV = os.path.join(SP, "cv"); BENCH = os.path.join(SP, "bench_v0", "data"); W = os.path.join(SP, f"person_panel_{D}")
+B = "gs://usersim-bakeoff-347838016394/usersim_sim"; CV = os.path.join(SP, "cv"); BENCH = os.path.join(SP, "bench_v0", "data"); TABLES = os.environ.get("PANEL_TABLES", "gs://usersim-bakeoff-347838016394/usersim_sim/simharness/bench_v0/data (Nov 23 build)"); W = os.path.join(SP, f"person_panel_{D}")
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
 os.makedirs(W, exist_ok=True); LU = os.path.join(W, "lineup.json"); open(LU, "w").write(gcat(f"{B}/raw/daily/{D}/today_0005.json"))
 r = subprocess.run([sys.executable, "-m", "simharness.run_what_panel", "build", "--bench", BENCH, "--lineup", LU, "--day", D, "--out", W], cwd=CV, capture_output=True, text=True)
@@ -52,7 +52,7 @@ for slug, rows in by_launch.items():
         with cf.ThreadPoolExecutor(8) as ex: res = list(ex.map(gen, batch))
         STATS["calls"] += len(batch)
         for row, g in zip(batch, res):
-            PRIV.append({"day": D, "launch_id": lid, "person_id": PEOPLE.get(row["meta"]["person_idx"]), "prompt": g["prompt"], "raw": g["raw"], "comment": g["comment"], "drop": g["drop"]})
+            PRIV.append({"tables": TABLES, "day": D, "launch_id": lid, "person_id": PEOPLE.get(row["meta"]["person_idx"]), "prompt": g["prompt"], "raw": g["raw"], "comment": g["comment"], "drop": g["drop"]})
             if g["drop"]: STATS["dropped"][g["drop"]] = STATS["dropped"].get(g["drop"], 0) + 1
             else: kept.append(g["comment"])
     OUTW[lid] = kept[:15]; STATS["launches"] += 1
@@ -68,7 +68,7 @@ for lid, cm in OUTW.items():
                                                                            "rehearsal_late_unscored": bool(REH), "label": LABEL}
 os.makedirs(os.path.dirname(p), exist_ok=True); json.dump(J, open(p, "w"), indent=1)
 pv = os.path.join(tempfile.gettempdir(), f"person_panel_{D}.parquet"); pd.DataFrame(PRIV).to_parquet(pv, index=False)
-STATS.update({"usd": sim_model.usd(), "day": D, "rehearsal": REH})
+STATS.update({"usd": sim_model.usd(), "day": D, "rehearsal": REH, "tables": TABLES})
 if UP:
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/explain/{D}.json"], check=True)
     subprocess.run(["gsutil", "-q", "cp", pv, f"{B}/tmp/e5/private/person_panel/{D}.parquet"], check=True)
