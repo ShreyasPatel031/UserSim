@@ -6,6 +6,7 @@ Stages (private files go to --out and, with --sync gs://prefix, are copied there
   leak     dated features must be unchanged when everything on or after the day is deleted
   hard     tie features on the round-1 HARD rows; logistic models fit on VAL-HARD, scored once on HARD
   full     full-pool ranking on every test launch: round-1 logistic vs logistic + dated ties (fit on validation)
+  presence diagnostic split: was the person on the site that day at all (upvoted any other launch)?
   agg      results.json + table.md (aggregates only) into --results-dir
 
   python -m simharness.run_ties STAGE --bench BENCH --round1 ROUND1_OUT --out OUT [--sync gs://...]
@@ -245,6 +246,50 @@ def stage_full(a):
     sync([f"{a.out}/ties_full_test.pkl", f"{a.out}/ties_full_results.json"], a.sync)
 
 
+# ------------------------------------------------------------------------------------------------ presence
+def stage_presence(a):
+    """Diagnostic only (uses same-day outcomes to SPLIT rows, never as a model input): did the person upvote any
+    OTHER launch that day? If matched non-voters are mostly absent that day, the missing variable is presence, not
+    choice; among people present that day, the AUC says how well a model picks the launch."""
+    from simharness.score import _auc, score_rows, summarize
+    b = load_bench(a)
+    r = pd.read_parquet(f"{a.round1}/preds_nonllm_hard_test.parquet")
+    t = pd.read_parquet(f"{a.out}/ties_preds_hard_test.parquet")
+    assert (r.person_idx.to_numpy() == t.person_idx.to_numpy()).all() and (r.item_idx.to_numpy() == t.item_idx.to_numpy()).all()
+    n_day = {}
+    for d in r.day.unique():
+        c = np.zeros(b.n_people, np.int32)
+        for it in b.items_on(d):
+            c[b.positives(d, it)] += 1
+        n_day[d] = c
+    other = np.array([n_day[d][p] for d, p in zip(r.day, r.person_idx)]) - r.y.to_numpy()
+    y = r.y.to_numpy()
+    present = other >= 1
+    res = {"definition": "present = upvoted at least one OTHER launch that day (an outcome of the day: diagnostic only)",
+           "share_present": {"voters": round(float(present[y == 1].mean()), 4),
+                             "matched_non_voters": round(float(present[y == 0].mean()), 4)},
+           "median_other_upvotes_that_day": {"voters": float(np.median(other[y == 1])),
+                                             "matched_non_voters": float(np.median(other[y == 0]))},
+           "oracle_auc_other_upvotes_that_day": round(_auc(other.astype(float), y), 4),
+           "oracle_auc_present_flag": round(_auc(present.astype(float), y), 4)}
+    cols = {"most-active": r["most-active"], "round-1 logistic": r["logistic"], "taste-v1": r["taste-v1"],
+            "dated ties": t["dated ties"], "dated ties + logistic features": t["dated ties + logistic features"],
+            "dated + follow ties + logistic features (upper bound)": t["dated + follow ties + logistic features (upper bound)"]}
+    sub = r[present].reset_index(drop=True)
+    res["rows_present"] = {"rows": int(present.sum()), "voters": int(y[present].sum()),
+                           "non_voters": int((1 - y[present]).sum())}
+    res["auc_among_present"] = {}
+    for k, v in cols.items():
+        df = score_rows(sub, v.to_numpy()[present])
+        df = df[(df.N > 0) & (df.n > df.N)]
+        s = summarize(df, pooled_auc=True, n_boot=1000, cluster="day")
+        res["auc_among_present"][k] = {"auc_pooled": s["auc_pooled"], "auc_mean_per_launch": s["auc_mean"],
+                                       "launches": s["items"]}
+    json.dump(res, open(f"{a.out}/ties_presence.json", "w"), indent=1, default=float)
+    print(json.dumps(res, indent=1, default=float))
+    sync([f"{a.out}/ties_presence.json"], a.sync)
+
+
 # ------------------------------------------------------------------------------------------------ agg
 def _f(d):
     return f"{d['value']:.3f} [{d['ci95'][0]:.3f}, {d['ci95'][1]:.3f}]"
@@ -260,6 +305,8 @@ def stage_agg(a):
            "hard": json.load(open(f"{a.out}/ties_hard_results.json"))}
     if os.path.exists(f"{a.out}/ties_full_results.json"):
         res["full"] = json.load(open(f"{a.out}/ties_full_results.json"))
+    if os.path.exists(f"{a.out}/ties_presence.json"):
+        res["presence_diagnostic"] = json.load(open(f"{a.out}/ties_presence.json"))
     if os.path.exists(f"{a.out}/ties_leak_checks.json"):
         res["leak_checks"] = json.load(open(f"{a.out}/ties_leak_checks.json"))
     L = ["| Model (fit on VAL-HARD, scored once on HARD, 50,100 rows) | HARD AUC | mean per-launch AUC | vs round-1 logistic "
@@ -286,7 +333,7 @@ def stage_agg(a):
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["data", "leak", "hard", "full", "agg"])
+    ap.add_argument("stage", choices=["data", "leak", "hard", "full", "presence", "agg"])
     ap.add_argument("--bench", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--round1", default="")
