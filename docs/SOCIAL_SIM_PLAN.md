@@ -138,6 +138,29 @@ Paired on the same rows (day-clustered 95% intervals):
   curve (12,000 rows, checkpoints at 4,000 and 8,000) to see whether more of our data keeps raising person match, then
   a joint vote + comment fine-tune on round 1's activity-matched rows.
 
+### Learning curve for the fine-tune (FT-TASKC-v1, Nov 24; about $6 of GPU): more comment rows do not help yet
+Same model and settings, 12,000 training comment rows (Jul 5-Oct 31, 5,663 people, at most 30 per person), with the
+adapter saved after 4,000 and 8,000 rows. 96 minutes on one A100.
+
+| Training rows seen | Test: person match | Validation: person match |
+|---|---|---|
+| 0 (untuned) | 54.6 | 52.2 |
+| 4,000 (first run, most recent rows only) | 65.2 [60.9, 70.1] | 60.1 |
+| 4,000 (snapshot of this run) | 63.1 [56.3, 69.2] | 59.8 |
+| 8,000 | 64.3 [60.6, 67.9] | 61.2 |
+| 12,000 | 61.3 [54.5, 68.2] | 60.4 |
+| Gemini 2.5 Flash with history (no training) | 59.3 | 59.3 |
+| the person's own latest earlier comment | 68.0 | 66.7 |
+
+- 12,000 minus 4,000 rows, paired: -1.8 [-6.8, +2.7] test, +0.5 [-5.5, +5.6] validation. Flat.
+- Reading: fine-tuning gives one step (untuned 52-55 to tuned 60-65) that 4,000 rows already buy; three times the
+  rows add nothing we can measure. The number of training comments is not what limits person match.
+- The measurement is also a limit: with about 330-370 scored rows the intervals are about +-5 points, so a gain under
+  about 6 points cannot be seen. More comment truth (fleet, due Nov 26) and scoring every validation row widen this.
+- Decision: no more data-scaling runs on this task. Next lever is what the model is shown about the person (more past
+  comments, comments chosen by similarity to the launch, profile text), tested first with a prompt-only model because
+  it costs cents, then carried into the tuned model.
+
 ### Task R, first test: re-rank the shortlist by expected held voters (E5, SIM-RERANK-1 stage A, b7061305, Nov 24)
 Question: does "how many of our held people are expected to back this launch" reorder the structural shortlist better?
 Answer: no. Re-ranked minus structural, paired by day, day-bootstrap 95% intervals.
@@ -178,7 +201,8 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
 3. Benchmark v0 builder, adapters and the first zero-shot leaderboard across model families (orchestrator).
 4. Fine-tune an open model on Task V + Task C training rows; compare with zero-shot frontier models (orchestrator).
 4b. Task C person match: first fine-tune done Nov 24 (65.2 vs 54.6 untuned, 59.3 Gemini Flash, 68.0 the person's own
-    last comment). Running: learning curve on 12,000 rows. Then add Claude, gpt-oss and Llama to the table.
+    last comment); learning curve done Nov 24 (flat from 4,000 to 12,000 rows). Running: what the model is shown about
+    the person (context ablation with a prompt-only model). Then add Claude, gpt-oss and Llama to the table.
 4c. Task C content measure: embeddings do not work for content (projecting out the launch text measured style; tried
     Nov 24). Needs judged "same point as the real comment" labels; also a style distance (length, question vs praise).
 4d. Joint fine-tune: vote (round 1's activity-matched rows) + comment in one adapter; score Task V and Task C.
