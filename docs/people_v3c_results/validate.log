@@ -1,0 +1,39 @@
+PASS persons_unique
+PASS no_orphan_events  [0]
+PASS no_orphan_handles_profiles
+PASS no_duplicate_events
+PASS no_null_event_ts
+PASS all_source_event_people_in_persons  [0]
+PASS handles_unknown_dates_are_null
+PASS handles_fetched_dates_valid
+PASS handles_upper_bound_dates_valid
+PASS handles_quality_values_known
+PASS handles_dated_share  [0.786]
+PASS profiles_unknown_dates_are_null
+PASS profiles_fetched_dates_valid
+PASS profiles_upper_bound_dates_valid
+PASS profiles_quality_values_known
+PASS profiles_dated_share  [0.625]
+PASS no_uuid_ph_user_id
+PASS ph_user_id_numeric_or_null
+PASS parser_version_recorded
+PASS no_literal_NaN_text  [{'name': 0, 'bio': 0, 'location': 0, 'website': 0, 'handle': 0, 'extra': 0}]
+PASS extra_json_has_no_bare_NaN
+PASS no_segments_carried
+PASS no_poison_names
+PASS no_wispr_in_ph_text_on_suspect_rows  [0]
+PASS wispr_bios_on_clean_fixed_rows  [['ph:mswulinski', 'ph:sarthakmalhotra']]
+PASS no_poisoned_ph_user_id
+PASS linkedin_rows_mentioning_wispr  [['ph:constanza_hasselmann']]
+PASS one_confident_x_handle_per_person  [0]
+PASS no_shared_confident_x_handle  [0]
+PASS x_events_only_for_confident_handles
+PASS x_self_link_urls_on_platform
+PASS github_self_link_urls_on_platform
+PASS linkedin_self_link_urls_on_platform
+PASS gone_have_no_profile  [7]
+PASS has_profile_matches_profiles
+PASS display_name_null  [9]
+PASS every_good_refetch_row_used  [0]
+PASS refetch_profiles_have_numeric_id_name_joined
+OVERALL PASS | built 2026-11-02
