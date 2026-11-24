@@ -366,11 +366,14 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
     added to BACKER-v2.
 4i. Quick-run reactions from matched real people's histories (orchestrator, next coding item): in mvp/ph_site/try_sim.py
     write "what they'll say" from the matched people's past comments; check on calibration days before switching.
-4h. Same-day person-linked comment rows (next for the subagent after PRESENCE-CHOICE-1): the fleet's live comment
-    stream carries the commenter's platform id, so a day's comments can be linked to held people the next morning
-    instead of waiting for profile re-reads. Measured Nov 24: of the comments captured on Nov 21 / 22 / 23, 119 of 239,
-    53 of 128 and 216 of 379 were written by people we hold complete (75 / 53 / 128 top-level). Adding them as forward
-    test days roughly triples the daily flow of Task C rows and tightens the +-5 point intervals within a week.
+4h. Same-day person-linked comment rows: DONE Nov 24 (FORWARD-C-1; simharness/domains/ph_live_comments.py,
+    run_forward_day.py, run_refresh.py; simharness/bench_v0/forward/README.md). Task C rows on test + forward days went
+    from 413 to 1,572 (1,450 with a second commenter); the new rows score like the old ones (history minus item-only
+    +8.3 [+4.5, +13.4] on content match, person match 61.6). From Nov 17 the profile reads brought 5-23 rows a day; the
+    stream gives 100-200. A nightly refresh rebuilds the tables from the current store and the stream, with stable
+    keys and a pointer that moves only after its checks pass; E5's nightly session runs it before the panel step.
+4j. Person voice on the larger row set (orchestrator, Nov 25): tuned Qwen 7B vs Gemini Flash with history vs untuned
+    on all 1,450 rows with a second commenter, to settle the tuned-vs-Flash difference that 327 rows could not.
 4g. Dated ties in the live backer model (E5, next slot): add "backed an earlier launch of this team" features to
     BACKER-v2's walk-forward test; deploy if recall@N is clear of noise on its truth set.
 4e. A serving path for a tuned open model (GPU endpoint started on demand) so a winner can replace the prompt model.
