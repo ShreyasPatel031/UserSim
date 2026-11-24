@@ -57,6 +57,7 @@ The harness provides:
 | persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22) | | 2 | |
 | history-built prompt, Gemini 2.5 Flash (bench v0) | | | person match 59.3 vs 50.3 launch-only (+8.9 [+0.6, +15.4]) | | 12 | $0.5 |
 | structural order (arm 3) | | | | baseline: 50.0 / 70.0 / 66.7 | 6 | |
+| re-rank by expected held voters (E5, SIM-RERANK-1 stage A) | | | | top 3: -0.6 [-1.9, +0.8] (shortlist 10), +0.2 [-0.4, +0.8] (15), -0.2 [-1.2, +0.8] (20): no lift | 171 backtest + 8 live | 0 |
 
 ### Benchmark v0, Task V, first results (simharness, Nov 23; private data in the bucket under simharness/bench_v0/)
 Built from the store: train 244 days / 5,703 launches / 392,763 real votes; validation 10 days / 316 launches; test
@@ -111,6 +112,24 @@ Reading:
 - Small n: 327-366 rows with a second commenter per split, 136-183 people; the test interval for Flash only just
   clears zero. More comment truth (the blocked comment threads) widens this.
 
+### Task R, first test: re-rank the shortlist by expected held voters (E5, SIM-RERANK-1 stage A, b7061305, Nov 24)
+Question: does "how many of our held people are expected to back this launch" reorder the structural shortlist better?
+Answer: no. Re-ranked minus structural, paired by day, day-bootstrap 95% intervals.
+
+| Shortlist | Top 3 | Top 5 | Top 10 | Near misses recovered / pushed out |
+|---|---|---|---|---|
+| structural top 10 | -0.6 [-1.9, +0.8] | -0.6 [-1.5, +0.4] | 0.0 | 7 / 10 (of 148) |
+| structural top 15 | +0.2 [-0.4, +0.8] | -0.2 | | 3 / 2 |
+| structural top 20 | -0.2 [-1.2, +0.8] | -0.8 [-1.6, 0.0] | | 5 / 6 |
+
+- Backtest: 171 days (Apr 15-Oct 31), structural capture 56.7 / 66.9 / 78.1. The feature is a walk-forward logistic on
+  recency-weighted upvotes and topic match, summed over the active pool. Caveat: store membership was chosen later.
+- Live: 8 days (Nov 15-22), five variants of the feature; every top-3 difference is between -4.2 and +4.2 and every
+  interval spans zero.
+- Reading: the count of held people expected to vote carries no ordering information beyond the structural score.
+  Closed. Stage B (70 history-built language-model agents per shortlist, frozen nightly before 03:45 PT, about $0.45 a
+  day) is scored forward only; first read at 7 scored days.
+
 ### Ceiling of the structural shortlist (PH agent, STRUCT-SHORTLIST, b9613465, Nov 23)
 Share of the real top k that sits inside the structural top m (arm 3, backtest 2026, 183 days, month-forward):
 
@@ -128,7 +147,8 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
-2. Re-rank with BACKER-v2 expected voters, then with history-built LLM agents (E5, SIM-RERANK-1).
+2. Re-rank with BACKER-v2 expected voters (done Nov 24: no lift), then with history-built LLM agents (E5, SIM-RERANK-1
+   stage B, running nightly, forward only; first read at 7 scored days).
 3. Benchmark v0 builder, adapters and the first zero-shot leaderboard across model families (orchestrator).
 4. Fine-tune an open model on Task V + Task C training rows; compare with zero-shot frontier models (orchestrator).
 4b. Task C person match: fine-tune on (history, launch) -> real comment (51,895 training rows) to close the gap between
