@@ -27,8 +27,8 @@ job() {
   # copy can fail to load
   TORCH=$($PY -c "import torch; print(torch.__version__.split('+')[0])")
   $PY -m pip uninstall -q -y torchaudio || true
-  $PY -m pip install -q --upgrade transformers peft accelerate "torch==$TORCH" \
-    || $PY -m pip install -q --upgrade --break-system-packages transformers peft accelerate "torch==$TORCH"
+  $PY -m pip install -q --upgrade transformers peft accelerate "jinja2>=3.1" "torch==$TORCH" \
+    || $PY -m pip install -q --upgrade --break-system-packages transformers peft accelerate "jinja2>=3.1" "torch==$TORCH"
   $PY -c "import torch, transformers, peft; print(torch.__version__, transformers.__version__, peft.__version__, torch.cuda.is_available())"
   gsutil -q cp $PREFIX/code/lora.py $PREFIX/data/train.jsonl $PREFIX/data/eval.jsonl .
   GCFLAG=""; [ "$GC" = "1" ] && GCFLAG="--grad-checkpoint"
