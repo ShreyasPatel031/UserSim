@@ -26,6 +26,20 @@ HUB = "https://hub-cloud.browserstack.com/wd/hub"
 
 
 class IOSDevice:
+    @classmethod
+    def from_url(cls, url: str, bundle_id: str = "com.apple.AppStore") -> "IOSDevice":
+        """Attach to any Appium endpoint (e.g. an AWS Device Farm remote access session)."""
+        self = cls.__new__(cls)
+        opts = XCUITestOptions()
+        opts.platform_name = "iOS"
+        opts.automation_name = "XCUITest"
+        opts.bundle_id = bundle_id
+        opts.set_capability("appium:newCommandTimeout", 600)
+        opts.set_capability("appium:autoAcceptAlerts", False)
+        self.d = webdriver.Remote(url, options=opts)
+        self.size = self.d.get_window_size()
+        return self
+
     def __init__(self, app: str, device: str = "iPhone 15", os_version: str = "17",
                  name: str = "usersim-ios"):
         opts = XCUITestOptions()

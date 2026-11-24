@@ -6,7 +6,10 @@ from mvp.device.ios_browserstack import IOSDevice
 
 OUT = os.environ.get("IOS_OUT", "/workspace/product/ios-test/shots")
 os.makedirs(OUT, exist_ok=True)
-dev = IOSDevice(sys.argv[1], os.environ.get("IOS_DEVICE", "iPhone 15"), os.environ.get("IOS_OS", "17"))
+if sys.argv[1].startswith("http"):  # Appium URL, e.g. AWS Device Farm remoteDriverEndpoint
+    dev = IOSDevice.from_url(sys.argv[1])
+else:
+    dev = IOSDevice(sys.argv[1], os.environ.get("IOS_DEVICE", "iPhone 15"), os.environ.get("IOS_OS", "17"))
 print("session", dev.d.session_id, flush=True)
 n = [0]
 

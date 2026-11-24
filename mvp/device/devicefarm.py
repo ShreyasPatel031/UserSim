@@ -98,7 +98,7 @@ def main() -> int:
     s = sub.add_parser("start")
     s.add_argument("--device", default="", help="substring of the device name, e.g. 'iPhone 15'")
     s.add_argument("--minutes", type=int, default=30, help="hard timeout (caps the bill)")
-    for name in ("status", "stop", "demo"):
+    for name in ("status", "stop", "demo", "url"):
         sub.add_parser(name).add_argument("arn", nargs="?")
     a = ap.parse_args()
     c = client()
@@ -136,6 +136,8 @@ def main() -> int:
     arn = a.arn or latest_running(c)
     if not arn:
         print("no running session"); return 0
+    if a.cmd == "url":  # Appium URL for mvp/device/ios_server.py
+        print(appium_url(c, arn)); return 0
     if a.cmd == "demo":
         return demo(c, arn)
     if a.cmd == "status":
