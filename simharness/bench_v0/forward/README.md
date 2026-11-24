@@ -13,7 +13,8 @@ on the same launch. The new rows score like the old ones with the existing Flash
   on a launch of D's 00:05 PT line-up, not by a maker or the hunter of that launch (ids from the line-up), at least
   15 characters, and the first by that person on that launch. Text: HTML removed, @handles replaced.
 - Overlay: `items.parquet` (the 00:05 line-up: item_id, slug, day, title, summary, description, tags), `comments.parquet`
-  (person_idx, item_id, item_idx, day_ord, ts, text; only rows that are not already in the benchmark), `meta.json`.
+  (person_idx, item_id, item_idx, day_ord, ts, text; every kept row of the day since Nov 24 18:50Z, the loader skips
+  pairs already present; overlays built before that hold only the rows that were new then, which is equivalent), `meta.json`.
 - Loader: `Benchmark(BENCH, overlays=[...])` or `bench.add_overlays([...])`. New launches are appended as items, new
   comment rows go into `comments` and the history. Days after the test split get the split name "forward", so
   `TaskC(bench).rows("forward")` works with its references. `simharness/task_c.py` needed no change.

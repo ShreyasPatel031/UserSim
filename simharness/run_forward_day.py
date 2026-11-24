@@ -47,9 +47,19 @@ def build(a):
     from simharness.domains.ph_live_comments import build_day, write_overlay
     bench = Benchmark(a.bench, overlays=overlay_dirs(a.forward_root, before=a.day))
     items, comments, rep = build_day(bench, a.day, a.stream, a.lineup, a.persons)
-    have = set(zip(bench.comments["person_idx"].to_numpy().tolist(), bench.comments["item_idx"].to_numpy().tolist()))
-    new = np.array([(int(p), int(i)) not in have for p, i in zip(comments["person_idx"], comments["item_idx"])], dtype=bool)
-    files = write_overlay(os.path.join(a.forward_root, a.day), items, comments[new].reset_index(drop=True), rep)
+    # The overlay holds EVERY kept row of the day, whether or not the tables passed in already have it: the loader
+    # skips pairs that are present. (Writing only "new" rows made a re-run against an already refreshed build write
+    # an empty overlay, and the next refresh then lost the day.) An existing overlay is never shrunk: rows it holds
+    # that this run did not produce (an earlier, fuller read of the stream) are kept.
+    out_dir = os.path.join(a.forward_root, a.day)
+    prev_path = os.path.join(out_dir, "comments.parquet")
+    if os.path.exists(prev_path):
+        prev = pd.read_parquet(prev_path)
+        comments = pd.concat([comments, prev[comments.columns]], ignore_index=True)
+        comments = comments.drop_duplicates(["person_idx", "item_id"], keep="first")
+        rep["rows_kept_from_the_existing_overlay"] = int(len(comments) - rep["first_per_person_and_launch"])
+    rep["overlay_rows"] = int(len(comments))
+    files = write_overlay(out_dir, items, comments.reset_index(drop=True), rep)
     print(json.dumps(rep))
     sync(files, f"{a.sync.rstrip('/')}/{a.day}" if a.sync else "")
 
