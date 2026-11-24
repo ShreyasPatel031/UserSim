@@ -43,10 +43,10 @@ def ios_devices(c) -> list[dict]:
     filters = [
         {"attribute": "PLATFORM", "operator": "EQUALS", "values": ["IOS"]},
         {"attribute": "REMOTE_ACCESS_ENABLED", "operator": "EQUALS", "values": ["TRUE"]},
-        {"attribute": "AVAILABILITY", "operator": "IN",
-         "values": ["HIGHLY_AVAILABLE", "AVAILABLE"]},
     ]
-    out = c.list_devices(filters=filters)["devices"]
+    out = [d for d in c.get_paginator("list_devices").paginate(filters=filters)
+           .build_full_result()["devices"]
+           if d.get("availability") in ("HIGHLY_AVAILABLE", "AVAILABLE")]
     return sorted(out, key=lambda d: (d.get("availability") != "HIGHLY_AVAILABLE", d["name"]))
 
 
