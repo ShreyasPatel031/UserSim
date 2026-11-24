@@ -126,4 +126,16 @@ python -m simharness.run_v0 baselines --bench BENCH --split test --out RESULTS
 PYTHONPATH=src:. GOOGLE_CLOUD_PROJECT=... python your_script.py
 ```
 
+Round 1 (activity-matched HARD rows, taste-v1, prompt models, stacks; results in `bench_v0/round1/`):
+
+```bash
+R="python -m simharness.run_round1"; A="--bench BENCH --out OUT --sync gs://PRIVATE/prefix"
+$R sets $A && $R leak $A && $R taste $A && $R ablate $A && $R nonllm $A --easy EASY.parquet
+PYTHONPATH=src:. GOOGLE_CLOUD_PROJECT=... $R llm $A --models gemini-2.5-flash,gpt-oss-120b --split test --cap 2.0
+$R agg --bench BENCH --out OUT --results-dir simharness/bench_v0/round1
+```
+
+Every stage writes its files to OUT and copies them to the `--sync` prefix; prompt-model calls are cached in
+append-only part files (`llm.JsonlCache`) so a restart never repeats a paid call, and `--cap` is a hard dollar limit.
+
 `domains/producthunt.py` is the first adapter; its module docstring lists its dating and leak choices.
