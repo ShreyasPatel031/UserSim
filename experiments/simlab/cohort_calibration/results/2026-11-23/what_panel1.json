@@ -1,0 +1,708 @@
+{
+ "day": "2026-11-23",
+ "launches": 11,
+ "truth": "frozen consensus truth v1 (3 extractions, >= 2 of 3)",
+ "judge": "same JUDGE/CJ prompts, 3 runs per launch, mean",
+ "note": "[mean %, launch-bootstrap 2.5%, 97.5%, launches]; persona panel and plain prompt from forward_says_2026-11-23.v1.json (same truth, same 3-run protocol)",
+ "per_arm": {
+  "persona_panel": {
+   "recall": [
+    71.5,
+    61.8,
+    81.7,
+    11
+   ],
+   "recall_w": [
+    75.0,
+    64.0,
+    85.4,
+    11
+   ],
+   "precision": [
+    38.8,
+    22.8,
+    57.4,
+    11
+   ],
+   "complaint_recall": [
+    24.6,
+    10.1,
+    40.2,
+    11
+   ]
+  },
+  "plain_prompt": {
+   "recall": [
+    60.3,
+    46.2,
+    74.4,
+    11
+   ],
+   "recall_w": [
+    66.8,
+    53.4,
+    80.2,
+    11
+   ],
+   "precision": [
+    29.7,
+    18.6,
+    44.0,
+    11
+   ],
+   "complaint_recall": [
+    10.3,
+    1.2,
+    21.7,
+    11
+   ]
+  },
+  "qwen7b_tuned (equal)": {
+   "recall": [
+    62.5,
+    48.5,
+    76.9,
+    11
+   ],
+   "recall_w": [
+    69.1,
+    55.1,
+    82.1,
+    11
+   ],
+   "precision": [
+    37.4,
+    23.8,
+    52.0,
+    11
+   ],
+   "complaint_recall": [
+    15.8,
+    6.7,
+    25.2,
+    11
+   ]
+  },
+  "qwen7b_tuned (all)": {
+   "recall": [
+    63.1,
+    50.0,
+    77.0,
+    11
+   ],
+   "recall_w": [
+    68.9,
+    55.9,
+    80.9,
+    11
+   ],
+   "precision": [
+    32.4,
+    21.3,
+    45.7,
+    11
+   ],
+   "complaint_recall": [
+    15.2,
+    6.3,
+    24.6,
+    11
+   ]
+  },
+  "qwen7b_untuned (equal)": {
+   "recall": [
+    53.6,
+    38.1,
+    69.4,
+    11
+   ],
+   "recall_w": [
+    57.7,
+    40.8,
+    73.3,
+    11
+   ],
+   "precision": [
+    58.4,
+    40.1,
+    77.7,
+    11
+   ],
+   "complaint_recall": [
+    11.3,
+    3.7,
+    20.4,
+    11
+   ]
+  },
+  "qwen7b_untuned (all)": {
+   "recall": [
+    54.9,
+    40.0,
+    70.2,
+    11
+   ],
+   "recall_w": [
+    63.7,
+    47.8,
+    78.3,
+    11
+   ],
+   "precision": [
+    62.0,
+    40.1,
+    82.7,
+    11
+   ],
+   "complaint_recall": [
+    15.5,
+    6.1,
+    26.1,
+    11
+   ]
+  },
+  "gemini_flash (equal)": {
+   "recall": [
+    58.8,
+    49.4,
+    67.9,
+    11
+   ],
+   "recall_w": [
+    67.0,
+    58.2,
+    75.4,
+    11
+   ],
+   "precision": [
+    70.7,
+    54.6,
+    85.2,
+    11
+   ],
+   "complaint_recall": [
+    29.7,
+    16.1,
+    43.6,
+    11
+   ]
+  },
+  "gemini_flash (all)": {
+   "recall": [
+    59.7,
+    48.3,
+    70.9,
+    11
+   ],
+   "recall_w": [
+    67.8,
+    56.8,
+    78.6,
+    11
+   ],
+   "precision": [
+    76.3,
+    62.0,
+    88.7,
+    11
+   ],
+   "complaint_recall": [
+    37.1,
+    22.9,
+    50.6,
+    11
+   ]
+  }
+ },
+ "paired (equal size, primary)": {
+  "qwen7b_tuned minus persona_panel": {
+   "recall": [
+    -8.9,
+    -20.4,
+    3.2,
+    11
+   ],
+   "recall_w": [
+    -5.9,
+    -17.4,
+    7.5,
+    11
+   ],
+   "precision": [
+    -1.4,
+    -14.1,
+    12.5,
+    11
+   ],
+   "complaint_recall": [
+    -8.9,
+    -27.6,
+    10.3,
+    11
+   ]
+  },
+  "qwen7b_tuned minus plain_prompt": {
+   "recall": [
+    2.2,
+    -9.7,
+    15.6,
+    11
+   ],
+   "recall_w": [
+    2.3,
+    -10.9,
+    16.1,
+    11
+   ],
+   "precision": [
+    7.7,
+    -5.2,
+    20.3,
+    11
+   ],
+   "complaint_recall": [
+    5.5,
+    -9.1,
+    19.4,
+    11
+   ]
+  },
+  "qwen7b_untuned minus persona_panel": {
+   "recall": [
+    -17.9,
+    -26.8,
+    -9.4,
+    11
+   ],
+   "recall_w": [
+    -17.2,
+    -29.2,
+    -7.0,
+    11
+   ],
+   "precision": [
+    19.6,
+    0.6,
+    39.0,
+    11
+   ],
+   "complaint_recall": [
+    -13.3,
+    -27.9,
+    0.0,
+    11
+   ]
+  },
+  "qwen7b_untuned minus plain_prompt": {
+   "recall": [
+    -6.8,
+    -16.0,
+    1.3,
+    11
+   ],
+   "recall_w": [
+    -9.1,
+    -22.4,
+    2.3,
+    11
+   ],
+   "precision": [
+    28.7,
+    14.4,
+    43.9,
+    11
+   ],
+   "complaint_recall": [
+    1.0,
+    -8.1,
+    8.7,
+    11
+   ]
+  },
+  "gemini_flash minus persona_panel": {
+   "recall": [
+    -12.6,
+    -22.0,
+    -3.2,
+    11
+   ],
+   "recall_w": [
+    -7.9,
+    -17.4,
+    3.3,
+    11
+   ],
+   "precision": [
+    31.9,
+    15.7,
+    49.8,
+    11
+   ],
+   "complaint_recall": [
+    5.1,
+    -5.1,
+    16.1,
+    11
+   ]
+  },
+  "gemini_flash minus plain_prompt": {
+   "recall": [
+    -1.5,
+    -13.5,
+    12.2,
+    11
+   ],
+   "recall_w": [
+    0.2,
+    -10.5,
+    12.5,
+    11
+   ],
+   "precision": [
+    41.0,
+    22.6,
+    57.9,
+    11
+   ],
+   "complaint_recall": [
+    19.4,
+    9.1,
+    30.7,
+    11
+   ]
+  },
+  "tuned minus untuned": {
+   "recall": [
+    8.9,
+    -1.9,
+    19.7,
+    11
+   ],
+   "recall_w": [
+    11.3,
+    0.3,
+    23.3,
+    11
+   ],
+   "precision": [
+    -21.0,
+    -38.9,
+    -3.7,
+    11
+   ],
+   "complaint_recall": [
+    4.4,
+    -10.3,
+    18.2,
+    11
+   ]
+  },
+  "tuned minus flash": {
+   "recall": [
+    3.7,
+    -8.2,
+    15.5,
+    11
+   ],
+   "recall_w": [
+    2.0,
+    -8.5,
+    12.4,
+    11
+   ],
+   "precision": [
+    -33.3,
+    -49.5,
+    -15.5,
+    11
+   ],
+   "complaint_recall": [
+    -13.9,
+    -33.0,
+    6.1,
+    11
+   ]
+  }
+ },
+ "paired (all 30)": {
+  "qwen7b_tuned minus persona_panel": {
+   "recall": [
+    -8.4,
+    -17.1,
+    1.2,
+    11
+   ],
+   "recall_w": [
+    -6.1,
+    -14.9,
+    3.4,
+    11
+   ],
+   "precision": [
+    -6.4,
+    -18.4,
+    5.3,
+    11
+   ],
+   "complaint_recall": [
+    -9.5,
+    -28.7,
+    9.6,
+    11
+   ]
+  },
+  "qwen7b_tuned minus plain_prompt": {
+   "recall": [
+    2.7,
+    -6.1,
+    12.6,
+    11
+   ],
+   "recall_w": [
+    2.1,
+    -7.9,
+    12.6,
+    11
+   ],
+   "precision": [
+    2.7,
+    -8.6,
+    13.9,
+    11
+   ],
+   "complaint_recall": [
+    4.8,
+    -9.6,
+    18.7,
+    11
+   ]
+  },
+  "qwen7b_untuned minus persona_panel": {
+   "recall": [
+    -16.6,
+    -23.8,
+    -9.0,
+    11
+   ],
+   "recall_w": [
+    -11.2,
+    -19.8,
+    -3.6,
+    11
+   ],
+   "precision": [
+    23.2,
+    2.2,
+    44.1,
+    11
+   ],
+   "complaint_recall": [
+    -9.2,
+    -24.7,
+    5.2,
+    11
+   ]
+  },
+  "qwen7b_untuned minus plain_prompt": {
+   "recall": [
+    -5.5,
+    -13.6,
+    1.4,
+    11
+   ],
+   "recall_w": [
+    -3.1,
+    -14.3,
+    5.5,
+    11
+   ],
+   "precision": [
+    32.3,
+    14.4,
+    49.2,
+    11
+   ],
+   "complaint_recall": [
+    5.2,
+    -2.1,
+    12.9,
+    11
+   ]
+  },
+  "gemini_flash minus persona_panel": {
+   "recall": [
+    -11.8,
+    -22.3,
+    -0.6,
+    11
+   ],
+   "recall_w": [
+    -7.1,
+    -19.8,
+    6.1,
+    11
+   ],
+   "precision": [
+    37.5,
+    20.7,
+    53.9,
+    11
+   ],
+   "complaint_recall": [
+    12.5,
+    -3.0,
+    28.6,
+    11
+   ]
+  },
+  "gemini_flash minus plain_prompt": {
+   "recall": [
+    -0.7,
+    -14.9,
+    13.0,
+    11
+   ],
+   "recall_w": [
+    1.0,
+    -13.8,
+    16.0,
+    11
+   ],
+   "precision": [
+    46.6,
+    33.5,
+    59.2,
+    11
+   ],
+   "complaint_recall": [
+    26.8,
+    14.4,
+    40.3,
+    11
+   ]
+  },
+  "tuned minus untuned": {
+   "recall": [
+    8.2,
+    -1.6,
+    16.5,
+    11
+   ],
+   "recall_w": [
+    5.2,
+    -2.9,
+    12.5,
+    11
+   ],
+   "precision": [
+    -29.6,
+    -47.7,
+    -11.0,
+    11
+   ],
+   "complaint_recall": [
+    -0.3,
+    -10.9,
+    9.7,
+    11
+   ]
+  },
+  "tuned minus flash": {
+   "recall": [
+    3.4,
+    -9.2,
+    18.6,
+    11
+   ],
+   "recall_w": [
+    1.1,
+    -10.4,
+    15.1,
+    11
+   ],
+   "precision": [
+    -43.8,
+    -57.5,
+    -29.0,
+    11
+   ],
+   "complaint_recall": [
+    -22.0,
+    -40.7,
+    -3.1,
+    11
+   ]
+  }
+ },
+ "maker-like comments (all 30, regex)": {
+  "qwen7b_tuned": 8,
+  "qwen7b_untuned": 1,
+  "gemini_flash": 2
+ },
+ "comments per launch": {
+  "qwen7b_tuned": {
+   "all": 30,
+   "equal": 22
+  },
+  "qwen7b_untuned": {
+   "all": 30,
+   "equal": 22
+  },
+  "gemini_flash": {
+   "all": 30,
+   "equal": 22
+  }
+ },
+ "usd": 0.38,
+ "sentiment JSD vs real (equal size, launch bootstrap)": {
+  "base": [
+   0.193,
+   0.136,
+   0.27,
+   11
+  ],
+  "persona_reactions": [
+   0.312,
+   0.201,
+   0.431,
+   11
+  ],
+  "qwen7b_tuned": [
+   0.251,
+   0.18,
+   0.339,
+   11
+  ],
+  "qwen7b_untuned": [
+   0.543,
+   0.484,
+   0.604,
+   11
+  ],
+  "gemini_flash": [
+   0.389,
+   0.288,
+   0.484,
+   11
+  ],
+  "qwen7b_tuned minus base": [
+   0.057,
+   0.008,
+   0.111,
+   11
+  ],
+  "qwen7b_untuned minus base": [
+   0.349,
+   0.285,
+   0.404,
+   11
+  ],
+  "gemini_flash minus base": [
+   0.195,
+   0.09,
+   0.284,
+   11
+  ],
+  "usd": 0.026
+ }
+}

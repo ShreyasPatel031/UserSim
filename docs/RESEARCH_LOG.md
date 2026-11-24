@@ -1708,3 +1708,12 @@ PREREG addenda 6, 6b, 6c. results: cohort_calibration/results/rerank_a_long.json
 - Structural capture (long): top 3 56.7, top 5 66.9, top 10 78.1. Live Nov 15–22: 50.0 / 67.5 / 68.8; 2 real top-10 launches featured after 00:05 (misses for both).
 - Live 8 days, all five candidates (expected held voters, propensity-weighted, top-3-prone groups [degenerate: no group met the rule], full-pool, full-pool active-7d): top-3 differences −4.2 to +4.2, all intervals span 0.
 - Reading: expected held voters (how many of our people would back it) carry no ordering information beyond the structural score. The walk-forward weight settles at 0.1–0.25 and changes little. Stage B (agents reading the page) is the remaining test.
+
+### 2026-11-24 E5 — WHAT-PANEL-1: history-built comments (Qwen 7B tuned / untuned, Gemini Flash) vs the persona panel, Nov 23 (11 launches)
+cohort_calibration/what_panel1.py → results/2026-11-23/what_panel1.json. Frozen consensus truth, 3 judge runs; equal size = 22 comments/launch (the panel's size), primary.
+- Equal size, [mean %, launch-boot 95%], recall / precision / complaint recall: panel 71.5 / 38.8 / 24.6; plain 60.3 / 29.7 / 10.3; tuned 62.5 / 37.4 / 15.8; untuned 53.6 / 58.4 / 11.3; Flash 58.8 / 70.7 / 29.7.
+- Clearing zero: Flash − panel recall −12.6 [−22.0, −3.2], precision +31.9 [+15.7, +49.8]; Flash − plain precision +41.0, complaint +19.4 [+9.1, +30.7]; untuned − panel recall −17.9; tuned − untuned recall_w +11.3 [+0.3, +23.3], precision −21.0 [−38.9, −3.7]; tuned − Flash precision −33.3 [−49.5, −15.5].
+- Not clearing: tuned − panel on every measure (recall −8.9 [−20.4, +3.2]); tuned − plain on every measure; tuned − Flash recall +3.7 [−8.2, +15.5].
+- Sentiment JSD (equal size): base 0.193, tuned 0.251, persona reactions 0.312, Flash 0.389, untuned 0.543; tuned is closest of the simulated arms but still worse than base (+0.057 [+0.008, +0.111]).
+- Maker-like comments by regex (of 330 per arm): tuned 8, untuned 1, Flash 2.
+- Reading: history-built comments do not beat the persona panel on theme recall; Gemini Flash with history is the most precise and catches the most complaints; tuning trades precision for recall and does not beat Flash. One day, 11 launches.
