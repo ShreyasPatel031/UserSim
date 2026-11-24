@@ -1,0 +1,1003 @@
+{
+ "day": "2026-11-23",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1305567": {
+   "themes": [
+    {
+     "theme": "Excitement about understanding dog communication and AI/computer vision",
+     "n": 10
+    },
+    {
+     "theme": "Skepticism about accuracy and validation of translation results",
+     "n": 3
+    },
+    {
+     "theme": "Curiosity about underlying technology, validation, and features",
+     "n": 3
+    },
+    {
+     "theme": "Interest in a 'cat translator' or translating back to the dog",
+     "n": 2
+    },
+    {
+     "theme": "Congratulations on the launch and development journey",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Accuracy/validation of results",
+    "Desire to understand ML parameters/weights",
+    "Two-way translation (human to pet)",
+    "Skepticism about revealing obvious information",
+    "Fear of negative pet thoughts/reactions"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are excited about the concept of understanding dog communication and the use of technology like AI and computer vision.",
+      "Users express skepticism about the accuracy and validation of the translation results.",
+      "Users are curious about the underlying technology, validation methods, and specific features.",
+      "Users are interested in a 'cat translator' or the ability to translate back to the dog.",
+      "Users appreciate the focus on posture and context in interpreting dog barks.",
+      "Users congratulate the team on the launch and the long development journey.",
+      "Users joke about potentially negative or humorous translation results.",
+      "The product is implicitly compared to LLMs, with the makers highlighting their unique approach."
+     ],
+     [
+      "Users are excited about the concept of understanding dog communication, especially how it incorporates context and body language.",
+      "Users are concerned about the accuracy and validation of the translation results.",
+      "Users are interested in a 'reverse' translation feature to communicate back to their dogs.",
+      "Users are curious about the underlying technology and how the app works.",
+      "Users are asking about the possibility of a cat translator and the differences between dog and cat communication.",
+      "Users are congratulating the team on the launch and the long development journey."
+     ],
+     [
+      "Users are excited about the concept of understanding dog communication and the use of technology like AI and computer vision.",
+      "Users express skepticism about the accuracy and validation of the translation results.",
+      "Users are curious about the underlying technology, validation methods, and specific features.",
+      "Users are interested in a 'cat translator' or the ability to translate back to the dog.",
+      "Users appreciate the focus on posture and context in interpreting dog barks.",
+      "Users congratulate the team on the launch and the long development journey.",
+      "Users joke about potentially negative or humorous translation results.",
+      "The product is implicitly compared to LLMs, with the makers highlighting their unique approach."
+     ]
+    ],
+    "complaints": [
+     [
+      "How can it be validated that the results are precise?",
+      "However, it's hard to believe what the dog is trying to say. Would love to know more about machine learning parameters, weights to decide the actual behaviour.",
+      "can it translate back to them too so i can tell her to stop running away every time I open the door lol",
+      "I'm curious what SuperTranslator can tell me that isn't already obvious.",
+      "I was about to ask for a cat translator but it's probably best we don't know what they think..."
+     ],
+     [
+      "How can it be validated that the results are precise?",
+      "Would love to know more about machine learning parameters, weights to decide the actual behaviour.",
+      "can it translate back to them too so i can tell her to stop running away every time I open the door lol",
+      "I'm curious what SuperTranslator can tell me that isn't already obvious.",
+      "I was about to ask for a cat translator but it's probably best we don't know what they think...",
+      "I am so terrified I'll find out my dog hates me"
+     ],
+     [
+      "How can it be validated that the results are precise?",
+      "Would love to know more about machine learning parameters, weights to decide the actual behaviour.",
+      "Can it translate back to them too so i can tell her to stop running away every time I open the door lol",
+      "I'm curious what SuperTranslator can tell me that isn't already obvious.",
+      "I was about to ask for a cat translator but it's probably best we don't know what they think..."
+     ]
+    ]
+   }
+  },
+  "1225286": {
+   "themes": [
+    {
+     "theme": "Closing the loop with customers after a fix is shipped",
+     "n": 5
+    },
+    {
+     "theme": "Grouping similar complaints from different channels or phrased differently",
+     "n": 4
+    },
+    {
+     "theme": "Review process/verification before communicating with customers",
+     "n": 3
+    },
+    {
+     "theme": "Integration with App Store reviews",
+     "n": 1
+    },
+    {
+     "theme": "Definition and customization of escalation paths",
+     "n": 1
+    },
+    {
+     "theme": "General congratulations on the launch",
+     "n": 2
+    },
+    {
+     "theme": "Product seen as emblematic of the future of software and useful for customer success teams",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Follow-up communication and review process",
+    "Grouping similar issues/tickets from multiple channels",
+    "Merging similar bug reports with different wording",
+    "Verification of fixes before customer notification",
+    "Definition of escalation paths",
+    "Integration with App Store reviews"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Does Modem group similar complaints from different channels or phrased differently into one issue?",
+      "How does Modem ensure the fix is correct before communicating with the customer?",
+      "The follow-up feature after a fix is shipped is highly valued and a key selling point.",
+      "Does Modem reply in the same channel the customer used and can the message be reviewed before sending?",
+      "The product is seen as emblematic of the future of software and useful for customer success teams.",
+      "How are escalation paths defined and customized?",
+      "Can Modem pull in App Store reviews?",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "Users appreciate the product's ability to close the loop with customers after a fix ships, recognizing it as a crucial and often neglected aspect of customer delight.",
+      "Users are curious about how the system handles grouping or merging similar issues reported in different channels or phrased differently.",
+      "Users want to know if there is a review process or verification step before the system automatically sends follow-up messages or hands problems to coding agents.",
+      "Users are interested in the ability to integrate App Store reviews into the monitoring system.",
+      "Users are asking how escalation paths are defined and customized within the system.",
+      "Users express general praise and congratulations for the product launch.",
+      "Users believe customer success teams would find this product highly beneficial.",
+      "Users see the product as emblematic of the future of software."
+     ],
+     [
+      "Users appreciate the product's ability to close the loop with customers after a fix ships, which is often a neglected part of the support process.",
+      "Users are concerned about how the product handles and groups similar issues reported in different ways or from multiple channels.",
+      "Users want to know how the product ensures the accuracy and review of messages sent to customers, especially when a coding agent is involved.",
+      "Users express general congratulations and positive sentiment about the product launch.",
+      "Users are curious about how escalation paths are defined and customized within the system.",
+      "Users are interested in the product's ability to integrate with and pull data from App Store reviews.",
+      "Users believe the product is emblematic of the future of software and would be valuable for customer success teams.",
+      "A solo developer finds the product particularly relevant for managing support and follow-ups."
+     ]
+    ],
+    "complaints": [
+     [
+      "When Modem follows up after the fix ships, does it reply in the same channel the customer used and can someone review that message first or does it go out on its own?",
+      "If the same complaint comes from 3 channels, does it group them into one issue or do I get 3 tickets?",
+      "When two customers describe the same bug in totally different words, does it merge them or show two separate issues?",
+      "When it hands a problem to a coding agent, who checks it was the right fix before the customer gets the fixed message?",
+      "How are escalation paths defined?",
+      "Can it pull in App Store reviews too?"
+     ],
+     [
+      "When Modem follows up after the fix ships, does it reply in the same channel the customer used and can someone review that message first or does it go out on its own?",
+      "If the same complaint comes from 3 channels, does it group them into one issue or do I get 3 tickets?",
+      "When two customers describe the same bug in totally different words, does it merge them or show two separate issues?",
+      "When it hands a problem to a coding agent, who checks it was the right fix before the customer gets the fixed message?",
+      "How are escalation paths defined?",
+      "Can it pull in App Store reviews too?"
+     ],
+     [
+      "When Modem follows up after the fix ships, does it reply in the same channel the customer used and can someone review that message first or does it go out on its own?",
+      "If the same complaint comes from 3 channels, does it group them into one issue or are there 3 tickets?",
+      "When two customers describe the same bug in totally different words, does it merge them or show two separate issues?",
+      "When it hands a problem to a coding agent, who checks it was the right fix before the customer gets the fixed message?",
+      "How are escalation paths defined?",
+      "Can it pull in App Store reviews too?"
+     ]
+    ]
+   }
+  },
+  "1326826": {
+   "themes": [
+    {
+     "theme": "Disk cleanup during active builds",
+     "n": 4
+    },
+    {
+     "theme": "Interest in using spare servers",
+     "n": 1
+    },
+    {
+     "theme": "Job behavior if Mac is used mid-build",
+     "n": 1
+    },
+    {
+     "theme": "Cleanup affecting active job caches",
+     "n": 1
+    },
+    {
+     "theme": "Job execution user identity",
+     "n": 1
+    },
+    {
+     "theme": "Runner daemon failure behavior",
+     "n": 1
+    },
+    {
+     "theme": "Keeping SwiftPM and DerivedData warm",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "What happens to a job if someone grabs the Mac and starts using it mid-build?",
+    "Does the 7-tier cleanup ever touch caches a running job still needs?",
+    "Do jobs run as whoever ran add-runner?",
+    "When a runner daemon dies, does it restart it on the same box, or just take that machine out of the queue?",
+    "Keeping SwiftPM and DerivedData warm across runs is the other half."
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The disk cleanup feature, especially during active builds, is highly appreciated as it addresses common issues with self-hosted runners.",
+      "Users are interested in trying the product as it addresses their need for utilizing spare servers without budget constraints.",
+      "What happens to a job if the Mac is used mid-build?",
+      "Does the 7-tier cleanup ever touch caches a running job still needs?",
+      "Do jobs run as the user who ran 'add-runner'?",
+      "When a runner daemon dies, does it restart on the same box or take the machine out of the queue?",
+      "Keeping SwiftPM and DerivedData warm across runs is an important feature for users."
+     ],
+     [
+      "The disk cleanup feature, especially during active builds, is highly appreciated as it addresses common issues with self-hosted runners.",
+      "Users are interested in trying the product as it addresses their need for utilizing spare servers without budget constraints.",
+      "Users are asking what happens to a job if the Mac is used mid-build.",
+      "Users are asking if the cleanup touches caches that a running job still needs.",
+      "Users are asking if jobs run as the user who added the runner, raising concerns about SSH key access.",
+      "Users are asking if the runner daemon restarts on the same box or if the machine is taken out of the queue when it dies.",
+      "Users are interested in keeping SwiftPM and DerivedData warm across runs for faster Xcode builds."
+     ],
+     [
+      "The cleanup during active builds is a detail I appreciate, especially regarding simulator caches and leaving the current job alone.",
+      "Full disks are a classic way for self-hosted runners to die overnight.",
+      "What happens to a job if someone grabs the Mac and starts using it mid-build?",
+      "Does the 7-tier cleanup ever touch caches a running job still needs?",
+      "Do jobs run as whoever ran add-runner?",
+      "When a runner daemon dies, does it restart it on the same box, or just take that machine out of the queue?",
+      "Keeping SwiftPM and DerivedData warm across runs is important for build performance.",
+      "This looks like something I was looking for, especially for spare servers with budget constraints."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the 7-tier cleanup ever touch caches a running job still needs?",
+      "What happens to a job if someone grabs the Mac and starts using it mid-build?",
+      "Do jobs run as whoever ran add-runner?",
+      "When a runner daemon dies, does it restart it on the same box, or just take that machine out of the queue?",
+      "Keeping SwiftPM and DerivedData warm across runs is the other half."
+     ],
+     [
+      "what happens to a job if someone grabs the mac and starts using it mid build",
+      "Does the 7-tier cleanup ever touch caches a running job still needs?",
+      "do jobs run as whoever ran add-runner?",
+      "When a runner daemon dies, does it restart it on the same box, or just take that machine out of the queue?",
+      "Keeping SwiftPM and DerivedData warm across runs is the other half"
+     ],
+     [
+      "What happens to a job if someone grabs the Mac and starts using it mid-build?",
+      "Does the 7-tier cleanup ever touch caches a running job still needs?",
+      "Do jobs run as whoever ran add-runner?",
+      "When a runner daemon dies, does it restart it on the same box, or just take that machine out of the queue?",
+      "Keeping SwiftPM and DerivedData warm across runs is the other half."
+     ]
+    ]
+   }
+  },
+  "1096678": {
+   "themes": [
+    {
+     "theme": "Mesh quality (topology, UVs, rigging)",
+     "n": 3
+    },
+    {
+     "theme": "Blender/Unity plugin availability on Free plan",
+     "n": 2
+    },
+    {
+     "theme": "Helpfulness for store owners",
+     "n": 2
+    },
+    {
+     "theme": "Photo to 3D model conversion",
+     "n": 1
+    },
+    {
+     "theme": "Underlying AI model used",
+     "n": 1
+    },
+    {
+     "theme": "Integration with existing tools (Blender, Unity, MCP)",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Mesh topology and UVs",
+    "Rigging and animation readiness",
+    "Photo to 3D model conversion",
+    "Underlying AI model (TripoSR)",
+    "Plugin availability on free plan"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How consistent is the topology and UVs on the generated meshes, especially for game use?",
+      "Do the Blender and Unity plugins work on the Free plan?",
+      "The tool looks great and helpful for store owners.",
+      "Can a photo of a real object be turned into a 3D model?",
+      "Did the tool rely on TripoSR model or was it built from scratch?",
+      "Does every asset come out rigged and ready to animate, or is that still a manual step afterwards?",
+      "Pulling from several 3D models and keeping the good parts is a smarter bet than one generator.",
+      "The Blender and Unity plugins plus MCP connection are appealing for staying within existing tools."
+     ],
+     [
+      "Users are concerned about the quality of generated meshes, specifically topology, clean UVs, and rigging for animation.",
+      "Users are asking about the underlying AI model used for generation.",
+      "Users are asking if they can turn a photo of a real object into a 3D model.",
+      "Users are asking about the availability of Blender and Unity plugins on the Free plan.",
+      "The product is seen as helpful for store owners.",
+      "The integration with existing tools like Blender, Unity, and MCP is appreciated.",
+      "The use of BlueFox, a custom model trained on Pixel3D, is seen as a positive sign."
+     ],
+     [
+      "How consistent is the topology and UVs on the generated meshes, especially for game use?",
+      "Do the Blender and Unity plugins work on the Free plan?",
+      "The tool looks great and will be helpful for store owners.",
+      "Can a photo of a real object be turned into a 3D model?",
+      "Did you rely on TripoSR model or build this tool's model from scratch?",
+      "Does every asset come out rigged and ready to animate, or is that still a manual step afterwards?",
+      "Pulling from several 3D models and keeping the good parts of each is a smarter bet than one generator.",
+      "The Blender and Unity plugins plus the MCP connection to Claude Code / Cursor is appealing for staying within existing tools."
+     ]
+    ],
+    "complaints": [
+     [
+      "How consistent is the topology on the generated meshes? For game use the thing that usually kills AI 3D for me is messy quads and no clean UVs, so curious if you do any retopo pass or if that is still manual afterwards.",
+      "Does every asset come out rigged and ready to animate, or is that still a manual step afterwards?",
+      "Can I turn a photo of a real object into a 3D model?",
+      "Looks cool, did yall rely on TripoSR model or built this tool's model from scratch?",
+      "Do the Blender and Unity plugins work on the Free plan?"
+     ],
+     [
+      "How consistent is the topology on the generated meshes? For game use the thing that usually kills AI 3D for me is messy quads and no clean UVs, so curious if you do any retopo pass or if that is still manual afterwards.",
+      "Does every asset come out rigged and ready to animate, or is that still a manual step afterwards?",
+      "Can I turn a photo of a real object into a 3D model?",
+      "Looks cool, did yall rely on TripoSR model or built this tool's model from scratch?",
+      "Do the Blender and Unity plugins work on the Free plan?"
+     ],
+     [
+      "How consistent is the topology on the generated meshes? For game use the thing that usually kills AI 3D for me is messy quads and no clean UVs, so curious if you do any retopo pass or if that is still manual afterwards.",
+      "Does every asset come out rigged and ready to animate, or is that still a manual step afterwards?",
+      "Can I turn a photo of a real object into a 3D model?",
+      "Looks cool, did yall rely on TripoSR model or built this tool's model from scratch?",
+      "Do the Blender and Unity plugins work on the Free plan?"
+     ]
+    ]
+   }
+  },
+  "1316202": {
+   "themes": [
+    {
+     "theme": "Ability to upload custom assets (logos, music, voiceovers)",
+     "n": 3
+    },
+    {
+     "theme": "Appreciation for using real UI/product screens over stock footage/talking heads",
+     "n": 2
+    },
+    {
+     "theme": "Questions about handling different website content (sparse, login-protected)",
+     "n": 3
+    },
+    {
+     "theme": "Interest in voiceover customization (languages, selection)",
+     "n": 2
+    },
+    {
+     "theme": "Tool saves time and effort in video creation",
+     "n": 4
+    },
+    {
+     "theme": "Inquiry if the launch video was made with the product",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Custom intro/outro logo animation",
+    "Multi-language voiceovers",
+    "Upload custom screenshots for private content"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Can I upload my own logo animation for the intro and outro?",
+      "A 15-second vertical ad from Film mode is interesting. That's normally a whole agency project for us.",
+      "Starting with the actual product screens is a good choice for a demo. Being able to change one scene after someone spots an issue should make the review a lot less painful.",
+      "So the launch video on this page was made with Motionflare?",
+      "Finally an AI video tool that isn't another talking-head avatar. Motion graphics just make more sense for a software product.",
+      "Wondering if this could turn a long tutorial into a short explainer.",
+      "Using real UI instead of stock footage is the right call. Nothing looks faker than a generic laptop on a desk.",
+      "Do the voiceovers come in other languages?"
+     ],
+     [
+      "The product is seen as a useful tool for creating various types of videos, especially for product launches and updates, saving time and effort compared to traditional methods.",
+      "Users are asking about the ability to customize or upload their own assets like logos, music, and voiceovers.",
+      "Users are asking about how the tool handles different types of website content, especially sparse sites or those behind a login.",
+      "The tool is appreciated for using real UI and product screens instead of generic stock footage or talking-head avatars.",
+      "Users have concerns about the pacing of scenes, font/color matching, and the selection of screenshots from their sites.",
+      "Users are asking about the features of the free preview.",
+      "Users are interested in integrating the tool with other AI agents for automated video creation.",
+      "Users are asking if the launch video for Motionflare itself was made using the product."
+     ],
+     [
+      "Users appreciate the ability to quickly generate shareable videos from a URL, saving time compared to traditional video production.",
+      "Users want to upload their own custom elements like logos, music, and potentially voiceovers.",
+      "Users are curious about how the tool handles specific website content, such as sparse sites, login-protected areas, or mobile screenshots.",
+      "Users have questions about customization options for voiceovers, including language support and voice selection.",
+      "Users value the use of real UI and motion graphics over generic stock footage or talking-head avatars for product demos.",
+      "Users experienced issues with pacing (scenes moving too fast) and design customization (fonts, colors, logo integration) in the generated videos.",
+      "Users are interested in the functionality of the free preview and the types of videos being created by others.",
+      "Users are interested in API integration to automate video creation as part of a larger workflow."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can I upload my own logo animation for the intro and outro?",
+      "Do the voiceovers come in other languages?",
+      "what if most of the product is behind a login, can i feed it my own screenshots or does it only work off the public site?",
+      "Can I upload my own music instead of the generated version?",
+      "Pacing: scenes move too fast, I couldnt read the text.",
+      "Design: fonts and colors didnt match my site, it used only 2 screenshots and missed the logo."
+     ],
+     [
+      "Can I upload my own logo animation for the intro and outro?",
+      "Do the voiceovers come in other languages?",
+      "what if most of the product is behind a login, can i feed it my own screenshots or does it only work off the public site?",
+      "Can I upload my own music instead of the generated version?",
+      "Pacing: scenes move too fast, I couldnt read the text. May be a minimum time per scene based on word count as default would help.",
+      "Design: fonts and colors didnt match my site, it used only 2 screenshots and missed the logo."
+     ],
+     [
+      "Can I upload my own logo animation for the intro and outro?",
+      "Do the voiceovers come in other languages?",
+      "Does the free preview give you the whole video or just the first 10 seconds?",
+      "Is the voice chosen automatically? I'd want something calmer for a B2B product.",
+      "what if most of the product is behind a login, can i feed it my own screenshots or does it only work off the public site?",
+      "Is there a way to call this from an agent?"
+     ]
+    ]
+   }
+  },
+  "1324531": {
+   "themes": [
+    {
+     "theme": "Agent handles repeated mistakes/lack of understanding",
+     "n": 3
+    },
+    {
+     "theme": "Agent for exam prep, local exams, and languages",
+     "n": 2
+    },
+    {
+     "theme": "AI study agent remembers struggles and builds habits",
+     "n": 3
+    },
+    {
+     "theme": "Agent determines mastery and handles missed study days",
+     "n": 3
+    },
+    {
+     "theme": "Agent's proactivity in suggesting next study topics and subject range",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Parental progress updates",
+    "Support for local exams and languages",
+    "Distinguishing mistake types",
+    "Adaptive teaching for repeated mistakes",
+    "Assessing mastery and retention",
+    "Detecting student motivation changes"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How does the agent handle repeated mistakes or lack of understanding on a topic?",
+      "Can the agent be used for exam preparation, especially for specific local exams or in different languages?",
+      "The idea of an AI study agent that remembers struggles and helps build learning habits is great.",
+      "How does the agent determine mastery of a topic and what happens if a student misses study days?",
+      "How proactive is the agent in suggesting what to study next, and does it cover a wide range of subjects?",
+      "Congratulations on the launch.",
+      "Can the app provide parent visibility on a child's progress?",
+      "How accurate are the AI-generated lessons and quizzes?"
+     ],
+     [
+      "Does it support local languages and exam patterns for specific countries like Bangladesh?",
+      "How does the app handle missed study days or weeks, and does it reprioritize content?",
+      "How does the AI determine mastery of a topic and differentiate between a careless mistake and a real knowledge gap?",
+      "What happens if a student consistently makes the same mistake; does the AI adapt its teaching approach or provide different exercises?",
+      "The idea of an AI study agent that remembers where students struggle and helps build better learning habits is highly valued.",
+      "Can the agent be used for exam preparation, especially when starting from zero knowledge on a topic?",
+      "How proactive is the agent in suggesting what to study next, or does the user need to initiate it?",
+      "Does the platform cover a wide range of subjects beyond typical academic topics, and how accurate are the AI-generated lessons?"
+     ],
+     [
+      "How does the agent handle missed study days or weeks, and does it reprioritize content?",
+      "How does the AI determine mastery of a topic and differentiate between a careless mistake and a real knowledge gap?",
+      "Can the agent adapt its teaching approach or provide different exercises if a student repeatedly makes the same mistake?",
+      "Does the agent support local exam patterns and languages for specific countries like Bangladesh?",
+      "The idea of the agent remembering where a student struggles and providing daily shortlists is highly valued.",
+      "How proactive is the agent in suggesting what to study next, or does the user need to initiate it?",
+      "Can the agent be used for exam preparation, especially when starting from zero knowledge on a topic?",
+      "Does the platform cover a wide range of subjects beyond typical academic topics, and how accurate are the AI-generated lessons?"
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it also tell parents how the kid is doing?",
+      "Can this agent help students prepare for government exams in countries like Bangladesh? Can it generate questions based on local exam patterns? Does it support local languages also?",
+      "How does it tell a careless slip from a real gap, a repeat mistake or just one wrong answer?",
+      "What happens if I keep making the same mistake? Will the AI try a different teaching approach, give me easier exercises or keep focusing on that topic until I improve?",
+      "How does it know I have actually mastered something? Is getting a few questions right enough or does it check again after a few days to make sure I have not forgotten?",
+      "Can the agent notice when a student is losing motivation? A student used to study every day but suddenly starts skipping sessions. Would it react differently?"
+     ],
+     [
+      "Does it also tell parents how the kid is doing?",
+      "Can this agent help students prepare for government exams in countries like Bangladesh? Can it generate questions based on local exam patterns? Does it support local languages also?",
+      "If I miss a day or forget to study, does the app tell me what I gotta prioritize first? Also curious how it handles a missed week rather than just a missed day, since that's usually when a study plan falls apart.",
+      "How does it tell a careless slip from a real gap, a repeat mistake or just one wrong answer?",
+      "What happens if i keep making the same mistake? Will the AI try a different teaching approach, give me easier exercises or keep focusing on that topic until i improve?",
+      "How proactive is the agent? will it actually reach out and suggest what i should work on next, or do i still need to open the app and ask?"
+     ],
+     [
+      "Does it also tell parents how the kid is doing?",
+      "Can this agent help students prepare for government exams in countries like Bangladesh? Can it generate questions based on local exam patterns? Does it support local languages also?",
+      "How does it tell a careless slip from a real gap, a repeat mistake or just one wrong answer?",
+      "What happens if I keep making the same mistake? Will the AI try a different teaching approach, give me easier exercises or keep focusing on that topic until I improve?",
+      "How does it know I have actually mastered something? Is getting a few questions right enough or does it check again after a few days to make sure I have not forgotten?",
+      "Can the agent notice when a student is losing motivation? A student used to study every day but suddenly starts skipping sessions. Would it react differently?"
+     ]
+    ]
+   }
+  },
+  "1325145": {
+   "themes": [
+    {
+     "theme": "Pairing alerts with deploys/errors for context",
+     "n": 3
+    },
+    {
+     "theme": "Time to establish baseline for 'normal' behavior",
+     "n": 1
+    },
+    {
+     "theme": "Confidence level for deploy-sales drop correlation",
+     "n": 1
+    },
+    {
+     "theme": "Client read-only access without sharing credentials",
+     "n": 1
+    },
+    {
+     "theme": "Which metric to alert on first (sales vs. signups)",
+     "n": 1
+    },
+    {
+     "theme": "App Store Connect integration (downloads/sales) with smartwatch notifications",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Read-only access for clients",
+    "Confidence level of deploy impact",
+    "Baseline for new startups with low traffic",
+    "App Store Connect integration"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The feature of pairing alerts with deploys or errors is highly valued as it provides immediate context for issues.",
+      "Users are concerned about the time it takes to establish a baseline for 'normal' behavior, especially for new startups with low traffic.",
+      "Users want to know if the system provides a confidence level for correlating deploys with sales drops, or if it just shows the closest event.",
+      "Users want the ability for clients to grant read-only access to their projects without sharing login credentials.",
+      "Users are curious about which metric (sales or signups) people typically set alerts on first.",
+      "Users would like integration with App Store Connect to see downloads and sales alongside Stripe data, potentially on a smartwatch."
+     ],
+     [
+      "Users appreciate the feature of correlating alerts with deploys or errors, as it helps in quickly identifying the cause of issues.",
+      "Users are interested in integrating App Store Connect data (downloads and sales) alongside Stripe data, potentially with Watch notifications.",
+      "Users want to know how the system determines the confidence level that a deploy caused a sales drop, or if it just shows the closest event.",
+      "Users are curious about the time it takes for the system to establish 'normal' behavior for a new startup with low traffic.",
+      "Users are looking for a way for clients to grant read-only access to their projects without sharing login credentials.",
+      "Users are asking which metric (sales or signups) people typically set an alert on first."
+     ],
+     [
+      "The feature of pairing alerts with deploys or errors is highly valued as it provides immediate context for issues.",
+      "Users are concerned about the time it takes to establish a baseline for 'normal' behavior, especially for new startups with low traffic.",
+      "Users want to know if the system provides a confidence level for correlating deploys with sales drops, or if it just shows the closest event.",
+      "Users want the ability for clients to grant read-only access to their projects without sharing login credentials.",
+      "Users are curious about which metric (sales or signups) people typically set alerts on first.",
+      "Users would like integration with App Store Connect to see downloads and sales alongside Stripe data, potentially on a smartwatch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can a client hand me read only access to their project without sharing a login?",
+      "How confident is it that the deploy caused the sales drop? Does it show a confidence level, or just the closest event?",
+      "How long does it take to figure out what's normal for a brand new startup with barely any traffic?",
+      "App Store Connect would be the one for me, seeing downloads and sales next to Stripe, on my Watch, would be the first alert I'd actually want."
+     ],
+     [
+      "Can a client hand me read only access to their project without sharing a login?",
+      "How confident is it that the deploy caused it? Does it show a confidence level, or just the closest event?",
+      "How long does it take to figure out whats normal for a brand new startup with barely any traffic?",
+      "App Store Connect would be the one for me."
+     ],
+     [
+      "Can a client hand me read only access to their project without sharing a login?",
+      "How confident is it that the deploy caused it? Does it show a confidence level, or just the closest event?",
+      "How long does it take to figure out whats normal for a brand new startup with barely any traffic?",
+      "App Store Connect would be the one for me."
+     ]
+    ]
+   }
+  },
+  "1321014": {
+   "themes": [
+    {
+     "theme": "Generic congratulations on the launch.",
+     "n": 3
+    },
+    {
+     "theme": "Concern about battery life, especially in cold weather.",
+     "n": 2
+    },
+    {
+     "theme": "Request for run data to include resort and snow conditions for future comparison.",
+     "n": 1
+    },
+    {
+     "theme": "Inquiry about the technology used for tracking (GPS vs. accelerometer).",
+     "n": 1
+    },
+    {
+     "theme": "Question about the process for getting a group to use the app and joining a trip without prior download.",
+     "n": 1
+    },
+    {
+     "theme": "Appreciates the ability to record runs without needing to use a phone.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Watch battery life in cold",
+    "Ski passport data retention",
+    "GPS vs. accelerometer usage",
+    "Onboarding entire group",
+    "Joining trip without download"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How does the watch battery hold up over a full day out in the cold?",
+      "Generic congratulations on the launch.",
+      "Do the runs in the ski passport keep the resort and the snow conditions with them, so the same trip next winter can be compared?",
+      "Are you using just GPS or also accelerometer?",
+      "How do you get the whole crew to install the app before the trip? Is there a way to join a trip without downloading first?",
+      "Runs recording on their own means I stop pulling my phone out on the lift, which is the moment the day stops feeling like a ski day."
+     ],
+     [
+      "Generic congratulations on the launch.",
+      "Concern about battery life, especially in cold weather.",
+      "Request for run data to include resort and snow conditions for future comparison.",
+      "Inquiry about the technology used for tracking (GPS vs. accelerometer).",
+      "Question about the process for getting a group to use the app and joining a trip without prior download.",
+      "Appreciates the ability to record runs without needing to use a phone."
+     ],
+     [
+      "How does the watch battery hold up over a full day out in the cold?",
+      "The ability to run recording on its own means not pulling out a phone on the lift, which improves the ski day experience.",
+      "Do the runs in the ski passport keep the resort and snow conditions for future comparison?",
+      "Are you using just GPS or also accelerometer?",
+      "How do you get the whole crew to install the app before the trip, or is there a way to join without downloading first?",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does the watch battery hold up over a full day out in the cold?",
+      "Do the runs in the ski passport keep the resort and the snow conditions with them, so the same trip next winter can be compared?",
+      "Are you using just GPS or also accelerometer?",
+      "How do you get the whole crew to install the app before the trip?",
+      "Is there a way to join a trip without downloading first?"
+     ],
+     [
+      "how does the watch battery hold up over a full day out in the cold",
+      "Do the runs in the ski passport keep the resort and the snow conditions with them, so the same trip next winter can be compared?",
+      "Are you using just GPS or also accelerometer?",
+      "how do you get the whole crew to install the app before the trip?",
+      "Is there a way to join a trip without downloading first?"
+     ],
+     [
+      "How does the watch battery hold up over a full day out in the cold?",
+      "Do the runs in the ski passport keep the resort and the snow conditions with them, so the same trip next winter can be compared?",
+      "Are you using just GPS or also accelerometer?",
+      "How do you get the whole crew to install the app before the trip?",
+      "Is there a way to join a trip without downloading first?"
+     ]
+    ]
+   }
+  },
+  "1326513": {
+   "themes": [
+    {
+     "theme": "Persona with small screen and large text size is a good example",
+     "n": 2
+    },
+    {
+     "theme": "Ability to simulate incoming SMS or notifications",
+     "n": 1
+    },
+    {
+     "theme": "Curiosity about agent's interaction style and handling of complex scenarios",
+     "n": 1
+    },
+    {
+     "theme": "Running personas on GitHub Actions emulators is smart and cost-effective",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Agent getting stuck/polite new user",
+    "Driving UI on a real phone/simulator",
+    "Persona receiving SMS/notifications"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The persona with a small screen and largest text size is a good example for developers.",
+      "Users want the agent to report exact screen, steps, video, and logs to save time reproducing crashes.",
+      "Users are curious if the agent gets stuck on accidental taps or acts like a polite new user.",
+      "Running each persona on GitHub Actions emulators is a smart way to keep it free.",
+      "Users want to know if a persona can be given a script of incoming SMS or notifications during its run."
+     ],
+     [
+      "The persona with a small screen and the largest text size is a good example for developers.",
+      "Users want the ability to simulate incoming SMS or notifications for testing.",
+      "Users are curious about the agent's interaction style and ability to handle complex scenarios.",
+      "The idea of testing on a real phone instead of a simulator is highly valued by solo iOS developers.",
+      "Running personas on GitHub Actions emulators is seen as a smart and cost-effective approach."
+     ],
+     [
+      "Users want the ability to script incoming SMS or notifications for personas to test apps that react to messages.",
+      "The idea of testing with specific personas like 'iPhone SE in Swedish at the largest text size' is highly relevant for identifying UI bugs.",
+      "The ability for the agent to report exact screen, steps, video, and logs would save significant debugging time.",
+      "Running personas on GitHub Actions emulators is seen as a smart and cost-effective approach.",
+      "There's a question about the agent's interaction style, specifically if it gets stuck on accidental taps or behaves more like a polite new user.",
+      "The difficulty of reproducing bugs that only appear on real devices with real interactions (keyboard, permissions, finger taps) is a significant pain point."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the agent get stuck on things a 3 year old would tap by accident, or is it more of a polite new user?",
+      "Curious whether it can drive the UI to the point of asking for permissions, like Location or Photos?",
+      "Could a persona be given a script of incoming SMS or notifications during its run?"
+     ],
+     [
+      "Does the agent get stuck on things a 3 year old would tap by accident, or is it more of a polite new user?",
+      "Curious whether it can drive the UI on a real phone, not just a simulator?",
+      "Could a persona be given a script of incoming SMS or notifications during its run?"
+     ],
+     [
+      "Does the agent get stuck on things a 3 year old would tap by accident, or is it more of a polite new user?",
+      "Curious whether it can drive the UI on a real phone, not just a simulator?",
+      "Could a persona be given a script of incoming SMS or notifications during its run?"
+     ]
+    ]
+   }
+  },
+  "1326030": {
+   "themes": [
+    {
+     "theme": "Distinguishing AI agents from humans",
+     "n": 6
+    },
+    {
+     "theme": "Accuracy of AI/bot detection",
+     "n": 4
+    },
+    {
+     "theme": "GDPR compliance and data security",
+     "n": 4
+    },
+    {
+     "theme": "On-site overlay/HUD for visitor activity",
+     "n": 4
+    },
+    {
+     "theme": "Comparisons to existing analytics tools",
+     "n": 4
+    },
+    {
+     "theme": "EU availability and functionality",
+     "n": 3
+    },
+    {
+     "theme": "Specific feature requests (heatmaps, CRM, alerts)",
+     "n": 3
+    },
+    {
+     "theme": "General congratulations and positive feedback",
+     "n": 4
+    }
+   ],
+   "complaints": [
+    "How to differentiate between real users, AI, and bots?",
+    "Comparison with existing analytics tools",
+    "GDPR compliance and data security",
+    "Heatmap support",
+    "Compatibility with non-Git managed sites (e.g., WordPress)",
+    "Percentage of de-anonymized users"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to see AI agents separately from human visitors is a unique and valuable feature not seen in other analytics tools.",
+      "Users are asking about the accuracy and methodology for distinguishing between real people, AI agents, and bots.",
+      "Users have questions regarding GDPR compliance and data security, especially concerning EU visitors and cookie consent.",
+      "The on-site overlay/HUD for viewing visitor activity directly on the website is highly appreciated for its accessibility and convenience.",
+      "Users are asking for comparisons and differences from existing analytics tools like RB2B, Clarity, and Posthog.",
+      "Users are asking about the product's availability and functionality in the EU market.",
+      "Users are interested in specific features like heatmaps, CRM integrations, and custom Slack alerts.",
+      "Generic congratulations and positive feedback on the launch."
+     ],
+     [
+      "The ability to see AI agents separately from human visitors and on the site itself is a unique and highly valued feature.",
+      "Users frequently ask how the product differentiates between real people, AI agents, and bots, especially concerning identification methods and data sources.",
+      "There are multiple questions regarding GDPR compliance, data security, and how the product handles cookie consent and user data in the EU.",
+      "Users often ask for comparisons to existing analytics tools like Posthog, Clarity, RB2B, and how this product is different or better.",
+      "Users inquire about the product's functionality, such as heatmap support, session replays, and integration with other systems like CRMs or Slack alerts.",
+      "There are questions about the product's applicability and effectiveness for different types of websites (e.g., WordPress, B2C vs B2B) and how it handles VPNs or shared office IPs.",
+      "General congratulations and positive feedback on the launch and the product's concept are common.",
+      "Users ask about the pricing plans and whether a specific plan is sufficient for evaluation on a small website."
+     ],
+     [
+      "The ability to see AI agents separately from human visitors is a unique and valuable feature.",
+      "Users are concerned about the accuracy of distinguishing between real people, AI agents, and bots.",
+      "Users have questions about GDPR compliance and data security.",
+      "Users are asking about the product's availability and functionality in the EU.",
+      "Users are asking for comparisons and differences from existing tools like Posthog, Clarity, and RB2B.",
+      "The on-site overlay/HUD for viewing visitor activity is a highly appreciated feature.",
+      "Users are asking about specific features like heatmaps, CRM integrations, and custom alerts.",
+      "Users are asking about the product's compatibility with platforms like WordPress and its effectiveness with VPN users."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you differentiate between a real person, a smart robot, an AI agent, or a plain scraper?",
+      "What is the difference between this product and existing analytics tools like RB2B, Clarity, or Posthog?",
+      "How does the product handle GDPR compliance, data security, and user privacy, especially with cookie consent and de-anonymization?",
+      "What is the percentage of users that can be de-anonymized, particularly for B2C or users with VPNs?",
+      "Does it support heatmaps, and are there integrations with CRMs or specific alert functionalities like Slack alerts for pricing page visits?",
+      "Does it work for sites not managed in Git, like WordPress, and is that on the roadmap?"
+     ],
+     [
+      "How do you differentiate between a real buyer, a plain scraper, and an AI agent?",
+      "Is the overlay visible only to logged-in team members or can visitors see it?",
+      "Does it support heatmaps or just recorded simulated behavior?",
+      "Is the product compliant with GDPR and how is user data secured?",
+      "Does it work for sites that aren't managed in Git, like WordPress?",
+      "What is the difference between this product and existing tools like RB2B, Clarity, or Posthog?"
+     ],
+     [
+      "How do you tell an AI agent browsing for a real buyer apart from a plain scraper?",
+      "Is this compliant with GDPR and how is user data handled securely?",
+      "What is the difference between this product and existing tools like RB2B, Clarity, or Posthog?",
+      "What is the percentage of users that can be de-anonymized, especially for enterprise customers using VPNs?",
+      "Does it support heatmaps or just recorded simulated behaviour?",
+      "Does it work for sites that aren't managed in git, like WordPress?"
+     ]
+    ]
+   }
+  },
+  "1324692": {
+   "themes": [
+    {
+     "theme": "Second agent reproducing evidence to prevent wild goose chases",
+     "n": 2
+    },
+    {
+     "theme": "Wary of autonomous agents touching production; want read-only actions",
+     "n": 1
+    },
+    {
+     "theme": "Can the system be installed on a computer?",
+     "n": 1
+    },
+    {
+     "theme": "Can the board be kept for postmortems?",
+     "n": 1
+    },
+    {
+     "theme": "Ability to tell swarm which leads are ruled out",
+     "n": 1
+    },
+    {
+     "theme": "Memory carries across incidents",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Preventing agents from worsening a situation",
+    "Handling agent disagreements",
+    "Memory persistence across incidents",
+    "Excluding leads for agents",
+    "Post-mortem board retention",
+    "Local installation capability"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are wary of autonomous agents touching production during an incident and want to know if actions are read-only until human approval.",
+      "Users want to know if the system can be installed on a computer.",
+      "Users are curious about how the system handles disagreements between agents when reproducing evidence.",
+      "Users want to know if the board can be kept for postmortems.",
+      "Users want to be able to tell the swarm which leads are already ruled out to prevent agents from investigating them.",
+      "The idea of a second agent reproducing evidence to prevent wild goose chases is appealing to users.",
+      "Solo developers find the concept of a swarm doing parallel digging and a shared evidence board appealing.",
+      "Users want to know if the memory carries across incidents so the system knows where to look first for recurring issues."
+     ],
+     [
+      "The idea of a second agent reproducing evidence before confirming a cause is highly valued for preventing wild goose chases.",
+      "Users are asking if the system can be installed on a computer.",
+      "Users want to know if the board can be kept for post-mortems.",
+      "Users want to be able to tell the swarm which leads are already ruled out.",
+      "Users are asking if the memory carries across incidents.",
+      "Users are wary of autonomous agents touching production during an incident and want to know if actions are read-only until human approval.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The idea of a second agent reproducing evidence to confirm a cause is highly valued for preventing wild goose chases during incidents.",
+      "Users are asking about the persistence and reusability of the incident board and findings for post-mortems and future incidents.",
+      "Users are concerned about the autonomy of agents and their potential to make changes in production during an incident.",
+      "Users are asking about the installation methods for the product.",
+      "Users want to know how the swarm handles disagreements between agents.",
+      "Users want to be able to tell the swarm which leads have already been ruled out.",
+      "The concept of a swarm doing parallel investigation is appealing, especially for solo developers.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "What stops them from making a bad situation worse, like a rollback that hits a migration? Is everything read-only until a human approves, or can it act on its own?",
+      "When two agents disagree, does the swarm pick a side or keep both open until someone tests them?",
+      "Does the memory carry across incidents, so the next time the same kind of thing breaks it already knows where to look first?",
+      "can i tell the swarm which leads are already ruled out so it doesnt burn agents on them?",
+      "So is it like can be installed to the computer also ?",
+      "can i keep the board after, for the postmortem?"
+     ],
+     [
+      "What stops agents from making a bad situation worse, like a rollback that hits a migration? Is everything read-only until a human approves, or can it act on its own?",
+      "When two agents disagree, does the swarm pick a side or keep both open until someone tests them?",
+      "Does the memory carry across incidents, so the next time the same kind of thing breaks it already knows where to look first?",
+      "Can I tell the swarm which leads are already ruled out so it doesn't burn agents on them?",
+      "Can I keep the board after, for the postmortem?",
+      "Is it like can be installed to the computer also?"
+     ],
+     [
+      "What stops agents from making a bad situation worse, like a rollback that hits a migration? Is everything read-only until a human approves, or can it act on its own?",
+      "When two agents disagree, does the swarm pick a side or keep both open until someone tests them?",
+      "Does the memory carry across incidents, so the next time the same kind of thing breaks it already knows where to look first?",
+      "Can I tell the swarm which leads are already ruled out so it doesn't burn agents on them?",
+      "Can I keep the board after, for the postmortem?",
+      "Is it like can be installed to the computer also?"
+     ]
+    ]
+   }
+  }
+ }
+}

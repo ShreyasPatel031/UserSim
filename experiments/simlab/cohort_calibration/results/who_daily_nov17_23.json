@@ -1,0 +1,116 @@
+{
+ "days": [
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20",
+  "2026-11-21",
+  "2026-11-22",
+  "2026-11-23"
+ ],
+ "min_held_backers_per_launch": 20,
+ "coverage": {
+  "2026-11-17": {
+   "observed_held_people": 2361,
+   "held_backer_rows": 1282,
+   "cut": "2026-11-17"
+  },
+  "2026-11-18": {
+   "observed_held_people": 2320,
+   "held_backer_rows": 1146,
+   "cut": "2026-11-18"
+  },
+  "2026-11-19": {
+   "observed_held_people": 2307,
+   "held_backer_rows": 1150,
+   "cut": "2026-11-19"
+  },
+  "2026-11-20": {
+   "observed_held_people": 2279,
+   "held_backer_rows": 950,
+   "cut": "2026-11-20"
+  },
+  "2026-11-21": {
+   "observed_held_people": 1973,
+   "held_backer_rows": 603,
+   "cut": "2026-11-21"
+  },
+  "2026-11-22": {
+   "observed_held_people": 929,
+   "held_backer_rows": 563,
+   "cut": "2026-11-22"
+  },
+  "2026-11-23": {
+   "observed_held_people": 0,
+   "held_backer_rows": 0,
+   "cut": "2026-11-23"
+  }
+ },
+ "launches_scored": 68,
+ "JSD base (shadow)": [
+  0.247,
+  0.235,
+  0.258,
+  68,
+  6
+ ],
+ "JSD P3 (published)": [
+  0.279,
+  0.267,
+  0.289,
+  68,
+  6
+ ],
+ "P3 minus base (paired)": [
+  0.032,
+  0.029,
+  0.035,
+  68,
+  6
+ ],
+ "per_day": [
+  {
+   "day": "2026-11-17",
+   "launches": 12,
+   "backers": 935,
+   "jsd_base": 0.244,
+   "jsd_p3": 0.283
+  },
+  {
+   "day": "2026-11-18",
+   "launches": 13,
+   "backers": 788,
+   "jsd_base": 0.233,
+   "jsd_p3": 0.263
+  },
+  {
+   "day": "2026-11-19",
+   "launches": 16,
+   "backers": 921,
+   "jsd_base": 0.259,
+   "jsd_p3": 0.291
+  },
+  {
+   "day": "2026-11-20",
+   "launches": 11,
+   "backers": 556,
+   "jsd_base": 0.27,
+   "jsd_p3": 0.296
+  },
+  {
+   "day": "2026-11-21",
+   "launches": 9,
+   "backers": 445,
+   "jsd_base": 0.234,
+   "jsd_p3": 0.263
+  },
+  {
+   "day": "2026-11-22",
+   "launches": 7,
+   "backers": 367,
+   "jsd_base": 0.232,
+   "jsd_p3": 0.267
+  }
+ ],
+ "note": "[mean, day-bootstrap 2.5%, 97.5%, launches, days]; real mix = held complete backers re-read after close; target JSD <= 0.10"
+}

@@ -9,7 +9,11 @@ ST, SP, D = sys.argv[1:4]; NL = int(sys.argv[sys.argv.index("--max-launches") + 
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"; gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True).stdout
 now = pd.Timestamp.now(tz="UTC"); close = PP.close_utc(D); start = close - pd.Timedelta(days=1); deadline = start + pd.Timedelta(hours=3, minutes=45)
 SL = json.loads(gcat(f"{B}/results/structural/{D}/shortlist.json") or b"{}")
-if not SL.get("launches"): sys.exit(f"no structural shortlist for {D}")
+SL_SRC = f"results/structural/{D}/shortlist.json"
+if not SL.get("launches"):   # fallback allowed by the orchestrator until the PH agent's file lands: the frozen 00:05 forecast order
+    fc = json.loads(gcat(f"{B}/results/web/forecast_0005/{D}.json") or b"{}")
+    if not fc.get("forecast"): sys.exit(f"no structural shortlist or 00:05 forecast for {D}")
+    SL = {"launches": [{"id": x["id"], "structural_rank": x["predicted_rank"], "structural_score": None, "name": None} for x in fc["forecast"]]}; SL_SRC = f"results/web/forecast_0005/{D}.json (fallback)"
 short = sorted(SL["launches"], key=lambda x: x["structural_rank"])[:NL]
 V2 = pd.read_parquet(io.BytesIO(gcat(f"{B}/tmp/e5/private/backer_pred_v2/{D}.parquet"))); V2["launch_id"] = V2.launch_id.astype(str)
 P = pd.read_parquet(f"{ST}/persons.parquet", columns=["person_id", "complete"]); COMPLETE = set(P[P.complete == True].person_id)
@@ -77,7 +81,7 @@ for x in short:
 R = pd.DataFrame(rows); ys = R.yes_share.fillna(R.yes_share.mean()); zz = (ys - ys.mean()) / (ys.std() + 1e-9)
 R["key"] = R.structural_rank - 2 * zz; R = R.sort_values(["key", "structural_rank"]); R["rerank"] = np.arange(1, len(R) + 1)
 out = {"day": D, "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "before_0345_pt": bool(pd.Timestamp.now(tz="UTC") < deadline), "prereg": "PREREG.md addendum 7",
-       "model": sim_model.MODEL, "rule": "key = structural_rank - 2 * z(yes share), z within the shortlist", "shortlist_source": f"results/structural/{D}/shortlist.json",
+       "model": sim_model.MODEL, "rule": "key = structural_rank - 2 * z(yes share), z within the shortlist", "shortlist_source": SL_SRC,
        "agents_total": int(A.vote.notna().sum()), "agent_calls": len(A), "usd": sim_model.usd(),
        "launches": R.drop(columns=["key"]).to_dict("records"),
        "leak": "agents see only their own upvotes/comments on launches before D (reads before D's start) and the launch page; no counts, ranks or others' comments"}
