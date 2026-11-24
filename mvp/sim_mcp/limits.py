@@ -64,6 +64,13 @@ DEFAULTS: dict[str, Any] = {
     "anon_allow_paid_captcha": True,
     "anon_allow_shared_aliases": False,
     "google_signin_anon": True,
+    "devices_enabled": True,
+    "device_max_concurrent": 5,
+    "device_session_max_s": 600,
+    "device_max_steps": 40,
+    "est_usd_per_device_session": 0.5,
+    "est_usd_per_device_step": 0.01,
+    "anon_daily_app_uploads_per_ip": 5,
     # Where simulated users' browsers run: "seed_vm" (our own seed VMs, reached over an IAP SSH tunnel) or
     # "browserbase" (kept as a fallback path only). See mvp/sim_mcp/seed_backend.py.
     "browser_backend": "seed_vm",

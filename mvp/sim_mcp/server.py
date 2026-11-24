@@ -7,6 +7,7 @@ and report can't drift between clients.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 from contextlib import AsyncExitStack
@@ -301,6 +302,94 @@ def _ann(read_only: bool, open_world: bool) -> ToolAnnotations:
     """Tool hints for clients (ChatGPT requires all three as explicit booleans). Nothing here deletes or overwrites
     the caller's data: browser actions run in a throwaway cloud browser with Atelier Sim's own accounts."""
     return ToolAnnotations(readOnlyHint=read_only, destructiveHint=False, openWorldHint=open_world)
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
+async def usersim_start_device_session(
+    ctx: Context,
+    app: str = Field(description="The app to test: an https:// link that downloads the .apk (for example a Bitrise build "
+                                 "artifact link), or an lt://APP... id from an earlier upload."),
+    task: str = Field(description="What the simulated user tries to do, in a user's words."),
+    persona: str = Field(description="Who the simulated user is (2 sentences)."),
+    platform: str = Field(default="android", description="android (iOS needs a signed .ipa; coming later)."),
+    device: str = Field(default="", description="Optional device name pattern, e.g. 'Pixel.*' or 'Galaxy S2.*'."),
+) -> list[Any] | str:
+    """Start a real phone (LambdaTest real device) with the app installed, for one simulated user.
+
+    Returns the first screenshot and the session_id. Then use usersim_device_act (tap / type / swipe / key / wait) and
+    finish with usersim_device_finish. Coordinates are in the returned screenshot's pixels. Sessions last at most
+    10 minutes; a few run at once, so 'busy' means retry in a minute.
+    """
+    from mvp.sim_mcp import devices as D
+    from mvp.sim_mcp import limits as L
+
+    owner = _owner(ctx)
+    try:
+        if S.is_anon(owner):
+            L.charge(owner, float(L.get("est_usd_per_device_session")), "device_session", dry=True)
+        d = await D.start(owner, app, task, persona, platform, device)
+        if S.is_anon(owner):
+            L.charge(owner, float(L.get("est_usd_per_device_session")), "device_session")
+        o = await D.observe(d)
+    except L.CapExceeded as exc:
+        return _cap_fail(exc)
+    except D.DeviceError as exc:
+        return _fail(exc)
+    meta = {**o["meta"], "app": d.app, "task": task,
+            "next": "Act with usersim_device_act (one action, with a first-person thought); finish with usersim_device_finish."}
+    return [json.dumps(meta), Image(data=o["jpeg"], format="jpeg")]
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=True, open_world=True))
+async def usersim_device_observe(ctx: Context, session_id: str) -> list[Any] | str:
+    """Current screenshot and on-screen elements of a real-device session, without acting."""
+    from mvp.sim_mcp import devices as D
+
+    try:
+        d = D.get(session_id, _owner(ctx))
+        o = await D.observe(d)
+    except D.DeviceError as exc:
+        return _fail(exc)
+    return [json.dumps(o["meta"]), Image(data=o["jpeg"], format="jpeg")]
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
+async def usersim_device_act(ctx: Context, session_id: str, action: str, thought: str, x: int | None = None,
+                             y: int | None = None, text: str | None = None, direction: str | None = None,
+                             key: str | None = None) -> list[Any] | str:
+    """One action on the real device, then the new screenshot.
+
+    action: tap (x, y in screenshot pixels) | type (text, into the focused field: tap it first) | swipe (direction
+    up/down/left/right; up scrolls down the page) | key (back, home or enter) | wait (text = seconds, max 10).
+    thought: the simulated user's first-person thought for this step.
+    """
+    from mvp.sim_mcp import devices as D
+    from mvp.sim_mcp import limits as L
+
+    owner = _owner(ctx)
+    try:
+        d = D.get(session_id, owner)
+        if S.is_anon(owner):
+            L.charge(owner, float(L.get("est_usd_per_device_step")), "device_act")
+        await D.act(d, action, thought, x, y, text, direction, key)
+        o = await D.observe(d)
+    except L.CapExceeded as exc:
+        return _cap_fail(exc)
+    except D.DeviceError as exc:
+        return _fail(exc)
+    return [json.dumps(o["meta"]), Image(data=o["jpeg"], format="jpeg")]
+
+
+@mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=False))
+async def usersim_device_finish(ctx: Context, session_id: str, outcome: str, notes: str) -> str:
+    """End a real-device session and free the phone. outcome: completed | gave_up | blocked. Returns the steps."""
+    from mvp.sim_mcp import devices as D
+
+    try:
+        d = D.get(session_id, _owner(ctx), allow_closed=True)
+    except D.DeviceError as exc:
+        return _fail(exc)
+    return json.dumps(await asyncio.to_thread(D.finish, d, outcome, notes), indent=1)
 
 
 @mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
@@ -2470,6 +2559,37 @@ def mount(app: Any) -> None:
                              "browsers": {"backend": browser_backend(), **seeds}})
 
     app.router.routes.insert(0, Route("/api/mcp/limits", endpoint=_limits, methods=["GET"]))
+
+    async def _app_upload(request: Any) -> Any:
+        """POST the raw .apk/.ipa bytes (e.g. from a Bitrise Script step: curl --data-binary @"$BITRISE_APK_PATH")
+        and get back an lt://APP id to give usersim_start_device_session. Anonymous callers: per-IP daily cap."""
+        import time
+
+        from mvp.sim_mcp import devices as D
+
+        headers = {k.lower(): v for k, v in request.headers.items()}
+        auth = headers.get("authorization", "")
+        tok = auth[7:].strip() if auth.lower().startswith("bearer ") else ""
+        owner = ("anon:" + L.client_ip(headers, getattr(request.client, "host", "") or "")) if tok not in _TOKENS else "token"
+        if int(headers.get("content-length") or 0) > 200 * 1024 * 1024:
+            return JSONResponse({"error": "app is larger than 200 MB"}, status_code=413)
+        try:
+            if S.is_anon(owner):
+                cap = int(L.get("anon_daily_app_uploads_per_ip"))
+                key = f"{owner}|{time.strftime('%Y-%m-%d')}"
+                n = D._UPLOADS.setdefault(key, [])
+                if len(n) >= cap:
+                    return JSONResponse({"error": f"{cap} app uploads a day without a token; reuse an earlier lt://APP id"},
+                                        status_code=429)
+                n.append(time.time())
+            data = await request.body()
+            name = re.sub(r"[^A-Za-z0-9._-]", "", headers.get("x-filename", "app.apk"))[:80] or "app.apk"
+            app_id = await asyncio.to_thread(D.upload_file, data, name)
+        except D.DeviceError as exc:
+            return JSONResponse({"error": str(exc)}, status_code=400)
+        return JSONResponse({"app": app_id, "ask_claude": f"Test my Android app {app_id} with Atelier Sim: <what a user should try>"})
+
+    app.router.routes.insert(0, Route("/api/apps/upload", endpoint=_app_upload, methods=["POST"]))
     _mount_launch_page(app)
     L.load_bundled()
 
