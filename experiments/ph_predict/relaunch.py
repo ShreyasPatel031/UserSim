@@ -7,7 +7,7 @@ page, day and effort). For each pair of consecutive launches: did the later one 
   gemini       Gemini shown both launch pages side by side (dates and results hidden), asked which will do better
 Score: share of pairs where the predicted direction is right (50% = coin flip), with a 95% interval.
 usage: python relaunch.py -> results/relaunch.json"""
-import json, os, pickle, random, re
+import json, os, random, re
 import numpy as np, pandas as pd
 import llm
 
@@ -38,7 +38,8 @@ def interval(hits):
 
 
 def main():
-    df = pickle.load(open(f"{D}/build_cache.pkl", "rb"))
+    from buildcache import build_cached
+    df = build_cached()
     P = pd.read_parquet("results/ctrl_preds.parquet")
     df = df.merge(P[["id", "fixed", "fixed+page", "fixed+day", "fixed+effort", "all"]], on="id").drop(columns=["logv"], errors="ignore").merge(P[["id", "logv"]], on="id")
     df = df[df.dailyRank.notna()].copy()

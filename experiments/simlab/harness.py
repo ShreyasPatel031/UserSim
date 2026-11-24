@@ -38,17 +38,21 @@ def baseline():
     try:
         import multiprocessing as mp
         import run as RN
-        from buildcache import build_cached
+        from buildcache import build_cached, cache_path
         df = build_cached(); df = df[~df.known]
-        stamp = os.path.getmtime(os.path.join(PH, "data", "build_cache.pkl"))
+        stamp = os.path.getmtime(cache_path())  # the pickle build_cached() just used (build_cache_gemini.pkl by default)
         path = os.path.join(CACHE, "baseline.parquet")
         if os.path.exists(path) and os.path.getmtime(path) > stamp:
             return pd.read_parquet(path)
-        with mp.get_context("fork").Pool(os.cpu_count()) as pool:
+        workers = int(os.environ.get("BASELINE_WORKERS") or os.cpu_count())   # cap it on a shared VM (e.g. 8)
+        with mp.get_context("fork").Pool(workers) as pool:
             B = pd.concat(pool.map(_fold, list(RN.folds(df, MONTHS))))
     finally:
         os.chdir(cwd)
-    os.makedirs(CACHE, exist_ok=True); B["id"] = B.id.astype(str); B.to_parquet(path)
+    from atomicio import atomic_path
+    os.makedirs(CACHE, exist_ok=True); B["id"] = B.id.astype(str)
+    with atomic_path(path) as tmp:   # parallel runs read this while another writes it
+        B.to_parquet(tmp)
     return B
 
 

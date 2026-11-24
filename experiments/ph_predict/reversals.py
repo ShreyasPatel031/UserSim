@@ -3,11 +3,12 @@ finished above A, with at least one of them in the real top 5 ("reversals"), ver
 1) Which inputs favour the surprise winner (B) in reversals, compared with correct pairs: mean of (winner - loser)
    standardised, reversal vs correct.  2) Where reversals happen: error rate by context bucket.
 Output: results/reversal_feats.csv, results/reversal_context.csv, results/reversal_pairs.csv"""
-import os, pickle
+import os
 import numpy as np, pandas as pd
+from buildcache import build_cached
 
 R = "results"
-df = pickle.load(open("data/build_cache.pkl", "rb"))
+df = build_cached()
 P = pd.read_csv(os.environ.get("PRED", f"{R}/predictions.csv"), usecols=["id", "pred"]); P["id"] = P.id.astype(str)
 df = df.merge(P, on="id", how="inner")
 df["prank"] = df.groupby("day").pred.rank(ascending=False, method="first")
