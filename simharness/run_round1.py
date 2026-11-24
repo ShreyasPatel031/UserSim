@@ -455,7 +455,49 @@ def stage_agg(a):
         res["before_restart"] = json.load(open(a.prior))
     os.makedirs(a.results_dir, exist_ok=True)
     json.dump(res, open(f"{a.results_dir}/results.json", "w"), indent=1, default=float)
-    print("wrote", f"{a.results_dir}/results.json")
+    open(f"{a.results_dir}/table.md", "w").write(_table(res))
+    print(_table(res))
+
+
+def _f(d, pct=False):
+    if not d:
+        return ""
+    k = 100 if pct else 1
+    nd = 1 if pct else 3
+    return f"{d['value'] * k:.{nd}f} [{d['ci95'][0] * k:.{nd}f}, {d['ci95'][1] * k:.{nd}f}]"
+
+
+def _fd(d):
+    return f"{d['diff']:+.3f} [{d['ci95'][0]:+.3f}, {d['ci95'][1]:+.3f}]" if d else ""
+
+
+def _table(res) -> str:
+    L = ["| Model | HARD AUC (all 50,100 rows) | HARD-LLM AUC (960 rows) | vs logistic on HARD-LLM (paired) | EASY AUC "
+         "| FULL recall@N | FULL AUC | $ / 1k | s / call |", "|---|---|---|---|---|---|---|---|---|"]
+    pv = res["paired_vs_logistic"]
+    for mn, e in res["models"].items():
+        full = e.get("FULL", {})
+        L.append(f"| {mn} | {_f(e.get('HARD', {}).get('auc_pooled'))} | {_f(e['HARD_LLM']['auc_pooled'])} "
+                 f"| {_fd(pv.get(mn, {}).get('HARD_LLM'))} | {_f(e.get('EASY', {}).get('auc_pooled'))} "
+                 f"| {_f(full.get('recall_at_N_pooled'), True)} | {_f(full.get('auc_mean'))} "
+                 f"| {e.get('cost_per_1k_usd') or 0:.2f} | {e.get('latency_s_median') or ''} |")
+    for mn, e in (res.get("before_restart", {}).get("HARD_LLM_test_960_rows") or {}).items():
+        if mn in res["models"]:
+            continue
+        a_ = e["auc_pooled"]
+        L.append(f"| {mn} (scored before the restart; day-bootstrap interval) | | {a_[0]:.3f} [{a_[1]:.3f}, {a_[2]:.3f}] "
+                 f"| not available (per-row scores lost) | | | | {e['cost_per_1k_usd']:.2f} | {e['latency_s_median']} |")
+    L += ["", "| Stack (weights fit on validation only) | HARD AUC | HARD-LLM AUC | vs logistic (paired) | vs its non-LLM "
+          "member | FULL recall@N |", "|---|---|---|---|---|---|"]
+    for sn, e in res["stacks"].items():
+        h, hl, full = e.get("HARD", {}), e.get("HARD_LLM", {}), e.get("FULL", {})
+        d = (hl or h).get("diff_vs_logistic") or {}
+        if "HARD" in e and "HARD_LLM" in e:
+            d = h.get("diff_vs_logistic")
+        dv = _fd(d) if d else (_fd(e.get("recall_diff_vs_logistic")) + " (recall@N)" if e.get("recall_diff_vs_logistic") else "")
+        L.append(f"| {sn} | {_f(h.get('auc_pooled'))} | {_f(hl.get('auc_pooled'))} | {dv} "
+                 f"| {_fd(hl.get('diff_vs_member'))} | {_f(full.get('recall_at_N_pooled'), True)} |")
+    return "\n".join(L) + "\n"
 
 
 def main(argv=None):
