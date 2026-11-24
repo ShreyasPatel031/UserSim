@@ -265,6 +265,11 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
 4f. Presence and choice (PRESENCE-CHOICE-1, subagent, running): a presence model from what is known at 00:05 PT, and
     a choice benchmark (present people x the day's line-up) scored for the structural order, taste, ties and language
     models that pick k launches from the whole line-up.
+4h. Same-day person-linked comment rows (next for the subagent after PRESENCE-CHOICE-1): the fleet's live comment
+    stream carries the commenter's platform id, so a day's comments can be linked to held people the next morning
+    instead of waiting for profile re-reads. Measured Nov 24: of the comments captured on Nov 21 / 22 / 23, 119 of 239,
+    53 of 128 and 216 of 379 were written by people we hold complete (75 / 53 / 128 top-level). Adding them as forward
+    test days roughly triples the daily flow of Task C rows and tightens the +-5 point intervals within a week.
 4g. Dated ties in the live backer model (E5, next slot): add "backed an earlier launch of this team" features to
     BACKER-v2's walk-forward test; deploy if recall@N is clear of noise on its truth set.
 4e. A serving path for a tuned open model (GPU endpoint started on demand) so a winner can replace the prompt model.
