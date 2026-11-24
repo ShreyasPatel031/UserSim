@@ -455,7 +455,8 @@ def stage_combine(a):
     pres = pd.read_parquet(f"{a.out}/presence_rows_test.parquet")
     lineup = ctx["lineup"]
     variants = ["P(present) alone [lgbm]", "P(present, logistic) x P(choose | present)",
-                "P(present, lgbm) x P(choose | present)", "P(choose | present) alone"]
+                "P(present, lgbm) x P(choose | present)", "P(choose | present) alone",
+                "ORACLE presence x P(choose | present) (diagnostic: uses the day's outcome)"]
     full = {k: [] for k in variants}
     for d in b.days("test"):
         pool = b.pool(d)
@@ -476,7 +477,9 @@ def stage_combine(a):
             sc = {"P(present) alone [lgbm]": pr["lgbm"].to_numpy(),
                   "P(present, logistic) x P(choose | present)": pr["logistic"].to_numpy() * pc[:, j],
                   "P(present, lgbm) x P(choose | present)": pr["lgbm"].to_numpy() * pc[:, j],
-                  "P(choose | present) alone": pc[:, j]}
+                  "P(choose | present) alone": pc[:, j],
+                  "ORACLE presence x P(choose | present) (diagnostic: uses the day's outcome)":
+                      pr["y"].to_numpy() * pc[:, j]}
             for k, v in sc.items():
                 full[k].append({"day": d, "item_idx": int(it), "on_lineup": int(it) in on, **score_item(v, y)})
         print("combine", d, len(pool), len(items), flush=True)
@@ -501,6 +504,67 @@ def stage_combine(a):
     sync([f"{a.out}/combine_results.json", f"{a.out}/combine_full_test.pkl"], a.sync)
 
 
+# ------------------------------------------------------------------------------------------------ leak checks
+def stage_leak(a):
+    import re
+    from simharness.bench import KIND_CODE, day_ord
+    from simharness.models.llm import build_choice_prompt, lineup_line
+    from simharness.presence import NAMES, PresenceData
+    from simharness.schema import ENDORSE
+    b = load_bench(a)
+    res = {}
+    # 1. presence features recomputed independently from history rows with item day < D
+    pdata = PresenceData(b)
+    rng = np.random.default_rng(8)
+    worst = 0.0
+    for d in rng.choice(b.days("test"), 2, replace=False):
+        o = day_ord(d)
+        X = pdata.features(d)
+        h = b.hist[(b.hist.kind == KIND_CODE[ENDORSE]) & (b.hist.day_ord < o)]
+        assert h.day_ord.max() < o
+        g = h.groupby("person_idx")
+        ref = pd.DataFrame({"total": g.size(), "adays": g.day_ord.nunique(), "last": g.day_ord.max(),
+                            "n7": h[h.day_ord >= o - 7].groupby("person_idx").size()}).reindex(range(b.n_people))
+        chk = {"ln_total": np.log1p(ref.total.fillna(0)), "ln_adays": np.log1p(ref.adays.fillna(0)),
+               "ln_n7": np.log1p(ref.n7.fillna(0)), "ln_dsl": np.log1p((o - ref["last"]).fillna(400).clip(upper=400))}
+        for k, v in chk.items():
+            worst = max(worst, float(np.abs(X[:, NAMES.index(k)] - v.to_numpy()).max()))
+    res["presence_features_vs_independent_recompute_max_abs_diff"] = worst
+    res["presence_training_days"] = "every fit uses only benchmark days before the refit day (asserted in walk_forward)"
+    # 2. choice line-up and structural scores
+    lu = pd.read_parquet(f"{a.out}/choice/choice_lineup.parquet")
+    test = lu[lu.day.isin(b.days("test"))]
+    res["test_lineup_source"] = test.drop_duplicates("day").source.value_counts().to_dict()
+    res["test_lineup_launches"] = int(len(test))
+    res["test_lineup_launches_with_frozen_structural_score"] = int(test.structural.notna().sum())
+    res["lineup_columns_read_from_capture"] = ["id", "description"]
+    cr = json.load(open(f"{a.out}/choice_results.json"))
+    res["combination_fit_days"] = cr["validation_days_for_fitting"]
+    res["combination_fit_days_all_before_test"] = bool(max(cr["validation_days_for_fitting"]) < min(b.days("test")))
+    # 3. prompts: no handle, no outcome field, history strictly before the day
+    sample = pd.read_parquet(f"{a.out}/choice/llm_sample.parquet")
+    text = pd.read_parquet(f"{a.out}/choice/choice_lineup_text.parquet")
+    desc = {(r.day, int(r.item_idx)): r.description for r in text.itertuples()}
+    handles = late = n = 0
+    for d, g in sample.groupby("day"):
+        hb = b.batch(d, g.person_idx.to_numpy())
+        for j, r in enumerate(g.itertuples()):
+            lines = [lineup_line(i + 1, b.item(it), desc.get((d, int(it)), "")) for i, it in enumerate(r.shown_items)]
+            pr = build_choice_prompt(hb.render(j), lines, r.k, r.m)
+            handles += len([m for m in re.findall(r"@[A-Za-z0-9_.-]+", pr) if m.rstrip(".-") != "@someone"])
+            late += int((hb.events(j).day_ord >= day_ord(d)).sum())
+            n += 1
+    res["choice_prompts_checked"] = n
+    res["handles_in_choice_prompts"] = handles
+    res["history_events_on_or_after_day_in_choice_prompts"] = late
+    res["known_residual_risk"] = ("upvotes are undated and attributed to the launch day; history is the store as read "
+                                  "later (see the presence reading-lag numbers); labels for a training day are read "
+                                  "after it (offline convention)")
+    json.dump(res, open(f"{a.out}/pc1_leak_checks.json", "w"), indent=1)
+    print(json.dumps(res, indent=1))
+    sync([f"{a.out}/pc1_leak_checks.json"], a.sync)
+
+
 # ------------------------------------------------------------------------------------------------ agg
 def stage_agg(a):
     b = load_bench(a)
@@ -510,6 +574,8 @@ def stage_agg(a):
             res[k] = json.load(open(f"{a.out}/{f}"))
     if os.path.exists(f"{a.out}/choice/llm_sample.parquet"):
         res["llm_choice"] = _llm_results(a, b)
+    if os.path.exists(f"{a.out}/pc1_leak_checks.json"):
+        res["leak_checks"] = json.load(open(f"{a.out}/pc1_leak_checks.json"))
     os.makedirs(a.results_dir, exist_ok=True)
     json.dump(res, open(f"{a.results_dir}/results.json", "w"), indent=1, default=float)
     f = lambda d, pct=False: (f"{d['value'] * 100:.1f} [{d['ci95'][0] * 100:.1f}, {d['ci95'][1] * 100:.1f}]" if pct  # noqa: E731
@@ -559,7 +625,7 @@ def stage_agg(a):
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["presence", "choice", "llm", "combine", "agg"])
+    ap.add_argument("stage", choices=["presence", "choice", "llm", "combine", "leak", "agg"])
     ap.add_argument("--bench", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--round1", default="")
