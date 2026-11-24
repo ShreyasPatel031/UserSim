@@ -335,3 +335,57 @@ def build_tie_tables(bench, store_dir: str, items_v2_path: str, daily_dir: str, 
            "target_source_counts": pd.Series(list(target_src.values())).value_counts().to_dict()}
     return {"launch_day": launch_day, "team": team, "target_team": tt, "made": made, "back": back,
             "follows_person_entity": f_pe, "follows_entity_person": f_ep, "ent_person": ent_person, "coverage": cov}
+
+
+# ------------------------------------------------------------------------------------------------ presence / choice
+def load_lineups(bench, daily_dir: str, forecast_dir: str, days: list[str]) -> pd.DataFrame:
+    """The day's line-up as captured at 00:05 PT (fallback: a same-day capture, flagged) with line-up fields only,
+    plus the structural model's frozen score for the day (the published 00:05 forecast parquet: column `pred`).
+
+    Columns: day, item_idx, source, description (as listed that day), structural (NaN when the day has no frozen
+    forecast or the launch is not in it). Vote counts and ranks in the capture files are never read."""
+    item_idx = dict(zip(bench.items["item_id"].astype(str), bench.items["item_idx"]))
+    item_day = dict(zip(bench.items["item_idx"], bench.items["day"]))
+    rows = []
+    for d in days:
+        f5, fd = os.path.join(daily_dir, f"{d}__0005.json"), os.path.join(daily_dir, f"{d}__day.json")
+        f, src = (f5, "0005") if os.path.exists(f5) else (fd, "same-day capture")
+        if not os.path.exists(f):
+            continue
+        try:
+            posts = json.load(open(f))
+        except ValueError:
+            continue
+        pred = {}
+        fp = os.path.join(forecast_dir, f"forecast_{d}.parquet")
+        if os.path.exists(fp):
+            fc = pd.read_parquet(fp, columns=["id", "pred"])
+            pred = dict(zip(fc["id"].astype(str), fc["pred"].astype(float)))
+        for p in posts if isinstance(posts, list) else []:
+            pid = str(p.get("id"))
+            if pid in item_idx and item_day[item_idx[pid]] == d:
+                rows.append({"day": d, "item_idx": int(item_idx[pid]), "source": src,
+                             "description": " ".join(str(p.get("description") or "").split()),
+                             "structural": pred.get(pid, np.nan)})
+    return pd.DataFrame(rows, columns=["day", "item_idx", "source", "description", "structural"])
+
+
+def load_first_seen(bench, events_path: str) -> tuple[np.ndarray, pd.DataFrame]:
+    """When each benchmark endorsement was first read into the store, aligned to the benchmark's endorsement arrays
+    (NaT when not found), and the days on which each person's upvotes were demonstrably read (a read that found
+    nothing new leaves no trace, so this undercounts reads)."""
+    from simharness.bench import day_ord
+    pidx = dict(zip(bench.people["person_id"], bench.people["person_idx"]))
+    iidx = dict(zip(bench.items["item_id"].astype(str), bench.items["item_idx"]))
+    e = pq.read_table(events_path, columns=["person_id", "target_id", "first_seen_at"],
+                      filters=[("platform", "=", "producthunt"), ("kind", "=", "upvote")]).to_pandas()
+    e = e[e["person_id"].isin(pidx)]
+    e["person_idx"] = e["person_id"].map(pidx).astype(np.int64)
+    reads = pd.DataFrame({"person_idx": e["person_idx"].to_numpy(),
+                          "day_ord": _pt_day(e["first_seen_at"]).map(day_ord).to_numpy()}).drop_duplicates()
+    e["item_idx"] = e["target_id"].map(iidx)
+    e = e.dropna(subset=["item_idx"])
+    first = e.groupby(["person_idx", "item_idx"])["first_seen_at"].min()
+    key = pd.MultiIndex.from_arrays([bench._e_p.astype(np.int64), bench._e_i.astype(np.float64)])
+    fs = first.reindex(key).to_numpy()
+    return fs, reads
