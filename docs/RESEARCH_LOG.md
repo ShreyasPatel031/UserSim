@@ -1717,3 +1717,16 @@ cohort_calibration/what_panel1.py → results/2026-11-23/what_panel1.json. Froze
 - Sentiment JSD (equal size): base 0.193, tuned 0.251, persona reactions 0.312, Flash 0.389, untuned 0.543; tuned is closest of the simulated arms but still worse than base (+0.057 [+0.008, +0.111]).
 - Maker-like comments by regex (of 330 per arm): tuned 8, untuned 1, Flash 2.
 - Reading: history-built comments do not beat the persona panel on theme recall; Gemini Flash with history is the most precise and catches the most complaints; tuning trades precision for recall and does not beat Flash. One day, 11 launches.
+
+### 2026-11-24 E5 — WHAT-PANEL-2: persona panel × person-built Flash mixes, Nov 21–23 (24 launches), equal size 22, 5 seeds
+cohort_calibration/what_panel2.py → results/what_panel2.json (bucket results/calibration/what_panel2_scores.json). Pooled, [mean %, launch-boot 95%]:
+
+| Arm | recall | precision | complaint | recall − panel | precision − panel |
+|---|---|---|---|---|---|
+| persona panel | 68.4 [62.0, 74.7] | 46.8 [38.3, 55.6] | 28.5 | — | — |
+| person-built Flash | 56.7 | 68.4 | 26.5 | −11.7 [−19.5, −4.1] | +21.7 [+14.0, +29.8] |
+| mix 11+11 | 63.3 | 56.5 | 30.9 | −5.1 [−10.0, −0.1] | +9.7 [+4.9, +14.8] |
+| mix 15+7 | 65.4 [60.2, 70.7] | 53.4 [45.8, 61.5] | 31.8 | −3.0 [−7.3, +1.3] | +6.7 [+2.1, +10.9] |
+| mix 7+15 | 62.0 | 59.0 | 30.5 | −6.4 [−11.9, −0.1] | +12.2 [+6.6, +17.8] |
+
+- No arm meets recall ≥ 70 and precision ≥ 50 (point or lower ends). Closest: mix 15+7 (precision met at the point, recall 4.6 short; recall not clearly worse than the panel, precision clearly better). Cost $3.37 (cap $3).

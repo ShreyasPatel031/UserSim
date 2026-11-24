@@ -60,3 +60,4 @@
 {"t": "persona_say_2026-11-24", "provider": "gcp", "usd": 0.3134, "note": "42 Gemini 2.5 Flash calls, tokens in 186611 out 102951"}
 {"t": "sim_rerank_b", "day": "2026-11-24", "provider": "gcp", "usd": 0.602, "calls": 1400}
 {"t": "what_panel1", "provider": "gcp", "usd": 0.38}
+{"t": "what_panel2", "provider": "gcp", "usd": 3.372}
