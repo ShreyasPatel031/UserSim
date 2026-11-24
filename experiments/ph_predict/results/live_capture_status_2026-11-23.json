@@ -2,42 +2,44 @@
  "day": "2026-11-23",
  "status": "FAIL",
  "counts": {
-  "posts": 272,
-  "comments": 149,
-  "board": 270,
-  "people": 201,
-  "products": 82,
-  "coverage": 10,
+  "posts": 2541,
+  "comments": 379,
+  "board": 2830,
+  "people": 1692,
+  "products": 721,
+  "coverage": 94,
   "fallback_post_rows": 0,
-  "snapshots": 10,
+  "snapshots": 94,
   "launches": 27,
   "absent_unread": 0,
-  "byid_rows": 2,
-  "vote_drops": 0,
-  "board_api_rows": 270,
+  "byid_rows": 3,
+  "vote_drops": 7,
+  "board_api_rows": 2830,
   "board_missing": 0,
   "bad_username": 0,
   "created_after_fetch": 0,
   "created_unparsed": 0,
-  "api_comments": 102,
+  "api_comments": 222,
   "api_comments_no_user_id": 0,
   "api_comments_created_after_pull": 0,
   "roster": 27,
   "roster_source": "pipeline list (createdAt in PT day)",
-  "not_this_day_rows": 0,
-  "not_this_day_launches": 0
+  "not_this_day_rows": 292,
+  "not_this_day_launches": 4
  },
  "fail": [
-  "posts: 27 rows with fetched_at more than 5 min from snapshot_ts",
-  "comments: 28 rows with fetched_at more than 5 min from snapshot_ts",
-  "board: 27 rows with fetched_at more than 5 min from snapshot_ts",
+  "posts: 351 rows with fetched_at more than 5 min from snapshot_ts",
+  "comments: 62 rows with fetched_at more than 5 min from snapshot_ts",
+  "board: 395 rows with fetched_at more than 5 min from snapshot_ts",
   "people: 66 rows with fetched_at more than 5 min from snapshot_ts",
-  "products: 27 rows with fetched_at more than 5 min from snapshot_ts"
+  "products: 27 rows with fetched_at more than 5 min from snapshot_ts",
+  "2 snapshot gaps > 20 min: 05:15-06:00Z, 06:00-06:30Z"
  ],
  "warn": [
+  "votes dropped between snapshots: 7 times on 6 launches",
   "board: no homepage / leaderboard page views (only the API ranking) - missing, route 4 off",
-  "comments: 149 without a username but with a commenter user id (API v2; map via user_id_map)",
+  "comments: 379 without a username but with a commenter user id (API v2; map via user_id_map)",
   "comments: 15 created more than a day before the launch day (old threads?)"
  ],
- "checked_at": "2026-11-23T10:20:00Z"
+ "checked_at": "2026-11-24T08:07:13Z"
 }
