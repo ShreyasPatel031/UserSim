@@ -1,6 +1,6 @@
 """Real phones for simulated users: Android (and later iOS) apps on LambdaTest real devices.
 
-A caller gives an app (an https:// link to an .apk, e.g. a Bitrise artifact, or an lt://APP... id from an earlier
+A caller gives an app (an https:// link to an .apk, or an lt://APP... id from an earlier
 upload); the server uploads it to LambdaTest if needed, starts a real device over Appium (W3C WebDriver, spoken
 directly over HTTPS so no Appium client is needed), and the model drives it with observe / act, like the browser
 tools. Credentials: LT_USERNAME / LT_ACCESS_KEY (Secret Manager usersim-LT_USERNAME / usersim-LT_ACCESS_KEY, hot
@@ -84,7 +84,7 @@ def resolve_app(app: str, owner: str = "") -> str:
 
 
 def upload_file(data: bytes, filename: str) -> str:
-    """Upload app bytes (from the /api/apps/upload route, e.g. a Bitrise step) and return its lt:// id."""
+    """Upload app bytes to LambdaTest and return its lt:// id."""
     if not data.startswith(b"PK"):
         raise DeviceError("not an .apk / .aab / .ipa file (zip expected)")
     u, k = creds()
