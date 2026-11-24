@@ -5,7 +5,7 @@ set -uo pipefail
 md() { curl -sf -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/$1"; }
 PREFIX=$(md ft_prefix); MODEL=$(md ft_model); TAG=$(md ft_tag)
 EPOCHS=$(md ft_epochs || echo 1); BATCH=$(md ft_batch || echo 2); ACCUM=$(md ft_accum || echo 8)
-GEN_BATCH=$(md ft_gen_batch || echo 8); GC=$(md ft_grad_checkpoint || echo 0)
+GEN_BATCH=$(md ft_gen_batch || echo 8); GC=$(md ft_grad_checkpoint || echo 0); SKIP_BASE=$(md ft_skip_base || echo 0)
 WORK=/opt/ft; mkdir -p $WORK; cd $WORK
 [ -f STARTED ] && exit 0   # a reboot must not run the job again
 touch STARTED
@@ -32,8 +32,10 @@ job() {
   $PY -c "import torch, transformers, peft; print(torch.__version__, transformers.__version__, peft.__version__, torch.cuda.is_available())"
   gsutil -q cp $PREFIX/code/lora.py $PREFIX/data/train.jsonl $PREFIX/data/eval.jsonl .
   GCFLAG=""; [ "$GC" = "1" ] && GCFLAG="--grad-checkpoint"
-  $PY lora.py generate --model "$MODEL" --rows eval.jsonl --out gen_base.jsonl --batch "$GEN_BATCH"
-  gsutil -q cp gen_base.jsonl $RUN/
+  if [ "$SKIP_BASE" != "1" ]; then  # the untuned model's comments, for the paired comparison
+    $PY lora.py generate --model "$MODEL" --rows eval.jsonl --out gen_base.jsonl --batch "$GEN_BATCH"
+    gsutil -q cp gen_base.jsonl $RUN/
+  fi
   $PY lora.py train --model "$MODEL" --train train.jsonl --out adapter --epochs "$EPOCHS" --batch "$BATCH" \
     --accum "$ACCUM" $GCFLAG
   $PY lora.py generate --model "$MODEL" --adapter adapter --rows eval.jsonl --out gen_tuned.jsonl --batch "$GEN_BATCH"

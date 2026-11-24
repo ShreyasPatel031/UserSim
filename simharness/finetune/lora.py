@@ -58,6 +58,21 @@ def load(model_name: str, adapter: str | None = None, train: bool = False):
     return tok, model
 
 
+def answer_loss(model, ids, att, lab):
+    """Cross-entropy on the answer tokens only. The vocabulary projection is applied to those positions alone: full
+    logits for a long prompt cost gigabytes of GPU memory per row and are not needed."""
+    try:
+        decoder, head = model.get_decoder(), model.get_output_embeddings()
+    except AttributeError:
+        decoder = head = None
+    if decoder is None or head is None:
+        return model(input_ids=ids, attention_mask=att, labels=lab).loss
+    hidden = decoder(input_ids=ids, attention_mask=att).last_hidden_state
+    target = lab[:, 1:]  # position t predicts token t + 1
+    keep = target != -100
+    return torch.nn.functional.cross_entropy(head(hidden[:, :-1][keep]).float(), target[keep])
+
+
 # ------------------------------------------------------------------------------------------ train
 def train(a) -> None:
     from peft import LoraConfig, get_peft_model
@@ -107,7 +122,7 @@ def train(a) -> None:
                 x, y = data[i]
                 ids[j, :len(x)] = torch.tensor(x); lab[j, :len(y)] = torch.tensor(y); att[j, :len(x)] = 1
             with torch.autocast(dev.type, dtype=torch.bfloat16, enabled=dev.type == "cuda"):
-                loss = model(input_ids=ids.to(dev), attention_mask=att.to(dev), labels=lab.to(dev)).loss
+                loss = answer_loss(model, ids.to(dev), att.to(dev), lab.to(dev))
             (loss / a.accum).backward()
             run_loss += loss.item(); run_n += 1; seen += len(b)
             if (k + 1) % a.accum == 0:
