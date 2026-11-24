@@ -58,7 +58,9 @@ class LogisticVote(VoteModel):
 
     def prepare(self, bench, day: str) -> None:
         o = day_ord(day)
-        if self._fit_day is not None and o - day_ord(self._fit_day) < self.refit_every:
+        # Reuse the last fit only for the same or a later day within refit_every; an earlier day always refits
+        # (a model fit for a later day has seen this day's labels).
+        if self._fit_day is not None and 0 <= o - day_ord(self._fit_day) < self.refit_every:
             return
         avail = [d for d in bench.days_info["day"] if day_ord(d) <= o - self.gap_days]
         if self.train_days:
@@ -71,6 +73,7 @@ class LogisticVote(VoteModel):
         self.mu, self.sd = X.mean(0), X.std(0) + 1e-9
         self.clf = LogisticRegression(C=self.C, max_iter=1000).fit((X - self.mu) / self.sd, y, sample_weight=w)
         self._fit_day = day
+        assert avail[-1] < day, "walk-forward violated: training day on or after the scored day"
         self.fit_info = {"fit_for": day, "train_first": avail[0], "train_last": avail[-1], "rows": int(len(y)),
                          "coef": dict(zip(self.names, np.round(self.clf.coef_[0] / self.sd, 4).tolist()))}
 

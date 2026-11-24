@@ -32,6 +32,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+import re
 from dataclasses import asdict, dataclass, field
 from functools import lru_cache
 from zoneinfo import ZoneInfo
@@ -44,6 +45,14 @@ from simharness.schema import COMMENT, ENDORSE, KINDS, DomainTables
 
 EPOCH = dt.date(1970, 1, 1)
 KIND_CODE = {k: i for i, k in enumerate(KINDS)}
+
+
+_HANDLE = re.compile(r"@[A-Za-z0-9_.-]+")
+
+
+def scrub(text: str) -> str:
+    """Remove @handles (usernames) from free text before it reaches a prompt or a log."""
+    return _HANDLE.sub("@someone", text or "")
 
 
 def day_ord(day: str) -> int:
@@ -206,6 +215,10 @@ class Benchmark:
         self._e_p = end["person_idx"].to_numpy()
         self._e_i = end["item_idx"].to_numpy()
         self._item_day = self.items["day_ord"].to_numpy()
+        com = self.hist[self.hist["kind"] == KIND_CODE[COMMENT]]
+        self._c_p, self._c_day = com["person_idx"].to_numpy(), com["day_ord"].to_numpy()
+        self._c_ts = com["ts"].dt.tz_convert("UTC").dt.tz_localize(None).to_numpy(dtype="datetime64[ns]")
+        self.topic_names = np.array(sorted(self.vocab, key=self.vocab.get))
 
     # -- structure
     def days(self, split: str) -> list[str]:
@@ -238,9 +251,17 @@ class Benchmark:
         rw = np.bincount(p, weights=0.5 ** (age / 7.0), minlength=self.n_people)
         n_all = np.bincount(p, minlength=self.n_people).astype(np.float64)
         n60 = np.bincount(p[age <= self.cfg.active_days], minlength=self.n_people).astype(np.float64)
+        n30 = np.bincount(p[age <= 30], minlength=self.n_people).astype(np.float64)
+        n7 = np.bincount(p[age <= 7], minlength=self.n_people).astype(np.float64)
+        rw30 = np.bincount(p[age <= 30], weights=0.5 ** (age[age <= 30] / 7.0), minlength=self.n_people)
         ind = sp.csr_matrix((np.ones(len(p), np.float32), (p, i)), shape=(self.n_people, len(self.items)))
         topics = (ind @ self.item_topics).tocsr()  # person x topic counts over past endorsed items
-        return {"rw": rw, "n_all": n_all, "n60": n60, "topics": topics}
+        # comments on items before D, written before D starts (when the time is known)
+        start, _ = _day_bounds_utc(day, self.cfg.day_tz)
+        c = self._c_p[(self._c_day < o) & (np.isnat(self._c_ts) | (self._c_ts < np.datetime64(start.tz_localize(None))))]
+        n_comments = np.bincount(c, minlength=self.n_people).astype(np.float64)
+        return {"rw": rw, "n_all": n_all, "n60": n60, "n30": n30, "n7": n7, "rw30": rw30, "topics": topics,
+                "n_comments": n_comments}
 
     # -- training sample for walk-forward models
     def training_sample(self, days: list[str], k: int = 20, seed: int = 0) -> pd.DataFrame:
@@ -310,8 +331,12 @@ class HistoryBatch:
         st = self.state
         h = self.events(j)
         e = h[h["kind"] == KIND_CODE[ENDORSE]].sort_values("day_ord", ascending=False).head(max_items)
-        lines = [f"Activity summary: {int(st['n_all'][pid])} dated upvotes before this day, "
-                 f"{int(st['n60'][pid])} in the last 60 days."]
+        tr = st["topics"][pid].toarray().ravel()
+        top = [str(b.topic_names[k]) for k in np.argsort(-tr)[:5] if tr[k] > 0]
+        lines = [f"Activity before this day: upvoted {int(st['n7'][pid])} launches in the last 7 days, "
+                 f"{int(st['n30'][pid])} in the last 30 days, {int(st['n60'][pid])} in the last 60 days, "
+                 f"{int(st['n_all'][pid])} dated upvotes in all; {int(st['n_comments'][pid])} launch comments written.",
+                 f"Most-upvoted topics: {', '.join(top) or '(none)'}."]
         if len(e):
             lines.append(f"Most recent upvoted launches (newest first, up to {max_items}):")
             for r in e.itertuples():
@@ -323,6 +348,6 @@ class HistoryBatch:
             lines.append("Recent comments they wrote:")
             for r in c.itertuples():
                 it = b.items.iloc[int(r.item_idx)]
-                txt = " ".join(str(r.text).split())[:240]
+                txt = scrub(" ".join(str(r.text).split()))[:240]
                 lines.append(f'- on {it.title}: "{txt}"')
         return "\n".join(lines)

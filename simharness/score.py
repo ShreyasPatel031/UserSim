@@ -86,6 +86,26 @@ def evaluate_sample(model, bench, sample: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def predict_rows(model, bench, rows: pd.DataFrame) -> np.ndarray:
+    """Model probabilities aligned to `rows` (columns day, item_idx, person_idx), scored item by item in day order."""
+    rows = rows.reset_index(drop=True)
+    out = np.full(len(rows), np.nan)
+    for (d, it), g in rows.groupby(["day", "item_idx"], sort=True):
+        model.prepare(bench, d)
+        out[g.index.to_numpy()] = model.score(bench.batch(d, g["person_idx"].to_numpy()), bench.item(it))
+    return out
+
+
+def score_rows(rows: pd.DataFrame, p: np.ndarray) -> pd.DataFrame:
+    """Per-item metrics from row-level predictions (rows: day, item_idx, y)."""
+    r = rows.reset_index(drop=True).assign(p=np.asarray(p, dtype=float))
+    out = []
+    for (d, it), g in r.groupby(["day", "item_idx"], sort=True):
+        pp, y = g["p"].to_numpy(), g["y"].to_numpy().astype(np.int8)
+        out.append({"day": d, "item_idx": int(it), "p": pp, "y": y, **score_item(pp, y)})
+    return pd.DataFrame(out)
+
+
 def _agg(df: pd.DataFrame, pooled_auc: bool = False) -> dict:
     out = {"recall_at_N_pooled": df["hits"].sum() / max(df["N"].sum(), 1),
            "recall_at_N_mean": float((df["hits"] / df["N"]).mean()),
@@ -98,10 +118,17 @@ def _agg(df: pd.DataFrame, pooled_auc: bool = False) -> dict:
     return out
 
 
-def summarize(df: pd.DataFrame, n_boot: int = 2000, seed: int = 0, pooled_auc: bool = False) -> dict:
+def _clusters(df: pd.DataFrame, cluster: str) -> pd.Series:
+    return df["day"] if cluster == "day" else df["day"].astype(str) + "|" + df["item_idx"].astype(str)
+
+
+def summarize(df: pd.DataFrame, n_boot: int = 2000, seed: int = 0, pooled_auc: bool = False,
+              cluster: str = "day") -> dict:
+    """cluster: "day" (resample days) or "item" (resample items / launches)."""
     point = _agg(df, pooled_auc)
-    days = df["day"].unique()
-    groups = {d: g for d, g in df.groupby("day")}
+    cl = _clusters(df, cluster)
+    days = cl.unique()
+    groups = {d: g for d, g in df.groupby(cl)}
     rng = np.random.default_rng(seed)
     boots = {k: [] for k in point}
     for _ in range(n_boot):
@@ -118,15 +145,16 @@ def summarize(df: pd.DataFrame, n_boot: int = 2000, seed: int = 0, pooled_auc: b
 
 
 def paired_diff(a: pd.DataFrame, b: pd.DataFrame, metric: str = "recall_at_N_pooled", n_boot: int = 2000,
-                seed: int = 0, pooled_auc: bool = False) -> dict:
-    """a - b on the same items, day-clustered bootstrap."""
+                seed: int = 0, pooled_auc: bool = False, cluster: str = "day") -> dict:
+    """a - b on the same items, bootstrap clustered by day or by item."""
     keys = ["day", "item_idx"]
     m = a.merge(b, on=keys, suffixes=("_a", "_b"))
     A = m[keys + [c for c in m if c.endswith("_a")]].rename(columns=lambda c: c[:-2] if c.endswith("_a") else c)
     B = m[keys + [c for c in m if c.endswith("_b")]].rename(columns=lambda c: c[:-2] if c.endswith("_b") else c)
     point = _agg(A, pooled_auc)[metric] - _agg(B, pooled_auc)[metric]
-    days = m["day"].unique()
-    ga = {d: g for d, g in A.groupby("day")}; gb = {d: g for d, g in B.groupby("day")}
+    ca, cb = _clusters(A, cluster), _clusters(B, cluster)
+    days = ca.unique()
+    ga = {d: g for d, g in A.groupby(ca)}; gb = {d: g for d, g in B.groupby(cb)}
     rng = np.random.default_rng(seed)
     bs = []
     for _ in range(n_boot):
@@ -134,7 +162,8 @@ def paired_diff(a: pd.DataFrame, b: pd.DataFrame, metric: str = "recall_at_N_poo
         bs.append(_agg(pd.concat([ga[d] for d in pick]), pooled_auc)[metric]
                   - _agg(pd.concat([gb[d] for d in pick]), pooled_auc)[metric])
     lo, hi = np.nanpercentile(bs, [2.5, 97.5])
-    return {"metric": metric, "diff": round(float(point), 4), "ci95": [round(float(lo), 4), round(float(hi), 4)]}
+    return {"metric": metric, "cluster": cluster, "diff": round(float(point), 4),
+            "ci95": [round(float(lo), 4), round(float(hi), 4)]}
 
 
 def write_leaderboard(entries: list[dict], path_json: str, path_md: str, title: str = "Task V leaderboard") -> None:
@@ -160,3 +189,19 @@ def write_leaderboard(entries: list[dict], path_json: str, path_md: str, title: 
     lines += ["", "Intervals: day-clustered bootstrap, 95%."]
     with open(path_md, "w") as f:
         f.write("\n".join(lines) + "\n")
+
+
+def _logit(p: np.ndarray) -> np.ndarray:
+    p = np.clip(np.where(np.isnan(p), 0.5, p), 1e-4, 1 - 1e-4)
+    return np.log(p / (1 - p))
+
+
+def stack_fit(cols_val: list[np.ndarray], y_val: np.ndarray):
+    """Logistic stack on logit-transformed member probabilities, fit on validation rows only."""
+    from sklearn.linear_model import LogisticRegression
+    X = np.column_stack([_logit(c) for c in cols_val])
+    return LogisticRegression(max_iter=1000).fit(X, y_val)
+
+
+def stack_apply(clf, cols: list[np.ndarray]) -> np.ndarray:
+    return clf.predict_proba(np.column_stack([_logit(c) for c in cols]))[:, 1]
