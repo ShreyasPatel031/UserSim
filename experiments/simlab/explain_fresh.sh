@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"; REPO="$(cd "$HERE/../.." && pwd)"; SP=${E
 PHOPS_SHA=b86f582d026852fcc03b08119de5830029b2049f; DIRS="cf rb early rbundle why segments persona bp explain_past backer bkf refresh_priority explain"
 exec > >(tee -a $LOG) 2>&1; echo "start $(date -u +%FT%TZ) D=$D SP=$SP"
 if [ -n "${EXPLAIN_REHEARSAL:-}" ]; then export PATH="$HERE/rehearsal_bin:$PATH"; echo "REHEARSAL: all bucket writes go to usersim_sim/_rehearsal/ (reads prefer rehearsal copies)"; fi
-export HF_HOME=${HF_HOME:-/tmp/hf} HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1; mkdir -p $HF_HOME/hub
+export HF_HOME=${HF_HOME:-/tmp/hf} HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1; mkdir -p $HF_HOME/hub/models--BAAI--bge-small-en-v1.5
 gsutil -m -q rsync -r $S/hf/models--BAAI--bge-small-en-v1.5 $HF_HOME/hub/models--BAAI--bge-small-en-v1.5 || echo "WARN hf model sync"
 # rb: only rb/h25src (9 MB) is read (step 0 via H25_SRC); rb/roots in the bucket is ~105 GB of stale cache and must not be pulled
 for d in $DIRS; do src=$S/$d; dst=$SP/$d; [ "$d" = rb ] && { src=$S/rb/h25src; dst=$SP/rb/h25src; }; mkdir -p $dst; gsutil -m -q rsync -r $src $dst || { echo "FAIL state $d"; exit 2; }; done
