@@ -175,3 +175,10 @@ Same days, people panel (per launch: 50 from the v2 top 200 + 20 random active, 
 text (one line per launch: name - tagline, page-read summary first 160 chars). Each agent sees the whole shortlist, shuffled per agent (seed = hash
 of person id), and picks the k launches it would upvote, k = round(own average upvotes per active day over the 30 days before D), min 1, max 5.
 Feature = pick share per launch (picks / agents). Fixed rule: key = structural_rank - 2 x z(pick share). Same metric, freeze, first read at 7 days.
+Addendum 8b (2026-11-24, orchestrator conditions, before the first frozen v2 run): each launch line uses only line-up fields that exist for every
+launch at 00:05 PT (name, tagline, up to 4 topics, the launch's own description text cut to 160 chars; total cap 300), never the page read.
+Order shuffled per agent with a recorded seed (md5 of person id + D); order and pick positions stored per agent; pick rate by position reported.
+k stored per agent. Every prompt and raw response is stored in the private agent file. Secondary read (no waiting): agreement between each agent's
+picks and the same person's real upvotes on the shortlist that day, for held re-read people who voted (Task V on the shortlist).
+Both arms run in a fresh scheduled session (stageb_nightly.sh), not in E5's session; v1 there has no /try page reads, so its page text falls back
+to the 00:05 name, tagline and description (recorded per launch as page_source).

@@ -57,11 +57,12 @@ def agent(args):
     k = VR.get(pid, 0.0)
     rate = (f"On days they are active, this person upvotes about {k:.1f} of the roughly {NDAY} launches of the day (about {100 * k / max(1, NDAY):.0f}% of them)."
             if k else f"This person has upvoted nothing in the last 30 days; today there are roughly {NDAY} launches.")
-    try: j = json.loads(sim_model.call(PROMPT.format(ups=ups, cms=cms, page=ptxt, rate=rate), 300))
+    prompt = PROMPT.format(ups=ups, cms=cms, page=ptxt, rate=rate); raw = None
+    try: raw = sim_model.call(prompt, 300); j = json.loads(raw)
     except Exception: j = {}
     v = str(j.get("vote", "")).lower(); p = j.get("p")
     return {"launch_id": lid, "person_id": pid, "panel": src, "vote": 1 if v == "yes" else 0 if v == "no" else np.nan,
-            "p": float(p) / 100 if isinstance(p, (int, float)) else np.nan, "comment": scrub(j.get("comment", ""))[:200], "sentiment": j.get("sentiment") if j.get("sentiment") in ("pos", "neu", "neg") else None}
+            "p": float(p) / 100 if isinstance(p, (int, float)) else np.nan, "comment": scrub(j.get("comment", ""))[:200], "prompt": prompt, "raw": raw, "sentiment": j.get("sentiment") if j.get("sentiment") in ("pos", "neu", "neg") else None}
 jobs, src_page = [], {}
 for x in short:
     lid = str(x["id"]); rng = np.random.default_rng(int(lid)); ptxt, srcp = page(lid); src_page[lid] = srcp
