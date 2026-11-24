@@ -213,6 +213,30 @@ test row (413; 328). Person match; differences are paired against the first row,
   cheaper prompts). Person match is now well mapped; the next question is whether person-built comments are better on
   the launch-level measure the product is judged on (themes and complaints against all real comments on a launch).
 
+### Person-built comments on the launch-level measure (WHAT-PANEL-1, Nov 24; E5 scoring bfbed0a3; about $2)
+Nov 23, 11 launches, E5's frozen consensus themes, 22 comments per launch for every arm (the persona panel's size).
+The person-built arms use 30 real held people per launch (closest upvote history to the launch's topics, at least 3
+past comments), history before the day and the 00:05 line-up fields only.
+
+| Who writes the comments | Theme recall | Precision | Complaint recall | Sentiment distance (lower is better) |
+|---|---|---|---|---|
+| persona panel (published) | 71.5 | 38.8 | 24.6 | 0.312 |
+| plain prompt | 60.3 | 29.7 | 10.3 | |
+| Gemini 2.5 Flash from real people's histories | 58.8 | 70.7 | 29.7 | 0.389 |
+| Qwen2.5-7B fine-tuned, from real people's histories | 62.5 | 37.4 | 15.8 | 0.251 |
+| Qwen2.5-7B untuned, from real people's histories | 53.6 | 58.4 | 11.3 | 0.543 |
+| base sentiment mix (published line) | | | | 0.193 |
+
+- Person-built Flash vs the persona panel, paired: recall -12.6 [-22.0, -3.2], precision +31.9 [+15.7, +49.8],
+  complaint recall +5.1 [-5.1, +16.1]. Against the plain prompt: precision +41.0, complaint recall +19.4 [+9.1, +30.7].
+- The fine-tuned model is not better than the persona panel or the plain prompt on any measure and loses precision to
+  Flash (-33.3 [-49.5, -15.5]); its tone is the closest of the simulated arms (0.251) but still behind the base mix.
+  Decision: the tuned model is closed for launch-level WHAT; it stays as the person-voice result.
+- The threshold is recall >= 70 with precision >= 50. The persona panel misses on precision, the person-built Flash
+  arm on recall. Next (WHAT-PANEL-2, E5, due 20:00Z): mixes of the two at equal size on Nov 21, 22 and 23; a mix that
+  meets both becomes the candidate for the published panel.
+- Small n: one day, 11 launches.
+
 ### Task R, first test: re-rank the shortlist by expected held voters (E5, SIM-RERANK-1 stage A, b7061305, Nov 24)
 Question: does "how many of our held people are expected to back this launch" reorder the structural shortlist better?
 Answer: no. Re-ranked minus structural, paired by day, day-bootstrap 95% intervals.
