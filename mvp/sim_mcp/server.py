@@ -307,8 +307,8 @@ def _ann(read_only: bool, open_world: bool) -> ToolAnnotations:
 @mcp.tool(structured_output=False, annotations=_ann(read_only=False, open_world=True))
 async def usersim_start_device_session(
     ctx: Context,
-    app: str = Field(description="The app to test: an https:// link that downloads the .apk, "
-                                 "or an lt://APP... id from an earlier upload."),
+    app: str = Field(description="The app to test: an https:// link that downloads the .apk (for example a Bitrise build "
+                                 "artifact link), or an lt://APP... id from an earlier upload."),
     task: str = Field(description="What the simulated user tries to do, in a user's words."),
     persona: str = Field(description="Who the simulated user is (2 sentences)."),
     platform: str = Field(default="android", description="android (iOS needs a signed .ipa; coming later)."),
@@ -2560,6 +2560,36 @@ def mount(app: Any) -> None:
 
     app.router.routes.insert(0, Route("/api/mcp/limits", endpoint=_limits, methods=["GET"]))
 
+    async def _app_upload(request: Any) -> Any:
+        """POST the raw .apk/.ipa bytes (e.g. from a Bitrise Script step: curl --data-binary @"$BITRISE_APK_PATH")
+        and get back an lt://APP id to give usersim_start_device_session. Anonymous callers: per-IP daily cap."""
+        import time
+
+        from mvp.sim_mcp import devices as D
+
+        headers = {k.lower(): v for k, v in request.headers.items()}
+        auth = headers.get("authorization", "")
+        tok = auth[7:].strip() if auth.lower().startswith("bearer ") else ""
+        owner = ("anon:" + L.client_ip(headers, getattr(request.client, "host", "") or "")) if tok not in _TOKENS else "token"
+        if int(headers.get("content-length") or 0) > 200 * 1024 * 1024:
+            return JSONResponse({"error": "app is larger than 200 MB"}, status_code=413)
+        try:
+            if S.is_anon(owner):
+                cap = int(L.get("anon_daily_app_uploads_per_ip"))
+                key = f"{owner}|{time.strftime('%Y-%m-%d')}"
+                n = D._UPLOADS.setdefault(key, [])
+                if len(n) >= cap:
+                    return JSONResponse({"error": f"{cap} app uploads a day without a token; reuse an earlier lt://APP id"},
+                                        status_code=429)
+                n.append(time.time())
+            data = await request.body()
+            name = re.sub(r"[^A-Za-z0-9._-]", "", headers.get("x-filename", "app.apk"))[:80] or "app.apk"
+            app_id = await asyncio.to_thread(D.upload_file, data, name)
+        except D.DeviceError as exc:
+            return JSONResponse({"error": str(exc)}, status_code=400)
+        return JSONResponse({"app": app_id, "ask_claude": f"Test my Android app {app_id} with Atelier Sim: <what a user should try>"})
+
+    app.router.routes.insert(0, Route("/api/apps/upload", endpoint=_app_upload, methods=["POST"]))
     _mount_launch_page(app)
     L.load_bundled()
 
