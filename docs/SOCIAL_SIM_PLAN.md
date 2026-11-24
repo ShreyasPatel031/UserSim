@@ -272,6 +272,22 @@ past comments), history before the day and the 00:05 line-up fields only.
   meets both becomes the candidate for the published panel.
 - Small n: one day, 11 launches.
 
+**Mixes at equal size (WHAT-PANEL-2, E5 05ebba70, Nov 24; $3.37).** 24 launches on Nov 21-23, 22 comments each, 5
+subsample seeds x 3 judge runs. Recall / precision / complaint recall, then paired vs the persona panel:
+
+| Arm | Recall | Precision | Complaint recall | Recall vs panel | Precision vs panel |
+|---|---|---|---|---|---|
+| persona panel | 68.4 [62.0, 74.7] | 46.8 [38.3, 55.6] | 28.5 | | |
+| person-built Flash | 56.7 | 68.4 | 26.5 | -11.7 [-19.5, -4.1] | +21.7 [+14.0, +29.8] |
+| mix 11 + 11 | 63.3 | 56.5 | 30.9 | -5.1 [-10.0, -0.1] | +9.7 [+4.9, +14.8] |
+| mix 15 persona + 7 person-built | 65.4 [60.2, 70.7] | 53.4 [45.8, 61.5] | 31.8 | -3.0 [-7.3, +1.3] | +6.7 [+2.1, +10.9] |
+| mix 7 + 15 | 62.0 | 59.0 | 30.5 | -6.4 [-11.9, -0.1] | +12.2 [+6.6, +17.8] |
+
+No arm meets recall >= 70 with precision >= 50 (these three days are harder: the panel was at 75.4 recall on Nov
+15-20). By the fixed rule nothing is deployed from the equal-size test. The per-comment result holds on three days:
+person-built comments are far more precise. Next (WHAT-PANEL-3, E5, due 17:30Z): add 8 / 11 / 15 person-built
+comments to the full persona panel instead of swapping; recall cannot fall and precision should rise.
+
 ### Task R, first test: re-rank the shortlist by expected held voters (E5, SIM-RERANK-1 stage A, b7061305, Nov 24)
 Question: does "how many of our held people are expected to back this launch" reorder the structural shortlist better?
 Answer: no. Re-ranked minus structural, paired by day, day-bootstrap 95% intervals.

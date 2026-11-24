@@ -72,6 +72,7 @@ class BenchConfig:
     first_day: str | None = None           # default: first item day + active_days (full look-back window)
     day_tz: str = "America/Los_Angeles"    # the domain's competition day
     require_observed: bool = True          # drop people not read after D closed
+    forward_from: str | None = None        # set when forward-day overlays are loaded: days from here are "forward"
 
     def split_of(self, day: str) -> str | None:
         if day <= self.train_end:
@@ -80,6 +81,8 @@ class BenchConfig:
             return "val"
         if self.test[0] <= day <= self.test[1]:
             return "test"
+        if self.forward_from and day >= self.forward_from:
+            return "forward"
         return None
 
 
@@ -187,7 +190,8 @@ class Item:
 
 
 class Benchmark:
-    def __init__(self, root: str):
+    def __init__(self, root: str, overlays: list[str] | None = None):
+        """root: the benchmark directory. overlays: forward-day overlay directories to add (see add_overlays)."""
         self.root = root
         self.meta = json.load(open(f"{root}/meta.json"))
         self.cfg = BenchConfig(**{k: tuple(v) if isinstance(v, list) else v for k, v in self.meta["config"].items()})
@@ -202,6 +206,14 @@ class Benchmark:
         self._pos = {k: g["person_idx"].to_numpy() for k, g in pos.groupby(["day_ord", "item_idx"])}
         self.n_people = len(self.people)
         self.days_info = pd.DataFrame(self.meta["days"])
+        self.overlays: list[dict] = []
+        self._index()
+        if overlays:
+            self.add_overlays(overlays)
+
+    def _index(self) -> None:
+        """(Re)build everything derived from items / hist / comments. Called again after overlays are added."""
+        type(self).state.cache_clear()
         # topic matrix (items x topics)
         vocab = sorted({t for tl in self.items["tags"] for t in tl})
         self.vocab = {t: i for i, t in enumerate(vocab)}
@@ -219,6 +231,71 @@ class Benchmark:
         self._c_p, self._c_day = com["person_idx"].to_numpy(), com["day_ord"].to_numpy()
         self._c_ts = com["ts"].dt.tz_convert("UTC").dt.tz_localize(None).to_numpy(dtype="datetime64[ns]")
         self.topic_names = np.array(sorted(self.vocab, key=self.vocab.get))
+
+    def add_overlays(self, paths: list[str], fill_descriptions: bool = False, new_item_descriptions: bool = True) -> list[dict]:
+        """Add forward-day overlays on top of the benchmark tables (nothing existing is changed or removed).
+
+        An overlay directory holds items.parquet (the day's line-up as listed at the start of the day: item_id, day,
+        title, summary, description, tags) and comments.parquet (person_idx, item_id, ts, text: comments read from
+        a live stream instead of a later profile read). Loading:
+          * items whose item_id is new are appended with the next item_idx (days after the test split: split
+            "forward"); existing items keep their row, and only get the overlay's description when theirs is empty
+            and `fill_descriptions` is set (off by default: it would change the prompts of existing rows);
+          * comment rows whose (person, item) pair has no comment yet are appended to `comments` and to the history
+            (kind comment), so a later day's history sees them, still only when written before that day starts.
+        Task V structures (pool, positives) are untouched: forward days have no vote labels here.
+        Returns one summary per overlay."""
+        out = []
+        for p in sorted(paths, key=lambda x: os.path.basename(os.path.normpath(x))):
+            it = pd.read_parquet(f"{p}/items.parquet")
+            com = pd.read_parquet(f"{p}/comments.parquet")
+            known = dict(zip(self.items["item_id"].astype(str), self.items["item_idx"]))
+            it["item_id"] = it["item_id"].astype(str)
+            new = it[~it["item_id"].isin(known)].sort_values(["day", "item_id"]).reset_index(drop=True)
+            if len(new):
+                add = pd.DataFrame({
+                    "item_idx": np.arange(len(self.items), len(self.items) + len(new), dtype=np.int32),
+                    "item_id": new["item_id"].astype(self.items["item_id"].dtype),
+                    "day": new["day"].astype(self.items["day"].dtype),
+                    "day_ord": new["day"].map(day_ord).astype(np.int32),
+                    "title": new["title"].astype(self.items["title"].dtype),
+                    "summary": new["summary"].astype(self.items["summary"].dtype),
+                    "description": (new["description"] if new_item_descriptions else "").astype(self.items["description"].dtype)
+                    if new_item_descriptions else pd.Series([""] * len(new), dtype=self.items["description"].dtype),
+                    "tags": new["tags"].map(list)})
+                self.items = pd.concat([self.items, add], ignore_index=True)
+                known.update(zip(add["item_id"].astype(str), add["item_idx"]))
+            filled = 0
+            if fill_descriptions:
+                d = dict(zip(it["item_id"], it["description"].fillna("")))
+                empty = self.items["description"].fillna("").str.len() == 0
+                fill = self.items.loc[empty, "item_id"].astype(str).map(d).fillna("")
+                self.items.loc[empty, "description"] = fill.astype(self.items["description"].dtype)
+                filled = int((fill.str.len() > 0).sum())
+            com = com.assign(item_idx=com["item_id"].astype(str).map(known)).dropna(subset=["item_idx"])
+            com["item_idx"] = com["item_idx"].astype(np.int32)
+            have = set(zip(self.comments["person_idx"].to_numpy().tolist(), self.comments["item_idx"].to_numpy().tolist()))
+            keep = np.array([(int(a), int(b)) not in have for a, b in zip(com["person_idx"], com["item_idx"])], dtype=bool)
+            add_c = com[keep].drop_duplicates(["person_idx", "item_idx"])
+            item_day = self.items["day_ord"].to_numpy()
+            rows = pd.DataFrame({"person_idx": add_c["person_idx"].astype(np.int32).to_numpy(),
+                                 "item_idx": add_c["item_idx"].to_numpy(),
+                                 "day_ord": item_day[add_c["item_idx"].to_numpy()].astype(np.int32),
+                                 "ts": pd.to_datetime(add_c["ts"], utc=True).astype(self.comments["ts"].dtype).to_numpy(),
+                                 "text": add_c["text"].astype(self.comments["text"].dtype).to_numpy()})
+            rows["ts"] = pd.to_datetime(rows["ts"], utc=True).astype(self.comments["ts"].dtype)
+            self.comments = pd.concat([self.comments, rows], ignore_index=True)
+            h = rows[["person_idx", "item_idx", "day_ord", "ts"]].assign(kind=np.int8(KIND_CODE[COMMENT]))
+            self.hist = pd.concat([self.hist, h[self.hist.columns]], ignore_index=True)
+            info = {"overlay": os.path.basename(os.path.normpath(p)), "items_new": int(len(new)),
+                    "items_already_in_benchmark": int(len(it) - len(new)), "descriptions_filled": filled,
+                    "comment_rows_in_overlay": int(len(com)), "comment_rows_already_in_benchmark": int((~keep).sum()),
+                    "comment_rows_added": int(len(rows))}
+            self.overlays.append(info)
+            out.append(info)
+        self.cfg.forward_from = ord_day(day_ord(self.cfg.test[1]) + 1)
+        self._index()
+        return out
 
     # -- structure
     def days(self, split: str) -> list[str]:
