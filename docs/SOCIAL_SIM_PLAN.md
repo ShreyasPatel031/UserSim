@@ -54,7 +54,7 @@ The harness provides:
 |---|---|---|---|---|---|---|
 | most-active baseline | 20.9 [20.1, 21.6] | | | | 14 | 0 |
 | BACKER-v2 logistic (E5, live) | 27.6 [26.2, 29.0] | | | | 14 | 0 |
-| persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22) | | 2 | |
+| persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22), 71.5 [61.8, 81.7] (Nov 23; plain prompt 60.3) | | 3 | |
 | history-built prompt, Gemini 2.5 Flash (bench v0) | | | person match 59.3 vs 50.3 launch-only (+8.9 [+0.6, +15.4]) | | 12 | $0.5 |
 | Qwen2.5-7B fine-tuned on 4,000 of our comment rows (FT-TASKC-v0) | | | person match 65.2 [60.9, 70.1] vs 54.6 untuned (+10.7 [+5.1, +16.9]) | | 12 | about $3 to train |
 | structural order (arm 3) | | | | baseline: 50.0 / 70.0 / 66.7 | 6 | |
@@ -197,7 +197,10 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
 2. Re-rank with BACKER-v2 expected voters (done Nov 24: no lift), then with history-built LLM agents (E5, SIM-RERANK-1
-   stage B, running nightly, forward only; first read at 7 scored days).
+   stage B, running nightly, forward only; first read at 7 scored days). Nov 24: the first night froze late (session
+   restarts; excluded) and v1 agents saturate (yes on 89-100% of launches unless the page read was thin). Stage B v2
+   approved to run beside v1: each agent sees the whole shortlist from line-up fields only and picks its own usual
+   number of launches.
 3. Benchmark v0 builder, adapters and the first zero-shot leaderboard across model families (orchestrator).
 4. Fine-tune an open model on Task V + Task C training rows; compare with zero-shot frontier models (orchestrator).
 4b. Task C person match: first fine-tune done Nov 24 (65.2 vs 54.6 untuned, 59.3 Gemini Flash, 68.0 the person's own
