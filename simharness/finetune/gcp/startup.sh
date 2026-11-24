@@ -7,6 +7,7 @@ PREFIX=$(md ft_prefix); MODEL=$(md ft_model); TAG=$(md ft_tag)
 EPOCHS=$(md ft_epochs || echo 1); BATCH=$(md ft_batch || echo 2); ACCUM=$(md ft_accum || echo 8)
 GEN_BATCH=$(md ft_gen_batch || echo 8); GC=$(md ft_grad_checkpoint || echo 0); SKIP_BASE=$(md ft_skip_base || echo 0)
 SAVE_AT=$(md ft_save_at || echo "")   # space-separated row counts: adapter snapshots for a learning curve
+ADAPTER_GCS=$(md ft_adapter_gcs || echo "")  # an adapter trained earlier: generate with it, no training
 WORK=/opt/ft; mkdir -p $WORK; cd $WORK
 [ -f STARTED ] && exit 0   # a reboot must not run the job again
 touch STARTED
@@ -31,11 +32,19 @@ job() {
   $PY -m pip install -q --upgrade transformers peft accelerate "jinja2>=3.1" "torch==$TORCH" \
     || $PY -m pip install -q --upgrade --break-system-packages transformers peft accelerate "jinja2>=3.1" "torch==$TORCH"
   $PY -c "import torch, transformers, peft; print(torch.__version__, transformers.__version__, peft.__version__, torch.cuda.is_available())"
-  gsutil -q cp $PREFIX/code/lora.py $PREFIX/data/train.jsonl $PREFIX/data/eval.jsonl .
+  gsutil -q cp $PREFIX/code/lora.py $PREFIX/data/eval.jsonl .
+  [ -n "$ADAPTER_GCS" ] || gsutil -q cp $PREFIX/data/train.jsonl .
   GCFLAG=""; [ "$GC" = "1" ] && GCFLAG="--grad-checkpoint"
   if [ "$SKIP_BASE" != "1" ]; then  # the untuned model's comments, for the paired comparison
     $PY lora.py generate --model "$MODEL" --rows eval.jsonl --out gen_base.jsonl --batch "$GEN_BATCH"
     gsutil -q cp gen_base.jsonl $RUN/
+  fi
+  if [ -n "$ADAPTER_GCS" ]; then
+    mkdir -p adapter && gsutil -q -m cp -r "$ADAPTER_GCS/*" adapter/
+    $PY lora.py generate --model "$MODEL" --adapter adapter --rows eval.jsonl --out gen_tuned.jsonl --batch "$GEN_BATCH"
+    gsutil -q cp gen_tuned.jsonl $RUN/
+    date -u
+    return 0
   fi
   SAVEFLAG=""; [ -n "$SAVE_AT" ] && SAVEFLAG="--save-at-rows $SAVE_AT"
   $PY lora.py train --model "$MODEL" --train train.jsonl --out adapter --epochs "$EPOCHS" --batch "$BATCH" \
