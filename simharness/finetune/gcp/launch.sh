@@ -1,5 +1,5 @@
 #!/bin/bash
-# Launch one fine-tune job on a GPU VM that powers itself off when done and is deleted at the run-time cap.
+# Launch one fine-tune job on a GPU VM that deletes itself when done and is deleted at the run-time cap anyway.
 #   launch.sh TAG MODEL MACHINE ZONE MAX_HOURS [EPOCHS BATCH ACCUM GEN_BATCH GRAD_CHECKPOINT]
 # Needs FT_PREFIX (gs://... holding code/lora.py, data/train.jsonl, data/eval.jsonl; results go to runs/TAG/).
 # Optional FT_ACCELERATOR for machine types without a built-in GPU. Optional FT_NETWORK and FT_SUBNET when the project has no default network (the subnet must be in ZONE's region).
