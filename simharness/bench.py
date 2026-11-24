@@ -253,6 +253,7 @@ class Benchmark:
             it["item_id"] = it["item_id"].astype(str)
             new = it[~it["item_id"].isin(known)].sort_values(["day", "item_id"]).reset_index(drop=True)
             if len(new):
+                # (new_item_descriptions=False blanks them, to match benchmark items that carry no description)
                 add = pd.DataFrame({
                     "item_idx": np.arange(len(self.items), len(self.items) + len(new), dtype=np.int32),
                     "item_id": new["item_id"].astype(self.items["item_id"].dtype),
@@ -260,8 +261,8 @@ class Benchmark:
                     "day_ord": new["day"].map(day_ord).astype(np.int32),
                     "title": new["title"].astype(self.items["title"].dtype),
                     "summary": new["summary"].astype(self.items["summary"].dtype),
-                    "description": (new["description"] if new_item_descriptions else "").astype(self.items["description"].dtype)
-                    if new_item_descriptions else pd.Series([""] * len(new), dtype=self.items["description"].dtype),
+                    "description": (new["description"].fillna("") if new_item_descriptions
+                                    else pd.Series([""] * len(new))).astype(self.items["description"].dtype),
                     "tags": new["tags"].map(list)})
                 self.items = pd.concat([self.items, add], ignore_index=True)
                 known.update(zip(add["item_id"].astype(str), add["item_idx"]))
