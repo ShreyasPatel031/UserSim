@@ -113,6 +113,37 @@ Reading:
 - Small n: 327-366 rows with a second commenter per split, 136-183 people; the test interval for Flash only just
   clears zero. More comment truth (the blocked comment threads) widens this.
 
+### Benchmark v0 round 1 and the ties probe: who votes, with activity taken out (subagent, Nov 24; $19.4)
+HARD rows = every held voter on a test launch (Nov 11-22) plus one non-voter of the same recent activity: 50,100 rows.
+The language models scored a 960-row subsample of the same rows. Score = AUC, where 0.50 is a coin flip.
+
+| Model | HARD (all rows) | HARD (960-row subsample) | Full pool recall@N |
+|---|---|---|---|
+| most-active | 0.499 | 0.461 | 32.0 |
+| logistic (recent upvotes + topic match) | 0.518 [0.515, 0.520] | 0.507 | 38.5 [36.6, 40.5] |
+| learned taste model (taste-v1) | 0.529 [0.521, 0.537] | 0.579 | 15.9 |
+| Gemini 2.5 Flash / Llama 4 Maverick / gpt-oss-120b | | 0.528 / 0.522 / 0.517 | |
+| Claude Sonnet 4.6 / Claude Haiku 4.5 / tuned Flash-Lite | | 0.530 / 0.517 / 0.517 | |
+| dated ties to the launch's team (TIES-1) | 0.539 [0.528, 0.549] | | |
+| dated ties + logistic features | 0.547 [0.536, 0.557] | | 39.2 (+0.7 [+0.2, +1.1]) |
+| dated ties + undated follows + logistic (upper bound, can leak) | 0.556 [0.543, 0.568] | | |
+| diagnostic, not known at 00:05 PT: upvoted another launch that day | 0.651 | | |
+
+- With activity matched, no model separates voters from non-voters well: the logistic that leads the full pool is at
+  0.518, a learned taste model at 0.53, and six language models (three families, one tuned) at 0.52-0.53. No language
+  model is clear of the logistic and no stack with one beats its non-language member.
+- Ties to the team are a real but small signal (+0.022 [+0.008, +0.034] over the logistic; +0.7 recall@N on the full
+  pool). Strong ties (on the team, or backed by it before) cover under 2% of voters; the common tie (backed an earlier
+  launch by the same team) is nearly as frequent among non-voters.
+- The larger gap is presence: 81% of voters against 58% of matched non-voters upvoted something else that day. Voting
+  is mostly "was this person on Product Hunt today", then "which launches did they pick".
+- Decision: Task V is split into presence (does the person upvote anything on day D, from what is known at 00:05 PT)
+  and choice (given they are present, which launches). Next: PRESENCE-CHOICE-1 (subagent). The dated-tie features go to
+  E5 as a candidate addition to the live backer model at its next slot.
+- Leak checks passed: dated features unchanged after deleting everything on or after the day; teams taken from the
+  00:05 PT capture; integer keys only. Gaps: 35 of 396 test launches were not on the 00:05 list (no ties); validation
+  teams exist for 197 of 316 launches.
+
 ### First fine-tune (FT-TASKC-v0, simharness/finetune/, Nov 24; about $3 of GPU)
 Qwen2.5-7B-Instruct (open weights) with a LoRA adapter, trained for one epoch on the 4,000 most recent training comment
 rows (Sep 9-Oct 31, 2,133 people, at most 15 per person): prompt = the person's history and the launch, answer = their
@@ -229,7 +260,13 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
     comes from past comments only). Running: person-built comments on the launch-level WHAT scorer (WHAT-PANEL-1).
 4c. Task C content measure: embeddings do not work for content (projecting out the launch text measured style; tried
     Nov 24). Needs judged "same point as the real comment" labels; also a style distance (length, question vs praise).
-4d. Joint fine-tune: vote (round 1's activity-matched rows) + comment in one adapter; score Task V and Task C.
+4d. Joint fine-tune: vote + comment in one adapter. On hold: round 1 shows vote yes/no from history is near chance
+    once activity is matched, so the vote half waits for the presence / choice split.
+4f. Presence and choice (PRESENCE-CHOICE-1, subagent, running): a presence model from what is known at 00:05 PT, and
+    a choice benchmark (present people x the day's line-up) scored for the structural order, taste, ties and language
+    models that pick k launches from the whole line-up.
+4g. Dated ties in the live backer model (E5, next slot): add "backed an earlier launch of this team" features to
+    BACKER-v2's walk-forward test; deploy if recall@N is clear of noise on its truth set.
 4e. A serving path for a tuned open model (GPU endpoint started on demand) so a winner can replace the prompt model.
 5. HOW axis: trace realism against human traces (plugin agent; unchanged).
 6. Truth data: broad post-close re-reads and full comment threads (fleet; asked hourly).
