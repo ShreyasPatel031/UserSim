@@ -94,15 +94,33 @@ def _day_bounds_utc(day: str, tz: str) -> tuple[pd.Timestamp, pd.Timestamp]:
     return pd.Timestamp(start).tz_convert("UTC"), pd.Timestamp(end).tz_convert("UTC")
 
 
-def build(tables: DomainTables, out_dir: str, cfg: BenchConfig | None = None) -> dict:
+def build(tables: DomainTables, out_dir: str, cfg: BenchConfig | None = None,
+          prev_people: pd.DataFrame | None = None, prev_items: pd.DataFrame | None = None) -> dict:
+    """Write the benchmark tables. With `prev_people` / `prev_items` (the people and items tables of an earlier
+    build) every person and item of that build keeps its index, and new ones are appended after them: a refresh
+    never reassigns a person_idx or an item_idx."""
     cfg = cfg or BenchConfig()
     os.makedirs(out_dir, exist_ok=True)
     people = tables.people[tables.people["complete"]].reset_index(drop=True)
     people = people.sort_values("person_id").reset_index(drop=True)
+    if prev_people is not None:
+        old = prev_people.sort_values("person_idx")["person_id"].tolist()
+        seen = set(old)
+        ids = old + [p for p in people["person_id"] if p not in seen]
+        obs = dict(zip(tables.people["person_id"], tables.people["observed_until"]))
+        people = pd.DataFrame({"person_id": ids, "observed_until": [obs.get(p, pd.NaT) for p in ids]})
+        people["observed_until"] = pd.to_datetime(people["observed_until"], utc=True)
     people["person_idx"] = np.arange(len(people), dtype=np.int32)
     pidx = dict(zip(people["person_id"], people["person_idx"]))
 
     items = tables.items.sort_values(["day", "item_id"]).reset_index(drop=True).copy()
+    if prev_items is not None:
+        order = {i: k for k, i in enumerate(prev_items.sort_values("item_idx")["item_id"].astype(str))}
+        items["_k"] = [order.get(str(i), len(order) + k) for k, i in enumerate(items["item_id"])]
+        missing = set(order) - set(items["item_id"].astype(str))
+        if missing:
+            raise ValueError(f"{len(missing)} items of the previous build are missing from the new item table")
+        items = items.sort_values("_k", kind="stable").drop(columns="_k").reset_index(drop=True)
     items["item_idx"] = np.arange(len(items), dtype=np.int32)
     items["day_ord"] = items["day"].map(day_ord).astype(np.int32)
     iidx = dict(zip(items["item_id"], items["item_idx"]))
@@ -192,6 +210,8 @@ class Item:
 class Benchmark:
     def __init__(self, root: str, overlays: list[str] | None = None):
         """root: the benchmark directory. overlays: forward-day overlay directories to add (see add_overlays)."""
+        if not os.path.exists(f"{root}/meta.json") and os.path.exists(f"{root}/latest"):
+            root = os.path.join(root, open(f"{root}/latest").read().strip())   # a builds folder with a pointer file
         self.root = root
         self.meta = json.load(open(f"{root}/meta.json"))
         self.cfg = BenchConfig(**{k: tuple(v) if isinstance(v, list) else v for k, v in self.meta["config"].items()})

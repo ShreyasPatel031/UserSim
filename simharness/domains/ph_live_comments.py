@@ -13,7 +13,7 @@ time zone); by a complete held person; on a launch of D's 00:05 line-up; not by 
 Text is the comment body with HTML removed and @handles replaced.
 
 Output (an overlay directory, loaded with Benchmark.add_overlays):
-  items.parquet     item_id, day, title, summary, description, tags   (D's line-up, line-up fields only)
+  items.parquet     item_id, slug, day, title, summary, description, tags   (D's line-up, line-up fields only)
   comments.parquet  person_idx, item_id, item_idx (the benchmark row when the launch is already an item, else -1),
                     day_ord, ts, text
   meta.json         counts per filter step
@@ -53,7 +53,7 @@ def read_lineup(path: str, day: str) -> tuple[pd.DataFrame, dict]:
         pid = str(p.get("id"))
         tags = [e["node"]["name"] for e in ((p.get("topics") or {}).get("edges") or [])
                 if isinstance(e, dict) and isinstance(e.get("node"), dict) and e["node"].get("name")]
-        rows.append({"item_id": pid, "day": day, "title": scrub(str(p.get("name") or "")),
+        rows.append({"item_id": pid, "slug": str(p.get("slug") or ""), "day": day, "title": scrub(str(p.get("name") or "")),
                      "summary": scrub(str(p.get("tagline") or "")),
                      "description": scrub(" ".join(str(p.get("description") or "").split())),
                      "tags": [t for t in tags if t not in SKIP_TOPICS]})
@@ -61,7 +61,7 @@ def read_lineup(path: str, day: str) -> tuple[pd.DataFrame, dict]:
         if isinstance(p.get("user"), dict) and p["user"].get("id") is not None:
             ids.add(str(p["user"]["id"]))
         team[pid] = ids
-    return pd.DataFrame(rows, columns=["item_id", "day", "title", "summary", "description", "tags"]), team
+    return pd.DataFrame(rows, columns=["item_id", "slug", "day", "title", "summary", "description", "tags"]), team
 
 
 def read_stream(path: str) -> pd.DataFrame:
