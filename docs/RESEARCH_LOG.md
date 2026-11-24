@@ -1730,3 +1730,11 @@ cohort_calibration/what_panel2.py → results/what_panel2.json (bucket results/c
 | mix 7+15 | 62.0 | 59.0 | 30.5 | −6.4 [−11.9, −0.1] | +12.2 [+6.6, +17.8] |
 
 - No arm meets recall ≥ 70 and precision ≥ 50 (point or lower ends). Closest: mix 15+7 (precision met at the point, recall 4.6 short; recall not clearly worse than the panel, precision clearly better). Cost $3.37 (cap $3).
+
+### 2026-11-24 E5 — WHAT-PANEL-3: full persona panel + person-built Flash comments, Nov 21–23 (24 launches, 3 seeds)
+cohort_calibration/what_panel3.py → results/what_panel3.json. Pooled, [mean %, launch-boot 95%]; paired vs the full panel:
+- panel (~22.8): recall 66.3 [59.9, 72.6], precision 45.8 [36.9, 55.3], complaint 27.7.
+- + 8: 68.7 / 49.5 / 34.3; recall +2.4 [−1.6, +6.1], precision +3.7 [−1.3, +8.4], complaint +6.5 [+0.5, +12.8].
+- + 11: 65.0 / 50.8 / 35.4; recall −1.3 [−6.4, +3.8], precision +5.0 [−0.3, +10.6], complaint +7.7 [+0.4, +15.3].
+- + 15: 68.7 [62.4, 74.6] / 54.3 [44.2, 64.9] / 36.4; recall +2.3 [−1.9, +6.6], precision +8.5 [+0.3, +16.5], complaint +8.7 [+2.9, +14.7].
+- Fixed rule: only panel + 15 qualifies (precision clearly above, recall not below, both points closer to 70/50). It meets precision ≥ 50 at the point (lower end 44.2) and stays 1.3 short on recall; no arm meets both at the point. Cost $2.27 (cap $2).

@@ -61,3 +61,4 @@
 {"t": "sim_rerank_b", "day": "2026-11-24", "provider": "gcp", "usd": 0.602, "calls": 1400}
 {"t": "what_panel1", "provider": "gcp", "usd": 0.38}
 {"t": "what_panel2", "provider": "gcp", "usd": 3.372}
+{"t": "what_panel3", "provider": "gcp", "usd": 2.271}
