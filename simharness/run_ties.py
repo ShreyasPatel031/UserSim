@@ -3,6 +3,7 @@
 Stages (private files go to --out and, with --sync gs://prefix, are copied there after each stage):
 
   data     team / backing / follow tables from the domain adapter (Product Hunt)
+  leak     dated features must be unchanged when everything on or after the day is deleted
   hard     tie features on the round-1 HARD rows; logistic models fit on VAL-HARD, scored once on HARD
   full     full-pool ranking on every test launch: round-1 logistic vs logistic + dated ties (fit on validation)
   agg      results.json + table.md (aggregates only) into --results-dir
@@ -57,6 +58,49 @@ def stage_data(a):
     files = save_tables(t, f"{a.out}/tables")
     print(json.dumps(cov, indent=1))
     sync(files, f"{a.sync.rstrip('/')}/tables" if a.sync else "")
+
+
+# ------------------------------------------------------------------------------------------------ leak checks
+def stage_leak(a):
+    """Dated tie features must not change when everything dated on or after the day is deleted from the tables."""
+    from simharness.bench import day_ord
+    from simharness.ties import DATED, TieData, featurize_rows, load_tables
+    b = load_bench(a)
+    t = load_tables(f"{a.out}/tables")
+    td = TieData(b.n_people, len(b.items), t)
+    rows = pd.read_parquet(f"{a.round1}/hard_test.parquet")
+    rng = np.random.default_rng(4)
+    res = {"days_checked": [], "max_abs_diff_after_deleting_everything_on_or_after_the_day": 0.0, "rows_checked": 0}
+    ld = t["launch_day"]
+    for d in rng.choice(sorted(rows.day.unique()), 3, replace=False):
+        o = day_ord(d)
+        cut = dict(t)
+        cut["back"] = t["back"][(t["back"]["event_day"] < o) & (ld[t["back"]["launch"].to_numpy()] < o)]
+        cut["made"] = t["made"][ld[t["made"]["launch"].to_numpy()] < o]
+        cut["team"] = t["team"][ld[t["team"]["launch"].to_numpy()] < o]
+        r = rows[rows.day == d]
+        x0 = featurize_rows(td, r, DATED)
+        x1 = featurize_rows(TieData(b.n_people, len(b.items), cut), r, DATED)
+        res["max_abs_diff_after_deleting_everything_on_or_after_the_day"] = max(
+            res["max_abs_diff_after_deleting_everything_on_or_after_the_day"], float(np.abs(x0 - x1).max()))
+        res["days_checked"].append(str(d))
+        res["rows_checked"] += len(r)
+        res.setdefault("rows_with_a_dated_tie_on_checked_days", 0)
+        res["rows_with_a_dated_tie_on_checked_days"] += int((x0[:, :2].sum(1) > 0).sum())
+    tt = t["target_team"]
+    res["target_team_source_by_launch"] = tt.drop_duplicates("item_idx")["source"].value_counts().to_dict()
+    it_day = dict(zip(b.items["item_idx"], b.items["day"]))
+    test_days = set(b.days("test"))
+    src_test = tt[tt["item_idx"].map(it_day).isin(test_days)].drop_duplicates("item_idx")["source"].value_counts().to_dict()
+    res["target_team_source_test_launches"] = src_test
+    res["tables_hold_only_integer_keys"] = bool(all(str(dt).startswith(("int", "bool", "float")) or c == "source"
+                                                    for k in ("team", "target_team", "made", "back",
+                                                              "follows_person_entity", "follows_entity_person")
+                                                    for c, dt in t[k].dtypes.items()))
+    res["follow_edges"] = "undated snapshots: can include follows made after the day; reported as an upper bound only"
+    json.dump(res, open(f"{a.out}/ties_leak_checks.json", "w"), indent=1)
+    print(json.dumps(res, indent=1))
+    sync([f"{a.out}/ties_leak_checks.json"], a.sync)
 
 
 # ------------------------------------------------------------------------------------------------ hard
@@ -242,7 +286,7 @@ def stage_agg(a):
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["data", "hard", "full", "agg"])
+    ap.add_argument("stage", choices=["data", "leak", "hard", "full", "agg"])
     ap.add_argument("--bench", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--round1", default="")
