@@ -1760,3 +1760,34 @@ Window Oct 1-24 (750 launches, 85,744 real votes); warehouse page-1 lists are 98
 - N: 80% needs ~5.0k more voters found most-active first (2.4-13.0k); 90% ~8.6k (4.2-16.2k). At the discovery route's 16.5% voting
   rate that is ~30k / ~52k people to add.
 - Missed votes: pool votes are 88% from 4+-vote people; the non-pool sample's are 41% (29% from one-vote people), so light voters dominate.
+
+## Verdict: early-vote shock correction on `vote_snapshots` (Nov 24, PR 143 session; first official run of `ph_predict/early_shock.py`)
+Pipeline step `earlyshock`, Nov 24 08:05 UTC: 17 clean days (Nov 3–23), leave-one-day-out, paired bootstrap over days. Results are in `backtests` (run_file `early_shock_2026-11-24`, 117 rows) and on the pipeline VM in `ph_predict/results/early_shock/early_shock_2026-11-24.md`.
+- **Excluded days:** Nov 5–7 (pipeline didn't run, so no honest prior) and Nov 16 (snapshot gap before hour 8).
+- **Three fixes shipped before the run**, each deployed by PH ops:
+  - **Vote counts hidden** (8452809e): every launch reads 0 votes until hour 4, so vote arms only count where votes are visible. Comment arms cover hours 0–3.
+  - **Launches dropped from the featured list** (e5240e4a): kept as never-top-k instead of failing the day's "ranks final" check.
+  - **Late-featured launches** (1e6cb510): kept with the day's 10th-percentile prior and never used to fit, instead of failing prior coverage. Some finish high (#5 on Nov 11, #8 on Nov 22).
+
+**Daily top 3**, Δ vs prior (95% CI):
+
+| Hour (PT) | Prior | Early votes, shock-corrected | Raw early votes | Shock + popscore vs shock | Early comments, shock-corrected |
+|---|---|---|---|---|---|
+| 1 | 52.9 | n/a (votes hidden) | n/a | n/a | 66.7, +13.7 (+2.0 to +27.5) |
+| 3 | 52.9 | n/a | n/a | n/a | 70.6, +17.6 (+3.9 to +33.3) |
+| 4 | 52.9 | 82.4, +29.4 (+15.7 to +41.2) | 84.3 | 0.0 | 72.5 |
+| 6 | 52.9 | **92.2**, +39.2 (+27.5 to +51.0) | 92.2 | −2.0 (−5.9 to 0.0) | 72.5 |
+| 8 | 52.9 | 92.2, +39.2 (+27.5 to +51.0) | 94.1 | 0.0 | 72.5 |
+| 12 | 52.9 | 98.0, +45.1 (+33.3 to +54.9) | 98.0 | −2.0 (−5.9 to 0.0) | 72.5 |
+
+Top 5 / 10, early votes vs prior: +23.5 / +16.5 at hour 4, +30.6 / +24.1 at hour 8, +32.9 / +27.1 at hour 12 (all CIs exclude 0).
+
+- **Verdict 1: early votes reach the daily north star from hour 6.** Top 3 is 92.2 at hour 6 and 98.0 at hour 12. This is a launch-day forecast, not a pre-launch one.
+- **Verdict 2: the shock correction adds nothing over raw votes.** "Votes alone" is equal or ahead at every hour from 4. Rank by early votes, with the prior only as a tiebreak.
+- **Verdict 3: popscore adds nothing.** The shock + popscore arm is −2.0 to +2.0 on top 3 and −2.9 to +1.8 on top 10, and every interval includes 0. This matches the Nov 2 verdict, now on live early-vote data. Note the limit: snapshots hold counts, not voters, so per-voter weighting was not testable.
+- **Verdict 4: comments are the only signal while votes are hidden:** +13.7 at hour 1 and +17.6 at hour 3 on top 3, both CIs above 0. They plateau at about 72.5, well below votes from hour 4.
+- **Live pre-launch prior is below its backtest:** 52.9 daily top 3 over these 17 days, against 64.4 for the honest backtest (May–Oct). Late-featured launches the morning forecast never saw are one likely cause (29–38% of the line-up on Nov 11, 21, 22).
+- **Caveats:**
+  - 17 days, so top-3 CIs are about ±12.
+  - Late-featured launches use a fallback prior.
+  - Weekly and monthly boards are not scored here.
