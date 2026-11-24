@@ -9,13 +9,14 @@ import concurrent.futures as cf, hashlib, json, os, re, subprocess, sys, tempfil
 import numpy as np, pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE); import sim_model  # noqa: E402
 D, SP = sys.argv[1:3]; REH = "--rehearsal" in sys.argv; UP = "--no-upload" not in sys.argv
-B = "gs://usersim-bakeoff-347838016394/usersim_sim"; CV = os.path.join(SP, "cv"); BENCH = os.path.join(SP, "bench_v0", "data"); TABLES = os.environ.get("PANEL_TABLES", "gs://usersim-bakeoff-347838016394/usersim_sim/simharness/bench_v0/data (Nov 23 build)"); W = os.path.join(SP, f"person_panel_{D}")
+B = "gs://usersim-bakeoff-347838016394/usersim_sim"; CV = os.path.join(SP, "cv"); BENCH = os.environ.get("PANEL_BENCH") or os.path.join(SP, "bench_v0", "data"); TABLES = os.environ.get("PANEL_TABLES", "gs://usersim-bakeoff-347838016394/usersim_sim/simharness/bench_v0/data (Nov 23 build)"); W = os.path.join(SP, f"person_panel_{D}")
 gcat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
 os.makedirs(W, exist_ok=True); LU = os.path.join(W, "lineup.json"); open(LU, "w").write(gcat(f"{B}/raw/daily/{D}/today_0005.json"))
 r = subprocess.run([sys.executable, "-m", "simharness.run_what_panel", "build", "--bench", BENCH, "--lineup", LU, "--day", D, "--out", W], cwd=CV, capture_output=True, text=True)
 if r.returncode: sys.exit("selection failed: " + r.stderr[-800:])
 ROWS = [json.loads(l) for l in open(os.path.join(W, "eval.jsonl"))]
-PEOPLE = pd.read_parquet(os.path.join(BENCH, "people.parquet"), columns=["person_idx", "person_id"]).set_index("person_idx").person_id.to_dict()
+_bd = BENCH if os.path.exists(os.path.join(BENCH, "people.parquet")) else os.path.join(BENCH, open(os.path.join(BENCH, "latest")).read().strip())
+PEOPLE = pd.read_parquet(os.path.join(_bd, "people.parquet"), columns=["person_idx", "person_id"]).set_index("person_idx").person_id.to_dict()
 SLUG2ID = {str(x.get("slug")): str(x["id"]) for x in json.load(open(LU))}
 OLD = "This member did comment on this launch today. Write that comment as they would: their usual length, tone, focus and\nkind of question or praise, as their past comments show. Reply with the comment only."
 NEW = ("This member did comment on this launch today. Write that comment as they would: their usual length, tone, focus and\nkind of question or praise, as their past comments show. "
