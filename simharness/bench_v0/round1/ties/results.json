@@ -1,0 +1,947 @@
+{
+ "task": "Benchmark v0 Task V, TIES-1",
+ "intervals": "day-clustered bootstrap 95%",
+ "coverage": {
+  "target_launches_with_team": 558,
+  "target_team_members": 653,
+  "members_resolved_to_a_store_person": 387,
+  "members_who_are_complete_held_people": 362,
+  "members_with_a_following_list_in_store": 285,
+  "launches_total": 97660,
+  "launches_outside_item_table": 90299,
+  "team_edges": 130288,
+  "backings": 1992617,
+  "target_source_counts": {
+   "0005": 486,
+   "same-day capture": 72
+  },
+  "val_launches": 316,
+  "val_launches_with_team": 197,
+  "test_launches": 396,
+  "test_launches_with_team": 361
+ },
+ "hard": {
+  "models": {
+   "round-1 logistic": {
+    "HARD_auc_pooled": {
+     "value": 0.5176,
+     "ci95": [
+      0.514,
+      0.5226
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.523,
+     "ci95": [
+      0.5144,
+      0.5333
+     ]
+    }
+   },
+   "round-1 taste-v1": {
+    "HARD_auc_pooled": {
+     "value": 0.5288,
+     "ci95": [
+      0.5193,
+      0.5368
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5408,
+     "ci95": [
+      0.5289,
+      0.554
+     ]
+    }
+   },
+   "dated ties": {
+    "HARD_auc_pooled": {
+     "value": 0.5395,
+     "ci95": [
+      0.5284,
+      0.5494
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5247,
+     "ci95": [
+      0.5154,
+      0.535
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.022,
+     "ci95": [
+      0.0076,
+      0.0342
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0108,
+     "ci95": [
+      0.0009,
+      0.0198
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0017,
+     "ci95": [
+      -0.0168,
+      0.019
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": -0.0161,
+     "ci95": [
+      -0.027,
+      -0.0062
+     ]
+    }
+   },
+   "dated ties + logistic features": {
+    "HARD_auc_pooled": {
+     "value": 0.5474,
+     "ci95": [
+      0.5362,
+      0.5575
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5467,
+     "ci95": [
+      0.5391,
+      0.5562
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0298,
+     "ci95": [
+      0.0158,
+      0.0419
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0186,
+     "ci95": [
+      0.0081,
+      0.0284
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0237,
+     "ci95": [
+      0.0108,
+      0.0373
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.006,
+     "ci95": [
+      -0.0076,
+      0.0196
+     ]
+    }
+   },
+   "dated ties + taste-v1": {
+    "HARD_auc_pooled": {
+     "value": 0.5445,
+     "ci95": [
+      0.533,
+      0.554
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.548,
+     "ci95": [
+      0.5352,
+      0.5618
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.027,
+     "ci95": [
+      0.0111,
+      0.0389
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0158,
+     "ci95": [
+      0.0116,
+      0.0199
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.025,
+     "ci95": [
+      0.002,
+      0.0469
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0072,
+     "ci95": [
+      0.0043,
+      0.0108
+     ]
+    }
+   },
+   "dated ties + logistic features + taste-v1": {
+    "HARD_auc_pooled": {
+     "value": 0.5455,
+     "ci95": [
+      0.5341,
+      0.5551
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5438,
+     "ci95": [
+      0.5301,
+      0.5592
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0279,
+     "ci95": [
+      0.0124,
+      0.0398
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0167,
+     "ci95": [
+      0.012,
+      0.0216
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0208,
+     "ci95": [
+      -0.003,
+      0.0438
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.003,
+     "ci95": [
+      -0.0009,
+      0.0075
+     ]
+    }
+   },
+   "follow ties only (undated, upper bound)": {
+    "HARD_auc_pooled": {
+     "value": 0.5306,
+     "ci95": [
+      0.523,
+      0.5381
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5195,
+     "ci95": [
+      0.5106,
+      0.5313
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.013,
+     "ci95": [
+      0.0027,
+      0.0223
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0018,
+     "ci95": [
+      -0.0072,
+      0.0108
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": -0.0036,
+     "ci95": [
+      -0.0213,
+      0.0152
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": -0.0213,
+     "ci95": [
+      -0.0306,
+      -0.0133
+     ]
+    }
+   },
+   "dated + follow ties (upper bound)": {
+    "HARD_auc_pooled": {
+     "value": 0.5501,
+     "ci95": [
+      0.5368,
+      0.5629
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5335,
+     "ci95": [
+      0.5196,
+      0.5503
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0326,
+     "ci95": [
+      0.0169,
+      0.0469
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0213,
+     "ci95": [
+      0.0094,
+      0.032
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0104,
+     "ci95": [
+      -0.0121,
+      0.0352
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": -0.0073,
+     "ci95": [
+      -0.0189,
+      0.0041
+     ]
+    }
+   },
+   "dated + follow ties + logistic features (upper bound)": {
+    "HARD_auc_pooled": {
+     "value": 0.5557,
+     "ci95": [
+      0.5427,
+      0.5682
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5539,
+     "ci95": [
+      0.5438,
+      0.567
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0381,
+     "ci95": [
+      0.0231,
+      0.0522
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0269,
+     "ci95": [
+      0.0157,
+      0.037
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0308,
+     "ci95": [
+      0.014,
+      0.0498
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0131,
+     "ci95": [
+      -0.0002,
+      0.0245
+     ]
+    }
+   },
+   "dated + follow ties + taste-v1 (upper bound)": {
+    "HARD_auc_pooled": {
+     "value": 0.5556,
+     "ci95": [
+      0.5426,
+      0.5675
+     ]
+    },
+    "HARD_auc_mean_per_launch": {
+     "value": 0.5541,
+     "ci95": [
+      0.538,
+      0.5734
+     ]
+    },
+    "vs_logistic": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0381,
+     "ci95": [
+      0.0209,
+      0.0521
+     ]
+    },
+    "vs_taste-v1": {
+     "metric": "auc_pooled",
+     "cluster": "day",
+     "diff": 0.0268,
+     "ci95": [
+      0.0197,
+      0.0337
+     ]
+    },
+    "vs_logistic_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0311,
+     "ci95": [
+      0.0054,
+      0.0582
+     ]
+    },
+    "vs_taste-v1_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "day",
+     "diff": 0.0133,
+     "ci95": [
+      0.0069,
+      0.0217
+     ]
+    }
+   }
+  },
+  "coef": {
+   "dated ties": {
+    "self_team": 8.427000045776367,
+    "back_any": -0.6079999804496765,
+    "back_n": 0.0949999988079071,
+    "back_rw": -0.003000000026077032,
+    "back_recent": 0.4860000014305115,
+    "co_n": -0.03400000184774399,
+    "co_cos": 3.6070001125335693,
+    "recip_any": -0.0,
+    "recip_n": 0.8740000128746033
+   },
+   "dated ties + logistic features": {
+    "self_team": 8.321999549865723,
+    "back_any": -0.6100000143051147,
+    "back_n": 0.09200000017881393,
+    "back_rw": -0.003000000026077032,
+    "back_recent": 0.4659999907016754,
+    "co_n": -0.027000000700354576,
+    "co_cos": 3.621000051498413,
+    "recip_any": 0.050999999046325684,
+    "recip_n": 0.8169999718666077,
+    "ln_rw": 0.03700000047683716,
+    "tm": 0.6909999847412109,
+    "ln_rw_x_tm": -0.13899999856948853
+   },
+   "dated ties + taste-v1": {
+    "self_team": 6.776,
+    "back_any": -0.16,
+    "back_n": 0.062,
+    "back_rw": 0.0,
+    "back_recent": -0.051,
+    "co_n": -0.032,
+    "co_cos": 3.46,
+    "recip_any": 0.047,
+    "recip_n": 0.906,
+    "taste_logit": 0.167
+   },
+   "dated ties + logistic features + taste-v1": {
+    "self_team": 6.811,
+    "back_any": -0.277,
+    "back_n": 0.035,
+    "back_rw": 0.002,
+    "back_recent": 0.08,
+    "co_n": -0.013,
+    "co_cos": 3.312,
+    "recip_any": 0.039,
+    "recip_n": 0.895,
+    "ln_rw": -0.025,
+    "tm": 0.522,
+    "ln_rw_x_tm": -0.116,
+    "taste_logit": 0.176
+   },
+   "follow ties only (undated, upper bound)": {
+    "fol_p2t_any": -1.965000033378601,
+    "fol_p2t_n": 3.4070000648498535,
+    "fol_t2p_any": 0.36000001430511475
+   },
+   "dated + follow ties (upper bound)": {
+    "self_team": 8.621000289916992,
+    "back_any": -0.7369999885559082,
+    "back_n": 0.08399999886751175,
+    "back_rw": -0.003000000026077032,
+    "back_recent": 0.45399999618530273,
+    "co_n": -0.013000000268220901,
+    "co_cos": 3.3570001125335693,
+    "recip_any": 0.008999999612569809,
+    "recip_n": 0.7990000247955322,
+    "fol_p2t_any": -1.8320000171661377,
+    "fol_p2t_n": 3.309999942779541,
+    "fol_t2p_any": 0.29899999499320984
+   },
+   "dated + follow ties + logistic features (upper bound)": {
+    "self_team": 11.35099983215332,
+    "back_any": -0.7519999742507935,
+    "back_n": 0.07999999821186066,
+    "back_rw": -0.003000000026077032,
+    "back_recent": 0.45500001311302185,
+    "co_n": -0.004999999888241291,
+    "co_cos": 3.3399999141693115,
+    "recip_any": 0.04800000041723251,
+    "recip_n": 0.7570000290870667,
+    "fol_p2t_any": -1.8279999494552612,
+    "fol_p2t_n": 3.303999900817871,
+    "fol_t2p_any": 0.29600000381469727,
+    "ln_rw": 0.041999999433755875,
+    "tm": 0.7250000238418579,
+    "ln_rw_x_tm": -0.16599999368190765
+   },
+   "dated + follow ties + taste-v1 (upper bound)": {
+    "self_team": 19.657,
+    "back_any": -0.309,
+    "back_n": 0.05,
+    "back_rw": 0.0,
+    "back_recent": -0.04,
+    "co_n": -0.011,
+    "co_cos": 3.192,
+    "recip_any": 0.079,
+    "recip_n": 0.809,
+    "fol_p2t_any": -1.816,
+    "fol_p2t_n": 3.238,
+    "fol_t2p_any": 0.314,
+    "taste_logit": 0.158
+   }
+  },
+  "tie_shares_on_HARD": {
+   "val": {
+    "on the team": {
+     "voters": 0.0029,
+     "matched_non_voters": 0.0,
+     "n_voters_with": 71,
+     "n_non_voters_with": 0
+    },
+    "backed an earlier launch of the team": {
+     "voters": 0.4901,
+     "matched_non_voters": 0.4739,
+     "n_voters_with": 11973,
+     "n_non_voters_with": 11578
+    },
+    "team member backed the person's earlier launch": {
+     "voters": 0.0043,
+     "matched_non_voters": 0.0015,
+     "n_voters_with": 104,
+     "n_non_voters_with": 37
+    },
+    "shares an earlier upvote with a held team member": {
+     "voters": 0.1696,
+     "matched_non_voters": 0.1432,
+     "n_voters_with": 4143,
+     "n_non_voters_with": 3499
+    },
+    "follows a team member (undated)": {
+     "voters": 0.24,
+     "matched_non_voters": 0.1698,
+     "n_voters_with": 5863,
+     "n_non_voters_with": 4148
+    },
+    "followed by a team member (undated)": {
+     "voters": 0.0286,
+     "matched_non_voters": 0.0164,
+     "n_voters_with": 698,
+     "n_non_voters_with": 401
+    },
+    "any dated tie (team / backed / reciprocal)": {
+     "voters": 0.4912,
+     "matched_non_voters": 0.4741,
+     "n_voters_with": 12000,
+     "n_non_voters_with": 11583
+    },
+    "any follow tie (undated)": {
+     "voters": 0.2481,
+     "matched_non_voters": 0.1756,
+     "n_voters_with": 6062,
+     "n_non_voters_with": 4291
+    },
+    "rows_on_launches_with_a_known_team": 0.7119
+   },
+   "test": {
+    "on the team": {
+     "voters": 0.0022,
+     "matched_non_voters": 0.0,
+     "n_voters_with": 56,
+     "n_non_voters_with": 1
+    },
+    "backed an earlier launch of the team": {
+     "voters": 0.6735,
+     "matched_non_voters": 0.6572,
+     "n_voters_with": 16870,
+     "n_non_voters_with": 16463
+    },
+    "team member backed the person's earlier launch": {
+     "voters": 0.0135,
+     "matched_non_voters": 0.0057,
+     "n_voters_with": 338,
+     "n_non_voters_with": 142
+    },
+    "shares an earlier upvote with a held team member": {
+     "voters": 0.2376,
+     "matched_non_voters": 0.2152,
+     "n_voters_with": 5953,
+     "n_non_voters_with": 5391
+    },
+    "follows a team member (undated)": {
+     "voters": 0.2594,
+     "matched_non_voters": 0.203,
+     "n_voters_with": 6497,
+     "n_non_voters_with": 5086
+    },
+    "followed by a team member (undated)": {
+     "voters": 0.0277,
+     "matched_non_voters": 0.0132,
+     "n_voters_with": 694,
+     "n_non_voters_with": 330
+    },
+    "any dated tie (team / backed / reciprocal)": {
+     "voters": 0.6753,
+     "matched_non_voters": 0.658,
+     "n_voters_with": 16916,
+     "n_non_voters_with": 16482
+    },
+    "any follow tie (undated)": {
+     "voters": 0.2673,
+     "matched_non_voters": 0.208,
+     "n_voters_with": 6697,
+     "n_non_voters_with": 5211
+    },
+    "rows_on_launches_with_a_known_team": 0.958
+   }
+  }
+ },
+ "full": {
+  "logistic": {
+   "recall_at_N_pooled": {
+    "value": 0.385,
+    "ci95": [
+     0.366,
+     0.4053
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.3648,
+    "ci95": [
+     0.3354,
+     0.3901
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9382,
+    "ci95": [
+     0.932,
+     0.9441
+    ]
+   },
+   "items": 394,
+   "positives": 25050
+  },
+  "logistic + dated ties": {
+   "recall_at_N_pooled": {
+    "value": 0.3917,
+    "ci95": [
+     0.3745,
+     0.4104
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.3678,
+    "ci95": [
+     0.3408,
+     0.3919
+    ]
+   },
+   "auc_mean": {
+    "value": 0.941,
+    "ci95": [
+     0.9352,
+     0.9463
+    ]
+   },
+   "items": 394,
+   "positives": 25050,
+   "recall_diff_vs_logistic": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": 0.0067,
+    "ci95": [
+     0.0022,
+     0.0105
+    ]
+   },
+   "coef": {
+    "logit_logistic": 1.004,
+    "self_team": 8.252,
+    "back_any": 0.441,
+    "back_n": -0.001,
+    "back_rw": -0.01,
+    "back_recent": 0.973,
+    "co_n": -0.104,
+    "co_cos": 8.718,
+    "recip_any": 1.407,
+    "recip_n": 0.852
+   }
+  },
+  "logistic + dated + follow ties (upper bound)": {
+   "recall_at_N_pooled": {
+    "value": 0.3901,
+    "ci95": [
+     0.3721,
+     0.4084
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.3671,
+    "ci95": [
+     0.3405,
+     0.3914
+    ]
+   },
+   "auc_mean": {
+    "value": 0.942,
+    "ci95": [
+     0.9354,
+     0.9477
+    ]
+   },
+   "items": 394,
+   "positives": 25050,
+   "recall_diff_vs_logistic": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": 0.0051,
+    "ci95": [
+     -0.0015,
+     0.0116
+    ]
+   },
+   "coef": {
+    "logit_logistic": 0.991,
+    "self_team": 7.944,
+    "back_any": 0.14,
+    "back_n": -0.025,
+    "back_rw": -0.004,
+    "back_recent": 0.77,
+    "co_n": -0.083,
+    "co_cos": 8.743,
+    "recip_any": 0.963,
+    "recip_n": 0.86,
+    "fol_p2t_any": 0.51,
+    "fol_p2t_n": 0.927,
+    "fol_t2p_any": 0.147
+   }
+  }
+ },
+ "presence_diagnostic": {
+  "definition": "present = upvoted at least one OTHER launch that day (an outcome of the day: diagnostic only)",
+  "share_present": {
+   "voters": 0.8079,
+   "matched_non_voters": 0.584
+  },
+  "median_other_upvotes_that_day": {
+   "voters": 3.0,
+   "matched_non_voters": 1.0
+  },
+  "oracle_auc_other_upvotes_that_day": 0.6507,
+  "oracle_auc_present_flag": 0.6119,
+  "rows_present": {
+   "rows": 34868,
+   "voters": 20238,
+   "non_voters": 14630
+  },
+  "auc_among_present": {
+   "most-active": {
+    "auc_pooled": {
+     "value": 0.4734,
+     "ci95": [
+      0.4589,
+      0.4888
+     ]
+    },
+    "auc_mean_per_launch": {
+     "value": 0.4693,
+     "ci95": [
+      0.4472,
+      0.4874
+     ]
+    },
+    "launches": 394
+   },
+   "round-1 logistic": {
+    "auc_pooled": {
+     "value": 0.5027,
+     "ci95": [
+      0.4938,
+      0.5126
+     ]
+    },
+    "auc_mean_per_launch": {
+     "value": 0.5103,
+     "ci95": [
+      0.4979,
+      0.5203
+     ]
+    },
+    "launches": 394
+   },
+   "taste-v1": {
+    "auc_pooled": {
+     "value": 0.5241,
+     "ci95": [
+      0.516,
+      0.5335
+     ]
+    },
+    "auc_mean_per_launch": {
+     "value": 0.5413,
+     "ci95": [
+      0.5312,
+      0.5547
+     ]
+    },
+    "launches": 394
+   },
+   "dated ties": {
+    "auc_pooled": {
+     "value": 0.4984,
+     "ci95": [
+      0.4913,
+      0.5059
+     ]
+    },
+    "auc_mean_per_launch": {
+     "value": 0.5017,
+     "ci95": [
+      0.4959,
+      0.5082
+     ]
+    },
+    "launches": 394
+   },
+   "dated ties + logistic features": {
+    "auc_pooled": {
+     "value": 0.5074,
+     "ci95": [
+      0.4984,
+      0.5164
+     ]
+    },
+    "auc_mean_per_launch": {
+     "value": 0.5212,
+     "ci95": [
+      0.5151,
+      0.529
+     ]
+    },
+    "launches": 394
+   },
+   "dated + follow ties + logistic features (upper bound)": {
+    "auc_pooled": {
+     "value": 0.5284,
+     "ci95": [
+      0.5182,
+      0.5377
+     ]
+    },
+    "auc_mean_per_launch": {
+     "value": 0.5356,
+     "ci95": [
+      0.5266,
+      0.5469
+     ]
+    },
+    "launches": 394
+   }
+  }
+ },
+ "leak_checks": {
+  "days_checked": [
+   "2026-11-18",
+   "2026-11-22",
+   "2026-11-21"
+  ],
+  "max_abs_diff_after_deleting_everything_on_or_after_the_day": 0.0,
+  "rows_checked": 10072,
+  "rows_with_a_dated_tie_on_checked_days": 6159,
+  "target_team_source_by_launch": {
+   "0005": 486,
+   "same-day capture": 72
+  },
+  "target_team_source_test_launches": {
+   "0005": 361
+  },
+  "tables_hold_only_integer_keys": true,
+  "follow_edges": "undated snapshots: can include follows made after the day; reported as an upper bound only"
+ }
+}

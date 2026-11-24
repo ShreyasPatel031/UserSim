@@ -138,4 +138,8 @@ $R agg --bench BENCH --out OUT --results-dir simharness/bench_v0/round1
 Every stage writes its files to OUT and copies them to the `--sync` prefix; prompt-model calls are cached in
 append-only part files (`llm.JsonlCache`) so a restart never repeats a paid call, and `--cap` is a hard dollar limit.
 
+TIES-1 (tie-to-the-team features on the same HARD rows; results in `bench_v0/round1/ties/`):
+`python -m simharness.run_ties {data,leak,hard,full,presence,agg}`; features in `ties.py`, the team / backing /
+follow tables come from the domain adapter (`domains/producthunt.build_tie_tables`).
+
 `domains/producthunt.py` is the first adapter; its module docstring lists its dating and leak choices.

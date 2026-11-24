@@ -161,6 +161,27 @@ adapter saved after 4,000 and 8,000 rows. 96 minutes on one A100.
   comments, comments chosen by similarity to the launch, profile text), tested first with a prompt-only model because
   it costs cents, then carried into the tuned model.
 
+### What the model should be shown about a person (Task C context ablation, Nov 24; Gemini 2.5 Flash, $3.37)
+Same model and rows, different history in the prompt. Every validation row (1,003; 912 with a second commenter) and
+test row (413; 328). Person match; differences are paired against the first row, day-clustered 95% intervals.
+
+| History shown | Validation | vs base | Test | vs base |
+|---|---|---|---|---|
+| 30 upvoted launches + 10 latest comments (base) | 57.9 [56.6, 59.6] | | 58.8 | |
+| 30 upvoted launches + 30 latest comments | 58.8 | +0.9 [-0.6, +2.6] | 60.1 | +1.2 [-1.3, +3.1] |
+| 10 latest comments only | 60.1 | +2.2 [-0.7, +5.1] | 59.5 | +0.6 [-2.4, +4.5] |
+| 30 upvoted launches only | 50.2 | -7.8 [-9.6, -5.8] | 48.2 | -10.7 [-15.3, -4.9] |
+| 30 upvoted launches + 10 past comments most similar to the launch | 54.4 | -3.6 [-6.1, -1.2] | 55.8 | -3.0 [-6.7, -0.2] |
+| the person's own latest earlier comment (reference) | 64.3 [61.0, 67.7] | | 68.0 | |
+
+- A person's voice comes only from their past comments: the upvote list alone is at chance, and removing it costs
+  nothing. More comments (30) do not help; choosing comments by similarity to the launch is worse than the latest ones.
+- So neither more training rows nor a different history closes the gap to the person's own last comment (64-68):
+  prompt-only models sit at 58-60 and the tuned 7B model at 60-65.
+- Decision: the fine-tune and the prompts keep the latest comments and may drop the upvote list for Task C (shorter,
+  cheaper prompts). Person match is now well mapped; the next question is whether person-built comments are better on
+  the launch-level measure the product is judged on (themes and complaints against all real comments on a launch).
+
 ### Task R, first test: re-rank the shortlist by expected held voters (E5, SIM-RERANK-1 stage A, b7061305, Nov 24)
 Question: does "how many of our held people are expected to back this launch" reorder the structural shortlist better?
 Answer: no. Re-ranked minus structural, paired by day, day-bootstrap 95% intervals.
@@ -204,8 +225,8 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
 3. Benchmark v0 builder, adapters and the first zero-shot leaderboard across model families (orchestrator).
 4. Fine-tune an open model on Task V + Task C training rows; compare with zero-shot frontier models (orchestrator).
 4b. Task C person match: first fine-tune done Nov 24 (65.2 vs 54.6 untuned, 59.3 Gemini Flash, 68.0 the person's own
-    last comment); learning curve done Nov 24 (flat from 4,000 to 12,000 rows). Running: what the model is shown about
-    the person (context ablation with a prompt-only model). Then add Claude, gpt-oss and Llama to the table.
+    last comment); learning curve done Nov 24 (flat from 4,000 to 12,000 rows); context ablation done Nov 24 (voice
+    comes from past comments only). Running: person-built comments on the launch-level WHAT scorer (WHAT-PANEL-1).
 4c. Task C content measure: embeddings do not work for content (projecting out the launch text measured style; tried
     Nov 24). Needs judged "same point as the real comment" labels; also a style distance (length, question vs praise).
 4d. Joint fine-tune: vote (round 1's activity-matched rows) + comment in one adapter; score Task V and Task C.
