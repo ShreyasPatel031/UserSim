@@ -31,6 +31,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
+from simharness.bench import scrub
 from simharness.models.base import VoteModel
 
 PROMPT = """You simulate one real Product Hunt member deciding about today's launches.
@@ -76,8 +77,9 @@ def build_prompt(history_text: str, item, version: int = 1) -> str:
     """version 1: v0 prompt; 2: activity-aware prompt (JSON p_vote + comment); 3: the same as 2 but answered yes/no
     (the supervised-tuning format)."""
     tags = ", ".join(item.tags) or "(none)"
-    if version in (2, 3):
-        head = PROMPT_V2_HEAD.format(history=history_text, title=item.title, summary=item.summary, tags=tags)
+    if version in (2, 3):  # @handles in launch text are removed, as they are in the history
+        head = PROMPT_V2_HEAD.format(history=history_text, title=scrub(item.title), summary=scrub(item.summary),
+                                     tags=tags)
         if version == 2:
             return head + PROMPT_V2_TAIL.format()
         return head.split("Use the member's activity rate")[0] + PROMPT_YN_TAIL

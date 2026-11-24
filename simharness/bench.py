@@ -341,7 +341,7 @@ class HistoryBatch:
             lines.append(f"Most recent upvoted launches (newest first, up to {max_items}):")
             for r in e.itertuples():
                 it = b.items.iloc[int(r.item_idx)]
-                lines.append(f"- {it.day}: {it.title} | {it.summary} | topics: {', '.join(it.tags[:5])}")
+                lines.append(f"- {it.day}: {scrub(it.title)} | {scrub(it.summary)} | topics: {', '.join(it.tags[:5])}")
         c = b.comments[(b.comments["person_idx"] == pid) & (b.comments["day_ord"] < o)]
         c = c[c["ts"].isna() | (c["ts"] < start)].sort_values("day_ord", ascending=False).head(max_comments)
         if len(c):
@@ -349,5 +349,5 @@ class HistoryBatch:
             for r in c.itertuples():
                 it = b.items.iloc[int(r.item_idx)]
                 txt = scrub(" ".join(str(r.text).split()))[:240]
-                lines.append(f'- on {it.title}: "{txt}"')
+                lines.append(f'- on {scrub(it.title)}: "{txt}"')
         return "\n".join(lines)
