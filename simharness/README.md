@@ -100,6 +100,23 @@ scores = T.score(rows, T.generate(PromptComment(backend), rows))
 summarize(scores); paired_diff(scores, plain_scores, "match")
 ```
 
+## Fine-tuning (`finetune/`)
+
+Fine-tune an open chat model on a benchmark's training rows and score it on the same rows as every other model.
+
+1. `python -m simharness.finetune.export --bench BENCH --out DATA` writes `train.jsonl` (chat rows: the person's
+   history and the item as the prompt, the real comment as the answer; most recent training rows, capped per person)
+   and `eval.jsonl` (the Task C scorer's validation and test rows).
+2. `finetune/lora.py` (one standalone file: torch, transformers, peft) trains a LoRA adapter with the loss on the
+   answer only (`train`) and writes comments for the eval rows with or without the adapter (`generate`).
+3. `finetune/gcp/launch.sh TAG MODEL MACHINE ZONE MAX_HOURS ...` runs both on a GPU VM that uploads its log, outputs
+   and adapter to `FT_PREFIX/runs/TAG/`, then deletes itself; the run-time cap deletes it if anything hangs.
+4. `python -m simharness.finetune.score_taskc --bench BENCH --gen tuned=... base=... --pairs tuned-base` scores any
+   generation files next to the references, paired on the same rows.
+
+Training rows, generations and adapters are private (real text and trained weights): they live under `FT_PREFIX` in a
+private bucket, never in this repository.
+
 ## Running
 
 ```bash
