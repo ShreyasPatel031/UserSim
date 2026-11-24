@@ -9,10 +9,21 @@ export FRESH_SIMHARNESS=$ROOT/cv FRESH_PHOPS=$ROOT/phops
 BASE="pandas==3.0.5 numpy==2.5.3 pyarrow==26.0.0 scikit-learn==1.9.1 scipy==1.18.1 duckdb==2.0.0"
 EXTRA="lightgbm==4.7.0 statsmodels==0.15.0 transformers==5.22.2 sentence-transformers==6.2.0 requests"
 if ! python3 -c "import pandas, sklearn, duckdb" 2>/dev/null || [ "$JOB" = explain ]; then
-  python3 -m venv --system-site-packages $ROOT/venv && export PATH=$ROOT/venv/bin:$PATH
-  python3 -m pip install -q $BASE || { echo "FAIL pip base"; exit 2; }
-  if [ "$JOB" = explain ]; then python3 -m pip install -q torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu || python3 -m pip install -q torch; python3 -m pip install -q $EXTRA || { echo "FAIL pip extra"; exit 2; }; fi
-  python3 -c "import pandas, sklearn; print('python deps ok', pandas.__version__)"
+  # 1) exact session versions on Python 3.13 via uv; 2) fallback: system python, newest compatible versions (logged)
+  PINNED=1
+  if python3 -m pip install -q uv 2>/dev/null && python3 -m uv venv -q -p 3.13 --python-preference managed $ROOT/venv 2>&1 | tail -2; [ -x $ROOT/venv/bin/python ]; then
+    export PATH=$ROOT/venv/bin:$PATH; PIP="python3 -m uv pip install -q -p $ROOT/venv/bin/python"
+  else
+    rm -rf $ROOT/venv; python3 -m venv --system-site-packages $ROOT/venv && export PATH=$ROOT/venv/bin:$PATH; PIP="python3 -m pip install -q"
+  fi
+  if ! $PIP $BASE; then echo "WARN exact pins unavailable on $(python3 --version); installing newest compatible"; PINNED=0
+    $PIP $(echo $BASE | sed 's/==[^ ]*//g') || { echo "FAIL pip base"; exit 2; }; fi
+  if [ "$JOB" = explain ]; then
+    $PIP torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu 2>/dev/null || $PIP torch --index-url https://download.pytorch.org/whl/cpu || $PIP torch
+    $PIP $EXTRA 2>/dev/null || { PINNED=0; $PIP $(echo $EXTRA | sed 's/==[^ ]*//g') || { echo "FAIL pip extra"; exit 2; }; }
+  fi
+  python3 -c "import sys,pandas,numpy,sklearn,pyarrow,duckdb; print('python deps ok', sys.version.split()[0], 'pandas',pandas.__version__,'numpy',numpy.__version__,'sklearn',sklearn.__version__,'pyarrow',pyarrow.__version__,'duckdb',duckdb.__version__)"
+  echo "deps_pinned=$PINNED"
 fi
 S=$ROOT/usersim/experiments/simlab
 case "$JOB" in
