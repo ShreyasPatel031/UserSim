@@ -26,7 +26,7 @@ log "token ready; primary capture standby_delay=${STANDBY_SEC}s"
 if [[ -x /opt/ph/overlays/exit_ip_heartbeat.sh ]]; then
   pgrep -f '[e]xit_ip_heartbeat.sh' >/dev/null 2>&1 || setsid bash /opt/ph/overlays/exit_ip_heartbeat.sh >>/var/log/phlive.log 2>&1 &
 fi
-(setsid bash -c 'while true; do python3 /workspace/phlaunch/live_ts_writer.py loop >>/var/log/phlive_ts.log 2>&1; sleep 60; done') &
+(setsid bash -c 'while true; do chmod -R a+rwX /workspace/phlaunch/live_ts 2>/dev/null; python3 /workspace/phlaunch/live_ts_writer.py loop >>/var/log/phlive_ts.log 2>&1; sleep 60; done') &
 last_ps=""
 while true; do
   read -r F HH MM < <(TZ=America/Los_Angeles date '+%F %H %M')
@@ -59,7 +59,7 @@ while true; do
   echo "$(date -u +%FT%TZ) slot=$PS wrote=$wrote primary" | gsutil -q cp - "$HBG" 2>/dev/null
   pgrep -f '[l]ive_ts_writer.py loop' >/dev/null 2>&1 || {
     log "live_ts_writer down; restarting"
-    (setsid bash -c 'while true; do python3 /workspace/phlaunch/live_ts_writer.py loop >>/var/log/phlive_ts.log 2>&1; sleep 60; done') &
+    (setsid bash -c 'while true; do chmod -R a+rwX /workspace/phlaunch/live_ts 2>/dev/null; python3 /workspace/phlaunch/live_ts_writer.py loop >>/var/log/phlive_ts.log 2>&1; sleep 60; done') &
   }
   sleep 20
 done
