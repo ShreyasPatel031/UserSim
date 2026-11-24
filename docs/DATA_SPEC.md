@@ -236,3 +236,17 @@ Legend. Cadence = how often re-read. Resolution = time precision of each event. 
 | Quick-run person index (site/person_index_v1) | full store, daily | 13,581 people (Nov 11 build); rebuild of 27,466 ready, publish denied by auto mode | Shreyas: "publish the index" |
 | Browserbase | none (AGENTS.md Nov 17) | website switched off (PR #222); key secrets still enabled (disable denied) | Shreyas: disable/revoke key |
 Spend: GCP $64.88 Nov 22 (soft cap $50), month-to-date $1,211.65; paid data $0.
+
+## Collection status, Nov 24 2026 (daily review, 13:30Z; run late, the session was idle 10:10Z-13:13Z)
+| Feed / row | Ideal | Now | Gap, owner, by when |
+|---|---|---|---|
+| Complete people (all tabs to PH end) | everyone who votes, daily | 93,604 complete of 94,894 indexed (likely 1,537/1,649, active 2,572/2,642, rest 89,489/90,603); +26 net in 24 h; need-list 1,235-1,296 | completions 0-1.7/min (6 slots at the Cloudflare wall, 6 dead). Fleet: lower priority, after the refresh machines prove out |
+| Upvote refresh (new votes of held people) | every held person daily | 0/min since Nov 23 evening (the three refresh machines no longer exist); 3,925 people with new upvotes in the last daily audit; median 12.1 days since last read | Fleet committed: above 0/min by Nov 25 00:30 PT; people active in the last 14 days <= 2 days behind by Nov 25 18:00 PT |
+| Post-close who-voted reads | every launch day, by 02:30 PT next day | official month rollup delivered for Nov 21, 22 (not per person); per-person passes for Nov 21-23 not done | Fleet committed: Nov 21-23 by Nov 26 06:00 PT, then nightly |
+| Day-close comment threads | full threads with replies, daily by 03:00 PT | Nov 23 truth has 379 comments and 157 replies (replies back); Nov 20-22 thin (306 / 239 / 146 rows, few replies) | Fleet committed: Nov 20-23 full threads by Nov 26 12:00 PT, then nightly |
+| 15-min live capture | every slot, fetched_at within 5 min | Nov 23 FAIL: gaps over 20 min at 21:15-22:30 PT plus fetched_at skew; Nov 24 passing; comment stream stale 08:03Z-13:01Z, recovered | Fleet. The gaps fell while the auditing sessions were down (usage limit), so nobody raised them at the time |
+| Vote coverage (held people's share of votes) | rising | Nov 23: 21.5% all / 34.9% top 3; Nov 17-23: 45.0% / 64.8%; Oct 30-Nov 5: 73.8% / 93.2% | falls on recent days because upvotes are read late; closes with the refresh. Fleet |
+| store_v3 daily build | daily | published 09:03Z Nov 24 (94,817 people, 93,598 complete, 21.43M events); population agent clears its local mirror before each build | disk 1.5-2.7 GB free on the population agent's box, briefly full at 13:08Z. Population agent |
+| Quick-run person index (site/person_index_v1) | full store, daily | 13,581 people (Nov 11 build); the rebuilt 27,466-person copy was lost in the 09:17Z container restart | Shreyas: "publish the index" (rebuild first) |
+| Block-triggered IP rotation (must be zero) | 0 | 147 on Nov 24 so far, 43 within 60 min of a block (slot 26: 41) | rule alert sent to Grok Bot 13:15Z; decision open with Shreyas |
+Spend: GCP $64.78 Nov 23 PT (infra $63.16, Vertex $1.62; soft cap $50), month-to-date $1,276.43, pace $1,665 for November; paid data $0. Dashboard refreshed 13:20Z (11 datasets).
