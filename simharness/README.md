@@ -43,9 +43,19 @@ class VoteModel:
 - `baselines.most_active()`: 60-day endorsement count (made a probability by a 1-feature walk-forward logistic).
 - `baselines.backer_logistic()`: ln(1 + recency-weighted endorsements, 7-day half-life), topic match with past
   endorsed topics, their interaction; walk-forward logistic. No follow edges (undated, would leak).
-- `llm.PromptVote(backend)`: renders the history as text (`HistoryBatch.render`) and the item, asks for
-  `{"p_vote", "comment"}` JSON. Backends: `GeminiBackend` (Vertex) implemented; `ClaudeBackend`, `OpenAIBackend`,
-  `LocalOpenModelBackend` are marked stubs.
+- `taste.TasteVote` (taste-v1): LightGBM / logistic on `features.TASTE_NAMES` (activity, topic shares, a local
+  bge-small text embedding of the item vs the person's backed items, comment rate), trained on train days only.
+- `llm.PromptVote(backend, prompt_version=2)`: renders the history as text (`HistoryBatch.render`: activity over the
+  last 7 / 30 / 60 days, comments, top topics, last ~30 backed items, recent comments with @handles removed) and the
+  item as listed at the start of its day, asks for `{"p_vote", "comment"}` JSON. Version 3 is the same prompt
+  answered yes/no (the supervised-tuning format; `VertexGemini(..., yes_no=True)` turns the logprobs into P(yes)).
+
+Backends (all `call(prompt) -> str`, real token usage, cost, latency, and a shared `Budget` dollar cap):
+`VertexGemini` (also a tuned endpoint via `endpoint=`), `VertexClaude` (Vertex publisher anthropic, rawPredict),
+`VertexOpenAICompat` (Model Garden MaaS: gpt-oss-120b, Llama 4 Maverick), `OpenAICompat` (any OpenAI-compatible
+server, e.g. vLLM on our own GPU VM), `GeminiBackend` (v0, via the repo helper), `OpenAIBackend` (stub, no key).
+To add a backend: subclass `Backend`, implement `_call(prompt) -> (text, input_tokens, output_tokens)`, add its
+prices to `PRICES`.
 
 To add a model: subclass `VoteModel` (or write a `Backend` with `call(prompt) -> str` and wrap it in `PromptVote`),
 then score it with `score.evaluate_full` (full pool) or `score.evaluate_sample` (a fixed sample shared with the
@@ -56,6 +66,39 @@ rank tests forward or on days after their training cutoff.
 
 recall@N per item (N = held endorsers in the pool; pooled and mean), AUC per item, expected calibration error, each
 with a day-clustered bootstrap 95% interval; `paired_diff` compares two models on the same items.
+
+## Evaluation sets (round 1)
+
+- **HARD**: every held voter of every test launch plus one non-voter of that launch from the same day pool, matched on
+  the nearest `rw30` (recency-weighted upvotes in the 30 days before the day) — `features.build_hard_set`. It
+  separates "who is active" from "who picks this launch": most-active scores about 0.50 AUC on it by construction.
+- **HARD-LLM**: a fixed subsample of HARD shared by every prompt model (size set by the budget).
+- **VAL-HARD** / VAL-HARD-LLM: the same on validation days, for choosing learners and fitting stack weights.
+- **EASY**: random pool non-voters (activity dominates). **FULL**: full-pool ranking (non-LLM models).
+- `score.stack_fit` / `stack_apply`: a logistic stack on member logits, fit on validation only.
+  `score.summarize(..., cluster="item")` and `paired_diff(..., cluster="item")` bootstrap by launch.
+
+## Task C: what they say (`task_c.py`)
+
+Rows are (person, item, the person's real comment), kept only when the comment was written on the item's own day and
+the person is not a maker of the item. A model writes one comment per row; sentence embeddings (a small local model by
+default) compare it with the real one.
+
+- `match`: similarity at or above a threshold fixed on training comments, so that a real comment taken from a
+  different item matches 5% of the time. The chance level is known by construction.
+- `own_vs_other`: is the simulated comment closer to this person's real comment than to another person's real comment
+  on the same item? 0.5 means no person-specific signal.
+- References scored on the same rows with no model call: a real comment from another item (floor), the person's own
+  latest earlier comment, and another person's real comment on the same item (the human yardstick).
+- `PlainComment` (item only) is the baseline; `PromptComment` (history + item) has to beat it on the same rows
+  (`paired_diff`, day-clustered interval). Both take any `Backend`.
+
+```python
+T = TaskC(Benchmark(BENCH))                 # fits the threshold on the training split
+rows = T.rows("test")
+scores = T.score(rows, T.generate(PromptComment(backend), rows))
+summarize(scores); paired_diff(scores, plain_scores, "match")
+```
 
 ## Running
 

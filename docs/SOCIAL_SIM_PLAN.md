@@ -35,8 +35,13 @@ The harness provides:
   - Candidates per launch: every held person with at least one upvote in the 60 days before D (the active pool).
   - Metrics: recall@N per launch (N = real held backers), AUC, calibration (ECE), all with day-bootstrap intervals.
   - Baselines to beat: most-active (20.9% recall@N), BACKER-v2 logistic (27.6%).
-- **Task C (comment)**: given the same inputs for a person who did comment, what did they say? Scored by theme recall and
-  precision against the real comment (the WHAT scorer E5 already runs), versus a plain prompt.
+- **Task C (comment)**: given the same inputs for a person who did comment, what did they say?
+  - Launch level: theme recall and precision against the launch's real comments (the WHAT scorer E5 already runs).
+  - Person level (simharness/task_c.py, Nov 24): the simulated comment is compared with that person's real comment by
+    sentence embeddings. Headline: **person match** = share of rows where the simulated comment is closer to this
+    person's real comment than to another person's real comment on the same launch (50% = nothing person-specific).
+    Second number: **content match** = similarity above a threshold that a real comment from a different launch
+    reaches 5% of the time. Both are compared with an item-only prompt on the same rows, paired.
 - **Task R (re-rank)**: the structural top 20 for a day, re-ranked with simulation outputs. Metric: capture of the real
   top 3 / 5 / 10 versus the structural order, paired by day; near-miss recovery (structural rank 4-6 that finished top 3).
   First number to establish: the ceiling (share of the real top 3 / 5 / 10 inside the structural top 10 / 15 / 20).
@@ -50,6 +55,7 @@ The harness provides:
 | most-active baseline | 20.9 [20.1, 21.6] | | | | 14 | 0 |
 | BACKER-v2 logistic (E5, live) | 27.6 [26.2, 29.0] | | | | 14 | 0 |
 | persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22) | | 2 | |
+| history-built prompt, Gemini 2.5 Flash (bench v0) | | | person match 59.3 vs 50.3 launch-only (+8.9 [+0.6, +15.4]) | | 12 | $0.5 |
 | structural order (arm 3) | | | | baseline: 50.0 / 70.0 / 66.7 | 6 | |
 
 ### Benchmark v0, Task V, first results (simharness, Nov 23; private data in the bucket under simharness/bench_v0/)
@@ -73,6 +79,38 @@ adds activity-matched non-voters, activity stats in the prompt, more model famil
 Callable today on our GCP project: Gemini (and tuned Gemini endpoints), Claude Haiku 4.5 / Sonnet 4.5 / Sonnet 4.6,
 gpt-oss-120b, Llama 4 Maverick. Not enabled: Claude Opus, Qwen, DeepSeek. No OpenAI API key is stored.
 
+### Benchmark v0, Task C at person level, first results (simharness/task_c.py, Nov 24; $0.68)
+Rows: comments written on the launch's own day by held people who are not makers of it. Validation 400 rows (10 days,
+183 people); test 413 rows (Nov 11-22, 12 days, 136 people, 327 with another commenter on the same launch). Intervals
+are day-clustered. Language models have not seen these launches (after their training cutoffs).
+
+| What writes the comment | Test: person match (50 = chance) | Test: content match (5 = chance) | Validation: person match | Validation: content match |
+|---|---|---|---|---|
+| a real comment from another launch (floor) | 49.1 | 1.9 | 46.2 | 3.2 |
+| the person's own latest earlier comment | 68.0 [60.2, 72.5] | 10.9 | 66.7 [61.2, 72.9] | 16.9 |
+| another person's real comment on the same launch | n/a | 17.4 | n/a | 23.2 |
+| Gemini 2.5 Flash-Lite, launch only | 48.8 | 33.9 | 54.9 | 29.5 |
+| Gemini 2.5 Flash-Lite, person's history + launch | 54.4 [51.3, 58.5] | 39.5 | 57.6 | 38.2 |
+| Gemini 2.5 Flash, launch only | 50.3 | 37.0 | 51.4 | 31.2 |
+| Gemini 2.5 Flash, person's history + launch | 59.3 [51.6, 65.6] | 41.4 | 59.3 | 38.2 |
+
+History minus launch-only, paired on the same rows:
+- Person match: Flash +8.9 [+0.6, +15.4] on test and +7.9 [+5.1, +11.3] on validation; Flash-Lite +5.5 [+1.9, +9.4] on
+  test and +2.7 [-0.6, +6.1] on validation.
+- Content match: Flash +4.4 [+0.8, +6.6] on test and +7.0 [+3.6, +9.9] on validation; Flash-Lite +5.6 [+3.9, +7.0] and
+  +8.8 [+5.2, +12.7].
+
+Reading:
+- Building the simulated person from their history does make the comment closer to what that person really said, on
+  both splits. This is the first place the history-built simulation beats a plain prompt with the interval clear.
+- It is still far from the person's voice: repeating the person's last comment identifies them 68% of the time, the
+  history-built prompt 54-59%. The gap from 59 to 68 and beyond is the target for fine-tuning on the 51,895 training
+  comment rows.
+- Content match is a weak measure: a language model's on-topic comment scores above a second real commenter on the
+  same launch (37-41 vs 17), because embeddings reward restating the product. Person match is the number to optimise.
+- Small n: 327-366 rows with a second commenter per split, 136-183 people; the test interval for Flash only just
+  clears zero. More comment truth (the blocked comment threads) widens this.
+
 ### Ceiling of the structural shortlist (PH agent, STRUCT-SHORTLIST, b9613465, Nov 23)
 Share of the real top k that sits inside the structural top m (arm 3, backtest 2026, 183 days, month-forward):
 
@@ -93,6 +131,10 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
 2. Re-rank with BACKER-v2 expected voters, then with history-built LLM agents (E5, SIM-RERANK-1).
 3. Benchmark v0 builder, adapters and the first zero-shot leaderboard across model families (orchestrator).
 4. Fine-tune an open model on Task V + Task C training rows; compare with zero-shot frontier models (orchestrator).
+4b. Task C person match: fine-tune on (history, launch) -> real comment (51,895 training rows) to close the gap between
+    the history-built prompt (59%) and the person's own last comment (68%); add Claude, gpt-oss and Llama to the table.
+4c. Task C scorer v1: a content measure that does not reward restating the product (score against the launch's real
+    themes with the launch description projected out), and a style distance (length, question vs praise).
 5. HOW axis: trace realism against human traces (plugin agent; unchanged).
 6. Truth data: broad post-close re-reads and full comment threads (fleet; asked hourly).
 7. Second domain to prove "plugs into any use case" (choose once Task R shows lift on Product Hunt).
