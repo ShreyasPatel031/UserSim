@@ -1,0 +1,23 @@
+#!/bin/bash
+# Rehearsal gsutil shim (EXPLAIN-OFF-SESSION): writes to gs://.../usersim_sim/... go to gs://.../usersim_sim/_rehearsal/...;
+# reads prefer the rehearsal copy when it exists (read-your-writes). Only active when this dir is first on PATH.
+REAL=${REAL_GSUTIL:-$(PATH=$(echo "$PATH" | tr ':' '\n' | grep -v rehearsal_bin | paste -sd:) command -v gsutil)}
+ROOT="gs://usersim-bakeoff-347838016394/usersim_sim/"; RH="${ROOT}_rehearsal/"
+re() { case "$1" in ${ROOT}_rehearsal/*) echo "$1";; ${ROOT}*) echo "${RH}${1#$ROOT}";; *) echo "$1";; esac; }
+rd() { case "$1" in ${ROOT}_rehearsal/*) echo "$1";; ${ROOT}*) local r; r=$(re "$1"); if [[ "$1" == *"*"* ]]; then "$REAL" -q ls "$r" >/dev/null 2>&1 && echo "$r" || echo "$1"; else "$REAL" -q stat "$r" >/dev/null 2>&1 && echo "$r" || echo "$1"; fi;; *) echo "$1";; esac; }
+args=("$@"); flags=(); i=0
+while [ $i -lt ${#args[@]} ] && [[ "${args[$i]}" == -* ]]; do flags+=("${args[$i]}"); i=$((i+1)); done
+cmd="${args[$i]}"; rest=("${args[@]:$((i+1))}")
+case "$cmd" in
+  cp|mv|rsync)
+    opts=(); paths=()
+    for a in "${rest[@]}"; do if [[ "$a" == -* ]] && [ ${#paths[@]} -eq 0 ]; then opts+=("$a"); else paths+=("$a"); fi; done
+    n=${#paths[@]}; dst="${paths[$((n-1))]}"; srcs=("${paths[@]:0:$((n-1))}"); out=()
+    for s in "${srcs[@]}"; do out+=("$(rd "$s")"); done
+    exec "$REAL" "${flags[@]}" "$cmd" "${opts[@]}" "${out[@]}" "$(re "$dst")";;
+  cat|stat|ls|du)
+    out=(); for a in "${rest[@]}"; do if [[ "$a" == gs://* ]]; then out+=("$(rd "$a")"); else out+=("$a"); fi; done
+    exec "$REAL" "${flags[@]}" "$cmd" "${out[@]}";;
+  rm) out=(); for a in "${rest[@]}"; do if [[ "$a" == gs://* ]]; then out+=("$(re "$a")"); else out+=("$a"); fi; done; exec "$REAL" "${flags[@]}" rm "${out[@]}";;
+  *) exec "$REAL" "$@";;
+esac
