@@ -11,6 +11,7 @@ if [ -n "${EXPLAIN_REHEARSAL:-}" ]; then export PATH="$HERE/rehearsal_bin:$PATH"
 export HF_HOME=${HF_HOME:-/tmp/hf} HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1; mkdir -p $HF_HOME/hub
 gsutil -m -q rsync -r $S/hf/models--BAAI--bge-small-en-v1.5 $HF_HOME/hub/models--BAAI--bge-small-en-v1.5 || echo "WARN hf model sync"
 for d in $DIRS; do mkdir -p $SP/$d; gsutil -m -q rsync -r $S/$d $SP/$d || { echo "FAIL state $d"; exit 2; }; done
+if [ -n "${FRESH_PHOPS:-}" ] && [ ! -e $SP/phops ]; then ln -s $FRESH_PHOPS $SP/phops; fi
 if [ ! -d $SP/phops/experiments ]; then git -C "$REPO" fetch -q origin claude/ph-ops-agent && git -C "$REPO" worktree add -f --detach $SP/phops $PHOPS_SHA -q || { echo FAIL phops; exit 2; }; fi
 mkdir -p $SP/store_live; gsutil -q cp $B/raw/population/store_v3/persons.parquet $B/raw/population/store_v3/events.parquet $SP/store_live/ || { echo FAIL store; exit 2; }
 (cd "$REPO/experiments" && python3 -c "from pipeline import warehouse; warehouse.table('launches', do_sync=True)" > /dev/null 2>&1)

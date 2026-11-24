@@ -8,8 +8,9 @@ HERE="$(cd "$(dirname "$0")" && pwd)"; SIMLAB="$(dirname "$HERE")"; W=${PANEL_WO
 exec > >(tee -a $LOG) 2>&1; echo "start $(date -u +%FT%TZ) D=$D"; export HF_HUB_OFFLINE=1
 # PANEL_PRESTEPS=1 turns on run_forward_day (D-1) + run_refresh (D); off until the overlay re-run issue is fixed (E5 report 18:50Z Nov 24)
 # reference code (claude/cool-volta-l5nuo4, fetched fresh each night) + tables through the harness build pointer (orchestrator 18:28Z Nov 24)
-git -C "$SIMLAB/../.." fetch -q origin claude/cool-volta-l5nuo4; CVREV=$(git -C "$SIMLAB/../.." rev-parse FETCH_HEAD)
-if [ -d $W/cv/simharness ]; then git -C $W/cv checkout -q --detach $CVREV; else git -C "$SIMLAB/../.." worktree add -f --detach $W/cv $CVREV -q; fi; echo "simharness code: $CVREV"
+if [ -n "${FRESH_SIMHARNESS:-}" ]; then rm -rf $W/cv; mkdir -p $W/cv; cp -r $FRESH_SIMHARNESS/simharness $W/cv/; echo "simharness code: bundle $(cat $FRESH_SIMHARNESS/../manifest.json 2>/dev/null)"
+else git -C "$SIMLAB/../.." fetch -q origin claude/cool-volta-l5nuo4; CVREV=$(git -C "$SIMLAB/../.." rev-parse FETCH_HEAD)
+if [ -d $W/cv/simharness ]; then git -C $W/cv checkout -q --detach $CVREV; else git -C "$SIMLAB/../.." worktree add -f --detach $W/cv $CVREV -q; fi; echo "simharness code: $CVREV"; fi
 mkdir -p $W/builds $W/forward $W/store; SYNC=${PRE_SYNC-1}
 gsutil -m -q cp $B/raw/population/store_v3/persons.parquet $B/raw/population/store_v3/events.parquet $B/raw/population/store_v3/tabs.parquet $W/store/ || echo "WARN store"
 mkdir -p $W/store/records; gsutil -m -q rsync -r $B/raw/population/store_v3/records $W/store/records || echo "WARN store records"
