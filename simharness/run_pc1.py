@@ -438,6 +438,21 @@ def _llm_results(a, b):
         res["models"][name] = e
         res["paired"][name] = {"vs structural order": ch.paired(per, base["structural order"], NB),
                                "vs " + combo_name: ch.paired(per, base[combo_name], NB)}
+        # launch-level order from the picks of the day's simulated members (what a re-rank would aggregate),
+        # scored as a non-personal order on EVERY test person-day of those days
+        agg_scores = {}
+        for d, g in pk.groupby("day"):
+            c = cds[d]
+            col = {int(it): j for j, it in enumerate(c.items)}
+            cnt = np.zeros(len(c.items), np.float32)
+            for r in g.itertuples():
+                for pos in (list(r.picks_pos) if r.picks_pos is not None else []):
+                    cnt[col[int(r.shown_items[pos - 1])]] += 1.0
+            agg_scores[d] = np.tile(cnt, (len(c.persons), 1))
+        per_agg = ch.per_personday(agg_scores, cds)
+        res.setdefault("pick_count_order", {})[name] = {
+            "what": "launches ordered by how many of the day's 25 simulated members picked them; all test person-days",
+            **ch.summarize(per_agg, NB), "vs structural order": ch.paired(per_agg, saved["structural order"], NB)}
         pr = np.array(pos_rel)
         res["position"][name] = {"share_of_picks_by_fifth_of_the_list": np.round(
             np.histogram(pr, bins=[0, .2, .4, .6, .8, 1.0])[0] / max(len(pr), 1), 3).tolist(),
@@ -613,6 +628,12 @@ def stage_agg(a):
             L.append(f"| {k} | {f(e['top3'], True)} | {f(e['mrr'])} | {f(e['auc'])} | {fd(ps['top3'], True) if ps else ''} "
                      f"| {fd(pc[0]['top3'], True) if pc else ''} | {e.get('cost_per_1k_usd') or ''} "
                      f"| {pos.get('share_of_picks_by_fifth_of_the_list', [''])[0]} |")
+        L.append("")
+    if "llm_choice" in res and "pick_count_order" in res["llm_choice"]:
+        L += ["**Launch order from the simulated members' pick counts (all test person-days)**", "",
+              "| Model | top-3 hit | MRR | AUC | top-3 vs structural |", "|---|---|---|---|---|"]
+        for k, e in res["llm_choice"]["pick_count_order"].items():
+            L.append(f"| {k} | {f(e['top3'], True)} | {f(e['mrr'])} | {f(e['auc'])} | {fd(e['vs structural order']['top3'], True)} |")
         L.append("")
     if "combine" in res:
         L += ["**Full pool, all test launches**", "", "| Model | recall@N | vs logistic | vs logistic + ties |", "|---|---|---|---|"]

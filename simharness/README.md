@@ -142,4 +142,9 @@ TIES-1 (tie-to-the-team features on the same HARD rows; results in `bench_v0/rou
 `python -m simharness.run_ties {data,leak,hard,full,presence,agg}`; features in `ties.py`, the team / backing /
 follow tables come from the domain adapter (`domains/producthunt.build_tie_tables`).
 
+PRESENCE-CHOICE-1 (Task V split into "shows up" and "picks"; results in `bench_v0/round1/pc1/`):
+`python -m simharness.run_pc1 {presence,choice,llm,combine,leak,agg}`; presence features and walk-forward models in
+`presence.py`, the CHOICE benchmark (person-days x the day's line-up; top-3 hit, MRR, AUC) in `choice.py`, the
+whole-line-up prompt in `models/llm.py` (`build_choice_prompt`, `parse_picks`).
+
 `domains/producthunt.py` is the first adapter; its module docstring lists its dating and leak choices.

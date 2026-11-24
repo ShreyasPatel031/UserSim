@@ -144,6 +144,41 @@ The language models scored a 960-row subsample of the same rows. Score = AUC, wh
   00:05 PT capture; integer keys only. Gaps: 35 of 396 test launches were not on the 00:05 list (no ties); validation
   teams exist for 197 of 316 launches.
 
+### Presence and choice (PRESENCE-CHOICE-1, subagent, Nov 24; $0.79): the limit on "who votes" is how fresh our reads are
+Test days Nov 11-22, day-clustered intervals.
+
+**Presence** (does the person upvote anything today; 56,878 person-days, 16% do):
+
+| History used | Best model | AUC | Share of the day's voters in the top N people |
+|---|---|---|---|
+| complete through the day before (as later read) | logistic or LightGBM | 0.90 | 65.4 (recency count alone: 61.0) |
+| what the store actually held at 00:05 PT | recency count | 0.56 | 38.3 |
+
+Only 59% of these people had any history in the store at 00:05 PT, and their newest read was 8 to 21 days old; nobody
+had been read within the 7 days before. With current histories presence is very predictable; with ours it is close
+to a coin flip. This, not the model, is what holds live backer prediction down.
+
+**Choice** (given the person is present, which of about 32 launches; 9,016 person-days), top-3 hit:
+random 23.8, topic match 22.6, taste-v1 31.5, dated ties 44.6, structural order 60.9 [52.7, 70.2], best combination
+61.5 (not clear of the structural order: +0.5 [-8.3, +7.5]). Choice is mostly popularity.
+
+**Language models choosing from the whole line-up** (300 person-days, the design E5's Stage B v2 uses forward):
+Gemini Flash 32.7, gpt-oss-120b 32.7, Llama 4 Maverick 27.7, against the structural order's 60.3 on the same rows
+(-27.7 [-37.3, -19.0] for Flash). Strong position bias (Llama's first pick is in the first fifth of the list 79% of
+the time). Ordering launches by how many simulated members picked them gets 28-33%. From line-up text and a person's
+history, language models do not know which launches will be popular.
+
+**Together** (full pool, 394 launches): presence x choice recall@N 39.3 vs the logistic's 38.5 (+0.8 [+0.4, +1.3]),
+equal to logistic + ties (39.2). Perfect presence with this choice model would reach 44.1.
+
+Decisions:
+- Model work on Task V stops here: with complete histories every approach lands at 38-39, and the ceiling with
+  perfect presence is about 44. The lever is freshness: held people's upvotes read through the day before.
+- The fleet's refresh (due Nov 25) is the experiment that matters; E5 measures live recall by how stale each
+  person's read was, once fresh reads exist.
+- Stage B (language-model agents re-ranking the shortlist) keeps running forward as pre-registered at about $1 a
+  day, with the expectation set by this backtest: no lift.
+
 ### First fine-tune (FT-TASKC-v0, simharness/finetune/, Nov 24; about $3 of GPU)
 Qwen2.5-7B-Instruct (open weights) with a LoRA adapter, trained for one epoch on the 4,000 most recent training comment
 rows (Sep 9-Oct 31, 2,133 people, at most 15 per person): prompt = the person's history and the launch, answer = their
@@ -286,9 +321,9 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
     Nov 24). Needs judged "same point as the real comment" labels; also a style distance (length, question vs praise).
 4d. Joint fine-tune: vote + comment in one adapter. On hold: round 1 shows vote yes/no from history is near chance
     once activity is matched, so the vote half waits for the presence / choice split.
-4f. Presence and choice (PRESENCE-CHOICE-1, subagent, running): a presence model from what is known at 00:05 PT, and
-    a choice benchmark (present people x the day's line-up) scored for the structural order, taste, ties and language
-    models that pick k launches from the whole line-up.
+4f. Presence and choice: done Nov 24 (see the section above). Follow-up for E5 once fresh reads exist: live backer
+    recall@N by staleness of each person's last upvote read (0-1, 2-3, 4-7, 8+ days), and the presence logistic
+    added to BACKER-v2.
 4h. Same-day person-linked comment rows (next for the subagent after PRESENCE-CHOICE-1): the fleet's live comment
     stream carries the commenter's platform id, so a day's comments can be linked to held people the next morning
     instead of waiting for profile re-reads. Measured Nov 24: of the comments captured on Nov 21 / 22 / 23, 119 of 239,

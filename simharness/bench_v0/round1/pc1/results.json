@@ -1,0 +1,1747 @@
+{
+ "task": "Benchmark v0, PRESENCE-CHOICE-1",
+ "intervals": "day-clustered bootstrap 95%",
+ "presence": {
+  "definition": "label = the person (in the day's active pool) upvoted at least one launch that day",
+  "base_rate_test": 0.1601,
+  "person_days_test": 56878,
+  "first_seen_missing_share": 0.0,
+  "reading_lag": {
+   "share_person_days_with_any_history_in_store_at_0005": 0.5915,
+   "share_read_on_the_previous_day": 0.0,
+   "share_read_within_3_days": 0.0,
+   "share_read_within_7_days": 0.0,
+   "median_days_since_last_read_when_any": 13.0
+  },
+  "views": {
+   "everyone, history complete through D-1 (read later)": {
+    "person_days": 56878,
+    "models": {
+     "baseline": {
+      "auc_mean": {
+       "value": 0.8738,
+       "ci95": [
+        0.8575,
+        0.8892
+       ]
+      },
+      "auc_pooled": {
+       "value": 0.8809,
+       "ci95": [
+        0.8614,
+        0.8949
+       ]
+      },
+      "ece": {
+       "value": 0.0127,
+       "ci95": [
+        0.0101,
+        0.0299
+       ]
+      },
+      "recall_at_N_pooled": {
+       "value": 0.61,
+       "ci95": [
+        0.6034,
+        0.6165
+       ]
+      },
+      "days": 12,
+      "rows": 56878,
+      "positives": 9108
+     },
+     "logistic": {
+      "auc_mean": {
+       "value": 0.897,
+       "ci95": [
+        0.8821,
+        0.9108
+       ]
+      },
+      "auc_pooled": {
+       "value": 0.9034,
+       "ci95": [
+        0.8857,
+        0.9168
+       ]
+      },
+      "ece": {
+       "value": 0.0081,
+       "ci95": [
+        0.0046,
+        0.0246
+       ]
+      },
+      "recall_at_N_pooled": {
+       "value": 0.6537,
+       "ci95": [
+        0.6382,
+        0.6672
+       ]
+      },
+      "days": 12,
+      "rows": 56878,
+      "positives": 9108
+     },
+     "lgbm": {
+      "auc_mean": {
+       "value": 0.898,
+       "ci95": [
+        0.883,
+        0.9117
+       ]
+      },
+      "auc_pooled": {
+       "value": 0.9064,
+       "ci95": [
+        0.8892,
+        0.9191
+       ]
+      },
+      "ece": {
+       "value": 0.0047,
+       "ci95": [
+        0.004,
+        0.0188
+       ]
+      },
+      "recall_at_N_pooled": {
+       "value": 0.6538,
+       "ci95": [
+        0.6388,
+        0.666
+       ]
+      },
+      "days": 12,
+      "rows": 56878,
+      "positives": 9108
+     }
+    },
+    "vs_baseline": {
+     "logistic": {
+      "auc_mean": {
+       "metric": "auc_mean",
+       "cluster": "day",
+       "diff": 0.0232,
+       "ci95": [
+        0.0187,
+        0.0282
+       ]
+      },
+      "auc_pooled": {
+       "metric": "auc_pooled",
+       "cluster": "day",
+       "diff": 0.0225,
+       "ci95": [
+        0.0189,
+        0.0268
+       ]
+      },
+      "recall_at_N_pooled": {
+       "metric": "recall_at_N_pooled",
+       "cluster": "day",
+       "diff": 0.0437,
+       "ci95": [
+        0.0277,
+        0.0585
+       ]
+      }
+     },
+     "lgbm": {
+      "auc_mean": {
+       "metric": "auc_mean",
+       "cluster": "day",
+       "diff": 0.0242,
+       "ci95": [
+        0.02,
+        0.0284
+       ]
+      },
+      "auc_pooled": {
+       "metric": "auc_pooled",
+       "cluster": "day",
+       "diff": 0.0255,
+       "ci95": [
+        0.0214,
+        0.0303
+       ]
+      },
+      "recall_at_N_pooled": {
+       "metric": "recall_at_N_pooled",
+       "cluster": "day",
+       "diff": 0.0438,
+       "ci95": [
+        0.0295,
+        0.0567
+       ]
+      }
+     }
+    }
+   },
+   "everyone, history as known at 00:05": {
+    "person_days": 56878,
+    "models": {
+     "baseline": {
+      "auc_mean": {
+       "value": 0.562,
+       "ci95": [
+        0.5477,
+        0.5759
+       ]
+      },
+      "auc_pooled": {
+       "value": 0.5785,
+       "ci95": [
+        0.5519,
+        0.6009
+       ]
+      },
+      "ece": {
+       "value": 0.1319,
+       "ci95": [
+        0.1035,
+        0.1714
+       ]
+      },
+      "recall_at_N_pooled": {
+       "value": 0.3833,
+       "ci95": [
+        0.3692,
+        0.397
+       ]
+      },
+      "days": 12,
+      "rows": 56878,
+      "positives": 9108
+     },
+     "logistic": {
+      "auc_mean": {
+       "value": 0.5652,
+       "ci95": [
+        0.5516,
+        0.5788
+       ]
+      },
+      "auc_pooled": {
+       "value": 0.562,
+       "ci95": [
+        0.5459,
+        0.5792
+       ]
+      },
+      "ece": {
+       "value": 0.1458,
+       "ci95": [
+        0.1175,
+        0.1853
+       ]
+      },
+      "recall_at_N_pooled": {
+       "value": 0.3779,
+       "ci95": [
+        0.3639,
+        0.3922
+       ]
+      },
+      "days": 12,
+      "rows": 56878,
+      "positives": 9108
+     },
+     "lgbm": {
+      "auc_mean": {
+       "value": 0.5345,
+       "ci95": [
+        0.5213,
+        0.5475
+       ]
+      },
+      "auc_pooled": {
+       "value": 0.5342,
+       "ci95": [
+        0.5171,
+        0.5501
+       ]
+      },
+      "ece": {
+       "value": 0.1459,
+       "ci95": [
+        0.1177,
+        0.1856
+       ]
+      },
+      "recall_at_N_pooled": {
+       "value": 0.2772,
+       "ci95": [
+        0.249,
+        0.3001
+       ]
+      },
+      "days": 12,
+      "rows": 56878,
+      "positives": 9108
+     }
+    },
+    "vs_baseline": {
+     "logistic": {
+      "auc_mean": {
+       "metric": "auc_mean",
+       "cluster": "day",
+       "diff": 0.0031,
+       "ci95": [
+        0.0013,
+        0.0052
+       ]
+      },
+      "auc_pooled": {
+       "metric": "auc_pooled",
+       "cluster": "day",
+       "diff": -0.0165,
+       "ci95": [
+        -0.0298,
+        0.0057
+       ]
+      },
+      "recall_at_N_pooled": {
+       "metric": "recall_at_N_pooled",
+       "cluster": "day",
+       "diff": -0.0054,
+       "ci95": [
+        -0.0113,
+        -0.0001
+       ]
+      }
+     },
+     "lgbm": {
+      "auc_mean": {
+       "metric": "auc_mean",
+       "cluster": "day",
+       "diff": -0.0275,
+       "ci95": [
+        -0.0361,
+        -0.0181
+       ]
+      },
+      "auc_pooled": {
+       "metric": "auc_pooled",
+       "cluster": "day",
+       "diff": -0.0443,
+       "ci95": [
+        -0.0591,
+        -0.0188
+       ]
+      },
+      "recall_at_N_pooled": {
+       "metric": "recall_at_N_pooled",
+       "cluster": "day",
+       "diff": -0.1061,
+       "ci95": [
+        -0.1271,
+        -0.0899
+       ]
+      }
+     }
+    }
+   },
+   "people read on D-1, history as known at 00:05": {
+    "person_days": 0,
+    "note": "too few person-days to score"
+   },
+   "people read within 7 days before D, history as known at 00:05": {
+    "person_days": 0,
+    "note": "too few person-days to score"
+   },
+   "people read within 7 days before D, history complete through D-1": {
+    "person_days": 0,
+    "note": "too few person-days to score"
+   }
+  },
+  "lgbm_gain_share_last_fit": {
+   "ln_rw": 0.284,
+   "ln_dsl": 0.035,
+   "ln_n1": 0.011,
+   "ln_n3": 0.008,
+   "ln_n7": 0.182,
+   "ln_n30": 0.006,
+   "a1": 0.0,
+   "a3": 0.006,
+   "a7": 0.328,
+   "a30": 0.059,
+   "ln_streak": 0.016,
+   "wd_share": 0.017,
+   "ln_dsc": 0.007,
+   "ln_hist": 0.01,
+   "ln_total": 0.009,
+   "ln_adays": 0.022
+  },
+  "walk_forward": "refit every 2 scored days on the 45 benchmark days before the refit day"
+ },
+ "choice": {
+  "benchmark": {
+   "person_days": {
+    "test": 9016,
+    "val": 7242
+   },
+   "days": {
+    "test": 12,
+    "val": 7
+   },
+   "mean_lineup_size": {
+    "test": 31.7,
+    "val": 29.0
+   },
+   "mean_upvoted_on_lineup": {
+    "test": 2.66,
+    "val": 2.4
+   },
+   "median_upvoted_on_lineup": {
+    "test": 1.0,
+    "val": 1.0
+   },
+   "upvotes_off_lineup_share": {
+    "test": 0.038,
+    "val": 0.0091
+   },
+   "lineup_source_by_day": {
+    "2026-11-01": "same-day capture",
+    "2026-11-02": "same-day capture",
+    "2026-11-03": "same-day capture",
+    "2026-11-04": "0005",
+    "2026-11-08": "0005",
+    "2026-11-09": "0005",
+    "2026-11-10": "0005",
+    "2026-11-11": "0005",
+    "2026-11-12": "0005",
+    "2026-11-13": "0005",
+    "2026-11-14": "0005",
+    "2026-11-15": "0005",
+    "2026-11-16": "0005",
+    "2026-11-17": "0005",
+    "2026-11-18": "0005",
+    "2026-11-19": "0005",
+    "2026-11-20": "0005",
+    "2026-11-21": "0005",
+    "2026-11-22": "0005"
+   },
+   "days_with_structural": [
+    "2026-11-03",
+    "2026-11-04",
+    "2026-11-08",
+    "2026-11-09",
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-14",
+    "2026-11-15",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+   ]
+  },
+  "validation_days_for_fitting": [
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10"
+  ],
+  "combination_learner_choice": {
+   "logistic": {
+    "person_days": 5191,
+    "days": 5,
+    "top3": {
+     "value": 0.5694,
+     "ci95": [
+      0.4322,
+      0.7032
+     ]
+    },
+    "mrr": {
+     "value": 0.4936,
+     "ci95": [
+      0.3856,
+      0.5891
+     ]
+    },
+    "auc": {
+     "value": 0.7856,
+     "ci95": [
+      0.711,
+      0.8428
+     ]
+    }
+   },
+   "lgbm": {
+    "person_days": 5191,
+    "days": 5,
+    "top3": {
+     "value": 0.4935,
+     "ci95": [
+      0.3631,
+      0.6298
+     ]
+    },
+    "mrr": {
+     "value": 0.4023,
+     "ci95": [
+      0.332,
+      0.4842
+     ]
+    },
+    "auc": {
+     "value": 0.7561,
+     "ci95": [
+      0.6673,
+      0.8236
+     ]
+    }
+   }
+  },
+  "combination_features": [
+   "struct_z",
+   "struct_rank",
+   "struct_missing",
+   "tm",
+   "tm_max",
+   "emb_cos",
+   "emb_max30",
+   "emb_mean30",
+   "self_team",
+   "back_any",
+   "back_n",
+   "back_rw",
+   "back_recent",
+   "co_n",
+   "co_cos",
+   "recip_any",
+   "recip_n",
+   "ln_k",
+   "ln_L"
+  ],
+  "models": {
+   "structural order": {
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.609,
+     "ci95": [
+      0.5269,
+      0.7025
+     ]
+    },
+    "mrr": {
+     "value": 0.4588,
+     "ci95": [
+      0.3882,
+      0.5323
+     ]
+    },
+    "auc": {
+     "value": 0.7737,
+     "ci95": [
+      0.7536,
+      0.7948
+     ]
+    }
+   },
+   "topic match": {
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.2264,
+     "ci95": [
+      0.1766,
+      0.279
+     ]
+    },
+    "mrr": {
+     "value": 0.2305,
+     "ci95": [
+      0.1963,
+      0.2693
+     ]
+    },
+    "auc": {
+     "value": 0.5817,
+     "ci95": [
+      0.5319,
+      0.6269
+     ]
+    }
+   },
+   "taste-v1": {
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.3153,
+     "ci95": [
+      0.2552,
+      0.383
+     ]
+    },
+    "mrr": {
+     "value": 0.2907,
+     "ci95": [
+      0.2457,
+      0.3388
+     ]
+    },
+    "auc": {
+     "value": 0.603,
+     "ci95": [
+      0.5627,
+      0.6382
+     ]
+    }
+   },
+   "dated ties": {
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.446,
+     "ci95": [
+      0.3763,
+      0.5238
+     ]
+    },
+    "mrr": {
+     "value": 0.3914,
+     "ci95": [
+      0.3381,
+      0.4512
+     ]
+    },
+    "auc": {
+     "value": 0.6709,
+     "ci95": [
+      0.6369,
+      0.6994
+     ]
+    }
+   },
+   "combination (logistic, fit on validation)": {
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.6146,
+     "ci95": [
+      0.5301,
+      0.6971
+     ]
+    },
+    "mrr": {
+     "value": 0.4984,
+     "ci95": [
+      0.4383,
+      0.5667
+     ]
+    },
+    "auc": {
+     "value": 0.7882,
+     "ci95": [
+      0.7663,
+      0.8074
+     ]
+    }
+   },
+   "random order": {
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.2378,
+     "ci95": [
+      0.2028,
+      0.2834
+     ]
+    },
+    "mrr": {
+     "value": 0.2353,
+     "ci95": [
+      0.2064,
+      0.2718
+     ]
+    },
+    "auc": {
+     "value": 0.4992,
+     "ci95": [
+      0.4945,
+      0.5035
+     ]
+    }
+   }
+  },
+  "vs_structural": {
+   "topic match": {
+    "person_days": 9016,
+    "top3": {
+     "diff": -0.3827,
+     "ci95": [
+      -0.4711,
+      -0.2954
+     ]
+    },
+    "mrr": {
+     "diff": -0.2283,
+     "ci95": [
+      -0.3017,
+      -0.1546
+     ]
+    },
+    "auc": {
+     "diff": -0.192,
+     "ci95": [
+      -0.2376,
+      -0.1505
+     ]
+    }
+   },
+   "taste-v1": {
+    "person_days": 9016,
+    "top3": {
+     "diff": -0.2937,
+     "ci95": [
+      -0.3806,
+      -0.2177
+     ]
+    },
+    "mrr": {
+     "diff": -0.1682,
+     "ci95": [
+      -0.2321,
+      -0.1027
+     ]
+    },
+    "auc": {
+     "diff": -0.1707,
+     "ci95": [
+      -0.2101,
+      -0.1325
+     ]
+    }
+   },
+   "dated ties": {
+    "person_days": 9016,
+    "top3": {
+     "diff": -0.163,
+     "ci95": [
+      -0.2392,
+      -0.0718
+     ]
+    },
+    "mrr": {
+     "diff": -0.0675,
+     "ci95": [
+      -0.1486,
+      0.0215
+     ]
+    },
+    "auc": {
+     "diff": -0.1028,
+     "ci95": [
+      -0.1315,
+      -0.0765
+     ]
+    }
+   },
+   "combination (logistic, fit on validation)": {
+    "person_days": 9016,
+    "top3": {
+     "diff": 0.0055,
+     "ci95": [
+      -0.083,
+      0.0749
+     ]
+    },
+    "mrr": {
+     "diff": 0.0395,
+     "ci95": [
+      -0.0167,
+      0.0986
+     ]
+    },
+    "auc": {
+     "diff": 0.0145,
+     "ci95": [
+      0.002,
+      0.0271
+     ]
+    }
+   },
+   "random order": {
+    "person_days": 9016,
+    "top3": {
+     "diff": -0.3712,
+     "ci95": [
+      -0.4357,
+      -0.3097
+     ]
+    },
+    "mrr": {
+     "diff": -0.2235,
+     "ci95": [
+      -0.2849,
+      -0.1609
+     ]
+    },
+    "auc": {
+     "diff": -0.2746,
+     "ci95": [
+      -0.2938,
+      -0.2563
+     ]
+    }
+   }
+  },
+  "combination_coef_standardised": {
+   "struct_z": 0.5929999947547913,
+   "struct_rank": -0.12700000405311584,
+   "struct_missing": 0.0,
+   "tm": -0.1720000058412552,
+   "tm_max": 0.061000000685453415,
+   "emb_cos": -0.035999998450279236,
+   "emb_max30": 0.026000000536441803,
+   "emb_mean30": 0.35600000619888306,
+   "self_team": 0.19499999284744263,
+   "back_any": 0.06300000101327896,
+   "back_n": 0.12099999934434891,
+   "back_rw": -0.08900000154972076,
+   "back_recent": 0.1899999976158142,
+   "co_n": 0.09099999815225601,
+   "co_cos": 0.12600000202655792,
+   "recip_any": -0.03200000151991844,
+   "recip_n": 0.06599999964237213,
+   "ln_k": 0.781000018119812,
+   "ln_L": -0.3179999887943268
+  }
+ },
+ "combine": {
+  "P(present) alone [lgbm]": {
+   "recall_at_N_pooled": {
+    "value": 0.2507,
+    "ci95": [
+     0.2328,
+     0.2713
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.1269,
+    "ci95": [
+     0.1072,
+     0.1555
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9159,
+    "ci95": [
+     0.9063,
+     0.9254
+    ]
+   },
+   "items": 394,
+   "vs_logistic": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": -0.1343,
+    "ci95": [
+     -0.1594,
+     -0.1096
+    ]
+   },
+   "vs_logistic_plus_ties": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": -0.141,
+    "ci95": [
+     -0.1634,
+     -0.1191
+    ]
+   },
+   "on_0005_lineup_only": {
+    "recall_at_N_pooled": {
+     "value": 0.2571,
+     "ci95": [
+      0.237,
+      0.2832
+     ]
+    },
+    "items": 359,
+    "vs_logistic": {
+     "metric": "recall_at_N_pooled",
+     "cluster": "day",
+     "diff": -0.1297,
+     "ci95": [
+      -0.1552,
+      -0.1033
+     ]
+    }
+   }
+  },
+  "P(present, logistic) x P(choose | present)": {
+   "recall_at_N_pooled": {
+    "value": 0.393,
+    "ci95": [
+     0.376,
+     0.4128
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.3697,
+    "ci95": [
+     0.3426,
+     0.3935
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9415,
+    "ci95": [
+     0.9352,
+     0.9475
+    ]
+   },
+   "items": 394,
+   "vs_logistic": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": 0.008,
+    "ci95": [
+     0.0037,
+     0.0131
+    ]
+   },
+   "vs_logistic_plus_ties": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": 0.0013,
+    "ci95": [
+     -0.004,
+     0.0066
+    ]
+   },
+   "on_0005_lineup_only": {
+    "recall_at_N_pooled": {
+     "value": 0.3948,
+     "ci95": [
+      0.3768,
+      0.4166
+     ]
+    },
+    "items": 359,
+    "vs_logistic": {
+     "metric": "recall_at_N_pooled",
+     "cluster": "day",
+     "diff": 0.0079,
+     "ci95": [
+      0.0035,
+      0.0134
+     ]
+    }
+   }
+  },
+  "P(present, lgbm) x P(choose | present)": {
+   "recall_at_N_pooled": {
+    "value": 0.3871,
+    "ci95": [
+     0.3722,
+     0.4052
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.3585,
+    "ci95": [
+     0.3333,
+     0.3818
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9424,
+    "ci95": [
+     0.9362,
+     0.9484
+    ]
+   },
+   "items": 394,
+   "vs_logistic": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": 0.0021,
+    "ci95": [
+     -0.004,
+     0.0094
+    ]
+   },
+   "vs_logistic_plus_ties": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": -0.0046,
+    "ci95": [
+     -0.012,
+     0.0026
+    ]
+   },
+   "on_0005_lineup_only": {
+    "recall_at_N_pooled": {
+     "value": 0.3894,
+     "ci95": [
+      0.3734,
+      0.4094
+     ]
+    },
+    "items": 359,
+    "vs_logistic": {
+     "metric": "recall_at_N_pooled",
+     "cluster": "day",
+     "diff": 0.0026,
+     "ci95": [
+      -0.0035,
+      0.01
+     ]
+    }
+   }
+  },
+  "P(choose | present) alone": {
+   "recall_at_N_pooled": {
+    "value": 0.2671,
+    "ci95": [
+     0.2488,
+     0.2816
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.2648,
+    "ci95": [
+     0.2299,
+     0.2896
+    ]
+   },
+   "auc_mean": {
+    "value": 0.8927,
+    "ci95": [
+     0.8848,
+     0.9006
+    ]
+   },
+   "items": 394,
+   "vs_logistic": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": -0.1179,
+    "ci95": [
+     -0.1322,
+     -0.1064
+    ]
+   },
+   "vs_logistic_plus_ties": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": -0.1246,
+    "ci95": [
+     -0.1388,
+     -0.1133
+    ]
+   },
+   "on_0005_lineup_only": {
+    "recall_at_N_pooled": {
+     "value": 0.2699,
+     "ci95": [
+      0.2522,
+      0.2839
+     ]
+    },
+    "items": 359,
+    "vs_logistic": {
+     "metric": "recall_at_N_pooled",
+     "cluster": "day",
+     "diff": -0.1169,
+     "ci95": [
+      -0.1307,
+      -0.1063
+     ]
+    }
+   }
+  },
+  "ORACLE presence x P(choose | present) (diagnostic: uses the day's outcome)": {
+   "recall_at_N_pooled": {
+    "value": 0.4409,
+    "ci95": [
+     0.4199,
+     0.4658
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.4009,
+    "ci95": [
+     0.374,
+     0.4245
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9706,
+    "ci95": [
+     0.9657,
+     0.9757
+    ]
+   },
+   "items": 394,
+   "vs_logistic": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": 0.0559,
+    "ci95": [
+     0.0442,
+     0.0691
+    ]
+   },
+   "vs_logistic_plus_ties": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "day",
+    "diff": 0.0492,
+    "ci95": [
+     0.0382,
+     0.0613
+    ]
+   },
+   "on_0005_lineup_only": {
+    "recall_at_N_pooled": {
+     "value": 0.4437,
+     "ci95": [
+      0.4217,
+      0.4717
+     ]
+    },
+    "items": 359,
+    "vs_logistic": {
+     "metric": "recall_at_N_pooled",
+     "cluster": "day",
+     "diff": 0.0569,
+     "ci95": [
+      0.0443,
+      0.0719
+     ]
+    }
+   }
+  },
+  "logistic (round 1)": {
+   "recall_at_N_pooled": {
+    "value": 0.385,
+    "ci95": [
+     0.366,
+     0.4053
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.3648,
+    "ci95": [
+     0.3354,
+     0.3901
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9382,
+    "ci95": [
+     0.932,
+     0.9441
+    ]
+   },
+   "items": 394
+  },
+  "logistic + dated ties (TIES-1)": {
+   "recall_at_N_pooled": {
+    "value": 0.3917,
+    "ci95": [
+     0.3745,
+     0.4104
+    ]
+   },
+   "recall_at_N_mean": {
+    "value": 0.3678,
+    "ci95": [
+     0.3408,
+     0.3919
+    ]
+   },
+   "auc_mean": {
+    "value": 0.941,
+    "ci95": [
+     0.9352,
+     0.9463
+    ]
+   },
+   "items": 394
+  }
+ },
+ "llm_choice": {
+  "sample": {
+   "person_days": 300,
+   "days": 12,
+   "per_day": 25,
+   "shuffle_seed": "numpy default_rng([day ordinal, person_idx, 7]).permutation(line-up size)",
+   "list_length": "max(3, k) capped at 10 and at the line-up size; k = the person's mean upvotes per active day before the day, rounded, minimum 1"
+  },
+  "models": {
+   "structural order (same person-days)": {
+    "person_days": 300,
+    "days": 12,
+    "top3": {
+     "value": 0.6033,
+     "ci95": [
+      0.5167,
+      0.6833
+     ]
+    },
+    "mrr": {
+     "value": 0.4501,
+     "ci95": [
+      0.3818,
+      0.5164
+     ]
+    },
+    "auc": {
+     "value": 0.7508,
+     "ci95": [
+      0.7299,
+      0.77
+     ]
+    }
+   },
+   "combination (logistic, fit on validation) (same person-days)": {
+    "person_days": 300,
+    "days": 12,
+    "top3": {
+     "value": 0.62,
+     "ci95": [
+      0.5533,
+      0.68
+     ]
+    },
+    "mrr": {
+     "value": 0.4821,
+     "ci95": [
+      0.4286,
+      0.5416
+     ]
+    },
+    "auc": {
+     "value": 0.7692,
+     "ci95": [
+      0.7509,
+      0.7877
+     ]
+    }
+   },
+   "taste-v1 (same person-days)": {
+    "person_days": 300,
+    "days": 12,
+    "top3": {
+     "value": 0.32,
+     "ci95": [
+      0.2367,
+      0.4033
+     ]
+    },
+    "mrr": {
+     "value": 0.2885,
+     "ci95": [
+      0.2277,
+      0.3493
+     ]
+    },
+    "auc": {
+     "value": 0.594,
+     "ci95": [
+      0.5634,
+      0.6223
+     ]
+    }
+   },
+   "random order (same person-days)": {
+    "person_days": 300,
+    "days": 12,
+    "top3": {
+     "value": 0.2467,
+     "ci95": [
+      0.19,
+      0.3033
+     ]
+    },
+    "mrr": {
+     "value": 0.2435,
+     "ci95": [
+      0.1889,
+      0.3024
+     ]
+    },
+    "auc": {
+     "value": 0.4911,
+     "ci95": [
+      0.4726,
+      0.511
+     ]
+    }
+   },
+   "gemini-2.5-flash": {
+    "person_days": 300,
+    "days": 12,
+    "top3": {
+     "value": 0.3267,
+     "ci95": [
+      0.2433,
+      0.4133
+     ]
+    },
+    "mrr": {
+     "value": 0.3104,
+     "ci95": [
+      0.2437,
+      0.3837
+     ]
+    },
+    "auc": {
+     "value": 0.5284,
+     "ci95": [
+      0.5034,
+      0.5546
+     ]
+    },
+    "cost_usd": 0.2982,
+    "cost_per_1k_usd": 0.9941,
+    "latency_s_median": 1.02,
+    "tokens_in": 955401,
+    "no_valid_pick": 0,
+    "mean_picks": 3.49,
+    "precision_of_first_k_picks": 0.2297
+   },
+   "gpt-oss-120b": {
+    "person_days": 300,
+    "days": 12,
+    "top3": {
+     "value": 0.3267,
+     "ci95": [
+      0.2433,
+      0.41
+     ]
+    },
+    "mrr": {
+     "value": 0.3045,
+     "ci95": [
+      0.2348,
+      0.3814
+     ]
+    },
+    "auc": {
+     "value": 0.5372,
+     "ci95": [
+      0.513,
+      0.5626
+     ]
+    },
+    "cost_usd": 0.173,
+    "cost_per_1k_usd": 0.5766,
+    "latency_s_median": 1.09,
+    "tokens_in": 923834,
+    "no_valid_pick": 0,
+    "mean_picks": 3.49,
+    "precision_of_first_k_picks": 0.2242
+   },
+   "llama-4-maverick": {
+    "person_days": 300,
+    "days": 12,
+    "top3": {
+     "value": 0.2767,
+     "ci95": [
+      0.2033,
+      0.3533
+     ]
+    },
+    "mrr": {
+     "value": 0.2722,
+     "ci95": [
+      0.2098,
+      0.3393
+     ]
+    },
+    "auc": {
+     "value": 0.5152,
+     "ci95": [
+      0.4995,
+      0.5305
+     ]
+    },
+    "cost_usd": 0.3235,
+    "cost_per_1k_usd": 1.0783,
+    "latency_s_median": 0.62,
+    "tokens_in": 908986,
+    "no_valid_pick": 0,
+    "mean_picks": 3.49,
+    "precision_of_first_k_picks": 0.2105
+   }
+  },
+  "paired": {
+   "gemini-2.5-flash": {
+    "vs structural order": {
+     "person_days": 300,
+     "top3": {
+      "diff": -0.2767,
+      "ci95": [
+       -0.3733,
+       -0.19
+      ]
+     },
+     "mrr": {
+      "diff": -0.1397,
+      "ci95": [
+       -0.2243,
+       -0.0585
+      ]
+     },
+     "auc": {
+      "diff": -0.2224,
+      "ci95": [
+       -0.2569,
+       -0.1884
+      ]
+     }
+    },
+    "vs combination (logistic, fit on validation)": {
+     "person_days": 300,
+     "top3": {
+      "diff": -0.2933,
+      "ci95": [
+       -0.38,
+       -0.1999
+      ]
+     },
+     "mrr": {
+      "diff": -0.1717,
+      "ci95": [
+       -0.2362,
+       -0.1028
+      ]
+     },
+     "auc": {
+      "diff": -0.2408,
+      "ci95": [
+       -0.2755,
+       -0.2046
+      ]
+     }
+    }
+   },
+   "gpt-oss-120b": {
+    "vs structural order": {
+     "person_days": 300,
+     "top3": {
+      "diff": -0.2767,
+      "ci95": [
+       -0.3767,
+       -0.1833
+      ]
+     },
+     "mrr": {
+      "diff": -0.1456,
+      "ci95": [
+       -0.2309,
+       -0.0713
+      ]
+     },
+     "auc": {
+      "diff": -0.2135,
+      "ci95": [
+       -0.2436,
+       -0.1815
+      ]
+     }
+    },
+    "vs combination (logistic, fit on validation)": {
+     "person_days": 300,
+     "top3": {
+      "diff": -0.2933,
+      "ci95": [
+       -0.38,
+       -0.2066
+      ]
+     },
+     "mrr": {
+      "diff": -0.1776,
+      "ci95": [
+       -0.251,
+       -0.1025
+      ]
+     },
+     "auc": {
+      "diff": -0.2319,
+      "ci95": [
+       -0.2668,
+       -0.1957
+      ]
+     }
+    }
+   },
+   "llama-4-maverick": {
+    "vs structural order": {
+     "person_days": 300,
+     "top3": {
+      "diff": -0.3267,
+      "ci95": [
+       -0.4034,
+       -0.2533
+      ]
+     },
+     "mrr": {
+      "diff": -0.1779,
+      "ci95": [
+       -0.2549,
+       -0.1055
+      ]
+     },
+     "auc": {
+      "diff": -0.2356,
+      "ci95": [
+       -0.2603,
+       -0.21
+      ]
+     }
+    },
+    "vs combination (logistic, fit on validation)": {
+     "person_days": 300,
+     "top3": {
+      "diff": -0.3433,
+      "ci95": [
+       -0.4167,
+       -0.26
+      ]
+     },
+     "mrr": {
+      "diff": -0.2099,
+      "ci95": [
+       -0.2707,
+       -0.1471
+      ]
+     },
+     "auc": {
+      "diff": -0.254,
+      "ci95": [
+       -0.2832,
+       -0.2244
+      ]
+     }
+    }
+   }
+  },
+  "position": {
+   "gemini-2.5-flash": {
+    "share_of_picks_by_fifth_of_the_list": [
+     0.269,
+     0.211,
+     0.2,
+     0.18,
+     0.139
+    ],
+    "first_pick_in_first_fifth": 0.477,
+    "mean_relative_position": 0.437
+   },
+   "gpt-oss-120b": {
+    "share_of_picks_by_fifth_of_the_list": [
+     0.375,
+     0.199,
+     0.158,
+     0.136,
+     0.131
+    ],
+    "first_pick_in_first_fifth": 0.573,
+    "mean_relative_position": 0.383
+   },
+   "llama-4-maverick": {
+    "share_of_picks_by_fifth_of_the_list": [
+     0.44,
+     0.249,
+     0.14,
+     0.124,
+     0.047
+    ],
+    "first_pick_in_first_fifth": 0.787,
+    "mean_relative_position": 0.308
+   }
+  },
+  "pick_count_order": {
+   "gemini-2.5-flash": {
+    "what": "launches ordered by how many of the day's 25 simulated members picked them; all test person-days",
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.3252,
+     "ci95": [
+      0.269,
+      0.3804
+     ]
+    },
+    "mrr": {
+     "value": 0.268,
+     "ci95": [
+      0.2339,
+      0.3103
+     ]
+    },
+    "auc": {
+     "value": 0.5791,
+     "ci95": [
+      0.5479,
+      0.6106
+     ]
+    },
+    "vs structural order": {
+     "person_days": 9016,
+     "top3": {
+      "diff": -0.2838,
+      "ci95": [
+       -0.3636,
+       -0.2102
+      ]
+     },
+     "mrr": {
+      "diff": -0.1909,
+      "ci95": [
+       -0.2493,
+       -0.1376
+      ]
+     },
+     "auc": {
+      "diff": -0.1946,
+      "ci95": [
+       -0.2278,
+       -0.1582
+      ]
+     }
+    }
+   },
+   "gpt-oss-120b": {
+    "what": "launches ordered by how many of the day's 25 simulated members picked them; all test person-days",
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.2819,
+     "ci95": [
+      0.2112,
+      0.3562
+     ]
+    },
+    "mrr": {
+     "value": 0.2925,
+     "ci95": [
+      0.2334,
+      0.3603
+     ]
+    },
+    "auc": {
+     "value": 0.5881,
+     "ci95": [
+      0.5345,
+      0.6432
+     ]
+    },
+    "vs structural order": {
+     "person_days": 9016,
+     "top3": {
+      "diff": -0.3271,
+      "ci95": [
+       -0.4123,
+       -0.2544
+      ]
+     },
+     "mrr": {
+      "diff": -0.1663,
+      "ci95": [
+       -0.2512,
+       -0.0827
+      ]
+     },
+     "auc": {
+      "diff": -0.1856,
+      "ci95": [
+       -0.2373,
+       -0.1393
+      ]
+     }
+    }
+   },
+   "llama-4-maverick": {
+    "what": "launches ordered by how many of the day's 25 simulated members picked them; all test person-days",
+    "person_days": 9016,
+    "days": 12,
+    "top3": {
+     "value": 0.308,
+     "ci95": [
+      0.2448,
+      0.3705
+     ]
+    },
+    "mrr": {
+     "value": 0.2811,
+     "ci95": [
+      0.2238,
+      0.3488
+     ]
+    },
+    "auc": {
+     "value": 0.5686,
+     "ci95": [
+      0.503,
+      0.6311
+     ]
+    },
+    "vs structural order": {
+     "person_days": 9016,
+     "top3": {
+      "diff": -0.301,
+      "ci95": [
+       -0.4041,
+       -0.2057
+      ]
+     },
+     "mrr": {
+      "diff": -0.1778,
+      "ci95": [
+       -0.2703,
+       -0.0848
+      ]
+     },
+     "auc": {
+      "diff": -0.2052,
+      "ci95": [
+       -0.273,
+       -0.1402
+      ]
+     }
+    }
+   }
+  }
+ },
+ "leak_checks": {
+  "presence_features_vs_independent_recompute_max_abs_diff": 2.4277674093298174e-07,
+  "presence_training_days": "every fit uses only benchmark days before the refit day (asserted in walk_forward)",
+  "test_lineup_source": {
+   "0005": 12
+  },
+  "test_lineup_launches": 361,
+  "test_lineup_launches_with_frozen_structural_score": 361,
+  "lineup_columns_read_from_capture": [
+   "id",
+   "description"
+  ],
+  "combination_fit_days": [
+   "2026-11-03",
+   "2026-11-04",
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10"
+  ],
+  "combination_fit_days_all_before_test": true,
+  "choice_prompts_checked": 300,
+  "handles_in_choice_prompts": 0,
+  "history_events_on_or_after_day_in_choice_prompts": 0,
+  "known_residual_risk": "upvotes are undated and attributed to the launch day; history is the store as read later (see the presence reading-lag numbers); labels for a training day are read after it (offline convention)"
+ }
+}
