@@ -73,7 +73,10 @@ def day_cols(t, H, UF, pi):
         if ls:
             tb = Ht[Ht.target_id.isin(ls)]
             if len(tb):
-                recent = max(ls, key=lambda x: lday.get(x, ""))
+                # tie-break fix (orchestrator 23:18Z Nov 24; PREREG addendum 10): from test day 2026-11-26 the "most recent team launch" is
+                # latest launch day, then smallest launch id. Before that, max() over a set of string ids, whose order depends on the process hash seed.
+                recent = (max(ls, key=lambda x: (lday.get(x, ""), -int(x) if str(x).isdigit() else 0, str(x))) if TIEFIX
+                          else max(ls, key=lambda x: lday.get(x, "")))
                 cnt = tb.groupby("person_id").target_id.nunique(); last = tb.groupby("person_id").lday.max()
                 ix_ = pd.Index(act.index)
                 bkr = ix_.isin(set(tb[tb.target_id == recent].person_id)).astype(float)
@@ -90,7 +93,9 @@ ARMS = {"CF-only": (30, ["n30", "n90", "last", "cf"]), "A7": (7, ["n30", "n90", 
 if os.environ.get("ARMS_ONLY"): ARMS = {k: v for k, v in ARMS.items() if k in os.environ["ARMS_ONLY"].split(",")}
 if os.environ.get("RING") == "1": ARMS = {k + "/ring": v for k, v in ARMS.items()}
 rng = np.random.default_rng(0)
+TIEFIX_FROM = os.environ.get("BACKER_TIEFIX_FROM", "2026-11-26")   # env override for tests only
 for D in TDAYS:
+    TIEFIX = D >= TIEFIX_FROM
     cut = start(D); H = U[U.fetched_at < cut]
     n_ring = None
     if os.environ.get("RING") == "1":   # remove likely-discounted (ring) people's upvotes from CF training (dated flag: reads before cut, launches before D-1)
@@ -129,4 +134,4 @@ for D in TDAYS:
     FR.to_parquet(fp)
     if UP: subprocess.run(["gsutil", "-q", "cp", fp, f"{B}/tmp/e5/private/backer_arms/{D}.parquet"], check=True)
     print(json.dumps({"day": D, "launches": int(FR.launch_id.nunique()), "arms": sorted(FR.arm.unique()), "n_active": len(act), "train_days": len(TRAIN),
-                      "svd_max_lday": str(H0.lday.max()), "reads_before": str(cut), "ring_flagged": n_ring, "sec": round(time.time() - t0)}), flush=True)
+                      "svd_max_lday": str(H0.lday.max()), "reads_before": str(cut), "ring_flagged": n_ring, "tie_break": "day,min_id" if TIEFIX else "legacy_hash_order", "sec": round(time.time() - t0)}), flush=True)
