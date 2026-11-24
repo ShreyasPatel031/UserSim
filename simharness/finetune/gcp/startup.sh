@@ -6,6 +6,7 @@ md() { curl -sf -H "Metadata-Flavor: Google" "http://metadata.google.internal/co
 PREFIX=$(md ft_prefix); MODEL=$(md ft_model); TAG=$(md ft_tag)
 EPOCHS=$(md ft_epochs || echo 1); BATCH=$(md ft_batch || echo 2); ACCUM=$(md ft_accum || echo 8)
 GEN_BATCH=$(md ft_gen_batch || echo 8); GC=$(md ft_grad_checkpoint || echo 0); SKIP_BASE=$(md ft_skip_base || echo 0)
+SAVE_AT=$(md ft_save_at || echo "")   # space-separated row counts: adapter snapshots for a learning curve
 WORK=/opt/ft; mkdir -p $WORK; cd $WORK
 [ -f STARTED ] && exit 0   # a reboot must not run the job again
 touch STARTED
@@ -36,8 +37,15 @@ job() {
     $PY lora.py generate --model "$MODEL" --rows eval.jsonl --out gen_base.jsonl --batch "$GEN_BATCH"
     gsutil -q cp gen_base.jsonl $RUN/
   fi
+  SAVEFLAG=""; [ -n "$SAVE_AT" ] && SAVEFLAG="--save-at-rows $SAVE_AT"
   $PY lora.py train --model "$MODEL" --train train.jsonl --out adapter --epochs "$EPOCHS" --batch "$BATCH" \
-    --accum "$ACCUM" $GCFLAG
+    --accum "$ACCUM" $GCFLAG $SAVEFLAG
+  for C in adapter/ckpt_*; do  # snapshots first, so a late failure still leaves the curve
+    [ -d "$C" ] || continue
+    N=${C##*_}
+    $PY lora.py generate --model "$MODEL" --adapter "$C" --rows eval.jsonl --out "gen_tuned_$N.jsonl" --batch "$GEN_BATCH"
+    gsutil -q cp "gen_tuned_$N.jsonl" $RUN/
+  done
   $PY lora.py generate --model "$MODEL" --adapter adapter --rows eval.jsonl --out gen_tuned.jsonl --batch "$GEN_BATCH"
   gsutil -q -m cp -r gen_tuned.jsonl adapter $RUN/
   date -u

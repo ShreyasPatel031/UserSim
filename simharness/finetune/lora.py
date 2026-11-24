@@ -112,6 +112,7 @@ def train(a) -> None:
     sched = get_cosine_schedule_with_warmup(opt, max(1, int(0.05 * steps)), steps)
     model.train()
     t0, step, seen, run_loss, run_n = time.time(), 0, 0, 0.0, 0
+    save_at = sorted(a.save_at_rows)  # adapter snapshots for a learning curve: out/ckpt_<rows seen>
     for epoch in range(a.epochs):
         for k, b in enumerate(batches()):
             n = max(len(data[i][0]) for i in b)
@@ -135,6 +136,10 @@ def train(a) -> None:
                     print(f"epoch {epoch} step {step}/{steps} loss {run_loss / run_n:.4f} rows {seen} "
                           f"{el:.0f}s eta {el / step * (steps - step):.0f}s", flush=True)
                     run_loss, run_n = 0.0, 0
+                while save_at and seen >= save_at[0]:
+                    model.save_pretrained(f"{a.out}/ckpt_{save_at[0]}"); tok.save_pretrained(f"{a.out}/ckpt_{save_at[0]}")
+                    print(f"saved checkpoint at {seen} rows", flush=True)
+                    save_at.pop(0)
         opt.zero_grad(set_to_none=True)
     model.save_pretrained(a.out)
     tok.save_pretrained(a.out)
@@ -187,7 +192,7 @@ def main() -> None:
     t.add_argument("--accum", type=int, default=8); t.add_argument("--max-prompt", type=int, default=1536)
     t.add_argument("--max-answer", type=int, default=256); t.add_argument("--grad-checkpoint", action="store_true")
     t.add_argument("--log-every", type=int, default=10); t.add_argument("--limit", type=int, default=0)
-    t.add_argument("--seed", type=int, default=0)
+    t.add_argument("--seed", type=int, default=0); t.add_argument("--save-at-rows", type=int, nargs="*", default=[])
     g = sub.add_parser("generate")
     g.add_argument("--model", required=True); g.add_argument("--adapter"); g.add_argument("--rows", required=True)
     g.add_argument("--out", required=True); g.add_argument("--batch", type=int, default=8)
