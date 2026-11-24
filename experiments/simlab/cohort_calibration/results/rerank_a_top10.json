@@ -1,0 +1,589 @@
+{
+ "prereg": "PREREG.md addendum 6",
+ "days": [
+  "2026-11-15",
+  "2026-11-16",
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20",
+  "2026-11-21",
+  "2026-11-22"
+ ],
+ "shortlist size": 10,
+ "structural source": "results/structural/backtest/<D>.json (PH agent, b9613465)",
+ "real top-10 launches absent from the structural file (featured after 00:05; misses for both orders) per day": {
+  "2026-11-15": 1,
+  "2026-11-16": 0,
+  "2026-11-17": 0,
+  "2026-11-18": 0,
+  "2026-11-19": 0,
+  "2026-11-20": 0,
+  "2026-11-21": 0,
+  "2026-11-22": 1
+ },
+ "labels": {
+  "2026-11-15": "v2 list walk-forward replay; 00:05 forecast as then published",
+  "2026-11-16": "v2 list walk-forward replay; 00:05 forecast as then published",
+  "2026-11-17": "v2 list walk-forward replay; 00:05 forecast as then published",
+  "2026-11-18": "v2 list walk-forward replay; 00:05 forecast as then published",
+  "2026-11-19": "v2 list walk-forward replay; 00:05 forecast as then published",
+  "2026-11-20": "v2 list walk-forward replay; 00:05 forecast as then published",
+  "2026-11-21": "v2 list walk-forward replay; 00:05 forecast as then published",
+  "2026-11-22": "v2 list walk-forward replay; 00:05 forecast as then published"
+ },
+ "ceiling (share of real top k inside structural top 20)": {
+  "3": 95.8,
+  "5": 90.0,
+  "10": 68.8
+ },
+ "candidates": {
+  "expected held voters": {
+   "top3 capture structural": [
+    50.0,
+    37.5,
+    66.7,
+    8
+   ],
+   "top5 capture structural": [
+    67.5,
+    57.5,
+    75.0,
+    8
+   ],
+   "top10 capture structural": [
+    68.8,
+    61.3,
+    75.0,
+    8
+   ],
+   "top3 capture re-ranked": [
+    45.8,
+    37.5,
+    58.3,
+    8
+   ],
+   "top5 capture re-ranked": [
+    62.5,
+    52.5,
+    72.5,
+    8
+   ],
+   "top10 capture re-ranked": [
+    68.8,
+    62.5,
+    75.0,
+    8
+   ],
+   "top3 re-ranked minus structural (paired)": [
+    -4.2,
+    -25.0,
+    12.5,
+    8
+   ],
+   "top5 re-ranked minus structural (paired)": [
+    -5.0,
+    -12.5,
+    0.0,
+    8
+   ],
+   "top10 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "near-miss launches (structural 4-6 that finished top 3)": 8,
+   "recovered into top 3": 1,
+   "cost: real top 3 pushed out": 2,
+   "blend weight by day (walk-forward)": {
+    "2026-11-15": 0,
+    "2026-11-16": 0,
+    "2026-11-17": 0,
+    "2026-11-18": 4,
+    "2026-11-19": 4,
+    "2026-11-20": 4,
+    "2026-11-21": 0,
+    "2026-11-22": 0
+   },
+   "Nov 8-22 only: top3 / top5 minus structural": [
+    [
+     -4.2,
+     -25.0,
+     8.3,
+     8
+    ],
+    [
+     -5.0,
+     -12.5,
+     0.0,
+     8
+    ]
+   ]
+  },
+  "propensity-weighted expected voters": {
+   "top3 capture structural": [
+    50.0,
+    37.5,
+    66.7,
+    8
+   ],
+   "top5 capture structural": [
+    67.5,
+    57.5,
+    77.5,
+    8
+   ],
+   "top10 capture structural": [
+    68.8,
+    61.3,
+    75.0,
+    8
+   ],
+   "top3 capture re-ranked": [
+    50.0,
+    37.5,
+    62.5,
+    8
+   ],
+   "top5 capture re-ranked": [
+    65.0,
+    52.5,
+    75.0,
+    8
+   ],
+   "top10 capture re-ranked": [
+    68.8,
+    62.5,
+    75.0,
+    8
+   ],
+   "top3 re-ranked minus structural (paired)": [
+    -0.0,
+    -12.5,
+    12.5,
+    8
+   ],
+   "top5 re-ranked minus structural (paired)": [
+    -2.5,
+    -7.5,
+    0.0,
+    8
+   ],
+   "top10 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "near-miss launches (structural 4-6 that finished top 3)": 8,
+   "recovered into top 3": 1,
+   "cost: real top 3 pushed out": 1,
+   "blend weight by day (walk-forward)": {
+    "2026-11-15": 0,
+    "2026-11-16": 0,
+    "2026-11-17": 0,
+    "2026-11-18": 0,
+    "2026-11-19": 0,
+    "2026-11-20": 1,
+    "2026-11-21": 0,
+    "2026-11-22": 0.5
+   },
+   "Nov 8-22 only: top3 / top5 minus structural": [
+    [
+     -0.0,
+     -12.5,
+     12.5,
+     8
+    ],
+    [
+     -2.5,
+     -7.5,
+     0.0,
+     8
+    ]
+   ]
+  },
+  "expected voters in top-3-prone groups": {
+   "top3 capture structural": [
+    50.0,
+    37.4,
+    66.7,
+    8
+   ],
+   "top5 capture structural": [
+    67.5,
+    57.5,
+    75.1,
+    8
+   ],
+   "top10 capture structural": [
+    68.8,
+    62.5,
+    75.0,
+    8
+   ],
+   "top3 capture re-ranked": [
+    50.0,
+    37.5,
+    66.7,
+    8
+   ],
+   "top5 capture re-ranked": [
+    67.5,
+    57.5,
+    75.0,
+    8
+   ],
+   "top10 capture re-ranked": [
+    68.8,
+    62.5,
+    75.0,
+    8
+   ],
+   "top3 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "top5 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "top10 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "near-miss launches (structural 4-6 that finished top 3)": 8,
+   "recovered into top 3": 0,
+   "cost: real top 3 pushed out": 0,
+   "blend weight by day (walk-forward)": {
+    "2026-11-15": 0,
+    "2026-11-16": 0,
+    "2026-11-17": 0,
+    "2026-11-18": 0,
+    "2026-11-19": 0,
+    "2026-11-20": 0,
+    "2026-11-21": 0,
+    "2026-11-22": 0.5
+   },
+   "Nov 8-22 only: top3 / top5 minus structural": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     8
+    ],
+    [
+     0.0,
+     0.0,
+     0.0,
+     8
+    ]
+   ]
+  },
+  "expected voters, full held pool (no list truncation)": {
+   "top3 capture structural": [
+    50.0,
+    37.5,
+    66.7,
+    8
+   ],
+   "top5 capture structural": [
+    67.5,
+    57.5,
+    77.5,
+    8
+   ],
+   "top10 capture structural": [
+    68.8,
+    62.5,
+    75.0,
+    8
+   ],
+   "top3 capture re-ranked": [
+    50.0,
+    37.5,
+    66.7,
+    8
+   ],
+   "top5 capture re-ranked": [
+    67.5,
+    57.5,
+    77.5,
+    8
+   ],
+   "top10 capture re-ranked": [
+    68.8,
+    61.3,
+    75.0,
+    8
+   ],
+   "top3 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "top5 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "top10 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "near-miss launches (structural 4-6 that finished top 3)": 8,
+   "recovered into top 3": 0,
+   "cost: real top 3 pushed out": 0,
+   "blend weight by day (walk-forward)": {
+    "2026-11-15": 0,
+    "2026-11-16": 0,
+    "2026-11-17": 0,
+    "2026-11-18": 0,
+    "2026-11-19": 0,
+    "2026-11-20": 0,
+    "2026-11-21": 0,
+    "2026-11-22": 0
+   },
+   "Nov 8-22 only: top3 / top5 minus structural": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     8
+    ],
+    [
+     0.0,
+     0.0,
+     0.0,
+     8
+    ]
+   ]
+  },
+  "expected voters, full pool, active last 7 days": {
+   "top3 capture structural": [
+    50.0,
+    37.5,
+    66.7,
+    8
+   ],
+   "top5 capture structural": [
+    67.5,
+    57.5,
+    77.5,
+    8
+   ],
+   "top10 capture structural": [
+    68.8,
+    61.3,
+    75.0,
+    8
+   ],
+   "top3 capture re-ranked": [
+    50.0,
+    33.3,
+    66.7,
+    8
+   ],
+   "top5 capture re-ranked": [
+    67.5,
+    57.5,
+    77.5,
+    8
+   ],
+   "top10 capture re-ranked": [
+    68.8,
+    62.5,
+    75.0,
+    8
+   ],
+   "top3 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "top5 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "top10 re-ranked minus structural (paired)": [
+    0.0,
+    0.0,
+    0.0,
+    8
+   ],
+   "near-miss launches (structural 4-6 that finished top 3)": 8,
+   "recovered into top 3": 0,
+   "cost: real top 3 pushed out": 0,
+   "blend weight by day (walk-forward)": {
+    "2026-11-15": 0,
+    "2026-11-16": 0,
+    "2026-11-17": 0,
+    "2026-11-18": 0,
+    "2026-11-19": 0,
+    "2026-11-20": 0,
+    "2026-11-21": 0,
+    "2026-11-22": 0
+   },
+   "Nov 8-22 only: top3 / top5 minus structural": [
+    [
+     0.0,
+     0.0,
+     0.0,
+     8
+    ],
+    [
+     0.0,
+     0.0,
+     0.0,
+     8
+    ]
+   ]
+  }
+ },
+ "exploratory (NOT a test): fixed-w paired top3/top5 minus structural over all days": {
+  "F1": {
+   "0.1": [
+    0.0,
+    0.0
+   ],
+   "0.25": [
+    0.0,
+    -2.5
+   ],
+   "0.5": [
+    0.0,
+    -2.5
+   ],
+   "1": [
+    4.2,
+    -7.5
+   ],
+   "2": [
+    -0.0,
+    -10.0
+   ],
+   "4": [
+    4.2,
+    -10.0
+   ]
+  },
+  "F2": {
+   "0.1": [
+    0.0,
+    0.0
+   ],
+   "0.25": [
+    0.0,
+    -2.5
+   ],
+   "0.5": [
+    8.3,
+    -2.5
+   ],
+   "1": [
+    8.3,
+    -10.0
+   ],
+   "2": [
+    4.2,
+    -10.0
+   ],
+   "4": [
+    -0.0,
+    -12.5
+   ]
+  },
+  "F3": {
+   "0.1": [
+    0.0,
+    0.0
+   ],
+   "0.25": [
+    0.0,
+    0.0
+   ],
+   "0.5": [
+    4.2,
+    0.0
+   ],
+   "1": [
+    0.0,
+    0.0
+   ],
+   "2": [
+    0.0,
+    0.0
+   ],
+   "4": [
+    0.0,
+    -2.5
+   ]
+  },
+  "F4": {
+   "0.1": [
+    0.0,
+    0.0
+   ],
+   "0.25": [
+    0.0,
+    -2.5
+   ],
+   "0.5": [
+    0.0,
+    -2.5
+   ],
+   "1": [
+    -0.0,
+    -7.5
+   ],
+   "2": [
+    -0.0,
+    -10.0
+   ],
+   "4": [
+    -4.2,
+    -12.5
+   ]
+  },
+  "F5": {
+   "0.1": [
+    0.0,
+    0.0
+   ],
+   "0.25": [
+    0.0,
+    -2.5
+   ],
+   "0.5": [
+    8.3,
+    -5.0
+   ],
+   "1": [
+    0.0,
+    -10.0
+   ],
+   "2": [
+    0.0,
+    -7.5
+   ],
+   "4": [
+    -0.0,
+    -10.0
+   ]
+  }
+ }
+}

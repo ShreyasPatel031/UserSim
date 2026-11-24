@@ -1695,3 +1695,16 @@ cohort_calibration/rerank_a.py (PREREG addendum 6) → results/rerank_a.json. Da
 - Near misses: 17 launches at structural rank 4–6 finished top 3; F2 recovered 1 and pushed 1 real top 3 out.
 - Fixed-weight curve (exploratory, not a test): any weight above 0.25 hurts (F1 at w = 1: −7.8 top 3).
 - Why: the features sum p over each launch's top-2000 list, and those lists overlap ~85%, so F1 is nearly flat across launches (~185–215 on Nov 15). Next: sum over the whole held pool rather than the truncated list; then Stage B (agents).
+
+### 2026-11-24 E5 — SIM-RERANK-1 Stage A final: no lift from people-model features on the structural shortlist (171 + 8 days)
+PREREG addenda 6, 6b, 6c. results: cohort_calibration/results/rerank_a_long.json (Apr 15–Oct 31, 171 days, lenient as-of upvote history, PH agent backtest files) and rerank_a_top{10,15,20}.json (Nov 15–22 live structural files × BACKER-v2 lists, 8 days). Paired re-ranked minus structural, [mean %, day-boot 95%]:
+
+| Shortlist | top 3 | top 5 | top 10 | near misses / recovered / pushed out |
+|---|---|---|---|---|
+| 10 (long) | −0.6 [−1.9, +0.8] | −0.6 [−1.5, +0.4] | 0.0 | 148 / 7 / 10 |
+| 15 (long) | +0.2 [−0.4, +0.8] | −0.2 [−0.7, +0.2] | −0.1 | 148 / 3 / 2 |
+| 20 (long) | −0.2 [−1.2, +0.8] | −0.8 [−1.6, 0.0] | −0.2 | 148 / 5 / 6 |
+
+- Structural capture (long): top 3 56.7, top 5 66.9, top 10 78.1. Live Nov 15–22: 50.0 / 67.5 / 68.8; 2 real top-10 launches featured after 00:05 (misses for both).
+- Live 8 days, all five candidates (expected held voters, propensity-weighted, top-3-prone groups [degenerate: no group met the rule], full-pool, full-pool active-7d): top-3 differences −4.2 to +4.2, all intervals span 0.
+- Reading: expected held voters (how many of our people would back it) carry no ordering information beyond the structural score. The walk-forward weight settles at 0.1–0.25 and changes little. Stage B (agents reading the page) is the remaining test.

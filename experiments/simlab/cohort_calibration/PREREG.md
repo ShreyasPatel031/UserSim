@@ -145,3 +145,27 @@ top-3/5/10 capture on earlier test days only (w = 0 until 3 earlier days). Metri
 structural order, day bootstrap 95%; near-miss recovery (structural rank 4-6 that finished top 3 and moved into the re-ranked top 3) and cost
 (real top 3 in the structural top 3 pushed out). Days: Nov 8-22 (v2 lists frozen as walk-forward replays) plus Oct 27-Nov 4 (labelled: v2 lists
 built later as replays from upvote/follow history read before each day). Pass: a candidate's top-3 or top-5 capture minus structural lower bound > 0.
+Addendum 6b (2026-11-23, before scoring): F4 = expected voters over the whole held complete pool (v2 logistic, subsampling-corrected, no top-2000
+truncation); F5 = F4 restricted to people active in the last 7 days. Same blend, weights and pass rule. Added after F1-F3 showed the truncated lists
+make F1 nearly flat; F1-F3 results stand as reported.
+
+## Addendum 7 (2026-11-24): SIM-RERANK-1 Stage B (language-model agents, forward only)
+Nightly, frozen to results/calibration/<D>/rerank_frozen.json before 03:45 PT. Shortlist = results/structural/<D>/shortlist.json top 20 (reported at 10 / 15 / 20).
+Per launch: 50 people sampled (seed = launch id) from the top 200 of the BACKER-v2 list for D, plus 20 at random from the active pool (complete,
+held before D's start, >= 1 upvote on launches in the 30 days before D). One agent per person, built only from that person's own last 30 upvoted
+launches before D (name, tagline, topics) and up to 5 of their own comments on launches before D (@handles removed). The agent sees the launch's
+page read (the /try nightly read, else the 00:05 name, tagline and description). No vote counts, ranks or comments of others. Output per agent:
+vote yes/no, probability 0-100, one-line comment, sentiment pos/neu/neg. Model: Gemini 2.5 Flash (temperature 0) behind sim_model.call().
+Features per launch: yes share, mean probability, sentiment shares (BACKER-top and random sub-panels kept separately).
+Fixed rule: re-ranked key = structural_rank - 2 x z(yes share of all 70 agents), z within the shortlist; ties by structural rank.
+Metric: top 3 / 5 / 10 capture by the re-ranked shortlist (10 / 15 / 20) vs the structural order, paired by day, day bootstrap; near-miss recovery
+and cost; launches featured after 00:05 count as misses for both orders. First read at 7 scored days; weights fit only after that.
+Also scored: agent votes vs held re-read backers (WHO), agent comments vs real comments with the WHAT judge (beside the persona panel).
+Addendum 7b (2026-11-24, before the first frozen run): a dry run on 3 Nov 23 launches gave 87% yes (real base rate a few %). The prompt now also states
+the person's own average upvotes per active day over the 30 days before D, and the day's line-up size, and asks the agent to keep that rate in mind.
+Rule, panels and metric unchanged.
+Addendum 6c (2026-11-24): long Stage A on the PH agent's structural backtest (Apr 15-Oct 31; arm 3 where present). Lenient as-of features: complete
+people's upvotes on launches dated before D (no read-time cut, no follows: the store was read in Oct-Nov, so a read-time cut would empty these days;
+store membership was chosen later, a selection caveat). Per day: logistic on [ln(1+rw), topic match, interaction] fit on the 14 previous days
+(negatives 2%, seed 0); F6 = expected voters over the active pool (>= 1 upvote in the 60 days before D), subsampling-corrected. Same blend rule
+(walk-forward w), shortlist 10 / 15 / 20, same metric and pass rule. Truth = final daily rank (structural file truth block).
