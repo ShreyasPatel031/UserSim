@@ -56,6 +56,7 @@ The harness provides:
 | BACKER-v2 logistic (E5, live) | 27.6 [26.2, 29.0] | | | | 14 | 0 |
 | persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22) | | 2 | |
 | history-built prompt, Gemini 2.5 Flash (bench v0) | | | person match 59.3 vs 50.3 launch-only (+8.9 [+0.6, +15.4]) | | 12 | $0.5 |
+| Qwen2.5-7B fine-tuned on 4,000 of our comment rows (FT-TASKC-v0) | | | person match 65.2 [60.9, 70.1] vs 54.6 untuned (+10.7 [+5.1, +16.9]) | | 12 | about $3 to train |
 | structural order (arm 3) | | | | baseline: 50.0 / 70.0 / 66.7 | 6 | |
 | re-rank by expected held voters (E5, SIM-RERANK-1 stage A) | | | | top 3: -0.6 [-1.9, +0.8] (shortlist 10), +0.2 [-0.4, +0.8] (15), -0.2 [-1.2, +0.8] (20): no lift | 171 backtest + 8 live | 0 |
 
@@ -112,6 +113,31 @@ Reading:
 - Small n: 327-366 rows with a second commenter per split, 136-183 people; the test interval for Flash only just
   clears zero. More comment truth (the blocked comment threads) widens this.
 
+### First fine-tune (FT-TASKC-v0, simharness/finetune/, Nov 24; about $3 of GPU)
+Qwen2.5-7B-Instruct (open weights) with a LoRA adapter, trained for one epoch on the 4,000 most recent training comment
+rows (Sep 9-Oct 31, 2,133 people, at most 15 per person): prompt = the person's history and the launch, answer = their
+real comment. 35 minutes on one A100. Scored on the same Task C rows as every other model.
+
+| What writes the comment | Test: person match | Validation: person match | Test: content match | Median length vs real |
+|---|---|---|---|---|
+| Qwen2.5-7B, untuned, history + launch | 54.6 [50.5, 58.4] | 52.2 | 33.7 | 1.9x |
+| **Qwen2.5-7B, fine-tuned, history + launch** | **65.2 [60.9, 70.1]** | **60.1 [54.7, 65.8]** | 26.2 | 0.7x |
+| Gemini 2.5 Flash, history + launch | 59.3 [51.6, 65.6] | 59.3 | 41.4 | 1.1x |
+| the person's own latest earlier comment | 68.0 [60.2, 72.5] | 66.7 | 10.9 | 1.0x |
+
+Paired on the same rows (day-clustered 95% intervals):
+- Tuned minus untuned, person match: +10.7 [+5.1, +16.9] test, +7.9 [+3.2, +13.4] validation. Clear on both.
+- Tuned minus Gemini Flash with history: +5.8 [-1.1, +14.8] test, +0.8 [-2.2, +3.9] validation. Not clear: a 7B open
+  model tuned on our rows equals the best zero-shot model here.
+- Tuned minus the person's own last comment: -3.1 [-8.5, +5.3] test, -6.0 [-10.8, -0.4] validation. The gap to the
+  person's own voice has narrowed and is no longer clear on test.
+- Content match fell (26 vs 34 untuned): tuned comments are shorter and restate the product less, which moves them
+  toward where a second real commenter sits (17). This is the weakness of that measure, not a loss.
+- Not copying: 0.5-0.8% of tuned comments are near-copies of the person's last comment (real people: 0-0.5%).
+- Decision: recorded, not deployed (no interval clears Gemini Flash, and there is no serving path yet). Next: a learning
+  curve (12,000 rows, checkpoints at 4,000 and 8,000) to see whether more of our data keeps raising person match, then
+  a joint vote + comment fine-tune on round 1's activity-matched rows.
+
 ### Task R, first test: re-rank the shortlist by expected held voters (E5, SIM-RERANK-1 stage A, b7061305, Nov 24)
 Question: does "how many of our held people are expected to back this launch" reorder the structural shortlist better?
 Answer: no. Re-ranked minus structural, paired by day, day-bootstrap 95% intervals.
@@ -151,10 +177,12 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
    stage B, running nightly, forward only; first read at 7 scored days).
 3. Benchmark v0 builder, adapters and the first zero-shot leaderboard across model families (orchestrator).
 4. Fine-tune an open model on Task V + Task C training rows; compare with zero-shot frontier models (orchestrator).
-4b. Task C person match: fine-tune on (history, launch) -> real comment (51,895 training rows) to close the gap between
-    the history-built prompt (59%) and the person's own last comment (68%); add Claude, gpt-oss and Llama to the table.
-4c. Task C scorer v1: a content measure that does not reward restating the product (score against the launch's real
-    themes with the launch description projected out), and a style distance (length, question vs praise).
+4b. Task C person match: first fine-tune done Nov 24 (65.2 vs 54.6 untuned, 59.3 Gemini Flash, 68.0 the person's own
+    last comment). Running: learning curve on 12,000 rows. Then add Claude, gpt-oss and Llama to the table.
+4c. Task C content measure: embeddings do not work for content (projecting out the launch text measured style; tried
+    Nov 24). Needs judged "same point as the real comment" labels; also a style distance (length, question vs praise).
+4d. Joint fine-tune: vote (round 1's activity-matched rows) + comment in one adapter; score Task V and Task C.
+4e. A serving path for a tuned open model (GPU endpoint started on demand) so a winner can replace the prompt model.
 5. HOW axis: trace realism against human traces (plugin agent; unchanged).
 6. Truth data: broad post-close re-reads and full comment threads (fleet; asked hourly).
 7. Second domain to prove "plugs into any use case" (choose once Task R shows lift on Product Hunt).
