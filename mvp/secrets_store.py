@@ -38,6 +38,8 @@ SECRET_VARS: tuple[str, ...] = (
     "MVP_SMS_API_KEY",
     "MVP_MCP_TOKEN",
     "MVP_TEXTVERIFIED_API_KEY",
+    "LT_USERNAME",
+    "LT_ACCESS_KEY",
 )
 
 _ABOUT: dict[str, str] = {
@@ -56,6 +58,8 @@ _ABOUT: dict[str, str] = {
     "MVP_SMS_API_KEY": "TextVerified (or other) API key when MVP_SMS_BACKEND=api.",
     "MVP_MCP_TOKEN": "Optional bearer token(s) that skip anonymous MCP caps (comma-separated).",
     "MVP_TEXTVERIFIED_API_KEY": "Legacy alias for TextVerified API key.",
+    "LT_USERNAME": "LambdaTest username (real-device app testing, mvp/sim_mcp/devices.py).",
+    "LT_ACCESS_KEY": "LambdaTest access key (real-device app testing).",
 }
 
 _LOCK = threading.Lock()

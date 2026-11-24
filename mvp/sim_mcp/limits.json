@@ -214,6 +214,34 @@
     "google_signin_anon": {
       "value": true,
       "about": "Let callers WITHOUT a token use Google sign-in (Nov 22, owner's decision for the public plugin). They stay under anon_daily_usd_per_ip. The model never sees the password or codes, and Google Account settings pages (password, security) are blocked for every session (BLOCKED_OFFSITE_HOSTS). false = token callers only."
+    },
+    "devices_enabled": {
+      "value": true,
+      "about": "Real phones (LambdaTest real devices) for app testing: usersim_start_device_session etc. false = off for everyone."
+    },
+    "device_max_concurrent": {
+      "value": 5,
+      "about": "Real-device sessions open at once across the server. Must not exceed the LambdaTest plan's parallel limit (5 on Nov 24)."
+    },
+    "device_session_max_s": {
+      "value": 600,
+      "about": "Wall-clock seconds per real-device session (10 minutes). Real devices are scarce and billed by plan."
+    },
+    "device_max_steps": {
+      "value": 40,
+      "about": "Actions per real-device session before usersim_device_finish is required."
+    },
+    "est_usd_per_device_session": {
+      "value": 0.5,
+      "about": "Budget units charged to callers without a token when a real-device session starts (so the $5/day cap allows about 8)."
+    },
+    "est_usd_per_device_step": {
+      "value": 0.01,
+      "about": "Budget units charged per real-device action for callers without a token."
+    },
+    "anon_daily_app_uploads_per_ip": {
+      "value": 5,
+      "about": "App uploads (link or /api/apps/upload) per client IP per day for callers without a token."
     }
   }
 }
