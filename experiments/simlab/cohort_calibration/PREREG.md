@@ -169,3 +169,9 @@ people's upvotes on launches dated before D (no read-time cut, no follows: the s
 store membership was chosen later, a selection caveat). Per day: logistic on [ln(1+rw), topic match, interaction] fit on the 14 previous days
 (negatives 2%, seed 0); F6 = expected voters over the active pool (>= 1 upvote in the 60 days before D), subsampling-corrected. Same blend rule
 (walk-forward w), shortlist 10 / 15 / 20, same metric and pass rule. Truth = final daily rank (structural file truth block).
+
+## Addendum 8 (2026-11-24): Stage B v2 "pick k" arm (beside v1)
+Same days, people panel (per launch: 50 from the v2 top 200 + 20 random active, pooled and de-duplicated across the shortlist), history and page
+text (one line per launch: name - tagline, page-read summary first 160 chars). Each agent sees the whole shortlist, shuffled per agent (seed = hash
+of person id), and picks the k launches it would upvote, k = round(own average upvotes per active day over the 30 days before D), min 1, max 5.
+Feature = pick share per launch (picks / agents). Fixed rule: key = structural_rank - 2 x z(pick share). Same metric, freeze, first read at 7 days.
