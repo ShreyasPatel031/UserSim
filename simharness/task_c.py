@@ -143,9 +143,26 @@ class TaskC:
     def __init__(self, bench, embedder=None, floor: float = 0.05, min_chars: int = 15, seed: int = 0,
                  tau_pairs: int = 5000):
         self.bench, self.floor, self.min_chars, self.seed = bench, floor, min_chars, seed
-        self.emb = embedder or LocalEmbedder()
+        self._emb, self._tau, self._tau_pairs = embedder, None, tau_pairs
         self._day_of = self._day_of_comments()
-        self.tau = self._fit_tau(tau_pairs)
+
+    @property
+    def emb(self):
+        """The embedder, loaded on first use (building rows or exporting needs none)."""
+        if self._emb is None:
+            self._emb = LocalEmbedder()
+        return self._emb
+
+    @property
+    def tau(self) -> float:
+        """The match threshold, fitted on training comments on first use."""
+        if self._tau is None:
+            self._tau = self._fit_tau(self._tau_pairs)
+        return self._tau
+
+    @tau.setter
+    def tau(self, value: float) -> None:
+        self._tau = float(value)
 
     # -- rows
     def _day_of_comments(self) -> pd.DataFrame:
