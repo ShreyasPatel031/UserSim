@@ -108,8 +108,10 @@ def build(tables: DomainTables, out_dir: str, cfg: BenchConfig | None = None,
         seen = set(old)
         ids = old + [p for p in people["person_id"] if p not in seen]
         obs = dict(zip(tables.people["person_id"], tables.people["observed_until"]))
-        people = pd.DataFrame({"person_id": ids, "observed_until": [obs.get(p, pd.NaT) for p in ids]})
-        people["observed_until"] = pd.to_datetime(people["observed_until"], utc=True)
+        people = pd.DataFrame({"person_id": pd.Series(ids, dtype=prev_people["person_id"].dtype),
+                               "observed_until": [obs.get(p, pd.NaT) for p in ids]})
+        people["observed_until"] = pd.to_datetime(people["observed_until"], utc=True).astype(
+            prev_people["observed_until"].dtype)
     people["person_idx"] = np.arange(len(people), dtype=np.int32)
     pidx = dict(zip(people["person_id"], people["person_idx"]))
 

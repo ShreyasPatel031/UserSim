@@ -12,7 +12,7 @@ on the same launch. The new rows score like the old ones with the existing Flash
   A stream comment is kept when it is unique by comment id, top-level, written on D (PT), by a complete held person,
   on a launch of D's 00:05 PT line-up, not by a maker or the hunter of that launch (ids from the line-up), at least
   15 characters, and the first by that person on that launch. Text: HTML removed, @handles replaced.
-- Overlay: `items.parquet` (the 00:05 line-up: item_id, day, title, summary, description, tags), `comments.parquet`
+- Overlay: `items.parquet` (the 00:05 line-up: item_id, slug, day, title, summary, description, tags), `comments.parquet`
   (person_idx, item_id, item_idx, day_ord, ts, text; only rows that are not already in the benchmark), `meta.json`.
 - Loader: `Benchmark(BENCH, overlays=[...])` or `bench.add_overlays([...])`. New launches are appended as items, new
   comment rows go into `comments` and the history. Days after the test split get the split name "forward", so
@@ -75,6 +75,36 @@ rows), the person's own previous comment 13.0%, another commenter on the same la
 - Overlay files hold person_idx, launch ids, day, time and text only: no platform user id, no username; 0 @handles in
   comment or launch text. 30 comments by a maker or the hunter and 65 on launches that were not on the 00:05 line-up
   were dropped.
+
+## Nightly refresh (`python -m simharness.run_refresh --store STORE --out BENCH [--day D]`)
+Rebuilds the benchmark tables from the current store and writes the overlays into them, so a history for day D holds
+everything dated before D that the store and the stream hold. Not scheduled anywhere.
+
+- **Inputs:** STORE = a local copy of the store (persons, tabs, events and `records/part-*.parquet` for comment text,
+  2.3 GB); `--forward-root` = the overlay folders; `--lineup` = day D's 00:05 line-up, so D's launches are items
+  before D's overlay exists; `--prev` only on the first run.
+- **Output:** `BENCH/<UTC stamp>/` with the same six tables (same columns and types, same salted ids) plus
+  `item_keys.parquet`, and `BENCH/latest`, a one-line pointer file. `Benchmark(BENCH)` follows the pointer.
+  With `--sync gs://...` the build is copied first and the remote pointer last.
+- **Stable keys:** every person and item of the previous build keeps its index; people complete now and new launches
+  are appended. Row files from earlier rounds (HARD, CHOICE, ties) stay valid by index. `bench_v0/data` is untouched
+  and remains the frozen reference for the round-1 numbers (pools in a new build differ by the few new people).
+- **Checks before the pointer moves:** people, items, history (in total and per kind) and comments not lower than in
+  the previous build; no person_idx or item_idx reassigned; same columns and types; no event dated on or after D in a
+  history for D (the day state equals an independent count, and 400 sampled histories and their rendered text hold
+  nothing from D or later); the build loads. On any failure the build is kept as `<stamp>.failed`, the pointer stays,
+  exit code 1. Tested: a store copy without the records folder fails on the comment count and leaves the pointer.
+- **Cost:** 76 and 82 seconds on this 4-core box in two runs (61 to 67 s of it reading comment text from the 48
+  record files), peak memory 2.7 to 2.8 GB. Add about 1.5 minutes to download the store and 5 s to upload the
+  build (28 MB). No model spend.
+- **First builds (Nov 24):** people 93,595 -> 93,598; items 7,361 -> 7,430 (the Nov 23 and 24 line-ups); history
+  658,220 -> 660,513; comments 53,631 -> 54,797 (1,160 from the stream overlays). Task C rows from the refreshed
+  tables: test 1,428, forward 144, the same as loading the overlays on the old tables. Current build:
+  `bench_v0/builds/20261124T182417Z` (pointer `bench_v0/builds/latest`).
+- **Limits:** the store targets comments by launch slug and the item table is keyed by id. The refresh recovers
+  slugs from the store itself (matching earlier comment rows by person and time) and carries them forward in
+  `item_keys.parquet`; 7,313 of 7,430 items have one (the rest never had a held comment and were in no capture).
+  Upvotes still arrive only through profile reads: the refresh cannot make histories fresher than the store.
 
 ## Spend
 $0.41 of the $1 cap (item-only prompt 0.10, history prompt 0.31; estimated from characters, as in run_taskc).

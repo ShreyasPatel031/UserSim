@@ -147,4 +147,17 @@ PRESENCE-CHOICE-1 (Task V split into "shows up" and "picks"; results in `bench_v
 `presence.py`, the CHOICE benchmark (person-days x the day's line-up; top-3 hit, MRR, AUC) in `choice.py`, the
 whole-line-up prompt in `models/llm.py` (`build_choice_prompt`, `parse_picks`).
 
+Forward days and the nightly refresh (results and details in `bench_v0/forward/`):
+
+```bash
+# the morning after day D: link D's live-stream comments to held people and write D's overlay
+python -m simharness.run_forward_day --day D --bench BENCH --forward-root FWD --stream comments_ts.jsonl \
+    --lineup today_0005.json --persons persons.parquet
+# every night: rebuild the tables from the current store, write the overlays in, move BENCH/latest if checks pass
+python -m simharness.run_refresh --store STORE --out BUILDS --forward-root FWD --day D --lineup today_0005.json
+```
+
+`Benchmark(BUILDS)` follows the `latest` pointer; `Benchmark(dir, overlays=[...])` adds overlays to any build without
+writing. Days after the test split are the split "forward" (`TaskC(bench).rows("forward")`).
+
 `domains/producthunt.py` is the first adapter; its module docstring lists its dating and leak choices.

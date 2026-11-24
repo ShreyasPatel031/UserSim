@@ -389,3 +389,63 @@ def load_first_seen(bench, events_path: str) -> tuple[np.ndarray, pd.DataFrame]:
     key = pd.MultiIndex.from_arrays([bench._e_p.astype(np.int64), bench._e_i.astype(np.float64)])
     fs = first.reindex(key).to_numpy()
     return fs, reads
+
+
+# ------------------------------------------------------------------------------------------------ nightly refresh
+def recover_slugs(events_path: str, prev_people: pd.DataFrame, prev_items: pd.DataFrame, prev_hist: pd.DataFrame,
+                  comment_kind: int) -> dict:
+    """item_id -> slug, recovered by matching the previous build's comment rows to the store's comment events on
+    (person, exact time). The store targets comments as "launch:<slug>" while the item table is keyed by id; this
+    makes a refresh independent of any side file that carried the slugs."""
+    e = pq.read_table(events_path, columns=["person_id", "target_id", "ts_lo", "ts_quality"],
+                      filters=[("platform", "=", "producthunt"), ("kind", "=", "comment")]).to_pandas()
+    e = e[e["ts_lo"].notna() & e["target_id"].astype(str).str.startswith("launch:")]
+    pidx = dict(zip(prev_people["person_id"], prev_people["person_idx"]))
+    e = e[e["person_id"].isin(pidx)]
+    e["person_idx"] = e["person_id"].map(pidx).astype(np.int64)
+    e["ts"] = pd.to_datetime(e["ts_lo"], utc=True).astype("datetime64[us, UTC]")
+    h = prev_hist[(prev_hist["kind"] == comment_kind) & prev_hist["ts"].notna()][["person_idx", "item_idx", "ts"]].copy()
+    h["person_idx"] = h["person_idx"].astype(np.int64)
+    h["ts"] = pd.to_datetime(h["ts"], utc=True).astype("datetime64[us, UTC]")
+    m = h.merge(e[["person_idx", "ts", "target_id", "ts_quality"]], on=["person_idx", "ts"])
+    m["slug"] = m["target_id"].str[len("launch:"):]
+    iid = dict(zip(prev_items["item_idx"], prev_items["item_id"].astype(str)))
+    out, used = {}, set()
+    # exact times first; coarser times only fill items still without a slug, and never reuse a slug
+    for exact in (True, False):
+        g = m[(m["ts_quality"] == "exact") == exact]
+        best = g.groupby(["item_idx", "slug"]).size().reset_index(name="n").sort_values("n")
+        best = best.drop_duplicates("item_idx", keep="last")
+        for i, sl in zip(best["item_idx"], best["slug"]):
+            k = iid[int(i)]
+            if k not in out and sl not in used:
+                out[k] = sl
+                used.add(sl)
+    return out
+
+
+def refresh_tables(store_dir: str, prev_people: pd.DataFrame, items: pd.DataFrame, slugs: dict,
+                   comment_texts: pd.DataFrame | None = None) -> DomainTables:
+    """Domain tables for a refresh: the given item table (earlier items plus new line-up items, already in the
+    harness schema), the store's current people and events. Events are kept for every person of the previous build
+    and every person complete now."""
+    from simharness.schema import OUTCOMES
+    items = items[["item_id", "day", "title", "summary", "description", "tags"]].copy()
+    items["item_id"] = items["item_id"].astype(str)
+    items["slug"] = items["item_id"].map(slugs).fillna("")
+    resolve = dict(zip(items["item_id"], items["item_id"]))
+    resolve.update({"launch:" + s: i for s, i in zip(items["slug"], items["item_id"]) if s})
+    people = load_people(os.path.join(store_dir, "persons.parquet"), os.path.join(store_dir, "tabs.parquet"))
+    keep = set(people.loc[people["complete"], "person_id"]) | set(prev_people["person_id"])
+    events = load_events(os.path.join(store_dir, "events.parquet"), resolve, dict(zip(items["item_id"], items["day"])),
+                         keep, comment_texts)
+    notes = {"endorse_dating": "upvotes are undated snapshots; attributed to the launch day (item_day)",
+             "follows": "excluded: follow edges are undated snapshots and would leak follows made after D",
+             "joinable_only": "only events whose target joins to a launch in items are emitted",
+             "observed_until": "Upvotes tab fetched_at; people not read after D are dropped from D's pool",
+             "comment_text": "joined from verbatim records by (person, comment_id)" if comment_texts is not None
+             else "not available (no records given)",
+             "items": "the previous build's item table plus new line-up items; slugs recovered from the store",
+             "structural": "not loaded here"}
+    return DomainTables(items=items, events=events, people=people, outcomes=OUTCOMES.empty(),
+                        structural=STRUCTURAL.empty(), notes=notes).validate()
