@@ -10,9 +10,9 @@ BASE="pandas==3.0.5 numpy==2.5.3 pyarrow==26.0.0 scikit-learn==1.9.1 scipy==1.18
 EXTRA="lightgbm==4.7.0 statsmodels==0.15.0 transformers==5.22.2 sentence-transformers==6.2.0 requests"
 if ! python3 -c "import pandas, sklearn, duckdb" 2>/dev/null || [ "$JOB" = explain ]; then
   # 1) exact session versions on Python 3.13 via uv; 2) fallback: system python, newest compatible versions (logged)
-  PINNED=1
-  if python3 -m pip install -q uv 2>/dev/null && python3 -m uv venv -q -p 3.13 --python-preference managed $ROOT/venv 2>&1 | tail -2; [ -x $ROOT/venv/bin/python ]; then
-    export PATH=$ROOT/venv/bin:$PATH; PIP="python3 -m uv pip install -q -p $ROOT/venv/bin/python"
+  PINNED=1; SYSPY=$(command -v python3)
+  if $SYSPY -m pip install -q uv 2>/dev/null && $SYSPY -m uv venv -q -p 3.13 --python-preference managed $ROOT/venv 2>&1 | tail -2; [ -x $ROOT/venv/bin/python ]; then
+    export PATH=$ROOT/venv/bin:$PATH; PIP="$SYSPY -m uv pip install -q -p $ROOT/venv/bin/python"
   else
     rm -rf $ROOT/venv; python3 -m venv --system-site-packages $ROOT/venv && export PATH=$ROOT/venv/bin:$PATH; PIP="python3 -m pip install -q"
   fi
