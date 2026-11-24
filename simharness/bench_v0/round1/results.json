@@ -1248,6 +1248,204 @@
   "gpt-oss-120b / val": 0.1253,
   "gemini-2.5-flash / val": 0.2348
  },
+ "taste_v1_feature_ablation_on_HARD": {
+  "activity only": {
+   "features": [
+    "ln_rw",
+    "ln_n7",
+    "ln_n30",
+    "ln_n60",
+    "ln_all",
+    "ln_com",
+    "com_rate"
+   ],
+   "HARD_auc_pooled": {
+    "value": 0.5207,
+    "ci95": [
+     0.5142,
+     0.5281
+    ]
+   },
+   "HARD_auc_mean_per_launch": {
+    "value": 0.5372,
+    "ci95": [
+     0.5304,
+     0.5443
+    ]
+   }
+  },
+  "activity + topics": {
+   "features": [
+    "ln_rw",
+    "ln_n7",
+    "ln_n30",
+    "ln_n60",
+    "ln_all",
+    "ln_com",
+    "com_rate",
+    "tm",
+    "tm_max",
+    "ln_rw_x_tm"
+   ],
+   "HARD_auc_pooled": {
+    "value": 0.5285,
+    "ci95": [
+     0.5213,
+     0.5366
+    ]
+   },
+   "HARD_auc_mean_per_launch": {
+    "value": 0.5409,
+    "ci95": [
+     0.5344,
+     0.5478
+    ]
+   },
+   "minus_activity_only": {
+    "auc_pooled": {
+     "metric": "auc_pooled",
+     "cluster": "item",
+     "diff": 0.0078,
+     "ci95": [
+      0.0044,
+      0.0112
+     ]
+    },
+    "auc_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "item",
+     "diff": 0.0037,
+     "ci95": [
+      0.0015,
+      0.0061
+     ]
+    }
+   }
+  },
+  "activity + embeddings": {
+   "features": [
+    "ln_rw",
+    "ln_n7",
+    "ln_n30",
+    "ln_n60",
+    "ln_all",
+    "ln_com",
+    "com_rate",
+    "emb_cos",
+    "emb_max30",
+    "emb_mean30"
+   ],
+   "HARD_auc_pooled": {
+    "value": 0.5299,
+    "ci95": [
+     0.5231,
+     0.5372
+    ]
+   },
+   "HARD_auc_mean_per_launch": {
+    "value": 0.5455,
+    "ci95": [
+     0.539,
+     0.5524
+    ]
+   },
+   "minus_activity_only": {
+    "auc_pooled": {
+     "metric": "auc_pooled",
+     "cluster": "item",
+     "diff": 0.0092,
+     "ci95": [
+      0.0071,
+      0.0113
+     ]
+    },
+    "auc_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "item",
+     "diff": 0.0083,
+     "ci95": [
+      0.0064,
+      0.0104
+     ]
+    }
+   }
+  },
+  "all (taste-v1)": {
+   "features": [
+    "ln_rw",
+    "ln_n7",
+    "ln_n30",
+    "ln_n60",
+    "ln_all",
+    "tm",
+    "tm_max",
+    "ln_rw_x_tm",
+    "emb_cos",
+    "emb_max30",
+    "emb_mean30",
+    "ln_com",
+    "com_rate"
+   ],
+   "HARD_auc_pooled": {
+    "value": 0.5288,
+    "ci95": [
+     0.5219,
+     0.5366
+    ]
+   },
+   "HARD_auc_mean_per_launch": {
+    "value": 0.5408,
+    "ci95": [
+     0.5342,
+     0.5474
+    ]
+   },
+   "minus_activity_only": {
+    "auc_pooled": {
+     "metric": "auc_pooled",
+     "cluster": "item",
+     "diff": 0.0081,
+     "ci95": [
+      0.0044,
+      0.0118
+     ]
+    },
+    "auc_mean_per_launch": {
+     "metric": "auc_mean",
+     "cluster": "item",
+     "diff": 0.0036,
+     "ci95": [
+      0.0011,
+      0.006
+     ]
+    }
+   }
+  },
+  "topics + embeddings only (no activity)": {
+   "features": [
+    "tm",
+    "tm_max",
+    "ln_rw_x_tm",
+    "emb_cos",
+    "emb_max30",
+    "emb_mean30"
+   ],
+   "HARD_auc_pooled": {
+    "value": 0.533,
+    "ci95": [
+     0.5258,
+     0.5401
+    ]
+   },
+   "HARD_auc_mean_per_launch": {
+    "value": 0.529,
+    "ci95": [
+     0.522,
+     0.5354
+    ]
+   }
+  }
+ },
  "before_restart": {
   "note": "Scored before the 09:17Z container restart on the same rows (the rebuilt subsamples give identical input-token counts: 1,375,583 test and 646,130 validation for Gemini). Per-row scores were lost in the restart, so these lines have no paired difference and no stack. Intervals: day-clustered bootstrap 95%, 300 resamples.",
   "HARD_LLM_test_960_rows": {
