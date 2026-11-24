@@ -1,0 +1,9 @@
+{
+ "frozen_at": "2026-11-20T10:35Z",
+ "rule": "z(pred_arm3) + 0.1 * z(promo_posts) within day; missing promo_posts -> day median; inputs as in the published 00:05 parquet; no refit",
+ "feature": "promo_posts",
+ "w": 0.1,
+ "status": "FROZEN forward shadow, POST-HOC (orchestrator 10:29Z Nov 20)",
+ "provenance": "arm3 miss anatomy (prereg 3776ca5d, result 6260cc5a): the pre-registered chosen rule (promo_reactions) was flat on 183 days; promo_posts was a second look: 2026 top 3 +2.0 [+0.4, +3.8], top 5 -0.3 [-1.2, +0.4] on 183 days, w = 0.1 in every leave-one-month-out fold; no 2025 replication (promo_* null in 2025)",
+ "decision": "at 25 scored forward days, paired vs published arm 3, day bootstrap 95%; forward days start Nov 20 (frozen before Nov 20 truth)"
+}

@@ -172,3 +172,22 @@ Model switches, direction reviews and agenda changes, newest last.
   - Nov 24 backfilled at 13:32Z from the same frozen scores (backfill true, on_time false).
   - The session task no longer writes the shortlist. The daily check now reports a missing or late shortlist the same morning.
   - Rollback: `bash ~/w/stage/20261124_structural_shortlist_vm/deploy_shortlist.sh rollback`.
+
+### 2026-11-24 13:48Z — DEPLOY: promo_posts and four-inputs frozen rows are now written from code on the VM
+
+Requested by the orchestrator at 13:35Z. This is a rehearsed fix and a timing-only change: inputs, features and scoring are unchanged.
+
+- **What changed.** The tw12a job `frozen` freezes each line's row from the 00:05 parquet to `gs://…/results/frozen_rows/<line>/<d>.json`. It runs at 01:25 PT with a retry at 02:45 PT, and a frozen file is never rewritten.
+- **Session side.** The session task (trig_01SFirgpcjTRDMAA19zRmp3h, now at 03:07 PT) only runs `pull` and commits. pull copies bucket rows into the repo jsonl files unchanged.
+  - promo_posts skips late rows.
+  - four_inputs late rows keep on_time false and are never scored.
+- **Files.**
+  - run.sh 8f032a1c → 8c4805e7
+  - sched12a.txt 73c5b085 → 6d2dcc76
+  - new ~/w/frozen_rows: promo_posts_shadow.py 38a0e7db, four_inputs_shadow.py f8375555, and the two frozen rule files copied unchanged
+- **Checks.**
+  - `check`: OK.
+  - `selftest`: deploy and rollback round-trip OK, and rollback removes the new folder.
+  - `rehearse 2026-11-24`: rc 0. The four_inputs order md5 5c40d6a6 equals the row already logged. A promo row rebuilt for Nov 23 equals the logged row on every field except written_at.
+- **Deployed** at 05:48 PT.
+- **Rollback:** `bash ~/w/stage/20261124_frozen_rows_vm/deploy_frozen.sh rollback`

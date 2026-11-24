@@ -3,6 +3,8 @@ results/frozen/four_inputs_w01_20261123.json: s = z(pred_arm3) + 0.1 * z(C) with
 ph_hunter_followers, x_maker_sum_followers, x_company_followers, promo_reactions; missing x -> day median; inputs exactly as frozen in the
 published 00:05 parquet; no refit, ever. Rows written after 03:45 PT of their day are flagged late and never scored.
   write <D>   order for day D from raw/daily/D/forecast_D.parquet (published arm 3 only) -> results/four_inputs_shadow.jsonl
+  freeze <D>  (VM, 01:20 PT) the same row, frozen once to gs://.../results/frozen_rows/<line>/<D>.json
+  pull        (session) append bucket-frozen rows not yet in the log; late rows keep on_time false and are never scored
   score       for every logged on-time day with truth_daily: top 3/5/10 of the shadow and of published arm 3 -> results/four_inputs_shadow_scores.jsonl;
               prints n days and, from 5 days, the paired day-bootstrap 95% (decision at 25 scored days).
 Counts and launch ids only."""
@@ -12,6 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); R = lambda p: os.path.join(HE
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"
 FROZEN = json.load(open(R("frozen/four_inputs_w01_20261123.json")))
 W, FEATS = FROZEN["w"], FROZEN["features"]
+NAME, SKIP_LATE = "four_inputs", False   # four_inputs: rows keep their own on_time flag; score() counts on-time rows only
 LOG, SC = R("four_inputs_shadow.jsonl"), R("four_inputs_shadow_scores.jsonl")
 cat = lambda p: subprocess.run(["gsutil", "cat", p], capture_output=True, text=True).stdout
 z = lambda s: (s - s.mean()) / (s.std(ddof=0) or 1.0)
@@ -56,8 +59,56 @@ def score():
     return out
 
 
+
+
+# --- VM freeze / session pull (orchestrator 13:35Z Nov 24: the freeze time must not depend on an agent session; timing only) ---
+ROWS = f"{B}/results/frozen_rows/{NAME}"
+
+
+def _build(d):
+    """The exact row write() logs, or a status dict (no row) when an input is missing."""
+    global LOG
+    real, LOG = LOG, os.path.join(tempfile.mkdtemp(), "x.jsonl")      # build into a scratch log, then read the row back
+    try:
+        st = write(d)
+        rows = [json.loads(l) for l in open(LOG)] if os.path.exists(LOG) else []
+    finally:
+        LOG = real
+    return (rows[0] if rows else None), st
+
+
+def freeze(d):
+    """VM job: build day d's row once at the fixed time and upload it to the bucket (never rewritten)."""
+    if subprocess.run(["gsutil", "-q", "stat", f"{ROWS}/{d}.json"], capture_output=True).returncode == 0:
+        return {"day": d, "status": "already frozen"}
+    row, st = _build(d)
+    if row is None: return st
+    row["on_time"] = bool(pd.Timestamp(row["written_at"]) < pd.Timestamp(f"{d} 03:45", tz="America/Los_Angeles")); row["frozen_by"] = "vm tw12a frozen job"
+    p = os.path.join(tempfile.mkdtemp(), f"{d}.json"); json.dump(row, open(p, "w"))
+    rc = subprocess.run(["gsutil", "-q", "cp", p, f"{ROWS}/{d}.json"], capture_output=True).returncode
+    return {"day": d, "status": "ok" if rc == 0 else "upload failed", "on_time": row["on_time"], "top3_differs": row["top3_differs"]}
+
+
+def pull():
+    """Session: copy bucket-frozen rows into the repo log (rows are appended unchanged; late rows: see SKIP_LATE)."""
+    ls = subprocess.run(["gsutil", "ls", f"{ROWS}/*.json"], capture_output=True, text=True).stdout.split()
+    have = done(LOG); added, skipped = [], []
+    for u in sorted(ls):
+        d = os.path.basename(u)[:10]
+        if d in have: continue
+        row = json.loads(subprocess.run(["gsutil", "cat", u], capture_output=True, text=True).stdout)
+        if SKIP_LATE and not row.get("on_time"): skipped.append(d); continue
+        open(LOG, "a").write(json.dumps(row) + "\n"); added.append(d)
+    return {"line": NAME, "added": added, "skipped_late": skipped}
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "write":
         for d in sys.argv[2:]: print(json.dumps(write(d)))
+    elif sys.argv[1] == "freeze":   # exit 1 unless every day is frozen (the 02:40 slot retries)
+        st = [freeze(d) for d in sys.argv[2:]]; [print(json.dumps(x)) for x in st]
+        sys.exit(0 if all(x.get("status") in ("ok", "already frozen") for x in st) else 1)
+    elif sys.argv[1] == "pull":
+        print(json.dumps(pull()))
     else:
         print(json.dumps(score()))
