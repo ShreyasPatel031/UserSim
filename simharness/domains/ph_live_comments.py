@@ -77,9 +77,10 @@ def read_stream(path: str) -> pd.DataFrame:
         rows.append({"comment_id": str(r.get("comment_id")), "launch_id": str(r.get("launch_id")),
                      "uid": None if r.get("commenter_user_id") in (None, "") else str(r.get("commenter_user_id")),
                      "top_level": r.get("parent_id") in (None, "", "null"), "created_at": r.get("created_at"),
-                     "body": r.get("body")})
-    df = pd.DataFrame(rows, columns=["comment_id", "launch_id", "uid", "top_level", "created_at", "body"])
+                     "body": r.get("body"), "fetched_at": r.get("fetched_at")})
+    df = pd.DataFrame(rows, columns=["comment_id", "launch_id", "uid", "top_level", "created_at", "body", "fetched_at"])
     df["ts"] = pd.to_datetime(df["created_at"], utc=True, errors="coerce")
+    df["fetched_at"] = pd.to_datetime(df["fetched_at"], utc=True, errors="coerce")
     return df
 
 
@@ -88,6 +89,10 @@ def build_day(bench, day: str, stream_path: str, lineup_path: str, persons_path:
     items, team = read_lineup(lineup_path, day)
     s = read_stream(stream_path)
     rep = {"day": day, "stream_rows": int(len(s))}
+    _, day_end = _day_bounds_utc(day, bench.cfg.day_tz)
+    last = s["fetched_at"].max()
+    rep["stream_last_fetched_utc"] = None if pd.isna(last) else last.isoformat()
+    rep["stream_covers_the_whole_day"] = bool(pd.notna(last) and last >= day_end - pd.Timedelta(minutes=90))
     s = s.sort_values("ts").drop_duplicates("comment_id")
     rep["comments_in_stream"] = int(len(s))
     s = s[s["top_level"]]

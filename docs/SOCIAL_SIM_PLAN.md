@@ -55,6 +55,7 @@ The harness provides:
 | most-active baseline | 20.9 [20.1, 21.6] | | | | 14 | 0 |
 | BACKER-v2 logistic (E5, live) | 27.6 [26.2, 29.0] | | | | 14 | 0 |
 | persona panel (Gemini, live) | | | 63.5 (Nov 21), 66.2 (Nov 22), 71.5 [61.8, 81.7] (Nov 23; plain prompt 60.3) | | 3 | |
+| persona panel + 15 person-built Flash comments (deployed Nov 24) | | | recall 68.7, precision 54.3, complaints 36.4 vs panel 66.3 / 45.8 / 27.7 (precision +8.5 [+0.3, +16.5]) | | 3 | about $0.35 a day |
 | history-built prompt, Gemini 2.5 Flash (bench v0) | | | person match 59.3 vs 50.3 launch-only (+8.9 [+0.6, +15.4]) | | 12 | $0.5 |
 | Qwen2.5-7B fine-tuned on 4,000 of our comment rows (FT-TASKC-v0) | | | person match 65.2 [60.9, 70.1] vs 54.6 untuned (+10.7 [+5.1, +16.9]) | | 12 | about $3 to train |
 | structural order (arm 3) | | | | baseline: 50.0 / 70.0 / 66.7 | 6 | |
@@ -288,6 +289,29 @@ No arm meets recall >= 70 with precision >= 50 (these three days are harder: the
 person-built comments are far more precise. Next (WHAT-PANEL-3, E5, due 17:30Z): add 8 / 11 / 15 person-built
 comments to the full persona panel instead of swapping; recall cannot fall and precision should rise.
 
+**Adding instead of swapping (WHAT-PANEL-3, E5 62e61a88, Nov 24; $2.27): DEPLOYED as the scored panel.** Same 24
+launches, the full persona panel plus a seeded draw of person-built Flash comments, 3 seeds x 3 judge runs.
+
+| Arm | Recall | Precision | Complaint recall | Precision vs panel | Complaint recall vs panel |
+|---|---|---|---|---|---|
+| full persona panel (about 23 comments) | 66.3 [59.9, 72.6] | 45.8 [36.9, 55.3] | 27.7 | | |
+| panel + 8 person-built | 68.7 | 49.5 | 34.3 | +3.7 [-1.3, +8.4] | +6.5 [+0.5, +12.8] |
+| panel + 11 | 65.0 | 50.8 | 35.4 | +5.0 [-0.3, +10.6] | +7.7 [+0.4, +15.3] |
+| **panel + 15** | **68.7 [62.4, 74.6]** | **54.3 [44.2, 64.9]** | **36.4** | **+8.5 [+0.3, +16.5]** | **+8.7 [+2.9, +14.7]** |
+
+- Panel + 15 is the only arm that meets the rule fixed before scoring (precision clearly above the panel, recall not
+  below: +2.3 [-1.9, +6.6], both closer to the thresholds). It does not yet meet recall >= 70 (68.7) at the point.
+- Decision (model-choice rule, no wait for live days): the nightly adds 15 person-built comments per launch; the scorer
+  reads persona + person-built merged as the main WHAT line, persona-only stays as the shadow. Revert after 7 scored
+  live days if merged precision is not above the shadow or recall is clearly below it.
+- Privacy guard: person-built comments are written from one real person's history, so they go under a separate key
+  that the public page does not show, with no person key, a "no own name, employer or products" instruction and a
+  filter for self-references. Showing them publicly is Shreyas's decision.
+- Caveats: three harder days, the precision interval only just clears zero, Nov 21 alone shows almost no precision
+  gain. Repeat on Nov 15-20 on Nov 25.
+- Product implication, next coding item: the quick run's "what they'll say" should be written from the matched real
+  people's histories (their past comments), not only from segment personas.
+
 ### Task R, first test: re-rank the shortlist by expected held voters (E5, SIM-RERANK-1 stage A, b7061305, Nov 24)
 Question: does "how many of our held people are expected to back this launch" reorder the structural shortlist better?
 Answer: no. Re-ranked minus structural, paired by day, day-bootstrap 95% intervals.
@@ -340,6 +364,8 @@ results/structural/<day>/shortlist.json nightly at 02:21 PT.
 4f. Presence and choice: done Nov 24 (see the section above). Follow-up for E5 once fresh reads exist: live backer
     recall@N by staleness of each person's last upvote read (0-1, 2-3, 4-7, 8+ days), and the presence logistic
     added to BACKER-v2.
+4i. Quick-run reactions from matched real people's histories (orchestrator, next coding item): in mvp/ph_site/try_sim.py
+    write "what they'll say" from the matched people's past comments; check on calibration days before switching.
 4h. Same-day person-linked comment rows (next for the subagent after PRESENCE-CHOICE-1): the fleet's live comment
     stream carries the commenter's platform id, so a day's comments can be linked to held people the next morning
     instead of waiting for profile re-reads. Measured Nov 24: of the comments captured on Nov 21 / 22 / 23, 119 of 239,
