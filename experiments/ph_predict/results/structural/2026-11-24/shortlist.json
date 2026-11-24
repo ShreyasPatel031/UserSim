@@ -1,0 +1,490 @@
+{
+ "day": "2026-11-24",
+ "source": "live frozen 00:05 forecast parquet",
+ "structural_model": "arm3",
+ "n_launches": 42,
+ "launches": [
+  {
+   "id": "1320041",
+   "name": "distribution.dev",
+   "structural_score": 5.46905,
+   "structural_rank": 1,
+   "score_arm3": 5.46905,
+   "rank_arm3": 1,
+   "score_arm2": 5.4532,
+   "rank_arm2": 1
+  },
+  {
+   "id": "1328270",
+   "name": "tday.com",
+   "structural_score": 5.33272,
+   "structural_rank": 2,
+   "score_arm3": 5.33272,
+   "rank_arm3": 2,
+   "score_arm2": 5.35782,
+   "rank_arm2": 3
+  },
+  {
+   "id": "1322364",
+   "name": "Astor",
+   "structural_score": 5.31832,
+   "structural_rank": 3,
+   "score_arm3": 5.31832,
+   "rank_arm3": 3,
+   "score_arm2": 5.364,
+   "rank_arm2": 2
+  },
+  {
+   "id": "1327551",
+   "name": "Valley",
+   "structural_score": 5.20843,
+   "structural_rank": 4,
+   "score_arm3": 5.20843,
+   "rank_arm3": 4,
+   "score_arm2": 5.19208,
+   "rank_arm2": 5
+  },
+  {
+   "id": "1328257",
+   "name": "Claude Ship",
+   "structural_score": 5.17029,
+   "structural_rank": 5,
+   "score_arm3": 5.17029,
+   "rank_arm3": 5,
+   "score_arm2": 5.15622,
+   "rank_arm2": 6
+  },
+  {
+   "id": "1328686",
+   "name": "Willow iOS 2.0",
+   "structural_score": 5.15529,
+   "structural_rank": 6,
+   "score_arm3": 5.15529,
+   "rank_arm3": 6,
+   "score_arm2": 5.29999,
+   "rank_arm2": 4
+  },
+  {
+   "id": "1322050",
+   "name": "Granular.Build",
+   "structural_score": 5.08289,
+   "structural_rank": 7,
+   "score_arm3": 5.08289,
+   "rank_arm3": 7,
+   "score_arm2": 5.10409,
+   "rank_arm2": 7
+  },
+  {
+   "id": "1326680",
+   "name": "doola MCP",
+   "structural_score": 4.94046,
+   "structural_rank": 8,
+   "score_arm3": 4.94046,
+   "rank_arm3": 8,
+   "score_arm2": 4.91735,
+   "rank_arm2": 8
+  },
+  {
+   "id": "1327970",
+   "name": "Viktor Code",
+   "structural_score": 4.8293,
+   "structural_rank": 9,
+   "score_arm3": 4.8293,
+   "rank_arm3": 9,
+   "score_arm2": 4.80793,
+   "rank_arm2": 9
+  },
+  {
+   "id": "1322500",
+   "name": "Cullman",
+   "structural_score": 4.71478,
+   "structural_rank": 10,
+   "score_arm3": 4.71478,
+   "rank_arm3": 10,
+   "score_arm2": 4.70869,
+   "rank_arm2": 11
+  },
+  {
+   "id": "1327983",
+   "name": "Finseo",
+   "structural_score": 4.70149,
+   "structural_rank": 11,
+   "score_arm3": 4.70149,
+   "rank_arm3": 11,
+   "score_arm2": 4.74,
+   "rank_arm2": 10
+  },
+  {
+   "id": "1312101",
+   "name": "Context",
+   "structural_score": 4.66357,
+   "structural_rank": 12,
+   "score_arm3": 4.66357,
+   "rank_arm3": 12,
+   "score_arm2": 4.45992,
+   "rank_arm2": 19
+  },
+  {
+   "id": "1328434",
+   "name": "Pinned",
+   "structural_score": 4.63297,
+   "structural_rank": 13,
+   "score_arm3": 4.63297,
+   "rank_arm3": 13,
+   "score_arm2": 4.56192,
+   "rank_arm2": 14
+  },
+  {
+   "id": "1328526",
+   "name": "Kodak SlideTag",
+   "structural_score": 4.61994,
+   "structural_rank": 14,
+   "score_arm3": 4.61994,
+   "rank_arm3": 14,
+   "score_arm2": 4.58759,
+   "rank_arm2": 12
+  },
+  {
+   "id": "1315348",
+   "name": "HeroUI Pro 1.0",
+   "structural_score": 4.61702,
+   "structural_rank": 15,
+   "score_arm3": 4.61702,
+   "rank_arm3": 15,
+   "score_arm2": 4.44482,
+   "rank_arm2": 20
+  },
+  {
+   "id": "1327242",
+   "name": "SparrowDesk Phone Calls",
+   "structural_score": 4.56679,
+   "structural_rank": 16,
+   "score_arm3": 4.56679,
+   "rank_arm3": 16,
+   "score_arm2": 4.4937,
+   "rank_arm2": 17
+  },
+  {
+   "id": "1327680",
+   "name": "frwrd.to",
+   "structural_score": 4.50648,
+   "structural_rank": 17,
+   "score_arm3": 4.50648,
+   "rank_arm3": 17,
+   "score_arm2": 4.52907,
+   "rank_arm2": 15
+  },
+  {
+   "id": "1327369",
+   "name": "Clam AI",
+   "structural_score": 4.50359,
+   "structural_rank": 18,
+   "score_arm3": 4.50359,
+   "rank_arm3": 18,
+   "score_arm2": 4.58545,
+   "rank_arm2": 13
+  },
+  {
+   "id": "1322011",
+   "name": "Ohhai",
+   "structural_score": 4.49315,
+   "structural_rank": 19,
+   "score_arm3": 4.49315,
+   "rank_arm3": 19,
+   "score_arm2": 4.47125,
+   "rank_arm2": 18
+  },
+  {
+   "id": "1327989",
+   "name": "InField",
+   "structural_score": 4.48537,
+   "structural_rank": 20,
+   "score_arm3": 4.48537,
+   "rank_arm3": 20,
+   "score_arm2": 4.3885,
+   "rank_arm2": 25
+  },
+  {
+   "id": "1328142",
+   "name": "Wellbreak",
+   "structural_score": 4.47186,
+   "structural_rank": 21,
+   "score_arm3": 4.47186,
+   "rank_arm3": 21,
+   "score_arm2": 4.39107,
+   "rank_arm2": 23
+  },
+  {
+   "id": "1328122",
+   "name": "Even G2 Enterprise SDK",
+   "structural_score": 4.43255,
+   "structural_rank": 22,
+   "score_arm3": 4.43255,
+   "rank_arm3": 22,
+   "score_arm2": 4.32314,
+   "rank_arm2": 33
+  },
+  {
+   "id": "1326778",
+   "name": "mindyOne",
+   "structural_score": 4.41738,
+   "structural_rank": 23,
+   "score_arm3": 4.41738,
+   "rank_arm3": 23,
+   "score_arm2": 4.50036,
+   "rank_arm2": 16
+  },
+  {
+   "id": "1328307",
+   "name": "Sotto",
+   "structural_score": 4.38299,
+   "structural_rank": 24,
+   "score_arm3": 4.38299,
+   "rank_arm3": 24,
+   "score_arm2": 4.32163,
+   "rank_arm2": 34
+  },
+  {
+   "id": "1328500",
+   "name": "Juncts",
+   "structural_score": 4.37989,
+   "structural_rank": 25,
+   "score_arm3": 4.37989,
+   "rank_arm3": 25,
+   "score_arm2": 4.40895,
+   "rank_arm2": 21
+  },
+  {
+   "id": "1317169",
+   "name": "TouchDeck",
+   "structural_score": 4.36991,
+   "structural_rank": 26,
+   "score_arm3": 4.36991,
+   "rank_arm3": 26,
+   "score_arm2": 4.30058,
+   "rank_arm2": 40
+  },
+  {
+   "id": "1325372",
+   "name": "Prates",
+   "structural_score": 4.36847,
+   "structural_rank": 27,
+   "score_arm3": 4.36847,
+   "rank_arm3": 27,
+   "score_arm2": 4.38913,
+   "rank_arm2": 24
+  },
+  {
+   "id": "1323870",
+   "name": "DeskMagic",
+   "structural_score": 4.35018,
+   "structural_rank": 28,
+   "score_arm3": 4.35018,
+   "rank_arm3": 28,
+   "score_arm2": 4.35602,
+   "rank_arm2": 27
+  },
+  {
+   "id": "1328492",
+   "name": "Mystonie",
+   "structural_score": 4.34225,
+   "structural_rank": 29,
+   "score_arm3": 4.34225,
+   "rank_arm3": 29,
+   "score_arm2": 4.33091,
+   "rank_arm2": 31
+  },
+  {
+   "id": "1326558",
+   "name": "Rotara",
+   "structural_score": 4.34092,
+   "structural_rank": 30,
+   "score_arm3": 4.34092,
+   "rank_arm3": 30,
+   "score_arm2": 4.3348,
+   "rank_arm2": 30
+  },
+  {
+   "id": "1320807",
+   "name": "Adanotch",
+   "structural_score": 4.3363,
+   "structural_rank": 31,
+   "score_arm3": 4.3363,
+   "rank_arm3": 31,
+   "score_arm2": 4.39735,
+   "rank_arm2": 22
+  },
+  {
+   "id": "1328590",
+   "name": "Hourly Journal",
+   "structural_score": 4.31999,
+   "structural_rank": 32,
+   "score_arm3": 4.31999,
+   "rank_arm3": 32,
+   "score_arm2": 4.31575,
+   "rank_arm2": 36
+  },
+  {
+   "id": "1327943",
+   "name": "Fleetify",
+   "structural_score": 4.31889,
+   "structural_rank": 33,
+   "score_arm3": 4.31889,
+   "rank_arm3": 33,
+   "score_arm2": 4.34382,
+   "rank_arm2": 28
+  },
+  {
+   "id": "1321479",
+   "name": "Bento terminal",
+   "structural_score": 4.30798,
+   "structural_rank": 34,
+   "score_arm3": 4.30798,
+   "rank_arm3": 34,
+   "score_arm2": 4.33746,
+   "rank_arm2": 29
+  },
+  {
+   "id": "1323873",
+   "name": "Tendor",
+   "structural_score": 4.30591,
+   "structural_rank": 35,
+   "score_arm3": 4.30591,
+   "rank_arm3": 35,
+   "score_arm2": 4.32483,
+   "rank_arm2": 32
+  },
+  {
+   "id": "1327926",
+   "name": "LayAuto 4",
+   "structural_score": 4.30504,
+   "structural_rank": 36,
+   "score_arm3": 4.30504,
+   "rank_arm3": 36,
+   "score_arm2": 4.35705,
+   "rank_arm2": 26
+  },
+  {
+   "id": "1324358",
+   "name": "K-Stra",
+   "structural_score": 4.29609,
+   "structural_rank": 37,
+   "score_arm3": 4.29609,
+   "rank_arm3": 37,
+   "score_arm2": 4.31919,
+   "rank_arm2": 35
+  },
+  {
+   "id": "1328582",
+   "name": "Finer Screenshot",
+   "structural_score": 4.2958,
+   "structural_rank": 38,
+   "score_arm3": 4.2958,
+   "rank_arm3": 38,
+   "score_arm2": 4.3007,
+   "rank_arm2": 39
+  },
+  {
+   "id": "1327990",
+   "name": "Umami",
+   "structural_score": 4.2955,
+   "structural_rank": 39,
+   "score_arm3": 4.2955,
+   "rank_arm3": 39,
+   "score_arm2": 4.31222,
+   "rank_arm2": 37
+  },
+  {
+   "id": "1327754",
+   "name": "Astrolabio",
+   "structural_score": 4.27883,
+   "structural_rank": 40,
+   "score_arm3": 4.27883,
+   "rank_arm3": 40,
+   "score_arm2": 4.27704,
+   "rank_arm2": 42
+  },
+  {
+   "id": "1328130",
+   "name": "Almma's PII Guard",
+   "structural_score": 4.27857,
+   "structural_rank": 41,
+   "score_arm3": 4.27857,
+   "rank_arm3": 41,
+   "score_arm2": 4.30886,
+   "rank_arm2": 38
+  },
+  {
+   "id": "1313944",
+   "name": "Scribase MCP Server",
+   "structural_score": 4.27424,
+   "structural_rank": 42,
+   "score_arm3": 4.27424,
+   "rank_arm3": 42,
+   "score_arm2": 4.29778,
+   "rank_arm2": 41
+  }
+ ],
+ "truth": {
+  "note": "not available: the day is not over; truth for scoring comes from results/web/truth_daily.json after the close"
+ },
+ "published_model": "arm3",
+ "frozen_at": "2026-11-24T08:23:22Z",
+ "model_version": "arm3_live, 62 inputs (00:05 forecast)",
+ "shortlists": {
+  "top10": [
+   "1320041",
+   "1328270",
+   "1322364",
+   "1327551",
+   "1328257",
+   "1328686",
+   "1322050",
+   "1326680",
+   "1327970",
+   "1322500"
+  ],
+  "top15": [
+   "1320041",
+   "1328270",
+   "1322364",
+   "1327551",
+   "1328257",
+   "1328686",
+   "1322050",
+   "1326680",
+   "1327970",
+   "1322500",
+   "1327983",
+   "1312101",
+   "1328434",
+   "1328526",
+   "1315348"
+  ],
+  "top20": [
+   "1320041",
+   "1328270",
+   "1322364",
+   "1327551",
+   "1328257",
+   "1328686",
+   "1322050",
+   "1326680",
+   "1327970",
+   "1322500",
+   "1327983",
+   "1312101",
+   "1328434",
+   "1328526",
+   "1315348",
+   "1327242",
+   "1327680",
+   "1327369",
+   "1322011",
+   "1327989"
+  ]
+ },
+ "written_at": "2026-11-24T13:32:02+00:00",
+ "on_time": false,
+ "backfill": true
+}

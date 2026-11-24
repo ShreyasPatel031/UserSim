@@ -165,3 +165,10 @@ Model switches, direction reviews and agenda changes, newest last.
     - The structural top 20 holds nearly the whole real top 3 / 5 (99%+ in backtest). The re-rank's room is ordering inside the shortlist, not recall.
     - Live, the cap is late-featured launches: Nov 21 and 22 added 7 each after 00:05.
     - Arm 3's shortlist is slightly wider-capturing than arm 2's on top 10 in backtest (+1.9 [+1.1, +2.6] inside the top 20).
+- 2026-11-24 ~13:34 UTC (05:34 PT): structural shortlist moved onto the VM (orchestrator 13:30Z Nov 24; rehearsed-fix rule). Bundle experiments/pipeline_patches/20261124_structural_shortlist_vm (README has the cause and schema).
+  - Cause: the 02:21 PT write ran from an agent-session scheduled task. The session's worker was down ~10:00–13:30Z Nov 24, so no file was written; E5's re-rank fell back to the 00:05 order.
+  - Change: tw12a run.sh 208a1587 → 8f032a1c (job `shortlist`); sched12a.txt 5dca79f9 → 73c5b085 (01:20 PT, retry 02:40 PT); structural_shortlist.py cef1eb53 on the VM (adds frozen_at, model_version, backfill flag, skip-if-on-time).
+  - Rehearsal: scratch run of the new job on Nov 24 (uploads refused): rc 0, 42 launches, frozen_at 08:23:22Z.
+  - Nov 24 backfilled at 13:32Z from the same frozen scores (backfill true, on_time false).
+  - The session task no longer writes the shortlist. The daily check now reports a missing or late shortlist the same morning.
+  - Rollback: `bash ~/w/stage/20261124_structural_shortlist_vm/deploy_shortlist.sh rollback`.

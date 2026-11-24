@@ -105,6 +105,13 @@ def backtest():
 
 
 def live(d):
+    if os.environ.get("SKIP_DONE") == "1":   # VM job retry slot: an on-time file already in the bucket is left alone
+        cur = sh("gsutil", "cat", f"{B}/results/structural/{d}/shortlist.json").stdout
+        try:
+            if cur and json.loads(cur).get("on_time"):
+                print(json.dumps({"day": d, "status": "skipped: on-time shortlist already written"})); return
+        except Exception:  # noqa: BLE001
+            pass
     tmp = tempfile.mkdtemp(); p = os.path.join(tmp, "f.parquet")
     if sh("gsutil", "-q", "cp", f"{B}/raw/daily/{d}/forecast_{d}.parquet", p).returncode:
         print(json.dumps({"day": d, "status": "missing input: no 00:05 parquet"})); return
@@ -117,9 +124,14 @@ def live(d):
     out = day_file(d, "live frozen 00:05 forecast parquet", L, pd.DataFrame({"id": [], "final_rank": [], "votes": []}))
     out["truth"] = {"note": "not available: the day is not over; truth for scoring comes from results/web/truth_daily.json after the close"}
     out["published_model"] = str(F.get("published_model", pd.Series(["?"])).iloc[0])
+    ls = sh("gsutil", "ls", "-l", f"{B}/raw/daily/{d}/forecast_{d}.parquet").stdout.split()
+    out["frozen_at"] = ls[1] if len(ls) > 1 else None          # write time of the frozen 00:05 forecast parquet (the scores' freeze)
+    nj = sh("gsutil", "cat", f"{B}/raw/daily/{d}/arm3_input_nulls_{d}.json").stdout
+    out["model_version"] = (f"arm3_live, {json.loads(nj).get('inputs')} inputs (00:05 forecast)" if nj else out["published_model"])
     out["shortlists"] = {f"top{m}": [r["id"] for r in out["launches"] if r["structural_rank"] and r["structural_rank"] <= m] for m in MS}
     out["written_at"] = pd.Timestamp.now(tz="UTC").isoformat(timespec="seconds")
     out["on_time"] = bool(pd.Timestamp(out["written_at"]) < pd.Timestamp(f"{d} 03:45", tz="America/Los_Angeles"))
+    out["backfill"] = os.environ.get("BACKFILL") == "1"            # written late from the same frozen scores (no refit)
     os.makedirs(os.path.join(OUT, d), exist_ok=True); f = os.path.join(OUT, d, "shortlist.json"); json.dump(out, open(f, "w"), indent=1)
     sh("gsutil", "-q", "cp", f, f"{B}/results/structural/{d}/shortlist.json")
     print(json.dumps({"day": d, "status": "ok", "launches": out["n_launches"], "structural_model": out["structural_model"], "on_time": out["on_time"]}))
