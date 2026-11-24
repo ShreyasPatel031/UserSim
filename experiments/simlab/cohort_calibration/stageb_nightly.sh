@@ -4,7 +4,7 @@
 #   bash experiments/simlab/cohort_calibration/stageb_nightly.sh [D]
 set -u; B=gs://usersim-bakeoff-347838016394/usersim_sim; D=${1:-$(TZ=America/Los_Angeles date +%F)}
 HERE="$(cd "$(dirname "$0")" && pwd)"; W=${STAGEB_WORK:-$HOME/stageb}; mkdir -p $W/store_live $W/kinds $W/forward; LOG=$W/stageb_$D.log
-PY=python3; python3 -c "import pandas, sklearn" 2>/dev/null || PY="$HERE/../../../.venv/bin/python"
+PY=python3; python3 -c "import pandas, sklearn" 2>/dev/null || { [ -x "$HERE/../../../.venv/bin/python" ] && PY="$HERE/../../../.venv/bin/python"; }
 exec > >(tee -a $LOG) 2>&1; echo "start $(date -u +%FT%TZ) D=$D"
 export HF_HUB_OFFLINE=1 SIM_SP=$W
 gsutil -q cp $B/raw/population/store_v3/persons.parquet $B/raw/population/store_v3/events.parquet $W/store_live/ || { echo FAIL store; exit 2; }
