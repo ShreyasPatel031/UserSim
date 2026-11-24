@@ -1,0 +1,333 @@
+{
+ "tests": {
+  "2026": {
+   "arm3_ref": {
+    "days": 280,
+    "top3": 55.7,
+    "top5": 66.0,
+    "top10": 77.7
+   },
+   "arm3_mono": {
+    "days": 280,
+    "top3": 55.7,
+    "top5": 65.6,
+    "top10": 77.6,
+    "d_top3": [
+     0.0,
+     -0.6,
+     0.6
+    ],
+    "d_top5": [
+     -0.36,
+     -0.86,
+     0.14
+    ],
+    "d_top10": [
+     -0.07,
+     -0.32,
+     0.18
+    ]
+   },
+   "arm3_mono_add": {
+    "days": 280,
+    "top3": 56.7,
+    "top5": 67.5,
+    "top10": 77.9,
+    "d_top3": [
+     0.95,
+     -0.6,
+     2.5
+    ],
+    "d_top5": [
+     1.5,
+     0.57,
+     2.43
+    ],
+    "d_top10": [
+     0.18,
+     -0.54,
+     0.89
+    ]
+   },
+   "blend_knn5": {
+    "days": 280,
+    "top3": 55.7,
+    "top5": 65.5,
+    "top10": 78.1,
+    "d_top3": [
+     0.0,
+     -1.19,
+     1.19
+    ],
+    "d_top5": [
+     -0.5,
+     -1.43,
+     0.43
+    ],
+    "d_top10": [
+     0.43,
+     -0.18,
+     1.07
+    ],
+    "w_by_month": {
+     "2026-01": 0.1,
+     "2026-02": 0.3,
+     "2026-03": 0.3,
+     "2026-04": 0.3,
+     "2026-05": 0.3,
+     "2026-06": 0.3,
+     "2026-07": 0.3,
+     "2026-08": 0.3,
+     "2026-09": 0.3,
+     "2026-10": 0.3,
+     "2026-11": 0.3
+    }
+   },
+   "blend_knn62": {
+    "days": 280,
+    "top3": 55.7,
+    "top5": 66.0,
+    "top10": 77.7,
+    "d_top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "d_top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "d_top10": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "w_by_month": {
+     "2026-01": 0,
+     "2026-02": 0,
+     "2026-03": 0,
+     "2026-04": 0,
+     "2026-05": 0,
+     "2026-06": 0,
+     "2026-07": 0,
+     "2026-08": 0,
+     "2026-09": 0,
+     "2026-10": 0,
+     "2026-11": 0
+    }
+   },
+   "near_miss": {
+    "arm3_mono": {
+     "near_misses_rank4_6": 230,
+     "moved_into_top3": 6,
+     "arm3_hits": 468,
+     "hits_dropped": 6,
+     "net_top3_hits": 0
+    },
+    "arm3_mono_add": {
+     "near_misses_rank4_6": 230,
+     "moved_into_top3": 34,
+     "arm3_hits": 468,
+     "hits_dropped": 27,
+     "net_top3_hits": 8
+    },
+    "s_blend_knn5": {
+     "near_misses_rank4_6": 230,
+     "moved_into_top3": 20,
+     "arm3_hits": 468,
+     "hits_dropped": 20,
+     "net_top3_hits": 0
+    },
+    "s_blend_knn62": {
+     "near_misses_rank4_6": 230,
+     "moved_into_top3": 0,
+     "arm3_hits": 468,
+     "hits_dropped": 0,
+     "net_top3_hits": 0
+    }
+   }
+  },
+  "2025": {
+   "arm3_ref": {
+    "days": 151,
+    "top3": 51.0,
+    "top5": 62.3,
+    "top10": 81.3
+   },
+   "arm3_mono": {
+    "days": 151,
+    "top3": 50.8,
+    "top5": 62.0,
+    "top10": 81.3,
+    "d_top3": [
+     -0.22,
+     -0.66,
+     0.0
+    ],
+    "d_top5": [
+     -0.26,
+     -0.66,
+     0.0
+    ],
+    "d_top10": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "arm3_mono_add": {
+    "days": 151,
+    "top3": 51.0,
+    "top5": 63.7,
+    "top10": 81.4,
+    "d_top3": [
+     0.0,
+     -2.21,
+     2.21
+    ],
+    "d_top5": [
+     1.46,
+     0.0,
+     2.91
+    ],
+    "d_top10": [
+     0.13,
+     -0.73,
+     0.93
+    ]
+   },
+   "blend_knn5": {
+    "days": 151,
+    "top3": 50.1,
+    "top5": 62.6,
+    "top10": 81.3,
+    "d_top3": [
+     -0.88,
+     -2.21,
+     0.44
+    ],
+    "d_top5": [
+     0.4,
+     -0.53,
+     1.46
+    ],
+    "d_top10": [
+     0.0,
+     -0.4,
+     0.4
+    ],
+    "w_by_month": {
+     "2025-06": 0.0,
+     "2025-07": 0.0,
+     "2025-08": 0.0,
+     "2025-09": 0.0,
+     "2025-10": 0.3,
+     "2025-11": 0.3,
+     "2025-12": 0.1
+    }
+   },
+   "blend_knn62": {
+    "days": 151,
+    "top3": 51.0,
+    "top5": 62.3,
+    "top10": 81.3,
+    "d_top3": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "d_top5": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "d_top10": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "w_by_month": {
+     "2025-06": 0.0,
+     "2025-07": 0.0,
+     "2025-08": 0.0,
+     "2025-09": 0.0,
+     "2025-10": 0,
+     "2025-11": 0,
+     "2025-12": 0
+    }
+   },
+   "near_miss": {
+    "arm3_mono": {
+     "near_misses_rank4_6": 138,
+     "moved_into_top3": 0,
+     "arm3_hits": 231,
+     "hits_dropped": 1,
+     "net_top3_hits": -1
+    },
+    "arm3_mono_add": {
+     "near_misses_rank4_6": 138,
+     "moved_into_top3": 23,
+     "arm3_hits": 231,
+     "hits_dropped": 23,
+     "net_top3_hits": 0
+    },
+    "s_blend_knn5": {
+     "near_misses_rank4_6": 138,
+     "moved_into_top3": 5,
+     "arm3_hits": 231,
+     "hits_dropped": 9,
+     "net_top3_hits": -4
+    },
+    "s_blend_knn62": {
+     "near_misses_rank4_6": 138,
+     "moved_into_top3": 0,
+     "arm3_hits": 231,
+     "hits_dropped": 0,
+     "net_top3_hits": 0
+    }
+   }
+  }
+ },
+ "replica_vs_stored_arm3": {
+  "rows": 7249,
+  "spearman": 0.995
+ },
+ "live_nov10_22_blend_knn5": {
+  "w": 0.3,
+  "near_misses_rank4_6": 11,
+  "moved_into_top3": 0,
+  "arm3_hits": 21,
+  "hits_dropped": 2,
+  "top3_hit_pct_published": 53.8,
+  "top3_hit_pct_blend": 48.7
+ },
+ "experiment": "PH-KNN1",
+ "asked": "orchestrator 10:01Z Nov 23",
+ "written_at": "2026-11-23T10:12:36+00:00",
+ "inputs_arm3": 62,
+ "k": 15,
+ "grid": [
+  0,
+  0.1,
+  0.2,
+  0.3,
+  0.5,
+  0.75,
+  1.0,
+  1.5,
+  2.0
+ ],
+ "leak_checks": "walk-forward only: arm-3 replica and monotone refits month-forward (train < month); kNN neighbours from earlier days only; blend weight picked on earlier months only; no final votes, ranks or hidden-order reads among the inputs (labels are read only as kNN targets of earlier days and as truth)",
+ "verdict": {
+  "deploy": "NONE",
+  "why": [
+   "(2b) arm3_mono_add clears 0 on 2026 top 5 (+1.5 [+0.57, +2.43]) but its four added inputs (ph_hunter_followers, x_maker_sum_followers, x_company_followers, promo_reactions) are dropped from arm 3 by model.py HONEST: for past launches they were read after launch day, so the backtest overstates them (leak check fails). 2025 replication +1.46 [0.0, +2.91] does not clear 0 either.",
+   "(1) blend_knn5 uses the same four inputs in its backtest neighbours (same leak) and shows nothing: 2026 \u0394 0.0 / -0.5 / +0.43, all intervals cover 0. On the frozen live parquets Nov 10-22 (honest values) it moves 0 of MISS1's 11 rank-4-6 misses into the top 3 and drops 2 hits (top 3 53.8 -> 48.7).",
+   "(1) blend_knn62 (every arm-3 input, honest): the walk-forward weight is 0 in every month, so it equals arm 3.",
+   "(2a) arm3_mono (promo_posts, the only one of the five that arm 3 uses, constrained +1): \u0394 0.0 / -0.36 / -0.07, intervals cover 0."
+  ],
+  "miss1_reading": "MISS1's (d) 'under-weighted' label rested on four inputs arm 3 does not use by design (honest rule), so 'under-weighted' there means 'excluded as post-launch reads in history'. Their honest value can only be measured forward on frozen 00:05 values.",
+  "replica_check": "arm3_ref vs the stored arm-3 backtest predictions: Spearman 0.995 on 7,249 shared rows"
+ }
+}

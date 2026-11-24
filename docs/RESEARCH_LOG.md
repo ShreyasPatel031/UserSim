@@ -49,3 +49,119 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-17 ~09:18 UTC: hunter_reach_0005 shadow file DEPLOYED. Bundle 20261117_hunter_reach (commit dd9dc920): e5_follow_run.sh f157fad4 over 6ca90ed5, plus hunter_reach.py 2cc5aac7; it runs as part of 12.8's nightly e5 job. Rehearsal: end-to-end DRY on Nov 16 from a scratch copy with uploads stubbed, verified nothing uploaded. Result: 38 launches, 50,888 eligible people (VM store copy), 21 hunters in the store, 21 with held followers. Tonight's file: raw/daily/2026-11-17/hunter_reach_0005.json written 09:18:03Z, 43 launches, 69,169 eligible, 21 in store, 25 with followers. It was run once by hand because the e5 job had already run before the deploy. Shadow only: no model reads it. Rollback: `bash ~/w/stage/20261117_hunter_reach/deploy_hunter_reach.sh rollback`.
 - 2026-11-17: arm 3's first published 00:05 (Nov 17). 12a.7 midnight write: model arm3, fallback none, inputs.missing [], written 08:21:09Z. The website label shows arm 3's row with intervals. Nov 6 recorder check (orchestrator 07:52Z): the recorder is correct; rank_now ties are equal hidden scores, and the 30% top 10 is PH reordering late (one launch moved 52 → 6 after noon PT). No fix and no recompute.
 - 2026-11-17 ~12:47 UTC (04:47 PT): next bundle r6 deployed via run_chain (check passed (all) → rehearsal passed on Nov 17 → deploy; CHAIN OK). Change: arm3_live.py e5751017 (over 52ba59d5) writes a parity sidecar right before the 5-seed fit: raw/daily/<d>/arm3_inputs_<d>.parquet (launch id + every input in te[cc]) and arm3_input_nulls_<d>.json. Best effort, never raises; the forecast is unchanged (orchestrator 12:44Z, E5 parity audit 2de15642). The local copy goes to data/arm3_inputs/ unless ARM3_INPUTS_DIR is set; the rehearsal sets it to scratch, and the real data dir was confirmed untouched. Rehearsal: arm3_shadow on Nov 17, 43 launches, rc 0; both sidecar files were written to scratch and the upload was refused by the stub. Rollback: `bash ~/w/stage/20261117_next_bundle_r6/deploy_nb.sh rollback`.
+- 2026-11-18: frozen ph_n_makers forward line CLOSED, NOT ADOPTED (orchestrator 21:29Z Nov 18). After 21 scored days (Oct 25 – Nov 17) frozen minus stored = −3.2 / −1.0 / 0.0 (top 3 / 5 / 10), and no 95% interval clears 0. The direction is against it. results/nmakers_frozen.json is the final file. The nightly run stops.
+- 2026-11-18: 03:45 before-reveal replay line fixed. hybrid_lodo.py looped only over Nov 2–13, so the _ku_0345 run could never find a 03:45 read. It now takes END_DAY from env (default 2026-11-13, so backtest rows are unchanged). It waits, writing "waiting" in the orders file, until there are 3 days with a read, which leave-one-day-out with inner day CV needs. On Nov 18 it found 2 days (Nov 16, 17). The nightly run passes END_DAY=<yesterday>. Report at 5 scored days with paired intervals vs the 00:05 arm 3.
+- 2026-11-18: X pre-launch buzz vs the published 00:05 line CLOSED, no signal (orchestrator 21:59Z). Prereg 8e729093 + amendment 86e2f8ff; result 050fb3dd (8 days, top 3/5 diff 0.0 [0.0, 0.0]). Raw fields (log1p pre-launch posts, pre-announce) are now logged nightly by x_buzz_log.py to results/x_buzz_daily.jsonl, with no shadow line. Re-test at ~30 days.
+- 2026-11-20: arm-3 miss anatomy closed (prereg 3776ca5d, result 6260cc5a; orchestrator 10:29Z).
+  - 9 misses over Nov 16–19: (a) 8, (b) 1, (c) 0.
+  - The chosen rule, promo_reactions re-weight, is CLOSED: flat on 183 days.
+  - promo_posts at w = 0.1 is a FROZEN forward shadow, logged as POST-HOC (second look, no 2025 replication). Frozen file: results/frozen/promo_posts_w01_20261120.json. Script: promo_posts_shadow.py.
+  - It is scored nightly against published arm 3 from Nov 20, with the decision at 25 scored days.
+  - No new model-tweak experiment until one forward line reaches its decision point.
+- 2026-11-21 ~09:20 UTC (01:20 PT): early_shock drop-out fix DEPLOYED (popscore commit e5240e4a, deployed under the rehearsed-fix rule). Bundle experiments/pipeline_patches/20261121_early_shock: early_shock.py 28866c64 over 240ddc43.
+  - Change: a launch that is unranked and missing from the day's last vote snapshot (dropped from the featured list) no longer counts against "ranks final" or snapshot coverage. It stays in the line-up at rank 999 with no outcome, so it never fits the shock weight.
+  - Rehearsal: end-to-end DRY on the VM from a scratch copy, real data read-only, --force, no --write. 13 clean days (Nov 19 and 20 now count; 11 before). Comment shock minus prior, top 3: +12.8 [+2.6, +25.6].
+  - Deploy: base-md5 gated; old file backed up to ~/w/backup_early_shock/early_shock.py.240ddc43; parse check passed; post-deploy status run ok (ready false, 13/14 clean days).
+  - Rollback: `bash ~/w/stage/20261121_early_shock/deploy_early_shock.sh rollback`.
+- 2026-11-22 ~04:22 UTC (20:22 PT Nov 21): published 03:45 forecast REMOVED (Shreyas "remove it", via orchestrator 03:55Z Nov 22). Bundle experiments/pipeline_patches/20261122_remove_prereveal.
+  - Change: on the VM, ~/w/tw12a/sched12a.txt goes 4cec4d5e → be17d0bd, dropping the 03:47 and 03:52 prereveal runs.
+  - Kept: the 03:45 recorder read ("rec": PH's hidden order, as raw data, baseline and truth); the midnight and lineup runs are unchanged.
+  - Rehearsal: the tick schedule was replayed for every minute in a scratch copy on the VM; only the prereveal entries were removed.
+  - Rollback: `cp -p ~/w/backup_tw12a/sched12a.txt.4cec4d5e ~/w/tw12a/sched12a.txt`.
+- 2026-11-22 ~18:36 UTC (10:36 PT): gemini_decisions_shadow INSTALLED on the pipeline VM (orchestrator 05:50Z Nov 22; recording only). Bundle experiments/pipeline_patches/20261122_gemini_decisions.
+  - Change: tw12a run.sh 5cd8b9e5 → 208a1587 (job cases gdsw and gdss); sched12a.txt be17d0bd → 5dca79f9 (01:10 gdsw write, 09:30 gdss score); script c9bbb774.
+  - Rehearsal on the VM: write gives "key missing" with rc 0; DRY rehearse of Nov 21 gives 2,190 people at about $0.24/day; a scratch run.sh gdsw run gives rc 0.
+  - The secret gemini-decisions-key does not exist yet (NOT_FOUND), so the job skips cleanly until it does.
+  - Rollback: restore ~/w/backup_tw12a/run.sh.5cd8b9e5 and sched12a.txt.be17d0bd into ~/w/tw12a/, and remove ~/w/experiments/ph_predict/gemini_decisions_shadow.py.
+- 2026-11-23 ~09:52 UTC (01:52 PT): early_shock late-featured fix DEPLOYED (popscore commit 1e6cb510, under the rehearsed-fix rule). Bundle experiments/pipeline_patches/20261123_early_shock_late: early_shock.py af8f0b4b over 28866c64.
+  - Change: a launch with no honest prior whose first vote snapshot is more than 0.5 h after the day's first (featured after the morning forecast) no longer counts against prior/popscore coverage, which is now checked on the forecast-time line-up only. It stays in the line-up with the day's 10th-percentile prior, is scored like the rest, and is never used to fit. Snapshot coverage counts only launches featured all day. Status line, outputs and backtests schema unchanged.
+  - Why: the deployed step was stuck at 13 clean days (Nov 22 and 23 both items=13); Nov 11, 21 and 22 were excluded by late launches (10 of 26, 7 of 21, 7 of 24), some finishing high.
+  - Rehearsal: end-to-end DRY on the VM from a scratch copy, real data read-only, --force, no --write: ready true, 16 clean days (Nov 3–22). Comment shock minus prior, top 3: +10.4 [−0.0, +22.9] (vote arms n/a in the forced run).
+  - Deploy: base-md5 gated; old file backed up to ~/w/backup_early_shock/early_shock.py.28866c64; parse check passed. Expected first ready run Nov 24 ~08:05 UTC (backtests run_file early_shock_2026-11-24).
+  - Rollback: `bash ~/w/stage/20261123_early_shock_late/deploy_early_shock.sh rollback`.
+- 2026-11-23 ~10:10 UTC: PH-FWD12, paired forward scoring of every shadow line against published arm3 (orchestrator 09:45Z Nov 23). Script experiments/ph_predict/shadow_forward_paired.py; output results/shadow_forward_paired_v1.json.
+  - Truth: truth_daily (first warehouse part after the PT day's close). Bootstrap: day-clustered, 10,000 draws, seed 0. Arm3 has a frozen 00:05 parquet on 6 days only (Nov 17–22), so every paired comparison has at most 6 days.
+  - Write-time cut: 03:45 PT of the day, not 00:05 PT. The published arm3 parquet itself lands ~00:18 PT, so a literal 00:05 cut would drop the baseline.
+  - Dropped as written after the cut: it8 Nov 10 (written Nov 11 02:16Z) and Nov 14 (13:34Z); arrivals Nov 14 (13:34Z); promo_posts Nov 21 and Nov 22 (21:26Z / 21:27Z, computed after the day from the frozen 00:05 parquet, dropped by rule).
+  - No line reads the 03:45 hidden-order read. Grok's 00:30 file searches X up to ~00:18 PT (13 min after 00:05) and is written ~00:20 PT.
+
+  | line | days | top 3 / 5 / 10 | Spearman | Δ top 3 vs arm3 [95% CI] | Δ top 5 | Δ top 10 | Δ Spearman | rule outcome |
+  |---|---|---|---|---|---|---|---|---|
+  | arm3 (published) | 6 | 50.0 / 70.0 / 66.7 | 0.622 | – | – | – | – | baseline |
+  | arm2 | 7 (6 paired) | 57.1 / 68.6 / 67.1 | 0.592 | +11.1 [+0.0, +22.2] | −3.3 [−10.0, +0.0] | +0.0 [−5.0, +5.0] | −0.037 [−0.096, +0.007] | keep |
+  | LM (pred) | 12 (6) | 55.6 / 66.7 / 65.0 | 0.642 | +5.6 [+0.0, +16.7] | −3.3 [−10.0, +0.0] | −5.0 [−8.3, −1.7] | −0.028 [−0.059, −0.0] | worse on top 10 (no compute to save: in the forecast parquet) |
+  | it8 | 10 (6) | 33.3 / 50.0 / 57.0 | 0.454 | −16.7 [−33.3, +5.6] | −23.3 [−40.0, −10.0] | −16.7 [−28.3, −6.7] | −0.239 [−0.375, −0.135] | drop |
+  | arrivals | 10 (6) | 50.0 / 50.0 / 61.0 | 0.388 | +5.6 [−22.2, +33.3] | −23.3 [−40.0, −6.7] | −13.3 [−16.7, −10.0] | −0.187 [−0.384, −0.0] | drop |
+  | promo_posts | 1 (1) | 100 / 60 / 50 | 0.322 | – | – | – | – | keep (1 day; decision stays at 25) |
+  | Grok X-buzz top 10 | 8 (6) | 20.8 / 30.0 / 51.2 | – | −27.8 [−55.6, +0.0] | −36.7 [−46.7, −26.7] | −15.0 [−28.3, −1.7] | – | drop |
+  - No line is better than arm3 with its interval clear of zero. Days to clear zero at the observed effect: arm2 top 3 needs 8 days (6 so far); LM top 3 needs 20.
+- 2026-11-23 ~10:45 UTC: PH-MISS1, anatomy of the 00:05 top-3 misses, Nov 10–22 (orchestrator 09:51Z Nov 23). Script experiments/ph_predict/miss_anatomy_fwd.py; output results/miss_anatomy_v1.json. (The older miss_anatomy.py, 239-day backtest, is unchanged.)
+  - Forecast: frozen 00:05 parquets. Arm3 Nov 17–22, arm2 Nov 15–16, launch model `pred` Nov 10–14 (arm2 not yet filled). Truth: truth_daily.
+  - 13 days, 39 true-top-3 slots: 21 hits (53.8%), 18 misses. 11 of the 18 misses sat at model rank 4–6.
+  - Each miss gets the first cause that matches, in the orchestrator's order. Shares use a 95% day bootstrap (10,000 draws). Oracle = fixing every miss of that cause.
+
+  | cause | misses | share of misses [95% CI] | oracle top-3 pts [95% CI] | data |
+  |---|---|---|---|---|
+  | (a) featured after the forecast | 0 | 0.0 | 0.0 | all 13 days |
+  | (b) team network unseen (no complete team member and no complete follower) | 0 | 0.0 | 0.0 | Nov 14–22 (leak-free store copies; none before Nov 13 14:35Z) |
+  | (c) votes from people we don't hold (E5 who_backs split: bottom third of the day's held-voter share) | 0 | 0.0 | 0.0 | Nov 10–21 (Nov 22 voters not yet in the store) |
+  | (d) inputs right, model under-weighted (leave-day-out 15-NN on the 5 inputs frozen in the parquet puts it in the day's top 3) | 7 | 38.9 [12.5, 65.0] | 17.9 [5.1, 33.3] | all 13 days |
+  | (e) unexplained | 11 | 61.1 [35.0, 87.5] | 28.2 [15.4, 43.6] | – |
+  - Context: 7 of the 13 misses with store data had no complete team member, but all had held followers (52 to 16,293). The team-held test found no effect.
+  - (d) uses only the 5 inputs frozen in the parquet; arm3 uses 40. It is a lower bound on under-weighting.
+  - Leak checks: forecasts, line-ups and team/follower inputs are frozen pre-00:05 files written before 03:45 PT. The newest store and truth label causes only.
+- 2026-11-23 ~10:20 UTC: PH-KNN1, does reweighting the inputs arm 3 already has beat arm 3? (orchestrator 10:01Z Nov 23). Scripts experiments/ph_predict/knn1_vm.py (VM, month-forward replica of live arm 3 plus monotone refits, on scratch copies) and knn1_score.py; output results/knn_reweight_v1.json. **Verdict: nothing to deploy.**
+  - Replica: same frame, 62 inputs, params and 5 seeds as arm3_live.predict, refit month-forward (train < month). Spearman 0.995 against the stored arm-3 backtest. Truth: final daily rank, days with >= 10 ranked. Paired day bootstrap 10,000 against the replica.
+  - Finding: of the five MISS1 inputs, only promo_posts is an arm-3 input. The other four are dropped by model.py HONEST, because for past launches they were read after launch day.
+
+  | candidate (walk-forward) | 2026, 280 days: top 3 / 5 / 10 | Δ top 3 [95% CI] | Δ top 5 | Δ top 10 | 2025 replication, 151 days: Δ top 5 | near-miss (2026): moved in / hits dropped | admissible? |
+  |---|---|---|---|---|---|---|---|
+  | arm 3 replica | 55.7 / 66.0 / 77.7 | – | – | – | – | – | baseline |
+  | (1) blend kNN on the 5 inputs, w = 0.3 | 55.7 / 65.5 / 78.1 | 0.0 [−1.2, +1.2] | −0.5 [−1.4, +0.4] | +0.4 [−0.2, +1.1] | +0.4 [−0.5, +1.5] | 20 / 20 | no (4 inputs post-launch reads in history) |
+  | (1) blend kNN on all 62 inputs | = arm 3 | 0 | 0 | 0 | 0 | 0 / 0 | yes; walk-forward w = 0 every month |
+  | (2a) monotone refit (promo_posts +1) | 55.7 / 65.6 / 77.6 | 0.0 [−0.6, +0.6] | −0.4 [−0.9, +0.1] | −0.1 [−0.3, +0.2] | −0.3 [−0.7, 0.0] | 6 / 6 | yes |
+  | (2b) monotone refit + the 4 dropped inputs | 56.7 / 67.5 / 77.9 | +1.0 [−0.6, +2.5] | +1.5 [+0.6, +2.4] | +0.2 [−0.5, +0.9] | +1.5 [0.0, +2.9] | 34 / 27 | no (same leak; 2025 does not clear 0) |
+  - Live, honest frozen values, Nov 10–22: blend kNN-5 moves 0 of MISS1's 11 rank-4–6 misses into the top 3 and drops 2 hits; top 3 goes from 53.8 to 48.7.
+  - MISS1's (d) label therefore means "inputs arm 3 excludes as post-launch reads", not under-weighting. Their honest value can only be measured forward on frozen 00:05 values.
+- 2026-11-23 ~10:25 UTC: four-inputs FROZEN forward shadow STARTED (orchestrator 10:13Z Nov 23; the PH ops session's one running line). Rule frozen a priori in experiments/ph_predict/results/frozen/four_inputs_w01_20261123.json; script four_inputs_shadow.py.
+  - Rule: s = z(arm3) + 0.1 · z(mean within-day z of log1p) over hunter followers, maker X followers, company X followers and promo reactions. Values are as frozen in the published 00:05 parquet; nothing was fitted.
+  - Rows written after 03:45 PT are flagged late and never scored.
+  - Decision at 25 scored days, paired vs arm 3 (day bootstrap 95%).
+  - Note: company X is empty on about 75% of launches at 00:05 (median fill), so the input mostly carries the other three.
+  - First row: Nov 23, written 02:20 PT, on time.
+- 2026-11-23 ~23:13 UTC (15:13 PT): tw-tree TODAY-ROWS fix DEPLOYED (orchestrator 22:42Z Nov 23; rehearsed-fix rule). Bundle experiments/pipeline_patches/20261123_tw_today_rows.
+  - Cause of the live hist_hunter_rel nulls:
+    - The tw tree (~/w/tw/experiments/ph_predict, cwd of every tw job) still ran features.py 981c5ded. That copy reads every data/today/*.json, so stale unlabelled rows enter add_history and leave hist_hunter_rel NaN for hunters with history.
+    - The deployed pipeline has had the fix since Nov 15 (033d7bd7); the tw copy never got it.
+    - arm2_shap.py (tw, 01:05 PT) refits arm 2 with that copy. Its h25_live.predict call re-uploaded raw/daily/<d>/arm2_input_nulls_<d>.json at ~09:15Z, overwriting the 00:05 forecast's own sidecar. That overwritten file is what the audit read.
+    - The published 00:05 arm 2 and arm 3 runs use the deployed features.py and are not affected:
+      - arm3_inputs show 0% null given history on every day;
+      - a full scratch rerun of the installed forecast.py for Nov 23 gives 0%;
+      - arm2_shap's own check shows its refit differs from the published pred_arm2 by up to 0.36 a day.
+  - Change:
+    - tw features.py 981c5ded → 033d7bd7. The diff is the TODAY-ROWS fix only.
+    - tw arm2_shap.py 71dbc3c5 → 91f2fb15. Its refit's null sidecar now goes to a local results/shadow_arm2_shap/<d>_input_nulls.json, never the bucket.
+    - From Nov 24 the other tw jobs that build features (makerfix / clean shadows, readable shadow and the like) also get correct hunter history: a change point for those shadow lines.
+  - Check, rollback and rehearsal:
+    - check: md5 gates passed.
+    - selftest: deploy → rollback round-trip on scratch copies passed.
+    - Rehearsal: end to end on Nov 23 from scratch copies, data read-only, uploads stubbed, sidecars captured.
+      - Old code: 14 of 18 launches with history null (77.8%), refit vs published 0.210, exactly the live job's numbers.
+      - New code: 0.0% null, refit vs published 0.070.
+  - Rollback: `bash ~/w/stage/20261123_tw_today_rows/deploy_tw_today_rows.sh rollback`.
+- 2026-11-23 ~23:20 UTC: STRUCT-SHORTLIST (orchestrator 23:02Z Nov 23; AGENTS.md "two models"; SOCIAL_SIM_PLAN Task R ceiling). Script experiments/ph_predict/structural_shortlist.py (derived outside the VM pipeline); output results/structural/ceiling_v1.json.
+  - Day files: results/structural/backtest/<day>.json, 191 days (183 backtest + 8 live). Each holds every launch with id, name and structural score / rank (arm 3, with arm 2 alongside); truth (final rank, votes) is in a separate truth block. Also in the bucket under results/structural/.
+  - Live: results/structural/<day>/shortlist.json from tonight, written at 02:21 PT by trig_01SFirgpcjTRDMAA19zRmp3h.
+  - Share of the real top k inside the structural top m, with a 95% day bootstrap (10,000 draws). Backtest = stored 2026 month-forward (leak-free); live = frozen 00:05 parquets, where launches featured after 00:05 are in no shortlist.
+
+  | set | arm | days | real top 3 in top 10 / 15 / 20 | real top 5 in top 10 / 15 / 20 | real top 10 in top 10 / 15 / 20 |
+  |---|---|---|---|---|---|
+  | backtest 2026 | arm 3 | 183 | 95.4 / 98.5 / 99.5 | 91.8 / 97.5 / 99.3 | 77.6 / 92.1 / 97.2 |
+  | backtest 2026 | arm 2 | 183 | 94.5 / 98.4 / 99.1 | 91.0 / 96.6 / 98.7 | 76.6 / 90.7 / 95.3 |
+  | backtest 2026 | arm 3 − arm 2 (paired) | 183 | +0.9 [−0.2, +2.2] / +0.2 / +0.4 [0.0, +0.9] | +0.8 / +0.9 [+0.2, +1.6] / +0.7 [+0.2, +1.2] | +1.0 [+0.1, +1.9] / +1.4 [+0.6, +2.3] / +1.9 [+1.1, +2.6] |
+  | live Nov 17–22 | arm 3 | 6 | 94.4 / 94.4 / 94.4 | 90.0 / 93.3 / 93.3 | 66.7 / 83.3 / 85.0 |
+  | live Nov 15–22 | arm 2 | 8 | 91.7 / 95.8 / 95.8 | 82.5 / 90.0 / 92.5 | 68.8 / 83.8 / 88.8 |
+  - Reading:
+    - The structural top 20 holds nearly the whole real top 3 / 5 (99%+ in backtest). The re-rank's room is ordering inside the shortlist, not recall.
+    - Live, the cap is late-featured launches: Nov 21 and 22 added 7 each after 00:05.
+    - Arm 3's shortlist is slightly wider-capturing than arm 2's on top 10 in backtest (+1.9 [+1.1, +2.6] inside the top 20).

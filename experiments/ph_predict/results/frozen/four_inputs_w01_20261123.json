@@ -1,0 +1,9 @@
+{
+ "frozen_at": "2026-11-23T10:20Z",
+ "rule": "s = z(pred_arm3) + 0.1 * z(C) within day, C = mean over the four inputs of the within-day z of log1p(x); missing x -> that input's day median; inputs exactly as frozen in the published 00:05 parquet; no refit, ever",
+ "features": ["ph_hunter_followers", "x_maker_sum_followers", "x_company_followers", "promo_reactions"],
+ "w": 0.1,
+ "status": "FROZEN forward shadow, chosen A PRIORI (orchestrator 10:13Z Nov 23): no honest history exists to tune on, so w = 0.1 and equal input weights copy the promo_posts precedent; nothing was fitted",
+ "provenance": "PH-MISS1 (739a1ea5) labelled 39% of misses 'under-weighted' on these inputs; PH-KNN1 (ffd36c7b) showed they are dropped from arm 3 by model.py HONEST (read after launch day in history), so their only honest test is forward on frozen 00:05 values",
+ "decision": "at 25 scored forward days, paired vs published arm 3 (top 3/5/10, day bootstrap 95%, 10,000 draws); forward days start Nov 23 (frozen before Nov 23 truth); only rows written before 03:45 PT of their day count"
+}

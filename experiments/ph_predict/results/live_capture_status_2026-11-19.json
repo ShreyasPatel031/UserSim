@@ -1,0 +1,45 @@
+{
+ "day": "2026-11-19",
+ "status": "FAIL",
+ "counts": {
+  "posts": 3242,
+  "comments": 583,
+  "board": 3232,
+  "people": 3100,
+  "products": 791,
+  "coverage": 98,
+  "fallback_post_rows": 0,
+  "snapshots": 98,
+  "launches": 33,
+  "absent_unread": 228,
+  "byid_rows": 9,
+  "vote_drops": 3,
+  "board_api_rows": 3232,
+  "board_missing": 0,
+  "bad_username": 0,
+  "created_after_fetch": 0,
+  "created_unparsed": 0,
+  "api_comments": 336,
+  "api_comments_no_user_id": 0,
+  "api_comments_created_after_pull": 0,
+  "roster": 33,
+  "roster_source": "pipeline list (createdAt in PT day)",
+  "not_this_day_rows": 226,
+  "not_this_day_launches": 3
+ },
+ "fail": [
+  "posts: 297 rows with fetched_at more than 5 min from snapshot_ts",
+  "comments: 96 rows with fetched_at more than 5 min from snapshot_ts",
+  "board: 297 rows with fetched_at more than 5 min from snapshot_ts",
+  "people: 252 rows with fetched_at more than 5 min from snapshot_ts",
+  "products: 66 rows with fetched_at more than 5 min from snapshot_ts",
+  "228 launch-snapshots with no vote read from any source (absent from the API ranking, no page or by-id read)"
+ ],
+ "warn": [
+  "votes dropped between snapshots: 3 times on 3 launches",
+  "board: no homepage / leaderboard page views (only the API ranking) - missing, route 4 off",
+  "comments: 583 without a username but with a commenter user id (API v2; map via user_id_map)",
+  "comments: 16 created more than a day before the launch day (old threads?)"
+ ],
+ "checked_at": "2026-11-20T08:26:35Z"
+}

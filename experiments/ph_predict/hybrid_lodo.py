@@ -33,7 +33,7 @@ def main():
     R = W.query("SELECT CAST(id AS VARCHAR) id, day, daily_rank FROM launches WHERE daily_rank IS NOT NULL", do_sync=False)
     TWn = pd.read_parquet(f"{HERE}/results/tw_nosite.parquet"); TWn["id"] = TWn.id.astype(str); twc = dict(zip(TWn.id, TWn.clean_v3_nosite))
     rows = []; src = {}
-    for d in pd.date_range("2026-11-02", "2026-11-13").strftime("%Y-%m-%d"):
+    for d in pd.date_range("2026-11-02", os.environ.get("END_DAY", "2026-11-13")).strftime("%Y-%m-%d"):   # END_DAY (orchestrator 21:29Z Nov 18): the live _ku_0345 run extends to yesterday; default keeps the backtest rows
         V = pd.DataFrame([json.loads(l) for l in gcat(f"{B}/raw/vote_snapshots/{d}.jsonl").stdout.splitlines() if l.strip()])
         V["launch_id"] = V.launch_id.astype(str); V["a"] = pd.to_datetime(V["at"], utc=True); V = V.drop_duplicates(["launch_id", "at"]).dropna(subset=["rank_now"])
         t0 = pd.Timestamp(d + " 00:00", tz="America/Los_Angeles").tz_convert("UTC"); truth = R[R.day == d].sort_values("daily_rank")
@@ -70,6 +70,10 @@ def main():
         X["z_" + c] = X.groupby("day")[c].transform(zf)
     X["y"] = X.groupby("day").final.transform(lambda s: zf(-np.log(s)))
     dd = sorted(X.day.unique()); G = {d: X[X.day == d] for d in dd}; AL = [0.3, 1.0, 3.0, 10.0, 30.0]
+    if len(dd) < 3:   # leave-one-day-out with inner day CV needs 2 other days to fit on: record the day(s) found and wait (Nov 18)
+        json.dump({"rule": f"recorder read within {TOL:g} min before {PTS['P3']} h", "point": list(PTS), "days": {},
+                   "waiting": {"days_with_read": dd, "need": 3}}, open(f"{HERE}/results/hybrid_lodo{TAG}_orders.json", "w"))
+        print(f"{len(dd)} day(s) with a read at the point; need 3 for leave-one-day-out"); return
     def hyb(te, sc):
         oh = te.sort_values(["pos", "id"]).id.tolist(); ol = te.assign(s=sc).sort_values(["s", "id"], ascending=[False, True]).id.tolist()
         return oh[:5] + [i for i in ol if i not in set(oh[:5])]
@@ -126,7 +130,8 @@ def main():
           f"Permutation (slots-6+ labels shuffled within day, LODO refit, 200 draws): observed gain {obs:+.2f}, permutation mean {np.mean(perm):+.2f}, "
           f"95th pct {np.percentile(perm, 95):+.2f}, one-sided p = {pval:.3f}.", f"Alphas chosen per fold: {sorted(set(alphas.values()))} ({list(alphas.values())}).",
           "Per day (hidden / LODO / L2O / prior): " + "; ".join(f"{d[5:]} {H[d]:.0f}/{L1[d]:.0f}/{L2[d]:.0f}/{P6[d]:.0f}" for d in dd)]
-    if TAG:   # all-day fit on the frozen file's days (Nov 2-12, alpha 3), same format as frozen/hybrid_vmonly_P345_20261114.json
+    if TAG and any(d <= "2026-11-12" for d in dd):   # live END_DAY runs (Nov 16+) have none of these days: never write a frozen file then (Nov 19)
+        # all-day fit on the frozen file's days (Nov 2-12, alpha 3), same format as frozen/hybrid_vmonly_P345_20261114.json
         tr = pd.concat([G[d] for d in dd if d <= "2026-11-12"]).dropna(subset=["y"]); m = Ridge(alpha=3.0).fit(tr[ZF], tr.y)
         json.dump({"frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "days": f"2026-11-02..2026-11-12 ({sum(d <= '2026-11-12' for d in dd)})", "alpha": 3.0,
                    "features": ZF, "coef": dict(zip(ZF, map(float, m.coef_))), "intercept": float(m.intercept_), "clean_prior": os.environ.get("CLEAN_PRIOR"),

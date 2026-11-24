@@ -1,0 +1,332 @@
+{
+ "prereg": "results/x_buzz_arm3_prereg.md (amendment 1)",
+ "days": {
+  "2026-11-08": {
+   "x_source": "backfill (pre window, count API)",
+   "base": "pred",
+   "arm3": null,
+   "launches": 17,
+   "x_matched": 17,
+   "x_missing": 0,
+   "partial_window": true,
+   "with_posts": 1,
+   "preannounced": 0
+  },
+  "2026-11-09": {
+   "x_source": "backfill (pre window, count API)",
+   "base": "pred",
+   "arm3": null,
+   "launches": 23,
+   "x_matched": 23,
+   "x_missing": 0,
+   "partial_window": true,
+   "with_posts": 8,
+   "preannounced": 0
+  },
+  "2026-11-10": {
+   "x_source": "backfill (pre window, count API)",
+   "base": "pred",
+   "arm3": null,
+   "launches": 50,
+   "x_matched": 50,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 24,
+   "preannounced": 1
+  },
+  "2026-11-11": {
+   "x_source": "backfill (pre window, count API)",
+   "base": "pred",
+   "arm3": null,
+   "launches": 16,
+   "x_matched": 16,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 13,
+   "preannounced": 2
+  },
+  "2026-11-12": {
+   "x_source": "backfill (pre window, count API)",
+   "base": "pred",
+   "arm3": null,
+   "launches": 37,
+   "x_matched": 37,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 19,
+   "preannounced": 5
+  },
+  "2026-11-13": {
+   "x_source": "backfill (pre window, count API)",
+   "base": "pred",
+   "arm3": null,
+   "launches": 20,
+   "x_matched": 20,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 13,
+   "preannounced": 1
+  },
+  "2026-11-14": {
+   "x_source": "backfill (pre window, count API)",
+   "base": "pred",
+   "arm3": null,
+   "launches": 28,
+   "x_matched": 28,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 15,
+   "preannounced": 0
+  },
+  "2026-11-15": {
+   "x_source": "x_buzz_0010 pre_launch",
+   "base": "pred_arm2",
+   "arm3": null,
+   "launches": 15,
+   "x_matched": 15,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 3,
+   "preannounced": 1
+  },
+  "2026-11-16": {
+   "x_source": "x_buzz_0010 pre_launch",
+   "base": "pred_arm2",
+   "arm3": "shadow_arm3",
+   "launches": 38,
+   "x_matched": 38,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 12,
+   "preannounced": 1
+  },
+  "2026-11-17": {
+   "x_source": "x_buzz_0010 pre_launch",
+   "base": "pred_arm3",
+   "arm3": "pred_arm3",
+   "launches": 43,
+   "x_matched": 43,
+   "x_missing": 0,
+   "partial_window": false,
+   "with_posts": 16,
+   "preannounced": 3
+  }
+ },
+ "primary": {
+  "n_days": 8,
+  "days": [
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12",
+   "2026-11-13",
+   "2026-11-14",
+   "2026-11-15",
+   "2026-11-16",
+   "2026-11-17"
+  ],
+  "base_3_5_10": [
+   54.2,
+   62.5,
+   70.0
+  ],
+  "rerank_3_5_10": [
+   54.2,
+   62.5,
+   71.2
+  ],
+  "diff_top3": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "diff_top5": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "diff_top10": [
+   1.3,
+   0.0,
+   3.8
+  ],
+  "lodo_choice": {
+   "2026-11-10": [
+    0,
+    0.25
+   ],
+   "2026-11-11": [
+    0,
+    0.25
+   ],
+   "2026-11-12": [
+    0,
+    0
+   ],
+   "2026-11-13": [
+    0,
+    0.25
+   ],
+   "2026-11-14": [
+    0,
+    0.25
+   ],
+   "2026-11-15": [
+    0,
+    0.25
+   ],
+   "2026-11-16": [
+    0,
+    0.25
+   ],
+   "2026-11-17": [
+    0,
+    0.25
+   ]
+  },
+  "days_changed": {
+   "2026-11-17": [
+    0.0,
+    0.0,
+    10.0
+   ]
+  },
+  "placebo_mean_diff_3_5_10": [
+   -1.77,
+   -0.16,
+   -0.61
+  ],
+  "n_needed_top3": null,
+  "n_needed_top5": null
+ },
+ "secondary_arm3_days": {
+  "n_days": 2,
+  "note": "too few days"
+ },
+ "incl_partial_nov8_9": {
+  "n_days": 10,
+  "days": [
+   "2026-11-08",
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12",
+   "2026-11-13",
+   "2026-11-14",
+   "2026-11-15",
+   "2026-11-16",
+   "2026-11-17"
+  ],
+  "base_3_5_10": [
+   53.3,
+   60.0,
+   71.0
+  ],
+  "rerank_3_5_10": [
+   53.3,
+   60.0,
+   72.0
+  ],
+  "diff_top3": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "diff_top5": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "diff_top10": [
+   1.0,
+   0.0,
+   3.0
+  ],
+  "lodo_choice": {
+   "2026-11-08": [
+    0,
+    0.25
+   ],
+   "2026-11-09": [
+    0,
+    0.25
+   ],
+   "2026-11-10": [
+    0,
+    0.25
+   ],
+   "2026-11-11": [
+    0,
+    0.25
+   ],
+   "2026-11-12": [
+    0,
+    0
+   ],
+   "2026-11-13": [
+    0,
+    0.25
+   ],
+   "2026-11-14": [
+    0,
+    0.25
+   ],
+   "2026-11-15": [
+    0,
+    0.25
+   ],
+   "2026-11-16": [
+    0,
+    0.25
+   ],
+   "2026-11-17": [
+    0,
+    0.25
+   ]
+  },
+  "days_changed": {
+   "2026-11-17": [
+    0.0,
+    0.0,
+    10.0
+   ]
+  },
+  "placebo_mean_diff_3_5_10": [
+   -1.37,
+   -0.24,
+   -0.46
+  ],
+  "n_needed_top3": null,
+  "n_needed_top5": null
+ },
+ "grok_x_only_top10_reference": {
+  "per_day_3_5_10": {
+   "2026-11-13": [
+    33.3,
+    20.0,
+    60.0
+   ],
+   "2026-11-15": [
+    66.7,
+    60.0,
+    70.0
+   ],
+   "2026-11-16": [
+    0.0,
+    20.0,
+    40.0
+   ],
+   "2026-11-17": [
+    33.3,
+    20.0,
+    50.0
+   ]
+  },
+  "mean": [
+   33.3,
+   30.0,
+   55.0
+  ],
+  "note": "uses launch_day counts to ~00:22 PT: not leak-free for 00:05; reference only"
+ },
+ "decision": "NOT CLEAR: scored forward shadow line"
+}
