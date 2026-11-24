@@ -164,36 +164,6 @@ class TaskC:
     def tau(self, value: float) -> None:
         self._tau = float(value)
 
-    # -- content beyond the item's own text (experimental: "restating the product" should not count as a match)
-    def _item_text(self, item_idx: int) -> str:
-        it = self.bench.item(item_idx)
-        return f"{it.title}. {it.summary}. {' '.join((it.description or '').split())[:600]}"
-
-    def _resid(self, texts: list, item_idx) -> np.ndarray:
-        """Comment embeddings with the direction of the item's own text projected out (unit rows)."""
-        e = self.emb.encode(texts)
-        d = self.emb.encode([self._item_text(i) for i in item_idx])
-        r = e - (e * d).sum(1, keepdims=True) * d
-        return r / np.maximum(np.linalg.norm(r, axis=1, keepdims=True), 1e-9)
-
-    @property
-    def tau_resid(self) -> float:
-        """Threshold for the residual similarity, fitted like `tau` (5% for real comments from different items)."""
-        if getattr(self, "_tau_resid", None) is None:
-            tr = self._day_of[(self._day_of["split"] == "train") & ~self._day_of["is_maker"]]
-            rng = np.random.default_rng(self.seed + 1)
-            a = rng.integers(0, len(tr), self._tau_pairs); b = rng.integers(0, len(tr), self._tau_pairs)
-            items = tr["item_idx"].to_numpy(); people = tr["person_idx"].to_numpy()
-            ok = (items[a] != items[b]) & (people[a] != people[b])
-            a, b = a[ok], b[ok]
-            Ra = self._resid(tr["text"].iloc[a].tolist(), items[a]); Rb = self._resid(tr["text"].iloc[b].tolist(), items[b])
-            self._tau_resid = float(np.quantile(np.einsum("ij,ij->i", Ra, Rb), 1.0 - self.floor))
-        return self._tau_resid
-
-    @tau_resid.setter
-    def tau_resid(self, value: float) -> None:
-        self._tau_resid = float(value)
-
     # -- rows
     def _day_of_comments(self) -> pd.DataFrame:
         """Comments written during the item's own day, one per (person, item): the first of that day."""
@@ -270,9 +240,8 @@ class TaskC:
         with ThreadPoolExecutor(workers) as ex:
             return list(ex.map(one, list(rows.itertuples())))
 
-    def score(self, rows: pd.DataFrame, texts: list, resid: bool = False) -> pd.DataFrame:
-        """Per-row scores of `texts` (one per row; None or '' = no comment, scored as a miss).
-        `resid=True` adds the same three scores on embeddings with the item's own text projected out."""
+    def score(self, rows: pd.DataFrame, texts: list) -> pd.DataFrame:
+        """Per-row scores of `texts` (one per row; None or '' = no comment, scored as a miss)."""
         has = np.array([bool(t) and isinstance(t, str) for t in texts])
         E_real = self.emb.encode(rows["text"].tolist())
         E_sim = self.emb.encode([t if h else " " for t, h in zip(texts, has)])
@@ -282,36 +251,22 @@ class TaskC:
         E_oth = self.emb.encode([t if isinstance(t, str) else " " for t in other])
         sim_o = np.einsum("ij,ij->i", E_oth, E_sim)
         own = np.where(has_o, (sim > sim_o) + 0.5 * (sim == sim_o), np.nan)
-        out = pd.DataFrame({"day": rows["day"].to_numpy(), "person_idx": rows["person_idx"].to_numpy(),
-                            "item_idx": rows["item_idx"].to_numpy(), "has": has, "sim": sim,
-                            "match": np.where(has, sim >= self.tau, False).astype(float), "own_vs_other": own,
-                            "len_ratio": [len(t) / max(len(r), 1) if h else np.nan
-                                          for t, r, h in zip(texts, rows["text"], has)]})
-        if resid:
-            items = rows["item_idx"].to_numpy()
-            R_real = self._resid(rows["text"].tolist(), items)
-            R_sim = self._resid([t if h else " " for t, h in zip(texts, has)], items)
-            R_oth = self._resid([t if isinstance(t, str) else " " for t in other], items)
-            rs = np.einsum("ij,ij->i", R_real, R_sim); ro = np.einsum("ij,ij->i", R_oth, R_sim)
-            out["sim_resid"] = np.where(has, rs, np.nan)
-            out["match_resid"] = np.where(has, rs >= self.tau_resid, False).astype(float)
-            out["own_vs_other_resid"] = np.where(has_o, (rs > ro) + 0.5 * (rs == ro), np.nan)
-        return out
+        return pd.DataFrame({"day": rows["day"].to_numpy(), "person_idx": rows["person_idx"].to_numpy(),
+                             "item_idx": rows["item_idx"].to_numpy(), "has": has, "sim": sim,
+                             "match": np.where(has, sim >= self.tau, False).astype(float), "own_vs_other": own,
+                             "len_ratio": [len(t) / max(len(r), 1) if h else np.nan
+                                           for t, r, h in zip(texts, rows["text"], has)]})
 
-    def score_reference(self, rows: pd.DataFrame, name: str, resid: bool = False) -> pd.DataFrame:
+    def score_reference(self, rows: pd.DataFrame, name: str) -> pd.DataFrame:
         """Score one of the reference columns; rows without that reference are left out (NaN), not counted as misses."""
-        s = self.score(rows, [t if isinstance(t, str) else None for t in rows[name]], resid=resid)
+        s = self.score(rows, [t if isinstance(t, str) else None for t in rows[name]])
         return s[s["has"]].reset_index(drop=True)
 
 
 # ------------------------------------------------------------------------------------------ summaries
 def _agg(df: pd.DataFrame) -> dict:
-    out = {"match": float(df["match"].mean()), "sim": float(df["sim"].mean()),
-           "own_vs_other": float(df["own_vs_other"].mean()), "len_ratio_median": float(df["len_ratio"].median())}
-    for k in ("match_resid", "own_vs_other_resid"):
-        if k in df:
-            out[k] = float(df[k].mean())
-    return out
+    return {"match": float(df["match"].mean()), "sim": float(df["sim"].mean()),
+            "own_vs_other": float(df["own_vs_other"].mean()), "len_ratio_median": float(df["len_ratio"].median())}
 
 
 def summarize(df: pd.DataFrame, n_boot: int = 2000, seed: int = 0) -> dict:

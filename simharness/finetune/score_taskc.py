@@ -2,11 +2,11 @@
 
     python -m simharness.finetune.score_taskc --bench BENCH --out scores.json \\
         --gen tuned=gen_tuned.jsonl base=gen_base.jsonl flash=gen_{split}_history.parquet \\
-        --pairs tuned-base tuned-flash [--tau 0.7497] [--tau-resid 0.41]
+        --pairs tuned-base tuned-flash [--tau 0.7497]
 
 A generation file is JSONL with {"meta": {"split", "person_idx", "item_idx"}, "text"} (what finetune/lora.py writes)
 or a parquet with person_idx, item_idx, sim_text; "{split}" in a path is replaced by the split name.
-Passing --tau (and --tau-resid) reuses thresholds fitted earlier instead of fitting them again.
+Passing --tau reuses a threshold fitted earlier instead of fitting it again.
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from simharness import task_c as tc
 from simharness.bench import Benchmark
 
 REFS = ("floor_other_item", "own_past_comment", "same_item_other")
-METRICS = ("own_vs_other", "match", "own_vs_other_resid", "match_resid")
+METRICS = ("own_vs_other", "match")
 
 
 def load_gen(path: str, split: str) -> dict:
@@ -42,22 +42,19 @@ def main() -> None:
     ap.add_argument("--gen", nargs="+", required=True, help="name=path ...")
     ap.add_argument("--pairs", nargs="*", default=[], help="a-b ... (a minus b, paired on the same rows)")
     ap.add_argument("--tau", type=float)
-    ap.add_argument("--tau-resid", type=float)
     ap.add_argument("--val-rows", type=int, default=400)
     a = ap.parse_args()
     T = tc.TaskC(Benchmark(a.bench))
     if a.tau:
         T.tau = a.tau
-    if a.tau_resid:
-        T.tau_resid = a.tau_resid
     gens = dict(g.split("=", 1) for g in a.gen)
-    res = {"tau": T.tau, "tau_resid": T.tau_resid, "splits": {}}
+    res = {"tau": T.tau, "splits": {}}
     for split, cap in (("val", a.val_rows), ("test", None)):
         rows = T.rows(split, max_rows=cap)
-        sc = {ref: T.score_reference(rows, ref, resid=True) for ref in REFS}
+        sc = {ref: T.score_reference(rows, ref) for ref in REFS}
         for name, path in gens.items():
             g = load_gen(path, split)
-            sc[name] = T.score(rows, [g.get((int(r.person_idx), int(r.item_idx))) for r in rows.itertuples()], resid=True)
+            sc[name] = T.score(rows, [g.get((int(r.person_idx), int(r.item_idx))) for r in rows.itertuples()])
         R = {"rows": len(rows), "models": {}, "paired": {}}
         for k, v in sc.items():
             R["models"][k] = {**tc.summarize(v, n_boot=1000), "empty": int((~v["has"]).sum())}
@@ -69,8 +66,7 @@ def main() -> None:
         pct = lambda d: f"{100 * d['value']:.1f} [{100 * d['ci95'][0]:.1f}, {100 * d['ci95'][1]:.1f}]"  # noqa: E731
         print(split, len(rows), flush=True)
         for k, v in R["models"].items():
-            print(f"  {k:22s} person {pct(v['own_vs_other'])} | content {pct(v['match'])} | resid person "
-                  f"{pct(v['own_vs_other_resid'])} | resid content {pct(v['match_resid'])} | len "
+            print(f"  {k:22s} person {pct(v['own_vs_other'])} | content {pct(v['match'])} | len "
                   f"{v['len_ratio_median']['value']:.2f} | empty {v['empty']}", flush=True)
         for k, v in R["paired"].items():
             print(f"  PAIRED {k}: {100 * v['diff']:+.1f} [{100 * v['ci95'][0]:+.1f}, {100 * v['ci95'][1]:+.1f}] "
