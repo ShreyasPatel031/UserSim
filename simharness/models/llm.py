@@ -105,6 +105,51 @@ def parse(text: str) -> tuple[float, str]:
     return (min(max(p, 0.0), 1.0) if p == p else np.nan), str(d.get("comment", ""))
 
 
+CHOICE_PROMPT = """You simulate one real Product Hunt member choosing among today's launches.
+
+THIS MEMBER (everything known before today, newest first):
+{history}
+
+TODAY'S LINE-UP ({n} launches, listed in random order):
+{lines}
+
+On a day when this member is active they upvote about {k} launches.
+Pick the {m} launches from this line-up that this member is most likely to upvote today, most likely first.
+Reply with JSON only: {{"picks": [<line numbers, most likely first>]}}"""
+
+
+def lineup_line(i: int, item, description: str = "") -> str:
+    """One line-up entry from line-up fields only: name, tagline, up to 4 topics, description cut to 160 chars."""
+    desc = scrub(" ".join((description or "").split()))[:160]
+    line = f"{i}. {scrub(item.title)} | {scrub(item.summary)} | topics: {', '.join(item.tags[:4]) or '(none)'}"
+    return line + (f" | {desc}" if desc else "")
+
+
+def build_choice_prompt(history_text: str, lines: list[str], k: int, m: int) -> str:
+    return CHOICE_PROMPT.format(history=history_text, n=len(lines), lines="\n".join(lines), k=k, m=m)
+
+
+def parse_picks(text: str, n: int) -> list[int]:
+    """Line numbers (1..n) in the order given, duplicates and out-of-range numbers dropped."""
+    m = re.search(r"\{[^{}]*\"picks\"[^{}]*\}", text or "", re.S)
+    try:
+        raw = json.loads(m.group(0)).get("picks", []) if m else []
+    except ValueError:
+        raw = []
+    if not raw and text:
+        mm = re.search(r"picks\W+\[([^\]]*)\]", text)
+        raw = re.findall(r"\d+", mm.group(1)) if mm else []
+    out = []
+    for x in raw if isinstance(raw, list) else []:
+        try:
+            v = int(x)
+        except (TypeError, ValueError):
+            continue
+        if 1 <= v <= n and v not in out:
+            out.append(v)
+    return out
+
+
 # ------------------------------------------------------------------------------------------ budget and cache
 class BudgetExceeded(RuntimeError):
     pass
