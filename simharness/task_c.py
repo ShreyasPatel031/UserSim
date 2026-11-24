@@ -110,9 +110,9 @@ class PromptComment(CommentModel):
     """History-built comment: the person's rendered history plus the item, through any text backend
     (`simharness.models.llm.Backend`)."""
 
-    def __init__(self, backend, max_items: int = 30, max_comments: int = 10):
+    def __init__(self, backend, max_items: int = 30, max_comments: int = 10, label: str | None = None):
         self.backend, self.max_items, self.max_comments = backend, max_items, max_comments
-        self.name = f"history-prompt[{backend.name}]"
+        self.name = f"history-prompt[{backend.name}]" + (f"[{label}]" if label else "")
 
     @property
     def cost_usd(self) -> float:
@@ -120,6 +120,38 @@ class PromptComment(CommentModel):
 
     def write(self, batch, j: int, item) -> str:
         hist = batch.render(j, self.max_items, self.max_comments)
+        return parse_comment(self.backend.call(HISTORY_PROMPT.format(history=hist, **_item_fields(item))))
+
+
+class RetrievedComment(PromptComment):
+    """History-built comment where the past comments shown are the `k` most similar to the item's text, not the
+    latest `k`. Call `prepare(bench, rows, embedder)` once before generating (it does the retrieval in one thread)."""
+
+    def __init__(self, backend, max_items: int = 30, k: int = 10, label: str = "retrieved"):
+        super().__init__(backend, max_items=max_items, max_comments=0, label=label)
+        self.k, self._picked = k, {}
+
+    def prepare(self, bench, rows: pd.DataFrame, embedder) -> None:
+        from simharness.bench import scrub
+        for row in rows.itertuples():
+            start, _ = _day_bounds_utc(row.day, bench.cfg.day_tz)
+            c = bench.comments[(bench.comments["person_idx"] == row.person_idx)
+                               & (bench.comments["day_ord"] < day_ord(row.day))]
+            c = c[c["ts"].isna() | (c["ts"] < start)]  # leak rule: written before the day starts
+            if not len(c):
+                continue
+            it = bench.item(row.item_idx)
+            texts = [scrub(" ".join(str(t).split()))[:240] for t in c["text"]]
+            sims = embedder.encode(texts) @ embedder.encode([f"{it.title}. {it.summary}. {(it.description or '')[:600]}"])[0]
+            top = np.argsort(-sims)[: self.k]
+            titles = [scrub(str(bench.items.iloc[int(i)].title)) for i in c["item_idx"].to_numpy()[top]]
+            self._picked[(int(row.person_idx), int(row.item_idx))] = [f'- on {t}: "{texts[i]}"' for t, i in zip(titles, top)]
+
+    def write(self, batch, j: int, item) -> str:
+        hist = batch.render(j, self.max_items, 0)
+        lines = self._picked.get((int(batch.person_idx[j]), int(item.item_idx)))
+        if lines:
+            hist += "\nComments they wrote on the launches most like this one:\n" + "\n".join(lines)
         return parse_comment(self.backend.call(HISTORY_PROMPT.format(history=hist, **_item_fields(item))))
 
 
