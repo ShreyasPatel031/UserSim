@@ -1,11 +1,11 @@
 {
- "week_monday": "2026-11-16",
+ "week_monday": "2026-11-23",
  "points": {
   "dayend": {
-   "day": "2026-11-22",
-   "written_at": "2026-11-23T08:21:16.106969+00:00",
-   "file": "results/weekly_live/2026-11-16_2026-11-22_dayend.json"
+   "day": "2026-11-23",
+   "written_at": "2026-11-24T08:16:04.017093+00:00",
+   "file": "results/weekly_live/2026-11-23_2026-11-23_dayend.json"
   }
  },
- "updated_at": "2026-11-23T08:21:16.106969+00:00"
+ "updated_at": "2026-11-24T08:16:04.017093+00:00"
 }
