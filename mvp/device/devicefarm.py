@@ -1,7 +1,12 @@
 """Pay-per-minute real iPhones on AWS Device Farm (remote access sessions).
 
 Billing is $0.17 per device minute while a session runs (first 1,000 minutes free).
-The device is wiped when the session ends, so sign in to the Apple ID each session.
+The device is wiped when the session ends.
+
+LIMIT (checked Nov 24 2026, iPhone 16 / iOS 18.0): public devices are supervised by
+Amazon's MDM. The App Store is restricted ("Unable to launch com.apple.AppStore because it
+is restricted") and the Apple Account row in Settings is greyed out. So no Apple ID sign-in
+and no App Store installs: only Safari, built-in apps, or an .ipa you upload yourself.
 
 Credentials: standard AWS env vars (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY) or a
 profile. The IAM user needs the `devicefarm:*` actions (AWSDeviceFarmFullAccess).
