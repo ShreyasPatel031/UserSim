@@ -5,6 +5,7 @@ Stages (each writes its files to --out and, with --sync gs://prefix, copies them
   sets     HARD rows (activity-matched, test / validation / a train sample), the shared prompt-model subsamples
   leak     leak checks on the built rows, features and prompts
   taste    item embeddings, taste-v1 variants, choice on validation
+  ablate   taste-v1 feature groups on HARD (activity / topics / embeddings)
   nonllm   most-active, logistic, taste-v1 on every set + full-pool ranking + the logistic+taste stack
   llm      one prompt model on the shared subsample (--models a,b --split test|val --cap USD); every call cached
   agg      results.json + README.md table (aggregates only) into --results-dir
@@ -230,6 +231,39 @@ def stage_taste(a):
     sync([f"{a.out}/taste_models.pkl", f"{a.out}/taste_val_report.json"], a.sync)
 
 
+def stage_ablate(a):
+    """Where does taste-v1's edge on HARD come from: finer activity recency, topic shares, or text embeddings?"""
+    from simharness.features import TASTE_NAMES
+    from simharness.models.taste import TasteVote, featurize, pool_weights
+    from simharness.score import paired_diff, score_rows, summarize
+    b = load_bench(a)
+    tf = _taste(a, b)
+    tr = pd.read_parquet(f"{a.out}/taste_train_rows.parquet")
+    X, y, w = np.load(f"{a.out}/taste_Xtr.npy"), tr.y.to_numpy(), pool_weights(b, tr, 0.1)
+    ht = pd.read_parquet(f"{a.out}/hard_test.parquet")
+    Xt = featurize(tf, ht)
+    act = ["ln_rw", "ln_n7", "ln_n30", "ln_n60", "ln_all", "ln_com", "com_rate"]
+    top = ["tm", "tm_max", "ln_rw_x_tm"]
+    emb = ["emb_cos", "emb_max30", "emb_mean30"]
+    groups = {"activity only": act, "activity + topics": act + top, "activity + embeddings": act + emb,
+              "all (taste-v1)": list(TASTE_NAMES), "topics + embeddings only (no activity)": top + emb}
+    per, res = {}, {}
+    for name, cols in groups.items():
+        ix = [TASTE_NAMES.index(c) for c in cols]
+        m = TasteVote(tf, "lgbm").fit(X[:, ix], y, sample_weight=w)
+        per[name] = score_rows(ht, m.predict(Xt[:, ix]))
+        s = summarize(per[name], pooled_auc=True, n_boot=1000, cluster="item")
+        res[name] = {"features": cols, "HARD_auc_pooled": s["auc_pooled"], "HARD_auc_mean_per_launch": s["auc_mean"]}
+        print(name, json.dumps(res[name]), flush=True)
+    for name in ("activity + topics", "activity + embeddings", "all (taste-v1)"):
+        res[name]["minus_activity_only"] = {
+            "auc_pooled": paired_diff(per[name], per["activity only"], "auc_pooled", 1000, pooled_auc=True, cluster="item"),
+            "auc_mean_per_launch": paired_diff(per[name], per["activity only"], "auc_mean", 1000, cluster="item")}
+        print(name, json.dumps(res[name]["minus_activity_only"]), flush=True)
+    json.dump(res, open(f"{a.out}/taste_ablation.json", "w"), indent=1)
+    sync([f"{a.out}/taste_ablation.json"], a.sync)
+
+
 def _models(a, b):
     from simharness.models.baselines import backer_logistic, most_active
     from simharness.models.taste import TasteVote
@@ -451,6 +485,8 @@ def stage_agg(a):
     for (m, sp), r in led.items():
         spend[f"{m} / {sp}"] = r["cost_usd"]
     res["spend_usd_this_run"] = spend
+    if os.path.exists(f"{a.out}/taste_ablation.json"):
+        res["taste_v1_feature_ablation_on_HARD"] = json.load(open(f"{a.out}/taste_ablation.json"))
     if a.prior and os.path.exists(a.prior):
         res["before_restart"] = json.load(open(a.prior))
     os.makedirs(a.results_dir, exist_ok=True)
@@ -502,7 +538,7 @@ def _table(res) -> str:
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["sets", "leak", "taste", "nonllm", "llm", "agg"])
+    ap.add_argument("stage", choices=["sets", "leak", "taste", "ablate", "nonllm", "llm", "agg"])
     ap.add_argument("--bench", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--sync", default="")
