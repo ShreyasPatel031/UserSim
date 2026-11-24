@@ -122,21 +122,49 @@ def _clusters(df: pd.DataFrame, cluster: str) -> pd.Series:
     return df["day"] if cluster == "day" else df["day"].astype(str) + "|" + df["item_idx"].astype(str)
 
 
+class _Prep:
+    """Per-item arrays for fast cluster bootstraps (no DataFrame work inside the loop)."""
+
+    def __init__(self, df: pd.DataFrame, cluster: str, pooled_auc: bool):
+        df = df.reset_index(drop=True)
+        self.hits, self.N = df["hits"].to_numpy(float), df["N"].to_numpy(float)
+        self.auc, self.bins = df["auc"].to_numpy(float), np.stack(df["bins"].to_list())
+        self.pooled = bool(pooled_auc and "p" in df)
+        if self.pooled:
+            self.p, self.y = df["p"].to_list(), df["y"].to_list()
+        names, inv = np.unique(_clusters(df, cluster).to_numpy().astype(str), return_inverse=True)
+        self.members = [np.flatnonzero(inv == k) for k in range(len(names))]
+
+    def agg(self, idx: np.ndarray) -> dict:
+        with np.errstate(divide="ignore", invalid="ignore"):
+            rec = self.hits[idx] / self.N[idx]
+        out = {"recall_at_N_pooled": self.hits[idx].sum() / max(self.N[idx].sum(), 1),
+               "recall_at_N_mean": float(np.nanmean(rec)) if np.isfinite(rec).any() else np.nan,
+               "auc_mean": float(np.nanmean(self.auc[idx])) if np.isfinite(self.auc[idx]).any() else np.nan,
+               "ece": _ece(self.bins[idx].sum(axis=0))}
+        if self.pooled:
+            p = np.concatenate([self.p[i] for i in idx]); y = np.concatenate([self.y[i] for i in idx])
+            ok = ~np.isnan(p)
+            out["auc_pooled"] = _auc(p[ok], y[ok])
+        return out
+
+    def draw(self, rng) -> np.ndarray:
+        pick = rng.integers(0, len(self.members), len(self.members))
+        return np.concatenate([self.members[k] for k in pick])
+
+
 def summarize(df: pd.DataFrame, n_boot: int = 2000, seed: int = 0, pooled_auc: bool = False,
               cluster: str = "day") -> dict:
     """cluster: "day" (resample days) or "item" (resample items / launches)."""
-    point = _agg(df, pooled_auc)
-    cl = _clusters(df, cluster)
-    days = cl.unique()
-    groups = {d: g for d, g in df.groupby(cl)}
+    pr = _Prep(df, cluster, pooled_auc)
+    point = pr.agg(np.arange(len(df)))
     rng = np.random.default_rng(seed)
     boots = {k: [] for k in point}
     for _ in range(n_boot):
-        pick = rng.choice(days, len(days), replace=True)
-        a = _agg(pd.concat([groups[d] for d in pick]), pooled_auc)
+        a = pr.agg(pr.draw(rng))
         for k in point:
             boots[k].append(a[k])
-    res = {"days": int(len(days)), "items": int(len(df)), "positives": int(df["N"].sum()),
+    res = {"days": int(df["day"].nunique()), "items": int(len(df)), "positives": int(df["N"].sum()),
            "pairs": int(df["n"].sum())}
     for k, v in point.items():
         lo, hi = np.nanpercentile(boots[k], [2.5, 97.5])
@@ -146,21 +174,19 @@ def summarize(df: pd.DataFrame, n_boot: int = 2000, seed: int = 0, pooled_auc: b
 
 def paired_diff(a: pd.DataFrame, b: pd.DataFrame, metric: str = "recall_at_N_pooled", n_boot: int = 2000,
                 seed: int = 0, pooled_auc: bool = False, cluster: str = "day") -> dict:
-    """a - b on the same items, bootstrap clustered by day or by item."""
+    """a - b on the same items, bootstrap clustered by day or by item (the same resample for both)."""
     keys = ["day", "item_idx"]
     m = a.merge(b, on=keys, suffixes=("_a", "_b"))
     A = m[keys + [c for c in m if c.endswith("_a")]].rename(columns=lambda c: c[:-2] if c.endswith("_a") else c)
     B = m[keys + [c for c in m if c.endswith("_b")]].rename(columns=lambda c: c[:-2] if c.endswith("_b") else c)
-    point = _agg(A, pooled_auc)[metric] - _agg(B, pooled_auc)[metric]
-    ca, cb = _clusters(A, cluster), _clusters(B, cluster)
-    days = ca.unique()
-    ga = {d: g for d, g in A.groupby(ca)}; gb = {d: g for d, g in B.groupby(cb)}
+    pa, pb = _Prep(A, cluster, pooled_auc), _Prep(B, cluster, pooled_auc)
+    full = np.arange(len(m))
+    point = pa.agg(full)[metric] - pb.agg(full)[metric]
     rng = np.random.default_rng(seed)
     bs = []
     for _ in range(n_boot):
-        pick = rng.choice(days, len(days), replace=True)
-        bs.append(_agg(pd.concat([ga[d] for d in pick]), pooled_auc)[metric]
-                  - _agg(pd.concat([gb[d] for d in pick]), pooled_auc)[metric])
+        idx = pa.draw(rng)
+        bs.append(pa.agg(idx)[metric] - pb.agg(idx)[metric])
     lo, hi = np.nanpercentile(bs, [2.5, 97.5])
     return {"metric": metric, "cluster": cluster, "diff": round(float(point), 4),
             "ci95": [round(float(lo), 4), round(float(hi), 4)]}
