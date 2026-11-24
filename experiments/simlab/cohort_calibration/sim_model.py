@@ -10,9 +10,9 @@ def _token():
         if time.time() - _tok["at"] > 1800:
             _tok["t"] = subprocess.check_output(["gcloud", "auth", "print-access-token"], text=True).strip(); _tok["at"] = time.time()
         return _tok["t"]
-def _gemini(prompt, max_tokens, model):
+def _gemini(prompt, max_tokens, model, temperature=0.0):
     body = {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0, "maxOutputTokens": max_tokens, "responseMimeType": "application/json", "thinkingConfig": {"thinkingBudget": 0}}}
+            "generationConfig": {"temperature": temperature, "maxOutputTokens": max_tokens, "responseMimeType": "application/json", "thinkingConfig": {"thinkingBudget": 0}}}
     for i in range(6):
         try:
             req = urllib.request.Request(_URL.format(m=model), json.dumps(body).encode(), {"Authorization": "Bearer " + _token(), "Content-Type": "application/json"})
@@ -24,8 +24,8 @@ def _gemini(prompt, max_tokens, model):
             if "403" in str(e) or "PERMISSION" in str(e).upper(): raise
             time.sleep(5 * (i + 1))
     return ""
-def call(prompt, max_tokens=400):
-    if MODEL.startswith("gemini-"): return _gemini(prompt, max_tokens, MODEL)
+def call(prompt, max_tokens=400, temperature=0.0):
+    if MODEL.startswith("gemini-"): return _gemini(prompt, max_tokens, MODEL, temperature)
     raise NotImplementedError(f"no adapter for {MODEL}")
 def usd():
     return round(USAGE["in"] / 1e6 * 0.30 + USAGE["out"] / 1e6 * 2.50, 4)

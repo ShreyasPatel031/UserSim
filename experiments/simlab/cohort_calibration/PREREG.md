@@ -182,3 +182,14 @@ k stored per agent. Every prompt and raw response is stored in the private agent
 picks and the same person's real upvotes on the shortlist that day, for held re-read people who voted (Task V on the shortlist).
 Both arms run in a fresh scheduled session (stageb_nightly.sh), not in E5's session; v1 there has no /try page reads, so its page text falls back
 to the 00:05 name, tagline and description (recorded per launch as page_source).
+
+## Addendum 9 (2026-11-24): person-built panel deployed (WHAT-PANEL-3 decision, orchestrator 14:29Z)
+Nightly step 4b (person_panel.py) writes say.person_built_panel (15 comments per launch, no person keys) into results/web/explain/<D>.json.
+Selection = simharness/run_what_panel.py build (parity: Nov 23 panel reproduced exactly, 27/27 launches, 810/810 rows) on the bench_v0 tables
+(no forward overlays, so no day-of data); draw of 15 from the top 30 by md5(launch id + D); gemini-2.5-flash at temperature 0.7; FT_PROMPT with
+the last sentence replaced by "Do not mention your own name, employer or products" + JSON instruction. Privacy guard: drop maker-like or
+self-naming comments and comments that name a launch from the person's own rendered history, then take the next person in the draw.
+forward_says.py main WHAT line = persona + person-built merged; persona-only = shadow, paired difference reported daily.
+Revert rule (fixed): after 7 scored live days, revert to persona-only if merged precision is not above the shadow (paired interval includes 0)
+or merged recall is clearly below it. Nov 24 = rehearsal (flagged rehearsal_late_unscored, not merged in the forward series).
+Caveat: the bench tables are static (built ~Nov 23); people's histories after that are not in the prompts until the harness bench is refreshed.

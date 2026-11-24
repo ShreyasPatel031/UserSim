@@ -67,6 +67,11 @@ def one(lid):
     # metrics averaged over runs, run-to-run spread kept; plain-arm comments generated once per launch (cached) so arms differ only by judging.
     cm = NT[NT.post == lid].sort_values("created").text.tolist(); pan = ((EX.get(lid) or {}).get("say") or {}).get("persona_panel") or {}
     cand = [f"{x.get('reaction', '')} Concern: {x.get('concern', '')} Question: {x.get('question', '')}" for x in pan.get("items", [])]
+    # WHAT-PANEL-3 deploy (orchestrator 14:29Z Nov 24): the main line scores persona_panel + person_built_panel merged; persona-only is the shadow.
+    # A rehearsal panel (rehearsal_late_unscored) is not merged into the main line.
+    pbp = ((EX.get(lid) or {}).get("say") or {}).get("person_built_panel") or {}
+    pb = [str(x)[:300] for x in (pbp.get("comments") or []) if str(x).strip()] if not pbp.get("rehearsal_late_unscored") else []
+    shadow = cand[:] if pb else None; cand = cand + pb
     if len(cm) < 5 or not cand: return {"id": lid, "n_comments": len(cm), "scored": False, "why": "fewer than 5 non-team comments" if len(cm) < 5 else "no panel"}
     c = "\n".join(f"- {t[:400]}" for t in cm[:40]); t0 = T0.get(lid) or {}
     if lid not in PLC:
@@ -76,10 +81,11 @@ def one(lid):
     th, ct = tr["themes"], tr["complaints"]
     for _ in range(NRUNS):
         x = judge(th, ct, cand)
+        if shadow: x.update({"persona_only_" + k: v for k, v in judge(th, ct, shadow).items()})
         if pl: x.update({"plain_" + k: v for k, v in judge(th, ct, pl).items()})
         runs.append(x)
-    r = {"id": lid, "n_comments": len(cm), "n_personas": len(cand), "scored": any(x.get("scored") for x in runs), "runs": runs}
-    for k in [m for m in M] + ["plain_" + m for m in M]:
+    r = {"id": lid, "n_comments": len(cm), "n_personas": len(cand) - len(pb), "n_person_built": len(pb), "scored": any(x.get("scored") for x in runs), "runs": runs}
+    for k in [m for m in M] + ["plain_" + m for m in M] + ["persona_only_" + m for m in M]:
         v = [x[k] for x in runs if k in x]
         if v: r[k] = float(np.mean(v)); r[k + "_spread"] = float(np.max(v) - np.min(v)); r[k + "_nruns"] = len(v)
     return r
@@ -100,6 +106,9 @@ out = {"day": D, "source": "official PH API v2 live capture (api_comments + live
        "complaint_recall": ci(S.complaint_recall.dropna()) if len(S) and "complaint_recall" in S else None, "launches_with_complaints": int(S.complaint_recall.notna().sum()) if len(S) and "complaint_recall" in S else 0,
        "plain_recall": ci(S.plain_recall.dropna()) if "plain_recall" in S else None, "plain_precision": ci(S.plain_precision.dropna()) if "plain_precision" in S else None,
        "plain_complaint_recall": ci(S.plain_complaint_recall.dropna()) if "plain_complaint_recall" in S else None,
+       "main line": "persona panel + person-built panel (merged) where a deployed person-built panel exists; else persona panel",
+       "shadow persona-only (launches with a person-built panel)": {m: ci(S["persona_only_" + m].dropna()) for m in M if "persona_only_" + m in S} or None,
+       "merged minus persona-only (paired)": {m: ci((S[m] - S["persona_only_" + m]).dropna()) for m in M if "persona_only_" + m in S} or None,
        "harness reference (276 past launches, 24-persona panel)": {"recall": 62.8, "recall_w": 73.3, "precision": 54.2, "complaint_recall": 24.8},
        "usd": round(llm.USAGE["in"] / 1e6 * .3 + llm.USAGE["out"] / 1e6 * 2.5, 3), "per_launch": [{k: v for k, v in r.items()} for r in R]}
 os.makedirs(os.path.join(HERE, "reports", "forward_sim"), exist_ok=True); 
