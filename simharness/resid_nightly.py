@@ -2,6 +2,8 @@
 
   python -m simharness.resid_nightly --day 2026-11-26            # one PT day, once its final board exists
   python -m simharness.resid_nightly --backfill 2026-11-15:2026-11-24
+  python -m simharness.resid_nightly --catch-up 2026-11-15       # every day from FIRST to yesterday (PT) with no
+                                                                 # residual.json yet; the nightly job runs this
   python -m simharness.resid_nightly --leaderboard-only
 
   --root   where results live (default gs://usersim-bakeoff-347838016394/usersim_sim; a local folder with the same
@@ -483,6 +485,7 @@ def main(argv=None):
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--day")
     g.add_argument("--backfill", help="FIRST:LAST (PT days)")
+    g.add_argument("--catch-up", metavar="FIRST", help="every PT day from FIRST to yesterday without a residual.json")
     g.add_argument("--leaderboard-only", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args(argv)
@@ -492,7 +495,14 @@ def main(argv=None):
               "(pip install vaderSentiment)", file=sys.stderr)
 
     history = load_history(store)
-    todo = [] if a.leaderboard_only else ([a.day] if a.day else list(days_between(*a.backfill.split(":"))))
+    if a.catch_up:
+        yesterday = (dt.datetime.now(PT).date() - dt.timedelta(days=1)).isoformat()
+        done = {h["day"] for h in history}
+        todo = [d for d in days_between(a.catch_up, yesterday) if d not in done]
+    elif a.leaderboard_only:
+        todo = []
+    else:
+        todo = [a.day] if a.day else list(days_between(*a.backfill.split(":")))
     status = {}
     for day in todo:
         res, why = read_day(store, day)
