@@ -141,10 +141,15 @@ def check():
     now = dt.datetime.now(UTC)
     out = []
     hbs = []
+    api_ok = []  # heartbeat times whose newest ph_api_v2 snapshot had 0 failures (orchestrator 13:02Z Nov 25)
     for who in ("from_grokbot", "from_cursor"):
-        m = re.search(r"updated:\s*(\S+)", sh("gsutil", "cat", f"{G}/mailbox/{who}/ph_live_capture.status.md"))
+        txt = sh("gsutil", "cat", f"{G}/mailbox/{who}/ph_live_capture.status.md")
+        m = re.search(r"updated:\s*(\S+)", txt)
         if m and ts(m.group(1)):
             hbs.append(ts(m.group(1)))
+            a = re.search(r"ph_api_v2:[^\n]*?failures (\d+)", txt)
+            if a and int(a.group(1)) == 0:
+                api_ok.append(ts(m.group(1)))
     hb = max(hbs) if hbs else None
     if not hb or (now - hb).total_seconds() / 60 > 20:
         out.append({"feed": "live_capture_heartbeat", "last_good": hb.isoformat() if hb else None,
@@ -157,6 +162,12 @@ def check():
     posts, cms = posts + yp, cms + yc
     for feed, series, lim in (("posts_ts", posts, POSTS_LIMIT), ("comments_ts", cms, comment_limit(now))):
         last = max(series) if series else None
+        if feed == "comments_ts" and api_ok:
+            # api_comments files only land when there are new comments, so a quiet spell reads as a gap. The capture
+            # heartbeat (a 15-min ph_api_v2 snapshot with 0 failures, updated within 20 min) is the freshness evidence.
+            hb_ok = max(api_ok)
+            if (now - hb_ok).total_seconds() / 60 <= 20:
+                last = max(last, hb_ok) if last else hb_ok
         if not last or (now - last).total_seconds() / 60 > lim:
             row = {"feed": feed, "day_pt": day, "last_good": last.isoformat() if last else None,
                    "gap_min": round((now - last).total_seconds() / 60, 1) if last else None, "limit_min": lim}
