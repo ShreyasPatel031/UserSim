@@ -58,7 +58,13 @@ def fast_video(run: str) -> str | None:
         with open(full, "wb") as f:
             for chunk in v.iter_content(1 << 20):
                 f.write(chunk)
-    subprocess.run(["python3", "-m", "mvp.device.fast_video", full, f"{run}/fast.mp4"], check=True)
+    # Client rule: the video starts at the first screen of the test, never setup, install or login. A run without a
+    # mark gets no client video (start would be 0 and show the login).
+    if meta.get("test_start_video_s") is None:
+        print(f"{run}: no test-start mark; not cutting a client video")
+        return None
+    start = max(0.0, meta["test_start_video_s"] - 1.0)
+    subprocess.run(["python3", "-m", "mvp.device.fast_video", full, f"{run}/fast.mp4", "--start", str(start)], check=True)
     meta["video_url"] = url
     meta["fast_video"] = "fast.mp4"
     json.dump(meta, open(f"{run}/session.json", "w"), indent=1)
