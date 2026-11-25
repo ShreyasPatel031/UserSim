@@ -46,6 +46,8 @@ for m in sorted(X.mon.unique()):
     cc = [c for c in M.cols(tr, src) if not c.startswith(AL.MP) and c not in AL.ID and c not in ("llm_site", "ph_month")] + NEW
     ref = fitp(tr, te, cc, {})
     P = te[["id", "day", "mon", "dailyRank", "votes"]].copy(); P["arm3_ref"] = ref; P["n_inputs"] = len(cc)
+    if os.environ.get("SAVE_INPUTS_FROM") and m == os.environ["SAVE_INPUTS_FROM"][:7]:   # parity read (orchestrator 21:22Z Nov 25): the month's inputs
+        te[te.day >= os.environ["SAVE_INPUTS_FROM"]][["id", "day"] + cc].to_parquet(os.path.join(OUT, "inputs_tail.parquet"), index=False)
     parts.append(P); log(month=m, train=int(trm.sum()), test=int(tem.sum()), inputs=len(cc))
 O = pd.concat(parts, ignore_index=True)
 for c in O.columns:
