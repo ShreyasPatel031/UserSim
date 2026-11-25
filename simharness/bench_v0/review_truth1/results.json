@@ -1,0 +1,387 @@
+{
+ "reviews_total": 36017,
+ "reviews_from_2025": 15312,
+ "products_with_any_2025_review": 4028,
+ "products_with_5_plus": 537,
+ "products_with_10_plus": 266,
+ "median_reviews_per_product": 9.0,
+ "products_with_complaint_truth": 341,
+ "products_with_like_truth": 535,
+ "mean_complaints": 1.9,
+ "mean_likes": 4.99,
+ "rating_mean_over_products": 4.84,
+ "category_source": {
+  "classifier_slug_homepage_likes": 290,
+  "ph_product": 202,
+  "classifier": 45
+ },
+ "review_sources_2025": {
+  "records": 8797,
+  "simlab_review_text": 3777,
+  "competitor_reviews": 2738
+ },
+ "categories_with_any_truth_product": 142,
+ "categories_with_20_plus_truth_products": 6,
+ "coverage_backtest_competitor_sets": {
+  "launches": 5081,
+  "competitor_slots": 25400,
+  "slots_with_truth": 0.23,
+  "launches_with_>=1": 0.6028,
+  "launches_with_both_first_2": 0.1573,
+  "launches_with_>=2_any": 0.3131
+ },
+ "coverage_nov23_24_shortlist_sets": {
+  "launches": 69,
+  "competitor_slots": 345,
+  "slots_with_truth": 0.3391,
+  "launches_with_>=1": 0.7536,
+  "launches_with_both_first_2": 0.2899,
+  "launches_with_>=2_any": 0.5217
+ },
+ "coverage_nov24_full_lineup_category_fallback": {
+  "launches": 42,
+  "competitor_slots": 210,
+  "slots_with_truth": 0.3286,
+  "launches_with_>=1": 0.6905,
+  "launches_with_both_first_2": 0.3095,
+  "launches_with_>=2_any": 0.4762
+ },
+ "homepage_fetch": {
+  "products_with_url": 360,
+  "kept": 288,
+  "dropped": {
+   "too_short": 30,
+   "http_error": 19,
+   "review_widget": 18,
+   "fetch_error": 3,
+   "redirected_to_producthunt": 2
+  },
+  "url_sources_kept": {
+   "competitor_domain_list": 213,
+   "launch_site_capture": 75
+  },
+  "fetched_between": [
+   "2026-11-25T01:48:24+00:00",
+   "2026-11-25T01:48:36+00:00"
+  ]
+ },
+ "baseline_overall": {
+  "complaint_recall": [
+   17.8,
+   14.1,
+   21.6,
+   204
+  ],
+  "complaint_precision": [
+   10.0,
+   8.1,
+   12.1,
+   204
+  ],
+  "like_recall": [
+   54.6,
+   50.9,
+   58.2,
+   287
+  ],
+  "like_precision": [
+   33.9,
+   31.3,
+   36.4,
+   287
+  ]
+ },
+ "truth_products_per_category": {
+  "AI Infrastructure Tools": 31,
+  "Cloud Computing Platforms": 28,
+  "Team collaboration software": 25,
+  "AI Coding Agents": 24,
+  "UI frameworks": 24,
+  "Databases and backend frameworks": 20,
+  "Foundation Models": 16,
+  "Automation tools": 15,
+  "AI Voice Agents": 15,
+  "AI Chatbots": 15,
+  "Project management software": 13,
+  "LLMs": 13,
+  "Vibe Coding Tools": 13,
+  "Website analytics": 12,
+  "No-Code App Builder": 12,
+  "Payment processors": 11,
+  "Engineering & Development": 11,
+  "AI Generative Media": 11,
+  "LLM Developer Tools": 10,
+  "Code editors": 10,
+  "Command line tools": 10,
+  "Ecommerce platforms": 10,
+  "AI Code Editors": 10,
+  "No-code Platforms": 10,
+  "Social Networking": 10,
+  "Note and writing apps": 10
+ },
+ "baseline_per_category_20_plus": {
+  "AI Infrastructure Tools": {
+   "complaint_recall": [
+    4.0,
+    0.0,
+    12.0,
+    10
+   ],
+   "complaint_precision": [
+    5.0,
+    0.0,
+    11.7,
+    10
+   ],
+   "like_recall": [
+    56.6,
+    39.5,
+    73.1,
+    20
+   ],
+   "like_precision": [
+    31.1,
+    20.8,
+    41.7,
+    20
+   ]
+  }
+ },
+ "baseline_per_category_10_19_indicative": {
+  "AI Coding Agents": {
+   "complaint_recall": [
+    14.0,
+    4.3,
+    24.5,
+    13
+   ],
+   "complaint_precision": [
+    9.8,
+    2.6,
+    17.1,
+    13
+   ],
+   "like_recall": [
+    48.8,
+    31.0,
+    65.4,
+    14
+   ],
+   "like_precision": [
+    33.3,
+    19.8,
+    47.6,
+    14
+   ]
+  },
+  "AI Voice Agents": {
+   "complaint_recall": [
+    21.0,
+    3.6,
+    40.5,
+    7
+   ],
+   "complaint_precision": [
+    10.3,
+    3.2,
+    19.0,
+    7
+   ],
+   "like_recall": [
+    51.2,
+    37.3,
+    66.7,
+    11
+   ],
+   "like_precision": [
+    30.8,
+    20.7,
+    40.9,
+    11
+   ]
+  },
+  "Cloud Computing Platforms": {
+   "complaint_recall": null,
+   "complaint_precision": null,
+   "like_recall": [
+    63.5,
+    41.6,
+    83.6,
+    10
+   ],
+   "like_precision": [
+    34.4,
+    22.2,
+    46.1,
+    10
+   ]
+  },
+  "Project management software": {
+   "complaint_recall": [
+    16.7,
+    4.2,
+    34.7,
+    12
+   ],
+   "complaint_precision": [
+    9.7,
+    2.8,
+    17.1,
+    12
+   ],
+   "like_recall": [
+    38.3,
+    20.0,
+    57.4,
+    13
+   ],
+   "like_precision": [
+    29.1,
+    13.2,
+    47.9,
+    13
+   ]
+  },
+  "Team collaboration software": {
+   "complaint_recall": [
+    30.6,
+    11.9,
+    50.6,
+    14
+   ],
+   "complaint_precision": [
+    15.5,
+    7.1,
+    24.6,
+    14
+   ],
+   "like_recall": [
+    47.1,
+    31.0,
+    62.5,
+    18
+   ],
+   "like_precision": [
+    25.9,
+    16.7,
+    35.8,
+    18
+   ]
+  },
+  "Vibe Coding Tools": {
+   "complaint_recall": [
+    12.5,
+    2.8,
+    22.8,
+    10
+   ],
+   "complaint_precision": [
+    9.4,
+    1.7,
+    17.8,
+    10
+   ],
+   "like_recall": [
+    43.8,
+    23.1,
+    64.3,
+    11
+   ],
+   "like_precision": [
+    30.3,
+    15.2,
+    48.0,
+    11
+   ]
+  }
+ },
+ "baseline_by_url_source": {
+  "competitor_domain_list": {
+   "complaint_recall": [
+    19.2,
+    14.8,
+    23.8,
+    146
+   ],
+   "complaint_precision": [
+    10.6,
+    8.2,
+    13.1,
+    146
+   ],
+   "like_recall": [
+    58.8,
+    54.6,
+    63.1,
+    212
+   ],
+   "like_precision": [
+    35.6,
+    32.8,
+    38.5,
+    212
+   ]
+  },
+  "launch_site_capture": {
+   "complaint_recall": [
+    14.2,
+    8.7,
+    20.3,
+    58
+   ],
+   "complaint_precision": [
+    8.5,
+    5.3,
+    12.0,
+    58
+   ],
+   "like_recall": [
+    42.5,
+    34.5,
+    50.2,
+    75
+   ],
+   "like_precision": [
+    29.0,
+    23.3,
+    35.0,
+    75
+   ]
+  }
+ },
+ "baseline_10plus_reviews": {
+  "complaint_recall": [
+   19.1,
+   14.8,
+   23.7,
+   138
+  ],
+  "complaint_precision": [
+   11.6,
+   9.0,
+   14.3,
+   138
+  ],
+  "like_recall": [
+   54.1,
+   48.9,
+   59.1,
+   170
+  ],
+  "like_precision": [
+   33.7,
+   30.2,
+   37.1,
+   170
+  ]
+ },
+ "spend_usd": {
+  "truth_extraction": 1.6,
+  "baseline_and_judging": 0.7,
+  "total": 2.3
+ },
+ "frozen_file": {
+  "path": "simharness/taxonomy/review_truth.parquet",
+  "sha256": "0d81ad0965c5fd06314394f3e1033c0d87dcfad57efd84a35825124e2889bec9"
+ }
+}

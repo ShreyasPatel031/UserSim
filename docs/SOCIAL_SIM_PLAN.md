@@ -394,6 +394,13 @@ precision +12.2 [+8.5, +15.3], recall -0.9, complaint recall 0.0 [-3.8, +4.4]. T
 complaint-recall gain did not replicate. No revert alarm: the deployed panel stays, judged by the 7-day live rule.
 Judge levels drift between runs; compare only paired differences. Files: simharness/bench_v0/what_panel4/.
 
+### Review truth for product use (REVIEW-TRUTH-1, subagent, Nov 25; about $2.30)
+537 products with 5+ Product Hunt reviews dated 2025 or later (after the models' cutoffs), from 15,312 such reviews:
+complaints (341 products, 1.9 each), likes (535, 5.0 each), mean rating 4.84. Frozen: simharness/taxonomy/review_truth.parquet
+(sha256 0d81ad09...). The bar for layer 2: a model shown only the homepage reaches complaint recall 17.8 [14.1, 21.6] and
+like recall 54.6 [50.9, 58.2] (precision 10.0 / 33.9). Coverage: about half of shortlist launches have 2 competitors with
+truth. Files: simharness/bench_v0/review_truth1/.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
