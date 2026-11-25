@@ -289,7 +289,7 @@ def stage_score(a):
     cp = f"{a.out}/judge_cache.pkl"
     cache = pickle.load(open(cp, "rb")) if os.path.exists(cp) else {}
     labs = []
-    for run in range(3):
+    for run in range(a.judge_runs):
         todo = P
         if run == 2:   # the third run can only change the majority where the first two disagree
             g = pd.concat(labs).groupby("pair_id")["same_point"].agg(["sum", "size"])
@@ -316,6 +316,8 @@ def stage_score(a):
     maj = L.groupby("pair_id")["same_point"].agg(lambda s: int(s.sum() * 2 > len(s)) if len(s) >= 2 else int(s.iloc[0]))
     pts = L.groupby("pair_id")["point"].agg(lambda s: next((x for x in s if x), ""))
     P["same_point"] = P["pair_id"].map(maj).fillna(0).astype(int)
+    nr = L.groupby("pair_id")["same_point"].agg(["sum", "size"])
+    P["tie"] = P["pair_id"].map((nr["size"] == 2) & (nr["sum"] == 1)).fillna(False)
     P["point"] = P["pair_id"].map(pts)
     P.to_parquet(f"{a.out}/pairs_labelled.parquet")
     # per row x arm table with person match and length
@@ -351,7 +353,10 @@ def stage_score(a):
         df = pd.DataFrame({"day": X.loc[ix, "day"], "d": X.loc[ix, metric].astype(float) - Y.loc[ix, metric].astype(float)}).dropna()
         return boot(df, lambda z: z["d"].mean()) + [int(len(df))]
 
-    res = {"rows": int(len(S)), "days": int(S.day.nunique()), "note": "[value %, day-bootstrap 2.5, 97.5] (+ n for paired)",
+    ties = P.groupby("arm")["tie"].sum().astype(int).to_dict()
+    res_ties = {"split_1_1_pairs_counted_as_no": ties, "same_point_if_ties_counted_as_yes": {
+        arm: round(100 * float((P[P.arm == arm]["same_point"] | P[P.arm == arm]["tie"]).mean()), 1) for arm in arms}}
+    res = {"ties": res_ties, "judge_runs": a.judge_runs, "rows": int(len(S)), "days": int(S.day.nunique()), "note": "[value %, day-bootstrap 2.5, 97.5] (+ n for paired)",
            "arms": {}, "paired": {}, "judge_usd": round(j.usd, 3), "gen": json.load(open(f"{a.out}/gen_info.json"))}
     for arm in arms:
         X = Rr[Rr.arm == arm]
@@ -383,6 +388,7 @@ def main(argv=None):
     ap.add_argument("--project", default=os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"))
     ap.add_argument("--a3-rows", type=int, default=150); ap.add_argument("--a3-cap", type=float, default=1.6)
     ap.add_argument("--judge-cap", type=float, default=3.2)
+    ap.add_argument("--judge-runs", type=int, default=3)
     a = ap.parse_args(argv)
     os.makedirs(a.out, exist_ok=True)
     globals()[f"stage_{a.stage}"](a)
