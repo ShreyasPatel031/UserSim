@@ -234,6 +234,27 @@ out["standing_information_needs"] = {
         ),
         "nov22_pt_deadline_utc": "2026-11-22T10:00:00Z",
     },
+    "simulation_competitor_feeds": {
+        "orc_request_utc": "2026-11-25T00:22:57Z",
+        "category_directory": {
+            "deadline_pt": "2026-11-28T00:00:00",
+            "refresh": "weekly Sundays 00:30 PT",
+            "gcs_current": "raw/ph_categories/directory/categories_full.jsonl",
+            "gcs_history": "raw/ph_categories/directory/history/categories_full_{YYYYMMDD}PT.jsonl",
+            "runner": "camoufox_residential (ph_alternatives pattern, not pdeep fleet)",
+        },
+        "launch_competitor_context": {
+            "nightly_deadline_pt": "01:00",
+            "nightly_start_pt_day": "2026-11-26",
+            "backfill_pt_days": "2026-11-01 through 2026-11-25 by 2026-11-28",
+            "gcs_nightly": "raw/ph_at_launch/{YYYY-MM-DD}/launch_competitor_context.jsonl",
+            "gcs_backfill": "raw/ph_at_launch/competitor_backfill/2026-11-01_2026-11-25.jsonl",
+            "gcs_rolling": "raw/ph_alternatives/similar_products_by_launch.jsonl",
+            "schema_ref": "raw/ph_alternatives/similar_products_all.jsonl plus launch_categories[]",
+        },
+        "doc": "mailbox/from_cursor/2026-11-25T00:25Z_orchestrator_simulation_competitor_feeds.md",
+        "additive": "does not replace upvote refresh or need-list",
+    },
 }
 out["need_list_diagnosis"] = {
     "why_not_need_list_new_completes": (
