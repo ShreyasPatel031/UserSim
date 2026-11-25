@@ -11,6 +11,8 @@ Then drive it (each command prints a compact element list and saves a screenshot
     python -m mvp.client_qa.drive 8801 look [tag]
     python -m mvp.client_qa.drive 8801 tap X Y | label "Text" | type "text" | swipe up|down|left|right | back | wait S
     python -m mvp.client_qa.drive 8801 note ITEM pass|fail|blocked|confusing "what happened" ["expected"]
+    python -m mvp.client_qa.drive 8801 mark          -> "the test starts here" (first screen after login); the client
+                                                        video starts at this point, so log in before marking
     python -m mvp.client_qa.drive 8801 quit          -> closes the session, writes session.json with the video link
 
 Every action and note is appended to <out>/log.jsonl with a timestamp and the screenshot it was taken on, so
@@ -102,6 +104,12 @@ def serve(a) -> None:
                     write({"kind": "act", "action": act, "result": res, "on": state["last"]})
                     time.sleep(float(body.get("settle", 1.5)))
                     r = look(body.get("tag", act["action"]))
+                elif self.path == "/mark":
+                    # seconds into the LambdaTest recording, which starts when the session connects
+                    write({"kind": "mark", "video_s": round(time.time() - t0 - meta["connect_s"], 1), "shot": state["last"]})
+                    meta["test_start_video_s"] = round(time.time() - t0 - meta["connect_s"], 1)
+                    json.dump(meta, open(f"{a.out}/session.json", "w"), indent=1)
+                    r = {"test_start_video_s": meta["test_start_video_s"]}
                 elif self.path == "/note":
                     write({"kind": "note", **body, "shot": state["last"]})
                     r = {"noted": body.get("item")}
@@ -162,6 +170,8 @@ def cli(argv: list[str]) -> None:
         item, status, what = rest[0], rest[1], rest[2]
         print(call(port, "/note", {"item": item, "status": status, "what": what,
                                    "expected": rest[3] if len(rest) > 3 else ""}))
+    elif cmd == "mark":
+        print(json.dumps(call(port, "/mark", {})))
     elif cmd == "quit":
         print(json.dumps(call(port, "/quit", {})))
     else:
