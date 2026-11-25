@@ -2902,3 +2902,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-25 15:35Z hourly check: board live (33 of 34 with votes). Fleet refresh back to 1.9/min. Residual leaderboard unchanged since 06:20Z (14:47Z run had no newly final day). Mailbox checked 15:34Z.
 - 2026-11-25 16:35Z hourly check: board see report; mailbox checked 16:34Z; fleet see status.
 - 2026-11-25 21:00Z WEEKLY-2 (subagent, $0): in-week weekly top-10 capture using finished days' real votes: Mon 37.0, Tue 42.5, Wed 53.2, Thu 64.1, Fri 76.4, Sat 85.0, Sun 86.8, all-real 88.2; monthly day 1 15, day 8 32, day 15 50, day 22 73, day 29 84. Late votes small (median 2.9% of week total; winners about 10%; R2 0.42 from launch-day results). Remaining gap is launches not yet out: daily breakout and margin. Published weekly forecast should use known days.
+- 2026-11-25 17:35Z hourly check: board see report; mailbox checked 17:34Z; fleet see status.
