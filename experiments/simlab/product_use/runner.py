@@ -18,7 +18,7 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "..", "cohort_calibration"))
 import sim_model  # noqa: E402
 MAINWT = os.environ.get("PU_MAINWT") or os.path.join(os.environ.get("PU_WORK", "/tmp/pu"), "mainwt")
-sys.path.insert(0, os.path.join(MAINWT, "scripts")); sys.path.insert(0, MAINWT)
+sys.path.insert(0, os.path.join(MAINWT, "scripts")); sys.path.insert(0, os.path.join(MAINWT, "src")); sys.path.insert(0, MAINWT)
 import mcp_study_runner as R  # noqa: E402
 from mcp_study_runner_lib import SpendGate  # noqa: E402
 from mcp_runner_gemini import GeminiDriver, vertex_client  # noqa: E402
@@ -39,8 +39,9 @@ USERS = LU["users"]
 def task_text(l):
     return (f"{l['core_task']}\n\nThe moment of value for this kind of product: {l['value_moment']}\n\n"
             "Rules: you are trying this product for the first time on its website. Use only free options; never enter payment details. "
-            "Sign up only if the product requires it to reach the moment of value. The first time you reach the moment of value, put the "
-            "word VALUE_REACHED in your thought for that step. If something stops you (a signup wall you cannot pass, a captcha, an access "
+            "Sign up only if the product requires it to reach the moment of value. The first time you reach the moment of value, START your thought "
+            "for that step with the word VALUE_REACHED. If this product does the job in a different way than described, do the closest "
+            "version of the job that this product offers; give up only if it truly does not do this kind of job. If something stops you (a signup wall you cannot pass, a captcha, an access "
             "block, a page that does not load or needs a desktop app or mobile app), finish with outcome 'blocked' and say exactly what stopped you. "
             "Otherwise finish when you have reached the moment of value or decided you cannot.")
 def persona_text(u):
@@ -56,8 +57,20 @@ for l in LAUNCHES:
 # order: round-robin over launches so a budget stop cuts from the bottom of the structural top 15 (spec), not mid-launch
 CELLS.sort(key=lambda c: ([x["id"] for x in LAUNCHES].index(c["_launch"]), c["_user"], c["_slot"]))
 
+FULL = {}   # session_id -> [(tool, full thought or notes)]
+def _wrap(llm):
+    orig = llm.messages.create
+    def create(*a, **k):
+        resp = orig(*a, **k)
+        for b in resp.content:
+            if getattr(b, "type", "") == "tool_use" and isinstance(b.input, dict) and b.input.get("session_id"):
+                FULL.setdefault(b.input["session_id"], []).append((b.name, str(b.input.get("thought") or b.input.get("notes") or "")[:1200], b.input.get("outcome")))
+        return resp
+    llm.messages.create = create; return llm
+
 async def main():
     llm = GeminiDriver(vertex_client(os.environ.get("GOOGLE_CLOUD_PROJECT", "project-amer-scs-sandbox"), os.environ.get("RUNNER_LOCATION", "global")))
+    llm = _wrap(llm)
     gate = SpendGate(max_usd=MAXUSD, max_retries=200); sem = asyncio.Semaphore(PAR); out = WORK / "cells"; out.mkdir(exist_ok=True)
     async def one(c):
         f = out / f"{c['cell_id']}.json"
@@ -67,7 +80,7 @@ async def main():
             t0 = time.time()
             try: log = await R.run_cell("", {k: v for k, v in c.items() if not k.startswith("_")}, MAX_TURNS, MAX_CELL_USD, out, llm, gate)
             except Exception as e: log = {"cell": c, "error": "runner: " + repr(e)[:300]}
-            log["cell"] = c; log["wall_s"] = round(time.time() - t0); f.write_text(json.dumps(log, default=str)); return log
+            log["cell"] = c; log["wall_s"] = round(time.time() - t0); log["full"] = FULL.get(log.get("session_id"), []); f.write_text(json.dumps(log, default=str)); return log
     logs = await asyncio.gather(*[one(c) for c in CELLS])
     return logs, gate.total_usd
 
@@ -76,12 +89,15 @@ by = {}
 for lg in LOGS: c = lg["cell"]; by.setdefault((c["_launch"], c["_user"]), {})[c["_slot"]] = lg
 
 def brief(lg):
-    st = lg.get("steps") or []
-    v = next((k for k, s in enumerate(st) if "VALUE_REACHED" in (s.get("thought") or "")), None)
+    st = lg.get("steps") or []; full = lg.get("full") or []
+    th = [f[1] for f in full if f[0] == "usersim_act"] or [(s.get("args") or {}).get("thought") or s.get("thought") or "" for s in st if s.get("tool") == "usersim_act"]
+    v = next((k for k, t in enumerate(th) if "VALUE_REACHED" in (t or "")[:40]), None)
+    notes = next((f[1] for f in full if f[0] == "usersim_finish"), None) or next(((s.get("args") or {}).get("notes") for s in st if s.get("tool") == "usersim_finish"), "")
+    outcome = next((f[2] for f in full if f[0] == "usersim_finish"), None) or next(((s.get("args") or {}).get("outcome") for s in st if s.get("tool") == "usersim_finish"), None)
     errs = sum(1 for s in st if s.get("rejected") or "error" in str(s.get("result", ""))[:200].lower())
-    return {"n_steps": len(st), "steps_to_value": (v + 1) if v is not None else None, "seconds": lg.get("seconds") or lg.get("wall_s"),
-            "error_steps": errs, "engine_error": lg.get("error"), "finish": (lg.get("finish") or "")[:1200],
-            "thoughts": [f"{k + 1}. [{s.get('tool')}:{s.get('action')}] {(s.get('thought') or '')[:220]}" for k, s in enumerate(st)][:45]}
+    return {"n_steps": len(th), "steps_to_value": (v + 1) if v is not None else None, "seconds": lg.get("seconds") or lg.get("wall_s"),
+            "error_steps": errs, "engine_error": lg.get("error"), "outcome": outcome, "finish": f"outcome={outcome}; notes: {notes}"[:1200],
+            "thoughts": [f"{k + 1}. {t[:260]}" for k, t in enumerate(th)][:45]}
 
 DEBRIEF = """You are {who}. Today you tried three products for the same job, one after another. Here is your own step log for each.
 Job: {task}
@@ -120,7 +136,7 @@ for l in LAUNCHES:
             rows.append({"launch_id": l["id"], "structural_rank": l["structural_rank"], "category": l["category"], "user": u["user_key"], "slot": slot,
                          "product": names[slot], "url": lg["cell"]["site"], "artefact": art, "artefact_evidence": pj.get("artefact_evidence"),
                          "completed": pj.get("completed"), "would_use": pj.get("would_use"), "problems": pj.get("problems") or [], "likes": pj.get("likes") or [],
-                         "n_steps": b["n_steps"], "steps_to_value": b["steps_to_value"], "seconds": b["seconds"], "error_steps": b["error_steps"],
+                         "driver_outcome": b["outcome"], "n_steps": b["n_steps"], "steps_to_value": b["steps_to_value"], "seconds": b["seconds"], "error_steps": b["error_steps"],
                          "pref_rank": ([inv.get(x) for x in dj.get("preference") or []].index(slot) + 1) if slot in [inv.get(x) for x in dj.get("preference") or []] else None,
                          "n_ranked": len(dj.get("preference") or []), "reasons": dj.get("reasons")})
         # private trace store: full logs + debrief, per user and product

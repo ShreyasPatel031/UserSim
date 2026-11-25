@@ -160,12 +160,16 @@ TK = json.loads(gcat(f"{PRIV}/category_tasks.json") or b"{}")
 for l in L:
     c = l["category"]
     if c not in TK:
-        p = (f"Product category: {c}\nCategory description: {CD.get(c, '')}\n\nWrite ONE first-use task that a new user could do on ANY product "
-             "in this category, in the first 10 minutes, without paying, and that reaches the category's first moment of value (the point where "
-             "the user gets the result this kind of product exists to give). It must not name any product. Also state, in one sentence, what "
-             "counts as reaching that moment of value. Reply as JSON only: {\"task\": \"...\", \"value_moment\": \"...\"}")
-        r = sim_model.call(p, max_tokens=300, temperature=0.0); m = re.search(r"\{.*\}", r or "", re.S)
-        TK[c] = dict(json.loads(m.group(0)) if m else {"task": None}, written_at=pd.Timestamp.now(tz="UTC").isoformat(), model="gemini-2.5-flash")
+        ex = "; ".join(f"{PROD[k]['name']} ({PROD[k]['tagline']})" for k in sorted(BYCAT.get(c, []), key=lambda k: -PROD[k]["reviews_count"])[:6])
+        p = (f"Product category: {c}\nCategory description: {CD.get(c, '')}\nExamples of products in this category: {ex}\n\n"
+             "Write ONE first-use task that a new user could do on EVERY product in this category (each product does some version of it), "
+             "in the first 10 minutes, without paying, and that reaches the category's first moment of value (the point where the user gets "
+             "the result this kind of product exists to give). Keep it at the level of the category's shared job, not one product's feature "
+             "(for example 'set up your first ad campaign or listing and see where it would run', not 'generate a video ad'). Do not name any "
+             "product. Also state, in one sentence, what counts as reaching that moment of value. "
+             "Reply as JSON only: {\"task\": \"...\", \"value_moment\": \"...\"}")
+        r = sim_model.call(p, max_tokens=400, temperature=0.0); m = re.search(r"\{.*\}", r or "", re.S)
+        TK[c] = dict(json.loads(m.group(0)) if m else {"task": None}, written_at=pd.Timestamp.now(tz="UTC").isoformat(), model="gemini-2.5-flash", prompt_version=2)
     l["core_task"], l["value_moment"] = TK[c].get("task"), TK[c].get("value_moment")
 
 # ---- 4 users per launch from the person-built panel's selection (pre-D history only; comments and the launch block dropped) ----
