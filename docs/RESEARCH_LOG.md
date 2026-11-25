@@ -200,3 +200,20 @@ The orchestrator flagged at 10:26Z that the PH ops coverage figure did not match
 - **Check.** Re-run on Nov 18–24 (255 launches) against the same store: 38.78 / 60.15 capped, which matches the ledger's 38.8 / 60.2.
 - **Why uncapped exceeds 100%.** Listed upvoters outnumber PH's displayed vote count on many top launches (count-time discounting, votes_drift.md), and an old window has had longer for people's lists to fill.
 - **From now on.** The population ledger is the official coverage number. PH ops reports coverage only if a same-window cross-check disagrees by more than 1 point; the 2-hourly routine was updated to do this.
+
+### 2026-11-25 14:41Z — STRUCT-BT26: structural backtest for every 2026 day, with pred_votes
+
+Requested by the orchestrator at 14:33Z, because TARGETS-0 could score only 24 weeks on the 191 non-contiguous structural days.
+
+- **How it was built.**
+  - struct_bt_vm.py is the PH-KNN1 arm-3 replica with arm3_ref only. It uses the same frame, 62 inputs, parameters and 5 seeds; test month m is trained on days before m; it ran in 304 s on the VM from scratch copies.
+  - struct_bt_write.py writes results/structural/backtest/<day>.json for every day from Jan 1 to Nov 24: 328 days, no gaps, 7,422 launches, in the existing format plus `pred_votes`.
+  - `pred_votes` = expm1(a + b·score) × Duan smearing. a and b are fitted month-forward on the out-of-sample rows of earlier months only.
+- **Checks.**
+  - Replica vs the stored arm-3 backtest: Spearman 0.995 on 5,034 rows.
+  - Out-of-sample, on 282 days: the daily sum of pred_votes over the real sum has median 1.004 (p10–p90 0.88–1.16); median per-launch |log error| is 0.288.
+- **Changes to existing files.**
+  - On the 191 days that already had a file, arm 3 is now the replica, for one consistent series.
+  - Where the old file had arm-2 scores, they are carried over; elsewhere arm 2 is null.
+  - On Nov 10–22 the live frozen-00:05 scores were replaced by month-forward scores. The live record stays in raw/daily/<d>/forecast_<d>.parquet.
+- **Summary file:** results/structural/backtest_v2.json.

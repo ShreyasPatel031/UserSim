@@ -1,0 +1,93 @@
+{
+ "experiment": "STRUCT-BT26",
+ "asked": "orchestrator 14:33Z Nov 25",
+ "written_at": "2026-11-25T14:40:31+00:00",
+ "files_written": 328,
+ "first": "2026-01-01",
+ "last": "2026-11-24",
+ "days": 328,
+ "missing_days": [],
+ "launch_rows": 7422,
+ "replica_vs_stored_arm3": {
+  "rows": 5034,
+  "spearman": 0.9953
+ },
+ "calibration_by_month": {
+  "2026-01": {
+   "a": 0.1301,
+   "b": 0.9614,
+   "smear": 1.1079,
+   "fit_rows": 3076
+  },
+  "2026-02": {
+   "a": 0.0469,
+   "b": 0.9777,
+   "smear": 1.1072,
+   "fit_rows": 3507
+  },
+  "2026-03": {
+   "a": 0.0418,
+   "b": 0.9798,
+   "smear": 1.1053,
+   "fit_rows": 4012
+  },
+  "2026-04": {
+   "a": 0.2096,
+   "b": 0.9493,
+   "smear": 1.1045,
+   "fit_rows": 4688
+  },
+  "2026-05": {
+   "a": 0.0987,
+   "b": 0.9669,
+   "smear": 1.1033,
+   "fit_rows": 5588
+  },
+  "2026-06": {
+   "a": -0.0273,
+   "b": 0.9907,
+   "smear": 1.0983,
+   "fit_rows": 6413
+  },
+  "2026-07": {
+   "a": -0.0274,
+   "b": 0.9923,
+   "smear": 1.0961,
+   "fit_rows": 7025
+  },
+  "2026-08": {
+   "a": -0.0045,
+   "b": 0.9889,
+   "smear": 1.0939,
+   "fit_rows": 7556
+  },
+  "2026-09": {
+   "a": 0.0106,
+   "b": 0.9856,
+   "smear": 1.092,
+   "fit_rows": 8107
+  },
+  "2026-10": {
+   "a": -0.0309,
+   "b": 0.993,
+   "smear": 1.0894,
+   "fit_rows": 8815
+  },
+  "2026-11": {
+   "a": -0.0734,
+   "b": 1.0004,
+   "smear": 1.0855,
+   "fit_rows": 9722
+  }
+ },
+ "pred_votes_check": {
+  "days": 282,
+  "median_day_ratio_pred_over_real": 1.004,
+  "p10_p90_day_ratio": [
+   0.88,
+   1.164
+  ],
+  "median_launch_abs_log_error": 0.288
+ },
+ "leak_checks": "scores month-forward (train < month start); the votes calibration for month m uses only OOS rows of earlier months; truth (final rank, votes) is only in each file's truth block and in this check"
+}
