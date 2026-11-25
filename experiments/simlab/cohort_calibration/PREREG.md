@@ -244,3 +244,7 @@ category's core task, do (1) their preferences explain the structural model's mi
 - The URL and competitor resolution use live web search at freeze time.
 - Similar Products before the nightly feed is up to Nov 1 only.
 - Browser capacity is pending the orchestrator: anonymous MCP caps allow about 40 sessions/day per IP, and a night needs 180.
+- 11a (Nov 25, before the first frozen night, from the Nov 24 rehearsal):
+  - Sessions run in two waves: each launch's first user on every site first, then users 2–4 log in to that account (MCP same_account_as) instead of signing up again. Four signups per site from one IP caused rate limits and captchas.
+  - Session cap raised from 30 to 40 turns (about 1/3 of rehearsal sessions hit 30 mid-signup) and from $0.09 to $0.12.
+  - A budget or freeze-deadline stop in wave 2 removes users 2–4 of the bottom launches first. Expected nightly spend (about $9) is under the cap.

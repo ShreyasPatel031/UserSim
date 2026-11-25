@@ -35,7 +35,7 @@ B = "gs://usersim-bakeoff-347838016394/usersim_sim"; PRIV = f"{B}/tmp/e5/private
 args = [a for a in sys.argv[1:] if not a.startswith("--")]; D = args[0]; REH = "--rehearsal" in sys.argv
 opt = lambda k, d: type(d)(sys.argv[sys.argv.index(k) + 1]) if k in sys.argv else d
 MAXL, PAR, MAXUSD = opt("--max-launches", 15), opt("--par", int(os.environ.get("PU_PAR", "5"))), opt("--max-usd", 14.0)
-MAX_TURNS, MAX_CELL_USD = int(os.environ.get("PU_MAX_TURNS", "30")), float(os.environ.get("PU_MAX_CELL_USD", "0.09"))
+MAX_TURNS, MAX_CELL_USD = int(os.environ.get("PU_MAX_TURNS", "40")), float(os.environ.get("PU_MAX_CELL_USD", "0.12"))
 DEADLINE = pd.Timestamp(os.environ["PU_DEADLINE_UTC"]) if os.environ.get("PU_DEADLINE_UTC") else None   # no new session after this (freeze)
 TAG = D + ("_rehearsal" if REH else ""); PUB = f"{B}/{'_rehearsal/' if REH else ''}results/calibration/{D}/product_use"
 WORK = Path(os.environ.get("PU_WORK", "/tmp/pu")) / TAG; WORK.mkdir(parents=True, exist_ok=True)
@@ -59,10 +59,10 @@ def persona_text(u):
 CELLS = []
 for l in LAUNCHES:
     slots = [("launch", l["url"])] + [(f"comp{k + 1}", c["url"]) for k, c in enumerate(l.get("competitors") or [])]
-    for u in USERS.get(l["id"], [])[:4]:
+    for ui, u in enumerate(USERS.get(l["id"], [])[:4]):
         for slot, url in slots:
             if url: CELLS.append({"cell_id": f"{l['id']}_{u['user_key']}_{slot}", "site": url, "persona": persona_text(u), "task": task_text(l),
-                                  "_launch": l["id"], "_user": u["user_key"], "_slot": slot})
+                                  "_launch": l["id"], "_user": u["user_key"], "_slot": slot, "_wave": 0 if ui == 0 else 1})
 # order: round-robin over launches so a budget stop cuts from the bottom of the structural top 15 (spec), not mid-launch
 CELLS.sort(key=lambda c: ([x["id"] for x in LAUNCHES].index(c["_launch"]), c["_user"], c["_slot"]))
 
@@ -91,8 +91,22 @@ async def main():
             try: log = await R.run_cell("", {k: v for k, v in c.items() if not k.startswith("_")}, MAX_TURNS, MAX_CELL_USD, out, llm, gate)
             except Exception as e: log = {"cell": c, "error": "runner: " + repr(e)[:300]}
             log["cell"] = c; log["wall_s"] = round(time.time() - t0); log["full"] = FULL.get(log.get("session_id"), []); f.write_text(json.dumps(log, default=str)); return log
-    logs = await asyncio.gather(*[one(c) for c in CELLS])
-    return logs, gate.total_usd
+    # wave 1: each launch's first user on every site (creates the account when a site needs one); wave 2: the other users log in to that
+    # account (same_account_as) instead of signing up again (4 signups per site from one IP triggered rate limits and captchas, Nov 24 rehearsal)
+    w1 = await asyncio.gather(*[one(c) for c in CELLS if c["_wave"] == 0])
+    acct = {}
+    for lg in w1:
+        if lg.get("session_id"): acct.setdefault(lg["cell"]["site"], lg["session_id"])
+    w2c = []
+    for c in CELLS:
+        if c["_wave"] == 1:
+            c = dict(c)
+            if c["site"] in acct:
+                c["task"] += (f"\n\nAccount: another tester already tried this site. If it needs an account, call usersim_signup_identity with "
+                              f"same_account_as=\"{acct[c['site']]}\" and log in with the account it returns; sign up yourself only if that fails.")
+            w2c.append(c)
+    w2 = await asyncio.gather(*[one(c) for c in w2c])
+    return list(w1) + list(w2), gate.total_usd
 
 t0 = time.time(); LOGS, USD = asyncio.run(main())
 by = {}
