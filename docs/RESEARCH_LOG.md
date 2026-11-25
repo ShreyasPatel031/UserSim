@@ -2881,3 +2881,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-25 10:10Z Grok Bot: X-buzz second freeze 02:00 PT (results/grok_forecast/2026-11-25_0200.json, top 10 led by MAGI-2, Canva MCP, MyClaw 3.0); X backfill closed.
 - 2026-11-25 10:30Z PH agent coverage (73.93 / 93.09 capped, 80.57 / 109.19 uncapped, last week) disagrees with the population ledger (Nov 18-24 38.8 / 60.2). Official coverage is the population agent's (AGENTS.md); PH agent asked once for its definition and to report only disagreements.
 - 2026-11-25 10:35Z PH agent: coverage gap was a stale hardcoded window (Oct 29-Nov 4 since Nov 5); same definition on Nov 18-24 gives 38.78 / 60.15, matching the population ledger. Uncapped >100% because PH discounts some votes in the displayed count. PH agent stops reporting coverage; population ledger official.
+- 2026-11-25 10:32Z comments_ts recovered (gap 09:53Z to before 10:30Z, under 40 min); 10:22Z merge 49, lost 0.
