@@ -35,9 +35,14 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("src"); ap.add_argument("dst")
     ap.add_argument("--speed", type=float, default=1.5); ap.add_argument("--keep-freeze", type=float, default=0.8)
+    ap.add_argument("--start", type=float, default=0.0,
+                    help="seconds of the source to skip: device setup, login and any setup retries are never shown")
     a = ap.parse_args()
-    keep, t = [], 0.0
+    keep, t = [], a.start
     for s, e in freezes(a.src):
+        if e <= a.start:
+            continue
+        s = max(s, a.start)
         keep.append((t, s + a.keep_freeze)); t = e
     keep.append((t, duration(a.src)))
     keep = [(s, e) for s, e in keep if e > s]
