@@ -230,3 +230,11 @@ distinguish the launch model and the social simulation model from now".
 - **The harness is open-source code; the data, the calibrated traces and the trained weights stay private** (the core-IP rule
   above is unchanged).
 - The plan, the benchmark definition and the leaderboard live in docs/SOCIAL_SIM_PLAN.md.
+
+## Rule for every agent: the audit ledger (Shreyas, Nov 25 2026)
+
+Shreyas audits every experiment and decision. Each experiment gets a row in docs/ledger/experiments.jsonl before it runs
+(design, scoring fixed before results, budget) and is completed after it (what actually ran, every deviation from the
+design with who decided it and why, results, measured cost, decision). Each decision gets a row in
+docs/ledger/decisions.jsonl. Rows are append-only; corrections are new rows. An unrecorded deviation (a changed window,
+sample size, model, setting or metric) is an audit failure. Check rows with `python -m simharness.ledger validate`.
