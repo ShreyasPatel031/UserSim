@@ -36,6 +36,7 @@ args = [a for a in sys.argv[1:] if not a.startswith("--")]; D = args[0]; REH = "
 opt = lambda k, d: type(d)(sys.argv[sys.argv.index(k) + 1]) if k in sys.argv else d
 MAXL, PAR, MAXUSD = opt("--max-launches", 15), opt("--par", int(os.environ.get("PU_PAR", "5"))), opt("--max-usd", 14.0)
 MAX_TURNS, MAX_CELL_USD = int(os.environ.get("PU_MAX_TURNS", "30")), float(os.environ.get("PU_MAX_CELL_USD", "0.09"))
+DEADLINE = pd.Timestamp(os.environ["PU_DEADLINE_UTC"]) if os.environ.get("PU_DEADLINE_UTC") else None   # no new session after this (freeze)
 TAG = D + ("_rehearsal" if REH else ""); PUB = f"{B}/{'_rehearsal/' if REH else ''}results/calibration/{D}/product_use"
 WORK = Path(os.environ.get("PU_WORK", "/tmp/pu")) / TAG; WORK.mkdir(parents=True, exist_ok=True)
 if "claude" in R.MODEL.lower(): sys.exit("RUNNER_MODEL must be Gemini")
@@ -85,6 +86,7 @@ async def main():
         if f.exists(): return json.loads(f.read_text())
         async with sem:
             if gate.over_cap(): return {"cell": c, "error": "budget stop"}
+            if DEADLINE and pd.Timestamp.now(tz="UTC") > DEADLINE: return {"cell": c, "error": "deadline stop (freeze)"}
             t0 = time.time()
             try: log = await R.run_cell("", {k: v for k, v in c.items() if not k.startswith("_")}, MAX_TURNS, MAX_CELL_USD, out, llm, gate)
             except Exception as e: log = {"cell": c, "error": "runner: " + repr(e)[:300]}
