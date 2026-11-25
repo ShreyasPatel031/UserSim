@@ -41,6 +41,13 @@ Experiments in order:
    on 6,668 launches). Fleet asked for the full category directory (by Nov 28) and nightly Similar Products (01:00 PT).
 1b. CATEGORY-1 (orchestrator's subagent, by Nov 25 12:00Z): launch-to-category table with a validated fallback
    classifier, competitor sets per launch, and the structural miss per category (the residual baseline).
+   CATEGORY-1 result (Nov 25, $0; simharness/bench_v0/category1/): all 7,430 launches labelled (2,407 own PH label,
+   4,236 Similar-Products majority, 787 classifier; classifier top-1 41.5% [39.1, 44.0], top-3 64.6% on Sep 1-Nov 1).
+   Competitor sets for 5,150 launches (4.1 of 5 from same-category Similar Products). Category explains 3.8% of the
+   structural miss variance vs 1.9% shuffled (p < 0.002): worse than predicted No-Code AI Agent Builder +6.2 [+2.8, +10.0],
+   AI Workflow Automation +3.2, SEO / lead generation / marketing automation about +3; better than predicted Games -6.0,
+   Screenshots and recording -4.1, Chrome Extensions -2.6, Note and writing apps -2.2. Same-day category rivals +0.36
+   places each [+0.09, +0.62] on one labelling only. Leak note: old-day Similar Products contain up to 7.8% later products.
 2. RESID-EXPLAIN (orchestrator): which kinds of findings move with the structural miss (onboarding friction, clear
    difference from competitors, missing basics), so that layer 3 cites only findings with measured value.
 3. Stage B (running): history-built agents reading the launch page only; the text-only control for 1.
