@@ -27,6 +27,16 @@ Adds to (does not replace) upvote refresh + need-list work.
 - Route-4 residential Camoufox (documented in `ph_alternatives/README.md`); volume ~featured count/day + one-time category crawl (larger than 300-launch batch).
 - Fleet pdeep remains on need-list/upvote; **LIVE_PRIORITY_HOLD** — no historical fleet scale-up for these feeds.
 
+## 3) Reviews for competitor-set products (orchestrator 00:48Z)
+
+- **Scope:** every `product_slug` in `similar_products[]` from each day's `launch_competitor_context.jsonl` (and Nov 1–25 backfill sets).
+- **Schema:** same as `raw/ph_reviews/*.jsonl.gz` — `rating`, `text`, `date` per review (plus product identifiers).
+- **GCS:**
+  - Nightly **02:00 PT** from Nov 26: `raw/ph_reviews/competitor_sets/{YYYY-MM-DD}/reviews.jsonl.gz`
+  - Backfill: `raw/ph_reviews/competitor_sets/backfill_2026-11-01_2026-11-25.jsonl.gz` by **Nov 28**
+  - Coverage index: `raw/ph_reviews/competitor_sets/coverage_manifest.json`
+- **Gap today:** Nov 24 top-15 competitor set — only **2/29** competitor products have held reviews.
+
 ## Status
 
 Recorded in `mailbox/from_cursor/status.json` under `standing_information_needs.simulation_competitor_feeds`.
