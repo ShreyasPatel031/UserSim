@@ -341,15 +341,90 @@ def _competition_test(R: pd.DataFrame, x: np.ndarray) -> dict:
             "share_with_any_same_category_launch": round(float((df["x"] > 0).mean()), 4)}
 
 
+# ------------------------------------------------------------------------------------------------ leak check
+def stage_leak(a):
+    """Similar Products were read on Nov 1. How much could that list reflect later popularity?
+    (1) share of a launch's Similar Products that first launched AFTER the launch (by launch age);
+    (2) reviews of the listed products by launch age; (3) does the competitors' popularity move with the structural
+    miss more for older launches (read long after) than for the most recent 300 (read within 12 days)?
+    (4) per-category miss with the Similar-Products label vs the label knowable at 00:05."""
+    from scipy.stats import spearmanr
+    launches = pd.read_parquet(f"{a.out}/similar_launches.parquet")
+    products = pd.read_parquet(f"{a.out}/products.parquet").set_index("slug")
+    post = {}
+    for f in glob.glob(os.path.join(a.products_info, "*.json")):
+        try:
+            d = json.load(open(f))
+        except ValueError:
+            continue
+        if d.get("post_created_at") and d.get("status") == "ok_post_slug_match":
+            post[d.get("slug")] = str(d["post_created_at"])[:10]
+    recent = set()
+    if a.recent300 and os.path.exists(a.recent300):
+        recent = {str(json.loads(l)["launch_id"]) for l in open(a.recent300) if l.strip()}
+    rows = []
+    for r in launches.itertuples():
+        sims = [s for s in r.similar if s in products.index]
+        dated = [s for s in sims if s in post]
+        fut = [post[s] > r.launch_day for s in dated]
+        rv = [np.log1p(products.loc[s, "reviews_count"]) for s in sims]
+        rows.append({"launch_id": r.launch_id, "day": r.launch_day, "recent300": r.launch_id in recent,
+                     "age_days_at_fetch": (pd.Timestamp("2026-11-01") - pd.Timestamp(r.launch_day)).days,
+                     "n_similar": len(sims), "n_dated": len(dated), "n_future": int(sum(fut)),
+                     "mean_log_reviews": float(np.mean(rv)) if rv else np.nan})
+    L = pd.DataFrame(rows)
+    L["age_bucket"] = pd.cut(L["age_days_at_fetch"], [-1, 12, 30, 90, 180, 400], labels=["0-12", "13-30", "31-90", "91-180", "181+"])
+    g = L.groupby("age_bucket", observed=True)
+    res = {"products_with_a_dated_first_post": int(len(post)),
+           "similar_products_launched_after_the_launch": {
+               str(k): {"launches": int(len(v)), "share_of_dated_similar_products": round(float(v["n_future"].sum() / max(v["n_dated"].sum(), 1)), 4),
+                        "share_of_launches_with_any": round(float((v["n_future"] > 0).mean()), 4),
+                        "dated_share": round(float(v["n_dated"].sum() / max(v["n_similar"].sum(), 1)), 3),
+                        "mean_log1p_reviews_of_similar": round(float(v["mean_log_reviews"].mean()), 3)} for k, v in g},
+           "recent300_vs_older": {
+               "recent300": {"launches": int(L["recent300"].sum()),
+                             "future_share": round(float(L.loc[L.recent300, "n_future"].sum() / max(L.loc[L.recent300, "n_dated"].sum(), 1)), 4)},
+               "older": {"launches": int((~L["recent300"]).sum()),
+                         "future_share": round(float(L.loc[~L.recent300, "n_future"].sum() / max(L.loc[~L.recent300, "n_dated"].sum(), 1)), 4)}}}
+    R = pd.read_parquet(f"{a.out}/residual_rows.parquet").merge(L[["launch_id", "mean_log_reviews", "recent300", "age_bucket", "n_future"]],
+                                                                 left_on="item_id", right_on="launch_id", how="inner")
+    R["miss_w"] = R["miss"] - R.groupby("day")["miss"].transform("mean")
+    pop = {}
+    for name, m in (("recent 300 (read within 12 days)", R["recent300"]), ("older backtest launches", ~R["recent300"])):
+        sub = R[m & R["mean_log_reviews"].notna()]
+        pop[name] = {"launches": int(len(sub)),
+                     "spearman_miss_vs_competitor_reviews": round(float(spearmanr(sub["miss_w"], sub["mean_log_reviews"]).correlation), 4),
+                     "spearman_miss_vs_future_similar_count": round(float(spearmanr(sub["miss_w"], sub["n_future"]).correlation), 4)}
+        rng = np.random.default_rng(2)
+        bs = []
+        for _ in range(500):
+            k = rng.integers(0, len(sub), len(sub))
+            bs.append(spearmanr(sub["miss_w"].to_numpy()[k], sub["mean_log_reviews"].to_numpy()[k]).correlation)
+        pop[name]["ci95_reviews"] = [round(float(x), 4) for x in np.percentile(bs, [2.5, 97.5])]
+    res["competitor_popularity_vs_miss"] = pop
+    # labels: per-category mean miss with the Similar-Products label vs the 00:05 label
+    RR = pd.read_parquet(f"{a.out}/residual_rows.parquet")
+    m1 = RR.groupby("primary")["miss"].agg(["mean", "size"]); m2 = RR.groupby("cat_0005")["miss"].agg(["mean", "size"])
+    j = m1[m1["size"] >= 20].join(m2[m2["size"] >= 20], lsuffix="_ph", rsuffix="_0005", how="inner")
+    res["per_category_miss_ph_label_vs_0005_label"] = {"categories": int(len(j)),
+                                                       "spearman_of_category_means": round(float(spearmanr(j["mean_ph"], j["mean_0005"]).correlation), 4),
+                                                       "launch_label_agreement": round(float((RR["primary"] == RR["cat_0005"]).mean()), 4)}
+    json.dump(res, open(f"{a.out}/leak_results.json", "w"), indent=1, default=float)
+    print(json.dumps(res, indent=1, default=float))
+    sync([f"{a.out}/leak_results.json"], a.sync)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["labels", "competitors", "residual"])
+    ap.add_argument("stage", choices=["labels", "competitors", "residual", "leak"])
     ap.add_argument("--items-dir", required=True)
     ap.add_argument("--similar", required=True)
     ap.add_argument("--taxonomy", required=True)
     ap.add_argument("--structural", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--sync", default="")
+    ap.add_argument("--products-info", default="")
+    ap.add_argument("--recent300", default="")
     a = ap.parse_args(argv)
     os.makedirs(a.out, exist_ok=True)
     globals()[f"stage_{a.stage}"](a)
