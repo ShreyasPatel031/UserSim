@@ -235,6 +235,83 @@ def cmd_launch(a):
     json.dump({"usd": round(usd(), 4), "calls": USAGE["calls"], "tokens_in": USAGE["in"], "tokens_out": USAGE["out"]}, open(f"{W}/launch_spend.json", "w"))
 
 
+def cmd_launch2(a):
+    """CEILING-2: as cmd_launch, plus the half-B themes stored, and each arm also judged on a subsample of the same size
+    as half A (fixed seed per launch and resample). Launches: the CEILING-1 launches, then launches of --block-days whose
+    person-built panel carries the launch-page block."""
+    P = prompts(a.sim_dir)
+    W = a.work
+    prev = {(json.loads(l)["day"], json.loads(l)["id"]) for l in open(f"{W}/launch_rows.jsonl")}
+    cands = []
+    for d in sorted(os.listdir(f"{W}/raw")):
+        C, T0 = real_comments(W, d)
+        arms = arms_for(W, d, T0)
+        for lid, g_ in C.groupby("post"):
+            if g_.uid.nunique() < 10 or lid not in arms or not arms[lid]["persona"]:
+                continue
+            if (d, lid) in prev:
+                cands.append((0, d, lid, g_, arms[lid]))
+            elif d in a.block_days.split(",") and (arms[lid]["pb_source"] or "").startswith("explain"):
+                cands.append((1, d, lid, g_, arms[lid]))
+    cands.sort(key=lambda x: (x[0], x[1], x[2]))
+    print("launches: ceiling-1", sum(c[0] == 0 for c in cands), "block", sum(c[0] == 1 for c in cands), flush=True)
+    path = f"{W}/launch2_rows.jsonl"
+    done = {(json.loads(l)["day"], json.loads(l)["id"], json.loads(l)["resample"]) for l in open(path)} if os.path.exists(path) else set()
+    fo = open(path, "a")
+    for grp, d, lid, g_, arms in cands:
+        if usd() >= a.budget:
+            print("budget reached", round(usd(), 3), flush=True)
+            break
+        users = sorted(g_.uid.unique())
+        jobs = []
+        for k in range(a.resamples):
+            if (d, lid, k) in done:
+                continue
+            perm = np.random.default_rng(int(lid) * 100 + k).permutation(users)
+            A, Bh = set(perm[: len(users) // 2]), set(perm[len(users) // 2:])
+            jobs.append((k, g_[g_.uid.isin(A)].sort_values("created").text.tolist(), g_[g_.uid.isin(Bh)].sort_values("created").text.tolist()))
+
+        def one(job):
+            k, ca, cb = job
+            th, ct = truth_for(P, "\n".join(f"- {t[:500]}" for t in cb))
+            r = {"group": "ceiling1_launch" if grp == 0 else "launch_block", "day": d, "id": lid, "resample": k, "n_commenters": len(users),
+                 "n_a": len(ca), "n_b": len(cb), "themes_b": th, "complaints_b": ct, "pb_source": arms["pb_source"],
+                 "n_deployed": len(arms["deployed"]), "n_persona": len(arms["persona"])}
+            rs = np.random.default_rng(int(lid) * 1000 + k)
+            sub = lambda L: [L[i] for i in sorted(rs.choice(len(L), min(len(ca), len(L)), replace=False))]
+            for arm, cand in (("ceiling_half_a", [x[:300] for x in ca]), ("deployed_eq", sub(arms["deployed"])), ("persona_eq", sub(arms["persona"]))):
+                for m, v in judge(P, th, ct, cand).items():
+                    r[f"{arm}:{m}"] = v
+            return r
+        with cf.ThreadPoolExecutor(10) as ex:
+            for r in ex.map(one, jobs):
+                fo.write(json.dumps(r) + "\n")
+                fo.flush()
+        print(d, lid, len(users), "usd", round(usd(), 3), "calls", USAGE["calls"], flush=True)
+    json.dump({"usd": round(usd(), 4), "calls": USAGE["calls"], "tokens_in": USAGE["in"], "tokens_out": USAGE["out"]}, open(f"{W}/launch2_spend.json", "w"))
+
+
+def launch2_table(W):
+    R = pd.DataFrame([json.loads(l) for l in open(f"{W}/launch2_rows.jsonl")])
+    out = {}
+    for grp, G in [("all", R)] + list(R.groupby("group")):
+        o = {"launches": int(G.id.nunique()), "days": sorted(G.day.unique().tolist()), "resamples_per_launch": round(float(G.groupby("id").size().mean()), 1),
+             "median_commenters": float(G.groupby("id").n_commenters.first().median()), "median_half_a": float(G.n_a.median()), "metrics": {}}
+        for m in ("recall", "recall_w", "precision", "complaint_recall"):
+            cols = {arm: f"{arm}:{m}" for arm in ("ceiling_half_a", "deployed_eq", "persona_eq") if f"{arm}:{m}" in G}
+            per = G.groupby("id").agg(**{arm: (c, "mean") for arm, c in cols.items()})
+            row = {arm: boot(per[arm] * 100) for arm in per}
+            for arm in ("deployed_eq", "persona_eq"):
+                if arm in per:
+                    ok = per["ceiling_half_a"] > 0
+                    row[f"{arm}_ratio_of_means"] = round(float(per[arm].mean() / per["ceiling_half_a"].mean()), 4)
+                    row[f"{arm}_fraction_of_ceiling"] = boot((per[arm] / per["ceiling_half_a"])[ok])
+                    row[f"{arm}_minus_ceiling_points"] = boot((per[arm] - per["ceiling_half_a"]) * 100)
+            o["metrics"][m] = row
+        out[grp] = o
+    return out
+
+
 def launch_table(W):
     R = pd.DataFrame([json.loads(l) for l in open(f"{W}/launch_rows.jsonl")])
     out = {"launches": int(R.id.nunique()), "days": int(R.day.nunique()), "resamples_per_launch": float(R.groupby("id").size().mean()),
@@ -343,6 +420,16 @@ def main(argv=None):
     l.add_argument("--resamples", type=int, default=20)
     l.add_argument("--max-launches", type=int, default=1000)
     l.add_argument("--budget", type=float, default=4.0)
+    l2 = sub.add_parser("launch2")
+    l2.add_argument("--work", required=True)
+    l2.add_argument("--sim-dir", required=True)
+    l2.add_argument("--resamples", type=int, default=8)
+    l2.add_argument("--block-days", default="2026-11-24,2026-11-25")
+    l2.add_argument("--budget", type=float, default=2.4)
+    t2 = sub.add_parser("table2")
+    t2.add_argument("--work", required=True)
+    t2.add_argument("--out-dir", required=True)
+    t2.add_argument("--sync")
     pp = sub.add_parser("person")
     pp.add_argument("--work", required=True)
     pp.add_argument("--bench", required=True)
@@ -358,6 +445,15 @@ def main(argv=None):
     a = ap.parse_args(argv)
     if a.cmd == "launch":
         cmd_launch(a)
+    elif a.cmd == "launch2":
+        cmd_launch2(a)
+    elif a.cmd == "table2":
+        res = {"version": "ceiling2_v1", "launch_level_equal_size": launch2_table(a.work), "spend": json.load(open(f"{a.work}/launch2_spend.json"))}
+        os.makedirs(a.out_dir, exist_ok=True)
+        json.dump(res, open(f"{a.out_dir}/ceiling2.json", "w"), indent=1)
+        if a.sync:
+            subprocess.run(["gsutil", "-q", "cp", f"{a.out_dir}/ceiling2.json", a.sync + "/ceiling2.json"], check=False)
+        print(json.dumps(res, indent=1)[:9000])
     elif a.cmd == "person":
         cmd_person(a)
     elif a.cmd == "table":
