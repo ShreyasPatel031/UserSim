@@ -18,7 +18,7 @@ Spend: $4.47 of $5 (launch level $3.76 Gemini Flash, 4,184 calls; person level $
 | person | same point | another real commenter: 15.9 [10.5, 20.9] | A0 Flash + launch block | 25.3 [20.0, 30.0] | 1.60 | +9.5 (POINT-1) |
 | person | same point | the person's own comment on their most similar earlier launch: 6.1 [3.6, 8.5] | A0 Flash + launch block | 25.3 | 4.17 | +19.3 |
 
-Launch level: 16 launches (Nov 15-20, median 19 real commenters), 20 random half splits each, one judge run per split,
+Launch level: 16 launches (Nov 15-22 (Nov 15, 16, 17, 18, 19, 22), median 19 real commenters), 20 random half splits each, one judge run per split,
 launch-bootstrap intervals. Person level: the 296 POINT-1 rows, day-bootstrap intervals; the own-comment arm judged by
 the same same-point-v1 judge, 2 runs, 1-1 counted as no (as in POINT-1).
 
@@ -29,7 +29,7 @@ the same same-point-v1 judge, 2 runs, 1-1 counted as no (as in POINT-1).
   half A's size against the same half-B themes). Not run: the half-B themes were not stored and re-extracting them would
   exceed the budget (about $1.2 more). Precision is per item and less affected: deployed 1.20 of the ceiling
   [1.00, 1.39], persona only 0.96 [0.75, 1.17].
-- **No launch had the launch-page block.** The 16 sampled launches fall on Nov 15-20; their person-built comments are
+- **No launch had the launch-page block.** The 16 sampled launches fall on Nov 15-22 (Nov 15, 16, 17, 18, 19, 22); their person-built comments are
   the Nov 25 re-generation without the maker's comment. 56 launches qualified; budget allowed 16 at 20 resamples.
 - **Complaint-recall ratios** are means of per-launch ratios and are inflated by launches where the ceiling is small;
   the ratio of means is about 1.0.
@@ -68,5 +68,5 @@ Reading:
   equal size (deployed vs persona only); none of these differences is clear on its own.
 - Caveats: only 1 of the 6 Nov 24-25 launches had the maker's comment in its launch block at run time (the others ran
   the POINT-1 prompt without it); Nov 25's comments were read mid-day (launch day still open, both halves from the same
-  partial set). The CEILING-1 launches span Nov 15-22 (not Nov 15-20 as first written). 8 resamples per launch, not 20,
+  partial set). The CEILING-1 launches span Nov 15-22 (not Nov 15-22 (Nov 15, 16, 17, 18, 19, 22) as first written). 8 resamples per launch, not 20,
   to cover the Nov 24+ launches within the budget.
