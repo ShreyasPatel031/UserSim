@@ -61,6 +61,24 @@ class LTDevice(IOSDevice):
         self.size = self.d.get_window_size()
         self.session_id = self.d.session_id
 
+    def act(self, a: dict[str, Any]) -> str:
+        if a.get("action") == "type_into":
+            # field: "password" -> the secure field; otherwise a label / placeholder / value to match. Clears first.
+            f = (a.get("field") or "").strip()
+            if f.lower() in ("password", "secure"):
+                el = self.d.find_element("-ios class chain", "**/XCUIElementTypeSecureTextField")
+            else:
+                q = f.replace('"', "")
+                el = self.d.find_element("-ios predicate string",
+                                         f'(type == "XCUIElementTypeTextField" OR type == "XCUIElementTypeSecureTextField") '
+                                         f'AND (label CONTAINS[c] "{q}" OR placeholderValue CONTAINS[c] "{q}" '
+                                         f'OR value CONTAINS[c] "{q}" OR name CONTAINS[c] "{q}")')
+            el.click()
+            el.clear()
+            el.send_keys(a.get("text", ""))
+            return "ok"
+        return super().act(a)
+
 
 def fill_secrets(act: dict[str, Any]) -> dict[str, Any]:
     """The agent writes {{EMAIL}} / {{PASSWORD}}; the real values come from QA_LOGIN_EMAIL / QA_LOGIN_PASSWORD (env or the
@@ -92,10 +110,12 @@ History of your last actions:
 {history}
 
 Reply with JSON only:
-{{"thought": "what you see and why the next action", "action": {{"action": "tap"|"tap_label"|"type"|"swipe"|"wait"|"done",
+{{"thought": "what you see and why the next action", "action": {{"action": "tap"|"tap_label"|"type_into"|"swipe"|"wait"|"done", "field": str,
   "x": int, "y": int, "label": str, "text": str, "direction": "up"|"down"|"left"|"right", "s": float}},
  "finding": null | {{"severity": "bug"|"confusing"|"ok", "checklist_item": str, "what_happened": str, "expected": str}}}}
-To log in, tap the field first, then type {{{{EMAIL}}}} or {{{{PASSWORD}}}} literally; the real values are filled in for you.
+To fill a text field use {{"action": "type_into", "field": "<its label or placeholder, or password>", "text": "..."}}; it
+taps, clears and types into that exact field. For logging in type {{{{EMAIL}}}} or {{{{PASSWORD}}}} literally; the real
+values are filled in for you.
 Use "done" when every checklist item has been tried or you are blocked; say why in the thought. Report a finding whenever
 something looks off, confusing or broken, and an "ok" finding when a checklist item works."""
 
