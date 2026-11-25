@@ -189,23 +189,50 @@ for l in L:
         TK[c] = dict(json.loads(m.group(0)) if m else {"task": None}, written_at=pd.Timestamp.now(tz="UTC").isoformat(), model="gemini-2.5-flash", prompt_version=2)
     l["core_task"], l["value_moment"] = TK[c].get("task"), TK[c].get("value_moment")
 
-# ---- 4 users per launch from the person-built panel's selection (pre-D history only; comments and the launch block dropped) ----
-PP = pd.read_parquet(io.BytesIO(gcat(f"{B}/tmp/e5/private/person_panel/{D}.parquet", False)))
+# ---- 4 users per launch: the person-built panel's selection (simharness run_what_panel build: held complete people with >= 3 comments before
+# D and >= 1 upvote in the 60 days before D, ranked by topic affinity), in the panel's own seeded order (md5(launch id + D)); the first 4.
+# Run here from the latest harness build so the line-up does not wait for the panel's comment generation (PREREG 11c). Fallback: the
+# person_panel/D.parquet file. Profiles are pre-D history only (quoted comments removed); person ids are hashed with D.
 def profile(prompt):
     h = prompt.split("THIS MEMBER'S HISTORY", 1)[-1].split("TODAY'S LAUNCH", 1)[0]
     h = h.split("Recent comments they wrote:", 1)[0]                         # drop quoted comments (names, self-intros)
     return re.sub(r"@\w+", "", h).strip(" :\n")
-USERS = {}
-for l in L:
-    g = PP[(PP.launch_id.astype(str) == l["id"])]
-    g = g[g["drop"].isna() | (g["drop"].astype(str).str.strip() == "")] if "drop" in g else g   # drop = reason the generated comment was dropped
-    USERS[l["id"]] = [{"user_key": hashlib.sha256((str(pid) + "|" + D).encode()).hexdigest()[:12], "profile": profile(pr)}
-                      for pid, pr in zip(g.person_id.head(4), g.prompt.head(4))]
-    l["n_users"] = len(USERS[l["id"]])
+USERS, users_source = {}, None
+CV = os.environ.get("FRESH_SIMHARNESS") or os.environ.get("PU_CV")
+if CV and os.path.isdir(os.path.join(CV, "simharness")):
+    WB = os.path.join(os.environ.get("PU_WORK", "/tmp/pu"), f"sel_{D}"); os.makedirs(WB + "/builds", exist_ok=True)
+    stamp = (gcat(f"{B}/simharness/bench_v0/builds/latest") or b"").decode().strip()
+    if stamp:
+        os.makedirs(f"{WB}/builds/{stamp}", exist_ok=True)   # gsutil rsync needs the target directory to exist
+        subprocess.run(["gsutil", "-m", "-q", "rsync", "-r", f"{B}/simharness/bench_v0/builds/{stamp}", f"{WB}/builds/{stamp}"]); open(f"{WB}/builds/latest", "w").write(stamp)
+        LUF = os.path.join(WB, "lineup.json"); open(LUF, "wb").write(gcat(f"{B}/raw/daily/{D}/today_0005.json", False))
+        r = subprocess.run([sys.executable, "-m", "simharness.run_what_panel", "build", "--bench", f"{WB}/builds", "--lineup", LUF, "--day", D, "--out", WB], cwd=CV, capture_output=True, text=True)
+        if not r.returncode and os.path.exists(os.path.join(WB, "eval.jsonl")):
+            PEOPLE = pd.read_parquet(f"{WB}/builds/{stamp}/people.parquet", columns=["person_idx", "person_id"]).set_index("person_idx").person_id.to_dict()
+            S2I = {str(x.get("slug")): str(x["id"]) for x in json.load(open(LUF))}; by = {}
+            for l2 in open(os.path.join(WB, "eval.jsonl")):
+                row = json.loads(l2); lid = S2I.get(row["meta"]["slug"])
+                if lid: by.setdefault(lid, []).append(row)
+            for l in L:
+                rows = by.get(l["id"], [])
+                order = list(np.random.default_rng(int(hashlib.md5((l["id"] + D).encode()).hexdigest()[:8], 16)).permutation(len(rows)))
+                USERS[l["id"]] = [{"user_key": hashlib.sha256((str(PEOPLE.get(rows[i]["meta"]["person_idx"])) + "|" + D).encode()).hexdigest()[:12],
+                                   "profile": profile(rows[i]["messages"][0]["content"])} for i in order[:4]]
+            users_source = f"run_what_panel build on harness build {stamp} (panel seeded order, first 4)"
+        else: print("WARN selection failed:", (r.stderr or "")[-400:], flush=True)
+if not USERS:
+    PP = pd.read_parquet(io.BytesIO(gcat(f"{B}/tmp/e5/private/person_panel/{D}.parquet", False)))
+    for l in L:
+        g = PP[(PP.launch_id.astype(str) == l["id"])]
+        g = g[g["drop"].isna() | (g["drop"].astype(str).str.strip() == "")] if "drop" in g else g   # drop = reason the generated comment was dropped
+        USERS[l["id"]] = [{"user_key": hashlib.sha256((str(pid) + "|" + D).encode()).hexdigest()[:12], "profile": profile(pr)}
+                          for pid, pr in zip(g.person_id.head(4), g.prompt.head(4))]
+    users_source = "person_panel/D.parquet (fallback)"
+for l in L: l["n_users"] = len(USERS.get(l["id"], []))
 
 commit = subprocess.run(["git", "-C", HERE, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip() or os.environ.get("PU_COMMIT", "")
 frozen = pd.Timestamp.now(tz="UTC"); cut = pd.Timestamp(D + " 03:30", tz="America/Los_Angeles")
-meta = {"day": D, "frozen_at": frozen.isoformat(), "freeze_deadline": cut.tz_convert("UTC").isoformat(), "on_time": bool(frozen <= cut),
+meta = {"day": D, "users_source": users_source, "frozen_at": frozen.isoformat(), "freeze_deadline": cut.tz_convert("UTC").isoformat(), "on_time": bool(frozen <= cut),
         "rehearsal": REH, "code_commit": commit, "structural_model": SL.get("structural_model"), "n": len(L), "sec": round(time.time() - t0),
         "inputs_read": ["structural rank", "00:05 name/tagline/description/topics", "pre-D person history", "category data", "PH Similar Products (up to Nov 1 / nightly)"],
         "inputs_not_read": ["votes", "comments", "ranks of D", "launch-day comments"]}
