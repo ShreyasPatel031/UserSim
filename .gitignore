@@ -46,3 +46,4 @@ experiments/human_experience/results_own_bench_*.log
 experiments/staged_context/hm/shots/
 *grokbot_webhook*
 mvp/client_qa/private/
+.claude/settings.local.json
