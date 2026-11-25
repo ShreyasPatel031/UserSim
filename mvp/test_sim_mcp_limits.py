@@ -236,7 +236,7 @@ class SmsLeaseTests(unittest.TestCase):
 
         self.tmp = tempfile.TemporaryDirectory()
         self.env = mock.patch.dict(os.environ, {**BASE_ENV, "MVP_MCP_SPEND_FILE": os.path.join(self.tmp.name, "s.json"),
-                                                "MVP_MCP_ANON_ALLOW_SMS": "1"})
+                                                "MVP_MCP_ANON_ALLOW_SMS": "1", "MVP_MCP_SMS_QUEUE_WAIT_S": "0"})
         self.env.start()
         L.reset_for_tests()
         sms_lease.reset_for_tests()
@@ -306,6 +306,47 @@ class SmsLeaseTests(unittest.TestCase):
         with mock.patch.dict(os.environ, {"MVP_MCP_SMS_LEASE_S": "0"}):
             self.assertEqual(self._phone(self._sim("203.0.113.7"), "203.0.113.7")["lease"], "new")
         self.assertEqual(self._phone(b, "203.0.113.6")["lease"], "new")  # expired at once
+
+    def test_queue_is_first_come_and_waiter_gets_number_when_freed(self):
+        a, b, c = self._sim("203.0.113.5"), self._sim("203.0.113.6"), self._sim("203.0.113.7")
+        self._phone(a, "203.0.113.5")
+        self.assertTrue(self._phone(b, "203.0.113.6")["busy"])  # b queues first
+        self.assertTrue(self._phone(c, "203.0.113.7")["busy"])
+        a.closed = True
+        self.assertTrue(self._phone(c, "203.0.113.7")["busy"])  # c may not jump ahead of b
+        self.assertEqual(self._phone(b, "203.0.113.6")["lease"], "new")
+        b.closed = True
+        self.assertEqual(self._phone(c, "203.0.113.7")["lease"], "new")
+
+    def test_phone_waits_for_lease_instead_of_failing(self):
+        from mvp.sim_mcp import sms_lease
+
+        a, b = self._sim("203.0.113.5"), self._sim("203.0.113.6")
+        self._phone(a, "203.0.113.5")
+
+        async def both():
+            async def free_later():
+                await asyncio.sleep(0.5)
+                sms_lease.release(a.id)
+            t = asyncio.ensure_future(free_later())
+            out = await SV.usersim_signup_phone(_ctx("203.0.113.6"), b.id)
+            await t
+            return json.loads(out)
+
+        with mock.patch.dict(os.environ, {"MVP_MCP_SMS_QUEUE_WAIT_S": "10"}):
+            out = asyncio.run(both())
+        self.assertEqual(out["lease"], "new")
+
+    def test_lease_shrinks_after_code_read(self):
+        from mvp.sim_mcp import sms_lease
+
+        a, b = self._sim("203.0.113.5"), self._sim("203.0.113.6")
+        self._phone(a, "203.0.113.5")
+        with mock.patch.dict(os.environ, {"MVP_MCP_SMS_AFTER_CODE_S": "0"}), \
+                mock.patch("mvp.sms_provider.wait_for_sms", return_value="111222"):
+            json.loads(asyncio.run(SV.usersim_wait_for_sms_code(_ctx("203.0.113.5"), a.id, 10)))
+        self.assertIsNone(sms_lease.held_by(a.id, S.SESSIONS))
+        self.assertEqual(self._phone(b, "203.0.113.6")["lease"], "new")
 
     def test_daily_lease_cap_per_ip(self):
         from mvp.sim_mcp import sms_lease

@@ -105,6 +105,14 @@
       "value": 600,
       "about": "Seconds one session holds the phone number after usersim_signup_phone (or until that session closes). Another session asking meanwhile gets 'number busy, retry in N s'. Applies to every caller, token or not."
     },
+    "sms_queue_wait_s": {
+      "value": 45,
+      "about": "Seconds usersim_signup_phone waits in a first-come queue for the shared number before answering 'busy, retry' (the caller keeps its place). 0 = answer busy at once. Keep under the ~60 s MCP client timeout."
+    },
+    "sms_after_code_s": {
+      "value": 90,
+      "about": "Once the lease holder has read its SMS code, its lease shrinks to this many seconds (room for a wrong code or resend), freeing the number for the next queued user instead of holding it for all of sms_lease_s."
+    },
     "anon_daily_sms_leases_per_ip": {
       "value": 5,
       "about": "SMS-number leases per client IP per day (America/Los_Angeles) for callers without a token."

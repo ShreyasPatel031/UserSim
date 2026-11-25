@@ -1804,9 +1804,11 @@ async def usersim_signup_phone(ctx: Context, session_id: str) -> str:
     """Phone number for an SMS step (only if the site insists on one). Then call usersim_wait_for_sms_code.
 
     The number is shared, so it is leased to one session at a time (about 10 min, or until the session ends).
-    If another simulated user holds it you get busy=true and retry_after_s: wait that long and call again.
+    If another simulated user holds it, this call waits in a first-come queue (up to ~45 s); if still busy you get
+    busy=true and retry_after_s: call again soon (you keep your place in the queue).
     """
     import asyncio
+    import time
 
     from mvp.sim_mcp import limits as L
     from mvp.sim_mcp import sms_lease
@@ -1821,10 +1823,19 @@ async def usersim_signup_phone(ctx: Context, session_id: str) -> str:
 
         number = sim.sms_number or await asyncio.to_thread(lease_number, _host(sim))
         on_new = (lambda: L.count_sms_lease(owner)) if S.is_anon(owner) else None
-        lease, new = sms_lease.acquire(sim.id, owner, float(L.get("sms_lease_s")), S.SESSIONS, on_new=on_new)
+        # Queue for the shared number rather than failing at once ("line busy" lost 7 sessions on Nov 24-25).
+        deadline = time.time() + max(0.0, min(float(L.get("sms_queue_wait_s")), 55.0))
+        while True:
+            try:
+                lease, new = sms_lease.acquire(sim.id, owner, float(L.get("sms_lease_s")), S.SESSIONS, on_new=on_new)
+                break
+            except sms_lease.Busy:
+                if time.time() + 2.0 > deadline or sim.closed:
+                    raise
+                await asyncio.sleep(2.0)
         sim.sms_number = number
         sim.row["sms_since"] = lease.started
-        return json.dumps({"phone": number.phone, "lease_seconds_left": int(lease.expires - __import__("time").time()),
+        return json.dumps({"phone": number.phone, "lease_seconds_left": int(lease.expires - time.time()),
                            "lease": "new" if new else "renewed",
                            "next": "Type this number into the site, request the code, then call usersim_wait_for_sms_code. "
                                    "Only texts that arrive after this lease started are returned."})
@@ -1867,6 +1878,7 @@ async def usersim_wait_for_sms_code(ctx: Context, session_id: str, timeout_s: in
                                        skip=L.sms_denied, slack_s=0.0)
         if code:
             sim.row["sms_code_received"] = True
+            sms_lease.shorten(sim.id, float(L.get("sms_after_code_s")))
             return json.dumps({"found": True, "code": code})
         return json.dumps({"found": False, "code": None, "lease_seconds_left": max(0, int(lease.expires - time.time())),
                            "note": f"no SMS code yet (waited {t}s). Texts can take a minute: call again, or use the "
