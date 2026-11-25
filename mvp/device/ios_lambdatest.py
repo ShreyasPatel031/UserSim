@@ -77,6 +77,21 @@ class LTDevice(IOSDevice):
             el.clear()
             el.send_keys(a.get("text", ""))
             return "ok"
+        if a.get("action") in ("long_press", "hold"):
+            # press and hold at a point (hidden menus, context menus); duration in seconds
+            self.d.execute_script("mobile: touchAndHold", {"x": a["x"], "y": a["y"],
+                                                            "duration": a.get("duration", 1.5)})
+            return "ok"
+        if a.get("action") == "multi_tap":
+            # n quick taps at one point (hidden gestures), then optionally a hold
+            import time as _t
+            for _ in range(int(a.get("n", 3))):
+                self.d.execute_script("mobile: tap", {"x": a["x"], "y": a["y"]})
+                _t.sleep(a.get("gap", 0.15))
+            if a.get("hold"):
+                self.d.execute_script("mobile: touchAndHold", {"x": a["x"], "y": a["y"],
+                                                                "duration": a.get("hold", 1.5)})
+            return "ok"
         if a.get("action") in ("swipe", "scroll"):
             # a real finger drag with known start and end points (so the video can draw it). direction "up" scrolls
             # the content up: the finger moves from low to high on the screen.
