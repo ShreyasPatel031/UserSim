@@ -50,7 +50,7 @@ for x in short:
                  "pick_share_backer_top": sum(lid in p for p in ok[ok.panel == "backer_top"].picks) / max(1, (ok.panel == "backer_top").sum()), "page_source": src_page[lid]})
 R = pd.DataFrame(rows); zz = (R.pick_share - R.pick_share.mean()) / (R.pick_share.std() + 1e-9); R["key"] = R.structural_rank - 2 * zz
 R = R.sort_values(["key", "structural_rank"]); R["rerank"] = np.arange(1, len(R) + 1)
-out = {"day": D, "arm": "v2 pick-k", "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "before_0345_pt": bool(pd.Timestamp.now(tz="UTC") < deadline), "prereg": "PREREG.md addendum 8",
+out = {"day": D, "arm": "v2 pick-k", "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "predicted_at": pd.Timestamp.now(tz="UTC").isoformat(), "before_0345_pt": bool(pd.Timestamp.now(tz="UTC") < deadline), "freeze_deadline": pd.Timestamp(f"{D} 03:30", tz="America/Los_Angeles").tz_convert("UTC").isoformat(), "before_0330_pt": bool(pd.Timestamp.now(tz="UTC") < pd.Timestamp(f"{D} 03:30", tz="America/Los_Angeles").tz_convert("UTC")), "prereg": "PREREG.md addendum 8",
        "model": sim_model.MODEL, "agents": int(n), "pick rate by position": {str(i + 1): round(float(np.mean([order_pos_hit(r, i) for r in ok.itertuples()])), 4) for i in range(len(ids))}, "agent_calls": int(len(A)), "usd": sim_model.usd(), "shortlist_source": G["SL_SRC"], "launches": R.drop(columns=["key"]).to_dict("records")}
 DRY = "--dry" in sys.argv_b
 cal = os.path.join(tempfile.gettempdir(), f"rerank2_{D}.json"); json.dump(out, open(cal, "w"), indent=1, default=float)

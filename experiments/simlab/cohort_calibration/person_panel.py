@@ -89,16 +89,18 @@ LABEL = ("Person-built panel: 15 comments per launch, each written by Gemini 2.5
          "recall +8.7 [+2.9, +14.7] points with recall not lower. Not for display without Shreyas's decision (individual-history text).")
 p = os.path.join(SP, "explain", f"{D}.json"); J = json.loads(gcat(f"{B}/results/web/explain/{D}.json") or "{}")
 if not J.get("launches"): sys.exit("no explain file for D")
+_PRED = pd.Timestamp.now(tz="UTC"); _DL = pd.Timestamp(f"{D} 03:30", tz="America/Los_Angeles").tz_convert("UTC")   # orchestrator Nov 25 06:14Z: every line freezes before 03:30 PT, predicted_at stamped
+STAMP = {"predicted_at": _PRED.isoformat(), "freeze_deadline": _DL.isoformat(), "before_0330_pt": bool(_PRED < _DL)}
 for lid, cm in OUTW.items():
     if lid in J["launches"]:
         J["launches"][lid].setdefault("say", {})["person_built_panel"] = {"comments": cm, "n": len(cm), "model": sim_model.MODEL, "temperature": 0.7,
-                                                                           "rehearsal_late_unscored": bool(REH), "label": LABEL,
+                                                                           "rehearsal_late_unscored": bool(REH), "label": LABEL, **STAMP,
                                                                            "launch_block": {"maker_comment_present": lid in MAKERC, "api_comments_snapshot": MAKER_SNAP}}
         J["launches"][lid]["say"]["person_built_panel_noblock"] = {"comments": OUTN.get(lid, []), "n": len(OUTN.get(lid, [])), "shadow": True,
-                                                                   "rehearsal_late_unscored": bool(REH), "label": "Shadow: the person-built panel without the maker's first comment (pre-POINT-1 prompt)."}
+                                                                   "rehearsal_late_unscored": bool(REH), **STAMP, "label": "Shadow: the person-built panel without the maker's first comment (pre-POINT-1 prompt)."}
 os.makedirs(os.path.dirname(p), exist_ok=True); json.dump(J, open(p, "w"), indent=1)
 pv = os.path.join(tempfile.gettempdir(), f"person_panel_{D}.parquet"); pd.DataFrame(PRIV).to_parquet(pv, index=False)
-STATS.update({"usd": sim_model.usd(), "day": D, "rehearsal": REH, "tables": TABLES})
+STATS.update({**STAMP, "usd": sim_model.usd(), "day": D, "rehearsal": REH, "tables": TABLES})
 if UP:
     subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/explain/{D}.json"], check=True)
     subprocess.run(["gsutil", "-q", "cp", pv, f"{B}/tmp/e5/private/person_panel/{D}.parquet"], check=True)

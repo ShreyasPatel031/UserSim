@@ -81,7 +81,7 @@ for x in short:
                  "sentiment": {k: round(float(s.get(k, 0)), 3) for k in ("pos", "neu", "neg")}, "page_source": src_page[lid]})
 R = pd.DataFrame(rows); ys = R.yes_share.fillna(R.yes_share.mean()); zz = (ys - ys.mean()) / (ys.std() + 1e-9)
 R["key"] = R.structural_rank - 2 * zz; R = R.sort_values(["key", "structural_rank"]); R["rerank"] = np.arange(1, len(R) + 1)
-out = {"day": D, "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "before_0345_pt": bool(pd.Timestamp.now(tz="UTC") < deadline), "prereg": "PREREG.md addendum 7",
+out = {"day": D, "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(), "predicted_at": pd.Timestamp.now(tz="UTC").isoformat(), "before_0345_pt": bool(pd.Timestamp.now(tz="UTC") < deadline), "freeze_deadline": pd.Timestamp(f"{D} 03:30", tz="America/Los_Angeles").tz_convert("UTC").isoformat(), "before_0330_pt": bool(pd.Timestamp.now(tz="UTC") < pd.Timestamp(f"{D} 03:30", tz="America/Los_Angeles").tz_convert("UTC")), "prereg": "PREREG.md addendum 7",
        "model": sim_model.MODEL, "rule": "key = structural_rank - 2 * z(yes share), z within the shortlist", "shortlist_source": SL_SRC,
        "agents_total": int(A.vote.notna().sum()), "agent_calls": len(A), "usd": sim_model.usd(),
        "launches": R.drop(columns=["key"]).to_dict("records"),

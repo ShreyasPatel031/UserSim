@@ -220,6 +220,7 @@ OUT["n_sessions_excluded_access"] = int((R_.artefact != "none").sum()) if len(R_
 OUT["n_launches_no_prediction"] = int(sum(x is None for x in A.sim_score)) if len(A) else 0
 OUT["skipped_unreachable"] = SKIPPED; OUT["access_playbook_sites"] = len(PB)
 OUT["artefact_raw_counts"] = R_.artefact_raw.value_counts().to_dict() if len(R_) else {}
+OUT["predicted_at"] = OUT["frozen_at"]
 OUT["on_time"] = (OUT["frozen_at"] <= OUT["freeze_deadline"]) if OUT["freeze_deadline"][:2] == "20" else None
 p = WORK / "outputs.json"; p.write_text(json.dumps(OUT, indent=1, default=str)); subprocess.run(["gsutil", "-q", "cp", str(p), f"{PUB}/outputs.json"])
 print(json.dumps({k: OUT[k] for k in ("day", "n_cells", "n_sessions_run", "model_usd_sessions", "minutes", "on_time", "clean_session_rate", "clean_session_rate_launch")},
