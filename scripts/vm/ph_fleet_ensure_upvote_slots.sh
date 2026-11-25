@@ -9,7 +9,8 @@ ART="$ROOT/results/ph_fleet_full/${RUN_ID}"
 export FLEET_ART="$ART"
 # shellcheck source=/dev/null
 source "$ROOT/scripts/vm/ph_fleet_frozen_guard.sh"
-UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-${UPVOTE_SLOTS:-9 27 38}}"
+# Only FLEET_UPVOTE_SLOTS (not UPVOTE_SLOTS — often narrowed to ONLY_SLOTS in subshells).
+UPVOTE_SLOTS="${FLEET_UPVOTE_SLOTS:-9 27 38}"
 export PH_FLEET_STRATEGY="${PH_FLEET_STRATEGY:-$ROOT/scripts/vm/ph_strategies/fleet_upvote_refresh.env}"
 # Re-use autoscale create_one (sticky port from slots.tsv, upvote GO token).
 # shellcheck source=/dev/null
