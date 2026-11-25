@@ -199,3 +199,48 @@ Caveat: the bench tables are static (built ~Nov 23); people's histories after th
 **Fix.** Deterministic tie-break: latest launch day, then smallest launch id. Gated on the test day, `D >= 2026-11-26`. The status line records `tie_break: day,min_id` (or `legacy_hash_order`). Check: two runs on D=2026-11-24 with the fix forced on and different PYTHONHASHSEED gave the same person at every rank in all four arms (max |dp| 1.8e-14).
 **First night it applies.** The Nov 26 nightly (test day 2026-11-26). Nov 25 runs unchanged.
 **Change point.** 2026-11-26 is a change point in the CF+intensity series. Rank-sensitive measures (precision/recall at k, rank of true backers) are not pooled or compared across it; each side is read on its own. Nights before Nov 26 were hash-order dependent, and their stored lists stay as they are. The other arms (CF-only, CF+back, A7) and the published v2 list are untouched.
+
+## Addendum 11 (2026-11-25): PRODUCT-USE-1, simulated users use the product and two same-category competitors (orchestrator 00:17Z + amendment 00:23Z)
+**Question.** When simulated users from a launch's likely cohort actually use it and its two nearest same-category competitors on the
+category's core task, do (1) their preferences explain the structural model's miss, and (2) their problems and likes match what real users say?
+**Line-up (frozen before 03:30 PT, before any rank is visible):** `experiments/simlab/product_use/lineup.py`
+- Launches: the night's structural top 15 (results/structural/D/shortlist.json). Launch text is name, tagline, description and topics only (the 00:05 file's votes, comments and ranks are never read).
+- Product URL: Gemini 2.5 Flash with Google Search grounding (url_source recorded). The Feeder's /r/ resolution has returned nothing since Nov 17.
+- Category, in order:
+  1. CATEGORY-1 table (simharness/taxonomy) when present.
+  2. Otherwise a bge-small shortlist of 12 over every PH category held (91 pasted with descriptions, plus 248 from Similar Products), then a Gemini pick at temperature 0. Source and confidence are recorded; "no pick" falls back to the embedding top 1 with confidence low.
+- Competitors (2), in order:
+  1. Nightly PH Similar Products that share the category.
+  2. CATEGORY-1 competitor sets.
+  3. The category's 10 most-reviewed live products, ranked by embedding closeness to the launch.
+  Each is resolved by grounded search and checked live through safe_fetch plus competitor_urls' same-site and product-host rules. The source of each competitor is recorded.
+- Core task: one per category, written once by Gemini from the category description and frozen (category_tasks.json). Every product in a category is judged on the same job.
+- Users: 4 per launch, the first 4 kept people of the person-built panel's pre-D selection. The profile is pre-D activity only (quoted comments removed). Person ids are hashed with D and stay private.
+**Runs:** `runner.py`
+- One MCP session per launch × user × product, on the seed VMs (Camoufox, own static IPs, producthunt.com blocked in the browser context).
+- Driver: Gemini 2.5 Flash (scripts/mcp_runner_gemini.py, run_cell), at most 30 turns and $0.09 per session, $14 per night.
+- Cells run launch by launch in structural order, so a budget stop cuts from the bottom of the top 15 and keeps 4 users per launch.
+- One debrief per user (Gemini, temperature 0, reads only that user's own three step logs), per product:
+  - completion;
+  - artefact tag: signup_wall | captcha | block | js_only | timeout | engine | none, with evidence;
+  - would-use 0-1;
+  - top 3 problems and top 3 likes;
+  - preference ordering with reasons.
+- Steps to the first value moment come from the driver's VALUE_REACHED marker; error steps and seconds come from the log.
+- Artefact-tagged sessions are excluded from product findings. The artefact rate is reported per launch.
+- Full traces go to tmp/e5/private/product_use/D/traces (core IP, private). Frozen outputs go to results/calibration/D/product_use/ with the code commit and frozen_at.
+**Simulation score:** sim_score = would-use × preference (launch's mean over non-artefact users). Preference = (n_ranked − rank)/(n_ranked − 1).
+**Metrics** (forward days only; paired by day; day-bootstrap 95% intervals):
+1. Residual:
+   - (a) capture of the real top 3 / 5 when the structural top 15 is re-ordered by sim_score, minus the structural order's capture;
+   - (b) within-day Spearman of sim_score with (real rank − structural rank).
+2. Product reaction: recall and precision of real complaints, praise and competitor comparisons in D's comments, on the frozen consensus-theme scorer (forward_says.judge; truth extracted 3× and merged, kept if found in at least 2 of 3).
+3. Calibration on competitors: problems and likes, and the preference ordering, against PH reviews of the competitor products dated after Gemini 2.5 Flash's training cutoff (2025-01-31). Source: raw/ph_predict_data/competitor_reviews.jsonl.gz plus any later review pulls.
+**Controls on the same launches:** Stage B text-only agents (rerank_b / rerank_b2 scores), and the plain homepage prompt (e2e_vs_reviews/part1.py baseline: homepage via safe_fetch → themes).
+**Scorecards:** overall, paired by day. Per category only for categories with ≥ 20 scored launches.
+**Read:** first at 7 scored forward days (first frozen night: the Nov 26 PT launches), reported once. Nov 24 is a rehearsal (line-up built on Nov 25, after results), never scored.
+**Leak checks:** no launch-day comments, votes or ranks in any input; commit and freeze time recorded; seed egress blocks producthunt.com.
+**Known limits:**
+- The URL and competitor resolution use live web search at freeze time.
+- Similar Products before the nightly feed is up to Nov 1 only.
+- Browser capacity is pending the orchestrator: anonymous MCP caps allow about 40 sessions/day per IP, and a night needs 180.
