@@ -1,0 +1,16 @@
+{
+ "calls": 1817,
+ "launches": 109,
+ "usd_generation": 0.614,
+ "dropped": {
+  "maker_like": 138,
+  "names_own_history_product": 31,
+  "self_named": 9,
+  "empty": 4
+ },
+ "leak": {
+  "prompts": 3270,
+  "history_lines_on_or_after_day": 0,
+  "comment_lines_on_a_launch_of_the_day": 19
+ }
+}

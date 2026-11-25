@@ -387,6 +387,13 @@ Flash + history 60.9, untuned Qwen 55.2, own last comment 66.1. Tuned - Flash +0
 untuned +6.1 [+4.1, +8.4]. Content match: tuned 25.9 vs Flash 40.7 (tuned writes shorter comments). Decision: the tuned
 line is closed for person voice; Flash + history stays. Files: simharness/bench_v0/person_voice_1/.
 
+### Panel + 15 repeat check (WHAT-PANEL-4, subagent, Nov 25; $2.27)
+85 launches on Nov 15-20, generated as the deployed job does, paired by launch (panel + 15 minus panel): recall -1.2
+[-4.1, +1.2], precision +11.3 [+6.8, +14.7], complaint recall -1.3 [-5.4, +3.4]. Pooled Nov 15-23 (109 launches, 9 days):
+precision +12.2 [+8.5, +15.3], recall -0.9, complaint recall 0.0 [-3.8, +4.4]. The precision gain holds; WHAT-PANEL-3's
+complaint-recall gain did not replicate. No revert alarm: the deployed panel stays, judged by the 7-day live rule.
+Judge levels drift between runs; compare only paired differences. Files: simharness/bench_v0/what_panel4/.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
