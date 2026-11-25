@@ -452,6 +452,14 @@ Daily top 3 is close to random (66% of misses are structural 4th-6th; the #3-#4 
   leaves 74% unexplained; rating not predicted by either (17% coverage); later relaunches rho 0.24.
 Next: structural scores for every 2026 day (PH agent), then weekly-top-10 tests for the simulation.
 
+### Weekly and monthly top 10: where the miss is (WEEKLY-1, subagent, Nov 25; $0)
+44 weeks, 10 months, every day covered by STRUCT-BT26. Structural captures 37.0% [33.4, 40.5] of the weekly top 10 and 15%
+[11, 19] of the monthly. Ceilings: 88% / 85% with real daily votes. Fixing each day's total volume adds 3 / 8 points; fixing
+within-day vote shares adds 48 / 59. 75% of weekly misses are within-day: the missed launch was its day's real #1 (structural
+median 4th), and structural's predicted spread is too flat. Getting the day's winner right is worth about 32 points weekly
+(37 -> 69); sizing how far it pulls ahead is the rest, and most of the monthly gain. Target for the simulation: spot the
+breakout launch of each day and size its margin.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
