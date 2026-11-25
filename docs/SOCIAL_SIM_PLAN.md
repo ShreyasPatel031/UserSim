@@ -432,6 +432,15 @@ given structural rank -0.06 to -0.09 (clear of zero for sentiment and on establi
 change +1 to +2, intervals touching zero). Person-panel sentiment top-3 +2.2 [+0.6, +4.4] but Spearman, partial and top 5
 all null or opposite: likely chance among 10 lines; extension to all 171 days queued for Nov 26 ($5-6). Layer 1 still 0.
 
+### Residual targets restated (Shreyas, Nov 25)
+Daily top 3 is close to random (66% of misses are structural 4th-6th; the #3-#4 vote margin is under 10% on 41% of days;
+14% of adjacent top-5 pairs are vote-inverted by Product Hunt). The simulation is judged first on:
+1. Daily top 10, especially lifting launches from structural 11-20: real top-10 capture 76.4%; 2.4 misses a day, of which
+   64% sat at structural 11-15, 23% at 16-20, 13% beyond.
+2. Weekly and monthly top 10 (weekly closes now held via the official API; monthly re-reads running).
+3. Sustained product outcomes: still online months later, reviews and rating accumulated, relaunches, follower growth.
+   These are where real product use should show, and the product-use test should be scored on them.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
