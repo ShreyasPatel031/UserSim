@@ -11,6 +11,9 @@ Then drive it (each command prints a compact element list and saves a screenshot
     python -m mvp.client_qa.drive 8801 look [tag]
     Logins: type "{{EMAIL}}" / "{{PASSWORD}}"; real values come from QA_LOGIN_ENV (mvp.device.ios_lambdatest.fill_secrets).
     Do real swipes wherever a screen has more below: the client wants to see scrolling.
+    python -m mvp.client_qa.drive 8801 typeinto FIELD TEXT | multitap X Y N [HOLD_S]
+    Before every run read, and after every run add to, the private client knowledge file (Reframe:
+    gs://usersim-bakeoff-347838016394/usersim_sim/client_qa/reframe/knowledge.md). Test only the build the brief names.
     python -m mvp.client_qa.drive 8801 tap X Y | label "Text" | type "text" | swipe up|down|left|right | back | wait S
     python -m mvp.client_qa.drive 8801 note ITEM pass|fail|blocked|confusing "what happened" ["expected"]
     python -m mvp.client_qa.drive 8801 mark          -> "the test starts here" (first screen after login); the client
@@ -176,6 +179,13 @@ def cli(argv: list[str]) -> None:
         show(call(port, "/act", {"action": "tap_label", "label": rest[0]}))
     elif cmd == "type":
         show(call(port, "/act", {"action": "type", "text": rest[0], "tag": "type"}))  # use {{EMAIL}} / {{PASSWORD}} for logins
+    elif cmd == "typeinto":  # typeinto FIELD TEXT (field: label/placeholder, or "password")
+        show(call(port, "/act", {"action": "type_into", "field": rest[0], "text": rest[1], "tag": "type"}))
+    elif cmd == "multitap":  # multitap X Y N [HOLD_S]: one timed sequence (e.g. the admin gesture: 3 taps, hold last)
+        act = {"action": "multi_tap", "x": int(rest[0]), "y": int(rest[1]), "n": int(rest[2])}
+        if len(rest) > 3:
+            act["hold"] = float(rest[3])
+        show(call(port, "/act", act))
     elif cmd == "swipe":
         show(call(port, "/act", {"action": "swipe", "direction": rest[0]}))
     elif cmd == "back":
