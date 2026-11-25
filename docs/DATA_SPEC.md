@@ -250,3 +250,15 @@ Spend: GCP $64.88 Nov 22 (soft cap $50), month-to-date $1,211.65; paid data $0.
 | Quick-run person index (site/person_index_v1) | full store, daily | 13,581 people (Nov 11 build); the rebuilt 27,466-person copy was lost in the 09:17Z container restart | Shreyas: "publish the index" (rebuild first) |
 | Block-triggered IP rotation (must be zero) | 0 | 147 on Nov 24 so far, 43 within 60 min of a block (slot 26: 41) | rule alert sent to Grok Bot 13:15Z; decision open with Shreyas |
 Spend: GCP $64.78 Nov 23 PT (infra $63.16, Vertex $1.62; soft cap $50), month-to-date $1,276.43, pace $1,665 for November; paid data $0. Dashboard refreshed 13:20Z (11 datasets).
+
+## Collection status, Nov 25 2026 (orchestrator daily review)
+| Feed | Ideal | Now | Gap / owner / date |
+|---|---|---|---|
+| Complete people | every person who backs or comments, complete | 93,619 complete (+21 since Nov 24); fleet inflow back since 09:16Z (19-58 saves per cycle) | need-list 1,276; fleet; no date given |
+| Upvote refresh (14-day-active) | through yesterday by 00:05 PT daily | 1.9/min from 09:30Z (0 overnight); median read 13.1 days old | fleet missed its Nov 25 08:30Z date; asked for Nov 26 08:05Z |
+| Coverage (complete people) | rising | Nov 18-24 38.8 / 60.2 (all / top 3), down from 45.0 / 64.8 | follows fleet throughput; definitions reconciled (population ledger official) |
+| Live comments stream | gap under 20 min | breach 09:53Z, recovered before 10:30Z | fleet / Data Feeder |
+| Launch comment pages (PH pipeline) | all pages | 44 of 44 blocked | PH pipeline; no evasion; open |
+| Product website links | resolved for every launch | 0 of 33 since Nov 17 (Data Feeder) | Grok Bot asked Nov 25; E5 uses search grounding meanwhile |
+| Category directory, nightly Similar Products, competitor reviews | nightly by 01:00-02:00 PT | not yet | fleet: Nov 26 nightly, backfill and directory by Nov 28 |
+| Product-use sessions (MCP engine) | 80%+ clean entry | 25-31% | signup agent (blocked from GCP: Shreyas) |
