@@ -1,0 +1,869 @@
+{
+ "tau": 0.7497,
+ "groups": {
+  "all": {
+   "rows": 1450,
+   "days": 14,
+   "models": {
+    "tuned": {
+     "rows": 1450,
+     "days": 14,
+     "rows_with_same_item_other": 1450,
+     "match": {
+      "value": 0.2586,
+      "ci95": [
+       0.2404,
+       0.2738
+      ]
+     },
+     "sim": {
+      "value": 0.6845,
+      "ci95": [
+       0.6791,
+       0.6885
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.6138,
+      "ci95": [
+       0.5902,
+       0.6414
+      ]
+     },
+     "len_ratio_median": {
+      "value": 0.7443,
+      "ci95": [
+       0.7236,
+       0.771
+      ]
+     },
+     "empty": 0
+    },
+    "base": {
+     "rows": 1450,
+     "days": 14,
+     "rows_with_same_item_other": 1450,
+     "match": {
+      "value": 0.3483,
+      "ci95": [
+       0.3117,
+       0.3768
+      ]
+     },
+     "sim": {
+      "value": 0.7092,
+      "ci95": [
+       0.7012,
+       0.7152
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.5524,
+      "ci95": [
+       0.5373,
+       0.5701
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.7146,
+      "ci95": [
+       1.6363,
+       1.8039
+      ]
+     },
+     "empty": 0
+    },
+    "flash": {
+     "rows": 1450,
+     "days": 14,
+     "rows_with_same_item_other": 1443,
+     "match": {
+      "value": 0.4069,
+      "ci95": [
+       0.3791,
+       0.4305
+      ]
+     },
+     "sim": {
+      "value": 0.7192,
+      "ci95": [
+       0.7129,
+       0.7244
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.6085,
+      "ci95": [
+       0.5862,
+       0.6293
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.1064,
+      "ci95": [
+       1.0754,
+       1.139
+      ]
+     },
+     "empty": 7
+    },
+    "own_last_comment": {
+     "rows": 1348,
+     "days": 14,
+     "rows_with_same_item_other": 1348,
+     "match": {
+      "value": 0.132,
+      "ci95": [
+       0.1022,
+       0.159
+      ]
+     },
+     "sim": {
+      "value": 0.6525,
+      "ci95": [
+       0.6448,
+       0.6592
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.661,
+      "ci95": [
+       0.6287,
+       0.6975
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.0279,
+      "ci95": [
+       0.9904,
+       1.0737
+      ]
+     },
+     "empty": 102
+    }
+   },
+   "paired": {
+    "tuned - flash: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 1443,
+     "diff": 0.0035,
+     "ci95": [
+      -0.0125,
+      0.0245
+     ]
+    },
+    "tuned - flash: match": {
+     "metric": "match",
+     "rows": 1450,
+     "diff": -0.1483,
+     "ci95": [
+      -0.1702,
+      -0.1242
+     ]
+    },
+    "tuned - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 1450,
+     "diff": 0.0614,
+     "ci95": [
+      0.0407,
+      0.0841
+     ]
+    },
+    "tuned - base: match": {
+     "metric": "match",
+     "rows": 1450,
+     "diff": -0.0897,
+     "ci95": [
+      -0.1181,
+      -0.0554
+     ]
+    },
+    "flash - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 1443,
+     "diff": 0.0561,
+     "ci95": [
+      0.0323,
+      0.0788
+     ]
+    },
+    "flash - base: match": {
+     "metric": "match",
+     "rows": 1450,
+     "diff": 0.0586,
+     "ci95": [
+      0.0432,
+      0.078
+     ]
+    },
+    "tuned - own_last_comment: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 1348,
+     "diff": -0.0326,
+     "ci95": [
+      -0.0641,
+      0.0016
+     ]
+    },
+    "tuned - own_last_comment: match": {
+     "metric": "match",
+     "rows": 1450,
+     "diff": 0.1359,
+     "ci95": [
+      0.1117,
+      0.1643
+     ]
+    }
+   }
+  },
+  "forward days (Nov 23-24)": {
+   "rows": 126,
+   "days": 2,
+   "models": {
+    "tuned": {
+     "rows": 126,
+     "days": 2,
+     "rows_with_same_item_other": 126,
+     "match": {
+      "value": 0.2698,
+      "ci95": [
+       0.2323,
+       0.4074
+      ]
+     },
+     "sim": {
+      "value": 0.6961,
+      "ci95": [
+       0.6879,
+       0.7262
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.6905,
+      "ci95": [
+       0.6566,
+       0.8148
+      ]
+     },
+     "len_ratio_median": {
+      "value": 0.8356,
+      "ci95": [
+       0.8351,
+       0.8361
+      ]
+     },
+     "empty": 0
+    },
+    "base": {
+     "rows": 126,
+     "days": 2,
+     "rows_with_same_item_other": 126,
+     "match": {
+      "value": 0.4048,
+      "ci95": [
+       0.3838,
+       0.4815
+      ]
+     },
+     "sim": {
+      "value": 0.7182,
+      "ci95": [
+       0.7152,
+       0.7291
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.5714,
+      "ci95": [
+       0.5657,
+       0.5926
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.9805,
+      "ci95": [
+       1.715,
+       2.0316
+      ]
+     },
+     "empty": 0
+    },
+    "flash": {
+     "rows": 126,
+     "days": 2,
+     "rows_with_same_item_other": 125,
+     "match": {
+      "value": 0.4762,
+      "ci95": [
+       0.4343,
+       0.6296
+      ]
+     },
+     "sim": {
+      "value": 0.7266,
+      "ci95": [
+       0.7157,
+       0.7662
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.632,
+      "ci95": [
+       0.5918,
+       0.7778
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.1325,
+      "ci95": [
+       1.1272,
+       1.1923
+      ]
+     },
+     "empty": 1
+    },
+    "own_last_comment": {
+     "rows": 124,
+     "days": 2,
+     "rows_with_same_item_other": 124,
+     "match": {
+      "value": 0.0968,
+      "ci95": [
+       0.0909,
+       0.12
+      ]
+     },
+     "sim": {
+      "value": 0.6468,
+      "ci95": [
+       0.6418,
+       0.6667
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.7581,
+      "ci95": [
+       0.72,
+       0.7677
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.0279,
+      "ci95": [
+       1.0,
+       1.0476
+      ]
+     },
+     "empty": 2
+    }
+   },
+   "paired": {
+    "tuned - flash: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 125,
+     "diff": 0.056,
+     "ci95": [
+      0.037,
+      0.0612
+     ]
+    },
+    "tuned - flash: match": {
+     "metric": "match",
+     "rows": 126,
+     "diff": -0.2063,
+     "ci95": [
+      -0.2222,
+      -0.202
+     ]
+    },
+    "tuned - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 126,
+     "diff": 0.119,
+     "ci95": [
+      0.0909,
+      0.2222
+     ]
+    },
+    "tuned - base: match": {
+     "metric": "match",
+     "rows": 126,
+     "diff": -0.1349,
+     "ci95": [
+      -0.1515,
+      -0.0741
+     ]
+    },
+    "flash - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 125,
+     "diff": 0.064,
+     "ci95": [
+      0.0306,
+      0.1852
+     ]
+    },
+    "flash - base: match": {
+     "metric": "match",
+     "rows": 126,
+     "diff": 0.0714,
+     "ci95": [
+      0.0505,
+      0.1481
+     ]
+    },
+    "tuned - own_last_comment: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 124,
+     "diff": -0.0726,
+     "ci95": [
+      -0.1111,
+      0.08
+     ]
+    },
+    "tuned - own_last_comment: match": {
+     "metric": "match",
+     "rows": 126,
+     "diff": 0.1746,
+     "ci95": [
+      0.1414,
+      0.2963
+     ]
+    }
+   }
+  },
+  "test days, rows new from the stream": {
+   "rows": 941,
+   "days": 12,
+   "models": {
+    "tuned": {
+     "rows": 941,
+     "days": 12,
+     "rows_with_same_item_other": 941,
+     "match": {
+      "value": 0.2667,
+      "ci95": [
+       0.2324,
+       0.2842
+      ]
+     },
+     "sim": {
+      "value": 0.684,
+      "ci95": [
+       0.6733,
+       0.6897
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.5994,
+      "ci95": [
+       0.5699,
+       0.6309
+      ]
+     },
+     "len_ratio_median": {
+      "value": 0.7345,
+      "ci95": [
+       0.7043,
+       0.7721
+      ]
+     },
+     "empty": 0
+    },
+    "base": {
+     "rows": 941,
+     "days": 12,
+     "rows_with_same_item_other": 941,
+     "match": {
+      "value": 0.3454,
+      "ci95": [
+       0.3017,
+       0.3763
+      ]
+     },
+     "sim": {
+      "value": 0.708,
+      "ci95": [
+       0.6973,
+       0.7156
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.5494,
+      "ci95": [
+       0.5254,
+       0.5751
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.6333,
+      "ci95": [
+       1.5942,
+       1.68
+      ]
+     },
+     "empty": 0
+    },
+    "flash": {
+     "rows": 941,
+     "days": 12,
+     "rows_with_same_item_other": 936,
+     "match": {
+      "value": 0.4049,
+      "ci95": [
+       0.3535,
+       0.4403
+      ]
+     },
+     "sim": {
+      "value": 0.7193,
+      "ci95": [
+       0.7069,
+       0.7271
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.5994,
+      "ci95": [
+       0.5671,
+       0.6292
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.0894,
+      "ci95": [
+       1.0625,
+       1.139
+      ]
+     },
+     "empty": 5
+    },
+    "own_last_comment": {
+     "rows": 846,
+     "days": 12,
+     "rows_with_same_item_other": 846,
+     "match": {
+      "value": 0.1466,
+      "ci95": [
+       0.1055,
+       0.1829
+      ]
+     },
+     "sim": {
+      "value": 0.6553,
+      "ci95": [
+       0.6426,
+       0.6637
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.6454,
+      "ci95": [
+       0.6127,
+       0.6761
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.0226,
+      "ci95": [
+       0.9863,
+       1.0613
+      ]
+     },
+     "empty": 95
+    }
+   },
+   "paired": {
+    "tuned - flash: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 936,
+     "diff": -0.0021,
+     "ci95": [
+      -0.0211,
+      0.023
+     ]
+    },
+    "tuned - flash: match": {
+     "metric": "match",
+     "rows": 941,
+     "diff": -0.1382,
+     "ci95": [
+      -0.1678,
+      -0.1094
+     ]
+    },
+    "tuned - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 941,
+     "diff": 0.0499,
+     "ci95": [
+      0.0313,
+      0.0695
+     ]
+    },
+    "tuned - base: match": {
+     "metric": "match",
+     "rows": 941,
+     "diff": -0.0786,
+     "ci95": [
+      -0.1077,
+      -0.047
+     ]
+    },
+    "flash - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 936,
+     "diff": 0.0491,
+     "ci95": [
+      0.0229,
+      0.0733
+     ]
+    },
+    "flash - base: match": {
+     "metric": "match",
+     "rows": 941,
+     "diff": 0.0595,
+     "ci95": [
+      0.0342,
+      0.0828
+     ]
+    },
+    "tuned - own_last_comment: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 846,
+     "diff": -0.0236,
+     "ci95": [
+      -0.0597,
+      0.0112
+     ]
+    },
+    "tuned - own_last_comment: match": {
+     "metric": "match",
+     "rows": 941,
+     "diff": 0.135,
+     "ci95": [
+      0.1013,
+      0.1653
+     ]
+    }
+   }
+  },
+  "test days, rows already in the benchmark": {
+   "rows": 383,
+   "days": 12,
+   "models": {
+    "tuned": {
+     "rows": 383,
+     "days": 12,
+     "rows_with_same_item_other": 383,
+     "match": {
+      "value": 0.235,
+      "ci95": [
+       0.1914,
+       0.2803
+      ]
+     },
+     "sim": {
+      "value": 0.6816,
+      "ci95": [
+       0.6687,
+       0.6916
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.624,
+      "ci95": [
+       0.5729,
+       0.6609
+      ]
+     },
+     "len_ratio_median": {
+      "value": 0.7353,
+      "ci95": [
+       0.7059,
+       0.7692
+      ]
+     },
+     "empty": 0
+    },
+    "base": {
+     "rows": 383,
+     "days": 12,
+     "rows_with_same_item_other": 383,
+     "match": {
+      "value": 0.3368,
+      "ci95": [
+       0.291,
+       0.3848
+      ]
+     },
+     "sim": {
+      "value": 0.709,
+      "ci95": [
+       0.6977,
+       0.7174
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.5535,
+      "ci95": [
+       0.5105,
+       0.5981
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.9921,
+      "ci95": [
+       1.7246,
+       2.2464
+      ]
+     },
+     "empty": 0
+    },
+    "flash": {
+     "rows": 383,
+     "days": 12,
+     "rows_with_same_item_other": 382,
+     "match": {
+      "value": 0.389,
+      "ci95": [
+       0.3483,
+       0.4159
+      ]
+     },
+     "sim": {
+      "value": 0.7165,
+      "ci95": [
+       0.7032,
+       0.7259
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.623,
+      "ci95": [
+       0.5862,
+       0.655
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.1282,
+      "ci95": [
+       1.0278,
+       1.2089
+      ]
+     },
+     "empty": 1
+    },
+    "own_last_comment": {
+     "rows": 378,
+     "days": 12,
+     "rows_with_same_item_other": 378,
+     "match": {
+      "value": 0.1111,
+      "ci95": [
+       0.0783,
+       0.1504
+      ]
+     },
+     "sim": {
+      "value": 0.6481,
+      "ci95": [
+       0.6304,
+       0.6609
+      ]
+     },
+     "own_vs_other": {
+      "value": 0.664,
+      "ci95": [
+       0.5882,
+       0.7333
+      ]
+     },
+     "len_ratio_median": {
+      "value": 1.0402,
+      "ci95": [
+       0.9507,
+       1.1334
+      ]
+     },
+     "empty": 5
+    }
+   },
+   "paired": {
+    "tuned - flash: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 382,
+     "diff": 0.0,
+     "ci95": [
+      -0.0425,
+      0.0252
+     ]
+    },
+    "tuned - flash: match": {
+     "metric": "match",
+     "rows": 383,
+     "diff": -0.154,
+     "ci95": [
+      -0.1915,
+      -0.1058
+     ]
+    },
+    "tuned - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 383,
+     "diff": 0.0705,
+     "ci95": [
+      0.0223,
+      0.108
+     ]
+    },
+    "tuned - base: match": {
+     "metric": "match",
+     "rows": 383,
+     "diff": -0.1018,
+     "ci95": [
+      -0.1654,
+      -0.0336
+     ]
+    },
+    "flash - base: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 382,
+     "diff": 0.0707,
+     "ci95": [
+      0.0318,
+      0.102
+     ]
+    },
+    "flash - base: match": {
+     "metric": "match",
+     "rows": 383,
+     "diff": 0.0522,
+     "ci95": [
+      0.0,
+      0.0907
+     ]
+    },
+    "tuned - own_last_comment: own_vs_other": {
+     "metric": "own_vs_other",
+     "rows": 378,
+     "diff": -0.0397,
+     "ci95": [
+      -0.0836,
+      0.0035
+     ]
+    },
+    "tuned - own_last_comment: match": {
+     "metric": "match",
+     "rows": 383,
+     "diff": 0.1253,
+     "ci95": [
+      0.0595,
+      0.1894
+     ]
+    }
+   }
+  }
+ }
+}

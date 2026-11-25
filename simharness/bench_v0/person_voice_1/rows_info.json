@@ -1,0 +1,19 @@
+{
+ "rows": 1450,
+ "by_group": {
+  "test days, rows new from the stream": 941,
+  "test days, rows already in the benchmark": 383,
+  "forward days (Nov 23-24)": 126
+ },
+ "people": 478,
+ "launches": 256,
+ "days": 14,
+ "leak": {
+  "history_events_on_or_after_day": 0,
+  "history_events_timed_after_day_start": 0,
+  "the_launch_itself_in_history": 0,
+  "real_comment_text_inside_prompt": 9,
+  "fine_tune_training_rows_last_day": "2026-10-31",
+  "rows_on_or_before_training_last_day": 0
+ }
+}

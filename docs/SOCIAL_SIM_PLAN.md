@@ -381,6 +381,12 @@ The room for the simulation is the ordering inside the shortlist: from about 60%
 00:05 PT are in no shortlist (7 each on Nov 21 and 22). Files: results/structural/backtest/<day>.json (191 days) and
 results/structural/<day>/shortlist.json nightly at 02:21 PT.
 
+### Person voice, tuned vs Gemini (PERSON-VOICE-1, subagent, Nov 25; about $1.4)
+On 1,450 out-of-sample Task C rows (Nov 11-24, 478 people, 256 launches), person match: tuned Qwen 61.4 [59.0, 64.1],
+Flash + history 60.9, untuned Qwen 55.2, own last comment 66.1. Tuned - Flash +0.4 [-1.2, +2.5]: not clear. Tuned -
+untuned +6.1 [+4.1, +8.4]. Content match: tuned 25.9 vs Flash 40.7 (tuned writes shorter comments). Decision: the tuned
+line is closed for person voice; Flash + history stays. Files: simharness/bench_v0/person_voice_1/.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
