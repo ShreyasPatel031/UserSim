@@ -188,12 +188,12 @@ A = R_.groupby("launch_id").apply(agg).reset_index() if len(R_) else pd.DataFram
 if len(A): A["sim_score"] = A.would_use.fillna(A.would_use.median()) * A.pref_score.fillna(0.5)     # pre-registered re-order key: would-use x preference
 commit = subprocess.run(["git", "-C", HERE, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip() or os.environ.get("PU_COMMIT", "")
 OUT = {"day": D, "rehearsal": REH, "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(),
-       "freeze_deadline": pd.Timestamp(D + " 03:30", tz="America/Los_Angeles").tz_convert("UTC").isoformat(), "code_commit": commit,
+       "freeze_deadline": (pd.Timestamp(D + " 03:30", tz="America/Los_Angeles").tz_convert("UTC").isoformat() if re.match(r"\d{4}-\d\d-\d\d$", D) else "n/a (backtest)"), "code_commit": commit,
        "lineup_frozen_at": LU["frozen_at"], "n_cells": len(CELLS), "n_sessions_run": sum(1 for x in LOGS if x.get("session_id")),
        "model_usd_sessions": round(USD, 3), "minutes": round((time.time() - t0) / 60, 1), "driver_model": R.MODEL,
        "launches": A.to_dict("records") if len(A) else [],
        "findings": R_[["launch_id", "slot", "product", "category", "artefact", "completed", "would_use", "problems", "likes", "steps_to_value", "n_steps", "error_steps", "pref_rank", "n_ranked"]].to_dict("records") if len(R_) else []}
-OUT["on_time"] = OUT["frozen_at"] <= OUT["freeze_deadline"]
+OUT["on_time"] = (OUT["frozen_at"] <= OUT["freeze_deadline"]) if OUT["freeze_deadline"][:2] == "20" else None
 p = WORK / "outputs.json"; p.write_text(json.dumps(OUT, indent=1, default=str)); subprocess.run(["gsutil", "-q", "cp", str(p), f"{PUB}/outputs.json"])
 print(json.dumps({k: OUT[k] for k in ("day", "n_cells", "n_sessions_run", "model_usd_sessions", "minutes", "on_time")},
                  default=str), "artefacts:", R_.artefact.value_counts().to_dict() if len(R_) else {})

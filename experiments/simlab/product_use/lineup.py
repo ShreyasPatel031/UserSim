@@ -104,8 +104,11 @@ if _c1:
     _df = pd.read_parquet(io.BytesIO(_c1))
     C1 = {str(r.item_id): {"category": r.primary, "source": r.category_source, "top3": list(r.embedding_top3),
                            "top3_scores": list(r.embedding_top3_scores), "own": list(r.own_categories)} for r in _df.itertuples()}
-    C1C = {str(r.item_id): {"competitors": [{"name": c.get("name"), "tagline": c.get("tagline"), "source": "category_leader:" + str(c.get("source"))}
+    C1C = {str(r.item_id): {"competitors": [{"name": c.get("name"), "tagline": c.get("tagline"), "slug": c.get("slug"), "source": "category_leader:" + str(c.get("source"))}
                                             for c in json.loads(r.competitors)]} for r in _df.itertuples()}
+# review truth (REVIEW-TRUTH-1; orchestrator 02:01Z): among the 5 competitors, prefer the nearest ones that have post-cutoff review truth
+_rt = gcat(f"{B}/simharness/taxonomy/review_truth.parquet")
+TRUTH_SLUGS = set(pd.read_parquet(io.BytesIO(_rt))["product"].str.lower()) if _rt else set()
 from sentence_transformers import SentenceTransformer  # noqa: E402
 EMB = SentenceTransformer("BAAI/bge-small-en-v1.5")
 CE = EMB.encode([f"{c}: {CD[c]}" for c in CN], normalize_embeddings=True)
@@ -139,7 +142,11 @@ def cands(l):
                if cat in {low(c) for c in s.get("categories") or []} and not s.get("no_longer_online")]
         if len(out) >= 2: return out
     if l["id"] in C1C:
-        out = [(c.get("name"), c.get("tagline"), c["source"]) for c in C1C[l["id"]].get("competitors") or []]
+        cs = C1C[l["id"]].get("competitors") or []
+        if "_v" in l and cs:                                                   # nearest first, then those with review truth first (stable)
+            ev = EMB.encode([f"{c['name']}. {c.get('tagline') or ''}" for c in cs], normalize_embeddings=True); cs = [cs[i] for i in np.argsort(-(ev @ l["_v"]))]
+        cs = sorted(cs, key=lambda c: (str(c.get("slug") or "").lower() not in TRUTH_SLUGS))
+        out = [(c.get("name"), c.get("tagline"), c["source"] + ("|review_truth" if str(c.get("slug") or "").lower() in TRUTH_SLUGS else "")) for c in cs]
         if len(out) >= 2: return out
     pool = sorted([(q["reviews_count"], k) for k, q in PROD.items() if not q["dead"] and cat in {low(c) for c in q["cats"]}
                    and low(q["name"]) not in own and own not in low(q["name"])], reverse=True)[:10]          # the category's 10 most-reviewed live products

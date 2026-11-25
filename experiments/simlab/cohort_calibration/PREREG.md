@@ -248,3 +248,18 @@ category's core task, do (1) their preferences explain the structural model's mi
   - Sessions run in two waves: each launch's first user on every site first, then users 2–4 log in to that account (MCP same_account_as) instead of signing up again. Four signups per site from one IP caused rate limits and captchas.
   - Session cap raised from 30 to 40 turns (about 1/3 of rehearsal sessions hit 30 mid-signup) and from $0.09 to $0.12.
   - A budget or freeze-deadline stop in wave 2 removes users 2–4 of the bottom launches first. Expected nightly spend (about $9) is under the cap.
+- 11b (Nov 25, orchestrator 02:01Z): among CATEGORY-1's 5 competitors, the 2 used are the nearest (bge-small) that have REVIEW-TRUTH-1 review truth, then the nearest others. A "|review_truth" suffix on the competitor source marks them.
+
+## Addendum 12 (2026-11-25): PRODUCT-USE-0, back-test of the product-use harness on post-cutoff PH review truth (orchestrator 02:01Z)
+**Question.** Does using the product beat reading its homepage on complaint recall at equal or better precision, on post-cutoff review truth? Do the artefact tags keep access problems out of the findings?
+**Truth:** simharness/taxonomy/review_truth.parquet (REVIEW-TRUTH-1, frozen sha256 0d81ad0965c5…). Complaints and likes are consensus themes from reviews dated 2025 or later.
+**Products:** truth products with ≥ 10 such reviews and a usable homepage that the homepage-only baseline scored, deduplicated by slug and by site. That leaves 120, run from most-reviewed down until $10 is spent (sessions about $9, plus debrief, merge and judge).
+**Runs:** the PRODUCT-USE-1 harness (runner.py, PREREG 11/11a). 3 users per product, drawn per product (md5 seed) from the Nov 20–24 person-built panel pools, using pre-day profiles. Task: the product's own PH category core task (frozen, v2 prompt). No competitors.
+**Scoring:** `pu0_score.py`.
+- The non-artefact problems and likes of the 3 users are merged (one Gemini call, temperature 0) into at most 6 complaints and 6 likes, the same shape as the baseline.
+- Both arms are judged in the same run with the same prompts: complaints_eval.CJ for complaints, reactions_eval.JUDGE for likes. 3 runs are averaged. The homepage arm reuses its cached predictions.
+- Paired difference (sim − homepage) on complaint recall and precision and on like recall and precision. Bootstrap 95% intervals over products (2,000 draws, seed 0).
+**Decision rule:**
+- "Using beats reading" requires the complaint-recall difference's interval above 0, with the complaint-precision difference not below 0 (its interval's lower bound > −5 points).
+- Artefact check: the share of sim complaints about access (signup, login, verification, captcha, blocked) must not exceed the truth's share by more than 10 points.
+**Leak note:** products are well known and pre-cutoff knowledge of them can leak into both arms equally. The pairing controls this; it is not a forward test.
