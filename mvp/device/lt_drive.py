@@ -59,11 +59,21 @@ def main() -> None:
 
         def do_POST(self):
             act = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+            if act.get("action") in ("tap_label", "type_into") and "x" not in act:
+                try:  # record where the finger lands, so the video can show the touch (touch_overlay.py)
+                    q = (act.get("label") or act.get("field") or "").replace('"', "")
+                    el = dev.d.find_element("-ios predicate string", f'label == "{q}" OR name == "{q}"')
+                    r = el.rect
+                    act = {**act, "x": r["x"] + r["width"] // 2, "y": r["y"] + r["height"] // 2}
+                except Exception:  # noqa: BLE001
+                    pass
             try:
                 res = dev.act(fill_secrets(act))
             except Exception as e:  # noqa: BLE001
                 res = f"error: {type(e).__name__}: {str(e)[:300]}"
-            log.write(json.dumps({"t": round(time.time() - state["t0"], 1), "action": act, "result": res}) + "\n"); log.flush()
+            logged = {k: v for k, v in act.items() if k != "text"}  # typed text (may be a credential) is never logged
+            log.write(json.dumps({"t": round(time.time() - state["t0"], 1), "action": logged, "result": res}) + "\n")
+            log.flush()
             self.reply({"result": res})
 
     print(json.dumps({"ready": True, "session_id": dev.session_id}), flush=True)
