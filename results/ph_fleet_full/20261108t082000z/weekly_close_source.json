@@ -1,0 +1,9 @@
+{
+  "read_date_PT": "2026-11-24",
+  "close_source": "official_api_weekly_ranks",
+  "fleet_slot": null,
+  "route4_attempt_rc": 1,
+  "route4_note": "slots 9 and 27 MISSING; API fallback fleet-cursor 07:49Z",
+  "gcs_output": "raw/ph_at_launch/2026-11-24/weekly_close/20261124T2349PT_api.jsonl",
+  "recorded_at": "2026-11-25T07:49:30Z"
+}
