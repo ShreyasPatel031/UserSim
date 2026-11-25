@@ -523,6 +523,9 @@ def main(argv=None):
             n_late = sum(1 for r in h["lines"].values() if r["status"] == "late")
             print(f"{h['day']}: {n_on} line(s) on time, {n_late} late")
     lb = leaderboard(history)
+    prev = store.read_json("results/calibration/residual_leaderboard.json") or {}
+    if "backtest_post_cutoff" in prev:   # written by simharness.run_resid_backtest; kept, never recomputed here
+        lb["backtest_post_cutoff"] = prev["backtest_post_cutoff"]
     if not a.dry_run:
         store.write_json("results/calibration/residual_leaderboard.json", lb)
     for name, r in lb["lines"].items():
