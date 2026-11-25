@@ -460,6 +460,16 @@ median 4th), and structural's predicted spread is too flat. Getting the day's wi
 (37 -> 69); sizing how far it pulls ahead is the rest, and most of the monthly gain. Target for the simulation: spot the
 breakout launch of each day and size its margin.
 
+### Refocus (Nov 25, after Shreyas: "keep the focus on user simulations ... what is the problem on a higher lens")
+The simulation is judged on reproducing real people's reactions, always against a human ceiling, not on Product Hunt rank
+(rank stays with the structural model).
+- Ceiling: how well one half of a launch's real commenters / testers predicts the other half (split-half). The simulation's
+  score is reported as a fraction of that ceiling.
+- Metrics, in order: (1) findings recall against real testers (Reframe team findings; detector holdout 69% recall at 77%
+  precision on team findings, Nov 25); (2) launch-level theme recall / precision / complaint recall against real comments,
+  as a fraction of the split-half ceiling; (3) person-level "same point" (25.3% vs 15.9% for another real commenter).
+- One compounding loop: every scored day adds rows; one weekly re-fit; one leaderboard.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.

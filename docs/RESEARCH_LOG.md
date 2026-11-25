@@ -2909,3 +2909,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-25 19:05Z population 6h (13-19Z): 662 refresh merges, lost 0; no new complete people since 12:20Z (93,622); fleet only refreshing (refresh 1.7-2.1/min, complete 0-0.07/min, 4-6 active slots); need-list unchanged; rotations 0; breaches fleet_status, site_live_record.
 - 2026-11-25 19:35Z hourly check: board see report; mailbox checked 19:34Z; fleet see status; simulation refocus awaits Shreyas.
 - 2026-11-25 20:35Z hourly check: board see report; mailbox checked 20:34Z; fleet see status; simulation refocus awaits Shreyas.
+- 2026-11-25 20:45Z Refocus taken (Shreyas '.' after the proposal): simulation judged on reproducing real reactions against a split-half human ceiling; Product Hunt rank left to structural. CEILING-1 assigned to subagent.
