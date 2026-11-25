@@ -28,6 +28,7 @@ import sim_model  # noqa: E402
 MAINWT = os.environ.get("PU_MAINWT") or os.path.join(os.environ.get("PU_WORK", "/tmp/pu"), "mainwt")
 sys.path.insert(0, os.path.join(MAINWT, "scripts")); sys.path.insert(0, os.path.join(MAINWT, "src")); sys.path.insert(0, MAINWT)
 import mcp_study_runner as R  # noqa: E402
+R.SUB_TOOLS.add("usersim_google_signin")   # PREREG 11d: token callers may finish 'Continue with Google'
 from mcp_study_runner_lib import SpendGate  # noqa: E402
 from mcp_runner_gemini import GeminiDriver, vertex_client  # noqa: E402
 
@@ -48,11 +49,15 @@ USERS = LU["users"]
 def task_text(l):
     return (f"{l['core_task']}\n\nThe moment of value for this kind of product: {l['value_moment']}\n\n"
             "Rules: you are trying this product for the first time on its website. Use only free options; never enter payment details. "
-            "Sign up only if the product requires it to reach the moment of value. Verification emails can take 2-3 minutes: call the "
+            "First look for a way to do the job without an account: a demo, playground, try-it box, sample project, template gallery or the pricing "
+            "and features pages. Make an account only if the product needs one to reach the moment of value. You may already be signed in: if so, "
+            "just continue. If it needs an account and offers 'Continue with Google' / 'Sign in with Google', click it and, when the page is on "
+            "accounts.google.com, call usersim_google_signin; otherwise use the tool that gives you an email identity. Verification emails can take 2-3 minutes: call the "
             "verification wait tool again (up to 4 times) before deciding the email never came. The first time you reach the moment of value, START your thought "
             "for that step with the word VALUE_REACHED. If this product does the job in a different way than described, do the closest "
-            "version of the job that this product offers; give up only if it truly does not do this kind of job. If something stops you (a signup wall you cannot pass, a captcha, an access "
-            "block, a page that does not load or needs a desktop app or mobile app), finish with outcome 'blocked' and say exactly what stopped you. "
+            "version of the job that this product offers; give up only if it truly does not do this kind of job. If something stops you (an account you cannot "
+            "create or verify, a captcha, an access block, a page that does not load or needs a desktop app or mobile app, a free trial that asks for a card, "
+            "an onboarding step that will not let you through), finish with outcome 'blocked' and say exactly what stopped you. "
             "Otherwise finish when you have reached the moment of value or decided you cannot.")
 def persona_text(u):
     return ("A Product Hunt member who tries new products. What is known about them (their activity before today):\n" + u["profile"][:1800])
@@ -95,20 +100,10 @@ async def main():
                 if log.get("session_id") or "could not open the browser" not in str(log.get("error")): break
                 log["start_retries"] = k + 1; await asyncio.sleep(30 * (k + 1))
             log["cell"] = c; log["wall_s"] = round(time.time() - t0); log["full"] = FULL.get(log.get("session_id"), []); f.write_text(json.dumps(log, default=str)); return log
-    # wave 1: each launch's first user on every site (creates the account when a site needs one); wave 2: the other users log in to that
-    # account (same_account_as) instead of signing up again (4 signups per site from one IP triggered rate limits and captchas, Nov 24 rehearsal)
+    # wave 1: each launch's first user on every site (makes the account when a site needs one; the server saves the signed-in state per
+    # domain); wave 2: the other users start from that saved state. same_account_as was dropped (PREREG 11d: 4 of 40 wave-2 logins failed).
     w1 = await asyncio.gather(*[one(c) for c in CELLS if c["_wave"] == 0])
-    acct = {}
-    for lg in w1:
-        if lg.get("session_id"): acct.setdefault(lg["cell"]["site"], lg["session_id"])
-    w2c = []
-    for c in CELLS:
-        if c["_wave"] == 1:
-            c = dict(c)
-            if c["site"] in acct:
-                c["task"] += (f"\n\nAccount: another tester already tried this site. If it needs an account, call usersim_signup_identity with "
-                              f"same_account_as=\"{acct[c['site']]}\" and log in with the account it returns; sign up yourself only if that fails.")
-            w2c.append(c)
+    w2c = [c for c in CELLS if c["_wave"] == 1]   # PREREG 11d: wave 2 starts from the site's saved signed-in state (server seed_states), not same_account_as
     w2 = await asyncio.gather(*[one(c) for c in w2c])
     return list(w1) + list(w2), gate.total_usd
 
@@ -135,8 +130,10 @@ Job: {task}
 Answer as this person, honestly, from what happened in the logs only. For each product, first decide whether you were stopped by an ACCESS
 ARTEFACT rather than by the product itself: signup_wall (needed an account you could not create or verify), captcha, block (access denied,
 bot check, region block), js_only (page did not render or needed an app/desktop download), timeout (ran out of steps/time while the page
-was still loading), engine (the browser session failed to start or crashed), or none. Problems caused by an artefact go in "artefact_evidence",
-NOT in "problems". Problems are about the product: its onboarding, clarity, features, speed, output quality, pricing seen, etc.
+was still loading), engine (the browser session failed to start or crashed), card_required (a free plan or trial that asks for a card or payment),
+onboarding_broken (the product's own signup or onboarding flow loops, errors or will not let you through although you filled it in), or none.
+Problems caused by signup_wall, captcha, block, js_only, timeout or engine go in "artefact_evidence", NOT in "problems". card_required and
+onboarding_broken are the product's own problems: describe them in "problems" as well. Problems are about the product: its onboarding, clarity, features, speed, output quality, pricing seen, etc.
 Reply JSON only:
 {{"products": {{"A": {{"completed": true|false, "artefact": "...", "artefact_evidence": "...", "would_use": 0.0-1.0,
   "value_step": <number of the step in that product's log where you first got the job's result, or null>,
@@ -144,6 +141,7 @@ Reply JSON only:
  "preference": [all three of "A","B","C", the one you would choose for this job first; a product that could not do the job for you
    ranks below those that could; break ties by which you would rather try again], "reasons": {{"A_vs_B": "...", "A_vs_C": "..."}}}}"""
 
+PRODUCT_FRICTION = {"card_required", "onboarding_broken"}
 rows, deb_usd = [], 0.0
 for l in LAUNCHES:
     names = {"launch": l["name"], **{f"comp{k + 1}": c["name"] for k, c in enumerate(l.get("competitors") or [])}}
@@ -162,9 +160,10 @@ for l in LAUNCHES:
         inv = {v: k for k, v in lab.items()}
         for slot, lg in S.items():
             pj = (dj.get("products") or {}).get(lab[slot], {}); b = lg["_brief"]
-            art = pj.get("artefact") or ("engine" if b["engine_error"] else "none")
+            raw = pj.get("artefact") or ("engine" if b["engine_error"] else "none")
+            art = "none" if raw in PRODUCT_FRICTION else raw            # PREREG 11d: product friction is a finding; raw tag kept beside it
             rows.append({"launch_id": l["id"], "structural_rank": l["structural_rank"], "category": l["category"], "user": u["user_key"], "slot": slot,
-                         "product": names[slot], "url": lg["cell"]["site"], "artefact": art, "artefact_evidence": pj.get("artefact_evidence"),
+                         "product": names[slot], "url": lg["cell"]["site"], "artefact": art, "artefact_raw": raw, "artefact_evidence": pj.get("artefact_evidence"),
                          "completed": pj.get("completed"), "would_use": pj.get("would_use"), "problems": pj.get("problems") or [], "likes": pj.get("likes") or [],
                          "driver_outcome": b["outcome"], "n_steps": b["n_steps"], "steps_to_value": (pj.get("value_step") if isinstance(pj.get("value_step"), int) else b["steps_to_value"]), "seconds": b["seconds"], "error_steps": b["error_steps"],
                          "pref_rank": ([inv.get(x) for x in dj.get("preference") or []].index(slot) + 1) if slot in [inv.get(x) for x in dj.get("preference") or []] else None,
@@ -192,8 +191,11 @@ OUT = {"day": D, "rehearsal": REH, "frozen_at": pd.Timestamp.now(tz="UTC").isofo
        "lineup_frozen_at": LU["frozen_at"], "n_cells": len(CELLS), "n_sessions_run": sum(1 for x in LOGS if x.get("session_id")),
        "model_usd_sessions": round(USD, 3), "minutes": round((time.time() - t0) / 60, 1), "driver_model": R.MODEL,
        "launches": A.to_dict("records") if len(A) else [],
-       "findings": R_[["launch_id", "slot", "product", "category", "artefact", "completed", "would_use", "problems", "likes", "steps_to_value", "n_steps", "error_steps", "pref_rank", "n_ranked"]].to_dict("records") if len(R_) else []}
+       "findings": R_[["launch_id", "slot", "product", "category", "artefact", "artefact_raw", "completed", "would_use", "problems", "likes", "steps_to_value", "n_steps", "error_steps", "pref_rank", "n_ranked"]].to_dict("records") if len(R_) else []}
+OUT["clean_session_rate"] = round(float((R_.artefact == "none").mean()), 3) if len(R_) else None          # PREREG 11d: target >= 0.60 per night
+OUT["clean_session_rate_launch"] = round(float((R_[R_.slot == "launch"].artefact == "none").mean()), 3) if len(R_) else None
+OUT["artefact_raw_counts"] = R_.artefact_raw.value_counts().to_dict() if len(R_) else {}
 OUT["on_time"] = (OUT["frozen_at"] <= OUT["freeze_deadline"]) if OUT["freeze_deadline"][:2] == "20" else None
 p = WORK / "outputs.json"; p.write_text(json.dumps(OUT, indent=1, default=str)); subprocess.run(["gsutil", "-q", "cp", str(p), f"{PUB}/outputs.json"])
-print(json.dumps({k: OUT[k] for k in ("day", "n_cells", "n_sessions_run", "model_usd_sessions", "minutes", "on_time")},
+print(json.dumps({k: OUT[k] for k in ("day", "n_cells", "n_sessions_run", "model_usd_sessions", "minutes", "on_time", "clean_session_rate", "clean_session_rate_launch")},
                  default=str), "artefacts:", R_.artefact.value_counts().to_dict() if len(R_) else {})
