@@ -13,7 +13,7 @@ for p in results/structural/$D/shortlist.json; do
 cd "$HERE"; REH=""; [ "$D" \< "${PU_FIRST_DAY:-2026-11-26}" ] && { REH="--rehearsal"; echo "DRESS REHEARSAL (before the first frozen night): outputs under _rehearsal/, never scored"; }
 env -u VERCEL python3 lineup.py $D --n 15 $REH || { echo "FAIL lineup"; }
 env -u VERCEL python3 control_homepage.py $D $REH || echo "WARN homepage control"
-PU_TOKEN_FROM_SECRET=1 PU_DEADLINE_UTC=$FREEZE env -u VERCEL python3 runner.py $D --par ${PU_PAR:-8} --max-usd ${PU_MAX_USD:-14} $REH || echo "FAIL runner"
+PU_TOKEN_FROM_SECRET=1 PU_DEADLINE_UTC=$FREEZE env -u VERCEL python3 runner.py $D --par ${PU_PAR:-8} --max-usd ${PU_MAX_USD:-14} --max-launches ${PU_MAXL:-15} $REH || echo "FAIL runner"
 # score yesterday (forward only; Nov 24 rehearsal is never scored)
 if gsutil -q stat $B/results/calibration/$Y/product_use/outputs.json; then
   python3 score.py $Y $W || echo "WARN score $Y"; python3 review_cal.py $Y || echo "WARN review_cal $Y"; fi
