@@ -83,14 +83,19 @@ class LTDevice(IOSDevice):
                                                             "duration": a.get("duration", 1.5)})
             return "ok"
         if a.get("action") == "multi_tap":
-            # n quick taps at one point (hidden gestures), then optionally a hold
-            import time as _t
-            for _ in range(int(a.get("n", 3))):
-                self.d.execute_script("mobile: tap", {"x": a["x"], "y": a["y"]})
-                _t.sleep(a.get("gap", 0.15))
-            if a.get("hold"):
-                self.d.execute_script("mobile: touchAndHold", {"x": a["x"], "y": a["y"],
-                                                                "duration": a.get("hold", 1.5)})
+            # n quick taps then optionally a hold on the last one, sent as ONE W3C action sequence so the timing is
+            # exact on the device (separate commands arrive ~0.5 s apart over the cloud, too slow for tap gestures)
+            x, y, n = int(a["x"]), int(a["y"]), int(a.get("n", 3))
+            gap, down, hold = float(a.get("gap", 0.08)), float(a.get("down", 0.06)), float(a.get("hold", 0))
+            seq = [{"type": "pointerMove", "duration": 0, "x": x, "y": y}]
+            for i in range(n):
+                seq += [{"type": "pointerDown", "button": 0}, {"type": "pause", "duration": int(down * 1000)},
+                        {"type": "pointerUp", "button": 0}, {"type": "pause", "duration": int(gap * 1000)}]
+            if hold:
+                seq += [{"type": "pointerDown", "button": 0}, {"type": "pause", "duration": int(hold * 1000)},
+                        {"type": "pointerUp", "button": 0}]
+            self.d.execute("actions", {"actions": [{"type": "pointer", "id": "finger1",
+                                                    "parameters": {"pointerType": "touch"}, "actions": seq}]})
             return "ok"
         if a.get("action") in ("swipe", "scroll"):
             # a real finger drag with known start and end points (so the video can draw it). direction "up" scrolls
