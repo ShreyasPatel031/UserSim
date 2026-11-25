@@ -1,79 +1,135 @@
-"""Build the review page's flow map (canvas.json): real screens as nodes, branching where runs diverge.
+"""Build the review page's flow graph (canvas.json): every distinct app screen is one node, every move a test run made
+between two screens is an edge (cycles allowed), laid out in layers from the app's entry screens.
 
-    python -m mvp.client_qa.flowmap flows.json shots.json canvas.json
+    python -m mvp.client_qa.flowmap flows.json shots.json canvas.json [--skip team]
 
-flows.json: the review page's runs ([{id, title, steps:[{img, url, taps?}]}]).
-shots.json: {"<flow id>": ["local/path/of/step0.png", ...]} -- local screenshots, used only to tell screens apart.
-Consecutive near-identical screens in a run are folded into one node; runs share a node while their screens match
-(perceptual hash, status bar ignored), and a run that starts mid-app grafts onto the closest matching screen.
-Edge labels come from the taps bound to each screen (drive.py runs); runs without bound taps get unlabelled arrows.
+flows.json: the review page's runs ([{id, title, steps:[{img, url, taps?}], tapsBound?}]).
+shots.json: {"<flow id>": ["local/path/of/step0.png", ...]}; local screenshots, used only to tell screens apart.
+Screens are matched by a perceptual hash with the status bar ignored. Edge labels come from the taps bound to each screen
+(runs driven with mvp.client_qa.drive); `paths` keeps each run's node sequence so the page can step through a run.
 """
-import json,sys
+from __future__ import annotations
+
+import argparse
+import json
+
 from PIL import Image
-flows=json.load(open(sys.argv[1])); SHOTS=json.load(open(sys.argv[2])); OUT=sys.argv[3]
-def path_of(fid,i):
-    p=SHOTS.get(fid); return p[i] if p and i<len(p) else None
-def dhash(p):
-    im=Image.open(p).convert("L"); w,h=im.size
-    im=im.crop((0,int(h*0.07),w,h)).resize((17,32)); px=list(im.get_flattened_data() if hasattr(im,"get_flattened_data") else im.getdata())
-    return [px[r*17+c]>px[r*17+c+1] for r in range(32) for c in range(16)]
-def dist(a,b): return sum(x!=y for x,y in zip(a,b))
-SAME, MERGE = 20, 50
-fl={f["id"]:f for f in flows}
-H={(f["id"],i):(dhash(path_of(f["id"],i)) if path_of(f["id"],i) else None) for f in flows for i in range(len(f["steps"]))}
-seqs={}
-for f in flows:
-    seq=[]
-    for i in range(len(f["steps"])):
-        h=H[(f["id"],i)]
-        if seq and h and seq[-1]["h"] and dist(seq[-1]["h"],h)<=SAME: seq[-1]["steps"].append(i); continue
-        seq.append({"h":h,"steps":[i]})
-    seqs[f["id"]]=seq
-nodes=[]; edges={}; roots=[]
-def mk(fid,grp,parent):
-    n={"id":f"n{len(nodes)}","members":[{"flow":fid,"steps":grp["steps"]}],"h":grp["h"],"children":[],"parent":parent}
-    nodes.append(n); return n
-def edge(a,b,fid,lab):
-    e=edges.setdefault((a["id"],b["id"]),{"from":a["id"],"to":b["id"],"labels":[],"flows":[]})
-    if lab and lab not in e["labels"]: e["labels"].append(lab)
-    if fid not in e["flows"]: e["flows"].append(fid)
-def label(fid,k):
-    if not fl[fid].get("tapsBound") or k==0: return ""
-    last=fl[fid]["steps"][seqs[fid][k-1]["steps"][-1]]
-    out=[]
-    for t in last.get("taps",[]):
-        if t["kind"].startswith("tap"): out.append("tap “%s”"%t["label"] if t.get("label") else "tap")
-        elif t["kind"] in("type","type_into"): out.append("type")
-        else: out.append(t["kind"])
-    return ", ".join(out)
-# runs with bound taps first, then longer runs (so a run starting mid-app can graft onto one already placed), runs without shots last
-order=[f["id"] for f in sorted(flows, key=lambda f: (not f.get("tapsBound"), f["id"] not in SHOTS, -len(f["steps"])))]
-for fid in [o for o in order if o in fl]:
-    cur=None
-    for k,grp in enumerate(seqs[fid]):
-        h=grp["h"]; match=None
-        if h is not None:
-            pool = (roots if cur is None else cur["children"])
-            for c in pool:
-                if c["h"] and dist(c["h"],h)<=MERGE: match=c; break
-            if match is None and cur is None:     # a run that starts mid-app grafts onto the closest matching screen anywhere
-                best=min(((dist(n["h"],h),n) for n in nodes if n["h"]), default=(999,None), key=lambda x:x[0])
-                if best[0]<=MERGE: match=best[1]
-        if match: match["members"].append({"flow":fid,"steps":grp["steps"]}); nxt=match
-        else:
-            nxt=mk(fid,grp,cur["id"] if cur else None)
-            (roots if cur is None else cur["children"]).append(nxt)
-        if cur: edge(cur,nxt,fid,label(fid,k))
-        cur=nxt
-W,Hn,GX,GY=240,520,150,110
-row=[0]
-def place(n,d):
-    n["x"]=d*(W+GX); n["depth"]=d
-    if not n["children"]: n["y"]=row[0]*(Hn+GY); row[0]+=1
-    else:
-        for c in n["children"]: place(c,d+1)
-        n["y"]=(n["children"][0]["y"]+n["children"][-1]["y"])/2
-for r in roots: place(r,0)
-json.dump({"node_w":W,"node_h":Hn,"nodes":[{k:n[k] for k in("id","members","x","y","depth")} for n in nodes],"edges":list(edges.values())},open(OUT,"w"))
-sh=[(n["id"],sorted({m["flow"] for m in n["members"]})) for n in nodes if len({m["flow"] for m in n["members"]})>1]
-print(len(nodes),"nodes",len(edges),"edges, leaf rows",row[0],"roots",len(roots)); print("shared:",sh)
+
+SAME = 50   # max hash distance for two screenshots to count as the same screen
+
+
+def dhash(p: str) -> list[bool]:
+    im = Image.open(p).convert("L"); w, h = im.size
+    im = im.crop((0, int(h * 0.07), w, h)).resize((17, 32))
+    px = list(im.get_flattened_data() if hasattr(im, "get_flattened_data") else im.getdata())
+    return [px[r * 17 + c] > px[r * 17 + c + 1] for r in range(32) for c in range(16)]
+
+
+def dist(a, b) -> int:
+    return sum(x != y for x, y in zip(a, b))
+
+
+def tap_label(step: dict) -> str:
+    out = []
+    for t in step.get("taps", []):
+        k = t.get("kind", "")
+        if k.startswith("tap") and t.get("label"):
+            out.append(f"Tap “{t['label']}”")
+        elif k.startswith("tap"):
+            out.append("Tap")
+        elif k in ("type", "type_into"):
+            out.append("Type")
+        elif k in ("swipe", "scroll"):
+            out.append("Scroll " + t.get("dir", ""))
+        elif k == "back":
+            out.append("Back")
+        elif k == "multi_tap":
+            out.append("Tap-tap-hold")
+    # keep it short: the last meaningful action is what moved the screen
+    return out[-1] if out else ""
+
+
+def build(flows: list[dict], shots: dict, skip: set[str]) -> dict:
+    clusters: list[dict] = []   # {id, rep, members:[{flow, step}]}
+    paths: dict[str, list[dict]] = {}
+    for f in flows:
+        if f["id"] in skip or f["id"] not in shots:
+            continue
+        seq = []
+        for i, _ in enumerate(f["steps"]):
+            h = dhash(shots[f["id"]][i])
+            best = min(((dist(c["rep"], h), c) for c in clusters), default=(999, None), key=lambda x: x[0])
+            c = best[1] if best[0] <= SAME else None
+            if c is None:
+                c = {"id": f"n{len(clusters)}", "rep": h, "members": []}; clusters.append(c)
+            c["members"].append({"flow": f["id"], "step": i})
+            if seq and seq[-1]["node"] == c["id"]:
+                seq[-1]["steps"].append(i)
+            else:
+                seq.append({"node": c["id"], "steps": [i]})
+        paths[f["id"]] = seq
+    edges: dict[tuple, dict] = {}
+    fl = {f["id"]: f for f in flows}
+    for fid, seq in paths.items():
+        for a, b in zip(seq, seq[1:]):
+            e = edges.setdefault((a["node"], b["node"]), {"from": a["node"], "to": b["node"], "labels": [], "flows": []})
+            lab = tap_label(fl[fid]["steps"][a["steps"][-1]]) if fl[fid].get("tapsBound") else ""
+            if lab and lab not in e["labels"]:
+                e["labels"].append(lab)
+            if fid not in e["flows"]:
+                e["flows"].append(fid)
+    # layers: shortest hop count from any run's first screen
+    out = {c["id"]: [] for c in clusters}
+    for e in edges.values():
+        out[e["from"]].append(e["to"])
+    depth = {}
+    frontier = [seq[0]["node"] for seq in paths.values() if seq]
+    for n in frontier:
+        depth.setdefault(n, 0)
+    q = list(dict.fromkeys(frontier))
+    while q:
+        n = q.pop(0)
+        for m in out[n]:
+            if m not in depth:
+                depth[m] = depth[n] + 1; q.append(m)
+    layers: dict[int, list[str]] = {}
+    for c in clusters:
+        layers.setdefault(depth.get(c["id"], 0), []).append(c["id"])
+    # order within layers by the mean position of predecessors (two sweeps)
+    pos = {}
+    for d in sorted(layers):
+        for i, n in enumerate(layers[d]):
+            pos[n] = i
+    preds: dict[str, list[str]] = {c["id"]: [] for c in clusters}
+    for e in edges.values():
+        preds[e["to"]].append(e["from"])
+    for _ in range(3):
+        for d in sorted(layers)[1:]:
+            layers[d].sort(key=lambda n: (sum(pos[p] for p in preds[n] if depth.get(p, 0) < d) /
+                                          max(1, sum(1 for p in preds[n] if depth.get(p, 0) < d))) if preds[n] else pos[n])
+            for i, n in enumerate(layers[d]):
+                pos[n] = i
+    W, H, GX, GY = 240, 520, 300, 140
+    tallest = max(len(v) for v in layers.values())
+    nodes = []
+    for c in clusters:
+        d = depth.get(c["id"], 0); col = layers[d]
+        y0 = (tallest - len(col)) * (H + GY) / 2
+        nodes.append({"id": c["id"], "x": d * (W + GX), "y": y0 + col.index(c["id"]) * (H + GY), "depth": d,
+                      "members": c["members"]})
+    return {"node_w": W, "node_h": H, "nodes": nodes, "edges": list(edges.values()), "paths": paths}
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("flows"); ap.add_argument("shots"); ap.add_argument("out"); ap.add_argument("--skip", nargs="*", default=[])
+    a = ap.parse_args()
+    g = build(json.load(open(a.flows)), json.load(open(a.shots)), set(a.skip))
+    json.dump(g, open(a.out, "w"))
+    term = [n["id"] for n in g["nodes"] if not any(e["from"] == n["id"] for e in g["edges"])]
+    print(len(g["nodes"]), "screens,", len(g["edges"]), "transitions,", len(term), "dead ends,",
+          max(n["depth"] for n in g["nodes"]) + 1, "layers")
+
+
+if __name__ == "__main__":
+    main()
