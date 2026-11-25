@@ -16,6 +16,14 @@ from pathlib import Path
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "..", "cohort_calibration"))
+# MCP bearer token (Shreyas, Nov 25: read usersim-MVP_MCP_TOKEN via gcloud for the product-use test; never print it). Held in this
+# process's environment only (mcp_study_runner._headers reads MCP_CLIENT_TOKEN); never logged, written to disk or put in outputs.
+if os.environ.get("PU_TOKEN_FROM_SECRET") == "1" and not os.environ.get("MCP_CLIENT_TOKEN"):
+    _r = subprocess.run(["gcloud", "secrets", "versions", "access", "latest", "--secret=usersim-MVP_MCP_TOKEN", "--project=project-amer-scs-sandbox"],
+                        capture_output=True, text=True)
+    _t = [x for x in re.split(r"[ ,]+", _r.stdout.strip()) if x]
+    if _t: os.environ["MCP_CLIENT_TOKEN"] = _t[0].split("=", 1)[-1]
+    print("mcp token:", "loaded" if _t else "NOT loaded (anonymous caps apply)", flush=True); del _r, _t
 import sim_model  # noqa: E402
 MAINWT = os.environ.get("PU_MAINWT") or os.path.join(os.environ.get("PU_WORK", "/tmp/pu"), "mainwt")
 sys.path.insert(0, os.path.join(MAINWT, "scripts")); sys.path.insert(0, os.path.join(MAINWT, "src")); sys.path.insert(0, MAINWT)
