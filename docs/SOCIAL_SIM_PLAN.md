@@ -15,6 +15,28 @@ arm 3) sits at about 50 / 70 / 67 on the daily top 3 / 5 / 10 live.
 
 Go-to-market and dogfooding (20%) belongs to Grok Bot.
 
+## 1b. North-star metrics, restated (Shreyas, Nov 25: keep the structural predictions; focus on the residual, on how
+users behave on the actual product and its competitors, and on extracting meaning from that)
+
+| Layer | Question | Metric (forward days only for language models; paired by day, day-bootstrap 95% intervals) | Today |
+|---|---|---|---|
+| 0. Structural (frozen) | Where does the launch land from its mechanics (hunter, network, followers, timing, competition)? | daily / weekly / monthly top 3 / 5 / 10 | top 3 about 60 |
+| 1. Residual (primary for the simulation) | What does the structural model get wrong that the simulation gets right? | (a) capture of the real top 3 / 5 / 10 when the simulation re-orders the structural top 15, minus the structural order; (b) within-day rank correlation of the simulation score with the structural miss (real rank minus structural rank) | 0: every test so far is within noise (held-voter count, X buzz, persona appeal); room is 60 -> 95-99 on the top 3 |
+| 2. Product reaction | When simulated users actually use the product and its two nearest competitors, do their reactions match what real users said and did? | recall and precision of real complaints, praise and competitor comparisons in the day's comments; preference vs competitor against real "switching from / compared to" comments | one test (Nov 17, 23781c29): 25% complaint recall vs 38% for a plain homepage prompt, because findings were test artefacts (signup walls, captchas) |
+| 3. Meaning | For each launch, why it landed where it did | a per-launch card: structural expected rank with its top drivers, the residual, and the simulated findings that explain it, each finding carrying its measured predictive value from layers 1-2 | not built |
+
+WHO / WHAT / HOW stay as the calibration gates under layers 1-2 (docs/NORTH_STAR_CALIBRATION.md).
+
+Experiments in order:
+1. PRODUCT-USE-1 (E5, on the seed VMs, Camoufox): nightly, before results, for the structural top 15: simulated users
+   drawn from the launch's likely cohort use the product and its two nearest competitors on a first-use task; they report
+   would-use, preference vs each competitor and the top problems. Access artefacts (signup walls, captchas, blocks) are
+   tagged as such and kept out of the product findings. Scored forward on layers 1 and 2 against the text-only Stage B
+   agents and the plain homepage prompt. First read at 7 scored days.
+2. RESID-EXPLAIN (orchestrator): which kinds of findings move with the structural miss (onboarding friction, clear
+   difference from competitors, missing basics), so that layer 3 cites only findings with measured value.
+3. Stage B (running): history-built agents reading the launch page only; the text-only control for 1.
+
 ## 2. The harness (code is open-source; data, traces and weights are private)
 A domain plugs in four tables:
 1. **items**: what people act on (launches: id, day, name, tagline, description, topics).
