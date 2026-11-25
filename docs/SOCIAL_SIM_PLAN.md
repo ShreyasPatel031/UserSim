@@ -471,7 +471,7 @@ The simulation is judged on reproducing real people's reactions, always against 
 - One compounding loop: every scored day adds rows; one weekly re-fit; one leaderboard.
 
 ### Human ceiling (CEILING-1, subagent, Nov 25; $4.47)
-16 launches Nov 15-20 (median 19 real commenters, 20 half-splits). Ceiling = half A's real comments against half-B themes.
+16 launches Nov 15-22 (median 19 real commenters, 20 half-splits). Ceiling = half A's real comments against half-B themes.
 | Metric | Ceiling | Deployed (persona + 15) | Persona only |
 |---|---|---|---|
 | Theme recall | 61.1 [53.7, 68.7] | 69.0 (1.17x [1.05, 1.31]) | 69.3 (1.17x) |
@@ -481,6 +481,16 @@ Person level (296 rows): another real commenter 15.9%, Flash + launch block 25.3
 their most similar earlier launch 6.1% (a floor, not a ceiling).
 - Not yet fair: half A has ~11 comments, the panels 22-37, and recall grows with list length. Precision (per comment)
   is the fairer read: deployed 1.20x, persona-only 0.96x. Equal-size version is CEILING-2.
+
+### Equal-size ceiling (CEILING-2, subagent, Nov 25; $1.8)
+22 launches (16 from CEILING-1 + 6 from Nov 24-25), each arm cut to half A's size (median 8.5), 8 resamples.
+| Metric | Ceiling | Deployed | Persona only |
+|---|---|---|---|
+| Theme recall | 62.2 | 0.92x [0.82, 1.05] | 0.97x [0.87, 1.09] |
+| Precision | 50.8 | 1.20x [1.04, 1.34] | 1.09x [0.94, 1.24] |
+| Complaint recall | 31.8 | 0.77x (ratio of means) | 0.82x |
+- Nov 24-25 only: deployed recall 0.87x [0.80, 0.94], precision 1.20x [1.11, 1.29], complaints 0.63x [0.41, 0.95].
+- Reading: themes about at the human ceiling, precision above it, complaints the main gap. Next: COMPLAINT-1.
 
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
