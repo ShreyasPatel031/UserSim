@@ -414,9 +414,53 @@ def stage_leak(a):
     sync([f"{a.out}/leak_results.json"], a.sync)
 
 
+# ------------------------------------------------------------------------------------------------ line-up (nightly use)
+def stage_lineup(a):
+    """Categories and competitors for a day's 00:05 line-up (new launches have no Similar Products yet): the
+    product's own Product Hunt label when its slug is a known product, else the classifier (centroids from every
+    labelled launch); competitors = the most-reviewed online products of that category (source recorded)."""
+    from simharness.domains.ph_live_comments import read_lineup
+    lc = pd.read_parquet(f"{a.out}/launch_categories.parquet")
+    E = np.load(f"{a.out}/launch_emb.npy")
+    it = _items(a)
+    products = pd.read_parquet(f"{a.out}/products.parquet")
+    products["categories"] = products["categories"].map(list)
+    P = products.set_index("slug", drop=False)
+    vocab = sorted({c for cs in products["categories"] for c in cs})
+    tax = tx.load_taxonomy(a.taxonomy)
+    ce = tx.CategoryEmbedder(vocab, dict(zip(tax["name"], tax["description"])))
+    m = lc["majority"].notna().to_numpy()
+    row = {i: k for k, i in enumerate(it["item_id"])}
+    idx = [row[i] for i in lc.loc[m, "item_id"]]
+    ce.fit_centroids(E[idx], lc.loc[m, "majority"].tolist(), 0.0)
+    top = tx.category_top_reviewed(products)
+    day = a.day
+    items, _ = read_lineup(a.lineup, day)
+    X = ce.encode([tx.launch_text(r) for r in items.assign(tags=items["tags"]).itertuples()])
+    pred, sc = ce.topk(X, 3)
+    cats = dict(zip(products["slug"], products["categories"]))
+    out = []
+    for k, r in enumerate(items.itertuples()):
+        own = cats.get(r.slug) or cats.get(tx.norm_slug(r.slug)) or []
+        if own:
+            primary, src = own[0] if pred[k][0] not in own else pred[k][0], "ph_own"
+        else:
+            primary, src = pred[k][0], "embedding"
+        comp = tx.competitor_set([primary], primary, [], {r.slug, tx.norm_slug(r.slug)}, P, top, k=5)
+        out.append({"day": day, "item_id": r.item_id, "name": r.title, "primary": primary, "category_source": src,
+                    "own_categories": list(own), "embedding_top3": pred[k], "embedding_top3_scores": [round(float(x), 4) for x in sc[k]],
+                    "competitors": json.dumps(comp)})
+    df = pd.DataFrame(out)
+    f = f"{a.out}/lineup_{day}.parquet"
+    df.to_parquet(f)
+    print(df[["name", "primary", "category_source"]].head(12).to_string(index=False))
+    print(json.dumps({"launches": len(df), "by_source": df["category_source"].value_counts().to_dict()}))
+    sync([f], a.sync)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["labels", "competitors", "residual", "leak"])
+    ap.add_argument("stage", choices=["labels", "competitors", "residual", "leak", "lineup"])
     ap.add_argument("--items-dir", required=True)
     ap.add_argument("--similar", required=True)
     ap.add_argument("--taxonomy", required=True)
@@ -425,6 +469,8 @@ def main(argv=None):
     ap.add_argument("--sync", default="")
     ap.add_argument("--products-info", default="")
     ap.add_argument("--recent300", default="")
+    ap.add_argument("--lineup", default="")
+    ap.add_argument("--day", default="")
     a = ap.parse_args(argv)
     os.makedirs(a.out, exist_ok=True)
     globals()[f"stage_{a.stage}"](a)

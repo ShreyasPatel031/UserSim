@@ -1,0 +1,4069 @@
+{
+ "labels": {
+  "vocab_size": 248,
+  "pasted_with_description": 91,
+  "launches_with_similar_row": 6668,
+  "validation": {
+   "model_choice_on_jul_aug": {
+    "zero-shot (name + description)": {
+     "alpha": null,
+     "val_top1": 0.1684,
+     "val_top3": 0.3302
+    },
+    "centroid alpha 0.0": {
+     "alpha": 0.0,
+     "val_top1": 0.4056,
+     "val_top3": 0.6456
+    },
+    "centroid alpha 0.3": {
+     "alpha": 0.3,
+     "val_top1": 0.3693,
+     "val_top3": 0.614
+    },
+    "centroid alpha 0.6": {
+     "alpha": 0.6,
+     "val_top1": 0.2847,
+     "val_top3": 0.4967
+    }
+   },
+   "chosen": "centroid alpha 0.0",
+   "zero-shot (name + description)": {
+    "fit_on": "no launches",
+    "test": "launches 2026-09-01 to Nov 1",
+    "top1_vs_majority": {
+     "value": 0.197,
+     "ci95": [
+      0.1801,
+      0.2145
+     ],
+     "n": 1619,
+     "days": 62
+    },
+    "top3_contains_majority": {
+     "value": 0.3539,
+     "ci95": [
+      0.3301,
+      0.3788
+     ],
+     "n": 1619,
+     "days": 62
+    },
+    "top1_is_any_similar_category": {
+     "value": 0.3854,
+     "ci95": [
+      0.3593,
+      0.411
+     ],
+     "n": 1619,
+     "days": 62
+    },
+    "top1_by_majority_share": {
+     ">= 0.4": 0.2018,
+     ">= 0.6": 0.2191,
+     ">= 0.8": 0.2554
+    }
+   },
+   "centroid alpha 0.0": {
+    "fit_on": "launches before 2026-09-01",
+    "test": "launches 2026-09-01 to Nov 1",
+    "top1_vs_majority": {
+     "value": 0.4151,
+     "ci95": [
+      0.3911,
+      0.4398
+     ],
+     "n": 1619,
+     "days": 62
+    },
+    "top3_contains_majority": {
+     "value": 0.6455,
+     "ci95": [
+      0.6219,
+      0.67
+     ],
+     "n": 1619,
+     "days": 62
+    },
+    "top1_is_any_similar_category": {
+     "value": 0.6479,
+     "ci95": [
+      0.6218,
+      0.6734
+     ],
+     "n": 1619,
+     "days": 62
+    },
+    "top1_by_majority_share": {
+     ">= 0.4": 0.4281,
+     ">= 0.6": 0.4654,
+     ">= 0.8": 0.5147
+    },
+    "per_category": {
+     "AI Coding Agents": {
+      "n_launches_all": 467,
+      "n_test": 123,
+      "top1_recall": 0.488,
+      "top1_recall_ci95": [
+       0.401,
+       0.575
+      ],
+      "top3_recall": 0.724,
+      "top1_precision": 0.645
+     },
+     "AI Infrastructure Tools": {
+      "n_launches_all": 288,
+      "n_test": 75,
+      "top1_recall": 0.267,
+      "top1_recall_ci95": [
+       0.18,
+       0.376
+      ],
+      "top3_recall": 0.52,
+      "top1_precision": 0.444
+     },
+     "Automation tools": {
+      "n_launches_all": 212,
+      "n_test": 50,
+      "top1_recall": 0.04,
+      "top1_recall_ci95": [
+       0.011,
+       0.135
+      ],
+      "top3_recall": 0.26,
+      "top1_precision": 0.083
+     },
+     "AI Chatbots": {
+      "n_launches_all": 179,
+      "n_test": 48,
+      "top1_recall": 0.271,
+      "top1_recall_ci95": [
+       0.166,
+       0.41
+      ],
+      "top3_recall": 0.583,
+      "top1_precision": 0.333
+     },
+     "Note and writing apps": {
+      "n_launches_all": 178,
+      "n_test": 47,
+      "top1_recall": 0.468,
+      "top1_recall_ci95": [
+       0.333,
+       0.608
+      ],
+      "top3_recall": 0.723,
+      "top1_precision": 0.71
+     },
+     "AI Dictation Apps": {
+      "n_launches_all": 135,
+      "n_test": 37,
+      "top1_recall": 0.486,
+      "top1_recall_ci95": [
+       0.334,
+       0.641
+      ],
+      "top3_recall": 0.622,
+      "top1_precision": 0.545
+     },
+     "Screenshots and screen recording apps": {
+      "n_launches_all": 122,
+      "n_test": 33,
+      "top1_recall": 0.455,
+      "top1_recall_ci95": [
+       0.298,
+       0.62
+      ],
+      "top3_recall": 0.606,
+      "top1_precision": 0.652
+     },
+     "Productivity": {
+      "n_launches_all": 120,
+      "n_test": 42,
+      "top1_recall": 0.071,
+      "top1_recall_ci95": [
+       0.025,
+       0.19
+      ],
+      "top3_recall": 0.69,
+      "top1_precision": 0.091
+     },
+     "Chrome Extensions": {
+      "n_launches_all": 119,
+      "n_test": 20,
+      "top1_recall": 0.6,
+      "top1_recall_ci95": [
+       0.387,
+       0.781
+      ],
+      "top3_recall": 0.9,
+      "top1_precision": 0.6
+     },
+     "AI Workflow Automation": {
+      "n_launches_all": 118,
+      "n_test": 22,
+      "top1_recall": 0.591,
+      "top1_recall_ci95": [
+       0.387,
+       0.767
+      ],
+      "top3_recall": 0.818,
+      "top1_precision": 0.271
+     },
+     "AI Generative Media": {
+      "n_launches_all": 115,
+      "n_test": 22,
+      "top1_recall": 0.227,
+      "top1_recall_ci95": [
+       0.101,
+       0.434
+      ],
+      "top3_recall": 0.773,
+      "top1_precision": 0.278
+     },
+     "Video editing": {
+      "n_launches_all": 114,
+      "n_test": 31,
+      "top1_recall": 0.645,
+      "top1_recall_ci95": [
+       0.469,
+       0.789
+      ],
+      "top3_recall": 0.742,
+      "top1_precision": 0.526
+     },
+     "Foundation Models": {
+      "n_launches_all": 105,
+      "n_test": 28,
+      "top1_recall": 0.464,
+      "top1_recall_ci95": [
+       0.295,
+       0.642
+      ],
+      "top3_recall": 0.786,
+      "top1_precision": 0.433
+     },
+     "App switcher": {
+      "n_launches_all": 81,
+      "n_test": 35,
+      "top1_recall": 0.771,
+      "top1_recall_ci95": [
+       0.61,
+       0.879
+      ],
+      "top3_recall": 0.943,
+      "top1_precision": 0.429
+     },
+     "AI Voice Agents": {
+      "n_launches_all": 78,
+      "n_test": 24,
+      "top1_recall": 0.375,
+      "top1_recall_ci95": [
+       0.212,
+       0.573
+      ],
+      "top3_recall": 0.792,
+      "top1_precision": 0.346
+     },
+     "Search": {
+      "n_launches_all": 77,
+      "n_test": 13,
+      "top1_recall": 0.154,
+      "top1_recall_ci95": [
+       0.043,
+       0.422
+      ],
+      "top3_recall": 0.154,
+      "top1_precision": 0.25
+     },
+     "Online learning": {
+      "n_launches_all": 77,
+      "n_test": 18,
+      "top1_recall": 0.667,
+      "top1_recall_ci95": [
+       0.437,
+       0.837
+      ],
+      "top3_recall": 0.833,
+      "top1_precision": 0.75
+     },
+     "Lead generation software": {
+      "n_launches_all": 76,
+      "n_test": 18,
+      "top1_recall": 0.389,
+      "top1_recall_ci95": [
+       0.203,
+       0.614
+      ],
+      "top3_recall": 0.611,
+      "top1_precision": 0.438
+     },
+     "AI notetakers": {
+      "n_launches_all": 76,
+      "n_test": 24,
+      "top1_recall": 0.583,
+      "top1_recall_ci95": [
+       0.388,
+       0.755
+      ],
+      "top3_recall": 0.792,
+      "top1_precision": 0.438
+     },
+     "Team collaboration software": {
+      "n_launches_all": 74,
+      "n_test": 20,
+      "top1_recall": 0.15,
+      "top1_recall_ci95": [
+       0.052,
+       0.36
+      ],
+      "top3_recall": 0.4,
+      "top1_precision": 0.167
+     },
+     "Project management software": {
+      "n_launches_all": 73,
+      "n_test": 18,
+      "top1_recall": 0.111,
+      "top1_recall_ci95": [
+       0.031,
+       0.328
+      ],
+      "top3_recall": 0.278,
+      "top1_precision": 0.333
+     },
+     "Security software": {
+      "n_launches_all": 70,
+      "n_test": 15,
+      "top1_recall": 0.333,
+      "top1_recall_ci95": [
+       0.152,
+       0.583
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.294
+     },
+     "Testing and QA software": {
+      "n_launches_all": 69,
+      "n_test": 11,
+      "top1_recall": 0.455,
+      "top1_recall_ci95": [
+       0.213,
+       0.72
+      ],
+      "top3_recall": 0.545,
+      "top1_precision": 0.385
+     },
+     "Knowledge base software": {
+      "n_launches_all": 68,
+      "n_test": 21,
+      "top1_recall": 0.19,
+      "top1_recall_ci95": [
+       0.077,
+       0.4
+      ],
+      "top3_recall": 0.476,
+      "top1_precision": 0.25
+     },
+     "Customer support tools": {
+      "n_launches_all": 67,
+      "n_test": 23,
+      "top1_recall": 0.696,
+      "top1_recall_ci95": [
+       0.491,
+       0.844
+      ],
+      "top3_recall": 0.783,
+      "top1_precision": 0.64
+     },
+     "3D & Animation": {
+      "n_launches_all": 65,
+      "n_test": 18,
+      "top1_recall": 0.556,
+      "top1_recall_ci95": [
+       0.337,
+       0.754
+      ],
+      "top3_recall": 0.778,
+      "top1_precision": 0.476
+     },
+     "LLMs": {
+      "n_launches_all": 65,
+      "n_test": 8,
+      "top1_recall": 0.125,
+      "top1_recall_ci95": [
+       0.022,
+       0.471
+      ],
+      "top3_recall": 0.625,
+      "top1_precision": 0.067
+     },
+     "Cloud Computing Platforms": {
+      "n_launches_all": 64,
+      "n_test": 13,
+      "top1_recall": 0.231,
+      "top1_recall_ci95": [
+       0.082,
+       0.503
+      ],
+      "top3_recall": 0.462,
+      "top1_precision": 0.231
+     },
+     "Observability tools": {
+      "n_launches_all": 61,
+      "n_test": 18,
+      "top1_recall": 0.167,
+      "top1_recall_ci95": [
+       0.058,
+       0.392
+      ],
+      "top3_recall": 0.444,
+      "top1_precision": 0.375
+     },
+     "Email clients": {
+      "n_launches_all": 61,
+      "n_test": 15,
+      "top1_recall": 0.733,
+      "top1_recall_ci95": [
+       0.48,
+       0.891
+      ],
+      "top3_recall": 0.8,
+      "top1_precision": 0.647
+     },
+     "Terminals": {
+      "n_launches_all": 58,
+      "n_test": 13,
+      "top1_recall": 0.538,
+      "top1_recall_ci95": [
+       0.291,
+       0.768
+      ],
+      "top3_recall": 0.769,
+      "top1_precision": 0.5
+     },
+     "Writing assistants": {
+      "n_launches_all": 58,
+      "n_test": 16,
+      "top1_recall": 0.375,
+      "top1_recall_ci95": [
+       0.185,
+       0.614
+      ],
+      "top3_recall": 0.688,
+      "top1_precision": 0.545
+     },
+     "Data visualization tools": {
+      "n_launches_all": 57,
+      "n_test": 15,
+      "top1_recall": 0.667,
+      "top1_recall_ci95": [
+       0.417,
+       0.848
+      ],
+      "top3_recall": 0.8,
+      "top1_precision": 0.833
+     },
+     "Activity tracking": {
+      "n_launches_all": 55,
+      "n_test": 5,
+      "top1_recall": 0.0,
+      "top1_recall_ci95": [
+       -0.0,
+       0.434
+      ],
+      "top3_recall": 0.0,
+      "top1_precision": 0.0
+     },
+     "Social media management tools": {
+      "n_launches_all": 54,
+      "n_test": 17,
+      "top1_recall": 0.294,
+      "top1_recall_ci95": [
+       0.133,
+       0.531
+      ],
+      "top3_recall": 0.529,
+      "top1_precision": 0.714
+     },
+     "Unified API": {
+      "n_launches_all": 54,
+      "n_test": 9,
+      "top1_recall": 0.222,
+      "top1_recall_ci95": [
+       0.063,
+       0.547
+      ],
+      "top3_recall": 0.556,
+      "top1_precision": 0.2
+     },
+     "Advertising tools": {
+      "n_launches_all": 53,
+      "n_test": 14,
+      "top1_recall": 0.929,
+      "top1_recall_ci95": [
+       0.685,
+       0.987
+      ],
+      "top3_recall": 0.929,
+      "top1_precision": 0.619
+     },
+     "AI Metrics and Evaluation": {
+      "n_launches_all": 52,
+      "n_test": 15,
+      "top1_recall": 0.4,
+      "top1_recall_ci95": [
+       0.198,
+       0.643
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.4
+     },
+     "File storage and sharing apps": {
+      "n_launches_all": 51,
+      "n_test": 13,
+      "top1_recall": 0.462,
+      "top1_recall_ci95": [
+       0.232,
+       0.709
+      ],
+      "top3_recall": 0.769,
+      "top1_precision": 0.286
+     },
+     "Code Review Tools": {
+      "n_launches_all": 50,
+      "n_test": 18,
+      "top1_recall": 0.556,
+      "top1_recall_ci95": [
+       0.337,
+       0.754
+      ],
+      "top3_recall": 0.833,
+      "top1_precision": 0.556
+     },
+     "GEO Tools": {
+      "n_launches_all": 50,
+      "n_test": 15,
+      "top1_recall": 0.733,
+      "top1_recall_ci95": [
+       0.48,
+       0.891
+      ],
+      "top3_recall": 0.933,
+      "top1_precision": 0.786
+     },
+     "Calendar apps": {
+      "n_launches_all": 50,
+      "n_test": 18,
+      "top1_recall": 0.667,
+      "top1_recall_ci95": [
+       0.437,
+       0.837
+      ],
+      "top3_recall": 0.778,
+      "top1_precision": 0.706
+     },
+     "Games": {
+      "n_launches_all": 50,
+      "n_test": 21,
+      "top1_recall": 0.571,
+      "top1_recall_ci95": [
+       0.365,
+       0.755
+      ],
+      "top3_recall": 0.81,
+      "top1_precision": 0.522
+     },
+     "Business intelligence software": {
+      "n_launches_all": 47,
+      "n_test": 7,
+      "top1_recall": 0.0,
+      "top1_recall_ci95": [
+       0.0,
+       0.354
+      ],
+      "top3_recall": 0.571,
+      "top1_precision": 0.0
+     },
+     "Website analytics": {
+      "n_launches_all": 47,
+      "n_test": 9,
+      "top1_recall": 0.333,
+      "top1_recall_ci95": [
+       0.121,
+       0.646
+      ],
+      "top3_recall": 0.556,
+      "top1_precision": 0.25
+     },
+     "Browser Automation": {
+      "n_launches_all": 47,
+      "n_test": 10,
+      "top1_recall": 0.5,
+      "top1_recall_ci95": [
+       0.237,
+       0.763
+      ],
+      "top3_recall": 0.8,
+      "top1_precision": 0.357
+     },
+     "Website builders": {
+      "n_launches_all": 45,
+      "n_test": 3,
+      "top1_recall": 0.333,
+      "top1_recall_ci95": [
+       0.061,
+       0.792
+      ],
+      "top3_recall": 0.333,
+      "top1_precision": 0.143
+     },
+     "No-code Platforms": {
+      "n_launches_all": 43,
+      "n_test": 4,
+      "top1_recall": 0.25,
+      "top1_recall_ci95": [
+       0.046,
+       0.699
+      ],
+      "top3_recall": 0.5,
+      "top1_precision": 0.167
+     },
+     "SEO tools": {
+      "n_launches_all": 42,
+      "n_test": 12,
+      "top1_recall": 0.583,
+      "top1_recall_ci95": [
+       0.32,
+       0.807
+      ],
+      "top3_recall": 0.917,
+      "top1_precision": 0.636
+     },
+     "Language Learning": {
+      "n_launches_all": 42,
+      "n_test": 7,
+      "top1_recall": 0.714,
+      "top1_recall_ci95": [
+       0.359,
+       0.918
+      ],
+      "top3_recall": 0.857,
+      "top1_precision": 0.556
+     },
+     "Maps and GPS": {
+      "n_launches_all": 41,
+      "n_test": 6,
+      "top1_recall": 0.333,
+      "top1_recall_ci95": [
+       0.097,
+       0.7
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.222
+     },
+     "Hiring software": {
+      "n_launches_all": 41,
+      "n_test": 6,
+      "top1_recall": 0.833,
+      "top1_recall_ci95": [
+       0.436,
+       0.97
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.455
+     },
+     "Graphic design tools": {
+      "n_launches_all": 41,
+      "n_test": 10,
+      "top1_recall": 0.3,
+      "top1_recall_ci95": [
+       0.108,
+       0.603
+      ],
+      "top3_recall": 0.7,
+      "top1_precision": 0.429
+     },
+     "Email marketing": {
+      "n_launches_all": 41,
+      "n_test": 10,
+      "top1_recall": 0.9,
+      "top1_recall_ci95": [
+       0.596,
+       0.982
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.9
+     },
+     "Marketing automation platforms": {
+      "n_launches_all": 40,
+      "n_test": 8,
+      "top1_recall": 0.375,
+      "top1_recall_ci95": [
+       0.137,
+       0.694
+      ],
+      "top3_recall": 0.625,
+      "top1_precision": 0.3
+     },
+     "Social Networking": {
+      "n_launches_all": 40,
+      "n_test": 9,
+      "top1_recall": 0.0,
+      "top1_recall_ci95": [
+       0.0,
+       0.299
+      ],
+      "top3_recall": 0.111,
+      "top1_precision": 0.0
+     },
+     "LLM Developer Tools": {
+      "n_launches_all": 39,
+      "n_test": 10,
+      "top1_recall": 0.2,
+      "top1_recall_ci95": [
+       0.057,
+       0.51
+      ],
+      "top3_recall": 0.4,
+      "top1_precision": 0.167
+     },
+     "Music Generation": {
+      "n_launches_all": 39,
+      "n_test": 8,
+      "top1_recall": 0.875,
+      "top1_recall_ci95": [
+       0.529,
+       0.978
+      ],
+      "top3_recall": 0.875,
+      "top1_precision": 0.538
+     },
+     "Medical": {
+      "n_launches_all": 39,
+      "n_test": 5,
+      "top1_recall": 0.2,
+      "top1_recall_ci95": [
+       0.036,
+       0.624
+      ],
+      "top3_recall": 0.4,
+      "top1_precision": 0.5
+     },
+     "Command line tools": {
+      "n_launches_all": 39,
+      "n_test": 4,
+      "top1_recall": 0.5,
+      "top1_recall_ci95": [
+       0.15,
+       0.85
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.091
+     },
+     "Meeting software": {
+      "n_launches_all": 38,
+      "n_test": 14,
+      "top1_recall": 0.429,
+      "top1_recall_ci95": [
+       0.214,
+       0.674
+      ],
+      "top3_recall": 0.5,
+      "top1_precision": 0.6
+     },
+     "Time tracking apps": {
+      "n_launches_all": 36,
+      "n_test": 9,
+      "top1_recall": 0.444,
+      "top1_recall_ci95": [
+       0.189,
+       0.733
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.235
+     },
+     "Mental Health": {
+      "n_launches_all": 35,
+      "n_test": 8,
+      "top1_recall": 0.25,
+      "top1_recall_ci95": [
+       0.071,
+       0.591
+      ],
+      "top3_recall": 0.5,
+      "top1_precision": 0.25
+     },
+     "OpenClaw": {
+      "n_launches_all": 34,
+      "n_test": 8,
+      "top1_recall": 0.25,
+      "top1_recall_ci95": [
+       0.071,
+       0.591
+      ],
+      "top3_recall": 0.375,
+      "top1_precision": 0.111
+     },
+     "Safety and Privacy platforms": {
+      "n_launches_all": 34,
+      "n_test": 13,
+      "top1_recall": 0.385,
+      "top1_recall_ci95": [
+       0.177,
+       0.645
+      ],
+      "top3_recall": 0.615,
+      "top1_precision": 0.5
+     },
+     "Payment processors": {
+      "n_launches_all": 33,
+      "n_test": 3,
+      "top1_recall": 0.0,
+      "top1_recall_ci95": [
+       0.0,
+       0.562
+      ],
+      "top3_recall": 0.0,
+      "top1_precision": 0.0
+     },
+     "User research": {
+      "n_launches_all": 30,
+      "n_test": 9,
+      "top1_recall": 0.444,
+      "top1_recall_ci95": [
+       0.189,
+       0.733
+      ],
+      "top3_recall": 0.778,
+      "top1_precision": 0.308
+     },
+     "AI sales tools": {
+      "n_launches_all": 30,
+      "n_test": 6,
+      "top1_recall": 0.167,
+      "top1_recall_ci95": [
+       0.03,
+       0.564
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.091
+     },
+     "Budgeting apps": {
+      "n_launches_all": 29,
+      "n_test": 4,
+      "top1_recall": 1.0,
+      "top1_recall_ci95": [
+       0.51,
+       1.0
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.571
+     },
+     "Scheduling software": {
+      "n_launches_all": 29,
+      "n_test": 3,
+      "top1_recall": 0.667,
+      "top1_recall_ci95": [
+       0.208,
+       0.939
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.4
+     },
+     "Presentation Software": {
+      "n_launches_all": 29,
+      "n_test": 4,
+      "top1_recall": 0.5,
+      "top1_recall_ci95": [
+       0.15,
+       0.85
+      ],
+      "top3_recall": 0.75,
+      "top1_precision": 1.0
+     },
+     "Interface design tools": {
+      "n_launches_all": 28,
+      "n_test": 12,
+      "top1_recall": 0.25,
+      "top1_recall_ci95": [
+       0.089,
+       0.532
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.273
+     },
+     "Camera apps": {
+      "n_launches_all": 28,
+      "n_test": 11,
+      "top1_recall": 0.636,
+      "top1_recall_ci95": [
+       0.354,
+       0.848
+      ],
+      "top3_recall": 0.818,
+      "top1_precision": 0.583
+     },
+     "Messaging apps": {
+      "n_launches_all": 28,
+      "n_test": 9,
+      "top1_recall": 0.778,
+      "top1_recall_ci95": [
+       0.453,
+       0.937
+      ],
+      "top3_recall": 0.889,
+      "top1_precision": 0.438
+     },
+     "Photo editing": {
+      "n_launches_all": 27,
+      "n_test": 5,
+      "top1_recall": 1.0,
+      "top1_recall_ci95": [
+       0.566,
+       1.0
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.625
+     },
+     "No-Code AI Agent Builder": {
+      "n_launches_all": 27,
+      "n_test": 4,
+      "top1_recall": 0.5,
+      "top1_recall_ci95": [
+       0.15,
+       0.85
+      ],
+      "top3_recall": 0.5,
+      "top1_precision": 0.105
+     },
+     "Web browsers": {
+      "n_launches_all": 26,
+      "n_test": 10,
+      "top1_recall": 0.6,
+      "top1_recall_ci95": [
+       0.313,
+       0.832
+      ],
+      "top3_recall": 0.6,
+      "top1_precision": 0.857
+     },
+     "CRM software": {
+      "n_launches_all": 26,
+      "n_test": 2,
+      "top1_recall": 0.5,
+      "top1_recall_ci95": [
+       0.095,
+       0.905
+      ],
+      "top3_recall": 0.5,
+      "top1_precision": 0.333
+     },
+     "Fundraising resources": {
+      "n_launches_all": 26,
+      "n_test": 4,
+      "top1_recall": 0.75,
+      "top1_recall_ci95": [
+       0.301,
+       0.954
+      ],
+      "top3_recall": 0.75,
+      "top1_precision": 1.0
+     },
+     "Text-to-Speech Software": {
+      "n_launches_all": 26,
+      "n_test": 9,
+      "top1_recall": 0.333,
+      "top1_recall_ci95": [
+       0.121,
+       0.646
+      ],
+      "top3_recall": 0.778,
+      "top1_precision": 0.429
+     },
+     "Git clients": {
+      "n_launches_all": 24,
+      "n_test": 7,
+      "top1_recall": 0.857,
+      "top1_recall_ci95": [
+       0.487,
+       0.974
+      ],
+      "top3_recall": 0.857,
+      "top1_precision": 0.375
+     },
+     "News": {
+      "n_launches_all": 24,
+      "n_test": 4,
+      "top1_recall": 0.5,
+      "top1_recall_ci95": [
+       0.15,
+       0.85
+      ],
+      "top3_recall": 0.5,
+      "top1_precision": 1.0
+     },
+     "Workout platforms": {
+      "n_launches_all": 24,
+      "n_test": 7,
+      "top1_recall": 0.571,
+      "top1_recall_ci95": [
+       0.25,
+       0.842
+      ],
+      "top3_recall": 0.857,
+      "top1_precision": 0.8
+     },
+     "Databases and backend frameworks": {
+      "n_launches_all": 24,
+      "n_test": 8,
+      "top1_recall": 0.625,
+      "top1_recall_ci95": [
+       0.306,
+       0.863
+      ],
+      "top3_recall": 0.625,
+      "top1_precision": 0.5
+     },
+     "Survey and form builders": {
+      "n_launches_all": 24,
+      "n_test": 4,
+      "top1_recall": 1.0,
+      "top1_recall_ci95": [
+       0.51,
+       1.0
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 1.0
+     },
+     "Travel apps": {
+      "n_launches_all": 23,
+      "n_test": 3,
+      "top1_recall": 0.0,
+      "top1_recall_ci95": [
+       0.0,
+       0.562
+      ],
+      "top3_recall": 0.333,
+      "top1_precision": 0.0
+     },
+     "Data analysis tools": {
+      "n_launches_all": 23,
+      "n_test": 6,
+      "top1_recall": 0.333,
+      "top1_recall_ci95": [
+       0.097,
+       0.7
+      ],
+      "top3_recall": 0.667,
+      "top1_precision": 0.286
+     },
+     "Product demo": {
+      "n_launches_all": 21,
+      "n_test": 8,
+      "top1_recall": 0.25,
+      "top1_recall_ci95": [
+       0.071,
+       0.591
+      ],
+      "top3_recall": 0.625,
+      "top1_precision": 0.667
+     },
+     "Sleep apps": {
+      "n_launches_all": 21,
+      "n_test": 2,
+      "top1_recall": 0.5,
+      "top1_recall_ci95": [
+       0.095,
+       0.905
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.167
+     },
+     "Translation": {
+      "n_launches_all": 21,
+      "n_test": 6,
+      "top1_recall": 1.0,
+      "top1_recall_ci95": [
+       0.61,
+       1.0
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.462
+     },
+     "AI Designer": {
+      "n_launches_all": 20,
+      "n_test": 4,
+      "top1_recall": 0.75,
+      "top1_recall_ci95": [
+       0.301,
+       0.954
+      ],
+      "top3_recall": 1.0,
+      "top1_precision": 0.3
+     }
+    },
+    "most_common_confusions": [
+     {
+      "true": "Productivity",
+      "pred": "App switcher",
+      "n": 18
+     },
+     {
+      "true": "AI Infrastructure Tools",
+      "pred": "Foundation Models",
+      "n": 8
+     },
+     {
+      "true": "AI Coding Agents",
+      "pred": "Terminals",
+      "n": 7
+     },
+     {
+      "true": "App switcher",
+      "pred": "Productivity",
+      "n": 6
+     },
+     {
+      "true": "AI Chatbots",
+      "pred": "AI Workflow Automation",
+      "n": 5
+     },
+     {
+      "true": "Automation tools",
+      "pred": "AI Workflow Automation",
+      "n": 5
+     },
+     {
+      "true": "AI Dictation Apps",
+      "pred": "AI notetakers",
+      "n": 5
+     },
+     {
+      "true": "AI Voice Agents",
+      "pred": "AI Dictation Apps",
+      "n": 5
+     },
+     {
+      "true": "AI Coding Agents",
+      "pred": "Automation tools",
+      "n": 4
+     },
+     {
+      "true": "AI Chatbots",
+      "pred": "AI Infrastructure Tools",
+      "n": 4
+     },
+     {
+      "true": "AI Coding Agents",
+      "pred": "AI Workflow Automation",
+      "n": 4
+     },
+     {
+      "true": "AI Chatbots",
+      "pred": "No-Code AI Agent Builder",
+      "n": 4
+     },
+     {
+      "true": "AI Generative Media",
+      "pred": "3D & Animation",
+      "n": 4
+     },
+     {
+      "true": "Automation tools",
+      "pred": "Productivity",
+      "n": 4
+     },
+     {
+      "true": "AI Coding Agents",
+      "pred": "OpenClaw",
+      "n": 4
+     }
+    ]
+   }
+  },
+  "assignment": {
+   "launches": 7430,
+   "by_source": {
+    "similar_majority": 4236,
+    "ph_own": 2407,
+    "embedding": 787
+   },
+   "categories_used": 225,
+   "categories_with_20_plus_launches": 99
+  }
+ },
+ "competitors": {
+  "launch_days": 193,
+  "launches": 5150,
+  "by_set": {
+   "backtest": 5081,
+   "shortlist": 69
+  },
+  "with_5_competitors": 0.9994,
+  "mean_from_ph_similar": 4.11,
+  "share_with_any_ph_similar": 0.9301,
+  "share_with_no_similar_row": 0.0639,
+  "by_category_source": {
+   "similar_majority": 3054,
+   "ph_own": 1743,
+   "embedding": 353
+  }
+ },
+ "residual": {
+  "days": 191,
+  "launches": 5073,
+  "model": "frozen structural backtest (arm 3)",
+  "miss": "real rank - structural rank (positive = finished below its structural rank)",
+  "overall": {
+   "mean_abs_miss": 6.43,
+   "struct_top3_capture": {
+    "value": 0.5622,
+    "ci95": [
+     0.5289,
+     0.5954
+    ],
+    "n": 571,
+    "days": 191
+   }
+  },
+  "per_category": {
+   "AI Coding Agents": {
+    "launches": 340,
+    "days": 147,
+    "mean_miss": {
+     "value": -0.7529,
+     "ci95": [
+      -1.8312,
+      0.3211
+     ],
+     "n": 340,
+     "days": 147
+    },
+    "mean_miss_pct_of_lineup": -0.0117,
+    "sd_miss": 10.77,
+    "iqr_miss": [
+     -4.0,
+     4.0
+    ],
+    "mean_abs_miss": 6.95,
+    "real_top3_launches": 36,
+    "real_top3_missed_by_struct_top3": 0.4722,
+    "struct_top3_capture": {
+     "value": 0.5278,
+     "ci95": [
+      0.3611,
+      0.6944
+     ],
+     "n": 36,
+     "days": 36
+    },
+    "category_source_mix": {
+     "similar_majority": 178,
+     "ph_own": 153,
+     "embedding": 9
+    }
+   },
+   "AI Infrastructure Tools": {
+    "launches": 221,
+    "days": 117,
+    "mean_miss": {
+     "value": 0.7828,
+     "ci95": [
+      -0.5549,
+      2.1081
+     ],
+     "n": 221,
+     "days": 117
+    },
+    "mean_miss_pct_of_lineup": 0.0286,
+    "sd_miss": 10.52,
+    "iqr_miss": [
+     -3.0,
+     4.0
+    ],
+    "mean_abs_miss": 6.65,
+    "real_top3_launches": 41,
+    "real_top3_missed_by_struct_top3": 0.3415,
+    "struct_top3_capture": {
+     "value": 0.6585,
+     "ci95": [
+      0.5128,
+      0.8
+     ],
+     "n": 41,
+     "days": 38
+    },
+    "category_source_mix": {
+     "similar_majority": 125,
+     "ph_own": 90,
+     "embedding": 6
+    }
+   },
+   "Automation tools": {
+    "launches": 141,
+    "days": 93,
+    "mean_miss": {
+     "value": -1.2128,
+     "ci95": [
+      -2.9417,
+      0.5173
+     ],
+     "n": 141,
+     "days": 93
+    },
+    "mean_miss_pct_of_lineup": -0.0171,
+    "sd_miss": 9.71,
+    "iqr_miss": [
+     -4.0,
+     3.0
+    ],
+    "mean_abs_miss": 5.87,
+    "real_top3_launches": 18,
+    "real_top3_missed_by_struct_top3": 0.2778,
+    "struct_top3_capture": {
+     "value": 0.7222,
+     "ci95": [
+      0.5,
+      0.9412
+     ],
+     "n": 18,
+     "days": 17
+    },
+    "category_source_mix": {
+     "similar_majority": 93,
+     "ph_own": 47,
+     "embedding": 1
+    }
+   },
+   "Note and writing apps": {
+    "launches": 127,
+    "days": 93,
+    "mean_miss": {
+     "value": -2.2362,
+     "ci95": [
+      -3.7522,
+      -0.8535
+     ],
+     "n": 127,
+     "days": 93
+    },
+    "mean_miss_pct_of_lineup": -0.0724,
+    "sd_miss": 8.07,
+    "iqr_miss": [
+     -5.0,
+     2.0
+    ],
+    "mean_abs_miss": 5.54,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 88,
+     "ph_own": 34,
+     "embedding": 5
+    }
+   },
+   "AI Workflow Automation": {
+    "launches": 118,
+    "days": 75,
+    "mean_miss": {
+     "value": 3.2288,
+     "ci95": [
+      1.6059,
+      4.9558
+     ],
+     "n": 118,
+     "days": 75
+    },
+    "mean_miss_pct_of_lineup": 0.0783,
+    "sd_miss": 9.96,
+    "iqr_miss": [
+     -2.0,
+     5.0
+    ],
+    "mean_abs_miss": 6.81,
+    "real_top3_launches": 25,
+    "real_top3_missed_by_struct_top3": 0.2,
+    "struct_top3_capture": {
+     "value": 0.8,
+     "ci95": [
+      0.64,
+      0.9231
+     ],
+     "n": 25,
+     "days": 24
+    },
+    "category_source_mix": {
+     "similar_majority": 52,
+     "ph_own": 43,
+     "embedding": 23
+    }
+   },
+   "AI Chatbots": {
+    "launches": 109,
+    "days": 78,
+    "mean_miss": {
+     "value": -0.0642,
+     "ci95": [
+      -2.5007,
+      2.1653
+     ],
+     "n": 109,
+     "days": 78
+    },
+    "mean_miss_pct_of_lineup": 0.0098,
+    "sd_miss": 10.31,
+    "iqr_miss": [
+     -3.0,
+     4.0
+    ],
+    "mean_abs_miss": 6.17,
+    "real_top3_launches": 22,
+    "real_top3_missed_by_struct_top3": 0.2273,
+    "struct_top3_capture": {
+     "value": 0.7727,
+     "ci95": [
+      0.5714,
+      0.913
+     ],
+     "n": 22,
+     "days": 21
+    },
+    "category_source_mix": {
+     "similar_majority": 72,
+     "ph_own": 37
+    }
+   },
+   "Screenshots and screen recording apps": {
+    "launches": 98,
+    "days": 76,
+    "mean_miss": {
+     "value": -4.1429,
+     "ci95": [
+      -6.0994,
+      -2.3207
+     ],
+     "n": 98,
+     "days": 76
+    },
+    "mean_miss_pct_of_lineup": -0.1215,
+    "sd_miss": 9.98,
+    "iqr_miss": [
+     -7.0,
+     1.0
+    ],
+    "mean_abs_miss": 6.2,
+    "real_top3_launches": 10,
+    "real_top3_missed_by_struct_top3": 0.6,
+    "struct_top3_capture": {
+     "value": 0.4,
+     "ci95": [
+      0.1,
+      0.7
+     ],
+     "n": 10,
+     "days": 10
+    },
+    "category_source_mix": {
+     "similar_majority": 66,
+     "ph_own": 28,
+     "embedding": 4
+    }
+   },
+   "Productivity": {
+    "launches": 89,
+    "days": 73,
+    "mean_miss": {
+     "value": -1.6067,
+     "ci95": [
+      -3.8625,
+      0.7447
+     ],
+     "n": 89,
+     "days": 73
+    },
+    "mean_miss_pct_of_lineup": -0.0618,
+    "sd_miss": 10.59,
+    "iqr_miss": [
+     -5.0,
+     3.0
+    ],
+    "mean_abs_miss": 6.8,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 0.0,
+    "struct_top3_capture": {
+     "value": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "similar_majority": 80,
+     "ph_own": 8,
+     "embedding": 1
+    }
+   },
+   "AI Dictation Apps": {
+    "launches": 85,
+    "days": 63,
+    "mean_miss": {
+     "value": 0.8706,
+     "ci95": [
+      -1.3765,
+      3.2476
+     ],
+     "n": 85,
+     "days": 63
+    },
+    "mean_miss_pct_of_lineup": 0.0177,
+    "sd_miss": 10.2,
+    "iqr_miss": [
+     -4.0,
+     4.0
+    ],
+    "mean_abs_miss": 6.14,
+    "real_top3_launches": 9,
+    "real_top3_missed_by_struct_top3": 0.6667,
+    "struct_top3_capture": {
+     "value": 0.3333,
+     "ci95": [
+      0.0,
+      0.6667
+     ],
+     "n": 9,
+     "days": 9
+    },
+    "category_source_mix": {
+     "similar_majority": 66,
+     "ph_own": 18,
+     "embedding": 1
+    }
+   },
+   "Video editing": {
+    "launches": 85,
+    "days": 69,
+    "mean_miss": {
+     "value": 1.1529,
+     "ci95": [
+      -0.8492,
+      3.3849
+     ],
+     "n": 85,
+     "days": 69
+    },
+    "mean_miss_pct_of_lineup": 0.0158,
+    "sd_miss": 11.29,
+    "iqr_miss": [
+     -4.0,
+     5.0
+    ],
+    "mean_abs_miss": 7.18,
+    "real_top3_launches": 7,
+    "real_top3_missed_by_struct_top3": 0.5714,
+    "struct_top3_capture": {
+     "value": 0.4286,
+     "ci95": [
+      0.0,
+      0.8571
+     ],
+     "n": 7,
+     "days": 7
+    },
+    "category_source_mix": {
+     "similar_majority": 69,
+     "ph_own": 13,
+     "embedding": 3
+    }
+   },
+   "Foundation Models": {
+    "launches": 78,
+    "days": 64,
+    "mean_miss": {
+     "value": 2.4359,
+     "ci95": [
+      1.0814,
+      3.8454
+     ],
+     "n": 78,
+     "days": 64
+    },
+    "mean_miss_pct_of_lineup": 0.0869,
+    "sd_miss": 6.23,
+    "iqr_miss": [
+     -1.0,
+     5.75
+    ],
+    "mean_abs_miss": 4.59,
+    "real_top3_launches": 16,
+    "real_top3_missed_by_struct_top3": 0.5625,
+    "struct_top3_capture": {
+     "value": 0.4375,
+     "ci95": [
+      0.1875,
+      0.6667
+     ],
+     "n": 16,
+     "days": 15
+    },
+    "category_source_mix": {
+     "ph_own": 49,
+     "similar_majority": 25,
+     "embedding": 4
+    }
+   },
+   "Chrome Extensions": {
+    "launches": 76,
+    "days": 61,
+    "mean_miss": {
+     "value": -2.6316,
+     "ci95": [
+      -4.2935,
+      -1.013
+     ],
+     "n": 76,
+     "days": 61
+    },
+    "mean_miss_pct_of_lineup": -0.0745,
+    "sd_miss": 7.39,
+    "iqr_miss": [
+     -5.25,
+     1.25
+    ],
+    "mean_abs_miss": 5.18,
+    "real_top3_launches": 3,
+    "real_top3_missed_by_struct_top3": 0.3333,
+    "struct_top3_capture": {
+     "value": 0.6667,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 3,
+     "days": 3
+    },
+    "category_source_mix": {
+     "similar_majority": 52,
+     "ph_own": 21,
+     "embedding": 3
+    }
+   },
+   "AI Generative Media": {
+    "launches": 73,
+    "days": 59,
+    "mean_miss": {
+     "value": 1.9178,
+     "ci95": [
+      -0.576,
+      4.975
+     ],
+     "n": 73,
+     "days": 59
+    },
+    "mean_miss_pct_of_lineup": 0.0477,
+    "sd_miss": 10.72,
+    "iqr_miss": [
+     -2.0,
+     4.0
+    ],
+    "mean_abs_miss": 5.95,
+    "real_top3_launches": 13,
+    "real_top3_missed_by_struct_top3": 0.2308,
+    "struct_top3_capture": {
+     "value": 0.7692,
+     "ci95": [
+      0.5385,
+      1.0
+     ],
+     "n": 13,
+     "days": 13
+    },
+    "category_source_mix": {
+     "similar_majority": 48,
+     "ph_own": 23,
+     "embedding": 2
+    }
+   },
+   "App switcher": {
+    "launches": 70,
+    "days": 54,
+    "mean_miss": {
+     "value": 0.2,
+     "ci95": [
+      -1.4394,
+      1.8082
+     ],
+     "n": 70,
+     "days": 54
+    },
+    "mean_miss_pct_of_lineup": 0.0196,
+    "sd_miss": 7.1,
+    "iqr_miss": [
+     -4.75,
+     4.0
+    ],
+    "mean_abs_miss": 5.31,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "ph_own": 44,
+     "similar_majority": 20,
+     "embedding": 6
+    }
+   },
+   "3D & Animation": {
+    "launches": 64,
+    "days": 51,
+    "mean_miss": {
+     "value": -0.4375,
+     "ci95": [
+      -2.9071,
+      2.2971
+     ],
+     "n": 64,
+     "days": 51
+    },
+    "mean_miss_pct_of_lineup": -0.0151,
+    "sd_miss": 9.29,
+    "iqr_miss": [
+     -5.0,
+     4.0
+    ],
+    "mean_abs_miss": 6.62,
+    "real_top3_launches": 6,
+    "real_top3_missed_by_struct_top3": 0.6667,
+    "struct_top3_capture": {
+     "value": 0.3333,
+     "ci95": [
+      0.0,
+      0.6667
+     ],
+     "n": 6,
+     "days": 6
+    },
+    "category_source_mix": {
+     "similar_majority": 38,
+     "ph_own": 18,
+     "embedding": 8
+    }
+   },
+   "AI Voice Agents": {
+    "launches": 62,
+    "days": 53,
+    "mean_miss": {
+     "value": 1.7419,
+     "ci95": [
+      -0.2168,
+      3.7693
+     ],
+     "n": 62,
+     "days": 53
+    },
+    "mean_miss_pct_of_lineup": 0.0442,
+    "sd_miss": 7.41,
+    "iqr_miss": [
+     -2.0,
+     6.75
+    ],
+    "mean_abs_miss": 5.26,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.0,
+    "struct_top3_capture": {
+     "value": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 39,
+     "ph_own": 17,
+     "embedding": 6
+    }
+   },
+   "Lead generation software": {
+    "launches": 61,
+    "days": 54,
+    "mean_miss": {
+     "value": 3.0984,
+     "ci95": [
+      0.5823,
+      5.9705
+     ],
+     "n": 61,
+     "days": 54
+    },
+    "mean_miss_pct_of_lineup": 0.0748,
+    "sd_miss": 8.91,
+    "iqr_miss": [
+     -1.0,
+     5.0
+    ],
+    "mean_abs_miss": 5.79,
+    "real_top3_launches": 17,
+    "real_top3_missed_by_struct_top3": 0.2353,
+    "struct_top3_capture": {
+     "value": 0.7647,
+     "ci95": [
+      0.5294,
+      0.9412
+     ],
+     "n": 17,
+     "days": 17
+    },
+    "category_source_mix": {
+     "similar_majority": 45,
+     "ph_own": 9,
+     "embedding": 7
+    }
+   },
+   "Online learning": {
+    "launches": 61,
+    "days": 47,
+    "mean_miss": {
+     "value": -1.1639,
+     "ci95": [
+      -4.3287,
+      1.9201
+     ],
+     "n": 61,
+     "days": 47
+    },
+    "mean_miss_pct_of_lineup": -0.03,
+    "sd_miss": 12.05,
+    "iqr_miss": [
+     -4.0,
+     2.0
+    ],
+    "mean_abs_miss": 7.03,
+    "real_top3_launches": 9,
+    "real_top3_missed_by_struct_top3": 0.3333,
+    "struct_top3_capture": {
+     "value": 0.6667,
+     "ci95": [
+      0.375,
+      0.8889
+     ],
+     "n": 9,
+     "days": 8
+    },
+    "category_source_mix": {
+     "similar_majority": 36,
+     "ph_own": 24,
+     "embedding": 1
+    }
+   },
+   "Security software": {
+    "launches": 59,
+    "days": 48,
+    "mean_miss": {
+     "value": 2.678,
+     "ci95": [
+      -0.1819,
+      6.2282
+     ],
+     "n": 59,
+     "days": 48
+    },
+    "mean_miss_pct_of_lineup": 0.0559,
+    "sd_miss": 10.83,
+    "iqr_miss": [
+     -2.0,
+     6.5
+    ],
+    "mean_abs_miss": 6.88,
+    "real_top3_launches": 4,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 4,
+     "days": 4
+    },
+    "category_source_mix": {
+     "ph_own": 27,
+     "similar_majority": 26,
+     "embedding": 6
+    }
+   },
+   "AI notetakers": {
+    "launches": 57,
+    "days": 46,
+    "mean_miss": {
+     "value": 1.0351,
+     "ci95": [
+      -1.3891,
+      3.6001
+     ],
+     "n": 57,
+     "days": 46
+    },
+    "mean_miss_pct_of_lineup": 0.0125,
+    "sd_miss": 10.36,
+    "iqr_miss": [
+     -4.0,
+     5.0
+    ],
+    "mean_abs_miss": 6.61,
+    "real_top3_launches": 6,
+    "real_top3_missed_by_struct_top3": 0.6667,
+    "struct_top3_capture": {
+     "value": 0.3333,
+     "ci95": [
+      0.0,
+      0.6667
+     ],
+     "n": 6,
+     "days": 6
+    },
+    "category_source_mix": {
+     "similar_majority": 44,
+     "ph_own": 10,
+     "embedding": 3
+    }
+   },
+   "Data visualization tools": {
+    "launches": 56,
+    "days": 51,
+    "mean_miss": {
+     "value": -0.125,
+     "ci95": [
+      -2.3401,
+      1.7683
+     ],
+     "n": 56,
+     "days": 51
+    },
+    "mean_miss_pct_of_lineup": 0.0338,
+    "sd_miss": 7.6,
+    "iqr_miss": [
+     -2.25,
+     4.0
+    ],
+    "mean_abs_miss": 4.62,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.4,
+    "struct_top3_capture": {
+     "value": 0.6,
+     "ci95": [
+      0.2,
+      1.0
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "ph_own": 46,
+     "similar_majority": 10
+    }
+   },
+   "Knowledge base software": {
+    "launches": 55,
+    "days": 46,
+    "mean_miss": {
+     "value": 0.2545,
+     "ci95": [
+      -2.1552,
+      2.9639
+     ],
+     "n": 55,
+     "days": 46
+    },
+    "mean_miss_pct_of_lineup": -0.0014,
+    "sd_miss": 10.09,
+    "iqr_miss": [
+     -3.0,
+     3.5
+    ],
+    "mean_abs_miss": 5.71,
+    "real_top3_launches": 8,
+    "real_top3_missed_by_struct_top3": 0.375,
+    "struct_top3_capture": {
+     "value": 0.625,
+     "ci95": [
+      0.25,
+      1.0
+     ],
+     "n": 8,
+     "days": 8
+    },
+    "category_source_mix": {
+     "similar_majority": 28,
+     "ph_own": 25,
+     "embedding": 2
+    }
+   },
+   "Search": {
+    "launches": 55,
+    "days": 47,
+    "mean_miss": {
+     "value": -1.1636,
+     "ci95": [
+      -2.6901,
+      0.4083
+     ],
+     "n": 55,
+     "days": 47
+    },
+    "mean_miss_pct_of_lineup": -0.0285,
+    "sd_miss": 6.45,
+    "iqr_miss": [
+     -5.0,
+     3.0
+    ],
+    "mean_abs_miss": 4.98,
+    "real_top3_launches": 4,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 4,
+     "days": 4
+    },
+    "category_source_mix": {
+     "ph_own": 28,
+     "similar_majority": 26,
+     "embedding": 1
+    }
+   },
+   "Email clients": {
+    "launches": 53,
+    "days": 46,
+    "mean_miss": {
+     "value": 0.8302,
+     "ci95": [
+      -1.1539,
+      2.7501
+     ],
+     "n": 53,
+     "days": 46
+    },
+    "mean_miss_pct_of_lineup": -0.0012,
+    "sd_miss": 7.15,
+    "iqr_miss": [
+     -4.0,
+     4.0
+    ],
+    "mean_abs_miss": 5.17,
+    "real_top3_launches": 9,
+    "real_top3_missed_by_struct_top3": 0.5556,
+    "struct_top3_capture": {
+     "value": 0.4444,
+     "ci95": [
+      0.1111,
+      0.7778
+     ],
+     "n": 9,
+     "days": 9
+    },
+    "category_source_mix": {
+     "similar_majority": 31,
+     "ph_own": 17,
+     "embedding": 5
+    }
+   },
+   "Project management software": {
+    "launches": 52,
+    "days": 43,
+    "mean_miss": {
+     "value": 0.9231,
+     "ci95": [
+      -1.1134,
+      3.7755
+     ],
+     "n": 52,
+     "days": 43
+    },
+    "mean_miss_pct_of_lineup": -0.0061,
+    "sd_miss": 9.11,
+    "iqr_miss": [
+     -4.0,
+     3.25
+    ],
+    "mean_abs_miss": 5.31,
+    "real_top3_launches": 6,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.1667,
+      0.8333
+     ],
+     "n": 6,
+     "days": 6
+    },
+    "category_source_mix": {
+     "similar_majority": 41,
+     "ph_own": 11
+    }
+   },
+   "Observability tools": {
+    "launches": 52,
+    "days": 47,
+    "mean_miss": {
+     "value": 0.4423,
+     "ci95": [
+      -1.6667,
+      2.8794
+     ],
+     "n": 52,
+     "days": 47
+    },
+    "mean_miss_pct_of_lineup": -0.0118,
+    "sd_miss": 8.44,
+    "iqr_miss": [
+     -3.25,
+     2.25
+    ],
+    "mean_abs_miss": 5.06,
+    "real_top3_launches": 4,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 4,
+     "days": 4
+    },
+    "category_source_mix": {
+     "ph_own": 31,
+     "similar_majority": 18,
+     "embedding": 3
+    }
+   },
+   "Team collaboration software": {
+    "launches": 50,
+    "days": 45,
+    "mean_miss": {
+     "value": -0.26,
+     "ci95": [
+      -3.0716,
+      2.2712
+     ],
+     "n": 50,
+     "days": 45
+    },
+    "mean_miss_pct_of_lineup": 0.0067,
+    "sd_miss": 8.92,
+    "iqr_miss": [
+     -4.0,
+     4.0
+    ],
+    "mean_abs_miss": 6.54,
+    "real_top3_launches": 4,
+    "real_top3_missed_by_struct_top3": 0.25,
+    "struct_top3_capture": {
+     "value": 0.75,
+     "ci95": [
+      0.25,
+      1.0
+     ],
+     "n": 4,
+     "days": 4
+    },
+    "category_source_mix": {
+     "similar_majority": 38,
+     "ph_own": 10,
+     "embedding": 2
+    }
+   },
+   "Writing assistants": {
+    "launches": 49,
+    "days": 39,
+    "mean_miss": {
+     "value": -1.6122,
+     "ci95": [
+      -3.5745,
+      0.628
+     ],
+     "n": 49,
+     "days": 39
+    },
+    "mean_miss_pct_of_lineup": -0.041,
+    "sd_miss": 8.7,
+    "iqr_miss": [
+     -6.0,
+     2.0
+    ],
+    "mean_abs_miss": 6.22,
+    "real_top3_launches": 4,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 4,
+     "days": 4
+    },
+    "category_source_mix": {
+     "similar_majority": 31,
+     "ph_own": 15,
+     "embedding": 3
+    }
+   },
+   "Testing and QA software": {
+    "launches": 49,
+    "days": 41,
+    "mean_miss": {
+     "value": 2.1633,
+     "ci95": [
+      -1.1542,
+      5.0213
+     ],
+     "n": 49,
+     "days": 41
+    },
+    "mean_miss_pct_of_lineup": 0.0704,
+    "sd_miss": 11.21,
+    "iqr_miss": [
+     -2.0,
+     5.0
+    ],
+    "mean_abs_miss": 7.39,
+    "real_top3_launches": 7,
+    "real_top3_missed_by_struct_top3": 0.2857,
+    "struct_top3_capture": {
+     "value": 0.7143,
+     "ci95": [
+      0.4286,
+      1.0
+     ],
+     "n": 7,
+     "days": 7
+    },
+    "category_source_mix": {
+     "similar_majority": 26,
+     "ph_own": 20,
+     "embedding": 3
+    }
+   },
+   "Customer support tools": {
+    "launches": 49,
+    "days": 41,
+    "mean_miss": {
+     "value": 2.3878,
+     "ci95": [
+      -1.7972,
+      6.9652
+     ],
+     "n": 49,
+     "days": 41
+    },
+    "mean_miss_pct_of_lineup": 0.042,
+    "sd_miss": 15.28,
+    "iqr_miss": [
+     -5.0,
+     5.0
+    ],
+    "mean_abs_miss": 8.8,
+    "real_top3_launches": 4,
+    "real_top3_missed_by_struct_top3": 0.25,
+    "struct_top3_capture": {
+     "value": 0.75,
+     "ci95": [
+      0.25,
+      1.0
+     ],
+     "n": 4,
+     "days": 4
+    },
+    "category_source_mix": {
+     "similar_majority": 39,
+     "ph_own": 9,
+     "embedding": 1
+    }
+   },
+   "Cloud Computing Platforms": {
+    "launches": 46,
+    "days": 43,
+    "mean_miss": {
+     "value": -1.1739,
+     "ci95": [
+      -3.0222,
+      0.4683
+     ],
+     "n": 46,
+     "days": 43
+    },
+    "mean_miss_pct_of_lineup": -0.0273,
+    "sd_miss": 6.5,
+    "iqr_miss": [
+     -3.0,
+     1.75
+    ],
+    "mean_abs_miss": 4.3,
+    "real_top3_launches": 7,
+    "real_top3_missed_by_struct_top3": 0.5714,
+    "struct_top3_capture": {
+     "value": 0.4286,
+     "ci95": [
+      0.1429,
+      0.8571
+     ],
+     "n": 7,
+     "days": 7
+    },
+    "category_source_mix": {
+     "similar_majority": 31,
+     "ph_own": 13,
+     "embedding": 2
+    }
+   },
+   "Advertising tools": {
+    "launches": 45,
+    "days": 41,
+    "mean_miss": {
+     "value": 2.4889,
+     "ci95": [
+      -0.0687,
+      5.4093
+     ],
+     "n": 45,
+     "days": 41
+    },
+    "mean_miss_pct_of_lineup": 0.0676,
+    "sd_miss": 9.85,
+    "iqr_miss": [
+     -2.0,
+     5.0
+    ],
+    "mean_abs_miss": 6.04,
+    "real_top3_launches": 10,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.2,
+      0.8
+     ],
+     "n": 10,
+     "days": 10
+    },
+    "category_source_mix": {
+     "similar_majority": 30,
+     "ph_own": 12,
+     "embedding": 3
+    }
+   },
+   "Terminals": {
+    "launches": 43,
+    "days": 40,
+    "mean_miss": {
+     "value": -0.3023,
+     "ci95": [
+      -3.1952,
+      3.2565
+     ],
+     "n": 43,
+     "days": 40
+    },
+    "mean_miss_pct_of_lineup": -0.0423,
+    "sd_miss": 9.32,
+    "iqr_miss": [
+     -5.5,
+     3.5
+    ],
+    "mean_abs_miss": 6.67,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "ph_own": 27,
+     "similar_majority": 16
+    }
+   },
+   "GEO Tools": {
+    "launches": 43,
+    "days": 38,
+    "mean_miss": {
+     "value": 4.093,
+     "ci95": [
+      0.8749,
+      7.2277
+     ],
+     "n": 43,
+     "days": 38
+    },
+    "mean_miss_pct_of_lineup": 0.0647,
+    "sd_miss": 12.39,
+    "iqr_miss": [
+     -3.0,
+     6.0
+    ],
+    "mean_abs_miss": 8.37,
+    "real_top3_launches": 6,
+    "real_top3_missed_by_struct_top3": 0.8333,
+    "struct_top3_capture": {
+     "value": 0.1667,
+     "ci95": [
+      0.0,
+      0.5
+     ],
+     "n": 6,
+     "days": 6
+    },
+    "category_source_mix": {
+     "ph_own": 23,
+     "similar_majority": 18,
+     "embedding": 2
+    }
+   },
+   "AI Metrics and Evaluation": {
+    "launches": 42,
+    "days": 35,
+    "mean_miss": {
+     "value": -2.3333,
+     "ci95": [
+      -5.2098,
+      0.3177
+     ],
+     "n": 42,
+     "days": 35
+    },
+    "mean_miss_pct_of_lineup": -0.0539,
+    "sd_miss": 9.5,
+    "iqr_miss": [
+     -4.75,
+     0.75
+    ],
+    "mean_abs_miss": 5.71,
+    "real_top3_launches": 9,
+    "real_top3_missed_by_struct_top3": 0.5556,
+    "struct_top3_capture": {
+     "value": 0.4444,
+     "ci95": [
+      0.125,
+      0.7778
+     ],
+     "n": 9,
+     "days": 8
+    },
+    "category_source_mix": {
+     "similar_majority": 23,
+     "ph_own": 19
+    }
+   },
+   "Calendar apps": {
+    "launches": 42,
+    "days": 36,
+    "mean_miss": {
+     "value": -0.6667,
+     "ci95": [
+      -4.1112,
+      2.5138
+     ],
+     "n": 42,
+     "days": 36
+    },
+    "mean_miss_pct_of_lineup": -0.0119,
+    "sd_miss": 10.5,
+    "iqr_miss": [
+     -4.75,
+     4.75
+    ],
+    "mean_abs_miss": 7.19,
+    "real_top3_launches": 2,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 2,
+     "days": 2
+    },
+    "category_source_mix": {
+     "similar_majority": 32,
+     "ph_own": 8,
+     "embedding": 2
+    }
+   },
+   "Code Review Tools": {
+    "launches": 42,
+    "days": 34,
+    "mean_miss": {
+     "value": 0.0714,
+     "ci95": [
+      -3.0774,
+      3.0006
+     ],
+     "n": 42,
+     "days": 34
+    },
+    "mean_miss_pct_of_lineup": 0.0188,
+    "sd_miss": 9.87,
+    "iqr_miss": [
+     -4.75,
+     5.75
+    ],
+    "mean_abs_miss": 6.69,
+    "real_top3_launches": 2,
+    "real_top3_missed_by_struct_top3": 0.0,
+    "struct_top3_capture": {
+     "value": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "n": 2,
+     "days": 2
+    },
+    "category_source_mix": {
+     "similar_majority": 24,
+     "ph_own": 13,
+     "embedding": 5
+    }
+   },
+   "Social media management tools": {
+    "launches": 41,
+    "days": 37,
+    "mean_miss": {
+     "value": 1.9268,
+     "ci95": [
+      -2.1799,
+      6.65
+     ],
+     "n": 41,
+     "days": 37
+    },
+    "mean_miss_pct_of_lineup": 0.0604,
+    "sd_miss": 11.54,
+    "iqr_miss": [
+     -2.0,
+     3.0
+    ],
+    "mean_abs_miss": 6.27,
+    "real_top3_launches": 9,
+    "real_top3_missed_by_struct_top3": 0.3333,
+    "struct_top3_capture": {
+     "value": 0.6667,
+     "ci95": [
+      0.3333,
+      1.0
+     ],
+     "n": 9,
+     "days": 9
+    },
+    "category_source_mix": {
+     "similar_majority": 35,
+     "ph_own": 4,
+     "embedding": 2
+    }
+   },
+   "Games": {
+    "launches": 41,
+    "days": 31,
+    "mean_miss": {
+     "value": -6.0,
+     "ci95": [
+      -9.3475,
+      -2.7103
+     ],
+     "n": 41,
+     "days": 31
+    },
+    "mean_miss_pct_of_lineup": -0.1076,
+    "sd_miss": 12.28,
+    "iqr_miss": [
+     -9.0,
+     0.0
+    ],
+    "mean_abs_miss": 9.27,
+    "real_top3_launches": 2,
+    "real_top3_missed_by_struct_top3": 0.0,
+    "struct_top3_capture": {
+     "value": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "n": 2,
+     "days": 2
+    },
+    "category_source_mix": {
+     "ph_own": 23,
+     "similar_majority": 13,
+     "embedding": 5
+    }
+   },
+   "Unified API": {
+    "launches": 38,
+    "days": 36,
+    "mean_miss": {
+     "value": -0.0789,
+     "ci95": [
+      -2.4618,
+      2.4055
+     ],
+     "n": 38,
+     "days": 36
+    },
+    "mean_miss_pct_of_lineup": -0.003,
+    "sd_miss": 7.99,
+    "iqr_miss": [
+     -3.75,
+     3.5
+    ],
+    "mean_abs_miss": 5.61,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.6,
+    "struct_top3_capture": {
+     "value": 0.4,
+     "ci95": [
+      0.0,
+      0.8
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 22,
+     "ph_own": 13,
+     "embedding": 3
+    }
+   },
+   "Website analytics": {
+    "launches": 37,
+    "days": 37,
+    "mean_miss": {
+     "value": -2.1892,
+     "ci95": [
+      -5.3514,
+      1.0
+     ],
+     "n": 37,
+     "days": 37
+    },
+    "mean_miss_pct_of_lineup": -0.0497,
+    "sd_miss": 10.28,
+    "iqr_miss": [
+     -5.0,
+     3.0
+    ],
+    "mean_abs_miss": 7.32,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.6,
+    "struct_top3_capture": {
+     "value": 0.4,
+     "ci95": [
+      0.0,
+      0.8
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 29,
+     "ph_own": 7,
+     "embedding": 1
+    }
+   },
+   "File storage and sharing apps": {
+    "launches": 37,
+    "days": 33,
+    "mean_miss": {
+     "value": 0.5135,
+     "ci95": [
+      -2.1036,
+      3.4729
+     ],
+     "n": 37,
+     "days": 33
+    },
+    "mean_miss_pct_of_lineup": 0.0046,
+    "sd_miss": 8.27,
+    "iqr_miss": [
+     -4.0,
+     3.0
+    ],
+    "mean_abs_miss": 6.03,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "similar_majority": 18,
+     "ph_own": 17,
+     "embedding": 2
+    }
+   },
+   "Business intelligence software": {
+    "launches": 37,
+    "days": 33,
+    "mean_miss": {
+     "value": 3.3784,
+     "ci95": [
+      -1.2105,
+      7.607
+     ],
+     "n": 37,
+     "days": 33
+    },
+    "mean_miss_pct_of_lineup": 0.0688,
+    "sd_miss": 13.3,
+    "iqr_miss": [
+     -2.0,
+     10.0
+    ],
+    "mean_abs_miss": 9.43,
+    "real_top3_launches": 3,
+    "real_top3_missed_by_struct_top3": 0.3333,
+    "struct_top3_capture": {
+     "value": 0.6667,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 3,
+     "days": 3
+    },
+    "category_source_mix": {
+     "ph_own": 19,
+     "similar_majority": 15,
+     "embedding": 3
+    }
+   },
+   "Meeting software": {
+    "launches": 37,
+    "days": 34,
+    "mean_miss": {
+     "value": 1.6216,
+     "ci95": [
+      -0.2227,
+      3.7225
+     ],
+     "n": 37,
+     "days": 34
+    },
+    "mean_miss_pct_of_lineup": 0.0356,
+    "sd_miss": 7.07,
+    "iqr_miss": [
+     -2.0,
+     3.0
+    ],
+    "mean_abs_miss": 4.59,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.2,
+    "struct_top3_capture": {
+     "value": 0.8,
+     "ci95": [
+      0.4,
+      1.0
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 25,
+     "ph_own": 10,
+     "embedding": 2
+    }
+   },
+   "Medical": {
+    "launches": 35,
+    "days": 21,
+    "mean_miss": {
+     "value": 1.1714,
+     "ci95": [
+      -3.5947,
+      4.7107
+     ],
+     "n": 35,
+     "days": 21
+    },
+    "mean_miss_pct_of_lineup": -0.0057,
+    "sd_miss": 12.93,
+    "iqr_miss": [
+     -7.5,
+     6.5
+    ],
+    "mean_abs_miss": 9.29,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "ph_own": 19,
+     "similar_majority": 14,
+     "embedding": 2
+    }
+   },
+   "Command line tools": {
+    "launches": 34,
+    "days": 28,
+    "mean_miss": {
+     "value": -1.7941,
+     "ci95": [
+      -4.4196,
+      0.9706
+     ],
+     "n": 34,
+     "days": 28
+    },
+    "mean_miss_pct_of_lineup": -0.0555,
+    "sd_miss": 8.67,
+    "iqr_miss": [
+     -5.0,
+     1.0
+    ],
+    "mean_abs_miss": 6.32,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "ph_own": 19,
+     "similar_majority": 14,
+     "embedding": 1
+    }
+   },
+   "Activity tracking": {
+    "launches": 33,
+    "days": 28,
+    "mean_miss": {
+     "value": -2.5455,
+     "ci95": [
+      -7.6669,
+      1.6064
+     ],
+     "n": 33,
+     "days": 28
+    },
+    "mean_miss_pct_of_lineup": -0.0561,
+    "sd_miss": 13.73,
+    "iqr_miss": [
+     -8.0,
+     4.0
+    ],
+    "mean_abs_miss": 8.36,
+    "real_top3_launches": 2,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 2,
+     "days": 2
+    },
+    "category_source_mix": {
+     "similar_majority": 28,
+     "ph_own": 5
+    }
+   },
+   "OpenClaw": {
+    "launches": 33,
+    "days": 31,
+    "mean_miss": {
+     "value": 0.1818,
+     "ci95": [
+      -2.5596,
+      3.1473
+     ],
+     "n": 33,
+     "days": 31
+    },
+    "mean_miss_pct_of_lineup": -0.0131,
+    "sd_miss": 8.35,
+    "iqr_miss": [
+     -3.0,
+     3.0
+    ],
+    "mean_abs_miss": 5.33,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.6,
+    "struct_top3_capture": {
+     "value": 0.4,
+     "ci95": [
+      0.0,
+      0.8
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "ph_own": 22,
+     "embedding": 6,
+     "similar_majority": 5
+    }
+   },
+   "Hiring software": {
+    "launches": 33,
+    "days": 27,
+    "mean_miss": {
+     "value": 1.5152,
+     "ci95": [
+      -1.2225,
+      4.1144
+     ],
+     "n": 33,
+     "days": 27
+    },
+    "mean_miss_pct_of_lineup": 0.0254,
+    "sd_miss": 9.44,
+    "iqr_miss": [
+     -4.0,
+     5.0
+    ],
+    "mean_abs_miss": 6.61,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.8,
+    "struct_top3_capture": {
+     "value": 0.2,
+     "ci95": [
+      0.0,
+      0.6
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 28,
+     "ph_own": 4,
+     "embedding": 1
+    }
+   },
+   "LLM Developer Tools": {
+    "launches": 33,
+    "days": 29,
+    "mean_miss": {
+     "value": 1.3939,
+     "ci95": [
+      -0.5,
+      3.6336
+     ],
+     "n": 33,
+     "days": 29
+    },
+    "mean_miss_pct_of_lineup": 0.033,
+    "sd_miss": 6.02,
+    "iqr_miss": [
+     -3.0,
+     3.0
+    ],
+    "mean_abs_miss": 4.24,
+    "real_top3_launches": 10,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.2,
+      0.8
+     ],
+     "n": 10,
+     "days": 10
+    },
+    "category_source_mix": {
+     "ph_own": 14,
+     "similar_majority": 13,
+     "embedding": 6
+    }
+   },
+   "Email marketing": {
+    "launches": 32,
+    "days": 30,
+    "mean_miss": {
+     "value": 0.5,
+     "ci95": [
+      -2.4574,
+      3.3642
+     ],
+     "n": 32,
+     "days": 30
+    },
+    "mean_miss_pct_of_lineup": 0.0171,
+    "sd_miss": 8.33,
+    "iqr_miss": [
+     -3.25,
+     6.25
+    ],
+    "mean_abs_miss": 5.88,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.6,
+    "struct_top3_capture": {
+     "value": 0.4,
+     "ci95": [
+      0.0,
+      0.8
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 20,
+     "ph_own": 9,
+     "embedding": 3
+    }
+   },
+   "Social Networking": {
+    "launches": 31,
+    "days": 28,
+    "mean_miss": {
+     "value": -0.9355,
+     "ci95": [
+      -2.9034,
+      1.0
+     ],
+     "n": 31,
+     "days": 28
+    },
+    "mean_miss_pct_of_lineup": -0.0146,
+    "sd_miss": 10.66,
+    "iqr_miss": [
+     -5.0,
+     2.5
+    ],
+    "mean_abs_miss": 6.35,
+    "real_top3_launches": 4,
+    "real_top3_missed_by_struct_top3": 0.75,
+    "struct_top3_capture": {
+     "value": 0.25,
+     "ci95": [
+      0.0,
+      0.75
+     ],
+     "n": 4,
+     "days": 4
+    },
+    "category_source_mix": {
+     "similar_majority": 21,
+     "ph_own": 9,
+     "embedding": 1
+    }
+   },
+   "SEO tools": {
+    "launches": 31,
+    "days": 31,
+    "mean_miss": {
+     "value": 3.1613,
+     "ci95": [
+      0.3548,
+      6.4516
+     ],
+     "n": 31,
+     "days": 31
+    },
+    "mean_miss_pct_of_lineup": 0.0682,
+    "sd_miss": 8.95,
+    "iqr_miss": [
+     -1.5,
+     6.0
+    ],
+    "mean_abs_miss": 6.06,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.4,
+    "struct_top3_capture": {
+     "value": 0.6,
+     "ci95": [
+      0.2,
+      1.0
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 17,
+     "ph_own": 12,
+     "embedding": 2
+    }
+   },
+   "Camera apps": {
+    "launches": 30,
+    "days": 30,
+    "mean_miss": {
+     "value": -0.5,
+     "ci95": [
+      -4.1008,
+      3.8667
+     ],
+     "n": 30,
+     "days": 30
+    },
+    "mean_miss_pct_of_lineup": -0.0535,
+    "sd_miss": 11.55,
+    "iqr_miss": [
+     -7.0,
+     4.25
+    ],
+    "mean_abs_miss": 7.3,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "ph_own": 18,
+     "similar_majority": 9,
+     "embedding": 3
+    }
+   },
+   "Browser Automation": {
+    "launches": 30,
+    "days": 27,
+    "mean_miss": {
+     "value": -2.5,
+     "ci95": [
+      -6.5188,
+      0.4445
+     ],
+     "n": 30,
+     "days": 27
+    },
+    "mean_miss_pct_of_lineup": -0.0508,
+    "sd_miss": 9.79,
+    "iqr_miss": [
+     -4.0,
+     1.0
+    ],
+    "mean_abs_miss": 5.1,
+    "real_top3_launches": 8,
+    "real_top3_missed_by_struct_top3": 0.375,
+    "struct_top3_capture": {
+     "value": 0.625,
+     "ci95": [
+      0.25,
+      0.875
+     ],
+     "n": 8,
+     "days": 8
+    },
+    "category_source_mix": {
+     "similar_majority": 16,
+     "ph_own": 14
+    }
+   },
+   "Graphic design tools": {
+    "launches": 30,
+    "days": 29,
+    "mean_miss": {
+     "value": -0.1333,
+     "ci95": [
+      -4.3112,
+      3.4378
+     ],
+     "n": 30,
+     "days": 29
+    },
+    "mean_miss_pct_of_lineup": 0.0691,
+    "sd_miss": 11.43,
+    "iqr_miss": [
+     -1.0,
+     4.75
+    ],
+    "mean_abs_miss": 6.93,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 0.0,
+    "struct_top3_capture": {
+     "value": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "similar_majority": 21,
+     "ph_own": 8,
+     "embedding": 1
+    }
+   },
+   "Safety and Privacy platforms": {
+    "launches": 29,
+    "days": 28,
+    "mean_miss": {
+     "value": -3.6552,
+     "ci95": [
+      -9.1436,
+      1.5867
+     ],
+     "n": 29,
+     "days": 28
+    },
+    "mean_miss_pct_of_lineup": -0.0811,
+    "sd_miss": 15.09,
+    "iqr_miss": [
+     -7.0,
+     2.0
+    ],
+    "mean_abs_miss": 8.83,
+    "real_top3_launches": 3,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 3,
+     "days": 3
+    },
+    "category_source_mix": {
+     "similar_majority": 20,
+     "ph_own": 6,
+     "embedding": 3
+    }
+   },
+   "Marketing automation platforms": {
+    "launches": 29,
+    "days": 27,
+    "mean_miss": {
+     "value": 2.5517,
+     "ci95": [
+      0.5,
+      4.4245
+     ],
+     "n": 29,
+     "days": 27
+    },
+    "mean_miss_pct_of_lineup": 0.0914,
+    "sd_miss": 6.13,
+    "iqr_miss": [
+     -1.0,
+     5.0
+    ],
+    "mean_abs_miss": 4.55,
+    "real_top3_launches": 3,
+    "real_top3_missed_by_struct_top3": 0.3333,
+    "struct_top3_capture": {
+     "value": 0.6667,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 3,
+     "days": 3
+    },
+    "category_source_mix": {
+     "similar_majority": 20,
+     "ph_own": 8,
+     "embedding": 1
+    }
+   },
+   "LLMs": {
+    "launches": 28,
+    "days": 24,
+    "mean_miss": {
+     "value": 1.7857,
+     "ci95": [
+      -0.134,
+      4.1483
+     ],
+     "n": 28,
+     "days": 24
+    },
+    "mean_miss_pct_of_lineup": 0.0392,
+    "sd_miss": 7.29,
+    "iqr_miss": [
+     -1.0,
+     3.25
+    ],
+    "mean_abs_miss": 4.79,
+    "real_top3_launches": 7,
+    "real_top3_missed_by_struct_top3": 0.4286,
+    "struct_top3_capture": {
+     "value": 0.5714,
+     "ci95": [
+      0.1429,
+      0.8571
+     ],
+     "n": 7,
+     "days": 7
+    },
+    "category_source_mix": {
+     "ph_own": 14,
+     "similar_majority": 12,
+     "embedding": 2
+    }
+   },
+   "Maps and GPS": {
+    "launches": 27,
+    "days": 25,
+    "mean_miss": {
+     "value": -2.2593,
+     "ci95": [
+      -6.5205,
+      1.7502
+     ],
+     "n": 27,
+     "days": 25
+    },
+    "mean_miss_pct_of_lineup": -0.0673,
+    "sd_miss": 10.8,
+    "iqr_miss": [
+     -7.5,
+     3.0
+    ],
+    "mean_abs_miss": 7.81,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "ph_own": 16,
+     "similar_majority": 9,
+     "embedding": 2
+    }
+   },
+   "AI sales tools": {
+    "launches": 27,
+    "days": 23,
+    "mean_miss": {
+     "value": 2.4815,
+     "ci95": [
+      -2.9664,
+      7.6788
+     ],
+     "n": 27,
+     "days": 23
+    },
+    "mean_miss_pct_of_lineup": 0.0291,
+    "sd_miss": 12.83,
+    "iqr_miss": [
+     -1.5,
+     6.0
+    ],
+    "mean_abs_miss": 7.81,
+    "real_top3_launches": 6,
+    "real_top3_missed_by_struct_top3": 0.1667,
+    "struct_top3_capture": {
+     "value": 0.8333,
+     "ci95": [
+      0.5,
+      1.0
+     ],
+     "n": 6,
+     "days": 6
+    },
+    "category_source_mix": {
+     "similar_majority": 18,
+     "ph_own": 8,
+     "embedding": 1
+    }
+   },
+   "Music Generation": {
+    "launches": 27,
+    "days": 24,
+    "mean_miss": {
+     "value": 2.6296,
+     "ci95": [
+      -0.8526,
+      6.5777
+     ],
+     "n": 27,
+     "days": 24
+    },
+    "mean_miss_pct_of_lineup": 0.0829,
+    "sd_miss": 9.45,
+    "iqr_miss": [
+     -2.0,
+     4.5
+    ],
+    "mean_abs_miss": 6.41,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "similar_majority": 14,
+     "ph_own": 13
+    }
+   },
+   "No-code Platforms": {
+    "launches": 26,
+    "days": 25,
+    "mean_miss": {
+     "value": 2.2308,
+     "ci95": [
+      -0.8,
+      5.4235
+     ],
+     "n": 26,
+     "days": 25
+    },
+    "mean_miss_pct_of_lineup": 0.0489,
+    "sd_miss": 8.11,
+    "iqr_miss": [
+     -1.0,
+     6.0
+    ],
+    "mean_abs_miss": 5.77,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.2,
+    "struct_top3_capture": {
+     "value": 0.8,
+     "ci95": [
+      0.4,
+      1.0
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 22,
+     "embedding": 3,
+     "ph_own": 1
+    }
+   },
+   "Time tracking apps": {
+    "launches": 26,
+    "days": 23,
+    "mean_miss": {
+     "value": -3.2308,
+     "ci95": [
+      -9.4236,
+      1.5833
+     ],
+     "n": 26,
+     "days": 23
+    },
+    "mean_miss_pct_of_lineup": -0.0903,
+    "sd_miss": 14.98,
+    "iqr_miss": [
+     -5.75,
+     1.75
+    ],
+    "mean_abs_miss": 8.15,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "similar_majority": 21,
+     "ph_own": 5
+    }
+   },
+   "Mental Health": {
+    "launches": 26,
+    "days": 25,
+    "mean_miss": {
+     "value": -2.1154,
+     "ci95": [
+      -6.2006,
+      2.037
+     ],
+     "n": 26,
+     "days": 25
+    },
+    "mean_miss_pct_of_lineup": -0.0919,
+    "sd_miss": 10.74,
+    "iqr_miss": [
+     -5.75,
+     0.75
+    ],
+    "mean_abs_miss": 7.27,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "similar_majority": 21,
+     "embedding": 4,
+     "ph_own": 1
+    }
+   },
+   "Payment processors": {
+    "launches": 25,
+    "days": 22,
+    "mean_miss": {
+     "value": 1.32,
+     "ci95": [
+      -0.96,
+      3.5601
+     ],
+     "n": 25,
+     "days": 22
+    },
+    "mean_miss_pct_of_lineup": 0.0569,
+    "sd_miss": 7.0,
+    "iqr_miss": [
+     -1.0,
+     6.0
+    ],
+    "mean_abs_miss": 5.16,
+    "real_top3_launches": 5,
+    "real_top3_missed_by_struct_top3": 0.2,
+    "struct_top3_capture": {
+     "value": 0.8,
+     "ci95": [
+      0.4,
+      1.0
+     ],
+     "n": 5,
+     "days": 5
+    },
+    "category_source_mix": {
+     "similar_majority": 13,
+     "ph_own": 11,
+     "embedding": 1
+    }
+   },
+   "Language Learning": {
+    "launches": 25,
+    "days": 24,
+    "mean_miss": {
+     "value": -0.84,
+     "ci95": [
+      -3.9583,
+      2.1667
+     ],
+     "n": 25,
+     "days": 24
+    },
+    "mean_miss_pct_of_lineup": -0.0102,
+    "sd_miss": 8.22,
+    "iqr_miss": [
+     -2.0,
+     2.0
+    ],
+    "mean_abs_miss": 5.64,
+    "real_top3_launches": 0,
+    "real_top3_missed_by_struct_top3": null,
+    "struct_top3_capture": null,
+    "category_source_mix": {
+     "similar_majority": 17,
+     "ph_own": 7,
+     "embedding": 1
+    }
+   },
+   "User research": {
+    "launches": 24,
+    "days": 22,
+    "mean_miss": {
+     "value": -1.0833,
+     "ci95": [
+      -5.7284,
+      2.7086
+     ],
+     "n": 24,
+     "days": 22
+    },
+    "mean_miss_pct_of_lineup": 0.0116,
+    "sd_miss": 9.7,
+    "iqr_miss": [
+     -3.25,
+     4.0
+    ],
+    "mean_abs_miss": 6.25,
+    "real_top3_launches": 3,
+    "real_top3_missed_by_struct_top3": 0.3333,
+    "struct_top3_capture": {
+     "value": 0.6667,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 3,
+     "days": 3
+    },
+    "category_source_mix": {
+     "similar_majority": 20,
+     "ph_own": 3,
+     "embedding": 1
+    }
+   },
+   "Web browsers": {
+    "launches": 24,
+    "days": 24,
+    "mean_miss": {
+     "value": 1.0833,
+     "ci95": [
+      -1.4167,
+      3.6667
+     ],
+     "n": 24,
+     "days": 24
+    },
+    "mean_miss_pct_of_lineup": 0.0114,
+    "sd_miss": 6.69,
+    "iqr_miss": [
+     -4.0,
+     5.25
+    ],
+    "mean_abs_miss": 5.33,
+    "real_top3_launches": 2,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 2,
+     "days": 2
+    },
+    "category_source_mix": {
+     "similar_majority": 14,
+     "ph_own": 9,
+     "embedding": 1
+    }
+   },
+   "Messaging apps": {
+    "launches": 24,
+    "days": 22,
+    "mean_miss": {
+     "value": -0.375,
+     "ci95": [
+      -3.961,
+      2.9594
+     ],
+     "n": 24,
+     "days": 22
+    },
+    "mean_miss_pct_of_lineup": 0.0369,
+    "sd_miss": 8.66,
+    "iqr_miss": [
+     -3.25,
+     4.5
+    ],
+    "mean_abs_miss": 5.88,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "similar_majority": 16,
+     "ph_own": 6,
+     "embedding": 2
+    }
+   },
+   "Text-to-Speech Software": {
+    "launches": 22,
+    "days": 20,
+    "mean_miss": {
+     "value": 0.4545,
+     "ci95": [
+      -2.5425,
+      3.1827
+     ],
+     "n": 22,
+     "days": 20
+    },
+    "mean_miss_pct_of_lineup": 0.0531,
+    "sd_miss": 6.76,
+    "iqr_miss": [
+     -1.75,
+     5.75
+    ],
+    "mean_abs_miss": 5.0,
+    "real_top3_launches": 2,
+    "real_top3_missed_by_struct_top3": 0.5,
+    "struct_top3_capture": {
+     "value": 0.5,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 2,
+     "days": 2
+    },
+    "category_source_mix": {
+     "similar_majority": 13,
+     "ph_own": 8,
+     "embedding": 1
+    }
+   },
+   "Website builders": {
+    "launches": 22,
+    "days": 19,
+    "mean_miss": {
+     "value": 0.5909,
+     "ci95": [
+      -2.1543,
+      3.7503
+     ],
+     "n": 22,
+     "days": 19
+    },
+    "mean_miss_pct_of_lineup": 0.0228,
+    "sd_miss": 6.79,
+    "iqr_miss": [
+     -3.0,
+     4.0
+    ],
+    "mean_abs_miss": 5.32,
+    "real_top3_launches": 3,
+    "real_top3_missed_by_struct_top3": 0.6667,
+    "struct_top3_capture": {
+     "value": 0.3333,
+     "ci95": [
+      0.0,
+      1.0
+     ],
+     "n": 3,
+     "days": 3
+    },
+    "category_source_mix": {
+     "similar_majority": 19,
+     "ph_own": 3
+    }
+   },
+   "Interface design tools": {
+    "launches": 22,
+    "days": 21,
+    "mean_miss": {
+     "value": -0.2727,
+     "ci95": [
+      -2.2387,
+      1.7143
+     ],
+     "n": 22,
+     "days": 21
+    },
+    "mean_miss_pct_of_lineup": -0.0092,
+    "sd_miss": 5.05,
+    "iqr_miss": [
+     -3.75,
+     1.75
+    ],
+    "mean_abs_miss": 3.91,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 1.0,
+    "struct_top3_capture": {
+     "value": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "similar_majority": 14,
+     "ph_own": 7,
+     "embedding": 1
+    }
+   },
+   "No-Code AI Agent Builder": {
+    "launches": 21,
+    "days": 21,
+    "mean_miss": {
+     "value": 6.2381,
+     "ci95": [
+      2.7619,
+      9.9524
+     ],
+     "n": 21,
+     "days": 21
+    },
+    "mean_miss_pct_of_lineup": 0.1764,
+    "sd_miss": 8.58,
+    "iqr_miss": [
+     0.0,
+     8.0
+    ],
+    "mean_abs_miss": 6.81,
+    "real_top3_launches": 6,
+    "real_top3_missed_by_struct_top3": 0.3333,
+    "struct_top3_capture": {
+     "value": 0.6667,
+     "ci95": [
+      0.3333,
+      1.0
+     ],
+     "n": 6,
+     "days": 6
+    },
+    "category_source_mix": {
+     "similar_majority": 15,
+     "ph_own": 3,
+     "embedding": 3
+    }
+   },
+   "Fundraising resources": {
+    "launches": 20,
+    "days": 19,
+    "mean_miss": {
+     "value": -2.9,
+     "ci95": [
+      -9.8434,
+      1.6364
+     ],
+     "n": 20,
+     "days": 19
+    },
+    "mean_miss_pct_of_lineup": -0.0604,
+    "sd_miss": 13.19,
+    "iqr_miss": [
+     -3.5,
+     1.0
+    ],
+    "mean_abs_miss": 5.8,
+    "real_top3_launches": 7,
+    "real_top3_missed_by_struct_top3": 0.5714,
+    "struct_top3_capture": {
+     "value": 0.4286,
+     "ci95": [
+      0.1429,
+      0.8571
+     ],
+     "n": 7,
+     "days": 7
+    },
+    "category_source_mix": {
+     "similar_majority": 15,
+     "ph_own": 4,
+     "embedding": 1
+    }
+   },
+   "Scheduling software": {
+    "launches": 20,
+    "days": 19,
+    "mean_miss": {
+     "value": 1.85,
+     "ci95": [
+      -2.8947,
+      5.75
+     ],
+     "n": 20,
+     "days": 19
+    },
+    "mean_miss_pct_of_lineup": 0.0747,
+    "sd_miss": 9.8,
+    "iqr_miss": [
+     -0.25,
+     6.25
+    ],
+    "mean_abs_miss": 6.25,
+    "real_top3_launches": 1,
+    "real_top3_missed_by_struct_top3": 0.0,
+    "struct_top3_capture": {
+     "value": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "n": 1,
+     "days": 1
+    },
+    "category_source_mix": {
+     "similar_majority": 12,
+     "ph_own": 6,
+     "embedding": 2
+    }
+   }
+  },
+  "category_explains_miss": {
+   "between_category_share_of_variance": 0.0383,
+   "permutation_p": 0.0,
+   "permutation_mean": 0.0187,
+   "launches": 4044
+  },
+  "same_day_competition": {
+   "primary": {
+    "label_source": "Similar-Products label (fetched Nov 1; not knowable at 00:05)",
+    "coef_rank_places_per_same_category_launch": {
+     "value": 0.136,
+     "ci95": [
+      -0.219,
+      0.495
+     ]
+    },
+    "spearman_raw": -0.0008,
+    "spearman_struct_top10": 0.0408,
+    "mean_miss_pct_by_same_category_count(0,1,2,3+)": {
+     "0": {
+      "mean": 0.0023,
+      "n": 3481
+     },
+     "1": {
+      "mean": -0.0007,
+      "n": 966
+     },
+     "2": {
+      "mean": -0.0032,
+      "n": 372
+     },
+     "3": {
+      "mean": 0.0276,
+      "n": 254
+     }
+    },
+    "share_with_any_same_category_launch": 0.3138
+   },
+   "cat_0005": {
+    "label_source": "classifier fit on launches before Apr 1 (knowable at 00:05)",
+    "coef_rank_places_per_same_category_launch": {
+     "value": 0.358,
+     "ci95": [
+      0.09,
+      0.624
+     ]
+    },
+    "spearman_raw": 0.0363,
+    "spearman_struct_top10": 0.0731,
+    "mean_miss_pct_by_same_category_count(0,1,2,3+)": {
+     "0": {
+      "mean": -0.0023,
+      "n": 2976
+     },
+     "1": {
+      "mean": 0.0067,
+      "n": 1160
+     },
+     "2": {
+      "mean": -0.0023,
+      "n": 510
+     },
+     "3": {
+      "mean": 0.0309,
+      "n": 427
+     }
+    },
+    "share_with_any_same_category_launch": 0.4134
+   },
+   "cat_zero_shot": {
+    "label_source": "zero-shot classifier (knowable at 00:05)",
+    "coef_rank_places_per_same_category_launch": {
+     "value": 0.204,
+     "ci95": [
+      -0.085,
+      0.483
+     ]
+    },
+    "spearman_raw": 0.0369,
+    "spearman_struct_top10": 0.0407,
+    "mean_miss_pct_by_same_category_count(0,1,2,3+)": {
+     "0": {
+      "mean": -0.0022,
+      "n": 3405
+     },
+     "1": {
+      "mean": 0.0052,
+      "n": 1022
+     },
+     "2": {
+      "mean": 0.0127,
+      "n": 324
+     },
+     "3": {
+      "mean": 0.0348,
+      "n": 322
+     }
+    },
+    "share_with_any_same_category_launch": 0.3288
+   }
+  }
+ },
+ "similar_products_leak": {
+  "products_with_a_dated_first_post": 32770,
+  "similar_products_launched_after_the_launch": {
+   "0-12": {
+    "launches": 310,
+    "share_of_dated_similar_products": 0.0,
+    "share_of_launches_with_any": 0.0,
+    "dated_share": 0.691,
+    "mean_log1p_reviews_of_similar": 2.392
+   },
+   "13-30": {
+    "launches": 579,
+    "share_of_dated_similar_products": 0.0082,
+    "share_of_launches_with_any": 0.0259,
+    "dated_share": 0.678,
+    "mean_log1p_reviews_of_similar": 2.345
+   },
+   "31-90": {
+    "launches": 1275,
+    "share_of_dated_similar_products": 0.0193,
+    "share_of_launches_with_any": 0.0588,
+    "dated_share": 0.669,
+    "mean_log1p_reviews_of_similar": 2.388
+   },
+   "91-180": {
+    "launches": 1888,
+    "share_of_dated_similar_products": 0.042,
+    "share_of_launches_with_any": 0.125,
+    "dated_share": 0.692,
+    "mean_log1p_reviews_of_similar": 2.436
+   },
+   "181+": {
+    "launches": 2616,
+    "share_of_dated_similar_products": 0.0779,
+    "share_of_launches_with_any": 0.2122,
+    "dated_share": 0.694,
+    "mean_log1p_reviews_of_similar": 2.488
+   }
+  },
+  "recent300_vs_older": {
+   "recent300": {
+    "launches": 300,
+    "future_share": 0.0
+   },
+   "older": {
+    "launches": 6368,
+    "future_share": 0.0494
+   }
+  },
+  "competitor_popularity_vs_miss": {
+   "recent 300 (read within 12 days)": {
+    "launches": 275,
+    "spearman_miss_vs_competitor_reviews": 0.2413,
+    "spearman_miss_vs_future_similar_count": NaN,
+    "ci95_reviews": [
+     0.1382,
+     0.3549
+    ]
+   },
+   "older backtest launches": {
+    "launches": 4523,
+    "spearman_miss_vs_competitor_reviews": 0.0808,
+    "spearman_miss_vs_future_similar_count": -0.019,
+    "ci95_reviews": [
+     0.0539,
+     0.1104
+    ]
+   }
+  },
+  "per_category_miss_ph_label_vs_0005_label": {
+   "categories": 67,
+   "spearman_of_category_means": 0.5956,
+   "launch_label_agreement": 0.3659
+  }
+ }
+}
