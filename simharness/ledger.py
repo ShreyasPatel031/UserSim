@@ -85,7 +85,33 @@ def add(kind: str, path: str) -> None:
         f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
+def sync(branches: list[str]) -> None:
+    """Copy rows with new ids from other agents' branches (they can only push to their own)."""
+    import subprocess
+    for b in branches:
+        subprocess.run(["git", "fetch", "-q", "origin", b], check=True)
+        for kind in SCHEMA:
+            txt = subprocess.run(["git", "show", f"FETCH_HEAD:docs/ledger/{kind}.jsonl"], capture_output=True,
+                                 text=True).stdout
+            have = {r["id"] for r in rows(kind)}
+            for line in txt.splitlines():
+                if not line.strip():
+                    continue
+                r = json.loads(line)
+                if r["id"] in have:
+                    continue
+                e = check(kind, r)
+                print(b, kind, r["id"], "; ".join(e) or "added")
+                if not e:
+                    with open(ROOT / f"{kind}.jsonl", "a") as f:
+                        f.write(json.dumps(r, ensure_ascii=False) + "\n")
+                    have.add(r["id"])
+
+
 if __name__ == "__main__":
+    if sys.argv[1] == "sync":
+        sync(sys.argv[2:] or ["claude/person-model-v2", "claude/ph-ops-agent"])
+        sys.exit(0)
     if sys.argv[1] == "validate":
         sys.exit(validate())
     add(sys.argv[2], sys.argv[3])
