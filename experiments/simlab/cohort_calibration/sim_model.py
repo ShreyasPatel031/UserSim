@@ -18,7 +18,7 @@ def _gemini(prompt, max_tokens, model, temperature=0.0):
             req = urllib.request.Request(_URL.format(m=model), json.dumps(body).encode(), {"Authorization": "Bearer " + _token(), "Content-Type": "application/json"})
             with urllib.request.urlopen(req, timeout=300) as r:
                 j = json.load(r); u = j.get("usageMetadata", {})
-                with _lk: USAGE["in"] += u.get("promptTokenCount", 0); USAGE["out"] += u.get("candidatesTokenCount", 0)
+                with _lk: USAGE["in"] += u.get("promptTokenCount", 0); USAGE["out"] += u.get("candidatesTokenCount", 0) + u.get("thoughtsTokenCount", 0); USAGE["calls"] = USAGE.get("calls", 0) + 1; USAGE["thoughts"] = USAGE.get("thoughts", 0) + u.get("thoughtsTokenCount", 0)
                 return "".join(p.get("text", "") for p in j["candidates"][0]["content"]["parts"])
         except Exception as e:  # noqa: BLE001
             if "403" in str(e) or "PERMISSION" in str(e).upper(): raise
@@ -27,7 +27,9 @@ def _gemini(prompt, max_tokens, model, temperature=0.0):
 def call(prompt, max_tokens=400, temperature=0.0):
     if MODEL.startswith("gemini-"): return _gemini(prompt, max_tokens, MODEL, temperature)
     raise NotImplementedError(f"no adapter for {MODEL}")
-def usd():
+def usd():   # usageMetadata at Vertex gemini-2.5-flash list price: input $0.30, output incl. thinking $2.50 per 1M tokens
     return round(USAGE["in"] / 1e6 * 0.30 + USAGE["out"] / 1e6 * 2.50, 4)
+def usage():
+    return {**USAGE, "usd": usd()}
 def gemini_call(prompt, max_tokens):   # alias with PH ops' llm.gemini_call signature (temperature 0)
     return _gemini(prompt, max_tokens, "gemini-2.5-flash", 0.0)

@@ -33,14 +33,16 @@ def gput(obj, p):
     t = f"/tmp/pu_{abs(hash(p))}.json"; json.dump(obj, open(t, "w"), indent=1, ensure_ascii=False); subprocess.run(["gsutil", "-q", "cp", t, p], check=True)
 def jl(b): return [json.loads(l) for l in b.decode().splitlines() if l.strip()] if b else []
 
+GU = {"calls": 0, "in": 0, "out": 0}   # grounded calls: tokens at list price + $0.035 per grounded prompt (Vertex grounding with Google Search)
 GURL = sim_model._URL.format(m="gemini-2.5-flash")
 def grounded(q, tries=3):
     import urllib.request
-    body = {"contents": [{"role": "user", "parts": [{"text": q}]}], "tools": [{"google_search": {}}], "generationConfig": {"temperature": 0}}
+    body = {"contents": [{"role": "user", "parts": [{"text": q}]}], "tools": [{"google_search": {}}], "generationConfig": {"temperature": 0, "thinkingConfig": {"thinkingBudget": 0}}}
     for k in range(tries):
         try:
             r = json.load(urllib.request.urlopen(urllib.request.Request(GURL, json.dumps(body).encode(),
                           {"Authorization": "Bearer " + sim_model._token(), "Content-Type": "application/json"}), timeout=120))
+            u = r.get("usageMetadata", {}); GU["calls"] += 1; GU["in"] += u.get("promptTokenCount", 0); GU["out"] += u.get("candidatesTokenCount", 0) + u.get("thoughtsTokenCount", 0)
             t = "".join(x.get("text", "") for x in r["candidates"][0]["content"]["parts"]); m = re.search(r"\{.*\}", t, re.S)
             o = json.loads(m.group(0)) if m else {}
             if "producthunt.com" in str(o.get("url") or "").lower(): o = {"url": None, "dropped": "producthunt.com result"}
@@ -232,7 +234,9 @@ for l in L: l["n_users"] = len(USERS.get(l["id"], []))
 
 commit = subprocess.run(["git", "-C", HERE, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip() or os.environ.get("PU_COMMIT", "")
 frozen = pd.Timestamp.now(tz="UTC"); cut = pd.Timestamp(D + " 03:30", tz="America/Los_Angeles")
-meta = {"day": D, "users_source": users_source, "frozen_at": frozen.isoformat(), "freeze_deadline": cut.tz_convert("UTC").isoformat(), "on_time": bool(frozen <= cut),
+cost = {"grounded": {**GU, "usd": round(GU["in"] / 1e6 * 0.30 + GU["out"] / 1e6 * 2.50 + 0.035 * GU["calls"], 4)}, "gemini_other": sim_model.usage()}
+cost["usd_measured_total"] = round(cost["grounded"]["usd"] + cost["gemini_other"]["usd"], 4)
+meta = {"day": D, "users_source": users_source, "cost": cost, "frozen_at": frozen.isoformat(), "freeze_deadline": cut.tz_convert("UTC").isoformat(), "on_time": bool(frozen <= cut),
         "rehearsal": REH, "code_commit": commit, "structural_model": SL.get("structural_model"), "n": len(L), "sec": round(time.time() - t0),
         "inputs_read": ["structural rank", "00:05 name/tagline/description/topics", "pre-D person history", "category data", "PH Similar Products (up to Nov 1 / nightly)"],
         "inputs_not_read": ["votes", "comments", "ranks of D", "launch-day comments"]}
