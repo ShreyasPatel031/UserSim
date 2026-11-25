@@ -33,6 +33,14 @@ Experiments in order:
    would-use, preference vs each competitor and the top problems. Access artefacts (signup walls, captchas, blocks) are
    tagged as such and kept out of the product findings. Scored forward on layers 1 and 2 against the text-only Stage B
    agents and the plain homepage prompt. First read at 7 scored days.
+   Amended Nov 25 (Shreyas: "go into product use, as deep as possible", compare reliably within Product Hunt categories):
+   competitors are PH's own Similar Products sharing the launch's PH category; every product in a category is judged on
+   the same category-defined core task (completion, time and steps to first value, errors, would-use, preference order);
+   competitor reactions are also calibrated against PH reviews posted after the model's cutoff; scorecards per category
+   (20+ launches). Taxonomy: simharness/taxonomy/ (91 pasted categories with descriptions; 248 held via Similar Products
+   on 6,668 launches). Fleet asked for the full category directory (by Nov 28) and nightly Similar Products (01:00 PT).
+1b. CATEGORY-1 (orchestrator's subagent, by Nov 25 12:00Z): launch-to-category table with a validated fallback
+   classifier, competitor sets per launch, and the structural miss per category (the residual baseline).
 2. RESID-EXPLAIN (orchestrator): which kinds of findings move with the structural miss (onboarding friction, clear
    difference from competitors, missing basics), so that layer 3 cites only findings with measured value.
 3. Stage B (running): history-built agents reading the launch page only; the text-only control for 1.
