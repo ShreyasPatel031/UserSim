@@ -418,6 +418,11 @@ def _iter_recent_messages(
 _POLL_LOCK = threading.Lock()
 _POLL: dict[str, Any] = {"user": "", "ts": 0.0, "rows": [], "max_uid": 0}
 _BODIES: dict[bytes, email.message.Message] = {}
+# Gmail's Spam folder, polled the same way on its own connection. Verification mail from a new sender to a plus
+# alias is often filed as spam, and an INBOX-only poll never sees it: the agent waits until it gives up.
+_JUNK_POLL: dict[str, Any] = {"user": "", "ts": 0.0, "rows": [], "max_uid": 0, "box": None}
+_JUNK_BODIES: dict[bytes, email.message.Message] = {}
+_JUNK_LIST_RE = re.compile(rb'\\(?:Junk|Spam)\b[^)]*\)\s+(?:"[^"]*"|NIL)\s+"?([^"]+?)"?\s*$', re.I)
 _HEADER_FIELDS = "(TO CC DELIVERED-TO X-ORIGINAL-TO DATE MESSAGE-ID FROM SUBJECT)"
 _UID_RE = re.compile(rb"UID (\d+)")
 
@@ -429,21 +434,51 @@ def _poll_min_s() -> float:
         return 2.0
 
 
-def _conn(username: str, app_password: str) -> imaplib.IMAP4_SSL:
-    """One persistent IMAP connection (INBOX selected), reopened on error. Caller holds _POLL_LOCK."""
-    con = _POLL.get("con")
-    if con is not None and _POLL.get("user") == username:
+def _junk_enabled() -> bool:
+    return (os.environ.get("MVP_IMAP_JUNK") or "1").strip().lower() not in {"0", "false", "no", "off"}
+
+
+def _junk_box(con: imaplib.IMAP4_SSL) -> str:
+    """The account's spam mailbox by its \\Junk flag (the name is localised), else "[Gmail]/Spam"."""
+    try:
+        typ, data = con.list()
+        for line in data or []:
+            if isinstance(line, bytes):
+                m = _JUNK_LIST_RE.search(line)
+                if m:
+                    return m.group(1).decode("utf-8", "replace").strip()
+    except Exception:  # noqa: BLE001
+        pass
+    return "[Gmail]/Spam"
+
+
+def _conn(username: str, app_password: str, state: dict[str, Any] | None = None) -> imaplib.IMAP4_SSL:
+    """One persistent IMAP connection per polled mailbox (INBOX, or Spam for _JUNK_POLL), reopened on error.
+    Caller holds _POLL_LOCK."""
+    st = _POLL if state is None else state
+    con = st.get("con")
+    if con is not None and st.get("user") == username:
         return con
-    _drop_conn()
+    _drop_conn(st)
     con = imaplib.IMAP4_SSL(IMAP_HOST, timeout=30)
     con.login(username, app_password.replace(" ", ""))
-    con.select("INBOX", readonly=True)
-    _POLL.update(con=con, user=username, rows=[], max_uid=0, ts=0.0)
+    if st is _POLL:
+        box = "INBOX"
+    else:
+        box = st.get("box") or _junk_box(con)
+        st["box"] = box
+    typ, _ = con.select(f'"{box}"' if " " in box or "[" in box else box, readonly=True)
+    if typ != "OK":
+        try:
+            con.logout()
+        finally:
+            raise RuntimeError(f"cannot select mailbox {box!r}")
+    st.update(con=con, user=username, rows=[], max_uid=0, ts=0.0)
     return con
 
 
-def _drop_conn() -> None:
-    con = _POLL.pop("con", None)
+def _drop_conn(state: dict[str, Any] | None = None) -> None:
+    con = (_POLL if state is None else state).pop("con", None)
     if con is not None:
         try:
             con.logout()
@@ -486,13 +521,29 @@ def _recent_header_rows(username: str, app_password: str, lookback: int) -> list
     (reads failed silently) and a burst of 40 n8n mails pushed other agents'
     codes out of the 30-message window.
     """
+    return _header_rows_for(username, app_password, lookback, _POLL)
+
+
+def _junk_header_rows(username: str, app_password: str, lookback: int) -> list[dict[str, Any]]:
+    """Same as _recent_header_rows for the Spam folder; [] when disabled or unreadable (never breaks INBOX reads)."""
+    if not _junk_enabled():
+        return []
+    try:
+        rows = _header_rows_for(username, app_password, lookback, _JUNK_POLL)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[email_codes] spam folder poll failed: {exc!r}", flush=True)
+        return []
+    return [{**r, "folder": "spam"} for r in rows]
+
+
+def _header_rows_for(username: str, app_password: str, lookback: int, st: dict[str, Any]) -> list[dict[str, Any]]:
     with _POLL_LOCK:
-        if _POLL.get("user") == username and time.time() - float(_POLL.get("ts") or 0) < _poll_min_s():
-            return list(_POLL["rows"])[:lookback]
+        if st.get("user") == username and time.time() - float(st.get("ts") or 0) < _poll_min_s():
+            return list(st["rows"])[:lookback]
         for attempt in range(2):
             try:
-                con = _conn(username, app_password)
-                max_uid = int(_POLL.get("max_uid") or 0)
+                con = _conn(username, app_password, st)
+                max_uid = int(st.get("max_uid") or 0)
                 if not max_uid:
                     since = time.strftime("%d-%b-%Y", time.gmtime(time.time() - 2 * 86400))
                     typ, data = con.uid("search", None, "SINCE", since)
@@ -504,44 +555,45 @@ def _recent_header_rows(username: str, app_password: str, lookback: int) -> list
                     typ, data = con.uid("search", None, "UID", f"{max_uid + 1}:*")
                     uids = [u for u in (data[0].split() if typ == "OK" and data and data[0] else []) if int(u) > max_uid]
                 new_rows = _header_rows(con, uids)
-                rows = sorted(new_rows + list(_POLL.get("rows") or []), key=lambda r: int(r["uid"]), reverse=True)[:1000]
+                rows = sorted(new_rows + list(st.get("rows") or []), key=lambda r: int(r["uid"]), reverse=True)[:1000]
                 top = max([int(u) for u in uids] + [max_uid])
-                _POLL.update(rows=rows, max_uid=top, ts=time.time())
+                st.update(rows=rows, max_uid=top, ts=time.time())
                 return rows[:lookback]
             except Exception as exc:  # noqa: BLE001
-                _drop_conn()
+                _drop_conn(st)
                 if attempt:
                     raise
                 print(f"[email_codes] imap poll retry after {exc!r}", flush=True)
         return []
 
 
-def _fetch_bodies(username: str, app_password: str, uids: list[bytes]) -> None:
-    need = [u for u in uids if u not in _BODIES]
+def _fetch_bodies(username: str, app_password: str, uids: list[bytes], *, junk: bool = False) -> None:
+    st, bodies = (_JUNK_POLL, _JUNK_BODIES) if junk else (_POLL, _BODIES)
+    need = [u for u in uids if u not in bodies]
     if not need:
         return
     with _POLL_LOCK:
-        need = [u for u in need if u not in _BODIES]
+        need = [u for u in need if u not in bodies]
         if not need:
             return
         for attempt in range(2):
             try:
-                con = _conn(username, app_password)
+                con = _conn(username, app_password, st)
                 typ, raw = con.uid("fetch", b",".join(need), "(UID BODY.PEEK[])")
                 for item in raw or []:
                     if not isinstance(item, tuple) or len(item) < 2:
                         continue
                     m = _UID_RE.search(item[0] or b"")
                     if m:
-                        _BODIES[m.group(1)] = email.message_from_bytes(item[1] or b"")
+                        bodies[m.group(1)] = email.message_from_bytes(item[1] or b"")
                 break
             except Exception:  # noqa: BLE001
-                _drop_conn()
+                _drop_conn(st)
                 if attempt:
                     raise
-        if len(_BODIES) > 2000:
-            for key in sorted(_BODIES, key=int)[:1000]:
-                _BODIES.pop(key, None)
+        if len(bodies) > 2000:
+            for key in sorted(bodies, key=int)[:1000]:
+                bodies.pop(key, None)
 
 
 def messages_for_alias(
@@ -552,29 +604,37 @@ def messages_for_alias(
     newer_than: float | None = None,
     lookback: int = 300,
 ) -> list[email.message.Message]:
-    """Full messages addressed to ``alias``, newest first (header match, then bodies)."""
-    rows = _recent_header_rows(username, app_password, lookback)
-    hits = [
-        r["uid"]
-        for r in rows
-        if _alias_match(r["recipients"], alias)
-        and (newer_than is None or r["ts"] is None or r["ts"] >= newer_than - 30)
-    ]
-    if not hits:
-        return []
-    _fetch_bodies(username, app_password, hits)
-    return [_BODIES[u] for u in hits if u in _BODIES]
+    """Full messages addressed to ``alias`` (header match, then bodies): INBOX newest first, then the Spam folder."""
+
+    def hits_in(rows: list[dict[str, Any]]) -> list[bytes]:
+        return [r["uid"] for r in rows if _alias_match(r["recipients"], alias)
+                and (newer_than is None or r["ts"] is None or r["ts"] >= newer_than - 30)]
+
+    out: list[email.message.Message] = []
+    hits = hits_in(_recent_header_rows(username, app_password, lookback))
+    if hits:
+        _fetch_bodies(username, app_password, hits)
+        out += [_BODIES[u] for u in hits if u in _BODIES]
+    junk = hits_in(_junk_header_rows(username, app_password, lookback))
+    if junk:
+        try:
+            _fetch_bodies(username, app_password, junk, junk=True)
+            out += [_JUNK_BODIES[u] for u in junk if u in _JUNK_BODIES]
+        except Exception as exc:  # noqa: BLE001
+            print(f"[email_codes] spam folder fetch failed: {exc!r}", flush=True)
+    return out
 
 
 def recent_mail_diagnostics(username: str, app_password: str, alias: str, *, since: float, limit: int = 12) -> list[dict[str, Any]]:
     """Headers (never bodies) of mail that arrived since ``since``, with whether each one matched ``alias``. For a wait
     that found nothing: shows whether the site mailed a different address (normalised dots, a plain inbox address)."""
     out = []
-    for r in _recent_header_rows(username, app_password, 300):
+    for r in _recent_header_rows(username, app_password, 300) + _junk_header_rows(username, app_password, 300):
         if r.get("ts") is not None and r["ts"] < since - 30:
             continue
         out.append({"ts": r.get("ts"), "from": r.get("sender"), "subject": r.get("subject"),
-                    "to": (r.get("recipients") or "")[:120], "matched": _alias_match(r.get("recipients") or "", alias)})
+                    "to": (r.get("recipients") or "")[:120], "matched": _alias_match(r.get("recipients") or "", alias),
+                    "folder": r.get("folder") or "inbox"})
         if len(out) >= limit:
             break
     return out
