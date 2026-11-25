@@ -37,7 +37,38 @@ def thumb(path: str, width: int = 280) -> str:
         return ""
 
 
+def fast_video(run: str) -> str | None:
+    """Fetch the full LambdaTest recording fresh (links expire) and cut it with mvp.device.fast_video into
+    <run>/fast.mp4. Secure password fields render as dots; still check the login frames before sending."""
+    import subprocess
+    import requests
+    meta = json.load(open(f"{run}/session.json"))
+    sid = meta.get("session_id")
+    if not sid:
+        return None
+    r = requests.get(f"https://mobile-api.lambdatest.com/mobile-automation/api/v1/sessions/{sid}",
+                     auth=(os.environ.get("LT_USERNAME", "proxy-injected"), os.environ.get("LT_ACCESS_KEY", "proxy-injected")),
+                     timeout=60)
+    url = ((r.json() if r.ok else {}).get("data") or {}).get("video_url")
+    if not url:
+        return None
+    full = f"{run}/full.mp4"
+    with requests.get(url, stream=True, timeout=600) as v:
+        v.raise_for_status()
+        with open(full, "wb") as f:
+            for chunk in v.iter_content(1 << 20):
+                f.write(chunk)
+    subprocess.run(["python3", "-m", "mvp.device.fast_video", full, f"{run}/fast.mp4"], check=True)
+    meta["video_url"] = url
+    meta["fast_video"] = "fast.mp4"
+    json.dump(meta, open(f"{run}/session.json", "w"), indent=1)
+    return f"{run}/fast.mp4"
+
+
 def build(a) -> None:
+    if a.videos:
+        for r in a.runs:
+            print("video", r, fast_video(r))
     items = json.load(open(a.checklist))
     os.makedirs(a.out, exist_ok=True)
     runs, notes = [], []
@@ -66,7 +97,8 @@ def build(a) -> None:
     for r in runs:
         m = r["meta"]
         md.append(f"- **{r['var']}** — {m.get('device')} iOS {m.get('os')}, {m.get('seconds', '?')} s, {r['acts']} actions — "
-                  f"video: {m.get('video_url') or 'pending'}")
+                  f"sped-up video: {os.path.join(r['dir'], m['fast_video']) if m.get('fast_video') else 'pending'} "
+                  f"(full recording: LambdaTest session {m.get('session_id')})")
     md += ["", "## Checklist", "", "| Item | Status | What happened | Expected |", "|---|---|---|---|"]
     for i in items:
         n = status.get(i["id"]) or {}
@@ -87,7 +119,7 @@ def build(a) -> None:
         f"<div class='f'><img src='{thumb(n['shot_path'])}'><div><b>{e(n['item'])} — {e(n['status'])}</b> (run {e(n['var'])})"
         f"<p>{e(n['what'])}</p><p><i>Expected:</i> {e(n.get('expected', ''))}</p></div></div>"
         for n in notes if n["status"] in ("fail", "confusing"))
-    vids = "".join(f"<li><b>{e(r['var'])}</b>: <a href='{e(r['meta'].get('video_url') or '#')}'>video</a> "
+    vids = "".join(f"<li><b>{e(r['var'])}</b>: <a href='{e(r['meta'].get('fast_video') and r['var'] + '/' + r['meta']['fast_video'] or '#')}'>sped-up video</a> "
                    f"({e(str(r['meta'].get('seconds', '?')))} s, {r['acts']} actions)</li>" for r in runs)
     page = f"""<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>Build {e(a.build)} test report</title><style>
@@ -109,6 +141,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--checklist", required=True); ap.add_argument("--runs", nargs="+", required=True)
     ap.add_argument("--out", required=True); ap.add_argument("--build", default="?"); ap.add_argument("--arrived-utc")
+    ap.add_argument("--videos", action="store_true", help="fetch each run's recording and cut it to fast.mp4")
     build(ap.parse_args())
 
 
