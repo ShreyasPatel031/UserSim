@@ -470,6 +470,18 @@ The simulation is judged on reproducing real people's reactions, always against 
   as a fraction of the split-half ceiling; (3) person-level "same point" (25.3% vs 15.9% for another real commenter).
 - One compounding loop: every scored day adds rows; one weekly re-fit; one leaderboard.
 
+### Human ceiling (CEILING-1, subagent, Nov 25; $4.47)
+16 launches Nov 15-20 (median 19 real commenters, 20 half-splits). Ceiling = half A's real comments against half-B themes.
+| Metric | Ceiling | Deployed (persona + 15) | Persona only |
+|---|---|---|---|
+| Theme recall | 61.1 [53.7, 68.7] | 69.0 (1.17x [1.05, 1.31]) | 69.3 (1.17x) |
+| Precision | 48.3 [43.2, 53.4] | 56.5 (1.20x [1.00, 1.39]) | 45.5 (0.96x [0.75, 1.17]) |
+| Complaint recall | 33.0 [24.4, 42.1] | 34.0 (+1.0 [-9.8, +11.5]) | 33.3 (+0.4) |
+Person level (296 rows): another real commenter 15.9%, Flash + launch block 25.3% (1.60x); the person's own comment on
+their most similar earlier launch 6.1% (a floor, not a ceiling).
+- Not yet fair: half A has ~11 comments, the panels 22-37, and recall grows with list length. Precision (per comment)
+  is the fairer read: deployed 1.20x, persona-only 0.96x. Equal-size version is CEILING-2.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
