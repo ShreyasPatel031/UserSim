@@ -77,6 +77,20 @@ class LTDevice(IOSDevice):
             el.clear()
             el.send_keys(a.get("text", ""))
             return "ok"
+        if a.get("action") in ("swipe", "scroll"):
+            # a real finger drag with known start and end points (so the video can draw it). direction "up" scrolls
+            # the content up: the finger moves from low to high on the screen.
+            w, h = self.size["width"], self.size["height"]
+            d = a.get("direction", "up")
+            x = a.get("x", w / 2); y = a.get("y", h / 2)
+            dist = a.get("distance", 0.45)
+            dx, dy = {"up": (0, -1), "down": (0, 1), "left": (-1, 0), "right": (1, 0)}[d]
+            x1, y1 = x - dx * w * dist / 2, y - dy * h * dist / 2
+            x2, y2 = x + dx * w * dist / 2, y + dy * h * dist / 2
+            self.d.execute_script("mobile: dragFromToForDuration", {"fromX": x1, "fromY": y1, "toX": x2, "toY": y2,
+                                                                     "duration": a.get("duration", 0.25)})
+            a.update(x1=round(x1), y1=round(y1), x2=round(x2), y2=round(y2))
+            return "ok"
         return super().act(a)
 
 

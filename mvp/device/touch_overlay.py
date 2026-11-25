@@ -112,20 +112,17 @@ def main() -> None:
             continue
         if act.get("action") in ("tap", "tap_label", "type_into") and "x" in act and "y" in act:
             marks.append((t, tap_clip, act["x"] * k - half, act["y"] * k - half))
-        elif act.get("action") == "swipe":
-            dx, dy = SWIPE.get(act.get("direction", "up"), (0, -1))
-            x0 = act.get("x", a.points_width / 2) * k
-            y0 = act.get("y", H / k / 2) * k - dy * H * 0.2
-            length = (W * 0.35, H * 0.35)
-            sf, size = [], int(r * 5)
-            n = 16
+        elif act.get("action") in ("swipe", "scroll") and "x1" in act:
+            x1, y1, x2, y2 = (act[k_] * k for k_ in ("x1", "y1", "x2", "y2"))
+            sf, n = [], 18
             for j in range(n):
                 im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-                f = ease_out(min(1, j / (n - 5)))
-                for tr in range(4):  # fading trail behind the dot
-                    ft = max(0.0, f - tr * 0.06)
-                    dot(im, x0 + dx * ft * length[0], y0 + dy * ft * length[1], r * (1 - tr * 0.15),
-                        (1 - tr * 0.3) * (1 if j < n - 4 else (n - j) / 4))
+                f = ease_out(min(1.0, j / 11))  # glide over ~0.37 s, then fade out
+                fade = 1.0 if j < n - 5 else (n - j) / 5
+                for tr in range(5, -1, -1):  # trail: older positions smaller and fainter
+                    ft = max(0.0, f - tr * 0.07)
+                    dot(sf_im := im, x1 + (x2 - x1) * ft, y1 + (y2 - y1) * ft, r * (1 - tr * 0.12),
+                        fade * (1 - tr * 0.16))
                 sf.append(im)
             clip = f"{tmp}/swipe{i}.mov"
             write_clip(sf, clip, tmp)
