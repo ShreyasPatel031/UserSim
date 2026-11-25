@@ -64,7 +64,18 @@ def fast_video(run: str) -> str | None:
         print(f"{run}: no test-start mark; not cutting a client video")
         return None
     start = max(0.0, meta["test_start_video_s"] - 1.0)
-    subprocess.run(["python3", "-m", "mvp.device.fast_video", full, f"{run}/fast.mp4", "--start", str(start)], check=True)
+    # trim to the test part, draw every touch (iOS recordings show none), then cut freezes and speed up
+    trimmed, touched = f"{run}/test.mp4", f"{run}/touched.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", str(start), "-i", full, "-c:v", "libx264", "-preset", "veryfast",
+                    "-an", trimmed], check=True)
+    shifted = f"{run}/actions_test.jsonl"
+    with open(shifted, "w") as out:
+        for line in open(f"{run}/actions.jsonl"):
+            row = json.loads(line)
+            if row["t"] >= start:
+                out.write(json.dumps({**row, "t": round(row["t"] - start, 1)}) + "\n")
+    subprocess.run(["python3", "-m", "mvp.device.touch_overlay", trimmed, shifted, touched], check=True)
+    subprocess.run(["python3", "-m", "mvp.device.fast_video", touched, f"{run}/fast.mp4"], check=True)
     meta["video_url"] = url
     meta["fast_video"] = "fast.mp4"
     json.dump(meta, open(f"{run}/session.json", "w"), indent=1)
