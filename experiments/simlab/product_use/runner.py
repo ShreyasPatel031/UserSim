@@ -61,13 +61,28 @@ def task_text(l):
 def persona_text(u):
     return ("A Product Hunt member who tries new products. What is known about them (their activity before today):\n" + u["profile"][:1800])
 
+# signup agent's per-site playbook (session_01WkCrULer75dbfV12Unm3BZ, format v1), keyed by host without www.; a missing file or host = no change
+PB = (json.loads(subprocess.run(["gsutil", "cat", f"{PRIV}/{TAG}/access_playbook.json"], capture_output=True).stdout or b"{}") or {}).get("sites") or {}
+_host = lambda u: re.sub(r"^www\.", "", re.sub(r"^https?://", "", str(u)).split("/")[0].split(":")[0].lower())
+_SIGNUP_WORDS = re.compile(r"sign ?up|create (?:a |an |your |a new )?(?:new )?account|register|registration|verify your email", re.I)   # = mvp/sim_mcp/site_states
+SKIPPED = []   # unreachable sites (Mac-only app, browser extension...): no session; a product trait, recorded, never an access failure
 CELLS = []
 for l in LAUNCHES:
     slots = [("launch", l["url"])] + [(f"comp{k + 1}", c["url"]) for k, c in enumerate(l.get("competitors") or [])]
     for ui, u in enumerate(USERS.get(l["id"], [])[:4]):
         for slot, url in slots:
-            if url: CELLS.append({"cell_id": f"{l['id']}_{u['user_key']}_{slot}", "site": url, "persona": persona_text(u), "task": task_text(l),
-                                  "_launch": l["id"], "_user": u["user_key"], "_slot": slot, "_wave": 0 if ui == 0 else 1})
+            if not url: continue
+            pb = PB.get(_host(url)) or {}
+            if pb.get("method") == "unreachable":
+                SKIPPED.append({"launch_id": l["id"], "user": u["user_key"], "slot": slot, "url": url, "artefact_raw": "platform_only", "note": pb.get("note")}); continue
+            site = pb["entry_url"] if pb.get("entry_url") and pb.get("method") == "saved_state" and pb.get("status") != "broken" else url
+            note = pb.get("note") if pb.get("note") and not _SIGNUP_WORDS.search(str(pb["note"])) else None   # would make the server start signed out
+            if pb.get("note") and not note: print("WARN playbook note dropped (signup wording):", _host(url), flush=True)
+            task = task_text(l) + (f"\n\nAbout this site: {note}" if note else "")
+            CELLS.append({"cell_id": f"{l['id']}_{u['user_key']}_{slot}", "site": site, "persona": persona_text(u), "task": task,
+                          "_launch": l["id"], "_user": u["user_key"], "_slot": slot, "_wave": 0 if ui == 0 else 1,
+                          "_playbook": {k: pb.get(k) for k in ("method", "status")} if pb else None})
+print("access playbook:", len(PB), "sites;", sum(1 for c in CELLS if c["_playbook"]), "cells use it;", len(SKIPPED), "unreachable cells skipped", flush=True)
 # order: round-robin over launches so a budget stop cuts from the bottom of the structural top 15 (spec), not mid-launch
 CELLS.sort(key=lambda c: ([x["id"] for x in LAUNCHES].index(c["_launch"]), c["_user"], c["_slot"]))
 
@@ -203,6 +218,7 @@ OUT["clean_session_rate"] = round(float((R_.artefact == "none").mean()), 3) if l
 OUT["clean_session_rate_launch"] = round(float((R_[R_.slot == "launch"].artefact == "none").mean()), 3) if len(R_) else None
 OUT["n_sessions_excluded_access"] = int((R_.artefact != "none").sum()) if len(R_) else 0
 OUT["n_launches_no_prediction"] = int(sum(x is None for x in A.sim_score)) if len(A) else 0
+OUT["skipped_unreachable"] = SKIPPED; OUT["access_playbook_sites"] = len(PB)
 OUT["artefact_raw_counts"] = R_.artefact_raw.value_counts().to_dict() if len(R_) else {}
 OUT["on_time"] = (OUT["frozen_at"] <= OUT["freeze_deadline"]) if OUT["freeze_deadline"][:2] == "20" else None
 p = WORK / "outputs.json"; p.write_text(json.dumps(OUT, indent=1, default=str)); subprocess.run(["gsutil", "-q", "cp", str(p), f"{PUB}/outputs.json"])
