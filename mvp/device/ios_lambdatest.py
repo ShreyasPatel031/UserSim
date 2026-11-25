@@ -62,6 +62,22 @@ class LTDevice(IOSDevice):
         self.session_id = self.d.session_id
 
 
+def fill_secrets(act: dict[str, Any]) -> dict[str, Any]:
+    """The agent writes {{EMAIL}} / {{PASSWORD}}; the real values come from QA_LOGIN_EMAIL / QA_LOGIN_PASSWORD (env or the
+    file in QA_LOGIN_ENV) and never enter the prompt, the steps file or the log."""
+    text = act.get("text")
+    if not text or "{{" not in text:
+        return act
+    if not os.environ.get("QA_LOGIN_PASSWORD") and os.environ.get("QA_LOGIN_ENV"):
+        for line in open(os.environ["QA_LOGIN_ENV"]):
+            if "=" in line:
+                k, v = line.strip().split("=", 1)
+                os.environ.setdefault(k, v)
+    text = text.replace("{{EMAIL}}", os.environ.get("QA_LOGIN_EMAIL", "")).replace(
+        "{{PASSWORD}}", os.environ.get("QA_LOGIN_PASSWORD", ""))
+    return {**act, "text": text}
+
+
 def session_info(session_id: str) -> dict[str, Any]:
     r = requests.get(f"{SESSIONS}/{session_id}", auth=creds(), timeout=60)
     return r.json() if r.ok else {"http": r.status_code}
@@ -79,6 +95,7 @@ Reply with JSON only:
 {{"thought": "what you see and why the next action", "action": {{"action": "tap"|"tap_label"|"type"|"swipe"|"wait"|"done",
   "x": int, "y": int, "label": str, "text": str, "direction": "up"|"down"|"left"|"right", "s": float}},
  "finding": null | {{"severity": "bug"|"confusing"|"ok", "checklist_item": str, "what_happened": str, "expected": str}}}}
+To log in, tap the field first, then type {{{{EMAIL}}}} or {{{{PASSWORD}}}} literally; the real values are filled in for you.
 Use "done" when every checklist item has been tried or you are blocked; say why in the thought. Report a finding whenever
 something looks off, confusing or broken, and an "ok" finding when a checklist item works."""
 
@@ -115,7 +132,7 @@ def run(a) -> None:
                 steps.append(rec)
                 break
             try:
-                dev.act(act)
+                dev.act(fill_secrets(act))
                 rec["result"] = "ok"
             except Exception as e:  # noqa: BLE001
                 rec["result"] = f"error: {type(e).__name__}"
