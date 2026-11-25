@@ -441,6 +441,17 @@ Daily top 3 is close to random (66% of misses are structural 4th-6th; the #3-#4 
 3. Sustained product outcomes: still online months later, reviews and rating accumulated, relaunches, follower growth.
    These are where real product use should show, and the product-use test should be scored on them.
 
+### Room on each target (TARGETS-0, subagent, Nov 25; $0)
+- Daily top 10 from structural 11-20 (1,543 launches, 24% made it): structural rank inside the band already sorts them
+  (AUC 0.66); Automation tools and AI Workflow Automation make it 13 points less often; backer quality helps only on the
+  truth side (AUC 0.55-0.57), predicted backers carry nothing (top-10 capture change -0.9 to +0.1).
+- Weekly top 10 (truth: warehouse weekly_rank, 46 weeks; 24 fully covered by structural files): structural 38.3%
+  [32.9, 43.3] vs 88.8% for the week's real daily votes. The largest gap of any target: it is mostly predicting vote size
+  across days, not order within a day. Monthly needs structural scores for every day (only 4 readable months).
+- Sustained outcomes: still-online not measurable; product reviews now (36% coverage) structural rho 0.57, daily rank
+  leaves 74% unexplained; rating not predicted by either (17% coverage); later relaunches rho 0.24.
+Next: structural scores for every 2026 day (PH agent), then weekly-top-10 tests for the simulation.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
