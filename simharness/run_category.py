@@ -157,6 +157,8 @@ def stage_labels(a):
         if r.item_id in by_id.index:
             b = by_id.loc[r.item_id]
             maj, share, cnt, n_sim = b["majority"], b["majority_share"], json.loads(b["majority_counts"]), int(b["n_similar"])
+            if not isinstance(maj, str):
+                maj, share = None, None
         else:
             maj, share, cnt, n_sim = None, None, {}, 0
         p, src = tx.primary_category(own, cnt, maj)
