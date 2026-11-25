@@ -409,6 +409,14 @@ measure ranked Flash first (restating the product); same point ranks it below a 
 comments sound like the person but rarely make the point the person made: the gap to close is about 8 points. Code:
 simharness/content_judge.py; task_c.py score(..., content_judge=...). Files: simharness/bench_v0/content_labels1/.
 
+### Product use against reviews (PRODUCT-USE-0, E5, Nov 25; $8.51): failed
+70 products, 208 sessions, only 31% free of access problems (12 completed the task). Against post-2025 review truth,
+simulated product use lost to a homepage-only prompt: complaint recall 3.1 vs 21.6 (-18.5 [-27.6, -9.9]), like recall
+9.0 vs 53.4. 16% of simulated complaints were about access. Reading: first-use sessions surface first-ten-minutes friction,
+not what reviewers report after weeks; and access still dominates. Closed. PU-1 continues forward with launch-day comments
+as layer-2 truth (first impressions) and a target of 60%+ clean sessions (seed accounts, no-account paths). An artefact
+rerun after the 11a fixes gave 25% clean (no gain).
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
