@@ -46,14 +46,19 @@ def main() -> None:
         keep.append((t, s + a.keep_freeze)); t = e
     keep.append((t, duration(a.src)))
     keep = [(s, e) for s, e in keep if e > s]
-    parts = [f"[0:v]trim=start={s:.2f}:end={e:.2f},setpts=PTS-STARTPTS,fps=30,scale=-2:1280[v{i}]"
-             for i, (s, e) in enumerate(keep)]
-    fc = ";".join(parts) + ";" + "".join(f"[v{i}]" for i in range(len(keep))) + \
-        f"concat=n={len(keep)}:v=1:a=0,setpts=PTS/{a.speed}[out]"
-    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as f:
-        f.write(fc)
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", a.src, "-filter_complex_script", f.name, "-map", "[out]", "-an",
-                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "24", "-movflags", "+faststart", a.dst], check=True)
+    # one small file per kept stretch, then a concat: memory stays flat however long the session is
+    tmp = tempfile.mkdtemp()
+    names = []
+    for i, (s0, e0) in enumerate(keep):
+        name = f"{tmp}/s{i:04d}.mp4"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{s0:.3f}", "-t", f"{e0 - s0:.3f}", "-i", a.src,
+                        "-vf", f"setpts=PTS/{a.speed},fps=30,scale=-2:1280", "-an", "-c:v", "libx264",
+                        "-preset", "veryfast", "-crf", "22", "-pix_fmt", "yuv420p", name], check=True)
+        names.append(name)
+    with open(f"{tmp}/list.txt", "w") as f:
+        f.writelines(f"file '{n}'\n" for n in names)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", f"{tmp}/list.txt", "-c", "copy",
+                    "-movflags", "+faststart", a.dst], check=True)
     print(f"{a.dst}: {duration(a.dst):.1f} s from {duration(a.src):.1f} s")
 
 
