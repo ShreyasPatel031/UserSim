@@ -1,0 +1,257 @@
+{
+ "version": "ceiling1_v1",
+ "launch_level": {
+  "launches": 16,
+  "days": 6,
+  "resamples_per_launch": 20.0,
+  "median_commenters": 19.0,
+  "pb_source": {
+   "Nov 25 re-generation (no launch block)": 16
+  },
+  "metrics": {
+   "recall": {
+    "ceiling_half_a": {
+     "mean": 61.0859,
+     "lo": 53.676,
+     "hi": 68.7248,
+     "n": 16
+    },
+    "deployed": {
+     "mean": 69.0487,
+     "lo": 62.4974,
+     "hi": 75.6459,
+     "n": 16
+    },
+    "persona": {
+     "mean": 69.3211,
+     "lo": 62.0063,
+     "hi": 76.585,
+     "n": 16
+    },
+    "deployed_fraction_of_ceiling": {
+     "mean": 1.1725,
+     "lo": 1.0506,
+     "hi": 1.3064,
+     "n": 16
+    },
+    "deployed_minus_ceiling_points": {
+     "mean": 7.9628,
+     "lo": 2.0316,
+     "hi": 14.0288,
+     "n": 16
+    },
+    "persona_fraction_of_ceiling": {
+     "mean": 1.1718,
+     "lo": 1.0487,
+     "hi": 1.3111,
+     "n": 16
+    },
+    "persona_minus_ceiling_points": {
+     "mean": 8.2351,
+     "lo": 2.5041,
+     "hi": 14.3107,
+     "n": 16
+    }
+   },
+   "recall_w": {
+    "ceiling_half_a": {
+     "mean": 68.4378,
+     "lo": 60.9145,
+     "hi": 75.3649,
+     "n": 16
+    },
+    "deployed": {
+     "mean": 74.6682,
+     "lo": 67.6711,
+     "hi": 81.3417,
+     "n": 16
+    },
+    "persona": {
+     "mean": 74.4245,
+     "lo": 67.3155,
+     "hi": 81.0209,
+     "n": 16
+    },
+    "deployed_fraction_of_ceiling": {
+     "mean": 1.1186,
+     "lo": 1.0119,
+     "hi": 1.2296,
+     "n": 16
+    },
+    "deployed_minus_ceiling_points": {
+     "mean": 6.2304,
+     "lo": 0.4165,
+     "hi": 12.0576,
+     "n": 16
+    },
+    "persona_fraction_of_ceiling": {
+     "mean": 1.1167,
+     "lo": 1.0086,
+     "hi": 1.2459,
+     "n": 16
+    },
+    "persona_minus_ceiling_points": {
+     "mean": 5.9867,
+     "lo": 0.5044,
+     "hi": 11.8871,
+     "n": 16
+    }
+   },
+   "precision": {
+    "ceiling_half_a": {
+     "mean": 48.2837,
+     "lo": 43.1893,
+     "hi": 53.3774,
+     "n": 16
+    },
+    "deployed": {
+     "mean": 56.4951,
+     "lo": 47.3595,
+     "hi": 65.8521,
+     "n": 16
+    },
+    "persona": {
+     "mean": 45.5122,
+     "lo": 35.3946,
+     "hi": 55.834,
+     "n": 16
+    },
+    "deployed_fraction_of_ceiling": {
+     "mean": 1.1999,
+     "lo": 0.9995,
+     "hi": 1.3948,
+     "n": 16
+    },
+    "deployed_minus_ceiling_points": {
+     "mean": 8.2113,
+     "lo": -0.5038,
+     "hi": 16.8477,
+     "n": 16
+    },
+    "persona_fraction_of_ceiling": {
+     "mean": 0.9599,
+     "lo": 0.7507,
+     "hi": 1.1728,
+     "n": 16
+    },
+    "persona_minus_ceiling_points": {
+     "mean": -2.7715,
+     "lo": -12.5602,
+     "hi": 7.2308,
+     "n": 16
+    }
+   },
+   "complaint_recall": {
+    "ceiling_half_a": {
+     "mean": 32.974,
+     "lo": 24.4216,
+     "hi": 42.0732,
+     "n": 16
+    },
+    "deployed": {
+     "mean": 34.0156,
+     "lo": 27.0518,
+     "hi": 41.1458,
+     "n": 16
+    },
+    "persona": {
+     "mean": 33.3385,
+     "lo": 26.4111,
+     "hi": 40.2608,
+     "n": 16
+    },
+    "deployed_fraction_of_ceiling": {
+     "mean": 1.4371,
+     "lo": 0.9358,
+     "hi": 2.0423,
+     "n": 16
+    },
+    "deployed_minus_ceiling_points": {
+     "mean": 1.0417,
+     "lo": -9.7762,
+     "hi": 11.4638,
+     "n": 16
+    },
+    "persona_fraction_of_ceiling": {
+     "mean": 1.399,
+     "lo": 0.9388,
+     "hi": 1.9626,
+     "n": 16
+    },
+    "persona_minus_ceiling_points": {
+     "mean": 0.3646,
+     "lo": -10.1781,
+     "hi": 10.6512,
+     "n": 16
+    }
+   }
+  }
+ },
+ "person_level": {
+  "rows": 296,
+  "rows_with_earlier_own_comment": 296,
+  "median_similarity_of_chosen_launch": 0.676,
+  "by_day": {},
+  "same_point_all_rows": {
+   "A0": {
+    "mean": 25.34,
+    "lo": 20.0,
+    "hi": 30.0,
+    "n": 296
+   },
+   "ref_other_commenter": {
+    "mean": 15.88,
+    "lo": 10.47,
+    "hi": 20.94,
+    "n": 296
+   },
+   "own_similar_comment": {
+    "mean": 6.08,
+    "lo": 3.6,
+    "hi": 8.46,
+    "n": 296
+   }
+  },
+  "same_point_rows_with_own_comment": {
+   "A0": {
+    "mean": 25.34,
+    "lo": 20.0,
+    "hi": 30.08,
+    "n": 296
+   },
+   "ref_other_commenter": {
+    "mean": 15.88,
+    "lo": 10.47,
+    "hi": 21.03,
+    "n": 296
+   },
+   "own_similar_comment": {
+    "mean": 6.08,
+    "lo": 3.64,
+    "hi": 8.49,
+    "n": 296
+   }
+  },
+  "A0_fraction_of_ceilings_on_common_rows": {
+   "A0": 25.34,
+   "other_commenter": 15.88,
+   "own_similar_comment": 6.08,
+   "n": 296,
+   "A0_over_other_commenter": 1.596,
+   "A0_over_own_similar": 4.167
+  }
+ },
+ "spend": {
+  "launch": {
+   "usd": 3.7597,
+   "calls": 4184,
+   "tokens_in": 5004316,
+   "tokens_out": 903350
+  },
+  "person": {
+   "judge_usd": 0.7118,
+   "pairs": 296,
+   "rows": 296
+  }
+ }
+}
