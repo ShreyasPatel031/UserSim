@@ -34,7 +34,7 @@ from mcp_runner_gemini import GeminiDriver, vertex_client  # noqa: E402
 B = "gs://usersim-bakeoff-347838016394/usersim_sim"; PRIV = f"{B}/tmp/e5/private/product_use"
 args = [a for a in sys.argv[1:] if not a.startswith("--")]; D = args[0]; REH = "--rehearsal" in sys.argv
 opt = lambda k, d: type(d)(sys.argv[sys.argv.index(k) + 1]) if k in sys.argv else d
-MAXL, PAR, MAXUSD = opt("--max-launches", 15), opt("--par", int(os.environ.get("PU_PAR", "5"))), opt("--max-usd", 14.0)
+MAXL, PAR, MAXUSD = opt("--max-launches", 15), opt("--par", int(os.environ.get("PU_PAR", "8"))), opt("--max-usd", 14.0)
 MAX_TURNS, MAX_CELL_USD = int(os.environ.get("PU_MAX_TURNS", "40")), float(os.environ.get("PU_MAX_CELL_USD", "0.12"))
 DEADLINE = pd.Timestamp(os.environ["PU_DEADLINE_UTC"]) if os.environ.get("PU_DEADLINE_UTC") else None   # no new session after this (freeze)
 TAG = D + ("_rehearsal" if REH else ""); PUB = f"{B}/{'_rehearsal/' if REH else ''}results/calibration/{D}/product_use"
@@ -48,7 +48,8 @@ USERS = LU["users"]
 def task_text(l):
     return (f"{l['core_task']}\n\nThe moment of value for this kind of product: {l['value_moment']}\n\n"
             "Rules: you are trying this product for the first time on its website. Use only free options; never enter payment details. "
-            "Sign up only if the product requires it to reach the moment of value. The first time you reach the moment of value, START your thought "
+            "Sign up only if the product requires it to reach the moment of value. Verification emails can take 2-3 minutes: call the "
+            "verification wait tool again (up to 4 times) before deciding the email never came. The first time you reach the moment of value, START your thought "
             "for that step with the word VALUE_REACHED. If this product does the job in a different way than described, do the closest "
             "version of the job that this product offers; give up only if it truly does not do this kind of job. If something stops you (a signup wall you cannot pass, a captcha, an access "
             "block, a page that does not load or needs a desktop app or mobile app), finish with outcome 'blocked' and say exactly what stopped you. "
@@ -88,8 +89,11 @@ async def main():
             if gate.over_cap(): return {"cell": c, "error": "budget stop"}
             if DEADLINE and pd.Timestamp.now(tz="UTC") > DEADLINE: return {"cell": c, "error": "deadline stop (freeze)"}
             t0 = time.time()
-            try: log = await R.run_cell("", {k: v for k, v in c.items() if not k.startswith("_")}, MAX_TURNS, MAX_CELL_USD, out, llm, gate)
-            except Exception as e: log = {"cell": c, "error": "runner: " + repr(e)[:300]}
+            for k in range(4):   # the seed browser sometimes fails to open under load ("could not open the browser"): retry the start
+                try: log = await R.run_cell("", {k2: v for k2, v in c.items() if not k2.startswith("_")}, MAX_TURNS, MAX_CELL_USD, out, llm, gate)
+                except Exception as e: log = {"cell": c, "error": "runner: " + repr(e)[:300]}
+                if log.get("session_id") or "could not open the browser" not in str(log.get("error")): break
+                log["start_retries"] = k + 1; await asyncio.sleep(30 * (k + 1))
             log["cell"] = c; log["wall_s"] = round(time.time() - t0); log["full"] = FULL.get(log.get("session_id"), []); f.write_text(json.dumps(log, default=str)); return log
     # wave 1: each launch's first user on every site (creates the account when a site needs one); wave 2: the other users log in to that
     # account (same_account_as) instead of signing up again (4 signups per site from one IP triggered rate limits and captchas, Nov 24 rehearsal)
