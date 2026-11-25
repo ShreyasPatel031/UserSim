@@ -599,7 +599,7 @@ html { scroll-behavior: smooth; }
     <div class="copy">
       <h1>Test your product on simulated users</h1>
       <p class="lede sub">Calibrated daily against real launches</p>
-      <a class="proof" href="#leaderboard"><svg class="phlogo" width="26" height="26" fill="#DA552F" aria-hidden="true" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.801 0-.993-.805-1.799-1.801-1.799zM12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm1.604 14.4h-3.405V18H7.801V6h5.804c2.319 0 4.2 1.88 4.2 4.199 0 2.321-1.881 4.201-4.201 4.201z"/></svg><span>Predicts <span class="live"><span class="dot" aria-hidden="true"></span><b id="pct">70.5%</b></span> of Product Hunt's top 10 launches</span><span class="arrow" aria-hidden="true">&darr;</span></a>
+      <a class="proof" href="#leaderboard"><svg class="phlogo" width="26" height="26" fill="#DA552F" aria-hidden="true" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13.604 8.4h-3.405V12h3.405c.995 0 1.801-.806 1.801-1.801 0-.993-.805-1.799-1.801-1.799zM12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zm1.604 14.4h-3.405V18H7.801V6h5.804c2.319 0 4.2 1.88 4.2 4.199 0 2.321-1.881 4.201-4.201 4.201z"/></svg><span>Predicts <span class="live"><span class="dot" aria-hidden="true"></span><b id="pct">&nbsp;</b></span> of Product Hunt's top 10 launches</span><span class="arrow" aria-hidden="true">&darr;</span></a>
       <form id="sim" action="#" method="get">
         <input name="url" type="url" required placeholder="https://yourproduct.com" aria-label="Product URL" autocomplete="url">
         <button type="submit">Simulate</button>
@@ -1161,9 +1161,10 @@ document.querySelectorAll(".copy-btn").forEach(b=>b.addEventListener("click", as
   catch(e){ const r = document.createRange(); r.selectNodeContents(b.parentNode.querySelector("code")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Selected"; }
   setTimeout(()=>b.textContent = "Copy", 1600);
 }));
-// Headline number: the same live figure the leaderboard below shows.
-(function(){ const t = setInterval(()=>{ const v = window.VIEW; if(!v) return; clearInterval(t);
-  const r = ((v.accuracy || {}).mid || []).find(x=>x.flag === "live"); if(r) document.getElementById("pct").textContent = Number(r.top10).toFixed(1) + "%"; }, 300); })();
+// Headline number: copy the leaderboard's own figure (#metric) whenever it renders, so the two always match.
+(function(){ const m = document.getElementById("metric"), out = document.getElementById("pct");
+  const sync = ()=>{ const b = m && m.querySelector(".live b"); if(b && b.textContent.trim()) out.textContent = b.textContent.trim(); };
+  if(m){ new MutationObserver(sync).observe(m, {childList: true, subtree: true, characterData: true}); sync(); } })();
 </script>
 </body>
 </html>
