@@ -439,6 +439,8 @@ with_scale_lock() {
   "$@"
 }
 
+# Allow sourcing create_one / helpers from ph_fleet_ensure_upvote_slots.sh
+[[ "${BASH_SOURCE[0]}" != "${0}" ]] && return 0 2>/dev/null || true
 case "${1:-}" in
   status) cmd_status ;;
   scale-to) with_scale_lock cmd_scale_to "${2:?n}" ;;

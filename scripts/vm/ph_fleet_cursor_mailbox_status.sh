@@ -162,6 +162,43 @@ out["upvote_refresh_diagnosis"] = {
     },
     "note": "New refresh uploads merge (1721Z). ~122 older staged HELD until those handles refresh again.",
 }
+_refresh_vm_missing = [
+    int(s)
+    for s in (9, 27, 38)
+    if str(s) in {str(x.get("slot")) for x in (m.get("slots") or []) if (x.get("state") or "") == "probe_fail"}
+    or not any(str(x.get("slot")) == str(s) for x in (m.get("slots") or []))
+]
+out["orchestrator_information_commitments"] = {
+    "orc_checkin_utc": "2026-11-25T08:34:09Z",
+    "daily_upvote_refresh_14d_active": {
+        "agreed_running_by_utc": "2026-11-25T08:30:00Z",
+        "missed_at_checkin": True,
+        "missed_reason": (
+            "upvote_refresh_ppm=0; dedicated slots 9/27/38 GCE MISSING "
+            "(weekly close also failed 23:45 PT for same reason)"
+        ),
+        "scope": "upvotes through 2026-11-24 PT for 14-day-active held people",
+        "original_deadline_utc": "2026-11-26T08:05:00Z",
+        "original_deadline_pt": "2026-11-26 00:05 PT",
+        "revised_commitment_utc": "2026-11-26T14:00:00Z",
+        "revised_commitment_pt": "2026-11-26 06:00 PT",
+        "revised_reason": (
+            "08:05Z not reachable from 0 refresh/min without recreating refresh VMs; "
+            "target 06:00 PT after ph_fleet_ensure_upvote_slots + ramp"
+        ),
+        "action_utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "action": "recreate slots 9/27/38; ph_fleet_start_upvote_refresh.sh",
+        "refresh_slots_missing_probe": _refresh_vm_missing,
+    },
+    "need_list_completions": {
+        "complete_ppm_15m_observed": ppm_c,
+        "revised_commitment_utc": None,
+        "revised_note": (
+            "No new deadline: 0 whole() saves; blocker stacks/whole-person gate (not refresh). "
+            "Refresh and need-list are independent pipelines."
+        ),
+    },
+}
 tfc = {}
 tfp = art / "tab_failure_counts.json"
 if tfp.is_file():
