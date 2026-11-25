@@ -69,6 +69,8 @@ react = {a: {m: (float(g[m].mean()) if m in g and g[m].notna().any() else None) 
          for a, g in RD.groupby("arm")} if len(RD) else {}
 S = {"day": D, "rehearsal": REH, "scored_at": pd.Timestamp.now(tz="UTC").isoformat(), "truth_source": "results/web/truth_daily.json",
      "residual": RES, "reaction": react, "reaction_rows": REACT, "n_launches": len(ids),
+     "n_sessions_excluded_access": (OUT or {}).get("n_sessions_excluded_access"), "n_launches_no_prediction": (OUT or {}).get("n_launches_no_prediction"),
+     "clean_session_rate": (OUT or {}).get("clean_session_rate"),
      "artefact_rate_launch_sessions": (float((F[F.slot == "launch"].artefact != "none").mean()) if len(F) else None)}
 p = os.path.join(SP, f"pu_score_{D}.json"); json.dump(S, open(p, "w"), indent=1, default=str); subprocess.run(["gsutil", "-q", "cp", p, f"{PUB}/score.json"])
 print(json.dumps({k: S[k] for k in ("day", "residual", "reaction", "artefact_rate_launch_sessions")}, default=str)[:1500])

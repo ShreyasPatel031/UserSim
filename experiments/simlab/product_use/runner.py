@@ -13,7 +13,7 @@ Outputs (frozen, public):   results/calibration/D/product_use/outputs.json  (agg
 """
 import asyncio, json, os, re, subprocess, sys, time
 from pathlib import Path
-import pandas as pd
+import numpy as np, pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, "..", "cohort_calibration"))
 # MCP bearer token (Shreyas, Nov 25: read usersim-MVP_MCP_TOKEN via gcloud for the product-use test; never print it). Held in this
@@ -49,8 +49,7 @@ USERS = LU["users"]
 def task_text(l):
     return (f"{l['core_task']}\n\nThe moment of value for this kind of product: {l['value_moment']}\n\n"
             "Rules: you are trying this product for the first time on its website. Use only free options; never enter payment details. "
-            "First look for a way to do the job without an account: a demo, playground, try-it box, sample project, template gallery or the pricing "
-            "and features pages. Make an account only if the product needs one to reach the moment of value. You may already be signed in: if so, "
+            "Make an account only if the product needs one to reach the moment of value. You may already be signed in: if so, "
             "just continue. If it needs an account and offers 'Continue with Google' / 'Sign in with Google', click it and, when the page is on "
             "accounts.google.com, call usersim_google_signin; otherwise use the tool that gives you an email identity. Verification emails can take 2-3 minutes: call the "
             "verification wait tool again (up to 4 times) before deciding the email never came. The first time you reach the moment of value, START your thought "
@@ -129,11 +128,12 @@ Job: {task}
 
 Answer as this person, honestly, from what happened in the logs only. For each product, first decide whether you were stopped by an ACCESS
 ARTEFACT rather than by the product itself: signup_wall (needed an account you could not create or verify), captcha, block (access denied,
-bot check, region block), js_only (page did not render or needed an app/desktop download), timeout (ran out of steps/time while the page
+bot check, region block), js_only (the page did not render in the browser), timeout (ran out of steps/time while the page
 was still loading), engine (the browser session failed to start or crashed), card_required (a free plan or trial that asks for a card or payment),
-onboarding_broken (the product's own signup or onboarding flow loops, errors or will not let you through although you filled it in), or none.
-Problems caused by signup_wall, captcha, block, js_only, timeout or engine go in "artefact_evidence", NOT in "problems". card_required and
-onboarding_broken are the product's own problems: describe them in "problems" as well. Problems are about the product: its onboarding, clarity, features, speed, output quality, pricing seen, etc.
+onboarding_broken (after you got in, the product's own onboarding loops, errors or will not let you through although you filled it in),
+platform_only (the product only works as a Mac/Windows/desktop app, a browser extension or a mobile app), or none.
+Problems caused by signup_wall, captcha, block, js_only, timeout or engine go in "artefact_evidence", NOT in "problems". card_required,
+onboarding_broken and platform_only are the product's own traits: describe them in "problems" as well. Problems are about the product: its onboarding, clarity, features, speed, output quality, pricing seen, etc.
 Reply JSON only:
 {{"products": {{"A": {{"completed": true|false, "artefact": "...", "artefact_evidence": "...", "would_use": 0.0-1.0,
   "value_step": <number of the step in that product's log where you first got the job's result, or null>,
@@ -141,7 +141,7 @@ Reply JSON only:
  "preference": [all three of "A","B","C", the one you would choose for this job first; a product that could not do the job for you
    ranks below those that could; break ties by which you would rather try again], "reasons": {{"A_vs_B": "...", "A_vs_C": "..."}}}}"""
 
-PRODUCT_FRICTION = {"card_required", "onboarding_broken"}
+PRODUCT_FRICTION = {"card_required", "onboarding_broken", "platform_only"}   # product traits: findings (orchestrator/Shreyas 06:03Z Nov 25)
 rows, deb_usd = [], 0.0
 for l in LAUNCHES:
     names = {"launch": l["name"], **{f"comp{k + 1}": c["name"] for k, c in enumerate(l.get("competitors") or [])}}
@@ -175,25 +175,34 @@ for l in LAUNCHES:
             subprocess.run(["gsutil", "-q", "cp", str(t), f"{PRIV}/{TAG}/traces/{l['id']}/{u['user_key']}_{slot}.json"])
 
 R_ = pd.DataFrame(rows)
+# Access failures never count (orchestrator/Shreyas 06:03Z Nov 25): a session tagged signup_wall/captcha/block/js_only/timeout/engine is
+# excluded from every prediction and score, not a negative. Preference is re-ranked among the user's sessions that got in.
+if len(R_):
+    R_["clean"] = R_.artefact == "none"
+    _m = R_.clean & R_.pref_rank.notna()
+    R_["pref_rank_clean"] = R_.pref_rank.where(_m).groupby([R_.launch_id, R_.user]).rank(method="first")
+    R_["n_ranked_clean"] = _m.groupby([R_.launch_id, R_.user]).transform("sum").astype(int)
 def agg(g):
     a = g[g.slot == "launch"]; ok = a[a.artefact == "none"]
-    return pd.Series({"n_user_sessions": len(a), "artefact_rate": round(float((a.artefact != "none").mean()), 3) if len(a) else None,
+    return pd.Series({"n_user_sessions": len(a), "n_excluded_access": int((a.artefact != "none").sum()), "n_used": int(len(ok)), "artefact_rate": round(float((a.artefact != "none").mean()), 3) if len(a) else None,
                       "would_use": round(float(ok.would_use.astype(float).mean()), 3) if len(ok) else None,
-                      "pref_score": round(float(((ok.n_ranked - ok.pref_rank) / (ok.n_ranked - 1).clip(lower=1)).mean()), 3) if len(ok) and ok.pref_rank.notna().any() else None,
+                      "pref_score": (round(float(((o2.n_ranked_clean - o2.pref_rank_clean) / (o2.n_ranked_clean - 1)).mean()), 3) if len(o2 := ok[(ok.n_ranked_clean >= 2) & ok.pref_rank_clean.notna()]) else None),
                       "completion": round(float(ok.completed.astype(bool).mean()), 3) if len(ok) else None,
                       "steps_to_value_med": float(ok.steps_to_value.median()) if ok.steps_to_value.notna().any() else None,
                       "competitor_artefact_rate": round(float((g[g.slot != "launch"].artefact != "none").mean()), 3) if (g.slot != "launch").any() else None})
 A = R_.groupby("launch_id").apply(agg).reset_index() if len(R_) else pd.DataFrame()
-if len(A): A["sim_score"] = A.would_use.fillna(A.would_use.median()) * A.pref_score.fillna(0.5)     # pre-registered re-order key: would-use x preference
+if len(A): A["sim_score"] = [None if pd.isna(w) else round(float(w) * (0.5 if pd.isna(q) else float(q)), 4) for w, q in zip(A.would_use, A.pref_score)]   # would-use x preference; no clean launch session = no prediction
 commit = subprocess.run(["git", "-C", HERE, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip() or os.environ.get("PU_COMMIT", "")
 OUT = {"day": D, "rehearsal": REH, "frozen_at": pd.Timestamp.now(tz="UTC").isoformat(),
        "freeze_deadline": (pd.Timestamp(D + " 03:30", tz="America/Los_Angeles").tz_convert("UTC").isoformat() if re.match(r"\d{4}-\d\d-\d\d$", D) else "n/a (backtest)"), "code_commit": commit,
        "lineup_frozen_at": LU["frozen_at"], "n_cells": len(CELLS), "n_sessions_run": sum(1 for x in LOGS if x.get("session_id")),
        "model_usd_sessions": round(USD, 3), "minutes": round((time.time() - t0) / 60, 1), "driver_model": R.MODEL,
        "launches": A.to_dict("records") if len(A) else [],
-       "findings": R_[["launch_id", "slot", "product", "category", "artefact", "artefact_raw", "completed", "would_use", "problems", "likes", "steps_to_value", "n_steps", "error_steps", "pref_rank", "n_ranked"]].to_dict("records") if len(R_) else []}
+       "findings": R_[["launch_id", "slot", "product", "category", "artefact", "artefact_raw", "clean", "completed", "would_use", "problems", "likes", "steps_to_value", "n_steps", "error_steps", "pref_rank", "n_ranked", "pref_rank_clean", "n_ranked_clean"]].to_dict("records") if len(R_) else []}
 OUT["clean_session_rate"] = round(float((R_.artefact == "none").mean()), 3) if len(R_) else None          # PREREG 11d: target >= 0.60 per night
 OUT["clean_session_rate_launch"] = round(float((R_[R_.slot == "launch"].artefact == "none").mean()), 3) if len(R_) else None
+OUT["n_sessions_excluded_access"] = int((R_.artefact != "none").sum()) if len(R_) else 0
+OUT["n_launches_no_prediction"] = int(sum(x is None for x in A.sim_score)) if len(A) else 0
 OUT["artefact_raw_counts"] = R_.artefact_raw.value_counts().to_dict() if len(R_) else {}
 OUT["on_time"] = (OUT["frozen_at"] <= OUT["freeze_deadline"]) if OUT["freeze_deadline"][:2] == "20" else None
 p = WORK / "outputs.json"; p.write_text(json.dumps(OUT, indent=1, default=str)); subprocess.run(["gsutil", "-q", "cp", str(p), f"{PUB}/outputs.json"])
