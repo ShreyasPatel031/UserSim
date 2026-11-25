@@ -191,3 +191,12 @@ Requested by the orchestrator at 13:35Z. This is a rehearsed fix and a timing-on
   - `rehearse 2026-11-24`: rc 0. The four_inputs order md5 5c40d6a6 equals the row already logged. A promo row rebuilt for Nov 23 equals the logged row on every field except written_at.
 - **Deployed** at 05:48 PT.
 - **Rollback:** `bash ~/w/stage/20261124_frozen_rows_vm/deploy_frozen.sh rollback`
+
+### 2026-11-25 10:30Z — CORRECTION: the PH ops "last-week coverage" figure was a fixed, stale window
+
+The orchestrator flagged at 10:26Z that the PH ops coverage figure did not match the population agent's ledger.
+
+- **Cause.** pool_size.py's lastweek block defaults to LW_FROM=2026-10-29 and LW_TO=2026-11-04, a window Shreyas set on Nov 5. It was never moved forward, so the "last-week" numbers reported since then (e.g. 73.93 / 93.09 capped on Nov 25) described Oct 29–Nov 4.
+- **Check.** Re-run on Nov 18–24 (255 launches) against the same store: 38.78 / 60.15 capped, which matches the ledger's 38.8 / 60.2.
+- **Why uncapped exceeds 100%.** Listed upvoters outnumber PH's displayed vote count on many top launches (count-time discounting, votes_drift.md), and an old window has had longer for people's lists to fill.
+- **From now on.** The population ledger is the official coverage number. PH ops reports coverage only if a same-window cross-check disagrees by more than 1 point; the 2-hourly routine was updated to do this.
