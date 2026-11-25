@@ -119,8 +119,10 @@ was still loading), engine (the browser session failed to start or crashed), or 
 NOT in "problems". Problems are about the product: its onboarding, clarity, features, speed, output quality, pricing seen, etc.
 Reply JSON only:
 {{"products": {{"A": {{"completed": true|false, "artefact": "...", "artefact_evidence": "...", "would_use": 0.0-1.0,
+  "value_step": <number of the step in that product's log where you first got the job's result, or null>,
   "problems": ["...", "...", "..."], "likes": ["...", "...", "..."]}}, "B": {{...}}, "C": {{...}}}},
- "preference": ["A"|"B"|"C" best first, only products you could actually judge], "reasons": {{"A_vs_B": "...", "A_vs_C": "..."}}}}"""
+ "preference": [all three of "A","B","C", the one you would choose for this job first; a product that could not do the job for you
+   ranks below those that could; break ties by which you would rather try again], "reasons": {{"A_vs_B": "...", "A_vs_C": "..."}}}}"""
 
 rows, deb_usd = [], 0.0
 for l in LAUNCHES:
@@ -144,7 +146,7 @@ for l in LAUNCHES:
             rows.append({"launch_id": l["id"], "structural_rank": l["structural_rank"], "category": l["category"], "user": u["user_key"], "slot": slot,
                          "product": names[slot], "url": lg["cell"]["site"], "artefact": art, "artefact_evidence": pj.get("artefact_evidence"),
                          "completed": pj.get("completed"), "would_use": pj.get("would_use"), "problems": pj.get("problems") or [], "likes": pj.get("likes") or [],
-                         "driver_outcome": b["outcome"], "n_steps": b["n_steps"], "steps_to_value": b["steps_to_value"], "seconds": b["seconds"], "error_steps": b["error_steps"],
+                         "driver_outcome": b["outcome"], "n_steps": b["n_steps"], "steps_to_value": (pj.get("value_step") if isinstance(pj.get("value_step"), int) else b["steps_to_value"]), "seconds": b["seconds"], "error_steps": b["error_steps"],
                          "pref_rank": ([inv.get(x) for x in dj.get("preference") or []].index(slot) + 1) if slot in [inv.get(x) for x in dj.get("preference") or []] else None,
                          "n_ranked": len(dj.get("preference") or []), "reasons": dj.get("reasons")})
         # private trace store: full logs + debrief, per user and product

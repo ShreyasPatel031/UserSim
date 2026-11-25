@@ -42,7 +42,9 @@ def grounded(q, tries=3):
             r = json.load(urllib.request.urlopen(urllib.request.Request(GURL, json.dumps(body).encode(),
                           {"Authorization": "Bearer " + sim_model._token(), "Content-Type": "application/json"}), timeout=120))
             t = "".join(x.get("text", "") for x in r["candidates"][0]["content"]["parts"]); m = re.search(r"\{.*\}", t, re.S)
-            return json.loads(m.group(0)) if m else {}
+            o = json.loads(m.group(0)) if m else {}
+            if "producthunt.com" in str(o.get("url") or "").lower(): o = {"url": None, "dropped": "producthunt.com result"}
+            return {**o, "queried_at": pd.Timestamp.now(tz="UTC").isoformat()}
         except Exception as e:
             if k == tries - 1: return {"error": repr(e)[:200]}
             time.sleep(5 * (k + 1))
@@ -77,7 +79,7 @@ L = [{"id": str(r["id"]), "structural_rank": r["structural_rank"], "name": T[str
 UC = json.loads(gcat(f"{PRIV}/url_cache.json") or b"{}")
 for l in L:
     if l["id"] not in UC: UC[l["id"]] = dict(official_url(l["name"], l["tagline"], l["description"]), source="gemini_search_grounding", at=pd.Timestamp.now(tz="UTC").isoformat())
-    l["url"], l["url_source"], l["url_confidence"] = UC[l["id"]].get("url"), UC[l["id"]]["source"], UC[l["id"]].get("confidence")
+    l["url"], l["url_source"], l["url_confidence"], l["url_queried_at"] = UC[l["id"]].get("url"), UC[l["id"]]["source"], UC[l["id"]].get("confidence"), UC[l["id"]].get("queried_at") or UC[l["id"]].get("at")
 
 # ---- categories: CATEGORY-1 table if delivered; else embedding shortlist (12) over every PH category we hold, then a Gemini pick ----
 CATS = jl(gcat(f"{B}/simharness/taxonomy/ph_categories_pasted.jsonl", False))
@@ -94,16 +96,25 @@ for k, q in PROD.items():
 for c, ks in BYCAT.items():
     if c not in CD: CD[c] = "Products such as: " + "; ".join(f"{PROD[k]['name']} ({PROD[k]['tagline']})" for k in sorted(ks, key=lambda k: -PROD[k]["reviews_count"])[:3])
 CN = sorted(CD)
-C1 = None
-for p in ("launch_category.jsonl", "launch_categories.jsonl"):
-    rows = jl(gcat(f"{B}/simharness/taxonomy/{p}"))
-    if rows: C1 = {str(r.get("launch_id") or r.get("id")): r for r in rows}; break
+# CATEGORY-1 (orchestrator 00:40Z Nov 25): simharness.run_category lineup -> simharness/taxonomy/lineup_<D>.parquet (category: own PH label
+# when the slug is known, else the classifier's top 1 of top 3; competitors: most-reviewed online products of the category = category leaders)
+C1, C1C = None, {}
+_c1 = gcat(f"{B}/simharness/taxonomy/lineup_{D}.parquet") or gcat(f"{B}/simharness/taxonomy/wip/lineup_{D}.parquet")
+if _c1:
+    _df = pd.read_parquet(io.BytesIO(_c1))
+    C1 = {str(r.item_id): {"category": r.primary, "source": r.category_source, "top3": list(r.embedding_top3),
+                           "top3_scores": list(r.embedding_top3_scores), "own": list(r.own_categories)} for r in _df.itertuples()}
+    C1C = {str(r.item_id): {"competitors": [{"name": c.get("name"), "tagline": c.get("tagline"), "source": "category_leader:" + str(c.get("source"))}
+                                            for c in json.loads(r.competitors)]} for r in _df.itertuples()}
 from sentence_transformers import SentenceTransformer  # noqa: E402
 EMB = SentenceTransformer("BAAI/bge-small-en-v1.5")
 CE = EMB.encode([f"{c}: {CD[c]}" for c in CN], normalize_embeddings=True)
 for l in L:
     if C1 and l["id"] in C1 and (C1[l["id"]].get("category")):
-        r = C1[l["id"]]; l.update(category=r["category"], category_source="category1:" + str(r.get("source", "")), category_confidence=r.get("confidence"))
+        r = C1[l["id"]]; l.update(category=r["category"], category_source="category1:" + str(r.get("source", "")),
+                                  category_confidence=("ph_own_label" if r["source"] == "ph_own" else "classifier top1 (41.5% vs majority; top3 64.6%)"),
+                                  category_top3=r["top3"], category_top3_scores=r["top3_scores"])
+        v = EMB.encode([f"{l['name']}. {l['tagline']}. {l['description'][:500]} Topics: {', '.join(l['topics'])}"], normalize_embeddings=True)[0]; l["_v"] = v
         continue
     v = EMB.encode([f"{l['name']}. {l['tagline']}. {l['description'][:500]} Topics: {', '.join(l['topics'])}"], normalize_embeddings=True)[0]
     l["_v"] = v; o = list(np.argsort(-(CE @ v))[:12])
@@ -119,17 +130,16 @@ for l in L:
              category_cos=round(float(CE[j] @ v), 4))
 
 # ---- competitors: nightly PH Similar Products sharing the category > CATEGORY-1 sets > category's most-reviewed live products ----
-NIGHT = {str(x.get("launch_id")): x for x in jl(gcat(f"{B}/raw/ph_alternatives/nightly/{D}.jsonl"))}
-C1C = {str(x.get("launch_id")): x for x in jl(gcat(f"{B}/simharness/taxonomy/competitor_sets.jsonl"))}
+NIGHT = {str(x.get("launch_id") or x.get("id")): x for x in jl(gcat(f"{B}/raw/ph_at_launch/{D}/launch_competitor_context.jsonl"))}   # fleet nightly Similar Products (from Nov 26)
 CC = json.loads(gcat(f"{PRIV}/competitor_url_cache.json") or b"{}")
 def cands(l):
     low = lambda s: (s or "").lower(); cat = low(l["category"]); own = low(l["name"])
     if l["id"] in NIGHT:
-        out = [(s.get("name"), s.get("tagline"), "ph_similar_nightly") for s in NIGHT[l["id"]].get("similar_products") or []
+        out = [(s.get("name"), s.get("tagline"), "ph_similar_nightly") for s in (NIGHT[l["id"]].get("similar_products") or NIGHT[l["id"]].get("competitors") or [])
                if cat in {low(c) for c in s.get("categories") or []} and not s.get("no_longer_online")]
         if len(out) >= 2: return out
     if l["id"] in C1C:
-        out = [(c.get("name"), c.get("tagline"), "category1:" + str(c.get("source", ""))) for c in C1C[l["id"]].get("competitors") or []]
+        out = [(c.get("name"), c.get("tagline"), c["source"]) for c in C1C[l["id"]].get("competitors") or []]
         if len(out) >= 2: return out
     pool = sorted([(q["reviews_count"], k) for k, q in PROD.items() if not q["dead"] and cat in {low(c) for c in q["cats"]}
                    and low(q["name"]) not in own and own not in low(q["name"])], reverse=True)[:10]          # the category's 10 most-reviewed live products
@@ -146,7 +156,7 @@ async def pick(l):
         if not u or (l.get("url") and cu.same_site(u, l["url"])): continue
         chk = await live(u)
         if chk["ok"] and not any(cu.same_site(chk["final_url"], o["url"]) for o in out):
-            out.append({"name": name, "url": chk["final_url"], "source": src, "url_source": "gemini_search_grounding", "url_confidence": CC[key].get("confidence")})
+            out.append({"name": name, "url": chk["final_url"], "source": src, "url_source": "gemini_search_grounding", "url_confidence": CC[key].get("confidence"), "url_queried_at": CC[key].get("queried_at")})
         if len(out) == 2: break
     return out
 async def all_comps():
