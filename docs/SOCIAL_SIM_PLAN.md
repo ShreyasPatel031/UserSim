@@ -401,6 +401,14 @@ complaints (341 products, 1.9 each), likes (535, 5.0 each), mean rating 4.84. Fr
 like recall 54.6 [50.9, 58.2] (precision 10.0 / 33.9). Coverage: about half of shortlist launches have 2 competitors with
 truth. Files: simharness/bench_v0/review_truth1/.
 
+### What a person actually says (CONTENT-LABELS-1, subagent, Nov 25; $2.20)
+New Task C content metric "same point" (Claude Opus judge, frozen prompt same-point-v1, 3 runs, majority; agrees with blind
+hand labels on 59 of 60, kappa 0.93). On 150 rows: another real commenter on the same launch 20.0 [14.0, 26.7], Flash +
+history 12.0, tuned Qwen 8.0, the person's own last comment 3.3. Flash - other person -8.0 [-16.0, -0.7]. The embedding
+measure ranked Flash first (restating the product); same point ranks it below a random real commenter. Person-built
+comments sound like the person but rarely make the point the person made: the gap to close is about 8 points. Code:
+simharness/content_judge.py; task_c.py score(..., content_judge=...). Files: simharness/bench_v0/content_labels1/.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
@@ -414,7 +422,7 @@ truth. Files: simharness/bench_v0/review_truth1/.
 4b. Task C person match: first fine-tune done Nov 24 (65.2 vs 54.6 untuned, 59.3 Gemini Flash, 68.0 the person's own
     last comment); learning curve done Nov 24 (flat from 4,000 to 12,000 rows); context ablation done Nov 24 (voice
     comes from past comments only). Running: person-built comments on the launch-level WHAT scorer (WHAT-PANEL-1).
-4c. Task C content measure: embeddings do not work for content (projecting out the launch text measured style; tried
+4c. (done Nov 25: CONTENT-LABELS-1, same-point judge) Task C content measure: embeddings do not work for content (projecting out the launch text measured style; tried
     Nov 24). Needs judged "same point as the real comment" labels; also a style distance (length, question vs praise).
 4d. Joint fine-tune: vote + comment in one adapter. On hold: round 1 shows vote yes/no from history is near chance
     once activity is matched, so the vote half waits for the presence / choice split.

@@ -272,8 +272,13 @@ class TaskC:
         with ThreadPoolExecutor(workers) as ex:
             return list(ex.map(one, list(rows.itertuples())))
 
-    def score(self, rows: pd.DataFrame, texts: list) -> pd.DataFrame:
-        """Per-row scores of `texts` (one per row; None or '' = no comment, scored as a miss)."""
+    def score(self, rows: pd.DataFrame, texts: list, content_judge=None) -> pd.DataFrame:
+        """Per-row scores of `texts` (one per row; None or '' = no comment, scored as a miss).
+
+        content_judge: optional simharness.content_judge.ContentJudge. When given, adds `same_point` (0/1, majority of
+        the judge's runs; NaN for a missing comment counted as 0): does the comment make the same specific point as the
+        person's real comment. Validated in CONTENT-LABELS-1 (kappa 0.93 against hand labels on 60 pairs); this is the
+        Task C content metric. The embedding `match` rewards restating the product and is kept for continuity."""
         has = np.array([bool(t) and isinstance(t, str) for t in texts])
         E_real = self.emb.encode(rows["text"].tolist())
         E_sim = self.emb.encode([t if h else " " for t, h in zip(texts, has)])
@@ -283,11 +288,29 @@ class TaskC:
         E_oth = self.emb.encode([t if isinstance(t, str) else " " for t in other])
         sim_o = np.einsum("ij,ij->i", E_oth, E_sim)
         own = np.where(has_o, (sim > sim_o) + 0.5 * (sim == sim_o), np.nan)
-        return pd.DataFrame({"day": rows["day"].to_numpy(), "person_idx": rows["person_idx"].to_numpy(),
+        out = pd.DataFrame({"day": rows["day"].to_numpy(), "person_idx": rows["person_idx"].to_numpy(),
                              "item_idx": rows["item_idx"].to_numpy(), "has": has, "sim": sim,
                              "match": np.where(has, sim >= self.tau, False).astype(float), "own_vs_other": own,
                              "len_ratio": [len(t) / max(len(r), 1) if h else np.nan
                                            for t, r, h in zip(texts, rows["text"], has)]})
+        if content_judge is not None:
+            out["same_point"] = self._same_point(rows, texts, has, content_judge)
+        return out
+
+    def _same_point(self, rows: pd.DataFrame, texts: list, has: np.ndarray, judge) -> np.ndarray:
+        from simharness.bench import scrub
+        from simharness.content_judge import majority
+        pairs = []
+        for k, (r, t, h) in enumerate(zip(rows.itertuples(), texts, has)):
+            if h:
+                it = self.bench.item(r.item_idx)
+                pairs.append({"pair_id": k, "launch": f"{it.title} — {it.summary}",
+                              "real": scrub(" ".join(str(r.text).split()))[:500], "cand": scrub(" ".join(str(t).split()))[:500]})
+        sp = np.zeros(len(rows))   # a missing comment makes no point
+        if pairs:
+            m = majority(judge.label(pd.DataFrame(pairs)))
+            sp[m["pair_id"].to_numpy()] = m["same_point"].to_numpy()
+        return sp
 
     def score_reference(self, rows: pd.DataFrame, name: str) -> pd.DataFrame:
         """Score one of the reference columns; rows without that reference are left out (NaN), not counted as misses."""
@@ -297,8 +320,11 @@ class TaskC:
 
 # ------------------------------------------------------------------------------------------ summaries
 def _agg(df: pd.DataFrame) -> dict:
-    return {"match": float(df["match"].mean()), "sim": float(df["sim"].mean()),
-            "own_vs_other": float(df["own_vs_other"].mean()), "len_ratio_median": float(df["len_ratio"].median())}
+    out = {"match": float(df["match"].mean()), "sim": float(df["sim"].mean()),
+           "own_vs_other": float(df["own_vs_other"].mean()), "len_ratio_median": float(df["len_ratio"].median())}
+    if "same_point" in df:
+        out["same_point"] = float(df["same_point"].mean())
+    return out
 
 
 def summarize(df: pd.DataFrame, n_boot: int = 2000, seed: int = 0) -> dict:
