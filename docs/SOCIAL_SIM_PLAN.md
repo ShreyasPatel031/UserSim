@@ -417,6 +417,13 @@ not what reviewers report after weeks; and access still dominates. Closed. PU-1 
 as layer-2 truth (first impressions) and a target of 60%+ clean sessions (seed accounts, no-account paths). An artefact
 rerun after the 11a fixes gave 25% clean (no gain).
 
+### First residual read (RESID-READ-0, subagent, Nov 25; $0)
+Only the persona panel and the say block were frozen on time (about 01:30 PT) on Nov 15-23 (9 days, 164 launches). Within-day
+Spearman with the structural miss: panel interest -0.13 [-0.28, +0.01], sentiment +0.06 / +0.00; re-ordering never helps
+(k = 0 on 8 of 9 days; top-3 capture change -3.7 [-11.1, 0.0]). Stage B and the person-built panel had no scorable day
+(Nov 24 Stage B frozen 05:28 PT; Nov 15-23 person panels generated after results). Layer 1 is still 0; 9 days can only see
+effects of about 10 points. Forward lines must freeze before 03:30 PT every night from Nov 25.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
