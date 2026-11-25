@@ -1,0 +1,949 @@
+{
+ "day": "2026-11-24",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1328526": {
+   "themes": [
+    {
+     "theme": "AirTag feature is appreciated",
+     "n": 2
+    },
+    {
+     "theme": "Battery life concerns",
+     "n": 2
+    },
+    {
+     "theme": "Slide mount design is liked",
+     "n": 1
+    },
+    {
+     "theme": "Ability to rotate through photos",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to accordion photo albums",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Battery life with tracking",
+    "Rotate through multiple photos"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the AirTag feature and the idea behind it.",
+      "Users are asking about the battery life, especially with tracking switched on.",
+      "Users like the slide mount design.",
+      "Users are asking if the device can rotate through a few photos.",
+      "Users express general positive sentiment.",
+      "Users compare the product to blind boxes.",
+      "Users compare the product to old accordion photo albums."
+     ],
+     [
+      "Users appreciate the AirTag feature and the idea behind it.",
+      "Users are asking about the battery life, especially with tracking switched on.",
+      "Users like the slide mount design.",
+      "Users are asking if the device can rotate through a few photos.",
+      "Users express general positive sentiment.",
+      "Users compare the product to blind boxes.",
+      "Users compare the product to old accordion photo albums."
+     ],
+     [
+      "How long does the battery last?",
+      "The AirTag feature is really clever.",
+      "The slide mount design is fun.",
+      "Can it rotate through a few photos?",
+      "This reminds me of when people used to store those accordion photo albums in their wallet."
+     ]
+    ],
+    "complaints": [
+     [
+      "How long does the battery last with tracking switched on?",
+      "Can it rotate through a few photos?"
+     ],
+     [
+      "How long does the battery last with tracking switched on?",
+      "Can it rotate through a few photos?"
+     ],
+     [
+      "How long does the battery last with tracking switched on?",
+      "Do you have a sense of how long the battery lasts?",
+      "Can it rotate through a few photos?"
+     ]
+    ]
+   }
+  },
+  "1327242": {
+   "themes": [
+    {
+     "theme": "Unified inbox for calls, transcripts, and summaries",
+     "n": 5
+    },
+    {
+     "theme": "AI agent's access to past customer history during live calls",
+     "n": 2
+    },
+    {
+     "theme": "Availability of local phone numbers in different countries",
+     "n": 1
+    },
+    {
+     "theme": "AI agent's ability to take actions and supervisor instructions",
+     "n": 1
+    },
+    {
+     "theme": "Specific business use cases for the product",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "AI agent access to past customer history",
+    "International availability of local numbers",
+    "Business use cases"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The integration of calls, transcripts, and summaries into the same inbox as email and chat is highly valued, as it helps agents maintain context and avoids losing information after a call.",
+      "Users are curious about the AI agent's ability to access and utilize a caller's past tickets, email, chat, and WhatsApp history during a live call.",
+      "The ability to easily sort out phone numbers for different countries within the helpdesk is seen as a significant benefit.",
+      "The AI agent's capability to take actions (e.g., check booking/order status) and supervisors' ability to pass instructions to the AI during a live call are highlighted as interesting and valuable features.",
+      "Users are asking about the specific business use cases that benefit most from SparrowDesk.",
+      "There is a question regarding the availability of local numbers in specific countries, such as Australia."
+     ],
+     [
+      "Keeping calls and tickets in one place, especially with transcripts and AI summaries, is highly valued for continuity and efficiency.",
+      "Users are curious about the AI agent's access to past customer history (tickets, emails, chat, WhatsApp) during a live call.",
+      "The ability to easily get phone numbers for different countries within the helpdesk is a significant convenience.",
+      "The AI agent's capability to take actions (e.g., check booking/order status) and supervisors' ability to pass instructions to the AI during a live call are highlighted as interesting features.",
+      "Users are asking about the specific business use cases that benefit most from the product.",
+      "Users are inquiring about the availability of local numbers in specific countries."
+     ],
+     [
+      "Keeping calls and tickets in one place, especially with transcripts and AI summaries, is highly valued for continuity and efficiency.",
+      "Users are curious about the AI agent's access to past customer history (tickets, emails, chat, WhatsApp) during a live call.",
+      "The ability to easily get phone numbers for different countries within the helpdesk is a significant convenience.",
+      "The AI agent's capability to take actions (e.g., check booking/order status) and supervisors' ability to pass instructions to the AI during a live call are highlighted as interesting features.",
+      "Users are asking about the specific business use cases that benefit most from the product.",
+      "Users are inquiring about the availability of local numbers in specific countries."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the AI agent see a caller's past tickets before it picks up or only the human after the transfer?",
+      "Can the AI agent use a customer\u2018s previous email, chat and WhatsApp history during a live call?",
+      "Is Australia one of the 51 countries for local numbers?",
+      "Curious how it handles a caller who already emailed in \u2014 does the agent"
+     ],
+     [
+      "Does the AI agent see a caller's past tickets before it picks up or only the human after the transfer?",
+      "Can the AI agent use a customer\u2018s previous email, chat and WhatsApp history during a live call?",
+      "Is Australia one of the 51 countries for local numbers?",
+      "What sort of business use cases have you seen benefit most with SparrowDesk?"
+     ],
+     [
+      "Does the AI agent see a caller's past tickets before it picks up or only the human after the transfer?",
+      "Can the AI agent use a customer\u2018s previous email, chat and WhatsApp history during a live call?",
+      "Is Australia one of the 51 countries for local numbers?",
+      "What sort of business use cases have you seen benefit most with SparrowDesk?"
+     ]
+    ]
+   }
+  },
+  "1328270": {
+   "themes": [
+    {
+     "theme": "Can multiple features be combined into one video?",
+     "n": 1
+    },
+    {
+     "theme": "Ability to capture flows that pause for human approval as one demo",
+     "n": 1
+    },
+    {
+     "theme": "Can misclicks be fixed in the editor or does the whole demo need to be re-recorded?",
+     "n": 1
+    },
+    {
+     "theme": "Is narration written from the screen or from the prompt?",
+     "n": 1
+    },
+    {
+     "theme": "Appreciation for automated editing features (voiceover, cursor, zooms)",
+     "n": 1
+    },
+    {
+     "theme": "Product is fun and useful",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Ability to edit individual steps in a demo",
+    "Narration source (screen vs. prompt)",
+    "Capture entire flow as one demo",
+    "Combine multiple features into one video"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Can I combine multiple features into 1 video?",
+      "The brand, videos, and team are fun, making it a fun product and company.",
+      "Could it capture a whole flow that pauses for human approval and then picks back up as one demo?",
+      "The automatic recording of the real app locally from a one-line prompt, with voiceover, cursor, and zooms, is really appealing.",
+      "If it misclicks something mid-flow, can you fix just that step in the editor, or do you have to re-record the whole demo?",
+      "When you ask for a demo in one line, does it write the narration from the screen or from your prompt?"
+     ],
+     [
+      "Users find the product fun and useful.",
+      "Users want to know if multiple features can be combined into one video.",
+      "Users are asking about the ability to capture flows that pause for human approval as one demo.",
+      "Users want to know if they can fix a misclick in the editor or if they have to re-record the whole demo.",
+      "Users are asking whether the narration is written from the screen or from the prompt.",
+      "Users appreciate the automated editing features like voiceover, cursor, and zooms."
+     ],
+     [
+      "Users find the product fun and useful.",
+      "Users want to know if multiple features can be combined into one video.",
+      "Users are asking if the tool can capture flows that pause for human approval as one demo.",
+      "Users want to know if they can fix a misclick in the editor or if they have to re-record the whole demo.",
+      "Users are asking if the narration is written from the screen or from the prompt.",
+      "Users appreciate the automated editing features like voiceover, cursor, and zooms."
+     ]
+    ],
+    "complaints": [
+     [
+      "If it misclicks something mid-flow, can you fix just that step in the editor, or do you have to re-record the whole demo?",
+      "when you ask for a demo in one line, does it write the narration from the screen or from your prompt?",
+      "Could it capture that whole thing as one demo?",
+      "Can I combine multiple features into 1 video?"
+     ],
+     [
+      "Can it capture a whole flow as one demo, even if it pauses for human approval?",
+      "If it misclicks something mid-flow, can you fix just that step in the editor, or do you have to re-record the whole demo?",
+      "When you ask for a demo in one line, does it write the narration from the screen or from your prompt?",
+      "Can I combine multiple features into 1 video?"
+     ],
+     [
+      "Can I combine multiple features into 1 video?",
+      "Could it capture that whole thing as one demo?",
+      "If it misclicks something mid-flow, can you fix just that step in the editor, or do you have to re-record the whole demo?",
+      "when you ask for a demo in one line, does it write the narration from the screen or from your prompt?"
+     ]
+    ]
+   }
+  },
+  "1327680": {
+   "themes": [
+    {
+     "theme": "AI assistant for tidying/pruning dead links",
+     "n": 3
+    },
+    {
+     "theme": "Positive sentiment/product is 'cool'",
+     "n": 3
+    },
+    {
+     "theme": "Scheduled expiry feature",
+     "n": 1
+    },
+    {
+     "theme": "Considering switching from other link-in-bio solutions",
+     "n": 1
+    },
+    {
+     "theme": "Question about page language based on browser",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Does the page pick the language from the visitor's browser?",
+    "What's the first thing you'd ask your assistant to tidy up on your page?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the AI assistant's ability to tidy up and prune dead links, especially for link-in-bio pages that become graveyards of old links.",
+      "Users generally express positive sentiment and find the product 'cool' or 'very nice'.",
+      "The scheduled expiry feature is highlighted as a favorite detail for managing campaign links.",
+      "The process of creating a link page through the MCP is described as very smooth.",
+      "One user is considering switching from their self-made link-in-bio page to this product due to its quality and AI features.",
+      "A user asks if the page picks the language from the visitor's browser.",
+      "A user asks what would be the first thing to ask the assistant to tidy up on their page."
+     ],
+     [
+      "Users appreciate the scheduled expiry feature for campaign links.",
+      "Users find the AI assistant's ability to tidy up and prune dead links particularly useful.",
+      "Users find the link page creation process smooth and easy.",
+      "Users are considering switching from their own link-in-bio solutions to this product due to its quality.",
+      "Users are asking if the page picks up the language from the visitor's browser.",
+      "Generic positive feedback and congratulations on the launch."
+     ],
+     [
+      "Users appreciate the AI assistant's ability to tidy up and prune dead links, especially for link-in-bio pages that become graveyards of old links.",
+      "Users find the product 'really cool' and 'very nice'.",
+      "The scheduled expiry feature is highlighted as a favorite detail.",
+      "One user is considering switching from their own link-in-bio solution to this product due to its quality.",
+      "A user asks if the page picks the language from the visitor's browser.",
+      "A user asks what the first thing the assistant would be asked to tidy up on their page.",
+      "A user asks if the launch is on the same day as another product."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the page pick the language from the visitor's browser?",
+      "What's the first thing you'd ask your assistant to tidy up on your page?"
+     ],
+     [
+      "Does the page pick the language from the visitor's browser?",
+      "What's the first thing you'd ask your assistant to tidy up on your page?"
+     ],
+     [
+      "What's the first thing you'd ask your assistant to tidy up on your page?",
+      "Does the page pick the language from the visitor's browser?"
+     ]
+    ]
+   }
+  },
+  "1327970": {
+   "themes": [
+    {
+     "theme": "Product is impressive, simple, and powerful for building tools efficiently",
+     "n": 4
+    },
+    {
+     "theme": "Users want to see how Viktor splits goals before opening PRs",
+     "n": 2
+    },
+    {
+     "theme": "Product allows non-technical users to build and ship like engineers",
+     "n": 2
+    },
+    {
+     "theme": "Pricing information is not easily discoverable",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking for specific solutions the product excels at for app businesses",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking about how Viktor differentiates between relevant and irrelevant information and how teams decide on repository access",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "How does Viktor differentiate between tasks or learn preferences?",
+    "How are repository permissions managed for Viktor?",
+    "How is business rationale communicated with PRs?",
+    "Pricing information is missing.",
+    "Can users see the task breakdown before PRs are opened?",
+    "What are the core solutions offered for app businesses?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users find the product impressive, simple, and powerful, enabling them to build tools and cover more ground efficiently.",
+      "Users want to see how Viktor splits goals before opening PRs and how the business rationale travels with the PR.",
+      "Users are asking about how Viktor differentiates between relevant and irrelevant information and how teams decide on repository access.",
+      "The product allows non-technical users to build and ship like engineers.",
+      "The product helps teams coordinate and avoid duplicated work by making all loops visible.",
+      "Users are asking for specific solutions the product excels at for app businesses.",
+      "The pricing information is not easily discoverable on the homepage.",
+      "The product handles engineering tasks like integrations, fixes, and performance, including finding and fixing production issues."
+     ],
+     [
+      "Users praise the product for its ability to build tools and applications efficiently, even for non-technical users.",
+      "Users are asking for clarification on how Viktor handles team collaboration, context, and decision-making processes.",
+      "Users are concerned about the visibility and accessibility of pricing information.",
+      "Users are interested in seeing how the AI splits goals before opening pull requests.",
+      "Users are asking for specific use cases or solutions that the product excels at for app businesses.",
+      "Users compare the product favorably to other coding agents they have tried.",
+      "Users express general appreciation for the concept and product."
+     ],
+     [
+      "Users find the product impressive, simple, and powerful, enabling them to build tools and cover more ground efficiently.",
+      "Users want to see how Viktor splits goals before opening PRs and how the business rationale travels with the PR.",
+      "Users are asking about how Viktor differentiates between relevant and irrelevant information and how teams decide on repository access.",
+      "The product allows non-technical users to build and ship like engineers.",
+      "The product helps teams coordinate and avoid duplicated work by making all loops visible.",
+      "Users are asking for specific solutions the product excels at for app businesses.",
+      "The pricing information is not easily discoverable on the homepage.",
+      "The product handles engineering tasks like integrations, fixes, and performance, including finding and fixing production issues."
+     ]
+    ],
+    "complaints": [
+     [
+      "how does he know what is my call and what isnt? do you set that per type of work or he learns it?",
+      "How do teams decide which repos Viktor can open PRs on at first?",
+      "Curious how the business rationale travels with the PR: does the reviewer see the original outcome and the decisions behind it, or just the diff?",
+      "pricing missing on homepage?!",
+      "can i see how he split the goal up before any PR gets opened?",
+      "Could you please define 3-5 solutions that you do best and can be applied to an app business?"
+     ],
+     [
+      "Could you please define 3-5 solutions that you do best and can be applied to an app business?",
+      "how does he know what is my call and what isnt? do you set that per type of work or he learns it?",
+      "How do teams decide which repos Viktor can open PRs on at first?",
+      "Curious how the business rationale travels with the PR: does the reviewer see the original outcome and the decisions behind it, or just the diff?",
+      "pricing missing on homepage?!",
+      "can i see how he split the goal up before any PR gets opened?"
+     ],
+     [
+      "How do teams decide which repos Viktor can open PRs on at first?",
+      "Curious how the business rationale travels with the PR: does the reviewer see the original outcome and the decisions behind it, or just the diff?",
+      "Can I see how he split the goal up before any PR gets opened?",
+      "How does he know what is my call and what isn't? Do you set that per type of work or he learns it?",
+      "Could you please define 3-5 solutions that you do best and can be applied to an app business?",
+      "Pricing missing on homepage?!"
+     ]
+    ]
+   }
+  },
+  "1322050": {
+   "themes": [
+    {
+     "theme": "Integration of files and agents in a single workspace simplifies task handoff and improves workflow.",
+     "n": 5
+    },
+    {
+     "theme": "Users are asking about Granular's ability to handle existing or long-term projects, specifically regarding context import and updates.",
+     "n": 3
+    },
+    {
+     "theme": "General congratulations and positive remarks on the product launch.",
+     "n": 3
+    },
+    {
+     "theme": "Users are curious about how Granular manages concurrent changes by multiple agents and the process for merging and testing these changes.",
+     "n": 2
+    },
+    {
+     "theme": "Users are asking for a comparison of Granular's benefits over existing tools.",
+     "n": 2
+    },
+    {
+     "theme": "Users are asking about the carry-forward policy for unused free credits.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking if there will be a mobile app to monitor agents.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Can users bring their existing project context into Granular without starting from scratch?",
+    "How does Granular handle long projects where requirements change over time?",
+    "Does the free credits carry forward to next month if not utilized?",
+    "Can you point out the main benefits for someone like me over using Claude design and figma?",
+    "Curious how the boss agent handles it when two specialists touch the same files at once \u2014 does it queue them, or can?",
+    "Will the mobile app let me check on the agents while they're running?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate having files and agents in the same workspace, making handoff between tasks easier and improving workflow.",
+      "Generic congratulations and positive remarks on the launch.",
+      "Users are asking about bringing existing project context into Granular or using it with ongoing projects.",
+      "Users are asking about how Granular handles long projects with changing requirements and automatic context updates.",
+      "Users are asking about the carry-forward policy for unused free credits.",
+      "Users are asking for a comparison of Granular's benefits over alternatives like Claude design and Figma for designers.",
+      "Users are asking about how Granular handles multiple agents touching the same files simultaneously.",
+      "Users are asking about the functionality of a mobile app, specifically checking on agents while running."
+     ],
+     [
+      "The integration of files and agents in a single workspace simplifies task handoff and improves workflow by keeping project memory together.",
+      "Users are asking about Granular's ability to handle existing or long-term projects, specifically regarding context import and updates.",
+      "General congratulations and positive remarks on the product launch.",
+      "Users are curious about how Granular manages concurrent changes by multiple agents and the process for merging and testing these changes.",
+      "Users are asking for a comparison of Granular's benefits over existing tools like Glorify, Claude design, and Figma.",
+      "A user is asking about the carry-forward policy for unused free credits.",
+      "A user is asking if there will be a mobile app to monitor agents.",
+      "Granular is described as a 'killer product' and the 'future of work'."
+     ],
+     [
+      "The integration of files and agents in a single workspace simplifies task handoff and improves workflow by keeping project memory together.",
+      "Users are asking about Granular's ability to handle existing or long-term projects, specifically regarding context import and updates.",
+      "General congratulations and positive remarks on the product launch.",
+      "Users are curious about how Granular manages concurrent changes by multiple agents and the process for merging and testing these changes.",
+      "Users are asking for a comparison of Granular's benefits over existing tools like Glorify, Claude design, and Figma.",
+      "A user is asking about the carry-forward policy for unused free credits.",
+      "A user is asking if there will be a mobile app to monitor agents.",
+      "Granular is described as a 'killer product' and the 'future of work'."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can users bring their existing project context into Granular without starting from scratch?",
+      "How does Granular handle long projects where requirements change over time? Does the workspace update it's context automatically?",
+      "Does the free credits carry forward to next month if not utilized?",
+      "Can you point out the main benefits for someone like me over using Claude design and figma?",
+      "Curious how the boss agent handles it when two specialists touch the same files at once \u2014 does it queue them, or can",
+      "Will the mobile app let me check on the agents while they're running?"
+     ],
+     [
+      "Can users bring their existing project context into Granular without starting from scratch?",
+      "How does Granular handle long projects where requirements change over time? Does the workspace update it's context automatically?",
+      "Does the free credits carry forward to next month if not utilized?",
+      "Can you point out the main benefits for someone like me over using Claude design and figma?",
+      "Curious how the boss agent handles it when two specialists touch the same files at once \u2014 does it queue them, or can?",
+      "When several agents finish in parallel, how do you check their changes still work together before merging? Is there a built-in way to run the app or tests, or is that left to the user?"
+     ],
+     [
+      "Can users bring their existing project context into Granular without starting from scratch?",
+      "How does Granular handle long projects where requirements change over time?",
+      "When several agents finish in parallel, how do you check their changes still work together before merging?",
+      "Does the free credits carry forward to next month if not utilized?",
+      "Can you point out the main benefits for someone like me over using Claude design and figma?",
+      "Will the mobile app let me check on the agents while they're running?"
+     ]
+    ]
+   }
+  },
+  "1328686": {
+   "themes": [
+    {
+     "theme": "Dictation within keyboard is a key selling point",
+     "n": 3
+    },
+    {
+     "theme": "Concern about Apple blocking the app",
+     "n": 1
+    },
+    {
+     "theme": "Questions about mixed-language input",
+     "n": 1
+    },
+    {
+     "theme": "Confusion with similarly named products",
+     "n": 2
+    },
+    {
+     "theme": "Appreciation for not switching apps",
+     "n": 1
+    },
+    {
+     "theme": "General congratulations on launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Apple blocking WebKit technique",
+    "Confusion with similarly named products",
+    "Mixed language support"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Keeping dictation within the keyboard instead of switching apps is a significant improvement and a key selling point.",
+      "There is concern about Apple potentially blocking the app due to its technique, similar to Raycast's WebKit.",
+      "Users are asking about the app's behavior with mixed-language input.",
+      "There is confusion with other similarly named products when searching.",
+      "Users appreciate the convenience of not having to switch apps to use the product.",
+      "General congratulations on the launch."
+     ],
+     [
+      "Keeping dictation within the keyboard instead of switching apps is a significant improvement and a key selling point.",
+      "There is concern about Apple potentially blocking the app due to its technique, similar to Raycast's WebKit.",
+      "Users are asking about the app's behavior with mixed-language input.",
+      "There is confusion with other similarly named products when searching.",
+      "Users appreciate the convenience of not having to switch apps to use the product.",
+      "General congratulations on the launch."
+     ],
+     [
+      "Keeping dictation within the keyboard instead of switching apps is a significant improvement and a key selling point.",
+      "There is concern about Apple potentially blocking the app due to its technique, similar to Raycast's WebKit.",
+      "Users are asking about the app's behavior with mixed-language input.",
+      "There is confusion with other similarly named products when searching.",
+      "Users appreciate the convenience of not having to switch apps to use the product.",
+      "General congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does this use Raycast\u2019s WebKit technique? Seems like Apple might block it soon, no?",
+      "I wonder if some of your upvotes are going to the other similar named products?",
+      "When I searched Willow, two other names came up besides yours on Product.",
+      "what happens with mixed language, like english into japanese mid sentence, does it follow or do you pick a language first?"
+     ],
+     [
+      "Does this use Raycast\u2019s WebKit technique? Seems like Apple might block it soon, no?",
+      "I wonder if some of your upvotes are going to the other similar named products?",
+      "When I searched Willow, two other names came up besides yours on Product. One I thought to be yours until I actually started paying attention and realized it was not the right Willow.",
+      "What happens with mixed language, like english into japanese mid sentence, does it follow or do you pick a language first?"
+     ],
+     [
+      "Does this use Raycast\u2019s WebKit technique? Seems like Apple might block it soon, no?",
+      "I wonder if some of your upvotes are going to the other similar named products?",
+      "When I searched Willow, two other names came up besides yours on Product.",
+      "what happens with mixed language, like english into japanese mid sentence, does it follow or do you pick a language first?"
+     ]
+    ]
+   }
+  },
+  "1320041": {
+   "themes": [
+    {
+     "theme": "Convenience of running one campaign across multiple communities",
+     "n": 3
+    },
+    {
+     "theme": "Minimum campaign budget and suitability for indie developers",
+     "n": 2
+    },
+    {
+     "theme": "How campaign sites are chosen and if they can be selected",
+     "n": 3
+    },
+    {
+     "theme": "Developer trust and effectiveness of ads",
+     "n": 3
+    },
+    {
+     "theme": "General congratulations on the launch",
+     "n": 1
+    },
+    {
+     "theme": "Per-site sign-up data for post-click conversion",
+     "n": 1
+    },
+    {
+     "theme": "Appearance of ads (content-like vs. traditional)",
+     "n": 1
+    },
+    {
+     "theme": "Specific platforms where ads are shown",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Ad placement and appearance (native vs. traditional)",
+    "Campaign site selection and control",
+    "Minimum campaign budget and suitability for indie developers",
+    "Post-click analytics and conversion tracking"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the convenience of running one campaign across multiple developer communities and seeing results in one place.",
+      "Users are asking about the minimum campaign budget and whether it's suitable for indie developers.",
+      "Users want to know how sites are chosen for campaigns and if they can select them.",
+      "Users are concerned about developer trust and the effectiveness of ads that don't feel like native content or are aimed at managers.",
+      "Users generally congratulate the team on the launch.",
+      "Users want to see per-site sign-up data, not just clicks, to understand post-click conversion.",
+      "Users are curious about the appearance of successful ads on daily.dev, specifically if they resemble content like tutorials or code snippets.",
+      "Users are asking about the specific platforms where ads are shown."
+     ],
+     [
+      "Users appreciate the convenience of running one campaign across multiple developer communities and seeing results in one place.",
+      "Users are concerned about the effectiveness of ads, especially regarding developer trust and the quality of the post-click experience.",
+      "Users want to know how campaign sites are chosen and if they can select them.",
+      "Users are curious about the minimum campaign budget and whether it's suitable for indie developers.",
+      "Users want to see per-site signup data, not just clicks, to measure post-click conversion.",
+      "Users are asking about the types of platforms where ads are shown.",
+      "Users are asking if the ads look more like content or traditional ads.",
+      "Users express general congratulations and appreciation for the product launch."
+     ],
+     [
+      "Users appreciate the convenience of running one campaign across multiple developer communities and seeing results in one place.",
+      "Users are concerned about the effectiveness of ads, especially regarding developer trust and the quality of the post-click experience.",
+      "Users want to know how campaign sites are chosen and if they can select them.",
+      "Users are curious about the minimum campaign budget and whether it's suitable for indie developers.",
+      "Users want to see per-site signup data, not just clicks, to measure post-click conversion.",
+      "Users are asking about the types of platforms where ads are shown.",
+      "Users are asking if the ads look more like content or traditional ads.",
+      "Users express general congratulations and appreciation for the product launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Do placements show up next to real community posts?",
+      "I would want to see per site who actually signed up, not only clicks.",
+      "How do you decide which sites a campaign runs on and can I choose them myself?",
+      "Is there a minimum campaign budget?",
+      "Is it that sketchy you spend $500 then we spend $500 deal that Reddit uses?",
+      "Do the ads that do best on daily.dev look more like content (tutorial, code snippet) or more like normal ads?"
+     ],
+     [
+      "Is there a minimum campaign budget, and does it work for indie developers with small budgets or is it aimed at funded teams?",
+      "How do you decide which sites a campaign runs on, and can I choose them myself?",
+      "Do placements show up next to real community posts, and do the ads that do best look more like content or more like normal ads?",
+      "What happens after the click, and can I see per site who actually signed up, not only clicks?",
+      "What's the minimum budget to start as an advertiser?",
+      "What all platforms are these ads shown on?"
+     ],
+     [
+      "Is there a minimum campaign budget, and does it work for indie developers with small budgets or is it aimed at funded teams?",
+      "How do you decide which sites a campaign runs on, and can I choose them myself?",
+      "Do placements show up next to real community posts, and do the ads that do best look more like content or more like normal ads?",
+      "What happens after the click, and can I see per site who actually signed up, not only clicks?",
+      "What's the minimum budget to start as an advertiser?",
+      "What all platforms are these ads shown on?"
+     ]
+    ]
+   }
+  },
+  "1327943": {
+   "themes": [
+    {
+     "theme": "Separate worktree per task",
+     "n": 3
+    },
+    {
+     "theme": "Conflict handling with shared files",
+     "n": 2
+    },
+    {
+     "theme": "Auto-approve list for git commit messages",
+     "n": 1
+    },
+    {
+     "theme": "Per-session spend and token tracking for local Ollama models",
+     "n": 1
+    },
+    {
+     "theme": "Per-session spend and token tracking is a nice touch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Handling of concurrent file modifications by multiple agents",
+    "Per-session spend and token tracking for local Ollama models",
+    "Matching behavior of git commit -m * with other commands"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The separate worktree per task is a standout feature that improves review and organization.",
+      "How does Fleetify handle conflicts when two agents need to touch the same shared file?",
+      "Does 'git commit -m *' on the auto-approve list also match 'git commit -m wip && curl something | sh'?",
+      "Does the per-session spend and token tracking work the same for local Ollama models?",
+      "The per-session spend is a nice touch."
+     ],
+     [
+      "The separate git worktree per task/agent is a standout and useful feature.",
+      "How does Fleetify handle conflicts when multiple agents modify the same shared files?",
+      "The per-session spend and token tracking is a nice touch.",
+      "Does the per-session spend and token tracking work for local Ollama models?",
+      "Does the auto-approve list for git commit messages handle complex or malicious commands?"
+     ],
+     [
+      "The separate worktree per task is a standout feature that improves review and organization.",
+      "How does Fleetify handle conflicts when two agents need to touch the same shared file?",
+      "Does 'git commit -m *' on the auto-approve list also match 'git commit -m wip && curl something | sh'?",
+      "Does the per-session spend and token tracking work the same for local Ollama models?",
+      "The per-session spend is a nice touch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does Fleetify handle it when two agents need to touch the same shared file, or does the per-task worktree keep that from happening in practice?",
+      "Does it work when two agents touch the same files? Curious if Fleetify warns about conflicts or just shows both running side by side.",
+      "Also curious whether the per-session spend and token tracking works the same for local Ollama m",
+      "does git commit -m * on the auto-approve list also match git commit -m wip && curl something | sh?"
+     ],
+     [
+      "How does Fleetify handle it when two agents need to touch the same shared file, or does the per-task worktree keep that from happening in practice?",
+      "Does it work when two agents touch the same files? Curious if Fleetify warns about conflicts or just shows both running side by side.",
+      "Also curious whether the per-session spend and token tracking works the same for local Ollama models.",
+      "Does git commit -m * on the auto-approve list also match git commit -m wip && curl something | sh?"
+     ],
+     [
+      "How does Fleetify handle it when two agents need to touch the same shared file, or does the per-task worktree keep that from happening in practice?",
+      "Does it work when two agents touch the same files? Curious if Fleetify warns about conflicts or just shows both running side by side.",
+      "Also curious whether the per-session spend and token tracking works the same for local Ollama models.",
+      "Does git commit -m * on the auto-approve list also match git commit -m wip && curl something | sh?"
+     ]
+    ]
+   }
+  },
+  "1327369": {
+   "themes": [
+    {
+     "theme": "Email spoofing concerns",
+     "n": 3
+    },
+    {
+     "theme": "Partial rule matching",
+     "n": 2
+    },
+    {
+     "theme": "Deterministic policies and no email storage",
+     "n": 2
+    },
+    {
+     "theme": "'Ask me first' approvals with unattended agents",
+     "n": 1
+    },
+    {
+     "theme": "Plain English rules",
+     "n": 1
+    },
+    {
+     "theme": "Composio integration",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does the system handle emails that partially match a rule?",
+    "How does the system prevent spoofing or malicious actors from faking email content to trigger specific rules and gain access?",
+    "How do 'ask me first' approvals work when an agent is running unattended?",
+    "How can users visualize or understand the outcome of rule changes?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are concerned about email spoofing and how the system handles emails designed to bypass rules.",
+      "Users are asking about how the system handles emails that partially match rules.",
+      "Users appreciate the deterministic nature of the policy checks and the 'doesn't store your emails' feature.",
+      "Users are asking about the 'ask me first' approvals and how they function when an agent is running unattended.",
+      "Users want to know how to test or visualize the outcome of rule changes.",
+      "Users find the plain English rules and smart functionality appealing.",
+      "Users are asking about integration with Composio.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "Users are concerned about email spoofing and how the system verifies senders before applying rules.",
+      "Users are asking how the system handles emails that only partially match a rule.",
+      "Users appreciate the concept of plain English rules and smart email management.",
+      "Users are asking about integration with Composio.",
+      "Users see deterministic allow/deny with no grey area as the right approach for an inbox.",
+      "Users appreciate the enforceable limits and the combination of 'doesn't store your emails' and deterministic Cedar policies for trust.",
+      "Users are asking how 'ask me first' approvals work when an agent is running unattended.",
+      "Users are asking where they can see what a rewritten rule turned into."
+     ],
+     [
+      "Users are concerned about email spoofing and how the system verifies senders before applying rules.",
+      "Users are asking how the system handles emails that only partially match a rule.",
+      "Users appreciate the concept of enforceable limits and deterministic policies for inbox management.",
+      "Users are asking about the functionality of 'ask me first' approvals when an agent is running unattended.",
+      "Users are asking if the product can still be used through Composio.",
+      "Users praise the idea of plain English rules for email management.",
+      "Users appreciate the 'doesn't store your emails' and deterministic Cedar policies combo for trust.",
+      "Users are asking where they can see what a rewritten rule turned into."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does the system handle emails that partially match a rule, and what is the impact of deterministic policy checks?",
+      "How does the system prevent spoofing or malicious actors from faking email content to trigger specific rules and gain access?",
+      "How do 'ask me first' approvals work when an agent is running unattended, and what is the scope of the pause?",
+      "How can users visualize or understand the outcome of rule changes, especially when rewriting rules?"
+     ],
+     [
+      "How does the system handle emails that partially match a rule, and what is the impact of deterministic policy checks?",
+      "How does the system prevent spoofing or malicious actors from faking email content to trigger specific rules and gain access?",
+      "How do 'ask me first' approvals work when an agent is running unattended, and what is the scope of the pause?",
+      "How can users visualize or understand the outcome of rule changes, especially when rewriting rules?"
+     ],
+     [
+      "How does the system handle spoofing or faked emails to bypass rules, and how is sender verification performed?",
+      "How does the system handle emails that only partially match a rule?",
+      "How do 'ask me first' approvals work when an agent is running unattended?",
+      "How can users test or visualize the impact of rule changes?",
+      "Can the product be integrated with Composio?"
+     ]
+    ]
+   }
+  },
+  "1327551": {
+   "themes": [
+    {
+     "theme": "Focus on personalization and human-centric outbound for high reply rates",
+     "n": 10
+    },
+    {
+     "theme": "Appreciation for sensible timing and fit checks, shifting to quality over quantity",
+     "n": 4
+    },
+    {
+     "theme": "Questions about specific data points and signal effectiveness",
+     "n": 3
+    },
+    {
+     "theme": "General congratulations and positive sentiment",
+     "n": 3
+    },
+    {
+     "theme": "Questions about time savings compared to traditional workflows",
+     "n": 1
+    },
+    {
+     "theme": "Freelance web developer concern about email read rates in a saturated market",
+     "n": 1
+    },
+    {
+     "theme": "Questions about pausing sends due to LinkedIn account warnings",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Best performing buying signal",
+    "Visibility of buying signal to sales reps",
+    "Time savings compared to traditional workflows",
+    "Most surprising buying signal",
+    "Pausing sending on LinkedIn account warnings"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the focus on personalization, relevance, and human-centric outbound, leading to high reply rates.",
+      "Users appreciate the sensible order of timing and fit checks before drafting, and the shift from quantity to quality in outreach.",
+      "Users are asking about specific data points, such as which signals yield the best reply rates and how signals are used in follow-up calls.",
+      "Users express general congratulations and positive sentiment for the launch and the team.",
+      "A user is interested in the AI research and personalization capabilities.",
+      "A user asks about the time savings compared to traditional outbound workflows.",
+      "A freelance web developer expresses concern about achieving adequate read rates for emails in a market saturated with automated outreach.",
+      "A user asks if the system pauses sending if a LinkedIn account receives a warning."
+     ],
+     [
+      "The product focuses on finding the right people at the right time and making outbound more human, relevant, and personalized, leading to high reply rates.",
+      "Users are experiencing significant positive results, including increased reply rates, booked meetings, and revenue.",
+      "Users are asking about the effectiveness of specific signals and how the data is used in follow-up interactions.",
+      "The product's approach to timing and fit checks before drafting messages is seen as sensible and effective.",
+      "Users are asking about the time-saving benefits of using the product compared to traditional methods.",
+      "A freelance web developer is looking for a solution to improve email read rates in a saturated market.",
+      "Users are asking about the product's behavior regarding LinkedIn account warnings.",
+      "The video showcasing the product is highly engaging and effective."
+     ],
+     [
+      "Users praise the focus on personalization, relevance, and human-centric outbound, leading to high reply rates.",
+      "Users appreciate the shift from sending more messages to finding the right people at the right time.",
+      "Users are asking about the effectiveness of different signals and how they are used in the sales process.",
+      "Users express general congratulations and positive sentiment for the launch.",
+      "Users are interested in the time-saving aspects and operational details of using Valley.",
+      "A user questions the timing of outreach to people in their first week of a new role.",
+      "A freelance web developer expresses a need for efficient client acquisition and better email read rates.",
+      "The product video is highlighted as being attention-grabbing and awesome."
+     ]
+    ],
+    "complaints": [
+     [
+      "people in their first week of a new role always seemed like the worst timing to me, everyone is drowning in week one \ud83d\ude05 which signal ended up with the best reply rate in your data",
+      "when a lead replies, does the person who takes the call see which signal picked them? otherwise the first call starts from zero again",
+      "Would love to know how much time teams typically save using Valley compared to traditional outbound workflows.",
+      "As a freelance web developer my primary objective is to acquire clients efficiently. The most significant challenge I currently face is achieving adequate read rates for my emails and messages.",
+      "Of all the buying signals Valley reads, which one surprised you most when you checked it against who actually replied?",
+      "Does it pause sending if a LinkedIn account gets a warning?"
+     ],
+     [
+      "What signal ended up with the best reply rate in your data?",
+      "When a lead replies, does the person who takes the call see which signal picked them?",
+      "Would love to know how much time teams typically save using Valley compared to traditional outbound workflows.",
+      "Of all the buying signals Valley reads, which one surprised you most when you checked it against who actually replied?",
+      "Does it pause sending if a LinkedIn account gets a warning?"
+     ],
+     [
+      "When a lead replies, does the person who takes the call see which signal picked them, otherwise the first call starts from zero again?",
+      "Which signal ended up with the best reply rate in your data?",
+      "How much time do teams typically save using Valley compared to traditional outbound workflows?",
+      "As a freelance web developer, how can I achieve adequate read rates for my emails and messages in a market saturated with automated outreach?",
+      "Of all the buying signals Valley reads, which one surprised you most when you checked it against who actually replied?",
+      "Does it pause sending if a LinkedIn account gets a warning?"
+     ]
+    ]
+   }
+  }
+ }
+}
