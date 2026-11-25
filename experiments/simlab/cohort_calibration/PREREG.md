@@ -264,3 +264,12 @@ category's core task, do (1) their preferences explain the structural model's mi
 - Artefact check: the share of sim complaints about access (signup, login, verification, captcha, blocked) must not exceed the truth's share by more than 10 points.
 **Leak note:** products are well known and pre-cutoff knowledge of them can leak into both arms equally. The pairing controls this; it is not a forward test.
 - 11c (Nov 25, before the first frozen night): users are the first 4 people of the person-built panel's selection in the panel's own seeded order (md5(launch id + D)). The selection (simharness run_what_panel build) runs inside the line-up step from the latest harness build, so the line-up does not wait for the panel's comment generation, which lands around 10:50Z (close to the 11:30Z freeze). On the Nov 24 line-up this matched the panel file's people for 59 of 60 users. Fallback: person_panel/D.parquet. A night before 2026-11-26 runs as an unscored dress rehearsal under _rehearsal/.
+
+## Addendum 13 (2026-11-25): POINT-1 deploy, person-built comments get the launch-page block (orchestrator 02:16Z)
+- **Main line from the Nov 25 night:** person_panel.py's person-built comments are written with the launch-page block. That block is the 00:05 name, tagline, description and topics (already in the prompt), plus the maker's or hunter's first top-level comment if it is posted by run time.
+- **Comment source:** read from the newest raw/ph_at_launch/D/api_comments snapshots present at run time. Team authors are the 00:05 file's poster and makers; @handles are removed. Presence and snapshot are recorded per launch (say.person_built_panel.launch_block).
+  - On Nov 24 with snapshots up to 02:30 PT, 40 of 42 launches had one.
+- **Shadow:** the previous prompt, generated in the same run with the same seeded people and independent privacy-guard keeps (say.person_built_panel_noblock).
+- **Scoring:** forward_says adds noblock_* (persona plus the no-block person-built panel) and reports merged minus merged-no-block, paired.
+- **Revert rule (usual):** after 7 scored live days, revert if the main line's precision is not above the shadow's, or its recall is clearly below.
+- **Not run by E5:** the Opus two-stage shadow arm (POINT-1 A3). E5's standing constraint is no Claude API calls.

@@ -18,6 +18,29 @@ ROWS = [json.loads(l) for l in open(os.path.join(W, "eval.jsonl"))]
 _bd = BENCH if os.path.exists(os.path.join(BENCH, "people.parquet")) else os.path.join(BENCH, open(os.path.join(BENCH, "latest")).read().strip())
 PEOPLE = pd.read_parquet(os.path.join(_bd, "people.parquet"), columns=["person_idx", "person_id"]).set_index("person_idx").person_id.to_dict()
 SLUG2ID = {str(x.get("slug")): str(x["id"]) for x in json.load(open(LU))}
+# POINT-1 deploy (orchestrator 02:16Z Nov 25): the launch-page block = the 00:05 name/tagline/description/topics (already in the prompt) plus the
+# maker's or hunter's first top-level comment if posted by run time. Read from the api_comments snapshots present at run time; presence recorded.
+T0L = {str(x["id"]): x for x in json.load(open(LU))}
+TEAM = {i: {str((x.get("user") or {}).get("id"))} | {str(m.get("id")) for m in (x.get("makers") or [])} for i, x in T0L.items()}
+MAKERC, MAKER_SNAP = {}, None
+_files = sorted(subprocess.run(["gsutil", "ls", f"{B}/raw/ph_at_launch/{D}/api_comments/*.jsonl"], capture_output=True, text=True).stdout.split())
+if _files:
+    MAKER_SNAP = _files[-1].rsplit("/", 1)[-1]; _best = {}
+    for l in subprocess.run(["gsutil", "cat", *_files[-3:]], capture_output=True, text=True).stdout.splitlines():
+        try: x = json.loads(l)
+        except Exception: continue
+        pid, uid = str(x.get("post_id")), str(x.get("commenter_user_id"))
+        if pid in TEAM and uid in TEAM[pid] and not x.get("parentId") and (x.get("body") or "").strip():
+            if pid not in _best or str(x.get("createdAt")) < str(_best[pid].get("createdAt")): _best[pid] = x
+    for pid, x in _best.items():
+        t = re.sub(r"<[^>]+>", " ", x["body"]); t = re.sub(r"@[A-Za-z0-9_.-]+", "", " ".join(t.split()))
+        MAKERC[pid] = t[:1200]
+def with_block(prompt, lid):
+    mc = MAKERC.get(lid)
+    if not mc: return prompt
+    k = prompt.find("\n", prompt.find("Topics:", prompt.find("TODAY'S LAUNCH"))) if "TODAY'S LAUNCH" in prompt else -1
+    ins = f"\nThe maker's first comment on the launch: {mc}"
+    return prompt[:k] + ins + prompt[k:] if k > 0 else prompt + ins
 OLD = "This member did comment on this launch today. Write that comment as they would: their usual length, tone, focus and\nkind of question or praise, as their past comments show. Reply with the comment only."
 NEW = ("This member did comment on this launch today. Write that comment as they would: their usual length, tone, focus and\nkind of question or praise, as their past comments show. "
        "Do not mention your own name, employer or products. Answer in JSON only: {\"comment\": \"...\"}")
@@ -34,29 +57,32 @@ def own_names(prompt):   # launch names in the person's rendered history: "- YYY
     return {n for n in out if len(n) >= 4}
 by_launch = {}
 for row in ROWS: by_launch.setdefault(row["meta"]["slug"], []).append(row)
-def gen(row):
-    prompt = row["messages"][0]["content"]; p2 = prompt.replace(OLD, NEW) if OLD in prompt else prompt + "\n\nDo not mention your own name, employer or products. Answer in JSON only: {\"comment\": \"...\"}"
+def gen(row, lid=None, block=False):
+    prompt = row["messages"][0]["content"]; prompt = with_block(prompt, lid) if block else prompt; p2 = prompt.replace(OLD, NEW) if OLD in prompt else prompt + "\n\nDo not mention your own name, employer or products. Answer in JSON only: {\"comment\": \"...\"}"
     raw = None
     try: raw = sim_model.call(p2, 300, temperature=0.7); c = str(json.loads(raw).get("comment", "")).strip()
     except Exception: c = ""
     c = re.sub(r"@[A-Za-z0-9_.-]+", "@someone", " ".join(c.split()))
     why = "empty" if not c else "maker_like" if MAKER.search(c) else "self_named" if SELFNAME.search(c) else "names_own_history_product" if any(n.lower() in c.lower() for n in own_names(prompt)) else None
     return {"prompt": p2, "raw": raw, "comment": c, "drop": why}
-OUTW, PRIV, STATS = {}, [], {"launches": 0, "calls": 0, "dropped": {}}
+OUTW, OUTN, PRIV, STATS = {}, {}, [], {"launches": 0, "calls": 0, "dropped": {}, "maker_comment_present": 0}
 for slug, rows in by_launch.items():
     lid = SLUG2ID.get(slug)
     if not lid: continue
     order = list(np.random.default_rng(int(hashlib.md5((lid + D).encode()).hexdigest()[:8], 16)).permutation(len(rows)))
-    kept, pos = [], 0
-    while len(kept) < 15 and pos < len(order):
-        need = min(15 - len(kept), len(order) - pos); batch = [rows[i] for i in order[pos:pos + need]]; pos += need
-        with cf.ThreadPoolExecutor(8) as ex: res = list(ex.map(gen, batch))
-        STATS["calls"] += len(batch)
-        for row, g in zip(batch, res):
-            PRIV.append({"tables": TABLES, "day": D, "launch_id": lid, "person_id": PEOPLE.get(row["meta"]["person_idx"]), "prompt": g["prompt"], "raw": g["raw"], "comment": g["comment"], "drop": g["drop"]})
-            if g["drop"]: STATS["dropped"][g["drop"]] = STATS["dropped"].get(g["drop"], 0) + 1
-            else: kept.append(g["comment"])
-    OUTW[lid] = kept[:15]; STATS["launches"] += 1
+    STATS["maker_comment_present"] += int(lid in MAKERC)
+    for arm, block, OUT in (("block", True, OUTW), ("noblock", False, OUTN)):   # main = with the launch-page block; shadow = the previous prompt
+        kept, pos = [], 0
+        while len(kept) < 15 and pos < len(order):
+            need = min(15 - len(kept), len(order) - pos); batch = [rows[i] for i in order[pos:pos + need]]; pos += need
+            with cf.ThreadPoolExecutor(8) as ex: res = list(ex.map(lambda r_: gen(r_, lid, block), batch))
+            STATS["calls"] += len(batch)
+            for row, g in zip(batch, res):
+                PRIV.append({"tables": TABLES, "day": D, "launch_id": lid, "arm": arm, "person_id": PEOPLE.get(row["meta"]["person_idx"]), "prompt": g["prompt"], "raw": g["raw"], "comment": g["comment"], "drop": g["drop"]})
+                if g["drop"]: STATS["dropped"][g["drop"]] = STATS["dropped"].get(g["drop"], 0) + 1
+                else: kept.append(g["comment"])
+        OUT[lid] = kept[:15]
+    STATS["launches"] += 1
 LABEL = ("Person-built panel: 15 comments per launch, each written by Gemini 2.5 Flash from one real held member's own history before the day "
          "(their latest upvotes and comments) and the launch's 00:05 line-up fields only; members chosen by how closely their upvotes match the "
          "launch's topics. Tested on Nov 21-23 (24 launches): added to the persona panel it raised theme precision +8.5 [+0.3, +16.5] and complaint "
@@ -66,7 +92,10 @@ if not J.get("launches"): sys.exit("no explain file for D")
 for lid, cm in OUTW.items():
     if lid in J["launches"]:
         J["launches"][lid].setdefault("say", {})["person_built_panel"] = {"comments": cm, "n": len(cm), "model": sim_model.MODEL, "temperature": 0.7,
-                                                                           "rehearsal_late_unscored": bool(REH), "label": LABEL}
+                                                                           "rehearsal_late_unscored": bool(REH), "label": LABEL,
+                                                                           "launch_block": {"maker_comment_present": lid in MAKERC, "api_comments_snapshot": MAKER_SNAP}}
+        J["launches"][lid]["say"]["person_built_panel_noblock"] = {"comments": OUTN.get(lid, []), "n": len(OUTN.get(lid, [])), "shadow": True,
+                                                                   "rehearsal_late_unscored": bool(REH), "label": "Shadow: the person-built panel without the maker's first comment (pre-POINT-1 prompt)."}
 os.makedirs(os.path.dirname(p), exist_ok=True); json.dump(J, open(p, "w"), indent=1)
 pv = os.path.join(tempfile.gettempdir(), f"person_panel_{D}.parquet"); pd.DataFrame(PRIV).to_parquet(pv, index=False)
 STATS.update({"usd": sim_model.usd(), "day": D, "rehearsal": REH, "tables": TABLES})
