@@ -2890,3 +2890,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-25 12:35Z hourly check: board live with votes (31 of 31, 12:34Z). Fleet 20 running, refresh 2.0/min, complete 0/min. No new mailbox replies. Mailbox checked 12:34Z.
 - 2026-11-25 13:05Z population 6h: 462 merged (lost 0), complete 93,622; inflow resumed 09:16Z (19-63 per cycle, 15-34 VMs); fleet 20 running; comments_ts breach reopened 11:52Z. Checked: comments_ts written 12:41Z and snapshots succeed every 15 min (13:00Z 31/31, 0 new comments): likely a quiet spell, not a gap; population agent asked to judge by snapshot heartbeat.
 - 2026-11-25 13:12Z population: comments_ts now judged by capture heartbeat (breach closed); fleet status.json may be stale on liveness (vms_alive 5 of 20 vs 20 RUNNING and 30+ VMs staging saves).
+- 2026-11-25 13:35Z hourly check: board see report; mailbox checked 13:34Z; fleet see status.
