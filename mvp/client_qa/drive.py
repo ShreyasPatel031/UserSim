@@ -9,6 +9,8 @@ Start one device server per variation (each holds its own LambdaTest session, so
 Then drive it (each command prints a compact element list and saves a screenshot under <out>/shots/):
 
     python -m mvp.client_qa.drive 8801 look [tag]
+    Logins: type "{{EMAIL}}" / "{{PASSWORD}}"; real values come from QA_LOGIN_ENV (mvp.device.ios_lambdatest.fill_secrets).
+    Do real swipes wherever a screen has more below: the client wants to see scrolling.
     python -m mvp.client_qa.drive 8801 tap X Y | label "Text" | type "text" | swipe up|down|left|right | back | wait S
     python -m mvp.client_qa.drive 8801 note ITEM pass|fail|blocked|confusing "what happened" ["expected"]
     python -m mvp.client_qa.drive 8801 mark          -> "the test starts here" (first screen after login); the client
@@ -48,7 +50,7 @@ def _shrink(png: bytes, width: int = 430) -> bytes:
 def serve(a) -> None:
     os.environ.setdefault("LT_USERNAME", "proxy-injected")
     os.environ.setdefault("LT_ACCESS_KEY", "proxy-injected")
-    from mvp.device.ios_lambdatest import LTDevice, session_info
+    from mvp.device.ios_lambdatest import LTDevice, fill_secrets, session_info
     os.makedirs(f"{a.out}/shots", exist_ok=True)
     t0 = time.time()
     # The plan has one device slot: a session request waits in LambdaTest's queue and the proxy may cut the long
@@ -63,6 +65,7 @@ def serve(a) -> None:
             print(f"waiting for a device: {repr(e)[:120]}", flush=True)
             time.sleep(20)
     log = open(f"{a.out}/log.jsonl", "a")
+    actions = open(f"{a.out}/actions.jsonl", "a")  # mvp.device.touch_overlay format, t = seconds into the recording
     state = {"n": 0, "last": None}
     meta = {"session_id": dev.session_id, "app": a.app, "device": a.device, "os": a.os, "name": a.name,
             "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(t0)),
@@ -96,12 +99,25 @@ def serve(a) -> None:
                 if self.path == "/look":
                     r = look(body.get("tag", "obs"))
                 elif self.path == "/act":
-                    act = body
-                    if act["action"] == "back":
-                        dev.d.back(); res = "ok"
-                    else:
-                        res = dev.act(act)
-                    write({"kind": "act", "action": act, "result": res, "on": state["last"]})
+                    act = {k: v for k, v in body.items() if k not in ("tag", "settle")}
+                    if act["action"] in ("tap_label", "type_into") and "x" not in act:
+                        try:  # where the finger lands, so the client video can show the touch
+                            q = (act.get("label") or act.get("field") or "").replace('"', "")
+                            r_ = dev.d.find_element("-ios predicate string", f'label == "{q}" OR name == "{q}"').rect
+                            act = {**act, "x": r_["x"] + r_["width"] // 2, "y": r_["y"] + r_["height"] // 2}
+                        except Exception:  # noqa: BLE001
+                            pass
+                    t_rec = round(time.time() - t0 - meta["connect_s"], 1)
+                    try:
+                        if act["action"] == "back":
+                            dev.d.back(); res = "ok"
+                        else:
+                            res = dev.act(fill_secrets(act))  # {{EMAIL}} / {{PASSWORD}} filled here, never logged
+                    except Exception as e:  # noqa: BLE001
+                        res = f"error: {type(e).__name__}"
+                    logged = {k: v for k, v in act.items() if k != "text"}  # typed text is never written
+                    write({"kind": "act", "action": logged, "result": res, "on": state["last"]})
+                    actions.write(json.dumps({"t": t_rec, "action": logged, "result": res}) + "\n"); actions.flush()
                     time.sleep(float(body.get("settle", 1.5)))
                     r = look(body.get("tag", act["action"]))
                 elif self.path == "/mark":
@@ -159,7 +175,7 @@ def cli(argv: list[str]) -> None:
     elif cmd == "label":
         show(call(port, "/act", {"action": "tap_label", "label": rest[0]}))
     elif cmd == "type":
-        show(call(port, "/act", {"action": "type", "text": os.path.expandvars(rest[0]), "tag": "type"}))
+        show(call(port, "/act", {"action": "type", "text": rest[0], "tag": "type"}))  # use {{EMAIL}} / {{PASSWORD}} for logins
     elif cmd == "swipe":
         show(call(port, "/act", {"action": "swipe", "direction": rest[0]}))
     elif cmd == "back":
