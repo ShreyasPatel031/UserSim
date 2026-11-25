@@ -1,0 +1,138 @@
+{
+ "day": "2026-11-24",
+ "arm": "Stage B v1 agents' comments (late run, frozen 05:28 PT; not on time)",
+ "judge": "forward_says.judge vs frozen consensus truth",
+ "summary": {
+  "launches": 10,
+  "recall": [
+   20.5,
+   10.7,
+   30.4,
+   10
+  ],
+  "precision": [
+   55.7,
+   27.9,
+   81.4,
+   10
+  ],
+  "complaint_recall": [
+   0.0,
+   0.0,
+   0.0,
+   10
+  ]
+ },
+ "rows": [
+  {
+   "launch_id": "1320041",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.0,
+   "recall_w": 0.0,
+   "precision": 0.0,
+   "n_themes": 8,
+   "complaint_recall": 0.0,
+   "n_complaints": 4
+  },
+  {
+   "launch_id": "1322050",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.2857142857142857,
+   "recall_w": 0.47058823529411764,
+   "precision": 1.0,
+   "n_themes": 7,
+   "complaint_recall": 0.0,
+   "n_complaints": 6
+  },
+  {
+   "launch_id": "1327242",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.2,
+   "recall_w": 0.5,
+   "precision": 0.9285714285714286,
+   "n_themes": 5,
+   "complaint_recall": 0.0,
+   "n_complaints": 3
+  },
+  {
+   "launch_id": "1327369",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.0,
+   "recall_w": 0.0,
+   "precision": 0.0,
+   "n_themes": 6,
+   "complaint_recall": 0.0,
+   "n_complaints": 4
+  },
+  {
+   "launch_id": "1327551",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.0,
+   "recall_w": 0.0,
+   "precision": 0.0,
+   "n_themes": 7,
+   "complaint_recall": 0.0,
+   "n_complaints": 5
+  },
+  {
+   "launch_id": "1327680",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.2,
+   "recall_w": 0.3333333333333333,
+   "precision": 0.8571428571428571,
+   "n_themes": 5,
+   "complaint_recall": 0.0,
+   "n_complaints": 2
+  },
+  {
+   "launch_id": "1327970",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.3333333333333333,
+   "recall_w": 0.5,
+   "precision": 0.9285714285714286,
+   "n_themes": 6,
+   "complaint_recall": 0.0,
+   "n_complaints": 6
+  },
+  {
+   "launch_id": "1328270",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.3333333333333333,
+   "recall_w": 0.42857142857142855,
+   "precision": 0.9285714285714286,
+   "n_themes": 6,
+   "complaint_recall": 0.0,
+   "n_complaints": 4
+  },
+  {
+   "launch_id": "1328526",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.2,
+   "recall_w": 0.2857142857142857,
+   "precision": 0.14285714285714285,
+   "n_themes": 5,
+   "complaint_recall": 0.0,
+   "n_complaints": 2
+  },
+  {
+   "launch_id": "1328686",
+   "n_cand": 14,
+   "scored": true,
+   "recall": 0.5,
+   "recall_w": 0.5555555555555556,
+   "precision": 0.7857142857142857,
+   "n_themes": 6,
+   "complaint_recall": 0.0,
+   "n_complaints": 3
+  }
+ ]
+}
