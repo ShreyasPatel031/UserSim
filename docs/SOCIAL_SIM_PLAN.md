@@ -424,6 +424,14 @@ Spearman with the structural miss: panel interest -0.13 [-0.28, +0.01], sentimen
 (Nov 24 Stage B frozen 05:28 PT; Nov 15-23 person panels generated after results). Layer 1 is still 0; 9 days can only see
 effects of about 10 points. Forward lines must freeze before 03:30 PT every night from Nov 25.
 
+### Residual on post-cutoff backtest days (RESID-BACKTEST-1, subagent, Nov 25; $18.4)
+60 days of 2026 (structural top 15, 879 launches), Gemini 2.5 Flash with the nightly prompts, histories cut at D-1, agent
+counts scaled down. Structural top 3 57.8. No line reaches |Spearman| 0.15 with the miss. Stage B agents mostly echo the
+structural order (score vs structural rank -0.26). Beyond it, Stage B v1 knows a little: partial correlation with real rank
+given structural rank -0.06 to -0.09 (clear of zero for sentiment and on established agents), too small to re-order (top-3
+change +1 to +2, intervals touching zero). Person-panel sentiment top-3 +2.2 [+0.6, +4.4] but Spearman, partial and top 5
+all null or opposite: likely chance among 10 lines; extension to all 171 days queued for Nov 26 ($5-6). Layer 1 still 0.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
