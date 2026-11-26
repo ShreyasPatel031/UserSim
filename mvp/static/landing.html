@@ -586,6 +586,12 @@ html { scroll-behavior: smooth; }
 .copy .sub { font-size: clamp(18px, 1.6vw, 22px); color: var(--soft); margin-top: -12px; }
 
 #leaderboard #acc, #leaderboard #legend .final { display: none !important; }
+
+#leaderboard #pred li.btsum { list-style: none; padding: 10px 0 4px; font-size: 13px; color: var(--soft); border: 0; }
+#leaderboard #pred li.btsum span { color: var(--faint, var(--soft)); }
+#leaderboard #pred li.dayhead { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 18px 0 8px; border: 0; font-size: 13px; color: var(--soft); }
+#leaderboard #pred li.dayhead b { font: 600 14px/1.3 var(--sans); color: var(--ink); }
+#leaderboard #pred li.dayhead .dh { margin-left: auto; font-variant-numeric: tabular-nums; }
 </style>
 
 </head>
@@ -989,8 +995,15 @@ function renderPred(){
   tabs();
   const p = pointFor(TAB);
   const bt = TAB === "pre" && !p && (((VIEW.accuracy || {}).pre) || []).find(x=>x.backtest);
-  if(bt){   // no on-time live forecast for this day: show the labelled backtest instead of a list
-    $("#pred").innerHTML = `<li class="skeleton backtest">Backtest, ${esc(bt.range || ((bt.flag || "").match(/backtest, (.*) \(replayed\)/) || [])[1] || "")} (replayed after the days closed): ${Number(bt.top10).toFixed(1)}% top 10 · ${Number(bt.top5).toFixed(1)}% top 5 · ${Number(bt.top3).toFixed(1)}% top 3. Live forecasts start with the first on-time day.</li>`;
+  if(bt){   // no on-time live forecast for this day: the backtest summary and its last 3 replayed days, as lists
+    const rng = bt.range || ((bt.flag || "").match(/backtest, (.*) \(replayed\)/) || [])[1] || "";
+    const dayname = (d)=>{ const [y, m, dd] = String(d).split("-").map(Number); return new Date(y, m - 1, dd).toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"}); };
+    let h = `<li class="btsum">${Number(bt.top10).toFixed(1)}% top 10 · ${Number(bt.top5).toFixed(1)}% top 5 · ${Number(bt.top3).toFixed(1)}% top 3 <span>(${esc(rng)}, replayed)</span></li>`;
+    (bt.recent || []).forEach(d=>{
+      h += `<li class="dayhead"><b>${esc(dayname(d.day))}</b><span>Replayed after the day closed</span><span class="dh">${d.hits[2]}/10 top 10 · ${d.hits[1]}/5 · ${d.hits[0]}/3</span></li>`;
+      h += d.picks.map(x=> row(x.pred_rank, x, x.final_rank ? "#" + x.final_rank : null, "final", status(x.pred_rank, x.final_rank))).join("");
+    });
+    $("#pred").innerHTML = h;
     legend(); return;
   }
   if(!p || p.fallback === "none_available"){

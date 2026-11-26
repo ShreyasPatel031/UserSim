@@ -868,6 +868,11 @@ def test_pre_backtest_is_labelled_and_only_replays(monkeypatch):
     monkeypatch.setattr(live.gcs, "_cache", {})
     monkeypatch.setattr(live, "today_pt", lambda: "2026-11-26")
     monkeypatch.setattr(live, "actuals", lambda d: {"final": True, "ranks": {f"p{i}": {"rank": i + 1} for i in range(12)}})
+    monkeypatch.setattr(live, "_lineup", lambda d: {f"p{i}": {"name": f"P{i}", "tagline": "t", "thumb": None} for i in range(12)})
     bt = live.pre_backtest()
     assert bt["days"] == 1 and bt["top10"] == 100.0 and bt["flag"].startswith("backtest") and "replayed" in bt["flag"]
+    (d,) = bt["recent"]
+    assert d["day"] == "2026-11-20" and d["hits"] == [3, 5, 10] and len(d["picks"]) == 10
+    assert d["picks"][0] == {"id": "p0", "pred_rank": 1, "final_rank": 1, "final_votes": None, "name": "P0", "tagline": "t",
+                             "thumb": None, "slug": None, "topics": []}
     assert "not predicted before public votes" in bt["note"]

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=29">
+<link rel="stylesheet" href="/static/ph_site.css?v=30">
 </head>
 <body>
 <div class="wrap">
@@ -370,8 +370,15 @@ function renderPred(){
   tabs();
   const p = pointFor(TAB);
   const bt = TAB === "pre" && !p && (((VIEW.accuracy || {}).pre) || []).find(x=>x.backtest);
-  if(bt){   // no on-time live forecast for this day: show the labelled backtest instead of a list
-    $("#pred").innerHTML = `<li class="skeleton backtest">Backtest, ${esc(bt.range || ((bt.flag || "").match(/backtest, (.*) \(replayed\)/) || [])[1] || "")} (replayed after the days closed): ${Number(bt.top10).toFixed(1)}% top 10 · ${Number(bt.top5).toFixed(1)}% top 5 · ${Number(bt.top3).toFixed(1)}% top 3. Live forecasts start with the first on-time day.</li>`;
+  if(bt){   // no on-time live forecast for this day: the backtest summary and its last 3 replayed days, as lists
+    const rng = bt.range || ((bt.flag || "").match(/backtest, (.*) \(replayed\)/) || [])[1] || "";
+    const dayname = (d)=>{ const [y, m, dd] = String(d).split("-").map(Number); return new Date(y, m - 1, dd).toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"}); };
+    let h = `<li class="btsum">${Number(bt.top10).toFixed(1)}% top 10 · ${Number(bt.top5).toFixed(1)}% top 5 · ${Number(bt.top3).toFixed(1)}% top 3 <span>(${esc(rng)}, replayed)</span></li>`;
+    (bt.recent || []).forEach(d=>{
+      h += `<li class="dayhead"><b>${esc(dayname(d.day))}</b><span>Replayed after the day closed</span><span class="dh">${d.hits[2]}/10 top 10 · ${d.hits[1]}/5 · ${d.hits[0]}/3</span></li>`;
+      h += d.picks.map(x=> row(x.pred_rank, x, x.final_rank ? "#" + x.final_rank : null, "final", status(x.pred_rank, x.final_rank))).join("");
+    });
+    $("#pred").innerHTML = h;
     legend(); return;
   }
   if(!p || p.fallback === "none_available"){
