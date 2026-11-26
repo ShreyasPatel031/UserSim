@@ -169,8 +169,12 @@ def run_once(cl, root: str, work: Path) -> int:
             if key in idx and idx[key].get("status") in ("marked", "screenshot"):
                 continue
             if key in idx and idx[key].get("tries", 0) >= 3 and len(list((shard / "shots").glob("*.png"))) == idx[key].get("n_shots"):
-                continue  # nothing new to look at
-            res = locate(cl, shard, f)
+                if not evidence_shot(shard, f, idx[key]):
+                    continue  # nothing new to look at
+                res = dict(idx[key])
+            else:
+                res = None
+            res = res or locate(cl, shard, f)
             if res["status"] != "marked":
                 ev = evidence_shot(shard, f, res)
                 if ev:
