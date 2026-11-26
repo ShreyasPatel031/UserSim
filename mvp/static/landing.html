@@ -976,8 +976,10 @@ function pointFor(v){
 }
 function tabs(){
   const has = {mid: !!pointFor("mid"), pre: !!pointFor("pre")};
-  if(!TAB || (TAB === "pre" && !has.pre)) TAB = has.pre ? "pre" : "mid";   // Product + comments is the default when today's order-free forecast exists
-  const pb = $("#tab-pre"); if(pb) pb.hidden = !has.pre;                   // no forecast_pre file for the day: Product only
+  const preRows = ((VIEW.accuracy || {}).pre) || [], preLive = preRows.some(x=>x.flag === "live" && x.settled);
+  const showPre = has.pre || preRows.length > 0;                          // a live forecast today, or its labelled backtest
+  if(!TAB || (TAB === "pre" && !showPre)) TAB = has.pre && preLive ? "pre" : "mid";   // Product only stays the default until Product + comments has live days
+  const pb = $("#tab-pre"); if(pb) pb.hidden = !showPre;
   ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
     const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Expected " + EXPECT[v];
     b.onclick = ()=>{ TAB = v; renderPred(); metric(); renderLive(); drawLinks(); }; });
@@ -986,6 +988,11 @@ const EXPECT = {mid: "00:05 PT", pre: "03:45 PT"};
 function renderPred(){
   tabs();
   const p = pointFor(TAB);
+  const bt = TAB === "pre" && !p && (((VIEW.accuracy || {}).pre) || []).find(x=>x.backtest);
+  if(bt){   // no on-time live forecast for this day: show the labelled backtest instead of a list
+    $("#pred").innerHTML = `<li class="skeleton backtest">Backtest, ${esc(bt.range || ((bt.flag || "").match(/backtest, (.*) \(replayed\)/) || [])[1] || "")} (replayed after the days closed): ${Number(bt.top10).toFixed(1)}% top 10 · ${Number(bt.top5).toFixed(1)}% top 5 · ${Number(bt.top3).toFixed(1)}% top 3. Live forecasts start with the first on-time day.</li>`;
+    legend(); return;
+  }
   if(!p || p.fallback === "none_available"){
     $("#pred").innerHTML = `<li class="skeleton">${p ? "Not available for this day." : `Not yet available${VIEW.day === VIEW.today ? ` · expected ${EXPECT[TAB]}` : " for this day"}.`}</li>`;
     legend(); return;

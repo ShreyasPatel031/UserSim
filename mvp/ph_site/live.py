@@ -1122,6 +1122,7 @@ def pre_backtest() -> dict | None:
         n, tot = len(per), [sum(h[i] for _, h in per) for i in range(3)]
         lab = lambda d: datetime.fromisoformat(d).strftime("%b %-d")
         return {"flag": f"backtest, {lab(per[0][0])} – {lab(per[-1][0])} (replayed)", "days": n,
+                "range": f"{lab(per[0][0])}–{lab(per[-1][0])}",
                 "top3": round(100 * tot[0] / (3 * n), 1), "top5": round(100 * tot[1] / (5 * n), 1),
                 "top10": round(100 * tot[2] / (10 * n), 1), "backtest": True,
                 "hits": {f"top{k}": [tot[i], k * n] for i, k in enumerate((3, 5, 10))},
