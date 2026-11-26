@@ -247,4 +247,7 @@ day to day setup and upkeep and making sure website is up and stuff".
   or sends it wake messages; agents use the data that lands.
 - **The orchestrator** does day-to-day setup and upkeep: the public website and live board up, the midnight forecast written
   on time, the MCP server and seeds healthy, scheduled jobs and agent sessions running, the ledger synced, costs watched.
-  It no longer runs or assigns ML research experiments; outages and broken jobs come first.
+  Outages and broken jobs come first.
+- **Experiments continue** (Shreyas, Nov 26: "you can continue experiments, just keep an eye on usage and understand carbon
+  is better, so if it gives suggestions for ml research take it"). The orchestrator keeps its experiment slot, watches token
+  and model spend, and takes Gemini Carbon's ML research suggestions over its own plans.
