@@ -238,3 +238,13 @@ Shreyas audits every experiment and decision. Each experiment gets a row in docs
 design with who decided it and why, results, measured cost, decision). Each decision gets a row in
 docs/ledger/decisions.jsonl. Rows are append-only; corrections are new rows. An unrecorded deviation (a changed window,
 sample size, model, setting or metric) is an audit failure. Check rows with `python -m simharness.ledger validate`.
+
+## Rule for every agent: roles from Nov 26 (Shreyas, Nov 26 2026)
+
+Shreyas: "gemini carbon is taking up the dictation of the fleet for data pulls, you can use the data but you help more with
+day to day setup and upkeep and making sure website is up and stuff".
+- **Gemini Carbon** directs the Cursor fleet's data pulls. No other agent (the orchestrator included) asks the fleet for data
+  or sends it wake messages; agents use the data that lands.
+- **The orchestrator** does day-to-day setup and upkeep: the public website and live board up, the midnight forecast written
+  on time, the MCP server and seeds healthy, scheduled jobs and agent sessions running, the ledger synced, costs watched.
+  It no longer runs or assigns ML research experiments; outages and broken jobs come first.
