@@ -2930,3 +2930,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T06:33Z hourly check: board live, site/launch/MCP 200. Waiting on Shreyas re antigravity. No spend.
 - 2026-11-26T07:15Z Shreyas: policing the fleet / other agents is not the orchestrator's job; the 06:2xZ Grok Bot alert about fleet IP rotation was out of scope. Recorded in AGENTS.md.
 - 2026-11-26T07:24Z Shreyas confirmed: 'antigravity' is Gemini Carbon and acts with his authorization; its workstreams (WS1-4) stand.
+- 2026-11-26T07:34Z hourly check: board live (07:33Z), site/launch/MCP 200; no new antigravity instructions; ledger sync nothing new. CHOICE-FT-1 starts after 08:00Z.
