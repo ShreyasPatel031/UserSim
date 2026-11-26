@@ -492,6 +492,14 @@ their most similar earlier launch 6.1% (a floor, not a ceiling).
 - Nov 24-25 only: deployed recall 0.87x [0.80, 0.94], precision 1.20x [1.11, 1.29], complaints 0.63x [0.41, 0.95].
 - Reading: themes about at the human ceiling, precision above it, complaints the main gap. Next: COMPLAINT-1.
 
+### Fine-tune on real backing choices (CHOICE-FT-1, subagent, Nov 26; $15.49)
+Qwen2.5-7B + LoRA as a yes/no backing scorer on (held person x launch) pairs, Mar 2-Oct 31 training, test Nov 11-22
+(361 launches, 15% fixed pool sample, 3,463 held backers). recall@N pooled: BACKER-v2 39.0 [37.4, 40.5], tuned 500k rows
+37.0 [35.5, 38.4] (-1.9 [-3.2, -0.6]), 200k 35.9, 50k 26.9, untuned 12.8, most-active 32.6. AUC per launch: tuned 0.944 vs
+0.941 (+0.003 [+0.000, +0.005]). Learning curve flat after 200k (500k-200k +1.1 [-0.1, +2.4]). Leak checks clean.
+- Decision: not deployed; no further scaling of yes/no choice fine-tunes. Only remaining test: stack P(yes) with
+  BACKER-v2 features, scored forward. Fresher upvote reads are the bigger lever (PRESENCE-CHOICE-1).
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
