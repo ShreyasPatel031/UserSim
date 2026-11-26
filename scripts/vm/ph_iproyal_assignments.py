@@ -163,9 +163,13 @@ def pick_next_purl_ring(current: str, lines: list[str]) -> str | None:
 
 
 def protected_slots() -> set[str]:
+    raw = os.environ.get("FLEET_IPROYAL_NEVER_ROTATE_SLOTS", "").split()
+    if raw and any(raw):
+        return {x for x in raw if x}
     live = os.environ.get("FLEET_LIVE_SLOTS", "39").split()
     up = os.environ.get("FLEET_UPVOTE_SLOTS", "9 27 38").split()
-    return {x for x in live + up if x}
+    pin = os.environ.get("FLEET_POOL_B_PINNED_SLOTS", "32 40 42 44 45").split()
+    return {x for x in live + up + pin if x}
 
 
 def slot_for_host(st: dict, host: str, skip: str) -> str | None:
@@ -267,6 +271,8 @@ def rotate_cooldown_ok(slot: str, sec: float | None = None) -> bool:
 def rotate(slot: int | str, reason: str = "block") -> dict:
     root = _root()
     slot = str(slot)
+    if slot in protected_slots():
+        return {"ok": False, "reason": "pinned_slot", "slot": slot}
     if not rotate_cooldown_ok(slot):
         return {"ok": False, "reason": "rotate_cooldown", "slot": slot}
     pool = pool_path()

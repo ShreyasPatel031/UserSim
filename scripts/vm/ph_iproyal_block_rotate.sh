@@ -20,9 +20,12 @@ from pathlib import Path
 art = Path("$ART")
 m = json.loads((art / "fleet_measure.json").read_text())
 walls_min = int("$WALLS_MIN")
-protect = set(os.environ.get("FLEET_LIVE_SLOTS", "39").split()) | set(
-    os.environ.get("FLEET_UPVOTE_SLOTS", "9 27 38").split()
-)
+protect = set(os.environ.get("FLEET_IPROYAL_NEVER_ROTATE_SLOTS", "").split())
+if not protect:
+    protect = set(os.environ.get("FLEET_LIVE_SLOTS", "39").split()) | set(
+        os.environ.get("FLEET_UPVOTE_SLOTS", "9 27 38").split()
+    ) | set(os.environ.get("FLEET_POOL_B_PINNED_SLOTS", "32 40 42 44 45").split())
+protect.discard("")
 out = []
 for s in m.get("slots", []):
     slot = int(s.get("slot") or 0)
