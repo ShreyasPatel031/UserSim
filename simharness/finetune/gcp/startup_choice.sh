@@ -2,11 +2,14 @@
 # CHOICE-FT-1 job for a GPU VM (launch with launch.sh and FT_STARTUP pointing here): trains the yes/no backing scorer
 # (choice_lora.py), scores the eval person-days with the untuned model and at each snapshot, uploads each result as
 # soon as it exists (so the run-time cap never loses a finished point), then removes the VM.
-# Metadata: ft_prefix (code/choice_lora.py, data/train.jsonl, data/eval.jsonl), ft_model, ft_tag, ft_rows, ft_eval_at.
+# Metadata: ft_prefix (code/choice_lora.py, data/train.jsonl, data/eval.jsonl), ft_model, ft_tag, ft_rows, ft_eval_at;
+# score-only: ft_adapter_gcs (an adapter folder) and ft_eval_file (a file under data/).
 set -uo pipefail
 md() { curl -sf -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/$1"; }
 PREFIX=$(md ft_prefix); MODEL=$(md ft_model); TAG=$(md ft_tag)
 ROWS=$(md ft_rows || echo 0); EVAL_AT=$(md ft_eval_at || echo "")
+ADAPTER_GCS=$(md ft_adapter_gcs || echo "")   # set: score data/$EVAL_FILE with this adapter, no training
+EVAL_FILE=$(md ft_eval_file || echo eval.jsonl)
 WORK=/opt/ft; mkdir -p $WORK; cd $WORK
 [ -f STARTED ] && exit 0   # a reboot must not run the job again
 touch STARTED
@@ -29,6 +32,13 @@ job() {
   $PY -m pip install -q "transformers==5.20.2" "peft==0.21.3" accelerate "jinja2>=3.1" "torch==$TORCH" \
     || $PY -m pip install -q --break-system-packages "transformers==5.20.2" "peft==0.21.3" accelerate "jinja2>=3.1" "torch==$TORCH"
   $PY -c "import torch, transformers, peft; print(torch.__version__, transformers.__version__, peft.__version__, torch.cuda.get_device_name(0))"
+  if [ -n "$ADAPTER_GCS" ]; then
+    gsutil -q cp $PREFIX/code/choice_lora.py $PREFIX/data/$EVAL_FILE .
+    mkdir -p adapter && gsutil -q -m cp -r "$ADAPTER_GCS/*" adapter/
+    $PY choice_lora.py score --model "$MODEL" --adapter adapter --eval "$EVAL_FILE" --out "scores_$EVAL_FILE"
+    gsutil -q cp "scores_$EVAL_FILE" $RUN/
+    echo "job end $(date -u +%FT%TZ)"; return 0
+  fi
   gsutil -q cp $PREFIX/code/choice_lora.py $PREFIX/data/train.jsonl $PREFIX/data/eval.jsonl .
   $PY choice_lora.py train --model "$MODEL" --train train.jsonl --eval eval.jsonl --out adapter --rows "$ROWS" \
     --eval-at $EVAL_AT --grad-checkpoint --score-base --upload "$RUN"
