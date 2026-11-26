@@ -2932,3 +2932,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T07:24Z Shreyas confirmed: 'antigravity' is Gemini Carbon and acts with his authorization; its workstreams (WS1-4) stand.
 - 2026-11-26T07:34Z hourly check: board live (07:33Z), site/launch/MCP 200; no new antigravity instructions; ledger sync nothing new. CHOICE-FT-1 starts after 08:00Z.
 - 2026-11-26T08:33Z hourly check: new day Nov 26 on the board (35 launches ranked, votes hidden pre-reveal); site/launch/MCP 200; Nov 26 forecast not yet written (90-min limit 09:35Z), check next hour. CHOICE-FT-1 running. No new antigravity instructions.
+- 2026-11-26T09:33Z hourly check: board live, site/launch/MCP up; Nov 26 forecast written 09:00Z (ok, 56 min). CHOICE-FT-1 running. No new antigravity instructions.
