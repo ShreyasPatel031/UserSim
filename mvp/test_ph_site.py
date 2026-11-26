@@ -665,19 +665,20 @@ def test_A5_A6_A7_only_two_fixed_predictions(monkeypatch):
     f15 = live.forecasts("2026-11-15")
     assert set(f15) <= {"0005", "PRE"}                                 # A5: no internal points leave the server
     assert f15["0005"]["ranks"] == {"7": 1}                            # A6: the published file is the day's only list
-    assert f15["PRE"]["ranks"] == {"8": 1}                             # 03:45 hybrid until a published prereveal file exists
+    assert "PRE" not in f15                                            # Product + comments: never the 03:45 hybrid (P345)
     f16 = live.forecasts("2026-11-16")
     assert f16["0005"]["ranks"] == {"3": 1} and f16["0005"]["fallback"] == "earlier_forecast"   # A7, labelled
     files["results/web/predictions/2026-11-16_prereveal.json"] = {"day": "2026-11-16", "model": "none_available", "fallback_used": "none_available", "ranking": []}
     files["results/early_forecast/2026-11-16_P345.json"] = {"forecast": [{"id": 6, "pred_rank_hybrid": 1}], "written_at": "x"}
-    names.append(("results/web/predictions/2026-11-16_prereveal.json", ""))
     live.gcs._cache.clear()
-    pre16 = live.forecasts("2026-11-16")["PRE"]
-    assert pre16["fallback"] == "none_available" and pre16["ranks"] == {}      # never the P345 shadow line
+    assert "PRE" not in live.forecasts("2026-11-16")                   # nor the old prereveal file
+    files["results/web/forecast_pre/2026-11-16.json"] = {"forecast": [{"id": 6, "predicted_rank": 1}, {"id": 4, "predicted_rank": 2}], "written_at": "w"}
+    live.gcs._cache.clear()
+    assert live.forecasts("2026-11-16")["PRE"]["ranks"] == {"6": 1, "4": 2}   # only the order-free forecast_pre file
     f17 = live.forecasts("2026-11-17")
     assert "0005" not in f17                                           # A6: published era, not written yet: nothing shown
     f13 = live.forecasts("2026-11-13")
-    assert f13["0005"]["ranks"] == {"3": 1} and f13["PRE"]["ranks"] == {"5": 1}   # before the cutover: files live then
+    assert f13["0005"]["ranks"] == {"3": 1} and "PRE" not in f13
 
 
 def test_B6_rate_limit_backs_off(monkeypatch):
@@ -836,6 +837,7 @@ def test_live_aggregate_includes_today_in_progress(monkeypatch):
     tr = {"days": [{"day": "2026-11-14", "prediction": "00:05 PT", "flag": "live", "status": "scored",
                     "hits_top3": 2, "hits_top5": 4, "hits_top10": 6, "fallback_used": "fb"}]}
     monkeypatch.setattr(live.gcs, "read_json", lambda *a, **k: tr)
+    monkeypatch.setattr(live.gcs, "list_names", lambda *a, **k: [])
     ids = [f"p{i}" for i in range(12)]
     view = {"day": "2026-11-15", "today": "2026-11-15", "status": {"final": False},
             "launches": [{"id": x, "board_rank": i + 1} for i, x in enumerate(ids)],
@@ -844,4 +846,6 @@ def test_live_aggregate_includes_today_in_progress(monkeypatch):
     assert row["days"] == 2 and row["in_progress"] is True
     assert row["hits"] == {"top3": [5, 6], "top5": [9, 10], "top10": [16, 20]}
     assert row["per_day"][0]["fallback"] == "fb" and row["per_day"][1]["final"] is False
+    assert row["settled"] == {"days": 1, "top3": 66.7, "top5": 80.0, "top10": 60.0, "hits_top10": [6, 10]}   # headline: final days only
+    assert "pre" not in live.live_aggregate(view)                      # no forecast_pre days, no old 03:45 record
 
