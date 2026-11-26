@@ -25,7 +25,16 @@ def main(days):
         g["rank"] = range(1, len(g) + 1)
         res = {"day": d, "written_at": pd.Timestamp.now(tz="UTC").isoformat(), "run_updated_at": g.u.iloc[0],
                "forecast": [{"id": i, "predicted_rank": int(r)} for i, r in zip(g.id, g["rank"])]}
-        p = f"{OUT}/{d}.json"; json.dump(res, open(p, "w"), indent=1)
+        p = f"{OUT}/{d}.json"
+        # write once (orchestrator 03:48Z Nov 26): tw.sh re-runs this after every pre-reveal point; an unchanged file is neither rewritten nor
+        # re-uploaded, so written_at and the heartbeat keep the first write's time (a rewrite at 12:01Z read as "late 236 min" on Nov 25)
+        try:
+            old = json.load(open(p))
+            if str(old.get("run_updated_at")) == str(res["run_updated_at"]) and old.get("forecast") == res["forecast"]:
+                print(json.dumps({"day": d, "status": "unchanged, not rewritten", "launches": len(g)})); continue
+        except (OSError, ValueError):
+            pass
+        json.dump(res, open(p, "w"), indent=1)
         subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/web/forecast_0005/{d}.json"], check=True)
         import heartbeat; heartbeat.beat("forecast_0005", d, pd.Timestamp(d + " 00:05", tz="America/Los_Angeles").tz_convert("UTC"), "ok")
         print(json.dumps({"day": d, "launches": len(g)}))

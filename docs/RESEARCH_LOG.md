@@ -217,3 +217,21 @@ Requested by the orchestrator at 14:33Z, because TARGETS-0 could score only 24 w
   - Where the old file had arm-2 scores, they are carried over; elsewhere arm 2 is null.
   - On Nov 10–22 the live frozen-00:05 scores were replaced by month-forward scores. The live record stays in raw/daily/<d>/forecast_<d>.parquet.
 - **Summary file:** results/structural/backtest_v2.json.
+
+### 2026-11-26 03:51Z — DEPLOY: the website forecast copy is now written once (heartbeat "late 236 min" fix)
+
+Requested by the orchestrator at 03:48Z. This is a rehearsed fix and timing only: the file's content is unchanged.
+
+- **Symptom.** On Nov 25 the heartbeat showed forecast_0005 written at 12:01Z against the 08:05Z cut, labelled "late" by 236 min.
+- **Cause.**
+  - tw.sh runs web_forecast_0005.py at 01:10 PT, in the catch-up slots, and after every pre-reveal point.
+  - The script rewrote today's results/web/forecast_0005/<d>.json on every run and re-stamped the heartbeat each time.
+  - So the last re-run (after P4, 12:01Z) became the recorded write time.
+  - The first real write was 09:01Z, 56 min after the cut and inside the 90-min rule. The 00:05 forecast itself was on time: its parquet landed at 08:44Z.
+- **Fix.** web_forecast_0005.py 7645b1eb → 0293f025 on the VM tw tree (~/w/tw/experiments/ph_predict). A file whose run_updated_at and forecast are unchanged is not rewritten, re-uploaded or re-stamped. A re-published forecast still rewrites it.
+- **Checks.**
+  - `check`: OK.
+  - `selftest`: deploy and rollback round-trip OK.
+  - `rehearse 2026-11-25`: with today's real file in place it skipped, with 0 uploads; without it, it wrote the identical forecast.
+- **Deployed** at 19:51 PT. Ledger row D-WEB-FORECAST-ONCE was registered before the deploy.
+- **Rollback:** `bash ~/w/stage/20261126_web_forecast_once/deploy_wf.sh rollback`
