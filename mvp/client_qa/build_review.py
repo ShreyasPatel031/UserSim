@@ -183,6 +183,14 @@ def finalize(a) -> None:
         del f["src"]
     json.dump(dropped, open(os.path.join(a.out, "dropped.json"), "w"), indent=1)
     json.dump(out, open(os.path.join(a.out, "findings.json"), "w"), indent=1)
+    # publish gate (mvp.client_qa.gate): crash/freeze held for a manual repro, no-screenshot held, weak/duplicate/slop dropped
+    from mvp.client_qa.gate import gate
+    bp = os.path.join(a.out, "brief.txt")
+    rep = gate(a.out, lambda f: os.path.join(a.out, f["marked_img"]) if f.get("marked_img") and os.path.exists(os.path.join(a.out, f["marked_img"])) else None,
+               open(bp).read() if os.path.exists(bp) else "")
+    out = json.load(open(os.path.join(a.out, "findings.json")))
+    print("gate:", rep["published"], "published,", len(rep["held"]), "held,", len(rep["dropped"]), "dropped (see gate.json)")
+    json.dump(out, open(os.path.join(a.out, "findings.json"), "w"), indent=1)
     print(len(g["nodes"]), "screens,", len(out), "findings (", sum(f["source"] == "tester" for f in out), "from testers,",
           sum(bool(f.get("needs_screenshot")) for f in out), "need a screenshot ),", len(dropped), "dropped: not visible on their own screenshot")
 

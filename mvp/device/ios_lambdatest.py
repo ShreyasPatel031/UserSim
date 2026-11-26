@@ -57,6 +57,9 @@ class LTDevice(IOSDevice):
             "build": build, "name": name, "video": True, "visual": True, "devicelog": True, "network": True,
             "autoAcceptAlerts": False, "idleTimeout": 600})
         opts.set_capability("appium:newCommandTimeout", 600)
+        # never wait for the app to go idle: a spinner or animation otherwise stalls every command for minutes
+        opts.set_capability("appium:waitForIdleTimeout", 0)
+        opts.set_capability("appium:waitForQuiescence", False)
         self.d = webdriver.Remote(HUB, options=opts)
         self.size = self.d.get_window_size()
         self.session_id = self.d.session_id

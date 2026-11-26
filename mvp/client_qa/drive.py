@@ -212,8 +212,8 @@ def main() -> None:
         ap = argparse.ArgumentParser()
         ap.add_argument("serve"); ap.add_argument("--app", required=True); ap.add_argument("--port", type=int, required=True)
         ap.add_argument("--out", required=True); ap.add_argument("--name", default="client-qa")
-        ap.add_argument("--build", default="client-qa"); ap.add_argument("--device", default="iPhone 15")
-        ap.add_argument("--os", default="17"); ap.add_argument("--queue-max", type=float, default=3600)
+        ap.add_argument("--build", default="client-qa"); ap.add_argument("--device", default="iPhone 18 Pro Max")
+        ap.add_argument("--os", default="27"); ap.add_argument("--queue-max", type=float, default=3600)
         serve(ap.parse_args())
     else:
         cli(sys.argv[1:])
