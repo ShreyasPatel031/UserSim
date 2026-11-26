@@ -92,7 +92,25 @@ function failed(sel, what, e){
   $(sel).innerHTML = `<li class="skeleton">Couldn't load ${esc(what)} (${esc(e.message)}). <a href="#" onclick="location.reload();return false">Retry</a></li>`;
 }
 
+// Last answer per day, kept in this browser: the page draws it at once and redraws only when the server's answer differs.
+const CACHE_KEY = (day)=> "ph:view:" + (day || "today");
+function cacheGet(day){
+  try { const v = JSON.parse(localStorage.getItem(CACHE_KEY(day)) || "null");
+    const now = new Intl.DateTimeFormat("en-CA", {timeZone: "America/Los_Angeles"}).format(new Date());
+    return v && (day || v.today === now) ? v : null; } catch(e){ return null; }   // "today" only while it is still today (PT)
+}
+function cachePut(day, raw){ try { localStorage.setItem(CACHE_KEY(day), raw); } catch(e){} }
+function show(v){
+  VIEW = v;
+  dayStep();
+  const st = VIEW.status;
+  $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
+  renderPred(); metric(); renderLive(); drawLinks();
+  loadExplain(VIEW.day);
+}
 async function load(day){
+  const cached = cacheGet(day);
+  if(cached && (!VIEW || VIEW.day !== cached.day)) show(cached);          // instant: last numbers we had
   let v;
   try { v = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
   catch(e){
@@ -103,13 +121,11 @@ async function load(day){
     }
     failed("#pred", "the forecast", e); failed("#live", "the leaderboard", e); return;
   }
-  VIEW = v;
-  dayStep();
-  const isToday = VIEW.day === VIEW.today, st = VIEW.status;
-
-  $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
-  renderPred(); metric(); renderLive(); drawLinks();
-  loadExplain(VIEW.day);
+  const raw = JSON.stringify(v);
+  cachePut(day, raw);
+  if(!day) cachePut(v.day, raw);
+  if(VIEW && VIEW.day === v.day && JSON.stringify(VIEW) === raw) return;   // nothing changed: leave the page as it is
+  show(v);
 }
 
 // Click a launch -> who votes / what they will say / competitors / why (E5 explain file; blocks may be missing).
