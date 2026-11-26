@@ -89,6 +89,8 @@ def serve(a) -> None:
         open(small, "wb").write(_shrink(o["screenshot_png"]))
         state["last"] = os.path.relpath(p, a.out)
         els = [e for e in o["elements"] if not any(k in e["label"] for k in NOISE)]
+        # page source for this exact screenshot: findings may only be marked on an element located here
+        json.dump({"size": o["size"], "elements": o["elements"]}, open(p[:-4] + ".elements.json", "w"))
         write({"kind": "look", "shot": state["last"]})
         return {"shot": small, "size": o["size"], "elements": els}
 

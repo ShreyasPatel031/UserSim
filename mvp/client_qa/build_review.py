@@ -110,23 +110,61 @@ def finalize(a) -> None:
         cands.append({"flow": f["flow"], "img": f["img"], "path": st["src"], "type": f["severity"], "title": f["title"],
                       "detail": f["detail"], "confidence": round(f["confidence"], 2), "source": "detector"})
     cl = d.client()
-    sch = {"type": "object", "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "short_title": {"type": "string"}}, "required": ["x", "y", "short_title"]}
+    sch = {"type": "object", "properties": {"visible": {"type": "boolean"}, "element": {"type": "integer"}, "short_title": {"type": "string"}},
+           "required": ["visible", "element", "short_title"]}
+    def page_source(c):   # saved by mvp.client_qa.drive next to each screenshot; older runs have none
+        q = c["path"][:-4] + ".elements.json"
+        return json.load(open(q)) if os.path.exists(q) else None
     def loc(c):
-        r, _ = d.call_json(cl, sch, "You locate a reported UI problem on an iPhone screenshot.", [d.img_block(c["path"]), {"type": "text", "text":
-            "Problem: " + c["title"] + ". " + c["detail"][:400] + "\nGive x,y = centre of the faulty element as fractions (0-1) of image width and height, "
-            "and short_title = the problem in at most 8 plain words, sentence case."}], effort="low", max_tokens=4000)
-        return r or {}
+        src = page_source(c)
+        els = [e for e in (src or {}).get("elements", []) if e.get("label") and e.get("frame")]
+        listing = "\n".join(f"{i}: {e['type']} \"{e['label']}\" frame {e['frame']}" for i, e in enumerate(els)) or "(no page source saved)"
+        r, _ = d.call_json(cl, sch, "You check a reported UI problem against one iPhone screenshot and its page source. Be strict.", [d.img_block(c["path"]), {"type": "text", "text":
+            "Problem: " + c["title"] + ". " + c["detail"][:400] + "\n\nPage source of THIS screenshot (index: type \"label\" frame [x,y,w,h] in points):\n" + listing +
+            "\n\nvisible = the problem itself is plainly visible in THIS screenshot (not inferred from another screen or from the description). "
+            "element = index of the page-source element the problem is about, or -1 if no listed element is it. "
+            "short_title = the problem in at most 8 plain words, sentence case."}], effort="low", max_tokens=4000)
+        return (r or {}), els, src
     with cf.ThreadPoolExecutor(8) as ex:
         res = list(ex.map(loc, cands))
-    out = []
-    for c, r in zip(cands, res):
+    out, dropped = [], []
+    for c, (r, els, src) in zip(cands, res):
         f = {k: c[k] for k in ("flow", "img", "type", "detail", "confidence", "source")}
         f["title"] = r.get("short_title") or c["title"]
-        f["x"] = min(.95, max(.05, float(r.get("x", .5)))); f["y"] = min(.95, max(.05, float(r.get("y", .5))))
-        f["id"] = "p" + hashlib.sha1((f["flow"] + "|" + f["img"] + "|" + f["title"]).encode()).hexdigest()[:10]
+        f["id"] = "p" + hashlib.sha1((f["flow"] + "|" + f["img"] + "|" + c["title"]).encode()).hexdigest()[:10]
+        if not r.get("visible"):   # its own screenshot does not show it: not a finding on this page
+            dropped.append({"title": c["title"], "flow": c["flow"], "img": c["img"], "source": c["source"]}); continue
+        i = r.get("element", -1)
+        if isinstance(i, int) and 0 <= i < len(els):
+            W, H = Image.open(c["path"]).size
+            k = W / src["size"]["width"]   # points -> screenshot pixels (x3 on these iPhones)
+            x, y, w, h = els[i]["frame"]
+            f["element"] = els[i]["label"]
+            f["box"] = [x * k / W, y * k / H, (x + w) * k / W, (y + h) * k / H]
+            f["x"], f["y"] = (x + w / 2) * k / W, (y + h / 2) * k / H
+            f["src"] = c["path"]
+        else:   # no element located in this screenshot's page source: no mark
+            f["needs_screenshot"] = True
+            f["x"], f["y"] = .9, .06
         out.append(f)
+    # pen-marked screenshot only around a page-source element (mvp.client_qa.annotate), like the team's Slack screenshots
+    from mvp.client_qa.annotate import annotate
+    mdir = os.path.join(a.out, "marked"); os.makedirs(mdir, exist_ok=True)
+    for f in out:
+        if "src" not in f:
+            continue
+        W, H = Image.open(f["src"]).size
+        x1, y1, x2, y2 = f["box"]
+        png = os.path.join(mdir, f["id"] + ".png")
+        annotate(f["src"], png, [(int(x1 * W), int(y1 * H), int(x2 * W), int(y2 * H))], f["title"])
+        Image.open(png).convert("RGB").save(png[:-4] + ".jpg", quality=82)
+        f["marked_img"] = "marked/" + f["id"] + ".jpg"
+        f["marked"] = assets.get(f["marked_img"])
+        del f["src"]
+    json.dump(dropped, open(os.path.join(a.out, "dropped.json"), "w"), indent=1)
     json.dump(out, open(os.path.join(a.out, "findings.json"), "w"), indent=1)
-    print(len(g["nodes"]), "screens,", len(out), "findings (", sum(f["source"] == "tester" for f in out), "from testers )")
+    print(len(g["nodes"]), "screens,", len(out), "findings (", sum(f["source"] == "tester" for f in out), "from testers,",
+          sum(bool(f.get("needs_screenshot")) for f in out), "need a screenshot ),", len(dropped), "dropped: not visible on their own screenshot")
 
 
 def main() -> None:
