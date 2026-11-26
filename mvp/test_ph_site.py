@@ -856,3 +856,18 @@ def test_live_aggregate_includes_today_in_progress(monkeypatch):
     assert row["settled"] == {"days": 1, "top3": 66.7, "top5": 80.0, "top10": 60.0, "hits_top10": [6, 10]}   # headline: final days only
     assert "pre" not in live.live_aggregate(view)                      # no forecast_pre days, no old 03:45 record
 
+
+
+def test_pre_backtest_is_labelled_and_only_replays(monkeypatch):
+    from mvp.ph_site import live
+    fc = {"provenance": "order_free_replay", "forecast": [{"id": f"p{i}", "predicted_rank": i + 1} for i in range(10)]}
+    files = {"results/web/forecast_pre_replay/2026-11-20.json": fc,
+             "results/web/forecast_pre_replay/2026-11-21.json": {**fc, "provenance": "live"}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [(k, "") for k in files])
+    monkeypatch.setattr(live.gcs, "_cache", {})
+    monkeypatch.setattr(live, "today_pt", lambda: "2026-11-26")
+    monkeypatch.setattr(live, "actuals", lambda d: {"final": True, "ranks": {f"p{i}": {"rank": i + 1} for i in range(12)}})
+    bt = live.pre_backtest()
+    assert bt["days"] == 1 and bt["top10"] == 100.0 and bt["flag"].startswith("backtest") and "replayed" in bt["flag"]
+    assert "not predicted before public votes" in bt["note"]

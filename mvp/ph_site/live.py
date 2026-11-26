@@ -1095,6 +1095,40 @@ def monthly() -> dict | None:
     return {"month": month, "as_of_day": day, "written_at": j.get("written_at"), "top": top}
 
 
+def pre_backtest() -> dict | None:
+    """Product + comments replayed on past days (results/web/forecast_pre_replay/, provenance order_free_replay), scored
+    on the final ranks. A backtest made after the fact: labelled as one, never 'predicted before public votes'."""
+    def go():
+        per = []
+        today = today_pt()
+        for name, _ in gcs.list_names("results/web/forecast_pre_replay/", ttl=1800):
+            d = name.rsplit("/", 1)[-1].removesuffix(".json")
+            if len(d) != 10 or d >= today:
+                continue
+            j = gcs.read_json(f"results/web/forecast_pre_replay/{d}.json", ttl=1800)
+            if not isinstance(j, dict) or j.get("provenance") != "order_free_replay" or not isinstance(j.get("forecast"), list):
+                continue
+            rows = [(str(r.get("id")), int(r.get("predicted_rank") or 0)) for r in j["forecast"] if isinstance(r, dict)]
+            ranks = {i: n for n, (i, _) in enumerate(sorted(rows, key=lambda t: t[1]), 1)}
+            act = actuals(d)
+            if not act.get("final"):
+                continue
+            h = [hits(ranks, act["ranks"], k) for k in (3, 5, 10)]
+            if None not in h:
+                per.append((d, h))
+        if not per:
+            return None
+        per.sort()
+        n, tot = len(per), [sum(h[i] for _, h in per) for i in range(3)]
+        lab = lambda d: datetime.fromisoformat(d).strftime("%b %-d")
+        return {"flag": f"backtest, {lab(per[0][0])} – {lab(per[-1][0])} (replayed)", "days": n,
+                "top3": round(100 * tot[0] / (3 * n), 1), "top5": round(100 * tot[1] / (5 * n), 1),
+                "top10": round(100 * tot[2] / (10 * n), 1), "backtest": True,
+                "hits": {f"top{k}": [tot[i], k * n] for i, k in enumerate((3, 5, 10))},
+                "note": f"{tot[2]}/{10 * n} top 10; replayed after the days closed, not predicted before public votes"}
+    return gcs._cached("pre_backtest", 1800, go)
+
+
 _LIVE_PRED = {"mid": ("00:05 PT", "0005"), "pre": ("03:45 PT", "PRE")}
 
 

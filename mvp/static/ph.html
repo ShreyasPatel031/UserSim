@@ -409,7 +409,7 @@ function accLine(){
   $("#acc").textContent = `${name}${made}${fb}${acc ? " — " + acc : ""}${flag}`;
 }
 function metric(){
-  const acc = VIEW.accuracy || {}, pick = (t)=> (acc[t] || []).find(x=>x.flag==="live" && (x.settled || x.top10 != null));
+  const acc = VIEW.accuracy || {}, pick = (t)=> (acc[t] || []).find(x=>x.flag==="live" && x.settled);   // headline: live-made, settled days only
   const rows = acc.mid || [];
   const cur = (TAB === "pre" && pick("pre")) || rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
   const r = cur || prev, pctv = r && r.settled ? r.settled.top10 : r && r.top10;   // settled (final) days only

@@ -129,7 +129,9 @@ async def _ph_today(day: str | None):
             rows = [r for r in view["accuracy"].get(tab, []) if r.get("flag") != "live"]
             view["accuracy"][tab] = [row] + rows
         # Product + comments: only its own order-free live record (from live_aggregate); never the old 03:45 rows.
-        view["accuracy"]["pre"] = [r for r in view["accuracy"].get("pre", []) if r.get("flag") == "live" and "settled" in r]
+        pre_rows = [r for r in view["accuracy"].get("pre", []) if r.get("flag") == "live" and "settled" in r]
+        bt = await asyncio.to_thread(live.pre_backtest)     # labelled backtest (replayed), never the headline
+        view["accuracy"]["pre"] = pre_rows + ([bt] if bt else [])
     except Exception:  # noqa: BLE001 - the accuracy line is optional
         view["accuracy"] = {}
     try:
