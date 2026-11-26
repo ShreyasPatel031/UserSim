@@ -47,14 +47,20 @@ def load_run(d: str) -> dict:
 def prepare(a) -> None:
     os.makedirs(os.path.join(a.out, "img"), exist_ok=True)
     runs = [load_run(d) for d in a.runs]
-    manifest = {"runs": []}
+    mp = os.path.join(a.out, "manifest.json")   # additive: runs can be prepared one at a time as they finish
+    manifest = json.load(open(mp)) if os.path.exists(mp) else {"runs": [], "detected": []}
+    names = {r["name"] for r in runs}
+    manifest["runs"] = [r for r in manifest["runs"] if r["id"] not in names]
+    manifest["detected"] = [f for f in manifest.get("detected", []) if f["flow"] not in names]
+    new_runs = []
     for r in runs:
         steps = []
         for i, s in enumerate(r["shots"]):
             name = f"img/{r['name']}_{i:03d}.jpg"
             Image.open(os.path.join(r["dir"], s)).convert("RGB").resize((786, 1704)).save(os.path.join(a.out, name), quality=78)
             steps.append({"img": name, "src": os.path.join(r["dir"], s), "w": 393, "h": 852, "taps": r["taps"].get(s, [])})
-        manifest["runs"].append({"id": r["name"], "title": r["name"], "steps": steps, "notes": r["notes"]})
+        new_runs.append({"id": r["name"], "title": r["name"], "steps": steps, "notes": r["notes"]})
+    manifest["runs"] += new_runs
     if a.detect:
         import mvp.client_qa.detect_eval as d
         cl = d.client()
@@ -62,7 +68,7 @@ def prepare(a) -> None:
             sc = [{"img": s["img"], "path": s["src"], "title": run["title"] + " (build 4255)"} for s in run["steps"]]
             return d.detect_flow(cl, run["id"], sc, [])[0] if sc else []
         with cf.ThreadPoolExecutor(6) as ex:
-            manifest["detected"] = [f for fl in ex.map(det, manifest["runs"]) for f in fl]
+            manifest["detected"] += [f for fl in ex.map(det, new_runs) for f in fl]
     json.dump(manifest, open(os.path.join(a.out, "manifest.json"), "w"), indent=1)
     print(len(manifest["runs"]), "runs,", sum(len(r["steps"]) for r in manifest["runs"]), "screens,",
           len(manifest.get("detected", [])), "detector flags")
