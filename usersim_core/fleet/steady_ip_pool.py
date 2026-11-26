@@ -30,21 +30,33 @@ from typing import Any
 
 
 # Steady-state 20-IP distribution & data SLA plan (Zero ongoing Apify spend — $0/day external API cost).
-# Partitioned into two strict isolation pools so signed-in accounts NEVER rotate IPs and get locked:
-#   - Pool A (12 IPs, rotatable/cooldown PH pool):
+# Driven strictly by MEASURED net leaderboard lift (not raw univariate correlation):
+#   - Apify X/LinkedIn/G2 added ~0.0 net pts over arm3 (`70.9% -> 70.9%` live Top-10; `+0.13 pts` 55d noise)
+#     because arm3 already captures X follower reach + free Vertex Google Search (`promo_search.py`).
+#   - What actually moved the score:
+#       1. Live PH + 15m Pre-Reveal Comments + Post-Midnight Arrivals: `+4.81 pts` Nov (`66.7%` Top-3 / `73.9%` Top-5 / `73.5%` Top-10 live).
+#       2. Active-Voter Daily Upvote Refresh: lifts voter presence AUC `0.562 -> 0.898`.
+#       3. Live Product Surface Inspection (`v1` `+2.5 pts` Nov Top-10), where ~70% of SaaS launches block anonymous
+#          entry behind login walls (`Continue with Google`) — unlocked by the 5 pinned Gmail/Camoufox IPs!
+#
+# Partitioned into two strict isolation pools so signed-in Google accounts NEVER rotate IPs:
+#   - Pool A (15 IPs, rotatable/cooldown PH pool):
 #       * 3 IPs: Live PH Capture & Pre-Reveal Comments (<=15m SLA)
-#       * 5 IPs: Active-Voter Daily Upvote Refresh (~9,000/day capacity -> keeps 2,545 14d-active & ~6,500 30d-active <=24h fresh)
-#       * 4 IPs: Bounded Historical PH Whole-Person Pulls (clears 1,276 need_list in ~2-3d + daily new commenters/backers)
-#   - Pool B (8 IPs, HARD-PINNED 1:1 sticky IPs + persistent Camoufox profiles for signed-in accounts — NEVER rotated!):
-#       * 4 Sticky IPs: Signed-in X/Twitter accounts (#1 external lift: rho_votes=+0.219, p=0.016 residual lift)
-#       * 3 Sticky IPs: Signed-in LinkedIn / Google accounts (#2 external lift: rho_votes=+0.124, ~15 org/founder pages/IP/day)
-#       * 1 Sticky IP:  Slow G2 / Capterra / Trustpilot scraper (Google SSO, 1-2 pages/min for Atelier Sim review bank)
+#       * 8 IPs: Active-Voter Daily Upvote Refresh (~14,400/day capacity -> keeps 2,545 14d-active & ~6,500 30d-active <=24h fresh)
+#       * 4 IPs: Bounded Historical PH Whole-Person Pulls (`need_list=1,276` high-vote backers + daily new commenters)
+#   - Pool B (5 IPs, HARD-PINNED 1:1 sticky IPs + persistent Camoufox profiles on slots `32, 40, 42, 44, 45` — NEVER rotated!):
+#       * 5 Sticky IPs (`slots 32, 40, 42, 44, 45`): 1 signed-in Gmail account per IP (`usersim-fleet-gmail-accounts` 1..5)
+#         running `pool_b_worker.py` for `"Continue with Google"` live product-use inspection (`producthunt.com` blocked)
+#         + background competitor user-feedback pulls for Atelier Sim.
+PINNED_POOL_B_SLOTS = {"32", "40", "42", "44", "45"}
+
 RECOMMENDED_DEMAND_TARGETS = {
-    "pool_A_ph_rotatable_12_ips": {
+    "pool_A_ph_rotatable_15_ips": {
         "live_ph_capture_and_comments": {
             "target_ips": 3,
             "ip_mode": "rotatable_with_standby",
             "sla_max_gap_minutes": 15,
+            "measured_lift": "+4.81 pts Nov paired mean(3,5,10); +7.3 Top-3 / +5.2 Top-5 / +2.6 Top-10 on 23 live days",
             "scope": [
                 "00:05 PT lineup + rolling 15m post-midnight launch discovery (lineup_0100 + api_detail)",
                 "15m api_comments / comments_ts continuous capture (primary + hot standby to eliminate 30-240m gaps)",
@@ -52,12 +64,13 @@ RECOMMENDED_DEMAND_TARGETS = {
             ],
         },
         "active_voter_upvote_refresh": {
-            "target_ips": 5,
+            "target_ips": 8,
             "ip_mode": "rotatable_cooldown",
             "sla_freshness_hours": 24,
+            "measured_lift": "Voter presence AUC 0.562 -> 0.898 when D-1 upvotes are <=24h fresh",
             "scope": [
-                "Daily newest-first Upvotes diff prioritizing 2,545 14d-active + 3,655 refresh-delta complete people first, then 30d-active (~9,000 refreshes/day capacity)",
-                "Keeps D-1 upvotes <=24h fresh before 00:05 PT (lifts voter presence AUC 0.562 -> 0.898)",
+                "Daily newest-first Upvotes diff prioritizing 2,545 14d-active + 3,655 refresh-delta complete people first, then 30d-active (~14,400 refreshes/day capacity)",
+                "Keeps D-1 upvotes <=24h fresh before 00:05 PT",
             ],
         },
         "bounded_historical_ph_whole_people": {
@@ -70,33 +83,17 @@ RECOMMENDED_DEMAND_TARGETS = {
             ],
         },
     },
-    "pool_B_signed_in_sticky_8_ips_NEVER_ROTATE": {
-        "x_twitter_signed_in_search": {
-            "target_ips": 4,
-            "ip_mode": "PINNED_STICKY_1_ACCOUNT_PER_IP_NO_ROTATION",
-            "accounts_needed": "4 signed-in X/Twitter accounts in persistent Camoufox profiles",
-            "sla": "By 00:25 PT for 00:05 lineup + within 20m of any post-00:05 launch; daytime HN/maker backfill",
+    "pool_B_signed_in_sticky_5_ips_NEVER_ROTATE": {
+        "gmail_google_sso_live_product_and_reviews": {
+            "target_ips": 5,
+            "pinned_slots": ["32", "40", "42", "44", "45"],
+            "ip_mode": "PINNED_STICKY_1_GMAIL_ACCOUNT_PER_IP_NO_ROTATION",
+            "accounts_secret": "projects/project-amer-scs-sandbox/secrets/usersim-fleet-gmail-accounts",
+            "measured_lift": "+2.5 pts Nov Top-10 from live product surface inspection; unlocks ~70% login-walled SaaS launches via Continue with Google",
+            "sla": "Continuous 5m poll (`usersim-poolb.service`); 00:05 lineup inspected within ~3-4m across 5 sharded VMs",
             "scope": [
-                "Pre-launch X search (`\"domain\" OR \"product\" OR from:maker until:<D>`) — #1 external signal (rho_votes=+0.219, p=0.016 residual over arm3)",
-                "Maker & company X profile followers, bio, pinned/recent launch threads (~10-15 queries/account at midnight, human-paced)",
-            ],
-        },
-        "linkedin_company_and_founder_signed_in": {
-            "target_ips": 3,
-            "ip_mode": "PINNED_STICKY_1_ACCOUNT_PER_IP_NO_ROTATION",
-            "accounts_needed": "3 signed-in LinkedIn (or Google-SSO LinkedIn) accounts in persistent Camoufox profiles",
-            "sla": "By 00:30 PT for daily PH launches (~12-18 company/founder pages per account/day — well below LinkedIn's ~80/day safety limit)",
-            "scope": [
-                "Company headcount, follower count, founded year, funding, and cold-start founder/maker work history (#2 external signal: rho_votes=+0.124)",
-            ],
-        },
-        "g2_capterra_slow_competitor_reviews": {
-            "target_ips": 1,
-            "ip_mode": "PINNED_STICKY_SLOW_CAMOUFOX_1_TO_2_PAGES_PER_MIN",
-            "accounts_needed": "1 Google account for G2/Capterra SSO in persistent Camoufox profile",
-            "sla": "Continuous background refresh (weekly per category incumbent; ~300-500 review pages/day)",
-            "scope": [
-                "Verified buyer Pros, Cons, and Switching Triggers across `competitors.parquet` SaaS incumbents for Atelier Sim E2E user-testing studies",
+                "Real Camoufox + Google SSO (`Continue with Google`) live product surface inspection on daily PH launches (`producthunt.com` strictly blocked per AGENTS.md L141)",
+                "Gentle background competitor user-feedback / SaaS category discussions (`competitor_feedback_slot<N>.jsonl`) for Atelier Sim user-testing studies",
             ],
         },
     },
@@ -145,7 +142,7 @@ def evaluate_tick(
     """
     now_iso = dt.datetime.fromtimestamp(now_ts, tz=dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     actions: list[dict[str, Any]] = []
-    pinned = pinned_account_slots or set()
+    pinned = pinned_account_slots if pinned_account_slots is not None else PINNED_POOL_B_SLOTS
 
     # Prune expired IP quarantines
     ledger.ip_quarantine_until = {

@@ -27,7 +27,9 @@ Per `AGENTS.md` L145-156, `fleet-cursor` owns slot assignment, scaling, and VM s
   - Live `sites_0005.json` URL redirect resolution.
 - **Active Held-Voter Upvote Refresh (`<=24h` fresh by `00:05 PT` daily):**
   - Daily newest-first `Upvotes` diff down to first held item for 14-day and 30-day active complete people (`~3,655-8,500` people), keeping `D-1` voter activity current.
-- **Bounded High-Signal Complete-People Completion (`need_list=1,197`):**
-  - Prioritize Top-10 launch backers & commenters from `Apr-Nov 2026` (`whole-person` mode; audit `stacks` `0/0` empty-tab edge case so valid 0-stack users are not blocked from saving).
-- **External Anti-Bot Sources Offloaded from the 20 PH IPs:**
-  - Pre-launch X/Twitter search, LinkedIn company profiles, and G2/Capterra reviews are pulled via `usersim_core/apify_pull.py` into `gs://usersim-bakeoff-347838016394/usersim_sim/raw/apify_v1/` — the 20 PH IPRoyal IPs do **not** need to scrape X, LinkedIn, or G2.
+- **Bounded High-Signal Complete-People Completion (`need_list=1,276`):**
+  - Prioritize Top-10 launch backers & commenters from `Apr-Nov 2026` (`whole-person` mode; `population` WS-4 confirmed `195/197` missing-header rows need plain whole re-pulls).
+- **20-IP Split: 15 Rotatable PH IPs (`Pool A`) + 5 Hard-Pinned Sticky Gmail/Camoufox IPs (`Pool B`: `slots 32, 40, 42, 44, 45`):**
+  - `Pool A` (`15 IPs`): `3` Live PH + `15m` Comments + Post-Midnight Arrivals (`+4.81 pts` Nov lift), `8` Active-Voter Daily Upvote Refresh (`<=24h` SLA, `0.562 -> 0.898` presence AUC), `4` Bounded `need_list=1,276` Whole-Person Pulls.
+  - `Pool B` (`5 IPs` pinned `1:1` on `slots 32, 40, 42, 44, 45`, **never rotated**): `1` Gmail account per sticky IP (`usersim-fleet-gmail-accounts` `1..5`) running `pool_b_worker.py` (`usersim-poolb.service`) for `"Continue with Google"` live product surface inspection (`producthunt.com` strictly blocked) + background competitor user-feedback pulls (`$0/day` external API spend).
+  - *Note on X/LinkedIn scrapes:* `USERSIM-CORE-HILLCLIMB-2` ablation (`A1 -> A2`) proved raw X/LinkedIn scrapes add `~0.0` net leaderboard pts over `arm3` (`70.9% -> 70.9%` live Top-10) because `arm3` already includes `ext_x` follower reach + free Vertex Google Search `promo_search.py`. Zero fleet IPs are wasted on X/LinkedIn scraping.
