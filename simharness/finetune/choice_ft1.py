@@ -298,14 +298,14 @@ def stage_agg(a):
                                                 "comments_written_on_or_after_day_start", "target_launch_in_history",
                                                 "launches_all_dated_on_the_row_day", "handles_in_prompts")},
            "models": {}, "vs_backer_v2_wf": {}, "vs_most_active": {}, "full_pool_baselines": {}}
-    keys = ("recall_at_N_pooled", "recall_at_N_mean", "auc_mean", "auc_pooled")
+    keys = ("recall_at_N_pooled", "recall_at_N_mean", "auc_mean")
     for k, df in per.items():
-        s = summarize(ok(df), n_boot=NB, cluster="item", pooled_auc=True)
+        s = summarize(ok(df), n_boot=NB, cluster="item")
         res["models"][k] = {m: s[m] for m in keys} | {"launches": s["items"], "positives": s["positives"],
                                                       "pairs": s["pairs"]}
         for ref, slot in (("backer_v2_wf", "vs_backer_v2_wf"), ("most_active", "vs_most_active")):
             if k != ref:
-                res[slot][k] = {m: paired_diff(ok(df), ok(per[ref]), m, NB, cluster="item", pooled_auc=True)
+                res[slot][k] = {m: paired_diff(ok(df), ok(per[ref]), m, NB, cluster="item")
                                 for m in ("recall_at_N_pooled", "recall_at_N_mean", "auc_mean")}
     for k in names:
         s = summarize(ok(score_rows(full, bs[f"{k}__full"])), n_boot=NB, cluster="item")
@@ -316,8 +316,8 @@ def stage_agg(a):
     res["learning_curve"] = [{"train_rows": n, "model": k, **{m: res["models"][k][m] for m in keys}} for n, k in curve]
     if len(curve) >= 2:
         hi, lo = curve[-1][1], curve[0][1]
-        res["learning_curve_last_minus_first"] = {m: paired_diff(ok(per[hi]), ok(per[lo]), m, NB, cluster="item",
-                                                                 pooled_auc=True) for m in ("recall_at_N_pooled", "auc_mean")}
+        res["learning_curve_last_minus_first"] = {m: paired_diff(ok(per[hi]), ok(per[lo]), m, NB, cluster="item")
+                                                  for m in ("recall_at_N_pooled", "auc_mean")}
     if os.path.exists(f"{a.scores}/train_info.json"):
         res["train_info"] = json.load(open(f"{a.scores}/train_info.json"))
     if os.path.exists(f"{a.scores}/cost.json"):
