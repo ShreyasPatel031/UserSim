@@ -15,15 +15,20 @@ bash "$ROOT/scripts/vm/ph_iproyal_sync_pool.sh" >/dev/null 2>&1 || true
 python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" init >/dev/null 2>&1 || true
 
 mapfile -t targets < <(python3 - <<PY
-import json
+import json, os
 from pathlib import Path
 art = Path("$ART")
 m = json.loads((art / "fleet_measure.json").read_text())
 walls_min = int("$WALLS_MIN")
+protect = set(os.environ.get("FLEET_LIVE_SLOTS", "39").split()) | set(
+    os.environ.get("FLEET_UPVOTE_SLOTS", "9 27 38").split()
+)
 out = []
 for s in m.get("slots", []):
     slot = int(s.get("slot") or 0)
     if slot < 1:
+        continue
+    if str(slot) in protect:
         continue
     st = s.get("state") or ""
     walls = int(s.get("walls") or 0)

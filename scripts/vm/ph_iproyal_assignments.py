@@ -162,9 +162,18 @@ def pick_next_purl_ring(current: str, lines: list[str]) -> str | None:
     return None
 
 
+def protected_slots() -> set[str]:
+    live = os.environ.get("FLEET_LIVE_SLOTS", "39").split()
+    up = os.environ.get("FLEET_UPVOTE_SLOTS", "9 27 38").split()
+    return {x for x in live + up if x}
+
+
 def slot_for_host(st: dict, host: str, skip: str) -> str | None:
+    prot = protected_slots()
     for s, sl in (st.get("slots") or {}).items():
         if s == skip:
+            continue
+        if skip not in prot and s in prot:
             continue
         if (sl or {}).get("host") == host:
             return s
