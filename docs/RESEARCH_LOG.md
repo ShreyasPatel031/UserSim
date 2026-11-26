@@ -2938,3 +2938,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T11:33Z hourly check: board live, site/launch/MCP up; nothing broken; CHOICE-FT-1 running.
 - 2026-11-26T12:34Z hourly check: board live, site/launch/MCP up; calibration truth.json now on the VM (D-CALIB-TRUTH-VM); CHOICE-FT-1 running.
 - 2026-11-26T12:45Z CHOICE-FT-1 RESULT (subagent, $15.49): tuned Qwen 7B on 500k real backing choices: recall@N 37.0 vs BACKER-v2 39.0 (-1.9 [-3.2,-0.6]); AUC 0.944 vs 0.941; curve flat after 200k. Not deployed; choice fine-tunes stopped. Ledger rows finished + D-CHOICE-FT-1.
+- 2026-11-26T13:33Z hourly check: board live (votes revealed), site/launch/MCP up. STACK-1 registered ($8) and started.
