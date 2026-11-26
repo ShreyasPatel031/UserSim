@@ -242,33 +242,41 @@ def attempt_google_signin(browser_ctx: Any, page: Any, email: str, password: str
 
 
 def handle_google_oauth_popup_or_redirect(page: Any, email: str) -> bool:
-    """If clicking 'Continue with Google' redirected to accounts.google.com account chooser, select our signed-in account."""
+    """Select our signed-in account on an OAuth chooser / consent page (popup or main tab)."""
     try:
+        page.wait_for_timeout(1800)
+        if page.is_closed():
+            return True
         if "accounts.google.com" not in page.url.lower():
             return True
-        page.wait_for_timeout(2000)
-        body_low = page.inner_text("body").lower()
+        body_low = page.inner_text("body")[:1500].lower()
         if "captcha" in body_low or "verify it" in body_low:
             return False
         for sel in (
             f'div[data-identifier="{email.lower()}"]',
             f'div[data-email="{email.lower()}"]',
             f'li:has-text("{email}")',
+            f'div[role="link"]:has-text("{email}")',
+            'div[data-identifier]',
         ):
-            loc = page.locator(sel).first
-            if loc.count() > 0 and loc.is_visible():
-                loc.click(timeout=4000)
-                page.wait_for_timeout(3500)
-                break
-        # Consent "Continue" button on OAuth screen if shown
-        _click_first_visible(page, ("Continue", "Allow"))
-        page.wait_for_timeout(3000)
-        return "accounts.google.com" not in page.url.lower()
+            try:
+                loc = page.locator(sel).first
+                if loc.count() > 0 and loc.is_visible():
+                    loc.click(timeout=3500)
+                    page.wait_for_timeout(2500)
+                    break
+            except Exception:
+                continue
+        if page.is_closed():
+            return True
+        _click_first_visible(page, ("Continue", "Allow", "Confirm"))
+        page.wait_for_timeout(2800)
+        return page.is_closed() or ("accounts.google.com" not in page.url.lower())
     except Exception:
-        return False
+        return page.is_closed()
 
 
-def inspect_product_page(page: Any, item_id: str, url: str, signed_in: bool, email: str) -> dict[str, Any]:
+def inspect_product_page(browser: Any, page: Any, item_id: str, url: str, signed_in: bool, email: str) -> dict[str, Any]:
     """Visit external launch URL in Camoufox (`producthunt.com` strictly blocked per AGENTS.md)."""
     if not url or "producthunt.com" in url.lower():
         return {"item_id": item_id, "url": url, "status": "skipped_ph_or_empty"}
@@ -311,16 +319,36 @@ def inspect_product_page(page: Any, item_id: str, url: str, signed_in: bool, ema
                         pass
             if sso_loc.count() > 0 and sso_loc.first.is_visible():
                 sso_attempted = True
+                pages_before = len(browser.pages)
                 try:
                     sso_loc.first.click(timeout=4500)
-                    page.wait_for_timeout(3500)
-                    if handle_google_oauth_popup_or_redirect(page, email):
-                        post_sso_url = page.url
-                        if "accounts.google.com" not in post_sso_url.lower() and "producthunt.com" not in post_sso_url.lower():
-                            sso_entered = post_sso_url != landing_u
-                            post_sso_excerpt = " ".join(page.inner_text("body").split())[:2000]
+                    page.wait_for_timeout(2500)
+                    target_p = page
+                    if len(browser.pages) > pages_before:
+                        popup = browser.pages[-1]
+                        handle_google_oauth_popup_or_redirect(popup, email)
+                        page.wait_for_timeout(2800)
+                        if not popup.is_closed() and "accounts.google.com" not in popup.url.lower():
+                            target_p = popup
+                    elif "accounts.google.com" in page.url.lower():
+                        handle_google_oauth_popup_or_redirect(page, email)
+                        page.wait_for_timeout(2500)
+
+                    post_sso_url = target_p.url
+                    if "accounts.google.com" not in post_sso_url.lower() and "producthunt.com" not in post_sso_url.lower():
+                        p_body = " ".join(target_p.inner_text("body").split())[:2000]
+                        if post_sso_url != landing_u or abs(len(p_body) - len(body_txt)) > 120:
+                            sso_entered = True
+                            post_sso_excerpt = p_body
                 except Exception:
                     pass
+                finally:
+                    for extra_p in list(browser.pages)[1:]:
+                        if not extra_p.is_closed():
+                            try:
+                                extra_p.close()
+                            except Exception:
+                                pass
 
         return {
             "fetched_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -517,7 +545,7 @@ def run_worker(slot: int, account_idx: int, once: bool = False, retry_auth: bool
             for lid, u in targets:
                 if lid in done_ids:
                     continue
-                rec = inspect_product_page(page, lid, u, signed_in=signed_in, email=email)
+                rec = inspect_product_page(browser, page, lid, u, signed_in=signed_in, email=email)
                 rec["slot"] = slot
                 rec["account_idx"] = account_idx
                 rec["google_signed_in"] = signed_in
