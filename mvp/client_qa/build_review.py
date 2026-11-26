@@ -97,7 +97,10 @@ def finalize(a) -> None:
     g = build(flows, shots, set()); json.dump(g, open(os.path.join(a.out, "canvas.json"), "w"))
     cands = []
     auto = json.load(open(a.automark)) if getattr(a, "automark", None) else None
+    noted = {n["what"] for r in man["runs"] for n in r["notes"] if n.get("marked_png")}
     for k, v in (auto or {}).items():   # mvp.client_qa.automark: verified pen-marked shot, or "needs screenshot"
+        if k != "_usage" and v.get("finding", "").split(" Expected: ")[0] in noted:
+            continue
         run = next((r for r in man["runs"] if r["id"] == v.get("shard")), None) if k != "_usage" else None
         if not run or not run["steps"]:
             continue
@@ -106,15 +109,20 @@ def finalize(a) -> None:
         cands.append({"flow": run["id"], "img": st["img"], "path": st["src"], "type": t, "title": v["finding"].split(". ")[0][:110],
                       "detail": v["finding"], "confidence": 0.9, "source": "tester", "auto": v,
                       "auto_png": os.path.join(os.path.dirname(a.automark), "..", "..", v["png"]) if v.get("png") else None})
-    for r in ([] if auto is not None else man["runs"]):
+    for r in man["runs"]:
         src2img = {os.path.relpath(s["src"], os.path.join(os.path.dirname(s["src"]), "..")): s for s in r["steps"]}
         for n in r["notes"]:
             t = note_type(n)
             st = src2img.get(n.get("shot") or "")
             if not t or not st:
                 continue
-            cands.append({"flow": r["id"], "img": st["img"], "path": st["src"], "type": t, "title": n["what"].split(". ")[0][:110],
-                          "detail": n["what"] + (" Expected: " + n["expected"] if n.get("expected") else ""), "confidence": 0.9, "source": "tester"})
+            c = {"flow": r["id"], "img": st["img"], "path": st["src"], "type": t, "title": n["what"].split(". ")[0][:110],
+                 "detail": n["what"] + (" Expected: " + n["expected"] if n.get("expected") else ""), "confidence": 0.9, "source": "tester"}
+            if n.get("marked_png") and os.path.exists(n["marked_png"]):
+                # marked by the tester's own `note --on/--box` at the moment the bug was flagged: used as is, no second pass
+                cands.append({**c, "auto": {"png": n["marked_png"]}, "auto_png": n["marked_png"]})
+            elif auto is None:
+                cands.append(c)
     for f in man.get("detected", []):
         st = next(s for r in man["runs"] if r["id"] == f["flow"] for s in r["steps"] if s["img"] == f["img"])
         cands.append({"flow": f["flow"], "img": f["img"], "path": st["src"], "type": f["severity"], "title": f["title"],

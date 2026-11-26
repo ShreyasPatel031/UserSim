@@ -15,7 +15,9 @@ Then drive it (each command prints a compact element list and saves a screenshot
     Before every run read, and after every run add to, the private client knowledge file (Reframe:
     gs://usersim-bakeoff-347838016394/usersim_sim/client_qa/reframe/knowledge.md). Test only the build the brief names.
     python -m mvp.client_qa.drive 8801 tap X Y | label "Text" | type "text" | swipe up|down|left|right | back | wait S
-    python -m mvp.client_qa.drive 8801 note ITEM pass|fail|blocked|confusing "what happened" ["expected"]
+    python -m mvp.client_qa.drive 8801 note ITEM pass|fail|blocked|confusing "what happened" ["expected"] [--on "Label" ...] [--box X1 Y1 X2 Y2]
+        a fail/confusing note pen-marks the CURRENT screenshot at once: --on circles the element with that label in this screen's
+        page source, --box circles a rectangle in points; a fail/confusing note without a mark is refused
     python -m mvp.client_qa.drive 8801 mark          -> "the test starts here" (first screen after login); the client
                                                         video starts at this point, so log in before marking
     python -m mvp.client_qa.drive 8801 quit          -> closes the session, writes session.json with the video link
@@ -163,7 +165,48 @@ def call(port: int, path: str, body: dict) -> dict:
     return json.loads(urllib.request.urlopen(req, timeout=300).read())
 
 
+LAST = "/tmp/usersim_drive_last_{}.txt"
+
+
+def mark_note(shot_png: str, on: list[str], boxes: list[list[float]], title: str) -> tuple[str | None, list[str]]:
+    """Pen-mark a note's own screenshot the moment the note is made: each --on label is found in THIS screenshot's page source
+    (<shot>.elements.json, saved by look) and its frame circled; each --box (x1 y1 x2 y2 in points) is circled as given.
+    Returns (marked png path or None, labels that were not found)."""
+    from PIL import Image
+    from mvp.client_qa.annotate import annotate
+    src_p = shot_png[:-4] + ".elements.json"
+    src = json.load(open(src_p)) if os.path.exists(src_p) else {"size": None, "elements": []}
+    W = Image.open(shot_png).width
+    k = W / (src["size"] or {"width": W / 3})["width"]
+    rects, missing = [], []
+    for lab in on:
+        els = [e for e in src["elements"] if e.get("frame") and e.get("label")]
+        hit = [e for e in els if e["label"].strip() == lab.strip()] or \
+              [e for e in els if e["label"].strip().lower() == lab.strip().lower()] or \
+              [min([e for e in els if lab.strip().lower() in e["label"].lower()] or [None], key=lambda e: e["frame"][2] * e["frame"][3] if e else 0)]
+        hit = [e for e in hit if e]
+        if not hit:
+            missing.append(lab); continue
+        seen = set()
+        for e in hit:   # every element with exactly that label (a Button and its StaticText share one place: circle it once)
+            x, y, w, h = e["frame"]
+            if any(abs(x - a) < 8 and abs(y - b) < 8 for a, b in seen):
+                continue
+            seen.add((x, y))
+            rects.append((int((x - 6) * k), int((y - 6) * k), int((x + w + 6) * k), int((y + h + 6) * k)))
+    for b in boxes:
+        rects.append(tuple(int(v * k) for v in b))
+    if not rects:
+        return None, missing
+    mdir = os.path.join(os.path.dirname(os.path.dirname(shot_png)), "marked"); os.makedirs(mdir, exist_ok=True)
+    out = os.path.join(mdir, os.path.basename(shot_png)[:-4] + "_" + str(time.time_ns() // 1000000) + ".png")
+    annotate(shot_png, out, rects, title)
+    return out, missing
+
+
 def show(r: dict) -> None:
+    if r.get("shot") and "_PORT" in globals():
+        open(LAST.format(_PORT), "w").write(r["shot"])
     if "elements" not in r:
         print(json.dumps(r)); return
     print(f"shot {r['shot']}  screen {r['size']['width']}x{r['size']['height']}")
@@ -173,6 +216,7 @@ def show(r: dict) -> None:
 
 def cli(argv: list[str]) -> None:
     port, cmd, rest = int(argv[0]), argv[1], argv[2:]
+    globals()["_PORT"] = port
     if cmd == "look":
         show(call(port, "/look", {"tag": rest[0] if rest else "look"}))
     elif cmd == "tap":
@@ -195,9 +239,35 @@ def cli(argv: list[str]) -> None:
     elif cmd == "wait":
         show(call(port, "/act", {"action": "wait", "s": float(rest[0]) if rest else 3, "settle": 0}))
     elif cmd == "note":
-        item, status, what = rest[0], rest[1], rest[2]
-        print(call(port, "/note", {"item": item, "status": status, "what": what,
-                                   "expected": rest[3] if len(rest) > 3 else ""}))
+        # note ITEM STATUS "what" ["expected"] [--on "Label" ...] [--box X1 Y1 X2 Y2 ...] [--nomark]
+        # fail/confusing notes are marked on the current screenshot right now; no mark, no note (unless --nomark: blocked/pass only)
+        pos, on, boxes, nomark, i = [], [], [], False, 0
+        while i < len(rest):
+            if rest[i] == "--on":
+                on.append(rest[i + 1]); i += 2
+            elif rest[i] == "--box":
+                boxes.append([float(v) for v in rest[i + 1:i + 5]]); i += 5
+            elif rest[i] == "--nomark":
+                nomark = True; i += 1
+            else:
+                pos.append(rest[i]); i += 1
+        item, status, what = pos[0], pos[1], pos[2]
+        body = {"item": item, "status": status, "what": what, "expected": pos[3] if len(pos) > 3 else ""}
+        if status in ("fail", "confusing"):
+            if nomark:
+                sys.exit("a fail/confusing note must show the problem: add --on LABEL or --box X1 Y1 X2 Y2 (points); --nomark is for pass/blocked")
+            last = open(LAST.format(port)).read().strip() if os.path.exists(LAST.format(port)) else ""
+            png = last.replace(".small.jpg", ".png")
+            if not (png and os.path.exists(png)):
+                sys.exit("no screenshot to mark: run `look` on the screen that shows the problem first")
+            marked, missing = mark_note(png, on, boxes, what.split(". ")[0][:90])
+            if missing:
+                print("not in this screen's page source:", missing, "(use --box with coordinates instead)")
+            if not marked:
+                sys.exit("nothing marked, note NOT recorded: give --on with a label from the element list, or --box X1 Y1 X2 Y2 in points")
+            body["marked_png"] = marked; body["marked_shot"] = os.path.basename(png)
+            print("marked:", marked)
+        print(call(port, "/note", body))
     elif cmd == "mark":
         print(json.dumps(call(port, "/mark", {})))
     elif cmd == "quit":
