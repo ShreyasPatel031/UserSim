@@ -29,34 +29,76 @@ import os
 from typing import Any
 
 
-# Recommended steady-state demand targets across the 20 bought IPs (non-binding input spec;
-# fleet-cursor owns slot mapping and VM supervision per AGENTS.md):
+# Steady-state 20-IP distribution & data SLA plan (Zero ongoing Apify spend — $0/day external API cost).
+# Partitioned into two strict isolation pools so signed-in accounts NEVER rotate IPs and get locked:
+#   - Pool A (12 IPs, rotatable/cooldown PH pool):
+#       * 3 IPs: Live PH Capture & Pre-Reveal Comments (<=15m SLA)
+#       * 5 IPs: Active-Voter Daily Upvote Refresh (~9,000/day capacity -> keeps 2,545 14d-active & ~6,500 30d-active <=24h fresh)
+#       * 4 IPs: Bounded Historical PH Whole-Person Pulls (clears 1,276 need_list in ~2-3d + daily new commenters/backers)
+#   - Pool B (8 IPs, HARD-PINNED 1:1 sticky IPs + persistent Camoufox profiles for signed-in accounts — NEVER rotated!):
+#       * 4 Sticky IPs: Signed-in X/Twitter accounts (#1 external lift: rho_votes=+0.219, p=0.016 residual lift)
+#       * 3 Sticky IPs: Signed-in LinkedIn / Google accounts (#2 external lift: rho_votes=+0.124, ~15 org/founder pages/IP/day)
+#       * 1 Sticky IP:  Slow G2 / Capterra / Trustpilot scraper (Google SSO, 1-2 pages/min for Atelier Sim review bank)
 RECOMMENDED_DEMAND_TARGETS = {
-    "live_ph_capture_and_comments": {
-        "target_ips": 3,
-        "sla_max_gap_minutes": 15,
-        "scope": [
-            "00:05 PT lineup + rolling 15m post-midnight launch discovery (lineup_0100 + api_detail)",
-            "15m api_comments / comments_ts continuous capture (primary + hot standby to eliminate 30-240m gaps)",
-            "sites_0005 live URL redirect resolution + unblocked comment-page fetch",
-        ],
+    "pool_A_ph_rotatable_12_ips": {
+        "live_ph_capture_and_comments": {
+            "target_ips": 3,
+            "ip_mode": "rotatable_with_standby",
+            "sla_max_gap_minutes": 15,
+            "scope": [
+                "00:05 PT lineup + rolling 15m post-midnight launch discovery (lineup_0100 + api_detail)",
+                "15m api_comments / comments_ts continuous capture (primary + hot standby to eliminate 30-240m gaps)",
+                "sites_0005 live URL redirect resolution + unblocked daily comment-thread pages",
+            ],
+        },
+        "active_voter_upvote_refresh": {
+            "target_ips": 5,
+            "ip_mode": "rotatable_cooldown",
+            "sla_freshness_hours": 24,
+            "scope": [
+                "Daily newest-first Upvotes diff prioritizing 2,545 14d-active + 3,655 refresh-delta complete people first, then 30d-active (~9,000 refreshes/day capacity)",
+                "Keeps D-1 upvotes <=24h fresh before 00:05 PT (lifts voter presence AUC 0.562 -> 0.898)",
+            ],
+        },
+        "bounded_historical_ph_whole_people": {
+            "target_ips": 4,
+            "ip_mode": "rotatable_cooldown",
+            "sla_freshness_hours": 72,
+            "scope": [
+                "Plain whole-person pulls on need_list=1,276 high-vote backers/commenters (Apr-Nov 2026) + daily new launch commenters/makers",
+                "Bounded to multi-vote / Top-10 launch participants rather than unbounded 1-vote tail",
+            ],
+        },
     },
-    "active_voter_upvote_refresh": {
-        "target_ips": 11,
-        "sla_freshness_hours": 24,
-        "scope": [
-            "Daily newest-first Upvotes diff on 14-day & 30-day active complete people (~3,655-8,500 people)",
-            "Must keep active voters <=24h fresh through D-1 before 00:05 PT (lifts voter presence AUC 0.562 -> 0.898)",
-        ],
-    },
-    "bounded_high_signal_people_and_surfaces": {
-        "target_ips": 6,
-        "sla_freshness_hours": 72,
-        "scope": [
-            "Complete-people completion pass on bounded Top-10 launch backers & commenters (Apr-Nov 2026 high-vote need_list=1,276 first; no unbounded low-activity tail)",
-            "Public competitor product surfaces, GitHub stargazer/repo metadata, and HN public threads",
-            "Note: Hard anti-bot external targets (X pre-launch search, LinkedIn companies, G2/Capterra reviews) are offloaded to Apify bridge (`usersim_core.apify_pull`) so 0 of the 20 PH IPs burn on third-party walls.",
-        ],
+    "pool_B_signed_in_sticky_8_ips_NEVER_ROTATE": {
+        "x_twitter_signed_in_search": {
+            "target_ips": 4,
+            "ip_mode": "PINNED_STICKY_1_ACCOUNT_PER_IP_NO_ROTATION",
+            "accounts_needed": "4 signed-in X/Twitter accounts in persistent Camoufox profiles",
+            "sla": "By 00:25 PT for 00:05 lineup + within 20m of any post-00:05 launch; daytime HN/maker backfill",
+            "scope": [
+                "Pre-launch X search (`\"domain\" OR \"product\" OR from:maker until:<D>`) — #1 external signal (rho_votes=+0.219, p=0.016 residual over arm3)",
+                "Maker & company X profile followers, bio, pinned/recent launch threads (~10-15 queries/account at midnight, human-paced)",
+            ],
+        },
+        "linkedin_company_and_founder_signed_in": {
+            "target_ips": 3,
+            "ip_mode": "PINNED_STICKY_1_ACCOUNT_PER_IP_NO_ROTATION",
+            "accounts_needed": "3 signed-in LinkedIn (or Google-SSO LinkedIn) accounts in persistent Camoufox profiles",
+            "sla": "By 00:30 PT for daily PH launches (~12-18 company/founder pages per account/day — well below LinkedIn's ~80/day safety limit)",
+            "scope": [
+                "Company headcount, follower count, founded year, funding, and cold-start founder/maker work history (#2 external signal: rho_votes=+0.124)",
+            ],
+        },
+        "g2_capterra_slow_competitor_reviews": {
+            "target_ips": 1,
+            "ip_mode": "PINNED_STICKY_SLOW_CAMOUFOX_1_TO_2_PAGES_PER_MIN",
+            "accounts_needed": "1 Google account for G2/Capterra SSO in persistent Camoufox profile",
+            "sla": "Continuous background refresh (weekly per category incumbent; ~300-500 review pages/day)",
+            "scope": [
+                "Verified buyer Pros, Cons, and Switching Triggers across `competitors.parquet` SaaS incumbents for Atelier Sim E2E user-testing studies",
+            ],
+        },
     },
 }
 
@@ -94,10 +136,16 @@ def evaluate_tick(
     status_slots: list[dict[str, Any]],
     assignments: dict[str, str],
     ledger: PoolLedger,
+    pinned_account_slots: set[str] | None = None,
 ) -> tuple[PoolLedger, list[dict[str, Any]]]:
-    """Pure, deterministic 15m tick evaluator producing exact slot actions without ping-ponging."""
+    """Pure, deterministic 15m tick evaluator producing exact slot actions without ping-ponging.
+
+    CRITICAL: Any slot in `pinned_account_slots` (Pool B: the 8 signed-in X / LinkedIn / G2 account VMs)
+    is strictly NEVER rotated onto a different IP — if rate-limited, it pauses in place to protect the signed-in session.
+    """
     now_iso = dt.datetime.fromtimestamp(now_ts, tz=dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     actions: list[dict[str, Any]] = []
+    pinned = pinned_account_slots or set()
 
     # Prune expired IP quarantines
     ledger.ip_quarantine_until = {
@@ -151,11 +199,12 @@ def evaluate_tick(
                 ledger.ip_quarantine_until[purl] = st.cooldown_until_utc
 
                 spare_choice = None
-                for cand_p in all_known_purls:
-                    if cand_p not in in_use_purls and cand_p not in ledger.ip_quarantine_until:
-                        spare_choice = cand_p
-                        in_use_purls.add(cand_p)
-                        break
+                if slot not in pinned:
+                    for cand_p in all_known_purls:
+                        if cand_p not in in_use_purls and cand_p not in ledger.ip_quarantine_until:
+                            spare_choice = cand_p
+                            in_use_purls.add(cand_p)
+                            break
                 actions.append({
                     "slot": slot,
                     "purl_id": purl,

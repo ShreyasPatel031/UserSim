@@ -108,10 +108,13 @@ def main() -> None:
         f_ids = set(pd.read_parquet(fpq)["id"].astype(str))
 
     late = discover_live_post_0005_launches(day, f_ids, args.work_dir)
-    apify_counts = {"linkedin": 0, "x_tweets": 0}
-    tok = os.environ.get("APIFY_API_TOKEN", "").strip()
-    if tok and late:
-        apify_counts = incremental_apify_for_new_launches(ApifyClient(tok), day, late, f"{args.work_dir}/apify_v1")
+    # Ongoing external signals come from Pool B fleet scrapers (`raw/fleet_external/<day>/`), $0/day API cost!
+    os.makedirs(f"{args.work_dir}/fleet_external/{day}", exist_ok=True)
+    subprocess.run(
+        ["gcloud", "storage", "cp", "-q", f"gs://{args.bucket}/usersim_sim/raw/fleet_external/{day}/*.jsonl", f"{args.work_dir}/fleet_external/{day}/"],
+        check=False,
+    )
+    ext_files = glob.glob(f"{args.work_dir}/fleet_external/{day}/*.jsonl")
 
     # Summarize order-free pre-reveal comments observed so far
     comm_by_post: dict[str, int] = {}
@@ -129,7 +132,7 @@ def main() -> None:
         "post_0005_discovered_count": len(late),
         "post_0005_ids": [str(r["id"]) for r in late],
         "posts_with_pre_reveal_comments": len(comm_by_post),
-        "incremental_apify": apify_counts,
+        "fleet_external_files_synced": len(ext_files),
         "zero_rank_vote_leak_enforced": True,
     }
     out_p = f"{args.work_dir}/intraday_manifest_{day}.json"
