@@ -458,6 +458,40 @@ def _forecast_pre(day: str) -> dict | None:
             "method": "Product + comments (order-free, 03:45 PT)"}
 
 
+def _forecast_pre_replay(day: str) -> dict | None:
+    """Product + comments replayed after the day closed (forecast_pre_replay/, provenance order_free_replay): shown for
+    past days only, marked replay, and never counted in the live record or the headline."""
+    if day >= today_pt():
+        return None
+    j = gcs.read_json(f"results/web/forecast_pre_replay/{day}.json", ttl=1800)
+    if not isinstance(j, dict) or j.get("provenance") != "order_free_replay" or not isinstance(j.get("forecast"), list):
+        return None
+    rows = [(str(r.get("id")), int(r.get("predicted_rank") or 0)) for r in j["forecast"] if isinstance(r, dict)]
+    ids = [i for i, _ in sorted(rows, key=lambda t: t[1]) if i]
+    if not ids:
+        return None
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": j.get("written_at", ""), "replay": True,
+            "data_up_to": datetime.fromisoformat(day).replace(hour=3, minute=45, tzinfo=PT).isoformat(),
+            "method": "Product + comments, replayed after the day closed"}
+
+
+def pre_days() -> list[str]:
+    """Days the Product + comments tab has a list for: on-time live forecasts, then replays of past days."""
+    def go():
+        out = set()
+        for name, _ in gcs.list_names("results/web/forecast_pre/", ttl=600):
+            d = name.rsplit("/", 1)[-1].removesuffix(".json")
+            if len(d) == 10 and _forecast_pre(d):
+                out.add(d)
+        t = today_pt()
+        for name, _ in gcs.list_names("results/web/forecast_pre_replay/", ttl=1800):
+            d = name.rsplit("/", 1)[-1].removesuffix(".json")
+            if len(d) == 10 and d < t:
+                out.add(d)
+        return sorted(out)
+    return gcs._cached("pre_days", 600, go)
+
+
 def forecasts(day: str) -> dict[str, dict]:
     def go():
         out = {}
@@ -496,7 +530,7 @@ def forecasts(day: str) -> dict[str, dict]:
             keep["0005"]["exp_votes"] = legacy["0005"]["exp_votes"]
         # Product + comments carries no vote figure of its own: give each of its ranks the vote level the midnight model
         # expects at that position today (k-th largest midnight estimate), so the column reads in votes and stays in order.
-        f_pre = _forecast_pre(day)                       # Product + comments: the order-free file only
+        f_pre = _forecast_pre(day) or _forecast_pre_replay(day)   # on-time live file, else the replay (past days)
         if f_pre:
             keep["PRE"] = f_pre
         pre, mid = keep.get("PRE"), keep.get("0005")
@@ -946,7 +980,7 @@ def day_view(day: str) -> dict:
                        "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "vote_err": f.get("vote_err"), "made_at": f.get("made_at"),
                        "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
                        "ranks": f["ranks"], "score": score, "fallback": f.get("fallback"), "source": f.get("source"),
-                       "backtest_line": f.get("backtest_line")})
+                       "backtest_line": f.get("backtest_line"), "replay": bool(f.get("replay"))})
     # Only expose live votes after the reveal; before it they are hidden on PH too.
     ranks = act["ranks"] if act["revealed"] else {}
     launches = []

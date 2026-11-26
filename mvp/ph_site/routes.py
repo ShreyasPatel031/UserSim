@@ -121,7 +121,12 @@ async def _ph_today(day: str | None):
     view["points"] = [p for p in view.get("points") or [] if p.get("key") in ("0005", "PRE")]
     view["why"] = {k: v for k, v in (view.get("why") or {}).items() if k in ("0005", "after")}
     keys = {p["key"] for p in view["points"]}
-    view["lead_point"] = "PRE" if "PRE" in keys else ("0005" if "0005" in keys else None)
+    pre_live = any(p["key"] == "PRE" and not p.get("replay") for p in view["points"])
+    view["lead_point"] = "PRE" if pre_live else ("0005" if "0005" in keys else ("PRE" if "PRE" in keys else None))
+    try:
+        view["pre_days"] = await asyncio.to_thread(live.pre_days)
+    except Exception:  # noqa: BLE001 - optional
+        view["pre_days"] = []
     try:
         view["accuracy"] = await asyncio.to_thread(live.accuracy)
         agg = await asyncio.to_thread(live.live_aggregate, view)
