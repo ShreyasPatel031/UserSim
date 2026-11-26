@@ -101,6 +101,9 @@ bash "$ROOT/scripts/vm/ph_iproyal_ensure_slot_proxies.sh" >/dev/null 2>&1 || tru
 chmod +x "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" 2>/dev/null || true
 bash "$ROOT/scripts/vm/ph_iproyal_block_rotate.sh" >>"$ART/iproyal_block_rotate_tick.log" 2>&1 || true
 bash "$ROOT/scripts/vm/ph_fleet_utilization_recover.sh"
+chmod +x "$ROOT/scripts/vm/ph_fleet_restart_pool_a_dead.sh" "$ROOT/scripts/vm/ph_fleet_stop_poolb_phsuper.sh" 2>/dev/null || true
+bash "$ROOT/scripts/vm/ph_fleet_restart_pool_a_dead.sh" >>"$ART/pool_a_restart.log" 2>&1 || true
+bash "$ROOT/scripts/vm/ph_fleet_stop_poolb_phsuper.sh" >>"$ART/pool_b_stop.log" 2>&1 || true
 chmod +x "$ROOT/scripts/vm/ph_fleet_cursor_mailbox_status.sh" 2>/dev/null || true
 bash "$ROOT/scripts/vm/ph_fleet_cursor_mailbox_status.sh"
 chmod +x "$ROOT/scripts/vm/ph_fleet_upload_iproyal_mailbox.sh" 2>/dev/null || true

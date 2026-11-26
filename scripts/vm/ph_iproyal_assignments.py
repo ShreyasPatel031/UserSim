@@ -53,7 +53,38 @@ def load_state() -> dict:
     ap = assign_path()
     if ap.is_file():
         return json.loads(ap.read_text())
-    return {"slots": {}, "version": 1}
+    return {"slots": {}, "quarantine_hosts": {}, "version": 1}
+
+
+def _host_quarantined(st: dict, host: str) -> bool:
+    if not host:
+        return False
+    from datetime import datetime, timezone
+
+    until = (st.get("quarantine_hosts") or {}).get(host)
+    if not until:
+        return False
+    try:
+        t = datetime.fromisoformat(until.replace("Z", "+00:00"))
+        if datetime.now(timezone.utc) < t:
+            return True
+        del st["quarantine_hosts"][host]
+    except Exception:
+        pass
+    return False
+
+
+def _quarantine_host(st: dict, host: str, reason: str) -> None:
+    if not host:
+        return
+    sec = float(os.environ.get("IPROYAL_PURL_QUARANTINE_SEC", "3600"))
+    if "cf" not in reason and "wall" not in reason and "block" not in reason:
+        return
+    from datetime import datetime, timedelta, timezone
+
+    until = (datetime.now(timezone.utc) + timedelta(seconds=sec)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    qh = st.setdefault("quarantine_hosts", {})
+    qh[host] = until
 
 
 def save_state(st: dict) -> None:
@@ -139,11 +170,12 @@ def pick_next_purl(slot: str, current: str, lines: list[str]) -> str | None:
         candidates = ordered[i + 1 :] + ordered[: i + 1]
     else:
         candidates = ordered
+    st = load_state()
     for p in candidates:
         if p == current:
             continue
         h = purl_host(Path(p))
-        if h and h not in used:
+        if h and h not in used and not _host_quarantined(st, h):
             return p
     return None
 
@@ -156,8 +188,12 @@ def pick_next_purl_ring(current: str, lines: list[str]) -> str | None:
     if current not in fi:
         return fi[0] if fi[0] != current else (fi[1] if len(fi) > 1 else None)
     i = fi.index(current)
+    st = load_state()
     for p in fi[i + 1 :] + fi[: i + 1]:
-        if p != current:
+        if p == current:
+            continue
+        h = purl_host(Path(p))
+        if not _host_quarantined(st, h):
             return p
     return None
 
@@ -279,6 +315,8 @@ def rotate(slot: int | str, reason: str = "block") -> dict:
     lines = pool_lines(root, pool)
     st = init_from_pool()
     cur = (st["slots"].get(slot) or {}).get("purl") or get_purl_abs(slot)
+    cur_h = purl_host(Path(cur))
+    _quarantine_host(st, cur_h, reason)
     nxt = pick_next_purl(slot, cur, lines)
     if not nxt or nxt == cur:
         nxt = pick_next_purl_ring(cur, lines)
