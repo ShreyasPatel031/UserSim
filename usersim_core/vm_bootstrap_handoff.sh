@@ -25,7 +25,10 @@ HANDOFF_GCS="$HANDOFF_DIR/usersim_core_scratch_bundle.tar.gz"
 REPO_GCS="$HANDOFF_DIR/UserSim_repo_usersim_core_v1.tar.gz"
 SIM_GCS="gs://usersim-bakeoff-347838016394/usersim_sim"
 
-echo "=== [1/5] Ensuring uv & system tools are available ==="
+echo "=== [1/5] Ensuring git, libgomp1 (LightGBM), tmux, ripgrep & uv are installed ==="
+if ! command -v git >/dev/null 2>&1 || ! dpkg -s libgomp1 >/dev/null 2>&1; then
+  sudo apt-get update -qq && sudo apt-get install -y -qq git tmux libgomp1 curl jq ripgrep build-essential >/dev/null
+fi
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/bin:$PATH"
 if ! command -v uv >/dev/null 2>&1; then
   curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -37,7 +40,7 @@ if [ ! -d "$REPO_DIR/.git" ]; then
   echo "  -> Bootstrapping full git repo snapshot from $REPO_GCS..."
   mkdir -p "$REPO_DIR"
   gcloud storage cp "$REPO_GCS" /tmp/UserSim_repo_usersim_core_v1.tar.gz
-  tar -xzf /tmp/UserSim_repo_usersim_core_v1.tar.gz -C "$REPO_DIR"
+  tar --warning=no-unknown-keyword -xzf /tmp/UserSim_repo_usersim_core_v1.tar.gz -C "$REPO_DIR"
   rm -f /tmp/UserSim_repo_usersim_core_v1.tar.gz
 fi
 git -C "$REPO_DIR" fetch origin 2>/dev/null || true
@@ -55,7 +58,7 @@ echo "=== [4/5] Restoring Scratch Data, LLM Caches, CUA Traces & 93K Population 
 mkdir -p "$WORK_DIR"
 if [ ! -f "$WORK_DIR/.bundle_restored_20261126" ]; then
   gcloud storage cp "$HANDOFF_GCS" "$WORK_DIR/usersim_core_scratch_bundle.tar.gz"
-  tar -xzf "$WORK_DIR/usersim_core_scratch_bundle.tar.gz" -C "$WORK_DIR"
+  tar --warning=no-unknown-keyword -xzf "$WORK_DIR/usersim_core_scratch_bundle.tar.gz" -C "$WORK_DIR"
   rm -f "$WORK_DIR/usersim_core_scratch_bundle.tar.gz"
   touch "$WORK_DIR/.bundle_restored_20261126"
 fi
