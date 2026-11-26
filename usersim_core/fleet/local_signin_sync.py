@@ -14,8 +14,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import socket
 import subprocess
 import tempfile
+import time
 import urllib.parse
 from typing import Any
 
@@ -97,6 +99,39 @@ def sync_state_to_vm(slot: int, idx: int, state_path: str) -> None:
     print(f"[sync] Done! {vm} usersim-poolb.service restarted with your signed-in Google session.", flush=True)
 
 
+def _pick_free_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        return int(s.getsockname()[1])
+
+
+def start_vm_proxy_tunnel(slot: int, proxy: dict[str, str]) -> tuple[subprocess.Popen[Any], dict[str, str]]:
+    """Forward a local port through the fleet VM so IPRoyal sees the VM's GCE IP (prevents 403 Forbidden)."""
+    vm = f"feeder-fleet-20261108t082000z-{slot}"
+    u = urllib.parse.urlparse(proxy["server"])
+    local_port = _pick_free_port()
+    cmd = [
+        "gcloud", "compute", "ssh", vm,
+        f"--zone={ZONE}", f"--project={PROJECT}",
+        "--tunnel-through-iap", "--quiet",
+        "--", "-N", "-L", f"127.0.0.1:{local_port}:{u.hostname}:{u.port}",
+    ]
+    proc = subprocess.Popen(cmd, env=_gcloud_env(), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # Wait up to 15s for the local tunnel port to start listening
+    deadline = time.time() + 15.0
+    while time.time() < deadline:
+        if proc.poll() is not None:
+            raise RuntimeError(f"SSH tunnel to {vm} exited early (code {proc.returncode})")
+        try:
+            with socket.create_connection(("127.0.0.1", local_port), timeout=0.5):
+                break
+        except OSError:
+            time.sleep(0.3)
+    tunneled = dict(proxy)
+    tunneled["server"] = f"{u.scheme}://127.0.0.1:{local_port}"
+    return proc, tunneled
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--slot", type=int, required=True, choices=sorted(SLOT_TO_IDX.keys()))
@@ -116,41 +151,49 @@ def main() -> None:
         pw_note = ""
 
     print(f"=== SLOT {args.slot} (Account #{idx}: {email}) ===", flush=True)
-    print(f"Sticky Proxy: {proxy['server']}", flush=True)
+    print(f"Sticky Proxy (via VM {args.slot} tunnel): {proxy['server']}", flush=True)
     print(pw_note, flush=True)
-    print("Opening native Camoufox window on your Mac...", flush=True)
+    print("Opening SSH tunnel through VM and launching native Camoufox on your Mac...", flush=True)
     print("1. Complete Google sign-in until you see myaccount.google.com.", flush=True)
-    print("2. Close the Camoufox window (or press Enter here) to auto-sync to the fleet VM.", flush=True)
+    print("2. Press Enter in this terminal (before closing Camoufox) to auto-sync to the fleet VM.", flush=True)
 
     local_prof = os.path.expanduser(f"~/.cache/usersim_local_sso/gmail_{idx}")
     os.makedirs(local_prof, exist_ok=True)
     state_file = tempfile.NamedTemporaryFile(prefix=f"slot_{args.slot}_state_", suffix=".json", delete=False).name
 
-    with Camoufox(
-        headless=False,
-        canvas_noise=False,
-        persistent_context=True,
-        user_data_dir=local_prof,
-        proxy=proxy,
-        geoip=True,
-        i_know_what_im_doing=True,
-    ) as browser:
-        page = browser.pages[0] if browser.pages else browser.new_page()
-        page.goto("https://accounts.google.com/signin/v2/identifier?hl=en", wait_until="domcontentloaded", timeout=45000)
-        try:
-            inp = page.locator('input[name="identifier"], input#identifierId, input[type="email"]').first
-            inp.wait_for(state="visible", timeout=10000)
-            inp.fill(email)
-        except Exception:
-            pass
+    tunnel_proc, tunneled_proxy = start_vm_proxy_tunnel(args.slot, proxy)
+    try:
+        with Camoufox(
+            headless=False,
+            canvas_noise=False,
+            persistent_context=True,
+            user_data_dir=local_prof,
+            proxy=tunneled_proxy,
+            geoip=False,
+            i_know_what_im_doing=True,
+        ) as browser:
+            page = browser.pages[0] if browser.pages else browser.new_page()
+            page.goto("https://accounts.google.com/signin/v2/identifier?hl=en", wait_until="domcontentloaded", timeout=45000)
+            try:
+                inp = page.locator('input[name="identifier"], input#identifierId, input[type="email"]').first
+                inp.wait_for(state="visible", timeout=10000)
+                inp.fill(email)
+            except Exception:
+                pass
 
-        input("\n>>> Press ENTER in this terminal once you are signed in (before closing the browser) to save & upload cookies: ")
-        state: dict[str, Any] = browser.storage_state()
-        with open(state_file, "w") as f:
-            json.dump(state, f, indent=2)
-        google_cookies = [c for c in (state.get("cookies") or []) if "google.com" in (c.get("domain") or "")]
-        has_sid = any(c.get("name") in ("SID", "SSID", "HSID", "SAPISID", "__Secure-1PSID") for c in google_cookies)
-        print(f"[saved] {len(google_cookies)} Google cookies captured (SID present: {has_sid})", flush=True)
+            input("\n>>> Press ENTER in this terminal once you are signed in (before closing the browser) to save & upload cookies: ")
+            state: dict[str, Any] = browser.storage_state()
+            with open(state_file, "w") as f:
+                json.dump(state, f, indent=2)
+            google_cookies = [c for c in (state.get("cookies") or []) if "google.com" in (c.get("domain") or "")]
+            has_sid = any(c.get("name") in ("SID", "SSID", "HSID", "SAPISID", "__Secure-1PSID") for c in google_cookies)
+            print(f"[saved] {len(google_cookies)} Google cookies captured (SID present: {has_sid})", flush=True)
+    finally:
+        tunnel_proc.terminate()
+        try:
+            tunnel_proc.wait(timeout=3)
+        except Exception:
+            tunnel_proc.kill()
 
     try:
         sync_state_to_vm(args.slot, idx, state_file)
