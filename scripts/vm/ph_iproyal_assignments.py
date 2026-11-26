@@ -145,7 +145,29 @@ def pick_next_purl(slot: str, current: str, lines: list[str]) -> str | None:
         h = purl_host(Path(p))
         if h and h not in used:
             return p
-    # Never put two VMs on one IP: they trip Cloudflare together and both stall.
+    return None
+
+
+def pick_next_purl_ring(current: str, lines: list[str]) -> str | None:
+    """Next Finland purl in pool ring (used when every host is assigned — swap on rotate)."""
+    fi = _fi_purls(_root(), lines)
+    if not fi:
+        return None
+    if current not in fi:
+        return fi[0] if fi[0] != current else (fi[1] if len(fi) > 1 else None)
+    i = fi.index(current)
+    for p in fi[i + 1 :] + fi[: i + 1]:
+        if p != current:
+            return p
+    return None
+
+
+def slot_for_host(st: dict, host: str, skip: str) -> str | None:
+    for s, sl in (st.get("slots") or {}).items():
+        if s == skip:
+            continue
+        if (sl or {}).get("host") == host:
+            return s
     return None
 
 
@@ -216,7 +238,9 @@ def rebalance() -> dict:
     }
 
 
-def rotate_cooldown_ok(slot: str, sec: float = 1200.0) -> bool:
+def rotate_cooldown_ok(slot: str, sec: float | None = None) -> bool:
+    if sec is None:
+        sec = float(os.environ.get("IPROYAL_ROTATE_COOLDOWN_SEC", "300"))
     st = load_state()
     sl = st["slots"].get(slot) or {}
     import datetime as _dt
@@ -242,16 +266,30 @@ def rotate(slot: int | str, reason: str = "block") -> dict:
     cur = (st["slots"].get(slot) or {}).get("purl") or get_purl_abs(slot)
     nxt = pick_next_purl(slot, cur, lines)
     if not nxt or nxt == cur:
+        nxt = pick_next_purl_ring(cur, lines)
+    if not nxt or nxt == cur:
         return {"ok": False, "reason": "no_alternate_ip", "slot": slot, "host": purl_host(Path(cur))}
     gen = int((st["slots"].get(slot) or {}).get("gen") or 0) + 1
     from datetime import datetime, timezone
 
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    nxt_h = purl_host(Path(nxt))
+    other = slot_for_host(st, nxt_h, slot) if nxt_h else None
+    if other:
+        ogen = int((st["slots"].get(other) or {}).get("gen") or 0) + 1
+        st["slots"][other] = {
+            "purl": cur,
+            "host": purl_host(Path(cur)),
+            "gen": ogen,
+            "last_reason": f"swap_from_{slot}",
+            "last_rotate_utc": now,
+        }
     st["slots"][slot] = {
         "purl": nxt,
-        "host": purl_host(Path(nxt)),
+        "host": nxt_h,
         "gen": gen,
         "last_reason": reason,
-        "last_rotate_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "last_rotate_utc": now,
     }
     save_state(st)
     out = {
@@ -263,7 +301,8 @@ def rotate(slot: int | str, reason: str = "block") -> dict:
         "to_host": st["slots"][slot]["host"],
         "gen": gen,
         "reason": reason,
-        "utc": st["slots"][slot]["last_rotate_utc"],
+        "utc": now,
+        "swapped_slot": other,
     }
     try:
         from ph_iproyal_rotate_audit import record_rotate_result

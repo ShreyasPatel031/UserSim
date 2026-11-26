@@ -39,6 +39,21 @@ if [[ -x /opt/ph/overlays/proxy_geo_sync.sh ]]; then
 fi
 FORCE_GEOIP_REFRESH=1 PACE_GCS_VM_ROOT="'"$(grep PACE_GCS_VM_ROOT "$ROOT/results/ph_fleet_full/${RUN_ID}/pace.env" 2>/dev/null | cut -d= -f2- || echo "gs://${MVP_GCS_BUCKET}/usersim_sim/raw/ph_population/people_live/vm")"'" sudo -E bash /opt/ph/overlays/ensure_geoip.sh 2>/dev/null || true
 sudo systemctl restart phsuper' 2>/dev/null || echo "ssh rotate follow-up skipped $name"
+swap="$(echo "$res" | python3 -c "import json,sys; print(json.load(sys.stdin).get('swapped_slot') or '')" 2>/dev/null || true)"
+if [[ -n "$swap" ]]; then
+  swap_purl="$(python3 "$ROOT/scripts/vm/ph_iproyal_assignments.py" get "$swap")"
+  if [[ -f "$swap_purl" ]]; then
+    swap_name="feeder-fleet-${RUN_ID}-${swap}"
+    swap_st="$("${GC[@]}" compute instances describe "$swap_name" --zone="$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)"
+    if [[ "$swap_st" == RUNNING ]]; then
+      "${GC[@]}" compute instances add-metadata "$swap_name" --zone="$ZONE" \
+        --metadata-from-file="proxy-url=$swap_purl,ph-strategy-env=$STRAT" >/dev/null 2>&1 || true
+      "${GC[@]}" compute ssh "$swap_name" --zone="$ZONE" --tunnel-through-iap --quiet </dev/null \
+        --command='sudo rm -f /opt/ph/reuse/cf_cooldown_until /opt/ph/reuse/cf_backoff_n 2>/dev/null; sudo systemctl restart phsuper' \
+        2>/dev/null || echo "ssh swap follow-up skipped $swap_name"
+    fi
+  fi
+fi
 LOG="$ROOT/results/ph_fleet_full/${RUN_ID}/iproyal_rotate.log"
 echo "$(date -u +%FT%TZ) $res" >>"$LOG"
 export MVP_GCS_BUCKET="${MVP_GCS_BUCKET:-}"
