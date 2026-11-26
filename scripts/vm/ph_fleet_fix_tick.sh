@@ -50,6 +50,45 @@ PY
     python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
   fi
 fi
+# Dedicated upvote refresh (Pool A): 15m tick must fix dead/missing slots, not only report refresh_ppm=0.
+if [[ -x "$ROOT/scripts/vm/ph_fleet_ensure_upvote_slots.sh" ]]; then
+  _upvote="$(python3 - "$ART/fleet_measure.json" "$ART/last_upvote_recover.utc" <<'PY' 2>/dev/null || echo skip
+import json, sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+m = json.loads(Path(sys.argv[1]).read_text())
+stamp = Path(sys.argv[2])
+cooldown = int(__import__("os").environ.get("FLEET_UPVOTE_RECOVER_COOLDOWN_SEC", "1200"))
+up = [int(x) for x in (__import__("os").environ.get("FLEET_UPVOTE_SLOTS", "9 27 38").split()) if x.strip().isdigit()]
+by = {int(s.get("slot") or 0): s for s in m.get("slots") or []}
+refresh = float(m.get("upvote_refresh_ppm_15m") or 0)
+dead_up = [sl for sl in up if (by.get(sl) or {}).get("state") == "dead"]
+if refresh >= 0.2 and not dead_up:
+    sys.exit(0)
+if not dead_up and refresh >= 0.05:
+    sys.exit(0)
+now = datetime.now(timezone.utc)
+if stamp.is_file():
+    try:
+        t0 = datetime.fromisoformat(stamp.read_text().strip().replace("Z", "+00:00"))
+        if (now - t0).total_seconds() < cooldown:
+            sys.exit(0)
+    except Exception:
+        pass
+print("recover")
+PY
+)"
+  if [[ "$_upvote" == recover ]]; then
+    date -u +%Y-%m-%dT%H:%M:%SZ >"$ART/last_upvote_recover.utc"
+    bash "$ROOT/scripts/vm/ph_fleet_ensure_upvote_slots.sh" >>"$ART/upvote_recover.log" 2>&1 || true
+    bash "$ROOT/scripts/vm/ph_fleet_start_upvote_refresh.sh" >>"$ART/upvote_recover.log" 2>&1 || true
+    chmod +x "$ROOT/scripts/vm/ph_fleet_inplace_restart_slots.sh" 2>/dev/null || true
+    PACE_FLEET_RUN_ID="${PACE_FLEET_RUN_ID}" bash "$ROOT/scripts/vm/ph_fleet_inplace_restart_slots.sh" \
+      ${FLEET_UPVOTE_SLOTS:-9 27 38} >>"$ART/upvote_recover.log" 2>&1 || true
+    python3 "$ROOT/scripts/vm/ph_fleet_measure.py"
+  fi
+fi
 python3 "$ROOT/scripts/vm/ph_fleet_refill_lists.py" || true
 _attempt="$(python3 -c "import json; print(json.load(open('$ART/fleet_measure.json')).get('attempt_ppm',0))" 2>/dev/null || echo 0)"
 if python3 -c "exit(0 if float('${_attempt}') < 1.0 else 1)" 2>/dev/null; then
