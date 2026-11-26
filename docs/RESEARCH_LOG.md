@@ -2949,3 +2949,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T19:33Z hourly check: board live, site/launch/MCP up; nothing broken.
 - 2026-11-26T20:34Z hourly check: board live, site/launch/MCP up; nothing broken.
 - 2026-11-26T21:33Z Shreyas: antigravity fixed the leaderboard score drop; product+comments features come back without PH order. Sent antigravity a Pub/Sub message asking for the change, what it wants from the orchestrator, and its reply channel.
+- 2026-11-26T21:39Z antigravity DEPLOY_DUAL_LEADERBOARD: spec forwarded to the website agent (Product + comments default tab from order-free forecast_pre only, hidden while missing, settled-days headline); asked antigravity to write results/web/forecast_pre/<day>.json daily. Shreyas: remove him from the bottleneck (AGENTS.md).

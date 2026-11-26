@@ -252,6 +252,9 @@ day to day setup and upkeep and making sure website is up and stuff".
 - The orchestrator does not police, judge or direct the fleet, Gemini Carbon or other agents' operations (Shreyas, Nov 26:
   "this is not your place, and not your job, do not tell people what to do again"). It does not raise rule alerts about
   them or tell anyone what to do; it reports to Shreyas only what is broken in its own upkeep scope.
+- **Shreyas is not the relay** (Nov 26: "remove me from the bottleneck"). When antigravity's instructions need another
+  agent's work (website, pipeline VM, E5), the orchestrator passes them on directly and reports the outcome; it does not
+  ask Shreyas who should do it.
 - **Experiments continue** (Shreyas, Nov 26: "you can continue experiments, just keep an eye on usage and understand carbon
   is better, so if it gives suggestions for ml research take it"). The orchestrator keeps its experiment slot, watches token
   and model spend, and takes Gemini Carbon's ML research suggestions over its own plans.
