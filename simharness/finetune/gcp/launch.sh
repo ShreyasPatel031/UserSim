@@ -1,6 +1,6 @@
 #!/bin/bash
 # Launch one fine-tune job on a GPU VM that deletes itself when done and is deleted at the run-time cap anyway.
-#   launch.sh TAG MODEL MACHINE ZONE MAX_HOURS [EPOCHS BATCH ACCUM GEN_BATCH GRAD_CHECKPOINT SKIP_BASE "SAVE_AT_ROWS"]
+#   launch.sh TAG MODEL MACHINE ZONE MAX_HOURS (a number of hours, or a duration such as 1h30m) [EPOCHS BATCH ACCUM GEN_BATCH GRAD_CHECKPOINT SKIP_BASE "SAVE_AT_ROWS"]
 # Needs FT_PREFIX (gs://... holding code/lora.py, data/train.jsonl, data/eval.jsonl; results go to runs/TAG/).
 # Optional FT_ADAPTER (gs://.../adapter of an earlier run): generate with it for data/eval.jsonl, no training.
 # Optional FT_STARTUP (another startup script, e.g. startup_choice.sh), FT_PROVISIONING (STANDARD or SPOT; default
@@ -15,7 +15,7 @@ ACC=(); [ -n "${FT_ACCELERATOR:-}" ] && ACC=(--accelerator "$FT_ACCELERATOR")  #
 NET=(); [ -n "${FT_NETWORK:-}" ] && NET=(--network "$FT_NETWORK" --subnet "${FT_SUBNET:?set FT_SUBNET with FT_NETWORK}")
 gcloud compute instances create "ft-$TAG" --zone "$ZONE" --machine-type "$MACHINE" \
   --maintenance-policy TERMINATE --provisioning-model "${FT_PROVISIONING:-STANDARD}" "${NET[@]}" "${ACC[@]}" \
-  --max-run-duration "${HOURS}h" --instance-termination-action DELETE \
+  --max-run-duration "$( [[ $HOURS =~ [a-z] ]] && echo "$HOURS" || echo "${HOURS}h" )" --instance-termination-action DELETE \
   --image-family pytorch-2-9-cu129-ubuntu-2204-nvidia-580 --image-project deeplearning-platform-release \
   --boot-disk-size 150GB --boot-disk-type pd-balanced --scopes cloud-platform \
   --labels purpose=simharness-finetune \

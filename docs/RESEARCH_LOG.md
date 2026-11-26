@@ -2940,3 +2940,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T12:45Z CHOICE-FT-1 RESULT (subagent, $15.49): tuned Qwen 7B on 500k real backing choices: recall@N 37.0 vs BACKER-v2 39.0 (-1.9 [-3.2,-0.6]); AUC 0.944 vs 0.941; curve flat after 200k. Not deployed; choice fine-tunes stopped. Ledger rows finished + D-CHOICE-FT-1.
 - 2026-11-26T13:33Z hourly check: board live (votes revealed), site/launch/MCP up. STACK-1 registered ($8) and started.
 - 2026-11-26T14:02Z STACK-1 RESULT ($1.47): BACKER-v2 + tuned P(yes) stack recall@N 40.0 vs 39.0 (+1.0 [+0.2,+1.9]), AUC +0.006 [+0.004,+0.008]. Clear of zero on the 15% sample; full-pool confirmation STACK-1b next before any deploy.
+- 2026-11-26T14:33Z hourly check: board live, site/launch/MCP up; STACK-1b running.
