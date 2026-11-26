@@ -32,5 +32,6 @@ case "$JOB" in
   panel)   PANEL_WORK=$ROOT/panelwork bash $S/cohort_calibration/panel_nightly.sh "$@";;
   explain) EXPLAIN_WORK=$ROOT/explainwork bash $S/explain_fresh.sh "$@";;
   product_use) bash $S/product_use/nightly.sh "$@";;
+  stack)   bash $S/stack/nightly.sh "$@";;
   *) echo "unknown job $JOB"; exit 2;;
 esac

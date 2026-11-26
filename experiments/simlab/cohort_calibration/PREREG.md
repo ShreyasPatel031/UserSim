@@ -286,3 +286,21 @@ category's core task, do (1) their preferences explain the structural model's mi
 - **Scoring:** forward_says adds noblock_* (persona plus the no-block person-built panel) and reports merged minus merged-no-block, paired.
 - **Revert rule (usual):** after 7 scored live days, revert if the main line's precision is not above the shadow's, or its recall is clearly below.
 - **Not run by E5:** the Opus two-stage shadow arm (POINT-1 A3). E5's standing constraint is no Claude API calls.
+
+## Addendum 14 (2026-11-26): STACK-1b becomes the forward backer line; BACKER-v2 is its shadow (orchestrator 16:38Z Nov 26, ledger DEC-ORCH-STACK-DEPLOY; written before the first forward run)
+**Model:** logistic on standardised [ln_rw, tm, ln_rw×tm, logit P(yes)], where P(yes) comes from the CHOICE-FT-1 500k Qwen2.5-7B LoRA adapter (ckpt_final_500000). The coefficients are the STACK-1 validation fit (Nov 1–10), refit once on the same validation pairs with the Nov 26 harness build. They match STACK-1's to within 0.001 (ln_rw 0.396, tm −0.044, ln_rw×tm 0.039, logit p 1.296; intercept −6.663). They are frozen at tmp/e5/private/stack/stack_coef.json.
+**Forward run** (experiments/simlab/stack/stack_nightly.py, fresh session about 01:50 PT):
+- Bench: the latest harness build, from the day before, plus D's 00:05 line-up as overlay items.
+- Pool: people with an endorsement in the 60 days before D. Deviation from STACK-1b: the bench's require_observed filter needs reads after the close, so it cannot run forward. The forward pool is about 9.7k a night against the backtest's about 4.6k.
+- Prompts: CHOICE-FT-1 format, identical to the FT1 eval prompts on 40 Nov 20 rows.
+- Scoring: one A100 (a2-highgpu-1g; spot, then standard) using the existing launch.sh / startup_choice.sh score-only path.
+- Output: top 2,000 per launch in the backer_pred_v2 schema, at tmp/e5/private/backer_pred_stack/D.parquet, with predicted_at / before_0330_pt and the GPU cost in D_meta.json.
+**Schedule:**
+- Nov 27 PT night: shadow dry run, not published.
+- Nov 28 PT night: becomes the published backer line, if the Nov 27 run froze before 03:30 PT and its file is complete (35±10 launches × 2,000). BACKER-v2 keeps running unchanged as the shadow.
+**Scoring, nightly once re-reads land:**
+- recall@N per launch (N = the launch's real held backers), pooled over launches.
+- Per-launch AUC on the held complete people re-read after the close.
+- Stack vs BACKER-v2, paired by launch; launch bootstrap, 2,000 draws.
+**Rule 5:** if the stack trails BACKER-v2 on recall@N over the scored live days (paired interval below 0 at 7 scored days), BACKER-v2 is restored as the published line.
+**Exception:** CPU-only was E5's standing rule. A nightly GPU VM is the orchestrator's decision (16:38Z Nov 26). Measured cost is logged nightly.
