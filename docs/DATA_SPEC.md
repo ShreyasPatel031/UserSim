@@ -262,3 +262,10 @@ Spend: GCP $64.78 Nov 23 PT (infra $63.16, Vertex $1.62; soft cap $50), month-to
 | Product website links | resolved for every launch | 0 of 33 since Nov 17 (Data Feeder) | Grok Bot asked Nov 25; E5 uses search grounding meanwhile |
 | Category directory, nightly Similar Products, competitor reviews | nightly by 01:00-02:00 PT | not yet | fleet: Nov 26 nightly, backfill and directory by Nov 28 |
 | Product-use sessions (MCP engine) | 80%+ clean entry | 25-31% | signup agent (blocked from GCP: Shreyas) |
+
+## Save locations added Nov 25–26, 2026 (`usersim_core` & Apify Marketplace v1)
+- `gs://usersim-trace-store-347838016394/usersim_core_v1/`: 4-table portable flywheel (`universal_users.parquet`, `cua_traces.parquet`, `sim_feedback_residuals.parquet`, `calibration_ledger.parquet`) + `locked_proof_results.json`.
+- `gs://usersim-bakeoff-347838016394/usersim_sim/raw/apify_v1/`: Full verbatim raw JSONL responses (zero dropped fields) from Apify Marketplace Starter Plan pulls (`usersim_core/apify_pull.py`):
+  - `x_prelaunch_tweets_raw.jsonl.gz` + `x_query_map.json` (`kaitoeasyapi/twitter-x-data-tweet-scraper-pay-per-result-cheapest`, strictly `< D 00:00 PT` pre-launch tweets across `Sep 1 – Nov 25, 2026` launches).
+  - `linkedin_companies_raw.jsonl.gz` + `linkedin_query_map.json` (`harvestapi/linkedin-company`, full company metadata, headcount, followers, founded year, industries across `Sep 1 – Nov 25, 2026` launches).
+  - `g2_products_and_reviews_raw.jsonl.gz` + `g2_extra_incumbent_reviews_raw.jsonl.gz` + `g2_query_map.json` (`omkar-cloud/g2-product-scraper`, full product ratings/counts + verified buyer pros/cons/switching pain points across top PH category incumbents).

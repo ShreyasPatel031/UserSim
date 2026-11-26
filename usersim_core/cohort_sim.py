@@ -41,6 +41,7 @@ def _sa_vertex_token() -> str:
     with _gcloud_lock:
         if not _gcloud_tok["t"] or time.time() - _gcloud_tok["at"] > 1800:
             env = os.environ.copy()
+            env["PATH"] = f"/opt/homebrew/share/google-cloud-sdk/bin:/opt/homebrew/bin:{env.get('PATH', '')}"
             env.setdefault("CLOUDSDK_CORE_ACCOUNT", "usersim-cloud-agent@project-amer-scs-sandbox.iam.gserviceaccount.com")
             _gcloud_tok["t"] = subprocess.check_output(
                 ["gcloud", "auth", "print-access-token"], text=True, env=env
