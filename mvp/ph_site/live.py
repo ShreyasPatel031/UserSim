@@ -433,10 +433,18 @@ def _forecast_pre(day: str) -> dict | None:
     """Product + comments, order-free (usersim_core, <= 03:45 PT): results/web/forecast_pre/<day>.json, same shape as
     forecast_0005. Never results/early_forecast/*_PRE.json or the 03:45 hybrid, which read PH's hidden vote order."""
     j = gcs.read_json(f"results/web/forecast_pre/{day}.json", ttl=600)
-    made = ""
-    if isinstance(j, dict) and isinstance(j.get("forecast"), list):
-        made = j.get("run_updated_at") or j.get("written_at", "")
-        j = j["forecast"]
+    # Only a forecast made before the votes counts: provenance "live" and written before D 03:50 PT. A replay or a
+    # late file is treated as missing (no tab for that day, not in the accuracy row).
+    if not isinstance(j, dict) or j.get("provenance") != "live" or not isinstance(j.get("forecast"), list):
+        return None
+    try:
+        written = datetime.fromisoformat(str(j.get("written_at")).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if written.tzinfo is None or written >= datetime.fromisoformat(day).replace(hour=3, minute=50, tzinfo=PT):
+        return None
+    made = j.get("run_updated_at") or j.get("written_at", "")
+    j = j["forecast"]
     ids = None
     if isinstance(j, list) and j:
         rows = [(str(r.get("id")), int(r.get("predicted_rank") or r.get("pred_rank") or 0)) for r in j if isinstance(r, dict)]

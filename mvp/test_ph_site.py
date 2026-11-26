@@ -672,9 +672,16 @@ def test_A5_A6_A7_only_two_fixed_predictions(monkeypatch):
     files["results/early_forecast/2026-11-16_P345.json"] = {"forecast": [{"id": 6, "pred_rank_hybrid": 1}], "written_at": "x"}
     live.gcs._cache.clear()
     assert "PRE" not in live.forecasts("2026-11-16")                   # nor the old prereveal file
-    files["results/web/forecast_pre/2026-11-16.json"] = {"forecast": [{"id": 6, "predicted_rank": 1}, {"id": 4, "predicted_rank": 2}], "written_at": "w"}
+    fc = [{"id": 6, "predicted_rank": 1}, {"id": 4, "predicted_rank": 2}]
+    files["results/web/forecast_pre/2026-11-16.json"] = {"forecast": fc, "provenance": "order_free_replay", "written_at": "2026-11-16T10:00:00+00:00"}
     live.gcs._cache.clear()
-    assert live.forecasts("2026-11-16")["PRE"]["ranks"] == {"6": 1, "4": 2}   # only the order-free forecast_pre file
+    assert "PRE" not in live.forecasts("2026-11-16")                   # a replay never counts
+    files["results/web/forecast_pre/2026-11-16.json"] = {"forecast": fc, "provenance": "live", "written_at": "2026-11-16T22:11:00+00:00"}
+    live.gcs._cache.clear()
+    assert "PRE" not in live.forecasts("2026-11-16")                   # written after 03:50 PT (after the votes): missing
+    files["results/web/forecast_pre/2026-11-16.json"] = {"forecast": fc, "provenance": "live", "written_at": "2026-11-16T11:40:00+00:00"}
+    live.gcs._cache.clear()
+    assert live.forecasts("2026-11-16")["PRE"]["ranks"] == {"6": 1, "4": 2}   # live and on time (03:40 PT): shown
     f17 = live.forecasts("2026-11-17")
     assert "0005" not in f17                                           # A6: published era, not written yet: nothing shown
     f13 = live.forecasts("2026-11-13")
