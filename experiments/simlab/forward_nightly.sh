@@ -18,6 +18,8 @@ if gsutil -q stat gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/forward_s
 else echo "no frozen predictions for $YDAY: nothing to judge" >> $LOG; fi
 env -u VERCEL python forward_band.py $TODAY $SP $WT >> $LOG 2>&1
 FWD_PREDICT=1 env -u VERCEL python forward_sim.py $TODAY $WT $SP $OUT >> $LOG 2>&1
+# one retry after 60 s when the freeze did not land (Nov 26: a one-off ConnectError to the Vertex embedding endpoint crashed the predict step)
+gsutil -q stat gs://usersim-bakeoff-347838016394/usersim_sim/tmp/e5/forward_sim/$TODAY/predictions_frozen.json || { echo "predict retry $(date -u +%T)" >> $LOG; sleep 60; FWD_PREDICT=1 env -u VERCEL python forward_sim.py $TODAY $WT $SP $OUT >> $LOG 2>&1; }
 # SINGLE-WRITER RULE (orchestrator 20:21Z Nov 14): the website writers below also run on the VM (bundle 12, tw.sh e5w:* jobs from the vm_writers
 # tarball). Heartbeat = an "e5w:" line in the VM's own job log results/timed_writes/<day>.log for today or yesterday (PT). If present, the VM
 # owns tmp/e5/website/* and this container writes nothing there; E5_CONTAINER_WRITERS=1 forces the container run (manual fallback only).
