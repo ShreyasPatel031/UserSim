@@ -1,0 +1,39 @@
+{
+ "day": "2026-11-26",
+ "status": "FAIL",
+ "counts": {
+  "posts": 323,
+  "comments": 92,
+  "board": 339,
+  "people": 170,
+  "products": 74,
+  "coverage": 10,
+  "fallback_post_rows": 0,
+  "snapshots": 10,
+  "launches": 35,
+  "absent_unread": 0,
+  "byid_rows": 0,
+  "vote_drops": 0,
+  "board_api_rows": 339,
+  "board_missing": 0,
+  "bad_username": 0,
+  "created_after_fetch": 0,
+  "created_unparsed": 0,
+  "api_comments": 89,
+  "api_comments_no_user_id": 0,
+  "api_comments_created_after_pull": 0,
+  "roster": 35,
+  "roster_source": "pipeline list (createdAt in PT day)",
+  "not_this_day_rows": 15,
+  "not_this_day_launches": 3
+ },
+ "fail": [
+  "1 snapshots under 95% fetched 200: 08:01Z 23%"
+ ],
+ "warn": [
+  "board: no homepage / leaderboard page views (only the API ranking) - missing, route 4 off",
+  "comments: 92 without a username but with a commenter user id (API v2; map via user_id_map)",
+  "comments: 9 created more than a day before the launch day (old threads?)"
+ ],
+ "checked_at": "2026-11-26T10:25:54Z"
+}
