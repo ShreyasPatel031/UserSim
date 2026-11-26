@@ -235,3 +235,21 @@ Requested by the orchestrator at 03:48Z. This is a rehearsed fix and timing only
   - `rehearse 2026-11-25`: with today's real file in place it skipped, with 0 uploads; without it, it wrote the identical forecast.
 - **Deployed** at 19:51 PT. Ledger row D-WEB-FORECAST-ONCE was registered before the deploy.
 - **Rollback:** `bash ~/w/stage/20261126_web_forecast_once/deploy_wf.sh rollback`
+
+### 2026-11-26 11:46Z — DEPLOY: calibration truth.json written from code on the VM
+
+Requested by the orchestrator at 11:39Z. This is a rehearsed fix.
+
+- **Cause.** truth.json was written by a chain of one-shot agent-session reminders. The chain broke on Nov 24, while the session worker was down, so Nov 24 and 25 were missing until they were backfilled at 11:38Z (44 and 34 launches, 0 theme failures).
+- **What changed.** The tw12a job `truth` runs at 01:45 PT, with a retry at 02:50 PT. It covers yesterday and the 2 days before, only where truth.json is missing, and never rewrites an existing file.
+  - run.sh 8c4805e7 → 348ba755
+  - sched12a.txt 6d2dcc76 → 20a890d5
+  - new ~/w/calib_truth/calibration_truth.py 17029750 (the same code as the repo)
+  - Gemini 2.5 flash runs on Vertex under the VM's own account; a test call returned HTTP 200.
+- **Checks.**
+  - `check`: OK.
+  - `selftest`: round-trip OK, and rollback removes the new folder.
+  - `rehearse 2026-11-26` (forced dry run, uploads refused): Nov 25 gave 34 launches and 33/0 themes, with the same launch set and final ranks as the bucket file and no handles.
+- **Backup.** The session task trig_01XNNpeksYLkr6QfNSHdxmwT now runs at 03:15 PT and writes only if the VM missed.
+- **Ledger:** D-CALIB-TRUTH-VM, registered before the deploy.
+- **Rollback:** `bash ~/w/stage/20261126_calibration_truth_vm/deploy_truth.sh rollback`
