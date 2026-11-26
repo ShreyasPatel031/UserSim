@@ -1,0 +1,1084 @@
+{
+ "day": "2026-11-25",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1329703": {
+   "themes": [
+    {
+     "theme": "Tying answers back to their source (PRs, discussions) is a solid and trustworthy feature.",
+     "n": 3
+    },
+    {
+     "theme": "Users want to be able to open the source of a decision.",
+     "n": 1
+    },
+    {
+     "theme": "The 'why' behind decisions is often lost when people leave or over time.",
+     "n": 1
+    },
+    {
+     "theme": "Users are concerned about how the system handles newer decisions replacing older ones.",
+     "n": 1
+    },
+    {
+     "theme": "Users are curious about how the system decides what decisions are worth capturing automatically.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Ability to open the source of a decision",
+    "Handling of newer decisions replacing older ones",
+    "Who is responsible for keeping the memory current",
+    "How the system decides what's a decision worth capturing"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Tying answers back to their source (PRs, discussions) is a solid and trustworthy feature.",
+      "Users want to be able to open the source of a decision.",
+      "Users are concerned about how the system handles newer decisions replacing older ones.",
+      "Users are curious about who maintains the 'company memory' of decisions.",
+      "The 'why' behind decisions is often lost when people leave or over time.",
+      "Users are curious about how the system decides what decisions are worth capturing automatically."
+     ],
+     [
+      "Tying every answer back to the source PR or discussion is a solid touch and builds trust.",
+      "Users want to be able to open the source of a decision.",
+      "The 'why' behind a decision is often lost when team members leave.",
+      "What happens when a newer decision replaces an older one?",
+      "How does the system decide what is a decision worth capturing versus routine chatter?",
+      "The product addresses the pain of scattered company memory for solo developers."
+     ],
+     [
+      "Tying every answer back to its source (PR/discussion) is a solid and trustworthy feature.",
+      "The ability to open the source of a decision is a highly desired feature.",
+      "The 'why' behind a decision is often lost when team members leave, highlighting a pain point this product could address.",
+      "What happens when a newer decision replaces an older one?",
+      "How does the system decide what is a decision worth capturing versus routine chatter, and does it pull everything in automatically?",
+      "Who is responsible for keeping the company memory current: engineers or a dedicated role?",
+      "Generic congratulations to Sanket."
+     ]
+    ],
+    "complaints": [
+     [
+      "Being able to open the source is the feature I'd reach for first.",
+      "what happens when a newer decision replaces an older one?",
+      "In your first teams, who ended up keeping the memory current: the engineers, or someone whose job it became?",
+      "Curious how it decides what's a decision worth capturing versus routine chatter \u2014 does it pull everything in automatic"
+     ],
+     [
+      "Being able to open the source is the feature I'd reach for first.",
+      "what happens when a newer decision replaces an older one?",
+      "In your first teams, who ended up keeping the memory current: the engineers, or someone whose job it became?",
+      "Curious how it decides what's a decision worth capturing versus routine chatter \u2014 does it pull everything in automatic"
+     ],
+     [
+      "I'd like to know how the system handles newer decisions replacing older ones.",
+      "I'm curious about how the system decides what constitutes a decision worth capturing versus routine chatter, and if it pulls everything in automatically.",
+      "I'd like to be able to open the source of a decision to understand the original discussion.",
+      "I'm concerned about who is responsible for keeping the memory current when team members leave."
+     ]
+    ]
+   }
+  },
+  "1329814": {
+   "themes": [
+    {
+     "theme": "Tool's usefulness and comprehensive reports, identifying new competitors",
+     "n": 3
+    },
+    {
+     "theme": "Suggestions for website revisions and landing page updates",
+     "n": 2
+    },
+    {
+     "theme": "What the tool does after initial analysis and if it remains free",
+     "n": 2
+    },
+    {
+     "theme": "Free competitor teardown as a value demonstration",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "What does Falcon do after analysis?",
+    "Provide concrete suggestions for changes",
+    "Is the product really free?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the tool for its usefulness and comprehensive reports, highlighting its ability to identify new competitors.",
+      "Users suggest that the tool should provide concrete suggestions for website revisions and draft landing page updates.",
+      "Users are asking what the tool does after the initial analysis and if the service will remain free.",
+      "Users appreciate the free competitor teardown as a way to demonstrate value.",
+      "The daily emergence of new AI competitors makes tracking a full-time job."
+     ],
+     [
+      "Users praise the tool for its usefulness and comprehensive reports, highlighting its ability to identify unknown competitors.",
+      "Users suggest that the tool should provide concrete suggestions for website revisions based on its analysis.",
+      "Users are asking what the tool does after the initial analysis and if the service will remain free.",
+      "Users appreciate the free competitor teardown as a way to demonstrate value.",
+      "Users appreciate the tool's ability to suggest positioning changes and draft landing page updates."
+     ],
+     [
+      "The tool provides a comprehensive and high-quality report.",
+      "The tool helps identify competitors that were previously unknown.",
+      "Users want concrete suggestions for website revisions based on the analysis.",
+      "Users are curious about the actions Falcon takes after the initial analysis.",
+      "The tool helps turn reports into actionable work by suggesting positioning changes and drafting landing page updates.",
+      "Offering a free competitor teardown is an effective way to demonstrate value.",
+      "Users are surprised by the tool's quality and question if it should be free."
+     ]
+    ],
+    "complaints": [
+     [
+      "What does Falcon actually do after the analysis?",
+      "An ongoing watch is much easier to use if a change comes with a concrete suggestion for what to revisit on the site.",
+      "Are you sure this should be free?"
+     ],
+     [
+      "What does Falcon actually do after the analysis?",
+      "An ongoing watch is much easier to use if a change comes with a concrete suggestion for what to revisit on the site.",
+      "Are you sure this should be free?"
+     ],
+     [
+      "What does Falcon actually do after the analysis?",
+      "An ongoing watch is much easier to use if a change comes with a concrete suggestion for what to revisit on the site.",
+      "Are you sure this should be free?"
+     ]
+    ]
+   }
+  },
+  "1312113": {
+   "themes": [
+    {
+     "theme": "Memory wipe/testing real learning is a genius approach",
+     "n": 7
+    },
+    {
+     "theme": "Openness (paper, code, runs) builds trust",
+     "n": 2
+    },
+    {
+     "theme": "How are distribution shifts handled?",
+     "n": 1
+    },
+    {
+     "theme": "How to prevent bad lessons from sticking?",
+     "n": 1
+    },
+    {
+     "theme": "Compare with human performance on repeat puzzles",
+     "n": 1
+    },
+    {
+     "theme": "Apply to coding agents",
+     "n": 1
+    },
+    {
+     "theme": "Clever guardrails (note rejection, repair step)",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Distinguishing performance on familiar vs. new puzzles",
+    "Handling distribution shifts",
+    "Preventing repetition of bad lessons",
+    "Applying the setup to a coding agent"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The memory wipe trick and testing real learning instead of just memory claims is a genius and interesting approach.",
+      "Making everything open (paper, code, runs) is a big plus and earns trust.",
+      "How do you keep a bad lesson from sticking around and repeating?",
+      "I'd want to see both scores (familiar puzzles with fresh inputs and puzzles the agent has never seen) before deciding what carried over.",
+      "Curious how you handle distribution shifts when the underlying task structure changes slightly.",
+      "It would be cool to see how a regular person does on the repeat puzzles, like how much faster people get the second time.",
+      "I'd love to see this same setup aimed at a coding agent.",
+      "The note rejection if it doesn't help and the repair step in the program library are clever guardrails."
+     ],
+     [
+      "The approach of testing actual learning rather than just memory claims, especially with a memory wipe or reset before each puzzle, is highly praised as a significant advancement.",
+      "The openness of the project (open paper, code, and runs) is appreciated as it builds trust.",
+      "Users are curious about how distribution shifts are handled when the underlying task structure changes slightly.",
+      "Users are interested in how bad lessons are prevented from sticking around and repeating in agents that learn from past runs.",
+      "Users would like to see how a regular person performs on repeat puzzles to compare with agent performance.",
+      "A user notes that their coding agents often repeat the same mistakes in fresh sessions because nothing carries over, highlighting a common failure mode.",
+      "The 'note getting rejected if it doesn't help' and the 'repair step in the program library' are highlighted as clever guardrails.",
+      "A user would like to see this same setup (reset-before-every-puzzle) aimed at coding agents."
+     ],
+     [
+      "The approach of testing actual learning rather than just memory claims, especially with a memory wipe or reset before each puzzle, is highly praised as a significant advancement.",
+      "The openness of the project (open paper, code, and runs) is appreciated as it builds trust.",
+      "Users are curious about how distribution shifts are handled when the underlying task structure changes slightly.",
+      "Users are interested in how bad lessons are prevented from sticking around and repeating in agents that learn from past runs.",
+      "Users would like to see how a regular person performs on repeat puzzles to compare with agent performance.",
+      "A user notes that their coding agents often repeat the same mistakes in fresh sessions because nothing carries over, highlighting a common failure mode.",
+      "The 'note getting rejected if it doesn't help' and the 'repair step in the program library' are highlighted as clever guardrails.",
+      "A user would like to see this same setup (reset-before-every-puzzle) aimed at coding agents."
+     ]
+    ],
+    "complaints": [
+     [
+      "I'd want to see both scores (familiar puzzles with fresh inputs vs. puzzles the agent has never seen) before deciding what carried over.",
+      "Curious how you handle distribution shifts when the underlying task structure changes slightly.",
+      "How do you keep a bad lesson from sticking around and repeating?",
+      "I'd love to see this same setup aimed at a coding agent."
+     ],
+     [
+      "I'd want to see both scores (familiar puzzles with fresh inputs vs. puzzles the agent has never seen) before deciding what carried over.",
+      "Curious how you handle distribution shifts when the underlying task structure changes slightly.",
+      "How do you keep a bad lesson from sticking around and repeating?",
+      "I'd love to see this same setup aimed at a coding agent."
+     ],
+     [
+      "would be cool to see how a regular person does on the repeat puzzles, like how much faster ppl get the second time",
+      "Separating familiar puzzles with fresh inputs from puzzles the agent has never seen is an interesting design choice. I'd want to see both scores before deciding what carried over.",
+      "Curious how you handle distribution shifts when the underlying task structure changes slightly.",
+      "How do you keep a bad lesson from sticking around and repeating?",
+      "I'd love to see this same setup aimed at a codin"
+     ]
+    ]
+   }
+  },
+  "1316963": {
+   "themes": [
+    {
+     "theme": "Gold card feature for agent attention",
+     "n": 5
+    },
+    {
+     "theme": "Worktree per agent to prevent file conflicts",
+     "n": 4
+    },
+    {
+     "theme": "Notifications for gold cards (outside app)",
+     "n": 2
+    },
+    {
+     "theme": "Ability to switch accounts to handle limits",
+     "n": 1
+    },
+    {
+     "theme": "Technical implementation of account switching (session resume/replay)",
+     "n": 1
+    },
+    {
+     "theme": "Reviewer getting own worktree for PR checks",
+     "n": 1
+    },
+    {
+     "theme": "Handling multiple gold cards simultaneously",
+     "n": 1
+    },
+    {
+     "theme": "Interaction of answering questions on card with terminal",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Notifications for card status changes",
+    "Handoff mechanism for agent sessions",
+    "Reviewer workflow for pull requests",
+    "Interaction with the terminal",
+    "Handling multiple simultaneous card status changes"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The 'gold card' feature, which indicates when an agent needs attention, is highly praised for solving the problem of missed permission prompts and agent waiting.",
+      "The 'worktree per agent' feature is appreciated for preventing multiple agents from editing the same files simultaneously.",
+      "The ability to easily switch accounts when hitting limits is seen as a solution to losing context during long refactors.",
+      "Users want to know if they receive notifications when a card turns gold, specifically outside the application (e.g., Mac push notifications).",
+      "Users are curious about the technical implementation of account switching, specifically whether a session is resumed or replayed.",
+      "Users want to know if a reviewer gets their own worktree when asked to check a PR.",
+      "Users are curious about how the system handles multiple cards turning gold simultaneously.",
+      "Users want to know if answering a question on a card types into the real terminal or if the agent reads it from elsewhere."
+     ],
+     [
+      "The 'gold card' feature, which indicates when an agent needs attention, is highly praised for solving the annoyance of missed permission prompts and agent waiting.",
+      "The 'worktree per agent' feature is appreciated for preventing agents from editing the same files and addressing multi-terminal chaos.",
+      "Users are asking about notification mechanisms for 'gold cards', specifically if they receive pings or push notifications outside the app.",
+      "Users are curious about how answering questions on a card interacts with the real terminal versus the agent reading from elsewhere.",
+      "The ability to move an agent to another account mid-conversation is seen as a solution for hitting limits during long refactors.",
+      "Users are asking about the technical details of agent handoff between accounts, specifically if the session resumes or the transcript is replayed.",
+      "There's a question about whether a reviewer gets their own worktree on a branch when a builder asks for a PR check.",
+      "A concern is raised about how the system handles multiple 'gold cards' turning up simultaneously."
+     ],
+     [
+      "The 'gold card' feature, which indicates when an agent needs attention, is highly praised for solving the annoyance of missed permission prompts and agent waiting.",
+      "The 'worktree per agent' feature is appreciated for preventing agents from editing the same files and addressing multi-terminal chaos.",
+      "Users are asking about notification mechanisms for 'gold cards', specifically if they receive pings or push notifications outside the app.",
+      "Users are curious about how answering questions on a card interacts with the real terminal versus the agent reading from elsewhere.",
+      "The ability to move an agent to another account mid-conversation is seen as a solution for hitting limits during long refactors.",
+      "Users are asking about the technical details of agent handoff between accounts, specifically if the session resumes or the transcript is replayed.",
+      "There's a question about whether a reviewer gets their own worktree on a branch when a builder asks for a PR check.",
+      "A concern is raised about how the system handles multiple 'gold cards' turning up simultaneously."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can you also get a notification outside the app, like a mac push, when a card turns gold?",
+      "Does it ping me when a card goes gold or do I have to keep the board open?",
+      "When I answer a question on the card, does it type into the real terminal, or does the agent read it from somewhere else?",
+      "How does that handoff work underneath, does Tendeck resume the same session on the second account or replay the transcript into a fresh one?",
+      "When a builder asks a reviewer to check its PR, does the reviewer get its own worktree on that branch?",
+      "Curious how it holds up when three or four cards all turn gold at once?"
+     ],
+     [
+      "Can I get a notification outside the app, like a Mac push, when a card turns gold?",
+      "How does the handoff work when moving an agent to another account mid-conversation, does Tendeck resume the same session on the second account or replay the transcript into a fresh one?",
+      "When a builder asks a reviewer to check its PR, does the reviewer get its own worktree on that branch?",
+      "Does it ping me when a card goes gold or do I have to keep the board open?",
+      "When I answer a question on the card, does it type into the real terminal, or does the agent read it from somewhere else?",
+      "Curious how it holds up when three or four cards all turn gold at once?"
+     ],
+     [
+      "Does it ping me when a card goes gold or do I have to keep the board open?",
+      "Can you also get a notification outside the app, like a Mac push, when a card turns gold?",
+      "When I answer a question on the card, does it type into the real terminal, or does the agent read it from somewhere else?",
+      "How does that handoff work underneath, does Tendeck resume the same session on the second account or replay the transcript into a fresh one?",
+      "When a builder asks a reviewer to check its PR, does the reviewer get its own worktree on that branch?",
+      "Curious how it holds up when three or four cards all turn gold at once?"
+     ]
+    ]
+   }
+  },
+  "1329023": {
+   "themes": [
+    {
+     "theme": "Review plan then get text answer",
+     "n": 4
+    },
+    {
+     "theme": "Accessibility and multilingual use cases",
+     "n": 3
+    },
+    {
+     "theme": "Handles long hold times/IVR menus",
+     "n": 2
+    },
+    {
+     "theme": "AI placing calls saves time",
+     "n": 1
+    },
+    {
+     "theme": "Handles unexpected questions/offers",
+     "n": 1
+    },
+    {
+     "theme": "Account on waitlist issue",
+     "n": 1
+    },
+    {
+     "theme": "Plans for mobile app/dashboard",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Handling IVR menus and long hold times",
+    "Handling unexpected questions or alternative offers",
+    "Future plans: mobile app/business dashboard",
+    "Waitlist/account access issues",
+    "Booking not completed/stopped"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to review a plan first and receive the answer back in text is a thoughtful and clever approach to making phone bookings easier.",
+      "Hai solves a real hurdle for people navigating a second language and those who find phone-only booking inaccessible, offering accessibility and multilingual use cases.",
+      "Users are curious about how Hai handles long hold times and IVR menus.",
+      "The concept of an AI placing calls for bookings and support lines is seen as a significant time-saver.",
+      "There's a question about Hai's ability to handle unexpected questions or alternative offers from businesses, make adjustments, and seek approval before confirming.",
+      "A user encountered an issue where their account was on a waitlist despite setting up the connector and Google account, leading to a booking not being completed.",
+      "A user asked if a dedicated mobile app or business dashboard is planned next.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The idea of approving a plan first, then getting the outcome back in text, is a thoughtful way to make phone bookings easier.",
+      "How does Hai handle long hold times or being put on hold?",
+      "Turning phone bookings into a simple text approval flow solves a real hurdle for accessibility and multilingual users.",
+      "How does Hai handle unexpected questions or alternative offers from businesses?",
+      "Are you planning a dedicated mobile app or business dashboard next?",
+      "The booking stopped and the account appears to be on a waitlist despite setup.",
+      "Having an AI actually place the call saves real time.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The ability to review a plan first and receive the answer back in text is a thoughtful and clever approach to making phone bookings easier.",
+      "Hai solves a real hurdle for people navigating a second language and those who find phone-only booking inaccessible, offering accessibility and multilingual use cases.",
+      "Users are curious about how Hai handles long hold times and IVR menus.",
+      "The concept of an AI placing calls for bookings and support lines is seen as a significant time-saver.",
+      "There's a question about Hai's ability to handle unexpected questions or alternative offers from businesses, make adjustments, and seek approval before confirming.",
+      "A user encountered an issue where their account was on a waitlist despite setting up the connector and Google account, leading to a booking not being completed.",
+      "A user asked if a dedicated mobile app or business dashboard is planned next.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does it handle IVR menus and long hold times?",
+      "How does Hai handle situations where a business asks unexpected questions or offers a different time than the one requested?",
+      "Are you planning a dedicated mobile app or business dashboard next?",
+      "Claude returns a note that says \"Every Haicall tool I tried, including the one that gives out the test number, answers that your account is on the waitlist.\"",
+      "5 min and the booking isn't done. text say it stopped?"
+     ],
+     [
+      "How does Hai handle IVR menus and long hold times?",
+      "How does Hai handle situations where a business asks unexpected questions or offers a different time than the one requested?",
+      "Are you planning a dedicated mobile app or business dashboard next?",
+      "Can it understand the response, make a reasonable adjustment and ask for approval before confirming anything?",
+      "I was auto connected to my Google account (to set up my Hai account), which I did, and everything appeared to be set. I then tried the test prompt but Claude returns a note that says \"Every Haicall tool I tried, including the one that gives out the test number, answers that your account is on the waitlist. I can't",
+      "5 min and the booking isn't done. text say it stopped?"
+     ],
+     [
+      "How does Hai handle IVR menus and long hold times?",
+      "How does Hai handle situations where a business asks unexpected questions or offers a different time than the one requested?",
+      "Are you planning a dedicated mobile app or business dashboard next?",
+      "Can it understand the response, make a reasonable adjustment and ask for approval before confirming anything?",
+      "I was auto connected to my Google account (to set up my Hai account), which I did, and everything appeared to be set. I then tried the test prompt but Claude returns a note that says \"Every Haicall tool I tried, including the one that gives out the test number, answers that your account is on the waitlist. I can't",
+      "5 min and the booking isn't done. text say it stopped?"
+     ]
+    ]
+   }
+  },
+  "1329374": {
+   "themes": [
+    {
+     "theme": "Shared memory across multiple agents is a highly valued feature.",
+     "n": 5
+    },
+    {
+     "theme": "Concerns about handling conflicts/overwriting with shared memory.",
+     "n": 6
+    },
+    {
+     "theme": "Questions about practicalities of agent operation (task handoffs, parallel execution).",
+     "n": 5
+    },
+    {
+     "theme": "Concerns about data residency (GDPR) and geo-pinning agents.",
+     "n": 1
+    },
+    {
+     "theme": "Interest in pricing structure and cost tracking.",
+     "n": 2
+    },
+    {
+     "theme": "Concern about product obsolescence due to rapid LLM evolution.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Conflict resolution in shared memory/data among agents",
+    "Agent operation in background/offline and task persistence",
+    "Pricing details and cost monitoring per agent",
+    "Data residency/GDPR compliance with EU-hosted models",
+    "Managing outdated/irrelevant information in agent memory"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How do you handle conflicts or 'sloppy notes' when multiple agents share memory, especially regarding overwriting information or context pollution?",
+      "The concept of shared memory across multiple agents is a significant and highly valued feature, enabling better collaboration and context retention.",
+      "Users have questions about the practicalities of agent operation, such as task handoffs, parallel execution limits, and what happens to tasks if interrupted.",
+      "Users propose specific tasks and workflows for agents, including customer interview analysis, landing page rewriting, competitor research, and bug reproduction.",
+      "Users are concerned about data residency (GDPR) and the ability to pin agents to specific geographic locations.",
+      "Users are interested in the pricing structure and cost tracking for individual agents.",
+      "The flexibility of choosing different models per teammate and the 'no lock-in' effect are appreciated.",
+      "There is a concern that the product might become obsolete as large language models continue to evolve rapidly."
+     ],
+     [
+      "Users are excited about the shared memory feature across agents, seeing it as a significant advancement for AI teamwork and workflow management.",
+      "Users are concerned about how conflicts are handled when multiple agents with shared memory try to change the same file or have contradictory information.",
+      "Users want to be able to hand off tasks between different AI models or agents, allowing one to pick up where another left off, especially for debugging or complex workflows.",
+      "Users are asking about the number of parallel agents or teammates that can be supported.",
+      "Users have questions regarding data residency and the ability to pin specific teammates to EU-hosted models for GDPR compliance.",
+      "Users are asking about the pricing and associated costs of using the product.",
+      "Users are asking about the ability to run the product in the background or on multiple devices simultaneously.",
+      "Users are concerned about the potential for the product to become obsolete if large models continue to evolve rapidly."
+     ],
+     [
+      "How do you handle conflicts or 'sloppy notes' when multiple agents share memory, especially regarding overwriting information or context pollution?",
+      "The concept of shared memory across multiple agents is a significant and highly valued feature, enabling better collaboration and context retention.",
+      "Users have questions about the practicalities of agent operation, such as task handoffs, parallel execution limits, and what happens to tasks if interrupted.",
+      "Users propose specific tasks and workflows for agents, including customer interview analysis, landing page rewriting, competitor research, and bug reproduction.",
+      "Users are concerned about data residency (GDPR) and the ability to pin agents to specific geographic locations.",
+      "Users are interested in the pricing structure and cost tracking for individual agents.",
+      "The flexibility of choosing different models per teammate and the 'no lock-in' effect are appreciated.",
+      "There is a concern that the product might become obsolete as large language models continue to evolve rapidly."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you handle conflicts or inconsistencies in shared memory between agents, especially when they might overwrite each other's information or have different facts?",
+      "Can agents operate in the background or when the user is offline, and what happens to ongoing tasks if the connection or cloud computer restarts?",
+      "What are the pricing details and how can I monitor the cost incurred by individual agents?",
+      "Can specific agents be pinned to EU-hosted models for data residency compliance (GDPR)?",
+      "What is the maximum number of parallel agents or teammates supported?",
+      "Can agents forget old information, such as outdated product names, or be instructed to ignore certain data?"
+     ],
+     [
+      "How do you handle conflicts when multiple agents write different facts about the same thing or try to change the same file?",
+      "Can specific teammates be pinned to EU-hosted models for data residency (GDPR, client contracts)?",
+      "How do you prevent one teammate's sloppy notes or old information from polluting the others' context or memory?",
+      "What happens to a half-finished task if the cloud computer needs to restart, or if the browser is shut down?",
+      "What are the costs associated with this, and can I see how much each teammate spent?",
+      "Can MyClaw use my PC in the background and on my phone while my PC is open and connected to the net?"
+     ],
+     [
+      "How do you handle conflicts when multiple agents try to change the same file or write different facts about the same thing?",
+      "Can specific teammates be pinned to EU-hosted models for data residency (GDPR, client contracts)?",
+      "What happens to a half-finished task if the cloud computer needs to restart, or if the browser is shut down?",
+      "How do you prevent one teammate's sloppy notes or irrelevant information from polluting the others' shared context?",
+      "What are the costs associated with this, and can I see how much each teammate spent?",
+      "Can the system run in the background on a PC and phone, even when offline?"
+     ]
+    ]
+   }
+  },
+  "1323240": {
+   "themes": [
+    {
+     "theme": "How Airbot prioritizes notifications",
+     "n": 5
+    },
+    {
+     "theme": "Ability to approve drafts/actions directly from WhatsApp/iMessage",
+     "n": 4
+    },
+    {
+     "theme": "Airbot's proactive nature and pre-done work",
+     "n": 4
+    },
+    {
+     "theme": "Airbot reduces notification noise and consolidates information",
+     "n": 3
+    },
+    {
+     "theme": "Convenience of Airbot being in existing messaging apps (WhatsApp/iMessage)",
+     "n": 2
+    },
+    {
+     "theme": "Airbot's learning mechanism and initial priority setting",
+     "n": 2
+    },
+    {
+     "theme": "Differentiation from alternatives like Claude",
+     "n": 2
+    },
+    {
+     "theme": "Interest in approving drafts/actions via voice notes",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does Airbot prioritize notifications?",
+    "Does Airbot learn user preferences?",
+    "How does Airbot compare to existing AI tools?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How does Airbot decide which notifications are important enough to be brought to your notice or what is worth pinging you about?",
+      "The ability to approve drafts/actions directly from WhatsApp/iMessage is a significant benefit and changes daily workflow.",
+      "Users appreciate Airbot's proactive nature, messaging first with suggestions and having work already done.",
+      "Airbot helps cut down notification noise and consolidate information, addressing a common user fatigue with AI and multiple tools.",
+      "The convenience of Airbot living where users already are (WhatsApp/iMessage) is highly valued.",
+      "Does Airbot learn from user interactions, priorities, or ignored alerts, and how does it establish priorities initially?",
+      "Users want to know what Airbot does that alternatives like Claude cannot, especially regarding proactive communication and specific functionalities.",
+      "Users are interested in the ability to approve drafts or actions using voice notes."
+     ],
+     [
+      "How does Airbot decide which notifications are important enough to be brought to your notice or what is worth pinging you about?",
+      "The ability to approve drafts/actions directly from WhatsApp/iMessage is a significant benefit and changes daily workflow.",
+      "Users appreciate Airbot's proactive nature, messaging first with suggestions and having work already done.",
+      "Airbot helps cut down notification noise and consolidate information, addressing a common user fatigue with AI and multiple tools.",
+      "The convenience of Airbot living where users already are (WhatsApp/iMessage) is highly valued.",
+      "Does Airbot learn from user interactions, priorities, or ignored alerts, and how does it establish priorities initially?",
+      "Users want to know what Airbot does that alternatives like Claude cannot, especially regarding proactive communication and specific functionalities.",
+      "Users are interested in the ability to approve drafts or actions using voice notes."
+     ],
+     [
+      "How does Airbot decide which notifications are important enough to be brought to your notice or what is worth pinging you about?",
+      "The ability to approve drafts/actions directly from WhatsApp/iMessage is a significant benefit and changes daily workflow.",
+      "Users appreciate Airbot's proactive nature, messaging first with suggestions and having work already done.",
+      "Airbot helps cut down notification noise and consolidate information, addressing a common user fatigue with AI and multiple tools.",
+      "The convenience of Airbot living where users already are (WhatsApp/iMessage) is highly valued.",
+      "Does Airbot learn from user interactions, priorities, or ignored alerts, and how does it establish priorities initially?",
+      "Users want to know what Airbot does that alternatives like Claude cannot, especially regarding proactive communication and specific functionalities.",
+      "Users are interested in the ability to approve drafts or actions using voice notes."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can you tell me how Airbot decides which notifications are important enough to be brought to your notice?",
+      "How does it decide what's worth interrupting me for vs. saving for a daily digest?",
+      "How does Airbot decide what's worth texting me about, though? If it pings me ten times before lunch, I'm back to living in notifications.",
+      "How does Airbot decide what is worth pinging me about and does it learn when i keep ignoring a certain kind of alert?",
+      "Curious, does Airbot get better at understanding my priorities the more I use it?",
+      "What does it do that Claude can't already do with my Gmail and Calendar connected? Just the texting me first part?"
+     ],
+     [
+      "Can you tell me how Airbot decides which notifications are important enough to be brought to your notice?",
+      "How does it decide what's worth interrupting me for vs. saving for a daily digest?",
+      "How does Airbot decide what's worth texting me about, though? If it pings me ten times before lunch, I'm back to living in notifications.",
+      "How does Airbot decide what is worth pinging me about and does it learn when i keep ignoring a certain kind of alert?",
+      "Curious, does Airbot get better at understanding my priorities the more I use it?",
+      "What does it do that Claude can't already do with my Gmail and Calendar connected? Just the texting me first part?"
+     ],
+     [
+      "Can you tell me how Airbot decides which notifications are important enough to be brought to your notice?",
+      "How does it decide what's worth interrupting me for vs. saving for a daily digest?",
+      "How does Airbot decide what's worth texting me about, though? If it pings me ten times before lunch, I'm back to living in notifications.",
+      "How does Airbot decide what is worth pinging me about and does it learn when i keep ignoring a certain kind of alert?",
+      "Curious, does Airbot get better at understanding my priorities the more I use it?",
+      "What does it do that Claude can't already do with my Gmail and Calendar connected? Just the texting me first part?"
+     ]
+    ]
+   }
+  },
+  "1328124": {
+   "themes": [
+    {
+     "theme": "Escrow system for credits until link is verified live",
+     "n": 3
+    },
+    {
+     "theme": "Ability to find specific pages and judge them before approving",
+     "n": 2
+    },
+    {
+     "theme": "Agencies getting separate credit balance per client site",
+     "n": 1
+    },
+    {
+     "theme": "How the draft-message step works and agent's access to target page content to avoid generic outreach",
+     "n": 1
+    },
+    {
+     "theme": "Approval step is important for human oversight",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Draft message process",
+    "Agency credit balance"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The escrow system for credits until a link is verified live is a smart and friction-reducing feature.",
+      "The ability to find specific pages and judge them before approving a request is a valuable feature.",
+      "Do agencies get a separate credit balance per client site?",
+      "How does the draft-message step work, specifically regarding the agent's access to target page content for outreach?",
+      "There is a concern about the outreach message sounding generic if the agent only sees the topic and metrics, not the actual content.",
+      "The ability to pull contextual page matches straight inside Claude or Cursor removes much friction from link outreach.",
+      "The approval step is important for maintaining human oversight when agents can spend credits or commit to deals.",
+      "Finding relevant partner pages that already cover the topic is a task that users would hand off."
+     ],
+     [
+      "Holding credits in escrow until a do-follow link is verified live is a smart feature.",
+      "Finding the specific page or contextual page matches is a valuable feature.",
+      "Users want to understand how the draft-message step works and if the agent sees the target page's actual content to avoid generic outreach.",
+      "Do agencies get a separate credit balance per client site?",
+      "The approval step is important for human oversight.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The escrow system for credits until a link is verified live is a smart and friction-reducing feature.",
+      "The ability to find specific pages and judge them before approving a request is a valuable feature.",
+      "Do agencies get a separate credit balance per client site?",
+      "How does the draft-message step work, specifically regarding the agent's access to target page content for outreach?",
+      "There is a concern about the outreach message sounding generic if the agent only sees the topic and metrics, not the actual content.",
+      "The ability to pull contextual page matches straight inside Claude or Cursor removes much friction from link outreach.",
+      "The approval step is important for maintaining human oversight when agents can spend credits or commit to deals.",
+      "Finding relevant partner pages that already cover the topic is a task that users would hand off."
+     ]
+    ],
+    "complaints": [
+     [
+      "Curious how the draft-message step works: does the agent see the target page's actual content when it writes the outreach, or just the topic and metrics?",
+      "do agencies get a separate credit balance per client site"
+     ],
+     [
+      "Curious how the draft-message step works: does the agent see the target page's actual content when it writes the outreach, or just the topic and metrics?",
+      "do agencies get a separate credit balance per client site"
+     ],
+     [
+      "Curious how the draft-message step works: does the agent see the target page's actual content when it writes the outreach, or just the topic and metrics?",
+      "do agencies get a separate credit balance per client site"
+     ]
+    ]
+   }
+  },
+  "1329543": {
+   "themes": [
+    {
+     "theme": "Explaining risks instead of blocking them",
+     "n": 2
+    },
+    {
+     "theme": "Analysis runs locally or data sent to server",
+     "n": 2
+    },
+    {
+     "theme": "Congratulating makers on launch",
+     "n": 5
+    },
+    {
+     "theme": "Compatibility with Google Meet and Zoom",
+     "n": 1
+    },
+    {
+     "theme": "Windows compatibility and release plans",
+     "n": 1
+    },
+    {
+     "theme": "Technical method of sensitive data identification (pattern matching vs. AI)",
+     "n": 1
+    },
+    {
+     "theme": "On-device checks are a thoughtful security measure",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Local processing vs. server-side processing",
+    "Platform availability (Mac, Windows)",
+    "Integration with other tools (Google Meet, Zoom)",
+    "Sensitive data identification (local pattern matching vs. AI model)"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users praise the idea of explaining risks instead of just flagging or blocking them.",
+      "Users are asking if the analysis runs locally in the browser or if data is sent to a server.",
+      "Users congratulate the makers on the launch.",
+      "Users are asking if the product works with Google Meet and Zoom.",
+      "Users are asking if the product is only for Mac and when a Windows version will be available.",
+      "Users are asking if sensitive data identification is purely local using pattern matching or if it uses an AI model.",
+      "Users appreciate the masking of sensitive card data and flagging of disguised downloads as it solves a security gap.",
+      "Users consider the on-device checks a thoughtful touch."
+     ],
+     [
+      "Users appreciate the concept of explaining risks instead of just blocking them.",
+      "Users praise the on-device checks as a thoughtful security measure.",
+      "Users are asking if the analysis runs locally in the browser or if data is sent to a server.",
+      "Users are asking about compatibility with Google Meet and Zoom.",
+      "Users are asking about Windows compatibility and release plans.",
+      "Users are asking about the technical method of sensitive data identification (pattern matching vs. AI model).",
+      "Users compare the local guard feature to a similar one built into Notely.",
+      "Users generally congratulate the makers on the launch."
+     ],
+     [
+      "Users appreciate the concept of explaining risks instead of just blocking them.",
+      "Users praise the on-device checks as a thoughtful security measure.",
+      "Users are asking if the analysis runs locally in the browser or if data is sent to a server.",
+      "Users are asking about compatibility with Google Meet and Zoom.",
+      "Users are asking about Windows compatibility and release plans.",
+      "Users are asking about the technical method of sensitive data identification (pattern matching vs. AI model).",
+      "Users compare the local guard feature to a similar one built into Notely.",
+      "Users generally congratulate the makers on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the analysis run locally in the browser, or is page data sent to a server?",
+      "Is it only mac? If yes, when windows?",
+      "Does it work with Google Meet and Zoom too?",
+      "Does it identify sensitive data like API keys, credentials, or card numbers purely locally using pattern matching, or does it call an AI model to classify confidential text?"
+     ],
+     [
+      "Does the analysis run locally in the browser, or is page data sent to a server?",
+      "Is it only mac ? If yes, when windows?",
+      "Does it work with Google Meet and Zoom too?",
+      "Does it identify sensitive data like API keys, credentials, or card numbers purely locally using pattern matching, or does it call an AI model to classify confidential text?"
+     ],
+     [
+      "Does the analysis run locally in the browser, or is page data sent to a server?",
+      "Is it only mac ? If yes, when windows?",
+      "Does it work with Google Meet and Zoom too?",
+      "Does it identify sensitive data like API keys, credentials, or card numbers purely locally using pattern matching, or does it call an AI model to classify confidential text?"
+     ]
+    ]
+   }
+  },
+  "1328887": {
+   "themes": [
+    {
+     "theme": "Per-project memory ('Kin') is a good design choice and solves re-explaining context.",
+     "n": 7
+    },
+    {
+     "theme": "Users want to understand how Koed compares to existing memory features in other coding agents (e.g., Claude Code).",
+     "n": 3
+    },
+    {
+     "theme": "The open-source nature and on-device storage of Koed are appreciated.",
+     "n": 3
+    },
+    {
+     "theme": "Users are curious about Koed's technical implementation and specific benefits (e.g., over plain agent loops, token cost savings, handling branches).",
+     "n": 3
+    }
+   ],
+   "complaints": [
+    "How to prevent old decisions from persisting",
+    "Koed's added value over Claude Code",
+    "Visual walkthroughs for new users and differentiation from existing memory features",
+    "Koed's core additions over a plain agent loop (tools, memory, orchestration)",
+    "Token drop with Claude Code",
+    "How recall handles branches"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Giving each project its own Kin (memory) is a good design choice and a sensible approach.",
+      "The ability to avoid re-explaining codebase decisions and past mistakes across agents is a significant benefit.",
+      "Users are curious about how Koed compares to existing memory features in other coding agents like Claude Code.",
+      "Users want to understand what extra benefits Koed offers over plain agent loops or other tools.",
+      "The open-source nature and on-device storage of Koed are appreciated.",
+      "Users are asking about the token cost savings when using Koed with other agents like Claude Code.",
+      "Users are curious about how Koed handles branches and discarded approaches in its memory.",
+      "Users are interested in how the memory store performs over a long project."
+     ],
+     [
+      "The concept of per-project memory or 'Kin' is highly praised for solving the problem of re-explaining decisions and context across different AI agents and projects.",
+      "Users frequently ask for clarification on how Koed differentiates itself from existing memory features in other AI tools, particularly Claude Code's CLAUDE.md.",
+      "The open-source nature and on-device storage of Koed are appreciated by users.",
+      "Users are curious about the technical implementation and specific benefits of Koed, such as its core additions over a plain agent loop, token cost savings, and how it handles branches.",
+      "Generic congratulations and positive remarks on the launch.",
+      "There is interest in more visual/product walkthroughs as Koed adds more integrations to help users understand its unique value.",
+      "A user raises a concern about how to stop old decisions from 'sticking around' once a project's direction changes.",
+      "Users compare Koed's functionality to Claude Code, Codex, and Pi, especially regarding shared context and memory features."
+     ],
+     [
+      "The concept of per-project memory or 'Kin' is highly praised for solving the problem of re-explaining decisions and context across different AI agents and projects.",
+      "Users frequently ask for clarification on how Koed differentiates itself from existing memory features in other AI tools, particularly Claude Code's CLAUDE.md.",
+      "The open-source nature and on-device storage of Koed are appreciated by users.",
+      "Users are curious about the technical implementation and specific benefits of Koed, such as its core additions over a plain agent loop, token cost savings, and how it handles branches.",
+      "Generic congratulations and positive remarks on the launch.",
+      "There is interest in more visual/product walkthroughs as Koed adds more integrations to help users understand its unique value.",
+      "A user raises a concern about how to stop old decisions from 'sticking around' once a project's direction changes.",
+      "Users compare Koed's functionality to Claude Code, Codex, and Pi, especially regarding shared context and memory features."
+     ]
+    ],
+    "complaints": [
+     [
+      "How do you stop old decisions from sticking around once I change my mind on how the project should work?",
+      "For someone who mostly uses Claude Code, what extra does Koed offer?",
+      "As Koed adds more integrations, are you thinking about creating more visual/product walkthroughs to help new users quickly understand the difference between Koed and the memory features built into individual coding agents?",
+      "What's the main thing Koed adds over a plain agent loop: tools, memory, or orchestration?",
+      "How big is the token drop with Claude Code?",
+      "How does recall handle branches: if we try two approaches on two branches and drop one, does the Kin scope?"
+     ],
+     [
+      "How do you stop old decisions from sticking around once I change my mind on how the project should work?",
+      "For someone who mostly uses Claude Code, what extra does Koed offer?",
+      "As Koed adds more integrations, are you thinking about creating more visual/product walkthroughs to help new users quickly understand the difference between Koed and the memory features built into individual coding agents?",
+      "What's the main thing Koed adds over a plain agent loop: tools, memory, or orchestration?",
+      "How big is the token drop with Claude Code?",
+      "How does recall handle branches: if we try two approaches on two branches and drop one, does the Kin scope?"
+     ],
+     [
+      "How do you stop old decisions from sticking around once I change my mind on how the project should work?",
+      "For someone who mostly uses Claude Code, what extra does Koed offer?",
+      "As Koed adds more integrations, are you thinking about creating more visual/product walkthroughs to help new users quickly understand the difference between Koed and the memory features built into individual coding agents?",
+      "What's the main thing Koed adds over a plain agent loop: tools, memory, or orchestration?",
+      "How big is the token drop with Claude Code?",
+      "How does recall handle branches: if we try two approaches on two branches and drop one, does the Kin scope?"
+     ]
+    ]
+   }
+  },
+  "1329844": {
+   "themes": [
+    {
+     "theme": "Local-first, offline, and privacy-focused design (BYOK AI, 'Never Send to AI')",
+     "n": 4
+    },
+    {
+     "theme": "Custom OpenAI-compatible endpoint for other AI models",
+     "n": 1
+    },
+    {
+     "theme": "Word-level version history storage location",
+     "n": 1
+    },
+    {
+     "theme": "Availability of a Mac version",
+     "n": 1
+    },
+    {
+     "theme": "Local search and tabs combination",
+     "n": 1
+    },
+    {
+     "theme": "Word-level version history as a bonus",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the launch",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Custom AI model endpoint",
+    "Word-level version history storage",
+    "Mac version availability"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the local-first approach, offline capabilities, and privacy-focused design, especially BYOK AI and per-note 'Never Send to AI' options.",
+      "Users would like a custom OpenAI-compatible endpoint field to use other AI models like Mistral or EU-hosted models.",
+      "Users are asking if the word-level version history is stored within the local SQLite file or separately.",
+      "Users are asking about the availability of a Mac version.",
+      "Users find the combination of local search and tabs to be a sensible and useful feature.",
+      "Users appreciate the word-level version history as a nice bonus.",
+      "Users appreciate the FTS5 search remaining instant even with a large database."
+     ],
+     [
+      "Users appreciate the local-first approach, especially with SQLite and offline capabilities.",
+      "The privacy design, including opt-in BYOK and per-note 'Never Send to AI', is highly valued.",
+      "Users want a custom OpenAI-compatible endpoint field for BYOK to use alternative AI models.",
+      "Users are asking about the storage location of word-level version history.",
+      "Users are inquiring about the availability of a Mac version.",
+      "The combination of local search and tabs is seen as a sensible and useful feature.",
+      "The word-level version history is considered a nice bonus.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "Users appreciate the local-first approach, especially with SQLite and offline capabilities.",
+      "The privacy design, including opt-in BYOK and per-note 'Never Send to AI', is highly valued.",
+      "Users want a custom OpenAI-compatible endpoint field for BYOK to use alternative AI models.",
+      "Users are asking about the storage location of word-level version history.",
+      "Users are inquiring about the availability of a Mac version.",
+      "The combination of local search and tabs is seen as a sensible and useful feature.",
+      "The word-level version history is considered a nice bonus.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "A custom OpenAI-compatible endpoint field would let privacy-minded users pick Mistral or EU-hosted models instead of only Gemini/Groq.",
+      "Does the word level version history live in the same file, or is it stored somewhere I lose if I only back up the notebook?",
+      "Is a Mac version on the roadmap at all, or is Windows only?"
+     ],
+     [
+      "A custom OpenAI-compatible endpoint field would let privacy-minded users pick Mistral or EU-hosted models instead of only Gemini/Groq.",
+      "Does the word level version history live in the same file, or is it stored somewhere I lose if I only back up the notebook?",
+      "Is a Mac version on the roadmap at all, or is Windows only?"
+     ],
+     [
+      "A custom OpenAI-compatible endpoint field would let privacy-minded users pick Mistral or EU-hosted models instead of only Gemini/Groq.",
+      "Does the word level version history live in the same file, or is it stored somewhere I lose if I only back up the notebook?",
+      "Is a Mac version on the roadmap at all, or is Windows only for now?"
+     ]
+    ]
+   }
+  },
+  "1329880": {
+   "themes": [
+    {
+     "theme": "Agent handoff for different tasks",
+     "n": 3
+    },
+    {
+     "theme": "Concerns about unattended agents and nonsensical commits",
+     "n": 2
+    },
+    {
+     "theme": "Ability to point to custom OpenAI-compatible base URL",
+     "n": 1
+    },
+    {
+     "theme": "GitHub comments subscription behavior",
+     "n": 1
+    },
+    {
+     "theme": "Specify files agent should not modify",
+     "n": 1
+    },
+    {
+     "theme": "Reopening the same conversation for failed checks/comments",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "What stops it from drifting, is there a checkpoint where it has to stop and ask?",
+    "Can I point it to a custom OpenAI-compatible base URL?",
+    "Is there a way to give it files it should never touch?",
+    "How do you handle it when a reviewer asks for something that conflicts with the original task?",
+    "Does a GitHub comments subscription only wake the thread for linked accounts, like mentions do?",
+    "Picking the work back up without reconstructing what happened is the part I'd care about."
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The handoff between agents, especially for different tasks like coding and testing/review, is impressive and addresses common workflow issues.",
+      "Concerns about agents running unattended for extended periods leading to undesirable or nonsensical commits.",
+      "The ability to merge a PR from a phone once CI passes and tests are green.",
+      "Can OpenCode be pointed to a custom OpenAI-compatible base URL?",
+      "Does a GitHub comments subscription only wake the thread for linked accounts, similar to mentions?",
+      "A way to specify files that the agent should never modify.",
+      "What mechanisms prevent the agent from drifting or require it to ask for approval at checkpoints?",
+      "The system's ability to reopen the same conversation for failed checks or reviewer comments instead of starting fresh is appreciated."
+     ],
+     [
+      "The ability for agents to hand off work, like one agent writing code and another handling tests/diff review, is seriously impressive and addresses common async setup issues.",
+      "Concerns about an agent running unattended for hours leading to 'confident nonsense' and drifting, with a need for checkpoints or human intervention.",
+      "The ability to merge a PR from a phone once CI passes and tests are green.",
+      "Can OpenCode be pointed to a custom OpenAI-compatible base URL?",
+      "Does a GitHub comments subscription only wake the thread for linked accounts, like mentions do?",
+      "A way to give the agent files it should never touch.",
+      "Keeping the CI failure and review in the original task thread, and reopening the same conversation for failed checks or reviewer comments, is a valuable feature.",
+      "General congratulations on the launch and the impressive solo build with 1,900 commits."
+     ],
+     [
+      "The handoff between agents for different tasks (e.g., coding, testing, diff review) is impressive and addresses common async setup issues.",
+      "Concerns about agents running unattended for extended periods leading to undesirable or nonsensical commits.",
+      "Inquiring about the ability to point OpenCode to a custom OpenAI-compatible base URL.",
+      "Asking if a GitHub comments subscription only wakes the thread for linked accounts.",
+      "Requesting a mechanism to specify files that the agent should never modify.",
+      "Asking about mechanisms to prevent agent drift and whether there are checkpoints requiring human approval.",
+      "Appreciation for the product keeping CI failures and reviews within the original task thread, aiding in resuming work."
+     ]
+    ],
+    "complaints": [
+     [
+      "What stops it from drifting, is there a checkpoint where it has to stop and ask?",
+      "Can I point it to a custom OpenAI-compatible base URL?",
+      "Is there a way to give it files it should never touch?",
+      "How do you handle it when a reviewer asks for something that conflicts with the original task?",
+      "Does a GitHub comments subscription only wake the thread for linked accounts, like mentions do?"
+     ],
+     [
+      "What stops the agent from drifting, is there a checkpoint where it has to stop and ask?",
+      "Can I point OpenCode to a custom OpenAI-compatible base URL?",
+      "Is there a way to give it files it should never touch?",
+      "How do you handle it when a reviewer asks for something that conflicts with the original task?",
+      "Does a GitHub comments subscription only wake the thread for linked accounts, like mentions do?",
+      "Picking the work back up without reconstructing what happened is the part I'd care about."
+     ],
+     [
+      "What stops it from drifting, is there a checkpoint where it has to stop and ask?",
+      "Curious how you handle it when a reviewer asks for something that conflicts with the original request?",
+      "With OpenCode, can I point it to a custom OpenAI-compatible base URL?",
+      "Is there a way to give it files it should never touch?",
+      "Does a GitHub comments subscription only wake the thread for linked accounts, like mentions do?",
+      "Picking the work back up without reconstructing what happened is the part I'd care about."
+     ]
+    ]
+   }
+  }
+ }
+}
