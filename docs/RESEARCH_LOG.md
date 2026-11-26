@@ -2941,3 +2941,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T13:33Z hourly check: board live (votes revealed), site/launch/MCP up. STACK-1 registered ($8) and started.
 - 2026-11-26T14:02Z STACK-1 RESULT ($1.47): BACKER-v2 + tuned P(yes) stack recall@N 40.0 vs 39.0 (+1.0 [+0.2,+1.9]), AUC +0.006 [+0.004,+0.008]. Clear of zero on the 15% sample; full-pool confirmation STACK-1b next before any deploy.
 - 2026-11-26T14:33Z hourly check: board live, site/launch/MCP up; STACK-1b running.
+- 2026-11-26T15:33Z hourly check: board live, site/launch/MCP up; STACK-1b running.
