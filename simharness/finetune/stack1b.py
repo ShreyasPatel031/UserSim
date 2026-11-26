@@ -81,9 +81,10 @@ def stage_agg(a):
     ok = lambda df: df[(df.N > 0) & (df.n > df.N)]  # noqa: E731
     # BACKER-v2 walk-forward full-pool scores from CHOICE-FT-1 (same rows, same order)
     f1 = pd.read_parquet(f"{a.ft1}/full_pairs.parquet")
-    assert (f1[["day", "item_idx", "person_idx", "y"]].to_numpy() == fp[["day", "item_idx", "person_idx", "y"]].to_numpy()).all()
-    bs = np.load(f"{a.ft1}/baseline_scores.npz")
-    per = {"backer_v2_wf": ok(score_rows(fp, bs["backer_v2_wf__full"])),
+    f1["p"] = np.load(f"{a.ft1}/baseline_scores.npz")["backer_v2_wf__full"]
+    m = fp.merge(f1, on=["day", "item_idx", "person_idx"], how="left", suffixes=("", "_f1"))
+    assert len(m) == len(fp) and (m["y"] == m["y_f1"]).all() and not m["p"].isna().any()
+    per = {"backer_v2_wf": ok(score_rows(fp, m["p"].to_numpy())),
            "stack": ok(score_rows(fp, clf.predict_proba((Xt - mu) / sd)[:, 1])),
            "pyes_only": ok(score_rows(fp, py))}
     res = {"experiment": "STACK-1b", "intervals": "launch-clustered bootstrap, 95%, 2,000 draws",

@@ -1,0 +1,127 @@
+{
+ "experiment": "STACK-1b",
+ "intervals": "launch-clustered bootstrap, 95%, 2,000 draws",
+ "full_pool": {
+  "full_person_days": 57080,
+  "full_pairs": 1654907,
+  "full_positives": 24270,
+  "rest_person_days_to_score": 48516,
+  "reused_person_days": 8564,
+  "handles_in_prompts": 0
+ },
+ "stack_coef_standardised": {
+  "ln_rw": 0.396,
+  "tm": -0.0452,
+  "ln_rw_x_tm": 0.0392,
+  "logit_pyes": 1.2969
+ },
+ "models": {
+  "backer_v2_wf": {
+   "recall_at_N_pooled": {
+    "value": 0.3896,
+    "ci95": [
+     0.3799,
+     0.3988
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9385,
+    "ci95": [
+     0.9345,
+     0.9421
+    ]
+   },
+   "launches": 359,
+   "positives": 24270
+  },
+  "stack": {
+   "recall_at_N_pooled": {
+    "value": 0.4033,
+    "ci95": [
+     0.3934,
+     0.4123
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9433,
+    "ci95": [
+     0.9392,
+     0.9472
+    ]
+   },
+   "launches": 359,
+   "positives": 24270
+  },
+  "pyes_only": {
+   "recall_at_N_pooled": {
+    "value": 0.3764,
+    "ci95": [
+     0.365,
+     0.3868
+    ]
+   },
+   "auc_mean": {
+    "value": 0.9397,
+    "ci95": [
+     0.9352,
+     0.9438
+    ]
+   },
+   "launches": 359,
+   "positives": 24270
+  }
+ },
+ "paired": {
+  "stack - backer_v2_wf": {
+   "recall_at_N_pooled": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "item",
+    "diff": 0.0136,
+    "ci95": [
+     0.01,
+     0.0174
+    ]
+   },
+   "auc_mean": {
+    "metric": "auc_mean",
+    "cluster": "item",
+    "diff": 0.0049,
+    "ci95": [
+     0.0037,
+     0.006
+    ]
+   }
+  },
+  "pyes_only - backer_v2_wf": {
+   "recall_at_N_pooled": {
+    "metric": "recall_at_N_pooled",
+    "cluster": "item",
+    "diff": -0.0132,
+    "ci95": [
+     -0.021,
+     -0.0058
+    ]
+   },
+   "auc_mean": {
+    "metric": "auc_mean",
+    "cluster": "item",
+    "diff": 0.0012,
+    "ci95": [
+     -0.0004,
+     0.0029
+    ]
+   }
+  }
+ },
+ "serving": {
+  "pairs_scored": 1406597,
+  "score_seconds_incl_model_load": 6048,
+  "ms_per_pair": 4.3,
+  "night_pairs_mean_test": 137909,
+  "night_score_minutes": 9.9,
+  "night_vm_minutes_incl_setup": 15.9,
+  "night_cost_usd_standard": 0.97,
+  "night_cost_usd_spot": 0.58,
+  "basis": "one A100 40GB (a2-highgpu-1g); score time from the job log; setup (driver, pip, model download) ~6 min measured; prices from the Cloud Billing catalog: standard $3.673/h, spot $2.204/h (us-central1)"
+ }
+}
