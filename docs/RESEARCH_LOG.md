@@ -2936,3 +2936,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T10:33Z hourly check: board live, site/launch/MCP up; nothing broken; CHOICE-FT-1 running; no antigravity instructions.
 - 2026-11-26T10:44Z Daily collection review: complete people 93,623 (+4 in 24 h; Nov 25 10:50Z was 93,619), active tier whole 2,577/2,642, likely 1,540/1,649; last pull within 24 h 2,549, 7 d 3,405, never 145. Coverage dashboard refreshed (7 of 11 datasets; fleet, freshness_open, upvote_refresh, vote_coverage come from the population agent's dashboard JSON). No asks filed: fleet data pulls are Gemini Carbon's from Nov 26.
 - 2026-11-26T11:33Z hourly check: board live, site/launch/MCP up; nothing broken; CHOICE-FT-1 running.
+- 2026-11-26T12:34Z hourly check: board live, site/launch/MCP up; calibration truth.json now on the VM (D-CALIB-TRUTH-VM); CHOICE-FT-1 running.
