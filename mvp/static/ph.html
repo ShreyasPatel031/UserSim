@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
-<link rel="stylesheet" href="/static/ph_site.css?v=30">
+<link rel="stylesheet" href="/static/ph_site.css?v=31">
 </head>
 <body>
 <div class="wrap">
@@ -363,7 +363,8 @@ function tabs(){
   if(!TAB || (TAB === "pre" && !showPre)) TAB = has.pre && preLive ? "pre" : "mid";   // Product only stays the default until Product + comments has live days
   const pb = $("#tab-pre"); if(pb) pb.hidden = !showPre;
   ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
-    const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Expected " + EXPECT[v];
+    const p = pointFor(v); b.title = p ? (p.replay ? "Replayed after the day closed" : "Made " + p.time_pt) : "Expected " + EXPECT[v];
+    if(v === "pre") b.innerHTML = "Product + comments" + (p && p.replay ? ' <small class="rtag">replayed</small>' : "");
     b.onclick = ()=>{ TAB = v;
       if(v === "pre" && !pointFor("pre") && preDays.length){   // no list for this day: go to the latest day that has one
         const back = preDays.filter(d=>d <= VIEW.day); load(back.length ? back[back.length - 1] : preDays[preDays.length - 1]); return;
@@ -381,19 +382,7 @@ function renderPred(){
   const real = new Map(liveTop().map(x=>[x.id, x.board_rank]));
   const o = VIEW.launches.filter(x=>p.ranks[x.id]).sort((a,b)=>p.ranks[a.id]-p.ranks[b.id]).slice(0,10);
   const sts = o.map(x=>real.size ? status(p.ranks[x.id], real.get(x.id)) : "");
-  let head = "";
-  if(TAB === "pre"){   // Product + comments: the backtest summary, and for a replayed day its label and hits
-    const bt = (((VIEW.accuracy || {}).pre) || []).find(x=>x.backtest);
-    if(bt){ const rng = bt.range || ((bt.flag || "").match(/backtest, (.*) \(replayed\)/) || [])[1] || "";
-      head += `<li class="btsum">${Number(bt.top10).toFixed(1)}% top 10 · ${Number(bt.top5).toFixed(1)}% top 5 · ${Number(bt.top3).toFixed(1)}% top 3 <span>(${esc(rng)}, replayed)</span></li>`; }
-    if(p.replay){
-      const fin = VIEW.status && VIEW.status.final, rk = new Map(VIEW.launches.filter(x=>x.actual_rank).map(x=>[x.id, x.actual_rank]));
-      const ours = Object.entries(p.ranks).sort((a, b)=>a[1] - b[1]).map(([id])=>id);
-      const hit = (k)=> ours.slice(0, k).filter(id=>rk.get(id) && rk.get(id) <= k).length;
-      head += `<li class="dayhead"><span>Replayed after the day closed</span>${fin && rk.size ? `<span class="dh">${hit(10)}/10 top 10 · ${hit(5)}/5 · ${hit(3)}/3</span>` : ""}</li>`;
-    }
-  }
-  $("#pred").innerHTML = head + o.map((x, i)=>{
+  $("#pred").innerHTML = o.map((x, i)=>{
     const ev = p.exp_votes && p.exp_votes[x.id];
     return row(p.ranks[x.id], x, ev!=null ? "~" + Number(ev) : null, "est.", sts[i]);
   }).join("");
