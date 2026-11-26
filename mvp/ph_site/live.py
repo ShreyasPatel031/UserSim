@@ -1115,10 +1115,21 @@ def pre_backtest() -> dict | None:
                 continue
             h = [hits(ranks, act["ranks"], k) for k in (3, 5, 10)]
             if None not in h:
-                per.append((d, h))
+                per.append((d, h, ranks, act["ranks"]))
         if not per:
             return None
-        per.sort()
+        per.sort(key=lambda t: t[0])
+        recent = []
+        for d, h, ranks, fin in reversed(per[-3:]):      # last 3 settled days, newest first, for the tab's lists
+            prods = _safe(lambda: _lineup(d), {}, "lineup")
+            picks = []
+            for i, r in sorted(ranks.items(), key=lambda kv: kv[1])[:10]:
+                pr, f = prods.get(i) or {}, fin.get(i) or {}
+                picks.append({"id": i, "pred_rank": r, "final_rank": f.get("rank"), "final_votes": f.get("votes"),
+                              "name": pr.get("name") or "", "tagline": pr.get("tagline") or "", "thumb": pr.get("thumb"),
+                              "slug": pr.get("slug"), "topics": (pr.get("topics") or [])[:2]})
+            recent.append({"day": d, "hits": h, "picks": picks})
+        per = [(d, h) for d, h, _, _ in per]
         n, tot = len(per), [sum(h[i] for _, h in per) for i in range(3)]
         lab = lambda d: datetime.fromisoformat(d).strftime("%b %-d")
         return {"flag": f"backtest, {lab(per[0][0])} – {lab(per[-1][0])} (replayed)", "days": n,
@@ -1126,7 +1137,8 @@ def pre_backtest() -> dict | None:
                 "top3": round(100 * tot[0] / (3 * n), 1), "top5": round(100 * tot[1] / (5 * n), 1),
                 "top10": round(100 * tot[2] / (10 * n), 1), "backtest": True,
                 "hits": {f"top{k}": [tot[i], k * n] for i, k in enumerate((3, 5, 10))},
-                "note": f"{tot[2]}/{10 * n} top 10; replayed after the days closed, not predicted before public votes"}
+                "note": f"{tot[2]}/{10 * n} top 10; replayed after the days closed, not predicted before public votes",
+                "recent": recent}
     return gcs._cached("pre_backtest", 1800, go)
 
 
