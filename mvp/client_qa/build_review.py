@@ -90,7 +90,7 @@ def finalize(a) -> None:
     from mvp.client_qa.flowmap import build
     man = json.load(open(os.path.join(a.out, "manifest.json"))); assets = json.load(open(a.assets))
     flows = [{"id": r["id"], "title": r["title"], "build": "4255", "tapsBound": True,
-              "steps": [{"img": s["img"], "url": assets[s["img"]], "w": 393, "h": 852, "taps": s["taps"]} for s in r["steps"]]}
+              "steps": [{"img": s["img"], "url": assets.get(s["img"]), "w": 393, "h": 852, "taps": s["taps"]} for s in r["steps"]]}
              for r in man["runs"]]
     shots = {r["id"]: [s["src"] for s in r["steps"]] for r in man["runs"]}
     json.dump(flows, open(os.path.join(a.out, "flows.json"), "w"))
