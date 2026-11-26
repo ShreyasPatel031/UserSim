@@ -2946,3 +2946,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T16:38Z STACK-1b RESULT ($5.64): full pool, stack +1.4 [+1.0,+1.7] recall@N over BACKER-v2 (40.3 vs 39.0), AUC +0.005. DECISION DEC-ORCH-STACK-DEPLOY: stack becomes the forward backer line, BACKER-v2 shadow; handed to E5. Orchestrator spend today about $22.6.
 - 2026-11-26T17:34Z hourly check: board live, site/launch/MCP up. Own experiment slot idle until the Nov 27 PT budget day ($22.6 of $30 used); E5 building the stack backer line.
 - 2026-11-26T18:34Z hourly check: board live, site/launch/MCP up; nothing broken.
+- 2026-11-26T19:33Z hourly check: board live, site/launch/MCP up; nothing broken.
