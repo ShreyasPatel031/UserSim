@@ -503,7 +503,8 @@ Qwen2.5-7B + LoRA as a yes/no backing scorer on (held person x launch) pairs, Ma
 ### Stack P(yes) + BACKER-v2 (STACK-1, Nov 26; $1.47)
 Fit on validation Nov 1-4, 8-10 only; test Nov 11-22 (15% pool sample). Stack recall@N 40.0 [38.4, 41.4] vs BACKER-v2
 39.0: +1.0 [+0.2, +1.9]; AUC 0.947 vs 0.941: +0.006 [+0.004, +0.008]. P(yes) carries most weight (std coef 1.30).
-- Decision pending a full-pool confirmation (STACK-1b) before any nightly use; serving cost about $0.60/day of A100.
+- STACK-1b full pool (57,080 person-days, 24,270 backers): stack 40.3 vs BACKER-v2 39.0, +1.4 [+1.0, +1.7]; AUC +0.005.
+- DECISION (orchestrator, rule 5): deploy the stack as the nightly forward backer line, BACKER-v2 as shadow; about $1/night A100.
 
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
