@@ -429,6 +429,27 @@ def accuracy() -> dict:
     return out
 
 
+def _forecast_pre(day: str) -> dict | None:
+    """Product + comments, order-free (usersim_core, <= 03:45 PT): results/web/forecast_pre/<day>.json, same shape as
+    forecast_0005. Never results/early_forecast/*_PRE.json or the 03:45 hybrid, which read PH's hidden vote order."""
+    j = gcs.read_json(f"results/web/forecast_pre/{day}.json", ttl=600)
+    made = ""
+    if isinstance(j, dict) and isinstance(j.get("forecast"), list):
+        made = j.get("run_updated_at") or j.get("written_at", "")
+        j = j["forecast"]
+    ids = None
+    if isinstance(j, list) and j:
+        rows = [(str(r.get("id")), int(r.get("predicted_rank") or r.get("pred_rank") or 0)) for r in j if isinstance(r, dict)]
+        ids = [i for i, _ in sorted(rows, key=lambda t: t[1]) if i]
+    elif isinstance(j, dict) and j:
+        ids = [str(k) for k, _ in sorted(j.items(), key=lambda kv: int(kv[1]))]
+    if not ids:
+        return None
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": made,
+            "data_up_to": datetime.fromisoformat(day).replace(hour=3, minute=45, tzinfo=PT).isoformat(),
+            "method": "Product + comments (order-free, 03:45 PT)"}
+
+
 def forecasts(day: str) -> dict[str, dict]:
     def go():
         out = {}
@@ -446,11 +467,11 @@ def forecasts(day: str) -> dict[str, dict]:
         #    so the list never changes once shown; before it is written the tab says "not yet available";
         #  - a published file marked none_available is superseded by the day's real forecast file if there is one;
         #  - days before the cutover keep the files that were live then (00:05 forecast, the 03:45 hybrid in P345).
-        legacy = {"0005": out.get("0005"), "PRE": _p345(day)}
-        pub = {"0005": _published(day, "0005"), "PRE": _published(day, "prereveal")}
-        cut = {"0005": _cutover("0005"), "PRE": _cutover("prereveal")}
+        legacy = {"0005": out.get("0005")}
+        pub = {"0005": _published(day, "0005")}
+        cut = {"0005": _cutover("0005")}
         keep = {}
-        for k in ("0005", "PRE"):
+        for k in ("0005",):
             p = pub[k]
             if p and p.get("fallback") != "none_available":
                 keep[k] = p
@@ -467,12 +488,15 @@ def forecasts(day: str) -> dict[str, dict]:
             keep["0005"]["exp_votes"] = legacy["0005"]["exp_votes"]
         # Product + comments carries no vote figure of its own: give each of its ranks the vote level the midnight model
         # expects at that position today (k-th largest midnight estimate), so the column reads in votes and stays in order.
+        f_pre = _forecast_pre(day)                       # Product + comments: the order-free file only
+        if f_pre:
+            keep["PRE"] = f_pre
         pre, mid = keep.get("PRE"), keep.get("0005")
         if pre and pre.get("ranks") and not pre.get("exp_votes") and mid and mid.get("exp_votes"):
             levels = sorted(mid["exp_votes"].values(), reverse=True)
             ev = {i: levels[r - 1] for i, r in pre["ranks"].items() if 0 < r <= len(levels)}
             if ev:
-                pre = dict(pre, exp_votes=ev, vote_err=(claims().get("vote_error_pre") or {}).get("text"))
+                pre = dict(pre, exp_votes=ev)
                 keep["PRE"] = pre
         out = keep                                        # only the two published predictions leave the server
         return out
@@ -1083,8 +1107,18 @@ def live_aggregate(view: dict) -> dict:
                         and all(isinstance(r.get(f"top{k}"), (int, float)) for k in (3, 5, 10)):
                     per[r["day"]] = {"day": r["day"], "h": [round(r[f"top{k}"] * k / 100) for k in (3, 5, 10)],
                                      "final": True, "fallback": r.get("input_flag") or None}
+        if tab == "pre":   # order-free Product + comments: each published forecast_pre day, scored on the final ranks
+            for name, _ in gcs.list_names("results/web/forecast_pre/", ttl=600):
+                d = name.rsplit("/", 1)[-1].removesuffix(".json")
+                if d == day or len(d) != 10 or d >= today:
+                    continue
+                f, act = _forecast_pre(d), actuals(d)
+                if f and act.get("final"):
+                    h = [hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)]
+                    if None not in h:
+                        per[d] = {"day": d, "h": h, "final": True, "fallback": None}
         for r in t.get("days") or []:
-            if r.get("day") in per:
+            if tab == "pre" or r.get("day") in per:      # never the old 03:45 hybrid's record
                 continue
             if r.get("flag") == "live" and r.get("prediction") == pred and r.get("status") == "scored" \
                     and all(isinstance(r.get(f"hits_top{k}"), int) for k in (3, 5, 10)):
@@ -1101,7 +1135,14 @@ def live_aggregate(view: dict) -> dict:
         days = [per[d] for d in sorted(per)]
         n = len(days)
         tot = [sum(x["h"][i] for x in days) for i in range(3)]
-        out[tab] = {"flag": "live", "days": n, "first_day": days[0]["day"], "last_day": days[-1]["day"],
+        done = [x for x in days if x["final"]]
+        settled = None
+        if done:
+            st = [sum(x["h"][i] for x in done) for i in range(3)]
+            settled = {"days": len(done), "top3": round(100 * st[0] / (3 * len(done)), 1),
+                       "top5": round(100 * st[1] / (5 * len(done)), 1), "top10": round(100 * st[2] / (10 * len(done)), 1),
+                       "hits_top10": [st[2], 10 * len(done)]}
+        out[tab] = {"flag": "live", "days": n, "first_day": days[0]["day"], "last_day": days[-1]["day"], "settled": settled,
                     "in_progress": any(not x["final"] for x in days),
                     "hits": {f"top{k}": [tot[i], k * n] for i, k in enumerate((3, 5, 10))},
                     "top3": round(100 * tot[0] / (3 * n), 1), "top5": round(100 * tot[1] / (5 * n), 1),

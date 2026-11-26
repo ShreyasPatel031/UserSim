@@ -116,17 +116,20 @@ async def _ph_today(day: str | None):
     view["days"] = days
     # Public pages show the 00:05 PT forecast only (Shreyas, Nov 22): every later read sees Product Hunt's own
     # hidden-vote order, so its score measures PH's order, not our model.
-    view["points"] = [p for p in view.get("points") or [] if p.get("key") == "0005"]
+    # Two published forecasts (Shreyas, Nov 26): Product only (00:05) and Product + comments (order-free usersim_core,
+    # read only from results/web/forecast_pre/; never the old 03:45 hybrid, which read PH's hidden vote order).
+    view["points"] = [p for p in view.get("points") or [] if p.get("key") in ("0005", "PRE")]
     view["why"] = {k: v for k, v in (view.get("why") or {}).items() if k in ("0005", "after")}
-    if view.get("lead_point") != "0005":
-        view["lead_point"] = "0005" if view["points"] else None
+    keys = {p["key"] for p in view["points"]}
+    view["lead_point"] = "PRE" if "PRE" in keys else ("0005" if "0005" in keys else None)
     try:
         view["accuracy"] = await asyncio.to_thread(live.accuracy)
         agg = await asyncio.to_thread(live.live_aggregate, view)
         for tab, row in agg.items():   # the live row = every live day so far, today included while it runs
             rows = [r for r in view["accuracy"].get(tab, []) if r.get("flag") != "live"]
             view["accuracy"][tab] = [row] + rows
-        view["accuracy"].pop("pre", None)   # 00:05 PT track record only (see above)
+        # Product + comments: only its own order-free live record (from live_aggregate); never the old 03:45 rows.
+        view["accuracy"]["pre"] = [r for r in view["accuracy"].get("pre", []) if r.get("flag") == "live" and "settled" in r]
     except Exception:  # noqa: BLE001 - the accuracy line is optional
         view["accuracy"] = {}
     try:
