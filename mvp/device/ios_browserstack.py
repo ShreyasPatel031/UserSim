@@ -65,7 +65,7 @@ class IOSDevice:
                 continue
             if w <= 0 or h <= 0:
                 continue
-            out.append({"type": t, "label": label[:80], "x": x + w // 2, "y": y + h // 2})
+            out.append({"type": t, "label": label[:80], "x": x + w // 2, "y": y + h // 2, "frame": [x, y, w, h]})
             if len(out) >= limit:
                 break
         return out
