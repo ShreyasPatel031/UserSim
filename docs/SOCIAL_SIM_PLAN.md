@@ -500,6 +500,11 @@ Qwen2.5-7B + LoRA as a yes/no backing scorer on (held person x launch) pairs, Ma
 - Decision: not deployed; no further scaling of yes/no choice fine-tunes. Only remaining test: stack P(yes) with
   BACKER-v2 features, scored forward. Fresher upvote reads are the bigger lever (PRESENCE-CHOICE-1).
 
+### Stack P(yes) + BACKER-v2 (STACK-1, Nov 26; $1.47)
+Fit on validation Nov 1-4, 8-10 only; test Nov 11-22 (15% pool sample). Stack recall@N 40.0 [38.4, 41.4] vs BACKER-v2
+39.0: +1.0 [+0.2, +1.9]; AUC 0.947 vs 0.941: +0.006 [+0.004, +0.008]. P(yes) carries most weight (std coef 1.30).
+- Decision pending a full-pool confirmation (STACK-1b) before any nightly use; serving cost about $0.60/day of A100.
+
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.
 1b. Late-featured launches (added after 00:05 PT) cap the live shortlist; test a later line-up re-read for the re-rank.
