@@ -876,3 +876,15 @@ def test_pre_backtest_is_labelled_and_only_replays(monkeypatch):
     assert d["picks"][0] == {"id": "p0", "pred_rank": 1, "final_rank": 1, "final_votes": None, "name": "P0", "tagline": "t",
                              "thumb": None, "slug": None, "topics": []}
     assert "not predicted before public votes" in bt["note"]
+
+
+def test_pre_replay_shown_for_past_days_only(monkeypatch):
+    from mvp.ph_site import live
+    rep = {"provenance": "order_free_replay", "written_at": "2026-11-26T22:11:00+00:00",
+           "forecast": [{"id": "a", "predicted_rank": 2}, {"id": "b", "predicted_rank": 1}]}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: rep if "forecast_pre_replay/2026-11-25" in path else None)
+    monkeypatch.setattr(live, "today_pt", lambda: "2026-11-26")
+    f = live._forecast_pre_replay("2026-11-25")
+    assert f["replay"] is True and f["ranks"] == {"b": 1, "a": 2}
+    assert live._forecast_pre_replay("2026-11-26") is None            # never for today
+    assert live._forecast_pre("2026-11-25") is None                   # and never counted as a live forecast
