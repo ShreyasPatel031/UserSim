@@ -457,6 +457,18 @@ def run_worker(slot: int, account_idx: int, once: bool = False, retry_auth: bool
         except Exception:
             page.route("**/*producthunt.com/*", lambda route: route.abort())
 
+        # If the user signed in natively on Mac over this VM's exact sticky IP and synced
+        # imported_storage_state.json, inject those cookies into the persistent Camoufox profile!
+        imported_state_path = f"{prof_dir}/imported_storage_state.json"
+        if os.path.exists(imported_state_path):
+            try:
+                st_data = json.load(open(imported_state_path))
+                cookies = st_data.get("cookies") or []
+                if cookies:
+                    browser.add_cookies(cookies)
+            except Exception:
+                pass
+
         cached_auth_path = f"{prof_dir}/last_auth_result.json"
         if not retry_auth and os.path.exists(cached_auth_path):
             prev_auth = json.load(open(cached_auth_path))
