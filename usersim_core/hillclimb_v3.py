@@ -720,7 +720,9 @@ def main() -> None:
         )
         surfaces_by_id.update(new_surfs)
         ext_df = pd.DataFrame(extra_rows_to_score)
-        v1_nov25 = json.load(open("/Users/shreyaspatel/.gemini/antigravity/brain/9180c5fc-4f89-4408-aad0-3184e5de8475/scratch/live_check/2026-11-25/usersim_core_frozen_2026-11-25.json"))
+        scratch_root = os.environ.get("USERSIM_WORK_DIR") or os.path.dirname(os.path.abspath(args.work_dir))
+        nov25_v1_path = os.path.join(scratch_root, "live_check/2026-11-25/usersim_core_frozen_2026-11-25.json")
+        v1_nov25 = json.load(open(nov25_v1_path)) if os.path.exists(nov25_v1_path) else {}
         v1_by_id = {str(r["item_id"]): r for r in v1_nov25.get("shortlist_details", [])}
         ext_df["raw_pe"] = [float((v1_by_id.get(str(lid)) or {}).get("pro_p_endorse", 0.48)) for lid in ext_df["item_id"]]
         ext_df["raw_cl"] = [float((v1_by_id.get(str(lid)) or {}).get("pro_instant_clarity", 0.50)) for lid in ext_df["item_id"]]
