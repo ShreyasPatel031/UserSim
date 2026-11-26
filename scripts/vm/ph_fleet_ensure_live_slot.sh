@@ -81,8 +81,9 @@ sudo systemctl stop phsuper 2>/dev/null || true
 sudo pkill -TERM -f "[p]deep.py|[p]h_batch.py|[c]amoufox" 2>/dev/null || true
 mkdir -p /opt/ph/live
 B=$(grep PACE_GCS_VM_ROOT /opt/ph/pace.env | cut -d= -f2-)
-gcloud storage cp -q "$B/_code/ph_fleet_live_capture.sh" /opt/ph/live/ph_fleet_live_capture.sh
-chmod +x /opt/ph/live/ph_fleet_live_capture.sh
+sudo mkdir -p /opt/ph/live
+sudo gcloud storage cp -q "$B/_code/ph_fleet_live_capture.sh" /opt/ph/live/ph_fleet_live_capture.sh
+sudo chmod +x /opt/ph/live/ph_fleet_live_capture.sh
 sudo systemctl stop phlive 2>/dev/null || true
 EA=""; [[ -f /opt/ph/pace.env ]] && EA="$EA -p EnvironmentFile=/opt/ph/pace.env"
 sudo systemd-run --unit=phlive --collect -p WorkingDirectory=/opt/ph/live $EA \
