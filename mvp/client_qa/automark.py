@@ -128,6 +128,22 @@ def locate_on(cl, shot: Path, f: dict) -> dict:
     return {"status": "marked", "shot": shot.name, "boxes": boxes, "verified_as": ok.get("what_is_visible", "")}
 
 
+HANG = ("froze", "freeze", "frozen", "hang", "hung", "spinner", "crash", "home screen", "was gone", "dropped", "loading")
+
+
+def evidence_shot(shard: Path, f: dict, res: dict) -> Path | None:
+    """For freezes, crashes and hangs there is no element to circle: the evidence is the screen at that moment.
+    Use the tester's cited shot, else the chosen one. Static UI findings never fall back (they need the right screen)."""
+    text = finding_text(f).lower()
+    if not any(w in text for w in HANG):
+        return None
+    for name in (f.get("shot", "").replace("shots/", ""), res.get("shot") or ""):
+        p = shard / "shots" / name
+        if name and p.is_file():
+            return p
+    return None
+
+
 def sh(*a):
     return subprocess.run(list(a), check=True, capture_output=True, text=True).stdout
 
@@ -150,16 +166,21 @@ def run_once(cl, root: str, work: Path) -> int:
             if f.get("status") in ("blocked", "ok", "pass") or not f.get("what"):
                 continue
             key = f"{shard.name}-" + hashlib.sha1(finding_text(f).encode()).hexdigest()[:10]
-            if key in idx and idx[key].get("status") == "marked":
+            if key in idx and idx[key].get("status") in ("marked", "screenshot"):
                 continue
             if key in idx and idx[key].get("tries", 0) >= 3 and len(list((shard / "shots").glob("*.png"))) == idx[key].get("n_shots"):
                 continue  # nothing new to look at
             res = locate(cl, shard, f)
+            if res["status"] != "marked":
+                ev = evidence_shot(shard, f, res)
+                if ev:
+                    res.update(status="screenshot", shot=ev.name, note="screen at the time; no single element to circle")
             res.update(shard=shard.name, finding=f.get("what"), item=f.get("item"),
                        tries=idx.get(key, {}).get("tries", 0) + 1, n_shots=len(list((shard / "shots").glob("*.png"))))
-            if res["status"] == "marked":
+            if res["status"] in ("marked", "screenshot"):
                 out = idx_path.parent / f"{key}.png"
-                annotate(str(shard / "shots" / res["shot"]), str(out), res["boxes"], finding_text(f))
+                cap = finding_text(f) if res["status"] == "marked" else "[Screen at the time] " + finding_text(f)
+                annotate(str(shard / "shots" / res["shot"]), str(out), res.get("boxes") or [], cap)
                 res["png"] = f"marked/auto/{key}.png"
             idx[key] = res
             new += 1
