@@ -110,10 +110,12 @@ def finalize(a) -> None:
         cands.append({"flow": f["flow"], "img": f["img"], "path": st["src"], "type": f["severity"], "title": f["title"],
                       "detail": f["detail"], "confidence": round(f["confidence"], 2), "source": "detector"})
     cl = d.client()
-    sch = {"type": "object", "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "short_title": {"type": "string"}}, "required": ["x", "y", "short_title"]}
+    sch = {"type": "object", "properties": {"x": {"type": "number"}, "y": {"type": "number"}, "short_title": {"type": "string"},
+           "box": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4}}, "required": ["x", "y", "short_title", "box"]}
     def loc(c):
         r, _ = d.call_json(cl, sch, "You locate a reported UI problem on an iPhone screenshot.", [d.img_block(c["path"]), {"type": "text", "text":
             "Problem: " + c["title"] + ". " + c["detail"][:400] + "\nGive x,y = centre of the faulty element as fractions (0-1) of image width and height, "
+            "box = [x1,y1,x2,y2] tight around the faulty element(s) as fractions, "
             "and short_title = the problem in at most 8 plain words, sentence case."}], effort="low", max_tokens=4000)
         return r or {}
     with cf.ThreadPoolExecutor(8) as ex:
@@ -124,7 +126,23 @@ def finalize(a) -> None:
         f["title"] = r.get("short_title") or c["title"]
         f["x"] = min(.95, max(.05, float(r.get("x", .5)))); f["y"] = min(.95, max(.05, float(r.get("y", .5))))
         f["id"] = "p" + hashlib.sha1((f["flow"] + "|" + f["img"] + "|" + f["title"]).encode()).hexdigest()[:10]
+        bx = r.get("box") or [f["x"] - .18, f["y"] - .04, f["x"] + .18, f["y"] + .04]
+        f["box"] = [min(1, max(0, float(v))) for v in bx]
+        f["src"] = c["path"]
         out.append(f)
+    # pen-marked screenshot per finding (mvp.client_qa.annotate), like the team's own Slack screenshots
+    from mvp.client_qa.annotate import annotate
+    mdir = os.path.join(a.out, "marked"); os.makedirs(mdir, exist_ok=True)
+    for f in out:
+        W, H = Image.open(f["src"]).size
+        x1, y1, x2, y2 = f["box"]
+        png = os.path.join(mdir, f["id"] + ".png")
+        if not os.path.exists(png):
+            annotate(f["src"], png, [(int(x1 * W), int(y1 * H), int(x2 * W), int(y2 * H))], f["title"])
+            Image.open(png).convert("RGB").save(png[:-4] + ".jpg", quality=82)
+        f["marked_img"] = "marked/" + f["id"] + ".jpg"
+        f["marked"] = assets.get(f["marked_img"])
+        del f["src"]
     json.dump(out, open(os.path.join(a.out, "findings.json"), "w"), indent=1)
     print(len(g["nodes"]), "screens,", len(out), "findings (", sum(f["source"] == "tester" for f in out), "from testers )")
 
