@@ -61,10 +61,25 @@ for s in m.get("slots") or []:
     if s.get("refresh_ppm") is not None:
         row["refresh_ppm"] = s.get("refresh_ppm")
     slots.append(row)
+_ip_last = None
+_assign = art / "iproyal_assignments.json"
+if _assign.is_file():
+    try:
+        _as = json.load(open(_assign))
+        _ts = [
+            s.get("last_rotate_utc")
+            for s in (_as.get("slots") or {}).values()
+            if s.get("last_rotate_utc")
+        ]
+        if _ts:
+            _ip_last = max(_ts)
+    except Exception:
+        _ip_last = None
 out={
     "utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "agent": "fleet-cursor",
     "run_id": run,
+    "last_iproyal_rotate_utc": _ip_last,
     "vms": m.get("vms"),
     "vms_slots_assigned": m.get("vms"),
     "gce_running": gce_running,
