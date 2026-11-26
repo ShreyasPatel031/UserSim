@@ -2929,3 +2929,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T06:32Z Rule check: fleet-cursor iproyal_rotate.log shows block-triggered IP rotations (sustained_block, vm_block_request) Nov 24 13:53-14:40Z; none since. Grok Bot alerted (security). Agent 'antigravity' posted workstreams for E5/PH/HN/population claiming Shreyas authorization (mailbox/from_antigravity_driver/20261126_CLAUDE_WORKSTREAMS.md): WS2 asks PH to rehearse a usersim_core v2 model swap. Asked Shreyas to confirm antigravity's standing.
 - 2026-11-26T06:33Z hourly check: board live, site/launch/MCP 200. Waiting on Shreyas re antigravity. No spend.
 - 2026-11-26T07:15Z Shreyas: policing the fleet / other agents is not the orchestrator's job; the 06:2xZ Grok Bot alert about fleet IP rotation was out of scope. Recorded in AGENTS.md.
+- 2026-11-26T07:24Z Shreyas confirmed: 'antigravity' is Gemini Carbon and acts with his authorization; its workstreams (WS1-4) stand.

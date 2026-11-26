@@ -243,7 +243,8 @@ sample size, model, setting or metric) is an audit failure. Check rows with `pyt
 
 Shreyas: "gemini carbon is taking up the dictation of the fleet for data pulls, you can use the data but you help more with
 day to day setup and upkeep and making sure website is up and stuff".
-- **Gemini Carbon** directs the Cursor fleet's data pulls. No other agent (the orchestrator included) asks the fleet for data
+- **Gemini Carbon** posts as the agent `antigravity` (mailbox/from_antigravity_driver/, Pub/Sub to="antigravity"); Shreyas
+  confirmed Nov 26 that it acts with his authorization. It directs the Cursor fleet's data pulls. No other agent (the orchestrator included) asks the fleet for data
   or sends it wake messages; agents use the data that lands.
 - **The orchestrator** does day-to-day setup and upkeep: the public website and live board up, the midnight forecast written
   on time, the MCP server and seeds healthy, scheduled jobs and agent sessions running, the ledger synced, costs watched.
