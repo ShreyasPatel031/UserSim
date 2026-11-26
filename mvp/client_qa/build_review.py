@@ -96,7 +96,17 @@ def finalize(a) -> None:
     json.dump(flows, open(os.path.join(a.out, "flows.json"), "w"))
     g = build(flows, shots, set()); json.dump(g, open(os.path.join(a.out, "canvas.json"), "w"))
     cands = []
-    for r in man["runs"]:
+    auto = json.load(open(a.automark)) if getattr(a, "automark", None) else None
+    for k, v in (auto or {}).items():   # mvp.client_qa.automark: verified pen-marked shot, or "needs screenshot"
+        run = next((r for r in man["runs"] if r["id"] == v.get("shard")), None) if k != "_usage" else None
+        if not run or not run["steps"]:
+            continue
+        st = next((s for s in run["steps"] if v.get("shot") and s["src"].endswith("/" + v["shot"])), run["steps"][-1])
+        t = note_type({"status": "fail", "what": v["finding"], "item": v.get("item", "")})
+        cands.append({"flow": run["id"], "img": st["img"], "path": st["src"], "type": t, "title": v["finding"].split(". ")[0][:110],
+                      "detail": v["finding"], "confidence": 0.9, "source": "tester", "auto": v,
+                      "auto_png": os.path.join(os.path.dirname(a.automark), "..", "..", v["png"]) if v.get("png") else None})
+    for r in ([] if auto is not None else man["runs"]):
         src2img = {os.path.relpath(s["src"], os.path.join(os.path.dirname(s["src"]), "..")): s for s in r["steps"]}
         for n in r["notes"]:
             t = note_type(n)
@@ -132,6 +142,12 @@ def finalize(a) -> None:
         f = {k: c[k] for k in ("flow", "img", "type", "detail", "confidence", "source")}
         f["title"] = r.get("short_title") or c["title"]
         f["id"] = "p" + hashlib.sha1((f["flow"] + "|" + f["img"] + "|" + c["title"]).encode()).hexdigest()[:10]
+        if c.get("auto"):
+            if c["auto_png"]:
+                f["auto_png"] = c["auto_png"]; f["x"], f["y"] = .5, .5
+            else:
+                f["needs_screenshot"] = True; f["x"], f["y"] = .9, .06
+            out.append(f); continue
         if not r.get("visible"):   # its own screenshot does not show it: not a finding on this page
             dropped.append({"title": c["title"], "flow": c["flow"], "img": c["img"], "source": c["source"]}); continue
         i = r.get("element", -1)
@@ -151,6 +167,10 @@ def finalize(a) -> None:
     from mvp.client_qa.annotate import annotate
     mdir = os.path.join(a.out, "marked"); os.makedirs(mdir, exist_ok=True)
     for f in out:
+        if f.get("auto_png"):
+            Image.open(f.pop("auto_png")).convert("RGB").save(os.path.join(mdir, f["id"] + ".jpg"), quality=82)
+            f["marked_img"] = "marked/" + f["id"] + ".jpg"; f["marked"] = assets.get(f["marked_img"])
+            continue
         if "src" not in f:
             continue
         W, H = Image.open(f["src"]).size
@@ -171,6 +191,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(); sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("prepare"); p.add_argument("--runs", nargs="+", required=True); p.add_argument("--out", required=True); p.add_argument("--detect", action="store_true")
     f = sub.add_parser("finalize"); f.add_argument("--out", required=True); f.add_argument("--assets", required=True)
+    f.add_argument("--automark", help="runs/<build>/marked/auto/index.json: tester findings and their verified marks come from here")
     a = ap.parse_args()
     prepare(a) if a.cmd == "prepare" else finalize(a)
 
