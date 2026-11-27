@@ -145,7 +145,46 @@ async def _ph_today(day: str | None):
         view["input_flag"] = None
     if _past_day(d):
         return _json(view, 600, 3600)
+    if not day:
+        await asyncio.to_thread(save_boot, view)
     return _json(view, 30, 30)
+
+
+BOOT_PATH = "site/boot/today.json"
+_boot_saved = [0.0]
+
+
+def save_boot(view: dict) -> None:
+    """Keep the last good 'today' answer in storage (at most once a minute), so the landing page can ship it inline
+    and every visitor sees a score and a board at once, even on a cold server; the page then refreshes it."""
+    import json
+    import time
+
+    from mvp.ph_site import gcs
+
+    if time.time() - _boot_saved[0] < 60 or not view.get("launches"):
+        return
+    _boot_saved[0] = time.time()
+    try:
+        gcs._bucket().blob(f"{gcs.ROOT}/{BOOT_PATH}").upload_from_string(
+            json.dumps(view, separators=(",", ":")), content_type="application/json")
+    except Exception as exc:  # noqa: BLE001 - the snapshot is a speed-up, never a reason to fail the request
+        print(f"[ph] boot snapshot not saved: {exc!r}", flush=True)
+
+
+def boot_html(page: str) -> str:
+    """The landing page with the last good board inlined (a JSON script tag the page draws before fetching)."""
+    from mvp.ph_site import gcs
+
+    try:
+        raw = gcs.read_bytes(BOOT_PATH, ttl=20)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[ph] boot snapshot not read: {exc!r}", flush=True)
+        raw = None
+    if not raw:
+        return page
+    tag = '<script id="boot" type="application/json">' + raw.decode().replace("</", "<\\/") + "</script>"
+    return page.replace("</head>", tag + "\n</head>", 1)
 
 
 @router.api_route("/api/ph/cron/snapshot", methods=["GET", "POST"])

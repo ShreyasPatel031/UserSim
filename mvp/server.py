@@ -239,6 +239,10 @@ async def landing(request: Request) -> FileResponse:
         page = STATIC / "index.html"
     if not page.is_file():
         raise HTTPException(status_code=503, detail="Frontend not bundled")
+    if page.name == "landing.html":   # ship the last good board inline: a score and a leaderboard on first paint
+        from mvp.ph_site.routes import boot_html
+        html = await asyncio.to_thread(boot_html, page.read_text())
+        return HTMLResponse(html, headers={"Cache-Control": "public, max-age=0, must-revalidate"})
     return FileResponse(page)
 
 
