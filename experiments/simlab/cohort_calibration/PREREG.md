@@ -334,3 +334,8 @@ category's core task, do (1) their preferences explain the structural model's mi
   - STACK-1b on the same rule: 37.6, difference **+10.4 [+9.4, +11.5]**. The stack is ahead on every one of the 12 days (+6.1 to +18.7 points).
   - The 14b number (−6.4) was an artefact: about 45% of the bench pool are people first read after D. They took list slots but can never count under the live rule. So the 14b hold rested on a wrong comparison.
   - Caveats: the STACK-1b correction was found after its bad number, so it is post hoc for STACK-1b, though pre-registered for STACK-v2. Forward lists use the previous night's build and stale reads, so the forward edge is still to be confirmed by the nightly shadow score. The stack cannot name people inactive for 60 days; BACKER-v2 can.
+- 15b (Nov 27, orchestrator decision DEC-ORCH-STACK-V2-DEPLOY, 11:14Z): **STACK-v2 is the published backer line from the Nov 28 PT night.**
+  - Nightly job (stack_nightly.py, 08:23Z): STACK-1b is scored as before (shadow, backer_pred_stack). Meanwhile live_v2_scores.py recomputes the live BACKER-v2 decision values, same code path as backer_v2_lists.py. Then STACK-v2 is frozen on pairs whose person was held before D's start (backer_pred_stack_v2).
+  - expected_voters.py uses backer_pred_stack_v2 from 2026-11-28 and calibrates only on STACK-v2 lists: Nov 11–22 backtest, then forward.
+  - Shadows: live BACKER-v2 and STACK-1b. All three are scored nightly under 15a by stack_score.py.
+  - Revert: if STACK-v2 trails live BACKER-v2 on scored forward days, paired by launch with the interval below 0, BACKER-v2 is restored.

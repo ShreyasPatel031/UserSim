@@ -68,6 +68,10 @@ log("prompts", meta)
 if DRY:
     X = feats(b, rows, np.full(len(rows), 0.5)); log("dry: features ok", X.shape, bool(np.isfinite(X[:, :3]).all())); sys.exit(0)
 
+# 4a. live BACKER-v2 decision values for STACK-v2's 5th input (CPU, runs while the GPU scores; PREREG 15, DEC-ORCH-STACK-V2-DEPLOY)
+SD = os.path.join(W, "store"); os.makedirs(SD, exist_ok=True)
+subprocess.run(["gsutil", "-q", "-m", "cp", f"{B}/raw/population/store_v3/persons.parquet", f"{B}/raw/population/store_v3/events.parquet", SD + "/"], check=True)
+V2F = os.path.join(W, f"v2_{D}.parquet"); V2P = subprocess.Popen([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "live_v2_scores.py"), SD, D, V2F])
 # 4. GPU scoring (score-only; each file uploaded on its own so a preemption keeps the rest)
 subprocess.run(["gsutil", "-q", "cp", f"{B}/simharness/choice_ft1/code/choice_lora.py", f"{PREFIX}/code/choice_lora.py"], check=True)
 subprocess.run(["gsutil", "-q", "-m", "cp", *files, f"{PREFIX}/data/"], check=True)
@@ -117,3 +121,21 @@ meta.update(predicted_at=now.isoformat(), freeze_deadline=dl.isoformat(), before
 p = os.path.join(W, f"{D}.parquet"); FR.to_parquet(p, index=False); mp = os.path.join(W, f"{D}_meta.json"); json.dump(meta, open(mp, "w"), indent=1)
 subprocess.run(["gsutil", "-q", "cp", p, mp, f"{PRIV}/backer_pred_stack{'_test' if TEST else ''}/"], check=True)
 log("FROZEN", json.dumps(meta))
+# 7. STACK-v2 (published from 2026-11-28): the same rows restricted to people held before D's start, + the live BACKER-v2 decision value
+rc = V2P.wait()
+if rc != 0: sys.exit(f"FAIL live BACKER-v2 scores rc={rc}: STACK-v2 not frozen (STACK-1b shadow frozen above)")
+V2 = pd.read_parquet(V2F); V2["launch_id"] = V2.launch_id.astype(str); V2["person_id"] = V2.person_id.astype(str)
+rows["launch_id"] = rows.item_idx.map(ID); rows["person_id"] = PID.reindex(rows.person_idx).to_numpy(); rows["pyes"] = pyes
+R2 = rows.merge(V2, on=["launch_id", "person_id"], how="inner").reset_index(drop=True)
+C2 = json.loads(gcat(f"{PRIV}/stack_v2/stack_v2_coef.json")); X2 = np.column_stack([feats(b, R2[["day", "item_idx", "person_idx"]], R2.pyes.to_numpy()), R2.s_v2.to_numpy()])
+R2["p"] = 1 / (1 + np.exp(-(((X2 - np.array(C2["mu"])) / np.array(C2["sd"])) @ np.array(C2["coef"]) + C2["intercept"])))
+F2 = pd.concat([g.nlargest(TOPN, "p").assign(rank=lambda x: np.arange(1, len(x) + 1)) for _, g in R2.groupby("launch_id")], ignore_index=True)
+F2 = F2[["launch_id", "person_id", "p", "rank"]].assign(day=D, model="stack_v2 (STACK-1b inputs + live BACKER-v2 score)", coef=json.dumps([round(x, 4) for x in C2["coef"]]))
+for c in ("launch_id", "person_id", "day", "model", "coef"): F2[c] = F2[c].astype("string")
+now2 = pd.Timestamp.now(tz="UTC")
+m2 = {**meta, "model": "STACK-v2", "pairs_held_before_D": int(len(R2)), "people_held_before_D": int(R2.person_id.nunique()), "predicted_at": now2.isoformat(),
+      "before_0330_pt": bool(now2 < dl), "rows_frozen": int(len(F2)), "launches_frozen": int(F2.launch_id.nunique()), "total_min": round((time.time() - t0) / 60, 1)}
+p2 = os.path.join(W, f"v2list_{D}.parquet"); F2.to_parquet(p2, index=False); mp2 = os.path.join(W, f"v2list_{D}_meta.json"); json.dump(m2, open(mp2, "w"), indent=1)
+dest = f"{PRIV}/backer_pred_stack_v2{'_test' if TEST else ''}"
+subprocess.run(["gsutil", "-q", "cp", p2, f"{dest}/{D}.parquet"], check=True); subprocess.run(["gsutil", "-q", "cp", mp2, f"{dest}/{D}_meta.json"], check=True)
+log("FROZEN_V2", json.dumps(m2))

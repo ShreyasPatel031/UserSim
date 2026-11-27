@@ -30,13 +30,14 @@ W["votes"] = pd.to_numeric(W.votes, errors="coerce"); U["lday"] = U.target_id.ma
 # Published backer list. From 2026-11-28 (PREREG addendum 14, STACK-FWD-1): the STACK-1b list tmp/e5/private/backer_pred_stack/<day>.parquet,
 # calibrated on its own history only (Nov 11-22 backtest lists on the observed pool, then the nightly forward lists); BACKER-v2 is the shadow.
 # Before that, or when the day's stack list is missing: BACKER-v2 (passed rule 5, Nov 23), then the CF-only arm. BACKER_LIST=v2|cf forces.
-STACK_FROM = os.environ.get("STACK_FROM", "9999-12-31")   # go-live held (E5 Nov 27 10:58Z): stack trails the live BACKER-v2 -6.4 [-7.6, -5.1] on Nov 11-22; orchestrator decides
-SRC = os.environ.get("BACKER_LIST") or ("stack" if D >= STACK_FROM and gcat(f"{B}/tmp/e5/private/backer_pred_stack/{D}.parquet", True) else "v2")
+STACK_DIR = os.environ.get("STACK_DIR", "backer_pred_stack_v2")   # published stack line: STACK-v2 (PREREG 15); STACK-1b (backer_pred_stack) is a shadow
+STACK_FROM = os.environ.get("STACK_FROM", "2026-11-28")   # DEC-ORCH-STACK-V2-DEPLOY (orchestrator 11:14Z Nov 27): STACK-v2 published from Nov 28 PT
+SRC = os.environ.get("BACKER_LIST") or ("stack" if D >= STACK_FROM and gcat(f"{B}/tmp/e5/private/{STACK_DIR}/{D}.parquet", True) else "v2")
 
 
 def arms(day):
     if SRC == "stack":   # same source for history and today, so the isotonic calibration matches the list it is applied to
-        raw = gcat(f"{B}/tmp/e5/private/backer_pred_stack/{day}.parquet", True)
+        raw = gcat(f"{B}/tmp/e5/private/{STACK_DIR}/{day}.parquet", True)
         if not raw: return None
         lp = os.path.join(SP, "bp", f"_stack_{day}.parquet"); open(lp, "wb").write(raw)
         return pd.read_parquet(lp)[["launch_id", "person_id", "p"]].assign(launch_id=lambda x: x.launch_id.astype(str), person_id=lambda x: x.person_id.astype(str))
@@ -134,7 +135,7 @@ print(json.dumps(VAL), flush=True)
 iso, c, k_cov = fit(list(H)); bs = base_share(D); FD = arms(D)
 if FD is None: sys.exit(f"no frozen CF list for {D}")
 FD = FD[FD.person_id.isin(held)]; T = group_table(FD, iso, c, k_cov, bs)
-SRC_NOTE = ("from Nov 28: STACK-1b, BACKER-v2's features plus a fine-tuned Qwen2.5-7B yes/no score; backtest Nov 11-22 recall@N +1.4 [+1.0, +1.7] points over BACKER-v2, which is now the shadow"
+SRC_NOTE = ("from Nov 28: STACK-v2, a logistic on BACKER-v2's activity and topic inputs, a fine-tuned Qwen2.5-7B yes/no score and the live BACKER-v2 score; backtest Nov 11-22 under the live rule recall@N 35.9 vs 27.2 for BACKER-v2, +8.7 [+7.8, +9.6] points; BACKER-v2 is now the shadow"
             if SRC == "stack" else "from Nov 23: BACKER-v2 walk-forward logistic on recency-weighted activity, topic match and follows of the team; it beat 'N most active' at naming real backers, +6.8 [+5.7, +7.9] points recall@N over 14 days; the CF-only list is the shadow")
 LABEL = (f"Expected voters by group: the published backer list's per-person probabilities ({SRC_NOTE}) (people we track; reads before 00:00 PT), recalibrated "
          f"on {len(H)} earlier scored days (isotonic reliability curve; tail factor {c:.2f} for voters outside each 2,000-person list), summed by "
