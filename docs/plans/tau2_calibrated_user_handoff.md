@@ -1,8 +1,9 @@
 # Handoff: Calibrated & Model-Invariant User Simulation (`tau2-bench`)
 
 > Saved 2026-11-27 from a session on a separate GCP VM that ran out of subscription
-> time. **The code is not in this repo.** It sits on a `tau2-bench` checkout
-> (branch `feature/calibrated-user-simulator` @ `b6d064a`) and in a git bundle on GCS (see "Recovering the code").
+> time. **The code is not in this repo.** It is on GitHub at
+> https://github.com/ShreyasPatel031/tau2-bench/tree/feature/calibrated-user-simulator (`b6d064a`),
+> with a backup git bundle on GCS.
 
 **Branch (tau2-bench fork):** `feature/calibrated-user-simulator` @ `b6d064a` (34 files)
 **GCS archive:** `gs://usersim-trace-store-347838016394/tau2_calibrated_user/`
@@ -11,7 +12,8 @@
 
 ## Recovering the code
 
-The VM could not push: `origin` pointed at upstream `sierra-research/tau2-bench` and the VM had no GitHub credentials. Recover the code from the bundle on any machine with GCS access to the bucket:
+The branch is on the fork: `git clone -b feature/calibrated-user-simulator https://github.com/ShreyasPatel031/tau2-bench.git`.
+If the fork is ever lost, restore from the GCS bundle:
 
 ```bash
 gcloud auth login
@@ -25,7 +27,7 @@ git push -u origin feature/calibrated-user-simulator
 Datasets, simulations and embedding caches are under the same GCS prefix.
 `data/external_human/` is git-excluded on purpose. Restore it from GCS.
 
-**Security:** an `HF_TOKEN` and an `OPENAI_API_KEY` were pasted into the earlier chat. Rotate or revoke both.
+**Security:** a GitHub PAT, an `HF_TOKEN` and an `OPENAI_API_KEY` were pasted into chat. Revoke or rotate all three.
 
 ## Completed work
 
