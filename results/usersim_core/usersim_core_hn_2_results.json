@@ -1,0 +1,184 @@
+{
+  "experiment_id": "USERSIM-CORE-HN-2",
+  "domain": "hackernews",
+  "pool": {
+    "people": 237162,
+    "comments": 6201413,
+    "story_vec_coverage": 0.99,
+    "svd_dim": 96,
+    "half_life_days": 45.0
+  },
+  "val_days": [
+    "2026-09-21",
+    "2026-09-30"
+  ],
+  "val_days_ext": [
+    "2026-08-01",
+    "2026-09-30"
+  ],
+  "test_window": "2026-10-01 .. 2026-10-16",
+  "test_days_n": 16,
+  "val_feature_residual_spearman": {
+    "pool_mass_z": -0.0392,
+    "pool_strong_log_z": -0.0379,
+    "pool_heavy_strong_log_z": -0.0383,
+    "pool_top200_z": -0.0392,
+    "pool_mean_sim_z": -0.0406,
+    "author_pool_act_log_z": 0.0507,
+    "topic_supply_7d_log_z": -0.0485,
+    "demand_supply_ratio_z": -0.0072
+  },
+  "story_only_t0_pool__hn1_val": {
+    "label": "pool, HN-1 val protocol (10 days)",
+    "train_days_n": 10,
+    "active_features": [
+      "pool_mass_z",
+      "pool_strong_log_z",
+      "pool_heavy_strong_log_z",
+      "pool_top200_z",
+      "pool_mean_sim_z",
+      "author_pool_act_log_z",
+      "topic_supply_7d_log_z",
+      "demand_supply_ratio_z"
+    ],
+    "spearman_structural": 0.1367,
+    "spearman_pool": 0.1314,
+    "eval": {
+      "n_days": 16,
+      "arm3": {
+        "top3": 6.25,
+        "top5": 6.25,
+        "top10": 5.62,
+        "mean_3_5_10": 6.04
+      },
+      "model": {
+        "top3": 6.25,
+        "top5": 3.75,
+        "top10": 5.62,
+        "mean_3_5_10": 5.21
+      },
+      "paired_lift_pts": {
+        "top3": {
+          "diff": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "top5": {
+          "diff": -2.5,
+          "ci95": [
+            -6.25,
+            0.0
+          ]
+        },
+        "top10": {
+          "diff": 0.0,
+          "ci95": [
+            -2.5,
+            2.5
+          ]
+        },
+        "mean_3_5_10": {
+          "diff": -0.83,
+          "ci95": [
+            -2.29,
+            0.42
+          ]
+        }
+      },
+      "residual_spearman_mean": -0.0105,
+      "reach_matched_ties": {
+        "n_pairs": 905,
+        "arm3_acc_pct": 50.61,
+        "model_acc_pct": 49.17,
+        "model_ci95": [
+          45.46,
+          52.79
+        ],
+        "paired_lift_pts": -1.44,
+        "lift_ci95": [
+          -4.26,
+          1.53
+        ]
+      }
+    }
+  },
+  "story_only_t0_pool__ext_val": {
+    "label": "pool, extended val Aug 1..Sep 30",
+    "train_days_n": 61,
+    "active_features": [
+      "pool_mass_z",
+      "pool_strong_log_z",
+      "pool_heavy_strong_log_z",
+      "pool_top200_z",
+      "pool_mean_sim_z",
+      "author_pool_act_log_z",
+      "topic_supply_7d_log_z"
+    ],
+    "spearman_structural": 0.1367,
+    "spearman_pool": 0.128,
+    "eval": {
+      "n_days": 16,
+      "arm3": {
+        "top3": 6.25,
+        "top5": 6.25,
+        "top10": 5.62,
+        "mean_3_5_10": 6.04
+      },
+      "model": {
+        "top3": 6.25,
+        "top5": 3.75,
+        "top10": 5.0,
+        "mean_3_5_10": 5.0
+      },
+      "paired_lift_pts": {
+        "top3": {
+          "diff": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "top5": {
+          "diff": -2.5,
+          "ci95": [
+            -6.25,
+            0.0
+          ]
+        },
+        "top10": {
+          "diff": -0.62,
+          "ci95": [
+            -2.5,
+            1.25
+          ]
+        },
+        "mean_3_5_10": {
+          "diff": -1.04,
+          "ci95": [
+            -2.71,
+            0.21
+          ]
+        }
+      },
+      "residual_spearman_mean": -0.0001,
+      "reach_matched_ties": {
+        "n_pairs": 905,
+        "arm3_acc_pct": 50.61,
+        "model_acc_pct": 52.38,
+        "model_ci95": [
+          46.39,
+          58.52
+        ],
+        "paired_lift_pts": 1.77,
+        "lift_ci95": [
+          -4.92,
+          9.28
+        ]
+      }
+    }
+  },
+  "llm_cost_usd": 0.0,
+  "elapsed_sec": 139.4
+}
