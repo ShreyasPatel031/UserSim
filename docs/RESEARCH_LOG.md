@@ -2956,3 +2956,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-26T22:35Z UPKEEP: homepage claimed 73.5% top-10 'before public votes' from 23 replayed forecast_pre files written 22:11Z today plus a late Nov 26 file. Moved all 24 to results/web/forecast_pre_replay/ (nothing deleted). Website agent asked to clear cache and enforce live+on-time guard; antigravity told.
 - 2026-11-26T23:34Z hourly check: board live, site/launch/MCP up; leaderboard back to original layout with Product + comments tab (PR #236); GTM integrations memo in docs/gtm/.
 - 2026-11-27T00:34Z hourly check: board live, site/launch/MCP up; nothing broken.
+- 2026-11-27T01:34Z hourly check: board live, site/launch/MCP up; nothing broken.
