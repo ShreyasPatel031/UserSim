@@ -721,6 +721,12 @@ function cacheGet(day){
     const now = new Intl.DateTimeFormat("en-CA", {timeZone: "America/Los_Angeles"}).format(new Date());
     return v && (day || v.today === now) ? v : null; } catch(e){ return null; }   // "today" only while it is still today (PT)
 }
+// The server ships its last good answer inside the page: draw it at once, even on a first visit.
+function bootView(){
+  try { const el = document.getElementById("boot"); const v = el && JSON.parse(el.textContent);
+    const at = v && v.board && v.board.as_of;
+    return v && v.launches && (!at || Date.now() - Date.parse(at) < 36 * 3600e3) ? v : null; } catch(e){ return null; }
+}
 function cachePut(day, raw){ try { localStorage.setItem(CACHE_KEY(day), raw); } catch(e){} }
 function show(v){
   VIEW = v;
@@ -731,7 +737,9 @@ function show(v){
   loadExplain(VIEW.day);
 }
 async function load(day){
-  const cached = cacheGet(day);
+  let cached = cacheGet(day);
+  if(!day){ const b = bootView();
+    if(b && (!cached || String((b.board||{}).as_of||"") > String((cached.board||{}).as_of||""))) cached = b; }
   if(cached && (!VIEW || VIEW.day !== cached.day)) show(cached);          // instant: last numbers we had
   let v;
   try { v = await getDay(day); }
