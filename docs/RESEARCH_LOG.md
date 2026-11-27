@@ -2975,3 +2975,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-27T12:38Z hourly check: board live from PH API (as_of 12:34Z), site/launch/MCP up. Data-feeder alert 10:39Z (live capture stalled 08:45-~10:39Z, ~114 min) has recovered: posts_ts has 12:30Z rows. Public board unaffected (served from PH API). Ledger 334/222 valid, nothing new. No antigravity instructions.
 - 2026-11-27T13:35Z hourly check: board live (13:34Z, 18/18 ranked), site/launch/MCP up; data-feeder RESOLVED capture stall (10:45-12:30Z). Ledger 334/222 valid. No antigravity instructions.
 - 2026-11-27T14:35Z hourly check: board live (14:34Z, 18/18), site/launch/MCP up; ledger 334/222 valid; no antigravity instructions.
+- 2026-11-27T15:35Z hourly check: board live (15:33Z, 18/18), site/launch/MCP up; second capture stall 13:00-14:43Z (data-feeder ALERT+RESOLVED), public board unaffected; ledger 334/222 valid; no antigravity instructions.
