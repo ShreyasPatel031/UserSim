@@ -1,0 +1,220 @@
+{
+ "week_monday": "2026-11-23",
+ "day": "2026-11-26",
+ "point": "reread",
+ "written_at": "2026-11-27T10:21:17.817501+00:00",
+ "launches": 146,
+ "source": "raw/ph_at_launch/monthly_reread/2026-11/2026-11-26.jsonl votesCount (read at 2026-11-27 01:52 PT)",
+ "forecast": [
+  {
+   "id": "1326030",
+   "day": "2026-11-23",
+   "pred_rank": 1,
+   "est": 416.0,
+   "src": "reread"
+  },
+  {
+   "id": "1329592",
+   "day": "2026-11-26",
+   "pred_rank": 2,
+   "est": 396.0,
+   "src": "reread"
+  },
+  {
+   "id": "1316202",
+   "day": "2026-11-23",
+   "pred_rank": 3,
+   "est": 346.0,
+   "src": "reread"
+  },
+  {
+   "id": "1329374",
+   "day": "2026-11-25",
+   "pred_rank": 4,
+   "est": 337.0,
+   "src": "reread"
+  },
+  {
+   "id": "1324531",
+   "day": "2026-11-23",
+   "pred_rank": 5,
+   "est": 322.0,
+   "src": "reread"
+  },
+  {
+   "id": "1323240",
+   "day": "2026-11-25",
+   "pred_rank": 6,
+   "est": 305.0,
+   "src": "reread"
+  },
+  {
+   "id": "1320041",
+   "day": "2026-11-24",
+   "pred_rank": 7,
+   "est": 301.0,
+   "src": "reread"
+  },
+  {
+   "id": "1322050",
+   "day": "2026-11-24",
+   "pred_rank": 8,
+   "est": 237.0,
+   "src": "reread"
+  },
+  {
+   "id": "1305567",
+   "day": "2026-11-23",
+   "pred_rank": 9,
+   "est": 230.0,
+   "src": "reread"
+  },
+  {
+   "id": "1225286",
+   "day": "2026-11-23",
+   "pred_rank": 10,
+   "est": 216.0,
+   "src": "reread"
+  },
+  {
+   "id": "1329270",
+   "day": "2026-11-26",
+   "pred_rank": 11,
+   "est": 209.0,
+   "src": "reread"
+  },
+  {
+   "id": "1329956",
+   "day": "2026-11-25",
+   "pred_rank": 12,
+   "est": 206.0,
+   "src": "reread"
+  },
+  {
+   "id": "1327970",
+   "day": "2026-11-24",
+   "pred_rank": 13,
+   "est": 191.0,
+   "src": "reread"
+  },
+  {
+   "id": "1327369",
+   "day": "2026-11-24",
+   "pred_rank": 14,
+   "est": 189.0,
+   "src": "reread"
+  },
+  {
+   "id": "1329327",
+   "day": "2026-11-25",
+   "pred_rank": 15,
+   "est": 186.0,
+   "src": "reread"
+  },
+  {
+   "id": "1303130",
+   "day": "2026-11-26",
+   "pred_rank": 16,
+   "est": 183.0,
+   "src": "reread"
+  },
+  {
+   "id": "1329325",
+   "day": "2026-11-26",
+   "pred_rank": 17,
+   "est": 165.0,
+   "src": "reread"
+  },
+  {
+   "id": "1327242",
+   "day": "2026-11-24",
+   "pred_rank": 18,
+   "est": 159.0,
+   "src": "reread"
+  },
+  {
+   "id": "1328257",
+   "day": "2026-11-24",
+   "pred_rank": 19,
+   "est": 158.0,
+   "src": "reread"
+  },
+  {
+   "id": "1327680",
+   "day": "2026-11-24",
+   "pred_rank": 20,
+   "est": 149.0,
+   "src": "reread"
+  },
+  {
+   "id": "1328447",
+   "day": "2026-11-25",
+   "pred_rank": 21,
+   "est": 144.0,
+   "src": "reread"
+  },
+  {
+   "id": "1324692",
+   "day": "2026-11-23",
+   "pred_rank": 22,
+   "est": 142.0,
+   "src": "reread"
+  },
+  {
+   "id": "1327037",
+   "day": "2026-11-23",
+   "pred_rank": 23,
+   "est": 141.0,
+   "src": "reread"
+  },
+  {
+   "id": "1329543",
+   "day": "2026-11-25",
+   "pred_rank": 24,
+   "est": 136.0,
+   "src": "reread"
+  },
+  {
+   "id": "1331434",
+   "day": "2026-11-26",
+   "pred_rank": 25,
+   "est": 129.0,
+   "src": "reread"
+  },
+  {
+   "id": "1328526",
+   "day": "2026-11-24",
+   "pred_rank": 26,
+   "est": 129.0,
+   "src": "reread"
+  },
+  {
+   "id": "1325086",
+   "day": "2026-11-23",
+   "pred_rank": 27,
+   "est": 125.0,
+   "src": "reread"
+  },
+  {
+   "id": "1328270",
+   "day": "2026-11-24",
+   "pred_rank": 28,
+   "est": 120.0,
+   "src": "reread"
+  },
+  {
+   "id": "1096678",
+   "day": "2026-11-23",
+   "pred_rank": 29,
+   "est": 118.0,
+   "src": "reread"
+  },
+  {
+   "id": "1328677",
+   "day": "2026-11-24",
+   "pred_rank": 30,
+   "est": 116.0,
+   "src": "reread"
+  }
+ ]
+}
