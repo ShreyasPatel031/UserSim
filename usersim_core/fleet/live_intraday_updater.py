@@ -135,7 +135,7 @@ def _is_strictly_live_pre_0350_pt(day: str, now_utc: dt.datetime | None = None) 
 def run_intraday_update(
     day: str,
     bucket: str = "usersim-bakeoff-347838016394",
-    trace_bucket_prefix: str = "gs://usersim-trace-store-347838016394/usersim_core_v5",
+    trace_bucket_prefix: str = "gs://usersim-trace-store-347838016394/usersim_core_v9",
     work_dir: str | None = None,
     persistent_data_dir: str = "/tmp/usersim_work/data",
     trigger_pool_b_ssh: bool = False,
@@ -150,16 +150,22 @@ def run_intraday_update(
     os.makedirs(f"{wdir}/why", exist_ok=True)
 
     try:
-        # 1. Pull today's 00:05 frozen forecast + post-00:05 arrivals + <=03:45 PT comments + Pool B traces
+        # 1. Pull today's 00:05 frozen forecast + pnx + post-00:05 arrivals + complete <=03:45 PT comments/replies + Pool B traces
         gcs_cp(f"gs://{bucket}/usersim_sim/raw/daily/{day}/forecast_{day}.parquet", f"{wdir}/forecasts/")
         gcs_cp(f"gs://{bucket}/usersim_sim/raw/daily/{day}/sites_0005.json", f"{wdir}/forecasts/")
         gcs_cp(f"gs://{bucket}/usersim_sim/raw/daily/{day}/today_0005.json", f"{wdir}/forecasts/")
+        gcs_cp(f"gs://{bucket}/usersim_sim/raw/ph_at_launch/{day}/pnx_{day}.json", f"{wdir}/forecasts/")
+        gcs_cp(f"gs://{bucket}/usersim_sim/raw/ph_at_launch/{day}/live/comments_ts.jsonl", f"{wdir}/comments/{day}/")
         subprocess.run(
             ["gcloud", "storage", "cp", "-q", f"gs://{bucket}/usersim_sim/raw/ph_at_launch/{day}/api_detail/*PT.jsonl", f"{wdir}/post0005/{day}/"],
             check=False,
         )
         subprocess.run(
             ["gcloud", "storage", "cp", "-q", f"gs://{bucket}/usersim_sim/raw/ph_at_launch/{day}/api_comments/*T0[0123]*PT.jsonl", f"{wdir}/comments/{day}/"],
+            check=False,
+        )
+        subprocess.run(
+            ["gcloud", "storage", "cp", "-q", f"gs://{bucket}/usersim_sim/raw/ph_at_launch/{day}/api_replies/*T0[0123]*PT.jsonl", f"{wdir}/comments/{day}/"],
             check=False,
         )
         job_prefix = f"intraday_{day.replace('-', '')}_cua"
@@ -376,13 +382,29 @@ def run_intraday_update(
                 sd = float(np.std(a))
                 return np.clip((a - float(np.mean(a))) / sd, -2.5, 2.5) if sd > 1e-8 else np.zeros_like(a)
 
-            # Track 1: Product only (`mid`, STRICTLY ZERO COMMENTS!)
-            sh_mid = np.clip(0.055 * _z(sso_arr) + 0.050 * comp_arr + 0.055 * pop_arr, -0.26, 0.38)
-            # Track 2: Product + comments (`pre`, <= 03:45 PT order-free!)
-            sh_pre = np.clip(sh_mid + 0.080 * _z(disc_arr) + 0.050 * _z(subs_arr), -0.28, 0.42)
+            # Dual-Boundary Universal Ranker v9 (`k_podium = 5`):
+            # Head A (`Podium`) protects high-confidence #1-#5 locks (`±0.195` mid, `±0.245` pre);
+            # Head B (`Cutline`) promotes #6-#20 bubble breakouts cleanly below the podium floor (`±0.34` mid, `±0.54` pre).
+            sh_mid_pod = np.clip(0.050 * _z(sso_arr) + 0.045 * comp_arr + 0.050 * pop_arr, -0.195, 0.195)
+            sh_mid_cut = np.clip(0.075 * _z(sso_arr) + 0.070 * comp_arr + 0.075 * pop_arr, -0.34, 0.34)
 
-            po_map = {i: float(candidates[i]["structural_score"] + s) for i, s in zip(canon, sh_mid)}
-            pc_map = {i: float(candidates[i]["structural_score"] + s) for i, s in zip(canon, sh_pre)}
+            sh_pre_pod = np.clip(sh_mid_pod + 0.080 * _z(disc_arr) + 0.050 * _z(subs_arr), -0.245, 0.245)
+            sh_pre_cut = np.clip(sh_mid_cut + 0.125 * _z(disc_arr) + 0.080 * _z(subs_arr), -0.54, 0.54)
+
+            def _compose_dual(pod_s: np.ndarray, cut_s: np.ndarray, k_pod: int = 5) -> dict[str, float]:
+                base_s = np.array([float(candidates[i]["structural_score"]) for i in canon], dtype=np.float64)
+                p_tot = {i: float(b + s) for i, b, s in zip(canon, base_s, pod_s)}
+                c_tot = {i: float(b + s) for i, b, s in zip(canon, base_s, cut_s)}
+                if len(canon) <= k_pod:
+                    return p_tot
+                pod_ids = set(sorted(canon, key=lambda x: (-p_tot[x], x))[:k_pod])
+                pod_floor = min(p_tot[x] for x in pod_ids)
+                rest = [x for x in canon if x not in pod_ids]
+                off = min(0.0, (pod_floor - 0.005) - max(c_tot[x] for x in rest)) if rest else 0.0
+                return {x: (p_tot[x] if x in pod_ids else float(c_tot[x] + off)) for x in canon}
+
+            po_map = _compose_dual(sh_mid_pod, sh_mid_cut, k_pod=5)
+            pc_map = _compose_dual(sh_pre_pod, sh_pre_cut, k_pod=5)
             return {i: po_map[i] for i in id_list}, {i: pc_map[i] for i in id_list}
 
         ids_sorted = sorted(candidates.keys())
@@ -417,7 +439,7 @@ def run_intraday_update(
             "day": day,
             "written_at": now_iso,
             "provenance": "live" if is_live_pre else "replay_or_post_cutoff",
-            "model": "usersim_core_v5_order_free_product_comments",
+            "model": "usersim_core_v9_dual_boundary_order_free_product_comments",
             "inputs": {
                 "present": [
                     "forecast_0005" if f_ids else "missing_forecast_0005",
@@ -460,7 +482,7 @@ def run_intraday_update(
         # Emit privacy-safe (`min_group >= 20`) why cards if candidates exist
         why_uploaded = 0
         if not day_df.empty:
-            pred_meta = {"model": "usersim_core_v5", "min_group": WHY_MIN_GROUP}
+            pred_meta = {"model": "usersim_core_v9", "min_group": WHY_MIN_GROUP}
             mid_why = build_day_why_card(
                 day, "mid", day_df, po_a, comp_map, why_pop_by_key, surfaces_by_id, sso_meta, cua_by_id, {}, pred_meta
             )
@@ -506,7 +528,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--day", default="")
     ap.add_argument("--bucket", default="usersim-bakeoff-347838016394")
-    ap.add_argument("--trace-prefix", default="gs://usersim-trace-store-347838016394/usersim_core_v5")
+    ap.add_argument("--trace-prefix", default="gs://usersim-trace-store-347838016394/usersim_core_v9")
     ap.add_argument("--work-dir", default="")
     ap.add_argument("--data-dir", default="/tmp/usersim_work/data")
     ap.add_argument("--trigger-pool-b-ssh", action="store_true")

@@ -39,10 +39,22 @@ _gcloud_lock = threading.Lock()
 
 def _sa_vertex_token() -> str:
     with _gcloud_lock:
-        if not _gcloud_tok["t"] or time.time() - _gcloud_tok["at"] > 1800:
+        if not _gcloud_tok["t"] or time.time() - _gcloud_tok["at"] > 1500:
+            try:
+                import httpx
+                r = httpx.get(
+                    "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token",
+                    headers={"Metadata-Flavor": "Google"},
+                    timeout=2.0,
+                )
+                if r.status_code == 200:
+                    _gcloud_tok["t"] = r.json()["access_token"]
+                    _gcloud_tok["at"] = time.time()
+                    return _gcloud_tok["t"]
+            except Exception:
+                pass
             env = os.environ.copy()
             env["PATH"] = f"/opt/homebrew/share/google-cloud-sdk/bin:/opt/homebrew/bin:{env.get('PATH', '')}"
-            env.setdefault("CLOUDSDK_CORE_ACCOUNT", "usersim-cloud-agent@project-amer-scs-sandbox.iam.gserviceaccount.com")
             _gcloud_tok["t"] = subprocess.check_output(
                 ["gcloud", "auth", "print-access-token"], text=True, env=env
             ).strip()
