@@ -1,0 +1,1069 @@
+{
+ "day": "2026-11-26",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1330867": {
+   "themes": [
+    {
+     "theme": "Adjust captions to avoid social media UI elements",
+     "n": 1
+    },
+    {
+     "theme": "AI as a creative partner for editing and previewing results",
+     "n": 1
+    },
+    {
+     "theme": "Inquiry about the technology stack",
+     "n": 1
+    },
+    {
+     "theme": "How Auto-Cut handles music beds",
+     "n": 1
+    },
+    {
+     "theme": "Concern about token usage for short video creators",
+     "n": 1
+    },
+    {
+     "theme": "Appreciation for 'cut pauses and tighten to 60 seconds' feature",
+     "n": 1
+    },
+    {
+     "theme": "How the system handles re-cuts and keeps earlier versions",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "UI awareness",
+    "Music continuity during auto-cut",
+    "Handling re-cuts/versioning",
+    "Token usage for short video creators",
+    "Vertical cut and caption placement"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Ability to automatically adjust captions to avoid TikTok and Reels UI elements.",
+      "Appreciation for the idea of using AI (Claude/ChatGPT) as a creative partner for editing, especially with previewing results.",
+      "Inquiry about the technology stack used to build the website.",
+      "Question about how Auto-Cut handles music beds when removing pauses.",
+      "Concern about token usage for short video creators.",
+      "Appreciation for the 'cut pauses and tighten to 60 seconds' feature and AI integration.",
+      "Question about how the system handles re-cuts and keeps earlier versions."
+     ],
+     [
+      "Users want Flurra to account for platform-specific UI elements like TikTok and Reels buttons when making vertical cuts.",
+      "Users appreciate the idea of using AI (Claude/ChatGPT) as a creative partner for editing and the ability to preview results before committing.",
+      "Users are curious about the technical stack used to build the Flurra website.",
+      "Users want to know how Auto-Cut handles music beds when removing pauses and making cuts.",
+      "Users are concerned about token usage for short video creators.",
+      "Users appreciate the ability to automatically cut pauses and tighten videos to a specific duration.",
+      "Users like that Flurra integrates with Claude or ChatGPT instead of requiring learning another editor, and that it remembers user voice and saved ideas.",
+      "Users are curious about how Flurra handles re-cuts and if it keeps earlier versions available."
+     ],
+     [
+      "Users want the ability to make vertical cuts and keep captions clear of social media UI elements.",
+      "Users appreciate the idea of using AI (Claude/ChatGPT) as a creative partner for editing and the ability to preview results before committing.",
+      "Users are curious about the technology stack used to build the website.",
+      "Users want to know how the auto-cut feature handles music beds, specifically if they remain continuous or jump with cuts.",
+      "Users are concerned about token usage for short video creators.",
+      "Users like the ability to automatically cut pauses and tighten videos to a specific duration.",
+      "Users are curious about how the system handles re-cuts and if it retains earlier versions."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does Flurra know where each app's UI sits?",
+      "Does a music bed stay continuous when Auto-Cut removes the pauses, or does it jump at every cut?",
+      "Curious how it handles a re-cut when I change my mind halfway through, does it keep the earlier version around?",
+      "Short video creators are overjoyed, but they don't know about token usage.",
+      "I'd like to be able to make a vertical cut and keep the captions clear of the TikTok and Reels buttons."
+     ],
+     [
+      "Does a music bed stay continuous when Auto-Cut removes the pauses, or does it jump at every cut?",
+      "Does Flurra know where each app's UI sits?",
+      "Curious how it handles a re-cut when I change my mind halfway through, does it keep the earlier version around?",
+      "Short video creators are overjoyed, but they don't know about token usage."
+     ],
+     [
+      "Does Flurra know where each app's UI sits?",
+      "Does a music bed stay continuous when Auto-Cut removes the pauses, or does it jump at every cut?",
+      "Curious how it handles a re-cut when I change my mind halfway through, does it keep the earlier version around?",
+      "Short video creators are overjoyed, but they don't know about token usage.",
+      "I'd like to be able to make a vertical cut and keep the captions clear of the TikTok and Reels buttons."
+     ]
+    ]
+   }
+  },
+  "1326096": {
+   "themes": [
+    {
+     "theme": "Ability to run voice/TTS directly on the watch for phone-free listening",
+     "n": 4
+    },
+    {
+     "theme": "Concern about battery life when continuously listening on the watch",
+     "n": 2
+    },
+    {
+     "theme": "Questions about the technical implementation of TTS (on Watch, iPhone, or cloud)",
+     "n": 2
+    },
+    {
+     "theme": "Concern about potential legal risks or copyright infringement",
+     "n": 1
+    },
+    {
+     "theme": "Questions about smooth functionality with AirPods",
+     "n": 1
+    },
+    {
+     "theme": "Requests for Android support",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the product launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Battery life",
+    "AirPods compatibility",
+    "Android support",
+    "TTS processing location",
+    "Legal/copyright concerns"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to run voice/TTS directly on the watch, allowing phone-free listening, is a significant advantage.",
+      "Users are concerned about battery life when continuously listening on the watch.",
+      "Users are asking about the technical implementation of TTS (on Watch, iPhone, or cloud).",
+      "Users are asking for Android support.",
+      "Users are asking if the app works smoothly with AirPods.",
+      "Users are concerned about potential legal risks or copyright infringement.",
+      "Generic congratulations on the product launch."
+     ],
+     [
+      "Running the voice on the watch itself is a highly appealing feature, enabling phone-free listening.",
+      "Users are asking about the battery life of the watch with continuous listening.",
+      "Users are asking whether the TTS is running on the Watch, iPhone, or cloud.",
+      "There is a concern about potential copyright infringement.",
+      "Users are asking about smooth functionality with AirPods.",
+      "Users are requesting Android support in the future.",
+      "Generic congratulations on the product launch."
+     ],
+     [
+      "Running the voice on the watch itself is a significant advantage for phone-free use.",
+      "Users are asking about the battery life with continuous listening on the watch.",
+      "Users are asking whether the TTS is running on the Watch, iPhone, or cloud.",
+      "There is a concern about potential copyright infringement.",
+      "A user is asking about smooth functionality with AirPods.",
+      "A user is requesting Android support in the future.",
+      "Generic congratulations were offered to the makers."
+     ]
+    ],
+    "complaints": [
+     [
+      "How long does a full charge last with continuous listening?",
+      "Does it work smoothly with AirPods too?",
+      "In the upcoming days would you bring android support as well?",
+      "Are you running the TTS on Watch or iPhone/cloud?",
+      "I wonder if there are any legal risks; I suspect it might infringe on copyright."
+     ],
+     [
+      "How long does a full charge last with continuous listening?",
+      "Does it work smoothly with AirPods too?",
+      "In the upcoming days would you bring android support as well?",
+      "Are you running the TTS on Watch or iPhone/cloud?",
+      "I wonder if there are any legal risks; I suspect it might infringe on copyright."
+     ],
+     [
+      "How long does a full charge last with continuous listening?",
+      "Does it work smoothly with AirPods too?",
+      "In the upcoming days would you bring android support as well?",
+      "Are you running the TTS on Watch or iPhone/cloud?",
+      "I wonder if there are any legal risks; I suspect it might infringe on copyright."
+     ]
+    ]
+   }
+  },
+  "1330892": {
+   "themes": [
+    {
+     "theme": "Privacy and security of personal information/chat data",
+     "n": 1
+    },
+    {
+     "theme": "Ability to add an image for visual inspiration",
+     "n": 1
+    },
+    {
+     "theme": "Chat provides reasons for failed changes",
+     "n": 1
+    },
+    {
+     "theme": "App's lifecycle after creation (e.g., App Store app)",
+     "n": 1
+    },
+    {
+     "theme": "General appreciation/congratulations on launch",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Data privacy and human oversight",
+    "App Store deployment",
+    "Image input for UI/UX",
+    "Error explanation"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are asking about the privacy and security of their personal information and chat data.",
+      "Users are requesting the ability to add an image for visual inspiration in UX/UI creation.",
+      "Users are asking if the chat provides reasons for failed changes.",
+      "Users are curious about the app's lifecycle after initial creation, specifically if it can become a proper App Store app.",
+      "Users are expressing general appreciation for the concept and launch."
+     ],
+     [
+      "Will there be an option to add an image that will serve as visual inspiration to create the UX/UI of the app?",
+      "When a change fails and the app stays as it was, does the chat tell you why it failed?",
+      "How can we ensure that my personal information is not leaked?",
+      "Does any real person at any of the providers or iwantmyapp see or read some of these chats?",
+      "Once it has real users in it, can it become a proper App Store app, or does it always live in the browser or test app?",
+      "The minute-from-chat-to-running-on-a-phone part is impressive.",
+      "Interesting concept.",
+      "Congratulations on the launch!"
+     ],
+     [
+      "Does any real person at any of the providers or iwantmyapp see or read some of these chats?",
+      "Will there be an option to add an image that will serve as visual inspiration to create the UX/UI of the app?",
+      "When a change fails and the app stays as it was, does the chat tell you why it failed?",
+      "How can we ensure that my personal information is not leaked?",
+      "Can it become a proper App Store app, or does it always live in the browser or test app?",
+      "I like the idea.",
+      "Congratulations on the launch! Interesting concept.",
+      "The minute-from-chat-to-running-on-a-phone part is what gets me."
+     ]
+    ],
+    "complaints": [
+     [
+      "How can we ensure that personal information is not leaked?",
+      "Does any real person at any of the providers or iwantmyapp see or read some of these chats?",
+      "Can the app become a proper App Store app, or does it always live in the browser or test app?",
+      "Will there be an option to add an image that will serve as visual inspiration to create the UX/UI of the app?",
+      "When a change fails and the app stays as it was, does the chat tell you why it failed?"
+     ],
+     [
+      "How can we ensure that personal information is not leaked?",
+      "Does any real person at any of the providers or iwantmyapp see or read some of these chats?",
+      "Will there be an option to add an image that will serve as visual inspiration to create the UX/UI of the app?",
+      "When a change fails and the app stays as it was, does the chat tell you why it failed?",
+      "Can it become a proper App Store app, or does it always live in the browser or test app?"
+     ],
+     [
+      "How can we ensure that personal information is not leaked?",
+      "Does any real person at any of the providers or iwantmyapp see or read some of these chats?",
+      "Will there be an option to add an image that will serve as visual inspiration to create the UX/UI of the app?",
+      "When a change fails and the app stays as it was, does the chat tell you why it failed?",
+      "Can it become a proper App Store app, or does it always live in the browser or test app?"
+     ]
+    ]
+   }
+  },
+  "1329325": {
+   "themes": [
+    {
+     "theme": "Pay-as-you-go pricing is too expensive",
+     "n": 1
+    },
+    {
+     "theme": "Differentiating individual AI crawlers vs. combined view",
+     "n": 1
+    },
+    {
+     "theme": "Verifying fix impact on AI assistant responses",
+     "n": 1
+    },
+    {
+     "theme": "Scanning staging sites behind a password",
+     "n": 1
+    },
+    {
+     "theme": "Reports covering subpages, not just homepage",
+     "n": 1
+    },
+    {
+     "theme": "Sandbox for diffing changes before and after a fix",
+     "n": 1
+    },
+    {
+     "theme": "Accessibility for non-technical users to understand and fix issues",
+     "n": 1
+    },
+    {
+     "theme": "Will Bifura help increase AI citations?",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Pay-as-you-go pricing is too expensive compared to subscriptions.",
+    "Unclear if the tool differentiates between individual AI crawlers.",
+    "Unclear how the tool verifies that a fix actually changes what the AI assistant says.",
+    "Unclear if the tool can scan a staging site behind a password.",
+    "Unclear if the tool helps increase AI citations.",
+    "Unclear if the report covers subpages, not just the homepage."
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The pay-as-you-go pricing is too expensive compared to the subscription model.",
+      "Does Bifura show differences between individual AI crawlers or a combined view?",
+      "How does Bifura check that a fix actually changes what the AI assistant says, not just what the crawler fetched?",
+      "Will Bifura help increase AI citations?",
+      "Can Bifura scan a staging site behind a password?",
+      "Does the report cover subpages, not just the homepage?",
+      "Does the sandbox let you diff what the agent extracts before and after a fix?",
+      "Can someone with no tech skills understand and fix the issues reported by Bifura?"
+     ],
+     [
+      "The product helps users understand how AI interprets their website content, which is crucial given the increasing role of AI in how users discover information.",
+      "Users are curious about the specifics of AI crawler differentiation and how the tool verifies the impact of content changes on AI assistant responses.",
+      "Users want to know if the tool can scan staging sites behind a password and if reports cover subpages in addition to the homepage.",
+      "The pricing for the pay-as-you-go option is a concern, with users finding it too expensive compared to subscription plans.",
+      "Users are asking about other potential use cases for Bifura beyond its primary tagline.",
+      "Users want to know if the tool can help increase AI citations and if it provides a way to diff changes before and after a fix.",
+      "Users are asking if someone without technical skills can understand and fix the issues identified by the tool.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The pay-as-you-go pricing is too expensive compared to the subscription model.",
+      "Does Bifura show differences between individual AI crawlers or a combined view?",
+      "How does Bifura check that a fix actually changes what the AI assistant says, not just what the crawler fetched?",
+      "Will Bifura help increase AI citations?",
+      "Can Bifura scan a staging site behind a password?",
+      "Does the report cover subpages, not just the homepage?",
+      "Does the sandbox let you diff what the agent extracts before and after a fix?",
+      "Can someone with no tech skills understand and fix the issues reported by Bifura?"
+     ]
+    ],
+    "complaints": [
+     [
+      "The pay-as-you-go option is too expensive compared to the monthly subscription.",
+      "It is unclear if the tool differentiates between individual AI crawlers or provides a combined view.",
+      "It is unclear how the tool verifies that a fix actually changes what the AI assistant says.",
+      "It is unclear if the tool helps increase AI citations.",
+      "It is unclear if the tool can scan a staging site behind a password.",
+      "It is unclear if the report covers subpages, not just the homepage."
+     ],
+     [
+      "The pricing model for pay-as-you-go is too expensive compared to subscriptions, making it less appealing.",
+      "There is a need to understand if the tool differentiates between various AI crawlers (e.g., GPTBot vs. PerplexityBot vs. ClaudeBot) and how it verifies the impact of fixes on AI assistant responses.",
+      "Users want to know if the tool can scan staging sites behind a password.",
+      "Users are curious about other potential use cases for Bifura beyond its primary tagline.",
+      "There's a question about whether the tool helps increase AI citations, not just impressions.",
+      "Users want to know if the report covers subpages, not just the homepage, and if the sandbox allows diffing before and after fixes."
+     ],
+     [
+      "The pricing model for pay-as-you-go is too expensive compared to subscriptions, making it less appealing.",
+      "There is a need to understand if the tool differentiates between various AI crawlers (e.g., GPTBot vs. PerplexityBot vs. ClaudeBot) and how it verifies the impact of fixes on AI assistant responses.",
+      "Users want to know if the tool can scan staging sites behind a password.",
+      "Users are curious about other potential use cases for Bifura beyond its primary tagline.",
+      "There's a question about whether the tool helps increase AI citations, not just impressions.",
+      "Users want to know if the report covers subpages, not just the homepage, and if the sandbox allows diffing before and after fixes."
+     ]
+    ]
+   }
+  },
+  "1303130": {
+   "themes": [
+    {
+     "theme": "Starting from the .env.example file is a practical and helpful approach for developers.",
+     "n": 4
+    },
+    {
+     "theme": "Users are asking about the teardown process for provisioned environments.",
+     "n": 2
+    },
+    {
+     "theme": "Users are concerned about committing to another CLI tool and long-term adoption.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking about scalability and the ability to refactor services without breaking changes.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking about key rotation handling.",
+     "n": 1
+    },
+    {
+     "theme": "Users want to know if there are guardrails or approval steps before provisioning to prevent unintended resource creation.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking about the availability of Git repos.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking for security comparisons with solutions like Supabase.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Automated resource teardown",
+    "Guardrails/approval for resource provisioning",
+    "Scalability and size limits",
+    "Key rotation and security"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Starting from the .env.example file is a practical and helpful approach for developers.",
+      "Users are asking about the teardown process for provisioned environments.",
+      "Users are concerned about committing to another CLI tool and long-term adoption.",
+      "Users are asking about scalability and the ability to refactor services without breaking changes.",
+      "Users are asking about key rotation handling.",
+      "Users want to know if there are guardrails or approval steps before provisioning to prevent unintended resource creation.",
+      "Users are asking about the availability of Git repos.",
+      "Users are asking for security comparisons with solutions like Supabase."
+     ],
+     [
+      "Starting from the .env.example file is a practical and helpful approach for developers.",
+      "Users are asking about the teardown functionality for provisioned environments.",
+      "Users are concerned about scalability and the ability to migrate parts of their service.",
+      "Users are asking about key rotation handling.",
+      "Users are hesitant to commit to another CLI tool.",
+      "Users are asking about guardrails or approval steps to prevent unintended provisioning by agents.",
+      "Users are asking about the availability of Git repos.",
+      "Users are asking for security comparisons with solutions like Supabase."
+     ],
+     [
+      "Starting from the .env.example file is a practical and helpful approach for developers.",
+      "Users are asking about the teardown functionality for provisioned environments.",
+      "Users are concerned about scalability and the ability to migrate parts of their service.",
+      "Users are asking about key rotation handling.",
+      "Users are hesitant to commit to another CLI tool.",
+      "Users are asking about guardrails or approval steps to prevent unintended provisioning by agents.",
+      "Users are asking about the availability of Git repos.",
+      "Users are asking for security comparisons with solutions like Supabase."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it handle teardown too, say when an agent spins up a preview env and abandons it?",
+      "if an agent provisions the wrong thing, or something bigger than I meant, is there a guardrail or approval step before it spins up, or is that on me to catch in the dashboard after?",
+      "Will this work as my service grows? Or is there some size limit?",
+      "And what if I want to move some part to some other service, can I easily without breaking stuff?",
+      "Do you handle key rotation too or is that still on me when something leaks?",
+      "committing to another CLI feels like a weekend project. wondering if i'll actually stick with it."
+     ],
+     [
+      "Does it handle teardown too, say when an agent spins up a preview env and abandons it?",
+      "If an agent provisions the wrong thing, or something bigger than I meant, is there a guardrail or approval step before it spins up, or is that on me to catch in the dashboard after?",
+      "Will this work as my service grows? Or is there some size limit?",
+      "Do you handle key rotation too or is that still on me when something leaks?",
+      "When are the Git repos due?",
+      "How does it compare in terms of security with solutions like Supabase?"
+     ],
+     [
+      "Does it handle teardown too, say when an agent spins up a preview env and abandons it?",
+      "Will this work as my service grows? Or is there some size limit?",
+      "And what if I want to move some part to some other service, can I easily without breaking stuff?",
+      "Do you handle key rotation too or is that still on me when something leaks?",
+      "If an agent provisions the wrong thing, or something bigger than I meant, is there a guardrail or approval step before it spins up, or is that on me to catch in the dashboard after?",
+      "When are the Git repos due?"
+     ]
+    ]
+   }
+  },
+  "1329592": {
+   "themes": [
+    {
+     "theme": "How does Hub decide which decisions are worth bringing to a human and which the agents settle themselves?",
+     "n": 4
+    },
+    {
+     "theme": "Generic congratulations and positive feedback on the launch.",
+     "n": 10
+    },
+    {
+     "theme": "Can the agents work with other models or specific applications like Figma, Blender, or 3D scene files?",
+     "n": 4
+    },
+    {
+     "theme": "How does Hub handle multiple agents interacting with the same resources, such as files or ports, or sharing a single hub?",
+     "n": 4
+    },
+    {
+     "theme": "What are the implications of self-hosting, such as maintenance, running on a VPS, or continued operation when the laptop is closed?",
+     "n": 4
+    },
+    {
+     "theme": "How does Hub manage costs, specifically regarding using different models for different agents?",
+     "n": 1
+    },
+    {
+     "theme": "What are the security and control mechanisms, such as sandboxing, dry run mode, or rolling back after a bad run?",
+     "n": 3
+    },
+    {
+     "theme": "What are the practical use cases and typical workflows for Hub, and how does it scale?",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Human-agent decision handoff",
+    "Support for other AI models",
+    "Self-hosting implications",
+    "Agent integration with design tools (e.g., Figma)",
+    "Agent capability with 3D files",
+    "Tiered model usage for agents"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "How does Hub decide which decisions are worth bringing to a human and which the agents settle themselves?",
+      "Generic congratulations and positive feedback on the launch.",
+      "Can the agents work with other models or specific applications like Figma, Blender, or 3D scene files?",
+      "How does Hub handle multiple agents interacting with the same resources, such as files or ports, or sharing a single hub?",
+      "What are the implications of self-hosting, such as maintenance, running on a VPS, or continued operation when the laptop is closed?",
+      "How does Hub manage costs, specifically regarding using different models for different agents?",
+      "What are the security and control mechanisms, such as sandboxing, dry run mode, or rolling back after a bad run?",
+      "What are the practical use cases and typical workflows for Hub, and how does it scale?"
+     ],
+     [
+      "How does Hub decide which decisions are worth bringing to a human and which the agents settle themselves?",
+      "Generic congratulations and positive feedback on the launch.",
+      "Can the agents work with other models or specific applications like Figma, Blender, or 3D scene files?",
+      "How does Hub handle multiple agents interacting with the same resources, such as files or ports, or sharing a single hub?",
+      "What are the implications of self-hosting, such as maintenance, running on a VPS, or continued operation when the laptop is closed?",
+      "How does Hub manage costs, specifically regarding using different models for different agents?",
+      "What are the security and control mechanisms, such as sandboxing, dry run mode, or rolling back after a bad run?",
+      "What are the practical use cases and typical workflows for Hub, and how does it scale?"
+     ],
+     [
+      "Users appreciate the concept of managing multiple AI agents in one place and having decisions surfaced in a single view.",
+      "Users are asking about the decision-making process of the Hub, specifically how it balances agent autonomy with human intervention.",
+      "Users have questions about the technical aspects of running the agents, such as resource usage, parallel execution, and conflict resolution.",
+      "Users are interested in the ability to integrate with other tools and models, such as Figma, Blender, and different AI models.",
+      "Users are asking about the self-hosted nature of the product, including installation, maintenance, and security.",
+      "Users are curious about the practical applications and typical usage scenarios of the product.",
+      "Users express concerns about the cost of running multiple agents on large models and the potential for agents to make confident but incorrect decisions.",
+      "Users are asking about the business model and future pricing of the product."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does Hub decide which decisions are worth bringing to a human and which the agents settle themselves?",
+      "Is it Claude only, or can other models run inside it too?",
+      "Self-hosted means I'm the one who fixes it when it breaks right?",
+      "Can the agents work with Figma, like take a frame and build it as a page?",
+      "Can the agents open a 3D scene file, or is it code only?",
+      "Is it possible to give the simple ones a cheaper model and leave the big one for the main agent?"
+     ],
+     [
+      "How does Hub decide which decisions are worth bringing to a human and which the agents settle themselves?",
+      "Is it Claude only, or can other models run inside it too?",
+      "Self-hosted means I'm the one who fixes it when it breaks right?",
+      "Can the agents work with Figma, like take a frame and build it as a page?",
+      "Can the agents open a 3D scene file, or is it code only?",
+      "Is it possible to give the simple ones a cheaper model and leave the big one for the main agent?"
+     ],
+     [
+      "How does Hub decide which decisions are worth bringing to a human and which the agents settle themselves?",
+      "Can the agents work with Figma, like take a frame and build it as a page?",
+      "Self-hosted means I'm the one who fixes it when it breaks right?",
+      "When two agents need to touch the same file, does the coordinator queue them or ask you?",
+      "Is it possible to give the simple ones a cheaper model and leave the big one for the main agent?",
+      "Can two people on a team share one hub, or does everyone need their own install?"
+     ]
+    ]
+   }
+  },
+  "1331268": {
+   "themes": [
+    {
+     "theme": "The ctrl+shift+space shortcut and its panel are neat.",
+     "n": 2
+    },
+    {
+     "theme": "Users are asking about the behavior of Doodle when declining suggestions or after accepting a plugin.",
+     "n": 2
+    },
+    {
+     "theme": "Generic congratulations and well wishes for the launch.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking if the shortcut can be customized.",
+     "n": 1
+    },
+    {
+     "theme": "The dictation feature is seen as potentially helpful for audio issues in meetings.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "What happens if I decline a suggestion?",
+    "Does a plugin run immediately after approval?",
+    "Can I customize the shortcut?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ctrl+shift+space shortcut and its panel are neat.",
+      "Users are asking about the behavior of Doodle when declining suggestions.",
+      "Users are asking about the immediate execution of plugins after approval.",
+      "Users are asking if the shortcut can be customized.",
+      "The dictation feature is seen as potentially helpful for audio issues in meetings.",
+      "Generic congratulations and well wishes for the launch."
+     ],
+     [
+      "The ctrl+shift+space shortcut for opening a small panel is neat and could help with shortcut adoption.",
+      "What happens if a user declines a build offer from Doodle?",
+      "Generic congratulations and well wishes for the launch.",
+      "Does a plugin run immediately after a user accepts it?",
+      "Can the Ctrl+Shift+Space shortcut be customized?",
+      "The dictation feature through any app could be very useful for meeting audio issues."
+     ],
+     [
+      "Users appreciate the convenience of the ctrl+shift+space shortcut and its potential to improve workflow.",
+      "Users are asking about the behavior of Doodle when they decline a suggestion or after accepting a plugin.",
+      "Users are offering general congratulations and well wishes for the product launch.",
+      "Users are asking if the default shortcut can be customized.",
+      "Users find the dictation feature useful for improving audio in meetings."
+     ]
+    ],
+    "complaints": [
+     [
+      "what happens when it offers to build something and i say no, does it keep asking later",
+      "after i say yes to a plugin, does it run right away?",
+      "Can I change the shortcut from Ctrl+Shift+Space?"
+     ],
+     [
+      "what happens when it offers to build something and i say no, does it keep asking later",
+      "after i say yes to a plugin, does it run right away?",
+      "Can I change the shortcut from Ctrl+Shift+Space?"
+     ],
+     [
+      "what happens when it offers to build something and i say no, does it keep asking later",
+      "after i say yes to a plugin, does it run right away?",
+      "Can I change the shortcut from Ctrl+Shift+Space?"
+     ]
+    ]
+   }
+  },
+  "1329841": {
+   "themes": [
+    {
+     "theme": "Consent-first approach to voice cloning",
+     "n": 3
+    },
+    {
+     "theme": "Hearing a loved one's voice in messages",
+     "n": 2
+    },
+    {
+     "theme": "Language limitations",
+     "n": 1
+    },
+    {
+     "theme": "On-device vs. server-side voice cloning",
+     "n": 1
+    },
+    {
+     "theme": "Specific app integrations (e.g., Signal)",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Is the cloned voice made on the phone, or does the recording go to a server somewhere?",
+    "Are there limits to languages?",
+    "Is Signal one of the 16 apps?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the consent-first approach to voice cloning.",
+      "The idea of hearing a loved one's voice in messages is well-received.",
+      "Users are asking about language limitations.",
+      "Users are asking if the voice cloning process happens on-device or on a server.",
+      "Users are asking about specific app integrations, such as Signal."
+     ],
+     [
+      "Users appreciate the consent-first approach and the emotional impact of hearing a loved one's voice.",
+      "Users are asking about language limitations.",
+      "Users are asking if voice cloning happens on-device or on a server.",
+      "Users are asking about specific app integrations, like Signal."
+     ],
+     [
+      "Users appreciate the consent-first approach to voice cloning.",
+      "The idea of hearing a loved one's voice in messages is well-received.",
+      "Users are asking about language limitations.",
+      "Users are asking if the voice cloning process happens on-device or on a server.",
+      "Users are asking about specific app integrations, such as Signal."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is the cloned voice made on the phone, or does the recording go to a server somewhere?",
+      "Are there limits to languages?",
+      "Is Signal one of the 16 apps?"
+     ],
+     [
+      "Are there limits to languages?",
+      "Is the cloned voice made on the phone, or does the recording go to a server somewhere?",
+      "Is Signal one of the 16 apps?"
+     ],
+     [
+      "Are there limits to languages?",
+      "Is the cloned voice made on the phone, or does the recording go to a server somewhere?",
+      "Is Signal one of the 16 apps?"
+     ]
+    ]
+   }
+  },
+  "1331434": {
+   "themes": [
+    {
+     "theme": "The plugin-everything architecture, especially the swappable coding agent and the --agent flag, is a clean and appealing feature.",
+     "n": 2
+    },
+    {
+     "theme": "The ability to run the same agent in the terminal and in a service is a nice detail for testing changes.",
+     "n": 1
+    },
+    {
+     "theme": "Is there a plugin registry, or are plugins shared as plain Python packages?",
+     "n": 1
+    },
+    {
+     "theme": "The ability to make the coding piece swappable opens it up to non-coding agents.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking about timing for AGENTS.md support on Windows.",
+     "n": 1
+    },
+    {
+     "theme": "The model-agnostic nature and easy 'uvx command' make it simple to try out.",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on going live.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Plugin registry/sharing",
+    "AGENTS.md support"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The plugin-everything architecture, especially the swappable coding agent and the --agent flag, is a clean and appealing feature.",
+      "The ability to run the same agent in the terminal and in a service is a nice detail for testing changes.",
+      "Is there a plugin registry, or are plugins shared as plain Python packages?",
+      "The ability to make the coding piece swappable opens it up to non-coding agents.",
+      "Users are asking about timing for AGENTS.md support on Windows.",
+      "The model-agnostic nature and easy 'uvx command' make it simple to try out.",
+      "Generic congratulations on going live."
+     ],
+     [
+      "The plugin-everything architecture, especially the swappable coding agent and the --agent flag, is a clean and appealing feature.",
+      "The ability to run the same agent in the terminal and in a service is a nice detail for testing changes.",
+      "Is there a plugin registry, or are plugins shared as plain Python packages?",
+      "The ability to make the coding piece swappable opens it up to non-coding agents.",
+      "Users are asking about timing for AGENTS.md support on Windows.",
+      "The model-agnostic nature and easy 'uvx command' make it simple to try out.",
+      "Generic congratulations on going live."
+     ],
+     [
+      "The plugin-everything architecture, especially the swappable coding agent and the --agent flag, is a clean and appealing feature.",
+      "The ability to run the same agent in the terminal and in a service is a nice detail for testing changes.",
+      "Is there a plugin registry, or are plugins shared as plain Python packages?",
+      "The ability to make the coding piece swappable opens it up to non-coding agents.",
+      "Users are asking about timing for AGENTS.md support on Windows.",
+      "The model-agnostic nature and easy 'uvx command' make it simple to try out.",
+      "Generic congratulations on going live."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is there a plugin registry yet, or are people sharing plugins as plain Python packages for now?",
+      "Any timing on AGENTS.md support there?"
+     ],
+     [
+      "Is there a plugin registry yet, or are people sharing plugins as plain Python packages for now?",
+      "Any timing on AGENTS.md support there?"
+     ],
+     [
+      "Is there a plugin registry yet, or are people sharing plugins as plain Python packages for now?",
+      "Any timing on AGENTS.md support there?"
+     ]
+    ]
+   }
+  },
+  "1331389": {
+   "themes": [
+    {
+     "theme": "Opening a printed path at the exact line is a useful detail.",
+     "n": 2
+    },
+    {
+     "theme": "Shells surviving app restarts is a genuinely useful feature.",
+     "n": 1
+    },
+    {
+     "theme": "Tab icons showing which agent is working or needs attention is a smart touch.",
+     "n": 1
+    },
+    {
+     "theme": "A native Mac window for terminal agents is a desired feature.",
+     "n": 1
+    },
+    {
+     "theme": "The amount of Swift code (25k lines) is impressive.",
+     "n": 1
+    },
+    {
+     "theme": "Does a workstream take a user's own spec file as its rules?",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations on the launch.",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Does a workstream take my own spec file as its rules?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Opening a printed path at the exact line is a useful detail.",
+      "Shells surviving app restarts is a genuinely useful feature.",
+      "Tab icons showing which agent is working or needs attention is a smart touch.",
+      "A native Mac window for terminal agents is a desired feature.",
+      "The amount of Swift code (25k lines) is impressive.",
+      "Does a workstream take a user's own spec file as its rules?",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The ability to open a printed path at the exact line is a highly appreciated detail.",
+      "Generic congratulations on the launch.",
+      "Tab icons indicating agent status are a smart touch.",
+      "A native Mac window for terminal agents is a desired feature.",
+      "The use of Swift for development is seen as a positive.",
+      "Shells surviving app restarts is a genuinely useful feature.",
+      "Users are asking if a workstream can take their own spec file as its rules."
+     ],
+     [
+      "Opening a printed path at the exact line is a useful detail.",
+      "Shells surviving app restarts is a genuinely useful feature.",
+      "Tab icons showing which agent is working or needs attention is a smart touch.",
+      "A native Mac window for terminal agents is a desired feature.",
+      "The amount of Swift code (25k lines) is impressive.",
+      "Does a workstream take a user's own spec file as its rules?",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "does a workstream take my own spec file as its rules?"
+     ],
+     [
+      "does a workstream take my own spec file as its rules?"
+     ],
+     [
+      "does a workstream take my own spec file as its rules?"
+     ]
+    ]
+   }
+  },
+  "1331053": {
+   "themes": [
+    {
+     "theme": "Ability to generate synthetic test data with zero orphan keys",
+     "n": 4
+    },
+    {
+     "theme": "Concerns about handling complex relationships across multiple tables",
+     "n": 1
+    },
+    {
+     "theme": "Ability to mirror schema from a Postgres connection",
+     "n": 1
+    },
+    {
+     "theme": "Orphan-key example clarifies use case and value of reliable joins",
+     "n": 1
+    },
+    {
+     "theme": "Effectiveness of synthetic data in fine-tuning text-to-SQL models",
+     "n": 1
+    },
+    {
+     "theme": "Curiosity about synthetic data performance on messier distributions",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Schema mirroring from Postgres",
+    "Handling complex relationships across multiple tables",
+    "Performance with messy data distributions"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to generate synthetic test data with zero orphan keys is impressive and addresses a common problem.",
+      "Concerns about how the system handles more complex relationships when generating data across multiple tables.",
+      "Can the system mirror the schema straight from a Postgres connection?",
+      "The orphan-key example makes the use case clear and highlights the value of reliable joins in test data.",
+      "The synthetic data's effectiveness in fine-tuning a 1.5B model for text-to-SQL tasks is a strong indicator of its quality.",
+      "Curiosity about how the synthetic data holds up on messier distributions."
+     ],
+     [
+      "The ability to generate data with zero orphan keys is impressive and addresses a common problem with synthetic test data.",
+      "The orphan-key example makes the use case click and highlights the value of reliable joins in test data.",
+      "Can the tool mirror the schema straight from a Postgres connection?",
+      "How does Ground handle more complex relationships when generating data across multiple tables?",
+      "The synthetic data's performance in fine-tuning a text-to-SQL model suggests it's effective for teaching, not just filling tables.",
+      "How does the synthetic data hold up on messier distributions?"
+     ],
+     [
+      "The ability to generate synthetic test data with zero orphan keys is impressive and addresses a common problem.",
+      "Concerns about how the system handles more complex relationships when generating data across multiple tables.",
+      "Can the system mirror the schema straight from a Postgres connection?",
+      "The orphan-key example makes the use case clear and highlights the value of reliable joins in test data.",
+      "The synthetic data's effectiveness in fine-tuning a 1.5B model for text-to-SQL tasks is a strong indicator of its quality.",
+      "Curiosity about how the synthetic data holds up on messier distributions."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can it mirror the schema straight from a Postgres connection?",
+      "How does ground handle more complex relationships when generating data across multiple tables?",
+      "Curious how it holds up on messier distributions."
+     ],
+     [
+      "Can it mirror the schema straight from a Postgres connection?",
+      "How does ground handle more complex relationships when generating data across multiple tables?",
+      "Curious how it holds up on messier distributions."
+     ],
+     [
+      "Can it mirror the schema straight from a Postgres connection?",
+      "How does ground handle more complex relationships when generating data across multiple tables?",
+      "Curious how it holds up on messier distributions."
+     ]
+    ]
+   }
+  },
+  "1329270": {
+   "themes": [
+    {
+     "theme": "Product fills a crucial gap after coding agents indicate completion, addressing remaining bugs.",
+     "n": 4
+    },
+    {
+     "theme": "Elimination of E2E script maintenance overhead.",
+     "n": 2
+    },
+    {
+     "theme": "How the QA agent handles flows behind login, specifically regarding credentials.",
+     "n": 1
+    },
+    {
+     "theme": "Do agents automatically adjust tests when UI changes, or are manual fixes required?",
+     "n": 1
+    },
+    {
+     "theme": "Clarification on the difference between QA.tech and normal CLI models with similar functions.",
+     "n": 1
+    },
+    {
+     "theme": "How the product handles testing on a local development server versus a deployed preview URL.",
+     "n": 1
+    },
+    {
+     "theme": "Concern about preventing the agent from fixing the test instead of the actual bug.",
+     "n": 1
+    },
+    {
+     "theme": "Cleanup process for test data generated by the agent interacting with real backend systems.",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "How does the QA agent handle credentials for flows behind login?",
+    "When the UI changes, do the agents adjust the tests on their own, or do you still have to go in and fix things?",
+    "How does it handle a local dev server versus a deployed preview URL?",
+    "How do you stop the agent fixing the test instead of the bug?",
+    "If the agent explores on its own and signs up or checks out, who cleans that up?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate that the product fills a crucial gap in the development workflow, especially after a coding agent indicates completion.",
+      "Users value the elimination of E2E script maintenance overhead.",
+      "Users are curious about how the QA agent handles flows behind login, specifically regarding credentials.",
+      "Users want to know if the agents automatically adjust tests when the UI changes or if manual fixes are still required.",
+      "Users are asking for clarification on the difference between QA.tech and normal CLI models that perform similar functions via skills.",
+      "Users are interested in how the product handles testing on a local development server versus a deployed preview URL.",
+      "Users are concerned about how to prevent the agent from fixing the test instead of the actual bug.",
+      "Users are asking about the cleanup process for test data generated by the agent interacting with real backend systems."
+     ],
+     [
+      "Users appreciate that the product addresses the problem of coding agents saying 'done' but the app still having bugs, requiring manual testing.",
+      "Users value the ability to test preview URLs per change, as it makes the process practical and avoids slow full re-runs.",
+      "Users are positive about the product eliminating the pain and overhead of maintaining E2E scripts.",
+      "Users are asking how the QA agent handles flows behind login, specifically regarding credentials.",
+      "Users are asking if the agents adjust tests automatically when the UI changes, or if manual fixes are still required.",
+      "Users are asking for clarification on the difference between QA.tech and normal CLI models that perform similar functions via skills.",
+      "Users are curious about how the product handles testing on a local dev server versus a deployed preview URL.",
+      "Users are concerned about how to prevent the agent from fixing the test instead of the actual bug."
+     ],
+     [
+      "Users appreciate that the product addresses the problem of coding agents saying 'done' but the app still having bugs, requiring manual testing.",
+      "Users value the elimination of E2E script maintenance overhead.",
+      "Users are asking about how the QA agent handles flows behind login, specifically regarding credentials.",
+      "Users are asking if the agents adjust tests automatically when the UI changes or if manual fixes are still required.",
+      "Users are asking for clarification on the difference between QA.tech and normal CLI models that perform similar functions via skills.",
+      "Users are curious about how the product handles testing on a local dev server versus a deployed preview URL.",
+      "Users are asking how to prevent the agent from fixing the test instead of the actual bug.",
+      "Users are concerned about data cleanup when the agent explores and creates data in the real dev backend."
+     ]
+    ],
+    "complaints": [
+     [
+      "For flows behind login, how does the QA agent handle credentials?",
+      "When the UI changes, do the agents adjust the tests on their own, or do you still have to go in and fix things?",
+      "Aren't the CLI models doing these same things via skills?",
+      "How does it handle a local dev server versus a deployed preview URL?",
+      "How do you stop the agent fixing the test instead of the bug?",
+      "If the agent explores on its own and signs up or checks out, who cleans that up?"
+     ],
+     [
+      "For flows behind login, how does the QA agent handle credentials?",
+      "When the UI changes, do the agents adjust the tests on their own, or do you still have to go in and fix things?",
+      "Aren't the CLI models doing these same things via skills?",
+      "How does it handle a local dev server versus a deployed preview URL?",
+      "How do you stop the agent fixing the test instead of the bug?",
+      "If the agent explores on its own and signs up or checks out, who cleans that up?"
+     ],
+     [
+      "How does the QA agent handle credentials for flows behind login?",
+      "When the UI changes, do the agents adjust the tests on their own, or do you still have to go in and fix things?",
+      "How does it handle a local dev server versus a deployed preview URL?",
+      "How do you stop the agent fixing the test instead of the bug?",
+      "If the agent explores on its own and signs up or checks out, who cleans that up?",
+      "Do teams usually trigger it per change, or batch a few edits first?"
+     ]
+    ]
+   }
+  }
+ }
+}
