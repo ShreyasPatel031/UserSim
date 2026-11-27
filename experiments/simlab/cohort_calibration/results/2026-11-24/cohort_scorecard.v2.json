@@ -1,0 +1,236 @@
+{
+ "scorecard": "cohort",
+ "day": "2026-11-24",
+ "version": "v2",
+ "written_at": "2026-11-27",
+ "WHO": {
+  "status": "Nov 24 not scorable yet (1 held person re-read after close)",
+  "published line": "base mix (P3 is the shadow)",
+  "pooled Nov 17-23 (>= 20 held re-read backers)": {
+   "launches": 75,
+   "JSD base (published)": [
+    0.25,
+    0.238,
+    0.262,
+    75,
+    7
+   ],
+   "JSD P3 (shadow)": [
+    0.279,
+    0.267,
+    0.291,
+    75,
+    7
+   ],
+   "P3 minus base": [
+    0.03,
+    0.022,
+    0.034,
+    75,
+    7
+   ]
+  },
+  "coverage": {
+   "2026-11-17": {
+    "observed_held_people": 2377,
+    "held_backer_rows": 1284,
+    "cut": "2026-11-17"
+   },
+   "2026-11-18": {
+    "observed_held_people": 2336,
+    "held_backer_rows": 1151,
+    "cut": "2026-11-18"
+   },
+   "2026-11-19": {
+    "observed_held_people": 2323,
+    "held_backer_rows": 1155,
+    "cut": "2026-11-19"
+   },
+   "2026-11-20": {
+    "observed_held_people": 2295,
+    "held_backer_rows": 958,
+    "cut": "2026-11-20"
+   },
+   "2026-11-21": {
+    "observed_held_people": 1989,
+    "held_backer_rows": 621,
+    "cut": "2026-11-21"
+   },
+   "2026-11-22": {
+    "observed_held_people": 975,
+    "held_backer_rows": 601,
+    "cut": "2026-11-22"
+   },
+   "2026-11-23": {
+    "observed_held_people": 205,
+    "held_backer_rows": 153,
+    "cut": "2026-11-23"
+   },
+   "2026-11-24": {
+    "observed_held_people": 1,
+    "held_backer_rows": 0,
+    "cut": "2026-11-24"
+   }
+  },
+  "per_day": [
+   {
+    "day": "2026-11-17",
+    "launches": 12,
+    "backers": 936,
+    "jsd_base": 0.244,
+    "jsd_p3": 0.283
+   },
+   {
+    "day": "2026-11-18",
+    "launches": 13,
+    "backers": 791,
+    "jsd_base": 0.233,
+    "jsd_p3": 0.263
+   },
+   {
+    "day": "2026-11-19",
+    "launches": 17,
+    "backers": 945,
+    "jsd_base": 0.264,
+    "jsd_p3": 0.298
+   },
+   {
+    "day": "2026-11-20",
+    "launches": 11,
+    "backers": 560,
+    "jsd_base": 0.269,
+    "jsd_p3": 0.296
+   },
+   {
+    "day": "2026-11-21",
+    "launches": 11,
+    "backers": 496,
+    "jsd_base": 0.238,
+    "jsd_p3": 0.265
+   },
+   {
+    "day": "2026-11-22",
+    "launches": 9,
+    "backers": 426,
+    "jsd_base": 0.232,
+    "jsd_p3": 0.264
+   },
+   {
+    "day": "2026-11-23",
+    "launches": 2,
+    "backers": 62,
+    "jsd_base": 0.316,
+    "jsd_p3": 0.267
+   }
+  ]
+ },
+ "WHAT": {
+  "note": "Nov 24 is the person-panel rehearsal day (late, unscored): the main line is persona-only",
+  "themes (frozen consensus truth, 3 judge runs)": {
+   "launches": 11,
+   "panel recall": [
+    70.1,
+    63.5,
+    78.1
+   ],
+   "panel recall_w (beside)": [
+    79.1,
+    72.9,
+    85.5
+   ],
+   "panel precision": [
+    58.9,
+    42.7,
+    75.7
+   ],
+   "panel complaint recall": [
+    14.4,
+    0.0,
+    34.8
+   ],
+   "plain recall": [
+    60.2,
+    51.5,
+    68.1
+   ],
+   "plain precision": [
+    28.4,
+    17.1,
+    41.5
+   ],
+   "plain complaint recall": [
+    4.7,
+    0.0,
+    11.4
+   ],
+   "judge spread": {
+    "recall": 1.1,
+    "recall_w": 0.6,
+    "precision": 12.2,
+    "complaint_recall": 0.0,
+    "plain_recall": 5.2,
+    "plain_recall_w": 5.3,
+    "plain_precision": 5.4,
+    "plain_complaint_recall": 3.3
+   }
+  },
+  "sentiment (reactions only)": {
+   "day": "2026-11-24",
+   "launches": 14,
+   "base mix (earlier real labels)": [
+    0.522,
+    0.409,
+    0.069
+   ],
+   "jsd reactions": 0.302,
+   "jsd base (published line)": 0.214,
+   "reactions minus base [mean, launch-boot 95%]": [
+    0.088,
+    -0.016,
+    0.196
+   ],
+   "agree reactions / base": [
+    0.429,
+    0.643
+   ],
+   "pos share reactions / real": [
+    0.464,
+    0.554
+   ],
+   "sources not scorable today": {
+    "(a) ~20 P3-persona reactions": "not generated in the nightly yet",
+    "(b) plugin in-product feedback": "plugin_runs/2026-11-21_personas.json holds outcomes only (gave_up/blocked/...), no feedback text"
+   },
+   "usd": 0.0073
+  }
+ },
+ "agents (SIM-RERANK Stage B v1, late run frozen 05:28 PT, not on time)": {
+  "comments vs real comment themes (same judge)": {
+   "launches": 10,
+   "recall": [
+    20.5,
+    10.7,
+    30.4,
+    10
+   ],
+   "precision": [
+    55.7,
+    27.9,
+    81.4,
+    10
+   ],
+   "complaint_recall": [
+    0.0,
+    0.0,
+    0.0,
+    10
+   ]
+  },
+  "backers vs held re-read backers": "pending: Nov 24 re-reads not landed (1 held person)"
+ },
+ "scored live days for the 7-day revert rule": {
+  "WHAT merged vs persona-only shadow": 0,
+  "note": "Nov 25 is the first live day with the person-built panel + launch-page block on time"
+ },
+ "v2_change": "sentiment filled (results/calibration/<day>/truth.json landed by Nov 27 11:30Z); everything else as v1"
+}

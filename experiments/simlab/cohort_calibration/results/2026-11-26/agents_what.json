@@ -1,0 +1,252 @@
+{
+ "day": "2026-11-26",
+ "judge": "forward_says.judge vs frozen consensus truth",
+ "summary": {
+  "v1": {
+   "launches": 9,
+   "recall": [
+    20.0,
+    12.0,
+    29.0,
+    9
+   ],
+   "precision": [
+    49.2,
+    19.8,
+    79.4,
+    9
+   ],
+   "complaint_recall": [
+    2.8,
+    0.0,
+    8.3,
+    9
+   ]
+  },
+  "v2pick (comment attributed to the person's first pick)": {
+   "launches": 9,
+   "recall": [
+    22.4,
+    14.2,
+    31.2,
+    9
+   ],
+   "precision": [
+    48.6,
+    26.4,
+    71.6,
+    9
+   ],
+   "complaint_recall": [
+    3.7,
+    0.0,
+    11.1,
+    9
+   ]
+  }
+ },
+ "rows": {
+  "v1": [
+   {
+    "launch_id": "1303130",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.125,
+    "recall_w": 0.3333333333333333,
+    "precision": 0.07142857142857142,
+    "n_themes": 8,
+    "complaint_recall": 0.25,
+    "n_complaints": 4
+   },
+   {
+    "launch_id": "1329270",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.125,
+    "recall_w": 0.3333333333333333,
+    "precision": 0.21428571428571427,
+    "n_themes": 8,
+    "complaint_recall": 0.0,
+    "n_complaints": 5
+   },
+   {
+    "launch_id": "1329325",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.125,
+    "recall_w": 0.125,
+    "precision": 0.07142857142857142,
+    "n_themes": 8,
+    "complaint_recall": 0.0,
+    "n_complaints": 6
+   },
+   {
+    "launch_id": "1329592",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.0,
+    "recall_w": 0.0,
+    "precision": 0.0,
+    "n_themes": 8,
+    "complaint_recall": 0.0,
+    "n_complaints": 6
+   },
+   {
+    "launch_id": "1329841",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.2,
+    "recall_w": 0.25,
+    "precision": 1.0,
+    "n_themes": 5,
+    "complaint_recall": 0.0,
+    "n_complaints": 3
+   },
+   {
+    "launch_id": "1330892",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.2,
+    "recall_w": 0.2,
+    "precision": 1.0,
+    "n_themes": 5,
+    "complaint_recall": 0.0,
+    "n_complaints": 4
+   },
+   {
+    "launch_id": "1331053",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.16666666666666666,
+    "recall_w": 0.1111111111111111,
+    "precision": 0.07142857142857142,
+    "n_themes": 6,
+    "complaint_recall": 0.0,
+    "n_complaints": 3
+   },
+   {
+    "launch_id": "1331389",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.42857142857142855,
+    "recall_w": 0.4444444444444444,
+    "precision": 1.0,
+    "n_themes": 7,
+    "complaint_recall": 0.0,
+    "n_complaints": 1
+   },
+   {
+    "launch_id": "1331434",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.42857142857142855,
+    "recall_w": 0.5,
+    "precision": 1.0,
+    "n_themes": 7,
+    "complaint_recall": 0.0,
+    "n_complaints": 2
+   }
+  ],
+  "v2": [
+   {
+    "launch_id": "1303130",
+    "n_cand": 8,
+    "scored": true,
+    "recall": 0.0,
+    "recall_w": 0.0,
+    "precision": 0.0,
+    "n_themes": 8,
+    "complaint_recall": 0.0,
+    "n_complaints": 4
+   },
+   {
+    "launch_id": "1329270",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.25,
+    "recall_w": 0.4166666666666667,
+    "precision": 0.5714285714285714,
+    "n_themes": 8,
+    "complaint_recall": 0.0,
+    "n_complaints": 5
+   },
+   {
+    "launch_id": "1329325",
+    "n_cand": 3,
+    "scored": true,
+    "recall": 0.125,
+    "recall_w": 0.125,
+    "precision": 0.3333333333333333,
+    "n_themes": 8,
+    "complaint_recall": 0.0,
+    "n_complaints": 6
+   },
+   {
+    "launch_id": "1329592",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.5,
+    "recall_w": 0.5,
+    "precision": 1.0,
+    "n_themes": 8,
+    "complaint_recall": 0.0,
+    "n_complaints": 6
+   },
+   {
+    "launch_id": "1329841",
+    "n_cand": 5,
+    "scored": true,
+    "recall": 0.2,
+    "recall_w": 0.25,
+    "precision": 0.4,
+    "n_themes": 5,
+    "complaint_recall": 0.3333333333333333,
+    "n_complaints": 3
+   },
+   {
+    "launch_id": "1330892",
+    "n_cand": 5,
+    "scored": true,
+    "recall": 0.2,
+    "recall_w": 0.2,
+    "precision": 0.0,
+    "n_themes": 5,
+    "complaint_recall": 0.0,
+    "n_complaints": 4
+   },
+   {
+    "launch_id": "1331053",
+    "n_cand": 1,
+    "scored": true,
+    "recall": 0.16666666666666666,
+    "recall_w": 0.1111111111111111,
+    "precision": 1.0,
+    "n_themes": 6,
+    "complaint_recall": 0.0,
+    "n_complaints": 3
+   },
+   {
+    "launch_id": "1331389",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.2857142857142857,
+    "recall_w": 0.2222222222222222,
+    "precision": 0.5714285714285714,
+    "n_themes": 7,
+    "complaint_recall": 0.0,
+    "n_complaints": 1
+   },
+   {
+    "launch_id": "1331434",
+    "n_cand": 14,
+    "scored": true,
+    "recall": 0.2857142857142857,
+    "recall_w": 0.375,
+    "precision": 0.5,
+    "n_themes": 7,
+    "complaint_recall": 0.0,
+    "n_complaints": 2
+   }
+  ]
+ }
+}
