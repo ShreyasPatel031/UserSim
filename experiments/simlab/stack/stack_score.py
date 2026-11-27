@@ -21,7 +21,7 @@ W = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_du
 U["lday"] = U.target_id.map(dict(zip(W.id, W.day.astype(str).str[:10])))
 rows, days = [], []
 for D in [str(d)[:10] for d in pd.date_range(FIRST, LAST)]:
-    S, V = gp(f"{B}/tmp/e5/private/backer_pred_stack/{D}.parquet"), gp(f"{B}/tmp/e5/private/backer_pred_v2/{D}.parquet")
+    S, V = gp(f"{B}/tmp/e5/private/{os.environ.get('STACK_LISTS', 'backer_pred_stack')}/{D}.parquet"), gp(f"{B}/tmp/e5/private/backer_pred_v2/{D}.parquet")
     if S is None or V is None: days.append({"day": D, "status": "missing list"}); continue
     close = PP.close_utc(D); reread = set(last_read[last_read > close].index) & held
     frozen = set(first_read[first_read < close - pd.Timedelta(days=1)].index) & held
@@ -32,7 +32,7 @@ for D in [str(d)[:10] for d in pd.date_range(FIRST, LAST)]:
         if n == 0: continue
         hit = {}
         for name, F in (("stack", S), ("backer_v2", V)):
-            g = F[(F.launch_id.astype(str) == lid) & F.person_id.astype(str).isin(reread)].sort_values("rank")
+            g = F[(F.launch_id.astype(str) == lid) & F.person_id.astype(str).isin(reread & frozen)].sort_values("rank")   # PREREG 15a: held at freeze
             hit[name] = len(set(g.person_id.astype(str).iloc[:n]) & o)
         rows.append({"day": D, "launch_id": lid, "n": n, **hit}); n_day += 1
     days.append({"day": D, "status": "scored" if n_day else "no observed held backers yet", "launches": n_day, "held_reread_after_close": len(reread)})
@@ -45,5 +45,6 @@ if len(R):
                stack_minus_backer_v2=[round(pooled(R, "stack") - pooled(R, "backer_v2"), 1), round(float(np.percentile(bs, 2.5)), 1), round(float(np.percentile(bs, 97.5)), 1)],
                rule5={"scored_live_days": int(R.day.nunique()), "revert": bool(R.day.nunique() >= 7 and np.percentile(bs, 97.5) < 0)})
 out["scored_at"] = pd.Timestamp.now(tz="UTC").isoformat()
-p = "/tmp/stack_score.json"; json.dump(out, open(p, "w"), indent=1); subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/calibration/stack_fwd/score.json"])
+p = "/tmp/stack_score.json"; json.dump(out, open(p, "w"), indent=1); subprocess.run(["gsutil", "-q", "cp", p, f"{B}/results/calibration/stack_fwd/{os.environ.get('STACK_SCORE_NAME', 'score')}.json"])
 print(json.dumps({k: v for k, v in out.items() if k != "days"}), json.dumps(days[-3:]))
+if len(R) and os.environ.get("PER_DAY"): print(R.groupby("day")[["n", "stack", "backer_v2"]].apply(lambda g: pd.Series({"launches": len(g), "n": g.n.sum(), "stack": round(100 * g["stack"].sum() / g.n.sum(), 1), "v2": round(100 * g["backer_v2"].sum() / g.n.sum(), 1)})).to_string())

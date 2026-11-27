@@ -314,3 +314,23 @@ category's core task, do (1) their preferences explain the structural model's mi
   - Coverage is not the cause: on Nov 17–20 the stack's 2,000-person lists hold 94.9% of the observed backers, BACKER-v2's 83.0%.
   - The likely cause is that the live BACKER-v2 also uses follow edges to the team. STACK-1b's baseline is the harness BACKER-v2 (ln_rw, tm), which has no follows, so the backtest's +1.4 is measured against a weaker line.
   - The stack keeps running nightly as a shadow. expected_voters.py stays on BACKER-v2 (STACK_FROM unset) until the orchestrator decides.
+
+## Addendum 15 (2026-11-27): STACK-v2, STACK-1b plus the live BACKER-v2 score (orchestrator 10:57Z Nov 27; written before any fit)
+**Model:**
+- Logistic on standardised [ln_rw, tm, ln_rw×tm, logit P(yes) from CHOICE-FT-1 500k, s_v2]. s_v2 is the live BACKER-v2 walk-forward decision value for that day, from the same code path as backer_v2_lists.py, including the team-follow features. It is trained only on re-read truth of days before that day.
+- Fit once on STACK-1's validation pairs (Nov 1–10, 15% pool sample). No refit on test.
+**Test:**
+- Nov 11–22, full bench pool (STACK-1b scores). Lists are the top 2,000 per launch by STACK-v2 probability.
+- Scored with stack_score.py under the live north-star rule against the live BACKER-v2 lists, paired by launch, launch bootstrap of 2,000 draws.
+**Promotion rule (orchestrator):** promote only if STACK-v2 minus live BACKER-v2 on pooled recall@N has its 95% interval above 0. Otherwise BACKER-v2 stays published, STACK-v2 is not deployed, and STACK-1b stays a shadow.
+**Known limit, stated in advance:** STACK-v2 can only name people in the bench pool (an endorsement in the last 60 days). BACKER-v2 ranks every held person. The same holds for forward use.
+- 15a (Nov 27, after the first STACK-v2 fit printed its coefficients and before any STACK-v2 test score):
+  - The first fit had no live BACKER-v2 score for 56% of validation pairs. The bench holds people first read after D (about 45% of its pool): the store backfilled their history later. Live BACKER-v2 scores only people held before D's start.
+  - Fix: STACK-v2 is fit and tested on bench pairs whose person was held before D's start (forward-available).
+  - stack_score.py now ranks both lists within people re-read after the close and held before the freeze. BACKER-v2 lists already contain only such people.
+  - The same correction is applied to the STACK-1b history lists. Their −6.4 (14b) counted list slots spent on people who could never be named live. Both numbers are reported.
+- **15 result (Nov 27 11:10Z; results/calibration/stack_fwd/backtest_*.json).** Nov 11–22, 358 launches, 11,589 observed held backers, live rule with 15a (both lists ranked within people re-read after the close and held before the freeze):
+  - STACK-v2: recall@N 35.9 vs live BACKER-v2 27.2, difference **+8.7 [+7.8, +9.6]**. It meets the pre-registered promotion rule.
+  - STACK-1b on the same rule: 37.6, difference **+10.4 [+9.4, +11.5]**. The stack is ahead on every one of the 12 days (+6.1 to +18.7 points).
+  - The 14b number (−6.4) was an artefact: about 45% of the bench pool are people first read after D. They took list slots but can never count under the live rule. So the 14b hold rested on a wrong comparison.
+  - Caveats: the STACK-1b correction was found after its bad number, so it is post hoc for STACK-1b, though pre-registered for STACK-v2. Forward lists use the previous night's build and stale reads, so the forward edge is still to be confirmed by the nightly shadow score. The stack cannot name people inactive for 60 days; BACKER-v2 can.
