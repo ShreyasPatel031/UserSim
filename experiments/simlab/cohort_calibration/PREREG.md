@@ -304,3 +304,9 @@ category's core task, do (1) their preferences explain the structural model's mi
 - Stack vs BACKER-v2, paired by launch; launch bootstrap, 2,000 draws.
 **Rule 5:** if the stack trails BACKER-v2 on recall@N over the scored live days (paired interval below 0 at 7 scored days), BACKER-v2 is restored as the published line.
 **Exception:** CPU-only was E5's standing rule. A nightly GPU VM is the orchestrator's decision (16:38Z Nov 26). Measured cost is logged nightly.
+- 14a (Nov 27, after the shadow run, before going live):
+  - Shadow run: froze at 02:02 PT with all 17 of 17 line-up launches (Thanksgiving). The 35±10 "complete" test was written for an ordinary day, so completeness is now read as every line-up launch frozen.
+  - Schedule: the job moves to 08:23Z (00:23 PT). The published consumer, expected_voters.py inside the 09:47Z explain chain, then reads a list already frozen. Before this, the stack froze around 10:02Z and the explain step read at about 09:55Z.
+  - Published consumer: from 2026-11-28, expected_voters.py uses the stack list when it exists for D, and calibrates it (isotonic) on stack lists only. Those are the Nov 11–22 backtest lists, rebuilt the forward way (pooled recall@N 40.2 vs STACK-1b's 40.3), then the nightly forward lists. Mixing BACKER-v2 history with stack scores would miscalibrate, because the two scales differ.
+  - Caveat: the Nov 11–22 stack lists cover the observed pool only, so its calibration validation (count slope 0.90 vs BACKER-v2's 0.63) is optimistic.
+  - Stage B and rerank_a/b keep reading BACKER-v2: changing a running experiment's input would be a deviation.

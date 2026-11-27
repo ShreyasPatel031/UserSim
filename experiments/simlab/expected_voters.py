@@ -27,10 +27,20 @@ W = warehouse.table("launches", do_sync=False).sort_values("updated_at").drop_du
 W["votes"] = pd.to_numeric(W.votes, errors="coerce"); U["lday"] = U.target_id.map(dict(zip(W.id, W.day))); shown = dict(zip(W.id, W.votes))
 
 
+# Published backer list. From 2026-11-28 (PREREG addendum 14, STACK-FWD-1): the STACK-1b list tmp/e5/private/backer_pred_stack/<day>.parquet,
+# calibrated on its own history only (Nov 11-22 backtest lists on the observed pool, then the nightly forward lists); BACKER-v2 is the shadow.
+# Before that, or when the day's stack list is missing: BACKER-v2 (passed rule 5, Nov 23), then the CF-only arm. BACKER_LIST=v2|cf forces.
+STACK_FROM = os.environ.get("STACK_FROM", "2026-11-28")
+SRC = os.environ.get("BACKER_LIST") or ("stack" if D >= STACK_FROM and gcat(f"{B}/tmp/e5/private/backer_pred_stack/{D}.parquet", True) else "v2")
+
+
 def arms(day):
-    # published backer list (BACKER-v2 passed rule 5, Nov 23): the walk-forward logistic list tmp/e5/private/backer_pred_v2/<day>.parquet;
-    # the CF-only arm is the shadow and the fallback for days without a v2 list. BACKER_LIST=cf forces the old list.
-    if os.environ.get("BACKER_LIST", "v2") == "v2":
+    if SRC == "stack":   # same source for history and today, so the isotonic calibration matches the list it is applied to
+        raw = gcat(f"{B}/tmp/e5/private/backer_pred_stack/{day}.parquet", True)
+        if not raw: return None
+        lp = os.path.join(SP, "bp", f"_stack_{day}.parquet"); open(lp, "wb").write(raw)
+        return pd.read_parquet(lp)[["launch_id", "person_id", "p"]].assign(launch_id=lambda x: x.launch_id.astype(str), person_id=lambda x: x.person_id.astype(str))
+    if SRC == "v2":
         raw = gcat(f"{B}/tmp/e5/private/backer_pred_v2/{day}.parquet", True)
         if raw:
             lp = os.path.join(SP, "bp", f"_v2_{day}.parquet"); open(lp, "wb").write(raw)
@@ -124,7 +134,9 @@ print(json.dumps(VAL), flush=True)
 iso, c, k_cov = fit(list(H)); bs = base_share(D); FD = arms(D)
 if FD is None: sys.exit(f"no frozen CF list for {D}")
 FD = FD[FD.person_id.isin(held)]; T = group_table(FD, iso, c, k_cov, bs)
-LABEL = (f"Expected voters by group: the published backer list's per-person probabilities (from Nov 23: BACKER-v2 walk-forward logistic on recency-weighted activity, topic match and follows of the team; it beat 'N most active' at naming real backers, +6.8 [+5.7, +7.9] points recall@N over 14 days; the CF-only list is the shadow) (people we track; reads before 00:00 PT), recalibrated "
+SRC_NOTE = ("from Nov 28: STACK-1b, BACKER-v2's features plus a fine-tuned Qwen2.5-7B yes/no score; backtest Nov 11-22 recall@N +1.4 [+1.0, +1.7] points over BACKER-v2, which is now the shadow"
+            if SRC == "stack" else "from Nov 23: BACKER-v2 walk-forward logistic on recency-weighted activity, topic match and follows of the team; it beat 'N most active' at naming real backers, +6.8 [+5.7, +7.9] points recall@N over 14 days; the CF-only list is the shadow")
+LABEL = (f"Expected voters by group: the published backer list's per-person probabilities ({SRC_NOTE}) (people we track; reads before 00:00 PT), recalibrated "
          f"on {len(H)} earlier scored days (isotonic reliability curve; tail factor {c:.2f} for voters outside each 2,000-person list), summed by "
          f"data-driven group (segments cut {SEGCUT}). 'Expected votes on PH' multiplies by {k_cov:.1f} displayed votes per tracked voter (history median; approximate). "
          f"Leave-one-day-out check: observed/predicted {VAL['observed / predicted total']}, group-count correlation {VAL['count correlation']}; "
@@ -181,7 +193,7 @@ def p3_prior(lid):
 bsu = base_share(D, SUBU); TS = group_table(FD, iso, c, k_cov, bsu, SUBU)
 json.dump({"day": D, "k_cov": k_cov, "base_share": {k: float(v) for k, v in bsu.items()}, "launches": {l: t for l, t in TS.items()},
            "validation_subgroup": VAL["subgroup-level check"]}, open(os.path.join(SP, "segments", f"expected_sub_{D}.json"), "w"), indent=1, default=float)
-json.dump({"day": D, "validation": VAL, "label": LABEL, "launches": out}, open(os.path.join(SP, "segments", f"expected_{D}.json"), "w"), indent=1, default=float)
+json.dump({"day": D, "backer_list": SRC, "validation": VAL, "label": LABEL, "launches": out}, open(os.path.join(SP, "segments", f"expected_{D}.json"), "w"), indent=1, default=float)
 p = os.path.join(SP, "explain", f"{D}.json"); J = json.loads(gcat(f"{B}/results/web/explain/{D}.json") or (open(p).read() if os.path.exists(p) else "{}"))
 if J.get("launches"):
     for lid, v in out.items():
