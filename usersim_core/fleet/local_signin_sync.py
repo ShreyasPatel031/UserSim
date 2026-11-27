@@ -80,13 +80,12 @@ def sync_state_to_vm(slot: int, idx: int, state_path: str) -> None:
         env=env,
     )
     remote_cmd = (
-        f"sudo systemctl stop usersim-poolb.service; "
+        f"if sudo systemctl list-unit-files usersim-poolb.service 2>/dev/null | grep -q usersim-poolb; then sudo systemctl stop usersim-poolb.service || true; fi; "
         f"sudo mkdir -p /var/tmp/usersim_google_sso/gmail_{idx}; "
         f"sudo mv {remote_tmp} /var/tmp/usersim_google_sso/gmail_{idx}/imported_storage_state.json; "
         f"sudo chmod 600 /var/tmp/usersim_google_sso/gmail_{idx}/imported_storage_state.json; "
         f"sudo rm -f /var/tmp/usersim_google_sso/gmail_{idx}/last_auth_result.json; "
-        f"sudo systemctl start usersim-poolb.service; "
-        f"sleep 2; sudo systemctl is-active usersim-poolb.service"
+        f"if sudo systemctl list-unit-files usersim-poolb.service 2>/dev/null | grep -q usersim-poolb; then sudo systemctl start usersim-poolb.service; sleep 2; sudo systemctl is-active usersim-poolb.service; else echo 'cookies synced (no systemd service)'; fi"
     )
     subprocess.check_call(
         [
@@ -181,13 +180,20 @@ def main() -> None:
             except Exception:
                 pass
 
-            input("\n>>> Press ENTER in this terminal once you are signed in (before closing the browser) to save & upload cookies: ")
+            input("\n>>> Sign into Google (and optionally LinkedIn / X / GitHub in extra tabs), then press ENTER here (before closing Camoufox) to save & upload ALL cookies: ")
             state: dict[str, Any] = browser.storage_state()
             with open(state_file, "w") as f:
                 json.dump(state, f, indent=2)
-            google_cookies = [c for c in (state.get("cookies") or []) if "google.com" in (c.get("domain") or "")]
+            all_c = state.get("cookies") or []
+            google_cookies = [c for c in all_c if "google.com" in (c.get("domain") or "")]
             has_sid = any(c.get("name") in ("SID", "SSID", "HSID", "SAPISID", "__Secure-1PSID") for c in google_cookies)
-            print(f"[saved] {len(google_cookies)} Google cookies captured (SID present: {has_sid})", flush=True)
+            has_li = any("linkedin.com" in (c.get("domain") or "") and c.get("name") == "li_at" for c in all_c)
+            has_x = any(("x.com" in (c.get("domain") or "") or "twitter.com" in (c.get("domain") or "")) and c.get("name") == "auth_token" for c in all_c)
+            has_gh = any("github.com" in (c.get("domain") or "") and c.get("name") == "user_session" for c in all_c)
+            print(
+                f"[saved] total={len(all_c)} cookies | Google(SID)={has_sid} | LinkedIn(li_at)={has_li} | X(auth_token)={has_x} | GitHub={has_gh}",
+                flush=True,
+            )
     finally:
         tunnel_proc.terminate()
         try:
