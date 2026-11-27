@@ -30,7 +30,7 @@ W["votes"] = pd.to_numeric(W.votes, errors="coerce"); U["lday"] = U.target_id.ma
 # Published backer list. From 2026-11-28 (PREREG addendum 14, STACK-FWD-1): the STACK-1b list tmp/e5/private/backer_pred_stack/<day>.parquet,
 # calibrated on its own history only (Nov 11-22 backtest lists on the observed pool, then the nightly forward lists); BACKER-v2 is the shadow.
 # Before that, or when the day's stack list is missing: BACKER-v2 (passed rule 5, Nov 23), then the CF-only arm. BACKER_LIST=v2|cf forces.
-STACK_FROM = os.environ.get("STACK_FROM", "2026-11-28")
+STACK_FROM = os.environ.get("STACK_FROM", "9999-12-31")   # go-live held (E5 Nov 27 10:58Z): stack trails the live BACKER-v2 -6.4 [-7.6, -5.1] on Nov 11-22; orchestrator decides
 SRC = os.environ.get("BACKER_LIST") or ("stack" if D >= STACK_FROM and gcat(f"{B}/tmp/e5/private/backer_pred_stack/{D}.parquet", True) else "v2")
 
 
