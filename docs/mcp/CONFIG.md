@@ -64,6 +64,8 @@ Each row has a `value` (read at **use time** so hot reload applies without resta
 | `anon_max_cells_per_study` | `12` | Max cells per study without a token (use a token for 108). |
 | `anon_allow_sms` | `true` | SMS tools without a token (lease + denylist protect the real phone). |
 | `sms_lease_s` | `600` | Seconds one session holds the shared SMS number. |
+| `sms_queue_wait_s` | `45` | Seconds `usersim_signup_phone` waits in a first-come queue for the number before answering busy (caller keeps its place). |
+| `sms_after_code_s` | `90` | After the holder reads its code, its lease shrinks to this, freeing the number for the next user. |
 | `anon_daily_sms_leases_per_ip` | `10` | SMS leases per IP per day (no token). |
 | `sms_sender_denylist` | list | Sender/body words never returned (protects owner's Apple/bank 2FA). |
 | `anon_allow_paid_captcha` | `false` | If `paid_captcha` is true: allow **anonymous** callers to trigger paid solves. **Cost:** each solve billed to CapSolver. **Risk:** abuse burns balance. |

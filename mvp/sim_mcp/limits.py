@@ -53,6 +53,8 @@ DEFAULTS: dict[str, Any] = {
     "anon_max_cells_per_study": 108,
     "anon_allow_sms": True,
     "sms_lease_s": 600,
+    "sms_queue_wait_s": 45,
+    "sms_after_code_s": 90,
     "anon_daily_sms_leases_per_ip": 5,
     "sms_sender_denylist": [
         "apple", "icloud", "google", "g-", "gmail", "microsoft", "outlook", "amazon", "paypal", "venmo", "zelle",
