@@ -15,6 +15,9 @@ for name, f in (("stageb_v1", "rerank_frozen.json"), ("stageb_v2", "rerank_froze
 E = (gj(f"{B}/results/web/explain/{D}.json") or {}).get("launches") or {}
 for name, k in (("person_panel", "person_built_panel"), ("person_panel_noblock", "person_built_panel_noblock")):
     ts = sorted({(v.get("say") or {}).get(k, {}).get("predicted_at") for v in E.values()} - {None}); R.append(chk(name, ts[-1] if ts else None))
+for name, f in (("backer_stack_v2", "backer_pred_stack_v2"), ("backer_stack_1b", "backer_pred_stack")):   # PREREG 14/15b (STACK-v2 published from Nov 28)
+    if D >= ("2026-11-28" if name == "backer_stack_v2" else "2026-11-27"):
+        x = gj(f"{B}/tmp/e5/private/{f}/{D}_meta.json") or {}; R.append(chk(name, x.get("predicted_at")))
 if D >= "2026-11-26":
     x = gj(f"{B}/results/calibration/{D}/product_use/outputs.json") or {}; R.append(chk("product_use", x.get("predicted_at") or x.get("frozen_at")))
 out = {"day": D, "deadline_utc": DL.isoformat(), "checked_at": pd.Timestamp.now(tz="UTC").isoformat(), "lines": R, "all_on_time": all(r["on_time"] for r in R)}
