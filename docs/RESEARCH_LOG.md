@@ -2981,3 +2981,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-27T18:34Z hourly check: board live (18:33Z, 18/18), site/launch/MCP up; ledger 334/222 valid; no antigravity instructions.
 - 2026-11-27T19:00Z Site: leaderboard no longer waits on the data request. Last good board saved to site/boot/today.json (at most once a minute) and inlined in the landing HTML; page draws it, then refreshes (patch experiments/site_patches/20261127_instant_board.patch, deployed by the website agent as PR #237, main 8c39b558). Verified by me: data request held forever, fresh profile, desktop and phone draw 10+10 rows, no Loading.
 - 2026-11-27T19:35Z hourly check: board live (19:34Z, 18/18), landing ships inline board (id=boot), launch/MCP up; ledger 334/222 valid; no antigravity instructions.
+- 2026-11-27T20:34Z hourly check: board live (20:33Z, 18/18), inline board present, launch/MCP up; ledger 334/222 valid; no antigravity instructions.
