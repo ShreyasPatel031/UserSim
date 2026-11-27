@@ -2967,3 +2967,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-27T08:34Z hourly check: new day Nov 27 on the board (18 launches, votes hidden, Thanksgiving-light line-up); site/launch/MCP up; Nov 27 forecast not yet written (limit 09:35Z).
 - 2026-11-27T09:33Z hourly check: board live (Nov 27), site/launch/MCP up.
 - 2026-11-27T10:33Z hourly check: board live, site/launch/MCP up; first live on-time forecast_pre (Nov 27) is the lead tab.
+- 2026-11-27T10:44Z Daily collection review: complete people 93,633 (+10 in 24 h), active 2,580/2,642, likely 1,542/1,649; last pull within 24 h 574 (was 2,549), 7 d 5,415, never 143. Coverage dashboard refreshed (7 datasets). Public pages and scheduled jobs OK.
