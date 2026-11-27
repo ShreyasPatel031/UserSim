@@ -1,0 +1,16 @@
+[Unit]
+Description=UserSim Core v5 Intraday Pre-Reveal Forecast & Pool B CUA Updater
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=shreyaspatel
+WorkingDirectory=/home/shreyaspatel/UserSim
+Environment="PYTHONPATH=/home/shreyaspatel/UserSim"
+Environment="PYTHONUNBUFFERED=1"
+Nice=10
+MemoryMax=2G
+ExecStart=/home/shreyaspatel/UserSim/.venv/bin/python -m usersim_core.fleet.live_intraday_updater --data-dir /tmp/usersim_work/data
+StandardOutput=journal
+StandardError=journal

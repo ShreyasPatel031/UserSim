@@ -1,0 +1,14 @@
+[Unit]
+Description=UserSim Core v5 Pre-Reveal Intraday Schedule (00:12, 01:10, 02:20, 03:35 PT)
+
+[Timer]
+OnCalendar=*-*-* 00:12:00 America/Los_Angeles
+OnCalendar=*-*-* 01:10:00 America/Los_Angeles
+OnCalendar=*-*-* 02:20:00 America/Los_Angeles
+OnCalendar=*-*-* 03:35:00 America/Los_Angeles
+Persistent=false
+AccuracySec=15s
+Unit=usersim-live-pre.service
+
+[Install]
+WantedBy=timers.target
