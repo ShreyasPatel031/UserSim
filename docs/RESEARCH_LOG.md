@@ -2961,3 +2961,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-27T03:34Z hourly check: board live, site/launch/MCP up; nothing broken.
 - 2026-11-27T04:34Z hourly check: board live, site/launch/MCP up; nothing broken.
 - 2026-11-27T05:34Z hourly check: board live, site/launch/MCP up; nothing broken.
+- 2026-11-27T05:35Z hourly check: one empty /api/ph/today response at 05:34Z (transient; retries OK, one took 19 s); board live; site/launch/MCP up.
