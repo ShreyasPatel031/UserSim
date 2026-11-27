@@ -410,16 +410,25 @@ def train_and_eval_qwen_vl(
     train_jsonl: str,
     val_jsonl: str,
     out_dir: str,
+    test_jsonl: str = "",
     lora_r: int = 32,
     lr: float = 1.5e-4,
-    max_train_rows: int = 1200,
-    max_val_choice_rows: int = 300,
-    accum: int = 8,
-    max_seq_len: int = 1280,
+    max_train_rows: int = 2800,
+    max_val_choice_rows: int = 1500,
+    batch_size: int = 1,
+    accum: int = 16,
+    max_seq_len: int = 960,
     gcs_dest: str = "",
     seed: int = 42,
 ) -> dict[str, Any]:
-    """Fine-tune `Qwen2.5-VL-7B-Instruct` (`bf16` + LoRA `r=32`) on 1x L4 24GB GPU and verify choice AUC + CUA JSON."""
+    """Fine-tune `Qwen2.5-VL-7B-Instruct` (`bf16` + LoRA `r=32`) on 1x L4 24GB GPU and export Sep-Nov item scores."""
+    from collections import defaultdict
+    import sys
+
+    os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+    # Guard against mismatched system torchaudio C++ extension when importing transformers/peft
+    sys.modules.setdefault("torchaudio", None)  # type: ignore[arg-type]
+
     import torch
     from PIL import Image
     from peft import LoraConfig, get_peft_model
@@ -441,7 +450,7 @@ def train_and_eval_qwen_vl(
     dev = torch.device("cuda")
     gpu_name = torch.cuda.get_device_name(0)
 
-    processor = AutoProcessor.from_pretrained(model_name, min_pixels=256 * 28 * 28, max_pixels=512 * 28 * 28)
+    processor = AutoProcessor.from_pretrained(model_name, min_pixels=192 * 28 * 28, max_pixels=384 * 28 * 28)
     tok = processor.tokenizer
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
@@ -459,38 +468,62 @@ def train_and_eval_qwen_vl(
     no_id = tok.encode("No", add_special_tokens=False)[0]
 
     val_all = [json.loads(l) for l in open(val_jsonl) if l.strip()]
-    val_choice = [r for r in val_all if r["task"] == "person_choice"][:max_val_choice_rows]
-    val_cua = [r for r in val_all if r["task"] == "cua_trace"][:40]
+    val_choice_all = [r for r in val_all if r["task"] == "person_choice"]
+    val_choice_eval = val_choice_all[:max_val_choice_rows]
+    val_cua = [r for r in val_all if r["task"] == "cua_trace"]
+
+    test_all = [json.loads(l) for l in open(test_jsonl) if l.strip()] if (test_jsonl and os.path.exists(test_jsonl)) else []
+    test_choice_all = [r for r in test_all if r["task"] == "person_choice"]
+    test_choice_eval = test_choice_all[:max_val_choice_rows]
+    test_cua = [r for r in test_all if r["task"] == "cua_trace"]
 
     @torch.no_grad()
-    def _score_choice_rows(rows: list[dict[str, Any]], batch_sz: int = 8) -> tuple[float, float]:
+    def _score_choice_logits(rows: list[dict[str, Any]], bsz: int = 10) -> tuple[np.ndarray, float]:
+        if not rows:
+            return np.zeros(0, dtype=np.float32), 0.0
         model.eval()
-        probs: list[float] = []
-        y_true = [int(r["label"]) for r in rows]
+        # Sort by prompt length for minimal padding, then unsort back to exact input order
+        prompts = [
+            tok.apply_chat_template(r["messages"][:-1], tokenize=False, add_generation_prompt=True)
+            for r in rows
+        ]
+        order = sorted(range(len(rows)), key=lambda i: len(prompts[i]))
+        logits_out = np.zeros(len(rows), dtype=np.float32)
+        tok.padding_side = "left"
         ts = time.time()
-        for s in range(0, len(rows), batch_sz):
-            b = rows[s : s + batch_sz]
-            prompts = [
-                tok.apply_chat_template(r["messages"][:-1], tokenize=False, add_generation_prompt=True)
-                for r in b
-            ]
-            tok.padding_side = "left"
-            enc = tok(prompts, return_tensors="pt", padding=True, truncation=True, max_length=max_seq_len).to(dev)
+        for s in range(0, len(order), bsz):
+            b_idx = order[s : s + bsz]
+            b_p = [prompts[i] for i in b_idx]
+            enc = tok(b_p, return_tensors="pt", padding=True, truncation=True, max_length=max_seq_len).to(dev)
             with torch.autocast("cuda", dtype=torch.bfloat16):
-                out = model(input_ids=enc["input_ids"], attention_mask=enc["attention_mask"])
+                try:
+                    out = model(input_ids=enc["input_ids"], attention_mask=enc["attention_mask"], logits_to_keep=1)
+                except TypeError:
+                    out = model(input_ids=enc["input_ids"], attention_mask=enc["attention_mask"])
                 logits_last = out.logits[:, -1, :]
-                diff = (logits_last[:, yes_id] - logits_last[:, no_id]).float()
-                p_b = torch.sigmoid(diff).cpu().tolist()
-            probs.extend(p_b)
+                diff = (logits_last[:, yes_id] - logits_last[:, no_id]).float().cpu().numpy()
+            logits_out[b_idx] = diff
+        torch.cuda.empty_cache()
         elapsed = time.time() - ts
-        auc = float(roc_auc_score(y_true, probs)) if len(set(y_true)) > 1 else 0.5
         ms_per_row = 1000.0 * elapsed / max(len(rows), 1)
-        return auc, ms_per_row
+        return logits_out, ms_per_row
 
-    base_choice_auc, base_ms_per_user = _score_choice_rows(val_choice)
-    print(f"[Qwen2.5-VL-7B Base on {gpu_name}] Val Choice AUC={base_choice_auc:.4f} ({base_ms_per_user:.1f} ms/row)", flush=True)
+    base_val_logits, base_ms_per_user = _score_choice_logits(val_choice_eval)
+    y_val_eval = [int(r["label"]) for r in val_choice_eval]
+    base_choice_auc = float(roc_auc_score(y_val_eval, base_val_logits)) if len(set(y_val_eval)) > 1 else 0.5
 
-    # Apply LoRA r=32 across language + projector linear modules
+    base_test_auc = None
+    if test_choice_eval:
+        base_test_logits, _ = _score_choice_logits(test_choice_eval)
+        y_test_eval = [int(r["label"]) for r in test_choice_eval]
+        base_test_auc = float(roc_auc_score(y_test_eval, base_test_logits)) if len(set(y_test_eval)) > 1 else 0.5
+
+    print(
+        f"[Qwen2.5-VL-7B Base on {gpu_name}] Val Choice AUC={base_choice_auc:.4f} | "
+        f"Test Choice AUC={base_test_auc if base_test_auc is not None else 'n/a'} ({base_ms_per_user:.1f} ms/row)",
+        flush=True,
+    )
+
     lora_cfg = LoraConfig(
         r=lora_r,
         lora_alpha=2 * lora_r,
@@ -504,77 +537,113 @@ def train_and_eval_qwen_vl(
     total_p = sum(p.numel() for p in model.parameters())
 
     train_all = [json.loads(l) for l in open(train_jsonl) if l.strip()]
-    random.shuffle(train_all)
-    # Include multimodal screenshot trajectories + balanced choice & reaction rows
-    mm_rows = [r for r in val_cua[:0]]  # NEVER train on val!
-    train_rows = train_all[:max_train_rows]
+    # Stratified multi-task sampling so CUA_TRACE, PERSON_CHOICE, and PERSON_REACTION are all strongly represented!
+    t_cua = [r for r in train_all if r["task"] == "cua_trace"]
+    t_cho = [r for r in train_all if r["task"] == "person_choice"]
+    t_rea = [r for r in train_all if r["task"] == "person_reaction"]
+    random.shuffle(t_cua)
+    random.shuffle(t_cho)
+    random.shuffle(t_rea)
+    n_cua_take = min(len(t_cua), max(400, max_train_rows // 4))
+    n_rea_take = min(len(t_rea), max(300, max_train_rows // 6))
+    n_cho_take = min(len(t_cho), max(500, max_train_rows - n_cua_take - n_rea_take))
+    train_rows = t_cua[:n_cua_take] + t_rea[:n_rea_take] + t_cho[:n_cho_take]
 
+    # Pre-tokenize text rows for fast length-grouped minibatching (`batch_size=4`)
+    tok.padding_side = "right"
+    encoded_text_rows: list[tuple[list[int], int]] = []
+    mm_train_rows: list[dict[str, Any]] = []
+    for r in train_rows:
+        if r.get("image_jpg_b64"):
+            mm_train_rows.append(r)
+            continue
+        msgs = r["messages"]
+        p_txt = tok.apply_chat_template(msgs[:-1], tokenize=False, add_generation_prompt=True)
+        f_txt = tok.apply_chat_template(msgs, tokenize=False)
+        p_ids = tok(p_txt, add_special_tokens=False)["input_ids"]
+        f_ids = tok(f_txt, add_special_tokens=False)["input_ids"]
+        if len(f_ids) > max_seq_len:
+            ans_ids = tok(msgs[-1]["content"] + (tok.eos_token or ""), add_special_tokens=False)["input_ids"][:220]
+            keep_p = max(128, max_seq_len - len(ans_ids))
+            p_ids = p_ids[:256] + p_ids[-(keep_p - 256) :]
+            f_ids = p_ids + ans_ids
+        if len(f_ids) > len(p_ids):
+            encoded_text_rows.append((f_ids, len(p_ids)))
+
+    order_tr = sorted(range(len(encoded_text_rows)), key=lambda i: len(encoded_text_rows[i][0]))
+    batches_tr: list[tuple[str, Any]] = [
+        ("text", order_tr[i : i + batch_size]) for i in range(0, len(order_tr), batch_size)
+    ]
+    for mr in mm_train_rows[:180]:
+        batches_tr.append(("mm", mr))
+    random.shuffle(batches_tr)
+
+    total_micro = len(batches_tr)
+    total_steps = max(1, math.ceil(total_micro / accum))
     opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=lr, weight_decay=0.01)
-    total_steps = max(1, math.ceil(len(train_rows) / accum))
     sched = get_cosine_schedule_with_warmup(opt, max(1, int(0.08 * total_steps)), total_steps)
 
     model.train()
-    tok.padding_side = "right"
     step = 0
     losses: list[float] = []
 
-    for idx, r in enumerate(train_rows):
-        msgs = r["messages"]
-        img_b64 = r.get("image_jpg_b64") or ""
-        if img_b64:
-            img = Image.open(io.BytesIO(base64.b64decode(img_b64))).convert("RGB")
-            mm_msgs_prompt = [
-                msgs[0],
-                {"role": "user", "content": [{"type": "image", "image": img}, {"type": "text", "text": msgs[1]["content"]}]},
-            ]
-            mm_msgs_full = mm_msgs_prompt + [msgs[2]]
-            p_txt = processor.apply_chat_template(mm_msgs_prompt, tokenize=False, add_generation_prompt=True)
-            f_txt = processor.apply_chat_template(mm_msgs_full, tokenize=False)
-            p_inp = processor(text=[p_txt], images=[img], return_tensors="pt")
-            f_inp = processor(text=[f_txt], images=[img], return_tensors="pt")
-            p_len = p_inp["input_ids"].shape[1]
-            ids = f_inp["input_ids"][:, :max_seq_len].to(dev)
-            att = f_inp["attention_mask"][:, :max_seq_len].to(dev)
-            labels = ids.clone()
-            labels[:, : min(p_len, labels.shape[1])] = -100
-            extra_kw = {
-                "pixel_values": f_inp["pixel_values"].to(dev, dtype=torch.bfloat16),
-                "image_grid_thw": f_inp["image_grid_thw"].to(dev),
-            }
+    for m_idx, (kind, payload) in enumerate(batches_tr):
+        if kind == "text":
+            b_ids = payload
+            max_l = max(len(encoded_text_rows[i][0]) for i in b_ids)
+            ids = torch.full((len(b_ids), max_l), tok.pad_token_id, dtype=torch.long, device=dev)
+            att = torch.zeros((len(b_ids), max_l), dtype=torch.long, device=dev)
+            labels = torch.full((len(b_ids), max_l), -100, dtype=torch.long, device=dev)
+            for j, i in enumerate(b_ids):
+                seq, plen = encoded_text_rows[i]
+                L_s = len(seq)
+                ids[j, :L_s] = torch.tensor(seq, dtype=torch.long, device=dev)
+                att[j, :L_s] = 1
+                labels[j, plen:L_s] = ids[j, plen:L_s]
+
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                out = model(input_ids=ids, attention_mask=att, labels=labels)
+                loss = out.loss / accum
         else:
-            p_txt = tok.apply_chat_template(msgs[:-1], tokenize=False, add_generation_prompt=True)
-            f_txt = tok.apply_chat_template(msgs, tokenize=False)
-            p_ids = tok(p_txt, add_special_tokens=False)["input_ids"]
-            f_ids = tok(f_txt, add_special_tokens=False)["input_ids"]
-            if len(f_ids) > max_seq_len:
-                ans_len = max(1, len(f_ids) - len(p_ids))
-                keep_p = max(128, max_seq_len - ans_len)
-                p_ids = p_ids[:256] + p_ids[-(keep_p - 256) :]
-                ans_ids = tok(msgs[-1]["content"] + (tok.eos_token or ""), add_special_tokens=False)["input_ids"][:256]
-                f_ids = p_ids + ans_ids
-            ids = torch.tensor([f_ids], dtype=torch.long, device=dev)
-            att = torch.ones_like(ids)
-            labels = ids.clone()
-            labels[:, : min(len(p_ids), labels.shape[1])] = -100
-            extra_kw = {}
-
-        if (labels != -100).sum().item() == 0:
-            continue
-
-        with torch.autocast("cuda", dtype=torch.bfloat16):
-            out = model(input_ids=ids, attention_mask=att, labels=labels, **extra_kw)
-            loss = out.loss / accum
+            mr = payload
+            msgs = mr["messages"]
+            img = Image.open(io.BytesIO(base64.b64decode(mr["image_jpg_b64"]))).convert("RGB")
+            mm_u = [
+                msgs[0],
+                {"role": "user", "content": [{"type": "image", "image": img}, {"type": "text", "text": msgs[1]["content"][:1800]}]},
+            ]
+            mm_f = mm_u + [msgs[2]]
+            ptxt = processor.apply_chat_template(mm_u, tokenize=False, add_generation_prompt=True)
+            ftxt = processor.apply_chat_template(mm_f, tokenize=False)
+            p_enc = processor(text=[ptxt], images=[img], return_tensors="pt")
+            f_enc = processor(text=[ftxt], images=[img], return_tensors="pt")
+            plen = int(p_enc["input_ids"].shape[1])
+            ids_m = f_enc["input_ids"].to(dev)
+            att_m = f_enc["attention_mask"].to(dev)
+            pix_m = f_enc["pixel_values"].to(dev, dtype=torch.bfloat16)
+            grid_m = f_enc["image_grid_thw"].to(dev)
+            lbl_m = ids_m.clone()
+            lbl_m[:, :plen] = -100
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                out = model(
+                    input_ids=ids_m,
+                    attention_mask=att_m,
+                    pixel_values=pix_m,
+                    image_grid_thw=grid_m,
+                    labels=lbl_m,
+                )
+                loss = out.loss / accum
 
         loss.backward()
         losses.append(float(out.loss.item()))
 
-        if (idx + 1) % accum == 0 or (idx + 1) == len(train_rows):
+        if (m_idx + 1) % accum == 0 or (m_idx + 1) == total_micro:
             torch.nn.utils.clip_grad_norm_([p for p in model.parameters() if p.requires_grad], 1.0)
             opt.step()
             sched.step()
             opt.zero_grad(set_to_none=True)
             step += 1
-            if step % 15 == 0 or step == 1 or step == total_steps:
+            if step % 20 == 0 or step == 1 or step == total_steps:
                 recent_l = float(np.mean(losses[-accum * 5 :]))
                 vram_gb = torch.cuda.max_memory_allocated() / (1024**3)
                 print(
@@ -582,14 +651,32 @@ def train_and_eval_qwen_vl(
                     flush=True,
                 )
 
-    # Evaluate tuned adapter on held-out Val Choice + Multimodal CUA Trace Judge!
-    tuned_choice_auc, tuned_ms_per_user = _score_choice_rows(val_choice)
+    # Evaluate tuned adapter on Val Sep + Test Oct-Nov!
+    tuned_val_logits, tuned_ms_per_user = _score_choice_logits(val_choice_eval)
+    tuned_choice_auc = float(roc_auc_score(y_val_eval, tuned_val_logits)) if len(set(y_val_eval)) > 1 else 0.5
 
+    tuned_test_auc = None
+    if test_choice_eval:
+        tuned_test_logits, _ = _score_choice_logits(test_choice_eval)
+        y_test_eval = [int(r["label"]) for r in test_choice_eval]
+        tuned_test_auc = float(roc_auc_score(y_test_eval, tuned_test_logits)) if len(set(y_test_eval)) > 1 else 0.5
+
+    # Score ALL Val + Test `person_choice` rows to materialize `sep_nov_item_scores.parquet` for `HILLCLIMB-6`!
+    all_sep_nov_choice = val_choice_all + test_choice_all
+    all_sep_nov_logits, _ = _score_choice_logits(all_sep_nov_choice, bsz=12)
+    by_item_logits: dict[tuple[str, str], list[float]] = defaultdict(list)
+    for r, lg in zip(all_sep_nov_choice, all_sep_nov_logits):
+        by_item_logits[(str(r["day"]), str(r["item_id"]))].append(float(lg))
+
+    # Evaluate multimodal CUA_TRACE JSON reality head on Val + Test CUA sessions with screenshots/DOM!
     model.eval()
     cua_valid_json = 0
     cua_preds: list[float] = []
     cua_targets: list[float] = []
-    for r in val_cua[:20]:
+    cua_pred_by_item: dict[tuple[str, str], float] = {}
+
+    eval_cua_sample = val_cua[:30] + [r for r in test_cua if r.get("has_image")][:30]
+    for k_c, r in enumerate(eval_cua_sample):
         msgs = r["messages"]
         img_b64 = r.get("image_jpg_b64") or ""
         with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
@@ -601,24 +688,46 @@ def train_and_eval_qwen_vl(
                 ]
                 ptxt = processor.apply_chat_template(mm_p, tokenize=False, add_generation_prompt=True)
                 inp = processor(text=[ptxt], images=[img], return_tensors="pt").to(dev)
-                gen = model.generate(**inp, max_new_tokens=140, do_sample=False)
+                gen = model.generate(**inp, max_new_tokens=120, do_sample=False)
                 pred_txt = tok.decode(gen[0, inp["input_ids"].shape[1] :], skip_special_tokens=True).strip()
             else:
                 ptxt = tok.apply_chat_template(msgs[:-1], tokenize=False, add_generation_prompt=True)
+                tok.padding_side = "left"
                 inp = tok([ptxt], return_tensors="pt", truncation=True, max_length=max_seq_len).to(dev)
-                gen = model.generate(**inp, max_new_tokens=140, do_sample=False)
+                gen = model.generate(**inp, max_new_tokens=120, do_sample=False)
                 pred_txt = tok.decode(gen[0, inp["input_ids"].shape[1] :], skip_special_tokens=True).strip()
         try:
             m = re.search(r"\{.*\}", pred_txt, re.S)
             if m:
                 pj = json.loads(m.group(0))
                 tj = json.loads(msgs[-1]["content"])
-                if "next_cua_action" in pj and "hands_on_works" in pj:
-                    cua_valid_json += 1
-                    cua_preds.append(float(pj["hands_on_works"]))
-                    cua_targets.append(float(tj["hands_on_works"]))
+                if "hands_on_works" in pj:
+                    pw = float(np.clip(float(pj["hands_on_works"]), 0.0, 1.0))
+                    cua_pred_by_item[(str(r["day"]), str(r["item_id"]))] = pw
+                    if k_c < min(30, len(val_cua)):
+                        cua_valid_json += 1
+                        cua_preds.append(pw)
+                        cua_targets.append(float(tj["hands_on_works"]))
         except Exception:
             pass
+
+    item_score_rows = []
+    all_keys = sorted(set(by_item_logits.keys()) | set(cua_pred_by_item.keys()))
+    for d_k, lid_k in all_keys:
+        lgs = by_item_logits.get((d_k, lid_k), [])
+        arr = np.asarray(lgs, dtype=np.float64) if lgs else np.zeros(0, dtype=np.float64)
+        probs = 1.0 / (1.0 + np.exp(-np.clip(arr, -12.0, 12.0))) if len(arr) else np.zeros(0, dtype=np.float64)
+        item_score_rows.append({
+            "day": d_k,
+            "item_id": lid_k,
+            "qwen_vl_choice_logit_mean": float(np.mean(arr)) if len(arr) else np.nan,
+            "qwen_vl_choice_logit_p80": float(np.percentile(arr, 80)) if len(arr) else np.nan,
+            "qwen_vl_choice_prob_mean": float(np.mean(probs)) if len(probs) else np.nan,
+            "qwen_vl_cua_works_pred": cua_pred_by_item.get((d_k, lid_k), np.nan),
+            "n_choice_scored": int(len(arr)),
+        })
+    item_pq_path = os.path.join(out_dir, "sep_nov_item_scores.parquet")
+    pd.DataFrame(item_score_rows).to_parquet(item_pq_path, index=False)
 
     cua_mae = float(np.mean(np.abs(np.array(cua_preds) - np.array(cua_targets)))) if cua_preds else None
     max_vram_gib = round(torch.cuda.max_memory_allocated() / (1024**3), 2)
@@ -628,24 +737,30 @@ def train_and_eval_qwen_vl(
     tok.save_pretrained(adapter_dir)
 
     summary = {
+        "experiment_id": "USERSIM-CORE-QWENVL-1",
         "model": model_name,
         "existing_text_lora_reference": EXISTING_TEXT_LORA_REF,
         "gpu_device": gpu_name,
         "lora_r": lora_r,
         "trainable_params": trainable_p,
         "total_params": total_p,
-        "train_rows_seen": len(train_rows),
+        "train_rows_seen": len(encoded_text_rows) + len(mm_train_rows),
         "optimizer_steps": step,
         "final_loss_mean": round(float(np.mean(losses[-20:])), 4) if losses else None,
         "max_vram_gib": max_vram_gib,
-        "val_person_choice_n": len(val_choice),
+        "val_person_choice_n": len(val_choice_eval),
         "val_choice_auc_base": round(base_choice_auc, 4),
         "val_choice_auc_tuned": round(tuned_choice_auc, 4),
         "val_choice_auc_lift": round(tuned_choice_auc - base_choice_auc, 4),
+        "test_person_choice_n": len(test_choice_eval),
+        "test_choice_auc_base": round(base_test_auc, 4) if base_test_auc is not None else None,
+        "test_choice_auc_tuned": round(tuned_test_auc, 4) if tuned_test_auc is not None else None,
+        "test_choice_auc_lift": round(tuned_test_auc - base_test_auc, 4) if (tuned_test_auc is not None and base_test_auc is not None) else None,
+        "sep_nov_items_scored": len(item_score_rows),
         "batched_choice_latency_ms_per_row": round(tuned_ms_per_user, 2),
         "est_2000_users_prefix_cached_sec": round(2000 * tuned_ms_per_user / 1000.0 * 0.22, 1),
-        "val_cua_eval_n": min(20, len(val_cua)),
-        "val_cua_valid_json_pct": round(100.0 * cua_valid_json / max(1, min(20, len(val_cua))), 1),
+        "val_cua_eval_n": min(30, len(val_cua)),
+        "val_cua_valid_json_pct": round(100.0 * cua_valid_json / max(1, min(30, len(val_cua))), 1),
         "val_cua_hands_on_works_mae": round(cua_mae, 4) if cua_mae is not None else None,
         "elapsed_sec": round(time.time() - t0, 1),
     }
@@ -680,12 +795,14 @@ def main() -> None:
     t.add_argument("--model", default=DEFAULT_VL_MODEL)
     t.add_argument("--train-jsonl", required=True)
     t.add_argument("--val-jsonl", required=True)
-    t.add_argument("--out-dir", default="/tmp/qwen_vl_v5_pilot_r32")
+    t.add_argument("--test-jsonl", default="")
+    t.add_argument("--out-dir", default="/tmp/qwen_vl_r32_v1")
     t.add_argument("--lora-r", type=int, default=32)
     t.add_argument("--lr", type=float, default=1.5e-4)
-    t.add_argument("--max-train-rows", type=int, default=1200)
-    t.add_argument("--max-val-choice-rows", type=int, default=300)
-    t.add_argument("--accum", type=int, default=8)
+    t.add_argument("--max-train-rows", type=int, default=2800)
+    t.add_argument("--max-val-choice-rows", type=int, default=1500)
+    t.add_argument("--batch-size", type=int, default=1)
+    t.add_argument("--accum", type=int, default=16)
     t.add_argument("--gcs-dest", default="gs://usersim-trace-store-347838016394/usersim_core_v5/qwen_vl_v5/runs")
 
     args = ap.parse_args()
@@ -705,11 +822,13 @@ def main() -> None:
             model_name=args.model,
             train_jsonl=args.train_jsonl,
             val_jsonl=args.val_jsonl,
+            test_jsonl=args.test_jsonl,
             out_dir=args.out_dir,
             lora_r=args.lora_r,
             lr=args.lr,
             max_train_rows=args.max_train_rows,
             max_val_choice_rows=args.max_val_choice_rows,
+            batch_size=args.batch_size,
             accum=args.accum,
             gcs_dest=args.gcs_dest,
         )

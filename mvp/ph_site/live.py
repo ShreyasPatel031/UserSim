@@ -1,0 +1,1348 @@
+"""Live PH leaderboard forecast: read the day's forecast files, attach product facts and (once known) actual ranks.
+
+Sources (read only):
+  raw/daily/<day>/today_0005.json            line-up at 00:05 PT (product fields only are kept)
+  raw/daily/<day>/forecast_<day>.parquet     00:05 PT launch-model forecast (pred = predicted log votes)
+  results/early_forecast/<day>_P1..P4.json   pre-reveal: comment ridge (pred_rank), PH API rank (pred_rank_api), blend
+  results/early_forecast/<day>_R0..R4.json   after the vote reveal (~04:00 PT)
+  raw/ph_at_launch/<day>/api_detail/*.jsonl  hourly official-API detail: name/tagline/topics, votes, dailyRank
+  raw/ph_at_launch/<day>/live/posts_ts.jsonl fallback for end-of-day ranks
+Only product fields (id, name, tagline, slug, topics) and counts leave this module: maker/hunter/user fields are dropped.
+"""
+from __future__ import annotations
+
+import math
+import ast
+import json
+import re
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+
+from mvp.ph_site import gcs
+
+PT = ZoneInfo("America/Los_Angeles")
+
+# Forecast points in time order. "sees" is what the forecast could see when it was made.
+POINTS = [
+    ("0005", "pre-launch", "Line-up, product pages, maker/hunter/team track record. No votes, no comments."),
+    ("P1", "pre-reveal 1", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
+    ("P2", "pre-reveal 2", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
+    ("P3", "pre-reveal 3", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
+    ("P4", "pre-reveal 4", "Product Hunt's own (hidden-vote) order so far + the 00:05 forecast. No comments; vote counts still hidden."),
+    ("R0", "votes revealed", "First vote counts after PH reveals them (~04:00 PT) + the 00:05 forecast."),
+    ("R1", "reveal + 1 h", "Vote counts and vote speed up to 1 h after the reveal + the 00:05 forecast."),
+    ("R2", "reveal + 2 h", "Vote counts and vote speed up to 2 h after the reveal + the 00:05 forecast."),
+    ("R4", "reveal + 4 h", "Vote counts and vote speed up to 4 h after the reveal + the 00:05 forecast."),
+    ("PRE", "before reveal", "Product Hunt's hidden order, comments and the 00:05 forecast at 03:45 PT, the last read before votes show."),
+]
+POINT_KEYS = [p[0] for p in POINTS]
+
+
+def today_pt() -> str:
+    return datetime.now(PT).strftime("%Y-%m-%d")
+
+
+def _topics(v) -> list[str]:
+    """topics arrive as dict edges/nodes, a list, or a stringified python dict (api_detail)."""
+    if isinstance(v, str):
+        try:
+            v = ast.literal_eval(v)
+        except Exception:  # noqa: BLE001
+            try:
+                v = json.loads(v)
+            except Exception:  # noqa: BLE001
+                return []
+    out = []
+    if isinstance(v, dict):
+        items = v.get("edges") or v.get("nodes") or []
+        for it in items:
+            n = it.get("node", it) if isinstance(it, dict) else {}
+            if isinstance(n, dict) and n.get("name"):
+                out.append(str(n["name"]))
+    elif isinstance(v, list):
+        out = [str(x) for x in v if isinstance(x, str)]
+    return out[:4]
+
+
+def _clean_text(s) -> str:
+    return " ".join(str(s or "").split())[:200]
+
+
+THUMB_HOSTS = ("ph-files.imgix.net",)
+
+
+def _thumb(v) -> str | None:
+    """Product thumbnail from PH's image CDN only (Post.thumbnail.url in the official API). Never a person avatar."""
+    if isinstance(v, dict):
+        v = v.get("url")
+    if not isinstance(v, str):
+        return None
+    m = re.match(r"^https://(ph-files\.imgix\.net)/[A-Za-z0-9._\-/]+$", v.split("?")[0])
+    if not m or m.group(1) not in THUMB_HOSTS:
+        return None
+    return v.split("?")[0] + "?auto=format&fit=crop&w=112&h=112"
+
+
+def _product(r: dict) -> dict:
+    # Whitelist: product facts only. Never makers / user / hunter / website redirect.
+    return {"id": str(r.get("id")), "name": _clean_text(r.get("name")), "tagline": _clean_text(r.get("tagline")),
+            "slug": _clean_text(r.get("slug")), "topics": _topics(r.get("topics")),
+            "thumb": _thumb(r.get("thumbnail") or r.get("thumbnail_url"))}
+
+
+def _icons(day: str) -> dict[str, str]:
+    """Optional per-day {launch_id: thumbnail url} written by the data feeder from the official API."""
+    j = gcs.read_json(f"results/web/icons/{day}.json", ttl=600) or {}
+    return {str(k): t for k, v in j.items() if (t := _thumb(v))} if isinstance(j, dict) else {}
+
+
+def available_days(limit: int = 30) -> list[str]:
+    days = set()
+    for name, _ in gcs.list_names("raw/daily/", ttl=300):
+        parts = name.split("/")
+        if len(parts) >= 4 and parts[3].startswith("forecast_") and parts[3].endswith(".parquet"):
+            days.add(parts[2])
+    for name, _ in gcs.list_names("results/web/forecast_0005/", ttl=300):
+        f = name.rsplit("/", 1)[-1]
+        if f.endswith(".json") and f[:10].count("-") == 2:
+            days.add(f[:10])
+    for name, _ in gcs.list_names("results/early_forecast/", ttl=120):
+        f = name.rsplit("/", 1)[-1]
+        if f[:10].count("-") == 2:
+            days.add(f[:10])
+    return sorted(days, reverse=True)[:limit]
+
+
+def _api_detail(day: str) -> tuple[list[dict], str | None]:
+    names = sorted(n for n, _ in gcs.list_names(f"raw/ph_at_launch/{day}/api_detail/", ttl=300) if n.endswith(".jsonl"))
+    if not names:
+        return [], None
+    rows = [r for r in gcs.read_jsonl(names[-1], ttl=300) if _launch_day(r, day) == day]
+    at = max((r.get("snapshot_at") or "" for r in rows), default="") or None
+    return rows, at
+
+
+def _launch_day(r: dict, default: str) -> str:
+    """Launch day = PT date of featured_at (raw files tag launches featured at exactly 00:00 PT to the previous day)."""
+    fa = r.get("featured_at") or r.get("featuredAt")
+    if fa:
+        try:
+            return datetime.fromisoformat(str(fa).replace("Z", "+00:00")).astimezone(PT).strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+    return str(r.get("day") or default)
+
+
+def _final_after(day: str) -> datetime:
+    """PH's daily rank is votes at midnight PT; it is only stable from 03:00 PT the next day."""
+    return datetime.fromisoformat(day).replace(tzinfo=PT) + timedelta(days=1, hours=3)
+
+
+def _pt_day(iso: str) -> str | None:
+    try:
+        return datetime.fromisoformat(str(iso).replace("Z", "+00:00")).astimezone(PT).strftime("%Y-%m-%d")
+    except ValueError:
+        return None
+
+
+def _monthly_reread(day: str) -> tuple[dict, str | None]:
+    """Official dailyRank from the 23:50 PT official-API re-read, using only rows read at or after 03:00 PT the next
+    day. The launch day is the PT date of featuredAt (a launch featured at 00:00 PT belongs to that new day)."""
+    cut = _final_after(day)
+    months = sorted({day[:7], (datetime.fromisoformat(day) + timedelta(days=1)).strftime("%Y-%m")})
+    names = sorted(n for m in months for n, _ in gcs.list_names(f"raw/ph_at_launch/monthly_reread/{m}/", ttl=600)
+                   if n.endswith(".jsonl"))
+    for n in reversed(names):
+        rows = gcs.read_jsonl(n, ttl=600)
+        ranks, at = {}, None
+        for r in rows:
+            if r.get("_header") or not r.get("dailyRank"):
+                continue
+            launch_day = _pt_day(r.get("featuredAt")) or str(r.get("launch_day_PT"))
+            if launch_day != day:
+                continue
+            try:
+                fetched = datetime.fromisoformat(str(r.get("fetched_at")).replace("Z", "+00:00"))
+            except ValueError:
+                continue
+            if fetched < cut:
+                continue
+            try:
+                ranks[str(r["id"])] = {"rank": int(r["dailyRank"]), "votes": int(r.get("votesCount") or 0)}
+            except (ValueError, TypeError):
+                continue
+            at = max(at or "", str(r.get("fetched_at") or ""))
+        if ranks:
+            return ranks, at
+    return {}, None
+
+
+def _scoreboard_top10(day: str) -> dict:
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+    ids = (sb.get("actual_top10") or {}).get(day) or []
+    return {str(i): {"rank": n, "votes": None} for n, i in enumerate(ids, 1)}
+
+
+def actuals(day: str) -> dict:
+    """{'final', 'as_of', 'revealed', 'ranks': {id: {rank, votes}}, 'source'}.
+    Final only from the official daily rank read at or after 03:00 PT the next day (monthly re-read), or from the
+    warehouse's final ranks (lineup file / scoreboard top 10) for older days. Same-day reads are 'current', never final."""
+    def go():
+        now = datetime.now(PT)
+        if now >= _final_after(day):
+            mr, mat = _monthly_reread(day)
+            if mr:
+                return {"final": True, "as_of": mat, "revealed": True, "ranks": mr, "source": "official daily rank"}
+            lu = gcs.read_json(f"results/web/lineup/{day}.json", ttl=3600) or {}
+            top = {str(r["id"]): {"rank": int(r["daily_rank"]), "votes": r.get("votes")}
+                   for r in (lu.get("launches") or []) if isinstance(r, dict) and r.get("daily_rank")}
+            src = "warehouse final ranks"
+            if not top:
+                top, src = _scoreboard_top10(day), "scoreboard final top 10"
+            if top:
+                return {"final": True, "as_of": _final_after(day).isoformat(), "revealed": True, "ranks": top,
+                        "source": src}
+        rows, at = _api_detail(day)
+        ranks = {}
+        for r in rows:
+            try:
+                ranks[str(r["id"])] = {"rank": int(r.get("dailyRank") or 0) or None, "votes": int(r.get("votesCount") or 0)}
+            except (ValueError, TypeError):
+                continue
+        revealed = any(v.get("votes") for v in ranks.values())
+        return {"final": False, "as_of": at, "revealed": revealed, "ranks": ranks, "source": "same-day read (not final)"}
+    return gcs._cached("actuals:" + day, 300, go)
+
+
+def _lineup(day: str) -> dict[str, dict]:
+    prods: dict[str, dict] = {}
+    t = (gcs.read_json(f"raw/daily/{day}/today_0005.json", ttl=600)
+         or gcs.read_json(f"raw/daily/{day}/{day}.json", ttl=600) or [])
+    for r in t if isinstance(t, list) else []:
+        p = _product(r)
+        prods[p["id"]] = p
+    lu = gcs.read_json(f"results/web/lineup/{day}.json", ttl=3600) or {}
+    for r in lu.get("launches") or [] if isinstance(lu, dict) else []:
+        p = _product(r)
+        prods.setdefault(p["id"], p)
+    rows, _ = _api_detail(day)
+    for r in rows:
+        p = _product(r)
+        if p["id"] not in prods:
+            prods[p["id"]] = p
+        else:
+            prods[p["id"]]["topics"] = prods[p["id"]]["topics"] or p["topics"]
+            prods[p["id"]]["thumb"] = prods[p["id"]]["thumb"] or p["thumb"]
+    for pid, url in _icons(day).items():
+        if pid in prods and not prods[pid]["thumb"]:
+            prods[pid]["thumb"] = url
+    return prods
+
+
+def _forecast_0005(day: str):
+    """00:05 PT launch-model order. Prefer the JSON export (results/web/forecast_0005/<day>.json: [{id, predicted_rank}]
+    or {id: rank}); the parquet is read only where pyarrow happens to be installed (it is not in the Vercel bundle)."""
+    ids, made = None, ""
+    j = gcs.read_json(f"results/web/forecast_0005/{day}.json", ttl=600)
+    if isinstance(j, dict) and isinstance(j.get("forecast"), list):
+        made = j.get("run_updated_at") or j.get("written_at", "")   # when the forecast itself was produced
+        j = j["forecast"]
+    if isinstance(j, list) and j:
+        rows = [(str(r.get("id")), int(r.get("predicted_rank") or r.get("pred_rank") or 0)) for r in j if isinstance(r, dict)]
+        ids = [i for i, _ in sorted(rows, key=lambda t: t[1]) if i]
+    elif isinstance(j, dict) and j:
+        ids = [str(k) for k, _ in sorted(j.items(), key=lambda kv: int(kv[1]))]
+    if not ids:
+        try:
+            df = gcs.read_parquet_cols(f"raw/daily/{day}/forecast_{day}.parquet", ["id", "pred"], ttl=600)
+        except ImportError:
+            df = None
+        if not df or not df["id"]:
+            return _forecast_0005_md(day)
+        ids = [str(i) for i, _ in sorted(zip(df["id"], df["pred"]), key=lambda t: -(t[1] if t[1] is not None else -1e9))]
+        made = dict(gcs.list_names(f"raw/daily/{day}/", ttl=300)).get(f"raw/daily/{day}/forecast_{day}.parquet", "")
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": made,
+            "data_up_to": datetime.fromisoformat(day).replace(hour=0, minute=5, tzinfo=PT).isoformat(),
+            "method": "launch model (deployed 00:05 PT)"}
+
+
+def _forecast_0005_md(day: str):
+    """Fallback without pyarrow (the Vercel bundle): the same 00:05 run also writes raw/daily/<day>/forecast_<day>.md, a
+    table of predicted rank and product name; names are mapped to ids through that night's line-up file."""
+    import re as _re
+    raw = gcs.read_bytes(f"raw/daily/{day}/forecast_{day}.md", ttl=600)
+    t = gcs.read_json(f"raw/daily/{day}/today_0005.json", ttl=600) or gcs.read_json(f"raw/daily/{day}/{day}.json", ttl=600)
+    if not raw or not isinstance(t, list):
+        return None
+    by_name: dict[str, list[str]] = {}
+    for r in t:
+        p = _product(r)
+        by_name.setdefault((p.get("name") or "").strip().lower(), []).append(p["id"])
+    ranked = []
+    for line in raw.decode("utf-8", "replace").splitlines():
+        m = _re.match(r"^\|\s*(\d+)\s*\|\s*(.*?)\s*\|", line)
+        if not m:
+            continue
+        cand = by_name.get(m.group(2).strip().lower()) or []
+        if len(cand) == 1:
+            ranked.append((int(m.group(1)), cand[0]))
+    if len(ranked) < max(3, len(t) // 2):        # too few names matched: do not show a partial order as the forecast
+        return None
+    ids = [i for _, i in sorted(ranked)]
+    made = dict(gcs.list_names(f"raw/daily/{day}/", ttl=300)).get(f"raw/daily/{day}/forecast_{day}.md", "")
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": made,
+            "data_up_to": datetime.fromisoformat(day).replace(hour=0, minute=5, tzinfo=PT).isoformat(),
+            "method": "launch model (deployed 00:05 PT)"}
+
+
+def _forecast_file(day: str, key: str):
+    j = gcs.read_json(f"results/early_forecast/{day}_{key}.json", ttl=120)
+    if not j or not j.get("forecast"):
+        return None
+    f = j["forecast"]
+    # Pre-reveal files carry three orderings. The comment ridge leads (backtested on 207 days); PH's API rank and the
+    # blend rest on a few replay days, so they are kept as experimental alternatives (PH ops, Nov 11).
+    field = "pred_rank_best" if key.startswith("P") and any("pred_rank_best" in r for r in f) else "pred_rank"
+    ranks = {str(r["id"]): int(r[field]) for r in f if r.get(field) is not None}
+    # Expected day-end votes (PH ops growth model, from Nov 12; null when unknown).
+    exp = {str(r["id"]): round(float(r["exp_final_votes"])) for r in f
+           if isinstance(r.get("exp_final_votes"), (int, float))}
+    if not ranks:
+        return None
+    alt = {}
+    for af in ("pred_rank", "pred_rank_blend", "pred_rank_api"):
+        if af != field and any(af in r for r in f):
+            alt[af] = {str(r["id"]): int(r[af]) for r in f if r.get(af) is not None}
+    method = ("best blend (comments, PH's hidden order, 00:05 model)" if field == "pred_rank_best"
+              else "comment ridge" if key.startswith("P") else (j.get("method") or field))
+    agree = None
+    if key.startswith("P"):
+        # Do PH's hidden API order and the 00:05 model roughly agree on this pick? (|positions| <= 2, PH ops' rule)
+        api = {str(r["id"]): r.get("pred_rank_api") for r in f}
+        lm = sorted(((str(r["id"]), r.get("lm")) for r in f if isinstance(r.get("lm"), (int, float))), key=lambda t: -t[1])
+        lm_pos = {i: n for n, (i, _) in enumerate(lm, 1)}
+        agree = {i: abs(int(api[i]) - lm_pos[i]) <= 2 for i in ranks if api.get(i) and i in lm_pos}
+    return {"ranks": ranks, "made_at": j.get("written_at", ""), "data_up_to": j.get("data_up_to", ""),
+            "method": method, "rank_field": field, "alt": alt, "exp_votes": exp or None, "agree": agree}
+
+
+def _published(day: str, kind: str) -> dict | None:
+    j = gcs.read_json(f"results/web/predictions/{day}_{kind}.json", ttl=120)
+    if not isinstance(j, dict) or str(j.get("day")) != day or not isinstance(j.get("ranking"), list):
+        return None
+    ranks, exp = {}, {}
+    for r in j["ranking"]:
+        try:
+            ranks[str(r["id"])] = int(r["rank"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        # 00:05 score = the launch model's expected log1p(day-end votes) (PH ops model.py / features.py logv).
+        if kind == "0005" and isinstance(r.get("score"), (int, float)) and 0 < r["score"] < 12:
+            exp[str(r["id"])] = int(round(math.expm1(float(r["score"]))))
+    none = str(j.get("model") or "") == "none_available" or str(j.get("fallback_used") or "") == "none_available"
+    if not ranks and not none:
+        return None
+    cut_h, cut_m = (0, 5) if kind == "0005" else (3, 45)
+    return {"ranks": ranks, "made_at": j.get("written_at", ""), "method": str(j.get("model") or "")[:80],
+            "data_up_to": datetime.fromisoformat(day).replace(hour=cut_h, minute=cut_m, tzinfo=PT).isoformat(),
+            "fallback": "none_available" if none else (str(j.get("fallback_used"))[:40] if j.get("fallback_used") else None),
+            "backtest_line": str(j.get("backtest") or "")[:200], "exp_votes": exp or None,
+            "vote_err": (claims().get("vote_error_0005") or {}).get("text") if exp else None,
+            "source": f"results/web/predictions/{day}_{kind}.json"}
+
+
+def _cutover(kind: str) -> str | None:
+    """Earliest day with a published prediction file of this kind (results/web/predictions/<day>_<kind>.json)."""
+    days = sorted(n.rsplit("/", 1)[-1][:10] for n, _ in gcs.list_names("results/web/predictions/", ttl=600)
+                  if n.endswith(f"_{kind}.json") and n.rsplit("/", 1)[-1][:10].count("-") == 2)
+    return days[0] if days else None
+
+
+def _p345(day: str) -> dict | None:
+    j = gcs.read_json(f"results/early_forecast/{day}_P345.json", ttl=120)
+    f = (j or {}).get("forecast") or []
+    ranks = {str(r["id"]): int(r["pred_rank_hybrid"]) for r in f if isinstance(r.get("pred_rank_hybrid"), (int, float))}
+    if not ranks:
+        return None
+    exp = {str(r["id"]): round(float(r["exp_final_votes"])) for r in f if isinstance(r.get("exp_final_votes"), (int, float))}
+    return {"ranks": ranks, "made_at": j.get("written_at", ""), "data_up_to": j.get("data_up_to", ""),
+            "method": "hybrid (hidden rank top 5 + ridge 6+)", "exp_votes": exp or None,
+            "source": f"results/early_forecast/{day}_P345.json"}
+
+
+def input_flag(day: str) -> str | None:
+    """PH ops' per-day input warning for the 00:05 and pre-reveal predictions (scoreboard.json day_flags), e.g.
+    'built on polluted hunter-history inputs (today-rows bug, fix not yet live)'. Plain text only, capped."""
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+    f = (sb.get("day_flags") or {}).get(day) if isinstance(sb.get("day_flags"), dict) else None
+    return _clean_text(f)[:160] if isinstance(f, str) and f.strip() else None
+
+
+def accuracy() -> dict:
+    """Track record of the two published predictions (E5, tmp/e5/website/track_record_v1.json): one block per
+    prediction and flag (backtest / replay / live), never pooled across flags."""
+    t = gcs.read_json("tmp/e5/website/track_record_v1.json", ttl=1800) or {}
+    out = {"mid": [], "pre": []}
+    for key, b in (t.get("summary") or {}).items():
+        pred, _, flag = str(key).partition(" | ")
+        tab = "mid" if pred.startswith("00:05") else "pre" if pred.startswith("03:45") else None
+        a = (b or {}).get("all days") or {}
+        try:
+            row = {"flag": flag, "top3": a["top3 hits %"][0], "top5": a["top5 hits %"][0], "top10": a["top10 hits %"][0],
+                   "days": a["top10 hits %"][3]}
+            if (b or {}).get("note"):
+                n = str(b["note"])
+                n = n.split(" (settled")[0] if len(n) > 160 else n      # keep the headline of a long note
+                row["note"] = n if len(n) <= 160 else n[:157].rsplit(" ", 1)[0] + "…"
+        except (KeyError, IndexError, TypeError):
+            continue
+        if tab == "mid" and flag == "live, previous published model":
+            row["flag"] = "live, previous model"     # what was actually published (scoreboard), never a replay
+        if tab:
+            out[tab].append(row)
+    # 00:05 tab (E5 drift_0005, Nov 14): the Sep–Oct backtest of the deployed model and the previous model's live
+    # days replace the 214-day backtest; the new model's own live rows (flag "live") are kept from the file.
+    m = claims().get("midnight_accuracy")
+    if m:
+        keep = [r for r in out["mid"] if r["flag"] in ("live", "backtest", "live, previous model")]
+        for r in keep:
+            if r["flag"] == "live, previous model" and m.get("live_note"):
+                r["note"] = str(m["live_note"])
+        for r in keep:
+            if r["flag"] == "backtest":
+                r["flag"] = f"backtest ({r['days']} days)"
+                r["days"] = None
+        out["mid"] = keep + [dict(r) for r in m["rows"]]
+    # 03:45 tab (E5, Nov 14): the leave-one-day-out replay of the hybrid, shown beside Product Hunt's hidden order alone.
+    for r in out["pre"]:
+        if r["flag"] == "replay (hidden rank alone)":
+            r["flag"] = "Product Hunt's hidden order alone"
+    # Independent audit (orchestrator, Nov 15): the replay is from the 03:00 PT read; top 3 / 5 are PH's hidden order
+    # itself and only top 10 is the hybrid's own gain. The audited row (with 12-day intervals) replaces the file's row.
+    pa = claims().get("prereveal_audit")
+    if pa and pa.get("row"):
+        out["pre"] = [r for r in out["pre"] if r["flag"] != "replay"] + [dict(pa["row"])]
+    order = {"live": 0, "live, previous model": 1, "replay with fixed inputs (not live)": 1.5, "backtest (Sep–Oct)": 3, "replay": 4,
+             "replayed from the 03:00 PT read": 4, "Product Hunt's hidden order alone": 5}
+    for v in out.values():
+        v.sort(key=lambda r: order.get(r["flag"], 2))
+    return out
+
+
+def _forecast_pre(day: str) -> dict | None:
+    """Product + comments, order-free (usersim_core, <= 03:45 PT): results/web/forecast_pre/<day>.json, same shape as
+    forecast_0005. Never results/early_forecast/*_PRE.json or the 03:45 hybrid, which read PH's hidden vote order."""
+    j = gcs.read_json(f"results/web/forecast_pre/{day}.json", ttl=600)
+    made = ""
+    if isinstance(j, dict) and isinstance(j.get("forecast"), list):
+        made = j.get("run_updated_at") or j.get("written_at", "")
+        j = j["forecast"]
+    ids = None
+    if isinstance(j, list) and j:
+        rows = [(str(r.get("id")), int(r.get("predicted_rank") or r.get("pred_rank") or 0)) for r in j if isinstance(r, dict)]
+        ids = [i for i, _ in sorted(rows, key=lambda t: t[1]) if i]
+    elif isinstance(j, dict) and j:
+        ids = [str(k) for k, _ in sorted(j.items(), key=lambda kv: int(kv[1]))]
+    if not ids:
+        return None
+    return {"ranks": {i: n for n, i in enumerate(ids, 1)}, "made_at": made,
+            "data_up_to": datetime.fromisoformat(day).replace(hour=3, minute=45, tzinfo=PT).isoformat(),
+            "method": "Product + comments (order-free, 03:45 PT)"}
+
+
+def forecasts(day: str) -> dict[str, dict]:
+    def go():
+        out = {}
+        f = _forecast_0005(day)
+        if f:
+            out["0005"] = f
+        for k in POINT_KEYS[1:]:
+            if k == "PRE":
+                continue
+            f = _forecast_file(day, k)
+            if f:
+                out[k] = f
+        # The two published predictions (PH ops, Nov 14), one fixed list each per day:
+        #  - from the first day a published file exists for a kind (its cutover day), only the published file is shown,
+        #    so the list never changes once shown; before it is written the tab says "not yet available";
+        #  - a published file marked none_available is superseded by the day's real forecast file if there is one;
+        #  - days before the cutover keep the files that were live then (00:05 forecast, the 03:45 hybrid in P345).
+        legacy = {"0005": out.get("0005")}
+        pub = {"0005": _published(day, "0005")}
+        cut = {"0005": _cutover("0005")}
+        keep = {}
+        for k in ("0005",):
+            p = pub[k]
+            if p and p.get("fallback") != "none_available":
+                keep[k] = p
+            elif p:                                       # none_available
+                if k == "0005" and legacy[k]:             # the VM's own 00:05 forecast, labelled as such
+                    keep[k] = {**legacy[k], "fallback": "earlier_forecast"}
+                else:                                     # P345 is a shadow line now: never shown as the prediction
+                    keep[k] = p
+            elif cut[k] and day >= cut[k]:
+                pass                                      # published era, not written yet
+            elif legacy[k]:
+                keep[k] = legacy[k]
+        if keep.get("0005") is pub["0005"] and legacy["0005"] and legacy["0005"].get("exp_votes") and not keep["0005"].get("exp_votes"):
+            keep["0005"]["exp_votes"] = legacy["0005"]["exp_votes"]
+        # Product + comments carries no vote figure of its own: give each of its ranks the vote level the midnight model
+        # expects at that position today (k-th largest midnight estimate), so the column reads in votes and stays in order.
+        f_pre = _forecast_pre(day)                       # Product + comments: the order-free file only
+        if f_pre:
+            keep["PRE"] = f_pre
+        pre, mid = keep.get("PRE"), keep.get("0005")
+        if pre and pre.get("ranks") and not pre.get("exp_votes") and mid and mid.get("exp_votes"):
+            levels = sorted(mid["exp_votes"].values(), reverse=True)
+            ev = {i: levels[r - 1] for i, r in pre["ranks"].items() if 0 < r <= len(levels)}
+            if ev:
+                pre = dict(pre, exp_votes=ev)
+                keep["PRE"] = pre
+        out = keep                                        # only the two published predictions leave the server
+        return out
+    return gcs._cached("fc:" + day, 120, go)
+
+
+def _written_label(day: str, iso: str | None) -> str:
+    if not iso:
+        return ""
+    try:
+        t = datetime.fromisoformat(str(iso).replace("Z", "+00:00")).astimezone(PT)
+    except ValueError:
+        return ""
+    return t.strftime("%H:%M PT") if t.strftime("%Y-%m-%d") == day else t.strftime("%b %d, %H:%M PT")
+
+
+def _pt_label(iso: str) -> str:
+    if not iso:
+        return ""
+    try:
+        return datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(PT).strftime("%H:%M PT")
+    except ValueError:
+        return ""
+
+
+def hits(pred: dict[str, int], act: dict[str, dict], k: int) -> int | None:
+    actual_top = [i for i, v in sorted(act.items(), key=lambda kv: kv[1]["rank"] or 999) if v.get("rank")][:k]
+    if len(actual_top) < k:
+        return None
+    pred_top = [i for i, _ in sorted(pred.items(), key=lambda kv: kv[1])][:k]
+    return len(set(pred_top) & set(actual_top))
+
+
+def current_board(day: str) -> dict:
+    """PH's own leaderboard from the latest 15-min snapshot (official API light loop). Votes only once PH shows them."""
+    rows = gcs.read_tail_jsonl(f"raw/ph_at_launch/{day}/live/posts_ts.jsonl", ttl=120)
+    rows = [r for r in rows if r.get("fetch_status") == 200 and r.get("snapshot_ts") and _launch_day(r, day) == day]
+    if not rows:
+        return {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True}
+    last = max(r["snapshot_ts"] for r in rows)
+    snap = [r for r in rows if r["snapshot_ts"] == last]
+    hidden = sum(bool(r.get("hide_votes_count")) for r in snap) > len(snap) / 2
+    ranks = {}
+    for i, r in enumerate(sorted(snap, key=lambda r: (int(r.get("daily_rank_at_fetch") or 999), -(r.get("votes_at_fetch") or 0))), 1):
+        dr = r.get("daily_rank_at_fetch")
+        ranks[str(r["launch_id"])] = {"rank": int(dr) if dr else i,
+                                      "votes": None if hidden or r.get("votes_at_fetch") is None else int(r["votes_at_fetch"]),
+                                      "comments": int(r.get("comments_count_at_fetch") or 0)}
+    return {"as_of": last, "as_of_pt": _pt_label(last), "ranks": ranks, "votes_hidden": hidden}
+
+
+def claims() -> dict:
+    """Fixed offline figures with source and date (mvp/ph_site/claims.json)."""
+    from pathlib import Path
+    return json.loads((Path(__file__).with_name("claims.json")).read_text())
+
+
+_BRAND = re.compile(r"\bby\s+[A-Z]")
+_VERSION = re.compile(r"\b\d+(\.\d+)+\b|\bv\d+\b")
+
+
+def _top3_confidence(ranks: dict[str, int], prods: dict[str, dict]) -> dict[str, dict]:
+    """Live per-pick record of the deployed 00:05 model (scoreboard: how often our #k finished in the final top 3)."""
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+    row = next((r for r in sb.get("summary") or [] if r.get("point") == "0005" and r.get("method") == "published"
+                and r.get("source") == "live"), None)
+    if not row:
+        return {}
+    bt = None
+    b = claims().get("launch_model_backtest")
+    if b and "p1_top3" in b["values"]:
+        bt = {"label": b.get("pick_label") or b["label"], "p1": b["values"]["p1_top3"], "exact1": b["values"]["exact1"],
+              "date": b["date"]}
+    out = {}
+    for pid, r in ranks.items():
+        cnt = row.get(f"p{r}_top3_count") if r <= 3 else None
+        if cnt:
+            out[pid] = {"count": cnt, "what": "top 3", "basis": f"live 00:05 calls, {row.get('first_day')} to {row.get('last_day')}",
+                        "backtest": bt}
+    return out
+
+
+def _prereveal_confidence(key: str, f: dict) -> dict | None:
+    """PH ops' replay of the pre-reveal picks (results/web/prereveal_confidence.json): how often pick k finished in the
+    top 3 (picks 1-3) or top 5 (picks 4-5), as counts, plus whether the hidden API order and the 00:05 model agree."""
+    pc = gcs.read_json("results/web/prereveal_confidence.json", ttl=3600)
+    if not pc or key not in (pc.get("by_point") or {}) or pc.get("applies_to", "pred_rank_best") != "pred_rank_best":
+        return None
+    bp, out = pc["by_point"][key], {}
+    ag = pc.get("by_agreement") or {}
+    for pid, r in f["ranks"].items():
+        if r > 5:
+            continue
+        cell = (bp.get(f"pick{r}") or {}).get("in_top3" if r <= 3 else "in_top5")
+        if not cell:
+            continue
+        a = (f.get("agree") or {}).get(pid)
+        arate = ((ag.get("agree" if a else "disagree") or {}).get("picks1_3_in_top3" if r <= 3 else "picks1_5_in_top5")
+                 if a is not None else None)
+        out[pid] = {"hits": cell["hits"], "n": cell["n"], "what": "top 3" if r <= 3 else "top 5", "agree": a,
+                    "agree_rate": arate["rate"] if arate else None,
+                    "basis": f"{'in-sample ' if pc.get('in_sample') else ''}replay, {pc.get('n_days')} days",
+                    "note": pc.get("note", "")}
+    return out or None
+
+
+def _difficulty(day: str) -> dict | None:
+    """Day label from results/web/confidence/<day>.json (conf_v2: clear_leader / open_field). It is validated for the
+    clean shadow model only, so it is returned only if the file says it applies to the published ranking and is
+    stable; with today's files (applies_to "clean shadow model") it is never shown next to the published picks."""
+    j = gcs.read_json(f"results/web/confidence/{day}.json", ttl=600)
+    if not isinstance(j, dict) or not j.get("label") or j.get("stable") is not True:
+        return None
+    if str(j.get("applies_to") or "").strip().lower() not in ("published", "published 00:05 ranking", "deployed"):
+        return None
+    vr = j.get("validated_rates") or {}
+    out = {"label": j["label"], "text": j.get("text") or "", "days": vr.get("days"), "p1_top3": vr.get("p1_top3"),
+           "p1_count": vr.get("p1_count"), "source": j.get("source") or ""}
+    fc = gcs.read_json("results/web/confidence_scoreboard.json", ttl=600) or {}
+    fwd = ((fc.get("by_label") or {}).get(j["label"])) if isinstance(fc, dict) else None
+    if isinstance(fwd, dict) and fwd.get("days"):
+        out["forward"] = {"days": fwd["days"], "p1_top3_count": fwd.get("p1_top3_count")}
+    return out
+
+
+WHY_MIN_GROUP = 20
+_WHY_PERSON_ID_RE = re.compile(r"\bp_[0-9a-f]{10,}\b", re.IGNORECASE)
+_WHY_EMAIL_RE = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
+_WHY_HANDLE_RE = re.compile(r"(?<!\w)@\w+")
+_WHY_URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
+
+
+def _why_prefix() -> str:
+    # The published path. A local-only override lets the shadow files be previewed; it is ignored on the deployed site.
+    import os
+    o = os.environ.get("PH_WHY_PREFIX")
+    return o if o and not (os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV")) else "results/web/why"
+
+
+def _why_num(v):
+    return round(float(v), 4) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+
+
+def _why_clean_str(v, max_len: int = 220) -> str:
+    txt = str(v or "")
+    txt = _WHY_URL_RE.sub("", txt)
+    txt = _WHY_EMAIL_RE.sub("", txt)
+    txt = _WHY_PERSON_ID_RE.sub("", txt)
+    txt = _WHY_HANDLE_RE.sub("", txt)
+    return " ".join(txt.split())[:max_len].strip()
+
+
+def _why_safe_gate(gate: dict | None, floor: int) -> dict:
+    if not isinstance(gate, dict):
+        return {"n_people": None, "expected_votes": None, "suppressed_lt_min_group": True}
+    n = gate.get("n_people")
+    ev = _why_num(gate.get("expected_votes"))
+    if n == 0 and not isinstance(n, bool):
+        return {"n_people": 0, "expected_votes": 0.0 if ev is not None else None, "suppressed_lt_min_group": False}
+    if isinstance(n, (int, float)) and not isinstance(n, bool) and int(n) >= floor:
+        return {"n_people": int(n), "expected_votes": round(ev, 2) if ev is not None else None, "suppressed_lt_min_group": False}
+    return {"n_people": None, "expected_votes": None, "suppressed_lt_min_group": True, "min_group_threshold": floor}
+
+
+def why_cards(day: str, point: str, ids: set[str]) -> dict | None:
+    """Structured per-launch interpretability cards (`usersim_core_why_v5`/`v6`: `named_competitors`,
+    `voter_population_breakdown`, `sameday_head_to_head_split`, `cua_execution_proof`).
+    Strictly re-validates `min_group >= 20` and scrubs handles, person IDs, emails, and URLs before serving."""
+    pt_norm = "mid" if point in ("0005", "mid") else "pre" if point in ("PRE", "pre") else point
+    candidates = [pt_norm] + ([point] if point != pt_norm else [])
+    j = None
+    for cand in candidates:
+        cand_j = gcs.read_json(f"{_why_prefix()}/{day}_{cand}.json", ttl=300)
+        if isinstance(cand_j, dict) and isinstance(cand_j.get("launches"), dict):
+            j = cand_j
+            break
+    if not isinstance(j, dict) or not isinstance(j.get("launches"), dict):
+        return None
+
+    floor = max(WHY_MIN_GROUP, int(j.get("min_group") or 0))
+    out = {}
+    for pid, row in j["launches"].items():
+        if str(pid) not in ids or not isinstance(row, dict):
+            continue
+        has_rich = any(
+            k in row for k in ("named_competitors", "voter_population_breakdown", "sameday_head_to_head_split", "cua_execution_proof")
+        )
+        if not has_rich:
+            continue
+
+        # 1. Top-3 Named Competitors (< D)
+        comps = []
+        for c in (row.get("named_competitors") or [])[:3] if isinstance(row.get("named_competitors"), list) else []:
+            if not isinstance(c, dict):
+                continue
+            nm = _why_clean_str(c.get("name"), 80)
+            if not nm:
+                continue
+            hend = c.get("hist_endorsements_lt_d")
+            safe_hend = int(hend) if isinstance(hend, (int, float)) and not isinstance(hend, bool) and (int(hend) == 0 or int(hend) >= floor) else None
+            comps.append({
+                "name": nm,
+                "slug": re.sub(r"[^a-z0-9-]+", "", str(c.get("slug") or "").lower())[:60],
+                "shared_categories": [_why_clean_str(x, 48) for x in (c.get("shared_categories") or [])[:3] if _why_clean_str(x, 48)],
+                "reviews_count": max(0, int(c.get("reviews_count") or 0)) if isinstance(c.get("reviews_count"), (int, float)) else 0,
+                "hist_endorsements_lt_d": safe_hend,
+                "key_user_pain_point": _why_clean_str(c.get("key_user_pain_point"), 180),
+                "hands_on_comparison": _why_clean_str(c.get("hands_on_comparison"), 180),
+            })
+
+        # 2. 93,618-Person Discrete-Choice Voter & Switcher Breakdown (`min_group >= 20`)
+        vp = row.get("voter_population_breakdown") if isinstance(row.get("voter_population_breakdown"), dict) else {}
+        act_n = vp.get("active_90d_pool_n")
+        safe_act_n = int(act_n) if isinstance(act_n, (int, float)) and not isinstance(act_n, bool) and int(act_n) >= floor else None
+        tm_raw = vp.get("activity_tier_mix") if isinstance(vp.get("activity_tier_mix"), dict) else {}
+        safe_tiers = {}
+        for tk in ("1-9", "10-99", "100+"):
+            cell = tm_raw.get(tk) if isinstance(tm_raw.get(tk), dict) else {}
+            tn = cell.get("n_people")
+            sh = _why_num(cell.get("expected_vote_share"))
+            if isinstance(tn, (int, float)) and not isinstance(tn, bool) and int(tn) >= floor:
+                safe_tiers[tk] = {"n_people": int(tn), "expected_vote_share": sh}
+            else:
+                safe_tiers[tk] = {"n_people": None, "expected_vote_share": None, "suppressed_lt_min_group": True}
+        base_tiers = {
+            tk: _why_num((vp.get("all_held_people_tier_baseline") or {}).get(tk))
+            for tk in ("1-9", "10-99", "100+")
+            if isinstance(vp.get("all_held_people_tier_baseline"), dict)
+        }
+        vpop = {
+            "active_90d_pool_n": safe_act_n,
+            "expected_held_votes": _why_num(vp.get("expected_held_votes")) if safe_act_n is not None else None,
+            "qwen_stack1b_expected_votes": _why_num(vp.get("qwen_stack1b_expected_votes")) if safe_act_n is not None else None,
+            "team_and_hunter_backers": _why_safe_gate(vp.get("team_and_hunter_backers"), floor),
+            "follow_ties_lt_d": _why_safe_gate(vp.get("follow_ties_lt_d"), floor),
+            "competitor_voters_and_switchers": _why_safe_gate(vp.get("competitor_voters_and_switchers"), floor),
+            "activity_tier_mix": safe_tiers,
+            "all_held_people_tier_baseline": {k: v for k, v in base_tiers.items() if v is not None},
+        }
+
+        # 3. Same-Day Head-to-Head Split (`cohort_n >= 20` strictly)
+        h2h_raw = row.get("sameday_head_to_head_split")
+        sameday_h2h = None
+        if isinstance(h2h_raw, dict):
+            cn = h2h_raw.get("cohort_n")
+            if isinstance(cn, (int, float)) and not isinstance(cn, bool) and int(cn) >= floor:
+                p_this = _why_num(h2h_raw.get("prefer_this_pct"))
+                p_riv = _why_num(h2h_raw.get("prefer_rival_pct"))
+                ov_pct = _why_num(h2h_raw.get("voter_overlap_pct"))
+                rname = _why_clean_str(h2h_raw.get("rival_name"), 80)
+                if rname and p_this is not None and p_riv is not None:
+                    sameday_h2h = {
+                        "rival_item_id": _why_clean_str(h2h_raw.get("rival_item_id"), 32),
+                        "rival_name": rname,
+                        "cohort_n": int(cn),
+                        "voter_overlap_pct": ov_pct if ov_pct is not None else 0.0,
+                        "prefer_this_pct": p_this,
+                        "prefer_rival_pct": p_riv,
+                        "summary": _why_clean_str(h2h_raw.get("summary"), 220),
+                    }
+
+        # 4. Sanitized 4-Step CUA Execution Proof
+        cr = row.get("cua_execution_proof") if isinstance(row.get("cua_execution_proof"), dict) else {}
+        cua_proof = {
+            "inspected": bool(cr.get("inspected")),
+            "access_status": _why_clean_str(cr.get("access_status") or "unverified", 32),
+            "product_trait": _why_clean_str(cr.get("product_trait") or "none", 32),
+            "sso_entered": bool(cr.get("sso_entered")),
+            "workflow_action": _why_clean_str(cr.get("workflow_action") or "none", 60),
+            "workflow_responded": bool(cr.get("workflow_responded")),
+            "hands_on_works": _why_num(cr.get("hands_on_works")),
+            "ui_craft_depth": _why_num(cr.get("ui_craft_depth")),
+            "has_open_source": bool(cr.get("has_open_source")),
+            "has_free_tier": bool(cr.get("has_free_tier")),
+            "exec_digest": _why_clean_str(cr.get("exec_digest"), 200),
+        }
+
+        fd = row.get("forecast_drivers") if isinstance(row.get("forecast_drivers"), dict) else {}
+        pts_raw = fd.get("points") if isinstance(fd.get("points"), dict) else {}
+        pts = {_why_clean_str(k, 60): _why_num(v) for k, v in pts_raw.items() if _why_clean_str(k, 60) and _why_num(v) is not None}
+
+        out[str(pid)] = {
+            "predicted_rank": int(row["predicted_rank"]) if isinstance(row.get("predicted_rank"), (int, float)) else None,
+            "final_score": _why_num(row.get("final_score")),
+            "structural_score": _why_num(row.get("structural_score")),
+            "net_simulation_shift": _why_num(row.get("net_simulation_shift")),
+            "named_competitors": comps,
+            "voter_population_breakdown": vpop,
+            "sameday_head_to_head_split": sameday_h2h,
+            "cua_execution_proof": cua_proof,
+            "forecast_drivers": {
+                "rank_explanation_model": int(fd["rank_explanation_model"]) if isinstance(fd.get("rank_explanation_model"), (int, float)) else None,
+                "score": _why_num(fd.get("score")),
+                "points": pts,
+            },
+        }
+
+    if not out:
+        return None
+    mpv = _explain_clean(j.get("measured_predictive_value")) if isinstance(j.get("measured_predictive_value"), dict) else None
+    hp = j.get("held_people")
+    return {
+        "point": pt_norm,
+        "track": _why_clean_str(j.get("track") or pt_norm, 64),
+        "as_of": _why_clean_str(j.get("as_of"), 40),
+        "as_of_pt": _pt_label(str(j.get("as_of") or "")),
+        "shadow": bool(j.get("shadow")),
+        "min_group": floor,
+        "held_people": int(hp) if isinstance(hp, (int, float)) and not isinstance(hp, bool) and int(hp) >= floor else None,
+        "measured_predictive_value": mpv,
+        "launches": out,
+    }
+
+
+def why(day: str, point: str, ids: set[str]) -> dict | None:
+    """Per-launch explanation items written by the model owners (results/web/why/<day>_<point>.json): aggregates only.
+    Re-checked here before anything is served: only launches in the day's line-up, only numbers (or one level of named
+    numeric shares), and no item that rests on fewer than 20 people."""
+    alt = "mid" if point == "0005" else "pre" if point == "PRE" else None
+    j = gcs.read_json(f"{_why_prefix()}/{day}_{point}.json", ttl=300)
+    if not isinstance(j, dict) and alt:
+        j = gcs.read_json(f"{_why_prefix()}/{day}_{alt}.json", ttl=300)
+    if not isinstance(j, dict) or not isinstance(j.get("launches"), dict) or not isinstance(j.get("items"), dict):
+        return None
+    floor = max(WHY_MIN_GROUP, int(j.get("min_group") or 0))
+    notes = {str(k): str(v)[:500] for k, v in (j.get("notes") or {}).items()}
+    items = {str(k): {"label": str(v.get("label") or k)[:200], "unit": str(v.get("unit") or "")[:120],
+                      "note": notes.get(str(v.get("note")), "")}
+             for k, v in j["items"].items() if isinstance(v, dict)}
+    out = {}
+    for pid, row in j["launches"].items():
+        if str(pid) not in ids or not isinstance(row, dict):
+            continue
+        keep = {}
+        for k, it in row.items():
+            if k not in items or not isinstance(it, dict):
+                continue
+            n = it.get("n_people")
+            if isinstance(n, (int, float)) and n < floor:
+                continue                                     # never show a group under the floor
+            val = it.get("value")
+            if isinstance(val, dict):
+                v = {str(a)[:40]: {str(b)[:20]: _why_num(x) for b, x in d.items() if _why_num(x) is not None}
+                     for a, d in val.items() if isinstance(d, dict)}
+            else:
+                v = _why_num(val)
+            if v is None or v == {}:
+                continue
+            cov = {str(a)[:40]: (int(b) if float(b).is_integer() else round(float(b), 3))
+                   for a, b in (it.get("coverage") or {}).items()
+                   if isinstance(b, (int, float)) and not isinstance(b, bool)} if isinstance(it.get("coverage"), dict) else {}
+            keep[k] = {"value": v, "n_people": int(n) if isinstance(n, (int, float)) else None, "coverage": cov}
+        if keep:
+            out[str(pid)] = keep
+    if not out:
+        return None
+    used = {k for r in out.values() for k in r}
+    return {"as_of": str(j.get("as_of") or ""), "as_of_pt": _pt_label(str(j.get("as_of") or "")), "shadow": bool(j.get("shadow")),
+            "items": {k: v for k, v in items.items() if k in used}, "launches": out}
+
+
+# --- /ph explain panel: per-launch who / say / competitors / why (E5, results/web/explain/<day>.json) -------------------
+EXPLAIN_BLOCKS = ("who", "say", "competitors", "why", "who_actually")
+_EXPLAIN_DENY = {"username", "usernames", "handle", "handles", "user", "users", "user_id", "user_ids", "profile", "profiles",
+                 "profile_url", "email", "person", "people", "voter", "voters", "ids", "url", "urls", "link", "links", "twitter", "x_handle"}
+_ACC_KEYS = ("accuracy_label", "accuracy", "measured_accuracy", "label_accuracy")
+
+
+def _ex_text(v, n):
+    """Whitespace-normalised text cut at n characters (the page's _clean_text stops at 200, too short for these)."""
+    return " ".join(str(v or "").split())[:n]
+
+
+def _explain_clean(v, depth=0):  # noqa: C901
+    """Aggregates only: text, numbers, short lists, small dicts. No usernames/handles/links, no group under the floor."""
+    if depth > 4 or v is None or isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return round(float(v), 4) if not float(v).is_integer() else int(v)
+    if isinstance(v, str):
+        t = _ex_text(v, 320)
+        return None if not t or re.search(r"(^|\s)@\w", t) or t.lower().startswith(("not available", "n/a")) else t
+    if isinstance(v, list):
+        out = [x for x in (_explain_clean(i, depth + 1) for i in v[:30]) if x not in (None, {}, [])]
+        return out or None
+    if isinstance(v, dict):
+        for nk in ("n_people", "n_held_people_scored", "n_held_backers"):
+            n = v.get(nk)
+            if isinstance(n, (int, float)) and not isinstance(n, bool) and n < WHY_MIN_GROUP:
+                return None
+        out = {}
+        for k, x in v.items():
+            ks = str(k)[:40]
+            if ks.lower() in _EXPLAIN_DENY:
+                continue
+            c = _explain_clean(x, depth + 1)
+            if c not in (None, {}, []):
+                out[ks] = c
+        return out or None
+    return None
+
+
+def explain(day: str, ids: set[str]) -> dict | None:
+    """E5's per-launch explanation (results/web/explain/<day>.json): blocks who / say / competitors / why, each with the
+    owner's accuracy labels (top-level "labels"). Also attaches privacy-audited `usersim_core` interpretability cards
+    (`sim_why`: `mid` / `pre`) when present under `_why_prefix()`."""
+    j = gcs.read_json(f"results/web/explain/{day}.json", ttl=300)
+    wc_mid = why_cards(day, "mid", ids)
+    wc_pre = why_cards(day, "pre", ids)
+    if not isinstance(j, dict) and not wc_mid and not wc_pre:
+        return None
+    rows = (j.get("launches") if isinstance(j.get("launches"), dict) else {k: v for k, v in j.items() if isinstance(v, dict)}) if isinstance(j, dict) else {}
+    out, labels = {}, {}
+    top = j.get("labels") if isinstance(j, dict) and isinstance(j.get("labels"), dict) else {}
+    for b, d in top.items():
+        if b in EXPLAIN_BLOCKS and isinstance(d, dict):
+            labels[b] = {str(k)[:40]: _ex_text(v, 700) for k, v in d.items() if isinstance(v, str) and _ex_text(v, 700)}
+    for pid, row in rows.items():
+        if str(pid) not in ids or not isinstance(row, dict):
+            continue
+        keep = {}
+        for b in EXPLAIN_BLOCKS:
+            raw = row.get(b)
+            if isinstance(raw, dict) and "accuracy_label" in raw:          # per-block label inside the block (Nov 14 file)
+                al, raw = raw["accuracy_label"], {k: v for k, v in raw.items() if k != "accuracy_label"}
+                if b not in labels:
+                    labels[b] = ({str(k)[:40]: _ex_text(v, 700) for k, v in al.items() if isinstance(v, str) and _ex_text(v, 700)}
+                                 if isinstance(al, dict) else {"text": _ex_text(al, 1000)} if isinstance(al, str) and _ex_text(al, 1000) else {})
+            body = _explain_clean(raw)
+            if body:
+                keep[b] = body
+        if keep:
+            out[str(pid)] = keep
+    # Attach structured `usersim_core` interpretability cards (`mid` / `pre`) when present
+    sim_meta = {}
+    for tk, wc in (("mid", wc_mid), ("pre", wc_pre)):
+        if not wc:
+            continue
+        sim_meta[tk] = {mk: wc[mk] for mk in ("track", "as_of", "as_of_pt", "shadow", "min_group", "held_people", "measured_predictive_value") if wc.get(mk) is not None}
+        for pid, card in wc["launches"].items():
+            out.setdefault(str(pid), {}).setdefault("sim_why", {})[tk] = card
+    # Every input of the readable explanation model, with its points (results/web/why/<day>_0005.json forecast_drivers).
+    w = gcs.read_json(f"{_why_prefix()}/{day}_0005.json", ttl=600) or gcs.read_json(f"{_why_prefix()}/{day}_mid.json", ttl=600)
+    # Existing audience: counts that differ a lot between launches (followers, past backers, expected held votes), each
+    # with its rank among the day's launches. Counts only; a count under the group floor is never shown.
+    AUD = ("hunter_followers", "follow_ties", "follow_ties_active", "held_backers", "expected_held_votes")
+    wl = (w or {}).get("launches") if isinstance(w, dict) and isinstance(w.get("launches"), dict) else {}
+    vals = {k: {} for k in AUD}
+    for pid, row in wl.items():
+        for k in AUD:
+            v = ((row or {}).get(k) or {}).get("value") if isinstance(row, dict) else None
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and (k in ("hunter_followers", "expected_held_votes") or v >= WHY_MIN_GROUP):
+                vals[k][str(pid)] = float(v)
+    pus = []
+    for pid in list(out):
+        aud = {}
+        for k in AUD:
+            if pid in vals[k]:
+                ordered = sorted(vals[k].values(), reverse=True)
+                aud[k] = {"value": vals[k][pid], "rank": ordered.index(vals[k][pid]) + 1, "of": len(ordered)}
+        row = wl.get(pid) or {}
+        tiers = ((row.get("audience_tiers") or {}).get("value") or {}) if isinstance(row, dict) else {}
+        n_t = (row.get("audience_tiers") or {}).get("n_people") if isinstance(row, dict) else None
+        if isinstance(tiers, dict) and isinstance(n_t, (int, float)) and n_t >= WHY_MIN_GROUP:
+            t, a = tiers.get("this launch") or {}, tiers.get("all held people") or {}
+            if isinstance(t.get("100+"), (int, float)) and isinstance(a.get("100+"), (int, float)):
+                aud["power_users"] = {"share": round(float(t["10-99"] or 0) + float(t["100+"]), 3),
+                                      "usual": round(float(a.get("10-99") or 0) + float(a["100+"]), 3)}
+        aud["n_launches"] = len(vals["expected_held_votes"]) or len(wl)
+        if "power_users" in aud:
+            pus.append(aud["power_users"]["share"])
+        if len(aud) > 1:
+            out[pid]["audience"] = aud
+    if pus:                                   # compare with the day's median launch, not with everyone we hold
+        med = sorted(pus)[len(pus) // 2]
+        for v in out.values():
+            if "power_users" in v.get("audience", {}):
+                v["audience"]["power_users"]["day_median"] = med
+    # Raw values a founder can act on, from the 00:05 line-up file (counts and dates only, never names).
+    raw = {}
+    lu = gcs.read_json(f"raw/daily/{day}/today_0005.json", ttl=600) or gcs.read_json(f"raw/daily/{day}/{day}.json", ttl=600) or []
+    for r in lu if isinstance(lu, list) else []:
+        if not isinstance(r, dict) or str(r.get("id")) not in out:
+            continue
+        u = r.get("user") if isinstance(r.get("user"), dict) else {}
+        age = None
+        try:
+            age = (datetime.fromisoformat(f"{day}T00:00:00+00:00") - datetime.fromisoformat(str(u.get("createdAt")).replace("Z", "+00:00"))).days
+        except (TypeError, ValueError):
+            pass
+        def _n(v):
+            return len(v) if isinstance(v, list) else (len(v.get("edges") or []) if isinstance(v, dict) else None)
+        raw[str(r["id"])] = {"team size": _n(r.get("makers")), "media items": _n(r.get("media")),
+                             "hunter account age": f"{age // 365} y {age % 365 // 30} mo" if isinstance(age, int) and age >= 0 else None,
+                             "topics": [str(((e or {}).get("node") or {}).get("name") or "")[:40] for e in ((r.get("topics") or {}).get("edges") or [])][:6]
+                             if isinstance(r.get("topics"), dict) else None}
+    for pid, rv in raw.items():
+        out[pid]["raw"] = {k: v for k, v in rv.items() if v not in (None, [], "")}
+    for pid, row in ((w or {}).get("launches") or {}).items() if isinstance(w, dict) else []:
+        fd = (row or {}).get("forecast_drivers") if isinstance(row, dict) else None
+        pts = fd.get("points") if isinstance(fd, dict) else None
+        if str(pid) in out and isinstance(pts, dict) and "why" in out[str(pid)] and not out[str(pid)]["why"].get("all_inputs"):
+            out[str(pid)]["why"]["all_inputs"] = [{"input": _ex_text(k, 60), "points": round(float(v), 4)}
+                                                  for k, v in pts.items() if isinstance(v, (int, float)) and not isinstance(v, bool)][:20]
+    if not out:
+        return None
+    as_of = str(j.get("written_at") or "") if isinstance(j, dict) else str((wc_pre or wc_mid or {}).get("as_of") or "")
+    res = {"as_of": as_of, "labels": labels, "launches": out}
+    if sim_meta:
+        res["sim_why_meta"] = sim_meta
+    return res
+
+
+# Nominal data cut of each point (PT, hours after midnight); a point counts as "not made" once its cut is 90 min past.
+NOMINAL_CUT_H = {"0005": 0.08, "PRE": 3.75}
+BOARD_STALE_MIN = 35
+
+
+def _capture_gaps(day: str) -> list[dict]:
+    """Gaps of more than 30 min in the 15-min Product Hunt capture (raw/ph_at_launch/<day>/snapshots/<day>T<HHMM>PT_*)."""
+    import re as _re
+    ts = sorted({m.group(1) for n, _ in gcs.list_names(f"raw/ph_at_launch/{day}/snapshots/", ttl=120)
+                 for m in [_re.search(r"T(\d{4})PT", n.rsplit("/", 1)[-1])] if m})
+    mins = [int(t[:2]) * 60 + int(t[2:]) for t in ts]
+    return [{"from_pt": f"{a // 60:02d}:{a % 60:02d} PT", "to_pt": f"{b // 60:02d}:{b % 60:02d} PT", "minutes": b - a}
+            for a, b in zip(mins, mins[1:]) if b - a > 30]
+
+
+def _freshness(day: str, fc: dict, board: dict, final: bool) -> dict:
+    """What is missing or not updated, so the page can say so instead of breaking or looking current."""
+    now = datetime.now(PT)
+    is_today = day == now.strftime("%Y-%m-%d")
+    midnight = datetime.fromisoformat(day).replace(tzinfo=PT)
+    past = now - midnight
+    missing = [k for k, h in NOMINAL_CUT_H.items() if k not in fc and (not is_today or past.total_seconds() > (h * 60 + 90) * 60)]
+    out = {"missing_points": missing, "missing_labels": [dict((k, l) for k, l, _ in POINTS).get(k, k) for k in missing],
+           "capture_gaps": [], "board_stale": False, "board_stale_label": ""}
+    try:
+        out["capture_gaps"] = _capture_gaps(day)
+    except Exception as exc:  # noqa: BLE001 - a listing failure must not take the page down
+        print(f"[ph] capture gap check failed: {exc!r}", flush=True)
+    if is_today and not final:
+        try:
+            age = (datetime.now(timezone.utc) - datetime.fromisoformat(str(board.get("as_of")).replace("Z", "+00:00"))).total_seconds() / 60
+        except (ValueError, TypeError):
+            age = None
+        limit = 5 if board.get("source") == "Product Hunt API" else BOARD_STALE_MIN
+        if age is None or age > limit:
+            out["board_stale"] = True
+            out["board_stale_label"] = (f"not updated since {board.get('as_of_pt')}" if board.get("as_of_pt")
+                                        else "no live reading yet today")
+            # an open gap: the capture stopped and has not resumed
+            if board.get("as_of_pt") and age is not None:
+                out["capture_gaps"].append({"from_pt": board["as_of_pt"], "to_pt": None, "minutes": int(age)})
+    return out
+
+
+def _api_board(day: str) -> dict | None:
+    """The site's own Product Hunt API board (mvp/ph_site/ph_live.py); None when unconfigured and never saved."""
+    from mvp.ph_site import ph_live
+    try:
+        return ph_live.board(day)
+    except Exception as exc:  # noqa: BLE001 - fall back to the capture files
+        print(f"[ph] live board unavailable: {type(exc).__name__}", flush=True)
+        return None
+
+
+def board_only_view(day: str) -> dict:
+    """The live board with no predictions: used when the day view itself fails."""
+    api = _api_board(day) or {"launches": [], "fetched_at": None, "votes_hidden": False}
+    launches = [{"id": r["id"], "name": r["name"], "tagline": r["tagline"], "slug": r["slug"], "topics": r.get("topics") or [],
+                 "thumb": r["thumb"], "board_rank": r["rank"], "board_votes": r["votes"]} for r in api["launches"]]
+    return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": [],
+            "freshness": {"missing_points": [], "missing_labels": [], "capture_gaps": [], "board_stale": False,
+                          "board_stale_label": ""}, "why": {}, "lead_point": None,
+            "board": {"as_of": api["fetched_at"], "as_of_pt": _pt_label(api["fetched_at"] or ""),
+                      "votes_hidden": api["votes_hidden"], "source": "Product Hunt API" if api["fetched_at"] else None},
+            "status": {"final": bool(api.get("final")), "revealed": True, "as_of_pt": "", "as_of": api["fetched_at"]}}
+
+
+def _safe(fn, default, what: str):
+    try:
+        return fn()
+    except Exception as exc:  # noqa: BLE001 - one broken file or storage error must not take the page down
+        print(f"[ph] {what} unavailable: {type(exc).__name__}", flush=True)
+        return default
+
+
+def day_view(day: str) -> dict:
+    prods = _safe(lambda: _lineup(day), {}, "line-up")
+    fc = _safe(lambda: forecasts(day), {}, "forecasts")
+    act = _safe(lambda: actuals(day), {"final": False, "as_of": None, "revealed": False, "ranks": {}}, "actuals")
+    api = _api_board(day)
+    if api:
+        for r in api["launches"]:                  # launches the line-up files missed (or no files at all)
+            if r["id"] not in prods:
+                prods[r["id"]] = {"id": r["id"], "name": r["name"], "tagline": r["tagline"], "slug": r["slug"],
+                                  "topics": r["topics"], "thumb": r["thumb"]}
+            elif not prods[r["id"]].get("thumb") and r.get("thumb"):
+                prods[r["id"]]["thumb"] = r["thumb"]
+        if act["final"] and api.get("final"):      # official ranks kept; vote counts filled from the API's final read
+            av = {r["id"]: r["votes"] for r in api["launches"]}
+            act = {**act, "ranks": {k: {**v, "votes": v.get("votes") if v.get("votes") is not None else av.get(k)}
+                                    for k, v in act["ranks"].items()}}
+        if api.get("final") and not act["final"]:
+            act = {"final": True, "as_of": api["fetched_at"], "revealed": True, "source": "Product Hunt API, after the day closed",
+                   "ranks": {r["id"]: {"rank": r["rank"], "votes": r["votes"]} for r in api["launches"]}}
+    points = []
+    for key, label, sees in POINTS:
+        if key not in fc:
+            continue
+        f = fc[key]
+        # 'Made' is when the file was actually written (not its data cut); show the date if written on a later day.
+        made = _written_label(day, f.get("made_at")) or _pt_label(f.get("data_up_to"))
+        cut = _pt_label(f.get("data_up_to"))
+        score = None
+        if act["final"]:
+            score = {str(k): hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)}
+        conf = None
+        exp_err = None
+        if f.get("exp_votes"):
+            g = claims().get("exp_votes_error", {}).get("values", {})
+            exp_err = g.get(key)
+        late = False
+        try:
+            late = (datetime.fromisoformat(str(f.get("made_at")).replace("Z", "+00:00"))
+                    - datetime.fromisoformat(str(f.get("data_up_to")).replace("Z", "+00:00"))).total_seconds() > (
+                        60 if key == "0005" else 90) * 60
+        except (ValueError, TypeError):
+            pass
+        points.append({"key": key, "label": label, "time_pt": made, "data_cut_pt": cut, "late": late, "top3_conf": conf,
+                       "exp_votes": f.get("exp_votes"), "exp_err": exp_err, "vote_err": f.get("vote_err"), "made_at": f.get("made_at"),
+                       "data_up_to": f.get("data_up_to"), "sees": sees, "method": f.get("method"),
+                       "ranks": f["ranks"], "score": score, "fallback": f.get("fallback"), "source": f.get("source"),
+                       "backtest_line": f.get("backtest_line")})
+    # Only expose live votes after the reveal; before it they are hidden on PH too.
+    ranks = act["ranks"] if act["revealed"] else {}
+    launches = []
+    for pid, p in prods.items():
+        a = ranks.get(pid, {})
+        launches.append({**p, "actual_rank": a.get("rank") if act["final"] else None,
+                         "current_rank": a.get("rank") if act["revealed"] else None,
+                         "votes": a.get("votes") if act["revealed"] else None})
+    if act["final"]:
+        board = {"as_of": act["as_of"], "as_of_pt": _pt_label(act["as_of"] or ""), "ranks": act["ranks"], "votes_hidden": False}
+    elif api:
+        board = {"as_of": api["fetched_at"], "as_of_pt": _pt_label(api["fetched_at"]), "votes_hidden": api["votes_hidden"],
+                 "source": "Product Hunt API",
+                 "ranks": {r["id"]: {"rank": r["rank"], "votes": r["votes"], "comments": r["comments"]} for r in api["launches"]}}
+    else:
+        board = _safe(lambda: current_board(day), {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True}, "capture board")
+    for x in launches:
+        b = board["ranks"].get(x["id"], {})
+        x["board_rank"] = b.get("rank")
+        x["board_votes"] = b.get("votes")
+    difficulty = None
+    on_time = [p for p in points if not p.get("late")]
+    lead = (on_time or points)[-1]["key"] if points else None
+    fresh = _safe(lambda: _freshness(day, fc, board, act["final"]),
+                  {"missing_points": [], "missing_labels": [], "capture_gaps": [], "board_stale": False, "board_stale_label": ""},
+                  "freshness")
+    ids = set(prods)
+    whys = {}
+    why_cards_out = {}
+    for pt in [p["key"] for p in points] + (["after"] if act["final"] else []):
+        try:
+            w = why(day, pt, ids)
+        except Exception as exc:  # noqa: BLE001 - explanations are optional; never take the page down
+            print(f"[ph] why {pt} unavailable: {exc!r}", flush=True)
+            w = None
+        if w:
+            whys[pt] = w
+    for tk in ("mid", "pre"):
+        wc = _safe(lambda tk=tk: why_cards(day, tk, ids), None, f"why_cards {tk}")
+        if wc:
+            why_cards_out[tk] = wc
+    return {"day": day, "today": today_pt(), "lineup_size": len(launches), "launches": launches, "points": points,
+            "freshness": fresh, "why": whys, "why_cards": why_cards_out,
+            "lead_point": lead, "difficulty": difficulty,
+            "board": {k: board.get(k) for k in ("as_of", "as_of_pt", "votes_hidden", "source")},
+            "status": {"final": act["final"], "revealed": act["revealed"], "as_of_pt": _written_label(day, act["as_of"]),
+                       "as_of": act["as_of"]}}
+
+
+SB_LABEL = {"0005": "00:05 PT launch model", "P1": "pre-reveal +1 h", "P2": "pre-reveal +2 h", "P3": "pre-reveal +3 h",
+            "P4": "pre-reveal +4 h", "P0": "pre-reveal 00:45", "R0": "votes revealed", "R1": "reveal + 1 h", "R2": "reveal + 2 h", "R4": "reveal + 4 h"}
+SB_METHOD = {"published": "", "comment_ridge": "comments", "api_rank": "PH order", "blend": "blend",
+             "best": "best (shown)", "depth": "depth", "raw_votes": "votes"}
+
+
+def track_record(max_days: int = 30) -> dict:
+    """Prefer the PH agent's daily scoreboard (results/web/scoreboard.json); fall back to scoring the files here."""
+    sb = gcs.read_json("results/web/scoreboard.json", ttl=600)
+    if sb and sb.get("summary"):
+        order = {k: i for i, k in enumerate(POINT_KEYS)}
+        src_rank = {"live": 0, "late": 1, "replay": 2, "replay_in_sample": 3}
+        rows = []
+        for r in sb["summary"]:
+            if r.get("source") == "shadow" or r.get("method") in ("makerfix_shadow", "unfixed_replay"):
+                continue
+            if str(r.get("point", "")).startswith("P") and r.get("method") not in ("best",):
+                continue   # only the pre-reveal ranking the page shows
+            m = SB_METHOD.get(r.get("method"), r.get("method", ""))
+            rows.append({"key": r["point"], "label": SB_LABEL.get(r["point"], r["point"]) + (f" · {m}" if m else ""),
+                         "source": r.get("source"), "n_days": r.get("days", 0),
+                         "days_range": [r.get("first_day"), r.get("last_day")],
+                         "top3": r.get("mean_top3"), "top5": r.get("mean_top5"), "top10": r.get("mean_top10"),
+                         "experimental": "experimental" in m,
+                         "picks": {k: r.get(f"{k}_count") for k in ("p1_top3", "p2_top3", "p3_top3", "exact1")
+                                   if r.get(f"{k}_count")} or None,
+                         # 95% day-bootstrap intervals, if the scoreboard carries them (NORTH_STAR shows them at 5+ days)
+                         "ci": {k: r[c] for k in ("top3", "top5", "top10")
+                                for c in (f"ci_{k}", f"ci95_{k}", f"{k}_ci") if c in r} or None})
+        rows.sort(key=lambda r: (src_rank.get(r["source"], 9), order.get(r["key"], 99), r["experimental"], r["label"]))
+        return {"rows": rows, "computed_at": sb.get("built_at"), "source": "results/web/scoreboard.json",
+                "how": (sb.get("definition") or "") + ". Live = written in time; late = honest data cut but written "
+                       "after the fact; replay = re-run afterwards on data up to the point time."}
+    # No scoreboard -> no track record: the local fallback cannot tell live calls from late runs.
+    return {"rows": [], "computed_at": None, "source": None, "unavailable": True,
+            "how": "The track record is unavailable right now."}
+
+
+def weekly() -> dict | None:
+    ptr = gcs.read_json("results/web/weekly_latest.json", ttl=300) or {}
+    pts = ptr.get("points") or {}
+    # The reveal + 4 h call if it is the newest day, else the end-of-day standings (never the 03:45 estimate).
+    # Preferred: Product Hunt's own running weekly rank (official, after the nightly ranks step). Otherwise our call
+    # at reveal + 4 h if it is the newest day, else the end-of-day standings (never the 03:45 estimate).
+    pick = pts.get("running") if isinstance(pts.get("running"), dict) and pts["running"].get("file") else None
+    pick = pick or max((v for k, v in pts.items() if k in ("R4", "dayend") and isinstance(v, dict) and v.get("file")),
+                       key=lambda v: (v.get("day") or "", v.get("written_at") or ""), default=None)
+    if pick:
+        names = [pick["file"]]
+    else:
+        names = sorted(n for n, _ in gcs.list_names("results/weekly_live/", ttl=300)
+                       if n.endswith(".json") and not n.endswith("_est.json"))
+    if not names:
+        return None
+    j = gcs.read_json(names[-1], ttl=300) or {}
+    keep = []
+    lookup: dict[str, dict] = {}
+    for d in j.get("days_covered", []):
+        lookup.update(_lineup(d))
+    for r in (j.get("forecast") or [])[:10]:
+        p = lookup.get(str(r.get("id")), {"name": "", "tagline": "", "topics": [], "slug": ""})
+        keep.append({"id": str(r.get("id")), "pred_rank": r.get("pred_rank"), "est_votes": r.get("est"), "day": r.get("day"),
+                     "name": p.get("name"), "tagline": p.get("tagline"), "slug": p.get("slug"), "topics": p.get("topics", [])})
+    if j.get("point") == "running":
+        for x in keep:
+            x["est_votes"] = None          # running files carry -rank, not votes
+    out = {"week_monday": j.get("week_monday"), "as_of_day": j.get("day"), "point": j.get("point"),
+           "ratio": j.get("ratio"), "written_at": j.get("written_at"), "top": keep}
+    try:
+        out["month"] = monthly()
+    except Exception as exc:  # noqa: BLE001 - the week still shows
+        print(f"[ph] monthly unavailable: {exc!r}", flush=True)
+        out["month"] = None
+    return out
+
+
+def monthly() -> dict | None:
+    """Product Hunt's own running monthly rank (results/monthly_live/<month>_<day>_running.json), top 10."""
+    names = sorted(n for n, _ in gcs.list_names("results/monthly_live/", ttl=300) if n.endswith("_running.json"))
+    if not names:
+        return None
+    j = gcs.read_json(names[-1], ttl=300) or {}
+    ids = [str(i) for i in (j.get("forecast_monthlyRank") or [])[:10]]
+    day, month = str(j.get("day") or ""), str(j.get("month") or "")
+    if not ids or not day.startswith(month):
+        return None
+    lookup: dict[str, dict] = {}
+    d = datetime.fromisoformat(month + "-01")
+    while d.strftime("%Y-%m-%d") <= day:
+        lookup.update(_lineup(d.strftime("%Y-%m-%d")))
+        d += timedelta(days=1)
+    slugs: dict[str, str] = {}
+    if any(i not in lookup for i in ids):
+        # Launches missing from the nightly line-up files: take the product slug from the official monthly re-read.
+        rr = sorted(n for n, _ in gcs.list_names(f"raw/ph_at_launch/monthly_reread/{month}/", ttl=600) if n.endswith(".jsonl"))
+        for r in (gcs.read_jsonl(rr[-1], ttl=600) if rr else []):
+            if str(r.get("id")) in ids and r.get("slug"):
+                slugs[str(r["id"])] = str(r["slug"])
+    pretty = lambda sl: " ".join(w.capitalize() for w in re.sub(r"-\d+$", "", sl).split("-")) if sl else None
+    top = [{"id": i, "rank": n, "name": lookup.get(i, {}).get("name") or pretty(slugs.get(i)),
+            "slug": lookup.get(i, {}).get("slug") or slugs.get(i)} for n, i in enumerate(ids, 1)]
+    return {"month": month, "as_of_day": day, "written_at": j.get("written_at"), "top": top}
+
+
+_LIVE_PRED = {"mid": ("00:05 PT", "0005"), "pre": ("03:45 PT", "PRE")}
+
+
+def live_aggregate(view: dict) -> dict:
+    """The 'live' accuracy row: every published live day so far, today included while it runs (scored on the current
+    board, replaced by the official result once the day is settled). Settled days come from E5's track record
+    (official rank <= k, >= 10 ranked, unranked picks are misses); today's hits use the same rule on the live board."""
+    t = gcs.read_json("tmp/e5/website/track_record_v1.json", ttl=1800) or {}
+    day, today = view.get("day"), view.get("today") or today_pt()
+    board = {x["id"]: {"rank": x.get("board_rank")} for x in view.get("launches") or [] if x.get("board_rank")}
+    out = {}
+    for tab, (pred, key) in _LIVE_PRED.items():
+        per = {}
+        if tab == "mid":   # every published 00:05 day from the very start (PH agent's scoreboard), whatever the model
+            sb = gcs.read_json("results/web/scoreboard.json", ttl=600) or {}
+            for r in sb.get("rows") or []:
+                if r.get("point") == "0005" and r.get("method") == "published" and r.get("source") == "live" \
+                        and all(isinstance(r.get(f"top{k}"), (int, float)) for k in (3, 5, 10)):
+                    per[r["day"]] = {"day": r["day"], "h": [round(r[f"top{k}"] * k / 100) for k in (3, 5, 10)],
+                                     "final": True, "fallback": r.get("input_flag") or None}
+        if tab == "pre":   # order-free Product + comments: each published forecast_pre day, scored on the final ranks
+            for name, _ in gcs.list_names("results/web/forecast_pre/", ttl=600):
+                d = name.rsplit("/", 1)[-1].removesuffix(".json")
+                if d == day or len(d) != 10 or d >= today:
+                    continue
+                f, act = _forecast_pre(d), actuals(d)
+                if f and act.get("final"):
+                    h = [hits(f["ranks"], act["ranks"], k) for k in (3, 5, 10)]
+                    if None not in h:
+                        per[d] = {"day": d, "h": h, "final": True, "fallback": None}
+        for r in t.get("days") or []:
+            if tab == "pre" or r.get("day") in per:      # never the old 03:45 hybrid's record
+                continue
+            if r.get("flag") == "live" and r.get("prediction") == pred and r.get("status") == "scored" \
+                    and all(isinstance(r.get(f"hits_top{k}"), int) for k in (3, 5, 10)):
+                per[r["day"]] = {"day": r["day"], "h": [r["hits_top3"], r["hits_top5"], r["hits_top10"]],
+                                 "final": True, "fallback": r.get("fallback_used") or None}
+        p = next((x for x in view.get("points") or [] if x.get("key") == key), None)
+        if day == today and day not in per and p and p.get("ranks") and len(board) >= 10:
+            h = [hits(p["ranks"], board, k) for k in (3, 5, 10)]
+            if None not in h:
+                fin = bool((view.get("status") or {}).get("final"))
+                per[day] = {"day": day, "h": h, "final": fin, "fallback": p.get("fallback") or None}
+        if not per:
+            continue
+        days = [per[d] for d in sorted(per)]
+        n = len(days)
+        tot = [sum(x["h"][i] for x in days) for i in range(3)]
+        done = [x for x in days if x["final"]]
+        settled = None
+        if done:
+            st = [sum(x["h"][i] for x in done) for i in range(3)]
+            settled = {"days": len(done), "top3": round(100 * st[0] / (3 * len(done)), 1),
+                       "top5": round(100 * st[1] / (5 * len(done)), 1), "top10": round(100 * st[2] / (10 * len(done)), 1),
+                       "hits_top10": [st[2], 10 * len(done)]}
+        out[tab] = {"flag": "live", "days": n, "first_day": days[0]["day"], "last_day": days[-1]["day"], "settled": settled,
+                    "in_progress": any(not x["final"] for x in days),
+                    "hits": {f"top{k}": [tot[i], k * n] for i, k in enumerate((3, 5, 10))},
+                    "top3": round(100 * tot[0] / (3 * n), 1), "top5": round(100 * tot[1] / (5 * n), 1),
+                    "top10": round(100 * tot[2] / (10 * n), 1), "per_day": days}
+    return out

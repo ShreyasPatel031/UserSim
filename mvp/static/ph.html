@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier · Product Hunt forecast</title>
+<meta name="description" content="Our forecast of today's Product Hunt leaderboard next to the live board, with an honest track record.">
+<link rel="icon" href="/atelier/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600&display=swap">
+<link rel="stylesheet" href="/static/ph_site.css?v=29">
+</head>
+<body>
+<div class="wrap">
+  <nav class="top" aria-label="Main">
+    <a class="mark" href="/" aria-label="Atelier home"><img src="/atelier/logo.png" alt="" width="30" height="30">Atelier</a>
+    <div class="menu label"><a href="/ph" aria-current="page">PH forecast</a><a href="/try">Try a product</a><a href="/app">Open app</a></div>
+  </nav>
+
+  <header class="head">
+    <div class="copy">
+      <p class="label" id="kicker">Product Hunt</p>
+      <h1 id="title">Live Product Hunt user simulations</h1>
+      <p class="metric" id="metric"></p>
+    </div>
+    <div class="daystep" role="group" aria-label="Launch day">
+      <button type="button" id="day-prev" aria-label="Previous day"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 L5 8 L10 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button type="button" id="day-label" class="daylabel" aria-haspopup="dialog" aria-expanded="false" aria-live="polite">—</button>
+      <button type="button" id="day-next" aria-label="Next day"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3 L11 8 L6 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="daygrid" id="daygrid" role="dialog" aria-label="Pick a day" hidden></div>
+    </div>
+  </header>
+
+  <div class="vs" id="vs">
+    <section class="col" aria-labelledby="pred-h">
+      <header class="colhead">
+        <div><p class="label">Our call<span class="wide"> · user simulations</span></p><h2 id="pred-h">Predicted votes</h2></div>
+        <div class="tabs" role="tablist" aria-label="Forecast">
+          <button type="button" role="tab" id="tab-mid" data-v="mid">Product only</button>
+          <button type="button" role="tab" id="tab-pre" data-v="pre">Product + comments</button>
+        </div>
+      </header>
+      <ol class="board" id="pred" aria-live="polite"><li class="skeleton">Loading…</li></ol>
+    </section>
+    <div class="links" aria-hidden="true"><svg id="links"></svg></div>
+    <section class="col" aria-labelledby="live-h">
+      <header class="colhead">
+        <div><p class="label" id="live-k">Product Hunt</p><h2 id="live-h">Live leaderboard</h2></div>
+        <p class="stamp" id="live-stamp"></p>
+      </header>
+      <ol class="board" id="live" aria-live="polite"><li class="skeleton">Loading…</li></ol>
+    </section>
+  </div>
+  <p class="legend small" id="legend"></p>
+  <p class="acc small" id="acc"></p>
+  <div class="exmodal" id="explain" hidden></div>
+  <section class="whyp" id="whyp" hidden></section>
+
+  <footer class="note label"><span>Forecasts by Atelier · not affiliated with Product Hunt</span><span id="asof"></span></footer>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const GLYPH = [["Artificial Intelligence","✦"],["Developer Tools","{}"],["Open Source","◎"],["Design Tools","◐"],["Productivity","◷"],
+  ["Marketing","↗"],["Sales","$"],["Fintech","$"],["Analytics","▤"],["Data & Analytics","▤"],["Mac","⌘"],["iOS","▯"],["Android","▯"],
+  ["SaaS","☁"],["Video","▶"],["Audio","♪"],["Music","♪"],["Health & Fitness","+"],["Education","✎"],["Writing","✎"],["Games","◆"],
+  ["Privacy","⊘"],["Security","⊘"],["Email","✉"],["Messaging","✉"],["Hardware","▣"],["Social Media","☺"],["Photography","◉"]];
+function hash(s){let h=2166136261;for(const c of String(s))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
+function icon(p){
+  const letter = esc((p.name||"?").trim().charAt(0).toUpperCase());
+  if(p.thumb) return `<div class="icon real"><img src="${esc(p.thumb)}" alt="" loading="lazy" width="56" height="56" referrerpolicy="no-referrer" onerror="this.parentNode.classList.remove('real');this.remove()"><span>${letter}</span></div>`;
+  const h=hash(p.id||p.name), g=(GLYPH.find(([t])=>(p.topics||[]).includes(t))||[])[1]||"·";
+  return `<div class="icon" style="--dot:${3+(h%4)}px;--dop:${(0.16+((h>>3)%5)*0.06).toFixed(2)}" aria-hidden="true"><span>${letter}</span><i>${esc(g)}</i></div>`;
+}
+let VIEW=null, TAB=null;
+const link = (x)=> x.slug ? `<a href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name);
+const chips = (x)=> (x.topics||[]).slice(0,2).map(t=>`<span class="t">${esc(t)}</span>`).join("");
+
+async function getJSON(url, ms){
+  const ctl = new AbortController(), t = setTimeout(()=>ctl.abort(), ms || 25000);
+  try {
+    const r = await fetch(url, {signal: ctl.signal});
+    const j = await r.json().catch(()=>null);
+    if(!r.ok || !j) throw new Error((j && (j.error || j.detail)) || ("HTTP " + r.status));
+    return j;
+  } catch(e){ throw new Error(e.name === "AbortError" ? "timed out" : e.message); }
+  finally { clearTimeout(t); }
+}
+function failed(sel, what, e){
+  $(sel).innerHTML = `<li class="skeleton">Couldn't load ${esc(what)} (${esc(e.message)}). <a href="#" onclick="location.reload();return false">Retry</a></li>`;
+}
+
+// Last answer per day, kept in this browser: the page draws it at once and redraws only when the server's answer differs.
+const CACHE_KEY = (day)=> "ph:view:" + (day || "today");
+function cacheGet(day){
+  try { const v = JSON.parse(localStorage.getItem(CACHE_KEY(day)) || "null");
+    const now = new Intl.DateTimeFormat("en-CA", {timeZone: "America/Los_Angeles"}).format(new Date());
+    return v && (day || v.today === now) ? v : null; } catch(e){ return null; }   // "today" only while it is still today (PT)
+}
+function cachePut(day, raw){ try { localStorage.setItem(CACHE_KEY(day), raw); } catch(e){} }
+function show(v){
+  VIEW = v;
+  dayStep();
+  const st = VIEW.status;
+  $("#asof").textContent = st.final ? `Final ${st.as_of_pt}` : `Updated ${VIEW.board.as_of_pt || "—"}`;
+  renderPred(); metric(); renderLive(); drawLinks();
+  loadExplain(VIEW.day);
+}
+async function load(day){
+  const cached = cacheGet(day);
+  if(cached && (!VIEW || VIEW.day !== cached.day)) show(cached);          // instant: last numbers we had
+  let v;
+  try { v = await getJSON("/api/ph/today" + (day ? "?day="+encodeURIComponent(day) : "")); }
+  catch(e){
+    if(VIEW && (!day || day === VIEW.day)){        // keep the last rendered board; say how old it is
+      const at = VIEW.board && VIEW.board.as_of;
+      $("#live-stamp").innerHTML = `<span class="tag">Couldn't refresh${at ? " · board from " + esc(ago(at)) : ""}</span>`;
+      return;
+    }
+    failed("#pred", "the forecast", e); failed("#live", "the leaderboard", e); return;
+  }
+  const raw = JSON.stringify(v);
+  cachePut(day, raw);
+  if(!day) cachePut(v.day, raw);
+  if(VIEW && VIEW.day === v.day && JSON.stringify(VIEW) === raw) return;   // nothing changed: leave the page as it is
+  show(v);
+}
+
+// Click a launch -> who votes / what they will say / competitors / why (E5 explain file; blocks may be missing).
+let EXPL = {launches: {}}, EXPL_DAY = null, EXPL_ID = null;
+async function loadExplain(day){
+  if(EXPL_DAY === day && day === VIEW.day && Object.keys(EXPL.launches).length) { markExplain(); return; }
+  try { EXPL = await getJSON("/api/ph/explain?day=" + encodeURIComponent(day)); EXPL_DAY = day; } catch(e){ EXPL = {launches: {}}; }
+  if(day !== VIEW.day) return;
+  markExplain();
+}
+function markExplain(){
+  document.querySelectorAll("#pred li.row, #live li.row").forEach(li=>li.classList.toggle("has-explain", !!((EXPL.launches || {})[li.dataset.id] || simCardFor(li.dataset.id, TAB))));
+  if(EXPL_ID && !((EXPL.launches || {})[EXPL_ID] || simCardFor(EXPL_ID, TAB))) $("#explain").hidden = true;
+}
+const short = (t)=> String(t || "");
+const pct = (n)=> Math.round(Number(n) * 100) + "%";
+const arr = (d)=> Array.isArray(d) ? d : (d && d.items) || [];
+const info = (t)=> `<details class="info"><summary aria-label="What does this mean?">i</summary><p>${t}</p></details>`;
+const bar = (label, frac, val, cls = "", tip = "")=> `<div class="bx ${cls}"><span class="bl">${esc(label)}${tip ? info(tip) : ""}</span><span class="bt"><i style="width:${Math.max(2, Math.min(100, frac * 100))}%"></i></span><span class="bv">${val}</span></div>`;
+// What each input of the explanation model measures, in plain words.
+const FACTOR = {
+  "Gemini pitch score": "Gemini's estimated chance (0–100%) that the launch finishes in the day's top 5, judged from the pitch alone (name, tagline, description, topics), with all of the day's launches compared in one go.",
+  "hunter top-5 finishes before": "The share of the hunter's earlier launches that finished in a day's top 5 (a rate, not a count).",
+  "hunter top-5 rate before": "The share of the hunter's earlier launches that finished in a day's top 5 (a rate, not a count).",
+  "hunter launches before": "How many launches the hunter has posted before.",
+  "hunter track record (relative)": "How many votes the hunter's earlier launches got compared with the other launches on their days (0 = average).",
+  "hunter account age": "How long the hunter's Product Hunt account has existed.",
+  "team size": "How many makers are listed on the launch.",
+  "pre-launch promotion": "Press, Hacker News, Reddit or other coverage dated before launch day, found by Gemini with Google Search.",
+  "pre-launch coverage": "Press, Hacker News, Reddit or other coverage dated before launch day, found by Gemini with Google Search.",
+  "topic prior": "How launches in the same Product Hunt topics usually do against their day (rare topics count less).",
+  "text model score": "A word-based model of the name, tagline and description, trained on past launches: how many votes that wording usually gets against the day's average (0 = average).",
+  "media items": "How many images and videos are in the gallery."};
+const votesPct = (p)=> { const v = Math.round((Math.exp(Number(p) || 0) - 1) * 100); return (v > 0 ? "+" : "") + v + "% votes"; };
+const TRUST = {
+  who: "Describes who is likely to vote for it. It did not improve the vote forecast, and we hold about half of real voters.",
+  say: "About 1 in 3 predicted concerns or questions matched a real commenter's point in past tests.",
+  competitors: "Real earlier launches. Likes and dislikes are paraphrased from their real comments. Similar does not mean same rank.",
+  why: "From a simpler stand-in model (right on about 3 of 4 top-10 picks in backtests), not the published one.",
+  who_actually: "Seen after the day, from profiles we hold. A floor, not all voters; it fills in as profiles are re-read."};
+function trust(b){
+  const L = (EXPL.labels || {})[b] || {}, full = Object.entries(L).map(([k, v])=> k === "text" ? v : `${k.replace(/_/g, " ")}: ${v}`).join(" · ");
+  return `<details class="trust"><summary>How reliable? ${esc(TRUST[b] || "")}</summary>${full ? `<p>${esc(full)}</p>` : ""}</details>`;
+}
+// "Who": the launch's existing audience (varies a lot between launches), ranked against the day's other launches.
+// Roles by bio keyword barely differ between launches, for predicted and for real voters alike, so they sit folded.
+const n0 = (v)=> Math.round(Number(v)).toLocaleString();
+const rk = (o)=> o ? `<span class="rkof">#${o.rank} of ${o.of} today</span>` : "";
+function audRows(a){
+  if(!a) return "";
+  const r = (lab, o, tip, fmt = n0)=> o ? `<div class="aud"><span class="bl">${lab}${info(tip)}</span><b>${fmt(o.value)}</b>${rk(o)}</div>` : "";
+  return r("Hunter's followers", a.hunter_followers, "Followers of the person who posted it, read at 00:05 PT.")
+    + r("People we hold who follow the hunter or makers", a.follow_ties, "Follows that existed before launch day, among people we hold.")
+    + r("…of them active in the last 30 days", a.follow_ties_active, "Followers who upvoted something in the 30 days before the launch.")
+    + r("People who voted for this team before", a.held_backers, "People we hold who upvoted an earlier launch by this team's members.");
+}
+function exWho(d, aud){
+  const a = aud || {}, missing = !a.follow_ties && !a.held_backers;
+  const pu = a.power_users, lift = pu && pu.usual ? pu.share / pu.usual : null;
+  const segs = (d && d.segments || []).filter(s=>s.n_held_people_scored), tot = segs.reduce((x, s)=>x + s.n_held_people_scored, 0) || 1;
+  const tp = d && d.team_past_backers;
+  const liftRows = (rows, lab, base)=> rows.map(x=>`<div class="bx2"><span class="bl">${esc(x[lab])}</span><span class="bt"><i class="share" style="width:${Math.min(100, x.share / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i><i class="base" style="left:${Math.min(100, x[base] / Math.max(...rows.map(y=>y.share), .01) * 100)}%"></i></span><span class="bv">${pct(x.share)}</span><span class="lift ${x.lift >= 1.3 ? "hi" : x.lift <= .77 ? "lo" : ""}">${Number(x.lift).toFixed(1)}×</span></div>`).join("");
+  const pool = (p, who)=> p && p.n_held_people >= 20 ? `<h5>People who voted for ${who} before</h5>
+    <p class="lede"><b>${n0(p.n_held_people)}</b> people we hold upvoted an earlier launch by ${who}.${p.heavy_upvoter_share != null ? ` ${pct(p.heavy_upvoter_share)} of them are heavy upvoters (vs ${pct(p.heavy_upvoter_share_all_held_active)} of everyone active).` : ""}${info("Held people who upvoted an earlier launch of " + who + ". This group is specific to the team: across past launches about half of the real voters we could see came from past voters of the hunter or maker.")}</p>
+    ${(p.segments_by_lift || []).length ? `<div class="legend2"><span><i class="k share"></i>share of them</span><span><i class="k base"></i>share of everyone we hold</span></div>${liftRows(p.segments_by_lift, "segment", "share_of_all_held_active")}` : ""}
+    ${(p.topics_by_lift || []).length ? `<h5>What they upvote more than most people</h5>${liftRows(p.topics_by_lift, "topic", "share_for_all_held_active")}` : ""}` : "";
+  const tpHtml = pool(d && (d.hunter_past_backers || d.team_past_backers), "this hunter") + pool(d && d.maker_past_backers, "these makers");
+  const gm = (d && d.group_mix) || {}, gRows = (r)=> (Array.isArray(r) ? r : []).filter(x=>x.name).map(x=>({group: x.name, share: x.expected_share || 0, base: x.base_share || 0, lift: x.lift || 0}));
+  const gChart = (rows)=> `<div class="legend2"><span><i class="k share"></i>share of these voters</span><span><i class="k base"></i>usual share of upvotes</span></div>${liftRows(rows, "group", "base")}`;
+  const gPools = [["hunter_past_voters (people)", "the hunter"], ["maker_past_voters (people)", "the makers"]].map(([k, who])=>{ const r = gRows(gm[k]); return r.length ? `<h6>People who voted for ${who} before</h6>${gChart(r)}` : ""; }).join("");
+  const gLaunch = gRows(gm["launch (expected voters)"]);
+  const gHtml = gPools || gLaunch.length ? `<h5>Voter groups${info("5 groups of real Product Hunt voters, clustered by what they upvote (81,131 people). The bar is the group's share of these voters; the tick is its usual share of all upvotes. 2.0× means twice its usual share. " + (gm.accuracy_label || ""))}</h5>
+    ${gPools || `<p class="note">This team has no earlier voters we hold, so there is nothing team-specific to show.</p>`}
+    ${gLaunch.length ? `<details class="more"${gPools ? "" : " open"}><summary>Expected voters by group</summary>${gChart(gLaunch)}<p class="note">This mix is about the same for every launch today (Tech Innovators cast most upvotes on Product Hunt). Last week it predicted the real voter mix no better than the usual mix, so treat the team pools above as the signal.</p></details>` : ""}` : "";
+  return `${gHtml}${tpHtml}<h5>Its existing audience on Product Hunt</h5>${audRows(a)}
+    ${missing ? `<p class="note">No follower or past-voter counts: this team's profiles are not among the people we hold.</p>` : ""}
+    ${lift ? `<div class="aud"><span class="bl">Heavy upvoters in that audience${info("Share of its followers and past voters who upvoted 10+ launches in the last 90 days, against the typical launch today. Heavy upvoters vote early and often.")}</span><b>${pct(pu.share)}</b><span class="rkof">${pu.day_median ? `typical today ${pct(pu.day_median)}` : `${lift.toFixed(1)}× usual`}</span></div>` : ""}
+    ${segs.length ? `<details class="more"><summary>Roles of likely voters (a typical mix)</summary>
+      ${segs.filter(s=>s.share_of_held_expected_votes >= .02).map(s=>bar(s.segment, s.share_of_held_expected_votes / .4, pct(s.share_of_held_expected_votes))).join("")}
+      <p class="note">Roles from bios barely differ between launches, for real voters too: across 23 past launches, developers were 18–38% of the voters we could see, and marketers 15–27%.</p></details>` : ""}
+    ${trust("who")}`;
+}
+function exSay(d){
+  const card = (t, cls)=> `<div class="q ${cls}">${esc(t)}</div>`;
+  const pp = d.panel || d.persona_panel, raw = (pp && pp.items) || [];
+  // One card per voter group: the panel can speak several times for the same group; merge those voices.
+  const RANK = {high: 3, medium: 2, low: 1}, byseg = new Map();
+  raw.forEach(x=>{ const k = x.segment || "?", g = byseg.get(k);
+    if(!g){ byseg.set(k, {...x, n_people: Number(x.n_people) || 0, reactions: x.reaction ? [x.reaction] : [], concerns: x.concern ? [x.concern] : [], questions: x.question ? [x.question] : [], votes: {[x.interest]: 1}}); return; }
+    g.n_people += Number(x.n_people) || 0; g.votes[x.interest] = (g.votes[x.interest] || 0) + 1;
+    if(x.reaction) g.reactions.push(x.reaction); if(x.concern) g.concerns.push(x.concern); if(x.question) g.questions.push(x.question); });
+  const items = [...byseg.values()].map(g=>({...g, interest: Object.entries(g.votes).sort((a, b)=>b[1] - a[1] || RANK[b[0]] - RANK[a[0]])[0][0]})).sort((a, b)=>b.n_people - a.n_people);
+  const totN = items.reduce((t, x)=>t + x.n_people, 0) || 1;
+  let panel = "";
+  if(items.length){
+    const cnt = {high: 0, medium: 0, low: 0}; raw.forEach(x=>cnt[x.interest] = (cnt[x.interest] || 0) + 1);
+    const src = /past/.test(pp.source_people || "") ? "people who voted for this team's earlier launches" : "today's likeliest voters";
+    panel = `<p class="lede"><b>${items.length} voter group${items.length === 1 ? "" : "s"}</b>, from ${raw.length} simulated voices, one card per subgroup of real voters (people we hold, clustered by what they upvote and how they engage), drawn from ${src}.${info(esc(pp.accuracy_label || ""))}</p>
+      <div class="interest"><span class="lab">Interest</span>${["high","medium","low"].map(k=>cnt[k] ? `<span class="iv ${k}" style="flex:${cnt[k]}">${cnt[k]} ${k}</span>` : "").join("")}</div>
+      ${items.map(x=>{ const sp = x.segment_profile || {}, grp = sp.group || x.segment, sub = sp.group && x.segment.includes(" / ") ? x.segment.split(" / ").slice(1).join(" / ") : "";
+        return `<div class="persona"><div class="ph"><span class="seg">${esc(grp)}${sub ? ` <small>· ${esc(sub)}</small>` : ""}${sp.who ? info(esc(sp.who) + (sp.votes_for ? " " + esc(sp.votes_for) : "")) : ""}</span><span class="sm">${n0(x.n_people)} people · ${pct(x.n_people / totN)} of likely voters</span><span class="iv ${esc(x.interest)}">${esc(x.interest)} interest</span></div>
+        ${x.reactions[0] ? `<p class="re">“${esc(x.reactions[0])}”</p>` : ""}
+        ${x.concerns.length ? `<p class="pc worry"><b>Worr${x.concerns.length > 1 ? "ies" : "y"}:</b></p><ul class="pcl worry">${x.concerns.slice(0, 3).map(t=>`<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+        ${x.questions.length ? `<p class="pc ask"><b>Asks:</b></p><ul class="pcl ask">${x.questions.slice(0, 3).map(t=>`<li>${esc(t)}</li>`).join("")}</ul>` : ""}</div>`; }).join("")}
+      <p class="note">Simulated by an AI speaking as each group, from the launch's own page; not real comments.</p>
+      <details class="trust"><summary>How reliable? On 279 past launches this panel caught 54% of the points real commenters raised (the older single-AI version caught 39%); about half of its points matched a real one.</summary><p>${esc(pp.accuracy_label || "")}</p></details>`;
+  }
+  const older = `${(d.top_concerns || []).length ? `<h5>Likely worries</h5>${d.top_concerns.map(t=>card(t, "worry")).join("")}` : ""}
+    ${(d.top_questions || []).length ? `<h5>Likely questions</h5>${d.top_questions.map(t=>card(t, "ask")).join("")}` : ""}`;
+  return items.length ? panel + (older.trim() ? `<details class="more"><summary>Earlier single-AI predictions</summary>${older}${trust("say")}</details>` : "")
+    : `<p class="note top">Written by our AI simulator from the launch's own page, before any real comments existed. These are not real people.</p>${older}${trust("say")}`;
+}
+function exComp(d){
+  const tip = "How close its name, tagline and description are to this launch, in meaning (a text-embedding match, 0–100%). It says nothing about how the launch ranked.";
+  return `<p class="lede">Earlier launches whose description is closest to this one, and what their real commenters said.</p>` + arr(d).map(c=>`<div class="comp"><div class="ch"><b>${esc(c.name)}</b>${c.final_daily_rank ? `<span class="rk">finished #${esc(c.final_daily_rank)}</span>` : ""}<span class="sm">${c.final_votes ? Math.round(c.final_votes) + " votes · " : ""}${esc(c.launch_date || "")}</span></div>
+    ${bar("Description match", c.similarity || 0, pct(c.similarity || 0), "thin", tip)}
+    <div class="pills">${(c.commenters_praised || []).map(t=>`<span class="pill up">Liked: ${esc(t)}</span>`).join("")}${(c.commenters_complained || []).map(t=>`<span class="pill dn">Disliked: ${esc(t)}</span>`).join("")}</div></div>`).join("") + trust("competitors");
+}
+let RAW = {};
+function exWhy(d){
+  const all = (d.all_inputs && d.all_inputs.length ? d.all_inputs : d.top_drivers || []).slice().sort((a, b)=>Math.abs(b.points) - Math.abs(a.points));
+  const m = Math.max(...all.map(r=>Math.abs(r.points || 0)), .001);
+  return `<p class="lede">Everything our explanation model measures, and how much each one moved this launch's predicted votes${d.rank_in_explanation_model ? ` (it ranks it <b>#${esc(d.rank_in_explanation_model)}</b>)` : ""}. Tap a factor to see what it means.</p>
+    <div class="legend2"><span><i class="k up"></i>pushes votes up</span><span><i class="k dn"></i>pulls votes down</span></div>
+    ${all.map(r=>{ const v = Number(r.points) || 0, w = Math.abs(v) / m * 50;
+      const rv0 = r.input === "hunter account age" && (RAW || {})[r.input] ? RAW[r.input] : typeof r.raw_value === "number" ? r.raw_value : (RAW || {})[r.input];
+      const rv = typeof rv0 === "number" ? (Number.isInteger(rv0) ? rv0 : +rv0.toFixed(2)) : rv0;
+      return `<details class="fx"><summary><span class="bl">${esc(r.input)}${rv != null ? ` <em class="rv">${esc(rv)}</em>` : ""}</span><span class="dt"><i class="${v >= 0 ? "pos" : "neg"}" style="width:${w}%;${v >= 0 ? "left:50%" : "right:50%"}"></i></span><span class="bv ${v >= 0 ? "pos" : "neg"}">${votesPct(v)}</span></summary><p>${esc(r.definition || FACTOR[r.input] || "An input of the explanation model.")}</p></details>`; }).join("")}
+    <p class="note">This readable model uses these 10 inputs. The published forecast uses about 40 (hunter record, pitch, brand, topic, competition, media, team, promotion, wording, day), so small factors like media items move little here.</p>
+    <p class="note">"+19% votes" means: with everything else the same, this factor alone moves the predicted votes up by about 19% compared with a typical launch that day.</p>${trust("why")}`;
+}
+function exActual(d){
+  const segs = d.segments || [], max = Math.max(...segs.map(s=>s.n_held_backers || 0), 1);
+  const rr = d.held_people_total ? d.held_people_reread_after_the_day / d.held_people_total : null;
+  return `<p class="lede">Product Hunt shows <b>${esc(d.displayed_votes)}</b> votes. We can see <b>${esc(d.observed_held_backers)}</b> of the people behind them. By role:</p>
+    ${segs.map(s=>bar(s.segment, s.n_held_backers / max, esc(s.n_held_backers))).join("")}
+    ${rr != null ? `<h5>How complete is this?</h5>${bar("Profiles re-read since the day", rr, pct(rr))}` : ""}
+    <p class="note">The count can pass the displayed votes: Product Hunt counts some young accounts at about half.</p>${trust("who_actually")}`;
+}
+const words = (t)=> new Set(String(t || "").toLowerCase().match(/[a-z]{4,}/g) || []);
+const overlap = (x, y)=> { const A = words(x), B = words(y); let n = 0; A.forEach(w=>B.has(w) && n++); return n / Math.max(1, Math.min(A.size, B.size)); };
+// Same product = one name (without version numbers) is the start of the other: "Dex" / "Dex Semantics", not "Gemini 4 Argon" / "Gemini Robotics".
+const sameProduct = (a, b)=> { const k = (t)=> String(t || "").toLowerCase().replace(/[0-9.]+/g, " ").replace(/[^a-z]+/g, " ").trim();
+  const x = k(a), y = k(b); return !!x && !!y && (x === y || (x + " ").startsWith(y + " ") || (y + " ").startsWith(x + " ")); };
+function exOverview(d){
+  const a = d.audience || {}, e = a.expected_held_votes, f = a.follow_ties, pu = a.power_users, raw = d.raw || {};
+  const name = (VIEW.launches.find(l=>l.id === EXPL_ID) || {}).name;
+  const panelItems = ((d.say && d.say.persona_panel) || {}).items || [];
+  const worry = (panelItems.find(x=>x.interest === "high" && x.concern) || panelItems.find(x=>x.concern) || {}).concern || (d.say && (d.say.top_concerns || [])[0]);
+  const ask = d.say && (d.say.top_questions || []).find(q=>overlap(q, worry) < .5);
+  const cs = arr(d.competitors), own = cs.find(c=>sameProduct(c.name, name)), others = cs.filter(c=>c !== own);
+  const best = others.slice().sort((x, y)=>(x.final_daily_rank || 99) - (y.final_daily_rank || 99))[0];
+  const gapC = others.find(c=>(c.commenters_complained || [])[0]);
+  const all = (d.why && (d.why.all_inputs || d.why.top_drivers)) || [];
+  const up = all.slice().sort((x, y)=>y.points - x.points)[0], down = all.filter(r=>r.points < 0).sort((x, y)=>x.points - y.points)[0];
+  const strong = (r)=> r && Math.abs(Math.exp(r.points) - 1) >= .05;
+  const tile = (k, v, sub = "")=> v ? `<div class="tile"><small>${k}</small><b>${v}</b>${sub ? `<span>${sub}</span>` : ""}</div>` : "";
+  const tier = (o)=> o.rank <= Math.ceil(o.of / 3) ? "top" : o.rank > Math.floor(o.of * 2 / 3) ? "bottom" : "middle";
+  const net = !f ? `We can't see your team's Product Hunt network (your profiles aren't among the people we hold), so most early votes will come from people who don't know you yet. The pitch and the first comment carry the launch.`
+    : tier(f) === "top" ? `You have one of today's biggest networks: <b>${n0(f.value)}</b> people we hold follow the hunter or makers (#${f.rank} of the ${f.of} launches whose network we can see). Make sure they know it's live.`
+    : tier(f) === "middle" ? `Your network is mid-sized for today: <b>${n0(f.value)}</b> followers we hold (#${f.rank} of ${f.of}). Votes beyond it depend on the pitch.`
+    : `Your network is one of today's smallest we can see (<b>${n0(f.value)}</b> followers we hold, #${f.rank} of ${f.of}). Reach beyond it: the first comment and the gallery have to win strangers.`;
+  const tp = d.who && [d.who.maker_past_backers, d.who.hunter_past_backers, d.who.team_past_backers].find(p=>p && p.n_held_people >= 20), lean = tp && tp.n_held_people > 0 && (tp.segments_by_lift || []).filter(x=>x.lift >= 1.3 && x.n >= 20)[0];
+  const tlean = tp && tp.n_held_people > 0 && (tp.topics_by_lift || []).filter(x=>x.lift >= 1.3)[0];
+  const pts = [net,
+    lean ? `People who voted for your earlier launches lean towards <b>${esc(lean.segment)}</b> (${Number(lean.lift).toFixed(1)}× their usual share)${tlean ? ` and upvote <b>${esc(tlean.topic)}</b> launches more than most` : ""}. Speak to them first.` : "",
+    pu && pu.day_median && pu.share / pu.day_median >= 1.5 ? `Your audience has more heavy upvoters than most launches today (${pct(pu.share)} vs a typical ${pct(pu.day_median)}). They vote in the first hours, so be in the comments early.` : "",
+    own ? `Your earlier launch <b>${esc(own.name)}</b> finished #${esc(own.final_daily_rank)} with ${Math.round(own.final_votes || 0)} votes.${(own.commenters_complained || [])[0] ? ` Its commenters disliked: <i>“${esc(own.commenters_complained[0])}”</i> Show what changed.` : ""}` : "",
+    worry ? `Answer this worry in the first comment, before anyone asks: <i>“${esc(worry)}”</i>` : "",
+    ask ? `Put this answer on the page: <i>“${esc(ask)}”</i>` : "",
+    gapC ? `People disliked this in a similar product (${esc(gapC.name)}): <i>“${esc(gapC.commenters_complained[0])}”</i> Show how this one avoids it.` : "",
+    strong(down) && down.input === "team size" && raw["team size"] != null && raw["team size"] <= 2 ? `${raw["team size"] === 0 ? "No makers are" : raw["team size"] === 1 ? "Only 1 maker is" : "Only 2 makers are"} listed on the launch. Launches that list the whole team do better in our model (${votesPct(down.points)} here): add the team as makers.` :
+    strong(down) ? `Weakest factor in our model: <b>${esc(down.input)}</b> (${votesPct(down.points)}). ${esc(FACTOR[down.input] || "")}` : ""].filter(Boolean);
+  return `<div class="tiles">${tile("Top worry", worry && esc(worry))}
+    ${tile("Biggest boost", strong(up) ? esc(up.input) : "No strong boost", strong(up) ? votesPct(up.points) : "every factor is close to typical")}
+    ${own ? tile("Your earlier launch", esc(own.name), `finished #${esc(own.final_daily_rank)}`) : best ? tile("Closest past launch", esc(best.name), best.final_daily_rank ? `finished #${best.final_daily_rank}` : "") : ""}
+    ${pu && pu.day_median ? tile("Heavy upvoters in its audience", pct(pu.share), `typical launch today: ${pct(pu.day_median)}`) : ""}</div>
+    <h5>Talking points for the founder</h5><ol class="pitch">${pts.map(t=>`<li>${t}</li>`).join("")}</ol><p class="note">Built only from the tabs here; each tab says how reliable it is.</p>`;
+}
+const TABS = [["overview", "Overview", exOverview], ["sim_why", "Simulation card", null], ["who_actually", "Who voted", null], ["who", "Who votes", null], ["say", "What they'll say", null], ["competitors", "Competitors", null], ["why", "Why", null]];
+const BLOCK_FN = {sim_why: exSimWhy, who_actually: exActual, who: exWho, say: exSay, competitors: exComp, why: exWhy};
+let EX_TAB = "overview";
+function simCardFor(id, tabOrKey){
+  const tk = (tabOrKey === "PRE" || tabOrKey === "pre") ? "pre" : (tabOrKey === "0005" || tabOrKey === "mid") ? "mid" : (TAB || "pre");
+  const fromEx = ((EXPL.launches || {})[id] || {}).sim_why || {};
+  const fromView = VIEW && VIEW.why_cards || {};
+  const pick = (t)=> fromEx[t] || ((fromView[t] || {}).launches || {})[id] || null;
+  return pick(tk) || pick("pre") || pick("mid");
+}
+function simMetaFor(tabOrKey){
+  const tk = (tabOrKey === "PRE" || tabOrKey === "pre") ? "pre" : (tabOrKey === "0005" || tabOrKey === "mid") ? "mid" : (TAB || "pre");
+  const mEx = EXPL.sim_why_meta || {};
+  const mView = VIEW && VIEW.why_cards || {};
+  return mEx[tk] || mView[tk] || mEx.pre || mView.pre || mEx.mid || mView.mid || null;
+}
+function renderSimWhyCard(c, meta){
+  if(!c) return "";
+  const vp = c.voter_population_breakdown || {}, cp = c.cua_execution_proof || {}, h2h = c.sameday_head_to_head_split, comps = c.named_competitors || [];
+  const gateTxt = (g)=> !g ? "—" : g.suppressed_lt_min_group ? `<span class="sm">&lt; 20 people (privacy floor)</span>` : `<b>${n0(g.n_people || 0)}</b>${g.expected_votes != null ? ` <span class="sm">(~${Number(g.expected_votes).toFixed(1)} est. votes)</span>` : ""}`;
+  const badges = [
+    cp.inspected ? `<span class="pill up">CUA verified (${esc(cp.access_status)})</span>` : `<span class="pill">Spec fallback</span>`,
+    cp.sso_entered ? `<span class="pill up">Google SSO entered</span>` : "",
+    cp.workflow_responded ? `<span class="pill up">Workflow responded (${esc(cp.workflow_action)})</span>` : "",
+    cp.has_open_source ? `<span class="pill up">Open source</span>` : "",
+    cp.has_free_tier ? `<span class="pill up">Free tier</span>` : "",
+  ].filter(Boolean).join("");
+  const cuaHtml = `<h5>4-step hands-on product verification</h5>
+    <div class="pills">${badges}</div>
+    ${cp.hands_on_works != null ? bar("Hands-on product works", cp.hands_on_works, pct(cp.hands_on_works)) : ""}
+    ${cp.ui_craft_depth != null ? bar("UI & workflow craft", cp.ui_craft_depth, pct(cp.ui_craft_depth), "alt") : ""}
+    ${cp.exec_digest ? `<p class="note">${esc(cp.exec_digest)}</p>` : ""}`;
+
+  const tm = vp.activity_tier_mix || {}, tb = vp.all_held_people_tier_baseline || {};
+  const tierRows = ["100+", "10-99", "1-9"].map(k=>{
+    const cell = tm[k] || {};
+    if(cell.suppressed_lt_min_group || cell.n_people == null) return `<div class="aud"><span class="bl">Activity tier ${esc(k)} upvotes</span><span class="sm">&lt; 20 people (suppressed)</span><span></span></div>`;
+    return `<div class="aud"><span class="bl">Activity tier ${esc(k)} (${n0(cell.n_people)} active people)</span><b>${cell.expected_vote_share != null ? pct(cell.expected_vote_share) : "—"}</b><span class="rkof">${tb[k] != null ? `baseline ${pct(tb[k])}` : ""}</span></div>`;
+  }).join("");
+  const popHtml = `<h5>93,618-person discrete-choice voter &amp; switcher simulation</h5>
+    <div class="aud"><span class="bl">Active 90-day candidate pool</span><b>${vp.active_90d_pool_n != null ? n0(vp.active_90d_pool_n) : "&lt; 20"}</b><span class="rkof">${vp.expected_held_votes != null ? `~${Number(vp.expected_held_votes).toFixed(1)} held votes` : ""}${vp.qwen_stack1b_expected_votes != null ? ` · Qwen-7B ~${Number(vp.qwen_stack1b_expected_votes).toFixed(1)}` : ""}</span></div>
+    <div class="aud"><span class="bl">Team &amp; hunter past backers (&lt; launch day)</span><span>${gateTxt(vp.team_and_hunter_backers)}</span><span></span></div>
+    <div class="aud"><span class="bl">Competitor voters &amp; switchers (&lt; launch day)</span><span>${gateTxt(vp.competitor_voters_and_switchers)}</span><span></span></div>
+    <div class="aud"><span class="bl">Pre-launch follow ties</span><span>${gateTxt(vp.follow_ties_lt_d)}</span><span></span></div>
+    ${tierRows}`;
+
+  const h2hHtml = h2h ? `<h5>Same-day audience head-to-head split</h5>
+    <p class="lede">${esc(h2h.summary || `Contested active builder cohort (n=${h2h.cohort_n}, ${h2h.voter_overlap_pct}% overlap) vs ${h2h.rival_name}`)}</p>
+    ${bar("Prefer this launch", (h2h.prefer_this_pct || 0) / 100, Math.round(h2h.prefer_this_pct || 0) + "%")}
+    ${bar("Prefer " + (h2h.rival_name || "rival"), (h2h.prefer_rival_pct || 0) / 100, Math.round(h2h.prefer_rival_pct || 0) + "%", "alt")}` : "";
+
+  const compHtml = comps.length ? `<h5>Top named competitors (&lt; launch day)</h5>` + comps.map(nc=>`<div class="comp"><div class="ch"><b>${esc(nc.name)}</b><span class="sm">${nc.reviews_count ? n0(nc.reviews_count) + " G2 reviews" : ""}${nc.hist_endorsements_lt_d ? ` · ${n0(nc.hist_endorsements_lt_d)} prior PH backers` : ""}${(nc.shared_categories || []).length ? " · " + esc(nc.shared_categories.join(", ")) : ""}</span></div>
+    <div class="pills">${nc.key_user_pain_point ? `<span class="pill dn">Incumbent pain: ${esc(nc.key_user_pain_point)}</span>` : ""}${nc.hands_on_comparison ? `<span class="pill up">Hands-on vs rival: ${esc(nc.hands_on_comparison)}</span>` : ""}</div></div>`).join("") : "";
+
+  const pts = Object.entries(((c.forecast_drivers || {}).points) || {}).filter(([k])=>k !== "structural_baseline_arm3").sort((a, b)=>Math.abs(b[1]) - Math.abs(a[1]));
+  const mMax = Math.max(...pts.map(([, v])=>Math.abs(v || 0)), .001);
+  const drvHtml = pts.length ? `<h5>Simulation score drivers${c.predicted_rank ? ` (ranked #${Number(c.predicted_rank)})` : ""}</h5>` + pts.map(([k, v])=>{
+    const w = Math.abs(v) / mMax * 50;
+    return `<div class="bx"><span class="bl">${esc(k.replace(/_/g, " "))}</span><span class="bt"><i style="width:${Math.max(3, Math.min(100, w * 2))}%;background:${v >= 0 ? "var(--exact)" : "var(--miss)"}"></i></span><span class="bv">${votesPct(v)}</span></div>`;
+  }).join("") : "";
+
+  const mpv = (meta && meta.measured_predictive_value) || {}, lv = mpv.live_23d || {}, bt = mpv.locked_test_55d || {};
+  const relNote = lv.top10_pct != null ? `Measured accuracy (${esc(meta.track || "")}): 23 live days top-3 ${lv.top3_pct}% · top-5 ${lv.top5_pct}% · top-10 ${lv.top10_pct}%${bt.top10_pct != null ? `; 55-day locked test top-10 ${bt.top10_pct}%` : ""}. Strict min_group ≥ 20; zero usernames or IDs.` : "All counts strictly enforce min_group ≥ 20 with zero usernames or person IDs.";
+  return `${cuaHtml}${popHtml}${h2hHtml}${compHtml}${drvHtml}<p class="note">${esc(relNote)}</p>`;
+}
+function exSimWhy(){
+  return renderSimWhyCard(simCardFor(EXPL_ID, TAB), simMetaFor(TAB)) || `<p class="note">No simulation card available for this launch.</p>`;
+}
+function whyBlock(id, key){
+  return renderSimWhyCard(simCardFor(id, key), simMetaFor(key));
+}
+function showExplain(id){
+  const d = (EXPL.launches || {})[id] || (simCardFor(id, TAB) ? {sim_why: true} : null), x = VIEW.launches.find(l=>l.id===id), el = $("#explain");
+  if(!d || !x){ el.hidden = true; return; }
+  EXPL_ID = id;
+  const hasSim = !!simCardFor(id, TAB);
+  const tabs = TABS.filter(([k])=> k === "overview" ? (d.who || d.say || d.competitors || d.why) : k === "sim_why" ? hasSim : k === "who" ? (d.who || d.audience) : d[k]);
+  if(!tabs.length){ el.hidden = true; return; }
+  if(!tabs.find(([k])=>k === EX_TAB)) EX_TAB = tabs[0][0];
+  RAW = d.raw || {};
+  const body = EX_TAB === "overview" ? exOverview(d) : EX_TAB === "sim_why" ? exSimWhy() : EX_TAB === "who" ? exWho(d.who, d.audience) : BLOCK_FN[EX_TAB](d[EX_TAB]);
+  el.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(x.name)}">
+    <header><div class="ttl">${icon(x)}<div><h3>${esc(x.name)}</h3><p>${esc(x.tagline || "")}</p></div></div><button class="x" aria-label="Close">×</button></header>
+    <nav class="extabs">${tabs.map(([k, t])=>`<button data-t="${k}" aria-pressed="${k === EX_TAB}">${t}</button>`).join("")}</nav>
+    <div class="exbody">${body}</div>
+    ${x.slug ? `<footer><a href="https://www.producthunt.com/posts/${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">View on Product Hunt ↗</a></footer>` : ""}</div>`;
+  el.hidden = false; document.body.classList.add("modal-open");
+  el.querySelector(".x").onclick = closeExplain;
+  el.querySelectorAll(".extabs button").forEach(b=>b.onclick = ()=>{ EX_TAB = b.dataset.t; showExplain(id); });
+}
+function closeExplain(){ $("#explain").hidden = true; document.body.classList.remove("modal-open"); }
+document.addEventListener("keydown", e=>{ if(e.key === "Escape") closeExplain(); });
+document.addEventListener("click", e=>{
+  if(e.target.id === "explain") return closeExplain();               // click on the dimmed backdrop
+  const li = e.target.closest && e.target.closest("li.row.has-explain");
+  if(li){ e.preventDefault(); EX_TAB = "overview"; showExplain(li.dataset.id); }
+});
+
+// Match status: exact = same rank on both boards; near = in both top 10s at a different rank; miss = only on this board.
+function status(predRank, realRank){
+  if(!predRank || predRank > 10 || !realRank || realRank > 10) return "miss";
+  return predRank === realRank ? "exact" : "near";
+}
+function row(pos, x, votes, voteLabel, st){
+  return `<li class="row c ${st || ""}" data-id="${esc(x.id)}"><div class="pos">${Number(pos)}</div>${icon(x)}<div class="prod"><h3>${link(x)}</h3><p>${esc(x.tagline)}</p>
+    <div class="chips">${chips(x)}</div></div>${votes!=null
+      ? `<div class="vote"><span class="tri"></span><b>${esc(votes)}</b><small>${esc(voteLabel)}</small></div>`
+      : `<div class="vote hidden"><span class="tri"></span><b>—</b><small>${esc(voteLabel)}</small></div>`}</li>`;
+}
+
+function liveTop(){
+  return VIEW.launches.filter(x=>x.board_rank).sort((a,c)=>a.board_rank-c.board_rank).slice(0,10);
+}
+
+// Two forecasts only, both made before Product Hunt shows vote counts:
+// "Midnight" = the 00:05 PT forecast; "Before votes" = the latest pre-reveal forecast (on time if one exists).
+function pointFor(v){
+  if(v === "mid") return VIEW.points.find(q=>q.key==="0005") || null;
+  return VIEW.points.find(q=>q.key==="PRE") || null;   // the published 03:45 PT prediction only
+}
+function tabs(){
+  const has = {mid: !!pointFor("mid"), pre: !!pointFor("pre")};
+  if(!TAB || (TAB === "pre" && !has.pre)) TAB = has.pre ? "pre" : "mid";   // Product + comments is the default when today's order-free forecast exists
+  const pb = $("#tab-pre"); if(pb) pb.hidden = !has.pre;                   // no forecast_pre file for the day: Product only
+  ["mid","pre"].forEach(v=>{ const b = $("#tab-"+v); b.setAttribute("aria-selected", String(TAB===v));
+    const p = pointFor(v); b.title = p ? "Made " + p.time_pt : "Expected " + EXPECT[v];
+    b.onclick = ()=>{ TAB = v; renderPred(); metric(); renderLive(); drawLinks(); }; });
+}
+const EXPECT = {mid: "00:05 PT", pre: "03:45 PT"};
+function renderPred(){
+  tabs();
+  const p = pointFor(TAB);
+  if(!p || p.fallback === "none_available"){
+    $("#pred").innerHTML = `<li class="skeleton">${p ? "Not available for this day." : `Not yet available${VIEW.day === VIEW.today ? ` · expected ${EXPECT[TAB]}` : " for this day"}.`}</li>`;
+    legend(); return;
+  }
+  const real = new Map(liveTop().map(x=>[x.id, x.board_rank]));
+  const o = VIEW.launches.filter(x=>p.ranks[x.id]).sort((a,b)=>p.ranks[a.id]-p.ranks[b.id]).slice(0,10);
+  const sts = o.map(x=>real.size ? status(p.ranks[x.id], real.get(x.id)) : "");
+  $("#pred").innerHTML = o.map((x, i)=>{
+    const ev = p.exp_votes && p.exp_votes[x.id];
+    return row(p.ranks[x.id], x, ev!=null ? "~" + Number(ev) : null, "est.", sts[i]);
+  }).join("");
+  legend(sts);
+  document.querySelectorAll("#pred .row").forEach(li=>li.onclick=(e)=>{ if(e.target.closest("a")) return; showWhy(li.dataset.id, p.key); });
+}
+
+// Fallback codes (PH ops bundle 12a) in plain words (E5).
+const FALLBACK = {
+  clean_nosite_fallback: "made by our previous midnight model (the main model's inputs were not ready)",
+  no_prior: "made without the midnight forecast; Product Hunt's hidden order and comments only",
+  hidden_rank_only: "Product Hunt's hidden order as is (our adjustments were unavailable)",
+  midnight_order: "no pre-reveal read was available, so this repeats the midnight forecast",
+  earlier_forecast: "the published model had no data, so this is our earlier midnight forecast",
+};
+function accLine(){
+  const p = pointFor(TAB);
+  if(!p || p.fallback === "none_available"){ $("#acc").textContent = ""; return; }
+  const earlier = false;
+  const name = TAB === "mid" ? "Product only (00:05 PT)" : "Product + comments (03:45 PT)";
+  const made = p.time_pt ? ` · made ${p.time_pt}` : "";
+  const fb = p.fallback ? ` · ${FALLBACK[p.fallback] || "a fallback model was used"}` : "";
+  const pc = (v, r, k)=> (r.approx ? `about ${Math.round(v)}%` : `${Number(v).toFixed(1)}%`) + (r.ci && r.ci[k] ? ` [${r.ci[k][0]}–${r.ci[k][1]}]` : "");
+  let acc = "";
+  if(!earlier){
+    // The track record (per-day hits against the official rank) wins; the file's own line only when there is none.
+    acc = (((VIEW.accuracy||{})[TAB]) || []).map(r=>`${r.flag}${r.days ? ` on ${Number(r.days)} days` : ""}: top 3 ${pc(r.top3, r, "top3")} · top 5 ${pc(r.top5, r, "top5")} · top 10 ${pc(r.top10, r, "top10")}${r.note ? ` (${r.note})` : ""}`).join("; ")
+      || p.backtest_line || "";
+    if(acc && p.fallback) acc += " (this day used a fallback)";
+  }
+  const flag = VIEW.input_flag ? ` · Note: this day's prediction was ${VIEW.input_flag}` : "";
+  $("#acc").textContent = `${name}${made}${fb}${acc ? " — " + acc : ""}${flag}`;
+}
+function metric(){
+  const acc = VIEW.accuracy || {}, pick = (t)=> (acc[t] || []).find(x=>x.flag==="live" && (x.settled || x.top10 != null));
+  const rows = acc.mid || [];
+  const cur = (TAB === "pre" && pick("pre")) || rows.find(x=>x.flag==="live"), prev = rows.find(x=>x.flag==="live, previous model");
+  const r = cur || prev, pctv = r && r.settled ? r.settled.top10 : r && r.top10;   // settled (final) days only
+  if(r) $("#metric").innerHTML = `So far our user simulations have predicted <span class="live"><span class="dot" aria-hidden="true"></span><b>${Number(pctv).toFixed(1)}%</b></span> of each day's top 10 before public votes.`
+    + (cur ? "" : ` <span class="mnote">Previous model, live, ${Number(prev.days)} days${prev.note ? `; ${esc(prev.note)}` : ""}.</span>`);
+}
+function legend(sts){
+  accLine();
+  const n = (k)=> (sts||[]).filter(v=>v===k).length;
+  let h = sts && sts.some(Boolean)
+    ? `<span class="key exact"></span>Exact rank ${n("exact")}<span class="key near"></span>In top 10, other rank ${n("near")}<span class="key miss"></span>Missed ${n("miss")}${VIEW.status.final ? "" : " · so far"}`
+    : "";
+  const p0 = pointFor(TAB);
+  if(p0 && p0.exp_votes) h += `<span class="final">${esc(p0.vote_err || "est. = expected day-end votes, typical error about ±30% (1 forward day)")}</span>`;
+  if(VIEW.status.final){
+    const sc = (v, name)=>{ const p = pointFor(v); return p && p.score ? `<span class="final">${name}: top 3 ${p.score["3"]}/3 · top 5 ${p.score["5"]}/5 · top 10 ${p.score["10"]}/10</span>` : ""; };
+    h += sc("mid", "Product only") + sc("pre", "Product + comments");
+  }
+  $("#legend").innerHTML = h;
+}
+function ago(iso){
+  const m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000));
+  return m < 1 ? "just now" : m < 60 ? `${m} min ago` : `${Math.floor(m/60)} h ${m%60} min ago`;
+}
+
+function renderLive(){
+  const b = VIEW.board, fin = VIEW.status.final;
+  $("#live-h").textContent = fin ? "Final leaderboard" : "Live leaderboard";
+  const fr = VIEW.freshness || {};
+  $("#live-stamp").innerHTML = fin ? (b.as_of_pt ? `Final <b>${esc(b.as_of_pt)}</b>` : "Final")
+    : b.source === "Product Hunt API" && b.as_of
+      ? (b.votes_hidden ? `Votes hidden by Product Hunt until 04:00 PT<br>` : "") + `<span class="${fr.board_stale ? "tag" : ""}">Updated ${esc(ago(b.as_of))}</span>`
+      : fr.board_stale ? `<span class="tag">${esc(fr.board_stale_label)}</span>`
+      : b.as_of_pt ? `Updated <b>${esc(b.as_of_pt)}</b>` : "";
+  const lead = pointFor(TAB);
+  const ranks = lead ? lead.ranks : {};
+  $("#live").innerHTML = liveTop().map(x=>row(x.board_rank, x, x.board_votes!=null ? Number(x.board_votes) : null,
+      x.board_votes!=null ? "votes" : (fin ? "final" : "hidden"), lead ? status(ranks[x.id], x.board_rank) : "")).join("")
+    || `<li class="skeleton">${fin ? "No line-up for this day." : "The board appears after the 00:01 PT launch."}</li>`;
+}
+
+function drawLinks(){
+  const svg = $("#links"), box = svg.parentNode.getBoundingClientRect();
+  svg.setAttribute("width", box.width); svg.setAttribute("height", box.height);
+  const right = new Map([...document.querySelectorAll("#live .row")].map(li=>[li.dataset.id, li]));
+  const paths = [...document.querySelectorAll("#pred .row")].map(li=>{
+    const r = right.get(li.dataset.id);
+    if(!r || box.width < 8) return "";
+    const a = li.getBoundingClientRect(), c = r.getBoundingClientRect();
+    const y1 = a.top + a.height/2 - box.top, y2 = c.top + c.height/2 - box.top, w = box.width;
+    const k = li.classList.contains("exact") ? "exact" : "near";
+    return `<g class="${k}"><path d="M0 ${y1} C ${w*0.5} ${y1}, ${w*0.5} ${y2}, ${w} ${y2}"/><circle cx="0" cy="${y1}" r="3"/><circle cx="${w}" cy="${y2}" r="3"/></g>`;
+  }).join("");
+  svg.innerHTML = paths;
+}
+window.addEventListener("resize", ()=>{ if(VIEW) drawLinks(); });
+
+function showWhy(id, key){
+  const html = typeof whyBlock === "function" ? whyBlock(id, key) : "", x = VIEW.launches.find(l=>l.id===id), el = $("#whyp");
+  if(!html){ el.hidden = true; return; }
+  el.hidden = false; el.innerHTML = `<h3>Why: ${esc(x ? x.name : "")}</h3>` + html;
+  el.querySelector("details") && (el.querySelector("details").open = true);
+}
+
+// Day stepper: VIEW.days is newest first; "previous" goes back in time.
+function dayStep(){
+  const d = VIEW.days, i = d.indexOf(VIEW.day);
+  const fmt = new Date(VIEW.day + "T12:00:00").toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"});
+  $("#day-label").textContent = VIEW.day === VIEW.today ? `Today · ${fmt}` : fmt;
+  $("#day-prev").disabled = i < 0 || i >= d.length - 1;
+  $("#day-next").disabled = i <= 0;
+}
+function dayGrid(){
+  const g = $("#daygrid"), have = new Set(VIEW.days);
+  const days = [...VIEW.days].sort();
+  if(!days.length){ g.innerHTML = ""; return; }
+  const months = [...new Set(days.map(d=>d.slice(0,7)))];
+  g.innerHTML = months.map(m=>{
+    const first = new Date(m + "-01T12:00:00"), lead = (first.getDay() + 6) % 7;   // Monday-first
+    const last = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+    const cells = Array.from({length: lead}, ()=>`<span></span>`).concat(Array.from({length: last}, (_, i)=>{
+      const d = `${m}-${String(i + 1).padStart(2, "0")}`;
+      return have.has(d) ? `<button type="button" data-d="${d}" aria-pressed="${d===VIEW.day}"${d===VIEW.today ? ' class="today"' : ""}>${i + 1}</button>` : `<span class="off">${i + 1}</span>`;
+    }));
+    return `<div class="month"><p class="label">${first.toLocaleDateString("en-US", {month: "long", year: "numeric"})}</p>
+      <div class="dow"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="cells">${cells.join("")}</div></div>`;
+  }).reverse().join("");
+  g.querySelectorAll("button[data-d]").forEach(b=>b.onclick=()=>{ closeGrid(); $("#whyp").hidden = true; TAB = null; load(b.dataset.d); });
+}
+function closeGrid(){ $("#daygrid").hidden = true; $("#day-label").setAttribute("aria-expanded", "false"); }
+$("#day-label").onclick = (e)=>{ e.stopPropagation(); const g = $("#daygrid");
+  if(g.hidden){ dayGrid(); g.hidden = false; $("#day-label").setAttribute("aria-expanded", "true"); } else closeGrid(); };
+document.addEventListener("click", (e)=>{ if(!e.target.closest(".daystep")) closeGrid(); });
+document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeGrid(); });
+function goDay(step){
+  const d = VIEW.days, i = d.indexOf(VIEW.day), j = i + step;
+  if(j < 0 || j >= d.length) return;
+  $("#whyp").hidden = true; TAB = null; load(d[j]);
+}
+$("#day-prev").onclick = ()=>goDay(1);
+$("#day-next").onclick = ()=>goDay(-1);
+load();
+// The board is read from Product Hunt's API at most once a minute on the server; poll at the same pace.
+const ptToday = ()=> new Intl.DateTimeFormat("en-CA", {timeZone: "America/Los_Angeles"}).format(new Date());
+setInterval(()=>{
+  if(!VIEW || document.hidden) return;
+  if(VIEW.day === VIEW.today && ptToday() !== VIEW.today){ TAB = null; load(); return; }   // midnight PT: move to the new day
+  if(VIEW.day === VIEW.today && !VIEW.status.final) load(VIEW.day);
+}, 60*1000);
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && VIEW && VIEW.day === VIEW.today && ptToday() !== VIEW.today){ TAB = null; load(); } });
+</script>
+</body>
+</html>

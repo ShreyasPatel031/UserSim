@@ -249,6 +249,11 @@ async def index() -> FileResponse:
     return FileResponse(STATIC / "index.html")
 
 
+from mvp.ph_site.routes import router as _ph_site_router  # noqa: E402  /ph and /try (Product Hunt pages)
+
+app.include_router(_ph_site_router)
+
+
 @app.get("/live")
 async def live_page() -> FileResponse:
     path = STATIC / "live.html"

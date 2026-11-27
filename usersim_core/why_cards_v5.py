@@ -257,6 +257,11 @@ def build_day_why_card(
             ),
             "sameday_rivalry_adjustment": round(-0.025 * float(r.get("sameday_direct_rival_cannibalization_z", 0.0)), 4),
         }
+        if "qwen_vl_choice_mean_z" in r and float(r.get("has_qwen_vl_choice", 0.0)) > 0.0:
+            driver_points["qwen_vl_unified_7b_choice"] = round(
+                0.030 * (0.65 * float(r.get("qwen_vl_choice_mean_z", 0.0)) + 0.35 * float(r.get("qwen_vl_choice_p80_z", 0.0))),
+                4,
+            )
         if point == "pre":
             driver_points["pre_0345_order_free_comments"] = round(
                 0.045 * float(r.get("pc_early_discerning_z", 0.0))

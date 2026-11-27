@@ -1,0 +1,977 @@
+"""Tests for the public /ph and /try pages: redaction whitelist, SSRF guard, signed run tokens, rate limits."""
+import asyncio
+import json
+import os
+
+import pytest
+
+from mvp.ph_site import live, safe_fetch, try_sim
+
+os.environ.setdefault("TRY_SIGNING_KEY", "test-key-" + "x" * 40)
+
+
+@pytest.fixture(autouse=True)
+def _not_on_vercel(monkeypatch):
+    # Tests must never touch the shared counters or run store, whatever the environment they run in.
+    monkeypatch.delenv("VERCEL", raising=False)
+    monkeypatch.delenv("VERCEL_ENV", raising=False)
+    for k in ("PH_TOKEN", "PH_CLIENT_ID", "PH_CLIENT_SECRET"):   # no live Product Hunt calls from tests
+        monkeypatch.delenv(k, raising=False)
+
+
+def test_product_whitelist_drops_people():
+    r = {"id": 1, "name": "Prod", "tagline": "t", "slug": "prod", "topics": {"edges": [{"node": {"name": "SaaS"}}]},
+         "makers": [{"username": "someone", "name": "Some One"}], "user": {"username": "hunter1"},
+         "website": "https://x/r?utm=1"}
+    p = live._product(r)
+    assert set(p) == {"id", "name", "tagline", "slug", "topics", "thumb"}
+    assert p["thumb"] is None
+    s = json.dumps(p)
+    assert "someone" not in s and "hunter1" not in s and "Some One" not in s
+    assert p["topics"] == ["SaaS"]
+
+
+def test_thumb_only_ph_cdn():
+    assert live._thumb({"url": "https://ph-files.imgix.net/abc-1.png?w=1"}).startswith("https://ph-files.imgix.net/abc-1.png?")
+    for bad in ("https://evil.example/x.png", "http://ph-files.imgix.net/a.png", "javascript:alert(1)",
+                "https://ph-files.imgix.net.evil.com/a.png", "https://ph-files.imgix.net/a\"onerror=x.png", None, 5):
+        assert live._thumb(bad) is None
+
+
+def test_topics_from_stringified_api_detail():
+    assert live._topics("{'nodes': [{'slug': 'marketing', 'name': 'Marketing'}]}") == ["Marketing"]
+
+
+@pytest.mark.parametrize("url", ["file:///etc/passwd", "http://127.0.0.1/", "http://169.254.169.254/latest",
+                                 "http://localhost:8000", "http://10.0.0.5", "https://www.producthunt.com/posts/x",
+                                 "http://metadata.google.internal/", "https://user:pw@example.com", "http://example.com:2375/",
+                                 "gopher://example.com"])
+def test_ssrf_blocked(url):
+    with pytest.raises(safe_fetch.FetchError):
+        asyncio.run(safe_fetch.check_url(url))
+
+
+def test_ip_filter():
+    assert not safe_fetch._ip_ok("192.168.1.1") and not safe_fetch._ip_ok("::1") and not safe_fetch._ip_ok("100.64.1.1")
+    assert not safe_fetch._ip_ok("::ffff:127.0.0.1")
+    assert safe_fetch._ip_ok("8.8.8.8")
+
+
+def test_extract_strips_scripts():
+    ex = safe_fetch.extract("<title>X</title><script>evil()</script><p>Hello <b>world</b></p>")
+    assert ex["title"] == "X" and "evil" not in ex["text"] and "Hello world" in ex["text"]
+
+
+def test_token_roundtrip_and_tamper():
+    tok = try_sim.sign({"a": {"name": "n"}})
+    assert try_sim.verify(tok)["a"]["name"] == "n"
+    a, b = tok.split(".")
+    with pytest.raises(PermissionError):
+        try_sim.verify(a[:-2] + ("AA" if a[-2:] != "AA" else "BB") + "." + b)
+
+
+def test_local_rate_limit(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False); monkeypatch.delenv("VERCEL_ENV", raising=False)
+    try_sim._mem.clear()
+    for _ in range(try_sim.CAPS["per_ip_hour"]):
+        try_sim.take_slot("1.2.3.4")
+    with pytest.raises(PermissionError):
+        try_sim.take_slot("1.2.3.4")
+    try_sim.take_slot("5.6.7.8")
+
+
+def test_hits():
+    act = {str(i): {"rank": i, "votes": 100 - i} for i in range(1, 21)}
+    pred = {str(i): 21 - i for i in range(1, 21)}
+    assert live.hits(pred, act, 10) == 0
+    assert live.hits({str(i): i for i in range(1, 21)}, act, 3) == 3
+
+
+def test_e5_summary_shows_roles_tiers_only():
+    import numpy as np
+    from mvp.ph_site import person_e5
+    n = 300
+    roles = np.zeros((n, 9), np.uint8)
+    roles[:150, 0] = 1          # 150 devs
+    roles[150:155, 3] = 1       # 5 founders: too few to show on their own
+    B = {"pct99_tree": np.zeros(n, np.float32), "roles": roles,
+         "role_names": np.array(["dev", "design", "market", "founder", "product", "data_ai", "sales", "student", "invest"]),
+         "n_uses": np.full(n, 6, dtype=np.int32), "n": n}
+    score = np.linspace(-1, 1, n)
+    score[150:155] = 5           # the rare founders score highest
+    out = person_e5.summarize(B, score)
+    for p in out["people"]:
+        assert set(p) == {"roles", "tier", "likely", "strength", "shared_by"}
+        assert p["roles"] != ["founder"]   # a 5-person description is never shown
+    assert all(s["likely"] >= 20 for s in out["segments"])
+
+
+def test_pinned_fetch_uses_validated_ip(monkeypatch):
+    """The connection goes to the IP we validated, with the original Host header (no second DNS lookup)."""
+    import http.server
+    import threading
+    seen = {}
+
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            seen["host"] = self.headers.get("Host")
+            body = b"<title>T</title><p>" + b"x" * 200 + b"</p>"
+            self.send_response(200); self.send_header("Content-Type", "text/html; charset=nope")
+            self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+
+        def log_message(self, *a):
+            pass
+
+    srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+    port = srv.server_address[1]
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    calls = []
+
+    async def fake_resolve(host):
+        calls.append(host)
+        return ["127.0.0.1"]
+
+    monkeypatch.setattr(safe_fetch, "_resolve", fake_resolve)
+    monkeypatch.setattr(safe_fetch, "_behind_proxy", lambda: False)
+    monkeypatch.setattr(safe_fetch, "_static_checks", lambda u: (__import__("urllib.parse").parse.urlsplit(
+        u.replace("example.test", f"example.test:{port}")), "example.test"))
+    status, hdrs, raw = asyncio.run(safe_fetch._get_pinned("http://example.test/"))
+    srv.shutdown()
+    assert status == 200 and seen["host"] == f"example.test:{port}" and calls == ["example.test"]
+    assert "x" * 50 in safe_fetch._decode(raw, "text/html; charset=nope", "")   # unknown charset -> utf-8, no crash
+
+
+def test_ipv6_tunnels_blocked():
+    for ip in ("64:ff9b::7f00:1", "2002:7f00:1::1", "::ffff:10.0.0.1", "fd00::1", "fe80::1"):
+        assert not safe_fetch._ip_ok(ip)
+    assert safe_fetch._ip_ok("2606:4700::1111")
+
+
+def test_signing_fails_closed(monkeypatch):
+    monkeypatch.delenv("TRY_SIGNING_KEY", raising=False)
+    with pytest.raises(try_sim.NotConfigured):
+        try_sim.sign({"a": 1})
+
+
+def test_run_steps_are_one_use(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    tok = try_sim.new_run({"name": "n", "topics": []})
+    assert try_sim.use_run(tok, "reactions")["name"] == "n"
+    with pytest.raises(PermissionError):
+        try_sim.use_run(tok, "reactions")
+    try_sim.use_run(tok, "people")
+    with pytest.raises(PermissionError):
+        try_sim.use_run(tok, "people")
+
+
+def test_local_limits_ignored_on_vercel(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.setenv("VERCEL", "1")
+    assert not try_sim._local_limits()
+
+
+def test_client_ip_keys(monkeypatch):
+    from types import SimpleNamespace
+    from mvp.ph_site.routes import _client_ip
+    monkeypatch.setenv("VERCEL", "1")
+    req = lambda h, peer="9.9.9.9": SimpleNamespace(headers=h, client=SimpleNamespace(host=peer))
+    assert _client_ip(req({"x-vercel-forwarded-for": "1.2.3.4", "x-forwarded-for": "6.6.6.6"})) == "1.2.3.4"
+    assert _client_ip(req({"x-vercel-forwarded-for": "2001:db8:1:2:aaaa::1"})) == "2001:db8:1:2::/64"
+    assert _client_ip(req({"x-vercel-forwarded-for": "2001:db8:1:2:bbbb::9"})) == "2001:db8:1:2::/64"
+    monkeypatch.delenv("VERCEL")
+    assert _client_ip(req({"x-forwarded-for": "6.6.6.6"})) == "9.9.9.9"   # spoofable header ignored off Vercel
+
+
+def test_decode_non_text_codecs_and_bad_gzip():
+    for cs in ("base64", "rot13", "hex", "zlib", "nope"):
+        assert "hi" in safe_fetch._decode(b"hi there", f"text/html; charset={cs}", "")
+    with pytest.raises(safe_fetch.FetchError):
+        safe_fetch._decode(b"not gzip at all", "text/html", "gzip")
+
+
+def test_ipv4_compatible_and_siit_blocked():
+    assert not safe_fetch._ip_ok("::7f00:1")          # ::127.0.0.1 (IPv4-compatible)
+    assert not safe_fetch._ip_ok("::ffff:0:7f00:1")   # SIIT
+
+
+def test_refund_after_failed_fetch(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    try_sim._mem.clear()
+
+    async def ok(u):
+        return u
+
+    async def boom(u):
+        raise safe_fetch.FetchError("down")
+
+    monkeypatch.setattr(safe_fetch, "check_url", ok)
+    monkeypatch.setattr(safe_fetch, "fetch_product", boom)
+    for _ in range(try_sim.CAPS["per_ip_hour"] + 2):   # failures before any model call never use up the hour
+        with pytest.raises(safe_fetch.FetchError):
+            asyncio.run(try_sim.step_page("https://example.com", "7.7.7.7"))
+    assert len(try_sim._mem.get(try_sim._ip_hash("7.7.7.7"), [])) == 0
+
+
+def test_exp_final_votes_read(monkeypatch):
+    doc = {"written_at": "w", "data_up_to": "d", "method": "votes",
+           "forecast": [{"id": "1", "pred_rank": 1, "exp_final_votes": 412.6}, {"id": "2", "pred_rank": 2, "exp_final_votes": None}]}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: doc)
+    f = live._forecast_file("2026-11-12", "R2")
+    assert f["exp_votes"] == {"1": 413}
+    doc["forecast"] = [{"id": "1", "pred_rank": 1}]
+    assert live._forecast_file("2026-11-12", "R1")["exp_votes"] is None
+
+
+def test_prereveal_confidence(monkeypatch):
+    pc = {"n_days": 6, "note": "replay", "by_point": {"P2": {"pick1": {"in_top3": {"rate": 100.0, "hits": 6, "n": 6}},
+                                                             "pick4": {"in_top3": None, "in_top5": {"rate": 50.0, "hits": 3, "n": 6}}}},
+          "by_agreement": {"agree": {"picks1_3_in_top3": {"rate": 87.2}, "picks1_5_in_top5": {"rate": 88.7}},
+                           "disagree": {"picks1_3_in_top3": {"rate": 63.6}, "picks1_5_in_top5": {"rate": 65.7}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: pc)
+    f = {"ranks": {"a": 1, "b": 4, "c": 7}, "agree": {"a": True, "b": False}}
+    out = live._prereveal_confidence("P2", f)
+    assert out["a"]["hits"] == 6 and out["a"]["what"] == "top 3" and out["a"]["agree_rate"] == 87.2
+    assert out["b"]["what"] == "top 5" and out["b"]["agree_rate"] == 65.7 and "c" not in out
+
+
+def test_lock_not_in_payload(monkeypatch):
+    # The vote-gap lock has no sourced reliability figure, so it is no longer sent to the page (E5 audit, Nov 14).
+    monkeypatch.setattr(live, "actuals", lambda d: {"final": False, "as_of": None, "revealed": False, "ranks": {}})
+    monkeypatch.setattr(live, "_lineup", lambda d: {})
+    monkeypatch.setattr(live, "forecasts", lambda d: {})
+    monkeypatch.setattr(live, "current_board", lambda d: {"as_of": None, "as_of_pt": "", "ranks": {}, "votes_hidden": True})
+    monkeypatch.setattr(live, "_api_board", lambda d: None)
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [])
+    v = live.day_view("2026-11-12")
+    assert "lock" not in v["board"] and "reliab" not in str(v)
+
+
+def test_final_only_from_official_rank_after_3am(monkeypatch):
+    rows = [{"_header": True},
+            {"id": "a", "dailyRank": "1", "votesCount": "300", "featuredAt": "2026-11-10T08:01:00Z", "fetched_at": "2026-11-11T21:00:00Z"},
+            # featured at exactly 00:00 PT Nov 11 -> belongs to Nov 11, not Nov 10
+            {"id": "b", "dailyRank": "1", "votesCount": "900", "featuredAt": "2026-11-11T08:00:00Z", "launch_day_PT": "2026-11-10", "fetched_at": "2026-11-11T21:00:00Z"},
+            # read before 03:00 PT next day -> not final
+            {"id": "c", "dailyRank": "2", "votesCount": "200", "featuredAt": "2026-11-10T08:01:00Z", "fetched_at": "2026-11-11T09:00:00Z"}]
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [("raw/ph_at_launch/monthly_reread/2026-11/2026-11-11.jsonl", "")] if "monthly_reread" in prefix else [])
+    monkeypatch.setattr(live.gcs, "read_jsonl", lambda path, ttl=0: rows)
+    ranks, at = live._monthly_reread("2026-11-10")
+    assert set(ranks) == {"a"}
+
+
+def test_step_text_validates_before_spending(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    try_sim._mem.clear()
+    with pytest.raises(ValueError):
+        asyncio.run(try_sim.step_text("Name", "Tag", "too short", "8.8.8.8"))
+    assert not try_sim._mem.get(try_sim._ip_hash("8.8.8.8"))   # rejected input never took a slot
+
+
+def test_page_retries_site_root(monkeypatch):
+    monkeypatch.setenv("TRY_LOCAL_LIMITS", "1")
+    monkeypatch.delenv("VERCEL", raising=False)
+    calls = []
+
+    async def ok(u):
+        return u
+
+    async def fetch(u):
+        calls.append(u)
+        if u.endswith("/docs/x"):
+            raise safe_fetch.FetchError("403")
+        raise safe_fetch.FetchError("root also down")   # stop before any model call
+
+    monkeypatch.setattr(safe_fetch, "check_url", ok)
+    monkeypatch.setattr(safe_fetch, "fetch_product", fetch)
+    with pytest.raises(safe_fetch.FetchError):
+        asyncio.run(try_sim.step_page("https://example.com/docs/x", "9.9.9.9"))
+    assert calls == ["https://example.com/docs/x", "https://example.com/"]
+
+
+def test_difficulty_label(monkeypatch):
+    conf = {"label": "clear_leader", "stable": True, "applies_to": "clean shadow model", "text": "Clear leader today.",
+            "validated_rates": {"days": 69, "p1_top3": 0.855, "p1_count": "59 of 69"}}
+    sb = {"by_label": {"clear_leader": {"days": 3, "p1_top3_count": "2 of 3"}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: conf if "/confidence/" in path else sb if "confidence_scoreboard" in path else None)
+    assert live._difficulty("2026-11-12") is None            # clean-model label never attached to the published ranking
+    conf["applies_to"] = "published"
+    d = live._difficulty("2026-11-12")
+    assert d["label"] == "clear_leader" and d["forward"]["days"] == 3
+    conf.pop("stable")
+    assert live._difficulty("2026-11-12") is None
+
+
+def test_asks_rank_pick_and_note():
+    import numpy as np
+    from mvp.ph_site import try_sim
+    X = np.eye(4, dtype=np.float32)
+    # candidate 2 has the highest likelihood and the others tie: it is picked
+    assert try_sim._rank_pick(["a", "b"], [], np.zeros((0, 4), np.float32), X, [1, 1, 5, 1]) == 2
+    page, pasted = try_sim._asks_note(False), try_sim._asks_note(True)
+    assert "2 in 5" in page and "about 1 in 4 of these concerns" in page
+    assert "backtest only" in page and "backtest only" not in pasted and "forward check on 32 new launches" in pasted
+    assert "1 in 2" in pasted and "about 1 in 3 of these concerns" in pasted
+    assert "no accuracy figure" in try_sim._asks_note(True, 60, "earlier_method") and "1 in 3" not in try_sim._asks_note(True, 60, "earlier_method")
+    assert "common concerns" in try_sim._asks_note(False, None, "common")
+    assert try_sim.STEP_USES["asks"] == 1
+    assert "under 40 words" in try_sim._asks_note(True, 25) and "under 40 words" not in try_sim._asks_note(True, 60)
+    R = {"emb": np.array([[1, 0], [0.9, 0.1], [0, 1]], np.float32),
+         "rows": [{"slug_stem": "acme-2", "themes": []}, {"slug_stem": "other", "themes": ["objection: too pricey", "praise: nice"]},
+                  {"slug_stem": "third", "themes": ["question: is there an API?"]}]}
+    nb, s1 = try_sim._b20_neighbours(R, np.array([1, 0], np.float32), "Acme")
+    assert nb == [1, 2] and abs(s1 - 0.9) < 1e-6           # the product's own earlier launch (acme-2) is excluded
+    assert try_sim._b20_points(R, nb) == "[1] too pricey\n[2] is there an API?"
+
+
+def test_ph_steady_state_freshness(monkeypatch):
+    from datetime import datetime, timedelta, timezone
+    from mvp.ph_site import live, gcs
+    names = [(f"raw/ph_at_launch/d/snapshots/20261112T{t}PT_api.jsonl", "") for t in ("0245", "0300", "0555", "0600")]
+    monkeypatch.setattr(gcs, "list_names", lambda prefix, ttl=0: names if "snapshots" in prefix else [])
+    assert live._capture_gaps("2026-11-12") == [{"from_pt": "03:00 PT", "to_pt": "05:55 PT", "minutes": 175}]
+    today = live.today_pt()
+    old = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat()
+    f = live._freshness(today, {"0005": {}}, {"as_of": old, "as_of_pt": "05:00 PT"}, final=False)
+    assert f["board_stale"] and "not updated since 05:00 PT" in f["board_stale_label"]
+    assert f["capture_gaps"][-1]["to_pt"] is None
+    fresh = live._freshness(today, {}, {"as_of": datetime.now(timezone.utc).isoformat(), "as_of_pt": "x"}, final=False)
+    assert not fresh["board_stale"]
+    past = live._freshness("2026-11-01", {"0005": {}}, {}, final=True)
+    assert past["missing_points"] == ["PRE"] and not past["board_stale"]      # only the two published predictions count
+
+
+def test_forecast_0005_markdown_fallback(monkeypatch):
+    from mvp.ph_site import live, gcs
+    md = "| Predicted rank | Product | Tagline |\n|---|---|---|\n| 1 | Beta | b |\n| 2 | Alpha | a |\n| 3 | Gamma | c |\n"
+    lineup = [{"id": 11, "name": "Alpha"}, {"id": 22, "name": "Beta"}, {"id": 33, "name": "Gamma"}]
+    monkeypatch.setattr(gcs, "read_bytes", lambda n, ttl=0: md.encode() if n.endswith(".md") else None)
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: lineup if n.endswith("today_0005.json") else None)
+    monkeypatch.setattr(gcs, "list_names", lambda prefix, ttl=0: [])
+    f = live._forecast_0005_md("2026-11-12")
+    assert f["ranks"] == {"22": 1, "11": 2, "33": 3}
+    lineup.append({"id": 44, "name": "Delta"}); lineup.append({"id": 55, "name": "Eps"}); lineup.append({"id": 66, "name": "Z"})
+    lineup.append({"id": 77, "name": "Y"}); lineup.append({"id": 88, "name": "X"}); lineup.append({"id": 99, "name": "W"})
+    assert live._forecast_0005_md("2026-11-12") is None      # too few names matched: no partial order shown
+
+
+def test_launch_step_returns_input_note(monkeypatch):
+    from mvp.ph_site import try_sim, gcs
+    lb = {"vocab": {}, "intercept": 0.0, "topics_order": [], "dense_mean": [0, 0, 0], "dense_sd": [1, 1, 1],
+          "dense_coef": [0, 0, 0], "score_percentile_cuts": list(range(-50, 50)),
+          "bands": [{"decile": i + 1, "daily_rank_p10_p50_p90": [1, 5, 20], "votes_p10_p50_p90": [10, 50, 200],
+                    "share_top3": 0.1, "share_top10": 0.3, "n": 100} for i in range(10)],
+          "heldout_accuracy": {"days": 200, "top3": 29, "top5": 40, "top10": 60, "within_day_spearman": 0.2},
+          "trained_on": {"launches": 1000, "days": ["2026-01-01", "2026-11-10"]}}
+    rc = {"caveat": "Coarse.", "bands": [{"daily_rank_p09_p50_p91": [2, 6, 30], "votes_p09_p50_p91": [9, 40, 300],
+                                          "share_top3": 0.2, "share_top10": 0.5, "n": 600} for _ in range(10)]}
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: lb if n.endswith("launch_band.json") else
+                        rc if n.endswith("launch_band_recal82_v1.json") else None)
+    monkeypatch.setattr(try_sim, "use_run", lambda tok, step: {"name": "X", "tagline": "y", "ph_description": "z " * 50,
+                                                                "topics": [], "source": "pasted"})
+    out = try_sim.step_launch("t")
+    assert out["input_note"] and "0.35" in out["input_note"] and out["coverage"] is None
+    assert out["rank_band"] == {"likely": [2, 30], "median": 6} and out["band_level"] == "80% band"
+    assert "80.5%" in out["input_note"] and "Coarse." in out["method"]
+
+
+def test_why_is_sanitised(monkeypatch):
+    from mvp.ph_site import live, gcs
+    f = {"as_of": "2026-11-13T08:10:00+00:00", "min_group": 20, "shadow": True,
+         "items": {"held_backers": {"label": "Backers", "unit": "people", "note": "n1"},
+                   "tiers": {"label": "Tiers", "unit": "share by tier", "note": "n1"}},
+         "notes": {"n1": "Descriptive."},
+         "launches": {"1": {"held_backers": {"value": 120, "n_people": 120, "coverage": {"team_members_named": 2, "share_from_1000_most_active": 0.715}, "note": "n1"},
+                            "tiers": {"value": {"this launch": {"0": 0.5, "x": "bob"}}, "n_people": 40},
+                            "secret": {"value": 3, "n_people": 50}},
+                      "2": {"held_backers": {"value": 7, "n_people": 7, "username": "bob"}},
+                      "999": {"held_backers": {"value": 500, "n_people": 500}}}}
+    monkeypatch.setattr(gcs, "read_json", lambda n, ttl=0: f if n == "results/web/why/2026-11-13_0005.json" else None)
+    monkeypatch.delenv("PH_WHY_PREFIX", raising=False)
+    w = live.why("2026-11-13", "0005", {"1", "2"})
+    assert set(w["launches"]) == {"1"}                      # under-20 group and unknown launch dropped
+    assert set(w["launches"]["1"]) == {"held_backers", "tiers"} and "bob" not in str(w)
+    assert w["launches"]["1"]["tiers"]["value"] == {"this launch": {"0": 0.5}}
+    assert w["items"]["held_backers"]["note"] == "Descriptive." and w["shadow"] is True
+    assert w["launches"]["1"]["held_backers"]["coverage"] == {"team_members_named": 2, "share_from_1000_most_active": 0.715}
+    assert live.why("2026-11-13", "P1", {"1"}) is None
+    monkeypatch.setenv("PH_WHY_PREFIX", "tmp/e5/why_shadow"); monkeypatch.setenv("VERCEL", "1")
+    assert live._why_prefix() == "results/web/why"         # the preview override is ignored on the deployed site
+
+
+# ---------- live board from Product Hunt's API (mvp/ph_site/ph_live.py) ----------
+
+def _live_env(monkeypatch, now_pt):
+    """In-memory GCS + frozen clock for ph_live."""
+    import json as _json
+    from datetime import datetime as _dt
+    from mvp.ph_site import ph_live, gcs
+    store = {}
+
+    class Blob:
+        def __init__(self, name): self.name, self.metadata = name, None
+        def upload_from_string(self, data, content_type=None, if_generation_match=None):
+            if if_generation_match == 0 and self.name in store:
+                from google.api_core.exceptions import PreconditionFailed
+                raise PreconditionFailed("exists")
+            store[self.name] = data
+
+    class Bucket:
+        def blob(self, name): return Blob(name)
+
+    monkeypatch.setattr(gcs, "_bucket", lambda: Bucket())
+    monkeypatch.setattr(gcs, "read_json", lambda path, ttl=0: _json.loads(store[f"{gcs.ROOT}/{path}"]) if f"{gcs.ROOT}/{path}" in store else None)
+    monkeypatch.setenv("PH_TOKEN", "test-token")
+    ph_live._mem.clear()
+    ph_live._state.update(last_error=None, last_error_at=None, last_ok_at=None)
+    clock = {"now": now_pt}
+
+    class FakeDT(_dt):
+        @classmethod
+        def now(cls, tz=None):
+            n = clock["now"]
+            return n.astimezone(tz) if tz else n.replace(tzinfo=None)
+
+    monkeypatch.setattr(ph_live, "datetime", FakeDT)
+    return ph_live, store, clock
+
+
+def _nodes(day, n=3, votes=10):
+    return [{"id": str(100 + i), "name": f"P{i}", "tagline": "t", "slug": f"p{i}", "featuredAt": f"{day}T08:01:00Z",
+             "votesCount": votes * (n - i), "commentsCount": 2, "dailyRank": i + 1,
+             "thumbnail": {"url": "https://ph-files.imgix.net/x.png"}, "topics": {"edges": [{"node": {"name": "AI"}}]}}
+            for i in range(n)]
+
+
+def test_live_board_fresh_cached_and_persisted(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    calls = []
+    fetch = lambda d: calls.append(d) or _nodes(d)
+    b = ph_live.board("2026-11-14", fetch=fetch)
+    assert [r["rank"] for r in b["launches"]] == [1, 2, 3] and b["launches"][0]["votes"] == 30 and not b["votes_hidden"]
+    assert "usersim_sim/site/live_board/latest.json" in store and "usersim_sim/site/live_board/2026-11-14.json" in store
+    clock["now"] = now + timedelta(seconds=30)
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 1                                   # within the minute: no second upstream call
+    ph_live._mem.clear()                                     # another instance, cold, within the same minute
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 1                                   # it reuses the persisted snapshot
+    clock["now"] = now + timedelta(seconds=90)
+    ph_live.board("2026-11-14", fetch=fetch)
+    assert len(calls) == 2
+
+
+def test_live_board_upstream_down_or_rate_limited_serves_last_good(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    good = ph_live.board("2026-11-14", fetch=_nodes)
+    for err in ("rate limited", "network: ConnectTimeout", "http 502"):
+        clock["now"] += timedelta(minutes=2)
+        def boom(d, err=err): raise ph_live.Upstream(err)
+        b = ph_live.board("2026-11-14", fetch=boom)
+        assert b["fetched_at"] == good["fetched_at"] and len(b["launches"]) == 3
+        assert ph_live._state["last_error"] == err
+    clock["now"] += timedelta(minutes=2)
+    b = ph_live.board("2026-11-14", fetch=lambda d: [])    # an empty reply never blanks a good board
+    assert len(b["launches"]) == 3 and ph_live._state["last_error"] == "empty response"
+    ph_live._mem.clear()                                    # cold start while upstream is down: persisted copy
+    clock["now"] += timedelta(minutes=2)
+    b = ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(ph_live.Upstream("http 503")))
+    assert b and len(b["launches"]) == 3
+
+
+def test_live_board_cold_start_no_data_and_unconfigured(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    now = _dt(2026, 11, 14, 0, 2, tzinfo=ZoneInfo("America/Los_Angeles"))
+    ph_live, store, clock = _live_env(monkeypatch, now)
+    assert ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(ph_live.Upstream("http 500"))) is None
+    monkeypatch.delenv("PH_TOKEN")
+    calls = []
+    assert ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d)) is None and not calls
+
+
+def test_live_board_pre_reveal_hides_votes_and_rollover(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    PTZ = ZoneInfo("America/Los_Angeles")
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 23, 58, tzinfo=PTZ))
+    ph_live.board("2026-11-14", fetch=_nodes)
+    clock["now"] = _dt(2026, 11, 15, 0, 3, tzinfo=PTZ)      # day rolls over at 00:00 PT
+    b = ph_live.board("2026-11-15", fetch=lambda d: _nodes(d, votes=0))
+    assert b["day"] == "2026-11-15" and b["votes_hidden"] and all(r["votes"] is None for r in b["launches"])
+    y = ph_live.board("2026-11-14", fetch=lambda d: (_ for _ in ()).throw(AssertionError("must not refetch before close")))
+    assert y["day"] == "2026-11-14" and len(y["launches"]) == 3 and not y["final"]
+    clock["now"] = _dt(2026, 11, 15, 3, 5, tzinfo=PTZ)      # after 03:00 PT next day: one final re-read
+    calls = []
+    y = ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d, votes=20))
+    assert y["final"] and calls == ["2026-11-14"] and y["launches"][0]["votes"] == 60
+    ph_live.board("2026-11-14", fetch=lambda d: calls.append(d) or _nodes(d))
+    assert calls == ["2026-11-14"]                          # final is read once
+
+
+def test_live_board_keeps_only_product_fields(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    n = _nodes("2026-11-14", 1)
+    n[0]["makers"] = [{"username": "secret_handle"}]; n[0]["user"] = {"username": "hunter_handle"}
+    n[0]["thumbnail"] = {"url": "https://evil.example/x.png"}
+    b = ph_live.board("2026-11-14", fetch=lambda d: n)
+    assert "secret_handle" not in str(b) and "hunter_handle" not in str(b) and b["launches"][0]["thumb"] is None
+
+
+def test_live_record_slots_append_only(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    PTZ = ZoneInfo("America/Los_Angeles")
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 3, 46, tzinfo=PTZ))
+    assert ph_live.slot_for(_dt(2026, 11, 14, 3, 46)) == "0345" and ph_live.slot_for(_dt(2026, 11, 14, 23, 51)) == "2350"
+    assert ph_live.slot_for(_dt(2026, 11, 14, 23, 46)) == "2345" and ph_live.slot_for(_dt(2026, 11, 14, 0, 0)) == "0000"
+    r = ph_live.append_slot(fetch=lambda d: _nodes(d, votes=0))
+    assert r["status"] == "written" and r["slot"] == "0345" and r["rows"] == 3
+    rows = [__import__("json").loads(l) for l in store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"].splitlines()]
+    assert rows[0]["votes"] is None and set(rows[0]) == {"snapshot_ts", "slot", "id", "slug", "votes", "comments", "rank", "featured_at"}
+    clock["now"] += timedelta(minutes=2)                    # same slot again: never rewritten
+    before = store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"]
+    assert ph_live.append_slot(fetch=lambda d: _nodes(d, votes=99))["status"] == "exists"
+    assert store["usersim_sim/site/live_board/2026-11-14_ts/0345.jsonl"] == before
+    clock["now"] = _dt(2026, 11, 14, 4, 1, tzinfo=PTZ)
+    r = ph_live.append_slot(fetch=lambda d: _nodes(d, votes=5))
+    assert r["slot"] == "0400" and r["status"] == "written"
+
+
+def test_live_record_skips_empty_day(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 15, 0, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    r = ph_live.append_slot(fetch=lambda d: [])
+    assert r["status"] == "skipped" and not any("_ts/" in k for k in store)
+
+
+def test_cron_endpoint_requires_secret(monkeypatch):
+    from fastapi.testclient import TestClient
+    from mvp.server import app
+    c = TestClient(app)
+    monkeypatch.delenv("CRON_SECRET", raising=False)
+    assert c.get("/api/ph/cron/snapshot").status_code == 503
+    monkeypatch.setenv("CRON_SECRET", "s" * 32)
+    assert c.get("/api/ph/cron/snapshot").status_code == 401
+    assert c.get("/api/ph/cron/snapshot", headers={"Authorization": "Bearer wrong"}).status_code == 401
+
+
+
+def test_midnight_accuracy_rows_never_pooled(monkeypatch):
+    tr = {"summary": {"00:05 PT | backtest": {"all days": {"top3 hits %": [60.7, 57.8, 63.7, 214], "top5 hits %": [68.4, 0, 0, 214], "top10 hits %": [75.7, 0, 0, 214]}},
+                      "00:05 PT | live, previous published model": {"all days": {"top3 hits %": [51.5, 0, 0, 11], "top5 hits %": [60.0, None, None, 11], "top10 hits %": [73.6, None, None, 11]}},
+                      "00:05 PT | backtest (clean_nosite, fallback model)": {"all days": {"top3 hits %": [54.5, 0, 0, 183], "top5 hits %": [64.7, 0, 0, 183], "top10 hits %": [76.0, 0, 0, 183]}},
+                      "03:45 PT | replay": {"all days": {"top3 hits %": [72.7, 0, 0, 11], "top5 hits %": [74.5, 0, 0, 11], "top10 hits %": [78.2, 0, 0, 11]}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
+    a = live.accuracy()
+    flags = [r["flag"] for r in a["mid"]]
+    assert flags == ["live, previous model", "replay with fixed inputs (not live)", "backtest (214 days)", "backtest (Sep–Oct)"]
+    fixed = a["mid"][1]
+    assert (fixed["top3"], fixed["top5"], fixed["top10"], fixed["days"]) == (54.5, 61.8, 73.6, 11) and "note" not in fixed
+    assert next(r for r in a["mid"] if r["flag"] == "backtest (Sep–Oct)")["days"] == 59
+    live_prev = a["mid"][0]
+    assert (live_prev["top10"], live_prev["days"]) == (73.6, 11) and "polluted hunter-history inputs" in live_prev["note"]
+    assert a["pre"][0]["flag"] == "replayed from the 03:00 PT read" and a["pre"][0]["top10"] == 77.5      # audited row replaces the file row
+
+
+def test_prereveal_replay_note_and_hidden_rank_row(monkeypatch):
+    tr = {"summary": {
+        "03:45 PT | replay (hidden rank alone)": {"all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [73.3, None, None, 12]}},
+        "03:45 PT | replay": {"note": "top-10 edge +4.2", "all days": {"top3 hits %": [72.2, None, None, 12], "top5 hits %": [75.0, None, None, 12], "top10 hits %": [77.5, None, None, 12]},
+                              "superseded 11-day figure (weights fit on all days)": {"top10 hits %": [77.3, 0, 0, 11]}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: tr if "track_record" in path else None)
+    pre = live.accuracy()["pre"]
+    assert [r["flag"] for r in pre] == ["replayed from the 03:00 PT read", "Product Hunt's hidden order alone"]
+    assert pre[0]["top10"] == 77.5 and pre[0]["days"] == 12 and pre[0]["ci"]["top10"] == [67.5, 86] and "hidden order itself" in pre[0]["note"]
+    assert pre[1]["top10"] == 73.3 and "note" not in pre[1]
+
+
+def test_published_prediction_files(monkeypatch):
+    files = {
+        "results/web/predictions/2026-11-14_0005.json": {"day": "2026-11-14", "kind": "0005", "model": "arm2", "fallback_used": None,
+            "written_at": "2026-11-14T08:30:00Z", "backtest": "60.7 / 68.4 / 75.7", "ranking": [{"rank": 1, "id": 11, "name": "A", "score": 1.2}, {"rank": 2, "id": 22, "name": "B"}]},
+        "results/web/predictions/2026-11-14_prereveal.json": {"day": "2026-11-14", "kind": "prereveal", "model": "midnight_order",
+            "fallback_used": "midnight_order", "written_at": "2026-11-14T11:47:00Z", "ranking": [{"rank": 1, "id": 22}]},
+        "results/web/predictions/2026-11-15_prereveal.json": {"day": "2026-11-15", "model": "none_available", "fallback_used": "none_available", "ranking": []},
+        "results/web/predictions/2026-11-16_0005.json": {"day": "2026-11-15", "ranking": [{"rank": 1, "id": 1}]},   # wrong day inside
+    }
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    a = live._published("2026-11-14", "0005")
+    assert a["ranks"] == {"11": 1, "22": 2} and a["fallback"] is None and a["data_up_to"].startswith("2026-11-14T00:05")
+    b = live._published("2026-11-14", "prereveal")
+    assert b["fallback"] == "midnight_order" and b["data_up_to"].startswith("2026-11-14T03:45")
+    c = live._published("2026-11-15", "prereveal")
+    assert c["fallback"] == "none_available" and c["ranks"] == {}
+    assert live._published("2026-11-16", "0005") is None          # never another day's picks under this date
+
+
+# ---------- stability review (orchestrator, Nov 14): one test per finding ----------
+
+def test_A1_latest_json_only_holds_today(monkeypatch):
+    from datetime import datetime as _dt
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 15, 4, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    ph_live.board("2026-11-14", fetch=_nodes)                # a past day re-read after it closed
+    assert "usersim_sim/site/live_board/2026-11-14.json" in store
+    assert "usersim_sim/site/live_board/latest.json" not in store
+    ph_live.board("2026-11-15", fetch=_nodes)
+    assert __import__("json").loads(store["usersim_sim/site/live_board/latest.json"])["day"] == "2026-11-15"
+
+
+def test_A2_page_survives_broken_blocks(monkeypatch):
+    def boom(*a, **k): raise RuntimeError("storage down")
+    monkeypatch.setattr(live, "_lineup", boom)
+    monkeypatch.setattr(live, "forecasts", boom)
+    monkeypatch.setattr(live, "actuals", boom)
+    monkeypatch.setattr(live, "current_board", boom)
+    monkeypatch.setattr(live, "_freshness", boom)
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    api = {"day": "2026-11-14", "fetched_at": "2026-11-14T12:00:00+00:00", "votes_hidden": False, "final": False,
+           "launches": [{"id": "1", "name": "A", "tagline": "t", "slug": "a", "topics": [], "thumb": None, "rank": 1, "votes": 9, "comments": 1}]}
+    monkeypatch.setattr(live, "_api_board", lambda d: api)
+    v = live.day_view("2026-11-14")
+    assert v["points"] == [] and v["launches"][0]["board_rank"] == 1 and v["board"]["source"] == "Product Hunt API"
+    v2 = live.board_only_view("2026-11-14")
+    assert v2["launches"][0]["board_votes"] == 9 and v2["points"] == []
+
+
+def test_A5_A6_A7_only_two_fixed_predictions(monkeypatch):
+    files = {
+        "results/web/predictions/2026-11-15_0005.json": {"day": "2026-11-15", "model": "arm2", "ranking": [{"rank": 1, "id": 7}]},
+        "results/web/predictions/2026-11-16_0005.json": {"day": "2026-11-16", "model": "none_available", "fallback_used": "none_available", "ranking": []},
+        "results/early_forecast/2026-11-15_P345.json": {"forecast": [{"id": 8, "pred_rank_hybrid": 1}], "written_at": "x"},
+        "results/early_forecast/2026-11-15_P2.json": {"forecast": [{"id": 9, "pred_rank_best": 1}]},
+        "results/early_forecast/2026-11-13_P345.json": {"forecast": [{"id": 5, "pred_rank_hybrid": 1}], "written_at": "x"},
+    }
+    names = [("results/web/predictions/2026-11-15_0005.json", ""), ("results/web/predictions/2026-11-16_0005.json", "")]
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: names if "predictions" in prefix else [])
+    monkeypatch.setattr(live.gcs, "_cache", {})
+    legacy = {"ranks": {"3": 1}, "made_at": "y", "data_up_to": "z", "method": "old"}
+    monkeypatch.setattr(live, "_forecast_0005", lambda d: dict(legacy))
+    f15 = live.forecasts("2026-11-15")
+    assert set(f15) <= {"0005", "PRE"}                                 # A5: no internal points leave the server
+    assert f15["0005"]["ranks"] == {"7": 1}                            # A6: the published file is the day's only list
+    assert "PRE" not in f15                                            # Product + comments: never the 03:45 hybrid (P345)
+    f16 = live.forecasts("2026-11-16")
+    assert f16["0005"]["ranks"] == {"3": 1} and f16["0005"]["fallback"] == "earlier_forecast"   # A7, labelled
+    files["results/web/predictions/2026-11-16_prereveal.json"] = {"day": "2026-11-16", "model": "none_available", "fallback_used": "none_available", "ranking": []}
+    files["results/early_forecast/2026-11-16_P345.json"] = {"forecast": [{"id": 6, "pred_rank_hybrid": 1}], "written_at": "x"}
+    live.gcs._cache.clear()
+    assert "PRE" not in live.forecasts("2026-11-16")                   # nor the old prereveal file
+    files["results/web/forecast_pre/2026-11-16.json"] = {"forecast": [{"id": 6, "predicted_rank": 1}, {"id": 4, "predicted_rank": 2}], "written_at": "w"}
+    live.gcs._cache.clear()
+    assert live.forecasts("2026-11-16")["PRE"]["ranks"] == {"6": 1, "4": 2}   # only the order-free forecast_pre file
+    f17 = live.forecasts("2026-11-17")
+    assert "0005" not in f17                                           # A6: published era, not written yet: nothing shown
+    f13 = live.forecasts("2026-11-13")
+    assert f13["0005"]["ranks"] == {"3": 1} and "PRE" not in f13
+
+
+def test_B6_rate_limit_backs_off(monkeypatch):
+    from datetime import datetime as _dt, timedelta
+    from zoneinfo import ZoneInfo
+    ph_live, store, clock = _live_env(monkeypatch, _dt(2026, 11, 14, 9, 0, tzinfo=ZoneInfo("America/Los_Angeles")))
+    good = ph_live.board("2026-11-14", fetch=_nodes)
+    calls = []
+    def limited(d):
+        calls.append(d); raise ph_live.RateLimited(300)
+    clock["now"] += timedelta(minutes=2)
+    assert ph_live.board("2026-11-14", fetch=limited)["fetched_at"] == good["fetched_at"]
+    assert len(calls) == 1 and ph_live._state["backoff_until"]
+    for _ in range(3):                                          # within the reset window: no further upstream calls
+        clock["now"] += timedelta(minutes=1)
+        ph_live._mem.clear()
+        assert ph_live.board("2026-11-14", fetch=limited) is not None
+    assert len(calls) == 1
+
+
+def test_B7_B8_token_remint_and_partial_errors(monkeypatch):
+    from mvp.ph_site import ph_live
+    monkeypatch.delenv("PH_TOKEN", raising=False)
+    monkeypatch.setenv("PH_CLIENT_ID", "cid"); monkeypatch.setenv("PH_CLIENT_SECRET", "sec")
+    ph_live._minted.clear()
+
+    class R:
+        def __init__(self, code, body): self.status_code, self._b = code, body
+        def json(self): return self._b
+
+    page = lambda nodes, more=False: {"data": {"posts": {"edges": [{"node": n} for n in nodes], "pageInfo": {"hasNextPage": more, "endCursor": "c"}}}}
+    seq = []
+
+    class Http:
+        def __init__(self, replies): self.replies, self.tokens = replies, 0
+        def post(self, url, json=None, headers=None, timeout=None):
+            if url == ph_live.TOKEN_URL:
+                self.tokens += 1
+                return R(200, {"access_token": f"t{self.tokens}"})
+            seq.append(headers["Authorization"])
+            return self.replies.pop(0)
+
+    h = Http([R(401, {}), R(200, page([{"id": 1, "dailyRank": 1}]))])
+    tok = [ph_live._token(h)]
+    out = ph_live._query(h, tok, "a", "b")
+    assert len(out) == 1 and seq == ["Bearer t1", "Bearer t2"]                    # B7: re-minted once on 401
+    partial = page([{"id": 1, "dailyRank": 1}]); partial["errors"] = [{"message": "thumbnail unavailable"}]
+    assert len(ph_live._query(Http([R(200, partial)]), ["t"], "a", "b")) == 1      # B8: data with a partial error is used
+    import pytest as _pt
+    with _pt.raises(ph_live.Upstream):
+        ph_live._query(Http([R(200, {"errors": [{"message": "boom"}], "data": None})]), ["t"], "a", "b")
+    with _pt.raises(ph_live.RateLimited):
+        ph_live._query(Http([R(200, {"errors": [{"error": "rate_limit_reached", "details": {"reset_in": 120}}]})]), ["t"], "a", "b")
+    assert ph_live._rank_gap([{"dailyRank": 1}, {"dailyRank": 3}]) is True
+
+
+
+def test_rank_gaps_and_ties_are_not_incomplete(monkeypatch):
+    from mvp.ph_site import ph_live
+    def node(i, r): return {"id": i, "name": f"N{i}", "dailyRank": r, "featuredAt": "2026-11-14T08:01:00Z", "votesCount": 10}
+    tie = [node(1, 1), node(2, 2), node(3, 3), node(4, 3), node(5, 5)]          # two rank 3s, no rank 4
+    gap = [node(1, 1), node(2, 2), node(3, 4), node(4, 5)]                      # rank 3 hidden later
+    for nodes, reads in ((tie, 1), (gap, 2)):
+        calls = []
+        def fake_query(http, tok, a, b, nodes=nodes):
+            calls.append(a); return list(nodes)
+        monkeypatch.setattr(ph_live, "_query", fake_query)
+        monkeypatch.setattr(ph_live, "_token", lambda http: "t")
+        out = ph_live._fetch_upstream("2026-11-14")
+        assert len(out) == len(nodes) and len(calls) == reads      # a gap costs one wider re-read; the list is still served
+    snap = ph_live._snapshot("2026-11-14", tie, final=True)
+    assert [r["rank"] for r in snap["launches"]] == [1, 2, 3, 3, 5]              # ties shown as ties
+    def broken(http, tok, a, b): raise ph_live.Upstream("too many pages")
+    monkeypatch.setattr(ph_live, "_query", broken)
+    import pytest as _pt
+    with _pt.raises(ph_live.Upstream):
+        ph_live._fetch_upstream("2026-11-14")                                     # paging failure: last good is served
+
+
+def test_input_flag_per_day(monkeypatch):
+    sb = {"day_flags": {"2026-11-10": "built on polluted hunter-history inputs (today-rows bug, fix not yet live)"}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: sb if path.endswith("scoreboard.json") else None)
+    assert live.input_flag("2026-11-10").startswith("built on polluted hunter-history inputs")
+    assert live.input_flag("2026-10-20") is None
+
+
+def test_published_0005_scores_become_vote_estimates(monkeypatch):
+    f = {"day": "2026-11-14", "kind": "0005", "model": "clean_nosite", "ranking": [
+        {"rank": 1, "id": "11", "score": 5.2794}, {"rank": 2, "id": "22"}]}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: f if path.endswith("_0005.json") else None)
+    a = live._published("2026-11-14", "0005")
+    assert a["exp_votes"] == {"11": 195} and "±19%" in a["vote_err"]
+
+
+def test_prereveal_gets_rank_mapped_votes(monkeypatch):
+    files = {"results/web/predictions/2026-11-14_0005.json": {"day": "2026-11-14", "kind": "0005", "model": "m",
+                 "ranking": [{"rank": 1, "id": "a", "score": 5.0}, {"rank": 2, "id": "b", "score": 4.0}]},
+             "results/web/forecast_pre/2026-11-14.json": {"day": "2026-11-14",
+                 "forecast": [{"predicted_rank": 1, "id": "b"}, {"predicted_rank": 2, "id": "a"}]}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: files.get(path))
+    monkeypatch.setattr(live.gcs, "read_bytes", lambda path, ttl=0: None)
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [(k, None) for k in files if k.startswith(prefix)])
+    monkeypatch.setattr(live.gcs, "_cached", lambda key, ttl, fn: fn())
+    f = live.forecasts("2026-11-14")
+    assert f["0005"]["exp_votes"] == {"a": 147, "b": 54}
+    assert f["PRE"]["exp_votes"] == {"b": 147, "a": 54}
+
+
+def test_why_cards_v5_blocks_and_privacy_floor(monkeypatch):
+    from fastapi.testclient import TestClient
+    from mvp.server import app
+
+    sample_mid = {
+        "schema_version": "usersim_core_why_v6",
+        "as_of": "2026-11-25T08:05:00+00:00",
+        "shadow": True,
+        "min_group": 20,
+        "day": "2026-11-25",
+        "point": "mid",
+        "track": "product_only",
+        "held_people": 93618,
+        "measured_predictive_value": {"live_23d": {"days": 23, "top3_pct": 59.4, "top5_pct": 69.6, "top10_pct": 72.6}},
+        "launches": {
+            "101": {
+                "title": "CleanDev CLI",
+                "predicted_rank": 1,
+                "final_score": 5.82,
+                "structural_score": 5.61,
+                "net_simulation_shift": 0.21,
+                "named_competitors": [
+                    {
+                        "name": "RivalCLI @leaked_handle",
+                        "slug": "rival-cli",
+                        "shared_categories": ["Developer Tools"],
+                        "reviews_count": 142,
+                        "hist_endorsements_lt_d": 8,  # < 20 must be suppressed!
+                        "key_user_pain_point": "Slow cold boot reported by p_abcdef0123456789 and bob@example.com",
+                        "hands_on_comparison": "Instant terminal sandbox vs https://secret.example/x",
+                    }
+                ],
+                "voter_population_breakdown": {
+                    "active_90d_pool_n": 1840,
+                    "expected_held_votes": 64.2,
+                    "qwen_stack1b_expected_votes": 68.5,
+                    "team_and_hunter_backers": {"n_people": 45, "expected_votes": 19.4, "suppressed_lt_min_group": False},
+                    "follow_ties_lt_d": {"n_people": 12, "suppressed_lt_min_group": False},  # < 20 must be suppressed!
+                    "competitor_voters_and_switchers": {"n_people": 38, "expected_votes": 11.2, "suppressed_lt_min_group": False},
+                    "activity_tier_mix": {
+                        "1-9": {"n_people": 420, "expected_vote_share": 0.22},
+                        "10-99": {"n_people": 15, "expected_vote_share": 0.31},  # < 20 must be suppressed!
+                        "100+": {"n_people": 95, "expected_vote_share": 0.47},
+                    },
+                    "all_held_people_tier_baseline": {"1-9": 0.30, "10-99": 0.35, "100+": 0.35},
+                },
+                "sameday_head_to_head_split": {
+                    "rival_item_id": "102",
+                    "rival_name": "OtherDev",
+                    "cohort_n": 64,
+                    "voter_overlap_pct": 41.5,
+                    "prefer_this_pct": 62.0,
+                    "prefer_rival_pct": 38.0,
+                    "summary": "62.0% favor this launch vs 38.0% for OtherDev.",
+                },
+                "cua_execution_proof": {
+                    "inspected": True,
+                    "access_status": "clean",
+                    "product_trait": "instant_demo",
+                    "sso_entered": True,
+                    "workflow_action": "run_playground",
+                    "workflow_responded": True,
+                    "hands_on_works": 0.88,
+                    "ui_craft_depth": 0.84,
+                    "has_open_source": True,
+                    "has_free_tier": True,
+                    "exec_digest": "Signed in via Google SSO; interactive CLI sandbox executed cleanly.",
+                },
+                "forecast_drivers": {"rank_explanation_model": 1, "score": 5.82, "points": {"competitor_cua_advantage": 0.085}},
+            },
+            "102": {
+                "predicted_rank": 2,
+                "sameday_head_to_head_split": {
+                    "rival_item_id": "101",
+                    "rival_name": "CleanDev CLI",
+                    "cohort_n": 14,  # < 20 must be dropped completely!
+                    "prefer_this_pct": 38.0,
+                    "prefer_rival_pct": 62.0,
+                },
+                "cua_execution_proof": {"inspected": False, "access_status": "unverified"},
+            },
+        },
+    }
+
+    def fake_read_json(path, ttl=0):
+        if path.endswith("why/2026-11-25_mid.json"):
+            return sample_mid
+        if path.endswith("today_0005.json"):
+            return [{"id": "101", "name": "CleanDev CLI", "slug": "cleandev"}, {"id": "102", "name": "OtherDev", "slug": "otherdev"}]
+        return None
+
+    monkeypatch.setattr(live.gcs, "read_json", fake_read_json)
+    monkeypatch.setattr(live.gcs, "read_bytes", lambda path, ttl=0: None)
+    monkeypatch.setattr(live.gcs, "read_tail_jsonl", lambda path, nbytes=0, ttl=0: [])
+    monkeypatch.setattr(live.gcs, "list_names", lambda prefix, ttl=0: [])
+    monkeypatch.setattr(live.gcs, "_cached", lambda key, ttl, fn: fn())
+
+    wc = live.why_cards("2026-11-25", "0005", {"101", "102"})
+    assert wc is not None and wc["min_group"] == 20
+    raw_dump = json.dumps(wc)
+    assert "@leaked_handle" not in raw_dump
+    assert "p_abcdef0123456789" not in raw_dump
+    assert "bob@example.com" not in raw_dump
+    assert "https://secret.example" not in raw_dump
+
+    c101 = wc["launches"]["101"]
+    assert c101["named_competitors"][0]["hist_endorsements_lt_d"] is None
+    assert c101["voter_population_breakdown"]["team_and_hunter_backers"]["n_people"] == 45
+    assert c101["voter_population_breakdown"]["follow_ties_lt_d"]["n_people"] is None
+    assert c101["voter_population_breakdown"]["follow_ties_lt_d"]["suppressed_lt_min_group"] is True
+    assert c101["voter_population_breakdown"]["activity_tier_mix"]["10-99"]["n_people"] is None
+    assert c101["sameday_head_to_head_split"]["cohort_n"] == 64
+    assert c101["cua_execution_proof"]["sso_entered"] is True
+
+    # Launch 102 had cohort_n = 14 (< 20): head-to-head split must be None
+    assert wc["launches"]["102"]["sameday_head_to_head_split"] is None
+
+    # /api/ph/explain serves sim_why even when legacy explain/<day>.json does not exist
+    r = TestClient(app).get("/api/ph/explain?day=2026-11-25")
+    assert r.status_code == 200
+    body = r.json()
+    assert "101" in body["launches"] and "mid" in body["launches"]["101"]["sim_why"]
+    assert body["sim_why_meta"]["mid"]["held_people"] == 93618
+
+
+def test_explain_sanitised(monkeypatch):
+    j = {"written_at": "2026-11-14T22:00:00Z", "labels": {"who": {"predictive_value": "descriptive, 0.0 gain"}},
+         "launches": {
+        "11": {"name": "X",
+               "who": {"segments": [{"segment": "developers", "share_of_held_expected_votes": 0.4, "n_held_people_scored": 120},
+                                    {"segment": "tiny", "share_of_held_expected_votes": 0.1, "n_held_people_scored": 5}],
+                       "what_likely_backers_dislike": "not available (we observe upvotes only)"},
+               "say": {"top_concerns": ["Another reader?", "ping @bob"], "per_item_confidence": "not available (none)"},
+               "competitors": [{"name": "Rival", "final_daily_rank": 3, "commenters_praised": ["fast"],
+                                "commenters_complained": "not available", "url": "https://x"}],
+               "why": {"top_drivers": [{"input": "team size", "points": -0.08}], "rank_in_explanation_model": 11}},
+        "99": {"who": {"segments": [{"segment": "x"}]}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: j if path.endswith("explain/2026-11-14.json") else None)
+    e = live.explain("2026-11-14", {"11"})
+    L = e["launches"]["11"]
+    assert set(e["launches"]) == {"11"} and set(L) == {"who", "say", "competitors", "why"}
+    assert L["who"]["segments"] == [{"segment": "developers", "share_of_held_expected_votes": 0.4, "n_held_people_scored": 120}]
+    assert "what_likely_backers_dislike" not in L["who"] and "per_item_confidence" not in L["say"]
+    assert L["say"]["top_concerns"] == ["Another reader?"]
+    assert L["competitors"] == [{"name": "Rival", "final_daily_rank": 3, "commenters_praised": ["fast"]}]
+    assert e["labels"]["who"]["predictive_value"].startswith("descriptive")
+
+
+def test_explain_route_without_file(monkeypatch):
+    from fastapi.testclient import TestClient
+    from mvp.server import app
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: None)
+    r = TestClient(app).get("/api/ph/explain?day=2026-11-14")
+    assert r.status_code == 200 and r.json() == {"launches": {}}
+
+
+def test_explain_who_actually_and_block_labels(monkeypatch):
+    j = {"launches": {"11": {"name": "X",
+            "who_actually": {"segments": [{"segment": "developers", "n_held_backers": 65}, {"segment": "tiny", "n_held_backers": 7}],
+                             "observed_held_backers": 214, "displayed_votes": 301, "observed_over_displayed": 0.711,
+                             "held_people_reread_after_the_day": 57408, "held_people_total": 81131,
+                             "accuracy_label": "observed after the fact; a floor"},
+            "competitors": {"items": [{"name": "R", "similarity": 0.7}], "accuracy_label": {"predictive_value": "descriptive"}}}}}
+    monkeypatch.setattr(live.gcs, "read_json", lambda path, ttl=0: j if path.endswith("explain/2026-11-07.json") else None)
+    e = live.explain("2026-11-07", {"11"})
+    wa = e["launches"]["11"]["who_actually"]
+    assert wa["segments"] == [{"segment": "developers", "n_held_backers": 65}] and wa["observed_over_displayed"] == 0.711
+    assert "accuracy_label" not in wa and e["labels"]["who_actually"]["text"].startswith("observed")
+    assert e["labels"]["competitors"]["predictive_value"] == "descriptive"
+
+
+def test_live_aggregate_includes_today_in_progress(monkeypatch):
+    from mvp.ph_site import live
+    tr = {"days": [{"day": "2026-11-14", "prediction": "00:05 PT", "flag": "live", "status": "scored",
+                    "hits_top3": 2, "hits_top5": 4, "hits_top10": 6, "fallback_used": "fb"}]}
+    monkeypatch.setattr(live.gcs, "read_json", lambda *a, **k: tr)
+    monkeypatch.setattr(live.gcs, "list_names", lambda *a, **k: [])
+    ids = [f"p{i}" for i in range(12)]
+    view = {"day": "2026-11-15", "today": "2026-11-15", "status": {"final": False},
+            "launches": [{"id": x, "board_rank": i + 1} for i, x in enumerate(ids)],
+            "points": [{"key": "0005", "ranks": {x: i + 1 for i, x in enumerate(ids)}}]}
+    row = live.live_aggregate(view)["mid"]
+    assert row["days"] == 2 and row["in_progress"] is True
+    assert row["hits"] == {"top3": [5, 6], "top5": [9, 10], "top10": [16, 20]}
+    assert row["per_day"][0]["fallback"] == "fb" and row["per_day"][1]["final"] is False
+    assert row["settled"] == {"days": 1, "top3": 66.7, "top5": 80.0, "top10": 60.0, "hits_top10": [6, 10]}   # headline: final days only
+    assert "pre" not in live.live_aggregate(view)                      # no forecast_pre days, no old 03:45 record
+
