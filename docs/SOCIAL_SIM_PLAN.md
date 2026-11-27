@@ -505,6 +505,7 @@ Fit on validation Nov 1-4, 8-10 only; test Nov 11-22 (15% pool sample). Stack re
 39.0: +1.0 [+0.2, +1.9]; AUC 0.947 vs 0.941: +0.006 [+0.004, +0.008]. P(yes) carries most weight (std coef 1.30).
 - STACK-1b full pool (57,080 person-days, 24,270 backers): stack 40.3 vs BACKER-v2 39.0, +1.4 [+1.0, +1.7]; AUC +0.005.
 - DECISION (orchestrator, rule 5): deploy the stack as the nightly forward backer line, BACKER-v2 as shadow; about $1/night A100.
+- WITHDRAWN Nov 27 (DEC-ORCH-STACK-DEPLOY-CORR): the backtest baseline (ln_rw + tm) was not the live BACKER-v2, which also uses team follow edges. Against the live line on live scoring: stack 20.8 vs 27.1 (-6.4 [-7.6, -5.1]). Stack stays shadow; stack v2 with the follow feature next.
 
 ## 5. Open items (keep at least three beyond those running)
 1. (done Nov 23) Ceiling of the structural shortlist: see the table above.

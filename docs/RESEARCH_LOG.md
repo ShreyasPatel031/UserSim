@@ -2968,3 +2968,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-27T09:33Z hourly check: board live (Nov 27), site/launch/MCP up.
 - 2026-11-27T10:33Z hourly check: board live, site/launch/MCP up; first live on-time forecast_pre (Nov 27) is the lead tab.
 - 2026-11-27T10:44Z Daily collection review: complete people 93,633 (+10 in 24 h), active 2,580/2,642, likely 1,542/1,649; last pull within 24 h 574 (was 2,549), 7 d 5,415, never 143. Coverage dashboard refreshed (7 datasets). Public pages and scheduled jobs OK.
+- 2026-11-27T10:57Z STACK deploy WITHDRAWN: E5 found the stack trails the live BACKER-v2 on live scoring (20.8 vs 27.1, -6.4 [-7.6,-5.1]); my STACK-1/1b baseline lacked the live line's team-follow feature. Stack stays shadow; E5 does stack v2 (+ follow feature, refit on validation) and 7-day forward shadow.
