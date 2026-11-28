@@ -1,0 +1,1045 @@
+{
+ "day": "2026-11-27",
+ "version": 1,
+ "rule": "themes present in >= 2 of 3 independent extractions (Gemini merge)",
+ "launches": {
+  "1329710": {
+   "themes": [
+    {
+     "theme": "Exclude specific providers or regions when searching for GPUs",
+     "n": 2
+    },
+    {
+     "theme": "Filter by region and show provider incorporation details",
+     "n": 1
+    },
+    {
+     "theme": "Concerned about data transfer costs (egress) when switching providers for fine-tuning",
+     "n": 1
+    },
+    {
+     "theme": "Resumes fine-tuning from a checkpoint if a GPU is reclaimed",
+     "n": 1
+    },
+    {
+     "theme": "Appreciate seeing the price before the machine starts",
+     "n": 1
+    },
+    {
+     "theme": "Like the idea of an assistant finding GPUs instead of manual dashboard checking",
+     "n": 1
+    },
+    {
+     "theme": "Considers price per performance or just the lowest price",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Can users exclude specific providers or regions when searching for GPUs?",
+    "Does the price shown include data transfer costs, or is storage handled separately by each provider?",
+    "Does the system resume a fine-tuning job from a checkpoint if the GPU is reclaimed?",
+    "Does the system prioritize price per performance or just the lowest price when suggesting GPUs?",
+    "Does the system automatically rent a GPU or does it require user confirmation first?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users want to exclude specific providers or regions when searching for GPUs.",
+      "Users want to know if the tool can filter by region and show provider incorporation details.",
+      "Users are concerned about data transfer costs (egress) when switching providers for fine-tuning.",
+      "Users want to know if the tool resumes fine-tuning from a checkpoint if a GPU is reclaimed.",
+      "Users appreciate seeing the price before the machine starts.",
+      "Users like the idea of an assistant finding GPUs instead of manual dashboard checking.",
+      "Users want to know if the tool considers price per performance or just the lowest price."
+     ],
+     [
+      "Users want to exclude specific providers or regions when searching for GPUs.",
+      "Users want to know if the tool can filter by region and show provider incorporation details.",
+      "Users are concerned about data transfer costs (egress) when switching providers for fine-tuning.",
+      "Users want to know if the tool resumes fine-tuning from a checkpoint if a GPU is reclaimed.",
+      "Users appreciate seeing the price before the machine starts.",
+      "Users like the idea of an assistant finding GPUs instead of manual dashboard checking.",
+      "Users want to know if the tool considers price per performance or just the lowest price."
+     ],
+     [
+      "Users want to exclude specific providers or regions when searching for GPUs.",
+      "Users want to know if the tool can filter by region and show provider incorporation details.",
+      "Users are concerned about data transfer costs (egress) when switching providers for fine-tuning.",
+      "Users want to know if the tool resumes fine-tuning from a checkpoint if a GPU is reclaimed.",
+      "Users appreciate seeing the price before the machine starts.",
+      "Users like the idea of an assistant finding GPUs instead of manual dashboard checking.",
+      "Users want to know if the tool considers price per performance or just the lowest price."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can users exclude specific providers or regions when searching for GPUs?",
+      "Does the system automatically rent a GPU or does it require user confirmation first?",
+      "Does the price shown include data transfer costs, or is storage handled separately by each provider?",
+      "Does the system resume a fine-tuning job from a checkpoint if the GPU is reclaimed and a new one is rented?",
+      "Does the system prioritize price per performance or just the lowest price when suggesting GPUs?"
+     ],
+     [
+      "Can I exclude some providers or regions?",
+      "Does the price you show before renting include moving data, or is storage on me per provider?",
+      "If a fine-tune is halfway done and the provider reclaims the GPU, does gpyou resume from a checkpoint on the next offer?",
+      "Does `gpyou gpus` take a region filter, and do you show where the provider is incorporated, not just where the DC is?",
+      "Does it surface price per performance, or just the lowest price?",
+      "Can I ask it to wait for a yes first?"
+     ],
+     [
+      "Can I exclude specific providers or regions when searching for GPUs?",
+      "Does the price shown before renting include data transfer costs, or is storage handled per provider?",
+      "Does the system resume from a checkpoint if a GPU is reclaimed during a fine-tune?",
+      "Does the system surface price per performance, or just the lowest price when finding GPUs?",
+      "Can I control when the system rents a GPU, or does it happen automatically?",
+      "I'd want to see the price before the machine starts, while I'm still choosing the GPU."
+     ]
+    ]
+   }
+  },
+  "1330231": {
+   "themes": [
+    {
+     "theme": "Pricing of $0.06 per second is aggressive/affordable",
+     "n": 4
+    },
+    {
+     "theme": "Character/product consistency across multiple clips",
+     "n": 3
+    },
+    {
+     "theme": "Availability of an API",
+     "n": 2
+    },
+    {
+     "theme": "5-15 second format practical for social media",
+     "n": 1
+    },
+    {
+     "theme": "All-in-one audio + video workflow and native audio generation",
+     "n": 2
+    },
+    {
+     "theme": "Multi-language support for built-in voices/sound effects",
+     "n": 1
+    },
+    {
+     "theme": "Render times for typical clips",
+     "n": 1
+    },
+    {
+     "theme": "Concerns about motion smoothness trade-offs for low price",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "API availability",
+    "Character consistency",
+    "Render time",
+    "Multilingual support (voices/SFX)",
+    "Price point trade-offs",
+    "Localization beyond language (gestures)"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The pricing of $0.06 per second is seen as aggressive, interesting, and makes video generation more affordable, especially with unlimited generations.",
+      "Users are curious about character/product consistency across multiple clips or shots, especially for app UIs.",
+      "Users are asking about the availability of an API for R1.",
+      "The 5-15 second format is practical for social media and short-form content.",
+      "The all-in-one audio + video workflow and native audio generation are appreciated features.",
+      "Users are asking about multi-language support for built-in voices and sound effects.",
+      "Users are asking about render times for typical clips.",
+      "Users are concerned about potential trade-offs in motion smoothness to achieve the low price point."
+     ],
+     [
+      "The pricing of $0.06 per second is seen as aggressive, interesting, and makes video generation more affordable, especially with unlimited generations.",
+      "Users are curious about character/product consistency across multiple clips or shots, especially for app UIs.",
+      "Users are asking about the availability of an API for R1.",
+      "The 5-15 second format is practical for social media and short-form content.",
+      "The all-in-one audio + video workflow and native audio generation are appreciated features.",
+      "Users are asking about multi-language support for built-in voices and sound effects.",
+      "Users are asking about render times for typical clips.",
+      "Users are concerned about potential trade-offs in motion smoothness to achieve the low price point."
+     ],
+     [
+      "The pricing of $0.06 per second is seen as aggressive, interesting, and makes video generation more affordable, especially with unlimited generations.",
+      "Users are curious about character/product consistency across multiple clips or shots, especially for app UIs.",
+      "Users are asking about the availability of an API for R1.",
+      "The 5-15 second format is practical for social media and short-form content.",
+      "The all-in-one audio + video workflow and native audio generation are appreciated features.",
+      "Users are asking about multi-language support for built-in voices and sound effects.",
+      "Users are asking about render times for typical clips.",
+      "Users are concerned about potential trade-offs in motion smoothness to achieve the low price point."
+     ]
+    ],
+    "complaints": [
+     [
+      "Is R1 available through an API, or only in the Wizstar app for now?",
+      "Curious how does character consistency hold up across multiple 15s clips for the same series?",
+      "How long does a typical 10-second render take right now?",
+      "Do the built\u2011in voices and sound effects support multiple languages besides English?",
+      "I\u2019m wondering what trade\u2011offs you made to hit the $0.06/s price point while keeping natural movement.",
+      "The thing I'd want to test first is whether those nine reference images can keep an actual app UI identical across shots, not just a character."
+     ],
+     [
+      "Is R1 available through an API, or only in the Wizstar app for now?",
+      "Curious how does character consistency hold up across multiple 15s clips for the same series?",
+      "How long does a typical 10-second render take right now?",
+      "Do the built\u2011in voices and sound effects support multiple languages besides English?",
+      "I\u2019m wondering what trade\u2011offs you made to hit the $0.06/s price point while keeping natural movement.",
+      "What if gestures changed for each market, not just the language? Is that on the roadmap?"
+     ],
+     [
+      "How does character consistency hold up across multiple 15s clips for the same series?",
+      "Is R1 available through an API, or only in the Wizstar app for now?",
+      "Do the built\u2011in voices and sound effects support multiple languages besides English?",
+      "How long does a typical 10-second render take right now?",
+      "I\u2019m wondering what trade\u2011offs you made to hit the $0.06/s price point while keeping natural movement.",
+      "What if gestures changed for each market, not just the language? is that on the roadmap?"
+     ]
+    ]
+   }
+  },
+  "1332620": {
+   "themes": [
+    {
+     "theme": "The ability to preview fonts directly in the design is a significant time-saver.",
+     "n": 1
+    },
+    {
+     "theme": "The duplicate cleanup feature in Font Insights is a valuable improvement for design teams.",
+     "n": 2
+    },
+    {
+     "theme": "The on-device AI classification is appreciated for privacy reasons.",
+     "n": 1
+    },
+    {
+     "theme": "The drive sharing feature is beneficial for resolving font discrepancies among designers.",
+     "n": 1
+    },
+    {
+     "theme": "Users want to know if Font Insights shows which font copy is active before removing duplicates.",
+     "n": 1
+    },
+    {
+     "theme": "Users are asking if the app warns when a file uses a font not in the shared library.",
+     "n": 1
+    },
+    {
+     "theme": "Font licensing and upkeep are practical concerns when choosing fonts for clients.",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and positive remarks on the launch.",
+     "n": 3
+    }
+   ],
+   "complaints": [
+    "Does it show which copy is used in active files before removing one?",
+    "Does it warn you if a file uses a font that's not in the shared library?",
+    "How do you discover and choose fonts for your designs?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to preview fonts directly in the design is a significant time-saver.",
+      "The duplicate cleanup feature in Font Insights is a valuable improvement for design teams.",
+      "The on-device AI classification is appreciated for privacy reasons.",
+      "The drive sharing feature is beneficial for resolving font discrepancies among designers.",
+      "Users want to know if Font Insights shows which font copy is active before removing duplicates.",
+      "Users are asking if the app warns when a file uses a font not in the shared library.",
+      "Font licensing and upkeep are practical concerns when choosing fonts for clients.",
+      "Generic congratulations and positive remarks on the launch."
+     ],
+     [
+      "Users appreciate the duplicate font cleanup feature in Font Insights.",
+      "Users appreciate the ability to preview fonts directly in the design.",
+      "Users appreciate the on-device AI classification for organizing fonts.",
+      "Users want to know if Font Insights shows which font copy is used in active files before removing duplicates.",
+      "Users want to know if the app warns if a file uses a font not in the shared library.",
+      "Users appreciate the drive sharing feature.",
+      "Users are concerned about font licensing and upkeep for clients.",
+      "Generic congratulations and positive remarks on the launch."
+     ],
+     [
+      "The ability to preview fonts directly in the design is a significant time-saver.",
+      "The duplicate cleanup feature in Font Insights is a valuable improvement for design teams.",
+      "The on-device AI classification is appreciated for privacy reasons.",
+      "The drive sharing feature is beneficial for resolving font discrepancies among designers.",
+      "Users want to know if Font Insights shows which font copy is active before removing duplicates.",
+      "Users are asking if the app warns when a file uses a font not in the shared library.",
+      "Font licensing and upkeep are practical concerns when choosing fonts for clients.",
+      "Generic congratulations and positive remarks on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does it show which copy is used in active files before removing one?",
+      "Does it warn you if a file uses a font that's not in the shared library?",
+      "How do you discover and choose fonts for your designs?"
+     ],
+     [
+      "Does it warn you if a file uses a font that's not in the shared library?",
+      "Does it show which copy is used in active files before removing one?",
+      "How do you discover and choose fonts for your designs?"
+     ],
+     [
+      "Does it show which copy is used in active files before removing one?",
+      "Does it warn you if a file uses a font that's not in the shared library?",
+      "How do you discover and choose fonts for your designs?"
+     ]
+    ]
+   }
+  },
+  "1331316": {
+   "themes": [
+    {
+     "theme": "Waveform preview before cutting/export",
+     "n": 3
+    },
+    {
+     "theme": "Ability to run locally/on-device with no upload",
+     "n": 2
+    },
+    {
+     "theme": "Control over breath gaps/minimum pause length",
+     "n": 2
+    },
+    {
+     "theme": "Handling silent audio with expressive video (e.g., podcasts)",
+     "n": 1
+    },
+    {
+     "theme": "Ability to unselect/undo a cut after reviewing",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Breath gap/rushed speech",
+    "Minimum pause length setting",
+    "Undo/unselect cuts",
+    "Handling silent audio with video expressions"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The waveform preview before cutting and export is a valuable feature.",
+      "The ability to run the tool locally/on-device with no upload is a significant advantage.",
+      "Users are asking if the tool leaves a short breath gap before the next word or cuts right up to it.",
+      "Users want the option to keep a short breath gap so speech doesn't sound rushed.",
+      "Users are asking if there is a minimum pause length setting to control which gaps are removed.",
+      "Users want to know how the tool handles silent audio when the video has expressions, especially for podcasts.",
+      "Users are asking if it's possible to unselect or undo a particular cut after reviewing.",
+      "The combination of on-device processing, waveform preview, and threshold tuning is a desired workflow."
+     ],
+     [
+      "The waveform preview is nice, allowing users to see what is being cut before downloading.",
+      "Users want to know if a short breath gap can be kept so speech doesn't sound rushed.",
+      "The ability to run the tool locally with no upload is a big plus for users.",
+      "Users are asking if there is a minimum pause length setting.",
+      "Users want to know how to handle situations where audio is silent but video has expressions, especially in podcasts.",
+      "Users are asking if it's possible to unselect or undo a particular cut after reviewing.",
+      "The product is praised for keeping it free.",
+      "Generic congratulations on the launch."
+     ],
+     [
+      "The waveform preview is nice, allowing users to see cuts before export/download.",
+      "Users want to control the breath gap or minimum pause length to avoid rushed speech or cutting natural pauses.",
+      "The ability to run locally/on-device with no upload is a significant advantage.",
+      "Users are concerned about how the tool handles silent audio with expressive video, especially in podcasts.",
+      "Users want to know if it's possible to unselect or undo a particular cut after reviewing.",
+      "The workflow of seeing pauses, tuning the threshold, and downloading a tighter WAV is exactly what some users want.",
+      "Keeping the tool free is appreciated.",
+      "Generic congratulations on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Can you keep a short breath gap so speech doesn't end up sounding rushed?",
+      "Is there a minimum pause length setting, so only gaps longer than, say, 0.4s get removed?",
+      "Does it leave a little breath before the next word or cut right up to it?",
+      "How to handle if Audio is silent and video has some expressions especially in case of Podcast etc?",
+      "Is it possible to unselect or undo a particular cut after reviewing?"
+     ],
+     [
+      "Can you keep a short breath gap so speech doesn't end up sounding rushed?",
+      "Is there a minimum pause length setting, so only gaps longer than, say, 0.4s get removed?",
+      "Is it possible to unselect or undo a particular cut after reviewing?",
+      "does it leave a little breath before the next word or cut right up to it",
+      "how to handle if Audio is silent and video has some expressions especially in case of Podcast etc?"
+     ],
+     [
+      "Can you keep a short breath gap so speech doesn't end up sounding rushed?",
+      "Is there a minimum pause length setting, so only gaps longer than, say, 0.4s get removed?",
+      "Does it leave a little breath before the next word or cut right up to it?",
+      "How to handle if Audio is silent and video has some expressions especially in case of Podcast etc?",
+      "Is it possible to unselect or undo a particular cut after reviewing?"
+     ]
+    ]
+   }
+  },
+  "1332536": {
+   "themes": [
+    {
+     "theme": "Data privacy concerns (hosting, retention) for European buyers",
+     "n": 2
+    },
+    {
+     "theme": "Self-serve opt-out and EU-hosted option",
+     "n": 1
+    },
+    {
+     "theme": "Review/remove information from Superprofile",
+     "n": 1
+    },
+    {
+     "theme": "Agent pulling together professional context (multi-tab replacement)",
+     "n": 1
+    },
+    {
+     "theme": "Querying people by role, skills, and location within an editor/IDE",
+     "n": 1
+    },
+    {
+     "theme": "Handling conflicting information in Superprofile",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and well wishes for the launch",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "Data hosting location and retention for EU users",
+    "Self-serve opt-out and EU-hosted option",
+    "Review and removal of Superprofile data",
+    "Handling of conflicting information in Superprofile"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are concerned about data hosting location and data retention policies, especially for European buyers.",
+      "Users request a self-serve opt-out and an EU-hosted option for Ploid.",
+      "Users want to know how they can review or remove information that goes into their Superprofile.",
+      "The ability to have an agent pull together professional context instead of using multiple tabs is seen as useful.",
+      "The MCP server angle and the ability to query people by role, skills, and location within an editor is a significant workflow improvement.",
+      "Users are curious about how Superprofile handles conflicting information from different sources and whether it shows both sources or a merged result.",
+      "Generic congratulations and well wishes for the launch."
+     ],
+     [
+      "Users are concerned about data privacy, specifically where the index is hosted and how long agent queries are kept, especially for European buyers.",
+      "Users would like a self-serve opt-out and an EU-hosted option for Ploid.",
+      "Users are curious about how individuals can review or remove information that goes into their Superprofile.",
+      "Users find the idea of an agent pulling together professional context instead of using multiple tabs very useful.",
+      "Users appreciate the integration with development environments like Cursor for querying people by role, skills, and location.",
+      "Users are curious about how the Superprofile handles conflicting information from different sources and whether it shows both sources or a merged result.",
+      "Users generally express positive sentiment and wish for a successful launch."
+     ],
+     [
+      "Users are concerned about data privacy, specifically where the index is hosted and how long agent queries are kept, especially for European buyers.",
+      "Users would like a self-serve opt-out and an EU-hosted option for Ploid.",
+      "Users are curious about how individuals can review or remove information that goes into their Superprofile.",
+      "Users find the idea of an agent pulling together professional context instead of using multiple tabs very useful.",
+      "Users appreciate the integration with development environments like Cursor for querying people by role, skills, and location.",
+      "Users are curious about how the Superprofile handles conflicting information from different sources and whether it shows both sources or a merged result.",
+      "Generic positive feedback and good wishes for the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "For European buyers, I think the first questions will be where the index is hosted and how long agent queries are kept.",
+      "A self-serve opt-out and an EU-hosted option would make Ploid much easier to adopt over here.",
+      "I'd be curious how people can review or remove what goes into their Superprofile.",
+      "I'm curious how the Superprofile handles conflicting info though: if LinkedIn says one role and a personal site says another, does the agent see both sources, or just the merged result?"
+     ],
+     [
+      "For European buyers, I think the first questions will be where the index is hosted and how long agent queries are kept.",
+      "A self-serve opt-out and an EU-hosted option would make Ploid much easier to adopt over here.",
+      "I\u2019d be curious how people can review or remove what goes into their Superprofile.",
+      "I'm curious how the Superprofile handles conflicting info though: if LinkedIn says one role and a personal site says another, does the agent see both sources, or just the merged result?"
+     ],
+     [
+      "For European buyers, I think the first questions will be where the index is hosted and how long agent queries are kept.",
+      "A self-serve opt-out and an EU-hosted option would make Ploid much easier to adopt over here.",
+      "I'd be curious how people can review or remove what goes into their Superprofile.",
+      "I'm curious how the Superprofile handles conflicting info though: if LinkedIn says one role and a personal site says another, does the agent see both sources, or just the merged result?"
+     ]
+    ]
+   }
+  },
+  "1326302": {
+   "themes": [
+    {
+     "theme": "Saving snippets with source and context",
+     "n": 4
+    },
+    {
+     "theme": "AI answer sourcing and linking to original content",
+     "n": 3
+    },
+    {
+     "theme": "Local-first and AI off by default approach",
+     "n": 1
+    },
+    {
+     "theme": "Custom OpenAI-compatible base URL for BYOK",
+     "n": 1
+    },
+    {
+     "theme": "Saving more than reviewing",
+     "n": 1
+    },
+    {
+     "theme": "Founder's process for validating the problem",
+     "n": 1
+    },
+    {
+     "theme": "Mobile device compatibility",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "AI answer shows source highlights",
+    "Snippet links to exact source",
+    "AI pulls from single or multiple highlights",
+    "Custom OpenAI-compatible base URL",
+    "Mobile app availability"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The ability to save snippets with their original source and context is highly valued for future reference and trust.",
+      "Users are curious about how the AI answers are sourced and whether they link back to the original content or exact snippet location.",
+      "The local-first approach and AI off by default are appreciated.",
+      "There is a question about whether users end up saving more than they ever review.",
+      "A custom OpenAI-compatible base URL field for Bring Your Own Key (BYOK) is requested.",
+      "A user asks about the founder's process for validating the problem before building the product.",
+      "The workflow of saving highlights from any app without switching context is exactly what some users want.",
+      "There is a question about whether the product works on phones."
+     ],
+     [
+      "The ability to save the source and context of snippets is a highly valued and unique feature.",
+      "Users are curious about how the AI answers are sourced and whether they link back to the original content.",
+      "The local-first and AI-off-by-default approach is appreciated.",
+      "A custom OpenAI-compatible base URL field for BYOK is requested.",
+      "Users wonder if the AI pulls in nearby highlights from the same article when asked about a snippet.",
+      "Users are curious about the development process and initial problem validation.",
+      "Users question if people save more than they ever look at again.",
+      "Users want to know if the product works on mobile devices."
+     ],
+     [
+      "The ability to save the source and context of snippets is a highly valued and unique feature.",
+      "Users are curious about how the AI answers are sourced and whether they link back to the original content.",
+      "The local-first and AI-off-by-default approach is appreciated.",
+      "A custom OpenAI-compatible base URL field for BYOK is requested.",
+      "Users wonder if the AI pulls in nearby highlights from the same article when asked about a snippet.",
+      "Users are curious about the development process and initial problem validation.",
+      "Users question if people save more than they ever look at again.",
+      "Users want to know if the product works on mobile devices."
+     ]
+    ],
+    "complaints": [
+     [
+      "Does the AI answer show which highlights it pulled from?",
+      "Does a saved snippet link back to the exact spot it came from, or just the app name?",
+      "Does Snibl AI answer with links back to the original article so I can check what it says?",
+      "A custom OpenAI-compatible base URL field would cover every gateway at once, e.g. Eden AI for people in Europe who want their snippets to only hit EU-hosted models.",
+      "When I ask about a highlight, does it pull in just that one snippet, or nearby highlights from the same article too?",
+      "Does it work on phone too?"
+     ],
+     [
+      "Does the AI answer show which highlights it pulled from?",
+      "Does a saved snippet link back to the exact spot it came from, or just the app name?",
+      "Does Snibl AI answer with links back to the original article so I can check what it says?",
+      "A custom OpenAI-compatible base URL field would cover every gateway at once, e.g. Eden AI for people in Europe who want their snippets to only hit EU-hosted models.",
+      "When I ask about a highlight, does it pull in just that one snippet, or nearby highlights from the same article too?",
+      "Does it work on phone too?"
+     ],
+     [
+      "Does the AI answer show which highlights it pulled from?",
+      "does a saved snippet link back to the exact spot it came from, or just the app name?",
+      "when I ask about a highlight, does it pull in just that one snippet, or nearby highlights from the same article too?",
+      "do ppl end up saving way more than they ever look at again",
+      "a custom OpenAI-compatible base URL field. that covers every gateway at once, e.g. Eden AI for people in Europe who want their snippets to only hit EU-hosted models",
+      "Does it work on phone too?"
+     ]
+    ]
+   }
+  },
+  "1332846": {
+   "themes": [
+    {
+     "theme": "Calm canvas for messy ideas",
+     "n": 4
+    },
+    {
+     "theme": "AI model used and data privacy concerns",
+     "n": 1
+    },
+    {
+     "theme": "Live collaboration functionality",
+     "n": 2
+    },
+    {
+     "theme": "'Well' metaphor and deeper thinking AI",
+     "n": 3
+    },
+    {
+     "theme": "Value proposition compared to existing tools (e.g., Notion)",
+     "n": 1
+    },
+    {
+     "theme": "Integration with multi-model gateway (e.g., Eden AI)",
+     "n": 1
+    },
+    {
+     "theme": "Integration with Claude Code",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and good luck",
+     "n": 3
+    }
+   ],
+   "complaints": [
+    "Why switch from Notion?",
+    "How does live collaboration work with AI?",
+    "Which AI model is used and can it be customized?",
+    "Can Claude Code be integrated?",
+    "How does live collaboration handle multiple users?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the concept of a calm canvas for messy ideas and the AI's non-intrusive nature.",
+      "Users are asking about the AI model used and whether teams can choose it, especially for data privacy concerns.",
+      "Users are curious about how live collaboration works in practice.",
+      "Users like the 'well' metaphor and its meaning.",
+      "A user questions the value proposition compared to existing tools like Notion.",
+      "A user suggests integrating a multi-model gateway like Eden AI for EU-hosted options.",
+      "A user asks if Claude Code can be connected to the tool.",
+      "Generic congratulations and good luck messages for the launch."
+     ],
+     [
+      "Users appreciate the concept of a 'calm canvas' for organizing messy, half-formed ideas without immediate AI intervention.",
+      "The 'well' metaphor and the idea of an AI that encourages deeper thinking rather than providing instant answers resonates with users.",
+      "Users are curious about how live collaboration works, specifically regarding potential chaos and AI's scope during multi-user editing.",
+      "Users want to know which AI model is used and if teams can choose their own, especially for data privacy concerns in European companies.",
+      "There is a request for integration with Claude Code.",
+      "A user questions the value proposition compared to existing tools like Notion.",
+      "A suggestion is made to use a multi-model gateway like Eden AI for EU-hosted options.",
+      "Generic congratulations and good luck wishes for the launch."
+     ],
+     [
+      "Users appreciate the concept of a 'calm canvas' for organizing messy, half-formed ideas without immediate AI intervention.",
+      "The 'well' metaphor and the idea of an AI that encourages deeper thinking rather than providing instant answers resonates with users.",
+      "Users are curious about how live collaboration works, specifically regarding potential chaos and AI's scope during multi-user editing.",
+      "Users want to know which AI model is used and if teams can choose their own, especially for data privacy concerns in European companies.",
+      "There is a request for integration with Claude Code.",
+      "A user questions the value proposition compared to existing tools like Notion.",
+      "A suggestion is made to use a multi-model gateway like Eden AI for EU-hosted options.",
+      "Generic congratulations and good luck wishes for the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "Why would I move my notes from Notion to this?",
+      "When two people edit live, does the AI look at the whole board or only what each person selects?",
+      "which model is behind the AI, and can teams pick?",
+      "Can you connect Claude Code to this?",
+      "Curious how live collaboration works in practice when two people are moving things around at once \u2014 does it get chaotic, or"
+     ],
+     [
+      "When two people edit live, does the AI look at the whole board or only what each person selects?",
+      "Why would I move my notes from Notion to this?",
+      "Which model is behind the AI, and can teams pick?",
+      "Can you connect Claude Code to this?",
+      "Curious how live collaboration works in practice when two people are moving things around at once \u2014 does it get chaotic, or"
+     ],
+     [
+      "Why would I move my notes from Notion to this?",
+      "When two people edit live, does the AI look at the whole board or only what each person selects?",
+      "which model is behind the AI, and can teams pick?",
+      "Can you connect Claude Code to this?",
+      "Curious how live collaboration works in practice when two people are moving things around at once \u2014 does it get chaotic, or"
+     ]
+    ]
+   }
+  },
+  "1331740": {
+   "themes": [
+    {
+     "theme": "Deterministic check after every turn is valuable",
+     "n": 6
+    },
+    {
+     "theme": "Questions about the specifics of the checking mechanism",
+     "n": 4
+    },
+    {
+     "theme": "Teaching/learn mode is a good idea",
+     "n": 3
+    },
+    {
+     "theme": "Agents making changes outside requested scope",
+     "n": 2
+    },
+    {
+     "theme": "Teaching mode evolution (explanations to hints/quizzes)",
+     "n": 1
+    },
+    {
+     "theme": "Compatibility of teaching model with API endpoints",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "Agent's output validation against prompt/tests",
+    "Agent's scope adherence",
+    "Compatibility with custom/EU-hosted OpenAI-compatible endpoints",
+    "Accuracy of code explanations",
+    "Agent drift detection timing",
+    "Quality and translation of teaching cards"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The deterministic check after every turn is a smart and valuable feature, addressing a common pain point with agents.",
+      "Users have questions about the specifics of the 'check after every turn' feature, including what it compares against and what it flags.",
+      "The 'teaching mode' or 'learn mode' is seen as a very good and valuable idea for user skill development.",
+      "A common concern is agents making changes outside the requested scope, leading to unnecessary modifications.",
+      "The ability to undo a whole turn is a noticed and appreciated feature.",
+      "Users are interested in the teaching mode evolving from explanations to hints or quizzes as they improve.",
+      "There are questions about the compatibility of the teaching model with various OpenAI-compatible endpoints and custom base URLs.",
+      "Users compare the product's failure modes to those experienced with 'Claude Code'."
+     ],
+     [
+      "The deterministic check after each turn is a smart and valuable feature that addresses common agent failures.",
+      "Users have questions about the specifics of the checking mechanism, such as what it compares against, if it runs tests, and what it flags.",
+      "The 'undo whole turn' feature is appreciated for allowing users to revert multi-file changes easily.",
+      "The teaching/learn mode is seen as a good idea for knowledge transfer and preventing skill atrophy.",
+      "A common issue with agents like Claude Code is scope creep, where they modify more than requested.",
+      "Users are curious about the teaching model's compatibility with different API endpoints and custom base URLs, especially for EU-hosted models.",
+      "A suggestion was made for learn mode to evolve from explanations to hints to quizzes as the user improves.",
+      "There are questions about the quality and translation of teaching cards in multiple languages."
+     ],
+     [
+      "The deterministic check after every turn is a smart and valuable feature.",
+      "Agents, including Claude Code, often make unwanted changes outside the requested scope.",
+      "The teaching/learn mode is a good idea for user understanding and skill development.",
+      "Does the check compare against the prompt, run tests, or flag drift mid-session?",
+      "Does the teaching model accept any OpenAI-compatible endpoint or only specific keys?",
+      "How often does the explainer get it wrong about what the code actually does?",
+      "Learn mode could evolve from explanations to hints to quizzes as the user improves.",
+      "Are the teaching cards translated or generated per language, and what about quality in rarer languages?"
+     ]
+    ],
+    "complaints": [
+     [
+      "The check should compare against the prompt, run tests, and catch agents rewriting files with identical content or claiming files they never touched.",
+      "The agent often gets the scope wrong, cleaning files nobody asked for, and needs a check to ensure it only touches what the task needed.",
+      "Does the teaching model accept any OpenAI-compatible endpoint with a custom base URL, or only OpenAI/Anthropic keys, especially for EU-hosted models?",
+      "How often does the explainer get it wrong about what the code actually does?",
+      "Does the check flag when the agent drifts mid-session or only after the turn finished?",
+      "Are the teaching cards translated or generated per language, and what about quality in rarer languages?"
+     ],
+     [
+      "The check should compare against the prompt, run tests, and catch agents rewriting files with identical content or claiming files they never touched.",
+      "The agent often gets the scope wrong, cleaning files nobody asked for, and needs a check to ensure it only touches what the task needed.",
+      "Does the teaching model accept any OpenAI-compatible endpoint with a custom base URL, or only OpenAI/Anthropic keys, especially for EU-hosted models?",
+      "How often does the explainer get it wrong about what the code actually does?",
+      "Does the check flag when the agent drifts mid-session or only after the turn finished?",
+      "Are the teaching cards translated or generated per language, and what about quality in rarer languages?"
+     ],
+     [
+      "The check should compare against the prompt, run tests, and catch agents rewriting files with identical content or claiming files they never touched.",
+      "The agent often gets the scope wrong, cleaning files nobody asked for, and needs a check to ensure it only touches what the task needed.",
+      "Does the teaching model accept any OpenAI-compatible endpoint with a custom base URL, or only OpenAI/Anthropic keys, especially for EU-hosted models?",
+      "How often does the explainer get it wrong about what the code actually does?",
+      "Does the check flag when the agent drifts mid-session or only after the turn finished?",
+      "Are the teaching cards translated or generated per language, and what about quality in rarer languages?"
+     ]
+    ]
+   }
+  },
+  "1332445": {
+   "themes": [
+    {
+     "theme": "Read-only nature of the tool",
+     "n": 3
+    },
+    {
+     "theme": "Adaptability of voice-matched titles to new formats",
+     "n": 2
+    },
+    {
+     "theme": "Speech-to-text quality for Hinglish content",
+     "n": 1
+    },
+    {
+     "theme": "Benchmarking multiple speech-to-text providers for Hinglish",
+     "n": 1
+    },
+    {
+     "theme": "Use of real retention data and channel's own numbers for reviews",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "How many uploads before titles sound like the creator?",
+    "How well do voice-matched titles adapt to new formats?",
+    "Is channel average a useful baseline when videos are very different?",
+    "Speech-to-text quality on Hinglish varies a lot."
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users appreciate the 'read-only' aspect of the tool, ensuring it doesn't alter their channel content.",
+      "There are concerns about the accuracy and usefulness of channel averages as a baseline for channels with varied content or infrequent uploads.",
+      "Users are curious about how well the voice-matched titles adapt when a channel tries a new format.",
+      "The approach of using real retention data after 48 hours for reviews is seen as sensible.",
+      "The review being grounded in the channel's own numbers is liked.",
+      "There is a suggestion to benchmark multiple speech-to-text providers for Hinglish content due to varying quality.",
+      "A user asks how many uploads are needed before titles start sounding like the creator.",
+      "Generic congratulations and positive remarks are present."
+     ],
+     [
+      "Users appreciate the read-only nature of the tool, ensuring it doesn't take control of their channel.",
+      "Users are curious about how well the voice-matched titles adapt to new channel formats or different video topics.",
+      "The idea of using real retention data for reviews is seen as sensible.",
+      "The review being grounded in the channel's own numbers is a positive aspect.",
+      "The quality of speech-to-text for Hinglish is a concern, as it varies significantly between providers.",
+      "A suggestion to benchmark multiple speech-to-text providers for Hinglish on actual creator footage.",
+      "Eden AI is mentioned as a tool that allows running audio through multiple STT providers with one API."
+     ],
+     [
+      "Users appreciate the read-only nature of the tool, ensuring they maintain control over their channel.",
+      "Users are curious about how well the voice-matched titles adapt to new content formats or diverse video topics.",
+      "Concerns are raised about the quality and variability of speech-to-text for Hinglish content, which is crucial for rough cut analysis.",
+      "The use of real retention data for reviews and grounding the review in the channel's own numbers is seen as sensible and useful.",
+      "A suggestion is made to benchmark multiple speech-to-text providers for Hinglish content.",
+      "The thoughtful inclusion of Hinglish titles is appreciated.",
+      "Generic congratulations and positive remarks are present."
+     ]
+    ],
+    "complaints": [
+     [
+      "How well do the voice-matched titles adapt when a channel tries a new format?",
+      "Is the channel average a useful baseline when videos are very different from each other, or does one outlier launch skew what 'good' looks like for the next one?",
+      "How many uploads does it need before the titles start sounding like the creator?",
+      "Speech-to-text quality on Hinglish varies a lot from one provider to another, so benchmarking several on creators' actual footage is important."
+     ],
+     [
+      "How many uploads does it need before the titles start sounding like the creator?",
+      "Curious how well the voice-matched titles adapt when a channel tries a new format.",
+      "Speech-to-text quality on Hinglish varies a lot from one provider to another.",
+      "Is the channel average a useful baseline when the videos are that different from each other?",
+      "Does one outlier launch end up skewing what 'good' looks like for the next one?"
+     ],
+     [
+      "Is the channel average a useful baseline when the videos are very different from each other, or does one outlier launch skew what 'good' looks like for the next one?",
+      "How many uploads does it need before the titles start sounding like the creator?",
+      "How well do the voice-matched titles adapt when a channel tries a new format?",
+      "Speech-to-text quality on Hinglish varies a lot from one provider to another, so it's worth benchmarking several on actual creator footage before picking one."
+     ]
+    ]
+   }
+  },
+  "1331479": {
+   "themes": [
+    {
+     "theme": "Concerns about handling UI changes and task notifications",
+     "n": 4
+    },
+    {
+     "theme": "Praise for automating old desktop software without APIs",
+     "n": 4
+    },
+    {
+     "theme": "Questions about endpoint return values, progress streaming, and chaining",
+     "n": 2
+    },
+    {
+     "theme": "Requests for debugging features (screenshots) and BYOK for cost reduction",
+     "n": 2
+    },
+    {
+     "theme": "Curiosity about use cases and the problem inspiration",
+     "n": 1
+    },
+    {
+     "theme": "Pricing concerns and BYOK suggestion for cost reduction",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and well wishes",
+     "n": 1
+    }
+   ],
+   "complaints": [
+    "What happens when the screen layout changes after an update?",
+    "How does the person get pinged?",
+    "What does the endpoint return while a long task is still running?",
+    "I would need screenshots of each run.",
+    "Have you considered BYOK and allowing the use of a user's own compute to reduce subscription costs?",
+    "Can one endpoint chain into another?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "Users are concerned about how the system handles changes in application layouts or UI, and how it notifies users about task progress or failures.",
+      "Users praise the concept of automating tasks on old desktop software without APIs, recognizing it addresses a significant pain point.",
+      "Users ask about the return value of an endpoint for long-running tasks, whether it streams progress, and if endpoints can be chained.",
+      "Users request features like screenshots of each run to debug errors and the ability to use their own compute (BYOK) to reduce subscription costs.",
+      "Users are curious about specific end-to-end use cases and the real-world problem that inspired the product.",
+      "One user finds the pricing high and suggests a 'Bring Your Own Key' (BYOK) model to reduce subscription costs.",
+      "Users offer generic congratulations and well wishes for the product launch."
+     ],
+     [
+      "Users are concerned about how the system handles changes in application layouts or UI, and how it notifies users about task progress or failures.",
+      "Users praise the concept of automating tasks on old desktop software without APIs, recognizing it addresses a significant pain point.",
+      "Users ask about the return value of an endpoint for long-running tasks, whether it streams progress, and if endpoints can be chained.",
+      "Users request features like screenshots of each run to debug errors and the ability to use their own compute (BYOK) to reduce subscription costs.",
+      "Users are curious about specific end-to-end use cases and the real-world problem that inspired the product.",
+      "One user finds the pricing high and suggests a 'Bring Your Own Key' (BYOK) model to reduce subscription costs.",
+      "Users offer generic congratulations and well wishes for the product launch."
+     ],
+     [
+      "Users are concerned about how the system handles changes in application layouts or UI, and how it notifies users about task progress or failures.",
+      "Users praise the concept of automating tasks on old desktop software without APIs, recognizing it addresses a significant pain point.",
+      "Users ask about the return value of an endpoint for long-running tasks, whether it streams progress, and if endpoints can be chained.",
+      "Users request features like screenshots of each run to debug errors and the ability to use their own compute (BYOK) to reduce subscription costs.",
+      "Users are curious about specific end-to-end use cases and the real-world problem that inspired the product.",
+      "One user finds the pricing high and suggests a 'Bring Your Own Key' (BYOK) model to reduce subscription costs.",
+      "Users offer generic congratulations and well wishes for the product launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "What happens when the screen layout of an old application changes after an update?",
+      "How does the person get pinged when the agent stops for a login or a go-ahead?",
+      "What does the endpoint return while a long task is still running, and can one endpoint chain into another?",
+      "I would need screenshots of each run to see where a field went wrong without re-running it.",
+      "The pricing feels high, have you considered BYOK and allowing the use of a user's own compute to reduce subscription costs?",
+      "I'm curious to understand a very specific use case of this and how it would work end-to-end."
+     ],
+     [
+      "What happens when the screen layout changes after an update?",
+      "What does the endpoint return while a long task is still running? Does it stream progress, or only return when it's done?",
+      "How does the person get pinged, email, slack, inside Claude???",
+      "I would need screenshots of each run, so when one field is wrong I see where it went wrong without running it again.",
+      "Have you considered BYOK and allowing the use of a user's own compute (VM or local) to reduce subscription costs?",
+      "Can one endpoint chain into another, or is each task isolated?"
+     ],
+     [
+      "What happens when the screen layout changes after an update?",
+      "How does the person get pinged, email, slack, inside Claude???",
+      "What does the endpoint return while a long task is still running? Does it stream progress, or only return when it's done?",
+      "Can one endpoint chain into another, or is each task isolated?",
+      "I would need screenshots of each run, so when one field is wrong I see where it went wrong without running it again.",
+      "Your pricing feels high, but likely required because of the business model. Have you considered BYOK and allowing the use of a user's own compute (VM or local) to reduce subscription costs?"
+     ]
+    ]
+   }
+  },
+  "1326480": {
+   "themes": [
+    {
+     "theme": "Addresses pain point of AI agents stalling due to missed approvals when users are away from desks.",
+     "n": 4
+    },
+    {
+     "theme": "Users want to set quiet hours or specific conditions for calls.",
+     "n": 3
+    },
+    {
+     "theme": "Availability of service in specific countries (e.g., France, South Korea).",
+     "n": 3
+    },
+    {
+     "theme": "How the system identifies important messages for calls.",
+     "n": 1
+    },
+    {
+     "theme": "Ability of calls to handle longer spoken instructions.",
+     "n": 1
+    },
+    {
+     "theme": "Comparison to existing free alternatives (Claude Code, Codex).",
+     "n": 1
+    },
+    {
+     "theme": "Generic congratulations and positive feedback on the launch.",
+     "n": 2
+    }
+   ],
+   "complaints": [
+    "How does Pushary identify important messages?",
+    "Can the call take longer spoken instructions?",
+    "International availability (e.g., France, South Korea)",
+    "Can I make it call only for some actions?"
+   ],
+   "extractions": {
+    "themes": [
+     [
+      "The product addresses the pain point of AI agents stalling due to missed approvals, especially when users are away from their desks.",
+      "Users want to be able to set quiet hours or specific conditions for when calls should be made.",
+      "Users are asking about the availability of the service in specific countries, particularly France and South Korea.",
+      "Users want to understand how the system identifies important messages that warrant a phone call.",
+      "Users are asking if the call can handle longer spoken instructions.",
+      "Users want the ability to configure calls only for specific actions or types of messages.",
+      "The product is compared to Claude Code and Codex, which already offer phone approvals for free.",
+      "Generic congratulations and positive feedback on the launch."
+     ],
+     [
+      "The product addresses a real pain point of AI agents stalling while waiting for approval, especially when away from the desk or missing notifications.",
+      "Users want to be able to set quiet hours for calls and specify which actions trigger a call.",
+      "Users are asking about the availability of the service in specific countries (France, South Korea) and for specific phone numbers.",
+      "Users are asking how the system identifies important messages that warrant a call versus those that don't.",
+      "The detail of setting hours for calls is appreciated, as it allows for important pings without constant interruptions.",
+      "The transparency about existing free alternatives (Claude Code, Codex) is appreciated and builds trust.",
+      "Users are asking if the call can handle longer spoken instructions.",
+      "Generic congratulations and praise for the launch and idea."
+     ],
+     [
+      "The product addresses the pain point of AI agents stalling due to missed approvals, especially when users are away from their desks.",
+      "Users want to be able to set quiet hours or specific conditions for when calls should be made.",
+      "Users are asking about the availability of the service in specific countries, particularly France and South Korea.",
+      "Users want to understand how the system identifies important messages that warrant a phone call.",
+      "Users are asking if the call can handle longer spoken instructions.",
+      "Users want the ability to configure calls only for specific actions or types of messages.",
+      "The product is compared to Claude Code and Codex, which already offer phone approvals for free.",
+      "Generic congratulations and positive feedback on the launch."
+     ]
+    ],
+    "complaints": [
+     [
+      "How does Pushary identify important messages that needs to be sent to the phone, since all the messages shouldn't be sent over a call?",
+      "Can the call take a longer spoken instruction,like \"skip the migration and just fix the tests\"?",
+      "The call speaks French but can't ring French numbers yet? Any plan for France?",
+      "France isn't on the call list yet. Any date?",
+      "Any plan for South Korea numbers?",
+      "Can I make it call only for some actions, like anything that sends a message, and stay quiet for file reads?"
+     ],
+     [
+      "How does Pushary identify important messages that needs to be sent to the phone, since all the messages shouldn't be sent over a call?",
+      "Can the call take a longer spoken instruction,like \"skip the migration and just fix the tests\"?",
+      "France isn't on the call list yet. Any date?",
+      "Any plan for South Korea numbers?",
+      "can I make it call only for some actions, like anything that sends a message, and stay quiet for file reads?"
+     ],
+     [
+      "How does Pushary identify important messages that needs to be sent to the phone, since all the messages shouldn't be sent over a call?",
+      "Can the call take a longer spoken instruction,like \"skip the migration and just fix the tests\"?",
+      "France isn't on the call list yet. Any date?",
+      "Any plan for South Korea numbers?",
+      "can I make it call only for some actions, like anything that sends a message, and stay quiet for file reads?"
+     ]
+    ]
+   }
+  }
+ }
+}
