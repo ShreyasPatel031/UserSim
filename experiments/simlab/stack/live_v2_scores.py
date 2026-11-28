@@ -6,6 +6,8 @@ import os, sys
 import numpy as np, pandas as pd
 from sklearn.linear_model import LogisticRegression
 HERE = os.path.dirname(os.path.abspath(__file__)); CC = os.path.join(HERE, "..", "cohort_calibration"); ST, D, OUT = sys.argv[1:4]
+sys.path.insert(0, os.path.join(HERE, "..", "..")); from pipeline import warehouse  # noqa: E402
+warehouse.table("launches", do_sync=True)   # a fresh session has no local launches table (Nov 28: CatalogException)
 os.environ["BV2_LIB"] = "1"; G = {"__file__": os.path.join(CC, "backer_v2.py")}; sys.argv = ["x", ST, "/dev/null", "2026-11-08", "2026-11-21", "2026-10-25"]
 try: exec(open(os.path.join(CC, "backer_v2.py")).read(), G)
 except SystemExit: pass

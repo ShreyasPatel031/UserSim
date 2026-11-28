@@ -82,8 +82,8 @@ def launch(tag, prov, zone):
     r = subprocess.run(["bash", f"{GS}/launch.sh", tag, MODEL, "a2-highgpu-1g", zone, "1h"], env=env, capture_output=True, text=True)
     log("launch", tag, prov, zone, "rc", r.returncode, (r.stderr or r.stdout)[-300:].replace("\n", " ")); return r.returncode == 0
 done = lambda tag: {os.path.basename(p) for p in subprocess.run(["gsutil", "ls", f"{PREFIX}/runs/{tag}/"], capture_output=True, text=True).stdout.split()}
-want = {f"scores_{os.path.basename(f)}" for f in files}; tag = None; t_gpu = time.time()
-for k, (prov, zone) in enumerate((("SPOT", "us-central1-f"), ("SPOT", "us-central1-a"), ("STANDARD", "us-central1-f"), ("STANDARD", "us-central1-a"))):
+want = {f"scores_{os.path.basename(f)}" for f in files}; tag = os.environ.get("STACK_REUSE_TAG"); t_gpu = time.time()   # reuse: scores already in runs/<tag>
+for k, (prov, zone) in ([] if tag else enumerate((("SPOT", "us-central1-f"), ("SPOT", "us-central1-a"), ("STANDARD", "us-central1-f"), ("STANDARD", "us-central1-a")))):
     t = f"stackfwd-{D.replace('-', '')}{'t' if TEST else ''}-{k}"
     if launch(t, prov, zone): tag = t; break
 if not tag: sys.exit("GPU: no A100 VM could be created")
