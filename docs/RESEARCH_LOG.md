@@ -3003,3 +3003,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-28T12:34Z hourly check: board live (12:33Z, 20 ranked), inline board, launch/MCP up; ledger 334/222 valid.
 - 2026-11-28T13:36Z OUTAGE: atelier-sim.com (/, /launch, /api/ph/today) returns HTTP 402 DEPLOYMENT_DISABLED from Vercel since between 12:34Z and 13:33Z; usersim.vercel.app also 402. Vercel disabled the account's deployments (billing/usage limit). No Vercel credentials here; needs Shreyas in the Vercel dashboard. MCP server (sslip) up.
 - 2026-11-28T14:34Z hourly check: atelier-sim.com still 402 DEPLOYMENT_DISABLED (Vercel billing); MCP up; ledger 334/222 valid.
+- 2026-11-28T15:34Z hourly check: atelier-sim.com still Vercel 402; MCP up.
