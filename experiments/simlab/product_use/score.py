@@ -19,12 +19,15 @@ if not ranks: sys.exit(f"no truth ranks for {D} yet")
 SB = {str(x["id"]): x.get("yes_share") for x in (gj(f"{B}/results/calibration/{D}/rerank_frozen.json") or {}).get("launches", [])}
 ids = [l["id"] for l in LU["launches"]]; srank = {l["id"]: l["structural_rank"] for l in LU["launches"]}
 real = {i: ranks.get(i, 99) for i in ids}                               # unranked (not featured / not in the counted list) = bottom
-arms = {"sim": {x["launch_id"]: x.get("sim_score") for x in (OUT or {}).get("launches", [])},
-        "stageb": SB, "homepage": {x["launch_id"]: x.get("would_use") for x in (HP or {}).get("launches", [])}}
+_ok = lambda v: None if v is None or (isinstance(v, float) and np.isnan(v)) else v   # NaN = no clean session = no prediction (PREREG 11e; bug fixed Nov 28)
+arms = {"sim": {x["launch_id"]: _ok(x.get("sim_score")) for x in (OUT or {}).get("launches", [])},
+        "stageb": {k: _ok(v) for k, v in SB.items()}, "homepage": {x["launch_id"]: _ok(x.get("would_use")) for x in (HP or {}).get("launches", [])}}
 def reorder(sc):
-    v = [sc.get(i) for i in ids]; med = np.nanmedian([x for x in v if x is not None]) if any(x is not None for x in v) else 0.0
-    s = [(-(x if x is not None else med), srank[i]) for x, i in zip(v, ids)]          # ties / missing keep structural order
-    return [ids[k] for k in sorted(range(len(ids)), key=lambda k: s[k])]
+    # PREREG 11e: a launch with no prediction keeps its structural slot; scored launches are re-ordered among the remaining slots
+    # (ties keep structural order). Before Nov 28 a missing score was set to the day's median score instead.
+    struct_ = sorted(ids, key=lambda i: srank[i]); scored = [i for i in struct_ if sc.get(i) is not None]
+    it = iter(sorted(scored, key=lambda i: (-sc[i], srank[i])))
+    return [next(it) if sc.get(i) is not None else i for i in struct_]
 truth_top = lambda k: set(sorted(ids, key=lambda i: real[i])[:k])
 def cap(order, k): return len(set(order[:k]) & truth_top(k)) / k
 struct = sorted(ids, key=lambda i: srank[i]); RES = {"structural": {f"top{k}": cap(struct, k) for k in (3, 5)}}
