@@ -24,7 +24,7 @@
   "monthly dayend": {
    "day": "2026-11-27",
    "data_cut": null,
-   "written_at": "2026-11-28T08:21:29.141286+00:00",
+   "written_at": "2026-11-28T10:20:46.381110+00:00",
    "status": "missing read",
    "late_min": null
   },
@@ -190,5 +190,5 @@
    "late_min": 20.3
   }
  },
- "updated_at": "2026-11-28T08:21:29.141286+00:00"
+ "updated_at": "2026-11-28T10:20:46.381110+00:00"
 }
