@@ -2993,3 +2993,4 @@ Model switches, direction reviews and agenda changes, newest last.
 - 2026-11-28T05:34Z hourly check: board live (05:33Z, 18/18), inline board present, launch/MCP up; ledger 334/222 valid; population 6h summary + PB60 forward request received (fleet policing not my role).
 - 2026-11-28T06:34Z hourly check: board live (06:33Z, 18/18), inline board present, launch/MCP up; ledger 334/222 valid.
 - 2026-11-28T07:34Z hourly check: board live (07:33Z, 18/18), inline board present, launch/MCP up; ledger 334/222 valid.
+- 2026-11-28T08:34Z hourly check: new day Nov 28 live on site (16 launches ranked, 0005 point shown), inline board present, launch/MCP up; web forecast_0005 copy not yet written (usually ~09:01Z, inside 90-min rule); ledger 334/222 valid.
