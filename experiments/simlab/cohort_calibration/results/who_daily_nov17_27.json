@@ -1,0 +1,168 @@
+{
+ "days": [
+  "2026-11-17",
+  "2026-11-18",
+  "2026-11-19",
+  "2026-11-20",
+  "2026-11-21",
+  "2026-11-22",
+  "2026-11-23",
+  "2026-11-24",
+  "2026-11-25",
+  "2026-11-26",
+  "2026-11-27"
+ ],
+ "min_held_backers_per_launch": 20,
+ "coverage": {
+  "2026-11-17": {
+   "observed_held_people": 3036,
+   "held_backer_rows": 1327,
+   "cut": "2026-11-17"
+  },
+  "2026-11-18": {
+   "observed_held_people": 2995,
+   "held_backer_rows": 1170,
+   "cut": "2026-11-18"
+  },
+  "2026-11-19": {
+   "observed_held_people": 2982,
+   "held_backer_rows": 1169,
+   "cut": "2026-11-19"
+  },
+  "2026-11-20": {
+   "observed_held_people": 2956,
+   "held_backer_rows": 977,
+   "cut": "2026-11-20"
+  },
+  "2026-11-21": {
+   "observed_held_people": 2697,
+   "held_backer_rows": 630,
+   "cut": "2026-11-21"
+  },
+  "2026-11-22": {
+   "observed_held_people": 1859,
+   "held_backer_rows": 637,
+   "cut": "2026-11-22"
+  },
+  "2026-11-23": {
+   "observed_held_people": 1419,
+   "held_backer_rows": 488,
+   "cut": "2026-11-23"
+  },
+  "2026-11-24": {
+   "observed_held_people": 1303,
+   "held_backer_rows": 304,
+   "cut": "2026-11-24"
+  },
+  "2026-11-25": {
+   "observed_held_people": 500,
+   "held_backer_rows": 160,
+   "cut": "2026-11-25"
+  },
+  "2026-11-26": {
+   "observed_held_people": 491,
+   "held_backer_rows": 109,
+   "cut": "2026-11-26"
+  },
+  "2026-11-27": {
+   "observed_held_people": 0,
+   "held_backer_rows": 0,
+   "cut": "2026-11-27"
+  }
+ },
+ "launches_scored": 84,
+ "JSD base (shadow)": [
+  0.225,
+  0.214,
+  0.236,
+  84,
+  10
+ ],
+ "JSD P3 (published)": [
+  0.249,
+  0.232,
+  0.261,
+  84,
+  10
+ ],
+ "P3 minus base (paired)": [
+  0.024,
+  0.014,
+  0.028,
+  84,
+  10
+ ],
+ "per_day": [
+  {
+   "day": "2026-11-17",
+   "launches": 12,
+   "backers": 960,
+   "jsd_base": 0.226,
+   "jsd_p3": 0.259
+  },
+  {
+   "day": "2026-11-18",
+   "launches": 14,
+   "backers": 823,
+   "jsd_base": 0.214,
+   "jsd_p3": 0.241
+  },
+  {
+   "day": "2026-11-19",
+   "launches": 17,
+   "backers": 958,
+   "jsd_base": 0.244,
+   "jsd_p3": 0.276
+  },
+  {
+   "day": "2026-11-20",
+   "launches": 11,
+   "backers": 571,
+   "jsd_base": 0.24,
+   "jsd_p3": 0.261
+  },
+  {
+   "day": "2026-11-21",
+   "launches": 11,
+   "backers": 503,
+   "jsd_base": 0.215,
+   "jsd_p3": 0.244
+  },
+  {
+   "day": "2026-11-22",
+   "launches": 9,
+   "backers": 451,
+   "jsd_base": 0.208,
+   "jsd_p3": 0.234
+  },
+  {
+   "day": "2026-11-23",
+   "launches": 4,
+   "backers": 279,
+   "jsd_base": 0.257,
+   "jsd_p3": 0.247
+  },
+  {
+   "day": "2026-11-24",
+   "launches": 3,
+   "backers": 96,
+   "jsd_base": 0.21,
+   "jsd_p3": 0.217
+  },
+  {
+   "day": "2026-11-25",
+   "launches": 2,
+   "backers": 60,
+   "jsd_base": 0.173,
+   "jsd_p3": 0.143
+  },
+  {
+   "day": "2026-11-26",
+   "launches": 1,
+   "backers": 25,
+   "jsd_base": 0.178,
+   "jsd_p3": 0.152
+  }
+ ],
+ "note": "[mean, day-bootstrap 2.5%, 97.5%, launches, days]; real mix = held complete backers re-read after close; target JSD <= 0.10"
+}

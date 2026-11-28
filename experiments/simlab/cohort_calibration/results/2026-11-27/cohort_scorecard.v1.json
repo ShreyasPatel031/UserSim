@@ -1,0 +1,382 @@
+{
+ "scorecard": "cohort",
+ "day": "2026-11-27",
+ "version": "v1",
+ "written_at": "2026-11-28",
+ "WHO": {
+  "status": "Nov 27 not scorable yet",
+  "published line": "base mix (P3 is the shadow)",
+  "pooled (>= 20 held re-read backers)": {
+   "launches": 84,
+   "JSD base (published)": [
+    0.225,
+    0.214,
+    0.236,
+    84,
+    10
+   ],
+   "JSD P3 (shadow)": [
+    0.249,
+    0.232,
+    0.261,
+    84,
+    10
+   ],
+   "P3 minus base": [
+    0.024,
+    0.014,
+    0.028,
+    84,
+    10
+   ]
+  },
+  "coverage": {
+   "2026-11-17": {
+    "observed_held_people": 3036,
+    "held_backer_rows": 1327,
+    "cut": "2026-11-17"
+   },
+   "2026-11-18": {
+    "observed_held_people": 2995,
+    "held_backer_rows": 1170,
+    "cut": "2026-11-18"
+   },
+   "2026-11-19": {
+    "observed_held_people": 2982,
+    "held_backer_rows": 1169,
+    "cut": "2026-11-19"
+   },
+   "2026-11-20": {
+    "observed_held_people": 2956,
+    "held_backer_rows": 977,
+    "cut": "2026-11-20"
+   },
+   "2026-11-21": {
+    "observed_held_people": 2697,
+    "held_backer_rows": 630,
+    "cut": "2026-11-21"
+   },
+   "2026-11-22": {
+    "observed_held_people": 1859,
+    "held_backer_rows": 637,
+    "cut": "2026-11-22"
+   },
+   "2026-11-23": {
+    "observed_held_people": 1419,
+    "held_backer_rows": 488,
+    "cut": "2026-11-23"
+   },
+   "2026-11-24": {
+    "observed_held_people": 1303,
+    "held_backer_rows": 304,
+    "cut": "2026-11-24"
+   },
+   "2026-11-25": {
+    "observed_held_people": 500,
+    "held_backer_rows": 160,
+    "cut": "2026-11-25"
+   },
+   "2026-11-26": {
+    "observed_held_people": 491,
+    "held_backer_rows": 109,
+    "cut": "2026-11-26"
+   },
+   "2026-11-27": {
+    "observed_held_people": 0,
+    "held_backer_rows": 0,
+    "cut": "2026-11-27"
+   }
+  }
+ },
+ "WHAT": {
+  "themes": {
+   "launches": 11,
+   "merged recall": [
+    82.6,
+    75.8,
+    88.9
+   ],
+   "merged precision": [
+    73.7,
+    60.8,
+    85.9
+   ],
+   "merged complaint recall": [
+    33.9,
+    17.7,
+    49.8
+   ],
+   "plain recall": [
+    59.0,
+    49.3,
+    68.2
+   ],
+   "plain precision": [
+    20.2,
+    13.4,
+    29.6
+   ],
+   "plain complaint recall": [
+    5.4,
+    0.0,
+    14.1
+   ]
+  },
+  "persona-only shadow": {
+   "recall": [
+    71.2,
+    62.6,
+    79.1
+   ],
+   "recall_w": [
+    79.0,
+    70.0,
+    86.5
+   ],
+   "precision": [
+    53.0,
+    35.6,
+    70.8
+   ],
+   "complaint_recall": [
+    41.2,
+    31.7,
+    51.4
+   ]
+  },
+  "merged minus persona-only (paired)": {
+   "recall": [
+    11.5,
+    2.4,
+    19.8
+   ],
+   "recall_w": [
+    7.6,
+    -3.3,
+    17.5
+   ],
+   "precision": [
+    20.7,
+    7.8,
+    35.0
+   ],
+   "complaint_recall": [
+    -7.3,
+    -24.2,
+    12.1
+   ]
+  },
+  "merged with launch block minus no-block shadow (paired; POINT-1)": {
+   "recall": [
+    8.4,
+    2.2,
+    15.4
+   ],
+   "recall_w": [
+    7.6,
+    1.6,
+    15.3
+   ],
+   "precision": [
+    9.0,
+    1.4,
+    17.3
+   ],
+   "complaint_recall": [
+    1.2,
+    -16.7,
+    20.9
+   ]
+  },
+  "sentiment (reactions only)": {
+   "day": "2026-11-27",
+   "launches": 12,
+   "base mix (earlier real labels)": [
+    0.522,
+    0.409,
+    0.069
+   ],
+   "jsd reactions": 0.3,
+   "jsd base (published line)": 0.219,
+   "reactions minus base [mean, launch-boot 95%]": [
+    0.08,
+    0.004,
+    0.167
+   ],
+   "agree reactions / base": [
+    0.417,
+    0.583
+   ],
+   "pos share reactions / real": [
+    0.542,
+    0.413
+   ],
+   "sources not scorable today": {
+    "(a) ~20 P3-persona reactions": "not generated in the nightly yet",
+    "(b) plugin in-product feedback": "plugin_runs/2026-11-21_personas.json holds outcomes only (gave_up/blocked/...), no feedback text"
+   },
+   "usd": 0.0056
+  }
+ },
+ "agents (SIM-RERANK Stage B, on time)": {
+  "comments vs real comment themes": {
+   "v1": {
+    "launches": 11,
+    "recall": [
+     34.7,
+     24.7,
+     44.6,
+     11
+    ],
+    "precision": [
+     66.2,
+     46.1,
+     85.1,
+     11
+    ],
+    "complaint_recall": [
+     0.0,
+     0.0,
+     0.0,
+     11
+    ]
+   },
+   "v2pick (comment attributed to the person's first pick)": {
+    "launches": 10,
+    "recall": [
+     24.9,
+     10.7,
+     41.1,
+     10
+    ],
+    "precision": [
+     40.4,
+     17.9,
+     65.0,
+     10
+    ],
+    "complaint_recall": [
+     3.7,
+     0.0,
+     9.0,
+     10
+    ]
+   }
+  }
+ },
+ "backer lines (PREREG 15a/15b)": {
+  "STACK-v2 (published from Nov 28)": "first forward list is Nov 28; scored once its re-reads land",
+  "STACK-1b (shadow)": "Nov 27: no observed held backers yet (re-reads not landed)"
+ },
+ "PRODUCT-USE-1 (night 2)": {
+  "clean_session_rate": 0.536,
+  "clean_session_rate_launch": 0.646,
+  "n_sessions_excluded_access": 78,
+  "model_usd_measured_total": 5.248,
+  "score (not reported until 7 scored days)": {
+   "residual": {
+    "structural": {
+     "top3": 0.3333333333333333,
+     "top5": 0.4
+    },
+    "sim": {
+     "available": true,
+     "top3": 0.3333333333333333,
+     "top5": 0.2,
+     "top3_minus_structural": 0.0,
+     "top5_minus_structural": -0.2,
+     "spearman_vs_miss": null,
+     "n_scored": 15
+    },
+    "stageb": {
+     "available": true,
+     "top3": 0.3333333333333333,
+     "top5": 0.6,
+     "top3_minus_structural": 0.0,
+     "top5_minus_structural": 0.19999999999999996,
+     "spearman_vs_miss": -0.1869980501401382,
+     "n_scored": 15
+    },
+    "homepage": {
+     "available": true,
+     "top3": 0.0,
+     "top5": 0.2,
+     "top3_minus_structural": -0.3333333333333333,
+     "top5_minus_structural": -0.2,
+     "spearman_vs_miss": 0.3343298402503228,
+     "n_scored": 15
+    }
+   },
+   "reaction": {
+    "homepage": {
+     "recall": 0.1336904761904762,
+     "precision": 0.08857466063348415,
+     "complaint_recall": 0.03333333333333333,
+     "n_launches": 10
+    },
+    "sim": {
+     "recall": 0.0,
+     "precision": 0.0,
+     "complaint_recall": 0.0,
+     "n_launches": 7
+    }
+   }
+  }
+ },
+ "7-day revert rule": {
+  "scored live days": 3,
+  "merged minus persona-only": {
+   "day 1 (Nov 25)": {
+    "recall": [
+     14.0,
+     4.9,
+     23.7
+    ],
+    "precision": [
+     -1.9,
+     -16.7,
+     10.5
+    ],
+    "complaint_recall": [
+     1.9,
+     -9.7,
+     14.4
+    ]
+   },
+   "day 2 (Nov 26)": {
+    "recall": [
+     9.9,
+     -2.9,
+     22.5
+    ],
+    "precision": [
+     9.6,
+     -4.4,
+     25.2
+    ],
+    "complaint_recall": [
+     -7.4,
+     -15.7,
+     -0.9
+    ]
+   },
+   "day 3 (Nov 27)": {
+    "recall": [
+     11.5,
+     2.4,
+     19.8
+    ],
+    "precision": [
+     20.7,
+     7.8,
+     35.0
+    ],
+    "complaint_recall": [
+     -7.3,
+     -24.2,
+     12.1
+    ]
+   }
+  }
+ }
+}
